@@ -1,214 +1,222 @@
-Return-Path: <cgroups+bounces-6080-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6081-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFC55A07826
-	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2025 14:50:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B108EA085B9
+	for <lists+cgroups@lfdr.de>; Fri, 10 Jan 2025 03:57:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFEA33A8494
-	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2025 13:47:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8FBE3A9E72
+	for <lists+cgroups@lfdr.de>; Fri, 10 Jan 2025 02:57:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A588472;
-	Thu,  9 Jan 2025 13:47:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B93194A60;
+	Fri, 10 Jan 2025 02:57:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iAn4a3m7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UUdvIC51"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82101217F4A;
-	Thu,  9 Jan 2025 13:47:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8071E0DCF
+	for <cgroups@vger.kernel.org>; Fri, 10 Jan 2025 02:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736430422; cv=none; b=ht6XDZVuz9f7qQv8DhO+iN/eWgNV5ES1FEcp2QD5/OQUjBSlS7t9ODEe+ueXm5XZp29A3vc1seB3yuiipMFpxr790ajpQDTt4ZdEKNlFj/0ju/FGdlGOo5tFLey8LEaE0Rech/Y58KbYQ91pgUFsvLy/VxOMbp6hBkrLs5aFfoM=
+	t=1736477842; cv=none; b=mhZwVfHmpaWWmIU4GCaOTFVJ+TTFUW54odQtA+9wre3FRYV0x/+Z1mzAgXIJ21lansDnZ7oPkorI2QmkzMLQcO49ffHThNnnGnuqrOdzwKwD8Lh+T/dNLuX0KeV7DRY5wodcwgC2czNLPkHnn2xDmSLxBao6Ubo6eLCKIWpCcWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736430422; c=relaxed/simple;
-	bh=79rl6nUkFLG/k6QDfglEjS9SOFbewyC8BM3IQiT7eTg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BwErOsu1JIpk/ARz/poPS1VbfgH+GWVOPwThivGxPiX3ahqBtAHTo5wdByliszVCS7jS6Ci2pqVkdKJ7k7K6NULaH7Y06agA8QhOAph9yzGjK1PUSDN8AQQZLsIbAgA97dG9y55rlmwqQIzjL9Ei5XRDehRGaOp9lml49OcqAlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iAn4a3m7; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-467a17055e6so9073661cf.3;
-        Thu, 09 Jan 2025 05:47:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736430419; x=1737035219; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x4O+9dMQs9z1mpZvLCXy3eE+9C/pTlYhQ/Ut88jMwoo=;
-        b=iAn4a3m7ayS+W2ntjeJVoy4yNo/ENdKW292bi1yem5dI0U25MJFGgsWDuW4X6HEdlw
-         2wp6+E+WoTzsWuz6DYGmkppz/rulzZoItuoiT7jtv303Wt76X6rYPh52paGl7hL4/paz
-         uAgcQ5ST3c0hHhd3rJPzaDrZGhVGKiYdG1sBgNLNg4ZTLndl5jekuO3Lg0lTStgOKJne
-         HYKhb4QncVERdz4X0rMWL4oXzMPAQUVO9G7IHzGbIq8ye8ftAO15zqghBBejmhpNziYl
-         Y1nrYBIi6C3VBy/7iBY1ZujaGQiOiGUDOR1kjoy0t2e3VTIPhb+tQsSpaoKQto68okyR
-         Q6Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736430419; x=1737035219;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x4O+9dMQs9z1mpZvLCXy3eE+9C/pTlYhQ/Ut88jMwoo=;
-        b=msVcy/n/mVcoqM2VTDiUNttxU7RTyqlCteK0hQD0ZpwM6Rj5zwB7MCA2ejOD4XA4Vz
-         qy/IL4cSiIO0/cSDEY92/bCMjkzS9d13jmh2lycZKzB6T7ApyRQfBBJrHGY6LyDH0MSa
-         nTTo+A+mXWt3PiO59mzzooSNlmg5aMzYbpNnEnbzX/dUS7lj9WE5tuMMi6mBqDvGt6bT
-         YfLovZeVj/+NVOb7vdWyj29rOYA/Ikv9sDSicdzd/8gdh3OLaQDKjMqMj1e96+oI22Tp
-         MbMDBIz/h/3ojJXraLiN4eB6xmO0agwqW+JMMcFIUE4A8WaHYMFp3hlDGYYLL67mJ1TB
-         rmrw==
-X-Forwarded-Encrypted: i=1; AJvYcCW/GFBosgL00yn47K+iLPsrRxr0At9an6g4JHnK17VCWnwht96Fbt4q5I23BTYvn/xHpm1RgcuL@vger.kernel.org, AJvYcCXM2FIpkSg/sMmnY8p2rMQzjml3gFfkp/MjyssMfXvX7ml6K2AzXlBIWdmNRpOfDFXgy2hWx+QLhLMPG9J/@vger.kernel.org
-X-Gm-Message-State: AOJu0YygbP8QA/gNrA9ZJLEFFE9aqAZqFf4SnSCmrdROAQz6SUMb1Zm0
-	p+Z2UaC5382TR126Wt7hgfjcL7bINRZ9UpPg6GPP8lSH0E2In1treQfb6eNwcj4IY3UCqxFBd0/
-	FLPEN748cib1h5UJ6piBgtBGIfKc=
-X-Gm-Gg: ASbGncu0LcxeFKeq4EdPQ/gshf0Y+vzQ2+MLtZysXN3V9VXN8cM2OwE6EW3YvhG5sBK
-	YmZH6+fP16Op86usIwdRH90f/QuYXKSzAYtlE36VJ
-X-Google-Smtp-Source: AGHT+IFT+CJdtfPBKnXp1lIzBMT3rgy5V8stNsAzlOOJg2YwcRJh81yx++tNno/y9rDBXbgCwuxfImfsc/hM7Bck2zY=
-X-Received: by 2002:a05:6214:3008:b0:6d4:2646:109c with SMTP id
- 6a1803df08f44-6df9b1cf3c5mr80749856d6.3.1736430419404; Thu, 09 Jan 2025
- 05:46:59 -0800 (PST)
+	s=arc-20240116; t=1736477842; c=relaxed/simple;
+	bh=KqYk2sMvXavRbku1F5davlT2uf8l8k/EWDFEnMPWPFQ=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=KsZ/GSc4JsTwOU8tEpw48HDBfTyp4piWUG0lRtRLLjT9GVqKTjT1GpWPAaAfYMBQZbWSdefAkPMYl4eSJ1OJ5hTqP2K78vPzSxFy3X16kM0/2fhOraQuFcWEpct3o9btK84gtWJdPoWSOKugAbQ+oWLjnuyixWM8CzQfepNb9Mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UUdvIC51; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1736477840; x=1768013840;
+  h=date:from:to:cc:subject:message-id;
+  bh=KqYk2sMvXavRbku1F5davlT2uf8l8k/EWDFEnMPWPFQ=;
+  b=UUdvIC51rSWChdsaecX6b2uzRJQjblvbQOBMvA2DTaKKy6zcewJq0eJc
+   szuytvnW4L23OHAPqqWR5SX1xL12/GL6AhC7IEVo6Atvp1EQm8PSYrMzK
+   VwRlho8nktm4oKJzsI78mURIjXRS/SnvyZKvCRnvNlZlm+YDbx8cfQA3q
+   63u6ReRuYDzfSp47fjNrRR0SrAK+LZBaRUZ9HVzpR/dsy4tdBCLMTBh1L
+   t8ZPvjK+jbd50O+GXG5MLNHqbpp2naNs3igH3ghFOLm6x6DGzCkamKN4b
+   fzE9GUUnutXBvzxVz85IhXtV6CMVn0D7xfZg+ecJfkX7apuKYOi43mKNC
+   w==;
+X-CSE-ConnectionGUID: QNqPBmWRSeOMaPzJxELqng==
+X-CSE-MsgGUID: CRIPgdLoT3asIINgAFsyRg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11310"; a="54306155"
+X-IronPort-AV: E=Sophos;i="6.12,302,1728975600"; 
+   d="scan'208";a="54306155"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2025 18:57:18 -0800
+X-CSE-ConnectionGUID: hsCLSHA1S0W+avKucp7HCg==
+X-CSE-MsgGUID: 7+fO9LWAS72zT9iguFou9w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="108218761"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 09 Jan 2025 18:57:17 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tW5D1-000IRf-2B;
+	Fri, 10 Jan 2025 02:57:15 +0000
+Date: Fri, 10 Jan 2025 10:56:30 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 3cb97a927fffe443e1e7e8eddbfebfdb062e86ed
+Message-ID: <202501101024.uEcK53uJ-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250103022409.2544-1-laoar.shao@gmail.com> <20250103022409.2544-5-laoar.shao@gmail.com>
- <z2s55zx724rsytuyppikxxnqrxt23ojzoovdpkrk3yc4nwqmc7@of7dq2vj7oi3>
-In-Reply-To: <z2s55zx724rsytuyppikxxnqrxt23ojzoovdpkrk3yc4nwqmc7@of7dq2vj7oi3>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 9 Jan 2025 21:46:23 +0800
-X-Gm-Features: AbW1kvaKkMqpK8mxw4zFIk501IQjsHJbKsFT45M0lYhNKse3TYJHGv23jTDCv1Q
-Message-ID: <CALOAHbAY8MLDT=EdzY6TzQv3ZF4OGXTWoWBEs45zQijZH4C0Gw@mail.gmail.com>
-Subject: Re: [PATCH v8 4/4] sched: Fix cgroup irq time for CONFIG_IRQ_TIME_ACCOUNTING
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Peter Zijlstra <peterz@infradead.org>
-Cc: mingo@redhat.com, hannes@cmpxchg.org, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, surenb@google.com, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, lkp@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 9, 2025 at 6:47=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.com=
-> wrote:
->
-> Hello Yafang.
->
-> I consider the runtimization you did in the first three patches
-> sensible,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 3cb97a927fffe443e1e7e8eddbfebfdb062e86ed  cgroup/cpuset: remove kernfs active break
 
-The first three patches can be considered as a separate series and are
-not directly related to this issue.
+elapsed time: 1456m
 
-Hello Peter,
+configs tested: 129
+configs skipped: 2
 
-Since the first three patches have already received many reviews,
-could you please apply them first?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> however, this fourth patch is a hard sell.
+tested configs:
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    gcc-14.2.0
+arc                              allmodconfig    gcc-13.2.0
+arc                               allnoconfig    gcc-13.2.0
+arc                              allyesconfig    gcc-13.2.0
+arc                          axs101_defconfig    gcc-13.2.0
+arc                   randconfig-001-20250109    gcc-13.2.0
+arc                   randconfig-002-20250109    gcc-13.2.0
+arm                              alldefconfig    gcc-14.2.0
+arm                              allmodconfig    gcc-14.2.0
+arm                               allnoconfig    clang-17
+arm                              allyesconfig    gcc-14.2.0
+arm                          exynos_defconfig    clang-20
+arm                      jornada720_defconfig    clang-20
+arm                         lpc32xx_defconfig    clang-20
+arm                   randconfig-001-20250109    gcc-14.2.0
+arm                   randconfig-002-20250109    clang-17
+arm                   randconfig-003-20250109    clang-20
+arm                   randconfig-004-20250109    gcc-14.2.0
+arm                        shmobile_defconfig    gcc-14.2.0
+arm                        spear6xx_defconfig    clang-19
+arm                           stm32_defconfig    gcc-14.2.0
+arm                           tegra_defconfig    gcc-14.2.0
+arm64                            allmodconfig    clang-18
+arm64                             allnoconfig    gcc-14.2.0
+arm64                 randconfig-001-20250109    gcc-14.2.0
+arm64                 randconfig-002-20250109    clang-20
+arm64                 randconfig-003-20250109    gcc-14.2.0
+arm64                 randconfig-004-20250109    gcc-14.2.0
+csky                              allnoconfig    gcc-14.2.0
+csky                  randconfig-001-20250109    gcc-14.2.0
+csky                  randconfig-002-20250109    gcc-14.2.0
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    clang-20
+hexagon                          allyesconfig    clang-18
+hexagon               randconfig-001-20250109    clang-14
+hexagon               randconfig-002-20250109    clang-20
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250109    gcc-12
+i386        buildonly-randconfig-002-20250109    gcc-12
+i386        buildonly-randconfig-003-20250109    clang-19
+i386        buildonly-randconfig-004-20250109    clang-19
+i386        buildonly-randconfig-005-20250109    clang-19
+i386        buildonly-randconfig-006-20250109    gcc-12
+i386                                defconfig    clang-19
+loongarch                        allmodconfig    gcc-14.2.0
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch             randconfig-001-20250109    gcc-14.2.0
+loongarch             randconfig-002-20250109    gcc-14.2.0
+m68k                             allmodconfig    gcc-14.2.0
+m68k                             allyesconfig    gcc-14.2.0
+m68k                          atari_defconfig    gcc-14.2.0
+microblaze                       allmodconfig    gcc-14.2.0
+microblaze                       allyesconfig    gcc-14.2.0
+mips                         bigsur_defconfig    gcc-14.2.0
+mips                      bmips_stb_defconfig    clang-18
+mips                         db1xxx_defconfig    clang-20
+mips                          eyeq6_defconfig    clang-20
+mips                     loongson1b_defconfig    clang-20
+nios2                 randconfig-001-20250109    gcc-14.2.0
+nios2                 randconfig-002-20250109    gcc-14.2.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+openrisc                            defconfig    gcc-14.2.0
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                generic-64bit_defconfig    gcc-14.2.0
+parisc                randconfig-001-20250109    gcc-14.2.0
+parisc                randconfig-002-20250109    gcc-14.2.0
+powerpc                          allmodconfig    gcc-14.2.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-16
+powerpc                      cm5200_defconfig    clang-20
+powerpc                 mpc836x_rdk_defconfig    clang-18
+powerpc                      pasemi_defconfig    clang-20
+powerpc                      ppc44x_defconfig    clang-20
+powerpc               randconfig-001-20250109    clang-15
+powerpc               randconfig-002-20250109    gcc-14.2.0
+powerpc               randconfig-003-20250109    gcc-14.2.0
+powerpc                     tqm8541_defconfig    clang-15
+powerpc                      tqm8xx_defconfig    clang-20
+powerpc                 xes_mpc85xx_defconfig    gcc-14.2.0
+powerpc64             randconfig-001-20250109    gcc-14.2.0
+powerpc64             randconfig-002-20250109    clang-20
+powerpc64             randconfig-003-20250109    clang-17
+riscv                            allmodconfig    clang-20
+riscv                             allnoconfig    gcc-14.2.0
+riscv                            allyesconfig    clang-20
+riscv                               defconfig    clang-19
+riscv                 randconfig-001-20250109    gcc-14.2.0
+riscv                 randconfig-002-20250109    clang-15
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.2.0
+s390                  randconfig-001-20250109    gcc-14.2.0
+s390                  randconfig-002-20250109    clang-16
+sh                               allmodconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                    randconfig-001-20250109    gcc-14.2.0
+sh                    randconfig-002-20250109    gcc-14.2.0
+sh                   rts7751r2dplus_defconfig    gcc-14.2.0
+sh                          sdk7786_defconfig    gcc-14.2.0
+sh                  sh7785lcr_32bit_defconfig    gcc-14.2.0
+sh                              ul2_defconfig    gcc-14.2.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                 randconfig-001-20250109    gcc-14.2.0
+sparc                 randconfig-002-20250109    gcc-14.2.0
+sparc                       sparc64_defconfig    gcc-14.2.0
+sparc64               randconfig-001-20250109    gcc-14.2.0
+sparc64               randconfig-002-20250109    gcc-14.2.0
+um                               allmodconfig    clang-20
+um                                allnoconfig    clang-18
+um                               allyesconfig    gcc-12
+um                    randconfig-001-20250109    gcc-12
+um                    randconfig-002-20250109    gcc-12
+x86_64                            allnoconfig    clang-19
+x86_64                           allyesconfig    clang-19
+x86_64      buildonly-randconfig-001-20250109    clang-19
+x86_64      buildonly-randconfig-002-20250109    gcc-12
+x86_64      buildonly-randconfig-003-20250109    clang-19
+x86_64      buildonly-randconfig-004-20250109    clang-19
+x86_64      buildonly-randconfig-005-20250109    clang-19
+x86_64      buildonly-randconfig-006-20250109    gcc-12
+x86_64                              defconfig    gcc-11
+xtensa                randconfig-001-20250109    gcc-14.2.0
+xtensa                randconfig-002-20250109    gcc-14.2.0
 
-Seems that way. I'll do my best to advocate for it.
-
->
-> On Fri, Jan 03, 2025 at 10:24:09AM +0800, Yafang Shao <laoar.shao@gmail.c=
-om> wrote:
-> > However, despite adding more threads to handle an increased workload,
-> > the CPU usage could not be raised.
->
-> (Is that behavior same in both CONFIG_IRQ_TIME_ACCOUNTING and
-> !CONFIG_IRQ_TIME_ACCOUNTING cases?)
-
-No, in the case of !CONFIG_IRQ_TIME_ACCOUNTING, CPU usage will
-increase as we add more workloads. In other words, this is a
-user-visible behavior change, and we should aim to avoid it.
-
->
-> > In other words, even though the container=E2=80=99s CPU usage appeared =
-low, it
-> > was unable to process more workloads to utilize additional CPU
-> > resources, which caused issues.
->
-> Hm, I think this would be worth documenting in the context of
-> CONFIG_IRQ_TIME_ACCOUNTING and irq.pressure.
-
-Document it as follows?
-
-"Enabling CONFIG_IRQ_TIME_ACCOUNTING will exclude IRQ usage from the
-CPU usage of your tasks. In other words, your task's CPU usage will
-only reflect user time and system time."
-
-If we document it clearly this way, I believe no one will try to enable it =
-;-)
-
->
-> > The CPU usage of the cgroup is relatively low at around 55%, but this u=
-sage
-> > doesn't increase, even with more netperf tasks. The reason is that CPU0=
- is
-> > at 100% utilization, as confirmed by mpstat:
-> >
-> >   02:56:22 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %st=
-eal  %guest  %gnice   %idle
-> >   02:56:23 PM    0    0.99    0.00   55.45    0.00    0.99   42.57    0=
-.00    0.00    0.00    0.00
-> >
-> >   02:56:23 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %st=
-eal  %guest  %gnice   %idle
-> >   02:56:24 PM    0    2.00    0.00   55.00    0.00    0.00   43.00    0=
-.00    0.00    0.00    0.00
-> >
-> > It is clear that the %soft is excluded in the cgroup of the interrupted
-> > task. This behavior is unexpected. We should include IRQ time in the
-> > cgroup to reflect the pressure the group is under.
->
-> What is irq.pressure shown in this case?
-
-$ cat irq.pressure ; sleep 1; cat irq.pressure
-full avg10=3D42.96 avg60=3D39.31 avg300=3D17.44 total=3D66518335
-full avg10=3D42.96 avg60=3D39.31 avg300=3D17.44 total=3D66952730
-
-It seems that after a certain point, avg10 is almost identical to
-%irq. However, can we simply add avg10 to the CPU utilization? I don't
-believe we can.
-
->
-> > The system metric in cpuacct.stat is crucial in indicating whether a
-> > container is under heavy system pressure, including IRQ/softirq activit=
-y.
-> > Hence, IRQ/softirq time should be included in the cpuacct system usage,
-> > which also applies to cgroup2=E2=80=99s rstat.
->
-> But this only works for you where cgroup's workload induces IRQ on
-> itself but generally it'd be confusing (showing some sys time that
-> originates out of the cgroup). irq.pressure covers this universally (or
-> it should).
-
-It worked well before the introduction of CONFIG_IRQ_TIME_ACCOUNTING.
-Why not just maintain the previous behavior, especially since it's not
-difficult to do so?
-
->
-> On Fri, Jan 03, 2025 at 10:24:05AM +0800, Yafang Shao <laoar.shao@gmail.c=
-om> wrote:
-> > The load balancer is malfunctioning due to the exclusion of IRQ time fr=
-om
-> > CPU utilization calculations. What's worse, there is no effective way t=
-o
-> > add the irq time back into the CPU utilization based on current
-> > available metrics. Therefore, we have to change the kernel code.
->
-> That's IMO what irq.pressure (PSI) should be useful for. Adjusting
-> cgroup's CPU usage with irq.pressue (perhaps not as simple as
-> multiplication, Johannes may step in here) should tell you info for load
-> balancer.
-
-We=E2=80=99re unsure how to use this metric to guide us, and I don't think
-there will be clear guidance on how irq.pressure relates to CPU
-utilization. :(
-
-
---=20
-Regards
-Yafang
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
