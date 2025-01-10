@@ -1,331 +1,142 @@
-Return-Path: <cgroups+bounces-6085-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6086-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C858A08FC7
-	for <lists+cgroups@lfdr.de>; Fri, 10 Jan 2025 12:53:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCB12A09074
+	for <lists+cgroups@lfdr.de>; Fri, 10 Jan 2025 13:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B40657A1017
-	for <lists+cgroups@lfdr.de>; Fri, 10 Jan 2025 11:52:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EAF9164546
+	for <lists+cgroups@lfdr.de>; Fri, 10 Jan 2025 12:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0178320B7E0;
-	Fri, 10 Jan 2025 11:52:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F6420D50C;
+	Fri, 10 Jan 2025 12:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="EnfZ1XTj"
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="KTkpg0zT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2081.outbound.protection.outlook.com [40.107.220.81])
+Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com [139.138.36.225])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020091AAA1F;
-	Fri, 10 Jan 2025 11:52:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.81
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736509971; cv=fail; b=fbHe/wIy7Xna2ZFiczH+ITWYe/DyyVepdoqfNN23BTcQbcaBLPRvNBIaShyJOp0n+JcyWmS8CgW3bPls4cgy2qczBdiRvZyaCgclCEDiA8+ORZKfXU3D6sDBUWDnXqkIyWIv3oP6OxWZxdcSdzMGKqQIdrSKKoSqyZutp/IiKXY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736509971; c=relaxed/simple;
-	bh=pUHIDew9Sxq9v/DBIw/MXOaV9eknDdv7xbL1eD/i3WI=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=jrYLyQghJgX6DCCSNBgGIfazQuqisPEUjPwGmFa60gW30h+T/8eMpBNxyuWl8GAabPMIvOnBlMp7gnsJyaCcqvguA4Xodsv692KGpCBS6YaZgddOska2kzoD/94uxXB29XW3X/UwSwp0SLMC7NTxSUNPscUzqdVl/B6HePHURJ8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=EnfZ1XTj; arc=fail smtp.client-ip=40.107.220.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=VZ+txlV9pfGNt7QGWl0gQkmRuF3X8SEZItng/uPPntLRmTjSFnEg0jCOB/g0mwQI1VdhFyrc+Tz4JSr/OX37u94FfR5RZGUMe+vLFvsBTjRohgXQt+6BWfDHSX5eER9dm+hUPwp6uFzuGmKJa9Aw3h4vxmq7spuBnbolDYbLCJCMz1HT99fR94EhHIw0tY4zXmdNm3ZfTBR8/u8juKyspn+To8j+kiDy+QrGOtl0XjLzZPeyGSsp4EBfqBsPeSEygcG8t5KqPCi7xZPRvbVSdAVYuCLDo5kAAaCzFr6Iik9Nt89f4vuBLVhhebgDwf1PzxJJNGNAvgBxVvzlTuxeyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lUaqlVytT6/vAzo+dqLqqr2fg2Z9pxMKfL7mTWTRnxQ=;
- b=H0mQZz1XYSh5BHh2tzNBa/ZPIwQ5GKevluzMyPC02bxB5m1MztIoYuxZE78pDP1U8ImKaT6RQlA61C7yAlpL+mFrBZUbBlTgq+zlAdBZaNwsYRS9aOLalsVrD13TYfN0FxEEwM/7m0hReVakHKJqcx9LH20w17wQLZhQvzIOQpNJk2kYBo9Cpc8RTym2Cr5T8lHZTTZ8ptQP1XeYvO5SkdI+nq7LpJ/rwJbJRDM5HHffzE1Kn6OQ8vxbSHTH2U4Xp88ZWG8HcRZPWtzCxuZNwU+prC3gG0rKDgMJfqaR+Swk0c/f+DGyE34L4NocMft/bScbKMwDPQhDV4yu3aCKvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lUaqlVytT6/vAzo+dqLqqr2fg2Z9pxMKfL7mTWTRnxQ=;
- b=EnfZ1XTjLyYYQks3fc7hXAvQxtiWpfeQMwIIxmZKEGUXKESL+rh75ZaJE1IOsOKen5Tq+dBt5NnM0uhoF0A5VIri4CGOhveo3oMoD59SOkAObmIciSM+GeTCMm/v3DpwKmEidETHRsZadLBrAfMy1bIyAnrv52adkE86HalnIWhy2NKrTt4AW79eZd/2CeVBZ6ei4/fqbnS/ur9TrwmZ3Jh4MKXPJ7OMdMgPFv6yDe1q7lymhf1CZmZvNojINCrO5eVa9Cqy7FaC16hoghLMASyogxarxJWTNO0AVyMYKhBUH8IjlNDTQudqQ1Gtq3qG3fvtcDdOtuL2eY4xInWI8w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SJ2PR12MB8784.namprd12.prod.outlook.com (2603:10b6:a03:4d0::11)
- by PH8PR12MB7232.namprd12.prod.outlook.com (2603:10b6:510:224::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8335.10; Fri, 10 Jan
- 2025 11:52:47 +0000
-Received: from SJ2PR12MB8784.namprd12.prod.outlook.com
- ([fe80::1660:3173:eef6:6cd9]) by SJ2PR12MB8784.namprd12.prod.outlook.com
- ([fe80::1660:3173:eef6:6cd9%4]) with mapi id 15.20.8335.011; Fri, 10 Jan 2025
- 11:52:47 +0000
-Message-ID: <ba51a43f-796d-4b79-808a-b8185905638a@nvidia.com>
-Date: Fri, 10 Jan 2025 11:52:38 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/2] sched/deadline: Check bandwidth overflow earlier
- for hotplug
-To: Juri Lelli <juri.lelli@redhat.com>, Waiman Long <longman@redhat.com>,
- Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Koutny <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Phil Auld <pauld@redhat.com>
-Cc: Qais Yousef <qyousef@layalina.io>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- "Joel Fernandes (Google)" <joel@joelfernandes.org>,
- Suleiman Souhlal <suleiman@google.com>, Aashish Sharma <shraash@google.com>,
- Shin Kawamura <kawasin@google.com>,
- Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <20241114142810.794657-1-juri.lelli@redhat.com>
- <ZzYhyOQh3OAsrPo9@jlelli-thinkpadt14gen4.remote.csb>
- <Zzc1DfPhbvqDDIJR@jlelli-thinkpadt14gen4.remote.csb>
-From: Jon Hunter <jonathanh@nvidia.com>
-Content-Language: en-US
-In-Reply-To: <Zzc1DfPhbvqDDIJR@jlelli-thinkpadt14gen4.remote.csb>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P265CA0231.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:315::17) To SJ2PR12MB8784.namprd12.prod.outlook.com
- (2603:10b6:a03:4d0::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898DC20D4F7;
+	Fri, 10 Jan 2025 12:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.138.36.225
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736512175; cv=none; b=M8YRKhjGoUkugSrL164KTGi9EQfss5ScCSnCDMiiIRW5Zh94HnDrm2A3dJwWGP4DhYmwpb+bJ7KqfznK86kL02A7WDKgB2Gu4dRQsJwg2Ahw+VOKf/fN80KKgQC29osgWZPVbjRA9BQsjmmDJj+IA5GZLNqQq5f3yyyxu0N01A0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736512175; c=relaxed/simple;
+	bh=lCOchsCcSRvNCiXrD4uJhCOB3/weni28KEmIqfS0Lt8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e1hVUYQvNGNO3/+/OIBy4ngvIZwTTRjJ6r9/Su8tnF51JlPFSqtRJe11EMRFsSKdxTW5o45xVowesxDG45O5NhrSLpYvJWQVdrmMRnHe5alHLZtwu3arrAT79vfYqx4Ft2OzSL8mEVQ1Cm/u+Huy53ax0SpuPIQ9ul9yLQs1s3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=KTkpg0zT; arc=none smtp.client-ip=139.138.36.225
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1736512173; x=1768048173;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lCOchsCcSRvNCiXrD4uJhCOB3/weni28KEmIqfS0Lt8=;
+  b=KTkpg0zTl2AgVVeBBJNNX/wJYT1hSwalOr7CloM8CzL6VVZGSYI8tjk0
+   7x005zlw4grwWLcZtfASepQXFpTbJSPJGi4tUVlPL8Trtbl0TOwR1fQbe
+   NmF0gnK90qb3kYQ4lJXefIAuW3vnLNpMvKMuKtW+6rkHVA9l5ef99C0nO
+   Pny0TQbVVaF18gXDLhyCKxHbdA6NRYITs/wWwvufok1BL0XB6rvjnma1L
+   x4WHIZOmd9VdmU2y8rGJJIy0V/JhVjjQacT/PUj2UnDbeegZ9XCX0JgKa
+   ve7qVxw8UgYJg7uzNn2jkNB/eVutLPozFi8xjWXsgRGvh6pNIzABUyI4O
+   g==;
+X-CSE-ConnectionGUID: We2fsczjTfmHAkkBSJQHvw==
+X-CSE-MsgGUID: ayCZOc63TRqbu2HhM+385g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11311"; a="173535461"
+X-IronPort-AV: E=Sophos;i="6.12,303,1728918000"; 
+   d="scan'208";a="173535461"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+  by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2025 21:29:24 +0900
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
+	by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 1D9ECD6EA9;
+	Fri, 10 Jan 2025 21:29:23 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+	by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id E01D610362;
+	Fri, 10 Jan 2025 21:29:22 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 6D7E1202C3CBB;
+	Fri, 10 Jan 2025 21:29:22 +0900 (JST)
+Received: from iaas-rdma.. (unknown [10.167.135.44])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 69ADB1A000B;
+	Fri, 10 Jan 2025 20:29:21 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-doc@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	mkoutny@suse.com,
+	Jonathan Corbet <corbet@lwn.net>,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Li Zhijian <lizhijian@fujitsu.com>
+Subject: [PATCH] Documentation/cgroup-v2: Update memory.numa_stat description to reflect possible units
+Date: Fri, 10 Jan 2025 20:30:19 +0800
+Message-ID: <20250110123019.423725-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR12MB8784:EE_|PH8PR12MB7232:EE_
-X-MS-Office365-Filtering-Correlation-Id: 95521609-676b-4d57-56c3-08dd316d4d23
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|1800799024|7416014|366016|10070799003|921020|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?by9mODNPNkd1ZXBkcTc3S1FmWEwvTUZoNWJHOENMR09JRDl2Q2x0R0picWJv?=
- =?utf-8?B?eUZWTWtGdmt2NTFpbU9WYTRUblFUQUx5ZHcyaHNrTGhwb1JCNGN6eS8xYVcz?=
- =?utf-8?B?VUN4cTFyenhBVlJIbUorUzhWK3F1b1dHSWRVUE9KZWNXbFJaK05LYUg0akRk?=
- =?utf-8?B?N1VNTEVOa3l1eGdYMlJWcWttaW85ZFliSno3anlJN2syWG9KdGhsUHorT1Jp?=
- =?utf-8?B?K3dxbVpCdHNPTUI1RjFIemZqaUt1T3N5aDdlZW91ZkpFYmh0ZXltUjIvSnVP?=
- =?utf-8?B?dHZVbUlnK0loV1BENmRETU45ZGJiRnhocG9sRHg3dlJqb2h6d0F6RjkycGFk?=
- =?utf-8?B?Z1JQdm5HbnpKVDBTNUIveUE5NUw4Q3c4Yi8yWEZPZncvWGwrZkJRUGhmK0Fz?=
- =?utf-8?B?K2I4WlVzWndTbnFEZFY4bkxucWRtWkNjOU83Q2VyL0M1RnNKd0xodGpBSktp?=
- =?utf-8?B?bklBcG5DTERGOEpIZ01FaHNFb0VWb1BaaW4vTzNQazRmVzVqazdBdmEwZXM3?=
- =?utf-8?B?dU9ISFlsWGR2QllwcEx5VTZCTTJBRStrV3JvWEFsN05xQ0ZzbzR3NnQzdFdJ?=
- =?utf-8?B?L2t5N3RvTURHODVwR0NXbmcwN2cvczZHYitLaWZXSGRkUGMzY2pHcnJ3eEhv?=
- =?utf-8?B?SVAvbW1aN2FZeENzcTNyVlNFTUpucXRacGx0RnNuUjAvczB1UkUxaEVZelFU?=
- =?utf-8?B?aUpaKzROUEVCU0xQdWJINEtmYlRDZ01LcTYwaUVxTkcvUXpVdDBXSWJSVzVX?=
- =?utf-8?B?anpja09pV21hRG92L1FzSlN3ZXRrTnhQSmF4azdRSlpiVUIrbWJRcHRMYXY1?=
- =?utf-8?B?aHM1Y1I3RXdYb2hFU2p6ZVh4eG12d1Y3bGFEbGZSR1Q1a3VudXlLbFZ6dUFL?=
- =?utf-8?B?RzRPMlhFbFB6NDI4d0VTUkhmZG9FamdkaHdlRUFNS3pKZEhHNzBKV2tmV2da?=
- =?utf-8?B?NFBocFJJZkpHYlkvRjVvRm0vODdXcGxRRXlub2pYQlcweWNCYU1lbTlFNTFL?=
- =?utf-8?B?bkkzVHVza2Nzb3hRNHhwTWlWQWoyK0JYNy9EQVNnZWtuVUdCc0dTelI5VDcv?=
- =?utf-8?B?K2FIc0VuQUVrZFpjNWY1N3VMZWdoUVVzNnVEbnZtUmVZWTJLSkNWK3hoWmJv?=
- =?utf-8?B?aUFPK2tPT3JqNHpwM1hZcXEzUmE3d1hpbjZ3TjFLQkpqdis1NU9KcmsyOWNI?=
- =?utf-8?B?V0o5cGNzdm5mMUJRNkFwaWk4Y0lOdEZzeDJLWGN4Q2FodkJzSnNZQlVZMjBj?=
- =?utf-8?B?R3VjbkFzbk1RQU90WXpqd3dUQkFMbDY5QVRjQ2QxU0NyR2hZMjk1N2hQaHI2?=
- =?utf-8?B?OE4rZlBsTU9XclVtV0EyOHhDalVIdEJUZEZ0bnhURkw0c3p2ZWowUUFSN2Ro?=
- =?utf-8?B?R2x6VjlOSjA5STd0NVJ4RVlDZVJIUm94bnFlOW90Q0xrYWRuVmd4aFkzV3I3?=
- =?utf-8?B?cFhROTA0Z0Q0VU9lVVdlVHBZdHhJR3BxNFkzQk9YeThoTURTU2RWeUlmdzg1?=
- =?utf-8?B?SEpDUEhMZXJHbVJ5dUVlMHJ1OUwrMXZyS1prYUV0eVVVeUF1b1laWVorSUww?=
- =?utf-8?B?SHowL09jTnZWRFlKeHphQTdPc2F1QTlIT3djb2FrZXlZVjNBT2pNcFRVdnYz?=
- =?utf-8?B?cGRZMktBSWFCR21DTUM2ZUxScVBlMW1qNk92SVl5NXg0ZFEzRVY1Y1EzbTlN?=
- =?utf-8?B?RUhTaW1iMHZTajdWaUN2UWc5V016VXQwYlFIZVlQdTM4YWd5cXpNMXA0eGY3?=
- =?utf-8?B?aHhIVG5Tb1FQVEZnUmRhYXcrOFlMVEpnR1pYa0UrSTNFL3I1bzEybGtSVURi?=
- =?utf-8?B?NkZjUXIxMTJaT01kVGVrcEtBRGZJQWhvbXMyMUFMNlJXYXR6VkE3NUVDM3k0?=
- =?utf-8?B?ZGIxNTFKdWpuaEJKMUo1Q2hLSjE0emc2L1lIOGhSWUlSd0xuOEVSSWxGaC9T?=
- =?utf-8?Q?eb+JSc6Aq00=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8784.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(366016)(10070799003)(921020)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TnpKSm9QMDNkb3JFcGI5VkRldEZnM05SL1ovYVkzN2VGaVBWYXE0NThkcUVV?=
- =?utf-8?B?TWVsNDYvZU5Mb1lnYnF1Nk1xbE16b1V4R3hJZ3N6SUx0eG9RYzlwekhBSXlG?=
- =?utf-8?B?SjdlcHZHZ2l1T3dxUTgzNHlRVGtvbXF4K3FESlpES3BLSnE5OVovSi8xNGpi?=
- =?utf-8?B?dC94ZTBNRzBYY0Q5eFErL2ErS2hraWxMMUlJNjhpSlIzQ09TSFZxTnNkQjZo?=
- =?utf-8?B?dzNzSFhpZmcwS2xtNXppM3ZSZEVRY0FDSDNSSHJWUFA4MDZMdDg1K2c0Rk80?=
- =?utf-8?B?STY1NnZXbk8vcXBzaXIzM0w1aEthWEU0MGVjcG1FbTVEOWJNUzN0eEhDN1Y0?=
- =?utf-8?B?R0VQSW10U2VRWnBhdjlYQkdqdVRSbHdrd2k1eEp6VTZzUW5CZ09DQTRnVHFp?=
- =?utf-8?B?ckQ2ZmVKNzhWYXpxUGtnMUFtN28zekc2Z08yaWJ1N3VjdjRydFVnV3pDMTBC?=
- =?utf-8?B?UUpDYXZTam4xZTZsalZHbUJ0L2FDTDJTRWQvQmNFcEV4c3kwZ3ViSlYxUHBS?=
- =?utf-8?B?cEdSdnk3QTJrL2o2UEhPU1Bjd1Z1T2hkcjVhVFJBc2MxeXF3akttb2dkdjZ4?=
- =?utf-8?B?eGdhYzNLdzJOZVhIYmt5Y0RrOThDTWdqM2xiTXRDYkdSZDFhNytHcnF1d1ha?=
- =?utf-8?B?U0tuRlZrSHRxVjZvUFBMblh5K2l1TzZzeWgyektIUW9mTlRzemRWVmovOFpZ?=
- =?utf-8?B?dmRmZVVub2hFbDNTNXd0WUl0MkFhV3hYa2wzOHRPWWZpL1p0OVRDU1ljQXg5?=
- =?utf-8?B?Y2J3WlNDRkkvaEFTc25nSXA4VFFPT0N2OFRLMURTQ0RyaExYcFFsSjg2d0o1?=
- =?utf-8?B?ZjBzMXlMd01pNHlrQ3RieloyanVhVWZpN2YzcDNHTmkzSG1wRDNLNGxVV2xw?=
- =?utf-8?B?QnVoSUs3Z2xNVmpqNWFGc05qUDNnZGMvSlora1BObVowWnN5eGxDQ2FpZVFJ?=
- =?utf-8?B?ZmdQNjNxd3lhT1JiOXlCVHpQRmhuQk1JZ3c3ZUFsR2d1QnlkWTJvMktnK055?=
- =?utf-8?B?Q1RTY2prZmF5NXlldmEvaEFHdTF3NHhzZWc2ZjkzRnQyQTBIZnRyZCtLOXFk?=
- =?utf-8?B?bllETzVYbzVCdDVNQ21ZLzk5ZE9VWUxGNEFweS8rKzZlaW9sU3V4S0FYUG5o?=
- =?utf-8?B?VVNsdGlLV2xneEZzRFJDcnFUc1JreFZBL0FFK1dBWWM4Zk42WDJzRW9RdHE3?=
- =?utf-8?B?bkxUWU5IWmFHM3o1cDgxYnlQRFpRR3djcmVlVk40NUFORjZpM0ZUTWtPcjJX?=
- =?utf-8?B?cFM0UFJ6TUpSMVZkcXVqSlFTWDRRck90QmtPS2xZUjBQOFo1ZHlLSXZ0K1B5?=
- =?utf-8?B?dHdqYnJmVXB6YTlXNmpwQVlocVpmWDloNjYwRE5JaTczUjFQNGZxSFBTd3JJ?=
- =?utf-8?B?VWViMmNwNktQSEdWUVd3ZkR6azJTdlVMak02V2VGODN1QXFobEIwcUcrd0V4?=
- =?utf-8?B?dGs5MkIyTXZXWDNwc0hDZlQrMy9HZWNZTWkzcjFCRkxyeTlVcUlRYW1zSSs3?=
- =?utf-8?B?WGZlWk1sVE1KTFpVVnRzNlFiaWJaeE1md01KZVg4U1FvUUQ3S2NPRG5rYTVB?=
- =?utf-8?B?WEJxOUppVTdHUG1KcC9Cc3gyU1BqNFQ4RENpekFjWjh3UStlcEZ0elZCVCtL?=
- =?utf-8?B?bG5QcUdaOG8vUEhtTnlGKzFMd1c2aVQwRjdmenI3ZE41WlhqckVHYkpCSDBW?=
- =?utf-8?B?K3FYcExXMnVwclRtc3pBTm1tTTJsUU1ldXFoVGJNeDVxbEpPbEl5VEZ0L0NF?=
- =?utf-8?B?cVo2MXMxSUkrODdHdzVYMHgwaFdhNGxvZXBXdDgwTUYzcXBzcXdLSVVWb080?=
- =?utf-8?B?a3FUeGJtYVk3WlBnUVFOcS92TjM0Q3VQZWxDVExNekRsU2ljbEV6dDFSZWIz?=
- =?utf-8?B?eVBkR1FqL2ltQklFMjc1VWZZbVhPdjZxZ3crK3FPcG5JaG1CQi9BYnVDSFFh?=
- =?utf-8?B?SnZ4MXZqWmx2aExQK1A1TC9tdkw0NGJhYzlzT2NmV1pOeFIzcGMrTExWN0NB?=
- =?utf-8?B?UXNERzEzMXJza05jN3RPdXNHMW9qRHRleHB1dFMxU3FXVkhiREUyaHlCMjhF?=
- =?utf-8?B?MVRqYmxQRnRzTWJFbkI2c1hrQmVOdlFxR1JicVkvVlhndm1WelF1RXZ0YTlN?=
- =?utf-8?B?VGNRMG1RYmQwUkVsY1ZabUtSbXAyNThSZlN0dVhUQnd3OFBTeThBaDdSSU5I?=
- =?utf-8?Q?ckmlPesLoV/y2c8dDfCtqwYtHdVD+FNiqTwhmZzoKeFB?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95521609-676b-4d57-56c3-08dd316d4d23
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8784.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2025 11:52:47.2896
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k/+N9c1ca/89HB3/w3v+V2QvK9Ukc4J9oQZHGpjqK8fb+thrumqpK8an+QrwqFvwBccMuD+W/GDS/XBtdNIYRQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7232
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28914.007
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28914.007
+X-TMASE-Result: 10--4.161800-10.000000
+X-TMASE-MatchedRID: v+sphrBU45GgOUOBLqPMtLPx3rO+jk2QK2GKtdiFmTnVjNsehGf0vb8F
+	Hrw7frluf146W0iUu2tUmZgXoV1CCxTfVlVWxWRBxvp0tuDMx3l9LQinZ4QefCP/VFuTOXUTC5M
+	umjkcRzWOhzOa6g8KrW3ALrb2ZTUcsGc/8dUNSsWCTTZ5QyGVyETZPqz6c0Gny6LvC6Dn+51Zim
+	nmYhta94salhnTWXtbvvbbTLm8c7HVmqyAbNs4LBXBt/mUREyAj/ZFF9Wfm7hNy7ppG0IjcFQqk
+	0j7vLVUewMSBDreIdk=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-Hi Juri,
+The description of the memory.numa_stat file has been updated to clarify
+that the output values can be in bytes or pages. This change ensures that
+users are aware that the unit of measurement for memory values can vary
+and should be verified by consulting the memory.stat
 
-On 15/11/2024 11:48, Juri Lelli wrote:
-> Currently we check for bandwidth overflow potentially due to hotplug
-> operations at the end of sched_cpu_deactivate(), after the cpu going
-> offline has already been removed from scheduling, active_mask, etc.
-> This can create issues for DEADLINE tasks, as there is a substantial
-> race window between the start of sched_cpu_deactivate() and the moment
-> we possibly decide to roll-back the operation if dl_bw_deactivate()
-> returns failure in cpuset_cpu_inactive(). An example is a throttled
-> task that sees its replenishment timer firing while the cpu it was
-> previously running on is considered offline, but before
-> dl_bw_deactivate() had a chance to say no and roll-back happened.
-> 
-> Fix this by directly calling dl_bw_deactivate() first thing in
-> sched_cpu_deactivate() and do the required calculation in the former
-> function considering the cpu passed as an argument as offline already.
-> 
-> By doing so we also simplify sched_cpu_deactivate(), as there is no need
-> anymore for any kind of roll-back if we fail early.
-> 
-> Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-> ---
-> Thanks Waiman and Phil for testing and reviewing the scratch version of
-> this change. I think the below might be better, as we end up with a
-> clean-up as well.
-> 
-> Please take another look when you/others have time.
-> ---
->   kernel/sched/core.c     | 22 +++++++---------------
->   kernel/sched/deadline.c | 12 ++++++++++--
->   2 files changed, 17 insertions(+), 17 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index d1049e784510..e2c6eacf793e 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -8054,19 +8054,14 @@ static void cpuset_cpu_active(void)
->   	cpuset_update_active_cpus();
->   }
->   
-> -static int cpuset_cpu_inactive(unsigned int cpu)
-> +static void cpuset_cpu_inactive(unsigned int cpu)
->   {
->   	if (!cpuhp_tasks_frozen) {
-> -		int ret = dl_bw_deactivate(cpu);
-> -
-> -		if (ret)
-> -			return ret;
->   		cpuset_update_active_cpus();
->   	} else {
->   		num_cpus_frozen++;
->   		partition_sched_domains(1, NULL, NULL);
->   	}
-> -	return 0;
->   }
->   
->   static inline void sched_smt_present_inc(int cpu)
-> @@ -8128,6 +8123,11 @@ int sched_cpu_deactivate(unsigned int cpu)
->   	struct rq *rq = cpu_rq(cpu);
->   	int ret;
->   
-> +	ret = dl_bw_deactivate(cpu);
-> +
-> +	if (ret)
-> +		return ret;
-> +
->   	/*
->   	 * Remove CPU from nohz.idle_cpus_mask to prevent participating in
->   	 * load balancing when not active
-> @@ -8173,15 +8173,7 @@ int sched_cpu_deactivate(unsigned int cpu)
->   		return 0;
->   
->   	sched_update_numa(cpu, false);
-> -	ret = cpuset_cpu_inactive(cpu);
-> -	if (ret) {
-> -		sched_smt_present_inc(cpu);
-> -		sched_set_rq_online(rq, cpu);
-> -		balance_push_set(cpu, false);
-> -		set_cpu_active(cpu, true);
-> -		sched_update_numa(cpu, true);
-> -		return ret;
-> -	}
-> +	cpuset_cpu_inactive(cpu);
->   	sched_domains_numa_masks_clear(cpu);
->   	return 0;
->   }
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index 267ea8bacaf6..6e988d4cd787 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -3505,6 +3505,13 @@ static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
->   		}
->   		break;
->   	case dl_bw_req_deactivate:
-> +		/*
-> +		 * cpu is not off yet, but we need to do the math by
-> +		 * considering it off already (i.e., what would happen if we
-> +		 * turn cpu off?).
-> +		 */
-> +		cap -= arch_scale_cpu_capacity(cpu);
-> +
->   		/*
->   		 * cpu is going offline and NORMAL tasks will be moved away
->   		 * from it. We can thus discount dl_server bandwidth
-> @@ -3522,9 +3529,10 @@ static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
->   		if (dl_b->total_bw - fair_server_bw > 0) {
->   			/*
->   			 * Leaving at least one CPU for DEADLINE tasks seems a
-> -			 * wise thing to do.
-> +			 * wise thing to do. As said above, cpu is not offline
-> +			 * yet, so account for that.
->   			 */
-> -			if (dl_bw_cpus(cpu))
-> +			if (dl_bw_cpus(cpu) - 1)
->   				overflow = __dl_overflow(dl_b, cap, fair_server_bw, 0);
->   			else
->   				overflow = 1;
+It's known that
+workingset_*, pgdemote_* and pgpromote_success are counted in pages
 
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-I have noticed a suspend regression on one of our Tegra boards and 
-bisect is pointing to this commit. If I revert this on top of -next then 
-I don't see the issue.
-
-The only messages I see when suspend fails are ...
-
-[   53.905976] Error taking CPU1 down: -16
-[   53.909887] Non-boot CPUs are not disabled
-
-So far this is only happening on Tegra186 (ARM64). Let me know if you 
-have any thoughts.
-
-Thanks
-Jon
-
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 315ede811c9d..5d1d44547409 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1427,7 +1427,7 @@ The following nested keys are defined.
+ 	types of memory, type-specific details, and other information
+ 	on the state and past events of the memory management system.
+ 
+-	All memory amounts are in bytes.
++	All memory amounts are in bytes or bytes.
+ 
+ 	The entries are ordered to be human readable, and new entries
+ 	can show up in the middle. Don't rely on items remaining in a
+@@ -1673,11 +1673,12 @@ The following nested keys are defined.
+ 	application performance by combining this information with the
+ 	application's CPU allocation.
+ 
+-	All memory amounts are in bytes.
+-
+ 	The output format of memory.numa_stat is::
+ 
+-	  type N0=<bytes in node 0> N1=<bytes in node 1> ...
++	  type N0=<value for node 0> N1=<value for node 1> ...
++
++        The 'value' can be in bytes or pages, depending on the specific
++        type of memory. To determine the unit, refer to the memory.stat.
+ 
+ 	The entries are ordered to be human readable, and new entries
+ 	can show up in the middle. Don't rely on items remaining in a
 -- 
-nvpublic
+2.44.0
 
 
