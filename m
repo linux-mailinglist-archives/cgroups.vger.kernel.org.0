@@ -1,79 +1,123 @@
-Return-Path: <cgroups+bounces-6092-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6093-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82917A0A00E
-	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 02:27:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07411A0A13A
+	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 07:27:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3D4B7A4EDB
-	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 01:26:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5559188BD99
+	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 06:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6607C4D5AB;
-	Sat, 11 Jan 2025 01:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC840156F3A;
+	Sat, 11 Jan 2025 06:27:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fFWOM55h"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TwYoa2fG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210BA433A0;
-	Sat, 11 Jan 2025 01:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE06129A78;
+	Sat, 11 Jan 2025 06:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736558748; cv=none; b=Q5FM/K8psAqYA413yiwd/ZAHYQ2V8O/M6Fc50ThbeRyqprVtuxYuRKp++TmYMNvrLDk0QHDcWfVKnNlzPp96UphCFteXltwxYRNBmR2/5TpwTnYQZmzPoastMjJLxRWL2uovsR7Xp9rxEaMCQAs02SVOekTmJffJYr+1ONwAlsg=
+	t=1736576863; cv=none; b=CiEFgyV1avNhNqgOF+5Sg5KvHtv9Yt19sSyNw6dYH+PR2bp3AMACHFPeqV5VL+dxtkgn1Wpq8GNM1vWrY/f9Syts5wj8AJHn/zD6WrMdgJFjbDCSRgsKZTUXNPjp1m8odmLuiH3pLFRuu3tteuSYp3dUmPhBJ2F4vId6Nl5x71c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736558748; c=relaxed/simple;
-	bh=sjmbjfWjsh488UdCTLTEpyaTwnivZahKIxOXHoEuf3g=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Sa9MMwm6OsgQOIhUyqTUYJIOlfr0UVuaPk7GjswPYwqRYfZ3V3gXdwA7Un/V7N9hP2/RmLfWJnpSB6ex/1tYTamfSWqg6GHt2ZVCVsodVVZlAcN3zZMJbwq51nGWtGmUoVZW+tpEnPDG3ri6LYSXCsKHt4ypWgwktDEt6jYtems=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fFWOM55h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE0DAC4CED6;
-	Sat, 11 Jan 2025 01:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736558748;
-	bh=sjmbjfWjsh488UdCTLTEpyaTwnivZahKIxOXHoEuf3g=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=fFWOM55hzVSM0zl5ulCv5wi4jyOaaZbBiI7zmdfGalZCecGfvp8Fe3ip8FBqaj/Gs
-	 EKcnOIYZWCNdZPfJdEsj45u24zPXUS+EYXGRkZxITpJ+1ksYoP5aiIJzfmZp/0cEm5
-	 tai4UOwwFgXqhzUFDd1tU/r4QiPhQvyhqOG4iIV/Ax5BJ1UmH5sC2/MltKtE1jzTxL
-	 8PdXJ38RYZenpCfF+4KEsjNB8ybdmpIoQwVCIgoBlODAGe+Kf3TPo0ozFUMwWX3nmQ
-	 44Ma+v1eDeA3iaDvlxzHlL3zmop9ahpjDTcfkPru29SBjTx8++GAbXL89HIzz2PB8g
-	 Ovdklk9t/Fiyw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33DE4380AA57;
-	Sat, 11 Jan 2025 01:26:11 +0000 (UTC)
-Subject: Re: [GIT PULL] cgroup: Fixes for v6.13-rc6
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <Z4GlPPv2Ku5xRs6N@slm.duckdns.org>
-References: <Z4GlPPv2Ku5xRs6N@slm.duckdns.org>
-X-PR-Tracked-List-Id: <cgroups.vger.kernel.org>
-X-PR-Tracked-Message-Id: <Z4GlPPv2Ku5xRs6N@slm.duckdns.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.13-rc6-fixes
-X-PR-Tracked-Commit-Id: 3cb97a927fffe443e1e7e8eddbfebfdb062e86ed
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 58624e4bc876198a5dc41be1d7dd39e7c944b9c6
-Message-Id: <173655876972.2259020.8674365237576361536.pr-tracker-bot@kernel.org>
-Date: Sat, 11 Jan 2025 01:26:09 +0000
-To: Tejun Heo <tj@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, cgroups@vger.kernel.org
+	s=arc-20240116; t=1736576863; c=relaxed/simple;
+	bh=sY2rgjzVm2gPyKaIrUNRbeO6ismVJLrlddNs+GzQYSY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lSRFVd1MoSmFtg3Eg9L+Qq5mDgRN6RoCy7ja7HXgHXrTO1pnsaxxQZa+pFI9JI6UKD++qqA5Gpm8jG+rCLYoG22oxbZqlY8iPZDMoeJWfsYw0Az308qZGHUdbS8UhJltIxTTVjfMJCr2T8cTY7BbhurLyEvcHrz6jFbWcALFF30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=TwYoa2fG; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=u/IIvcBnkV57SLSk3JYcF+WO+sFRHt9IbN0Mu71SVWg=; b=TwYoa2fGJytfCgNq/IKMXVHGa0
+	jIuElvp2vfSJPRCyM8OBfZn8YLSDaQdyr8J8E2HcuHL5a161idpL8tIMEN1ls/t2oQ8RGPv4ESf36
+	4QVND0AmjDPvlE+fSi/45/MFONjOHOnIJ5VbAE6rmlhE96vUiKuMlJeYrh7T1JV0pni/ZM/1DuJL2
+	vlJ9IE2Lv67xyFkHZ3emV8SY+14E8cuO3sG+r68QOfa2fWcBabYgS10CAoP0MwqDjXaYaUXIgwM4j
+	7DEuKptXrIPbE3mW8WxtgyXvkt0jaAlevh4vRJLDL4ed+Q6r05xcd21yIg0d0/2tCeEMoJ035HmkP
+	XE4BXeaA==;
+Received: from [50.53.2.24] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tWUyC-00000000H2a-2faP;
+	Sat, 11 Jan 2025 06:27:40 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-block@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Tejun Heo <tj@kernel.org>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	cgroups@vger.kernel.org
+Subject: [PATCH] blk-cgroup: fix kernel-doc warnings in header file
+Date: Fri, 10 Jan 2025 22:27:36 -0800
+Message-ID: <20250111062736.910383-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-The pull request you sent on Fri, 10 Jan 2025 12:54:52 -1000:
+Correct the function parameters and function names to eliminate
+kernel-doc warnings:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.13-rc6-fixes
+blk-cgroup.h:238: warning: Function parameter or struct member 'bio' not described in 'bio_issue_as_root_blkg'
+blk-cgroup.h:248: warning: bad line: 
+blk-cgroup.h:279: warning: expecting prototype for blkg_to_pdata(). Prototype was for blkg_to_pd() instead
+blk-cgroup.h:296: warning: expecting prototype for pdata_to_blkg(). Prototype was for pd_to_blkg() instead
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/58624e4bc876198a5dc41be1d7dd39e7c944b9c6
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: cgroups@vger.kernel.org
+---
+ block/blk-cgroup.h |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+--- linux-next-20250108.orig/block/blk-cgroup.h
++++ linux-next-20250108/block/blk-cgroup.h
+@@ -225,7 +225,9 @@ void blkg_conf_exit(struct blkg_conf_ctx
+ 
+ /**
+  * bio_issue_as_root_blkg - see if this bio needs to be issued as root blkg
+- * @return: true if this bio needs to be submitted with the root blkg context.
++ * @bio: the target &bio
++ *
++ * Return: true if this bio needs to be submitted with the root blkg context.
+  *
+  * In order to avoid priority inversions we sometimes need to issue a bio as if
+  * it were attached to the root blkg, and then backcharge to the actual owning
+@@ -245,7 +247,7 @@ static inline bool bio_issue_as_root_blk
+  * @q: request_queue of interest
+  *
+  * Lookup blkg for the @blkcg - @q pair.
+-
++ *
+  * Must be called in a RCU critical section.
+  */
+ static inline struct blkcg_gq *blkg_lookup(struct blkcg *blkcg,
+@@ -268,7 +270,7 @@ static inline struct blkcg_gq *blkg_look
+ }
+ 
+ /**
+- * blkg_to_pdata - get policy private data
++ * blkg_to_pd - get policy private data
+  * @blkg: blkg of interest
+  * @pol: policy of interest
+  *
+@@ -287,7 +289,7 @@ static inline struct blkcg_policy_data *
+ }
+ 
+ /**
+- * pdata_to_blkg - get blkg associated with policy private data
++ * pd_to_blkg - get blkg associated with policy private data
+  * @pd: policy private data of interest
+  *
+  * @pd is policy private data.  Determine the blkg it's associated with.
 
