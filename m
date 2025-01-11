@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-6093-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6094-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07411A0A13A
-	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 07:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44A7CA0A13C
+	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 07:27:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5559188BD99
-	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 06:27:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2811A188BD77
+	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 06:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC840156F3A;
-	Sat, 11 Jan 2025 06:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41FE158DD9;
+	Sat, 11 Jan 2025 06:27:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TwYoa2fG"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="k1L4WuGr"
 X-Original-To: cgroups@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE06129A78;
-	Sat, 11 Jan 2025 06:27:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AD3129A78;
+	Sat, 11 Jan 2025 06:27:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736576863; cv=none; b=CiEFgyV1avNhNqgOF+5Sg5KvHtv9Yt19sSyNw6dYH+PR2bp3AMACHFPeqV5VL+dxtkgn1Wpq8GNM1vWrY/f9Syts5wj8AJHn/zD6WrMdgJFjbDCSRgsKZTUXNPjp1m8odmLuiH3pLFRuu3tteuSYp3dUmPhBJ2F4vId6Nl5x71c=
+	t=1736576871; cv=none; b=GTwWWZkzjuUkdHf9blYdFBP9ytGvCO0LwxsE3I/Y1HNKsyJ9sqFVCcz5fD4BeP3SUW7Lw/N/uRg4GiSg8MyL6Mie31p/xn+smIRXTSXN1rJLlJ22jp0NB/FF+mSpnZUPzed3+Du/fsmhMlu4kPH3q4Wbq9yJCa1g4PTjHvg7JQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736576863; c=relaxed/simple;
-	bh=sY2rgjzVm2gPyKaIrUNRbeO6ismVJLrlddNs+GzQYSY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lSRFVd1MoSmFtg3Eg9L+Qq5mDgRN6RoCy7ja7HXgHXrTO1pnsaxxQZa+pFI9JI6UKD++qqA5Gpm8jG+rCLYoG22oxbZqlY8iPZDMoeJWfsYw0Az308qZGHUdbS8UhJltIxTTVjfMJCr2T8cTY7BbhurLyEvcHrz6jFbWcALFF30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=TwYoa2fG; arc=none smtp.client-ip=198.137.202.133
+	s=arc-20240116; t=1736576871; c=relaxed/simple;
+	bh=IDaSdxfnGf33O2S0Hn/FzGCL18pD52R97dWPXndg4VM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ROly4NMfmma3EqZenF3zaln7a0YV3obJw8Tf/Ze+xS1Km43hS6XuSThnsJBefhwpRgjpUy9sgZUFqDpeE8YgzIYjisi7tup2t5ZV4tNS7dvCX7zUI3PO18j0GEh3fL80hPOKGPX64A/poPoBFwIAx7gi3q8hSGzsf7jzFl1p7kY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=k1L4WuGr; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
 	Content-ID:Content-Description:In-Reply-To:References;
-	bh=u/IIvcBnkV57SLSk3JYcF+WO+sFRHt9IbN0Mu71SVWg=; b=TwYoa2fGJytfCgNq/IKMXVHGa0
-	jIuElvp2vfSJPRCyM8OBfZn8YLSDaQdyr8J8E2HcuHL5a161idpL8tIMEN1ls/t2oQ8RGPv4ESf36
-	4QVND0AmjDPvlE+fSi/45/MFONjOHOnIJ5VbAE6rmlhE96vUiKuMlJeYrh7T1JV0pni/ZM/1DuJL2
-	vlJ9IE2Lv67xyFkHZ3emV8SY+14E8cuO3sG+r68QOfa2fWcBabYgS10CAoP0MwqDjXaYaUXIgwM4j
-	7DEuKptXrIPbE3mW8WxtgyXvkt0jaAlevh4vRJLDL4ed+Q6r05xcd21yIg0d0/2tCeEMoJ035HmkP
-	XE4BXeaA==;
+	bh=WUxWwFKdoN3GrCnuGXQZYa95akxNZD4zoFS0jYRWjg4=; b=k1L4WuGrIhLjJthjzCoZx1aQLR
+	rzeLVT2zLjJnAmw0aUTYgqo3v55QbE8qvnD5b04ijmVB9aSHrEd6BFfoNS/RiLFUCxJ7YoyPzduka
+	/LvBNMz5+jigA1XO0EqvOfF37z5nm3/a3YN2LsAWDbBkLhMl/7G/tLz/dj98eEM7atMfdnZbgbYeF
+	uXynpEIzn9UcXHc3gRldDYS3lxIkP42vFESDtisEpZ3nl5sBlQTmH1XQTK56cAQ25uVwOMxRfiD2p
+	VcDEX9nPbg0I8w1snGHm6hbIB047jErbYuTfKfiDsm4wh2wYYu5vHGtiZnSOWWkzNoSYOvhNP8JKN
+	XPhtjMSw==;
 Received: from [50.53.2.24] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWUyC-00000000H2a-2faP;
-	Sat, 11 Jan 2025 06:27:40 +0000
+	id 1tWUyL-00000000H3O-2MMa;
+	Sat, 11 Jan 2025 06:27:49 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-block@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
@@ -51,9 +51,9 @@ Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Josef Bacik <josef@toxicpanda.com>,
 	Jens Axboe <axboe@kernel.dk>,
 	cgroups@vger.kernel.org
-Subject: [PATCH] blk-cgroup: fix kernel-doc warnings in header file
-Date: Fri, 10 Jan 2025 22:27:36 -0800
-Message-ID: <20250111062736.910383-1-rdunlap@infradead.org>
+Subject: [PATCH] blk-cgroup: rwstat: fix kernel-doc warnings in header file
+Date: Fri, 10 Jan 2025 22:27:48 -0800
+Message-ID: <20250111062748.910442-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -63,13 +63,11 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Correct the function parameters and function names to eliminate
-kernel-doc warnings:
+Correct the function parameters to eliminate kernel-doc warnings:
 
-blk-cgroup.h:238: warning: Function parameter or struct member 'bio' not described in 'bio_issue_as_root_blkg'
-blk-cgroup.h:248: warning: bad line: 
-blk-cgroup.h:279: warning: expecting prototype for blkg_to_pdata(). Prototype was for blkg_to_pd() instead
-blk-cgroup.h:296: warning: expecting prototype for pdata_to_blkg(). Prototype was for pd_to_blkg() instead
+blk-cgroup-rwstat.h:63: warning: Function parameter or struct member 'opf' not described in 'blkg_rwstat_add'
+blk-cgroup-rwstat.h:63: warning: Excess function parameter 'op' description in 'blkg_rwstat_add'
+blk-cgroup-rwstat.h:91: warning: Function parameter or struct member 'result' not described in 'blkg_rwstat_read'
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Cc: Tejun Heo <tj@kernel.org>
@@ -77,47 +75,29 @@ Cc: Josef Bacik <josef@toxicpanda.com>
 Cc: Jens Axboe <axboe@kernel.dk>
 Cc: cgroups@vger.kernel.org
 ---
- block/blk-cgroup.h |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ block/blk-cgroup-rwstat.h |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- linux-next-20250108.orig/block/blk-cgroup.h
-+++ linux-next-20250108/block/blk-cgroup.h
-@@ -225,7 +225,9 @@ void blkg_conf_exit(struct blkg_conf_ctx
- 
+--- linux-next-20250108.orig/block/blk-cgroup-rwstat.h
++++ linux-next-20250108/block/blk-cgroup-rwstat.h
+@@ -52,7 +52,7 @@ void blkg_rwstat_recursive_sum(struct bl
  /**
-  * bio_issue_as_root_blkg - see if this bio needs to be issued as root blkg
-- * @return: true if this bio needs to be submitted with the root blkg context.
-+ * @bio: the target &bio
-+ *
-+ * Return: true if this bio needs to be submitted with the root blkg context.
+  * blkg_rwstat_add - add a value to a blkg_rwstat
+  * @rwstat: target blkg_rwstat
+- * @op: REQ_OP and flags
++ * @opf: REQ_OP and flags
+  * @val: value to add
   *
-  * In order to avoid priority inversions we sometimes need to issue a bio as if
-  * it were attached to the root blkg, and then backcharge to the actual owning
-@@ -245,7 +247,7 @@ static inline bool bio_issue_as_root_blk
-  * @q: request_queue of interest
+  * Add @val to @rwstat.  The counters are chosen according to @rw.  The
+@@ -83,8 +83,9 @@ static inline void blkg_rwstat_add(struc
+ /**
+  * blkg_rwstat_read - read the current values of a blkg_rwstat
+  * @rwstat: blkg_rwstat to read
++ * @result: where to put the current values
   *
-  * Lookup blkg for the @blkcg - @q pair.
--
-+ *
-  * Must be called in a RCU critical section.
+- * Read the current snapshot of @rwstat and return it in the aux counts.
++ * Read the current snapshot of @rwstat and return it in the @result counts.
   */
- static inline struct blkcg_gq *blkg_lookup(struct blkcg *blkcg,
-@@ -268,7 +270,7 @@ static inline struct blkcg_gq *blkg_look
- }
- 
- /**
-- * blkg_to_pdata - get policy private data
-+ * blkg_to_pd - get policy private data
-  * @blkg: blkg of interest
-  * @pol: policy of interest
-  *
-@@ -287,7 +289,7 @@ static inline struct blkcg_policy_data *
- }
- 
- /**
-- * pdata_to_blkg - get blkg associated with policy private data
-+ * pd_to_blkg - get blkg associated with policy private data
-  * @pd: policy private data of interest
-  *
-  * @pd is policy private data.  Determine the blkg it's associated with.
+ static inline void blkg_rwstat_read(struct blkg_rwstat *rwstat,
+ 		struct blkg_rwstat_sample *result)
 
