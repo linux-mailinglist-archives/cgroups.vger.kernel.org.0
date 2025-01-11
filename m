@@ -1,100 +1,79 @@
-Return-Path: <cgroups+bounces-6091-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6092-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0195EA09E6C
-	for <lists+cgroups@lfdr.de>; Fri, 10 Jan 2025 23:55:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82917A0A00E
+	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 02:27:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEFA5188ADFC
-	for <lists+cgroups@lfdr.de>; Fri, 10 Jan 2025 22:55:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3D4B7A4EDB
+	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 01:26:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0319421A43A;
-	Fri, 10 Jan 2025 22:54:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6607C4D5AB;
+	Sat, 11 Jan 2025 01:25:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="elP+eq3h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fFWOM55h"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21E92080F6;
-	Fri, 10 Jan 2025 22:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210BA433A0;
+	Sat, 11 Jan 2025 01:25:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736549693; cv=none; b=jw+RCLwAl9a/JgUZ9zkxB/TZd5rmK1t6UxNfd88bqRtTodo0xPKHX/bZpqXo/BLN9ZSuYrAirhC1SpPlXaOvanOyQHAb4gaF4Qtqgg7wRyCo8dRUA/4fK3jhrxutw9YF2rzQ83ExwaBmekhgPDnoScQu8Sg8YeQ0zKL6fVLUgmM=
+	t=1736558748; cv=none; b=Q5FM/K8psAqYA413yiwd/ZAHYQ2V8O/M6Fc50ThbeRyqprVtuxYuRKp++TmYMNvrLDk0QHDcWfVKnNlzPp96UphCFteXltwxYRNBmR2/5TpwTnYQZmzPoastMjJLxRWL2uovsR7Xp9rxEaMCQAs02SVOekTmJffJYr+1ONwAlsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736549693; c=relaxed/simple;
-	bh=f9JiWFrGEwi8hLt237XzDglvO03EV7vVu7PMXaPKWeQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=rHRml8/L8CL0N/EbcCpJUyXp9qSHf+eTUMix7ZMtyZyyerqOutF6cFuidz9kdcU9BErJPdxWjBAmfdnbYHFtYYuLfqa7darBoNMl2Q13IHTYBomjj4y9DykvNgJqQPeHyLFzwB/x76Nb1aRaabLNAsOUoeZ6JkNin/WPzDG2WNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=elP+eq3h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28B91C4CED6;
-	Fri, 10 Jan 2025 22:54:53 +0000 (UTC)
+	s=arc-20240116; t=1736558748; c=relaxed/simple;
+	bh=sjmbjfWjsh488UdCTLTEpyaTwnivZahKIxOXHoEuf3g=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Sa9MMwm6OsgQOIhUyqTUYJIOlfr0UVuaPk7GjswPYwqRYfZ3V3gXdwA7Un/V7N9hP2/RmLfWJnpSB6ex/1tYTamfSWqg6GHt2ZVCVsodVVZlAcN3zZMJbwq51nGWtGmUoVZW+tpEnPDG3ri6LYSXCsKHt4ypWgwktDEt6jYtems=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fFWOM55h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE0DAC4CED6;
+	Sat, 11 Jan 2025 01:25:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736549693;
-	bh=f9JiWFrGEwi8hLt237XzDglvO03EV7vVu7PMXaPKWeQ=;
-	h=Date:From:To:Cc:Subject:From;
-	b=elP+eq3hnXpkTm3qG+rGY8sMyPrcfftfVQSTiw3LN6tt9eU7rCSxoXcUFy9ea00M4
-	 dHe2QUG8vBk1PvqdgDuT51DtihpZHzO+GQ9YykzTG2FUaj1xHyFnOV518Y6KV80zDI
-	 K+G4gfGrmrjXXrHsd4E3wOPhmKyX/Mbqx5i7wlckpHaS5bSHwHciJ6btOK4UzP46uP
-	 CS8qV7vCFhihjwRrOR9LLKoJCLVEcMyF8Ni5kKTrkTxxRue8EdxvkHOuOCi1fjdzm1
-	 5gnegUJSDBuDd7txPYbJwlv3ggGsdeSV9CKeknZD/4r9NfndtBtqMTIuGFMOpG2O4M
-	 xXRCGpk/iPCkg==
-Date: Fri, 10 Jan 2025 12:54:52 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org
-Subject: [GIT PULL] cgroup: Fixes for v6.13-rc6
-Message-ID: <Z4GlPPv2Ku5xRs6N@slm.duckdns.org>
+	s=k20201202; t=1736558748;
+	bh=sjmbjfWjsh488UdCTLTEpyaTwnivZahKIxOXHoEuf3g=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=fFWOM55hzVSM0zl5ulCv5wi4jyOaaZbBiI7zmdfGalZCecGfvp8Fe3ip8FBqaj/Gs
+	 EKcnOIYZWCNdZPfJdEsj45u24zPXUS+EYXGRkZxITpJ+1ksYoP5aiIJzfmZp/0cEm5
+	 tai4UOwwFgXqhzUFDd1tU/r4QiPhQvyhqOG4iIV/Ax5BJ1UmH5sC2/MltKtE1jzTxL
+	 8PdXJ38RYZenpCfF+4KEsjNB8ybdmpIoQwVCIgoBlODAGe+Kf3TPo0ozFUMwWX3nmQ
+	 44Ma+v1eDeA3iaDvlxzHlL3zmop9ahpjDTcfkPru29SBjTx8++GAbXL89HIzz2PB8g
+	 Ovdklk9t/Fiyw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33DE4380AA57;
+	Sat, 11 Jan 2025 01:26:11 +0000 (UTC)
+Subject: Re: [GIT PULL] cgroup: Fixes for v6.13-rc6
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <Z4GlPPv2Ku5xRs6N@slm.duckdns.org>
+References: <Z4GlPPv2Ku5xRs6N@slm.duckdns.org>
+X-PR-Tracked-List-Id: <cgroups.vger.kernel.org>
+X-PR-Tracked-Message-Id: <Z4GlPPv2Ku5xRs6N@slm.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.13-rc6-fixes
+X-PR-Tracked-Commit-Id: 3cb97a927fffe443e1e7e8eddbfebfdb062e86ed
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 58624e4bc876198a5dc41be1d7dd39e7c944b9c6
+Message-Id: <173655876972.2259020.8674365237576361536.pr-tracker-bot@kernel.org>
+Date: Sat, 11 Jan 2025 01:26:09 +0000
+To: Tejun Heo <tj@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, cgroups@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-The following changes since commit f92f4749861b06fed908d336b4dee1326003291b:
+The pull request you sent on Fri, 10 Jan 2025 12:54:52 -1000:
 
-  Merge tag 'clk-fixes-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux (2024-12-10 18:21:40 -0800)
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.13-rc6-fixes
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/58624e4bc876198a5dc41be1d7dd39e7c944b9c6
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.13-rc6-fixes
-
-for you to fetch changes up to 3cb97a927fffe443e1e7e8eddbfebfdb062e86ed:
-
-  cgroup/cpuset: remove kernfs active break (2025-01-08 15:54:39 -1000)
-
-----------------------------------------------------------------
-cgroup: Fixes for v6.13-rc6
-
-All are cpuset changes:
-
-- Fix isolated CPUs leaking into sched domains.
-
-- Remove now unnecessary kernfs active break which can trigger a warning.
-
-- Comment updates.
-
-----------------------------------------------------------------
-Chen Ridong (1):
-      cgroup/cpuset: remove kernfs active break
-
-Costa Shulyupin (1):
-      cgroup/cpuset: Remove stale text
-
-Waiman Long (1):
-      cgroup/cpuset: Prevent leakage of isolated CPUs into sched domains
-
- kernel/cgroup/cpuset.c                            | 44 ++++++-----------------
- tools/testing/selftests/cgroup/test_cpuset_prs.sh | 33 +++++++++--------
- 2 files changed, 30 insertions(+), 47 deletions(-)
+Thank you!
 
 -- 
-tejun
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
