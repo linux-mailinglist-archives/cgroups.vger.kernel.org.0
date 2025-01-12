@@ -1,59 +1,70 @@
-Return-Path: <cgroups+bounces-6094-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6095-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44A7CA0A13C
-	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 07:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16EE1A0AA36
+	for <lists+cgroups@lfdr.de>; Sun, 12 Jan 2025 15:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2811A188BD77
-	for <lists+cgroups@lfdr.de>; Sat, 11 Jan 2025 06:28:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16CAC1886F5D
+	for <lists+cgroups@lfdr.de>; Sun, 12 Jan 2025 14:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41FE158DD9;
-	Sat, 11 Jan 2025 06:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="k1L4WuGr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E3AC1B87E3;
+	Sun, 12 Jan 2025 14:50:23 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AD3129A78;
-	Sat, 11 Jan 2025 06:27:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1591F1B85C5;
+	Sun, 12 Jan 2025 14:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736576871; cv=none; b=GTwWWZkzjuUkdHf9blYdFBP9ytGvCO0LwxsE3I/Y1HNKsyJ9sqFVCcz5fD4BeP3SUW7Lw/N/uRg4GiSg8MyL6Mie31p/xn+smIRXTSXN1rJLlJ22jp0NB/FF+mSpnZUPzed3+Du/fsmhMlu4kPH3q4Wbq9yJCa1g4PTjHvg7JQs=
+	t=1736693423; cv=none; b=P88aHJhLI+14uvtL38f8/9QdSe1kqhlYUHTDSKIS8hVE9eM+3l8NqB2pf8y2jf7ViIPaIT71LImTnZ2T44OdASVfyFxdIZowHPlCqIkJ79YTVClbnBJn4ngJUys0cfXLX9jttOB6/08sCRb5/ZTImHvCoI1PPsuKL8DKUaYIXFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736576871; c=relaxed/simple;
-	bh=IDaSdxfnGf33O2S0Hn/FzGCL18pD52R97dWPXndg4VM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ROly4NMfmma3EqZenF3zaln7a0YV3obJw8Tf/Ze+xS1Km43hS6XuSThnsJBefhwpRgjpUy9sgZUFqDpeE8YgzIYjisi7tup2t5ZV4tNS7dvCX7zUI3PO18j0GEh3fL80hPOKGPX64A/poPoBFwIAx7gi3q8hSGzsf7jzFl1p7kY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=k1L4WuGr; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=WUxWwFKdoN3GrCnuGXQZYa95akxNZD4zoFS0jYRWjg4=; b=k1L4WuGrIhLjJthjzCoZx1aQLR
-	rzeLVT2zLjJnAmw0aUTYgqo3v55QbE8qvnD5b04ijmVB9aSHrEd6BFfoNS/RiLFUCxJ7YoyPzduka
-	/LvBNMz5+jigA1XO0EqvOfF37z5nm3/a3YN2LsAWDbBkLhMl/7G/tLz/dj98eEM7atMfdnZbgbYeF
-	uXynpEIzn9UcXHc3gRldDYS3lxIkP42vFESDtisEpZ3nl5sBlQTmH1XQTK56cAQ25uVwOMxRfiD2p
-	VcDEX9nPbg0I8w1snGHm6hbIB047jErbYuTfKfiDsm4wh2wYYu5vHGtiZnSOWWkzNoSYOvhNP8JKN
-	XPhtjMSw==;
-Received: from [50.53.2.24] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWUyL-00000000H3O-2MMa;
-	Sat, 11 Jan 2025 06:27:49 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-block@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Tejun Heo <tj@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	cgroups@vger.kernel.org
-Subject: [PATCH] blk-cgroup: rwstat: fix kernel-doc warnings in header file
-Date: Fri, 10 Jan 2025 22:27:48 -0800
-Message-ID: <20250111062748.910442-1-rdunlap@infradead.org>
+	s=arc-20240116; t=1736693423; c=relaxed/simple;
+	bh=AAQ5kitbUKVxf0MWOLvAk+HLmeBOw7YzJcSZO/8d/Hk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nowcM+GUVm43akql0RAAEQ/bhPV4YnnHc1QE/6dOC2LnbvXsumQU6Pmt+dnTt4Ef5/r2pfQhHZ/zGpS5yNQvllexMSPYhmFoz194Wc1FNdRQQlPahnEO2d7WtfCl/8yK4ZZFqBYluqcCcCM5h7rmeh0f1CODJyNc+6UWeupB+zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=hehaorui.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=hehaorui.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2164b1f05caso58850065ad.3;
+        Sun, 12 Jan 2025 06:50:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736693420; x=1737298220;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uhy698aVp2re67sHRs+SXrFxmynjNM+DF6S2D2BFOF8=;
+        b=FUMqptmgH2Lq6MJxB/M61Z8F1tJMwBwpwByc9Kbkq6blOUdc01tyd0L6Ju9U2jannz
+         nlKyT+KEZZxAoCFq/ZnnhLkxZzw9vRRdVwcqBPigkQEc3HnmRtVlCqeM7FST0Q9aZ/R5
+         SHocwkqVJYmRRS6l6+6kXtW1ik2FJTNXNLXxwAFTHeg/PyLvJgx1vx1idHX6XU9xwyiW
+         MCWZd2r536UttabcwuR0TZgVaWYgIM+gNH/6QNjXhffqWsggI9a9o3W01Frn24/wNqnc
+         gacZyEERpO+1oJ5ZVe96pN2dg5tWYtRCgVY86STcgEQqqp4FKXD/5rpRiF0SnS6TWNnM
+         Qfkg==
+X-Gm-Message-State: AOJu0YwZ4DmO3D+lUPY/y6HnvplGNldJ8lXpSGEFLsw0efQL5hngvWQR
+	P1tV1aGjL3qYpVggVONeXAornYjqd8BrdkckYFSnWAH4qWJCnGgQS3xV/SaKp9FbFA==
+X-Gm-Gg: ASbGncskOntLJx+JcZ7CH8II+ceA/wWEEnoUKcYD96gSKaw8ZJCJkQ4O8YBPEUHzLvR
+	XqdS82+PI7GpafvMpM0sUUNG3Jg+dR0RHtrXAe+xQMk/79Bu9A0fRIfEBn12pyZRuD+YwI8qYS/
+	TM8YW7CplAKnKHxvtbvbf9poiJtU0gSFbj32yrcO8j6PRE4zdh/Om0EQ58pzg2b3Arsx8KUlAWk
+	bRqtWDN/lQehdaYcwRJH1HQEy+CgKpmj3kTY/K+uOiVqBIMelmJqeRgBfk=
+X-Google-Smtp-Source: AGHT+IErdutXYq+ZXiiWBvc3ZAW+CiSNU0IgGAkJTG8NePpFBsWZ8oa4RweLp8cYwzyvgRowDlbmXw==
+X-Received: by 2002:a05:6a21:4a4b:b0:1e1:ce4d:a144 with SMTP id adf61e73a8af0-1e88cd2943emr26698706637.0.1736693420417;
+        Sun, 12 Jan 2025 06:50:20 -0800 (PST)
+Received: from localhost.localdomain ([2001:da8:c800:d70a:0:740:2:113])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d4056a5c3sm4529517b3a.62.2025.01.12.06.50.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jan 2025 06:50:19 -0800 (PST)
+From: Haorui He <mail@hehaorui.com>
+To: cgroups@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	mkoutny@suse.com,
+	hannes@cmpxchg.org,
+	tj@kernel.org,
+	Haorui He <mail@hehaorui.com>
+Subject: [PATCH] cgroup: update comment about dropping cgroup kn refs
+Date: Sun, 12 Jan 2025 22:49:20 +0800
+Message-ID: <20250112144920.1270566-1-mail@hehaorui.com>
 X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -63,41 +74,29 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Correct the function parameters to eliminate kernel-doc warnings:
+the cgroup is actually freed in css_free_rwork_fn() now
+the ref count of the cgroup's kernfs_node is also dropped there
+so we need to update the corresponding comment in cgroup_mkdir()
 
-blk-cgroup-rwstat.h:63: warning: Function parameter or struct member 'opf' not described in 'blkg_rwstat_add'
-blk-cgroup-rwstat.h:63: warning: Excess function parameter 'op' description in 'blkg_rwstat_add'
-blk-cgroup-rwstat.h:91: warning: Function parameter or struct member 'result' not described in 'blkg_rwstat_read'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: cgroups@vger.kernel.org
+Signed-off-by: Haorui He <mail@hehaorui.com>
 ---
- block/blk-cgroup-rwstat.h |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/cgroup/cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20250108.orig/block/blk-cgroup-rwstat.h
-+++ linux-next-20250108/block/blk-cgroup-rwstat.h
-@@ -52,7 +52,7 @@ void blkg_rwstat_recursive_sum(struct bl
- /**
-  * blkg_rwstat_add - add a value to a blkg_rwstat
-  * @rwstat: target blkg_rwstat
-- * @op: REQ_OP and flags
-+ * @opf: REQ_OP and flags
-  * @val: value to add
-  *
-  * Add @val to @rwstat.  The counters are chosen according to @rw.  The
-@@ -83,8 +83,9 @@ static inline void blkg_rwstat_add(struc
- /**
-  * blkg_rwstat_read - read the current values of a blkg_rwstat
-  * @rwstat: blkg_rwstat to read
-+ * @result: where to put the current values
-  *
-- * Read the current snapshot of @rwstat and return it in the aux counts.
-+ * Read the current snapshot of @rwstat and return it in the @result counts.
-  */
- static inline void blkg_rwstat_read(struct blkg_rwstat *rwstat,
- 		struct blkg_rwstat_sample *result)
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index d9061bd55436..805764cf14e2 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5835,7 +5835,7 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
+ 	}
+ 
+ 	/*
+-	 * This extra ref will be put in cgroup_free_fn() and guarantees
++	 * This extra ref will be put in css_free_rwork_fn() and guarantees
+ 	 * that @cgrp->kn is always accessible.
+ 	 */
+ 	kernfs_get(cgrp->kn);
+-- 
+2.47.1
+
 
