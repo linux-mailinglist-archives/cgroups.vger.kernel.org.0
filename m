@@ -1,148 +1,208 @@
-Return-Path: <cgroups+bounces-6097-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6098-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52163A0AD16
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2025 02:06:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B8BAA0AF7B
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2025 07:52:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56FAB3A6E0A
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2025 01:05:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1567816392D
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2025 06:52:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B61612E5B;
-	Mon, 13 Jan 2025 01:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="cfSy0Jb/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9CD231A50;
+	Mon, 13 Jan 2025 06:52:04 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com [68.232.139.117])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E38BA4B;
-	Mon, 13 Jan 2025 01:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.139.117
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73415231C88;
+	Mon, 13 Jan 2025 06:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736730345; cv=none; b=kGhzXJE8EqK/h13kcQlB6mPoQGnYBRnsvXxB5ph5tZ3PCk3inALy5t0eorKhKbcuqIqDzm6X9sXVq4kt6k/3wEVaEWh15KuSlmzquZjAbA8ro3BZ6A8anCXCS79gm2YJb6KgMx28d4I1ZbVTWozHzmzKvgN0DCo9lEd/Dac2aNw=
+	t=1736751124; cv=none; b=qleQ4ShBoUzechJq3W/f293HfDGG4iTzmDkIY3i22IU6yyaxJpNDEwmUcD95vZSpP0XjHWJ67yZM5vQUloyB7de6W6Lbaq5GaRpg/XjeE9HufXgVhdTse8PCwOBpTVTRYPCoT7cnCxyWvESGiR+fIGW/qmgzKPRtzxgiMsVSZSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736730345; c=relaxed/simple;
-	bh=zTaa8HYhR0T7JXfkAWwzg0rqsHYC2A2po9SaveVras4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KUwzG1m4sEOHcjz+3fvD3ALyBUXqDFHdggPtE57jOhImUKk0YAi4G3WMKiBi/ZRTZoycJLYlZRHiG8pKyHsXOhvqZbPu7ourM0jXtcKuFCRuV3ZP30sobVS31YWT8fONmAhEsEJmuDZkIXbZP7rxDM3tpoEOTgAkgA/gB0cYprY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=cfSy0Jb/; arc=none smtp.client-ip=68.232.139.117
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1736730343; x=1768266343;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zTaa8HYhR0T7JXfkAWwzg0rqsHYC2A2po9SaveVras4=;
-  b=cfSy0Jb/Ee24+vgyCU/R/YWieZ7TCx8Z+CA9PhnMzdLS65b64ezhpH4i
-   /P9WTWb5MIrCaX57XdyQtNb1hytaNIPKFYaBgVTvbHJmZ0ijhUm4defn3
-   nUwZ+b9TostSsDWGPQTLdELu9XFLutU2Qf7eRFN1fUSw7DuipcqXKzEhM
-   GX19YM37IOagY92b3oYSVMJbeINvbbth7Peb7HqjEBcxxym72UY/4BOBy
-   RQ3/cGuv0VH0jdDTfOmBrVk6z7yK5NZZaCuxZL+Wf/uQMHUIyxOOMasQb
-   tl65PQYtFaSnmedRTq4hVdRVCZT/I92ctSAOU2eC83+xkTdcg05rhD5gS
-   g==;
-X-CSE-ConnectionGUID: /AyguDavRsmIkpZyA+B5DQ==
-X-CSE-MsgGUID: LHsmP4SzQHWZdUvR7Z48fA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11313"; a="186564847"
-X-IronPort-AV: E=Sophos;i="6.12,310,1728918000"; 
-   d="scan'208";a="186564847"
-Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
-  by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2025 10:04:30 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com [192.168.87.58])
-	by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 5EC57DE677;
-	Mon, 13 Jan 2025 10:04:28 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
-	by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 2E038D4F41;
-	Mon, 13 Jan 2025 10:04:28 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 98AB12007FAFE;
-	Mon, 13 Jan 2025 10:04:27 +0900 (JST)
-Received: from iaas-rdma.. (unknown [10.167.135.44])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id 872E41A006C;
-	Mon, 13 Jan 2025 09:04:26 +0800 (CST)
-From: Li Zhijian <lizhijian@fujitsu.com>
-To: linux-doc@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	mkoutny@suse.com,
-	Jonathan Corbet <corbet@lwn.net>,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Waiman Long <llong@redhat.com>,
-	Li Zhijian <lizhijian@fujitsu.com>
-Subject: [PATCH v2] Documentation/cgroup-v2: Update memory.{stat,numa_stat} description to reflect possible units
-Date: Mon, 13 Jan 2025 09:05:30 +0800
-Message-ID: <20250113010530.432396-1-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20250110123019.423725-1-lizhijian@fujitsu.com>
-References: <20250110123019.423725-1-lizhijian@fujitsu.com>
+	s=arc-20240116; t=1736751124; c=relaxed/simple;
+	bh=FqcPUiDjsYz400ZPUQn1W6RtMNo/tDZbZ0txwWjo5Vk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DSzkXa54p06A9W3f3k0ZVVL2Bz9ZhxWUq2uPx+zDyOZX98ijRFQ1iNW5DZDchsC2kS/HZeDECtAIXfBc4oQP72JHpJKFm8xqN/xR1aBeR1aXZgLQXTngxUH1pQrPNNGS6XeagSnsO8cCf4UgMTok5x6biKdFvwTpRJ00M2n+AVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YWjbX2bsWz4f3js9;
+	Mon, 13 Jan 2025 14:51:36 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id A9B3D1A084C;
+	Mon, 13 Jan 2025 14:51:56 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP1 (Coremail) with SMTP id cCh0CgAninoLuIRnfO5AAw--.40643S2;
+	Mon, 13 Jan 2025 14:51:56 +0800 (CST)
+Message-ID: <58caaa4f-cf78-4d0f-af31-8a9277b6ebf5@huaweicloud.com>
+Date: Mon, 13 Jan 2025 14:51:55 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28920.004
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28920.004
-X-TMASE-Result: 10--8.417900-10.000000
-X-TMASE-MatchedRID: Wu7mvlVj+42gOUOBLqPMtLPx3rO+jk2QK2GKtdiFmTkKo7vFXsOIEjBy
-	UyUcWgBxs2pATm9V9PxUdjhO4CbFI+BRuAss+FbmEXjPIvKd74BMkOX0UoduufJdr/uA7ez9G/C
-	T7CSpnL2C9g3+dE2CC++zkoobd8qBr78SC5iivxwURSScn+QSXt0H8LFZNFG7bkV4e2xSge6bCT
-	BZ/aKW2AzIND4/GH2mtrCLkQaGGdYCjGN0tulMiRyFdNnda6Rv
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] memcg: fix soft lockup in the OOM process
+To: Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
+ mhocko@kernel.org, hannes@cmpxchg.org, yosryahmed@google.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ davidf@vimeo.com, handai.szj@taobao.com, rientjes@google.com,
+ kamezawa.hiroyu@jp.fujitsu.com, RCU <rcu@vger.kernel.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, chenridong@huawei.com, wangweiyang2@huawei.com
+References: <20241224025238.3768787-1-chenridong@huaweicloud.com>
+ <1ea309c1-d0f8-4209-b0b0-e69ad4e986ae@suse.cz>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <1ea309c1-d0f8-4209-b0b0-e69ad4e986ae@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgAninoLuIRnfO5AAw--.40643S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr4rKF4fKF13ZrW3GFyUJrb_yoWrCry8pF
+	yDCa1UKws5Jry5Xr12yryYvF1fJw48Ca1UJr47tr15Cr17KwnrJr17Gr15Jrn5AFWavF12
+	yFn0vw1Igr4YvaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-The description of the memory.{stat,numa_stat} file has been updated to
-clarify that the output values can be in bytes or pages.
-This change ensures that users are aware that the unit of measurement for
-memory values can vary and should be verified by consulting the memory.stat
 
-It's known that
-workingset_*, pg* are counted in pages
 
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>a
----
-V2: updated the document as suggestion from Michal
-    updated subject and commit log
----
- Documentation/admin-guide/cgroup-v2.rst | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+On 2025/1/6 16:45, Vlastimil Babka wrote:
+> On 12/24/24 03:52, Chen Ridong wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
+> 
+> +CC RCU
+> 
+>> A soft lockup issue was found in the product with about 56,000 tasks were
+>> in the OOM cgroup, it was traversing them when the soft lockup was
+>> triggered.
+>>
+>> watchdog: BUG: soft lockup - CPU#2 stuck for 23s! [VM Thread:1503066]
+>> CPU: 2 PID: 1503066 Comm: VM Thread Kdump: loaded Tainted: G
+>> Hardware name: Huawei Cloud OpenStack Nova, BIOS
+>> RIP: 0010:console_unlock+0x343/0x540
+>> RSP: 0000:ffffb751447db9a0 EFLAGS: 00000247 ORIG_RAX: ffffffffffffff13
+>> RAX: 0000000000000001 RBX: 0000000000000000 RCX: 00000000ffffffff
+>> RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000247
+>> RBP: ffffffffafc71f90 R08: 0000000000000000 R09: 0000000000000040
+>> R10: 0000000000000080 R11: 0000000000000000 R12: ffffffffafc74bd0
+>> R13: ffffffffaf60a220 R14: 0000000000000247 R15: 0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 00007f2fe6ad91f0 CR3: 00000004b2076003 CR4: 0000000000360ee0
+>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>> Call Trace:
+>>  vprintk_emit+0x193/0x280
+>>  printk+0x52/0x6e
+>>  dump_task+0x114/0x130
+>>  mem_cgroup_scan_tasks+0x76/0x100
+>>  dump_header+0x1fe/0x210
+>>  oom_kill_process+0xd1/0x100
+>>  out_of_memory+0x125/0x570
+>>  mem_cgroup_out_of_memory+0xb5/0xd0
+>>  try_charge+0x720/0x770
+>>  mem_cgroup_try_charge+0x86/0x180
+>>  mem_cgroup_try_charge_delay+0x1c/0x40
+>>  do_anonymous_page+0xb5/0x390
+>>  handle_mm_fault+0xc4/0x1f0
+>>
+>> This is because thousands of processes are in the OOM cgroup, it takes a
+>> long time to traverse all of them. As a result, this lead to soft lockup
+>> in the OOM process.
+>>
+>> To fix this issue, call 'cond_resched' in the 'mem_cgroup_scan_tasks'
+>> function per 1000 iterations. For global OOM, call
+>> 'touch_softlockup_watchdog' per 1000 iterations to avoid this issue.
+>>
+>> Fixes: 9cbb78bb3143 ("mm, memcg: introduce own oom handler to iterate only over its own threads")
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> ---
+>>  mm/memcontrol.c | 7 ++++++-
+>>  mm/oom_kill.c   | 8 +++++++-
+>>  2 files changed, 13 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 65fb5eee1466..46f8b372d212 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -1161,6 +1161,7 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+>>  {
+>>  	struct mem_cgroup *iter;
+>>  	int ret = 0;
+>> +	int i = 0;
+>>  
+>>  	BUG_ON(mem_cgroup_is_root(memcg));
+>>  
+>> @@ -1169,8 +1170,12 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+>>  		struct task_struct *task;
+>>  
+>>  		css_task_iter_start(&iter->css, CSS_TASK_ITER_PROCS, &it);
+>> -		while (!ret && (task = css_task_iter_next(&it)))
+>> +		while (!ret && (task = css_task_iter_next(&it))) {
+>> +			/* Avoid potential softlockup warning */
+>> +			if ((++i & 1023) == 0)
+>> +				cond_resched();
+>>  			ret = fn(task, arg);
+>> +		}
+>>  		css_task_iter_end(&it);
+>>  		if (ret) {
+>>  			mem_cgroup_iter_break(memcg, iter);
+>> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+>> index 1c485beb0b93..044ebab2c941 100644
+>> --- a/mm/oom_kill.c
+>> +++ b/mm/oom_kill.c
+>> @@ -44,6 +44,7 @@
+>>  #include <linux/init.h>
+>>  #include <linux/mmu_notifier.h>
+>>  #include <linux/cred.h>
+>> +#include <linux/nmi.h>
+>>  
+>>  #include <asm/tlb.h>
+>>  #include "internal.h"
+>> @@ -430,10 +431,15 @@ static void dump_tasks(struct oom_control *oc)
+>>  		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
+>>  	else {
+>>  		struct task_struct *p;
+>> +		int i = 0;
+>>  
+>>  		rcu_read_lock();
+>> -		for_each_process(p)
+>> +		for_each_process(p) {
+>> +			/* Avoid potential softlockup warning */
+>> +			if ((++i & 1023) == 0)
+>> +				touch_softlockup_watchdog();
+> 
+> This might suppress the soft lockup, but won't a rcu stall still be detected?
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 315ede811c9d..0a43be0c32d1 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1427,7 +1427,7 @@ The following nested keys are defined.
- 	types of memory, type-specific details, and other information
- 	on the state and past events of the memory management system.
- 
--	All memory amounts are in bytes.
-+	All memory amounts are in bytes unless said otherwise.
- 
- 	The entries are ordered to be human readable, and new entries
- 	can show up in the middle. Don't rely on items remaining in a
-@@ -1673,11 +1673,12 @@ The following nested keys are defined.
- 	application performance by combining this information with the
- 	application's CPU allocation.
- 
--	All memory amounts are in bytes.
--
- 	The output format of memory.numa_stat is::
- 
--	  type N0=<bytes in node 0> N1=<bytes in node 1> ...
-+	  type N0=<value for node 0> N1=<value for node 1> ...
-+
-+        The 'value' can be in bytes or pages, depending on the specific
-+        type of memory. To determine the unit, refer to the memory.stat.
- 
- 	The entries are ordered to be human readable, and new entries
- 	can show up in the middle. Don't rely on items remaining in a
--- 
-2.44.0
+Yes, rcu stall was still detected.
+For global OOM, system is likely to struggle, do we have to do some
+works to suppress RCU detete?
+
+Best regards,
+Ridong
+
+> 
+>>  			dump_task(p, oc);
+>> +		}
+>>  		rcu_read_unlock();
+>>  	}
+>>  }
+> 
 
 
