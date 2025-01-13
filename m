@@ -1,54 +1,56 @@
-Return-Path: <cgroups+bounces-6112-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6113-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D76B4A0BFC5
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2025 19:27:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FA0A0C09A
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2025 19:48:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A65CE1614A9
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2025 18:27:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06A6918881CF
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2025 18:48:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D601C242C;
-	Mon, 13 Jan 2025 18:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFE71C5F0F;
+	Mon, 13 Jan 2025 18:39:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gn54B0Bh"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vFFqsvbG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7931C3C0B;
-	Mon, 13 Jan 2025 18:26:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0A21C3039
+	for <cgroups@vger.kernel.org>; Mon, 13 Jan 2025 18:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736792808; cv=none; b=OWgz3RR5oz1kniOSh+aSt6EIueZ9sMUbXy8xRjox7x4mVvlUb281uHpJ8VXJ/R+vfkT8WjJyVx4HFMJq3E5P+M/5ADldpLNR2E6J/Hl08U3Em+iyXgJ7X4skANkEnRHm0UE+Th3xukqYngHFqsjiaFPj8+NOlQazcT3N+SlPanY=
+	t=1736793554; cv=none; b=XrewjX8P3u1nPBWuueMUPlCADXRiV8FJfgGwu4ex6ZsYeNBnmJaujUML53wZ/yldIV3c0WdAtzgQRd1ZILtpTZTuuYyMlipnPLYx6SCnG1J6O5pKB5X7hifOGM0IUXjvigNBBbOsnIpBnf0pLLG0Okfwgn/zKzSCjArHY8XT2c4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736792808; c=relaxed/simple;
-	bh=qrnMO+SEhArbD9drBVGu2JBe+n5ukAPSY/0qzjKehrE=;
+	s=arc-20240116; t=1736793554; c=relaxed/simple;
+	bh=wbQ3t7nKoKAGuq84eKntOyoq/qfcCq8bKOoo99GEtvE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jc3z1/L1vfaDI0rIy1sRCh95hxj0dM4QNHAGp9e48rRBtNBFJLff8InHq+j5eNWMUsWP5GpdIKEWwMZij7moSO+zow2AWUNgHmyDTC1cAoLz9ZTg+Eqlzuqe95BMyI63EOFEdoMaOBJGaI35A5MT1LV8sLVfRcrudlUkYNXeyNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gn54B0Bh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99091C4CED6;
-	Mon, 13 Jan 2025 18:26:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736792807;
-	bh=qrnMO+SEhArbD9drBVGu2JBe+n5ukAPSY/0qzjKehrE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Gn54B0Bh1ocuPNt94ilrpJoyStCw1HLF2Z3xH1mEg+Z+t6DzHOlO53/hEAi6vjcET
-	 uZ2FkNu6Zoiq5BAj0PlVYTxDsN9w7de7d9XxK66SHFu5icLxHeXOWpLh49vCx4+1M7
-	 /cnXchY3zpbuTOiD/jA29a7xWipBfKWsvT1tVO7UA6oR/Bk45BYmg4BKQ0ecocM/Un
-	 BgOx/sTDVSxSB/ZC21Nv0snVOSsfHCnd5njxWoGGCoF7Lv0gAuYjJKw1XBJNBMXFWg
-	 NWrJPtp+yzh1kUGGME7ieK9nSaj7KC36TTdTL/KycUsQIyIDfL06nwr92g+Ym6lf7O
-	 rkqpVj5q/p+Jg==
-Date: Mon, 13 Jan 2025 08:26:46 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Haorui He <mail@hehaorui.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, mkoutny@suse.com,
-	hannes@cmpxchg.org
-Subject: Re: [PATCH] cgroup: update comment about dropping cgroup kn refs
-Message-ID: <Z4Va5lxSMo1o8bXg@slm.duckdns.org>
-References: <20250112144920.1270566-1-mail@hehaorui.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TNuPGx/saHRxcwLOCEz2wmAAssJhDL2UZzk1o4fTZGOJbooWau84Ttra7E9GYsPyHrK/XuUS8magh7JjkHyjw0LaxXbh+SPQyfx5Vn8SQVQkY/FzlUZl7Rbx4MGYND5EMInSOPtfc7WM0oqOW2I36II7m2eBVm+12jp22ETVARA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vFFqsvbG; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 13 Jan 2025 10:39:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1736793546;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=o/UCRhXYVzb80u83dwZDEreXYoPVjDV1NMvAkaKNMOI=;
+	b=vFFqsvbGctLEamklCXfzXi0+GDouo+92NWGi2b8zErWxR0JTEzlkaQvgD/hWRrk0o8TZZM
+	cRW2g76edbLorBBqIvo8NPFVzl7bsaczsoDlKQpolsp6MaCBP7wdxJ5hk1JK5ZpMoW6PUl
+	0EKtk1OV3l4VweZljPFExsy8+sxkF3s=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+Cc: JP Kobryn <inwardvessel@gmail.com>, mhocko@kernel.org, 
+	hannes@cmpxchg.org, yosryahmed@google.com, akpm@linux-foundation.org, 
+	linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 0/9 v2] cgroup: separate per-subsystem rstat trees
+Message-ID: <zwdpnhzxebx64pbvd5wtwje6gixbu4lifw2qzrmnybledtform@cc6g4bznoz6v>
+References: <20250103015020.78547-1-inwardvessel@gmail.com>
+ <Z3hf5wrRuw0KylTh@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,19 +59,41 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250112144920.1270566-1-mail@hehaorui.com>
+In-Reply-To: <Z3hf5wrRuw0KylTh@slm.duckdns.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, Jan 12, 2025 at 10:49:20PM +0800, Haorui He wrote:
-> the cgroup is actually freed in css_free_rwork_fn() now
-> the ref count of the cgroup's kernfs_node is also dropped there
-> so we need to update the corresponding comment in cgroup_mkdir()
+On Fri, Jan 03, 2025 at 12:08:39PM -1000, Tejun Heo wrote:
+> Hello,
 > 
-> Signed-off-by: Haorui He <mail@hehaorui.com>
+> On Thu, Jan 02, 2025 at 05:50:11PM -0800, JP Kobryn wrote:
+> ...
+> > I reached a point where this started to feel stable in my local testing, so I
+> > wanted to share and get feedback on this approach.
+> 
+> The rationale for using one tree to track all subsystems was that if one
+> subsys has been active (e.g. memory), it's likely that other subsyses have
+> been active too (e.g. cpu) and thus we might as well flush the whole thing
+> together. The approach can be useful for reducing the amount of work done
+> when e.g. there are a lot of cgroups which are only active periodically but
+> has drawbacks when one subsystem's stats are read a lot more actively than
+> others as you pointed out.
 
-Applied to sched_ext/for-6.14.
+I wanted to add two more points to above: (1) One subsystem (memory) has
+in-kernel stats consumer with strict latency/performance requirement and
+(2) the flush cost of memory stats have drastically increased due to
+more than 100 stats it has to maintain.
 
-Thanks.
+> 
+> Intuitions go only so far and it's difficult to judge whether splitting the
+> trees would be a good idea without data. Can you please provide some
+> numbers along with rationales for the test setups?
 
--- 
-tejun
+Here I think the supportive data we can show is the (1) non-memory stats
+readers not needing to spend time on memory stats flushing and (2) with
+per-subsystem update tree, have we increased the cost of update tree
+insertion in general?
+
+Anything else you think will be needed?
+
+Thanks Tejun for taking a look.
 
