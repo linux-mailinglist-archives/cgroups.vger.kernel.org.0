@@ -1,141 +1,169 @@
-Return-Path: <cgroups+bounces-6133-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6134-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4E80A10A46
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 16:05:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91AF3A10B3E
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 16:42:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 176AC3A51FA
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 15:04:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C572168482
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 15:42:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9FA814F9ED;
-	Tue, 14 Jan 2025 15:04:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A4E81CDFA9;
+	Tue, 14 Jan 2025 15:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="QpirACUF"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b="FA78eag5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56C8232424
-	for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 15:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92C41D2B34
+	for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 15:39:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736867085; cv=none; b=rLjdUrlfVyL8H1Bv2p8AqAg/9EtEtvDavUFv4gg4ajsFryi+VBK2xAd6umBHaWSyjqRUjovkCnDkjWXx+ZHP/phkFb3q5LRRwdkkQQK6PsC/BcBAV+myKa082WuUTyH/nQ5+Nb/l5xmhl5X4TZBtkvujdmc94lCeGYL05rYQELw=
+	t=1736869181; cv=none; b=l+ZJY2U/rKIVq6t8dJ8OCv8Q4LuE/vURhme/DEUSDomofjakk6Y9XFm0VXMQwtiDg7DOPbi7DPm4g8w8Yt0/B0mrhq9nHImGfqnsNBxhXO/NuHCZnCqhKoFsuQn9OIjTYiFKRHQDDOZGIG2Ihy/GyAgQF3FmcmNYYlRV530ksyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736867085; c=relaxed/simple;
-	bh=OzBgRFx4fTp6VNlvSBlUWiyBGdW0/IUTfAq6e9k2Cnw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lIMSw7vEqf4CDr53MYG3dIk0GbS0KEet9N5Cq1qAr641oJ1QMZJTCrtyR/+9tM+E/3d6WNnjY7x3IDBOzhS+10d7vqYoevsNIHIJbrF3CUtL1WI5yqWTge0/aB9CaE4/GXOdWzmWIDZDchnkNJ7wTsIhBf6oFpB/VrXHfJgyTho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=QpirACUF; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5d88c355e0dso9829401a12.0
-        for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 07:04:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1736867081; x=1737471881; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JlzFzz9CnL3cnQzM4bidxHHVsjw7x7xEwR/iZezcWCU=;
-        b=QpirACUFvLejNk0XvMp2vLnIzE75dgO7uFuJoAofl5VCscGTgpA72h+Mow+5He7j0+
-         rP9j4pJ6CA+n/wvyqq9+EoZu2kpxY75WuWMHTKzWYqwDQx4j0oPQlAQqk8rkSFWRGPj4
-         4jyh3JEj0ObfAjT9TQdZEKBkfCvBQkq4eBaow=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736867081; x=1737471881;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JlzFzz9CnL3cnQzM4bidxHHVsjw7x7xEwR/iZezcWCU=;
-        b=UPTLrAVuWkhwbGkmSP/irFYfLl0COD0y3ImY9FMwtxZ/HRtuizc0ni3+CGFXVwkLr/
-         DOS82oW2VJZZMfW7FkV1fFCFo5mdyGQ6qOtTWpOJwLFJOUg16Ts0OYAcGNNf4RQ8WOaX
-         gwRtepSEahPaBvhgfdZzdgqQYrN6mFLHPJAxaOJ3dLS7jvPUMryaLivv4/lJe6xu+lpC
-         Ms4+6Z4OsXOvnjnVcWPAWHnGvQG3dzrICPffxOEnt5m0GRxYs2+pjHjre6QK/KHSQFHT
-         /mTZEOY5AmhhawjN41gpRUOwrCTnGwSQQtLS6plNpqZckfiBSBmppeJ0xapbH7e0XuQJ
-         EnBw==
-X-Forwarded-Encrypted: i=1; AJvYcCXagiPNbT6wxFHM+FWFvlAgB1ZT1cdSsWpwx38AtGy23JViHDiXr96JrGMA8431ldroGTz7FDWK@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGaAiecRHCGHu7MW6ij0sd9Y7geo+tvHL1+/WnB1Iu4IRTwAg2
-	xulWJu6hHDb4MuW+VqnHVqAGlfhwTJEy0vTnH7VIgvEu6T+Q41xD38eaW557er4=
-X-Gm-Gg: ASbGncuIhnHatnjZrqWJoWUhGU52yPar7c/hs/osSD1aiQ6pS7QEicKSZa33M8dtkwC
-	5cHAVEwVM0OXavPbpGsYDlgsyjTTlXyyHeItfcQzHbEOH8K2dsISN7Za4NOtuKexP2a9F+v90qk
-	OpCRQEKb+vC4263hUpmhXqLra7akG2XAW2OaB2UITi7UM+sWx137K6NqkGKHmLjl5nrYAp47gZE
-	rd1PAvH3MzWI2WbZerNCV5HcjExN7Acucf/QyVB+Guc3ducoD4+i55CoCNuvgkS36o6
-X-Google-Smtp-Source: AGHT+IH+UnsuMwr+XU0+iENq475M2f9Mz3g9fsBiqzqlUj2pYHNplby4nlIPDiPfP8/GQO+NFoPQDA==
-X-Received: by 2002:a17:907:3f95:b0:aa6:8bb4:5030 with SMTP id a640c23a62f3a-ab2aad118aamr2488137166b.0.1736867079859;
-        Tue, 14 Jan 2025 07:04:39 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:5485:d4b2:c087:b497])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab2c96468afsm646952566b.170.2025.01.14.07.04.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2025 07:04:38 -0800 (PST)
-Date: Tue, 14 Jan 2025 16:04:36 +0100
-From: Simona Vetter <simona.vetter@ffwll.ch>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>, Tejun Heo <tj@kernel.org>,
+	s=arc-20240116; t=1736869181; c=relaxed/simple;
+	bh=8nag8BQryUnYcepb7LBbRcdAQui2BgmOS3uxDkgegwU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o7jO0rrXex+apVQdgj+L1/jJH5JqfTDkVkLhRDvHHJx7fMYZucCqXc82zP2fBSbCUPWqvgSiFR0PtT5K2Tw4Avido0jxSVmc0uil5eAz4beVjW6tIDvnktUAMos30ZJOaj+h0T6pZZ+rP29EMWm4lLX2tZOk3wOJ8OSXaP+P/kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b=FA78eag5; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1736869171; x=1737473971; i=friedrich.vock@gmx.de;
+	bh=1wKjG+3sQeQ4jISNLomfGkq1QxEvNFSzRfxfd3bvLwU=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=FA78eag52dOOlcuQuC3JTB09KIhjB1bIhaMaKkMX+fmtV8RC5ZxLg+buKua6QyR7
+	 NLGuKCdWqf8p7RmGL9sVKB7HBAMvrPmwDnzMchQPkYCB7+65qsjeExYXmShffcNB4
+	 b8Rz08F512bpwut73cxSO3VH6x5ell2gcDpCyMvzHelBEWkLbpLaURoTGO/X7HmJP
+	 7ksJG8pgoG5OBt2dFlo550aIh4qecZLU7jcMpaOrAxK4NVQzV0K/1cki9hvVZZ8aV
+	 no1LKDYTRwtNOo80qhWPQYruUoWUR6vx/vMwXRLl0X3tdvp+3QHqguPKTaTWdZX9Y
+	 /ZDIIegGYAGj7NHVJw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from localhost.localdomain ([109.91.201.165]) by mail.gmx.net
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1Mjj87-1t99tQ1r7j-00m0Lw; Tue, 14 Jan 2025 16:39:31 +0100
+From: Friedrich Vock <friedrich.vock@gmx.de>
+To: Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
 	Simona Vetter <simona.vetter@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
-	cgroups@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH 4/4] doc/cgroup: Fix title underline length
-Message-ID: <Z4Z9BENJm07M-mOO@phenom.ffwll.local>
-References: <20250113092608.1349287-1-mripard@kernel.org>
- <20250113092608.1349287-4-mripard@kernel.org>
+	David Airlie <airlied@gmail.com>
+Cc: Maarten Lankhorst <dev@lankhorst.se>,
+	Maxime Ripard <mripard@kernel.org>,
+	dri-devel@lists.freedesktop.org,
+	cgroups@vger.kernel.org
+Subject: [PATCH] cgroup/dmem: Don't clobber pool in dmem_cgroup_calculate_protection
+Date: Tue, 14 Jan 2025 16:39:12 +0100
+Message-ID: <20250114153912.278909-1-friedrich.vock@gmx.de>
+X-Mailer: git-send-email 2.48.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250113092608.1349287-4-mripard@kernel.org>
-X-Operating-System: Linux phenom 6.12.3-amd64 
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9eNm08SBRIT30oeEmduXTjEw8ODPxSpix++4CFBr3M2+LUkQCCg
+ dAljsqzeS/+y2gGp2T1lzYCcqh8ZIHSSi748O5Mlsr5PM/qdXqKutrNaDK+nJ89x3LBZDwH
+ JZso78K0dGLQqItjjrIWLzbES/lzXFjsx9Vj5JvwmhPGdaN9ovocwTEBPTpUqrh6gkGRnkF
+ kW5A7X+xel91defoZGpxA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:5q0PkIyEVDY=;bwP5siTbyqtBDN/Qt3OVsVqlagv
+ 2+X010RJvu7CaC82FRDNU9TfyTtJFiXaEhEmTQHId8d6AOonC4FNEmhPr5VhG/85veDfBmcdU
+ AHH6HBC996qQ0xEOQozB66pJf0kTat7BSD4UgM8op5+7b6vmWliZTvBXmvU+MOJaWLUC+S3el
+ yAzMzpfxbD+evCyf9bbJ4OVdhNOjeTqaKHe8Wsfxhykj/9jTO4r2cPBU9F1H05pxS/GAkI5SK
+ 7coQyEouHlFr4uftFcNnPpR6gxO4MqJBCWk75AwfkF/3HvkG915EtUtBFychU8lqPFItPhOQY
+ IVDXAif1CtaZ9zqWRdbpeveFhT3bZX1j7MH8RG14ze4WoPOSdtEOCl9jjlzQoi6YORvDW+8GA
+ s/K/WnntiPCfJ97yvFhNQqu9JnER7Rp2sdAH1sTYHR1Ezyln3U8V2XpGHHi77rackDYf+qJhf
+ jvEhiU9333/PnUaHX7Ik+he+Z+VbtpQxPrajAWq0QLFYlVmPiFkyyNqElRXLhj5oJOV3OVi1f
+ RgknNNMddzn4yjWJKaAwCrq++fZByhfbuhscb5Yf0UyPC50TFq5JDjJEeHq0rnzwG3/sQ7G2A
+ YqjLTYVaLdJtw4nynVKKT/QB+YPPzuqEL4hou24M3v5d0UL+BHDEjniSnW9sXqYUxj0gzAiXs
+ QrZV+1745JfowGvPpWR1uWzD6BHrPyVcCyeOVrd4pYjOTOFzPry9WlV5r6QzDLu/HI1rd+Z8z
+ xZk7xLfn+5rwgfOjnN/OxT67xBY5b0oUiMgw6xmtDHTk8CpCqiY9hDLt6oIkWZ/OMEyz87CzM
+ mZoI63GgjfyAM4dHMoOc5so5748wNGTmaEyeqpaUT4FBv1Shin6enHpvt+rSi2e7VFiFrizwq
+ +fe0mJ5DjGtbFofq5L127hZP46BkhyYtZN5FG19QRguH+FS8qYSgUCScTayDZsj7gUGRkNyc/
+ S2kyIJEmI540dKuK/iWT6c4mK2LJ8y0xjQP4lWfCxEL2Ei7uE65GFQlRNgSk2ODUZjP3OCh62
+ /ql9dEJDMnP7OpcsyeXRiM6n04OGNgDR/eCa97FC6/VbCGYZKLnB5HPCPhFW976HylOHHKld0
+ P9UKRiERuZAGOn8GJOI1JpOhZZO9OyrpafQMUCqDGZTWBn2E0QUaf32S1kjs1+4KsqC+IcWkO
+ My+mFL/ZcjT3lgvryCc/GvEMY6uAJ/luWn/jvdfwTLA==
 
-On Mon, Jan 13, 2025 at 10:26:08AM +0100, Maxime Ripard wrote:
-> Commit
-> 
-> Commit b168ed458dde ("kernel/cgroup: Add "dmem" memory accounting
-> cgroup") introduced a new documentation file, with a shorter than
-> expected underline. This results in a documentation build warning. Fix
-> that underline length.
-> 
-> Fixes: b168ed458dde ("kernel/cgroup: Add "dmem" memory accounting cgroup")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Closes: https://lore.kernel.org/r/20250113154611.624256bf@canb.auug.org.au/
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+If the current css doesn't contain any pool that is a descendant of
+the "pool" (i.e. when found_descendant =3D=3D false), then "pool" will
+point to some unrelated pool. If the current css has a child, we'll
+overwrite parent_pool with this unrelated pool on the next iteration.
 
-On the three doc patches:
+Fix this by overwriting "pool" only if it actually is a descendant of
+parent_pool, and setting it to NULL otherwise. Also, skip traversing
+subtrees if pool =3D=3D NULL to avoid overwriting parent_pool (and because
+it's pointless).
 
-Reviewed-by: Simona Vetter <simona.vetter@ffwll.ch>
+Fixes: b168ed458 ("kernel/cgroup: Add "dmem" memory accounting cgroup")
+Signed-off-by: Friedrich Vock <friedrich.vock@gmx.de>
+=2D--
+ kernel/cgroup/dmem.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-> ---
->  Documentation/core-api/cgroup.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/core-api/cgroup.rst b/Documentation/core-api/cgroup.rst
-> index 8696e9513f51..734ea21e1e17 100644
-> --- a/Documentation/core-api/cgroup.rst
-> +++ b/Documentation/core-api/cgroup.rst
-> @@ -1,9 +1,9 @@
->  ==================
->  Cgroup Kernel APIs
->  ==================
->  
->  Device Memory Cgroup API (dmemcg)
-> -=========================
-> +=================================
->  .. kernel-doc:: kernel/cgroup/dmem.c
->     :export:
->  
-> -- 
-> 2.47.1
-> 
+diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+index 52736ef0ccf25..10d37df5d50f6 100644
+=2D-- a/kernel/cgroup/dmem.c
++++ b/kernel/cgroup/dmem.c
+@@ -222,8 +222,7 @@ dmem_cgroup_calculate_protection(struct dmem_cgroup_po=
+ol_state *limit_pool,
+ 	struct page_counter *climit;
+ 	struct cgroup_subsys_state *css, *next_css;
+ 	struct dmemcg_state *dmemcg_iter;
+-	struct dmem_cgroup_pool_state *pool, *parent_pool;
+-	bool found_descendant;
++	struct dmem_cgroup_pool_state *pool, *candidate_pool, *parent_pool;
 
--- 
-Simona Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+ 	climit =3D &limit_pool->cnt;
+
+@@ -241,7 +240,13 @@ dmem_cgroup_calculate_protection(struct dmem_cgroup_p=
+ool_state *limit_pool,
+ 	 */
+ 	while (pool !=3D test_pool) {
+ 		next_css =3D css_next_child(NULL, css);
+-		if (next_css) {
++		/*
++		 * pool is NULL when the current css does not contain a
++		 * pool of the type we're interested in. In that case, it's
++		 * impossible that any child css contains a relevant pool, so
++		 * skip the subtree entirely and move on to the next sibling.
++		 */
++		if (next_css && pool) {
+ 			parent_pool =3D pool;
+ 		} else {
+ 			while (css !=3D &limit_pool->cs->css) {
+@@ -260,16 +265,16 @@ dmem_cgroup_calculate_protection(struct dmem_cgroup_=
+pool_state *limit_pool,
+ 		}
+ 		css =3D next_css;
+
+-		found_descendant =3D false;
+ 		dmemcg_iter =3D container_of(css, struct dmemcg_state, css);
+
+-		list_for_each_entry_rcu(pool, &dmemcg_iter->pools, css_node) {
+-			if (pool_parent(pool) =3D=3D parent_pool) {
+-				found_descendant =3D true;
++		pool =3D NULL;
++		list_for_each_entry_rcu(candidate_pool, &dmemcg_iter->pools, css_node) =
+{
++			if (pool_parent(candidate_pool) =3D=3D parent_pool) {
++				pool =3D candidate_pool;
+ 				break;
+ 			}
+ 		}
+-		if (!found_descendant)
++		if (!pool)
+ 			continue;
+
+ 		page_counter_calculate_protection(
+=2D-
+2.48.0
+
 
