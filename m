@@ -1,105 +1,97 @@
-Return-Path: <cgroups+bounces-6116-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6117-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A96A0FFB6
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 04:46:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07EBFA100D4
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 07:28:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE13D7A2AFC
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 03:46:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CEA91888A53
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 06:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3EB722FE16;
-	Tue, 14 Jan 2025 03:45:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F3023497D;
+	Tue, 14 Jan 2025 06:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="l4xnWvRe"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="LxcYgr5I"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A58D1E4A4;
-	Tue, 14 Jan 2025 03:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02704233522;
+	Tue, 14 Jan 2025 06:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736826348; cv=none; b=mUbaSMIKG7WgXLyYwn1dNZ0TYzkzNdrktgr29REYgHiVY8D/DGKsZpQl/9RJakg4DqodYO11mXPDLU4xJGygOe5oN3Hk+nSsNNcJRnutjTiCOg6ZICc8IoOHBAxcJVY+6Hsv1ForrMDap/KdPwemzas8EBZWOb03SwO6f3OQW10=
+	t=1736836102; cv=none; b=MYHmmbqOHfUqZ4Ed8rmRtE/6Y9N7/fBYAgt8znQxGtzTzEmrD20umVMWhdZxyLzWBBq6m+5G/3sKPIrJxwElc85P4gTVsXP9BCn7HjIOLk1xtDU4aHXQsngnNPODXoQIeYQzLx2Svvt8QMigPhjm84AJh1dN7ssVyurwfJJ1p/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736826348; c=relaxed/simple;
-	bh=S9/mJqNvgVCYUx8ZpWZUpeA5W4YEkSbONpCP6gTCHdQ=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=hnv0cwGD4PBV0uyS1hId1IW7pJXzgqrbr/m8zVm8qKYKKFAQV4oWDzdeWqFoRlmfcYjdSVF1W276bP3qKP7aFQ9frU0oD57EnCV0KU7UcQNa1VhZjmuIGm7tecAGeD/nA+4kSUZeJN1wUrjxWSpIQNi1QYZHo0egrp9Skit5TgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=l4xnWvRe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29ECDC4CEDF;
-	Tue, 14 Jan 2025 03:45:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1736826347;
-	bh=S9/mJqNvgVCYUx8ZpWZUpeA5W4YEkSbONpCP6gTCHdQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=l4xnWvRet4z0e7dQuQmyY2RR0PYjtekU1sqenPc/vtjMTz1CW8WrNiItDlMshUcfO
-	 HGtdjCnM3eoTmh4ZMcIIKDChRpX7Qa9U1xSfXOnU0cqiU/0MgS1+xFl76x0NrGnErl
-	 /n8ZQXikiCLz9+RSIog8tIPmKvWmQDj4cwemTAbc=
-Date: Mon, 13 Jan 2025 19:45:46 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>, mhocko@kernel.org, hannes@cmpxchg.org,
- yosryahmed@google.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, davidf@vimeo.com, handai.szj@taobao.com,
- rientjes@google.com, kamezawa.hiroyu@jp.fujitsu.com, RCU
- <rcu@vger.kernel.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, chenridong@huawei.com, wangweiyang2@huawei.com
-Subject: Re: [PATCH v3] memcg: fix soft lockup in the OOM process
-Message-Id: <20250113194546.3de1af46fa7a668111909b63@linux-foundation.org>
-In-Reply-To: <58caaa4f-cf78-4d0f-af31-8a9277b6ebf5@huaweicloud.com>
-References: <20241224025238.3768787-1-chenridong@huaweicloud.com>
-	<1ea309c1-d0f8-4209-b0b0-e69ad4e986ae@suse.cz>
-	<58caaa4f-cf78-4d0f-af31-8a9277b6ebf5@huaweicloud.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1736836102; c=relaxed/simple;
+	bh=oulMsQ0U5u/ZRyNRpgvi5yh3d7a3wSXGEyS7JxFXAUg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=SIb0vWT6xPffmgVFrI6OivOOHp7wveGnOSWAKR2hKQ4CMq8SSOqh4HHfxm/bmO/wSLtRfzAcNAXKdKKS2bsKODCOmN7vT6ocYsN2+05zsYrrFguyePjrfu6xuHzg4CwRFC1X7ovwqrhFbZWSAgiQpiH3e3fEb2qGZjREr3S3FSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=LxcYgr5I; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1736836089; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=Vuu7eRPXxp/CyR/Kg/hAZb0idN+VpA9yj9zvsIETRbM=;
+	b=LxcYgr5IMhpqKDQOWeQFy6lC75OtrygtXyNeeXPBrFJh81RjBSC3H9C3dLb8DjTID7ESFdETiLMPXCBk+tGlvPnRyIKPgBrwGuzemhaqZ5QjN7csJJ01NVaHFIpCAGaoOPKQSrHTbnc36K1IsTT77OuvQmC/0GepDXiprdt2PEk=
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0WNe89iK_1736836086 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 14 Jan 2025 14:28:08 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: tj@kernel.org
+Cc: hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] kernel/cgroup: Remove the unused variable climit
+Date: Tue, 14 Jan 2025 14:28:04 +0800
+Message-Id: <20250114062804.5092-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, 13 Jan 2025 14:51:55 +0800 Chen Ridong <chenridong@huaweicloud.com> wrote:
+Variable climit is not effectively used, so delete it.
 
-> 
-> 
-> On 2025/1/6 16:45, Vlastimil Babka wrote:
-> > On 12/24/24 03:52, Chen Ridong wrote:
-> >> From: Chen Ridong <chenridong@huawei.com>
-> > 
-> > +CC RCU
-> > 
-> >> A soft lockup issue was found in the product with about 56,000 tasks were
-> >> in the OOM cgroup, it was traversing them when the soft lockup was
-> >> triggered.
-> >>
->
-> ...
->
-> >> @@ -430,10 +431,15 @@ static void dump_tasks(struct oom_control *oc)
-> >>  		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
-> >>  	else {
-> >>  		struct task_struct *p;
-> >> +		int i = 0;
-> >>  
-> >>  		rcu_read_lock();
-> >> -		for_each_process(p)
-> >> +		for_each_process(p) {
-> >> +			/* Avoid potential softlockup warning */
-> >> +			if ((++i & 1023) == 0)
-> >> +				touch_softlockup_watchdog();
-> > 
-> > This might suppress the soft lockup, but won't a rcu stall still be detected?
-> 
-> Yes, rcu stall was still detected.
-> For global OOM, system is likely to struggle, do we have to do some
-> works to suppress RCU detete?
+kernel/cgroup/dmem.c:302:23: warning: variable ‘climit’ set but not used.
 
-rcu_cpu_stall_reset()?
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=13512
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ kernel/cgroup/dmem.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+index 52736ef0ccf2..78d9361ed521 100644
+--- a/kernel/cgroup/dmem.c
++++ b/kernel/cgroup/dmem.c
+@@ -299,7 +299,7 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+ 				      bool ignore_low, bool *ret_hit_low)
+ {
+ 	struct dmem_cgroup_pool_state *pool = test_pool;
+-	struct page_counter *climit, *ctest;
++	struct page_counter *ctest;
+ 	u64 used, min, low;
+ 
+ 	/* Can always evict from current pool, despite limits */
+@@ -324,7 +324,6 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+ 			{}
+ 	}
+ 
+-	climit = &limit_pool->cnt;
+ 	ctest = &test_pool->cnt;
+ 
+ 	dmem_cgroup_calculate_protection(limit_pool, test_pool);
+-- 
+2.32.0.3.g01195cf9f
 
 
