@@ -1,47 +1,46 @@
-Return-Path: <cgroups+bounces-6150-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6151-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE3A3A11049
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 19:37:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CB54A11053
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 19:39:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A35AA3A8C0E
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 18:37:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59AE81658BF
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 18:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F721FA24C;
-	Tue, 14 Jan 2025 18:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E2A1D54E2;
+	Tue, 14 Jan 2025 18:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Hq7CGt64"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X0mr7wuG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE801CDA2E
-	for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 18:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CFAF1FA15B
+	for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 18:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736879831; cv=none; b=jcd9sLbRXRNuzRBdf9j75xWMriSwTJ7Shmh6SCqSPC+rqEVpsfhNlV0gZocVcX+miM8rVbT9hR0rEwxlz39aQY3ZGkfgwhwQceSkXj35pSPlaLlbExWw8k4x5mhEWbCwKq00+si8tlk7ZTQvPc1nWE/WDnshLBvGu4FaH1l/jeQ=
+	t=1736879972; cv=none; b=EG5cgdmvvbcOSG8nJEKhpyRKrb1Yip3C8YDsCr07aBF+G9OYEtoW1FkLWQm/EFSitXF3mD/qQ/DSLK6MDcrARpTkdWC2/ucHGj3G6BtpnAEDcAah3hVQNHJ98XBWtkjVkZbUMn3RkukkrRRg0TrH243ybGOElYvbgymua1+k5SU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736879831; c=relaxed/simple;
-	bh=89xXIJqIemGMjRBWn5Eue11hzOW5MITJqqjVlG3Rq9s=;
+	s=arc-20240116; t=1736879972; c=relaxed/simple;
+	bh=3Qd60WO1MzYWIY/6NHCmYgT+Ufv7E2dAOkGX/fkwER0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H2wCD5xgIpfo6gQcvyVxeb+IqolYmYPbzlCDabXLXStprPgP3o8SuLFyY9H8hwXr84q2bSNhsIMFKSB41cQRfxvd7pdWHOXetr1WJPV/0Hy3zO8zz5AEQ5z5haqamtLLVoffFkQkt+Y62qGDV46zs85dDcb0Kj7MqG4PypTi8Lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Hq7CGt64; arc=none smtp.client-ip=91.218.175.183
+	 Content-Type:Content-Disposition:In-Reply-To; b=rr88KywIrYE3maW1LUM6PZ7DBjY+XqgI5a4swL5JzrKw013dmrjesDW4So4s1zc9CsW+IsrZWvD1DGtEF+xLwDERsL0ezAdUZoKsXid7AvxMd70uE93u6MsLeq+GnjFpABRU3iQWmqs6Y3mk/qbeFqKZXpE1p45t4GoqEMdSeZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X0mr7wuG; arc=none smtp.client-ip=95.215.58.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 14 Jan 2025 18:36:56 +0000
+Date: Tue, 14 Jan 2025 18:39:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1736879821;
+	t=1736879968;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uci2CxDdUTcor4Mocplroy6VPU/3I3PJ+VGlYKC6Dl8=;
-	b=Hq7CGt64ZlG4Zrwq3yMhjDi/VU/rIvX+OxVuxjc0cFOU/SHhb3nDqLzoA2d2IpWy/HP6UP
-	U0dBGsFY4I0IJSRQAmvojnWjTjqxK5qi71/kgLNnB7hJPbTYcvS2hKQ6DyJL7nKk4gfDIM
-	0dQDP+4yS6fk4MC31yJfkaIKWVj6qrs=
+	bh=e3s/m86XDhNPZpeC6SALb78gz4i2UYER5cvYC+d8x0Q=;
+	b=X0mr7wuGdnFj/k4VqYOqhZ6kGoaoOOC3rRbzV1tSj4OQqZY0o2zwqVhCbOZIPI9CysgfvK
+	LsZj0YLVNQWpNSv3Nv7PQOS7XrSkFYqUHtP0oxKUY697ev46eSYYvzrIgbNZBPsrM2pX28
+	uGjRtBSG3k8Sh3NKpcmg9Rxg+tKcKZU=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Roman Gushchin <roman.gushchin@linux.dev>
 To: Chen Ridong <chenridong@huaweicloud.com>
@@ -51,35 +50,29 @@ Cc: akpm@linux-foundation.org, mhocko@kernel.org, hannes@cmpxchg.org,
 	mkoutny@suse.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org, chenridong@huawei.com,
 	wangweiyang2@huawei.com
-Subject: Re: [PATCH -v2 next 2/4] memcg: call the free function when
- allocation of pn fails
-Message-ID: <Z4auyCo_V4e-2GU3@google.com>
+Subject: Re: [PATCH -v2 next 3/4] memcg: factor out the replace_stock_objcg
+ function
+Message-ID: <Z4avW3fQQ03YnwNr@google.com>
 References: <20250114122519.1404275-1-chenridong@huaweicloud.com>
- <20250114122519.1404275-3-chenridong@huaweicloud.com>
+ <20250114122519.1404275-4-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250114122519.1404275-3-chenridong@huaweicloud.com>
+In-Reply-To: <20250114122519.1404275-4-chenridong@huaweicloud.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jan 14, 2025 at 12:25:17PM +0000, Chen Ridong wrote:
+On Tue, Jan 14, 2025 at 12:25:18PM +0000, Chen Ridong wrote:
 > From: Chen Ridong <chenridong@huawei.com>
 > 
-> The 'free_mem_cgroup_per_node_info' function is used to free
-> the 'mem_cgroup_per_node' struct. Using 'pn' as the input for the
-> free_mem_cgroup_per_node_info function will be much clearer.
-> Call 'free_mem_cgroup_per_node_info' when 'alloc_mem_cgroup_per_node_info'
-> fails, to free 'pn' as a whole, which makes the code more cohesive.
+> Factor out the 'replace_stock_objcg' function to make the code more
+> cohesive.
 > 
 > Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> Reviewed-by: Michal Koutný <mkoutny@suse.com>
-> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
 Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
