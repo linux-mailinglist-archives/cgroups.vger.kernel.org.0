@@ -1,169 +1,117 @@
-Return-Path: <cgroups+bounces-6156-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6157-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BC37A1114C
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 20:42:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EF4AA11262
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 21:44:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94B6C188A56D
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 19:42:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CE94161957
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 20:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 238112063C1;
-	Tue, 14 Jan 2025 19:42:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E6AD1FA82B;
+	Tue, 14 Jan 2025 20:44:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="av5O9o+Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TR3bLBCa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A76B01F9F66
-	for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 19:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39DB6204590;
+	Tue, 14 Jan 2025 20:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736883743; cv=none; b=s/kH6bzrUlWCA3F19VCLVfyqcyzfKSxAge7I0AvdwFCJmSkoxh6SOk4lgtYtCLzOPJ2RJmZHMngX5xqSN8M9iLZxsLd/vSnUpXMKF7iedum3MArCVeGe6bwWasg+KtjceS0LvdmLEFWrbi2RdEKSpaw7CQ4FgfdxhVbyAYeY9lM=
+	t=1736887471; cv=none; b=dr5JsvcSRx6KmEwl+eg+cQJPD158W48EcFlE7uEkAhxjMtjKPqcc74Z4Kg/wc1mUXkh+tFfvicIBxsC6AZkheu79shdYWtlLJjmYwxrqdW0hib4E/bNtnDx16WYY9HF6qWIIh4lYp3IiTVddbdx4pH28UcxLrNTFNkoko+Ic2VI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736883743; c=relaxed/simple;
-	bh=JTqkWMq/nqpxm+udupUzLoShwoP5j0GD/S8afXZ6Fvw=;
+	s=arc-20240116; t=1736887471; c=relaxed/simple;
+	bh=GhSyuvazemiNBHplKm7JkAuEuU0thINNrfaZZ5PCoG8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lHlvKgotB7X8+FbGjqBlXd3AMTajuGFuJU8e63NCb3cQOcZWPwpbbStWtPjlJWoVN8SpOEsHMY3hJ9vm29ujLmKI9hZ3V4GAgk3K6n9iPMaHaUCM6Y/xc8JwjiJogneGoGZPkYLhDT+B2eS8SKK2YH/8iJLVORiOmwnlMS/5OZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=av5O9o+Z; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-aaedd529ba1so829811466b.1
-        for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 11:42:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1736883740; x=1737488540; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=URutu6iZhZLQvnv3Wg+eMF7yoZlTyVi2IgQurCtdros=;
-        b=av5O9o+Zu2tvfdGceS8tiXIbxbs5IQ6HSdbHIUx/LJ3ltZNi06RgIqBtO7yP7d2rE+
-         5OVTQN8hYXGc4PJUvKNWNdSL7qmEioO+l7WTEDsvxn8iEBU+dlYERVufMwRL2SPf2bNV
-         nWlB+1WlOdY1Z1qvHvsK++Oloh4TVW7cXmiiBgCY3w3yazF4YOlNLufNJQg/v9SByGy8
-         VvHNbA5Uk7q7ss/HbHyQHz8i4ugRgi1z+m/L6LJrla3vUJpsjL0w6J+i7ZzQtMd5X/nW
-         neDQf63W1BPtKJa4DHLboiG+6JYTAXez37hroAB4gZrhFxSrjL75IAOFsdO0n7D7eWUs
-         DU0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736883740; x=1737488540;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=URutu6iZhZLQvnv3Wg+eMF7yoZlTyVi2IgQurCtdros=;
-        b=S0kw+TveVx9KhCbvyQicE0bGh/Acu6p83/n2Ox34YkJcvVrxAy3t5V58sPZ8QZvJDW
-         daRUQmyg5e5883PwNw7ZotOPa+fqqbOnJ/67kOCwI081TlcvC6o7u9yUVknIMeZI3ts4
-         t0229BpAYJegXdO8SsVW8dq76sEXHF7RY5iMBZqRl/ldYjMhPdFaZ8IyPf1Kgo8/C/5L
-         3YuAR3Chi/8AEZAud4t/ehABxZPyP6DoLfiiM72Io27iqUu/gN6Mf6ltoPDu557y0p/w
-         XUgXXu0t7ImyrZhCbS8nvFd5a941n5NAlzHldZbd1ZzSOXRJ18gJQaAxmKQYWw60EMHY
-         C2tQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUcbgyq5nDut3GE0Z4QxpCVcoj6zNkGDphTgvQ3C2iCaBqxOd81s4fXhenojes9SEnYJWNJTgA@vger.kernel.org
-X-Gm-Message-State: AOJu0YyNpcw65zMOX8P1nBXE6clG97sUyhZ5pZZM/KfqcxDqP4cnmfRW
-	q6JfIQYGGtqLcVOWKo/gYqx8EBao6UbLi5wlinKFFdzISunWA64VwVt7lurmeWs=
-X-Gm-Gg: ASbGnct4eRp5JMKLbTtMECVuZ1UE4qKU9F7QBa16amRaKgLUe5fglVteTfclZp/KUDJ
-	sBAxbpjqE5snONbcsyXHjnP1qlkdtArI5PGxJO7A1Hc8LFdCedaoytL+UY9NeJ3jPLkKCHys3Wf
-	VXaZF7SZ+3OGpjmZavhYBkuPGD145VnqbM5/mrMwvfLBO143UWzlPbAPmgaCl+Jfwfqp31mlA+I
-	Zyj08AwtfPiShwfzbfDtaZtci5XZyReGjI/xpUGpoDQvSPoAyDY9pTV5rbcG2g4r54zbg==
-X-Google-Smtp-Source: AGHT+IHX58DCazbPKYkixhcaH+ova41IeImuJ3K429IoKdaLrXLzYh2PmVvFh17MJ8hWqpFaLBoDxg==
-X-Received: by 2002:a05:6402:321a:b0:5d3:cff5:635e with SMTP id 4fb4d7f45d1cf-5d972e63d86mr60948294a12.26.1736883740019;
-        Tue, 14 Jan 2025 11:42:20 -0800 (PST)
-Received: from localhost (109-81-90-202.rct.o2.cz. [109.81.90.202])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab2c90d5c9asm662108266b.45.2025.01.14.11.42.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2025 11:42:19 -0800 (PST)
-Date: Tue, 14 Jan 2025 20:42:18 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Rik van Riel <riel@surriel.com>, Yosry Ahmed <yosryahmed@google.com>,
-	Balbir Singh <balbirs@nvidia.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	hakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com, Nhat Pham <nphamcs@gmail.com>
-Subject: Re: [PATCH v2] memcg: allow exiting tasks to write back data to swap
-Message-ID: <Z4a-GllRm7KABAu7@tiehlicka>
-References: <CAJD7tkY=bHv0obOpRiOg4aLMYNkbEjfOtpVSSzNJgVSwkzaNpA@mail.gmail.com>
- <20241212183012.GB1026@cmpxchg.org>
- <Z2BJoDsMeKi4LQGe@tiehlicka>
- <20250114160955.GA1115056@cmpxchg.org>
- <Z4aU7dn_TKeeTmP_@tiehlicka>
- <af6b1cb66253ad045c9af7c954c94ad91230e449.camel@surriel.com>
- <Z4aYSdEamukBGAZi@tiehlicka>
- <193d98b0d5d2b14da1b96953fcb5d91b2a35bf21.camel@surriel.com>
- <Z4apM9lbuptQBA5Z@tiehlicka>
- <20250114192322.GB1115056@cmpxchg.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AxU1ugrvO3N/LfMd77NDv1pyoNPLVfRTF1qjWQgAni3gAXAA7Oxcj55bHVHC+zzSBhIuCbOCmlGsR5kSxbkD2rVQDs3BeTxTgR2SvjBwh8HalN2n7zuTgngbb80qY2Hs6wQgmYK6dr8b5WMwkQr7VUyLS3Waj7/kdWV6phpFE6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TR3bLBCa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 980EBC4CEDD;
+	Tue, 14 Jan 2025 20:44:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736887470;
+	bh=GhSyuvazemiNBHplKm7JkAuEuU0thINNrfaZZ5PCoG8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TR3bLBCaEXtn6gKtpIjKi2FuGrDLFxP23CpdxZWuBPDHHQO5o61eRWp6HptQCGoju
+	 T/LkaX3g78JIPWzRtHVgtdaBaWDQkacXBkS3uF1DrLPh62OUpNTevE5q/q4yyftkyj
+	 807NpvzsOAPVyCFVSvMdDM/776gKWQ9zwc/qB5djjSdgrmiowqkW/Nx8MvMvtpO/67
+	 DhnmNc+CZtday2l+vPTPBMmPoL/8xso2M127C71HeCBEQWyha2aZ0+jnMpJzEgtNJ/
+	 hq/Dk+/lVFUpxBbeE75tKLb0+OLUQKF7WP9WsK8vVEERzKjAO/h4P6LuuBv4BqaVyQ
+	 aMyi+EcnhRgsQ==
+Date: Tue, 14 Jan 2025 10:44:29 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Waiman Long <llong@redhat.com>,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, hannes@cmpxchg.org,
+	mkoutny@suse.com, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+	dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH -next] kernel/cgroup: Remove the unused variable climit
+Message-ID: <Z4bMrXdcNWEj9MYc@slm.duckdns.org>
+References: <20250114062804.5092-1-jiapeng.chong@linux.alibaba.com>
+ <f502ee68-7743-48c6-9024-83431265a6b8@redhat.com>
+ <20250114-voracious-optimal-alligator-cdaaba@houat>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250114192322.GB1115056@cmpxchg.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250114-voracious-optimal-alligator-cdaaba@houat>
 
-On Tue 14-01-25 14:23:22, Johannes Weiner wrote:
-> On Tue, Jan 14, 2025 at 07:13:07PM +0100, Michal Hocko wrote:
-> > Anyway, have you tried to reproduce with 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 7b3503d12aaf..9c30c442e3b0 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -1627,7 +1627,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> >  	 * A few threads which were not waiting at mutex_lock_killable() can
-> >  	 * fail to bail out. Therefore, check again after holding oom_lock.
-> >  	 */
-> > -	ret = task_is_dying() || out_of_memory(&oc);
-> > +	ret = out_of_memory(&oc);
-> >  
-> >  unlock:
-> >  	mutex_unlock(&oom_lock);
+On Tue, Jan 14, 2025 at 06:56:38PM +0100, Maxime Ripard wrote:
+> On Tue, Jan 14, 2025 at 10:41:28AM -0500, Waiman Long wrote:
+> > On 1/14/25 1:28 AM, Jiapeng Chong wrote:
+> > > Variable climit is not effectively used, so delete it.
+> > > 
+> > > kernel/cgroup/dmem.c:302:23: warning: variable ‘climit’ set but not used.
+> > > 
+> > > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> > > Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=13512
+> > > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> > > ---
+> > >   kernel/cgroup/dmem.c | 3 +--
+> > >   1 file changed, 1 insertion(+), 2 deletions(-)
+> > > 
+> > > diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+> > > index 52736ef0ccf2..78d9361ed521 100644
+> > > --- a/kernel/cgroup/dmem.c
+> > > +++ b/kernel/cgroup/dmem.c
+> > > @@ -299,7 +299,7 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+> > >   				      bool ignore_low, bool *ret_hit_low)
+> > >   {
+> > >   	struct dmem_cgroup_pool_state *pool = test_pool;
+> > > -	struct page_counter *climit, *ctest;
+> > > +	struct page_counter *ctest;
+> > >   	u64 used, min, low;
+> > >   	/* Can always evict from current pool, despite limits */
+> > > @@ -324,7 +324,6 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+> > >   			{}
+> > >   	}
+> > > -	climit = &limit_pool->cnt;
+> > >   	ctest = &test_pool->cnt;
+> > >   	dmem_cgroup_calculate_protection(limit_pool, test_pool);
 > > 
-> > proposed by Johannes earlier? This should help to trigger the oom reaper
-> > to free up some memory.
+> > The dmem controller is actually pulled into the drm tree at the moment.
+> > 
+> > cc relevant parties on how to handle this fix commit.
 > 
-> Yes, I was wondering about that too.
-> 
-> If the OOM reaper can be our reliable way of forward progress, we
-> don't need any reserve or headroom beyond memory.max.
-> 
-> IIRC it can fail if somebody is holding mmap_sem for writing. The exit
-> path at some point takes that, but also around the time it frees up
-> all its memory voluntarily, so that should be fine. Are you aware of
-> other scenarios where it can fail?
+> We can either take it through drm with one of the cgroup maintainers
+> ack, or they can merge the PR in their tree and merge the fixes as they
+> wish through their tree.
 
-Setting MMF_OOM_SKIP is the final moment when oom reaper can act. This
-is after exit_mm_release which releases futex. Also get_user callers
-shouldn't be holding exclusive mmap_lock as that would deadlock when PF
-path takes the read lock, right?
+Acked-by: Tejun Heo <tj@kernel.org>
 
-> What if everything has been swapped out already and there is nothing
-> to reap? IOW, only unreclaimable/kernel memory remaining in the group.
+Please route with the rest of dmem changes.
 
-Yes, this is possible. It is also possible the the oom victim depletes
-oom reserves globally and fail the allocation resulting in the same
-problem. Reserves do buy some time but do not solve the underlying
-issue.
-
-> It still seems to me that allowing the OOM victim (and only the OOM
-> victim) to bypass memory.max is the only guarantee to progress.
-> 
-> I'm not really concerned about side effects. Any runaway allocation in
-> the exit path (like the vmalloc one you referenced before) is a much
-> bigger concern for exceeding the physical OOM reserves in the page
-> allocator. What's a containment failure for cgroups would be a memory
-> deadlock at the system level. It's a class of kernel bug that needs
-> fixing, not something we can really work around in the cgroup code.
-
-I do agreee that a memory deadlock is not really proper way to deal with
-the issue. I have to admit that my understanding was based on ENOMEM
-being properly propagated out of in kernel user page faults. It seems I
-was wrong about that. On the other hand wouldn't that be a proper way to
-deal with the issue? Relying on allocations never failing is quite
-fragile.
+Thanks.
 
 -- 
-Michal Hocko
-SUSE Labs
+tejun
 
