@@ -1,136 +1,132 @@
-Return-Path: <cgroups+bounces-6145-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6146-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1007AA10D30
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 18:12:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41588A10E8C
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 18:58:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60877161B86
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 17:12:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23B923A575F
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 17:57:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22251CF7AF;
-	Tue, 14 Jan 2025 17:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC9A1FBCAE;
+	Tue, 14 Jan 2025 17:56:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VkpnoVSb"
 X-Original-To: cgroups@vger.kernel.org
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EAFB1BD9E7;
-	Tue, 14 Jan 2025 17:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.67.55.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84DA51FA14B;
+	Tue, 14 Jan 2025 17:56:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736874727; cv=none; b=bP51WdgkuHP9Pk68JjSEl+mUze+1cQasRlzLm7mxF9D1S6ExeGb8TQ65ghZyvHXj0G31HNnaUxEmkSqYxQJnIyKD4xgyMGLNrdEfqzSS5a/jgzzZ6KS6kWZCx062oN5akJ+py97Sw4UV2WJiF3Efe7tztkHtYruwuuSFASgZpYQ=
+	t=1736877401; cv=none; b=O7XEliEwm43Dd7qFBkeKuX8eFjetvJ40t9yHNh6sTBPSgd7ikBh1SHASOx2u74ronBfA60Z7A1XHCmmW296uL+ekI2ZOTvZq7+bkRAiTJWyUw4RU3clgzm0paLV4G75Pcix9jYFwEC4SDCmRfRj5wmqwyTFOHJLNQkTfNWBHAc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736874727; c=relaxed/simple;
-	bh=f2U7tOnZPuRxU/wb1Bm7gMMLy4PIWvSH0mVGFR0Al1Y=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TwKJxbm0QKPV5+a06QfG9xoQuQMTfNiW0NFBRW7TbnVKz8BPct47jfMlRkKQ+oD+ajWKk8kA/AkwoQAWNZi7SQcoBwK4kwNIEgHjtpkgo3o98U2E4KINUQQj99SU3Kb2BPfhNRKjZAwNaJQhYVyn6Y+NSxNzfwXv5BreJ39lseE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com; spf=pass smtp.mailfrom=shelob.surriel.com; arc=none smtp.client-ip=96.67.55.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shelob.surriel.com
-Received: from fangorn.home.surriel.com ([10.0.13.7])
-	by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.97.1)
-	(envelope-from <riel@shelob.surriel.com>)
-	id 1tXkSI-000000000XQ-3kHZ;
-	Tue, 14 Jan 2025 12:11:54 -0500
-Message-ID: <193d98b0d5d2b14da1b96953fcb5d91b2a35bf21.camel@surriel.com>
-Subject: Re: [PATCH v2] memcg: allow exiting tasks to write back data to swap
-From: Rik van Riel <riel@surriel.com>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed
- <yosryahmed@google.com>,  Balbir Singh <balbirs@nvidia.com>, Roman Gushchin
- <roman.gushchin@linux.dev>, hakeel Butt	 <shakeel.butt@linux.dev>, Muchun
- Song <muchun.song@linux.dev>, Andrew Morton	 <akpm@linux-foundation.org>,
- cgroups@vger.kernel.org, linux-mm@kvack.org, 	linux-kernel@vger.kernel.org,
- kernel-team@meta.com, Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 14 Jan 2025 12:11:54 -0500
-In-Reply-To: <Z4aYSdEamukBGAZi@tiehlicka>
-References: <20241212115754.38f798b3@fangorn>
-	 <CAJD7tkY=bHv0obOpRiOg4aLMYNkbEjfOtpVSSzNJgVSwkzaNpA@mail.gmail.com>
-	 <20241212183012.GB1026@cmpxchg.org> <Z2BJoDsMeKi4LQGe@tiehlicka>
-	 <20250114160955.GA1115056@cmpxchg.org> <Z4aU7dn_TKeeTmP_@tiehlicka>
-	 <af6b1cb66253ad045c9af7c954c94ad91230e449.camel@surriel.com>
-	 <Z4aYSdEamukBGAZi@tiehlicka>
-Autocrypt: addr=riel@surriel.com; prefer-encrypt=mutual;
- keydata=mQENBFIt3aUBCADCK0LicyCYyMa0E1lodCDUBf6G+6C5UXKG1jEYwQu49cc/gUBTTk33A
- eo2hjn4JinVaPF3zfZprnKMEGGv4dHvEOCPWiNhlz5RtqH3SKJllq2dpeMS9RqbMvDA36rlJIIo47
- Z/nl6IA8MDhSqyqdnTY8z7LnQHqq16jAqwo7Ll9qALXz4yG1ZdSCmo80VPetBZZPw7WMjo+1hByv/
- lvdFnLfiQ52tayuuC1r9x2qZ/SYWd2M4p/f5CLmvG9UcnkbYFsKWz8bwOBWKg1PQcaYHLx06sHGdY
- dIDaeVvkIfMFwAprSo5EFU+aes2VB2ZjugOTbkkW2aPSWTRsBhPHhV6dABEBAAG0HlJpayB2YW4gU
- mllbCA8cmllbEByZWRoYXQuY29tPokBHwQwAQIACQUCW5LcVgIdIAAKCRDOed6ShMTeg05SB/986o
- gEgdq4byrtaBQKFg5LWfd8e+h+QzLOg/T8mSS3dJzFXe5JBOfvYg7Bj47xXi9I5sM+I9Lu9+1XVb/
- r2rGJrU1DwA09TnmyFtK76bgMF0sBEh1ECILYNQTEIemzNFwOWLZZlEhZFRJsZyX+mtEp/WQIygHV
- WjwuP69VJw+fPQvLOGn4j8W9QXuvhha7u1QJ7mYx4dLGHrZlHdwDsqpvWsW+3rsIqs1BBe5/Itz9o
- 6y9gLNtQzwmSDioV8KhF85VmYInslhv5tUtMEppfdTLyX4SUKh8ftNIVmH9mXyRCZclSoa6IMd635
- Jq1Pj2/Lp64tOzSvN5Y9zaiCc5FucXtB9SaWsgdmFuIFJpZWwgPHJpZWxAc3VycmllbC5jb20+iQE
- +BBMBAgAoBQJSLd2lAhsjBQkSzAMABgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRDOed6ShMTe
- g4PpB/0ZivKYFt0LaB22ssWUrBoeNWCP1NY/lkq2QbPhR3agLB7ZXI97PF2z/5QD9Fuy/FD/jddPx
- KRTvFCtHcEzTOcFjBmf52uqgt3U40H9GM++0IM0yHusd9EzlaWsbp09vsAV2DwdqS69x9RPbvE/Ne
- fO5subhocH76okcF/aQiQ+oj2j6LJZGBJBVigOHg+4zyzdDgKM+jp0bvDI51KQ4XfxV593OhvkS3z
- 3FPx0CE7l62WhWrieHyBblqvkTYgJ6dq4bsYpqxxGJOkQ47WpEUx6onH+rImWmPJbSYGhwBzTo0Mm
- G1Nb1qGPG+mTrSmJjDRxrwf1zjmYqQreWVSFEt26tBpSaWsgdmFuIFJpZWwgPHJpZWxAZmIuY29tP
- okBPgQTAQIAKAUCW5LbiAIbIwUJEswDAAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQznneko
- TE3oOUEQgAsrGxjTC1bGtZyuvyQPcXclap11Ogib6rQywGYu6/Mnkbd6hbyY3wpdyQii/cas2S44N
- cQj8HkGv91JLVE24/Wt0gITPCH3rLVJJDGQxprHTVDs1t1RAbsbp0XTksZPCNWDGYIBo2aHDwErhI
- omYQ0Xluo1WBtH/UmHgirHvclsou1Ks9jyTxiPyUKRfae7GNOFiX99+ZlB27P3t8CjtSO831Ij0Ip
- QrfooZ21YVlUKw0Wy6Ll8EyefyrEYSh8KTm8dQj4O7xxvdg865TLeLpho5PwDRF+/mR3qi8CdGbkE
- c4pYZQO8UDXUN4S+pe0aTeTqlYw8rRHWF9TnvtpcNzZw==
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
+	s=arc-20240116; t=1736877401; c=relaxed/simple;
+	bh=HVAs2E2tbiTll+bmQK7MYfZHFdUhyRyMfEKuzz7fbdU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dFCOUBn2ZAr5S//uMXtvbsX7oZzejUCt3yrrBTdWw4VYxIVy09vIzwYDrk0EiGbTXm2Wb/ZZP+Qd+dSMKfOBb/jGZdNgJJ4XkNq9n+0zg3yuuQrP3DCeMeUde9W2twnevC2aV7HG1PB9nh6kFG/5Zx3OC4gftbbMb32NAa1Zl40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VkpnoVSb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 007E9C4CEDD;
+	Tue, 14 Jan 2025 17:56:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736877401;
+	bh=HVAs2E2tbiTll+bmQK7MYfZHFdUhyRyMfEKuzz7fbdU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VkpnoVSb5QcZqnbtk3/XpQNgNbUfIHXLcGU3WRhQJiZxIUDWEGoL6cTsl+xXJjwqu
+	 oEgybG8IWKaSVCCdyqsN9Rs5LRtSRTD9joTaQLNM7byEVYuuGRqtOZ6eTyjKNXi7O6
+	 FbtLH6wsfXSV+rnlPku3k6KuXUvi9j6UmNcZRsIbSKceN96JDTQ9ghgW3dG1vW665p
+	 rcZsfJRmepux7QYnV7LwzHc3l6ax2fs/SaNgfn2+YNOgTQryFgKOexkwuCkRBLCy/f
+	 VYoVkUeUtgG5kiwuEys9AiAKlByKDwl/z1uO/GJhElUjlfB62Z7IzdZLB6CjEy8VbX
+	 ZG0gCeVkhcZwg==
+Date: Tue, 14 Jan 2025 18:56:38 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Waiman Long <llong@redhat.com>
+Cc: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, tj@kernel.org, 
+	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>, 
+	dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH -next] kernel/cgroup: Remove the unused variable climit
+Message-ID: <20250114-voracious-optimal-alligator-cdaaba@houat>
+References: <20250114062804.5092-1-jiapeng.chong@linux.alibaba.com>
+ <f502ee68-7743-48c6-9024-83431265a6b8@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Sender: riel@surriel.com
+Content-Type: multipart/signed; micalg=pgp-sha384;
+	protocol="application/pgp-signature"; boundary="aanl67po5zzp3cqw"
+Content-Disposition: inline
+In-Reply-To: <f502ee68-7743-48c6-9024-83431265a6b8@redhat.com>
 
-On Tue, 2025-01-14 at 18:00 +0100, Michal Hocko wrote:
-> On Tue 14-01-25 11:51:18, Rik van Riel wrote:
-> > On Tue, 2025-01-14 at 17:46 +0100, Michal Hocko wrote:
-> > > On Tue 14-01-25 11:09:55, Johannes Weiner wrote:
-> > >=20
-> > > > charge_memcg
-> > > > mem_cgroup_swapin_charge_folio
-> > > > __read_swap_cache_async
-> > > > swapin_readahead
-> > > > do_swap_page
-> > > > handle_mm_fault
-> > > > do_user_addr_fault
-> > > > exc_page_fault
-> > > > asm_exc_page_fault
-> > > > __get_user
-> > >=20
-> > > All the way here and return the failure to futex_cleanup which
-> > > doesn't
-> > > retry __get_user on the failure AFAICS (exit_robust_list). But I
-> > > might
-> > > be missing something, it's been quite some time since I've looked
-> > > into
-> > > futex code.
+
+--aanl67po5zzp3cqw
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH -next] kernel/cgroup: Remove the unused variable climit
+MIME-Version: 1.0
+
+On Tue, Jan 14, 2025 at 10:41:28AM -0500, Waiman Long wrote:
+> On 1/14/25 1:28 AM, Jiapeng Chong wrote:
+> > Variable climit is not effectively used, so delete it.
 > >=20
-> > Can you explain how -ENOMEM would get propagated down
-> > past the page fault handler?
+> > kernel/cgroup/dmem.c:302:23: warning: variable =E2=80=98climit=E2=80=99=
+ set but not used.
 > >=20
-> > This isn't get_user_pages(), which can just pass
-> > -ENOMEM on to the caller.
+> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> > Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D13512
+> > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> > ---
+> >   kernel/cgroup/dmem.c | 3 +--
+> >   1 file changed, 1 insertion(+), 2 deletions(-)
 > >=20
-> > If there is code to pass -ENOMEM on past the page
-> > fault exception handler, I have not been able to
-> > find it. How does this work?
+> > diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+> > index 52736ef0ccf2..78d9361ed521 100644
+> > --- a/kernel/cgroup/dmem.c
+> > +++ b/kernel/cgroup/dmem.c
+> > @@ -299,7 +299,7 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_c=
+group_pool_state *limit_pool,
+> >   				      bool ignore_low, bool *ret_hit_low)
+> >   {
+> >   	struct dmem_cgroup_pool_state *pool =3D test_pool;
+> > -	struct page_counter *climit, *ctest;
+> > +	struct page_counter *ctest;
+> >   	u64 used, min, low;
+> >   	/* Can always evict from current pool, despite limits */
+> > @@ -324,7 +324,6 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_c=
+group_pool_state *limit_pool,
+> >   			{}
+> >   	}
+> > -	climit =3D &limit_pool->cnt;
+> >   	ctest =3D &test_pool->cnt;
+> >   	dmem_cgroup_calculate_protection(limit_pool, test_pool);
 >=20
-> This might be me misunderstading get_user machinery but doesn't it
-> return a failure on PF handler returing ENOMEM?
+> The dmem controller is actually pulled into the drm tree at the moment.
+>=20
+> cc relevant parties on how to handle this fix commit.
 
-I believe __get_user simply does a memcpy, and ends
-up in the page fault handler.
+We can either take it through drm with one of the cgroup maintainers
+ack, or they can merge the PR in their tree and merge the fixes as they
+wish through their tree.
 
-It does not access userspace explicitly like we do
-with functions like get_user_pages.
+Maxime
 
---=20
-All Rights Reversed.
+--aanl67po5zzp3cqw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZ4alVgAKCRAnX84Zoj2+
+dkbhAYCvXuQH457px9VQnRHo/JbT0RoUcJKd/ZYksLGw3xZOOofgHU5mWjQXqy6f
+Kxjp5SABfRPrRSXBThg/8O4SJqCxmLasieuJ7nPihfhLfoG0PJFpe8OaKQQrvnGN
+OJsmuzpNGA==
+=nWul
+-----END PGP SIGNATURE-----
+
+--aanl67po5zzp3cqw--
 
