@@ -1,158 +1,122 @@
-Return-Path: <cgroups+bounces-6141-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6144-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7FF7A10CC3
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 17:54:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A754A10CE8
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 18:01:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FB9E3A60C7
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 16:54:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D69416A12F
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 17:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07BF1F9AA5;
-	Tue, 14 Jan 2025 16:54:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="TIg/Kz39"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723DA1AA1DC;
+	Tue, 14 Jan 2025 17:01:26 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 466431B87C6
-	for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 16:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC83C14AD2E;
+	Tue, 14 Jan 2025 17:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.67.55.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736873662; cv=none; b=NPrfL1hejN0GbtiwOVGgD+ClwyIpQ470HDhn4D/iyp2vu07cjJhXSEUHzckSIv4hETTkRpvhX+dOS0dX4sE11edg7fQtr7Q8SBi6Mm1w7Y1lCo9C7fvkaCX8zzhz45wHf78+qaELMdz0lALRHeMyP4NjndSbphNBuMICOgeQnxo=
+	t=1736874086; cv=none; b=ngoAClRhE2TsVxeLQMqshJRloC2+g3+xp9K89I9lEc1pBQoIdpttyOk1KQENqgwYFSTVLamu/5HBmgU3CcjwZ09HVmYwCaN/5yi1BuPGATr0hPchNY4h3xqbcZ+PC4hI/uW/POcKavgy8IyOjtj8kWZQZdRpfOInTXy6Md83cDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736873662; c=relaxed/simple;
-	bh=QArxDshYBXXjPsSxBkOjDge7ebuo2qKnIT/yKZpkdfk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aALJKHw0phB5WYqms2VOLCHZIOy8QHMXaUlU73WCheqp8XFYtMt6qrJRSFb13KFlvg+o07+KTjdCAZJeBsiyKlebVVgU8oAQuJGFJhkZlde0njpZl2pX9/toBHkK9DvlERGFsh93wQnRL7NL0WVKV7norc6jT+FqJ6nGCU2AbA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=TIg/Kz39; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-aaf60d85238so1047688366b.0
-        for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 08:54:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1736873657; x=1737478457; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LsRaccHvZKr6FJzMPGUpANQeurIQy5ZJPHMSFpAg7jM=;
-        b=TIg/Kz39NGsfDd40XUVlW5h5e5ETYRuO2BuD6fD7buF1Fo2Xa9trrTRee/0jeQB6qg
-         TWfo+/myhOFeozAiWg3HzD0KML8LunfygVaTkaXMXLifS2OCy46IXSg89m5nKoyRQskx
-         1bT+Eg2ChcV3OXQpYAruXPu6rEJ9B+gijCPbAB3VCEqzsKmz98ttSMsrf0WtpmrxBHzp
-         VkoJBiRTtwlgI34feP4KN8J7vE3/GWPR445OWKyAfQKfhNIHWY6oc9qFX9kCNw4KSXLc
-         w9bMXBQbqLxKE0ipV6bEUGOxNG1BIY9i59K3n7ik5QOaJFDDzRYdprtXQSk2rhVksavq
-         1dXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736873657; x=1737478457;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LsRaccHvZKr6FJzMPGUpANQeurIQy5ZJPHMSFpAg7jM=;
-        b=DqFZ4LY0VHqRM7WvtaQm+rLBwFYDx50Lqwm2ItsCK8jr7GJgma9MsovSLCLpZ4iYpP
-         hSOjXPtmeEWNoOdbsrKdMYAZ6d2raSwK5l9tg639A2l9TZ3rjQkOKn7bFc1VIXFZrgsu
-         eg26ZXRd+rIQ8Rf074uZDc7xuUvtbhnF8dG3EnjWZ662XYB/oovpKHHqBtycq7u1//1+
-         MujlqMJcS9wgOV7TkdbAVq1TIJumJvOHVCiY5uQwXEZpeV+snkvziedOoooliUm5w9k/
-         nsYNoySqpyfrpGmak8ruwwuVqVO69rq+ebouB8smPtMAnEKIiuESzuxPuDbGH2tKbCQJ
-         xIbw==
-X-Forwarded-Encrypted: i=1; AJvYcCX0DYcTe2wJokqCvwiy4aZvDjp8sWCQn9BWMYApBVZcTgAdkjF+pC93hfBMa0WCyvIr+FmYXdto@vger.kernel.org
-X-Gm-Message-State: AOJu0YwAMeMfLYMULMJ0CcJ+cbtP48iMR47Erg/4qe5mod4dQnY6G6Ck
-	Nvx324uzmdNnUO5cU7rnj/nQJmptGneteLCPtJmsBN92DV2do8SjO7ZtXN9foqs=
-X-Gm-Gg: ASbGncsHLAFQMiN3on0sLfeouOtjiTU2UZ3bDRKTn1DRbsmItLD2bplKs1PPktAB7Tm
-	sal7i7YelcxQjvcctJiY7rmajnFvkNmbmZ0bYj12hTOmYWXrCno1UNDkETMGn+w0Pv7UTWCjSm3
-	NgKbND6rcbyT5uzUT0dMwyhgDtOK+izqJ5Rd4QKnx5mJmw9hgKnMIq3SHAklt5S+ups03lW3AH5
-	+DwePXkmL1u8gl+G4OFrqAT5uyDgQldOp37CcgDZZ/iD0vGVcTRsqqJhaRo77aqmshzCw==
-X-Google-Smtp-Source: AGHT+IE82dJIBD1oYsvhQ/wbzxr9AzjVtFcZvJeySe4F0GuPIoDu+lt8hhocCPFRA+YHPmI6489vFw==
-X-Received: by 2002:a17:907:97d2:b0:aab:73c5:836 with SMTP id a640c23a62f3a-ab2ab711bfemr2444968566b.32.1736873657580;
-        Tue, 14 Jan 2025 08:54:17 -0800 (PST)
-Received: from localhost (109-81-90-202.rct.o2.cz. [109.81.90.202])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d9904a4132sm6453355a12.75.2025.01.14.08.54.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2025 08:54:17 -0800 (PST)
-Date: Tue, 14 Jan 2025 17:54:16 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Rik van Riel <riel@surriel.com>,
-	Balbir Singh <balbirs@nvidia.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	hakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com, Nhat Pham <nphamcs@gmail.com>
+	s=arc-20240116; t=1736874086; c=relaxed/simple;
+	bh=R88i/iRzxO2ixybo41pWF1KELxLSXSWNqc/8wXFSIqE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=i1LlmwaYyFjcL1wyMql6In5FHpXdV7h0eUeoyaBjWnFfg/u3ZoF99e5Ho8GW6rp2Gz0m5J85RoJuqGJHDYf1FpU1wlUxft66/9GFRDjCut99FNmdDTBE+F/shEvSsS9qWYsOfUpJMTkFockMlRyxkotXgqsYCjdpnQR/lf6nPXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com; spf=pass smtp.mailfrom=shelob.surriel.com; arc=none smtp.client-ip=96.67.55.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shelob.surriel.com
+Received: from fangorn.home.surriel.com ([10.0.13.7])
+	by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.97.1)
+	(envelope-from <riel@shelob.surriel.com>)
+	id 1tXkDf-0000000008F-0ZN1;
+	Tue, 14 Jan 2025 11:56:47 -0500
+Message-ID: <298822027ef468c290a67fe98e228348e2b389de.camel@surriel.com>
 Subject: Re: [PATCH v2] memcg: allow exiting tasks to write back data to swap
-Message-ID: <Z4aWuD_-BkcEjvj7@tiehlicka>
+From: Rik van Riel <riel@surriel.com>
+To: Michal Hocko <mhocko@suse.com>, Johannes Weiner <hannes@cmpxchg.org>
+Cc: Yosry Ahmed <yosryahmed@google.com>, Balbir Singh <balbirs@nvidia.com>, 
+ Roman Gushchin <roman.gushchin@linux.dev>, hakeel Butt
+ <shakeel.butt@linux.dev>, Muchun Song	 <muchun.song@linux.dev>, Andrew
+ Morton <akpm@linux-foundation.org>, 	cgroups@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, 	kernel-team@meta.com,
+ Nhat Pham <nphamcs@gmail.com>
+Date: Tue, 14 Jan 2025 11:56:47 -0500
+In-Reply-To: <Z4aWuD_-BkcEjvj7@tiehlicka>
 References: <20241212115754.38f798b3@fangorn>
- <CAJD7tkY=bHv0obOpRiOg4aLMYNkbEjfOtpVSSzNJgVSwkzaNpA@mail.gmail.com>
- <20241212183012.GB1026@cmpxchg.org>
- <Z2BJoDsMeKi4LQGe@tiehlicka>
- <20250114160955.GA1115056@cmpxchg.org>
- <Z4aU7dn_TKeeTmP_@tiehlicka>
+	 <CAJD7tkY=bHv0obOpRiOg4aLMYNkbEjfOtpVSSzNJgVSwkzaNpA@mail.gmail.com>
+	 <20241212183012.GB1026@cmpxchg.org> <Z2BJoDsMeKi4LQGe@tiehlicka>
+	 <20250114160955.GA1115056@cmpxchg.org> <Z4aU7dn_TKeeTmP_@tiehlicka>
+	 <Z4aWuD_-BkcEjvj7@tiehlicka>
+Autocrypt: addr=riel@surriel.com; prefer-encrypt=mutual;
+ keydata=mQENBFIt3aUBCADCK0LicyCYyMa0E1lodCDUBf6G+6C5UXKG1jEYwQu49cc/gUBTTk33A
+ eo2hjn4JinVaPF3zfZprnKMEGGv4dHvEOCPWiNhlz5RtqH3SKJllq2dpeMS9RqbMvDA36rlJIIo47
+ Z/nl6IA8MDhSqyqdnTY8z7LnQHqq16jAqwo7Ll9qALXz4yG1ZdSCmo80VPetBZZPw7WMjo+1hByv/
+ lvdFnLfiQ52tayuuC1r9x2qZ/SYWd2M4p/f5CLmvG9UcnkbYFsKWz8bwOBWKg1PQcaYHLx06sHGdY
+ dIDaeVvkIfMFwAprSo5EFU+aes2VB2ZjugOTbkkW2aPSWTRsBhPHhV6dABEBAAG0HlJpayB2YW4gU
+ mllbCA8cmllbEByZWRoYXQuY29tPokBHwQwAQIACQUCW5LcVgIdIAAKCRDOed6ShMTeg05SB/986o
+ gEgdq4byrtaBQKFg5LWfd8e+h+QzLOg/T8mSS3dJzFXe5JBOfvYg7Bj47xXi9I5sM+I9Lu9+1XVb/
+ r2rGJrU1DwA09TnmyFtK76bgMF0sBEh1ECILYNQTEIemzNFwOWLZZlEhZFRJsZyX+mtEp/WQIygHV
+ WjwuP69VJw+fPQvLOGn4j8W9QXuvhha7u1QJ7mYx4dLGHrZlHdwDsqpvWsW+3rsIqs1BBe5/Itz9o
+ 6y9gLNtQzwmSDioV8KhF85VmYInslhv5tUtMEppfdTLyX4SUKh8ftNIVmH9mXyRCZclSoa6IMd635
+ Jq1Pj2/Lp64tOzSvN5Y9zaiCc5FucXtB9SaWsgdmFuIFJpZWwgPHJpZWxAc3VycmllbC5jb20+iQE
+ +BBMBAgAoBQJSLd2lAhsjBQkSzAMABgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRDOed6ShMTe
+ g4PpB/0ZivKYFt0LaB22ssWUrBoeNWCP1NY/lkq2QbPhR3agLB7ZXI97PF2z/5QD9Fuy/FD/jddPx
+ KRTvFCtHcEzTOcFjBmf52uqgt3U40H9GM++0IM0yHusd9EzlaWsbp09vsAV2DwdqS69x9RPbvE/Ne
+ fO5subhocH76okcF/aQiQ+oj2j6LJZGBJBVigOHg+4zyzdDgKM+jp0bvDI51KQ4XfxV593OhvkS3z
+ 3FPx0CE7l62WhWrieHyBblqvkTYgJ6dq4bsYpqxxGJOkQ47WpEUx6onH+rImWmPJbSYGhwBzTo0Mm
+ G1Nb1qGPG+mTrSmJjDRxrwf1zjmYqQreWVSFEt26tBpSaWsgdmFuIFJpZWwgPHJpZWxAZmIuY29tP
+ okBPgQTAQIAKAUCW5LbiAIbIwUJEswDAAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQznneko
+ TE3oOUEQgAsrGxjTC1bGtZyuvyQPcXclap11Ogib6rQywGYu6/Mnkbd6hbyY3wpdyQii/cas2S44N
+ cQj8HkGv91JLVE24/Wt0gITPCH3rLVJJDGQxprHTVDs1t1RAbsbp0XTksZPCNWDGYIBo2aHDwErhI
+ omYQ0Xluo1WBtH/UmHgirHvclsou1Ks9jyTxiPyUKRfae7GNOFiX99+ZlB27P3t8CjtSO831Ij0Ip
+ QrfooZ21YVlUKw0Wy6Ll8EyefyrEYSh8KTm8dQj4O7xxvdg865TLeLpho5PwDRF+/mR3qi8CdGbkE
+ c4pYZQO8UDXUN4S+pe0aTeTqlYw8rRHWF9TnvtpcNzZw==
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z4aU7dn_TKeeTmP_@tiehlicka>
+Sender: riel@surriel.com
 
-On Tue 14-01-25 17:46:39, Michal Hocko wrote:
-> On Tue 14-01-25 11:09:55, Johannes Weiner wrote:
-> > Hi,
-> > 
-> > On Mon, Dec 16, 2024 at 04:39:12PM +0100, Michal Hocko wrote:
-> > > On Thu 12-12-24 13:30:12, Johannes Weiner wrote:
-> [...]
-> > > > If we return -ENOMEM to an OOM victim in a fault, the fault handler
-> > > > will re-trigger OOM, which will find the existing OOM victim and do
-> > > > nothing, then restart the fault.
-> > > 
-> > > IIRC the task will handle the pending SIGKILL if the #PF fails. If the
-> > > charge happens from the exit path then we rely on ENOMEM returned from
-> > > gup as a signal to back off. Do we have any caller that keeps retrying
-> > > on ENOMEM?
-> > 
-> > We managed to extract a stack trace of the livelocked task:
-> > 
-> > obj_cgroup_may_swap
-> > zswap_store
-> > swap_writepage
-> > shrink_folio_list
-> > shrink_lruvec
-> > shrink_node
-> > do_try_to_free_pages
-> > try_to_free_mem_cgroup_pages
-> 
-> OK, so this is the reclaim path and it fails due to reasons you mention
-> below. This will retry several times until it hits mem_cgroup_oom which
-> will bail in mem_cgroup_out_of_memory because of task_is_dying (returns
-> true) and retry the charge + reclaim (as the oom killer hasn't done
-> anything) with passed_oom = true this time and eventually got to nomem
-> path and returns ENOMEM.  SUSE Labs
+On Tue, 2025-01-14 at 17:54 +0100, Michal Hocko wrote:
+> O
+> Btw. is there any actual reason why we cannot go nomem without going
+> to the oom killer (just to bail out) and go through the whole cycle
+> again? That seems arbitrary and simply burning a lot of cycle without
+> much chances to make any better outcome
+>=20
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 7b3503d12aaf..eb45eaf0acfc 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2268,8 +2268,7 @@ int try_charge_memcg(struct mem_cgroup *memcg,
+> gfp_t gfp_mask,
+> =C2=A0	if (gfp_mask & __GFP_RETRY_MAYFAIL)
+> =C2=A0		goto nomem;
+> =C2=A0
+> -	/* Avoid endless loop for tasks bypassed by the oom killer
+> */
+> -	if (passed_oom && task_is_dying())
+> +	if (task_is_dying())
+> =C2=A0		goto nomem;
+> =C2=A0
+> =C2=A0	/*
 
-Btw. is there any actual reason why we cannot go nomem without going
-to the oom killer (just to bail out) and go through the whole cycle
-again? That seems arbitrary and simply burning a lot of cycle without
-much chances to make any better outcome
+When we return from the page fault handler, we
+restart the instruction that faulted.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 7b3503d12aaf..eb45eaf0acfc 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2268,8 +2268,7 @@ int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	if (gfp_mask & __GFP_RETRY_MAYFAIL)
- 		goto nomem;
- 
--	/* Avoid endless loop for tasks bypassed by the oom killer */
--	if (passed_oom && task_is_dying())
-+	if (task_is_dying())
- 		goto nomem;
- 
- 	/*
--- 
-Michal Hocko
-SUSE Labs
+That means we could just end up repeating the
+same fault over and over again.
+
+--=20
+All Rights Reversed.
 
