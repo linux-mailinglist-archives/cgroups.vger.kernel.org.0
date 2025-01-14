@@ -1,147 +1,201 @@
-Return-Path: <cgroups+bounces-6154-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6155-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76172A11116
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 20:23:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64126A11123
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 20:27:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2655A3A992F
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 19:23:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C1F6188A585
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 19:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4281C1FCF79;
-	Tue, 14 Jan 2025 19:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101691FDE05;
+	Tue, 14 Jan 2025 19:27:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="sazLHi00"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R7CjaqTv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 394CC1E495
-	for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 19:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC6CA14A60C
+	for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 19:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736882612; cv=none; b=oEbRvwvvUhYKcKRb51Ytsbr7lbsx8UovMx+7A5RCHgcLnvlTicQ71hNxRcxzC2lBdDvX+tT1Hya6VBx7LHMZZwpXuYLw7lY0z0FkIoBd67W44e0LwRHGje4Ly/MEfK/gtv5lD4MkneUApMlFz7eGrb+EYcF2WX3F5Sql+yJGwq0=
+	t=1736882855; cv=none; b=rEK7U5RkG5esdAW9PuWs8pNUYSvruznw/zqFX6ZZTldLrid7/0FKCKsUdbDnIxAuEu2HjqYtHTBFHcJY0hQHEnzSO3MTVNEDc3QfMlClY7KoYuM0R8cG3SjqTeUCtaIArsjos1k8KFebBOF5BYdiZ0rN3oRU/MFxcoodbqQ9jcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736882612; c=relaxed/simple;
-	bh=YDhfuqzlOb1+Gs0RHQUIPsLHSPiXLv6iWKGOpM/dwOI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aOwPJF+czAfU7p7/zkDZyCTnwmBdmfn3GMSA1qtuN2+W5FDNQWNRC9a5SD+yR9hyfg5Oaf+FRGzUJRXi2PE2PG/wI7VWIYi0GB2irlGpWFokmCd2RhmW66PGTS8JSSd7mbW9BrhTvnnWssuI+fRQRtWtaGB+zRjNt9CTQw86WyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=sazLHi00; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7bcf32a6582so286259585a.1
-        for <cgroups@vger.kernel.org>; Tue, 14 Jan 2025 11:23:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1736882607; x=1737487407; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pRH5WXAIfJW9sI4d3VG1suC4yIuhuyX08y9rusU5HkA=;
-        b=sazLHi00UxphXbj3SOBxN4IMwpLOSZ5WPuptPzmnzEyuEfVH1lgCx+26vF+LLjbqST
-         aFlckgEsS5Py5/HTJ3ir3LajlZXT0FdDywTvRZyq85gjiGtc+zCxtvi5rn0tul0OchCJ
-         NqR6l/oumWOu1dc8Jm6px5qrICzHG3WkXMPzgVl9XpugL2eo9EvX0YjL1Tf9mxgVDmRd
-         ABlifiHXn+hDybTic+jXF2s+/h4sYZUbN63/NLIXoZkW8/P//cwvU66+vXBSR1Fvb1FR
-         knBsL5SqK/u6mY2Yas1lRqBeR6aWF+CVxNBxryn2BxoAm0FmlkJ94FKQLHiHzq4ZQAX+
-         Ch2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736882607; x=1737487407;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pRH5WXAIfJW9sI4d3VG1suC4yIuhuyX08y9rusU5HkA=;
-        b=tIHouXW3AVflG1UrGeLZEtl/sWGRS5ZNJMNUAgDV+U13kK7ob+YGpxFDe/7LT6WHPL
-         uNVie03Qsv2g3IFJ+tccODTrXn1dUL4Cr/v43rdY7oCd4emZ9bwfeXAQfImElyllPIOW
-         zgY02rMz2APsxwI5sA9OXxUfvro0quDlUCeitDF4Qsvn1Is57bEl1pihE+nHafA3PXmX
-         RNtTNu0SyhfIWS8VMeUpLwkYillxQ9SNiHrSifLDhdSXb0bN9lbmysPLE6YVi97+FeFz
-         mei755qJz1X0ppvqxSKznYkaYzSVoOqiyOUwT6c9Dk3ot6RURvlkH9E+jrPey5CadZj5
-         Pn5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXs2dwrQa85ncss2pVJAiIrHXB+HxZg/DhMyKJ3axoIeo/jpQDYn144flUy0rpK7NEBANAGM/+b@vger.kernel.org
-X-Gm-Message-State: AOJu0YweNw657XW+gZ4wJIjni+9lRxqoOSJVOiSm6Ws2LXtCJPib0ZU7
-	Bb4IQeth7YBzIylz7BHVJTJE/npJUJTsj7fbBI25zfhuawdxrYc7PSzYdAxCJYU=
-X-Gm-Gg: ASbGncs2EMqCBJBTT8BqoDvxChd6FWHWnKMOpFVxF2Hj/Yw56mnYbPw7i5FuXydDHQe
-	uO3AGEuOrSE067xwfEO/gN1XKrbkv3vtKdAS0laPNMOg1CTT2oPifJbf4Lv/J9vsUVOt9SSzqJT
-	4YI1rRNlyOvJfrNvLXpMmTqsoqyAzkDGBdJ67UrDAoFU3U/jABcrVdBXLZft+ZsrTGuB28LP0qC
-	r01PESbNHZxhAKjhJxWenWfqgr0MWmsPx8/MQldNnAEKttHqXkiaoM=
-X-Google-Smtp-Source: AGHT+IGLXLFv2cUPWN27tEDLm5LK2vwWsP3tTlNAMSZlbuEbtvxtpoDkKUXi/q1Kv5wrEtQZjuRT9A==
-X-Received: by 2002:a05:620a:31a9:b0:7b6:ea91:d886 with SMTP id af79cd13be357-7bcd97b5a4amr4124433785a.39.1736882606918;
-        Tue, 14 Jan 2025 11:23:26 -0800 (PST)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6dfad86153asm56206756d6.22.2025.01.14.11.23.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2025 11:23:26 -0800 (PST)
-Date: Tue, 14 Jan 2025 14:23:22 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Rik van Riel <riel@surriel.com>, Yosry Ahmed <yosryahmed@google.com>,
-	Balbir Singh <balbirs@nvidia.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	hakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com, Nhat Pham <nphamcs@gmail.com>
-Subject: Re: [PATCH v2] memcg: allow exiting tasks to write back data to swap
-Message-ID: <20250114192322.GB1115056@cmpxchg.org>
-References: <20241212115754.38f798b3@fangorn>
- <CAJD7tkY=bHv0obOpRiOg4aLMYNkbEjfOtpVSSzNJgVSwkzaNpA@mail.gmail.com>
- <20241212183012.GB1026@cmpxchg.org>
- <Z2BJoDsMeKi4LQGe@tiehlicka>
- <20250114160955.GA1115056@cmpxchg.org>
- <Z4aU7dn_TKeeTmP_@tiehlicka>
- <af6b1cb66253ad045c9af7c954c94ad91230e449.camel@surriel.com>
- <Z4aYSdEamukBGAZi@tiehlicka>
- <193d98b0d5d2b14da1b96953fcb5d91b2a35bf21.camel@surriel.com>
- <Z4apM9lbuptQBA5Z@tiehlicka>
+	s=arc-20240116; t=1736882855; c=relaxed/simple;
+	bh=1XNdGBaEf+wyx3t3aisyEqnB/KqN2EFJwRO3ndVecY4=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=uVuI+xCis9CPRYqb267wlccvHJw99zOOhggC8TzTqA23OglMPvHO6LTIG37dYyjr+6i4nYRdcDJLWT1eb99E8ZZaipgoDt+BywdoWi8xhmNGdtsrSX49iuNqpAUyjQOoaTCV8qrJo1eDuGk/PqIjJLvv7FnKgZ/DV3jKrHL4N+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R7CjaqTv; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1736882854; x=1768418854;
+  h=date:from:to:cc:subject:message-id;
+  bh=1XNdGBaEf+wyx3t3aisyEqnB/KqN2EFJwRO3ndVecY4=;
+  b=R7CjaqTvRORdXSxBwKAmz6G51RpXGfbc0/MRzOdYgotFOyzmr+a+iwUg
+   7LsQcy7aXdaK+mhuOFDE649AMHeqHZXgR5U9HQ7q8uj8hDJc3Bl5kwtcC
+   KY5LGIJlVfaFGP6UWkzawKGKnZfWCYlHyGFqbyoyo/6XU9XRHBhFC2wQH
+   5I/uOU62aSszgaVJg8Dr6xjcbTNXnj3KV5QFoNRYGQtIWaPOPefWRDKEj
+   NDWTsSav10tjxxkjrTJDbqckF18EG1nBoIbnbmSq5YxIWkpdrDaFl0o93
+   ZE2oiTvEXa46nBwGXfQAMwRy2itYf7FrYS2t4oA1dNLJjhXBeizSDBlOw
+   A==;
+X-CSE-ConnectionGUID: 07eQIS8ySqqEEJOXTZWJbg==
+X-CSE-MsgGUID: 2wKZ34sJTDKVBEJiF/66yQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11315"; a="37111985"
+X-IronPort-AV: E=Sophos;i="6.12,315,1728975600"; 
+   d="scan'208";a="37111985"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2025 11:27:33 -0800
+X-CSE-ConnectionGUID: by/TE0sLSZyle+LdxNlVyw==
+X-CSE-MsgGUID: n4rtkaFSQnirzro5Yby2Cw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="109523476"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 14 Jan 2025 11:27:32 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tXmZV-000OwV-39;
+	Tue, 14 Jan 2025 19:27:29 +0000
+Date: Wed, 15 Jan 2025 03:26:34 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ ca3957ef3f806b3aa241e1b228712d63d2264219
+Message-ID: <202501150327.rSuXAEAQ-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z4apM9lbuptQBA5Z@tiehlicka>
 
-On Tue, Jan 14, 2025 at 07:13:07PM +0100, Michal Hocko wrote:
-> Anyway, have you tried to reproduce with 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 7b3503d12aaf..9c30c442e3b0 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1627,7 +1627,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  	 * A few threads which were not waiting at mutex_lock_killable() can
->  	 * fail to bail out. Therefore, check again after holding oom_lock.
->  	 */
-> -	ret = task_is_dying() || out_of_memory(&oc);
-> +	ret = out_of_memory(&oc);
->  
->  unlock:
->  	mutex_unlock(&oom_lock);
-> 
-> proposed by Johannes earlier? This should help to trigger the oom reaper
-> to free up some memory.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: ca3957ef3f806b3aa241e1b228712d63d2264219  cgroup: update comment about dropping cgroup kn refs
 
-Yes, I was wondering about that too.
+elapsed time: 1443m
 
-If the OOM reaper can be our reliable way of forward progress, we
-don't need any reserve or headroom beyond memory.max.
+configs tested: 108
+configs skipped: 2
 
-IIRC it can fail if somebody is holding mmap_sem for writing. The exit
-path at some point takes that, but also around the time it frees up
-all its memory voluntarily, so that should be fine. Are you aware of
-other scenarios where it can fail?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-What if everything has been swapped out already and there is nothing
-to reap? IOW, only unreclaimable/kernel memory remaining in the group.
+tested configs:
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    gcc-14.2.0
+arc                              allmodconfig    gcc-13.2.0
+arc                               allnoconfig    gcc-13.2.0
+arc                              allyesconfig    gcc-13.2.0
+arc                   randconfig-001-20250114    gcc-13.2.0
+arc                   randconfig-002-20250114    gcc-13.2.0
+arm                              allmodconfig    gcc-14.2.0
+arm                               allnoconfig    clang-17
+arm                              allyesconfig    gcc-14.2.0
+arm                         lpc18xx_defconfig    clang-19
+arm                   randconfig-001-20250114    clang-15
+arm                   randconfig-002-20250114    clang-20
+arm                   randconfig-003-20250114    gcc-14.2.0
+arm                   randconfig-004-20250114    gcc-14.2.0
+arm64                            allmodconfig    clang-18
+arm64                             allnoconfig    gcc-14.2.0
+arm64                 randconfig-001-20250114    clang-17
+arm64                 randconfig-002-20250114    clang-19
+arm64                 randconfig-003-20250114    gcc-14.2.0
+arm64                 randconfig-004-20250114    clang-20
+csky                              allnoconfig    gcc-14.2.0
+csky                  randconfig-001-20250114    gcc-14.2.0
+csky                  randconfig-002-20250114    gcc-14.2.0
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    clang-20
+hexagon                          allyesconfig    clang-18
+hexagon               randconfig-001-20250114    clang-20
+hexagon               randconfig-002-20250114    clang-20
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250114    gcc-12
+i386        buildonly-randconfig-002-20250114    clang-19
+i386        buildonly-randconfig-003-20250114    clang-19
+i386        buildonly-randconfig-004-20250114    gcc-12
+i386        buildonly-randconfig-005-20250114    clang-19
+i386        buildonly-randconfig-006-20250114    clang-19
+i386                                defconfig    clang-19
+loongarch                        allmodconfig    gcc-14.2.0
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch             randconfig-001-20250114    gcc-14.2.0
+loongarch             randconfig-002-20250114    gcc-14.2.0
+m68k                             allmodconfig    gcc-14.2.0
+m68k                              allnoconfig    gcc-14.2.0
+m68k                             allyesconfig    gcc-14.2.0
+m68k                       m5249evb_defconfig    gcc-14.2.0
+microblaze                       allmodconfig    gcc-14.2.0
+microblaze                        allnoconfig    gcc-14.2.0
+microblaze                       allyesconfig    gcc-14.2.0
+mips                              allnoconfig    gcc-14.2.0
+nios2                             allnoconfig    gcc-14.2.0
+nios2                 randconfig-001-20250114    gcc-14.2.0
+nios2                 randconfig-002-20250114    gcc-14.2.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                randconfig-001-20250114    gcc-14.2.0
+parisc                randconfig-002-20250114    gcc-14.2.0
+powerpc                          allmodconfig    gcc-14.2.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-16
+powerpc               randconfig-001-20250114    gcc-14.2.0
+powerpc               randconfig-002-20250114    clang-20
+powerpc               randconfig-003-20250114    gcc-14.2.0
+powerpc64             randconfig-001-20250114    clang-20
+powerpc64             randconfig-002-20250114    clang-15
+powerpc64             randconfig-003-20250114    clang-20
+riscv                            allmodconfig    clang-20
+riscv                             allnoconfig    gcc-14.2.0
+riscv                            allyesconfig    clang-20
+riscv                 randconfig-001-20250114    gcc-14.2.0
+riscv                 randconfig-002-20250114    clang-20
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.2.0
+s390                  randconfig-001-20250114    clang-18
+s390                  randconfig-002-20250114    gcc-14.2.0
+sh                               allmodconfig    gcc-14.2.0
+sh                                allnoconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                    randconfig-001-20250114    gcc-14.2.0
+sh                    randconfig-002-20250114    gcc-14.2.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                             allnoconfig    gcc-14.2.0
+sparc                 randconfig-001-20250114    gcc-14.2.0
+sparc                 randconfig-002-20250114    gcc-14.2.0
+sparc64               randconfig-001-20250114    gcc-14.2.0
+sparc64               randconfig-002-20250114    gcc-14.2.0
+um                               allmodconfig    clang-20
+um                                allnoconfig    clang-18
+um                               allyesconfig    gcc-12
+um                    randconfig-001-20250114    clang-17
+um                    randconfig-002-20250114    gcc-11
+x86_64                            allnoconfig    clang-19
+x86_64                           allyesconfig    clang-19
+x86_64      buildonly-randconfig-001-20250114    clang-19
+x86_64      buildonly-randconfig-002-20250114    clang-19
+x86_64      buildonly-randconfig-003-20250114    clang-19
+x86_64      buildonly-randconfig-004-20250114    clang-19
+x86_64      buildonly-randconfig-005-20250114    clang-19
+x86_64      buildonly-randconfig-006-20250114    clang-19
+x86_64                              defconfig    gcc-11
+xtensa                            allnoconfig    gcc-14.2.0
+xtensa                randconfig-001-20250114    gcc-14.2.0
+xtensa                randconfig-002-20250114    gcc-14.2.0
 
-It still seems to me that allowing the OOM victim (and only the OOM
-victim) to bypass memory.max is the only guarantee to progress.
-
-I'm not really concerned about side effects. Any runaway allocation in
-the exit path (like the vmalloc one you referenced before) is a much
-bigger concern for exceeding the physical OOM reserves in the page
-allocator. What's a containment failure for cgroups would be a memory
-deadlock at the system level. It's a class of kernel bug that needs
-fixing, not something we can really work around in the cgroup code.
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
