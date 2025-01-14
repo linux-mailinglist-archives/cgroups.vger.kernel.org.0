@@ -1,57 +1,60 @@
-Return-Path: <cgroups+bounces-6146-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6147-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41588A10E8C
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 18:58:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78CA0A10F12
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 19:05:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23B923A575F
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 17:57:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C97E27A1E05
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2025 18:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC9A1FBCAE;
-	Tue, 14 Jan 2025 17:56:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F5422258C;
+	Tue, 14 Jan 2025 18:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VkpnoVSb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Khv/Exdn"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84DA51FA14B;
-	Tue, 14 Jan 2025 17:56:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA0FE222576;
+	Tue, 14 Jan 2025 18:01:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736877401; cv=none; b=O7XEliEwm43Dd7qFBkeKuX8eFjetvJ40t9yHNh6sTBPSgd7ikBh1SHASOx2u74ronBfA60Z7A1XHCmmW296uL+ekI2ZOTvZq7+bkRAiTJWyUw4RU3clgzm0paLV4G75Pcix9jYFwEC4SDCmRfRj5wmqwyTFOHJLNQkTfNWBHAc0=
+	t=1736877672; cv=none; b=eInUmVK6TWPA9zdMbN4EwyLDCx39j2E2052BVVAdyJMy1TE8SDQ3WssobWAGx7ix8oScg5niNA001DU9NMRuJnCoelLEJ3DGc0lyL15Js67JDJpgxqIYyy574LiPRKLA+DhB/5MC4tNm9hZClQ73bGD4JvPGfUPVJ42Q5tBneeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736877401; c=relaxed/simple;
-	bh=HVAs2E2tbiTll+bmQK7MYfZHFdUhyRyMfEKuzz7fbdU=;
+	s=arc-20240116; t=1736877672; c=relaxed/simple;
+	bh=xGnt9QTMfNKV1OFFfTQWPhTcVBgpSWwX7LndHQqnEro=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dFCOUBn2ZAr5S//uMXtvbsX7oZzejUCt3yrrBTdWw4VYxIVy09vIzwYDrk0EiGbTXm2Wb/ZZP+Qd+dSMKfOBb/jGZdNgJJ4XkNq9n+0zg3yuuQrP3DCeMeUde9W2twnevC2aV7HG1PB9nh6kFG/5Zx3OC4gftbbMb32NAa1Zl40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VkpnoVSb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 007E9C4CEDD;
-	Tue, 14 Jan 2025 17:56:40 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=gZS1+SFbzy/ioWXWct0x8wMxIrnZP5OgdYsf8vzafmASHmdhfqEEv4Wbl33JYUPbDb3zBq0lNDYwK4+jtaJ4qkTfzeUkmzDkB0uGm8dJMxa+5sDCLMn2ta7leZZNAbUW73RKRgTqqQ08EdP5mDzXfYUiwX2dIpBAK/r8ENQhsMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Khv/Exdn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E16D0C4CEDD;
+	Tue, 14 Jan 2025 18:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736877401;
-	bh=HVAs2E2tbiTll+bmQK7MYfZHFdUhyRyMfEKuzz7fbdU=;
+	s=k20201202; t=1736877672;
+	bh=xGnt9QTMfNKV1OFFfTQWPhTcVBgpSWwX7LndHQqnEro=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VkpnoVSb5QcZqnbtk3/XpQNgNbUfIHXLcGU3WRhQJiZxIUDWEGoL6cTsl+xXJjwqu
-	 oEgybG8IWKaSVCCdyqsN9Rs5LRtSRTD9joTaQLNM7byEVYuuGRqtOZ6eTyjKNXi7O6
-	 FbtLH6wsfXSV+rnlPku3k6KuXUvi9j6UmNcZRsIbSKceN96JDTQ9ghgW3dG1vW665p
-	 rcZsfJRmepux7QYnV7LwzHc3l6ax2fs/SaNgfn2+YNOgTQryFgKOexkwuCkRBLCy/f
-	 VYoVkUeUtgG5kiwuEys9AiAKlByKDwl/z1uO/GJhElUjlfB62Z7IzdZLB6CjEy8VbX
-	 ZG0gCeVkhcZwg==
-Date: Tue, 14 Jan 2025 18:56:38 +0100
+	b=Khv/ExdnHJ+AEA3NMRhpXuge75QH8lnhotTCn9IUVYpuCYbPb9o5f1yyqbr/8qH7r
+	 nfUDhOQyv5OU5Pd5OOE4FxvmKbgQS3T9AbmxrH2HQaQduV554cRtikSool+9Sqaxqw
+	 hrNd6Vnp0sgBrtAH0f29KdvonNKmg0GJPvXUTkm4JzCmvIR4oKKYiX5QglQ3CLyw0R
+	 NvpYQceTLVan1wgCF5qfCICTIay6uYu9R48WwGb9C4jSjrSvwsHsiMaTaKlGSRtZ3l
+	 3cXQv8tBDyy3qSQwWAxg/SaUMfda+tdO+TAqDW9eBhqo66KsU3iNur2GskbgXea6G1
+	 U7lClyAGCmf9w==
+Date: Tue, 14 Jan 2025 19:01:09 +0100
 From: Maxime Ripard <mripard@kernel.org>
-To: Waiman Long <llong@redhat.com>
-Cc: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, tj@kernel.org, 
-	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>, 
-	dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH -next] kernel/cgroup: Remove the unused variable climit
-Message-ID: <20250114-voracious-optimal-alligator-cdaaba@houat>
-References: <20250114062804.5092-1-jiapeng.chong@linux.alibaba.com>
- <f502ee68-7743-48c6-9024-83431265a6b8@redhat.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Maarten Lankhorst <dev@lankhorst.se>, linux-kernel@vger.kernel.org, 
+	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org, Tejun Heo <tj@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: [PATCH v2.1 1/1] kernel/cgroup: Add "dmem" memory accounting
+ cgroup
+Message-ID: <20250114-awesome-earthworm-of-camouflage-5bdd5b@houat>
+References: <20241204134410.1161769-2-dev@lankhorst.se>
+ <20241204143112.1250983-1-dev@lankhorst.se>
+ <CAMuHMdUmPfahsnZwx2iB5yfh8rjjW25LNcnYujNBgcKotUXBNg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -59,74 +62,117 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha384;
-	protocol="application/pgp-signature"; boundary="aanl67po5zzp3cqw"
+	protocol="application/pgp-signature"; boundary="6yxrd253xm54q4ba"
 Content-Disposition: inline
-In-Reply-To: <f502ee68-7743-48c6-9024-83431265a6b8@redhat.com>
+In-Reply-To: <CAMuHMdUmPfahsnZwx2iB5yfh8rjjW25LNcnYujNBgcKotUXBNg@mail.gmail.com>
 
 
---aanl67po5zzp3cqw
+--6yxrd253xm54q4ba
 Content-Type: text/plain; protected-headers=v1; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH -next] kernel/cgroup: Remove the unused variable climit
+Subject: Re: [PATCH v2.1 1/1] kernel/cgroup: Add "dmem" memory accounting
+ cgroup
 MIME-Version: 1.0
 
-On Tue, Jan 14, 2025 at 10:41:28AM -0500, Waiman Long wrote:
-> On 1/14/25 1:28 AM, Jiapeng Chong wrote:
-> > Variable climit is not effectively used, so delete it.
-> >=20
-> > kernel/cgroup/dmem.c:302:23: warning: variable =E2=80=98climit=E2=80=99=
- set but not used.
-> >=20
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D13512
-> > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> > ---
-> >   kernel/cgroup/dmem.c | 3 +--
-> >   1 file changed, 1 insertion(+), 2 deletions(-)
-> >=20
-> > diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-> > index 52736ef0ccf2..78d9361ed521 100644
-> > --- a/kernel/cgroup/dmem.c
-> > +++ b/kernel/cgroup/dmem.c
-> > @@ -299,7 +299,7 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_c=
-group_pool_state *limit_pool,
-> >   				      bool ignore_low, bool *ret_hit_low)
-> >   {
-> >   	struct dmem_cgroup_pool_state *pool =3D test_pool;
-> > -	struct page_counter *climit, *ctest;
-> > +	struct page_counter *ctest;
-> >   	u64 used, min, low;
-> >   	/* Can always evict from current pool, despite limits */
-> > @@ -324,7 +324,6 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_c=
-group_pool_state *limit_pool,
-> >   			{}
-> >   	}
-> > -	climit =3D &limit_pool->cnt;
-> >   	ctest =3D &test_pool->cnt;
-> >   	dmem_cgroup_calculate_protection(limit_pool, test_pool);
->=20
-> The dmem controller is actually pulled into the drm tree at the moment.
->=20
-> cc relevant parties on how to handle this fix commit.
+Hi Geert,
 
-We can either take it through drm with one of the cgroup maintainers
-ack, or they can merge the PR in their tree and merge the fixes as they
-wish through their tree.
+On Tue, Jan 14, 2025 at 11:16:43AM +0100, Geert Uytterhoeven wrote:
+> Hi Maarten,
+>=20
+> On Wed, Dec 4, 2024 at 3:32=E2=80=AFPM Maarten Lankhorst <dev@lankhorst.s=
+e> wrote:
+> > This code is based on the RDMA and misc cgroup initially, but now
+> > uses page_counter. It uses the same min/low/max semantics as the memory
+> > cgroup as a result.
+> >
+> > There's a small mismatch as TTM uses u64, and page_counter long pages.
+> > In practice it's not a problem. 32-bits systems don't really come with
+> > >=3D4GB cards and as long as we're consistently wrong with units, it's
+> > fine. The device page size may not be in the same units as kernel page
+> > size, and each region might also have a different page size (VRAM vs GA=
+RT
+> > for example).
+> >
+> > The interface is simple:
+> > - Call dmem_cgroup_register_region()
+> > - Use dmem_cgroup_try_charge to check if you can allocate a chunk of me=
+mory,
+> >   use dmem_cgroup__uncharge when freeing it. This may return an error c=
+ode,
+> >   or -EAGAIN when the cgroup limit is reached. In that case a reference
+> >   to the limiting pool is returned.
+> > - The limiting cs can be used as compare function for
+> >   dmem_cgroup_state_evict_valuable.
+> > - After having evicted enough, drop reference to limiting cs with
+> >   dmem_cgroup_pool_state_put.
+> >
+> > This API allows you to limit device resources with cgroups.
+> > You can see the supported cards in /sys/fs/cgroup/dmem.capacity
+> > You need to echo +dmem to cgroup.subtree_control, and then you can
+> > partition device memory.
+> >
+> > Co-developed-by: Friedrich Vock <friedrich.vock@gmx.de>
+> > Signed-off-by: Friedrich Vock <friedrich.vock@gmx.de>
+> > Co-developed-by: Maxime Ripard <mripard@kernel.org>
+> > Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> > Signed-off-by: Maarten Lankhorst <dev@lankhorst.se>
+>=20
+> Thanks for your patch, which is now commit b168ed458ddecc17
+> ("kernel/cgroup: Add "dmem" memory accounting cgroup") in drm/drm-next.
+>=20
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -1128,6 +1128,7 @@ config CGROUP_PIDS
+> >
+> >  config CGROUP_RDMA
+> >         bool "RDMA controller"
+> > +       select PAGE_COUNTER
+>=20
+> This change looks unrelated?
+>=20
+> Oh, reading your response to the build error, this should have been below?
+
+Indeed, good catch.
+
+> >         help
+> >           Provides enforcement of RDMA resources defined by IB stack.
+> >           It is fairly easy for consumers to exhaust RDMA resources, wh=
+ich
+> > @@ -1136,6 +1137,15 @@ config CGROUP_RDMA
+> >           Attaching processes with active RDMA resources to the cgroup
+> >           hierarchy is allowed even if can cross the hierarchy's limit.
+> >
+> > +config CGROUP_DMEM
+> > +       bool "Device memory controller (DMEM)"
+> > +       help
+> > +         The DMEM controller allows compatible devices to restrict dev=
+ice
+> > +         memory usage based on the cgroup hierarchy.
+> > +
+> > +         As an example, it allows you to restrict VRAM usage for appli=
+cations
+> > +         in the DRM subsystem.
+> > +
+>=20
+> Do you envision other users than DRM?
+> Perhaps this should depend on DRM for now?
+
+dma-buf heaps and v4l2 support are in progress right now.
 
 Maxime
 
---aanl67po5zzp3cqw
+--6yxrd253xm54q4ba
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZ4alVgAKCRAnX84Zoj2+
-dkbhAYCvXuQH457px9VQnRHo/JbT0RoUcJKd/ZYksLGw3xZOOofgHU5mWjQXqy6f
-Kxjp5SABfRPrRSXBThg/8O4SJqCxmLasieuJ7nPihfhLfoG0PJFpe8OaKQQrvnGN
-OJsmuzpNGA==
-=nWul
+iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZ4amZQAKCRAnX84Zoj2+
+dgjDAX0W4SqGxbW7Q7IklK0znNvkntNHh6K1lujA0gPteaqWh799ZIBjzxh/cgs0
+P3bf5LEBgMEug4QbiLG8y8uDai/9qY2bChSMIdsxk2qfhycBLAechk/7OoRr7az/
+5VlQrByP9Q==
+=mx8q
 -----END PGP SIGNATURE-----
 
---aanl67po5zzp3cqw--
+--6yxrd253xm54q4ba--
 
