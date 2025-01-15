@@ -1,188 +1,162 @@
-Return-Path: <cgroups+bounces-6161-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6162-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90204A1178E
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 03:59:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA884A118AF
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 06:05:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA99718844C4
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 02:59:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 396673A1470
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 05:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C3A22E40F;
-	Wed, 15 Jan 2025 02:59:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3535F155CBF;
+	Wed, 15 Jan 2025 05:05:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HxYF56AS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hiDf1IHL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AC4122E3E9;
-	Wed, 15 Jan 2025 02:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 686F9232440;
+	Wed, 15 Jan 2025 05:05:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736909946; cv=none; b=eFThb/V/wA5gs57Ugj9PFlun8GPN9Io/jFL/XrjkPTwFGu96IVzp0LMxLmnUX4DuMDsAaI0/0xINpQT4wT23n9hGn81uOEq2SxAMixcUDOLBagKi8khpoAyKAvO9cvMX14CLQxLVYX1CoZr9/tfRbt3CyDH5tS5YEdhtFi3EHc4=
+	t=1736917535; cv=none; b=Zp+qWzd7rpvckgBLOG61ZQUdW+Np4cCO2ql3Mgjpyh5uU4CzTzqxu3u+0oaOu7maWo4yihK3l3bmJUtstlzm0lGt9qdjkYvaqAMdd9GdEngGRJKECgZXzSE9AgmbzU14Bd5ykUCT4rqrMDu8SEcwV7mx1+0YP00KtxqdkX3bzK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736909946; c=relaxed/simple;
-	bh=jwU7aCyg20KNF7ssdjXpO2OEORgrVNvi3ngrOHwEZ1w=;
+	s=arc-20240116; t=1736917535; c=relaxed/simple;
+	bh=8et3Wlgn1FaExiphtErdGIVdVSZ7lmVNJRR4NPVm6Is=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aqzk2x4sRUUt3Ukvbk0K8SAf8zarKHXguX09CCyXzEICrlYP26e4bhLVZtXruXnQOrii+48xxykwnrBH9A9ODQ/hXx/ZzqjBAgm0LndI90Tv+cJAprkY9YzEe4MfUmS1zj9bCKgQ+8oxCNCSJLtEgsC175qpbtfrBTmgrVQZEUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HxYF56AS; arc=none smtp.client-ip=209.85.222.179
+	 To:Content-Type; b=LEWHdZjizGtODD3Y4T009Z87E9hjXGmMzodbxLywsYB5atHaqjnal9qEdve+H8IRkFXE042WJCG52Lag/T48R3u560NCgebeVrsbH9GJoJ05HxPJw52iuifAguXggyC4Nzx2FO5m8jXgjDQggNP2tJPp/Shq+pY0nbe4u8qEgT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hiDf1IHL; arc=none smtp.client-ip=209.85.222.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7b6e9db19c8so502107685a.3;
-        Tue, 14 Jan 2025 18:59:02 -0800 (PST)
+Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-860f0e91121so294712241.0;
+        Tue, 14 Jan 2025 21:05:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736909942; x=1737514742; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=gmail.com; s=20230601; t=1736917532; x=1737522332; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WeNYRqCXp83bmP8MaMvN/WFLlPcmxObNXoivEWRhmTA=;
-        b=HxYF56AS3HhHq+HAiZRmC4Dez16cTPKcY0aLTtL8OLF0CmsuYSl9OPbCFVT8Mkb15g
-         +UANlpmL2RgJFdmnyYiC9ABHw9gUabweGPD6WzUI5Sh3ZsXAOx9C+1rexrIX+/12KFX0
-         lZIL/Qgem8G5BgMMDrl9RVO1nHjzQIj+s3qynD83NajsAAlXs9mS1ZLeTDjpcN2oXIhT
-         dLUxL3lQzk4tSAQ2TynGMdyrXatU27n3V1PhFC704wHICwjdlZ856RtELsYTXQUW2QU9
-         Pg58Y6FbXiiV8ATCx3Ua97ecFviolIr0YeiYgo9DOK/Zh2d1z8kWcEmZ3sl9M1sJIO42
-         e1+A==
+        bh=Ow/IRyN+cemWyTkrDl3bh0gJC+EkqRfEmUEIN6uUVCg=;
+        b=hiDf1IHLfOe6qig1ZRvYdIMSgZC5gJnTqp7MRzL4nWJT85HgTjGwWWdPl1YrzhMByd
+         2sWTcZxNuhC+11dfeyHNRwbDYnJEEDY+dNzm1cBP06qH4hZQXhQT+6uB1mJhw0ge+9Du
+         gEWqDpXRKnK/M637U2eGS6visAoFUT7aidWgMHYRfK+tz5w0j9se4xb6aPR1eI1eZDBN
+         tRprdL7575Gv0x5yT5Ys4w2PZI9UA0yB3Py8SD3WnBVFnE/Tu1BBM2IxHdhAr1lf3d5u
+         Gt7ajIj4piTSbzr+nTBraD9jkS0DHezGuQa9n2J1LejwL8EvyYEQc03fIDtW8Up+3Om+
+         2G9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736909942; x=1737514742;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1736917532; x=1737522332;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WeNYRqCXp83bmP8MaMvN/WFLlPcmxObNXoivEWRhmTA=;
-        b=Eqhc6vxsCYyDNP8ppRJNKK6DozI7vZyfM+CpkkEBXLBLYMSPGc9ACmQNHUNL6WTICr
-         XyEey1U2/21SAt9OoKiqBGigZLnGT1QNwJ+VMK5DQqmgMhNmHYIKNF9AcnWhkCvWv7nr
-         YrbLOMV0Q/mTF6fz1X/QzZazt+2QzeENBbT81LrWFDUJ0IRAE5/2C+0G79SQkOFLSDXY
-         MvK7wqNC4Rpbb/rqJBQ1uaUGIso7d7Ss0hyuJb5shT32EFthSLfbovdnw/NptYGmkuG+
-         75xGvqXTE5tAmyzmMJVKdEcAjaPDdAM3blpq7COw0xh5h6aYxOe9oHMP0d6FQsgva/5Y
-         g7Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCV9ao7Odf4acVJ7MB38phFaYCMSkuZ7/huUjC4M1GsdBbmH6gURnjR2tlqmPc4ULQowIM2A2mJe@vger.kernel.org, AJvYcCWdU47YPcUx7ANLJw46SiWk29Akhfi6pAGIhSl79qqp5AGTkQL7WdFYLovY1HSaT7KE18gU5g9W4XUwljUt@vger.kernel.org
-X-Gm-Message-State: AOJu0YzE+Lo0E4IH8PGZ2oQ4VnHMklIUTl1bHC5hgtOFLEA0tmhVQbe+
-	I0F+o9sYbZcVa5Ph+1qlykQPC/FONbON3STwnKlu0VsGIBcx4GLs65Abw7NXtxpSgx9anbmLnT5
-	729Cd6kW6McJkgj0jmxYY/Fu683s=
-X-Gm-Gg: ASbGncvw7pyG8eQ1/9jDytGQQHNMHIk/702TT+NQFwPmyeK0b3BUYtuiB6mbA9GvsFx
-	j4VzAjSH79eqMa7jRMJoYRMCzoRLmlaxFT3gm
-X-Google-Smtp-Source: AGHT+IGno1xvnkB2a1XVPVlPICRUZzwEN2fyLLcNQGhACuu6B6Dd2i+2S669m6D304fmzbWwo0olKM1xfYuMRUBu4mw=
-X-Received: by 2002:a05:620a:136c:b0:7be:39e7:a025 with SMTP id
- af79cd13be357-7be39e7a116mr1308964785a.26.1736909941703; Tue, 14 Jan 2025
- 18:59:01 -0800 (PST)
+        bh=Ow/IRyN+cemWyTkrDl3bh0gJC+EkqRfEmUEIN6uUVCg=;
+        b=iyzDieH/jxQEQyqCXTKVdOx5kqSwCIFzaiz6lxABsBe9dR2zI1+VDiwaO1lYm68PCx
+         JBCHtSO/IrIlJ/QfgUGGJEeKIt8aO+Up1wFyVLuOGhA7pOUQMwxiCtAWRr5imcC2ynO4
+         2vdMoE1WTgb25usaU+64ye+/V8wx4erXe9z/N5pZFj1zLNQZ3pIuZ+jC46Ya1YK3WEsE
+         O+Ba4QFEvSeRh/rSTghQUGVlkvE8FB2R4PpMnmScsaam64ROEWpw50IsShqkRvBgHOgA
+         EypYXxgL4Z8Zx745opvOCcuBCKEdD8s3jzfHHdC49R7hQvR9fbNu9EXkWufncjX8LnzF
+         cWbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUrfLB+CZsUKIhxsYq8aThdLuLiQ0DfY6AUXdyAn3eW04bgBeqxa0zpTgjTxo8wj+MecAlReKSt@vger.kernel.org, AJvYcCVm5PjLH8VNOn50Q3zGsvwbK0ySpb/p2OXQ2yKDishA02wbQfnd++sLiGVRXUOud2UuWso66UYjLfJH3EON@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGltwb4E5tgnYxvYS555ER8LRVV9z1mUfwCUiQ1YBhasllmXiN
+	jIOzYEgLFvRfuxs4o0I/GJRl8lSCbkt4vXdKZgZGedhFRA+OIbF8PNLVTsu7qWXEaoP65CTxVkg
+	/lqKZOq7jHm0NHOABcQYUeIyFI+jSCpLz
+X-Gm-Gg: ASbGnctI9EYMz64gccBouCVZIFl2T4eiNYUAqYgFqRpHKvYuNKvcMxjQz7fiAuPlRyi
+	hCh5FuAF5yeLgWSoTowCdI4PWnnZINEqwd0EbNuI=
+X-Google-Smtp-Source: AGHT+IEPIjE/yt1kBlHDkhiExpjHdJ/cUXgYRnLu3AB3J3DWNRi2NpSk/MmzmEe2wdBeS6sApxlZu6RBtrJqKE7x55g=
+X-Received: by 2002:a05:6102:374e:b0:4af:fc7d:b74a with SMTP id
+ ada2fe7eead31-4b669ed1ac0mr1202429137.2.1736917532171; Tue, 14 Jan 2025
+ 21:05:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250103022409.2544-1-laoar.shao@gmail.com> <20250103022409.2544-5-laoar.shao@gmail.com>
- <z2s55zx724rsytuyppikxxnqrxt23ojzoovdpkrk3yc4nwqmc7@of7dq2vj7oi3>
- <CALOAHbAY8MLDT=EdzY6TzQv3ZF4OGXTWoWBEs45zQijZH4C0Gw@mail.gmail.com> <kc5uqohpi55tlv2ntmzlji7tkowxjja7swpwkyj6znmdw6rnjl@4wsolhiqbrss>
-In-Reply-To: <kc5uqohpi55tlv2ntmzlji7tkowxjja7swpwkyj6znmdw6rnjl@4wsolhiqbrss>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 15 Jan 2025 10:58:25 +0800
-X-Gm-Features: AbW1kvYkzOEijQezgrK4c3_lkbEW6vqMx6hrDrzxhJWbJfD6ZrxWdwc7CZvGmUw
-Message-ID: <CALOAHbDRA5Ak-N4DyHfNhVhVMT-8CuVVagkgYNv2nBB6eNqFsQ@mail.gmail.com>
-Subject: Re: [PATCH v8 4/4] sched: Fix cgroup irq time for CONFIG_IRQ_TIME_ACCOUNTING
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com, hannes@cmpxchg.org, 
-	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, 
-	surenb@google.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	lkp@intel.com
+References: <3a5337f9-9f86-4723-837e-de86504c2094.jinguojie.jgj@alibaba-inc.com>
+In-Reply-To: <3a5337f9-9f86-4723-837e-de86504c2094.jinguojie.jgj@alibaba-inc.com>
+From: Jin Guojie <guojie.jin@gmail.com>
+Date: Wed, 15 Jan 2025 13:05:21 +0800
+X-Gm-Features: AbW1kvbNg6ANiJ99w8o31FxA5RfybMfm6xTCDD94IoQ7KyHDqFw5PHpFVmraiTw
+Message-ID: <CA+B+MYQD2K0Vz_jHD_YNnnTcH08_+N=_xRBb7qfvgyxx-wPbiw@mail.gmail.com>
+Subject: [PATCH v2] cgroup/cpuset: call fmeter_init() when cpuset.memory_pressure
+ disabled
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 14, 2025 at 11:48=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.c=
-om> wrote:
->
-> On Thu, Jan 09, 2025 at 09:46:23PM +0800, Yafang Shao <laoar.shao@gmail.c=
-om> wrote:
-> > No, in the case of !CONFIG_IRQ_TIME_ACCOUNTING, CPU usage will
-> > increase as we add more workloads. In other words, this is a
-> > user-visible behavior change, and we should aim to avoid it.
->
-> I wouldn't be excited about that -- differently configured kernel is
-> supposed to behave differently.
->
-> > Document it as follows?
->
-> That makes sense to me, with explanation of "where" the time
-> (dis)appears.
->
-> >
-> > "Enabling CONFIG_IRQ_TIME_ACCOUNTING will exclude IRQ usage from the
-> > CPU usage of your tasks. In other words, your task's CPU usage will
-> > only reflect user time and system time."
->           reflect proper user ...
->   and IRQ usage is only attributed on the global level visible e.g. in
->   /proc/stat or irq.pressure (possibly on cgroup level).
+When running LTP's cpuset_memory_pressure program, the following error occu=
+rs:
 
-I completely agree with you that it's essential to clearly document
-this behavior change. Thanks for your suggestion.
+(1) Create a cgroup, enable cpuset subsystem, set memory limit, and
+then set cpuset_memory_pressure to 1
+(2) In this cgroup, create a process to allocate a large amount of
+memory and generate pressure counts
+(3) Set cpuset_memory_pressure to 0
+(4) Check cpuset.memory_pressure: LTP thinks it should be 0, but the
+current kernel returns a value of 1, so LTP determines it as FAIL
 
->
-> > If we document it clearly this way, I believe no one will try to enable=
- it ;-)
->
-> I understand that users who want to have the insight between real system
-> time and IRQ time would enable it.
->
->
-> > It worked well before the introduction of CONFIG_IRQ_TIME_ACCOUNTING.
-> > Why not just maintain the previous behavior, especially since it's not
-> > difficult to do so?
->
-> Then why do you need CONFIG_IRQ_TIME_ACCOUNTING enabled? Bundling it
-> together with (not so) random tasks used to work for you.
+V2:
+* call fmeter_init() when writing 0 to the memory_pressure_enabled
 
-Our motivation for enabling irq.pressure was to monitor and address
-issues caused by IRQ activity. On our production servers, we have
-already enabled {cpu,memory,io}.pressure, which have proven to be very
-helpful. We believed that irq.pressure could provide similar benefits.
+Compared with patch v1 [1], this version implements clearer logic.
 
-However, we encountered an unexpected behavior change introduced by
-enabling irq.pressure, which has been unacceptable to our users. As a
-result, we have reverted this configuration in our production
-environment. If the issues we observed cannot be resolved, we will not
-enable irq.pressure again.
+[1] https://lore.kernel.org/cgroups/CA+B+MYRNsdKcYxC8kbyzVrdH9fT8c2if5UxGgu=
+Kep36ZHe6HMQ@mail.gmail.com/T/#u
 
->
-> > We=E2=80=99re unsure how to use this metric to guide us, and I don't th=
-ink
-> > there will be clear guidance on how irq.pressure relates to CPU
-> > utilization. :(
->
-> (If irq.pressure is not useful in this case, then when is it useful? I
-> obviously need to brush up on this.)
+Signed-off-by: Jin Guojie <guojie.jin@gmail.com>
+Suggested-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+Suggested-by: Waiman Long <longman@redhat.com>
+---
+ kernel/cgroup/cpuset-v1.c | 4 +++-
+ kernel/cgroup/cpuset.c    | 2 ++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-It=E2=80=99s not that =E2=80=9Cirq.pressure is not useful in this case,=E2=
-=80=9D but rather
-that irq.pressure introduces a behavior change that we find
-unacceptable.
+diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+index 25c1d7b77e2f..7520eb31598a 100644
+--- a/kernel/cgroup/cpuset-v1.c
++++ b/kernel/cgroup/cpuset-v1.c
+@@ -66,7 +66,6 @@ void fmeter_init(struct fmeter *fmp)
+        fmp->cnt =3D 0;
+        fmp->val =3D 0;
+        fmp->time =3D 0;
+-       spin_lock_init(&fmp->lock);
+ }
 
-Our motivation for enabling irq.pressure stems from the lack of a
-dedicated IRQ utilization metric in cpuacct.stat or cpu.stat
-(cgroup2). For example:
+ /* Internal meter update - process cnt events and update value */
+@@ -437,6 +436,9 @@ static int cpuset_write_u64(struct
+cgroup_subsys_state *css, struct cftype *cft,
+                break;
+        case FILE_MEMORY_PRESSURE_ENABLED:
+                cpuset_memory_pressure_enabled =3D !!val;
++               if (cpuset_memory_pressure_enabled =3D=3D 0) {
++                       fmeter_init(&cs->fmeter);
++               }
+                break;
+        case FILE_SPREAD_PAGE:
+                retval =3D cpuset_update_flag(CS_SPREAD_PAGE, cs, val);
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 0f910c828973..3583c898ff77 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3378,6 +3378,7 @@ cpuset_css_alloc(struct cgroup_subsys_state *parent_c=
+ss)
 
- $ cat cpuacct.stat
-  user 21763829
-  system 1052269        <<<< irq is included in system
+        __set_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
+        fmeter_init(&cs->fmeter);
++       spin_lock_init(&cs->fmeter.lock);
+        cs->relax_domain_level =3D -1;
+        INIT_LIST_HEAD(&cs->remote_sibling);
 
- $ cat cpu.stat
-  usage_usec 3878342
-  user_usec 1589312
-  system_usec 2289029   <<<< irq is included here
-  ...
+@@ -3650,6 +3651,7 @@ int __init cpuset_init(void)
+        nodes_setall(top_cpuset.effective_mems);
 
-To address this, I propose introducing a separate metric, such as irq
-or irq_usec (cgroup2), to explicitly reflect the IRQ utilization of a
-cgroup. This approach would eliminate the need to enable irq.pressure
-while providing the desired insights into IRQ usage.
+        fmeter_init(&top_cpuset.fmeter);
++       spin_lock_init(&top_cpuset.fmeter.lock);
+        INIT_LIST_HEAD(&remote_children);
 
-WDYT ?
-
+        BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
 --
-Regards
-
-
-Yafang
+2.34.1
 
