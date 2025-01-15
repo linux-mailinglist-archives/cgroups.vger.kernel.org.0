@@ -1,61 +1,66 @@
-Return-Path: <cgroups+bounces-6163-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6164-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C1D5A11C6A
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 09:50:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A466A11C6E
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 09:50:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2219B3A2BAC
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 08:50:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2789188B311
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 08:50:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 659A41DE3D9;
-	Wed, 15 Jan 2025 08:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90EB1EEA2C;
+	Wed, 15 Jan 2025 08:50:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ahtILrMU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GXiR539S"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2018A23F264;
-	Wed, 15 Jan 2025 08:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7537A23F264;
+	Wed, 15 Jan 2025 08:50:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736931034; cv=none; b=GUvZ1Gc2QUWSriwKOkm8wh2zkD1ucDO3rKnFq+k4rorsRRFE4FZmyVaiRbWdHwCdIAPBzlyw4zIfh08EuFqTJw2p3hok2lO39V02fOLHBx2j9q48DxEMtc4FRwxY4EBFZ4TUofdyWExgc5adJ95JcXE54+ZtA8+WoLVQm4n32EU=
+	t=1736931037; cv=none; b=ubyoBybKzV7VTyNHqaCiHiucwRxRU71Ihc2XlDcV9y18zRtn9hj0MjEwwJVR//9B/cX656kC5FDy7vvNR3Mp4rrOPrjaBcmhxOjNdTvtlQXY4nI0sn+wEETZ1uDI8EgHGci/IiuXCi66AopZ2MUb9nScjiwCmi3TVrz+V89wS/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736931034; c=relaxed/simple;
-	bh=foBUaGW4fuRofdxnTBj73G0WdM51+smJx2yDdUusg24=;
+	s=arc-20240116; t=1736931037; c=relaxed/simple;
+	bh=GdB0s3esCm0Taj9qiopz0AL7rQJL+qDQQcnoixILlIE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RWh42zoZ/LqLKS6ihdUG1xVo9ZWyZ7k2wvylH7eBWqXdlUtr4txAwMGC1z8eNj0+xgV8G1r682ncSd/6sOTD69eN0pak4ZPWsUY+x2w3v+5uzGg9oTzRpzYuXewI7ggjDJqw0nmZV53hzMwcOQmc2Rk5aJjHA6FrsG8i6KvPzVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ahtILrMU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 834C5C4CEDF;
-	Wed, 15 Jan 2025 08:50:33 +0000 (UTC)
+	 MIME-Version:Content-Type; b=qegcTfIgybISiFi+D8l+7ESjKEMhh0iG6uh9do2NjjBsxgNWKwmMm/gXse0Eq/OpKYxeYeWkDoNs9CnP1Ti8wqGh7ZIbk4ZHXY0Yr5vgluuyyRZJO3nksRnzuMdlGQTGdgDMPC95UFef2tARn0dHj92j6m4esXoKcmeXGYSyptE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GXiR539S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A96B9C4CEDF;
+	Wed, 15 Jan 2025 08:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736931034;
-	bh=foBUaGW4fuRofdxnTBj73G0WdM51+smJx2yDdUusg24=;
+	s=k20201202; t=1736931037;
+	bh=GdB0s3esCm0Taj9qiopz0AL7rQJL+qDQQcnoixILlIE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ahtILrMUWntuEZA4G+xE81f0bseyBuxdNfbdW6CcjeNY4dPsO7xAuuxo5IonYe0Du
-	 XB0PUZO2vveTrN3GXCOoUNyXu0FniyvNO66zcU/+qpFBvFg+zxlTgrAfNUQy6Y8d91
-	 K2JYQJNPQbbU7CMsbImTj/JxPSuhUDsrXqbm8mEljG5kElO/PDl3pXVzdw2icZqi43
-	 GYeT7+JGRntUVL9YDPTxGdV6vw6lJFukseWfqVnKUu2GzcnZgnqixyWa0VweB8ZQfL
-	 RpybXIa19Gt0v2hUhOkOyVeZHuHe/qFqKXqenCXNCcfzezYTMGs8m4fw549fyYNPqR
-	 9rPkR7nF3jI9A==
+	b=GXiR539SdOIS5+z1lRuAb0gIU/FZe1caxq8gN3Vkd2FWFaSwxtVbO1SNEIDuWgLpV
+	 my2eJO6BpJA6eerEUw8l0FjTbZ8/YhN+t/2/i6T4/4gSckFVoEvWUYKK4dnWF6fCTx
+	 jlb9nGGONVvH8UGcxLsPb55OleS5GM85f3n/AqMOdud/UDgkNmo2RGlC79Buh9TbDk
+	 UR640S7vo8Fk/JkrpSp55Pvtj6DES7si/CJwoq5Im49H4xaCtJWFFtOv01NFQkEcyn
+	 OuipZOo+4iTf7TRZQ2Z/nYefssD3ZpNLu9ITFS03kl2Fs9HsEZyIwM1MdPu/U87W/e
+	 AtF8lF8a20Mbg==
 From: Maxime Ripard <mripard@kernel.org>
-To: tj@kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: Maxime Ripard <mripard@kernel.org>,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
+To: Jonathan Corbet <corbet@lwn.net>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Simona Vetter <simona.vetter@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Maxime Ripard <mripard@kernel.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org,
+	linux-doc@vger.kernel.org,
 	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH -next] kernel/cgroup: Remove the unused variable climit
-Date: Wed, 15 Jan 2025 09:50:27 +0100
-Message-ID: <173693101809.2804074.2672495073642757354.b4-ty@kernel.org>
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 1/4] cgroup/dmem: Select PAGE_COUNTER
+Date: Wed, 15 Jan 2025 09:50:28 +0100
+Message-ID: <173693101810.2804074.2827818197131810241.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250114062804.5092-1-jiapeng.chong@linux.alibaba.com>
-References: <20250114062804.5092-1-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20250113092608.1349287-1-mripard@kernel.org>
+References: <20250113092608.1349287-1-mripard@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,10 +70,10 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Tue, 14 Jan 2025 14:28:04 +0800, Jiapeng Chong wrote:
-> Variable climit is not effectively used, so delete it.
-> 
-> kernel/cgroup/dmem.c:302:23: warning: variable ‘climit’ set but not used.
+On Mon, 13 Jan 2025 10:26:05 +0100, Maxime Ripard wrote:
+> The dmem cgroup the page counting API implemented behing the
+> PAGE_COUNTER kconfig option. However, it doesn't select it, resulting in
+> potential build breakages. Select PAGE_COUNTER.
 > 
 > 
 
