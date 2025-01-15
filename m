@@ -1,163 +1,153 @@
-Return-Path: <cgroups+bounces-6170-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6171-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FD76A12BD6
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 20:39:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17FFCA12BDE
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 20:41:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE31A1886683
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 19:39:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C9CB18843D3
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2025 19:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 048931D6DA1;
-	Wed, 15 Jan 2025 19:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB29C1D63F6;
+	Wed, 15 Jan 2025 19:41:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h06KZ7Vm"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NpjH76wk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6009E1AAA09
-	for <cgroups@vger.kernel.org>; Wed, 15 Jan 2025 19:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672611D5AC3
+	for <cgroups@vger.kernel.org>; Wed, 15 Jan 2025 19:41:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736969942; cv=none; b=koRxL4xrC3bzZBZEVuIrQ/5jpLqwSDpnVmXPD2t9foeWtM+8/XL8u3nWEEsBX72CJj7ZPUI10owp7aWljTI22kLiooXGWlCigohcmINt5FvMk5D6e5roK4nQ1PHwXxxhHYYQBgp2QdwUB3XgCk9Y4bQQiQgO+PvAY9Z9rVMp5/I=
+	t=1736970099; cv=none; b=nT5pL8KjtWMHkr4B1xHuKpuwFQZy0bMtItpxbnRWVZ8kbW63/9KI5OqxrkcIk3eigOA4Gz6nTS8TU1607ZL0l/Oq0FUeidgqunvk7yGBJmOf+SY9j/wKnQ8zllCQnHJjTcsIag7JUsvQRYgSx0qRtOIiGg0a+p4rF8q0xJotHZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736969942; c=relaxed/simple;
-	bh=Nri+ijQHgnnvw1Q+UTvOtmS15t6/cZj5z1xsRPl/cA0=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=YhHZCaNtHBY59RwUQywGYHSu80XaoFqnqgaOJQUq8CCvlZJSmkmQvq/U04cr+xN+MPBrM3GEN2gmhthcDPzgJXnOEL3p2L6jLSNecUi9k/tBL1Uc4rc6MhWf/fgROQ9IppKp5uKwAv47iHx6jMx6LEkv9SoV4D1nuXLQUw9Df8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h06KZ7Vm; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2164b662090so809735ad.1
-        for <cgroups@vger.kernel.org>; Wed, 15 Jan 2025 11:39:01 -0800 (PST)
+	s=arc-20240116; t=1736970099; c=relaxed/simple;
+	bh=X79fQShG2win0Kg23ZMNAfHyL/M4PaoYCU5ajfjIgyI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W+Dds5U3mDde4J+FwApy+OISm4aO8R8Hg1Bst8anOLNdg3Zl8pNCzHOyTD+g/k1P8B37s2Z0bXRtW9lH97PnNnNp7DVWGN23rWIn+/WJAG1THWok53cnQMCN2pMka4N7tTd9DQXi1usb70p7QwaFwgOytdj4bYNhJlLiuhvjmBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NpjH76wk; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5d3ecae02beso159249a12.0
+        for <cgroups@vger.kernel.org>; Wed, 15 Jan 2025 11:41:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736969940; x=1737574740; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=YT8LeYyl1IQE2OMUqDpDp3mQmKP3ywSVwhJGc5iz/kw=;
-        b=h06KZ7Vm3EL2ZlYV03SEtPGKy+7yaYwlSALNNh2dethaWtd1Idiu5OwRvjduoilr3S
-         mz9RpALbiiRy7IpBtfkt+mkUeD0ILNQiBfVAyVieGm8qawkTjrJzL4BXoQwqyF9sY5vb
-         HvLiYiaJ3TPIefnlf7x1eO7G3sNjW329XtXydSoqrvFhuVZ1tRv1hjA8OlZEv8/IsLWQ
-         VJ2JkpgyhcRPIQe+CZOEF+g9RQVrtoyFJG/jm4zaWGPJH6u7pko50MnR0Zzj7Zrx+qeg
-         mqWzHcahlo6Re4Y6zxtzNRgGpXXDMmzRi5PkVSiBMm+QoUIff35BPojnGOWIGOtSPS88
-         ZOgw==
+        d=suse.com; s=google; t=1736970096; x=1737574896; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ZVNqrTwKIYDf4Bm8NNK5jPuTo2WMdjzDg2Q0uygxvA=;
+        b=NpjH76wkqrBfvKJkqGH9//9ueHN18TRvKnHkgiO+gVUCAdb+oXnklWDqUJA9JSVp0c
+         QUT0lgpNKep/eWomXY8ZjkORKkGBQ4AHYKooJjYQJR3ZuHGA+CMEbd1+8kUSO3KP/yd1
+         OmVanT9p5dWYaHK9VhMDJzdCHF8vc28fsOQ06GQeI2Er+4uzS8qzmuKlpLG37AcajzrX
+         oLc64YR91KgnmMo5rwju+YztZ6zLja2zUM3gNmvp/cj4dxdysjf9W2orRzTNM02Zl5ql
+         siP7TDys5CDSQ0DiX7jfInoucv4TFNLy7JVvE99qnMtcUopsq+59r00PX4sB6giMSVsm
+         d5qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736969940; x=1737574740;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YT8LeYyl1IQE2OMUqDpDp3mQmKP3ywSVwhJGc5iz/kw=;
-        b=jXsAg/LI+ozMK5kkxY27At+hZ8ieFLffuPCsBw47qRQz8ulixdxbcGTsdQ7aqPpyB1
-         ofJmeSL5bY9YR7f0LQc5yrcbEp6UGLoS0myWw+SgMIxRkCaEU8jSpjX/vWas4qJxCvQ+
-         I+NkESZW6C+pXK94uOl8+VWm3IcM5DigLkWLqIs5DHHDTu62yEPkwzlAlgMpQhMBuc13
-         3t+qLx+r4OJRFzDFcHzK095kmMOV7N9WrlgV/HuVaod3SWrVE13y1HdfoZorVYkwNL/Z
-         MDuxWyilvfCM+2vZGWhtt1w/snn1h+58Bh0z/jfs6bCKqUkBQOf8BOgNCVt/k811cPsK
-         pLwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVQ6BRmhVBokhKEya5j9b/6BHVA1gwRUr0aYQcLLN7z9uiCKfNgtYIAN0h7S8qLjA3y48v5wQg7@vger.kernel.org
-X-Gm-Message-State: AOJu0YwsLKEiJj0oOOIEdgsgvxV4vFhedpJu/RkLbP6jWi76jnoPHi6F
-	eio4cPUc77RZcCaavtAFjDLXEXP7dvP3MXs/83ymFOw+fp6rHmVz
-X-Gm-Gg: ASbGncvIkn75Vf/guWg8NZrheLlOWNl93G0TdebzKKQ/AxF2WiahPcL4KJ6Ekec42WL
-	caR8BVUlB1bdXfEND9AAJAYFG0TTRiytIk231/pw0kf38RTXRpZa4f0Z6IwxFDPS8QT4XOjkt0f
-	0y5iA1D7PM1Wu6T+ONv86FlTD+8xPrKOIuxZZEZe9VXvVffywK8AdRkeQcyBT7qki3tSCgjipnv
-	qhTxLy+Yf4LbAcfHYKFJoRasCsdFZ4Ub7C+i2kVPbhSVd91sXxS61/mnULhFwN4izYNVDKSbdyq
-	EDB13fN5wCgMpQ==
-X-Google-Smtp-Source: AGHT+IFOKfNEni4cheEMDE4joOYaQXJ/C8N6Te9Lc9LoIuJOxFACSRD2Iq8Srr936C5fgptM1H/zEQ==
-X-Received: by 2002:a17:903:1112:b0:216:138a:5956 with SMTP id d9443c01a7336-21a83f59822mr478521225ad.19.1736969940495;
-        Wed, 15 Jan 2025 11:39:00 -0800 (PST)
-Received: from ?IPV6:2a03:83e0:1151:15:dc0e:edda:f2ff:379a? ([2620:10d:c090:500::7:7294])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f21aba7sm87093735ad.113.2025.01.15.11.38.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jan 2025 11:38:59 -0800 (PST)
-Message-ID: <babbf756-48ec-47c7-91fc-895e44fb18cc@gmail.com>
-Date: Wed, 15 Jan 2025 11:38:57 -0800
+        d=1e100.net; s=20230601; t=1736970096; x=1737574896;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3ZVNqrTwKIYDf4Bm8NNK5jPuTo2WMdjzDg2Q0uygxvA=;
+        b=AMX+TPpx7Kzdi1Ti09Lp+zcUR3RE8hw/K6r7UgH0ML/2rzUEDlwcANWYM83dAgwdAA
+         JA4Ezn78rJiBNDlc2/iK53dxWZ/NOd5dt+2cN4Gc/3ShOp31gR5h3+opwnrEEYFpAjmf
+         etUe+34DHoUi0bxKGOc9ecbyW79qNUgLaJUODi61nBH2iuMQdczdM9IhXG/s93PBMOo0
+         W7IikygYZFxZXdevA/BMxn3bUhysEv8rZ2/H+L/yT7PJSKwm/zkUD1G88QDEs3/Dfhnc
+         h80o/EWb2pUFJtyuniTGFck4noLvnPjD5bbBLa63+MOjZKlzd0XXpqbnYs/QJRhhlAEs
+         pE6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWvhfPXpUkhITsqeHvbNGoWBicq79p63iH4vawKQbe+7gf5/TDteRdrbLDiKnYoxbAWP59/rb0c@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjnttIlgDvS51mIen/kQ3RgGLWM9gp9bW3gDeYbzZFwgRFVDO7
+	IYnc+sNkhJ2Hg/U0nztSwHCN6McYHI+R5EXOccrEdItfIWxo2sk32WwmWia5jK4=
+X-Gm-Gg: ASbGncsoN7SetHzHttldRaULWi7jnM6XtbM4P9R1n8F2/c+xBc/Xp764R0reXrAGfvl
+	ocxbJeSkCAK+HOhwZWEvgMEp0KFG4ZuW22Q/p0qvdpCs2sjEnAIMWu7AFEf10TIFS3Ub0AylWpl
+	7PmBzEfbqLbw42GQK2QhTECTyu2u1iMIjR3xF1FAC13QHT99JTq8w6YVFvBBozZgMa77A/n/9R7
+	pVBdoHVcMuVrqHmFm0KGRy1AMRphGsctJSC9K94rTOnj9NyJ9cF0ifF/tzWlAZ225iVrw==
+X-Google-Smtp-Source: AGHT+IEQAuyjYMWDuvxbQji30YXDQg1tnXpQK7ijaXsvEZSUIwVzPcfJ06q+Oo+0/rOilCVxe3Nb/g==
+X-Received: by 2002:a05:6402:4307:b0:5d9:f362:1682 with SMTP id 4fb4d7f45d1cf-5d9f3621964mr8968077a12.24.1736970095771;
+        Wed, 15 Jan 2025 11:41:35 -0800 (PST)
+Received: from localhost (109-81-90-202.rct.o2.cz. [109.81.90.202])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d9900c4326sm7629912a12.23.2025.01.15.11.41.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jan 2025 11:41:35 -0800 (PST)
+Date: Wed, 15 Jan 2025 20:41:34 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Rik van Riel <riel@surriel.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	Balbir Singh <balbirs@nvidia.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	hakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com, Nhat Pham <nphamcs@gmail.com>
+Subject: Re: [PATCH v2] memcg: allow exiting tasks to write back data to swap
+Message-ID: <Z4gPblXp1HXrgL_I@tiehlicka>
+References: <Z2BJoDsMeKi4LQGe@tiehlicka>
+ <20250114160955.GA1115056@cmpxchg.org>
+ <Z4aU7dn_TKeeTmP_@tiehlicka>
+ <af6b1cb66253ad045c9af7c954c94ad91230e449.camel@surriel.com>
+ <Z4aYSdEamukBGAZi@tiehlicka>
+ <193d98b0d5d2b14da1b96953fcb5d91b2a35bf21.camel@surriel.com>
+ <Z4apM9lbuptQBA5Z@tiehlicka>
+ <20250114192322.GB1115056@cmpxchg.org>
+ <Z4a-GllRm7KABAu7@tiehlicka>
+ <7a4e5591f45df455e6a485fc5400989569d3d22d.camel@surriel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: JP Kobryn <inwardvessel@gmail.com>
-Subject: Re: [PATCH 0/9 RFC] cgroup: separate rstat trees
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, hannes@cmpxchg.org, akpm@linux-foundation.org,
- linux-mm@kvack.org, cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>
-References: <20241224011402.134009-1-inwardvessel@gmail.com>
- <cenwdwpggezxk6hko6z6je7cuxg3irk4wehlzpj5otxbxrmztp@xcit4h7cjxon>
- <3wew3ngaqq7cjqphpqltbq77de5rmqviolyqphneer4pfzu5h5@4ucytmd6rpfa>
- <3348742b-4e49-44c1-b447-b21553ff704a@gmail.com>
- <CAJD7tkbhzWaSnMJwZJU+fdMFyXjXBAPB1yfa0tKADucU7HyxUQ@mail.gmail.com>
-Content-Language: en-US
-In-Reply-To: <CAJD7tkbhzWaSnMJwZJU+fdMFyXjXBAPB1yfa0tKADucU7HyxUQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7a4e5591f45df455e6a485fc5400989569d3d22d.camel@surriel.com>
 
-Hi Yosry,
-
-On 1/14/25 5:39 PM, Yosry Ahmed wrote:
-> On Tue, Jan 14, 2025 at 5:33 PM JP Kobryn <inwardvessel@gmail.com> wrote:
->>
->> Hi Michal,
->>
->> On 1/13/25 10:25 AM, Shakeel Butt wrote:
->>> On Wed, Jan 08, 2025 at 07:16:47PM +0100, Michal Koutný wrote:
->>>> Hello JP.
->>>>
->>>> On Mon, Dec 23, 2024 at 05:13:53PM -0800, JP Kobryn <inwardvessel@gmail.com> wrote:
->>>>> I've been experimenting with these changes to allow for separate
->>>>> updating/flushing of cgroup stats per-subsystem.
->>>>
->>>> Nice.
->>>>
->>>>> I reached a point where this started to feel stable in my local testing, so I
->>>>> wanted to share and get feedback on this approach.
->>>>
->>>> The split is not straight-forwardly an improvement --
->>>
->>> The major improvement in my opinion is the performance isolation for
->>> stats readers i.e. cpu stats readers do not need to flush memory stats.
->>>
->>>> there's at least
->>>> higher memory footprint
->>>
->>> Yes this is indeed the case and JP, can you please give a ballmark on
->>> the memory overhead?
->>
->> Yes, the trade-off is using more memory to allow for separate trees.
->> With these patches the changes in allocated memory for the
->> cgroup_rstat_cpu instances and their associated locks are:
->> static
->>          reduced by 58%
->> dynamic
->>          increased by 344%
->>
->> The threefold increase on the dynamic side is attributed to now having 3
->> rstat trees per cgroup (1 for base stats, 1 for memory, 1 for io),
->> instead of originally just 1. The number will change if more subsystems
->> start or stop using rstat in the future. Feel free to let me know if you
->> would like to see the detailed breakdown of these values.
+On Wed 15-01-25 12:35:37, Rik van Riel wrote:
+> On Tue, 2025-01-14 at 20:42 +0100, Michal Hocko wrote:
+> > O
+> > I do agreee that a memory deadlock is not really proper way to deal
+> > with
+> > the issue. I have to admit that my understanding was based on ENOMEM
+> > being properly propagated out of in kernel user page faults. 
 > 
-> What is the absolute per-CPU memory usage?
+> It looks like it kind of is.
+> 
+> In case of VM_FAULT_OOM, the page fault code calls
+> kernelmode_fixup_or_oops(), which a few functions
+> down calls ex_handler_default(), which advances
+> regs->ip to the next instruction after the one
+> that faulted.
 
-This is what I calculate as the combined per-cpu usage.
-before:
-	one cgroup_rstat_cpu instance for every cgroup
-	sizeof(cgroup_rstat_cpu) * nr_cgroups
-after:
-	three cgroup_rstat_cpu instances for every cgroup + updater lock for 
-every subsystem plus one for base stats
-	sizeof(cgroup_rstat_cpu) * 3 * nr_cgroups +
-		sizeof(spinlock_t) * (CGROUP_SUBSYS_COUNT + 1)
+OK, so we do not have the endless loop. Good. Sorry I didn't get to read
+through the fixup tables maze. Thanks for confirming.
 
-Note that "every cgroup" includes the root cgroup. Also, 3 represents 
-the number of current rstat clients: base stats, memory, and io 
-(assuming all enabled).
+> Of course, if we have a copy_from_user loop, we
+> could end up there a bunch of times :)
 
-As I'm writing this, I realize I might need to include the bpf cgroups 
-as a fourth client and include this in my testing.
+Yes, the robust list might have many elements and if each and every is
+swapped out then this can take a lot of time if the reclaim path is
+desperately retrying the whole reclaim. All that being said, does the
+change (partial revert) suggested by Johannes
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7b3503d12aaf..9c30c442e3b0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1627,7 +1627,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 * A few threads which were not waiting at mutex_lock_killable() can
+ 	 * fail to bail out. Therefore, check again after holding oom_lock.
+ 	 */
+-	ret = task_is_dying() || out_of_memory(&oc);
++	ret = out_of_memory(&oc);
+ 
+ unlock:
+ 	mutex_unlock(&oom_lock);
+
+Or is the exit still taking unbearably too long? If yes maybe we can
+help to ENOMEM already killed and oom reaped tasks earlier?
+-- 
+Michal Hocko
+SUSE Labs
 
