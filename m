@@ -1,173 +1,200 @@
-Return-Path: <cgroups+bounces-6198-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6199-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 358AAA13DC5
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 16:36:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAAD5A13E80
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 16:57:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83C8A3A1FD8
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 15:36:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05D85188772A
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 15:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFE4C22BAC0;
-	Thu, 16 Jan 2025 15:36:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E7D22CF30;
+	Thu, 16 Jan 2025 15:55:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LiboD/Me"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h9qQissB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F2022B8B2
-	for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 15:36:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5348022C9ED
+	for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 15:55:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737041764; cv=none; b=FB+nGxD+24T8k2fK0rSFLZvomLzYYWpwcBA0lKDzhpl8Nw9rn8Lb95OUTnbGdfwjQRAe2DUcBpAfWxPg5m0l2u7MpCF8Y9inJUpp1Ee6+KmaT25TvPzmgS9Stuw+pu3ij1gzqXXMw9JGvwM0IhpszmJqiSmp0YOh9MVUur8/jGs=
+	t=1737042941; cv=none; b=IZCJlHS5JBL8VGNvkRWKyDRfGnmENV24XY8VjYxZ13zHDhbVVUQUew9Ec3nvZJNZoAitU8pJ9uQuPDrzdiBMALwEcd3gF6ztuw/nxmdu9OahEAWCN7k0VMilf17hsnvfnABAu7Gwz7n+xgm9mLnlNz5YRdni0EMGdRbT89uwpn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737041764; c=relaxed/simple;
-	bh=fo1NgW63J4SKuzXXMhTWxFtnNcHO6pz7B41Kv4sChNk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GHOodalJ9NO4CYK0HwbxKU7dIgDIMk06HAM1jEs5VpXK1C6IHvvP9fAhi7TXhKoI9M+9QhnpM6txlnqpbs6z2T6TeaVO1Dmdru3CH1DgBAdsyFppm3YsuM7LlKwWxu8cmtPJyJLNtgFFqlsMLVWHjnBYjybJRKLBxmlTMAzc6VY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LiboD/Me; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6e1a41935c3so13604096d6.3
-        for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 07:36:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1737041762; x=1737646562; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gwoQXtB03J2k0TrNlaF4zg+3HM5xnvoWUuazwn262Ng=;
-        b=LiboD/MehyR4eQjZwqkeqVqWej92pjoU9EuBZk3t40Mw1FsrYItOOULL+K17Icn4Da
-         /uX+YtwaVOQChTR/2LQ8zWz6TDxIZN51xTiFL2CpsrE1z4T5ckeJuYEA3zJETvJnqOax
-         TTsoWmCC5WfMiWYk0le8j8MEh72sYccy8NnAlpxjzynRzDhxIO87IQEDozwznG3Nobqh
-         uZGn2y09TC5YQqQzeezLpBYiyqOZqUwXAMug7lnCLWobJxbJ3botZK/4znp5JwSAOKUs
-         RaLil06kwazgdJ8B9Cs+iWc3FP7IDlt83NAH39iCx6pBZ8v281kAM4dmI0tIVZN2N5fv
-         e2nQ==
+	s=arc-20240116; t=1737042941; c=relaxed/simple;
+	bh=M6rLbXwoKLY87vdD//6QBLSukPIfifTbilph5z1bzaU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DuN9ZiDLaUbD5Ap3inBBgezsoO4hJ6giuv0/TIi0VQ/kADrgiVGKCledAnNWqYXbiW3pHdQXUeQFEqBbWSZwb/d5wiHXjKw9NLhJ8NKzS9wZw8HHg+xjYhFJKUP6SkTOJPoNT/tevIjQR/OhySnV78n7HPgzXN/d1hJmboPQjhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h9qQissB; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737042938;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VXCxqR2hB1HdDwCoB2P/zuXO8pseRXLobkWHItFNoHE=;
+	b=h9qQissBzksUTgWb0FmrJdMQczfV/zEdtguldxoijG7zb1lMIEnk/IDGiOU5jl074v8LgH
+	ejWXXU5HgwHECIsPHiIq4XQBmLsdFnNbzUEOOC6SYfz9P/SUr37paPNeAarEw5b7DO4GlV
+	0fP25GwIIrW2oFojwM9NxD6tMW2Dvmc=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-664-6DMqMs4jP36svth407SfDw-1; Thu, 16 Jan 2025 10:55:36 -0500
+X-MC-Unique: 6DMqMs4jP36svth407SfDw-1
+X-Mimecast-MFC-AGG-ID: 6DMqMs4jP36svth407SfDw
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-46909701869so25980721cf.0
+        for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 07:55:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737041762; x=1737646562;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gwoQXtB03J2k0TrNlaF4zg+3HM5xnvoWUuazwn262Ng=;
-        b=ah2um4E2zLZG1Vo2H671/2P1gVZJRvnfMz01RlEXrub5aZmjcL0p9KxXETDmp2TiAL
-         xUXwF9yUSp5oYa0uhSAwxbE407FVvM2Bd8H6yRGAUYr/7N484RD9QV1tRRGS10ZVCCF4
-         1TlDLJl4xGUi9zS9St915ERy1EgnrP1ba1Zem5jplKysTOg/B0iJbHiNNlXzrsuj5N8P
-         KzivHlRImAgKb+SU4+awhOAxjA9fzU55RKsfKI9WHumeL1dj322+R1U9hrSs/EiBkCRO
-         Rv1wbCmDKHeEZ7F5pNGSmizUep8Q+oeI9OV06SYcaXc0q6HYZgqJPMHRkplvLRFS9x5e
-         Qf2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXro9tzxMdjt3PNY4GPZ+CmdZVk6761mCc8F7wx53+oPY4mYPXE0XHWNOKYhHwHgRlA0M6cxsD6@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJCr5KntuBnQm2fnPye27+R14pU1sEK9pPXeJ2gIGTHdJ5CnxN
-	Cu7hnIfz2golhqjRS/76+tfAkhIhDKwRNsFRxkqYsd1BfhyC6Onv05Fo71A/EMgii3fulCqCkzL
-	zvFRsMHHwy9syHRs1Ggg3wkRwcimvSJfoFWNf
-X-Gm-Gg: ASbGncuXHpyr2B9Q/XtDPAy2NPqqfO/lB8AcpP1/VYnM5+0F2PoMAU6y6N0JgV6qeSr
-	1G7qrBdzcpz29uRgh2zIG+pcG6tFwpz/Kt5c=
-X-Google-Smtp-Source: AGHT+IGQx7oMBedqeGgpo6yQr9WNwpasiimO5fE+NbzzO4q5VJOFglCPvDATO0nKf03AVFZ+/JKqZYOHXU5sX1cr04M=
-X-Received: by 2002:a05:6214:1d0b:b0:6d8:86c8:c29a with SMTP id
- 6a1803df08f44-6df9b1ce0fbmr604590146d6.10.1737041761771; Thu, 16 Jan 2025
- 07:36:01 -0800 (PST)
+        d=1e100.net; s=20230601; t=1737042936; x=1737647736;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VXCxqR2hB1HdDwCoB2P/zuXO8pseRXLobkWHItFNoHE=;
+        b=W6w/y0Ks1U2EMWMMYBJJ48+Dkv64gH3qYuq58h9cbD3BtI71+pFkZf73Mg1kfaVD8D
+         2DBb2NNCTQAl4IJ+EEtdMKn0ymG+VXdTiuTKH3J93X+04TiAE8pu75lnX9g/Or9DXbky
+         9QnYodDw/lLT0NU973i9N2Mn9WC+yCs5JwGmlaSPYlfoLZ0gMgQel3fWz+DNT5YIgb9t
+         MAQo9XeRizXsQhZPS1jTsqXX7hcSX1GZ/+PIn99on75HvU2/B3V3shRpppdLNJkqockZ
+         p4WQWoD18WgX86RQ3yzPDL8IDcO3a6B0DbfQdAj99dsWeEP2T1RnsCYT0ag6o88MbJIm
+         24Vw==
+X-Forwarded-Encrypted: i=1; AJvYcCWUVIqJBPq9lD7bvSmslYQCKPIKXD8xZGwuxTVffcS09Yj8Dpz+5g/T6MLnpPNWKBKUYLJsFe4x@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzb8IWA8WYD9Z5XsCpAZunnP4r14SoVWgtJ88kqBs01SugcB+GD
+	AyQ2YLLBMYHE+3tU/+zPpzR5SDNkZXcIKnkI3zEF8ipHto55/eojFGcxme9LlTow25rAkxE9+IK
+	cjwV0lCwGEHYsULbCN8kt0HHMhnL0rx8JmHwmfxJw2s088Tw/VfBizig=
+X-Gm-Gg: ASbGncs3UjLtGHJNwJdBaW04EKzUtHtcMQKNuI7YGt5yJIpQko6L0Q9UxcUe9KsNcLY
+	KKkYJqP8ezJrFJDn8bqkSQTaq69Zid0SocMQKNjERYyhqXXeBlL7kp6/HXx/3NF8EyMgZLcZF7z
+	vgReGRETakwJI5Ewq6CsWBRQfCuABFzXiMfdBmTuiMKkpZzojTFLe6Lky8OryZGTg6siV7Tk2xW
+	S55vMP4H63PjiAp0815QN+MZwkTotoTV2LNJ89y+zcl5rXr6PZ8SFI8bTItJQ9DR6g5Y/OhdumE
+	VfzWbCK3Mw==
+X-Received: by 2002:a05:622a:101:b0:46d:faa2:b6d1 with SMTP id d75a77b69052e-46dfaa2b78fmr106852271cf.16.1737042935825;
+        Thu, 16 Jan 2025 07:55:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG6rEQNPX3QX1cl1+CEt2jh6XECB7XmNLIK/9PkAlURmQsCMsq9QryFVTViYqSI+bAw4+QYfg==
+X-Received: by 2002:a05:622a:101:b0:46d:faa2:b6d1 with SMTP id d75a77b69052e-46dfaa2b78fmr106851951cf.16.1737042935507;
+        Thu, 16 Jan 2025 07:55:35 -0800 (PST)
+Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.92.51])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46e10436a37sm697891cf.79.2025.01.16.07.55.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jan 2025 07:55:33 -0800 (PST)
+Date: Thu, 16 Jan 2025 16:55:27 +0100
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: Thierry Reding <treding@nvidia.com>, Waiman Long <longman@redhat.com>,
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Koutny <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Phil Auld <pauld@redhat.com>, Qais Yousef <qyousef@layalina.io>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
+	Suleiman Souhlal <suleiman@google.com>,
+	Aashish Sharma <shraash@google.com>,
+	Shin Kawamura <kawasin@google.com>,
+	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v2 3/2] sched/deadline: Check bandwidth overflow earlier
+ for hotplug
+Message-ID: <Z4kr7xq7tysrKGoR@jlelli-thinkpadt14gen4.remote.csb>
+References: <ZzYhyOQh3OAsrPo9@jlelli-thinkpadt14gen4.remote.csb>
+ <Zzc1DfPhbvqDDIJR@jlelli-thinkpadt14gen4.remote.csb>
+ <ba51a43f-796d-4b79-808a-b8185905638a@nvidia.com>
+ <Z4FAhF5Nvx2N_Zu6@jlelli-thinkpadt14gen4.remote.csb>
+ <5d7e5c02-00ee-4891-a8cf-09abe3e089e1@nvidia.com>
+ <Z4TdofljoDdyq9Vb@jlelli-thinkpadt14gen4.remote.csb>
+ <e9f527c0-4530-42ad-8cc9-cb04aa3d94b7@nvidia.com>
+ <Z4ZuaeGssJ-9RQA2@jlelli-thinkpadt14gen4.remote.csb>
+ <Z4fd_6M2vhSMSR0i@jlelli-thinkpadt14gen4.remote.csb>
+ <aebb2c29-2224-4d14-94e0-7a495923b401@nvidia.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241224011402.134009-1-inwardvessel@gmail.com>
- <cenwdwpggezxk6hko6z6je7cuxg3irk4wehlzpj5otxbxrmztp@xcit4h7cjxon>
- <3wew3ngaqq7cjqphpqltbq77de5rmqviolyqphneer4pfzu5h5@4ucytmd6rpfa> <gn5itb2kpffyuqzqwlu6e2qtkhsvbo2bif7d6pcryrplq25t3r@ytndeykgtkf3>
-In-Reply-To: <gn5itb2kpffyuqzqwlu6e2qtkhsvbo2bif7d6pcryrplq25t3r@ytndeykgtkf3>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 16 Jan 2025 07:35:25 -0800
-X-Gm-Features: AbW1kvYFC55FklfPWaCbeq5zpRtCrNzWLETLwIsv7izVGGfcV01UiDEi7-li7Kg
-Message-ID: <CAJD7tkY8sge3wxqjFMa0CmyhjXv4_o7vDz5SkptxnK62noUHyw@mail.gmail.com>
-Subject: Re: [PATCH 0/9 RFC] cgroup: separate rstat trees
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, JP Kobryn <inwardvessel@gmail.com>, hannes@cmpxchg.org, 
-	akpm@linux-foundation.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aebb2c29-2224-4d14-94e0-7a495923b401@nvidia.com>
 
-On Thu, Jan 16, 2025 at 7:19=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
->
-> Hello.
->
-> On Mon, Jan 13, 2025 at 10:25:34AM -0800, Shakeel Butt <shakeel.butt@linu=
-x.dev> wrote:
-> > > and flushing efffectiveness depends on how individual readers are
-> > > correlated,
-> >
-> > Sorry I am confused by the above statement, can you please expand on
-> > what you meant by it?
-> >
-> > > OTOH writer correlation affects
-> > > updaters when extending the update tree.
-> >
-> > Here I am confused about the difference between writer and updater.
->
-> reader -- a call site that'd need to call cgroup_rstat_flush() to
->         calculate aggregated stats
-> writer (or updater) -- a call site that calls cgroup_rstat_updated()
->         when it modifies whatever datum
->
-> By correlated readers I meant that stats for multiple controllers are
-> read close to each other (time-wise). First such a reader does the heavy
-> lifting, consequent readers enjoy quick access.
-> (With per-controller flushing, each reader would need to do the flush
-> and I'm suspecting the total time non-linear wrt parts.)
+On 16/01/25 13:14, Jon Hunter wrote:
+> 
+> On 15/01/2025 16:10, Juri Lelli wrote:
+> > On 14/01/25 15:02, Juri Lelli wrote:
+> > > On 14/01/25 13:52, Jon Hunter wrote:
+> > > > 
+> > > > On 13/01/2025 09:32, Juri Lelli wrote:
+> > > > > On 10/01/25 18:40, Jon Hunter wrote:
+> > > > > 
+> > > > > ...
+> > > > > 
+> > > > > > With the above I see the following ...
+> > > > > > 
+> > > > > > [   53.919672] dl_bw_manage: cpu=5 cap=3072 fair_server_bw=52428 total_bw=209712 dl_bw_cpus=4
+> > > > > > [   53.930608] dl_bw_manage: cpu=4 cap=2048 fair_server_bw=52428 total_bw=157284 dl_bw_cpus=3
+> > > > > > [   53.941601] dl_bw_manage: cpu=3 cap=1024 fair_server_bw=52428 total_bw=104856 dl_bw_cpus=2
+> > > > > 
+> > > > > So far so good.
+> > > > > 
+> > > > > > [   53.952186] dl_bw_manage: cpu=2 cap=1024 fair_server_bw=52428 total_bw=576708 dl_bw_cpus=2
+> > > > > 
+> > > > > But, this above doesn't sound right.
+> > > > > 
+> > > > > > [   53.962938] dl_bw_manage: cpu=1 cap=0 fair_server_bw=52428 total_bw=576708 dl_bw_cpus=1
+> > > > > > [   53.971068] Error taking CPU1 down: -16
+> > > > > > [   53.974912] Non-boot CPUs are not disabled
+> > > > > 
+> > > > > What is the topology of your board?
+> > > > > 
+> > > > > Are you using any cpuset configuration for partitioning CPUs?
+> > > > 
+> > > > 
+> > > > I just noticed that by default we do boot this board with 'isolcpus=1-2'. I
+> > > > see that this is a deprecated cmdline argument now and I must admit I don't
+> > > > know the history of this for this specific board. It is quite old now.
+> > > > 
+> > > > Thierry, I am curious if you have this set for Tegra186 or not? Looks like
+> > > > our BSP (r35 based) sets this by default.
+> > > > 
+> > > > I did try removing this and that does appear to fix it.
+> > > 
+> > > OK, good.
+> > > 
+> > > > Juri, let me know your thoughts.
+> > > 
+> > > Thanks for the additional info. I guess I could now try to repro using
+> > > isolcpus at boot on systems I have access to (to possibly understand
+> > > what the underlying problem is).
+> > 
+> > I think the problem lies in the def_root_domain accounting of dl_servers
+> > (which isolated cpus remains attached to).
+> > 
+> > Came up with the following, of which I'm not yet fully convinced, but
+> > could you please try it out on top of the debug patch and see how it
+> > does with the original failing setup using isolcpus?
+> 
+> 
+> Thanks I added the change, but suspend is still failing with this ...
 
-In this case, I actually think it's better if every reader pays for
-the flush they asked for (and only that). There is a bit of repeated
-work if we read memory stats then io stats right after, but in cases
-where we don't, paying to flush all subsystems because they are likely
-to be flushed soon is not necessarily a good thing imo.
+Thanks!
 
->
-> Similarly for writers, if multiple controller's data change in short
-> window, only the first one has to construct the rstat tree from top down
-> to self, the other are updating the same tree.
+> [  210.595431] dl_bw_manage: cpu=5 cap=3072 fair_server_bw=52428 total_bw=209712 dl_bw_cpus=4
+> [  210.606269] dl_bw_manage: cpu=4 cap=2048 fair_server_bw=52428 total_bw=157284 dl_bw_cpus=3
+> [  210.617281] dl_bw_manage: cpu=3 cap=1024 fair_server_bw=52428 total_bw=104856 dl_bw_cpus=2
+> [  210.627205] dl_bw_manage: cpu=2 cap=1024 fair_server_bw=52428 total_bw=262140 dl_bw_cpus=2
+> [  210.637752] dl_bw_manage: cpu=1 cap=0 fair_server_bw=52428 total_bw=262140 dl_bw_cpus=1
+                                                                          ^
+Different than before but still not what I expected. Looks like there
+are conditions/path I currently cannot replicate on my setup, so more
+thinking. Unfortunately I will be out traveling next week, so this
+might required a bit of time.
 
-This I agree about. If we have consecutive updates from two different
-subsystems to the same cgroup, almost all the work is repeated.
-Whether that causes a tangible performance difference or not is
-something the numbers should show. In my experience, real regressions
-on the update side are usually caught by LKP and are somewhat easy to
-surface in benchmarks (I used netperf in the past).
+Best,
+Juri
 
->
-> > In-kernel memcg stats readers will be unaffected most of the time with
-> > this change. The only difference will be when they flush, they will onl=
-y
-> > flush memcg stats.
->
-> That "most of the time" is what depends on how other controller's
-> readers are active.
-
-Since readers of other controllers are only in userspace (AFAICT), I
-think it's unlikely that they are correlated with in-kernel memcg stat
-readers in general.
-
->
-> > Here I am assuming you meant measurements in terms of cpu cost or do yo=
-u
-> > have something else in mind?
->
-> I have in mind something like Tejun's point 2:
-> | 2. It has noticeable benefits in the targeted use cases.
->
-> The cover letter mentions some old problems (which may not be problems
-> nowadays with memcg flushing reworks) and it's not clear how the
-> separation into per-controller trees impacts (today's) problems.
->
-> (I can imagine if the problem is stated like: io.stat readers are
-> unnecessarily waiting for memory.stat flushing, the benefit can be shown
-> (unless io.stat readers could benefit from flushing triggered by e.g.
-> memory).  But I didn't get if _that_ is the problem.)
-
-Yeah I hope/expect that numbers will show that reading memcg stats (in
-userspace or the kernel) becomes a bit faster, while reading other
-subsystem stats should be significantly faster (at least in some
-cases). We will see how that turns out.
 
