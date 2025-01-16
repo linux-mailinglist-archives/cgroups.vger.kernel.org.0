@@ -1,119 +1,126 @@
-Return-Path: <cgroups+bounces-6191-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6192-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C9C6A13B01
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 14:39:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 814F8A13B07
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 14:41:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A6CD16426D
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 13:39:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2ED03A21CA
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 13:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3BF81F37B0;
-	Thu, 16 Jan 2025 13:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 461A522A80A;
+	Thu, 16 Jan 2025 13:41:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UCRf5AmW";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mLnWUoUT"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MuNBNu48"
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BFD8143736;
-	Thu, 16 Jan 2025 13:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA7E22A7EC
+	for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 13:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737034769; cv=none; b=Z6+Z0TPnNNkQ5V5jd6HIX1FOGkSCX3NxcnmeS810+WRZrDVGTQktkNC9X4hisGigIXo3nU5VRRbHuMM0nL9//mw+x3zxNytNcWp76nhDflIzjxBwpE2KsKFy4ZNukUIBuM7pq4ONOH4QEEf6B0BhOV3jGYW6cczXJbg9md4/quc=
+	t=1737034867; cv=none; b=mfXzTpUJVeeG39PAG+r7PiMPdCexKNCDha7GwmbuYHCsUVPbP1Y3ngFxn3zuZU3+Emhl2CsnrAD9QVKsnKDN6ZjRx1G0IAF4n+FEdB1GFpxSRs44a6S/2vaUxeVVLmO3K3HBHroZOKA0P7iva9zCCV+2EOdIaFbYnEqFoSPQtG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737034769; c=relaxed/simple;
-	bh=YaOCWTi7Oo+i0S4haKVf8BamGh6GzNdiBfuLZLVmZHI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Le9ZOwSAlwujE2SDLo9VChAKwtBnP+7kaloZhwxpQj8LG1WScrfblmw01qSsg//aNH3VJopLyA/PY4IFBVQ29bMv5ZQYrJ8D3wwzo3Brmas55oaNTjb6iy0+LWL/UarehQNzYE1+cpatynlQt1k9mnF5CzpkjgI4dCqI5ZPkgeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UCRf5AmW; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mLnWUoUT; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 16 Jan 2025 14:39:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1737034765;
+	s=arc-20240116; t=1737034867; c=relaxed/simple;
+	bh=RHFOBtWCmvV7lPztg0dWQrc6RBt+/NMmdmKKcaVtJYQ=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=O5fCZ9SDzIsmK/RDdu3haLVK9iawDGXe1cCFuLBe6TFvBNfWroAYFYwBhgF5/3vKTAfY6086MDGEZhchM2ZXrDMFFN5WqfbDV8KHoIEKaz2NFjAb1stGnF5ReZ48VELN2g0qprT9fztwdj/IMHjD1CrWk9ISspb8ZHKWG6bS49U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MuNBNu48; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737034863;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=SGJ4KdM46X8mQsnAtylyjwp7hkOOM29WF2J7ugpYPTw=;
-	b=UCRf5AmWJmHtwYuBHfX6Fdt/uqSaKZ7ZrLaq9c4kziDuBHRc40Q5x2enKaJSBMYWvjfZ7q
-	bDb/od7eKfzhbQDRZmzIt4T0yaR9cti2LxQki4Zq+t6BhT1ir1LtfDaZ6r796zRCQP/1vu
-	zQrR0RZWTP6yTT2hlMRfP8rdEeS2DoDLna+5SOoDmR0nScsvC/xan6Qq6SJ9CpLitPtU49
-	6QqXM6ZZvwv6DJa28YVy65lGNDC0Cxuv/XtH/NpESJqEYxsBKdBr7dYqUSSHk0lnoPAAyG
-	FXhBXI+ISYRIF1mth49yQYsr+GIeBn0TDkTpuIaVRQiW4u5MmMyoVideM9Hb/A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1737034765;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SGJ4KdM46X8mQsnAtylyjwp7hkOOM29WF2J7ugpYPTw=;
-	b=mLnWUoUTul6iZ8xSF0/2BG6YWRKBQ5A95g4t87fuRYd5nZAZWZPvqtnrpt529crkWLDvNF
-	qZy+3cVHyRS9MAAw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hillf Danton <hdanton@sina.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Marco Elver <elver@google.com>, Zefan Li <lizefan.x@bytedance.com>,
-	tglx@linutronix.de,
-	syzbot+6ea37e2e6ffccf41a7e6@syzkaller.appspotmail.com
-Subject: Re: [PATCH v3] kernfs: Use RCU for kernfs_node::name and ::parent
- lookup.
-Message-ID: <20250116133924.XGY8rIaj@linutronix.de>
-References: <20241121175250.EJbI7VMb@linutronix.de>
- <Z0-Eg0B09JQUZG2N@slm.duckdns.org>
- <20250116132745.dU941oor@linutronix.de>
+	bh=n3VCOL0D78vqUW2184mv6wyBzLiBmr3jrjU49FJv374=;
+	b=MuNBNu48v5CZhRCxnjV1Y2qlixQSsrqkmXeEDkAYj5C8GPgHmAzkj7e1C7uVUeMRmMNNJM
+	3KjQRK3LIgjZ0CabMlk/1VNns70UwVFX5RwV8TbQEA55wRNXVRqwaqGtbhjw1R8mZGNDJ1
+	ZQd63lJSAigDn9avJYb/4ABbvo2MIJA=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-447-Jt2pasPEOByPxOD7lSeT5g-1; Thu, 16 Jan 2025 08:41:00 -0500
+X-MC-Unique: Jt2pasPEOByPxOD7lSeT5g-1
+X-Mimecast-MFC-AGG-ID: Jt2pasPEOByPxOD7lSeT5g
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-2178115051dso19558645ad.1
+        for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 05:41:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737034859; x=1737639659;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n3VCOL0D78vqUW2184mv6wyBzLiBmr3jrjU49FJv374=;
+        b=gdqUdmUldsSxpM+Uv+yyQ4sKuFVsVghxI3V65N6SVyU/C0N8EymdTWypDjtXBrAxrV
+         2KLoFxlg0T+6HLyYV9SPjAbo9PJEylg0uX0B9ZgG/Cm0JKRsxHwQTA5/Se/HLCsrm6Gh
+         5OfGXiZL5OoRoSs9fvY5E6MbZ0c4h3KpkPHU3qJ5lpe9pMnM3dIniR+T1nTd6u1q+hBH
+         zRyuA9TaGl9+wETKGWaaetzZHN5KG5h3sv2freVC4P6zdsrLi8OWvDBgIxbOKpCoYwGq
+         UrGGKGTpCKFZ3k4/R6NVNSaK6siJ1vWhaGyNMsnIMT9a4ag3g3QByVv3YGiM/ZAEa7cX
+         Y77Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVajYWJwngElQZF2uwijOhVZaGpTRSGq1qas9ZWLiEaozjLH84nd2wh5sc9BbNoQQp4GlEQsupS@vger.kernel.org
+X-Gm-Message-State: AOJu0YzaMYNEAhql2ICkFteKfF1jjSf15AWyDgpewcxcylA6zyqIGZsx
+	gu4NrsNGzWqCslxwoGluP7IJorA9E2lCQ4MH8uAjZY9ZfxJB8CLdUXjNQhl8HR36B1tC4uhadxU
+	5G9V6xFrnU1AygdcovzfH6E24g1UwkqIhSETjl1riVzZcx/mLHpToeFM=
+X-Gm-Gg: ASbGnctNZzrp/MrDmvnbBfJIg2nbrkxCtrumXA5GFpxH6ciQSOA2/1nhuCm8U4FR06W
+	CaedCw+HkGPTB5UFE5TqRBjiVUnQWEfnH0RuB1XvdKiHuJ6ryuVtiX+nuvOiakWMIKv8oA7eLw9
+	qs6V6N48pI3O/CZEvw9Vsxm46Cv2EDvKoAimtYRiQC81EnMhj4ryrfex1nzAymRq5HY4WxxreY8
+	WjcuYPaSfOxTy1HIO2tj+tF4kj92ap2xXNvz3mkYE2As25PuN4XgJBaVPhwiVdLU9vhfVCl4s42
+	XQBGpHbr+50H/nbKxmh/lkXkGEQ=
+X-Received: by 2002:a17:902:f551:b0:216:46f4:7e30 with SMTP id d9443c01a7336-21a83fc6d98mr536111305ad.43.1737034859288;
+        Thu, 16 Jan 2025 05:40:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFSXRMV2P6Rpc0zdlVDQcdVEqMlCGxhwufQY94QDMEqPWCar0YzrlSDhf6sPLgmUiQMoissrw==
+X-Received: by 2002:a17:902:f551:b0:216:46f4:7e30 with SMTP id d9443c01a7336-21a83fc6d98mr536110935ad.43.1737034858898;
+        Thu, 16 Jan 2025 05:40:58 -0800 (PST)
+Received: from ?IPV6:2601:188:c100:5710:315f:57b3:b997:5fca? ([2601:188:c100:5710:315f:57b3:b997:5fca])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21c2cd609aesm634605ad.0.2025.01.16.05.40.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jan 2025 05:40:58 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <b90d0be9-b970-442d-874d-1031a63d1058@redhat.com>
+Date: Thu, 16 Jan 2025 08:40:56 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20250116132745.dU941oor@linutronix.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup/cpuset: Move procfs cpuset attribute under
+ cgroup-v1.c
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ Chen Ridong <chenridong@huawei.com>
+References: <20250116095656.643976-1-mkoutny@suse.com>
+Content-Language: en-US
+In-Reply-To: <20250116095656.643976-1-mkoutny@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 2025-01-16 14:27:47 [+0100], To Tejun Heo wrote:
-> > > @@ -557,16 +568,18 @@ void kernfs_put(struct kernfs_node *kn)
-> > >  	if (!kn || !atomic_dec_and_test(&kn->count))
-> > >  		return;
-> > >  	root =3D kernfs_root(kn);
-> > > +	guard(rcu)();
-> > >   repeat:
-> > >  	/*
-> > >  	 * Moving/renaming is always done while holding reference.
-> > >  	 * kn->parent won't change beneath us.
-> > >  	 */
-> > > -	parent =3D kn->parent;
-> > > +	parent =3D rcu_dereference(kn->parent);
-> >=20
-> > I wonder whether it'd be better to encode the reference count rule (ie.=
- add
-> > the condition kn->count =3D=3D 0 to deref_check) in the kn->parent deref
-> > accessor. This function doesn't need RCU read lock and holding it makes=
- it
-> > more confusing.
->=20
-> You are saying that we don't need RCU here because if we drop the last
-> reference then nobody can rename the node anymore and so parent can't
-> change. That sounds right.
-> What about using rcu_dereference_protected() instead? Using
-> rcu_dereference(x, !atomic_read(&kn->count)) looks odd given that we
-> established that the counter is 0. Therefore I would suggest
-> rcu_access_pointer() but the reference drop might qualify as "locked".
+On 1/16/25 4:56 AM, Michal Koutný wrote:
+> The cpuset file is a legacy attribute that is bound primarily to cpuset
+> v1 (and it'd be equal to effective /proc/$pid/cgroup path on the unified
+> hierarchy).
+>
+> Followup to commit b0ced9d378d49 ("cgroup/cpuset: move v1 interfaces to
+> cpuset-v1.c") and hide CONFIG_PROC_PID_CPUSET under CONFIG_CPUSETS_V1.
+> Drop an obsolete comment too.
+>
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
 
-Ehm or indeed rcu_access_pointer() given that _protected() requires a
-second argument=E2=80=A6
+I do have some reservation in taking out /proc/<pid>/cpuset by default 
+as CPUSETS_V1 is off by default. This may break some existing user scripts.
 
-Sebastian
+Also the statement that the cpuset file is the same as the path in 
+cgroup file in unified hierarchy is not true if that cgroup doesn't have 
+cpuset enabled.
+
+Cheers,
+Longman
+
 
