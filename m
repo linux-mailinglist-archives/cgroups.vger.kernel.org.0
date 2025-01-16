@@ -1,155 +1,146 @@
-Return-Path: <cgroups+bounces-6177-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6178-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F12FA130B0
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 02:21:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5DC1A13150
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 03:22:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74711163B5E
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 01:21:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DB5E188949A
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 02:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8316227462;
-	Thu, 16 Jan 2025 01:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57834481A3;
+	Thu, 16 Jan 2025 02:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QxEFtrV/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C945E28E37;
-	Thu, 16 Jan 2025 01:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6747224A7EE;
+	Thu, 16 Jan 2025 02:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736990514; cv=none; b=bRNLisUcYGSk1zC6avYuExMPMCWgdHGEBAFYRmxyXQz4K0Sms96rAJ/01xp+fYpvDL/IICxmWn3EPelVacXp9BrXMwA0FVJJETZcBve4K2Z9c1wMiIT1kOaeFvtHJ5rHsoWnYH/NEMAWgFUe6aKKGEQskZ1gXh8Hm5s++1bY7Ok=
+	t=1736994165; cv=none; b=OE88ZlXG3B/g7I9jF9/gKWXjpEO/TgifBk5iFWdfG9p6Q6aF58k1C1qyHmigeTtjAnf7s2DVqm3f6pfxIsmV+CVeRM0bnSj4vCkyj6upEANJRTwodaEhnXhkKA4OKKcUKRw87tz2n68XApjuWUxzpeDvX23E+6oOO40KetH+XJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736990514; c=relaxed/simple;
-	bh=d7EEn4nKleEKHHxP3Vapn99mKqGWWVzE/sttOKMBTYc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AKlynn9rEOB1BibuYuscgP9LIY8L6tSDzogKDbmAc8rW2FypqSOr6QuQoJL2yZMyWluldXhsanN39a3+7No4az7xMIFg7ESCUo/2sR+zWR45y7Zi1MH0BdEh9ulfz+zIE+vDe2Z9ZwbaQ/d46GKIeos3PEBpAhkaPrTEYvtvOh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YYQ764v1rz4f3kFh;
-	Thu, 16 Jan 2025 09:21:22 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 1B8F11A0F2D;
-	Thu, 16 Jan 2025 09:21:43 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP2 (Coremail) with SMTP id Syh0CgDX4WQlX4hn8ntLBA--.58672S2;
-	Thu, 16 Jan 2025 09:21:42 +0800 (CST)
-Message-ID: <a4dd27e4-dca4-45e7-8c37-c53e88cf878c@huaweicloud.com>
-Date: Thu, 16 Jan 2025 09:21:41 +0800
+	s=arc-20240116; t=1736994165; c=relaxed/simple;
+	bh=JG5PwZAne8XlSGNWsx/HK3rGAQ9E85RzEK5Z61yXxbA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FVhnqc8U6/VR9hNadmwC/0IefMrIRJW7sflDiE4TMLB/O65aPZjz0JpGOZYFssdDZYJpm2Q0AkENgZ4A970MWsXsrAd5rkWF2/BUNYMAr8j6R7k7sZ7hVp6/Ys75zBnI746VmCfRnmv0tPEaXjXnHCnzRkt2a0IKZodpAWJamuo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QxEFtrV/; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-385d7f19f20so202504f8f.1;
+        Wed, 15 Jan 2025 18:22:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736994161; x=1737598961; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9CCoBm1y8pOX5q7ZU8+TocUYP0UhOzxurJN+MoqKRGw=;
+        b=QxEFtrV/vo9llP85RIZnWDsnawoMuo5pYrKENAp0b1xdlHUbAJ1edxF0fafUFNvKu1
+         BmWdk5okljQXh7aszGSmPdlvNwD0xRJqrNyIJmQyRlXEUpe3mV8QdTT4hijr1xn/inTp
+         wKi7YAwKCr8ryQS3QTpAtwavApyRoilQsJwudyYWBdw60y7UApLoukkLAju2ZiTlHK2a
+         f764J4wSa9hx2VXcYphw7AftRGQJOSUdfhxx5lpKr6XLp1YRaIzCPUHoztsk5YQdwkNA
+         HS2QGcX9kAQsb1i4ttJ/W4yXbcWq73RX8N5uceFcLymRHUy8zfdTp/vbJFt6F1rx/OBr
+         A52w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736994161; x=1737598961;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9CCoBm1y8pOX5q7ZU8+TocUYP0UhOzxurJN+MoqKRGw=;
+        b=M3Us8C/OG4OTdjwfa869RnQc7nYcOdVTF998x60+Add8nbagAeH6NnbteWswDtwqSX
+         b0ikTN3UIEe2rcRXVxRnq5Z0Kwr6Cu6FudJqT28+m7JA0lEt3VwrjdDAuRiWsV1huKip
+         526TrvOyAapuRzKqN7DGyvsNodvwfQTD3r4tpWGCVSIH9WEp77BTAB8bt4Uu6N65dfU7
+         Os14yxUuamMzJJuBOE6qWoZ7W7+qHIxcHc5KY7GvW1F7SjUtE9gC0wdkJUHA9Wq/FQ4v
+         mN+NV91ETkb18LrXC8VLP5j0FpTg+FB0lh0n78M/W3qiCeJAdT3GQGoNHodD82xHm/jm
+         QYCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWf1k6/7Cr3sPXUCo+xGAkqWObHAq0gdc0SY/V40wLT+WIndbv3xRNG2Gr3EnMqBf781fuHgwBV@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywn3IaGPmhCIhFSCv1zGcr0Y9mkCBLRe2gozp3mUhnB2wUhfqcc
+	x76kTOrqPZV3SPhYNF054G45RvpjJWj00zGpqfqDAwOMfKWStpQl1lBDiXzAIVeDy30Ep9a0Lb6
+	SHxbG4DxfWF+PoARQAWlsD2Drd7w+Pt6n
+X-Gm-Gg: ASbGncseW9JhpmLRYu2Zm7+RUyHnA28ThdZJ4oExU7nk7HFi/C1NRh+TEImH75TGe/7
+	IcVbtaS+DB1KRkeAMzD+jlXqPKhRZir2F+fAZee47SXpYEz7lsGAZkA==
+X-Google-Smtp-Source: AGHT+IEKtVuajWZgwoOaUg+OTfmnKZcUaMvweNO4Ybs9RNl3uzalHNeEM+EZaVIZssyRHPill9de9h23TNze52Bju+0=
+X-Received: by 2002:a05:6000:178e:b0:385:fd24:3303 with SMTP id
+ ffacd0b85a97d-38be9ceac10mr3199495f8f.0.1736994161574; Wed, 15 Jan 2025
+ 18:22:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -v2 next 4/4] memcg: factor out
- stat(event)/stat_local(event_local) reading functions
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Roman Gushchin <roman.gushchin@linux.dev>
-Cc: akpm@linux-foundation.org, mhocko@kernel.org, hannes@cmpxchg.org,
- yosryahmed@google.com, muchun.song@linux.dev, davidf@vimeo.com,
- vbabka@suse.cz, mkoutny@suse.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- chenridong@huawei.com, wangweiyang2@huawei.com
-References: <20250114122519.1404275-1-chenridong@huaweicloud.com>
- <20250114122519.1404275-5-chenridong@huaweicloud.com>
- <Z4awwH3cbhjl0H4W@google.com>
- <csuymdtyrj2tch2m4lhn5hz5aeojhzvixepxydvphvawqsn5ky@dx4o25o4wzlw>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <csuymdtyrj2tch2m4lhn5hz5aeojhzvixepxydvphvawqsn5ky@dx4o25o4wzlw>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgDX4WQlX4hn8ntLBA--.58672S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4fXrWDGr45GF1fXF1rCrg_yoW8uw43pF
-	ZrJayakayUXrySgr9IqF4DZryYyF1xtr4UXrZrtrySqFnFva43K345KFy8uFWUZrWkZF12
-	va4jyrnrXw4jvrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+References: <20250115021746.34691-1-alexei.starovoitov@gmail.com>
+ <20250115021746.34691-5-alexei.starovoitov@gmail.com> <svm77mp6vx5uui7zzzvfo27oijq6nh3ceqfdc676to6oruidaq@p7ddlyjwwwrw>
+In-Reply-To: <svm77mp6vx5uui7zzzvfo27oijq6nh3ceqfdc676to6oruidaq@p7ddlyjwwwrw>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 15 Jan 2025 18:22:28 -0800
+X-Gm-Features: AbW1kvbmtlUFtOVTN9tBFoUufcUMkk4E5svlUJ9HTwowBMUBZJ_jZip0odkQM_0
+Message-ID: <CAADnVQLEfjETi+L3PXwTz7i+MnT4FT1ohoAL555N_Mdhd+vqBg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/7] memcg: Use trylock to access memcg stock_lock.
+To: Shakeel Butt <shakeel.butt@linux.dev>, joshua.hahnjy@gmail.com, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	SeongJae Park <sj@kernel.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, linux-mm <linux-mm@kvack.org>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Sebastian Sewior <bigeasy@linutronix.de>, 
+	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>, 
+	Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, 
+	Tejun Heo <tj@kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Jan 15, 2025 at 4:12=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
+>
+> On Tue, Jan 14, 2025 at 06:17:43PM -0800, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > Teach memcg to operate under trylock conditions when spinning locks
+> > cannot be used.
+> >
+> > local_trylock might fail and this would lead to charge cache bypass if
+> > the calling context doesn't allow spinning (gfpflags_allow_spinning).
+> > In those cases charge the memcg counter directly and fail early if
+> > that is not possible. This might cause a pre-mature charge failing
+> > but it will allow an opportunistic charging that is safe from
+> > try_alloc_pages path.
+> >
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>
+> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+>
+> > @@ -1851,7 +1856,14 @@ static void refill_stock(struct mem_cgroup *memc=
+g, unsigned int nr_pages)
+> >  {
+> >       unsigned long flags;
+> >
+> > -     local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> > +     if (!local_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
+> > +             /*
+> > +              * In case of unlikely failure to lock percpu stock_lock
+> > +              * uncharge memcg directly.
+> > +              */
+> > +             mem_cgroup_cancel_charge(memcg, nr_pages);
+>
+> mem_cgroup_cancel_charge() has been removed by a patch in mm-tree. Maybe
+> we can either revive mem_cgroup_cancel_charge() or simply inline it
+> here.
 
+Ouch.
 
-On 2025/1/16 8:57, Shakeel Butt wrote:
-> On Tue, Jan 14, 2025 at 06:45:20PM +0000, Roman Gushchin wrote:
->> On Tue, Jan 14, 2025 at 12:25:19PM +0000, Chen Ridong wrote:
->>> From: Chen Ridong <chenridong@huawei.com>
->>>
->>> The only difference between 'lruvec_page_state' and
->>> 'lruvec_page_state_local' is that they read 'state' and 'state_local',
->>> respectively. Factor out an inner functions to make the code more concise.
->>> Do the same for reading 'memcg_page_stat' and 'memcg_events'.
->>>
->>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->>> ---
->>>  mm/memcontrol.c | 72 +++++++++++++++++++++----------------------------
->>>  1 file changed, 30 insertions(+), 42 deletions(-)
->>>
->>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>> index b10e0a8f3375..14541610cad0 100644
->>> --- a/mm/memcontrol.c
->>> +++ b/mm/memcontrol.c
->>> @@ -375,7 +375,8 @@ struct lruvec_stats {
->>>  	long state_pending[NR_MEMCG_NODE_STAT_ITEMS];
->>>  };
->>>  
->>> -unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx)
->>> +static unsigned long __lruvec_page_state(struct lruvec *lruvec,
->>> +		enum node_stat_item idx, bool local)
->>>  {
->>>  	struct mem_cgroup_per_node *pn;
->>>  	long x;
->>> @@ -389,7 +390,8 @@ unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx)
->>>  		return 0;
->>>  
->>>  	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
->>> -	x = READ_ONCE(pn->lruvec_stats->state[i]);
->>> +	x = local ? READ_ONCE(pn->lruvec_stats->state_local[i]) :
->>> +		    READ_ONCE(pn->lruvec_stats->state[i]);
->>>  #ifdef CONFIG_SMP
->>>  	if (x < 0)
->>>  		x = 0;
->>> @@ -397,27 +399,16 @@ unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx)
->>>  	return x;
->>>  }
->>>  
->>> +
->>> +unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx)
->>> +{
->>> +	return __lruvec_page_state(lruvec, idx, false);
->>> +}
->>
->> I'd move these wrapper function definitions to memcontrol.h and make them
->> static inline.
-> 
-> +1
-> 
+this one?
+https://lore.kernel.org/all/20241211203951.764733-4-joshua.hahnjy@gmail.com=
+/
 
-Thank you.
+Joshua,
 
-Will update.
-
-Best regards,
-Ridong
->>
->> Other than that, lgtm.
->>
->> Thank you!
-
+could you hold on to that clean up?
+Or leave mem_cgroup_cancel_charge() in place ?
 
