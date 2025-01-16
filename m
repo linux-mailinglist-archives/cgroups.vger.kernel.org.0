@@ -1,126 +1,133 @@
-Return-Path: <cgroups+bounces-6192-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6193-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 814F8A13B07
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 14:41:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B236A13BA8
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 15:06:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2ED03A21CA
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 13:41:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 050D2188D57A
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 14:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 461A522A80A;
-	Thu, 16 Jan 2025 13:41:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E989B22A819;
+	Thu, 16 Jan 2025 14:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MuNBNu48"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dUZa7aX8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA7E22A7EC
-	for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 13:41:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB06722A1EA
+	for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 14:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737034867; cv=none; b=mfXzTpUJVeeG39PAG+r7PiMPdCexKNCDha7GwmbuYHCsUVPbP1Y3ngFxn3zuZU3+Emhl2CsnrAD9QVKsnKDN6ZjRx1G0IAF4n+FEdB1GFpxSRs44a6S/2vaUxeVVLmO3K3HBHroZOKA0P7iva9zCCV+2EOdIaFbYnEqFoSPQtG0=
+	t=1737036337; cv=none; b=ubTGrsBSTmhKvo3mKM+grhkk0wm9m2rykHj4h2EAD1toZdo2QNWXbqAynl3j3s1bRtUWqB9BJzZB26KcPfA8FkRY0boFqrBPJiHIZtNRmCG1pgF3kiMGUNQsLUKQ2EqJBaB9OlX57uHY/BvJ8aFvPZUesZm1vjYW6ZJ594QYD1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737034867; c=relaxed/simple;
-	bh=RHFOBtWCmvV7lPztg0dWQrc6RBt+/NMmdmKKcaVtJYQ=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=O5fCZ9SDzIsmK/RDdu3haLVK9iawDGXe1cCFuLBe6TFvBNfWroAYFYwBhgF5/3vKTAfY6086MDGEZhchM2ZXrDMFFN5WqfbDV8KHoIEKaz2NFjAb1stGnF5ReZ48VELN2g0qprT9fztwdj/IMHjD1CrWk9ISspb8ZHKWG6bS49U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MuNBNu48; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1737034863;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n3VCOL0D78vqUW2184mv6wyBzLiBmr3jrjU49FJv374=;
-	b=MuNBNu48v5CZhRCxnjV1Y2qlixQSsrqkmXeEDkAYj5C8GPgHmAzkj7e1C7uVUeMRmMNNJM
-	3KjQRK3LIgjZ0CabMlk/1VNns70UwVFX5RwV8TbQEA55wRNXVRqwaqGtbhjw1R8mZGNDJ1
-	ZQd63lJSAigDn9avJYb/4ABbvo2MIJA=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-447-Jt2pasPEOByPxOD7lSeT5g-1; Thu, 16 Jan 2025 08:41:00 -0500
-X-MC-Unique: Jt2pasPEOByPxOD7lSeT5g-1
-X-Mimecast-MFC-AGG-ID: Jt2pasPEOByPxOD7lSeT5g
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-2178115051dso19558645ad.1
-        for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 05:41:00 -0800 (PST)
+	s=arc-20240116; t=1737036337; c=relaxed/simple;
+	bh=SyqUeqqNalXA8XJghIn/qhfro0ohuCVATanAb15dvkw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sBtNLu0LM4/DUY47p7uP65JTkE471YK3ZjzX2Il2i7CsgoFL5KqP6FSFK3qUxWOjBB/kYS52/2nRuEUPc+q8c8XTg8hk93BZIXFhr0c7qvsfdaseMLHCXbN3v8UncW1m56fGhVJlGCVbvRtewNN4huXrFQVK6PzogzQbLHcQHxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dUZa7aX8; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-38a34e8410bso522317f8f.2
+        for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 06:05:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1737036334; x=1737641134; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SyqUeqqNalXA8XJghIn/qhfro0ohuCVATanAb15dvkw=;
+        b=dUZa7aX8iE2DfGljYeAO9PH01aYS3aHQkU9gjxGTbI+E3rPTXhjkmICqZQWqZYdhdB
+         nTDnDAKUkPSaTIsw9Qhnryus21FLWVImBooXcfUxuqi+X7wOkk8i/Q7viZTiyBA15akB
+         3PWJOnAmboxwZL50taqX4PW0XQ2NkgA1pqwN/MZUsS/HnBJa7e7jOk9pC+btk3STkSA2
+         DSUqviE3QrfSqLOr3mWoEJiwcQKx4mYs5LVeuGJx+Ao6d2lgeLH2apA1J2GcbNlnfXvZ
+         eoxqUByqkvljsxsQ3CALI1rHiPN9LRSD0G3lIYCHTfJGnwJ+fuFu2xYMMz1oFbVWauPv
+         iU4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737034859; x=1737639659;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n3VCOL0D78vqUW2184mv6wyBzLiBmr3jrjU49FJv374=;
-        b=gdqUdmUldsSxpM+Uv+yyQ4sKuFVsVghxI3V65N6SVyU/C0N8EymdTWypDjtXBrAxrV
-         2KLoFxlg0T+6HLyYV9SPjAbo9PJEylg0uX0B9ZgG/Cm0JKRsxHwQTA5/Se/HLCsrm6Gh
-         5OfGXiZL5OoRoSs9fvY5E6MbZ0c4h3KpkPHU3qJ5lpe9pMnM3dIniR+T1nTd6u1q+hBH
-         zRyuA9TaGl9+wETKGWaaetzZHN5KG5h3sv2freVC4P6zdsrLi8OWvDBgIxbOKpCoYwGq
-         UrGGKGTpCKFZ3k4/R6NVNSaK6siJ1vWhaGyNMsnIMT9a4ag3g3QByVv3YGiM/ZAEa7cX
-         Y77Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVajYWJwngElQZF2uwijOhVZaGpTRSGq1qas9ZWLiEaozjLH84nd2wh5sc9BbNoQQp4GlEQsupS@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaMYNEAhql2ICkFteKfF1jjSf15AWyDgpewcxcylA6zyqIGZsx
-	gu4NrsNGzWqCslxwoGluP7IJorA9E2lCQ4MH8uAjZY9ZfxJB8CLdUXjNQhl8HR36B1tC4uhadxU
-	5G9V6xFrnU1AygdcovzfH6E24g1UwkqIhSETjl1riVzZcx/mLHpToeFM=
-X-Gm-Gg: ASbGnctNZzrp/MrDmvnbBfJIg2nbrkxCtrumXA5GFpxH6ciQSOA2/1nhuCm8U4FR06W
-	CaedCw+HkGPTB5UFE5TqRBjiVUnQWEfnH0RuB1XvdKiHuJ6ryuVtiX+nuvOiakWMIKv8oA7eLw9
-	qs6V6N48pI3O/CZEvw9Vsxm46Cv2EDvKoAimtYRiQC81EnMhj4ryrfex1nzAymRq5HY4WxxreY8
-	WjcuYPaSfOxTy1HIO2tj+tF4kj92ap2xXNvz3mkYE2As25PuN4XgJBaVPhwiVdLU9vhfVCl4s42
-	XQBGpHbr+50H/nbKxmh/lkXkGEQ=
-X-Received: by 2002:a17:902:f551:b0:216:46f4:7e30 with SMTP id d9443c01a7336-21a83fc6d98mr536111305ad.43.1737034859288;
-        Thu, 16 Jan 2025 05:40:59 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFSXRMV2P6Rpc0zdlVDQcdVEqMlCGxhwufQY94QDMEqPWCar0YzrlSDhf6sPLgmUiQMoissrw==
-X-Received: by 2002:a17:902:f551:b0:216:46f4:7e30 with SMTP id d9443c01a7336-21a83fc6d98mr536110935ad.43.1737034858898;
-        Thu, 16 Jan 2025 05:40:58 -0800 (PST)
-Received: from ?IPV6:2601:188:c100:5710:315f:57b3:b997:5fca? ([2601:188:c100:5710:315f:57b3:b997:5fca])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21c2cd609aesm634605ad.0.2025.01.16.05.40.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jan 2025 05:40:58 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <b90d0be9-b970-442d-874d-1031a63d1058@redhat.com>
-Date: Thu, 16 Jan 2025 08:40:56 -0500
+        d=1e100.net; s=20230601; t=1737036334; x=1737641134;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SyqUeqqNalXA8XJghIn/qhfro0ohuCVATanAb15dvkw=;
+        b=gHhBy0Bdkwj1IpXuuSWR+eIXxwWqbBDRHikmPyh8yqkJx5A8UIsUYko0qfZjV9pwwz
+         biEf5iu1NN97P+kjXv+2tcXy51J9pgC/iz9qvzKijf1YXwRL4wZ4TnI1JdmzErqSiGVV
+         pHhZEjvL79Upyp6kPXBCSeBCYiUvY5RMWQbidw3VD1K3nfZU9F/0Tsq5pIKAfYzxbCKl
+         WzG4QzsxugoTOmOCBEAamHIrnfjun1/P7zcCoVVUh6oiyfyWsSyhLy/A1RkWVQMeHqxH
+         q1MrGaQ+u+vp9n1cOwSDukEyRjhaHDd2E6CJAJxBD0KJCMm0vKgjvhGXD8vVj9Ewt8mb
+         JnSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWhRmMwGLun1CiM1wxmuRIRsY3ZXQ/CT0CNvH/SJ3/yISI+NrifflOrLlljaizu0dvYD26U0N9g@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzxvo+TC6gth1vOt1pCSAe0I8j1myJsHGxjDcrU35txT/Z+89BE
+	8fLRHAN1GhktJTBL8OUybO+Uw6TPoyt/Wa7mdRVoVuNeFlslxkAQigXmy0OP6zw=
+X-Gm-Gg: ASbGncuGaV/jyJhEwiq5uIfKJ29xIhinGsO+g3fT3Hg1GTc9+moFFtRy+0KtjdwAa1M
+	vBBAmQ6Yd6VzjnMKNb/Uxk9NiesCt1o49c3NS39MGjUFVv6/zSvJf5SjIJz8zglU4yUC0LsSNch
+	ZLUTamsMXUMRJHJTxtO4PtgYH+ueRyRLs0CSXYyX5PB4SZhhU4ulP7Nz/EsVU2bfTXYgdHNZM3Z
+	i1nactVzsq2sX/9AXWljiH/0+t2Y6lLWTY56F0vCBbfbPIP8JBfigPsQZY=
+X-Google-Smtp-Source: AGHT+IFMmnZyKAiwU+Q2MGRH262yXFMAxcYu6K8VMkDZLbxtV2/u/LzzAkknBodqMku1eBIQtjzEKA==
+X-Received: by 2002:a05:6000:471a:b0:385:db11:badf with SMTP id ffacd0b85a97d-38a872e1640mr30128213f8f.22.1737036333867;
+        Thu, 16 Jan 2025 06:05:33 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a8e3840bfsm20948850f8f.39.2025.01.16.06.05.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jan 2025 06:05:33 -0800 (PST)
+Date: Thu, 16 Jan 2025 15:05:32 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Waiman Long <llong@redhat.com>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Chen Ridong <chenridong@huawei.com>
+Subject: Re: [PATCH] cgroup/cpuset: Move procfs cpuset attribute under
+ cgroup-v1.c
+Message-ID: <l7o4dygoe2h7koumizjqljs7meqs4dzngkw6ugypgk6smqdqbm@ocl4ldt5izmr>
+References: <20250116095656.643976-1-mkoutny@suse.com>
+ <b90d0be9-b970-442d-874d-1031a63d1058@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qh6gjs2cei26ojun"
+Content-Disposition: inline
+In-Reply-To: <b90d0be9-b970-442d-874d-1031a63d1058@redhat.com>
+
+
+--qh6gjs2cei26ojun
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
 Subject: Re: [PATCH] cgroup/cpuset: Move procfs cpuset attribute under
  cgroup-v1.c
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- Chen Ridong <chenridong@huawei.com>
-References: <20250116095656.643976-1-mkoutny@suse.com>
-Content-Language: en-US
-In-Reply-To: <20250116095656.643976-1-mkoutny@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
 
-On 1/16/25 4:56 AM, Michal Koutný wrote:
-> The cpuset file is a legacy attribute that is bound primarily to cpuset
-> v1 (and it'd be equal to effective /proc/$pid/cgroup path on the unified
-> hierarchy).
->
-> Followup to commit b0ced9d378d49 ("cgroup/cpuset: move v1 interfaces to
-> cpuset-v1.c") and hide CONFIG_PROC_PID_CPUSET under CONFIG_CPUSETS_V1.
-> Drop an obsolete comment too.
->
-> Signed-off-by: Michal Koutný <mkoutny@suse.com>
+On Thu, Jan 16, 2025 at 08:40:56AM -0500, Waiman Long <llong@redhat.com> wrote:
+> I do have some reservation in taking out /proc/<pid>/cpuset by default as
+> CPUSETS_V1 is off by default. This may break some existing user scripts.
 
-I do have some reservation in taking out /proc/<pid>/cpuset by default 
-as CPUSETS_V1 is off by default. This may break some existing user scripts.
+Cannot be /proc/$pid/cpuset declared a v1 feature?
+Similar to cpuset fs (that is under CPUSETS_V1). If there's a breakage,
+the user is not non-v1 ready and CPUSETS_V1 must be enabled.
 
-Also the statement that the cpuset file is the same as the path in 
-cgroup file in unified hierarchy is not true if that cgroup doesn't have 
-cpuset enabled.
+> Also the statement that the cpuset file is the same as the path in cgroup
+> file in unified hierarchy is not true if that cgroup doesn't have cpuset
+> enabled.
 
-Cheers,
-Longman
+(I tried to capture that with the "effective path", I should reword it
+more clearly.)
 
+Thanks,
+Michal
+
+--qh6gjs2cei26ojun
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ4kSKQAKCRAt3Wney77B
+ScqIAQCzkakWY9O9Baa9IRWwgzOyc+pYIDQ9Qm+SjE36UHvI3gEAuHJPHJ5vk91z
+Zl3CLStzVag2VR1Q8Kw0AKGzAV4ELg4=
+=ebgC
+-----END PGP SIGNATURE-----
+
+--qh6gjs2cei26ojun--
 
