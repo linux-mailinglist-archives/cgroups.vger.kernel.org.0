@@ -1,154 +1,131 @@
-Return-Path: <cgroups+bounces-6204-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6205-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1FCBA141EF
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 20:03:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B405AA14220
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 20:15:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 071EA16A8B6
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 19:03:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31D2F3A2595
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 19:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D12C222BAC8;
-	Thu, 16 Jan 2025 19:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9D4C236A81;
+	Thu, 16 Jan 2025 19:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TTVKiLzu"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gsoU8HYL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F891547E2
-	for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 19:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974E6230D07
+	for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 19:15:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737054198; cv=none; b=BIvugWnbBK3YwBFUMPA/u6KrBscDXFAcwJkcJ9JkdCq1eKrUSYpGOjZvu+NRIMFqTKUVbi9JKnzN17o0naqkNDcqT2yoISVt5WVMOwaDbhICkI1BleoqRTaoCChmrCNXT07U5uZlofQpD+Zx++Rh2s45iLCh/zH/XpfH3z5wJ3o=
+	t=1737054909; cv=none; b=cSjQSXfkQ/RXK77+IfHd/knRbE+YLgZ0XySrRhiHZa/av6UQECMiui7ITG4LPVWFxHV+Xu2a4W6R8o/PCUyHiL+UjgYaZX0dKLoRHDxA3qYl9p1wL12Rc49uUxDPmDNoRAjuHknduQjLTcu27NBCGQsIU4/t/rCmgGXljB8MLFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737054198; c=relaxed/simple;
-	bh=zoSOYX06rR/Ik6aIGiw1FA3cLgUwY/yyhp9z75AwAbk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V3VQKZRyY+eWxhJ27TUM1jpguDHh3lkpr2PdEq50e7gb/BgNsvgM0u2oEnW3aZToUZ3Fy69oQ4YnsHtx6rf58riIvhjUCy4vOsexy+qCJFRuGRZg4XZMbgqMUn/5poe3SBWCdsu4XSKeexDrq5pgjA+h3a04ce6MM51SZoGQXg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TTVKiLzu; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 16 Jan 2025 11:03:04 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1737054188;
+	s=arc-20240116; t=1737054909; c=relaxed/simple;
+	bh=+sEVtUCOEnvpxNGKeO34yA6I94hgCr0WaHKfF6gOIFk=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=LwPkUIu5s3SP82gQGErqpZ8qSCD4AITWNs1xEKbzcIryVVIuDu0aMqHo14lBFkMwnxuOOG6K3QBzHpOm6pmmbWJDLaCUSqtHGdqMzoB79CKdEt8A5+1a42rfBJG0L2UcCnPF+0V8pP1KnORjSfIwnO42r9hHKbeoNM4ltsh7b9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gsoU8HYL; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737054905;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PriwJ4U020CFEGM07Fm7VVqZv09ITbevlvcsDPyM08U=;
-	b=TTVKiLzuzJuqjkY34Apdyf8KngJ61KEZTAW10B+lDiWgtTHkaPSrsIv3iS9KkS08t00mMx
-	ggY4eaPsai5kMHbow6g4TOWvHJvPJ4T8/A7cp6ytsgZYYCQwh8gGxekyc17SjrkJ1ajRW8
-	hYx5AMgaDkvqdpxxQAiif59kKf2NBY8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: JP Kobryn <inwardvessel@gmail.com>, hannes@cmpxchg.org, 
-	yosryahmed@google.com, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 0/9 RFC] cgroup: separate rstat trees
-Message-ID: <p3auznfl34gg3f3igbohewpk5rjyge7oy5q6byiow7y64plgzu@wrp3wk6yvfut>
-References: <20241224011402.134009-1-inwardvessel@gmail.com>
- <cenwdwpggezxk6hko6z6je7cuxg3irk4wehlzpj5otxbxrmztp@xcit4h7cjxon>
- <3wew3ngaqq7cjqphpqltbq77de5rmqviolyqphneer4pfzu5h5@4ucytmd6rpfa>
- <gn5itb2kpffyuqzqwlu6e2qtkhsvbo2bif7d6pcryrplq25t3r@ytndeykgtkf3>
+	bh=5wFn+zra1tRQHFTOaGuF8DRo9/yvU7g+Hng9H6HWePg=;
+	b=gsoU8HYLVEVl12wx8W+ftr8QXIBSKniSh1dNPJdiw1i61sBWWTxU1gLG3dAArV+ydpjzg0
+	IOBRXpHrOQZUh8EN4tzDieNE7y2LQKEG17YTF2DQulNGfC2nUs9DI/agH4kfEdp+0ujdxh
+	d3jIiAWpYUdMTAwWawCifcs5XsNcll4=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-615-NpFfi6X9M5WY95ibEJHTkQ-1; Thu, 16 Jan 2025 14:15:04 -0500
+X-MC-Unique: NpFfi6X9M5WY95ibEJHTkQ-1
+X-Mimecast-MFC-AGG-ID: NpFfi6X9M5WY95ibEJHTkQ
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2166e907b5eso24863135ad.3
+        for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 11:15:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737054903; x=1737659703;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5wFn+zra1tRQHFTOaGuF8DRo9/yvU7g+Hng9H6HWePg=;
+        b=tw8no30/uiRCKZnkI5r4Gy0LlWDW3b3cMxwjF+KpO+E/Tl2tvKkYlBK5e/Xl8xZBo3
+         smip9qM5LaW203GjMPMVI7r4Q2cKdbPgtZrXc7lqx9gbMlnZ/Tnkg5JyZeX+kWyNzhwC
+         6bwWu5MSegccBU23akAh+T2gARtk+0GUIlkgHoB7o1cSsRRwj5QicpJSEGwhr9MpWF4I
+         3e7PXvg8xSb7/za4szRoW3/d/zmXq76G9Bn8lgMsWptn5YvYH4DHVWby72milZEqyqQx
+         108Y8fkXXPDvWftRAMuM7xXzasqn5lXpNZNiVpt1EkPRis8svJe2gaRbVWWYODP8faV8
+         nVTw==
+X-Forwarded-Encrypted: i=1; AJvYcCX0rOXisRIiBadyGEu8GBspGDtnyfha8W+vCqnMD1OsIUcSKul4GLZMxvqkeGb9SsvdMQqabuDv@vger.kernel.org
+X-Gm-Message-State: AOJu0YwqvnKbWQJHXB7O0mKl7GHd9xJEpG9nsMlU1PMeNCMO0iz+8QwL
+	5hPeWrqKvelh7sgLFcozNlz3BAkzAeTsMoqjD4/SmhQAkVwkw2lKaxDIHmFRYL7W1tyHxA7uBCy
+	dpOR8MfGNTauc4w74haup5KG+LYqeaLT8lqWMVLfMj+8tngZAKe/GiZo=
+X-Gm-Gg: ASbGncvSHOCiSw/Hsl8qZp0aChICTI7qw3XK5uAl7knH53phNnR9Ad4CVWZNZ0lP5Ao
+	I8KJIxShlNJy5fxmXhRztPAa1HhGb9kYRwf97oi5n9r7WyPoSGh4NTPtJo8c90nbnmSa3wtN+TK
+	ttODwiUITk6zrjMNKlL4/E0mgyY/tZtHA9fG3QMWGpzhyVBrbBJAzP/cqEV6GvIe3vMvUu6+WPZ
+	SOQzoYQwrKqwwxt2/wq7lxMXVowfrszjuvyj6u/AVGOHKz3whtm/vBqnvfsD+3tlsvW1aaeNT69
+	g733SeJjzDSAscXtskOPs+Cijj8=
+X-Received: by 2002:a17:902:cecd:b0:215:a2e2:53fe with SMTP id d9443c01a7336-21a83fde4e7mr603562185ad.40.1737054903074;
+        Thu, 16 Jan 2025 11:15:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHuuJ4XE4YBqRpZVxDmAlIxqD3WtoUv4F8kqPqHW0nAAwQNqzy72sftRNmbnl4oMvOj2Y4Tug==
+X-Received: by 2002:a17:902:cecd:b0:215:a2e2:53fe with SMTP id d9443c01a7336-21a83fde4e7mr603561705ad.40.1737054902641;
+        Thu, 16 Jan 2025 11:15:02 -0800 (PST)
+Received: from ?IPV6:2601:188:c100:5710:315f:57b3:b997:5fca? ([2601:188:c100:5710:315f:57b3:b997:5fca])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21c2cfbadb4sm3597405ad.102.2025.01.16.11.15.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jan 2025 11:15:02 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <3ebd4519-4699-47ff-901e-a3ce30e45bcd@redhat.com>
+Date: Thu, 16 Jan 2025 14:15:00 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup/cpuset: Move procfs cpuset attribute under
+ cgroup-v1.c
+To: Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: Waiman Long <llong@redhat.com>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+ Chen Ridong <chenridong@huawei.com>
+References: <20250116095656.643976-1-mkoutny@suse.com>
+ <b90d0be9-b970-442d-874d-1031a63d1058@redhat.com>
+ <l7o4dygoe2h7koumizjqljs7meqs4dzngkw6ugypgk6smqdqbm@ocl4ldt5izmr>
+ <Z4lA702nBSWNFQYm@slm.duckdns.org>
+Content-Language: en-US
+In-Reply-To: <Z4lA702nBSWNFQYm@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <gn5itb2kpffyuqzqwlu6e2qtkhsvbo2bif7d6pcryrplq25t3r@ytndeykgtkf3>
-X-Migadu-Flow: FLOW_OUT
 
-Hi Michal,
 
-On Thu, Jan 16, 2025 at 04:19:07PM +0100, Michal Koutný wrote:
-> Hello.
-> 
-> On Mon, Jan 13, 2025 at 10:25:34AM -0800, Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > > and flushing efffectiveness depends on how individual readers are
-> > > correlated, 
-> > 
-> > Sorry I am confused by the above statement, can you please expand on
-> > what you meant by it?
-> > 
-> > > OTOH writer correlation affects
-> > > updaters when extending the update tree.
-> > 
-> > Here I am confused about the difference between writer and updater.
-> 
-> reader -- a call site that'd need to call cgroup_rstat_flush() to
-> 	calculate aggregated stats
-> writer (or updater) -- a call site that calls cgroup_rstat_updated()
-> 	when it modifies whatever datum
+On 1/16/25 12:25 PM, Tejun Heo wrote:
+> Hello,
 >
+> On Thu, Jan 16, 2025 at 03:05:32PM +0100, Michal Koutný wrote:
+>> On Thu, Jan 16, 2025 at 08:40:56AM -0500, Waiman Long <llong@redhat.com> wrote:
+>>> I do have some reservation in taking out /proc/<pid>/cpuset by default as
+>>> CPUSETS_V1 is off by default. This may break some existing user scripts.
+>> Cannot be /proc/$pid/cpuset declared a v1 feature?
+>> Similar to cpuset fs (that is under CPUSETS_V1). If there's a breakage,
+>> the user is not non-v1 ready and CPUSETS_V1 must be enabled.
+> I think we can try given that the config is providing an exit path. After
+> all, users who were depending on cpusets on v1 are in the same boat.
+I am not totally against this, but I think we need to make the 
+relationship between the CPUSETS_V1 config and /proc/<pid>/cpuset file 
+more visible if we want to go this route. We should update the help text 
+of CPUSETS_V1 config entry to emphasize this.
 
-Ah so writer and updater are same.
+Cheers,
+Longman
 
-> By correlated readers I meant that stats for multiple controllers are
-> read close to each other (time-wise). First such a reader does the heavy
-> lifting, consequent readers enjoy quick access.
-> (With per-controller flushing, each reader would need to do the flush
-> and I'm suspecting the total time non-linear wrt parts.)
-
-This is a good point and actually in prod we are observing machines with
-very active workloads, the close readers of different stats are flushing
-all the subsystems even when reads are very close-by time-wise. In
-addition there are users who are only reading non-memory stats and still
-paying the cost of memory flushing. Please note that memory stats
-flushing is the most expensive one at the moment and it does not make
-sense to do flush memory stats for above two cases.
-
-> 
-> Similarly for writers, if multiple controller's data change in short
-> window, only the first one has to construct the rstat tree from top down
-> to self, the other are updating the same tree.
-
-Another good point. From my observation, the cost of rstat tree
-insertion is very cheap and the cost get amortized i.e. a lot of updates
-within flushes such that the insertion cost is not noticeable at all, at
-least in the perf traces.
-
-> 
-> > In-kernel memcg stats readers will be unaffected most of the time with
-> > this change. The only difference will be when they flush, they will only
-> > flush memcg stats.
-> 
-> That "most of the time" is what depends on how other controller's
-> readers are active.
-> 
-> > Here I am assuming you meant measurements in terms of cpu cost or do you
-> > have something else in mind?
-> 
-> I have in mind something like Tejun's point 2:
-> | 2. It has noticeable benefits in the targeted use cases.
-> 
-> The cover letter mentions some old problems (which may not be problems
-> nowadays with memcg flushing reworks) and it's not clear how the
-> separation into per-controller trees impacts (today's) problems.
-> 
-> (I can imagine if the problem is stated like: io.stat readers are
-> unnecessarily waiting for memory.stat flushing, the benefit can be shown
-> (unless io.stat readers could benefit from flushing triggered by e.g.
-> memory).  But I didn't get if _that_ is the problem.)
-> 
-
-The cover letter of v2 has more information on the motivation. The
-main motivation is the same I descrived above i.e. many applications
-(stat monitors) has to flush all the subsystem even when they are
-reading different subsystem stats close-by and then there are
-applications who are reading just stats of cpu or io and still have to
-pay for memcg stat flushing. This series is targeting these two very
-common scenarios.
-
-Thanks Michal for your time and comments.
-
-Shakeel
 
 
