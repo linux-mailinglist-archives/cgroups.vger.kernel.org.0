@@ -1,151 +1,118 @@
-Return-Path: <cgroups+bounces-6183-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6184-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCE8CA13537
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 09:20:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 666E4A13627
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 10:06:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69EB53A55C0
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 08:20:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B60447A12FE
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2025 09:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78419198A38;
-	Thu, 16 Jan 2025 08:20:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA6721D7E33;
+	Thu, 16 Jan 2025 09:06:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b="gR8FApBG"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="anBtU/YP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E36A194C75
-	for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 08:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C5FA1A08BC
+	for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 09:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737015620; cv=none; b=f0945t+zlEbCVcQr0xg+v9hPXs0TJ2ACmyThBjnzCSDaGC66/6DcNSejCQcQaBbHK7tPlVg3yDyjinQhHGBrX/k+zGEO5LiAACh/dfj+RHfrd6mhykXaGcb8MKsPqk3Tu/b1KuNE09U0p60wBrqUkR74EZQeT5gLuJwkQn0z9+8=
+	t=1737018369; cv=none; b=W+xTaTuzfSLlgm7AgXG0rJNlu4eD32grmor148y5ovGRQHT446h0Q0QgYf4mwNMOHDlkWYg7r1fdVwKaLefoF/XzGVXOMzAShJawzRMH6jXM00BF1XeSF435KpYWYSmPZ1ABQ2egaLNnXZxhILckyWd9zybS+pkTEgB+bmWxw9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737015620; c=relaxed/simple;
-	bh=/RHLlbc4PW8R9gp+t/in1mtnrEju6WaZEupfBALpjfo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jzdq/S+ZgoChtGRr501Dr8CQFHeH1sZQO3VzU2X1N+GaXzageXaGD+zMY9L4Gpc169BqIaHcUDP5sRzLnG3yTYcbXYbdu0FDU8uDmwSFdAqLGH57QUwMarbAkPuBw5IvRZeipnmMt5UTUYuG8L5Ktr/hNXxiVsLNSj1sCd+okdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b=gR8FApBG; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1737015609; x=1737620409; i=friedrich.vock@gmx.de;
-	bh=/RHLlbc4PW8R9gp+t/in1mtnrEju6WaZEupfBALpjfo=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=gR8FApBGALYfRCY67/CwEde2UjnFdfWccX7H3oLJfLISOrjS8Xb/5SDr5f4dmkw5
-	 WQ8h2FW+HV85W6imnmYEI0ihuOAKq4Jx0wDjKruT99FDTOURrvjHmXJgxhcZ9gSNk
-	 EBZvISFFBIQ6b82+QyjW35XQ5MHciXpOSxdkEyi4ccTKp955H6DLrTm4Rl76KOXZ0
-	 10jgkOPl4YXTauVza0h7pLOHdj3f4KYpMs0YBFIS25IZNIxusN/yGCyst7mgnbhWs
-	 3odohk9lMWpYH0J4lgM3vjmyplSWgCi22sLpc7bs7KYptbDTYArPM2qm/u1mu7Y5N
-	 y2qFLdsDtDqeKFPmTA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.8.16.110] ([134.34.7.110]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MgvvJ-1t2bmm0G5d-00lhcQ; Thu, 16
- Jan 2025 09:20:09 +0100
-Message-ID: <4d6ccc9a-3db9-4d5b-87c9-267b659c2a1b@gmx.de>
-Date: Thu, 16 Jan 2025 09:20:08 +0100
+	s=arc-20240116; t=1737018369; c=relaxed/simple;
+	bh=Fyty0rNeX2yiWWT1aURj/tfcYLq5hJIr6iNivV6v43M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VU8Uk2+5EToaxIH4QHS8Zc2m5M+LZRdQwhk8mE/2XOyeEW9VMQu4BwLKs759l0vElVafWjLgVybSTvrzFsRtBdr3FQxxK07dBacbzLslrV3gt9CLGV1fUdHMlF3PAAVsPjx/aqGevB64g27u1WVJyv5AaMgIi8EHPNPkjZgUC50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=anBtU/YP; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-385e06af753so349574f8f.2
+        for <cgroups@vger.kernel.org>; Thu, 16 Jan 2025 01:06:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1737018366; x=1737623166; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rvLoYGW797Wwa5tA/CyXEnf4NFivauTHwpj75TV5TX0=;
+        b=anBtU/YP8pfr6kOk8M0hlr7hEsyFLMxMsGe07HbmXsIx8RLACgcli+rcrowD1Po5Z4
+         o7hh65PvZsYE0/75j6i+NITW8aMcpeQQvv+xZmBL1bMrcH0UEdwC3bgZVrsdb9ZufBm+
+         imTXTUKsOTM9Cnwyei90kzf8lWJd7P+ArGMTJUtamf+M+9/qea0TLAvGDSaRZiOPaK1h
+         u3bQH3RnsErw7CxbLl/FdJRP4b+C1kEMltn4n97xbNow+l/4jqy7GIruNwZfjDbnhQmp
+         c0VzVj1kDkY5y8qLmj/YOILsCUsmT5xfp//p/2sF+asILOIpb66HgutB38pMW+JcThRk
+         pZcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737018366; x=1737623166;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rvLoYGW797Wwa5tA/CyXEnf4NFivauTHwpj75TV5TX0=;
+        b=mxmlDbsFoQle1KQ3YrVMjxtXTT7LDKrstJ7feeIwLWk3U0nBt+JPgq90Rwgd8QTFsT
+         xRRTq63tGQ0W3Npn6LoL1jb2ih86BS1L4G6VzfpND62jhN6YAZWRYh+9ttrlfunheGO4
+         5motbesy1+k8L9W439MYhs+fLL4EyJH6gT5YQt+0jHupFAMMUs22fbJ0dDoWEU60Zkum
+         tmPFpqRxZlxc8mD6CFDfIt4jjAPNZtGXfgv9h+BvaubbbwRR8BRcAvQsqppFprOcPjSq
+         KVtoaHR1XAI4kypBhRzcY9WObmgyWtXjAUM955f+sHPuNVdtCmVmo2Tz+xAOV7rLj1HR
+         EcUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXsnCT8H36eMT/JvowVgC2LwxZO1+4uRP1/cWknJvfbxxWqXsgaaEIVGDl05etfe7LYEWJYO9XV@vger.kernel.org
+X-Gm-Message-State: AOJu0YxHs9crmfXc27QOQ/wP/h47G9gUPuqF6l49DN7b4Wh8c8qi7dMT
+	UeJHjbqmKsM2wnXG9hhUSfRTicslG6jZygh1DndquZFEo/lbyVFLN7gzdEHzAFk=
+X-Gm-Gg: ASbGncsEm3x78LQcUNVYrdTk4P+lK2lpfpuPsNXwHlJXJuis/X77VhMfijPKWuxXYFc
+	72htSa3jKbHJqwyJqyuahy8dRCtHDrggSBlD2sMP4iq3cHgTHhwBgMCb28675e9kkYmAh+ABhi0
+	RduUaJrIt1JJxNJiKO4xZlZcV0bUyU5aFctrq5P3Ddfc+fbl0zDxFgkzAc9ZwoBYNDkuB41xIWw
+	nCILTY4+qX3qywkCkzA6KxHh8R114PeP6q+6oc6Z9TrUwpwiDqGaFBp/BpTvFp9+y6Nrg==
+X-Google-Smtp-Source: AGHT+IEZEzn28CIcCG4IS7Ndr+zHZ02erH6CBGKsMWizQ+Tszr6rCV5A6NnVL5PjMhYeMeFv5lQt7Q==
+X-Received: by 2002:a05:6000:4011:b0:385:f47b:1501 with SMTP id ffacd0b85a97d-38a87312d58mr26734400f8f.32.1737018365807;
+        Thu, 16 Jan 2025 01:06:05 -0800 (PST)
+Received: from localhost (109-81-84-225.rct.o2.cz. [109.81.84.225])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-437c74ac5f9sm51057375e9.11.2025.01.16.01.06.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jan 2025 01:06:05 -0800 (PST)
+Date: Thu, 16 Jan 2025 10:06:04 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Harshvardhan Jha <harshvardhan.j.jha@oracle.com>
+Cc: Petr Vorel <pvorel@suse.cz>, Li Wang <liwang@redhat.com>,
+	Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it,
+	cgroups@vger.kernel.org
+Subject: Re: [LTP] Issue faced in memcg_stat_rss while running mainline
+ kernels between 6.7 and 6.8
+Message-ID: <Z4jL_GzJ98S_VYa3@tiehlicka>
+References: <e66fcf77-cf9d-4d14-9e42-1fc4564483bc@oracle.com>
+ <PH7PR10MB650583A6483E7A87B43630BDAC302@PH7PR10MB6505.namprd10.prod.outlook.com>
+ <20250115125241.GD648257@pevik>
+ <20250115225920.GA669149@pevik>
+ <Z4i6-WZ73FgOjvtq@tiehlicka>
+ <6ee7b877-19cc-4eda-9ea7-abf3af0a1b57@oracle.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/dmem: Don't clobber pool in
- dmem_cgroup_calculate_protection
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- Simona Vetter <simona.vetter@ffwll.ch>, David Airlie <airlied@gmail.com>,
- Maarten Lankhorst <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>,
- dri-devel@lists.freedesktop.org, cgroups@vger.kernel.org
-References: <20250114153912.278909-1-friedrich.vock@gmx.de>
- <ijjhmxsu5l7nvabyorzqxd5b5xml7eantom4wtgdwqeq7bmy73@cz7doxxi57ig>
-Content-Language: en-US
-From: Friedrich Vock <friedrich.vock@gmx.de>
-In-Reply-To: <ijjhmxsu5l7nvabyorzqxd5b5xml7eantom4wtgdwqeq7bmy73@cz7doxxi57ig>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9vRwhu7cYH3l3nQNyx4UESIEEF6MUpfdauZlOt/NmAn3SLx/gPy
- JWhXXtrBcX6D6Cpg6HB8EJZYq/vUQxihciR2Fk7rtwXn7CWHeuxeVvoglNGVHbk5lPEjNyr
- UK2FzmEp6Wfg5nCymfv4fCOp3oA7lZYcZLDfFlcv7R2QAh83ReymaLZRNl5ZQLmKjKUHW1Q
- S2lIiWfIaEfMm7n9Hc4Kw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Cu/3UwpS19U=;v5KsVh8RdsptcHqNt75KrsHadhC
- lwZbeJWl10DGv9Xy4Jb7uE8LlGx+IZ5VGAKI4WIxm5n9+w2s+WMPixi74PjLJDVmW0JjKNxL6
- zX7zKLAUIqtF5OGyRbjbKNLI65vWITTkugcQJMXzCkBG6JTjMwvZNNJm90U1MKZQ2otr8E9ic
- 0u5US7Mu6mnsxR95uRVC0AmGJahcu8MZvTnEuU7HYx3n5reTi5qBWlXgyEx5P0EqeUk/cORSw
- dy2De15F9+J+nIm1k4LJN+5PIgEQXcB02cV3FdcNFY51mNaMlIxiSiO8qEse1Ra6DpTqHhKKl
- 9+kfATRgPUA8GKfyuW0mJHsWJ3lm2dtiKnqOJqocMyMXOP5l7mJhOvz3YYB8yHESGW2SYoBSS
- ZOtzbnOIv1s+qDPuNamvfo6cI/ZSbmqVA9yi8GlZhEpRDVJ+GRmFu45Wo1EIZUtGYhfypD7Ml
- 2OvzHWooM2HV/bAFcPrGFsYkgTW9La4LPBDNDaIaM+LIAEoHn+/wlunNbiPhx1oDdscL14do5
- 6vnIbIYspor0lfUFR5bN3qmwJvs/1gdPLFTrczglvZzluSY7Cyaysx39IiDaowilnJ5cuLDTP
- 6PC6ltWY1woiUaZgWQEcZLSzZ6NGgpXQ3cIpXPQKQmB6MDjonjt9yVehX/etix0KEalRdjQ2m
- sTlpTC1fu/OClNxzAslAgmn8rGDK42chfZe8DT9Q0I3jQ3AX8NhM9Krwd/n8wQ42QN21L+qLq
- 6L3Nd27UPj45L47oyILg2SRVm7yTbnMJ7JJc/FTjsNfkfaGPypbMjIhYAmKi4tZ2N1Sy5cN70
- wRlzcm9llSEW1I3gRiUswrhj+YWaRfdSFrxt1rV5xghjjUGdxbKa5OA1MCwLi8ndPq+YPh3v/
- 6EeXUeeUdGMFP98MwSXyiFHYgrPszLhVTvb8GHjd2bpxbBn5ydTjNRI7qdWufp39PixHT8aqt
- KxVAXSUvmyoeYhtfCeH9RruQuE2k0pyhJUP0VbP13Be9EjJ4VjFEp913xRFYel8Dp/aFzr9Yv
- /o+ltN5i5mdWc8klT4/2A7AvqVxpZO2gHI22qdTsFQ3gtOpC+bWfZKAVbUl8ZSfDNJIxZJ/sO
- sZnxmml6jQWfj2kbSSUOfgHGIXBsEW77+BbWF5Cd6nfJ7aM8U3yleokTCbiDRegCYgm3WmhW6
- 7vDTXD8Fft81Vt/xEoCyoeANVx89T5nJNxNJ0EcOXBA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6ee7b877-19cc-4eda-9ea7-abf3af0a1b57@oracle.com>
 
-Hi,
+On Thu 16-01-25 13:37:14, Harshvardhan Jha wrote:
+> Hello Michal
+> On 16/01/25 1:23 PM, Michal Hocko wrote:
+> > Hi,
+> >
+> > On Wed 15-01-25 23:59:20, Petr Vorel wrote:
+> >> Hi Harshvardhan,
+> >>
+> >> [ Cc cgroups@vger.kernel.org: FYI problem in recent kernel using cgroup v1 ]
+> > It is hard to decypher the output and nail down actual failure. Could
+> > somebody do a TL;DR summary of the failure, since when it happens, is it
+> > really v1 specific?
+> 
+> The test ltp_memcg_stat_rss is indeed cgroup v1 specific.
 
-On 14.01.25 16:58, Michal Koutn=C3=BD wrote:
-> On Tue, Jan 14, 2025 at 04:39:12PM +0100, Friedrich Vock <friedrich.vock=
-@gmx.de> wrote:
->> If the current css doesn't contain any pool that is a descendant of
->> the "pool" (i.e. when found_descendant =3D=3D false), then "pool" will
->> point to some unrelated pool. If the current css has a child, we'll
->> overwrite parent_pool with this unrelated pool on the next iteration.
->
-> Could this be verified with more idiomatic way with
-> cgroup_is_descendant()? (The predicate could be used between pools [1]
-> if they pin respective cgroups).
+What does this test case aims to test?
 
-I'm not sure if I'm missing something, but I don't think
-cgroup_is_descendant is really related to this issue. Each css can
-contain some amount of "pools" representing memory from different
-devices (e.g. with the current DRM implementation, one pool corresponds
-to VRAM of a specific GPU). These pools are allocated on-demand, so if a
-cgroup has not made any allocations for a specific device, there will be
-no pool corresponding to that device's memory. Pools have a hierarchy of
-their own (that is, for a given cgroup's pool corresponding to some
-device, the "parent pool" refers to the parent cgroup's pool
-corresponding to the same device).
-
-In dmem_cgroup_calculate_protection, we're trying to update the
-protection values for the entire pool hierarchy between
-limit_pool/test_pool (with the end goal of having accurate
-effective-protection values for test_pool). Since pools only store
-parent pointers to establish that hierarchy, to find child pools given
-only the parent pool, we iterate over the pools of all child cgroups and
-check if the parent pointer matches with our current "parent pool" pointer=
-.
-
-The bug happens when some cgroup doesn't have any pool in the hierarchy
-we're iterating over (that is, we iterate over all pools but don't find
-any pool whose parent matches our current "parent pool" pointer). The
-cgroup itself is part of the (cgroup) hierarchy, so the result of
-cgroup_is_descendant is obviously true - but because of how we allocate
-pools on-demand, it's still possible there is no pool that is part of
-the (pool) hierarchy we're iterating over.
-
-Thanks,
-Friedrich
-
->
-> Thanks,
-> Michal
->
-> [1] https://lore.kernel.org/all/uj6railxyazpu6ocl2ygo6lw4lavbsgg26oq57px=
-xqe5uzxw42@fhnqvq3tia6n/
-
+-- 
+Michal Hocko
+SUSE Labs
 
