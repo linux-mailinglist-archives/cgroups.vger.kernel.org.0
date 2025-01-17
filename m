@@ -1,118 +1,101 @@
-Return-Path: <cgroups+bounces-6220-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6221-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82EEEA14E9D
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 12:44:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F1B4A14F37
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 13:34:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAA4D1888051
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 11:44:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC488165EDE
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 12:34:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C261FE46B;
-	Fri, 17 Jan 2025 11:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZGnh2ci2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08C8D1FF1B1;
+	Fri, 17 Jan 2025 12:34:06 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D935719992C
-	for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 11:43:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486C41FECA7
+	for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 12:34:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737114239; cv=none; b=Of2Xqs62B8pCgSzTS33pXLCSCHP4sr7zu4wQFBqlEU4hRAge97MdP4GYtLX4fc+uHYcPmTmdmzLdv3ZRv69uplSu9LkvZ1Ve0LomVLoM2Qth3RY+UuqhVH92SwJBf+VDPGI5rG43XdYnYU0DZhRQBDyjrc82dVLBFrnw8LmJSRo=
+	t=1737117245; cv=none; b=LzGks9X3mt+WqfLmgqjJeZVx1c6ylYprT+9q2I92Zq8wYc39R4Bsn0sOXHGiIZdO+UaAjLEbEJ5XkDPJpJxRvTLrXzavYQfRW/8ccPgRTwmJ9CqaP5Tts08EFgrxiixIThaodbggiXxzC3A0l/JTyLw171gBl3XI3imdRUszVW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737114239; c=relaxed/simple;
-	bh=x1pZ2+NWWGFp00TYoCsdcvWhjXVo0gEuAeli/wzRMVw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tVJ3fbUrcXXVnyxh9p0omRMRw2SLDAGgKFpzbk7WvnDOsefRzXPpav4o0Xyqs3vLx+wwjZgF30gYSancSF3EEpDhcXes12bWs+WSlVK6Oc5MP7iSf1fbLiXQZLpIY3ZQctvxf7btLUXF7Y1DNjIwU8/vCAtFMyo1W7xCmzf9DE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZGnh2ci2; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-436a39e4891so12857755e9.1
-        for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 03:43:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1737114236; x=1737719036; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hUuW6LaXAzQ4ddmq/8F+bgdsSQzi5OE6ZPQ7s3KDBMg=;
-        b=ZGnh2ci2hdz1XnahDspkBI3m7zBCeDo2l33n9ow0hMNYMAT1SjkJJYVDRBvK42P+lH
-         BVCpLR1i8XfrWTxK2WUgV0SeD3xsE/03SDGLv05VcPIXZHFPtSPK+vxur5JQ/XTDw4C4
-         rNd0cIBw3zP5aSCKEEZ9lnIXfFHsIZ4Kn7Xl6gxJG98s2RVYq1E965h2lorNxYvrKhQm
-         H2UMk2NWROEozxJEQDyy7GamyvyOiYf12NOhjaeN2juOFHd8F8D+PYsawOhXMkMt6YZL
-         J+SJ02dyJc0vqlGz4vUOYqpyyu0BAS6u0ruTHJVGTOlPCqgZkQd61rPsit7LaHpCGZdv
-         M7PA==
+	s=arc-20240116; t=1737117245; c=relaxed/simple;
+	bh=f6UH6L4B+hKtCwzKAlYd+xmm5Ot1kU+xbkfzuFhko94=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Hr993dGSlWMjI3j6R+SZAS8jRMBYVjq8qsy3wQcUCG+gVZICEimFTX5r0Vo9nwHLKrRyrtIp7QNX64GTk8gnzuM3f54q24keNJNdXdCqpKpnO4oQ5zv1jrnP/+lz9j7QybRJrAAdWEAGbic7aQRN3YUEL0aUISaKQabQnhH4vBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3cde3591dbfso16302785ab.0
+        for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 04:34:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737114236; x=1737719036;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hUuW6LaXAzQ4ddmq/8F+bgdsSQzi5OE6ZPQ7s3KDBMg=;
-        b=O27igEsbs4gAr9ld/32LMrMkbruN2AMatImnEIQ6S05Iyr2G/Tvjteca1LMPlW8q6o
-         /nOrmXlpxFIrH92OpHz3zUAIEuvMamgCf+Fdps1o6X0w8kS+eYleAohuy3q8AiPS6+B7
-         5shl269f6+PZTQYJffGcv2Huk6KgWlXD1vBQ06KEkF0KX2AdwSKMQmryzxmzCGytt7zo
-         KxaAo7g7heOFcXh2IlNLz2VGDpVqDiLYaE5NtUGOEK9IVBDPKh3wfPjxsTzJu7JGz1z8
-         VuCwv7WaZTNTcHSHJzeTKLwrQLv+ixphTadEHp/bS9A/j1TOVphPMIFhua0LwZtuPhHy
-         vBvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWubPiBepBOmBItBkE8+gYXQM2BtMiYbOWMqknI2fMT8MgzNo7r9XHkijm/ZBWW98aRcVIPnvBi@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy61Nvbd0VMl1oLaedeiNpAHhNC98Y+JZETpOeRbggJfAxTfGVl
-	WB4i5wR6pLLiD24ytPUm/rYeOO/DR8NR/5hL6Bww9CNlr2Nq4eESS8JUe6B36T8=
-X-Gm-Gg: ASbGncum8+q964oCTKPc1cHXTalO4RyK3mobW0XUCjNE7xVWc1D932eBYRSMoDQMniq
-	aR+WxobtBqq5FXZ667NaFHTEbck+Mvd5fGZ5H/Yec8BGkUz5FVCykS9pFRnIQM13C7TLk99gWQA
-	SPrADehkk1PMqdJc95v4rkYRDMO3lJ5gCAzxnHs/JV7MU0t0Wj1bsP7kcolLKhzSSCnkPVKvvch
-	QxbDQZNWO34qfZsHCDpLR54r6BhEb+5AlJS+2n+gIa3+2Hq1/LBKdjhDI6ZDgbBfD4j7A==
-X-Google-Smtp-Source: AGHT+IFaHWJbC48oF3hpgHSBXUqG6jy4KSI+cLoiycTrsPbXkX+F6N0oMZn1e4sry1caAjXknYiBkw==
-X-Received: by 2002:a05:600c:1389:b0:431:52f5:f48d with SMTP id 5b1f17b1804b1-43891460bbemr23967465e9.31.1737114236195;
-        Fri, 17 Jan 2025 03:43:56 -0800 (PST)
-Received: from localhost (109-81-84-225.rct.o2.cz. [109.81.84.225])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38bf3288f79sm2279111f8f.100.2025.01.17.03.43.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2025 03:43:55 -0800 (PST)
-Date: Fri, 17 Jan 2025 12:43:55 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: zhiguojiang <justinjiang@vivo.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	opensource.kernel@vivo.com
-Subject: Re: [PATCH] mm: memcg supports freeing the specified zone's memory
-Message-ID: <Z4pCe_B9cwilD7zh@tiehlicka>
-References: <20250116142242.615-1-justinjiang@vivo.com>
- <Z4kZa0BLH6jexJf1@tiehlicka>
- <a0c310ba-8a43-4f61-ba01-f0d385f1253e@vivo.com>
- <Z4okBYrYD8G1WdKx@tiehlicka>
- <3156c69f-b52d-4777-ba38-4c32ebc16b24@vivo.com>
+        d=1e100.net; s=20230601; t=1737117243; x=1737722043;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QvZtm/UtggZQ4vZzY3P7eWyMLxgL/oSk0kGt7oXniJs=;
+        b=G8fnolY1I6l6j+qwYHBEHodtNgORP2xcgB3g+wz7kSuW/N3ZwxFyDrNuAi1n11w4Lg
+         dq6zUZVuDdmwRPmnwgIkEmcLmjAkjAlnPLrRDsbhQTKMOJ+snYnNl39R73uxedUHXoFa
+         xhpzyfSlEp8j/ogaSYLCtFWSA98ZlVStmvJzLc4YjDSFGR9zZSxhMdKx111oA+uKHa+y
+         2AogxaOnNK+XxNrp/td39j5DDIiqqJJVu4fdfzJC6T9cg9E3Z/BHRd/hIHCDRRa44CJQ
+         yaN+HWkt+SrnYA8CzEqDdXwEqQftgxshxOuRN6lTlWGh1JBvVSaMf7lnA9cvjYAtXW+Q
+         fLyg==
+X-Forwarded-Encrypted: i=1; AJvYcCWxomxNUigde15k7VVPWLVvT3rkts8o1pdf3O4pfmXICn3OXuHrREAmeMbEBzjUQIgrCZUKDZJy@vger.kernel.org
+X-Gm-Message-State: AOJu0YxG6+LnBxJhPao6eSs4DBe5Dd6iV0kojRAQSD7zeuTuCAW3rI6c
+	B6RKuKGISpE6pyMZkXDKn3bzbiIGOzT26qBE94qhbv6OVQmH9bR3Gjp/kOztx+MOxqaDITlwYy5
+	ot5lXl6iP5SuUtNrr1aD+BJOu05VonJdJ5/M1SjM4VtbwrcyAhx5Q0lY=
+X-Google-Smtp-Source: AGHT+IGSN+89+ev6I1KKIKrYVVMo2ys84hMSR+T3BfDaLgnUIIaFdFWMTnr/kHWhlVvZWahKwsOImXHsCYbnOPCcr/MWQDnXuHB1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3156c69f-b52d-4777-ba38-4c32ebc16b24@vivo.com>
+X-Received: by 2002:a05:6e02:148e:b0:3ce:7cc9:9f46 with SMTP id
+ e9e14a558f8ab-3cf748b4d2dmr14934665ab.9.1737117243572; Fri, 17 Jan 2025
+ 04:34:03 -0800 (PST)
+Date: Fri, 17 Jan 2025 04:34:03 -0800
+In-Reply-To: <0000000000001e66f5061fe3b883@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <678a4e3b.050a0220.303755.0005.GAE@google.com>
+Subject: Re: [syzbot] [cgroups?] possible deadlock in console_lock_spinning_enable
+ (5)
+From: syzbot <syzbot+622acb507894a48b2ce9@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	cgroups@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net, 
+	elic@nvidia.com, gregkh@linuxfoundation.org, hannes@cmpxchg.org, 
+	hawk@kernel.org, jasowang@redhat.com, jirislaby@kernel.org, 
+	john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org, 
+	len.brown@intel.com, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, 
+	linux-serial@vger.kernel.org, mingo@redhat.com, mkoutny@suse.com, 
+	mst@redhat.com, netdev@vger.kernel.org, parav@nvidia.com, pavel@ucw.cz, 
+	rafael@kernel.org, rostedt@goodmis.org, songliubraving@fb.com, 
+	syzkaller-bugs@googlegroups.com, tj@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri 17-01-25 18:25:13, zhiguojiang wrote:
-[...]
-> > Could you describe problem that you are trying to solve?
->
-> In a dual zone system with both movable and normal zones, we encountered
-> the problem where the GFP_KERNEL flag failed to allocate memory from the
-> normal zone and crashed. Analyzing the logs, we found that there was
-> very little free memory in the normal zone, but more free memory in the
-> movable zone at this time. Therefore, we want to reclaim accurately
-> the normal zone's memory occupied by memcg through
-> try_to_free_mem_cgroup_pages().
+syzbot has bisected this issue to:
 
-Could you be more specific please? What was the allocation request. Has
-the allocation or charge failed? Do you have allocation failure memory
-info or oom killer report?
--- 
-Michal Hocko
-SUSE Labs
+commit bc0d90ee021f1baecd6aaa010d787eb373aa74dd
+Author: Parav Pandit <parav@nvidia.com>
+Date:   Tue Jan 5 10:32:02 2021 +0000
+
+    vdpa: Enable user to query vdpa device info
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1440c2b0580000
+start commit:   619f0b6fad52 Merge tag 'seccomp-v6.13-rc8' of git://git.ke..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1640c2b0580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1240c2b0580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d1cb4a1f148c0861
+dashboard link: https://syzkaller.appspot.com/bug?extid=622acb507894a48b2ce9
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175029df980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16f29a18580000
+
+Reported-by: syzbot+622acb507894a48b2ce9@syzkaller.appspotmail.com
+Fixes: bc0d90ee021f ("vdpa: Enable user to query vdpa device info")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
