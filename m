@@ -1,76 +1,76 @@
-Return-Path: <cgroups+bounces-6227-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6228-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 796DDA1550C
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 17:56:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C41AA15511
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 17:57:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBE3C1881E18
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 16:56:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB13D169B09
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 16:57:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C598719F13B;
-	Fri, 17 Jan 2025 16:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294F819DF4B;
+	Fri, 17 Jan 2025 16:57:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="IaJ+JOkD"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="AVpQGIkS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1697D198822
-	for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 16:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A7519C54E
+	for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 16:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737132980; cv=none; b=DImtpivFn7+VkWSochYa9E1t8Dr/2byIqqkXZPj8Z2sGHiNNMAY0cLxWLcYKuYdPk75Bod0ZCpYnUo8k+aQQBMntA/+9+mQbBlsdlmtK+/g5wPKNDIAQuIHpPJ56/rx8kj+m5GDBGH8tIaAwZUVliamUzdQWfg8lzyTBNTOxa9c=
+	t=1737133041; cv=none; b=JSV7h535r6Xl+sE22u5RdtL+I3+Zd3eWp8BzPWzv+jYC4XciUmwVwNGlvu8oo4BdoV47RMQii9ExLgdna8mcBFo+7WeYRWUBkvQmiSw51qifJCKpmo3L668IDI2cTW9dQkL+OXut7Kpg5eSme85OabKwGcncyScaBdJK94G+PuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737132980; c=relaxed/simple;
-	bh=EcKTRL8JXgL6MYjimVIRKmKtsAaC6f8InOAt5ItXdT4=;
+	s=arc-20240116; t=1737133041; c=relaxed/simple;
+	bh=6ow3zCdAZ7HxDhWDO2oG9aKSe9LSbw6iohSvIxenrV8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f+9oQafZvcMIP3n3aaNnazTVvFadNcVpDBOmwFjooZVXhKyVxIEWpXNB9WYY+m9sZGmtzN++Fptc5LKIlNX5vPAiMnwI9KrSakgsiSsjMi+3+2Yv4MlSaHFLOAJQ46W98fIsd5lYhd+l7d2hZpqWvGN9HQrTmH7mrjIAPPcc2hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=IaJ+JOkD; arc=none smtp.client-ip=209.85.222.180
+	 Content-Type:Content-Disposition:In-Reply-To; b=hQziFmhi+vX9bLifhrOa3UggYV6LZ8UT8GXRolGbp7S7/UFGBsgRljbOkqqOBii7rHCukKStoO4hyTE47AO1dXsysYnIzFc1d9MWV5VONbBKHJzNBwP66f4xcA+qBg7hbJvw4yQ7D6PwaQmgQGDj8nixPSBOaX8xBG7C52wvWJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=AVpQGIkS; arc=none smtp.client-ip=209.85.222.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7b6f1b54dc3so386040485a.1
-        for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 08:56:17 -0800 (PST)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7b700c13edaso119258785a.3
+        for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 08:57:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1737132977; x=1737737777; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1737133039; x=1737737839; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ghbAvzlR6mk62PxWv6MFBehOgd27WJTfHwfhEljUO9k=;
-        b=IaJ+JOkDYEkZk209bzt1Zvv8u2V1Ys28Vu4hUAnF6+hwcIJL/ArR3AL3I9wAOWSgWo
-         Eg6NZ9gnu/0s7PWPNuAU6zHcgYlYS8g1VIa1VS5pkTUvjkuOqzoSTTusJw2ELSpXYiJC
-         NmcslDfp6HD7wkDmOD+oLNFlwYsVON1YhqgwYWFeSOuwrhfq3M0OnoCy9+DmSM0hJ6XI
-         R6DxNpIjne4ZE2vTh3y73UQb1f/03+vjw8D8eWx8acBt0pMRgjdgxtWOEm1MLORzWPIF
-         cBmmqfIquJHrXgY+vcIfYGArYmJ+ZUKsRntb6DE869SKg527sM8QWlIewH4uzuYV37Q0
-         kpUA==
+        bh=A3+FOZl9G0CmS+l4AgTiYZxyDmYtH5WqjmYohOoxqVA=;
+        b=AVpQGIkSIJJEdIJU4KSNtbAl+A0H8hWavDXZR/bIsKKN5/9XLjotrJ+Gq3a7jys6NV
+         8LPzqUNwXbkcxZNOu5dGqywlvrC9tFpCq8WAZBhuIs2EjK1EQIT05O4iLx7w9QKV/77g
+         ke+IIGeY6Cknmt5MT5uoC8zGavHOhdwoYznIz+RJ+RLSZktLH8+v4QgmPp0FkvlkjBPm
+         ceKH3wZrsK3l8ZVO3MRMyQZP5Ra9OX2y1dJ4uN8+wogXNWRgK78puqp3KRIIFDbK6Wv2
+         xgTBJdqIWE/9VlIGv826+/F5IYsW8QZPQ1BIWa5vh4e8yt28ulsDl8o3bVKD5ABaTlAe
+         i2uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737132977; x=1737737777;
+        d=1e100.net; s=20230601; t=1737133039; x=1737737839;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ghbAvzlR6mk62PxWv6MFBehOgd27WJTfHwfhEljUO9k=;
-        b=pa+CXoUuNm8VWL/tN2OdwENf7e7VeLhXMMJCq1IyTOHEW5I+9AgPuSh6oeGFcsQtkm
-         Y3gejxehZgxInsdw8lzWTJu7bj3JzrC2pi4tuAWTMfobCrFOcx4OlrdtAZrOkbu7htZ3
-         zqPE63ggS/kJ1cfsiAeVP0+kFNKWtz2HjzyrATOQRqNXmKWrjiCgcKJ8LKNKOjweOGza
-         OV2p0/2CgLuoe2gNPeFU1sLPfPaGGDhPZFtWBU3/J5nkO3dWdJb46IXkaJ/KvaI0YtwA
-         PujLgZVPHkT5d95GU0dmROtSdH98IkqsZJ4d28iAOciTHzBXjtYylCQ7xaVFkqwlDPl7
-         N1QQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUvWtfedD8ThnWqkvO9QLagB7FZV3m+wmlXBrcqfgXdShbYJtwYVwuH44t1VkEimXw4CKbAzm+A@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+as+j91eDpdZzvP0QKqAG5uOg4JuFa1GIUWZ7mtwPC1RsPhxg
-	LxIhURKou6jNqJeN38Kr20ClkpQLQWqVW07UyWKdDo7JYlNgkNIEpruT7f6grjE=
-X-Gm-Gg: ASbGncut64rsTT2qbsO4i9pmCeLqOlgdHtAH/WuWCg1LO0P81OZw9yFhdcZlTcI5o39
-	bDpPuD3qFXTnTXe0z1ZC0jK2ze7FY4e5lhFAFIEFpmj8S/no4Pl3UdJaQUPzScIdymMrxFbbvKw
-	O57n5NP9yoWu7CSa9s2TCQ2rvvvs6UpnxueOKrT/TWcUtL3pKuY4sfXoYK/o0PfZJsxH2FmXvvq
-	Rspclz1Lpi9n0Lsvs4pACOBWRZTXGk4AXKS06gLEhnigXdY0tqsmJo=
-X-Google-Smtp-Source: AGHT+IGlnTKX/0q5IbCtm50o6MEMkk7zw+6qINZ8d+hjttdZmOyoqXGdPKCXxLM1GFu2wStmxZ0MTw==
-X-Received: by 2002:a05:620a:4142:b0:7b6:6e59:2864 with SMTP id af79cd13be357-7be6324fc1cmr571824785a.43.1737132976849;
-        Fri, 17 Jan 2025 08:56:16 -0800 (PST)
+        bh=A3+FOZl9G0CmS+l4AgTiYZxyDmYtH5WqjmYohOoxqVA=;
+        b=etDdYPC/DLVVf9ENZ3YFll1KRwjSglz6NccHEybtaKGM73rWVhcf1vMsaz86dHsEdS
+         bRB1Or13zJsh9KqYLJ/DfBE7kIIYZf+jzdr1xp/vR2UWrsqxvdrZb+FRnwBCn7b+EAPc
+         kAttU5P5f0LyBbFqdcH/r8kK5tGx55wxgMaaHMxFDGAE9blT5+iqAzZKY6C/NJM6zkJs
+         ACAnrArs8x4Ctyho0BZqrdjwr4yBiJGdxc05uQPaQtnFmsrzR4n+6ckAc65GRqZZ070J
+         7koxip8xJuA3NTrU76msXdM3djJWgaVtLdQsbh4Y+t5J1OESMOwjcty3FtyYHlyo2xMv
+         4rOw==
+X-Forwarded-Encrypted: i=1; AJvYcCX7rpaQs0WUgZPihAy3zVXH4gJmLYkIf3YjAzQquk1FtmcXg5vyvYlNZI1wYYs4Iake+TJG5nC0@vger.kernel.org
+X-Gm-Message-State: AOJu0YyG4QBT8XZzlWfLAuIQqt0Lwf1xbwRIXtwv79MAcPDAzHiL16L6
+	nUbEdkvsR7+vlYlt4ewQLlmgM4fR8hPYTAZ2HbKqdZ5v8HwFQMZHafH6D7Lx8tw=
+X-Gm-Gg: ASbGnct43PPApNBsDBbcqOg2VqalE6DsaD8ba94UAaOsjIGlUN7j7XmPQJpxhVTub51
+	tRH8W/+S/rQdPsQdfdxsuAWugV4OEE80BE0EDD8dBwxcA1lDwmlAFz5YIZEuD8f5b2p4o1Qak8x
+	G2pup0ni1j9ZS8pS9sBojxZduxkSnOfvr9R1kjzsurNWAh4zffL3e+7+5BwTt0hUScLdktSIEFp
+	Nz8STIPJHhSEd0JcPYQnyBoej0BVbMb6eNWwkbfgSa21FHe7v28OXs=
+X-Google-Smtp-Source: AGHT+IEXRz29FmQ7/DeWr+qbLVpSrbszPsxs9nr3ZLeyzTMwlO5/BUjKEPnQYg9GbkTNysXjXKLj2w==
+X-Received: by 2002:a05:620a:1916:b0:7b6:e98e:ad15 with SMTP id af79cd13be357-7be6320d09cmr474429785a.34.1737133039335;
+        Fri, 17 Jan 2025 08:57:19 -0800 (PST)
 Received: from localhost ([2603:7000:c01:2716:f0c4:bf28:3737:7c34])
-        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6e1afc33cacsm12950386d6.66.2025.01.17.08.56.15
+        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7be61484065sm130301685a.49.2025.01.17.08.57.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2025 08:56:15 -0800 (PST)
-Date: Fri, 17 Jan 2025 11:56:15 -0500
+        Fri, 17 Jan 2025 08:57:18 -0800 (PST)
+Date: Fri, 17 Jan 2025 11:57:17 -0500
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Chen Ridong <chenridong@huaweicloud.com>
 Cc: akpm@linux-foundation.org, mhocko@kernel.org, yosryahmed@google.com,
@@ -79,11 +79,11 @@ Cc: akpm@linux-foundation.org, mhocko@kernel.org, yosryahmed@google.com,
 	mkoutny@suse.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org, chenridong@huawei.com,
 	wangweiyang2@huawei.com
-Subject: Re: [PATCH v3 next 4/5] memcg: factor out
- stat(event)/stat_local(event_local) reading functions
-Message-ID: <20250117165615.GF182896@cmpxchg.org>
+Subject: Re: [PATCH v3 next 5/5] memcg: move the 'local' functions to
+ memcontrol-v1.c
+Message-ID: <20250117165717.GG182896@cmpxchg.org>
 References: <20250117014645.1673127-1-chenridong@huaweicloud.com>
- <20250117014645.1673127-5-chenridong@huaweicloud.com>
+ <20250117014645.1673127-6-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -92,20 +92,17 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250117014645.1673127-5-chenridong@huaweicloud.com>
+In-Reply-To: <20250117014645.1673127-6-chenridong@huaweicloud.com>
 
-On Fri, Jan 17, 2025 at 01:46:44AM +0000, Chen Ridong wrote:
+On Fri, Jan 17, 2025 at 01:46:45AM +0000, Chen Ridong wrote:
 > From: Chen Ridong <chenridong@huawei.com>
 > 
-> The only difference between 'lruvec_page_state' and
-> 'lruvec_page_state_local' is that they read 'state' and 'state_local',
-> respectively. Factor out an inner functions to make the code more concise.
-> Do the same for reading 'memcg_page_stat' and 'memcg_events'.
+> Move the 'local' functions, which are only used in memcg v1, to the
+> memcontrol-v1.c.
 > 
 > Signed-off-by: Chen Ridong <chenridong@huawei.com>
 
-bool parameters make for poor readability at the callsites :(
+This makes sense. Without the refactoring from the preceding patch:
 
-With the next patch moving most of the duplication to memcontrol-v1.c,
-I think it's probably not worth refactoring this.
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
