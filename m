@@ -1,41 +1,42 @@
-Return-Path: <cgroups+bounces-6209-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6208-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3179A147F8
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 03:15:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17701A147F6
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 03:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE59A16A6F3
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 02:15:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87DC53A710F
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 02:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB531F5611;
-	Fri, 17 Jan 2025 02:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514C81F5607;
+	Fri, 17 Jan 2025 02:14:48 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA5A25A65B;
-	Fri, 17 Jan 2025 02:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D72A25A65B;
+	Fri, 17 Jan 2025 02:14:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737080099; cv=none; b=ohrG/Fs5+qgP2fURZ87R2R/ZJL6k3M8eGQnQ24MjsBRC5qdtli3StYDWIWsT1OjIUMNUy2NiMtd5cpIPuwhL6QsRRQIk+qxB/P92e+cAx6v8BfLeUE3cQjfmcX/CPTCqnaxeka6sWwnOQqsTNicRfKqMnnMVYUlGM05op4m//UQ=
+	t=1737080088; cv=none; b=SrEMJOIKuwjjKD7nKQB9kl/wQqbIgmrBNCsYlPdU58Im+zVcnvPHk07ZGOf+2WfB8wo02Q6LOX+XUGT1yH2qzWbeYQedi7ONrAqjitrHDv9ZXqwugyXrTssq3F83YhpZOR83StP1MbwDRT4tLCg+CEW4aGjGFW7XO8+QBKC3/Wk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737080099; c=relaxed/simple;
-	bh=rZqLUl8mRweRtYaD0sn1J9F0l4tnFVQxbFpGONjle4M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lOLMxvFdn2eXRQg5R5o9IcwBn5DiyTmxa1BFGvlDyCOtBvKW3bY+w5HV5QBJC3Sf/9GUE888aLtgQWdXc0ADMf96Ee5BDacZghTHeN88mizmpykuwZQ3HeysljNf5KUzxmxjKoXHtxyMyQOMqdmh8OMvuyOLc0SoK/IRHQGPJS8=
+	s=arc-20240116; t=1737080088; c=relaxed/simple;
+	bh=t8ZApSVZF7kYvsUpMXc542nOM3zha9IX6Jo+ZeLhhiE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XsROT4Ng1tloTEVCsLe8y2hVi1sEHs3H7UF90p+VKRyOMfhRGLyUeUscod/4df2hTMCOtCM7yF2RDlvnIHfSauBkjfYuOQDDzFJbPY7XHJYgBg9i39dz3mwTRbdRt2Zrpucnc1Uyx7p5qtptU1y3W9mtnR3I8kDoElwgNAPZ6EM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YZ2t020Hfz4f3jMK;
-	Fri, 17 Jan 2025 09:57:12 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YZ2t661Rpz4f3jt1;
+	Fri, 17 Jan 2025 09:57:18 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id EC1B21A0E3E;
-	Fri, 17 Jan 2025 09:57:33 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 185F81A177B;
+	Fri, 17 Jan 2025 09:57:34 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP2 (Coremail) with SMTP id Syh0CgCnsWT7uIln8NWrBA--.20802S2;
+	by APP2 (Coremail) with SMTP id Syh0CgCnsWT7uIln8NWrBA--.20802S3;
 	Fri, 17 Jan 2025 09:57:33 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: akpm@linux-foundation.org,
@@ -53,65 +54,65 @@ Cc: linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	chenridong@huawei.com,
 	wangweiyang2@huawei.com
-Subject: [PATCH v3 next 0/5] Some cleanup for memcg
-Date: Fri, 17 Jan 2025 01:46:40 +0000
-Message-Id: <20250117014645.1673127-1-chenridong@huaweicloud.com>
+Subject: [PATCH v3 next 1/5] memcg: use OFP_PEAK_UNSET instead of -1
+Date: Fri, 17 Jan 2025 01:46:41 +0000
+Message-Id: <20250117014645.1673127-2-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250117014645.1673127-1-chenridong@huaweicloud.com>
+References: <20250117014645.1673127-1-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCnsWT7uIln8NWrBA--.20802S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruF43XrykAw45Wr15ZF4rAFb_yoWfKFc_KF
-	97AFy7tw42gryUJFy2kr45JFy2kan8A34DG3WjqF43tasxtw1q9FnF9FW8Zr18X3y3Cr4Y
-	vr98Jw4kWw129jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbI8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
-	w2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-	xUOBMKDUUUU
+X-CM-TRANSID:Syh0CgCnsWT7uIln8NWrBA--.20802S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFWrJF43Cw1xWF1xWr4Uurg_yoWfGFX_uF
+	WkKr1DZr15J3ySk3Z0yrySvrnayF1UX347Kw45tw13AFyqqasYvF1vqr4vvw1kXr47try3
+	Cwsaqayqgw12gjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbDAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r18M2
+	8IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
+	021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r
+	4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
+	0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
+	JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AKxV
+	WUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
+	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
+	wI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
+	4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jjuWdU
+	UUUU=
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-Some cleanup for memcg
+The 'OFP_PEAK_UNSET' has been defined, use it instead of '-1'.
 
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+Reviewed-by: Michal Koutný <mkoutny@suse.com>
+Acked-by: David Finkel <davidf@vimeo.com>
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
+ mm/memcontrol.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v2->v3:
- - move the wrapper function definitions to header files.
- - add a patch to move the 'local' functions to the memcontrol-v1.c.
-
-v1->v2:
- - drop the patch 'simplify the mem_cgroup_update_lru_size function'.
- - for patch 3, rename '__refill_obj_stock' to replace_stock_objcg, and
-   keep the 'objcg equal' check in the calling functions.
-
-Chen Ridong (5):
-  memcg: use OFP_PEAK_UNSET instead of -1
-  memcg: call the free function when allocation of pn fails
-  memcg: factor out the replace_stock_objcg function
-  memcg: factor out stat(event)/stat_local(event_local) reading
-    functions
-  memcg: move the 'local' functions to memcontrol-v1.c
-
- include/linux/memcontrol.h |  25 +++++--
- mm/memcontrol-v1.c         |  17 +++++
- mm/memcontrol-v1.h         |  11 ++--
- mm/memcontrol.c            | 130 ++++++++++++-------------------------
- 4 files changed, 86 insertions(+), 97 deletions(-)
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 46f8b372d212..05a32c860554 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4004,7 +4004,7 @@ static ssize_t peak_write(struct kernfs_open_file *of, char *buf, size_t nbytes,
+ 			WRITE_ONCE(peer_ctx->value, usage);
+ 
+ 	/* initial write, register watcher */
+-	if (ofp->value == -1)
++	if (ofp->value == OFP_PEAK_UNSET)
+ 		list_add(&ofp->list, watchers);
+ 
+ 	WRITE_ONCE(ofp->value, usage);
 -- 
 2.34.1
 
