@@ -1,165 +1,153 @@
-Return-Path: <cgroups+bounces-6230-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6231-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85777A155B7
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 18:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ACB2A155D6
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 18:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5B67188D48B
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 17:29:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98F58188D915
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 17:37:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BCDF19F495;
-	Fri, 17 Jan 2025 17:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D5771A2391;
+	Fri, 17 Jan 2025 17:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="E4wCnFGj"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="KJfx41QP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3F9725A636
-	for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 17:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5DAE1A072A
+	for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 17:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737134970; cv=none; b=goKuf4Md/ZscHVc2qj62Ug/9WFgXHfRfl4ZF1dCi0XEGFkftv5K/Bk2KUhOGveiz1jJPeLdbW5Ct051UZVS7Ats3E88TRnzfsg1SbG5TaIbKf8wyp4NY3ab0tiYlneLGpiAiIbPePUva3oJoU/csIcUYCex17mKO4A96u4A6neo=
+	t=1737135417; cv=none; b=jDVeaHoVjYGVYfrERlYdbGZ0pe+e2jasXwmjE3uAEQlCYtShW853dxolEWglDdk8NubDS0g9rrw9r+Ep921fJPapiz+ZqzM4lT0dPqMThCYqbgzV/9Hq8h2Yb333B/B5Rzl+9hVfNsGi/fm6lpSFcXe4lwWdYOmW6cQjYkwLwc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737134970; c=relaxed/simple;
-	bh=CKOLl1ci2veAiEIeBmdl6Gx5POAz0SNektA/2B0Jfi8=;
+	s=arc-20240116; t=1737135417; c=relaxed/simple;
+	bh=a96zl8g16GHY09Z4zOKis3TmpUulJ6y2yUf5Tx5WcK8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fP/1+TzHnG6HPSmSj7/TzbPnddZyIu0+dkzoxzc4P0WT0P6sxQN/Rx0WYaAfGGjjKx5asXXXDcJ6n/0UDcTyK7AcTrsF5AVtvRrbVH4A4UjMfaFfHaEff/ldjuFTjF6DhpmTpyPhSyNovIuRd3XkLQ7iupb56pqmQJt+gSXmuDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=E4wCnFGj; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-436202dd730so16446895e9.2
-        for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 09:29:28 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=mVhBiC4DUl6+5KACyjzpL7MQvcuboaTEdEtOaXOvTQVhu+15TlMGtEbaX3MKdd4eG5btXtLldiQsf8wdGeL7fHBpp9kSXk8gxmzbA7TIe8OWmAXwsOxT0mcarQpjfLipiy8KDodgQoHC9ilt5lc5TVHUn2bFfmum7vHE81GO0aQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=KJfx41QP; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-467a6ecaa54so22070601cf.0
+        for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 09:36:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1737134967; x=1737739767; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jsXeTDpN3LmohLv7MAiOIweQD1yeDmykm13NwCHWMEg=;
-        b=E4wCnFGjRykphZGTIVk/kYMH2stCx/I3wJOQnwhOsC7ojK7UNzzMtK3rT7Y1z5xvy4
-         tSlFaccUoDkJ+4J9LhZo2OvDWb3BGI1angmRuqzCOaJfjHocQ4kP2u0GjgnuDn/YyJJ2
-         HMKRtvxAmVigcrAxj99TMBI8JAdD8l7+qtgxopXwyqFEzIVRQ1Uz6GujrybyYd0/VQ82
-         6aeKbNRPFWY6z6w/b8X+ppcrUtSf6NBv23kzSW5Kvhm5nfGfgt/GGpcUyMTN5ajOsUIQ
-         8zhB18JU5IJbMDUT/Cbk+bC7PA0SHuxFaFDW5REj72EpmckbfC0l/TLIKe0uB46kFW48
-         3V9w==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1737135413; x=1737740213; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7Rb8h7iwsxGtB2Jxx9CB8AY9s5fwogb7DDAbIS4Jt8Q=;
+        b=KJfx41QPZO0O0ZZu/A2U+yK8GhvRz+f56sN5AWxSHKF1/veCUrttmvMLqY5TMAkbGa
+         2iAQVijHV/tsM2QWkLxE9VLHPUMvVKnhdpinNrKLnKx6ivCMnbNYg6ix6CsF2b39P5JB
+         qRtf0iSr4c3fsXSLLYDtsWwes3W1mg3XlD7TyuhhwY91atxn/tjhLf5ttX0pbG1O59sM
+         CbKZYVrm6MPAfYwEUF0H1eYLOt7YXWpBI2pkyX71zAOgO7VgGt7xmuQK9l5DGqhi3/AJ
+         pjHCJn9QqHmVUKsuNYOwnOK3Hq3XMqHr9qogePCEIyLp+2yKSjrdTLK67CrWKhQNlI2S
+         FXNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737134967; x=1737739767;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jsXeTDpN3LmohLv7MAiOIweQD1yeDmykm13NwCHWMEg=;
-        b=k405NNqHPhUIZpzUZJGGaq2Gt0umpOlb66FKgcnL8iJ7OObjXOp6Y4Q4aPe8MoKZDr
-         kb43gA6pzzZlBv51Pqr4vtY5cx5gqQwJSUZAFcSun0645AeI8aEozXTJe0j2wF01qnYr
-         Itbcd1gj4j0sPI5EvxHcpNJ5/yoZ9cJDBxPJC7Wz+LGUxfUeVaTd3UiXzICQXLOA/gPY
-         4yhJb7Pbiln2Wr3seGqgu2X2IEbC9SMIsXx/m5qg0jiatodS2+RQZd8NVPIRa1f+/wTP
-         3yUz9kGMaHvleuoUOsF+gsT1mZQ8Pa2TSEU99DELvnMdrUmBXXp4lnIv/cvz/aqWGkMs
-         4Q6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX9wpD4gYBrws4hK1rzuRPxDlij0kmdnSboc57wY7MLamWLImYT9UYUCtanKSE9wuO1COa8bRje@vger.kernel.org
-X-Gm-Message-State: AOJu0YzILTnKpNz49lhN/3IlKTUrs0oBWyq5P5qqbO4b6Bszigfywhp3
-	oleXzlgA65kjmocXCjNLbfdsZ5YTZcJHH1B6D4dbFnP8YYNjbhehsRegReEFLE8=
-X-Gm-Gg: ASbGncvLM246f0kQ+lsO1erHPE5AR28Bui1MAME9bEhnZUSZkVEJ3vRa7tKe4lr77xp
-	wWCQC3AICiJVIBXlrnCykHyCxLXATh8oSta+in+nxisw0eXQILRe058lSMimOhWzhTT7SghpWMg
-	ctbZIDIdhF4rt1n6jA/4vQ4KagVLIzvv7dkGi7IXZYbGTI5CweIQE+js4Ddy9JCxyTS4wa17d1Q
-	wFOWzjUVI2ojKEgPBmRDKyEbbvMejee+0twRtbvFxRpLe8b7QLQ0fSv4pQ=
-X-Google-Smtp-Source: AGHT+IERF4iHOHPcbM5nuH3FJfAV1BNIQj1Wcp7xUmZ3b+laxqzqes1j3Dh3jvwp9n1JkYnyhv16EQ==
-X-Received: by 2002:a05:600c:3542:b0:434:9e1d:7626 with SMTP id 5b1f17b1804b1-4389145137dmr31233705e9.25.1737134967041;
-        Fri, 17 Jan 2025 09:29:27 -0800 (PST)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-437c74ace90sm101507705e9.16.2025.01.17.09.29.26
+        d=1e100.net; s=20230601; t=1737135413; x=1737740213;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7Rb8h7iwsxGtB2Jxx9CB8AY9s5fwogb7DDAbIS4Jt8Q=;
+        b=IsGMUE8J/HY5YPyWwf2Cir7NxvGteJmvBhxYozc+JmYTGdmNwaoCBUvNEgvDsTKhGD
+         hxs/9LYvoUf9CVmu93xW+3ULiA9S5Xh7kTk1ayWLTafJgvaMjXbzOk8dzkAuGHzy+JnR
+         W2P/4owQHb1E8hPw+ee6AgafM8vJvrbbhNR+tGVZn2dCEXI57W5DpKja85SFUXysymMq
+         9+qwkZNdkRP0k5GyO3hDrBERNRq/F0m+FkuapqXgVCtyqq5mv6CaRIzKyjhNLpN8Z5IY
+         4iwMrfIxJF6J2/RTCVYbpTtTVWlChR3ylnuVnZvXvkRYcOPmaTdxKmgXxULNKdZrIh8N
+         ADqA==
+X-Forwarded-Encrypted: i=1; AJvYcCX8HGkv6ZQ/U91UNWhy12BOgZ6u4P9rKM3LrX4b8Ia/9yIHNq3ucraWxo5QCWodnFHy4VBnOe5c@vger.kernel.org
+X-Gm-Message-State: AOJu0YzT2F4tPjAWjLN3sMpmwWUUBge9Qjc5o1zSeDpsMaquM+eTKxWb
+	+yHz0PL5tx3qAqVRWrV3w1iV2tAWAq3gyyOpFtp5wjFybIwgAJx/lq9kJhWxc0c=
+X-Gm-Gg: ASbGncv88AzkKY8NV7ntxC6IIhyu+DkX/utAELRLGdQUGMtQKX5Lx0v3dOvNYVmm1Nx
+	q5PCN4o0qEndduPqolF+nR+ElR3O/Osy9ov0lL2LVPbdhZrFxGiBgFhNDhX17Qktm6ZQsGIAQHu
+	dA8IQOFZDRqBfyN3Ipzue0xfYvFQQqAI+x01UIHmjvC9Cm5g94YQzB1pIgdU+Y93gYql6kxfi7T
+	B5QqiokZr6H76EFf16DEga1R8ZPTIURlaYwa5ISOe7DMqXyctNbw88=
+X-Google-Smtp-Source: AGHT+IFP0vyEHf5uMK9mcP5ikvQCVxFQj9kliA9F6BCDOqUWAwOXEM0bkwrK3Boz183wkDpCcShmlw==
+X-Received: by 2002:ac8:5fc4:0:b0:467:5734:d08b with SMTP id d75a77b69052e-46e12abc7dbmr62165531cf.31.1737135413585;
+        Fri, 17 Jan 2025 09:36:53 -0800 (PST)
+Received: from localhost ([2603:7000:c01:2716:f0c4:bf28:3737:7c34])
+        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-46e102fc99asm13531981cf.29.2025.01.17.09.36.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2025 09:29:26 -0800 (PST)
-Date: Fri, 17 Jan 2025 18:29:25 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Friedrich Vock <friedrich.vock@gmx.de>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Simona Vetter <simona.vetter@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Maarten Lankhorst <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>, 
-	dri-devel@lists.freedesktop.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] cgroup/dmem: Don't clobber pool in
- dmem_cgroup_calculate_protection
-Message-ID: <oe3qgfb3jfzoacfh7efpvmuosravx5kra3ss67zqem6rbtctws@5dmmklctrg3x>
-References: <20250114153912.278909-1-friedrich.vock@gmx.de>
- <ijjhmxsu5l7nvabyorzqxd5b5xml7eantom4wtgdwqeq7bmy73@cz7doxxi57ig>
- <4d6ccc9a-3db9-4d5b-87c9-267b659c2a1b@gmx.de>
+        Fri, 17 Jan 2025 09:36:52 -0800 (PST)
+Date: Fri, 17 Jan 2025 12:36:49 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	SeongJae Park <sj@kernel.org>,
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+	linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Sebastian Sewior <bigeasy@linutronix.de>,
+	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>,
+	Tejun Heo <tj@kernel.org>, Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next v5 4/7] memcg: Use trylock to access memcg
+ stock_lock.
+Message-ID: <20250117173649.GH182896@cmpxchg.org>
+References: <CAADnVQLEfjETi+L3PXwTz7i+MnT4FT1ohoAL555N_Mdhd+vqBg@mail.gmail.com>
+ <20250116200736.1258733-1-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7hm3w7xjc6ubac3y"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4d6ccc9a-3db9-4d5b-87c9-267b659c2a1b@gmx.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250116200736.1258733-1-joshua.hahnjy@gmail.com>
 
+On Thu, Jan 16, 2025 at 12:07:28PM -0800, Joshua Hahn wrote:
+> On Wed, 15 Jan 2025 18:22:28 -0800 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > On Wed, Jan 15, 2025 at 4:12 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> > > On Tue, Jan 14, 2025 at 06:17:43PM -0800, Alexei Starovoitov wrote:
+> > > > @@ -1851,7 +1856,14 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+> > > >  {
+> > > >       unsigned long flags;
+> > > >
+> > > > -     local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> > > > +     if (!local_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
+> > > > +             /*
+> > > > +              * In case of unlikely failure to lock percpu stock_lock
+> > > > +              * uncharge memcg directly.
+> > > > +              */
+> > > > +             mem_cgroup_cancel_charge(memcg, nr_pages);
+> > >
+> > > mem_cgroup_cancel_charge() has been removed by a patch in mm-tree. Maybe
+> > > we can either revive mem_cgroup_cancel_charge() or simply inline it
+> > > here.
+> > 
+> > Ouch.
+> > 
+> > this one?
+> > https://lore.kernel.org/all/20241211203951.764733-4-joshua.hahnjy@gmail.com/
+> > 
+> > Joshua,
+> > 
+> > could you hold on to that clean up?
+> > Or leave mem_cgroup_cancel_charge() in place ?
+> 
+> Hi Andrew,
+> 
+> I think that the patch was moved into mm-stable earlier this week.
+> I was wondering if it would be possible to revert the patch and
+> replace it with this one below. The only difference is that I leave
+> mem_cgroup_cancel_charge untouched in this version.
 
---7hm3w7xjc6ubac3y
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] cgroup/dmem: Don't clobber pool in
- dmem_cgroup_calculate_protection
-MIME-Version: 1.0
+Let's not revert.
 
-On Thu, Jan 16, 2025 at 09:20:08AM +0100, Friedrich Vock <friedrich.vock@gm=
-x.de> wrote:
-> These pools are allocated on-demand, so if a
-> cgroup has not made any allocations for a specific device, there will be
-> no pool corresponding to that device's memory.
+This is a bit of a weird function to keep around without the rest of
+the transaction API. It doesn't need to be external linkage, either.
 
-Here I understand.
-
-> Pools have a hierarchy of their own (that is, for a given cgroup's
-> pool corresponding to some device, the "parent pool" refers to the
-> parent cgroup's pool corresponding to the same device).
->=20
-> In dmem_cgroup_calculate_protection, we're trying to update the
-> protection values for the entire pool hierarchy between
-> limit_pool/test_pool (with the end goal of having accurate
-> effective-protection values for test_pool).
-
-If you check and bail out at start:
-	if (!cgroup_is_descendant(test_pool->cs->css.cgroup, limit_pool->cs->css.c=
-group))
-		return;
-=2E..
-
-> Since pools only store parent pointers to establish that hierarchy, to
-> find child pools given only the parent pool, we iterate over the pools
-> of all child cgroups and check if the parent pointer matches with our
-> current "parent pool" pointer.
-=20
-> The bug happens when some cgroup doesn't have any pool in the hierarchy
-> we're iterating over (that is, we iterate over all pools but don't find
-> any pool whose parent matches our current "parent pool" pointer).
-
-=2E..then the initial check ensures, you always find a pool that is
-a descendant of limit_pool (at least the test_pool).
-And there are pools for whole path between limit_pool and test_pool, or
-am I mistaken here?
-
-> The cgroup itself is part of the (cgroup) hierarchy, so the result of
-> cgroup_is_descendant is obviously true - but because of how we
-> allocate pools on-demand, it's still possible there is no pool that is
-> part of the (pool) hierarchy we're iterating over.
-
-Can there be a pool without cgroup?
-
-Thanks,
-Michal
-
---7hm3w7xjc6ubac3y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ4qTcwAKCRAt3Wney77B
-SXjDAQCncLM/XCLLSWKy6chCwIjuq/y0pPpusJ/lNYAoUxKz/AD+KrmKYQl6E53c
-NXucf48+OersRlcXPZxZtqCIfNK3PQ0=
-=tx46
------END PGP SIGNATURE-----
-
---7hm3w7xjc6ubac3y--
+Alexei, can you please just open-code the two page_counter calls?
 
