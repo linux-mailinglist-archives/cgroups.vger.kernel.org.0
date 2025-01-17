@@ -1,78 +1,76 @@
-Return-Path: <cgroups+bounces-6225-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6226-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03E35A154AB
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 17:48:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1705A154B2
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 17:48:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDA783A709C
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 16:47:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB9D33A9B3D
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 16:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7167719CC3A;
-	Fri, 17 Jan 2025 16:47:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2BB019F13B;
+	Fri, 17 Jan 2025 16:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="mbwWs8y7"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="iWzZCpBy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0751335BA
-	for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 16:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BC37166F29
+	for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 16:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737132472; cv=none; b=VQt4JBsMsXEeXTedTMxfyax8LXLnMY0VaRT2xDbXEE2iPwFdVc/ZkBTw7H7Ywx9izgkJQHcTR3/Rcl7bkpvMgM2Gq+5V8E87NJqirUc0qHjlbDhHpzUJRb7GzWLG4lLuxS7tfDd4IMdOpSpYxKzgKfbNj7sV1W23hHLK3rnVhiE=
+	t=1737132495; cv=none; b=u8kyD7D4B19uzTEtb6FW9auaAATjfdzgkQnx5vMfZSBOHm0w6JqVSwNB0UQRPEOI4JzhD+ZEw+nIwlENn7iBIafe4GS583813UMiW+YjEFGajhiecJvfNtINBgMmoNFenC6XWXL2bDlRqUnQsFmszyjuWXhhf/ZKEbTUVl6A52U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737132472; c=relaxed/simple;
-	bh=LekiLxjmEZu6e0m+oSb8Ke+0BjTVtML2AjG7Ue6w1C0=;
+	s=arc-20240116; t=1737132495; c=relaxed/simple;
+	bh=FQ2koMMWmX5cApEXH+IXNvtfu+A0E4n4juhen6ZDEwc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DTf025tLJyL4QhYmgkcLXGCOvI75q5JxmdckE6XlMPO0GYL7uyNdiacFTQ3lwoDlhn7LHZtwqsL2nIN/qD3qiZXGxxEsxp3bcrHY6CFNPYaTDst6t+qS1YZZI5WmMK//T/imo0L7Oqpsjp2wXNpz4iveC806f2bBNeA1g+zUQk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=mbwWs8y7; arc=none smtp.client-ip=209.85.219.46
+	 Content-Type:Content-Disposition:In-Reply-To; b=C6M92QVZxoP+qAXg+n8LaA6kxXdOMHBwaSIjZdg8kBHRm6H+dbZnFu0nNndq0E3uUozthqnFD7efXi5YPo6afJGf/Bs6R1ClKaK61HuAgS9q/l0pwa3V0Z1SdiKKDIADF8xTfYbOyt4D6e2pORLS88nCaOET/7dSjKPS83sHWJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=iWzZCpBy; arc=none smtp.client-ip=209.85.160.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6dcdf23b4edso21447166d6.0
-        for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 08:47:49 -0800 (PST)
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-467a3c85e11so15478041cf.2
+        for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 08:48:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1737132469; x=1737737269; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ALV5l/odctAX4u/DDnncfiVwNjPi9uf3gn37R/WtIws=;
-        b=mbwWs8y7BeGELb1nmXASH2VN+KxgwimwV6+VqlEe+rb0khrJ7d8bKOFB8yu4vi1otP
-         j9H7ydlsbHhZCscrI3gV/fSN2p5kfK2RkSU9kcH85EI6FpQ1vjcMh7KSDQgLrSCiAzYa
-         /yFhvcMXkvNVzqASwerAVecv0Rn/Kbp/1Pz9aQQD7vM3aRuJ27tSZ7oX1YrtjvaErxZB
-         fKXCBrAqb30Ykzdhdj2ZGmn0uFdYL7qPRILhPsCvq7ZIs2tkaBMeX+u7pkmQ8miqZejO
-         aFtmVtSRrFpxXsPVkmNVPeg8eY4R77Q3pzOv/DKkGlsO8yymOfZHnYk8+49NtskwYz1M
-         avEQ==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1737132491; x=1737737291; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l8YaBSyWTZacAKpiBL4zeCVsLIUHz0xsGOJbxkKSeNE=;
+        b=iWzZCpBycPwgly76N+/X9gZaqHpyottFLXN5Ap2JsLdHXvTom+TAeJr9pSQn+QviD4
+         SQk2wAfbGmMPCU4HLqcfnwndgxV+r0x9hiE40vkBjqLMO7l8WXTBOaXhht91AscT2FcQ
+         VVdA3ySXZK3pHC3fMPGrBQ6tzEFwZLar19mOMYat4lw2l30cSJVc7lkKGTC0K7E+Mtuf
+         T2pI4FsgSaCLTIIBha4v7bn/nUxoNkOP3OUdpuh6im1AwV5dfhxyLF4VgbMWJkDdfpOj
+         mntWTJcLC5dyroyDHxcqE8DpB8JIfskKbMufJ5UDRtZgrJAZKQV7m5vGIC1arT4MOHl2
+         RLgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737132469; x=1737737269;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ALV5l/odctAX4u/DDnncfiVwNjPi9uf3gn37R/WtIws=;
-        b=qpAlc5bgRjlZAIdj055x4q9RZapHwJu5O4QK6hjd1IPxnix38GNugpF8spS6t6Q2Kp
-         w99MstzgqVO/qJnqHmctuAoCgPF7tpUpxQE4DnDz/AU+ckhgFuVgwY+okXGrAmnZPoQ3
-         gLtQ6ECwE0WWCJ528U/2daO50zub0EKYEJRQOWprtKFM0HuIaR8yMeol9SDo/NaDmbzw
-         fyfZeq4Y0lNRxgau8cEip6Q5Iw8gPBirI8XZQAuJkF56P/oW5Rg+zjWXfbZQl9eNXrlh
-         k8aJHmQXoAiir5nFQuRFj9ANaBI/7Kho+8ZGnnKZtao0hNnLVZoN86EBH9mc/Rs6lAeP
-         GH+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVR35iTwMqypubI/kBwWnznrjKQxryOCyncnXiaSQcnLScWVsRfwB82gcit6/GE/xHQ7K4iq8Qj@vger.kernel.org
-X-Gm-Message-State: AOJu0YxnD6TkmcQ2Akp5T4sMj3o9acXB2Q17q+sL3S60i0Qew57nM9g2
-	o47yjo2fC8BX8e0cfape7LAY9MN0HDDcEXunoskXLzhiMbz9qdYTKFDlh13879vRqV2h8YrZMP+
-	t
-X-Gm-Gg: ASbGncubnK6+/WoORd+QIzOqZGqR/vYvuTvSiR1f/RR46IxPjqC2Ee/RvP3R5rDyT6H
-	Fe1m3OpJ3jCf6vxrL8B581Cj9RbtUeW1WrzN7kMefUoX58WNHQJ0KafpeJC3kKgHpsJPiiPTns5
-	bj/ABMuKzRuqwEg2vHZChaUqrVGinDfc+NJw5GFR+m7deUN3ImpuXRXQaDMssZ71i09M8TjQk0d
-	clT18mki/98EOgYRBhAnKxpSd8Pb2NgRdtV5Nj3dc8GT1bRNuMURJI=
-X-Google-Smtp-Source: AGHT+IGJD22IumK4sgXeQYpyReO0k61FPPlVycvnYk8ngibV4lTzbMH3JRKUWQsEY2VfnGaf5KWdIw==
-X-Received: by 2002:a05:6214:400f:b0:6df:97ed:54d6 with SMTP id 6a1803df08f44-6e1b2180604mr62615746d6.21.1737132468860;
-        Fri, 17 Jan 2025 08:47:48 -0800 (PST)
+        d=1e100.net; s=20230601; t=1737132491; x=1737737291;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l8YaBSyWTZacAKpiBL4zeCVsLIUHz0xsGOJbxkKSeNE=;
+        b=cRadt1FvfAG7uKlpDHKi5gOzPyklObseV1XFJF7zE2xyr5uPa/dj6u0yDv5f/AxbS/
+         E5piLpqULAm2bMyvHOtl3V6eE8LMY5doFL9RudQ8zT1Fp67/eXY+2l2eHtS7oh1S/DQ7
+         K+GE98ezlbCEgclX8XV0z/8/0FUeU6PWkGqMwCCqdJ6LcFQGwgf9fe9762lGe0Ws9FCr
+         At1A5ekpg60zcGoKInxbWSP0bSa3klQUlpdYAaH7eA9foGeZsEYIlLxar89Jy03qBf1H
+         tY47dWJu9TcoVhabHRd9mZy1Os6PQCXp/FtEZfhj8COvu20K4rqvfwWIQQqrVuNcHY3j
+         JIoA==
+X-Forwarded-Encrypted: i=1; AJvYcCUVxE0cYJWe/TUDmQJnhHj4TSmb1zSowsY1BNt+n5RIUQo9rj0YV5fkl9b2tw7sE+NHZJ7WtuYc@vger.kernel.org
+X-Gm-Message-State: AOJu0YwgcmpLbYxIVxovXbB7XlhSI5/qYOEGrcOR69O45bomCsrlQvBY
+	8MzqyfApIQxPeaIaIQ21FwfCBm//4futkW2io4QYL7+bV8LbGZ395LTvk7m08f0=
+X-Gm-Gg: ASbGncuICZEb/gOfdl5PiMfo2ijlr/YZ6WTBi119dvai8+Z+C/XMV/7Qczvs7k4fWw4
+	L52FFp9mcC/vmlKfTVVIWYm/CCfcefwvI/w8orO6LfF+C/jHPvuNQB9QgAKLuKmyPChUKOw0CUo
+	/lxWgI3tBWwDKuIujZj0S61lT3ShR+zGGJa9S+DuIP9IDRuAzHPNXR8omLUzH2BiYqdGX26aqI8
+	IPPN8TOfaxoPEOm8FlV71OrKPQpUiFH26xcd5NQQMAT74rR7HzVFSM=
+X-Google-Smtp-Source: AGHT+IHnKmujOhexofpW2cCRKOdVd4mgH+9RWl0NrA2BUuwjZsr+vt7twxWRa+WyYfI3I0Pnq20sFQ==
+X-Received: by 2002:a05:622a:229e:b0:467:8797:29f1 with SMTP id d75a77b69052e-46e12bb3aaemr46795911cf.45.1737132491435;
+        Fri, 17 Jan 2025 08:48:11 -0800 (PST)
 Received: from localhost ([2603:7000:c01:2716:f0c4:bf28:3737:7c34])
-        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6e1afc117a2sm12960046d6.40.2025.01.17.08.47.48
+        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-46e10323c3fsm13162711cf.48.2025.01.17.08.48.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2025 08:47:48 -0800 (PST)
-Date: Fri, 17 Jan 2025 11:47:48 -0500
+        Fri, 17 Jan 2025 08:48:10 -0800 (PST)
+Date: Fri, 17 Jan 2025 11:48:10 -0500
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Chen Ridong <chenridong@huaweicloud.com>
 Cc: akpm@linux-foundation.org, mhocko@kernel.org, yosryahmed@google.com,
@@ -81,33 +79,29 @@ Cc: akpm@linux-foundation.org, mhocko@kernel.org, yosryahmed@google.com,
 	mkoutny@suse.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org, chenridong@huawei.com,
 	wangweiyang2@huawei.com
-Subject: Re: [PATCH v3 next 2/5] memcg: call the free function when
- allocation of pn fails
-Message-ID: <20250117164748.GD182896@cmpxchg.org>
+Subject: Re: [PATCH v3 next 3/5] memcg: factor out the replace_stock_objcg
+ function
+Message-ID: <20250117164810.GE182896@cmpxchg.org>
 References: <20250117014645.1673127-1-chenridong@huaweicloud.com>
- <20250117014645.1673127-3-chenridong@huaweicloud.com>
+ <20250117014645.1673127-4-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250117014645.1673127-3-chenridong@huaweicloud.com>
+In-Reply-To: <20250117014645.1673127-4-chenridong@huaweicloud.com>
 
-On Fri, Jan 17, 2025 at 01:46:42AM +0000, Chen Ridong wrote:
+On Fri, Jan 17, 2025 at 01:46:43AM +0000, Chen Ridong wrote:
 > From: Chen Ridong <chenridong@huawei.com>
 > 
-> The 'free_mem_cgroup_per_node_info' function is used to free
-> the 'mem_cgroup_per_node' struct. Using 'pn' as the input for the
-> free_mem_cgroup_per_node_info function will be much clearer.
-> Call 'free_mem_cgroup_per_node_info' when 'alloc_mem_cgroup_per_node_info'
-> fails, to free 'pn' as a whole, which makes the code more cohesive.
+> Factor out the 'replace_stock_objcg' function to make the code more
+> cohesive.
 > 
 > Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> Reviewed-by: Michal Koutný <mkoutny@suse.com>
+> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 > Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
