@@ -1,159 +1,116 @@
-Return-Path: <cgroups+bounces-6216-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6217-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD43EA149E8
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 07:59:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90A45A14C3A
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 10:34:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E98A416756D
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 06:59:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05CA83A622F
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2025 09:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD9F1F78E7;
-	Fri, 17 Jan 2025 06:59:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0E831F9ECD;
+	Fri, 17 Jan 2025 09:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gkQWfE2z"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17EAB1F78E1;
-	Fri, 17 Jan 2025 06:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 582771F9409
+	for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 09:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737097168; cv=none; b=AKJ+unoyEe1djvy2FSIpckCdqKXTj4L22TmSjhQgZc66Jz632i2lKtttfYEy922q/38V63orzeo3xoprTr1GLgrKv6aClxM/BCdAeU0Kzr2Rz6OUL9TUfcD70xkLfNrhmkqMXPzluzYEm07JRYTquFl6U7bVghSDOTYaMyhqxC4=
+	t=1737106442; cv=none; b=iGBFVYhCrWQK8eF+JTiWE5T/lrGDozCwez6IHEbqri2GT83SmngheXFQGZZXAHCBd+FW9ISbSt5yIP2QcjoXeWnL/FcKdUfJ+0VBzv4Cywt+RbRUcwHCFc2iYtAx0jrzrWn/bcrKz4Z2TswuHoiKteZi3+fk2mlMJvO5sgHKETE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737097168; c=relaxed/simple;
-	bh=bT/lws0qdKKEVqXiASK2cA33sHXAEJPrHrOb8JKK8AE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ItueL73OTfxoFmMrqkz19DTmjSziAxfPgvrKDqpwvCa26WhNvd+gzbdyh7BGfa2x+WgISXQUpDMQ0GtQZ1UJK4mohdD4gkc5vsDve06Vb1jnWZ7l2ZEgS0tbaiAlyYlZlGRUS0xaKLO2/kH/nSCa0YEmuevFRLMJsDm365dRRVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4YZ9V31bHmz1W49p;
-	Fri, 17 Jan 2025 14:55:23 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 69E3B180101;
-	Fri, 17 Jan 2025 14:59:16 +0800 (CST)
-Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 17 Jan
- 2025 14:59:15 +0800
-Message-ID: <a9f98b54-19ac-4ea6-bb8b-76eeb9c89608@huawei.com>
-Date: Fri, 17 Jan 2025 14:59:14 +0800
+	s=arc-20240116; t=1737106442; c=relaxed/simple;
+	bh=cnITsTvGmNqhJGWq2jKzgEF3ZQHDwDL3o92KopbghWc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QZi9PRp45fOjyYK2wQd+e3K//1SiXwdgkv3iF/KW2+bZ0H2wDlEyngmiNwxvEF66y/zEN+yqFU+PqeauKPfbEdYISWvXNVVzC66enh51+c0ylfzXixhLg3VqHAF6kqHbvLV+MwUumyr7x/a6bKz60g4IqIRH29quCYLR68MtJhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gkQWfE2z; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-43635796b48so11629275e9.0
+        for <cgroups@vger.kernel.org>; Fri, 17 Jan 2025 01:34:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1737106438; x=1737711238; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DpEcDbL12pVoi7d2pYABiZaYKE4gVvTaOXo3VG2boqw=;
+        b=gkQWfE2zpPs7mEBNlUzWvrbhH73ncOPsixsYNn/GDGsflZiz+s/MT2GiKBvM5TwSfZ
+         /iJNWuT657Syofn9nCK0naUtPYVFKjvGVELgKfeUcB+lkAPMWkw3Z2W4S+J4NdgqRw3q
+         1kXkRvBTEHEIWyvCWIRhRkNuj7dZXrWS8alCBBDH/Hi2XFjlNLTB+cWP6LLkOqyWMWxc
+         XxQ8MNjKzgUk3DAe8qxH2/w28fzAjtFe1JgPqfa5rJ8avDS11uSPFa/TKtGx8s6Lf1HI
+         MfbIsdubIUd53GCMKAvzEi8pmJ6BPRs+FL0wo/ZXIs+Snc5C5DOQNyI7V3Ai4cQzPqU0
+         XAKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737106438; x=1737711238;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DpEcDbL12pVoi7d2pYABiZaYKE4gVvTaOXo3VG2boqw=;
+        b=XF5BC8UQr9d7NR2c8lVBTvTsZmxVsY52gUObDkET7r1TT7bgEzeSGlmoxmNK0ej2py
+         C6f3Ne4rzh+EVpTFi5AfR8Rtqd6wi4FJDtmyxfzLe5FD/usedE0LciQq+act8uTVzonC
+         ld0cxJUNRPrl72P77+KhMiTxvM/bhtkJ/d0M5uEEaVB6H2tcPrtje0/RAy6hlSebTwR1
+         H41Sf983gwjG0xS8rw7ImF5T7vwl13zaYqLt/CgqFus/0y08w6myfOqp1zePBCeFdpdg
+         2XtZNOTA/Sc9ErQ8FPnN5aTwCM52IOGtQOI2mY9ZpSRDZW7Jnwm5d/xO7/W2UrzbzTwI
+         z7BA==
+X-Forwarded-Encrypted: i=1; AJvYcCW+LueQJS0yFbaxhx2y+4kYUMEjUQqhxTdo0/ktN3hT5B8QzGZnENTmBkdMgCX81jT0lmGeKoMx@vger.kernel.org
+X-Gm-Message-State: AOJu0YyA2fPoE8cbl7kvFUjwhFuQtEO8ps3MzQTc/OQ0Bds3X9ig6/70
+	+A55XaxcgMCG9lubMTrVeR4xBk0CUzcm14SjtCAQbp4h8Bgz4AMiYgMyOUVmgkE=
+X-Gm-Gg: ASbGncuyZeU26cSmrm6MWwrqKp1fXDWQQyuDQjvhofd4Z3nPnfv+9HEprR/yJDAkj/9
+	tWH4YlBmI19HqlZw5Ab4oRdaW3weAtl+e74nXxbuKq4CGYfufy4j7/POsLoUKfjfqtHu6xt1n36
+	PAq5EDFOlXgN+5cjB+stwDyaLhjKL3KSnJth/D+BQbx0BEAU/pDDMwUAgutFwKmRwc8Am7x+9Kh
+	+dMIzNFrBstqdj3RXMVEBwlmbLgAwqT0gf5yCID5y6TBNE1mEPvXIz7xvj7oWSwp1ws/Q==
+X-Google-Smtp-Source: AGHT+IFFj5UxXG8t53dNKmaUTxCG+4Bqsl1WEiLZQzzk2+K5RgvbOuitcW8UcJVnLe9LnQvdnrJyeA==
+X-Received: by 2002:a05:600c:3481:b0:436:fdac:26eb with SMTP id 5b1f17b1804b1-437c6afdb21mr94369605e9.7.1737106438583;
+        Fri, 17 Jan 2025 01:33:58 -0800 (PST)
+Received: from localhost (109-81-84-225.rct.o2.cz. [109.81.84.225])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43890468869sm26761175e9.35.2025.01.17.01.33.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jan 2025 01:33:58 -0800 (PST)
+Date: Fri, 17 Jan 2025 10:33:57 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: zhiguojiang <justinjiang@vivo.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	opensource.kernel@vivo.com
+Subject: Re: [PATCH] mm: memcg supports freeing the specified zone's memory
+Message-ID: <Z4okBYrYD8G1WdKx@tiehlicka>
+References: <20250116142242.615-1-justinjiang@vivo.com>
+ <Z4kZa0BLH6jexJf1@tiehlicka>
+ <a0c310ba-8a43-4f61-ba01-f0d385f1253e@vivo.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] memcg: fix soft lockup in the OOM process
-To: <paulmck@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>
-CC: Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>, Andrew
- Morton <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-	<yosryahmed@google.com>, <roman.gushchin@linux.dev>,
-	<shakeel.butt@linux.dev>, <muchun.song@linux.dev>, <davidf@vimeo.com>,
-	<handai.szj@taobao.com>, <rientjes@google.com>,
-	<kamezawa.hiroyu@jp.fujitsu.com>, RCU <rcu@vger.kernel.org>,
-	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<cgroups@vger.kernel.org>, <wangweiyang2@huawei.com>
-References: <20241224025238.3768787-1-chenridong@huaweicloud.com>
- <1ea309c1-d0f8-4209-b0b0-e69ad4e986ae@suse.cz>
- <58caaa4f-cf78-4d0f-af31-8a9277b6ebf5@huaweicloud.com>
- <20250113194546.3de1af46fa7a668111909b63@linux-foundation.org>
- <Z4YjArAULdlOjhUf@tiehlicka> <aaa26dbb-e3b5-42a3-aac0-1cb594a272b6@suse.cz>
- <0b6a3935-8b6c-4d11-bacc-31c1ba15b349@huaweicloud.com>
- <81294730-1cd9-4793-b886-9ababe29d071@paulmck-laptop>
-Content-Language: en-US
-From: chenridong <chenridong@huawei.com>
-In-Reply-To: <81294730-1cd9-4793-b886-9ababe29d071@paulmck-laptop>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a0c310ba-8a43-4f61-ba01-f0d385f1253e@vivo.com>
 
+On Fri 17-01-25 12:41:40, zhiguojiang wrote:
+[...]
+> In response to the above situation, we need reclaim only the normal
+> zone's memory occupied by memcg by try_to_free_mem_cgroup_pages(), in
+> order to solve the issues of the gfp flags allocations and failure due
+> to gfp flags limited only to alloc memory from the normal zone. At this
+> point, if the memcg memory reclaimed by try_to_free_mem_cgroup_pages()
+> mainly comes from the movable zone, which cannot solve such problems.
 
+Memory cgroup reclaim doesn't allocate the memory directly. This is done
+by the page allocator called before the memory is charged. The memcg
+charging is then responsible for reclaiming charges and that is not
+really zone aware.
 
-On 2025/1/15 2:42, Paul E. McKenney wrote:
-> On Tue, Jan 14, 2025 at 08:13:37PM +0800, Chen Ridong wrote:
->>
->>
->> On 2025/1/14 17:20, Vlastimil Babka wrote:
->>> On 1/14/25 09:40, Michal Hocko wrote:
->>>> On Mon 13-01-25 19:45:46, Andrew Morton wrote:
->>>>> On Mon, 13 Jan 2025 14:51:55 +0800 Chen Ridong <chenridong@huaweicloud.com> wrote:
->>>>>
->>>>>>>> @@ -430,10 +431,15 @@ static void dump_tasks(struct oom_control *oc)
->>>>>>>>  		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
->>>>>>>>  	else {
->>>>>>>>  		struct task_struct *p;
->>>>>>>> +		int i = 0;
->>>>>>>>  
->>>>>>>>  		rcu_read_lock();
->>>>>>>> -		for_each_process(p)
->>>>>>>> +		for_each_process(p) {
->>>>>>>> +			/* Avoid potential softlockup warning */
->>>>>>>> +			if ((++i & 1023) == 0)
->>>>>>>> +				touch_softlockup_watchdog();
->>>>>>>
->>>>>>> This might suppress the soft lockup, but won't a rcu stall still be detected?
->>>>>>
->>>>>> Yes, rcu stall was still detected.
->>>
->>> "was" or "would be"? I thought only the memcg case was observed, or was that
->>> some deliberate stress test of the global case? (or the pr_info() console
->>> stress test mentioned earlier, but created outside of the oom code?)
->>>
->>
->> It's not easy to reproduce for global OOM. Because the pr_info() console
->> stress test can also lead to other softlockups or RCU warnings(not
->> causeed by OOM process) because the whole system is struggling.However,
->> if I add mdelay(1) in the dump_task() function (just to slow down
->> dump_task, assuming this is slowed by pr_info()) and trigger a global
->> OOM, RCU warnings can be observed.
->>
->> I think this can verify that global OOM can trigger RCU warnings in the
->> specific scenarios.
-> 
-> We do have a recently upstreamed rcutree.csd_lock_suppress_rcu_stall
-> kernel boot parameter that causes RCU CPU stall warnings to suppress
-> most of the output when there is an ongoing CSD-lock stall.
-> 
-> Would it make sense to do something similar when the system is in OOM,
-> give or take the traditional difficulty of determining exactly when OOM
-> starts and ends?
-> 
-> 1dd01c06506c ("rcu: Summarize RCU CPU stall warnings during CSD-lock stalls")
-> 
-> 							Thanx, Paul
-> 
-
-I prefer to just drop it.
-
-Unlike memcg OOM, global OOM doesn't usually happen. Although it
-'verified' that the RCU warning can be observed, we haven't encountered
-it in practice. Besides, other RCU warnings may also be observed during
-global OOM, and it's difficult to circumvent all the warnings.
-
-Best regards,
-Ridong
-
->>>>>> For global OOM, system is likely to struggle, do we have to do some
->>>>>> works to suppress RCU detete?
->>>>>
->>>>> rcu_cpu_stall_reset()?
->>>>
->>>> Do we really care about those? The code to iterate over all processes
->>>> under RCU is there (basically) since ever and yet we do not seem to have
->>>> many reports of stalls? Chen's situation is specific to memcg OOM and
->>>> touching the global case was mostly for consistency reasons.
->>>
->>> Then I'd rather not touch the global case then if it's theoretical? It's not
->>> even exactly consistent, given it's a cond_resched() in the memcg code (that
->>> can be eventually automatically removed once/if lazy preempt becomes the
->>> sole implementation), but the touch_softlockup_watchdog() would remain,
->>> while doing only half of the job?
->>
->>
+Could you describe problem that you are trying to solve?
+-- 
+Michal Hocko
+SUSE Labs
 
