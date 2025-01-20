@@ -1,127 +1,278 @@
-Return-Path: <cgroups+bounces-6241-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6242-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 066F2A16EE7
-	for <lists+cgroups@lfdr.de>; Mon, 20 Jan 2025 16:01:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F5DCA16F20
+	for <lists+cgroups@lfdr.de>; Mon, 20 Jan 2025 16:16:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 737F71888111
-	for <lists+cgroups@lfdr.de>; Mon, 20 Jan 2025 15:01:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5992E3A7577
+	for <lists+cgroups@lfdr.de>; Mon, 20 Jan 2025 15:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFAE51B982E;
-	Mon, 20 Jan 2025 15:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87E091E5726;
+	Mon, 20 Jan 2025 15:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Y9baf5hl"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Pvy8Nlbl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE76A1C2335
-	for <cgroups@vger.kernel.org>; Mon, 20 Jan 2025 15:01:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904881E32D9
+	for <cgroups@vger.kernel.org>; Mon, 20 Jan 2025 15:16:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737385266; cv=none; b=Ytl6MOPDBXUvoCCB4sW958W0VGTotMCr0Sob0wfwiPF/Gi8ZOdNOPJHQwBITbXzY7BaZ6kXeCd3NjKJCSkmtRZQL2aD+S4smGDSizla2SDA7S88zaEBgZmH3cPXxoV2lULmKF8M3Y6qG+UIUj0L0O7cksBJOLMiPw1a7F3y9Ktk=
+	t=1737386207; cv=none; b=COojIvqhWwZPG7rGllBwtwuCZu8JSQQC91oZh1QD+VTqVUZZL21MTQW14VhG+6Otm4/M+Ro+aw27X3rx4zvEYOhTtVnWDm3KNUYCkwYVjrVp+yYi0qZPf3Zf3Ve+dYz8pSUc5b2InaOXvmdS2lbVgME8UWUlEHz1+jsj3gOHugo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737385266; c=relaxed/simple;
-	bh=asj/uimr+XiNatLrhqRCb8Vw8BsenYDGBmIhJD4sSzc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VYfaiTRTjgrsP7scQ9OL8Fm0slJbSnrS3qZ/XHSeZLBFVXbCib3jRWrGVgDMCQ2OegwOuYoFXGzlWCX+DkOSZXbBX8oiJlJvZl9cqvQDTA4v1/+qVIY2NQfdvdEBtw/pakgLH4IVhd3/bOSWiVJMSFnLvrngSMkgNe9q3IF7aC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Y9baf5hl; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-437a92d7b96so45471425e9.2
-        for <cgroups@vger.kernel.org>; Mon, 20 Jan 2025 07:01:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1737385263; x=1737990063; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=asj/uimr+XiNatLrhqRCb8Vw8BsenYDGBmIhJD4sSzc=;
-        b=Y9baf5hlWBv47bP0pZ40/5haHndRR9npa0ttk0aPCzRcoETpMqRdyyyxQMcfO9UGEJ
-         RzeEWkuvYf4w4usQ4nACuGAF2BqQ2lDZI2WsbXnqpcAjs9jHTkpeVTWKyjALzlRTb0Wp
-         kIo2AnZGfciCzBgPj9p428y6hMcoP0MXJeSEmWU9kKYg3jbBqsTTVfBXKgeTJuuYZ1cJ
-         h6hRuBf2cLP/VuyPEibT5VDXSj8hFVFkZr1a3wPIl9hs8UnfnR51zfRFQBVaw4Xvpeti
-         97+A3RPZpIjJyf/kV5sIWWI6Alvd3lp8RhPIz/e7BNfbWQ7uQb2UhvomM1JBxZigdnNZ
-         Dxaw==
+	s=arc-20240116; t=1737386207; c=relaxed/simple;
+	bh=9+9b9SG5sk+pAABUD6zvKqDzoH/IskHcubMLq+I3ta0=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=RG+3qY7NA3BdV/dbuEfXzO5CJn+3yE6gFRf0aNtJh13cKhbp2bJHZkn6i3jphN/xQIEMyQlJgDpHd5E2f5weWMQ1JlsAMZW7LOJnZPINHufpU7Ja6tjq2x+XUIDpUvKfesrLDa6JumkSPRcIyDhF4kxDrCAQe6FAns5di0CfVSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Pvy8Nlbl; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737386203;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KFVwk2VrsevalC6D6th0fx99IWTy+CMBjZ3Dt3EDL28=;
+	b=Pvy8Nlbl2dstI4/rXKAbZeoNU91RJrB+GSwHPPnLFLhPOSAYcjjo5TQ2UCpnEyNMATGkTu
+	EIGZ3f1VM0t2pQoGsJT1wtkDCG7O60Y1gkYJieZSxEmCTljGJ8nKoEQKooq7i/VKLRsFqT
+	CGbrdxFD7EMU6qx8GBsKHIgXy8egkGI=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-328-hJBPFuTSNViehbeG5q1B4Q-1; Mon, 20 Jan 2025 10:16:40 -0500
+X-MC-Unique: hJBPFuTSNViehbeG5q1B4Q-1
+X-Mimecast-MFC-AGG-ID: hJBPFuTSNViehbeG5q1B4Q
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7b9e433351dso900877585a.3
+        for <cgroups@vger.kernel.org>; Mon, 20 Jan 2025 07:16:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737385263; x=1737990063;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=asj/uimr+XiNatLrhqRCb8Vw8BsenYDGBmIhJD4sSzc=;
-        b=op+SvNMTIdM+SH+MyJ1+yBnZExTSD8iWiLTiAY8Oy209WHrPQtCOByiDhNms0cy/3h
-         WjUTSQuOS+1r08yG3HHuw/3AlwxfyYHMHXY/Hd6UgUZe7HFzKQwqNeOH1J+XzOr5QN/Y
-         JnlJYdt7dzcZPTGnKJq1NtO2iYkbYwQq8gws2wPLbMYddbNO3DBb39u6GGOE6mO0JAEt
-         jDaC4CRUkD53Kb5qYXoiyVeAbmGyGo/IE61rn2tuPUR3zQTC6/Fziskbf6NTpOri0A/g
-         MNhHxN5lu80GOW1wgIgW9p4BdBNza/++r44JogYp0mrRuKbToRYNToV578Vc2YJzSdUz
-         6oog==
-X-Forwarded-Encrypted: i=1; AJvYcCX5hSc9+9sNd9jnbFPc/AO9inLrmjoGMMywOXcQsg6/4kmuMXErGLfc/vz27QHv22o5R3X8xIZ4@vger.kernel.org
-X-Gm-Message-State: AOJu0YyC5EoXuzlCzmkvJDq+/g6h1hH8GMirJrYK3cD7oN1JKxL08HcF
-	lO78Sx0GN1n2HpZj35PtRfpjCRriCOHBV39NvmfN46A5YWP+Vx19wET3VYQ4q9c=
-X-Gm-Gg: ASbGncugbW4ymGSRD87vaXTxk+5Ypdvta47PLInIpwg523qYO6JKKgm0uD9Qy1yGEnc
-	oFuDGOwH+htoJz0LAMSAJ63sqYI++bAuZlM+0iIitW1m9FYPURLpOZGBpoHj2z4TDBbJUpzQk2h
-	wsxPETHY0LR7IyBXz/73pfXEBMBihBqm8rbtMHbCrOc5xpO2diYafdbqLz+qxjY8FstImu7+Vdt
-	weBGgP01zoVlqxCfg09+54cIE7bgQQFoVsyoMlkLlOOlrg/vpofXdFTgjATHACOti9UNsfG
-X-Google-Smtp-Source: AGHT+IHU7IKibowjOp5iyupXGNYo2g1aNRGoxZ3HXz6UMwwnNHdlZwnc1ZpPxEGpBn2HUoDdjaC85w==
-X-Received: by 2002:a05:600c:35c3:b0:438:a290:3ce0 with SMTP id 5b1f17b1804b1-438a2903f47mr75973505e9.8.1737385262801;
-        Mon, 20 Jan 2025 07:01:02 -0800 (PST)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43890408a66sm145066205e9.5.2025.01.20.07.01.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jan 2025 07:01:02 -0800 (PST)
-Date: Mon, 20 Jan 2025 16:01:00 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: Waiman Long <llong@redhat.com>, kernel test robot <lkp@intel.com>, 
-	oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org
-Subject: Re: [tj-cgroup:for-next 5/5] kernel/cgroup/cpuset-v1.c:397:18:
- error: implicit declaration of function 'cgroup_path_ns_locked'; did you
- mean 'cgroup_path_ns'?
-Message-ID: <wb4pz2ny7hzg62j674tl5d24z72axasxpacivwx4mdbze44tcw@borj5ejhdwtt>
-References: <202501180315.KcDn5BG5-lkp@intel.com>
- <4ea9fbd6-dc6d-499e-9110-461ed0462309@redhat.com>
- <Z4rHMAgNHCRRpss9@slm.duckdns.org>
+        d=1e100.net; s=20230601; t=1737386200; x=1737991000;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KFVwk2VrsevalC6D6th0fx99IWTy+CMBjZ3Dt3EDL28=;
+        b=PLJFGlnTpl67W5LB53NSYBdWcSCy/R0CWGeJL7g/VTTpLhIx/dRRL5FvFYI4vlf5wJ
+         lr7b0801pNf5IDTiGNpCv4DljYN14IlLJFxTiaxRVLHmQ/P1iZGsEHbzlkT+lsVsvVcH
+         UcPLW4Kpk0Colz/gqAXbLveck+tcW/p2DPRihbNwOIWM0Owz/VSB+UFZtyzoyB53yM9F
+         9PCU/qGFlcxrstcfvy0kp2ZwCQGj3D2pbY4NRB2ge+Ni+oY4vFVMDJeCYRSRDjyMa39O
+         VxCesky33YFtkzeG0cvFzQ9AZu1rDXaD0FYFfY9/HS29SOoP38rWfZROnxmwliQdGmlt
+         GNgg==
+X-Forwarded-Encrypted: i=1; AJvYcCUU8o7lu54KvkwKp4bWCSEHCwRpSjHHOD0aXLHk3wwCOxkW7CgkvXzIqJvgbvS3QPya9lBZTNb2@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQqHRqjk3TrrY+apXFeC8KZ/+Msr1zdghGojb7I208IiR7B/qG
+	15q4mpzdkPtUkcKtRST2mib0sNjvGvIqciCjvCyktB5NXTjBaPAeDi/bq6+uY61KCKXO8M5kaPd
+	dhyNnNMUVgTzL7NfTqBTuJWmV9suyZnh01RdA0bokSnoNlnhPqm5/TC8=
+X-Gm-Gg: ASbGncus3W293ohE4kl9qA5KWiusN9hxJRzxerAtZZvCcbUaYbWdFayY8+IDolovjr9
+	hmUr1FPjeWWmQnSS4coywDEXWG7NTLbk5Nzj/w3RbWpkpSXU7u2xNYjOMjN6vJlE/o9kuTh3TYY
+	Zu2XbGgyO3fz1hYTNkmplnhRqw1HSda4xmuDWU23dxwoW1RTN5KwzqpMJIZNS1rar4sCyvJ2k9u
+	i3w5VGj5fG8wlY41tGq7PajW689GSiTU4SHhNZ75Wl8r5GYgy48nkef9iK+aOhI4NbXy1XXNhjH
+	QJTyyUQH4q3Ln5WIsMcQC5zO4rpr13w58fmLVFgQ
+X-Received: by 2002:a05:620a:2888:b0:7b6:c695:fb7c with SMTP id af79cd13be357-7be6320c398mr2036648885a.33.1737386199927;
+        Mon, 20 Jan 2025 07:16:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGAugYu7eAzmB+V9801n/X6ILhXl5Iy718gPDbhQMp+yDHefGSzACN/HgoHHGjsPG6oXOpdJQ==
+X-Received: by 2002:a05:620a:2888:b0:7b6:c695:fb7c with SMTP id af79cd13be357-7be6320c398mr2036645285a.33.1737386199619;
+        Mon, 20 Jan 2025 07:16:39 -0800 (PST)
+Received: from ?IPV6:2601:188:c100:5710:315f:57b3:b997:5fca? ([2601:188:c100:5710:315f:57b3:b997:5fca])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7be6147f46fsm452707485a.35.2025.01.20.07.16.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jan 2025 07:16:39 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <d7f471a0-bf06-402d-a98f-0346ea8a30ef@redhat.com>
+Date: Mon, 20 Jan 2025 10:16:38 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5z7zzepdgysyonk4"
-Content-Disposition: inline
-In-Reply-To: <Z4rHMAgNHCRRpss9@slm.duckdns.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] cgroup/cpuset: Move procfs cpuset attribute under
+ cgroup-v1.c
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ Chen Ridong <chenridong@huawei.com>
+References: <20250120145749.925170-1-mkoutny@suse.com>
+Content-Language: en-US
+In-Reply-To: <20250120145749.925170-1-mkoutny@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+On 1/20/25 9:57 AM, Michal Koutný wrote:
+> The cpuset file is a legacy attribute that is bound primarily to cpuset
+> v1 hierarchy (equivalent information is available in /proc/$pid/cgroup path
+> on the unified hierarchy in conjunction with respective
+> cgroup.controllers showing where cpuset controller is enabled).
+>
+> Followup to commit b0ced9d378d49 ("cgroup/cpuset: move v1 interfaces to
+> cpuset-v1.c") and hide CONFIG_PROC_PID_CPUSET under CONFIG_CPUSETS_V1.
+> Drop an obsolete comment too.
+>
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
+> ---
+>   init/Kconfig              |  5 +++--
+>   kernel/cgroup/cpuset-v1.c | 41 +++++++++++++++++++++++++++++++++++
+>   kernel/cgroup/cpuset.c    | 45 ---------------------------------------
+>   3 files changed, 44 insertions(+), 47 deletions(-)
+>
+> v3 changes:
+> - move dependency on internal cgroup-internal.h to v1-only too
+>    Reported-by: kernel test robot <lkp@intel.com>
+>    Link: https://lore.kernel.org/oe-kbuild-all/202501180315.KcDn5BG5-lkp@intel.com/
+>
+> v2 changes:
+> - explicitly say what's part of CPUSETS_V1
+> - commit message wrt effective paths
+Acked-by: Waiman Long <longman@redhat.com>
 
---5z7zzepdgysyonk4
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Subject: Re: [tj-cgroup:for-next 5/5] kernel/cgroup/cpuset-v1.c:397:18:
- error: implicit declaration of function 'cgroup_path_ns_locked'; did you
- mean 'cgroup_path_ns'?
-MIME-Version: 1.0
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index a20e6efd3f0fb..2f3121c49ed23 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1182,7 +1182,8 @@ config CPUSETS_V1
+>   	help
+>   	  Legacy cgroup v1 cpusets controller which has been deprecated by
+>   	  cgroup v2 implementation. The v1 is there for legacy applications
+> -	  which haven't migrated to the new cgroup v2 interface yet. If you
+> +	  which haven't migrated to the new cgroup v2 interface yet. Legacy
+> +	  interface includes cpuset filesystem and /proc/<pid>/cpuset. If you
+>   	  do not have any such application then you are completely fine leaving
+>   	  this option disabled.
+>   
+> @@ -1190,7 +1191,7 @@ config CPUSETS_V1
+>   
+>   config PROC_PID_CPUSET
+>   	bool "Include legacy /proc/<pid>/cpuset file"
+> -	depends on CPUSETS
+> +	depends on CPUSETS_V1
+>   	default y
+>   
+>   config CGROUP_DEVICE
+> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+> index 25c1d7b77e2f2..81b5e2a50d587 100644
+> --- a/kernel/cgroup/cpuset-v1.c
+> +++ b/kernel/cgroup/cpuset-v1.c
+> @@ -1,5 +1,6 @@
+>   // SPDX-License-Identifier: GPL-2.0-or-later
+>   
+> +#include "cgroup-internal.h"
+>   #include "cpuset-internal.h"
+>   
+>   /*
+> @@ -373,6 +374,46 @@ int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial)
+>   	return ret;
+>   }
+>   
+> +#ifdef CONFIG_PROC_PID_CPUSET
+> +/*
+> + * proc_cpuset_show()
+> + *  - Print tasks cpuset path into seq_file.
+> + *  - Used for /proc/<pid>/cpuset.
+> + */
+> +int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
+> +		     struct pid *pid, struct task_struct *tsk)
+> +{
+> +	char *buf;
+> +	struct cgroup_subsys_state *css;
+> +	int retval;
+> +
+> +	retval = -ENOMEM;
+> +	buf = kmalloc(PATH_MAX, GFP_KERNEL);
+> +	if (!buf)
+> +		goto out;
+> +
+> +	rcu_read_lock();
+> +	spin_lock_irq(&css_set_lock);
+> +	css = task_css(tsk, cpuset_cgrp_id);
+> +	retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
+> +				       current->nsproxy->cgroup_ns);
+> +	spin_unlock_irq(&css_set_lock);
+> +	rcu_read_unlock();
+> +
+> +	if (retval == -E2BIG)
+> +		retval = -ENAMETOOLONG;
+> +	if (retval < 0)
+> +		goto out_free;
+> +	seq_puts(m, buf);
+> +	seq_putc(m, '\n');
+> +	retval = 0;
+> +out_free:
+> +	kfree(buf);
+> +out:
+> +	return retval;
+> +}
+> +#endif /* CONFIG_PROC_PID_CPUSET */
+> +
+>   static u64 cpuset_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
+>   {
+>   	struct cpuset *cs = css_cs(css);
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 0f910c828973a..5a637292faa20 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -21,7 +21,6 @@
+>    *  License.  See the file COPYING in the main directory of the Linux
+>    *  distribution for more details.
+>    */
+> -#include "cgroup-internal.h"
+>   #include "cpuset-internal.h"
+>   
+>   #include <linux/init.h>
+> @@ -4244,50 +4243,6 @@ void cpuset_print_current_mems_allowed(void)
+>   	rcu_read_unlock();
+>   }
+>   
+> -#ifdef CONFIG_PROC_PID_CPUSET
+> -/*
+> - * proc_cpuset_show()
+> - *  - Print tasks cpuset path into seq_file.
+> - *  - Used for /proc/<pid>/cpuset.
+> - *  - No need to task_lock(tsk) on this tsk->cpuset reference, as it
+> - *    doesn't really matter if tsk->cpuset changes after we read it,
+> - *    and we take cpuset_mutex, keeping cpuset_attach() from changing it
+> - *    anyway.
+> - */
+> -int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
+> -		     struct pid *pid, struct task_struct *tsk)
+> -{
+> -	char *buf;
+> -	struct cgroup_subsys_state *css;
+> -	int retval;
+> -
+> -	retval = -ENOMEM;
+> -	buf = kmalloc(PATH_MAX, GFP_KERNEL);
+> -	if (!buf)
+> -		goto out;
+> -
+> -	rcu_read_lock();
+> -	spin_lock_irq(&css_set_lock);
+> -	css = task_css(tsk, cpuset_cgrp_id);
+> -	retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
+> -				       current->nsproxy->cgroup_ns);
+> -	spin_unlock_irq(&css_set_lock);
+> -	rcu_read_unlock();
+> -
+> -	if (retval == -E2BIG)
+> -		retval = -ENAMETOOLONG;
+> -	if (retval < 0)
+> -		goto out_free;
+> -	seq_puts(m, buf);
+> -	seq_putc(m, '\n');
+> -	retval = 0;
+> -out_free:
+> -	kfree(buf);
+> -out:
+> -	return retval;
+> -}
+> -#endif /* CONFIG_PROC_PID_CPUSET */
+> -
+>   /* Display task mems_allowed in /proc/<pid>/status file. */
+>   void cpuset_task_status_allowed(struct seq_file *m, struct task_struct *task)
+>   {
 
-On Fri, Jan 17, 2025 at 11:10:08AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> Dropped the patch for now. Michal, can you please send an updated version?
-
-Sorry for complications. (Despite I tested both configs, I forgot about
-some caching in my test setup and missed the build failure.)
-
-I've sent out v3.
-
-Michal
-
---5z7zzepdgysyonk4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ45lKgAKCRAt3Wney77B
-SVg5AQDUX7DDJhPSr5s2AMwlzl/3ZFdglJ9IXAd8MatXB35QWAEApeIyWJI4fyu1
-rl2ZbAjeJZFo63mEJ4hIepFn42EySwk=
-=7C1+
------END PGP SIGNATURE-----
-
---5z7zzepdgysyonk4--
 
