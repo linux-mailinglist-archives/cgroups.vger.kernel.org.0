@@ -1,133 +1,145 @@
-Return-Path: <cgroups+bounces-6243-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6244-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BB50A17F7E
-	for <lists+cgroups@lfdr.de>; Tue, 21 Jan 2025 15:15:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 288A2A18538
+	for <lists+cgroups@lfdr.de>; Tue, 21 Jan 2025 19:30:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 594F53AAD8C
-	for <lists+cgroups@lfdr.de>; Tue, 21 Jan 2025 14:15:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B02F2166C53
+	for <lists+cgroups@lfdr.de>; Tue, 21 Jan 2025 18:30:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B29571F37D4;
-	Tue, 21 Jan 2025 14:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE88D1F7076;
+	Tue, 21 Jan 2025 18:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CBVjj374"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9A481F37CA;
-	Tue, 21 Jan 2025 14:15:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C87B1C1741
+	for <cgroups@vger.kernel.org>; Tue, 21 Jan 2025 18:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737468909; cv=none; b=UX0sWbT0FcPqhvrKJwl8DxcEIACGmhLUMnoJ/TnFvpA9BkoX0uVI5PD3/0VCA6ixstHoccnnuK/1CzgVGCH28q/E22x3DxHMw72E48f35+kJR60HwKRlGev6xa1ceeANw7d66Qgb2TOF0Du8N85TOcTI3/Bg2woBDkuj7lifKc4=
+	t=1737484194; cv=none; b=XEnoritQ1Osfm7O3MvlAK3e5HlL6eKZ5h531Q4TQuDqejroC0XSIDrJxtlqtMi/8wHjNExzqGXBXYljzJJSXDvOCCCGZptroxEuK+tvABIxcTUt5B0xcW9rJPx4ycg58BbU19poabZMpOkkc4eHreEjBAmPVjh+5P2VZPetsk/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737468909; c=relaxed/simple;
-	bh=wSw3qcr+HiKsMID+4H165eLUSiKj7LIYBwrBnauZ/sk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EmVGDqnJir5NuwIFJPVBla0g+gqRUSyKJu2AOZL0F69Hm0IwZzJlAint5RoDX/y7uI+2GEldSyht20L1+LyeUblorRCPq7UFghs+FyUdo2uY+z80DRwCcUKyWwymWV+Uwa1K980F/uqfg72DwKRoBH56wILsZ0pYtGXnc/duc/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Ycq351SpTz4f3jYR;
-	Tue, 21 Jan 2025 22:14:41 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id C31231A1422;
-	Tue, 21 Jan 2025 22:15:01 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP2 (Coremail) with SMTP id Syh0CgCXoGPkq49nlLdTBg--.37785S2;
-	Tue, 21 Jan 2025 22:15:01 +0800 (CST)
-Message-ID: <6daaf853-1283-42e6-bb0f-55d951edc925@huaweicloud.com>
-Date: Tue, 21 Jan 2025 22:15:00 +0800
+	s=arc-20240116; t=1737484194; c=relaxed/simple;
+	bh=jqDzj+eTPBIMLC2SCvL3JbqmPEgXso2MiJ7GoqGTJng=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wdmk0mKskk2JUOVw/TLV/Qa+C72GQEMxA7ulBXlXpeK0iw5fHu8PtWYw0l41qdQo3t8YOi/oXfMk07xztaPHSmi9x5AdbFMLeSwziqZrBc4Y9zVlkrsppErbOQ/lkj1988xer7Jwyc5r6Xw6nmSVNsd3cyAf+VPB5lncqSn6e5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CBVjj374; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4364a37a1d7so59421925e9.3
+        for <cgroups@vger.kernel.org>; Tue, 21 Jan 2025 10:29:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1737484190; x=1738088990; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xkAKeDcaoc8aic3fG+NCS5mGcWlbtV39f2bpcRLuxIs=;
+        b=CBVjj374ySgZoWRqkz/ZOjaeJC02SUgJTl3e5wOoWNU4ivRFj6CtucAn/Eun3JucxH
+         FQ+FKYQ6uK7khIZhR14Nw+5pJs/VzBdsbL9EXArk7eQGBALQ7nw+g7BnOhvTluVhD/E6
+         kHX63P1iDAXceWcKVtKMJ9sqHFLsOYa+8b/skB9njTq53rClIVnqZQBrH/VJC9WDuKb/
+         bXCPPVoajZGv92bDycH2b9RAJL0cEIdeDPnhLCbCtk8sAxbBVmJdHA1IP1JKVi42gJMB
+         6v9navO29kRkaeLf0+a9NpT5s+gS8wVxsctQEkidvjqSKc7hu3KR/tm1iealqp+Ik6ct
+         vuJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737484190; x=1738088990;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xkAKeDcaoc8aic3fG+NCS5mGcWlbtV39f2bpcRLuxIs=;
+        b=qlkO+iJyAxLxcYXrHY+edVyBSKKLkB92m+J14vXiAdYxcBdBTDGH1gUI51sx82kVsX
+         yGAEzJ3IMnQSLWz2MOJV8P+w9gUowZGbajRPWlv4XBTDvkkUF+OE1FuAJeemTQ9q4h5g
+         Oef/UcGNv1lUTnQ+NQ5ildUM6O3yQrZXjlwQxiZLDZqYosa/HKBUOy1g58tBkNbEV9Az
+         1z7oAxVf43rCEVitY2Nmn+X8gLihxPAQJi9NJ2U0f9mQ0k+Tde+GpT6RDEFvnbWPOh0b
+         Kj1VbuUjl1DEBG/D0ZtnWg4VOFiv95ZYp0Qizm8ZsE0uIcYtkgJN0KVcGCBGwLlQ+uUs
+         nfbA==
+X-Forwarded-Encrypted: i=1; AJvYcCUL8i7oEv/fGEhrERVCAMRMmUdAmA0WTAQJEX4V4RLcSqitrThDRvmC/vuJRVvmJrzrtYwjytFE@vger.kernel.org
+X-Gm-Message-State: AOJu0YwopUD9tvXc9Px3ytAprPGHX9rjeBTeNtehDUnWAzaXR8z/6dSn
+	ejucY+8SKD4gPcyMdg7Vo5ZnsksGyUN3Cf1De48Et1ih/W8WcBJ4Cq09x4uHm6M=
+X-Gm-Gg: ASbGncuhHprr0cbWXUQPEcfNE6Y7OeD2QYlHbTpmk2VzA4crIpZx5b46EC6m/Lp9ylm
+	boxGfrXbEnh+1iyh1/MfmfGXiNbH5mFJeW/e8jUOV9kbNxuMopB1Rf3AS3D4/7q5vyzVDfPgQ+p
+	kUqGwBHIY12wZBXEB59VxUFR/2Uihz/wh3/C0iYUunPY5sQyl9x7kBxqOwInOz7G8MflulqXV1P
+	GFGd2UcAcGUs3HCd2rS47wZH+ZHNgsrgzFk83zHemlbfQoTluszfw6GHuJ1uwv4/mGfgvlx
+X-Google-Smtp-Source: AGHT+IHfUrUKD19ckbGWZSAxbod4Fwp6AvvMqNG6Dkq6zkY1uEsGnMGxwAgZfueRaa6lpWJgnlQp+Q==
+X-Received: by 2002:a05:600c:350b:b0:431:58cd:b259 with SMTP id 5b1f17b1804b1-438914671fdmr193243775e9.31.1737484190523;
+        Tue, 21 Jan 2025 10:29:50 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438904621cdsm187778135e9.27.2025.01.21.10.29.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jan 2025 10:29:50 -0800 (PST)
+Date: Tue, 21 Jan 2025 19:29:48 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: syzbot <syzbot+622acb507894a48b2ce9@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	cgroups@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net, elic@nvidia.com, 
+	gregkh@linuxfoundation.org, hannes@cmpxchg.org, hawk@kernel.org, jasowang@redhat.com, 
+	jirislaby@kernel.org, john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org, 
+	kuba@kernel.org, len.brown@intel.com, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-serial@vger.kernel.org, mingo@redhat.com, mst@redhat.com, 
+	netdev@vger.kernel.org, parav@nvidia.com, pavel@ucw.cz, rafael@kernel.org, 
+	rostedt@goodmis.org, songliubraving@fb.com, syzkaller-bugs@googlegroups.com, 
+	tj@kernel.org, yhs@fb.com
+Subject: Re: [syzbot] [cgroups?] possible deadlock in
+ console_lock_spinning_enable (5)
+Message-ID: <6pdxz7oqr6442cczbec7n3cqtldrrpfsdk7ynqjguiqp6d5ucv@sibkx2lfldvu>
+References: <0000000000001e66f5061fe3b883@google.com>
+ <678a4e3b.050a0220.303755.0005.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 next 4/5] memcg: factor out
- stat(event)/stat_local(event_local) reading functions
-To: Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed <yosryahmed@google.com>
-Cc: akpm@linux-foundation.org, mhocko@kernel.org, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, muchun.song@linux.dev, davidf@vimeo.com,
- vbabka@suse.cz, mkoutny@suse.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- chenridong@huawei.com, wangweiyang2@huawei.com
-References: <20250117014645.1673127-1-chenridong@huaweicloud.com>
- <20250117014645.1673127-5-chenridong@huaweicloud.com>
- <20250117165615.GF182896@cmpxchg.org>
- <CAJD7tkYahASkO+4VkwSL0QnL3fFY4pgvnN84moip4tzLcvQ_yQ@mail.gmail.com>
- <20250117180238.GI182896@cmpxchg.org>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20250117180238.GI182896@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCXoGPkq49nlLdTBg--.37785S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF47XF45Ww1DXrW5Ww17Jrb_yoW8AFyrpr
-	W7uFyUAayDGrySkFnIya13Ww1F9rZ3JrW5Z34v934IqFnIqwn7Kry2kFW5uFWrJr1Iqr1U
-	Aw4Yqryayay5AaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="flx2psaakqlkzlmd"
+Content-Disposition: inline
+In-Reply-To: <678a4e3b.050a0220.303755.0005.GAE@google.com>
 
 
+--flx2psaakqlkzlmd
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [syzbot] [cgroups?] possible deadlock in
+ console_lock_spinning_enable (5)
+MIME-Version: 1.0
 
-On 2025/1/18 2:02, Johannes Weiner wrote:
-> On Fri, Jan 17, 2025 at 09:01:59AM -0800, Yosry Ahmed wrote:
->> On Fri, Jan 17, 2025 at 8:56 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->>>
->>> On Fri, Jan 17, 2025 at 01:46:44AM +0000, Chen Ridong wrote:
->>>> From: Chen Ridong <chenridong@huawei.com>
->>>>
->>>> The only difference between 'lruvec_page_state' and
->>>> 'lruvec_page_state_local' is that they read 'state' and 'state_local',
->>>> respectively. Factor out an inner functions to make the code more concise.
->>>> Do the same for reading 'memcg_page_stat' and 'memcg_events'.
->>>>
->>>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->>>
->>> bool parameters make for poor readability at the callsites :(
->>>
->>> With the next patch moving most of the duplication to memcontrol-v1.c,
->>> I think it's probably not worth refactoring this.
->>
->> Arguably the duplication would now be across two different files,
->> making it more difficult to notice and keep the implementations in
->> sync.
-> 
-> Dependencies between the files is a bigger pain. E.g. try_charge()
-> being defined in memcontrol-v1.h makes memcontrol.c more difficult to
-> work with. That shared state also immediately bitrotted when charge
-> moving was removed and the last cgroup1 caller disappeared.
-> 
-> The whole point of the cgroup1 split was to simplify cgroup2 code. The
-> tiny amount of duplication in this case doesn't warrant further
-> entanglement between the codebases.
+On Fri, Jan 17, 2025 at 04:34:03AM -0800, syzbot <syzbot+622acb507894a48b2c=
+e9@syzkaller.appspotmail.com> wrote:
+> syzbot has bisected this issue to:
+>=20
+> commit bc0d90ee021f1baecd6aaa010d787eb373aa74dd
+> Author: Parav Pandit <parav@nvidia.com>
+> Date:   Tue Jan 5 10:32:02 2021 +0000
+>=20
+>     vdpa: Enable user to query vdpa device info
+>=20
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1440c2b058=
+0000
 
-Thank you for your review.
+syzbot got this somehow wrong, it started with the lockdep bug but then
+switched to a different
+| crash: BUG: unable to handle kernel paging request in bpf_trace_run3
+so the bisecting session yielded (I believe) random commit, didn't it?
 
-I agree with that. However, If I just move the 'local' functions to
-memcontrol-v1.c, I have to move some dependent declarations to the
-memcontrol-v1.h.
-E.g. struct memcg_vmstats, MEMCG_VMSTAT_SIZE and so on.
+(The lockdep appears valid, with PSI enabled and the fault injection at
+unfortunate place (with BPF'd tracepoint).)
 
-Is this worth doing?
+Michal
 
-Best regards,
-Ridong
+--flx2psaakqlkzlmd
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ4/nmgAKCRAt3Wney77B
+SfWDAQD9atuzOG3FHcpa9TZop/UV7vy3rJ7Nt2Jbeo9pTOreKgEAoQlnyi+4Metp
+9vIjKtqdXgf9fmKryAgGyrYpKRkNAws=
+=bsM8
+-----END PGP SIGNATURE-----
+
+--flx2psaakqlkzlmd--
 
