@@ -1,209 +1,224 @@
-Return-Path: <cgroups+bounces-6245-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6246-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F3A4A19736
-	for <lists+cgroups@lfdr.de>; Wed, 22 Jan 2025 18:11:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31D93A19971
+	for <lists+cgroups@lfdr.de>; Wed, 22 Jan 2025 21:03:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE161160470
-	for <lists+cgroups@lfdr.de>; Wed, 22 Jan 2025 17:11:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B36F16AA27
+	for <lists+cgroups@lfdr.de>; Wed, 22 Jan 2025 20:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC5C621516D;
-	Wed, 22 Jan 2025 17:11:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFC01B6CE0;
+	Wed, 22 Jan 2025 20:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aHmowr/Q"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I3RB46CM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810A21369B4;
-	Wed, 22 Jan 2025 17:11:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C11841607AC
+	for <cgroups@vger.kernel.org>; Wed, 22 Jan 2025 20:03:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737565880; cv=none; b=NS/h3zwEL3hfhke6LPt8THbNcUg5tfwVc/V2OVJwHdlrDwCVnJYOF60BGIEavRFVTNn+6waHPMih2I4xNTSF+UkIHBX5yLjFW9NEN3FFxaD4qmUmavjaWaaMOzTPbt7gbr5qdnItqG73io0qmf+fM6H5LjBbcj7pzDz9H364xFY=
+	t=1737576208; cv=none; b=rftsOz7MaWohP22bqHFVaeZmofQ34SfNbHVGMqhXC32neIHxgD+CXo93wWLQaBF88FeOYFcIWuB3Zw8qNXbFqLDBbnTE+c7o7OvH8sYaIepRaRARLu3FdIfhZq9EZxFwhq9tIl5xY6BS9wCZvGxagTdBrJeq8412+8dG2yQJDt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737565880; c=relaxed/simple;
-	bh=vrOcVfrtnQTE4mLP1ckCne1X0XXALsHqOEb6+eSyEdU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hziysGee4DVCT/ZnNl+UrQ8jbTz7Y5soBW33krWCRe1FZn2bWOEqd/DbvNzwDkTCfkAPU5hjZrP8hqXQOH+zmsOpoAnm1rmYWIhKf96Lj4UdCTAWadKVtSAb7+8WKw+MMHgK5TH4MGrkYAHWALmKqwXnpsOYMkg88tlgzffaqbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aHmowr/Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5466AC4CED6;
-	Wed, 22 Jan 2025 17:11:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737565879;
-	bh=vrOcVfrtnQTE4mLP1ckCne1X0XXALsHqOEb6+eSyEdU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aHmowr/QACR71pMgPQ+3ISG6Ptx3ISzssy7g1oPZws6K0Pk/tjVcWSHQ4deN5QZHW
-	 2VLLZ9zNLhXtuegmHBBpwubGCSDh8xWkQqxP95HU0ktUyq+T/HwNkDyvioIe/55c8W
-	 6ZkfBw73pnF4ANBNf3cdOwt+ggdUFeXfjju4wrH3lEOpTF30hSQc/3FXGt29hyM7X2
-	 Ohq80MByU6xrJI/q3q2/Jdp5mcrWb53oXYKpe7qmgLKM3GdJHpHQsEPurS+oZ2lJeL
-	 QkIchdZB4fuPtABT340CxZ0dfFGnPLti5HKvMIXOkZ1WO1zP3Cvv6/srPWiqd/RgPU
-	 OOPaoweC0YShw==
-Date: Wed, 22 Jan 2025 18:11:16 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Costa Shulyupin <costa.shul@redhat.com>
-Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Chen Yu <yu.c.chen@intel.com>, Kees Cook <kees@kernel.org>,
-	Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH v1] Add kthreads_update_affinity()
-Message-ID: <Z5EmtNh_lryVj0S3@localhost.localdomain>
-References: <20250113190911.800623-1-costa.shul@redhat.com>
+	s=arc-20240116; t=1737576208; c=relaxed/simple;
+	bh=Q+QfOxDJ4I1AxZ0Qo3g0FywunQHxMuvv9+iK7t8c8yw=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=iqry8R0oqrILRySy+nRvdk+N84QJY6kPpXijzqNm564TP0VtDEukzMiAa7royr0waEXZSD6zs/C+Z6SW2jFe3mI+z02MDLZT+FCvN9eM+Vl6J9rrei9mV7dbXhyg4SqJDECP5BeK15ih8S/D8gAVqv/mwYiIV/npSi79D8q/kFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I3RB46CM; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1737576207; x=1769112207;
+  h=date:from:to:cc:subject:message-id;
+  bh=Q+QfOxDJ4I1AxZ0Qo3g0FywunQHxMuvv9+iK7t8c8yw=;
+  b=I3RB46CMSKigXHjxUK4SB0wTfbq/5JF9UzdFqXVckKBRlHpoG6/bNFKh
+   FPK7Rx2ynrOxXj9MQtBAe67R0SQy4SnCL1/ZL6q/a/B4LtPXEuFTwwkIl
+   fOF+AIwOlmtsLLOOzf4ZhBY/3/mx57uLLApYa9N88XFu5oqcCizM0q/Fr
+   CnQPY5CR+hKiwSpUdVN1gPxt1AKURIQ8+r5X4CbotYf5P0iGDxXfjH8M5
+   yzRKzFCZh6FptZqN9S9L2M4ce3fbKQfiiNa8yLLIGy8XpaEdhkiIsSaIe
+   5GRAbysf2xht19E2pYO+v3dZkoftA7nl64EhQctRVKioNDmEPQPE4/Q/g
+   w==;
+X-CSE-ConnectionGUID: /dHwknxWTq6WxHZ0sa0FMQ==
+X-CSE-MsgGUID: k16q+2xORICfCgS/7MwJQQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11323"; a="48649088"
+X-IronPort-AV: E=Sophos;i="6.13,226,1732608000"; 
+   d="scan'208";a="48649088"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2025 12:03:26 -0800
+X-CSE-ConnectionGUID: HJigx8yjSJ6c4h1ucAY/xA==
+X-CSE-MsgGUID: VKt5PcUCQkOeoXzteT+0dw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,226,1732608000"; 
+   d="scan'208";a="107071991"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 22 Jan 2025 12:03:25 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tagwd-000aHV-0R;
+	Wed, 22 Jan 2025 20:03:23 +0000
+Date: Thu, 23 Jan 2025 04:02:23 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 4a6780a30e86cde7756954981db9e6aec285793d
+Message-ID: <202501230417.sZ18iAXt-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250113190911.800623-1-costa.shul@redhat.com>
 
-Hi Costa,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 4a6780a30e86cde7756954981db9e6aec285793d  cgroup: update comment about dropping cgroup kn refs
 
-Le Mon, Jan 13, 2025 at 09:08:54PM +0200, Costa Shulyupin a écrit :
-> Changing and using housekeeping and isolated CPUs requires reboot.
-> 
-> The goal is to change CPU isolation dynamically without reboot.
-> 
-> This patch is based on the parent patch
-> cgroup/cpuset: Exclude isolated CPUs from housekeeping CPU masks
-> https://lore.kernel.org/lkml/20240821142312.236970-3-longman@redhat.com/
-> Its purpose is to update isolation cpumasks.
-> 
-> However, some subsystems may use outdated housekeeping CPU masks. To
-> prevent the use of these isolated CPUs, it is essential to explicitly
-> propagate updates to the housekeeping masks across all subsystems that
-> depend on them.
-> 
-> This patch is not intended to be merged and disrupt the kernel.
-> It is still a proof-of-concept for research purposes.
-> 
-> The questions are:
-> - Is this the right direction, or should I explore an alternative approach?
-> - What factors need to be considered?
-> - Any suggestions or advice?
-> - Have similar attempts been made before?
+elapsed time: 1442m
 
-Since the kthreads preferred affinity patchset just got merged,
-I don't think anything needs to be done anymore in the kthreads front to toggle
-nohz_full through cpusets safely. Let's see the details below:
+configs tested: 131
+configs skipped: 4
 
-> 
-> Update the affinity of kthreadd and trigger the recalculation of kthread
-> affinities using kthreads_online_cpu().
-> 
-> The argument passed to kthreads_online_cpu() is irrelevant, as the
-> function reassigns affinities of kthreads based on their
-> preferred_affinity and the updated housekeeping_cpumask(HK_TYPE_KTHREAD).
-> 
-> Currently only RCU uses kthread_affine_preferred().
-> 
-> I dare to try calling kthread_affine_preferred() from kthread_run() to
-> set preferred_affinity as cpu_possible_mask for kthreads without a
-> specific affinity, enabling their management through
-> kthreads_online_cpu().
-> 
-> Any objections?
-> 
-> For details about kthreads affinity patterns please see:
-> https://lore.kernel.org/lkml/20241211154035.75565-16-frederic@kernel.org/
-> 
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
-> ---
->  include/linux/kthread.h | 5 ++++-
->  kernel/cgroup/cpuset.c  | 1 +
->  kernel/kthread.c        | 6 ++++++
->  3 files changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-> index 8d27403888ce9..b43c5aeb2cfd7 100644
-> --- a/include/linux/kthread.h
-> +++ b/include/linux/kthread.h
-> @@ -52,8 +52,10 @@ bool kthread_is_per_cpu(struct task_struct *k);
->  ({									   \
->  	struct task_struct *__k						   \
->  		= kthread_create(threadfn, data, namefmt, ## __VA_ARGS__); \
-> -	if (!IS_ERR(__k))						   \
-> +	if (!IS_ERR(__k)) {						   \
-> +		kthread_affine_preferred(__k, cpu_possible_mask);	   \
->  		wake_up_process(__k);					   \
-> +	}								   \
->  	__k;								   \
->  })
->  
-> @@ -270,4 +272,5 @@ struct cgroup_subsys_state *kthread_blkcg(void);
->  #else
->  static inline void kthread_associate_blkcg(struct cgroup_subsys_state *css) { }
->  #endif
-> +void kthreads_update_affinity(void);
->  #endif /* _LINUX_KTHREAD_H */
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 65658a5c2ac81..7d71acc7f46b6 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1355,6 +1355,7 @@ static void update_isolation_cpumasks(bool isolcpus_updated)
->  	trl();
->  	ret = housekeeping_exlude_isolcpus(isolated_cpus, HOUSEKEEPING_FLAGS);
->  	WARN_ON_ONCE((ret < 0) && (ret != -EOPNOTSUPP));
-> +	kthreads_update_affinity();
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-A few things to consider:
+tested configs:
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    gcc-14.2.0
+arc                              allmodconfig    gcc-13.2.0
+arc                               allnoconfig    gcc-13.2.0
+arc                              allyesconfig    gcc-13.2.0
+arc                   randconfig-001-20250122    gcc-13.2.0
+arc                   randconfig-002-20250122    gcc-13.2.0
+arm                              allmodconfig    gcc-14.2.0
+arm                               allnoconfig    clang-17
+arm                              allyesconfig    gcc-14.2.0
+arm                         assabet_defconfig    clang-20
+arm                         lpc18xx_defconfig    clang-19
+arm                        multi_v7_defconfig    gcc-14.2.0
+arm                          pxa3xx_defconfig    clang-20
+arm                          pxa910_defconfig    gcc-14.2.0
+arm                   randconfig-001-20250122    clang-19
+arm                   randconfig-002-20250122    clang-20
+arm                   randconfig-003-20250122    gcc-14.2.0
+arm                   randconfig-004-20250122    gcc-14.2.0
+arm                         socfpga_defconfig    gcc-14.2.0
+arm                        vexpress_defconfig    gcc-14.2.0
+arm64                            allmodconfig    clang-18
+arm64                             allnoconfig    gcc-14.2.0
+arm64                 randconfig-001-20250122    clang-20
+arm64                 randconfig-002-20250122    clang-15
+arm64                 randconfig-003-20250122    clang-20
+arm64                 randconfig-004-20250122    clang-19
+csky                              allnoconfig    gcc-14.2.0
+csky                  randconfig-001-20250122    gcc-14.2.0
+csky                  randconfig-002-20250122    gcc-14.2.0
+hexagon                          alldefconfig    clang-15
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    clang-20
+hexagon                          allyesconfig    clang-18
+hexagon               randconfig-001-20250122    clang-20
+hexagon               randconfig-002-20250122    clang-20
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250122    clang-19
+i386        buildonly-randconfig-002-20250122    gcc-12
+i386        buildonly-randconfig-003-20250122    gcc-12
+i386        buildonly-randconfig-004-20250122    clang-19
+i386        buildonly-randconfig-005-20250122    clang-19
+i386        buildonly-randconfig-006-20250122    clang-19
+i386                                defconfig    clang-19
+loongarch                        allmodconfig    gcc-14.2.0
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch                 loongson3_defconfig    gcc-14.2.0
+loongarch             randconfig-001-20250122    gcc-14.2.0
+loongarch             randconfig-002-20250122    gcc-14.2.0
+m68k                             allmodconfig    gcc-14.2.0
+m68k                              allnoconfig    gcc-14.2.0
+m68k                             allyesconfig    gcc-14.2.0
+microblaze                       allmodconfig    gcc-14.2.0
+microblaze                        allnoconfig    gcc-14.2.0
+microblaze                       allyesconfig    gcc-14.2.0
+mips                              allnoconfig    gcc-14.2.0
+mips                          ath79_defconfig    gcc-14.2.0
+mips                        bcm63xx_defconfig    clang-20
+nios2                             allnoconfig    gcc-14.2.0
+nios2                 randconfig-001-20250122    gcc-14.2.0
+nios2                 randconfig-002-20250122    gcc-14.2.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+openrisc                            defconfig    gcc-14.2.0
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                              defconfig    gcc-14.2.0
+parisc                randconfig-001-20250122    gcc-14.2.0
+parisc                randconfig-002-20250122    gcc-14.2.0
+powerpc                          allmodconfig    gcc-14.2.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-16
+powerpc                   bluestone_defconfig    clang-20
+powerpc                     kmeter1_defconfig    gcc-14.2.0
+powerpc                     mpc5200_defconfig    clang-20
+powerpc               randconfig-001-20250122    gcc-14.2.0
+powerpc               randconfig-002-20250122    clang-17
+powerpc               randconfig-003-20250122    clang-15
+powerpc                     sequoia_defconfig    clang-17
+powerpc                         wii_defconfig    gcc-14.2.0
+powerpc64             randconfig-001-20250122    clang-20
+powerpc64             randconfig-002-20250122    clang-19
+powerpc64             randconfig-003-20250122    clang-20
+riscv                            allmodconfig    clang-20
+riscv                             allnoconfig    gcc-14.2.0
+riscv                            allyesconfig    clang-20
+riscv                               defconfig    clang-19
+riscv                 randconfig-001-20250122    clang-20
+riscv                 randconfig-002-20250122    gcc-14.2.0
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.2.0
+s390                                defconfig    clang-15
+s390                  randconfig-001-20250122    clang-18
+s390                  randconfig-002-20250122    clang-20
+sh                               allmodconfig    gcc-14.2.0
+sh                                allnoconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                                  defconfig    gcc-14.2.0
+sh                            hp6xx_defconfig    gcc-14.2.0
+sh                               j2_defconfig    gcc-14.2.0
+sh                    randconfig-001-20250122    gcc-14.2.0
+sh                    randconfig-002-20250122    gcc-14.2.0
+sh                          sdk7786_defconfig    gcc-14.2.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                             allnoconfig    gcc-14.2.0
+sparc                 randconfig-001-20250122    gcc-14.2.0
+sparc                 randconfig-002-20250122    gcc-14.2.0
+sparc64               randconfig-001-20250122    gcc-14.2.0
+sparc64               randconfig-002-20250122    gcc-14.2.0
+um                               allmodconfig    clang-20
+um                                allnoconfig    clang-18
+um                               allyesconfig    gcc-12
+um                    randconfig-001-20250122    gcc-12
+um                    randconfig-002-20250122    clang-20
+x86_64                            allnoconfig    clang-19
+x86_64                           allyesconfig    clang-19
+x86_64      buildonly-randconfig-001-20250122    gcc-12
+x86_64      buildonly-randconfig-002-20250122    clang-19
+x86_64      buildonly-randconfig-003-20250122    gcc-12
+x86_64      buildonly-randconfig-004-20250122    gcc-12
+x86_64      buildonly-randconfig-005-20250122    gcc-12
+x86_64      buildonly-randconfig-006-20250122    clang-19
+x86_64                              defconfig    gcc-11
+xtensa                            allnoconfig    gcc-14.2.0
+xtensa                randconfig-001-20250122    gcc-14.2.0
+xtensa                randconfig-002-20250122    gcc-14.2.0
+xtensa                    smp_lx200_defconfig    gcc-14.2.0
 
-1) update_isolation_cpumasks() will be called with cpus_read_lock()
-  (cf: sched_partition_write() and cpuset_write_resmask()), therefore
-  kthreads_online_cpu() can't run concurrently.
-
-2) The constraint to turn on/off a CPU as nohz_full will be that the
-   target CPU is offline.
-
-So when the target CPU will later become offline, kthreads_online_cpu()
-will take care of the newly modified housekeeping_mask() (which will be visible
-because cpus_write_lock() is held) and apply accordingly the appropriate
-effective affinity.
-
-The only thing that might need to be done by update_isolation_cpumasks() is
-to hold kthreads_hotplug_lock so that a subsequent call to
-kthread_affine_preferred() sees the "freshest" update to housekeeping_mask().
-But even that may not be mandatory because the concerned CPUs are offline
-and kthreads_online_cpu() will fix the race when they boot.
-
-Oh and the special case kthreadd might need a direct affinity update.
-
-So the good news is that we have a lot of things sorted out to prepare
-for that cpuset interface:
-
-_ RCU NOCB is ready
-_ kthreads are ready
-_ timers are fine since we toggle only offline CPUs and timer_migration.c
-  should work without changes.
-
-Still some details need to be taken care of:
-
-* scheduler (see the housekeeping_mask() references, especially the ilb which is
-  my biggest worry, get_nohz_timer_target() shouldn't be an issue)
-  
-* posix cpu timers (make tick_dep unconditional ?)
-
-* kernel/watchdog.c (make proc_watchdog_cpumask() and
-  lockup_detector_online_cpu() safe against update_isolation_cpumasks()
-  
-* workqueue unbound mask (just apply the new one?)
-
-* some RCU tick_dep to handle (make them unconditional since they
-  apply on slow path anyway?)
-  
-* other things? (grep for tick_nohz_full_cpu(), housekeeping_* and tick_dep_* )
-
-But we are getting closer!
-
-Thanks!
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
