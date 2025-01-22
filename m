@@ -1,145 +1,209 @@
-Return-Path: <cgroups+bounces-6244-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6245-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 288A2A18538
-	for <lists+cgroups@lfdr.de>; Tue, 21 Jan 2025 19:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F3A4A19736
+	for <lists+cgroups@lfdr.de>; Wed, 22 Jan 2025 18:11:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B02F2166C53
-	for <lists+cgroups@lfdr.de>; Tue, 21 Jan 2025 18:30:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE161160470
+	for <lists+cgroups@lfdr.de>; Wed, 22 Jan 2025 17:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE88D1F7076;
-	Tue, 21 Jan 2025 18:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC5C621516D;
+	Wed, 22 Jan 2025 17:11:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CBVjj374"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aHmowr/Q"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C87B1C1741
-	for <cgroups@vger.kernel.org>; Tue, 21 Jan 2025 18:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810A21369B4;
+	Wed, 22 Jan 2025 17:11:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737484194; cv=none; b=XEnoritQ1Osfm7O3MvlAK3e5HlL6eKZ5h531Q4TQuDqejroC0XSIDrJxtlqtMi/8wHjNExzqGXBXYljzJJSXDvOCCCGZptroxEuK+tvABIxcTUt5B0xcW9rJPx4ycg58BbU19poabZMpOkkc4eHreEjBAmPVjh+5P2VZPetsk/s=
+	t=1737565880; cv=none; b=NS/h3zwEL3hfhke6LPt8THbNcUg5tfwVc/V2OVJwHdlrDwCVnJYOF60BGIEavRFVTNn+6waHPMih2I4xNTSF+UkIHBX5yLjFW9NEN3FFxaD4qmUmavjaWaaMOzTPbt7gbr5qdnItqG73io0qmf+fM6H5LjBbcj7pzDz9H364xFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737484194; c=relaxed/simple;
-	bh=jqDzj+eTPBIMLC2SCvL3JbqmPEgXso2MiJ7GoqGTJng=;
+	s=arc-20240116; t=1737565880; c=relaxed/simple;
+	bh=vrOcVfrtnQTE4mLP1ckCne1X0XXALsHqOEb6+eSyEdU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wdmk0mKskk2JUOVw/TLV/Qa+C72GQEMxA7ulBXlXpeK0iw5fHu8PtWYw0l41qdQo3t8YOi/oXfMk07xztaPHSmi9x5AdbFMLeSwziqZrBc4Y9zVlkrsppErbOQ/lkj1988xer7Jwyc5r6Xw6nmSVNsd3cyAf+VPB5lncqSn6e5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CBVjj374; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4364a37a1d7so59421925e9.3
-        for <cgroups@vger.kernel.org>; Tue, 21 Jan 2025 10:29:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1737484190; x=1738088990; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xkAKeDcaoc8aic3fG+NCS5mGcWlbtV39f2bpcRLuxIs=;
-        b=CBVjj374ySgZoWRqkz/ZOjaeJC02SUgJTl3e5wOoWNU4ivRFj6CtucAn/Eun3JucxH
-         FQ+FKYQ6uK7khIZhR14Nw+5pJs/VzBdsbL9EXArk7eQGBALQ7nw+g7BnOhvTluVhD/E6
-         kHX63P1iDAXceWcKVtKMJ9sqHFLsOYa+8b/skB9njTq53rClIVnqZQBrH/VJC9WDuKb/
-         bXCPPVoajZGv92bDycH2b9RAJL0cEIdeDPnhLCbCtk8sAxbBVmJdHA1IP1JKVi42gJMB
-         6v9navO29kRkaeLf0+a9NpT5s+gS8wVxsctQEkidvjqSKc7hu3KR/tm1iealqp+Ik6ct
-         vuJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737484190; x=1738088990;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xkAKeDcaoc8aic3fG+NCS5mGcWlbtV39f2bpcRLuxIs=;
-        b=qlkO+iJyAxLxcYXrHY+edVyBSKKLkB92m+J14vXiAdYxcBdBTDGH1gUI51sx82kVsX
-         yGAEzJ3IMnQSLWz2MOJV8P+w9gUowZGbajRPWlv4XBTDvkkUF+OE1FuAJeemTQ9q4h5g
-         Oef/UcGNv1lUTnQ+NQ5ildUM6O3yQrZXjlwQxiZLDZqYosa/HKBUOy1g58tBkNbEV9Az
-         1z7oAxVf43rCEVitY2Nmn+X8gLihxPAQJi9NJ2U0f9mQ0k+Tde+GpT6RDEFvnbWPOh0b
-         Kj1VbuUjl1DEBG/D0ZtnWg4VOFiv95ZYp0Qizm8ZsE0uIcYtkgJN0KVcGCBGwLlQ+uUs
-         nfbA==
-X-Forwarded-Encrypted: i=1; AJvYcCUL8i7oEv/fGEhrERVCAMRMmUdAmA0WTAQJEX4V4RLcSqitrThDRvmC/vuJRVvmJrzrtYwjytFE@vger.kernel.org
-X-Gm-Message-State: AOJu0YwopUD9tvXc9Px3ytAprPGHX9rjeBTeNtehDUnWAzaXR8z/6dSn
-	ejucY+8SKD4gPcyMdg7Vo5ZnsksGyUN3Cf1De48Et1ih/W8WcBJ4Cq09x4uHm6M=
-X-Gm-Gg: ASbGncuhHprr0cbWXUQPEcfNE6Y7OeD2QYlHbTpmk2VzA4crIpZx5b46EC6m/Lp9ylm
-	boxGfrXbEnh+1iyh1/MfmfGXiNbH5mFJeW/e8jUOV9kbNxuMopB1Rf3AS3D4/7q5vyzVDfPgQ+p
-	kUqGwBHIY12wZBXEB59VxUFR/2Uihz/wh3/C0iYUunPY5sQyl9x7kBxqOwInOz7G8MflulqXV1P
-	GFGd2UcAcGUs3HCd2rS47wZH+ZHNgsrgzFk83zHemlbfQoTluszfw6GHuJ1uwv4/mGfgvlx
-X-Google-Smtp-Source: AGHT+IHfUrUKD19ckbGWZSAxbod4Fwp6AvvMqNG6Dkq6zkY1uEsGnMGxwAgZfueRaa6lpWJgnlQp+Q==
-X-Received: by 2002:a05:600c:350b:b0:431:58cd:b259 with SMTP id 5b1f17b1804b1-438914671fdmr193243775e9.31.1737484190523;
-        Tue, 21 Jan 2025 10:29:50 -0800 (PST)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438904621cdsm187778135e9.27.2025.01.21.10.29.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jan 2025 10:29:50 -0800 (PST)
-Date: Tue, 21 Jan 2025 19:29:48 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: syzbot <syzbot+622acb507894a48b2ce9@syzkaller.appspotmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	cgroups@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net, elic@nvidia.com, 
-	gregkh@linuxfoundation.org, hannes@cmpxchg.org, hawk@kernel.org, jasowang@redhat.com, 
-	jirislaby@kernel.org, john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org, 
-	kuba@kernel.org, len.brown@intel.com, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-serial@vger.kernel.org, mingo@redhat.com, mst@redhat.com, 
-	netdev@vger.kernel.org, parav@nvidia.com, pavel@ucw.cz, rafael@kernel.org, 
-	rostedt@goodmis.org, songliubraving@fb.com, syzkaller-bugs@googlegroups.com, 
-	tj@kernel.org, yhs@fb.com
-Subject: Re: [syzbot] [cgroups?] possible deadlock in
- console_lock_spinning_enable (5)
-Message-ID: <6pdxz7oqr6442cczbec7n3cqtldrrpfsdk7ynqjguiqp6d5ucv@sibkx2lfldvu>
-References: <0000000000001e66f5061fe3b883@google.com>
- <678a4e3b.050a0220.303755.0005.GAE@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hziysGee4DVCT/ZnNl+UrQ8jbTz7Y5soBW33krWCRe1FZn2bWOEqd/DbvNzwDkTCfkAPU5hjZrP8hqXQOH+zmsOpoAnm1rmYWIhKf96Lj4UdCTAWadKVtSAb7+8WKw+MMHgK5TH4MGrkYAHWALmKqwXnpsOYMkg88tlgzffaqbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aHmowr/Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5466AC4CED6;
+	Wed, 22 Jan 2025 17:11:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737565879;
+	bh=vrOcVfrtnQTE4mLP1ckCne1X0XXALsHqOEb6+eSyEdU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aHmowr/QACR71pMgPQ+3ISG6Ptx3ISzssy7g1oPZws6K0Pk/tjVcWSHQ4deN5QZHW
+	 2VLLZ9zNLhXtuegmHBBpwubGCSDh8xWkQqxP95HU0ktUyq+T/HwNkDyvioIe/55c8W
+	 6ZkfBw73pnF4ANBNf3cdOwt+ggdUFeXfjju4wrH3lEOpTF30hSQc/3FXGt29hyM7X2
+	 Ohq80MByU6xrJI/q3q2/Jdp5mcrWb53oXYKpe7qmgLKM3GdJHpHQsEPurS+oZ2lJeL
+	 QkIchdZB4fuPtABT340CxZ0dfFGnPLti5HKvMIXOkZ1WO1zP3Cvv6/srPWiqd/RgPU
+	 OOPaoweC0YShw==
+Date: Wed, 22 Jan 2025 18:11:16 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Costa Shulyupin <costa.shul@redhat.com>
+Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Chen Yu <yu.c.chen@intel.com>, Kees Cook <kees@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH v1] Add kthreads_update_affinity()
+Message-ID: <Z5EmtNh_lryVj0S3@localhost.localdomain>
+References: <20250113190911.800623-1-costa.shul@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="flx2psaakqlkzlmd"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <678a4e3b.050a0220.303755.0005.GAE@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250113190911.800623-1-costa.shul@redhat.com>
 
+Hi Costa,
 
---flx2psaakqlkzlmd
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [syzbot] [cgroups?] possible deadlock in
- console_lock_spinning_enable (5)
-MIME-Version: 1.0
+Le Mon, Jan 13, 2025 at 09:08:54PM +0200, Costa Shulyupin a écrit :
+> Changing and using housekeeping and isolated CPUs requires reboot.
+> 
+> The goal is to change CPU isolation dynamically without reboot.
+> 
+> This patch is based on the parent patch
+> cgroup/cpuset: Exclude isolated CPUs from housekeeping CPU masks
+> https://lore.kernel.org/lkml/20240821142312.236970-3-longman@redhat.com/
+> Its purpose is to update isolation cpumasks.
+> 
+> However, some subsystems may use outdated housekeeping CPU masks. To
+> prevent the use of these isolated CPUs, it is essential to explicitly
+> propagate updates to the housekeeping masks across all subsystems that
+> depend on them.
+> 
+> This patch is not intended to be merged and disrupt the kernel.
+> It is still a proof-of-concept for research purposes.
+> 
+> The questions are:
+> - Is this the right direction, or should I explore an alternative approach?
+> - What factors need to be considered?
+> - Any suggestions or advice?
+> - Have similar attempts been made before?
 
-On Fri, Jan 17, 2025 at 04:34:03AM -0800, syzbot <syzbot+622acb507894a48b2c=
-e9@syzkaller.appspotmail.com> wrote:
-> syzbot has bisected this issue to:
->=20
-> commit bc0d90ee021f1baecd6aaa010d787eb373aa74dd
-> Author: Parav Pandit <parav@nvidia.com>
-> Date:   Tue Jan 5 10:32:02 2021 +0000
->=20
->     vdpa: Enable user to query vdpa device info
->=20
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1440c2b058=
-0000
+Since the kthreads preferred affinity patchset just got merged,
+I don't think anything needs to be done anymore in the kthreads front to toggle
+nohz_full through cpusets safely. Let's see the details below:
 
-syzbot got this somehow wrong, it started with the lockdep bug but then
-switched to a different
-| crash: BUG: unable to handle kernel paging request in bpf_trace_run3
-so the bisecting session yielded (I believe) random commit, didn't it?
+> 
+> Update the affinity of kthreadd and trigger the recalculation of kthread
+> affinities using kthreads_online_cpu().
+> 
+> The argument passed to kthreads_online_cpu() is irrelevant, as the
+> function reassigns affinities of kthreads based on their
+> preferred_affinity and the updated housekeeping_cpumask(HK_TYPE_KTHREAD).
+> 
+> Currently only RCU uses kthread_affine_preferred().
+> 
+> I dare to try calling kthread_affine_preferred() from kthread_run() to
+> set preferred_affinity as cpu_possible_mask for kthreads without a
+> specific affinity, enabling their management through
+> kthreads_online_cpu().
+> 
+> Any objections?
+> 
+> For details about kthreads affinity patterns please see:
+> https://lore.kernel.org/lkml/20241211154035.75565-16-frederic@kernel.org/
+> 
+> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+> ---
+>  include/linux/kthread.h | 5 ++++-
+>  kernel/cgroup/cpuset.c  | 1 +
+>  kernel/kthread.c        | 6 ++++++
+>  3 files changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+> index 8d27403888ce9..b43c5aeb2cfd7 100644
+> --- a/include/linux/kthread.h
+> +++ b/include/linux/kthread.h
+> @@ -52,8 +52,10 @@ bool kthread_is_per_cpu(struct task_struct *k);
+>  ({									   \
+>  	struct task_struct *__k						   \
+>  		= kthread_create(threadfn, data, namefmt, ## __VA_ARGS__); \
+> -	if (!IS_ERR(__k))						   \
+> +	if (!IS_ERR(__k)) {						   \
+> +		kthread_affine_preferred(__k, cpu_possible_mask);	   \
+>  		wake_up_process(__k);					   \
+> +	}								   \
+>  	__k;								   \
+>  })
+>  
+> @@ -270,4 +272,5 @@ struct cgroup_subsys_state *kthread_blkcg(void);
+>  #else
+>  static inline void kthread_associate_blkcg(struct cgroup_subsys_state *css) { }
+>  #endif
+> +void kthreads_update_affinity(void);
+>  #endif /* _LINUX_KTHREAD_H */
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 65658a5c2ac81..7d71acc7f46b6 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1355,6 +1355,7 @@ static void update_isolation_cpumasks(bool isolcpus_updated)
+>  	trl();
+>  	ret = housekeeping_exlude_isolcpus(isolated_cpus, HOUSEKEEPING_FLAGS);
+>  	WARN_ON_ONCE((ret < 0) && (ret != -EOPNOTSUPP));
+> +	kthreads_update_affinity();
 
-(The lockdep appears valid, with PSI enabled and the fault injection at
-unfortunate place (with BPF'd tracepoint).)
+A few things to consider:
 
-Michal
+1) update_isolation_cpumasks() will be called with cpus_read_lock()
+  (cf: sched_partition_write() and cpuset_write_resmask()), therefore
+  kthreads_online_cpu() can't run concurrently.
 
---flx2psaakqlkzlmd
-Content-Type: application/pgp-signature; name="signature.asc"
+2) The constraint to turn on/off a CPU as nohz_full will be that the
+   target CPU is offline.
 
------BEGIN PGP SIGNATURE-----
+So when the target CPU will later become offline, kthreads_online_cpu()
+will take care of the newly modified housekeeping_mask() (which will be visible
+because cpus_write_lock() is held) and apply accordingly the appropriate
+effective affinity.
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ4/nmgAKCRAt3Wney77B
-SfWDAQD9atuzOG3FHcpa9TZop/UV7vy3rJ7Nt2Jbeo9pTOreKgEAoQlnyi+4Metp
-9vIjKtqdXgf9fmKryAgGyrYpKRkNAws=
-=bsM8
------END PGP SIGNATURE-----
+The only thing that might need to be done by update_isolation_cpumasks() is
+to hold kthreads_hotplug_lock so that a subsequent call to
+kthread_affine_preferred() sees the "freshest" update to housekeeping_mask().
+But even that may not be mandatory because the concerned CPUs are offline
+and kthreads_online_cpu() will fix the race when they boot.
 
---flx2psaakqlkzlmd--
+Oh and the special case kthreadd might need a direct affinity update.
+
+So the good news is that we have a lot of things sorted out to prepare
+for that cpuset interface:
+
+_ RCU NOCB is ready
+_ kthreads are ready
+_ timers are fine since we toggle only offline CPUs and timer_migration.c
+  should work without changes.
+
+Still some details need to be taken care of:
+
+* scheduler (see the housekeeping_mask() references, especially the ilb which is
+  my biggest worry, get_nohz_timer_target() shouldn't be an issue)
+  
+* posix cpu timers (make tick_dep unconditional ?)
+
+* kernel/watchdog.c (make proc_watchdog_cpumask() and
+  lockup_detector_online_cpu() safe against update_isolation_cpumasks()
+  
+* workqueue unbound mask (just apply the new one?)
+
+* some RCU tick_dep to handle (make them unconditional since they
+  apply on slow path anyway?)
+  
+* other things? (grep for tick_nohz_full_cpu(), housekeeping_* and tick_dep_* )
+
+But we are getting closer!
+
+Thanks!
 
