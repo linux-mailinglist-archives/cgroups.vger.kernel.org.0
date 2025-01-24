@@ -1,167 +1,153 @@
-Return-Path: <cgroups+bounces-6267-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6268-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27FC5A1B320
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 10:56:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 852CDA1B326
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 10:58:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0E0D3A527C
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 09:56:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DB9D18880F9
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 09:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FBA021A43B;
-	Fri, 24 Jan 2025 09:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44EF21A452;
+	Fri, 24 Jan 2025 09:58:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JvzjG+NR"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="NfN34gq6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A8823A0
-	for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 09:56:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 360C921A444
+	for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 09:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737712573; cv=none; b=FbWRcNj5GzkuT9QGvAN8Hq5MnRCWE31+hWwGgGgJXI4B/zawO4MJS6L0LJlgB1/qQL7wtjQL2tBNZ6WVb9zAyCmd0KbCOAW24xt9KL2SN9YnkT6a4deulzPp7MgVA0yyei+HxXBM9zif1ycLYrZVNsgcUHlJudjUKv5wX51Vka0=
+	t=1737712718; cv=none; b=sjFySnXxy+ZR+vWomtP9a6jJl+AoltQZUUHOeG9OgwCd2DrTUDJBvgMD8Lg3QRyGMDrbfmQTo4nwPXQxJg2mFS1N/gFpKJAgoaSjwwuBkl2r+Lwui5qJa36VcIf/Mcw5GDBvpd+a5vAOICNPGVYTiMBRjBr5rGfaEx6f056WQJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737712573; c=relaxed/simple;
-	bh=1CR4frQOomj1twb3rqRDUii/z5dGsK8gkFJnYl05f7w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dE7XOgtmrFsH49zOyiINMVgKII4DOW/LaIxW1BLDJtVmio6lIpekApBz+oQtcvQNiOYIgd6Slf9o0bmP0ixwqLq5UBEeBcecV0P8cJfja0v5E0wqdD6YWjNZH098uT0d5Mqq/LW4viYQ+WfDpuG9NkMs+rITYLMGXrWMUXbxMd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JvzjG+NR; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-43626213fffso19233735e9.1
-        for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 01:56:10 -0800 (PST)
+	s=arc-20240116; t=1737712718; c=relaxed/simple;
+	bh=b0NM6/LjIOBz/UPiTAWXH24WsHcyH4sODiI1aMjHIqQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NR+MmLwZwzfxOnOIw8neXojoU57TIaJT2S+srgcxkETBXWopg4OMumP+yxQ9EGNgjd7aFkSM6xWU5fBgNET8pj866mo71ISakHUcae3Z7bfUZ7jEvU/O+4n0TE+sp4l+WbtPWsKle8JGrcPfYnc+tyPJZKjHcROkTm8hxjOGcQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=NfN34gq6; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2f7d35de32dso445514a91.3
+        for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 01:58:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1737712569; x=1738317369; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HFtaZY6ZZraVAs4Am9Vg5xV1oypKfUrqh6METYm11sk=;
-        b=JvzjG+NRF3eR149ubfs1Cxq/7yZCQuM91yIUs/qraQH7ru9Gd6fD7gfrIXpc0HVPEs
-         pyoz+prr1KxW4RTpuKvsSmDp0S/FdEaK3Pe1tg9tcDQs7sw9WZiK1OnuesorUQKvs3Uk
-         f5Ors7OpkorqeZjW5TCzoVuHFBsMjwODuhDUrnLtCObnjfWpFCNrMOAp58r9j3T3IlKW
-         oO1BzMc8hGQU3MMSkXQWgE17dZrVrTKM4SVox7tT0rCcsXPp/huHMVSqbIHr0OZ3qxiZ
-         J/98GrviMte6wy/8zKMxOeK4OdHMG57dfn5NlmVZAb+pqJt7Fd5OIMRVaTp7PszdzpiC
-         clWQ==
+        d=bytedance.com; s=google; t=1737712716; x=1738317516; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QZxKjba6HTWFABaly4I6MxGfobohJauNd1R6JB0rLRg=;
+        b=NfN34gq6ocg6H5q9aX72lfa55M6krjv3bcCtJBa/BzYL5Q7S2sd/EvJeJ2g3MdyrN9
+         3f/GCpRgykl8Gsv5e9fNaOXTCXzj4ohIfPnjt99WjMwOIdtaaM1iLVB+chQYYp4SSwDM
+         k18uXqKlGKgR8R7wmununkeU+T5M60R2I58JCJ6AzQsc+JZC77ldrNzWBDNHRM7acJJ0
+         FmS5CjiZdpVtiO//cUJhF1sKducsiJTMf0k1toMHPTqNrXgIS4z6p9DYT7YwIX9n9ZHt
+         D+tj7YuPGPUN4x2GO/bzrQTY7+U9EFaf2Idxp8wwltQmVVMgYyq0Tjz9gudpTceWoh/r
+         rZ5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737712569; x=1738317369;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HFtaZY6ZZraVAs4Am9Vg5xV1oypKfUrqh6METYm11sk=;
-        b=YN1a1yTvdQ2xzqWEzy+EcH+MK+KSIFb9Ao+WQjfIOHRVkk8SwsJQmW5485rw5Lr94T
-         JBYaVScUfnHWPv5nM/E27HSNer5UmDG4HYjeESR5JPurJ1VjD1Gc8BfDY4APUnkdgL1W
-         Lv0ApGHpC7B8sDFvVpb4x212jRuHcEj7SpVfXtGhPZQS12C3Mthi68IS+en8FKaDydYP
-         ZX7rHraT5eya6PRJiIlwXgJdYrpUgK70GffxJoWMmtKVdFSQyR9l6Vt37KFBnZ8L+JA1
-         nEErLJlWdRyQM8vfAS/qdZvSJxJokhhO0BKa5aeKCLK+rkW7PKRXFmAw22eWzNtkEDUz
-         Moyg==
-X-Forwarded-Encrypted: i=1; AJvYcCWRzYbTQvBIZxRCueBa9S0Uqdo99f1+sqFuU70o2KOokWyOaQOrrc1QA7rOavCiqkCW0wX8ddQk@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/27oc9SQgqurp3OkMVsodgCtH1X1Luj7f30RdQA+URxjTNIhM
-	FIGr3doBqnpdr5oCWjx+rOKlc+VGeBhjgE896r9K3BVLBXasgZLSFCM5B/GvWJw=
-X-Gm-Gg: ASbGncsUZxC8cunfvPiggrIOeXHD278eoUg9pMSt6L5lUHnyKYQOe/G5emb5o+zqThz
-	ayfXWIiS1Q6YsKxZbxdyd/8SayosEGLGw3U+21DVBT7wNOXUzHvdi6UAkZBylDhlGL7EvX0sFhh
-	vME5OwlVftRtZYDPejJEbRUgQljvogBWVY45/5vR7vze+nXjFHNWBTj0gREqO6A3fSNZCAt4x90
-	hnPkIJt64kA917qjDgpb6JcvS5g3v2c2aZ4nBouIq3VRJLutJllOMAMHG49r1sHlUNP2J5KJ1Nd
-	l5HUkSUIZ8NVcY935g==
-X-Google-Smtp-Source: AGHT+IGxpw5taskk35HLdhUeYYcYpfgCX2aqes5gSqbZ3vWLljthfE6j/dI9FbVrsv4Q3UQvxshbzw==
-X-Received: by 2002:a05:600c:63ce:b0:437:c453:ff19 with SMTP id 5b1f17b1804b1-438bd0bd5eemr23052955e9.14.1737712569291;
-        Fri, 24 Jan 2025 01:56:09 -0800 (PST)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438bd507c59sm20351855e9.17.2025.01.24.01.56.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2025 01:56:08 -0800 (PST)
-Date: Fri, 24 Jan 2025 10:56:07 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Friedrich Vock <friedrich.vock@gmx.de>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Simona Vetter <simona.vetter@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Maarten Lankhorst <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>, 
-	dri-devel@lists.freedesktop.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] cgroup/dmem: Don't clobber pool in
- dmem_cgroup_calculate_protection
-Message-ID: <qu3jdiik2sfstey4ecxdojndkzb5gzblg37i76p43xccnotawl@jlbafrgjad2x>
-References: <20250114153912.278909-1-friedrich.vock@gmx.de>
- <ijjhmxsu5l7nvabyorzqxd5b5xml7eantom4wtgdwqeq7bmy73@cz7doxxi57ig>
- <4d6ccc9a-3db9-4d5b-87c9-267b659c2a1b@gmx.de>
- <oe3qgfb3jfzoacfh7efpvmuosravx5kra3ss67zqem6rbtctws@5dmmklctrg3x>
- <672de60e-5c10-406b-927c-7940d2fbc921@gmx.de>
+        d=1e100.net; s=20230601; t=1737712716; x=1738317516;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QZxKjba6HTWFABaly4I6MxGfobohJauNd1R6JB0rLRg=;
+        b=WJ24m5NCxb9lfr2uJMFNdzCn/NIGs8/iYdexgmW9mX2fp/GuF6v0+jzsc3sWUg7WQs
+         D5YwQM7JC51IUh4OjtimrVR54gji7dKlIUHqic8/kBoVCHJ4szZQWy/NpzECIaLJ6UeF
+         sJ3eOSdRdbS1pJ6GcnjqsS0AX92UcZMzcix3S6icY/HIWabI7N/JFDsMQFL6g5LLqBc8
+         yAVViWUuasBRq7rrgiLC7TN3Ln/H/qWmLn9JgrnhgYXLJFnDXh0c7hJVZUrgIgS5TC6e
+         s/HZMA0VZBJ0DhDSveNSJxyFxL5CBrNCwgGgei/xAd0U+O0y061n+PTjx82XZWZQ6ncA
+         PBAg==
+X-Forwarded-Encrypted: i=1; AJvYcCXRsLAbzAHrF5ha+UhQEESjb3fAW9TszV2Kp+4wSDYWyvOHKKZ/aKTfOe5utHGgb+mia1MvTO4o@vger.kernel.org
+X-Gm-Message-State: AOJu0YyerxhAC8D3CUSB+Wnc23G2vNjkV98I+3FOfBkuR+ZNOQ/xj4VC
+	77JnhbEZmGZrYvD97SMi3xOU+K/o1PYaNsdQHW9prX/YY5+Vv+kIjY6CVA2m3Cs=
+X-Gm-Gg: ASbGnctk5vCzhIRSwWk2vJNtadV2nOtvsHYQj52MfGo5GJhcGebEZ4+UdY4S8PORjXf
+	3bwG5qVHFYfCUGnVur7DXgOKN2byDc1SKexrD2qpNlR0PGTgIVrfc0fg/UKe+GmtOcPcBJNbKD1
+	poK4iRdF4ULOQVLftAxedFyRVlyHWvHSal5Qk6S/E3cOMwtdy1C8y2a/PG49c7jp97rjhXXctns
+	47o8iNmBovguyQIhOlUt3bdvcDBeG/Nj/maLee5Y87003nRqiCSE/zAFIgCyx+PeWKByaJtwWGq
+	Jm/gUZe6neyU/Y7RxF5s/sYf/YdDQA==
+X-Google-Smtp-Source: AGHT+IHtYalRAVyxBUhTBsy5Jn95iocNFeyYPN3yZIod2dqOmdZ06kSOSS2mzh+YdMEduLvhnG7BLA==
+X-Received: by 2002:a17:90b:6c4:b0:2ee:cbc9:d50b with SMTP id 98e67ed59e1d1-2f782d35946mr16117328a91.4.1737712716429;
+        Fri, 24 Jan 2025 01:58:36 -0800 (PST)
+Received: from [10.254.144.106] ([139.177.225.251])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffac2807sm1246125a91.20.2025.01.24.01.58.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jan 2025 01:58:35 -0800 (PST)
+Message-ID: <a7a24c05-87ca-49d1-9fa3-be4c3555e238@bytedance.com>
+Date: Fri, 24 Jan 2025 17:58:26 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6hrt3edpenmuek2m"
-Content-Disposition: inline
-In-Reply-To: <672de60e-5c10-406b-927c-7940d2fbc921@gmx.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] cgroup/rstat: Fix forceidle time in cpu.stat
+Content-Language: en-US
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Yury Norov <yury.norov@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Bitao Hu
+ <yaoma@linux.alibaba.com>, Chen Ridong <chenridong@huawei.com>,
+ "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20250123174713.25570-1-wuyun.abel@bytedance.com>
+ <20250123174713.25570-2-wuyun.abel@bytedance.com>
+ <cf5k7vmtqa2a5e6haxghvsolnydaczrz5n3bkluttmula5s35y@z35txmj4bxsb>
+From: Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <cf5k7vmtqa2a5e6haxghvsolnydaczrz5n3bkluttmula5s35y@z35txmj4bxsb>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
---6hrt3edpenmuek2m
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] cgroup/dmem: Don't clobber pool in
- dmem_cgroup_calculate_protection
-MIME-Version: 1.0
 
-On Fri, Jan 17, 2025 at 08:02:55PM +0100, Friedrich Vock <friedrich.vock@gm=
-x.de> wrote:
-> Yeah, there are pools for the whole path between limit_pool and
-> test_pool, but the issue is that we traverse the entire tree of cgroups,
-> and we don't always stay on the path between limit_pool and test_pool
-> (because we're iterating from the top down, and we don't know what the
-> path is in that direction - so we just traverse the whole tree until we
-> find test_pool).
->=20
-> This means that we'll sometimes end up straying off-path - and there are
-> no guarantees for which pools are present in the cgroups we visit there.
-> These cgroups are the potentially problematic ones where the issue can
-> happen.
->=20
-> Ideally we could always stay on the path between limit_pool and
-> test_pool, but this is hardly possible because we can only follow parent
-> links (so bottom-up traversal) but for accurate protection calculation
-> we need to traverse the path top-down.
+On 1/24/25 5:22 PM, Michal Koutný Wrote:
+> Hello.
+> 
+> On Fri, Jan 24, 2025 at 01:47:01AM +0800, Abel Wu <wuyun.abel@bytedance.com> wrote:
+>> The commit b824766504e4 ("cgroup/rstat: add force idle show helper")
+>> retrieves forceidle_time outside cgroup_rstat_lock for non-root cgroups
+>> which can be potentially inconsistent with other stats.
+>>
+>> Rather than reverting that commit, fix it in a way that retains the
+>> effort of cleaning up the ifdef-messes.
+> 
+> Sorry, I'm blind, where's the change moving wrt cgroup_rstat_lock?
+> (I only see unuse of root cgroup's bstat and a few renames).
 
-Aha, thanks for bearing with me.
+Hi Michal,
 
-	css_foreach_descendant_pre(css, limit_pool->cs->css) {
-		dmemcg_iter =3D container_of(css, struct dmemcg_state, css);
+The following hunk deleted the snapshot of cgrp->bstat.forceidle_sum:
 
-		struct dmem_cgroup_pool_state *found_pool =3D NULL;
-		list_for_each_entry_rcu(pool, &dmemcg_iter->pools, css_node) {
-			if (pool->region =3D=3D limit_pool->region) {
-				found_pool =3D pool
-				break;
-			}
-		}
-		if (!found_pool)
-			continue;
+  	if (cgroup_parent(cgrp)) {
+  		cgroup_rstat_flush_hold(cgrp);
+  		usage = cgrp->bstat.cputime.sum_exec_runtime;
+  		cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime,
+  			       &utime, &stime);
+-#ifdef CONFIG_SCHED_CORE
+-		forceidle_time = cgrp->bstat.forceidle_sum;
+-#endif
+  		cgroup_rstat_flush_release(cgrp);
+  	} else {
 
-		page_counter_calculate_protection(
-			climit, &found->cnt, true);
-	}
+and then read forceidle_sum from @cgrp directly outside of the lock,
+but its value can be changed in this window, so...
+  
+-#ifdef CONFIG_SCHED_CORE
+-	seq_printf(seq, "core_sched.force_idle_usec %llu\n", forceidle_time);
+-#endif
++	cgroup_force_idle_show(seq, &cgrp->bstat);
+  }
+  
+result in the inconsistence between forceidle and other cputimes.
 
-Here I use (IMO) more idiomatic css_foreach_descendant_pre() instead and
-I use the predicate based on ->region (correct?) to match pool's
-devices.
+Best Regards,
+	Abel
 
-Would that work as intended?
-
-Michal
-
---6hrt3edpenmuek2m
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ5NjtQAKCRAt3Wney77B
-Sb9kAQDx2dXNJx0ji8l5wnSMZa+EVuGB9ub0rZlAyG+KV+9M2QD/d5JuUzDjSqnA
-KJTKp7PQu58CspZeNoeZdl8PWueJHwQ=
-=2rqU
------END PGP SIGNATURE-----
-
---6hrt3edpenmuek2m--
 
