@@ -1,154 +1,179 @@
-Return-Path: <cgroups+bounces-6253-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6254-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A15CA1AF62
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 05:23:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 905F9A1AF70
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 05:39:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89FA516D3A7
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 04:23:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD65B3ACCB4
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 04:39:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44FE41D63FB;
-	Fri, 24 Jan 2025 04:23:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569591D6DBB;
+	Fri, 24 Jan 2025 04:39:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="GyNrJH9O"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="ahOTj5zq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A81291448E4
-	for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 04:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9B4A29
+	for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 04:39:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737692589; cv=none; b=ElurpfyEHwgfn7TouanHneZX63ooVVIlU6KvQohENJsoM+UBseI+vxfFWQS2rYivpfxqZ93d5CY+s5/FJjIxtTVXC6+4REYU4HKftS7Z+KJmU/mJiomompq0J/LoByoVxs5wNMyhGUxIwflCaR2KPpa/7gMZu4P+DfvrCyXlsYc=
+	t=1737693554; cv=none; b=qbFQiZrMCiSjRkoljyBAh0nrHHUE6JcfVaWRc/xCpN/y1SW1WzrubIID1V9qAPlKgmEshQLqU60dwQ6JVsoYr1o/0qtuVXZfoOsSaxwI3lLF/FISkLGkpV08/U7zXNqrHXjFYRfSkaurMBMM6bGoRFb+W9YlG1+INUvGJyHQN2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737692589; c=relaxed/simple;
-	bh=QIUoKjwxPBNQni2VV+m60SGOzN6C+VWkQ/6ZLrpa8Iw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aPRtaV/CZHYKym57xP5MydZ16VQCoeumwumc5hw8eGBzDz4mxbXvJPpq9hHkAn8z/bScnRm3/8GRgTUMub61yZuwstEEO6Tl6I1hSCGXf10IeUVTWy3gFlPWX3ZQlpr6xNY+Zay6pW0Qbo+xotpuGd/Jda0Ne30JLuO2+Eze7aQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=GyNrJH9O; arc=none smtp.client-ip=209.85.222.179
+	s=arc-20240116; t=1737693554; c=relaxed/simple;
+	bh=PXg73LuFiGEKAa7Mt9lCJeMONLDawGYG3u6NrvTqFlA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LKVcDbageZulTtit/c99gynTslgCHw2MvvSP/CixfGvK4CLfU/0OE6BbVb10L4ck2lao4tYjNjnFSW1VjEZAIIZBSt4oeDHcHs6L7l+cf98hhYFTj8JDqCFPejf8HSBb06h2XdnlklbBRbx5zl6kMVm26gUpBSycHizBwEwA5aA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=ahOTj5zq; arc=none smtp.client-ip=209.85.219.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7b6e5c74cb7so141033885a.2
-        for <cgroups@vger.kernel.org>; Thu, 23 Jan 2025 20:23:06 -0800 (PST)
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6d88cb85987so15868886d6.1
+        for <cgroups@vger.kernel.org>; Thu, 23 Jan 2025 20:39:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1737692585; x=1738297385; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kG4DUpM1UB6jOLI1pm+8TNJuI6YIiIHXVVab7FNAq7c=;
-        b=GyNrJH9OpK2mdg0he1+TAS41GyxKLDUXpBtmXPbdYQd9xrDw0SiDYl5QBh/+JtoAVX
-         niO/svlwnm3jB70MSN5haGeC863ZeqNHoyKLzztPaSXi1Smmd33OocUgIaHCrGZzzq46
-         AhVKexW3vHT9CFF2gK07DCoj8HQ9vMr3x5aUi9xYfKRCHc9+ce4BreRJWdT/f0YEHY4W
-         ODrCUAyOEVZGZ2ZizjCxuj7TBB9r9NmvRgErpVmIJyHeBZAlClsoun9ESC4lLr+tRLyA
-         NESxBTUfqw9vU02IypssVnmOYEMhQWxU4ylnVydmn45EP8EbN1ewyWu0fDcXA86kLw5X
-         g1Lw==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1737693550; x=1738298350; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LA98XB9LYD/MipEPJEpEr2dcKbFDev2YEJD5nlY7UfU=;
+        b=ahOTj5zq7WwXza76foPFPSTVQR7xim6MWJSkXCzanL5ZHlC1TCLZxIGVHZtLl3uGQn
+         ZFAagHRq/ycYRRyoptTQbyPfCyOVZ6Wrg9qosq5ENn4+V9PpZB7Jotgnsl7km2wr7HR4
+         1MWfPqyGMajPOznouxhhGdUdMoob4ZB+mKKSs6/5WFnPJw1T8Gz+wRmw85CmrOmuBubj
+         jteOtnQ9/h3nW+TahxKnQUf9C+GHTgBIu8M/2FVzyR4a9KqPifvt3QOrETtWt5QPvFRd
+         KyDLvk+3lhzRvcbY5xmdkw/XR54qjA3UkOPIj249bvYG9aj8l5UtuRrlS0CHn/DXY82T
+         oESw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737692585; x=1738297385;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kG4DUpM1UB6jOLI1pm+8TNJuI6YIiIHXVVab7FNAq7c=;
-        b=FUczWH19tIlZxghKlqiZ7Xd/9bOM875rru9bLQjowC86/TIw6Ptcy+LYG1ItquwxqQ
-         av0U8etkBBFlqiHwHhcyDWbG5jcYZskyziUp/vwR5r9kPOID4pH3xH3gZMkbVQF7nOCg
-         rp5AJvu8H9q9Z8bCcWle7HYbziknNA4CEl0O8YY25lk8WHL+VFABjhyacB56NEjoynK9
-         4rx4bGedqK0mcFe+naGg4Wvu6doKNjnMGVl7yv8afsCqSfCAKeapHPW+k797uChrcXb/
-         OAYWyrMxuPHNuacReZGNgAZAY1NR+h/rx7M0KBNF4ze7Ozihi1qQuR6sPjcPieAQNnoD
-         /S/g==
-X-Forwarded-Encrypted: i=1; AJvYcCVsh/l3UZDYRwDqKSPdg1r0Bcyo8R1HQRyk2o1tCz3dbQMiK9gFOvplD0c15r/QzS+ySP+aDZET@vger.kernel.org
-X-Gm-Message-State: AOJu0YyCzNICKECFAFhblipCX6dM+dhPgt6bzYDuScC3hPDqtk+Dp8eF
-	JrLQ1bJ02YTkbSKN7aR250Zv1h0qXNSA79hYqnMPpFWWxJ+0Z4L8Ifv7vZtIcaI=
-X-Gm-Gg: ASbGncuUDVEiEgOkiE+6dpC10NZ5R7fgXhAQppy7UJwRdhnXVNKMqOUGAwGOxcbG8FJ
-	UqiwDCsZQUqifsBIRZa4wnd83Cjg6ou7Kwd8GZrIDtmI7k9hegUzLH1KzGPmtNaVEz8IYqMJ1nE
-	QxOXMUdd+uh3ziLLbHvU1KjZi37RD6NufHa0Lay0vYSEUzVldST9+s8U6vWtxZGgamvvWrLGJ4x
-	T/V6j7UVUILKcIkUVtHByUhpCCrCNH31riglVjiOuZd9BAGjNLQ8iiWm4Jcmm4a2X7RCLhiyIBf
-	rIE=
-X-Google-Smtp-Source: AGHT+IGo0KG1jJsV8LAVWPWibBVx7pPKXJw0TH3lDScWkAUGDKvetKsTjpYKOK3t4tcayDEiV/Ghsw==
-X-Received: by 2002:a05:620a:c50:b0:7b6:f024:3ca with SMTP id af79cd13be357-7be63288d69mr4526978385a.58.1737692585320;
-        Thu, 23 Jan 2025 20:23:05 -0800 (PST)
+        d=1e100.net; s=20230601; t=1737693550; x=1738298350;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LA98XB9LYD/MipEPJEpEr2dcKbFDev2YEJD5nlY7UfU=;
+        b=uxD/pjOFrr1tBk0knFh8bPlUYWFeDGse9ycLk9RKcvq53mKMlrFY+Lx3hBqePB/0Ho
+         h9jGhysqWhs7JG7f6PXhX93D0XxORqL5tML5XwMF9agPMK6nVS/xDr24qxC9swuI9Kt3
+         MjzoJo1b7XO7vgxzxCZbzfZ6lUQpMCZdR1Q6qAvjdEkjaXfTtbBi0F/OGUW/ORH5k/04
+         uFC7qP6iYbBZeNa7/vQd4b/mCjJyGsBearb1YULboReMeoW20tNSSy/CD3Rm9l50j+t5
+         lueV3/mqT+GkYCSFEog4tBDcxPvJTeoxDMA+3YAd6SlUZrzzFpSZiDmz+GndIOasdWsz
+         U28Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU95FuNu6PtLskNrSvFlGdQ+C4q60fF1mBnGaDa2XYpnK4ixUwKUuDwJWWkQ2da/H+/LJkxNZ3I@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6gMATm/GQRvYAoBr+z8b1NkiAYzijioBQa/kZxv5+cWUPRzZx
+	MdmeIDwna3fcTw3zYKqQQbUHQjw1oL1yoXM1i+sTfsmCJxKprwazhTroIVVUirA=
+X-Gm-Gg: ASbGncsTzFpfMl83TZ1sGUZLkECbLAwdz0w8gIm7VQzVUCVl5/Sn7H3KegKHGne+5/H
+	oZGmiG5zWjOacdT9dyBQYJk/28vNu95bhS4uNNSrGwzklpCreNdJS1cR1lZ59ft/iSVD67rNPrM
+	+xsEw1V1D5q35GEGWsgsbSUSvdrplb5lnkMQzD+RCMEjftIDzkqlpEgBGAbPSyRGfVvMyVtwtqh
+	N9EBzujIy8r70ozU2kH+Wl//qx2SrlL1PZJSxgF7D3xK1ipKzFPqxRWExizi5XGGXJUdvphOynp
+	R0s=
+X-Google-Smtp-Source: AGHT+IFNV83+n81ZC7OSsymBf3rQHfUmDNRkj6S/SLoyQgdTGlbAJ2mV0G99gsb8+lXqSCYHJomFEA==
+X-Received: by 2002:ad4:5d4a:0:b0:6d9:2f70:2dab with SMTP id 6a1803df08f44-6e206253519mr36862156d6.16.1737693550460;
+        Thu, 23 Jan 2025 20:39:10 -0800 (PST)
 Received: from localhost ([2603:7000:c01:2716:cbb0:8ad0:a429:60f5])
-        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7be9ae7f84esm56105385a.9.2025.01.23.20.23.03
+        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6e2058c2b76sm5148046d6.107.2025.01.23.20.39.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2025 20:23:03 -0800 (PST)
-Date: Thu, 23 Jan 2025 23:23:02 -0500
+        Thu, 23 Jan 2025 20:39:09 -0800 (PST)
 From: Johannes Weiner <hannes@cmpxchg.org>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>, akpm@linux-foundation.org,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, davidf@vimeo.com, vbabka@suse.cz,
-	mkoutny@suse.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, chenridong@huawei.com,
-	wangweiyang2@huawei.com
-Subject: Re: [PATCH v3 next 4/5] memcg: factor out
- stat(event)/stat_local(event_local) reading functions
-Message-ID: <20250124042302.GA5581@cmpxchg.org>
-References: <20250117014645.1673127-1-chenridong@huaweicloud.com>
- <20250117014645.1673127-5-chenridong@huaweicloud.com>
- <20250117165615.GF182896@cmpxchg.org>
- <CAJD7tkYahASkO+4VkwSL0QnL3fFY4pgvnN84moip4tzLcvQ_yQ@mail.gmail.com>
- <20250117180238.GI182896@cmpxchg.org>
- <6daaf853-1283-42e6-bb0f-55d951edc925@huaweicloud.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] mm: memcontrol: unshare v2-only charge API bits again
+Date: Thu, 23 Jan 2025 23:38:58 -0500
+Message-ID: <20250124043859.18808-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6daaf853-1283-42e6-bb0f-55d951edc925@huaweicloud.com>
 
-On Tue, Jan 21, 2025 at 10:15:00PM +0800, Chen Ridong wrote:
-> 
-> 
-> On 2025/1/18 2:02, Johannes Weiner wrote:
-> > On Fri, Jan 17, 2025 at 09:01:59AM -0800, Yosry Ahmed wrote:
-> >> On Fri, Jan 17, 2025 at 8:56 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >>>
-> >>> On Fri, Jan 17, 2025 at 01:46:44AM +0000, Chen Ridong wrote:
-> >>>> From: Chen Ridong <chenridong@huawei.com>
-> >>>>
-> >>>> The only difference between 'lruvec_page_state' and
-> >>>> 'lruvec_page_state_local' is that they read 'state' and 'state_local',
-> >>>> respectively. Factor out an inner functions to make the code more concise.
-> >>>> Do the same for reading 'memcg_page_stat' and 'memcg_events'.
-> >>>>
-> >>>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> >>>
-> >>> bool parameters make for poor readability at the callsites :(
-> >>>
-> >>> With the next patch moving most of the duplication to memcontrol-v1.c,
-> >>> I think it's probably not worth refactoring this.
-> >>
-> >> Arguably the duplication would now be across two different files,
-> >> making it more difficult to notice and keep the implementations in
-> >> sync.
-> > 
-> > Dependencies between the files is a bigger pain. E.g. try_charge()
-> > being defined in memcontrol-v1.h makes memcontrol.c more difficult to
-> > work with. That shared state also immediately bitrotted when charge
-> > moving was removed and the last cgroup1 caller disappeared.
-> > 
-> > The whole point of the cgroup1 split was to simplify cgroup2 code. The
-> > tiny amount of duplication in this case doesn't warrant further
-> > entanglement between the codebases.
-> 
-> Thank you for your review.
-> 
-> I agree with that. However, If I just move the 'local' functions to
-> memcontrol-v1.c, I have to move some dependent declarations to the
-> memcontrol-v1.h.
-> E.g. struct memcg_vmstats, MEMCG_VMSTAT_SIZE and so on.
-> 
-> Is this worth doing?
+6b611388b626 ("memcg-v1: remove charge move code") removed the
+remaining v1 callers.
 
-Ah, right. No, that's not worth it.
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/memcontrol-v1.h | 15 ---------------
+ mm/memcontrol.c    | 17 +++++++++++++----
+ 2 files changed, 13 insertions(+), 19 deletions(-)
 
-The easiest way is to slap CONFIG_MEMCG_V1 guards around the local
-functions but leave them in memcontrol.c for now. We already have a
-few of those ifdefs for where splitting/sharing wasn't practical. At
-least then it's clearly marked and they won't get built.
+diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
+index 144d71b65907..6dd7eaf96856 100644
+--- a/mm/memcontrol-v1.h
++++ b/mm/memcontrol-v1.h
+@@ -7,21 +7,6 @@
+ 
+ /* Cgroup v1 and v2 common declarations */
+ 
+-int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+-		     unsigned int nr_pages);
+-
+-static inline int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+-			     unsigned int nr_pages)
+-{
+-	if (mem_cgroup_is_root(memcg))
+-		return 0;
+-
+-	return try_charge_memcg(memcg, gfp_mask, nr_pages);
+-}
+-
+-void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned int n);
+-void mem_cgroup_id_put_many(struct mem_cgroup *memcg, unsigned int n);
+-
+ /*
+  * Iteration constructs for visiting all cgroups (under a tree).  If
+  * loops are exited prematurely (break), mem_cgroup_iter_break() must
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 46f8b372d212..818143b81760 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2198,8 +2198,8 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	css_put(&memcg->css);
+ }
+ 
+-int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+-		     unsigned int nr_pages)
++static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
++			    unsigned int nr_pages)
+ {
+ 	unsigned int batch = max(MEMCG_CHARGE_BATCH, nr_pages);
+ 	int nr_retries = MAX_RECLAIM_RETRIES;
+@@ -2388,6 +2388,15 @@ int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	return 0;
+ }
+ 
++static inline int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
++			     unsigned int nr_pages)
++{
++	if (mem_cgroup_is_root(memcg))
++		return 0;
++
++	return try_charge_memcg(memcg, gfp_mask, nr_pages);
++}
++
+ static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+ {
+ 	VM_BUG_ON_FOLIO(folio_memcg_charged(folio), folio);
+@@ -3368,13 +3377,13 @@ static void mem_cgroup_id_remove(struct mem_cgroup *memcg)
+ 	}
+ }
+ 
+-void __maybe_unused mem_cgroup_id_get_many(struct mem_cgroup *memcg,
++static void __maybe_unused mem_cgroup_id_get_many(struct mem_cgroup *memcg,
+ 					   unsigned int n)
+ {
+ 	refcount_add(n, &memcg->id.ref);
+ }
+ 
+-void mem_cgroup_id_put_many(struct mem_cgroup *memcg, unsigned int n)
++static void mem_cgroup_id_put_many(struct mem_cgroup *memcg, unsigned int n)
+ {
+ 	if (refcount_sub_and_test(n, &memcg->id.ref)) {
+ 		mem_cgroup_id_remove(memcg);
+-- 
+2.48.1
+
 
