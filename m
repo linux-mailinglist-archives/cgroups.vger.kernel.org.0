@@ -1,89 +1,81 @@
-Return-Path: <cgroups+bounces-6282-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6283-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5273AA1BDE9
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 22:33:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB6E0A1BE39
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 23:02:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 478D7188ECA9
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 21:33:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F391A16CCA7
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 22:02:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91DF81DD520;
-	Fri, 24 Jan 2025 21:33:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1E51DD872;
+	Fri, 24 Jan 2025 22:02:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L09HrAf6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HMs00Mvn"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB9612EBDB;
-	Fri, 24 Jan 2025 21:33:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1A71DB128;
+	Fri, 24 Jan 2025 22:02:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737754389; cv=none; b=ETABav9NCpNKiySHHu+0yPakxwT8D/fP8RkWLDbWG1MWK7+BFn9djZxOfg6jgl6OU03ImBaXyckg5LsxjQlJTVYsfkQ/7zgcwVUD33LNaUwKpuFNMYrkTFGWt4E00qjoWtazHC4FuA4kYLbruXDKDL682CrB6nI5BgeMfDULzBo=
+	t=1737756134; cv=none; b=OUQOC9E1LFRUxrKh6bXuIhuGJqjG0pEkJTLLDWyONHCoeTfdUUU9q6iaCgMYZXh0ywr5brClazy87IIrV4OJzndINaWrDqvPkBsnW0Pu72ot5UgONayF5L2NHuRDPH+xFnc+Inp8m/OwPCmT0tjp60gd+H91DgGPXgt7ZcFz15s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737754389; c=relaxed/simple;
-	bh=qtxtVv/eUmvjo6zXjbbWpetjcbEvPkRFG9m/YzrMg9k=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=kaWcYek7rhJ7q8Ga8xFYVj8/kuCJd0g5bI56YYpJqLSPwvV3+7UcJ9PsFyIsZD3kFs58cARdeBcNIRNx+mPS64bTOw9iDs82DjsjZVIOR3108peLUMUZtxPrWKMj0IZwDOVMlyRtBsarHXOoluEP72okvOQCiOlNQoXIEHk/OhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L09HrAf6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5ECFC4CED2;
-	Fri, 24 Jan 2025 21:33:08 +0000 (UTC)
+	s=arc-20240116; t=1737756134; c=relaxed/simple;
+	bh=lLihE6XZZtN9yVgumbdWxb4A42CSEAsS/LOxYGjvpqk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hx0hlUJ6LMAFEbRryBIkHjLIzcCQvQKhXtSLkZ9yofiBztkULyL2GY3eENmu2F65adMpQsmGpvTlwHv/jhT0J7Z1CHZnT0I5RMCY/p6SPh1eUrKKEU5WJ3qq/o/XVQSuIrNuUZhAELtvmp7LaD2hr1sb6U3T7x4FyN50645KKFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HMs00Mvn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47351C4CED2;
+	Fri, 24 Jan 2025 22:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737754388;
-	bh=qtxtVv/eUmvjo6zXjbbWpetjcbEvPkRFG9m/YzrMg9k=;
-	h=Date:From:To:Cc:Subject:From;
-	b=L09HrAf6F+LECxSNsZ0vryTm7KnCwTWDALASzjqhGXE486bToxFZYnMoBXTq9A8bs
-	 vqV3kzE/4OnI7nFVl4uJiybvYvd7WTJyWwPJF5fr7CEGiR4/5+TDNbxXX7D4kP3E5w
-	 KvxBQmOJla2Qbei5ay4j6p252gmXmMaHx+nqLiseYpZ+Rw6OnvOILoA8Pt6z9AOzzz
-	 fWaTtG719CXsDZu+5V88/YatdDzfflLED3scXbXJ/lKd4bn6gHWehbFRYpSzlfedDM
-	 MR3AgNb4OFZ4uEzCrWxHN2TI5HTpuxXfrfYVWKZpJIEev5Ye7TrnExLZDszVJccUaV
-	 j9lPPwB5KLKdg==
-Date: Fri, 24 Jan 2025 11:33:07 -1000
+	s=k20201202; t=1737756134;
+	bh=lLihE6XZZtN9yVgumbdWxb4A42CSEAsS/LOxYGjvpqk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HMs00Mvn0wF26a5URlz5Gqrxny50Jn21G4gh65kTGOuOTiWHiM8qWnhYz3WLrbqse
+	 NVDN1TiScwYv8x6SQ2HgHV8T+K8/8MjALkB/FdtFylGWQ1FvIxjNMewbms/9OplGyd
+	 bLbEE3wzMlBxD4G+j9F09RzSW42tFscaziv9UxASLaWMhvI+wfYrXW/BNQ+z0AUhWi
+	 LtcPyE078FfRDh8Pr9jRWF87d4HpNMDfmLcotVpzbVTQYzlP3ArBrG5h2zJtVVsY+K
+	 jKPG2LfUezYTn4VwIOTGABUxONkcGQUiVycr0m7ORp9ClXQ7xO8WB6Z4NVhlg+v98X
+	 D5Er7zWzozYhQ==
+Date: Fri, 24 Jan 2025 12:02:13 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Joshua Hahn <joshua.hahnjy@gmail.com>
-Subject: Maybe a race window in cgroup.kill?
-Message-ID: <Z5QHE2Qn-QZ6M-KW@slm.duckdns.org>
+	Waiman Long <longman@redhat.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Chen Ridong <chenridong@huawei.com>
+Subject: Re: [PATCH v3] cgroup/cpuset: Move procfs cpuset attribute under
+ cgroup-v1.c
+Message-ID: <Z5QN5V0BOCqQzb5I@slm.duckdns.org>
+References: <20250120145749.925170-1-mkoutny@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250120145749.925170-1-mkoutny@suse.com>
 
-Hello, Christian.
+On Mon, Jan 20, 2025 at 03:57:49PM +0100, Michal Koutný wrote:
+> The cpuset file is a legacy attribute that is bound primarily to cpuset
+> v1 hierarchy (equivalent information is available in /proc/$pid/cgroup path
+> on the unified hierarchy in conjunction with respective
+> cgroup.controllers showing where cpuset controller is enabled).
+> 
+> Followup to commit b0ced9d378d49 ("cgroup/cpuset: move v1 interfaces to
+> cpuset-v1.c") and hide CONFIG_PROC_PID_CPUSET under CONFIG_CPUSETS_V1.
+> Drop an obsolete comment too.
+> 
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
 
-I was looking at cgroup.kill implementation and wondering whether there
-could be a race window. So, __cgroup_kill() does the following:
-
- k1. Set CGRP_KILL.
- k2. Iterate tasks and deliver SIGKILL.
- k3. Clear CGRP_KILL.
-
-The copy_process() does the following:
-
- c1. Copy a bunch of stuff.
- c2. Grab siglock.
- c3. Check fatal_signal_pending().
- c4. Commit to forking.
- c5. Release siglock.
- c6. Call cgroup_post_fork() which puts the task on the css_set and tests
-     CGRP_KILL.
-
-The intention seems to be that either a forking task gets SIGKILL and
-terminates on c3 or it sees CGRP_KILL on c6 and kills the child. However, I
-don't see what guarantees that k3 can't happen before c6. ie. After a
-forking task passes c5, k2 can take place and then before the forking task
-reaches c6, k3 can happen. Then, nobody would send SIGKILL to the child.
-What am I missing?
+Applied to cgroup/for-6.15.
 
 Thanks.
 
