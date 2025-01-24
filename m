@@ -1,45 +1,78 @@
-Return-Path: <cgroups+bounces-6258-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6263-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D3BAA1B10B
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 08:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A1906A1B120
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 08:49:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06E51188AAFB
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 07:42:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C22A188ECC2
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 07:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FDF1DAC9F;
-	Fri, 24 Jan 2025 07:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD09A1DB14B;
+	Fri, 24 Jan 2025 07:49:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="fuzhoy4v"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 502261DA10A;
-	Fri, 24 Jan 2025 07:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D2E1D95BE
+	for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 07:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737704536; cv=none; b=DgLsdyz2R8dZDxZNEISoty853kQzw/0MSf43EN4gzdMbVjpcQFf6TC8p3SPReE59AbaV+Eot9Abn7BVJ+PeLHbvgJsXYJKwwXc2ww1bCoSZC5HkEQB06vepEfOs4AF9v0xGeIksZmwtgt7IV6po3inYU4Coxybsg9mvq7s7uqi4=
+	t=1737704969; cv=none; b=uiNlN9x8G3YMw75xGKGAAuToOaUbb4wXbaY8R6eDDXflm5SNA7OjoOdVE7OohE35yDH2cHfKuQ0RZHnDtkYjhETwVvjBvDCFxRF1ROUbmkVS+Zf9zw+HLUpEGPdY7HPOdeazw4AqMoZkQdjcddrA4p3x0dncUlTGWGfp5jSQK1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737704536; c=relaxed/simple;
-	bh=nkwoPcdjj71lkE4dlzCAt5xGDy19DizgBrAjSXBFVac=;
+	s=arc-20240116; t=1737704969; c=relaxed/simple;
+	bh=Awy505UaJPkp48e9y2lfNPkRKflzoPa5yjo9vK5w14k=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=df18pYczMHpN/JJYw9MFEUe7WG3cscsQHzgNU+K9gIXfX6ZA0wxIEOFrPzW2zkAlO7qTFBGuquXOuJmv2KdOmEBg54hkU8QCn8uglkVsygjDnStoAXHvztR/y+0wo4sUDlknh6Vea7JAC5P3U/8REStOK9edk928kBJJgOni8IY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YfVBL4gvtz4f3jQP;
-	Fri, 24 Jan 2025 15:41:46 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 9B7F71A0A31;
-	Fri, 24 Jan 2025 15:42:08 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP3 (Coremail) with SMTP id _Ch0CgC3V8JPRJNnZMJABw--.54478S2;
-	Fri, 24 Jan 2025 15:42:08 +0800 (CST)
-Message-ID: <50927192-67ac-4fb5-b41f-d11cdcd4e0e3@huaweicloud.com>
-Date: Fri, 24 Jan 2025 15:42:07 +0800
+	 In-Reply-To:Content-Type; b=gOacDoyZA1KpKojW5VUOQb8sQ1tmBbp/WWztumlQunDBldJHnJ8vlbu+/zM22sQML5TEHKkJsgmiqez5S8OqO236/CSKzrmUqfawiitjsvAtTXns0F8EvMGceXpYitg9pjtugPatY/PRiLKNXmnDc+hx5+9ASKdCpyI7c1Ren3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=fuzhoy4v; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2f74e6c6cbcso400240a91.2
+        for <cgroups@vger.kernel.org>; Thu, 23 Jan 2025 23:49:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1737704966; x=1738309766; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uws+ehspnEbk0q5oAsWqCHUTLRfxlLuAIbCiJ7MZofs=;
+        b=fuzhoy4vXPA51vYuY7HJCUOZwXpEZNi/OlOcckgVfDhSFWssvRSLH60pPxagdml84e
+         Zs6/oNQm9j3KZlx09kvqr8Kg91BBL+cOBARHOpIg+8CYdt9Al2X8rbx5w3wNAd7b9sUW
+         fwVIudEbRp8u7YnC+HQqyWDSPwNbEnlsVg7hxNGdd/Hcz+e5x0WE0TIiiqBbLSn5AU+y
+         xwGyqGBvi1x/yDQNExKXZ+VWgzm8nDBoIqjG52XC0RqQlbGba859N33Gfe5NOWwrR96v
+         QGvv2U4CJwJXyZdFFzE2TU1a0MBSHKFUGefmoarziTFCPlvpT4P6xhq5el2Q8twWwkkh
+         VmYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737704966; x=1738309766;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uws+ehspnEbk0q5oAsWqCHUTLRfxlLuAIbCiJ7MZofs=;
+        b=mj7iiC8TeILe0821lY2WCzQH0qcMrU4kG0TWPAHBfJ1RRw3Ew+8URfPljVVHrwXHEE
+         hObimQFw4X95gl9Rl62RNABbwmpgyKobvkGQ1RZ0JZblUghnmtfcL4A+fcjfQh4lVK/g
+         mOuB+2OjEIHMzNUjikFnWVU8gBNco54sB/slTgieWySInymZJItJj7p81fSIwqHjG0Fq
+         n7yG2Nbo3VMTdlJauXL12gdYCQ69O/T3y9IC8mKqajSBGJNcw8TQvlLhchH1GAxsL43N
+         HDtmBMAqyzrthK3l+9F3qHQ/jlzYLugBJXspnDthJEs9InNuSvo2H4iWlUdoJBUazjWJ
+         2WNQ==
+X-Gm-Message-State: AOJu0YwKapphbdw1GqNB7fP4ETOaN5WbNp5GL2A4ivAu6h/IESDJYMGA
+	hU0cfT1IZxwJqaOb4dxSoEw6e9HGE52PxmbQYXKJE6tRtCzz8K+43/5CDGnByQg=
+X-Gm-Gg: ASbGnctbYoaXeuiDl+LxSdhzXuqSsSJ3IVw5I5AgSbh6X9jjhF+dI4zpOJkIZzKNVt2
+	f57kXwL6i1EgHkDIxE6qe1L1/XPWCjTzeHPHrd90+7DFA5VHc5XWOGqmFygD2JfLYyDkMReBBB5
+	udFMZb4B2HCw27WcqQHn3NiZe+FBoAiLN9b4SkqX5YnQGFCLY/f5wrimUTkUyhQjo+iSM98RZEK
+	xiSSiiXFCxPklKRL+Y0KqhpMniNPql2mRrnColSyEDHrd4CC7NfW+OzGM5LttjG8aqhgMZFMYgh
+	tfhZBU6noF6WEhFYJW/ZsHrLqjG40w==
+X-Google-Smtp-Source: AGHT+IEEJ+74un4tMKpaPeLW04njmN5HnJ938utpDTqTFM2Z68P/2bjYtoGBIV/UH9qBePmOk/E0og==
+X-Received: by 2002:a05:6a00:1894:b0:725:e499:5b94 with SMTP id d2e1a72fcca58-72dafa6b3a7mr13902096b3a.4.1737704965963;
+        Thu, 23 Jan 2025 23:49:25 -0800 (PST)
+Received: from [10.254.144.106] ([139.177.225.251])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72f8a69f5fdsm1208111b3a.5.2025.01.23.23.49.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jan 2025 23:49:25 -0800 (PST)
+Message-ID: <2bba87cf-69aa-4fac-ae1a-c50e2f376e2a@bytedance.com>
+Date: Fri, 24 Jan 2025 15:49:16 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,102 +80,77 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 next 4/5] memcg: factor out
- stat(event)/stat_local(event_local) reading functions
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>, akpm@linux-foundation.org,
- mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, davidf@vimeo.com, vbabka@suse.cz, mkoutny@suse.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- chenridong@huawei.com, wangweiyang2@huawei.com
-References: <20250117014645.1673127-1-chenridong@huaweicloud.com>
- <20250117014645.1673127-5-chenridong@huaweicloud.com>
- <20250117165615.GF182896@cmpxchg.org>
- <CAJD7tkYahASkO+4VkwSL0QnL3fFY4pgvnN84moip4tzLcvQ_yQ@mail.gmail.com>
- <20250117180238.GI182896@cmpxchg.org>
- <6daaf853-1283-42e6-bb0f-55d951edc925@huaweicloud.com>
- <20250124042302.GA5581@cmpxchg.org>
+Subject: Re: Re: [PATCH 1/3] cgroup/rstat: Fix forceidle time in cpu.stat
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20250124042302.GA5581@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgC3V8JPRJNnZMJABw--.54478S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1kGFy3Cw13Kw43WF4kZwb_yoW8Kr1kpr
-	W2yFyjkayDGrWrAF12ya15Ww1S9r93JrW5X34qvryIqr9Fqwn7try2kr45uFy5Jr4xXr1Y
-	yr4Yqry2vF45AaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+To: chenridong <chenridong@huawei.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Yury Norov <yury.norov@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Bitao Hu <yaoma@linux.alibaba.com>
+Cc: "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20250123174713.25570-1-wuyun.abel@bytedance.com>
+ <20250123174713.25570-2-wuyun.abel@bytedance.com>
+ <853d2669-e05b-435e-9ac1-86311ead56e5@huawei.com>
+From: Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <853d2669-e05b-435e-9ac1-86311ead56e5@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-
-On 2025/1/24 12:23, Johannes Weiner wrote:
-> On Tue, Jan 21, 2025 at 10:15:00PM +0800, Chen Ridong wrote:
->>
->>
->> On 2025/1/18 2:02, Johannes Weiner wrote:
->>> On Fri, Jan 17, 2025 at 09:01:59AM -0800, Yosry Ahmed wrote:
->>>> On Fri, Jan 17, 2025 at 8:56 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->>>>>
->>>>> On Fri, Jan 17, 2025 at 01:46:44AM +0000, Chen Ridong wrote:
->>>>>> From: Chen Ridong <chenridong@huawei.com>
->>>>>>
->>>>>> The only difference between 'lruvec_page_state' and
->>>>>> 'lruvec_page_state_local' is that they read 'state' and 'state_local',
->>>>>> respectively. Factor out an inner functions to make the code more concise.
->>>>>> Do the same for reading 'memcg_page_stat' and 'memcg_events'.
->>>>>>
->>>>>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->>>>>
->>>>> bool parameters make for poor readability at the callsites :(
->>>>>
->>>>> With the next patch moving most of the duplication to memcontrol-v1.c,
->>>>> I think it's probably not worth refactoring this.
->>>>
->>>> Arguably the duplication would now be across two different files,
->>>> making it more difficult to notice and keep the implementations in
->>>> sync.
->>>
->>> Dependencies between the files is a bigger pain. E.g. try_charge()
->>> being defined in memcontrol-v1.h makes memcontrol.c more difficult to
->>> work with. That shared state also immediately bitrotted when charge
->>> moving was removed and the last cgroup1 caller disappeared.
->>>
->>> The whole point of the cgroup1 split was to simplify cgroup2 code. The
->>> tiny amount of duplication in this case doesn't warrant further
->>> entanglement between the codebases.
->>
->> Thank you for your review.
->>
->> I agree with that. However, If I just move the 'local' functions to
->> memcontrol-v1.c, I have to move some dependent declarations to the
->> memcontrol-v1.h.
->> E.g. struct memcg_vmstats, MEMCG_VMSTAT_SIZE and so on.
->>
->> Is this worth doing?
+On 1/24/25 9:47 AM, chenridong Wrote:
 > 
-> Ah, right. No, that's not worth it.
 > 
-> The easiest way is to slap CONFIG_MEMCG_V1 guards around the local
-> functions but leave them in memcontrol.c for now. We already have a
-> few of those ifdefs for where splitting/sharing wasn't practical. At
-> least then it's clearly marked and they won't get built.
+> On 2025/1/24 1:47, Abel Wu wrote:
+>> The commit b824766504e4 ("cgroup/rstat: add force idle show helper")
+>> retrieves forceidle_time outside cgroup_rstat_lock for non-root cgroups
+>> which can be potentially inconsistent with other stats.
+>>
+>> Rather than reverting that commit, fix it in a way that retains the
+>> effort of cleaning up the ifdef-messes.
+>>
+>> Fixes: b824766504e4 ("cgroup/rstat: add force idle show helper")
+>> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+>> ---
+>>   kernel/cgroup/rstat.c | 29 +++++++++++++----------------
+>>   1 file changed, 13 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+>> index 5877974ece92..c2784c317cdd 100644
+>> --- a/kernel/cgroup/rstat.c
+>> +++ b/kernel/cgroup/rstat.c
+>> @@ -613,36 +613,33 @@ static void cgroup_force_idle_show(struct seq_file *seq, struct cgroup_base_stat
+>>   void cgroup_base_stat_cputime_show(struct seq_file *seq)
+>>   {
+>>   	struct cgroup *cgrp = seq_css(seq)->cgroup;
+>> -	u64 usage, utime, stime, ntime;
+>> +	struct cgroup_base_stat bstat;
+>>   
+>>   	if (cgroup_parent(cgrp)) {
+>>   		cgroup_rstat_flush_hold(cgrp);
+>> -		usage = cgrp->bstat.cputime.sum_exec_runtime;
+>> +		bstat = cgrp->bstat;
+> 
+> Thank you for finding that.
+> In my version 2, I used to assign cgrp->bstat to bstat.
+> This is Tj's comment:
+> https://lore.kernel.org/linux-kernel/ZoQ2ti7nnz9EJSc3@slm.duckdns.org/
 
-Thank you, will do that.
+Thanks for pointing out. Using memcpy() is fine for me, but I see
+cgroup_base_stat_flush() is using the same pattern, and if we don't
+want copy like this, it would be better unify them in a separate
+patch.
 
-Best regards,
-Ridong
+But IMHO in either way, I don't think reading forceidle time outside
+cgroup_rstat_lock is the right thing to do.
+
+Best Regards,
+	Abel
 
 
