@@ -1,35 +1,35 @@
-Return-Path: <cgroups+bounces-6280-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6279-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5247A1BBAE
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 18:47:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71BE2A1BBAD
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 18:47:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30A227A5A54
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 17:47:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C2BC188E53E
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 17:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2F921C19A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781ED288B1;
 	Fri, 24 Jan 2025 17:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cHdk7aZC";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NYiEuO3y"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Vv4C+g6Y";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OuJx/3N9"
 X-Original-To: cgroups@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD75021B905;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7DF21B907;
 	Fri, 24 Jan 2025 17:46:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737740787; cv=none; b=kF4EtPSyUTCbLszop9tykPq2aGsgm0Kfbes4/LVRGC8FOKh6tsbGvMDffPBVFRwyPk6xwaBk9OfeSnZxhwS+akqv5EtY8uBJPGhJ8UzcJfv6ikC3ZcmI9rSV4QurR8Vz3I84BLFdQV8XXftB24J/PXeA4J+31cUukNYPrm4jMss=
+	t=1737740787; cv=none; b=oLevahEC4/QryUVEf3VGIik95PLDip7eNG/d8CLQ3UFZHZCJyUkV9D+JT60exhfg5NFSRQnvssmgDv8Cg3s+Jlat4Hn4wwndHVa059N7w3RkNgX6U6mo48Qm7UNuCHbVQgy/tGXs83IkCD6rUesDYN8pRQi/k5TgjKg4Zd1iwtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1737740787; c=relaxed/simple;
-	bh=N+eJYXcDSRYWGgE4LpN8HqQ7eD76hz+6U8QJbttznU8=;
+	bh=MpG/vsQ8TcVdYflyQGrxWe/RnX2kSKe1yFAenBk2UQQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cADXdl4hjt23Qy4iJFFMrtQekUzq2mp8Qm2mWj3uuU1SIS/+Li4LU+YGQBX29fym1HE4ZUaYiqZWXGB4N9O8G3F/v5qElHUZpMPQ7aZrByJM0H4JNmgw0Op7aWHH86GLtaZ7Ug8OmvOg3fpuGfHfvPGheyc0XIcxpQ9LYLWPi20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cHdk7aZC; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=NYiEuO3y; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=NhgMk8TfbDzdd4s0N70goXNPC27JvSNVD3TuZDxB13fddnubMvRUZ2lkHKW2aEySCGHvMpSYGwY6Ru3TFjWWvu48hNgV8T2DG4LJ2qa17k7XNjRoEXE6amPMc4SarOkjWletf6RSjKIF8x1Z4CzxWFeZkunkIAVMuZVo7VH19Zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Vv4C+g6Y; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OuJx/3N9; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
@@ -39,21 +39,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+OWEC59J0oyfuIoT5iBObE6dWRdUE3eLFH8H0jxThZ4=;
-	b=cHdk7aZCeiawMHB2xVujvM/Re5f8uNrh+Oe5wmMNS/m4wwRm+zC2ixUz8Vf4HmC0vzcPNB
-	/UxovaVyPH3n6sPEQVuhdfYHJaQ0CsTVcVdCTlkeoOTfwB77u9NyS8l5cTmzj0JtH6L2GR
-	qvLEa64LOPJhXzqrKUEiOZeFk2rZdwHDUjzgwrA5cuELo+B4rQ/8/CxAe5J8uKXbOOgoUn
-	13AZlKWn9+KB83OR5vpVVQMZ734XepH/MANFzpWaeXZcMinPu/307OzgMoY7KLhLP2FQcf
-	sPVaStYBxERZkkoHYK5bXM8/wtudCxNH5ftkCPxbJPADggbwPJ7mbRAkTkruUA==
+	bh=lTWSXnw/eEIED7yIXq40+MqbVgLBPgPwGEjCZ90dh6I=;
+	b=Vv4C+g6Yxm0SJKU3aNSu2Oox4SCtaHmZYz/MpMU7WPusNFjjrefg37e/encN/OFwefk4rG
+	mwLWs2IsFosuN6BqWn+ijL8z4IR5hlSWXrFc/EwW9WIcThUHGp3aGI/V0E/9tt0ZoXkcEc
+	KsP8GQ+3TVcDfr1bmROo1yBZS5mQntAc6gI4XXvff7/QziPKubyXEJB+9AEqZNVvAEI6K0
+	ZtZ1i1dFVAlQLc1ScQSbwnBmKQdUniCY0NjBm9YZx/d0aawtt0OBccpMqpGCIXevQ/6C3W
+	iwQhwx1gRPndMW5cDNFmIySxOHfIuSsfj2sMlW39mw30l2LKaVOGgUUF3lra+A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1737740781;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+OWEC59J0oyfuIoT5iBObE6dWRdUE3eLFH8H0jxThZ4=;
-	b=NYiEuO3yUEFftTWPHSW/GErm7DcpM+LY9H9ba2WomRve/2VUxqKCdzA0xbz7JZiD+4qb2A
-	eXw3x+jwF75tEWDQ==
+	bh=lTWSXnw/eEIED7yIXq40+MqbVgLBPgPwGEjCZ90dh6I=;
+	b=OuJx/3N90AslykahyGkJbLI0sOeHMH5DogYQFH51pHKRZnWYOR7Kk6I6JobU6U2YnDCz+w
+	W3dLLGDnD95hkwDg==
 To: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
@@ -66,10 +66,11 @@ Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
 	Tejun Heo <tj@kernel.org>,
 	Zefan Li <lizefan.x@bytedance.com>,
 	tglx@linutronix.de,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH v4 5/6] kernfs: Use RCU to access kernfs_node::parent.
-Date: Fri, 24 Jan 2025 18:46:13 +0100
-Message-ID: <20250124174614.866884-6-bigeasy@linutronix.de>
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	syzbot+6ea37e2e6ffccf41a7e6@syzkaller.appspotmail.com
+Subject: [PATCH v4 6/6] kernfs: Use RCU to access kernfs_node::name.
+Date: Fri, 24 Jan 2025 18:46:14 +0100
+Message-ID: <20250124174614.866884-7-bigeasy@linutronix.de>
 In-Reply-To: <20250124174614.866884-1-bigeasy@linutronix.de>
 References: <20250124174614.866884-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -80,935 +81,623 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-kernfs_rename_lock is used to obtain stable kernfs_node::{name|parent}
-pointer. This is a preparation to access kernfs_node::parent under RCU
-and ensure that the pointer remains stable under the RCU lifetime
-guarantees.
+Using RCU lifetime rules to access kernfs_node::name can avoid the
+trouble kernfs_rename_lock in kernfs_name() and kernfs_path_from_node()
+if the fs was created with KERNFS_ROOT_INVARIANT_PARENT.
 
-For a complete path, as it is done in kernfs_path_from_node(), the
-kernfs_rename_lock is still required in order to obtain a stable parent
-relationship while computing the relevant node depth. This must not
-change while the nodes are inspected in order to build the path.
-If the kernfs user never moves the nodes (changes the parent) then the
-kernfs_rename_lock is not required and the RCU guarantees are
-sufficient. This "restriction" can be set with
-KERNFS_ROOT_INVARIANT_PARENT. Otherwise the lock is required.
+I went through all ::name users and added the required access for the lookup
+with a few extensions:
+- rdtgroup_pseudo_lock_create() drops all locks and then uses the name
+  later on. resctrl supports rename with different parents. Here I made
+  a temporal copy of the name while it is used outside of the lock.
 
-Rename kernfs_node::parent to kernfs_node::__parent to denote the RCU
-access and use RCU accessor while accessing the node.
-Make cgroup use KERNFS_ROOT_INVARIANT_PARENT since the parent here can
-not change.
+- kernfs_rename_ns() accepts NULL as new_parent. This simplifies
+  sysfs_move_dir_ns() where it can set NULL in order to reuse the current
+  name.
 
+- kernfs_rename_ns() is only using kernfs_rename_lock if the parents are
+  different. All users use either kernfs_rwsem (for stable path view) or
+  just RCU for the lookup. The ::name uses always RCU free.
+
+Use RCU lifetime guarantees to access kernfs_node::name.
+
+Suggested-by: Tejun Heo <tj@kernel.org>
+Reported-by: syzbot+6ea37e2e6ffccf41a7e6@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/lkml/67251dc6.050a0220.529b6.015e.GAE@googl=
+e.com/
+Reported-by: Hillf Danton <hdanton@sina.com>
+Closes: https://lore.kernel.org/20241102001224.2789-1-hdanton@sina.com
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 52 ++++++++-------
- fs/kernfs/dir.c                        | 87 +++++++++++++++-----------
- fs/kernfs/kernfs-internal.h            | 19 +++++-
- fs/kernfs/mount.c                      | 10 +--
- fs/kernfs/symlink.c                    | 23 +++----
- fs/sysfs/file.c                        | 24 ++++---
- include/linux/kernfs.h                 |  7 ++-
- kernel/cgroup/cgroup-v1.c              |  2 +-
- kernel/cgroup/cgroup.c                 | 16 +++--
- 9 files changed, 149 insertions(+), 91 deletions(-)
+ arch/x86/kernel/cpu/resctrl/internal.h    |   5 +
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  14 ++-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  10 +-
+ fs/kernfs/dir.c                           | 114 ++++++++++++----------
+ fs/kernfs/file.c                          |   4 +-
+ fs/kernfs/kernfs-internal.h               |   5 +
+ fs/kernfs/mount.c                         |   5 +-
+ fs/kernfs/symlink.c                       |   7 +-
+ fs/sysfs/dir.c                            |   2 +-
+ include/linux/kernfs.h                    |   4 +-
+ security/selinux/hooks.c                  |   7 +-
+ 11 files changed, 106 insertions(+), 71 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/r=
-esctrl/rdtgroup.c
-index d906a1cd84917..3d5d03f22c10d 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -947,10 +947,16 @@ static int rdt_last_cmd_status_show(struct kernfs_ope=
-n_file *of,
- 	return 0;
- }
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/r=
+esctrl/internal.h
+index 955999aecfca9..cc83dbc70a8ef 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -505,6 +505,11 @@ int parse_bw(struct rdt_parse_data *data, struct resct=
+rl_schema *s,
 =20
-+static void *rdt_get_kn_parent_priv(struct kernfs_node *kn)
+ extern struct mutex rdtgroup_mutex;
+=20
++static inline const char *rdt_kn_get_name(const struct kernfs_node *kn)
 +{
-+	guard(rcu)();
-+	return rcu_dereference(kn->__parent)->priv;
++	return rcu_dereference_check(kn->name, lockdep_is_held(&rdtgroup_mutex));
 +}
 +
- static int rdt_num_closids_show(struct kernfs_open_file *of,
- 				struct seq_file *seq, void *v)
- {
--	struct resctrl_schema *s =3D of->kn->parent->priv;
-+	struct resctrl_schema *s =3D rdt_get_kn_parent_priv(of->kn);
-=20
- 	seq_printf(seq, "%u\n", s->num_closid);
- 	return 0;
-@@ -959,7 +965,7 @@ static int rdt_num_closids_show(struct kernfs_open_file=
- *of,
- static int rdt_default_ctrl_show(struct kernfs_open_file *of,
- 			     struct seq_file *seq, void *v)
- {
--	struct resctrl_schema *s =3D of->kn->parent->priv;
-+	struct resctrl_schema *s =3D rdt_get_kn_parent_priv(of->kn);
- 	struct rdt_resource *r =3D s->res;
-=20
- 	seq_printf(seq, "%x\n", r->default_ctrl);
-@@ -969,7 +975,7 @@ static int rdt_default_ctrl_show(struct kernfs_open_fil=
-e *of,
- static int rdt_min_cbm_bits_show(struct kernfs_open_file *of,
- 			     struct seq_file *seq, void *v)
- {
--	struct resctrl_schema *s =3D of->kn->parent->priv;
-+	struct resctrl_schema *s =3D rdt_get_kn_parent_priv(of->kn);
- 	struct rdt_resource *r =3D s->res;
-=20
- 	seq_printf(seq, "%u\n", r->cache.min_cbm_bits);
-@@ -979,7 +985,7 @@ static int rdt_min_cbm_bits_show(struct kernfs_open_fil=
-e *of,
- static int rdt_shareable_bits_show(struct kernfs_open_file *of,
- 				   struct seq_file *seq, void *v)
- {
--	struct resctrl_schema *s =3D of->kn->parent->priv;
-+	struct resctrl_schema *s =3D rdt_get_kn_parent_priv(of->kn);
- 	struct rdt_resource *r =3D s->res;
-=20
- 	seq_printf(seq, "%x\n", r->cache.shareable_bits);
-@@ -1003,7 +1009,7 @@ static int rdt_shareable_bits_show(struct kernfs_open=
-_file *of,
- static int rdt_bit_usage_show(struct kernfs_open_file *of,
- 			      struct seq_file *seq, void *v)
- {
--	struct resctrl_schema *s =3D of->kn->parent->priv;
-+	struct resctrl_schema *s =3D rdt_get_kn_parent_priv(of->kn);
- 	/*
- 	 * Use unsigned long even though only 32 bits are used to ensure
- 	 * test_bit() is used safely.
-@@ -1085,7 +1091,7 @@ static int rdt_bit_usage_show(struct kernfs_open_file=
- *of,
- static int rdt_min_bw_show(struct kernfs_open_file *of,
- 			     struct seq_file *seq, void *v)
- {
--	struct resctrl_schema *s =3D of->kn->parent->priv;
-+	struct resctrl_schema *s =3D rdt_get_kn_parent_priv(of->kn);
- 	struct rdt_resource *r =3D s->res;
-=20
- 	seq_printf(seq, "%u\n", r->membw.min_bw);
-@@ -1095,7 +1101,7 @@ static int rdt_min_bw_show(struct kernfs_open_file *o=
-f,
- static int rdt_num_rmids_show(struct kernfs_open_file *of,
- 			      struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r =3D of->kn->parent->priv;
-+	struct rdt_resource *r =3D rdt_get_kn_parent_priv(of->kn);
-=20
- 	seq_printf(seq, "%d\n", r->num_rmid);
-=20
-@@ -1105,7 +1111,7 @@ static int rdt_num_rmids_show(struct kernfs_open_file=
- *of,
- static int rdt_mon_features_show(struct kernfs_open_file *of,
- 				 struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r =3D of->kn->parent->priv;
-+	struct rdt_resource *r =3D rdt_get_kn_parent_priv(of->kn);
- 	struct mon_evt *mevt;
-=20
- 	list_for_each_entry(mevt, &r->evt_list, list) {
-@@ -1120,7 +1126,7 @@ static int rdt_mon_features_show(struct kernfs_open_f=
-ile *of,
- static int rdt_bw_gran_show(struct kernfs_open_file *of,
- 			     struct seq_file *seq, void *v)
- {
--	struct resctrl_schema *s =3D of->kn->parent->priv;
-+	struct resctrl_schema *s =3D rdt_get_kn_parent_priv(of->kn);
- 	struct rdt_resource *r =3D s->res;
-=20
- 	seq_printf(seq, "%u\n", r->membw.bw_gran);
-@@ -1130,7 +1136,7 @@ static int rdt_bw_gran_show(struct kernfs_open_file *=
-of,
- static int rdt_delay_linear_show(struct kernfs_open_file *of,
- 			     struct seq_file *seq, void *v)
- {
--	struct resctrl_schema *s =3D of->kn->parent->priv;
-+	struct resctrl_schema *s =3D rdt_get_kn_parent_priv(of->kn);
- 	struct rdt_resource *r =3D s->res;
-=20
- 	seq_printf(seq, "%u\n", r->membw.delay_linear);
-@@ -1148,7 +1154,7 @@ static int max_threshold_occ_show(struct kernfs_open_=
-file *of,
- static int rdt_thread_throttle_mode_show(struct kernfs_open_file *of,
- 					 struct seq_file *seq, void *v)
- {
--	struct resctrl_schema *s =3D of->kn->parent->priv;
-+	struct resctrl_schema *s =3D rdt_get_kn_parent_priv(of->kn);
- 	struct rdt_resource *r =3D s->res;
-=20
- 	if (r->membw.throttle_mode =3D=3D THREAD_THROTTLE_PER_THREAD)
-@@ -1213,7 +1219,7 @@ static enum resctrl_conf_type resctrl_peer_type(enum =
-resctrl_conf_type my_type)
- static int rdt_has_sparse_bitmasks_show(struct kernfs_open_file *of,
- 					struct seq_file *seq, void *v)
- {
--	struct resctrl_schema *s =3D of->kn->parent->priv;
-+	struct resctrl_schema *s =3D rdt_get_kn_parent_priv(of->kn);
- 	struct rdt_resource *r =3D s->res;
-=20
- 	seq_printf(seq, "%u\n", r->cache.arch_has_sparse_bitmasks);
-@@ -1625,7 +1631,7 @@ static int mbm_config_show(struct seq_file *s, struct=
- rdt_resource *r, u32 evtid
- static int mbm_total_bytes_config_show(struct kernfs_open_file *of,
- 				       struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r =3D of->kn->parent->priv;
-+	struct rdt_resource *r =3D rdt_get_kn_parent_priv(of->kn);
-=20
- 	mbm_config_show(seq, r, QOS_L3_MBM_TOTAL_EVENT_ID);
-=20
-@@ -1635,7 +1641,7 @@ static int mbm_total_bytes_config_show(struct kernfs_=
-open_file *of,
- static int mbm_local_bytes_config_show(struct kernfs_open_file *of,
- 				       struct seq_file *seq, void *v)
- {
--	struct rdt_resource *r =3D of->kn->parent->priv;
-+	struct rdt_resource *r =3D rdt_get_kn_parent_priv(of->kn);
-=20
- 	mbm_config_show(seq, r, QOS_L3_MBM_LOCAL_EVENT_ID);
-=20
-@@ -1741,7 +1747,7 @@ static ssize_t mbm_total_bytes_config_write(struct ke=
-rnfs_open_file *of,
- 					    char *buf, size_t nbytes,
- 					    loff_t off)
- {
--	struct rdt_resource *r =3D of->kn->parent->priv;
-+	struct rdt_resource *r =3D rdt_get_kn_parent_priv(of->kn);
- 	int ret;
-=20
- 	/* Valid input requires a trailing newline */
-@@ -1767,7 +1773,7 @@ static ssize_t mbm_local_bytes_config_write(struct ke=
-rnfs_open_file *of,
- 					    char *buf, size_t nbytes,
- 					    loff_t off)
- {
--	struct rdt_resource *r =3D of->kn->parent->priv;
-+	struct rdt_resource *r =3D rdt_get_kn_parent_priv(of->kn);
- 	int ret;
-=20
- 	/* Valid input requires a trailing newline */
-@@ -2429,12 +2435,13 @@ static struct rdtgroup *kernfs_to_rdtgroup(struct k=
-ernfs_node *kn)
- 		 * resource. "info" and its subdirectories don't
- 		 * have rdtgroup structures, so return NULL here.
- 		 */
--		if (kn =3D=3D kn_info || kn->parent =3D=3D kn_info)
-+		if (kn =3D=3D kn_info ||
-+		    rcu_dereference_check(kn->__parent, true) =3D=3D kn_info)
- 			return NULL;
- 		else
- 			return kn->priv;
- 	} else {
--		return kn->parent->priv;
-+		return rdt_get_kn_parent_priv(kn);
- 	}
+ extern struct rdt_hw_resource rdt_resources_all[];
+ extern struct rdtgroup rdtgroup_default;
+ extern struct dentry *debugfs_resctrl;
+diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cp=
+u/resctrl/pseudo_lock.c
+index 972e6b6b0481f..efe1fc5a6866f 100644
+--- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
++++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+@@ -52,7 +52,8 @@ static char *pseudo_lock_devnode(const struct device *dev=
+, umode_t *mode)
+ 	rdtgrp =3D dev_get_drvdata(dev);
+ 	if (mode)
+ 		*mode =3D 0600;
+-	return kasprintf(GFP_KERNEL, "pseudo_lock/%s", rdtgrp->kn->name);
++	guard(mutex)(&rdtgroup_mutex);
++	return kasprintf(GFP_KERNEL, "pseudo_lock/%s", rdt_kn_get_name(rdtgrp->kn=
+));
  }
 =20
-@@ -3760,7 +3767,7 @@ static int rdtgroup_rmdir_ctrl(struct rdtgroup *rdtgr=
-p, cpumask_var_t tmpmask)
+ static const struct class pseudo_lock_class =3D {
+@@ -1301,6 +1302,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtg=
+rp)
+ 	struct task_struct *thread;
+ 	unsigned int new_minor;
+ 	struct device *dev;
++	char *kn_name __free(kfree) =3D NULL;
+ 	int ret;
 =20
- static int rdtgroup_rmdir(struct kernfs_node *kn)
+ 	ret =3D pseudo_lock_region_alloc(plr);
+@@ -1312,6 +1314,11 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdt=
+grp)
+ 		ret =3D -EINVAL;
+ 		goto out_region;
+ 	}
++	kn_name =3D kstrdup(rdt_kn_get_name(rdtgrp->kn), GFP_KERNEL);
++	if (!kn_name) {
++		ret =3D -ENOMEM;
++		goto out_cstates;
++	}
+=20
+ 	plr->thread_done =3D 0;
+=20
+@@ -1360,8 +1367,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtg=
+rp)
+ 	mutex_unlock(&rdtgroup_mutex);
+=20
+ 	if (!IS_ERR_OR_NULL(debugfs_resctrl)) {
+-		plr->debugfs_dir =3D debugfs_create_dir(rdtgrp->kn->name,
+-						      debugfs_resctrl);
++		plr->debugfs_dir =3D debugfs_create_dir(kn_name, debugfs_resctrl);
+ 		if (!IS_ERR_OR_NULL(plr->debugfs_dir))
+ 			debugfs_create_file("pseudo_lock_measure", 0200,
+ 					    plr->debugfs_dir, rdtgrp,
+@@ -1370,7 +1376,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtg=
+rp)
+=20
+ 	dev =3D device_create(&pseudo_lock_class, NULL,
+ 			    MKDEV(pseudo_lock_major, new_minor),
+-			    rdtgrp, "%s", rdtgrp->kn->name);
++			    rdtgrp, "%s", kn_name);
+=20
+ 	mutex_lock(&rdtgroup_mutex);
+=20
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/r=
+esctrl/rdtgroup.c
+index 3d5d03f22c10d..97e07fb26ab54 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -907,14 +907,14 @@ int proc_resctrl_show(struct seq_file *s, struct pid_=
+namespace *ns,
+ 			continue;
+=20
+ 		seq_printf(s, "res:%s%s\n", (rdtg =3D=3D &rdtgroup_default) ? "/" : "",
+-			   rdtg->kn->name);
++			   rdt_kn_get_name(rdtg->kn));
+ 		seq_puts(s, "mon:");
+ 		list_for_each_entry(crg, &rdtg->mon.crdtgrp_list,
+ 				    mon.crdtgrp_list) {
+ 			if (!resctrl_arch_match_rmid(tsk, crg->mon.parent->closid,
+ 						     crg->mon.rmid))
+ 				continue;
+-			seq_printf(s, "%s", crg->kn->name);
++			seq_printf(s, "%s", rdt_kn_get_name(crg->kn));
+ 			break;
+ 		}
+ 		seq_putc(s, '\n');
+@@ -3658,7 +3658,7 @@ static int rdtgroup_mkdir_ctrl_mon(struct kernfs_node=
+ *parent_kn,
+  */
+ static bool is_mon_groups(struct kernfs_node *kn, const char *name)
  {
--	struct kernfs_node *parent_kn =3D kn->parent;
-+	struct kernfs_node *parent_kn;
- 	struct rdtgroup *rdtgrp;
- 	cpumask_var_t tmpmask;
- 	int ret =3D 0;
-@@ -3773,6 +3780,7 @@ static int rdtgroup_rmdir(struct kernfs_node *kn)
+-	return (!strcmp(kn->name, "mon_groups") &&
++	return (!strcmp(rdt_kn_get_name(kn), "mon_groups") &&
+ 		strcmp(name, "mon_groups"));
+ }
+=20
+@@ -3798,7 +3798,7 @@ static int rdtgroup_rmdir(struct kernfs_node *kn)
+ 			ret =3D rdtgroup_rmdir_ctrl(rdtgrp, tmpmask);
+ 		}
+ 	} else if (rdtgrp->type =3D=3D RDTMON_GROUP &&
+-		 is_mon_groups(parent_kn, kn->name)) {
++		 is_mon_groups(parent_kn, rdt_kn_get_name(kn))) {
+ 		ret =3D rdtgroup_rmdir_mon(rdtgrp, tmpmask);
+ 	} else {
  		ret =3D -EPERM;
- 		goto out;
- 	}
-+	parent_kn =3D rcu_dereference_check(kn->__parent, lockdep_is_held(&rdtgro=
-up_mutex));
+@@ -3886,7 +3886,7 @@ static int rdtgroup_rename(struct kernfs_node *kn,
 =20
- 	/*
- 	 * If the rdtgroup is a ctrl_mon group and parent directory
-@@ -3841,6 +3849,7 @@ static void mongrp_reparent(struct rdtgroup *rdtgrp,
- static int rdtgroup_rename(struct kernfs_node *kn,
- 			   struct kernfs_node *new_parent, const char *new_name)
- {
-+	struct kernfs_node *kn_parent;
- 	struct rdtgroup *new_prdtgrp;
- 	struct rdtgroup *rdtgrp;
- 	cpumask_var_t tmpmask;
-@@ -3875,8 +3884,9 @@ static int rdtgroup_rename(struct kernfs_node *kn,
- 		goto out;
- 	}
-=20
--	if (rdtgrp->type !=3D RDTMON_GROUP || !kn->parent ||
--	    !is_mon_groups(kn->parent, kn->name)) {
-+	kn_parent =3D rcu_dereference_check(kn->__parent, lockdep_is_held(&rdtgro=
+ 	kn_parent =3D rcu_dereference_check(kn->__parent, lockdep_is_held(&rdtgro=
 up_mutex));
-+	if (rdtgrp->type !=3D RDTMON_GROUP || !kn_parent ||
-+	    !is_mon_groups(kn_parent, kn->name)) {
+ 	if (rdtgrp->type !=3D RDTMON_GROUP || !kn_parent ||
+-	    !is_mon_groups(kn_parent, kn->name)) {
++	    !is_mon_groups(kn_parent, rdt_kn_get_name(kn))) {
  		rdt_last_cmd_puts("Source must be a MON group\n");
  		ret =3D -EPERM;
  		goto out;
 diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 5a1fea414996e..8e92928c6bca6 100644
+index 8e92928c6bca6..679e168eca9ea 100644
 --- a/fs/kernfs/dir.c
 +++ b/fs/kernfs/dir.c
-@@ -56,7 +56,7 @@ static int kernfs_name_locked(struct kernfs_node *kn, cha=
-r *buf, size_t buflen)
- 	if (!kn)
- 		return strscpy(buf, "(null)", buflen);
+@@ -51,14 +51,6 @@ static bool kernfs_lockdep(struct kernfs_node *kn)
+ #endif
+ }
 =20
--	return strscpy(buf, kn->parent ? kn->name : "/", buflen);
-+	return strscpy(buf, rcu_access_pointer(kn->__parent) ? kn->name : "/", bu=
+-static int kernfs_name_locked(struct kernfs_node *kn, char *buf, size_t bu=
+flen)
+-{
+-	if (!kn)
+-		return strscpy(buf, "(null)", buflen);
+-
+-	return strscpy(buf, rcu_access_pointer(kn->__parent) ? kn->name : "/", bu=
 flen);
- }
-=20
+-}
+-
  /* kernfs_node_depth - compute depth from @from to @to */
-@@ -64,9 +64,9 @@ static size_t kernfs_depth(struct kernfs_node *from, stru=
-ct kernfs_node *to)
+ static size_t kernfs_depth(struct kernfs_node *from, struct kernfs_node *t=
+o)
  {
- 	size_t depth =3D 0;
-=20
--	while (to->parent && to !=3D from) {
-+	while (rcu_dereference(to->__parent) && to !=3D from) {
- 		depth++;
--		to =3D to->parent;
-+		to =3D rcu_dereference(to->__parent);
- 	}
- 	return depth;
- }
-@@ -84,18 +84,18 @@ static struct kernfs_node *kernfs_common_ancestor(struc=
-t kernfs_node *a,
- 	db =3D kernfs_depth(rb->kn, b);
-=20
- 	while (da > db) {
--		a =3D a->parent;
-+		a =3D rcu_dereference(a->__parent);
- 		da--;
- 	}
- 	while (db > da) {
--		b =3D b->parent;
-+		b =3D rcu_dereference(b->__parent);
- 		db--;
- 	}
-=20
- 	/* worst case b and a will be the same at root */
- 	while (b !=3D a) {
--		b =3D b->parent;
--		a =3D a->parent;
-+		b =3D rcu_dereference(b->__parent);
-+		a =3D rcu_dereference(a->__parent);
- 	}
-=20
- 	return a;
-@@ -168,8 +168,9 @@ static int kernfs_path_from_node_locked(struct kernfs_n=
-ode *kn_to,
+@@ -168,11 +160,13 @@ static int kernfs_path_from_node_locked(struct kernfs=
+_node *kn_to,
 =20
  	/* Calculate how many bytes we need for the rest */
  	for (i =3D depth_to - 1; i >=3D 0; i--) {
-+
++		const char *name;
+=20
  		for (kn =3D kn_to, j =3D 0; j < i; j++)
--			kn =3D kn->parent;
-+			kn =3D rcu_dereference(kn->__parent);
+ 			kn =3D rcu_dereference(kn->__parent);
 =20
- 		len +=3D scnprintf(buf + len, buflen - len, "/%s", kn->name);
+-		len +=3D scnprintf(buf + len, buflen - len, "/%s", kn->name);
++		name =3D rcu_dereference(kn->name);
++		len +=3D scnprintf(buf + len, buflen - len, "/%s", name);
  	}
-@@ -295,7 +296,7 @@ struct kernfs_node *kernfs_get_parent(struct kernfs_nod=
-e *kn)
- 	unsigned long flags;
 =20
- 	read_lock_irqsave(&kernfs_rename_lock, flags);
--	parent =3D kn->parent;
-+	parent =3D rcu_dereference_check(kn->__parent, lockdep_is_held(&kernfs_re=
-name_lock));
- 	kernfs_get(parent);
- 	read_unlock_irqrestore(&kernfs_rename_lock, flags);
-=20
-@@ -360,8 +361,12 @@ static int kernfs_sd_compare(const struct kernfs_node =
-*left,
+ 	return len;
+@@ -196,13 +190,18 @@ static int kernfs_path_from_node_locked(struct kernfs=
+_node *kn_to,
   */
- static int kernfs_link_sibling(struct kernfs_node *kn)
+ int kernfs_name(struct kernfs_node *kn, char *buf, size_t buflen)
  {
--	struct rb_node **node =3D &kn->parent->dir.children.rb_node;
- 	struct rb_node *parent =3D NULL;
+-	unsigned long flags;
+-	int ret;
 +	struct kernfs_node *kn_parent;
-+	struct rb_node **node;
+=20
+-	read_lock_irqsave(&kernfs_rename_lock, flags);
+-	ret =3D kernfs_name_locked(kn, buf, buflen);
+-	read_unlock_irqrestore(&kernfs_rename_lock, flags);
+-	return ret;
++	if (!kn)
++		return strscpy(buf, "(null)", buflen);
 +
-+	kn_parent =3D kernfs_parent(kn);
-+	node =3D &kn_parent->dir.children.rb_node;
-=20
- 	while (*node) {
- 		struct kernfs_node *pos;
-@@ -380,13 +385,13 @@ static int kernfs_link_sibling(struct kernfs_node *kn)
-=20
- 	/* add new node and rebalance the tree */
- 	rb_link_node(&kn->rb, parent, node);
--	rb_insert_color(&kn->rb, &kn->parent->dir.children);
-+	rb_insert_color(&kn->rb, &kn_parent->dir.children);
-=20
- 	/* successfully added, account subdir number */
- 	down_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
- 	if (kernfs_type(kn) =3D=3D KERNFS_DIR)
--		kn->parent->dir.subdirs++;
--	kernfs_inc_rev(kn->parent);
-+		kn_parent->dir.subdirs++;
-+	kernfs_inc_rev(kn_parent);
- 	up_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
-=20
- 	return 0;
-@@ -407,16 +412,19 @@ static int kernfs_link_sibling(struct kernfs_node *kn)
-  */
- static bool kernfs_unlink_sibling(struct kernfs_node *kn)
- {
-+	struct kernfs_node *kn_parent;
-+
- 	if (RB_EMPTY_NODE(&kn->rb))
- 		return false;
-=20
-+	kn_parent =3D kernfs_parent(kn);
- 	down_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
- 	if (kernfs_type(kn) =3D=3D KERNFS_DIR)
--		kn->parent->dir.subdirs--;
--	kernfs_inc_rev(kn->parent);
-+		kn_parent->dir.subdirs--;
-+	kernfs_inc_rev(kn_parent);
- 	up_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
-=20
--	rb_erase(&kn->rb, &kn->parent->dir.children);
-+	rb_erase(&kn->rb, &kn_parent->dir.children);
- 	RB_CLEAR_NODE(&kn->rb);
- 	return true;
++	guard(rcu)();
++	/*
++	 * KERNFS_ROOT_INVARIANT_PARENT is ignored here. The name is RCU freed and
++	 * the parent is either existing or not.
++	 */
++	kn_parent =3D rcu_dereference(kn->__parent);
++	return strscpy(buf, kn_parent ? rcu_dereference(kn->name) : "/", buflen);
  }
-@@ -562,7 +570,7 @@ void kernfs_put(struct kernfs_node *kn)
- 	 * Moving/renaming is always done while holding reference.
- 	 * kn->parent won't change beneath us.
- 	 */
--	parent =3D kn->parent;
-+	parent =3D rcu_dereference_check(kn->__parent, !atomic_read(&kn->count));
+=20
+ /**
+@@ -224,13 +223,17 @@ int kernfs_name(struct kernfs_node *kn, char *buf, si=
+ze_t buflen)
+ int kernfs_path_from_node(struct kernfs_node *to, struct kernfs_node *from,
+ 			  char *buf, size_t buflen)
+ {
+-	unsigned long flags;
+-	int ret;
++	struct kernfs_root *root;
+=20
+-	read_lock_irqsave(&kernfs_rename_lock, flags);
+-	ret =3D kernfs_path_from_node_locked(to, from, buf, buflen);
+-	read_unlock_irqrestore(&kernfs_rename_lock, flags);
+-	return ret;
++	guard(rcu)();
++	if (to) {
++		root =3D kernfs_root(to);
++		if (!(root->flags & KERNFS_ROOT_INVARIANT_PARENT)) {
++			guard(read_lock_irqsave)(&kernfs_rename_lock);
++			return kernfs_path_from_node_locked(to, from, buf, buflen);
++		}
++	}
++	return kernfs_path_from_node_locked(to, from, buf, buflen);
+ }
+ EXPORT_SYMBOL_GPL(kernfs_path_from_node);
+=20
+@@ -337,13 +340,13 @@ static int kernfs_name_compare(unsigned int hash, con=
+st char *name,
+ 		return -1;
+ 	if (ns > kn->ns)
+ 		return 1;
+-	return strcmp(name, kn->name);
++	return strcmp(name, kernfs_rcu_get_name(kn));
+ }
+=20
+ static int kernfs_sd_compare(const struct kernfs_node *left,
+ 			     const struct kernfs_node *right)
+ {
+-	return kernfs_name_compare(left->hash, left->name, left->ns, right);
++	return kernfs_name_compare(left->hash, kernfs_rcu_get_name(left), left->n=
+s, right);
+ }
+=20
+ /**
+@@ -541,7 +544,8 @@ static void kernfs_free_rcu(struct rcu_head *rcu)
+ {
+ 	struct kernfs_node *kn =3D container_of(rcu, struct kernfs_node, rcu);
+=20
+-	kfree_const(kn->name);
++	/* If the whole node goes away, then name can't be used outside */
++	kfree_const(rcu_access_pointer(kn->name));
+=20
+ 	if (kn->iattr) {
+ 		simple_xattrs_free(&kn->iattr->xattrs, NULL);
+@@ -574,7 +578,8 @@ void kernfs_put(struct kernfs_node *kn)
 =20
  	WARN_ONCE(atomic_read(&kn->active) !=3D KN_DEACTIVATED_BIAS,
  		  "kernfs_put: %s/%s: released with incorrect active_ref %d\n",
-@@ -701,7 +709,7 @@ struct kernfs_node *kernfs_new_node(struct kernfs_node =
-*parent,
- 			       name, mode, uid, gid, flags);
- 	if (kn) {
- 		kernfs_get(parent);
--		kn->parent =3D parent;
-+		rcu_assign_pointer(kn->__parent, parent);
- 	}
- 	return kn;
- }
-@@ -769,13 +777,14 @@ struct kernfs_node *kernfs_find_and_get_node_by_id(st=
-ruct kernfs_root *root,
-  */
- int kernfs_add_one(struct kernfs_node *kn)
- {
--	struct kernfs_node *parent =3D kn->parent;
--	struct kernfs_root *root =3D kernfs_root(parent);
-+	struct kernfs_root *root =3D kernfs_root(kn);
- 	struct kernfs_iattrs *ps_iattr;
-+	struct kernfs_node *parent;
- 	bool has_ns;
- 	int ret;
+-		  parent ? parent->name : "", kn->name, atomic_read(&kn->active));
++		  parent ? rcu_dereference(parent->name) : "",
++		  rcu_dereference(kn->name), atomic_read(&kn->active));
 =20
- 	down_write(&root->kernfs_rwsem);
-+	parent =3D kernfs_parent(kn);
+ 	if (kernfs_type(kn) =3D=3D KERNFS_LINK)
+ 		kernfs_put(kn->symlink.target_kn);
+@@ -651,7 +656,7 @@ static struct kernfs_node *__kernfs_new_node(struct ker=
+nfs_root *root,
+ 	atomic_set(&kn->active, KN_DEACTIVATED_BIAS);
+ 	RB_CLEAR_NODE(&kn->rb);
 =20
+-	kn->name =3D name;
++	rcu_assign_pointer(kn->name, name);
+ 	kn->mode =3D mode;
+ 	kn->flags =3D flags;
+=20
+@@ -789,7 +794,8 @@ int kernfs_add_one(struct kernfs_node *kn)
  	ret =3D -EINVAL;
  	has_ns =3D kernfs_ns_enabled(parent);
-@@ -1111,7 +1120,7 @@ struct kernfs_node *kernfs_create_empty_dir(struct ke=
-rnfs_node *parent,
+ 	if (WARN(has_ns !=3D (bool)kn->ns, KERN_WARNING "kernfs: ns %s in '%s' fo=
+r '%s'\n",
+-		 has_ns ? "required" : "invalid", parent->name, kn->name))
++		 has_ns ? "required" : "invalid",
++		 kernfs_rcu_get_name(parent), kernfs_rcu_get_name(kn)))
+ 		goto out_unlock;
 =20
- static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
- {
--	struct kernfs_node *kn;
-+	struct kernfs_node *kn, *parent;
- 	struct kernfs_root *root;
+ 	if (kernfs_type(parent) !=3D KERNFS_DIR)
+@@ -799,7 +805,7 @@ int kernfs_add_one(struct kernfs_node *kn)
+ 	if (parent->flags & (KERNFS_REMOVING | KERNFS_EMPTY_DIR))
+ 		goto out_unlock;
 =20
- 	if (flags & LOOKUP_RCU)
-@@ -1162,8 +1171,9 @@ static int kernfs_dop_revalidate(struct dentry *dentr=
-y, unsigned int flags)
- 	if (!kernfs_active(kn))
- 		goto out_bad;
+-	kn->hash =3D kernfs_name_hash(kn->name, kn->ns);
++	kn->hash =3D kernfs_name_hash(kernfs_rcu_get_name(kn), kn->ns);
 =20
-+	parent =3D kernfs_parent(kn);
- 	/* The kernfs node has been moved? */
--	if (kernfs_dentry_node(dentry->d_parent) !=3D kn->parent)
-+	if (kernfs_dentry_node(dentry->d_parent) !=3D parent)
- 		goto out_bad;
+ 	ret =3D kernfs_link_sibling(kn);
+ 	if (ret)
+@@ -855,7 +861,7 @@ static struct kernfs_node *kernfs_find_ns(struct kernfs=
+_node *parent,
 =20
- 	/* The kernfs node has been renamed */
-@@ -1171,7 +1181,7 @@ static int kernfs_dop_revalidate(struct dentry *dentr=
-y, unsigned int flags)
- 		goto out_bad;
-=20
- 	/* The kernfs node has been moved to a different namespace */
--	if (kn->parent && kernfs_ns_enabled(kn->parent) &&
-+	if (parent && kernfs_ns_enabled(parent) &&
- 	    kernfs_info(dentry->d_sb)->ns !=3D kn->ns)
- 		goto out_bad;
-=20
-@@ -1364,7 +1374,7 @@ static struct kernfs_node *kernfs_next_descendant_pos=
-t(struct kernfs_node *pos,
- 		return kernfs_leftmost_descendant(rb_to_kn(rbn));
-=20
- 	/* no sibling left, visit parent */
--	return pos->parent;
-+	return kernfs_parent(pos);
- }
-=20
- static void kernfs_activate_one(struct kernfs_node *kn)
-@@ -1376,7 +1386,7 @@ static void kernfs_activate_one(struct kernfs_node *k=
-n)
- 	if (kernfs_active(kn) || (kn->flags & (KERNFS_HIDDEN | KERNFS_REMOVING)))
- 		return;
-=20
--	WARN_ON_ONCE(kn->parent && RB_EMPTY_NODE(&kn->rb));
-+	WARN_ON_ONCE(kernfs_parent(kn) && RB_EMPTY_NODE(&kn->rb));
- 	WARN_ON_ONCE(atomic_read(&kn->active) !=3D KN_DEACTIVATED_BIAS);
-=20
- 	atomic_sub(KN_DEACTIVATED_BIAS, &kn->active);
-@@ -1446,7 +1456,7 @@ void kernfs_show(struct kernfs_node *kn, bool show)
-=20
- static void __kernfs_remove(struct kernfs_node *kn)
- {
--	struct kernfs_node *pos;
-+	struct kernfs_node *pos, *parent;
-=20
- 	/* Short-circuit if non-root @kn has already finished removal. */
- 	if (!kn)
-@@ -1458,7 +1468,7 @@ static void __kernfs_remove(struct kernfs_node *kn)
- 	 * This is for kernfs_remove_self() which plays with active ref
- 	 * after removal.
- 	 */
--	if (kn->parent && RB_EMPTY_NODE(&kn->rb))
-+	if (kernfs_parent(kn) && RB_EMPTY_NODE(&kn->rb))
- 		return;
-=20
- 	pr_debug("kernfs %s: removing\n", kn->name);
-@@ -1484,14 +1494,14 @@ static void __kernfs_remove(struct kernfs_node *kn)
- 		kernfs_get(pos);
-=20
- 		kernfs_drain(pos);
--
-+		parent =3D kernfs_parent(pos);
- 		/*
- 		 * kernfs_unlink_sibling() succeeds once per node.  Use it
- 		 * to decide who's responsible for cleanups.
- 		 */
--		if (!pos->parent || kernfs_unlink_sibling(pos)) {
-+		if (!parent || kernfs_unlink_sibling(pos)) {
- 			struct kernfs_iattrs *ps_iattr =3D
--				pos->parent ? pos->parent->iattr : NULL;
-+				parent ? parent->iattr : NULL;
-=20
- 			/* update timestamps on the parent */
- 			down_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
-@@ -1721,7 +1731,7 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct k=
-ernfs_node *new_parent,
- 	int error;
-=20
- 	/* can't move or rename root */
--	if (!kn->parent)
-+	if (!rcu_access_pointer(kn->__parent))
- 		return -EINVAL;
-=20
- 	root =3D kernfs_root(kn);
-@@ -1732,8 +1742,15 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct =
-kernfs_node *new_parent,
- 	    (new_parent->flags & KERNFS_EMPTY_DIR))
- 		goto out;
-=20
-+	old_parent =3D kernfs_parent(kn);
-+	if (root->flags & KERNFS_ROOT_INVARIANT_PARENT) {
-+		error =3D -EINVAL;
-+		if (WARN_ON_ONCE(old_parent !=3D new_parent))
-+			goto out;
-+	}
-+
- 	error =3D 0;
--	if ((kn->parent =3D=3D new_parent) && (kn->ns =3D=3D new_ns) &&
-+	if ((old_parent =3D=3D new_parent) && (kn->ns =3D=3D new_ns) &&
- 	    (strcmp(kn->name, new_name) =3D=3D 0))
- 		goto out;	/* nothing to rename */
-=20
-@@ -1760,8 +1777,8 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct k=
-ernfs_node *new_parent,
- 	/* rename_lock protects ->parent and ->name accessors */
- 	write_lock_irq(&kernfs_rename_lock);
-=20
--	old_parent =3D kn->parent;
--	kn->parent =3D new_parent;
-+	old_parent =3D rcu_dereference_check(kn->__parent, kernfs_root_is_locked(=
-kn));
-+	rcu_assign_pointer(kn->__parent, new_parent);
-=20
- 	kn->ns =3D new_ns;
- 	if (new_name) {
-@@ -1794,7 +1811,7 @@ static struct kernfs_node *kernfs_dir_pos(const void =
-*ns,
- {
- 	if (pos) {
- 		int valid =3D kernfs_active(pos) &&
--			pos->parent =3D=3D parent && hash =3D=3D pos->hash;
-+			kernfs_parent(pos) =3D=3D parent && hash =3D=3D pos->hash;
- 		kernfs_put(pos);
- 		if (!valid)
- 			pos =3D NULL;
-diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
-index b42ee6547cdc1..da3a933b9cac0 100644
---- a/fs/kernfs/kernfs-internal.h
-+++ b/fs/kernfs/kernfs-internal.h
-@@ -64,11 +64,14 @@ struct kernfs_root {
-  *
-  * Return: the kernfs_root @kn belongs to.
-  */
--static inline struct kernfs_root *kernfs_root(struct kernfs_node *kn)
-+static inline struct kernfs_root *kernfs_root(const struct kernfs_node *kn)
- {
-+	const struct kernfs_node *knp;
- 	/* if parent exists, it's always a dir; otherwise, @sd is a dir */
--	if (kn->parent)
--		kn =3D kn->parent;
-+	guard(rcu)();
-+	knp =3D rcu_dereference(kn->__parent);
-+	if (knp)
-+		kn =3D knp;
- 	return kn->dir.root;
- }
-=20
-@@ -97,6 +100,16 @@ struct kernfs_super_info {
- };
- #define kernfs_info(SB) ((struct kernfs_super_info *)(SB->s_fs_info))
-=20
-+static inline bool kernfs_root_is_locked(const struct kernfs_node *kn)
-+{
-+	return lockdep_is_held(&kernfs_root(kn)->kernfs_rwsem);
-+}
-+
-+static inline struct kernfs_node *kernfs_parent(const struct kernfs_node *=
-kn)
-+{
-+	return rcu_dereference_check(kn->__parent, kernfs_root_is_locked(kn));
-+}
-+
- static inline struct kernfs_node *kernfs_dentry_node(struct dentry *dentry)
- {
- 	if (d_really_is_negative(dentry))
-diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
-index 4a0ff08d589ca..2252b16e6ef0b 100644
---- a/fs/kernfs/mount.c
-+++ b/fs/kernfs/mount.c
-@@ -148,7 +148,7 @@ static struct dentry *kernfs_get_parent_dentry(struct d=
-entry *child)
- 	struct kernfs_root *root =3D kernfs_root(kn);
-=20
- 	guard(rwsem_read)(&root->kernfs_rwsem);
--	return d_obtain_alias(kernfs_get_inode(child->d_sb, kn->parent));
-+	return d_obtain_alias(kernfs_get_inode(child->d_sb, kernfs_parent(kn)));
- }
-=20
- static const struct export_operations kernfs_export_ops =3D {
-@@ -188,10 +188,10 @@ static struct kernfs_node *find_next_ancestor(struct =
-kernfs_node *child,
+ 	if (has_ns !=3D (bool)ns) {
+ 		WARN(1, KERN_WARNING "kernfs: ns %s in '%s' for '%s'\n",
+-		     has_ns ? "required" : "invalid", parent->name, name);
++		     has_ns ? "required" : "invalid", kernfs_rcu_get_name(parent), name);
  		return NULL;
  	}
 =20
--	while (child->parent !=3D parent) {
--		if (!child->parent)
-+	while (kernfs_parent(child) !=3D parent) {
-+		child =3D kernfs_parent(child);
-+		if (!child)
- 			return NULL;
--		child =3D child->parent;
+@@ -1128,8 +1134,6 @@ static int kernfs_dop_revalidate(struct dentry *dentr=
+y, unsigned int flags)
+=20
+ 	/* Negative hashed dentry? */
+ 	if (d_really_is_negative(dentry)) {
+-		struct kernfs_node *parent;
+-
+ 		/* If the kernfs parent node has changed discard and
+ 		 * proceed to ->lookup.
+ 		 *
+@@ -1177,7 +1181,7 @@ static int kernfs_dop_revalidate(struct dentry *dentr=
+y, unsigned int flags)
+ 		goto out_bad;
+=20
+ 	/* The kernfs node has been renamed */
+-	if (strcmp(dentry->d_name.name, kn->name) !=3D 0)
++	if (strcmp(dentry->d_name.name, kernfs_rcu_get_name(kn)) !=3D 0)
+ 		goto out_bad;
+=20
+ 	/* The kernfs node has been moved to a different namespace */
+@@ -1471,7 +1475,7 @@ static void __kernfs_remove(struct kernfs_node *kn)
+ 	if (kernfs_parent(kn) && RB_EMPTY_NODE(&kn->rb))
+ 		return;
+=20
+-	pr_debug("kernfs %s: removing\n", kn->name);
++	pr_debug("kernfs %s: removing\n", kernfs_rcu_get_name(kn));
+=20
+ 	/* prevent new usage by marking all nodes removing and deactivating */
+ 	pos =3D NULL;
+@@ -1727,7 +1731,7 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct k=
+ernfs_node *new_parent,
+ {
+ 	struct kernfs_node *old_parent;
+ 	struct kernfs_root *root;
+-	const char *old_name =3D NULL;
++	const char *old_name;
+ 	int error;
+=20
+ 	/* can't move or rename root */
+@@ -1750,8 +1754,11 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct =
+kernfs_node *new_parent,
  	}
 =20
- 	return child;
-@@ -216,7 +216,7 @@ struct dentry *kernfs_node_dentry(struct kernfs_node *k=
+ 	error =3D 0;
++	old_name =3D kernfs_rcu_get_name(kn);
++	if (!new_name)
++		new_name =3D old_name;
+ 	if ((old_parent =3D=3D new_parent) && (kn->ns =3D=3D new_ns) &&
+-	    (strcmp(kn->name, new_name) =3D=3D 0))
++	    (strcmp(old_name, new_name) =3D=3D 0))
+ 		goto out;	/* nothing to rename */
+=20
+ 	error =3D -EEXIST;
+@@ -1759,7 +1766,7 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct k=
+ernfs_node *new_parent,
+ 		goto out;
+=20
+ 	/* rename kernfs_node */
+-	if (strcmp(kn->name, new_name) !=3D 0) {
++	if (strcmp(old_name, new_name) !=3D 0) {
+ 		error =3D -ENOMEM;
+ 		new_name =3D kstrdup_const(new_name, GFP_KERNEL);
+ 		if (!new_name)
+@@ -1772,27 +1779,32 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct=
+ kernfs_node *new_parent,
+ 	 * Move to the appropriate place in the appropriate directories rbtree.
+ 	 */
+ 	kernfs_unlink_sibling(kn);
+-	kernfs_get(new_parent);
+=20
+-	/* rename_lock protects ->parent and ->name accessors */
+-	write_lock_irq(&kernfs_rename_lock);
++	/* rename_lock protects ->parent accessors */
++	if (old_parent !=3D new_parent) {
++		kernfs_get(new_parent);
++		write_lock_irq(&kernfs_rename_lock);
+=20
+-	old_parent =3D rcu_dereference_check(kn->__parent, kernfs_root_is_locked(=
+kn));
+-	rcu_assign_pointer(kn->__parent, new_parent);
++		rcu_assign_pointer(kn->__parent, new_parent);
+=20
+-	kn->ns =3D new_ns;
+-	if (new_name) {
+-		old_name =3D kn->name;
+-		kn->name =3D new_name;
++		kn->ns =3D new_ns;
++		if (new_name)
++			rcu_assign_pointer(kn->name, new_name);
++
++		write_unlock_irq(&kernfs_rename_lock);
++		kernfs_put(old_parent);
++	} else {
++		/* name assignment is RCU protected, parent is the same */
++		kn->ns =3D new_ns;
++		if (new_name)
++			rcu_assign_pointer(kn->name, new_name);
+ 	}
+=20
+-	write_unlock_irq(&kernfs_rename_lock);
+-
+-	kn->hash =3D kernfs_name_hash(kn->name, kn->ns);
++	kn->hash =3D kernfs_name_hash(new_name ?: old_name, kn->ns);
+ 	kernfs_link_sibling(kn);
+=20
+-	kernfs_put(old_parent);
+-	kfree_const(old_name);
++	if (new_name && !is_kernel_rodata((unsigned long)old_name))
++		kfree_rcu_mightsleep(old_name);
+=20
+ 	error =3D 0;
+  out:
+@@ -1876,7 +1888,7 @@ static int kernfs_fop_readdir(struct file *file, stru=
+ct dir_context *ctx)
+ 	for (pos =3D kernfs_dir_pos(ns, parent, ctx->pos, pos);
+ 	     pos;
+ 	     pos =3D kernfs_dir_next_pos(ns, parent, ctx->pos, pos)) {
+-		const char *name =3D pos->name;
++		const char *name =3D kernfs_rcu_get_name(pos);
+ 		unsigned int type =3D fs_umode_to_dtype(pos->mode);
+ 		int len =3D strlen(name);
+ 		ino_t ino =3D kernfs_ino(pos);
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index 38033caeaea51..05f7b30283150 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -915,6 +915,7 @@ static void kernfs_notify_workfn(struct work_struct *wo=
+rk)
+ 	list_for_each_entry(info, &kernfs_root(kn)->supers, node) {
+ 		struct kernfs_node *parent;
+ 		struct inode *p_inode =3D NULL;
++		const char *kn_name;
+ 		struct inode *inode;
+ 		struct qstr name;
+=20
+@@ -928,7 +929,8 @@ static void kernfs_notify_workfn(struct work_struct *wo=
+rk)
+ 		if (!inode)
+ 			continue;
+=20
+-		name =3D (struct qstr)QSTR_INIT(kn->name, strlen(kn->name));
++		kn_name =3D kernfs_rcu_get_name(kn);
++		name =3D (struct qstr)QSTR_INIT(kn_name, strlen(kn_name));
+ 		parent =3D kernfs_get_parent(kn);
+ 		if (parent) {
+ 			p_inode =3D ilookup(info->sb, kernfs_ino(parent));
+diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
+index da3a933b9cac0..c2265dd6daa79 100644
+--- a/fs/kernfs/kernfs-internal.h
++++ b/fs/kernfs/kernfs-internal.h
+@@ -105,6 +105,11 @@ static inline bool kernfs_root_is_locked(const struct =
+kernfs_node *kn)
+ 	return lockdep_is_held(&kernfs_root(kn)->kernfs_rwsem);
+ }
+=20
++static inline const char *kernfs_rcu_get_name(const struct kernfs_node *kn)
++{
++	return rcu_dereference_check(kn->name, kernfs_root_is_locked(kn));
++}
++
+ static inline struct kernfs_node *kernfs_parent(const struct kernfs_node *=
+kn)
+ {
+ 	return rcu_dereference_check(kn->__parent, kernfs_root_is_locked(kn));
+diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
+index 2252b16e6ef0b..d1f512b7bf867 100644
+--- a/fs/kernfs/mount.c
++++ b/fs/kernfs/mount.c
+@@ -231,6 +231,7 @@ struct dentry *kernfs_node_dentry(struct kernfs_node *k=
 n,
- 	dentry =3D dget(sb->s_root);
+ 	do {
+ 		struct dentry *dtmp;
+ 		struct kernfs_node *kntmp;
++		const char *name;
 =20
- 	/* Check if this is the root kernfs_node */
--	if (!kn->parent)
-+	if (!rcu_access_pointer(kn->__parent))
- 		return dentry;
-=20
- 	root =3D kernfs_root(kn);
+ 		if (kn =3D=3D knparent)
+ 			return dentry;
+@@ -239,8 +240,8 @@ struct dentry *kernfs_node_dentry(struct kernfs_node *k=
+n,
+ 			dput(dentry);
+ 			return ERR_PTR(-EINVAL);
+ 		}
+-		dtmp =3D lookup_positive_unlocked(kntmp->name, dentry,
+-					       strlen(kntmp->name));
++		name =3D rcu_dereference(kntmp->name);
++		dtmp =3D lookup_positive_unlocked(name, dentry, strlen(name));
+ 		dput(dentry);
+ 		if (IS_ERR(dtmp))
+ 			return dtmp;
 diff --git a/fs/kernfs/symlink.c b/fs/kernfs/symlink.c
-index 45371a70caa71..05c62ca93c53d 100644
+index 05c62ca93c53d..6ccd38195764f 100644
 --- a/fs/kernfs/symlink.c
 +++ b/fs/kernfs/symlink.c
-@@ -62,10 +62,10 @@ static int kernfs_get_target_path(struct kernfs_node *p=
-arent,
-=20
- 	/* go up to the root, stop at the base */
- 	base =3D parent;
--	while (base->parent) {
--		kn =3D target->parent;
--		while (kn->parent && base !=3D kn)
--			kn =3D kn->parent;
-+	while (kernfs_parent(base)) {
-+		kn =3D kernfs_parent(target);
-+		while (kernfs_parent(kn) && base !=3D kn)
-+			kn =3D kernfs_parent(kn);
-=20
- 		if (base =3D=3D kn)
- 			break;
-@@ -75,14 +75,14 @@ static int kernfs_get_target_path(struct kernfs_node *p=
-arent,
-=20
- 		strcpy(s, "../");
- 		s +=3D 3;
--		base =3D base->parent;
-+		base =3D kernfs_parent(base);
- 	}
-=20
+@@ -81,7 +81,7 @@ static int kernfs_get_target_path(struct kernfs_node *par=
+ent,
  	/* determine end of target string for reverse fillup */
  	kn =3D target;
--	while (kn->parent && kn !=3D base) {
-+	while (kernfs_parent(kn) && kn !=3D base) {
- 		len +=3D strlen(kn->name) + 1;
--		kn =3D kn->parent;
-+		kn =3D kernfs_parent(kn);
+ 	while (kernfs_parent(kn) && kn !=3D base) {
+-		len +=3D strlen(kn->name) + 1;
++		len +=3D strlen(kernfs_rcu_get_name(kn)) + 1;
+ 		kn =3D kernfs_parent(kn);
  	}
 =20
- 	/* check limits */
-@@ -94,7 +94,7 @@ static int kernfs_get_target_path(struct kernfs_node *par=
-ent,
-=20
+@@ -95,10 +95,11 @@ static int kernfs_get_target_path(struct kernfs_node *p=
+arent,
  	/* reverse fillup of target string from target to base */
  	kn =3D target;
--	while (kn->parent && kn !=3D base) {
-+	while (kernfs_parent(kn) && kn !=3D base) {
- 		int slen =3D strlen(kn->name);
+ 	while (kernfs_parent(kn) && kn !=3D base) {
+-		int slen =3D strlen(kn->name);
++		const char *name =3D kernfs_rcu_get_name(kn);
++		int slen =3D strlen(name);
 =20
  		len -=3D slen;
-@@ -102,7 +102,7 @@ static int kernfs_get_target_path(struct kernfs_node *p=
-arent,
+-		memcpy(s + len, kn->name, slen);
++		memcpy(s + len, name, slen);
  		if (len)
  			s[--len] =3D '/';
 =20
--		kn =3D kn->parent;
-+		kn =3D kernfs_parent(kn);
- 	}
+diff --git a/fs/sysfs/dir.c b/fs/sysfs/dir.c
+index 4df2afa551dc6..94e12efd92f21 100644
+--- a/fs/sysfs/dir.c
++++ b/fs/sysfs/dir.c
+@@ -123,7 +123,7 @@ int sysfs_move_dir_ns(struct kobject *kobj, struct kobj=
+ect *new_parent_kobj,
+ 	new_parent =3D new_parent_kobj && new_parent_kobj->sd ?
+ 		new_parent_kobj->sd : sysfs_root_kn;
 =20
- 	return 0;
-@@ -111,12 +111,13 @@ static int kernfs_get_target_path(struct kernfs_node =
-*parent,
- static int kernfs_getlink(struct inode *inode, char *path)
- {
- 	struct kernfs_node *kn =3D inode->i_private;
--	struct kernfs_node *parent =3D kn->parent;
-+	struct kernfs_node *parent;
- 	struct kernfs_node *target =3D kn->symlink.target_kn;
--	struct kernfs_root *root =3D kernfs_root(parent);
-+	struct kernfs_root *root =3D kernfs_root(kn);
- 	int error;
-=20
- 	down_read(&root->kernfs_rwsem);
-+	parent =3D kernfs_parent(kn);
- 	error =3D kernfs_get_target_path(parent, target, path);
- 	up_read(&root->kernfs_rwsem);
-=20
-diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-index 785408861c01c..1d16b4a386aa9 100644
---- a/fs/sysfs/file.c
-+++ b/fs/sysfs/file.c
-@@ -19,13 +19,19 @@
-=20
- #include "sysfs.h"
-=20
-+static struct kobject *sysfs_file_kobj(struct kernfs_node *kn)
-+{
-+	guard(rcu)();
-+	return rcu_dereference(kn->__parent)->priv;
-+}
-+
- /*
-  * Determine ktype->sysfs_ops for the given kernfs_node.  This function
-  * must be called while holding an active reference.
-  */
- static const struct sysfs_ops *sysfs_file_ops(struct kernfs_node *kn)
- {
--	struct kobject *kobj =3D kn->parent->priv;
-+	struct kobject *kobj =3D sysfs_file_kobj(kn);
-=20
- 	if (kn->flags & KERNFS_LOCKDEP)
- 		lockdep_assert_held(kn);
-@@ -40,7 +46,7 @@ static const struct sysfs_ops *sysfs_file_ops(struct kern=
-fs_node *kn)
- static int sysfs_kf_seq_show(struct seq_file *sf, void *v)
- {
- 	struct kernfs_open_file *of =3D sf->private;
--	struct kobject *kobj =3D of->kn->parent->priv;
-+	struct kobject *kobj =3D sysfs_file_kobj(of->kn);
- 	const struct sysfs_ops *ops =3D sysfs_file_ops(of->kn);
- 	ssize_t count;
- 	char *buf;
-@@ -78,7 +84,7 @@ static ssize_t sysfs_kf_bin_read(struct kernfs_open_file =
-*of, char *buf,
- 				 size_t count, loff_t pos)
- {
- 	struct bin_attribute *battr =3D of->kn->priv;
--	struct kobject *kobj =3D of->kn->parent->priv;
-+	struct kobject *kobj =3D sysfs_file_kobj(of->kn);
- 	loff_t size =3D file_inode(of->file)->i_size;
-=20
- 	if (!count)
-@@ -105,7 +111,7 @@ static ssize_t sysfs_kf_read(struct kernfs_open_file *o=
-f, char *buf,
- 			     size_t count, loff_t pos)
- {
- 	const struct sysfs_ops *ops =3D sysfs_file_ops(of->kn);
--	struct kobject *kobj =3D of->kn->parent->priv;
-+	struct kobject *kobj =3D sysfs_file_kobj(of->kn);
- 	ssize_t len;
-=20
- 	/*
-@@ -131,7 +137,7 @@ static ssize_t sysfs_kf_write(struct kernfs_open_file *=
-of, char *buf,
- 			      size_t count, loff_t pos)
- {
- 	const struct sysfs_ops *ops =3D sysfs_file_ops(of->kn);
--	struct kobject *kobj =3D of->kn->parent->priv;
-+	struct kobject *kobj =3D sysfs_file_kobj(of->kn);
-=20
- 	if (!count)
- 		return 0;
-@@ -144,7 +150,7 @@ static ssize_t sysfs_kf_bin_write(struct kernfs_open_fi=
-le *of, char *buf,
- 				  size_t count, loff_t pos)
- {
- 	struct bin_attribute *battr =3D of->kn->priv;
--	struct kobject *kobj =3D of->kn->parent->priv;
-+	struct kobject *kobj =3D sysfs_file_kobj(of->kn);
- 	loff_t size =3D file_inode(of->file)->i_size;
-=20
- 	if (size) {
-@@ -168,7 +174,7 @@ static int sysfs_kf_bin_mmap(struct kernfs_open_file *o=
-f,
- 			     struct vm_area_struct *vma)
- {
- 	struct bin_attribute *battr =3D of->kn->priv;
--	struct kobject *kobj =3D of->kn->parent->priv;
-+	struct kobject *kobj =3D sysfs_file_kobj(of->kn);
-=20
- 	return battr->mmap(of->file, kobj, battr, vma);
+-	return kernfs_rename_ns(kn, new_parent, kn->name, new_ns);
++	return kernfs_rename_ns(kn, new_parent, NULL, new_ns);
  }
-@@ -177,7 +183,7 @@ static loff_t sysfs_kf_bin_llseek(struct kernfs_open_fi=
-le *of, loff_t offset,
- 				  int whence)
- {
- 	struct bin_attribute *battr =3D of->kn->priv;
--	struct kobject *kobj =3D of->kn->parent->priv;
-+	struct kobject *kobj =3D sysfs_file_kobj(of->kn);
 =20
- 	if (battr->llseek)
- 		return battr->llseek(of->file, kobj, battr, offset, whence);
-@@ -494,7 +500,7 @@ EXPORT_SYMBOL_GPL(sysfs_break_active_protection);
-  */
- void sysfs_unbreak_active_protection(struct kernfs_node *kn)
- {
--	struct kobject *kobj =3D kn->parent->priv;
-+	struct kobject *kobj =3D sysfs_file_kobj(kn);
-=20
- 	kernfs_unbreak_active_protection(kn);
- 	kernfs_put(kn);
+ /**
 diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
-index 87c79d076d6d7..9d4f09711cd73 100644
+index 9d4f09711cd73..415e0cf43df09 100644
 --- a/include/linux/kernfs.h
 +++ b/include/linux/kernfs.h
-@@ -147,6 +147,11 @@ enum kernfs_root_flag {
- 	 * Support user xattrs to be written to nodes rooted at this root.
- 	 */
- 	KERNFS_ROOT_SUPPORT_USER_XATTR		=3D 0x0008,
-+
-+	/*
-+	 * Renames must not change the parent node.
-+	 */
-+	KERNFS_ROOT_INVARIANT_PARENT		=3D 0x0010,
- };
-=20
- /* type-specific structures for kernfs_node union members */
-@@ -199,8 +204,8 @@ struct kernfs_node {
+@@ -204,8 +204,8 @@ struct kernfs_node {
  	 * never moved to a different parent, it is safe to access the
  	 * parent directly.
  	 */
--	struct kernfs_node	*parent;
- 	const char		*name;
-+	struct kernfs_node	__rcu *__parent;
+-	const char		*name;
+ 	struct kernfs_node	__rcu *__parent;
++	const char		__rcu *name;
 =20
  	struct rb_node		rb;
 =20
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index e28d5f0d20ed0..c9752eb607ec9 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -844,7 +844,7 @@ static int cgroup1_rename(struct kernfs_node *kn, struc=
-t kernfs_node *new_parent
-=20
- 	if (kernfs_type(kn) !=3D KERNFS_DIR)
- 		return -ENOTDIR;
--	if (kn->parent !=3D new_parent)
-+	if (rcu_access_pointer(kn->__parent) !=3D new_parent)
- 		return -EIO;
-=20
- 	/*
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index d9061bd55436b..02c4b5da2a6c3 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -633,9 +633,14 @@ int cgroup_task_count(const struct cgroup *cgrp)
- 	return count;
+@@ -400,7 +400,7 @@ static inline bool kernfs_ns_enabled(struct kernfs_node=
+ *kn)
  }
 =20
-+static struct cgroup *kn_get_priv(struct kernfs_node *kn)
-+{
-+	return rcu_dereference_check(kn->__parent, kn->flags & KERNFS_ROOT_INVARI=
-ANT_PARENT)->priv;
-+}
-+
- struct cgroup_subsys_state *of_css(struct kernfs_open_file *of)
- {
--	struct cgroup *cgrp =3D of->kn->parent->priv;
-+	struct cgroup *cgrp =3D kn_get_priv(of->kn);
- 	struct cftype *cft =3D of_cft(of);
+ int kernfs_name(struct kernfs_node *kn, char *buf, size_t buflen);
+-int kernfs_path_from_node(struct kernfs_node *root_kn, struct kernfs_node =
+*kn,
++int kernfs_path_from_node(struct kernfs_node *kn_to, struct kernfs_node *k=
+n_from,
+ 			  char *buf, size_t buflen);
+ void pr_cont_kernfs_name(struct kernfs_node *kn);
+ void pr_cont_kernfs_path(struct kernfs_node *kn);
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 171dd7fceac54..9e92057d2caac 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -3583,10 +3583,13 @@ static int selinux_kernfs_init_security(struct kern=
+fs_node *kn_dir,
+ 		newsid =3D tsec->create_sid;
+ 	} else {
+ 		u16 secclass =3D inode_mode_to_security_class(kn->mode);
++		const char *kn_name;
+ 		struct qstr q;
 =20
- 	/*
-@@ -1612,7 +1617,7 @@ void cgroup_kn_unlock(struct kernfs_node *kn)
- 	if (kernfs_type(kn) =3D=3D KERNFS_DIR)
- 		cgrp =3D kn->priv;
- 	else
--		cgrp =3D kn->parent->priv;
-+		cgrp =3D kn_get_priv(kn);
+-		q.name =3D kn->name;
+-		q.hash_len =3D hashlen_string(kn_dir, kn->name);
++		/* kn is fresh, can't be renamed, name goes not away */
++		kn_name =3D rcu_dereference_check(kn->name, true);
++		q.name =3D kn_name;
++		q.hash_len =3D hashlen_string(kn_dir, kn_name);
 =20
- 	cgroup_unlock();
-=20
-@@ -1644,7 +1649,7 @@ struct cgroup *cgroup_kn_lock_live(struct kernfs_node=
- *kn, bool drain_offline)
- 	if (kernfs_type(kn) =3D=3D KERNFS_DIR)
- 		cgrp =3D kn->priv;
- 	else
--		cgrp =3D kn->parent->priv;
-+		cgrp =3D kn_get_priv(kn);
-=20
- 	/*
- 	 * We're gonna grab cgroup_mutex which nests outside kernfs
-@@ -2118,7 +2123,8 @@ int cgroup_setup_root(struct cgroup_root *root, u16 s=
-s_mask)
- 	root->kf_root =3D kernfs_create_root(kf_sops,
- 					   KERNFS_ROOT_CREATE_DEACTIVATED |
- 					   KERNFS_ROOT_SUPPORT_EXPORTOP |
--					   KERNFS_ROOT_SUPPORT_USER_XATTR,
-+					   KERNFS_ROOT_SUPPORT_USER_XATTR |
-+					   KERNFS_ROOT_INVARIANT_PARENT,
- 					   root_cgrp);
- 	if (IS_ERR(root->kf_root)) {
- 		ret =3D PTR_ERR(root->kf_root);
-@@ -4119,7 +4125,7 @@ static ssize_t cgroup_file_write(struct kernfs_open_f=
-ile *of, char *buf,
- 				 size_t nbytes, loff_t off)
- {
- 	struct cgroup_file_ctx *ctx =3D of->priv;
--	struct cgroup *cgrp =3D of->kn->parent->priv;
-+	struct cgroup *cgrp =3D kn_get_priv(of->kn);
- 	struct cftype *cft =3D of_cft(of);
- 	struct cgroup_subsys_state *css;
- 	int ret;
+ 		rc =3D security_transition_sid(tsec->sid,
+ 					     parent_sid, secclass, &q,
 --=20
 2.47.2
 
