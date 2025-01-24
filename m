@@ -1,130 +1,164 @@
-Return-Path: <cgroups+bounces-6271-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6272-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10346A1B448
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 11:58:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F29DFA1B9B5
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 16:54:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09F2F18818FD
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 10:58:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C82E91886724
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 15:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFAE5219E8C;
-	Fri, 24 Jan 2025 10:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6469B15A84E;
+	Fri, 24 Jan 2025 15:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="NVpCoCct"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="Bz/pUqP7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270CA1CDFC1
-	for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 10:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 582D1156676
+	for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 15:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737716309; cv=none; b=E6QVFrSIE9K53eqPwBkmx7isijYiEkcM27iR0Jo0jRl6/U1Xok9X9zVR6qOID83DrZkLGfTN1nvl3rneL25AM//3uia/cSkENwL2BKhJMjt0a5S173ofFSum2ApFFtM41KkECYelqT7zrIt4yUTGIduBdCqeV5WQrUrX0t43hGM=
+	t=1737734071; cv=none; b=eBbgSlyrPFI6s1QPnOc7ScbPkJCJJPUx4Hc6IaBk8Mkb9eVLUyn/GWcAX8OUgwgEkgtqk0HOVD7rKs013LVo0qHrYnZ5wloTNP5UQggwVZcUIkQJqYFHnCiUFp0SJa0ywVvUkBtMByEkAcdBch/AlmlTPl47T38ynj4mUan/Z9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737716309; c=relaxed/simple;
-	bh=sbEBeAA4tFoSk+b62opzzrzqZXSAeiZClFCJpKPq2ps=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JfN4YKWJdyWW5Ru0MmMjlYsQJ9V7IQwlrElpyneX7KMbhMkOQFt97hCFeGCI4OMDNKAo2AoU0SX5m65DKyHwoCfP4VsiVewLV9h/bcxLJl6wTKJGnotnLOaxgCTGr2u6Yjdau8KycwnhYoAPzVPe3M+whzDvFcDOdNEvVpFIwls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=NVpCoCct; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-21634417587so4490075ad.3
-        for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 02:58:27 -0800 (PST)
+	s=arc-20240116; t=1737734071; c=relaxed/simple;
+	bh=qxridkHxaY97JQm3SeHc/9g4JU7IA7islWSnMI7J1+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RDyjkK0RRc7Da2xjrlVKKcXjWWreXmhVpOn2bLrtejs4/+o2zSWXTXVSmJKxhLd27hGrKSsybmjcTzslT3kPGh8/ToEgdKDhqk8+h5xpT8NUT2KV8PIzj4/fKaMSycIhUdcc/5285z6NX/ObdQoW55rZ0ytBjYo6z8HT8T9PaZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=Bz/pUqP7; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7b6e8814842so236546685a.0
+        for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 07:54:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1737716307; x=1738321107; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Pda3ELabzjHMCz9NofWB5XWgpAksp0H0JyV9tun2x64=;
-        b=NVpCoCcthWlbgojWasR/lX+XkQXJeE9Ecte0blStMKqTOVLhobOejMdyUuN//obWOS
-         RGhhfMvSLzKGqA3rJoTTUDRAabJq0hH7JZ3O/7dmCp81uOQcMVLnZ78EdpLkP97plfwo
-         FxJwC0/3rvFE3IQ4ThM9brQv+xQCt9HM065LKZMmonL09EkDKeRhX5Q+envXQ2YN1v/q
-         yhGVo8ppAQDPHayB2MmGJEschHPZy7UtRfAvmo7rJzghjfNpr5dgfKEw4Qf3BOiUgVRO
-         YBTT8GDa9TA/Ahr17TZtZKsX56JrRAGhuRc1yQyhGy5I+LiDfVZg8rIeWr8AL9NELIsx
-         CC5w==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1737734066; x=1738338866; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jaO5J1OLleA0s2cJXfqZOWGHbYpMpsF93JnDLodR8mk=;
+        b=Bz/pUqP7PpkO+XA/K1NdBjAmG3zenV9T+5PIwRnF9+1UHTFGJbXxElHcNa5+d9sIr9
+         1c6Pl6aMiyE830EXCnBu8J9zhTyOYXhWhRMMXP0i+BFreT6Nq3VeV/AKP1uj0Nh8QAFf
+         tuKBKvsImN0VNozoF8egGEJZM66825J6T5eUYwp9ro4PTtzF9afgJxF0QMV1iSz9TRB1
+         c19Qu57bRR/3tMDdqXvYqkq83QI5ICGauILXs1E0fnCPRi9b60MBpayyC1epNLypXYBB
+         kjofTiyrg7cQ7mJGXeEJXQ+2PM1NBiGITY9X2f/kYYMrz0qX78FEhId7Tt6CzjHzQTpw
+         B95w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737716307; x=1738321107;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pda3ELabzjHMCz9NofWB5XWgpAksp0H0JyV9tun2x64=;
-        b=Zbxcx4pNSfOQsbaelypM/DPtrITdWaQARLlY471qLUv7m/OWGsoMvFJXlbDsJ8cEDT
-         aag84QI5sI999Vl2vWmwdcL+4tCRvpZIw6HvWc1IWq0H0cpAyLHfKVxnO5GoTrS0cdd6
-         2qVT27PdQ5q8bZIkSRP+/1+5jeI8J7o6N8D/FXSPikZCdd4F6YqNPCjOj4NqwnqHgrjP
-         odifesD4203oYACc+Xkl5GFQoMB68zb6HwEnoHtm9tzoHrqA9uc43hJS+tgPdkfiuM9y
-         02qFECRA5NKfnI+WYjTD/E1RvkZgt/F1LPMRIuDsqounJ0g+aIuekNRIEpfcKzQoIEut
-         LYpg==
-X-Forwarded-Encrypted: i=1; AJvYcCXz8gw0OZ4YmqwAiyuLi9WdlMS3wdXkt/aGGdcdVwHDKDRpdJa9z6D3MhMG37wJgLfl10QUO00b@vger.kernel.org
-X-Gm-Message-State: AOJu0YxqcJg8g0R0QwBpZcAq9tLUk6ttXhB8RfqUSVnNOaDTuZrDACrZ
-	UC7oYrXcT5qPxDrznuyu7yzbL3DG45UWJCDvWPVF3RZfpQqbkt2bzD/iKlOR8kQ=
-X-Gm-Gg: ASbGncvisB+kcVj32fkBal3rGRoYEctqC1bPBwUmVrkwbT8YoRf6baAPbdp+Lpd0AQr
-	2RyN/SOjZNCpV33liX5MAX3f5l2uK6q6JJwzyaFbS5AoOSzc4B2PzFIm2uObjVQCD33BpZoahdA
-	X4SMLnc7nDb4Lxttffiu/9kH/EkK2MPOd79L3riuRiiPZN7qmmza3fWTYjVR9KFLZpjWWLZ9erq
-	Em4I3xlfjfQpg0xznCbCXfOaKAJ9YsiyHq5kIFP/J2hGvUG83pzpy+DoQ5NOfsrGQQo4p7LexAG
-	o/HfVA+kpL1qiAbg71/VqdrJLf4DUw==
-X-Google-Smtp-Source: AGHT+IFPPAFtKUdWUrQ1fZ9ztKOZDVBkhLa1n4uWXAzzo9DG3Aj4Kym2pHd3B4/CvxBQ8m2/WgEEgQ==
-X-Received: by 2002:a17:902:d4c3:b0:21b:d105:26ca with SMTP id d9443c01a7336-21c35560010mr170856325ad.4.1737716307400;
-        Fri, 24 Jan 2025 02:58:27 -0800 (PST)
-Received: from [10.254.144.106] ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da3d9dedcsm13807185ad.46.2025.01.24.02.58.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Jan 2025 02:58:26 -0800 (PST)
-Message-ID: <2824d739-235d-46d5-8559-aa3f374bccbe@bytedance.com>
-Date: Fri, 24 Jan 2025 18:58:17 +0800
+        d=1e100.net; s=20230601; t=1737734066; x=1738338866;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jaO5J1OLleA0s2cJXfqZOWGHbYpMpsF93JnDLodR8mk=;
+        b=e3QEb8Wm4uOeXsS3PucpEHHoCQyJ64Y7VO0QDsNZ52BsCE8f/4Kj1yT3fpMoczIvCZ
+         0LLzvULuCZqZJZmiYlboukvnJATgl4XeZQdEkXobDwQauY/agYDJGWFBjMsLw6ey9nMt
+         nPxl/ov/iAhKD/6ghK4XmzSdPuUc6Kd6hCPka4lYM3PcNw9ppVHLQzM2XQ9+Cdl4NLPw
+         sljJ+XQGAtGFEdEQlW4iP+qo8a+Rk98DqgoDmcofEF1BKPIWqvLg2vSpAiF9NfTq9x6a
+         ITbMmWsHPqPU/oKbKFhKMdGCKjTsUqk0MshpDb9iy+BsX0pBH+rq1lYx1P3BrKfyfXSP
+         z1+g==
+X-Forwarded-Encrypted: i=1; AJvYcCVmQnTX8fk9pM/FcvTtxlKOC/OOujh00iZLO/b9ZsTsBGEoxikbRbB/TmtmBNKdxNBkPv77cXf2@vger.kernel.org
+X-Gm-Message-State: AOJu0YweszegA2YgfFbjjaQw2CR1qFdy/PFySXz4IYW2hsva7MYq0dC5
+	ls/sqlya/f8gJNJU1LHDHELFUlG72jBwPpSyETEDg+M+Owg8GMOB8ifZ++S9iio=
+X-Gm-Gg: ASbGnctv6/Ds9F3SvNBD1tk0lmnO3y9+bMnZymmVTVt64m+pmZWc6QGAR/xA4SCmQ5w
+	40Qtaj1bHnfV2mPXyD6veryXCytYh7GRiMIbGrX9cCM+G4W8GfYCOgUEM7GHx5jClaJpFIml8O5
+	a0S8d7C4usub/aUms2j/YSMosGLq+CeGS49+AXumxfw4IMlY/cMTsExUthi31MnPGelhK3jmHQ3
+	ZgEgehojYiIzxKJ1iIgVEJPwXSGa6WyqfeoO9eUdxeYB1jd3SqmmJbaSqsw8Vx6bYm/dOoW8MVt
+	HU8=
+X-Google-Smtp-Source: AGHT+IF7MEA53OVqDa9yY3jpDkbRjQbEp6o5hVbXuPIzBO08qcAzX4X3mShK2xIPJXxXgBs5Mq02Uw==
+X-Received: by 2002:a05:620a:29c1:b0:7b6:e8c3:4b60 with SMTP id af79cd13be357-7be632385c7mr4427127285a.28.1737734066003;
+        Fri, 24 Jan 2025 07:54:26 -0800 (PST)
+Received: from localhost ([2603:7000:c01:2716:cbb0:8ad0:a429:60f5])
+        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7be9ae7ec0asm105917285a.12.2025.01.24.07.54.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jan 2025 07:54:25 -0800 (PST)
+Date: Fri, 24 Jan 2025 10:54:20 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Hugh Dickins <hughd@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@suse.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: move memsw charge callbacks to v1
+Message-ID: <20250124155420.GA1222@cmpxchg.org>
+References: <20250124054132.45643-1-hannes@cmpxchg.org>
+ <a90b33c3-7ea3-5375-3fcd-c97cc13c9964@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] cgroup/rstat: Fix forceidle time in cpu.stat
-Content-Language: en-US
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Thomas Gleixner <tglx@linutronix.de>, Yury Norov <yury.norov@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Bitao Hu
- <yaoma@linux.alibaba.com>, Chen Ridong <chenridong@huawei.com>,
- "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20250123174713.25570-1-wuyun.abel@bytedance.com>
- <20250123174713.25570-2-wuyun.abel@bytedance.com>
- <cf5k7vmtqa2a5e6haxghvsolnydaczrz5n3bkluttmula5s35y@z35txmj4bxsb>
- <a7a24c05-87ca-49d1-9fa3-be4c3555e238@bytedance.com>
- <amw4ehhgqglvym6u4bkht2fcrxfzcwcyh4eeju3m3a3icnscxa@qx5ntsgw3y3c>
-From: Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <amw4ehhgqglvym6u4bkht2fcrxfzcwcyh4eeju3m3a3icnscxa@qx5ntsgw3y3c>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a90b33c3-7ea3-5375-3fcd-c97cc13c9964@google.com>
 
-On 1/24/25 6:39 PM, Michal Koutný Wrote:
-> On Fri, Jan 24, 2025 at 05:58:26PM +0800, Abel Wu <wuyun.abel@bytedance.com> wrote:
->> The following hunk deleted the snapshot of cgrp->bstat.forceidle_sum:
+On Thu, Jan 23, 2025 at 10:53:04PM -0800, Hugh Dickins wrote:
+> On Fri, 24 Jan 2025, Johannes Weiner wrote:
 > 
-> But there's no such hunk in your PATCH 1/3 :-o
+> > The interweaving of two entirely different swap accounting strategies
+> > has been one of the more confusing parts of the memcg code. Split out
+> > the v1 code to clarify the implementation and a handful of callsites,
+> > and to avoid building the v1 bits when !CONFIG_MEMCG_V1.
+> > 
+> >    text	  data	   bss	   dec	   hex	filename
+> >   39253	  6446	  4160	 49859	  c2c3	mm/memcontrol.o.old
+> >   38877	  6382	  4160	 49419	  c10b	mm/memcontrol.o
+> > 
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> I'm not really looking at this, but want to chime in that I found the
+> memcg1 swap stuff in mm/memcontrol.c, not in mm/memcontrol-v1.c, very
+> misleading when I was doing the folio_unqueue_deferred_split() business:
+> so, without looking into the details of it, strongly approve of the
+> direction you're taking here - thank you.
 
-  	if (cgroup_parent(cgrp)) {
-  		cgroup_rstat_flush_hold(cgrp);
--		usage = cgrp->bstat.cputime.sum_exec_runtime;
-+		bstat = cgrp->bstat;
-  		cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime,
--			       &utime, &stime);
--		ntime = cgrp->bstat.ntime;
-+			       &bstat.cputime.utime, &bstat.cputime.stime);
-  		cgroup_rstat_flush_release(cgrp);
-  	} else {
+Thanks, I'm glad to hear that!
 
-Because @bstat takes a full snapshot of @cgrp->bstat which contains
-forceidle time. I think the lack of readability is the reason why
-TJ doesn't like this :(
+> But thought you could go even further, given that
+> static inline bool do_memsw_account(void)
+> {
+> 	return !cgroup_subsys_on_dfl(memory_cgrp_subsys);
+> }
+> 
+> I thought that amounted to do_memsw_account iff memcg_v1;
+> but I never did grasp cgroup_subsys_on_dfl very well,
+> so ignore me if I'm making no sense to you.
+
+Yes, technically we should be able to move all the code guarded by
+this check to v1 proper in some form.
+
+[ It's a runtime check for whether the memory controller is attached
+  to a cgroup1 or a cgroup2 mount. You can still mount the v1
+  controller when !CONFIG_MEMCG_V1, but in that case it won't have any
+  memory control files, so whether we update the memsw counter or not,
+  the results of it won't be visible. ]
+
+But memcg1_swapout()/swapin() are special in that they are completely
+separate, v1-specific memcg entry points. The same is not true for the
+other occurrences:
+
+- mem_cgroup_margin():
+- mem_cgroup_get_max():
+
+	The v1 part is about half the function in both cases. We could
+	split that out into a v1 subfunction, but IMO at a relatively
+	high cost to the readability of the v1 control flow.
+
+- drain_stock:
+- try_charge_memcg:
+- uncharge_batch:
+- mem_cgroup_replace_folio:
+- __mem_cgroup_try_charge_swap:
+- __mem_cgroup_uncharge_swap:
+- mem_cgroup_get_nr_swap_pages:
+- mem_cgroup_swap_full:
+
+	The majority of the code applies to v2 or both versions, and
+	the v1 checks either cause an early return or guard the update
+	to the memsw page_counter.
+
+	So not much to farm out code-wise. And the test uses a static
+	branch, so not much overhead to be cut either.
 
