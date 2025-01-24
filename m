@@ -1,63 +1,73 @@
-Return-Path: <cgroups+bounces-6289-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6290-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 202AFA1BF13
-	for <lists+cgroups@lfdr.de>; Sat, 25 Jan 2025 00:41:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2C99A1BF22
+	for <lists+cgroups@lfdr.de>; Sat, 25 Jan 2025 00:49:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7226B1697A0
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 23:41:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FA143ACD02
+	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2025 23:49:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E7F1EE7CF;
-	Fri, 24 Jan 2025 23:41:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E57D1E990F;
+	Fri, 24 Jan 2025 23:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UQaopvJq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AhluxOqI"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49EE1E3DE3;
-	Fri, 24 Jan 2025 23:41:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B92CF29406;
+	Fri, 24 Jan 2025 23:49:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737762078; cv=none; b=rtlyPuHsZnLLtpLipACm1KwGUddJrDrAwSUQAZ1sxlPQ+iiKummX91Mdfp2x11e5fhI3pRdoWC5sB3n0cdHc3R0DqVBC73korGrFtkJFJjnBIq3zIDBgOxhblhTURJ6JThnU5RxedocdX1LgkoZTWayMGHDbNh3zDjrOYQOlI8U=
+	t=1737762550; cv=none; b=hZclu/O+P33J6P6KjHIii3M5rDMVRgmyoM49ruUeGJ7896H7V3JrazbFY/yCYQE+LQGjwdcyGo78i5z0ltoJ2rIUIvIqYG57F5migsUc0JCeVgbQ4/sLHcMYifbqzrzBoWIHixhvJaiLq/qYXASbrgYVTRRP//4p4L06ChoESNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737762078; c=relaxed/simple;
-	bh=6rceZtujyCmy7GhYqAC5OMAdRD9CKglVVl7ZlEVyVuA=;
+	s=arc-20240116; t=1737762550; c=relaxed/simple;
+	bh=47nLu+gh4Pfvvo3iBdftodxWw7LcI5ceO5NYpid1mvQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=li7Cy4NnrK5liWXy77pMp0v2qtZtUXh7BSZJNgDJcN8CvC2oGNkIQgPlmpaJKs3Kl97rsj3f3tAFhfL2fd3ZKxXNJK6+I2o7OnBR3x12Neb9CimqPY8K4kMYxamjAOexxK6izyuvUM9I7+oGRGr3APnpdi/JuwGYcKUgbQU1uto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UQaopvJq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A791C4CED2;
-	Fri, 24 Jan 2025 23:41:18 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=da+lQ8uEYtfFMQxLqtEIQe1SvTARCmbqHtFi/vunSlFPAYwij0ciLC3+ws7eXAsEgT9PaG7mslYppd85oDCUOC7xkBG876N9hw/kZZW0fhy7t1XU+k3G5HiITfi7J3qZg2Z5Ylr3zHX5mZfsVBOfXWrAsq8Kpn8WW+SfQP1jFWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AhluxOqI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75670C4CED2;
+	Fri, 24 Jan 2025 23:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737762078;
-	bh=6rceZtujyCmy7GhYqAC5OMAdRD9CKglVVl7ZlEVyVuA=;
+	s=k20201202; t=1737762550;
+	bh=47nLu+gh4Pfvvo3iBdftodxWw7LcI5ceO5NYpid1mvQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UQaopvJqwUZWLvapwlN06/LFhU7bpXYch0hNXT8xODD8mGGE9vec5hhLOw5RObJzg
-	 hnlkHARYLlZJqyRJlLBHutMkEzzjIeFY31yTLa6ZMDliNENtVuMqm7yFKeTCFA/gBN
-	 l/iybIvz5XfrhhDPPy/gYSxirk2KQJaF7aAxitydH+wtz6JiqgraWnemEqehg4+vRr
-	 /TLy88sbcMPtXm2Jb6m4iffP8/N6JdsSn00qbUM3ZiM3JQmZ0bYEN0u70cAkM0tn5i
-	 BYX+KRzyQHA1wKz/4g4EFca7Oqt1uy4hG3SrnT3f/zGpCZd8Mwe5E8VbdVHUZ9bBu2
-	 Km4vwz5sQoWQw==
-Date: Fri, 24 Jan 2025 13:41:17 -1000
+	b=AhluxOqIiR1+uTPfrYT6D52bPVtqyFrhHybWMxLaD1xZ6ju5PeBNrMalT+f1iUi00
+	 F/C1Mo6T+161vbd8Vho5MC1cMhItFba8cR5lvigZrPbn/3XiXnkclDxr2NFEnPagxe
+	 4LOlPLzUwxTUCKZ52ENzP2q5SaGOqCE5RoBO/Xha+3WR1dTLJAkLwClpLKlOy4yJRC
+	 Bq7IJKQbCLd4+dkA6aEbC/D4ojtce4rn0qc6p/opE1HOxKfF0LIeM6+toe7zbk3MD9
+	 sGruxIGmOZz2zR5wl7TQ7U6TGqPGoIVddxB48QT8ODrZbmTjT8lS11tk5HVulBPa1A
+	 JVXVCt+cD3Smg==
+Date: Fri, 24 Jan 2025 13:49:09 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hillf Danton <hdanton@sina.com>,
+To: Abel Wu <wuyun.abel@bytedance.com>
+Cc: chenridong <chenridong@huawei.com>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Marco Elver <elver@google.com>, Zefan Li <lizefan.x@bytedance.com>,
-	tglx@linutronix.de,
-	syzbot+6ea37e2e6ffccf41a7e6@syzkaller.appspotmail.com
-Subject: Re: [PATCH v4 6/6] kernfs: Use RCU to access kernfs_node::name.
-Message-ID: <Z5QlHcCErrALjWfG@slm.duckdns.org>
-References: <20250124174614.866884-1-bigeasy@linutronix.de>
- <20250124174614.866884-7-bigeasy@linutronix.de>
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Yury Norov <yury.norov@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bitao Hu <yaoma@linux.alibaba.com>,
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH 1/3] cgroup/rstat: Fix forceidle time in cpu.stat
+Message-ID: <Z5Qm9aXwZhwjBEfy@slm.duckdns.org>
+References: <20250123174713.25570-1-wuyun.abel@bytedance.com>
+ <20250123174713.25570-2-wuyun.abel@bytedance.com>
+ <853d2669-e05b-435e-9ac1-86311ead56e5@huawei.com>
+ <2bba87cf-69aa-4fac-ae1a-c50e2f376e2a@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -66,24 +76,32 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250124174614.866884-7-bigeasy@linutronix.de>
+In-Reply-To: <2bba87cf-69aa-4fac-ae1a-c50e2f376e2a@bytedance.com>
 
-Hello,
+On Fri, Jan 24, 2025 at 03:49:16PM +0800, Abel Wu wrote:
+...
+> > > --- a/kernel/cgroup/rstat.c
+> > > +++ b/kernel/cgroup/rstat.c
+> > > @@ -613,36 +613,33 @@ static void cgroup_force_idle_show(struct seq_file *seq, struct cgroup_base_stat
+> > >   void cgroup_base_stat_cputime_show(struct seq_file *seq)
+> > >   {
+> > >   	struct cgroup *cgrp = seq_css(seq)->cgroup;
+> > > -	u64 usage, utime, stime, ntime;
+> > > +	struct cgroup_base_stat bstat;
+> > >   	if (cgroup_parent(cgrp)) {
+> > >   		cgroup_rstat_flush_hold(cgrp);
+> > > -		usage = cgrp->bstat.cputime.sum_exec_runtime;
+> > > +		bstat = cgrp->bstat;
+> > 
+> > Thank you for finding that.
+> > In my version 2, I used to assign cgrp->bstat to bstat.
+> > This is Tj's comment:
+> > https://lore.kernel.org/linux-kernel/ZoQ2ti7nnz9EJSc3@slm.duckdns.org/
 
-On Fri, Jan 24, 2025 at 06:46:14PM +0100, Sebastian Andrzej Siewior wrote:
-> Using RCU lifetime rules to access kernfs_node::name can avoid the
-> trouble kernfs_rename_lock in kernfs_name() and kernfs_path_from_node()
-> if the fs was created with KERNFS_ROOT_INVARIANT_PARENT.
-
-Maybe explain why we want to do this?
-
-> +static inline const char *kernfs_rcu_get_name(const struct kernfs_node *kn)
-> +{
-> +	return rcu_dereference_check(kn->name, kernfs_root_is_locked(kn));
-> +}
-
-Can you drop "get" from the accessors? Other accessors don't have it and it
-gets confusing with reference counting operations.
+I wasn't saying that memcpy() should be used instead of assignment. I was
+saying that if a non-trivial struct can be pointed to instead of being
+copied, it should be pointed to. If all the fields need to be snapshotted,
+assigning is fine.
 
 Thanks.
 
