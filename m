@@ -1,292 +1,298 @@
-Return-Path: <cgroups+bounces-6323-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6324-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 576C7A1C115
-	for <lists+cgroups@lfdr.de>; Sat, 25 Jan 2025 06:26:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB69AA1C4AB
+	for <lists+cgroups@lfdr.de>; Sat, 25 Jan 2025 18:40:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B37847A38EF
-	for <lists+cgroups@lfdr.de>; Sat, 25 Jan 2025 05:26:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22C017A38C2
+	for <lists+cgroups@lfdr.de>; Sat, 25 Jan 2025 17:40:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 891BF207A23;
-	Sat, 25 Jan 2025 05:26:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FA570803;
+	Sat, 25 Jan 2025 17:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="V2PHTE/h"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aPZRvaT1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF4B207A0C
-	for <cgroups@vger.kernel.org>; Sat, 25 Jan 2025 05:26:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B52C148
+	for <cgroups@vger.kernel.org>; Sat, 25 Jan 2025 17:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737782793; cv=none; b=L0VlVrG/ZFPt/VTHQ/FqQPT4qwhUnq98Jtu79IjhExjqgGtuVZ9jIcN+tER/8QpAjKpRncJcvlZjosaN0flSb1PdVV3N/37QWqbsME2BfpSRjKfiSfyjoLGbl/AIdNqRnm8HBSqOKQoREFzoDk1UPqBDxei5OJUWCoUrJF/weMk=
+	t=1737826831; cv=none; b=KiD2cBygBwMOEANTx/GGzer3K6eLltVW2sZO/2b1S5nv7Ft/alS6qNR5gkqeP9qWCAeVJ+AJ6wWhHHyZdKFWiJg4+otv324phuSPUNrKSVLv5eWblfoj0pRKvLOabqZjNm3KQKf88ELE2T2hFDUW6oJZe6T1hq1UFZAI6Kx1hUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737782793; c=relaxed/simple;
-	bh=F0tN3/ScTvoDzI4ZP+uWoHMZYDf4tVeWpABUX7xOiBE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ec7k/ZOYmIdwUjStReAg0fT8JPI/sp3xKXX1upD6+I9PaaJPyOMINRN+rcf33oWS7syBuieR5ijFepET7Qd9xjZMJnij0PfUJnbB2hD0zd5hbP3D7JHAUgAivH7yiDA7bCYayKWcm0sTg3mCRqR7RJ4s+DPp1chUG88laTCTgWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=V2PHTE/h; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2ef6ee55225so601547a91.0
-        for <cgroups@vger.kernel.org>; Fri, 24 Jan 2025 21:26:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1737782790; x=1738387590; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=65pQEnSZRCQqijbR0Oh+WFGSMWcOg9x3kdoXaS0aoxw=;
-        b=V2PHTE/hcKNvo+f0QA+569TjvFwUOQEHYKRJMMnSZnjmzUr7YY9dcTXDdANoKZMIrm
-         /bQ7NXll0Onbqf7BaH5i/yNZsHbLQmDpJ8VdIDegDgGvFMigAK13lxONbT5SIBnn/Z/p
-         XlnEEUUWaVrPcIGwMedGBfEQ+fZHS/9ed9GmdHETozcKnD2UkcEmEUf5MOfOHh9FJKxh
-         DhcWs//guJdFfnZAwok/a2i0scOilCMokK0hYBcXnvNiQyz1qZh9EsfgrTeHLd8e2PmP
-         1cER8eA2MVfx7h//Ut8zG0RDbF+2CN7W6SsI3pj04guX2PQH1cQIp2wU7rK2j2Wczz6U
-         FVug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737782790; x=1738387590;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=65pQEnSZRCQqijbR0Oh+WFGSMWcOg9x3kdoXaS0aoxw=;
-        b=LzxyO8uxjih394h+8Vqv9suj8bLjuj0v7gH1BBWzTC/l4diYnJ3o8A9ul9789OgASk
-         ZCJoWWko8xRI7pembRzbwVEbhez1tCrstVqk5kl5muCXwx4Ec2LAGN6BNuqxI73WleEX
-         5klOVcL/Zy4b5w+CC4D8f4KTBkLVjGxt6IfgpA59JT5tjr5FQn7rQiHAKIPC9WjivhVp
-         BkBGFIhSr3i6LCkgyc/y2uLBSZZmDdYtKdRKLLUIdtpEwjNABQuSHyxHB2ukkCrh2gDu
-         qEb4UqLyzQCKvqAZHwnX3Jp7Sv1sbgRUabdZdMF67mu8kQ53tf6vBDIjUqN1PjsPGCbo
-         y/oQ==
-X-Gm-Message-State: AOJu0YyIRUk5Q3aeDTd5HJ4gZpWFNF6mfkaPhm0nEKuJYCPRyFfmTEbV
-	i5ZZYp5uoMsRMTFyZG9lNdwkI4WlDCLI1Wk84UU4oJTlS8U5gZ4zYClq3uzXyw0=
-X-Gm-Gg: ASbGncuj4qcpn6SoEicqJfA1a4vUBZxa7IDRY4WaWmZUqF3LYACQ9ovd7ExtadcvGBs
-	lfMlrPlj4NIDIpu33RT0yTPZygiNKfL35h5tSwrKq+vL5ltiDf4/v3Rvb4X30oKJUaGVr05XPdM
-	7gf4J4OXHJMAaTmbqSyz1pqWVUhLbY1DxxlZeOsBWhQ6FhK8uojFq0sGfgk8WzhvFBr8X3BU4Cb
-	KM9WQW8lpcWOXj2Q8ETCHF8XFhp1KO01Q5gA4XqIUELUHaKlIPQWsOVHGxlru1awUlVtvgtayJs
-	3gthMtPfzCP7UzN3e8k0JZ2z6AkUWDDGNwUhzHehrSg=
-X-Google-Smtp-Source: AGHT+IHkD6zmvqMpOXbEPbuzXo/Pe1cZxAlxxma1M+X1urOV5txaJxgn/lBX2zCClsLohBxknITnJw==
-X-Received: by 2002:a05:6a00:114d:b0:729:1ca2:c166 with SMTP id d2e1a72fcca58-72f6a89bb7dmr8743550b3a.2.1737782789881;
-        Fri, 24 Jan 2025 21:26:29 -0800 (PST)
-Received: from C02DV8HUMD6R.bytedance.net ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ac496bbdc9esm2563856a12.63.2025.01.24.21.26.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2025 21:26:29 -0800 (PST)
-From: Abel Wu <wuyun.abel@bytedance.com>
-To: Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Yury Norov <yury.norov@gmail.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bitao Hu <yaoma@linux.alibaba.com>,
-	Chen Ridong <chenridong@huawei.com>
-Cc: cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
-	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 3/3] cgroup/rstat: Add run_delay accounting for cgroups
-Date: Sat, 25 Jan 2025 13:25:12 +0800
-Message-Id: <20250125052521.19487-4-wuyun.abel@bytedance.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20250125052521.19487-1-wuyun.abel@bytedance.com>
-References: <20250125052521.19487-1-wuyun.abel@bytedance.com>
+	s=arc-20240116; t=1737826831; c=relaxed/simple;
+	bh=BHqzNTxEZIFVsW21fFJ1Msn9/qpLYQsK0k0pYzDC10k=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=PuxEGZ9qAZv68wHCVSvvnxvwdZDLlruoNo4ju0waOop23fuKowIjZe/lKds8Ac9mxtpIYWEo+kTq2blYTBSqIi5spu9zYuRCCoAmwJ3yIC55ZLHGY3WLkFBJp+/x1yPE8IAP3J0507OTnz4Z01FMaOe1hvblQZABdaNKBd1tX3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aPZRvaT1; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1737826829; x=1769362829;
+  h=date:from:to:cc:subject:message-id;
+  bh=BHqzNTxEZIFVsW21fFJ1Msn9/qpLYQsK0k0pYzDC10k=;
+  b=aPZRvaT1zcgWeC/S1wAemb/znrBWaT18NPsXlq0S9eqJqluCGE+SlPuK
+   2vM+8j17TPCeJ5NujxgKUTCtXPlHwmyIxnWTBwFBUEPaqQjVRMCn7yIzd
+   /u3LoVcoZ8b4YSjhbl44ngOPFhEhditx3R2RKD9qTPhHHvBgP8SPLJCgP
+   Aey+593legj3sFrawC9+0Ve9xoPOfhcFK7wfbmt0qRTGQ3cLXIAN24+uA
+   Zi36rjwz5FTyAiQ4ZckYfC/USaaXrAs8A64QCNaeIyBb/1/CbUhDbdP20
+   DWdMpCIm9J2k76w3lyvma8LWxTg3hmPN0dUha+PZ5p5SnUzRuxvYqPMl/
+   A==;
+X-CSE-ConnectionGUID: d4eekxv5TlGUhr37FbAx/A==
+X-CSE-MsgGUID: g0avxS1mTXK+N8i3wTeZzw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11326"; a="42273834"
+X-IronPort-AV: E=Sophos;i="6.13,234,1732608000"; 
+   d="scan'208";a="42273834"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2025 09:40:29 -0800
+X-CSE-ConnectionGUID: iyedXbrSQEi3yKmYLw1awA==
+X-CSE-MsgGUID: ijCnw990T2OGPRQ+vLhB5A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="145287703"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 25 Jan 2025 09:40:28 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tbk8v-000e4o-1K;
+	Sat, 25 Jan 2025 17:40:25 +0000
+Date: Sun, 26 Jan 2025 01:39:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ dae68fba8e115fd84d820354f79da1481135acbd
+Message-ID: <202501260130.zrXfYH8y-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The per-task and per-cpu accounting have already been tracked by
-t->sched_info.run_delay and rq->rq_sched_info.run_delay respectively.
-Extends this to also include cgroups.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: dae68fba8e115fd84d820354f79da1481135acbd  cgroup/cpuset: Move procfs cpuset attribute under cgroup-v1.c
 
-The PSI indicator, "some" of cpu.pressure, loses the insight into how
-severely that cgroup is stalled. Say 100 tasks or just 1 task that gets
-stalled at a certain point will show no difference in "some" pressure.
-IOW "some" is a flat value that not weighted by the severity (e.g. # of
-tasks).
+elapsed time: 1162m
 
-Only cgroup v2 is supported. Similar to the task accounting, the cgroup
-accounting requires that CONFIG_SCHED_INFO is enabled.
+configs tested: 205
+configs skipped: 7
 
-Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
----
- Documentation/admin-guide/cgroup-v2.rst |  1 +
- include/linux/cgroup-defs.h             |  3 +++
- include/linux/kernel_stat.h             | 14 ++++++++++++++
- kernel/cgroup/rstat.c                   | 17 +++++++++++++++++
- kernel/sched/cputime.c                  | 12 ++++++++++++
- kernel/sched/stats.h                    |  2 ++
- 6 files changed, 49 insertions(+)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 315ede811c9d..440c3800c49c 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1100,6 +1100,7 @@ All time durations are in microseconds.
- 	- usage_usec
- 	- user_usec
- 	- system_usec
-+	- run_delay_usec	(requires CONFIG_SCHED_INFO)
- 
- 	and the following five when the controller is enabled:
- 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 1b20d2d8ef7c..287366e60414 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -328,6 +328,9 @@ struct cgroup_base_stat {
- 	u64 forceidle_sum;
- #endif
- 	u64 ntime;
-+#ifdef CONFIG_SCHED_INFO
-+	u64 run_delay;
-+#endif
- };
- 
- /*
-diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
-index b97ce2df376f..256b1a55de62 100644
---- a/include/linux/kernel_stat.h
-+++ b/include/linux/kernel_stat.h
-@@ -31,6 +31,15 @@ enum cpu_usage_stat {
- 	CPUTIME_FORCEIDLE,
- #endif
- 	NR_STATS,
-+
-+#ifdef CONFIG_SCHED_INFO
-+	/*
-+	 * Instead of cputime, run_delay is tracked through
-+	 * sched_info by task and rq, so there is no need to
-+	 * enlarge the cpustat[] array.
-+	 */
-+	CPUTIME_RUN_DELAY,
-+#endif
- };
- 
- struct kernel_cpustat {
-@@ -141,4 +150,9 @@ extern void account_idle_ticks(unsigned long ticks);
- extern void __account_forceidle_time(struct task_struct *tsk, u64 delta);
- #endif
- 
-+#ifdef CONFIG_SCHED_INFO
-+extern void account_run_delay_time(struct task_struct *tsk, u64 delta);
-+extern u64 get_cpu_run_delay(int cpu);
-+#endif
-+
- #endif /* _LINUX_KERNEL_STAT_H */
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index dc6acab00d69..c7f9397a714e 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -445,6 +445,9 @@ static void cgroup_base_stat_add(struct cgroup_base_stat *dst_bstat,
- 	dst_bstat->forceidle_sum += src_bstat->forceidle_sum;
- #endif
- 	dst_bstat->ntime += src_bstat->ntime;
-+#ifdef CONFIG_SCHED_INFO
-+	dst_bstat->run_delay += src_bstat->run_delay;
-+#endif
- }
- 
- static void cgroup_base_stat_sub(struct cgroup_base_stat *dst_bstat,
-@@ -457,6 +460,9 @@ static void cgroup_base_stat_sub(struct cgroup_base_stat *dst_bstat,
- 	dst_bstat->forceidle_sum -= src_bstat->forceidle_sum;
- #endif
- 	dst_bstat->ntime -= src_bstat->ntime;
-+#ifdef CONFIG_SCHED_INFO
-+	dst_bstat->run_delay -= src_bstat->run_delay;
-+#endif
- }
- 
- static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu)
-@@ -551,6 +557,11 @@ void __cgroup_account_cputime_field(struct cgroup *cgrp,
- 	case CPUTIME_FORCEIDLE:
- 		rstatc->bstat.forceidle_sum += delta_exec;
- 		break;
-+#endif
-+#ifdef CONFIG_SCHED_INFO
-+	case CPUTIME_RUN_DELAY:
-+		rstatc->bstat.run_delay += delta_exec;
-+		break;
- #endif
- 	default:
- 		break;
-@@ -596,6 +607,9 @@ static void root_cgroup_cputime(struct cgroup_base_stat *bstat)
- 		bstat->forceidle_sum += cpustat[CPUTIME_FORCEIDLE];
- #endif
- 		bstat->ntime += cpustat[CPUTIME_NICE];
-+#ifdef CONFIG_SCHED_INFO
-+		bstat->run_delay += get_cpu_run_delay(i);
-+#endif
- 	}
- }
- 
-@@ -611,6 +625,9 @@ static struct bstat_entry {
- 	BSTAT_ENTRY("nice_usec",	ntime),
- #ifdef CONFIG_SCHED_CORE
- 	BSTAT_ENTRY("core_sched.force_idle_usec", forceidle_sum),
-+#endif
-+#ifdef CONFIG_SCHED_INFO
-+	BSTAT_ENTRY("run_delay_usec",	run_delay),
- #endif
- 	{ NULL } /* must be at end */
- #undef BSTAT_ENTRY
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index 5d9143dd0879..e6be57cdb54e 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -243,6 +243,18 @@ void __account_forceidle_time(struct task_struct *p, u64 delta)
- }
- #endif
- 
-+#ifdef CONFIG_SCHED_INFO
-+void account_run_delay_time(struct task_struct *p, u64 delta)
-+{
-+	cgroup_account_cputime_field(p, CPUTIME_RUN_DELAY, delta);
-+}
-+
-+u64 get_cpu_run_delay(int cpu)
-+{
-+	return cpu_rq(cpu)->rq_sched_info.run_delay;
-+}
-+#endif
-+
- /*
-  * When a guest is interrupted for a longer amount of time, missed clock
-  * ticks are not redelivered later. Due to that, this function may on
-diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
-index 6ade91bce63e..b21a2c4b9c54 100644
---- a/kernel/sched/stats.h
-+++ b/kernel/sched/stats.h
-@@ -249,6 +249,7 @@ static inline void sched_info_dequeue(struct rq *rq, struct task_struct *t)
- 	t->sched_info.last_queued = 0;
- 	t->sched_info.run_delay += delta;
- 
-+	account_run_delay_time(t, delta);
- 	rq_sched_info_dequeue(rq, delta);
- }
- 
-@@ -271,6 +272,7 @@ static void sched_info_arrive(struct rq *rq, struct task_struct *t)
- 	t->sched_info.last_arrival = now;
- 	t->sched_info.pcount++;
- 
-+	account_run_delay_time(t, delta);
- 	rq_sched_info_arrive(rq, delta);
- }
- 
--- 
-2.37.3
+tested configs:
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    clang-20
+alpha                            allyesconfig    gcc-14.2.0
+alpha                               defconfig    gcc-14.2.0
+arc                              allmodconfig    clang-18
+arc                              allmodconfig    gcc-13.2.0
+arc                               allnoconfig    gcc-13.2.0
+arc                               allnoconfig    gcc-14.2.0
+arc                              allyesconfig    clang-18
+arc                              allyesconfig    gcc-13.2.0
+arc                                 defconfig    gcc-14.2.0
+arc                   randconfig-001-20250125    gcc-13.2.0
+arc                   randconfig-002-20250125    gcc-13.2.0
+arc                           tb10x_defconfig    gcc-14.2.0
+arm                              allmodconfig    clang-18
+arm                              allmodconfig    gcc-14.2.0
+arm                               allnoconfig    clang-17
+arm                               allnoconfig    gcc-14.2.0
+arm                              allyesconfig    clang-18
+arm                              allyesconfig    gcc-14.2.0
+arm                                 defconfig    gcc-14.2.0
+arm                       imx_v6_v7_defconfig    gcc-14.1.0
+arm                          pxa168_defconfig    gcc-14.1.0
+arm                   randconfig-001-20250125    gcc-14.2.0
+arm                   randconfig-002-20250125    gcc-14.2.0
+arm                   randconfig-003-20250125    clang-18
+arm                   randconfig-004-20250125    clang-20
+arm64                            allmodconfig    clang-18
+arm64                             allnoconfig    gcc-14.2.0
+arm64                               defconfig    gcc-14.2.0
+arm64                 randconfig-001-20250125    gcc-14.2.0
+arm64                 randconfig-002-20250125    gcc-14.2.0
+arm64                 randconfig-003-20250125    gcc-14.2.0
+arm64                 randconfig-004-20250125    gcc-14.2.0
+csky                              allnoconfig    gcc-14.2.0
+csky                                defconfig    gcc-14.2.0
+csky                  randconfig-001-20250125    gcc-14.2.0
+csky                  randconfig-002-20250125    gcc-14.2.0
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    clang-20
+hexagon                           allnoconfig    gcc-14.2.0
+hexagon                          allyesconfig    clang-18
+hexagon                          allyesconfig    clang-20
+hexagon                             defconfig    gcc-14.2.0
+hexagon               randconfig-001-20250125    clang-20
+hexagon               randconfig-001-20250125    gcc-14.2.0
+hexagon               randconfig-002-20250125    clang-20
+hexagon               randconfig-002-20250125    gcc-14.2.0
+i386                             allmodconfig    clang-19
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    clang-19
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    clang-19
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250125    gcc-12
+i386        buildonly-randconfig-002-20250125    clang-19
+i386        buildonly-randconfig-003-20250125    gcc-12
+i386        buildonly-randconfig-004-20250125    clang-19
+i386        buildonly-randconfig-005-20250125    clang-19
+i386        buildonly-randconfig-006-20250125    gcc-12
+i386                                defconfig    clang-19
+i386                  randconfig-001-20250125    clang-19
+i386                  randconfig-002-20250125    clang-19
+i386                  randconfig-003-20250125    clang-19
+i386                  randconfig-004-20250125    clang-19
+i386                  randconfig-005-20250125    clang-19
+i386                  randconfig-006-20250125    clang-19
+i386                  randconfig-007-20250125    clang-19
+i386                  randconfig-011-20250125    gcc-12
+i386                  randconfig-012-20250125    gcc-12
+i386                  randconfig-013-20250125    gcc-12
+i386                  randconfig-014-20250125    gcc-12
+i386                  randconfig-015-20250125    gcc-12
+i386                  randconfig-016-20250125    gcc-12
+i386                  randconfig-017-20250125    gcc-12
+loongarch                        allmodconfig    gcc-14.2.0
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch                           defconfig    gcc-14.2.0
+loongarch             randconfig-001-20250125    gcc-14.2.0
+loongarch             randconfig-002-20250125    gcc-14.2.0
+m68k                             allmodconfig    gcc-14.2.0
+m68k                              allnoconfig    gcc-14.2.0
+m68k                             allyesconfig    gcc-14.2.0
+m68k                                defconfig    gcc-14.2.0
+m68k                          hp300_defconfig    gcc-14.1.0
+m68k                        mvme16x_defconfig    gcc-14.2.0
+microblaze                       allmodconfig    gcc-14.2.0
+microblaze                        allnoconfig    gcc-14.2.0
+microblaze                       allyesconfig    gcc-14.2.0
+microblaze                          defconfig    gcc-14.2.0
+mips                              allnoconfig    gcc-14.2.0
+nios2                             allnoconfig    gcc-14.2.0
+nios2                               defconfig    gcc-14.2.0
+nios2                 randconfig-001-20250125    gcc-14.2.0
+nios2                 randconfig-002-20250125    gcc-14.2.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+openrisc                            defconfig    gcc-12
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                              defconfig    gcc-12
+parisc                randconfig-001-20250125    gcc-14.2.0
+parisc                randconfig-002-20250125    gcc-14.2.0
+parisc64                         alldefconfig    gcc-14.1.0
+parisc64                            defconfig    gcc-14.2.0
+powerpc                          allmodconfig    gcc-14.2.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-16
+powerpc                          allyesconfig    gcc-14.2.0
+powerpc                     mpc512x_defconfig    gcc-14.2.0
+powerpc               randconfig-001-20250125    clang-18
+powerpc               randconfig-001-20250125    gcc-14.2.0
+powerpc               randconfig-002-20250125    gcc-14.2.0
+powerpc               randconfig-003-20250125    gcc-14.2.0
+powerpc                    sam440ep_defconfig    gcc-14.1.0
+powerpc                     stx_gp3_defconfig    gcc-14.2.0
+powerpc64             randconfig-001-20250125    gcc-14.2.0
+powerpc64             randconfig-002-20250125    clang-20
+powerpc64             randconfig-002-20250125    gcc-14.2.0
+powerpc64             randconfig-003-20250125    clang-16
+powerpc64             randconfig-003-20250125    gcc-14.2.0
+riscv                            allmodconfig    clang-20
+riscv                            allmodconfig    gcc-14.2.0
+riscv                             allnoconfig    gcc-14.2.0
+riscv                            allyesconfig    clang-20
+riscv                            allyesconfig    gcc-14.2.0
+riscv                               defconfig    gcc-12
+riscv                 randconfig-001-20250125    gcc-14.2.0
+riscv                 randconfig-002-20250125    gcc-14.2.0
+s390                             allmodconfig    clang-19
+s390                             allmodconfig    gcc-14.2.0
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.2.0
+s390                          debug_defconfig    gcc-14.1.0
+s390                                defconfig    gcc-12
+s390                                defconfig    gcc-14.2.0
+s390                  randconfig-001-20250125    clang-19
+s390                  randconfig-001-20250125    gcc-14.2.0
+s390                  randconfig-002-20250125    clang-20
+s390                  randconfig-002-20250125    gcc-14.2.0
+sh                               allmodconfig    gcc-14.2.0
+sh                                allnoconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                                  defconfig    gcc-12
+sh                ecovec24-romimage_defconfig    gcc-14.1.0
+sh                    randconfig-001-20250125    gcc-14.2.0
+sh                    randconfig-002-20250125    gcc-14.2.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                             allnoconfig    gcc-14.2.0
+sparc                 randconfig-001-20250125    gcc-14.2.0
+sparc                 randconfig-002-20250125    gcc-14.2.0
+sparc64                             defconfig    gcc-12
+sparc64               randconfig-001-20250125    gcc-14.2.0
+sparc64               randconfig-002-20250125    gcc-14.2.0
+um                               allmodconfig    clang-20
+um                                allnoconfig    clang-18
+um                               allyesconfig    clang-20
+um                               allyesconfig    gcc-12
+um                                  defconfig    gcc-12
+um                             i386_defconfig    gcc-12
+um                    randconfig-001-20250125    clang-20
+um                    randconfig-001-20250125    gcc-14.2.0
+um                    randconfig-002-20250125    gcc-11
+um                    randconfig-002-20250125    gcc-14.2.0
+um                           x86_64_defconfig    gcc-12
+x86_64                            allnoconfig    clang-19
+x86_64                           allyesconfig    clang-19
+x86_64      buildonly-randconfig-001-20250125    clang-19
+x86_64      buildonly-randconfig-002-20250125    clang-19
+x86_64      buildonly-randconfig-002-20250125    gcc-11
+x86_64      buildonly-randconfig-003-20250125    clang-19
+x86_64      buildonly-randconfig-004-20250125    clang-19
+x86_64      buildonly-randconfig-004-20250125    gcc-12
+x86_64      buildonly-randconfig-005-20250125    clang-19
+x86_64      buildonly-randconfig-006-20250125    clang-19
+x86_64      buildonly-randconfig-006-20250125    gcc-12
+x86_64                              defconfig    clang-19
+x86_64                              defconfig    gcc-11
+x86_64                                  kexec    clang-19
+x86_64                randconfig-001-20250125    clang-19
+x86_64                randconfig-002-20250125    clang-19
+x86_64                randconfig-003-20250125    clang-19
+x86_64                randconfig-004-20250125    clang-19
+x86_64                randconfig-005-20250125    clang-19
+x86_64                randconfig-006-20250125    clang-19
+x86_64                randconfig-007-20250125    clang-19
+x86_64                randconfig-008-20250125    clang-19
+x86_64                randconfig-071-20250125    clang-19
+x86_64                randconfig-072-20250125    clang-19
+x86_64                randconfig-073-20250125    clang-19
+x86_64                randconfig-074-20250125    clang-19
+x86_64                randconfig-075-20250125    clang-19
+x86_64                randconfig-076-20250125    clang-19
+x86_64                randconfig-077-20250125    clang-19
+x86_64                randconfig-078-20250125    clang-19
+x86_64                               rhel-9.4    clang-19
+x86_64                           rhel-9.4-bpf    clang-19
+x86_64                         rhel-9.4-kunit    clang-19
+x86_64                           rhel-9.4-ltp    clang-19
+x86_64                          rhel-9.4-rust    clang-19
+xtensa                            allnoconfig    gcc-14.2.0
+xtensa                randconfig-001-20250125    gcc-14.2.0
+xtensa                randconfig-002-20250125    gcc-14.2.0
+xtensa                         virt_defconfig    gcc-14.2.0
 
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
