@@ -1,103 +1,165 @@
-Return-Path: <cgroups+bounces-6328-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6329-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2672AA1C53C
-	for <lists+cgroups@lfdr.de>; Sat, 25 Jan 2025 22:11:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C5A2A1CCAF
+	for <lists+cgroups@lfdr.de>; Sun, 26 Jan 2025 17:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0B903A49B7
-	for <lists+cgroups@lfdr.de>; Sat, 25 Jan 2025 21:11:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C068C1884B5C
+	for <lists+cgroups@lfdr.de>; Sun, 26 Jan 2025 16:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A88220127B;
-	Sat, 25 Jan 2025 21:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21ADA154BE5;
+	Sun, 26 Jan 2025 16:38:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VXYm1J23"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b="sr0KJfn3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E101C201261;
-	Sat, 25 Jan 2025 21:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C492A92E
+	for <cgroups@vger.kernel.org>; Sun, 26 Jan 2025 16:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737839483; cv=none; b=tIhjJGFAWBeiXet082fATvnrt+jSW42kmRh5eUCsv8n9ch4h0I4v1xX0kafMzoBUuztQIrtUkNjCB0/iW6ZTiOeRYIuhZDcu3Fi3fTP5tBIT5n3I7Vwps+R9o+LxHgwqvN+3c1pXUCutK1eg9pR3YqY2aMEiD62+roEfMtRx1TQ=
+	t=1737909513; cv=none; b=q+k5KeUDsHY0isDmtZvT9se/vrIh0ipCSXuLHZ/J+X/70gAsRQ6uevGc41uDfL0DnlKWTtgYrUdVQXnva+zP/u1lPPzpTZNBofQd1XxfR38i7rccQJ8bfI/gnYoggTz1OjRWmpj2A67+ADEZa9T6dqybm+PRph3rUQ8I6iNYwfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737839483; c=relaxed/simple;
-	bh=WwBHBjXL9Tl0sCV996E+xmN/tqzCflQlGBIkEMaATss=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G8MG1RpugxxXxocZnYGtWhY//1uiIcZGKAFjspB+gdAWlTnZaP67z2NKeSUR84g9t0MlArhFRyPT/sHjxfc12faITb9EUyWBX9qfeFoa3VZfgApmIhoLLRxsrZHcC/eiLlx291mhYhD1U/3h4j7oGIi92nN7GraQk1zyHBp+EIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VXYm1J23; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=hTC7xZP00vZwuqeUX/Qi4a89pRjLh3//dnH8lrPL87c=; b=VXYm1J23cWK45LRtI+ytieiEkS
-	kYr7WD+LswZg9KHQeHDLMp44H9Pbmeqpe/m1UoGnB27DO2opHk6Q7R5zpdfVyrwV7HJVm9YkaN/BT
-	W4oDcyBj9smeuWkbQ8ScD7kz4zlDIqdz7vTfLricLnyOS1KZ5yOCkkoemN5lL1jF4BCrEZJDH5RSS
-	DQJ7N94YGHRWCQvCrE95SZLGJQc4Rjs6YUUbo6KOOkH3vR3nGueuigahxwLD0V9NwiQkIhsCtSvim
-	5aXdyV+yA2ZnJ2/JMkxQ3CDi6Kd8NmApfkXhib4bMAWwLLypl1KJLVAgbH8Y5QnbsV6AEQ8XzAsFN
-	hCminmZg==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tbnQc-000000071OE-2pbA;
-	Sat, 25 Jan 2025 21:10:54 +0000
-Date: Sat, 25 Jan 2025 21:10:54 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Anthony Yznaga <anthony.yznaga@oracle.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org,
-	markhemm@googlemail.com, viro@zeniv.linux.org.uk, david@redhat.com,
-	khalid@kernel.org, jthoughton@google.com, corbet@lwn.net,
-	dave.hansen@intel.com, kirill@shutemov.name, luto@kernel.org,
-	brauner@kernel.org, arnd@arndb.de, ebiederm@xmission.com,
-	catalin.marinas@arm.com, mingo@redhat.com, peterz@infradead.org,
-	liam.howlett@oracle.com, lorenzo.stoakes@oracle.com, vbabka@suse.cz,
-	jannh@google.com, hannes@cmpxchg.org, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, tglx@linutronix.de, cgroups@vger.kernel.org,
-	x86@kernel.org, linux-doc@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, mhiramat@kernel.org, rostedt@goodmis.org,
-	vasily.averin@linux.dev, xhao@linux.alibaba.com, pcc@google.com,
-	neilb@suse.de, maz@kernel.org
-Subject: Re: [PATCH 01/20] mm: Add msharefs filesystem
-Message-ID: <Z5VTXhszpk3_zfV1@casper.infradead.org>
-References: <20250124235454.84587-1-anthony.yznaga@oracle.com>
- <20250124235454.84587-2-anthony.yznaga@oracle.com>
- <879e64a0-f097-4bde-ae31-25a1adc30d5f@infradead.org>
- <f515279e-235e-4396-9c91-cbf67083001f@oracle.com>
+	s=arc-20240116; t=1737909513; c=relaxed/simple;
+	bh=DrOnu994Fy2B/xLFO44oKsSRBnNBHk4YqbY9wH66+4E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=glPdxb2qeOB+H4x77tnXjvWTiRxwrqseHQ27xRdGALyTc5s8jl+gV+pbyCT0RLdqjyTDUZG2VeqAV7ITQxvNK+cGhFzMcm8YcEcIGWp4/NQnogckNftUydpEaUusN+IfL6N0YS0+t/YKCHRnpxKbPjOVu1Ho+Y+9Ic6xFp70o3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b=sr0KJfn3; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1737909500; x=1738514300; i=friedrich.vock@gmx.de;
+	bh=+uNvDFJsbol9zWzOErJjvH+WZqG+4taeD/WTOcbIM10=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=sr0KJfn36XmYCdUTDR3zjUNDqdlp9lprWELaGV69OxtZF4m0L2quBPpjitx5kbQc
+	 /D7pakqMTdWRCF0QuIaED06ebbraNQ0hkZzIoUYTcQGJPicAbr5ZWkUP7NtBNqcOG
+	 8AD0sBrrj5cmRXWNwxBKafzrRRrbOzGhqohyfWTDlZ6rve3l1Y1DFtWoNCh1GJZvH
+	 SFFs8tTysH5KzBOxO2xWm4T2+fDoiQgCstG3bC1m0KdBDvL8UD5iekrKZG+2hIJ9e
+	 EyyzVx4NuHWaSxsm/vFfHxD2XZnAIQpKGzM2K9HRDVAxsgxj/F4Rmjy6zcSEATG+2
+	 RnNOQFx5coRcEKzZng==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.53] ([77.179.97.224]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Msq24-1tMlee0bPc-016EUs; Sun, 26
+ Jan 2025 17:38:20 +0100
+Message-ID: <2a5c5c05-1d54-4b23-898b-ab4ef96fa61c@gmx.de>
+Date: Sun, 26 Jan 2025 17:38:19 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f515279e-235e-4396-9c91-cbf67083001f@oracle.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup/dmem: Don't clobber pool in
+ dmem_cgroup_calculate_protection
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ Simona Vetter <simona.vetter@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ Maarten Lankhorst <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>,
+ dri-devel@lists.freedesktop.org, cgroups@vger.kernel.org
+References: <20250114153912.278909-1-friedrich.vock@gmx.de>
+ <ijjhmxsu5l7nvabyorzqxd5b5xml7eantom4wtgdwqeq7bmy73@cz7doxxi57ig>
+ <4d6ccc9a-3db9-4d5b-87c9-267b659c2a1b@gmx.de>
+ <oe3qgfb3jfzoacfh7efpvmuosravx5kra3ss67zqem6rbtctws@5dmmklctrg3x>
+ <672de60e-5c10-406b-927c-7940d2fbc921@gmx.de>
+ <qu3jdiik2sfstey4ecxdojndkzb5gzblg37i76p43xccnotawl@jlbafrgjad2x>
+Content-Language: en-US
+From: Friedrich Vock <friedrich.vock@gmx.de>
+In-Reply-To: <qu3jdiik2sfstey4ecxdojndkzb5gzblg37i76p43xccnotawl@jlbafrgjad2x>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Z1HTYfykAZOaBEjxJ5iDUMZtoZp8JWVvhPUcvWSr5ohjZh0uGaY
+ nBeodp3ygmyswdHi592AJvgD+DpivC95NTRYNAwj+L6D5S+RjC8GTISeKREZYx0GjrCjmZC
+ k1CwbK7QkNgBSHfkGFWli9iDyHYLD/k+t29m8eUHHJsU09l9pWssRkGFtIwFZtVc+GcHePP
+ hFAYuyW+qGhtEFyyOrAqQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:c/iwLNE90WE=;HZs+bHxGEadtRJIte0AXP5+8QZJ
+ RuKJCTEWuhUzzWwS/GDd1FVg6UeYYCTMiYbl4Ygx0IVPBJW3MH8T+08wAm/EWbi7rKqWp7XdU
+ TZgMsjeMqSitOqCVIX8s/Q9PtQ4hOLWtQo5EbBAs6ynE5W/GyRFXJpqhNudY95dKYxjfueEuz
+ iLzZ46TE3Cyy2sjU7GAwb0+vCHgXJenCRVRlVZ7Z9fKs1xUVMH7lIgtTLlVzMq0ccYotJKVXQ
+ Rnq028lpSwH1HQ81D4WTFpCt+Q10fYamjr2xE9L0Qa6tTMsHYPhOzfleBMHMcssqQ1Pz69IB6
+ +ejGbHlx+RcqupRIcobYCEdvU67QfvKEAPPyBmKDykcMyB8u6/nBRQKt4LeyzOvfXPXwq80kq
+ W/oQ1Q/jot6Ltlo9FGf1GSY5NFriJBWOem5wVEpLUfiNLLWRd8/qfHIdsHK/4HBBTJ81cfdC9
+ D/z+C0ToSrjYuAGsj5Tgm6uXSX6GfhqX3r2B6wWAfUJ5AlYCywyB/H7Zn8nOcQEneVPej2BOe
+ xghpOYSZT0AijcFH7jT9j7/UTe0raf2wJRKZr42tblFthNr2ILs+5lM7npZzkj4SHGtXESGq+
+ POwu4qjt2BRF4rQ+cARI04JbMEwlH44eUz2orUgitrFPvM4n8jnmLPgWyG+dSa9XKt4Hp3X5y
+ FFMZ/ziP+iQv2bMFfu9G3tYrEO+M+da12BtMtFpQrQoJ5Q0rt3nPItjZCsg7A4fblhlimetjk
+ rqRM0PAXuxAc4/jL8KnITmekbs3IYujZ9+juXIkKZ3tBBncqCNmgPKT55RY5EaND6JcGKWDWS
+ yZ+AyOYpDbjL7Lc9v+750cPhJDCqStejr2bM3F6860Hs77EvOfm+jmCa/cluQ8ASfKiIBlRqy
+ CmlPqYBJJF7w7IHaSvFGBhTq2u1N94py4R16g0s5GPwDFF6d1rjddP9f4M3bfPdCOTu1TFQfK
+ TMd0IpL3ZLJUTNPso7qgvAaPyWfd21KeYdgDhpYdwxHwam4bkLnsPBYNo4mAxsAgzhiPxH5ko
+ oXFkbSEP4eQ4sHGI0ZtuZMQNYxIFvrmWE0xOpoRljiL+UaMc/RZPUSA+HrUEvdTnM7krmH++p
+ qOnbIau4imU6J/C+Kj+byL0JXEaCjkP09uSPP/rlwm06cTCOc2LxEsnZ6yUL1Y7YHQ4esUcvD
+ mQf820JT4C63J65kiDx5XNlt69fuNkOpnKV87GP97Nw==
 
-On Sat, Jan 25, 2025 at 12:05:47PM -0800, Anthony Yznaga wrote:
-> 
-> On 1/24/25 7:13 PM, Randy Dunlap wrote:
-> > Just nits:
-> > 
-> > 
-> > On 1/24/25 3:54 PM, Anthony Yznaga wrote:
-> > > diff --git a/mm/Kconfig b/mm/Kconfig
-> > > index 1b501db06417..ba3dbe31f86a 100644
-> > > --- a/mm/Kconfig
-> > > +++ b/mm/Kconfig
-> > > @@ -1358,6 +1358,15 @@ config PT_RECLAIM
-> > >   	  Note: now only empty user PTE page table pages will be reclaimed.
-> > > +config MSHARE
-> > > +	bool "Mshare"
-> > > +	depends on MMU
-> > > +	help
-> > > +	  Enable msharefs: A ram-based filesystem that allows multiple
-> > 	                     RAM-based
+On 24.01.25 10:56, Michal Koutn=C3=BD wrote:
+> On Fri, Jan 17, 2025 at 08:02:55PM +0100, Friedrich Vock <friedrich.vock=
+@gmx.de> wrote:
+>> Yeah, there are pools for the whole path between limit_pool and
+>> test_pool, but the issue is that we traverse the entire tree of cgroups=
+,
+>> and we don't always stay on the path between limit_pool and test_pool
+>> (because we're iterating from the top down, and we don't know what the
+>> path is in that direction - so we just traverse the whole tree until we
+>> find test_pool).
+>>
+>> This means that we'll sometimes end up straying off-path - and there ar=
+e
+>> no guarantees for which pools are present in the cgroups we visit there=
+.
+>> These cgroups are the potentially problematic ones where the issue can
+>> happen.
+>>
+>> Ideally we could always stay on the path between limit_pool and
+>> test_pool, but this is hardly possible because we can only follow paren=
+t
+>> links (so bottom-up traversal) but for accurate protection calculation
+>> we need to traverse the path top-down.
+>
+> Aha, thanks for bearing with me.
+>
+> 	css_foreach_descendant_pre(css, limit_pool->cs->css) {
+> 		dmemcg_iter =3D container_of(css, struct dmemcg_state, css);
+>
+> 		struct dmem_cgroup_pool_state *found_pool =3D NULL;
+> 		list_for_each_entry_rcu(pool, &dmemcg_iter->pools, css_node) {
+> 			if (pool->region =3D=3D limit_pool->region) {
+> 				found_pool =3D pool
+> 				break;
+> 			}
+> 		}
+> 		if (!found_pool)
+> 			continue;
+>
+> 		page_counter_calculate_protection(
+> 			climit, &found->cnt, true);
+> 	}
+>
+> Here I use (IMO) more idiomatic css_foreach_descendant_pre() instead and
+> I use the predicate based on ->region (correct?) to match pool's
+> devices.
 
-But it's not a ram-based filesystem.  It's a pseudo-filesystem like
-procfs.  It doesn't have any memory of its own.
+Good catch with ->region! That works well indeed, I think it might not
+have been a thing back when I wrote this tree traversal :>
+
+I've applied this snippet (with a few minor edits) and taken it for a
+test run too - it appears to work nicely in practice as well. I'll send
+out a v2 with this approach tomorrow.
+
+Thanks,
+Friedrich
+
+>
+> Would that work as intended?
+>
+> Michal
+
 
