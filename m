@@ -1,136 +1,233 @@
-Return-Path: <cgroups+bounces-6356-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6357-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABB56A2071D
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jan 2025 10:19:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A1B9A20735
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jan 2025 10:21:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 171E7168A1B
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jan 2025 09:19:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 461F9188315E
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jan 2025 09:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB2E1F76C1;
-	Tue, 28 Jan 2025 09:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9841DF99F;
+	Tue, 28 Jan 2025 09:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Wpum4YqR"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="STYX81fj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BDC51F76B6
-	for <cgroups@vger.kernel.org>; Tue, 28 Jan 2025 09:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A23429CF0
+	for <cgroups@vger.kernel.org>; Tue, 28 Jan 2025 09:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738055818; cv=none; b=bFO6vvu+9j0rFq+v4TTAqZyKzJcIn5nV8yAJ5+I2d/IBGilehWAB9zlVRudC8JrcJ9RqxpjqCleIrzGLlPrN80xHfCmUhnaoh52f1OHgxpCB7BS4EVAfKGUpZHdjANb2jgMoXAEFPVmsV8L+ODzS0Jik1rSGo1f2M5AYKFVdaHo=
+	t=1738056094; cv=none; b=HZyrL5vGvQAkiCXUKj7nR/BIoA0QPHQdR/hqxmtA9djebaPZIJrR6rCluefXN6NHIFX7oczDADQVPoqPpN/duX1CF0Rgowbt1IYYji6+TKMCKm/MfsuWbetkQL+N81Ozlm2rrel4BjsdSy9wxxajzFbXwZpF70w92EseKozgl4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738055818; c=relaxed/simple;
-	bh=hwP9YzLbjeqUhQqHf84hDh2Rku2vfkZT4z1/7mJ77UA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mLU65M91HQ2VrPaXqXl8SeMHG2i7iBBaeQxqc4K1R7ejhJ3lR313PWTdERtHcbcPwvbCmBAr1yhf7WdsnKvrx7t6BcCtn/+F7F5U7nNXw/m4EQaZRLo3oSJqqNS+Ka4KGscBnyp81l0MO9tPmCK9Z+KhlRo4K3NdvlaelKP/5+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Wpum4YqR; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-43621d27adeso35692685e9.2
-        for <cgroups@vger.kernel.org>; Tue, 28 Jan 2025 01:16:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1738055814; x=1738660614; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VX5ZJlhZysoP40bJCjyiyaJ04EwsYMPXplD4Ebgs3GY=;
-        b=Wpum4YqR5qPdakfvnZWqS94qV+Hk2E7KAWwWNiqRJt3A71fKFHHRRuxxwFtDruVC82
-         Ipo4x8S5hxC6fwz84eu13PorNOQFkYPKIf5oG1krheye30bH80iMpSbVduzOXCzhqR4X
-         B+fa3qscS3KcbK7kdkyx0kn6IsyC/K5bUnaoUBgXOQRH9QOMNjRWRyZYMXE3xbwTT9Sd
-         Onq1VVAb/6d+orijszsc5//t19X0xOfQ+JuU1D0S/Aef5sUOd9TcbZ2GbFtZvmOMVA1p
-         t81kQ+F9BGKspmmlxZcoJxPff5pLHNKoHPYdQFZpVDRzlumt6xe6bXYKXdHXfOqVUYmF
-         qo8Q==
+	s=arc-20240116; t=1738056094; c=relaxed/simple;
+	bh=mCmXjknTtIcjFJNty5WDJ3v8zj9pwJsL4dbbEBENa9w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qNJ/CvSHYtn28jnJwTXUUYaYtQ2ad+RauZr0ZhBIJrZBQgPCQJ0vqFBdVB2zkEOsjTScDCJWRUxnkvJMLULOAtU2uCYqzPfZXimuiG6KUbfLxKLjzd/9gudJ6IoA60r7jz3EOBdxLeBvdORoVL/ZoFoCy80FRiJ5LP+EAcUEvWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=STYX81fj; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1738056092;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=76CON/o+ODpZ363mQWv962ci7akBJ4jlp9OpVn0R1FU=;
+	b=STYX81fjg0DTH6g+VVyEHD8vKz+YGFpJkRG4jXEX5ph11QMnEn8liV4R4TolNCi8v0nx/U
+	HoVhqmdGb681aCekZaPq13dKsnAwrFM/jtJABRIHzC54TAhAqCNm6ZnjazEnm4V6S2k44U
+	QF4itQ56Nt/bIAnL/twFWy+lY5CDXNk=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-511-tTc9OeeXOxy3xnUvDIiOBw-1; Tue, 28 Jan 2025 04:21:29 -0500
+X-MC-Unique: tTc9OeeXOxy3xnUvDIiOBw-1
+X-Mimecast-MFC-AGG-ID: tTc9OeeXOxy3xnUvDIiOBw
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-436723bf7ffso40977145e9.3
+        for <cgroups@vger.kernel.org>; Tue, 28 Jan 2025 01:21:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738055814; x=1738660614;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VX5ZJlhZysoP40bJCjyiyaJ04EwsYMPXplD4Ebgs3GY=;
-        b=Lu6YGvh+0rlwxVNz2c5ofoPF4SJjexO7nilSTkQx9rxckaSfQTsAbjWScgVSmZIAMU
-         uIKI1Wg/gCznP91hOThPHXCAD5pfrr/6t9nd921PtHhI0LG9jUyVeJe7yJylZviVWBRy
-         yOzyh+/GxuPUKE+vBCZjFphABqJLIEIhdea7LleF9pjej+vkhYoZyiGB71yv8yl0/+gL
-         rmlSNtANalihl7zfyTcRVMm4IUp6IecE1KowbFTFRfczN8J3qofzbtcB4E4m5lUO+bh5
-         y5Tze0BJ9C9gTqMOh7T54WBj+jDorgJ4OZ+nfM2p95rFdpSuy4EpqP075bAPxu3yLbXR
-         wIQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUAQOG7WmhkytNkZLDK023Jyq/oWoi2mF3r2EYsb0ujiqbM8UmE46AA7HAN6ejIO0k8aq8Kz5//@vger.kernel.org
-X-Gm-Message-State: AOJu0YyblkwEG8hLk0+9HuNLBvH1ygrYns97/kP/kCZ56BPOAe8PS/7O
-	MvG8Sbme4uYm6q0nBq6ZZXmKIngDSXRfW2u6HaiN03uwre1X/Yqz6wOJsx2c/yDj+6SJnFAhcv4
-	P
-X-Gm-Gg: ASbGnctjj+6dfQdLEDhoQ2AUjkHhjQyDUsRUjMy6YGwg8qOIzmWgRU2c6QfbMkzk2Qx
-	v9nya7nwxqGHBWDApi4lzNcsSt1k22jBLiN6XJ3h3S31L21gMZm+kGhfE+RJe0fDFliJCT/N9eQ
-	b9I9e87AWsY9umP3hg2j1/UxW78OpYqX2fuo/9xanLRt1ysy96Xz245c73CoYvIOQySOeVtB3oG
-	9p/bLBq87HreOQIy7FaEJE/iQuSJ8hOsz0EKcssCaZT63Ttn5FyPz+4ATVFz9saTDX+fVzXE8tn
-	Tp4kHVmDlpLfr246FQ==
-X-Google-Smtp-Source: AGHT+IF6tnfWH3JAx6zXlQnkGP4HTlO2tbMDCBVW3UBNVZobWqGBzp6phgNemBSGDjzFjKpNWV9tCw==
-X-Received: by 2002:a05:600c:35d6:b0:431:5aea:95f with SMTP id 5b1f17b1804b1-438913ed550mr457621265e9.16.1738055813762;
-        Tue, 28 Jan 2025 01:16:53 -0800 (PST)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438bd47f367sm161867605e9.7.2025.01.28.01.16.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jan 2025 01:16:53 -0800 (PST)
-Date: Tue, 28 Jan 2025 10:16:51 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: linux@treblig.org
-Cc: tj@kernel.org, hannes@cmpxchg.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup/misc: Remove unused misc_cg_res_total_usage
-Message-ID: <5tkx5474kjy52pyqixevmujksaj7sdgrmk4fdodmo7j6qbravp@5iscohcabedf>
-References: <20250127235214.277512-1-linux@treblig.org>
+        d=1e100.net; s=20230601; t=1738056088; x=1738660888;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=76CON/o+ODpZ363mQWv962ci7akBJ4jlp9OpVn0R1FU=;
+        b=Ftd5mmwQGchbr3Btaf7Rbnar7gkuwJZsxMNx76kjqeNI0mz5qQkurizikAtboiDau4
+         Vz6f5PeTiIeayYh5/4GFhzQtqyY3zPMOW7yQRp00IQZfwZaP3zSKWyw0EhKQH2PG9aja
+         NtjtQTdE1dz0vi4LAmovXotyABtLf1RyJ5sz6qrANZGw4a21FiAnoVhaKSlkDDfMH7LN
+         UUTZpu5LBmkgSKDpjATgkGePiAvqY170eCjFugvxnDkCLK7vkaV5f6BsixQenKj+RHpk
+         DRcvatc+bo8o06fT4gjVcmdA1iuekdbsSrzrNy7WZVvE3KLAqMgLhnjpK3kSFwNVV/sY
+         IQNA==
+X-Forwarded-Encrypted: i=1; AJvYcCX4ZsEk8P0Q7K+SFKgurGHStYIbbu3XQqMu3RThCPAsSShsccdc0TN7rAoC6c9Xbkmird1qroaI@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzmms94eR8qeYyJt/rA+cVuTrDXy+SENOO5XQ8xK2QjtNUtFb95
+	m9dI/lfK/+s7z6zAOZG7D5iHhRMu+plxGoku+82J88Dd3VQ0AfvQLgV6Tp/qePS/ippPUG1iYZ1
+	5C/4WzoB6wZ2FV13dpJ7qRZBYPLhL5up+eNXXIHmqi6ftu30MPcEOk38=
+X-Gm-Gg: ASbGncsi/CHItpM6ci8z73caNDdXlIjOmHloS1g5OkfnDz/CunzN3lCgkylNy1CTD0P
+	tBYF/IOG4Yj/4fhWWTctDsJw0FxitYqUMDNYBeF8RKqfTH+7Ynxv/84G7WaqNJDoaxVeIkmnceV
+	PDjuxrSouHf8ymB2BMHUXy7rwHEIdD9lBa+XiDgxfoTcCYOLB4LDSHIihdyKaz2FCkkmdHipM3f
+	Hs7Xfssf30ISha5FYHk+Uu4KA0bkLmqdbVr7mmGIUSs8Uzr8WwureQQve6GRGpMIMIwb5DxBHUa
+	xJJoqnzK34qcQ7x6Y2h+pk8HvFJMtiuZIA==
+X-Received: by 2002:a05:6000:4011:b0:38a:4184:152a with SMTP id ffacd0b85a97d-38bf5669eb5mr44324563f8f.28.1738056087957;
+        Tue, 28 Jan 2025 01:21:27 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGvImmYvqk0afzoCeet3qVIqUfCCKPU1AYvRvME2bm0F6aJ80CkP/sZ5UP4Ft2i7kCCjB+S0Q==
+X-Received: by 2002:a05:6000:4011:b0:38a:4184:152a with SMTP id ffacd0b85a97d-38bf5669eb5mr44324508f8f.28.1738056087489;
+        Tue, 28 Jan 2025 01:21:27 -0800 (PST)
+Received: from [192.168.3.141] (p5b0c6662.dip0.t-ipconnect.de. [91.12.102.98])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38c2a1c4006sm13707156f8f.94.2025.01.28.01.21.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Jan 2025 01:21:26 -0800 (PST)
+Message-ID: <c8e2e374-3ce9-45c9-8ae8-7e31fd084e57@redhat.com>
+Date: Tue, 28 Jan 2025 10:21:23 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qpbb4tfhoreouqal"
-Content-Disposition: inline
-In-Reply-To: <20250127235214.277512-1-linux@treblig.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/20] Add support for shared PTEs across processes
+To: Andrew Morton <akpm@linux-foundation.org>,
+ Anthony Yznaga <anthony.yznaga@oracle.com>
+Cc: willy@infradead.org, markhemm@googlemail.com, viro@zeniv.linux.org.uk,
+ khalid@kernel.org, jthoughton@google.com, corbet@lwn.net,
+ dave.hansen@intel.com, kirill@shutemov.name, luto@kernel.org,
+ brauner@kernel.org, arnd@arndb.de, ebiederm@xmission.com,
+ catalin.marinas@arm.com, mingo@redhat.com, peterz@infradead.org,
+ liam.howlett@oracle.com, lorenzo.stoakes@oracle.com, vbabka@suse.cz,
+ jannh@google.com, hannes@cmpxchg.org, mhocko@kernel.org,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ tglx@linutronix.de, cgroups@vger.kernel.org, x86@kernel.org,
+ linux-doc@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhiramat@kernel.org,
+ rostedt@goodmis.org, vasily.averin@linux.dev, xhao@linux.alibaba.com,
+ pcc@google.com, neilb@suse.de, maz@kernel.org
+References: <20250124235454.84587-1-anthony.yznaga@oracle.com>
+ <20250127143339.b1f6b6d5586f319762c5e516@linux-foundation.org>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20250127143339.b1f6b6d5586f319762c5e516@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 27.01.25 23:33, Andrew Morton wrote:
+> On Fri, 24 Jan 2025 15:54:34 -0800 Anthony Yznaga <anthony.yznaga@oracle.com> wrote:
+> 
+>> Memory pages shared between processes require page table entries
+>> (PTEs) for each process. Each of these PTEs consume some of
+>> the memory and as long as the number of mappings being maintained
+>> is small enough, this space consumed by page tables is not
+>> objectionable. When very few memory pages are shared between
+>> processes, the number of PTEs to maintain is mostly constrained by
+>> the number of pages of memory on the system. As the number of shared
+>> pages and the number of times pages are shared goes up, amount of
+>> memory consumed by page tables starts to become significant. This
+>> issue does not apply to threads. Any number of threads can share the
+>> same pages inside a process while sharing the same PTEs. Extending
+>> this same model to sharing pages across processes can eliminate this
+>> issue for sharing across processes as well.
+>>
+>> ...
+>>
+>> API
+>> ===
+>>
+>> mshare does not introduce a new API. It instead uses existing APIs
+>> to implement page table sharing. The steps to use this feature are:
+>>
+>> 1. Mount msharefs on /sys/fs/mshare -
+>>          mount -t msharefs msharefs /sys/fs/mshare
+>>
+>> 2. mshare regions have alignment and size requirements. Start
+>>     address for the region must be aligned to an address boundary and
+>>     be a multiple of fixed size. This alignment and size requirement
+>>     can be obtained by reading the file /sys/fs/mshare/mshare_info
+>>     which returns a number in text format. mshare regions must be
+>>     aligned to this boundary and be a multiple of this size.
+>>
+>> 3. For the process creating an mshare region:
+>>          a. Create a file on /sys/fs/mshare, for example -
+>>                  fd = open("/sys/fs/mshare/shareme",
+>>                                  O_RDWR|O_CREAT|O_EXCL, 0600);
+>>
+>>          b. Establish the starting address and size of the region
+>>                  struct mshare_info minfo;
+>>
+>>                  minfo.start = TB(2);
+>>                  minfo.size = BUFFER_SIZE;
+>>                  ioctl(fd, MSHAREFS_SET_SIZE, &minfo)
+ >>>>          c. Map some memory in the region
+>>                  struct mshare_create mcreate;
+>>
+>>                  mcreate.addr = TB(2);
+ >>                  mcreate.size = BUFFER_SIZE;>> 
+mcreate.offset = 0;
+>>                  mcreate.prot = PROT_READ | PROT_WRITE;
+>>                  mcreate.flags = MAP_ANONYMOUS | MAP_SHARED | MAP_FIXED;
+>>                  mcreate.fd = -1;
+>>
+>>                  ioctl(fd, MSHAREFS_CREATE_MAPPING, &mcreate)
+> 
+> I'm not really understanding why step a exists.  It's basically an
+> mmap() so why can't this be done within step d?
 
---qpbb4tfhoreouqal
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] cgroup/misc: Remove unused misc_cg_res_total_usage
-MIME-Version: 1.0
+Conceptually, it's defining the content of the virtual file: by creating 
+mappings/unmapping mappings/changing mappings. Some applications will 
+require multiple different mappings in such a virtual file.
 
-On Mon, Jan 27, 2025 at 11:52:14PM +0000, linux@treblig.org wrote:
-> From: "Dr. David Alan Gilbert" <linux@treblig.org>
->=20
-> misc_cg_res_total_usage() was added in 2021 by
-> commit a72232eabdfc ("cgroup: Add misc cgroup controller")
->=20
-> but has remained unused.
+Processes mmap the resulting virtual file.
 
-It can be used by out-of-tree modules in theory.
-But the information is more likely used by userspace than internal
-consumers as of
-  e973dfe929944 ("cgroup/misc: Expose misc.current on cgroup v2 root") v6.5=
--rc1~187^2~1
+-- 
+Cheers,
 
-> Remove it.
+David / dhildenb
 
-I think it's fine to remove it now.
-
-Acked-by: Michal Koutn=FD <mkoutny@suse.com>
-
-Michal
-
---qpbb4tfhoreouqal
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ5igdQAKCRAt3Wney77B
-SZKbAQDJ0YzoBqYdbhS+TCkEGUrxIiHTyWBCPaoxMUO8Hs5bvQEA7WPSJQ9JSRoU
-U15hH2ZME3++dX9osejNjWsdZZcnCAw=
-=G4xR
------END PGP SIGNATURE-----
-
---qpbb4tfhoreouqal--
 
