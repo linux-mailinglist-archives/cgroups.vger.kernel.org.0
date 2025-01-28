@@ -1,137 +1,140 @@
-Return-Path: <cgroups+bounces-6348-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6349-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A8BBA204E9
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jan 2025 08:11:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3116BA2064D
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jan 2025 09:42:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 587517A1F3D
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jan 2025 07:11:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FC301889EF7
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jan 2025 08:42:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81AC1BEF74;
-	Tue, 28 Jan 2025 07:11:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321391DE891;
+	Tue, 28 Jan 2025 08:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QZ8xdxRg"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yZL0qkpj";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rXpXk2lZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 239D74430;
-	Tue, 28 Jan 2025 07:11:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629BF18B476;
+	Tue, 28 Jan 2025 08:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738048280; cv=none; b=WdzrOddrnKr3mCNTxVwoVc8sP+wa+ka6sRpbUXNIKMv+XYeO6wJkRgLzrIO+KOUCMMiQVbylFU8wgk7exl138e41Czvgidg7ToCXLbI5M+bLAh0AFClUTfSgSbiahCETl8Mi8pC4sQwgbQ4JJKpiE866WDrnzlyQA7TXDtcXFSo=
+	t=1738053751; cv=none; b=N5vroklIud8C8lYcrl5E4C/Wy7QhBmDka9R4so3d9CohX5VFb8C3vgS9np3Rje+7z6kzX4cydZoNsAFQ/I3hp+0s46Cy1gQ2wdUtTaoPSVuPJo5evkoZXUGbfkDUlPk1DHNXZadQ0Y96NmN8nDEhjnM5cugShtLrB0tktrGsaoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738048280; c=relaxed/simple;
-	bh=qb59MYWuc/ZGTCFVDZKupCVYcsTZ0gfflndQPHympkU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B+ioL6gYA1yOaKiRoe+sQmMMymswJEDvserjmbZU0RH8Ue/mRcUoZfxP8bX+doaKeCX/7b7n/GVwDN5ZV2BFr6OlDuFC3Nin+yRSwYp2HzRDg3tOMrgj9aZXmqucoT/vTLTCoozFiQO5zokqbFSZzriqYlF+Xx34BtMPwzvSLWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QZ8xdxRg; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2162c0f6a39so112610875ad.0;
-        Mon, 27 Jan 2025 23:11:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738048278; x=1738653078; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TOee54Vjfy8Zgf+CeinxDwBoPyWlYWwKO8jqEGetSk8=;
-        b=QZ8xdxRgHM7ePzcFEBTE7Be5LanC/KCS3OyYBEXgk2cBAgP9cyrMwInb+j10Y/hXV+
-         HhsP7JoZxxrNiG6MStylph6HtBemXejz9f083dHY61OfnHY4kadwnJ+UmVYVB9QtmoQb
-         V61W4YKZrKXgDsTtDqv39wc40wXSKU7OtKzWP9mNn7tCBNXdav0hPZtjxnaVmcBZllxf
-         J1l6wg1mhY70traQrdJ+MYjosjolerr5WIe5V1RH8Zikj5RYfv+6GMIlHyIceOczl/jO
-         IhNn/abkWOz6aC9OzlpMcsrLnyJH6KNpTiqPpMO4ufTeV7O4rjdp6QYCue0SE990VYNT
-         /Adw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738048278; x=1738653078;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TOee54Vjfy8Zgf+CeinxDwBoPyWlYWwKO8jqEGetSk8=;
-        b=Tws8NEUyAz9i3yRCERzLiEhBvn7tzPe7mmwL9grs/V/qwYN706J+jahttCvuSQrF4O
-         Srw/qUru6cQsIwyzBv2VGurEybhGJ8Ck3zmsONVY3FJ++UFrEVBFVnkwoeQAa2lRZHhC
-         ify3O1Bkoacgaj58+FYzqeOJbtAZb6DfJkYx4KR2Q29fjWeI/MOCe69M8CkAim8vRvSv
-         9K4jJ46kiCd4edYOReu6Nwgv6iG9yPFtsMn+NLZDlfVDtjRVK5t9Q4zp+Y3Gge9kYN5W
-         0gOe0ZCSw2gj48CHst2t9YsMhqX+s+xct34E3nR2s7eCzEV+U6N9TOVt1eqAjdx7Ymiv
-         O90w==
-X-Forwarded-Encrypted: i=1; AJvYcCUTR64Py5IvMz580YT44JsEpXmpn4Elo5BUKqnWiTQ0ZBBzB2fYgPV7WCNOfMR8OZICLLaagFPeM9S1wA==@vger.kernel.org, AJvYcCWP7MNLqGh8lweQGu69sxx0DdKdhq+KW0+X9kqOt3VV5RhBFw4ja2kaxqNegm9bmq1A1ZjtVfJL@vger.kernel.org, AJvYcCWzwS6RFLS0BlzlIipomMHTBRXI0KKR/QzcOcvf8NwdKBlMG7IWTcv5fEbMUA7eq4izl4FZAqel9wx3vBre@vger.kernel.org, AJvYcCXRxpAsd4vmGU0eddEnv3VU4IQmwi5VgzAmTAXr2Z9MmMgFUPLcNOuCjd1qRHr8s5L/YosCzpgXc6B6@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWnBWTCUSpEJA0N1LcsrxCkVk4KDUqH1ml+EUcwlZCNy4Mf6wp
-	mBlv+Qe8ja2z0ssBGMQx7hG73DIprN48wtAK1u0LTICif7cUaz5a
-X-Gm-Gg: ASbGncshd1/MEIz7d0n0lTkmBlzvOtNmRdJu8u4tcWP+Ys+dN8FiVpDD1BgbivuYulA
-	/KgqjDJUHbnr9tZ0V5zv/XsaS8Q05skQjGQ3LLWElQl4e2BUNraWdkj7KOp1cs/eUfPBuJukLqa
-	mxeKTgzpLj7Ap/pxG0WuBZqn5ZBCmevFjqAjIDmcMgofhlxpcJq1GnC1UCkEwt5GmWUUWV1xc5A
-	Mjr4fp7M4+a5djxj5dJJM4QkVtbN+QG+EiRWOUdnFOwvgNN+67pj/CCR5HcCyNLW7K8p04M7qDu
-	dyNBR1pDGSMUh9w=
-X-Google-Smtp-Source: AGHT+IGte3XzP0hcbMME183b4Iq4zR/+73//Bdw3Gahd7QTH6jLtMBx6u5GrLhR7l+kdchY4YAXEKg==
-X-Received: by 2002:a05:6a21:7885:b0:1e1:ad90:dda6 with SMTP id adf61e73a8af0-1ed6e6db70bmr3622280637.20.1738048278128;
-        Mon, 27 Jan 2025 23:11:18 -0800 (PST)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72f8a760e35sm8457899b3a.89.2025.01.27.23.11.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jan 2025 23:11:17 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id CC20B420A74B; Tue, 28 Jan 2025 14:11:14 +0700 (WIB)
-Date: Tue, 28 Jan 2025 14:11:14 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Anthony Yznaga <anthony.yznaga@oracle.com>, akpm@linux-foundation.org,
-	willy@infradead.org, markhemm@googlemail.com,
-	viro@zeniv.linux.org.uk, david@redhat.com, khalid@kernel.org
-Cc: jthoughton@google.com, corbet@lwn.net, dave.hansen@intel.com,
-	kirill@shutemov.name, luto@kernel.org, brauner@kernel.org,
-	arnd@arndb.de, ebiederm@xmission.com, catalin.marinas@arm.com,
-	mingo@redhat.com, peterz@infradead.org, liam.howlett@oracle.com,
-	lorenzo.stoakes@oracle.com, vbabka@suse.cz, jannh@google.com,
-	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev, tglx@linutronix.de,
-	cgroups@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, mhiramat@kernel.org, rostedt@goodmis.org,
-	vasily.averin@linux.dev, xhao@linux.alibaba.com, pcc@google.com,
-	neilb@suse.de, maz@kernel.org
-Subject: Re: [PATCH 00/20] Add support for shared PTEs across processes
-Message-ID: <Z5iDEpaEPynnW4s5@archie.me>
-References: <20250124235454.84587-1-anthony.yznaga@oracle.com>
+	s=arc-20240116; t=1738053751; c=relaxed/simple;
+	bh=ruI2ZKGgdPMRnFBOQr3nu/ZhYn2P20UeKsv0OBRMZA8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Q+GSHYjOVUl7729W+z4tRPPES5+Ak9sB/90sbOblgbx8dtG2Wxt416cGduZEEBvW0cYHrC/+KRTiKl/tohAwHhi6hvR9KNH96kYlpjtA0iHPbtSCBejz6uAGdSZqxpYdRcWOmzDXmV6hAA+7Tg+kU6JXYDBow7MsCYA76ihu5JA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yZL0qkpj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rXpXk2lZ; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1738053747;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=lAylB0Y8GIVu+2xs1Bj6B6+nVmN6OdQ644kBwDRkuXM=;
+	b=yZL0qkpjkGikQyB3LbxnhFU3eUH7xfDLzRcIqgy8c+5tMzMVe3twawWDwWpXO0aV9WBIzP
+	HZjEnDMw1ZusQHdDFlYHQzg0moaHLCze50tH4REVhfGcK1qsf4Cr0zq+EUUjQR/0D6z7oV
+	2/BDkEk0kqye0uvfqLS+eI/HmEkz9CFC+Pwk/8bXS4LcxC870cm4smcV1zTKhfiHuO0b0v
+	Qjl7T8coNAzn/vdcnSRCmuMwY22jXcYp0f+uwQ9OCo4duBPcGSKGuOEDBqtRJrQHwbJ6eb
+	mhaLKXUdI2n8RoGaOTtvqR5ElSWxRGqneY5WjrTyKIatYvsQewOCBFB06aSJaA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1738053747;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=lAylB0Y8GIVu+2xs1Bj6B6+nVmN6OdQ644kBwDRkuXM=;
+	b=rXpXk2lZF4jPrGL5JjK8XkKgWlFY7q3jMRouO5NVGJFWruuS8iZ6jEhvhK6cpcY7dBSJpe
+	+5CsSJZFVH7O5gCQ==
+To: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hillf Danton <hdanton@sina.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Marco Elver <elver@google.com>,
+	Tejun Heo <tj@kernel.org>,
+	tglx@linutronix.de,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH v5 0/6] kernfs: Use RCU to access kernfs_node::{parent|name}.
+Date: Tue, 28 Jan 2025 09:42:20 +0100
+Message-ID: <20250128084226.1499291-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vdmPF3+wO5kdxqKn"
-Content-Disposition: inline
-In-Reply-To: <20250124235454.84587-1-anthony.yznaga@oracle.com>
-
-
---vdmPF3+wO5kdxqKn
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 24, 2025 at 03:54:34PM -0800, Anthony Yznaga wrote:
-> v1:
->   - Based on mm-unstable mm-hotfixes-stable-2025-01-16-21-11
+Hi,
 
-Seems like I can't cleanly apply this series on the aforementioned tag.
-Can you give me the exact base commit?
+This started as a bug report by Hillf Danton and aims to access
+kernfs_node::{name|parent} with RCU to avoid the lock during
+kernfs_path_from_node().
 
-Confused...
+I've split the individual fixes in separate patches (#1 to #4). I've
+also split the ::parent and ::name RCU conversation into a single patch
+(#5 and #6).
+
+v4=E2=80=A6v5 https://lore.kernel.org/all/20250124174614.866884-1-bigeasy@l=
+inutronix.de/
+  - rdtgroup:
+    - Add a comment to rdt_get_kn_parent_priv() regarding lifetime of
+      parent.
+    - Move individual rcu_dereference_check() invocations into
+      rdt_kn_parent() with a comment on lifetime.
+    - Use rcu_access_pointer() in kernfs_to_rdtgroup() instead
+      rcu_dereference_check(, true)
+  - s/kernfs_rcu_get_name/kernfs_rcu_name/
+  - Move all rcu_dereference_check() within kernfs into kernfs_parent()
+    and extend its checks to have all cases in one spot. Document why
+    each case makes sense.
+  - kernfs_notify_workfn(): Do unlocks in the reverse order of locks.
+  - Add kernfs_root_flags() and use it in cgroup's kn_get_priv() to
+    check the right KERNFS_ROOT_INVARIANT_PARENT flag.
+
+v3: https://lore.kernel.org/all/20241121175250.EJbI7VMb@linutronix.de/
+v2: https://lore.kernel.org/all/20241112155713.269214-1-bigeasy@linutronix.=
+de/
+v1: https://lore.kernel.org/all/20241108222406.n5azgO98@linutronix.de/
+
+Sebastian
+
+Sebastian Andrzej Siewior (6):
+  kernfs: Acquire kernfs_rwsem in kernfs_notify_workfn().
+  kernfs: Acquire kernfs_rwsem in kernfs_get_parent_dentry().
+  kernfs: Acquire kernfs_rwsem in kernfs_node_dentry().
+  kernfs: Don't re-lock kernfs_root::kernfs_rwsem in
+    kernfs_fop_readdir().
+  kernfs: Use RCU to access kernfs_node::parent.
+  kernfs: Use RCU to access kernfs_node::name.
+
+ arch/x86/kernel/cpu/resctrl/internal.h    |   5 +
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  14 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  73 +++++---
+ fs/kernfs/dir.c                           | 214 ++++++++++++----------
+ fs/kernfs/file.c                          |   6 +-
+ fs/kernfs/kernfs-internal.h               |  37 +++-
+ fs/kernfs/mount.c                         |  21 ++-
+ fs/kernfs/symlink.c                       |  30 +--
+ fs/sysfs/dir.c                            |   2 +-
+ fs/sysfs/file.c                           |  24 ++-
+ include/linux/kernfs.h                    |  14 +-
+ kernel/cgroup/cgroup-v1.c                 |   2 +-
+ kernel/cgroup/cgroup.c                    |  24 ++-
+ security/selinux/hooks.c                  |   7 +-
+ 14 files changed, 306 insertions(+), 167 deletions(-)
 
 --=20
-An old man doll... just what I always wanted! - Clara
+2.47.2
 
---vdmPF3+wO5kdxqKn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZ5iDDAAKCRD2uYlJVVFO
-o+/KAPsGv924ZYZ6/UMFVH433PGVmgZOkVswFu3KjB9IDSSvFQD+IsVII6smVoXN
-3z9RVSqI01TZwsI9dsMsU/9ccHsK1gE=
-=y22C
------END PGP SIGNATURE-----
-
---vdmPF3+wO5kdxqKn--
 
