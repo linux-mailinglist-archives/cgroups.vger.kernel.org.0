@@ -1,219 +1,264 @@
-Return-Path: <cgroups+bounces-6375-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6376-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CFF9A22464
-	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2025 20:09:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87D4FA22476
+	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2025 20:13:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5169C1883438
-	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2025 19:09:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57A143A2BCB
+	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2025 19:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C041E230E;
-	Wed, 29 Jan 2025 19:09:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DB301E2847;
+	Wed, 29 Jan 2025 19:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fyT+/RMt"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fnLasy5h"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74E321E1A25
-	for <cgroups@vger.kernel.org>; Wed, 29 Jan 2025 19:09:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27D13194089
+	for <cgroups@vger.kernel.org>; Wed, 29 Jan 2025 19:13:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738177743; cv=none; b=Pjaf0bv0B52QkP7v3ODOpM1/qR7Hw38L90peRHNGqCzon8XCK/9EyZMUDEDgVemr63IUq/LH3msFoYUhNo437MjQ2Fm0cwnDpI2V5S0oKyHNPOJhIukuWO1xXsaVB8peA7XCmFLkM2u0AwqozJWnRQhZAS3jAw76jtlGyS8Go7U=
+	t=1738178023; cv=none; b=B2hlJdNX1ZqQoolydsuDiBmOm0CN2YcvvaAGz4OSR7BD7uR7TX85LCU01OyNHWhyUurs5YatAvyo7OgMRqV21BO5KTp8if+uzcrIFbxhVZcUUGL9Weg558Ve+86ALneUbLWPkTrdodpQTItnkqas9/Znt8vLgmAbzNJAiIcwFgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738177743; c=relaxed/simple;
-	bh=ETSnYPpBol5TovSZCr6weJqWVGFKsnAPWAmjuCt0blM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HndcPk/uYWh8BpkD/msdf5/K9Mwi48UQ2qwyTmWPJ7Lzltdt/kS2QkhqlkBbRVs5x37lAD7CMfUSAYaMadfsXDqd37RG2C7wlBTIz3oOrGwPf9GEwaESIcuE7MStUakE7KojbtpjOeFL9cEDcWdJt335Be3i7+5xksbbBHiTR5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fyT+/RMt; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 29 Jan 2025 11:08:41 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738177729;
+	s=arc-20240116; t=1738178023; c=relaxed/simple;
+	bh=rzLzjYrQFIGsBb/wF5fNiV+zZdxHUAcvPCnP/FaLu04=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d0L02G1GEQdbibag3NHOwG/QDCp6B3qFu2kTPBm7qoGWcE1uFoYPlO28/0hlED09rAXgKh7ZeVjnoZwGGZmFkq+KeRLxQxbjEFRILZk4Bi5mG3Uted8QcxIlHJHTGaeIuMIP7jwQQzHxfffaQsEOelEQSICINo7NqAF16q+Q2Ds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fnLasy5h; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1738178019;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kjaFGfiXvf7orXD1rkuKW4CYeNoXdb0iJw2qsbgXT7Q=;
-	b=fyT+/RMtTe8HDsbhMvoHufeGLCM4qedOwc0j7Kz7ioiPAHVXyE2T6gKbCmTJwcu4MU7BuK
-	trFuJTbMzQo7umzN/UMosi87av9xMEKDCKytRbEB7dcL+5awUNNQUefq7jKBC322527m6M
-	fmJA3dzWgraaKAdfMUFH/3vq7+pRvfE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Tejun Heo <tj@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Joshua Hahn <joshua.hahnjy@gmail.com>
-Subject: Re: Maybe a race window in cgroup.kill?
-Message-ID: <lelekt53th2kq7dpz6r7gkifpnxwyk6hwhdko4elshj5qqik3e@cjlyam5ttaoe>
-References: <Z5QHE2Qn-QZ6M-KW@slm.duckdns.org>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ESCwOFGjc2CRHxjS2qaB93dnoCB0+FE5/DZ0ZcBVXU8=;
+	b=fnLasy5hiyE+iFyGzrIFE9irDvqrUYsmSOGTGvoF5QfwPG3V1As9EfNBLXGP71Y4uhHjBc
+	0U8HI/XOzcG0wUbW0XT5Xl3RXG7dQ76rL7EJ4FUXJm4olV7C5QuiApZT7lw16ZIZjKqIlu
+	ggv3OyPyrhlUK/WmlPzuxBEA4l5R2/4=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-79-b4VoASIBNvaRCCa7iNt4nQ-1; Wed,
+ 29 Jan 2025 14:13:35 -0500
+X-MC-Unique: b4VoASIBNvaRCCa7iNt4nQ-1
+X-Mimecast-MFC-AGG-ID: b4VoASIBNvaRCCa7iNt4nQ
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DB3551956087;
+	Wed, 29 Jan 2025 19:13:32 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.64.23])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9EE8130001BE;
+	Wed, 29 Jan 2025 19:13:28 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-doc@vger.kernel.org,
+	Peter Hunt <pehunt@redhat.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [RFC PATCH] mm, memcg: introduce memory.high.throttle
+Date: Wed, 29 Jan 2025 14:12:04 -0500
+Message-ID: <20250129191204.368199-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z5QHE2Qn-QZ6M-KW@slm.duckdns.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-On Fri, Jan 24, 2025 at 11:33:07AM -1000, Tejun Heo wrote:
-> Hello, Christian.
-> 
-> I was looking at cgroup.kill implementation and wondering whether there
-> could be a race window. So, __cgroup_kill() does the following:
-> 
->  k1. Set CGRP_KILL.
->  k2. Iterate tasks and deliver SIGKILL.
->  k3. Clear CGRP_KILL.
-> 
-> The copy_process() does the following:
-> 
->  c1. Copy a bunch of stuff.
->  c2. Grab siglock.
->  c3. Check fatal_signal_pending().
->  c4. Commit to forking.
->  c5. Release siglock.
->  c6. Call cgroup_post_fork() which puts the task on the css_set and tests
->      CGRP_KILL.
-> 
-> The intention seems to be that either a forking task gets SIGKILL and
-> terminates on c3 or it sees CGRP_KILL on c6 and kills the child. However, I
-> don't see what guarantees that k3 can't happen before c6. ie. After a
-> forking task passes c5, k2 can take place and then before the forking task
-> reaches c6, k3 can happen. Then, nobody would send SIGKILL to the child.
-> What am I missing?
-> 
-> Thanks.
+Since commit 0e4b01df8659 ("mm, memcg: throttle allocators when failing
+reclaim over memory.high"), the amount of allocator throttling had
+increased substantially. As a result, it could be difficult for a
+misbehaving application that consumes increasing amount of memory from
+being OOM-killed if memory.high is set. Instead, the application may
+just be crawling along holding close to the allowed memory.high memory
+for the current memory cgroup for a very long time especially those
+that do a lot of memcg charging and uncharging operations.
 
-I think this is indeed the race though small. One way to fix this is by
-taking cgroup_threadgroup_rwsem in write mode in __cgroup_kill() as the
-fork side takes it in read mode from cgroup_can_fork() to
-cgroup_post_fork(). Though I think we should avoid that as this adds
-one more potential stall scenario for cgroup.kill which is usually
-triggered under extreme situation (memory pressure). I have prototyped a
-sequence number based approach below. If that is acceptable then I can
-proposed the patch with detailed commit message.
+This behavior makes the upstream Kubernetes community hesitate to
+use memory.high. Instead, they use only memory.max for memory control
+similar to what is being done for cgroup v1 [1].
 
+To allow better control of the amount of throttling and hence the
+speed that a misbehving task can be OOM killed, a new single-value
+memory.high.throttle control file is now added. The allowable range
+is 0-32.  By default, it has a value of 0 which means maximum throttling
+like before. Any non-zero positive value represents the corresponding
+power of 2 reduction of throttling and makes OOM kills easier to happen.
 
-From e9362c5884ea67867ed4fe7e3bb7de7f750a97fc Mon Sep 17 00:00:00 2001
-From: Shakeel Butt <shakeel.butt@linux.dev>
-Date: Wed, 29 Jan 2025 10:53:21 -0800
-Subject: [PATCH] cgroup: fix race between fork and cgroup.kill
+System administrators can now use this parameter to determine how easy
+they want OOM kills to happen for applications that tend to consume
+a lot of memory without the need to run a special userspace memory
+management tool to monitor memory consumption when memory.high is set.
 
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+Below are the test results of a simple program showing how different
+values of memory.high.throttle can affect its run time (in secs) until
+it gets OOM killed. This test program allocates pages from kernel
+continuously. There are some run-to-run variations and the results
+are just one possible set of samples.
+
+  # systemd-run -p MemoryHigh=10M -p MemoryMax=20M -p MemorySwapMax=10M \
+	--wait -t timeout 300 /tmp/mmap-oom
+
+  memory.high.throttle	service runtime
+  --------------------	---------------
+            0		    120.521
+            1		    103.376
+            2		     85.881
+            3		     69.698
+            4		     42.668
+            5		     45.782
+            6		     22.179
+            7		      9.909
+            8		      5.347
+            9		      3.100
+           10		      1.757
+           11		      1.084
+           12		      0.919
+           13		      0.650
+           14		      0.650
+           15		      0.655
+
+[1] https://docs.google.com/document/d/1mY0MTT34P-Eyv5G1t_Pqs4OWyIH-cg9caRKWmqYlSbI/edit?tab=t.0
+
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- include/linux/cgroup-defs.h |  6 +++---
- include/linux/sched/task.h  |  1 +
- kernel/cgroup/cgroup.c      | 17 +++++++++--------
- 3 files changed, 13 insertions(+), 11 deletions(-)
+ Documentation/admin-guide/cgroup-v2.rst | 16 ++++++++--
+ include/linux/memcontrol.h              |  2 ++
+ mm/memcontrol.c                         | 41 +++++++++++++++++++++++++
+ 3 files changed, 57 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 1b20d2d8ef7c..0d8c12c0efdb 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -71,9 +71,6 @@ enum {
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index cb1b4e759b7e..df9410ad8b3b 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1291,8 +1291,20 @@ PAGE_SIZE multiple when read back.
+ 	Going over the high limit never invokes the OOM killer and
+ 	under extreme conditions the limit may be breached. The high
+ 	limit should be used in scenarios where an external process
+-	monitors the limited cgroup to alleviate heavy reclaim
+-	pressure.
++	monitors the limited cgroup to alleviate heavy reclaim pressure
++	unless a high enough value is set in "memory.high.throttle".
++
++  memory.high.throttle
++	A read-write single value file which exists on non-root
++	cgroups.  The default is 0.
++
++	Memory usage throttle control.	This value controls the amount
++	of throttling that will be applied when memory consumption
++	exceeds the "memory.high" limit.  The larger the value is,
++	the smaller the amount of throttling will be and the easier an
++	offending application may get OOM killed.
++
++	The valid range of this control file is 0-32.
  
- 	/* Cgroup is frozen. */
- 	CGRP_FROZEN,
--
--	/* Control group has to be killed. */
--	CGRP_KILL,
- };
+   memory.max
+ 	A read-write single value file which exists on non-root
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 6e74b8254d9b..b184d7b008d4 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -199,6 +199,8 @@ struct mem_cgroup {
+ 	struct list_head swap_peaks;
+ 	spinlock_t	 peaks_lock;
  
- /* cgroup_root->flags */
-@@ -520,6 +517,9 @@ struct cgroup {
- 	struct cgroup_rstat_cpu __percpu *rstat_cpu;
- 	struct list_head rstat_css_list;
++	int high_throttle_shift;
++
+ 	/* Range enforcement for interrupt charges */
+ 	struct work_struct high_work;
  
-+	/* sequence number for cgroup.kill, serialized by css_set_lock. */
-+	unsigned long kill_seq;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 46f8b372d212..2fa3fd99ebc9 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2112,6 +2112,7 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	unsigned long nr_reclaimed;
+ 	unsigned int nr_pages = current->memcg_nr_pages_over_high;
+ 	int nr_retries = MAX_RECLAIM_RETRIES;
++	int throttle_shift;
+ 	struct mem_cgroup *memcg;
+ 	bool in_retry = false;
+ 
+@@ -2156,6 +2157,13 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	penalty_jiffies += calculate_high_delay(memcg, nr_pages,
+ 						swap_find_max_overage(memcg));
+ 
++	/*
++	 * Reduce penalty according to the high_throttle_shift value.
++	 */
++	throttle_shift = READ_ONCE(memcg->high_throttle_shift);
++	if (throttle_shift)
++		penalty_jiffies >>= throttle_shift;
 +
  	/*
- 	 * Add padding to separate the read mostly rstat_cpu and
- 	 * rstat_css_list into a different cacheline from the following
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index 0f2aeb37bbb0..ce56ae0a9cbb 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -43,6 +43,7 @@ struct kernel_clone_args {
- 	void *fn_arg;
- 	struct cgroup *cgrp;
- 	struct css_set *cset;
-+	unsigned long kill_seq;
- };
- 
- /*
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 805764cf14e2..5aec3b7bc084 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4013,7 +4013,7 @@ static void __cgroup_kill(struct cgroup *cgrp)
- 	lockdep_assert_held(&cgroup_mutex);
- 
- 	spin_lock_irq(&css_set_lock);
--	set_bit(CGRP_KILL, &cgrp->flags);
-+	cgrp->kill_seq++;
- 	spin_unlock_irq(&css_set_lock);
- 
- 	css_task_iter_start(&cgrp->self, CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED, &it);
-@@ -4029,10 +4029,6 @@ static void __cgroup_kill(struct cgroup *cgrp)
- 		send_sig(SIGKILL, task, 0);
- 	}
- 	css_task_iter_end(&it);
--
--	spin_lock_irq(&css_set_lock);
--	clear_bit(CGRP_KILL, &cgrp->flags);
--	spin_unlock_irq(&css_set_lock);
+ 	 * Clamp the max delay per usermode return so as to still keep the
+ 	 * application moving forwards and also permit diagnostics, albeit
+@@ -4172,6 +4180,33 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
+ 	return nbytes;
  }
  
- static void cgroup_kill(struct cgroup *cgrp)
-@@ -6488,6 +6484,7 @@ static int cgroup_css_set_fork(struct kernel_clone_args *kargs)
- 	spin_lock_irq(&css_set_lock);
- 	cset = task_css_set(current);
- 	get_css_set(cset);
-+	kargs->kill_seq = kargs->cgrp->kill_seq;
- 	spin_unlock_irq(&css_set_lock);
- 
- 	if (!(kargs->flags & CLONE_INTO_CGROUP)) {
-@@ -6670,6 +6667,7 @@ void cgroup_post_fork(struct task_struct *child,
- {
- 	unsigned long cgrp_flags = 0;
- 	bool kill = false;
-+	unsigned long cgrp_kill_seq = 0;
- 	struct cgroup_subsys *ss;
- 	struct css_set *cset;
- 	int i;
-@@ -6681,10 +6679,13 @@ void cgroup_post_fork(struct task_struct *child,
- 
- 	/* init tasks are special, only link regular threads */
- 	if (likely(child->pid)) {
--		if (kargs->cgrp)
-+		if (kargs->cgrp) {
- 			cgrp_flags = kargs->cgrp->flags;
--		else
-+			cgrp_kill_seq = kargs->cgrp->kill_seq;
-+		} else {
- 			cgrp_flags = cset->dfl_cgrp->flags;
-+			cgrp_kill_seq = cset->dfl_cgrp->kill_seq;
-+		}
- 
- 		WARN_ON_ONCE(!list_empty(&child->cg_list));
- 		cset->nr_tasks++;
-@@ -6719,7 +6720,7 @@ void cgroup_post_fork(struct task_struct *child,
- 		 * child down right after we finished preparing it for
- 		 * userspace.
- 		 */
--		kill = test_bit(CGRP_KILL, &cgrp_flags);
-+		kill = kargs->kill_seq != cgrp_kill_seq;
- 	}
- 
- 	spin_unlock_irq(&css_set_lock);
++static u64 memory_high_throttle_read(struct cgroup_subsys_state *css,
++				     struct cftype *cft)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
++
++	return READ_ONCE(memcg->high_throttle_shift);
++}
++
++static ssize_t memory_high_throttle_write(struct kernfs_open_file *of,
++				char *buf, size_t nbytes, loff_t off)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
++	u64 val;
++	int err;
++
++	buf = strstrip(buf);
++	err = kstrtoull(buf, 10, &val);
++	if (err)
++		return err;
++
++	if (val > 32)
++		return -EINVAL;
++
++	WRITE_ONCE(memcg->high_throttle_shift, (int)val);
++	return nbytes;
++}
++
+ /*
+  * Note: don't forget to update the 'samples/cgroup/memcg_event_listener'
+  * if any new events become available.
+@@ -4396,6 +4431,12 @@ static struct cftype memory_files[] = {
+ 		.seq_show = memory_high_show,
+ 		.write = memory_high_write,
+ 	},
++	{
++		.name = "high.throttle",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.read_u64 = memory_high_throttle_read,
++		.write = memory_high_throttle_write,
++	},
+ 	{
+ 		.name = "max",
+ 		.flags = CFTYPE_NOT_ON_ROOT,
 -- 
-2.43.5
+2.48.1
 
 
