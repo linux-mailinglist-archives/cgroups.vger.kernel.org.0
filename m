@@ -1,102 +1,142 @@
-Return-Path: <cgroups+bounces-6368-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6369-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7190A215E5
-	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2025 01:59:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00E5AA21716
+	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2025 05:48:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 164A73A719D
-	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2025 00:59:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C05387A3AA5
+	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2025 04:47:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E5E183CA6;
-	Wed, 29 Jan 2025 00:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199BD18FDC6;
+	Wed, 29 Jan 2025 04:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Vv21INpm"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Lt3k7LRY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA3114F132;
-	Wed, 29 Jan 2025 00:59:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3081318BBAE
+	for <cgroups@vger.kernel.org>; Wed, 29 Jan 2025 04:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738112374; cv=none; b=IqoDToIm1r+aExMskwPr6bZFbR1qVW9XaLiGSKSBYIFr7EvSgQMXKT/NwEuGwaprDfhcif/zeWRwDu+m4o39y73Exv1xFGNPrweIfVr5vjo8Q+kTzQGrDeijJeRl/2nEqxU9kOE5GYFoZkPLXm+Vn1k0qUk0eKBeOrvEiTpVtCA=
+	t=1738126086; cv=none; b=ggp9YMEjWttdQhEjqcZTZNDBTm2SbuL67WqmL1q3ZcY9Dxhx3mIxiAnIeAabn0ed/gg1oEzfe5PPRjx1+Cmz5K9EeAtn/8oDImYJajtMakztRwcefOIuX3jnR7lfSOm0nTxmSj6fXNisB6XPQHpuKjSzhrDBrIpdOB4NvpAwgGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738112374; c=relaxed/simple;
-	bh=ApGe0o1oHXOCFvfbGQ4b3zp50tU4slOS5wNIA74SicY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XK5+177fDzN63O4rz/Y2JncuYMzex5L8aEMYrWQhow2OynAf2N0uJGYaPQMAd+JvCIloHNX125N7hk/dU7+qIPTK/H2WX1B0ggT9N08tlAZnK7z3AhcpZbU2lg8VFwbdXumk6EkfAo0rsjhNVf+a5rggqV4CPMC5RCHqvklclOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Vv21INpm; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=5Vw4h2SUuYgw1K1+ocrpaQsibGQqRleh9lz8vhZOdAs=; b=Vv21INpmlFaggzcWqUgEUGoJrj
-	+tEzvElQOrquw9XaKaS+uhIm833z/P9IOd4LbDUod/S3pRCHwC78VMF4OEZgr/dS6w9b40OcODcEI
-	qxUdPiD4cAno6LZ+rnaCMYkhY0yUr9kNDdhiav8BW743nnZjO0KV/7Z90h1BzZZGEzX2igEabfMEv
-	WeCXnTm1/+4cxt4RL5qXWr56XVZsMcwQ/LLsSWH+Wr1S2X4vg/frhFIQSdaTOwj/EY4mTBrvyWmau
-	auotVNPz0mu9t7JIN10lzGME8D+0cVQ4E+KEjHQYWqqSXnCd5fJ0Ft+hXLDB3agiVohmICQE+9Z9p
-	tcHaozxg==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tcwQB-0000000BM1Y-0Ijx;
-	Wed, 29 Jan 2025 00:59:11 +0000
-Date: Wed, 29 Jan 2025 00:59:10 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Anthony Yznaga <anthony.yznaga@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, markhemm@googlemail.com,
-	viro@zeniv.linux.org.uk, david@redhat.com, khalid@kernel.org,
-	jthoughton@google.com, corbet@lwn.net, dave.hansen@intel.com,
-	kirill@shutemov.name, luto@kernel.org, brauner@kernel.org,
-	arnd@arndb.de, ebiederm@xmission.com, catalin.marinas@arm.com,
-	mingo@redhat.com, peterz@infradead.org, liam.howlett@oracle.com,
-	lorenzo.stoakes@oracle.com, vbabka@suse.cz, jannh@google.com,
-	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev, tglx@linutronix.de,
-	cgroups@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, mhiramat@kernel.org, rostedt@goodmis.org,
-	vasily.averin@linux.dev, xhao@linux.alibaba.com, pcc@google.com,
-	neilb@suse.de, maz@kernel.org
-Subject: Re: [PATCH 00/20] Add support for shared PTEs across processes
-Message-ID: <Z5l9XpSntxyxMGKj@casper.infradead.org>
-References: <20250124235454.84587-1-anthony.yznaga@oracle.com>
- <20250128161138.066f6c27d0d941609ba1c1c9@linux-foundation.org>
- <92f188ed-4f47-427b-b8fd-2c0f76ef129b@oracle.com>
+	s=arc-20240116; t=1738126086; c=relaxed/simple;
+	bh=peWcLBmGw9O9vXyRSnEUD3ALTkxdirdqXdZSwpQylRs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dEX1U6AjOsJ0S0PUcoD2G/aCM6D/YRKHkG7+Lv0VcXpYTsPyai/NFqnAp6XKvmSp7sfOrzlN00s0YoyiabltgKUPfzPOI/AoGyWpnSn4eb23C+vvt0053vw9BCe3BENmeNIzmi41D2bV+idNdKEt0QzZbsqtcI0fAZ473RQUEEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Lt3k7LRY; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2166db59927so11857505ad.0
+        for <cgroups@vger.kernel.org>; Tue, 28 Jan 2025 20:48:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1738126084; x=1738730884; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9nBAJs/K3XCTXctROPnqYBKk6nvC0nwt2edw8ojQ7lg=;
+        b=Lt3k7LRYozcgFjHizxN+y2ak7j/v6IEqkGVpTv8tthoZnMfYGpuCdQm9k7seLwRa2P
+         IS/pJei54lkDhV3T7E+L+57UjWO54Hv31MPBRNKwGGExtyMSqCKrvG5khjNaf9VKiEXH
+         MjGnYEFAudGKRMPp+nwf6KeJj1nJgxvwewelUGdOMuGF2opy4JiotMf9joMo7sx71scm
+         tPZ0fZ/ujLe5fQLCz02MmQ+nf9XDRFpLfm8jWzyZTCy5s73/t4ZqZzT3B3NOowaN9C8W
+         hxH9m8iQJVLYwlMFPQnpazTR0XW1HcXNKeA3pZOHiVHGAf2/T8MzlUfM2TRqqnw1mRhZ
+         Kgqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738126084; x=1738730884;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9nBAJs/K3XCTXctROPnqYBKk6nvC0nwt2edw8ojQ7lg=;
+        b=rVnF570dA0Y9bvZO6k2s3zjEwllJ23R5ZGqoptHg7aSWRAaCWj6E6f/LZKU7jnFrUZ
+         JGqmA+19wELearoPiancgVH6CD7WfPNKX/L52N7HWCKOTYwdeyANNxtZWTlszb7P/L72
+         TtGfDuUeS+uBZqOR8DJKS/nScZ0aHWe019lM3+QSndi36u2W55+cHOQWUbwgxmo4I8cX
+         6QvKZq/zhWZRtmimdpGwAf1eZm2PbvN5mNbPVEl2/XJOLcj7hSmrkLawtC1vtL8ubBUr
+         sMIEOleKDRCz1otC/YkUEgrK3/5ZCgrMmG5Lc79cakpyJBfw3msF4KJJ+wWRnDyK4wYv
+         IfJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWAIvLExWZJBYm2vSxMYF2dzipouKhvwmcvoaNzEIqZtZUZoJ3PzPdMMgNiEMOQj2I3vmO6Velr@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+I6w8aQeLXjHyX21QhijTBJ0SCcpDesxwJnjfJ4QRjsnKVLEu
+	PcxvSq2ilCvHmU7Aq342BNRwi8rQC3RoTRw56TuncJHGk0lMarPhx2IkE34GjLY=
+X-Gm-Gg: ASbGncscxsAK/3IpPNPbszQw9lWW8ObmTHf6aUqyiXZ45PM86ioH7I4jnjMTl8KZTdO
+	7clEF1iOAZcvtsDyQcmfGLrXV/+r6FXpYSnl2Qx+5jVA3UJIRoj2gGXbeAxKz2isPxix77CsagE
+	ES2JJ9xT0pKjbsX8pEBVK4GDv9Dp7ChfXZULecSsXZjQ+n1mLEpr1ttmjt/h8PMzwAWIL/1WEgb
+	3NmVgdKlZ4YKU7ogabJEZYpL4qeqHGs+zyWiGp+duljT9OduhzHDlgW9QT+3EJiEB/luvRBLde1
+	1xx3cTz6oJBRJQ8AygjlziZopCb521nAfTYLtB+qGzJrAJyZnIY=
+X-Google-Smtp-Source: AGHT+IH2SL9fkJmk2X8K7lTgSkBExNzIhKUEntMRXEEyWswgtjrpKfSvnvK7wAH+UMWjl6oI+Hf7kw==
+X-Received: by 2002:a17:902:db09:b0:215:6533:f4ee with SMTP id d9443c01a7336-21dd7deeab0mr9770055ad.13.1738126084231;
+        Tue, 28 Jan 2025 20:48:04 -0800 (PST)
+Received: from [10.254.209.208] ([139.177.225.253])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21da424f39fsm89622785ad.249.2025.01.28.20.47.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Jan 2025 20:48:03 -0800 (PST)
+Message-ID: <784be226-d4a8-43bf-9096-dbb7ca8f0cff@bytedance.com>
+Date: Wed, 29 Jan 2025 12:47:54 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <92f188ed-4f47-427b-b8fd-2c0f76ef129b@oracle.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Re: [PATCH v2 2/3] cgroup/rstat: Cleanup cpu.stat once for all
+Content-Language: en-US
+To: Tejun Heo <tj@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Bitao Hu
+ <yaoma@linux.alibaba.com>, Yury Norov <yury.norov@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Chen Ridong <chenridong@huawei.com>,
+ "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20250125052521.19487-1-wuyun.abel@bytedance.com>
+ <20250125052521.19487-3-wuyun.abel@bytedance.com>
+ <Z5fpw2uVYGP9kf18@slm.duckdns.org>
+From: Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <Z5fpw2uVYGP9kf18@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 28, 2025 at 04:25:22PM -0800, Anthony Yznaga wrote:
+Hi Tejun,
+
+On 1/28/25 4:17 AM, Tejun Heo Wrote:
+> On Sat, Jan 25, 2025 at 01:25:11PM +0800, Abel Wu wrote:
+>> There were efforts like b824766504e4 ("cgroup/rstat: add force idle show helper")
+>> to escape from #ifdef hells, and there could be new stats coming out in
+>> the future, let's clean it up once for all.
+>>
+>> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+>> ---
+>>   kernel/cgroup/rstat.c | 47 ++++++++++++++++++++++++-------------------
+>>   1 file changed, 26 insertions(+), 21 deletions(-)
 > 
-> On 1/28/25 4:11 PM, Andrew Morton wrote:
-> > On Fri, 24 Jan 2025 15:54:34 -0800 Anthony Yznaga <anthony.yznaga@oracle.com> wrote:
-> > 
-> > > Some of the field deployments commonly see memory pages shared
-> > > across 1000s of processes. On x86_64, each page requires a PTE that
-> > > is 8 bytes long which is very small compared to the 4K page
-> > > size.
-> > Dumb question: why aren't these applications using huge pages?
-> > 
-> They often are using hugetlbfs but would also benefit from having page
-> tables shared for other kinds of memory such as shmem, tmpfs or dax.
+> Is this materially better? The existing code has ifdef in one place which
+> the new code can't avoid. 
 
-... and the implementation of PMD sharing in hugetlbfs is horrible.  In
-addition to inverting the locking order (see gigantic comment in rmap.c),
-the semantics aren't what the Oracle DB wants, and it's inefficient.
+Indeed, # of ifdefs will stay unchanged, but they will be folded
+into one place inside the bstats[] array quite the same as the
+definition of the struct cgroup_base_stat, which IMHO won't hurt
+readability.
 
-So when we were looking at implementing page table sharing for DAX, we
-examined _and rejected_ porting the hugetlbfs approach.  We've discussed
-this extensively at the last three LSFMM sessions where mshare has been
-a topic, and in previous submissions of mshare.  So seeing the question
-being asked yet again is disheartening.
+> The new code is more complex and has more lines.
+> Does the balance get better with additions of new entries?
+
+The line diff is 5, and 4 of them are for readability. If adding
+one more field into cpu.stat, 1 or 3 lines will be added w/o or
+w/ ifdef respectively, comparing to 8 or 10 lines without this
+cleanup. So the balance will be better if cpu.stat extends. And
+it would also be better cleanup duplicated code for each field.
+
+Thanks,
+	Abel
+
 
