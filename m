@@ -1,88 +1,88 @@
-Return-Path: <cgroups+bounces-6391-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6392-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ECBFA230A0
-	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 15:52:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 632EDA230C8
+	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 16:05:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A892F7A266C
-	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 14:51:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2939816322E
+	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 15:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BE21E98F3;
-	Thu, 30 Jan 2025 14:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 537DE1E9B2A;
+	Thu, 30 Jan 2025 15:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aIuXXXze"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LiAYEW4V"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29AD21DDD1
-	for <cgroups@vger.kernel.org>; Thu, 30 Jan 2025 14:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F48C13FEE
+	for <cgroups@vger.kernel.org>; Thu, 30 Jan 2025 15:05:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738248757; cv=none; b=ROCTGNa5BIbICMwcyKKo8Yhg5HY1TiYnvMjcp4oaOIFbDKDAFt4pyBOT/YvzZ7KVeukTs62EidRw89cXg8XVCKKRJ2RtfvlLKsR7ZWbDAsu7tfM1bb/jZQclEoF5XiskzZsumucpqQvoZ3uNrXQgaMxexyqgppbAXTlXgf5lw4c=
+	t=1738249542; cv=none; b=Xv0pusreAXy8hNB1WshDLQLZwwLJsGEFTxddjEN5l70/WXh012xAnxhMtVPzEP3KqQg93XX5D27NwocWpKplX3+pegJOMTXI1Y299l+Qgwg/JOYkUMcHYqMqrmExHcQeCcSs0LeuLE06UppxWxpu0yxWuc1CH9ailiolWLYpTHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738248757; c=relaxed/simple;
-	bh=PCYY8IA+Wsi1N1QvCopsjKMlR20mHZ5esGgVL3/VF9k=;
+	s=arc-20240116; t=1738249542; c=relaxed/simple;
+	bh=xz6HTttNyAohBekFqEUq7BEwVmYybpKGfGnf2Wz7mPw=;
 	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=XvNgVntuLeBonlSkfO7V3z58AXRRmevlhCihiY7LwhQsnxkWEnlpp0fuddNjv5scCT71uFXi8TBIs15X+xmkNE3nFzsCfq0V9TyOb+9at3d0AlOxtH2ikqh+9lZ3mZpXnUUaMTvYeuIe1xNBIL4/gMs2pDvUniNXIRhBBthxBY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aIuXXXze; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=QBfdpXw7omNCG6oBgNCaMwb/eYEt2qro0hSeDOmgTm0rrwAQVZKOVyRCvBkBzK8LhTnUCF5j3+ss12MYMA+r1iV3+/TMVyVGS+ab/6o80YRESiQueE+1SbKyZY+6xm9hqAwNrgF5hs8SBMY5jveTMODxP8+RtYyP3VbcA9Ckl3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LiAYEW4V; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1738248755;
+	s=mimecast20190719; t=1738249538;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=SGz1ZibS2GfwUDvWQSD0jo0W5/+6emzlakirCqtq8vk=;
-	b=aIuXXXzeh9NsMvyCglf6jX/t3WFgc9MpgBHOyxwFfdOEvoHgyvtS2fG2iU/FzBdH5NMBkC
-	9upXXBmYlBc4GmrqcGYpqSOPqwg04m6GUtD8O0C7fQWd5L/HeArcrO/Q6F/xoYM9BOkeoZ
-	Mn1qi+ptvR0HAJsiphd5chU87YbFDNY=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=UAngit6M03LgRRaR1K5FI0V6z65Vw9FPDcpq2Hs9JbE=;
+	b=LiAYEW4VmBkug+NMtnGoiF1dp7qBiAz0r1vBOKPRTCGRQZVeJQE8nD30TNKOyTsH9hR6I5
+	gK5sCHjsa3M3dBsUH+/sKcfEbl3JKCKbcOwNB+19taNlLJFJcDgkROIsVZfUitYIL58q6X
+	Wxg2twrVOBvs8Tw35VDFIhgCdLtMlvY=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-310-4PHwpMgCMRG9preyAWNYMA-1; Thu, 30 Jan 2025 09:52:33 -0500
-X-MC-Unique: 4PHwpMgCMRG9preyAWNYMA-1
-X-Mimecast-MFC-AGG-ID: 4PHwpMgCMRG9preyAWNYMA
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-46791423fc9so17626211cf.2
-        for <cgroups@vger.kernel.org>; Thu, 30 Jan 2025 06:52:33 -0800 (PST)
+ us-mta-208-odSIj06_PMiIahp1wNfCAQ-1; Thu, 30 Jan 2025 10:05:37 -0500
+X-MC-Unique: odSIj06_PMiIahp1wNfCAQ-1
+X-Mimecast-MFC-AGG-ID: odSIj06_PMiIahp1wNfCAQ
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6df9ac8dcbeso27112586d6.3
+        for <cgroups@vger.kernel.org>; Thu, 30 Jan 2025 07:05:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738248753; x=1738853553;
+        d=1e100.net; s=20230601; t=1738249537; x=1738854337;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SGz1ZibS2GfwUDvWQSD0jo0W5/+6emzlakirCqtq8vk=;
-        b=C3Sj8S6pRtGs1ysSS8D2yXGq/u5U454M9oFQ4jCZVccZzUwlZAQP29JdTUsBfg3ZQB
-         VFQBfbS6vLLezO43nW/xxkBr5pQLhP2hi8IanWkjLM33cYEpwCJT9KwAonYUv6o014uj
-         xF5mOyKo3u1XtrDK0EPultOYjxmdbeBOY+YlbMMDwr7w1WA8WCZ7bmcZHFg0c0+CWBM9
-         2rZTgVgsXpjiJbF7Ko2AVWhqmkYhP4WOJCz8VW4Jtypa+kd2c9sfnr/Ef7DLxr0zqAcG
-         2P/2USIeamvO4t6Pcl6HxTJEdXhpiTueoTpcrEYgr+yWOAFby42yR+y1OLVDGw9IhBN3
-         6RVA==
-X-Forwarded-Encrypted: i=1; AJvYcCXEw7mPfqxq5jLFDV4O0ncaIqTamADh9lKrglPQ4SVNiNYD4pETq3F6AJh/gtI2cKfplnWJ9Qjy@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzkwy7bmt3MLYz+Mp4utN/BcqNJIbu7jNqkR+sXDiQmKkOsLb8O
-	/q26hPZHmC/waaznBrFrR1mouXMPACICDgeIiJzCNxfEvJcBjgzOIOChVAfKPzuklioCts7wVbv
-	xV35ZJaVzwHO5vkUvG2gQZqbW7sLGiQ6Agfn+GetlXhMIsoc9TwkW1j4=
-X-Gm-Gg: ASbGncutD+p5WPlnQOc02ROrZPv1oAsWWPTkwFTM7qWvizyslrwB/BggogyJwe3OPE5
-	2eU6sd3rDobS2xOLlw0wW3NH0JEfEY4yB/DGTQjA8T5d5WXNaIrhMf2mm3eRHIHVSDxuVPq10WR
-	TsL7WFnkBBjy5+BO0ggoSwXMoDJ0S+s+jLTy5MWFwpURUdqC61kAjpKNUbwE1nk2LohMJ0NKOxJ
-	1hkoabI+7spf4LEkitaKwsigGZWiMF2Pt9X+rqUCwgb3BkYnqf3sYTf1PMtjlnV7ix9deE6ob15
-	cPUG3SIqFdlYTeklqLmX4KnRHXclP0SGAHXjwWJPcAJoYy7UEk4=
-X-Received: by 2002:ac8:6f17:0:b0:467:53c8:7570 with SMTP id d75a77b69052e-46fd0a1e874mr145317911cf.13.1738248753179;
-        Thu, 30 Jan 2025 06:52:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFZtczFOZdXZZrzAnnTtypYwYu2MEl/wAI3+p6VGOBUkFWHhZm0Tir+2iIoGGAmsnU1RVk9pA==
-X-Received: by 2002:ac8:6f17:0:b0:467:53c8:7570 with SMTP id d75a77b69052e-46fd0a1e874mr145317521cf.13.1738248752831;
-        Thu, 30 Jan 2025 06:52:32 -0800 (PST)
+        bh=UAngit6M03LgRRaR1K5FI0V6z65Vw9FPDcpq2Hs9JbE=;
+        b=j7DyBIYJUOX+BbAMn7kXDcCZHBldb0JoNS78B8g4IgmRQWc7UgidGVqHClMoUpldGM
+         LZT1bJQBjimh3nYf7sOvs0OdybV1XKsNjr0me4PdMtcyiDRUg1ToApJfdMNHNfV5/Mb7
+         +4GqGh6CoE9r2nZLnrKKfJgsDRislok4nv/chTKgc6GYva/Z0NKCZLlLEH17edYkVqWK
+         6CSpdNtdjpRdRcWEeGXaX56VDaYdOeRpGfq3gtJLXaihmH1MrTIElma70TpCQ5tBzPs7
+         LU0m2dK2yXTmCiUrAiXhgX3lQi6ImoBeJ2Ud5L3yDRYAvGta5quCyDxpxI5o0nawjO7n
+         z2kA==
+X-Forwarded-Encrypted: i=1; AJvYcCXa/mFYCIuc6uAHva22X9sXj1WeDb1vdVrqkL90cp4Yx/5Nkq/CkQWBcIzXWzyB6deZjO8V2aTL@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYrGzX/+TU2dIjTHRxL+sXF3cmijYLor2tozg4aKK0CrFqTXQf
+	8TDvVg4C8cF2EiAY/4z7ZiWtr1CnPo2YN2MLLsk72bLpor23HhSk6OpPyFxwkIlwr/tMeT6RDAH
+	SBLCQ9ndWH76LwBLeU4p3VtN7d1g+uxi/+ZjlIZAd0kE2iKEPLnfig0Y=
+X-Gm-Gg: ASbGncvunYLjvVnarPNlwAr3Q7a6xFWhbfo+MF0Ra+oOgUyIEEhhhn8ssEPVYSyj0up
+	r5E1yGEvX6Gyk/XGqYOf0uWO9jiSmV/yGYQShcMQYkMdx7Yof5sfEUGhxzlYzucGpzBWbZSrZ3R
+	GLGyv5JtTDcRDimueTR43+3BAyLHgzJlG0yrHQMDdcmJ81nlsnbxmVWNCEduTidRsvS7MFcZ/b3
+	RqyHOedyB7KFSw90irMM0bXcuiPEzbwMjoe1Agl5eeMeRJUoVAtSyM2MKobX1mjxCzJHga88wA9
+	fFE7RYIFRe1bfZUH3ZbBPHNzeSrrKGBhMVXMI9kRL8ERWvDoy8I=
+X-Received: by 2002:a05:6214:d48:b0:6d4:dae:6250 with SMTP id 6a1803df08f44-6e243c67537mr126629396d6.34.1738249536669;
+        Thu, 30 Jan 2025 07:05:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGUK7lLnq0YpD0cZmVruuYg19C46zZhFDKnof0uqIEU4K98pvy7EmVxD4asUaHatzWO9jD7dg==
+X-Received: by 2002:a05:6214:d48:b0:6d4:dae:6250 with SMTP id 6a1803df08f44-6e243c67537mr126628996d6.34.1738249536237;
+        Thu, 30 Jan 2025 07:05:36 -0800 (PST)
 Received: from ?IPV6:2601:408:c101:1d00:6621:a07c:fed4:cbba? ([2601:408:c101:1d00:6621:a07c:fed4:cbba])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46fdf0c7e5esm7550941cf.24.2025.01.30.06.52.30
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e2548357f9sm7038796d6.63.2025.01.30.07.05.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jan 2025 06:52:32 -0800 (PST)
+        Thu, 30 Jan 2025 07:05:35 -0800 (PST)
 From: Waiman Long <llong@redhat.com>
 X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <366fd30f-033d-48d6-92b4-ac67c44d0d9b@redhat.com>
-Date: Thu, 30 Jan 2025 09:52:29 -0500
+Message-ID: <211b394b-3b9a-4872-8c07-b185386487d3@redhat.com>
+Date: Thu, 30 Jan 2025 10:05:34 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,24 +91,23 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH] mm, memcg: introduce memory.high.throttle
-To: Yosry Ahmed <yosry.ahmed@linux.dev>
+To: Michal Hocko <mhocko@suse.com>
 Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
  =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
+ Jonathan Corbet <corbet@lwn.net>, Roman Gushchin <roman.gushchin@linux.dev>,
  Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
  Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
  cgroups@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org,
  Peter Hunt <pehunt@redhat.com>
 References: <20250129191204.368199-1-longman@redhat.com>
- <Z5qLQ1o6cXbcvc0o@google.com>
+ <Z5s1DG2YVH78RWpR@tiehlicka>
 Content-Language: en-US
-In-Reply-To: <Z5qLQ1o6cXbcvc0o@google.com>
+In-Reply-To: <Z5s1DG2YVH78RWpR@tiehlicka>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 1/29/25 3:10 PM, Yosry Ahmed wrote:
-> On Wed, Jan 29, 2025 at 02:12:04PM -0500, Waiman Long wrote:
+On 1/30/25 3:15 AM, Michal Hocko wrote:
+> On Wed 29-01-25 14:12:04, Waiman Long wrote:
 >> Since commit 0e4b01df8659 ("mm, memcg: throttle allocators when failing
 >> reclaim over memory.high"), the amount of allocator throttling had
 >> increased substantially. As a result, it could be difficult for a
@@ -121,87 +120,42 @@ On 1/29/25 3:10 PM, Yosry Ahmed wrote:
 >> This behavior makes the upstream Kubernetes community hesitate to
 >> use memory.high. Instead, they use only memory.max for memory control
 >> similar to what is being done for cgroup v1 [1].
->>
+> Why is this a problem for them?
+My understanding is that a mishaving container will hold up memory.high 
+amount of memory for a long time instead of getting OOM killed sooner 
+and be more productively used elsewhere.
+>
 >> To allow better control of the amount of throttling and hence the
 >> speed that a misbehving task can be OOM killed, a new single-value
 >> memory.high.throttle control file is now added. The allowable range
 >> is 0-32.  By default, it has a value of 0 which means maximum throttling
 >> like before. Any non-zero positive value represents the corresponding
 >> power of 2 reduction of throttling and makes OOM kills easier to happen.
->>
+> I do not like the interface to be honest. It exposes an implementation
+> detail and casts it into a user API. If we ever need to change the way
+> how the throttling is implemented this will stand in the way because
+> there will be applications depending on a behavior they were carefuly
+> tuned to.
+>
+> It is also not entirely sure how is this supposed to be used in
+> practice? How do people what kind of value they should use?
+Yes, I agree that a user may need to run some trial runs to find a 
+proper value. Perhaps a simpler binary interface of "off" and "on" may 
+be easier to understand and use.
+>
 >> System administrators can now use this parameter to determine how easy
 >> they want OOM kills to happen for applications that tend to consume
 >> a lot of memory without the need to run a special userspace memory
 >> management tool to monitor memory consumption when memory.high is set.
->>
->> Below are the test results of a simple program showing how different
->> values of memory.high.throttle can affect its run time (in secs) until
->> it gets OOM killed. This test program allocates pages from kernel
->> continuously. There are some run-to-run variations and the results
->> are just one possible set of samples.
->>
->>    # systemd-run -p MemoryHigh=10M -p MemoryMax=20M -p MemorySwapMax=10M \
->> 	--wait -t timeout 300 /tmp/mmap-oom
->>
->>    memory.high.throttle	service runtime
->>    --------------------	---------------
->>              0		    120.521
->>              1		    103.376
->>              2		     85.881
->>              3		     69.698
->>              4		     42.668
->>              5		     45.782
->>              6		     22.179
->>              7		      9.909
->>              8		      5.347
->>              9		      3.100
->>             10		      1.757
->>             11		      1.084
->>             12		      0.919
->>             13		      0.650
->>             14		      0.650
->>             15		      0.655
->>
->> [1] https://docs.google.com/document/d/1mY0MTT34P-Eyv5G1t_Pqs4OWyIH-cg9caRKWmqYlSbI/edit?tab=t.0
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   Documentation/admin-guide/cgroup-v2.rst | 16 ++++++++--
->>   include/linux/memcontrol.h              |  2 ++
->>   mm/memcontrol.c                         | 41 +++++++++++++++++++++++++
->>   3 files changed, 57 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
->> index cb1b4e759b7e..df9410ad8b3b 100644
->> --- a/Documentation/admin-guide/cgroup-v2.rst
->> +++ b/Documentation/admin-guide/cgroup-v2.rst
->> @@ -1291,8 +1291,20 @@ PAGE_SIZE multiple when read back.
->>   	Going over the high limit never invokes the OOM killer and
->>   	under extreme conditions the limit may be breached. The high
->>   	limit should be used in scenarios where an external process
->> -	monitors the limited cgroup to alleviate heavy reclaim
->> -	pressure.
->> +	monitors the limited cgroup to alleviate heavy reclaim pressure
->> +	unless a high enough value is set in "memory.high.throttle".
->> +
->> +  memory.high.throttle
->> +	A read-write single value file which exists on non-root
->> +	cgroups.  The default is 0.
->> +
->> +	Memory usage throttle control.	This value controls the amount
->> +	of throttling that will be applied when memory consumption
->> +	exceeds the "memory.high" limit.  The larger the value is,
->> +	the smaller the amount of throttling will be and the easier an
->> +	offending application may get OOM killed.
-> memory.high is supposed to never invoke the OOM killer (see above). It's
-> unclear to me if you are referring to OOM kills from the kernel or
-> userspace in the commit message. If the latter, I think it shouldn't be
-> in kernel docs.
+> Why cannot they achieve the same with the existing events/metrics we
+> already do provide? Most notably PSI which is properly accounted when
+> a task is throttled due to memory.high throttling.
 
-I am sorry for not being clear. What I meant is that if an application 
-is consuming more memory than what can be recovered by memory reclaim, 
-it will reach memory.max faster, if set, and get OOM killed. Will 
-clarify that in the next version.
+That will require the use of a userspace management agent that looks for 
+these stalling conditions and make the kill, if necessary. There are 
+certainly users out there that want to get some benefit of using 
+memory.high like early memory reclaim without the trouble of handling 
+these kind of stalling conditions.
 
 Cheers,
 Longman
