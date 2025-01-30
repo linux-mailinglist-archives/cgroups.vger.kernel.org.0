@@ -1,196 +1,143 @@
-Return-Path: <cgroups+bounces-6381-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6382-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97981A2280C
-	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 05:11:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D60C7A22975
+	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 09:15:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8E991887067
-	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 04:11:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEA643A69BE
+	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 08:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D510137750;
-	Thu, 30 Jan 2025 04:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7AC1AA1D8;
+	Thu, 30 Jan 2025 08:15:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FvFPOePl"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JlH6NiL1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4632770C;
-	Thu, 30 Jan 2025 04:11:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CEF195FE8
+	for <cgroups@vger.kernel.org>; Thu, 30 Jan 2025 08:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738210303; cv=none; b=Sw4w9zaKRZjlmNGAIcvEJVCjDjxJMi9yGT+6rUGRY5OLG/QcBenJ89dJ0EjIw5DUC35uRSNduUnKBLH4RQFf1hmsAx352patq53+EvvcVU+gwAY4Bbx/98n0ZKBAHwGBm8szTvxcrG/XXY9vLHHAuoaI7SQqBc6PR1E6gv6LXEk=
+	t=1738224913; cv=none; b=HNeSfXTUSqEZYE8B92sSR54mmTkqc/L3wHLkDApdVpOPT3bSNTi0q6/8jdgXIIcpDNJTwBbpOCYz1x0PAKIa4i11O5xfAVIhg6J6nWem0GlBW1CrUNZBzDcRGACIawQrMuAOa97PZHWt/2rdxmo+orTq+cSHfvQ4qaWV91Mv3To=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738210303; c=relaxed/simple;
-	bh=UC8IeBBKFfPBafCFr4kyUFlVe382D2VnfBipiZRaeRk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qWC1bJy9QN8MO4h2j6so3CiBFfaabUjSYxEYK3Pvk4Y/L/stGCnw2Z8dPsN7dZ6z+Rqa5VY/W9wqwNXxZpEBgEjsX840VGq5xKwX3md9Zca6rByW28oQmev6Sxfdta4dCR2fbeaCJ2rE2+s3GNkDp4MYJnkWR8pABXaJZGWptXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FvFPOePl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 142C8C4CED2;
-	Thu, 30 Jan 2025 04:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738210301;
-	bh=UC8IeBBKFfPBafCFr4kyUFlVe382D2VnfBipiZRaeRk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FvFPOePlZwb+q7p6VAdWvFNtAW3tP1nHg6WW2zcJaU4NBd7tkRrFawMA/8C7BVKNG
-	 avNXIc291RJYKtb21lcaVNzFUTmGc5vV1aU3QRNrNmu8Q1jLa4VXBHSzRiYuAPZv1l
-	 gzi3AAm1a55/2ZTre2qX6zQBFJKDzfm5yJc9JKoT6RZNMwmr4U2C1a4zYCTEJ6R7b4
-	 ZR3IOq9yYN4nJGJGt4UWdBiWuXACHW9fk0T1xLslstiVWWKaN3EMcatUlLBePbEL74
-	 udgZylVrsFyKyefsc0ConnfYje20wF64jkfAOJtPMg6sLxytwIat3xeR8ynGMZJpGt
-	 lnapa7ShDYaDw==
-From: SeongJae Park <sj@kernel.org>
-To: Yuanchu Xie <yuanchu@google.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-	Khalid Aziz <khalid.aziz@oracle.com>,
-	Henry Huang <henry.hj@antgroup.com>,
-	Yu Zhao <yuzhao@google.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Gregory Price <gregory.price@memverge.com>,
-	Huang Ying <ying.huang@intel.com>,
-	Lance Yang <ioworker0@gmail.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Tejun Heo <tj@kernel.org>,
-	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+	s=arc-20240116; t=1738224913; c=relaxed/simple;
+	bh=KP3oV+9reynS+fHo+js2BMI/eMFWrdIW5NJ9OSJoOI8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JLIcj4bA/d/EH07ge9WXTGePH3gsYyN2FHdr+bMYCNx5Ss89uaAI/9y8rzIgS7mpuaqyXitiXkITwYqBJHQkFwfMniYQUILt8qKxDCceMeRnsb4pkvrTQm014eRy4Lst9B4LWtzWYfwupRdDBJW1TfKux0LcexgseuI5RhqxeBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JlH6NiL1; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-ab633d9582aso109570266b.1
+        for <cgroups@vger.kernel.org>; Thu, 30 Jan 2025 00:15:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1738224910; x=1738829710; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0Yd9VP1y+BPQkS13xsK2KcWh5RNg6hbyGkYuynFoiXU=;
+        b=JlH6NiL1sZoUYcjKoQgDR92iT4sv3G9TbTrsCrmeu0ySZ+hw7LU17OKYE1hCjELu/J
+         0OxbT8Py2mps/c1YlaFAq9vYzjFo/hO0xjZVb4WxrpAiU1Tdndjew6xcbHvB4tId9KKQ
+         fqUKdWDErf2x09X3535MpMie/iRTTzVWoj81/Ql05K3d5LKRFJVJRIWPHaY0f4YM6tDa
+         sDK2HsC4dayjJv8JIiVlrqycARAk4PUlCtSEXXDeD4lShI0l9AN6Y1kO7JvtYsh3rG5H
+         WrIVj82p46l7KeVN65Z4ozmK6N7z19IKWld8kOJKfmhI7nrs6zEiKvlriv7zsU5cpJ/Q
+         bnNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738224910; x=1738829710;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Yd9VP1y+BPQkS13xsK2KcWh5RNg6hbyGkYuynFoiXU=;
+        b=GeVEil88+A4BZE2Y2fNWe98fiuFM6v3gPOL2qEPv3Xls/9VWAjXrd/zAENupHsKsF7
+         Ceu/bLFOgAPVzbNEZj909U0gWl2lvx0Q5HiUH3r615JKipMb6v2xfySYBN4m0lh37MD3
+         TaXHD7oOhhckeIYKEVNv3vJbckOzF9/pPgrrYdyET9uzSUg7Q5job3iExYP6SZuoo9gW
+         bbtC6KPDkbog25Ih7mE8Wdm+XUBiRE6hqjJPTUxvwc522+CUGwOtNHugW65vJATkFxEY
+         RyksrA+lYRRQzwQSRR8NqVQN91sX04EmThJrchXH/w4WNA/1Tb/4h8KlaalHNQQJEiLs
+         ki8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX23iwYXnjICzNQ2sx9A4b4zHMRHrc1+LVXUovmbm0Lp+z1iRRAJODRmLRU87lCMmtTNDlzwQTj@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNCxdzaNKymUdHZAYUP5WJjBUnW4eb1kiO3kDE7kxANBtnvhCX
+	nhJcVJF+byqa24z6PAPu+4vnXrLVjSCsroGav56t25LjV/11NsuW8xji3XCbDKQ=
+X-Gm-Gg: ASbGncssiYU2jTK0qg2Bz79aDYg/kk0yUKqz5fcz2VxdV9z8BWzfPW8rvYe5Q4U3ZBT
+	xLGjzJoNqUVd9k8Np3RdX7ptYqwK9OfE9wYikKgj/MmJy2AelYJ3IpHCD7qWMLL5d23S/fKy0E0
+	jKCpFnkb+CW1T9q16FK1zXZeHS3RGB1kssOiIhqqCYpc+9gtyqSOXV53XBpZCfFmsoeISjDI3MY
+	j8rJDURlFGR72yDnloR1Wq2OZTpE2CBr07e0OxreZUkGkOofP9v4SFXLAbMzK2LmWdEF/2LvrZi
+	WDptCw==
+X-Google-Smtp-Source: AGHT+IHYvWOfej6DnMLzp2Xiw9S+tkev5jMy3KwGkLNQuYfF/NRaZoyfB9k61+r7Ggik1KDW2aMMow==
+X-Received: by 2002:a17:906:6d8c:b0:ab6:d47a:9b20 with SMTP id a640c23a62f3a-ab6d47a9fc0mr492898866b.31.1738224909401;
+        Thu, 30 Jan 2025 00:15:09 -0800 (PST)
+Received: from localhost ([193.86.92.181])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-ab6e4a32253sm76696266b.152.2025.01.30.00.15.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jan 2025 00:15:09 -0800 (PST)
+Date: Thu, 30 Jan 2025 09:15:08 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Waiman Long <longman@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
 	Jonathan Corbet <corbet@lwn.net>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
-	Michal Hocko <mhocko@kernel.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
-	Mike Rapoport <rppt@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Daniel Watson <ozzloy@each.do>,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 0/9] mm: workingset reporting
-Date: Wed, 29 Jan 2025 20:11:39 -0800
-Message-Id: <20250130041139.49594-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <CAJj2-QEaLTasfQgb=VFfnbOmkcXU3kw2VbsNummNEq0V3b9jdw@mail.gmail.com>
-References: 
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-doc@vger.kernel.org,
+	Peter Hunt <pehunt@redhat.com>
+Subject: Re: [RFC PATCH] mm, memcg: introduce memory.high.throttle
+Message-ID: <Z5s1DG2YVH78RWpR@tiehlicka>
+References: <20250129191204.368199-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250129191204.368199-1-longman@redhat.com>
 
-Hi Yuanchu,
-
-On Wed, 29 Jan 2025 18:02:26 -0800 Yuanchu Xie <yuanchu@google.com> wrote:
-
-> On Wed, Dec 11, 2024 at 11:53 AM SeongJae Park <sj@kernel.org> wrote:
-> >
-> > On Fri, 6 Dec 2024 11:57:55 -0800 Yuanchu Xie <yuanchu@google.com> wrote:
-> >
-> > > Thanks for the response Johannes. Some replies inline.
-> > >
-> > > On Tue, Nov 26, 2024 at 11:26\u202fPM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > >
-> > > > On Tue, Nov 26, 2024 at 06:57:19PM -0800, Yuanchu Xie wrote:
-> > > > > This patch series provides workingset reporting of user pages in
-> > > > > lruvecs, of which coldness can be tracked by accessed bits and fd
-> > > > > references. However, the concept of workingset applies generically to
-> > > > > all types of memory, which could be kernel slab caches, discardable
-> > > > > userspace caches (databases), or CXL.mem. Therefore, data sources might
-> > > > > come from slab shrinkers, device drivers, or the userspace.
-> > > > > Another interesting idea might be hugepage workingset, so that we can
-> > > > > measure the proportion of hugepages backing cold memory. However, with
-> > > > > architectures like arm, there may be too many hugepage sizes leading to
-> > > > > a combinatorial explosion when exporting stats to the userspace.
-> > > > > Nonetheless, the kernel should provide a set of workingset interfaces
-> > > > > that is generic enough to accommodate the various use cases, and extensible
-> > > > > to potential future use cases.
-> > > >
-> > > > Doesn't DAMON already provide this information?
-> > > >
-> > > > CCing SJ.
-> > > Thanks for the CC. DAMON was really good at visualizing the memory
-> > > access frequencies last time I tried it out!
-> >
-> > Thank you for this kind acknowledgement, Yuanchu!
-> >
-> > > For server use cases,
-> > > DAMON would benefit from integrations with cgroups.  The key then would be a
-> > > standard interface for exporting a cgroup's working set to the user.
-> >
-> > I show two ways to make DAMON supports cgroups for now.  First way is making
-> > another DAMON operations set implementation for cgroups.  I shared a rough idea
-> > for this before, probably on kernel summit.  But I haven't had a chance to
-> > prioritize this so far.  Please let me know if you need more details.  The
-> > second way is extending DAMOS filter to provide more detailed statistics per
-> > DAMON-region, and adding another DAMOS action that does nothing but only
-> > accounting the detailed statistics.  Using the new DAMOS action, users will be
-> > able to know how much of specific DAMON-found regions are filtered out by the
-> > given filter.  Because we have DAMOS filter type for cgroups, we can know how
-> > much of workingset (or, warm memory) belongs to specific groups.  This can be
-> > applied to not only cgroups, but for any DAMOS filter types that exist (e.g.,
-> > anonymous page, young page).
-> >
-> > I believe the second way is simpler to implement while providing information
-> > that sufficient for most possible use cases.  I was anyway planning to do this.
-
-I implemented the feature for the second approach I mentioned above.  The
-initial version of the feature has recently merged[1] into the mainline as a
-part of 6.14-rc1 MM pull request.  DAMON user-space tool (damo) is also updated
-for baisc support of it.  I forgot updating that on this thread, sorry.
-
-> For a container orchestrator like kubernetes, the node agents need to
-> be able to gather the working set stats at a per-job level. Some jobs
-> can create sub-hierarchies as well, so it's important that we have
-> hierarchical stats.
-
-This makes sense to me.  And yes, I believe DAMOS filters for memcg could also
-be used for this use case, since we can install and use multiple DAMOS filters
-in combinations.
-
-The documentation of the feature is not that good and there are many rooms to
-improve.  You might not be able to get what you want in a perfect way with the
-current implementation.  But we will continue improving it, and I believe we
-can make it faster if efforts are gathered.  Of course, I could be wrong, and
-whether to use it or not is up to each person :)
-
-Anyway, please feel free to ask me questions or any help about the feature if
-you want.
-
+On Wed 29-01-25 14:12:04, Waiman Long wrote:
+> Since commit 0e4b01df8659 ("mm, memcg: throttle allocators when failing
+> reclaim over memory.high"), the amount of allocator throttling had
+> increased substantially. As a result, it could be difficult for a
+> misbehaving application that consumes increasing amount of memory from
+> being OOM-killed if memory.high is set. Instead, the application may
+> just be crawling along holding close to the allowed memory.high memory
+> for the current memory cgroup for a very long time especially those
+> that do a lot of memcg charging and uncharging operations.
 > 
-> Do you think it's a good idea to integrate DAMON to provide some
-> aggregate stats in a memory controller file? With the DAMOS cgroup
-> filter, there can be some kind of interface that a DAMOS action or the
-> damo tool could call into. I feel that would be a straightforward and
-> integrated way to support cgroups.
+> This behavior makes the upstream Kubernetes community hesitate to
+> use memory.high. Instead, they use only memory.max for memory control
+> similar to what is being done for cgroup v1 [1].
 
-DAMON basically exposes its internal information via DAMON sysfs, and DAMON
-user-space tool (damo) uses it.  In this case, per-memcg working set could also
-be retrieved in the way (directly from DAMON sysfs or indirectly from damo).
+Why is this a problem for them?
 
-But, yes, I think we could make new and optimized ABIs for exposing the
-information to user-space in more efficient way depending on the use case, if
-needed.  DAMON modules such as DAMON_RECLAIM and DAMON_LRU_SORT provides their
-own ABIs that simplified and optimized for their usages.
+> To allow better control of the amount of throttling and hence the
+> speed that a misbehving task can be OOM killed, a new single-value
+> memory.high.throttle control file is now added. The allowable range
+> is 0-32.  By default, it has a value of 0 which means maximum throttling
+> like before. Any non-zero positive value represents the corresponding
+> power of 2 reduction of throttling and makes OOM kills easier to happen.
 
-[1] https://git.kernel.org/torvalds/c/626ffabe67c2
+I do not like the interface to be honest. It exposes an implementation
+detail and casts it into a user API. If we ever need to change the way
+how the throttling is implemented this will stand in the way because
+there will be applications depending on a behavior they were carefuly
+tuned to.
 
+It is also not entirely sure how is this supposed to be used in
+practice? How do people what kind of value they should use?
 
-Thanks,
-SJ
+> System administrators can now use this parameter to determine how easy
+> they want OOM kills to happen for applications that tend to consume
+> a lot of memory without the need to run a special userspace memory
+> management tool to monitor memory consumption when memory.high is set.
 
-[...]
+Why cannot they achieve the same with the existing events/metrics we
+already do provide? Most notably PSI which is properly accounted when
+a task is throttled due to memory.high throttling.
+-- 
+Michal Hocko
+SUSE Labs
 
