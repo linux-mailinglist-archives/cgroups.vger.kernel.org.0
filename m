@@ -1,709 +1,209 @@
-Return-Path: <cgroups+bounces-6389-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6391-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D66F7A22EA1
-	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 15:04:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ECBFA230A0
+	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 15:52:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E28D188B5EE
-	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 14:03:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A892F7A266C
+	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2025 14:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AF3D1EBFFD;
-	Thu, 30 Jan 2025 14:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BE21E98F3;
+	Thu, 30 Jan 2025 14:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hWPNl1r6";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ExSQiBQK"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aIuXXXze"
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B3F21E9B1E;
-	Thu, 30 Jan 2025 14:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29AD21DDD1
+	for <cgroups@vger.kernel.org>; Thu, 30 Jan 2025 14:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738245748; cv=none; b=hZuWnEcT/oQJDFDYFPL1RCRwDLNhjAAmLxdF/SEOBZ4DJp4G+iG6Pou8pphpWy+wY3ZsUnMSIAbNo5lF50kDC+S+fiE0xPDLtVZzCI90ZYVTwtTfYbL0a87eOF93yDJ8SXKseqyQ29odYhHBoLCtP61UERbWNP8xFoToZLdoxVs=
+	t=1738248757; cv=none; b=ROCTGNa5BIbICMwcyKKo8Yhg5HY1TiYnvMjcp4oaOIFbDKDAFt4pyBOT/YvzZ7KVeukTs62EidRw89cXg8XVCKKRJ2RtfvlLKsR7ZWbDAsu7tfM1bb/jZQclEoF5XiskzZsumucpqQvoZ3uNrXQgaMxexyqgppbAXTlXgf5lw4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738245748; c=relaxed/simple;
-	bh=fXPeRek6JC3H/Rov4MQv+p4MElASks0IvCFFGpJqMJI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X6RMKtDyp99i1uUlmyGVdSwg1EnzyBstRPrYDi4XjXzNASW3r2gh6eM0GD9TKD8X0xLu/aRc29ppyDZfG8uJdbbm3cRxDp/ci9VfHf3LDh0PgsHAlm0hvpzP0hpqrWEqyzY70zMvhu+nmXs735LmFM+uM9pKBmlzO3izJu9IJ7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hWPNl1r6; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ExSQiBQK; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1738245742;
+	s=arc-20240116; t=1738248757; c=relaxed/simple;
+	bh=PCYY8IA+Wsi1N1QvCopsjKMlR20mHZ5esGgVL3/VF9k=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=XvNgVntuLeBonlSkfO7V3z58AXRRmevlhCihiY7LwhQsnxkWEnlpp0fuddNjv5scCT71uFXi8TBIs15X+xmkNE3nFzsCfq0V9TyOb+9at3d0AlOxtH2ikqh+9lZ3mZpXnUUaMTvYeuIe1xNBIL4/gMs2pDvUniNXIRhBBthxBY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aIuXXXze; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1738248755;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Pvg2eeSvkrWLceglIjzdEB8Vsoh3rhA8HF51nzR4fwQ=;
-	b=hWPNl1r6U5pjxlrEhwwxVLfIy3mjfh57EVDCt7IQa9VxNAaz3w7XDaIChXoWRf3lSvPyG5
-	cccIkd2urQwhw8SU8etqFLMTBrFg2t8K0c8Lgvbwrh99cxjJ716+7dhhpa/ZoMfgyDH6U7
-	f0Y+h82dkUObmyPnyUggrWufCIOfWMfQVZDb0eHYjN4gitrDswWtM6X9DCSg1oF+k8PnNA
-	kEdtEaWlEMeQE6Flzi/DsJzYsaONs4netgx0Md72m8+aFsTgXugiJzd3hApGbkWzIaU6or
-	8Z0EoZXNcHBXHrItL/EZb/CPSq9yC1LGOQrmmEBH/WmbrwFAdAGlXxswEq8QlA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1738245742;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Pvg2eeSvkrWLceglIjzdEB8Vsoh3rhA8HF51nzR4fwQ=;
-	b=ExSQiBQK67Pf3AqQxl+cbv1iRuQLDH8yZ2rVBRui8tcZLR005Ylis8/hGTRyzxMNx44NCc
-	6yErER8BhVrvJ/DQ==
-To: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hillf Danton <hdanton@sina.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Marco Elver <elver@google.com>,
-	Tejun Heo <tj@kernel.org>,
-	tglx@linutronix.de,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	syzbot+6ea37e2e6ffccf41a7e6@syzkaller.appspotmail.com
-Subject: [PATCH v6 6/6] kernfs: Use RCU to access kernfs_node::name.
-Date: Thu, 30 Jan 2025 15:02:07 +0100
-Message-ID: <20250130140207.1914339-7-bigeasy@linutronix.de>
-In-Reply-To: <20250130140207.1914339-1-bigeasy@linutronix.de>
-References: <20250130140207.1914339-1-bigeasy@linutronix.de>
+	bh=SGz1ZibS2GfwUDvWQSD0jo0W5/+6emzlakirCqtq8vk=;
+	b=aIuXXXzeh9NsMvyCglf6jX/t3WFgc9MpgBHOyxwFfdOEvoHgyvtS2fG2iU/FzBdH5NMBkC
+	9upXXBmYlBc4GmrqcGYpqSOPqwg04m6GUtD8O0C7fQWd5L/HeArcrO/Q6F/xoYM9BOkeoZ
+	Mn1qi+ptvR0HAJsiphd5chU87YbFDNY=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-310-4PHwpMgCMRG9preyAWNYMA-1; Thu, 30 Jan 2025 09:52:33 -0500
+X-MC-Unique: 4PHwpMgCMRG9preyAWNYMA-1
+X-Mimecast-MFC-AGG-ID: 4PHwpMgCMRG9preyAWNYMA
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-46791423fc9so17626211cf.2
+        for <cgroups@vger.kernel.org>; Thu, 30 Jan 2025 06:52:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738248753; x=1738853553;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SGz1ZibS2GfwUDvWQSD0jo0W5/+6emzlakirCqtq8vk=;
+        b=C3Sj8S6pRtGs1ysSS8D2yXGq/u5U454M9oFQ4jCZVccZzUwlZAQP29JdTUsBfg3ZQB
+         VFQBfbS6vLLezO43nW/xxkBr5pQLhP2hi8IanWkjLM33cYEpwCJT9KwAonYUv6o014uj
+         xF5mOyKo3u1XtrDK0EPultOYjxmdbeBOY+YlbMMDwr7w1WA8WCZ7bmcZHFg0c0+CWBM9
+         2rZTgVgsXpjiJbF7Ko2AVWhqmkYhP4WOJCz8VW4Jtypa+kd2c9sfnr/Ef7DLxr0zqAcG
+         2P/2USIeamvO4t6Pcl6HxTJEdXhpiTueoTpcrEYgr+yWOAFby42yR+y1OLVDGw9IhBN3
+         6RVA==
+X-Forwarded-Encrypted: i=1; AJvYcCXEw7mPfqxq5jLFDV4O0ncaIqTamADh9lKrglPQ4SVNiNYD4pETq3F6AJh/gtI2cKfplnWJ9Qjy@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzkwy7bmt3MLYz+Mp4utN/BcqNJIbu7jNqkR+sXDiQmKkOsLb8O
+	/q26hPZHmC/waaznBrFrR1mouXMPACICDgeIiJzCNxfEvJcBjgzOIOChVAfKPzuklioCts7wVbv
+	xV35ZJaVzwHO5vkUvG2gQZqbW7sLGiQ6Agfn+GetlXhMIsoc9TwkW1j4=
+X-Gm-Gg: ASbGncutD+p5WPlnQOc02ROrZPv1oAsWWPTkwFTM7qWvizyslrwB/BggogyJwe3OPE5
+	2eU6sd3rDobS2xOLlw0wW3NH0JEfEY4yB/DGTQjA8T5d5WXNaIrhMf2mm3eRHIHVSDxuVPq10WR
+	TsL7WFnkBBjy5+BO0ggoSwXMoDJ0S+s+jLTy5MWFwpURUdqC61kAjpKNUbwE1nk2LohMJ0NKOxJ
+	1hkoabI+7spf4LEkitaKwsigGZWiMF2Pt9X+rqUCwgb3BkYnqf3sYTf1PMtjlnV7ix9deE6ob15
+	cPUG3SIqFdlYTeklqLmX4KnRHXclP0SGAHXjwWJPcAJoYy7UEk4=
+X-Received: by 2002:ac8:6f17:0:b0:467:53c8:7570 with SMTP id d75a77b69052e-46fd0a1e874mr145317911cf.13.1738248753179;
+        Thu, 30 Jan 2025 06:52:33 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFZtczFOZdXZZrzAnnTtypYwYu2MEl/wAI3+p6VGOBUkFWHhZm0Tir+2iIoGGAmsnU1RVk9pA==
+X-Received: by 2002:ac8:6f17:0:b0:467:53c8:7570 with SMTP id d75a77b69052e-46fd0a1e874mr145317521cf.13.1738248752831;
+        Thu, 30 Jan 2025 06:52:32 -0800 (PST)
+Received: from ?IPV6:2601:408:c101:1d00:6621:a07c:fed4:cbba? ([2601:408:c101:1d00:6621:a07c:fed4:cbba])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46fdf0c7e5esm7550941cf.24.2025.01.30.06.52.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Jan 2025 06:52:32 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <366fd30f-033d-48d6-92b4-ac67c44d0d9b@redhat.com>
+Date: Thu, 30 Jan 2025 09:52:29 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] mm, memcg: introduce memory.high.throttle
+To: Yosry Ahmed <yosry.ahmed@linux.dev>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org,
+ Peter Hunt <pehunt@redhat.com>
+References: <20250129191204.368199-1-longman@redhat.com>
+ <Z5qLQ1o6cXbcvc0o@google.com>
+Content-Language: en-US
+In-Reply-To: <Z5qLQ1o6cXbcvc0o@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Using RCU lifetime rules to access kernfs_node::name can avoid the
-trouble with kernfs_rename_lock in kernfs_name() and kernfs_path_from_node()
-if the fs was created with KERNFS_ROOT_INVARIANT_PARENT. This is usefull
-as it allows to implement kernfs_path_from_node() only with RCU
-protection and avoiding kernfs_rename_lock. The lock is only required if
-the __parent node can be changed and the function requires an unchanged
-hierarchy while it iterates from the node to its parent.
-The change is needed to allow the lookup of the node's path
-(kernfs_path_from_node()) from context which runs always with disabled
-preemption and or interrutps even on PREEMPT_RT. The problem is that
-kernfs_rename_lock becomes a sleeping lock on PREEMPT_RT.
+On 1/29/25 3:10 PM, Yosry Ahmed wrote:
+> On Wed, Jan 29, 2025 at 02:12:04PM -0500, Waiman Long wrote:
+>> Since commit 0e4b01df8659 ("mm, memcg: throttle allocators when failing
+>> reclaim over memory.high"), the amount of allocator throttling had
+>> increased substantially. As a result, it could be difficult for a
+>> misbehaving application that consumes increasing amount of memory from
+>> being OOM-killed if memory.high is set. Instead, the application may
+>> just be crawling along holding close to the allowed memory.high memory
+>> for the current memory cgroup for a very long time especially those
+>> that do a lot of memcg charging and uncharging operations.
+>>
+>> This behavior makes the upstream Kubernetes community hesitate to
+>> use memory.high. Instead, they use only memory.max for memory control
+>> similar to what is being done for cgroup v1 [1].
+>>
+>> To allow better control of the amount of throttling and hence the
+>> speed that a misbehving task can be OOM killed, a new single-value
+>> memory.high.throttle control file is now added. The allowable range
+>> is 0-32.  By default, it has a value of 0 which means maximum throttling
+>> like before. Any non-zero positive value represents the corresponding
+>> power of 2 reduction of throttling and makes OOM kills easier to happen.
+>>
+>> System administrators can now use this parameter to determine how easy
+>> they want OOM kills to happen for applications that tend to consume
+>> a lot of memory without the need to run a special userspace memory
+>> management tool to monitor memory consumption when memory.high is set.
+>>
+>> Below are the test results of a simple program showing how different
+>> values of memory.high.throttle can affect its run time (in secs) until
+>> it gets OOM killed. This test program allocates pages from kernel
+>> continuously. There are some run-to-run variations and the results
+>> are just one possible set of samples.
+>>
+>>    # systemd-run -p MemoryHigh=10M -p MemoryMax=20M -p MemorySwapMax=10M \
+>> 	--wait -t timeout 300 /tmp/mmap-oom
+>>
+>>    memory.high.throttle	service runtime
+>>    --------------------	---------------
+>>              0		    120.521
+>>              1		    103.376
+>>              2		     85.881
+>>              3		     69.698
+>>              4		     42.668
+>>              5		     45.782
+>>              6		     22.179
+>>              7		      9.909
+>>              8		      5.347
+>>              9		      3.100
+>>             10		      1.757
+>>             11		      1.084
+>>             12		      0.919
+>>             13		      0.650
+>>             14		      0.650
+>>             15		      0.655
+>>
+>> [1] https://docs.google.com/document/d/1mY0MTT34P-Eyv5G1t_Pqs4OWyIH-cg9caRKWmqYlSbI/edit?tab=t.0
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   Documentation/admin-guide/cgroup-v2.rst | 16 ++++++++--
+>>   include/linux/memcontrol.h              |  2 ++
+>>   mm/memcontrol.c                         | 41 +++++++++++++++++++++++++
+>>   3 files changed, 57 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+>> index cb1b4e759b7e..df9410ad8b3b 100644
+>> --- a/Documentation/admin-guide/cgroup-v2.rst
+>> +++ b/Documentation/admin-guide/cgroup-v2.rst
+>> @@ -1291,8 +1291,20 @@ PAGE_SIZE multiple when read back.
+>>   	Going over the high limit never invokes the OOM killer and
+>>   	under extreme conditions the limit may be breached. The high
+>>   	limit should be used in scenarios where an external process
+>> -	monitors the limited cgroup to alleviate heavy reclaim
+>> -	pressure.
+>> +	monitors the limited cgroup to alleviate heavy reclaim pressure
+>> +	unless a high enough value is set in "memory.high.throttle".
+>> +
+>> +  memory.high.throttle
+>> +	A read-write single value file which exists on non-root
+>> +	cgroups.  The default is 0.
+>> +
+>> +	Memory usage throttle control.	This value controls the amount
+>> +	of throttling that will be applied when memory consumption
+>> +	exceeds the "memory.high" limit.  The larger the value is,
+>> +	the smaller the amount of throttling will be and the easier an
+>> +	offending application may get OOM killed.
+> memory.high is supposed to never invoke the OOM killer (see above). It's
+> unclear to me if you are referring to OOM kills from the kernel or
+> userspace in the commit message. If the latter, I think it shouldn't be
+> in kernel docs.
 
-I went through all ::name users and added the required access for the lookup
-with a few extensions:
-- rdtgroup_pseudo_lock_create() drops all locks and then uses the name
-  later on. resctrl supports rename with different parents. Here I made
-  a temporal copy of the name while it is used outside of the lock.
+I am sorry for not being clear. What I meant is that if an application 
+is consuming more memory than what can be recovered by memory reclaim, 
+it will reach memory.max faster, if set, and get OOM killed. Will 
+clarify that in the next version.
 
-- kernfs_rename_ns() accepts NULL as new_parent. This simplifies
-  sysfs_move_dir_ns() where it can set NULL in order to reuse the current
-  name.
-
-- kernfs_rename_ns() is only using kernfs_rename_lock if the parents are
-  different. All users use either kernfs_rwsem (for stable path view) or
-  just RCU for the lookup. The ::name uses always RCU free.
-
-Use RCU lifetime guarantees to access kernfs_node::name.
-
-Suggested-by: Tejun Heo <tj@kernel.org>
-Acked-by: Tejun Heo <tj@kernel.org>
-Reported-by: syzbot+6ea37e2e6ffccf41a7e6@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/lkml/67251dc6.050a0220.529b6.015e.GAE@googl=
-e.com/
-Reported-by: Hillf Danton <hdanton@sina.com>
-Closes: https://lore.kernel.org/20241102001224.2789-1-hdanton@sina.com
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- arch/x86/kernel/cpu/resctrl/internal.h    |   5 +
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  14 ++-
- arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  10 +-
- fs/kernfs/dir.c                           | 113 ++++++++++++----------
- fs/kernfs/file.c                          |   4 +-
- fs/kernfs/kernfs-internal.h               |   5 +
- fs/kernfs/mount.c                         |   5 +-
- fs/kernfs/symlink.c                       |   7 +-
- fs/sysfs/dir.c                            |   2 +-
- include/linux/kernfs.h                    |   4 +-
- security/selinux/hooks.c                  |   7 +-
- 11 files changed, 105 insertions(+), 71 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/r=
-esctrl/internal.h
-index 955999aecfca9..c603bc8abbb72 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -505,6 +505,11 @@ int parse_bw(struct rdt_parse_data *data, struct resct=
-rl_schema *s,
-=20
- extern struct mutex rdtgroup_mutex;
-=20
-+static inline const char *rdt_kn_name(const struct kernfs_node *kn)
-+{
-+	return rcu_dereference_check(kn->name, lockdep_is_held(&rdtgroup_mutex));
-+}
-+
- extern struct rdt_hw_resource rdt_resources_all[];
- extern struct rdtgroup rdtgroup_default;
- extern struct dentry *debugfs_resctrl;
-diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cp=
-u/resctrl/pseudo_lock.c
-index 972e6b6b0481f..242ccd014a0ef 100644
---- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-+++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-@@ -52,7 +52,8 @@ static char *pseudo_lock_devnode(const struct device *dev=
-, umode_t *mode)
- 	rdtgrp =3D dev_get_drvdata(dev);
- 	if (mode)
- 		*mode =3D 0600;
--	return kasprintf(GFP_KERNEL, "pseudo_lock/%s", rdtgrp->kn->name);
-+	guard(mutex)(&rdtgroup_mutex);
-+	return kasprintf(GFP_KERNEL, "pseudo_lock/%s", rdt_kn_name(rdtgrp->kn));
- }
-=20
- static const struct class pseudo_lock_class =3D {
-@@ -1301,6 +1302,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtg=
-rp)
- 	struct task_struct *thread;
- 	unsigned int new_minor;
- 	struct device *dev;
-+	char *kn_name __free(kfree) =3D NULL;
- 	int ret;
-=20
- 	ret =3D pseudo_lock_region_alloc(plr);
-@@ -1312,6 +1314,11 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdt=
-grp)
- 		ret =3D -EINVAL;
- 		goto out_region;
- 	}
-+	kn_name =3D kstrdup(rdt_kn_name(rdtgrp->kn), GFP_KERNEL);
-+	if (!kn_name) {
-+		ret =3D -ENOMEM;
-+		goto out_cstates;
-+	}
-=20
- 	plr->thread_done =3D 0;
-=20
-@@ -1360,8 +1367,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtg=
-rp)
- 	mutex_unlock(&rdtgroup_mutex);
-=20
- 	if (!IS_ERR_OR_NULL(debugfs_resctrl)) {
--		plr->debugfs_dir =3D debugfs_create_dir(rdtgrp->kn->name,
--						      debugfs_resctrl);
-+		plr->debugfs_dir =3D debugfs_create_dir(kn_name, debugfs_resctrl);
- 		if (!IS_ERR_OR_NULL(plr->debugfs_dir))
- 			debugfs_create_file("pseudo_lock_measure", 0200,
- 					    plr->debugfs_dir, rdtgrp,
-@@ -1370,7 +1376,7 @@ int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtg=
-rp)
-=20
- 	dev =3D device_create(&pseudo_lock_class, NULL,
- 			    MKDEV(pseudo_lock_major, new_minor),
--			    rdtgrp, "%s", rdtgrp->kn->name);
-+			    rdtgrp, "%s", kn_name);
-=20
- 	mutex_lock(&rdtgroup_mutex);
-=20
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/r=
-esctrl/rdtgroup.c
-index 6219495352463..8c43e00a1ef5d 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -907,14 +907,14 @@ int proc_resctrl_show(struct seq_file *s, struct pid_=
-namespace *ns,
- 			continue;
-=20
- 		seq_printf(s, "res:%s%s\n", (rdtg =3D=3D &rdtgroup_default) ? "/" : "",
--			   rdtg->kn->name);
-+			   rdt_kn_name(rdtg->kn));
- 		seq_puts(s, "mon:");
- 		list_for_each_entry(crg, &rdtg->mon.crdtgrp_list,
- 				    mon.crdtgrp_list) {
- 			if (!resctrl_arch_match_rmid(tsk, crg->mon.parent->closid,
- 						     crg->mon.rmid))
- 				continue;
--			seq_printf(s, "%s", crg->kn->name);
-+			seq_printf(s, "%s", rdt_kn_name(crg->kn));
- 			break;
- 		}
- 		seq_putc(s, '\n');
-@@ -3662,7 +3662,7 @@ static int rdtgroup_mkdir_ctrl_mon(struct kernfs_node=
- *parent_kn,
-  */
- static bool is_mon_groups(struct kernfs_node *kn, const char *name)
- {
--	return (!strcmp(kn->name, "mon_groups") &&
-+	return (!strcmp(rdt_kn_name(kn), "mon_groups") &&
- 		strcmp(name, "mon_groups"));
- }
-=20
-@@ -3811,7 +3811,7 @@ static int rdtgroup_rmdir(struct kernfs_node *kn)
- 			ret =3D rdtgroup_rmdir_ctrl(rdtgrp, tmpmask);
- 		}
- 	} else if (rdtgrp->type =3D=3D RDTMON_GROUP &&
--		 is_mon_groups(parent_kn, kn->name)) {
-+		 is_mon_groups(parent_kn, rdt_kn_name(kn))) {
- 		ret =3D rdtgroup_rmdir_mon(rdtgrp, tmpmask);
- 	} else {
- 		ret =3D -EPERM;
-@@ -3899,7 +3899,7 @@ static int rdtgroup_rename(struct kernfs_node *kn,
-=20
- 	kn_parent =3D rdt_kn_parent(kn);
- 	if (rdtgrp->type !=3D RDTMON_GROUP || !kn_parent ||
--	    !is_mon_groups(kn_parent, kn->name)) {
-+	    !is_mon_groups(kn_parent, rdt_kn_name(kn))) {
- 		rdt_last_cmd_puts("Source must be a MON group\n");
- 		ret =3D -EPERM;
- 		goto out;
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index d2306641b569c..cda167b908f22 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -51,14 +51,6 @@ static bool kernfs_lockdep(struct kernfs_node *kn)
- #endif
- }
-=20
--static int kernfs_name_locked(struct kernfs_node *kn, char *buf, size_t bu=
-flen)
--{
--	if (!kn)
--		return strscpy(buf, "(null)", buflen);
--
--	return strscpy(buf, rcu_access_pointer(kn->__parent) ? kn->name : "/", bu=
-flen);
--}
--
- /* kernfs_node_depth - compute depth from @from to @to */
- static size_t kernfs_depth(struct kernfs_node *from, struct kernfs_node *t=
-o)
- {
-@@ -168,11 +160,13 @@ static int kernfs_path_from_node_locked(struct kernfs=
-_node *kn_to,
-=20
- 	/* Calculate how many bytes we need for the rest */
- 	for (i =3D depth_to - 1; i >=3D 0; i--) {
-+		const char *name;
-=20
- 		for (kn =3D kn_to, j =3D 0; j < i; j++)
- 			kn =3D rcu_dereference(kn->__parent);
-=20
--		len +=3D scnprintf(buf + len, buflen - len, "/%s", kn->name);
-+		name =3D rcu_dereference(kn->name);
-+		len +=3D scnprintf(buf + len, buflen - len, "/%s", name);
- 	}
-=20
- 	return len;
-@@ -196,13 +190,18 @@ static int kernfs_path_from_node_locked(struct kernfs=
-_node *kn_to,
-  */
- int kernfs_name(struct kernfs_node *kn, char *buf, size_t buflen)
- {
--	unsigned long flags;
--	int ret;
-+	struct kernfs_node *kn_parent;
-=20
--	read_lock_irqsave(&kernfs_rename_lock, flags);
--	ret =3D kernfs_name_locked(kn, buf, buflen);
--	read_unlock_irqrestore(&kernfs_rename_lock, flags);
--	return ret;
-+	if (!kn)
-+		return strscpy(buf, "(null)", buflen);
-+
-+	guard(rcu)();
-+	/*
-+	 * KERNFS_ROOT_INVARIANT_PARENT is ignored here. The name is RCU freed and
-+	 * the parent is either existing or not.
-+	 */
-+	kn_parent =3D rcu_dereference(kn->__parent);
-+	return strscpy(buf, kn_parent ? rcu_dereference(kn->name) : "/", buflen);
- }
-=20
- /**
-@@ -224,14 +223,17 @@ int kernfs_name(struct kernfs_node *kn, char *buf, si=
-ze_t buflen)
- int kernfs_path_from_node(struct kernfs_node *to, struct kernfs_node *from,
- 			  char *buf, size_t buflen)
- {
--	unsigned long flags;
--	int ret;
-+	struct kernfs_root *root;
-=20
- 	guard(rcu)();
--	read_lock_irqsave(&kernfs_rename_lock, flags);
--	ret =3D kernfs_path_from_node_locked(to, from, buf, buflen);
--	read_unlock_irqrestore(&kernfs_rename_lock, flags);
--	return ret;
-+	if (to) {
-+		root =3D kernfs_root(to);
-+		if (!(root->flags & KERNFS_ROOT_INVARIANT_PARENT)) {
-+			guard(read_lock_irqsave)(&kernfs_rename_lock);
-+			return kernfs_path_from_node_locked(to, from, buf, buflen);
-+		}
-+	}
-+	return kernfs_path_from_node_locked(to, from, buf, buflen);
- }
- EXPORT_SYMBOL_GPL(kernfs_path_from_node);
-=20
-@@ -338,13 +340,13 @@ static int kernfs_name_compare(unsigned int hash, con=
-st char *name,
- 		return -1;
- 	if (ns > kn->ns)
- 		return 1;
--	return strcmp(name, kn->name);
-+	return strcmp(name, kernfs_rcu_name(kn));
- }
-=20
- static int kernfs_sd_compare(const struct kernfs_node *left,
- 			     const struct kernfs_node *right)
- {
--	return kernfs_name_compare(left->hash, left->name, left->ns, right);
-+	return kernfs_name_compare(left->hash, kernfs_rcu_name(left), left->ns, r=
-ight);
- }
-=20
- /**
-@@ -542,7 +544,8 @@ static void kernfs_free_rcu(struct rcu_head *rcu)
- {
- 	struct kernfs_node *kn =3D container_of(rcu, struct kernfs_node, rcu);
-=20
--	kfree_const(kn->name);
-+	/* If the whole node goes away, then name can't be used outside */
-+	kfree_const(rcu_access_pointer(kn->name));
-=20
- 	if (kn->iattr) {
- 		simple_xattrs_free(&kn->iattr->xattrs, NULL);
-@@ -575,7 +578,8 @@ void kernfs_put(struct kernfs_node *kn)
-=20
- 	WARN_ONCE(atomic_read(&kn->active) !=3D KN_DEACTIVATED_BIAS,
- 		  "kernfs_put: %s/%s: released with incorrect active_ref %d\n",
--		  parent ? parent->name : "", kn->name, atomic_read(&kn->active));
-+		  parent ? rcu_dereference(parent->name) : "",
-+		  rcu_dereference(kn->name), atomic_read(&kn->active));
-=20
- 	if (kernfs_type(kn) =3D=3D KERNFS_LINK)
- 		kernfs_put(kn->symlink.target_kn);
-@@ -652,7 +656,7 @@ static struct kernfs_node *__kernfs_new_node(struct ker=
-nfs_root *root,
- 	atomic_set(&kn->active, KN_DEACTIVATED_BIAS);
- 	RB_CLEAR_NODE(&kn->rb);
-=20
--	kn->name =3D name;
-+	rcu_assign_pointer(kn->name, name);
- 	kn->mode =3D mode;
- 	kn->flags =3D flags;
-=20
-@@ -790,7 +794,8 @@ int kernfs_add_one(struct kernfs_node *kn)
- 	ret =3D -EINVAL;
- 	has_ns =3D kernfs_ns_enabled(parent);
- 	if (WARN(has_ns !=3D (bool)kn->ns, KERN_WARNING "kernfs: ns %s in '%s' fo=
-r '%s'\n",
--		 has_ns ? "required" : "invalid", parent->name, kn->name))
-+		 has_ns ? "required" : "invalid",
-+		 kernfs_rcu_name(parent), kernfs_rcu_name(kn)))
- 		goto out_unlock;
-=20
- 	if (kernfs_type(parent) !=3D KERNFS_DIR)
-@@ -800,7 +805,7 @@ int kernfs_add_one(struct kernfs_node *kn)
- 	if (parent->flags & (KERNFS_REMOVING | KERNFS_EMPTY_DIR))
- 		goto out_unlock;
-=20
--	kn->hash =3D kernfs_name_hash(kn->name, kn->ns);
-+	kn->hash =3D kernfs_name_hash(kernfs_rcu_name(kn), kn->ns);
-=20
- 	ret =3D kernfs_link_sibling(kn);
- 	if (ret)
-@@ -856,7 +861,7 @@ static struct kernfs_node *kernfs_find_ns(struct kernfs=
-_node *parent,
-=20
- 	if (has_ns !=3D (bool)ns) {
- 		WARN(1, KERN_WARNING "kernfs: ns %s in '%s' for '%s'\n",
--		     has_ns ? "required" : "invalid", parent->name, name);
-+		     has_ns ? "required" : "invalid", kernfs_rcu_name(parent), name);
- 		return NULL;
- 	}
-=20
-@@ -1134,8 +1139,6 @@ static int kernfs_dop_revalidate(struct dentry *dentr=
-y, unsigned int flags)
-=20
- 	/* Negative hashed dentry? */
- 	if (d_really_is_negative(dentry)) {
--		struct kernfs_node *parent;
--
- 		/* If the kernfs parent node has changed discard and
- 		 * proceed to ->lookup.
- 		 *
-@@ -1183,7 +1186,7 @@ static int kernfs_dop_revalidate(struct dentry *dentr=
-y, unsigned int flags)
- 		goto out_bad;
-=20
- 	/* The kernfs node has been renamed */
--	if (strcmp(dentry->d_name.name, kn->name) !=3D 0)
-+	if (strcmp(dentry->d_name.name, kernfs_rcu_name(kn)) !=3D 0)
- 		goto out_bad;
-=20
- 	/* The kernfs node has been moved to a different namespace */
-@@ -1477,7 +1480,7 @@ static void __kernfs_remove(struct kernfs_node *kn)
- 	if (kernfs_parent(kn) && RB_EMPTY_NODE(&kn->rb))
- 		return;
-=20
--	pr_debug("kernfs %s: removing\n", kn->name);
-+	pr_debug("kernfs %s: removing\n", kernfs_rcu_name(kn));
-=20
- 	/* prevent new usage by marking all nodes removing and deactivating */
- 	pos =3D NULL;
-@@ -1733,7 +1736,7 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct k=
-ernfs_node *new_parent,
- {
- 	struct kernfs_node *old_parent;
- 	struct kernfs_root *root;
--	const char *old_name =3D NULL;
-+	const char *old_name;
- 	int error;
-=20
- 	/* can't move or rename root */
-@@ -1756,8 +1759,11 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct =
-kernfs_node *new_parent,
- 	}
-=20
- 	error =3D 0;
-+	old_name =3D kernfs_rcu_name(kn);
-+	if (!new_name)
-+		new_name =3D old_name;
- 	if ((old_parent =3D=3D new_parent) && (kn->ns =3D=3D new_ns) &&
--	    (strcmp(kn->name, new_name) =3D=3D 0))
-+	    (strcmp(old_name, new_name) =3D=3D 0))
- 		goto out;	/* nothing to rename */
-=20
- 	error =3D -EEXIST;
-@@ -1765,7 +1771,7 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct k=
-ernfs_node *new_parent,
- 		goto out;
-=20
- 	/* rename kernfs_node */
--	if (strcmp(kn->name, new_name) !=3D 0) {
-+	if (strcmp(old_name, new_name) !=3D 0) {
- 		error =3D -ENOMEM;
- 		new_name =3D kstrdup_const(new_name, GFP_KERNEL);
- 		if (!new_name)
-@@ -1778,27 +1784,32 @@ int kernfs_rename_ns(struct kernfs_node *kn, struct=
- kernfs_node *new_parent,
- 	 * Move to the appropriate place in the appropriate directories rbtree.
- 	 */
- 	kernfs_unlink_sibling(kn);
--	kernfs_get(new_parent);
-=20
--	/* rename_lock protects ->parent and ->name accessors */
--	write_lock_irq(&kernfs_rename_lock);
-+	/* rename_lock protects ->parent accessors */
-+	if (old_parent !=3D new_parent) {
-+		kernfs_get(new_parent);
-+		write_lock_irq(&kernfs_rename_lock);
-=20
--	old_parent =3D kernfs_parent(kn);
--	rcu_assign_pointer(kn->__parent, new_parent);
-+		rcu_assign_pointer(kn->__parent, new_parent);
-=20
--	kn->ns =3D new_ns;
--	if (new_name) {
--		old_name =3D kn->name;
--		kn->name =3D new_name;
-+		kn->ns =3D new_ns;
-+		if (new_name)
-+			rcu_assign_pointer(kn->name, new_name);
-+
-+		write_unlock_irq(&kernfs_rename_lock);
-+		kernfs_put(old_parent);
-+	} else {
-+		/* name assignment is RCU protected, parent is the same */
-+		kn->ns =3D new_ns;
-+		if (new_name)
-+			rcu_assign_pointer(kn->name, new_name);
- 	}
-=20
--	write_unlock_irq(&kernfs_rename_lock);
--
--	kn->hash =3D kernfs_name_hash(kn->name, kn->ns);
-+	kn->hash =3D kernfs_name_hash(new_name ?: old_name, kn->ns);
- 	kernfs_link_sibling(kn);
-=20
--	kernfs_put(old_parent);
--	kfree_const(old_name);
-+	if (new_name && !is_kernel_rodata((unsigned long)old_name))
-+		kfree_rcu_mightsleep(old_name);
-=20
- 	error =3D 0;
-  out:
-@@ -1883,7 +1894,7 @@ static int kernfs_fop_readdir(struct file *file, stru=
-ct dir_context *ctx)
- 	for (pos =3D kernfs_dir_pos(ns, parent, ctx->pos, pos);
- 	     pos;
- 	     pos =3D kernfs_dir_next_pos(ns, parent, ctx->pos, pos)) {
--		const char *name =3D pos->name;
-+		const char *name =3D kernfs_rcu_name(pos);
- 		unsigned int type =3D fs_umode_to_dtype(pos->mode);
- 		int len =3D strlen(name);
- 		ino_t ino =3D kernfs_ino(pos);
-diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
-index 165d8e37976ba..970bf37a37fb7 100644
---- a/fs/kernfs/file.c
-+++ b/fs/kernfs/file.c
-@@ -915,6 +915,7 @@ static void kernfs_notify_workfn(struct work_struct *wo=
-rk)
- 	list_for_each_entry(info, &kernfs_root(kn)->supers, node) {
- 		struct kernfs_node *parent;
- 		struct inode *p_inode =3D NULL;
-+		const char *kn_name;
- 		struct inode *inode;
- 		struct qstr name;
-=20
-@@ -928,7 +929,8 @@ static void kernfs_notify_workfn(struct work_struct *wo=
-rk)
- 		if (!inode)
- 			continue;
-=20
--		name =3D (struct qstr)QSTR_INIT(kn->name, strlen(kn->name));
-+		kn_name =3D kernfs_rcu_name(kn);
-+		name =3D (struct qstr)QSTR_INIT(kn_name, strlen(kn_name));
- 		parent =3D kernfs_get_parent(kn);
- 		if (parent) {
- 			p_inode =3D ilookup(info->sb, kernfs_ino(parent));
-diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
-index c43bee18b79f7..40a2a9cd819d0 100644
---- a/fs/kernfs/kernfs-internal.h
-+++ b/fs/kernfs/kernfs-internal.h
-@@ -107,6 +107,11 @@ static inline bool kernfs_root_is_locked(const struct =
-kernfs_node *kn)
- 	return lockdep_is_held(&kernfs_root(kn)->kernfs_rwsem);
- }
-=20
-+static inline const char *kernfs_rcu_name(const struct kernfs_node *kn)
-+{
-+	return rcu_dereference_check(kn->name, kernfs_root_is_locked(kn));
-+}
-+
- static inline struct kernfs_node *kernfs_parent(const struct kernfs_node *=
-kn)
- {
- 	/*
-diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
-index 2252b16e6ef0b..d1f512b7bf867 100644
---- a/fs/kernfs/mount.c
-+++ b/fs/kernfs/mount.c
-@@ -231,6 +231,7 @@ struct dentry *kernfs_node_dentry(struct kernfs_node *k=
-n,
- 	do {
- 		struct dentry *dtmp;
- 		struct kernfs_node *kntmp;
-+		const char *name;
-=20
- 		if (kn =3D=3D knparent)
- 			return dentry;
-@@ -239,8 +240,8 @@ struct dentry *kernfs_node_dentry(struct kernfs_node *k=
-n,
- 			dput(dentry);
- 			return ERR_PTR(-EINVAL);
- 		}
--		dtmp =3D lookup_positive_unlocked(kntmp->name, dentry,
--					       strlen(kntmp->name));
-+		name =3D rcu_dereference(kntmp->name);
-+		dtmp =3D lookup_positive_unlocked(name, dentry, strlen(name));
- 		dput(dentry);
- 		if (IS_ERR(dtmp))
- 			return dtmp;
-diff --git a/fs/kernfs/symlink.c b/fs/kernfs/symlink.c
-index 05c62ca93c53d..0bd8a2143723d 100644
---- a/fs/kernfs/symlink.c
-+++ b/fs/kernfs/symlink.c
-@@ -81,7 +81,7 @@ static int kernfs_get_target_path(struct kernfs_node *par=
-ent,
- 	/* determine end of target string for reverse fillup */
- 	kn =3D target;
- 	while (kernfs_parent(kn) && kn !=3D base) {
--		len +=3D strlen(kn->name) + 1;
-+		len +=3D strlen(kernfs_rcu_name(kn)) + 1;
- 		kn =3D kernfs_parent(kn);
- 	}
-=20
-@@ -95,10 +95,11 @@ static int kernfs_get_target_path(struct kernfs_node *p=
-arent,
- 	/* reverse fillup of target string from target to base */
- 	kn =3D target;
- 	while (kernfs_parent(kn) && kn !=3D base) {
--		int slen =3D strlen(kn->name);
-+		const char *name =3D kernfs_rcu_name(kn);
-+		int slen =3D strlen(name);
-=20
- 		len -=3D slen;
--		memcpy(s + len, kn->name, slen);
-+		memcpy(s + len, name, slen);
- 		if (len)
- 			s[--len] =3D '/';
-=20
-diff --git a/fs/sysfs/dir.c b/fs/sysfs/dir.c
-index 4df2afa551dc6..94e12efd92f21 100644
---- a/fs/sysfs/dir.c
-+++ b/fs/sysfs/dir.c
-@@ -123,7 +123,7 @@ int sysfs_move_dir_ns(struct kobject *kobj, struct kobj=
-ect *new_parent_kobj,
- 	new_parent =3D new_parent_kobj && new_parent_kobj->sd ?
- 		new_parent_kobj->sd : sysfs_root_kn;
-=20
--	return kernfs_rename_ns(kn, new_parent, kn->name, new_ns);
-+	return kernfs_rename_ns(kn, new_parent, NULL, new_ns);
- }
-=20
- /**
-diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
-index 5dda9a268e44c..b5a5f32fdfd1a 100644
---- a/include/linux/kernfs.h
-+++ b/include/linux/kernfs.h
-@@ -204,8 +204,8 @@ struct kernfs_node {
- 	 * never moved to a different parent, it is safe to access the
- 	 * parent directly.
- 	 */
--	const char		*name;
- 	struct kernfs_node	__rcu *__parent;
-+	const char		__rcu *name;
-=20
- 	struct rb_node		rb;
-=20
-@@ -400,7 +400,7 @@ static inline bool kernfs_ns_enabled(struct kernfs_node=
- *kn)
- }
-=20
- int kernfs_name(struct kernfs_node *kn, char *buf, size_t buflen);
--int kernfs_path_from_node(struct kernfs_node *root_kn, struct kernfs_node =
-*kn,
-+int kernfs_path_from_node(struct kernfs_node *kn_to, struct kernfs_node *k=
-n_from,
- 			  char *buf, size_t buflen);
- void pr_cont_kernfs_name(struct kernfs_node *kn);
- void pr_cont_kernfs_path(struct kernfs_node *kn);
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 171dd7fceac54..9e92057d2caac 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -3583,10 +3583,13 @@ static int selinux_kernfs_init_security(struct kern=
-fs_node *kn_dir,
- 		newsid =3D tsec->create_sid;
- 	} else {
- 		u16 secclass =3D inode_mode_to_security_class(kn->mode);
-+		const char *kn_name;
- 		struct qstr q;
-=20
--		q.name =3D kn->name;
--		q.hash_len =3D hashlen_string(kn_dir, kn->name);
-+		/* kn is fresh, can't be renamed, name goes not away */
-+		kn_name =3D rcu_dereference_check(kn->name, true);
-+		q.name =3D kn_name;
-+		q.hash_len =3D hashlen_string(kn_dir, kn_name);
-=20
- 		rc =3D security_transition_sid(tsec->sid,
- 					     parent_sid, secclass, &q,
---=20
-2.47.2
+Cheers,
+Longman
 
 
