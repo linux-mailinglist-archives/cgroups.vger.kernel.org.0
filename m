@@ -1,221 +1,164 @@
-Return-Path: <cgroups+bounces-6404-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6405-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3F9FA2381E
-	for <lists+cgroups@lfdr.de>; Fri, 31 Jan 2025 01:06:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CBC9A23B76
+	for <lists+cgroups@lfdr.de>; Fri, 31 Jan 2025 10:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 438601888013
-	for <lists+cgroups@lfdr.de>; Fri, 31 Jan 2025 00:06:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 236343A6534
+	for <lists+cgroups@lfdr.de>; Fri, 31 Jan 2025 09:33:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C477632;
-	Fri, 31 Jan 2025 00:06:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8207115F330;
+	Fri, 31 Jan 2025 09:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hKvFsPh/"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ENU7Qlu8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC048323D
-	for <cgroups@vger.kernel.org>; Fri, 31 Jan 2025 00:06:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EFA5322B
+	for <cgroups@vger.kernel.org>; Fri, 31 Jan 2025 09:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738281979; cv=none; b=nLPYj5wub9RRi7f44430q9Cf1YtqZUhFQ5v2nmzbPwLTdPUjlqPOpa129Cmk8sv58VxxQR4idJ6zXij5qJ348LkceD41lOsSoc2ng05HlQybQqErKtyJlN9rMBiP9m3jpQc4Hs9UYV8Fwqq432jSjpHfDDKRKufYWDZkzDqz/4M=
+	t=1738316024; cv=none; b=V4iB+6TE0HcqLe3JzC4I+L+VyO+pEfGuWOwJnTJVY6WCenJioyHq5e4fbmPmzpfGGYt725ayhcYx7lvjnA8KXoqoQpsvf9afJDSogjYZL9l/pnKAWy8d0T0QEwCPSCNTpGLOU6v2doNdTHj7apcjSV9BabOtiL7iBugmgS8TV5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738281979; c=relaxed/simple;
-	bh=PIoUnJHk89m7IKL8EjscmZ658K/xqTtmuSHmmC2MlSc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dy365IwbgCYl/ZU//B5FiW+WpzI5PLoM8IFG5K+MWqGgyw0w5ZOGnQOyC8GsKjVJJkRu8eWjuu9Mkang6pBSIGntfNJq4YR23s7UY4AYyqB6PUnjFxWD7lIwZTOBC2Tp2lxzqEiWqQGFUeE5G8zuLhk5CPSTQJq5WKITgVs1nao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hKvFsPh/; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738281963;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Fy6PSBjEhWO5F6baEThGkls7hDcROVyek5p6WWL2O3w=;
-	b=hKvFsPh/q0QhDOek+LULFnkeWJl0+8VDESr9m2TKzUT03KPJO5wCqefdQTiKkDM2V18NW9
-	n0WDbEDm6P1qhU8e+s0j5wWk8POAe0KhvzCNOb7UTRnS5XIziTkv2g8ohi+S95Pn33vip3
-	HjS/Tg8/RTbVfbVIv7/VdLIQpkZBxTo=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+	s=arc-20240116; t=1738316024; c=relaxed/simple;
+	bh=9psyarGdV+Rf6x2zMJJATLHTqIUxMK5PgiUYtLsiP3U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b8wh3jO+GmP3W3h5daBguSVUkt1ifk7PqVB6qUNE2i6XaY1y02BpdfsnalgRSs0b1gAceXVi2kSauJJ1VHVk/tLdyFa26Jtau1WDY4kNCw0aX7exd4KNzjA5ACF2vY//Iv6UajrCdeck1M2ZUM3DgAeg0TsvVgWg3jAVlfjD9zQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ENU7Qlu8; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-38633b5dbcfso1738483f8f.2
+        for <cgroups@vger.kernel.org>; Fri, 31 Jan 2025 01:33:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1738316020; x=1738920820; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4jVAND7Ai4ETwfLpYMCrer3/CF37TNvowAyVGMzEzZ0=;
+        b=ENU7Qlu8HPw5RPo6IR0rCRMab4aX6e1as5ErR5GbOwT8vrdQkFCdU1wEYLPWs+Dlyp
+         4nQzfw8M8r6HEAjEmDSCycEk2VILJ2ULZP+Y4H+VbuJSToKPKjCZBu4SB42EWECPlZM7
+         6O3jaDwYBwlAQwxKKDc2TmjUQ6L61zDBpggCiATfJrLC53mrBZ07h+tFI4ZlS64jn1PF
+         fK4DY0WxJB2WBsF80D18wXgZNN7Tn7hK49L+gmzlErlwk1+ge3gjgHHjuTUnmVIbvGSH
+         tnY05rMJ+nG9wLhZRtllHd0/k1LpyUeAY6Mc/ujx1P0vdWSXT1xKSLeJGVMLC/ib99g7
+         vkjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738316020; x=1738920820;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4jVAND7Ai4ETwfLpYMCrer3/CF37TNvowAyVGMzEzZ0=;
+        b=WYpMZBSPfiLRVOalhedn5FTl2cAMTAuQmYU+LSEDkkB5LGWO9Y6/8cEwPvwOU60oID
+         oiW4dBIvlJoB6dmVV0biKGwWAO1UH5U27VoH/qbLXNb8ssZeg+iuT/1LAkqaDQtZzf/n
+         1m0sBGydrIz0Zr/XU5/Gfl+QX7M93A/JrmTAHmU1NdxAsNKJC7CF/KaOo5svp390iAqd
+         AOJy/1nrQllCucwvXkDiFe1xb3wbwX+/wzo04i9ATZCYV5MRmPuVoCFnpribqtoorfmZ
+         nlyMKM6ClzQF/mfGFSyk7IIG4DpcTkl1yJ85bYw8JAfrsK50RnYaan1zPet/960/kSjM
+         q/zA==
+X-Forwarded-Encrypted: i=1; AJvYcCWdn8k7a/IXuzYZjmB0k7c8Fz4SlxL+BuGfRgZpkwqrFMQdoY71018Z/SfVeaFh/uBmtXNxDPpj@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx93fiE5NAAmB6bTVct+jqPM6aVsXFXfjj+6sntd1NSM1j00n05
+	tYaxjcGY968HLIzhIzyJqaV1o19JYtNNGEYAKpwvNp2J2CL1dmmW9jsNP7bGtBQ=
+X-Gm-Gg: ASbGncs36+nFVjHYPFgWpEUx/Q/smxxz1rHpQGvJOvUhKBNDV0JhZLZ9FdPsJzFinfn
+	7xXHQayGdVHou3EyVQz1tQV3fi1MmMExAYuteXHJDDQjTunyeKT6px7YaTjGKui5lv2CyzZeDKE
+	nxPnKJVZ+VsVRSCyR81ALUE3Pt0Fzlw50vfuXUZhsloOY7MtUkqUOZ/RNGqNIHPMytaY2jpz6LI
+	29daWAUH9mJhFOSp5DDt1pF/pKbHfMQZHX9k1rytWxM499rEs3yqhEu8w2vBD1S3p3SoRGWjOGm
+	UCidJ2/lkIsRkpSjlw==
+X-Google-Smtp-Source: AGHT+IEcJnDN7OyY4JFBguUKcLFVGFjVNtkB7wXSfnIUxmCyBN3PrLsgzDawFD8pqHavqueW1oz+Kw==
+X-Received: by 2002:a5d:5f4d:0:b0:386:256c:8e59 with SMTP id ffacd0b85a97d-38c519378damr9845345f8f.3.1738316020544;
+        Fri, 31 Jan 2025 01:33:40 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38c5c1b576csm4227208f8f.63.2025.01.31.01.33.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jan 2025 01:33:40 -0800 (PST)
+Date: Fri, 31 Jan 2025 10:33:38 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Christian Brauner <brauner@kernel.org>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Meta kernel team <kernel-team@meta.com>
-Subject: [PATCH] cgroup: fix race between fork and cgroup.kill
-Date: Thu, 30 Jan 2025 16:05:42 -0800
-Message-ID: <20250131000542.1394856-1-shakeel.butt@linux.dev>
+Subject: Re: [PATCH] cgroup: fix race between fork and cgroup.kill
+Message-ID: <nsh73lyuoctjbeudj7o35jrkcygnfehhwj5dbf4u3hdvawx54v@nz6l2v5q2iin>
+References: <20250131000542.1394856-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="jtbw32lzcqctsvga"
+Content-Disposition: inline
+In-Reply-To: <20250131000542.1394856-1-shakeel.butt@linux.dev>
 
-Tejun reported the following race between fork() and cgroup.kill at [1].
 
-Tejun:
-  I was looking at cgroup.kill implementation and wondering whether there
-  could be a race window. So, __cgroup_kill() does the following:
+--jtbw32lzcqctsvga
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] cgroup: fix race between fork and cgroup.kill
+MIME-Version: 1.0
 
-   k1. Set CGRP_KILL.
-   k2. Iterate tasks and deliver SIGKILL.
-   k3. Clear CGRP_KILL.
+On Thu, Jan 30, 2025 at 04:05:42PM -0800, Shakeel Butt <shakeel.butt@linux.=
+dev> wrote:
+> @@ -6668,6 +6668,7 @@ void cgroup_post_fork(struct task_struct *child,
+>  		      struct kernel_clone_args *kargs)
+>  	__releases(&cgroup_threadgroup_rwsem) __releases(&cgroup_mutex)
+>  {
+> +	unsigned int cgrp_kill_seq =3D 0;
 
-  The copy_process() does the following:
+This initialization is only needed for the extra "init tasks" branch
+(the value should equal to whatever init_css_set.dfl_cgroup has, i.e.
+0).
 
-   c1. Copy a bunch of stuff.
-   c2. Grab siglock.
-   c3. Check fatal_signal_pending().
-   c4. Commit to forking.
-   c5. Release siglock.
-   c6. Call cgroup_post_fork() which puts the task on the css_set and tests
-       CGRP_KILL.
+>  	unsigned long cgrp_flags =3D 0;
+>  	bool kill =3D false;
+>  	struct cgroup_subsys *ss;
+> @@ -6681,10 +6682,13 @@ void cgroup_post_fork(struct task_struct *child,
+> =20
+>  	/* init tasks are special, only link regular threads */
+>  	if (likely(child->pid)) {
+> -		if (kargs->cgrp)
+> +		if (kargs->cgrp) {
+>  			cgrp_flags =3D kargs->cgrp->flags;
+> -		else
+> +			cgrp_kill_seq =3D kargs->cgrp->kill_seq;
+> +		} else {
 
-  The intention seems to be that either a forking task gets SIGKILL and
-  terminates on c3 or it sees CGRP_KILL on c6 and kills the child. However, I
-  don't see what guarantees that k3 can't happen before c6. ie. After a
-  forking task passes c5, k2 can take place and then before the forking task
-  reaches c6, k3 can happen. Then, nobody would send SIGKILL to the child.
-  What am I missing?
+This should not be strictly necessary thanks to cgroup_mutex during
+cgroup_kill and CLONE_INTO_CGROUP.
 
-This is indeed a race. One way to fix this race is by taking
-cgroup_threadgroup_rwsem in write mode in __cgroup_kill() as the fork()
-side takes cgroup_threadgroup_rwsem in read mode from cgroup_can_fork()
-to cgroup_post_fork(). However that would be heavy handed as this adds
-one more potential stall scenario for cgroup.kill which is usually
-called under extreme situation like memory pressure.
+>  			cgrp_flags =3D cset->dfl_cgrp->flags;
+> +			cgrp_kill_seq =3D cset->dfl_cgrp->kill_seq;
+> +		}
+> =20
+>  		WARN_ON_ONCE(!list_empty(&child->cg_list));
+>  		cset->nr_tasks++;
+> @@ -6719,7 +6723,7 @@ void cgroup_post_fork(struct task_struct *child,
+>  		 * child down right after we finished preparing it for
+>  		 * userspace.
+>  		 */
+> -		kill =3D test_bit(CGRP_KILL, &cgrp_flags);
+> +		kill =3D kargs->kill_seq !=3D cgrp_kill_seq;
+>  	}
+> =20
+>  	spin_unlock_irq(&css_set_lock);
 
-To fix this race, let's maintain a sequence number per cgroup which gets
-incremented on __cgroup_kill() call. On the fork() side, the
-cgroup_can_fork() will cache the sequence number locally and recheck it
-against the cgroup's sequence number at cgroup_post_fork() site. If the
-sequence numbers mismatch, it means __cgroup_kill() can been called and
-we should send SIGKILL to the newly created task.
+The above are only notes for better understanding, I don't think the fix
+needs changes in that regard. Thanks
 
-Reported-by: Tejun Heo <tj@kernel.org>
-Closes: https://lore.kernel.org/all/Z5QHE2Qn-QZ6M-KW@slm.duckdns.org/ [1]
-Fixes: 661ee6280931 ("cgroup: introduce cgroup.kill")
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- include/linux/cgroup-defs.h |  6 +++---
- include/linux/sched/task.h  |  1 +
- kernel/cgroup/cgroup.c      | 20 ++++++++++++--------
- 3 files changed, 16 insertions(+), 11 deletions(-)
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 1b20d2d8ef7c..17960a1e858d 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -71,9 +71,6 @@ enum {
- 
- 	/* Cgroup is frozen. */
- 	CGRP_FROZEN,
--
--	/* Control group has to be killed. */
--	CGRP_KILL,
- };
- 
- /* cgroup_root->flags */
-@@ -461,6 +458,9 @@ struct cgroup {
- 
- 	int nr_threaded_children;	/* # of live threaded child cgroups */
- 
-+	/* sequence number for cgroup.kill, serialized by css_set_lock. */
-+	unsigned int kill_seq;
-+
- 	struct kernfs_node *kn;		/* cgroup kernfs entry */
- 	struct cgroup_file procs_file;	/* handle for "cgroup.procs" */
- 	struct cgroup_file events_file;	/* handle for "cgroup.events" */
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index 0f2aeb37bbb0..ca1db4b92c32 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -43,6 +43,7 @@ struct kernel_clone_args {
- 	void *fn_arg;
- 	struct cgroup *cgrp;
- 	struct css_set *cset;
-+	unsigned int kill_seq;
- };
- 
- /*
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index d9061bd55436..afc665b7b1fe 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4013,7 +4013,7 @@ static void __cgroup_kill(struct cgroup *cgrp)
- 	lockdep_assert_held(&cgroup_mutex);
- 
- 	spin_lock_irq(&css_set_lock);
--	set_bit(CGRP_KILL, &cgrp->flags);
-+	cgrp->kill_seq++;
- 	spin_unlock_irq(&css_set_lock);
- 
- 	css_task_iter_start(&cgrp->self, CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED, &it);
-@@ -4029,10 +4029,6 @@ static void __cgroup_kill(struct cgroup *cgrp)
- 		send_sig(SIGKILL, task, 0);
- 	}
- 	css_task_iter_end(&it);
--
--	spin_lock_irq(&css_set_lock);
--	clear_bit(CGRP_KILL, &cgrp->flags);
--	spin_unlock_irq(&css_set_lock);
- }
- 
- static void cgroup_kill(struct cgroup *cgrp)
-@@ -6488,6 +6484,10 @@ static int cgroup_css_set_fork(struct kernel_clone_args *kargs)
- 	spin_lock_irq(&css_set_lock);
- 	cset = task_css_set(current);
- 	get_css_set(cset);
-+	if (kargs->cgrp)
-+		kargs->kill_seq = kargs->cgrp->kill_seq;
-+	else
-+		kargs->kill_seq = cset->dfl_cgrp->kill_seq;
- 	spin_unlock_irq(&css_set_lock);
- 
- 	if (!(kargs->flags & CLONE_INTO_CGROUP)) {
-@@ -6668,6 +6668,7 @@ void cgroup_post_fork(struct task_struct *child,
- 		      struct kernel_clone_args *kargs)
- 	__releases(&cgroup_threadgroup_rwsem) __releases(&cgroup_mutex)
- {
-+	unsigned int cgrp_kill_seq = 0;
- 	unsigned long cgrp_flags = 0;
- 	bool kill = false;
- 	struct cgroup_subsys *ss;
-@@ -6681,10 +6682,13 @@ void cgroup_post_fork(struct task_struct *child,
- 
- 	/* init tasks are special, only link regular threads */
- 	if (likely(child->pid)) {
--		if (kargs->cgrp)
-+		if (kargs->cgrp) {
- 			cgrp_flags = kargs->cgrp->flags;
--		else
-+			cgrp_kill_seq = kargs->cgrp->kill_seq;
-+		} else {
- 			cgrp_flags = cset->dfl_cgrp->flags;
-+			cgrp_kill_seq = cset->dfl_cgrp->kill_seq;
-+		}
- 
- 		WARN_ON_ONCE(!list_empty(&child->cg_list));
- 		cset->nr_tasks++;
-@@ -6719,7 +6723,7 @@ void cgroup_post_fork(struct task_struct *child,
- 		 * child down right after we finished preparing it for
- 		 * userspace.
- 		 */
--		kill = test_bit(CGRP_KILL, &cgrp_flags);
-+		kill = kargs->kill_seq != cgrp_kill_seq;
- 	}
- 
- 	spin_unlock_irq(&css_set_lock);
--- 
-2.43.5
+--jtbw32lzcqctsvga
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ5yY8AAKCRAt3Wney77B
+SQxPAQC1JHFXydeDfUZtGe+DtusOXERhm1syeRw5oNET0yL2XAD+Nf/iWTkBn4wg
+b3rL3A7T9sHALkkSEQ1pjPSeNQRmrgY=
+=Wonb
+-----END PGP SIGNATURE-----
+
+--jtbw32lzcqctsvga--
 
