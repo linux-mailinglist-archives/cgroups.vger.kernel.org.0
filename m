@@ -1,76 +1,76 @@
-Return-Path: <cgroups+bounces-6406-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6407-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69B7FA247FF
-	for <lists+cgroups@lfdr.de>; Sat,  1 Feb 2025 10:45:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9160A24806
+	for <lists+cgroups@lfdr.de>; Sat,  1 Feb 2025 10:51:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40E7B7A351F
-	for <lists+cgroups@lfdr.de>; Sat,  1 Feb 2025 09:45:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E91B164DE2
+	for <lists+cgroups@lfdr.de>; Sat,  1 Feb 2025 09:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70FF01474A2;
-	Sat,  1 Feb 2025 09:45:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 990981494A5;
+	Sat,  1 Feb 2025 09:51:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dLdG0ST/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rh9bUMs/"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A8B2B9A9;
-	Sat,  1 Feb 2025 09:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F31593F9C5;
+	Sat,  1 Feb 2025 09:51:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738403148; cv=none; b=TarQ/fOg6nMQ7TGAOALNL1xpqQ+pJfGD/k8d7eoEU0AFy/U5OtuE/2fEVTKUhulcjMeCF565LGIFBv/VWWxMRxJXQuXAiQICfjHwyCvG0Oizqy1sgFC+6XEG4Ein+hl5IwYaEE+CIuzm4n/1o3SQy7XqItRKxqn+CJxPbHO6Qvo=
+	t=1738403514; cv=none; b=bfka6NSvgF1pz2twZlddzTI1TjLmZDBh33osmISdUWH/7g0kO3rIB9/Fl2KmUwMCd7HaQKzfvJkQ7cIBRaKBZN3MhBDTExH3NpYzGL6svo9R7/lzNUHEZTBdt5q+FJkl8EpffmiKJaP2iwHUtRdbPslzutM5SCRlrpsl37v6RUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738403148; c=relaxed/simple;
-	bh=tLQ3X3o50sazcQ3riz1XRy19lYX43XwNdMTldntMfNk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rjXq9iiPCbnegs5bD7upL/R3Mhm1YKsh97ytuIEy7n1syQtmZucvScA3g/hVfXdxTqye8MA4JTZCEDgDLfvk83IdY6sclq+eZSZqoSKHcOXwxTeZcP/ALmSRRPwqxQ0mmr/rpDecs4LLVxH+913pQ7PAFYLRhkFN+VDZq8ePfno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dLdG0ST/; arc=none smtp.client-ip=209.85.214.193
+	s=arc-20240116; t=1738403514; c=relaxed/simple;
+	bh=XNPLmTu7g4O7Xoii4IS+RkrJZtMGwJWVOcITAXYVbRY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ajxqf/Uym7SYrv9FOgnvbVruhOi5W4061VeDXku+8C6E9bhfBfha/fABHf96J4ww9pBfD0q4EvFN2HvPF3yeGEyCejiSJpJFmB/2Fd3kiP/M4iuh84qjFXOeziLV95NKj1Q1qMgIw53I0trRp9hEkRuZsEM9g0Niox4vFaUngVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rh9bUMs/; arc=none smtp.client-ip=209.85.214.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-21654fdd5daso49676515ad.1;
-        Sat, 01 Feb 2025 01:45:45 -0800 (PST)
+Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-2161eb95317so49147415ad.1;
+        Sat, 01 Feb 2025 01:51:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738403145; x=1739007945; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738403512; x=1739008312; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AVRO+nMq3HdXxZo9GoEu318QQbe4p2iwPYY59ogFdgA=;
-        b=dLdG0ST/VEv6fdGR2SdxZLPA866HZu/ogX4lUrfOLpX9yoe6hbX01NoE4+M6SEiZJj
-         B8YL/WRx7zlKupLAG0e7d6hHW54hSmmb0I44zx874by8jqWOLLX7KKTBJIsUjutFKWh6
-         OS16KntaEe+L0CcLp2CRkUWjeXeRA4I83JqOWPj4z48LFQHvG0gB2cppbqdR47csAsnh
-         PoggsgEzk/SanCyhd0BDeiN8YAk4e49tbeSvnBHa97p9AWedODyVkYV3ZTja//Zj9dA7
-         8nOCoaRPlxcqaBaDy1cbJhUwcwoyV9zZe47I20YfBNBZefquQ/l5ybsQJEOOsWWQU05l
-         y41g==
+        bh=eEKIgvJzCHrLU/eHOSQhidalsv93ZokbwHbTteKHLMg=;
+        b=Rh9bUMs/nROR06NWIus4Kuu324PobPEiDmvyLsNLjkA9gcpZClrhYcOT00nLy3MQER
+         o3XAoqaUNgJiYuhCCreqoT6xwDAom/TVdQ5Ovy5JzJuNkorpKeYf88nYLJUoK8qptfeg
+         G+UkxkQ8p0zEFuvd/I1quiHUq4lb0V0NtB+DJQdy3fLbXeAwVIgphMYME4SLthVgjSeZ
+         3NendCkdCgOuE5ChmiasV53yG7Jc4zDzKGFTSrNv1ofcchUW0pD7iGv7QtFwzEzMYHaT
+         jEoJLnx+V3JarQ64YYjDlk6NrcQJBqd87+AIs9cyNnxJv9GGNyxeE1jBXlRSCwnJ3EwK
+         Ri5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738403145; x=1739007945;
+        d=1e100.net; s=20230601; t=1738403512; x=1739008312;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AVRO+nMq3HdXxZo9GoEu318QQbe4p2iwPYY59ogFdgA=;
-        b=eb9mE1NEEBxLAGc/O/Xd8cnnJeWpjcoGBqbKlng7ttNUzU31TMm47olHsfqtJ0eF/K
-         K1N2RSWT5xG1izUgKCxFZATstu0INEPAngx4rlkeKI2bGbI+LBery+KW5Dx+kZ6QFeyl
-         sB5py8FDvE+Q16XIBt4w3di3E1KGubw9zeN3ovOgpDOPHg21yEEsXoeZJWGv65Q9IkRe
-         eEIyKAeVyHpFgt/1COuPbXP9UvNo4eGU9upfzWszfqGuizahBq8IpOrkMH5RcDoLQ84u
-         rRUP2K2aGAE5fyzbkKMlRMPYEB1NDuJ2Go1VEhOyFFCOsQM7cis9abtmwb3HhdM0QuQg
-         lVug==
-X-Forwarded-Encrypted: i=1; AJvYcCVs26q3aMFXqtnDtGMhI1d6EGDJ4HCxqf4w0QkIqAKLwFhXxUznA8AjWHqTnT+oO6RXSmj2heC46i18/5RJ@vger.kernel.org, AJvYcCWz8WjDSat/9oL04gSNffFiIQ8Ilvw/PkmkbKzOdPWN3JGwjMserPyfzzjH99p6EgrEsX+B8Xn/@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+GCRXlMvooZVy1HN3TUOKOH+IGtq7gYxlu/rnu+qFDh6CrcW2
-	MnQVblUUPqBJBZvrXK196QSATlEnXOe5ByGooaAgjbLj/OxW8jM8
-X-Gm-Gg: ASbGncv2wOpF4vECHuK3I1Fq1lcF0RfDS+DRSTbdxYKI7jP1YcamYKODV2J2NW0+xPI
-	4ENPaLzQesw+vqwkZh5OMfJyUiqXfiEDfoL/xB8yHaXS1/Rv0Oc1LlpYKyLZ5pt2mxGQ7Y7oADC
-	sXkKB6TkqGUSKpTsYaMDNq5NKU5hVDAgVs2vM5vpkbm3qHc4XXg2Pe3QXZrCx+buSuLh8rXoWVB
-	nSbue+LTRIhtgAZJcNVk1PVR+3dplQJwUWtSjRl37bK8JHpkSC3FcyMurOI0QXWZ98nlxqRPmWH
-	0GBZkJF1twl9NvUQzABFgD4ty0H66rB3mxZGvY1CmJj6vg2UubDx25s4eYekl1myP5zq/Q2UyDB
-	fgieNiD/J4yoS
-X-Google-Smtp-Source: AGHT+IE5X0DTIrkfK1LUMBwobedDoDXV1ZeOu3cfQ9HscDpKjTiSIcD035WjaH0YixcQwwFGkPBhpQ==
-X-Received: by 2002:a17:90b:2c84:b0:2ee:b2e6:4275 with SMTP id 98e67ed59e1d1-2f83ac65958mr18136804a91.26.1738403145079;
-        Sat, 01 Feb 2025 01:45:45 -0800 (PST)
+        bh=eEKIgvJzCHrLU/eHOSQhidalsv93ZokbwHbTteKHLMg=;
+        b=Z5YyVXrribhGDc9a3hSCES2LvSYjku8VgI4gkf/FoyQW6Tvx4Cwveux5h65294uLgk
+         5d8oQ/dLhg1qF2Ut2bpV9G2YyMVd7uJCvcXNFKD6uTiSnQL+1gbCvgZ0AsxDLDTGYVEe
+         HwO4zdcKHNv+XyluW5v6xXH8AwkyvrQfTDLtuuXtTeB6FB0m3DMm02VKp/xTc/ewXRHs
+         y62XMvRcnfk04+255nAxE/bD9DWyXfKAy2089f9Cvv+T9nfRdwUgHBzCwdxlgmEc6cfy
+         toDNgOBolnG3+881jS7yikEoaqT4rBIq+rFaIWJhG72IBEoUH9YGwatwwfl7MXNm4CHp
+         09oQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVOPMI5VSkhuW4Z+rT1kQ/szfIXeNUMhbKKS11qa2DSj0QZ77J7Ei3ooch88Xu7ZyoYQWwp2gv6@vger.kernel.org, AJvYcCWggyiLvm2owB4OyPEHQdTVZM300tgc3WZcso/3NzjDrq8XivIfvJzFmNI+K6bNBCZ5HeCCCYoaSkxZMk2d@vger.kernel.org
+X-Gm-Message-State: AOJu0YyVDisB0aL0AmI0ONO7TkQM7JeqOS5Q3zouVi17FhWZhKETbhOh
+	ud6/4MtfvtxLzDBHwnytGa+OImU/tiUDirR9wFwluhHF1wUbMBOT
+X-Gm-Gg: ASbGnctllOQ+xa39CUNXSwzTkO9EV63tf0B4grE7BZBESQLDTLxwX+JeptMH0toQxUd
+	V2jfd6fJ8A6f4r1rtszytHz0W58BWza8lyKfgMHLtilIMFUqTIS68IfpUEhEb1peP1Hwj1qjleI
+	+d9c147jkQe+BXV3MQTCmE8YO8jeEB1JNsBa2VrIkPHTcYmeVcO+YQT/mGa6XmooUwqHgCvyVSR
+	rF+FTXw+toCynSoL/am2LSz6jmnN76fsj2+klPrNQZVCE572SO7Plzu6m8FYHuH9+2AmPg2tXmE
+	P8S1DeesTldPO1w10pNMHRlUkIAVHYySKIRY89vy348XPtS8fRMpgECJmlo5xEi8USk0sbU79qj
+	03NGUSrRrdJcY
+X-Google-Smtp-Source: AGHT+IFyrGJ/ADpSmNfnEEsU7Da1mkjiYBmUMieib7j1Ywzt5OocKc3/8aEY8su8diHKTdby5N41oA==
+X-Received: by 2002:a05:6a21:68e:b0:1e0:c3bf:7909 with SMTP id adf61e73a8af0-1ed7a61d02cmr26205417637.41.1738403512055;
+        Sat, 01 Feb 2025 01:51:52 -0800 (PST)
 Received: from codespaces-4a2804.mimvmn1ww3huhhjmzljqefhnig.rx.internal.cloudapp.net ([4.240.39.194])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21de3320edfsm42597175ad.229.2025.02.01.01.45.42
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72fe6424facsm4702635b3a.39.2025.02.01.01.51.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Feb 2025 01:45:44 -0800 (PST)
+        Sat, 01 Feb 2025 01:51:51 -0800 (PST)
 From: Umar Pathan <cynexium@gmail.com>
 X-Google-Original-From: Umar Pathan <cynexium@proton.me>
 To: tj@kernel.org
@@ -79,9 +79,9 @@ Cc: lizefan.x@bytedance.com,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Umar Pathan <cynexium@proton.me>
-Subject: [PATCH cgroup] Update freezer.c
-Date: Sat,  1 Feb 2025 09:45:39 +0000
-Message-ID: <20250201094539.29429-1-cynexium@proton.me>
+Subject: [PATCH cgroup] https://github.com/raspberrypi/linux/issues/6631
+Date: Sat,  1 Feb 2025 09:51:45 +0000
+Message-ID: <20250201095145.32300-1-cynexium@proton.me>
 X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -91,6 +91,21 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
+The existing freezer propagation logic improperly reduces
+nr_frozen_descendants by an increasing 'desc' counter during unfreeze,
+leading to:
+- Premature parent cgroup unfreezing
+- Negative descendant counts
+- Broken hierarchy state consistency
+
+Scenario demonstrating the bug:
+1. Create hierarchy A->B->C
+2. Freeze C (A/B freeze via propagation)
+3. Freeze A->D (separate branch)
+4. Unfreeze C -> A incorrectly unfreezes despite frozen D
+
+Fixes: 711f763 ("freezer,cgroup: add freezer.stats subsystem")
+Signed-off-by: Umar cynexium@gmail.com
 ---
  kernel/cgroup/freezer.c | 1 +
  1 file changed, 1 insertion(+)
