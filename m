@@ -1,155 +1,118 @@
-Return-Path: <cgroups+bounces-6408-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6409-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93BC1A2497C
-	for <lists+cgroups@lfdr.de>; Sat,  1 Feb 2025 15:09:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9001FA24F09
+	for <lists+cgroups@lfdr.de>; Sun,  2 Feb 2025 17:56:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0387A1883E9D
-	for <lists+cgroups@lfdr.de>; Sat,  1 Feb 2025 14:09:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45C671884953
+	for <lists+cgroups@lfdr.de>; Sun,  2 Feb 2025 16:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CBD91B87E7;
-	Sat,  1 Feb 2025 14:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E431D86E8;
+	Sun,  2 Feb 2025 16:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidreaver.com header.i=@davidreaver.com header.b="Ti5fjUya";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VJ6BBRPw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="saL55M12"
 X-Original-To: cgroups@vger.kernel.org
-Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C561586C8;
-	Sat,  1 Feb 2025 14:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF4B1D5154;
+	Sun,  2 Feb 2025 16:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738418941; cv=none; b=daaFGGY+kewiOr14pD2hiGJlsDjJBDnuZTofX2OOaoUmJQFEIlCA8lUoQAzK7305BI0xL65oQu6cYgp16Top5DQ9UliXbhqvQiMEsp29miEPY0IrZD4OWsuTBVQ9HIQ+Z4JCJ0odnacJSr9Y/XCATpDCpIvOpanFsFgOtfIhe94=
+	t=1738515382; cv=none; b=brqSpRnhZcakDHei11Mo/8KXqqWlZ6wKfTMZYcPtI8bCn57xuqaJYPjHtVG0AqIJ0c0lABTdbIfsU5tyZ9EDqUj5B6A1QjzV0aLHIEQPYSxzQeIHzP97kZwJwHVgs8s0dr6fydq5Ah1MDbl6wLe9nATc2CoL4OzyNHtEiZu4KlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738418941; c=relaxed/simple;
-	bh=60iSH3xkgzYLu5tNPSL6p85EuOS24Vc5RQZXS9zkAkI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=pvy0fW4R2G5nz/7Ojpz63tvIUAk4QEMGvX/V31gaWdHhmjuiWQqdcjCLcZLJTobxFFEyhE3FCVpMJenjZN+8bfINyN+iS6Y/hnFnrKd2wXBsi4lIDWBgJZkqJWO+mVcY2UlqVasZvqZS1x5gR0wOHa0rdK3ivo5/A1vram9btyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidreaver.com; spf=pass smtp.mailfrom=davidreaver.com; dkim=pass (2048-bit key) header.d=davidreaver.com header.i=@davidreaver.com header.b=Ti5fjUya; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VJ6BBRPw; arc=none smtp.client-ip=103.168.172.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidreaver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=davidreaver.com
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id A96BF11400F6;
-	Sat,  1 Feb 2025 09:08:58 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-03.internal (MEProxy); Sat, 01 Feb 2025 09:08:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=davidreaver.com;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1738418938; x=
-	1738505338; bh=uhCrR4gpWxcjRPhfgaQgwAxhoK1eIO+GJqfVxvXMHEU=; b=T
-	i5fjUyav12jpsKOSiohw6VInxbucj5+NwrACDLl4mSIF7up0wG1qnPQpkHcABDc5
-	8cmfRSQbe+SjYwSjBRU04mMvIFHAreV8cpywqv0AnMD/paNRkVG5rCktdrxP80GH
-	wDtYAVyBoE+gy+3mvVgVrIjy45qWdJAFVdSVPYexn9i0S51kinKyENSNG1LFC986
-	IB4L7cHEg4xF8J7T1Sk7rZEUpYlywqU818k1hUZFOp/frcJm/dnVDxBz8XyL59ik
-	tZgSlCIQyMa/5VFMtEU1H7Z/GDkAr9c8zSXyYE6d8xvViENkPsVkAzT1pjPRzpKX
-	JkmQYtR96J1DVMoBp+8Vg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1738418938; x=1738505338; bh=uhCrR4gpWxcjRPhfgaQgwAxhoK1eIO+GJqf
-	VxvXMHEU=; b=VJ6BBRPwS+jpQg3kr4Zh0vT9UoMM1MpvWdalAZRuPUHYYp//rfV
-	SThysL/nZXX3AND5+sP+DkDrmdNTiqxIdVIz8M81i9YY2E3DgH6LvZDUgQXOacNE
-	8Ce/mzm98LhR298fwirQrMVMXr/Q0sFTGnUTU68Nw1fjw3+KqTcVCqnn62+KYfym
-	CTvm2ejdrvX61BU8yNykav62rMT89ArxbIvzvjy5VXSvXcmafw8PMl+hI8F04Gkw
-	NU0ExRyoRuqG5cp258wgCJ17/u2zbbV/70cJBJoWGC9zK2HOej1f+bqVjNXtTtrP
-	MCHCIaZlV2UxlgZ1eZsvAszqOGhLcgTIjFw==
-X-ME-Sender: <xms:-SqeZ-xI_3gOfckwUnvrypoI8Q_RgC6jTHAZ-nTvASJtBHS-Bskmqw>
-    <xme:-SqeZ6QwvAkcCtGVupqXyokP5QgjWMbPcJa0xvjgzOOU-X7s9jdKBPgomaYDhY0a_
-    i2f0W54VZ0fucCx9ss>
-X-ME-Received: <xmr:-SqeZwVmZD94GQ1OTVhpe4Q75yfyPJtsT8Bj3n7tC6ssFb1O5qYSOEJRXY5ssfFq6lRTMap-iwJ-xhKFkQHTSGWYiTV0fg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduudelvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhephffvve
-    fujghffgffkfggtgesthdtredttdertdenucfhrhhomhepffgrvhhiugcutfgvrghvvghr
-    uceomhgvsegurghvihgurhgvrghvvghrrdgtohhmqeenucggtffrrghtthgvrhhnpeduje
-    fguddtueetgfegfeegueetkeetgfffieelvefhudetuedulefggeetgeffleenucffohhm
-    rghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepmhgvsegurghvihgurhgvrghvvghrrdgtohhmpdhnsggprhgt
-    phhtthhopeejpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegthihnvgigihhumh
-    esphhrohhtohhnrdhmvgdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghr
-    rdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegtghhrohhuphhssehvghgvrhdrkhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtohephhgrnhhnvghssegtmhhpgigthhhgrdhorhhgpdhr
-    tghpthhtoheplhhiiigvfhgrnhdrgiessgihthgvuggrnhgtvgdrtghomhdprhgtphhtth
-    hopehtjheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheptgihnhgvgihiuhhmsehgmhgr
-    ihhlrdgtohhm
-X-ME-Proxy: <xmx:-SqeZ0ha59j2dMjHpf-PTGl9hE3sXeBbs6rfPMftFXt1ci6W4cORig>
-    <xmx:-SqeZwDlQRznpw5aMW0WbJ6dRn8wfR_Mw4-7XlreOrF1VSSmvnmwQg>
-    <xmx:-SqeZ1Ids9img0SFAKTYRnxL_Z5l6HSoOvpuVvyIXzpRgTT4ttajIg>
-    <xmx:-SqeZ3C50MausHHSdFCZvf-x9DlQhAQ7LI7QtT37Cu5yakJTAzQ3HA>
-    <xmx:-iqeZ-Ar421iA7Bhwda0MaVn7tOekk4XNtHfYjl9sI0uL9D2NVztTNUZ>
-Feedback-ID: i67e946c9:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 1 Feb 2025 09:08:56 -0500 (EST)
-From: David Reaver <me@davidreaver.com>
-To: Umar Pathan <cynexium@gmail.com>
-Cc: tj@kernel.org,  lizefan.x@bytedance.com,  hannes@cmpxchg.org,
-  cgroups@vger.kernel.org,  linux-kernel@vger.kernel.org,  Umar Pathan
- <cynexium@proton.me>
-Subject: Re: [PATCH cgroup] https://github.com/raspberrypi/linux/issues/6631
-In-Reply-To: <20250201095145.32300-1-cynexium@proton.me> (Umar Pathan's
-	message of "Sat, 1 Feb 2025 09:51:45 +0000")
-References: <20250201095145.32300-1-cynexium@proton.me>
-User-Agent: mu4e 1.12.8; emacs 29.4
-Date: Sat, 01 Feb 2025 06:08:55 -0800
-Message-ID: <86cyg1bvuw.fsf@davidreaver.com>
+	s=arc-20240116; t=1738515382; c=relaxed/simple;
+	bh=JLT4Nr7NojIi7+uTBH3L/Cu64XQRCmLEXiT/0vWNAA4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MeJQJCYwIHEf7takWc0IGF8cFr0djjGAXwcz+DwKSmpQKWnrxvmuCPGJy/UkgNGwCaPscSDwLS84p403jzKJCm6gWNS9nVYQhXXP+bqNzd+y2X7YcetJ7BJDmyVvHH9tHIl0HHOQqGCzKcPSBAUR060FkFK3BfZ0pYWAnouugAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=saL55M12; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5DD6C4CED1;
+	Sun,  2 Feb 2025 16:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738515382;
+	bh=JLT4Nr7NojIi7+uTBH3L/Cu64XQRCmLEXiT/0vWNAA4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=saL55M12DYz5DzOBcMgvURXev2srBNofON9XHCdDWr6c3Ncnh3f2k1eV1VCmBfSAJ
+	 Un+XbLV/n+N75nVF9hX349pd7boSho6gCh8PBCn53m0TccN6xM14eoLf1nseK593Zb
+	 UkGlS1H0AdU8RoByeG/rFT2Sitnox2NoiDcd5rfdlEwAK/VdNmmlDtKrr1F1RC9n4/
+	 wJEnbbi4G2zvslV/1yOEfeDERSN6UWPPhq3+L/UBf3g4s2NuELBbvSBoC3w6+4xkmv
+	 epZVNuVC2EF9FMDjdug9rYH3IVgnqEsy5yHCqr7Fp42nygaAf9QSLTnOCFr8SYMtTX
+	 vkaENA5dfWS+Q==
+Date: Sun, 2 Feb 2025 06:56:20 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Christian Brauner <brauner@kernel.org>, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH] cgroup: fix race between fork and cgroup.kill
+Message-ID: <Z5-jtI26V845YRDz@slm.duckdns.org>
+References: <20250131000542.1394856-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250131000542.1394856-1-shakeel.butt@linux.dev>
 
-Umar Pathan <cynexium@gmail.com> writes:
+On Thu, Jan 30, 2025 at 04:05:42PM -0800, Shakeel Butt wrote:
+> Tejun reported the following race between fork() and cgroup.kill at [1].
+> 
+> Tejun:
+>   I was looking at cgroup.kill implementation and wondering whether there
+>   could be a race window. So, __cgroup_kill() does the following:
+> 
+>    k1. Set CGRP_KILL.
+>    k2. Iterate tasks and deliver SIGKILL.
+>    k3. Clear CGRP_KILL.
+> 
+>   The copy_process() does the following:
+> 
+>    c1. Copy a bunch of stuff.
+>    c2. Grab siglock.
+>    c3. Check fatal_signal_pending().
+>    c4. Commit to forking.
+>    c5. Release siglock.
+>    c6. Call cgroup_post_fork() which puts the task on the css_set and tests
+>        CGRP_KILL.
+> 
+>   The intention seems to be that either a forking task gets SIGKILL and
+>   terminates on c3 or it sees CGRP_KILL on c6 and kills the child. However, I
+>   don't see what guarantees that k3 can't happen before c6. ie. After a
+>   forking task passes c5, k2 can take place and then before the forking task
+>   reaches c6, k3 can happen. Then, nobody would send SIGKILL to the child.
+>   What am I missing?
+> 
+> This is indeed a race. One way to fix this race is by taking
+> cgroup_threadgroup_rwsem in write mode in __cgroup_kill() as the fork()
+> side takes cgroup_threadgroup_rwsem in read mode from cgroup_can_fork()
+> to cgroup_post_fork(). However that would be heavy handed as this adds
+> one more potential stall scenario for cgroup.kill which is usually
+> called under extreme situation like memory pressure.
+> 
+> To fix this race, let's maintain a sequence number per cgroup which gets
+> incremented on __cgroup_kill() call. On the fork() side, the
+> cgroup_can_fork() will cache the sequence number locally and recheck it
+> against the cgroup's sequence number at cgroup_post_fork() site. If the
+> sequence numbers mismatch, it means __cgroup_kill() can been called and
+> we should send SIGKILL to the newly created task.
+> 
+> Reported-by: Tejun Heo <tj@kernel.org>
+> Closes: https://lore.kernel.org/all/Z5QHE2Qn-QZ6M-KW@slm.duckdns.org/ [1]
+> Fixes: 661ee6280931 ("cgroup: introduce cgroup.kill")
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-> The existing freezer propagation logic improperly reduces
-> nr_frozen_descendants by an increasing 'desc' counter during unfreeze,
-> leading to:
-> - Premature parent cgroup unfreezing
-> - Negative descendant counts
-> - Broken hierarchy state consistency
->
-> Scenario demonstrating the bug:
-> 1. Create hierarchy A->B->C
-> 2. Freeze C (A/B freeze via propagation)
-> 3. Freeze A->D (separate branch)
-> 4. Unfreeze C -> A incorrectly unfreezes despite frozen D
->
-> Fixes: 711f763 ("freezer,cgroup: add freezer.stats subsystem")
-> Signed-off-by: Umar cynexium@gmail.com
-> ---
->  kernel/cgroup/freezer.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
-> index e9c15fbe5d9b..d384df2f53c2 100644
-> --- a/kernel/cgroup/freezer.c
-> +++ b/kernel/cgroup/freezer.c
-> @@ -304,6 +304,7 @@ void cgroup_freeze(struct cgroup *cgrp, bool freeze)
->  			 */
->  			if (dsct->freezer.e_freeze > 0)
->  				continue;
-> +
->  			WARN_ON_ONCE(dsct->freezer.e_freeze < 0);
->  		}
+Applied to cgroup/for-6.14-fixes.
 
-Hey Umar,
+Thanks.
 
-I dug around Github and I think I found the patch you intended to submit
-https://github.com/raspberrypi/linux/pull/6632/commits/711f76376ae7e11f48a1c22a4a04828a24d6a87a
-
-Unfortunately, your email only contains the inverse of your PR's
-whitespace change removing a line in freezer.c, not the rest of the
-patch. Did you perhaps revert that whitespace change in a new commit and
-accidentally only submit that commit instead of the whole change?
-
-Thanks,
-David Reaver
+-- 
+tejun
 
