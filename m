@@ -1,84 +1,84 @@
-Return-Path: <cgroups+bounces-6429-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6430-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8275FA284AE
-	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2025 07:54:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48103A287A1
+	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2025 11:12:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A50D18860ED
-	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2025 06:54:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8C6F3A258C
+	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2025 10:12:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19CDA228381;
-	Wed,  5 Feb 2025 06:54:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D20B22A80B;
+	Wed,  5 Feb 2025 10:12:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DSGlf0Gl"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Oj+SFF8k"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D77227BB7
-	for <cgroups@vger.kernel.org>; Wed,  5 Feb 2025 06:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B9122A4E5
+	for <cgroups@vger.kernel.org>; Wed,  5 Feb 2025 10:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738738442; cv=none; b=oLfXuRdh6nHRamQ4kFVxRf8XslK+60nmjsZ+GsiJj8FtnJo41gmot33prqUnGj4ugj3EDhwD59ZuTo0uL4kuJOiH91BVvd9bIYn6zdulTkjl3Ge+e1qKVL23Y8fBYRkA6WdwvIVPVkIpZiM3X3+QgHsrRLOKvGkD286zL2Q9+IQ=
+	t=1738750342; cv=none; b=F26PXer7cmbCHxi8HvNvzKEiNqUkdKxmfqber0MbyWMuzC1pbN4iWiyb0lLo1TnRhYUYLB6Orh4xCnvPXnzzuqhDRYkQ40frm6Sss1BvSdsqZkd4wyODR4Hg/A0jB5URYBPmb+RotJdDVrhTBBWLaOmkhz9N8Gk9rW1B+fz9D+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738738442; c=relaxed/simple;
-	bh=cWbO8HKmw8z2ZMTH0xbgQo1v4JbWKY6SdNB1Q44Twjg=;
+	s=arc-20240116; t=1738750342; c=relaxed/simple;
+	bh=a2P+2eH17up+Ofa94del8h0XUqFDuWoe68Y1Hf85Cm4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M+Ftij29eshHkcwiUUoy2f2Ib7f2H9k1IL1PCcgsEqsKw4zo/AKNb1R65TVcmi1/AdbA7RMeGSNVYgQ4sTfOfAIA/mF5f2PmG9DV1BqpcB5Itka+li6wO9cnSom0QddpYjm4wb2fyGoC1mobDhG1u+gHUNZsPnLHA4reVxA9GnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DSGlf0Gl; arc=none smtp.client-ip=170.10.133.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=PeMZpBc+KU9Rj+e3NfH4O9X2ICKQiAcTYHCvglySiX6ST9E0VR3sX/270+/aiOTvXkgRAZOyo8XjUaJjrp0OI4s2kOH229czYMh4gdXg8wkuyDW+OcsGtcBWAm4i+tqttcN9jHAqAoPF4jrKg84LqtyAYoPb3whS9/uF/bNba/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Oj+SFF8k; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1738738440;
+	s=mimecast20190719; t=1738750339;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ig+/O8/8C9meWS9i5E5x4FYET8uunPEIglzfgflUkxo=;
-	b=DSGlf0GlVxFMbmLEd+jVjBQMplLBeGkmjhRpeg9QccaQp1U5srGIsM9lg3n77FK80cPXS4
-	2bT3rbzwAakhljugGKU/o9TDrgYNV0v9qRS3OGjA5qqevwkF2VB9cGCpGAtBvKte56TiNs
-	nWUrnMgpoiLLqxUSmIAdPpE4fWWPyL0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=08znvKD929SmLMJj92WNC0Au1O4yxtiLADSy4vJ5xMg=;
+	b=Oj+SFF8kXXURp6wOlV7bDrpt/gK8AeUFXuLj9M0r1IGyr6+IJ9NYR7PuYQX6b2cCBfTAgc
+	uK7DL5xuskvSr4x0drWBTHVHYzZ9kWABNe7SD/G7NcwIO8bpdGZYj4SbX1vXMk1+emhskP
+	bPu4n1Zc4YwTq5EBQ7zoprdLDvxqb+g=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-218-Iqdhz2cMOXKcpi9pshXXUw-1; Wed, 05 Feb 2025 01:53:58 -0500
-X-MC-Unique: Iqdhz2cMOXKcpi9pshXXUw-1
-X-Mimecast-MFC-AGG-ID: Iqdhz2cMOXKcpi9pshXXUw
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4388eee7073so2021465e9.0
-        for <cgroups@vger.kernel.org>; Tue, 04 Feb 2025 22:53:57 -0800 (PST)
+ us-mta-680-WpcXGTyYMU-QK22M1pvG7Q-1; Wed, 05 Feb 2025 05:12:18 -0500
+X-MC-Unique: WpcXGTyYMU-QK22M1pvG7Q-1
+X-Mimecast-MFC-AGG-ID: WpcXGTyYMU-QK22M1pvG7Q
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-38db47fd683so398804f8f.0
+        for <cgroups@vger.kernel.org>; Wed, 05 Feb 2025 02:12:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738738437; x=1739343237;
+        d=1e100.net; s=20230601; t=1738750337; x=1739355137;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ig+/O8/8C9meWS9i5E5x4FYET8uunPEIglzfgflUkxo=;
-        b=u15Ipbz4mdYdoAgOLB+INYZnAIe1/DSOfcHAy3vlWQT7bdsIORayzCprM/RSfYkFF1
-         mrW1EI5O3s4ANCxCasD/LODt8tfarXVTpzyiohpRweIDOo+EkqFnIruXMEj3DdK2Ryh2
-         ZS05eA2CJp/G2SEz5uj5cdt30nIj+b6RUny3Ny25LsqPR+xdIhuMlqCQGo+f3bkD2dGl
-         QAw+S7jBrYiETNml82eucO2uUY6DBjY1lZ980W14AJ42UAd3srMpTQX2sctsGCuVmZpg
-         G2kfklFF6n3houMsnJFBG3uFqTYQg5egqOjb4sK09PaAcsNV7+W+hoP0pcpeqtSwkA8f
-         r2nA==
-X-Forwarded-Encrypted: i=1; AJvYcCXOJ3njJEunWTJkYYLX6eifMQFNWCFazEoXY8j6XqYMTY6BEmkwgzu26vox8o/+i7vwBDyfAcDI@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzWp5oKPCI8LcNIV01WqN6ZzDFfecmeRQbGqJF1WQ6O06tlJlf
-	qR9cTPj0VmtTgyThyaRb4ILVGzCtNZ2CQuaA6b+Q4GNz/Lxgd6scIk99U/sMLy5HWfVvGmErdAT
-	CTiWA41ebWyBnGPlTmfrnEJ/qSxp3IDW4dHuT3hAcA45Ki2/0P3gKIk4=
-X-Gm-Gg: ASbGnct8bkANzwT5DDxHx5HFgjtJsKgn+SYkLGmTnOErLAcosCT8cv/IBrR1QB3swUn
-	8G52vE7G4TEwUoowvtuSry2zMbQRuv4MugP1NWNX1WREZ7uKzeYePoMfLuU5JBIg4PvlFNzM4kZ
-	BWmk0qAaVIRbrjxCVA3BRjRGrChG+Q7H4eScgvL0Dk/ijv9A4DaYIPol4ekdvhv31LLpk21HQnx
-	kP8ASomTQQQ3JzmKnrPh0AZoz35wSiR5W3PdfYTDGl9rn10ZkVCjoW5ddEiVtKKwj1KBwSoct2Q
-	YPYcfMbD2NcZPHCfyDgRAK2dODvcGRXFUbsf
-X-Received: by 2002:a05:6000:184c:b0:38d:b7dc:30b8 with SMTP id ffacd0b85a97d-38db7dc3509mr21329f8f.18.1738738436798;
-        Tue, 04 Feb 2025 22:53:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFGpckBtgHNmxTU7R59xIWWBoy3feR6+6IjsVYrKHmwkhizPVL0uHMyp9QXQa1ReNMzYO5Zcg==
-X-Received: by 2002:a05:6000:184c:b0:38d:b7dc:30b8 with SMTP id ffacd0b85a97d-38db7dc3509mr21291f8f.18.1738738436348;
-        Tue, 04 Feb 2025 22:53:56 -0800 (PST)
+        bh=08znvKD929SmLMJj92WNC0Au1O4yxtiLADSy4vJ5xMg=;
+        b=LMfK3JJ7xNjhP84RyPTLCffVy6DLSMYzO+4ciZTO1ICAtkcrMSPQt/Qz1ZH+vCPx5F
+         DUEJU4asxhzABmOPtGrVInKgIx9a0w0FNTKgWp7Isxj6Cuili89r8x8730fhzVN0CMNP
+         Ras73RZTG/LFZQFDFGFrXPAmJich0iKu29Zw5nnjt8NSpruoQb4HoguRfw4FVuVyQr5U
+         Idpr/h+eNjpq6f/9GuTbdy69XqG5QGUpYvM+Uavo3HuVFRAITcwS+Se2A8inTwuGC5Ai
+         z6BC1ZB2OT16EJz2w9LkihBV8iSC3OZ8XznNerZMvYpwSzUuqmQ4owFbIb2L3xEJ5tTO
+         xYgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnTJ816M74odds5aQqKLr/OfJeH8NWl8XnoZQXR2nI4KoR78bQhL+3/l7V6QgComjdFl0DDnT8@vger.kernel.org
+X-Gm-Message-State: AOJu0YzsqCP4WX9mvXIa8pbkUSpvu1dwOFfbFBTxmxnQ3VqGKJ9T+Bc3
+	UJjfJ8VoJD4bAsC0QAS3tsUHQM17NeXQwLI1SqrPgaAoqQRf9J3ZqGbHJKgbsAqk767ZAOS13If
+	aV36VtI0enloI2hoxlB4MnIMfhZyxfCINoQL13RiZF07UxYvaIYC4Qlk=
+X-Gm-Gg: ASbGnctjV2n9E9k1NNLDtS9nfIK63yedoIKgqiqgYfBA63QMG7btgGYhHeqcCI0T8DE
+	Oa4Aulq9yVblDDAxQEvyGUQd/VIW74LzxpzcNfU36D4Bwt6nbzVQhtD5PT59/sKSn7Ux4IeBY8u
+	NjmZnFmGuOio6T2y8LWXjQ3li/Bq81XghZx7W88nD/PRr5VKSUdk1Qn7MdEAaqfRdEn0InVROEQ
+	Nul9u4VqJI6dF9HoxSr8wfPTzQTSJMvrNB7Qz2hDiiutQW8Sd7vtimV8HI3Pdhx5+4uWUyM3QJh
+	3btnEBLTAVeEh5z1Y9ucyBiA7UVyeZ1ByjPt
+X-Received: by 2002:a5d:4d8f:0:b0:38b:ed18:2f3b with SMTP id ffacd0b85a97d-38db48fde1cmr1533519f8f.48.1738750336891;
+        Wed, 05 Feb 2025 02:12:16 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGBp5ds39K1Z0cI93vntWmYRE9t9+g0+e2YclFwvxaztwPXTJF7S8AlnkTaxvuqyjPtyZlBXQ==
+X-Received: by 2002:a5d:4d8f:0:b0:38b:ed18:2f3b with SMTP id ffacd0b85a97d-38db48fde1cmr1533479f8f.48.1738750336470;
+        Wed, 05 Feb 2025 02:12:16 -0800 (PST)
 Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.128.176])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4390d96536asm11146655e9.18.2025.02.04.22.53.55
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38da8f6691bsm4315071f8f.42.2025.02.05.02.12.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Feb 2025 22:53:55 -0800 (PST)
-Date: Wed, 5 Feb 2025 07:53:53 +0100
+        Wed, 05 Feb 2025 02:12:15 -0800 (PST)
+Date: Wed, 5 Feb 2025 11:12:13 +0100
 From: Juri Lelli <juri.lelli@redhat.com>
 To: Jon Hunter <jonathanh@nvidia.com>
 Cc: Thierry Reding <treding@nvidia.com>, Waiman Long <longman@redhat.com>,
@@ -101,9 +101,8 @@ Cc: Thierry Reding <treding@nvidia.com>, Waiman Long <longman@redhat.com>,
 	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
 Subject: Re: [PATCH v2 3/2] sched/deadline: Check bandwidth overflow earlier
  for hotplug
-Message-ID: <Z6MLAX_TKowbmdS1@jlelli-thinkpadt14gen4.remote.csb>
-References: <ba51a43f-796d-4b79-808a-b8185905638a@nvidia.com>
- <Z4FAhF5Nvx2N_Zu6@jlelli-thinkpadt14gen4.remote.csb>
+Message-ID: <Z6M5fQB9P1_bDF7A@jlelli-thinkpadt14gen4.remote.csb>
+References: <Z4FAhF5Nvx2N_Zu6@jlelli-thinkpadt14gen4.remote.csb>
  <5d7e5c02-00ee-4891-a8cf-09abe3e089e1@nvidia.com>
  <Z4TdofljoDdyq9Vb@jlelli-thinkpadt14gen4.remote.csb>
  <e9f527c0-4530-42ad-8cc9-cb04aa3d94b7@nvidia.com>
@@ -112,6 +111,7 @@ References: <ba51a43f-796d-4b79-808a-b8185905638a@nvidia.com>
  <aebb2c29-2224-4d14-94e0-7a495923b401@nvidia.com>
  <Z4kr7xq7tysrKGoR@jlelli-thinkpadt14gen4.remote.csb>
  <cfcea236-5b4c-4037-a6f5-267c4c04ad3c@nvidia.com>
+ <Z6MLAX_TKowbmdS1@jlelli-thinkpadt14gen4.remote.csb>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -120,57 +120,105 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cfcea236-5b4c-4037-a6f5-267c4c04ad3c@nvidia.com>
+In-Reply-To: <Z6MLAX_TKowbmdS1@jlelli-thinkpadt14gen4.remote.csb>
 
-On 03/02/25 11:01, Jon Hunter wrote:
-> Hi Juri,
+On 05/02/25 07:53, Juri Lelli wrote:
+> On 03/02/25 11:01, Jon Hunter wrote:
+> > Hi Juri,
+> > 
+> > On 16/01/2025 15:55, Juri Lelli wrote:
+> > > On 16/01/25 13:14, Jon Hunter wrote:
 > 
-> On 16/01/2025 15:55, Juri Lelli wrote:
-> > On 16/01/25 13:14, Jon Hunter wrote:
-
-...
-
-> > > [  210.595431] dl_bw_manage: cpu=5 cap=3072 fair_server_bw=52428 total_bw=209712 dl_bw_cpus=4
-> > > [  210.606269] dl_bw_manage: cpu=4 cap=2048 fair_server_bw=52428 total_bw=157284 dl_bw_cpus=3
-> > > [  210.617281] dl_bw_manage: cpu=3 cap=1024 fair_server_bw=52428 total_bw=104856 dl_bw_cpus=2
-> > > [  210.627205] dl_bw_manage: cpu=2 cap=1024 fair_server_bw=52428 total_bw=262140 dl_bw_cpus=2
-> > > [  210.637752] dl_bw_manage: cpu=1 cap=0 fair_server_bw=52428 total_bw=262140 dl_bw_cpus=1
-> >                                                                            ^
-> > Different than before but still not what I expected. Looks like there
-> > are conditions/path I currently cannot replicate on my setup, so more
-> > thinking. Unfortunately I will be out traveling next week, so this
-> > might required a bit of time.
+> ...
 > 
+> > > > [  210.595431] dl_bw_manage: cpu=5 cap=3072 fair_server_bw=52428 total_bw=209712 dl_bw_cpus=4
+> > > > [  210.606269] dl_bw_manage: cpu=4 cap=2048 fair_server_bw=52428 total_bw=157284 dl_bw_cpus=3
+> > > > [  210.617281] dl_bw_manage: cpu=3 cap=1024 fair_server_bw=52428 total_bw=104856 dl_bw_cpus=2
+> > > > [  210.627205] dl_bw_manage: cpu=2 cap=1024 fair_server_bw=52428 total_bw=262140 dl_bw_cpus=2
+> > > > [  210.637752] dl_bw_manage: cpu=1 cap=0 fair_server_bw=52428 total_bw=262140 dl_bw_cpus=1
+> > >                                                                            ^
+> > > Different than before but still not what I expected. Looks like there
+> > > are conditions/path I currently cannot replicate on my setup, so more
+> > > thinking. Unfortunately I will be out traveling next week, so this
+> > > might required a bit of time.
+> > 
+> > 
+> > I see that this is now in the mainline and our board is still failing to
+> > suspend. Let me know if there is anything else you need me to test.
 > 
-> I see that this is now in the mainline and our board is still failing to
-> suspend. Let me know if there is anything else you need me to test.
+> Ah, can you actually add 'sched_verbose' and to your kernel cmdline? It
+> should print our additional debug info on the console when domains get
+> reconfigured by hotplug/suspends, e.g.
+> 
+>  dl_bw_manage: cpu=3 cap=3072 fair_server_bw=52428 total_bw=209712 dl_bw_cpus=4
+>  CPU0 attaching NULL sched-domain.
+>  CPU3 attaching NULL sched-domain.
+>  CPU4 attaching NULL sched-domain.
+>  CPU5 attaching NULL sched-domain.
+>  CPU0 attaching sched-domain(s):
+>   domain-0: span=0,4-5 level=MC
+>    groups: 0:{ span=0 cap=766 }, 4:{ span=4 cap=908 }, 5:{ span=5 cap=989 }
+>  CPU4 attaching sched-domain(s):
+>   domain-0: span=0,4-5 level=MC
+>    groups: 4:{ span=4 cap=908 }, 5:{ span=5 cap=989 }, 0:{ span=0 cap=766 }
+>  CPU5 attaching sched-domain(s):
+>   domain-0: span=0,4-5 level=MC
+>    groups: 5:{ span=5 cap=989 }, 0:{ span=0 cap=766 }, 4:{ span=4 cap=908 }
+>  root domain span: 0,4-5
+>  rd 0,4-5: Checking EAS, CPUs do not have asymmetric capacities
+>  psci: CPU3 killed (polled 0 ms)
+> 
+> Can you please share this information as well if you are able to collect
+> it (while still running with my last proposed fix)?
 
-Ah, can you actually add 'sched_verbose' and to your kernel cmdline? It
-should print our additional debug info on the console when domains get
-reconfigured by hotplug/suspends, e.g.
+Also, if you don't mind, add the following on top of the existing
+changes.
 
- dl_bw_manage: cpu=3 cap=3072 fair_server_bw=52428 total_bw=209712 dl_bw_cpus=4
- CPU0 attaching NULL sched-domain.
- CPU3 attaching NULL sched-domain.
- CPU4 attaching NULL sched-domain.
- CPU5 attaching NULL sched-domain.
- CPU0 attaching sched-domain(s):
-  domain-0: span=0,4-5 level=MC
-   groups: 0:{ span=0 cap=766 }, 4:{ span=4 cap=908 }, 5:{ span=5 cap=989 }
- CPU4 attaching sched-domain(s):
-  domain-0: span=0,4-5 level=MC
-   groups: 4:{ span=4 cap=908 }, 5:{ span=5 cap=989 }, 0:{ span=0 cap=766 }
- CPU5 attaching sched-domain(s):
-  domain-0: span=0,4-5 level=MC
-   groups: 5:{ span=5 cap=989 }, 0:{ span=0 cap=766 }, 4:{ span=4 cap=908 }
- root domain span: 0,4-5
- rd 0,4-5: Checking EAS, CPUs do not have asymmetric capacities
- psci: CPU3 killed (polled 0 ms)
+Just to be sure we don't get out of sync, I pushed current set to
 
-Can you please share this information as well if you are able to collect
-it (while still running with my last proposed fix)?
+https://github.com/jlelli/linux.git experimental/dl-debug
 
-Thanks!
-Juri
+---
+ kernel/sched/deadline.c | 2 +-
+ kernel/sched/topology.c | 5 ++++-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 9a47decd099a..504ff302299a 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -3545,7 +3545,7 @@ static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
+ 		 * dl_servers we can discount, as tasks will be moved out the
+ 		 * offlined CPUs anyway.
+ 		 */
+-		printk_deferred("%s: cpu=%d cap=%lu fair_server_bw=%llu total_bw=%llu dl_bw_cpus=%d\n", __func__, cpu, cap, fair_server_bw, dl_b->total_bw, dl_bw_cpus(cpu));
++		printk_deferred("%s: cpu=%d cap=%lu fair_server_bw=%llu total_bw=%llu dl_bw_cpus=%d type=%s span=%*pbl\n", __func__, cpu, cap, fair_server_bw, dl_b->total_bw, dl_bw_cpus(cpu), (cpu_rq(cpu)->rd == &def_root_domain) ? "DEF" : "DYN", cpumask_pr_args(cpu_rq(cpu)->rd->span));
+ 		if (dl_b->total_bw - fair_server_bw > 0) {
+ 			/*
+ 			 * Leaving at least one CPU for DEADLINE tasks seems a
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 93b08e76a52a..996270cd5bd2 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -137,6 +137,7 @@ static void sched_domain_debug(struct sched_domain *sd, int cpu)
+ 
+ 	if (!sd) {
+ 		printk(KERN_DEBUG "CPU%d attaching NULL sched-domain.\n", cpu);
++		printk(KERN_CONT "span=%*pbl\n", cpumask_pr_args(def_root_domain.span));
+ 		return;
+ 	}
+ 
+@@ -2534,8 +2535,10 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
+ 	if (has_cluster)
+ 		static_branch_inc_cpuslocked(&sched_cluster_active);
+ 
+-	if (rq && sched_debug_verbose)
++	if (rq && sched_debug_verbose) {
+ 		pr_info("root domain span: %*pbl\n", cpumask_pr_args(cpu_map));
++		pr_info("default domain span: %*pbl\n", cpumask_pr_args(def_root_domain.span));
++	}
+ 
+ 	ret = 0;
+ error:
 
 
