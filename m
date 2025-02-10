@@ -1,106 +1,61 @@
-Return-Path: <cgroups+bounces-6492-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6493-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76CB9A2F6F6
-	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 19:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AAD0EA2F734
+	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 19:35:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34CF03A6506
-	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 18:25:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 746693A42BF
+	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 18:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E402566F3;
-	Mon, 10 Feb 2025 18:25:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB3C25744E;
+	Mon, 10 Feb 2025 18:35:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="B1sBZ8qX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Eqq0fv/E"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2AD25B668
-	for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 18:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3447255E4C
+	for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 18:35:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739211954; cv=none; b=QndRm0flOE+GF5uWhSEcc/fBOZB+5fEpLNWdy0bBnuyJwYWgcK+KsFIQS53oypUXhcyfZl9iPMKodYFtce2cApZ9ZD7uvD3y1o0AbwT22t8OJ8eBQYq8KswvhG+kbcvfcyHI+HUTZqTLUtuZbiDKaIHpF4LihUFSr2iv9dBoZ8U=
+	t=1739212507; cv=none; b=Zp3E2X/qrlibDdpKEq+zVywYwFkTUBTqwXoI6H1DW8uc24DQmQ9NKji683L9+9bGG/gdUrdmi2WiDdy8Rf15QBVP87DUfymurQDDgdWCClYC2auVrj2Ei2eQSKEx2ykDG99DCstaWSab3fHwm4xvKleK5eoByvMJkrqFwDn2GW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739211954; c=relaxed/simple;
-	bh=yw+lKZDoeBK7rkNspoTrT5upsSeMqE0byCe2rNIKGy8=;
+	s=arc-20240116; t=1739212507; c=relaxed/simple;
+	bh=zWuoo7ND2Cayr7LKqH469oOc4M8MkwV//oIaGZjQhm8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tB95SvOyqSRsc2GwKpndyo23sB05LPOkZzoRxAW7nfXkk6K/GDS9fK0vTLc5xCO+M0IKE/pWUPGL+2apmuPVCWrzEaOWuyAE5eIzkIU0FWCBAgbW22T+vZEyPhXVOMCYIv2Hjf9iO+1dCG0RrpB1mnwIwytUPNTO9gZSNBAO+SI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=B1sBZ8qX; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7c058ae6777so168625685a.0
-        for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 10:25:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1739211950; x=1739816750; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1hZK6XGnRLi/IyorocuGwcKKQPXtEGusIrxLUfwsFRE=;
-        b=B1sBZ8qX4Q8msELlEl2SM0O5rUMt8TZEmz9rZ2GXv0qCach+Abcsl5xPFjVHsbIP5I
-         RyLsiVVeh6/f4zQc+lVZeOSR+FwtUOA3jDOL6YuZseo089k2cs/5MDHbjn8qQVzm36i+
-         OaMUesmprHldlagm0wt8ybRrFodTVQpgTHt6FQ137MQVyugmQw6nvwcqS1Gd7UX7e5aB
-         qWQ8pDWS7CTW37KSGOtwtO4ZMs6vppaV7lh9daWz5DAd/J6Rld2r4Qm0pEb2/9dPSmg/
-         zcADcgwe3JSETooMSLwJOG6cAQkuPpL3qSTgwioHCUGpp/siNI2p6W9FOLFmrqSVQiAl
-         In+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739211950; x=1739816750;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1hZK6XGnRLi/IyorocuGwcKKQPXtEGusIrxLUfwsFRE=;
-        b=J7hE3BEOBTiRDu17HvSw+Z7qHN/s7Wk0SGDSTFF8JkGSpBZX+6O5yAuUiQRuKZ9MT9
-         NQtg+eBPrlNg++0/NbAzbE7nn8DM0H39Dtf/LHnjhh12uyoZfOCYI5ltS+iqXtsb2iUF
-         8Z6GDiG+b58cKv0yj1Xg2Tl2xdHiKyhzce/xRCoWb+tLRTD2SfTnjlP5gLctt88a8uQL
-         KxCB/Lo80fHNuXXXz8tobrRhNw8THSjMeY/Aa2LEill/eaBVv1fJFS0Bpa3gbHWs+xdE
-         QHzknt6Sy4iER0dzh2a9tHf34AStHj8ropj/4pg1N9ghvrb3fyFXlKIB7TBIcqC5zXc6
-         UK4w==
-X-Forwarded-Encrypted: i=1; AJvYcCWGQs1zBudwEAQrVChaCeN/LvTK3O5/WwkK/Wendj023mDqhxstQC8jsiIkGT2KwdSQWPtLuDPF@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzqh4mTWz2dzhrN3mFk2WKI8am94R5gw706xxSzoXtlv6+1yS+N
-	IQ93NzDg2Fq0b/SM6zuJixKT1cSQaUd3Wuc/QEUE6MRp5CYWs+9SSlwjCPbQj6w=
-X-Gm-Gg: ASbGncvFh5xA0Yd0BOxm6T6frCg8vfTE+4uPGqH9ES3oaj0/Zq/O9e9iRQzagaH3oyY
-	E8IFWXSSs3tdxljOfDdGpT2cupYQLL+MpCCpnktRhU/P7fUf9MbnyhB6iLEHgTx03FWPrmyGfko
-	Woi4ea3qGI3Gp9h12lZxdTaouIayFC5oOBqzUeuHLH2adrAvjKkhenp5LqtMw8V9OIfhlhBn8IH
-	poHp3dJyIy1+dVUoxsAjIRKqNu6gHpLgEB5yu7ocEvenZpWyt3K3WPPS1yK9JV4of96VO97TYpw
-	R5JGMbP4PlaULQ==
-X-Google-Smtp-Source: AGHT+IERn1pEjIUK9eVekbDQIrmmcjZ+a9exbhT86XMP+EPRyQ3FbMbg8dM1n6UR9Wtt9h0PfLk7Tw==
-X-Received: by 2002:a05:620a:2549:b0:7b3:5858:1286 with SMTP id af79cd13be357-7c047c45da8mr2008700085a.47.1739211949818;
-        Mon, 10 Feb 2025 10:25:49 -0800 (PST)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7c05fdd0d58sm140341085a.6.2025.02.10.10.25.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 10:25:49 -0800 (PST)
-Date: Mon, 10 Feb 2025 13:25:45 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
-	Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Yury Norov <yury.norov@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bitao Hu <yaoma@linux.alibaba.com>,
-	Chen Ridong <chenridong@huawei.com>,
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] cgroup/rstat: Add run_delay accounting for cgroups
-Message-ID: <20250210182545.GA2484@cmpxchg.org>
-References: <20250125052521.19487-1-wuyun.abel@bytedance.com>
- <20250125052521.19487-4-wuyun.abel@bytedance.com>
- <3wqaz6jb74i2cdtvkv4isvhapiiqukyicuol76s66xwixlaz3c@qr6bva3wbxkx>
- <9515c474-366d-4692-91a7-a4c1a5fc18db@bytedance.com>
- <qt3qdbvmrqtbceeogo32bw2b7v5otc3q6gfh7vgsk4vrydcgix@33hepjadeyjb>
- <Z6onPMIxS0ixXxj9@slm.duckdns.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iWqerxNjwIRUMIYWjzKV4Qxp0ZAIOesqHjXBsiljKnIwcOWmAj8YKu5pYfpYlqjAx/d+duI3QJH8trtZ3mbIL9s2a8quFMYFjYOcgE0fQqsGlRV7sUrbLYm8bzkmP09DhLV7s5wCu95QMcKR/yRFaB02vZbhVkr0byTodaq2P6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Eqq0fv/E; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 10 Feb 2025 10:34:54 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1739212501;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Px6n4/iF3ATy1tkEKiiYXPtCS0uyJnLM3LWN0RZhHL8=;
+	b=Eqq0fv/EZqZxres6gXvwinFpZxvxoAbVnSYhy/hOzYIeULRrCalvzQY8wdrpNDLwQReVpz
+	qhKuOIIHVO/vQnzJEhcb+aYrzKJQC7n3mi2fMRb0VdpW4j3MLoC00YTmnAxqtyeHapkPwS
+	SrJNH6alGGJKnHKCG7ULeUTw9Xpdgxk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: "T.J. Mercier" <tjmercier@google.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH] memcg: add hierarchical effective limits for v2
+Message-ID: <j2qxkp3tjq7yenl3tkjisaxry7aqdwaxlpx7rn7mpkdi7fkf2c@xva7vgzspb2p>
+References: <20250205222029.2979048-1-shakeel.butt@linux.dev>
+ <mshcu3puv5zjsnendao73nxnvb2yiprml7aqgndc37d7k4f2em@vqq2l6dj7pxh>
+ <ctuqkowzqhxvpgij762dcuf24i57exuhjjhuh243qhngxi5ymg@lazsczjvy4yd>
+ <5jwdklebrnbym6c7ynd5y53t3wq453lg2iup6rj4yux5i72own@ay52cqthg3hy>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -110,53 +65,80 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z6onPMIxS0ixXxj9@slm.duckdns.org>
+In-Reply-To: <5jwdklebrnbym6c7ynd5y53t3wq453lg2iup6rj4yux5i72own@ay52cqthg3hy>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Feb 10, 2025 at 06:20:12AM -1000, Tejun Heo wrote:
-> On Mon, Feb 10, 2025 at 04:38:56PM +0100, Michal Koutný wrote:
-> ...
-> > The challenge is with nr (assuming they're all runnable during Δt), that
-> > would need to be sampled from /sys/kernel/debug/sched/debug. But then
-> > you can get whatever load for individual cfs_rqs from there. Hm, does it
-> > even make sense to add up run_delays from different CPUs?
+On Mon, Feb 10, 2025 at 05:24:17PM +0100, Michal Koutný wrote:
+> Hello.
 > 
-> The difficulty in aggregating across CPUs is why some and full pressures are
-> defined the way they are. Ideally, we'd want full distribution of stall
-> states across CPUs but both aggregation and presentation become challenging,
-> so some/full provide the two extremes. Sum of all cpu_delay adds more
-> incomplete signal on top. I don't know how useful it'd be. At meta, we
-> depend on PSI a lot when investigating resource problems and we've never
-> felt the need for the sum time, so that's one data point with the caveat
-> that usually our focus is on mem and io pressures where some and full
-> pressure metrics usually seem to provide sufficient information.
+> On Thu, Feb 06, 2025 at 11:09:05AM -0800, Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> > Oh I totally forgot about your series. In my use-case, it is not about
+> > dynamically knowning how much they can expand and adjust themselves but
+> > rather knowing statically upfront what resources they have been given.
 > 
-> As the picture provided by some and full metrics is incomplete, I can
-> imagine adding the sum being useful. That said, it'd help if Able can
-> provide more concrete examples on it being useful. Another thing to consider
-> is whether we should add this across resources monitored by PSI - cpu, mem
-> and io.
+> From the memcg PoV, the effective value doesn't tell how much they were
+> given (because of sharing).
+> 
+> > More concretely, these are workloads which used to completely occupy a
+> > single machine, though within containers but without limits. These
+> > workloads used to look at machine level metrics at startup on how much
+> > resources are available.
+> 
+> I've been there but haven't found convincing mapping of global to memcg
+> limits.
+> 
+> The issue is that such a value won't guarantee no OOM when below because
+> it can be (generally) effectively shared.
+> 
+> (Alas, apps typically don't express their memory needs in units of
+> PSI. So it boils down to a system wide monitor like systemd-oomd and
+> cooperation with it.)
+> 
 
-Yes, a more detailed description of the usecase would be helpful.
+I think you missed the static partitioning of resources use-case I
+mentioned. The issue you are pointing exist for the system level metrics
+as well i.e. a worklod looking at system metrics can't say how much they
+are given but in my specific case, the workloads know they occupy the
+full machine. Now we want to move such workloads to multi-tenant
+environment but the resources are still statically partitioned and not
+overcommitted, so effective limit will tell how much they are given.
 
-I'm not exactly sure how the sum of wait times in a cgroup would be
-used to gauge load without taking available concurrency into account.
-One second of aggregate wait time means something very different if
-you have 200 cpus compared to if you have 2.
+> > Now these workloads are being moved to multi-tenant environment but
+> > still the machine is partitioned statically between the workloads. So,
+> > these workloads need to know upfront how much resources are allocated to
+> > them upfront and the way the cgroup hierarchy is setup, that information
+> > is a bit above the tree.
+> 
+> FTR, e.g. in systemd setups, this can be partially overcome by exposed
+> EffectiveMemoryMax= (the service manager who configures the resources
+> also can do the ancestry traversal).
+> kubernetes has downward API where generic resource info is shared into
+> containers and I recall that lxcfs could mangle procfs
+> memory info wrt memory limits for legacy apps.
+> 
+> 
+> As I think about it, the cgroupns (in)visibility should be resolved by
+> assigning the proper limit to namespace's root group memory.max (read
+> only for contained user) and the traversal...
+> 
 
-This is precisely what psi tries to capture. "Some" does provide group
-loading information in a sense, but it's a ratio over available
-concurrency, and currently capped at 100%. I.e. if you have N cpus,
-100% some is "at least N threads waiting at all times." There is a
-gradient below that, but not above.
+I think here your point is why not have userspace based solution. I
+think it is possible but not convenient and adds an external dependency
+in the workload.
 
-It's conceivable percentages over 100% might be useful, to capture the
-degree of contention beyond that. Although like Tejun says, we've not
-felt the need for that so far. Whether something is actionable or not
-tends to be in the 0-1 range, and beyond that it's just "all bad".
+> 
+> On Thu, Feb 06, 2025 at 11:37:31AM -0800, "T.J. Mercier" <tjmercier@google.com> wrote:
+> > but having a single file to read instead of walking up the
+> > tree with multiple reads to calculate an effective limit would be
+> > nice.
+> 
+> ...in kernel is nice but possible performance gain isn't worth hiding
+> the shareability of the effective limit.
+> 
+> 
+> So I wonder what is the current PoV of more MM people...
 
-High overload scenarios can also be gauged with tools like runqlat[1],
-which give a histogram over individual tasks' delays. We've used this
-one extensively to track down issues.
+Yup, let's see more opinion on this.
 
-[1] https://github.com/iovisor/bcc/blob/master/tools/runqlat.py
+Thanks Michal for your feedback.
 
