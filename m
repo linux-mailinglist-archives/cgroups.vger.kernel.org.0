@@ -1,139 +1,157 @@
-Return-Path: <cgroups+bounces-6486-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6487-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC4E6A2F127
-	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 16:14:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20B54A2F1E5
+	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 16:39:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F6251661DB
-	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 15:14:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52F771887C12
+	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 15:39:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2AB52417C2;
-	Mon, 10 Feb 2025 15:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E893D23E23A;
+	Mon, 10 Feb 2025 15:39:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cPI3/4kP"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BXGkIxo0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7111223DEAA
-	for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 15:13:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A9823E224
+	for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 15:39:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739200384; cv=none; b=goHuyjyABmQbL8jFq/d+pLF95PiAYOaUneJFxI65mtqO6M9Qnh9dCqSs310aZwp36aJY6zVO/ubA2xeG7Xa3J7zVXM8awpGD7ye16MzFAeCUgWiK+QhsGjJbZWWZX2oXDjcDTo1iXHfrxWpMqnuzQS2Y11mBDMYDEImJGpYd0TI=
+	t=1739201942; cv=none; b=YqrS5GR0bZqJNJerGRbWfb7IDFLLXNVr4WVJ6Gv9zr+QlSqNT83nzl5lnPYf4hGnxpuorVrhT7/sQAXnL6XU4U66M9LL7ILuV65rfG4/uw3s0S4w+Gi/7hQBZom0TJAOfOcaNB/yBnaTwF+fEe0LvRbArfLnw/AfTV2qXAm6U+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739200384; c=relaxed/simple;
-	bh=iqeMyg2aM7rOxUpDWS/hr/9N/tXvFYSx8aHXmJaW8IE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Y/SswWBhC3Px6Npna4C9U/JW8tt9gPTPB9yxS3HErnWy8YPmAcRKeNTFMbvX6Ylvhdxy8+gdfTZ+0hXrZpOV+vMU4vuC3Yy2S1VjIRBjNskxqhvtwgboPY6tL3sw4SSYrE44Eb/9ro4fs/fVW1wggTBvZnO3M/bc7xX8VZUh3B4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cPI3/4kP; arc=none smtp.client-ip=209.85.218.47
+	s=arc-20240116; t=1739201942; c=relaxed/simple;
+	bh=+ZO1rTDnY2L4DK8ir1ncT8Jdms8oqofICMxDveJrpVs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bueg7Z6lyXhgQuCMZR73C2Qul6yz+NgpMv3/ZtYHGmuUA/uVTcHtplw3WWvFmUoGSviIoHqErOOjUBM0jZOUBPXemP6GqhfxB/tzfHZv4NdSZNhm24GF9BN6R1n9ksNnULtwPsmRABeDDDz+V5TlE8cqreZKUTZQ7bSLzHvAkhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BXGkIxo0; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-ab7ca64da5dso138241466b.0
-        for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 07:13:02 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5de727f7f05so2205567a12.1
+        for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 07:39:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1739200380; x=1739805180; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S7MdvLo2eJNuv+SAzqGScNlKUwpiF8b6hAU2gKf+PuM=;
-        b=cPI3/4kPGhCpWqSc5MwGXkQo+kYmiF7kcNbax9523QDkCcMDarEkuOEOptJq7pyOWH
-         OuK/KsbIyUndWq5qzuO5wg+cJ/bqFZmEEahUNQi2VCaDLlCly1dKpq4P8uOGeb8K/D26
-         INJhc2UiNtVcV8YcYyFbXL30GKHCnk5rK2vzEdHg4JFFN2zP2xIv8aAA6e/kj/fdQFbv
-         mv4M6iVCgKh671IMXB9dJOEJJ5Xy+h8r5rLuVciwfJD1Ht9gRKw6Udv/46tZVew8FqaE
-         fzV8X6fvYN5Keyp7xqiXTsujUpLYuLKQPXw8ADnTdJbD+sNX9euD9uWsZyZLltq97GxZ
-         QB9w==
+        d=suse.com; s=google; t=1739201939; x=1739806739; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gn5jBDSuUTKZUT+LyUeeWJnri0H/pvMZv3ujQ1+ZSQ4=;
+        b=BXGkIxo0rM3GbUtB/sfmckxDanCPt/+HRgRw/7z2B0/ehnKdJXeK0RPiU5evZAxYMl
+         HRHugo3f3hcKkO8PFT6r8hYwwdLmo8RRbeJUvXEiKb6f9UiUhTbH93IWl4C2J8wHCABW
+         7g8UbDnluvkRMjH/QTtadqTB6WTxq1mWTjgEXX3yX0Lo7szddUMRdLktLIbdNlTnqqG1
+         GXdVdFZBVx2HiuWKizuE3ZwhitUtexGZh4Lcwnmy6vho9megLQqwjUGiBXcsZi4qajZe
+         5xzpPv5U5Zfjsu63PuvTvkeWMmhYkXq8F92gWgs2d6BWnELXVXDVF9dnjwAEA/ATmVwo
+         r5AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739200380; x=1739805180;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S7MdvLo2eJNuv+SAzqGScNlKUwpiF8b6hAU2gKf+PuM=;
-        b=CNozQEedPN3ijHk3lOakA3nWIbyj9neOTTUiU3lm5M1Krj0eiVjMiwne3hsEPRY6/x
-         DbmAah7anaHVduQb08ZtThHgpPMKy0ViCbJlOwN2+TP2iPyHQQfMVSo6/0vn6RXmE/Sj
-         sd2PB7laC4l0dJwW1LHYfSv9CVHvIWV6DI03v7SCl5Wb9p7IKj77RySgrlB0FXQOlpxB
-         cFB29FDUENK/tDnLdjl6CVpfwKTC1jPC1nYOrkXLDOSxXIOoKYxRLvT6Xt6OkEr7vANE
-         98x9+jGaU4+7srSMNOWmwJSNF8TE5vsyODBpke1A/P9KXfmUG+KT2fC7PNgbaRcuGc6l
-         3zXA==
-X-Gm-Message-State: AOJu0YyBCtOkjIk+ejlbA9RMm1IlK24FTy+N8arntKAhc9Cnl3qhZl7i
-	usZQzRiS+Ci3iqZRoyRaTC6K+2buCLKRKAMm7eUKyOjBoCi/LGi0ZDnE3EBDUv85qpVt9cHkUbY
-	V
-X-Gm-Gg: ASbGncvuK7GO+4JRxYOCdBSivLnBd3PSNINaC0hG4DMC/63F5tQFZdqijKBMt+f867T
-	+W11QBTixJO/sPMHUICkL+G25xDFjbCHfbmaIK3XoOWv7nAbGvNsyXnKxG9EUzjDZvCwGUyxzjw
-	/+d6qDOjOMdJJQjORSOPknSbGJK4Nz6uAOyENO/HWeALdEBA7ERjwOzjRWf5MR+G/sjqhYF/Uea
-	lD9v3on5MrZ2Vol0wjyyr9ficsuEkUhrN+RaMAAMMfqS9odKb8mjxiAyMVpOAs6MijLLBPQGdXU
-	G0JrQd8xKl6D4YwI4Q==
-X-Google-Smtp-Source: AGHT+IGk13SlYbxa8hsziKdtSAXkNvItrd13FwoaDhO6Dj5aOXPATenE3duFftBrONekaMv0xj1FKQ==
-X-Received: by 2002:a17:907:d26:b0:ab7:d34a:8f83 with SMTP id a640c23a62f3a-ab7d34a94a4mr151220666b.17.1739200380472;
-        Mon, 10 Feb 2025 07:13:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739201939; x=1739806739;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gn5jBDSuUTKZUT+LyUeeWJnri0H/pvMZv3ujQ1+ZSQ4=;
+        b=g4cRKYVe3Dk9sKVXbry1jn9/Wg5uq5/CEZUPqZK441URfdfqCAA1Xe+HPvW9eoaVp2
+         fT2ChNpV/hN7sSZG5TMyIlN8EfRquxrSfCZxRbZ84nADzYrL+tgf9ybXwLgwVoML7Xvx
+         Juelthh7NvRacqU/fvRjV5t8CkWqi/pia8PwEdxkRE+cH/aVJquDuwTMBcjRRzKnqsK6
+         T4R9z2dZ9D96w74a1/oWvScJsNN9KmvctBL6IQQzLkpxx8PSf4N55+xWx5O1OegfJxZs
+         S2SmhePUlUaNXQDwT34iKHrFJukquQstFn3LJLUjjj1nwj3FsviO6KiDejZcbVoRy1dU
+         GyRw==
+X-Forwarded-Encrypted: i=1; AJvYcCUc9FeQvnR1gctzJVXYHe1VSCqI25fNj0Ox3gr76dn7iyyewF4YSgyoJAGLsNsFhQBui56gO7Oo@vger.kernel.org
+X-Gm-Message-State: AOJu0YylXlNkxDXIYQilwhzEdWBCWyZSTW26jVhqT54sxmsl6+HZGsfu
+	UodRNQD6kFiDsbPo/qhnKUvyNsBPodVKMo4vb5Cwh5HpdW6SxBSyR/D39JdIDN8=
+X-Gm-Gg: ASbGncsGpi2ifJY1GstUiZKdCKfBADwkecHJENOf7MGtvvWtDkmdmPPkLzaiF77BRVd
+	dmPx19JeHGuQYR//0ezMOQyBt8nvj9QC24JAhpH2rh+eAoIMqLMz7T8POAXMZkPM0Ez7UA6IhQ3
+	yc8ovT2o0VrVupp8Z5DB2MJl1zchjUz9RfJooG8U3cBB1R7nYBOK3Gc0YEJR7bvTkuzH3daZhcC
+	iugH6SoqOapEcgwZ0Y13XJqq4rWBXxbpnpb5b2h9CRk790bDldIl/Khu4SV8z2OYUTVNBHz59Zg
+	R8O/gyuIv1C2CKMpRw==
+X-Google-Smtp-Source: AGHT+IEkhOZI/bjOnubCCDmribYUDcUAGpriYeg1lXWJzTqKc4+MCipChQCFc1nZQcDkz7yfY286uQ==
+X-Received: by 2002:a17:907:9627:b0:ab7:5c95:3a82 with SMTP id a640c23a62f3a-ab789a6b63bmr1317004266b.1.1739201938875;
+        Mon, 10 Feb 2025 07:38:58 -0800 (PST)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab773339e82sm895192866b.143.2025.02.10.07.12.59
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab7bb9cc86fsm294087066b.140.2025.02.10.07.38.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 07:13:00 -0800 (PST)
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Frederic Weisbecker <fweisbecker@suse.com>
-Subject: [PATCH 9/9] sched: Add annotations to RT_GROUP_SCHED fields
-Date: Mon, 10 Feb 2025 16:12:39 +0100
-Message-ID: <20250210151239.50055-10-mkoutny@suse.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250210151239.50055-1-mkoutny@suse.com>
-References: <20250210151239.50055-1-mkoutny@suse.com>
+        Mon, 10 Feb 2025 07:38:58 -0800 (PST)
+Date: Mon, 10 Feb 2025 16:38:56 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Abel Wu <wuyun.abel@bytedance.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Yury Norov <yury.norov@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Bitao Hu <yaoma@linux.alibaba.com>, Chen Ridong <chenridong@huawei.com>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] cgroup/rstat: Add run_delay accounting for cgroups
+Message-ID: <qt3qdbvmrqtbceeogo32bw2b7v5otc3q6gfh7vgsk4vrydcgix@33hepjadeyjb>
+References: <20250125052521.19487-1-wuyun.abel@bytedance.com>
+ <20250125052521.19487-4-wuyun.abel@bytedance.com>
+ <3wqaz6jb74i2cdtvkv4isvhapiiqukyicuol76s66xwixlaz3c@qr6bva3wbxkx>
+ <9515c474-366d-4692-91a7-a4c1a5fc18db@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <9515c474-366d-4692-91a7-a4c1a5fc18db@bytedance.com>
 
-Update comments to ease RT throttling understanding.
+Hello Abel (sorry for my delay).
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- kernel/sched/sched.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On Wed, Jan 29, 2025 at 12:48:09PM +0800, Abel Wu <wuyun.abel@bytedance.com> wrote:
+> PSI tracks stall times for each cpu, and
+> 
+> 	tSOME[cpu] = time(nr_delayed_tasks[cpu] != 0)
+> 
+> which turns nr_delayed_tasks[cpu] into boolean value, hence loses
+> insight into how severely this task group is stalled on this cpu.
 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 4548048dbcb8f..51feefef65c66 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -819,17 +819,17 @@ struct rt_rq {
- 
- #ifdef CONFIG_RT_GROUP_SCHED
- 	int			rt_throttled;
--	u64			rt_time;
--	u64			rt_runtime;
-+	u64			rt_time; /* consumed RT time, goes up in update_curr_rt */
-+	u64			rt_runtime; /* allotted RT time, "slice" from rt_bandwidth, RT sharing/balancing */
- 	/* Nests inside the rq lock: */
- 	raw_spinlock_t		rt_runtime_lock;
- 
- 	unsigned int		rt_nr_boosted;
- 
--	struct rq		*rq;
-+	struct rq		*rq; /* this is always top-level rq, cache? */
- #endif
- #ifdef CONFIG_CGROUP_SCHED
--	struct task_group	*tg;
-+	struct task_group	*tg; /* this tg has "this" rt_rq on given CPU for runnable entities */
- #endif
- };
- 
--- 
-2.48.1
+Thanks for example. So the lost information is kind of a group load.
+What meaning it has when there is no group throttling?
 
+Honestly, I can't reason neither about PSI.some nor Σ run_delay wrt
+feedback for resource control. What it is slightly bugging me is
+introduction of another stats field before first one was explored :-)
+
+But if there's information loss with PSI -- could cpu.pressure:some be
+removed in favor of Σ run_delay? (The former could be calculated from
+latter if you're right :-p)
+
+(I didn't like the before/after shuffling with enum cpu_usage_stat
+NR_STATS but I saw v4 where you tackled that.)
+
+Michal
+
+
+More context form previous message, the difference is between a) and c),
+or better equal lanes:
+
+a')
+   t1 |----|
+   t2 |xx--|
+   t3 |----|
+
+c)
+   t1 |----|
+   t2 |xx--|
+   t3 |xx--|
+
+      <-Δt->
+
+run_delay can be calculated indepently of cpu.pressure:some
+because there is still difference between a') and c) in terms of total
+cpu usage.
+
+	Δrun_delay = nr * Δt - Δusage
+
+The challenge is with nr (assuming they're all runnable during Δt), that
+would need to be sampled from /sys/kernel/debug/sched/debug. But then
+you can get whatever load for individual cfs_rqs from there. Hm, does it
+even make sense to add up run_delays from different CPUs?
 
