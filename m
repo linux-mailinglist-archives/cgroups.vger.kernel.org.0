@@ -1,209 +1,162 @@
-Return-Path: <cgroups+bounces-6491-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6492-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7602A2F4B4
-	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 18:09:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76CB9A2F6F6
+	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 19:26:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12C7B7A134A
-	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 17:08:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34CF03A6506
+	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 18:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA4B8243962;
-	Mon, 10 Feb 2025 17:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E402566F3;
+	Mon, 10 Feb 2025 18:25:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Co8zl6uw"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="B1sBZ8qX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176C5256C6B
-	for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 17:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2AD25B668
+	for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 18:25:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739207355; cv=none; b=HifGuL8RlMWZDE5w5FhLaweSyz9Ry2goh5BIhSC1Ne0/uAOTWCgJieqOFjqZOyxJP+2muyIIsYBrjsQd3/adxpl4CgoPZwQLzFb1N2/nHJ+OHnSdvvfdNSiia2iYixLDEAyCjLjZZSVART6NOokMvyzMLwFZoAmGayEFn3k30bc=
+	t=1739211954; cv=none; b=QndRm0flOE+GF5uWhSEcc/fBOZB+5fEpLNWdy0bBnuyJwYWgcK+KsFIQS53oypUXhcyfZl9iPMKodYFtce2cApZ9ZD7uvD3y1o0AbwT22t8OJ8eBQYq8KswvhG+kbcvfcyHI+HUTZqTLUtuZbiDKaIHpF4LihUFSr2iv9dBoZ8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739207355; c=relaxed/simple;
-	bh=HOuWt82jq7ygkKCFtxmgpdL6DwPRgmClVPVz8aUf/uA=;
+	s=arc-20240116; t=1739211954; c=relaxed/simple;
+	bh=yw+lKZDoeBK7rkNspoTrT5upsSeMqE0byCe2rNIKGy8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yy08d6OsXSVfVmP2UXBMjeHzNx85cbgEi3ZVnfyn73ywZtV1cAFwAC6oJjOdhB/LXBQqMjrqYrTywBV55uj/uBys9HPwT5zAb9UUamgjHRDGphrybvi+Jnj8Lk1bZ63X2Y7POf2WFZvQIxMWSobkGEthUC2keVMOACrdZZHkZ64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Co8zl6uw; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739207353;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=75DhKP5p4pHL8SboeTssQDPO6tHFPAizpkaf2emg0Pc=;
-	b=Co8zl6uw8gvDe9UnnP0greTPfHYznU7ExJUhrgg9H90Lky/Jsq0ChgFPPla8WdQokqTfT0
-	e8tVo1Whamti5kNPCb8yf3kQ/h37q9TStWbZ3DF4HW5w02d/Np/8CabvauMiFzWvHwjMHh
-	kiDBDBTb8kgPov/CQAkpXIK4DKnKL8k=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-61-3gJ_lo9GNMmHX0py15rdXA-1; Mon, 10 Feb 2025 12:09:11 -0500
-X-MC-Unique: 3gJ_lo9GNMmHX0py15rdXA-1
-X-Mimecast-MFC-AGG-ID: 3gJ_lo9GNMmHX0py15rdXA
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4394c489babso1883475e9.1
-        for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 09:09:11 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=tB95SvOyqSRsc2GwKpndyo23sB05LPOkZzoRxAW7nfXkk6K/GDS9fK0vTLc5xCO+M0IKE/pWUPGL+2apmuPVCWrzEaOWuyAE5eIzkIU0FWCBAgbW22T+vZEyPhXVOMCYIv2Hjf9iO+1dCG0RrpB1mnwIwytUPNTO9gZSNBAO+SI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=B1sBZ8qX; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7c058ae6777so168625685a.0
+        for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 10:25:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1739211950; x=1739816750; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1hZK6XGnRLi/IyorocuGwcKKQPXtEGusIrxLUfwsFRE=;
+        b=B1sBZ8qX4Q8msELlEl2SM0O5rUMt8TZEmz9rZ2GXv0qCach+Abcsl5xPFjVHsbIP5I
+         RyLsiVVeh6/f4zQc+lVZeOSR+FwtUOA3jDOL6YuZseo089k2cs/5MDHbjn8qQVzm36i+
+         OaMUesmprHldlagm0wt8ybRrFodTVQpgTHt6FQ137MQVyugmQw6nvwcqS1Gd7UX7e5aB
+         qWQ8pDWS7CTW37KSGOtwtO4ZMs6vppaV7lh9daWz5DAd/J6Rld2r4Qm0pEb2/9dPSmg/
+         zcADcgwe3JSETooMSLwJOG6cAQkuPpL3qSTgwioHCUGpp/siNI2p6W9FOLFmrqSVQiAl
+         In+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739207350; x=1739812150;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=75DhKP5p4pHL8SboeTssQDPO6tHFPAizpkaf2emg0Pc=;
-        b=mKdT5wE3onqpb6ei9lgbJ/6RtufSiObGS9KUzp16QD7N7qFXJEZ74G7fW7LnWGovaY
-         CmoXrf5m5OZqnSv/AxnP9ZG7gjAxk/L7hLPJEWirDX8zGnCWBnkWsDjB7KWZUCWLcWIo
-         2yuMXTApiUV/MdZSjlm2RWOSvBcKPFANPX+WZ26hXY+AiPFrFeG+QPCBmrwQCTpVvmtc
-         2FJn15Pzd+WpQvRziPgul2j0dwTIwHDZMiUcblh1fTnTTmqSnZ3uHSt3yJ1UQ4DJ1j6q
-         nJ1nMl4C8jCkLJB1ZCJec4RHaBquv7W8y+N33XEJ/hAyFiw8uSnreZcH4Enc+puikNRb
-         rDXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXS7vWk+XSfxGGyqqNITBgKEBtB1xF++i2LuNvQ/3rVUyOscXRwyqshPB698lx/G/m+8Nim6kA0@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTYR+KtbFWwQukP6uCx3r/b0Ow2WU+c25brmnSt1TKWTbxTzEf
-	m2dcixlNXgga8IbW2dyxxKrao6l2v+rDIniCWplx+rZ2B6OVgbWnvA65g2omtibwQOesWeDSMSP
-	DDvhUlnT7pjC9nO4T7mWzI0yVvkMBHuPqzg+yuNrXoQ7sWpyL7/Sr24I=
-X-Gm-Gg: ASbGncuQH65auSAAPR4XCVtdDQJa9gMeXNzklA4ELHu+5ak0HcVpliIp3y27x8W00/t
-	VI/KbNw2P3mFUECJcuLV5T+dKfVGG558dJlkiFeX6XVkyjVfDkyJv3/btdmUgmfs0ckWCxIzCaf
-	WHm95RnI6IWNkNLBs+ZDg1JkvuL42I7e30g6ufLg/u65hX4xCJ5LCSFmo5XwwMi6+AFeyuWn0EX
-	/C7gIK2AR/J9XdcOvgLxdd3zzAHiwkKu+S4OjWo4dZRMK/mczm2/JQauQ7NEY8St67VNlRq6jlv
-	GB1thzeMK9t9FFtV7Z/qHazTf72sBRDRfQ==
-X-Received: by 2002:a05:6000:1847:b0:38d:d18e:8811 with SMTP id ffacd0b85a97d-38dd18e88ccmr8244800f8f.25.1739207349736;
-        Mon, 10 Feb 2025 09:09:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF4iWM6+kcMn/xG5VIs8/39JBzO5XwyaWmPrE9jrgtQyQ7EiaBt4luvYYTOSu7zPwW07wtZug==
-X-Received: by 2002:a05:6000:1847:b0:38d:d18e:8811 with SMTP id ffacd0b85a97d-38dd18e88ccmr8244771f8f.25.1739207349294;
-        Mon, 10 Feb 2025 09:09:09 -0800 (PST)
-Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.34.42])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4390d964c7csm185123115e9.17.2025.02.10.09.09.07
+        d=1e100.net; s=20230601; t=1739211950; x=1739816750;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1hZK6XGnRLi/IyorocuGwcKKQPXtEGusIrxLUfwsFRE=;
+        b=J7hE3BEOBTiRDu17HvSw+Z7qHN/s7Wk0SGDSTFF8JkGSpBZX+6O5yAuUiQRuKZ9MT9
+         NQtg+eBPrlNg++0/NbAzbE7nn8DM0H39Dtf/LHnjhh12uyoZfOCYI5ltS+iqXtsb2iUF
+         8Z6GDiG+b58cKv0yj1Xg2Tl2xdHiKyhzce/xRCoWb+tLRTD2SfTnjlP5gLctt88a8uQL
+         KxCB/Lo80fHNuXXXz8tobrRhNw8THSjMeY/Aa2LEill/eaBVv1fJFS0Bpa3gbHWs+xdE
+         QHzknt6Sy4iER0dzh2a9tHf34AStHj8ropj/4pg1N9ghvrb3fyFXlKIB7TBIcqC5zXc6
+         UK4w==
+X-Forwarded-Encrypted: i=1; AJvYcCWGQs1zBudwEAQrVChaCeN/LvTK3O5/WwkK/Wendj023mDqhxstQC8jsiIkGT2KwdSQWPtLuDPF@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzqh4mTWz2dzhrN3mFk2WKI8am94R5gw706xxSzoXtlv6+1yS+N
+	IQ93NzDg2Fq0b/SM6zuJixKT1cSQaUd3Wuc/QEUE6MRp5CYWs+9SSlwjCPbQj6w=
+X-Gm-Gg: ASbGncvFh5xA0Yd0BOxm6T6frCg8vfTE+4uPGqH9ES3oaj0/Zq/O9e9iRQzagaH3oyY
+	E8IFWXSSs3tdxljOfDdGpT2cupYQLL+MpCCpnktRhU/P7fUf9MbnyhB6iLEHgTx03FWPrmyGfko
+	Woi4ea3qGI3Gp9h12lZxdTaouIayFC5oOBqzUeuHLH2adrAvjKkhenp5LqtMw8V9OIfhlhBn8IH
+	poHp3dJyIy1+dVUoxsAjIRKqNu6gHpLgEB5yu7ocEvenZpWyt3K3WPPS1yK9JV4of96VO97TYpw
+	R5JGMbP4PlaULQ==
+X-Google-Smtp-Source: AGHT+IERn1pEjIUK9eVekbDQIrmmcjZ+a9exbhT86XMP+EPRyQ3FbMbg8dM1n6UR9Wtt9h0PfLk7Tw==
+X-Received: by 2002:a05:620a:2549:b0:7b3:5858:1286 with SMTP id af79cd13be357-7c047c45da8mr2008700085a.47.1739211949818;
+        Mon, 10 Feb 2025 10:25:49 -0800 (PST)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7c05fdd0d58sm140341085a.6.2025.02.10.10.25.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 09:09:08 -0800 (PST)
-Date: Mon, 10 Feb 2025 18:09:05 +0100
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Christian Loehle <christian.loehle@arm.com>
-Cc: Jon Hunter <jonathanh@nvidia.com>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Thierry Reding <treding@nvidia.com>,
-	Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Koutny <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+        Mon, 10 Feb 2025 10:25:49 -0800 (PST)
+Date: Mon, 10 Feb 2025 13:25:45 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
 	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
 	Valentin Schneider <vschneid@redhat.com>,
-	Phil Auld <pauld@redhat.com>, Qais Yousef <qyousef@layalina.io>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	Suleiman Souhlal <suleiman@google.com>,
-	Aashish Sharma <shraash@google.com>,
-	Shin Kawamura <kawasin@google.com>,
-	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v2 3/2] sched/deadline: Check bandwidth overflow earlier
- for hotplug
-Message-ID: <Z6oysfyRKM_eUHlj@jlelli-thinkpadt14gen4.remote.csb>
-References: <Z4kr7xq7tysrKGoR@jlelli-thinkpadt14gen4.remote.csb>
- <cfcea236-5b4c-4037-a6f5-267c4c04ad3c@nvidia.com>
- <Z6MLAX_TKowbmdS1@jlelli-thinkpadt14gen4.remote.csb>
- <Z6M5fQB9P1_bDF7A@jlelli-thinkpadt14gen4.remote.csb>
- <8572b3bc-46ec-4180-ba55-aa6b9ab7502b@nvidia.com>
- <Z6SA-1Eyr1zDTZDZ@jlelli-thinkpadt14gen4.remote.csb>
- <a305f53d-44d4-4d7a-8909-6a63ec18a04b@nvidia.com>
- <5a36a2e8-bd78-4875-9b9e-814468ca6692@arm.com>
- <db800694-84f7-443c-979f-3097caaa1982@nvidia.com>
- <8ff19556-a656-4f11-a10c-6f9b92ec9cea@arm.com>
+	Thomas Gleixner <tglx@linutronix.de>,
+	Yury Norov <yury.norov@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bitao Hu <yaoma@linux.alibaba.com>,
+	Chen Ridong <chenridong@huawei.com>,
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] cgroup/rstat: Add run_delay accounting for cgroups
+Message-ID: <20250210182545.GA2484@cmpxchg.org>
+References: <20250125052521.19487-1-wuyun.abel@bytedance.com>
+ <20250125052521.19487-4-wuyun.abel@bytedance.com>
+ <3wqaz6jb74i2cdtvkv4isvhapiiqukyicuol76s66xwixlaz3c@qr6bva3wbxkx>
+ <9515c474-366d-4692-91a7-a4c1a5fc18db@bytedance.com>
+ <qt3qdbvmrqtbceeogo32bw2b7v5otc3q6gfh7vgsk4vrydcgix@33hepjadeyjb>
+ <Z6onPMIxS0ixXxj9@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8ff19556-a656-4f11-a10c-6f9b92ec9cea@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z6onPMIxS0ixXxj9@slm.duckdns.org>
 
-Hi Christian,
-
-Thanks for taking a look as well.
-
-On 07/02/25 15:55, Christian Loehle wrote:
-> On 2/7/25 14:04, Jon Hunter wrote:
-> > 
-> > 
-> > On 07/02/2025 13:38, Dietmar Eggemann wrote:
-> >> On 07/02/2025 11:38, Jon Hunter wrote:
-> >>>
-> >>> On 06/02/2025 09:29, Juri Lelli wrote:
-> >>>> On 05/02/25 16:56, Jon Hunter wrote:
-> >>>>
-> >>>> ...
-> >>>>
-> >>>>> Thanks! That did make it easier :-)
-> >>>>>
-> >>>>> Here is what I see ...
-> >>>>
-> >>>> Thanks!
-> >>>>
-> >>>> Still different from what I can repro over here, so, unfortunately, I
-> >>>> had to add additional debug printks. Pushed to the same branch/repo.
-> >>>>
-> >>>> Could I ask for another run with it? Please also share the complete
-> >>>> dmesg from boot, as I would need to check debug output when CPUs are
-> >>>> first onlined.
-> >>
-> >> So you have a system with 2 big and 4 LITTLE CPUs (Denver0 Denver1 A57_0
-> >> A57_1 A57_2 A57_3) in one MC sched domain and (Denver1 and A57_0) are
-> >> isol CPUs?
-> > 
-> > I believe that 1-2 are the denvers (even thought they are listed as 0-1 in device-tree).
+On Mon, Feb 10, 2025 at 06:20:12AM -1000, Tejun Heo wrote:
+> On Mon, Feb 10, 2025 at 04:38:56PM +0100, Michal Koutný wrote:
+> ...
+> > The challenge is with nr (assuming they're all runnable during Δt), that
+> > would need to be sampled from /sys/kernel/debug/sched/debug. But then
+> > you can get whatever load for individual cfs_rqs from there. Hm, does it
+> > even make sense to add up run_delays from different CPUs?
 > 
-> Interesting, I have yet to reproduce this with equal capacities in isolcpus.
-> Maybe I didn't try hard enough yet.
+> The difficulty in aggregating across CPUs is why some and full pressures are
+> defined the way they are. Ideally, we'd want full distribution of stall
+> states across CPUs but both aggregation and presentation become challenging,
+> so some/full provide the two extremes. Sum of all cpu_delay adds more
+> incomplete signal on top. I don't know how useful it'd be. At meta, we
+> depend on PSI a lot when investigating resource problems and we've never
+> felt the need for the sum time, so that's one data point with the caveat
+> that usually our focus is on mem and io pressures where some and full
+> pressure metrics usually seem to provide sufficient information.
 > 
-> > 
-> >> This should be easy to set up for me on my Juno-r0 [A53 A57 A57 A53 A53 A53]
-> > 
-> > Yes I think it is similar to this.
-> > 
-> > Thanks!
-> > Jon
-> > 
-> 
-> I could reproduce that on a different LLLLbb with isolcpus=3,4 (Lb) and
-> the offlining order:
-> echo 0 > /sys/devices/system/cpu/cpu5/online
-> echo 0 > /sys/devices/system/cpu/cpu1/online
-> echo 0 > /sys/devices/system/cpu/cpu3/online
-> echo 0 > /sys/devices/system/cpu/cpu2/online
-> echo 0 > /sys/devices/system/cpu/cpu4/online
-> 
-> while the following offlining order succeeds:
-> echo 0 > /sys/devices/system/cpu/cpu5/online
-> echo 0 > /sys/devices/system/cpu/cpu4/online
-> echo 0 > /sys/devices/system/cpu/cpu1/online
-> echo 0 > /sys/devices/system/cpu/cpu2/online
-> echo 0 > /sys/devices/system/cpu/cpu3/online
-> (Both offline an isolcpus last, both have CPU0 online)
-> 
-> The issue only triggers with sugov DL threads (I guess that's obvious, but
-> just to mention it).
+> As the picture provided by some and full metrics is incomplete, I can
+> imagine adding the sum being useful. That said, it'd help if Able can
+> provide more concrete examples on it being useful. Another thing to consider
+> is whether we should add this across resources monitored by PSI - cpu, mem
+> and io.
 
-It wasn't obvious to me at first :). So thanks for confirming.
+Yes, a more detailed description of the usecase would be helpful.
 
-> I'll investigate some more later but wanted to share for now.
+I'm not exactly sure how the sum of wait times in a cgroup would be
+used to gauge load without taking available concurrency into account.
+One second of aggregate wait time means something very different if
+you have 200 cpus compared to if you have 2.
 
-So, problem actually is that I am not yet sure what we should do with
-sugovs' bandwidth wrt root domain accounting. W/o isolation it's all
-good, as it gets accounted for correctly on the dynamic domains sugov
-tasks can run on. But with isolation and sugov affected_cpus that cross
-isolation domains (e.g., one BIG one little), we can get into troubles
-not knowing if sugov contribution should fall on the DEF or DYN domain.
+This is precisely what psi tries to capture. "Some" does provide group
+loading information in a sense, but it's a ratio over available
+concurrency, and currently capped at 100%. I.e. if you have N cpus,
+100% some is "at least N threads waiting at all times." There is a
+gradient below that, but not above.
 
-Hummm, need to think more about it.
+It's conceivable percentages over 100% might be useful, to capture the
+degree of contention beyond that. Although like Tejun says, we've not
+felt the need for that so far. Whether something is actionable or not
+tends to be in the 0-1 range, and beyond that it's just "all bad".
 
-Thanks,
-Juri
+High overload scenarios can also be gauged with tools like runqlat[1],
+which give a histogram over individual tasks' delays. We've used this
+one extensively to track down issues.
 
+[1] https://github.com/iovisor/bcc/blob/master/tools/runqlat.py
 
