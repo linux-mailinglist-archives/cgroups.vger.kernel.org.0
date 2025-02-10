@@ -1,57 +1,89 @@
-Return-Path: <cgroups+bounces-6493-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6494-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAD0EA2F734
-	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 19:35:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F27E6A2FDC7
+	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 23:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 746693A42BF
-	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 18:35:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 947D4168388
+	for <lists+cgroups@lfdr.de>; Mon, 10 Feb 2025 22:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB3C25744E;
-	Mon, 10 Feb 2025 18:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F705253F0A;
+	Mon, 10 Feb 2025 22:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Eqq0fv/E"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="BRvr/uDR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3447255E4C
-	for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 18:35:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E271C2DA2
+	for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 22:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739212507; cv=none; b=Zp3E2X/qrlibDdpKEq+zVywYwFkTUBTqwXoI6H1DW8uc24DQmQ9NKji683L9+9bGG/gdUrdmi2WiDdy8Rf15QBVP87DUfymurQDDgdWCClYC2auVrj2Ei2eQSKEx2ykDG99DCstaWSab3fHwm4xvKleK5eoByvMJkrqFwDn2GW0=
+	t=1739227963; cv=none; b=LhtcZfC5FkoTRw1H+pSZdm599ZEnN4r8x5NmqWVkJZqEd4RPseOh3kjEqv8U66txikYmy6udE/yrRxm7/w7kVw5WhNXi9cARU/S34Jb80tLaDQYdA0zP/dPtDEewBZUnBDA+QyJKooaYlBHa+Rs/FgNp0zjOrueIOPSAbIq4RDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739212507; c=relaxed/simple;
-	bh=zWuoo7ND2Cayr7LKqH469oOc4M8MkwV//oIaGZjQhm8=;
+	s=arc-20240116; t=1739227963; c=relaxed/simple;
+	bh=u1A7hUp218r3DTCis5M2h9NuD/7RxkXbim97uOWF8B4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iWqerxNjwIRUMIYWjzKV4Qxp0ZAIOesqHjXBsiljKnIwcOWmAj8YKu5pYfpYlqjAx/d+duI3QJH8trtZ3mbIL9s2a8quFMYFjYOcgE0fQqsGlRV7sUrbLYm8bzkmP09DhLV7s5wCu95QMcKR/yRFaB02vZbhVkr0byTodaq2P6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Eqq0fv/E; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 10 Feb 2025 10:34:54 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1739212501;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Px6n4/iF3ATy1tkEKiiYXPtCS0uyJnLM3LWN0RZhHL8=;
-	b=Eqq0fv/EZqZxres6gXvwinFpZxvxoAbVnSYhy/hOzYIeULRrCalvzQY8wdrpNDLwQReVpz
-	qhKuOIIHVO/vQnzJEhcb+aYrzKJQC7n3mi2fMRb0VdpW4j3MLoC00YTmnAxqtyeHapkPwS
-	SrJNH6alGGJKnHKCG7ULeUTw9Xpdgxk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: "T.J. Mercier" <tjmercier@google.com>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	 Content-Type:Content-Disposition:In-Reply-To; b=t8QP0ddTxZ+bLnArSw3KXXKWGMU24pDu88Ntr2zaBcVqGRQIWgl6CaciQ5Cb47RTk+xd2oH1H76i3rB8AC/GcvVciFJB4Nw8oifGsNR+wKS0wKsa+Vb0h232XBT7rTiBlspXu5EcT6zwqOQ0pLOToSU3TfhIpN+HyK3j6NFul6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=BRvr/uDR; arc=none smtp.client-ip=209.85.219.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6e454a513a6so18924126d6.3
+        for <cgroups@vger.kernel.org>; Mon, 10 Feb 2025 14:52:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1739227959; x=1739832759; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=hIqV3tfLe7RjPFG0CQCvGtroDIm7scu+4kUGANh/xuo=;
+        b=BRvr/uDRHkkuRpDYPsq9md3vA0jBBZqwpflEG1uNMsL0aNuxZqy2WhXqQgFXSqR4HL
+         n0vPRiLiLNuTbcxGvM+yomTx/pE+E0KGeRO1COvH02BV2nS4yPiUpx4TRf0SAnieBRAo
+         9mcLtB8JUvFYZ1sshY99gGDKl6xEaV+rb2EksyPIILP5ScYhAe3tiX5syW8X3qPU3Yia
+         v8fndVpt0S9HxolQgiy0CZEt6fuYcxfFyilqZVswhXSmuTuvoSS/TR6nfVEDFR/zm8eA
+         U5Kxilw6KW7SOHPUOyEwZnvVWZx6Gqm7FNn2RA2EV4Q9ZJxAXKBJlbVPqveqnRbSQCcg
+         N7Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739227959; x=1739832759;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hIqV3tfLe7RjPFG0CQCvGtroDIm7scu+4kUGANh/xuo=;
+        b=AFyfOEVDRALubdDa6Eew/SkroXDE0IvPkstuP2V6bt41asfQ1LplR30ciz6GQfZZ3f
+         sR+nXPGchBS6Duqv3WBOxFwPcSdYvNNF6FUNo/dIEASelqwpQNyfADA3wvl74OlrphFn
+         F3Zsq2YW8nHbX6nt6TCdiwTPGOJvcYH2L8mbnZeIokuqk1+mWxGVxmZEp0YbE4AQ6PXN
+         MeFHsce3qlnPxa90IliM2bRbvRP1gFmAjUH133Ts8IdvQI7pudWFlk+SibhAe8DHw0Y+
+         hT3TzxAfH89NxAQJhnIvEsTJe2RUpzyEJLuKEiSFTTr5iqtj+FlMbdhuVQJVO+F5bNq+
+         J75A==
+X-Forwarded-Encrypted: i=1; AJvYcCWM5xPOQ7QfSvHIWDnFektQ5kAHeMYpV1pBsZhVw2O3TCBbkjVMVI0gAcYs3pwKFSdPta5TFg9x@vger.kernel.org
+X-Gm-Message-State: AOJu0YzXvZiJSGGFWqaOmPSS6Kb8V55ZIUi547UGTHp65ALZpelkCSSq
+	NtWfd4q0O4wdZFlL8B6nY/zjA/tG/ZX7lhQYcJZOXSKIWEzPB/UTjs1ZPloySzY=
+X-Gm-Gg: ASbGncs6vB6tOD4y2QlJJZsHk3YQ2A6zpTjchPl+sAHRZ/T7fHZkgmrlbvzczCV47QA
+	w7khbSExMyVzn6DAhaF4bo7jmAoNgVcMEOyNQxMYc9LvO5pxsYUD20t2inBigVd04HtIjh6nx8U
+	piqMVwM+cdnQ1cjWNih+DpXJWDVg4Qx298AJbdsAyzw8b8hb6Bm2KGDfdwDqp2KDUQt8KDUREq0
+	iVlO8IIZBscVokAx9KdRXSkpw7wNFPf8zuUAyGfVlct4ufM3lbtBpsRAn3gJs9ymE96w8EuyqkN
+	PwaHTe5XO+PFvA==
+X-Google-Smtp-Source: AGHT+IFCCtSpTxwzZJhFgQbTnEw4Hb6IM3CNmfFsUhwUhEqAD5ltagXJM+qe8uUcXCgdyfJayAr3pQ==
+X-Received: by 2002:a05:6214:1d0d:b0:6d8:9a85:5b44 with SMTP id 6a1803df08f44-6e4456c11ddmr220765156d6.29.1739227958757;
+        Mon, 10 Feb 2025 14:52:38 -0800 (PST)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6e451e423cdsm32325906d6.125.2025.02.10.14.52.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Feb 2025 14:52:38 -0800 (PST)
+Date: Mon, 10 Feb 2025 17:52:34 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>,
+	"T.J. Mercier" <tjmercier@google.com>, Tejun Heo <tj@kernel.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>
 Subject: Re: [PATCH] memcg: add hierarchical effective limits for v2
-Message-ID: <j2qxkp3tjq7yenl3tkjisaxry7aqdwaxlpx7rn7mpkdi7fkf2c@xva7vgzspb2p>
+Message-ID: <20250210225234.GB2484@cmpxchg.org>
 References: <20250205222029.2979048-1-shakeel.butt@linux.dev>
  <mshcu3puv5zjsnendao73nxnvb2yiprml7aqgndc37d7k4f2em@vqq2l6dj7pxh>
  <ctuqkowzqhxvpgij762dcuf24i57exuhjjhuh243qhngxi5ymg@lazsczjvy4yd>
@@ -62,13 +94,12 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <5jwdklebrnbym6c7ynd5y53t3wq453lg2iup6rj4yux5i72own@ay52cqthg3hy>
-X-Migadu-Flow: FLOW_OUT
 
-On Mon, Feb 10, 2025 at 05:24:17PM +0100, Michal Koutný wrote:
+On Mon, Feb 10, 2025 at 05:24:17PM +0100, Michal Koutn� wrote:
 > Hello.
 > 
 > On Thu, Feb 06, 2025 at 11:09:05AM -0800, Shakeel Butt <shakeel.butt@linux.dev> wrote:
@@ -78,67 +109,62 @@ On Mon, Feb 10, 2025 at 05:24:17PM +0100, Michal Koutný wrote:
 > 
 > From the memcg PoV, the effective value doesn't tell how much they were
 > given (because of sharing).
-> 
-> > More concretely, these are workloads which used to completely occupy a
-> > single machine, though within containers but without limits. These
-> > workloads used to look at machine level metrics at startup on how much
-> > resources are available.
-> 
-> I've been there but haven't found convincing mapping of global to memcg
-> limits.
-> 
-> The issue is that such a value won't guarantee no OOM when below because
-> it can be (generally) effectively shared.
-> 
-> (Alas, apps typically don't express their memory needs in units of
-> PSI. So it boils down to a system wide monitor like systemd-oomd and
-> cooperation with it.)
-> 
 
-I think you missed the static partitioning of resources use-case I
-mentioned. The issue you are pointing exist for the system level metrics
-as well i.e. a worklod looking at system metrics can't say how much they
-are given but in my specific case, the workloads know they occupy the
-full machine. Now we want to move such workloads to multi-tenant
-environment but the resources are still statically partitioned and not
-overcommitted, so effective limit will tell how much they are given.
+It's definitely true that if you have an ancestral limit for several
+otherwise unlimited siblings, then interpreting this number as "this
+is how much memory I have available" will be completely misleading.
 
-> > Now these workloads are being moved to multi-tenant environment but
-> > still the machine is partitioned statically between the workloads. So,
-> > these workloads need to know upfront how much resources are allocated to
-> > them upfront and the way the cgroup hierarchy is setup, that information
-> > is a bit above the tree.
-> 
-> FTR, e.g. in systemd setups, this can be partially overcome by exposed
-> EffectiveMemoryMax= (the service manager who configures the resources
-> also can do the ancestry traversal).
-> kubernetes has downward API where generic resource info is shared into
-> containers and I recall that lxcfs could mangle procfs
-> memory info wrt memory limits for legacy apps.
-> 
-> 
-> As I think about it, the cgroupns (in)visibility should be resolved by
-> assigning the proper limit to namespace's root group memory.max (read
-> only for contained user) and the traversal...
-> 
+I would also say that sharing a limit with several siblings requires a
+certain degree of awareness and cooperation between them. From that
+POV, IMO it would be fine to provide a metric with contextual caveats.
 
-I think here your point is why not have userspace based solution. I
-think it is possible but not convenient and adds an external dependency
-in the workload.
+The problem is, what do we do with canned, unaware, maybe untrusted
+applications? And they don't necessarily know which they are.
 
-> 
-> On Thu, Feb 06, 2025 at 11:37:31AM -0800, "T.J. Mercier" <tjmercier@google.com> wrote:
-> > but having a single file to read instead of walking up the
-> > tree with multiple reads to calculate an effective limit would be
-> > nice.
-> 
-> ...in kernel is nice but possible performance gain isn't worth hiding
-> the shareability of the effective limit.
-> 
-> 
-> So I wonder what is the current PoV of more MM people...
+It depends heavily on the judgement of the administrator of any given
+deployment. Some workloads might be completely untrusted and hard
+limited. Another deployment might consider the same workload
+reasonably predictable that it's configured only with a failsafe max
+limit that is much higher than where the workload is *expected* to
+operate. The allotment might happen altogether with min/low
+protections and no max limit. Or there could be a combination of
+protection slightly below and a limit slightly above the expected
+workload size.
 
-Yup, let's see more opinion on this.
+It seems basically impossible to write portable code against this
+without knowing the intent of the person setting it up.
 
-Thanks Michal for your feedback.
+But how do we communicate intent down to the container? The two broad
+options are implicitly or explicitly:
+
+a) Provide a cgroup file that automatically derives intended target
+   size from how min/low/high/max are set up.
+
+   Right now those can be set up super loosely depending on what the
+   administrator thinks about the application. In order for this to
+   work, we'd likely have to define an idiomatic way of configuring
+   the controller. E.g. if you set max by itself, we assume this is
+   the target size. If you set low, with or without max, then low is
+   the target size. Or if you set both, target is in between.
+
+   I'm not completely convinced this is workable. It might require
+   settings beyond what's actually needed for the safe containment of
+   the workload, which carries the risk of excluding something useful.
+   I don't mean enforced configuration rules, but rather the case
+   where a configuration is reasonable and effective given the
+   workload and environment, but now the target file shows nonsense.
+
+b) Provide a cgroup file that is freely configurable by the
+   administrator with the target size of the container.
+
+   This has obvious drawbacks as well. What's the default value? Also,
+   a lot of setups are dead simple: set a hard limit and expect the
+   workload to adhere to that, period. Nobody is going to reliably set
+   another cgroup file that a workload may or may not consume.
+
+The third option is to wash our hands of all of this, provide the
+static hierarchy settings to the leaves (like this patch, plus do it
+for the other knobs as well) and let userspace figure it out.
+
+Thoughts?
 
