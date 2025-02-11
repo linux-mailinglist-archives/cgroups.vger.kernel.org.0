@@ -1,160 +1,228 @@
-Return-Path: <cgroups+bounces-6497-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6498-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F123DA305C0
-	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2025 09:29:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD2CAA305E9
+	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2025 09:36:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 861A618861D1
-	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2025 08:29:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 487DC164FE0
+	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2025 08:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC991EEA59;
-	Tue, 11 Feb 2025 08:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373C01F03CC;
+	Tue, 11 Feb 2025 08:36:31 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D83E1EEA47;
-	Tue, 11 Feb 2025 08:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEDB926BDA8;
+	Tue, 11 Feb 2025 08:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739262566; cv=none; b=ptKoUhR2iDKrbpn97t3SnZJ2mKAns15+ECCuZMDYqioXuFGdwrbgu251UNtUCSKYrHChTv8/BjqVBiDg43Pc8fxgJCFD7uEorsKsQ+89IbaUY6tEkVHISYO3F7C+6SqiT9i02QZSzu4sfhS5EtdFnDyIEPrLyldRp9xHjCOMk0A=
+	t=1739262991; cv=none; b=Kr7OaIPAyHZc1+A5azCgpHsPfh14QCgz42hdt2zhlZYxFVGlfr2rtVwUqLdal93xNHgDPWykzI97l1pXfiYNbwV0m1UPhsmsHs2jA/Mmr6gE2SJJMQv0tX+TGI8lsGnVFMgItay6OZVmW0CEP41NR344aEYb41GVVOSLra1d62A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739262566; c=relaxed/simple;
-	bh=5mLlG7UJKSNSJiUN+gLdBG8mvz50NDCZxBPd4G5dwuU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gaJLs1yqPLF6o1WrcV1BaPueZdJ0WeHnB1S3Ji0Mg+Ygis8coq8np0zoQGrMOabAM0Xk4V2Jo0ZnYsElNSnO60sk6kEYANsT1akEbKVP7TfIODlrKKvUYFCC6/+xPxYGCVQnpAzVVviJwdfP/p+S8y4aQYYuVS7aUv2iEW7QwOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YsZNL4kw6z4f3lCm;
-	Tue, 11 Feb 2025 16:28:50 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 55B631A0CA9;
-	Tue, 11 Feb 2025 16:29:13 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP3 (Coremail) with SMTP id _Ch0CgAHp8FICqtnfiPrDQ--.42730S2;
-	Tue, 11 Feb 2025 16:29:13 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	akpm@linux-foundation.org
-Cc: cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	chenridong@huawei.com,
-	wangweiyang2@huawei.com
-Subject: [PATCH] memcg: avoid dead loop when setting memory.max
-Date: Tue, 11 Feb 2025 08:18:19 +0000
-Message-Id: <20250211081819.33307-1-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1739262991; c=relaxed/simple;
+	bh=3mb9hayIsyvxrq+UiLOv4MPGAR/NrjSFWRoNdg+bHUs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=I5V7Mg2+hQQslk88n8L+FhUa6Qtja9osXhd+TDOt9TZJA6DseQnOQy9N69Qgsyv+gWp3rD45XX12/0gC1w/Wd3ZutTuVdtkcRtaiYYmdF2Q4RSeosxO3j82fVDxKVFafFc8XL/SpPv4G/TXSkHnTkuWNehR5o1L7jmP9oTUB95s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF7A51477;
+	Tue, 11 Feb 2025 00:36:43 -0800 (PST)
+Received: from [192.168.178.6] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 807C13F5A1;
+	Tue, 11 Feb 2025 00:36:18 -0800 (PST)
+Message-ID: <80ccec94-df27-4a99-8037-17165f6c5d8f@arm.com>
+Date: Tue, 11 Feb 2025 09:36:10 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgAHp8FICqtnfiPrDQ--.42730S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw1fZr4DXw15ZF4ftw1kXwb_yoW5Cw1DpF
-	13Jw1UGF48Jr1kXr4UJF1fWr15Ga1kCFy7JrW7ur1rA3ZxG3WUJ34rK3yUXryDXr1rZr1a
-	vF1DJw4xtw4DJaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
-	n4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
-	tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IUbmii3UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/2] sched/deadline: Check bandwidth overflow earlier
+ for hotplug
+To: Juri Lelli <juri.lelli@redhat.com>,
+ Christian Loehle <christian.loehle@arm.com>
+Cc: Jon Hunter <jonathanh@nvidia.com>, Thierry Reding <treding@nvidia.com>,
+ Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Koutny <mkoutny@suse.com>,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Phil Auld <pauld@redhat.com>, Qais Yousef <qyousef@layalina.io>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+ Suleiman Souhlal <suleiman@google.com>, Aashish Sharma <shraash@google.com>,
+ Shin Kawamura <kawasin@google.com>,
+ Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <Z4kr7xq7tysrKGoR@jlelli-thinkpadt14gen4.remote.csb>
+ <cfcea236-5b4c-4037-a6f5-267c4c04ad3c@nvidia.com>
+ <Z6MLAX_TKowbmdS1@jlelli-thinkpadt14gen4.remote.csb>
+ <Z6M5fQB9P1_bDF7A@jlelli-thinkpadt14gen4.remote.csb>
+ <8572b3bc-46ec-4180-ba55-aa6b9ab7502b@nvidia.com>
+ <Z6SA-1Eyr1zDTZDZ@jlelli-thinkpadt14gen4.remote.csb>
+ <a305f53d-44d4-4d7a-8909-6a63ec18a04b@nvidia.com>
+ <5a36a2e8-bd78-4875-9b9e-814468ca6692@arm.com>
+ <db800694-84f7-443c-979f-3097caaa1982@nvidia.com>
+ <8ff19556-a656-4f11-a10c-6f9b92ec9cea@arm.com>
+ <Z6oysfyRKM_eUHlj@jlelli-thinkpadt14gen4.remote.csb>
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Content-Language: en-US
+In-Reply-To: <Z6oysfyRKM_eUHlj@jlelli-thinkpadt14gen4.remote.csb>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Chen Ridong <chenridong@huawei.com>
+On 10/02/2025 18:09, Juri Lelli wrote:
+> Hi Christian,
+> 
+> Thanks for taking a look as well.
+> 
+> On 07/02/25 15:55, Christian Loehle wrote:
+>> On 2/7/25 14:04, Jon Hunter wrote:
+>>>
+>>>
+>>> On 07/02/2025 13:38, Dietmar Eggemann wrote:
+>>>> On 07/02/2025 11:38, Jon Hunter wrote:
+>>>>>
+>>>>> On 06/02/2025 09:29, Juri Lelli wrote:
+>>>>>> On 05/02/25 16:56, Jon Hunter wrote:
+>>>>>>
+>>>>>> ...
+>>>>>>
+>>>>>>> Thanks! That did make it easier :-)
+>>>>>>>
+>>>>>>> Here is what I see ...
+>>>>>>
+>>>>>> Thanks!
+>>>>>>
+>>>>>> Still different from what I can repro over here, so, unfortunately, I
+>>>>>> had to add additional debug printks. Pushed to the same branch/repo.
+>>>>>>
+>>>>>> Could I ask for another run with it? Please also share the complete
+>>>>>> dmesg from boot, as I would need to check debug output when CPUs are
+>>>>>> first onlined.
+>>>>
+>>>> So you have a system with 2 big and 4 LITTLE CPUs (Denver0 Denver1 A57_0
+>>>> A57_1 A57_2 A57_3) in one MC sched domain and (Denver1 and A57_0) are
+>>>> isol CPUs?
+>>>
+>>> I believe that 1-2 are the denvers (even thought they are listed as 0-1 in device-tree).
+>>
+>> Interesting, I have yet to reproduce this with equal capacities in isolcpus.
+>> Maybe I didn't try hard enough yet.
+>>
+>>>
+>>>> This should be easy to set up for me on my Juno-r0 [A53 A57 A57 A53 A53 A53]
+>>>
+>>> Yes I think it is similar to this.
+>>>
+>>> Thanks!
+>>> Jon
+>>>
+>>
+>> I could reproduce that on a different LLLLbb with isolcpus=3,4 (Lb) and
+>> the offlining order:
+>> echo 0 > /sys/devices/system/cpu/cpu5/online
+>> echo 0 > /sys/devices/system/cpu/cpu1/online
+>> echo 0 > /sys/devices/system/cpu/cpu3/online
+>> echo 0 > /sys/devices/system/cpu/cpu2/online
+>> echo 0 > /sys/devices/system/cpu/cpu4/online
+>>
+>> while the following offlining order succeeds:
+>> echo 0 > /sys/devices/system/cpu/cpu5/online
+>> echo 0 > /sys/devices/system/cpu/cpu4/online
+>> echo 0 > /sys/devices/system/cpu/cpu1/online
+>> echo 0 > /sys/devices/system/cpu/cpu2/online
+>> echo 0 > /sys/devices/system/cpu/cpu3/online
+>> (Both offline an isolcpus last, both have CPU0 online)
+>>
 
-A softlockup issue was found with stress test:
- watchdog: BUG: soft lockup - CPU#27 stuck for 26s! [migration/27:181]
- CPU: 27 UID: 0 PID: 181 Comm: migration/27 6.14.0-rc2-next-20250210 #1
- Stopper: multi_cpu_stop <- stop_machine_from_inactive_cpu
- RIP: 0010:stop_machine_yield+0x2/0x10
- RSP: 0000:ff4a0dcecd19be48 EFLAGS: 00000246
- RAX: ffffffff89c0108f RBX: ff4a0dcec03afe44 RCX: 0000000000000000
- RDX: ff1cdaaf6eba5808 RSI: 0000000000000282 RDI: ff1cda80c1775a40
- RBP: 0000000000000001 R08: 00000011620096c6 R09: 7fffffffffffffff
- R10: 0000000000000001 R11: 0000000000000100 R12: ff1cda80c1775a40
- R13: 0000000000000000 R14: 0000000000000001 R15: ff4a0dcec03afe20
- FS:  0000000000000000(0000) GS:ff1cdaaf6eb80000(0000)
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000000 CR3: 00000025e2c2a001 CR4: 0000000000773ef0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- PKRU: 55555554
- Call Trace:
-  multi_cpu_stop+0x8f/0x100
-  cpu_stopper_thread+0x90/0x140
-  smpboot_thread_fn+0xad/0x150
-  kthread+0xc2/0x100
-  ret_from_fork+0x2d/0x50
+Could reproduce on Juno-r0:
 
-The stress test involves CPU hotplug operations and memory control group
-(memcg) operations. The scenario can be described as follows:
+0 1 2 3 4 5
 
- echo xx > memory.max 	cache_ap_online			oom_reaper
- (CPU23)						(CPU50)
- xx < usage		stop_machine_from_inactive_cpu
- for(;;)			// all active cpus
- trigger OOM		queue_stop_cpus_work
- // waiting oom_reaper
- 			multi_cpu_stop(migration/xx)
- 			// sync all active cpus ack
- 			// waiting cpu23 ack
- 			// CPU50 loops in multi_cpu_stop
- 							waiting cpu50
+L b b L L L
 
-Detailed explanation:
-1. When the usage is larger than xx, an OOM may be triggered. If the
-   process does not handle with ths kill signal immediately, it will loop
-   in the memory_max_write.
-2. When cache_ap_online is triggered, the multi_cpu_stop is queued to the
-   active cpus. Within the multi_cpu_stop function,  it attempts to
-   synchronize the CPU states. However, the CPU23 didn't acknowledge
-   because it is stuck in a loop within the for(;;).
-3. The oom_reaper process is blocked because CPU50 is in a loop, waiting
-   for CPU23 to acknowledge the synchronization request.
-4. Finally, it formed cyclic dependency and lead to softlockup and dead
-   loop.
+      ^^^
+      isol = [3-4] so both L
 
-To fix this issue, add cond_resched() in the memory_max_write, so that
-it will not block migration task.
+echo 0 > /sys/devices/system/cpu/cpu1/online
+echo 0 > /sys/devices/system/cpu/cpu4/online
+echo 0 > /sys/devices/system/cpu/cpu5/online
+echo 0 > /sys/devices/system/cpu/cpu2/online - isol
+echo 0 > /sys/devices/system/cpu/cpu3/online - isol
 
-Fixes: b6e6edcfa405 ("mm: memcontrol: reclaim and OOM kill when shrinking memory.max below usage")
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- mm/memcontrol.c | 1 +
- 1 file changed, 1 insertion(+)
+>> The issue only triggers with sugov DL threads (I guess that's obvious, but
+>> just to mention it).
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8d21c1a44220..16f3bdbd37d8 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -4213,6 +4213,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 		memcg_memory_event(memcg, MEMCG_OOM);
- 		if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0))
- 			break;
-+		cond_resched();
- 	}
- 
- 	memcg_wb_domain_size_changed(memcg);
--- 
-2.34.1
+IMHO, it doesn't have to be a sugov DL task. Any DL task will do.
 
+// on a 2. shell:
+# chrt -d -T 5000000 -D 10000000 -P 16666666 -p 0 $$
+
+# ps -eTo comm,pid,class | grep DLN
+bash             1243 DLN
+
+5000000/16666666 = 0.3, 0.3 << 10 = 307 (task util, bandwidth requirement)
+
+> It wasn't obvious to me at first :). So thanks for confirming.
+> 
+>> I'll investigate some more later but wanted to share for now.
+> 
+> So, problem actually is that I am not yet sure what we should do with
+> sugovs' bandwidth wrt root domain accounting. W/o isolation it's all
+> good, as it gets accounted for correctly on the dynamic domains sugov
+> tasks can run on. But with isolation and sugov affected_cpus that cross
+> isolation domains (e.g., one BIG one little), we can get into troubles
+> not knowing if sugov contribution should fall on the DEF or DYN domain.
+
+# echo 0 > /sys/devices/system/cpu/cpu1/online
+[   87.402722] __dl_bw_capacity() mask=0-2,5 cap=2940
+[   87.407551] dl_bw_cpus() cpu=1 rd->span=0-2,5 cpu_active_mask=0-5 cpumask_weight(rd->span)=4
+[   87.416019] dl_bw_manage: cpu=1 cap=1916 fair_server_bw=52428 total_bw=524284 dl_bw_cpus=4 type=DYN span=0-2,5
+
+# echo 0 > /sys/devices/system/cpu/cpu2/online
+[   95.562270] __dl_bw_capacity() mask=0,2,5 cap=1916
+[   95.567091] dl_bw_cpus() cpu=2 rd->span=0,2,5 cpu_active_mask=0,2-5 cpumask_weight(rd->span)=3
+[   95.575735] dl_bw_manage: cpu=2 cap=892 fair_server_bw=52428 total_bw=157284 dl_bw_cpus=3 type=DYN span=0,2,5
+
+# echo 0 > /sys/devices/system/cpu/cpu5/online
+[  100.573131] __dl_bw_capacity() mask=0,5 cap=892
+[  100.577713] dl_bw_cpus() cpu=5 rd->span=0,5 cpu_active_mask=0,3-5 cpumask_weight(rd->span)=2
+[  100.586186] dl_bw_manage: cpu=5 cap=446 fair_server_bw=52428 total_bw=104856 dl_bw_cpus=2 type=DYN span=0,5
+
+# echo 0 > /sys/devices/system/cpu/cpu3/online
+[  110.232755] __dl_bw_capacity() mask=1-5 cap=892
+[  110.237333] dl_bw_cpus() cpu=6 rd->span=1-5 cpu_active_mask=0,3-4 cpus=2
+[  110.244064] dl_bw_manage: cpu=3 cap=446 fair_server_bw=52428 total_bw=419428 dl_bw_cpus=2 type=DEF span=1-5
+
+
+# echo 0 > /sys/devices/system/cpu/cpu4/online
+[  175.870273] __dl_bw_capacity() mask=1-5 cap=446
+[  175.874850] dl_bw_cpus() cpu=6 rd->span=1-5 cpu_active_mask=0,4 cpus=1
+[  175.881407] dl_bw_manage: cpu=4 cap=0 fair_server_bw=52428 total_bw=367000 dl_bw_cpus=1 type=DEF span=1-5
+                                   ^^^^^                                                            ^^^^^^^^
+                                   w/o/ cpu4 cap is 0!                                              cpu0 is not part of it                                                                                                     
+...
+[  175.897600] dl_bw_manage() cpu=4 cap=0 overflow=1 return=-16
+                                          ^^^^^^^^^^ -EBUSY
+                                          
+-bash: echo: write error: Device or resource busy
+
+sched_cpu_deactivate()
+
+  dl_bw_deactivate(cpu)
+
+    dl_bw_manage(dl_bw_req_deactivate, cpu, 0);
+
+      return overflow ? -EBUSY : 0;
+
+Looks like in DEF there is no CPU capacity left but we still have 1 DLN
+task with a bandwidth requirement of 307.
 
