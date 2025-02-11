@@ -1,211 +1,141 @@
-Return-Path: <cgroups+bounces-6504-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6505-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B67F6A309EB
-	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2025 12:30:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58270A30D70
+	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2025 14:57:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B57BB7A119D
-	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2025 11:29:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10B3A3A3F74
+	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2025 13:57:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 793A21F8AC0;
-	Tue, 11 Feb 2025 11:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6741A24BCFD;
+	Tue, 11 Feb 2025 13:57:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WzvSrZNn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB5C26BD9A;
-	Tue, 11 Feb 2025 11:29:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 409372441B0
+	for <cgroups@vger.kernel.org>; Tue, 11 Feb 2025 13:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739273395; cv=none; b=dY5PlnfEg2kb7aJjaDoOP/Pwb21z3DF7JAqpFiF0E+IBrd6e2EOr5W4W6I+SfAsxAUXN+SvfxM7Tinb5NES7F8mVOZOi3ACpHcb2wRrBStBtc7/Mkgn5pYDWhxo+v6eKjEvVkjR3Ka3xjqjTedVff4TOOLpex5owMzccd/0Sacg=
+	t=1739282235; cv=none; b=sAaThD4R6jdTzIV9wp3F5avdpB77gkNYsehc0Qh+c8Ssnb8vnEJ+KZJ8pHyqrIfwaAtzESZGBfjFI5pKo5z5hPP5Z1BGvISWhFna8LhNoUs/6vH0q2w6lseBcxp+L+DPGNhC4pICzfMWjkAJQRGL1yBhDrMTSiAqUVofcjr/YpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739273395; c=relaxed/simple;
-	bh=FLOu/pI7z3ZO2PxU3I4TJKJo2y1oKoRHc8iwNZcTOJk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kHyKcOc3vuhHa3mNHq7p9HDC0LktffzRBIWJ1ZwLpoUJv6STqOjyO83WErY0hEBKOpdnBzH7Vuqt7XZ9XJL8bKSgY1EloisBTcqPz9ZDcdP8YMPtfInnRw8snGAcn2a3PLa/EdYnXtaceDSVfQ6WZWL5GsieKI3fQm9bp0PabmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YsfNd58NFz4f3kvm;
-	Tue, 11 Feb 2025 19:29:21 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 648701A0D28;
-	Tue, 11 Feb 2025 19:29:44 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP4 (Coremail) with SMTP id gCh0CgDnSF2mNKtnDpMpDg--.53537S2;
-	Tue, 11 Feb 2025 19:29:44 +0800 (CST)
-Message-ID: <10f34835-b604-4fbe-8bca-8f7d762d4419@huaweicloud.com>
-Date: Tue, 11 Feb 2025 19:29:42 +0800
+	s=arc-20240116; t=1739282235; c=relaxed/simple;
+	bh=42SkK/uGcPe3+X1XXQFJq5L9WLaDP9DsrXhpMr8UjQs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BXghYM5dFskCa/tYgXUBrnbsLJ6KEO6sW5APDDSzoL4ZRS1WR0DiQjv/NjLdwNzRJIlhh+QMuIbvUloI9d0l874RPKaxf8xtwfSpDRTnyPVoB0oGLUKgz+hws1ktlfJM6xZbosLfcKjC2eeb3KNjHXKp5s8ys2oMU1+JLjXPEM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WzvSrZNn; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5dea50ee572so850909a12.1
+        for <cgroups@vger.kernel.org>; Tue, 11 Feb 2025 05:57:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1739282231; x=1739887031; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nc2Fbe5I0sSQTKOy2ZPiGOXHCFIjUyJawnB44aSJiHk=;
+        b=WzvSrZNn1GiR5/VEcF2TfggW/UApynWXIGK+sMv+D7KY79IhJqcH9XFgDJC41CHk4B
+         R/eoF3Oz0MStjrRPbi0yBVrlMuSfLJ09C5N3gY0TxtMaetUB7rOZ3/wRIYrvDQ7GxrXA
+         /icrdFLtEVDqpBqKlRxhl+7vrmYLh40eU7tXUn6N9yjwkEmtJxm8tlcepbaIWzeSAzdn
+         WU7uPn0eSuM8HB7GJTUL5IHPY5uHds1a/Qs6EiHup3dR9En2XsI8V+S807MpEuWmCV+Q
+         zwqYAsPY77GWnWRl/+uFdEJguzuGR+9nZ/emqDJz5ChP2qwgJWhi0vWXM624WjE25T6m
+         2RWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739282231; x=1739887031;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nc2Fbe5I0sSQTKOy2ZPiGOXHCFIjUyJawnB44aSJiHk=;
+        b=n9Cwh5YRopFKVAjxCYHEoIU6FPjF1oRyjhj59Cla5pQ5Usf7ynDdFu1atG4WTaIf3B
+         soRx4oE8m6NIpjUR+5HCjVSTHGlT5v8wXD73LngESE+a6s7SWxbQOyjGzChCQwJLln4t
+         Bm7FJxdKzmp/cIokLAY1BdqJbtLgu2WDS35zC8z3MrCQa3iRBDOa1yvPhjUg23LnjtBF
+         MwmOz82u/r0gyaOv6oS5skmR1dfA1eNU0WY5OhkvD3oJjJ+1NGwG/2JV2FbX6I6AGkSg
+         Ui228JFhe7N7mE/gIm51SXVkOVQtqgaWxcDOx0QgIdG897uOWD60OsnNJ59OXytfroap
+         lL6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVj8b5DVLiZSE8rrfwJU/7V7QZyvpYQaATHDiovKnDrVcWUDvQbpNf3kJQ1N9NT8PA5BuWLqtNk@vger.kernel.org
+X-Gm-Message-State: AOJu0YzP09nTm+4958KOL3JAvjekZeQnsuwlNSUcAQZv5BDapObIeEBG
+	+mJlkqdRloa/76dhDo6mCjIwl2vK9yjlarh6r8DqU9aF9ewoBClb23RrAli2/dA=
+X-Gm-Gg: ASbGncudVAELU+lKCk+NGl0Stq7DqeAwrl+wDECvDm3aRPGfSlWBr/Km261u9XgBfao
+	un2t1IOqy7XuGX44ULJhPsMLUe4fYj33aEcjcD5AZ36/DfS3Cgnd08jwKqW7olTG2835XdCxjG+
+	20JBWka4AO73cb5Sb+BBRWqZ59D7SCiNTQUQOzj1T34ZLzzrMgHIhYyNjGr3/iJrX5/bU4sHuYx
+	FA8FYeG6C6CIADxOnSoRqjgxmE/sy0elKFNmS4fvEVt7rfpR2aPQxd8GS68KrFXTTtoD5DYBFs1
+	BXG3PK+r5OtTBgUKJg==
+X-Google-Smtp-Source: AGHT+IHOOumXj+rsEvDgGNfsD2H40sBsAx3FPNbbQOsVuk+Cv32qwjEvbWYK7p7fjHfp7cQhzJxRyw==
+X-Received: by 2002:a05:6402:321d:b0:5dc:1ec6:12bc with SMTP id 4fb4d7f45d1cf-5de45087800mr21024023a12.28.1739282231515;
+        Tue, 11 Feb 2025 05:57:11 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5de5941e014sm7157341a12.50.2025.02.11.05.57.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2025 05:57:11 -0800 (PST)
+Date: Tue, 11 Feb 2025 14:57:09 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Chen Linxuan <chenlinxuan@uniontech.com>
+Cc: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
+	Jens Axboe <axboe@kernel.dk>, Wen Tao <wentao@uniontech.com>, cgroups@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-cgroup: validate alloc/free function pairs at the
+ start of blkcg_policy_register()
+Message-ID: <i6owvzwb4pjg27tex5utdzcoyeeawqejegvc2byz6tnfn2flmh@2ggun5qyokvs>
+References: <EE1CE61DFCF2C98F+20250210031827.25557-1-chenlinxuan@uniontech.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] memcg: avoid dead loop when setting memory.max
-To: Michal Hocko <mhocko@suse.com>
-Cc: hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, akpm@linux-foundation.org, cgroups@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, chenridong@huawei.com,
- wangweiyang2@huawei.com
-References: <20250211081819.33307-1-chenridong@huaweicloud.com>
- <Z6sSOC0YWWZLMhtO@tiehlicka>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <Z6sSOC0YWWZLMhtO@tiehlicka>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgDnSF2mNKtnDpMpDg--.53537S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWr48Kr1fAry7CF4kJw4ruFg_yoW7Jr1UpF
-	93X3WUKF48Jr4kXrsFvF10gr15Aan7CFy7JryxWr1fZasxG3Wjyr1UKw45XryDJr1Fvr4S
-	vF1qqw1xtw4qyaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="dllvaf3vwm2keh2z"
+Content-Disposition: inline
+In-Reply-To: <EE1CE61DFCF2C98F+20250210031827.25557-1-chenlinxuan@uniontech.com>
 
 
+--dllvaf3vwm2keh2z
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] blk-cgroup: validate alloc/free function pairs at the
+ start of blkcg_policy_register()
+MIME-Version: 1.0
 
-On 2025/2/11 17:02, Michal Hocko wrote:
-> On Tue 11-02-25 08:18:19, Chen Ridong wrote:
->> From: Chen Ridong <chenridong@huawei.com>
->>
->> A softlockup issue was found with stress test:
->>  watchdog: BUG: soft lockup - CPU#27 stuck for 26s! [migration/27:181]
->>  CPU: 27 UID: 0 PID: 181 Comm: migration/27 6.14.0-rc2-next-20250210 #1
->>  Stopper: multi_cpu_stop <- stop_machine_from_inactive_cpu
->>  RIP: 0010:stop_machine_yield+0x2/0x10
->>  RSP: 0000:ff4a0dcecd19be48 EFLAGS: 00000246
->>  RAX: ffffffff89c0108f RBX: ff4a0dcec03afe44 RCX: 0000000000000000
->>  RDX: ff1cdaaf6eba5808 RSI: 0000000000000282 RDI: ff1cda80c1775a40
->>  RBP: 0000000000000001 R08: 00000011620096c6 R09: 7fffffffffffffff
->>  R10: 0000000000000001 R11: 0000000000000100 R12: ff1cda80c1775a40
->>  R13: 0000000000000000 R14: 0000000000000001 R15: ff4a0dcec03afe20
->>  FS:  0000000000000000(0000) GS:ff1cdaaf6eb80000(0000)
->>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>  CR2: 0000000000000000 CR3: 00000025e2c2a001 CR4: 0000000000773ef0
->>  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>  PKRU: 55555554
->>  Call Trace:
->>   multi_cpu_stop+0x8f/0x100
->>   cpu_stopper_thread+0x90/0x140
->>   smpboot_thread_fn+0xad/0x150
->>   kthread+0xc2/0x100
->>   ret_from_fork+0x2d/0x50
->>
->> The stress test involves CPU hotplug operations and memory control group
->> (memcg) operations. The scenario can be described as follows:
->>
->>  echo xx > memory.max 	cache_ap_online			oom_reaper
->>  (CPU23)						(CPU50)
->>  xx < usage		stop_machine_from_inactive_cpu
->>  for(;;)			// all active cpus
->>  trigger OOM		queue_stop_cpus_work
->>  // waiting oom_reaper
->>  			multi_cpu_stop(migration/xx)
->>  			// sync all active cpus ack
->>  			// waiting cpu23 ack
->>  			// CPU50 loops in multi_cpu_stop
->>  							waiting cpu50
->>
->> Detailed explanation:
->> 1. When the usage is larger than xx, an OOM may be triggered. If the
->>    process does not handle with ths kill signal immediately, it will loop
->>    in the memory_max_write.
-> 
-> Do I get it right that the issue is that mem_cgroup_out_of_memory which
-> doesn't have any cond_resched so it cannot yield to stopped kthread?
-> oom itself cannot make any progress because the oom victim is blocked as
-> per 3).
-> 
+Hello Linxuan.
 
-Yes, the same task was evaluated as the victim, which is blocked as
-described in point 3). Consequently, the operation returned oc->chosen =
-(void *)-1UL in the oom_evaluate_task function, and no cond_resched()
-was invoked.
+On Mon, Feb 10, 2025 at 11:18:27AM +0800, Chen Linxuan <chenlinxuan@unionte=
+ch.com> wrote:
+> Move the validation check for cpd/pd_alloc_fn and cpd/pd_free_fn function
+> pairs to the start of blkcg_policy_register(). This ensures we immediately
+> return -EINVAL if the function pairs are not correctly provided, rather
+> than returning -ENOSPC after locking and unlocking mutexes unnecessarily.
+>=20
+> Co-authored-by: Wen Tao <wentao@uniontech.com>
+> Signed-off-by: Wen Tao <wentao@uniontech.com>
+> Signed-off-by: Chen Linxuan <chenlinxuan@uniontech.com>
 
-for(;;) {
-...
-mem_cgroup_out_of_memory
-  out_of_memory
-    select_bad_process
-      oom_evaluate_task
-	oc->chosen = (void *)-1UL;
-  return !!oc->chosen;
-}
+If you consider those locks contention a problem (policy registrations
+are "only" boot time, possibly module load time), then it's good to refer
 
->> 2. When cache_ap_online is triggered, the multi_cpu_stop is queued to the
->>    active cpus. Within the multi_cpu_stop function,  it attempts to
->>    synchronize the CPU states. However, the CPU23 didn't acknowledge
->>    because it is stuck in a loop within the for(;;).
->> 3. The oom_reaper process is blocked because CPU50 is in a loop, waiting
->>    for CPU23 to acknowledge the synchronization request.
->> 4. Finally, it formed cyclic dependency and lead to softlockup and dead
->>    loop.
->>
->> To fix this issue, add cond_resched() in the memory_max_write, so that
->> it will not block migration task.
-> 
-> My first question was why this is not a problem in other
-> allocation/charge paths but this one is different because it doesn't
-> ever try to reclaim after MAX_RECLAIM_RETRIES reclaim rounds.
-> We do have scheduling points in the reclaim path which are no longer
-> triggered after we hit oom situation in this case.
-> 
-> I was thinking about having a guranteed cond_resched when oom killer
-> fails to find a victim but it seems the simplest fix for this particular
-> corner case is to add cond_resched as you did here. Hopefully we will
-> get rid of it very soon when !PREEMPT is removed.
-> 
-> Btw. this could be a problem on a single CPU machine even without CPU
-> hotplug as the oom repear won't run until memory_max_write yields the
-> cpu.
-> 
->> Fixes: b6e6edcfa405 ("mm: memcontrol: reclaim and OOM kill when shrinking memory.max below usage")
->> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> 
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> 
+Fixes: e84010732225c ("blkcg: add sanity check for blkcg policy operations")
 
-Thank you very much.
+> ---
+>  block/blk-cgroup.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 
-Best regards,
-Ridong
+But it's correct,
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
->> ---
->>  mm/memcontrol.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 8d21c1a44220..16f3bdbd37d8 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -4213,6 +4213,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
->>  		memcg_memory_event(memcg, MEMCG_OOM);
->>  		if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0))
->>  			break;
->> +		cond_resched();
->>  	}
->>  
->>  	memcg_wb_domain_size_changed(memcg);
->> -- 
->> 2.34.1
-> 
+--dllvaf3vwm2keh2z
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ6tXMwAKCRAt3Wney77B
+Sc0OAPsFfyTtfA9SZMEqJj2m4PnsUJUwkX/Vql/KV067dSlbYAEA/XZ7eLxelz4n
+RI4kpp42WYSfhwBMT9/50Ya9coA9eQQ=
+=IM8w
+-----END PGP SIGNATURE-----
+
+--dllvaf3vwm2keh2z--
 
