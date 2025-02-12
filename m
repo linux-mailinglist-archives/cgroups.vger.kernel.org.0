@@ -1,175 +1,154 @@
-Return-Path: <cgroups+bounces-6516-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6517-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0958A3215C
-	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 09:40:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50F8DA32196
+	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 09:57:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76D4E188670E
-	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 08:40:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A311160193
+	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 08:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1984020551A;
-	Wed, 12 Feb 2025 08:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7134E205ACE;
+	Wed, 12 Feb 2025 08:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aEzxNjKi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336F7204C00
-	for <cgroups@vger.kernel.org>; Wed, 12 Feb 2025 08:40:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A23271828
+	for <cgroups@vger.kernel.org>; Wed, 12 Feb 2025 08:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739349629; cv=none; b=GxSCtNfb5SxYnPmayDvsqr0sZztTkvRxmF4fidDoCKZMpS12NGE78lj+Y8bp7LRPSKLznYyq6I1LSEpP/JznoPlYPY1CBsZ/MKUnuKG3bDlHzto4WxAeO/b1smgKT5TiyvVeeuM74o6eKS52q5NyaBTFS452Vb6Sjml8Kg2OBuk=
+	t=1739350665; cv=none; b=m2XI4i1v0WfM3mGsgT4d9RX8cIA2oGif63Zz0P5St1qlZMOQODy01Kn/183oKyaNEOuwvcD7/3gKyEtJRpRpq2nsrosA3LY+dnplZf1FB7VagYHyp3sN30n70pt74M5GJMmdDLWFqhXHo4wk3Gr+EeqCTKlg5SDVMbNUm/gStSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739349629; c=relaxed/simple;
-	bh=cBD0k2U3YfYupM/n3qgSfSy19TWNpwagEKBNxf6CqiY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MQ2JBPGR5halwg3dfI3SyCnz+D5tGFF7F6nVDwJbPyh/gtIGQq45aV+1WxXpX/hyjTF9sur0JwRt811TyzKdWp5XHwTBTqtM8UllFJ7pmyfqAiipYBtVkE+b80Xp7KRlf/ojWENDYv9ClaNAB9yGrV+7CYMZgKrbR4KVHuzN0Dw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lankhorst.se; spf=none smtp.mailfrom=lankhorst.se; arc=none smtp.client-ip=141.105.120.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lankhorst.se
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=lankhorst.se
-Message-ID: <0ea22cc5-18c2-4de4-b06e-533ad4fae20f@lankhorst.se>
-Date: Wed, 12 Feb 2025 09:40:17 +0100
+	s=arc-20240116; t=1739350665; c=relaxed/simple;
+	bh=XV7IVblDWD8KDdpkj7qGjSLygK5e9tiLpzFQ3w2uR8E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AK+r0uyrh9Glc41HHkC7v3hx3ROUQUXmKvHSUCgMTCqLkwgob+SOF+sQA1U1D79wq1MY5rCwAV/gzmxbFqzxBIuwLYKxFKesqpSbEuUsn1FwbjfG2j6/Fxufdr0umXkvodsCp+tcWZWgQ/J2sLsT4qnCbeeth2jfy9MHkxb4Flk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=aEzxNjKi; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5deb956aa5eso117192a12.2
+        for <cgroups@vger.kernel.org>; Wed, 12 Feb 2025 00:57:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1739350660; x=1739955460; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+IuI5zXvDpkkZzSpr5OZmFLbRF4AuQK1DqlOW4Frc34=;
+        b=aEzxNjKiWWkWPFAE/ZCN5+4EGzFkvwtClDt36n0pzEHo/fVTs0e/EE/+LoU7IsLshh
+         pk9mlThKyEJoQ8weA2AtkF9gwG1IxsgF9Re3V/jasOWSlgqbyl6PtjeaWnRTtWjBc7GQ
+         BpNenyNzUGdInTKzwGOimakpZEihofAys+93Qx4fYPOYGqWT0dYV9h2h2WTXikdipz8h
+         u2k+jnedQ/qD9HBSWLECbxbtOoDDJ4sg7TLhWrR/09xEjVIO/trHcOkZ93zF5WB0zcIL
+         i2rU8CQqe08avbdd8EcLtZNZSacvfvIk+vtMqIqteTh8P6/7U7WHcATztx9BmuwFMdQD
+         JtYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739350660; x=1739955460;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+IuI5zXvDpkkZzSpr5OZmFLbRF4AuQK1DqlOW4Frc34=;
+        b=Q6mI00FtiQacpMoq3bNA0WMCrP99gWWildUfhTH4Is0KaQLCEH+zms/04J3g/FDRfP
+         X4iQbOPId03ljazLhDpr19T0r8phP5OuZSgp5sln0u8tIMXs/NE5naN88XWcYLIj+Cx1
+         ObjNyQxpwQHjXIM+FHgODIBRxTgqSe2i3A4z/eLJ6re3KTsrhaE0vnx6n8E9uzlkf1K5
+         +KzQmJkfZIu4LRIl30TmBPH/HjDmhhOtl/nQlVswealHP4bblZeCorEyc+TXCpEmNoZ7
+         WZcS5sCR5Y5pe2M+zBA2rLMnRm/N2NVVyJe0HqmmVNo36SqaSOwPOx4CntxvdLT2mNmL
+         xS0g==
+X-Forwarded-Encrypted: i=1; AJvYcCXwaf1M9+qAuc+VhudEX7pfJF9sR4vP9Of8+MsLOmTgZXwvkLwrWS6DzzcIaR1MoKHvAW5rPX/O@vger.kernel.org
+X-Gm-Message-State: AOJu0YykI5ln+WkiAJ9FIO9iWDWYVsVLyaVJeISTfTUIh0wbaFkbNAWH
+	NUn/3p3OHf62mGZBquYPQ8f6M27zW3SJdCGKgwnU47fEL2Fg67oqGssahjPA9AM=
+X-Gm-Gg: ASbGncsqpfdK/FsunvCGyp3JXhvR+hwi4Y399tPFPaTVaMsLhub0QQEN2myURKr8qZH
+	BCHpeIMEYRaG1gxCzgQogKFfQeR0gjjpTa931UdI0q+Uo8ZxkWewrQej/4HeZiyz3D8uxIJD9EN
+	Tj9b++oCCmIV5WDWU+/hd/mfqwem3Mv3XiST7ycahHjoqXbbqJwIf6E2h0AeAMDb+AJT9ICxO9T
+	EuctePo5zjovQBpNg3U85nvSLH4gJcBO64wYIVSlJ7q2+6pj2iQRz35g/O8FAbSbbMrrvITikfP
+	x2MP2hk1xey+dgLqdxnC2duiDohj
+X-Google-Smtp-Source: AGHT+IHAlI+h0f9gQ05Wk4VO5y5MPCyT960vP5L1X6nmRum7jNTTiYbDKSPELSyxpwXSfS409hjybw==
+X-Received: by 2002:a05:6402:40c1:b0:5dc:ea7e:8c56 with SMTP id 4fb4d7f45d1cf-5deadddd4e6mr4918933a12.22.1739350660368;
+        Wed, 12 Feb 2025 00:57:40 -0800 (PST)
+Received: from localhost (109-81-84-135.rct.o2.cz. [109.81.84.135])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-ab7d062771csm422764866b.29.2025.02.12.00.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Feb 2025 00:57:40 -0800 (PST)
+Date: Wed, 12 Feb 2025 09:57:39 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, yosryahmed@google.com,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, davidf@vimeo.com, vbabka@suse.cz,
+	mkoutny@suse.com, paulmck@kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	chenridong@huawei.com, wangweiyang2@huawei.com
+Subject: Re: [PATCH] mm/oom_kill: revert watchdog reset in global OOM process
+Message-ID: <Z6xig5sLNpFVFU2T@tiehlicka>
+References: <20250212025707.67009-1-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] cgroup/dmem: Don't open-code
- css_for_each_descendant_pre
-To: Friedrich Vock <friedrich.vock@gmx.de>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Simona Vetter <simona.vetter@ffwll.ch>,
- David Airlie <airlied@gmail.com>
-Cc: Maxime Ripard <mripard@kernel.org>, dri-devel@lists.freedesktop.org,
- cgroups@vger.kernel.org
-References: <20250114153912.278909-1-friedrich.vock@gmx.de>
- <20250127152754.21325-1-friedrich.vock@gmx.de>
-Content-Language: en-US
-From: Maarten Lankhorst <dev@lankhorst.se>
-In-Reply-To: <20250127152754.21325-1-friedrich.vock@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250212025707.67009-1-chenridong@huaweicloud.com>
 
-Hey,
-
-I was hoping someone else would look at it, but it seems not.
-
-This patch appears to work on my system, it would be helpful if I could 
-get the exact sequence failing to write a reproducer, but I don't want 
-to hold up a bugfix because of it.
-
-Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-
-Should I send this through the drm-misc-fixes tree?
-
-Cheers,
-~Maarten
-
-On 2025-01-27 16:27, Friedrich Vock wrote:
-> The current implementation has a bug: If the current css doesn't
-> contain any pool that is a descendant of the "pool" (i.e. when
-> found_descendant == false), then "pool" will point to some unrelated
-> pool. If the current css has a child, we'll overwrite parent_pool with
-> this unrelated pool on the next iteration.
+On Wed 12-02-25 02:57:07, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
 > 
-> Since we can just check whether a pool refers to the same region to
-> determine whether or not it's related, all the additional pool tracking
-> is unnecessary, so just switch to using css_for_each_descendant_pre for
-> traversal.
+> Unlike memcg OOM, which is relatively common, global OOM events are rare
+> and typically indicate that the entire system is under severe memory
+> pressure. The commit ade81479c7dd ("memcg: fix soft lockup in the OOM
+> process") added the touch_softlockup_watchdog in the global OOM handler to
+> suppess the soft lockup issues. However, while this change can suppress
+> soft lockup warnings, it does not address RCU stalls, which can still be
+> detected and may cause unnecessary disturbances. Simply remove the
+> modification from the global OOM handler.
 > 
-> Fixes: b168ed458 ("kernel/cgroup: Add "dmem" memory accounting cgroup")
-> Signed-off-by: Friedrich Vock <friedrich.vock@gmx.de>
+> Fixes: ade81479c7dd ("memcg: fix soft lockup in the OOM process")
+
+But this is not really fixing anything, is it? While this doesn't
+address a potential RCU stall it doesn't address any actual problem.
+So why do we want to do this?
+
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
 > ---
+>  mm/oom_kill.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 > 
-> v2 (Michal): Switch to the more idiomatic css_for_each_descendant_pre
-> instead of fixing the open-coded version
-> 
-> ---
->   kernel/cgroup/dmem.c | 50 ++++++++++----------------------------------
->   1 file changed, 11 insertions(+), 39 deletions(-)
-> 
-> diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-> index 52736ef0ccf2..77d9bb1c147f 100644
-> --- a/kernel/cgroup/dmem.c
-> +++ b/kernel/cgroup/dmem.c
-> @@ -220,60 +220,32 @@ dmem_cgroup_calculate_protection(struct dmem_cgroup_pool_state *limit_pool,
->   				 struct dmem_cgroup_pool_state *test_pool)
->   {
->   	struct page_counter *climit;
-> -	struct cgroup_subsys_state *css, *next_css;
-> +	struct cgroup_subsys_state *css;
->   	struct dmemcg_state *dmemcg_iter;
-> -	struct dmem_cgroup_pool_state *pool, *parent_pool;
-> -	bool found_descendant;
-> +	struct dmem_cgroup_pool_state *pool, *found_pool;
-> 
->   	climit = &limit_pool->cnt;
-> 
->   	rcu_read_lock();
-> -	parent_pool = pool = limit_pool;
-> -	css = &limit_pool->cs->css;
-> 
-> -	/*
-> -	 * This logic is roughly equivalent to css_foreach_descendant_pre,
-> -	 * except we also track the parent pool to find out which pool we need
-> -	 * to calculate protection values for.
-> -	 *
-> -	 * We can stop the traversal once we find test_pool among the
-> -	 * descendants since we don't really care about any others.
-> -	 */
-> -	while (pool != test_pool) {
-> -		next_css = css_next_child(NULL, css);
-> -		if (next_css) {
-> -			parent_pool = pool;
-> -		} else {
-> -			while (css != &limit_pool->cs->css) {
-> -				next_css = css_next_child(css, css->parent);
-> -				if (next_css)
-> -					break;
-> -				css = css->parent;
-> -				parent_pool = pool_parent(parent_pool);
-> -			}
-> -			/*
-> -			 * We can only hit this when test_pool is not a
-> -			 * descendant of limit_pool.
-> -			 */
-> -			if (WARN_ON_ONCE(css == &limit_pool->cs->css))
-> -				break;
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 25923cfec9c6..2d8b27604ef8 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -44,7 +44,6 @@
+>  #include <linux/init.h>
+>  #include <linux/mmu_notifier.h>
+>  #include <linux/cred.h>
+> -#include <linux/nmi.h>
+>  
+>  #include <asm/tlb.h>
+>  #include "internal.h"
+> @@ -431,15 +430,10 @@ static void dump_tasks(struct oom_control *oc)
+>  		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
+>  	else {
+>  		struct task_struct *p;
+> -		int i = 0;
+>  
+>  		rcu_read_lock();
+> -		for_each_process(p) {
+> -			/* Avoid potential softlockup warning */
+> -			if ((++i & 1023) == 0)
+> -				touch_softlockup_watchdog();
+> +		for_each_process(p)
+>  			dump_task(p, oc);
 > -		}
-> -		css = next_css;
-> -
-> -		found_descendant = false;
-> +	css_for_each_descendant_pre(css, &limit_pool->cs->css) {
->   		dmemcg_iter = container_of(css, struct dmemcg_state, css);
-> +		found_pool = NULL;
-> 
->   		list_for_each_entry_rcu(pool, &dmemcg_iter->pools, css_node) {
-> -			if (pool_parent(pool) == parent_pool) {
-> -				found_descendant = true;
-> +			if (pool->region == limit_pool->region) {
-> +				found_pool = pool;
->   				break;
->   			}
->   		}
-> -		if (!found_descendant)
-> +		if (!found_pool)
->   			continue;
-> 
->   		page_counter_calculate_protection(
-> -			climit, &pool->cnt, true);
-> +			climit, &found_pool->cnt, true);
-> +
-> +		if (found_pool == test_pool)
-> +			break;
->   	}
->   	rcu_read_unlock();
->   }
-> --
-> 2.48.0
-> 
+>  		rcu_read_unlock();
+>  	}
+>  }
+> -- 
+> 2.34.1
 
+-- 
+Michal Hocko
+SUSE Labs
 
