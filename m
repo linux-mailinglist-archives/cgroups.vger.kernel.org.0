@@ -1,113 +1,175 @@
-Return-Path: <cgroups+bounces-6515-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6516-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D055A32124
-	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 09:32:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0958A3215C
+	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 09:40:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4BA53A1F4F
-	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 08:32:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76D4E188670E
+	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 08:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1327204F81;
-	Wed, 12 Feb 2025 08:32:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1984020551A;
+	Wed, 12 Feb 2025 08:40:30 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3D91DED5F;
-	Wed, 12 Feb 2025 08:32:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336F7204C00
+	for <cgroups@vger.kernel.org>; Wed, 12 Feb 2025 08:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739349152; cv=none; b=grSQeJZvJsLTGgbzBGcQrX47sWt33SZu0zfVBpgZcbNH8bnhQSyA/epFXlyJbUTvI0EuNiin2GnZmucWthaAY6Mkltzkxw2UYnjPSDqBmu9cEB8KoGAz/DCdDwN7vkW1h1JCkmcV7DyfNH01eSRrpBPnimSREQGOOL2aiDaoXEA=
+	t=1739349629; cv=none; b=GxSCtNfb5SxYnPmayDvsqr0sZztTkvRxmF4fidDoCKZMpS12NGE78lj+Y8bp7LRPSKLznYyq6I1LSEpP/JznoPlYPY1CBsZ/MKUnuKG3bDlHzto4WxAeO/b1smgKT5TiyvVeeuM74o6eKS52q5NyaBTFS452Vb6Sjml8Kg2OBuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739349152; c=relaxed/simple;
-	bh=M6WO1IkI0Q7T3bIAJj97I6HVMTsXJ9vlKr3NrrCq6kM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q4GXorLIVfx9U7ey0u28jPyJ0BD76M6t5yN4izdOC8El/0eTd4mB0tSRrQz7FJtTEqZ6bi3OxqY9AwNMDRADaDFZwt70kT/WYbrk0C0ziEyf8CU1yjPyllhdT+HOd7/6XFkQgJaB5HMSLwz1ZZNxGU3GyXVv9r3qn0caavdXy6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost.localdomain (unknown [124.16.141.245])
-	by APP-05 (Coremail) with SMTP id zQCowAAnkMmUXKxnuhRoDA--.44357S2;
-	Wed, 12 Feb 2025 16:32:22 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: tj@kernel.org,
-	josef@toxicpanda.com,
-	axboe@kernel.dk
-Cc: cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH] block: Check blkg_to_lat return value to avoid NULL dereference
-Date: Wed, 12 Feb 2025 16:32:03 +0800
-Message-ID: <20250212083203.1030-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+	s=arc-20240116; t=1739349629; c=relaxed/simple;
+	bh=cBD0k2U3YfYupM/n3qgSfSy19TWNpwagEKBNxf6CqiY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MQ2JBPGR5halwg3dfI3SyCnz+D5tGFF7F6nVDwJbPyh/gtIGQq45aV+1WxXpX/hyjTF9sur0JwRt811TyzKdWp5XHwTBTqtM8UllFJ7pmyfqAiipYBtVkE+b80Xp7KRlf/ojWENDYv9ClaNAB9yGrV+7CYMZgKrbR4KVHuzN0Dw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lankhorst.se; spf=none smtp.mailfrom=lankhorst.se; arc=none smtp.client-ip=141.105.120.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lankhorst.se
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=lankhorst.se
+Message-ID: <0ea22cc5-18c2-4de4-b06e-533ad4fae20f@lankhorst.se>
+Date: Wed, 12 Feb 2025 09:40:17 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowAAnkMmUXKxnuhRoDA--.44357S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZrWDZrykZry8JF4DXF1xGrg_yoW8XF1rpa
-	18urZFvay5Gw47XF18Ka1rCryrCr4UKFyUCFZ5Aa4FkF1IgF4rtF10vF10yFWrAFWUCrs8
-	Jr1UtFZYvr45C37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
-	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v26r12
-	6r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-	IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjMqcUUUUU
-	U==
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiDAULA2esWj4JCwAAss
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] cgroup/dmem: Don't open-code
+ css_for_each_descendant_pre
+To: Friedrich Vock <friedrich.vock@gmx.de>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Simona Vetter <simona.vetter@ffwll.ch>,
+ David Airlie <airlied@gmail.com>
+Cc: Maxime Ripard <mripard@kernel.org>, dri-devel@lists.freedesktop.org,
+ cgroups@vger.kernel.org
+References: <20250114153912.278909-1-friedrich.vock@gmx.de>
+ <20250127152754.21325-1-friedrich.vock@gmx.de>
+Content-Language: en-US
+From: Maarten Lankhorst <dev@lankhorst.se>
+In-Reply-To: <20250127152754.21325-1-friedrich.vock@gmx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The function blkg_to_lat() may return NULL if the blkg is not associated
-with an iolatency group. In iolatency_set_min_lat_nsec() and
-iolatency_pd_init(), the return values are not checked, leading to
-potential NULL pointer dereferences.
+Hey,
 
-This patch adds checks for the return values of blkg_to_lat and let it
-returns early if it is NULL, preventing the NULL pointer dereference.
+I was hoping someone else would look at it, but it seems not.
 
-Fixes: d70675121546 ("block: introduce blk-iolatency io controller")
-Cc: stable@vger.kernel.org # 4.19+
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
- block/blk-iolatency.c | 4 ++++
- 1 file changed, 4 insertions(+)
+This patch appears to work on my system, it would be helpful if I could 
+get the exact sequence failing to write a reproducer, but I don't want 
+to hold up a bugfix because of it.
 
-diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
-index ebb522788d97..398f0a1747c4 100644
---- a/block/blk-iolatency.c
-+++ b/block/blk-iolatency.c
-@@ -787,6 +787,8 @@ static int blk_iolatency_init(struct gendisk *disk)
- static void iolatency_set_min_lat_nsec(struct blkcg_gq *blkg, u64 val)
- {
- 	struct iolatency_grp *iolat = blkg_to_lat(blkg);
-+	if (!iolat)
-+		return;
- 	struct blk_iolatency *blkiolat = iolat->blkiolat;
- 	u64 oldval = iolat->min_lat_nsec;
- 
-@@ -1013,6 +1015,8 @@ static void iolatency_pd_init(struct blkg_policy_data *pd)
- 	 */
- 	if (blkg->parent && blkg_to_pd(blkg->parent, &blkcg_policy_iolatency)) {
- 		struct iolatency_grp *parent = blkg_to_lat(blkg->parent);
-+		if (!parent)
-+			return;
- 		atomic_set(&iolat->scale_cookie,
- 			   atomic_read(&parent->child_lat.scale_cookie));
- 	} else {
--- 
-2.42.0.windows.2
+Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+
+Should I send this through the drm-misc-fixes tree?
+
+Cheers,
+~Maarten
+
+On 2025-01-27 16:27, Friedrich Vock wrote:
+> The current implementation has a bug: If the current css doesn't
+> contain any pool that is a descendant of the "pool" (i.e. when
+> found_descendant == false), then "pool" will point to some unrelated
+> pool. If the current css has a child, we'll overwrite parent_pool with
+> this unrelated pool on the next iteration.
+> 
+> Since we can just check whether a pool refers to the same region to
+> determine whether or not it's related, all the additional pool tracking
+> is unnecessary, so just switch to using css_for_each_descendant_pre for
+> traversal.
+> 
+> Fixes: b168ed458 ("kernel/cgroup: Add "dmem" memory accounting cgroup")
+> Signed-off-by: Friedrich Vock <friedrich.vock@gmx.de>
+> ---
+> 
+> v2 (Michal): Switch to the more idiomatic css_for_each_descendant_pre
+> instead of fixing the open-coded version
+> 
+> ---
+>   kernel/cgroup/dmem.c | 50 ++++++++++----------------------------------
+>   1 file changed, 11 insertions(+), 39 deletions(-)
+> 
+> diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+> index 52736ef0ccf2..77d9bb1c147f 100644
+> --- a/kernel/cgroup/dmem.c
+> +++ b/kernel/cgroup/dmem.c
+> @@ -220,60 +220,32 @@ dmem_cgroup_calculate_protection(struct dmem_cgroup_pool_state *limit_pool,
+>   				 struct dmem_cgroup_pool_state *test_pool)
+>   {
+>   	struct page_counter *climit;
+> -	struct cgroup_subsys_state *css, *next_css;
+> +	struct cgroup_subsys_state *css;
+>   	struct dmemcg_state *dmemcg_iter;
+> -	struct dmem_cgroup_pool_state *pool, *parent_pool;
+> -	bool found_descendant;
+> +	struct dmem_cgroup_pool_state *pool, *found_pool;
+> 
+>   	climit = &limit_pool->cnt;
+> 
+>   	rcu_read_lock();
+> -	parent_pool = pool = limit_pool;
+> -	css = &limit_pool->cs->css;
+> 
+> -	/*
+> -	 * This logic is roughly equivalent to css_foreach_descendant_pre,
+> -	 * except we also track the parent pool to find out which pool we need
+> -	 * to calculate protection values for.
+> -	 *
+> -	 * We can stop the traversal once we find test_pool among the
+> -	 * descendants since we don't really care about any others.
+> -	 */
+> -	while (pool != test_pool) {
+> -		next_css = css_next_child(NULL, css);
+> -		if (next_css) {
+> -			parent_pool = pool;
+> -		} else {
+> -			while (css != &limit_pool->cs->css) {
+> -				next_css = css_next_child(css, css->parent);
+> -				if (next_css)
+> -					break;
+> -				css = css->parent;
+> -				parent_pool = pool_parent(parent_pool);
+> -			}
+> -			/*
+> -			 * We can only hit this when test_pool is not a
+> -			 * descendant of limit_pool.
+> -			 */
+> -			if (WARN_ON_ONCE(css == &limit_pool->cs->css))
+> -				break;
+> -		}
+> -		css = next_css;
+> -
+> -		found_descendant = false;
+> +	css_for_each_descendant_pre(css, &limit_pool->cs->css) {
+>   		dmemcg_iter = container_of(css, struct dmemcg_state, css);
+> +		found_pool = NULL;
+> 
+>   		list_for_each_entry_rcu(pool, &dmemcg_iter->pools, css_node) {
+> -			if (pool_parent(pool) == parent_pool) {
+> -				found_descendant = true;
+> +			if (pool->region == limit_pool->region) {
+> +				found_pool = pool;
+>   				break;
+>   			}
+>   		}
+> -		if (!found_descendant)
+> +		if (!found_pool)
+>   			continue;
+> 
+>   		page_counter_calculate_protection(
+> -			climit, &pool->cnt, true);
+> +			climit, &found_pool->cnt, true);
+> +
+> +		if (found_pool == test_pool)
+> +			break;
+>   	}
+>   	rcu_read_unlock();
+>   }
+> --
+> 2.48.0
+> 
 
 
