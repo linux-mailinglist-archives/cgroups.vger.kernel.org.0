@@ -1,120 +1,136 @@
-Return-Path: <cgroups+bounces-6512-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6513-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 407C6A31BF9
-	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 03:27:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E85EA31C89
+	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 04:08:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB7731661FF
-	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 02:27:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1510A3A6A69
+	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 03:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E40D1C3BEE;
-	Wed, 12 Feb 2025 02:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27581D7998;
+	Wed, 12 Feb 2025 03:08:00 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3391C2AE90;
-	Wed, 12 Feb 2025 02:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD3CC148;
+	Wed, 12 Feb 2025 03:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739327227; cv=none; b=VZ5p3mtR/q6nwzhJQhr6N7Wz4RdVf786aGruayX2G5kSo8tBPI//EKD6s4CehgxLEl32VAQR28bNyEncAowzXoht9U06dcJxenk5lcNU05uNd/H9lnP22x++bcfDVapX+qnYasqetIyP5tvHk5EoWucaPnGfLndbxiDtRQx9rbc=
+	t=1739329680; cv=none; b=o108MTNVVFD10PQjgSkZMBuL6jScGae+AtOq6YRTM+KBQ+qzBsJJEeI6C7wW1sFQdSOcsghQLut37WMStV/01AkAMTj0E5l8D7E8n0ge/dUPeWrCPZyrrjE3NztcSQqV0KDwZAxoc8/GKrmTqxpz3+mH6jkW6GvNCXXEOGB2wFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739327227; c=relaxed/simple;
-	bh=QlyyhPqk6m3sIo6BvD/9VbX1f3j/d2XmefZRXi1VrAs=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=pytDnjg+MFX/6bcxypM0qp0HHqow40fdNTyhCjBrOc6s9RFRDuQcSOs6jb79YoHOO/eGXuApFMblbClGTeR7OD1TDJTO5gI5koI4O+n9alQcwFHzomkJx4mtssKDdKPqd8cdEPBwxTLfebZXG1PItsUqIfdImixRY1LPQ5HqLgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	s=arc-20240116; t=1739329680; c=relaxed/simple;
+	bh=jaIYd7cshqR/G5ETbAdsuBDEMdOgq06VwWSRJQs5sBw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JZXNTphVwl8lc7JzxTfEOvr7MYUFOkg0BfXlnS3wuMot1h2JYq7B7fghI1usMyq8HiNU34zLnCASj1SZmYQ5Qo3FoydJ3dIVHKK8ExVh/TM5KkDc7YmRxTarGPW5fd4zR28mzALGWbtciOPn3+hj94BQU31Rq9TVP/+PiOSTmhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Yt2Hs099Yz4f3js7;
-	Wed, 12 Feb 2025 10:26:33 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 556341A058E;
-	Wed, 12 Feb 2025 10:26:54 +0800 (CST)
-Received: from [10.174.179.143] (unknown [10.174.179.143])
-	by APP4 (Coremail) with SMTP id gCh0CgBHrGDsBqxnXJBlDg--.62273S3;
-	Wed, 12 Feb 2025 10:26:54 +0800 (CST)
-Subject: Re: [PATCH] blk-cgroup: validate alloc/free function pairs at the
- start of blkcg_policy_register()
-To: =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
- Chen Linxuan <chenlinxuan@uniontech.com>
-Cc: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
- Jens Axboe <axboe@kernel.dk>, Wen Tao <wentao@uniontech.com>,
- cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, "yukuai (C)" <yukuai3@huawei.com>
-References: <EE1CE61DFCF2C98F+20250210031827.25557-1-chenlinxuan@uniontech.com>
- <i6owvzwb4pjg27tex5utdzcoyeeawqejegvc2byz6tnfn2flmh@2ggun5qyokvs>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <29be6f4e-fc0b-8134-fee6-7b3170f0d806@huaweicloud.com>
-Date: Wed, 12 Feb 2025 10:26:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Yt3CF69hCz4f3jqb;
+	Wed, 12 Feb 2025 11:07:37 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id E0AF01A0BD9;
+	Wed, 12 Feb 2025 11:07:53 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP3 (Coremail) with SMTP id _Ch0CgDXKcSBEKxnbyc1Dg--.7428S2;
+	Wed, 12 Feb 2025 11:07:53 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: akpm@linux-foundation.org,
+	mhocko@kernel.org,
+	hannes@cmpxchg.org,
+	yosryahmed@google.com,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	davidf@vimeo.com,
+	vbabka@suse.cz,
+	mkoutny@suse.com,
+	paulmck@kernel.org
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	chenridong@huawei.com,
+	wangweiyang2@huawei.com
+Subject: [PATCH] mm/oom_kill: revert watchdog reset in global OOM process
+Date: Wed, 12 Feb 2025 02:57:07 +0000
+Message-Id: <20250212025707.67009-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <i6owvzwb4pjg27tex5utdzcoyeeawqejegvc2byz6tnfn2flmh@2ggun5qyokvs>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBHrGDsBqxnXJBlDg--.62273S3
-X-Coremail-Antispam: 1UD129KBjvJXoWrZF47JF15Cw47GF4DCFW3ZFb_yoW8JryfpF
-	ZIya4rAFy0krWxWanxKaySvr1rWa1kGw47JF90q34fu343AFyrtr4jyan5WF97ZFyIyFya
-	vFyYqaySk3WDA3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:_Ch0CgDXKcSBEKxnbyc1Dg--.7428S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFy8Kry3Ww48GryrJw1fWFg_yoW8XF48pa
+	98ua4UK398J3Z8ZF47Aa4IvF17J395ZFW8JF9rK34FvwsxtFn2yrWIyr1aqryrAFWS9a4Y
+	vFs8Kr1xJrWavw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
 	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
 	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYx
-	BIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
+	n4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8
+	ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IUbmii3UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-Hi,
+From: Chen Ridong <chenridong@huawei.com>
 
-在 2025/02/11 21:57, Michal Koutný 写道:
-> Hello Linxuan.
-> 
-> On Mon, Feb 10, 2025 at 11:18:27AM +0800, Chen Linxuan <chenlinxuan@uniontech.com> wrote:
->> Move the validation check for cpd/pd_alloc_fn and cpd/pd_free_fn function
->> pairs to the start of blkcg_policy_register(). This ensures we immediately
->> return -EINVAL if the function pairs are not correctly provided, rather
->> than returning -ENOSPC after locking and unlocking mutexes unnecessarily.
->>
->> Co-authored-by: Wen Tao <wentao@uniontech.com>
->> Signed-off-by: Wen Tao <wentao@uniontech.com>
->> Signed-off-by: Chen Linxuan <chenlinxuan@uniontech.com>
-> 
-> If you consider those locks contention a problem (policy registrations
-> are "only" boot time, possibly module load time), then it's good to refer
-> 
-> Fixes: e84010732225c ("blkcg: add sanity check for blkcg policy operations")
+Unlike memcg OOM, which is relatively common, global OOM events are rare
+and typically indicate that the entire system is under severe memory
+pressure. The commit ade81479c7dd ("memcg: fix soft lockup in the OOM
+process") added the touch_softlockup_watchdog in the global OOM handler to
+suppess the soft lockup issues. However, while this change can suppress
+soft lockup warnings, it does not address RCU stalls, which can still be
+detected and may cause unnecessary disturbances. Simply remove the
+modification from the global OOM handler.
 
-This is super cold path, so I don't think it's a problem.
-> 
->> ---
->>   block/blk-cgroup.c | 16 ++++++++--------
->>   1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> But it's correct,
-> Reviewed-by: Michal Koutný <mkoutny@suse.com>
-> 
+Fixes: ade81479c7dd ("memcg: fix soft lockup in the OOM process")
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ mm/oom_kill.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-Since we're here, can you also change the return value to -ENOMEM from
-error path err_free_cpds?
-
-Thanks,
-Kuai
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 25923cfec9c6..2d8b27604ef8 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -44,7 +44,6 @@
+ #include <linux/init.h>
+ #include <linux/mmu_notifier.h>
+ #include <linux/cred.h>
+-#include <linux/nmi.h>
+ 
+ #include <asm/tlb.h>
+ #include "internal.h"
+@@ -431,15 +430,10 @@ static void dump_tasks(struct oom_control *oc)
+ 		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
+ 	else {
+ 		struct task_struct *p;
+-		int i = 0;
+ 
+ 		rcu_read_lock();
+-		for_each_process(p) {
+-			/* Avoid potential softlockup warning */
+-			if ((++i & 1023) == 0)
+-				touch_softlockup_watchdog();
++		for_each_process(p)
+ 			dump_task(p, oc);
+-		}
+ 		rcu_read_unlock();
+ 	}
+ }
+-- 
+2.34.1
 
 
