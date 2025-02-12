@@ -1,142 +1,116 @@
-Return-Path: <cgroups+bounces-6522-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6523-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5A03A3257E
-	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 12:58:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E252FA32678
+	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 14:03:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AFD2167231
-	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 11:58:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62F387A2595
+	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2025 13:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C1320B1FD;
-	Wed, 12 Feb 2025 11:58:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF9420D516;
+	Wed, 12 Feb 2025 13:03:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fzxDle9Z"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ZngAeNPs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658072063E5
-	for <cgroups@vger.kernel.org>; Wed, 12 Feb 2025 11:58:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961A6204F6A;
+	Wed, 12 Feb 2025 13:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739361498; cv=none; b=ACGOxNxLx2mjMjVXlKlWW/ri9ZvFh+YPlR2QHltoF8JdHJmxJlOCx+O0cVZmJLK+U7fqZXrerT355xfdM1ZARZuP5WOBrFhXJlq31JXdML+CqqZ8mY724mbPFhWUZtn8vuNu+Wdq0Icv6GN2BR5HUjZ0tsRmguYprTxw6bs/nZY=
+	t=1739365404; cv=none; b=dTbEsUAdoYFbLnCn0eANNrqShjt6U/6gkUD3I8v+rjxQR8LKokUFA/12DsW4JaBO2n9nS2zIK9RqCgPjIQkaMLGWD74PZfmHhQ1LUZ0KdyZPO+mrxak3QREssxC8CB6WVYK/2Lma9uXkiIZDhnA/+qMPT0fY2r4bE7fjFsMcslk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739361498; c=relaxed/simple;
-	bh=Zr4yGBYQKB2JkRxHIXXJ2oz/3gXI/b3u5EhL7+/O86Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RxccxHzbvRspqgfjKMUBVnpLTnal4voPLYIRy4tKaP7xSZDnFICvO6auyV5fnEFAPQ/0zFJQ8VOFKrq/mhprk0+oYKuTixKrR2/bI2C3blhWM0rAz59bKHLgAPirgo212NcV1yOktejy15U2Gy6kyGtC7XGpcaJiDH5tt35Yuu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fzxDle9Z; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5de4f4b0e31so8668704a12.0
-        for <cgroups@vger.kernel.org>; Wed, 12 Feb 2025 03:58:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1739361495; x=1739966295; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Me0chvjbJ1pFFLI2sZT0ghALOrQAWMmkakkHmyi7IVI=;
-        b=fzxDle9Zwxv9UpqVmDh6UN39iE2L7E4XB1maiNJnvatR9rFpC/OqDguKPhkYrPMoQD
-         EVM8cR/xT3uj2z6xlXARrO035aIe1wOcRgN+ezARuQuOkZXgSAWu1bUdbIioNKA35GLa
-         yx1kyJlwGJH4TZdtjyKs3SRze/0iCS2ARw5J5K86iDMUEdi8RS3J7bs6ZgPVgheXtGFe
-         3xQKCCvtbBXXPaRlv04pJRSZ67bPi8kOLBzcQbrXul2I6oDErCWlByVt3QHpTTQIbB5K
-         DzctIxkRGqfvTuvJ8wFjXSAWd/R0nNdcvT6K01lEFsPfdNBrcqWwzl8CJv2M0YTdOsQF
-         lwnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739361495; x=1739966295;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Me0chvjbJ1pFFLI2sZT0ghALOrQAWMmkakkHmyi7IVI=;
-        b=XyWqk4Z9Q3ohtjFJPCxO4tmSyP/HOVfSYfvjAAZCFSUeRTdjn+gag2KDvJCaAsWUVc
-         3+UW8hMySCdKPBGI6nP/6ClIbzY3pUujsMOYhVFHTcly902uEaAs9ZbisbuLnfoMjwrM
-         tONU/ujwmONeuwCfKT6Uts03sbXYAq2P21YtNImVIiBqotvqHD7+4LYr1VGYEvblujM/
-         rrbRFRGDHo400qbYQnbVL6+VJNaK75Nbx9dw48ljIi91pAaT5lrNYlEs6knYZV1Pf/Xi
-         mO5duLaLJOtsxE8pr2/qfuaFy4PT0ogsm/1hvij0/b0CsyNETXCet9X8jHhuFGfCljpf
-         rzag==
-X-Forwarded-Encrypted: i=1; AJvYcCVKQtnOzm2Jpcw+iZEBAkzohMsME8JP58rjGtYfnFHoaN64wrLcDSsqjH5CKELuCBS+vE68oiS/@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywq2Q3fv2OyLRaBcjR2p8sfc+OoK6eX5bYvSkjmlxIPdFBpdhjb
-	oEWMU9Bu+M9MpjRvSrDsNhIfJrcjSv1eSYklN5rKBiyilFMCRcULkUOSMnjUtJk=
-X-Gm-Gg: ASbGncu3SUUWY+ZmKhf7Om5yhK8Y9ULnyvVFtyIUmdESjYOn0/bXLG0KNKfTWJ5K9dJ
-	T5wpIkXIGQqL7e8L24udYOqRuOkEXLHw9ah0W9xKIQ91RjrAol+sPiTl4lQ/8OZN5oBlGzU1zb+
-	hkmPqGhKgA7cO5hqYX78QOPJdAoLgYPaK2ZChVQmr7lzvLr/RBR9B6OOn0NxHAy4b1LrA5B5rNN
-	yZ0j9sWYXjcrvHybpkIPQ+Npe7FkjBIF94TBSaeBhwVlEn14FTOEZdzP8xOoni7qxSTUtbgkDs5
-	UcmCBq8fWhfE1Lk0jTgC+NrqaTxz
-X-Google-Smtp-Source: AGHT+IFZ3F6WfAtZKj1YYoqYD9Alxhol5RnT7Ux/XbgtcW0L2oEEJ4Aa1ufzUnzaMa86H/wd3EO7cw==
-X-Received: by 2002:a05:6402:2345:b0:5dc:545:40a7 with SMTP id 4fb4d7f45d1cf-5deadd9c9a0mr2372357a12.12.1739361494610;
-        Wed, 12 Feb 2025 03:58:14 -0800 (PST)
-Received: from localhost (109-81-84-135.rct.o2.cz. [109.81.84.135])
-        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-5de4d250084sm9533100a12.16.2025.02.12.03.58.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Feb 2025 03:58:14 -0800 (PST)
-Date: Wed, 12 Feb 2025 12:58:13 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Chen Ridong <chenridong@huaweicloud.com>, akpm@linux-foundation.org,
-	hannes@cmpxchg.org, yosryahmed@google.com, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev, davidf@vimeo.com,
-	mkoutny@suse.com, paulmck@kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	chenridong@huawei.com, wangweiyang2@huawei.com
-Subject: Re: [PATCH] mm/oom_kill: revert watchdog reset in global OOM process
-Message-ID: <Z6yM1dycm5E7vfT0@tiehlicka>
-References: <20250212025707.67009-1-chenridong@huaweicloud.com>
- <Z6xig5sLNpFVFU2T@tiehlicka>
- <d264a73e-966f-4890-9e23-88d476f0fc81@huaweicloud.com>
- <bccc9e06-af8b-4a55-a69c-98596f1c1385@suse.cz>
+	s=arc-20240116; t=1739365404; c=relaxed/simple;
+	bh=+Mc1XOKwygNzl+J75JzAnRhFTS1rDyHjsKiXZ66NZo8=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=MZeJs54NEzGxOPlEI/1Mc4IZJomI2Q9mDbXHLr1ckhEk1KeX5UvjjwWScco0zUWorGKEwskGqbub7CyGXZw01MCTMUJWxxC9d9sYCQTRsuzgeoOdyu1GoSH6fnC1mR6KEDKh0Drn+PGBogBcX/Ug1WNQjvNMZ/m1CtCbA2vX9o0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=ZngAeNPs; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1739365380; x=1739970180; i=markus.elfring@web.de;
+	bh=UhVHuDHyu/BxGMdq3OfR7GfxXgzLgEBeqCkCRiMEaAc=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=ZngAeNPsGmfh2V2NCCDFKLgY2b2/CRp/qVQNY7ScrR3Yw+vQ4IFxxh5HypwU/uZI
+	 x96EUUXKpYshPIoihIrcg6wxctVxdTEX95m8d82A1bdvUT1tCYAcSPV2VmfdoygXV
+	 T19bTeVT/KsCKd2HFQUIaJ1QM7gvwi9QZ/5nulOpvekaOJ7kKd3qWeiM5otfOhnGm
+	 ggKdEQPKpz2lHVVOY62Kfz53zHHU+JpxNLPyY2V2C6tclDkyk9O65hHRvQW7qPJXz
+	 kmI11GHDd7e4ODKZdv+r2N8ROciyAcGjmSyyXRyPRDS0vCJNyIDKg2Qyvf5FATfFR
+	 4pjvEofqsg6GhyiVDA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.93.11]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MwR4D-1tPhhZ0GMn-00wHo8; Wed, 12
+ Feb 2025 14:03:00 +0100
+Message-ID: <612ab8e6-a712-41f7-ae7f-7bdc0e3c1b90@web.de>
+Date: Wed, 12 Feb 2025 14:02:58 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bccc9e06-af8b-4a55-a69c-98596f1c1385@suse.cz>
+User-Agent: Mozilla Thunderbird
+To: Wentao Liang <vulab@iscas.ac.cn>, cgroups@vger.kernel.org,
+ linux-block@vger.kernel.org
+Cc: stable@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
+ Tejun Heo <tj@kernel.org>
+References: <20250212083203.1030-1-vulab@iscas.ac.cn>
+Subject: Re: [PATCH] block: Check blkg_to_lat() return value to avoid NULL
+ dereference
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20250212083203.1030-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:oku5XT0L9VHT9UFRSvoG+4mbuVUZMifD03n2hUg0w+6+WPGrNAP
+ Xc/Wbq87YEsS0LU84nPcZYuTW1WT9/t3F9NgZDbVsjz2Hwsd7atkKN5uqtzVK5NCLA+uhz4
+ leeRuhTgcsVWIPuZOkwFAWXYw+gZKn/7tKMn/HAyWOp6saYqAy3I+giefqXhK7N24gH18BU
+ RFUNqC2ZNdf4CfkFZ25Gw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Br8sEHTNNaU=;7Y7yedgzvBUlld/sjcV0dPcHaOM
+ 7HNJxMyDRZFkPzc5REL5/tjhqNf4HJeBRJCC2DxMgC559YqNeoVtkRMfeBcP2GsAVtezymQ8q
+ Hwe6fexjRkFzTQxoRbJAfcxNMBjOtGwrveenPm+wEJ/WONr5yqLRcjbF8i4OPOWzgJQ5PjgHA
+ 3B8QNxe4sSjd0VeUdvWCRzwwEYWNOzOkA8RrQxOvE08wdGMMkx3ysd1uhjG3SJvIdkMj3NnFs
+ +gRmLXv02iC5sO3KxXFaArPzxX5V+BTAb3lOEP8L1K5TMvXK+oMj3lFxdQ5x9Pv1AgUahE/3x
+ /ki6YUC76RWPfJj3/f9IOrdPC5Hq2Rmg2nH8IQzkMr0Te0GmLDtfzOhxhe/rOKGPerGG/p6e5
+ /9d7Y6R1XtGs2M81vEvcU8qZjlB5Fvi10zQQsB69SUf2KX1fxT+rcvgvZHRMlzRcY83NXV1k4
+ rcnJfDPfSWmQY8reF15Y4MsWTRNnrLo/BQH/2M1FrRxw4deTIMVsM4fdUHP8eJploh7epLz9B
+ J17DEVUTliDQNcpvCrSGYUYi3xhXUPxeXEKwKBvTtlEdhoDJy6P3FqwFM5RePsn5HbTbVXTmb
+ s2SfytFSn+TAbtJ+RaUpgkMmvj5TrgkUtnQzSw63rk2JTvJsBQvcb0FyONX1CtdRhfjxap8lu
+ NS+Y55WQuDnW4u6GulUC9NfU/iChLbbIXMkxnImXdyqK+wLN38N7GKPyDSGLimF8sS23+EBK/
+ 5mu614v9feRwrLSoCBpijCnTyoIYuIZCdFhIiYY3c0sKwPMiXl72Wvm70x4y2f3WUNOtBi3bc
+ nmFT9RJNdnBxK7rQpvZSKrXLXkF6Klmwvl2ZQhhBvAd4WtQ6MG42Z/V3rDtOtolm9ZgvB7osu
+ aYkRBRrO0jLkJA3i6ki9PcuKvtkUNc0tmE64mICv7MTYRdzPQJIDpB8beeCFq9A/H8k1lHBuk
+ SMZFDsgl+GyMKOSQJql85YAoXBzl9rBm0t8+XVsEb6Srcpw8WJUsqQrSstrEvtUYR4go2bD49
+ 0usK+I92gQUI1+RAY3Ca+fNOfv1vixylTYcSpwapi0qHx1mBqwzoTYmzKoEX0QVupOr/xS9q8
+ rOULITCLT5prF5a0ANHeWIiPRSIEFpSjYvB/vMlQ7nQR98xSZJ+s3EEQybycrQDMyLrK16t2u
+ Ton7UNVbFbn3DRDl19BROFlYnx1EXpDOqdjdFDAfPJPCi/qas7f7T7fjhdhUq6z/EmalmyAAO
+ v5M6QLELytl4UrGP04OebNUXXIrbHdJw+zbkHJeNQuKxkjvNv/GOWx9bx2UXLtMolPl4Fkenb
+ dhGhAcRObIVhSfwoWw9TGrQcZjc1fnKV4lBVz2kOXO30eOvm+nGf3MfpT/WTTpxgh90iTQ01Y
+ nxUcBLgxy9wLyGgDVW1evOvWcHogikcGFDGJxkYObAfFVayvxzBj6AlaDCC+HZTi/svDZNP87
+ FamWEQvOrlV04zSmdBtJg+lGRk1M=
 
-On Wed 12-02-25 10:34:06, Vlastimil Babka wrote:
-> On 2/12/25 10:19, Chen Ridong wrote:
-> > 
-> > 
-> > On 2025/2/12 16:57, Michal Hocko wrote:
-> >> On Wed 12-02-25 02:57:07, Chen Ridong wrote:
-> >>> From: Chen Ridong <chenridong@huawei.com>
-> >>>
-> >>> Unlike memcg OOM, which is relatively common, global OOM events are rare
-> >>> and typically indicate that the entire system is under severe memory
-> >>> pressure. The commit ade81479c7dd ("memcg: fix soft lockup in the OOM
-> >>> process") added the touch_softlockup_watchdog in the global OOM handler to
-> >>> suppess the soft lockup issues. However, while this change can suppress
-> >>> soft lockup warnings, it does not address RCU stalls, which can still be
-> >>> detected and may cause unnecessary disturbances. Simply remove the
-> >>> modification from the global OOM handler.
-> >>>
-> >>> Fixes: ade81479c7dd ("memcg: fix soft lockup in the OOM process")
-> >> 
-> >> But this is not really fixing anything, is it? While this doesn't
-> >> address a potential RCU stall it doesn't address any actual problem.
-> >> So why do we want to do this?
-> >> 
-> > 
-> > 
-> > [1]
-> > https://lore.kernel.org/cgroups/0d9ea655-5c1a-4ba9-9eeb-b45d74cc68d0@huaweicloud.com/
-> > 
-> > As previously discussed, the work I have done on the global OOM is 'half
-> > of the job'. Based on our discussions, I thought that it would be best
-> > to abandon this approach for global OOM. Therefore, I am sending this
-> > patch to revert the changes.
-> > 
-> > Or just leave it?
-> 
-> I suggested that part doesn't need to be in the patch, but if it was merged
-> with it, we can just leave it there. Thanks.
+=E2=80=A6
+> This patch adds checks for the return values of blkg_to_lat and let it
 
-Agreed!
+See also:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?h=3Dv6.14-rc2#n94
 
--- 
-Michal Hocko
-SUSE Labs
+
+> returns early if it is NULL, preventing the NULL pointer dereference.
+
+  return?
+
+
+Regards,
+Markus
 
