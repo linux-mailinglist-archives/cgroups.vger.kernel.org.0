@@ -1,35 +1,35 @@
-Return-Path: <cgroups+bounces-6542-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6543-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C83DA34429
-	for <lists+cgroups@lfdr.de>; Thu, 13 Feb 2025 16:01:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F31CCA34446
+	for <lists+cgroups@lfdr.de>; Thu, 13 Feb 2025 16:02:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E13E3B1A8C
-	for <lists+cgroups@lfdr.de>; Thu, 13 Feb 2025 14:53:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6FDC3AC28A
+	for <lists+cgroups@lfdr.de>; Thu, 13 Feb 2025 14:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863FC18A6C4;
-	Thu, 13 Feb 2025 14:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41D191AA782;
+	Thu, 13 Feb 2025 14:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OmvxL3gi";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="9UJ2jdOL"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jD6wb4yJ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZDwxIv2F"
 X-Original-To: cgroups@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA58156C71;
-	Thu, 13 Feb 2025 14:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75AFD15689A;
+	Thu, 13 Feb 2025 14:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739458231; cv=none; b=cIBKtv6HgBZdZf9DuyDoO/axd4Z6B9e0o/HW2u6QuU0l2DSdoIa3eMoIpCb66+fCb7WVKKtUcxg7fGmICWTV4jcvXolke8Nk/Cb+V7FkQXAd7g4+Xaq1xfLBng7VCYXAJjS6P8+xHPZECmk3dc9onSKoU2BYgu3fS2C4rxmBhR4=
+	t=1739458232; cv=none; b=DrT5oO+Mr2ET037jYy6naoNhHDk5y/A3DsMl9N/W7hlObpYTtTMmSGS1k5lFYU93lt27I7FnkeKh1oGLbgRAJ+Pw7iX+8hNl8xT7Hx7M42V6VRnU1cNlktIC4L8BcmDp65pbLIf3GywnzLi0ORMGP6sFHrSgkOB6z+0+551VV9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739458231; c=relaxed/simple;
-	bh=DGTpLamWHUkgj5xFOJwd0o2/wv8b1YO9QjSjYXScsrs=;
+	s=arc-20240116; t=1739458232; c=relaxed/simple;
+	bh=+kwU2zFUMmyb0jS6OU6MFBxnBiiwKa4vGC/wQUaUfq4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=boK9DiG8qYX/AfPKx0JtPYXqxOuzD7N1eaI7c4db4n6FwPtD+Y5XqWdeHmB4RGxvoEMOv8BGJPmnM5amWOPw5HRxbSci4xZ9qJ6OP6RpfzMcqKsLOOOBaeYxDcELdhMQi2r3ZmQl6+aPBub1CwyjxQ8loz4dUsy6tXW7ssA6UFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OmvxL3gi; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=9UJ2jdOL; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=PiEXeW+8nJV0Ur7IOdO9qavCLnZrbOBnwJ420DstHdanJ/A2HdkHLf61488lbqiNZg8vL7rJDm++0J7PHOufRYmciatapp+4H857MRwsXBYNFtQX8w8BJospsV6N2k1HFmD70SXQGRTyyHcjFJaDIey3atY6Z+nyHgR2zfGEzX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jD6wb4yJ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZDwxIv2F; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
@@ -39,21 +39,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=oAwgdfGiuXTUsdwQtdHn2gNdWY/bb3vNi/5j2k4yIQY=;
-	b=OmvxL3gitJUvtMNXFs88kHx2eJGqEIlJ3rVDVr/VCZmBEUUR9OZZ/EIK6K/uKLMcoQj4Ws
-	L4w83/DMAXlIi7tGTHHyeaPEU4yN+citKOHW34fkksdCo9/5aE+jm4xEYVtLcrjghDB6ku
-	AY63ZL8M7257mxoLywmybaStJQrJuBjuG4Gyq+Xbk1DQ9vR9V8CLNAWnEmPoNSlvXLLx4O
-	4ZRqEQz78OxKuwoVO913a+YqCoL4/SsUTUfIZn294J0Zlry43WE5U6cMOY9uXDLYNKLVBj
-	Bin2oy6YHJJTjX0I+C9LZ0ulcxLrQakZZRnj1sK4rKJXLIo86QGGUKGBvXVN2g==
+	bh=TQFaRwsMWqeRZCHTYyBsT4gxYaSSc81PYJjjcc6W9Sk=;
+	b=jD6wb4yJYr5PP6JxT8dH3Gkr4RwhUaKgDQootmD/AF/fXUKEYfRdoeqee1r2+62adLz0xv
+	cAl93rFqvPMLxW6432uIx8uzx8gSwPGfkuvvFuDoXol+PPq2Jc0IKdZgaoQT7eWEb9P2ee
+	7kSfUbKRqX0ou3NsGCOpr2X5V6vf9Dvl61uKOZlVhr4Ar/MqC7dEHqQV0Z4CoN4buOrc5a
+	svOsaqkFb3B6sgKfHfQ/32oq6RpCfWcKczZEiwCWSMzsUBt1QUiXns3nXult5a3AFRD87Q
+	M3ch4n+oO8Pk++lT+HNTl2COj/Ac14pUmkDd/tpb1KVKMYeMMjlSc4hevhodBw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1739458228;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=oAwgdfGiuXTUsdwQtdHn2gNdWY/bb3vNi/5j2k4yIQY=;
-	b=9UJ2jdOLcLwZuC43NiBrjIC5ZLeaNd+zi04ZrvrXhvudLrgTy6UhkWcFucWBcPUxAcpwiY
-	NI2W2/Bxo/aVTIAQ==
+	bh=TQFaRwsMWqeRZCHTYyBsT4gxYaSSc81PYJjjcc6W9Sk=;
+	b=ZDwxIv2FO0vZf94P8TbVb5TQSjdLm5c2QBCH6BNRDgVzFVq8B1CD/N4VaTrZjpS3DBNs+R
+	sjtdP9ZniLRnAkDw==
 To: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
@@ -66,9 +66,9 @@ Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
 	Tejun Heo <tj@kernel.org>,
 	tglx@linutronix.de,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH v8 2/6] kernfs: Acquire kernfs_rwsem in kernfs_get_parent_dentry().
-Date: Thu, 13 Feb 2025 15:50:19 +0100
-Message-ID: <20250213145023.2820193-3-bigeasy@linutronix.de>
+Subject: [PATCH v8 3/6] kernfs: Acquire kernfs_rwsem in kernfs_node_dentry().
+Date: Thu, 13 Feb 2025 15:50:20 +0100
+Message-ID: <20250213145023.2820193-4-bigeasy@linutronix.de>
 In-Reply-To: <20250213145023.2820193-1-bigeasy@linutronix.de>
 References: <20250213145023.2820193-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -79,33 +79,42 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-kernfs_get_parent_dentry() passes kernfs_node::parent to
-kernfs_get_inode().
+kernfs_node_dentry() passes kernfs_node::name to
+lookup_positive_unlocked().
 
-Acquire kernfs_root::kernfs_rwsem to ensure kernfs_node::parent isn't
-replaced during the operation.
+Acquire kernfs_root::kernfs_rwsem to ensure the node is not renamed
+during the operation.
 
 Acked-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- fs/kernfs/mount.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/kernfs/mount.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
-index 1358c21837f1a..b9b16e97bff18 100644
+index b9b16e97bff18..4a0ff08d589ca 100644
 --- a/fs/kernfs/mount.c
 +++ b/fs/kernfs/mount.c
-@@ -145,7 +145,9 @@ static struct dentry *kernfs_fh_to_parent(struct super_=
-block *sb,
- static struct dentry *kernfs_get_parent_dentry(struct dentry *child)
+@@ -209,6 +209,7 @@ struct dentry *kernfs_node_dentry(struct kernfs_node *k=
+n,
  {
- 	struct kernfs_node *kn =3D kernfs_dentry_node(child);
-+	struct kernfs_root *root =3D kernfs_root(kn);
+ 	struct dentry *dentry;
+ 	struct kernfs_node *knparent;
++	struct kernfs_root *root;
 =20
+ 	BUG_ON(sb->s_op !=3D &kernfs_sops);
+=20
+@@ -218,6 +219,9 @@ struct dentry *kernfs_node_dentry(struct kernfs_node *k=
+n,
+ 	if (!kn->parent)
+ 		return dentry;
+=20
++	root =3D kernfs_root(kn);
 +	guard(rwsem_read)(&root->kernfs_rwsem);
- 	return d_obtain_alias(kernfs_get_inode(child->d_sb, kn->parent));
- }
-=20
++
+ 	knparent =3D find_next_ancestor(kn, NULL);
+ 	if (WARN_ON(!knparent)) {
+ 		dput(dentry);
 --=20
 2.47.2
 
