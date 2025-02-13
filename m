@@ -1,147 +1,155 @@
-Return-Path: <cgroups+bounces-6539-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6540-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93F47A34083
-	for <lists+cgroups@lfdr.de>; Thu, 13 Feb 2025 14:38:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C27A1A34422
+	for <lists+cgroups@lfdr.de>; Thu, 13 Feb 2025 16:01:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 542AB16A7F2
-	for <lists+cgroups@lfdr.de>; Thu, 13 Feb 2025 13:38:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07C943AB184
+	for <lists+cgroups@lfdr.de>; Thu, 13 Feb 2025 14:53:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 497B1227EB5;
-	Thu, 13 Feb 2025 13:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8701714A1;
+	Thu, 13 Feb 2025 14:50:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aTWhXWLe";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3Pp+k0g8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED19720B80D;
-	Thu, 13 Feb 2025 13:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C69138389;
+	Thu, 13 Feb 2025 14:50:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739453928; cv=none; b=tuhvtGJHN0ieU3/bmIJ6YfS3/Mza8af82hMw/PiQVSwvc0vmiM3k1GdsQYKEe4Py7zGvCJhgNmt41WnRXAVHnz4pIShrj+ebVLubXg2iB8pnansymwkZhRh64SG32T16tcSQM6kgiIqrBJXHPL1ABSgwc4S/fOHRt7j2ywmkG1w=
+	t=1739458231; cv=none; b=rE95vAr4ZjRaX1cvV5yYFGg+dd6iI8deupjWofpsDMHbhk4PqZ/oR6FsLCsbSt7LRCOLAe1YUnrYp5S8kMD+rjeE5V4FuW8rexraY6KVHlMMgpD787USBithbgtRkbJW8nMyJOB4MgAioKYWfgDjnic+U/qoIjuOjXhFIpFg+4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739453928; c=relaxed/simple;
-	bh=pzBCvlYbL5cZxHO40BZm6owVnS0Y4kV/DE6Ud4axTWQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XHmeE+2/wJ08/wvOAByeqz3v1EESEg8C+UhgMM4TrBeEqdoL90k7LDF0UgB3OrGtKeAgRtV5I+a1IB9ch+qbkGB30dDbugOhvZKCXdBCVoVExx1Ccvm7KwN8GpiawLgKTD7R914hjvap1ad4Zk3VWieAR+pV6FGdJHXCTpFxZ9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B385616F3;
-	Thu, 13 Feb 2025 05:39:04 -0800 (PST)
-Received: from [10.1.30.41] (e127648.arm.com [10.1.30.41])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9188A3F58B;
-	Thu, 13 Feb 2025 05:38:39 -0800 (PST)
-Message-ID: <9629f060-28f4-4743-9e60-688cba039f87@arm.com>
-Date: Thu, 13 Feb 2025 13:38:37 +0000
+	s=arc-20240116; t=1739458231; c=relaxed/simple;
+	bh=NSCKzRekUECh1rgFngsoPBXi9xMzHFidKxXmjOlMdC8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BBpU3DChc3FEzN87jK8JKHNPvFd5fD26QlAnUZjPlFc29mWHHR1iw16WVFN3w1WP5TbuSO3uU9Gz7ffY2NvuexwjJqBRME0yYQse2DlOUirZQ4g4cfMPk9SiPsRXRXf6GYARNsUDH5L5+HOaLgVDazQJaYTc6R5ccoHWFW3k3sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aTWhXWLe; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3Pp+k0g8; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1739458227;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=OMukzCnamzmecBTc5qfvClioeFNM5qf8pYaykzEBLI4=;
+	b=aTWhXWLeVJ0KdYXkm8NaNTcUOch0FWGmzLrpQrU0flghMgS+uoPynsWIDPEAxSGotnYAXC
+	WunpDkO+2NuHVx03rWdiLzMmuD/I4ZcZokhmM/Vise5B0mK+XSX5fa1FH3NtOgHwvg+TgE
+	3d6kB3RmLamj19x/pmaDIYrcjmhmZSOYExP87vsjZC3JTpnnwxUCPKLNLIP01HawWLXpOw
+	oPr9UEICJDKukdYBz8ToEYYuZiigmxEay5kKEUN+JO5DS6q8YUfeZk8PFJUv2L6tNXGGPe
+	2AOq7iRUES3mYAmZSzwzzs9Yr4t8QSscjxjXTLMMg7Z1OiomqXmX6rTgY3PECA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1739458227;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=OMukzCnamzmecBTc5qfvClioeFNM5qf8pYaykzEBLI4=;
+	b=3Pp+k0g8MXptG2Z8Op0bnCXvq+H/FP7ipp7CyAXh7C4ThRRnEhX6wwYl7nLrNeZCFB1TvS
+	grbvYdnfVG4bV+Bg==
+To: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hillf Danton <hdanton@sina.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Marco Elver <elver@google.com>,
+	Tejun Heo <tj@kernel.org>,
+	tglx@linutronix.de,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH v8 0/6] kernfs: Use RCU to access kernfs_node::{parent|name}.
+Date: Thu, 13 Feb 2025 15:50:17 +0100
+Message-ID: <20250213145023.2820193-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/2] sched/deadline: Check bandwidth overflow earlier
- for hotplug
-To: Juri Lelli <juri.lelli@redhat.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Jon Hunter <jonathanh@nvidia.com>, Thierry Reding <treding@nvidia.com>,
- Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Koutny <mkoutny@suse.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Phil Auld <pauld@redhat.com>, Qais Yousef <qyousef@layalina.io>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- "Joel Fernandes (Google)" <joel@joelfernandes.org>,
- Suleiman Souhlal <suleiman@google.com>, Aashish Sharma <shraash@google.com>,
- Shin Kawamura <kawasin@google.com>,
- Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <a305f53d-44d4-4d7a-8909-6a63ec18a04b@nvidia.com>
- <5a36a2e8-bd78-4875-9b9e-814468ca6692@arm.com>
- <db800694-84f7-443c-979f-3097caaa1982@nvidia.com>
- <8ff19556-a656-4f11-a10c-6f9b92ec9cea@arm.com>
- <Z6oysfyRKM_eUHlj@jlelli-thinkpadt14gen4.remote.csb>
- <dbd2af63-e9ac-44c8-8bbf-84358e30bf0b@arm.com>
- <Z6spnwykg6YSXBX_@jlelli-thinkpadt14gen4.remote.csb>
- <285a43db-c36d-400e-8041-0566f089a482@arm.com>
- <Z62PPUOY5DClYo1A@jlelli-thinkpadt14gen4.remote.csb>
- <c8f626ba-1be4-4c25-b283-d1e11a061aac@arm.com>
- <Z630nGN1IHhyYIYl@jlelli-thinkpadt14gen4.remote.csb>
-Content-Language: en-US
-From: Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <Z630nGN1IHhyYIYl@jlelli-thinkpadt14gen4.remote.csb>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2/13/25 13:33, Juri Lelli wrote:
-> On 13/02/25 12:27, Christian Loehle wrote:
->> On 2/13/25 06:20, Juri Lelli wrote:
->>> On 12/02/25 19:22, Dietmar Eggemann wrote:
->>>> On 11/02/2025 11:42, Juri Lelli wrote:
->>>
->>> ...
->>>
->>>>> What about we actually ignore them consistently? We already do that for
->>>>> admission control, so maybe we can do that when rebuilding domains as
->>>>> well (until we find maybe a better way to deal with them).
->>>>>
->>>>> Does the following make any difference?
->>>>
->>>> It at least seems to solve the issue. And like you mentioned on irc, we
->>>> don't know the bw req of sugov anyway.
->>>>
->>>> So with this change we start with 'dl_bw->total_bw = 0' even w/ sugov tasks.
->>>>
->>>> dl_rq[0]:
->>>>   .dl_nr_running                 : 0
->>>>   .dl_bw->bw                     : 996147
->>>>   .dl_bw->total_bw               : 0       <-- !
->>>>
->>>> IMHO, people who want to run serious DL can always check whether there
->>>> are already these infrastructural DL tasks or even avoid schedutil.
->>>
->>> It definitely not ideal and admittedly gross, but not worse than what we
->>> are doing already considering we ignore sugovs at AC and the current
->>> bandwidth allocation its there only to help with PI. So, duck tape. :/
->>>
->>> A more proper way to work with this would entail coming up with sensible
->>> bandwidth allocation for sugovs, but that's most probably hardware
->>> specific, so I am not sure how we can make that general enough.
->>>
->>> Anyway, looks like Jon was still seeing the issue. I asked him to verify
->>> he is using all the proposed changes. Let's see what he reports.
->>
->> FWIW it also fixes my reproducer.
->>
->> I agree that dummy numbers for sugov bw is futile, but real bw numbers
->> also don't make a lot of sense (what if we exceed them? The system
->> won't be able to change frequency, i.e. might not be able to provide
->> bw for other DL tasks then either?).
->> I'm slightly worried about now allowing the last legal CPU for a sugov
->> cluster to offline, which would lead to a cluster still being active
->> but sugov DL unable to run anywhere. I can't reproduce this currently
->> though. Is this an issue in theory? Or am I missing something?
-> 
-> Not sure I get what your worry is, sorry. In my understanding when the
-> last cpu of a policy/cluster gets offlined the corresponding sugov
-> kthread gets stopped as well (sugov_exit)?
-> 
+Hi,
 
-The other way round.
-We may have sugov kthread of cluster [6,7] affined to CPU1. Is it
-guaranteed that we cannot offline CPU1 (while CPU6 or CPU7 are still
-online)?
-Or without the affinity:
-cluster [6,7] with isolcpu=6 (i.e. sugov kthread of that cluster can
-only run on CPU7). Is offlining of CPU6 then prevented (as long as
-CPU7 is online)?
-I don't see how.
-Anyway we probably want to change isolcpu and affinity to merely be 
-a suggestion for the sugov DL case. Fundamentally it belongs to what
-is run on that CPU anyway.
+This started as a bug report by Hillf Danton and aims to access
+kernfs_node::{name|parent} with RCU to avoid the lock during
+kernfs_path_from_node().
+
+I've split the individual fixes in separate patches (#1 to #4). I've
+also split the ::parent and ::name RCU conversation into a single patch
+(#5 and #6).
+
+v7=E2=80=A6v8 https://lore.kernel.org/all/20250203135023.416828-1-bigeasy@l=
+inutronix.de/
+  - A user in selftests/bpf is fixed in #5 as part of the rename.
+
+v6=E2=80=A6v7 https://lore.kernel.org/all/20250130140207.1914339-1-bigeasy@=
+linutronix.de/
+  - Rebase on v6.14-rc1
+
+v5=E2=80=A6v6 https://lore.kernel.org/all/20250128084226.1499291-1-bigeasy@=
+linutronix.de/
+  - s/rdt_kn_get_name/rdt_kn_name/
+  - s/rdt_get_kn_parent_priv/rdt_kn_parent_priv/
+  - s/kn_get_priv/kn_priv/
+  - The comment, that has been removed in kernfs_put(), is back.
+  - Using rcu_access_pointer() in kernfs_activate_one() and kernfs_dir_pos()
+    instead of kernfs_parent() where the pointer is not dereferenced but
+    just compared.
+
+v4=E2=80=A6v5 https://lore.kernel.org/all/20250124174614.866884-1-bigeasy@l=
+inutronix.de/
+  - rdtgroup:
+    - Add a comment to rdt_get_kn_parent_priv() regarding lifetime of
+      parent.
+    - Move individual rcu_dereference_check() invocations into
+      rdt_kn_parent() with a comment on lifetime.
+    - Use rcu_access_pointer() in kernfs_to_rdtgroup() instead
+      rcu_dereference_check(, true)
+  - s/kernfs_rcu_get_name/kernfs_rcu_name/
+  - Move all rcu_dereference_check() within kernfs into kernfs_parent()
+    and extend its checks to have all cases in one spot. Document why
+    each case makes sense.
+  - kernfs_notify_workfn(): Do unlocks in the reverse order of locks.
+  - Add kernfs_root_flags() and use it in cgroup's kn_get_priv() to
+    check the right KERNFS_ROOT_INVARIANT_PARENT flag.
+
+v3: https://lore.kernel.org/all/20241121175250.EJbI7VMb@linutronix.de/
+v2: https://lore.kernel.org/all/20241112155713.269214-1-bigeasy@linutronix.=
+de/
+v1: https://lore.kernel.org/all/20241108222406.n5azgO98@linutronix.de/
+
+Sebastian
+
+Sebastian Andrzej Siewior (6):
+  kernfs: Acquire kernfs_rwsem in kernfs_notify_workfn().
+  kernfs: Acquire kernfs_rwsem in kernfs_get_parent_dentry().
+  kernfs: Acquire kernfs_rwsem in kernfs_node_dentry().
+  kernfs: Don't re-lock kernfs_root::kernfs_rwsem in
+    kernfs_fop_readdir().
+  kernfs: Use RCU to access kernfs_node::parent.
+  kernfs: Use RCU to access kernfs_node::name.
+
+ arch/x86/kernel/cpu/resctrl/internal.h        |   5 +
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c     |  14 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c        |  73 +++---
+ fs/kernfs/dir.c                               | 211 ++++++++++--------
+ fs/kernfs/file.c                              |   6 +-
+ fs/kernfs/kernfs-internal.h                   |  37 ++-
+ fs/kernfs/mount.c                             |  21 +-
+ fs/kernfs/symlink.c                           |  30 +--
+ fs/sysfs/dir.c                                |   2 +-
+ fs/sysfs/file.c                               |  24 +-
+ include/linux/kernfs.h                        |  14 +-
+ kernel/cgroup/cgroup-v1.c                     |   2 +-
+ kernel/cgroup/cgroup.c                        |  24 +-
+ security/selinux/hooks.c                      |   7 +-
+ .../selftests/bpf/progs/profiler.inc.h        |   2 +-
+ 15 files changed, 308 insertions(+), 164 deletions(-)
 
