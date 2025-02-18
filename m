@@ -1,77 +1,77 @@
-Return-Path: <cgroups+bounces-6581-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6582-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3374A39132
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4318A39131
 	for <lists+cgroups@lfdr.de>; Tue, 18 Feb 2025 04:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 876C2188F147
-	for <lists+cgroups@lfdr.de>; Tue, 18 Feb 2025 03:15:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3CFD3A64D0
+	for <lists+cgroups@lfdr.de>; Tue, 18 Feb 2025 03:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879B31684AC;
-	Tue, 18 Feb 2025 03:15:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EA58186295;
+	Tue, 18 Feb 2025 03:15:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IE1oxPDC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RJWpQv6D"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D727C18132A
-	for <cgroups@vger.kernel.org>; Tue, 18 Feb 2025 03:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DFD1581E5
+	for <cgroups@vger.kernel.org>; Tue, 18 Feb 2025 03:15:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739848514; cv=none; b=NkCjUi3UYZ3NgihnAuA94R+FJu7qfXYNhM+Ow8zVJ2Agr8MQHJXXxjzaTvYE6TeoaA2Fa8fqkQZmDnch+frGni0UWEiqk3NYivu2sA8dRpL6TDSpcUgEMtUPWVOWUw5MDPR806Mo5RxY/j611pZX6x+6Tc3dpnDRycjCqufbdF0=
+	t=1739848517; cv=none; b=QfPEVSDX7fan4l75L8euBPfjo4b003ZeAuCFBBR8BvoVoc9u274W5eJmCnG5PzgDcn5Hngp/P2K3dBCALj654OIYb1trjZkVJ9NLi7qMlnsiDtgqNcsSIUHAKJE2/GY21CodekbRjq5NvEV4e6XxyhdcL2CCLpuCi6DgMTAPI4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739848514; c=relaxed/simple;
-	bh=z2C3KB8rEFJR29xgX1pLE4DeDFfZxWCQY1djtwjftfI=;
+	s=arc-20240116; t=1739848517; c=relaxed/simple;
+	bh=m6LjBP8WZ5SOwOF1pjvW9x7ycE/LrvbikoRWRhttwA8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KKrCPUkPRhCEbZTGBBUC3eqljWh+pcpwZ4+NJYdg4lTY1cz8nlvyOKmQ7rYbIW4JmfEV7yx1MSmO7fXf/3A4NRQbvRg9XGYBCW0JsusCxOx3kEIZ/4E1BhBiR/F8lFHzEJkjM7PtfjaHEHNj/9HFRxuJZtc85z6tp8Y8p8GCh3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IE1oxPDC; arc=none smtp.client-ip=209.85.214.178
+	 MIME-Version; b=SC6ywAniGMyeYWDkXqmiGLuAngpAHO4cpMSWZdD08fzDF0jhEhXOqx+MHJ0CE1+H/1EZTGkn4X0u8tPdcjq8J8snFd6e5WEntyZol1B+6nzJO0CU+c1dqShB6IEErMap17YCm07EvfswfLe8f+x6RmfPO7IPvKVFRYAFtAp5piE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RJWpQv6D; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-220ecbdb4c2so96432065ad.3
-        for <cgroups@vger.kernel.org>; Mon, 17 Feb 2025 19:15:12 -0800 (PST)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-220f4dd756eso60921165ad.3
+        for <cgroups@vger.kernel.org>; Mon, 17 Feb 2025 19:15:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739848512; x=1740453312; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739848514; x=1740453314; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i6fGNeZWtM3FGTNz/p/Bk400jphjU7NfeytH78W3bTI=;
-        b=IE1oxPDCiCRyyHMWTtT7vOWy9SMbICCBDwijtEITyxKztuD5UVIyp2oLwlM8FsNddK
-         KV8CJNdP6N/nIqL+iBB+Woc7zDX7urZGp4tR+diUJXROFhsQVeRaDd6NnJO4vqg82OXR
-         DWj14Znk9SjQCQWlIXVJmL8r3GE6ijuspho8wI9OOxYrSIrsMGF2ockaYvGCMkCiTazH
-         5Hh1V++CGe69XTVREKMx/9xRS2jLPx4HtfTIXIsZXUisBmWPVQd3WYx1yGgl3Y2Y9k4S
-         zEXi1N8Kti43p1MADSGpGhuD4mN2b8FD2W48bqdUlBNyYc4+g/CxfBSIQFK+QfL3a5I3
-         1dxQ==
+        bh=vXMdWzZanXBYybZlSePKoVtUVs1ExwxhVBifYgxpSeU=;
+        b=RJWpQv6D5SS2lir3jhB4KkqT++S/rYesZvP09IsxNV4ujQzrrbeJNFpr3jHNrZqpPZ
+         HUpViRT/AgQzHLXmBAIlhXPEl9gLttpB83BH3HnFcN2regwvsccj5IPP3D1yIqkHTSH8
+         SYpM/yqCTsaaq6qKZ5uYLKQc7qwh9AlC/12e4X7G1U1kryqfHMLztjTtmxrV0wKd2nrL
+         bz3PNL5do5DFLiCvJm6ySchKa3PFvLDtyZIoI3s9WotNlN8+WtWAxZ/9/hBpLWSjNS4i
+         wNtZCoZ5F4Ld/zYqynsK0ykOGyo6rmULtFKPxMrPwtZ6sPOnub+gGsbEqrb/TcAjSYik
+         hoxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739848512; x=1740453312;
+        d=1e100.net; s=20230601; t=1739848514; x=1740453314;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i6fGNeZWtM3FGTNz/p/Bk400jphjU7NfeytH78W3bTI=;
-        b=YZoxkqxz0+f/fHk0o+6Rb6qjgSQwbzXBccD5N3XJntW9vSJliN1CON42fHJ9sBHy0h
-         lHZM7pehnfB3I0p/YbXdjN3hg8prT8v4UxlwD/pDvMyhfd2xcQrQFuCkNWwwT5cSPdh8
-         o77v8LF5c9i+vMKYKKUDocHQvDNXM2kibR4xwaO4S/z41FSZeHNMsTjr5w0d2D+fB46K
-         ySkkm/aOSr/b+J6bD1xFlSddwakK4Mob4D2youEcF7vvbZG++KXiHCJLB4HWCZVs8Zo+
-         Phc7DISIXdQVrPn9Lgcm2C55b30JY6yZR5Kjeb0TbP9Hq4vX2dPD8GWgxRFZIOg899eO
-         xcqw==
-X-Forwarded-Encrypted: i=1; AJvYcCUNofBsrU24g0i3CQjzfIJXLzPGgihGw+x8TWy1EddbM0FJPLMCRIgFabzeyPP6Q3c3I8CO4CpW@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxGH9knZ2RlckxkWCLzO36RWWqZCjptFwZ/ViLBn4Otegi/5qf
-	GEzfMWDey5gBqbsRC/UFkNItKJCYCmHqgSYEd45wX/6kHemlUQgW
-X-Gm-Gg: ASbGnctD+HBiDbqr5FZGmYHPAbpGJBZD1LP4tHS7tCGVasKIBtB2GBNDzvI42WvhtMB
-	rUokeMip3xob7kxgULGcdbqu1jN2A75Fv2p3xkzvDDX9uPysx9A4874Q4537eyFJy6y2NkF2yx7
-	vApuU+lxm/ocuynP6fHePgqk/R9YOmkkl9j2oCk6UK53nH0lUXZhLNy+o1/CIc6pvpLhwyI0Im/
-	GUlQRqiyeM8fLzTw1I6TL7RQL1uU3K04214Lf0oOcM/jMv8H+t/3O/puZHVeXg2l8/+j+q1wRmV
-	HOZCYWjlC2kFrVk3k3XYpv2UdESYNdiz6Lfh3gvEVhxsIzrqPoTl
-X-Google-Smtp-Source: AGHT+IEdc2CfR68/O4SRSN2xNZsygVxwsIe5F71fhvH7zgtYBNKyQ2HCTgHwt2ieGZ7qbMGNDozeDQ==
-X-Received: by 2002:a05:6a20:4323:b0:1ee:83b8:7c6b with SMTP id adf61e73a8af0-1ee8cc084demr18831160637.39.1739848512098;
-        Mon, 17 Feb 2025 19:15:12 -0800 (PST)
+        bh=vXMdWzZanXBYybZlSePKoVtUVs1ExwxhVBifYgxpSeU=;
+        b=s5NMDiE/GTatPfnSu5mqLPG4thxV3+a2DD4aQ+aWkLDgbG9t57e9qcRqlgH3219tmg
+         QGe6z/4luUIGOS5HeLBAMvgbee2ltZb0AYTczOjaHEu1nLVOe+6wDQsMy7cX5OVImCVh
+         qyQ9UXUUa1wuSv32A/8lcqszZw8ePLCWZCInumhW50xvN89RiJc3DH9hKh2Y06sNvVJr
+         tUVs0YkDPhpllyB/1LXZAhsxpb61fIh1S0RMJGVx7mFnuZZvq8dPF0s9K+SHrpGnKYZ/
+         BvatmMmH9F3AfBQY2XA+xbppLDCLSgHoLhSN5inAWD0BzW53YpIqqpjJzlXsXlv2HnDS
+         i7+g==
+X-Forwarded-Encrypted: i=1; AJvYcCWRq3PX+v1yNFMXMKbbNCvi0kz47TDxhlOK/HXX68WkiJCfqe7qR4hkEK99NYoNRE05WHgVbYvS@vger.kernel.org
+X-Gm-Message-State: AOJu0YxfoyYznjdYaTero5AOWsLXMgBidhlrV1szX+h0nIWKVsZ+kvV9
+	c/oQXdKxF3mR9QwUIDoDqPTUQom7LisZQ1GvmZa5n0VbEVXrzp26
+X-Gm-Gg: ASbGncuVzYYy5X0pq/E87A8i38JpFlYjPobFNqLv0WXINlDJZj3k7JtU2AyNSB+HVL+
+	Y4cd5bVeA7fCmTfqa4HP+iZPjww6pP4QQNzdw/vnlCjRPbrWmJO5NzPCd2xZDA/SS6bJWT8Lb9m
+	DESzjlQDacU4j0Yuk/+16sqetN4l3oVOhCyBXBq4UqFASSyGaOkoJ2zVXN86nw4wqQ3buU8cM1U
+	mLWN62lhk6h0i9YCZM1zwnoQcCxpdFReU67Of2mxS/TDQDAv/9UPpUUNmZ9IBvjq54GMft4yLKY
+	wxZ93mKLhik8qp9Uw8coFwOklT1FSDIxR7deJWAXc89OvRcol+Jr
+X-Google-Smtp-Source: AGHT+IFwOfJPEGgpHYiuDd9xb8LF4nSMRJ63khUyuJwnxeuzlQfZkRMasq2TDIXK5ON9SxXG0Sczxw==
+X-Received: by 2002:a05:6a00:22cc:b0:730:9467:b4af with SMTP id d2e1a72fcca58-732619005bfmr17987615b3a.23.1739848513618;
+        Mon, 17 Feb 2025 19:15:13 -0800 (PST)
 Received: from saturn.. (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-732425466besm8763451b3a.9.2025.02.17.19.15.09
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-732425466besm8763451b3a.9.2025.02.17.19.15.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2025 19:15:11 -0800 (PST)
+        Mon, 17 Feb 2025 19:15:13 -0800 (PST)
 From: JP Kobryn <inwardvessel@gmail.com>
 To: shakeel.butt@linux.dev,
 	tj@kernel.org,
@@ -82,9 +82,9 @@ To: shakeel.butt@linux.dev,
 Cc: linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH 07/11] cgroup: fetch cpu-specific lock in rstat cpu lock helpers
-Date: Mon, 17 Feb 2025 19:14:44 -0800
-Message-ID: <20250218031448.46951-8-inwardvessel@gmail.com>
+Subject: [PATCH 08/11] cgroup: rstat cpu lock indirection
+Date: Mon, 17 Feb 2025 19:14:45 -0800
+Message-ID: <20250218031448.46951-9-inwardvessel@gmail.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250218031448.46951-1-inwardvessel@gmail.com>
 References: <20250218031448.46951-1-inwardvessel@gmail.com>
@@ -96,134 +96,236 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The lock/unlock helper functions for per-cpu locks accept a cpu
-argument. This makes them appear as if the cpu will be used as the
-offset off of the base per-cpu pointer. But in fact, the cpu is only
-used as a tracepoint argument. Change the functions so that the cpu is
-also used primarily for looking up the lock specific to this cpu. This
-means the call sites can be adjusted to not have to perform the offset
-prior to calling this function. Note that this follows suit with other
-functions in the rstat source - functions that accept a cpu argument
-perform the per-cpu pointer lookup within as opposed to having clients
-lookup in advance.
+Where functions access the global per-cpu lock, change their signature
+to accept the lock instead as a paremeter. Change the code within these
+functions to only access the parameter. This indirection allows for
+future code to accept different locks, increasing extensibity. For
+example, a new lock could be added specifically for the bpf cgroups and
+it would not contend with the existing lock.
 
 Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
 ---
- kernel/cgroup/rstat.c | 37 +++++++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 16 deletions(-)
+ kernel/cgroup/rstat.c | 74 +++++++++++++++++++++++++------------------
+ 1 file changed, 43 insertions(+), 31 deletions(-)
 
 diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 26c75629bca2..4cb0f3ffc1db 100644
+index 4cb0f3ffc1db..9f6da3ea3c8c 100644
 --- a/kernel/cgroup/rstat.c
 +++ b/kernel/cgroup/rstat.c
-@@ -115,7 +115,12 @@ static struct cgroup_rstat_ops rstat_bpf_ops = {
- #endif /* CONFIG_CGROUP_BPF */
- 
- /*
-- * Helper functions for rstat per CPU lock (cgroup_rstat_cpu_lock).
-+ * Helper functions for rstat per-cpu locks.
-+ * @lock: pointer to per-cpu lock variable
-+ * @cpu: the cpu to use for getting the cpu-specific lock
-+ * @cgrp: the associated cgroup
-+ * @fast_path: whether this function is called while updating
-+ *	in the fast path or flushing in the NON-fast path
-  *
-  * This makes it easier to diagnose locking issues and contention in
-  * production environments. The parameter @fast_path determine the
-@@ -123,19 +128,20 @@ static struct cgroup_rstat_ops rstat_bpf_ops = {
-  * operations without handling high-frequency fast-path "update" events.
-  */
- static __always_inline
--unsigned long _cgroup_rstat_cpu_lock(raw_spinlock_t *cpu_lock, int cpu,
-+unsigned long _cgroup_rstat_cpu_lock(raw_spinlock_t *lock, int cpu,
- 				     struct cgroup *cgrp, const bool fast_path)
- {
-+	raw_spinlock_t *cpu_lock = per_cpu_ptr(lock, cpu);
- 	unsigned long flags;
- 	bool contended;
- 
- 	/*
--	 * The _irqsave() is needed because cgroup_rstat_lock is
--	 * spinlock_t which is a sleeping lock on PREEMPT_RT. Acquiring
--	 * this lock with the _irq() suffix only disables interrupts on
--	 * a non-PREEMPT_RT kernel. The raw_spinlock_t below disables
--	 * interrupts on both configurations. The _irqsave() ensures
--	 * that interrupts are always disabled and later restored.
-+	 * The _irqsave() is needed because the locks used for flushing
-+	 * are spinlock_t which is a sleeping lock on PREEMPT_RT.
-+	 * Acquiring this lock with the _irq() suffix only disables
-+	 * interrupts on a non-PREEMPT_RT kernel. The raw_spinlock_t below
-+	 * disables interrupts on both configurations. The _irqsave()
-+	 * ensures that interrupts are always disabled and later restored.
- 	 */
- 	contended = !raw_spin_trylock_irqsave(cpu_lock, flags);
- 	if (contended) {
-@@ -156,10 +162,12 @@ unsigned long _cgroup_rstat_cpu_lock(raw_spinlock_t *cpu_lock, int cpu,
+@@ -177,7 +177,7 @@ void _cgroup_rstat_cpu_unlock(raw_spinlock_t *lock, int cpu,
  }
  
- static __always_inline
--void _cgroup_rstat_cpu_unlock(raw_spinlock_t *cpu_lock, int cpu,
-+void _cgroup_rstat_cpu_unlock(raw_spinlock_t *lock, int cpu,
- 			      struct cgroup *cgrp, unsigned long flags,
- 			      const bool fast_path)
- {
-+	raw_spinlock_t *cpu_lock = per_cpu_ptr(lock, cpu);
-+
- 	if (fast_path)
- 		trace_cgroup_rstat_cpu_unlock_fastpath(cgrp, cpu, false);
- 	else
-@@ -172,8 +180,6 @@ static void __cgroup_rstat_updated(struct cgroup_rstat *rstat, int cpu,
- 		struct cgroup_rstat_ops *ops)
+ static void __cgroup_rstat_updated(struct cgroup_rstat *rstat, int cpu,
+-		struct cgroup_rstat_ops *ops)
++		struct cgroup_rstat_ops *ops, raw_spinlock_t *cpu_lock)
  {
  	struct cgroup *cgrp;
--
--	raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
  	unsigned long flags;
- 
- 	/*
-@@ -188,7 +194,7 @@ static void __cgroup_rstat_updated(struct cgroup_rstat *rstat, int cpu,
+@@ -194,7 +194,7 @@ static void __cgroup_rstat_updated(struct cgroup_rstat *rstat, int cpu,
  		return;
  
  	cgrp = ops->cgroup_fn(rstat);
--	flags = _cgroup_rstat_cpu_lock(cpu_lock, cpu, cgrp, true);
-+	flags = _cgroup_rstat_cpu_lock(&cgroup_rstat_cpu_lock, cpu, cgrp, true);
+-	flags = _cgroup_rstat_cpu_lock(&cgroup_rstat_cpu_lock, cpu, cgrp, true);
++	flags = _cgroup_rstat_cpu_lock(cpu_lock, cpu, cgrp, true);
  
  	/* put @rstat and all ancestors on the corresponding updated lists */
  	while (true) {
-@@ -216,7 +222,7 @@ static void __cgroup_rstat_updated(struct cgroup_rstat *rstat, int cpu,
+@@ -222,7 +222,7 @@ static void __cgroup_rstat_updated(struct cgroup_rstat *rstat, int cpu,
  		rstat = parent;
  	}
  
--	_cgroup_rstat_cpu_unlock(cpu_lock, cpu, cgrp, flags, true);
-+	_cgroup_rstat_cpu_unlock(&cgroup_rstat_cpu_lock, cpu, cgrp, flags, true);
+-	_cgroup_rstat_cpu_unlock(&cgroup_rstat_cpu_lock, cpu, cgrp, flags, true);
++	_cgroup_rstat_cpu_unlock(cpu_lock, cpu, cgrp, flags, true);
  }
  
  /**
-@@ -315,14 +321,13 @@ static struct cgroup_rstat *cgroup_rstat_push_children(
- static struct cgroup_rstat *cgroup_rstat_updated_list(
- 		struct cgroup_rstat *root, int cpu, struct cgroup_rstat_ops *ops)
+@@ -236,13 +236,15 @@ static void __cgroup_rstat_updated(struct cgroup_rstat *rstat, int cpu,
+  */
+ void cgroup_rstat_updated(struct cgroup_subsys_state *css, int cpu)
  {
--	raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
+-	__cgroup_rstat_updated(&css->rstat, cpu, &rstat_css_ops);
++	__cgroup_rstat_updated(&css->rstat, cpu, &rstat_css_ops,
++			&cgroup_rstat_cpu_lock);
+ }
+ 
+ #ifdef CONFIG_CGROUP_BPF
+ __bpf_kfunc void bpf_cgroup_rstat_updated(struct cgroup *cgroup, int cpu)
+ {
+-	__cgroup_rstat_updated(&(cgroup->bpf.rstat), cpu, &rstat_bpf_ops);
++	__cgroup_rstat_updated(&(cgroup->bpf.rstat), cpu, &rstat_bpf_ops,
++			&cgroup_rstat_cpu_lock);
+ }
+ #endif /* CONFIG_CGROUP_BPF */
+ 
+@@ -319,7 +321,8 @@ static struct cgroup_rstat *cgroup_rstat_push_children(
+  * here is the cgroup root whose updated_next can be self terminated.
+  */
+ static struct cgroup_rstat *cgroup_rstat_updated_list(
+-		struct cgroup_rstat *root, int cpu, struct cgroup_rstat_ops *ops)
++		struct cgroup_rstat *root, int cpu, struct cgroup_rstat_ops *ops,
++		raw_spinlock_t *cpu_lock)
+ {
  	struct cgroup_rstat_cpu *rstatc = rstat_cpu(root, cpu);
  	struct cgroup_rstat *head = NULL, *parent, *child;
- 	struct cgroup *cgrp;
+@@ -327,7 +330,7 @@ static struct cgroup_rstat *cgroup_rstat_updated_list(
  	unsigned long flags;
  
  	cgrp = ops->cgroup_fn(root);
--	flags = _cgroup_rstat_cpu_lock(cpu_lock, cpu, cgrp, false);
-+	flags = _cgroup_rstat_cpu_lock(&cgroup_rstat_cpu_lock, cpu, cgrp, false);
+-	flags = _cgroup_rstat_cpu_lock(&cgroup_rstat_cpu_lock, cpu, cgrp, false);
++	flags = _cgroup_rstat_cpu_lock(cpu_lock, cpu, cgrp, false);
  
  	/* Return NULL if this subtree is not on-list */
  	if (!rstatc->updated_next)
-@@ -359,7 +364,7 @@ static struct cgroup_rstat *cgroup_rstat_updated_list(
+@@ -364,7 +367,7 @@ static struct cgroup_rstat *cgroup_rstat_updated_list(
  	if (child != root)
  		head = cgroup_rstat_push_children(head, child, cpu, ops);
  unlock_ret:
--	_cgroup_rstat_cpu_unlock(cpu_lock, cpu, cgrp, flags, false);
-+	_cgroup_rstat_cpu_unlock(&cgroup_rstat_cpu_lock, cpu, cgrp, flags, false);
+-	_cgroup_rstat_cpu_unlock(&cgroup_rstat_cpu_lock, cpu, cgrp, flags, false);
++	_cgroup_rstat_cpu_unlock(cpu_lock, cpu, cgrp, flags, false);
  	return head;
  }
  
+@@ -422,43 +425,46 @@ static inline void __cgroup_rstat_unlock(spinlock_t *lock,
+ 
+ /* see cgroup_rstat_flush() */
+ static void cgroup_rstat_flush_locked(struct cgroup_rstat *rstat,
+-		struct cgroup_rstat_ops *ops)
+-	__releases(&cgroup_rstat_lock) __acquires(&cgroup_rstat_lock)
++		struct cgroup_rstat_ops *ops, spinlock_t *lock,
++		raw_spinlock_t *cpu_lock)
++	__releases(lock) __acquires(lock)
+ {
+ 	int cpu;
+ 
+-	lockdep_assert_held(&cgroup_rstat_lock);
++	lockdep_assert_held(lock);
+ 
+ 	for_each_possible_cpu(cpu) {
+ 		struct cgroup_rstat *pos = cgroup_rstat_updated_list(
+-				rstat, cpu, ops);
++				rstat, cpu, ops, cpu_lock);
+ 
+ 		for (; pos; pos = pos->rstat_flush_next)
+ 			ops->flush_fn(pos, cpu);
+ 
+ 		/* play nice and yield if necessary */
+-		if (need_resched() || spin_needbreak(&cgroup_rstat_lock)) {
++		if (need_resched() || spin_needbreak(lock)) {
+ 			struct cgroup *cgrp;
+ 
+ 			cgrp = ops->cgroup_fn(rstat);
+-			__cgroup_rstat_unlock(&cgroup_rstat_lock, cgrp, cpu);
++			__cgroup_rstat_unlock(lock, cgrp, cpu);
+ 			if (!cond_resched())
+ 				cpu_relax();
+-			__cgroup_rstat_lock(&cgroup_rstat_lock, cgrp, cpu);
++			__cgroup_rstat_lock(lock, cgrp, cpu);
+ 		}
+ 	}
+ }
+ 
+ static void __cgroup_rstat_flush(struct cgroup_rstat *rstat,
+-		struct cgroup_rstat_ops *ops)
++		struct cgroup_rstat_ops *ops, spinlock_t *lock,
++		raw_spinlock_t *cpu_lock)
++	__acquires(lock) __releases(lock)
+ {
+ 	struct cgroup *cgrp;
+ 
+ 	might_sleep();
+ 	cgrp = ops->cgroup_fn(rstat);
+-	__cgroup_rstat_lock(&cgroup_rstat_lock, cgrp, -1);
+-	cgroup_rstat_flush_locked(rstat, ops);
+-	__cgroup_rstat_unlock(&cgroup_rstat_lock, cgrp, -1);
++	__cgroup_rstat_lock(lock, cgrp, -1);
++	cgroup_rstat_flush_locked(rstat, ops, lock, cpu_lock);
++	__cgroup_rstat_unlock(lock, cgrp, -1);
+ }
+ 
+ /**
+@@ -476,26 +482,29 @@ static void __cgroup_rstat_flush(struct cgroup_rstat *rstat,
+  */
+ void cgroup_rstat_flush(struct cgroup_subsys_state *css)
+ {
+-	__cgroup_rstat_flush(&css->rstat, &rstat_css_ops);
++	__cgroup_rstat_flush(&css->rstat, &rstat_css_ops,
++			&cgroup_rstat_lock, &cgroup_rstat_cpu_lock);
+ }
+ 
+ #ifdef CONFIG_CGROUP_BPF
+ __bpf_kfunc void bpf_cgroup_rstat_flush(struct cgroup *cgroup)
+ {
+-	__cgroup_rstat_flush(&(cgroup->bpf.rstat), &rstat_bpf_ops);
++	__cgroup_rstat_flush(&(cgroup->bpf.rstat), &rstat_bpf_ops,
++			&cgroup_rstat_lock, &cgroup_rstat_cpu_lock);
+ }
+ #endif /* CONFIG_CGROUP_BPF */
+ 
+ static void __cgroup_rstat_flush_hold(struct cgroup_rstat *rstat,
+-		struct cgroup_rstat_ops *ops)
+-	__acquires(&cgroup_rstat_lock)
++		struct cgroup_rstat_ops *ops, spinlock_t *lock,
++		raw_spinlock_t *cpu_lock)
++	__acquires(lock)
+ {
+ 	struct cgroup *cgrp;
+ 
+ 	might_sleep();
+ 	cgrp = ops->cgroup_fn(rstat);
+-	__cgroup_rstat_lock(&cgroup_rstat_lock, cgrp, -1);
+-	cgroup_rstat_flush_locked(rstat, ops);
++	__cgroup_rstat_lock(lock, cgrp, -1);
++	cgroup_rstat_flush_locked(rstat, ops, lock, cpu_lock);
+ }
+ 
+ /**
+@@ -509,7 +518,8 @@ static void __cgroup_rstat_flush_hold(struct cgroup_rstat *rstat,
+  */
+ void cgroup_rstat_flush_hold(struct cgroup_subsys_state *css)
+ {
+-	__cgroup_rstat_flush_hold(&css->rstat, &rstat_css_ops);
++	__cgroup_rstat_flush_hold(&css->rstat, &rstat_css_ops,
++			&cgroup_rstat_lock, &cgroup_rstat_cpu_lock);
+ }
+ 
+ /**
+@@ -517,13 +527,13 @@ void cgroup_rstat_flush_hold(struct cgroup_subsys_state *css)
+  * @rstat: rstat node used to find associated cgroup used by tracepoint
+  */
+ static void __cgroup_rstat_flush_release(struct cgroup_rstat *rstat,
+-		struct cgroup_rstat_ops *ops)
+-	__releases(&cgroup_rstat_lock)
++		struct cgroup_rstat_ops *ops, spinlock_t *lock)
++	__releases(lock)
+ {
+ 	struct cgroup *cgrp;
+ 
+ 	cgrp = ops->cgroup_fn(rstat);
+-	__cgroup_rstat_unlock(&cgroup_rstat_lock, cgrp, -1);
++	__cgroup_rstat_unlock(lock, cgrp, -1);
+ }
+ 
+ /**
+@@ -532,7 +542,8 @@ static void __cgroup_rstat_flush_release(struct cgroup_rstat *rstat,
+  */
+ void cgroup_rstat_flush_release(struct cgroup_subsys_state *css)
+ {
+-	__cgroup_rstat_flush_release(&css->rstat, &rstat_css_ops);
++	__cgroup_rstat_flush_release(&css->rstat, &rstat_css_ops,
++			&cgroup_rstat_lock);
+ }
+ 
+ static void __cgroup_rstat_init(struct cgroup_rstat *rstat)
+@@ -605,7 +616,8 @@ int bpf_cgroup_rstat_init(struct cgroup_bpf *bpf)
+ 
+ void bpf_cgroup_rstat_exit(struct cgroup_bpf *bpf)
+ {
+-	__cgroup_rstat_flush(&bpf->rstat, &rstat_bpf_ops);
++	__cgroup_rstat_flush(&bpf->rstat, &rstat_bpf_ops,
++			&cgroup_rstat_lock, &cgroup_rstat_cpu_lock);
+ 	__cgroup_rstat_exit(&bpf->rstat);
+ }
+ #endif /* CONFIG_CGROUP_BPF */
 -- 
 2.48.1
 
