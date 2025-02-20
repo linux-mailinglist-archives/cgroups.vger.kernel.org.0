@@ -1,134 +1,279 @@
-Return-Path: <cgroups+bounces-6618-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6619-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E923BA3DF6A
-	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 16:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42172A3E015
+	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 17:14:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4626219C610F
-	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 15:51:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 692C218998BC
+	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 16:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B10F1FE45A;
-	Thu, 20 Feb 2025 15:51:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD267202C36;
+	Thu, 20 Feb 2025 16:13:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aDv0FUkg"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SHMEoqUX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFCB8F5B
-	for <cgroups@vger.kernel.org>; Thu, 20 Feb 2025 15:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DEC91FFC78
+	for <cgroups@vger.kernel.org>; Thu, 20 Feb 2025 16:13:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740066665; cv=none; b=N+6h2QRiv9x7cvq8iqNbyHDbiTW29K6yUAFp5mewP+TGaXlPHEiSkYadfBWj0qXe8UwwR0ihjUf6lFKD2sJUOipGxluZwz7IPtmbuOJ8p9uWrL/qBYHB9ndoDVQcB8BmWVYxLi4EEKIIBf55FENH2/Ay6Js7oyhqDWOZcUQ7kbI=
+	t=1740068021; cv=none; b=rjVCtkVrtOxXGMd3bpiXuc8p0ylkn15ZjcQ6/1c+5EScTF2cE78tJdIRVfLXq5GHlKVjPWnMvp1koLMJGOJpRIxSc5uM6pL3H5dRhsHVGPbM4LLVni+aksCcD2Q9POkClcxUkBDJ1AaoRyV2eJN7U5q7eGqrQAT0NSgQNgnq1xc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740066665; c=relaxed/simple;
-	bh=74D4z/8LfODGfOhZKyP3pWUaQ47cVcZEFucwpuFpn2c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WHcCRbdVX9Zskld8ikLLMKmrRQYZtr3E3GPFsnNnL+EHJDnJwwUSp3mwayx1ffNxnvBODIBesPIbU9tBnD9As8QTTvpfA0tql3xVXoaTIPem/3AjyN2UHwk/WS7N9wgSIZpwWUFs1Ki0xsB6E0LLPTgo5NaIvg61qfZTAlQVVQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aDv0FUkg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57281C4CEDD;
-	Thu, 20 Feb 2025 15:51:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740066664;
-	bh=74D4z/8LfODGfOhZKyP3pWUaQ47cVcZEFucwpuFpn2c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aDv0FUkgMQbpqiIVJ2jkiT71UOS7AohZ71hzvBNb0EKKVwqe0gufVDyGqAMo+E2k7
-	 5qMRSZt6Ncq2fAqTYXSVlQCpZxggVaBVciwfeXNtTDz6a0K+cLtowf8AYnkAte7yd+
-	 TxwdYRXHZeg49dpHn0cTlyg5z5DkPa4oiyA4ILykKPMiddmbyjjgx2Fr/gn8CKlDcD
-	 YpvATWMzzIZQlOsh2C3qR9rhorUxntKcO1NSS+c+QpF5cp7jnMYboEAeTRuF6gxm4j
-	 ETbnQDLteSLlgwHTW0425DaKyYt49d0jYV2cnj+Hrzu82F5Ai1XcMyHBYIJOcTDoVa
-	 jpGag1JNbipKQ==
-Date: Thu, 20 Feb 2025 05:51:03 -1000
-From: Tejun Heo <tj@kernel.org>
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: shakeel.butt@linux.dev, mhocko@kernel.org, hannes@cmpxchg.org,
-	yosryahmed@google.com, akpm@linux-foundation.org,
-	linux-mm@kvack.org, cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 00/11] cgroup: separate rstat trees
-Message-ID: <Z7dPZ9dNcaYuT6SA@slm.duckdns.org>
-References: <20250218031448.46951-1-inwardvessel@gmail.com>
+	s=arc-20240116; t=1740068021; c=relaxed/simple;
+	bh=WJjthDEu0Fp7g6aRbLnGr4v0ahBplluVun4mHaBwH1w=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=aSAHkIhxG71uBBkM9ZRDqH9arwzmyWhuc6nGiRhRjn9ooRh6aXV7v1x1bcz/lylsfrmmeAIIedNkVWcwGXLNvbYfW25B3SAJCsyQLKVR6BfVG2Bl1z7xgVRwoQc/md2TKEJXWnrt6JeMeSjMUqFtJ4/Iwr0N5+UKnjJVBKax3os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SHMEoqUX; arc=none smtp.client-ip=209.85.222.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-866e8a51fa9so704627241.1
+        for <cgroups@vger.kernel.org>; Thu, 20 Feb 2025 08:13:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1740068018; x=1740672818; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=V879Iy5VcztBBIWmczzB/FWi9rCG1hoQENLoZiXnBvA=;
+        b=SHMEoqUX/rslKiMZ82tfUz0NB5ExB+b6BK1ZvMlEEDcFJ7Wr9MJMRLqqSnqkxcgrf6
+         +4xG8gsh6Z7OHAcQ7aWNPR4gqxHuLxLMJoSuVmOGck8nf5iSFHXwPZKj2umfGUCkY0Cz
+         TVBpKEe/6aKcWFUzsfoifAHgho1G2kEuCcYfg5KNPmjiYkp7kwcmTIWTheeTWrcZZdES
+         vj8EhS7rCDh2V/yTJm6r02L3dFpfk8jZBNHg6ZJITQseI7oAecZa2tzOteRn27lswiYE
+         tK1EZ+bjwU/gZBzfJHuY0wevw06JNGPSB4Fn4FBguQ5GjQK4pwO7HvT96SI9yDMvsiNm
+         2scg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740068018; x=1740672818;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V879Iy5VcztBBIWmczzB/FWi9rCG1hoQENLoZiXnBvA=;
+        b=t2RgadczEDfU5rJNE4M4B0akrqh2f03+HdQuZCymhyiaT+uAIm9xiD/EZ3pMlDQHaT
+         pZ7Y5wHHYcvUtg0nd2t0qAJur6abO00/feMSg32QBBelg2dtVaAoxqKCUfmzCSwhM3e0
+         xU0XBDynS8fPwAbWEOESss5u5hc1lZRfSRc1w3NP5qg7kHoVytXlAW+tdeIa3le2pzMy
+         +Q/IORK8fiZuWovt0tVHTiL+m3I/nR4SpzCkPHaJ1EIR4P9Gl/yXyyW/orZ6IWEIWz3m
+         IB/kql8QS2aCkcp3KKzuwJT07nOpTdMGJo8FRIBjLdyKRvIjww7tf/0eg27AW1Jgh+CH
+         K44Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUDvOLWLWsoKNyMLv4OSo7hAWd+h7/0Wx3iJhn/ixlMLB3aEHh5LXI8+Tg+WWec60HT+1qIKXkI@vger.kernel.org
+X-Gm-Message-State: AOJu0Yykx9tY/glp9xxkxBZO9YiIJf/pkPB/3nfx7ZyU1x30IKoGvmKX
+	HA3+9CGMbF9PtXdbqRDe4VhUwb3HlyLsYUbfHgaFl3BoQzN5dywxO1X9IZxBXrgl5iXpK3aMseM
+	EInw0hvVjdZF6qYgDSombbsrk+gI4l2zARol6U9avBMolEy6UViQ=
+X-Gm-Gg: ASbGncsJpSOa9x+XLJMq6w58ZvP87EW5B/6wFItYDxaALc1ZTm6wUQDbmvqyTUAGzAr
+	tMCTTGTNIzfnPjdq2dlunSeiQ4cZSqeyVgpmaEiNeohj3aNHyb9PoZn1J17f40Zx2znjaOSBDhP
+	WxGImJmiecrSxab/I+sF2Z8HU6FiU4HQ==
+X-Google-Smtp-Source: AGHT+IFOiwZCl0rxvNfwH8m/y6qEhO2vlqH8zC1rbxAsDQ/BH7O5MpliguoeJImu0JZ1xu0+r0UbS2zjSMnKnLqd9RA=
+X-Received: by 2002:a05:6122:17a7:b0:51e:ffd1:67f3 with SMTP id
+ 71dfb90a1353d-521dce38ba8mr2135245e0c.7.1740068018212; Thu, 20 Feb 2025
+ 08:13:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250218031448.46951-1-inwardvessel@gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 20 Feb 2025 21:43:26 +0530
+X-Gm-Features: AWEUYZkFcm73g8zLPsZavQg0Lht5rrlBSiureL7_1d0H-gYUnSDy_oWi453RMyo
+Message-ID: <CA+G9fYuVngeOP_t063LbiJ+8yf-f+5tRt-A3-Hj=_X9XmZ108w@mail.gmail.com>
+Subject: next-20250218: arm64 LTP pids kernel panic loop_free_idle_workers
+To: linux-block <linux-block@vger.kernel.org>, Cgroups <cgroups@vger.kernel.org>, 
+	Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-mm <linux-mm@kvack.org>, 
+	open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org, 
+	LTP List <ltp@lists.linux.it>
+Cc: Jens Axboe <axboe@kernel.dk>, Andrew Morton <akpm@linux-foundation.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Anders Roxell <anders.roxell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Regression on qemu-arm64 the kernel panic noticed while running the
+LTP controllers pids.sh test cases on Linux next 20250218 and started
+from the next-20250214
 
-On Mon, Feb 17, 2025 at 07:14:37PM -0800, JP Kobryn wrote:
-...
-> The first experiment consisted of a parent cgroup with memory.swap.max=0
-> and memory.max=1G. On a 52-cpu machine, 26 child cgroups were created and
-> within each child cgroup a process was spawned to encourage the updating of
-> memory cgroup stats by creating and then reading a file of size 1T
-> (encouraging reclaim). These 26 tasks were run in parallel.  While this was
-> going on, a custom program was used to open cpu.stat file of the parent
-> cgroup, read the entire file 1M times, then close it. The perf report for
-> the task performing the reading showed that most of the cycles (42%) were
-> spent on the function mem_cgroup_css_rstat_flush() of the control side. It
-> also showed a smaller but significant number of cycles spent in
-> __blkcg_rstat_flush. The perf report for patched kernel differed in that no
-> cycles were spent in these functions. Instead most cycles were spent on
-> cgroup_base_stat_flush(). Aside from the perf reports, the amount of time
-> spent running the program performing the reading of cpu.stats showed a gain
-> when comparing the control to the experimental kernel.The time in kernel
-> mode was reduced.
-> 
-> before:
-> real    0m18.449s
-> user    0m0.209s
-> sys     0m18.165s
-> 
-> after:
-> real    0m6.080s
-> user    0m0.170s
-> sys     0m5.890s
-> 
-> Another experiment on the same host was setup using a parent cgroup with
-> two child cgroups. The same swap and memory max were used as the previous
-> experiment. In the two child cgroups, kernel builds were done in parallel,
-> each using "-j 20". The program from the previous experiment was used to
-> perform 1M reads of the parent cpu.stat file. The perf comparison showed
-> similar results as the previous experiment. For the control side, a
-> majority of cycles (42%) on mem_cgroup_css_rstat_flush() and significant
-> cycles in __blkcg_rstat_flush(). On the experimental side, most cycles were
-> spent on cgroup_base_stat_flush() and no cycles were spent flushing memory
-> or io. As for the time taken by the program reading cpu.stat, measurements
-> are shown below.
-> 
-> before:
-> real    0m17.223s
-> user    0m0.259s
-> sys     0m16.871s
-> 
-> after:
-> real    0m6.498s
-> user    0m0.237s
-> sys     0m6.220s
-> 
-> For the final experiment, perf events were recorded during a kernel build
-> with the same host and cgroup setup. The builds took place in the child
-> node.  Control and experimental sides both showed similar in cycles spent
-> on cgroup_rstat_updated() and appeard insignificant compared among the
-> events recorded with the workload.
+Test regression: arm64 LTP pids kernel panic loop_free_idle_workers
 
-One of the reasons why the original design used one rstat tree is because
-readers, in addition to writers, can often be correlated too - e.g. You'd
-often have periodic monitoring tools which poll all the major stat files
-periodically. Splitting the trees will likely make those at least a bit
-worse. Can you test how much worse that'd be? ie. Repeat the above tests but
-read all the major stat files - cgroup.stat, cpu.stat, memory.stat and
-io.stat.
+Started noticing from next-20250214.
+Good: next-20250213
+Bad: next-20250213..next-20250218
 
-Thanks.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
--- 
-tejun
+Boot log:
+---------
+[    0.000000] Linux version 6.14.0-rc2-next-20250214
+(tuxmake@tuxmake) (aarch64-linux-gnu-gcc (Debian 13.3.0-12) 13.3.0,
+GNU ld (GNU Binutils for Debian) 2.43.90.20250127) #1 SMP PREEMPT
+@1739528119
+<trim>
+command: pids.sh 6 50 0
+<12>[  221.776255] /usr/local/bin/kirk[262]: starting test pids_6_50
+(pids.sh 6 50 0)
+pids 1 TINFO: Running: pids.sh 6 50 0
+pids 1 TINFO: Tested kernel: Linux
+runner-ykxhnyexq-project-40964107-concurrent-0
+6.14.0-rc2-next-20250214 #1 SMP PREEMPT @1739528119 aarch64 GNU/Linux
+pids 1 TINFO: ceiling LTP_TIMEOUT_MUL to 11
+pids 1 TINFO: timeout per run is 0h 55m 0s
+pids 1 TINFO: test starts with cgroup version 2
+pids 1 TINFO: Running testcase 6 with 50 processes
+pids 1 TINFO: set a limit that is smaller than current number of pids
+<1>[  224.406844] Unable to handle kernel paging request at virtual
+address dead000000000108
+<1>[  224.407052] Mem abort info:
+<1>[  224.407100]   ESR =3D 0x0000000096000044
+<1>[  224.407219]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+<1>[  224.407315]   SET =3D 0, FnV =3D 0
+<1>[  224.407400]   EA =3D 0, S1PTW =3D 0
+<1>[  224.407459]   FSC =3D 0x04: level 0 translation fault
+<1>[  224.407536] Data abort info:
+<1>[  224.407577]   ISV =3D 0, ISS =3D 0x00000044, ISS2 =3D 0x00000000
+<1>[  224.407621]   CM =3D 0, WnR =3D 1, TnD =3D 0, TagAccess =3D 0
+<1>[  224.407697]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
+<1>[  224.407809] [dead000000000108] address between user and kernel
+address ranges
+<0>[  224.408307] Internal error: Oops: 0000000096000044 [#1] PREEMPT SMP
+<4>[  224.416979] Modules linked in: btrfs blake2b_generic xor
+xor_neon raid6_pq zstd_compress sm3_ce sm3 sha3_ce sha512_ce
+sha512_arm64 fuse drm backlight ip_tables x_tables
+<4>[  224.421352] CPU: 0 UID: 0 PID: 3368 Comm: pids_task2 Not tainted
+6.14.0-rc2-next-20250214 #1
+<4>[  224.422657] Hardware name: linux,dummy-virt (DT)
+<4>[  224.423946] pstate: 224020c9 (nzCv daIF +PAN -UAO +TCO -DIT
+-SSBS BTYPE=3D--)
+<4>[ 224.424677] pc : loop_free_idle_workers (include/linux/list.h:195
+include/linux/list.h:218 include/linux/list.h:229
+drivers/block/loop.c:917)
+<4>[ 224.426548] lr : loop_free_idle_workers (drivers/block/loop.c:911
+(discriminator 2))
+<4>[  224.427338] sp : ffff800080003d50
+<4>[  224.427910] x29: ffff800080003d50 x28: fff238a88301c500 x27:
+fff238a883084c00
+<4>[  224.429587] x26: ffffa298bac57000 x25: ffffffffffffc568 x24:
+dead000000000122
+<4>[  224.430697] x23: fff238a880370ac8 x22: dead000000000100 x21:
+0000000000000000
+<4>[  224.432004] x20: fff238a880370ab8 x19: dead0000000000b8 x18:
+ffff800083d9bb90
+<4>[  224.432538] x17: fff296100496b000 x16: ffff800080000000 x15:
+0000ffff8d0a9fff
+<4>[  224.433866] x14: 0000000000000000 x13: 1ffe47151065cc61 x12:
+fff238a8832e630c
+<4>[  224.434769] x11: 003a9cb01550c679 x10: fff238a8bf4b7f70 x9 :
+ffffa298b8fc3cd0
+<4>[  224.436209] x8 : ffff800080003c28 x7 : 0000000000000101 x6 :
+ffff800080003ce0
+<4>[  224.437070] x5 : fff238a880eba680 x4 : dead000000000100 x3 :
+dead000000000122
+<4>[  224.438027] x2 : 0000000000000000 x1 : 00000000ffff50fc x0 :
+00000000ffff7b68
+<4>[  224.439174] Call trace:
+<4>[ 224.439882] loop_free_idle_workers (include/linux/list.h:195
+include/linux/list.h:218 include/linux/list.h:229
+drivers/block/loop.c:917) (P)
+<4>[ 224.440765] loop_free_idle_workers_timer (drivers/block/loop.c:932)
+<4>[ 224.441223] call_timer_fn (arch/arm64/include/asm/jump_label.h:36
+include/trace/events/timer.h:127 kernel/time/timer.c:1790)
+<4>[ 224.441822] __run_timers (kernel/time/timer.c:1841
+kernel/time/timer.c:2414)
+<4>[ 224.442389] run_timer_base (kernel/time/timer.c:2427
+kernel/time/timer.c:2418 kernel/time/timer.c:2435)
+<4>[ 224.442855] run_timer_softirq
+(arch/arm64/include/asm/jump_label.h:36 kernel/time/timer.c:342
+kernel/time/timer.c:2448)
+<4>[ 224.443547] handle_softirqs
+(arch/arm64/include/asm/jump_label.h:36 include/trace/events/irq.h:142
+kernel/softirq.c:562)
+<4>[ 224.444121] __do_softirq (kernel/softirq.c:596)
+<4>[ 224.444755] ____do_softirq (arch/arm64/kernel/irq.c:82)
+<4>[ 224.445204] call_on_irq_stack (arch/arm64/kernel/entry.S:897)
+<4>[ 224.445670] do_softirq_own_stack (arch/arm64/kernel/irq.c:87)
+<4>[ 224.445964] __irq_exit_rcu (kernel/softirq.c:442 kernel/softirq.c:662)
+<4>[ 224.446295] irq_exit_rcu (kernel/softirq.c:680)
+<4>[ 224.446808] el1_interrupt (arch/arm64/include/asm/current.h:19
+arch/arm64/kernel/entry-common.c:280
+arch/arm64/kernel/entry-common.c:563
+arch/arm64/kernel/entry-common.c:575)
+<4>[ 224.447585] el1h_64_irq_handler (arch/arm64/kernel/entry-common.c:581)
+<4>[ 224.448079] el1h_64_irq (arch/arm64/kernel/entry.S:596)
+<4>[ 224.448796] try_charge_memcg (mm/memcontrol.c:1803
+mm/memcontrol.c:2222) (P)
+<4>[ 224.449589] charge_memcg (mm/memcontrol.c:4541)
+<4>[ 224.450399] __mem_cgroup_charge (include/linux/cgroup_refcnt.h:78
+mm/memcontrol.c:4558)
+<4>[ 224.451234] __handle_mm_fault (mm/memory.c:1059 (discriminator 1)
+mm/memory.c:5462 (discriminator 1) mm/memory.c:5574 (discriminator 1)
+mm/memory.c:4091 (discriminator 1) mm/memory.c:5935 (discriminator 1)
+mm/memory.c:6078 (discriminator 1))
+<4>[ 224.451763] handle_mm_fault (mm/memory.c:6247)
+<4>[ 224.452307] do_page_fault (arch/arm64/mm/fault.c:647)
+<4>[ 224.452881] do_translation_fault (arch/arm64/mm/fault.c:787)
+<4>[ 224.453358] do_mem_abort (arch/arm64/mm/fault.c:919 (discriminator 1))
+<4>[ 224.453890] el0_da (arch/arm64/include/asm/irqflags.h:82
+(discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
+1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
+arch/arm64/kernel/entry-common.c:165 (discriminator 1)
+arch/arm64/kernel/entry-common.c:178 (discriminator 1)
+arch/arm64/kernel/entry-common.c:605 (discriminator 1))
+<4>[ 224.454329] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:766=
+)
+<4>[ 224.454897] el0t_64_sync (arch/arm64/kernel/entry.S:600)
+<0>[ 224.455654] Code: 8b190000 eb01001f 54000684 a9448f84 (f9000483)
+All code
+=3D=3D=3D=3D=3D=3D=3D=3D
+   0: 8b190000 add x0, x0, x25
+   4: eb01001f cmp x0, x1
+   8: 54000684 b.mi 0xd8  // b.first
+   c: a9448f84 ldp x4, x3, [x28, #72]
+  10:* f9000483 str x3, [x4, #8] <-- trapping instruction
+
+Code starting with the faulting instruction
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+   0: f9000483 str x3, [x4, #8]
+<4>[  224.456945] ---[ end trace 0000000000000000 ]---
+<0>[  224.458162] Kernel panic - not syncing: Oops: Fatal exception in inte=
+rrupt
+<2>[  224.459437] SMP: stopping secondary CPUs
+<0>[  224.460808] Kernel Offset: 0x229838400000 from 0xffff800080000000
+<0>[  224.461525] PHYS_OFFSET: 0xfffdc75880000000
+<0>[  224.462166] CPU features: 0x000,000000d0,60bef2f8,cb7e7f3f
+<0>[  224.463148] Memory Limit: none
+<0>[  224.463861] ---[ end Kernel panic - not syncing: Oops: Fatal
+exception in interrupt ]---
+
+## Source
+* Kernel version: 6.14.0-rc2-next-20250214
+* Git tree: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next=
+.git
+* Git sha: 0ae0fa3bf0b44c8611d114a9f69985bf451010c3
+* Git describe: next-20250214
+* Project details:
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250214/
+
+## Build
+* Test log: https://qa-reports.linaro.org/lkft/linux-next-master/build/next=
+-20250214/testrun/27292264/suite/log-parser-test/test/panic-multiline-kerne=
+l-panic-not-syncing-oops-fatal-exception-in-interrupt-89d94046139a63ab8ef65=
+7ef456dab84b63ef36eb42dc7c556dfa0f7a59423da/log
+* Test history:
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250214/te=
+strun/27292264/suite/log-parser-test/test/panic-multiline-kernel-panic-not-=
+syncing-oops-fatal-exception-in-interrupt-89d94046139a63ab8ef657ef456dab84b=
+63ef36eb42dc7c556dfa0f7a59423da/history/
+* Test details:
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250214/te=
+strun/27292264/suite/log-parser-test/test/panic-multiline-kernel-panic-not-=
+syncing-oops-fatal-exception-in-interrupt-89d94046139a63ab8ef657ef456dab84b=
+63ef36eb42dc7c556dfa0f7a59423da/
+* Kernel config:
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2t1m4RtgCbRZ2vhQrdEI=
+wwj3DIY/config
+* Architecures: arm64
+* Toolchain version: gcc-13
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
