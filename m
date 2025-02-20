@@ -1,57 +1,58 @@
-Return-Path: <cgroups+bounces-6623-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6624-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9711FA3E208
-	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 18:16:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EFEAA3E215
+	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 18:18:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 993D51880226
-	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 17:13:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E671423947
+	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 17:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F0B225795;
-	Thu, 20 Feb 2025 17:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C1F213E8E;
+	Thu, 20 Feb 2025 17:08:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EVsc3N7a"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DWQOPa1p"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C201B22257D
-	for <cgroups@vger.kernel.org>; Thu, 20 Feb 2025 17:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BFF721323F
+	for <cgroups@vger.kernel.org>; Thu, 20 Feb 2025 17:08:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740071214; cv=none; b=LK/i1KhlELbxXBpvMNBUZ8imO9CSRQLBuZDxUskiy6BZKHlSSthM32uea9HjyVbknOTJDKwOpcnwlzud3RlwxX03m5Gmet3TQfMiavVG+hkg3R8iiXPtriAJKXW8Sx+YHOKPhi89VovuGyZqIiA+vkRP1Bl7rLe5VZfs46S0480=
+	t=1740071320; cv=none; b=EZroacf3vTQH4Z70Vg2OzR2ySC1QoVeM8XItA5mDB/NklUV4TyE9dyrA9Y4pmpwiuess+M4sawN82B2fsKdYaCbvVfpq8yCl/duxOVbtuk3Ku4Frn1/lOaduwxm6G/IPtQM70fck4CMUGhGyrlD1bDVLYKh6jFkhjGvpycqIZ/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740071214; c=relaxed/simple;
-	bh=QwFELQ1FFVe05nVDqmbbjjqF9znyGaS+mLcfWWF6IAA=;
+	s=arc-20240116; t=1740071320; c=relaxed/simple;
+	bh=oEOdvH2WOCO1j1BshNhA8Bbotypz5Rw69IdLsbWHO38=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R92I5tk/15WzIGPm2Tjrg/wJRtvmvA7IfCQnwe93HRrR6+gkANzE6b0PDp+hJDuAVRmKRx+QkJKMWRTwmT6OlnAk0IW/tchT8uLJ8OhsYj7OSuxuEz824nosVoEvHVR3Iu0NkgrUTL9jRamz+xHzhcCm7SgabiWZfb2R9bThchM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EVsc3N7a; arc=none smtp.client-ip=91.218.175.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=KIWdNWrt97AdOZaXdwdH2fMc7aB/83LBqQ58c/NUnxeQ3B0nqWykr6F4HgZ7J6WAcxRXHjnZxId4ASDiUQ/HJzyF02rIQ5qnwpISIb0OA0zgMol237dcQ8PCQaMNtY33KWyFPBlUoJL75ik/a8IwxdfX6g/wPnRHXha2vrsCOAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DWQOPa1p; arc=none smtp.client-ip=95.215.58.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 20 Feb 2025 09:06:44 -0800
+Date: Thu, 20 Feb 2025 17:08:28 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740071208;
+	t=1740071316;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PeOiPofC0Wf/SoLeRvk4/6gQcNmvxbVkQrbXQBS3smY=;
-	b=EVsc3N7aYu9iU1Oyhu84fxdNxh8mv871Ivx9S+7vP1nspverlLlZ2e4pSU4aZJinqyHLAB
-	XZTRzgfLdiGJ/p1KBG8N8g4XdPJSU7P/N8R3Dl4gY3xNxCcSRqHBJAIY7E71sC/1KWCps4
-	bvpYsGH4q4L13aO6gxVdEtlikRt3I6c=
+	bh=e7RaaYPBvyR2i2/MPdBiVOheE81YWx6KyA9NN+p4Lg8=;
+	b=DWQOPa1p7AEsqCPS5YnozITOMxq5rIQHz5affWSsOgswOsqAFl8XO7tSo2dFZoYh10ExIU
+	ojdjF+m3JqHZqwCwiiRvyM8Op3iiXayVZ35qByYogsAWuo7rD2MNetOqsksvm1NjgsHaoV
+	bjXQFKdFkiMD1ML+M1KJ3VOdaSv9QT0=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: tj@kernel.org, mhocko@kernel.org, hannes@cmpxchg.org, 
-	yosryahmed@google.com, akpm@linux-foundation.org, linux-mm@kvack.org, 
+From: Yosry Ahmed <yosry.ahmed@linux.dev>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: JP Kobryn <inwardvessel@gmail.com>, tj@kernel.org, mhocko@kernel.org,
+	hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
 	cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 03/11] cgroup: move cgroup_rstat from cgroup to
- cgroup_subsys_state
-Message-ID: <yz6jmggzhbejzybcign2k3mfxvkx5zb6fxlacscrprbjsoplki@6x5dtnmzks7u>
+Subject: Re: [PATCH 02/11] cgroup: add level of indirection for cgroup_rstat
+ struct
+Message-ID: <Z7dhjBB8NJmxWg0F@google.com>
 References: <20250218031448.46951-1-inwardvessel@gmail.com>
- <20250218031448.46951-4-inwardvessel@gmail.com>
+ <20250218031448.46951-3-inwardvessel@gmail.com>
+ <xl2xxrfpixx66hbywv3njmdj6cckawtjiwri5nxcbc2gtz2ahu@5axlmmuzplzz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -60,50 +61,28 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250218031448.46951-4-inwardvessel@gmail.com>
+In-Reply-To: <xl2xxrfpixx66hbywv3njmdj6cckawtjiwri5nxcbc2gtz2ahu@5axlmmuzplzz>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Feb 17, 2025 at 07:14:40PM -0800, JP Kobryn wrote:
-[...]
-> @@ -3240,6 +3234,12 @@ static int cgroup_apply_control_enable(struct cgroup *cgrp)
->  				css = css_create(dsct, ss);
->  				if (IS_ERR(css))
->  					return PTR_ERR(css);
+On Tue, Feb 18, 2025 at 06:26:07PM -0800, Shakeel Butt wrote:
+> On Mon, Feb 17, 2025 at 07:14:39PM -0800, JP Kobryn wrote:
+> > Change the type of rstat node from cgroup to the new cgroup_rstat
+> > struct. Then for the rstat updated/flush api calls, add double under
+> > versions that accept references to the cgroup_rstat struct. This new
+> > level of indirection will allow for extending the public api further.
+> > i.e. the cgroup_rstat struct can be embedded in a new type of object and
+> > a public api can be added for that new type.
+> > 
+> > Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> 
+> I think the code looks good here but the commit message needs some
+> massaging. From what I understand, you are trying to decouple struct
+> cgroup_rstat from struct cgroup, so later you can move struct
+> cgroup_rstat in different structure (and maybe later some new structure
+> can all include cgroup_rstat to take advantage of rstat infra). I am not
+> sure I would call this "add level of indirection". 
 
-Since rstat is part of css, why not cgroup_rstat_init() inside
-css_create()?
-
-> +
-> +				if (css->ss && css->ss->css_rstat_flush) {
-> +					ret = cgroup_rstat_init(css);
-> +					if (ret)
-> +						goto err_out;
-> +				}
->  			}
->  
->  			WARN_ON_ONCE(percpu_ref_is_dying(&css->refcnt));
-> @@ -3253,6 +3253,21 @@ static int cgroup_apply_control_enable(struct cgroup *cgrp)
->  	}
->  
->  	return 0;
-
-Why not the following cleanup in css_kill()? If you handle it in
-css_kill(), you don't need this special handling.
-
-> +
-> +err_out:
-> +	cgroup_for_each_live_descendant_pre(dsct, d_css, cgrp) {
-> +		for_each_subsys(ss, ssid) {
-> +			struct cgroup_subsys_state *css = cgroup_css(dsct, ss);
-> +
-> +			if (!(cgroup_ss_mask(dsct) & (1 << ss->id)))
-> +				continue;
-> +
-> +			if (css && css->ss && css->ss->css_rstat_flush)
-> +				cgroup_rstat_exit(css);
-> +		}
-> +	}
-> +
-> +	return ret;
->  }
++1 here and probably in other patches too. "Add level of indirection"
+sounds like we are dereferencing one more pointer, which is not the case
+here.
 
