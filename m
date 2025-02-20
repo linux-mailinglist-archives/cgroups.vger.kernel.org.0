@@ -1,88 +1,58 @@
-Return-Path: <cgroups+bounces-6616-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6617-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B13B1A3DED1
-	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 16:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C380A3DF04
+	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 16:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85C5D1890997
-	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 15:38:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E30E4189D5E2
+	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2025 15:43:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88EB61F5849;
-	Thu, 20 Feb 2025 15:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F5E1EEA27;
+	Thu, 20 Feb 2025 15:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="NutQ096x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nMVxTLt+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E39FC1C5F34
-	for <cgroups@vger.kernel.org>; Thu, 20 Feb 2025 15:37:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A0A1FECD0
+	for <cgroups@vger.kernel.org>; Thu, 20 Feb 2025 15:42:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740065877; cv=none; b=YeHcllI8uk0Wk76jmCxVT17hValeZNYA/t+dRnrkFWZzRVS8/p/mbnD2vRW+UCuGZ9/fvG5FFy+pQc3MGlqro6EU0G+oY/XGi+YLMf3PAmgFBZoQBczWOJapakJo47z5pmeow1qhbDyoVrYgzIHwmsEyqxdxl5PcmuNJyw+h8Ko=
+	t=1740066166; cv=none; b=csEAcctVksGkJR3KFKcmvciZ1IO4IoDDtSWQntyL8ZG7X6ru4ss10w+zZvm4WbNHRBUBs8Y4DlKu+Su1YYIEeeUk451O0eQAaD1S4tiTCCx/ooTiR5rr9g0ipdBpYQtHeVHAx+ZEFqAeQPyDUswSJklbRNvTyFymXTuu+0HKwXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740065877; c=relaxed/simple;
-	bh=jHv7Xusneu9CcGC6gYOF9bzS4h5Y2fvc7aOb+dNB7XM=;
+	s=arc-20240116; t=1740066166; c=relaxed/simple;
+	bh=R42UsajzAxka9fkfebAW2aXGR8HYWr7WW8nJOx8+3gI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U9AQT2dAU8N1uDQ35uMyyYqNiJpoUJ09llwjZIWJRj0tu1KVnwHthwkQ2kCBtRvnSy+C69SOnzCVYE06+JOUktd1c4d25/eh3fHH5zSdnRdckThmbK98O2qWhnJbbU+oxf+R0tZzvSnK5dlGTYEJ+214gSIUh+mcjoVoSFUWZiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=NutQ096x; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6df83fd01cbso5085356d6.2
-        for <cgroups@vger.kernel.org>; Thu, 20 Feb 2025 07:37:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1740065873; x=1740670673; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CIhju5VbOnCPzyQKlcCT5jMfOJKAXyz0TX6VSDMcljc=;
-        b=NutQ096xM0U0DHbtNMtj1hRhOQlk7JvnsFfZKFfF1HNV1Fs8vwGlJVeZxqbiz/F/sd
-         oPVyFLXGgaMRUkUgtN8O9EjKirWzmzagBRFT/N+L/FGK+LoZe9VqX7097z0hV6IOOuc3
-         Vq6agqxczG6mxbhWAOD9qOIAcBmSNS5SF9cFj0c7r/eQhJImGR7NBfE/4ahc/kJIHhAX
-         hgdLpkD3MMiZe9g2zV8yKGUMnWlbEkBU48Qf9TX/sr0OTQj1FUSSqAIpt/kTymvTsCp/
-         eaFJ+hVhJqHYfuybpOZqi2cEC36RJMZ20OdxvSB380Zk5v1Sk0qOX3apZizBnXwiNJXd
-         ASdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740065873; x=1740670673;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CIhju5VbOnCPzyQKlcCT5jMfOJKAXyz0TX6VSDMcljc=;
-        b=hB6Qr/rTMadipaVmmwNHrpX0XcspgCm20x++baX2JlcVrN+1RUlmM+brO0nbO5pWoq
-         rWiZnW+BMGaHQYzyLGxYvGpU/xK41hNc6qlxI69q0KE6gsRRW4N2W0emOSMvhOSpFfyT
-         EKNFfkOSAZY5eZIJ5COwAo2ZEvrU4sYi6lMDBuk99wK6nGtP2VffkVmpjBvlEOsEZbSg
-         cyCqrBlue2IbkIGcVccHMV/a2trrZXhqqFuAI6cIgKVXA8PN59ICtABdBrPGcxSm2yi0
-         So2TSJqte9BP/xFbQBl2wPyGLdAkNGLeve/KMvb1ZibPCPDbDfCWvYafL7EkOBhcjB7p
-         +Vgg==
-X-Forwarded-Encrypted: i=1; AJvYcCVVuyoaRdlZTiqZzAFnJDT05felCG/SIvSDJUYiRz2Hn7daI+mZsqcCN399oBib0PYdnsTuder1@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyc+OMNt9RDRS1yHMpR2P3GSoQLH8s0T4WUj7tRpvOvdwqDamVd
-	hArQUlJTSHptrSGW4kzYjWZv6ylSeeiFaU1r80/7Ir6nvcNIR2fyG1SuaD0UYSE=
-X-Gm-Gg: ASbGnctCOQYJF7tn78kQHUG9DMM0opg7pF7wA/46eHHBnnrAaYhNtGyCWSGdqQ8ylPC
-	gAynM/Izj6+YZzhkLmYE5QJTvUpZpDLuw4DXcvCplmPUPkRRfrKtHYxdxhnJNf2193tCMlZTr0b
-	xqkhoR0q65n87Kb1y5EratyzawQnzZE86Y3Wd95NXCgIcVTgwVsJx5hkBawpSWIejJH57rKBVC4
-	lDJ4RPBdvAIqxzrKKWiV7hp1Q4/cILX6gbua+pxfofA7Irv8N2eH4U0qQ/4sVjQHB6iGw7MNe1N
-	kLqBQxB8j0Y9nQ==
-X-Google-Smtp-Source: AGHT+IFcIm7KN2/kYyHI5w4jBjyHNX4kq0DRfJRG5JubjcBZrPYm8p9wZWeE5aKd+xtJNfQyZ49tZg==
-X-Received: by 2002:a05:6214:29e1:b0:6e2:55b5:91d1 with SMTP id 6a1803df08f44-6e697413d1fmr120862276d6.0.1740065873655;
-        Thu, 20 Feb 2025 07:37:53 -0800 (PST)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6e65d9f3498sm86868896d6.84.2025.02.20.07.37.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2025 07:37:52 -0800 (PST)
-Date: Thu, 20 Feb 2025 10:37:51 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=leBmdh53y/Rk1zUcwX5MxPauPr3qa6nLR/lTg9jgQWtZ3DsrimGFHUO37hG2nopnixTKg0hNdh5VqbbhiZY70I81l8NX6x38m69gVn0+M6GL6Ug6IKZqYvC3p/mBLBVKssHya52vPORj6woRw1VK4hJkNvgWlrO69IsPA1aYCM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nMVxTLt+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 945BCC4CED1;
+	Thu, 20 Feb 2025 15:42:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740066165;
+	bh=R42UsajzAxka9fkfebAW2aXGR8HYWr7WW8nJOx8+3gI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nMVxTLt+JiavuSx9hPa3q4kWPq8sBb/J713N980RuC3btMmABShM9NI/ATGd6uywn
+	 /ojK8eLd88IMTbCCHBA3/5DbWOOf6SK7lmmPFo1SD/8Pe4AEPaaz7mCf0IeQjNXUxY
+	 BlAAu0Ab+bbGdHj6FACtHKk++z79WaVz5WcizI9LIQ+NBeDqsYMcB8flEQyWkPt7EQ
+	 MzluHIM1ze9YQ3FtsQ1xHoQWZgQ5peK/tF49aM7qqGngBBwXTqRj6zfw7Ri0Md3cCw
+	 4veFkaF8rGxapJjnvLlAXZiPTTJWsZws01oER38CV+yw8ljG4hD/bgVxbGO6V8BiyF
+	 GxL2CdKFXTw/Q==
+Date: Thu, 20 Feb 2025 05:42:44 -1000
+From: Tejun Heo <tj@kernel.org>
 To: Maarten Lankhorst <dev@lankhorst.se>
 Cc: dri-devel@lists.freedesktop.org, cgroups@vger.kernel.org,
-	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
 	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
 	Simona Vetter <simona.vetter@ffwll.ch>,
 	David Airlie <airlied@gmail.com>,
 	Maxime Ripard <mripard@kernel.org>,
 	Natalie Vock <natalie.vock@gmx.de>
 Subject: Re: [PATCH] MAINTAINERS: Add entry for DMEM cgroup controller
-Message-ID: <20250220153751.GA1276171@cmpxchg.org>
+Message-ID: <Z7dNdKLxEDqxkNmJ@slm.duckdns.org>
 References: <20250220140757.16823-1-dev@lankhorst.se>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -105,5 +75,10 @@ On Thu, Feb 20, 2025 at 03:07:57PM +0100, Maarten Lankhorst wrote:
 > Acked-by: Maxime Ripard <mripard@kernel.org>
 > Acked-by: Natalie Vock <natalie.vock@gmx.de>
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Tejun Heo <tj@kernel.org>
+
+Thanks.
+
+-- 
+tejun
 
