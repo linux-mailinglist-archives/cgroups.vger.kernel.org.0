@@ -1,277 +1,189 @@
-Return-Path: <cgroups+bounces-6647-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6648-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AA61A40845
-	for <lists+cgroups@lfdr.de>; Sat, 22 Feb 2025 13:17:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16E88A40C41
+	for <lists+cgroups@lfdr.de>; Sun, 23 Feb 2025 00:59:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AAF819C6547
-	for <lists+cgroups@lfdr.de>; Sat, 22 Feb 2025 12:17:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADC3C189D801
+	for <lists+cgroups@lfdr.de>; Sun, 23 Feb 2025 00:00:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28692080EE;
-	Sat, 22 Feb 2025 12:17:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37967204C31;
+	Sat, 22 Feb 2025 23:59:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EDmq1Geq"
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="HMMaV2Ty"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06D52063DC
-	for <cgroups@vger.kernel.org>; Sat, 22 Feb 2025 12:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D885204594
+	for <cgroups@vger.kernel.org>; Sat, 22 Feb 2025 23:59:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740226622; cv=none; b=GAAb22Hgyw+GJf+obu+mh5BNsNQlbNrynqK20B8UVVfFXkqpZlAJEkm19pgcixi6/wMLmjvoMp35VQxIbR72LjlDDYczx1ZloyDDrRw235rX0AjCQVFCZspoSxaeh/rmOAeWZqUkmdtFVJ+u+ZEG2E6TVEAMF6XNS6QxkEMAFYk=
+	t=1740268789; cv=none; b=lM4d2LqG5BvPx+BkxAbLN1YU5Jb97UGbbXv3e6z+QpfMUNSRZQm2h1N5qyv9EOBYkSfySfLqDlrFSgQGLXiE1XbfXANKS2d28JhSnjDsVMYmDWO8QSPVoOw9cxlIE4NmhGfeeS74UbL6GKlxUJncDOSLm7pvH+r8Fm1FKO4i2fY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740226622; c=relaxed/simple;
-	bh=uEFkS5f4I1pkgXfi+lR9dCubxCkxmZemaOLaMMW1bBE=;
+	s=arc-20240116; t=1740268789; c=relaxed/simple;
+	bh=BC1VikLvaQ+wmk7I7O5kqTkttd71b1FW4KIkZw3Br0c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sn2zTvhhAYSot98FBAwteGxYxBg+puMUguwtiFqDMHAR5Flgsls5Bd1EH4lqvspUtpDKVnUhRpaQg0cax4Es4tX6Hhvh3o+B522wVpJgzxp5qP6Mh1xU6f8UbJc/LQDmNiw8hQU6UHDSX2HTOTsatOKuHGrv59UyTAD+8OyJuLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EDmq1Geq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1740226619;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bTUI9x2p0yOdOJ1ZQhAAeGjQUlFKi+22DsGpMCU78nI=;
-	b=EDmq1Geq6iaYDkkGNt2MMOGJJHC0hWd5CwKrlYeO7AzNF6nf1SCEonJvzpaqR0bmor59ek
-	9k2uNuS3Tik4hAPt+lKhJRZMnUM7QeMaCvBvUlpPD99NywRMoiuQh3woaR4CJdCR0owJEL
-	N44698Dq01uRgNhMu0BFV/uuZKXkhAY=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-222-kTktK0WFPHWBxD4dtR_D2g-1; Sat,
- 22 Feb 2025 07:16:54 -0500
-X-MC-Unique: kTktK0WFPHWBxD4dtR_D2g-1
-X-Mimecast-MFC-AGG-ID: kTktK0WFPHWBxD4dtR_D2g_1740226612
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A83B41800878;
-	Sat, 22 Feb 2025 12:16:51 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.5])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 20D5119412A3;
-	Sat, 22 Feb 2025 12:16:43 +0000 (UTC)
-Date: Sat, 22 Feb 2025 20:16:37 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
-	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH 2/2] blk-throttle: fix off-by-one jiffies wait_time
-Message-ID: <Z7nAJSKGANoC0Glb@fedora>
-References: <20250222092823.210318-1-yukuai1@huaweicloud.com>
- <20250222092823.210318-3-yukuai1@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vt/SWKy5GxtA6KTeDu7qTRBKeeeQJlBZ7JfPkBoTp7Kns15ZdpqXpHozt456YzhediXQjXHHLOeQc76YQZ+Jhma9fPDJFrXiIk+j3DT1JlsXjtwZ7n8lGzraDaB6JbAWeXZ3HlyhMPR9mlGs/s6YJ+IFuuIb91MSahV5iRJlXdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=HMMaV2Ty; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5e050b1491eso7616233a12.0
+        for <cgroups@vger.kernel.org>; Sat, 22 Feb 2025 15:59:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1740268785; x=1740873585; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lu2LoNkT4EDP4h3CKy4CP8LgrHHyNd0iD27ycNO3cNY=;
+        b=HMMaV2Tynj3BGowSvfj9cHuQoVqAX/HkWUxJOH1zJzPICzw+fYsk5FE2gDA8+fRDnL
+         7fE5yb8roH+HqCw9DVVnqwxvBeHhldTN9xIxZBed2j/r0Jz0sKJblk+ersgetj7Qze3a
+         4YNeiSn8CtZ1JM92TtHW7UPt6eISGPCqjITB7leBAq8I8yAHxwWvx3+I4cU3vju75b77
+         Bw5weGObOTNk5aC6kYtV2psXM3aC3pVXtia3Uq4RboDgGSeQVswCxAESKKAhiaUJTi1n
+         n/CKj8G1ubmFZ8URoI4I9nEeY8XXu8xtLCYjRSmIdkXfEnRpP+dybVt9Bu+o4GJyoWjj
+         /isA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740268785; x=1740873585;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lu2LoNkT4EDP4h3CKy4CP8LgrHHyNd0iD27ycNO3cNY=;
+        b=LIRkRa3ukdCA06OXPdIxC/2E3gLDdFRN3y5neyNDKE3NfFJA3STCPmL/aTSGrKFVQv
+         MY8quupOrhA/aeRURk5CURWlPyll6HnmI39eTapJNXQBCfsAC99vVDOwCbZjDBTXy1BQ
+         9G5VUWf6V17Istn/aJ+4pAHL2VovJsac5gTP6H8P7G5l2ufJhAqIwZTcvT/rwWVUfoSP
+         WAjWruzmoqBPfajD2Us9+WFKVD3KZx6UH9vCS0IhdtJqDwaovE+2R+5ADdpcLEpRPALK
+         yghIDpPbp/jN1y+ZTh3Em8oy+fQc1InUZr5wtM4pNJ1nkIZEhqBRajhZbFYYjDchEhuR
+         eo4w==
+X-Forwarded-Encrypted: i=1; AJvYcCVrSN7SJdWWGCf/ywve7WV2cD7sp6SUL4FdR68ogyJdAt4oifKdPIVCB8N1IKWDmpmWkxI/9mar@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzval5/+tjKCY6DffLkCQuxYdReENdXhFBeI12qXNyQvihC2q8X
+	vi3tALEWV18E1EsAQQ3NFmgN3nC2WNDEgntFi0/qCWeCwzE38SXxdur6ydv2ZVY=
+X-Gm-Gg: ASbGncvHpD4OWRszmuT0xOVWBI3N9H/iAoWhcYPbBeNprV7e40Q+0WocDIhXsr8I9fq
+	58sR1z2cCI7K6g2z5lzDboe8dLt+AUCG9yExc0E2nt0cEec5Pn3TGjRPi4mh+xyH/DDdsAdm79x
+	DkdTflS3Qqr6H5qeuGzgQRgoUHrUKsZjXk0j/zvgsOUgnpChfgnGCgocsQ3HfAVAwrqDDUy7nKS
+	JkRcnlgW2ycCAHTTyylGJH8BiJzMmjDmY4ALqIyaW49sUHR7Par7GloahGy0TQENAj82Gbd+wo5
+	HmQQU8ggTdEjkGe/z8/I
+X-Google-Smtp-Source: AGHT+IEwAuQGxMOVSUtusVjN0BopgUdnw2fnKA4dzOqvUMZKdjWs0Zk6qVmFxkFPYOp6ZdBA7ynXRg==
+X-Received: by 2002:a17:907:7fa7:b0:abb:d334:73e7 with SMTP id a640c23a62f3a-abc0ae910a4mr749202366b.14.1740268785510;
+        Sat, 22 Feb 2025 15:59:45 -0800 (PST)
+Received: from airbuntu ([46.186.201.36])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abb8209a2cbsm1458407366b.133.2025.02.22.15.59.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Feb 2025 15:59:45 -0800 (PST)
+Date: Sat, 22 Feb 2025 23:59:36 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Juri Lelli <juri.lelli@redhat.com>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Christian Loehle <christian.loehle@arm.com>,
+	Jon Hunter <jonathanh@nvidia.com>,
+	Thierry Reding <treding@nvidia.com>,
+	Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Koutny <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Phil Auld <pauld@redhat.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
+	Suleiman Souhlal <suleiman@google.com>,
+	Aashish Sharma <shraash@google.com>,
+	Shin Kawamura <kawasin@google.com>,
+	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v2 3/2] sched/deadline: Check bandwidth overflow earlier
+ for hotplug
+Message-ID: <20250222235936.jmyrfacutheqt5a2@airbuntu>
+References: <5a36a2e8-bd78-4875-9b9e-814468ca6692@arm.com>
+ <db800694-84f7-443c-979f-3097caaa1982@nvidia.com>
+ <8ff19556-a656-4f11-a10c-6f9b92ec9cea@arm.com>
+ <Z6oysfyRKM_eUHlj@jlelli-thinkpadt14gen4.remote.csb>
+ <dbd2af63-e9ac-44c8-8bbf-84358e30bf0b@arm.com>
+ <Z6spnwykg6YSXBX_@jlelli-thinkpadt14gen4.remote.csb>
+ <285a43db-c36d-400e-8041-0566f089a482@arm.com>
+ <Z62PPUOY5DClYo1A@jlelli-thinkpadt14gen4.remote.csb>
+ <20250216163340.ttwddti5pzuynsj5@airbuntu>
+ <Z7NNHmGgrEF666W_@jlelli-thinkpadt14gen4.remote.csb>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250222092823.210318-3-yukuai1@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+In-Reply-To: <Z7NNHmGgrEF666W_@jlelli-thinkpadt14gen4.remote.csb>
 
-Hi Yukuai,
-
-On Sat, Feb 22, 2025 at 05:28:23PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
+On 02/17/25 15:52, Juri Lelli wrote:
+> On 16/02/25 16:33, Qais Yousef wrote:
+> > On 02/13/25 07:20, Juri Lelli wrote:
+> > > On 12/02/25 19:22, Dietmar Eggemann wrote:
+> > > > On 11/02/2025 11:42, Juri Lelli wrote:
+> > > 
+> > > ...
+> > > 
+> > > > > What about we actually ignore them consistently? We already do that for
+> > > > > admission control, so maybe we can do that when rebuilding domains as
+> > > > > well (until we find maybe a better way to deal with them).
+> > > > > 
+> > > > > Does the following make any difference?
+> > > > 
+> > > > It at least seems to solve the issue. And like you mentioned on irc, we
+> > > > don't know the bw req of sugov anyway.
+> > > > 
+> > > > So with this change we start with 'dl_bw->total_bw = 0' even w/ sugov tasks.
+> > > > 
+> > > > dl_rq[0]:
+> > > >   .dl_nr_running                 : 0
+> > > >   .dl_bw->bw                     : 996147
+> > > >   .dl_bw->total_bw               : 0       <-- !
+> > > > 
+> > > > IMHO, people who want to run serious DL can always check whether there
+> > > > are already these infrastructural DL tasks or even avoid schedutil.
+> > > 
+> > > It definitely not ideal and admittedly gross, but not worse than what we
+> > > are doing already considering we ignore sugovs at AC and the current
+> > > bandwidth allocation its there only to help with PI. So, duck tape. :/
+> > > 
+> > > A more proper way to work with this would entail coming up with sensible
+> > > bandwidth allocation for sugovs, but that's most probably hardware
+> > > specific, so I am not sure how we can make that general enough.
+> > 
+> > I haven't been following the problem closely, but one thing I was considering
+> > and I don't know if it makes sense to you and could help with this problem too.
+> > Shall we lump sugov with stopper class or create a new sched_class (seems
+> > unnecessary, I think stopper should do)? With the consolidate cpufreq update
+> > patch I've been working on Vincent raised issues with potential new ctx switch
+> > and to improve that I needed to look at improving sugov wakeup path. If we
+> > decouple it from DL I think that might fix your problem here and could allow us
+> > to special case it for other problems like the ones I faced more easily without
+> > missing up with DL.
+> > 
+> > Has the time come to consider retire the simple solution of making sugov a fake
+> > DL task?
 > 
-> wait_time is based on jiffies, and the calculation is:
-> 
-> wait_time = extra_bytes * HZ / bps_limit;
-> 
-> If wait time is not zero, the remainder is ignored, means wait time is
-> short by at most 1 jiffes; On the other hand, if wait time is zero, it
-> will be used as 1 jiffies, means it's excessive by at most 1 jiffes.
-> 
-> This way causes blktests throtl/001 failure in case of CONFIG_HZ_100=y,
-> fix the problem by recording remainder as debt, and repay the debt
-> later.
+> Problem is that 'ideally' we would want to explicitly take sugovs into
+> account when designing the system. We don't do that currently as a
+> 'temporary solution' that seemed simpler than a proper approach (started
+> wondering if it's indeed simpler). So, not sure if moving sugovs outside
+> DL is something we want to do.
 
-After further analysis, I figured out that this one extra jiffy isn't the
-only reason for throtl/001 failure.
+Okay I see. The issue though is that for a DL system with power management
+features on that warrant to wake up a sugov thread to update the frequency is
+sort of half broken by design. I don't see the benefit over using RT in this
+case. But I appreciate I could be misguided. So take it easy on me if it is
+obviously wrong understanding :) I know in Android usage of DL has been
+difficult, but many systems ship with slow switch hardware.
 
-In blktests throtl/001, bps_limit is 1MB/sec, and BS is 4k, and
-COFIG_HZ=100, and default throttle slice is 2 jiffies(20ms):
+How does DL handle the long softirqs from block and network layers by the way?
+This has been in a practice a problem for RT tasks so they should be to DL.
+sugov done in stopper should be handled similarly IMHO. I *think* it would be
+simpler to masquerade sugov thread as irq pressure.
 
-- 20ms can submit 5 bios: 1024K/50(5*4k=20KB)
-
-- the 6th bio is throttled, and the calculated wait is 1 jiffy from
-tg_within_bps_limit()
-
-- given all the 6 bios are handled in the time of jiffies A, so A + 1(wait) + 2(slice)
-is programmed to start pending timer for scheduling dispatch
-
-- when the pending timer is expired, the 6th bio is submitted, then the
-  current slice is trim/reset since the throttled 6th bio is dispatched.
-
-Now in the whole throttle slice period, 6 bios(24KB) are submitted, and 3
-jiffies are taken, so 256 bios will take (256/6) * 30ms = 1.3sec.
-
-But blktests throtl/001 still should pass since the allowed deviation is 0.5sec,
-and 1.3 < 1.5.
-
-Actually there is another reason of timer delay, looks one extra jiffy is
-delayed when the timer is triggered, which can be observed reliably by:
-
-bpftrace -e 'kfunc:throtl_pending_timer_fn { @timer_expire_delay = lhist(jiffies - args->t->expires, 0, 16, 1);}'
-
-Then 256 bios will take (256/6) * 40ms = 1.7sec, which does match with
-observation in throtl/001.
-
-Yeah, killing one jiffy may pass blktests throtl/001, but, ...
-
-> 
-> Reported-and-tested-by: Ming Lei <ming.lei@redhat.com>
-> Closes: https://lore.kernel.org/all/20250220111735.1187999-1-ming.lei@redhat.com/
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  block/blk-throttle.c | 24 +++++++++++++++++-------
->  block/blk-throttle.h | 12 ++++++++----
->  2 files changed, 25 insertions(+), 11 deletions(-)
-> 
-> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-> index 0096e486b1e3..3828c6535605 100644
-> --- a/block/blk-throttle.c
-> +++ b/block/blk-throttle.c
-> @@ -703,9 +703,10 @@ static unsigned long tg_within_iops_limit(struct throtl_grp *tg, struct bio *bio
->  }
->  
->  static unsigned long tg_within_bps_limit(struct throtl_grp *tg, struct bio *bio,
-> -				u64 bps_limit)
-> +				u64 bps_limit, bool *has_debt)
->  {
->  	bool rw = bio_data_dir(bio);
-> +	long long carryover_bytes;
->  	long long bytes_allowed;
->  	u64 extra_bytes;
->  	unsigned long jiffy_elapsed, jiffy_wait, jiffy_elapsed_rnd;
-> @@ -730,10 +731,16 @@ static unsigned long tg_within_bps_limit(struct throtl_grp *tg, struct bio *bio,
->  
->  	/* Calc approx time to dispatch */
->  	extra_bytes = tg->bytes_disp[rw] + bio_size - bytes_allowed;
-> -	jiffy_wait = div64_u64(extra_bytes * HZ, bps_limit);
-> -
-> -	if (!jiffy_wait)
-> -		jiffy_wait = 1;
-> +	jiffy_wait = div64_u64_rem(extra_bytes * HZ, bps_limit, &carryover_bytes);
-> +	if (carryover_bytes) {
-> +		/*
-> +		 * If extra_bytes is not divisible, the remainder is recorded as
-> +		 * debt. Caller must ensure the current slice has at least 1
-> +		 * more jiffies to repay the debt.
-> +		 */
-> +		*has_debt = true;
-> +		tg->carryover_bytes[rw] -= div64_u64(carryover_bytes, HZ);
-> +	}
-
-Thinking of further, it may not be good to use ->carryover_bytes[]:
-
-- if tg_within_bps_limit() returns 0 and the bio is dispatched
-  immediately, throtl_trim_slice() is called and ->carryover_bytes[]
-  is cleared.
-
-- if tg_within_bps_limit() returns >0, this bio will be throttled, and
-  tg_within_bps_limit() may be called more than one time, so
-  tg->carryover_bytes[] could be over-counted.
-
-Actually this patch changes tg_within_bps_limit() to one stateful function...
-
->  
->  	/*
->  	 * This wait time is without taking into consideration the rounding
-> @@ -754,6 +761,7 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
->  	unsigned long bps_wait = 0, iops_wait = 0, max_wait = 0;
->  	u64 bps_limit = tg_bps_limit(tg, rw);
->  	u32 iops_limit = tg_iops_limit(tg, rw);
-> +	bool has_debt = false;
->  
->  	/*
->   	 * Currently whole state machine of group depends on first bio
-> @@ -784,18 +792,20 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
->  	else
->  		throtl_extend_slice(tg, rw, jiffies + tg->td->throtl_slice);
->  
-> -	bps_wait = tg_within_bps_limit(tg, bio, bps_limit);
-> +	bps_wait = tg_within_bps_limit(tg, bio, bps_limit, &has_debt);
->  	iops_wait = tg_within_iops_limit(tg, bio, iops_limit);
->  	if (bps_wait + iops_wait == 0) {
->  		if (wait)
->  			*wait = 0;
-> +		if (has_debt)
-> +			throtl_extend_slice(tg, rw, jiffies + 1);
->  		return true;
->  	}
->  
->  	max_wait = max(bps_wait, iops_wait);
->  	if (wait)
->  		*wait = max_wait;
-> -	throtl_extend_slice(tg, rw, jiffies + max_wait);
-> +	throtl_extend_slice(tg, rw, jiffies + max_wait + has_debt);
->  
->  	return false;
->  }
-> diff --git a/block/blk-throttle.h b/block/blk-throttle.h
-> index 1a36d1278eea..56dcb5ce412f 100644
-> --- a/block/blk-throttle.h
-> +++ b/block/blk-throttle.h
-> @@ -110,10 +110,14 @@ struct throtl_grp {
->  	unsigned int last_io_disp[2];
->  
->  	/*
-> -	 * The following two fields are updated when new configuration is
-> -	 * submitted while some bios are still throttled, they record how many
-> -	 * bytes/ios are waited already in previous configuration, and they will
-> -	 * be used to calculate wait time under new configuration.
-> +	 * The following two fields are updated when:
-> +	 * 1) new configuration is submitted while some bios are still
-> +	 * throttled, they record how many bytes/ios are waited already in
-> +	 * previous configuration;
-> +	 * 2) IOs which may cause priority inversions are dispatched while tg is
-> +	 * over limit, these IOs will be dispatched directly;
-> +	 * 3) While calculating wait_time for IO, extra_bytes * HZ is not
-> +	 * divisible by bps_limit, the remainder will be recorded;
->  	 */
-
-blk-throttle takes token bucket algorithm, and the implementation
-shouldn't be sensitive with the above two factors, because the bps
-rate is controlled over the whole bucket(slice). Meantime it is still
-tricky to maintain ->carryover_bytes during slice cycle, which can't
-cover timer delay too.
-
-Another way is to avoid to trim slice too soon in case of owning too
-much debt, something like the following does avoid this issue:
-
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 8d149aff9fd0..a778ebbb6887 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -615,6 +615,14 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
- 	if (bytes_trim <= 0 && io_trim <= 0)
- 		return;
- 
-+	if (tg_bps_limit(tg, rw) != U64_MAX) {
-+		long long disp = tg->bytes_disp[rw];
-+
-+		if (bytes_trim > disp && (bytes_trim - disp) > disp / 2 && time_elapsed <
-+				8 * tg->td->throtl_slice)
-+			return;
-+	}
-+
- 	tg->carryover_bytes[rw] = 0;
- 	if ((long long)tg->bytes_disp[rw] >= bytes_trim)
- 		tg->bytes_disp[rw] -= bytes_trim;
-
-
-Thanks,
-Ming
-
+You can use the rate_limit_us as a potential guide for how much bandwidth sugov
+needs if moving it to another class really doesn't make sense instead?
 
