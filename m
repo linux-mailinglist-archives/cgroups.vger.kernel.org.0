@@ -1,84 +1,93 @@
-Return-Path: <cgroups+bounces-6643-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6644-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A5CAA4041D
-	for <lists+cgroups@lfdr.de>; Sat, 22 Feb 2025 01:29:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A31CA406EE
+	for <lists+cgroups@lfdr.de>; Sat, 22 Feb 2025 10:32:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 928AB189C16A
-	for <lists+cgroups@lfdr.de>; Sat, 22 Feb 2025 00:29:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A79F7A9194
+	for <lists+cgroups@lfdr.de>; Sat, 22 Feb 2025 09:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042B0381AA;
-	Sat, 22 Feb 2025 00:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="l2CxxsBf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245D2206F25;
+	Sat, 22 Feb 2025 09:32:18 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBFF35949
-	for <cgroups@vger.kernel.org>; Sat, 22 Feb 2025 00:29:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6BE07E765;
+	Sat, 22 Feb 2025 09:32:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740184150; cv=none; b=uGNmATdHbp6DAia/Ljwfa2HK+BLBaRNu6wARcbR/ILUFbV1b9ecY+RRe1x2kdNCv4OF33gi4W5jhJXRJ7FHJ8MhZNqyBJvg3MlBZpWaQaCyJGkUk5R5TAeCb9nGCjouRROKajed8CsDZo7G5G1crGJZV9xCzwMgG/iBLKl1BIUk=
+	t=1740216738; cv=none; b=ifPuhZonGNT9mIXQKmUSlkuR2CnsaUw20iYo/YVzhdN/ro7m08MuipzIFSGJ6OOsJFBoYIWVGQuda+KiLHflvlHsxfzyDK19iHZ9/aNqy7BdcYLmvX46ZXvuFNOLidbFEA1T3Z9DWstEKH44olV/rZyi5b2s6OkYm+RUSDQ6iLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740184150; c=relaxed/simple;
-	bh=+XByTX0CsXxJpYxNKTtgO7WGR/bXZvK6x/uwUxV1ch4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SEJ9wxyNcF5KOwiSlrf00fSEPMMdDhXvO/HD0/eJCKp5pT38uRIxRpmLOY4UxYj6ZHndO1QSpf7/J2kl7U5w77R4rvSUgDRT3KptTVdkedl/6LPKvsOROOJ3bZsnGyEILBJMH+CaCyVJ16LCLmprmmJjeOcyCJYTWyMp2WdN59U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=l2CxxsBf; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 21 Feb 2025 16:28:49 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740184146;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/Y6iYz6qo6As2WbWhauY4s4USd3SkFNZj9yuf7cHP7k=;
-	b=l2CxxsBfAll7US7dJzFobtnrbeFTCupZJvPpCBXGaebPlllXwvuaapqVQbrHhzVms0gKuE
-	S9WwMUAJzy2Vse0L9PO0i2t3rw9NfpUzD3yAAEetJ8NjH0dLkxiIKncczwrefD86s6Ar8v
-	7vDe3r6fSl7XaISLGekges4mzF42lhs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: tj@kernel.org, mhocko@kernel.org, hannes@cmpxchg.org, 
-	yosryahmed@google.com, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 11/11] cgroup: separate rstat list pointers from base
- stats
-Message-ID: <igo3r67bmobbaipyxfd5ye6zkluwn34e4xtop2wkadsxl6p3wq@25c76ftplahs>
-References: <20250218031448.46951-1-inwardvessel@gmail.com>
- <20250218031448.46951-12-inwardvessel@gmail.com>
+	s=arc-20240116; t=1740216738; c=relaxed/simple;
+	bh=CnAdsCS715AxMhPpcwR/bUqZE+IhEf1OSNjCFp0bSBs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dGgXLoS/VT8xrIXQqxPlg0ZwWTaz19SjFjzErJwZHuSUv2ySMrwiJauwFpjF/dJl761Jl3r7+C48V4GUAzNdV3Ujg9vK4knIBTFZzXYgJ5hVN0eOtojW8Fc0+XeOTR16p0BU8cJG+0HLv8AkFcHjvZ5CQUXHXsh/hsc0Th8kHEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Z0MFx1Wrsz4f3lDK;
+	Sat, 22 Feb 2025 17:31:49 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 50EC01A092F;
+	Sat, 22 Feb 2025 17:32:12 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgCnC2CamblnnzpDEg--.20805S4;
+	Sat, 22 Feb 2025 17:32:12 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: ming.lei@redhat.com,
+	tj@kernel.org,
+	josef@toxicpanda.com,
+	axboe@kernel.dk
+Cc: cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH 0/2] blk-throttle: fix off-by-one jiffies wait_time
+Date: Sat, 22 Feb 2025 17:28:21 +0800
+Message-Id: <20250222092823.210318-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250218031448.46951-12-inwardvessel@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCnC2CamblnnzpDEg--.20805S4
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYm7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8I
+	cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
+	Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+	6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72
+	CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7
+	M4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxAqzxv26xkF7I0En4kS14
+	v26r1q6r43MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
+	xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42
+	IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY
+	6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aV
+	CY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Mon, Feb 17, 2025 at 07:14:48PM -0800, JP Kobryn wrote:
-> A majority of the cgroup_rstat_cpu struct size is made up of the base stat
-> entities. Since only the "self" subsystem state makes use of these, move
-> them into a struct of their own. This allows for a new compact
-> cgroup_rstat_cpu struct that the formal subsystems can make use of.
-> Where applicable, decide on whether to allocate the compact or the full
-> struct including the base stats.
-> 
-> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-This looks good. Now there are two major asks and then minor comments on
-some individual patches.
+Yu Kuai (2):
+  blk-throttle: cleanup throtl_extend_slice()
+  blk-throttle: fix off-by-one jiffies wait_time
 
-Two main asks are:
-1. Experiment requested by Tejun.
-2. BPF rstat using the base subsystem as requested by Yosry.
+ block/blk-throttle.c | 38 ++++++++++++++++++++++----------------
+ block/blk-throttle.h | 12 ++++++++----
+ 2 files changed, 30 insertions(+), 20 deletions(-)
 
-I would say send the v2 addressing these requests.
+-- 
+2.39.2
+
 
