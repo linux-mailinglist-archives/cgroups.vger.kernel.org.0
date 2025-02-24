@@ -1,600 +1,346 @@
-Return-Path: <cgroups+bounces-6679-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6680-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 225E0A428ED
-	for <lists+cgroups@lfdr.de>; Mon, 24 Feb 2025 18:09:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1103AA42918
+	for <lists+cgroups@lfdr.de>; Mon, 24 Feb 2025 18:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A98E3A76C7
-	for <lists+cgroups@lfdr.de>; Mon, 24 Feb 2025 17:02:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B0C4441D16
+	for <lists+cgroups@lfdr.de>; Mon, 24 Feb 2025 17:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D52268C62;
-	Mon, 24 Feb 2025 16:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30CD0263F31;
+	Mon, 24 Feb 2025 17:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y9rq7iQQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kYkmWSUU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40310264A8D
-	for <cgroups@vger.kernel.org>; Mon, 24 Feb 2025 16:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320C625485D
+	for <cgroups@vger.kernel.org>; Mon, 24 Feb 2025 17:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740416214; cv=none; b=PEkVNLHsWzFHBnaWdKID/IMxmqSpRvzHr/XWq4dpdUnm/tSsMgqj5l1xxzp56KjNXH1lSAKCPKjP3wppatkVXIL2LLlRTwcsc7zdHAB1RQxxzDP4GeWQHUV8XyvbkRkx0bXOYr/+GI5J+AJLdn9M5j9uLuiqRv5RvVpgN5mCzns=
+	t=1740416787; cv=none; b=J14qDH1wx2DLXyYfxvH2P99soAqmO27am8Dcs+hOk9YtYPku/PGgtL5zCOQuCsd8yQ02Y4nIBwPExVD/8B/CP5qDaJJkIf1Oe0M9NGBfKKqk1z5/TrZcpS0oj8V3XmyHTKO1+dOtOhTPhw+le9TiO/aVIjFEvkTZ0dflm/lSlfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740416214; c=relaxed/simple;
-	bh=67pl9UOJ1GSYqL4a9JTWXCi0kA+lyx/GKrrnunY2cdA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=niyTVk2L0dn/l+e6xOggqe+PXBFMrt65MAmcxNitmKh5CidujmPxPQFRbYAGnd7c4y4Z1dfZnK1iPKbx1U+QEqgyGSmAY+D9eVVHBIB2BVrrGT6tpB68ndSGOmLlySfD+DV9MlgWUPWN7C51tcEa02NIRKvsJEzn39HC6cA45y8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y9rq7iQQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1740416211;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MgdgCkfQT710L4EQa1Wd5rppib0ue2uPYRNKLBnKmzg=;
-	b=Y9rq7iQQP70ohkPzt4jOUx+DGbi8OfTclsmk8p89QG3hEWJEDPEucTD5p/ZNLMyctJ3iw5
-	pPo0YRMn3rs5t3Bg9SPF19DMJ1HoQp9C+gGrpv3MLnw+FPSaDK8jrz7yBTyAy+Qd12fwYL
-	1mz/NzpomGayEZWDTyi98gGw42yeIMk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-201-P-FU2P_RMVO-e_uatQx-LA-1; Mon, 24 Feb 2025 11:56:49 -0500
-X-MC-Unique: P-FU2P_RMVO-e_uatQx-LA-1
-X-Mimecast-MFC-AGG-ID: P-FU2P_RMVO-e_uatQx-LA_1740416209
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-43935e09897so32831475e9.1
-        for <cgroups@vger.kernel.org>; Mon, 24 Feb 2025 08:56:49 -0800 (PST)
+	s=arc-20240116; t=1740416787; c=relaxed/simple;
+	bh=8XO4EngEYbHrlhslbR1fKot9+qgneBerrlkHW0mNYZs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PajrIN4cvn0HcouIKuyBexbDuGhDLE7AHdP7FIte3ZENAs4JaE6mQ4cTfNWyMna17z5ujk0xvy/jasRFlAjgkbShfc9b3IC7WUGEpPj+nB63aG1YXKJSzcNzVu6lJOj0jbpFS5IwR/fQNxAa13rN3Kq3wSXrLdIQt0pLhHTSn/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kYkmWSUU; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-220ec47991aso63631825ad.1
+        for <cgroups@vger.kernel.org>; Mon, 24 Feb 2025 09:06:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740416784; x=1741021584; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VTHS8iK3FsKYm/QQs//Dbn45NKszSJWQZPTjnfB9t0g=;
+        b=kYkmWSUU8oQNiJd3Hrbp3yujeY2mZQ8iY1FsCpJBTMjGevplVvd+TKxSsZw2j383w9
+         +5N2Pq0x9DgIH3RP7TEbXkGpWrspZZD1YbkW2GtsD1/IYM7f4yKn1K1KUF5d4yEe1uj7
+         wjxGB+TD/NBIIoLCzTsWUblLFm7wycvPX5NN2GG3swR4a2C2McdGqPMh+aYVIc8HCDYO
+         +FH4eVQFl6woJIqaUCVIOYvIHdZf7R7W8P6fmXAD09DJMa/nt7CppxKdFBHz5nz1ajzJ
+         NMqU4vQZle+7FjXgX2nfKpukci/f2JFsglwdr7fc586pFoSzH9gIUex/Hji1LMlWK/OV
+         EgjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740416208; x=1741021008;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MgdgCkfQT710L4EQa1Wd5rppib0ue2uPYRNKLBnKmzg=;
-        b=Zx70QdFmmbj11ZwnpqFvbJHv9h7Oz+SmNqSkvwfOYDynCbb5O8dsBSs9GtrzgkUxi3
-         9afk6rzpKPrd/HKPXbKsa0sILonJuChhGwfPx8pYcwVeBhdUvkL3+cT1tHZDVUYyOUgm
-         ufqghmm+qS1r2+M1LjBxyxaY4GeHkYtM5Y4eCXmC6UDukMo2G3el/MQMkQNx8tbVfkq1
-         jDMH99+Yq0K8WMcCYSpFIIZDfCWU7dYTjA2j83bU3dkUxSZHvBOOPzXzzz5dAAe/o2e8
-         AHz0wYyMCjjp5pbppWnOde/ga1Us+D3By9eo0OxC/6q1HzTuCgpFMCBMssuoiqmiTs0v
-         /ikw==
-X-Forwarded-Encrypted: i=1; AJvYcCXTXb3YAvTwxKq217hR6ZAOWvBgfwz1ehf09WGKN44/sEwcv3wlBUBSlulHGDVukE5jyy2ajp5T@vger.kernel.org
-X-Gm-Message-State: AOJu0YzI+Orm8yyYQcSL+dzCAuY20Bl4g6mMknfdKyFWArmK7YlqXGhy
-	m3rJ8HGYtYi0Xts/j1NwA9hLjT/3hus8y72coFxGorgRSMaOGq/ufRpf8rI8aLuUZ4PJIIsyvrq
-	cpM9qSrAvrPY+8PJqkjA9iEyi+wLZCAxOCbQx/csgUbtyVdDpcz391ws=
-X-Gm-Gg: ASbGnctvN9PPRHyLhquXEZtFfamdMsBDUsz6Y/DCU4vTLL0F1elhhqRLjL1UHMJkbV8
-	xCeEwWZJnJuhbPkzrkT8Euy2w2wJqNaKLI1Sm9Msgim29DGcn5u+rCgAVppvsfMDW43iD7rvh3I
-	TV1q5VPyupdDzNa3OekYzq5biKclBpp8mNW5DMkoaPvSNH/gwU3lnkSaSsBP1yQ4DJYVxp5sgCo
-	cGCiIzQdaIXBRIi2QSEGLZu44odBwcN6DOb+4WdcMbkvsLGFNqm9HbxFpDAKSoi8Rl1ca6KjOcC
-	EO1bbNExP3I1uKQ/4t0EvgcGTIVYng7jrbI/dUIeJw==
-X-Received: by 2002:a05:600c:5112:b0:434:a781:f5d5 with SMTP id 5b1f17b1804b1-43aa4ee1f53mr49951555e9.30.1740416208244;
-        Mon, 24 Feb 2025 08:56:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEkH/GtVfiPSlmNTBjcB5VCGgkWNht+vToPEPB5qduC+IDFH5nKzmUcOLgdLr6vKVUyR6uQ9w==
-X-Received: by 2002:a05:600c:5112:b0:434:a781:f5d5 with SMTP id 5b1f17b1804b1-43aa4ee1f53mr49951055e9.30.1740416207692;
-        Mon, 24 Feb 2025 08:56:47 -0800 (PST)
-Received: from localhost (p4ff234b6.dip0.t-ipconnect.de. [79.242.52.182])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-439b02ce41dsm115554595e9.1.2025.02.24.08.56.46
+        d=1e100.net; s=20230601; t=1740416784; x=1741021584;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VTHS8iK3FsKYm/QQs//Dbn45NKszSJWQZPTjnfB9t0g=;
+        b=Cx35loQEeeEO/pQpH3RrpAF6N7jzl1ptzt2SHgKyH/2qvrzKurx1XIsC+fWTjNKgGt
+         bAV1ao9SH/n02K0QRiMWa1i86R435Hi9kY91gw6F2TwNoLTW73AfyttMjUv5asJFHs0t
+         3xL3P8tnNFqf4/8C2qz0h+zV0m8HBRVBrrcXte0x729vbL0IVQgMQvh5LTFfauwlLfRn
+         g17vetiDwiONAAv1H0aeqSmKCox6sDp/yd0bW94eY0npLDNwFaQPyxU1OUBcQAkwgwfQ
+         CLFwc9jRkqD7K0qJmcaZxXhB6GHExUzFr/f67zXfc1iCyIsWICcrsVGqHsCPr2UcMsCH
+         CH0g==
+X-Forwarded-Encrypted: i=1; AJvYcCXxzP1IcjDFVCIpIFFz+3aRZu46/x/58AU0cZyoVvGAxqQSwzKXOvSK/yBDfpDpQoJW42hDFeMw@vger.kernel.org
+X-Gm-Message-State: AOJu0YxlFVVwsIkXWtxbX8UnM9tUQod1AHAs92ERt8n2t9p/ghez9qXK
+	NiHf5escB/A9Yf3mtO+TKxo/jOmfe4crhgW4eYp/Db4l7wMlAzMq
+X-Gm-Gg: ASbGncsUcv5XIuBCkxLobbs2p/SybMQfLZGfQMQWEHJf+91Wy6FF16xVA5hFyDVzEkA
+	0p6ZB/ilz2DuCBH6Be7KYRwZ7R4varOwYhYx+s/lqxiHo5JY+q3qbAEYVdLKxNfSD9dArw8rB49
+	tDQzDtya/tRGPzsss4tRR2RCfreZuywuhjwLH/s7mYghwAvw12NvHZvaWkhXHC7vbpYStXFyRT+
+	hklQyAM70GbtZ09v5RUnDOFvmDloggKAVaePYSib1UeEW7chkKrroHA+4XeE8ysf4SUlYFUNR9I
+	9AA//J68bJQ6ckRer30y94SG2QfmMs2x0G4Yjq2K8h18m7x5jAM2BqprBw==
+X-Google-Smtp-Source: AGHT+IGMqhrUZAxEQJWkNDLXJrTxLwT4UhOoRT1uPGC+2lcRJOsdoKA540ITjl1yDP8hW2ZlJQlBRQ==
+X-Received: by 2002:a17:90b:1c90:b0:2fa:137f:5c5c with SMTP id 98e67ed59e1d1-2fce769a8a3mr21389387a91.1.1740416784161;
+        Mon, 24 Feb 2025 09:06:24 -0800 (PST)
+Received: from ?IPV6:2a03:83e0:1151:15:19f:cf94:a905:e7ab? ([2620:10d:c090:500::6:77f7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fceb0a6902sm6852591a91.48.2025.02.24.09.06.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Feb 2025 08:56:47 -0800 (PST)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-doc@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andy Lutomirski <luto@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Jann Horn <jannh@google.com>
-Subject: [PATCH v2 20/20] mm: stop maintaining the per-page mapcount of large folios (CONFIG_NO_PAGE_MAPCOUNT)
-Date: Mon, 24 Feb 2025 17:56:02 +0100
-Message-ID: <20250224165603.1434404-21-david@redhat.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250224165603.1434404-1-david@redhat.com>
-References: <20250224165603.1434404-1-david@redhat.com>
+        Mon, 24 Feb 2025 09:06:23 -0800 (PST)
+Message-ID: <e0ff8143-c6fd-4185-b953-d543ffd58535@gmail.com>
+Date: Mon, 24 Feb 2025 09:06:21 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/11] cgroup: move rstat pointers into struct of their
+ own
+To: Yosry Ahmed <yosry.ahmed@linux.dev>
+Cc: shakeel.butt@linux.dev, tj@kernel.org, mhocko@kernel.org,
+ hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, kernel-team@meta.com
+References: <20250218031448.46951-1-inwardvessel@gmail.com>
+ <20250218031448.46951-2-inwardvessel@gmail.com> <Z7deFViKJYXWj8nf@google.com>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <Z7deFViKJYXWj8nf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Everything is in place to stop using the per-page mapcounts in large
-folios: the mapcount of tail pages will always be logically 0 (-1 value),
-just like it currently is for hugetlb folios already, and the page
-mapcount of the head page is either 0 (-1 value) or contains a page type
-(e.g., hugetlb).
+On 2/20/25 8:53 AM, Yosry Ahmed wrote:
+> On Mon, Feb 17, 2025 at 07:14:38PM -0800, JP Kobryn wrote:
+>> The rstat infrastructure makes use of pointers for list management.
+>> These pointers only exist as fields in the cgroup struct, so moving them
+>> into their own struct will allow them to be used elsewhere. The base
+>> stat entities are included with them for now.
+>>
+>> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+>> ---
+>>   include/linux/cgroup-defs.h                   | 90 +-----------------
+>>   include/linux/cgroup_rstat.h                  | 92 +++++++++++++++++++
+>>   kernel/cgroup/cgroup.c                        |  3 +-
+>>   kernel/cgroup/rstat.c                         | 27 +++---
+>>   .../selftests/bpf/progs/btf_type_tag_percpu.c |  4 +-
+>>   5 files changed, 112 insertions(+), 104 deletions(-)
+>>   create mode 100644 include/linux/cgroup_rstat.h
+>>
+>> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+>> index 1b20d2d8ef7c..6b6cc027fe70 100644
+>> --- a/include/linux/cgroup-defs.h
+>> +++ b/include/linux/cgroup-defs.h
+>> @@ -17,7 +17,7 @@
+>>   #include <linux/refcount.h>
+>>   #include <linux/percpu-refcount.h>
+>>   #include <linux/percpu-rwsem.h>
+>> -#include <linux/u64_stats_sync.h>
+>> +#include <linux/cgroup_rstat.h>
+>>   #include <linux/workqueue.h>
+>>   #include <linux/bpf-cgroup-defs.h>
+>>   #include <linux/psi_types.h>
+>> @@ -321,78 +321,6 @@ struct css_set {
+>>   	struct rcu_head rcu_head;
+>>   };
+>>   
+>> -struct cgroup_base_stat {
+>> -	struct task_cputime cputime;
+>> -
+>> -#ifdef CONFIG_SCHED_CORE
+>> -	u64 forceidle_sum;
+>> -#endif
+>> -	u64 ntime;
+>> -};
+>> -
+>> -/*
+>> - * rstat - cgroup scalable recursive statistics.  Accounting is done
+>> - * per-cpu in cgroup_rstat_cpu which is then lazily propagated up the
+>> - * hierarchy on reads.
+>> - *
+>> - * When a stat gets updated, the cgroup_rstat_cpu and its ancestors are
+>> - * linked into the updated tree.  On the following read, propagation only
+>> - * considers and consumes the updated tree.  This makes reading O(the
+>> - * number of descendants which have been active since last read) instead of
+>> - * O(the total number of descendants).
+>> - *
+>> - * This is important because there can be a lot of (draining) cgroups which
+>> - * aren't active and stat may be read frequently.  The combination can
+>> - * become very expensive.  By propagating selectively, increasing reading
+>> - * frequency decreases the cost of each read.
+>> - *
+>> - * This struct hosts both the fields which implement the above -
+>> - * updated_children and updated_next - and the fields which track basic
+>> - * resource statistics on top of it - bsync, bstat and last_bstat.
+>> - */
+>> -struct cgroup_rstat_cpu {
+>> -	/*
+>> -	 * ->bsync protects ->bstat.  These are the only fields which get
+>> -	 * updated in the hot path.
+>> -	 */
+>> -	struct u64_stats_sync bsync;
+>> -	struct cgroup_base_stat bstat;
+>> -
+>> -	/*
+>> -	 * Snapshots at the last reading.  These are used to calculate the
+>> -	 * deltas to propagate to the global counters.
+>> -	 */
+>> -	struct cgroup_base_stat last_bstat;
+>> -
+>> -	/*
+>> -	 * This field is used to record the cumulative per-cpu time of
+>> -	 * the cgroup and its descendants. Currently it can be read via
+>> -	 * eBPF/drgn etc, and we are still trying to determine how to
+>> -	 * expose it in the cgroupfs interface.
+>> -	 */
+>> -	struct cgroup_base_stat subtree_bstat;
+>> -
+>> -	/*
+>> -	 * Snapshots at the last reading. These are used to calculate the
+>> -	 * deltas to propagate to the per-cpu subtree_bstat.
+>> -	 */
+>> -	struct cgroup_base_stat last_subtree_bstat;
+>> -
+>> -	/*
+>> -	 * Child cgroups with stat updates on this cpu since the last read
+>> -	 * are linked on the parent's ->updated_children through
+>> -	 * ->updated_next.
+>> -	 *
+>> -	 * In addition to being more compact, singly-linked list pointing
+>> -	 * to the cgroup makes it unnecessary for each per-cpu struct to
+>> -	 * point back to the associated cgroup.
+>> -	 *
+>> -	 * Protected by per-cpu cgroup_rstat_cpu_lock.
+>> -	 */
+>> -	struct cgroup *updated_children;	/* terminated by self cgroup */
+>> -	struct cgroup *updated_next;		/* NULL iff not on the list */
+>> -};
+>> -
+>>   struct cgroup_freezer_state {
+>>   	/* Should the cgroup and its descendants be frozen. */
+>>   	bool freeze;
+>> @@ -517,23 +445,9 @@ struct cgroup {
+>>   	struct cgroup *old_dom_cgrp;		/* used while enabling threaded */
+>>   
+>>   	/* per-cpu recursive resource statistics */
+>> -	struct cgroup_rstat_cpu __percpu *rstat_cpu;
+>> +	struct cgroup_rstat rstat;
+>>   	struct list_head rstat_css_list;
+>>   
+>> -	/*
+>> -	 * Add padding to separate the read mostly rstat_cpu and
+>> -	 * rstat_css_list into a different cacheline from the following
+>> -	 * rstat_flush_next and *bstat fields which can have frequent updates.
+>> -	 */
+>> -	CACHELINE_PADDING(_pad_);
+>> -
+>> -	/*
+>> -	 * A singly-linked list of cgroup structures to be rstat flushed.
+>> -	 * This is a scratch field to be used exclusively by
+>> -	 * cgroup_rstat_flush_locked() and protected by cgroup_rstat_lock.
+>> -	 */
+>> -	struct cgroup	*rstat_flush_next;
+>> -
+>>   	/* cgroup basic resource statistics */
+>>   	struct cgroup_base_stat last_bstat;
+>>   	struct cgroup_base_stat bstat;
+>> diff --git a/include/linux/cgroup_rstat.h b/include/linux/cgroup_rstat.h
+>> new file mode 100644
+>> index 000000000000..f95474d6f8ab
+>> --- /dev/null
+>> +++ b/include/linux/cgroup_rstat.h
+>> @@ -0,0 +1,92 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef _LINUX_RSTAT_H
+>> +#define _LINUX_RSTAT_H
+>> +
+>> +#include <linux/u64_stats_sync.h>
+>> +
+>> +struct cgroup_rstat_cpu;
+> 
+> Why do we need the forward declaration instead of just defining struct
+> cgroup_rstat_cpu first? Also, why do we need a new header for these
+> definitions rather than just adding struct cgroup_rstat to
+> cgroup-defs.h?
 
-Maintaining _nr_pages_mapped without per-page mapcounts is impossible,
-so that one also has to go with CONFIG_NO_PAGE_MAPCOUNT.
+The new header was added so the cgroup_rstat type can be used in bpf
+cgroup-defs.h. As for the forward declaration, this was done so that
+updated_next and updated children fields of the cgroup_rstat_cpu can
+change type from from cgroup to cgroup_rstat.
 
-There are two remaining implications:
+Regardless, based on the direction we are moving with bpf sharing the
+"self" tree, this new header will NOT be needed in v2.
 
-(1) Per-node, per-cgroup and per-lruvec stats of "NR_ANON_MAPPED"
-    ("mapped anonymous memory") and "NR_FILE_MAPPED"
-    ("mapped file memory"):
-
-    As soon as any page of the folio is mapped -- folio_mapped() -- we
-    now account the complete folio as mapped. Once the last page is
-    unmapped -- !folio_mapped() -- we account the complete folio as
-    unmapped.
-
-    This implies that ...
-
-    * "AnonPages" and "Mapped" in /proc/meminfo and
-      /sys/devices/system/node/*/meminfo
-    * cgroup v2: "anon" and "file_mapped" in "memory.stat" and
-      "memory.numa_stat"
-    * cgroup v1: "rss" and "mapped_file" in "memory.stat" and
-      "memory.numa_stat
-
-    ... can now appear higher than before. But note that these folios do
-    consume that memory, simply not all pages are actually currently
-    mapped.
-
-    It's worth nothing that other accounting in the kernel (esp. cgroup
-    charging on allocation) is not affected by this change.
-
-    [why oh why is "anon" called "rss" in cgroup v1]
-
- (2) Detecting partial mappings
-
-     Detecting whether anon THPs are partially mapped gets a bit more
-     unreliable. As long as a single MM maps such a large folio
-     ("exclusively mapped"), we can reliably detect it. Especially before
-     fork() / after a short-lived child process quit, we will detect
-     partial mappings reliably, which is the common case.
-
-     In essence, if the average per-page mapcount in an anon THP is < 1,
-     we know for sure that we have a partial mapping.
-
-     However, as soon as multiple MMs are involved, we might miss detecting
-     partial mappings: this might be relevant with long-lived child
-     processes. If we have a fully-mapped anon folio before fork(), once
-     our child processes and our parent all unmap (zap/COW) the same pages
-     (but not the complete folio), we might not detect the partial mapping.
-     However, once the child processes quit we would detect the partial
-     mapping.
-
-     How relevant this case is in practice remains to be seen.
-     Swapout/migration will likely mitigate this.
-
-     In the future, RMAP walkers could check for that for that case
-     (e.g., when collecting access bits during reclaim) and simply flag
-     them for deferred-splitting.
-
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- .../admin-guide/cgroup-v1/memory.rst          |  4 +
- Documentation/admin-guide/cgroup-v2.rst       | 10 ++-
- Documentation/filesystems/proc.rst            | 10 ++-
- Documentation/mm/transhuge.rst                | 31 +++++--
- include/linux/rmap.h                          | 35 ++++++--
- mm/internal.h                                 |  5 +-
- mm/page_alloc.c                               |  3 +-
- mm/rmap.c                                     | 80 +++++++++++++++++--
- 8 files changed, 150 insertions(+), 28 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-index 286d16fc22ebb..53cf081b22e81 100644
---- a/Documentation/admin-guide/cgroup-v1/memory.rst
-+++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -609,6 +609,10 @@ memory.stat file includes following statistics:
- 
- 	'rss + mapped_file" will give you resident set size of cgroup.
- 
-+	Note that some kernel configurations might account complete larger
-+	allocations (e.g., THP) towards 'rss' and 'mapped_file', even if
-+	only some, but not all that memory is mapped.
-+
- 	(Note: file and shmem may be shared among other cgroups. In that case,
- 	mapped_file is accounted only when the memory cgroup is owner of page
- 	cache.)
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 175e9435ad5c1..53ada5c2620a7 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1448,7 +1448,10 @@ The following nested keys are defined.
- 
- 	  anon
- 		Amount of memory used in anonymous mappings such as
--		brk(), sbrk(), and mmap(MAP_ANONYMOUS)
-+		brk(), sbrk(), and mmap(MAP_ANONYMOUS). Note that
-+		some kernel configurations might account complete larger
-+		allocations (e.g., THP) if only some, but not all the
-+		memory of such an allocation is mapped anymore.
- 
- 	  file
- 		Amount of memory used to cache filesystem data,
-@@ -1491,7 +1494,10 @@ The following nested keys are defined.
- 		Amount of application memory swapped out to zswap.
- 
- 	  file_mapped
--		Amount of cached filesystem data mapped with mmap()
-+		Amount of cached filesystem data mapped with mmap(). Note
-+		that some kernel configurations might account complete
-+		larger allocations (e.g., THP) if only some, but not
-+		not all the memory of such an allocation is mapped.
- 
- 	  file_dirty
- 		Amount of cached filesystem data that was modified but
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 57d55274a1f42..c5052acfa0747 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -1150,9 +1150,15 @@ Dirty
- Writeback
-               Memory which is actively being written back to the disk
- AnonPages
--              Non-file backed pages mapped into userspace page tables
-+              Non-file backed pages mapped into userspace page tables. Note that
-+              some kernel configurations might consider all pages part of a
-+              larger allocation (e.g., THP) as "mapped", as soon as a single
-+              page is mapped.
- Mapped
--              files which have been mmapped, such as libraries
-+              files which have been mmapped, such as libraries. Note that some
-+              kernel configurations might consider all pages part of a larger
-+              allocation (e.g., THP) as "mapped", as soon as a single page is
-+              mapped.
- Shmem
-               Total memory used by shared memory (shmem) and tmpfs
- KReclaimable
-diff --git a/Documentation/mm/transhuge.rst b/Documentation/mm/transhuge.rst
-index baa17d718a762..0e7f8e4cd2e33 100644
---- a/Documentation/mm/transhuge.rst
-+++ b/Documentation/mm/transhuge.rst
-@@ -116,23 +116,28 @@ pages:
-     succeeds on tail pages.
- 
-   - map/unmap of a PMD entry for the whole THP increment/decrement
--    folio->_entire_mapcount, increment/decrement folio->_large_mapcount
--    and also increment/decrement folio->_nr_pages_mapped by ENTIRELY_MAPPED
--    when _entire_mapcount goes from -1 to 0 or 0 to -1.
-+    folio->_entire_mapcount and folio->_large_mapcount.
- 
-     We also maintain the two slots for tracking MM owners (MM ID and
-     corresponding mapcount), and the current status ("maybe mapped shared" vs.
-     "mapped exclusively").
- 
-+    With CONFIG_PAGE_MAPCOUNT, we also increment/decrement
-+    folio->_nr_pages_mapped by ENTIRELY_MAPPED when _entire_mapcount goes
-+    from -1 to 0 or 0 to -1.
-+
-   - map/unmap of individual pages with PTE entry increment/decrement
--    page->_mapcount, increment/decrement folio->_large_mapcount and also
--    increment/decrement folio->_nr_pages_mapped when page->_mapcount goes
--    from -1 to 0 or 0 to -1 as this counts the number of pages mapped by PTE.
-+    folio->_large_mapcount.
- 
-     We also maintain the two slots for tracking MM owners (MM ID and
-     corresponding mapcount), and the current status ("maybe mapped shared" vs.
-     "mapped exclusively").
- 
-+    With CONFIG_PAGE_MAPCOUNT, we also increment/decrement
-+    page->_mapcount and increment/decrement folio->_nr_pages_mapped when
-+    page->_mapcount goes from -1 to 0 or 0 to -1 as this counts the number
-+    of pages mapped by PTE.
-+
- split_huge_page internally has to distribute the refcounts in the head
- page to the tail pages before clearing all PG_head/tail bits from the page
- structures. It can be done easily for refcounts taken by page table
-@@ -159,8 +164,8 @@ clear where references should go after split: it will stay on the head page.
- Note that split_huge_pmd() doesn't have any limitations on refcounting:
- pmd can be split at any point and never fails.
- 
--Partial unmap and deferred_split_folio()
--========================================
-+Partial unmap and deferred_split_folio() (anon THP only)
-+========================================================
- 
- Unmapping part of THP (with munmap() or other way) is not going to free
- memory immediately. Instead, we detect that a subpage of THP is not in use
-@@ -175,3 +180,13 @@ a THP crosses a VMA boundary.
- The function deferred_split_folio() is used to queue a folio for splitting.
- The splitting itself will happen when we get memory pressure via shrinker
- interface.
-+
-+With CONFIG_PAGE_MAPCOUNT, we reliably detect partial mappings based on
-+folio->_nr_pages_mapped.
-+
-+With CONFIG_NO_PAGE_MAPCOUNT, we detect partial mappings based on the
-+average per-page mapcount in a THP: if the average is < 1, an anon THP is
-+certainly partially mapped. As long as only a single process maps a THP,
-+this detection is reliable. With long-running child processes, there can
-+be scenarios where partial mappings can currently not be detected, and
-+might need asynchronous detection during memory reclaim in the future.
-diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index c131b0efff0fa..6b82b618846ee 100644
---- a/include/linux/rmap.h
-+++ b/include/linux/rmap.h
-@@ -240,7 +240,7 @@ static __always_inline void folio_set_large_mapcount(struct folio *folio,
- 	folio_set_mm_id(folio, 0, vma->vm_mm->mm_id);
- }
- 
--static __always_inline void folio_add_large_mapcount(struct folio *folio,
-+static __always_inline int folio_add_return_large_mapcount(struct folio *folio,
- 		int diff, struct vm_area_struct *vma)
- {
- 	const mm_id_t mm_id = vma->vm_mm->mm_id;
-@@ -286,9 +286,11 @@ static __always_inline void folio_add_large_mapcount(struct folio *folio,
- 		folio->_mm_ids |= FOLIO_MM_IDS_SHARED_BIT;
- 	}
- 	folio_unlock_large_mapcount(folio);
-+	return new_mapcount_val + 1;
- }
-+#define folio_add_large_mapcount folio_add_return_large_mapcount
- 
--static __always_inline void folio_sub_large_mapcount(struct folio *folio,
-+static __always_inline int folio_sub_return_large_mapcount(struct folio *folio,
- 		int diff, struct vm_area_struct *vma)
- {
- 	const mm_id_t mm_id = vma->vm_mm->mm_id;
-@@ -331,7 +333,9 @@ static __always_inline void folio_sub_large_mapcount(struct folio *folio,
- 		folio->_mm_ids &= ~FOLIO_MM_IDS_SHARED_BIT;
- out:
- 	folio_unlock_large_mapcount(folio);
-+	return new_mapcount_val + 1;
- }
-+#define folio_sub_large_mapcount folio_sub_return_large_mapcount
- #else /* !CONFIG_MM_ID */
- /*
-  * See __folio_rmap_sanity_checks(), we might map large folios even without
-@@ -350,17 +354,33 @@ static inline void folio_add_large_mapcount(struct folio *folio,
- 	atomic_add(diff, &folio->_large_mapcount);
- }
- 
-+static inline int folio_add_return_large_mapcount(struct folio *folio,
-+		int diff, struct vm_area_struct *vma)
-+{
-+	BUILD_BUG();
-+}
-+
- static inline void folio_sub_large_mapcount(struct folio *folio,
- 		int diff, struct vm_area_struct *vma)
- {
- 	atomic_sub(diff, &folio->_large_mapcount);
- }
-+
-+static inline int folio_sub_return_large_mapcount(struct folio *folio,
-+		int diff, struct vm_area_struct *vma)
-+{
-+	BUILD_BUG();
-+}
- #endif /* CONFIG_MM_ID */
- 
- #define folio_inc_large_mapcount(folio, vma) \
- 	folio_add_large_mapcount(folio, 1, vma)
-+#define folio_inc_return_large_mapcount(folio, vma) \
-+	folio_add_return_large_mapcount(folio, 1, vma)
- #define folio_dec_large_mapcount(folio, vma) \
- 	folio_sub_large_mapcount(folio, 1, vma)
-+#define folio_dec_return_large_mapcount(folio, vma) \
-+	folio_sub_return_large_mapcount(folio, 1, vma)
- 
- /* RMAP flags, currently only relevant for some anon rmap operations. */
- typedef int __bitwise rmap_t;
-@@ -538,9 +558,11 @@ static __always_inline void __folio_dup_file_rmap(struct folio *folio,
- 			break;
- 		}
- 
--		do {
--			atomic_inc(&page->_mapcount);
--		} while (page++, --nr_pages > 0);
-+		if (IS_ENABLED(CONFIG_PAGE_MAPCOUNT)) {
-+			do {
-+				atomic_inc(&page->_mapcount);
-+			} while (page++, --nr_pages > 0);
-+		}
- 		folio_add_large_mapcount(folio, orig_nr_pages, dst_vma);
- 		break;
- 	case RMAP_LEVEL_PMD:
-@@ -638,7 +660,8 @@ static __always_inline int __folio_try_dup_anon_rmap(struct folio *folio,
- 		do {
- 			if (PageAnonExclusive(page))
- 				ClearPageAnonExclusive(page);
--			atomic_inc(&page->_mapcount);
-+			if (IS_ENABLED(CONFIG_PAGE_MAPCOUNT))
-+				atomic_inc(&page->_mapcount);
- 		} while (page++, --nr_pages > 0);
- 		folio_add_large_mapcount(folio, orig_nr_pages, dst_vma);
- 		break;
-diff --git a/mm/internal.h b/mm/internal.h
-index 7303ddd9dac04..7a4f81a6edd66 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -84,6 +84,8 @@ void page_writeback_init(void);
-  */
- static inline int folio_nr_pages_mapped(const struct folio *folio)
- {
-+	if (IS_ENABLED(CONFIG_NO_PAGE_MAPCOUNT))
-+		return -1;
- 	return atomic_read(&folio->_nr_pages_mapped) & FOLIO_PAGES_MAPPED;
- }
- 
-@@ -721,7 +723,8 @@ static inline void prep_compound_head(struct page *page, unsigned int order)
- 
- 	folio_set_order(folio, order);
- 	atomic_set(&folio->_large_mapcount, -1);
--	atomic_set(&folio->_nr_pages_mapped, 0);
-+	if (IS_ENABLED(CONFIG_PAGE_MAPCOUNT))
-+		atomic_set(&folio->_nr_pages_mapped, 0);
- 	if (IS_ENABLED(CONFIG_MM_ID)) {
- 		folio->_mm_ids = 0;
- 		folio->_mm_id_mapcount[0] = -1;
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 08caa92553998..4402672b5d838 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -951,7 +951,8 @@ static int free_tail_page_prepare(struct page *head_page, struct page *page)
- 			bad_page(page, "nonzero large_mapcount");
- 			goto out;
- 		}
--		if (unlikely(atomic_read(&folio->_nr_pages_mapped))) {
-+		if (IS_ENABLED(CONFIG_PAGE_MAPCOUNT) &&
-+		    unlikely(atomic_read(&folio->_nr_pages_mapped))) {
- 			bad_page(page, "nonzero nr_pages_mapped");
- 			goto out;
- 		}
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 8de415157bc8d..67bb273dfb80d 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1258,6 +1258,16 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
- 			break;
- 		}
- 
-+		if (IS_ENABLED(CONFIG_NO_PAGE_MAPCOUNT)) {
-+			nr = folio_add_return_large_mapcount(folio, orig_nr_pages, vma);
-+			if (nr == orig_nr_pages)
-+				/* Was completely unmapped. */
-+				nr = folio_large_nr_pages(folio);
-+			else
-+				nr = 0;
-+			break;
-+		}
-+
- 		do {
- 			first += atomic_inc_and_test(&page->_mapcount);
- 		} while (page++, --nr_pages > 0);
-@@ -1271,6 +1281,18 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
- 	case RMAP_LEVEL_PMD:
- 	case RMAP_LEVEL_PUD:
- 		first = atomic_inc_and_test(&folio->_entire_mapcount);
-+		if (IS_ENABLED(CONFIG_NO_PAGE_MAPCOUNT)) {
-+			if (level == RMAP_LEVEL_PMD && first)
-+				*nr_pmdmapped = folio_large_nr_pages(folio);
-+			nr = folio_inc_return_large_mapcount(folio, vma);
-+			if (nr == 1)
-+				/* Was completely unmapped. */
-+				nr = folio_large_nr_pages(folio);
-+			else
-+				nr = 0;
-+			break;
-+		}
-+
- 		if (first) {
- 			nr = atomic_add_return_relaxed(ENTIRELY_MAPPED, mapped);
- 			if (likely(nr < ENTIRELY_MAPPED + ENTIRELY_MAPPED)) {
-@@ -1436,13 +1458,23 @@ static __always_inline void __folio_add_anon_rmap(struct folio *folio,
- 			break;
- 		}
- 	}
-+
-+	VM_WARN_ON_FOLIO(!folio_test_large(folio) && PageAnonExclusive(page) &&
-+			 atomic_read(&folio->_mapcount) > 0, folio);
- 	for (i = 0; i < nr_pages; i++) {
- 		struct page *cur_page = page + i;
- 
--		/* While PTE-mapping a THP we have a PMD and a PTE mapping. */
--		VM_WARN_ON_FOLIO((atomic_read(&cur_page->_mapcount) > 0 ||
--				  (folio_test_large(folio) &&
--				   folio_entire_mapcount(folio) > 1)) &&
-+		VM_WARN_ON_FOLIO(folio_test_large(folio) &&
-+				 folio_entire_mapcount(folio) > 1 &&
-+				 PageAnonExclusive(cur_page), folio);
-+		if (IS_ENABLED(CONFIG_NO_PAGE_MAPCOUNT))
-+			continue;
-+
-+		/*
-+		 * While PTE-mapping a THP we have a PMD and a PTE
-+		 * mapping.
-+		 */
-+		VM_WARN_ON_FOLIO(atomic_read(&cur_page->_mapcount) > 0 &&
- 				 PageAnonExclusive(cur_page), folio);
- 	}
- 
-@@ -1548,20 +1580,23 @@ void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
- 		for (i = 0; i < nr; i++) {
- 			struct page *page = folio_page(folio, i);
- 
--			/* increment count (starts at -1) */
--			atomic_set(&page->_mapcount, 0);
-+			if (IS_ENABLED(CONFIG_PAGE_MAPCOUNT))
-+				/* increment count (starts at -1) */
-+				atomic_set(&page->_mapcount, 0);
- 			if (exclusive)
- 				SetPageAnonExclusive(page);
- 		}
- 
- 		folio_set_large_mapcount(folio, nr, vma);
--		atomic_set(&folio->_nr_pages_mapped, nr);
-+		if (IS_ENABLED(CONFIG_PAGE_MAPCOUNT))
-+			atomic_set(&folio->_nr_pages_mapped, nr);
- 	} else {
- 		nr = folio_large_nr_pages(folio);
- 		/* increment count (starts at -1) */
- 		atomic_set(&folio->_entire_mapcount, 0);
- 		folio_set_large_mapcount(folio, 1, vma);
--		atomic_set(&folio->_nr_pages_mapped, ENTIRELY_MAPPED);
-+		if (IS_ENABLED(CONFIG_PAGE_MAPCOUNT))
-+			atomic_set(&folio->_nr_pages_mapped, ENTIRELY_MAPPED);
- 		if (exclusive)
- 			SetPageAnonExclusive(&folio->page);
- 		nr_pmdmapped = nr;
-@@ -1665,6 +1700,19 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
- 			break;
- 		}
- 
-+		if (IS_ENABLED(CONFIG_NO_PAGE_MAPCOUNT)) {
-+			nr = folio_sub_return_large_mapcount(folio, nr_pages, vma);
-+			if (!nr) {
-+				/* Now completely unmapped. */
-+				nr = folio_nr_pages(folio);
-+			} else {
-+				partially_mapped = nr < folio_large_nr_pages(folio) &&
-+						   !folio_entire_mapcount(folio);
-+				nr = 0;
-+			}
-+			break;
-+		}
-+
- 		folio_sub_large_mapcount(folio, nr_pages, vma);
- 		do {
- 			last += atomic_add_negative(-1, &page->_mapcount);
-@@ -1678,6 +1726,22 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
- 		break;
- 	case RMAP_LEVEL_PMD:
- 	case RMAP_LEVEL_PUD:
-+		if (IS_ENABLED(CONFIG_NO_PAGE_MAPCOUNT)) {
-+			last = atomic_add_negative(-1, &folio->_entire_mapcount);
-+			if (level == RMAP_LEVEL_PMD && last)
-+				nr_pmdmapped = folio_large_nr_pages(folio);
-+			nr = folio_dec_return_large_mapcount(folio, vma);
-+			if (!nr) {
-+				/* Now completely unmapped. */
-+				nr = folio_large_nr_pages(folio);
-+			} else {
-+				partially_mapped = last &&
-+						   nr < folio_large_nr_pages(folio);
-+				nr = 0;
-+			}
-+			break;
-+		}
-+
- 		folio_dec_large_mapcount(folio, vma);
- 		last = atomic_add_negative(-1, &folio->_entire_mapcount);
- 		if (last) {
--- 
-2.48.1
+> 
+>> +
+>> +/*
+>> + * rstat - cgroup scalable recursive statistics.  Accounting is done
+>> + * per-cpu in cgroup_rstat_cpu which is then lazily propagated up the
+>> + * hierarchy on reads.
+>> + *
+>> + * When a stat gets updated, the cgroup_rstat_cpu and its ancestors are
+>> + * linked into the updated tree.  On the following read, propagation only
+>> + * considers and consumes the updated tree.  This makes reading O(the
+>> + * number of descendants which have been active since last read) instead of
+>> + * O(the total number of descendants).
+>> + *
+>> + * This is important because there can be a lot of (draining) cgroups which
+>> + * aren't active and stat may be read frequently.  The combination can
+>> + * become very expensive.  By propagating selectively, increasing reading
+>> + * frequency decreases the cost of each read.
+>> + *
+>> + * This struct hosts both the fields which implement the above -
+>> + * updated_children and updated_next - and the fields which track basic
+>> + * resource statistics on top of it - bsync, bstat and last_bstat.
+>> + */
+>> +struct cgroup_rstat {
+>> +	struct cgroup_rstat_cpu __percpu *rstat_cpu;
+>> +
+>> +	/*
+>> +	 * Add padding to separate the read mostly rstat_cpu and
+>> +	 * rstat_css_list into a different cacheline from the following
+>> +	 * rstat_flush_next and containing struct fields which can have
+>> +	 * frequent updates.
+>> +	 */
+>> +	CACHELINE_PADDING(_pad_);
+>> +	struct cgroup *rstat_flush_next;
+>> +};
+>> +
+>> +struct cgroup_base_stat {
+>> +	struct task_cputime cputime;
+>> +
+>> +#ifdef CONFIG_SCHED_CORE
+>> +	u64 forceidle_sum;
+>> +#endif
+>> +	u64 ntime;
+>> +};
+>> +
+>> +struct cgroup_rstat_cpu {
+>> +	/*
+>> +	 * Child cgroups with stat updates on this cpu since the last read
+>> +	 * are linked on the parent's ->updated_children through
+>> +	 * ->updated_next.
+>> +	 *
+>> +	 * In addition to being more compact, singly-linked list pointing
+>> +	 * to the cgroup makes it unnecessary for each per-cpu struct to
+>> +	 * point back to the associated cgroup.
+>> +	 */
+>> +	struct cgroup *updated_children;	/* terminated by self */
+>> +	struct cgroup *updated_next;		/* NULL if not on the list */
+>> +
+>> +	/*
+>> +	 * ->bsync protects ->bstat.  These are the only fields which get
+>> +	 * updated in the hot path.
+>> +	 */
+>> +	struct u64_stats_sync bsync;
+>> +	struct cgroup_base_stat bstat;
+>> +
+>> +	/*
+>> +	 * Snapshots at the last reading.  These are used to calculate the
+>> +	 * deltas to propagate to the global counters.
+>> +	 */
+>> +	struct cgroup_base_stat last_bstat;
+>> +
+>> +	/*
+>> +	 * This field is used to record the cumulative per-cpu time of
+>> +	 * the cgroup and its descendants. Currently it can be read via
+>> +	 * eBPF/drgn etc, and we are still trying to determine how to
+>> +	 * expose it in the cgroupfs interface.
+>> +	 */
+>> +	struct cgroup_base_stat subtree_bstat;
+>> +
+>> +	/*
+>> +	 * Snapshots at the last reading. These are used to calculate the
+>> +	 * deltas to propagate to the per-cpu subtree_bstat.
+>> +	 */
+>> +	struct cgroup_base_stat last_subtree_bstat;
+>> +};
+>> +
+>> +#endif	/* _LINUX_RSTAT_H */
 
 
