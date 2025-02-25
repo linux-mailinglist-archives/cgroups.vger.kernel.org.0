@@ -1,62 +1,63 @@
-Return-Path: <cgroups+bounces-6711-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6712-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1FFA441C5
-	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 15:06:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F09A441E1
+	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 15:09:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2EAC18869BF
-	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 14:04:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE1953AFDE8
+	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 14:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980E626A085;
-	Tue, 25 Feb 2025 14:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED2A26A090;
+	Tue, 25 Feb 2025 14:05:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fEar1t4h"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D5szGzZD"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7705233CFC;
-	Tue, 25 Feb 2025 14:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C0533CFC;
+	Tue, 25 Feb 2025 14:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740492286; cv=none; b=K86/bYJjseGDa8oZFQ4+pVAelNGlyeeJmJbCJ9+URQpiMJ7Pk6x8LvP5YUvAgrlf3/WeexOp+pW2naJL4BMPrNH5mC+VjX1K2qzyu9WEgsOpyJcwVD2a/e/d3jdIXDimLREcGPBvJWr5H590tNDZUo5xOg23y7K1xEmtHuGiLwo=
+	t=1740492303; cv=none; b=uSTur4GZnTFuvUJ7rmgBwwyqMTwjxkyrIcdwfQPXTBDqmixt+GVm9J2cWyLG85jgWoQD79tCEpKSagzeA/3ZHQXZDJMlMZWRSJTGYFhkV/sCUjMW0k95NU8NAaRL4BAWnP0yNhGUkOhxvQ1cgnQqtFDovzOadmVxyTz7JibQbfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740492286; c=relaxed/simple;
-	bh=sUXTHt6eh+QXI81EQBaYj0iPTuZrYTa5Od8UTyPzP8E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=IiSSdy4NADt1Ldyp7aAba6riAk+LkoDWtSFkgKperq4/zwAc0/O6MR2pgu6RKH5Qnui6/RbcOi/Um3DbrkkZcPjL1Ho+Qu+93InDV8+HlqMdvlxVIEqRe1Jh0ULbk7bECTB0GKqTEQ6UFwYM7XFsqGkwu0cj6bxfULNaC9+jQHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fEar1t4h; arc=none smtp.client-ip=198.175.65.16
+	s=arc-20240116; t=1740492303; c=relaxed/simple;
+	bh=hdQzrrNE52j/1pPIwjImRAwPDZ4EG0HB8b/6MuOnZsA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=VCVceGWcF4RNXqANeiKr+UKHp58JPufiHhay+XBhU5CjrM0yzvuu0385Ch8L0oCqafVbe7K2CwfCPsVAFeZDgkErtaUfTrwtgPzwpMm8nuRhLSm19y/Din6cwm54VxIjLH8aNzYliUjICphIeQCXa/7IZJfcOW/UBVlbaq7r8cM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D5szGzZD; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740492285; x=1772028285;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=sUXTHt6eh+QXI81EQBaYj0iPTuZrYTa5Od8UTyPzP8E=;
-  b=fEar1t4how0iMWoj0GdcED7yPNQmSznw2pMM0KIUIBzmPI2k8ePuiCgE
-   Obu+mBoSgc7Ud8WVy0SfVY05nUc/+zFwGtcFUF91CpjWYLRoJ2TUUeZcW
-   bTotjmfaaRJLETOUjMDdQnryBK2KPu1BI/nvH8K7UDTzP+Od6hcyoUCcX
-   aTajly2t5q1L3XLoG5ODRS/jZhvBGWR5xaooRrRCcIvviLmxjgCFZSWAt
-   VU4jaZXrmMqSJIpxcV+qgcP3c6T7SywltR1bFABCbAp4mENht4frMd+oL
-   d73QxuuLfSr+/Y9TqldzdpRlGP31fOOpDlNWwLvGCjeinnsGWu9SCVl/X
-   A==;
-X-CSE-ConnectionGUID: vqU87cMgQ6e9R/cKGVM8mQ==
-X-CSE-MsgGUID: UdVqnBnOR5C9FkFe2TY7ZA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11356"; a="41424557"
+  t=1740492302; x=1772028302;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hdQzrrNE52j/1pPIwjImRAwPDZ4EG0HB8b/6MuOnZsA=;
+  b=D5szGzZDfn1JT+NYprq2nNa+60QZ05C0TdIUT6vIQCF9AjozjcfyrLuy
+   cIaQJfuqdlT0zKZ+EM56fCCBN+ZBF13I2JKvLMrb0a1MloQBmtssyTaWl
+   a/9fjQuHS0A5NOFvrX7V7TsYk07ts5CxAenjOtBTXY1patibmQxvGQ1S7
+   O+WgyqKQ6/PAhgh2dYS3kczyJu2ev991PTh+E95g31h3Qeh6rFqJ8oqao
+   2jADKZpNh2ib28OeNJb7SxzjqvKF5jl90v9FBjHihY5d1JQIcw2UFoHA0
+   gzmBx+QNvuxyQADNz17wrI49A2flWbIWI8GMREqDOd41SHA2qURDR4u+U
+   g==;
+X-CSE-ConnectionGUID: VTCZTJuQTSmsFuMHa2rKPw==
+X-CSE-MsgGUID: YqaiZC5LQ1KUsLiwl84qSQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11356"; a="41424598"
 X-IronPort-AV: E=Sophos;i="6.13,314,1732608000"; 
-   d="scan'208";a="41424557"
+   d="scan'208";a="41424598"
 Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2025 06:04:44 -0800
-X-CSE-ConnectionGUID: DLHCB871RPS+O8m+2dz66Q==
-X-CSE-MsgGUID: vS2aVbs+RjSh1G++J6j2IA==
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2025 06:05:01 -0800
+X-CSE-ConnectionGUID: jOvlhMYcRna49H6HM95Otg==
+X-CSE-MsgGUID: aHIhg91ZQQexTDVfL18beg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.13,314,1732608000"; 
-   d="scan'208";a="116590673"
+   d="scan'208";a="116590762"
 Received: from chenyu-dev.sh.intel.com ([10.239.62.107])
-  by fmviesa008.fm.intel.com with ESMTP; 25 Feb 2025 06:04:38 -0800
+  by fmviesa008.fm.intel.com with ESMTP; 25 Feb 2025 06:04:56 -0800
 From: Chen Yu <yu.c.chen@intel.com>
 To: Ingo Molnar <mingo@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -83,70 +84,139 @@ Cc: Rik van Riel <riel@redhat.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	Chen Yu <yu.c.chen@intel.com>
-Subject: [RFC PATCH 0/3] sched/numa: Introduce per cgroup numa balance control 
-Date: Tue, 25 Feb 2025 21:59:33 +0800
-Message-Id: <cover.1740483690.git.yu.c.chen@intel.com>
+Subject: [RFC PATCH 1/3] sched/numa: Introduce numa balance task migration and swap in schedstats
+Date: Tue, 25 Feb 2025 22:00:01 +0800
+Message-Id: <1847c5ef828ad4835a35e3a54b88d2e13bce0eea.1740483690.git.yu.c.chen@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1740483690.git.yu.c.chen@intel.com>
+References: <cover.1740483690.git.yu.c.chen@intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Introduce a per-cgroup interface to enable NUMA balancing
-for specific cgroups. The system administrator needs to set
-the NUMA balancing mode to NUMA_BALANCING_CGROUP=4 to enable
-this feature. When in the NUMA_BALANCING_CGROUP mode, all
-cgroups' NUMA balancing is disabled by default. After the
-administrator enables this feature for a specific cgroup,
-NUMA balancing for that cgroup is enabled.
+There is a requirement to track task activities during NUMA
+balancing. NUMA balancing has two mechanisms for task migration:
+one is to migrate the task to an idle CPU in its preferred node,
+and the other is to swap tasks on different nodes if they are
+on each other's preferred node. The kernel already has NUMA page
+migration statistics. Add the task migration and swap count
+described above in the per-task/cgroup scope. The data will be
+displayed at
 
-This per-cgroup NUMA balancing control was once proposed in
-2019 by Yun Wang[1]. Then, in 2024, Kaiyang Zhao mentioned
-that he was working with Meta on per-cgroup NUMA control[2]
-during a discussion with David Rientjes.
+/sys/fs/cgroup/mytest/memory.stat and
+/proc/{PID}/sched.
 
-I could not find further discussion regarding per-cgroup NUMA
-balancing from that point on. This set of RFC patches is a
-rough and compile-passed version, and may have unhandled cases
-(for example, THP). It has not been thoroughly tested and is
-intended to initiate or resume the discussion on the topic of
-per-cgroup NUMA load balancing.
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+ include/linux/sched.h         |  4 ++++
+ include/linux/vm_event_item.h |  2 ++
+ kernel/sched/core.c           | 10 ++++++++--
+ kernel/sched/debug.c          |  4 ++++
+ mm/memcontrol.c               |  2 ++
+ mm/vmstat.c                   |  2 ++
+ 6 files changed, 22 insertions(+), 2 deletions(-)
 
-The first patch is a NUMA load balancing statistics enhancement.
-The second patch introduces per-cgroup NUMA balancing. The third
-one enhances NUMA load balancing for the MPOL_INTERLEAVE policy.
-
-Any feedback would be appreciated.
-
-[1] https://lore.kernel.org/linux-fsdevel/60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com/
-[2] https://lore.kernel.org/linux-mm/ZrukILyQhMAKWwTe@localhost.localhost/T/
-
-Chen Yu (3):
-  sched/numa: Introduce numa balance task migration and swap in
-    schedstats
-  sched/numa: Introduce per cgroup numa balance control
-  sched/numa: Allow intervale memory allocation for numa balance
-
- include/linux/numa.h           |  1 +
- include/linux/sched.h          |  4 ++++
- include/linux/sched/sysctl.h   |  1 +
- include/linux/vm_event_item.h  |  2 ++
- include/uapi/linux/mempolicy.h |  1 +
- kernel/sched/core.c            | 42 ++++++++++++++++++++++++++++++++--
- kernel/sched/debug.c           |  4 ++++
- kernel/sched/fair.c            | 18 +++++++++++++++
- kernel/sched/sched.h           |  3 +++
- mm/memcontrol.c                |  2 ++
- mm/memory.c                    |  2 +-
- mm/mempolicy.c                 |  7 ++++++
- mm/mprotect.c                  |  5 ++--
- mm/vmstat.c                    |  2 ++
- 14 files changed, 89 insertions(+), 5 deletions(-)
-
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 9632e3318e0d..01faa608ed7c 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -527,6 +527,10 @@ struct sched_statistics {
+ 	u64				nr_failed_migrations_running;
+ 	u64				nr_failed_migrations_hot;
+ 	u64				nr_forced_migrations;
++#ifdef CONFIG_NUMA_BALANCING
++	u64				nr_numa_migrations;
++	u64				nr_numa_swap;
++#endif
+ 
+ 	u64				nr_wakeups;
+ 	u64				nr_wakeups_sync;
+diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+index f70d0958095c..aef817474781 100644
+--- a/include/linux/vm_event_item.h
++++ b/include/linux/vm_event_item.h
+@@ -64,6 +64,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+ 		NUMA_HINT_FAULTS,
+ 		NUMA_HINT_FAULTS_LOCAL,
+ 		NUMA_PAGE_MIGRATE,
++		NUMA_TASK_MIGRATE,
++		NUMA_TASK_SWAP,
+ #endif
+ #ifdef CONFIG_MIGRATION
+ 		PGMIGRATE_SUCCESS, PGMIGRATE_FAIL,
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 165c90ba64ea..44efc725054a 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3348,6 +3348,11 @@ void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
+ #ifdef CONFIG_NUMA_BALANCING
+ static void __migrate_swap_task(struct task_struct *p, int cpu)
+ {
++	__schedstat_inc(p->stats.nr_numa_swap);
++
++	if (p->mm)
++		count_memcg_events_mm(p->mm, NUMA_TASK_SWAP, 1);
++
+ 	if (task_on_rq_queued(p)) {
+ 		struct rq *src_rq, *dst_rq;
+ 		struct rq_flags srf, drf;
+@@ -7901,8 +7906,9 @@ int migrate_task_to(struct task_struct *p, int target_cpu)
+ 	if (!cpumask_test_cpu(target_cpu, p->cpus_ptr))
+ 		return -EINVAL;
+ 
+-	/* TODO: This is not properly updating schedstats */
+-
++	__schedstat_inc(p->stats.nr_numa_migrations);
++	if (p->mm)
++		count_memcg_events_mm(p->mm, NUMA_TASK_MIGRATE, 1);
+ 	trace_sched_move_numa(p, curr_cpu, target_cpu);
+ 	return stop_one_cpu(curr_cpu, migration_cpu_stop, &arg);
+ }
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index ef047add7f9e..ed801cc00bf1 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -1204,6 +1204,10 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
+ 		P_SCHEDSTAT(nr_failed_migrations_running);
+ 		P_SCHEDSTAT(nr_failed_migrations_hot);
+ 		P_SCHEDSTAT(nr_forced_migrations);
++#ifdef CONFIG_NUMA_BALANCING
++		P_SCHEDSTAT(nr_numa_migrations);
++		P_SCHEDSTAT(nr_numa_swap);
++#endif
+ 		P_SCHEDSTAT(nr_wakeups);
+ 		P_SCHEDSTAT(nr_wakeups_sync);
+ 		P_SCHEDSTAT(nr_wakeups_migrate);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 46f8b372d212..496b5edc3db6 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -460,6 +460,8 @@ static const unsigned int memcg_vm_event_stat[] = {
+ 	NUMA_PAGE_MIGRATE,
+ 	NUMA_PTE_UPDATES,
+ 	NUMA_HINT_FAULTS,
++	NUMA_TASK_MIGRATE,
++	NUMA_TASK_SWAP,
+ #endif
+ };
+ 
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 16bfe1c694dd..d6651778e4bf 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1339,6 +1339,8 @@ const char * const vmstat_text[] = {
+ 	"numa_hint_faults",
+ 	"numa_hint_faults_local",
+ 	"numa_pages_migrated",
++	"numa_task_migrated",
++	"numa_task_swaped",
+ #endif
+ #ifdef CONFIG_MIGRATION
+ 	"pgmigrate_success",
 -- 
 2.25.1
 
