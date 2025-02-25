@@ -1,51 +1,72 @@
-Return-Path: <cgroups+bounces-6702-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6703-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E069AA4336D
-	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 04:12:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3F98A43792
+	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 09:27:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70D44189BF5C
-	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 03:12:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E3DF189CC97
+	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 08:24:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7294D2144AD;
-	Tue, 25 Feb 2025 03:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 005F119342E;
+	Tue, 25 Feb 2025 08:21:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UFC5HBQd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2326A2135BC;
-	Tue, 25 Feb 2025 03:12:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3249D257441
+	for <cgroups@vger.kernel.org>; Tue, 25 Feb 2025 08:21:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740453155; cv=none; b=j0dMcgLyGy1cIDV1MKqgnHuFTiF811pg50DjPf7DAWQRgXMaXdE43l76HX0Ra56HPnXFwwQztmW7aJwO8v/ssUvBEmzrqzyYqNxAMTd/3AhOmi6yLTk5L0cIHeywBHrojZnai0DmjKCvjHS0310zQyd44rH5aazA80+P54fJufA=
+	t=1740471708; cv=none; b=Ad2W5Bi9IRXGUdryaUIStPnW84W0/DNmTA71kmSm3sJSb8Kh0eIECeQSYnT4eqToZ/XYcirOqxEjNEKs9/Vfex2gkwCEjgBS3tUvXKsgeX8VtldVamo915sAKGHgo3MW571bCCLmknRgHoKnngxfCjaSHJr1hlOSsbj0f9HvLGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740453155; c=relaxed/simple;
-	bh=kjl+s6sWQ2AJgnYEcm8bFURklJKF/fJp4g1rYKQXWyM=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=d4SSGtO727oXmgL6sOdPsf3QgDL5RgjnICGK/4NzDbKYYXZlhoOe+SXe2F39XU37zLa6qMis54WjoWF4SccPB68ffIJfHmgf8zizQcrhLurXtARbrScZz0mYP+EYadqBB7A1bMqRw4zE5qHmW6JYda7IMuptoiVwjEBvhkPOUmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Z22hM5wt8z4f3kvf;
-	Tue, 25 Feb 2025 11:12:03 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 0FD1C1A0DCC;
-	Tue, 25 Feb 2025 11:12:27 +0800 (CST)
-Received: from [10.174.179.143] (unknown [10.174.179.143])
-	by APP4 (Coremail) with SMTP id gCh0CgBHrGAZNb1nh_xKEw--.65158S3;
-	Tue, 25 Feb 2025 11:12:26 +0800 (CST)
-Subject: Re: [PATCH 2/2] blk-throttle: fix off-by-one jiffies wait_time
-To: Ming Lei <ming.lei@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+	s=arc-20240116; t=1740471708; c=relaxed/simple;
+	bh=6LbLbk2Hi/cJhAyDERiL/9BQ/9IckNqbv1Bsg0nAn0s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LfvDnj7RLQhp5myvPpUNopY5StMFylBF+SBvIkxc0v4Wo8E2U2DaNPipvdH2qdlyQcmZcDdJrsBLdj92+qqs9ou0KXqZ6UlobOqPd1FIi1Vyg5bz3f3MZ/wA5N64UYKx4hUmDhcaRmOudha++7imOglY0GpFms6Cmq7TrNwu+DI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UFC5HBQd; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1740471706;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JGVEBgr6yIICt4OFYjSxGo52A+94TcAFJZUxRZ8kPXw=;
+	b=UFC5HBQdSV2OnuZ/6DM7oNkMATWNyCEYWPoufNXobVrlJwuFVupbLEHk4YhmkbDW8OTwlj
+	kwnheHv6GhWS7M+NcgU0ZFVZzx/4DWn9Ah6sh63l3vU/qmCSylvN5Nl6nZqwQeZrrsrnFL
+	h4kW+ovKVDDah87VytYe5IUfMxRSvVk=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-691-V37hrS02P2u-zcID8-HCQw-1; Tue,
+ 25 Feb 2025 03:21:39 -0500
+X-MC-Unique: V37hrS02P2u-zcID8-HCQw-1
+X-Mimecast-MFC-AGG-ID: V37hrS02P2u-zcID8-HCQw_1740471697
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2AC4C18EB2C3;
+	Tue, 25 Feb 2025 08:21:36 +0000 (UTC)
+Received: from fedora (unknown [10.72.120.31])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9F6B01800358;
+	Tue, 25 Feb 2025 08:21:27 +0000 (UTC)
+Date: Tue, 25 Feb 2025 16:21:22 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>
 Cc: tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
- cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20250222092823.210318-1-yukuai1@huaweicloud.com>
- <20250222092823.210318-3-yukuai1@huaweicloud.com> <Z7nAJSKGANoC0Glb@fedora>
+	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+	yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH 2/2] blk-throttle: fix off-by-one jiffies wait_time
+Message-ID: <Z719gj8GOl0itRwV@fedora>
+References: <Z7nAJSKGANoC0Glb@fedora>
  <f2f54206-b5c0-7486-d607-337d29e9c145@huaweicloud.com>
  <Z7vnTyk6Y6X4JWQB@fedora>
  <e6a29a6a-f5ec-7953-14e9-2550a549f955@huaweicloud.com>
@@ -54,83 +75,64 @@ References: <20250222092823.210318-1-yukuai1@huaweicloud.com>
  <Z70btzRaN83FbTJp@fedora>
  <8473fca2-16ab-b2a6-ede7-d1449aa7d463@huaweicloud.com>
  <Z70qvZEBdq6L3-Yb@fedora>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <084e25a1-5ed7-3097-5bae-b87addeaf01f@huaweicloud.com>
-Date: Tue, 25 Feb 2025 11:12:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <084e25a1-5ed7-3097-5bae-b87addeaf01f@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Z70qvZEBdq6L3-Yb@fedora>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBHrGAZNb1nh_xKEw--.65158S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr13Zw13Aw48uFWfCr4DJwb_yoWkXFX_uF
-	9xJwn3Cwn8CFn7uF4YkFy8K3y7Xr1Svry8C3yfGry7Z34IqFs7Z3WxGasa9ry2qa93X3Z0
-	vFn8AF1xGFn3WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbfAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7V
-	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+In-Reply-To: <084e25a1-5ed7-3097-5bae-b87addeaf01f@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-Hi, Ming!
-
-在 2025/02/25 10:28, Ming Lei 写道:
-> Can you explain in details why it signals that the rate is expected now?
+On Tue, Feb 25, 2025 at 11:12:24AM +0800, Yu Kuai wrote:
+> Hi, Ming!
 > 
-> If rate isn't expected, it will cause trouble to trim, even just the
-> previous part.
+> 在 2025/02/25 10:28, Ming Lei 写道:
+> > Can you explain in details why it signals that the rate is expected now?
+> > 
+> > If rate isn't expected, it will cause trouble to trim, even just the
+> > previous part.
+> 
+> Ok, for example, assume bps_limit is 1000bytes, 1 jiffes is 10ms, and
+> slice is 20ms(2 jiffies).
+> 
 
-Ok, for example, assume bps_limit is 1000bytes, 1 jiffes is 10ms, and
-slice is 20ms(2 jiffies).
+We all know how it works, but I didn't understand the behind idea why it
+is correct. Now I figured it out: 
 
-expected rate is 1000 / 1000 * 20 = 20 bytes per slice.
+1) increase default slice window to 2 * td->throttle_slice
 
-If user issue two 21 bytes IO, then wait time will be 30ms:
+2) slice window is set as [jiffies - td->throttle_slice, jiffies + td->throttle_slice]
 
-bytes_allowed = 20, extra_bytes = 1;
-jiffy_wait = 1 + 2 = 3 jiffies
+3) initialize td->bytes_disp[]/td->io_dis[] as actual dispatched bytes/ios
+done [jiffies - td->throttle_slice, 0]
 
-and consider
-extra 1 jiffies by timer, throtl_trim_slice() will be called at:
+This approach looks smart, and it should work well for any deviation which is <= 1
+throttle_slice.
 
-jiffies = 40ms
-slice_start = 0ms, slice_end= 40ms
-bytes_disp = 21
+Probably it is enough for fixing the issue in throtl/001, even though 2 jiffies
+timer drift still may be observed, see the below log collected in my VM(HZ_100)
+by just running one time of blktests './check throtl':
 
-In this case, before the patch, real rate in the first two slice is is
-10.5 bytes per slice, and slice will be updated:
+@timer_expire_delay:
+[1, 2)               387 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[2, 3)                11 |@                                                   |
 
-jiffies = 40ms
-slice_start = 40ms, slice_end = 60ms,
-bytes_disp = 0;
+bpftrace -e 'kfunc:throtl_pending_timer_fn { @timer_expire_delay = lhist(jiffies - args->t->expires, 0, 16, 1);}'
 
-Hence the second IO will have to wait another 30ms;
 
-With the patch, the real rate in the first slice is 20 bytes per slice,
-which is the same as expected, and slice will be updated:
+Also I'd suggest to remove ->carryover_bytes/ios since blk-throttle algorithm is
+supposed to be adaptive, and the approach I suggested may cover this area,
+what do you think of this cleanup? I have one local patchset, which can
+pass all blktest throtl tests with removing ->carryover_bytes/ios.
 
-jiffies=40ms,
-slice_start = 20ms, slice_end = 60ms,
-bytes_disp = 1;
 
-And now, the second IO will only have to wait 10ms;
 
 Thanks,
-Kuai
+Ming
 
 
