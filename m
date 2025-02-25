@@ -1,163 +1,153 @@
-Return-Path: <cgroups+bounces-6710-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6711-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F97AA43EB4
-	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 13:05:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A1FFA441C5
+	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 15:06:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 734ED3B2B99
-	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 12:00:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2EAC18869BF
+	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 14:04:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62D4268692;
-	Tue, 25 Feb 2025 12:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980E626A085;
+	Tue, 25 Feb 2025 14:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F/REEnBX"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fEar1t4h"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBAD267F46
-	for <cgroups@vger.kernel.org>; Tue, 25 Feb 2025 12:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7705233CFC;
+	Tue, 25 Feb 2025 14:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740484827; cv=none; b=sOoMN8BQ8MQnB9BxiKxRyjlMR4Km53mkpfEjT7Gsg54yp5kZ1PkbWg8qIircEK+M8NYeIYvW8VDu5MXwEJgh9+xpXZIm2N8Fh5MbPXwVCS536DpfomMiXGfgXCrPQV7cdcYCMqBK3vRQ82kRxdROzrMaQZQk0ZYaXwak7pXLeTA=
+	t=1740492286; cv=none; b=K86/bYJjseGDa8oZFQ4+pVAelNGlyeeJmJbCJ9+URQpiMJ7Pk6x8LvP5YUvAgrlf3/WeexOp+pW2naJL4BMPrNH5mC+VjX1K2qzyu9WEgsOpyJcwVD2a/e/d3jdIXDimLREcGPBvJWr5H590tNDZUo5xOg23y7K1xEmtHuGiLwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740484827; c=relaxed/simple;
-	bh=Vl3YJ7NZKaOS7tm3cHbI+ad4q0uOHnev1jlszYmFH8U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f+ppiV8SPpPZK/8Gexo/3zThjBcNwxOBRjZa5cYfpT3frWHRYrubFtNmCsbCzPy8qyBYVDoDWc6QqRujfT9/Z7Fz3usK5dsZTRe6U+7KYDEzsFDRMHot+7fYhyQeGJLDexjdKvqq6gH6A+kGLJ0RvJ8KlDqE/WzN2BQCQCURIsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F/REEnBX; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1740484824;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B0gU6eM4HHU/IeYFpUt81mKnAbJ6+bXQSqYVXAmQ0M0=;
-	b=F/REEnBXKibFfRbF+r8wazTQvGz4soYecYhPnCOzsSQ7zE0oTh7XsUHrEdHaPFES9ooD3v
-	Ewyk+5/cke4VFgia3VQG7OQJqKodzj2olaiAfapAgpQWpIvgEzwkucZOD7woWSLRu4GP7X
-	aZ+lPCXO3YKhfqpNnAh13q+hgzKDUCw=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-64-QbAXr5rKNfmpAFoLk17z5w-1; Tue,
- 25 Feb 2025 07:00:19 -0500
-X-MC-Unique: QbAXr5rKNfmpAFoLk17z5w-1
-X-Mimecast-MFC-AGG-ID: QbAXr5rKNfmpAFoLk17z5w_1740484817
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 67A2919560AF;
-	Tue, 25 Feb 2025 12:00:16 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.31])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 67D24180035E;
-	Tue, 25 Feb 2025 12:00:08 +0000 (UTC)
-Date: Tue, 25 Feb 2025 20:00:03 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
-	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-	yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH 2/2] blk-throttle: fix off-by-one jiffies wait_time
-Message-ID: <Z72ww9f8MCSqiTy0@fedora>
-References: <Z7vnTyk6Y6X4JWQB@fedora>
- <e6a29a6a-f5ec-7953-14e9-2550a549f955@huaweicloud.com>
- <Z7w0P8ImJiZhRsPD@fedora>
- <611f02a8-8430-16cf-46e5-e9417982b077@huaweicloud.com>
- <Z70btzRaN83FbTJp@fedora>
- <8473fca2-16ab-b2a6-ede7-d1449aa7d463@huaweicloud.com>
- <Z70qvZEBdq6L3-Yb@fedora>
- <084e25a1-5ed7-3097-5bae-b87addeaf01f@huaweicloud.com>
- <Z719gj8GOl0itRwV@fedora>
- <dc2b3a40-b33b-0bc5-3a73-18b288b4283f@huaweicloud.com>
+	s=arc-20240116; t=1740492286; c=relaxed/simple;
+	bh=sUXTHt6eh+QXI81EQBaYj0iPTuZrYTa5Od8UTyPzP8E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=IiSSdy4NADt1Ldyp7aAba6riAk+LkoDWtSFkgKperq4/zwAc0/O6MR2pgu6RKH5Qnui6/RbcOi/Um3DbrkkZcPjL1Ho+Qu+93InDV8+HlqMdvlxVIEqRe1Jh0ULbk7bECTB0GKqTEQ6UFwYM7XFsqGkwu0cj6bxfULNaC9+jQHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fEar1t4h; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1740492285; x=1772028285;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=sUXTHt6eh+QXI81EQBaYj0iPTuZrYTa5Od8UTyPzP8E=;
+  b=fEar1t4how0iMWoj0GdcED7yPNQmSznw2pMM0KIUIBzmPI2k8ePuiCgE
+   Obu+mBoSgc7Ud8WVy0SfVY05nUc/+zFwGtcFUF91CpjWYLRoJ2TUUeZcW
+   bTotjmfaaRJLETOUjMDdQnryBK2KPu1BI/nvH8K7UDTzP+Od6hcyoUCcX
+   aTajly2t5q1L3XLoG5ODRS/jZhvBGWR5xaooRrRCcIvviLmxjgCFZSWAt
+   VU4jaZXrmMqSJIpxcV+qgcP3c6T7SywltR1bFABCbAp4mENht4frMd+oL
+   d73QxuuLfSr+/Y9TqldzdpRlGP31fOOpDlNWwLvGCjeinnsGWu9SCVl/X
+   A==;
+X-CSE-ConnectionGUID: vqU87cMgQ6e9R/cKGVM8mQ==
+X-CSE-MsgGUID: UdVqnBnOR5C9FkFe2TY7ZA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11356"; a="41424557"
+X-IronPort-AV: E=Sophos;i="6.13,314,1732608000"; 
+   d="scan'208";a="41424557"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2025 06:04:44 -0800
+X-CSE-ConnectionGUID: DLHCB871RPS+O8m+2dz66Q==
+X-CSE-MsgGUID: vS2aVbs+RjSh1G++J6j2IA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,314,1732608000"; 
+   d="scan'208";a="116590673"
+Received: from chenyu-dev.sh.intel.com ([10.239.62.107])
+  by fmviesa008.fm.intel.com with ESMTP; 25 Feb 2025 06:04:38 -0800
+From: Chen Yu <yu.c.chen@intel.com>
+To: Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: Rik van Riel <riel@redhat.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	"Huang, Ying" <ying.huang@linux.alibaba.com>,
+	Tim Chen <tim.c.chen@intel.com>,
+	Aubrey Li <aubrey.li@intel.com>,
+	Michael Wang <yun.wang@linux.alibaba.com>,
+	Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
+	David Rientjes <rientjes@google.com>,
+	Raghavendra K T <raghavendra.kt@amd.com>,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Chen Yu <yu.c.chen@intel.com>
+Subject: [RFC PATCH 0/3] sched/numa: Introduce per cgroup numa balance control 
+Date: Tue, 25 Feb 2025 21:59:33 +0800
+Message-Id: <cover.1740483690.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <dc2b3a40-b33b-0bc5-3a73-18b288b4283f@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-On Tue, Feb 25, 2025 at 07:09:30PM +0800, Yu Kuai wrote:
-> Hi,
-> 
-> 在 2025/02/25 16:21, Ming Lei 写道:
-> > On Tue, Feb 25, 2025 at 11:12:24AM +0800, Yu Kuai wrote:
-> > > Hi, Ming!
-> > > 
-> > > 在 2025/02/25 10:28, Ming Lei 写道:
-> > > > Can you explain in details why it signals that the rate is expected now?
-> > > > 
-> > > > If rate isn't expected, it will cause trouble to trim, even just the
-> > > > previous part.
-> > > 
-> > > Ok, for example, assume bps_limit is 1000bytes, 1 jiffes is 10ms, and
-> > > slice is 20ms(2 jiffies).
-> > > 
-> > 
-> > We all know how it works, but I didn't understand the behind idea why it
-> > is correct. Now I figured it out:
-> > 
-> > 1) increase default slice window to 2 * td->throttle_slice
-> > 
-> > 2) slice window is set as [jiffies - td->throttle_slice, jiffies + td->throttle_slice]
-> > 
-> > 3) initialize td->bytes_disp[]/td->io_dis[] as actual dispatched bytes/ios
-> > done [jiffies - td->throttle_slice, 0]
-> > 
-> > This approach looks smart, and it should work well for any deviation which is <= 1
-> > throttle_slice.
-> > 
-> > Probably it is enough for fixing the issue in throtl/001, even though 2 jiffies
-> > timer drift still may be observed, see the below log collected in my VM(HZ_100)
-> > by just running one time of blktests './check throtl':
-> > 
-> > @timer_expire_delay:
-> > [1, 2)               387 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> > [2, 3)                11 |@                                                   |
-> > 
-> > bpftrace -e 'kfunc:throtl_pending_timer_fn { @timer_expire_delay = lhist(jiffies - args->t->expires, 0, 16, 1);}'
-> > 
-> > 
-> > Also I'd suggest to remove ->carryover_bytes/ios since blk-throttle algorithm is
-> > supposed to be adaptive, and the approach I suggested may cover this area,
-> > what do you think of this cleanup? I have one local patchset, which can
-> > pass all blktest throtl tests with removing ->carryover_bytes/ios.
-> > 
-> 
-> It's always welcome for such cleanup. BTW, do you have plans to support
-> bio merge for iops limit in blk-throttle?
-> Since bio split is handled. I
-> was thinking about using carryover_ios, perhaps you can handle this as
-> well.
+Introduce a per-cgroup interface to enable NUMA balancing
+for specific cgroups. The system administrator needs to set
+the NUMA balancing mode to NUMA_BALANCING_CGROUP=4 to enable
+this feature. When in the NUMA_BALANCING_CGROUP mode, all
+cgroups' NUMA balancing is disabled by default. After the
+administrator enables this feature for a specific cgroup,
+NUMA balancing for that cgroup is enabled.
 
-I don't know the two problems.
+This per-cgroup NUMA balancing control was once proposed in
+2019 by Yun Wang[1]. Then, in 2024, Kaiyang Zhao mentioned
+that he was working with Meta on per-cgroup NUMA control[2]
+during a discussion with David Rientjes.
 
-Let's focus on fixing throtl/001 first.
+I could not find further discussion regarding per-cgroup NUMA
+balancing from that point on. This set of RFC patches is a
+rough and compile-passed version, and may have unhandled cases
+(for example, THP). It has not been thoroughly tested and is
+intended to initiate or resume the discussion on the topic of
+per-cgroup NUMA load balancing.
 
-I raised the cleanup on carryover_ios because the fix I proposed in [1]
-may help to cover carryover_ios too.
+The first patch is a NUMA load balancing statistics enhancement.
+The second patch introduces per-cgroup NUMA balancing. The third
+one enhances NUMA load balancing for the MPOL_INTERLEAVE policy.
 
-But I guess your patch of doubling splice window is better for fixing
-throtl/001, can you send a formal patch with comment for fixing this
-issue first?
+Any feedback would be appreciated.
 
+[1] https://lore.kernel.org/linux-fsdevel/60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com/
+[2] https://lore.kernel.org/linux-mm/ZrukILyQhMAKWwTe@localhost.localhost/T/
 
-[1] https://lore.kernel.org/linux-block/Z7nAJSKGANoC0Glb@fedora/
+Chen Yu (3):
+  sched/numa: Introduce numa balance task migration and swap in
+    schedstats
+  sched/numa: Introduce per cgroup numa balance control
+  sched/numa: Allow intervale memory allocation for numa balance
 
+ include/linux/numa.h           |  1 +
+ include/linux/sched.h          |  4 ++++
+ include/linux/sched/sysctl.h   |  1 +
+ include/linux/vm_event_item.h  |  2 ++
+ include/uapi/linux/mempolicy.h |  1 +
+ kernel/sched/core.c            | 42 ++++++++++++++++++++++++++++++++--
+ kernel/sched/debug.c           |  4 ++++
+ kernel/sched/fair.c            | 18 +++++++++++++++
+ kernel/sched/sched.h           |  3 +++
+ mm/memcontrol.c                |  2 ++
+ mm/memory.c                    |  2 +-
+ mm/mempolicy.c                 |  7 ++++++
+ mm/mprotect.c                  |  5 ++--
+ mm/vmstat.c                    |  2 ++
+ 14 files changed, 89 insertions(+), 5 deletions(-)
 
-
-Thanks,
-Ming
+-- 
+2.25.1
 
 
