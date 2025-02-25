@@ -1,146 +1,124 @@
-Return-Path: <cgroups+bounces-6706-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6707-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0E0BA43B03
-	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 11:14:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D3E9A43C46
+	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 11:51:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3D263A313E
-	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 10:10:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98A2A16EA3A
+	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 10:51:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 278B126139E;
-	Tue, 25 Feb 2025 10:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5543B266F15;
+	Tue, 25 Feb 2025 10:51:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fB6zkoia"
 X-Original-To: cgroups@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A3B01519A5;
-	Tue, 25 Feb 2025 10:09:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B19C266B61
+	for <cgroups@vger.kernel.org>; Tue, 25 Feb 2025 10:51:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740478181; cv=none; b=o8mXNBxYh36iMnYgSkPyHpNCEljO9qlCy78lz9mzToiwbhssZc6OanBRcyOM/g9VAFjeDuxHDUvpIjhWp/nalHyNojTf3eSh+lgIHtRuAAAYLGvvPJ9+r8BqNlNzWJN1IXDrZZKbeLUFSxbNemABz26qmRpS+DGSZpk97pqkd2k=
+	t=1740480708; cv=none; b=TvY+YqE4c+0q+rXoKFbUEPyYift8WKImZo6yM1Cdsq1eEC6E1XXQOkWeKf/b3lC79Je/8mYSFANxI5cGdF1C32x3pjRqgjZN9ONarWGa9F04uZqzngtxQ1tECNpGUzggpgfRKSoRAllZojbHO32k4VShKb2tlfGmS7aBkZW3QzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740478181; c=relaxed/simple;
-	bh=bQ19GPyEpcj0UVq+Sl5IbDI1kfRuc1RHQHJ5d5vyfwE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NOjYi4XNwDE/jAdYO9gtH8B8To4itPmI2LZYPrCMuoJAYywiKgEvpUJaIlHuVAfgRXjfWDv2WUTMEIxJex0kzVDEWxSFqnCd+uRWJSiUGoCeCtt36T5RiHM7O7rbn6ZbndpQoQL2U5eazgfVr6yQInpLx7Mg5Y9dP8caj5xfGOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BEDF01516;
-	Tue, 25 Feb 2025 02:09:54 -0800 (PST)
-Received: from [10.1.35.64] (unknown [10.1.35.64])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C244C3F6A8;
-	Tue, 25 Feb 2025 02:09:32 -0800 (PST)
-Message-ID: <cbb364c8-5008-4fa4-b604-2d04e0095c9c@arm.com>
-Date: Tue, 25 Feb 2025 10:09:30 +0000
+	s=arc-20240116; t=1740480708; c=relaxed/simple;
+	bh=U2Fxrw+ZWnZroV2gtVWjbt2Q37s+7jT2hIUi1TH42vA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a8Wy9YV3rEVMczBX0aSVn5oW3N6sRhmoyfUWYg77uwyIYo/bBIzT+wECuJAUK3289VSGQpjBpdV54edG/ilfTSEO5A1W+PVcd6VN211Gv2pz8sccttKawNqNvUK2EaUVcn1SZnlTL3Tuzf1WyH++/AgStJQ/2twwZ5ui+ovoa+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fB6zkoia; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5e050b1491eso11127926a12.0
+        for <cgroups@vger.kernel.org>; Tue, 25 Feb 2025 02:51:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1740480704; x=1741085504; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mv1GjtLH9p6AAgaKLJdaYv1valnjqWPg00vkxZOmddk=;
+        b=fB6zkoiaIdMgbfeIGodOK3Bc5hooKM6K1xm0XsoLN2PzPWLcJ0JpZ1FGbt9tU+fZj1
+         cbH+/LkcoTXyyH7sdIjr+yizafF491qtIPOiJBtHMj6O7v5KdfCiPEpkgq4VYaUEdFbR
+         RCzrlNVkOSokkiFb5dyCsTLf4Wo10/c4HE0cI+EvhHLduwLr1oATaVQlrIRvp8QZAnxx
+         ZYVlsRJQlJkn8IL5m2vQ8ikz8w7Oy7eKBfSaYewdZL7UUZ0c7QntQTruTzMxqFlCnQg3
+         ZOUBl6Rho1SsPEjNqrZKLsDD7Y19DsUiV3DC17C2pjx9XmasY/krW9B41OJFhoW6wpH4
+         IyBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740480704; x=1741085504;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mv1GjtLH9p6AAgaKLJdaYv1valnjqWPg00vkxZOmddk=;
+        b=KDOTCksGN0PzQWuL2A0ut+kY466Jc43mISFH7X2Q7hpgQDnetYagZMmISv4kY4U15V
+         uB/sIjg74nj/fQGthlDylPDbLYTH8MmnsyKCkrKOsrboYbb9Dt3LL3UhOzn0Pe6ebLe7
+         IRfYnDymGW35YkVRfpsSeDQSCz/tEAd0GbzH7oBS4CwETStt9p0cy2bLagQupAgcLJob
+         f8IHrxHaa4Tzrll2kFATpGAuIDH0UVUIipCQ3fE4Wl0nWQ2+Tf4Ao6cpHy7Um1y+U9Xd
+         2pptFT0ewE6XOtuL/qHck7+AJBWXMpatKGfRrO3tiEMyDlcE8P5EvOpcgc9ickj6pJDR
+         NtQg==
+X-Forwarded-Encrypted: i=1; AJvYcCVEKTIXzmIotoXJIrhnDbPUlvwQpQuIibopRALL+Z+OjTBwHcXUdxaJlW5NwWwTYDKDY7LAVPp+@vger.kernel.org
+X-Gm-Message-State: AOJu0YwC2fTl8dLkvp+0Y8UZiidAQWPNzBHmiWEgOZwUJEIR4M7FPLCZ
+	Tz4UT3lB0ekqg/nCiksFkhSMvqj9+usegVcjpJyTJt1dzIZMKQBk26eNsY+JA1c=
+X-Gm-Gg: ASbGncuMs3E194NiBtaU7eHYTS9dqu5m5ShgLJaX2kNirx5hk9vKdxaKbfeig3EbCKV
+	HyKPjNwS+3f3X+H3rZHqQUWEZV11auFv+4kZD1Nm2gGSGicgugPyJv2Oqv3gLRuHI1K9iDaianz
+	k7qfVTzDqEbFQRa9vnbhfWH+kxV2jIFVhdWKAJ61q5rCln963MUeMfiWsdAipjIkW+zpE8vPjCY
+	RK9R8s6tk2vZa0w4wJsECxLjhUaM1AqI1e4Fu3AyIHZ1vmCv10U/8oJIPNHJ+S1d0Oeh0W7GTfc
+	YrZD8DKDX64E7HYnjAedfm70UUbA
+X-Google-Smtp-Source: AGHT+IHUS8m9al3aYpp9dTro/BoJsAzrTMGGeZSSdFhetcpWcy+SNbbUKcmiFFvP72TdtmWFR4s3Zg==
+X-Received: by 2002:a17:907:3e0b:b0:aba:620a:acf7 with SMTP id a640c23a62f3a-abc0ae5728bmr1777898866b.10.1740480704381;
+        Tue, 25 Feb 2025 02:51:44 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abed1da1c2dsm121396366b.77.2025.02.25.02.51.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Feb 2025 02:51:43 -0800 (PST)
+Date: Tue, 25 Feb 2025 11:51:41 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: ming.lei@redhat.com, tj@kernel.org, josef@toxicpanda.com, 
+	axboe@kernel.dk, cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH 0/2] blk-throttle: fix off-by-one jiffies wait_time
+Message-ID: <igzfzkwbbdywdvkbjzi624fgrc2jopnb6c4dpcrac644lazgbp@k63ht5r5ue4x>
+References: <20250222092823.210318-1-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/2] sched/deadline: Check bandwidth overflow earlier
- for hotplug
-To: Juri Lelli <juri.lelli@redhat.com>, Qais Yousef <qyousef@layalina.io>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Jon Hunter <jonathanh@nvidia.com>, Thierry Reding <treding@nvidia.com>,
- Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Koutny <mkoutny@suse.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Phil Auld <pauld@redhat.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- "Joel Fernandes (Google)" <joel@joelfernandes.org>,
- Suleiman Souhlal <suleiman@google.com>, Aashish Sharma <shraash@google.com>,
- Shin Kawamura <kawasin@google.com>,
- Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <Z6oysfyRKM_eUHlj@jlelli-thinkpadt14gen4.remote.csb>
- <dbd2af63-e9ac-44c8-8bbf-84358e30bf0b@arm.com>
- <Z6spnwykg6YSXBX_@jlelli-thinkpadt14gen4.remote.csb>
- <285a43db-c36d-400e-8041-0566f089a482@arm.com>
- <Z62PPUOY5DClYo1A@jlelli-thinkpadt14gen4.remote.csb>
- <20250216163340.ttwddti5pzuynsj5@airbuntu>
- <Z7NNHmGgrEF666W_@jlelli-thinkpadt14gen4.remote.csb>
- <20250222235936.jmyrfacutheqt5a2@airbuntu>
- <Z7w7g1zb0nfu9-C7@jlelli-thinkpadt14gen4.remote.csb>
- <20250225000237.nsgbibqigl6nhhdu@airbuntu>
- <Z72Rka_g1imcX5lt@jlelli-thinkpadt14gen4.remote.csb>
-Content-Language: en-US
-From: Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <Z72Rka_g1imcX5lt@jlelli-thinkpadt14gen4.remote.csb>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="teg6osmgnl3qwlc4"
+Content-Disposition: inline
+In-Reply-To: <20250222092823.210318-1-yukuai1@huaweicloud.com>
 
-On 2/25/25 09:46, Juri Lelli wrote:
-> On 25/02/25 00:02, Qais Yousef wrote:
->> On 02/24/25 10:27, Juri Lelli wrote:
->>
->>>> Okay I see. The issue though is that for a DL system with power management
->>>> features on that warrant to wake up a sugov thread to update the frequency is
->>>> sort of half broken by design. I don't see the benefit over using RT in this
->>>> case. But I appreciate I could be misguided. So take it easy on me if it is
->>>> obviously wrong understanding :) I know in Android usage of DL has been
->>>> difficult, but many systems ship with slow switch hardware.
->>>>
->>>> How does DL handle the long softirqs from block and network layers by the way?
->>>> This has been in a practice a problem for RT tasks so they should be to DL.
->>>> sugov done in stopper should be handled similarly IMHO. I *think* it would be
->>>> simpler to masquerade sugov thread as irq pressure.
->>>
->>> Kind of a trick question :), as DL doesn't handle this kind of
->>
->> :-)
->>
->>> load/pressure explicitly. It is essentially agnostic about it. From a
->>> system design point of view though, I would say that one should take
->>> that into account and maybe convert sensible kthreads to DL, so that the
->>> overall bandwidth can be explicitly evaluated. If one doesn't do that
->>> probably a less sound approach is to treat anything not explicitly
->>> scheduled by DL, but still required from a system perspective, as
->>> overload and be more conservative when assigning bandwidth to DL tasks
->>> (i.e. reduce the maximum amount of available bandwidth, so that the
->>> system doesn't get saturated).
->>
->> Maybe I didn't understand your initial answer properly. But what I got is that
->> we set as DL to do what you just suggested of converting it kthread to DL to
->> take its bandwidth into account. But we have been lying about bandwidth so far
->> and it was ignored? (I saw early bailouts of SCHED_FLAG_SUGOV was set in
->> bandwidth related operations)
-> 
-> Ignored as to have something 'that works'. :)
-> 
-> But, it's definitely far from being good.
-> 
->>>> You can use the rate_limit_us as a potential guide for how much bandwidth sugov
->>>> needs if moving it to another class really doesn't make sense instead?
->>>
->>> Or maybe try to estimate/measure how much utilization sugov threads are
->>> effectively using while running some kind of workload of interest and
->>> use that as an indication for DL runtime/period.
->>
->> I don't want to side track this thread. So maybe I should start a new thread to
->> discuss this. You might have seen my other series on consolidating cpufreq
->> updates. I'm not sure sugov can have a predictable period. Maybe runtime, but
->> it could run repeatedly, or it could be quite for a long time.
-> 
-> Doesn't need to have a predictable period. Sporadic (activations are not
-> periodic) tasks work well with DEADLINE if one is able to come up with a
-> sensible bandwidth allocation for them. So for sugov (and other
-> kthreads) the system designer should be thinking about the amount of CPU
-> to give to each kthread (runtime/period) and the granularity of such
-> allocation (period).
 
-The only really sensible choice I see is
-rate_limit * some_constant_approximated_runtime
-and on many systems that may yield >100% of the capacity.
-Qais' proposed changes would even remove the theoretical rate_limit cap here.
-A lot of complexity for something that is essentially a non-issue in practice
-AFAICS...
+--teg6osmgnl3qwlc4
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH 0/2] blk-throttle: fix off-by-one jiffies wait_time
+MIME-Version: 1.0
+
+On Sat, Feb 22, 2025 at 05:28:21PM +0800, Yu Kuai <yukuai1@huaweicloud.com> wrote:
+> Yu Kuai (2):
+>   blk-throttle: cleanup throtl_extend_slice()
+>   blk-throttle: fix off-by-one jiffies wait_time
+
+(I haven't read through all of the 2/2 discussion but) if the 1/2 patch
+is only a cleanup, it's more backport friendly to put it after the fix.
+
+Thanks,
+Michal
+
+--teg6osmgnl3qwlc4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ72guwAKCRAt3Wney77B
+SXOwAP9fngBMH4Xn+ahF0Zv0RzYoYnjox8PuSgoFd8VeVVyVIgD9EMg0p69jzpqn
+RGSQPrygGqTm1vbVYBMl+rzVsdR5Sgo=
+=bd7s
+-----END PGP SIGNATURE-----
+
+--teg6osmgnl3qwlc4--
 
