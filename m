@@ -1,164 +1,127 @@
-Return-Path: <cgroups+bounces-6699-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6700-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36129A43270
-	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 02:25:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF00A432D2
+	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 03:07:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68AC41899F05
-	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 01:24:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E112E189E502
+	for <lists+cgroups@lfdr.de>; Tue, 25 Feb 2025 02:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A4272110E;
-	Tue, 25 Feb 2025 01:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ScLY6hTR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2A9126C10;
+	Tue, 25 Feb 2025 02:07:21 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27EE13209
-	for <cgroups@vger.kernel.org>; Tue, 25 Feb 2025 01:24:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721862C9D;
+	Tue, 25 Feb 2025 02:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740446671; cv=none; b=WEQZqnxtlHpwWYR5KYTq9dCuzDV8NnRQoZvoVfNtev8Uxr+J6u2i1Odtk1IWUWIzzvTHxuOjR03vd6xcOge9l7/sgiAsJHohzGZZ98t3UNn0Yfv9xxcKNLvBGnJkAZD6TDH0M/z7BupvbmPoDqv7ifEBjsfa81hOI9J5FvDdY9M=
+	t=1740449241; cv=none; b=TrNLsgdDc8owy94/aWtz5V7aciZeon0r5F6EPDMBmOR5zRh0Id/Lipd14euagUo6j/CkOdn5x8xNGwd1UFZTK5A6TtMCSMVcz/tQyDeEPT8SNEqShri/1sTs4ZIot2hWRQkztJKcOgqPdsG5iR4DV1D0FzAUWQTPRkc01o3LjWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740446671; c=relaxed/simple;
-	bh=OTRcGeU7kGGgXpTtQsUzKusjg93W/6CQSsMA/m9BSZg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aPuQ2GTzdAH1MRywQd1fekxBhKJCHIifKb7rsCb9V/dRAiQ4eSSqe1GfToNAfPBCJiZKYC+z/AWg1BO4Qk59nwgLUWOln4ZUiZsX7VA9F2ma+VHo32PqZBJhCwnEt2v+1fiD4dkiNb/Jn3wezH5LI83f+Z0s66DtW5TYAaMHJFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ScLY6hTR; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1740446669;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cPoneJrfASluLO99cJQRqFmreizeALplyvR20fuKNPQ=;
-	b=ScLY6hTRK06apXK02JFakysKy6AAJlONKk4OUV+3KAvz2f6BseKrPZLj92kF7JJdI31hce
-	VyV6fglnMKrDs1siE22z4mIgjQ8uhDqr3Mt5iI1irtMdr++ni+0g69abJQwAeaaCBVC9yZ
-	mW79HbM1i2lgVhEWY5+qZIseTeGaA34=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-275-z7RIGHkGMtyUfOBsf1quFg-1; Mon,
- 24 Feb 2025 20:24:24 -0500
-X-MC-Unique: z7RIGHkGMtyUfOBsf1quFg-1
-X-Mimecast-MFC-AGG-ID: z7RIGHkGMtyUfOBsf1quFg_1740446663
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 024C8196E078;
-	Tue, 25 Feb 2025 01:24:22 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.21])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E45AC180035E;
-	Tue, 25 Feb 2025 01:24:13 +0000 (UTC)
-Date: Tue, 25 Feb 2025 09:24:07 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
-	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-	yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+	s=arc-20240116; t=1740449241; c=relaxed/simple;
+	bh=SsLY6n4liZpIkY9P30QAzYdo/JNgpF0lSeiOF6WkJTM=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=nNkBHkZFh0V3M7wkaw+OoQXh2H3PSjU23CU+R8iTfqtuMOR49XVRA4es1g0ApASMtZIZXs9A+klrZwUhcA+sXQTjO2AwzLacFearOkY8OXOCccgsmg2m/l3HCs4krclCdhZJbdqvw7pgf/wkO+MbmoYZa1o/eFnvR3O0DCMnAKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Z21F14H1Rz4f3jMF;
+	Tue, 25 Feb 2025 10:06:45 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id C132C1A12BD;
+	Tue, 25 Feb 2025 10:07:08 +0800 (CST)
+Received: from [10.174.179.143] (unknown [10.174.179.143])
+	by APP4 (Coremail) with SMTP id gCh0CgD3W2DKJb1nZ4xGEw--.61251S3;
+	Tue, 25 Feb 2025 10:07:08 +0800 (CST)
 Subject: Re: [PATCH 2/2] blk-throttle: fix off-by-one jiffies wait_time
-Message-ID: <Z70btzRaN83FbTJp@fedora>
+To: Ming Lei <ming.lei@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+ cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
 References: <20250222092823.210318-1-yukuai1@huaweicloud.com>
- <20250222092823.210318-3-yukuai1@huaweicloud.com>
- <Z7nAJSKGANoC0Glb@fedora>
+ <20250222092823.210318-3-yukuai1@huaweicloud.com> <Z7nAJSKGANoC0Glb@fedora>
  <f2f54206-b5c0-7486-d607-337d29e9c145@huaweicloud.com>
  <Z7vnTyk6Y6X4JWQB@fedora>
  <e6a29a6a-f5ec-7953-14e9-2550a549f955@huaweicloud.com>
  <Z7w0P8ImJiZhRsPD@fedora>
  <611f02a8-8430-16cf-46e5-e9417982b077@huaweicloud.com>
+ <Z70btzRaN83FbTJp@fedora>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <8473fca2-16ab-b2a6-ede7-d1449aa7d463@huaweicloud.com>
+Date: Tue, 25 Feb 2025 10:07:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <Z70btzRaN83FbTJp@fedora>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <611f02a8-8430-16cf-46e5-e9417982b077@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+X-CM-TRANSID:gCh0CgD3W2DKJb1nZ4xGEw--.61251S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7GrykWw4UJF45Jw13Cry5twb_yoWDJFb_Cr
+	9FkFs3J3y8Ar4qyF15Gwn0vrZakFWrWryDJr4DXw12qryIyF48Zr4kWryqqF1Dta1ftrs8
+	urs8J348Kr9FgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbfkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+	Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY
+	04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64
+	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Mon, Feb 24, 2025 at 08:03:32PM +0800, Yu Kuai wrote:
-> Hi,
+Hi,
+
+在 2025/02/25 9:24, Ming Lei 写道:
+>> -       if (!time_elapsed)
+>> +       /* don't trim slice until at least 2 slice is used */
+>> +       if (time_elapsed < tg->td->throtl_slice * 2)
+>>                  return;
 > 
-> 在 2025/02/24 16:56, Ming Lei 写道:
-> > On Mon, Feb 24, 2025 at 03:03:18PM +0800, Yu Kuai wrote:
-> > > Hi, Ming!
-> > > 
-> > > 在 2025/02/24 11:28, Ming Lei 写道:
-> > > > throtl_trim_slice() returns immediately if throtl_slice_used()
-> > > > is true.
-> > > > 
-> > > > And throtl_slice_used() checks jiffies in [start, end] via time_in_range(),
-> > > > so if `start <= jiffies <= end', it still returns false.
-> > > 
-> > > Yes, I misread the code, by thinking throtl_slice_used() will return
-> > > true if the slice is still used. :(
-> > > 
-> > > 
-> > > > > BTW, throtl_trim_slice() looks like problematic:
-> > > > > 
-> > > > > -       if (bytes_trim <= 0 && io_trim <= 0)
-> > > > > +       if (bytes_trim <= 0 || io_trim <= 0 ||
-> > > > > +           tg->bytes_disp[rw] < bytes_trim || tg->io_disp[rw] < io_trim)
-> > > > >                   return;
-> > > > That is exactly what my patch is doing, just taking deviation and
-> > > > timeout into account, also U64_MAX limit has to be excluded.
-> > > Yes, perhaps you can add some comments in the last two conditions of
-> > > your patch.
-> > 
-> > Yes, we need to add comment on the check, how about the following words?
-> > 
-> > ```
-> > 
-> > If actually rate doesn't match with expected rate, do not trim slice
-> > otherwise the present rate control info is lost, we don't have chance
-> > to compensate it in the following period of this slice any more.
-> 
-> So, I just give your patch a test, and result is 1.3s while 1s is
-> expected. While debuging, a new idea come up in mind. :)
-> 
-> How about keep at least one slice out of consideration from
-> throtl_trim_slice()? With following patch, the result is between
-> 1.01-1.03s in my VM.
+> If you just want to fix throtl/001, the above patch might
+> work(sometimes, it might not, and timer may expire by 2 jiffies), but it
+> is easy to fail other tests, such as, reduce the bps limit a bit, and
+> increase BS a bit to make the IO cross exactly two slices.
 
-That is easy to get the same result with the approach I suggested,
-another big benefit: it is adaptive, and blk-throttle may get
-simplified.
+That's fine, the key point is the following code, above code is
+just to make sure there is still at least one slice to trim after
+removing the last slice.
 
-> 
-> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-> index 8d149aff9fd0..5207c85098a5 100644
-> --- a/block/blk-throttle.c
-> +++ b/block/blk-throttle.c
-> @@ -604,9 +604,12 @@ static inline void throtl_trim_slice(struct throtl_grp
-> *tg, bool rw)
-> 
->         time_elapsed = rounddown(jiffies - tg->slice_start[rw],
->                                  tg->td->throtl_slice);
-> -       if (!time_elapsed)
-> +       /* don't trim slice until at least 2 slice is used */
-> +       if (time_elapsed < tg->td->throtl_slice * 2)
->                 return;
++       /* dispite the last slice, trim previous slice */
++       time_elapsed -= tg->td->throtl_slice;
 
-If you just want to fix throtl/001, the above patch might
-work(sometimes, it might not, and timer may expire by 2 jiffies), but it
-is easy to fail other tests, such as, reduce the bps limit a bit, and
-increase BS a bit to make the IO cross exactly two slices.
-
-Also the big question is that how you can make sure that rate is always
-good when the window is >= 2 slice?
-
+In this case, if one BIO cross 1+ slices, the rate is the same as
+expected in the previous slices, we can trim them without any negative
+impact.
 
 Thanks,
-Ming
+Kuai
+
+> 
+> Also the big question is that how you can make sure that rate is always
+> good when the window is >= 2 slice?
+> 
+> 
+> Thanks,
+> Ming
+> 
+> 
+> .
+> 
 
 
