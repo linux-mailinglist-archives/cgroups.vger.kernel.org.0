@@ -1,178 +1,181 @@
-Return-Path: <cgroups+bounces-6726-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6727-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C65CBA47A72
-	for <lists+cgroups@lfdr.de>; Thu, 27 Feb 2025 11:38:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1743FA47D32
+	for <lists+cgroups@lfdr.de>; Thu, 27 Feb 2025 13:15:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A04BB3B163C
-	for <lists+cgroups@lfdr.de>; Thu, 27 Feb 2025 10:37:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11D463A8BA9
+	for <lists+cgroups@lfdr.de>; Thu, 27 Feb 2025 12:15:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 113F822A1E4;
-	Thu, 27 Feb 2025 10:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="dvDVnCT8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C64A23771E;
+	Thu, 27 Feb 2025 12:11:00 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3AD921D3E7
-	for <cgroups@vger.kernel.org>; Thu, 27 Feb 2025 10:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B0A22DF9A;
+	Thu, 27 Feb 2025 12:10:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740652679; cv=none; b=MebQQVXfk1O9LmvmNmDP5T8WnY0ppQgv5fwJSDASeR0Qyf/tu3dcugaq7DUn2jebhN0WVWyWqMqywXC/bQlmQDgwwASV/iHXX8TnI0BIWxeD9Yyp1I81dzTUdjZEKv7Lr87len6q8jwW17m8e7Uu52hSCxaHnmo7FoHdg1vU2g4=
+	t=1740658259; cv=none; b=ShTXwz9RDo5BegenSdS10R241G6PdK42gdJATnjoMs8HIjA3jmWDQQMwn4N6N0EJctj3gkVuvjKQpCduYQLw/K1JXqMYRUBXgsOVQ/r00sY38QoCxlGsBWbT7WYu0Gvoy4KNfCM8UxQc8o9Pa5y6BkchGIC6A4YgmesBkZL1lA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740652679; c=relaxed/simple;
-	bh=Txiv0GNTP8DGlYvTjBfM0J81bv9A0WhZ76PlMqt/6+k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KLX5Fk0Oq/9Jl8YIgoLHrCyfUqt7kSQZ3j+VXkstggGFXZ52aCVjVAAg1WrH/KGEi4p6zljyF5k6Tx5GBVBFjfhaTQNJW+KMuZjrTkEyB4VgXaEeWkOqm9AkN5ueG6n8VSb5vQ7p8ViWGQsUxYPviRGrsE0rol24VZkq6cVFCE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=dvDVnCT8; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2fc92215d15so197210a91.1
-        for <cgroups@vger.kernel.org>; Thu, 27 Feb 2025 02:37:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1740652677; x=1741257477; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DV/4+EIKBxHU9rDR8HjaAlgwx72Pm8lEHt843SwpNpU=;
-        b=dvDVnCT8/LfSjdZINBh31asLOi1pKIpKPfFRXP0L5RJ0ifD3b1RorjVr+4WDv0BPeR
-         pZvUFZO4LaLad+igGoWbL07yhJOQ+bucwyE8ihUEpjiIX9LahU1ePrZV088ZUrNO13nS
-         U2uOBaHtqsI8G9AgGho+RDYZzQwwaic6TsHgikfjPN74soPu+k49cbilKHNR4OcmUZRw
-         59abPwYOmy4JZdyBsFzz73ACip2TwK8z9nzxRfANsVsuiFvV40sdNpKA99iH8Iq6zQJW
-         uoHjQHjsSuPkLmIL7P53xLVmU6BVbjNu9GfA3WVUEkSe77w8amVgjIa+LCr3eVLnphHY
-         ZZ+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740652677; x=1741257477;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DV/4+EIKBxHU9rDR8HjaAlgwx72Pm8lEHt843SwpNpU=;
-        b=kxW2RQTIBxuqfmV9SQ5sbK6F9ktCKqpNLlfVVLg4cjpEA1Mt6utkZ+jhKC92IfKAGL
-         DfJZvk7Bf0IMtEUXrvox9pA04L2Y1FB+5PV03BkzbyvxX81anuUVQhpwi6myxlRY4b1x
-         xHx5A0QzqKgw/nNvFnvuKkTAWQ4wRw/9PfOSfl3lLQI98RETnt1Ty0BCWJcJj9xRaOpS
-         yEzrzY3JVtTfgmP5y0GUIpU6y6ozHk69PgB48Q2xb3af89/8+iY5y5iBlXeEapNRhTL3
-         NFdXkQS0Gsj6oIejUXHf3EebAjdVkAc8bJFnwJ6dIUMD3qUPXdGkLvoxRoFo2WzMQR5U
-         3C4w==
-X-Gm-Message-State: AOJu0Yy6fGd5nIelXu9Ed82watE0zpW6CzqI8FNEkJr0YMUpZzxb4+R3
-	27rlJpbZnICSYqEwBP6ATFHPnggp0kKtctcv5shtKlmE+yeIlkUOzlDTFn9epfY=
-X-Gm-Gg: ASbGnct+3rnmzdT3sntLJ1G3QrfNeidioZ3syVx2YG9F6T0lUiDDqtBMIl6n7EJxk6d
-	09maGkYm4p9L9+MIMwxwzM8Av3yYdXaQZQs5lOv9pm3RM1Dz4S3XTPvKgSOODD6lR6bJP832sNm
-	QsWk/0auvNCJ/rqm/c4GWuvFSAjdEKuxijotwVp192hm6HdStcmdLmGq1rwmfTEHP98vOPm6nC6
-	psf454Dx1QhGqbSyerXE6WIAfiu2/c29R/jmqsrD4mj/6oQvdTF1OhAoZR5BjOYeK8MkIpZGRw6
-	6MrOAMiEslhDq/D9vFQbpL3KYgBrih1USF6rTNCiKPIySzZxDw==
-X-Google-Smtp-Source: AGHT+IF3E5oQo5TmO1ZbvJta2mk5C4leDe1bchlXF4Xyba/pdZ/HKHpPajKrTqwrefFmXv5KCnX2hQ==
-X-Received: by 2002:a17:90b:a11:b0:2fe:8e19:bcd7 with SMTP id 98e67ed59e1d1-2fe8e19c0c0mr2872297a91.5.1740652676848;
-        Thu, 27 Feb 2025 02:37:56 -0800 (PST)
-Received: from [10.254.225.63] ([139.177.225.243])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2feb0057317sm543180a91.0.2025.02.27.02.37.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Feb 2025 02:37:55 -0800 (PST)
-Message-ID: <15581a04-867f-4fc2-ab01-f4bd23e3c035@bytedance.com>
-Date: Thu, 27 Feb 2025 18:37:45 +0800
+	s=arc-20240116; t=1740658259; c=relaxed/simple;
+	bh=DL5WQ/m06BulIBUSol3oaMpPWqLdB+Y4lNopS+hQ/F8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iSi5w8BUDWXoEqIwWtKZRI8QaUzGRg9g6cpBnIZHy2I7xgZu5SsXkAiLtTgnCgbQoBO8DBAbo6MKCMmJkyTHH7qN8yWqgSjfEm+KsHsc47WFBx3vp/mY8ILy34yEP4MaSMFZ4rAGe+6XGhCNpfHplvSjBO8P7ksBl+SHYtnmbso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Z3VXm140tz4f3js9;
+	Thu, 27 Feb 2025 20:10:32 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 07D981A06DC;
+	Thu, 27 Feb 2025 20:10:54 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgB3219KVsBnUNAxFA--.41103S4;
+	Thu, 27 Feb 2025 20:10:51 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: ming.lei@redhat.com,
+	tj@kernel.org,
+	josef@toxicpanda.com,
+	axboe@kernel.dk,
+	vgoyal@redhat.com
+Cc: cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH v2] blk-throttle: fix lower bps rate by throtl_trim_slice()
+Date: Thu, 27 Feb 2025 20:06:45 +0800
+Message-Id: <20250227120645.812815-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] cgroup/rstat: Fix forceidle time in cpu.stat
-Content-Language: en-US
-To: Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Bitao Hu <yaoma@linux.alibaba.com>, Thomas Gleixner <tglx@linutronix.de>,
- Andrew Morton <akpm@linux-foundation.org>, Yury Norov
- <yury.norov@gmail.com>, Chen Ridong <chenridong@huawei.com>
-Cc: "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20250209061322.15260-1-wuyun.abel@bytedance.com>
- <20250209061322.15260-2-wuyun.abel@bytedance.com>
-From: Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <20250209061322.15260-2-wuyun.abel@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgB3219KVsBnUNAxFA--.41103S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF4DCr1fZFyDXw1kXry3XFb_yoW5tF43pF
+	W3Ar43WFW7XFy2kF43X3Z3Cay8C3yrGFy5Gwn5Cr4rA345Cr1xKFnxAr4Yya47A3s3uw4F
+	v3ZFvryxCr12yrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUFg4SDUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hi Tejun, can you please pick this fix? Since there is no objections..
+From: Yu Kuai <yukuai3@huawei.com>
 
-Thanks!
+The bio submission time may be a few jiffies more than the expected
+waiting time, due to 'extra_bytes' can't be divided in
+tg_within_bps_limit(), and also due to timer wakeup delay.
+In this case, adjust slice_start to jiffies will discard the extra wait time,
+causing lower rate than expected.
 
-On 2/9/25 2:13 PM, Abel Wu wrote:
-> The commit b824766504e4 ("cgroup/rstat: add force idle show helper")
-> retrieves forceidle_time outside cgroup_rstat_lock for non-root cgroups
-> which can be potentially inconsistent with other stats.
-> 
-> Rather than reverting that commit, fix it in a way that retains the
-> effort of cleaning up the ifdef-messes.
-> 
-> Fixes: b824766504e4 ("cgroup/rstat: add force idle show helper")
-> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
-> ---
->   kernel/cgroup/rstat.c | 29 +++++++++++++----------------
->   1 file changed, 13 insertions(+), 16 deletions(-)
-> 
-> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-> index 5877974ece92..c2784c317cdd 100644
-> --- a/kernel/cgroup/rstat.c
-> +++ b/kernel/cgroup/rstat.c
-> @@ -613,36 +613,33 @@ static void cgroup_force_idle_show(struct seq_file *seq, struct cgroup_base_stat
->   void cgroup_base_stat_cputime_show(struct seq_file *seq)
->   {
->   	struct cgroup *cgrp = seq_css(seq)->cgroup;
-> -	u64 usage, utime, stime, ntime;
-> +	struct cgroup_base_stat bstat;
->   
->   	if (cgroup_parent(cgrp)) {
->   		cgroup_rstat_flush_hold(cgrp);
-> -		usage = cgrp->bstat.cputime.sum_exec_runtime;
-> +		bstat = cgrp->bstat;
->   		cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime,
-> -			       &utime, &stime);
-> -		ntime = cgrp->bstat.ntime;
-> +			       &bstat.cputime.utime, &bstat.cputime.stime);
->   		cgroup_rstat_flush_release(cgrp);
->   	} else {
-> -		/* cgrp->bstat of root is not actually used, reuse it */
-> -		root_cgroup_cputime(&cgrp->bstat);
-> -		usage = cgrp->bstat.cputime.sum_exec_runtime;
-> -		utime = cgrp->bstat.cputime.utime;
-> -		stime = cgrp->bstat.cputime.stime;
-> -		ntime = cgrp->bstat.ntime;
-> +		root_cgroup_cputime(&bstat);
->   	}
->   
-> -	do_div(usage, NSEC_PER_USEC);
-> -	do_div(utime, NSEC_PER_USEC);
-> -	do_div(stime, NSEC_PER_USEC);
-> -	do_div(ntime, NSEC_PER_USEC);
-> +	do_div(bstat.cputime.sum_exec_runtime, NSEC_PER_USEC);
-> +	do_div(bstat.cputime.utime, NSEC_PER_USEC);
-> +	do_div(bstat.cputime.stime, NSEC_PER_USEC);
-> +	do_div(bstat.ntime, NSEC_PER_USEC);
->   
->   	seq_printf(seq, "usage_usec %llu\n"
->   			"user_usec %llu\n"
->   			"system_usec %llu\n"
->   			"nice_usec %llu\n",
-> -			usage, utime, stime, ntime);
-> +			bstat.cputime.sum_exec_runtime,
-> +			bstat.cputime.utime,
-> +			bstat.cputime.stime,
-> +			bstat.ntime);
->   
-> -	cgroup_force_idle_show(seq, &cgrp->bstat);
-> +	cgroup_force_idle_show(seq, &bstat);
->   }
->   
->   /* Add bpf kfuncs for cgroup_rstat_updated() and cgroup_rstat_flush() */
+Current in-tree code already covers deviation by rounddown(), but turns
+out it is not enough, because jiffies - slice_start can be a multiple of
+throtl_slice.
+
+For example, assume bps_limit is 1000bytes, 1 jiffes is 10ms, and
+slice is 20ms(2 jiffies), expected rate is 1000 / 1000 * 20 = 20 bytes
+per slice.
+
+If user issues two 21 bytes IO, then wait time will be 30ms for the
+first IO:
+
+bytes_allowed = 20, extra_bytes = 1;
+jiffy_wait = 1 + 2 = 3 jiffies
+
+and consider
+extra 1 jiffies by timer, throtl_trim_slice() will be called at:
+
+jiffies = 40ms
+slice_start = 0ms, slice_end= 40ms
+bytes_disp = 21
+
+In this case, before the patch, real rate in the first two slices is
+10.5 bytes per slice, and slice will be updated to:
+
+jiffies = 40ms
+slice_start = 40ms, slice_end = 60ms,
+bytes_disp = 0;
+
+Hence the second IO will have to wait another 30ms;
+
+With the patch, the real rate in the first slice is 20 bytes per slice,
+which is the same as expected, and slice will be updated:
+
+jiffies=40ms,
+slice_start = 20ms, slice_end = 60ms,
+bytes_disp = 1;
+
+And now, there is still 19 bytes allowed in the second slice, and the
+second IO will only have to wait 10ms;
+
+This problem will cause blktests throtl/001 failure in case of
+CONFIG_HZ_100=y, fix it by preserving one extra finished slice in
+throtl_trim_slice().
+
+Fixes: e43473b7f223 ("blkio: Core implementation of throttle policy")
+Reported-by: Ming Lei <ming.lei@redhat.com>
+Closes: https://lore.kernel.org/linux-block/20250222092823.210318-3-yukuai1@huaweicloud.com/
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+Changes from v1:
+ - update commit message and comment, to mention rounddown().
+ - add review tag by Ming, and ack tag by Tejun.
+ block/blk-throttle.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 8d149aff9fd0..a52f0d6b40ad 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -599,14 +599,23 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
+ 	 * sooner, then we need to reduce slice_end. A high bogus slice_end
+ 	 * is bad because it does not allow new slice to start.
+ 	 */
+-
+ 	throtl_set_slice_end(tg, rw, jiffies + tg->td->throtl_slice);
+ 
+ 	time_elapsed = rounddown(jiffies - tg->slice_start[rw],
+ 				 tg->td->throtl_slice);
+-	if (!time_elapsed)
++	/* Don't trim slice until at least 2 slices are used */
++	if (time_elapsed < tg->td->throtl_slice * 2)
+ 		return;
+ 
++	/*
++	 * The bio submission time may be a few jiffies more than the expected
++	 * waiting time, due to 'extra_bytes' can't be divided in
++	 * tg_within_bps_limit(), and also due to timer wakeup delay. In this
++	 * case, adjust slice_start will discard the extra wait time, causing
++	 * lower rate than expected. Therefore, other than the above rounddown,
++	 * one extra slice is preserved for deviation.
++	 */
++	time_elapsed -= tg->td->throtl_slice;
+ 	bytes_trim = calculate_bytes_allowed(tg_bps_limit(tg, rw),
+ 					     time_elapsed) +
+ 		     tg->carryover_bytes[rw];
+-- 
+2.39.2
 
 
