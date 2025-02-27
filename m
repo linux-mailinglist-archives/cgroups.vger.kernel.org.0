@@ -1,125 +1,175 @@
-Return-Path: <cgroups+bounces-6736-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6737-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31D9BA48C3D
-	for <lists+cgroups@lfdr.de>; Fri, 28 Feb 2025 00:01:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88A11A48CE7
+	for <lists+cgroups@lfdr.de>; Fri, 28 Feb 2025 00:44:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 060717A4C66
-	for <lists+cgroups@lfdr.de>; Thu, 27 Feb 2025 23:00:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 710403B58EA
+	for <lists+cgroups@lfdr.de>; Thu, 27 Feb 2025 23:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F25781AB6D8;
-	Thu, 27 Feb 2025 23:01:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A711BD9D0;
+	Thu, 27 Feb 2025 23:44:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HV9OM5/D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JNGNFdkI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F2C27780C
-	for <cgroups@vger.kernel.org>; Thu, 27 Feb 2025 23:01:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2DC276D27
+	for <cgroups@vger.kernel.org>; Thu, 27 Feb 2025 23:44:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740697296; cv=none; b=uFmn1g7mn1m+THRR4ga/lyXkxd/FIB8MirnvQ1TAKIMPE4rZAKBgrGJ7n59F3L7XmFWL24ls1bcNyqZClOgfKoqtJTeVs2vN/YD6NsJRfE04DNUNlDX6rTyvI9v52WYb3CV9HSbTmEKgoi48A4e6+hQCYo2vMxf+q0PNBzNiUOs=
+	t=1740699858; cv=none; b=j63QOLzHrq7MCSxxCFntk0QAGUhacpk45ZvcNcgZMviF7yanMdUsSmGk0grZaH5JW1OUuk0vQkpdNtRfSGr1DKaAqtkqQZR3cfLJeQ/+bc18EyYERy7iUcEubN1rk7efkEmnBG7nR7s6IPEdfMPUul6eFpQ91Zl4b6OpoY4qgzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740697296; c=relaxed/simple;
-	bh=1NWOS11L2TSKfIWNZX7tFO/ymFgypwRbLBD14bAu2+A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZRuTRIdarmyk3H4ZJ5zxKSVoAAokzy6NtRsZaEHsVahhwW/+WAjSwLzMlTzYKK5XTo2zcR4Feo/N4cIl05G8sImay6qNT1Dn7/P8wMVBy04jSNmvwRso90ILQ34KZcutb44XDTuTSyUvWyvykeHLRukHJglfUNbBn3rnVXO+U/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HV9OM5/D; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 27 Feb 2025 15:01:27 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740697292;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OoTaQAGzX8rjvV6FcqqXocN/Sg8kBNDVleKgzUwS4Yk=;
-	b=HV9OM5/D8AqGYFntEo2xAxZZKYH+R3tRKiP3D+3XTCbDUc9oCYeES4RITiFJUWHL1pYFmD
-	roCdIuTlLimk02enlly2j/p8MJXRVLOB56F5D6UO0h9AEms9GNYAmY0maiDv6WUVQyxD3c
-	nFdRAjitbOjMVtahfexg7ZWhsJrF7/4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: inwardvessel <inwardvessel@gmail.com>
-Cc: tj@kernel.org, yosryahmed@google.com, mhocko@kernel.org, 
-	hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 4/4 v2] cgroup: separate rstat list pointers from base
- stats
-Message-ID: <3asrhag2zfxzlmtjqwzmmuyt5tn57d3se7uvhpuloavsc4dvwa@2my4xmpabl2o>
-References: <20250227215543.49928-1-inwardvessel@gmail.com>
- <20250227215543.49928-5-inwardvessel@gmail.com>
+	s=arc-20240116; t=1740699858; c=relaxed/simple;
+	bh=JjbUWYIw6xsJEOtYZYLmKqAor18TBTuKYf5Z+HUkU5o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bsGkEorzyDPzNC4uk7cm/sEm0B7dGuMZ0pBSlFujTitVqeL5OnVFSFzSTuMsKMzovL8XeSUn2YI8pN9gUddjoLo1EvjyDhn+aPjLOSFh/FnpiiP3hgic9Yv8WNQ3XSuDRWyhC6IjKL+hfx5MZWA2MAA6byYyGm5UX6u7wsqYG1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JNGNFdkI; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2211acda7f6so35642665ad.3
+        for <cgroups@vger.kernel.org>; Thu, 27 Feb 2025 15:44:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740699856; x=1741304656; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HAUpca2R3d0U2hR0ll37Jv2ikqDEb2N9yLFXzqEDzzM=;
+        b=JNGNFdkIM2zBFDehM6deI7wtO3ffQbOkVHgIj3O0RllsWuXrn4DJ52nIsTwoixy4rX
+         jfTb8hpTFu9GaPGPci1yVNDkF9q2aE7jPWedGfWSiBNBLPB7lN/5AuOqRryDMxcFS+RG
+         zJfjIayKCftVtFcjhlwgiaof+N6wcJQ2BWNHlyH9jKRcaTcBopTwAt2zw+I0oiaiMIod
+         tAnfjPkHjKtetXompRdFFGEijIex3YgFBHaHUV8V22y30uYGIlMzCyVrZkJHVtkT7ILq
+         QHPGnqOVp26myY2RTb5U8IMypJ+OvjWruoKIRPgrUV4g0MDwTcPhE8ciQXqEPILn7a28
+         VjAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740699856; x=1741304656;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HAUpca2R3d0U2hR0ll37Jv2ikqDEb2N9yLFXzqEDzzM=;
+        b=WhZKq043M2sz15loqDlVdoyk/b4mRc3Rbm5pXaKwAZ15NUfbB4K9JQoVi1ACn6a0Um
+         Y62qaIfoQTv12/d+hC9Y6NrXGWA+W6AXKZewpEMOc4B2DaIk1mL5j0EmYiITxgbcdWAf
+         +zXhOU7zrjZVPQ8CrWBEH/biNgLNJ8PDiwOzx84vvdR32N40H8o1awylLkK1vVp0s78H
+         xiNhbcYiQJNRRWAo10P3umJr9kYSszUWC4fmolzVz5Y8Z+RV83SsrU7m7N8ZCcZ9soYn
+         JezXc1vcfLNB14AzDL41RhkMTRuv6fI34HkYj/tHweLeXYpzu+zob9wFDVGlCf3AnuPM
+         WIFg==
+X-Forwarded-Encrypted: i=1; AJvYcCVbaNSqlPupNyBpvzGRrmYnXb9eOLcHgluKcyI0kFgp6NBhSfiLOuvsdPDnTCHzJMgULPZoVGpm@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKXvnsJZYpS5dHO1LEiBcPgYtH+nFcrlzXWyPypJWHLQrrd23M
+	+4Zr302gjq8YuWvajuskPVr76Tq0FZSCoSZCBEuSwOHXpu6rG/LhNcEmQQ==
+X-Gm-Gg: ASbGncviIUOZbm8stfQTL1qSrwgUKA5MqadrC1aCpqHZYtpDT0v4ZS8SSTwnmdnwKyu
+	3uctO8ncKoYUXMpya8KekFUchr0ZeAcz7YBU3Of//Mtrm4HB8B7Ol6XOajRz1zKM3nGaKb6JD/A
+	+NDIlMkCnP+8yigpqWY8GAm6kV3KHaxvC1pba80PLeuOGB3PlpIseHi52K4awh+voqYW4mq8hgH
+	WHWqA6Qc/3Wiv14m6s29y9BnE36qCD2sDOcA8P4trQZTjOV4WYl/iPx0ADlC2ilP+nr+SHkvBEx
+	0+4iFtdzjG4dm0qZ8VlDj9Xly2XkhjWkVeUB835pvCoE6XEtWZr6F40cm9I=
+X-Google-Smtp-Source: AGHT+IH7yoAmJXvNFYIfB3be6p4ODNNjXp8tXvLrOZ8JAxx0oD/Lz+Hx7TMRdvkSQJypw7aCuRdCVg==
+X-Received: by 2002:a17:90b:3b8e:b0:2fa:228d:5b03 with SMTP id 98e67ed59e1d1-2febab7a2e4mr1771255a91.19.1740699855619;
+        Thu, 27 Feb 2025 15:44:15 -0800 (PST)
+Received: from ?IPV6:2a03:83e0:1151:15:8fb1:8b78:c871:aacd? ([2620:10d:c090:500::4:4d60])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fe825d2b85sm4455886a91.26.2025.02.27.15.44.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Feb 2025 15:44:15 -0800 (PST)
+Message-ID: <bbb633a4-7007-4444-a391-3305a9fc8ffa@gmail.com>
+Date: Thu, 27 Feb 2025 15:44:12 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250227215543.49928-5-inwardvessel@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/11] cgroup: separate rstat trees
+To: Tejun Heo <tj@kernel.org>
+Cc: shakeel.butt@linux.dev, mhocko@kernel.org, hannes@cmpxchg.org,
+ yosryahmed@google.com, akpm@linux-foundation.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, kernel-team@meta.com
+References: <20250218031448.46951-1-inwardvessel@gmail.com>
+ <Z7dPZ9dNcaYuT6SA@slm.duckdns.org>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <Z7dPZ9dNcaYuT6SA@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 27, 2025 at 01:55:43PM -0800, inwardvessel wrote:
-> From: JP Kobryn <inwardvessel@gmail.com>
+On 2/20/25 7:51 AM, Tejun Heo wrote:
+> Hello,
 > 
-> A majority of the cgroup_rstat_cpu struct size is made up of the base
-> stat entities. Since only the "self" subsystem state makes use of these,
-> move them into a struct of their own. This allows for a new compact
-> cgroup_rstat_cpu struct that the formal subsystems can make use of.
-> Where applicable, decide on whether to allocate the compact or full
-> struct including the base stats.
+> On Mon, Feb 17, 2025 at 07:14:37PM -0800, JP Kobryn wrote:
+> ...
+>> The first experiment consisted of a parent cgroup with memory.swap.max=0
+>> and memory.max=1G. On a 52-cpu machine, 26 child cgroups were created and
+>> within each child cgroup a process was spawned to encourage the updating of
+>> memory cgroup stats by creating and then reading a file of size 1T
+>> (encouraging reclaim). These 26 tasks were run in parallel.  While this was
+>> going on, a custom program was used to open cpu.stat file of the parent
+>> cgroup, read the entire file 1M times, then close it. The perf report for
+>> the task performing the reading showed that most of the cycles (42%) were
+>> spent on the function mem_cgroup_css_rstat_flush() of the control side. It
+>> also showed a smaller but significant number of cycles spent in
+>> __blkcg_rstat_flush. The perf report for patched kernel differed in that no
+>> cycles were spent in these functions. Instead most cycles were spent on
+>> cgroup_base_stat_flush(). Aside from the perf reports, the amount of time
+>> spent running the program performing the reading of cpu.stats showed a gain
+>> when comparing the control to the experimental kernel.The time in kernel
+>> mode was reduced.
+>>
+>> before:
+>> real    0m18.449s
+>> user    0m0.209s
+>> sys     0m18.165s
+>>
+>> after:
+>> real    0m6.080s
+>> user    0m0.170s
+>> sys     0m5.890s
+>>
+>> Another experiment on the same host was setup using a parent cgroup with
+>> two child cgroups. The same swap and memory max were used as the previous
+>> experiment. In the two child cgroups, kernel builds were done in parallel,
+>> each using "-j 20". The program from the previous experiment was used to
+>> perform 1M reads of the parent cpu.stat file. The perf comparison showed
+>> similar results as the previous experiment. For the control side, a
+>> majority of cycles (42%) on mem_cgroup_css_rstat_flush() and significant
+>> cycles in __blkcg_rstat_flush(). On the experimental side, most cycles were
+>> spent on cgroup_base_stat_flush() and no cycles were spent flushing memory
+>> or io. As for the time taken by the program reading cpu.stat, measurements
+>> are shown below.
+>>
+>> before:
+>> real    0m17.223s
+>> user    0m0.259s
+>> sys     0m16.871s
+>>
+>> after:
+>> real    0m6.498s
+>> user    0m0.237s
+>> sys     0m6.220s
+>>
+>> For the final experiment, perf events were recorded during a kernel build
+>> with the same host and cgroup setup. The builds took place in the child
+>> node.  Control and experimental sides both showed similar in cycles spent
+>> on cgroup_rstat_updated() and appeard insignificant compared among the
+>> events recorded with the workload.
 > 
-> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> One of the reasons why the original design used one rstat tree is because
+> readers, in addition to writers, can often be correlated too - e.g. You'd
+> often have periodic monitoring tools which poll all the major stat files
+> periodically. Splitting the trees will likely make those at least a bit
+> worse. Can you test how much worse that'd be? ie. Repeat the above tests but
+> read all the major stat files - cgroup.stat, cpu.stat, memory.stat and
+> io.stat.
 
-One nit below otherwise:
+Sure. I changed the experiment to read all of these files. It still 
+showed an improvement in performance. You can see the details in
+v2 [0] which I sent out earlier today.
 
-Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
+[0] 
+https://lore.kernel.org/all/20250227215543.49928-1-inwardvessel@gmail.com/
+> 
+> Thanks.
+> 
 
-[...]
-> @@ -438,17 +444,31 @@ int cgroup_rstat_init(struct cgroup_subsys_state *css)
->  
->  	/* the root cgrp's self css has rstat_cpu preallocated */
->  	if (!css->rstat_cpu) {
-
-Early return here for root to eliminate one indent in this function.
-
-> -		css->rstat_cpu = alloc_percpu(struct cgroup_rstat_cpu);
-> -		if (!css->rstat_cpu)
-> -			return -ENOMEM;
-> -	}
-> +		if (is_base_css(css)) {
-> +			css->rstat_base_cpu = alloc_percpu(struct cgroup_rstat_base_cpu);
-> +			if (!css->rstat_base_cpu)
-> +				return -ENOMEM;
->  
-> -	/* ->updated_children list is self terminated */
-> -	for_each_possible_cpu(cpu) {
-> -		struct cgroup_rstat_cpu *rstatc = cgroup_rstat_cpu(css, cpu);
-> +			for_each_possible_cpu(cpu) {
-> +				struct cgroup_rstat_base_cpu *rstatc;
-> +
-> +				rstatc = cgroup_rstat_base_cpu(css, cpu);
-> +				rstatc->self.updated_children = css;
-> +				u64_stats_init(&rstatc->bsync);
-> +			}
-> +		} else {
-> +			css->rstat_cpu = alloc_percpu(struct cgroup_rstat_cpu);
-> +			if (!css->rstat_cpu)
-> +				return -ENOMEM;
-> +
-> +			for_each_possible_cpu(cpu) {
-> +				struct cgroup_rstat_cpu *rstatc;
-> +
-> +				rstatc = cgroup_rstat_cpu(css, cpu);
-> +				rstatc->updated_children = css;
-> +			}
-> +		}
->  
-> -		rstatc->updated_children = css;
-> -		u64_stats_init(&rstatc->bsync);
->  	}
 
