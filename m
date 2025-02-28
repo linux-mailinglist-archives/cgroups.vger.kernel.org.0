@@ -1,329 +1,185 @@
-Return-Path: <cgroups+bounces-6743-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6744-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD365A49E4F
-	for <lists+cgroups@lfdr.de>; Fri, 28 Feb 2025 17:08:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96242A49F5B
+	for <lists+cgroups@lfdr.de>; Fri, 28 Feb 2025 17:53:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92B6A3AF03B
-	for <lists+cgroups@lfdr.de>; Fri, 28 Feb 2025 16:07:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 845053B48CA
+	for <lists+cgroups@lfdr.de>; Fri, 28 Feb 2025 16:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D9E18CC1D;
-	Fri, 28 Feb 2025 16:07:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F622755FE;
+	Fri, 28 Feb 2025 16:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bZUkL+Y6"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YTkDYpJS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FC0C16F265
-	for <cgroups@vger.kernel.org>; Fri, 28 Feb 2025 16:07:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 409CC27181C
+	for <cgroups@vger.kernel.org>; Fri, 28 Feb 2025 16:52:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740758875; cv=none; b=tkmEYqHQkdng8Sfc2Be22fXeL1QJrDl4v/dy/F7rYSorhYM5vUcfUeZQz4ZpcHyNwt98EuZvmnAPE0GQRAttx0UtizNHnY9P1hQSkLi8b3iotPH3IA3+u47TajtS/7+C/90NE1SGrjwu4Ijzws9L7SFrj+n1C1jCsw1fwRzLp4Q=
+	t=1740761542; cv=none; b=mhMtuGw5qe8aoZn/wf+gxms9QwxLDwCpo2NQA0bOuA/SF1fptLzojNV2MF3S/a3GagLGe5C316i3zXg/IDhMSsjXT8uaIq4lLQ7R4fPx2doIuJ6qBGwgTgJ941vruPREvzwS6UEGGTZt6QBiRR+Bf4cKVRc3a2+oK0AkTFe8V54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740758875; c=relaxed/simple;
-	bh=WRNougrcBWl2365/08/0TSgbN7RuVdWmLjanpUWuphY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lTGgsK18HwAiFjwDM/LsisiWa83z/WTt3Tliixll/aOk7dqOM4VUWKNvDRIyHGUAdJmoR7TL5ROkDnUMvtmXQrZk7udOiy3ljAwdn4Vs4j9jq7kXNcNpkSD9yPYdV8jbZq3rp5JnY9X3MKoW4/FKMe1j4k6QvMB5B5DngwYl+uE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bZUkL+Y6; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2232b12cd36so33380325ad.0
-        for <cgroups@vger.kernel.org>; Fri, 28 Feb 2025 08:07:53 -0800 (PST)
+	s=arc-20240116; t=1740761542; c=relaxed/simple;
+	bh=NsYtIP9Mw2b/nhaNRRDG6qj+beqFgzVf9yFx5qbgPTQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gfhUQVZJQWmK1EZhquGnbz1SkXfIRqzeno8JA1X1Nw2czyzOq/YJ9dJYR9dw2UIElNka55sJzJFf3alN7uhVNS7mCcyh3UGzQFeTnzpceviD6UaxQ2BC0qqc5lPeGNhj0c3A7b7baVNXq522LtgAoKk+nXLIQroJASRzffpk6Vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YTkDYpJS; arc=none smtp.client-ip=209.85.218.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-abf3d64849dso83815966b.3
+        for <cgroups@vger.kernel.org>; Fri, 28 Feb 2025 08:52:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740758873; x=1741363673; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RbNq4X7wcuSfUBCqJJ3Aotkg4KH2vHbVeL4DNaPJDPE=;
-        b=bZUkL+Y6cyhc12L+q+Rd2kep78cbuOqFmZr+pSfc65hK6YZ4yura8k4RpcsSWZoE6N
-         FcYGNZqKxS3m908IUgtYGUT6CyaXmqmw8QE6zxZwsnOPCtwxyI2HOig5+Xo7rwfveVbM
-         U9Q4XDwsBShLbnuWRkHKDDB7aLhJ+6fZQn9acsTWg4L7Kef5fH38XHmHMUp7pVKSS9n5
-         Cc61bhUu24+bYAzoMkjFSo1uEJJpljQAEPTjQIhaTWRGAxU75BwifKFhh3R/f81eT2jG
-         ZP5lK+cNICR39pfcUrPxLAgzj26EirqXj+dMF5WX76aHwzGF6yk8kvMuPmF0YzUu7DkG
-         0Q+Q==
+        d=suse.com; s=google; t=1740761538; x=1741366338; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DMEGjq6WjEVsV0tBdx2rpYvL0pVPJ8Xct6E1Q4Bt1js=;
+        b=YTkDYpJS9a21ha422hVk0M8FVi/r7w5KDTgauOPejHxA01oz21EZNje4EDQpBVgejx
+         G3uvmDgSjBjnPvTWQsCnaqX2miIy2PwJL+Wo6rqlHmcWfe9dha4dtAaPp7Uj0ixE4nK6
+         IovPR0tWI2cyyilIJNq32XUiwoEtmmaNOTbWYfo+czwwuM234dNhSYgGYot0QW5JvCXN
+         C9dV/Uy8A08m623K5emrCA6nu19+2NwAOxsipR/93D8rrujFYQZOPbPTvC3yGgvpyvtw
+         qRsHLUbM+eAjLjb4g+kck3HAgMjOziYyQag1o+3lMyZ7bqlfUB6SMMndfb1lOoWrbUsY
+         B10g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740758873; x=1741363673;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RbNq4X7wcuSfUBCqJJ3Aotkg4KH2vHbVeL4DNaPJDPE=;
-        b=kAKapwgSUyf/6ZNDcTxNFC2W6sBfP7qPJw4LhGW0qIYh+mygnlX2yakvV6Lh+/Urn1
-         uA6j4B3Bvz2OCTxIgf80ZnmsQ3XGg/J9Qa94x/6Xp/HBp02mxMZnyaqupD2pjeaebhLZ
-         UMOXmACTP0zVmTebcytYgIHkvSMuOLioyLvF05d+HBFwACmeINk+91vdx5P+lnXJRIIy
-         0XiFnUijGwu6Cr9dB3BqMLxzMtoM71xaTc3bB73ZvOPpdIfuMSaYSuFk9vagGT24sQlH
-         MFlboHflqKuFH6Fl1itjhgvhndtm26npNCNM2fvqEb170dtaXBo48IJGb5B/mdRGaBPk
-         LCTw==
-X-Forwarded-Encrypted: i=1; AJvYcCVKkilxCQtXTPxT4uOl2PiLHxKTvigH+I1McYiGNyWeq3jf20/5HeQFyrsYeVDiLxcZpwBf6unx@vger.kernel.org
-X-Gm-Message-State: AOJu0YzjjCde5qPJk9JTJJbkPPZ7SApFRoQd4EYT8r4Cr+kO5n1sk6VJ
-	XRuVfj6HTOb32RH4wO5UUV6wbVamXq7n3MIc/gjcDGiT0NJq04yL
-X-Gm-Gg: ASbGncvmLo8diYiXBx0lc8/H9q5Gv+EHFTcS08vMM2DgjcpP50HL57gJ74izI5e4g9J
-	fwRDih/+mXfwusl1rTGISvzd0Z1H+86A85ijLkbEZaE4qadvsEZBBzaCZA6p0eKLs3f3YCZdRkk
-	h/vXmUkGWOUruOqbxzJv3qYxlc2DFZrgqdfhd7T79V6lpqemPz4SGopRkMlf9XfKoQoZwy3iZRJ
-	vQFd3eibjZAuN3TFVrNV8zP/hIBgDbxcZ14NusHB+kqJBjUbLFvie4/F+sc4d2VRGCKwutPUHr7
-	YkEb1hhGg95HFElS1NoGY3/CUVPYjaPqpQY709AwypgQSRBCJd+BEXCnYCb8X+iFrQfjwNJp
-X-Google-Smtp-Source: AGHT+IEc/LpjyJNyc94QD2v1vBhS/25v1h4rkPWRkrce2r8rUx8g1O7eBeS9N2xW3uDvn0nqBf1Epw==
-X-Received: by 2002:a05:6a21:1796:b0:1ee:89ba:d9e6 with SMTP id adf61e73a8af0-1f2f4c94844mr7680017637.7.1740758873270;
-        Fri, 28 Feb 2025 08:07:53 -0800 (PST)
-Received: from [192.168.2.117] (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7349fe48873sm3906691b3a.49.2025.02.28.08.07.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Feb 2025 08:07:52 -0800 (PST)
-Message-ID: <066a7505-a4fe-4b76-b7a6-ae97f786dac7@gmail.com>
-Date: Fri, 28 Feb 2025 08:07:50 -0800
+        d=1e100.net; s=20230601; t=1740761538; x=1741366338;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DMEGjq6WjEVsV0tBdx2rpYvL0pVPJ8Xct6E1Q4Bt1js=;
+        b=HgmvouC3zlxEWzVRDmJscAxKQAhZe8NgsVm66EnigAp9jU04kKkrFBN1eXDUsnME/m
+         nMkZodjg61tvI4aM3ylF8sAz97qu4P3OvPUBwm86HjactbdQrFbSp8A3tkZto7ArpIXM
+         O0VHNCpQyBc+zMTMJno7MdzLclGrh+WPWZK5X2aBx/CGBX7lU4AOxdRcZNMsfNQXwVXH
+         0yi/mQ7a87KUnC9SFbsIS7js9RbGRn8/EYvhJWXhnz1o6ywda5LDHju3E+Gow1Qck4dn
+         AOEFdv+hd7lql7dFme3e6yGSGRTyAZwZuk08o1tt83OpLcUWLkX7R3tyt2fJglRVbWUZ
+         GeHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXCqweRplBBISMTzvDIsGQNrdbyPTxpeKwTFiI4rwwi7PF8U2E14pFCBcOODmXgZBt4ufG3aQ82@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWQYhpoHjZNasWtnwDZfYE2hUiYkQDn8eoIBIgI6Ed1aDG0dtD
+	v37aH2JMfxkfaxJgKrpyLfXSt3SEV+Betvm/zGx21gz+YpncDPK4nM+zQwlhvM8=
+X-Gm-Gg: ASbGncvUETzMOZBNIu5pvjsxfBMxmkEObwNImAHudCBxzgqksyukvfDJXSigkHKBvbD
+	jUFeMpEiE8EkqY1tMn/Tn90mEz/fBFaedAvyhd+jft9wNWS0FrAAiqQI/DAeXVNQmPRoRySruOr
+	rDf26UUzDXvxB67BNY3n/YQalm9slS97OXYV8PcEz8BNqN9jZRph2Y1GZ2cBgvd786VkN+PaJ0v
+	2a6qqKY1gWNvOZw5KrKn2AhDotVXxUWg87exi3xAgwM47MR81jgOOANovhK1/jNKnIgVx/mF8Yx
+	KdqHR2LRL4EcEK7laGiiQ4pA4D8M
+X-Google-Smtp-Source: AGHT+IEs+LalzKtbPFpkKQgFWFd0Lu/RhKgnHSlViKu4ecCAJmjCZ0T6cL/fwlL89/H2Lwl2Cv9zFw==
+X-Received: by 2002:a05:6402:2790:b0:5df:6a:54ea with SMTP id 4fb4d7f45d1cf-5e4d6adc7a0mr7561214a12.11.1740761538383;
+        Fri, 28 Feb 2025 08:52:18 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e4c3b6d252sm2764784a12.26.2025.02.28.08.52.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Feb 2025 08:52:17 -0800 (PST)
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To: netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	cgroups@vger.kernel.org
+Subject: [PATCH] netfilter: Make xt_cgroup independent from net_cls
+Date: Fri, 28 Feb 2025 17:52:16 +0100
+Message-ID: <20250228165216.339407-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4 v2] cgroup: separate rstat locks for subsystems
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: tj@kernel.org, yosryahmed@google.com, mhocko@kernel.org,
- hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
- cgroups@vger.kernel.org, kernel-team@meta.com
-References: <20250227215543.49928-1-inwardvessel@gmail.com>
- <20250227215543.49928-4-inwardvessel@gmail.com>
- <wr4gupwwb3dinb6wanadgbitpowa4ffvmsei4r7riq6ialpp3k@kebmsx62a4op>
-Content-Language: en-US
-From: JP Kobryn <inwardvessel@gmail.com>
-In-Reply-To: <wr4gupwwb3dinb6wanadgbitpowa4ffvmsei4r7riq6ialpp3k@kebmsx62a4op>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2/27/25 2:52 PM, Shakeel Butt wrote:
-> On Thu, Feb 27, 2025 at 01:55:42PM -0800, inwardvessel wrote:
->> From: JP Kobryn <inwardvessel@gmail.com>
->>
->> Let the existing locks be dedicated to the base stats and rename them as
->> such. Also add new rstat locks for each enabled subsystem. When handling
->> cgroup subsystem states, distinguish between formal subsystems (memory,
->> io, etc) and the base stats subsystem state (represented by
->> cgroup::self) to decide on which locks to take. This change is made to
->> prevent contention between subsystems when updating/flushing stats.
->>
->> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
-> 
-> Couple of nits below otherwise:
-> 
-> Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
-> 
->> ---
->>   kernel/cgroup/rstat.c | 93 +++++++++++++++++++++++++++++++++----------
->>   1 file changed, 72 insertions(+), 21 deletions(-)
->>
->> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
->> index 88908ef9212d..b3eaefc1fd07 100644
->> --- a/kernel/cgroup/rstat.c
->> +++ b/kernel/cgroup/rstat.c
->> @@ -9,8 +9,12 @@
->>   
->>   #include <trace/events/cgroup.h>
->>   
->> -static DEFINE_SPINLOCK(cgroup_rstat_lock);
->> -static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
->> +static DEFINE_SPINLOCK(cgroup_rstat_base_lock);
->> +static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_base_cpu_lock);
->> +
->> +static spinlock_t cgroup_rstat_subsys_lock[CGROUP_SUBSYS_COUNT];
->> +static DEFINE_PER_CPU(raw_spinlock_t,
->> +		cgroup_rstat_subsys_cpu_lock[CGROUP_SUBSYS_COUNT]);
->>   
-> 
-> The name of these locks are too long and you had to go multi-line.
-> Please just reduce the size of the names. These are local to this file,
-> so maybe you can drop cgroup_rstat_ from them or keep the rstat.
+The xt_group matching supports the default hierarchy since commit
+c38c4597e4bf3 ("netfilter: implement xt_cgroup cgroup2 path match").
+The cgroup v1 matching (based on clsid) and cgroup v2 matching (based on
+path) are rather independent. Adjust Kconfig so that xt_group can be
+built even without CONFIG_NET_CLS_CGROUP for path matching. Also add a
+message for users when they attempt to specify any non-trivial clsid.
 
-Agreed. Will do in next rev.
+Link: https://lists.opensuse.org/archives/list/kernel@lists.opensuse.org/thread/S23NOILB7MUIRHSKPBOQKJHVSK26GP6X/
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ net/netfilter/Kconfig     |  1 -
+ net/netfilter/xt_cgroup.c | 23 +++++++++++++++++++++++
+ 2 files changed, 23 insertions(+), 1 deletion(-)
 
-> 
->>   static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu);
->>   
->> @@ -20,8 +24,13 @@ static struct cgroup_rstat_cpu *cgroup_rstat_cpu(
->>   	return per_cpu_ptr(css->rstat_cpu, cpu);
->>   }
->>   
->> +static inline bool is_base_css(struct cgroup_subsys_state *css)
->> +{
->> +	return css->ss == NULL;
->> +}
->> +
->>   /*
->> - * Helper functions for rstat per CPU lock (cgroup_rstat_cpu_lock).
->> + * Helper functions for rstat per CPU locks.
->>    *
->>    * This makes it easier to diagnose locking issues and contention in
->>    * production environments. The parameter @fast_path determine the
->> @@ -36,12 +45,12 @@ unsigned long _cgroup_rstat_cpu_lock(raw_spinlock_t *cpu_lock, int cpu,
->>   	bool contended;
->>   
->>   	/*
->> -	 * The _irqsave() is needed because cgroup_rstat_lock is
->> -	 * spinlock_t which is a sleeping lock on PREEMPT_RT. Acquiring
->> -	 * this lock with the _irq() suffix only disables interrupts on
->> -	 * a non-PREEMPT_RT kernel. The raw_spinlock_t below disables
->> -	 * interrupts on both configurations. The _irqsave() ensures
->> -	 * that interrupts are always disabled and later restored.
->> +	 * The _irqsave() is needed because the locks used for flushing are
->> +	 * spinlock_t which is a sleeping lock on PREEMPT_RT. Acquiring this lock
->> +	 * with the _irq() suffix only disables interrupts on a non-PREEMPT_RT
->> +	 * kernel. The raw_spinlock_t below disables interrupts on both
->> +	 * configurations. The _irqsave() ensures that interrupts are always
->> +	 * disabled and later restored.
->>   	 */
->>   	contended = !raw_spin_trylock_irqsave(cpu_lock, flags);
->>   	if (contended) {
->> @@ -87,7 +96,7 @@ __bpf_kfunc void cgroup_rstat_updated(
->>   		struct cgroup_subsys_state *css, int cpu)
->>   {
->>   	struct cgroup *cgrp = css->cgroup;
->> -	raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
->> +	raw_spinlock_t *cpu_lock;
->>   	unsigned long flags;
->>   
->>   	/*
->> @@ -101,6 +110,12 @@ __bpf_kfunc void cgroup_rstat_updated(
->>   	if (data_race(cgroup_rstat_cpu(css, cpu)->updated_next))
->>   		return;
->>   
->> +	if (is_base_css(css))
->> +		cpu_lock = per_cpu_ptr(&cgroup_rstat_base_cpu_lock, cpu);
->> +	else
->> +		cpu_lock = per_cpu_ptr(cgroup_rstat_subsys_cpu_lock, cpu) +
->> +			css->ss->id;
-> 
-> Use the array index here like cgroup_rstat_subsys_cpu_lock[css->ss->id].
+diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
+index df2dc21304efb..af9350386033e 100644
+--- a/net/netfilter/Kconfig
++++ b/net/netfilter/Kconfig
+@@ -1180,7 +1180,6 @@ config NETFILTER_XT_MATCH_CGROUP
+ 	tristate '"control group" match support'
+ 	depends on NETFILTER_ADVANCED
+ 	depends on CGROUPS
+-	select CGROUP_NET_CLASSID
+ 	help
+ 	Socket/process control group matching allows you to match locally
+ 	generated packets based on which net_cls control group processes
+diff --git a/net/netfilter/xt_cgroup.c b/net/netfilter/xt_cgroup.c
+index c0f5e9a4f3c65..f30a62e803d22 100644
+--- a/net/netfilter/xt_cgroup.c
++++ b/net/netfilter/xt_cgroup.c
+@@ -23,6 +23,14 @@ MODULE_DESCRIPTION("Xtables: process control group matching");
+ MODULE_ALIAS("ipt_cgroup");
+ MODULE_ALIAS("ip6t_cgroup");
+ 
++static bool possible_classid(u32 classid)
++{
++	if (!IS_ENABLED(CONFIG_CGROUP_NET_CLASSID) && classid > 0)
++		return false;
++	else
++		return true;
++}
++
+ static int cgroup_mt_check_v0(const struct xt_mtchk_param *par)
+ {
+ 	struct xt_cgroup_info_v0 *info = par->matchinfo;
+@@ -30,6 +38,11 @@ static int cgroup_mt_check_v0(const struct xt_mtchk_param *par)
+ 	if (info->invert & ~1)
+ 		return -EINVAL;
+ 
++	if (!possible_classid(info->id)) {
++		pr_info("xt_cgroup: invalid classid\n");
++		return -EINVAL;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -51,6 +64,11 @@ static int cgroup_mt_check_v1(const struct xt_mtchk_param *par)
+ 		return -EINVAL;
+ 	}
+ 
++	if (!possible_classid(info->classid)) {
++		pr_info("xt_cgroup: invalid classid\n");
++		return -EINVAL;
++	}
++
+ 	info->priv = NULL;
+ 	if (info->has_path) {
+ 		cgrp = cgroup_get_from_path(info->path);
+@@ -83,6 +101,11 @@ static int cgroup_mt_check_v2(const struct xt_mtchk_param *par)
+ 		return -EINVAL;
+ 	}
+ 
++	if (info->has_classid && !possible_classid(info->classid)) {
++		pr_info("xt_cgroup: invalid classid\n");
++		return -EINVAL;
++	}
++
+ 	info->priv = NULL;
+ 	if (info->has_path) {
+ 		cgrp = cgroup_get_from_path(info->path);
 
-Good call. I see the arithmetic may be more appropriate in cases where
-the per-cpu array/buffer is dynamic. I'll use the index notation in v3.
-
-> 
->> +
->>   	flags = _cgroup_rstat_cpu_lock(cpu_lock, cpu, cgrp, true);
->>   
->>   	/* put @css and all ancestors on the corresponding updated lists */
->> @@ -208,11 +223,17 @@ static struct cgroup_subsys_state *cgroup_rstat_updated_list(
->>   		struct cgroup_subsys_state *root, int cpu)
->>   {
->>   	struct cgroup *cgrp = root->cgroup;
->> -	raw_spinlock_t *cpu_lock = per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu);
->>   	struct cgroup_rstat_cpu *rstatc = cgroup_rstat_cpu(root, cpu);
->>   	struct cgroup_subsys_state *head = NULL, *parent, *child;
->> +	raw_spinlock_t *cpu_lock;
->>   	unsigned long flags;
->>   
->> +	if (is_base_css(root))
->> +		cpu_lock = per_cpu_ptr(&cgroup_rstat_base_cpu_lock, cpu);
->> +	else
->> +		cpu_lock = per_cpu_ptr(cgroup_rstat_subsys_cpu_lock, cpu) +
->> +			root->ss->id;
-> 
-> Same here.
-> 
->> +
->>   	flags = _cgroup_rstat_cpu_lock(cpu_lock, cpu, cgrp, false);
->>   
->>   	/* Return NULL if this subtree is not on-list */
->> @@ -315,7 +336,7 @@ static void cgroup_rstat_flush_locked(struct cgroup_subsys_state *css,
->>   	struct cgroup *cgrp = css->cgroup;
->>   	int cpu;
->>   
->> -	lockdep_assert_held(&cgroup_rstat_lock);
->> +	lockdep_assert_held(&lock);
->>   
->>   	for_each_possible_cpu(cpu) {
->>   		struct cgroup_subsys_state *pos;
->> @@ -356,12 +377,18 @@ static void cgroup_rstat_flush_locked(struct cgroup_subsys_state *css,
->>   __bpf_kfunc void cgroup_rstat_flush(struct cgroup_subsys_state *css)
->>   {
->>   	struct cgroup *cgrp = css->cgroup;
->> +	spinlock_t *lock;
->> +
->> +	if (is_base_css(css))
->> +		lock = &cgroup_rstat_base_lock;
->> +	else
->> +		lock = &cgroup_rstat_subsys_lock[css->ss->id];
->>   
->>   	might_sleep();
->>   
->> -	__cgroup_rstat_lock(&cgroup_rstat_lock, cgrp, -1);
->> -	cgroup_rstat_flush_locked(css, &cgroup_rstat_lock);
->> -	__cgroup_rstat_unlock(&cgroup_rstat_lock, cgrp, -1);
->> +	__cgroup_rstat_lock(lock, cgrp, -1);
->> +	cgroup_rstat_flush_locked(css, lock);
->> +	__cgroup_rstat_unlock(lock, cgrp, -1);
->>   }
->>   
->>   /**
->> @@ -376,10 +403,16 @@ __bpf_kfunc void cgroup_rstat_flush(struct cgroup_subsys_state *css)
->>   void cgroup_rstat_flush_hold(struct cgroup_subsys_state *css)
->>   {
->>   	struct cgroup *cgrp = css->cgroup;
->> +	spinlock_t *lock;
->> +
->> +	if (is_base_css(css))
->> +		lock = &cgroup_rstat_base_lock;
->> +	else
->> +		lock = &cgroup_rstat_subsys_lock[css->ss->id];
->>   
->>   	might_sleep();
->> -	__cgroup_rstat_lock(&cgroup_rstat_lock, cgrp, -1);
->> -	cgroup_rstat_flush_locked(css, &cgroup_rstat_lock);
->> +	__cgroup_rstat_lock(lock, cgrp, -1);
->> +	cgroup_rstat_flush_locked(css, lock);
->>   }
->>   
->>   /**
->> @@ -389,7 +422,14 @@ void cgroup_rstat_flush_hold(struct cgroup_subsys_state *css)
->>   void cgroup_rstat_flush_release(struct cgroup_subsys_state *css)
->>   {
->>   	struct cgroup *cgrp = css->cgroup;
->> -	__cgroup_rstat_unlock(&cgroup_rstat_lock, cgrp, -1);
->> +	spinlock_t *lock;
->> +
->> +	if (is_base_css(css))
->> +		lock = &cgroup_rstat_base_lock;
->> +	else
->> +		lock = &cgroup_rstat_subsys_lock[css->ss->id];
->> +
->> +	__cgroup_rstat_unlock(lock, cgrp, -1);
->>   }
->>   
->>   int cgroup_rstat_init(struct cgroup_subsys_state *css)
->> @@ -435,10 +475,21 @@ void cgroup_rstat_exit(struct cgroup_subsys_state *css)
->>   
->>   void __init cgroup_rstat_boot(void)
->>   {
->> -	int cpu;
->> +	struct cgroup_subsys *ss;
->> +	int cpu, ssid;
->>   
->> -	for_each_possible_cpu(cpu)
->> -		raw_spin_lock_init(per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu));
->> +	for_each_subsys(ss, ssid) {
->> +		spin_lock_init(&cgroup_rstat_subsys_lock[ssid]);
->> +	}
->> +
->> +	for_each_possible_cpu(cpu) {
->> +		raw_spin_lock_init(per_cpu_ptr(&cgroup_rstat_base_cpu_lock, cpu));
->> +
->> +		for_each_subsys(ss, ssid) {
->> +			raw_spin_lock_init(
->> +					per_cpu_ptr(cgroup_rstat_subsys_cpu_lock, cpu) + ssid);
-> 
-> Same here.
-> 
->> +		}
->> +	}
->>   }
->>   
->>   /*
->> -- 
->> 2.43.5
->>
+base-commit: dd83757f6e686a2188997cb58b5975f744bb7786
+-- 
+2.48.1
 
 
