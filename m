@@ -1,211 +1,169 @@
-Return-Path: <cgroups+bounces-6755-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6756-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5504A4A771
-	for <lists+cgroups@lfdr.de>; Sat,  1 Mar 2025 02:30:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B018A4AE41
+	for <lists+cgroups@lfdr.de>; Sun,  2 Mar 2025 00:01:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90BCB189CAC3
-	for <lists+cgroups@lfdr.de>; Sat,  1 Mar 2025 01:31:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D2573B401F
+	for <lists+cgroups@lfdr.de>; Sat,  1 Mar 2025 23:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D273EA83;
-	Sat,  1 Mar 2025 01:30:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A3971D63D9;
+	Sat,  1 Mar 2025 23:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QfxYSx4t"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hbePXwdE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ADAA182D7
-	for <cgroups@vger.kernel.org>; Sat,  1 Mar 2025 01:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557EC23F36A
+	for <cgroups@vger.kernel.org>; Sat,  1 Mar 2025 23:01:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740792614; cv=none; b=QLKLu/A4mLPWnszGtzAXMRuDgNo3J0ZuZ5CHjSHYugqJQxOIQZSErbfngrpAx67cb4j/RN1I25JnE2sAytGBLj1hBH2qQBPk2fVvK57tEAY+okFqY07hN36uQG8EUIHm9AmAUGO+MeqOpOSVhbzo5/7A2ttrbe+8o9x8gbSFQp4=
+	t=1740870074; cv=none; b=lrI1L0lqrWAjftATpqJ304hgNEXSkbsnIT1o5vVv9cJ5yZ8SFBJnN0dj0IzrewHeg51ea2PEZf/AfABjkE7JmewCCtPcp4CSTWeWkqLZKUqAvqJ7Fk3eR5MSZumYbyZhFftyOucr8UTlp7T+M7Y3k67ACnwcgsG9OjG5ryQx8HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740792614; c=relaxed/simple;
-	bh=56e0BbObaUF+JpVAENl24npdFKJQqf1eympMAJPO8lI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ozcgfo+pTCi6yEtT1UYeiMqpCxwyddsFE51bFVp+v5jaoXCXgYctrTJidvuJF+wmXaff8JKWhAtU35i5ucTO7z++xr8L5+ApDnrepC9ZVMv1tuLkhyy/w61/eSGx714Lq9cxkdhFmTw3OdTUveEOWPeRaZTa2l0rBKE9gjJUM8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QfxYSx4t; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-22113560c57so52953855ad.2
-        for <cgroups@vger.kernel.org>; Fri, 28 Feb 2025 17:30:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740792612; x=1741397412; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WcnC0wr+7zYlTTCeDV2IWo4JFlYwYpgFbPA87xiSvVg=;
-        b=QfxYSx4tmButlFVg4WSuCikjl+plMbrtL9kLcOLpdZjJhzUCcW+nXQ/LDtjkaWamah
-         N33Pthfp9vKTIm8Ed1HNbpkZBmacxe17xFU4U7Ekxcl4nhty3CNIs/lOHf72P6r927wg
-         Acsd7TmS49IbZ/EhkOmdZrWhWtaf5uahsAWgsDaodrCwPuAV1qnT5xtCvrLygeepsE3k
-         zQofO7mFVenzYm75XdhLC95WvqWMVP8cjWycyx7MZeEXfdMoLIxjYAnFcMI9XFZ0wJ5o
-         //qkXWhwb2+DSrsI9Q6RjoNvKL+zBKIjETMCqIg2nGYS4aXk1NjuWZyHbiPPjzzfuA+I
-         /N0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740792612; x=1741397412;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WcnC0wr+7zYlTTCeDV2IWo4JFlYwYpgFbPA87xiSvVg=;
-        b=nUXZwrMgxG0IlfycjIrbH/wWG6B0LE0ttHGo8SZVPYgB5f/k7fLwPRmawyv1vTHE9+
-         bekqlrlwQqoUtDojGXnsxGx9n9r0Js82+C44DAwEZ0jc/fh48N9Uzqnw8wvIPr9cz/RV
-         W2+AX+S2uDvVu4ez7/r0OIAggb40HdemXWSqB0g4Cc6Fxh13d1HdtCbsQ+Hk9ZHmbdI3
-         38tx+kfxaCm6ketSxgrS+6Lx2N7ooryCgTwkCXZuaO9adi23YB4spWzcrz76bdysAXuR
-         RDeGzLRL15l8myGGtBwLeQB+m5EScvY+hBdcdNui78E88rBuW+GU50T7VoFSRfYIGxwa
-         RrGw==
-X-Forwarded-Encrypted: i=1; AJvYcCWRpt1Iba7nfwAVnXxCyeN9DOLCZ+DSiADBy+l6RM/AJfqF27K+JQlRvWHKQqOROsyoYjK5+gHJ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzt5SCroWOZGsTHGrRJ904kLxwnWtcPkyv0eVy1Owj0X8xLJCBr
-	WDuWf0qYSsY12ZEnY94IL8MrjMc/6ubOoOPVxy2HncJY/NUu8HFI
-X-Gm-Gg: ASbGncufAd2TMykTEapwk802FM0FnkSdmXh49LrKJ7jjglvwc+uS8XKxWcX7eVRsHoX
-	wlItbpR1WXLwuhE4cETPyrB3Q9LCrLG3r61k1o54NgPwmZTEOzZ0saZVF6lYjvE0TxWbsIG4jv5
-	PZIscxeV0PJSJGsw5373xfQHx0CdnddFOg0DHHtNnSDwESFyXim2yt0aWTLxqqOxlhJlX7csF6i
-	U3R9ocQ/Gma4D6hpYH4wOElV/pPThRP3RA7DKl4QOFhFhVPFHrvHkggcI1PCFrtXSokQ6l7XON7
-	E/2r2anzn16Pza9byHJoVYmihYGbXs8Lam9Ig6TPIt4lwmuhKwVzagt2WbUUPHiUQujd3ItIY/h
-	GVdoAxin0HXwnZRI=
-X-Google-Smtp-Source: AGHT+IFS84nBKQ7qD5FSWHU3UAF4RGLGLUtVzTkLxoE6IYbV54utngWld0V1qE0kZjahmoo9ERDBrQ==
-X-Received: by 2002:a05:6a00:4b10:b0:731:43ca:5cc6 with SMTP id d2e1a72fcca58-734ac3d3761mr8854564b3a.15.1740792611653;
-        Fri, 28 Feb 2025 17:30:11 -0800 (PST)
-Received: from [192.168.2.117] (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73637081ba7sm178941b3a.112.2025.02.28.17.30.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Feb 2025 17:30:09 -0800 (PST)
-Message-ID: <0a551dcc-6a95-46a4-9a60-7e62200e63ef@gmail.com>
-Date: Fri, 28 Feb 2025 17:30:08 -0800
+	s=arc-20240116; t=1740870074; c=relaxed/simple;
+	bh=7w2CX1Ue6tyDuYsaxdofmnT+sluFZwvTVHk4Da0sm+I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PD1597ZkhKKCdZofPXD10/viDyIsLXVHxbX2UTo15cE7C8trVqR4rkdJDNFr0qJiLoPlJixAC2VKaQ15CcQahS3HM3adP3z4auXKELqopwUJuvlWpsOk0k+VDAfCwJYRwNvkH7AB0nqcoQ8V6I0ssEzYcVTWzvrneWSs8YfQDZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hbePXwdE; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1740870073; x=1772406073;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7w2CX1Ue6tyDuYsaxdofmnT+sluFZwvTVHk4Da0sm+I=;
+  b=hbePXwdEUVVVv4FycDCFaln6W9VzNu06sKpwjNNMt8KiXtSyG5FbJ9g6
+   m5KNQof9zWiLfd0NMKTAUWv4gpAG0UuSZDvgxJWGWxIXCDsEflRPLbcxD
+   8+MHwa9EUqei2X+qOQrlSZqRL2vV2oXsYRGnDcrXt0aTRT1SLZIaKFR4u
+   Ti2ezgkStFdRMHXrsvy0ebFFlJAVySG41MxO7OCCZTN+CiI9vSG48dwYs
+   N2LzD635+ebndMMCcfW8JibwGi8UkXdOq/NJiuvrFFp5p1GzFfd1sreHB
+   RT81nb8iYmoUV9/71zvRQOZquKLcxTjt4OLUjy7Ovof8xD9kv7oUqUkkO
+   g==;
+X-CSE-ConnectionGUID: fkNkZKKMTYy4iuKNU4Nkhw==
+X-CSE-MsgGUID: 3AsMhfjsSOmc7FOJ7IPNgA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11360"; a="41895978"
+X-IronPort-AV: E=Sophos;i="6.13,326,1732608000"; 
+   d="scan'208";a="41895978"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2025 15:01:12 -0800
+X-CSE-ConnectionGUID: 3MvU6VudQkqtGj/otM+KYg==
+X-CSE-MsgGUID: 8qNv6xtxTou9EF4gBFQ4/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="121772219"
+Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
+  by fmviesa003.fm.intel.com with ESMTP; 01 Mar 2025 15:01:09 -0800
+Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1toVpP-000GnW-2y;
+	Sat, 01 Mar 2025 23:01:04 +0000
+Date: Sun, 2 Mar 2025 07:00:47 +0800
+From: kernel test robot <lkp@intel.com>
+To: inwardvessel <inwardvessel@gmail.com>, tj@kernel.org,
+	shakeel.butt@linux.dev, yosryahmed@google.com, mhocko@kernel.org,
+	hannes@cmpxchg.org, akpm@linux-foundation.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 3/4 v2] cgroup: separate rstat locks for subsystems
+Message-ID: <202503020616.SJVwhuOV-lkp@intel.com>
+References: <20250227215543.49928-4-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4 v2] cgroup: move cgroup_rstat from cgroup to
- cgroup_subsys_state
-To: Yosry Ahmed <yosry.ahmed@linux.dev>
-Cc: tj@kernel.org, shakeel.butt@linux.dev, mhocko@kernel.org,
- hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
- cgroups@vger.kernel.org, kernel-team@meta.com
-References: <20250227215543.49928-1-inwardvessel@gmail.com>
- <20250227215543.49928-2-inwardvessel@gmail.com> <Z8IIxUdRpqxZyIHO@google.com>
- <bd45e4df-266e-4b67-abd5-680808a40d4f@gmail.com>
- <Z8Jh7-lN_qltU7WD@google.com>
-Content-Language: en-US
-From: JP Kobryn <inwardvessel@gmail.com>
-In-Reply-To: <Z8Jh7-lN_qltU7WD@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250227215543.49928-4-inwardvessel@gmail.com>
 
-On 2/28/25 5:25 PM, Yosry Ahmed wrote:
-> On Fri, Feb 28, 2025 at 05:06:23PM -0800, JP Kobryn wrote:
-> [..]
->>>
->>>>    		cgroup_idr_replace(&ss->css_idr, NULL, css->id);
->>>>    		if (ss->css_released)
->>> [..]
->>>> @@ -6188,6 +6186,9 @@ int __init cgroup_init(void)
->>>>    			css->id = cgroup_idr_alloc(&ss->css_idr, css, 1, 2,
->>>>    						   GFP_KERNEL);
->>>>    			BUG_ON(css->id < 0);
->>>> +
->>>> +			if (css->ss && css->ss->css_rstat_flush)
->>>> +				BUG_ON(cgroup_rstat_init(css));
->>>
->>> Why do we need this call here? We already call cgroup_rstat_init() in
->>> cgroup_init_subsys(). IIUC for subsystems with ss->early_init, we will
->>> have already called cgroup_init_subsys() in cgroup_init_early().
->>>
->>> Did I miss something?
->>
->> Hmmm it's a good question. cgroup_rstat_init() is deferred in the same
->> way that cgroup_idr_alloc() is. So for ss with early_init == true,
->> cgroup_rstat_init() is not called during cgroup_early_init().
-> 
-> Oh I didn't realize that the call here is only when early_init == false.
-> I think we need a comment to clarify that cgroup_idr_alloc() and
-> cgroup_rstat_init() are not called in cgroup_init_subsys() when
-> early_init == true, and hence need to be called in cgroup_init().
-> 
-> Or maybe organize the code in a way to make this more obvious (put them
-> in a helper with a descriptive name? idk).
+Hi inwardvessel,
 
-I see what you're getting at. Let me think of something for v3.
+kernel test robot noticed the following build errors:
 
-> 
->>
->> Is it safe to call alloc_percpu() during early boot? If so, the
->> deferral can be removed and cgroup_rstat_init() can be called in one
->> place.
-> 
-> I don't think so. cgroup_init_early() is called before
-> setup_per_cpu_areas().
+[auto build test ERROR on bpf-next/net]
+[also build test ERROR on bpf-next/master bpf/master linus/master v6.14-rc4]
+[cannot apply to tj-cgroup/for-next next-20250228]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Cool. Thanks for pointing that out.
+url:    https://github.com/intel-lab-lkp/linux/commits/inwardvessel/cgroup-move-cgroup_rstat-from-cgroup-to-cgroup_subsys_state/20250228-055819
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
+patch link:    https://lore.kernel.org/r/20250227215543.49928-4-inwardvessel%40gmail.com
+patch subject: [PATCH 3/4 v2] cgroup: separate rstat locks for subsystems
+config: hexagon-randconfig-001-20250302 (https://download.01.org/0day-ci/archive/20250302/202503020616.SJVwhuOV-lkp@intel.com/config)
+compiler: clang version 21.0.0git (https://github.com/llvm/llvm-project 14170b16028c087ca154878f5ed93d3089a965c6)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250302/202503020616.SJVwhuOV-lkp@intel.com/reproduce)
 
-> 
->>
->>>
->>>>    		} else {
->>>>    			cgroup_init_subsys(ss, false);
->>>>    		}
->>> [..]
->>>> @@ -300,27 +306,25 @@ static inline void __cgroup_rstat_unlock(struct cgroup *cgrp, int cpu_in_loop)
->>>>    }
->>>>    /* see cgroup_rstat_flush() */
->>>> -static void cgroup_rstat_flush_locked(struct cgroup *cgrp)
->>>> +static void cgroup_rstat_flush_locked(struct cgroup_subsys_state *css)
->>>>    	__releases(&cgroup_rstat_lock) __acquires(&cgroup_rstat_lock)
->>>>    {
->>>> +	struct cgroup *cgrp = css->cgroup;
->>>>    	int cpu;
->>>>    	lockdep_assert_held(&cgroup_rstat_lock);
->>>>    	for_each_possible_cpu(cpu) {
->>>> -		struct cgroup *pos = cgroup_rstat_updated_list(cgrp, cpu);
->>>> +		struct cgroup_subsys_state *pos;
->>>> +		pos = cgroup_rstat_updated_list(css, cpu);
->>>>    		for (; pos; pos = pos->rstat_flush_next) {
->>>> -			struct cgroup_subsys_state *css;
->>>> +			if (!pos->ss)
->>>> +				cgroup_base_stat_flush(pos->cgroup, cpu);
->>>> +			else
->>>> +				pos->ss->css_rstat_flush(pos, cpu);
->>>> -			cgroup_base_stat_flush(pos, cpu);
->>>> -			bpf_rstat_flush(pos, cgroup_parent(pos), cpu);
->>>> -
->>>> -			rcu_read_lock();
->>>> -			list_for_each_entry_rcu(css, &pos->rstat_css_list,
->>>> -						rstat_css_node)
->>>> -				css->ss->css_rstat_flush(css, cpu);
->>>> -			rcu_read_unlock();
->>>> +			bpf_rstat_flush(pos->cgroup, cgroup_parent(pos->cgroup), cpu);
->>>
->>> We should call bpf_rstat_flush() only if (!pos->ss) as well, right?
->>> Otherwise we will call BPF rstat flush whenever any subsystem is
->>> flushed.
->>>
->>> I guess it's because BPF can now pass any subsystem to
->>> cgroup_rstat_flush(), and we don't keep track. I think it would be
->>> better if we do not allow BPF programs to select a css and always make
->>> them flush the self css.
->>>
->>> We can perhaps introduce a bpf_cgroup_rstat_flush() wrapper that takes
->>> in a cgroup and passes cgroup->self internally to cgroup_rstat_flush().
->>
->> I'm fine with this if others are in agreement. A similar concept was
->> done in v1.
-> 
-> Let's wait for Shakeel to chime in here since he suggested removing this
-> hook, but I am not sure if he intended to actually do it or not. Better
-> not to waste effort if this will be gone soon anyway.
-> 
->>
->>>
->>> But if the plan is to remove the bpf_rstat_flush() call here soon then
->>> it's probably not worth the hassle.
->>>
->>> Shakeel (and others), WDYT?
->>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202503020616.SJVwhuOV-lkp@intel.com/
 
+All errors (new ones prefixed by >>):
+
+>> kernel/cgroup/rstat.c:339:2: error: member reference base type 'spinlock_t *' (aka 'struct spinlock *') is not a structure or union
+     339 |         lockdep_assert_held(&lock);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/lockdep.h:285:17: note: expanded from macro 'lockdep_assert_held'
+     285 |         lockdep_assert(lockdep_is_held(l) != LOCK_STATE_NOT_HELD)
+         |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/lockdep.h:252:52: note: expanded from macro 'lockdep_is_held'
+     252 | #define lockdep_is_held(lock)           lock_is_held(&(lock)->dep_map)
+         |                                                             ^ ~~~~~~~
+   include/linux/lockdep.h:279:32: note: expanded from macro 'lockdep_assert'
+     279 |         do { WARN_ON(debug_locks && !(cond)); } while (0)
+         |              ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   include/asm-generic/bug.h:123:25: note: expanded from macro 'WARN_ON'
+     123 |         int __ret_warn_on = !!(condition);                              \
+         |                                ^~~~~~~~~
+   1 error generated.
+
+
+vim +339 kernel/cgroup/rstat.c
+
+   330	
+   331	/* see cgroup_rstat_flush() */
+   332	static void cgroup_rstat_flush_locked(struct cgroup_subsys_state *css,
+   333			spinlock_t *lock)
+   334		__releases(lock) __acquires(lock)
+   335	{
+   336		struct cgroup *cgrp = css->cgroup;
+   337		int cpu;
+   338	
+ > 339		lockdep_assert_held(&lock);
+   340	
+   341		for_each_possible_cpu(cpu) {
+   342			struct cgroup_subsys_state *pos;
+   343	
+   344			pos = cgroup_rstat_updated_list(css, cpu);
+   345			for (; pos; pos = pos->rstat_flush_next) {
+   346				if (!pos->ss)
+   347					cgroup_base_stat_flush(pos->cgroup, cpu);
+   348				else
+   349					pos->ss->css_rstat_flush(pos, cpu);
+   350	
+   351				bpf_rstat_flush(pos->cgroup, cgroup_parent(pos->cgroup), cpu);
+   352			}
+   353	
+   354			/* play nice and yield if necessary */
+   355			if (need_resched() || spin_needbreak(lock)) {
+   356				__cgroup_rstat_unlock(lock, cgrp, cpu);
+   357				if (!cond_resched())
+   358					cpu_relax();
+   359				__cgroup_rstat_lock(lock, cgrp, cpu);
+   360			}
+   361		}
+   362	}
+   363	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
