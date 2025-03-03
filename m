@@ -1,103 +1,148 @@
-Return-Path: <cgroups+bounces-6795-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6796-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 273D7A4CEA1
-	for <lists+cgroups@lfdr.de>; Mon,  3 Mar 2025 23:43:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4655EA4CF72
+	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 00:50:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A28A169DA5
-	for <lists+cgroups@lfdr.de>; Mon,  3 Mar 2025 22:43:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8CC53AC9ED
+	for <lists+cgroups@lfdr.de>; Mon,  3 Mar 2025 23:49:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE6A237702;
-	Mon,  3 Mar 2025 22:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025EA1F30BB;
+	Mon,  3 Mar 2025 23:50:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="sCxrpcyQ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Pjz8meHM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 132D51F03C7;
-	Mon,  3 Mar 2025 22:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6DA20EB
+	for <cgroups@vger.kernel.org>; Mon,  3 Mar 2025 23:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741041814; cv=none; b=RXr1vd/U1dpWr7u1WmLQ/Khdbx/GgK8owh4iqHw/X3zZIOAa5q3D/1H5x4FjvbRVxbVLMuuNfppO97FhLTzfkFcGVfYEtjKCt109V0gjQY/DC3d5MJKw0jji6js6FG/XZ7l1T7nvSAOygQVvj67y9wZrlndi0y2/zp7SDdnosto=
+	t=1741045800; cv=none; b=DbbAAQe9wYQx3C2V8/AN4X2kaKxT5JqkcKnCfvFnGtFh9P93SvtmiipNhnZf85peTQSmLdjMCu6mf8FiP+WjGWUUlPf7q23KVu4zYKdZ08sS56ili/TGK78zZqb/VQpBT/eZeNuJQeRpxh6pSaKhoKJZ1HRFmd9GBfsHkh+YaPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741041814; c=relaxed/simple;
-	bh=Ye4xOllgSwhjXuDnyBuAKIEjHgB7tBT2sx0Mlr/Fn7g=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=AKk5Hnm3NKwRqF27fGpH3tW4rQkl6m2QpYd4ZvXsGuhZiWsevcGH+93apDMkJarFkQr8s+UhHjgW49Esxo6YVQvuiA/OTugyXxQtZRFBwXWobOsdLp5COpzLFXtdkPEFivbcXMI7uz/5mD/KN5ChrUU2A3uOV0sO+kv3n2dXedQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=sCxrpcyQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2066C4CED6;
-	Mon,  3 Mar 2025 22:43:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1741041813;
-	bh=Ye4xOllgSwhjXuDnyBuAKIEjHgB7tBT2sx0Mlr/Fn7g=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sCxrpcyQEg5yYBT2gW7pbCgt0yG3N/wlf3mWDI4OGJqicQA+KFPrU8gmIwdRlmZrE
-	 Vhrdglv/yHorwkHx/4JsNBgWrl1E0iQkC9p/QSt42U6PomymhGBg6FCQ8eRXM/ovjp
-	 aWQwvj44KHZCQUuPyIcdXIrEvPMbBDKjvUujtAhM=
-Date: Mon, 3 Mar 2025 14:43:32 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
- linux-api@vger.kernel.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes
- Weiner <hannes@cmpxchg.org>, Michal =?ISO-8859-1?Q?Koutn=FD?=
- <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>, Andy Lutomirski
- <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, Muchun Song <muchun.song@linux.dev>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>, Lorenzo Stoakes
- <lorenzo.stoakes@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, Jann Horn
- <jannh@google.com>
-Subject: Re: [PATCH v3 00/20] mm: MM owner tracking for large folios
- (!hugetlb) + CONFIG_NO_PAGE_MAPCOUNT
-Message-Id: <20250303144332.4cb51677966b515ee0c89a44@linux-foundation.org>
-In-Reply-To: <20250303163014.1128035-1-david@redhat.com>
-References: <20250303163014.1128035-1-david@redhat.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1741045800; c=relaxed/simple;
+	bh=K3FhoAM4dvvrocFt48dCZynzxMocKl8lREc+96zHmfc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V1xQxxJ6nKmB9shlTAJ6LIguLkoWJdmr9jpepbIFeY0ez1LfmFZNP0YXZyo+f6E3jAFlIpXulVwiUFTznZ+0gS4tmO1YEBV1pNnuH7n30EtERUaiy1wf3IaIZ5P0qCT3Jsux7F5VxjF6RwjkA7DDfLA+1z+Q1ZjLiu2XKNqyhPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Pjz8meHM; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741045799; x=1772581799;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=K3FhoAM4dvvrocFt48dCZynzxMocKl8lREc+96zHmfc=;
+  b=Pjz8meHMq1jr/Fs+QOa+McWoDaczv7q0QlBoy+9iyJE3SDQBFlHCTSvq
+   tUoYZk3Q25oOXlpoeXr92z5fnHylYDLL35WP5cimNu0FXxrpGSqxYzwW4
+   z8K/0t2fFV8oRMIdPAM/DVABGvqvZ5kPXAQGq0j6yZewGMTYBKT0r2rws
+   ymJ92XLv45h2nq2hWVQVXBlfjRWn7l2Rx/z0hTwnBYDLKjyf9ldp6uFYn
+   Liilo3N8N+r1VH4Znv294/of+3IrC4VuZYccR/+elsn3QgrogIfIv/rSy
+   OoO5FoCDFbrLKuJmL8ifmOnLZ9En0Q7QUkASEssVf21Yp2W7VOhoz6iIr
+   w==;
+X-CSE-ConnectionGUID: jKJ1v7stSpiPjlM0YxuMCA==
+X-CSE-MsgGUID: NVnV/C4aSLC8MpuJ2BEZ3Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11362"; a="44753113"
+X-IronPort-AV: E=Sophos;i="6.13,331,1732608000"; 
+   d="scan'208";a="44753113"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2025 15:49:59 -0800
+X-CSE-ConnectionGUID: YdKTn2byS8ymABZe5hCEjw==
+X-CSE-MsgGUID: KSdTLPbiSiC9v+yVVIXetw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,331,1732608000"; 
+   d="scan'208";a="123143615"
+Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
+  by orviesa003.jf.intel.com with ESMTP; 03 Mar 2025 15:49:56 -0800
+Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tpFXl-000J3C-0H;
+	Mon, 03 Mar 2025 23:49:53 +0000
+Date: Tue, 4 Mar 2025 07:49:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: inwardvessel <inwardvessel@gmail.com>, tj@kernel.org,
+	shakeel.butt@linux.dev, yosryahmed@google.com, mhocko@kernel.org,
+	hannes@cmpxchg.org, akpm@linux-foundation.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 3/4 v2] cgroup: separate rstat locks for subsystems
+Message-ID: <202503040736.kEeH1wt6-lkp@intel.com>
+References: <20250227215543.49928-4-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250227215543.49928-4-inwardvessel@gmail.com>
 
-On Mon,  3 Mar 2025 17:29:53 +0100 David Hildenbrand <david@redhat.com> wrote:
+Hi inwardvessel,
 
-> Some smaller change based on Zi Yan's feedback (thanks!).
-> 
-> 
-> Let's add an "easy" way to decide -- without false positives, without
-> page-mapcounts and without page table/rmap scanning -- whether a large
-> folio is "certainly mapped exclusively" into a single MM, or whether it
-> "maybe mapped shared" into multiple MMs.
-> 
-> Use that information to implement Copy-on-Write reuse, to convert
-> folio_likely_mapped_shared() to folio_maybe_mapped_share(), and to
-> introduce a kernel config option that let's us not use+maintain
-> per-page mapcounts in large folios anymore.
-> 
-> ...
->
-> The goal is to make CONFIG_NO_PAGE_MAPCOUNT the default at some point,
-> to then slowly make it the only option, as we learn about real-life
-> impacts and possible ways to mitigate them.
+kernel test robot noticed the following build errors:
 
-I expect that we'll get very little runtime testing this way, and we
-won't hear about that testing unless there's a failure.
+[auto build test ERROR on bpf-next/net]
+[also build test ERROR on bpf-next/master bpf/master linus/master v6.14-rc5]
+[cannot apply to tj-cgroup/for-next next-20250303]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Part of me wants to make it default on right now, but that's perhaps a
-bit mean to linux-next testers.
+url:    https://github.com/intel-lab-lkp/linux/commits/inwardvessel/cgroup-move-cgroup_rstat-from-cgroup-to-cgroup_subsys_state/20250228-055819
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
+patch link:    https://lore.kernel.org/r/20250227215543.49928-4-inwardvessel%40gmail.com
+patch subject: [PATCH 3/4 v2] cgroup: separate rstat locks for subsystems
+config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20250304/202503040736.kEeH1wt6-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250304/202503040736.kEeH1wt6-lkp@intel.com/reproduce)
 
-Or perhaps default-off for now and switch to default-y for 6.15-rcX?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202503040736.kEeH1wt6-lkp@intel.com/
 
-I suggest this just to push things along more aggressively - we may
-choose to return to default-off after a few weeks of -rcX.
+All errors (new ones prefixed by >>):
 
+   In file included from arch/loongarch/include/asm/bug.h:61,
+                    from include/linux/bug.h:5,
+                    from include/linux/thread_info.h:13,
+                    from include/asm-generic/current.h:6,
+                    from ./arch/loongarch/include/generated/asm/current.h:1,
+                    from include/linux/sched.h:12,
+                    from include/linux/cgroup.h:12,
+                    from kernel/cgroup/cgroup-internal.h:5,
+                    from kernel/cgroup/rstat.c:2:
+   kernel/cgroup/rstat.c: In function 'cgroup_rstat_flush_locked':
+>> include/linux/lockdep.h:252:61: error: 'lock' is a pointer; did you mean to use '->'?
+     252 | #define lockdep_is_held(lock)           lock_is_held(&(lock)->dep_map)
+         |                                                             ^~
+   include/asm-generic/bug.h:123:32: note: in definition of macro 'WARN_ON'
+     123 |         int __ret_warn_on = !!(condition);                              \
+         |                                ^~~~~~~~~
+   include/linux/lockdep.h:285:9: note: in expansion of macro 'lockdep_assert'
+     285 |         lockdep_assert(lockdep_is_held(l) != LOCK_STATE_NOT_HELD)
+         |         ^~~~~~~~~~~~~~
+   include/linux/lockdep.h:285:24: note: in expansion of macro 'lockdep_is_held'
+     285 |         lockdep_assert(lockdep_is_held(l) != LOCK_STATE_NOT_HELD)
+         |                        ^~~~~~~~~~~~~~~
+   kernel/cgroup/rstat.c:339:9: note: in expansion of macro 'lockdep_assert_held'
+     339 |         lockdep_assert_held(&lock);
+         |         ^~~~~~~~~~~~~~~~~~~
+
+
+vim +252 include/linux/lockdep.h
+
+f607c668577481 Peter Zijlstra 2009-07-20  251  
+f8319483f57f1c Peter Zijlstra 2016-11-30 @252  #define lockdep_is_held(lock)		lock_is_held(&(lock)->dep_map)
+f8319483f57f1c Peter Zijlstra 2016-11-30  253  #define lockdep_is_held_type(lock, r)	lock_is_held_type(&(lock)->dep_map, (r))
+f607c668577481 Peter Zijlstra 2009-07-20  254  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
