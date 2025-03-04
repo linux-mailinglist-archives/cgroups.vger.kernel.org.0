@@ -1,77 +1,77 @@
-Return-Path: <cgroups+bounces-6819-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6820-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89993A4E581
-	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 17:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D06CBA4E533
+	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 17:12:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79ECE880C19
-	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 15:54:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B970B8A304C
+	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 15:55:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69D12862BC;
-	Tue,  4 Mar 2025 15:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470E528FFED;
+	Tue,  4 Mar 2025 15:39:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="MSKlbFbn"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VsTqcrWL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6D92857FD
-	for <cgroups@vger.kernel.org>; Tue,  4 Mar 2025 15:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0925228FFC0
+	for <cgroups@vger.kernel.org>; Tue,  4 Mar 2025 15:38:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741102739; cv=none; b=HeRBqhi+7QV0ewMLoUXZQDo/6+mVuQYWx+0Sjw6CQc/asN1UydwQX+xlveCwPrFnxWsuebOTPDA/iheTt4rahUwhKyNfqzysZYWEosF1Vu2f7Qs1+EMmOWq9D7jZ01tDCIWgj39uVZ59FFuanHaOQ/Zr2OPPGvoWUVlu3oanmoE=
+	t=1741102741; cv=none; b=ZjUqsBFd3e0pqX0JjcEq8R0xjYYP50L2C0ttCi9Fh7+2UisMZCg1k2Ftkt62lpSmxMXOLbSen+B1HW0D3t8fVpeuwLAO1c1AFU1/C0vrndu2Q5Nb2K3dvhLT0946ZEE9id2wteOxD6XH1DIiKirSBxrZsyGHt5OVXBT8BXEAuVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741102739; c=relaxed/simple;
-	bh=cHns8fqxRp7euip5mPfMcCQkmw1AJFKlvqhDmvw49+I=;
+	s=arc-20240116; t=1741102741; c=relaxed/simple;
+	bh=MdgvuPV/x8WhlRRCw7Trx9k9ojx5GfL3R2IFVSBLDBQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tjVASjotAekdjcZNy3r1gboZZp2FzpDJCfK7PTTv7W7Fp570aLT3Hw7SwHLaSijl1HUnuuNCPgViiUFw15JfbYsgOHoovgNqJB28TZ6yQNV9uJme/4EZKIyhrdmIE4P4SGMm2yBc1FW9vq2Fxy/K1y9peOvlnPbmb3L+rLczgo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=MSKlbFbn; arc=none smtp.client-ip=209.85.128.49
+	 MIME-Version:Content-Type; b=dpCVLXhOREfGdNEtZuppCRwKmMizs6QRnGEn1CXVfEELo8jidKz9cuTyGCTh9f/DCxL0ejIH9OI4nrci+Cheuy3Df4gK+Qy34i/cXm1JFnkrwVmtyh4N3jLlTETxh1NEKdRDTlijE4OMO6xh1LFcR4CEOHmRiPfeNxdKYNQER7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VsTqcrWL; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-43bccfa7b89so6208755e9.2
-        for <cgroups@vger.kernel.org>; Tue, 04 Mar 2025 07:38:57 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4394345e4d5so39904665e9.0
+        for <cgroups@vger.kernel.org>; Tue, 04 Mar 2025 07:38:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741102736; x=1741707536; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1741102738; x=1741707538; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wBPZZxD2lIKyHp8wqmCpoZT9q9nUxOdWhcx01NnsOjw=;
-        b=MSKlbFbnpfmgz5nTwVs4Oufvas/KA4uM8n/f8oKuhd0j8Cwhhr6BwiXr9DWVb5PqaX
-         uY+3ytvDvyPecRbxdLSJW08F3hJ59jTE4HIBM1p295lyRMQhUvBrZfRbtdaSA4H0IEEN
-         AzPXgGtJZAuHmpWFDWmX7vw8fUayakPRoU2j+gPF1Y7R/0HWxSF9p4xGonAqC8Zb9fm7
-         WifCTiRhX8J4re/aRNwWYFHhSAKSaVIz9LnzB1Mn97OUs2OejYMZdWdSgCYobWz8Hhod
-         C5KmKSam97nGoHYyfD9EBpXjhFXrUqnShXakh8FYTp4n6C48JTohRc2cw67bf067eug1
-         fFdg==
+        bh=TgXxWXRYbTk04GQd58ITj+iG+NER5RZZsNgCYR7jvUU=;
+        b=VsTqcrWLiRztdJqD+hckVkKPe1yjJ76YHIAWTRnEf737KnahCd6bqo1dAMJhSD/VSq
+         4DqQnPNAKhRzX3Aiuw2/i0mBSgSDxhHYlcFJE1hAEabP7ANQgTGDT0PO1kYBuR48XpPR
+         AS77lJoAKkkEL4LWLzf5vY9QXoEGyrZrV9bTL2apQMJJZN1DjVsNg2IW1h2XvQ4Jz8IS
+         uUQMzvihGsce8JQ79fkjhCOLS4Sivt0c82bu8seSHuRQI6SqLzXJbnuf+iHkWSwa0kyJ
+         RHuOVB+bgpMcJqNyaPTYocI+uPnPQ/trxh2ggCGW8iwzNejTjizmJuIi0Z/9Z8iPtyow
+         hZ6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741102736; x=1741707536;
+        d=1e100.net; s=20230601; t=1741102738; x=1741707538;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wBPZZxD2lIKyHp8wqmCpoZT9q9nUxOdWhcx01NnsOjw=;
-        b=nlhBilF2NKqOjwA4MMDskg+OlRWl3lxFi7tJuAzQc8mJxEAN0V+lg5f3KU7gSouRgW
-         JnobJWCk4wvkiGkA6SllsZueCZJkf+Roe0L9k8QlwmeVJLZT6xSrnuE0786Mee7dzwIl
-         gHYljTrm/NhcTCzXyvu/OCITiVdWlzUrUPTQi+mv6waJ+aclmetkmzuImqz0kWaoVze7
-         bAiicWhWNHjizvk95sb3q5sbj5WHv+NJRme5/qlHUrgbWTX6WoETF1zpjb5fdHwviOvL
-         RI88Xq2cFYLhJYxPJI1Nv9+Umxff9INek1BKQkyfytf+ZEvxC8eBPrlBcfYcHb94X3WY
-         +D3w==
-X-Gm-Message-State: AOJu0YzlY3Y2mwWqyHWg589mHMmK2XQUt8FyCtZiIwh3YmEOjfawvM4v
-	yopfo3se9wx77lCx+dOScKDKsOWXLI4ImmsO5YfSkMhKOjFYUMzEO5wDX8S9IZ8nPIq2sm6/TPC
-	lE2U=
-X-Gm-Gg: ASbGnct8hhy+Oq47zygG8vWtyWpZu5hQhZNR22g3R+JIz8pB4F/R1kLBKy/P4fAbSUj
-	795tF4ZQtYYmljKeR4dKf77yHgZxuZ4FCxTPzuS75PPgGF47VVciCNr/r5nlQhVsAN9hJnCBSGy
-	on+VQ5r0NzZ8t5d+vTOWJQ6zXaOfc2ZINqzmMO7/uUbKpuvYVwJe0YrkOdz3/LUMppj1qDcRHrL
-	2uUnYM7CGqVDp1TnQbdtWxc5Sf25adbr7EiFI5mNPyuUxWXB9jF5b6lyKaIrazLvyYF+kzT4Lep
-	uTd9vlxOiwIb9Wg/PxRZLag9YPKLmBVF+dLYWKQGnPngjLA=
-X-Google-Smtp-Source: AGHT+IFobiCmJ5R4HiRsL7pd40Q47J6t9IkNByEpgJJ+za6Nh1z2wpG/Yd/Pf+T6IGoi+Jf+ap0SAA==
-X-Received: by 2002:a05:600c:a47:b0:439:969e:d80f with SMTP id 5b1f17b1804b1-43ba6773869mr156464875e9.31.1741102735859;
-        Tue, 04 Mar 2025 07:38:55 -0800 (PST)
+        bh=TgXxWXRYbTk04GQd58ITj+iG+NER5RZZsNgCYR7jvUU=;
+        b=bFaxDJjZoI4cfyk3x6Z1JxDfwmDRqWah3hRKuy9dZbMQrFpNzUrJ+DB+AgVPuynmed
+         fcI9ue/oVFw6OqCvV9NC70ugir75jr3wfYRCsFvl7Jm/4z94N4jL43QXw4URnoKMRTsK
+         2bYHbaUrD52a/xU0TO5LXJgoIxh7MSDVUNrmslYsfY1jaGIMHYpF/KuIUkQxrC/+zIQc
+         GHkrKRO1IoYGwu5++xnjigK4C1nQoo5IZKiTUxUWEHUbSc9rh2sS2TuJpWWt9hBLrVHF
+         BEYdi0QqDcCtS4OyjuJ+Bu/OEt/jMhhRZwh/+QBKi4UZSnkT28vhfYaURSPrvCUCMSUU
+         omTw==
+X-Gm-Message-State: AOJu0Yw1COvxFP8q/LCVd4WxIpM+P8RyHhF4xbIRLGTeD25LkBBSiEjZ
+	Ifi99peIen1f14dYvopVbw6fl7sjEc2vtv8eiSGOQ7xjAiZME0DjMwKmgA1CfgifUB4PSFCH+5O
+	pSPY=
+X-Gm-Gg: ASbGnctK5kE8yi6PQkzeGLXqW0LmOrHQh9OBnwHCAA9oD50TvlCHu3GZhTidRoHwkEq
+	kadjkc98Algu1d+ISQfgESEW9vBNFr81pQSjj2AtvrnLrQyaE2nSyxgzFS1OUvRjI8Gg1LLQ+QB
+	iyjMGipzVoVvzlYzV87zjxdhzKMQGCGA5wrnxb+BZvSHOOmxjKqLlhXz2CKE3DZ1/a790m/LpZN
+	hlHbx1FAwDhMFJpeZesMXcG/8pyJ5hfpDgLSmE/S72gMS+7nUoMhvnqqmZJH4Qn0uCNNVHH31Rv
+	ftIUhxLQjpZNt47psW46bY89YVaH0X3rByx5Ku2+9CmeYf0=
+X-Google-Smtp-Source: AGHT+IGFdMgALKsPh/yOBcPEpPtHnNxwQeHrF4SOqKDJXo/p70nI+zMPXEdR7SegUyRy3tSFD06IsQ==
+X-Received: by 2002:a05:6000:2ce:b0:38d:d9bd:18a6 with SMTP id ffacd0b85a97d-390eca07164mr13871828f8f.42.1741102738265;
+        Tue, 04 Mar 2025 07:38:58 -0800 (PST)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43aba5710ebsm238670625e9.26.2025.03.04.07.38.55
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43aba5710ebsm238670625e9.26.2025.03.04.07.38.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Mar 2025 07:38:55 -0800 (PST)
+        Tue, 04 Mar 2025 07:38:58 -0800 (PST)
 From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
 To: cgroups@vger.kernel.org,
 	linux-block@vger.kernel.org,
@@ -82,11 +82,10 @@ Cc: Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
 	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
 	Waiman Long <longman@redhat.com>,
-	Paul Menage <menage@google.com>,
 	Paul Jackson <pj@sgi.com>
-Subject: [PATCH 5/9] RFC cgroup/cpuset-v1: Add deprecation warnings to mem_exclusive and mem_hardwall
-Date: Tue,  4 Mar 2025 16:37:57 +0100
-Message-ID: <20250304153801.597907-6-mkoutny@suse.com>
+Subject: [PATCH 6/9] RFC cgroup/cpuset-v1: Add deprecation warnings to memory_migrate
+Date: Tue,  4 Mar 2025 16:37:58 +0100
+Message-ID: <20250304153801.597907-7-mkoutny@suse.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250304153801.597907-1-mkoutny@suse.com>
 References: <20250304153801.597907-1-mkoutny@suse.com>
@@ -99,35 +98,28 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The concept of exclusive memory affinity may require complex approaches
-like with cpuset v2 cpu partitions. There is so far no implementation in
-cpuset v2.
-Specific kernel memory affinity may cause unintended (global)
-bottlenecks like kmem limits.
+Memory migration (between cgroups) was given up in v2 due to performance
+reasons of its implementation. Migration between NUMA nodes within one
+memcg may still make sense to modify affinity at runtime though.
 
-Cc: Paul Menage <menage@google.com>
 Cc: Paul Jackson <pj@sgi.com>
 Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
- kernel/cgroup/cpuset-v1.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/cgroup/cpuset-v1.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-index 9aae6dabb0b56..05d3622ea41e5 100644
+index 05d3622ea41e5..6155d890f10a4 100644
 --- a/kernel/cgroup/cpuset-v1.c
 +++ b/kernel/cgroup/cpuset-v1.c
-@@ -424,9 +424,11 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
- 		retval = cpuset_update_flag(CS_CPU_EXCLUSIVE, cs, val);
+@@ -436,6 +436,7 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+ 		retval = cpuset_update_flag(CS_SCHED_LOAD_BALANCE, cs, val);
  		break;
- 	case FILE_MEM_EXCLUSIVE:
+ 	case FILE_MEMORY_MIGRATE:
 +		pr_warn_once("cpuset.%s is deprecated\n", cft->name);
- 		retval = cpuset_update_flag(CS_MEM_EXCLUSIVE, cs, val);
+ 		retval = cpuset_update_flag(CS_MEMORY_MIGRATE, cs, val);
  		break;
- 	case FILE_MEM_HARDWALL:
-+		pr_warn_once("cpuset.%s is deprecated\n", cft->name);
- 		retval = cpuset_update_flag(CS_MEM_HARDWALL, cs, val);
- 		break;
- 	case FILE_SCHED_LOAD_BALANCE:
+ 	case FILE_MEMORY_PRESSURE_ENABLED:
 -- 
 2.48.1
 
