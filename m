@@ -1,177 +1,143 @@
-Return-Path: <cgroups+bounces-6813-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6814-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4443BA4E4A5
-	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 17:01:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72309A4E45A
+	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 16:53:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C770424AF9
-	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 15:50:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BE097A63E4
+	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 15:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8212D27933D;
-	Tue,  4 Mar 2025 15:34:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C3A280A51;
+	Tue,  4 Mar 2025 15:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y/kSqW2V"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eHPXFtbJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902D324EAA5
-	for <cgroups@vger.kernel.org>; Tue,  4 Mar 2025 15:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D3B4259CBB
+	for <cgroups@vger.kernel.org>; Tue,  4 Mar 2025 15:38:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741102445; cv=none; b=S3uzfKekT9BnqnJ5xuNFI8eT9UJ8Qr6CXETR6xZoiZL0OIC1tNJSik1qNwlqki0nr+Y5zFA25xmJhkf1wg4VvtgjU0w8lO1JtOCg2PfMe8/SL3TuQcXuRBHkN7tSd/uRW7KDP8+Ttcu6PbWccdeFRsqsS/fII2kVGaLH9n1Ifoo=
+	t=1741102719; cv=none; b=k7Ljet+XMdF63icnNAoSdL2BlfjZ/HU87H1ve79uO+9wkpktsv71u6DPIH7HRnQ8yQURO+3zQSxB6MxAEK9DBzknP0CEvpAypm5NiieLqVyvkn05HBC3f05wBQaRhqH3yXp9lb562qLiUOcruG+QZ0d+nXlqXV98r6EoP+FiCRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741102445; c=relaxed/simple;
-	bh=g9/2udOETvmToZrTCGb+qEZ+kSThEsu8wt6yi5lFMWo=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=kb7csIDhSoqK1qA1Vm/5OnP0muYzYHyQ3gWO9xviZQI46uGfANCOxiKEWnVlD/Jal0A6eJn50rbL7AyUililoC0kvJ8Hy5LTs6WGTYn+yyRRIbVcWl7EEYObUoW1gTI2NYzfcamfMjsIfUfSAadxDmDfwvBpgqNDkF1PkXm4iBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y/kSqW2V; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741102442;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZwJDnZ8tY9IELE2tx6CxJ71JiDXg4oK+AyaLx02RRac=;
-	b=Y/kSqW2VKcLVjeF1hX+sTpe02S7O4unkNy/xPkUQKgd4aQZlm9h3MyMbXRKEZPp0IXtwEr
-	oN9Ewxu9xM2W4NKHEUxI6ZYJHdvUDsQiuRvvfXLD97lcDZ44urw7bSOMH69fOkEFa3U61C
-	8A+EmtWpzBRxngBokd4i0HSlRaSYzhA=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-46-sLWG9srdOq-issg_nx4ZLQ-1; Tue, 04 Mar 2025 10:33:56 -0500
-X-MC-Unique: sLWG9srdOq-issg_nx4ZLQ-1
-X-Mimecast-MFC-AGG-ID: sLWG9srdOq-issg_nx4ZLQ_1741102436
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4721d9703ecso125608531cf.3
-        for <cgroups@vger.kernel.org>; Tue, 04 Mar 2025 07:33:56 -0800 (PST)
+	s=arc-20240116; t=1741102719; c=relaxed/simple;
+	bh=gPGd2SMtWSwL0Fk7C9vPkOctSj91rK9tyNIlwMh8Ou0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=aU3q/LW0Vc1fsJVRrqsXkzLkxoT+1kQyb0PpahZHjgOn9uP7Bjvn//nXAWNuBQAlLga/oY0gBxBdaN7C6lAvLc8fZb5vOte8WvoEbC/tL/X5uo1iWRVfEOUjn4Lu1zCElBijBU3ALJkZYKEtn2QFHwPoxaAPVdo0GOOuNuZTbY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=eHPXFtbJ; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-43bcc04d4fcso6010235e9.2
+        for <cgroups@vger.kernel.org>; Tue, 04 Mar 2025 07:38:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1741102715; x=1741707515; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iSd8ve04q9jkY+lejohEQNGWVY2Fdf6RaTdBEC1rDCo=;
+        b=eHPXFtbJf4SnTELpuH75eqCKgXaee+YKiH9TzGShhiME20ldLqlbWsU7uRso+ugJ3J
+         Fz7mhKBUijOOUtznRhRipy1oxuXm8yQSSKHcSPypT5UNIuaH3PRZnSX25uC8Ikd3e8S3
+         +zyN2aY7q12Nv8U5OY95gpF27M8SYiMnpcZYD4zQLodPI+IZtd7tfB3jTh0QSe4tw1kO
+         X8tnlbzZ7nWN/feBYSmSJmzOLHpGiBdoqHIUYh5+fNDEvVBA0LSVtlEl8h5Yr3bgPjS3
+         KC0inlVHBmgDu9pG65k2HSmKnncML0fAOp5QbiVeI9UarCEOG+ktxcUaDXW3gLsgkT85
+         T5vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741102436; x=1741707236;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZwJDnZ8tY9IELE2tx6CxJ71JiDXg4oK+AyaLx02RRac=;
-        b=LI8UPWlWg2tEhGPmwBZvY6Y5kTFOCYEnVjEnqAzhSIxqCjMp1UrHfHsLhv19KiAXHd
-         gPBm1uzY7QxiieOpeFWFoE3K93Uh1C35qxD1NVmZ8UOFITQ1if830omTb/IaRRi32HAi
-         5/YAmqcu9wv4cz9dBbkmRCgx4rJJRetn6FNUL9bk6nVS9GgCOIQQjf7fB5/noDSh8T2m
-         F146DkS96g0acp7SC5729RFBKFLa3EOTa+LvU4xwc7fc6QMeUHV/AkmNWhJDfTBNzCrk
-         4GmK1WSCWzsc67Db0UttTX6mTiKcM4lt2lIvaiGX2BuHjCNC/zcHz7y6GvocZsqLtFY6
-         xnCg==
-X-Forwarded-Encrypted: i=1; AJvYcCWwX9zbWHeYAPdL4bu64tRDkbWVaCldzVz24dhOa/ZfB++Q25UA6jVOyFe1Sp2nYC8j2SwiiKiB@vger.kernel.org
-X-Gm-Message-State: AOJu0YyiP0Q7aF29VvarAm3XhEKmg6yQOz6CbSjNioPE7LVodF/KuT7G
-	Y5QlvMfvQKL0hgUB41wcBvzRXUfKC+N1PVG/onGry81DWJS1Jw0NqgcMfQlyflprYSqD+nEyxvO
-	gu60ad96LZDRhL+G9pwLuJo7+7KcQp8DH8HRbyS/UTanpSx6uJEVRx8Y=
-X-Gm-Gg: ASbGncuiEgt9RjUygtOewNUrt9F2onjZY2o3nawYqYgpIDjrW3zEQAr+xmJL4ChzxRm
-	213ZkWuQZsOVxKjhgYQk+aXeh7A+cf3+8Q+/ZcdXS0EXMIolFgrWVHRNfNSjvOzFwoKiwOq2ULD
-	pmRbnIlkBvmQsxH+unJ6nG/rvnaPKJw46q40+7DK1/R2NhmHDT5HZnHvhKP5eVyCc8n3ybJ6QSi
-	iRBIQcW0aKhBy9vwJKUuSWrI/PIjlvrSO93OwyK9AEnQOsaNR82nno9UtrU/WI836bpu6OK96hf
-	ZLP24mge7ZmUfMZr/WXyTdx/lYf1E4SMxXEAOgbDjWdcEPeL70m1mqEQ7eE=
-X-Received: by 2002:a05:622a:1825:b0:474:b753:e262 with SMTP id d75a77b69052e-474bc04731emr188722491cf.9.1741102435729;
-        Tue, 04 Mar 2025 07:33:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG/dfjVxJtyP8MAwXmEMza87tPVSQuOFN0UMpAqo6ILEemgvwl18p7DpTuFQl8dUDghKTziBA==
-X-Received: by 2002:a05:622a:1825:b0:474:b753:e262 with SMTP id d75a77b69052e-474bc04731emr188722211cf.9.1741102435420;
-        Tue, 04 Mar 2025 07:33:55 -0800 (PST)
-Received: from ?IPV6:2601:188:c100:5710:627d:9ff:fe85:9ade? ([2601:188:c100:5710:627d:9ff:fe85:9ade])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-474691a22f4sm74434221cf.5.2025.03.04.07.33.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Mar 2025 07:33:54 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <a53c1601-81e7-439c-b0dd-ec009227a040@redhat.com>
-Date: Tue, 4 Mar 2025 10:33:53 -0500
+        d=1e100.net; s=20230601; t=1741102715; x=1741707515;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iSd8ve04q9jkY+lejohEQNGWVY2Fdf6RaTdBEC1rDCo=;
+        b=GR50871T/GC5D7GIlU3d0NMGKmDGKM7bOL0rxVw88UKs4U823gKGZn81e2ZO1OgBx3
+         TU2ZeBFW9p2axBGrZ5asiWAsekMLbHUBAcOmTPT5fO39SRMHjatIy1fJM3CMUj3mLi1B
+         dA2VBEd9NsQBA2RqlwbhACnOw7OtuWiHBd+2XnbvnSnf3vqo5jCIQV9VD+WWCM2G0jcZ
+         sEXMNkC8AK7/ceF7Ul8ht+jrpTat78ONQ14FhddbZLbaciLiL8IF41AnQ+1nbXemocU9
+         c5i1X/aeiR5LY9Ks0R/NBOkwO1E0wUrSSjH08gtjKLHe0+O0jCJKo8ye3MoxJqWPGnZB
+         3GPg==
+X-Gm-Message-State: AOJu0YybUyM/eFeDdsx+Y0TZ2NpFkepBlyCXJhNJNzA57az3MlC8WN9Q
+	EqxeTHaORp2pPH6nDn28tEZ0gWC9Cw8G25GVjx1z0FQYSeAWhRGkFANR1ddh1hJYTDfTc4FhzhC
+	STtU=
+X-Gm-Gg: ASbGncv/3+zy2yypeFUzE4CXmnSJyQ9rUTT0GQkbG5GjknwqHr3RIjpQI/S70YV+5Uu
+	k4R+ahLN28sMWM1DJKbL4pF42xrtmzv1+qegHbcwxfmKyaEk2Lm5e1PHwX7S5EvyzT1c1ZYa13L
+	jqI5tqZsOM/cYxGu5WEy1mOTju3FjYGJhrq1Sbdv+lSwJ4WsCE9sj77in3DwPmpijWp6bKLTgIA
+	89TjmgBsH9/odO8qMrqQ0xInTHmX/+wGvgyoOsmBvJ/v2IHNsJKWzQzW+otXKBW3PxXY/P2CUmh
+	H3gbfZRt+JxI1PlzZ0gC2Rf3LvJ5sEfqgiWhgszOa6gPa1g=
+X-Google-Smtp-Source: AGHT+IFCKBTaNh1ji5VjlXmlOoDP8Ygx/PbOCIjfOjueWZr/IzcTQzEGN3dOCOuAsGpaq/YEQ/vJjA==
+X-Received: by 2002:a05:600c:4fd1:b0:43b:cad8:ca87 with SMTP id 5b1f17b1804b1-43bcad8cc8dmr26424015e9.1.1741102714833;
+        Tue, 04 Mar 2025 07:38:34 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43aba5710ebsm238670625e9.26.2025.03.04.07.38.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Mar 2025 07:38:34 -0800 (PST)
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To: cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH 0/9] cgroup v1 deprecation warnings
+Date: Tue,  4 Mar 2025 16:37:52 +0100
+Message-ID: <20250304153801.597907-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] sched/deadline: Rebuild root domain accounting after
- every update
-To: Juri Lelli <juri.lelli@redhat.com>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Qais Yousef <qyousef@layalina.io>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Swapnil Sapkal <swapnil.sapkal@amd.com>,
- Shrikanth Hegde <sshegde@linux.ibm.com>, Phil Auld <pauld@redhat.com>,
- luca.abeni@santannapisa.it, tommaso.cucinotta@santannapisa.it,
- Jon Hunter <jonathanh@nvidia.com>
-References: <20250304084045.62554-1-juri.lelli@redhat.com>
- <20250304084045.62554-5-juri.lelli@redhat.com>
- <e78c0d2d-c5bf-41f1-9786-981c60b7b50c@redhat.com>
-Content-Language: en-US
-In-Reply-To: <e78c0d2d-c5bf-41f1-9786-981c60b7b50c@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 3/4/25 10:17 AM, Waiman Long wrote:
-> On 3/4/25 3:40 AM, Juri Lelli wrote:
->> Rebuilding of root domains accounting information (total_bw) is
->> currently broken on some cases, e.g. suspend/resume on aarch64. Problem
->> is that the way we keep track of domain changes and try to add bandwidth
->> back is convoluted and fragile.
->>
->> Fix it by simplify things by making sure bandwidth accounting is cleared
->> and completely restored after root domains changes (after root domains
->> are again stable).
->>
->> Reported-by: Jon Hunter <jonathanh@nvidia.com>
->> Fixes: 53916d5fd3c0 ("sched/deadline: Check bandwidth overflow 
->> earlier for hotplug")
->> Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
->> ---
->>   include/linux/sched/deadline.h |  4 ++++
->>   include/linux/sched/topology.h |  2 ++
->>   kernel/cgroup/cpuset.c         | 16 +++++++++-------
->>   kernel/sched/deadline.c        | 16 ++++++++++------
->>   kernel/sched/topology.c        |  1 +
->>   5 files changed, 26 insertions(+), 13 deletions(-)
->>
->> diff --git a/include/linux/sched/deadline.h 
->> b/include/linux/sched/deadline.h
->> index 6ec578600b24..a780068aa1a5 100644
->> --- a/include/linux/sched/deadline.h
->> +++ b/include/linux/sched/deadline.h
->> @@ -34,6 +34,10 @@ static inline bool dl_time_before(u64 a, u64 b)
->>   struct root_domain;
->>   extern void dl_add_task_root_domain(struct task_struct *p);
->>   extern void dl_clear_root_domain(struct root_domain *rd);
->> +extern void dl_clear_root_domain_cpu(int cpu);
->> +
->> +extern u64 dl_cookie;
->> +extern bool dl_bw_visited(int cpu, u64 gen);
->>     #endif /* CONFIG_SMP */
->>   diff --git a/include/linux/sched/topology.h 
->> b/include/linux/sched/topology.h
->> index 7f3dbafe1817..1622232bd08b 100644
->> --- a/include/linux/sched/topology.h
->> +++ b/include/linux/sched/topology.h
->> @@ -166,6 +166,8 @@ static inline struct cpumask 
->> *sched_domain_span(struct sched_domain *sd)
->>       return to_cpumask(sd->span);
->>   }
->>   +extern void dl_rebuild_rd_accounting(void);
->> +
->>   extern void partition_sched_domains_locked(int ndoms_new,
->>                          cpumask_var_t doms_new[],
->>                          struct sched_domain_attr *dattr_new);
+Memory controller had begun to print warning messages when using some
+attributes that do no have a counterpart in its cgroup v2
+implementation. This is informative to users who run (unwittingly) on v1
+or to distros that run v1 (they can learn about such users or prepare
+for disabling v1 configs).
 
-BTW, dl_rebuild_rd_accounting() is defined only if CONFIG_CPUSETS is 
-defined. I think you should move that declaration to cpuset.h and define 
-a proper wrapper in the else part.
+I consider the deprecated files in three categories:
+  - RE) replacement exists,
+  - DN) dropped as non-ideal concept (e.g. non-hierarchical resources),
+  - NE) not evaluated (yet).
 
-Cheers,
-Longman
+For RE, I added the replacement into the warning message, DN have only a
+plain deprecation message and I marked the commits with NE as RFC.
+Also I'd be happy if you would point out some forgotten knobs that'd
+deserve similar warnings.
+At the end are some cleanup patches I encountered en route.
+
+Michal Koutný (9):
+  cgroup/cpuset-v1: Add deprecation warnings to sched_load_balance and
+    memory_pressure_enabled
+  cgroup/cpuset-v1: Add deprecation warnings to memory_spread_page and
+    memory_spread_slab
+  cgroup/blkio: Add deprecation warnings to reset_stats
+  cgroup: Print warning when /proc/cgroups is read on v2-only system
+  RFC cgroup/cpuset-v1: Add deprecation warnings to mem_exclusive and
+    mem_hardwall
+  RFC cgroup/cpuset-v1: Add deprecation warnings to memory_migrate
+  RFC cgroup/cpuset-v1: Add deprecation warnings to
+    sched_relax_domain_level
+  cgroup: Update file naming comment
+  blk-cgroup: Simplify policy files registration
+
+ block/blk-cgroup.c              |  8 ++++++--
+ block/blk-ioprio.c              | 23 +++++++----------------
+ include/linux/cgroup-defs.h     |  5 ++---
+ include/linux/cgroup.h          |  1 +
+ kernel/cgroup/cgroup-internal.h |  1 +
+ kernel/cgroup/cgroup-v1.c       |  7 +++++++
+ kernel/cgroup/cgroup.c          |  4 ++--
+ kernel/cgroup/cpuset-v1.c       |  8 ++++++++
+ 8 files changed, 34 insertions(+), 23 deletions(-)
+
+
+base-commit: 76544811c850a1f4c055aa182b513b7a843868ea
+-- 
+2.48.1
 
 
