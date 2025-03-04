@@ -1,134 +1,131 @@
-Return-Path: <cgroups+bounces-6830-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6831-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24828A4EA17
-	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 18:55:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E75BEA4EA2F
+	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 18:57:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 950BD8C0692
-	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 17:37:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 229F8423634
+	for <lists+cgroups@lfdr.de>; Tue,  4 Mar 2025 17:52:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B20294EE4;
-	Tue,  4 Mar 2025 17:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ABA6205AC7;
+	Tue,  4 Mar 2025 17:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VMKvqcil"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZOAKXg1m"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E173B23645F
-	for <cgroups@vger.kernel.org>; Tue,  4 Mar 2025 17:11:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6991B2E3378
+	for <cgroups@vger.kernel.org>; Tue,  4 Mar 2025 17:33:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741108264; cv=none; b=KBb9prR2ofZQNgtF4lkcRGEgMH+WMAZOs5ygEh/wxo5wQ1ClvIOmmO3TPeyUztwzjoDbSM2z/BQIa9hsttSMzUGzzfTTdSV8xay+fmEG8W8bmNXCyY+VageZfAPFXl6+GKS+1R0cRiWeO8THUdyMGb0EyZbwmyMOxv6QDhTUpsk=
+	t=1741109619; cv=none; b=F2VA4RmuAz0JxfPnvrb+zbS9GFWAC/tROfrg2zQ3BEkNHVnjVTRjkUADTNXBd1XmgUdpzIIk19VgncM++YemagK8+Rkoxon23aDHDrGZLRJ69qYEzaYSUoOAlgBKmPa8H1TfhLni/ct2/n2fQyiTwVcjcwz1O+NAzKAQHS0CkSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741108264; c=relaxed/simple;
-	bh=BNIsmV/M1wFMJoJxKUmeED+xm/DpApiloOyzGvi1rhA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LAw3PmKBDldcGQqZsXM0hA3HVfLTohS9mslt7+0OnSgzuRTW+vFDMWX4HLSw7W+Ovqih33v3HHGdTKx1Y37p+K6OBYOYZCMfXiZd7Kc64fqYDOWvHO6HxbTk9PWaS4a+W1XT1fNamxh5ldyOCmj0HXbqtbGZCD5bIZ5sTuYpB28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VMKvqcil; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-438a39e659cso40422555e9.2
-        for <cgroups@vger.kernel.org>; Tue, 04 Mar 2025 09:11:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741108259; x=1741713059; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BNIsmV/M1wFMJoJxKUmeED+xm/DpApiloOyzGvi1rhA=;
-        b=VMKvqcilJiWN/SLu2HWRC79C4z1jJNs3KpF+X74a/+lxGVA5ClH8dTWLmHTdgzM/74
-         ohjOn25aXY8DdqXo+gWgbKaFLeTlzR1r0xO6O9NUWca0LoqWMZP9fX8GBzrP3PDjjmOT
-         MtMAM7pXYRgOpUcjoEBOnL1cfOLqFLcITMD8t2eBaYrm5AhbGSpw49facyYz1yacS+85
-         Ekb/EuU7t0BS61ob2OHx6dIA5lFV02kE9684RU+5u0CxMHHXIoOJ99vuLN9jnpH0xa5/
-         NQnbaA6LQTPbFzb+s1I4iFbk98THCg94xPnEGJ2FhmRns4sWCPmUU6B1dsjxYUW+foMq
-         RZ6g==
+	s=arc-20240116; t=1741109619; c=relaxed/simple;
+	bh=bNdSqKlXHjCnildLaWJjGpSWWKI5F2WeOXv0PLvCCFg=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=tYmqfSRPuKtC7WSPZ+0qYCr0ODff4/O2+fNK3uhMqy746+UOR6FiaD04B2Fy73g451MErBp+ER5dxo8L56QeVplvwfBr6ByMeGYIW6DEv5WVa+FcSP1Wr4qQYlP3JkYbLQlYgvGlX+ytU/HJgt5a9bEEmNRkwU+UQ+tHQAVxxSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZOAKXg1m; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1741109616;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u/gloNWENauCZr2RKyu+Q4jT9a16xZQ906Rg5zjtKlo=;
+	b=ZOAKXg1mkhrR4XBigBOjWG00CLcmYQt7qPOeOCMXVE4x5JbC+0lkf4e/coeesWZBVEFBwV
+	8fTOqkV+AcdoJ7fAQn4pM7zFsqbxL9WiLwzNpTkdcQGnOWeOctP8xNLHuX8xdBuqQrptQ0
+	sNsA3lSlvbGolgl2pdlzDDZfEOD3Tm0=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-487-YQb2J4ZANFyUcb6zv9wcpg-1; Tue, 04 Mar 2025 12:33:35 -0500
+X-MC-Unique: YQb2J4ZANFyUcb6zv9wcpg-1
+X-Mimecast-MFC-AGG-ID: YQb2J4ZANFyUcb6zv9wcpg_1741109614
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7c3b78c7c4aso412193985a.1
+        for <cgroups@vger.kernel.org>; Tue, 04 Mar 2025 09:33:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741108259; x=1741713059;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BNIsmV/M1wFMJoJxKUmeED+xm/DpApiloOyzGvi1rhA=;
-        b=Nm3L27ron10ocb0I2az6fzglWeRopfZ/xoq7bRaio7Rqrzz3dEhme4UOUKc4ON3NLA
-         +KNrts3GJnatDF+CZ5HN9lPLljH4xbwgGt8ZcNnPMxqXX2iAKnwgQYFJyDqtQWru73By
-         hD/4lS87BFwmXS6N6OQivuqV+RfHOBdAoMH6QTCjP4RfgcHCora+rI6Qp712AeG7TA8X
-         KWTgCbQsCm4yPTIxiTwpypSYyVKx6jS1VUhf2685vx/FrycCmaMXfBtgtiWVU+xzmGJb
-         Yh/Vyeo7tNnCF0mJEgC58X3gijeZyAZ+oYiZgpTzKk8du0D1m9iMudccw2l6egkF2pNA
-         gtNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWfagI9HKHA1bkKYe+1TOy+USplx5UuQMo524zMsbHkvZdfE7HPn74Pz0rZspBI/MqJrsmptqDW@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz4bJM1/sV6QRYdBdRILeLxXQ17ysIuEW2906XRYAhPQ6LJNugr
-	vppNVA3dJ5Zc5U07pauffkV2Qn6R6a1urThYmYobX4LeXTlcw2ghzOJ+2dLgBao=
-X-Gm-Gg: ASbGncvhQy624dmPPy3pVcldfX00QamlRcQ5oAZeE3UCwqiKJ6UNn8ozwBo5qkL60Xy
-	M8I9sjqoFh4J0m3DkIFLofqvmgiwZxewJ7ahg3uKLJaoNf7/fVjn8AyoNQ8a/JIwbcbvEop5Pqd
-	Kg5vjKPt1c9OSAEZIXB9zno/XUdud0BaAyCMU95h6tKv3c5J9oOCPurkfco2LTUm5+qMauiGEZD
-	dDOzaCWhmDsIzh8K0t3WNpvqDaj9yIcSG0IKuwZQo55skwXoU6mLquSKKoe5jjExMUSGVz3NGtE
-	1oXz/X8V1wC5Crc/UflaxjVR/C2zt4ZZdI/AbQ==
-X-Google-Smtp-Source: AGHT+IHwyTmNw7GkziQGU/grcke+J8YWNXy2qyeoEeNcQkNtnZMfPor87Z8qPAtdVAi/1sBgMwZwBQ==
-X-Received: by 2002:a05:600c:4693:b0:439:8523:36cc with SMTP id 5b1f17b1804b1-43ba66e66d7mr174859195e9.11.1741108259007;
-        Tue, 04 Mar 2025 09:10:59 -0800 (PST)
-Received: from blackbook2 ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bcc8cb8c9sm25012195e9.35.2025.03.04.09.10.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Mar 2025 09:10:58 -0800 (PST)
-Date: Tue, 4 Mar 2025 18:10:56 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: Waiman Long <llong@redhat.com>, cgroups@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
-	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH 1/9] cgroup/cpuset-v1: Add deprecation warnings to
- sched_load_balance and memory_pressure_enabled
-Message-ID: <n2ygi7m53y5y4dx5tjxhqgzqtgs5sisdi27sk7x2xjngpxenod@7behfsvlzhxi>
-References: <20250304153801.597907-1-mkoutny@suse.com>
- <20250304153801.597907-2-mkoutny@suse.com>
- <8b8f0f99-6d42-4c6f-9c43-d0224bdedf9e@redhat.com>
- <Z8cv2akQ_RY4uKQa@slm.duckdns.org>
+        d=1e100.net; s=20230601; t=1741109614; x=1741714414;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u/gloNWENauCZr2RKyu+Q4jT9a16xZQ906Rg5zjtKlo=;
+        b=UzAyvCchgqfcCbtWTfqM14DstX22JVmyKu0ok7bzyNtXKcUwl30sWEYZ3E761Y6zg5
+         VGWSo1Jd3Nif21WR4BTNH9Egawg3hM7jiq0OjWv9x5RWrEwVY4KefCIzcfK2tbLT07Ic
+         vuT7kyuJwjWZTmSPJ2Zi1MRRDyvzg4ozYJ0aizS5fV4kaQj5ikJKBTibfTRBxrj3TPWj
+         rGUUCNn4Bk9rLzZqZzF5OBEQljFc9p91JU8KP5d4ntf4m9nEMU7eAl0MhapkkbzsQsQS
+         dGOdhhSGie2zulwp1+/luT3pmThLrpg2i/BAZ8xrSUmD7SQ1832I4C5n8VdkzW9rQk5F
+         NGGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXwnlYCQ4hrz1GPIAgoLYlq6aFew+per91kdfn/WhZEmZRhgqUy7mrZE+Xy7hkoxEv6gQfIv8oN@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz97ZQob2h54hcKCYEdgXEW1ZWntJ0mt5jrLgz7Gm67fyNcD5iT
+	urEXUhczijwN9c1j1j9imdYK6XSLMemwo20seEGOvu7iWjOTZjQBxH/iLjMWCsVUK2ishBBYb4Q
+	x4BAv0Vxvzlo+ApHQwi4rJZbJ1rzgHiQpAcdOZUjVxUGQPDX1n2TxJ6E=
+X-Gm-Gg: ASbGncug11H+NeeUBe7SaVnsAEM5u7QJC3AR+/KKb00UnForwN4SLhBop3RiY8ROPPj
+	PT7Njzf2A2/s3uGu+11q5eAUcrqrkYt93H7L8wlA61vPxH6rgFiSeuymt1Xackj1FcrFsXTkpN+
+	2bq5EanqVYJ95etGP0+ipcOhgCi8zIt1qYXanpCG8z/Cx/mNteVwpK5hUSV1CsR/2EIQiVyQ6vV
+	73+trWNoNanRizFufT8z61BhXRw8TUop35jOrTjUyY5iWo2ZA9sskdxGs6tuGjDrM3z0jc8vwhF
+	8vmCdy7SNIsGzyZ2l05BnxYHD0ER10esM4bl7Ohuajzunx8pZVjAlVXtdLo=
+X-Received: by 2002:a05:620a:8908:b0:7c0:b523:e1b6 with SMTP id af79cd13be357-7c3d8e15ce7mr23061385a.11.1741109614489;
+        Tue, 04 Mar 2025 09:33:34 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEmWg+hzZenzZ4mRN1NfTFISPU5M4QS3jH+9tCASNEau0B50X9pJfy2Hegsf7Yzo9avT0yhxQ==
+X-Received: by 2002:a05:620a:8908:b0:7c0:b523:e1b6 with SMTP id af79cd13be357-7c3d8e15ce7mr23057985a.11.1741109614183;
+        Tue, 04 Mar 2025 09:33:34 -0800 (PST)
+Received: from ?IPV6:2601:188:c100:5710:627d:9ff:fe85:9ade? ([2601:188:c100:5710:627d:9ff:fe85:9ade])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c36fef4bbasm768017685a.40.2025.03.04.09.33.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 Mar 2025 09:33:33 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <123839ed-f607-4374-800a-4411e87ef845@redhat.com>
+Date: Tue, 4 Mar 2025 12:33:32 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="m7t5ylg5sh4ub3qc"
-Content-Disposition: inline
-In-Reply-To: <Z8cv2akQ_RY4uKQa@slm.duckdns.org>
-
-
---m7t5ylg5sh4ub3qc
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 1/9] cgroup/cpuset-v1: Add deprecation warnings to
  sched_load_balance and memory_pressure_enabled
-MIME-Version: 1.0
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Tejun Heo <tj@kernel.org>
+Cc: Waiman Long <llong@redhat.com>, cgroups@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+ Johannes Weiner <hannes@cmpxchg.org>
+References: <20250304153801.597907-1-mkoutny@suse.com>
+ <20250304153801.597907-2-mkoutny@suse.com>
+ <8b8f0f99-6d42-4c6f-9c43-d0224bdedf9e@redhat.com>
+ <Z8cv2akQ_RY4uKQa@slm.duckdns.org>
+ <n2ygi7m53y5y4dx5tjxhqgzqtgs5sisdi27sk7x2xjngpxenod@7behfsvlzhxi>
+Content-Language: en-US
+In-Reply-To: <n2ygi7m53y5y4dx5tjxhqgzqtgs5sisdi27sk7x2xjngpxenod@7behfsvlzhxi>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 04, 2025 at 06:52:41AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> On Tue, Mar 04, 2025 at 11:19:00AM -0500, Waiman Long wrote:
-> ...
-> > I do have some concern with the use of pr_warn*() because some users may
-> > attempt to use the panic_on_warn command line option.
->=20
-> Yeah, let's print these as info.
 
-The intention is _not_ to cause panic by any of this this.
-Note the difference between WARN() and pr_warn() (only the former
-panics).
-Warn level has precedent in mm/memcontrol-v1.c already.
+On 3/4/25 12:10 PM, Michal Koutný wrote:
+> On Tue, Mar 04, 2025 at 06:52:41AM -1000, Tejun Heo <tj@kernel.org> wrote:
+>> On Tue, Mar 04, 2025 at 11:19:00AM -0500, Waiman Long wrote:
+>> ...
+>>> I do have some concern with the use of pr_warn*() because some users may
+>>> attempt to use the panic_on_warn command line option.
+>> Yeah, let's print these as info.
+> The intention is _not_ to cause panic by any of this this.
+> Note the difference between WARN() and pr_warn() (only the former
+> panics).
+> Warn level has precedent in mm/memcontrol-v1.c already.
 
-Michal
+I think you are right. The pr_warn() function should not cause a panic. 
+I have the misconception that pr_warn() will be affected by 
+panic_on_warn before. In that case, I have no objection to use pr_warn().
 
---m7t5ylg5sh4ub3qc
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Longman
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ8c0HgAKCRAt3Wney77B
-SbexAQDwJlCeZoumG/jlue6Kzy4cUn1Ow4uQgOGmkE/7VYcugQEA0MuK4dJSSgbL
-rcAd7YdHp7o0baFNH7DpxWvcmSi0Zgo=
-=VnWp
------END PGP SIGNATURE-----
-
---m7t5ylg5sh4ub3qc--
 
