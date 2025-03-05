@@ -1,159 +1,144 @@
-Return-Path: <cgroups+bounces-6834-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6836-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34C7FA4F5FB
-	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 05:13:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18ECAA4FB6C
+	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 11:13:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6477716E362
-	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 04:13:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57C7A18848E0
+	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 10:13:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0BD1A5B87;
-	Wed,  5 Mar 2025 04:13:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7A5B2066EF;
+	Wed,  5 Mar 2025 10:12:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="COvuuk+S"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="evPzm6hF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 429921A23AF;
-	Wed,  5 Mar 2025 04:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AC42066C1
+	for <cgroups@vger.kernel.org>; Wed,  5 Mar 2025 10:12:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741147989; cv=none; b=g2kIwV+Q5pyHqJl+0bB8WdcCKF8/YqmC07oxTv7UsyTW0g1xEX3/FlvCgu/aM6fkLUHfAwnhnR+bVd5ZwcECMifFC4IxXX5ctmk1HiLlkS1pyez3V5TQGYaCTKVbUVjIUE5HJuJZGlzQesARWHTCV+/QNN/u59X2bHl3mtzpFZY=
+	t=1741169547; cv=none; b=lPoIyhZr7zAXdsrzFMymQE4G9DOujpAYVuBdCLin6xl5Y4HLLvudIzOrRB/xnesLEcum4fFQWnp7VP59sXNrYm2tdY9P8YnUA9NBRpmsGA37N/M6LGpdSw1Omb6ip0Fj29XkmqmxJdPYAJBWnj0z4fFfIzeSOIZXIY5DT/Bh6+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741147989; c=relaxed/simple;
-	bh=RBsh/xDj4vd4BAKgWWaorA7r/mUYNpFPasyRXkkSQEg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=WiLyGbHa49sOqM6SjM6KTglClI3u6mChQzKdbrZbbYCs90O3nDmtWGBypkN5U5IISAQbsXYFlxkV74Fo+fshvU5ELMk/8G7mf8WRPzcoEoGO/JmDew4utj2BUTe35IFQddRTAzXghhOnmXbYmBtyw4lRWWOgjBMzbgaMyKO9N8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=COvuuk+S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C129FC4CEEB;
-	Wed,  5 Mar 2025 04:13:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741147988;
-	bh=RBsh/xDj4vd4BAKgWWaorA7r/mUYNpFPasyRXkkSQEg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=COvuuk+ShgIppQ6Ihy1TUO9D39jQ3ibKNx+bE9FsBoqL980OPhD1D1WTp3pmi4+OZ
-	 3FuFgn7nTTPBiboTaxvRR23TZN5tCxba+H5EGb+CtdO3SiiA5adNfoFFnFX2Xf1EyR
-	 JNaLAXP18n3FYPxNj+ozt3hXUKvvPMplWITGYT6qTsQnYu86C0uc+VL2BmReakb4RM
-	 F52IkM3dJcpyl354lM5nf/I3muacTjwaXRFJkpt8eLmcOWYAik7cbvdsz7i++6lWPg
-	 fn2uId5LhUaMmXQPZjJ1YVcCKdPj2/XufF7Gk5VVdIpFegZC0JQC24XHzdJC882hh6
-	 wDXEY0Y+RdvFA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADC62C282DE;
-	Wed,  5 Mar 2025 04:13:08 +0000 (UTC)
-From: Shashank Balaji via B4 Relay <devnull+shashank.mahadasyam.sony.com@kernel.org>
-Date: Wed, 05 Mar 2025 13:12:44 +0900
-Subject: [PATCH 2/2] cgroup, docs: Document interaction of RT processes
- with cpu controller
+	s=arc-20240116; t=1741169547; c=relaxed/simple;
+	bh=4rA5mEK+MS4fNeVddqD3H/IjHGdBG/CHMImylytnnb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B6T0dm7o5rtYrw9iZuw7vM083jTD3Hoot+7dP7n0NMnBzuIFm8zARZzNE4gQG7Bui56KjiGYTDQd67PcBNbiXNUPdhS9BFaAWg4xptc/liAJiUqyj2IVvqjxEKd8+tz53Lb/xiFRWi5aTJXnTZPPpQHNzOaKX9ZQA08jmL0nodQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=evPzm6hF; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-43bd03ed604so9193435e9.2
+        for <cgroups@vger.kernel.org>; Wed, 05 Mar 2025 02:12:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1741169544; x=1741774344; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JK8Y7F0M6yt4sxuseFTO5fZ7Aq9PRgVqCQhiIQOhMVg=;
+        b=evPzm6hFp26Ik6t8XzJnpUCaz36cJSmmj9/vyllQTOqdID3VQ5DDSD63NCrNmNVLdQ
+         ZNeH89PeUDjqYZRVxyGVCLpze9yMYENulKYXDeguvaqz3zUM4QLG99R205vwNIERsWcu
+         BL5nNQ/ddFQwSUrtMuO3ow4ENIJajOwfOqmJb8TG/PKHVA4KjJLIBu2ZIf8eweLniTEz
+         72JDBFFcODRwTahSod3o9lEav0g9DK5wPZB8mP82HSbhA3D3xEcCOFBdbHBi8JZQq+28
+         4GnpKhF/lb/VJgEp4zXkRP2LU0/LZ2D8cOdcv5ilTTtkuP65AXL90bQ7w1LqfrEsQpSF
+         OHxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741169544; x=1741774344;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JK8Y7F0M6yt4sxuseFTO5fZ7Aq9PRgVqCQhiIQOhMVg=;
+        b=h4ggJGbHXnBRKz3qdInpmu0N2nRLJ/tPTaPrMOBKKMUQOkYwyGy39MWGsC1QguDmaK
+         3CKCK8jTvHkVokjtdLWYXxSFUBzZFCI205VN88c5lJcxm5E78PUMRU29u3aLtY1YcQzP
+         QuT3diqNex+FxMiA3tZfRkrVB6+4enhGUe+5e/E7q+7qXhFvt78A2EhHMeUv+ShIlBRc
+         rQRwDPKS9ebAAuhqNWxuUPNOlE84G8LKjKW44aGbOFYuMavCtC+h44Cp0YWLn02b6lZv
+         DLarhQLMjG0OMOHNLgaC5L7XSZbxEiHgUhOkz/anwaC7Sv2J4p3sw40+5stPedDVZHtA
+         vrfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVQh2uQbpo8+dVww3yi/MHlIxd+NpkUCsjCA+Aa4yNoVUXds4SZFxXykIfEB5jUzhJ+4CklGRfB@vger.kernel.org
+X-Gm-Message-State: AOJu0YxNB5fyRpoginnQGQCo+lWPs0kWnIeK9d+HjGhutX/k6z2PtOZq
+	rjzuvfYZl6wDoJHaOqWGx3cej3Om7cNJ+EAKjs8DlCDhBUmr/Gf7uRxjJh/uIuA=
+X-Gm-Gg: ASbGncuUekfEOGFWpAqvYuaUsKBNLSX13vq+yljOHxcdK7y0R+CBvUfOTwDUDbMN2Q3
+	spL6J3++mJByhdtrJE5lPrOmCrdDdnY95npXSuiKJDA7YzqXLQ3vx4qEPF3M2AzkB2y49zZ64jC
+	RKiwjdp5BdpOizcmpbRBn3utHXLETZvZOjgJumXeX0URZRIVtQamE6TwfsFhWsY++Nne5fCdVFP
+	HH+lVoJ8So1pgMrOtqFoi5yoevnDKHIMF+qKgmANzVJRYyIk0VJ3pXtX6QPu6BpMv65JfGorsGI
+	Hecrz/lFC29XpCl+CJvGoOeqm+muo9H8r2J1TZelP2V295c=
+X-Google-Smtp-Source: AGHT+IEmna6voY68vbZUHryvS51Xec95FeWivkSUZHU6RdAxXB35kR9fsC6gZZj1O0MDgQ1mVFz4Pw==
+X-Received: by 2002:a5d:64cf:0:b0:390:f552:d295 with SMTP id ffacd0b85a97d-3911f7c9ca7mr2048791f8f.53.1741169543647;
+        Wed, 05 Mar 2025 02:12:23 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e485d8e4sm20168761f8f.85.2025.03.05.02.12.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Mar 2025 02:12:23 -0800 (PST)
+Date: Wed, 5 Mar 2025 11:12:21 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Waiman Long <llong@redhat.com>, cgroups@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH 1/9] cgroup/cpuset-v1: Add deprecation warnings to
+ sched_load_balance and memory_pressure_enabled
+Message-ID: <5bw7yc6bacojk2i2ikhlmf2skfiix6t3ipchbnvyfttmyh644j@iyquxeuyapd7>
+References: <20250304153801.597907-1-mkoutny@suse.com>
+ <20250304153801.597907-2-mkoutny@suse.com>
+ <8b8f0f99-6d42-4c6f-9c43-d0224bdedf9e@redhat.com>
+ <Z8cv2akQ_RY4uKQa@slm.duckdns.org>
+ <n2ygi7m53y5y4dx5tjxhqgzqtgs5sisdi27sk7x2xjngpxenod@7behfsvlzhxi>
+ <123839ed-f607-4374-800a-4411e87ef845@redhat.com>
+ <Z8dAlvRnE28WyOGP@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250305-rt-and-cpu-controller-doc-v1-2-7b6a6f5ff43d@sony.com>
-References: <20250305-rt-and-cpu-controller-doc-v1-0-7b6a6f5ff43d@sony.com>
-In-Reply-To: <20250305-rt-and-cpu-controller-doc-v1-0-7b6a6f5ff43d@sony.com>
-To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
- =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
- Jonathan Corbet <corbet@lwn.net>
-Cc: Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org, 
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Shinya Takumi <shinya.takumi@sony.com>, 
- Shashank Balaji <shashank.mahadasyam@sony.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3070;
- i=shashank.mahadasyam@sony.com; h=from:subject:message-id;
- bh=C7JgnbF46KXkV/sLIdJxl+OtmX2NjXxlaJ2fLtetvIs=;
- b=owGbwMvMwCV2mPH4Ij++H1mMp9WSGNKPnw9e//2RmAhj3o5Du+SOLT0Xfi9vQYeCx84HZxYwC
- vzvemXwu6OUhUGMi0FWTJHlncy6CwetLJu+Hmf4BjOHlQlkCAMXpwBMxG8VI0NzIlvCn5hrrx4x
- iPRL7MhbL7J4AZ+BcWTx1e7fikX8J2Yz/A9+WhAhdXtX9QvT+uPMHMKiUusO/G6y/eXmc2Ptv5X
- Xv7EDAA==
-X-Developer-Key: i=shashank.mahadasyam@sony.com; a=openpgp;
- fpr=EE1CAED0C13A3982F5C700F6C301C7A24E0EF86A
-X-Endpoint-Received: by B4 Relay for shashank.mahadasyam@sony.com/default
- with auth_id=354
-X-Original-From: Shashank Balaji <shashank.mahadasyam@sony.com>
-Reply-To: shashank.mahadasyam@sony.com
-
-From: Shashank Balaji <shashank.mahadasyam@sony.com>
-
-If the cpu controller is enabled in a CONFIG_RT_GROUP_SCHED
-disabled setting, cpu.stat and cpu.pressure account for realtime
-processes, and cpu.uclamp.{min, max} affect realtime processes as well.
-None of the other interface files are affected by or affect realtime
-processes.
-
-Signed-off-by: Shashank Balaji <shashank.mahadasyam@sony.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index f293a13b42ed69e7c6bf5e974cb86e228411af4e..2c267f42e5fef9c4e2c3530ce73330d680b9b2dc 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1095,7 +1095,9 @@ realtime processes irrespective of CONFIG_RT_GROUP_SCHED.
- CPU Interface Files
- ~~~~~~~~~~~~~~~~~~~
- 
--All time durations are in microseconds.
-+All time durations are in microseconds. Only cpu.stat and cpu.pressure account
-+for realtime processes, and only cpu.uclamp.min and cpu.uclamp.max
-+affect realtime processes.
- 
-   cpu.stat
- 	A read-only flat-keyed file.
-@@ -1115,6 +1117,9 @@ All time durations are in microseconds.
- 	- nr_bursts
- 	- burst_usec
- 
-+    The runtime of realtime processes is accounted for only by the usage_usec,
-+	user_usec, and system_usec fields.
-+
-   cpu.weight
- 	A read-write single value file which exists on non-root
- 	cgroups.  The default is "100".
-@@ -1158,8 +1163,9 @@ All time durations are in microseconds.
-   cpu.pressure
- 	A read-write nested-keyed file.
- 
--	Shows pressure stall information for CPU. See
--	:ref:`Documentation/accounting/psi.rst <psi>` for details.
-+	Shows pressure stall information for CPU, including the contribution of
-+	realtime processes. See :ref:`Documentation/accounting/psi.rst <psi>`
-+	for details.
- 
-   cpu.uclamp.min
-         A read-write single value file which exists on non-root cgroups.
-@@ -1170,7 +1176,8 @@ All time durations are in microseconds.
- 
-         This interface allows reading and setting minimum utilization clamp
-         values similar to the sched_setattr(2). This minimum utilization
--        value is used to clamp the task specific minimum utilization clamp.
-+        value is used to clamp the task specific minimum utilization clamp,
-+        including those of realtime processes.
- 
-         The requested minimum utilization (protection) is always capped by
-         the current value for the maximum utilization (limit), i.e.
-@@ -1185,7 +1192,8 @@ All time durations are in microseconds.
- 
-         This interface allows reading and setting maximum utilization clamp
-         values similar to the sched_setattr(2). This maximum utilization
--        value is used to clamp the task specific maximum utilization clamp.
-+        value is used to clamp the task specific maximum utilization clamp,
-+        including those of realtime processes.
- 
-   cpu.idle
- 	A read-write single value file which exists on non-root cgroups.
-
--- 
-2.43.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kodlwgikrlg6std3"
+Content-Disposition: inline
+In-Reply-To: <Z8dAlvRnE28WyOGP@slm.duckdns.org>
 
 
+--kodlwgikrlg6std3
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH 1/9] cgroup/cpuset-v1: Add deprecation warnings to
+ sched_load_balance and memory_pressure_enabled
+MIME-Version: 1.0
+
+On Tue, Mar 04, 2025 at 08:04:06AM -1000, Tejun Heo <tj@kernel.org> wrote:
+> I'm apprehensive about adding warning messages which may be triggered
+> consistently without anything end users can do about them.
+
+That means you'd distinguish RE (replacement exists) vs DN (dropped as
+non-ideal) categories?
+
+
+> I think that deprecation messages, unless such deprecation is
+> immediate and would have direct consequences on how the system can be
+> used, should be informational.
+
+I could subscribe to that if there weren't so many other places to
+evaluate:
+  $ git grep -i "pr_warn.*deprec" torvalds/master --  | wc -l
+  62
+  $ git grep -i "pr_info.*deprec" torvalds/master --  | wc -l
+  2
+
+So is the disctinction worth the hassle?
+
+Michal
+
+--kodlwgikrlg6std3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ8gjggAKCRAt3Wney77B
+SRmCAPoCVnQ3mtHJRXQJXO38NpVCV2CLDqm4CBIDteO2hv5JfwEAx9LG33EQ1YVO
+M4iXA2i0xMEByWsgAdo2c7ZXsyvvWQs=
+=4wDE
+-----END PGP SIGNATURE-----
+
+--kodlwgikrlg6std3--
 
