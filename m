@@ -1,92 +1,88 @@
-Return-Path: <cgroups+bounces-6836-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6837-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18ECAA4FB6C
-	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 11:13:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA706A4FBA0
+	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 11:19:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57C7A18848E0
-	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 10:13:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 959B2189386C
+	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 10:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7A5B2066EF;
-	Wed,  5 Mar 2025 10:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC71207A33;
+	Wed,  5 Mar 2025 10:17:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="evPzm6hF"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dvu6ByZl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AC42066C1
-	for <cgroups@vger.kernel.org>; Wed,  5 Mar 2025 10:12:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251062063F8
+	for <cgroups@vger.kernel.org>; Wed,  5 Mar 2025 10:17:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741169547; cv=none; b=lPoIyhZr7zAXdsrzFMymQE4G9DOujpAYVuBdCLin6xl5Y4HLLvudIzOrRB/xnesLEcum4fFQWnp7VP59sXNrYm2tdY9P8YnUA9NBRpmsGA37N/M6LGpdSw1Omb6ip0Fj29XkmqmxJdPYAJBWnj0z4fFfIzeSOIZXIY5DT/Bh6+M=
+	t=1741169848; cv=none; b=CKGQ4rau8+BuSWskhNfvuv36h/oZkQAzNDrkQphyXI8+CDjWVwUx6FcHxuJFYYXgTjgXnhh4kVjhuUewFmyBg7UPDAwbreAmElnagRcLyUNf7RXpHc8+WcmuiTc44pvq5FFoDP2tWqiC/TDQuvX2awjhPIgujqeFMxTtDwoF3OY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741169547; c=relaxed/simple;
-	bh=4rA5mEK+MS4fNeVddqD3H/IjHGdBG/CHMImylytnnb4=;
+	s=arc-20240116; t=1741169848; c=relaxed/simple;
+	bh=9VFnpLzeqiLEQnzyxmwLAEeQdzPt+zBgO7BAKw0gcDw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B6T0dm7o5rtYrw9iZuw7vM083jTD3Hoot+7dP7n0NMnBzuIFm8zARZzNE4gQG7Bui56KjiGYTDQd67PcBNbiXNUPdhS9BFaAWg4xptc/liAJiUqyj2IVvqjxEKd8+tz53Lb/xiFRWi5aTJXnTZPPpQHNzOaKX9ZQA08jmL0nodQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=evPzm6hF; arc=none smtp.client-ip=209.85.128.46
+	 Content-Type:Content-Disposition:In-Reply-To; b=EITOw9xdicx5lZlKyj3mJVTorgmWSqGosyAWzAMNqJW7TRNC8XriqStQAgM/lxvrGwTlZvhfTrV7L2lZnzKxEn9NcgkSWGJBpl6Vm9OJOXQeRHJhXZxuRL4Fky3Uiph/by5O/DreOIjI260P3NluU8pPAXo6Y247vdRr3669ayM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dvu6ByZl; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-43bd03ed604so9193435e9.2
-        for <cgroups@vger.kernel.org>; Wed, 05 Mar 2025 02:12:25 -0800 (PST)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-390cf7458f5so6100409f8f.2
+        for <cgroups@vger.kernel.org>; Wed, 05 Mar 2025 02:17:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741169544; x=1741774344; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1741169844; x=1741774644; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JK8Y7F0M6yt4sxuseFTO5fZ7Aq9PRgVqCQhiIQOhMVg=;
-        b=evPzm6hFp26Ik6t8XzJnpUCaz36cJSmmj9/vyllQTOqdID3VQ5DDSD63NCrNmNVLdQ
-         ZNeH89PeUDjqYZRVxyGVCLpze9yMYENulKYXDeguvaqz3zUM4QLG99R205vwNIERsWcu
-         BL5nNQ/ddFQwSUrtMuO3ow4ENIJajOwfOqmJb8TG/PKHVA4KjJLIBu2ZIf8eweLniTEz
-         72JDBFFcODRwTahSod3o9lEav0g9DK5wPZB8mP82HSbhA3D3xEcCOFBdbHBi8JZQq+28
-         4GnpKhF/lb/VJgEp4zXkRP2LU0/LZ2D8cOdcv5ilTTtkuP65AXL90bQ7w1LqfrEsQpSF
-         OHxg==
+        bh=9VFnpLzeqiLEQnzyxmwLAEeQdzPt+zBgO7BAKw0gcDw=;
+        b=dvu6ByZlNsq3YJAF3nkethVOu1W07Yic9t4IqZ7F4J+Y8ig4MFYN9GPA/ZZe+SxdNr
+         NLbEKSF5g2pOhPAtcNYat1jwOtsXkdfTe0wF0/c6JSpeKH0WuLpsd4kRIYABWqu5P5iP
+         J640KjGwh8jY2MKNAkERRQ4c7kQ8T3665diZ7Tv36vJtVzRsfozS+4e9g8X6lqXIJcxS
+         EkZSZrNSAEsz3ktnhcTisT/yllZplI0HaBTS/HguTLdqFWL2obza1+R6Nk9TQJGumZJA
+         xfyrE/kmiUQtbGvDkeDL8cC1OG1auWMszs9lTdqe59cJ2dAjXpCkC0ehQvU/0CBNdqQQ
+         HDhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741169544; x=1741774344;
+        d=1e100.net; s=20230601; t=1741169844; x=1741774644;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JK8Y7F0M6yt4sxuseFTO5fZ7Aq9PRgVqCQhiIQOhMVg=;
-        b=h4ggJGbHXnBRKz3qdInpmu0N2nRLJ/tPTaPrMOBKKMUQOkYwyGy39MWGsC1QguDmaK
-         3CKCK8jTvHkVokjtdLWYXxSFUBzZFCI205VN88c5lJcxm5E78PUMRU29u3aLtY1YcQzP
-         QuT3diqNex+FxMiA3tZfRkrVB6+4enhGUe+5e/E7q+7qXhFvt78A2EhHMeUv+ShIlBRc
-         rQRwDPKS9ebAAuhqNWxuUPNOlE84G8LKjKW44aGbOFYuMavCtC+h44Cp0YWLn02b6lZv
-         DLarhQLMjG0OMOHNLgaC5L7XSZbxEiHgUhOkz/anwaC7Sv2J4p3sw40+5stPedDVZHtA
-         vrfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVQh2uQbpo8+dVww3yi/MHlIxd+NpkUCsjCA+Aa4yNoVUXds4SZFxXykIfEB5jUzhJ+4CklGRfB@vger.kernel.org
-X-Gm-Message-State: AOJu0YxNB5fyRpoginnQGQCo+lWPs0kWnIeK9d+HjGhutX/k6z2PtOZq
-	rjzuvfYZl6wDoJHaOqWGx3cej3Om7cNJ+EAKjs8DlCDhBUmr/Gf7uRxjJh/uIuA=
-X-Gm-Gg: ASbGncuUekfEOGFWpAqvYuaUsKBNLSX13vq+yljOHxcdK7y0R+CBvUfOTwDUDbMN2Q3
-	spL6J3++mJByhdtrJE5lPrOmCrdDdnY95npXSuiKJDA7YzqXLQ3vx4qEPF3M2AzkB2y49zZ64jC
-	RKiwjdp5BdpOizcmpbRBn3utHXLETZvZOjgJumXeX0URZRIVtQamE6TwfsFhWsY++Nne5fCdVFP
-	HH+lVoJ8So1pgMrOtqFoi5yoevnDKHIMF+qKgmANzVJRYyIk0VJ3pXtX6QPu6BpMv65JfGorsGI
-	Hecrz/lFC29XpCl+CJvGoOeqm+muo9H8r2J1TZelP2V295c=
-X-Google-Smtp-Source: AGHT+IEmna6voY68vbZUHryvS51Xec95FeWivkSUZHU6RdAxXB35kR9fsC6gZZj1O0MDgQ1mVFz4Pw==
-X-Received: by 2002:a5d:64cf:0:b0:390:f552:d295 with SMTP id ffacd0b85a97d-3911f7c9ca7mr2048791f8f.53.1741169543647;
-        Wed, 05 Mar 2025 02:12:23 -0800 (PST)
+        bh=9VFnpLzeqiLEQnzyxmwLAEeQdzPt+zBgO7BAKw0gcDw=;
+        b=QhBl/tZeQorWJGPUhCZxdEykj3i+Xpl+O2Ef4HX0ZgLSMOqQl+RK9fvgx9GqxetvpC
+         ig9HpbedBLAEZ1ZmiQh6CnWvAarWsDb9F70yQzqEmUcl3aNarXrAqvINBhNxWHu/JDqI
+         UIX+2oengYlRQedfg0X67WpnfrcAj45h0B11A/xnEiOzfFZuEFvI668YCEgI3iE/DCPv
+         dyawphAZWDbbcq1hUU8zhLl4xQPnK4BAsWPO10lJzvTAXf4Mjgq718LEZ33xnkGMPP/c
+         p76CZMalFUXslw4+x0jhilGYHCg+wAa8oDu3I25nUCsKaCmHyea6oJSxiCGMSeGJVSX6
+         t3hg==
+X-Gm-Message-State: AOJu0YxH2CkiR+xV2d+IFsoK/cvKwYp5H1u3h8B9ZmBo3e15QHOLUVo3
+	F93vrXxXwnfQSGca3+r834+Kf14geMKfamcDtwtj8RQBrMomWNVnYw2qcQxReHr1XHFi/pV6T+b
+	x6ZQ=
+X-Gm-Gg: ASbGnctQg/xoaydOTalvwLCE3ZuPMdTxd71xlO00+bejxMTLanK5aiC0pCblDVWMs/D
+	x9KkkrRiaRa4qMVmt8VKS/bI7uIdAqXtWNK9/iJEScUX77Y/LsItMASHiWvHnm+cLc/+48tbovj
+	3tyhPXLZ6/cp27W9NCmxHT3MaqQ7sAQzkA5BstZyt8g5xtQ0IuBHNeAkc63spujJxHOUI5bHlX/
+	hBxFPC1yckNjdCVWC83PeFTF4XFWJJ4jtHUgD9jXS8VpKslFkGrwrKHmyy3komXBJpLDE4KfDSJ
+	kE069aZwrNFSjXGkMNeGAMiEYxGO0/RtTqjGuKTo6LvWeAY=
+X-Google-Smtp-Source: AGHT+IELkfto1B3InHIV9XHTEiZ3UPQqTL8SpSgi8S+aMDMwNuHKEJeXQooPvFBqukLw7JdjT+ZyXA==
+X-Received: by 2002:a05:6000:1a8a:b0:391:13d6:c9e5 with SMTP id ffacd0b85a97d-3911f7403e8mr2072408f8f.19.1741169844335;
+        Wed, 05 Mar 2025 02:17:24 -0800 (PST)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e485d8e4sm20168761f8f.85.2025.03.05.02.12.22
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e47b7d12sm20945766f8f.58.2025.03.05.02.17.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Mar 2025 02:12:23 -0800 (PST)
-Date: Wed, 5 Mar 2025 11:12:21 +0100
+        Wed, 05 Mar 2025 02:17:23 -0800 (PST)
+Date: Wed, 5 Mar 2025 11:17:22 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 To: Tejun Heo <tj@kernel.org>
-Cc: Waiman Long <llong@redhat.com>, cgroups@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
-	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH 1/9] cgroup/cpuset-v1: Add deprecation warnings to
- sched_load_balance and memory_pressure_enabled
-Message-ID: <5bw7yc6bacojk2i2ikhlmf2skfiix6t3ipchbnvyfttmyh644j@iyquxeuyapd7>
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 4/9] cgroup: Print warning when /proc/cgroups is read on
+ v2-only system
+Message-ID: <t35nwno7wwwq43psp7cumpqco3zmi5n5y2czh3m4nj72qw2udp@ha3g6qnwkzh7>
 References: <20250304153801.597907-1-mkoutny@suse.com>
- <20250304153801.597907-2-mkoutny@suse.com>
- <8b8f0f99-6d42-4c6f-9c43-d0224bdedf9e@redhat.com>
- <Z8cv2akQ_RY4uKQa@slm.duckdns.org>
- <n2ygi7m53y5y4dx5tjxhqgzqtgs5sisdi27sk7x2xjngpxenod@7behfsvlzhxi>
- <123839ed-f607-4374-800a-4411e87ef845@redhat.com>
- <Z8dAlvRnE28WyOGP@slm.duckdns.org>
+ <20250304153801.597907-5-mkoutny@suse.com>
+ <Z8cwZluJooqbO7uZ@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -94,51 +90,40 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kodlwgikrlg6std3"
+	protocol="application/pgp-signature"; boundary="6ofgmq3xmxytwmxs"
 Content-Disposition: inline
-In-Reply-To: <Z8dAlvRnE28WyOGP@slm.duckdns.org>
+In-Reply-To: <Z8cwZluJooqbO7uZ@slm.duckdns.org>
 
 
---kodlwgikrlg6std3
+--6ofgmq3xmxytwmxs
 Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
-Subject: Re: [PATCH 1/9] cgroup/cpuset-v1: Add deprecation warnings to
- sched_load_balance and memory_pressure_enabled
+Subject: Re: [PATCH 4/9] cgroup: Print warning when /proc/cgroups is read on
+ v2-only system
 MIME-Version: 1.0
 
-On Tue, Mar 04, 2025 at 08:04:06AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> I'm apprehensive about adding warning messages which may be triggered
-> consistently without anything end users can do about them.
+On Tue, Mar 04, 2025 at 06:55:02AM -1000, Tejun Heo <tj@kernel.org> wrote:
+> I'm hoping that we could deprecate /proc/cgroups entirely. Maybe we can just
+> warn whenever the file is accessed?
 
-That means you'd distinguish RE (replacement exists) vs DN (dropped as
-non-ideal) categories?
-
-
-> I think that deprecation messages, unless such deprecation is
-> immediate and would have direct consequences on how the system can be
-> used, should be informational.
-
-I could subscribe to that if there weren't so many other places to
-evaluate:
-  $ git grep -i "pr_warn.*deprec" torvalds/master --  | wc -l
-  62
-  $ git grep -i "pr_info.*deprec" torvalds/master --  | wc -l
-  2
-
-So is the disctinction worth the hassle?
+I added the guard with legacy systems (i.e. make this backportable) in
+mind which start with no cgroupfs mounted at all and until they decide
+to continue either v1 or v2 way, looking at /proc/cgroups is fine.
+It should warn users that look at /proc/cgroups in cases when it bears
+no valid information.
 
 Michal
 
---kodlwgikrlg6std3
+--6ofgmq3xmxytwmxs
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ8gjggAKCRAt3Wney77B
-SRmCAPoCVnQ3mtHJRXQJXO38NpVCV2CLDqm4CBIDteO2hv5JfwEAx9LG33EQ1YVO
-M4iXA2i0xMEByWsgAdo2c7ZXsyvvWQs=
-=4wDE
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ8gksAAKCRAt3Wney77B
+SZviAQDogAzaKM/NodQpleghspQ8p1cKGWmOtSjRgWhYW60iIQD9EI4pdnCLmyC6
+WOgtU2xvERdR1ff2o77F39wQh+Dh7QM=
+=z6i3
 -----END PGP SIGNATURE-----
 
---kodlwgikrlg6std3--
+--6ofgmq3xmxytwmxs--
 
