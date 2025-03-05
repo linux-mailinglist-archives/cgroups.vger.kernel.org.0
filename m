@@ -1,138 +1,124 @@
-Return-Path: <cgroups+bounces-6846-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6847-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BCA0A5046B
-	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 17:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D7AEA504E8
+	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 17:32:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B35F916BB52
-	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 16:19:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C026168627
+	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 16:29:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03A2189919;
-	Wed,  5 Mar 2025 16:19:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E26253348;
+	Wed,  5 Mar 2025 16:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZEzjGrd8"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DyFqjXu2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6826BA2E
-	for <cgroups@vger.kernel.org>; Wed,  5 Mar 2025 16:19:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5FF253353
+	for <cgroups@vger.kernel.org>; Wed,  5 Mar 2025 16:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741191592; cv=none; b=nRmMf6l/HIMlWumDXSF8NmRuBXrrGBERkrjFoMmZ/X6xJR5/ick5iPQA5BE7lxT+IEF9NTrTq02Z8xWocrGNGSZXzyj8DcmmoC8So/eKqTfOAh2K+Vf+Olu3E9A2ESBfo0cBPgo9tz3s2U2PptWZCrf4hCZ+skebYhDjRPHfTuU=
+	t=1741192061; cv=none; b=e7C0s2Edc7srUAlXyF5fEg66k8RpaGTsCCOucn4SLz18BgF7PC5Q9sWXcMy9N28Qc9smThUlMdI76hbRxE2JFMFa86oqdlX16CDFMUC1DCg9iT5ai4C2mkC/U+Ap5gdeXIDf6ey+Suvqq7VLlbjJFwUBeQd0mp7w/cmfuPd9xR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741191592; c=relaxed/simple;
-	bh=lfd64ISt/RbrcjtvA7JF0gaXVbwwmUokpUC9i/vb/O8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hv0t1sQ0rI/8DjocWrSFPkNzNJZ9zP7BMvknFPgjoNNEbOKiZiqQwQBDJkblRgzR2kpeM7A8kvb1W4kMgw1TzHplRUV09VkRrsK9s7BBrI5vCJzo+IM9xJYpbXeZOPM4bjYvacS4VZ85xUXG0z1jZX1Jqzw2Xj5hO67x3DxSEV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZEzjGrd8; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-390cf7458f5so6515907f8f.2
-        for <cgroups@vger.kernel.org>; Wed, 05 Mar 2025 08:19:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741191589; x=1741796389; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lfd64ISt/RbrcjtvA7JF0gaXVbwwmUokpUC9i/vb/O8=;
-        b=ZEzjGrd8W77Dz+Gcck7iqywTksdbLXgtO58AMmFKoJ67Huug5Dt6P6ExpIYKKmPhSi
-         sXE6NDoX27fYT1/qUXzaxKWDKPqkF98VL6WtldXSAOeSd74nYIrgLAiXElQ0sDXenVLr
-         78A0dJ01ZgNkc1CyOtc+k3Xn661skl9qb/NL2HkcBV/yTjwN4wJau4KRWCKRM4Zkdu7v
-         RtYKBP51+ym4qJWwmDwvYPYePNFNe3HYgr6scmtvj9m4KgAh4gOLSL5kFqQndFrdalXm
-         qhXzDs9XJ+5ujYj5S2nRCfM9A+SSrdrYT5QunjVpqZfI6FtudCJ6TVoNJZ7CQVqBJClp
-         gbwA==
+	s=arc-20240116; t=1741192061; c=relaxed/simple;
+	bh=Vg7SCNGZuv6MSzX7s2TH5C/95lcIkGxtA3uOHTXdXys=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ojJPfshGgsSMB+odjP4lPWvFMisla/oLpo65kgAqpq0Yz3c9Rlx1dZYrz4ZyC9pDA2XP4ui/gLGUhrmv4ZIw/TUA4tZgG99StCXITVFFWDS8wAFodzUH6K9DMj0j6Gi+wuxyg+8mANPc9g642ABm5hRSQxAZciFre1mN9aMdPBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DyFqjXu2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1741192057;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SFJCCrP9iOFyoLc3U4Foi0Xf76AnU3YMKrRioOVaMZc=;
+	b=DyFqjXu2WyCSpv5rqP3EOlHuAPYhasXXAK4dehLz75zOnbngQQvDr6XBkdNe8Ceq3Z0+Kk
+	o4wOcyg0xsDs0wME3Wn4/zPVgpWGTMpVYYQ00T89Lw5PeXJgJpe0hIARlB7Ih4djj9OpSJ
+	HkOz5imjDg0pCMRXcH0Vt0NCcUp01hY=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-373-EGJTedbdOPS95OSqmEdy5A-1; Wed, 05 Mar 2025 11:27:35 -0500
+X-MC-Unique: EGJTedbdOPS95OSqmEdy5A-1
+X-Mimecast-MFC-AGG-ID: EGJTedbdOPS95OSqmEdy5A_1741192055
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6e8c4f5f3b4so91022446d6.1
+        for <cgroups@vger.kernel.org>; Wed, 05 Mar 2025 08:27:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741191589; x=1741796389;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lfd64ISt/RbrcjtvA7JF0gaXVbwwmUokpUC9i/vb/O8=;
-        b=Y0eqISaUeyWEwYx3Ek0LO3L1Kbwr2jZ6q0QO3bn7usFABne7PHKLeKF5toXbkO1FSL
-         wP9acq0eGIreye1Rek0GzGycrgi99BWpjoUrFng+XEiEzY/iYznhRtjJlESQshecJDrI
-         uDiUhQd4yTi149tYjCO0Rxllqim/kKhE2MSLI8ji3rcERxH0y6rEmDaSAnYjpiec6oN3
-         rDNqcCBYu0jFyDAs/8d9RQIgsdSj8UsfMubzMLgaFxoSPgGfDck3EySJEutvLO8x8zJC
-         PNdGY88vzT71RwkDPAGolvjDxsEnkHHXFFu+xtrAI8cuHHH6dEfq+6Lpwdx7CEUpdpVm
-         3YsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWF1/6oSkXP4yHFltzHZZqjE2XnBarKyptpekg1sRlhf/pw2FYqvRS84mjT+MGhBtChqr0uuJBJ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6X0SE5wupFFlTtx/ZYLdd8ZZl48QeDkvumP4U1kZCq666kz+T
-	ESQzmzjGKdi1epcu24kYPE/XDhIhS6+Jy1+LMAXuh+dvHtQiqvZXKVL7FBITDNo=
-X-Gm-Gg: ASbGncu0SYO5zQd9eb3mP903X7BTEq2JPS3KbUeIl5Xb6Cr+JfWomfiYSQlysuQYZA1
-	hN7AcbPl/4rYyPLSnHqug8VyPvqTMlujpapjhc9Yu13v3scckfUV3sF8+Agia23N+uJxgWOSTsa
-	asp7q624mcGYxD4kTK/WNAt9UGC0emGzhS9shAUc2WKRZG9qCBvLDPWNoTxKKszel81J36vy+3a
-	ZLtcJuIHRKz33ZNuv3HVhaYr99DYvkx4zzZ20+r7XPnK/PL9lmvDDQTebLS3i9ej3uKfOvDkctz
-	tDnXPv5lHeYWZh3Rx0Qx/a+2fzLb1IWKqZFFEkmYltJBl0Q=
-X-Google-Smtp-Source: AGHT+IFoRFVOSxz4aXuAZrJ3O/Og36uum919iPEJQo0fgDe96HeJ4Jmhlw2xmiXGf0Dk1Ste551NFg==
-X-Received: by 2002:a05:6000:156d:b0:390:debd:70c3 with SMTP id ffacd0b85a97d-3911f7caa1fmr3937218f8f.54.1741191589084;
-        Wed, 05 Mar 2025 08:19:49 -0800 (PST)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e485db82sm21108816f8f.88.2025.03.05.08.19.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Mar 2025 08:19:48 -0800 (PST)
-Date: Wed, 5 Mar 2025 17:19:47 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: shashank.mahadasyam@sony.com
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Shinya Takumi <shinya.takumi@sony.com>
-Subject: Re: [PATCH 2/2] cgroup, docs: Document interaction of RT processes
- with cpu controller
-Message-ID: <thhej7ngafu6ivtpcjs2czjidd5xqwihvrgqskvcrd3w65fnp4@inmu3wuofcpr>
-References: <20250305-rt-and-cpu-controller-doc-v1-0-7b6a6f5ff43d@sony.com>
- <20250305-rt-and-cpu-controller-doc-v1-2-7b6a6f5ff43d@sony.com>
+        d=1e100.net; s=20230601; t=1741192055; x=1741796855;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SFJCCrP9iOFyoLc3U4Foi0Xf76AnU3YMKrRioOVaMZc=;
+        b=sauKkyNmYuw70evQ5PFJx/briacS7L+aNORS5yN12PSWIRagttV+Kx1MybE+utxCSz
+         8cRAvVPBbRN/VGf+fHp17dLm/vTSoWAKRTFRClpwncGttoe+dr15W5WKww7g8axxqv/I
+         eLJzR5OOEIkbKZKrfJ8XEpRs0F/QdVWrHYS0+6aF17AlgebFll+foa+HaustpAvarDU7
+         pGoKL6yMyfLrW/4QB0eoOIhUCDIsj3p0KlzLIL/WQWVZZzJFKjm3GgWonU/VgLU2AskG
+         qC1aa2DtvD5pxPir2wAKBLfW4jhznuk0GVAtY9PhFuHER9QWGBfssfm8wwZhPdlKsvkB
+         VyMQ==
+X-Gm-Message-State: AOJu0Ywmp9exKMJzr99nurW+DrcFpc9igFu9XUQVKoOOIR4FxQJzMOqv
+	33Azi3tj4XZdkVB/I3OdW4YnAK7BQGJxRpwXJwjtGZTduxqiU1l75wd2g9gRU/NVaSh18AixQML
+	YftiIZZbEz8g0kQUd0RjxeG30RNxQzp4Lkvle0blPrDdy8qFUOoo5QBmCDiWBmTc=
+X-Gm-Gg: ASbGncsaWq9beafu9C0UoB1MrH4OboV2QKVtHSeVvqLaDIglFbWQ2bCE+cgASgM6gy/
+	OylcBZ/siZPbeaMkILYaxCNjN5SVn9A1jxd7vsdwRNC859Fx1eCMcc26wEKoVEyJL+EQ9oF8Ylv
+	N6exGzjS5r8SsTwMqgPh3wJC+Sl6SBkvJiUIcivv2Z0YBfRC7jtTZVx24Ir/XRgjgb4ewviiwAO
+	IQt2yfDzDNi6/a/9Q2z6Bllp2Pz5MsLtb4NF3A841r4roV64KQD/b3iiSAnuqtsNifqgBPAe1Eg
+	zSaXC8fiBbuBawDBtm5PSAlosD1EbsuvduvaY0fC98nIrjfAcq5FxVgNrxg=
+X-Received: by 2002:a05:6214:21cc:b0:6d8:9872:adc1 with SMTP id 6a1803df08f44-6e8e6dd876emr66705576d6.38.1741192054927;
+        Wed, 05 Mar 2025 08:27:34 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHdjGMu3Z9P5awn0k+syJ1lGAzEkIPJ7IQ68O6zR7KcCUd+jJ3LYDcgb0Pg4YRM3PptFxn4SQ==
+X-Received: by 2002:a05:6214:21cc:b0:6d8:9872:adc1 with SMTP id 6a1803df08f44-6e8e6dd876emr66705186d6.38.1741192054692;
+        Wed, 05 Mar 2025 08:27:34 -0800 (PST)
+Received: from ?IPV6:2601:188:c100:5710:627d:9ff:fe85:9ade? ([2601:188:c100:5710:627d:9ff:fe85:9ade])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e8f401d4bcsm395776d6.124.2025.03.05.08.27.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Mar 2025 08:27:34 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <9c24f14f-c7a8-490e-9077-0d977d175d89@redhat.com>
+Date: Wed, 5 Mar 2025 11:27:33 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="grdslyhitlxydqpc"
-Content-Disposition: inline
-In-Reply-To: <20250305-rt-and-cpu-controller-doc-v1-2-7b6a6f5ff43d@sony.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/9] cgroup: Print warning when /proc/cgroups is read on
+ v2-only system
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+ Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>
+References: <20250304153801.597907-1-mkoutny@suse.com>
+ <20250304153801.597907-5-mkoutny@suse.com> <Z8cwZluJooqbO7uZ@slm.duckdns.org>
+ <t35nwno7wwwq43psp7cumpqco3zmi5n5y2czh3m4nj72qw2udp@ha3g6qnwkzh7>
+Content-Language: en-US
+In-Reply-To: <t35nwno7wwwq43psp7cumpqco3zmi5n5y2czh3m4nj72qw2udp@ha3g6qnwkzh7>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
---grdslyhitlxydqpc
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 2/2] cgroup, docs: Document interaction of RT processes
- with cpu controller
-MIME-Version: 1.0
+On 3/5/25 5:17 AM, Michal Koutný wrote:
+> On Tue, Mar 04, 2025 at 06:55:02AM -1000, Tejun Heo <tj@kernel.org> wrote:
+>> I'm hoping that we could deprecate /proc/cgroups entirely. Maybe we can just
+>> warn whenever the file is accessed?
+> I added the guard with legacy systems (i.e. make this backportable) in
+> mind which start with no cgroupfs mounted at all and until they decide
+> to continue either v1 or v2 way, looking at /proc/cgroups is fine.
+> It should warn users that look at /proc/cgroups in cases when it bears
+> no valid information.
 
-Hello Shashank.
+I like the idea of warning users about using /etc/cgroups if no v1 
+filesystem is mounted. It makes sense to make it backportable to older 
+kernel. We can always add a follow-up patch later to always warn about it.
 
-On Wed, Mar 05, 2025 at 01:12:44PM +0900, Shashank Balaji via B4 Relay <dev=
-null+shashank.mahadasyam.sony.com@kernel.org> wrote:
-> From: Shashank Balaji <shashank.mahadasyam@sony.com>
->=20
-> If the cpu controller is enabled in a CONFIG_RT_GROUP_SCHED
-> disabled setting, cpu.stat and cpu.pressure account for realtime
-> processes, and cpu.uclamp.{min, max} affect realtime processes as well.
-> None of the other interface files are affected by or affect realtime
-> processes.
+Acked-by: Waiman Long <longman@redhat.com>
 
-I'm not sure the changed formulation make it clearer.
-What was the unexpected value with !CONFIG_RT_GROUP_SCHED that made you
-change this docs?
-
-(Please note the docs is for generic cgroup, not only root cgroup.)
-
-Michal
-
---grdslyhitlxydqpc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ8h5oAAKCRAt3Wney77B
-SZS9AQCweGn9vmr0uVAY0ditk3HYDJkXqtlv44llDojm9l8lfwEA+VwWyZAHkc4M
-qf0ODOchzeAkh9aPU/wjv2zNmo43Iwk=
-=/JpA
------END PGP SIGNATURE-----
-
---grdslyhitlxydqpc--
 
