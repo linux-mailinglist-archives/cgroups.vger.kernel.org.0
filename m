@@ -1,132 +1,160 @@
-Return-Path: <cgroups+bounces-6841-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6842-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21693A4FDEA
-	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 12:44:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DB36A5018A
+	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 15:14:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 525D916D90A
-	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 11:44:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD1CA1894F2D
+	for <lists+cgroups@lfdr.de>; Wed,  5 Mar 2025 14:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A435241697;
-	Wed,  5 Mar 2025 11:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6CA24BBE3;
+	Wed,  5 Mar 2025 14:14:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AEgFABIg"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HmtLfcgN"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508C81F416D
-	for <cgroups@vger.kernel.org>; Wed,  5 Mar 2025 11:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40DFE155751
+	for <cgroups@vger.kernel.org>; Wed,  5 Mar 2025 14:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741175043; cv=none; b=bJve/7t+iGVoxvYF7Id4g/r6IWGxojN9rKG7EF63QGTUUoJwGupAj1OobeXjMcZRNh4eyZ6IMDwzuVFHBOu0E0TAyKXFMLqmNVE5R4xMbrG3XMWUt/WcqFJmucgs9MyzZTb3YNuXfbBbiKf6wbwZ9P97MzkPNKDTIAR/MF5R1L0=
+	t=1741184053; cv=none; b=VwUavMrTFZYdDpXQB3aiGvECgNLq5ik4bVkHc0DK207kStntzREa7MYyq7FLMMCKY8PFU8eU/b7zfPS61924okbQm3k0HoYCX78EgHn6kmMq/BaGDVdL8aXIgAzgydQxrjV/NiFP3h5mx/5pWRyfRpSjpledajgQVLsYEE4XAeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741175043; c=relaxed/simple;
-	bh=obAikUlss8cx2pGO1oC5Xm/p3+C6R04IBQkrAWhpcZg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iyLviWuJM5sizSWuZMS8ew7rHhKYEqHPfWiDYDdFLPJRX/Cc2MzDq8kilw8BR6SeYw/dGzwlYK0XzindhaPc1QwNOyTuzu1bfwQos/8K1TLYxU+J0HKYcvbjf7ISU0ijNjPjH758eax1OhExBeUv6X3ui4jFUVXfaXQ3NBeDMuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AEgFABIg; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1741184053; c=relaxed/simple;
+	bh=EDOWiuz48EaOHCMVG5zuO1N25iNFE4iKpu3KXcX0EqI=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=MPX1fO6lOyOxuxTajlNZ3zB4+1wSXzVsvmY8jPNUiokRc+8l6REpFqc3lBFLhWJTbGFRDBB8emLQcJWcIOz7eUFSUzdnPeY1OVYCvcWdSdMnRHOwmwutHYbvVMm0SfvzYpiPhUwfntMpWQJOSYHxmrGrcYm8ARqRqVO6Jh0psE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HmtLfcgN; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741175041;
+	s=mimecast20190719; t=1741184050;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=obAikUlss8cx2pGO1oC5Xm/p3+C6R04IBQkrAWhpcZg=;
-	b=AEgFABIgVJVneNSnENXbzvhizKpcN7AUinBfIMy0lHz27WFXWL28dT8Jv8Nb7sKeO2oEiz
-	5tJzVf34W+LKvCUlcpD5Yzp6zRADFNNo4DmL/y09p7z+SS+U7RYLVZWbiqdko6UcGdSTRd
-	2mn74ym/1DKl01qBmZVxbULOcfZGUC8=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=0W+VuZVYcnV3HyAvSTpbUUrhFmo350QWrg+wnsTs7g4=;
+	b=HmtLfcgNhXZH2CO0E+a1Gt9+JCZ1Ezy75I+msaKSAioyW15Rg5HN7H1RtVe6WDuzU67epU
+	jC0iPmMw5Xvv8MSPHguLUrf8lMsjEeEbJlH3Gbzun18qZjM5aVMagirQEX/484Ga3A1rdw
+	P8FU2hSfMpZXq+Wre5wgKOdXyw58Cwg=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-47-wA7-M5iYPFaHQLYYthozZg-1; Wed, 05 Mar 2025 06:43:55 -0500
-X-MC-Unique: wA7-M5iYPFaHQLYYthozZg-1
-X-Mimecast-MFC-AGG-ID: wA7-M5iYPFaHQLYYthozZg_1741175034
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7c3c03b6990so520909685a.3
-        for <cgroups@vger.kernel.org>; Wed, 05 Mar 2025 03:43:55 -0800 (PST)
+ us-mta-425-OGd41DAlOTaL-KhVUQPzjw-1; Wed, 05 Mar 2025 09:13:54 -0500
+X-MC-Unique: OGd41DAlOTaL-KhVUQPzjw-1
+X-Mimecast-MFC-AGG-ID: OGd41DAlOTaL-KhVUQPzjw_1741184032
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7c3c0ccf1d3so184069585a.0
+        for <cgroups@vger.kernel.org>; Wed, 05 Mar 2025 06:13:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741175034; x=1741779834;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=obAikUlss8cx2pGO1oC5Xm/p3+C6R04IBQkrAWhpcZg=;
-        b=oXiXYW+wWwCPaMwdTea7u6x6L84f639Fhucln66hfPfaF6TdE9lWwx/Z0MF0oUXyYQ
-         7ixF1Mnnsk4R1nw9OK7d7W6x5P+u10WYTyAYJouQ30dVMlAsFiBxSOp3LnzSV3lSHRY9
-         NORfUInYmRh5rWPWgvrIv92FuGQs0t9BT9HX5wb4HvLDcUMZaBewvxHpVvj/f828TWxs
-         M+2ok7FAynM4rsDH+VZ572ugWfmTnel5xIevV752befw94Ej/MuF5zQuZcG+XdAuN0jd
-         JgyJ7Hww/cruNonznLLorn7j3aF1M1Q1j8GDGy2b/iMyv/fdwIPlw4SWqf4Wd4yFb3Za
-         7qxA==
-X-Forwarded-Encrypted: i=1; AJvYcCXfigaD70Tl+9j7iJ6AaPDarzjuoCGX3V4os9rv/c1bJXJ61girHqgz7HTX60qVewf108oI1h+E@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMjCnzuIKltUt11iPD2gqLzUHadY3sClv0IjancQesHUy5L9nO
-	NYyziJ7S4koja+Y0X5ork0oagEczo8Q+3aOmMu7eTXCYhoSM58BOU74CRSKp/XKhB6WPbVmF1KX
-	EBBc5C0bngU9NfDChDu5Iqyx1BdBarA3CxyorGMpj17INBzrrbszBsWc=
-X-Gm-Gg: ASbGncv7WW91DPWYiiJU8yLukIHz9ug+QAYItbErA5EdM4KJoLy5uvtufkslD/xObqV
-	leB9ejFp3a3ZKB8DBTiVZWwMT2xZwLRDhyApXL/thrOUVi3Lb8LKlHuB4pY6KQGyN672TQd/E7W
-	cmRon7S10rJfd74VFfXJ3y1iUokfQAa9EzxS0gkSaWVDK0WKv20UNmO9alF3pexJ2yoLH1U8s3H
-	0tgePb3gkyqnACmcn9Eyu+ziS5jdds9qlVqaaFhd50Q+hdwBpx5fqyRRzYzTykSuwnbO5XVjQ7H
-	nlz8c/hMxY9MMY+MEaS73r5sxpJn6hTjLYy93BQZlm62vqTlOwxGSm/lFbYzxmOBtoY+JqKYTm7
-	hxqUr
-X-Received: by 2002:a05:620a:4455:b0:7c3:bb38:88e5 with SMTP id af79cd13be357-7c3d8ef9afemr474812985a.55.1741175034545;
-        Wed, 05 Mar 2025 03:43:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFeM42f765loSizjHEJobaXam/I1bWNzdv8SjjSG4IsKkXXUknDDoOYHG829povW2NR0z7mQw==
-X-Received: by 2002:a05:620a:4455:b0:7c3:bb38:88e5 with SMTP id af79cd13be357-7c3d8ef9afemr474809885a.55.1741175034249;
-        Wed, 05 Mar 2025 03:43:54 -0800 (PST)
-Received: from jlelli-thinkpadt14gen4.remote.csb (host-89-240-117-139.as13285.net. [89.240.117.139])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c3d29d77dasm179383985a.115.2025.03.05.03.43.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Mar 2025 03:43:53 -0800 (PST)
-Date: Wed, 5 Mar 2025 11:43:47 +0000
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Waiman Long <llong@redhat.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Qais Yousef <qyousef@layalina.io>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Swapnil Sapkal <swapnil.sapkal@amd.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Phil Auld <pauld@redhat.com>, luca.abeni@santannapisa.it,
-	tommaso.cucinotta@santannapisa.it,
-	Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH 4/5] sched/deadline: Rebuild root domain accounting after
- every update
-Message-ID: <Z8g482-ZD7iuhhoC@jlelli-thinkpadt14gen4.remote.csb>
-References: <20250304084045.62554-1-juri.lelli@redhat.com>
- <20250304084045.62554-5-juri.lelli@redhat.com>
- <e78c0d2d-c5bf-41f1-9786-981c60b7b50c@redhat.com>
- <a53c1601-81e7-439c-b0dd-ec009227a040@redhat.com>
+        d=1e100.net; s=20230601; t=1741184032; x=1741788832;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0W+VuZVYcnV3HyAvSTpbUUrhFmo350QWrg+wnsTs7g4=;
+        b=HtIm9C1flmJDm8rAcuPD7zRldnHH8plHm3AQSfh+Wn4Vrdd4IAkJqBtvEpVBshrYoq
+         6sxubcra/E0fmzfCY1I7fjknE3gAp0lP0VOVYl0D46nLB7qVdkeEODH9w3rgiwbE9aXW
+         8uWl6x+hmvSKnwKAPrtQSKMEeTOwAV7FGD5sw0yyEkyRt6mazO2VWsIdjnT/CEroBZiG
+         kZYCOMWqQRoYI5erDrEJYglEqyHD4DKpxp6gv1WyF0OYvYFl3nHcLPZg8+qxFFzv6Wws
+         3inPHvrjBwPMhc1chKA1FXJznf0zEqDnwiv9x3ABN3G3u+Q/38pv8HKQTYftCBnAkAGq
+         5vgQ==
+X-Gm-Message-State: AOJu0YzRcQ9q5J4KtoIFpn7rKhPOjhGsJvQBXhnJVFtWXX4ZLOFxdmvY
+	67KXUaIPiyt+q34ikLrKiJTMyhf6b+pmhkSltqUDxuAkgmFtQyuYzv8gKI8J2sxzaSvjj52BrZS
+	G+7egHYQuWOvZgJ4CrmkotG58f1Qp2BZsNVKOxFm5ZSNlbcr20rxYJiU=
+X-Gm-Gg: ASbGncsFpgaEY0yJNO6fhePje9lS/HdZSCnrr0IVG1ytyc1F/LY1alPrZu5qTY4Vaqb
+	EJUlrjGx3uFL11fMfF628tm8EN0qwtbf9pCkl0399VOife0JZYR5/xwSrBl7zsexpYjW9pcIQR/
+	9v9ybCjURl2R6uNrzxXFwPAcnPxmV3kLuw6P3jWd70qx2eRc+cvo7yEhXA5w5X+zIA9RLN7dSzy
+	vq7aY/QDPS2vym4q85mYttLRCq3IVM9gPMfqcg40eXfqIu+Ud07wCTn/v2PnATxvGl/YZbJpMU+
+	5T2kaimqay/qsDrNtvYrkGobagXAkAEa7ygjLIRWObadQ8gwQ7cY2yQyDzk=
+X-Received: by 2002:a05:620a:43aa:b0:7c0:a260:ec1b with SMTP id af79cd13be357-7c3d91e8cafmr444389985a.25.1741184032531;
+        Wed, 05 Mar 2025 06:13:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH9ffpu0YZWhyUhYlZlVs8VrgC/jNuyM8WRbs000jc8OeU6/te1fV87F/+guN7+iQlwfItbJg==
+X-Received: by 2002:a05:620a:43aa:b0:7c0:a260:ec1b with SMTP id af79cd13be357-7c3d91e8cafmr444386885a.25.1741184032217;
+        Wed, 05 Mar 2025 06:13:52 -0800 (PST)
+Received: from ?IPV6:2601:188:c100:5710:627d:9ff:fe85:9ade? ([2601:188:c100:5710:627d:9ff:fe85:9ade])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c3bfb2a5e3sm392543585a.41.2025.03.05.06.13.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Mar 2025 06:13:51 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <6a6d4c61-a318-444f-b089-1776beb8873d@redhat.com>
+Date: Wed, 5 Mar 2025 09:13:50 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a53c1601-81e7-439c-b0dd-ec009227a040@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] cgroup, docs: Be explicit about independence of
+ RT_GROUP_SCHED and non-cpu controllers
+To: shashank.mahadasyam@sony.com, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Shinya Takumi <shinya.takumi@sony.com>
+References: <20250305-rt-and-cpu-controller-doc-v1-0-7b6a6f5ff43d@sony.com>
+ <20250305-rt-and-cpu-controller-doc-v1-1-7b6a6f5ff43d@sony.com>
+Content-Language: en-US
+In-Reply-To: <20250305-rt-and-cpu-controller-doc-v1-1-7b6a6f5ff43d@sony.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 04/03/25 10:33, Waiman Long wrote:
+On 3/4/25 11:12 PM, Shashank Balaji via B4 Relay wrote:
+> From: Shashank Balaji <shashank.mahadasyam@sony.com>
+>
+> The cgroup v2 cpu controller has a limitation that if
+> CONFIG_RT_GROUP_SCHED is enabled, the cpu controller can be enabled only
+> if all the realtime processes are in the root cgroup. The other
+> controllers have no such restriction. They can be used for the resource
+> control of realtime processes irrespective of whether
+> CONFIG_RT_GROUP_SCHED is enabled or not.
+>
+> Signed-off-by: Shashank Balaji <shashank.mahadasyam@sony.com>
+> ---
+>   Documentation/admin-guide/cgroup-v2.rst | 23 ++++++++++++++---------
+>   1 file changed, 14 insertions(+), 9 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index cb1b4e759b7e267c24d7f4f69564c16fb29c4d89..f293a13b42ed69e7c6bf5e974cb86e228411af4e 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1076,15 +1076,20 @@ cpufreq governor about the minimum desired frequency which should always be
+>   provided by a CPU, as well as the maximum desired frequency, which should not
+>   be exceeded by a CPU.
+>   
+> -WARNING: cgroup2 doesn't yet support control of realtime processes. For
+> -a kernel built with the CONFIG_RT_GROUP_SCHED option enabled for group
+> -scheduling of realtime processes, the cpu controller can only be enabled
+> -when all RT processes are in the root cgroup.  This limitation does
+> -not apply if CONFIG_RT_GROUP_SCHED is disabled.  Be aware that system
+> -management software may already have placed RT processes into nonroot
+> -cgroups during the system boot process, and these processes may need
+> -to be moved to the root cgroup before the cpu controller can be enabled
+> -with a CONFIG_RT_GROUP_SCHED enabled kernel.
+> +WARNING: cgroup2 cpu controller doesn't yet fully support the control of
+> +realtime processes. For a kernel built with the CONFIG_RT_GROUP_SCHED option
+> +enabled for group scheduling of realtime processes, the cpu controller can only
+> +be enabled when all RT processes are in the root cgroup. Be aware that system
+> +management software may already have placed RT processes into non-root cgroups
+> +during the system boot process, and these processes may need to be moved to the
+> +root cgroup before the cpu controller can be enabled with a
+> +CONFIG_RT_GROUP_SCHED enabled kernel.
+> +
+> +With CONFIG_RT_GROUP_SCHED disabled, this limitation does not apply and some of
+> +the interface files either affect realtime processes or account for them. See
+> +the following section for details. Only the cpu controller is affected by
+> +CONFIG_RT_GROUP_SCHED. Other controllers can be used for the resource control of
+> +realtime processes irrespective of CONFIG_RT_GROUP_SCHED.
+>   
+>   
+>   CPU Interface Files
 
-...
+LGTM
 
-> BTW, dl_rebuild_rd_accounting() is defined only if CONFIG_CPUSETS is
-> defined. I think you should move that declaration to cpuset.h and define a
-> proper wrapper in the else part.
-
-Sounds good. Will do.
-
-Thanks,
-Juri
+Acked-by: Waiman Long <longman@redhat.com>
 
 
