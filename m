@@ -1,83 +1,85 @@
-Return-Path: <cgroups+bounces-6860-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6858-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ADF0A54D12
-	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 15:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE160A54D0F
+	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 15:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CF7F3AB73E
-	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 14:11:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C81C73ABD5E
+	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 14:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE0E14F9C4;
-	Thu,  6 Mar 2025 14:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 889D1155757;
+	Thu,  6 Mar 2025 14:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MoSijJv4"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hmmkVwo7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2362942A
-	for <cgroups@vger.kernel.org>; Thu,  6 Mar 2025 14:10:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A2DCA6B
+	for <cgroups@vger.kernel.org>; Thu,  6 Mar 2025 14:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741270259; cv=none; b=SeTn6wFkXFpH5O/wV1+d9LHZisyNh7CZRIsn9kgrDznNulfFD/zpkmzPv7jHgaBCtxnu6H0oNu5lmPMAixSGw7eDNEXRLQ1slETxsn87f9LF/Ml0qMhbutFw/kMzr8QQ7sqqOfm9fTXdIe8gFb7RBuoEE5lsDYp+BSWpR/VhXsE=
+	t=1741270250; cv=none; b=GdDO1nNph6ci0NC6sZI/e43AJzsAxFV1YkYkhtDO55YcK+bKh8Tua3ITxDMBylYEgNlh5YrixG1VS90ZRy+IemZCK5esLEyw8aI0KPjwGZ43s/wjBScm4PkEonSTDFZBIZEdwybz/Q03Nx6e98Tg7+1vZZHoYzmpvNTnXBx1xUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741270259; c=relaxed/simple;
-	bh=vb1yMpDVAEn02NbneTokVcFGISNeAl4CsozM6DNbXrk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nc1H6QBPbXJ9CWzjfcusxm98CqKnMJf9LYJKh2pY8BYxBi4c44DG3L+DIfdDtmwHtAzMe3Bw4RlfCoel1fXhbpyMRjss0aM4p202nvznlxMVg+LmDFlzJb4XPrp6597uF6AAozn8YkA2+SBXrnR2OzyX7y4xgAl6AR6tPg4BWTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MoSijJv4; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1741270250; c=relaxed/simple;
+	bh=xcnCm892YVWrZWbMShd7y4D6hSOZDUxmmffjBmaQwmw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=UIrXGmUPb1VT36u1QKcmKk/l4aPVopBA5uHVWU9pVRKjwFoeusXDz9rw28RBh4Exjs7wgebpzCLH/icQUB/+QuEQbjzpnkePqsccoS553qt0zMtqy6Q+G+v663CjQET9jC7clXUKMxqcjMN3I8Z1m2l4cMiHVQ/4kTe5DH+Mk+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hmmkVwo7; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741270256;
+	s=mimecast20190719; t=1741270247;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=OREnm9aUBj2V96zq2XupaDSMV0AJ0BW+JRJEQM5qOOs=;
-	b=MoSijJv4k2SSLTMtvUTxOct2be1M8xgJWG5tDVESezNNDi/PbGZ4Gsq8HFwi56MezbMY4f
-	tUf4v6xOIwZLe8oCOPesjMZy+unOEocHZEJWce2TV86pT1pUPT6Up/LUmpFx87TA7fJ3Q1
-	63Ae5o9hOJNiY2efdGb2gxm/Z3j7xdw=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fsKE1JxR4r83PaPSyABYFCVJq9bgn0zVEf+tY5alCNY=;
+	b=hmmkVwo7XM/5mSst0ryrkVQxXzrB0yF+4TOD5eWp0+CpH3KpcufApukVxuJH6wJ37YVs/G
+	zcOLSgwkUb2pk6imoo/Q7vpm+iNt66uU9yXBBNhFr4iOkId2lYl35MIgMiNen7WIXpWL5K
+	O3H64ULob2GPKfNbPg8/8eO4KmHJiLI=
 Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
  [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-284-NEzJVIA3MhOziC-2K3JQ1Q-1; Thu, 06 Mar 2025 09:10:40 -0500
-X-MC-Unique: NEzJVIA3MhOziC-2K3JQ1Q-1
-X-Mimecast-MFC-AGG-ID: NEzJVIA3MhOziC-2K3JQ1Q_1741270240
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7c0922c5cfdso127721885a.3
-        for <cgroups@vger.kernel.org>; Thu, 06 Mar 2025 06:10:40 -0800 (PST)
+ us-mta-47-WsqXB6y3MuKU6JrGb3crAQ-1; Thu, 06 Mar 2025 09:10:41 -0500
+X-MC-Unique: WsqXB6y3MuKU6JrGb3crAQ-1
+X-Mimecast-MFC-AGG-ID: WsqXB6y3MuKU6JrGb3crAQ_1741270241
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7c0a89afcaaso147301985a.0
+        for <cgroups@vger.kernel.org>; Thu, 06 Mar 2025 06:10:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741270235; x=1741875035;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OREnm9aUBj2V96zq2XupaDSMV0AJ0BW+JRJEQM5qOOs=;
-        b=FToSSGmyZLQKRCJRHtvh+1Dg13YeYQYB9w/koyto6kQ+4dDup4+0wFVyBFiq5XOhaL
-         UjjVzF60J8g6wKTQU24e2DXxZJFwp4QATfaW3mFwhpVuoljAa9RAOSpwGnjgrUHc7lIf
-         xvaKdsqHJ/ECNv1sB2v3dJ40Tny/iulPrvjiOQ98iq+kvSrp1YC5V7VhykyAT3HwGAKV
-         jA3V8UseNS0X/J+eFzV/V41c5uqJDcx4CHXv9C1obGrIGdmJLYcwTEU+meZHR/vXgQJ4
-         HF+vERB5KEOmES29LWv5GbV0AKqHElioxbT0e9D/qgIlbmoVCQJoL5MM6vEChUgL4WqQ
-         SqtA==
-X-Forwarded-Encrypted: i=1; AJvYcCXVSKnqXkNJcKI+XBKCjPe8DsEBOs0QGvECbSJRhwsD5Cc3t+FtTc1587JjgJI5VHJcQLVC8Gtp@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQc2QS9FUSqdiQqkYciDA2UtzpbAKxOMAHQPvt9ELr7shLXCNU
-	kHU4OI7CNzRv0v3oU5X5uEZjJhrR+sPqGkMY04icDlpuYojdq2a5dv3cz7PSvwuPdp7xQ5EXs70
-	myyzRvoFq2u3GoRGsEFJkXeEa4aMXf5RKfAL/5n03/eEfypn4gW1zdrg=
-X-Gm-Gg: ASbGncvx6uQUL8clrADxE0AJOQGyOkS+vNfGqfLOB16SeaN6jL4K65HWLZTjThnFHXB
-	xcuyjJwzMjNKFNIjE0lEiQVZ3foxeR7CeWv7V1qefecBAaGOLntuTFNGAGbZpbkAfeH1KgqBhkg
-	e4MDwIX1EIAB6IJ4abqziMKJtUp/hxsOVgx5eQREuW2KMIKhbSMMMQRCFlN6eeZCX+/7Ewhud+G
-	NYA8WZ6MS7qkdpGi0iARtlufnQziZlzItanC2NwrF8nzLf12rqIWwXP/udqJWq8/ElICUIXd9rh
-	lcxTBGgmHhAz22B08NbgL2gdArIiY3Rxszisd2Wh0JgvBI1jk1TbMtJqtp8LZ/v2s1gwAB+ttjC
-	0Ov7X
-X-Received: by 2002:a05:620a:8908:b0:7c0:c650:e243 with SMTP id af79cd13be357-7c3d8dec097mr1160589585a.30.1741270234907;
-        Thu, 06 Mar 2025 06:10:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE4KmIqhzBVjcz2IYjNdsy7lmCjF1K/BOG8oys1LjVuBp57JX/6tNcFHNRLX3rFOWSlP/72JA==
-X-Received: by 2002:a05:620a:8908:b0:7c0:c650:e243 with SMTP id af79cd13be357-7c3d8dec097mr1160585085a.30.1741270234427;
-        Thu, 06 Mar 2025 06:10:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1741270241; x=1741875041;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fsKE1JxR4r83PaPSyABYFCVJq9bgn0zVEf+tY5alCNY=;
+        b=eR48xs410FgVKFdgr4tXF0tLii4PnsmK/YAM/AlozKy4HWqNroFgZ2pzAlR+TtQEga
+         M6IyYHNQOpRfBJKhPzJ9c5v3ggT8I1IUvlWqyY5vj1nhhLLERQDlUUyefbpzhyFfYYSD
+         79I464EzOReV3IAKxto4xfIVEYq0k8uZfstFMTGs3ZT1JjAS2iCw7Fazko+rv4whWXCB
+         NeM5sHy2IJpPPdIKuxhNWUss/uYrquBekB3juREwLMUjqWau0cgmnI/rapWve38c+74V
+         paDhLrCH4Uh9soVmU/f0NyEOO92zm53ahenqZ4FbMb7Qgus/+KBEWjwf9XAhqcUFu2jd
+         FhVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUtbvLN/im8hNlecePYm5r22I1u6M1dBaK1jcoNlBzP4smPcHoKNyAk1w8KKiicC716SloW/n8x@vger.kernel.org
+X-Gm-Message-State: AOJu0YwH2KJJm4YlN+4z6i/4plES86JrrG36GMYSaZ6nwvdCBhP8yu+e
+	z4uNrZn4x96C88IV02mtIyEynfjMvtyaQjYoe4ercPRVTX7Q4UaIY/fCKhPHdaVc09Up0rBxn+0
+	ih5qqRe9ObXwPiaqOpLMK1/lFz7x4daz57fxqKstZr2gY9uGWzajlTSc=
+X-Gm-Gg: ASbGncuqVYFZSFEH+HY402CTOVuy2zVQdmCbc5lwECxPDym/UsHIzhDtq7ZHsHE7+bg
+	++N/avidOYV71prSADD/ppOWo0MvbJfhItX5vi+qz6cyAZD+wyz9jJu7zuK502AbCT3EXvfZwNL
+	cYYyFIHeCVMGnw2cEUzhg5RycANqzUuq7yVomoqGBNVeIugk+3kBcq31p9lMKgkO+PDfG20cep1
+	CSRj5+s68l2Akv5CK36K/NCjH6z1s3bBf/D1eqLgq+PZPP1BhwxLJf+ClNZj6jXiy/cBiz6M61Q
+	/vE46n6oKQ5G9X6C0cm6dYKCaEbRjwjdfizyosEg7IFiMzDgavkz2Rn1pokAY6moScP7x/Rgh/F
+	9pZA9
+X-Received: by 2002:a05:620a:1b96:b0:7b6:c324:d3a5 with SMTP id af79cd13be357-7c3e3a1c910mr432226885a.19.1741270241028;
+        Thu, 06 Mar 2025 06:10:41 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHdyD8P5f8M2e9rNo87PDZMvWDzY4ue5a2vKgh31vwHmBPocp18qKgVS97FsSXL2hbSExV6Mg==
+X-Received: by 2002:a05:620a:1b96:b0:7b6:c324:d3a5 with SMTP id af79cd13be357-7c3e3a1c910mr432223185a.19.1741270240727;
+        Thu, 06 Mar 2025 06:10:40 -0800 (PST)
 Received: from jlelli-thinkpadt14gen4.remote.csb (host-89-240-117-139.as13285.net. [89.240.117.139])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c3e551119fsm93658985a.108.2025.03.06.06.10.30
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c3e551119fsm93658985a.108.2025.03.06.06.10.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Mar 2025 06:10:33 -0800 (PST)
+        Thu, 06 Mar 2025 06:10:37 -0800 (PST)
 From: Juri Lelli <juri.lelli@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org
@@ -102,10 +104,12 @@ Cc: Ingo Molnar <mingo@redhat.com>,
 	luca.abeni@santannapisa.it,
 	tommaso.cucinotta@santannapisa.it,
 	Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH v2 0/8] Fix SCHED_DEADLINE bandwidth accounting during suspend
-Date: Thu,  6 Mar 2025 14:10:08 +0000
-Message-ID: <20250306141016.268313-1-juri.lelli@redhat.com>
+Subject: [PATCH v2 1/8] sched/deadline: Ignore special tasks when rebuilding domains
+Date: Thu,  6 Mar 2025 14:10:09 +0000
+Message-ID: <20250306141016.268313-2-juri.lelli@redhat.com>
 X-Mailer: git-send-email 2.48.1
+In-Reply-To: <20250306141016.268313-1-juri.lelli@redhat.com>
+References: <20250306141016.268313-1-juri.lelli@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -114,65 +118,32 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello!
+SCHED_DEADLINE special tasks get a fake bandwidth that is only used to
+make sure sleeping and priority inheritance 'work', but it is ignored
+for runtime enforcement and admission control.
 
-Jon reported [1] a suspend regression on a Tegra board configured to
-boot with isolcpus and bisected it to commit 53916d5fd3c0
-("sched/deadline: Check bandwidth overflow earlier for hotplug").
+Be consistent with it also when rebuilding root domains.
 
-Root cause analysis pointed out that we are currently failing to
-correctly clear and restore bandwidth accounting on root domains after
-changes that initiate from partition_sched_domains(), as it is the case
-for suspend operations on that board.
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Fixes: 53916d5fd3c0 ("sched/deadline: Check bandwidth overflow earlier for hotplug")
+Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+---
+ kernel/sched/deadline.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is v2 [2] of the proposed approach to fix the issue. With respect
-to v1, the following implements the approach by:
-
-- 01: filter out DEADLINE special tasks
-- 02: preparatory wrappers to be able to grab sched_domains_mutex on
-      UP (remove !SMP wrappers - Waiman)
-- 03: generalize unique visiting of root domains so that we can
-      re-use the mechanism elsewhere
-- 04: the bulk of the approach, clean and rebuild after changes
-- 05: clean up a now redundant call
-- 06: remove partition_and_rebuild_sched_domains() (Waiman)
-- 07: stop exposing partition_sched_domains_locked (Waiman)
-
-Please test and review. The set is also available at
-
-git@github.com:jlelli/linux.git upstream/deadline/domains-suspend
-
-Best,
-Juri
-
-1 - https://lore.kernel.org/lkml/ba51a43f-796d-4b79-808a-b8185905638a@nvidia.com/
-2 - v1 https://lore.kernel.org/lkml/20250304084045.62554-1-juri.lelli@redhat.com
-
-Juri Lelli (8):
-  sched/deadline: Ignore special tasks when rebuilding domains
-  sched/topology: Wrappers for sched_domains_mutex
-  sched/deadline: Generalize unique visiting of root domains
-  sched/deadline: Rebuild root domain accounting after every update
-  sched/topology: Remove redundant dl_clear_root_domain call
-  cgroup/cpuset: Remove partition_and_rebuild_sched_domains
-  sched/topology: Stop exposing partition_sched_domains_locked
-  include/{topology,cpuset}: Move dl_rebuild_rd_accounting to cpuset.h
-
- include/linux/cpuset.h         |  5 +++++
- include/linux/sched.h          |  2 ++
- include/linux/sched/deadline.h |  7 +++++++
- include/linux/sched/topology.h | 10 ---------
- kernel/cgroup/cpuset.c         | 27 +++++++++----------------
- kernel/sched/core.c            |  4 ++--
- kernel/sched/deadline.c        | 37 ++++++++++++++++++++--------------
- kernel/sched/debug.c           |  8 ++++----
- kernel/sched/rt.c              |  2 ++
- kernel/sched/sched.h           |  2 +-
- kernel/sched/topology.c        | 32 +++++++++++++----------------
- 11 files changed, 69 insertions(+), 67 deletions(-)
-
-
-base-commit: 48a5eed9ad584315c30ed35204510536235ce402
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 38e4537790af..ab565a151355 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -2956,7 +2956,7 @@ void dl_add_task_root_domain(struct task_struct *p)
+ 	struct dl_bw *dl_b;
+ 
+ 	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
+-	if (!dl_task(p)) {
++	if (!dl_task(p) || dl_entity_is_special(&p->dl)) {
+ 		raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
+ 		return;
+ 	}
 -- 
 2.48.1
 
