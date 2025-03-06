@@ -1,173 +1,149 @@
-Return-Path: <cgroups+bounces-6866-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6867-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3437AA54D22
-	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 15:12:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 455A2A54DF2
+	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 15:37:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C85B18883F5
-	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 14:12:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4AC47A6ED6
+	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 14:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06805CA6B;
-	Thu,  6 Mar 2025 14:11:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A098176AC8;
+	Thu,  6 Mar 2025 14:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ADQ81Y9f"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="o08iJocy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C0D313C80C
-	for <cgroups@vger.kernel.org>; Thu,  6 Mar 2025 14:11:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56CB13CFA6
+	for <cgroups@vger.kernel.org>; Thu,  6 Mar 2025 14:37:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741270290; cv=none; b=ZGrkVNUO5KZJpS7QvNt5gjnNpvdgCgKbznGzmZBd83F+Bd3/XGxjyV05J3DdodkAQcDFcePouokUz8hXpfbFm1YqgJli0jOyHB2qGOapyD7l23mRyKA7C/xMbxxAnzCGMDoEufoklFOi27WRrpaQD4ceWxpJQ91sYxFZxf2TPjg=
+	t=1741271865; cv=none; b=L4tllief9/n9aajbt9NArbNStiU8l20t7QhTag+olovChO/R1oOfmnUDvMb72v4mTlbUt8Vw7p3luxcQ1WTFOoK/0Rq/FbP4K7YK1DdnFNNX40MEYmcjsOoJV9CLKafmtXxu3xLk3QnJqqlZ+CE5lmNotcSP3VR97c9o3W6P20g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741270290; c=relaxed/simple;
-	bh=C/Cc8iMh5RhuOM/HCUsSqAmjstO6BDzi53uIK0zWZm0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BOr0wjerKwRDWyKLz3ERtgL2wo37i1TsuQEb2Yx6vPqXbeesSjaDVNPMhxNWp8oUdBk11CT8zKyNYsvPuK3W4yN6I9dsjN4c3PEpKlG+R5Fo3qIdsAtzjG0YUw0sxhXc8cJKaVESoUphzCI7r8pTEh36D0vCXE+h/nISrLob8OI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ADQ81Y9f; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741270288;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R3M6FX8T2xhunhC57UXeJA8V9v8swCagmqmFMiwHiP0=;
-	b=ADQ81Y9fU16PnZnToxPbG/V53l74yPM68knDzHhf7Uy46+3Gos19xopurEIF81SK5AJvKp
-	HNw+cXA+/Mw5VC6NHPYsR3wnUoTYmRT4lrhsUEjoYLkIw9qSFO0utDTD4EWfSYwp+Mv8u7
-	XJljv6kT6uv6Pyp2fDKEGY+X0fU6gA0=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-97-7RqrNbcEPGift_WjesVm0Q-1; Thu, 06 Mar 2025 09:11:22 -0500
-X-MC-Unique: 7RqrNbcEPGift_WjesVm0Q-1
-X-Mimecast-MFC-AGG-ID: 7RqrNbcEPGift_WjesVm0Q_1741270281
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7c3b5004351so153649985a.2
-        for <cgroups@vger.kernel.org>; Thu, 06 Mar 2025 06:11:22 -0800 (PST)
+	s=arc-20240116; t=1741271865; c=relaxed/simple;
+	bh=gF3YkWOhDXWK+rQ4xDnI05H9mTCsTY1efQ9MZ8j7GiE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lJ5Qc85ET5nEezzl7ArJ53Cxfr6YC1HBdbuZrjCopJouWoDwD8JOFG3Ubv8j6q5weXxSjM/NdfRKfTr1Si6EEmVSBvGxLmQ847OL1ZvLl8MtGdT+kIRJT1VoJK0FBLYayaFUDM+D8NDLNEn6IHI7RSCRH5B6hNLHl/i/MWl86UU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=o08iJocy; arc=none smtp.client-ip=209.85.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6e8efefec89so5943776d6.3
+        for <cgroups@vger.kernel.org>; Thu, 06 Mar 2025 06:37:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1741271860; x=1741876660; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GkwQ0oLvEDj707o8NQ6UwhxGkpQaxXqiDQ8oga7M5qc=;
+        b=o08iJocyF4q6cQLocHMoKYohAiOO/tgkRZH2jr/h51nK+Y0zJ5NqByHA8ow+NkCcsl
+         ZATDyTW9YUSMmf426xyHRbZ9iiyNvgNdYiHkMPqTpBYdwCjgpgQUZLdtX+DL2E8DMbBE
+         f8Z7K3KsvAOlGhWiKcUS2Ow6C0xLyrzydBUr7Apdk1vvwtanO5uotYkA5oPd+5pTjWVT
+         kgDYTUhh/7P8A2FQqSVaiRb9LERiayjW93frFWlJdtvMGKyKFlePWBmm5Ct/G0ucwdQt
+         cKLBeeI87/+PPX1T7R0Oa/r1QCs/+CCLd46zsbGiojhdjuJukHtx5Qrn557npW8+zw+V
+         BmzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741270279; x=1741875079;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R3M6FX8T2xhunhC57UXeJA8V9v8swCagmqmFMiwHiP0=;
-        b=sOaB7lZ45CpBJL6vD12JDBHCOuVn90Y5ocz19I0vm+oBvkRbKThgMzEMgaoXEwfUqe
-         t0LVWOip74XlEXASdp6y9EgB42xzfcXIq2pKTLlxv5t+JWA5NZUrvJRrrm5V+APsp56Q
-         td77b8AIiCNjDvdTZVuBQOXP3RoNX5H6xNS9XKJumKb/tcJKFIUt+GhYdu5APCmQb4K4
-         qlULPcfvyS0Oa/oASuGFPlxbtIUlHsCrmyRRANJV6qLo97VzPKrB4uYOWW81+vMD02RO
-         JFEWI6EGo7sle6y07MkyXdU34UZNClCkSAaCp+Iy83YIpU7N0onuUnVreaDsc2TO8Vpj
-         swew==
-X-Forwarded-Encrypted: i=1; AJvYcCX6Pv3Fd6YItwFZWq5nE13RSSot/OfC2iCDk9BpqFpJLnBDEHZc+sOnv4DgDcp+8raK2gRMEiWI@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSFq8enYjoJbZBNq0EZIyNUfnkL67CILoZAtYZfEdm+PX0b8ea
-	o23aYV27k8pVriKnXpRKEkgjmavUsqromYZW59Kiy63B4YOawtpVhpBJu4jLZ6QjtxBAf0B07Cc
-	TD0ULaFVyN57xub9wGUgD7rwIIxr9Xes/yDKorFL70AJBZ+1iGZ7V+zviJ853FCVy6Q==
-X-Gm-Gg: ASbGncvd6Mx20R8VNKTIxiw1XZ0wnWtz65HgqiCDVdqVsLUS3Ckn7B6sTnH/hHzfcOQ
-	pxWrtrh6iHGlbE1Wy/7z1EFyHfrzQ6dt85K0BiLKN/fzMEaQwKcl0Y6ZAwsnQzpdDb7sr26FLlP
-	OX/OwmukPnyZiW82SmDgv5ZImL1DRj1pRqQ68/EduUn7OKiYXY+35zJVZ3/iKY71INMRq1N7I6n
-	XFDS6VuQ7jBZrUma90M7XLvK+1VNwwXpbZ/t9JjJ51zOrDkYz68ub/icbiefw9TnFgJgEK42vBI
-	oD2J+9LuBnUORgMixGLvgcnB41r5FID1huZZiFmFJJ+Xso1WRnFOpS2Op/kjjb3wFaJFt/C5+1n
-	2W6h0
-X-Received: by 2002:a05:620a:8706:b0:7c3:c1df:149a with SMTP id af79cd13be357-7c3d8ec7c89mr1017800185a.46.1741270279174;
-        Thu, 06 Mar 2025 06:11:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF/+GQVLhu46C/Nyd3wxyeBeqf/hT0BoGgJcoGKjcpXDkjFLsMk+xW8l/y0hrRplEO9PyuSkg==
-X-Received: by 2002:a05:620a:8706:b0:7c3:c1df:149a with SMTP id af79cd13be357-7c3d8ec7c89mr1017797085a.46.1741270278850;
-        Thu, 06 Mar 2025 06:11:18 -0800 (PST)
-Received: from jlelli-thinkpadt14gen4.remote.csb (host-89-240-117-139.as13285.net. [89.240.117.139])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c3e551119fsm93658985a.108.2025.03.06.06.11.14
+        d=1e100.net; s=20230601; t=1741271860; x=1741876660;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GkwQ0oLvEDj707o8NQ6UwhxGkpQaxXqiDQ8oga7M5qc=;
+        b=GlG6CY42a7nzXFMZlDKrrSEZSGPeNGA6wsebh3KsIm+azswPNQmUAsL37UV+3hPUpP
+         nkQBXloZfn1jvdtzL8OpWVkVnwPJegxUFHebRMlRDjZVMtrZy4x20Cep7M8IxubO9onY
+         qg8aNbPVKPCKp3SbHr4C0VyEmoFjo6kGvZBi+9Pcg1wrdkv9ckbnO7uBsxyKgItOuq15
+         zkAtfqtpz3EJhRslTiGKQcjW2KBpYAxjgvAEaPg7GNvIqd4emIA2WjFRXhKCmXSuJ6ui
+         PY69BLx4FkSVTHBbphgxTHKU+lQOzDiH039uDtniieXXkqB3a9SU7p93h654uNlCYbzU
+         X2JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVFRpABLdZ5RGrCc5K5VO7YsZN60atIZEHPc/MWB2c3JrOQ4nO58dFQMMC3Ofs431r8X6MUxs0Q@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBe08Xx1UsChuTaKxVL4YqiYSYIH4SjaJkpf5wQxNAQSQaHy+u
+	MMpkdrca85C0S7OKKSivWTzkkrnygAyIqwcN4nd9HVGtReiFE0buo9xswGNRbLQ=
+X-Gm-Gg: ASbGnct13tyKHmdiJAMxXPUN+O6FK2mEhzl5E1G8ztq0aslvuxPlXmozzrOYutjGehh
+	rT9jrATX/RmkrO5J9PxXN62kVQakmi3Cf4S0sldZicAEbOcoKXbXnQ2OWKi4eatQARnvp4oB3Jd
+	hDXYkCXw88KQt0AxVZ3ZhXzyAdoe00sfMqnR6rNLBc2qBCxLIDAnPaiR92+28/j+rhWQMvGRLNt
+	wM++e6oVOc7CrtoFpjzYqiXTP3lp/Ija1bmXlY2VtfQpp44ok54MCfUP8+p4neG5fgGJHa2aDxr
+	+efQZ2h2ii/wlNNIUvXfSFIc048oW35WWpTniQh3zuU=
+X-Google-Smtp-Source: AGHT+IE69KzW444Tq3MFt1OkLKjayfvH3XmFTp4VbrSWCKV4Vo0xqPzJpBTl6QpVk0gBd6/iM0+Njg==
+X-Received: by 2002:a05:6214:f61:b0:6e8:fb8c:e6dd with SMTP id 6a1803df08f44-6e8fb8ce9b4mr14514736d6.5.1741271860418;
+        Thu, 06 Mar 2025 06:37:40 -0800 (PST)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6e8f70a4495sm7760056d6.52.2025.03.06.06.37.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Mar 2025 06:11:16 -0800 (PST)
-From: Juri Lelli <juri.lelli@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Waiman Long <longman@redhat.com>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Qais Yousef <qyousef@layalina.io>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Swapnil Sapkal <swapnil.sapkal@amd.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Phil Auld <pauld@redhat.com>,
-	luca.abeni@santannapisa.it,
-	tommaso.cucinotta@santannapisa.it,
-	Jon Hunter <jonathanh@nvidia.com>,
-	Waiman Long <llong@redhat.com>
-Subject: [PATCH v2 8/8] include/{topology,cpuset}: Move dl_rebuild_rd_accounting to cpuset.h
-Date: Thu,  6 Mar 2025 14:10:16 +0000
-Message-ID: <20250306141016.268313-9-juri.lelli@redhat.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250306141016.268313-1-juri.lelli@redhat.com>
-References: <20250306141016.268313-1-juri.lelli@redhat.com>
+        Thu, 06 Mar 2025 06:37:39 -0800 (PST)
+Date: Thu, 6 Mar 2025 09:37:35 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Kairui Song <ryncsn@gmail.com>
+Cc: Muchun Song <songmuchun@bytedance.com>, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, akpm@linux-foundation.org, chrisl@kernel.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: fix swap counter leak from offline cgroup
+Message-ID: <20250306143735.GB290530@cmpxchg.org>
+References: <20250306023133.44838-1-songmuchun@bytedance.com>
+ <CAMgjq7B5SyqYFbLhbgNCvQejqxVs5C6SaV_iot4P64EZLHZ8Gg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMgjq7B5SyqYFbLhbgNCvQejqxVs5C6SaV_iot4P64EZLHZ8Gg@mail.gmail.com>
 
-dl_rebuild_rd_accounting() is defined in cpuset.c, so it makes more
-sense to move related declarations to cpuset.h.
+On Thu, Mar 06, 2025 at 10:54:12AM +0800, Kairui Song wrote:
+> On Thu, Mar 6, 2025 at 10:32 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> >
+> > The commit 6769183166b3 has removed the parameter of id from
+> > swap_cgroup_record() and get the memcg id from
+> > mem_cgroup_id(folio_memcg(folio)). However, the caller of it
+> > may update a different memcg's counter instead of
+> > folio_memcg(folio). E.g. in the caller of mem_cgroup_swapout(),
+> > @swap_memcg could be different with @memcg and update the counter
+> > of @swap_memcg, but swap_cgroup_record() records the wrong memcg's
+> > ID. When it is uncharged from __mem_cgroup_uncharge_swap(), the
+> > swap counter will leak since the wrong recorded ID. Fix it by
+> > bring the parameter of id back.
+> >
+> > Fixes: 6769183166b3 ("mm/swap_cgroup: decouple swap cgroup recording and clearing")
+> > Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Implement the move.
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Suggested-by: Waiman Long <llong@redhat.com>
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+Looking at the original commit again, we also should do this:
+
 ---
- include/linux/cpuset.h         | 5 +++++
- include/linux/sched/topology.h | 2 --
- 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index 835e7b793f6a..c414daa7d503 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -125,6 +125,7 @@ static inline int cpuset_do_page_mem_spread(void)
- 
- extern bool current_cpuset_is_being_rebound(void);
- 
-+extern void dl_rebuild_rd_accounting(void);
- extern void rebuild_sched_domains(void);
- 
- extern void cpuset_print_current_mems_allowed(void);
-@@ -259,6 +260,10 @@ static inline bool current_cpuset_is_being_rebound(void)
- 	return false;
- }
- 
-+static inline void dl_rebuild_rd_accounting(void)
-+{
-+}
-+
- static inline void rebuild_sched_domains(void)
+From 2685ca87d73d0c2b91cfd6959e381a40db235119 Mon Sep 17 00:00:00 2001
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Thu, 6 Mar 2025 09:31:42 -0500
+Subject: [PATCH] mm: swap_cgroup: remove double initialization of locals
+
+Fixes: 6769183166b3 ("mm/swap_cgroup: decouple swap cgroup recording and clearing")
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/swap_cgroup.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/mm/swap_cgroup.c b/mm/swap_cgroup.c
+index 1007c30f12e2..de779fed8c21 100644
+--- a/mm/swap_cgroup.c
++++ b/mm/swap_cgroup.c
+@@ -92,8 +92,7 @@ void swap_cgroup_record(struct folio *folio, unsigned short id,
+  */
+ unsigned short swap_cgroup_clear(swp_entry_t ent, unsigned int nr_ents)
  {
- 	partition_sched_domains(1, NULL, NULL);
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 96e69bfc3c8a..51f7b8169515 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -166,8 +166,6 @@ static inline struct cpumask *sched_domain_span(struct sched_domain *sd)
- 	return to_cpumask(sd->span);
- }
- 
--extern void dl_rebuild_rd_accounting(void);
--
- extern void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
- 				    struct sched_domain_attr *dattr_new);
+-	pgoff_t offset = swp_offset(ent);
+-	pgoff_t end = offset + nr_ents;
++	pgoff_t offset, end;
+ 	struct swap_cgroup *map;
+ 	unsigned short old, iter = 0;
  
 -- 
 2.48.1
-
 
