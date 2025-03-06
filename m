@@ -1,179 +1,174 @@
-Return-Path: <cgroups+bounces-6869-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6870-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D7CAA556BC
-	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 20:32:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A006AA558E6
+	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 22:37:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7B7C189956A
-	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 19:32:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9E1517598B
+	for <lists+cgroups@lfdr.de>; Thu,  6 Mar 2025 21:37:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB24126FD8C;
-	Thu,  6 Mar 2025 19:28:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 855BE27602D;
+	Thu,  6 Mar 2025 21:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lFzXsnMB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="InQAUk11"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A13526989C
-	for <cgroups@vger.kernel.org>; Thu,  6 Mar 2025 19:28:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DB226D5B6
+	for <cgroups@vger.kernel.org>; Thu,  6 Mar 2025 21:36:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741289331; cv=none; b=uBTVoHzBHJBz4arhk1mIND+LCXoAsi+iMeVRrzwyoCV3bKSwveUKD2hL5+5uscV0A9qobLzTLEjGfRJ2DmqlKJmUi2wvkZdHaev1YGJqVaxHCu0O8FatDxJ0sgkVF5azI1GXqjN4+B/hIPrP3x4LzNkyAuzA1d3/K5zJz8WtsuQ=
+	t=1741297019; cv=none; b=gmH8++wJn8L3qqlcvhMMwZk//9GtZvICzrE0khx7WbKPUHFN/r/xvqmFgbvwEF5h64tD+rgRN5JCTPjmBVSFOUcOXJLC9XfKiFuXr7+aBt9iI3XbIsJpKYQuRg7RoAwvnEJ7/rI8Xgzum0I3d8eT9eANnyEpuSCVojphI/2UNDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741289331; c=relaxed/simple;
-	bh=5P9OBQihE6vticMcixiZe1rgPeCrnfEgyp97jjkqTe4=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=NMhwrYdpXuOosS06I31mgPfgsLyZTCRi5kc7HffB+0wc1ERsGQeuihLTdLL8xfAfi3nWOiIMNWNoqxfoI5Mxld2wqojubYuRjE7zPAQO+41NzuBmBrjCgApuHdDnm+l6qAy3K/nd3cGEYxd4l2rNwDbRqm1qBkKy86fj0/mVAZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lFzXsnMB; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741289329; x=1772825329;
-  h=date:from:to:cc:subject:message-id;
-  bh=5P9OBQihE6vticMcixiZe1rgPeCrnfEgyp97jjkqTe4=;
-  b=lFzXsnMBipG5TWuD4uuyQtKVi3lslfEvd7IKidpp39ojzhuPyYNrsvFg
-   PuVWiv54WEKMrbqqQBILkHB1jf56wyc0G4Aqe/14A6radZzXl9ko7scA+
-   1UWRKdfbmkPpK3qhN5B2QN60Y+00gwByprvpz+Cz6OSqziootwAyufqhf
-   2X4inKi253A54rXmJoWHcGqjkN9BIZ8ZKcERLaYfjWNp3vZ5wZTfKknYr
-   DbZpEQ6UoEzHnE7I2DsYXSwu7/Fw4L+cBaa4KLQOLKSrJYiMbsyhGYgt6
-   jNAHP82LA7yNBzb9ktxObKV63IHrfT8JUXqc64L1u0+OHELHkTDBsFKGi
-   Q==;
-X-CSE-ConnectionGUID: paSqUB36SVqbiVEgDE817A==
-X-CSE-MsgGUID: W9g+2Jx+SKqED+WXGnMcyA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11365"; a="52966798"
-X-IronPort-AV: E=Sophos;i="6.14,227,1736841600"; 
-   d="scan'208";a="52966798"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2025 11:28:48 -0800
-X-CSE-ConnectionGUID: A/SxbCEyQgKmbu1Kxz7naQ==
-X-CSE-MsgGUID: VJFgPSNDQOONVYhkVAfkvg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="119034764"
-Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
-  by orviesa010.jf.intel.com with ESMTP; 06 Mar 2025 11:28:48 -0800
-Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tqGth-000NWE-14;
-	Thu, 06 Mar 2025 19:28:45 +0000
-Date: Fri, 07 Mar 2025 03:28:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.15] BUILD SUCCESS
- c7461cca916756a017f584126b8be73e58d55e53
-Message-ID: <202503070356.2dNaX6TV-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1741297019; c=relaxed/simple;
+	bh=wh1r05yHf9HTqqcQGBS+eqAkB97E4OFPqomKvC+g0VI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TiZVI5z9M/fOF8vbCn4N/3qpO4SYj3PP21Bfxi5obr1uoBNBC3N2pc+dZ2nrfrUiecLSvMdZUSp9+owWiqqlA/YW9natNLqWngvUJN5l2vKEFLIesqoqq3jTX2Xic2pUd/P1KuHRYBGNdkeyDYsKQXh/71dzZLiZkcjAst2ZLmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=InQAUk11; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-223a7065ff8so27207815ad.0
+        for <cgroups@vger.kernel.org>; Thu, 06 Mar 2025 13:36:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741297017; x=1741901817; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3IINhDf6Fw8o56JcRJ5e+93kJRMpCcvNit2/JwcLDIY=;
+        b=InQAUk11qebHTCoARlYfpsEaKG76Q9cRAFkMRWWCVKUX6qwXqfMqlLFDCFDhhfhzev
+         1Y60p+nz1odA3xdCkTUF2oLnc3GWcsoelc/vMIOU2VcWBVTz+FtfyVqjHEFuIfjgSy1v
+         0nAc3X6kYV/nMAHuALNGe9HaGQiC3/iffmE/UWB64WEsOfo//ygbvt+iHg99k+hCQu1C
+         /AkQDJU5SAGqLuRVMxcSZn81og2V1Ins2tZh7b+aRYbtK0C9/nMOG1MmfZsU/WaPI79g
+         kCY5VQ75N5iuEEwHshLMNm1U37WtwvT189KarHL2owF9xBkX56mi4tUqAYuOZJyuiQan
+         nFIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741297017; x=1741901817;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3IINhDf6Fw8o56JcRJ5e+93kJRMpCcvNit2/JwcLDIY=;
+        b=CfzbgnpkUa10vf7AGUxDaOUGnKwineJRVo4MgDbtP2TyGIsy/mD4nDNdekDSskXzvQ
+         yv8V8093vuUIaJqtz7ccJG4RZl2SIizR9LMOKcBbYRpc8+xCM7H79dM186uZ1vwHM7a5
+         V+y//ogkVEsfnW74EH5ZB3u1H5pwGFjrfUuGvnfB1UAKAgQy916PDkgR0/3iFQyTaQ43
+         PW74/7IXILCV8ZklJyXz1KwMppKJHxpxN4dheR/1g7dWL35mLKU0uz80j+otvZwVgGiy
+         o5ceSHTxuhxUggG/REMhEyoAFAj5ObBgLhcAcGQx9ze9y2RCn/T4vfOR5Dq0aPUNTQ4Y
+         BCPw==
+X-Forwarded-Encrypted: i=1; AJvYcCXlJMCS7AzH5Dyc7ifUMjgub7trZuFog5d7e108rfIKGBZDaL0C2KZYDViZaYYjk+KA/yy+7EcQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YxS1p2kJwgtypRpp5btZopblGhZx6gma6kYne/NAapf7BOwF+6m
+	Uf1Kxrg9qy4P5PDw0n8zd7rjDPyu9ccbKevHQMfMzlL95pI6YNPv
+X-Gm-Gg: ASbGncuvNykK/e39783BIW2Fsym+g0gX3tRS6zyEyMaH8B8DaeolL98xOQAOPNykpSY
+	aIbw1S7ma2ZCPGzvkjwOlxQiLbzZo+lCJE+kJ7gRX0MLPtD1D1cwsaYiNM1mrZoqtlRkzXJhmbT
+	X/94x84QALF6a/77/GLBWeT0mKyQApgTjCNkkqXvfz8MLmGBSM0uAKWNQZjFy399nHMfW0JVsnl
+	lGLp9bufWo3YZ5q8mqGYdP9Fa5J7lW08OqMi96B6eWjzwe0RpZ9fon28JLdBMb3PYTe+sn0xto2
+	0oJVSXJJmRrWMaHzU+CdyIsihLxt5Sf0VRvhJ88mUAPz5T4w1MLgG9VasFc/hXR3SE4Ya7MBGno
+	m
+X-Google-Smtp-Source: AGHT+IFqnaevbR7EZaWbc3xQVjHKp7P167o0Y2c+WpwOmU4hO/E+hRo1NTbAPz8T9gCEEukaEoeIiA==
+X-Received: by 2002:a05:6a21:a45:b0:1f3:3864:bbd9 with SMTP id adf61e73a8af0-1f544acd522mr1761699637.5.1741297016950;
+        Thu, 06 Mar 2025 13:36:56 -0800 (PST)
+Received: from ?IPV6:2a03:83e0:1151:15:d431:c86b:892f:8e30? ([2620:10d:c090:500::6:d8b])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af287c2d533sm1223692a12.23.2025.03.06.13.36.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Mar 2025 13:36:56 -0800 (PST)
+Message-ID: <1dd79ba5-aebf-4e81-8aa0-5abdf063d124@gmail.com>
+Date: Thu, 6 Mar 2025 13:36:54 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4 v2] cgroup: separate rstat locks for subsystems
+To: Yosry Ahmed <yosry.ahmed@linux.dev>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: tj@kernel.org, shakeel.butt@linux.dev, mhocko@kernel.org,
+ hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, kernel-team@meta.com
+References: <20250227215543.49928-1-inwardvessel@gmail.com>
+ <20250227215543.49928-4-inwardvessel@gmail.com>
+ <n4pe2mks7idmyd5rg6o3d6ay75f3pf4bkwv4hcwkpa2jsryk6v@5d5r3wdiddil>
+ <Z8X1IfzdjbKEg5OM@google.com>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <Z8X1IfzdjbKEg5OM@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.15
-branch HEAD: c7461cca916756a017f584126b8be73e58d55e53  cgroup, docs: Be explicit about independence of RT_GROUP_SCHED and non-cpu controllers
+On 3/3/25 10:29 AM, Yosry Ahmed wrote:
+> On Mon, Mar 03, 2025 at 04:22:42PM +0100, Michal Koutný wrote:
+>> On Thu, Feb 27, 2025 at 01:55:42PM -0800, inwardvessel <inwardvessel@gmail.com> wrote:
+>>> From: JP Kobryn <inwardvessel@gmail.com>
+>> ...
+>>> +static inline bool is_base_css(struct cgroup_subsys_state *css)
+>>> +{
+>>> +	return css->ss == NULL;
+>>> +}
+>>
+>> Similar predicate is also used in cgroup.c (various cgroup vs subsys
+>> lifecycle functions, e.g. css_free_rwork_fn()). I think it'd better
+>> unified, i.e. open code the predicate here or use the helper in both
+>> cases (css_is_cgroup() or similar).
 
-elapsed time: 1455m
+Sure. Thanks for pointing that one out.
 
-configs tested: 86
-configs skipped: 2
+>>
+>>>   void __init cgroup_rstat_boot(void)
+>>>   {
+>>> -	int cpu;
+>>> +	struct cgroup_subsys *ss;
+>>> +	int cpu, ssid;
+>>>   
+>>> -	for_each_possible_cpu(cpu)
+>>> -		raw_spin_lock_init(per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu));
+>>> +	for_each_subsys(ss, ssid) {
+>>> +		spin_lock_init(&cgroup_rstat_subsys_lock[ssid]);
+>>> +	}
+>>
+>> Hm, with this loop I realize it may be worth putting this lock into
+>> struct cgroup_subsys_state and initializing them in
+>> cgroup_init_subsys() to keep all per-subsys data in one pack.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Will give this a go in next rev.
 
-tested configs:
-alpha                             allnoconfig    gcc-14.2.0
-alpha                            allyesconfig    gcc-14.2.0
-arc                              allmodconfig    gcc-13.2.0
-arc                               allnoconfig    gcc-13.2.0
-arc                              allyesconfig    gcc-13.2.0
-arc                   randconfig-001-20250306    gcc-13.2.0
-arc                   randconfig-002-20250306    gcc-13.2.0
-arm                              allmodconfig    gcc-14.2.0
-arm                               allnoconfig    clang-17
-arm                              allyesconfig    gcc-14.2.0
-arm                   randconfig-001-20250306    gcc-14.2.0
-arm                   randconfig-002-20250306    gcc-14.2.0
-arm                   randconfig-003-20250306    gcc-14.2.0
-arm                   randconfig-004-20250306    clang-18
-arm64                            allmodconfig    clang-18
-arm64                             allnoconfig    gcc-14.2.0
-arm64                 randconfig-001-20250306    gcc-14.2.0
-arm64                 randconfig-002-20250306    gcc-14.2.0
-arm64                 randconfig-003-20250306    gcc-14.2.0
-arm64                 randconfig-004-20250306    gcc-14.2.0
-csky                              allnoconfig    gcc-14.2.0
-csky                  randconfig-001-20250306    gcc-14.2.0
-csky                  randconfig-002-20250306    gcc-14.2.0
-hexagon                          allmodconfig    clang-21
-hexagon                           allnoconfig    clang-21
-hexagon                          allyesconfig    clang-18
-hexagon               randconfig-001-20250306    clang-21
-hexagon               randconfig-002-20250306    clang-19
-i386        buildonly-randconfig-001-20250306    clang-19
-i386        buildonly-randconfig-002-20250306    clang-19
-i386        buildonly-randconfig-003-20250306    clang-19
-i386        buildonly-randconfig-004-20250306    gcc-12
-i386        buildonly-randconfig-005-20250306    gcc-12
-i386        buildonly-randconfig-006-20250306    clang-19
-loongarch                         allnoconfig    gcc-14.2.0
-loongarch             randconfig-001-20250306    gcc-14.2.0
-loongarch             randconfig-002-20250306    gcc-14.2.0
-m68k                              allnoconfig    gcc-14.2.0
-microblaze                        allnoconfig    gcc-14.2.0
-mips                              allnoconfig    gcc-14.2.0
-nios2                             allnoconfig    gcc-14.2.0
-nios2                 randconfig-001-20250306    gcc-14.2.0
-nios2                 randconfig-002-20250306    gcc-14.2.0
-openrisc                          allnoconfig    gcc-14.2.0
-parisc                            allnoconfig    gcc-14.2.0
-parisc                randconfig-001-20250306    gcc-14.2.0
-parisc                randconfig-002-20250306    gcc-14.2.0
-powerpc                           allnoconfig    gcc-14.2.0
-powerpc               randconfig-001-20250306    clang-21
-powerpc               randconfig-002-20250306    clang-18
-powerpc               randconfig-003-20250306    gcc-14.2.0
-powerpc64             randconfig-001-20250306    clang-18
-powerpc64             randconfig-002-20250306    clang-21
-powerpc64             randconfig-003-20250306    clang-18
-riscv                             allnoconfig    gcc-14.2.0
-riscv                 randconfig-001-20250306    clang-18
-riscv                 randconfig-002-20250306    gcc-14.2.0
-s390                             allmodconfig    clang-19
-s390                              allnoconfig    clang-15
-s390                             allyesconfig    gcc-14.2.0
-s390                  randconfig-001-20250306    gcc-14.2.0
-s390                  randconfig-002-20250306    clang-19
-sh                               allmodconfig    gcc-14.2.0
-sh                               allyesconfig    gcc-14.2.0
-sh                    randconfig-001-20250306    gcc-14.2.0
-sh                    randconfig-002-20250306    gcc-14.2.0
-sparc                            allmodconfig    gcc-14.2.0
-sparc                 randconfig-001-20250306    gcc-14.2.0
-sparc                 randconfig-002-20250306    gcc-14.2.0
-sparc64               randconfig-001-20250306    gcc-14.2.0
-sparc64               randconfig-002-20250306    gcc-14.2.0
-um                               allmodconfig    clang-21
-um                                allnoconfig    clang-18
-um                               allyesconfig    gcc-12
-um                    randconfig-001-20250306    gcc-12
-um                    randconfig-002-20250306    clang-16
-x86_64                            allnoconfig    clang-19
-x86_64      buildonly-randconfig-001-20250306    gcc-11
-x86_64      buildonly-randconfig-002-20250306    clang-19
-x86_64      buildonly-randconfig-003-20250306    clang-19
-x86_64      buildonly-randconfig-004-20250306    clang-19
-x86_64      buildonly-randconfig-005-20250306    clang-19
-x86_64      buildonly-randconfig-006-20250306    gcc-12
-x86_64                              defconfig    gcc-11
-xtensa                randconfig-001-20250306    gcc-14.2.0
-xtensa                randconfig-002-20250306    gcc-14.2.0
+> 
+> I thought about this, but this would have unnecessary memory overhead as
+> we only need one lock per-subsystem. So having a lock in every single
+> css is wasteful.
+> 
+> Maybe we can put the lock in struct cgroup_subsys? Then we can still
+> initialize them in cgroup_init_subsys().
+> 
+>>
+>>> +
+>>> +	for_each_possible_cpu(cpu) {
+>>> +		raw_spin_lock_init(per_cpu_ptr(&cgroup_rstat_base_cpu_lock, cpu));
+>>> +
+>>> +		for_each_subsys(ss, ssid) {
+>>> +			raw_spin_lock_init(
+>>> +					per_cpu_ptr(cgroup_rstat_subsys_cpu_lock, cpu) + ssid);
+>>> +		}
+>>
+>> Similar here, and keep cgroup_rstat_boot() for the base locks only.
+> 
+> I think it will be confusing to have cgroup_rstat_boot() only initialize
+> some of the locks.
+> 
+> I think if we initialize the subsys locks in cgroup_init_subsys(), then
+> we should open code initializing the base locks in cgroup_init(), and
+> remove cgroup_rstat_boot().
+> 
+> Alternatively, we can make cgroup_rstat_boot() take in a subsys and
+> initialize its lock. If we pass NULL, then it initialize the base locks.
+> In this case we can call cgroup_rstat_boot() for each subsystem that has
+> an rstat callback in cgroup_init() (or cgroup_init_subsys()), and then
+> once for the base locks.
+> 
+> WDYT?
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I like this alternative idea of adjusting cgroup_rstat_boot() so it can
+accept a subsys ref. Let's see how it looks when v3 goes out.
 
