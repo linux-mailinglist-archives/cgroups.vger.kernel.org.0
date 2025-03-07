@@ -1,148 +1,272 @@
-Return-Path: <cgroups+bounces-6883-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6884-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82E0CA56329
-	for <lists+cgroups@lfdr.de>; Fri,  7 Mar 2025 10:03:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 647D7A56339
+	for <lists+cgroups@lfdr.de>; Fri,  7 Mar 2025 10:06:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2CD91894E1A
-	for <lists+cgroups@lfdr.de>; Fri,  7 Mar 2025 09:03:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36AC43B2250
+	for <lists+cgroups@lfdr.de>; Fri,  7 Mar 2025 09:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD52D1DE3AB;
-	Fri,  7 Mar 2025 09:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NmH0zNM0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81C31DE2CC;
+	Fri,  7 Mar 2025 09:06:38 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF704642D;
-	Fri,  7 Mar 2025 09:02:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A117199E94;
+	Fri,  7 Mar 2025 09:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741338179; cv=none; b=ZVwQIE287m5Gg+naLNXJSHZ9MvO5H2UjCYmWcMUduzpH3g2kvnm6hrt84aArq5kTT583UWcV0zkaDpflV1VEivvQeVoXsMckpo+KEwe2Tx/h1jTCGoQbiPQL5UC83WPvj1F91MoSp+48i9H9gweFrVnG9tZXmKa05nWaQayR4bc=
+	t=1741338398; cv=none; b=Ad8SnuB66UBXgRNyYGbcSgD2ffyVhwVHuEQ1iNpni7UWGp8+FGOSJrpxGEPx4BJmqJNhG46IV4SveobgtC8o/W8ZbnopACg5aXf+w+u9dIKlUOYo6F8sC3ST15Se3qtJy/aPUTHpecN9BMpXFBSZkMjreban4i6CwXU4fqGyVn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741338179; c=relaxed/simple;
-	bh=eV3n2HAcmSw+Vwc1yMcQjLfUT+MAq7suMInx0fD4LQw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UPuy5la9L6JH00fq/6coqwewYvy3fZbRxKCJ5FR4JqM0OENRo3Aqz02XE0ks/r/ug2IJZK/bPkU2GOE0S1G2l4hSiFV8SrcBJDvh2q0U/201E9fYavgrMGpWfKBMj5SjQe1pdiJTJ7vKE9WucgBbx01Qrkr4O/yf+fgbPP/vvnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=NmH0zNM0; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5273kG32017968;
-	Fri, 7 Mar 2025 09:02:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=NEH/IN
-	zjebO8vGISVxFxMe3qFzWDvkkJzI+MLGJy0Rc=; b=NmH0zNM0cAPL357cqUo5W5
-	5AAeJfueNoxdF22XahOaGO2/tWmox3Jj4AztThxImTw/iyCXh5CHLdC1/xh2NsKB
-	XCS38QeLlvfwuwNizR7fdig9NUaE88ypXRICugxjPy1JwktRQ6QBMfzi7dk03kxz
-	eAu7e0SeLdVRnXor9RV2E60McjKPdn4msE9vaaPSK+m/+X+JWWrj+XFf0zeLNkwh
-	YizqhteGK+inb4zBXb6wD7Sx7Dgva5/iQNxvbObmPPMQ1M7SzY7YOA73iyIBn7f6
-	y3whA8au1CMvoUQXFrrq64nkuRhvABz0KMN63Kv1GVDYszesxf77upedaTwFzugw
-	==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 457s6a19tk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 07 Mar 2025 09:02:43 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5277HxXv025044;
-	Fri, 7 Mar 2025 09:02:42 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 454f92dbtk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 07 Mar 2025 09:02:42 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52792fEd41943414
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 7 Mar 2025 09:02:41 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E517F20040;
-	Fri,  7 Mar 2025 09:02:40 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 98F9D2004B;
-	Fri,  7 Mar 2025 09:02:36 +0000 (GMT)
-Received: from [9.124.218.213] (unknown [9.124.218.213])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  7 Mar 2025 09:02:36 +0000 (GMT)
-Message-ID: <ab67eb4d-0940-4278-b84f-20dbaf0560cf@linux.ibm.com>
-Date: Fri, 7 Mar 2025 14:32:35 +0530
+	s=arc-20240116; t=1741338398; c=relaxed/simple;
+	bh=HGOVik4p9v3ak8rxb1sEyoauH9teQ1vQw9f36MUssQM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HyR48n+klyxFkwlEIWzDR/LuZfSFzJ4/VOo6iLTg9jWOV7cKadgsE8Ape6J8hyJfM/9br2Ia8JeDAB/DJ9Ooi0NyrjwI2AaB+eJUKLr7ZDmF476tDezPCZXrhixt/L+uWKyzZ/X6PV2kV1qbF4G30lXRuXUoH+oc/9yqvxgD5N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Z8L4H3YMtz4f3jXP;
+	Fri,  7 Mar 2025 17:06:07 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id AA2451A0ACF;
+	Fri,  7 Mar 2025 17:06:29 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgAni18St8pnW0QrFw--.36042S4;
+	Fri, 07 Mar 2025 17:06:28 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: ming.lei@redhat.com,
+	axboe@kernel.dk,
+	tj@kernel.org,
+	josef@toxicpanda.com
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH] blk-throttle: support io merge over iops_limit
+Date: Fri,  7 Mar 2025 17:01:52 +0800
+Message-Id: <20250307090152.4095551-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/8] sched/topology: Wrappers for sched_domains_mutex
-To: Juri Lelli <juri.lelli@redhat.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
-        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>,
-        Qais Yousef <qyousef@layalina.io>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Swapnil Sapkal <swapnil.sapkal@amd.com>, Phil Auld <pauld@redhat.com>,
-        luca.abeni@santannapisa.it, tommaso.cucinotta@santannapisa.it,
-        Jon Hunter <jonathanh@nvidia.com>
-References: <20250306141016.268313-1-juri.lelli@redhat.com>
- <20250306141016.268313-3-juri.lelli@redhat.com>
- <6894861a-4a40-4c6d-8f48-997b999f5778@linux.ibm.com>
- <Z8q0Alpk8AXbGxgW@jlelli-thinkpadt14gen4.remote.csb>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-Content-Language: en-US
-In-Reply-To: <Z8q0Alpk8AXbGxgW@jlelli-thinkpadt14gen4.remote.csb>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fD1SQWSDcbG-VxvWoKrq5-xBE3Qrc7vD
-X-Proofpoint-ORIG-GUID: fD1SQWSDcbG-VxvWoKrq5-xBE3Qrc7vD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-07_03,2025-03-06_04,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- mlxlogscore=854 adultscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2502100000
- definitions=main-2503070064
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgAni18St8pnW0QrFw--.36042S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3AFy3WF15XF48KF4xAFy8Grg_yoWxWw18pF
+	WjyF4UAws7XF4vgFZ8J3WfJFWFqwsrA343G3y5Gw4fAFnIgrn5tF1kZryFvFW0vFZ3uFZ7
+	AF1IgwnrGF48trJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
+From: Yu Kuai <yukuai3@huawei.com>
 
+Commit 9f5ede3c01f9 ("block: throttle split bio in case of iops limit")
+support to account split IO for iops limit, because block layer provides
+io accounting against split bio.
 
-On 3/7/25 14:23, Juri Lelli wrote:
-> Hi,
-> 
-> Thanks for the overall review!
-> 
-> On 07/03/25 12:04, Shrikanth Hegde wrote:
->> Hi Juri.
->>
->> On 3/6/25 19:40, Juri Lelli wrote:
->>> Create wrappers for sched_domains_mutex so that it can transparently be
->>> used on both CONFIG_SMP and !CONFIG_SMP, as some function will need to
->>> do.
-> 
-> ...
-> 
->> Maybe sched_domains_mutex can be static since its only used in topology.c ?
-> 
-> We have a lockdep_assert in cpuset.c, don't we? We can create another
-> wrapper for that, but I am not sure it is going to be cleaner.
+However, io merge is still not handled, while block layer doesn't
+account merged io for iops. Fix this problem by decreasing io_disp
+if bio is merged, and following IO can use the extra budget. If io merge
+concurrent with iops throttling, it's not handled if one more or one
+less bio is dispatched, this is fine because as long as new slice is not
+started, blk-throttle already preserve one extra slice for deviation,
+and it's not worth it to handle the case that iops_limit rate is less than
+one per slice.
 
-Ok. Sorry, my bad. I searched only in kernel/sched. You can ignore this 
-comment.
+A regression test will be added for this case [1], before this patch,
+the test will fail:
 
-> 
-> Thanks,
-> Juri
-> 
++++ /root/blktests-mainline/results/nodev/throtl/007.out.bad
+@@ -1,4 +1,4 @@
+ Running throtl/007
+ 1
+-1
++11
+ Test complete
+
+[1] https://lore.kernel.org/all/20250307080318.3860858-2-yukuai1@huaweicloud.com/
+
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ block/blk-merge.c    |  3 +++
+ block/blk-throttle.c | 20 ++++++++++----------
+ block/blk-throttle.h | 19 +++++++++++++++++--
+ 3 files changed, 30 insertions(+), 12 deletions(-)
+
+diff --git a/block/blk-merge.c b/block/blk-merge.c
+index 15cd231d560c..8dc7add7c31e 100644
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -988,6 +988,7 @@ enum bio_merge_status bio_attempt_back_merge(struct request *req,
+ 
+ 	trace_block_bio_backmerge(bio);
+ 	rq_qos_merge(req->q, req, bio);
++	blk_throtl_bio_merge(req->q, bio);
+ 
+ 	if ((req->cmd_flags & REQ_FAILFAST_MASK) != ff)
+ 		blk_rq_set_mixed_merge(req);
+@@ -1025,6 +1026,7 @@ static enum bio_merge_status bio_attempt_front_merge(struct request *req,
+ 
+ 	trace_block_bio_frontmerge(bio);
+ 	rq_qos_merge(req->q, req, bio);
++	blk_throtl_bio_merge(req->q, bio);
+ 
+ 	if ((req->cmd_flags & REQ_FAILFAST_MASK) != ff)
+ 		blk_rq_set_mixed_merge(req);
+@@ -1055,6 +1057,7 @@ static enum bio_merge_status bio_attempt_discard_merge(struct request_queue *q,
+ 		goto no_merge;
+ 
+ 	rq_qos_merge(q, req, bio);
++	blk_throtl_bio_merge(q, bio);
+ 
+ 	req->biotail->bi_next = bio;
+ 	req->biotail = bio;
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 91dab43c65ab..9fd613c79caa 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -477,7 +477,7 @@ static inline void throtl_start_new_slice_with_credit(struct throtl_grp *tg,
+ 		bool rw, unsigned long start)
+ {
+ 	tg->bytes_disp[rw] = 0;
+-	tg->io_disp[rw] = 0;
++	atomic_set(&tg->io_disp[rw], 0);
+ 
+ 	/*
+ 	 * Previous slice has expired. We must have trimmed it after last
+@@ -500,7 +500,7 @@ static inline void throtl_start_new_slice(struct throtl_grp *tg, bool rw,
+ {
+ 	if (clear) {
+ 		tg->bytes_disp[rw] = 0;
+-		tg->io_disp[rw] = 0;
++		atomic_set(&tg->io_disp[rw], 0);
+ 	}
+ 	tg->slice_start[rw] = jiffies;
+ 	tg->slice_end[rw] = jiffies + tg->td->throtl_slice;
+@@ -623,10 +623,10 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
+ 	else
+ 		tg->bytes_disp[rw] = 0;
+ 
+-	if ((int)tg->io_disp[rw] >= io_trim)
+-		tg->io_disp[rw] -= io_trim;
++	if (atomic_read(&tg->io_disp[rw]) >= io_trim)
++		atomic_sub(io_trim, &tg->io_disp[rw]);
+ 	else
+-		tg->io_disp[rw] = 0;
++		atomic_set(&tg->io_disp[rw], 0);
+ 
+ 	tg->slice_start[rw] += time_elapsed;
+ 
+@@ -655,9 +655,9 @@ static void __tg_update_carryover(struct throtl_grp *tg, bool rw,
+ 			tg->bytes_disp[rw];
+ 	if (iops_limit != UINT_MAX)
+ 		*ios = calculate_io_allowed(iops_limit, jiffy_elapsed) -
+-			tg->io_disp[rw];
++			atomic_read(&tg->io_disp[rw]);
+ 	tg->bytes_disp[rw] -= *bytes;
+-	tg->io_disp[rw] -= *ios;
++	atomic_sub(*ios, &tg->io_disp[rw]);
+ }
+ 
+ static void tg_update_carryover(struct throtl_grp *tg)
+@@ -691,7 +691,7 @@ static unsigned long tg_within_iops_limit(struct throtl_grp *tg, struct bio *bio
+ 	/* Round up to the next throttle slice, wait time must be nonzero */
+ 	jiffy_elapsed_rnd = roundup(jiffy_elapsed + 1, tg->td->throtl_slice);
+ 	io_allowed = calculate_io_allowed(iops_limit, jiffy_elapsed_rnd);
+-	if (io_allowed > 0 && tg->io_disp[rw] + 1 <= io_allowed)
++	if (io_allowed > 0 && atomic_read(&tg->io_disp[rw]) + 1 <= io_allowed)
+ 		return 0;
+ 
+ 	/* Calc approx time to dispatch */
+@@ -815,7 +815,7 @@ static void throtl_charge_bio(struct throtl_grp *tg, struct bio *bio)
+ 	if (!bio_flagged(bio, BIO_BPS_THROTTLED))
+ 		tg->bytes_disp[rw] += bio_size;
+ 
+-	tg->io_disp[rw]++;
++	atomic_inc(&tg->io_disp[rw]);
+ }
+ 
+ /**
+@@ -1679,7 +1679,7 @@ bool __blk_throtl_bio(struct bio *bio)
+ 		   rw == READ ? 'R' : 'W',
+ 		   tg->bytes_disp[rw], bio->bi_iter.bi_size,
+ 		   tg_bps_limit(tg, rw),
+-		   tg->io_disp[rw], tg_iops_limit(tg, rw),
++		   atomic_read(&tg->io_disp[rw]), tg_iops_limit(tg, rw),
+ 		   sq->nr_queued[READ], sq->nr_queued[WRITE]);
+ 
+ 	td->nr_queued[rw]++;
+diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+index 7964cc041e06..7e5f50c6bb19 100644
+--- a/block/blk-throttle.h
++++ b/block/blk-throttle.h
+@@ -104,7 +104,7 @@ struct throtl_grp {
+ 	/* Number of bytes dispatched in current slice */
+ 	int64_t bytes_disp[2];
+ 	/* Number of bio's dispatched in current slice */
+-	int io_disp[2];
++	atomic_t io_disp[2];
+ 
+ 	/*
+ 	 * The following two fields are updated when new configuration is
+@@ -144,6 +144,8 @@ static inline struct throtl_grp *blkg_to_tg(struct blkcg_gq *blkg)
+ static inline void blk_throtl_exit(struct gendisk *disk) { }
+ static inline bool blk_throtl_bio(struct bio *bio) { return false; }
+ static inline void blk_throtl_cancel_bios(struct gendisk *disk) { }
++static inline void blk_throtl_bio_merge(struct request_queue *q,
++					struct bio *bio) { }
+ #else /* CONFIG_BLK_DEV_THROTTLING */
+ void blk_throtl_exit(struct gendisk *disk);
+ bool __blk_throtl_bio(struct bio *bio);
+@@ -189,12 +191,25 @@ static inline bool blk_should_throtl(struct bio *bio)
+ 
+ static inline bool blk_throtl_bio(struct bio *bio)
+ {
+-
+ 	if (!blk_should_throtl(bio))
+ 		return false;
+ 
+ 	return __blk_throtl_bio(bio);
+ }
++
++static inline void blk_throtl_bio_merge(struct request_queue *q,
++					struct bio *bio)
++{
++	struct throtl_grp *tg;
++	int rw = bio_data_dir(bio);
++
++	if (!blk_throtl_activated(bio->bi_bdev->bd_queue))
++		return;
++
++	tg = blkg_to_tg(bio->bi_blkg);
++	if (tg->has_rules_iops[rw])
++		atomic_dec(&tg->io_disp[rw]);
++}
+ #endif /* CONFIG_BLK_DEV_THROTTLING */
+ 
+ #endif
+-- 
+2.39.2
 
 
