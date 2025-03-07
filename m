@@ -1,161 +1,226 @@
-Return-Path: <cgroups+bounces-6886-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6887-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50F54A5640D
-	for <lists+cgroups@lfdr.de>; Fri,  7 Mar 2025 10:36:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7AE4A566F1
+	for <lists+cgroups@lfdr.de>; Fri,  7 Mar 2025 12:41:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B8BE17841A
-	for <lists+cgroups@lfdr.de>; Fri,  7 Mar 2025 09:35:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6F737A7C4C
+	for <lists+cgroups@lfdr.de>; Fri,  7 Mar 2025 11:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8B820DD7E;
-	Fri,  7 Mar 2025 09:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA874217719;
+	Fri,  7 Mar 2025 11:41:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UaAWHSjU"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="q4zIk+07"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2059.outbound.protection.outlook.com [40.107.243.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 636BE20B209
-	for <cgroups@vger.kernel.org>; Fri,  7 Mar 2025 09:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741340043; cv=none; b=T6wiLl9wrIILeqpbNMW8HdDzRd0ZIA5/0L8quw6074VAtdyjnC0DLKeUOrMLZD839bLIZceEaoCPueyX0idetmy/us8g0tbDMIIVnuC77s6hMbDo5Mh9exyTNLLJWgAfbstOauwaNCQi3ohBZYyYJyy+Bo6ARGXJjMlPJfz30L4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741340043; c=relaxed/simple;
-	bh=Ypb9lH57vm+WjVbRerOzUIkxUzGc7i5IMTgs/vJz0zQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ASIaHzIiJ7/xo8fmjicD3jPU9yaLcvwYPi41cEgFCmScUZI7bp3VbO1cwDX6u54wAQh0jCSEvFXx39oJBU2NszYe89a1JfZD74AOjtSDhN4qYv6kzUhXAK9ea3Alw28jb44pHw+npK8PWmiVncJ1EoyNkz8pCyN9A9p5B+RHTy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UaAWHSjU; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741340040;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jVEOIfEn4WDZ5RzbzaumI6wBZHn7khG5qOmcjQFY/34=;
-	b=UaAWHSjU0Q8ulYb2mycdhFtmRU4xYKRh4rcpiwrq1zaQM6sF9SDkCjGhmE7WOm9lUmPsE2
-	0alucV5kCDu2EAIClaHw+AUArZTOjT2Jmmu1Z+ymPngE4ESOFTuAThqnv6PUU7JsPwMbj+
-	o9nzhNbO2qR5Z1KEhzrLe8C0Q0i1cDk=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-690-CDROTf8tNv66BW9y_JipiQ-1; Fri, 07 Mar 2025 04:33:56 -0500
-X-MC-Unique: CDROTf8tNv66BW9y_JipiQ-1
-X-Mimecast-MFC-AGG-ID: CDROTf8tNv66BW9y_JipiQ_1741340036
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-6e8fb5a7183so28214666d6.1
-        for <cgroups@vger.kernel.org>; Fri, 07 Mar 2025 01:33:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741340036; x=1741944836;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jVEOIfEn4WDZ5RzbzaumI6wBZHn7khG5qOmcjQFY/34=;
-        b=phqDW6nb+76wBSEscAh9BltQq89T1rcl8oxTpWnPCp0hvFaGCGhVnpkDPmTrxck2p8
-         LbXa+OUA/v5ROBUoj0sM8/i/r8cDmDnz3g0bww6Q7wt5D5W3TptZFyDhH1e7UYqbvUFK
-         IADv9cCwO2fPwqnAVwTjmJS4Fmw1WZnWje9D6iUM/FjB0vUzQnIeuEr5A4mXnSSebfBO
-         7g9EnpNnLDwJlXzN47O+FKpb3yK2MljWPtHLAtiaeRcqqj5ebcskmmRjiZLu+pwcxNS3
-         EOUlxKjbe/OuEHqDgork6131kJco5/ctkHTHn8XlmRsYm+BJxGCbVaDRMerdNofCYGjt
-         sAeg==
-X-Forwarded-Encrypted: i=1; AJvYcCXdwJOunleYx+899q+7Hm7zIcR4/tB9n1Oqza/CUZ8fyTlzhDmSudHy2xyeCm247YWKWGYNCluZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YyckA7LIKxUrHwNholVIWYdMdnQ38F9bEzuyICZqMz0P+aXz6k6
-	82xHMQPhDTuLguv5MYf2ioD4GbZovudTh8ww3JxuHGQ+9nDzrDuuTu2CcfACvCD9zWB+hxXwBZg
-	hYHylPkYZWpQTLGlGoKSOIeiNepZ4zfh6oclh2oMeai2yQbGWtpU+6BI=
-X-Gm-Gg: ASbGnctNQ3Ra30eunynLVXaghw4qf3aSmquwg1DsPd5Tno+4bCOMkdt1XVluGEth3mj
-	w/IFsxvH2AgzWa+ySDoKW3EPhKoSX3nhA/NdznZWFAERkcGk/BJJwLdYrHrRta7dbumlJGyzTXs
-	ASt4dcr4z+E5Bv/+R22RFWY7yoJKyHsa+3UMOHqNOdsOlnQn1CTvhfyAH5e0RmBePLzjV882mL8
-	5F7KNVV5leWYoFlPU7j7bL264mvgwaxB3Sb9IyjM95VfeatMhbTqDOH7XNK/mKT64vr/DYUilCQ
-	JsuCb7ORAlNEMWF08Fyx6EK0wmlgMhuqSMy5A90TgzzCtgHoW1LCo2qU1VSpXTyo29U6aYMBErw
-	t8u7Q
-X-Received: by 2002:ad4:5d65:0:b0:6e8:89bd:2b50 with SMTP id 6a1803df08f44-6e900604760mr33987756d6.7.1741340035817;
-        Fri, 07 Mar 2025 01:33:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHyw0MIlPz6JSxN4+Pj2WN6QeNWdmbKWHxOQqdc5jlEBKq4ZYwIpIMz5BhiL2wU0DVNM6In+g==
-X-Received: by 2002:ad4:5d65:0:b0:6e8:89bd:2b50 with SMTP id 6a1803df08f44-6e900604760mr33987556d6.7.1741340035522;
-        Fri, 07 Mar 2025 01:33:55 -0800 (PST)
-Received: from jlelli-thinkpadt14gen4.remote.csb (host-89-240-117-139.as13285.net. [89.240.117.139])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e8f7090c4csm17736036d6.33.2025.03.07.01.33.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Mar 2025 01:33:54 -0800 (PST)
-Date: Fri, 7 Mar 2025 09:33:49 +0000
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41E5213252;
+	Fri,  7 Mar 2025 11:41:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741347662; cv=fail; b=LRtkw26N3bjN+jK9F+iw5K8vdmRvxcXqltd+RxU7IEG1EzvVlVZIEnyeJJjqOE1lpplcHjPuWN31XolRdsTEVehoeQXD2v6KJPWHxd7gDWuzfu9cCfaqUXOA61qmsCYcze3jF/bZQtyIdF4PsrYb3PZZ7nYPr9fFC5w0f8tOoas=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741347662; c=relaxed/simple;
+	bh=eQRXkdrhiUiW3RKWDoGGdPFPupVcFsV78JF69FSsxD0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=c28L2H1WULlWyXuQVbnegE0JVUFubDWF0x/cwQ9vCyWQgpOGnfn3yf1KhvL7DcovhuYNd57gI1mbH3El72MbYvVaXwn6UcTMUq+VGpFuBDKgx2o8WjPrVbDciWO9zW+xQIKmkOxulEHcdFdS+SB9WFafsJ2UJhK/ZtSELostgdQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=q4zIk+07; arc=fail smtp.client-ip=40.107.243.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=QUA+5yOmo1fMQeuzWapRayXxk5vDK5DgoGYm+iXL2vYseMkHy354shVp6lJBDhFHttdiw7m7CfT8lDgbUJ37yef1j4k8FT6fRQM35LyJrgPS+3wZbqZlRk1HMZ4KZnSl7hsZmUoS6gtKip28bGSxZIi1rNe/bljexllUbLD+8mXxNHlItp9ShKmH46XMBtm+WvynTvoySLeUtcH6kJ6Xkn535b9L6Ym6w+fpHgHAOysNo8BQF53l3RxUX6h0iRmbs91p9xuP1SeNnjZ97Tq7/JNJSbJ35FLm3JMU+WLSH2jWiK/5vS1RIJc7IJQP0jW2dfLRoYTGIjXUf5p4MU7kZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hpyz9aZ/iUy3dPzmCYPNk2UM9/reJ9xzPlwEVQkFiKM=;
+ b=r5rb5yNrsZx+oE6JN56tV6B0vDs4nnyfd0JSX6u/tvuAxlR3Mkd9gEocFfB2VxqmxiqYMNtSfZtrymvZRdmPjdCxA+PpRDbRH4bx4d1G2Lv/F2g8J6i8Xqd1s1dhGrzjQYO94r0jE7JmK5+BZYjlwvDiEn1PFbe7ae/ArmInyFxD7mDdQpEF7suV5U6wniV2tq+dQGr7OiC6OXUnb8PQsyjyak5HmBVrXcDZSjxdzoWmqXEdI4TDCllxQs+1gaar1ulRHikAwO6ngnHP9cxWQZPsPjaEN+quDG1iOAc7VwxQzRWWEaAOXIvS7jXSMudzq2JzCAa6DUIj0ZYG68fHRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hpyz9aZ/iUy3dPzmCYPNk2UM9/reJ9xzPlwEVQkFiKM=;
+ b=q4zIk+07RpYuPLcTLTi9elHulAd+iNN7lWEPUNiwQQvQL5kW9E89C5PL0++3kdSo6/wC60xT34hHO1fseQ68Ujoi9EPG7ceEPeLI5sGYPn0Qja6bApyevWEFdx4+vzJsacBQheEuT5AJ8vFc9+Oi4YRjhgxIwBZmmN3j6GCJeT0aJFBCI4xTCvSD5vqKEUOFwX1uAR1XW6jNbpnCy/TbOFVr1edHcQiOViJjKLLxAUcQZtLoAYYHmPJXtZpvLmpawAtydOge1H88Bjqf1lv9f88oqYKuoQB1esUklE9W5nUJpZOdhb01kXYUCBqAy5p1ldXn2rL2ke1XzR2DYDIkGA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SJ2PR12MB8784.namprd12.prod.outlook.com (2603:10b6:a03:4d0::11)
+ by MN2PR12MB4336.namprd12.prod.outlook.com (2603:10b6:208:1df::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.23; Fri, 7 Mar
+ 2025 11:40:58 +0000
+Received: from SJ2PR12MB8784.namprd12.prod.outlook.com
+ ([fe80::1660:3173:eef6:6cd9]) by SJ2PR12MB8784.namprd12.prod.outlook.com
+ ([fe80::1660:3173:eef6:6cd9%6]) with mapi id 15.20.8511.017; Fri, 7 Mar 2025
+ 11:40:57 +0000
+Message-ID: <5cffdf8b-2670-4b46-9434-8024e18e4750@nvidia.com>
+Date: Fri, 7 Mar 2025 11:40:50 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/8] Fix SCHED_DEADLINE bandwidth accounting during
+ suspend
+To: Juri Lelli <juri.lelli@redhat.com>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org
 Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Qais Yousef <qyousef@layalina.io>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Swapnil Sapkal <swapnil.sapkal@amd.com>, cgroups@vger.kernel.org,
-	Phil Auld <pauld@redhat.com>, luca.abeni@santannapisa.it,
-	linux-kernel@vger.kernel.org, tommaso.cucinotta@santannapisa.it,
-	Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH v2 4/8] sched/deadline: Rebuild root domain accounting
- after every update
-Message-ID: <Z8q9fY0DDzVsc4Yb@jlelli-thinkpadt14gen4.remote.csb>
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Qais Yousef <qyousef@layalina.io>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Swapnil Sapkal <swapnil.sapkal@amd.com>,
+ Shrikanth Hegde <sshegde@linux.ibm.com>, Phil Auld <pauld@redhat.com>,
+ luca.abeni@santannapisa.it, tommaso.cucinotta@santannapisa.it,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
 References: <20250306141016.268313-1-juri.lelli@redhat.com>
- <20250306141016.268313-5-juri.lelli@redhat.com>
- <2926c843-62e6-419b-a045-e49bdd0b0b97@linux.ibm.com>
+From: Jon Hunter <jonathanh@nvidia.com>
+Content-Language: en-US
+In-Reply-To: <20250306141016.268313-1-juri.lelli@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P265CA0201.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:318::10) To SJ2PR12MB8784.namprd12.prod.outlook.com
+ (2603:10b6:a03:4d0::11)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2926c843-62e6-419b-a045-e49bdd0b0b97@linux.ibm.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR12MB8784:EE_|MN2PR12MB4336:EE_
+X-MS-Office365-Filtering-Correlation-Id: 54a73a87-429c-4c6d-c357-08dd5d6ced26
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|10070799003|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?WEhNbi8xQ2w5SmJGMVlHdldJSUxOTWl0MkhPVDZHeWJaaWJOU2JhUEwyVlAy?=
+ =?utf-8?B?cElDR2I5VTN5QmpTM25GSEV1UjRuUUc0TU9HVUJ0dHZsRnRKdXJLMWlBaWhi?=
+ =?utf-8?B?NVpHblZxMy9Idlp2RmhCYTZwRVIzOWo1bm52bTVnV2RyQ2dmME51aXFVZlJV?=
+ =?utf-8?B?Wi9CM1Y1OGg1ZHZIdE5pWmFvM2VKemdKdnc0UFRWWktqYks3VjBZSHJxYXQz?=
+ =?utf-8?B?bTN0OXV0TG9mNTc0eFcwTmI3TVNGMk9NWStmRlJldVN2dk5wVTRiZVhlcS9N?=
+ =?utf-8?B?Q1V3LzBiemwwcjlqU2dPcWJ6WU9oM3RJM1ZLV2svM3FuaW1UZlA2b3Vzbk8w?=
+ =?utf-8?B?ZnJTeWtXZTBMcWcwOU5md0NucXRQYWxleWNxNHVqZFhoWFM4NUdkNDJKZlBk?=
+ =?utf-8?B?LytDeFFKdkx6eUU2RDVma3lvZDllNjRHQ1E1dlhTTEhabzBFQndQUjduczRm?=
+ =?utf-8?B?aElJNWdmdm9DblozWUhuUHZJVG9ZdVdBeHY0UFlhbncza1V0ZVc0RU9lY00r?=
+ =?utf-8?B?OWJuWDhFN0Fmd1lHSTJHUWNLQzN3NTBjQnA3VzRTV2Q2VCtGdDducFlXR0l0?=
+ =?utf-8?B?RXpBSk1jQmlOQk5JeUowVmpLMnllcHJNa1FIOS81T0FHT0dTZDllSmNHZVpo?=
+ =?utf-8?B?akNRdnNXVzVqTmNRTFJNWFBGRDkxV0o5ZlNOb2V6RG1MUnFzUDNLYTRRN1dQ?=
+ =?utf-8?B?ZHl5MzhQVHhvd1Z3a3RwbjVlMWZaeEVlSU5SUjRHSE00dHlBRytSTDVFaTFR?=
+ =?utf-8?B?S0h0SldrRDlpb2lvUExOOCtyTlJOMGVDcGVReVNvUm43SkZ6bEt0Q1ZyN2xM?=
+ =?utf-8?B?YllkQ1pMSjNZUTRxa3o3STdPSXozclV4Qmd0d3Q2bTdYMXhpYVNuUEZXMHZu?=
+ =?utf-8?B?T2czeTNLY2FIZjJPSXo0TFczTCtTVmFIVHpNaUVqVkRrWXlGdWF2bmNXNGlQ?=
+ =?utf-8?B?YnlHRGpCdWRVeGdXdDVZbXdPYTcrR0UxNVB2L0RGMjFqYnFCK0NEZmU0ckM2?=
+ =?utf-8?B?TzM4aUEyTGlGeTIxTWRYb3hmMW5CdG5hM0IrQWJUUTAyTU8wai81N3VQUmo4?=
+ =?utf-8?B?djhpZ1g0cldpcks4bEx5WmNxMFFoSURxU1pvK01rS3FmQzJkSWJMdjJYajBs?=
+ =?utf-8?B?R2diZzNjdkJMYjcyZThYSVpmdTFsaEZPZ0FadW8wQUdYcTlJNjB6eWpPVHI5?=
+ =?utf-8?B?MnU2bGJUTTVSS2NFYTdyekZpRFhmVmdLQlFnOW5TTFpsV2FCbkgvSG9NQ2dN?=
+ =?utf-8?B?YUMraUhTWTFaMmpHaXl2QjhQR2JFcnNMRkxnQWJUN2pJcExSYXlpdWR4TFVJ?=
+ =?utf-8?B?UlNINWI5YjhYR2h4Y3k5TTIyYkFzdUJDUmNsMGVYK2s1YUpEVGhnemVCZzlV?=
+ =?utf-8?B?V2RqclpmOTh4c0h0aWRCY2NieVhoc1d0Z2JUN0tsY05DUExHdVlXVXA0aSt0?=
+ =?utf-8?B?eFdlRVlQT1pEb3MrRmcyRXU3WjJNZFN3cjZzZUxtSjR3bmNrRkt6MzJDdTRT?=
+ =?utf-8?B?QWM0ZUNlWmVORUZ4Vys4WVdtODZncUc0M2QwQVl3MUdNbC9TVGowMnpLT0hL?=
+ =?utf-8?B?Skx0RHhuSjJLdXYyRTl1V2V1dXZRYkpwZkN5YTdLZnp2TmluTnlvUHZMN3h6?=
+ =?utf-8?B?T3YwbFQ3TWxjUEMrNWZucjlRSjlka010VlpnT1F4Z1RmNE5TRWF0SE12ZjBH?=
+ =?utf-8?B?NFhoMXRTTUJJQm1nTmw5b3pXWmJoNW8yRnJ6djd3TW5wK3RmRDI1N2NUUjRX?=
+ =?utf-8?B?UEpXdUsrZGtIUWxyR2hJanRqeWhIamFHdDJSem8yRzNHd2dFSGNRZ2k4VjdS?=
+ =?utf-8?B?eExHMXlHbERlZUMwM29WZTg2TWVPbGZmRWYxOXN0UTB3QUhUNmtjSzFJdEc1?=
+ =?utf-8?Q?yjfAOU1Do5wmd?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8784.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(10070799003)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dHlQekFQcGVGOXVZcEc0dnJocWI1cFA3ZUVWZFhhZGtsdFNDVkRQNWlPLzBZ?=
+ =?utf-8?B?NU12Zy9uaHBkbGgrWGVRNE9TSUJMQWxxdkkrRXVjREMzMjlsbWFEanpiZ2Mr?=
+ =?utf-8?B?czNEYTZiLzRYYW9qM0QvL3NmZ0ZqbC9Dd1Z6cUNXYWd0Zk5XLzIrWXo4eTlo?=
+ =?utf-8?B?VVh6ZTlnY0FTYVZxWGdiUW41MzBTcTd4Mm9KbnBKdy9vZDlieWJ6eHFkb3Fh?=
+ =?utf-8?B?VloyYlRrbU9NRDFkYzJIUVVEb2hkOFlqUi93a2ZiZDNYRHZmL05tSnhjNlhW?=
+ =?utf-8?B?OUpoL0pDVldqUVYzR0k2YmpFYjk3UFdWdlV6UXlzUDZrWUxJZGt1OE1KdFBU?=
+ =?utf-8?B?YXZKVzVXMnJTbkt6SkhlUWtSTTZVcjNrNk5pUTZ5S0xWYmtFcVFrRmdmUkht?=
+ =?utf-8?B?Ty9aRGJNSHFJMkFnRVRvVTVzNU15UFdVK0xscS9QSzkvYnhPL2FsSmtOR05M?=
+ =?utf-8?B?cDMvSGloOWxtT2JRYVRvT2hlRzBuU3IxUktDeXlXVnF2TmNMN0xpL1FTeE1F?=
+ =?utf-8?B?OEZtZytCbTBTMmJZWmFrTXpWME9kZUxHVTVSclgrS1MyUGRURkk5MmVzVGZY?=
+ =?utf-8?B?eFNxc2RONytibldlcC83ZzVwbUJselV5WENKRHFUQnBPRjhtNzlaeG5ROFpG?=
+ =?utf-8?B?ZEFIb0dmRWczM2hIVm1zM21ubVBub1FOWkU0MHpjMGdtd1NyWFhGQ1J4T01Y?=
+ =?utf-8?B?UklHZXgzTzl0THQ1UkE0dzgyWlk0UEkzb1RFYWJrbzZ0RnJ6bmRxVHZ5eWk4?=
+ =?utf-8?B?VFhoWjdBL0lWbE0vYnFrMEpBcDVQRE5TQWQvdjNRNVJOaEVKMDVLZGVQazhV?=
+ =?utf-8?B?OG1UQTBweGkwb3BoeS9iTGdPQ08wRFVzZ05ESVRCSHA0Y2xGb1UzY3IwY1l2?=
+ =?utf-8?B?ZVl5Vk5OMFFPWXJ5U1QvZWlKOUJnWE0veUsrMDhqRy9oWW1YY2NMK1VvbDRC?=
+ =?utf-8?B?ZThIQngyMXNKa3NKK3Myd2lYWkNzaGQ0bWozOVhMbHdVVlI0dDBZWWZiWVE2?=
+ =?utf-8?B?dFNLbkJxNXNHcHVIODdEeER0TUtuekdIcVFmYWZjOUpsQStiaTd6ZzdLWFFB?=
+ =?utf-8?B?Vkl1cTF1M3VMbnFMVmljVmZaMHhueW85SWJtb1hvNWdSelh1c2kzckU0VDVm?=
+ =?utf-8?B?TXA5SjVWTnN1OEs1MWlkOWNYdFQ4MTZ4QnZxeGNEZlNXbVd1cHBkWGU3c0Ur?=
+ =?utf-8?B?WHp6OWloY2tnYXV3M1paUVRGaEpCclV2bXIzYytlbTQ3OG1YV2RMWElkV1Mz?=
+ =?utf-8?B?ZFdCMmZkNUg3V3Y3WHZHODRvV2xyNk1Hc0pVWEQvd2VWWDNucW8vVit2ZGVa?=
+ =?utf-8?B?WmpsVzRJZnJPOHllM1l4aE9HanZGWFp6Q1FKMlQyRDUrckxDUzA2VnFEL3Bk?=
+ =?utf-8?B?VkVKV3d3QjVUekc5ckl5eHlXZDBKY1ZyTTViYmVQaFZXcWU3Y2RWVjVMKy92?=
+ =?utf-8?B?cGRVdktGSWpWeGZIR21sVVFaa2o0RkVFWTROeElaUUdicFoyTzlqaEZBWlkw?=
+ =?utf-8?B?Y1hqMWNsMTUxNTI5c1FZeDI1OHNDanUzYkZ3LzZrY2lUNEJDaGZTdmIrZ01r?=
+ =?utf-8?B?b1J2SS9OS1RybUgxNDZHWFh2YStIbk1jWWhtaUxSTlZ0REFoenc4bE4ybnBE?=
+ =?utf-8?B?SHVKcWVrc2Fnb1BHdFRsaEh6bm43WDhZY25vU2ZPd2Nkc3prVVVHM2FTaS9I?=
+ =?utf-8?B?SXV3QkdnZFdDMG8wQ0RMaGpZSldNbjFIL05yZ2NIamkxb2lFcmdoL1ZOZ2Yy?=
+ =?utf-8?B?cUV1Wk5Cajl1T2pqQVNxZ212eW5ZcG8rdVRKWFVJaURlQ0g0VVZxUVhvc2Fj?=
+ =?utf-8?B?cjA0NW5xckxtVlZvRTVGeTQrQituNEdJNktiNUxZUnFSZWJPTXRhcktaNGd6?=
+ =?utf-8?B?aXptWnQ4cGNab2tOWEVoQUJ5cENqUFhkRm5qdVAxM1JmdGZidU5lM2Y3Zkp6?=
+ =?utf-8?B?SmhGS0JqSys4Wm1xTWlSQ21kYzhvMjRXd0JBeFIvM3NoVHYrbkROeFhMU3ZE?=
+ =?utf-8?B?cW5MWTltRnh1TFUwYUZYTHRCZ1ZlRHBKZlpQQjdHdCtHNXZ5elVXZEdWNmhi?=
+ =?utf-8?B?dGVFREFrdVB4UkhiWWJvS0U3VFpuM0VQME4yRVhiV0xRWWpuVWE1THVOV3Jo?=
+ =?utf-8?B?SWg1NGhXMFNnNXJnUUtLUEZ0R0N5dTRWS3B5dkxSdEMzNHpKVU9XRG0wdjhD?=
+ =?utf-8?Q?z2qDums0BtJQqDfJWc0BM7jxgLQ4FzN9g5sfBatamzgl?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54a73a87-429c-4c6d-c357-08dd5d6ced26
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8784.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2025 11:40:57.5964
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: etxEBflhmFxRCzxE3er1DKJWIOANnR2jmNXcGqI98XtEdtaOrHA7Ei4QPu2AtykWNFEI4y5m2i6DKAN6YvMwYA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4336
 
-On 07/03/25 12:03, Shrikanth Hegde wrote:
-> Hi Juri.
+Hi Juri,
+
+On 06/03/2025 14:10, Juri Lelli wrote:
+> Hello!
 > 
-> On 3/6/25 19:40, Juri Lelli wrote:
-> > Rebuilding of root domains accounting information (total_bw) is
-> > currently broken on some cases, e.g. suspend/resume on aarch64. Problem
-> > is that the way we keep track of domain changes and try to add bandwidth
-> > back is convoluted and fragile.
-> > 
-> > Fix it by simplify things by making sure bandwidth accounting is cleared
-> > and completely restored after root domains changes (after root domains
-> > are again stable).
-> > 
-> > Reported-by: Jon Hunter <jonathanh@nvidia.com>
-> > Fixes: 53916d5fd3c0 ("sched/deadline: Check bandwidth overflow earlier for hotplug")
-> > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-> > ---
-> >   include/linux/sched/deadline.h |  4 ++++
-> >   include/linux/sched/topology.h |  2 ++
-> >   kernel/cgroup/cpuset.c         | 16 +++++++++-------
-> >   kernel/sched/deadline.c        | 16 ++++++++++------
-> >   kernel/sched/topology.c        |  1 +
-> >   5 files changed, 26 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/include/linux/sched/deadline.h b/include/linux/sched/deadline.h
-> > index 6ec578600b24..a780068aa1a5 100644
-> > --- a/include/linux/sched/deadline.h
-> > +++ b/include/linux/sched/deadline.h
-> > @@ -34,6 +34,10 @@ static inline bool dl_time_before(u64 a, u64 b)
-> >   struct root_domain;
-> >   extern void dl_add_task_root_domain(struct task_struct *p);
-> >   extern void dl_clear_root_domain(struct root_domain *rd);
-> > +extern void dl_clear_root_domain_cpu(int cpu);
-> > +
-> > +extern u64 dl_cookie;
-> > +extern bool dl_bw_visited(int cpu, u64 gen);
+> Jon reported [1] a suspend regression on a Tegra board configured to
+> boot with isolcpus and bisected it to commit 53916d5fd3c0
+> ("sched/deadline: Check bandwidth overflow earlier for hotplug").
 > 
-> Is this needed? There is same declaration outside of CONFIG_SMP done in
-> patch 3/8.
+> Root cause analysis pointed out that we are currently failing to
+> correctly clear and restore bandwidth accounting on root domains after
+> changes that initiate from partition_sched_domains(), as it is the case
+> for suspend operations on that board.
+> 
+> This is v2 [2] of the proposed approach to fix the issue. With respect
+> to v1, the following implements the approach by:
+> 
+> - 01: filter out DEADLINE special tasks
+> - 02: preparatory wrappers to be able to grab sched_domains_mutex on
+>        UP (remove !SMP wrappers - Waiman)
+> - 03: generalize unique visiting of root domains so that we can
+>        re-use the mechanism elsewhere
+> - 04: the bulk of the approach, clean and rebuild after changes
+> - 05: clean up a now redundant call
+> - 06: remove partition_and_rebuild_sched_domains() (Waiman)
+> - 07: stop exposing partition_sched_domains_locked (Waiman)
+> 
+> Please test and review. The set is also available at
 
-Nope. Good catch.
 
-Thanks,
-Juri
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+
+Thanks!
+Jon
+
+-- 
+nvpublic
 
 
