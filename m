@@ -1,280 +1,187 @@
-Return-Path: <cgroups+bounces-6902-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6903-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAF34A57572
-	for <lists+cgroups@lfdr.de>; Fri,  7 Mar 2025 23:54:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAA84A5843E
+	for <lists+cgroups@lfdr.de>; Sun,  9 Mar 2025 14:29:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 452B11899921
-	for <lists+cgroups@lfdr.de>; Fri,  7 Mar 2025 22:54:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 038663ACBA3
+	for <lists+cgroups@lfdr.de>; Sun,  9 Mar 2025 13:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECD42580C3;
-	Fri,  7 Mar 2025 22:54:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC84E1DC05F;
+	Sun,  9 Mar 2025 13:29:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O/Fcjbvr"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="EwEG3bY8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC41724167A;
-	Fri,  7 Mar 2025 22:54:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A6B1D8A0D
+	for <cgroups@vger.kernel.org>; Sun,  9 Mar 2025 13:29:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741388054; cv=none; b=f3riS3xQ5urWsmOiJHpdyRQiVCNB6z6K2oOcRUDIg5G/+C/QQg6C4dcuOvSdllX3Xym3aGFD0d9DYNpGXsMwywA3RCXeC6Xq7j8SxtYz6hBTeCRrcRHJJ2i9fSspPZLRJKxczcp0XbGXpTNi4NWWkKQZHLMhfmtLQZHv2mXvSU0=
+	t=1741526981; cv=none; b=IpgbP21kBXermamc/EMo6pFK7stAuF6f0mZVl5OXTS4+CFDRO4ojiLs6U0bgL2z+N99ywm5M3q1yo8Fs6R+BK4IyC5WuhPmnsalC5yDirrMn8pxWv22BTffb/Bc3LowklmT7EN3kDExxmnEmqPmUEmJX4MT1fry69Xmsa1W64K0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741388054; c=relaxed/simple;
-	bh=h95jfDEVekegdqKYt0vI61hdhO60jEa8FkEqwJSP3t0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=M4RCftU6C3UqRlARjho7e7k1hBnPw8WbYPJgALSCZy+RJUakD6L1eS4JarsJ4C7IWTHr3+M+2Ec2jPe2qHD15q5tkRzRCa4VI5qwPp4LOT5Dsrkx5d5JoW3b3CyApZ8hHQVDa7ntTtl2/fHkznkU3/5TQ/p3fR1Cq5bHxuaH5nM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O/Fcjbvr; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741388053; x=1772924053;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=h95jfDEVekegdqKYt0vI61hdhO60jEa8FkEqwJSP3t0=;
-  b=O/FcjbvriXj/sVEzUaTWU7hVw/dMl1j0wGVepd8SLtGoQwMpR3VhOMpD
-   e/N64yAvyJDpHNPyQNwSa6qRr4FPj1p8VubEYMJeF2+R9ib2Ms4Aafdsj
-   CxXK/arTxURlIqVc8FXAUXzazBxXdpu2JziSzs+2CH6VADQtFVh68vCGr
-   n8t5gpW8T4tINvSXCh+yF3abMmMnF0dlb4hf4zc6qqEHdN0M85c3yj7G5
-   fTb/J3x/49oCwoxOKN2tGoaE1nfvoN/VZsNvPHbx6CCbE090BSSuzU58C
-   cWhtEssv9VGKytPHDCsZECgXakfMaYfww6dZP3L10XGxRBzWSIpHXlBWq
-   Q==;
-X-CSE-ConnectionGUID: fEFMGlcJQaqnNlRrrS9k9A==
-X-CSE-MsgGUID: LCpkEvjtRrmvYjxGBM3Eng==
-X-IronPort-AV: E=McAfee;i="6700,10204,11366"; a="42156863"
-X-IronPort-AV: E=Sophos;i="6.14,230,1736841600"; 
-   d="scan'208";a="42156863"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2025 14:54:12 -0800
-X-CSE-ConnectionGUID: tkw14bPlTzOo9dHdIvualg==
-X-CSE-MsgGUID: 4IRqfbo2SZ6xNS3eCfDgeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="119382998"
-Received: from cmdeoliv-mobl4.amr.corp.intel.com (HELO [10.125.110.166]) ([10.125.110.166])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2025 14:54:12 -0800
-Message-ID: <0d1cc457c6a97178fc68880957757f3c27088f53.camel@linux.intel.com>
-Subject: Re: [RFC PATCH 2/3] sched/numa: Introduce per cgroup numa balance
- control
-From: Tim Chen <tim.c.chen@linux.intel.com>
-To: Chen Yu <yu.c.chen@intel.com>, Ingo Molnar <mingo@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Andrew Morton
- <akpm@linux-foundation.org>
-Cc: Rik van Riel <riel@redhat.com>, Mel Gorman <mgorman@suse.de>, Johannes
- Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, Roman
- Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, "Liam R. Howlett"
- <Liam.Howlett@oracle.com>,  Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "Huang, Ying" <ying.huang@linux.alibaba.com>, Tim Chen
- <tim.c.chen@intel.com>, Aubrey Li <aubrey.li@intel.com>, Michael Wang
- <yun.wang@linux.alibaba.com>, Kaiyang Zhao <kaiyang2@cs.cmu.edu>, David
- Rientjes <rientjes@google.com>, Raghavendra K T <raghavendra.kt@amd.com>,
- cgroups@vger.kernel.org,  linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Date: Fri, 07 Mar 2025 14:54:10 -0800
-In-Reply-To: <b3f1f6c478127a38b9091a8341374ba160d25c5a.1740483690.git.yu.c.chen@intel.com>
-References: <cover.1740483690.git.yu.c.chen@intel.com>
-	 <b3f1f6c478127a38b9091a8341374ba160d25c5a.1740483690.git.yu.c.chen@intel.com>
-Autocrypt: addr=tim.c.chen@linux.intel.com; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1741526981; c=relaxed/simple;
+	bh=BFBez99hJQWF8yQf0dUSZg1LTudTSAcMT/T2RWUc2CQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=i9ffX2FLBX80j3/NtckjxBTTJFg/dsGjkmdWBiJXiip4yLhfK3yfGZcRK84pG+erSX+WmjmWyB1gJ9nLInDqf93VdanfhJeH1P6HIPX2IFMaA+J8ECHdHqJ84+cFjCva7cBD8YQWzpFqgX0CwwqWra4+xpbkJSUMzdQJ2X36M8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=EwEG3bY8; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id DAEE63F869
+	for <cgroups@vger.kernel.org>; Sun,  9 Mar 2025 13:29:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1741526976;
+	bh=mqFbLsvDYgZMcATbnfiiqW+yfZu2sdh4iXGZzYCmKWw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=EwEG3bY8PoFwKAJrElrgPsV8oM3u4z/j+kr6bEwMnyrTmXmJQf2Ft3raQvdWeYlOc
+	 TC50RgqmyK+93mh9VD864wLit07eugfcN0d6+WEUsQUUePSD8MEOW77Hx+t/Xw/QeX
+	 C32anb3Z7zJbqeF4FJwV1oUaMXX80HyvE18jyAIrjyBgJgt8CPTF2DJh38C0DGcYb/
+	 QXW562ZwKSTzzXIGqCGb6+F/33k9cAIXPZpN5dUENuzmGewQ3lF9Jg+uq6SOkwy0Vm
+	 8aUNK3aLaIjRWW8R83FnYRqYHoPCQSDHg0zcD6WKJxO5ym6BUuPLsX+7rv4C813Wa+
+	 HjII/VD3yktFg==
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-ac297c7a0c2so19229066b.3
+        for <cgroups@vger.kernel.org>; Sun, 09 Mar 2025 06:29:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741526975; x=1742131775;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mqFbLsvDYgZMcATbnfiiqW+yfZu2sdh4iXGZzYCmKWw=;
+        b=aT/mAooXX3nJW7VCpsngpz7gn29dm1bjah4oC4YByA/3aDlLjMa+Gnn8SdDcqAiuT6
+         hUrjfK9CjHeGJI/pXlBGB4WKS5eHSYEkNV8hk7ahtxMuNNdyOgh+TScA/n7aWaq77TUh
+         Evg6NZorcg1Iz4EpHAQjEDKzRfGEyYLyj1d+AkprRy1oncdP64wdB3kObztjkoMYG4+D
+         1vdjeMKntVrsEBHPTuUYwqBK2xafCgLtfnys36n06l5DRD+6WBy/jMXgm1p4fu5GyOIc
+         WfUMJcJtGx6YGqc778b7H0A+gDRCKmZ8vXB6C8l32aKoTozLTXarUV3Xf+82bMEBduqU
+         d2Fg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJiYZH+RsqneU9rriZ+QFLNWVZ+SOow6DVk6EgRLYBdaw1VLhGzzybwn5MpY3eE1BmXDsYPOy/@vger.kernel.org
+X-Gm-Message-State: AOJu0YwAtWBUwv1G49gueqt0CoC/R2i1n6nAN0wPVNg2HJNDTiT3LtyP
+	+Hj0+jSVwmmTHse2MCrbMroM+5Uwqav5CZusVXAzAfJHjSaQ4NZSQYExwl54uSHqtYEcXDabfvd
+	nIyKhsrKFPT44SsCruGI/YstnPzkrzA5qY/3gAKU4dKyYR6Xc7fpo3pCXXfxtxNTvapoB0tY=
+X-Gm-Gg: ASbGncs8SG/lGVJaG0/s3BEjUp2wQ6qmUnoNyNQoRf98fSyxfHBjhamqgPrA1JOS+GZ
+	ljoWaTMr3I1HJ4mHTXbjFdoiJ5Xe2RMamREt7XD2a9rOzDfsm+hAwc+c3Ve70g/vIE/Q1nBeA1C
+	upaa5svBRqNYxE/1UrsBsFVlOXSP78HubwNeCuHUtK1vVItdd5OjlfePI6M5Si/2gs+0Pz/xPI3
+	IK0WJaTAdnbrxFGyFQXOIziX1kPGpDGyenj+RvUI4xtL4GHdXSGFbcu2uch6RJNjxPwWXAthlXH
+	Nj2ng2IJqtG/rBwKQZG+6N6LWKDfxhdJ3lbk8mVKg1ID4SUm8MNt8I4txi50GxB2HcKLEA+Ebo0
+	2jBu0XH3M5q8GObKDOg==
+X-Received: by 2002:a17:906:c514:b0:abf:4e8b:73e with SMTP id a640c23a62f3a-ac252e9cd5bmr962215566b.39.1741526974742;
+        Sun, 09 Mar 2025 06:29:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHWUIep2IRy9s5FbXJl+MjjuqqYaufw0PZ6Ppq51ixYq/v5+9VpIwIXq+cg1UIFg1fYCs++7g==
+X-Received: by 2002:a17:906:c514:b0:abf:4e8b:73e with SMTP id a640c23a62f3a-ac252e9cd5bmr962212766b.39.1741526974364;
+        Sun, 09 Mar 2025 06:29:34 -0700 (PDT)
+Received: from localhost.localdomain (ipbcc0714d.dynamic.kabel-deutschland.de. [188.192.113.77])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac25943f55csm435897366b.137.2025.03.09.06.29.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Mar 2025 06:29:33 -0700 (PDT)
+From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+To: kuniyu@amazon.com
+Cc: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Christian Brauner <brauner@kernel.org>,
+	Lennart Poettering <mzxreary@0pointer.de>,
+	Luca Boccassi <bluca@debian.org>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Shuah Khan <shuah@kernel.org>
+Subject: [PATCH net-next 0/4] Add getsockopt(SO_PEERCGROUPID) and fdinfo API to retreive socket's peer cgroup id
+Date: Sun,  9 Mar 2025 14:28:11 +0100
+Message-ID: <20250309132821.103046-1-aleksandr.mikhalitsyn@canonical.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2025-02-25 at 22:00 +0800, Chen Yu wrote:
-> [Problem Statement]
-> Currently, NUMA balancing is configured system-wide. However,
->=20
->=20
-> A simple example to show how to use per-cgroup Numa balancing:
->=20
-> Step1
-> //switch to global per cgroup Numa balancing,
-> //All cgroup's Numa balance is disabled by default.
-> echo 4 > /proc/sys/kernel/numa_balancing
->=20
+1. Add socket cgroup id and socket's peer cgroup id in socket's fdinfo
+2. Add SO_PEERCGROUPID which allows to retrieve socket's peer cgroup id
+3. Add SO_PEERCGROUPID kselftest
 
-Can you add documentation of this additional feature
-for numa_balancing in
-admin-guide/sysctl/kernel.rst
+Generally speaking, this API allows race-free resolution of socket's peer cgroup id.
+Currently, to do that SCM_CREDENTIALS/SCM_PIDFD -> pid -> /proc/<pid>/cgroup sequence
+is used which is racy.
 
-Should you make NUMA_BALANCING_NORMAL and NUMA_BALANCING_CGROUP
-mutually exclusive in? In other words
-echo 5 > /proc/sys/kernel/numa_balancing should result in numa_balancing to=
- be 1?
+As we don't add any new state to the socket itself there is no potential locking issues
+or performance problems. We use already existing sk->sk_cgrp_data.
 
-Otherwise tg_numa_balance_enabled() can return 0 with NUMA_BALANCING_CGROUP
-bit turned on even though you have NUMA_BALANCING_NORMAL bit on.
+We already have analogical interfaces to retrieve this
+information:
+- inet_diag: INET_DIAG_CGROUP_ID
+- eBPF: bpf_sk_cgroup_id
 
-Tim
->=20
-> Suggested-by: Tim Chen <tim.c.chen@intel.com>
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> ---
->  include/linux/sched/sysctl.h |  1 +
->  kernel/sched/core.c          | 32 ++++++++++++++++++++++++++++++++
->  kernel/sched/fair.c          | 18 ++++++++++++++++++
->  kernel/sched/sched.h         |  3 +++
->  mm/mprotect.c                |  5 +++--
->  5 files changed, 57 insertions(+), 2 deletions(-)
->=20
-> diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-> index 5a64582b086b..1e4d5a9ddb26 100644
-> --- a/include/linux/sched/sysctl.h
-> +++ b/include/linux/sched/sysctl.h
-> @@ -22,6 +22,7 @@ enum sched_tunable_scaling {
->  #define NUMA_BALANCING_DISABLED		0x0
->  #define NUMA_BALANCING_NORMAL		0x1
->  #define NUMA_BALANCING_MEMORY_TIERING	0x2
-> +#define NUMA_BALANCING_CGROUP		0x4
-> =20
->  #ifdef CONFIG_NUMA_BALANCING
->  extern int sysctl_numa_balancing_mode;
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 44efc725054a..f4f048b3da68 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -10023,6 +10023,31 @@ static ssize_t cpu_max_write(struct kernfs_open_=
-file *of,
->  }
->  #endif
-> =20
-> +#ifdef CONFIG_NUMA_BALANCING
-> +static DEFINE_MUTEX(numa_balance_mutex);
-> +static int numa_balance_write_u64(struct cgroup_subsys_state *css,
-> +				  struct cftype *cftype, u64 enable)
-> +{
-> +	struct task_group *tg;
-> +	int ret;
-> +
-> +	guard(mutex)(&numa_balance_mutex);
-> +	tg =3D css_tg(css);
-> +	if (tg->nlb_enabled =3D=3D enable)
-> +		return 0;
-> +
-> +	tg->nlb_enabled =3D enable;
-> +
-> +	return ret;
-> +}
-> +
-> +static u64 numa_balance_read_u64(struct cgroup_subsys_state *css,
-> +				 struct cftype *cft)
-> +{
-> +	return css_tg(css)->nlb_enabled;
-> +}
-> +#endif /* CONFIG_NUMA_BALANCING */
-> +
->  static struct cftype cpu_files[] =3D {
->  #ifdef CONFIG_GROUP_SCHED_WEIGHT
->  	{
-> @@ -10071,6 +10096,13 @@ static struct cftype cpu_files[] =3D {
->  		.seq_show =3D cpu_uclamp_max_show,
->  		.write =3D cpu_uclamp_max_write,
->  	},
-> +#endif
-> +#ifdef CONFIG_NUMA_BALANCING
-> +	{
-> +		.name =3D "numa_load_balance",
-> +		.read_u64 =3D numa_balance_read_u64,
-> +		.write_u64 =3D numa_balance_write_u64,
-> +	},
->  #endif
->  	{ }	/* terminate */
->  };
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 1c0ef435a7aa..526cb33b007c 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3146,6 +3146,18 @@ void task_numa_free(struct task_struct *p, bool fi=
-nal)
->  	}
->  }
-> =20
-> +/* return true if the task group has enabled the numa balance */
-> +static bool tg_numa_balance_enabled(struct task_struct *p)
-> +{
-> +	struct task_group *tg =3D task_group(p);
-> +
-> +	if (tg && (sysctl_numa_balancing_mode & NUMA_BALANCING_CGROUP) &&
-> +	    !tg->nlb_enabled)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  /*
->   * Got a PROT_NONE fault for a page on @node.
->   */
-> @@ -3174,6 +3186,9 @@ void task_numa_fault(int last_cpupid, int mem_node,=
- int pages, int flags)
->  	     !cpupid_valid(last_cpupid)))
->  		return;
-> =20
-> +	if (!tg_numa_balance_enabled(p))
-> +		return;
-> +
->  	/* Allocate buffer to track faults on a per-node basis */
->  	if (unlikely(!p->numa_faults)) {
->  		int size =3D sizeof(*p->numa_faults) *
-> @@ -3596,6 +3611,9 @@ static void task_tick_numa(struct rq *rq, struct ta=
-sk_struct *curr)
->  	if (!curr->mm || (curr->flags & (PF_EXITING | PF_KTHREAD)) || work->nex=
-t !=3D work)
->  		return;
-> =20
-> +	if (!tg_numa_balance_enabled(curr))
-> +		return;
-> +
->  	/*
->  	 * Using runtime rather than walltime has the dual advantage that
->  	 * we (mostly) drive the selection from busy threads and that the
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 38e0e323dda2..9f478fb2c03a 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -491,6 +491,9 @@ struct task_group {
->  	/* Effective clamp values used for a task group */
->  	struct uclamp_se	uclamp[UCLAMP_CNT];
->  #endif
-> +#ifdef CONFIG_NUMA_BALANCING
-> +	u64			nlb_enabled;
-> +#endif
-> =20
->  };
-> =20
-> diff --git a/mm/mprotect.c b/mm/mprotect.c
-> index 516b1d847e2c..ddaaf20ef94c 100644
-> --- a/mm/mprotect.c
-> +++ b/mm/mprotect.c
-> @@ -155,10 +155,11 @@ static long change_pte_range(struct mmu_gather *tlb=
-,
->  				toptier =3D node_is_toptier(nid);
-> =20
->  				/*
-> -				 * Skip scanning top tier node if normal numa
-> +				 * Skip scanning top tier node if normal/cgroup numa
->  				 * balancing is disabled
->  				 */
-> -				if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_NORMAL) &&
-> +				if (!(sysctl_numa_balancing_mode &
-> +				    (NUMA_BALANCING_CGROUP | NUMA_BALANCING_NORMAL)) &&
->  				    toptier)
->  					continue;
->  				if (folio_use_access_time(folio))
+Having getsockopt() interface makes sense for many applications, because using eBPF is
+not always an option, while inet_diag has obvious complexety and performance drawbacks
+if we only want to get this specific info for one specific socket.
+
+Idea comes from UAPI kernel group:
+https://uapi-group.org/kernel-features/
+
+Huge thanks to Christian Brauner, Lennart Poettering and Luca Boccassi for proposing
+and exchanging ideas about this.
+
+Git tree:
+https://github.com/mihalicyn/linux/tree/so_peercgroupid
+
+Cc: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: cgroups@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: Lennart Poettering <mzxreary@0pointer.de>
+Cc: Luca Boccassi <bluca@debian.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "Michal Koutný" <mkoutny@suse.com>
+Cc: Shuah Khan <shuah@kernel.org>
+
+Alexander Mikhalitsyn (4):
+  net: unix: print cgroup_id and peer_cgroup_id in fdinfo
+  net: core: add getsockopt SO_PEERCGROUPID
+  tools/testing/selftests/cgroup/cgroup_util: add cg_get_id helper
+  tools/testing/selftests/cgroup: add test for SO_PEERCGROUPID
+
+ arch/alpha/include/uapi/asm/socket.h          |   2 +
+ arch/mips/include/uapi/asm/socket.h           |   2 +
+ arch/parisc/include/uapi/asm/socket.h         |   2 +
+ arch/sparc/include/uapi/asm/socket.h          |   2 +
+ include/uapi/asm-generic/socket.h             |   2 +
+ net/core/sock.c                               |  17 +
+ net/unix/af_unix.c                            |  84 +++++
+ tools/include/uapi/asm-generic/socket.h       |   2 +
+ tools/testing/selftests/cgroup/Makefile       |   2 +
+ tools/testing/selftests/cgroup/cgroup_util.c  |  15 +
+ tools/testing/selftests/cgroup/cgroup_util.h  |   2 +
+ .../selftests/cgroup/test_so_peercgroupid.c   | 308 ++++++++++++++++++
+ 12 files changed, 440 insertions(+)
+ create mode 100644 tools/testing/selftests/cgroup/test_so_peercgroupid.c
+
+-- 
+2.43.0
 
 
