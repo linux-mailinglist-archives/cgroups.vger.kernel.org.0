@@ -1,124 +1,147 @@
-Return-Path: <cgroups+bounces-6946-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6947-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BAC0A59BFF
-	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 18:06:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5CA1A59CB6
+	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 18:14:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C349D7A5664
-	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 17:05:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FD7D160F3B
+	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 17:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8610C236428;
-	Mon, 10 Mar 2025 17:05:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363E522D4C3;
+	Mon, 10 Mar 2025 17:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aTQijJvh"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dgA0oPCj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C40234966
-	for <cgroups@vger.kernel.org>; Mon, 10 Mar 2025 17:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752F3231A2A
+	for <cgroups@vger.kernel.org>; Mon, 10 Mar 2025 17:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741626310; cv=none; b=mmtYPhTRJswb8lZQYH9HGLnXkBJPLa8cxjMqgJI5hyht/WBqSCH+4M3SmfgMvwF53QK6LsiTSTTRfPQ12D5sac9BkBYncAStTMZMXASo57tetlOjpqnwiCkLY+oQPq1pSYm3WXthyfUCwNPwXBrpXwxRg/GVy4ctO8VtbZlzic0=
+	t=1741626877; cv=none; b=rp51fbN9yN4fWlE4ma962YK1nusaREt9PS0O4ZJabEabZP6//NIvZRPC4EGj3wIpVEjsw6FOJ6q/8E5CmcsW+aIYSQX3D7PI9D4GdOcR3O4wmVa8dsqZTyVA2m85GNZ0BTQ051K7J/9ayq07RGr4iE7DO354dhYuKmUO+R3apr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741626310; c=relaxed/simple;
-	bh=xvZO/eWJHr5v18qgFAuJ2zD9tV9+05a3hSDFW/3DL08=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SzdvOsRA0Sq7bssvEJ2VMH/1lXdrQh9NyYQxiJUzi6FgcNQg8xTTN7PRav82xHYIF4BQjjbKuNVGQmFKUryiWDJbOyVxyodJ/YQ4Wb+Dy82XbWmE2HtXHk5EKvhp82+AsydsjgJqXAPSdqap/jvJlXLICVnhKjSiwzhxGPP4Ueo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=aTQijJvh; arc=none smtp.client-ip=209.85.221.54
+	s=arc-20240116; t=1741626877; c=relaxed/simple;
+	bh=dq1XvillSPGnZAnwO8Jk6HlomInoRUGnAxVEhvsL/5M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J9NKxfWZjAuj69rJBiLWymqFhioj64V1hl5B8B6NLpErpHD2gtoepf8wPrjsP517RUpK5vJ0bYE1T6T4n9IUpN4V+9EIMON0gHQubN/Sz1wuI3fVMcHW2hp5TSBCYCKzHZV46I0qQykyVSfpv1PTO0yUOfrrqalLRnXoyvs7eY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dgA0oPCj; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3914a5def6bso805854f8f.1
-        for <cgroups@vger.kernel.org>; Mon, 10 Mar 2025 10:05:08 -0700 (PDT)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-390e3b3d3f4so2135472f8f.2
+        for <cgroups@vger.kernel.org>; Mon, 10 Mar 2025 10:14:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741626307; x=1742231107; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZT+gLWqx/04LxUxfH1eW7PRrvfpM9WFH49x2PLPFue8=;
-        b=aTQijJvhrMGi064tHm2mJ/mAf/+ejnSHFBKt7Q3f+ko+o+YdG4B4iMXYFrwDu8tKzZ
-         h8r84SCEpDpVjRFMAbnV7QRLoNzqIuuC0+lC5r9P0t70IY6SuYereQFbqjB+ndeb5msH
-         lcIyi1JpbU7LaJzi7UlhRRqKGq88jsKZeDhI17EsAiQ9/PkwbLcdU38JsDb2tev2aLIU
-         uBpMDFVhn/YeAk7ObXuIRhsZq3LMHvELCaNLAVb1hs1MmCV3zGzn89p6W0E0Yd7GZ5y9
-         ClHdne5q+xpCIpK6vVOtw+B6yNrElq4JJxXaUbY8sK1q8TdNb57CECLOJDGhJ7OG5hk3
-         Y9vw==
+        d=suse.com; s=google; t=1741626873; x=1742231673; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=heWFhlz+SWz1xH5kFIwmWzIb+nauW24lGHRaxh0Rld0=;
+        b=dgA0oPCjX2IEdYB9UjJli/tufzml5YNIqR1FFkwh6Knn9+Q8gjFM2Yi1U+n7zAOSo7
+         X2bbhm4lwiT9VeMPHtuzkVMq6EYb86MdoGN7udZvHtl9gIM4C58Uae3Te913L7mduFV3
+         gcNQCeMU+J6ahrcpNZiFmh5cJKBmAkxwb7+XZPJ4Gs8jGGawN51ui2mOzoGdGOnKevnS
+         DHPmjOBlN3OjeczFT8PSpQr0kULwuAJg6eg6PXA6D+eB1rC3t9tX3HGioiQTaMlaWCpw
+         sfbQE/3RYXBH8hBpbquZyHidbqBQsibEuGt8JivRKHxUn4XtQ7DXp+liKQX8ZETGr8D0
+         IUcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741626307; x=1742231107;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZT+gLWqx/04LxUxfH1eW7PRrvfpM9WFH49x2PLPFue8=;
-        b=u6OWu+t7RWAYdSb0GqEXRBcXsuM8lgUsiYQVB4GCkYzXGI0CTejJf0qrp6GLBllaPr
-         XXlOfSFYD7Tpz8EEbM+U2a3oFjEidK5IxEu7t1rI7B6F57YV2Z9usS6qweVQUpXRcGFN
-         /mL7Th49XLFRH3EbvcL1cq0KbcwQQTijcJbNk9iBiGPi4WZomqgVfKoDBRNgrf+CO/yv
-         O6+a/v+wBOWKrns+EJCg/ZguxGsCHc14lMRWG8IV5IsFiGmn7yK779qL9I7NhpFKafWJ
-         SC3e4F+iNA9RTYU282UqubPhfmVy2Qj7XDFOOL09dkU69I7fp7ZLU7BXQECuPOlB1znj
-         80gw==
-X-Forwarded-Encrypted: i=1; AJvYcCVfy5J8kKHt/k3zCoDcMxJ2xFGFkoPekZ9l/fWRbgO2C0AnbtH9kl6q2YZsw5OmOBzZG8FNT2uo@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywmv9AIs2pm36E+SanLjDmy1iittdAg1rOesWwoJDJPXCNIXE3i
-	b9E96L/AyWCBNVa9GDvrxm8pt+xx29BL2FA7HQoQANmzTdqmGJOOBbcloo58FP0=
-X-Gm-Gg: ASbGnctKzcfxV5Di6UfYhOlJzfSbqcubr/hgts7LMOslvcVPdG7ancpb8a0nulxBq3X
-	VanzFhp9ztSmymz9kU3t1ZfZlUQIY2seWT6KDlh3saoBHVeYEzbtdwGw0x+LDUjSSdQ9xex2HhY
-	UQod0wr4vKoJYv4AFi7rOsqO4BtQYFlhjjHE62B/4KKUFI0GokM5gLW0zW2Ki6+El2MOOMt6QWB
-	E8+KylReon4EVTNXCYPqmmeL16nVdeegt4zI9a41vnFwMLLFGBF42A9GATvayNlI/I/siWHMyor
-	K2xh37745foi9MvqPsYuYIFBLQQj0w8bydPNsQ/uPu7UP7s=
-X-Google-Smtp-Source: AGHT+IEVpdllDp8ezqPm81pST1MhCpXpU9dAvAoZOtgMqwTmUvPRTqKqLJeuqRXUT4ASXwEhDtWGYA==
-X-Received: by 2002:a5d:64aa:0:b0:390:e853:85bd with SMTP id ffacd0b85a97d-39132db1108mr10862381f8f.48.1741626306652;
-        Mon, 10 Mar 2025 10:05:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1741626873; x=1742231673;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=heWFhlz+SWz1xH5kFIwmWzIb+nauW24lGHRaxh0Rld0=;
+        b=lOGQYDF3Eq6VzhozWmBVM2CC5Sy2wJqNhkJi9fcbP5aOCq65iauCpG9s4XuxBsINUm
+         WFwLjCWCatglgDbf9p0bgDLSPp3fQUweUPohULKNy2DXxPZUk5dS4KHjoTsulKxyMifY
+         MJqIpuT2zGe9XR2v9vq1FeYYSeshA1ENZY8IDoBfa6YElSiO7XPhxZ9zbbepy7N6e9Vr
+         gKaM09ykCiIkxk6U8z/MBqvj+wWB9l6OIylProAtLn58nQiLNVJnorRvtaE7Wwn0nZbV
+         QCliEjSojY5UMIHSZ9TzPLrzDWuaZlJgWbtf6SmBziOIdpNjZaU43pbt2S8pyTziPxIM
+         zCZw==
+X-Forwarded-Encrypted: i=1; AJvYcCWFCXeblZ/u+X6LXDnukeyOXl7f+O8xn2KkrQzmcKQ3t0scuyFftk7n85js9X9JZdiRUeKhVCIH@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwbFpmhgIW1J75PoK3bcvR112aPRm+TDyEqxWi4mIiejHGHf6c
+	0dcOHOPyfLI5g4n5iPNxjLS5krC5C8j+Vb92cpjtO6tTmVT4/BibK2B2gELW7Xw=
+X-Gm-Gg: ASbGnctKI6GWP4n1PW47fsxs7cC/2+pyT8BNNE0L2jqeOfHjRvlC5DH1ICkZnQw7G6E
+	5MAIFBwBCi3PXmcrJQXeHMd8BdR2M7qBIOoj0dDX9XG5yRqzMjIx+1d4W5w1INJNp3GM7uF1Qni
+	BxeZ9gXElwkQbpkPBX/P64eGV3/wVGQ9bLUJMJ6H8pgT/fQQCeOPJde4ySeTwdD2Q1abWdbzZyX
+	3yxxBOLirKxiyrQ0Gj6qU4NmfQOzBwsduEL6mTHxnCzgHssGjCtdr6DgqDRTN3NHReEBrcTjD/5
+	goZOdgi5g0Eaij9SSJe//PQ3RmkRANnpfkJW5usRVOlPvCQ=
+X-Google-Smtp-Source: AGHT+IHIfA6s47W3ZhsLWndjNxIG07Q9wUrct0SV7ZxC4AQ588su9NeqgtnaMCydV2H48+KZCdjFSQ==
+X-Received: by 2002:a05:6000:178d:b0:390:e9ea:59a with SMTP id ffacd0b85a97d-39132d77a7emr8940633f8f.5.1741626872767;
+        Mon, 10 Mar 2025 10:14:32 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912bfba679sm15302514f8f.8.2025.03.10.10.05.06
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912bfbab43sm15840796f8f.15.2025.03.10.10.14.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Mar 2025 10:05:06 -0700 (PDT)
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Frederic Weisbecker <fweisbecker@suse.com>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Subject: [PATCH v2 10/10] sched: Add deprecation warning for users of RT_GROUP_SCHED
-Date: Mon, 10 Mar 2025 18:04:42 +0100
-Message-ID: <20250310170442.504716-11-mkoutny@suse.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250310170442.504716-1-mkoutny@suse.com>
-References: <20250310170442.504716-1-mkoutny@suse.com>
+        Mon, 10 Mar 2025 10:14:32 -0700 (PDT)
+Date: Mon, 10 Mar 2025 18:14:30 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: "Shashank.Mahadasyam@sony.com" <Shashank.Mahadasyam@sony.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Waiman Long <longman@redhat.com>, 
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Shinya.Takumi@sony.com" <Shinya.Takumi@sony.com>
+Subject: Re: [PATCH 2/2] cgroup, docs: Document interaction of RT processes
+ with cpu controller
+Message-ID: <2vvwedzioiopvjhah4jxlc6a5gq4uayyj2s5gtjs455yojkhnn@rkxanxmh3hmu>
+References: <20250305-rt-and-cpu-controller-doc-v1-0-7b6a6f5ff43d@sony.com>
+ <20250305-rt-and-cpu-controller-doc-v1-2-7b6a6f5ff43d@sony.com>
+ <thhej7ngafu6ivtpcjs2czjidd5xqwihvrgqskvcrd3w65fnp4@inmu3wuofcpr>
+ <OSZPR01MB67118A17B171687DB2F6FBC993CA2@OSZPR01MB6711.jpnprd01.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="axv77jbvbeq5oriz"
+Content-Disposition: inline
+In-Reply-To: <OSZPR01MB67118A17B171687DB2F6FBC993CA2@OSZPR01MB6711.jpnprd01.prod.outlook.com>
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- kernel/sched/core.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 4b2d9ec0c1f23..6866355046d21 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9748,6 +9748,7 @@ static int cpu_cfs_local_stat_show(struct seq_file *sf, void *v)
- static int cpu_rt_runtime_write(struct cgroup_subsys_state *css,
- 				struct cftype *cft, s64 val)
- {
-+	pr_warn_once("RT_GROUP throttling is deprecated, use global sched_rt_runtime_us and deadline tasks.\n");
- 	return sched_group_set_rt_runtime(css_tg(css), val);
- }
- 
--- 
-2.48.1
+--axv77jbvbeq5oriz
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH 2/2] cgroup, docs: Document interaction of RT processes
+ with cpu controller
+MIME-Version: 1.0
 
+On Thu, Mar 06, 2025 at 11:02:22AM +0000, "Shashank.Mahadasyam@sony.com" <Shashank.Mahadasyam@sony.com> wrote:
+> Do you think it should be rephrased to make it clearer?
+
+Aha, I understand now why it confused you (with the paragraph about
+realtime tasks right above interface files).
+
+I'd consider such a minimal correction:
+
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1076,7 +1076,7 @@ cpufreq governor about the minimum desired frequency which should always be
+ provided by a CPU, as well as the maximum desired frequency, which should not
+ be exceeded by a CPU.
+
+-WARNING: cgroup2 doesn't yet support control of realtime processes. For
++WARNING: cgroup2 doesn't yet support (bandwidth) control of realtime processes. For
+ a kernel built with the CONFIG_RT_GROUP_SCHED option enabled for group
+ scheduling of realtime processes, the cpu controller can only be enabled
+ when all RT processes are in the root cgroup.  This limitation does
+
+
+Of course wordier rewrite is possible but I find the text as you
+originally proposed unclear due to several uses of "only" that imply
+restrictions that aren't in place in reality.
+
+Thanks,
+Michal
+
+--axv77jbvbeq5oriz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ88d9AAKCRAt3Wney77B
+SZInAP9Rd3zY18EcqWow8FjgpvFFozQcWGVRKThYkSVY8rgSLwD9GbCUzDgg1aDb
+cFJMyU4xEzEHa2BFoC6eDq1KMLSZqAA=
+=CF/q
+-----END PGP SIGNATURE-----
+
+--axv77jbvbeq5oriz--
 
