@@ -1,166 +1,128 @@
-Return-Path: <cgroups+bounces-6927-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6928-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EA83A5914A
-	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 11:34:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5434A5921B
+	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 11:58:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6309188B8C5
-	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 10:35:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C88523A821E
+	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 10:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D15918C011;
-	Mon, 10 Mar 2025 10:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95041227E83;
+	Mon, 10 Mar 2025 10:56:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZMTtmDnt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Gbicgfoi";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZMTtmDnt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Gbicgfoi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DLmKmnDQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD21E226870
-	for <cgroups@vger.kernel.org>; Mon, 10 Mar 2025 10:34:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79CC2227EB1
+	for <cgroups@vger.kernel.org>; Mon, 10 Mar 2025 10:56:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741602895; cv=none; b=KzyUUFKan6dpY+lxh2IRTCUGSOouQrN4DCNDv8i6P0ZfAMZLRj2VCGHTdTXfLHaLuF4+bb45ttopAJ4Qml4UartVL+Wn2FqDul5FjGS+DxjbXCOandM/ie7B2xWcfrj2qCdrwmOcAn8OTpSTl0v8kruzvy0xLHyIpOFc9HIn148=
+	t=1741604191; cv=none; b=BFYDHnYV0CVdyCLdOzPd04VJ/X/1WMjzL+kXWRT8lDUoEJjH3+cyZc/Ic8+oQwDSe2rnPCU2qAx5wUxfFFi2llHB5jnQysp+mGmnSazwxvjTjfDtAZZb00mgjqnEU6UTroUSdJOFQNZj/v3z4ddIw7rlNCkiFdHBh520uVzb3oU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741602895; c=relaxed/simple;
-	bh=YrX9G7xY0k+NAn/Dv4bTyGCRHEHkgd21+90hLoFAOGc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ahgPsAAkPa3nQQFSbXzXqRPEKhG9L7GXvpqR4eFQQWeumKoFC6ThWxhxOxvKDBfqz474i29SSB/8uGB1wujBPqSiQN4gyqyUbR4gW761WeugC/0CoqqGnNiUD/nk5KXYA1vWQNP4JnAK3Tgp0Np9LguvNLfdi2ibtamTlRjfDUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZMTtmDnt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Gbicgfoi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZMTtmDnt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Gbicgfoi; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 019A71F445;
-	Mon, 10 Mar 2025 10:34:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741602892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OL2Jtr+IMvqvjb/CMqGeFxXeoZIVlzRqDlmMZHJ67DU=;
-	b=ZMTtmDntJKGla57oONxZ0+Pdq+lZoSe5Rf0lth9XsjwkfhXf6zw+548dfazGD/LuGiAxxV
-	Dl5d3qOVtvNdepm26CCudlOQ9RAo8WtEq3QhW36j+1hg/uQlWKEC+Y4AVMRGCwHddXBB0L
-	aGvo5V/tlfWzq+dl7BraKaAuMdOd89I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741602892;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OL2Jtr+IMvqvjb/CMqGeFxXeoZIVlzRqDlmMZHJ67DU=;
-	b=Gbicgfoig8XzczVnYMHuER/2RSfIILVvVlLhPndHz9LPIUswyLLSETTsrH7Phei9aXTDHC
-	+bjCDJQCc9zq1iDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741602892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OL2Jtr+IMvqvjb/CMqGeFxXeoZIVlzRqDlmMZHJ67DU=;
-	b=ZMTtmDntJKGla57oONxZ0+Pdq+lZoSe5Rf0lth9XsjwkfhXf6zw+548dfazGD/LuGiAxxV
-	Dl5d3qOVtvNdepm26CCudlOQ9RAo8WtEq3QhW36j+1hg/uQlWKEC+Y4AVMRGCwHddXBB0L
-	aGvo5V/tlfWzq+dl7BraKaAuMdOd89I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741602892;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OL2Jtr+IMvqvjb/CMqGeFxXeoZIVlzRqDlmMZHJ67DU=;
-	b=Gbicgfoig8XzczVnYMHuER/2RSfIILVvVlLhPndHz9LPIUswyLLSETTsrH7Phei9aXTDHC
-	+bjCDJQCc9zq1iDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E20C6139E7;
-	Mon, 10 Mar 2025 10:34:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rfXcNkvAzmczawAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 10 Mar 2025 10:34:51 +0000
-Message-ID: <a30e2c60-e01b-4eac-8a40-e7a73abebfd3@suse.cz>
-Date: Mon, 10 Mar 2025 11:34:51 +0100
+	s=arc-20240116; t=1741604191; c=relaxed/simple;
+	bh=wGRxKiBJ9FQQRTK6oDzeSg0q1uR8lmPV8PHL2NFq+zA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jBjgZcOHtFH05S5iOjhoGffOq/0MfyAUVN3tyxlZgvtNMZX5fnRgXCCM57FaN0RFntBQp57E9ddKwKNBpfo4fEUkd3bQV/EvvTQ9/vs6OCo03oAnau5azi/s4k70SITcj5bBeHpG9ynEAa+jbAj/5RvD/9KdlFv2QmDPEUepktA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DLmKmnDQ; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-39130ee05b0so2442312f8f.3
+        for <cgroups@vger.kernel.org>; Mon, 10 Mar 2025 03:56:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741604188; x=1742208988; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wGRxKiBJ9FQQRTK6oDzeSg0q1uR8lmPV8PHL2NFq+zA=;
+        b=DLmKmnDQBOuLypJDQU9kqvcdvEuS0+IQ9xi0H0uM+0R6YcSGkUpNElz5RvxOFpwjaj
+         +r3+0kScshHolPHLB0VkfuDfM0/8JnCGsOXCznuEZkbl71mm/x3xM5UQ9LSKLlELHDQQ
+         j/EpX3wKIeIzDdkU9wc5xiB89b4lW/p1aPy+9SmxTMaS3iPY1XlQXDLIxp9YmnpOEHZA
+         dDFCB4HSt1dNg51+jVwJoRodonrd/0z8ZA+fI/PO/clWk6ZnpsY8UOvc1j80wy/PN5L+
+         tSCPxVFO/RLN1ceIGucHySvnZhbailrGcQGO+SMP9kUBhk0yWuKGHRUAmR0/Wp+F9MsW
+         0QCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741604188; x=1742208988;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wGRxKiBJ9FQQRTK6oDzeSg0q1uR8lmPV8PHL2NFq+zA=;
+        b=J553AQcNpgkfk7A2T0Ma3gpCuDIihXAmgTR7EUkF8rVuQ5L6b18PM+Dx+PCKR7GyFa
+         /NV1L7DmGfZceooqx8mlGUf1UrtiEW6Aev7CedMnuyLFYt2NW60tOMrePr3TAuCIHgae
+         02pyBSnpESfN4QRiql7NYcuNAzk0ThhQWB5MAqCwSga+/JZ1wqrEOCVuRd6BnoGfIr9S
+         2MdryKG51EWpc9YpdzxernqXmKnkV4s43/9vKvN4XAUVqjzLZ023qEz1KliGKym3usaZ
+         CE4a9rzYW2LWhpz4qvzJQQWjcwt4nXu0/gO+qpbqNAFZzz4TXu56/wAogxAktlXY2R8q
+         bHjg==
+X-Forwarded-Encrypted: i=1; AJvYcCVpqSrHcNzesV4qxmDf/I7+rKxZW9VlraZwKwvciTH2LPIAjg/Qrio1oJiDMIRB2womnfJjOsNq@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3Oz8ZfUsqRKHiT/aggjLDpbgUb8eLbnM/Yf/XCPRFfO+Q03Km
+	tD7OtdKwFYu6FxbcsiTbG+0yoIJ51CJIlyWcuREWjNaoEp4jb7ToRm8I3Q5X95bJ+nKCxFNEIRm
+	vNvXRT8MqBD+ss520DardkyLLZMKIhKIcylU=
+X-Gm-Gg: ASbGncuYIsnEOPjCL82mXcOq6A2envO77Th8Tj6YifZKoEOyRr6r2vTUx/B9rN+o3w4
+	WUwpwSvmXi4PkPLYQ4/8MeJDuVUifTmB0MqJv6HWncNYRE6Uv27t5zR9AKeD2maIK+7b5Drnip/
+	g9ok5fl/fZ4wq9puTdv34tmKL0bg==
+X-Google-Smtp-Source: AGHT+IGYDB/hh4zokMCikpkMPS3SEWZMqEvFe2ojibH66A319Zc73ywxFVPR2jPBB0VrzoRht/KJKUB7T8KTdt9OssE=
+X-Received: by 2002:a05:6000:4013:b0:391:3f94:dc9e with SMTP id
+ ffacd0b85a97d-3913f94dde0mr5331464f8f.16.1741604187611; Mon, 10 Mar 2025
+ 03:56:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <202503101254.cfd454df-lkp@intel.com> <7c41d8d7-7d5a-4c3d-97b3-23642e376ff9@suse.cz>
+ <CAADnVQ+NKZtNxS+jBW=tMnmca18S2jfuGCR+ap1bPHYyhxy6HQ@mail.gmail.com> <a30e2c60-e01b-4eac-8a40-e7a73abebfd3@suse.cz>
+In-Reply-To: <a30e2c60-e01b-4eac-8a40-e7a73abebfd3@suse.cz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 10 Mar 2025 11:56:16 +0100
+X-Gm-Features: AQ5f1JoUrD98AB14rnB1IKdkRt4DsRzn0OxlMkGJPDtUGy7hI_dYyPsJBkJXofA
+Message-ID: <CAADnVQ+g=VN6cOVzhF2ory0isXEc52W8fKx4KdwpYfOMvk372A@mail.gmail.com>
 Subject: Re: [linux-next:master] [memcg] 01d37228d3: netperf.Throughput_Mbps
  37.9% regression
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: kernel test robot <oliver.sang@intel.com>,
- Alexei Starovoitov <ast@kernel.org>, oe-lkp@lists.linux.dev,
- kbuild test robot <lkp@intel.com>, Michal Hocko <mhocko@suse.com>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
- linux-mm <linux-mm@kvack.org>
-References: <202503101254.cfd454df-lkp@intel.com>
- <7c41d8d7-7d5a-4c3d-97b3-23642e376ff9@suse.cz>
- <CAADnVQ+NKZtNxS+jBW=tMnmca18S2jfuGCR+ap1bPHYyhxy6HQ@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAADnVQ+NKZtNxS+jBW=tMnmca18S2jfuGCR+ap1bPHYyhxy6HQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	FREEMAIL_TO(0.00)[gmail.com];
-	ARC_NA(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: kernel test robot <oliver.sang@intel.com>, Alexei Starovoitov <ast@kernel.org>, oe-lkp@lists.linux.dev, 
+	kbuild test robot <lkp@intel.com>, Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/10/25 11:18, Alexei Starovoitov wrote:
->> because this will affect the refill even if consume_stock() fails not due to
->> a trylock failure (which should not be happening), but also just because the
->> stock was of a wrong memcg or depleted. So in the nowait context we deny the
->> refill even if we have the memory. Attached patch could be used to see if it
->> if fixes things. I'm not sure about the testcases where it doesn't look like
->> nowait context would be used though, let's see.
-> 
-> Not quite.
-> GFP_NOWAIT includes __GFP_KSWAPD_RECLAIM,
-> so gfpflags_allow_spinning() will return true.
+On Mon, Mar 10, 2025 at 11:34=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
+rote:
+>
+> On 3/10/25 11:18, Alexei Starovoitov wrote:
+> >> because this will affect the refill even if consume_stock() fails not =
+due to
+> >> a trylock failure (which should not be happening), but also just becau=
+se the
+> >> stock was of a wrong memcg or depleted. So in the nowait context we de=
+ny the
+> >> refill even if we have the memory. Attached patch could be used to see=
+ if it
+> >> if fixes things. I'm not sure about the testcases where it doesn't loo=
+k like
+> >> nowait context would be used though, let's see.
+> >
+> > Not quite.
+> > GFP_NOWAIT includes __GFP_KSWAPD_RECLAIM,
+> > so gfpflags_allow_spinning() will return true.
+>
+> Uh right, it's the new gfpflags_allow_spinning(), not the
+> gfpflags_allow_blocking() I'm used to and implicitly assumed, sorry.
+>
+> But then it's very simple because it has a bug:
+> gfpflags_allow_spinning() does
+>
+> return !(gfp_flags & __GFP_RECLAIM);
+>
+> should be !!
 
-Uh right, it's the new gfpflags_allow_spinning(), not the
-gfpflags_allow_blocking() I'm used to and implicitly assumed, sorry.
-
-But then it's very simple because it has a bug:
-gfpflags_allow_spinning() does
-
-return !(gfp_flags & __GFP_RECLAIM);
-
-should be !!
-
+Ouch.
+So I accidentally exposed the whole linux-next to this stress testing
+of new trylock facilities :(
+But the silver lining is that this is the only thing that blew up :)
+Could you send a patch or I will do it later today.
 
