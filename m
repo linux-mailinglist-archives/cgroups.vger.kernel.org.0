@@ -1,224 +1,142 @@
-Return-Path: <cgroups+bounces-6929-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6930-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA433A5922F
-	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 12:03:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1204FA592B9
+	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 12:27:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D0577A3137
-	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 11:02:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43C6116C95C
+	for <lists+cgroups@lfdr.de>; Mon, 10 Mar 2025 11:27:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1A6226D04;
-	Mon, 10 Mar 2025 11:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4A321E08D;
+	Mon, 10 Mar 2025 11:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YK5RY8ye";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+pFF7HOj";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hS8yxrDz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7SeOIjCw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KtkeaGIW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA87417A2E7
-	for <cgroups@vger.kernel.org>; Mon, 10 Mar 2025 11:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9501828EA;
+	Mon, 10 Mar 2025 11:27:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741604618; cv=none; b=ALoyLHoc3h5RskRyxAc/gsaB0/wqrSxv4WMtlMp73AjByuLj3n87TRIUUzds4j4rRY3I/Eg7GzEqhW+iARY/e578obR0ZylsoHnEItVpamqEa3FZG5qwysW6S8N+83QrBJo/ip1hdsE9ZEXijkhQnKX2mYjwvZpcrJaxoWTSPTM=
+	t=1741606028; cv=none; b=XjF4QtIr+iWlF0iZYEFPMKZ0POTKcucGk991N3/9WWzpFIfIlyD39g2D7S9ExY5nO3M304JeR8rszX6VwNwQNsJDirKoQqr7OZwZeW23athXV7zYZLfN01Q/4L6kcYJwfATxNxechK14t4gR/YyA9SAUIy/BiMRBG71K3Uy+QEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741604618; c=relaxed/simple;
-	bh=0qhwJrWnliClWx/mbHEwSY+mxZKahmyDZmGlrljvN3Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h81NRe9yYtMwvx8KpWCi71xOG7Uuc5DEFBx+DvIqSZDZbFigsoIg/14/jADdn1Fr2tlFMPpeMSYSu3UXk7JwEGB2r+IItOxvMN3eLxHSVqc7b/7/jsz2NXvNncjgaEvhuzzCd/qiNCNz02S8fdLEi72rp9wLG9M+hooBztayTx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YK5RY8ye; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+pFF7HOj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hS8yxrDz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7SeOIjCw; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EF1D21F441;
-	Mon, 10 Mar 2025 11:03:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741604615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zWokT2IM8sYu7FZhG0F0lhGI2QCoe6MEh1ZciFacqfk=;
-	b=YK5RY8yeI0XFeY+JEp8bdCLCzPDSmOK8H+woesKqLcNlJYnn8vLTpHeE359baqlnXo3AUX
-	xUOhs0sx1j0aF0t6WWuw61Cg+Rvh7h0LptzGFzs5iQtJvwidbxbBTTCfAhOokWpq9CzPzG
-	dhefgmLN6mtK1B2jPTGGXsavfy3Lz0Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741604615;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zWokT2IM8sYu7FZhG0F0lhGI2QCoe6MEh1ZciFacqfk=;
-	b=+pFF7HOjl8tMgaF65QVGAGnNkCPCASjsj3XfWzwTimAH/LmMRgPufx0IYr3oEour+qSzVs
-	8aYDMR9rbQ2mU1Aw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hS8yxrDz;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=7SeOIjCw
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741604614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zWokT2IM8sYu7FZhG0F0lhGI2QCoe6MEh1ZciFacqfk=;
-	b=hS8yxrDzaevWgM4q6jLS+Y7TyjdhV8sLQKKk7HwKNv/9F/jM20BFfyD0qiVWUSej9MMFl9
-	ShruwSH5ueOtsze0NuND/4bITypcodOYcLrc8viULv96mBNRmnahrZzzkbSmRD0AoHMk4J
-	AFkXDZNxUlsaqGoBdFuLDW4IXiLXECA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741604614;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zWokT2IM8sYu7FZhG0F0lhGI2QCoe6MEh1ZciFacqfk=;
-	b=7SeOIjCwy/X/bgvcCBOH3pbrEHTQnrkBMGOpqKiw/Zgkx1tSj0ch/G46ck1IayTqFF0J2/
-	qziexklndTh8/QAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D7D11139E7;
-	Mon, 10 Mar 2025 11:03:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bXVHNAbHzmfbdAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 10 Mar 2025 11:03:34 +0000
-Message-ID: <9d8f5f92-5f4b-4732-af48-3ecaa41af81a@suse.cz>
-Date: Mon, 10 Mar 2025 12:03:34 +0100
+	s=arc-20240116; t=1741606028; c=relaxed/simple;
+	bh=/MIwqVro98Ug0D/cRSeHQdD3SSd19RiNWyeW/pyUMfw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s7UgSO0Nu55GIF910iNmMUqaVAh8aUxvARtqU0ofAHJ14a033kY9s/WnZEpK/E2SEH41Xu9a6uuPbQPBIlyUYHokTRcqMCNPQDFl2B4np2i/19pd82K5E28rBmXfjqA/Dj+b82uPtQJk5U6NZkkT1m+QEnx3YhwWdKfEfZLBPV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KtkeaGIW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E8DBC4CEE5;
+	Mon, 10 Mar 2025 11:27:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741606028;
+	bh=/MIwqVro98Ug0D/cRSeHQdD3SSd19RiNWyeW/pyUMfw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KtkeaGIWdUq0zj1BatSHwEJMFaxUh+Th0MCcd/ugd4zMackZUMfik5WTje6eojSuV
+	 B1RV+m9yUJiH6ey/OBHpH14oiFpJxFs4wNGtDJjz/25nCXIXIqVpBg5J02/fU74xu5
+	 6gvbY+o+ZHEexqZNZmK+yt+Gk6OgEB1/8SQpJwNbCBozfgHhQjLfM+1cC1eosRZWbB
+	 wk0krFs2Uz6/nmwR73Z/vUxBKKBN7g9m970HlguhGNuVpTNWpfau1a9uO/sdz9zydv
+	 +qSs7xxX5x1TTQ7Qz6epGCebv4GrIpX0AGxF6RgqwmNFapb5y2/oRZTKw0CR3ndF/z
+	 9SD+Uw4UEw9+g==
+Date: Mon, 10 Mar 2025 12:27:00 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc: kuniyu@amazon.com, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, cgroups@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, 
+	Leon Romanovsky <leon@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Lennart Poettering <mzxreary@0pointer.de>, Luca Boccassi <bluca@debian.org>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH net-next 0/4] Add getsockopt(SO_PEERCGROUPID) and fdinfo
+ API to retreive socket's peer cgroup id
+Message-ID: <20250310-hinzog-unzweifelhaft-9105447ec12d@brauner>
+References: <20250309132821.103046-1-aleksandr.mikhalitsyn@canonical.com>
+ <20250310-ausdruck-virusinfektion-1b0d467b812c@brauner>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [linux-next:master] [memcg] 01d37228d3: netperf.Throughput_Mbps
- 37.9% regression
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: kernel test robot <oliver.sang@intel.com>,
- Alexei Starovoitov <ast@kernel.org>, oe-lkp@lists.linux.dev,
- kbuild test robot <lkp@intel.com>, Michal Hocko <mhocko@suse.com>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
- linux-mm <linux-mm@kvack.org>
-References: <202503101254.cfd454df-lkp@intel.com>
- <7c41d8d7-7d5a-4c3d-97b3-23642e376ff9@suse.cz>
- <CAADnVQ+NKZtNxS+jBW=tMnmca18S2jfuGCR+ap1bPHYyhxy6HQ@mail.gmail.com>
- <a30e2c60-e01b-4eac-8a40-e7a73abebfd3@suse.cz>
- <CAADnVQ+g=VN6cOVzhF2ory0isXEc52W8fKx4KdwpYfOMvk372A@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAADnVQ+g=VN6cOVzhF2ory0isXEc52W8fKx4KdwpYfOMvk372A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: EF1D21F441
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250310-ausdruck-virusinfektion-1b0d467b812c@brauner>
 
-On 3/10/25 11:56, Alexei Starovoitov wrote:
-> On Mon, Mar 10, 2025 at 11:34 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->>
->> On 3/10/25 11:18, Alexei Starovoitov wrote:
->> >> because this will affect the refill even if consume_stock() fails not due to
->> >> a trylock failure (which should not be happening), but also just because the
->> >> stock was of a wrong memcg or depleted. So in the nowait context we deny the
->> >> refill even if we have the memory. Attached patch could be used to see if it
->> >> if fixes things. I'm not sure about the testcases where it doesn't look like
->> >> nowait context would be used though, let's see.
->> >
->> > Not quite.
->> > GFP_NOWAIT includes __GFP_KSWAPD_RECLAIM,
->> > so gfpflags_allow_spinning() will return true.
->>
->> Uh right, it's the new gfpflags_allow_spinning(), not the
->> gfpflags_allow_blocking() I'm used to and implicitly assumed, sorry.
->>
->> But then it's very simple because it has a bug:
->> gfpflags_allow_spinning() does
->>
->> return !(gfp_flags & __GFP_RECLAIM);
->>
->> should be !!
+On Mon, Mar 10, 2025 at 09:52:31AM +0100, Christian Brauner wrote:
+> On Sun, Mar 09, 2025 at 02:28:11PM +0100, Alexander Mikhalitsyn wrote:
+> > 1. Add socket cgroup id and socket's peer cgroup id in socket's fdinfo
+> > 2. Add SO_PEERCGROUPID which allows to retrieve socket's peer cgroup id
+> > 3. Add SO_PEERCGROUPID kselftest
+> > 
+> > Generally speaking, this API allows race-free resolution of socket's peer cgroup id.
+> > Currently, to do that SCM_CREDENTIALS/SCM_PIDFD -> pid -> /proc/<pid>/cgroup sequence
+> > is used which is racy.
+> > 
+> > As we don't add any new state to the socket itself there is no potential locking issues
+> > or performance problems. We use already existing sk->sk_cgrp_data.
+> > 
+> > We already have analogical interfaces to retrieve this
+> > information:
+> > - inet_diag: INET_DIAG_CGROUP_ID
+> > - eBPF: bpf_sk_cgroup_id
+> > 
+> > Having getsockopt() interface makes sense for many applications, because using eBPF is
+> > not always an option, while inet_diag has obvious complexety and performance drawbacks
+> > if we only want to get this specific info for one specific socket.
+> > 
+> > Idea comes from UAPI kernel group:
+> > https://uapi-group.org/kernel-features/
+> > 
+> > Huge thanks to Christian Brauner, Lennart Poettering and Luca Boccassi for proposing
+> > and exchanging ideas about this.
 > 
-> Ouch.
-> So I accidentally exposed the whole linux-next to this stress testing
-> of new trylock facilities :(
-> But the silver lining is that this is the only thing that blew up :)
-> Could you send a patch or I will do it later today.
+> Seems fine to me,
+> Reviewed-by: Christian Brauner <brauner@kernel.org>
 
-OK
-----8<----
-From 69b3d1631645c82d9d88f17fb01184d24034df2b Mon Sep 17 00:00:00 2001
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Mon, 10 Mar 2025 11:57:52 +0100
-Subject: [PATCH] mm: Fix the flipped condition in gfpflags_allow_spinning()
+One wider conceptual comment.
 
-The function gfpflags_allow_spinning() has a bug that makes it return
-the opposite result than intended. This could contribute to deadlocks as
-usage profilerates, for now it was noticed as a performance regression
-due to try_charge_memcg() not refilling memcg stock when it could. Fix
-the flipped condition.
+Starting with v6.15 it is possible to retrieve exit information from
+pidfds even after the task has been reaped. So if someone opens a pidfd
+via pidfd_open() and that task gets reaped by the parent it is possible
+to call PIDFD_INFO_EXIT and you can retrieve the exit status and the
+cgroupid of the task that was reaped. That works even after all task
+linkage has been removed from struct pid.
 
-Fixes: 97769a53f117 ("mm, bpf: Introduce try_alloc_pages() for opportunistic page allocation")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202503101254.cfd454df-lkp@intel.com
+The system call api doesn't allow the creation of pidfds for reaped
+processes. It wouldn't be possible as the pid number will have already
+been released.
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- include/linux/gfp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Both SO_PEERPIDFD and SO_PASSPIDFD also don't allow the creation of
+pidfds for already reaped peers or senders.
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index ceb226c2e25c..c9fa6309c903 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -55,7 +55,7 @@ static inline bool gfpflags_allow_spinning(const gfp_t gfp_flags)
- 	 * regular page allocator doesn't fully support this
- 	 * allocation mode.
- 	 */
--	return !(gfp_flags & __GFP_RECLAIM);
-+	return !!(gfp_flags & __GFP_RECLAIM);
- }
- 
- #ifdef CONFIG_HIGHMEM
--- 
-2.48.1
+But that doesn't have to be the case since we always have the struct pid
+available. So it's entirely possible to hand out a pidfd to a reaped
+process if it's guaranteed that exit information is available. If it's
+not then this would be a bug.
 
+The trick is that when a struct pid is stashed it needs to also allocate
+a pidfd inode. That could simply be done by a helper get_pidfs_pid()
+which takes a reference to the struct pid and ensures that space for
+recording exit information is available.
 
+With that done SO_PEERCGROUPID isn't needed per se as it will be
+possible to get the cgroupid and exit status from the pidfd.
+
+From a cursory look that should be possible to do without too much work.
+I'm just pointing this out as an alternative.
+
+There's one restriction that this would be subject to that
+SO_PEERCGROUPID isn't. The SO_PEERCGROUPID is exposed for any process
+whereas PIDFD_GET_INFO ioctls (that includes the PIDFD_INFO_EXIT) option
+is only available for processes within the receivers pid namespace
+hierarchy.
+
+But in any case, enabling pidfds for such reaped processes might still
+be useful since it would mean receivers could get exit information for
+pidfds within their pid namespace hierarchy.
 
