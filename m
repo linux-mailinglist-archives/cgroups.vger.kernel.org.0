@@ -1,97 +1,90 @@
-Return-Path: <cgroups+bounces-6962-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6961-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15EC1A5C169
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 13:38:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E73AA5C15F
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 13:37:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28EE5188C07A
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 12:37:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F61F161C05
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 12:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA54256C84;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59853256C78;
 	Tue, 11 Mar 2025 12:36:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CGF+l0I5"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZjFO4j4u"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com [209.85.221.66])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D01C72222AB
-	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 12:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3793A23645F
+	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 12:36:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741696618; cv=none; b=bBHBSZozuyCcauln2Orf4+maV5QZqN8s1yHk0FNNypv7iMGQp9zNgX2HPt/sxaS9yXCMPxavCiPS5zckjkuMcUMpBNVMgjY/JZZ49XSaKCleeYF0OHJkiZ5mK3mSOwI/uAUziO3O8FDLiiwGxLxmTHGwr1rLEdcdkDOpYPi/d2I=
+	t=1741696618; cv=none; b=QoSeOaV4py/di5QK7F3g6K7R54utbw2ssYqM7sXqxPlUH2rr8UkDWsU6z7Fj9APBACpCIsBVrVqw4nxTiqaKhXoVbqpTKmyev/EXN7/PjC5ZyDSlR5rC1eCoFmDDD465Op6Gk34Qq8OSWHPMi8ifHZl3o7/7XKbdTVr+yAyff70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1741696618; c=relaxed/simple;
-	bh=CePJDN6866RNu5OilP7NSNORan/RA/RBfUihDSOHno8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eNYldpaLgdvKsOHYs7FwhjLFWuxI3ztEci6xl+krRTQZsA2N7TQ1FNE43AQvCuhOrZEcnQKMqY4kNrEnSOv+xf7DkqE+fgwaOwsvDKczuRTRcloTwNgVseCgI/kw3XAi/tCK00Ai0j5/8dW4yJU10g24ZCetejMj4PK19Yn6BKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CGF+l0I5; arc=none smtp.client-ip=209.85.221.66
+	bh=nW4jLdG4pxSPugL4mUyzgVTHJ6J8k0id4IG/O948Mcc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O5DYF+5ok4B6A7g1cLoHKsm59IqjKwsuiFKwHy6j/BEwIbW2MIXMrXrqmPcxfnRHJyWQd198kQNk++rSUx8ebeE8FvxA/qchAV3dU9Cqj4UbFZZhHuJfGoQ1KC6zO1Kn2d0dLS+c426fgfZc9xJXd8DiMeKjjVcDCA4mFhkkEmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZjFO4j4u; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f66.google.com with SMTP id ffacd0b85a97d-39133f709f5so2074817f8f.0
-        for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 05:36:54 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-43d04ea9d9aso3638595e9.3
+        for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 05:36:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741696613; x=1742301413; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7qYs9YHqi3o8BYflhXgM2/h7DX07No2svICRJmWY6FQ=;
-        b=CGF+l0I5Wsrch1iKaNhFNsc5fv4W/qTGaw/bNGmoseaXUOT+2ET757nQPK4LILnZQe
-         NzPbI/T0cinS74vqEzOL4MjQI5edjxOoHs1Gns4eXwRbrRZnrQZTxpMS/viv6FBf86nT
-         7yDM7hJFIPQP6hEIZlkEmyC8Qdw9ZylQpbjyWPqHgaPvVorEwplGVoiN2LAyRacz9MRT
-         LQoyOY36HWdHQcCf3d3aSANd16Tr568SPBQndn3TWNr3yMoaAgtABiIIJHQ+itfHox6K
-         hFX4lEOZt7+r+bFRpXkH4f2mx4imRji0yfcNNoTdiw9zoxVzuJX4yoPUzIqTAWs/C2YF
-         cWIA==
+        d=suse.com; s=google; t=1741696614; x=1742301414; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=854zdfjcN/UDCoKW38CZ3IaEk9swBTCN45qjV2gxt8s=;
+        b=ZjFO4j4u0e14NtQ4mw5lf7R42p6et1J8GgDSBlGuj+n6sDQJVkYOyWvOWuhbKVonUX
+         1iUhv5fTdQ8Kgm1iDsKFgeE5LHVpHazOt4V1O1gOvFW4aKkSZGHcL1VfZGoflOlNIUFU
+         +r0kA56m08H+GJkpV1V1x8F297uI6neNkLQdiLZQ5+UDf8dRwdyRgKbu6wL2f1YJiPBG
+         jpryfT4JWga7KgYvrr5MsPQZ9NWPIbva160PBeElJsTyiOtdNcKkFuq3K3gyXh3M6E+5
+         Vq2NCVHzyyobJTWnhwKQrszyCqG13/tRNdFF7b0QyUU3D7oqFKiQPyJ/e/SIO1c8aDVL
+         cFWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741696613; x=1742301413;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7qYs9YHqi3o8BYflhXgM2/h7DX07No2svICRJmWY6FQ=;
-        b=BtP5LZsgfEcuFt1PwQJCKiuABU1uvuyfTWi0Q3emVtLHWE6yqL9ip5ncK5D+yLbnCL
-         fhi7zcF+yWJPLR8il//JxrkLAHCkHw12+uPEIsSwRoC/Jn5my3TU3gi5mX61BQ727oyf
-         JiE7qbPwFbn3q5pKbWENnrh5ZraCSUtSsmqtYI88RHkp3xbQbGXQaMPHaJwJ132lTESC
-         JVDhgTf747pYhliOtZquEn1VHSrnRdsfzGp9oqWPj+0cCQkVzL0xn8NXf9VQOF/+Xp7z
-         ti9bw6/RXYO9pD37/qiN5lfjOHv9Qi9AlDdM6Z8L8nH39p6C/c/3tPVbsvhpPoZxJaSh
-         cISQ==
-X-Gm-Message-State: AOJu0YwFYh+DM5fIr7nFgiOUO1hSKLUu1MhUIfw+BmSO4zxozCwjPHXC
-	LX2FzVd7YSMlpGy1s1YI3JhYf7HVHgy5+7AV1VkM8r0wo7gK33tUEFBVSiB+JraCwqF4FETuC5N
-	e/d50TA==
-X-Gm-Gg: ASbGncvSlDrv6b54hT12NzdVCO9rXeB22nGdxjqjM1Vud8J94O1hw+Eig45sljSVGy1
-	9k7HsurAGqerqLR/Qwl/wbO1sh09tGfyzP3oLb2CNVG0vYDjHclNqZ/18dawPqDjrs6EpeL/a6c
-	SlRUWetfwS8BkBliv9CL2pHknDbrDOZ+1HP97Fi6GUQfENPcxRf7VYaQL7KSagPNezfL5IcbQ5L
-	1hhcLJ+r2lbEjXG4Ib2tVX0XLlnO1XOyUaNcr/HjZVCzKYKChwe9YwKl+y7JqMMlVbge6JH8GBa
-	OfFaXPlydn9TdqCVwjyeV+hD5bMbkKPPh7yDM+yOwa3gnfV9cv7DfDw5rg==
-X-Google-Smtp-Source: AGHT+IEBZYqz4EXYjBrQl7MEBAEBtNENBPTwZcu8eE/AXSvpLAC27EkQUSrI1TFPSdtbH6FbRzmNrg==
-X-Received: by 2002:adf:b312:0:b0:390:f6cd:c89f with SMTP id ffacd0b85a97d-39132db6f86mr10434242f8f.53.1741696613012;
-        Tue, 11 Mar 2025 05:36:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1741696614; x=1742301414;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=854zdfjcN/UDCoKW38CZ3IaEk9swBTCN45qjV2gxt8s=;
+        b=G+U72BuKKzwlSvXzPF1erqRhFZpX28159aJBIAYRkMtVDXmjDTovA0/Z04fHC8JOL1
+         WhkJAVGtm3yGXB3UbkXW/EgbDEnPX5R4rand5/NCM8Vts0ooUI7Zve5ydx4i3aXTsfrp
+         oOUbwtPhSo5ahHTBMxCE1pGdsu9zYBLxzOui3l/xxqr/1jZd+ID53tu/7GZO3BuafLQe
+         8/eOVYYPNo/bLYaPtQQliXGW5Q65A9/NwdZuN+HfOJkS0qRgSk70T7GOi/TmneAq/OjC
+         19PBoh3BH78Y20RfvQhReEOFroNYLFlv3mnHHlAabXFhKJlZEq/FNXSSClnokkUClWX7
+         owrw==
+X-Gm-Message-State: AOJu0YwEFZaCgPWdHp7eFIYKqcODZADGfaNHCZIpLeyW7xQ4JBmvmB8J
+	nPmpuET4rH6crg4aDp0ewugZm6Zcj29uQ7GXzkMrJN61MUmTp3f/zTt0gty+0AFJ1i+GGg/si7b
+	3mkU=
+X-Gm-Gg: ASbGncsnWZ+uE3QPFJ6uC8+5cgSeGZYwZEMiopGP9JmcokuAxu0vEif0sCYRQUCA5Ps
+	1hj4cjAq6eZIA6O3U+gMi2DbGC/YGM/nTHfIFoKfOVNyK6IW/ftZp6Cd3KZ8biQKNDhGzYE1b7o
+	EMwRLgsEkP5dmi1uAGvHJ+DhxOcjPfDpVe6o3HBBsJuus+b1xqG330qIIPe0MlkhA/TRNCM2LwJ
+	Ed9f99sVr2A9An5yZnZc9AvOOW3WY1K2m69oBKeuqO0HiJWjIsaqlrI2xy7hIxitM2hqT6ThLk1
+	eIovtz+6EigofpCXEB2ORgyjJCYzsq1t4dG6IeqsOoWRzv8=
+X-Google-Smtp-Source: AGHT+IEWMHT7CvjCWIzlXfslrA0NNHfMmwLfEld4qci+NoRLiOZKAENxmwF8nz0PqnnF8QUx9HYXpw==
+X-Received: by 2002:a05:600c:510c:b0:43d:45a:8fca with SMTP id 5b1f17b1804b1-43d045a9259mr31387195e9.30.1741696614492;
+        Tue, 11 Mar 2025 05:36:54 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d04004240sm9742265e9.3.2025.03.11.05.36.52
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d04004240sm9742265e9.3.2025.03.11.05.36.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Mar 2025 05:36:52 -0700 (PDT)
+        Tue, 11 Mar 2025 05:36:53 -0700 (PDT)
 From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
 To: cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-mm@kvack.org
+	linux-kernel@vger.kernel.org
 Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Josef Bacik <josef@toxicpanda.com>,
 	Waiman Long <longman@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
 	Tejun Heo <tj@kernel.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Michal Hocko <mhocko@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH v2 00/11] cgroup v1 deprecation messages
-Date: Tue, 11 Mar 2025 13:36:17 +0100
-Message-ID: <20250311123640.530377-1-mkoutny@suse.com>
+	Johannes Weiner <hannes@cmpxchg.org>
+Subject: [PATCH v2 01/11] cgroup/cpuset-v1: Add deprecation messages to sched_load_balance and memory_pressure_enabled
+Date: Tue, 11 Mar 2025 13:36:18 +0100
+Message-ID: <20250311123640.530377-2-mkoutny@suse.com>
 X-Mailer: git-send-email 2.48.1
+In-Reply-To: <20250311123640.530377-1-mkoutny@suse.com>
+References: <20250311123640.530377-1-mkoutny@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -101,76 +94,32 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Memory controller had begun to print warning messages when using some
-attributes that do no have a counterpart in its cgroup v2
-implementation. This is informative to users who run (unwittingly) on v1
-or to distros that run v1 (they can learn about such users or prepare
-for disabling v1 configs).
+These two v1 feature have analogues in cgroup v2.
 
-I consider the deprecated files in three categories:
-  - RE) replacement exists,
-  - DN) dropped as non-ideal concept (e.g. non-hierarchical resources),
-  - NE) not evaluated (yet).
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ kernel/cgroup/cpuset-v1.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-For RE, I added the replacement into the warning message, DN have only a
-plain deprecation message and I marked the commits with NE as RFC.
-Also I'd be happy if you would point out some forgotten knobs that'd
-deserve similar warnings.
-
-The level of messages is info to avoid too much noise (may be increased
-in future when there are fewer users). Some knobs from DN have warn
-level.
-
-The net_cls and net_prio controllers that only exist on v1 hierarchies
-have no straightforward action for users (replacement would rely on net
-NS or eBPF), so messages for their usage are omitted, although it'd be
-good to eventually retire that code in favor of aforementioned.
-
-At the end are some cleanup patches I encountered en route.
-
-Changes from v1 (https://lore.kernel.org/r/20250304153801.597907-1-mkoutny@suse.com/)
-- cpuset load_balance/pressure warn wording (Waiman)
-- comment typo (Waiman)
-- collect Acks
-- drop bouncing Cc: and respective RFC (self)
-- change level warn -> info, except for spread slab (Tejun)
-- add memory.swappiness (self)
-- add legacy freezer message (self)
-- update cover wrt net* controllers (self)
-
-Michal Koutný (11):
-  cgroup/cpuset-v1: Add deprecation messages to sched_load_balance and
-    memory_pressure_enabled
-  cgroup/cpuset-v1: Add deprecation messages to memory_spread_page and
-    memory_spread_slab
-  cgroup/blkio: Add deprecation messages to reset_stats
-  cgroup: Print message when /proc/cgroups is read on v2-only system
-  cgroup/cpuset-v1: Add deprecation messages to mem_exclusive and
-    mem_hardwall
-  cgroup/cpuset-v1: Add deprecation messages to memory_migrate
-  RFC cgroup/cpuset-v1: Add deprecation messages to
-    sched_relax_domain_level
-  mm: Add transformation message for per-memcg swappiness
-  cgroup: Add deprecation message to legacy freezer controller
-  cgroup: Update file naming comment
-  blk-cgroup: Simplify policy files registration
-
- .../cgroup-v1/freezer-subsystem.rst           |  4 ++++
- .../admin-guide/cgroup-v1/memory.rst          |  1 +
- block/blk-cgroup.c                            |  8 +++++--
- block/blk-ioprio.c                            | 23 ++++++-------------
- include/linux/cgroup-defs.h                   |  5 ++--
- include/linux/cgroup.h                        |  1 +
- kernel/cgroup/cgroup-internal.h               |  1 +
- kernel/cgroup/cgroup-v1.c                     |  7 ++++++
- kernel/cgroup/cgroup.c                        |  4 ++--
- kernel/cgroup/cpuset-v1.c                     |  8 +++++++
- kernel/cgroup/legacy_freezer.c                |  6 +++--
- mm/memcontrol-v1.c                            |  6 +++--
- 12 files changed, 47 insertions(+), 27 deletions(-)
-
-
-base-commit: 80e54e84911a923c40d7bee33a34c1b4be148d7a
+diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+index 25c1d7b77e2f2..9d47b20c03c4b 100644
+--- a/kernel/cgroup/cpuset-v1.c
++++ b/kernel/cgroup/cpuset-v1.c
+@@ -430,12 +430,14 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+ 		retval = cpuset_update_flag(CS_MEM_HARDWALL, cs, val);
+ 		break;
+ 	case FILE_SCHED_LOAD_BALANCE:
++		pr_info_once("cpuset.%s is deprecated, use cpuset.cpus.partition instead\n", cft->name);
+ 		retval = cpuset_update_flag(CS_SCHED_LOAD_BALANCE, cs, val);
+ 		break;
+ 	case FILE_MEMORY_MIGRATE:
+ 		retval = cpuset_update_flag(CS_MEMORY_MIGRATE, cs, val);
+ 		break;
+ 	case FILE_MEMORY_PRESSURE_ENABLED:
++		pr_info_once("cpuset.%s is deprecated, use memory.pressure with CONFIG_PSI instead\n", cft->name);
+ 		cpuset_memory_pressure_enabled = !!val;
+ 		break;
+ 	case FILE_SPREAD_PAGE:
 -- 
 2.48.1
 
