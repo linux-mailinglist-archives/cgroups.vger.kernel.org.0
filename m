@@ -1,77 +1,77 @@
-Return-Path: <cgroups+bounces-6965-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6966-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10954A5C163
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 13:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 225E7A5C166
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 13:38:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB6B63A5F1A
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 12:37:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B65303A694D
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 12:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93599258CD0;
-	Tue, 11 Mar 2025 12:37:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0134A2594BE;
+	Tue, 11 Mar 2025 12:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bfWcoulj"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="En5vfUC6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E2B25742D
-	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 12:37:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0932580D7
+	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 12:37:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741696622; cv=none; b=b14XnqtmFMDJI0jy4GwCjs0P28VoiKeJ6gs8BnEPlnOWDyLsdr5cEsBYU2oniqmqyMZCZI+onM2CRgHetNrdFr3ByDTDKAnNGSCrw6LxnZyFSZNWVdBtmQrkChxEPM/mgW3iSCmPeNPllZF9ua9WIFqfjWtdRYegw9yHToAJ+0Q=
+	t=1741696623; cv=none; b=Ko6132e4Y3yaCv6grp/cJsXTz2MqwfrykmSpV5cslKTJMAGHe/r/ZAyEQvV+ebVMQrAbgdGzYCClPwn5NJljpGiPrsrDazoZxSntiXPk441FiE3VJU43olEq3vAlSSmM+dNrMqKInJWtSCsgrYJ0dOBL7chE/G17vjaMf+dnLZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741696622; c=relaxed/simple;
-	bh=xyEpGRHmfNTyRjNmwaA53DxBYx2J1p00Psf5Ko0aRxA=;
+	s=arc-20240116; t=1741696623; c=relaxed/simple;
+	bh=2ITt60hWHc0r3GvTb/7g3Havz5rR++GRpwzVkgyK8qg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EoEDEuPHJC2qXGpINduSVtl7DmBwRGjUFRQmUMupePO/2FQGZekPyAwEi+/gWRPf88i7kty9oP/xaGc2LqyYA55jfPaCyGBjl8eXks1pVgPu0dgYOyEzEqAQlxr8Fi/uVwh9ZYAEd8ORqSoHVh2FLpHCI+X1pup4BXK8j/u77X0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bfWcoulj; arc=none smtp.client-ip=209.85.128.45
+	 MIME-Version:Content-Type; b=sYejXmS052ZDXSWHsRo+V6O94CNHaEjTpI7MlUwkJLvGOhIFw54acr6MvT/sTDezBdebR+aJBd0oMzOu1y6IDzvQ3Np57AJxL7m72JEckU2ZJS6sL1JC3rZOrvaKhezl83for8EydJisMrtYJVftbekx1TmlErXC+yedWXki6D0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=En5vfUC6; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-43cfe63c592so15480405e9.2
-        for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 05:37:00 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43cfecdd8b2so13093365e9.2
+        for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 05:37:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741696619; x=1742301419; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1741696620; x=1742301420; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2Xuoo2PtJFZeE4IeXKmwssCpt9oQyYMklcL+gMOuRoQ=;
-        b=bfWcouljdKQCxEXmcxoru9LHjh01i1KlUhSmUBYnYcDhreokBmz9Qp77KFcABE/IDM
-         TBcNno+Mtrfyiu3EidddcJ/89PMziiJfzkHUI/KiVhQPPPx9YQ8a4UBhgvfMkucqj04d
-         vYC/PRb+QmSLXDzHuTmlwizekshw0Cj7GjImm7jJs4QhiAP3FaNhoy+xNpkv4FxKI0D+
-         rkS4sGGUglssRlVd5vSlqqHVxW7b/ketR3w+a7xEjNC8aiXKSPamSPRBlEayJ1thWM1A
-         fF/GtYA5MujYYVQxsoEqqQiwiF+Bx4amM3TcIKFXZ1dHxYlmwGFBfklnFptB9JoUlnqR
-         8Akw==
+        bh=PGCLGZxH43T6lkRYp7vhg0rX2pU6776/zsJhIa1Cwzg=;
+        b=En5vfUC6n1lW9ea6SWdXarRWG6EOHOLhni0M5EXyae3vK/Hvzdj0A+EvLUWtLqmzcc
+         H/bL7ThORYYtkaniYXHIBwJ88PrZcR1lr3a4FNg7kYp5ZueYeVz+MxhEclYnikMuCLCg
+         mGaV8sfN/eQUUEryr07WbvNGFU6OnIA4pn7LXMkHnF6uH/aP06PVuKb5gXx+TGIXgoVQ
+         yuKCNrGMrgTgjg1pa+NMrp6oh3mqC222VaEV1Lac2E3SjvGx1jKptJHpSG7TDoyL2uQ8
+         DfRei6A/nm5CgdvkivpqQjXSQat4Mg1JUvEJS8hNiaOBRkG5WCpzPwOwwch1P6lmFWBB
+         24iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741696619; x=1742301419;
+        d=1e100.net; s=20230601; t=1741696620; x=1742301420;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2Xuoo2PtJFZeE4IeXKmwssCpt9oQyYMklcL+gMOuRoQ=;
-        b=UgGgVExheorfOHJHY+gCtIb4HhCRYiVqtn++oYeUfx2VFG17pKnq1B2KjqDvCZjEfS
-         jh5YvTjis1YCbdHJsN2n4H/OThesn0lP2NKNaQ+kux0vwtQQLWwi9eca2B4DSLQc33sB
-         5Djhr+3jO14uxPImjQnohaEEK/RWtQ0jVthZFbOaC9ZHO8iJXtknBb5a/ujn5pZwP24p
-         prsUym6yJIZe7w7JmZfJnLtAgfdhxVAGYiY8nznzN9G3x1oG6dk1czn0dCT6Ae+j0tMm
-         Hr0/cvHyYHaj6mcMtUtL2A0d1Pl3k9U2R2DfoSdS1aA57zZk8+6xN5kMtggehsmD/bHS
-         YAag==
-X-Gm-Message-State: AOJu0Yz7c+aLoVBDLavoBI9oOjaIoFOlhRgZCNTmDDDDdcxe53g7dWNW
-	7erT2c+VRKwGBWLVNeHXTXYo7wCQZlq3j3rJ8qc25zAKlnjs1p1u67UwglEztNXke8znAaszJPB
-	TvMI=
-X-Gm-Gg: ASbGncsQiw4eoLtKmXJztmInHQ5w4OiKlgkLGDEPuvWCcq/Ui6ocKf4UoxedxlTvQoC
-	cAY61+KZaHHiCkQVm6CrniFZR3iCrVg2fH8SezvGyQ/z7j6vSq313QgyfjE2YcYZtjkm+RSkxYA
-	pWE6xLG+FhkplCHIwsstBxv22IJ3E5ueUi5A59LBVWCx+O4HUJirm88oDeiDpffEJvOKrEXstbk
-	h5KnJ0rVPPe0gJ/LdPewgrjpqz2yx6NGmve5nhnSgHX2YaSuukxzFgOWHErqlsGrV8Bs8oxlfVR
-	sIdL8mldjvWwKlMlV+AgNy8otGmgjU+1dr9Uho6d6ngVj+8=
-X-Google-Smtp-Source: AGHT+IG705tglikfT9xX/hSnvCuldCmyH71qaPUhRYW4tTIkJUwakPUVz4hapz+mna0wElISmvRMlQ==
-X-Received: by 2002:a05:600c:4f10:b0:43c:f64c:447f with SMTP id 5b1f17b1804b1-43cf64c4722mr76736445e9.29.1741696618579;
-        Tue, 11 Mar 2025 05:36:58 -0700 (PDT)
+        bh=PGCLGZxH43T6lkRYp7vhg0rX2pU6776/zsJhIa1Cwzg=;
+        b=fyi5WZ1ni/uCyDBDP7BiC4wy0cUsR6DGdUp38ovOl4N6s/9vOwKiLIUlVgA8Tg9Ibn
+         zzlTjLJS0aCS30Vs7K1+Z0H6Tqb5r8QbR9nY71gC8yIagydFsva55b+gx/7gI7BXCkC/
+         03ndiuRqOm6IwF0YP9oKADdfm/Jtpg92ldeVCwuXbTbotGJWK2ctXJXyPYdH1+mRlaM2
+         RID4tVustwDW0gussz1hkDHSvbfa/+zzEzBugxk8XvuA3V/H68/Ux5Pagyosfz300pLS
+         syO/Tb02WL228iYuVGtI5eO/FZNbdI5KUxja7NcTtD7I4klAEGlnRpD70WNU4ItnnUvv
+         EczA==
+X-Gm-Message-State: AOJu0Yxa/oBs1K+b90JFKfDKfTaRS99QnP5dLpn+AjckSPZgw208TmU3
+	x/HtQ54/VTGTVJtr/75fbT24m2PPLodCTWGobc5JxthEwScOPqKBugJ23TSTYTaVyd65GKwWZmg
+	3sAA=
+X-Gm-Gg: ASbGncvnEtC1exjAWZSjr+OjMEg17JKxGhY+7nYxXaAOks25duLQXLceAkuBFw0GC1G
+	vabags/XfYQe6gW/mfGDpZlLob0sXtt5mmDUJxmYr0AEFY/HV8DOF1pUm0o9mUGhXH+xXWVXoeU
+	cUb1zCz/+QjAX31oUmHfJ7qn98LgEYd9wDfWc759IfUXDSrh5cwFYVhCyzIFSsr8GIBEa63EIxe
+	zfGm2wyfR8gXuqjkFNjV1Nw4tlZTxrajDj1VUse1arBcHc/H++Y451QKET9+mBVr/x1PWTAUR5s
+	YKMuyhnVCuYQa3Lg73Ki8z+ucrKC6cTk5liEpa6nDep7yn8=
+X-Google-Smtp-Source: AGHT+IF58w0f7YtTRozTF/uVQ4G2fK8Q6DSMhIynp+p7Thprd9B1hIoUoD3xl3YtV8/T5lnX+cBNhQ==
+X-Received: by 2002:a05:600c:1547:b0:43c:fceb:91f with SMTP id 5b1f17b1804b1-43cfceb0aedmr81539955e9.11.1741696619822;
+        Tue, 11 Mar 2025 05:36:59 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d04004240sm9742265e9.3.2025.03.11.05.36.57
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d04004240sm9742265e9.3.2025.03.11.05.36.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Mar 2025 05:36:58 -0700 (PDT)
+        Tue, 11 Mar 2025 05:36:59 -0700 (PDT)
 From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
 To: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -79,9 +79,9 @@ Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
 	Waiman Long <longman@redhat.com>,
 	Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>
-Subject: [PATCH v2 04/11] cgroup: Print message when /proc/cgroups is read on v2-only system
-Date: Tue, 11 Mar 2025 13:36:21 +0100
-Message-ID: <20250311123640.530377-5-mkoutny@suse.com>
+Subject: [PATCH v2 05/11] cgroup/cpuset-v1: Add deprecation messages to mem_exclusive and mem_hardwall
+Date: Tue, 11 Mar 2025 13:36:22 +0100
+Message-ID: <20250311123640.530377-6-mkoutny@suse.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250311123640.530377-1-mkoutny@suse.com>
 References: <20250311123640.530377-1-mkoutny@suse.com>
@@ -94,80 +94,33 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-As a followup to commits 6c2920926b10e ("cgroup: replace
-unified-hierarchy.txt with a proper cgroup v2 documentation") and
-ab03125268679 ("cgroup: Show # of subsystem CSSes in cgroup.stat"),
-add a runtime message to users who read status of controllers in
-/proc/cgroups on v2-only system. The detection is based on a)
-no controllers are attached to v1, b) default hierarchy is mounted (the
-latter is for setups that never mount v2 but read /proc/cgroups upon
-boot when controllers default to v2, so that this code may be backported
-to older kernels).
+The concept of exclusive memory affinity may require complex approaches
+like with cpuset v2 cpu partitions. There is so far no implementation in
+cpuset v2.
+Specific kernel memory affinity may cause unintended (global)
+bottlenecks like kmem limits.
 
 Signed-off-by: Michal Koutný <mkoutny@suse.com>
-Acked-by: Waiman Long <longman@redhat.com>
 ---
- kernel/cgroup/cgroup-internal.h | 1 +
- kernel/cgroup/cgroup-v1.c       | 7 +++++++
- kernel/cgroup/cgroup.c          | 2 +-
- 3 files changed, 9 insertions(+), 1 deletion(-)
+ kernel/cgroup/cpuset-v1.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-index c964dd7ff967a..95ab39e1ec8f0 100644
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -168,6 +168,7 @@ struct cgroup_mgctx {
- 
- extern struct cgroup_subsys *cgroup_subsys[];
- extern struct list_head cgroup_roots;
-+extern bool cgrp_dfl_visible;
- 
- /* iterate across the hierarchies */
- #define for_each_root(root)						\
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index e28d5f0d20ed0..11ea8d24ac727 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -673,6 +673,7 @@ struct cftype cgroup1_base_files[] = {
- int proc_cgroupstats_show(struct seq_file *m, void *v)
- {
- 	struct cgroup_subsys *ss;
-+	bool cgrp_v1_visible = false;
- 	int i;
- 
- 	seq_puts(m, "#subsys_name\thierarchy\tnum_cgroups\tenabled\n");
-@@ -684,12 +685,18 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
- 	for_each_subsys(ss, i) {
- 		if (cgroup1_subsys_absent(ss))
- 			continue;
-+		cgrp_v1_visible |= ss->root != &cgrp_dfl_root;
-+
- 		seq_printf(m, "%s\t%d\t%d\t%d\n",
- 			   ss->legacy_name, ss->root->hierarchy_id,
- 			   atomic_read(&ss->root->nr_cgrps),
- 			   cgroup_ssid_enabled(i));
- 	}
- 
-+	if (cgrp_dfl_visible && !cgrp_v1_visible)
-+		pr_info_once("/proc/cgroups lists only v1 controllers, use cgroup.controllers of root cgroup for v2 info\n");
-+
-+
- 	return 0;
- }
- 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index afc665b7b1fe5..3a5af0fc544a6 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -171,7 +171,7 @@ EXPORT_SYMBOL_GPL(cgrp_dfl_root);
-  * The default hierarchy always exists but is hidden until mounted for the
-  * first time.  This is for backward compatibility.
-  */
--static bool cgrp_dfl_visible;
-+bool cgrp_dfl_visible;
- 
- /* some controllers are not supported in the default hierarchy */
- static u16 cgrp_dfl_inhibit_ss_mask;
+diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+index fea8a0cb7ae1d..b243bdd952d78 100644
+--- a/kernel/cgroup/cpuset-v1.c
++++ b/kernel/cgroup/cpuset-v1.c
+@@ -424,9 +424,11 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+ 		retval = cpuset_update_flag(CS_CPU_EXCLUSIVE, cs, val);
+ 		break;
+ 	case FILE_MEM_EXCLUSIVE:
++		pr_info_once("cpuset.%s is deprecated\n", cft->name);
+ 		retval = cpuset_update_flag(CS_MEM_EXCLUSIVE, cs, val);
+ 		break;
+ 	case FILE_MEM_HARDWALL:
++		pr_info_once("cpuset.%s is deprecated\n", cft->name);
+ 		retval = cpuset_update_flag(CS_MEM_HARDWALL, cs, val);
+ 		break;
+ 	case FILE_SCHED_LOAD_BALANCE:
 -- 
 2.48.1
 
