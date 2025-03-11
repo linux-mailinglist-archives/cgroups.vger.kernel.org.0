@@ -1,190 +1,134 @@
-Return-Path: <cgroups+bounces-6975-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6976-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A079A5C2FD
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 14:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4181AA5C32F
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 15:03:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE3B53B11A2
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 13:49:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82D983B31FE
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 14:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA59F1CCEE0;
-	Tue, 11 Mar 2025 13:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4577525BAA8;
+	Tue, 11 Mar 2025 14:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZQGJfqTI"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UNdkTVLH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DB231487E9
-	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 13:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80CD525B666
+	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 14:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741700981; cv=none; b=YbyEcRUmLYh2JQdTP3r4W4ZnjUu95uW3QKHw01oWUINiogt7ow37MAILrbBkVk1zhByIdrFPfDdtVott3q44uJFdn6p2QjrsvG8uol+3+CHcq/RMUEBvPaR3umOg2Ya9WIND8mRD1xA/CKDeIFJFae4d4JK1SfaU2ZlNryHJTQ4=
+	t=1741701741; cv=none; b=Et9pnAbTcuxrBGQuzSgNVJ6vzhaTHFsCY1bUungI3zHBYpYfogS1J+ROiQERuFtHsNJMI0DH1H/vpFWzRCGwsVsYMOQejOLSlvZ2foO3wJvRTu6sp+t+5ACdMvZigzax42QALmDdX0T2dHLd06b776ZMAnyXue7h1QR7/3Hbi+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741700981; c=relaxed/simple;
-	bh=vScjEivhYdfVHvI2tSn+P+7Eluf9xWviNNomHGftrVE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CHrY1Gb3bfGlSgonrRjRrq5cZi+nClkfn6TeakEyJOtCqkaTk0lhurAYgkgF6NecJBeOBIJcMNgxIXDCxR1ZrY9JfFyZslCrmVRY7ir/1kaFk+fRzysF/HMlJavyODAPnK4rKsDGuPtT64OAqJak2HRhnmJMbVYvJ3buguUtcY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZQGJfqTI; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-43690d4605dso34028585e9.0
-        for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 06:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741700978; x=1742305778; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RlZHNg9yhg3SzjB7LxxqzdvnbsuoathUQwWLXPBZZPM=;
-        b=ZQGJfqTIlQv73JriFLg6VOH0IZyW/MxbKv3M9rILYXKgS+RiOsEFUive7SPtn+4TMW
-         yvHn+T3+GucyIYShhmhbJAZNguAb+CNAQZL69rx+daL/RwMBDEwfE9W4OJQyD7e+rW09
-         J9V8Abp+O1/cuGnh6cBWi7LKaqvORySMQUe74xXryabeYUt3dLPwR8KBt/2Tk07tjej6
-         ScoN+sLgCTkhBMWw0K4NXFoHGMG0NjL5BnoHJHJNQwGpI2qC1c7C09QUWwAnB8CoEqFM
-         9bSWdLwGTQbT8ZKB0PMLbP8dIMI4uLgxzNJzybkqoCdbPg1apAXB8q3toxRIutRjpJ3E
-         s53A==
+	s=arc-20240116; t=1741701741; c=relaxed/simple;
+	bh=w4/4MsuywTM8dKIEtT8CwRyGelvllPmBbieFzdzBLJI=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=trJxHT9IRtUATfSqSCad1nTJT/uE4TqExvnja/WS8VNZUDk9omer529UVrsCQ45O6H9E5Tw6xGtQMslhJyFigZ7vFH1iywFQuO/tgap+tU1NKaQez20nd4S8eObO1uwZ6iIqfRtIHjDG4/hmgDrWjtVMdWrLhBQVOFfX3ts4bTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UNdkTVLH; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1741701738;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=srjZEoMcmsNF1ucfOw62TWPMYLcdnIdIH/Ek8tx9FZo=;
+	b=UNdkTVLHpWoHhs0Zky3u9Q2F+ZjF+d72JdOZ7cXJPe0whjaQv/qWZ92wCO7uFstKus1P74
+	y0Ha5u99WTeJG+Q/bBDMEsTR2fXt3pGrc5gg7BKLD2NV56zRhXPSZXk4YtVgCajfF+hmjD
+	4g9/rYMkUF8EMyP6d4fg/FL8WecOGa8=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-625-B9ESvihmP-6QszD6qEpwxg-1; Tue, 11 Mar 2025 10:02:17 -0400
+X-MC-Unique: B9ESvihmP-6QszD6qEpwxg-1
+X-Mimecast-MFC-AGG-ID: B9ESvihmP-6QszD6qEpwxg_1741701737
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7c0a8583e60so1065507185a.2
+        for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 07:02:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741700978; x=1742305778;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RlZHNg9yhg3SzjB7LxxqzdvnbsuoathUQwWLXPBZZPM=;
-        b=tNSQnrAUMpkBsyFCwBdU6qiiZEtOWFHCU33z3wlio8RacjpL1iyHfX6I+VLMAftort
-         Qx55LKn5KoKqUe5huyS6E0vYUQpGVSUH5FJguCkiuPwhgXVv1nPYXJq+1nF5WJLYWa/B
-         iaeLKamk5869eyX+39QAPLA4SpMx4x1KUOTbThm0WPa2Qo6+y6k4TfmmWjmat/TsJM1X
-         O8DB4GD+9slnmrNjSKpZglsbpHV6xG8Pcq0sKXmummK5U/MeTBOmbX/s3FayBmgtPhVs
-         VeYQ6+Eqxbdsewpk73/at/xCR+aVHDw1GPg1eF5XPg56Hqa4p0qeFKWLgplNla6ZlJUN
-         rXNw==
-X-Forwarded-Encrypted: i=1; AJvYcCW2Hjx0R+0qkCt9E0jGAZ19PBA7mLEDS2E3jSilWgFkG9Un7gWrTFGB6xvCE1roZARRFyrFQuOu@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYQJG8Ufp0xVP8s2iVDQFojqLzS4WXmxNoijhE7I5ldDFY4bue
-	h+myfIpV4neqVH1a2bku6ZQp8nrGJRzDe1MQMrJrDsea7bD/kGco5jhcmESgzNo=
-X-Gm-Gg: ASbGnctFlIwgJD8UstMqM5zkEQ+y1qSTqHMX5tF6FpDqutF6VWkInoCyEvaIwWyNzDm
-	D3XXbKfxAnEX63p2pYeAXLw9LrJ1BHmGoRIfkyGh9tSDmqheHtU/5Y+jo0O252qXZJIwzTAf9Fo
-	89QUhO9zQE4bNP7hxntaW95I5l5wzRz80ZV5dIjaprvunz5x3IuZZy/1oN42Dv52w50QDO7J/3g
-	xOT8do89qc0Dxk92SFv+nTLUu24n7MzmMdZ59KlDfrG9EUJUZPJOIvGCGTzBTD0sHsVqR/am79h
-	IT4ewUDUrCU+9JtRISoYteW9T+lbyiZdHR15I8Tb+M8pTwE=
-X-Google-Smtp-Source: AGHT+IGO2jeFa+PgVDcTzL5RDaY9VZ8d2PFJuvU64B5OwM/B9gzkS6wcRA5JmSi8aOeqBP2HQtovEg==
-X-Received: by 2002:a05:600c:4708:b0:43d:10c:2f60 with SMTP id 5b1f17b1804b1-43d010c303cmr45005665e9.24.1741700977845;
-        Tue, 11 Mar 2025 06:49:37 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43ce8a493d0sm120392695e9.1.2025.03.11.06.49.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Mar 2025 06:49:37 -0700 (PDT)
-Date: Tue, 11 Mar 2025 14:49:35 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com, 
-	mhocko@kernel.org, hannes@cmpxchg.org, akpm@linux-foundation.org, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 0/4 v2] cgroup: separate rstat trees
-Message-ID: <frrvzvhexeb4wmdhjtjmdnbleg43nmcvf2vh3ayzt6hptazt5n@gzjka7dkhby7>
-References: <20250227215543.49928-1-inwardvessel@gmail.com>
- <ee4zdir4nikgzh2zdyfqic7b5lapsuimoeal7p26xsanitzwqo@rrjfhevoywpz>
- <c1899b5a-94a8-4198-be0a-5d2b69afd488@gmail.com>
+        d=1e100.net; s=20230601; t=1741701736; x=1742306536;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=srjZEoMcmsNF1ucfOw62TWPMYLcdnIdIH/Ek8tx9FZo=;
+        b=j9XiKHFbVNRxDdiTpTPdwUAIC6VOTU2gWfG9ok/3Z4wjf5P8QaATYnXhB06v9zgCHW
+         C218yYAttPXfc2LRl2IpnRYZmaJVLPGT01V2pq3Vm9tw9FjCROiYp9RSODPWvg7ZYrUl
+         dkkUBjRMKOKiDQ6j5ubvQJwq8cJW7bshCK82leg5RihVA3tvzDEh5B3aBo4jtciZEf9r
+         CuyR9GtHVhShBZ/mcW34S5C9RYKaGkcaEVCUVR3Rmb85QlzeG8sn9mJxi9tor7TWSEpD
+         t8F0E4t6sOR2JZsqA9Z1zLUIAI0MwsJQXxcRyWaaaYw0EjRN2SxwGDHrXCZUYM0g0oKs
+         mJkg==
+X-Forwarded-Encrypted: i=1; AJvYcCVGaI6b4a4Fii0Id1/Zt8QNPjkRYGhXDTTg/AudkRhdCYj5B06BeZ0su3m9/Bd0n4T+ndoyAPr1@vger.kernel.org
+X-Gm-Message-State: AOJu0YyezxZscqUJpk/zRuOll+xgBW0/H27ngdzpjXskE5ebOd7zUyvr
+	vH0rySXmGC+pDfac2Ul0tSeo/VeCz8FSD1sLCtPg53al3+FJ/3iGYu4Rg0sGW5BfMsOATqAAdkJ
+	UtuePHU+rPV80/R9RNutvhmD6Y3VmnXUGM3KzDoh/qljDTLEq8C3DRVGENUlNAqI=
+X-Gm-Gg: ASbGncvp6NOFO7HiwgBXHL1iuujTCVAoMyPOcig1j345AgoOcDsyQL5ugQWQ5XQ8/Xv
+	ngrtMsKa9soctWbUU4FpA4z0fLauUqg3pIYnvKmSbjSCH/kBHBsNkNEcB9YCgm6ocaCYZ6KoJcw
+	uMX+kK4fwP4JxDhW+5UkAXl0gOOzlCD+5uM/2qumXSOHuXj8PqSYYLjtE3nYGuG+uMKDJjrTx+p
+	P6R3XEp9BeGEb7b2F6yvB5W0zqIw3wFYhpF5LQfkHKKJp/MGZz8CteHlCNfRc3/ckjwuqrOJYfS
+	3y4zPHraitgTqeweFcP3/ARm5LrUBjfdk2nboPouFVG7QdM3ZZiYL5E5tTDIAg==
+X-Received: by 2002:a05:620a:8707:b0:7c5:5670:bd75 with SMTP id af79cd13be357-7c55670c019mr929100885a.46.1741701736055;
+        Tue, 11 Mar 2025 07:02:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGRg+L8adczL3Foi2AAcnsKmOHEJwYXqihA5sf9EJSRouLY4pSX3Hx4mbey3OW2QQT9tXALaQ==
+X-Received: by 2002:a05:620a:8707:b0:7c5:5670:bd75 with SMTP id af79cd13be357-7c55670c019mr929097085a.46.1741701735738;
+        Tue, 11 Mar 2025 07:02:15 -0700 (PDT)
+Received: from ?IPV6:2601:188:c100:5710:315f:57b3:b997:5fca? ([2601:188:c100:5710:315f:57b3:b997:5fca])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c558a2f92asm248542785a.33.2025.03.11.07.02.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Mar 2025 07:02:15 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <1959b178-5c3d-4564-beb3-f411cb9efe77@redhat.com>
+Date: Tue, 11 Mar 2025 10:02:14 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3fto5w6pevkh6njs"
-Content-Disposition: inline
-In-Reply-To: <c1899b5a-94a8-4198-be0a-5d2b69afd488@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/11] cgroup/cpuset-v1: Add deprecation messages to
+ sched_load_balance and memory_pressure_enabled
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>
+References: <20250311123640.530377-1-mkoutny@suse.com>
+ <20250311123640.530377-2-mkoutny@suse.com>
+Content-Language: en-US
+In-Reply-To: <20250311123640.530377-2-mkoutny@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
---3fto5w6pevkh6njs
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 0/4 v2] cgroup: separate rstat trees
-MIME-Version: 1.0
-
-On Wed, Mar 05, 2025 at 05:07:04PM -0800, JP Kobryn <inwardvessel@gmail.com=
-> wrote:
-> When the entry point for flushing is reading the file memory.stat,
-> memory_stat_show() is called which leads to __mem_cgroup_flush_stats(). In
-> this function, there is an early return when (!force && !needs_flush) is
-> true. This opportunity to "skip" a flush is not reached when another
-> subsystem has initiated the flush and entry point for flushing memory is
-> css->css_rstat_flush().
-
-That sounds spot on, I'd say that explains the savings observed.
-Could you add a note the next version along the lines like this:
-
-	memcg flushing uses heuristics to optimize flushing but this is
-	bypassed when memcg is flushed as consequence of sharing the
-	update tree with another controller.
-
-IOW, other controllers did flushing work instead of memcg but it was
-inefficient (effective though).
-
-
-> Are you suggesting a workload with fewer threads?
-
-No, no, I only roughly wondered where the work disappeared (but I've
-understood it from the flushing heuristics above).
-
-> > What's the change between control vs experiment? Runnning in root cg vs
-> > nested? Or running without *.stat readers vs with them against the
-> > kernel build?
-> > (This clarification would likely answer my question above.)
-> >=20
->=20
-
-(reordered by me, hopefully we're on the same page)
-
-before split:
-> workload control with no readers:
-> real    6m54.818s
-> user    117m3.122s
-> sys     5m4.996s
+On 3/11/25 8:36 AM, Michal Koutný wrote:
+> These two v1 feature have analogues in cgroup v2.
 >
-> workload control with constant readers {memory,io,cpu,cgroup}.stat:
-> real    6m59.468s
-> user    118m26.981s
-> sys     5m20.163s
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
+> ---
+>   kernel/cgroup/cpuset-v1.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+> index 25c1d7b77e2f2..9d47b20c03c4b 100644
+> --- a/kernel/cgroup/cpuset-v1.c
+> +++ b/kernel/cgroup/cpuset-v1.c
+> @@ -430,12 +430,14 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+>   		retval = cpuset_update_flag(CS_MEM_HARDWALL, cs, val);
+>   		break;
+>   	case FILE_SCHED_LOAD_BALANCE:
+> +		pr_info_once("cpuset.%s is deprecated, use cpuset.cpus.partition instead\n", cft->name);
+>   		retval = cpuset_update_flag(CS_SCHED_LOAD_BALANCE, cs, val);
+>   		break;
+>   	case FILE_MEMORY_MIGRATE:
+>   		retval = cpuset_update_flag(CS_MEMORY_MIGRATE, cs, val);
+>   		break;
+>   	case FILE_MEMORY_PRESSURE_ENABLED:
+> +		pr_info_once("cpuset.%s is deprecated, use memory.pressure with CONFIG_PSI instead\n", cft->name);
+>   		cpuset_memory_pressure_enabled = !!val;
+>   		break;
+>   	case FILE_SPREAD_PAGE:
+Acked-by: Waiman Long <longman@redhat.com>
 
-after split:
-> workload experiment with no readers:
-> real    6m54.862s
-> user    117m12.812s
-> sys     5m0.943s
->=20
-> workload experiment with constant readers {memory,io,cpu,cgroup}.stat:
-> real    6m57.031s
-> user    118m13.833s
-> sys     5m3.454s
-
-I reckon this is positive effect* of the utilized heuristics (no
-unnecessary flushes, therefore no unnecessary tree updates on writer
-side neither).
-
-*) Not statistical but it doesn't look worse.
-
-> These tests were done in a child (nested) cgroup. Were you also asking fo=
-r a
-> root vs nested experiment or were you just needing clarification on the t=
-est
-> details?
-
-No, I don't think the root vs nested would be that much interesting in
-this case.
-
-Thanks,
-Michal
-
---3fto5w6pevkh6njs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ9A/bQAKCRAt3Wney77B
-SW+DAP9MRwSkgfcF2q0SYv7iwTiItXhXwvL26zMPc1X6xOaKZAEAyJDXgE4sh8ew
-GyN5lrwplSNM5SbTJESB9q+JxBLVBQ8=
-=E+84
------END PGP SIGNATURE-----
-
---3fto5w6pevkh6njs--
 
