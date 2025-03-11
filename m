@@ -1,156 +1,149 @@
-Return-Path: <cgroups+bounces-6973-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6974-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B153A5C2AA
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 14:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 523A2A5C2FC
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 14:49:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25D513B2D28
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 13:29:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1D4A3B1860
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 13:49:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D45B1C1F07;
-	Tue, 11 Mar 2025 13:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2906C1D5150;
+	Tue, 11 Mar 2025 13:49:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZIlKNz/A"
 X-Original-To: cgroups@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77BA2156880;
-	Tue, 11 Mar 2025 13:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C5217A2E2
+	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 13:49:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741699768; cv=none; b=ERG0HSyyHTMLi/kcT09n4pwlvFZ9eur+8krDr90bKg3DWXeyn9hiQrHO2DxvCeaPBL90l2ckKWCqbADyijAdXosFpX8BEf1dkO9IVqazV07IIG/S7gNys6rfic7mAZ09VTESG2waXyAqRwdUblJ1hw/3LyWheTuT4GNmzQGQpq4=
+	t=1741700971; cv=none; b=lCUWrG1cMXh/MwP2sfxNbadgwiVco1iNY2WiEGGdbI0oeVHhnQnir1zGC5m5Y+dX6qZZTwHZZyTGDA8ThDBmtFr5lSwC+6GjZDL7i62J3DZ+94SMDpPMqYnHgB34SpihQo4zp3hhC6QWqZcr6PEjeuUcn9uH9gf2crCPHR83Yks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741699768; c=relaxed/simple;
-	bh=gqeqJ0qwfHmM8KEVQQJqOUAcSknDweM1L7QmLhmF25M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g+SmWDm+B0BKSE8xTQZvtFDepCSX4qalxELlcQ64X5PJxrVUaUy9OzleF/RG1JTJn4JSlo5hnxrlWZVzYBvGlfWQkJcEW93J/bvRl3MabHpbZCrzxC33HWWa6ogs9F+5/F6n+zrom7iT1/liFrGXEE0526VmoIpqGHTX525+Uvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA4511424;
-	Tue, 11 Mar 2025 06:29:36 -0700 (PDT)
-Received: from [192.168.178.6] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9309E3F694;
-	Tue, 11 Mar 2025 06:29:22 -0700 (PDT)
-Message-ID: <e6731145-5290-41f8-aafb-1d0f1bcc385a@arm.com>
-Date: Tue, 11 Mar 2025 14:29:12 +0100
+	s=arc-20240116; t=1741700971; c=relaxed/simple;
+	bh=RpJxqB/c9WlwSsJ3kc9FCZvjBh8kGAK1R1+AogqQdEY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HzIEm77wUs72yhpXrCrl2beZGMNmD9Sdgliue619pR5/a+KaAzGbi3IYXIP4Di2T3BxmkXoIEg63VzMF4Yv+L1YcCnnEHyE4hubaUAJ5B9oaP/9hTstTwlwxVmel9fNZpk6tg1FBZ2M20gNHFI9e4wg8w9YWn046st0EAs7L79Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZIlKNz/A; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-43ce71582e9so19819085e9.1
+        for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 06:49:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1741700968; x=1742305768; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gqB/iF+dei4y3VWYyAk1QsAKHD9oZbrYePOTdReSlBs=;
+        b=ZIlKNz/AANlWu1zcQYMeEfLvex4jQF9sCMdTWEPjA99X9S2Dg2gBohYaVEiWyaHC8p
+         3+Nct091ySZ09NS8Beawcn5I7QNzTPVos7yDQiDiXbJa0ubpdzQCEUQnoOHC5gdFfvWN
+         WGinFs9KQ8L7g114LQSt+KLRQorUG4zM36RuNNlXVinddfKxMdevK3gmtUw4kqMb1v1e
+         9Xsauo4jCcOh9ptRZXA5KnsUObCfOIdy02LN37A4dxdprzs9IBEexoQAu8m4vCRV86H2
+         BOV7mBnCJM/oPncMvxMNXuSZawwZJNdprru7xCvBTgSNVhCHHWEnPgkDAMncNAkAKpGL
+         clNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741700968; x=1742305768;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gqB/iF+dei4y3VWYyAk1QsAKHD9oZbrYePOTdReSlBs=;
+        b=Y/wiUdmnFgUg0+bZmw3PfjUsPzOHW/Y1jvh454PzWV1NusMlQpPKnF0HYHjnjHIROz
+         8/6WTjGcLtZBOvy5xGURRITVwsuHvIUMiuTZn1y4Ro87Ebztf/mXxqSPr84aAySR+Vmk
+         oOZNb6+nxdR6tve0LJVY3t45DjQKA40DWR9+TvBzs1k7HJcUwdsJeAZ4Kq+g4guyxUbL
+         Ih2ty9iUQWGbgsZD11DcFXrIwxjPsYoywhmueShWr3DssegU5ryntBA3aFgUPi9OVDB3
+         sHIBoMKaGJKsamnuKlLuGJeFl0r+yUT/KiMWy3KyrnotcLPI3SWFmTqsuYuqa08T0B2c
+         qeCw==
+X-Forwarded-Encrypted: i=1; AJvYcCXmkd1Esh3QqNC8PPNm7ao1KBy7Ucc4jf7H9kK6OPj85HXuvkZ9OCoSoAmlChKvedihNI+NkKrW@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywq4WbpZ0FDRL4+Fp6Pu9EUdv1wzdzRNIcxING/XChSr47rpIuW
+	em271pwsS0gczWn7mHYY4eE3lHONr2NSqZUR7SX2VUaYk0xvYItoMLaiS2f2FfQ=
+X-Gm-Gg: ASbGncun49oXS4Gj3H5/u2lgK9Wtvud6Y0JDVsJ19eDHXZ+u3iSEwLP3MZWyEjWKL/5
+	gyUoKLYT5GlOvdWS3Ycn8w3w/4Dv+cCreW292+iazoGrIcuG9bTwp7FIU3/s+4EiIbQnCcIrhaO
+	g4MAiG+9S2mhNI6TcZNA+CFBQMUc3cb96IHVpajd1MPBAC0YCCG5fcZeZ9JJ29KoFheuVnieYo5
+	6IFaJ3wJUPEOjXwA9FbWLY0l5ohZ7pIrNsvhiMghL2r22OkqZX4Nwx4VpQBwgCgdE3KMN/h3O26
+	6ccwz0i04GlpGG03j3naE//22B6WRJkX9rQ9rM287cx68ok=
+X-Google-Smtp-Source: AGHT+IHb+rSRbvUlQBkhWQdq8ou6WdPqG3+rRdmBEuLAz661CxrAjVqbigcZm8EOTGlYJNTw3Y20yw==
+X-Received: by 2002:a05:600c:1c1c:b0:43d:54a:221c with SMTP id 5b1f17b1804b1-43d054a2461mr25392025e9.18.1741700968169;
+        Tue, 11 Mar 2025 06:49:28 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43cf7c8249bsm73699775e9.7.2025.03.11.06.49.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Mar 2025 06:49:27 -0700 (PDT)
+Date: Tue, 11 Mar 2025 14:49:25 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: Yosry Ahmed <yosry.ahmed@linux.dev>, tj@kernel.org, 
+	shakeel.butt@linux.dev, mhocko@kernel.org, hannes@cmpxchg.org, akpm@linux-foundation.org, 
+	linux-mm@kvack.org, cgroups@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 3/4 v2] cgroup: separate rstat locks for subsystems
+Message-ID: <jtqkpzqv4xqy4vajm6fljin6ospot37qg252dfk3yldzq6aubu@icg3ndtg3k7i>
+References: <20250227215543.49928-1-inwardvessel@gmail.com>
+ <20250227215543.49928-4-inwardvessel@gmail.com>
+ <n4pe2mks7idmyd5rg6o3d6ay75f3pf4bkwv4hcwkpa2jsryk6v@5d5r3wdiddil>
+ <Z8X1IfzdjbKEg5OM@google.com>
+ <6no5upfirmqnmyfz2vdbcuuxgnrfttvieznj6xjamvtpaz5ysv@swb4vfaqdmbh>
+ <9c50b4ac-7c04-45ff-bf42-9630842eec21@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/8] sched/deadline: Rebuild root domain accounting
- after every update
-To: Waiman Long <llong@redhat.com>, Juri Lelli <juri.lelli@redhat.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Qais Yousef <qyousef@layalina.io>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Swapnil Sapkal <swapnil.sapkal@amd.com>,
- Shrikanth Hegde <sshegde@linux.ibm.com>, Phil Auld <pauld@redhat.com>,
- luca.abeni@santannapisa.it, tommaso.cucinotta@santannapisa.it,
- Jon Hunter <jonathanh@nvidia.com>
-References: <20250310091935.22923-1-juri.lelli@redhat.com>
- <Z86yxn12saDHLSy3@jlelli-thinkpadt14gen4.remote.csb>
- <797146a4-97d6-442e-b2d3-f7c4f438d209@arm.com>
- <398c710f-2e4e-4b35-a8a3-4c8d64f2fe68@redhat.com>
- <fd4d6143-9bd2-4a7c-80dc-1e19e4d1b2d1@redhat.com>
- <Z9Alq55RpuFqWT--@jlelli-thinkpadt14gen4.remote.csb>
- <be2c47b8-a5e4-4591-ac4d-3cbc92e2ce5d@redhat.com>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Content-Language: en-US
-In-Reply-To: <be2c47b8-a5e4-4591-ac4d-3cbc92e2ce5d@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="2iwj5eprdbpucc2n"
+Content-Disposition: inline
+In-Reply-To: <9c50b4ac-7c04-45ff-bf42-9630842eec21@gmail.com>
 
-On 11/03/2025 13:34, Waiman Long wrote:
-> On 3/11/25 7:59 AM, Juri Lelli wrote:
->> On 10/03/25 20:16, Waiman Long wrote:
->>> On 3/10/25 3:18 PM, Waiman Long wrote:
->>>> On 3/10/25 2:54 PM, Dietmar Eggemann wrote:
->>>>> On 10/03/2025 10:37, Juri Lelli wrote:
->>>>>> Rebuilding of root domains accounting information (total_bw) is
->>>>>> currently broken on some cases, e.g. suspend/resume on aarch64.
->>>>>> Problem
->>>>> Nit: Couldn't spot any arch dependency here. I guess it was just
->>>>> tested
->>>>> on Arm64 platforms so far.
->>>>>
->>>>> [...]
->>>>>
->>>>>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
->>>>>> index 44093339761c..363ad268a25b 100644
->>>>>> --- a/kernel/sched/topology.c
->>>>>> +++ b/kernel/sched/topology.c
->>>>>> @@ -2791,6 +2791,7 @@ void partition_sched_domains_locked(int
->>>>>> ndoms_new, cpumask_var_t doms_new[],
->>>>>>        ndoms_cur = ndoms_new;
->>>>>>          update_sched_domain_debugfs();
->>>>>> +    dl_rebuild_rd_accounting();
->>>>> Won't dl_rebuild_rd_accounting()'s lockdep_assert_held(&cpuset_mutex)
->>>>> barf when called via cpuhp's:
->>>>>
->>>>> sched_cpu_deactivate()
->>>>>
->>>>>     cpuset_cpu_inactive()
->>>>>
->>>>>       partition_sched_domains()
->>>>>
->>>>>         partition_sched_domains_locked()
->>>>>
->>>>>           dl_rebuild_rd_accounting()
->>>>>
->>>>> ?
->> Good catch. Guess I didn't notice while testing with LOCKDEP as I was
->> never able to hit this call path on my systems.
->>
->>>> Right. If cpuhp_tasks_frozen is true, partition_sched_domains() will be
->>>> called without holding cpuset mutex.
->>>>
->>>> Well, I think we will need an additional wrapper in cpuset.c that
->>>> acquires the cpuset_mutex first before calling
->>>> partition_sched_domains()
->>>> and use the new wrapper in these cases.
->>> Actually, partition_sched_domains() is called with the special
->>> arguments (1,
->>> NULL, NULL) to reset the domain to a single one. So perhaps something
->>> like
->>> the following will be enough to avoid this problem.
->> I think this would work, as we will still rebuild the accounting after
->> last CPU comes back from suspend. The thing I am still not sure about is
->> what we want to do in case we have DEADLINE tasks around, since with
->> this I belive we would be ignoring them and let suspend proceed.
-> 
-> That is the current behavior. You can certainly create a test case to
-> trigger such condition and see what to do about it. Alternatively, you
-> can document that and come up with a follow-up patch later on.
 
-But don't we rely on that partition_sched_domains_locked() calls
-dl_rebuild_rd_accounting() even in the reset_domain=1 case?
+--2iwj5eprdbpucc2n
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 3/4 v2] cgroup: separate rstat locks for subsystems
+MIME-Version: 1.0
 
-Testcase: suspend/resume
+On Mon, Mar 10, 2025 at 10:59:30AM -0700, JP Kobryn <inwardvessel@gmail.com=
+> wrote:
+> > DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_base_cpu_lock) =3D
+> > 	__RAW_SPIN_LOCK_INITIALIZER(cgroup_rstat_base_cpu_lock);
+> >=20
+> > (I see other places in kernel that assign into the per-cpu definition
+> > but I have no idea whether that does expands and links to what's
+> > expected. Neglecting the fact that the lock initializer is apparently
+> > not for external use.)
+>=20
+> I gave this a try. Using lockdep fields to verify, it expanded as
+> intended:
+> [    1.442498] [ss_rstat_init] cpu:0, lock.magic:dead4ead,
+> lock.owner_cpu:-1, lock.owner:ffffffffffffffff
+> [    1.443027] [ss_rstat_init] cpu:1, lock.magic:dead4ead,
+> lock.owner_cpu:-1, lock.owner:ffffffffffffffff
+> ...
+>=20
+> Unless anyone has objections on using the double under macro, I will use
+> this in v3.
 
-on Arm64 big.LITTLE cpumask=[LITTLE][big]=[0,3-5][1-2]
-plus cmd line option 'isolcpus=3,4'.
+Actually, I have the objection (to the underscored macro).
+It may be work today but it may break subtly in the future.
 
-with Waiman's snippet:
-https://lkml.kernel.org/r/fd4d6143-9bd2-4a7c-80dc-1e19e4d1b2d1@redhat.com
+Maybe add a separate patch that introduces a proper (non-underscore)
+initializer (or percpu wrapped initializer) macro and people Cc'd on
+that may evaluate wiseness of that.
 
-...
-[  234.831675] --- > partition_sched_domains_locked() reset_domain=1
-[  234.835966] psci: CPU4 killed (polled 0 ms)
-[  234.838912] Error taking CPU3 down: -16
-[  234.838952] Non-boot CPUs are not disabled
-[  234.838986] Enabling non-boot CPUs ...
-...
+Michal
 
-IIRC, that's the old DL accounting issue.
+--2iwj5eprdbpucc2n
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ9A/YQAKCRAt3Wney77B
+SZCmAQCrGZJINyrqRI+1swFv3OuIJLzuOa6+2ok8ZfMh1ppsugD9EYFPHrhvMxIa
+MhkTkgF7mt76n5ysmfBe+t/kdeHEngs=
+=GYKH
+-----END PGP SIGNATURE-----
+
+--2iwj5eprdbpucc2n--
 
