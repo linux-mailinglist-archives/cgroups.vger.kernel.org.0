@@ -1,74 +1,74 @@
-Return-Path: <cgroups+bounces-6993-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6994-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 782B9A5D358
-	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 00:47:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE917A5D359
+	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 00:47:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11D383A9C6C
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 23:47:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B8DB17C1EB
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 23:47:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CC5233159;
-	Tue, 11 Mar 2025 23:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 950D423370B;
+	Tue, 11 Mar 2025 23:47:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mv/edoJz"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R5oCfhGx"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E1C199FBA
-	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 23:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D80CA22FF21
+	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 23:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741736840; cv=none; b=BSjI3GTg8kfonuiaGa+w45MbVlQj6s7vjFs2+Dpm+I3JOvyCeQEtC+8hpEucXpNrDjC390hlbE+dqDdK8B8Onono/tZhWh6GBgNiAe2QwyEm6JdBeINYzBu4OfM4dhNjn7NqDQXaYvUZnnFXhWkhfGggMbj8KIdV4FXfztFSxUg=
+	t=1741736842; cv=none; b=cw9kvw5EYnEcuqOsxFBKuixW3oB0etAqTyoCeZ3dJgJ78Bkby6jTrBr8veasALYGuaz/D1m2AVRlsXNgxfn/soLbAbAroQneKvkIvuM2zsIrRcJCeDtPyGqKGDSWydwIPmgGKkuCpaXu1NR6F1diG/Qi7DAqcgMPq8bfP2s50X0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741736840; c=relaxed/simple;
-	bh=Y6R5ochXZjO0aw+ypmRlwg4ApKaPVzeVljwxvwsY0gs=;
+	s=arc-20240116; t=1741736842; c=relaxed/simple;
+	bh=F7030FiyuiufK2NQwbtEKBSquV5WtvIMs6fO9sMR2YI=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=bSKCpisSv3NLP/Q7+1UJ+owt4ZSbhwJj/0IB0jHNE7pPA7nQ3fPiJuCklBu8YcRzGtgcYso97i8OxRxk3O7QhdmkKHtX5Ibsis9MvpPbhPS8duPLNIiKgQadMuJjrnUwafvNcpkFxWJQKJKRKbS+Bz5M+y0zEqTd89+MNrm9PEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mv/edoJz; arc=none smtp.client-ip=192.198.163.12
+	 Content-Disposition; b=RoipPQavaBj6RHHG7bdhT/vs9s/KgWBkwNIvQGdbdc+gfkDGuXcSaQDHYMtGBkyGQ4g/Uxqis6+4VrdoSTudZUILzE7jFdv0hWKvv6L6qdNbD/A0SsnqYJ5GXczfXswBA5O7ptxGMPgKzbNrpLSuEcMcZ2woKaSRmyLnJw+VDD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R5oCfhGx; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741736839; x=1773272839;
+  t=1741736841; x=1773272841;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Y6R5ochXZjO0aw+ypmRlwg4ApKaPVzeVljwxvwsY0gs=;
-  b=mv/edoJzr1FwtqwyvngpSrhMegsUUhQ5gLMchsl5S2eN3/D/rFxc6FyS
-   baNKd+gKobH2ImOULszlUwcr9hcTzAcMgOuuC5O59yjFC3dNom/tTy5dL
-   eYpB5phkXB2q7atP+qC7DlxAGqA485LUcysEDHvG/gqi+ch3Y+UO3H9Gy
-   jCO4IX6TjSkSO3DYcuMAQ5KRiRK0S+BUTFnU+U97pXSErXC45Cvu4BrQr
-   9Zjqlv7NP/O25Hn7Ha3nGNoadesr10siyoXZZivdFr9mv8NFvok0e3JpY
-   RYo5zhOt1gSzyhU2lNtNhMgo+i6mfjAP8hrduNsfSVtEVzVjYd596RDDz
+  bh=F7030FiyuiufK2NQwbtEKBSquV5WtvIMs6fO9sMR2YI=;
+  b=R5oCfhGx8wCM1WTe7jliyksnQ5xP07ghn/eyBtPmCMStA7etVY216wCM
+   F11rDqAevnkA5PFYbL/eAO+36316LUXJ/xFMm6hzuro8rP9xgQD/BZ6fh
+   CNjWKT8lVezwQLlJSwbGMlrj8Cnm0Oz7drQd5fzUXyXGUXLesHnMppMXR
+   hb+KXxy/RE8oXrX5R7rWl/iHdkOLVoXvlf7dRaid+vWf9IEauofW0kkKJ
+   zIInetXmOKgSH8XOr1gqsufMi4DVlRbvDZP9f+Kv23/kgKLz00JS7TF7w
+   6Lwp8sQ/kn/VM6kyvXdZnoZTLX1AcG5H2tnunmMEsXvCgwXj4OVCghuus
    A==;
-X-CSE-ConnectionGUID: s/rMH+pyTnGT4fuoQoKuFw==
-X-CSE-MsgGUID: 8zTOUCNaSCaoglK0Pe0XSw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11370"; a="46711324"
+X-CSE-ConnectionGUID: 9PI8WZ8+RJavgmhiPfJctQ==
+X-CSE-MsgGUID: 17CJXuBuTe+LDcYmKbYUCg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11370"; a="46711329"
 X-IronPort-AV: E=Sophos;i="6.14,240,1736841600"; 
-   d="scan'208";a="46711324"
+   d="scan'208";a="46711329"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2025 16:47:18 -0700
-X-CSE-ConnectionGUID: fgIgXBXPQu6OLHRgtLP/eg==
-X-CSE-MsgGUID: 9PDSeaBqQ/yJ4MIzewbUew==
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2025 16:47:19 -0700
+X-CSE-ConnectionGUID: vrd/bwQJRFKgAfJYKZ1AWA==
+X-CSE-MsgGUID: Pu9xa6ZJSY2VEyvHhvUGwQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.14,240,1736841600"; 
-   d="scan'208";a="120174077"
+   d="scan'208";a="120174078"
 Received: from lkp-server02.sh.intel.com (HELO a4747d147074) ([10.239.97.151])
-  by orviesa009.jf.intel.com with ESMTP; 11 Mar 2025 16:47:16 -0700
+  by orviesa009.jf.intel.com with ESMTP; 11 Mar 2025 16:47:17 -0700
 Received: from kbuild by a4747d147074 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1ts9JX-0007xC-2R;
-	Tue, 11 Mar 2025 23:47:12 +0000
-Date: Wed, 12 Mar 2025 07:46:23 +0800
+	id 1ts9JZ-0007xF-2Q;
+	Tue, 11 Mar 2025 23:47:14 +0000
+Date: Wed, 12 Mar 2025 07:46:24 +0800
 From: kernel test robot <lkp@intel.com>
 To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
 	cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>
-Subject: [tj-cgroup:tmp 13/16] include/asm-generic/rwonce.h:59:1: error:
- expected ';' before 'do'
-Message-ID: <202503120719.47sOvfVx-lkp@intel.com>
+Subject: [tj-cgroup:tmp 13/16] mm/memcontrol-v1.c:1860:58: error: expected
+ ';' after expression
+Message-ID: <202503120710.guZkJx0h-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -81,52 +81,52 @@ Content-Disposition: inline
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git tmp
 head:   153926208f7777e220dec1156a44a5fa06623ac1
 commit: c359863bfd828fd03999c17d9bad87e767708fa0 [13/16] mm: Add transformation message for per-memcg swappiness
-config: sparc64-randconfig-002-20250312 (https://download.01.org/0day-ci/archive/20250312/202503120719.47sOvfVx-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250312/202503120719.47sOvfVx-lkp@intel.com/reproduce)
+config: hexagon-randconfig-001-20250312 (https://download.01.org/0day-ci/archive/20250312/202503120710.guZkJx0h-lkp@intel.com/config)
+compiler: clang version 21.0.0git (https://github.com/llvm/llvm-project e15545cad8297ec7555f26e5ae74a9f0511203e7)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250312/202503120710.guZkJx0h-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202503120719.47sOvfVx-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202503120710.guZkJx0h-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   In file included from ./arch/sparc/include/generated/asm/rwonce.h:1,
-                    from include/linux/compiler.h:339,
-                    from include/asm-generic/bug.h:5,
-                    from arch/sparc/include/asm/bug.h:25,
-                    from include/linux/bug.h:5,
-                    from include/linux/thread_info.h:13,
-                    from arch/sparc/include/asm/current.h:15,
-                    from include/linux/sched.h:12,
-                    from include/linux/cgroup.h:12,
-                    from include/linux/memcontrol.h:13,
-                    from mm/memcontrol-v1.c:3:
-   mm/memcontrol-v1.c: In function 'mem_cgroup_swappiness_write':
->> include/asm-generic/rwonce.h:59:1: error: expected ';' before 'do'
-      59 | do {                                                                    \
-         | ^~
-   mm/memcontrol-v1.c:1861:17: note: in expansion of macro 'WRITE_ONCE'
-    1861 |                 WRITE_ONCE(memcg->swappiness, val);
-         |                 ^~~~~~~~~~
+   In file included from mm/memcontrol-v1.c:5:
+   include/linux/mm_inline.h:47:41: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+      47 |         __mod_lruvec_state(lruvec, NR_LRU_BASE + lru, nr_pages);
+         |                                    ~~~~~~~~~~~ ^ ~~~
+   include/linux/mm_inline.h:49:22: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+      49 |                                 NR_ZONE_LRU_BASE + lru, nr_pages);
+         |                                 ~~~~~~~~~~~~~~~~ ^ ~~~
+>> mm/memcontrol-v1.c:1860:58: error: expected ';' after expression
+    1860 |                              "See memory.reclaim or memory.swap.max there\n ")
+         |                                                                               ^
+         |                                                                               ;
+   2 warnings and 1 error generated.
 
 
-vim +59 include/asm-generic/rwonce.h
+vim +1860 mm/memcontrol-v1.c
 
-e506ea451254ab1 Will Deacon 2019-10-15  57  
-e506ea451254ab1 Will Deacon 2019-10-15  58  #define WRITE_ONCE(x, val)						\
-e506ea451254ab1 Will Deacon 2019-10-15 @59  do {									\
-e506ea451254ab1 Will Deacon 2019-10-15  60  	compiletime_assert_rwonce_type(x);				\
-e506ea451254ab1 Will Deacon 2019-10-15  61  	__WRITE_ONCE(x, val);						\
-e506ea451254ab1 Will Deacon 2019-10-15  62  } while (0)
-e506ea451254ab1 Will Deacon 2019-10-15  63  
-
-:::::: The code at line 59 was first introduced by commit
-:::::: e506ea451254ab17e0bf918ca36232fec2a9b10c compiler.h: Split {READ,WRITE}_ONCE definitions out into rwonce.h
-
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
+  1849	
+  1850	static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
+  1851					       struct cftype *cft, u64 val)
+  1852	{
+  1853		struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+  1854	
+  1855		if (val > MAX_SWAPPINESS)
+  1856			return -EINVAL;
+  1857	
+  1858		if (!mem_cgroup_is_root(memcg)) {
+  1859			pr_info_once("Per memcg swappiness does not exist in cgroup v2. "
+> 1860				     "See memory.reclaim or memory.swap.max there\n ")
+  1861			WRITE_ONCE(memcg->swappiness, val);
+  1862		} else
+  1863			WRITE_ONCE(vm_swappiness, val);
+  1864	
+  1865		return 0;
+  1866	}
+  1867	
 
 -- 
 0-DAY CI Kernel Test Service
