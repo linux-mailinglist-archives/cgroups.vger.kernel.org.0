@@ -1,134 +1,164 @@
-Return-Path: <cgroups+bounces-6976-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6977-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4181AA5C32F
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 15:03:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF029A5C33D
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 15:06:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82D983B31FE
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 14:02:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F1331890C32
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 14:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4577525BAA8;
-	Tue, 11 Mar 2025 14:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UNdkTVLH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF0522571B6;
+	Tue, 11 Mar 2025 14:06:26 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80CD525B666
-	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 14:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B38E25A642
+	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 14:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741701741; cv=none; b=Et9pnAbTcuxrBGQuzSgNVJ6vzhaTHFsCY1bUungI3zHBYpYfogS1J+ROiQERuFtHsNJMI0DH1H/vpFWzRCGwsVsYMOQejOLSlvZ2foO3wJvRTu6sp+t+5ACdMvZigzax42QALmDdX0T2dHLd06b776ZMAnyXue7h1QR7/3Hbi+w=
+	t=1741701986; cv=none; b=HywV+qE4Dk8ZPiuU3MS87DlOXf5K3oDPR4MAtECtfQfZrvGsBR3rimkfRg4ZOT2sx1Q6LL/VwyO/4Kq9vfMZ1KmmFJZafGO16+VcsgQUEYZprmiMraJNnu4pl9iWkh2SB3E/jltWaCwQAnYJ94Xh1lH7mkDnwPx1Uhy3arYMaYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741701741; c=relaxed/simple;
-	bh=w4/4MsuywTM8dKIEtT8CwRyGelvllPmBbieFzdzBLJI=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=trJxHT9IRtUATfSqSCad1nTJT/uE4TqExvnja/WS8VNZUDk9omer529UVrsCQ45O6H9E5Tw6xGtQMslhJyFigZ7vFH1iywFQuO/tgap+tU1NKaQez20nd4S8eObO1uwZ6iIqfRtIHjDG4/hmgDrWjtVMdWrLhBQVOFfX3ts4bTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UNdkTVLH; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741701738;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=srjZEoMcmsNF1ucfOw62TWPMYLcdnIdIH/Ek8tx9FZo=;
-	b=UNdkTVLHpWoHhs0Zky3u9Q2F+ZjF+d72JdOZ7cXJPe0whjaQv/qWZ92wCO7uFstKus1P74
-	y0Ha5u99WTeJG+Q/bBDMEsTR2fXt3pGrc5gg7BKLD2NV56zRhXPSZXk4YtVgCajfF+hmjD
-	4g9/rYMkUF8EMyP6d4fg/FL8WecOGa8=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-625-B9ESvihmP-6QszD6qEpwxg-1; Tue, 11 Mar 2025 10:02:17 -0400
-X-MC-Unique: B9ESvihmP-6QszD6qEpwxg-1
-X-Mimecast-MFC-AGG-ID: B9ESvihmP-6QszD6qEpwxg_1741701737
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7c0a8583e60so1065507185a.2
-        for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 07:02:17 -0700 (PDT)
+	s=arc-20240116; t=1741701986; c=relaxed/simple;
+	bh=ZDwgVldp/dtR0sAQP/jrdO4x0Z5emH82grhthtbhCDc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=EzToXESLoNDAX0urrjysZ4l/+440dMcm4v7WgojGzc/hOBWCp1/DzGsP/y9528W9ZwRXHAKGPCPEi2IDNuGR7oM1EFydxzj+BRm4Dv7X9GwW33CehDPsIZ7FHGe8qIqSvaGLdnsaf7v70GpZqWFTs87j5vU+4g3wWNqPZ5otQY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3d44ba1c2b5so31864425ab.2
+        for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 07:06:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741701736; x=1742306536;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=srjZEoMcmsNF1ucfOw62TWPMYLcdnIdIH/Ek8tx9FZo=;
-        b=j9XiKHFbVNRxDdiTpTPdwUAIC6VOTU2gWfG9ok/3Z4wjf5P8QaATYnXhB06v9zgCHW
-         C218yYAttPXfc2LRl2IpnRYZmaJVLPGT01V2pq3Vm9tw9FjCROiYp9RSODPWvg7ZYrUl
-         dkkUBjRMKOKiDQ6j5ubvQJwq8cJW7bshCK82leg5RihVA3tvzDEh5B3aBo4jtciZEf9r
-         CuyR9GtHVhShBZ/mcW34S5C9RYKaGkcaEVCUVR3Rmb85QlzeG8sn9mJxi9tor7TWSEpD
-         t8F0E4t6sOR2JZsqA9Z1zLUIAI0MwsJQXxcRyWaaaYw0EjRN2SxwGDHrXCZUYM0g0oKs
-         mJkg==
-X-Forwarded-Encrypted: i=1; AJvYcCVGaI6b4a4Fii0Id1/Zt8QNPjkRYGhXDTTg/AudkRhdCYj5B06BeZ0su3m9/Bd0n4T+ndoyAPr1@vger.kernel.org
-X-Gm-Message-State: AOJu0YyezxZscqUJpk/zRuOll+xgBW0/H27ngdzpjXskE5ebOd7zUyvr
-	vH0rySXmGC+pDfac2Ul0tSeo/VeCz8FSD1sLCtPg53al3+FJ/3iGYu4Rg0sGW5BfMsOATqAAdkJ
-	UtuePHU+rPV80/R9RNutvhmD6Y3VmnXUGM3KzDoh/qljDTLEq8C3DRVGENUlNAqI=
-X-Gm-Gg: ASbGncvp6NOFO7HiwgBXHL1iuujTCVAoMyPOcig1j345AgoOcDsyQL5ugQWQ5XQ8/Xv
-	ngrtMsKa9soctWbUU4FpA4z0fLauUqg3pIYnvKmSbjSCH/kBHBsNkNEcB9YCgm6ocaCYZ6KoJcw
-	uMX+kK4fwP4JxDhW+5UkAXl0gOOzlCD+5uM/2qumXSOHuXj8PqSYYLjtE3nYGuG+uMKDJjrTx+p
-	P6R3XEp9BeGEb7b2F6yvB5W0zqIw3wFYhpF5LQfkHKKJp/MGZz8CteHlCNfRc3/ckjwuqrOJYfS
-	3y4zPHraitgTqeweFcP3/ARm5LrUBjfdk2nboPouFVG7QdM3ZZiYL5E5tTDIAg==
-X-Received: by 2002:a05:620a:8707:b0:7c5:5670:bd75 with SMTP id af79cd13be357-7c55670c019mr929100885a.46.1741701736055;
-        Tue, 11 Mar 2025 07:02:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGRg+L8adczL3Foi2AAcnsKmOHEJwYXqihA5sf9EJSRouLY4pSX3Hx4mbey3OW2QQT9tXALaQ==
-X-Received: by 2002:a05:620a:8707:b0:7c5:5670:bd75 with SMTP id af79cd13be357-7c55670c019mr929097085a.46.1741701735738;
-        Tue, 11 Mar 2025 07:02:15 -0700 (PDT)
-Received: from ?IPV6:2601:188:c100:5710:315f:57b3:b997:5fca? ([2601:188:c100:5710:315f:57b3:b997:5fca])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c558a2f92asm248542785a.33.2025.03.11.07.02.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Mar 2025 07:02:15 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <1959b178-5c3d-4564-beb3-f411cb9efe77@redhat.com>
-Date: Tue, 11 Mar 2025 10:02:14 -0400
+        d=1e100.net; s=20230601; t=1741701984; x=1742306784;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Qngm61D2P5O2wJvRP9JS9Q4K7MNXVw7PSsoQPHTFftA=;
+        b=HdcXn6LcCdRLgbIhLIFlLucZ1XiUb0rr166TCYUy06ZIFnEot+RGylD7i7GmVOe7KJ
+         p2qd+UsGpVtOzxmR4tJcYnWBGfzpjkIW+GwhHUb4u7ldUXU8cpB62tsTFFVe+w36UfWE
+         KU2BqwJAZel9SegDThso/8G8Y5zmEb759qcbmTKeBUwkfDMzxSIOVWCQJhyv1JhKH9q5
+         5LYswSHwJuji+KriKA7t2EfDsycA6LcFxnq3YaY9OOsyG9crxcZ7W2N6jCj6IS09E1sq
+         H4QmDnjr91oqvyOPtuHjxtbVunQG7mgEYpUXSVBqUI2XX/PX9hwKcBnqkI1GLaMkWjDP
+         Ru/w==
+X-Forwarded-Encrypted: i=1; AJvYcCXsTErVpPK0NaOpwLFk9kOP8qbT+/9L+0GKF1L8hIpRznijhdkpVBl/2ZcGuTvIc/PvYWMc5yqm@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzo00ZJYGdrQtSEvWdSBd2DCRemLY4VTfbnMONdRj9uCqDGDvTd
+	FHXeYJxD88IcEyE63P3osb25xWPrP6Mk9S3gaSSljOT6e+TqdRZgEq1RvfvMNMHvN+Ze4Bf5e2l
+	MydUKRogBV6tlyHndE+Ldb+CuiH7I1D8asYBdh1MLlw0LpR13iG8V/i8=
+X-Google-Smtp-Source: AGHT+IHUWAme+Fs0K+gNOZ+nI9ty/+hj1BANz5GfZzVckJV8cLPKZ5CoSUXCkX8P9/InJLZifFh14jePR0KOrqJKMHuo7SnqpgNP
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/11] cgroup/cpuset-v1: Add deprecation messages to
- sched_load_balance and memory_pressure_enabled
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>
-References: <20250311123640.530377-1-mkoutny@suse.com>
- <20250311123640.530377-2-mkoutny@suse.com>
-Content-Language: en-US
-In-Reply-To: <20250311123640.530377-2-mkoutny@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1848:b0:3d3:fa0a:7242 with SMTP id
+ e9e14a558f8ab-3d441969734mr182111785ab.9.1741701984189; Tue, 11 Mar 2025
+ 07:06:24 -0700 (PDT)
+Date: Tue, 11 Mar 2025 07:06:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67d04360.050a0220.1939a6.000e.GAE@google.com>
+Subject: [syzbot] [cgroups?] [mm?] KASAN: wild-memory-access Read in lookup_swap_cgroup_id
+From: syzbot <syzbot+d26257274cf7b53db74a@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
+	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 3/11/25 8:36 AM, Michal Koutný wrote:
-> These two v1 feature have analogues in cgroup v2.
->
-> Signed-off-by: Michal Koutný <mkoutny@suse.com>
-> ---
->   kernel/cgroup/cpuset-v1.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-> index 25c1d7b77e2f2..9d47b20c03c4b 100644
-> --- a/kernel/cgroup/cpuset-v1.c
-> +++ b/kernel/cgroup/cpuset-v1.c
-> @@ -430,12 +430,14 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
->   		retval = cpuset_update_flag(CS_MEM_HARDWALL, cs, val);
->   		break;
->   	case FILE_SCHED_LOAD_BALANCE:
-> +		pr_info_once("cpuset.%s is deprecated, use cpuset.cpus.partition instead\n", cft->name);
->   		retval = cpuset_update_flag(CS_SCHED_LOAD_BALANCE, cs, val);
->   		break;
->   	case FILE_MEMORY_MIGRATE:
->   		retval = cpuset_update_flag(CS_MEMORY_MIGRATE, cs, val);
->   		break;
->   	case FILE_MEMORY_PRESSURE_ENABLED:
-> +		pr_info_once("cpuset.%s is deprecated, use memory.pressure with CONFIG_PSI instead\n", cft->name);
->   		cpuset_memory_pressure_enabled = !!val;
->   		break;
->   	case FILE_SPREAD_PAGE:
-Acked-by: Waiman Long <longman@redhat.com>
+Hello,
 
+syzbot found the following issue on:
+
+HEAD commit:    848e07631744 Merge tag 'hid-for-linus-2025030501' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1247ca54580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2040405600e83619
+dashboard link: https://syzkaller.appspot.com/bug?extid=d26257274cf7b53db74a
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-848e0763.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c46426c0526b/vmlinux-848e0763.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d575feb1a7df/bzImage-848e0763.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d26257274cf7b53db74a@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: wild-memory-access in instrument_atomic_read include/linux/instrumented.h:68 [inline]
+BUG: KASAN: wild-memory-access in atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+BUG: KASAN: wild-memory-access in __swap_cgroup_id_lookup mm/swap_cgroup.c:28 [inline]
+BUG: KASAN: wild-memory-access in lookup_swap_cgroup_id+0x82/0xf0 mm/swap_cgroup.c:127
+Read of size 4 at addr 0007c8805a01cd3c by task udevd/5306
+
+CPU: 0 UID: 0 PID: 5306 Comm: udevd Not tainted 6.14.0-rc5-syzkaller-00039-g848e07631744 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ print_report+0xe3/0x5b0 mm/kasan/report.c:524
+ kasan_report+0x143/0x180 mm/kasan/report.c:634
+ kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
+ instrument_atomic_read include/linux/instrumented.h:68 [inline]
+ atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+ __swap_cgroup_id_lookup mm/swap_cgroup.c:28 [inline]
+ lookup_swap_cgroup_id+0x82/0xf0 mm/swap_cgroup.c:127
+ swap_pte_batch+0x142/0x330 mm/internal.h:333
+ zap_nonpresent_ptes mm/memory.c:1634 [inline]
+ do_zap_pte_range mm/memory.c:1702 [inline]
+ zap_pte_range mm/memory.c:1742 [inline]
+ zap_pmd_range mm/memory.c:1834 [inline]
+ zap_pud_range mm/memory.c:1863 [inline]
+ zap_p4d_range mm/memory.c:1884 [inline]
+ unmap_page_range+0x1bb5/0x4510 mm/memory.c:1905
+ unmap_vmas+0x3cc/0x5f0 mm/memory.c:1995
+ exit_mmap+0x283/0xd40 mm/mmap.c:1284
+ __mmput+0x115/0x420 kernel/fork.c:1356
+ exit_mm+0x220/0x310 kernel/exit.c:570
+ do_exit+0x9ad/0x28e0 kernel/exit.c:925
+ do_group_exit+0x207/0x2c0 kernel/exit.c:1087
+ get_signal+0x168c/0x1720 kernel/signal.c:3036
+ arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:337
+ exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
+ irqentry_exit_to_user_mode+0x7e/0x250 kernel/entry/common.c:231
+ exc_page_fault+0x590/0x8b0 arch/x86/mm/fault.c:1541
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+RIP: 0033:0x56281d3a39d0
+Code: Unable to access opcode bytes at 0x56281d3a39a6.
+RSP: 002b:00007ffd4e66dab0 EFLAGS: 00010246
+RAX: 00007ffd4e66dac8 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 00007ffd4e66dad8 RDI: 00007ffd4e66db10
+RBP: 000056283b5a6980 R08: 0000000000000007 R09: a02c58fefe889121
+R10: 00000000ffffffff R11: 0000000000000246 R12: 000056283b5a6980
+R13: 00007ffd4e66db98 R14: 0000000000000000 R15: 000056281d3ae4df
+ </TASK>
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
