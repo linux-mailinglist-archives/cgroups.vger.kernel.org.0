@@ -1,87 +1,88 @@
-Return-Path: <cgroups+bounces-6963-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6964-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D056EA5C16B
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 13:39:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E8C2A5C172
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 13:39:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38B63189ABF4
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 12:37:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBBDB1888828
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 12:37:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B46882571B2;
-	Tue, 11 Mar 2025 12:36:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A12502571A3;
+	Tue, 11 Mar 2025 12:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="MxRf14Iw"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BqeD8fBG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C49A25525A
-	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 12:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9990256C90
+	for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 12:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741696619; cv=none; b=G58TUXzggOb+zVK2ZlFOzxF5A+3bBvMYQLb0sjWn8C4TgM1ewk0P3FYrrnNesG9PA7r2YI++DUFt9cAOOlQg1YQIShlF8vc11Rt7O5yKFmNiXr02Vlwbr5/YoYin+wCvG7dxzBnKuO0n+RWkauziX54YB4aOjwbMpTg+TQ5a6Ac=
+	t=1741696621; cv=none; b=Ya+gsJPqj13rTDuLKz+bCWzhbFHmXuYywVmxLNtKev2B+dfreH1H6WcsHsUOsdH78q5BBcFCCJLo771aUXmcLuYUzetHSggV+RjUwCnpsmZwbk0krlG5AAEnJh/emyqGlNvw0PEN63/4/uKiovAOfW1YVQp6tllbliCV+D5iclI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741696619; c=relaxed/simple;
-	bh=8xlbP+kPuJXj1ujVkaKJJ/Ff/doqow82behndxtTC6g=;
+	s=arc-20240116; t=1741696621; c=relaxed/simple;
+	bh=3fO27bZgRSLX+ZjJteSn+272IeY/0JUe6KT6vJpgZF8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KIk7o7Zrw9Dx1r5IzPbajyEM3B7QB39+UBuFuIv1uDn0S+auY/BFmHObLEAyY4wnmCJBHKrL9QSkWWk4pv5oML7pSL44RFGzEtYDAF4YTz6iSVAZXI0QQwYbxN97LOoUrE3AeGmgg/FZvC9q5yUbDRfSsEGNFPfnKif2DXPlGc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=MxRf14Iw; arc=none smtp.client-ip=209.85.128.47
+	 MIME-Version:Content-Type; b=UjuPIVCZ0bsnSPirf9cchmyCU/TQAtMfNXRXTBzaSzG5owWkGWH/BnwhFMZLBKtWNFTJTM5Bzy7d/rhVDrj9z1yPdQO1+pGEexX/EyiUmxpEejK5pgeY2tKjZ54rDjwQvjc/oL3/xNXSUsZkVSo9JisbDW0IgTQNTOfaN1b3K8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BqeD8fBG; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43cfa7e7f54so12304795e9.1
-        for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 05:36:57 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-43cebe06e9eso17325725e9.3
+        for <cgroups@vger.kernel.org>; Tue, 11 Mar 2025 05:36:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741696616; x=1742301416; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1741696617; x=1742301417; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pokNekKuPIs26oz3GPhZwq4tj8n939iVWBrHJ6WBnec=;
-        b=MxRf14Iw5+GDGa/WdDxrbcra34DUz0Vmh92YgIe7Uzt3/FE3j0sBBr+sdOaCwEg048
-         0ANvq/BEOvWHJH6Gs8fTZqt2ii3T8vixyHsqV1QdxvhvoM8robZ8WH7zjKgZ0GnlZ0fB
-         fK5I71HCGkaLSuRNCc7Mgtr/oaWbP2QcfD9u1hJBz0EJAHk0KGkRo1ifOHwkVCP8xYX8
-         2LrXzYf99AduAIQisk3fv9rPEGVhulrVp59O8LvP07kCk8JiA4R62Sa3R7pfp94habp4
-         HMO7rtRO4rohkYiP0fx28Z9kpkpJkWM8yytxBBNuHDDY5CluB9o5fH2ZxXjB9qNlTMZ+
-         2THg==
+        bh=AeNwiCAXtv8YYTGNB6COQ1c83CjJXd/IUXH7xE+l9C0=;
+        b=BqeD8fBGYb1N+2ZDPxv3fuEKAJAbnrhqj5BWeyODaWECtWw8uiaNIdYzfJuBv/J2LB
+         qU4is8T0u/FhQAiwteu9Q67uW3iOwo0Qc1POzeV2mxzundKw27KMuqhmoNDnImApMWNM
+         MPa74CnVj4s7EbLTdurkNzitpcQiagnrtviu5vB0LxkEpC5ejENwdmCDbuUw1rkPBgYO
+         W69f6+tYWr2zAQkshkkRYqz0z7w4C1NiGiiYKcDOAD5VVo17bujgBoYpWgQORstw5sw9
+         5siLzL5867/f25Qnr0CX7iM6NHV/dzXdrR7ENmNP2fy+mcgFDVxXDXoKOoxgYisGcksH
+         kelg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741696616; x=1742301416;
+        d=1e100.net; s=20230601; t=1741696617; x=1742301417;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pokNekKuPIs26oz3GPhZwq4tj8n939iVWBrHJ6WBnec=;
-        b=dETUAEg992uR2BRlvw4kUQjfc1PgKETHSvSBnQqRfip6K1vxCaaDQtI1asfAGxBqgT
-         U+UVmi/NTmBwz0RXFza6v/cNkqh6jJuI5luK/dTjn5X8tD7Qi1zyR2oz7k3XBn7r5I0j
-         RROck+7PDEyMi3rpFV3brIOwXExva4y3PXpO8fs3s1SppeNoQtjWSViOVYJh/6bVI6lt
-         AzfSs8kS8CTipkazLuTeEfpxp9yCoHPeJzGL+JCG04iySBqDvVRdVq/rD+ZiskVyEYAh
-         RHAXgCDR03/a7Yd/bDVMOXx5+86sphvMXSYQdcXLdBaN257A6emjCifUmu7klZX1AE4T
-         b6fA==
-X-Gm-Message-State: AOJu0YzQvioc43bcl79wXQy748rGQ6a/aT91AzYGsQbmhsNuhNSe0m6T
-	ww0z3x73PEZnBGBbXriX7RokQnuvEJnww9q/hfeCg3S+nAGNtrcIqOV7d7jzl0TmH+5pdrg8ZQQ
-	g+d8=
-X-Gm-Gg: ASbGnct2RbFvE6UbE6L7RD24nXrnkaKBclZj0m20gtOvSK3fgDehc1iPRSViIm5hDWX
-	A+Zc8sg5SJQvMaQ49XfymfBi8KFwwbjy9FNPKyTzkUctxIMie61mpxMmfpd7R/QRWlcAnGU1l9d
-	Dr4mWuoLhpZdSeVK233hcBBd/DboA7PE1oLrV6Ac0iA6iuzs4mQk5K92OpBxg6gdJyafNRYyI8d
-	twjYTxu9x+g3Aj7lY6kt16+N29H40ehGFXOZDr7DvIferhufWtYVIkbmir/QymgAHDYabj54hJb
-	iUEC/jEvB4jN854NR0rWgeg87VbJMO0BF4nKBUAyJIlnjUA=
-X-Google-Smtp-Source: AGHT+IHODza/GMf9T09SMT422tZdvwqWv0XTo4CpUj/5PPPS2WJqoiJLOke3WnMQoceqcT1Uu1Y5Xg==
-X-Received: by 2002:a05:600c:4f02:b0:439:4c1e:d810 with SMTP id 5b1f17b1804b1-43d01d25bafmr42168185e9.9.1741696615816;
-        Tue, 11 Mar 2025 05:36:55 -0700 (PDT)
+        bh=AeNwiCAXtv8YYTGNB6COQ1c83CjJXd/IUXH7xE+l9C0=;
+        b=pD8Zhjte80h8fCUUhsC8pg2lhkiFGuBMlMHxuI0enjTKvgeyG3NWdy2gmKY1qqrwR+
+         3A5/YqeX7FTvpdUWIbagySvZi6s+RaJ0BFRXSlLcIfHHUrb6x20jSF5xG4k9cbWzzYTV
+         0yeYHtJF2ysohx7QYCNsNY1Y+DVD/CJxtkr9kPIQJB+2YuwQRglSECp41hXwzMl4g+ds
+         0LudQnTVxhp4FdQDYz/mxtbWiAh3tsoaAxKVF2n2DTeQ9L6rHTn/OOnKmzvu/VsgAIpQ
+         74RbhUM6HSdKEzNsYitiQ5dUkY2vPuP9QAhVV4hq/cIEJ8SzslPw4ZNGweyjKEZvGtHL
+         GcMg==
+X-Gm-Message-State: AOJu0YzMyDUki/Ba8HRVzF9kcwPw6OTIM4A4S6/hf5jHy2+qTak5K10x
+	LctgkJrWOWG6FvKKXgNzoVHqXO1wTSm94aOQ94lLVHNhZZh1nRa2oUSZReubcVuL8gS3fNe6q5M
+	6pKE=
+X-Gm-Gg: ASbGncsI7KbWD5Y8nA4GBHKDN3G8BttK8yv0yZn85GlXqAFxYKx2I9N6tJq5OPDZkRP
+	dhlGmlf7ApAygfX4ChZIiV+zgfDCulGqXFwd8ATf6McG3KheSWOjJpZHpv8AgFOsryidlPh7LMy
+	qI0MvqMjoMw799/z+GtlXAHw/IL6El8oQ0XEwOI1sVZOqFP2hhGN7qv4hkLMralixmTpGOIQe0o
+	3VjskZrQNK29eE/qzQLb3HXqudL5NxeUdsrGGtQU83gy1FG18Li+rCjsrpp4xYq+/9fZ8T/9zmu
+	WpaNA8QSZRByTljIW8DPnPGlgtfig4seE/8fWP/dbaUysKw=
+X-Google-Smtp-Source: AGHT+IHn6PvkpQKJBbjtpTZtl/brCs+22CGDxaMUBRMoRp7lTvofXIIlLNevzeSErD/52v0LpfOABA==
+X-Received: by 2002:a05:600c:4f8b:b0:43d:649:4e50 with SMTP id 5b1f17b1804b1-43d064952fbmr18361755e9.13.1741696617111;
+        Tue, 11 Mar 2025 05:36:57 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d04004240sm9742265e9.3.2025.03.11.05.36.55
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d04004240sm9742265e9.3.2025.03.11.05.36.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Mar 2025 05:36:55 -0700 (PDT)
+        Tue, 11 Mar 2025 05:36:56 -0700 (PDT)
 From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
 To: cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Waiman Long <longman@redhat.com>,
 	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Subject: [PATCH v2 02/11] cgroup/cpuset-v1: Add deprecation messages to memory_spread_page and memory_spread_slab
-Date: Tue, 11 Mar 2025 13:36:19 +0100
-Message-ID: <20250311123640.530377-3-mkoutny@suse.com>
+	Josef Bacik <josef@toxicpanda.com>,
+	Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH v2 03/11] cgroup/blkio: Add deprecation messages to reset_stats
+Date: Tue, 11 Mar 2025 13:36:20 +0100
+Message-ID: <20250311123640.530377-4-mkoutny@suse.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250311123640.530377-1-mkoutny@suse.com>
 References: <20250311123640.530377-1-mkoutny@suse.com>
@@ -94,32 +95,26 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-There is MPOL_INTERLEAVE for user explicit allocations.
-Deprecate spreading of allocations that users carry out unwittingly.
-Use straight warning level for slab spreading since such a knob is
-unnecessarily intertwined with slab allocator.
+It is difficult to sync with stat updaters, stats are (should be)
+monotonic so users can calculate differences from a reference.
 
 Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
- kernel/cgroup/cpuset-v1.c | 2 ++
- 1 file changed, 2 insertions(+)
+ block/blk-cgroup.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-index 9d47b20c03c4b..fea8a0cb7ae1d 100644
---- a/kernel/cgroup/cpuset-v1.c
-+++ b/kernel/cgroup/cpuset-v1.c
-@@ -441,9 +441,11 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
- 		cpuset_memory_pressure_enabled = !!val;
- 		break;
- 	case FILE_SPREAD_PAGE:
-+		pr_info_once("cpuset.%s is deprecated\n", cft->name);
- 		retval = cpuset_update_flag(CS_SPREAD_PAGE, cs, val);
- 		break;
- 	case FILE_SPREAD_SLAB:
-+		pr_warn_once("cpuset.%s is deprecated\n", cft->name);
- 		retval = cpuset_update_flag(CS_SPREAD_SLAB, cs, val);
- 		break;
- 	default:
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 9ed93d91d754a..1464c968eeb0c 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -659,6 +659,7 @@ static int blkcg_reset_stats(struct cgroup_subsys_state *css,
+ 	struct blkcg_gq *blkg;
+ 	int i;
+ 
++	pr_info_once("blkio.%s is deprecated\n", cftype->name);
+ 	mutex_lock(&blkcg_pol_mutex);
+ 	spin_lock_irq(&blkcg->lock);
+ 
 -- 
 2.48.1
 
