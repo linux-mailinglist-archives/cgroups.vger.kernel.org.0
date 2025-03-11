@@ -1,102 +1,87 @@
-Return-Path: <cgroups+bounces-6991-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6992-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB373A5CF41
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 20:24:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49DC5A5CF7E
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 20:34:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E70B5189CCFB
-	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 19:24:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0909E18899E4
+	for <lists+cgroups@lfdr.de>; Tue, 11 Mar 2025 19:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827642641C4;
-	Tue, 11 Mar 2025 19:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40162263F49;
+	Tue, 11 Mar 2025 19:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fNWAzyBh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OlsVUps8"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E0C263F46;
-	Tue, 11 Mar 2025 19:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA6D17591;
+	Tue, 11 Mar 2025 19:34:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741721040; cv=none; b=gqEWFRz3L1qbAA8GTLw8bCpKkXAOkky5EPay7XPNT46OQD9t64sdKMGYsWxGMIqadMJLaWThKgvRJjBtj3ELd+aRplIyquXrLOLaQ6ZmbHiVBCWiogSF9tQZXAQMxJch9mDSDMwXGJyCSbqn9vwEYNqpgXafzL5MMAkjKLyd0xQ=
+	t=1741721661; cv=none; b=WUrvzCtC+sH8NGZqLE5F/yfm/5LxmYTd5wGey46j20E5zVDEii2SqB6Lqdc8pIsxrdEPEaykVTvM+b5teVMAD4mEUlKS8t+Zojriiu/ebcq0glnbPYhaLRkSkt3JXsI2R5jA9pdwSnmw7cNBVXpIdFKUJQWPPiX56poXJbND80Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741721040; c=relaxed/simple;
-	bh=5mVnh8fjGF8Oy9qr15OGfcozu4fYLmyI3uszL0xmuO8=;
+	s=arc-20240116; t=1741721661; c=relaxed/simple;
+	bh=p87FX0SnpPxZ9l1ZBDNa6QJprc90RiIs0UOFXGZGDxM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A05qokKQIBI9i/4VwwG2Q7er5OYuGkIq9+kbCSdGryTenBTZ+CNHxzYN7vGVioSoOly0XVrs5dZ1PJNCYP08kNlbB2lQP9KRFQWhopdDcU5NNlFWwk69ri+EwkiWaVglwAuuQLtitOcvoIqgVqvvxzXkPo9G07/Ly09CCwTXl1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fNWAzyBh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 811E0C4CEEA;
-	Tue, 11 Mar 2025 19:23:59 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=EKCF8Ga4tJWNW9LyOFMe7HjZvSglD3uG4JOA4VQS2yuKW0LNU/wXcSK3cL0/Cyf4g3n6HSIU8dfQnJhYLEFj3ynJ9LzFUK9VzyTM+tBRrSW10d8MXQ3pc46c7SlDTUHb+gwA7rJwmjDHasJzn9ZWj/KrH6DpQgQbjTkczOiPib0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OlsVUps8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46C8FC4CEE9;
+	Tue, 11 Mar 2025 19:34:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741721039;
-	bh=5mVnh8fjGF8Oy9qr15OGfcozu4fYLmyI3uszL0xmuO8=;
+	s=k20201202; t=1741721659;
+	bh=p87FX0SnpPxZ9l1ZBDNa6QJprc90RiIs0UOFXGZGDxM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fNWAzyBhegpIESCOpfUhfzWO0+SAu6ynu9nA6DUlg8WBeqULGPcOe4cN5w1uTmc/w
-	 ol4QgnmOPAPOa++rCqD0ehNxbIjO8lV3ep1BSfMPYBE6t9mzLqezDg66k68DCliV6U
-	 9uhl9V8z6tuVSoCDM97UhnHozGzXn5KJ/PSlqlVhbdlQoh4K/CAFmpIfPDSpOp8Z1s
-	 lXbpe3fING+9OMnDwOTIjEAhuePf9KpaC18x50wDxB4GeZ9ivHyjCDUTZZk8qk7vkO
-	 OLcLWRhSddu2NRHptKZsr9V3fenrsTxkrDtg/Xyos95TkLLAPmfjf3iS8wdQQ8ipM5
-	 49bBC8dpZimrw==
-Date: Tue, 11 Mar 2025 09:23:58 -1000
+	b=OlsVUps8vrLIXM3DGWSr6KQfKDIbTTZV/i2KsDQ5w74YasGSAPZHdgYEGSpXG6eoI
+	 AaFU3I652y/uAms2zTuP9rNq3cMsg+a4jnD/fZw9AZ3QhXuOGTUkSZ6fRhZWpENM8l
+	 XpgfnHMC9vuPV1u8s+qXmCpY7hxwCWPOQPKXz/G2SteMk0H3kP+NraT4IL3ZkI++Qm
+	 exbdtkzmMl1Uw9ylgaCthmVlxvVTYqeYG+yGeZwjjm3HzBEj21QN8nM5C2E3FVda8m
+	 X+gGPUbFzXnM3FB+7pfM8uoucLf6jKBZzdHqHjNHxIP4G3sahe5GqbR4+G71yUk+Pz
+	 Rt01Cw+xFgd2A==
+Date: Tue, 11 Mar 2025 09:34:18 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-mm@kvack.org, Josef Bacik <josef@toxicpanda.com>,
-	Waiman Long <longman@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Michal Hocko <mhocko@kernel.org>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v2 00/11] cgroup v1 deprecation messages
-Message-ID: <Z9CNzt9VAjFrLPBT@slm.duckdns.org>
-References: <20250311123640.530377-1-mkoutny@suse.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Ming Lei <ming.lei@redhat.com>, axboe@kernel.dk, josef@toxicpanda.com,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+	"yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH] blk-throttle: support io merge over iops_limit
+Message-ID: <Z9CQOuJA-bo4xZkH@slm.duckdns.org>
+References: <20250307090152.4095551-1-yukuai1@huaweicloud.com>
+ <Z8sZyElaHQQwKqpB@slm.duckdns.org>
+ <5fc124c9-e202-99ca-418d-0f52d027640f@huaweicloud.com>
+ <Z85LjhvkCzlqBVZy@fedora>
+ <Z88K5JtR4rhhIFsY@slm.duckdns.org>
+ <baba2f82-6c35-8c24-847c-32a002009b63@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250311123640.530377-1-mkoutny@suse.com>
+In-Reply-To: <baba2f82-6c35-8c24-847c-32a002009b63@huaweicloud.com>
 
-On Tue, Mar 11, 2025 at 01:36:17PM +0100, Michal Koutný wrote:
-> Memory controller had begun to print warning messages when using some
-> attributes that do no have a counterpart in its cgroup v2
-> implementation. This is informative to users who run (unwittingly) on v1
-> or to distros that run v1 (they can learn about such users or prepare
-> for disabling v1 configs).
-> 
-> I consider the deprecated files in three categories:
->   - RE) replacement exists,
->   - DN) dropped as non-ideal concept (e.g. non-hierarchical resources),
->   - NE) not evaluated (yet).
-> 
-> For RE, I added the replacement into the warning message, DN have only a
-> plain deprecation message and I marked the commits with NE as RFC.
-> Also I'd be happy if you would point out some forgotten knobs that'd
-> deserve similar warnings.
-> 
-> The level of messages is info to avoid too much noise (may be increased
-> in future when there are fewer users). Some knobs from DN have warn
-> level.
-> 
-> The net_cls and net_prio controllers that only exist on v1 hierarchies
-> have no straightforward action for users (replacement would rely on net
-> NS or eBPF), so messages for their usage are omitted, although it'd be
-> good to eventually retire that code in favor of aforementioned.
-> 
-> At the end are some cleanup patches I encountered en route.
+Hello,
 
-Applied to cgroup/for-6.15.
+On Tue, Mar 11, 2025 at 11:08:00AM +0800, Yu Kuai wrote:
+...
+> > That said, I'm not sure about changing the behavior now. blk-throtl has
+> > mostly used the number of bios as long as it has existed and given that
+> > there can be a signficant difference between the two metrics, I'm not sure
+> > the change is justified at this point.
+> 
+> If we really concern about the behavior change, can we consider a new
+> flag that can switch to the old behavior? We'll see if any user will
+> complain.
+
+Yeah, that may be the right way to go about this, but let me turn this
+around and ask you why adding a new behavior would be a good idea. What
+problems are you trying to solve?
 
 Thanks.
 
