@@ -1,156 +1,126 @@
-Return-Path: <cgroups+bounces-7007-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7008-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99EACA5DA2F
-	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 11:09:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31C8CA5DE08
+	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 14:32:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C593189DB0F
-	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 10:09:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF4173B34FF
+	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 13:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336C523C8D8;
-	Wed, 12 Mar 2025 10:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A9A23F422;
+	Wed, 12 Mar 2025 13:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eU7TRk0W"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WyQinJ6k"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6021123C361
-	for <cgroups@vger.kernel.org>; Wed, 12 Mar 2025 10:09:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A231E48A
+	for <cgroups@vger.kernel.org>; Wed, 12 Mar 2025 13:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741774178; cv=none; b=QKY7u1maFxewf2SNHJFhKJtd9yFjDjj7FIWYxWcjoYi6guP6TL9Od7ZFiH2KlnN0+MCr/PIbHGMjqCax/RY1M0aTmeNqBjFAqxo9k7y5wJ3cjpbigxfxobkVvy92ZEtyAJiJTc/4lCAukdGnaMz3q140E8u/ZIO9Y6Ddb7iAonY=
+	t=1741786331; cv=none; b=QPHdjARMfVGrPmSspPM1CiP0XuzThdr77fh+fgxMBlUgP1hUKsdTj5245IlKgJCCpAR+SnJqj0vIPK55x/6MmCeqDyT6yqo5uT5L+mQ5oWEB3jsdM5a4oS7bcJgMKzm3Xmtl1DIGnzjJmPNof95fUlcqH3NoelrHJNIdDrdSKbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741774178; c=relaxed/simple;
-	bh=S743+2ahOXuPljV/reeQ/1enQbTDwpjWM1UaL2m9AeI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IoHRCNq1HYM2Hjuk42zEqf00hNtYygBtN34nwttjIZFoUfpXseYoONJrmDnqoKezZ/xIK4dEhWKpUU9uUbo6Q6kCWoeVhpEruptX1ItD+36xBd1ADCfawr9Z6nXNWKlzrptwLFiy7l/5/EMkdYbiLZ3KjwDOBF9rz8faYC0DMzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eU7TRk0W; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1741786331; c=relaxed/simple;
+	bh=n+YKh/MUNMUdrgEpVLdiNZ/ObkP4C8B3H8z7MNYDh6w=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=UIOx9gmsPuqyDzJZgUOh6SPecpue9lU8qhnZIjAELpkWyVgY5NDmPcCNd/Y/LDIpwn9L+ThR4hBT2wsRuvGGSR74iFregLo/UYFD1roAOjnS7nlj58kDI+G660T2z/oHtm2rOS5R8cqgukgHGM3+fgHcft0JHL4sZ1nZ2hdL6zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WyQinJ6k; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741774175;
+	s=mimecast20190719; t=1741786329;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=S743+2ahOXuPljV/reeQ/1enQbTDwpjWM1UaL2m9AeI=;
-	b=eU7TRk0WVI1FxQboMjwvUi/D/vv9LFf9DTK1hVluZD1BkrjJa9etf4cJ7PkjWulDMd3W8x
-	AUtK88ScmS/UkJ5xCy+OzP+BFJrljiHBrt5bgwp+qfcXi82BInM2LUegHH5CsQmkf8T2Za
-	DpEvIX5o94WjJ18Eihd8FoVydeNGgGk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=n+YKh/MUNMUdrgEpVLdiNZ/ObkP4C8B3H8z7MNYDh6w=;
+	b=WyQinJ6k+hRU4h1rSTgLRNgTIdsIqed3U9ddF+dKd3PTUDXcfM5UJoFFElMCJ+BWAR2nLH
+	RMTAZUWkkrnW7xqoQWU3XwX5iAZtCAtejj8KoRhxDtnn+pq8zg5Htt3OJc1G6pzZb97mnp
+	Zc6N2tI/etxuPBNZF52GcvwDTuMYIJg=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-516-_DlqFi6BPeqLJ_VqC5O24A-1; Wed, 12 Mar 2025 06:09:33 -0400
-X-MC-Unique: _DlqFi6BPeqLJ_VqC5O24A-1
-X-Mimecast-MFC-AGG-ID: _DlqFi6BPeqLJ_VqC5O24A_1741774172
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3913d8d7c3eso2195536f8f.0
-        for <cgroups@vger.kernel.org>; Wed, 12 Mar 2025 03:09:33 -0700 (PDT)
+ us-mta-515-vtQcsENEMau3hn02IywiSw-1; Wed, 12 Mar 2025 09:32:08 -0400
+X-MC-Unique: vtQcsENEMau3hn02IywiSw-1
+X-Mimecast-MFC-AGG-ID: vtQcsENEMau3hn02IywiSw_1741786326
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-43cf5196c25so19184695e9.0
+        for <cgroups@vger.kernel.org>; Wed, 12 Mar 2025 06:32:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741774172; x=1742378972;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S743+2ahOXuPljV/reeQ/1enQbTDwpjWM1UaL2m9AeI=;
-        b=gXwWAd8sLKMU5dy01Cqv4WaldHLtBrhAR53KxgGXxmaH8w5mj5aRoS8gCVX4yIxwdy
-         NGNQolV8TgqIiBbNI+I1wwU7xlvQF4b1XPKR3QX+Pr8YGmkKLY8kvCMhoe+Pt/HUZ95y
-         5tU+0wTiBfwVDhkhXHZYriK8Tlgn73jarzYI9pM70G0neue9kOtrhkBy5/PWlF5MaLcx
-         GnorcUQzyeYtz6w7ZAbL6hy4huqIkvhT277mU3f/sOKWGHpw4QR6HA6NKisxEgS94xQ/
-         yDXhYSRXR9uZUpNj8EC5CNEm1ZnHvuvKpSjmmyq7eAcvDV03BUnlwi9pFXBJ/+7N6+zK
-         EldA==
-X-Forwarded-Encrypted: i=1; AJvYcCV41LfWGya5juQVnu+oaGYLBUiKRbwryoQYF3Q6bn4y8IPi6SMwQoGdhNhltp2hiDR+/qNCTHHI@vger.kernel.org
-X-Gm-Message-State: AOJu0YwX7PxVbtJSc1rZyOrA/9S3FeACGbNmuKenTrEPinvqiHN02C60
-	g2pwkyex458oJUh5qkIkeHMTBk/vppLBcdCn7e8KfNGgFa7qXDSupF2H7BlTZyjTd3yjtZK7koS
-	IwPRIGZ4EjspoL49XKAKmWMzyNt7dYxhQG1ToKSNbvkHrg+DB2Fa4qgg=
-X-Gm-Gg: ASbGncsQTD41+QBcjmSbKg8dFpjDvsXsYPtkX9Dyy6eMT92p6OFa/PMmJwvtIYwm+Rd
-	kOuLPQD/TF1MoKAMzQAbloIi1thboyR+LuLCVULrs+eSaYSJIi/C3RSmz5VkD15s+j2MuaQgrfE
-	UqMLbSkLjVHwgXK2O62E5FcYmCBccOEEbO21sASyjOQEvidJmRShHqnqNoaaAOvKeIBpk8trGj7
-	9p7RkHUn5YBsQhLs4OXc2JKfumPZUK8dJIl6P49lPgm6aME92fFAhze2WZaPEu0arIrJ++6KViu
-	ATaxewzH6ke4hWrYR1Km+NME7tSdO3F/LcG06bgHlWw=
-X-Received: by 2002:a05:6000:2ac:b0:391:1458:2233 with SMTP id ffacd0b85a97d-39132d30145mr16025044f8f.11.1741774172441;
-        Wed, 12 Mar 2025 03:09:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEC/oegylWFmX8HIfDOEmL2IfKq6J8f3RVSsBgAXMYe83/CsTxWQv7uki2xiMPLn7D1hW+oew==
-X-Received: by 2002:a05:6000:2ac:b0:391:1458:2233 with SMTP id ffacd0b85a97d-39132d30145mr16025033f8f.11.1741774172078;
-        Wed, 12 Mar 2025 03:09:32 -0700 (PDT)
-Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.49.7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912c0e34fasm20758388f8f.75.2025.03.12.03.09.30
+        d=1e100.net; s=20230601; t=1741786326; x=1742391126;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n+YKh/MUNMUdrgEpVLdiNZ/ObkP4C8B3H8z7MNYDh6w=;
+        b=wMAPH8y3y6QTUKIL8wo3/cDdlOyD4fxs7AbgsFAJCsA6rJhEVaRDlVknzHgcdVC8xk
+         htFXCrH6pwZsFNIvcmRBIzfv49f2omMP6gwtpRjhQAQdpVnPfypREpqjraV2sulw+URI
+         IJkME2sl+cnlxwj+EV9O6SvKbhAOkPbeqLjvFhQrBFH/sHlz5VU4au0osYWeuDxSGRY4
+         gj4MFuetZm8rEzLFDrmUYqS7TWYCNy9AsHk891xbdRAMCcqW0Qns7XFeIUaJ0VzdNr2Y
+         FPKT0PFL+xWHdQHgaZMT2Ld96R9cLLwt5IZRyn7xZcISF7kzV0amRWOF0SCtqIdNq0KR
+         /V9g==
+X-Forwarded-Encrypted: i=1; AJvYcCV6XkigxgQyNzLv4rnPnznrgMBI31bMpkecKbm8a6CaMAsECa1vR1RTQvBi8R0TlSfCK2BD08pl@vger.kernel.org
+X-Gm-Message-State: AOJu0YySCvf5eNcJl570K42Lx9VDHNUXjk6BftOfptn00PFFq2KOgYC6
+	kJUEXTzMTKHskPD/oYsLN6DWWfOAzcDDZ36JO2qdWSMNpoDgwIjKg2GH/A5dtYU+lhgBGw98RfN
+	C0s2A705kYcxAh1C0Il0sg6EZ8EDc6sQHlpgCRX8MzpB26CFaa+NZl+s=
+X-Gm-Gg: ASbGnct/w0fEprmKdUeaC8ES7eqfRG6XqzCGz7A4Yw510/1sDJzhMlbnyXwIeGHJUfl
+	H2864H+AG+87ENhySfxQoediYWo+0Qa5sX+vLL9ultJIFgRv+h++ijt68Xz3n8hoNDyMCknj/Mz
+	GTnlTOb1Jxz8UpQHBNF5TlPvCDgVsruEiz7wHTGbU2x1qbKhy/exvCEfT2NwDLunuPJv5ilGtUT
+	ykNThNQJ4eNpMHSDeiTv56OAqFOg6+cdH5wbTuYNAnhEsTBms7U/4nCuE0Vu/fTc1ZgkrtaQPKj
+	5FUoM60SedpmQopuqrBEQE/AaD0+8jQe+cFhRxlXEWBxcrzvDrmraDWqRPbSMSYZzKaBydzj2Ng
+	v
+X-Received: by 2002:a05:600c:468a:b0:43a:ed4d:716c with SMTP id 5b1f17b1804b1-43c5a631741mr154089255e9.22.1741786326201;
+        Wed, 12 Mar 2025 06:32:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH5sHcDKhieURPdxRy300OU1jc5MhmokRYnxd3zuFMFYr99zeGoJFxp8tbG2zBpfoTzfjxCaQ==
+X-Received: by 2002:a05:600c:468a:b0:43a:ed4d:716c with SMTP id 5b1f17b1804b1-43c5a631741mr154088845e9.22.1741786325818;
+        Wed, 12 Mar 2025 06:32:05 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d0a72ed3csm21539145e9.6.2025.03.12.06.32.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Mar 2025 03:09:31 -0700 (PDT)
-Date: Wed, 12 Mar 2025 11:09:29 +0100
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Waiman Long <llong@redhat.com>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Qais Yousef <qyousef@layalina.io>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Swapnil Sapkal <swapnil.sapkal@amd.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Phil Auld <pauld@redhat.com>, luca.abeni@santannapisa.it,
-	tommaso.cucinotta@santannapisa.it,
-	Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH v3 4/8] sched/deadline: Rebuild root domain accounting
- after every update
-Message-ID: <Z9FdWZsiI9riBImL@jlelli-thinkpadt14gen4.remote.csb>
+        Wed, 12 Mar 2025 06:32:05 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Juri Lelli <juri.lelli@redhat.com>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel
+ Gorman <mgorman@suse.de>, Waiman Long <longman@redhat.com>, Tejun Heo
+ <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?K?=
+ =?utf-8?Q?outn=C3=BD?=
+ <mkoutny@suse.com>, Qais Yousef <qyousef@layalina.io>, Sebastian Andrzej
+ Siewior <bigeasy@linutronix.de>, Swapnil Sapkal <swapnil.sapkal@amd.com>,
+ Shrikanth Hegde <sshegde@linux.ibm.com>, Phil Auld <pauld@redhat.com>,
+ luca.abeni@santannapisa.it, tommaso.cucinotta@santannapisa.it, Jon Hunter
+ <jonathanh@nvidia.com>
+Subject: Re: [PATCH v3 1/8] sched/deadline: Ignore special tasks when
+ rebuilding domains
+In-Reply-To: <20250310091935.22923-2-juri.lelli@redhat.com>
 References: <20250310091935.22923-1-juri.lelli@redhat.com>
- <Z86yxn12saDHLSy3@jlelli-thinkpadt14gen4.remote.csb>
- <797146a4-97d6-442e-b2d3-f7c4f438d209@arm.com>
- <398c710f-2e4e-4b35-a8a3-4c8d64f2fe68@redhat.com>
- <fd4d6143-9bd2-4a7c-80dc-1e19e4d1b2d1@redhat.com>
- <Z9Alq55RpuFqWT--@jlelli-thinkpadt14gen4.remote.csb>
- <be2c47b8-a5e4-4591-ac4d-3cbc92e2ce5d@redhat.com>
- <e6731145-5290-41f8-aafb-1d0f1bcc385a@arm.com>
- <7fb20de6-46a6-4e87-932e-dfc915fff3dc@redhat.com>
- <724e00ea-eb27-46f1-acc3-465c04ffc84d@arm.com>
+ <20250310091935.22923-2-juri.lelli@redhat.com>
+Date: Wed, 12 Mar 2025 14:32:03 +0100
+Message-ID: <xhsmhr032pe7g.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <724e00ea-eb27-46f1-acc3-465c04ffc84d@arm.com>
+Content-Type: text/plain
 
-On 12/03/25 10:53, Dietmar Eggemann wrote:
-> On 11/03/2025 15:51, Waiman Long wrote:
+On 10/03/25 10:19, Juri Lelli wrote:
+> SCHED_DEADLINE special tasks get a fake bandwidth that is only used to
+> make sure sleeping and priority inheritance 'work', but it is ignored
+> for runtime enforcement and admission control.
+>
+> Be consistent with it also when rebuilding root domains.
+>
+> Reported-by: Jon Hunter <jonathanh@nvidia.com>
+> Fixes: 53916d5fd3c0 ("sched/deadline: Check bandwidth overflow earlier for hotplug")
+> Tested-by: Waiman Long <longman@redhat.com>
+> Tested-by: Jon Hunter <jonathanh@nvidia.com>
+> Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
 
-...
-
-> > You are right. cpuhp_tasks_frozen will be set in the suspend/resume
-> > case. In that case, we do need to add a cpuset helper to acquire the
-> > cpuset_mutex. A test patch as follows (no testing done yet):
-
-...
-
-> This seems to work.
-
-Thanks for testing!
-
-Waiman, how do you like to proceed. Separate patch (in this case can you
-please send me that with changelog etc.) or incorporate your changes
-into my original patch and possibly, if you like, add Co-authored-by?
-
-> But what about a !CONFIG_CPUSETS build. In this case we won't have
-> this DL accounting update during suspend/resume since
-> dl_rebuild_rd_accounting() is empty.
-
-I unfortunately very much suspect !CPUSETS accounting is broken. But if
-that is indeed the case, it has been broken for a while. :(
-
-Will need to double check that, but I would probably do it later on
-separated from this set that at least seems to cure the most common
-cases. What do people think?
-
-Thanks,
-Juri
+Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 
 
