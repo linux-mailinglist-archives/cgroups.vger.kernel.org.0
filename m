@@ -1,141 +1,121 @@
-Return-Path: <cgroups+bounces-7001-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7002-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8BDEA5D392
-	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 01:09:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB5DDA5D435
+	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 02:51:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B6AF3B9D5D
-	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 00:08:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89B6C189C595
+	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 01:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CAB51172A;
-	Wed, 12 Mar 2025 00:08:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g+HTR8Un"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6865613B58A;
+	Wed, 12 Mar 2025 01:51:38 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B77812B93
-	for <cgroups@vger.kernel.org>; Wed, 12 Mar 2025 00:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FBB5684;
+	Wed, 12 Mar 2025 01:51:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741738098; cv=none; b=tvcEBSyYCByFTy0V6cF0GP1v6sIzAM1YKMZoKTe8/m6sDPEIVMmcZGBXYI/B1Mz4i6bzKBP8WguTCs7BLunqGNiSPZDRQvhOa/yYR1enb3sv5YO62a9mfQZ1itj+ODz+sIaqJKfnFhzK0l+PU5KSF6iwL4mlFImMDzxWo+CN6xw=
+	t=1741744298; cv=none; b=BrQU/S2wXHLmpduUtX5V0PQRDbEDkGGbkcp6lImrhEAKxbYF3sgaP0dTvgxsSbtJKphKVqQdjACxklyCxVVwK86cWxczlGCzRpiS2St5koR98mr2n8t9S/VJK3OhEIBQ2fSSL0NkR5eSpnqyVUISlC8/GwdJdakrK7olWrCXacw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741738098; c=relaxed/simple;
-	bh=7JAKR1B2EJs5OMc3kDKDyMYaNnMBEQeVe+0pTH470+w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qmT3pFz8MUW2cHrBzg2BUsLJ5sl5mXmDfOahPkWMzZi1hkhNE82MIcDVGUZMHwhZsgzzEiJWhR1rpw/ksEVjIcoZRiX6BBEYZIHf/qE1nPR5iXABRZ4VT3igYigl/5LBrW8qtuRmAb+cbt2qIJ4bBzSO8fpUwHJZ7qnaIS7QrfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=g+HTR8Un; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741738094;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dGPxM9RdXtkX+Els8nvXOJm60GkYwZd/fztNUeVaxvI=;
-	b=g+HTR8UnPRZL27Bmat7gMMYayGRrQb9jD/h3Wob7ZlO++s4fjI4Atcqroi7yV4zQE5Duli
-	hxDWY6bmnifSPKd3vss/GadnYvFoUkH9u6257uwyrUN37MD6tJApZ/H8XA5Z3Plu/hI/If
-	q9oWiwCkAKifIMp3zeRh7Zp54/7ffRI=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-687-a_RbZen0O8GYnddRn1Kahg-1; Tue,
- 11 Mar 2025 20:08:11 -0400
-X-MC-Unique: a_RbZen0O8GYnddRn1Kahg-1
-X-Mimecast-MFC-AGG-ID: a_RbZen0O8GYnddRn1Kahg_1741738088
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 942B7180AF4C;
-	Wed, 12 Mar 2025 00:08:07 +0000 (UTC)
-Received: from h1.redhat.com (unknown [10.22.88.56])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B44AA1955DDD;
-	Wed, 12 Mar 2025 00:08:00 +0000 (UTC)
-From: Nico Pache <npache@redhat.com>
-To: linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	xen-devel@lists.xenproject.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org
-Cc: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	jerrin.shaji-george@broadcom.com,
-	bcm-kernel-feedback-list@broadcom.com,
-	arnd@arndb.de,
-	gregkh@linuxfoundation.org,
-	mst@redhat.com,
-	david@redhat.com,
-	jasowang@redhat.com,
-	xuanzhuo@linux.alibaba.com,
-	eperezma@redhat.com,
-	jgross@suse.com,
-	sstabellini@kernel.org,
-	oleksandr_tyshchenko@epam.com,
-	akpm@linux-foundation.org,
-	hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	nphamcs@gmail.com,
-	yosry.ahmed@linux.dev,
-	kanchana.p.sridhar@intel.com,
-	alexander.atanasov@virtuozzo.com
-Subject: [RFC 5/5] xen: balloon: update the NR_BALLOON_PAGES state
-Date: Tue, 11 Mar 2025 18:07:00 -0600
-Message-ID: <20250312000700.184573-6-npache@redhat.com>
-In-Reply-To: <20250312000700.184573-1-npache@redhat.com>
-References: <20250312000700.184573-1-npache@redhat.com>
+	s=arc-20240116; t=1741744298; c=relaxed/simple;
+	bh=kBuOWzKazd0QJN+2VfW1BelVrTxdYN+lsa1A1d0T5FI=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ChXXT3j9qxSc5jAgQHw3EQmsBK0ENFUW+hVNwbhB2B0Jo7MEjSj3Zv4c3I5t3B/xDb37vdDzgC9jYiJtOde0mpAi1qLMCTqVek0xc9GAlb+UR34jnO1p/u3NmSfWvxDdnfVuEbG4dr157lu+WMAtTdYk+S2VNC97vJAgL3ix060=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZCDB51JFwz4f3lgM;
+	Wed, 12 Mar 2025 09:51:09 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 0386F1A1546;
+	Wed, 12 Mar 2025 09:51:33 +0800 (CST)
+Received: from [10.174.179.143] (unknown [10.174.179.143])
+	by APP4 (Coremail) with SMTP id gCh0CgB32l6j6NBncivzGA--.24749S3;
+	Wed, 12 Mar 2025 09:51:32 +0800 (CST)
+Subject: Re: [PATCH] blk-throttle: support io merge over iops_limit
+To: Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Ming Lei <ming.lei@redhat.com>, axboe@kernel.dk, josef@toxicpanda.com,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20250307090152.4095551-1-yukuai1@huaweicloud.com>
+ <Z8sZyElaHQQwKqpB@slm.duckdns.org>
+ <5fc124c9-e202-99ca-418d-0f52d027640f@huaweicloud.com>
+ <Z85LjhvkCzlqBVZy@fedora> <Z88K5JtR4rhhIFsY@slm.duckdns.org>
+ <baba2f82-6c35-8c24-847c-32a002009b63@huaweicloud.com>
+ <Z9CQOuJA-bo4xZkH@slm.duckdns.org>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <c1e467a9-7499-e42b-88ed-b8e34b831515@huaweicloud.com>
+Date: Wed, 12 Mar 2025 09:51:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <Z9CQOuJA-bo4xZkH@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+X-CM-TRANSID:gCh0CgB32l6j6NBncivzGA--.24749S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrur15tFWrCryDuFW5Wr48JFb_yoWkGwc_uF
+	Z2kF48ua1Yv3Wktay3JryagrZIqay8WryUJrZ2qwsxW340yFWDuFW3Kr98Zw1rGFs7JFn0
+	kwn8Zr43ArW29jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbfAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7V
+	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
+	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
+	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Update the NR_BALLOON_PAGES counter when pages are added to or
-removed from the Xen balloon.
+Hi,
 
-Signed-off-by: Nico Pache <npache@redhat.com>
----
- drivers/xen/balloon.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ÔÚ 2025/03/12 3:34, Tejun Heo Ð´µÀ:
+> Hello,
+> 
+> On Tue, Mar 11, 2025 at 11:08:00AM +0800, Yu Kuai wrote:
+> ...
+>>> That said, I'm not sure about changing the behavior now. blk-throtl has
+>>> mostly used the number of bios as long as it has existed and given that
+>>> there can be a signficant difference between the two metrics, I'm not sure
+>>> the change is justified at this point.
+>>
+>> If we really concern about the behavior change, can we consider a new
+>> flag that can switch to the old behavior? We'll see if any user will
+>> complain.
+> 
+> Yeah, that may be the right way to go about this, but let me turn this
+> around and ask you why adding a new behavior would be a good idea. What
+> problems are you trying to solve?
 
-diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
-index 163f7f1d70f1..65d4e7fa1eb8 100644
---- a/drivers/xen/balloon.c
-+++ b/drivers/xen/balloon.c
-@@ -157,6 +157,8 @@ static void balloon_append(struct page *page)
- 		list_add(&page->lru, &ballooned_pages);
- 		balloon_stats.balloon_low++;
- 	}
-+	inc_node_page_state(page, NR_BALLOON_PAGES);
-+
- 	wake_up(&balloon_wq);
- }
- 
-@@ -179,6 +181,8 @@ static struct page *balloon_retrieve(bool require_lowmem)
- 		balloon_stats.balloon_low--;
- 
- 	__ClearPageOffline(page);
-+	dec_node_page_state(page, NR_BALLOON_PAGES);
-+
- 	return page;
- }
- 
--- 
-2.48.1
+In the case of dirty pages writeback, BIO is 4k, while RQ can be up to
+hw_sectors_kb. Our user are limiting iops based on real disk capacity
+and they found BIO merge will be broken.
+
+The idea way really is rq-qos based iops limit, which is after BIO merge
+and BIO merge is ensured not borken. In this case, I have to suggest
+them set a high iops limit or just remove the iops limit.
+
+Thanks,
+Kuai
+
+> 
+> Thanks.
+> 
 
 
