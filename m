@@ -1,83 +1,83 @@
-Return-Path: <cgroups+bounces-7009-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7010-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FC41A5DE0A
-	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 14:32:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3ACDA5DE0C
+	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 14:32:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 682977AD7E2
-	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 13:31:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 017B916E4D5
+	for <lists+cgroups@lfdr.de>; Wed, 12 Mar 2025 13:32:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E4C2459C2;
-	Wed, 12 Mar 2025 13:32:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78912459F6;
+	Wed, 12 Mar 2025 13:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BVsB1ifP"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VTKjr61L"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67AEA22ACD1
-	for <cgroups@vger.kernel.org>; Wed, 12 Mar 2025 13:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23CC11E48A
+	for <cgroups@vger.kernel.org>; Wed, 12 Mar 2025 13:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741786343; cv=none; b=YcV7JG+Zyp8Kdy0PRf6709MDN6hdMFEfksZqVsQEcAsG3LBnJdqccRX8TTosZtedKiVA/VHeh2kRRHgXeLEP9hJLFkdZgXr+jrq2xzkoplN8TwE/8VB+ad/FeHGhV5z024AZ46mydeHBa3VBTKDJKZB94z2oUNbzPdUFT8+HvtA=
+	t=1741786348; cv=none; b=Mv8L1hQjDKrONvjJ/ghe4wr8mukecAtWjdCPd+sja1t9VrIDSC8+OEvyzhLkuoxHVvdfcWYKsdzAQdCMTqEkel2zV4pJgqWmTXtwcAlSFw/+XIlh/LETcXt6N7OD2A1Ejl//FsUIgO2sXZHLl8ydvZsU+AoEn7ePVT2vHgNqr8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741786343; c=relaxed/simple;
-	bh=1cWixh968plrgs9DFJw4Oq3vwwUksg0Laamhx8PZPYE=;
+	s=arc-20240116; t=1741786348; c=relaxed/simple;
+	bh=mCSI4g63ZRxOe8nfZLB64gzPRCruOM7oaM6iEJmkZE8=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=HcpCvjSLjXyRmdl7ESbCVSI0FsFbh0XF8FcLGEFkDKYPtopaGJh//OCa8DSswg1+HRPkz+E5Jd5Lkun9pwN42K/brgupWwkHwhSAxfLxiBSWSO1aoaGOpQC9l8dwPQ+zzQeNWnaRyIwt0X/hL6SFt2fLpS9TkK1mGoLb84uRE8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BVsB1ifP; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=IEGVzG+thqC0J6t94Y4MNTqBoLzSjM6d9altUEsU8rHEGuK7k6OmZ3yIzQL67lOK5CzhbSzn7Z7qM9e1tClhRg+z4jvcsU64tteOaZfj4LKpbMfCA+axswG5GgpJRMTdOTeYPNRKMReoxDdUhLe+4yOpizqfO0QAPKYhTNzcokM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VTKjr61L; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741786340;
+	s=mimecast20190719; t=1741786346;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1cWixh968plrgs9DFJw4Oq3vwwUksg0Laamhx8PZPYE=;
-	b=BVsB1ifPieZAin16caQQ1iJFWiMoscfDnZ5yPC0QCMCimyN0x+pZotUQCAs35F9uKkV5fW
-	aWVxEVK3RydYHFfGG7DIj7CWcjZ0+BxAAJnu2U/koHQ34bJxLzLXc/neF84D5EWKoLTgQQ
-	ozf+iS+1i/7S+XPrbrcicFrnqcU/Un8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=mCSI4g63ZRxOe8nfZLB64gzPRCruOM7oaM6iEJmkZE8=;
+	b=VTKjr61LBeBIggjxTkH7JI9s4j6ZW8KeG8LMXsdrS+x0xbiGN9bPH7bqcLv+HcAXcPYAll
+	kQ4OcPAOHoN4IIt/ad1ThVhcZDTdbbHFUZVUuuoMjVvOwgT8I33KcPA6uSorbqqkhHdsti
+	9K+427GqECf/enQwUWe2902qrDwgyQY=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-172-hkB_ls94MOuTjW1IGlnjKw-1; Wed, 12 Mar 2025 09:32:19 -0400
-X-MC-Unique: hkB_ls94MOuTjW1IGlnjKw-1
-X-Mimecast-MFC-AGG-ID: hkB_ls94MOuTjW1IGlnjKw_1741786338
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3912539665cso408780f8f.1
-        for <cgroups@vger.kernel.org>; Wed, 12 Mar 2025 06:32:19 -0700 (PDT)
+ us-mta-277-VhzHu6DtPpK_ZWOcfpkE6A-1; Wed, 12 Mar 2025 09:32:24 -0400
+X-MC-Unique: VhzHu6DtPpK_ZWOcfpkE6A-1
+X-Mimecast-MFC-AGG-ID: VhzHu6DtPpK_ZWOcfpkE6A_1741786344
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-43d0830c3f7so10259225e9.2
+        for <cgroups@vger.kernel.org>; Wed, 12 Mar 2025 06:32:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741786338; x=1742391138;
+        d=1e100.net; s=20230601; t=1741786343; x=1742391143;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1cWixh968plrgs9DFJw4Oq3vwwUksg0Laamhx8PZPYE=;
-        b=KkIePCf2hO2HnUs6y+nwYcZi7ovvGvQV2aXweXiUdY4KbrcRvE3x2lGjA+6p7MwV59
-         SQIkM+RVM0ccMKra/4kL6jNlbqH9chttKM68XT/r/YNkoyrVCaiuUHxc8HdSLKfR3J2P
-         Clj3A4zAawXfWNIhJyz1en0EtEQuUNldpwhpVrwRscxrvSGUTvK/8L5J4Z2tKZ9+YtEm
-         cAquxBI1/3CUU9rFoQyGh0JdUJbO/v8ZZyD2HxuI/mWL4zrWeCfSxLowRJAWDM3GcCjr
-         fyMcrm5ddDLvS/THt/k8mw+QLQ5K8wjvk/AG/g3KzR4f+9CIB+vF/VXA8VFQb13Kx0Zh
-         Nptg==
-X-Forwarded-Encrypted: i=1; AJvYcCU1vDuvxXx4lqdDoBymxnsFP7w422Kygcrwzww7JRLbgn+Rv54c8VS6IVNzerFIiRb7oj7N6Ds4@vger.kernel.org
-X-Gm-Message-State: AOJu0YycdrIKtOM46WUfgEUf08EXbDKTFGPIljVC7mn+6nqKrxgTM6Rj
-	WCnq2FTOU2rkUVtJMnmYezo9RxhMFvXe9A5ekQbYTUqRmn1ynGkgIqjx54uZiYIikbUa6GUqy7r
-	IHEhMt489YC2TAzMyJryvvou5lB5iB+OmxarIw4oXiEBprcDMjEArNA4=
-X-Gm-Gg: ASbGncu9YzprYuKWbLl/nBVj4lQPxIrf3LLhaWHvrvQ4GWhE8xCu20WiF2f4Y475GyV
-	15PLzStBDDPlDjjczpcFTIaE4KZnDwqLQ0VKWDKm6jLpe5oXaqpcV7QYt1LD5pr7KO+Yq8dMv9z
-	YjQ3arCmlIVIcnta6QtCchGXaIS5XRhw6z0FEz/MWuiErtceSLlywdbAo12EtrvjYXTeRl8+IwG
-	Y6HDieyQNORfUmQUVSc8XXVur+fYC4WjFfoK/yH5kuqUcpJAhtu7wpSqjzSBshcVTnOr2rVbZwW
-	GvflfMsyF7tBaLUEKGJAz3WbDf9Grdo/mCV8IG6O0y8h7LqLBhgWNM5+fmr6GnX/cTW4yfkcloP
-	f
-X-Received: by 2002:a05:6000:2aa:b0:391:2884:9dfa with SMTP id ffacd0b85a97d-3926c8857cfmr8359702f8f.13.1741786338148;
-        Wed, 12 Mar 2025 06:32:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHAs3oOT7v6n4w2AauMkyMccFBCDAzBZ2SKWm8b0JnBgGqKoxB79FBQoR9xC12OHr9ON8VKQw==
-X-Received: by 2002:a05:6000:2aa:b0:391:2884:9dfa with SMTP id ffacd0b85a97d-3926c8857cfmr8359660f8f.13.1741786337746;
-        Wed, 12 Mar 2025 06:32:17 -0700 (PDT)
+        bh=mCSI4g63ZRxOe8nfZLB64gzPRCruOM7oaM6iEJmkZE8=;
+        b=MBjrw1sJqYPo7wW65Ox1nHayqaJXHp/bUTCB2r9KrDwG/aYZOO6qO89MaU1ofsw8vR
+         UV7VQ9xzFJ8r+MJneUpQ/ffegPNrWgkuRrkp3qBtgp+MfPYsOnX/E0BJ8tMS+VbQRUG4
+         Pn+f90/EqPY/SVwZGSX4+2vCiF5QOzDyuUT0ADizL7jVHNO+tlnC35skxTcUL1aYmvoZ
+         NXkUsuDb6jNNe9Wd/PA2dmDci3l9NPQ/K4n0DPTpS/Lsy2ZlF5XEefACn5fsdk81/d2z
+         QCzbQQ7vBv7MhEmpXpuppWycNVU+pdZBK7gkUUWvqZRil5jSHqSvBF1ge0Y3Q8hVq8ZJ
+         DuHA==
+X-Forwarded-Encrypted: i=1; AJvYcCXx0zlQGKgiV/sgLhzLYPTak9TGn6O4YIct2V/PdXfT3chyPiiItaEQURdlNdiHxUYlW0fQNgW7@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz1IxX2WnkzQWeThEacBuZLLG8Idiv+04EmuaBysIrw4j+FFGFt
+	x52JhWP01PHn7I1uDHcFNrCfldm0I4vl4214XGBRLBBZq5JhvL39Gajski5JcLvwrroPSNtgBjo
+	lbPGj6d+JeUJyRRSfBUT8eK46p3onPJPCVFd5IUxrmHEQUGdC3OgYfS0=
+X-Gm-Gg: ASbGncujeSKpAFONDAfH4Zk0uh54vZAfZYyofirBkJSRy61DDFoDVtkC46KVOxguoFY
+	zLmWbLQZgVNqpk9hwa5fFyhaexTZ9BHokS4/ciqy3kRSi4u2oAzypwCU3LtVK5Ety+3AhRe/5dZ
+	mGmKQq0BNA7Aw3yrB4z4wLlIL/kleAFbW2tEXU+22r1UwihkDC+CT8zFukgvRIWni+IQ024Nfaa
+	0LPKCC4R0YVTcDXbLkxkcrtbw4F5bdmZ4KUES45QZix96arNhEyHG4rdYJl3pM6NXfuevnx3dNh
+	Cx1Su+qofwEPoLqT9ZrG1m+kunqqEe5XwxwbRk0Trr9lkiN0Vin+uObxwBdvU15gegiU/qWlatv
+	8
+X-Received: by 2002:a05:600c:1c25:b0:43d:738:4a9 with SMTP id 5b1f17b1804b1-43d073805dbmr42351235e9.27.1741786343664;
+        Wed, 12 Mar 2025 06:32:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFhPw8NJ1lb0q/giTLWm+iKpfer34XUJS5eQYqmpFdFHzSRWp15aA/RZ5hULR6/Yxjpn+5pew==
+X-Received: by 2002:a05:600c:1c25:b0:43d:738:4a9 with SMTP id 5b1f17b1804b1-43d073805dbmr42350935e9.27.1741786343296;
+        Wed, 12 Mar 2025 06:32:23 -0700 (PDT)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-394bdd9fc74sm1360766f8f.64.2025.03.12.06.32.16
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d0a78dac2sm21127785e9.29.2025.03.12.06.32.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Mar 2025 06:32:17 -0700 (PDT)
+        Wed, 12 Mar 2025 06:32:22 -0700 (PDT)
 From: Valentin Schneider <vschneid@redhat.com>
 To: Juri Lelli <juri.lelli@redhat.com>, linux-kernel@vger.kernel.org,
  cgroups@vger.kernel.org
@@ -93,12 +93,13 @@ Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
  <sshegde@linux.ibm.com>, Phil Auld <pauld@redhat.com>,
  luca.abeni@santannapisa.it, tommaso.cucinotta@santannapisa.it, Jon Hunter
  <jonathanh@nvidia.com>
-Subject: Re: [PATCH v3 2/8] sched/topology: Wrappers for sched_domains_mutex
-In-Reply-To: <Z86xzGyT3av5dh1p@jlelli-thinkpadt14gen4.remote.csb>
+Subject: Re: [PATCH v3 3/8] sched/deadline: Generalize unique visiting of
+ root domains
+In-Reply-To: <Z86yfz-pIHHqC5TP@jlelli-thinkpadt14gen4.remote.csb>
 References: <20250310091935.22923-1-juri.lelli@redhat.com>
- <Z86xzGyT3av5dh1p@jlelli-thinkpadt14gen4.remote.csb>
-Date: Wed, 12 Mar 2025 14:32:16 +0100
-Message-ID: <xhsmhplimpe73.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Z86yfz-pIHHqC5TP@jlelli-thinkpadt14gen4.remote.csb>
+Date: Wed, 12 Mar 2025 14:32:21 +0100
+Message-ID: <xhsmho6y6pe6y.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -107,10 +108,15 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-On 10/03/25 10:33, Juri Lelli wrote:
-> Create wrappers for sched_domains_mutex so that it can transparently be
-> used on both CONFIG_SMP and !CONFIG_SMP, as some function will need to
-> do.
+On 10/03/25 10:35, Juri Lelli wrote:
+> Bandwidth checks and updates that work on root domains currently employ
+> a cookie mechanism for efficiency. This mechanism is very much tied to
+> when root domains are first created and initialized.
+>
+> Generalize the cookie mechanism so that it can be used also later at
+> runtime while updating root domains. Also, additionally guard it with
+> sched_domains_mutex, since domains need to be stable while updating them
+> (and it will be required for further dynamic changes).
 >
 > Reported-by: Jon Hunter <jonathanh@nvidia.com>
 > Fixes: 53916d5fd3c0 ("sched/deadline: Check bandwidth overflow earlier for hotplug")
