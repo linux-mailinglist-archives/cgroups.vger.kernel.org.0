@@ -1,84 +1,84 @@
-Return-Path: <cgroups+bounces-7043-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7044-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35A90A5FD0F
-	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 18:07:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FA1AA5FD1D
+	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 18:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 320313A0571
-	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 17:07:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 751D517131A
+	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 17:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF39E250EC;
-	Thu, 13 Mar 2025 17:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F8E269D08;
+	Thu, 13 Mar 2025 17:10:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AVG/CD9u"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gKLTav2j"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE6F153801
-	for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 17:07:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8427B269812
+	for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 17:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741885645; cv=none; b=SHbI9hpBnEnsVe49cl/Gh7fQPIdHebvtm5owgE4oh6rR3BPRBelvOGBWrs3cbSUAppHbL6pDLtVUXWsNRfnikdONjBxp6mEflKxpMjVXVkjT9Su0x+pYqbfCf60HhdPeGJUFnu/ZIfLihyz5Ev9GEE9wXruGIQ0d85/Q2JhOpCw=
+	t=1741885830; cv=none; b=Lj6+fqFdnE8/cC0EAknKyQJas8ZeffxdbhidqXpFVRJ3tydIR/kp1sCGkcAJlStBZFCR1Rsc6Sc0kzcybT1dWg91fxKRzXuGmpvFVgF1BjL8ucGDW+nZxm1Mj/P+yFoYx3P9nU7fdTBdBQgTJUmrAP09J+/uLM3uEcMdLKfVHaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741885645; c=relaxed/simple;
-	bh=KQiXIn2VlukWSexqG6FOkdHHd1iYI73n5V5ly7rktl0=;
+	s=arc-20240116; t=1741885830; c=relaxed/simple;
+	bh=nR1ob2cQONENW8eUXzLTE8w0E2+3XPvDjEWYcWYXJ6M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UA+uSe3CwrV8fjM944R7rc2u61xHZmMhjcMkGgVPdLkW09r7Do4Be86ijHq3QFN8e45Cpyet7uyPrkdoj4xxvZd1GzM2XbaQm/LFSvvSn9Ddhu4vP/SEMbDqzUqcBBz4MdDrV5e5u7EizZks4XSTScm9P7lp+0JVdOwzFlY6XlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AVG/CD9u; arc=none smtp.client-ip=170.10.129.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=i5s0JGm6F1MyaFblSXJQ3ghmgqzvLIpIDgUE42XP5PNgHdgH2CzL5Lr7Seor00eSuDbhl/AsZs4pJsZNwam1GcR9UGdwoJSnKMq8zUrx+yR7/Z02AM7A2AXriHU+r3cmSsvd6Tx2LdMMu5RrxuNQsXhGGig9PVf+wUj/z2jkrCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gKLTav2j; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741885642;
+	s=mimecast20190719; t=1741885827;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lRaM/X3X7FwnRVTV/8ABm5Bv6FFz4nCJnFljDa4QIJg=;
-	b=AVG/CD9uJiVGIswwiv3K/45/Gew+2s/Ki0lLupF0Cuee3u1ao9I9swIgI0khawIaaqV0gU
-	8Zovla0AEcYMBtMhmM1FNwTv+zgRGO3lk6uBEBwsYCm509w0aOWJge949n60hdnZ56dy1Y
-	0XkUIKO3j5dl04YVOHPQBDDXPRobhb8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=13IrME9qVH+0+hXjGK6BJyrl1EowiQUElDsQf/trHmI=;
+	b=gKLTav2jRTD12bRwwAn89KemLIrRnq56XY3bxnRqFbcz7CDwDJiViGhnjI31d9ELr0FknW
+	NJHK2zmxkIXbmREftI8DENqBfZmh//TasQmg3Ucbm2lxDfcXcvmLPLpaAkgYOli8eQU+9T
+	EcugsI5At3goqgd2jbKTi5ianY41t6c=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-351-D-R8m1QNPquuyEz_XVdsvg-1; Thu, 13 Mar 2025 13:05:52 -0400
-X-MC-Unique: D-R8m1QNPquuyEz_XVdsvg-1
-X-Mimecast-MFC-AGG-ID: D-R8m1QNPquuyEz_XVdsvg_1741885551
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43bd0586b86so8827735e9.3
-        for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 10:05:52 -0700 (PDT)
+ us-mta-313-zLmnX66VPA6Bq-OnC-P2Rg-1; Thu, 13 Mar 2025 13:10:26 -0400
+X-MC-Unique: zLmnX66VPA6Bq-OnC-P2Rg-1
+X-Mimecast-MFC-AGG-ID: zLmnX66VPA6Bq-OnC-P2Rg_1741885825
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3912a0439afso589682f8f.3
+        for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 10:10:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741885551; x=1742490351;
+        d=1e100.net; s=20230601; t=1741885825; x=1742490625;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lRaM/X3X7FwnRVTV/8ABm5Bv6FFz4nCJnFljDa4QIJg=;
-        b=GqS+m9nGfYyBTiVdrQ3K8px+otzDHkoPCFUHWRgwzdyFqSbPJVqfYkdPIDMZ/xRBQN
-         3FinJPCtS/SmZuJ/OzDNr145+Oc2lCLWEFWkc59jLz2pZsp32pIH/sV9OdRPhfvl88W7
-         s61ldk3nz8tJVUFjnLsxJojibK6LZmW7R8p70aBQ51yrD1TXKuXRJXNa3Qd8ys+xtvb4
-         gHM7HUgERQ+8JpKUAthF2gJDfqSe8mjquItauVyaEllI/tshvnznUW+bfmijJkgDqR1c
-         R47zS0ju1Kasalpy12M6SkO9FY33q4ITinGmAtvbcZ9viZcJfK3lfzYSVG6cQEJrScH9
-         Za5g==
-X-Forwarded-Encrypted: i=1; AJvYcCXBtHIqswKNMcrtlv6Tl1g8HHALA+w8Bfeu3XwS3K7YGeSQ2vIYdrzfqi8JrWAhImJDPBY6XOMP@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFIqrd2iHyWhtMulg+eUXAI2tafyEM5/m5+rBzVbNdXxfbzBbF
-	Z64OKBTnHYlbRLo2YVgwP5CMBPjr6HJyJKH+8qjLN0Jtm4kvhgMg2jX5kepvqqh0DHkaOYuNq+9
-	3kwTuD5MNQAX7TJVqX+UR+QnK9S2HiEuT6gW4+W5IR/p3oqtjbxvmlOo=
-X-Gm-Gg: ASbGncsvYyHSp0/3i4+G5sP0At+8Ycp1mLbySYHTIudLBs7TbjaNPn0Fa0vasVt0/3l
-	SXEd50BGedpbx6/I+hvE3TI6tu/GQhHpYiM7eYIIXjeA6P9XRDUms6FYgLEuk9NsHWePcfBVt0P
-	zu+ePXzSUJMbzIyNnHFaLNTAN2WaEM42smuHhyFPprTYneZ9B1soth2tQrYoJM1ieqJse3P7N/0
-	nHF0a8VTUPJ4vqohWELEPwN8j/xaPPewTTIp10YNt9RcKP+fHTa2t/uh2b1nQe2dKwGKR8TZpRY
-	5Twu7pPAOlZazeAbx6eE+rllBzmafOaShvxogvvlxX0=
-X-Received: by 2002:a05:600c:4690:b0:43c:f1cd:3d78 with SMTP id 5b1f17b1804b1-43d1d8996e4mr4685305e9.12.1741885551142;
-        Thu, 13 Mar 2025 10:05:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGFqSLsuGYqiWNcWGFhLHtrkt0oSv3EpUnzUFYIX8R0rzU3ce//LTSI6J0Klt+PSgxhr6Qokw==
-X-Received: by 2002:a05:600c:4690:b0:43c:f1cd:3d78 with SMTP id 5b1f17b1804b1-43d1d8996e4mr4684875e9.12.1741885550619;
-        Thu, 13 Mar 2025 10:05:50 -0700 (PDT)
+        bh=13IrME9qVH+0+hXjGK6BJyrl1EowiQUElDsQf/trHmI=;
+        b=f+uNXIO15DJ22knuF/HkORSFoXZqgt3cqi2+9vnjhy3gQWTUHRmP8x0/F4j3sBPs0t
+         k3c8XmF4uTBiChh4XPsNaWimvz+fBEE5boXpbYphiZojmY1+8d25YsETkUjIaGtZsgKf
+         hzAh72ZjN5gbMS5EyDHLoTLamBRfRrjaWst27Kn2JikAh0M+Bl4vn6/ck9g3cKnsZO9m
+         E+K6yNSwUZ1jsL5BcNam8savCQ7X+vM09PUwLbrTWGDPwIJkVv4S5tobj8UXy9955EOm
+         YbkJ9Jqw/a//h3M7FCGXnG+cFsJlNlRGRJWu4/6J2uqCnlWo+A283dV81BlD+w0v7ELg
+         mLrA==
+X-Forwarded-Encrypted: i=1; AJvYcCV2Duo+H/CyDFBSCe7jinqLr4S5PUXkUB2GQD/bOZtxCbN0jZqZ+P7uCaPlm2BdxZeSUMB9axqX@vger.kernel.org
+X-Gm-Message-State: AOJu0YxtPAt7XQ6+E9d6YdAs4gG0/EQ+CZdM7QbrttkAE5CBqOpOCF1S
+	YJwP8mWIoi4YZPUa0eMKW0GvYe2ctwoahrkLmmVGeNOxA5mni59Xg7SoNIuauiunSEeZ0bE4IkZ
+	/21yDpdwVMB60w069qlNwPhAwIYTjvy9kLLDQsCFpPaG5bJzI0c1oMTc=
+X-Gm-Gg: ASbGncse7SmAuswTo51rSEMgbTVdSqetCbz/WMLdApDcqr4pmfY314XsgaUwwVbCWFF
+	HBSOk5SArXmmfflgl/91ptzWRsfj9VvvaNtMQzlh0rgvw00UoOnlG8ZEN0sQ0S9zYuTCz5r+90h
+	XGgR2HX5XyCJ7hS5NiXntrlVeUfnccNulcqjU2KGIRWhdjHRo7SPCS4HlMs8/KItgzFDXq6Stb4
+	ib4y8EGSfG0MRVUIdlZl8u7B6O23FT/MSb3GcHMcf7Kckf4KbFLUjA3+iGK1AuLY2yIaNPnFzEC
+	64A7f3Vnq2FCEbOTFy/uV8UCtNGJulABfJEfw91Ajq8=
+X-Received: by 2002:a5d:598f:0:b0:391:2e97:577a with SMTP id ffacd0b85a97d-396c3e16586mr352397f8f.55.1741885824764;
+        Thu, 13 Mar 2025 10:10:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH+lg8zlUlXluRXE6AcisRhjeRo0PjZSFqibrRBKyIRUbuHm3FBSBZu6OcQAhW2z6WDs92D3g==
+X-Received: by 2002:a5d:598f:0:b0:391:2e97:577a with SMTP id ffacd0b85a97d-396c3e16586mr352346f8f.55.1741885824314;
+        Thu, 13 Mar 2025 10:10:24 -0700 (PDT)
 Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.49.7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395c83b6e87sm2849628f8f.32.2025.03.13.10.05.48
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395cb7eb92csm2752500f8f.91.2025.03.13.10.10.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Mar 2025 10:05:49 -0700 (PDT)
-Date: Thu, 13 Mar 2025 18:05:46 +0100
+        Thu, 13 Mar 2025 10:10:23 -0700 (PDT)
+Date: Thu, 13 Mar 2025 18:10:21 +0100
 From: Juri Lelli <juri.lelli@redhat.com>
 To: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
@@ -97,9 +97,9 @@ Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Phil Auld <pauld@redhat.com>, luca.abeni@santannapisa.it,
 	tommaso.cucinotta@santannapisa.it,
 	Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH v4 3/8] sched/deadline: Generalize unique visiting of root
- domains
-Message-ID: <Z9MQaiXPvEeW_v7x@jlelli-thinkpadt14gen4.remote.csb>
+Subject: [PATCH v4 4/8] sched/deadline: Rebuild root domain accounting after
+ every update
+Message-ID: <Z9MRfeJKJUOyUSto@jlelli-thinkpadt14gen4.remote.csb>
 References: <20250313170011.357208-1-juri.lelli@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -111,167 +111,226 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20250313170011.357208-1-juri.lelli@redhat.com>
 
-Bandwidth checks and updates that work on root domains currently employ
-a cookie mechanism for efficiency. This mechanism is very much tied to
-when root domains are first created and initialized.
+Rebuilding of root domains accounting information (total_bw) is
+currently broken on some cases, e.g. suspend/resume on aarch64. Problem
+is that the way we keep track of domain changes and try to add bandwidth
+back is convoluted and fragile.
 
-Generalize the cookie mechanism so that it can be used also later at
-runtime while updating root domains. Also, additionally guard it with
-sched_domains_mutex, since domains need to be stable while updating them
-(and it will be required for further dynamic changes).
+Fix it by simplify things by making sure bandwidth accounting is cleared
+and completely restored after root domains changes (after root domains
+are again stable).
+
+To be sure we always call dl_rebuild_rd_accounting while holding
+cpuset_mutex we also add cpuset_reset_sched_domains() wrapper.
 
 Reported-by: Jon Hunter <jonathanh@nvidia.com>
 Fixes: 53916d5fd3c0 ("sched/deadline: Check bandwidth overflow earlier for hotplug")
-Tested-by: Waiman Long <longman@redhat.com>
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+Co-developed-by: Waiman Long <llong@redhat.com>
+Signed-off-by: Waiman Long <llong@redhat.com>
 Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
 ---
- include/linux/sched/deadline.h |  3 +++
- kernel/sched/deadline.c        | 23 +++++++++++++----------
- kernel/sched/rt.c              |  2 ++
- kernel/sched/sched.h           |  2 +-
- kernel/sched/topology.c        |  2 +-
- 5 files changed, 20 insertions(+), 12 deletions(-)
+v3 -> v4: add cpuset_reset_sched_domains wrapper so that we always call
+          partition_sched_domains holding cpuset_mutex (Waiman)
+---
+ include/linux/cpuset.h         |  6 ++++++
+ include/linux/sched/deadline.h |  1 +
+ include/linux/sched/topology.h |  2 ++
+ kernel/cgroup/cpuset.c         | 23 ++++++++++++++++-------
+ kernel/sched/core.c            |  4 ++--
+ kernel/sched/deadline.c        | 16 ++++++++++------
+ kernel/sched/topology.c        |  1 +
+ 7 files changed, 38 insertions(+), 15 deletions(-)
 
+diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+index 835e7b793f6a..17cc90d900f9 100644
+--- a/include/linux/cpuset.h
++++ b/include/linux/cpuset.h
+@@ -128,6 +128,7 @@ extern bool current_cpuset_is_being_rebound(void);
+ extern void rebuild_sched_domains(void);
+ 
+ extern void cpuset_print_current_mems_allowed(void);
++extern void cpuset_reset_sched_domains(void);
+ 
+ /*
+  * read_mems_allowed_begin is required when making decisions involving
+@@ -264,6 +265,11 @@ static inline void rebuild_sched_domains(void)
+ 	partition_sched_domains(1, NULL, NULL);
+ }
+ 
++static inline void cpuset_reset_sched_domains(void)
++{
++	partition_sched_domains(1, NULL, NULL);
++}
++
+ static inline void cpuset_print_current_mems_allowed(void)
+ {
+ }
 diff --git a/include/linux/sched/deadline.h b/include/linux/sched/deadline.h
-index 3a912ab42bb5..6ec578600b24 100644
+index 6ec578600b24..f9aabbc9d22e 100644
 --- a/include/linux/sched/deadline.h
 +++ b/include/linux/sched/deadline.h
-@@ -37,4 +37,7 @@ extern void dl_clear_root_domain(struct root_domain *rd);
+@@ -34,6 +34,7 @@ static inline bool dl_time_before(u64 a, u64 b)
+ struct root_domain;
+ extern void dl_add_task_root_domain(struct task_struct *p);
+ extern void dl_clear_root_domain(struct root_domain *rd);
++extern void dl_clear_root_domain_cpu(int cpu);
  
  #endif /* CONFIG_SMP */
  
-+extern u64 dl_cookie;
-+extern bool dl_bw_visited(int cpu, u64 cookie);
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index 7f3dbafe1817..1622232bd08b 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -166,6 +166,8 @@ static inline struct cpumask *sched_domain_span(struct sched_domain *sd)
+ 	return to_cpumask(sd->span);
+ }
+ 
++extern void dl_rebuild_rd_accounting(void);
 +
- #endif /* _LINUX_SCHED_DEADLINE_H */
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 1a041c1fc0d1..3e05032e9e0e 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -166,14 +166,14 @@ static inline unsigned long dl_bw_capacity(int i)
+ extern void partition_sched_domains_locked(int ndoms_new,
+ 					   cpumask_var_t doms_new[],
+ 					   struct sched_domain_attr *dattr_new);
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index f87526edb2a4..1892dc8cd211 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -954,10 +954,12 @@ static void dl_update_tasks_root_domain(struct cpuset *cs)
+ 	css_task_iter_end(&it);
+ }
+ 
+-static void dl_rebuild_rd_accounting(void)
++void dl_rebuild_rd_accounting(void)
+ {
+ 	struct cpuset *cs = NULL;
+ 	struct cgroup_subsys_state *pos_css;
++	int cpu;
++	u64 cookie = ++dl_cookie;
+ 
+ 	lockdep_assert_held(&cpuset_mutex);
+ 	lockdep_assert_cpus_held();
+@@ -965,11 +967,12 @@ static void dl_rebuild_rd_accounting(void)
+ 
+ 	rcu_read_lock();
+ 
+-	/*
+-	 * Clear default root domain DL accounting, it will be computed again
+-	 * if a task belongs to it.
+-	 */
+-	dl_clear_root_domain(&def_root_domain);
++	for_each_possible_cpu(cpu) {
++		if (dl_bw_visited(cpu, cookie))
++			continue;
++
++		dl_clear_root_domain_cpu(cpu);
++	}
+ 
+ 	cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
+ 
+@@ -996,7 +999,6 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+ {
+ 	sched_domains_mutex_lock();
+ 	partition_sched_domains_locked(ndoms_new, doms_new, dattr_new);
+-	dl_rebuild_rd_accounting();
+ 	sched_domains_mutex_unlock();
+ }
+ 
+@@ -1083,6 +1085,13 @@ void rebuild_sched_domains(void)
+ 	cpus_read_unlock();
+ }
+ 
++void cpuset_reset_sched_domains(void)
++{
++	mutex_lock(&cpuset_mutex);
++	partition_sched_domains(1, NULL, NULL);
++	mutex_unlock(&cpuset_mutex);
++}
++
+ /**
+  * cpuset_update_tasks_cpumask - Update the cpumasks of tasks in the cpuset.
+  * @cs: the cpuset in which each task's cpus_allowed mask needs to be changed
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 58593f4d09a1..dbf44ddbb6b4 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8183,7 +8183,7 @@ static void cpuset_cpu_active(void)
+ 		 * operation in the resume sequence, just build a single sched
+ 		 * domain, ignoring cpusets.
+ 		 */
+-		partition_sched_domains(1, NULL, NULL);
++		cpuset_reset_sched_domains();
+ 		if (--num_cpus_frozen)
+ 			return;
+ 		/*
+@@ -8202,7 +8202,7 @@ static void cpuset_cpu_inactive(unsigned int cpu)
+ 		cpuset_update_active_cpus();
+ 	} else {
+ 		num_cpus_frozen++;
+-		partition_sched_domains(1, NULL, NULL);
++		cpuset_reset_sched_domains();
  	}
  }
  
--static inline bool dl_bw_visited(int cpu, u64 gen)
-+static inline bool dl_bw_visited(int cpu, u64 cookie)
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 3e05032e9e0e..5dca336cdd7c 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -166,7 +166,7 @@ static inline unsigned long dl_bw_capacity(int i)
+ 	}
+ }
+ 
+-static inline bool dl_bw_visited(int cpu, u64 cookie)
++bool dl_bw_visited(int cpu, u64 cookie)
  {
  	struct root_domain *rd = cpu_rq(cpu)->rd;
- 
--	if (rd->visit_gen == gen)
-+	if (rd->visit_cookie == cookie)
- 		return true;
- 
--	rd->visit_gen = gen;
-+	rd->visit_cookie = cookie;
- 	return false;
- }
  
 @@ -207,7 +207,7 @@ static inline unsigned long dl_bw_capacity(int i)
  	return SCHED_CAPACITY_SCALE;
  }
  
--static inline bool dl_bw_visited(int cpu, u64 gen)
-+static inline bool dl_bw_visited(int cpu, u64 cookie)
+-static inline bool dl_bw_visited(int cpu, u64 cookie)
++bool dl_bw_visited(int cpu, u64 cookie)
  {
  	return false;
  }
-@@ -3171,15 +3171,18 @@ DEFINE_SCHED_CLASS(dl) = {
- #endif
- };
+@@ -2981,18 +2981,22 @@ void dl_clear_root_domain(struct root_domain *rd)
+ 	rd->dl_bw.total_bw = 0;
  
--/* Used for dl_bw check and update, used under sched_rt_handler()::mutex */
--static u64 dl_generation;
-+/*
-+ * Used for dl_bw check and update, used under sched_rt_handler()::mutex and
-+ * sched_domains_mutex.
-+ */
-+u64 dl_cookie;
- 
- int sched_dl_global_validate(void)
- {
- 	u64 runtime = global_rt_runtime();
- 	u64 period = global_rt_period();
- 	u64 new_bw = to_ratio(period, runtime);
--	u64 gen = ++dl_generation;
-+	u64 cookie = ++dl_cookie;
- 	struct dl_bw *dl_b;
- 	int cpu, cpus, ret = 0;
- 	unsigned long flags;
-@@ -3192,7 +3195,7 @@ int sched_dl_global_validate(void)
- 	for_each_online_cpu(cpu) {
- 		rcu_read_lock_sched();
- 
--		if (dl_bw_visited(cpu, gen))
-+		if (dl_bw_visited(cpu, cookie))
- 			goto next;
- 
- 		dl_b = dl_bw_of(cpu);
-@@ -3229,7 +3232,7 @@ static void init_dl_rq_bw_ratio(struct dl_rq *dl_rq)
- void sched_dl_do_global(void)
- {
- 	u64 new_bw = -1;
--	u64 gen = ++dl_generation;
-+	u64 cookie = ++dl_cookie;
- 	struct dl_bw *dl_b;
- 	int cpu;
- 	unsigned long flags;
-@@ -3240,7 +3243,7 @@ void sched_dl_do_global(void)
- 	for_each_possible_cpu(cpu) {
- 		rcu_read_lock_sched();
- 
--		if (dl_bw_visited(cpu, gen)) {
-+		if (dl_bw_visited(cpu, cookie)) {
- 			rcu_read_unlock_sched();
- 			continue;
- 		}
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 4b8e33c615b1..8cebe71d2bb1 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -2910,6 +2910,7 @@ static int sched_rt_handler(const struct ctl_table *table, int write, void *buff
- 	int ret;
- 
- 	mutex_lock(&mutex);
-+	sched_domains_mutex_lock();
- 	old_period = sysctl_sched_rt_period;
- 	old_runtime = sysctl_sched_rt_runtime;
- 
-@@ -2936,6 +2937,7 @@ static int sched_rt_handler(const struct ctl_table *table, int write, void *buff
- 		sysctl_sched_rt_period = old_period;
- 		sysctl_sched_rt_runtime = old_runtime;
- 	}
-+	sched_domains_mutex_unlock();
- 	mutex_unlock(&mutex);
- 
- 	return ret;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index c8512a9fb022..c978abe38c07 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -998,7 +998,7 @@ struct root_domain {
- 	 * Also, some corner cases, like 'wrap around' is dangerous, but given
- 	 * that u64 is 'big enough'. So that shouldn't be a concern.
- 	 */
--	u64 visit_gen;
-+	u64 visit_cookie;
- 
- #ifdef HAVE_RT_PUSH_IPI
  	/*
+-	 * dl_server bandwidth is only restored when CPUs are attached to root
+-	 * domains (after domains are created or CPUs moved back to the
+-	 * default root doamin).
++	 * dl_servers are not tasks. Since dl_add_task_root_domain ignores
++	 * them, we need to account for them here explicitly.
+ 	 */
+ 	for_each_cpu(i, rd->span) {
+ 		struct sched_dl_entity *dl_se = &cpu_rq(i)->fair_server;
+ 
+ 		if (dl_server(dl_se) && cpu_active(i))
+-			rd->dl_bw.total_bw += dl_se->dl_bw;
++			__dl_add(&rd->dl_bw, dl_se->dl_bw, dl_bw_cpus(i));
+ 	}
+ }
+ 
++void dl_clear_root_domain_cpu(int cpu)
++{
++	dl_clear_root_domain(cpu_rq(cpu)->rd);
++}
++
+ #endif /* CONFIG_SMP */
+ 
+ static void switched_from_dl(struct rq *rq, struct task_struct *p)
 diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 296ff2acfd32..44093339761c 100644
+index 44093339761c..363ad268a25b 100644
 --- a/kernel/sched/topology.c
 +++ b/kernel/sched/topology.c
-@@ -568,7 +568,7 @@ static int init_rootdomain(struct root_domain *rd)
- 	rd->rto_push_work = IRQ_WORK_INIT_HARD(rto_push_irq_work_func);
- #endif
+@@ -2791,6 +2791,7 @@ void partition_sched_domains_locked(int ndoms_new, cpumask_var_t doms_new[],
+ 	ndoms_cur = ndoms_new;
  
--	rd->visit_gen = 0;
-+	rd->visit_cookie = 0;
- 	init_dl_bw(&rd->dl_bw);
- 	if (cpudl_init(&rd->cpudl) != 0)
- 		goto free_rto_mask;
+ 	update_sched_domain_debugfs();
++	dl_rebuild_rd_accounting();
+ }
+ 
+ /*
 -- 
 2.48.1
 
