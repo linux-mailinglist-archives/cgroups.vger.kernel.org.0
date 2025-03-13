@@ -1,84 +1,84 @@
-Return-Path: <cgroups+bounces-7042-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7043-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B1FEA5FCFA
-	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 18:05:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35A90A5FD0F
+	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 18:07:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DCD219C1F0C
-	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 17:04:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 320313A0571
+	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 17:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE7526A0CB;
-	Thu, 13 Mar 2025 17:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF39E250EC;
+	Thu, 13 Mar 2025 17:07:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NaMHO2E6"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AVG/CD9u"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B14915747D
-	for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 17:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE6F153801
+	for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 17:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741885423; cv=none; b=EXmzhJxKsNAGGhyKAj4Jtwc4LPWyUQXIPqVFfUI4ws0LMGQv/3ecFdPFMsEBbg+EgBELxkUtoXXBiUjtztIz0SbpM+Ro0DSD3vvmUwqceE3UlAMZ0osa/KH1Ef6tWX61qa2WL1aRKRFn5cijfyqQGmqo4ouNSARejjcD5DWLG0c=
+	t=1741885645; cv=none; b=SHbI9hpBnEnsVe49cl/Gh7fQPIdHebvtm5owgE4oh6rR3BPRBelvOGBWrs3cbSUAppHbL6pDLtVUXWsNRfnikdONjBxp6mEflKxpMjVXVkjT9Su0x+pYqbfCf60HhdPeGJUFnu/ZIfLihyz5Ev9GEE9wXruGIQ0d85/Q2JhOpCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741885423; c=relaxed/simple;
-	bh=rWzzcRlgHWgNn6FgV0nYpza0tAY2jpiBU7Yx3Kp/uJ0=;
+	s=arc-20240116; t=1741885645; c=relaxed/simple;
+	bh=KQiXIn2VlukWSexqG6FOkdHHd1iYI73n5V5ly7rktl0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nrET4PJDvOzKpahVz94LvadRahRG+/NUE+Tn1vmODdLsQhkEv5BrNkij5JRCiL72ASpC0n2PNEbxljlzAL+12z55U828xe+ZUVcP2n/JsPEkPsfkSD/cpXN7X5lP3dpBaM6VVqccWjtCStvdH1dcW2+9RJscSU6kdpP7Nyy1NfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NaMHO2E6; arc=none smtp.client-ip=170.10.133.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=UA+uSe3CwrV8fjM944R7rc2u61xHZmMhjcMkGgVPdLkW09r7Do4Be86ijHq3QFN8e45Cpyet7uyPrkdoj4xxvZd1GzM2XbaQm/LFSvvSn9Ddhu4vP/SEMbDqzUqcBBz4MdDrV5e5u7EizZks4XSTScm9P7lp+0JVdOwzFlY6XlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AVG/CD9u; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741885420;
+	s=mimecast20190719; t=1741885642;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EpKB27UpoppNUohxUmSpnADUhWYwKjiQjBLjD49aA4Q=;
-	b=NaMHO2E6RHhYcwYF+2RXMBSGTOkiprA5EBEdBFGtcgmAR8x95rr/l6LuJhANmgUyosOald
-	BOiB10A0vJ0M4+9CKdp++nB0ecCSg+oo2652bMaTcFCK8kUc3iQsBaZRgawEB4UcV8fRKq
-	OD99GCxmv66ttnOv5FTqCRTYFAPSTik=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=lRaM/X3X7FwnRVTV/8ABm5Bv6FFz4nCJnFljDa4QIJg=;
+	b=AVG/CD9uJiVGIswwiv3K/45/Gew+2s/Ki0lLupF0Cuee3u1ao9I9swIgI0khawIaaqV0gU
+	8Zovla0AEcYMBtMhmM1FNwTv+zgRGO3lk6uBEBwsYCm509w0aOWJge949n60hdnZ56dy1Y
+	0XkUIKO3j5dl04YVOHPQBDDXPRobhb8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-112-yXrav3t8MrWlAc6SdE6Lhg-1; Thu, 13 Mar 2025 13:03:39 -0400
-X-MC-Unique: yXrav3t8MrWlAc6SdE6Lhg-1
-X-Mimecast-MFC-AGG-ID: yXrav3t8MrWlAc6SdE6Lhg_1741885418
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-43bd0586a73so8517645e9.2
-        for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 10:03:38 -0700 (PDT)
+ us-mta-351-D-R8m1QNPquuyEz_XVdsvg-1; Thu, 13 Mar 2025 13:05:52 -0400
+X-MC-Unique: D-R8m1QNPquuyEz_XVdsvg-1
+X-Mimecast-MFC-AGG-ID: D-R8m1QNPquuyEz_XVdsvg_1741885551
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43bd0586b86so8827735e9.3
+        for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 10:05:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741885417; x=1742490217;
+        d=1e100.net; s=20230601; t=1741885551; x=1742490351;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EpKB27UpoppNUohxUmSpnADUhWYwKjiQjBLjD49aA4Q=;
-        b=FLB3p+F+bn94y22PgFB23PhSxuGWyfb6MrjecToTmeFrHw9pCF68d5ngMu0eJWefrq
-         xdmmK2FApWiR3qlkK+T0HNqhg/uOpB4h7wQq8yFwuz8LJewwpPL5v4eZiuo9fBWXi2lM
-         rcQUMDeByT2p2TJqO39y0ybC2yZXYy4cy8bR4Te64GikziACOfwUYRXv1N9+dccrE2Or
-         ngR9bwn3iap0Wa0PoJHc7Wb7w4pL1R2ijen3SlmEpewN9jVI8INwwZoBJEqtkDdYHETk
-         RFnPGlrRQxv0K8j1uMdrJrSEEYLHmOreX89HZwHcxc8gybUiosqM/Z3bdqWp/Rqld/ZD
-         Cx6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUklOeiqS/M2bGxDLGTflLtin7s379+kF0HC+SKc/53iRZAsr92VORZC7nWpIfyQheYFwsaRRYV@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOOhvqmRzB3KkTaXti5pyUYqvUl2YDk4POjVqf6S4XMyqg9QYQ
-	dJ1JVGGFoSZXSv2dwAR/vGKgGyZSU4W979oOC2PkkuP7q0jjslwCIVgqCdclkHfEHW1SmPGVRtR
-	0u943JX1tfbZDAO/QayMyybUgYNb47my4VHX2v92aAzZMBIHSbeiJz7c=
-X-Gm-Gg: ASbGncs7bOiFIjKj1cyAuyqvXp0vK3w8r44BaYayhiimHrh5+Hzu9lhfPbCm1VZycfP
-	tE1UDOO6yEK3tAaFqJ/S4+8X8xKdzuUCk3hcJyV01ubVDV0tiO2D9MDAiJID9c4Kw2t89FovtWl
-	wVDcguvKG7fdDkqlX1nDK9bht35zDpJUOxqCv9ltMReGMnMBpOMzHl5akHB5CqGIrYE3Z/eAg22
-	XCKQfSHySjxMLfcBA/YHJfzLH/tb5bxZrzq7T4qkh3PqgMzhORpiWzTkquQXTLRVIaRvgmONh7Q
-	vDr4QFilvkTS8g/yqFhcUorgyRZ1ZU5LHGWYzA2iHng=
-X-Received: by 2002:a05:600c:1ca4:b0:43c:f575:e305 with SMTP id 5b1f17b1804b1-43d1d897558mr4273325e9.8.1741885417499;
-        Thu, 13 Mar 2025 10:03:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE30aiOWpsPCl2pqvgKR9tHw0iFo0nuAsz0qQ6ZBddzYfWJm0vgp05kaC7GI1re3vo/9t8k9g==
-X-Received: by 2002:a05:600c:1ca4:b0:43c:f575:e305 with SMTP id 5b1f17b1804b1-43d1d897558mr4272595e9.8.1741885416975;
-        Thu, 13 Mar 2025 10:03:36 -0700 (PDT)
+        bh=lRaM/X3X7FwnRVTV/8ABm5Bv6FFz4nCJnFljDa4QIJg=;
+        b=GqS+m9nGfYyBTiVdrQ3K8px+otzDHkoPCFUHWRgwzdyFqSbPJVqfYkdPIDMZ/xRBQN
+         3FinJPCtS/SmZuJ/OzDNr145+Oc2lCLWEFWkc59jLz2pZsp32pIH/sV9OdRPhfvl88W7
+         s61ldk3nz8tJVUFjnLsxJojibK6LZmW7R8p70aBQ51yrD1TXKuXRJXNa3Qd8ys+xtvb4
+         gHM7HUgERQ+8JpKUAthF2gJDfqSe8mjquItauVyaEllI/tshvnznUW+bfmijJkgDqR1c
+         R47zS0ju1Kasalpy12M6SkO9FY33q4ITinGmAtvbcZ9viZcJfK3lfzYSVG6cQEJrScH9
+         Za5g==
+X-Forwarded-Encrypted: i=1; AJvYcCXBtHIqswKNMcrtlv6Tl1g8HHALA+w8Bfeu3XwS3K7YGeSQ2vIYdrzfqi8JrWAhImJDPBY6XOMP@vger.kernel.org
+X-Gm-Message-State: AOJu0YwFIqrd2iHyWhtMulg+eUXAI2tafyEM5/m5+rBzVbNdXxfbzBbF
+	Z64OKBTnHYlbRLo2YVgwP5CMBPjr6HJyJKH+8qjLN0Jtm4kvhgMg2jX5kepvqqh0DHkaOYuNq+9
+	3kwTuD5MNQAX7TJVqX+UR+QnK9S2HiEuT6gW4+W5IR/p3oqtjbxvmlOo=
+X-Gm-Gg: ASbGncsvYyHSp0/3i4+G5sP0At+8Ycp1mLbySYHTIudLBs7TbjaNPn0Fa0vasVt0/3l
+	SXEd50BGedpbx6/I+hvE3TI6tu/GQhHpYiM7eYIIXjeA6P9XRDUms6FYgLEuk9NsHWePcfBVt0P
+	zu+ePXzSUJMbzIyNnHFaLNTAN2WaEM42smuHhyFPprTYneZ9B1soth2tQrYoJM1ieqJse3P7N/0
+	nHF0a8VTUPJ4vqohWELEPwN8j/xaPPewTTIp10YNt9RcKP+fHTa2t/uh2b1nQe2dKwGKR8TZpRY
+	5Twu7pPAOlZazeAbx6eE+rllBzmafOaShvxogvvlxX0=
+X-Received: by 2002:a05:600c:4690:b0:43c:f1cd:3d78 with SMTP id 5b1f17b1804b1-43d1d8996e4mr4685305e9.12.1741885551142;
+        Thu, 13 Mar 2025 10:05:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGFqSLsuGYqiWNcWGFhLHtrkt0oSv3EpUnzUFYIX8R0rzU3ce//LTSI6J0Klt+PSgxhr6Qokw==
+X-Received: by 2002:a05:600c:4690:b0:43c:f1cd:3d78 with SMTP id 5b1f17b1804b1-43d1d8996e4mr4684875e9.12.1741885550619;
+        Thu, 13 Mar 2025 10:05:50 -0700 (PDT)
 Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.49.7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395cb3189absm2737097f8f.71.2025.03.13.10.03.34
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395c83b6e87sm2849628f8f.32.2025.03.13.10.05.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Mar 2025 10:03:35 -0700 (PDT)
-Date: Thu, 13 Mar 2025 18:03:32 +0100
+        Thu, 13 Mar 2025 10:05:49 -0700 (PDT)
+Date: Thu, 13 Mar 2025 18:05:46 +0100
 From: Juri Lelli <juri.lelli@redhat.com>
 To: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
@@ -97,8 +97,9 @@ Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Phil Auld <pauld@redhat.com>, luca.abeni@santannapisa.it,
 	tommaso.cucinotta@santannapisa.it,
 	Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH v4 2/8] sched/topology: Wrappers for sched_domains_mutex
-Message-ID: <Z9MP5Oq9RB8jBs3y@jlelli-thinkpadt14gen4.remote.csb>
+Subject: [PATCH v4 3/8] sched/deadline: Generalize unique visiting of root
+ domains
+Message-ID: <Z9MQaiXPvEeW_v7x@jlelli-thinkpadt14gen4.remote.csb>
 References: <20250313170011.357208-1-juri.lelli@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -110,9 +111,14 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20250313170011.357208-1-juri.lelli@redhat.com>
 
-Create wrappers for sched_domains_mutex so that it can transparently be
-used on both CONFIG_SMP and !CONFIG_SMP, as some function will need to
-do.
+Bandwidth checks and updates that work on root domains currently employ
+a cookie mechanism for efficiency. This mechanism is very much tied to
+when root domains are first created and initialized.
+
+Generalize the cookie mechanism so that it can be used also later at
+runtime while updating root domains. Also, additionally guard it with
+sched_domains_mutex, since domains need to be stable while updating them
+(and it will be required for further dynamic changes).
 
 Reported-by: Jon Hunter <jonathanh@nvidia.com>
 Fixes: 53916d5fd3c0 ("sched/deadline: Check bandwidth overflow earlier for hotplug")
@@ -121,125 +127,151 @@ Tested-by: Jon Hunter <jonathanh@nvidia.com>
 Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
 ---
- include/linux/sched.h   |  5 +++++
- kernel/cgroup/cpuset.c  |  4 ++--
- kernel/sched/core.c     |  4 ++--
- kernel/sched/debug.c    |  8 ++++----
- kernel/sched/topology.c | 12 ++++++++++--
- 5 files changed, 23 insertions(+), 10 deletions(-)
+ include/linux/sched/deadline.h |  3 +++
+ kernel/sched/deadline.c        | 23 +++++++++++++----------
+ kernel/sched/rt.c              |  2 ++
+ kernel/sched/sched.h           |  2 +-
+ kernel/sched/topology.c        |  2 +-
+ 5 files changed, 20 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 9c15365a30c0..4659898c0299 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -382,6 +382,11 @@ enum uclamp_id {
- #ifdef CONFIG_SMP
- extern struct root_domain def_root_domain;
- extern struct mutex sched_domains_mutex;
-+extern void sched_domains_mutex_lock(void);
-+extern void sched_domains_mutex_unlock(void);
-+#else
-+static inline void sched_domains_mutex_lock(void) { }
-+static inline void sched_domains_mutex_unlock(void) { }
- #endif
+diff --git a/include/linux/sched/deadline.h b/include/linux/sched/deadline.h
+index 3a912ab42bb5..6ec578600b24 100644
+--- a/include/linux/sched/deadline.h
++++ b/include/linux/sched/deadline.h
+@@ -37,4 +37,7 @@ extern void dl_clear_root_domain(struct root_domain *rd);
  
- struct sched_param {
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 0f910c828973..f87526edb2a4 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -994,10 +994,10 @@ static void
- partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
- 				    struct sched_domain_attr *dattr_new)
- {
--	mutex_lock(&sched_domains_mutex);
-+	sched_domains_mutex_lock();
- 	partition_sched_domains_locked(ndoms_new, doms_new, dattr_new);
- 	dl_rebuild_rd_accounting();
--	mutex_unlock(&sched_domains_mutex);
-+	sched_domains_mutex_unlock();
+ #endif /* CONFIG_SMP */
+ 
++extern u64 dl_cookie;
++extern bool dl_bw_visited(int cpu, u64 cookie);
++
+ #endif /* _LINUX_SCHED_DEADLINE_H */
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 1a041c1fc0d1..3e05032e9e0e 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -166,14 +166,14 @@ static inline unsigned long dl_bw_capacity(int i)
+ 	}
  }
  
- /*
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 67189907214d..58593f4d09a1 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8424,9 +8424,9 @@ void __init sched_init_smp(void)
- 	 * CPU masks are stable and all blatant races in the below code cannot
- 	 * happen.
- 	 */
--	mutex_lock(&sched_domains_mutex);
-+	sched_domains_mutex_lock();
- 	sched_init_domains(cpu_active_mask);
--	mutex_unlock(&sched_domains_mutex);
-+	sched_domains_mutex_unlock();
+-static inline bool dl_bw_visited(int cpu, u64 gen)
++static inline bool dl_bw_visited(int cpu, u64 cookie)
+ {
+ 	struct root_domain *rd = cpu_rq(cpu)->rd;
  
- 	/* Move init over to a non-isolated CPU */
- 	if (set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_TYPE_DOMAIN)) < 0)
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index ef047add7f9e..a0893a483d35 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -292,7 +292,7 @@ static ssize_t sched_verbose_write(struct file *filp, const char __user *ubuf,
- 	bool orig;
+-	if (rd->visit_gen == gen)
++	if (rd->visit_cookie == cookie)
+ 		return true;
  
- 	cpus_read_lock();
--	mutex_lock(&sched_domains_mutex);
-+	sched_domains_mutex_lock();
+-	rd->visit_gen = gen;
++	rd->visit_cookie = cookie;
+ 	return false;
+ }
  
- 	orig = sched_debug_verbose;
- 	result = debugfs_write_file_bool(filp, ubuf, cnt, ppos);
-@@ -304,7 +304,7 @@ static ssize_t sched_verbose_write(struct file *filp, const char __user *ubuf,
- 		sd_dentry = NULL;
- 	}
+@@ -207,7 +207,7 @@ static inline unsigned long dl_bw_capacity(int i)
+ 	return SCHED_CAPACITY_SCALE;
+ }
  
--	mutex_unlock(&sched_domains_mutex);
-+	sched_domains_mutex_unlock();
- 	cpus_read_unlock();
- 
- 	return result;
-@@ -515,9 +515,9 @@ static __init int sched_init_debug(void)
- 	debugfs_create_u32("migration_cost_ns", 0644, debugfs_sched, &sysctl_sched_migration_cost);
- 	debugfs_create_u32("nr_migrate", 0644, debugfs_sched, &sysctl_sched_nr_migrate);
- 
--	mutex_lock(&sched_domains_mutex);
-+	sched_domains_mutex_lock();
- 	update_sched_domain_debugfs();
--	mutex_unlock(&sched_domains_mutex);
-+	sched_domains_mutex_unlock();
+-static inline bool dl_bw_visited(int cpu, u64 gen)
++static inline bool dl_bw_visited(int cpu, u64 cookie)
+ {
+ 	return false;
+ }
+@@ -3171,15 +3171,18 @@ DEFINE_SCHED_CLASS(dl) = {
  #endif
+ };
  
- #ifdef CONFIG_NUMA_BALANCING
+-/* Used for dl_bw check and update, used under sched_rt_handler()::mutex */
+-static u64 dl_generation;
++/*
++ * Used for dl_bw check and update, used under sched_rt_handler()::mutex and
++ * sched_domains_mutex.
++ */
++u64 dl_cookie;
+ 
+ int sched_dl_global_validate(void)
+ {
+ 	u64 runtime = global_rt_runtime();
+ 	u64 period = global_rt_period();
+ 	u64 new_bw = to_ratio(period, runtime);
+-	u64 gen = ++dl_generation;
++	u64 cookie = ++dl_cookie;
+ 	struct dl_bw *dl_b;
+ 	int cpu, cpus, ret = 0;
+ 	unsigned long flags;
+@@ -3192,7 +3195,7 @@ int sched_dl_global_validate(void)
+ 	for_each_online_cpu(cpu) {
+ 		rcu_read_lock_sched();
+ 
+-		if (dl_bw_visited(cpu, gen))
++		if (dl_bw_visited(cpu, cookie))
+ 			goto next;
+ 
+ 		dl_b = dl_bw_of(cpu);
+@@ -3229,7 +3232,7 @@ static void init_dl_rq_bw_ratio(struct dl_rq *dl_rq)
+ void sched_dl_do_global(void)
+ {
+ 	u64 new_bw = -1;
+-	u64 gen = ++dl_generation;
++	u64 cookie = ++dl_cookie;
+ 	struct dl_bw *dl_b;
+ 	int cpu;
+ 	unsigned long flags;
+@@ -3240,7 +3243,7 @@ void sched_dl_do_global(void)
+ 	for_each_possible_cpu(cpu) {
+ 		rcu_read_lock_sched();
+ 
+-		if (dl_bw_visited(cpu, gen)) {
++		if (dl_bw_visited(cpu, cookie)) {
+ 			rcu_read_unlock_sched();
+ 			continue;
+ 		}
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 4b8e33c615b1..8cebe71d2bb1 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -2910,6 +2910,7 @@ static int sched_rt_handler(const struct ctl_table *table, int write, void *buff
+ 	int ret;
+ 
+ 	mutex_lock(&mutex);
++	sched_domains_mutex_lock();
+ 	old_period = sysctl_sched_rt_period;
+ 	old_runtime = sysctl_sched_rt_runtime;
+ 
+@@ -2936,6 +2937,7 @@ static int sched_rt_handler(const struct ctl_table *table, int write, void *buff
+ 		sysctl_sched_rt_period = old_period;
+ 		sysctl_sched_rt_runtime = old_runtime;
+ 	}
++	sched_domains_mutex_unlock();
+ 	mutex_unlock(&mutex);
+ 
+ 	return ret;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index c8512a9fb022..c978abe38c07 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -998,7 +998,7 @@ struct root_domain {
+ 	 * Also, some corner cases, like 'wrap around' is dangerous, but given
+ 	 * that u64 is 'big enough'. So that shouldn't be a concern.
+ 	 */
+-	u64 visit_gen;
++	u64 visit_cookie;
+ 
+ #ifdef HAVE_RT_PUSH_IPI
+ 	/*
 diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index c49aea8c1025..296ff2acfd32 100644
+index 296ff2acfd32..44093339761c 100644
 --- a/kernel/sched/topology.c
 +++ b/kernel/sched/topology.c
-@@ -6,6 +6,14 @@
- #include <linux/bsearch.h>
+@@ -568,7 +568,7 @@ static int init_rootdomain(struct root_domain *rd)
+ 	rd->rto_push_work = IRQ_WORK_INIT_HARD(rto_push_irq_work_func);
+ #endif
  
- DEFINE_MUTEX(sched_domains_mutex);
-+void sched_domains_mutex_lock(void)
-+{
-+	mutex_lock(&sched_domains_mutex);
-+}
-+void sched_domains_mutex_unlock(void)
-+{
-+	mutex_unlock(&sched_domains_mutex);
-+}
- 
- /* Protected by sched_domains_mutex: */
- static cpumask_var_t sched_domains_tmpmask;
-@@ -2791,7 +2799,7 @@ void partition_sched_domains_locked(int ndoms_new, cpumask_var_t doms_new[],
- void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
- 			     struct sched_domain_attr *dattr_new)
- {
--	mutex_lock(&sched_domains_mutex);
-+	sched_domains_mutex_lock();
- 	partition_sched_domains_locked(ndoms_new, doms_new, dattr_new);
--	mutex_unlock(&sched_domains_mutex);
-+	sched_domains_mutex_unlock();
- }
+-	rd->visit_gen = 0;
++	rd->visit_cookie = 0;
+ 	init_dl_bw(&rd->dl_bw);
+ 	if (cpudl_init(&rd->cpudl) != 0)
+ 		goto free_rto_mask;
 -- 
 2.48.1
 
