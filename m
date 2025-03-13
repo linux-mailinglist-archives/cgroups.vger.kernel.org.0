@@ -1,169 +1,174 @@
-Return-Path: <cgroups+bounces-7048-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7049-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341CEA5FD32
-	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 18:14:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18B30A5FDFA
+	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 18:37:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A53064208F8
-	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 17:13:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4A0819C566C
+	for <lists+cgroups@lfdr.de>; Thu, 13 Mar 2025 17:37:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63FB1269D1D;
-	Thu, 13 Mar 2025 17:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DFA214386D;
+	Thu, 13 Mar 2025 17:36:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fDmC00yv"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eTQ6A8nm"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5637B26A0B7
-	for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 17:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D9D1684B4
+	for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 17:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741886018; cv=none; b=l6wTuNy+In/raowaD6EQIWTYVlqBIqT5llfKAhyjz/NULNkRCCX7f5ud7J3Byid/CvaLWDKQOBoHb4qLhW9d3RdiOS28Zj/HMK1bbUHn7bBiWZMjw3It/Gtp6BZWarRZz5ojtq3JXmrG9jkcMrgUYRPi8tJlsZxZF1yqV4Tezl4=
+	t=1741887382; cv=none; b=owa4/kvo9voHLgXLZGO0I2eM9zfB+GaTwT9qubzqq0nFPr6ufU5W7ckPK0rX/gUOe6mFBd4fEhhVTfVywqBp3mzJdv/6BquW9rlRLOgFczTx8F+vErXXlwILaTH1yieTwO45W7z5v9bGsP9y0IhNP7wObW1qbdNwCWGiM/Mm6Ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741886018; c=relaxed/simple;
-	bh=WqHYUTx+eFUkw2RW2AHRWFLhORx7kUJq9HKMYWBIj8E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d/Ff+ynD/+PAScLZFOSGfLYUCUbc8W6WKRrRQLz21zJx5HtuUFSJlHpwa+ydkVyONyaDrs5xWFe51oZB59lR+Okx/8kEaZKQu49ZufPeoNMG2gB7ROlEjsP0E7ChNwAZPyJL2qCLTXcvk8QkPee8aRZd7t0ZOdYwHFQLYNBt5KU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fDmC00yv; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1741887382; c=relaxed/simple;
+	bh=74LdO3L2papOXx6onu8X7dux3CgaxYMbpnbfEZf5vfs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hYr/lnv/Q4DVCPJux0nSi9jmcgMzX+zoUvrHNUOKm0stjhKYbHkEbNnRttM8WQ3eex1EkV/ykBNj5Baw+kanrb/3o5mvbbKhmRQM4aa/UHQvNQZrXLSYKdnHrY9nGejHBniWkBKrBP0tu7Zkj8/UeF9LobxNtRJAqsX3cMppWwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eTQ6A8nm; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741886015;
+	s=mimecast20190719; t=1741887379;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bupEj0syAwoPVUhQa42XfJiVX6UxcC7+LozYYJO5dvc=;
-	b=fDmC00yvJpzWfH2b7kWRpwd/4Ml0RTjEEPjfqaTLhAPhsqj5ileVqxCBAPZCtu+X52Bk1T
-	3/kaAe71yF+kFFcOVViobWaG8bzTGKj92v1+rURe92PXZ1O+1uyrNnZy1n3DwgjakOI6pf
-	IXVzQ0f0ZHV9tDaCpX+7dK2ovoRjndw=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=74LdO3L2papOXx6onu8X7dux3CgaxYMbpnbfEZf5vfs=;
+	b=eTQ6A8nmI7dVD7E6N4IgfYSqM/PuLRRlGKIyGAvEZ4vecoNWmCkq17DPCdZFAN8HFZCFBw
+	jmSH5Q2IeM8gq0W1h7l6yVZQuJyW6p2MHKekpZ+6NvBsb/pNnNDzk8wTUJ2nWnhH3LVORA
+	LVOK9YMBv1NHxH4jYXmjNDZDFqQvdbo=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-494-ddvbyuEAN3KQLGWKuDq43Q-1; Thu, 13 Mar 2025 13:13:33 -0400
-X-MC-Unique: ddvbyuEAN3KQLGWKuDq43Q-1
-X-Mimecast-MFC-AGG-ID: ddvbyuEAN3KQLGWKuDq43Q_1741886012
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3913f97d115so616980f8f.0
-        for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 10:13:32 -0700 (PDT)
+ us-mta-114-ZBaSI267P96LKdzhEf20mQ-1; Thu, 13 Mar 2025 13:36:17 -0400
+X-MC-Unique: ZBaSI267P96LKdzhEf20mQ-1
+X-Mimecast-MFC-AGG-ID: ZBaSI267P96LKdzhEf20mQ_1741887377
+Received: by mail-yb1-f197.google.com with SMTP id 3f1490d57ef6-e586f6c6289so1948392276.1
+        for <cgroups@vger.kernel.org>; Thu, 13 Mar 2025 10:36:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741886012; x=1742490812;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bupEj0syAwoPVUhQa42XfJiVX6UxcC7+LozYYJO5dvc=;
-        b=RQNBBkZ7q0IjQ3U0JLcUAxvo1z5BoAFmcHdAVUXrKJOhPmVdgSru/jfTKIpscdvLrB
-         Q2iZeXNzXZxvb6pVLyaAAWyv9nYEMrqHfJfN+fEZcgmAhIGEei6+VUABcmqBJDzI2kMb
-         1xwUIt9Eqyijp/fqQiSFmlrBwz3SvTgr8eVg+GvLZmPFL1CbR39cCLeGVmMHT5IdEVH8
-         2AbOLQCKONah1Qptp1PQBy/k3eqSi/GgfTIkipt1nSWMhzAFFl7SfafQ0E0qhLaR2Sjd
-         hfvYNQXUQxYqbW8sEWM7EhTC0eizd9+NAz/vPzhsLhJ9jGiihoxg9HSKS5g33rMQPzUW
-         tIkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW/69d0C1ofNfdoHtWS/ObjVybsmn8EsTcxFEElYC7EdYYPPieYFKkIwXb634kqRmfO70M4ae00@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCT6DMTwCkXS5jCwYiZERZZGI0pAtFqHcgjmDOO7Ig56U6CcBM
-	lQqkrwV2wZavA97y2GDxDZ35zq8Cjot1A5sCM29ysz9NSXuYSmp/UsFSxEVj2Y44HWueC9CxwMZ
-	RXAbA9qbuArap2CFQb7Hl+2/saREKDn+Wnzb/huBwEDS7utsORPkLldI=
-X-Gm-Gg: ASbGncuX+4SBYqmZkaYVSmkgKaAJmLDagIkadO9UEVEGJYyjJ0QJ5/ehHGwHrgYAgOX
-	0wYCUkfWOGlCs0tBv+QXgOKWaUBcIf6SZA1n2o3gi45BkI32w8Yg7iaYIHIs/hTRorhX6uqdFR/
-	9c0p7f3pWnXcsKah0Y3OWPKUG62ZdBIt5kTmZfOK/4XuNDmsBM5fBiJ2RwFoIGGVQRJtP53Gj3Y
-	SM65PqvbCVH7MDT8HFQyI1IyTwl6Ozu34C0JPbW553I6X2u5iU/ngD0DfUqCeE1mTWPGqiR/6s+
-	9tQNJlx2yh9Yu4Kq2d2qjaufm8Q9XE95lEfBzCDHUFM=
-X-Received: by 2002:a05:6000:2c1:b0:390:f0ff:2c10 with SMTP id ffacd0b85a97d-395b954eb19mr3355820f8f.19.1741886011880;
-        Thu, 13 Mar 2025 10:13:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHEEnc4cttulcmus+Fv0WW0T5aRNhlzgKWFpdFHOzzTN1NDvd2Ek9XGkn5vqNfWrw9ReDOVzw==
-X-Received: by 2002:a05:6000:2c1:b0:390:f0ff:2c10 with SMTP id ffacd0b85a97d-395b954eb19mr3355799f8f.19.1741886011521;
-        Thu, 13 Mar 2025 10:13:31 -0700 (PDT)
-Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.49.7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395c83b6b70sm2787906f8f.30.2025.03.13.10.13.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Mar 2025 10:13:30 -0700 (PDT)
-Date: Thu, 13 Mar 2025 18:13:29 +0100
-From: Juri Lelli <juri.lelli@redhat.com>
-To: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Qais Yousef <qyousef@layalina.io>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Swapnil Sapkal <swapnil.sapkal@amd.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Phil Auld <pauld@redhat.com>, luca.abeni@santannapisa.it,
-	tommaso.cucinotta@santannapisa.it,
-	Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH v4 8/8] include/{topology,cpuset}: Move
- dl_rebuild_rd_accounting to cpuset.h
-Message-ID: <Z9MSOVMpU7jpVrMU@jlelli-thinkpadt14gen4.remote.csb>
-References: <20250313170011.357208-1-juri.lelli@redhat.com>
+        d=1e100.net; s=20230601; t=1741887377; x=1742492177;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=74LdO3L2papOXx6onu8X7dux3CgaxYMbpnbfEZf5vfs=;
+        b=TPBoYHopDA2+RCseyMlzCGejpkPEzKAW3eJS1+RHEYBMZmoCpAtcUF79x9NhrQyMkF
+         22CAhRPkR/DDIzMf4CbCRtTkZqJ7Tck/DYndeNt1Za3VB7VFXst0gCWyeR5xaIaGxGeL
+         DApRYAIaIagm7dcvYD8TcD1d1b3ymVNNotEh3QlywcZ+K7ZXxNMZuIwmuKB9I6zEAEYQ
+         tEtwpk1lDuZe7L60al2LZcxeiM7w0gsHTYqLv3LQ4Lj75PvqPbNSDRI+8yxN0LNKPVBE
+         yu1CUOtw+qCFVqJTEJxI2OQMjkWBTpdxjx01ym5ucWpZ8HFOYE4W5DFbGugAzkVeO8P4
+         oKYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUtsMUG/AeqB6fq23hBHlJRLrcViijypQ+Zl18L0QNcatrwyP4GpesljpaakSurAeVRcSzX8SGd@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQxCQoMmKX4IdLeGFy6Hzn+vtMaI4DSVKDlOHy8lsVh78lMY/D
+	7pBQQpsvxY834eI8BWAUEbLB17Xv9RBsm3Laq9x0JAFLW2uCZ5EQSwMfL4jUB/T23W76cagBnby
+	v7Nmnkb0tRyLksmY8ss+CpeoXz2M/xyi4LbGzU1O74S7GRN9v8db8aXftWePLAGRyPtuiVpu94o
+	TwjnYnZXSHxHv7+cEz91t/nxl25EMREg==
+X-Gm-Gg: ASbGncs3B+lVAnI9UxIpFfk/labh7SSXrrxuVX/k7m4dKEgdm/+x/ZIKsCt62rpS/8M
+	vfdL0pFunq8nuHeh5U1KOrqxHZt2/8Tpq0FhG2ka8PLZ34ksKz0V5mrCstjXVKWYMZP/FjeXo9+
+	eZ+twIIFYMcw==
+X-Received: by 2002:a05:6902:11cc:b0:e5d:d6b8:231d with SMTP id 3f1490d57ef6-e63f3c1ab89mr394099276.46.1741887377134;
+        Thu, 13 Mar 2025 10:36:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IESNapqN0/McTxEgf1yThn7lvo6wBYo3eRd0NunIcEjHGxMwrpjR53TwIJsg0lBT1jUk9YB7r7WxOStKAHssG0=
+X-Received: by 2002:a05:6902:11cc:b0:e5d:d6b8:231d with SMTP id
+ 3f1490d57ef6-e63f3c1ab89mr394058276.46.1741887376762; Thu, 13 Mar 2025
+ 10:36:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250313170011.357208-1-juri.lelli@redhat.com>
+References: <20250312000700.184573-1-npache@redhat.com> <20250312000700.184573-2-npache@redhat.com>
+ <c4229ea5-d991-4f5e-a0ff-45dce78a242a@redhat.com> <CAA1CXcCv20TW+Xgn18E0Jn1rbT003+3gR-KAxxE9GLzh=EHNmQ@mail.gmail.com>
+ <e9570319-a766-40f6-a8ea-8d9af5f03f81@redhat.com>
+In-Reply-To: <e9570319-a766-40f6-a8ea-8d9af5f03f81@redhat.com>
+From: Nico Pache <npache@redhat.com>
+Date: Thu, 13 Mar 2025 11:35:49 -0600
+X-Gm-Features: AQ5f1JrzcM5gNtNPl-Fo_pToh0DelHZYtUioYU9wKMINK1ALGT_dvw_uu_EmSak
+Message-ID: <CAA1CXcBsnbj1toxZNbks+NxrR_R_xuUb76X4ANin551Fi0WROA@mail.gmail.com>
+Subject: Re: [RFC 1/5] meminfo: add a per node counter for balloon drivers
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org, 
+	decui@microsoft.com, jerrin.shaji-george@broadcom.com, 
+	bcm-kernel-feedback-list@broadcom.com, arnd@arndb.de, 
+	gregkh@linuxfoundation.org, mst@redhat.com, jasowang@redhat.com, 
+	xuanzhuo@linux.alibaba.com, eperezma@redhat.com, jgross@suse.com, 
+	sstabellini@kernel.org, oleksandr_tyshchenko@epam.com, 
+	akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
+	nphamcs@gmail.com, yosry.ahmed@linux.dev, kanchana.p.sridhar@intel.com, 
+	alexander.atanasov@virtuozzo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-dl_rebuild_rd_accounting() is defined in cpuset.c, so it makes more
-sense to move related declarations to cpuset.h.
+On Thu, Mar 13, 2025 at 2:22=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 13.03.25 00:04, Nico Pache wrote:
+> > On Wed, Mar 12, 2025 at 4:19=E2=80=AFPM David Hildenbrand <david@redhat=
+.com> wrote:
+> >>
+> >> On 12.03.25 01:06, Nico Pache wrote:
+> >>> Add NR_BALLOON_PAGES counter to track memory used by balloon drivers =
+and
+> >>> expose it through /proc/meminfo and other memory reporting interfaces=
+.
+> >>
+> >> In balloon_page_enqueue_one(), we perform a
+> >>
+> >> __count_vm_event(BALLOON_INFLATE)
+> >>
+> >> and in balloon_page_list_dequeue
+> >>
+> >> __count_vm_event(BALLOON_DEFLATE);
+> >>
+> >>
+> >> Should we maybe simply do the per-node accounting similarly there?
+> >
+> > I think the issue is that some balloon drivers use the
+> > balloon_compaction interface while others use their own.
+> >
+> > This would require unifying all the drivers under a single api which
+> > may be tricky if they all have different behavior
+>
+> Why would that be required? Simply implement it in the balloon
+> compaction logic, and in addition separately in the ones that don't
+> implement it.
 
-Implement the move.
+Ah ok that makes sense!
 
-Suggested-by: Waiman Long <llong@redhat.com>
-Reviewed-by: Waiman Long <llong@redhat.com>
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
-Tested-by: Waiman Long <longman@redhat.com>
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
----
- include/linux/cpuset.h         | 5 +++++
- include/linux/sched/topology.h | 2 --
- 2 files changed, 5 insertions(+), 2 deletions(-)
+>
+> That's the same as how we handle PageOffline today.
+>
+> In summary, we have
+>
+> virtio-balloon: balloon compaction
+> hv-balloon: no balloon compaction
+> xen-balloon: no balloon compaction
+> vmx-balloon: balloon compaction
+> pseries-cmm: balloon compaction
 
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index 17cc90d900f9..5466c96a33db 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -125,6 +125,7 @@ static inline int cpuset_do_page_mem_spread(void)
- 
- extern bool current_cpuset_is_being_rebound(void);
- 
-+extern void dl_rebuild_rd_accounting(void);
- extern void rebuild_sched_domains(void);
- 
- extern void cpuset_print_current_mems_allowed(void);
-@@ -260,6 +261,10 @@ static inline bool current_cpuset_is_being_rebound(void)
- 	return false;
- }
- 
-+static inline void dl_rebuild_rd_accounting(void)
-+{
-+}
-+
- static inline void rebuild_sched_domains(void)
- {
- 	partition_sched_domains(1, NULL, NULL);
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 96e69bfc3c8a..51f7b8169515 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -166,8 +166,6 @@ static inline struct cpumask *sched_domain_span(struct sched_domain *sd)
- 	return to_cpumask(sd->span);
- }
- 
--extern void dl_rebuild_rd_accounting(void);
--
- extern void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
- 				    struct sched_domain_attr *dattr_new);
- 
--- 
-2.48.1
+I'm having a hard time verifying this... it looks like only
+vmx-balloon uses the balloon_compaction balloon_page_list_enqueue
+function that calls balloon_page_enqueue_one.
+
+>
+> So you'd handle 3 balloon drivers in one go.
+>
+> (this series didn't touch pseries-cmm)
+Ah I didn't realize that was a balloon driver. Ill add that one to the todo=
+.
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
 
