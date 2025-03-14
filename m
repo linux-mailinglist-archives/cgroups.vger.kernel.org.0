@@ -1,72 +1,71 @@
-Return-Path: <cgroups+bounces-7070-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7071-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 405B5A61002
-	for <lists+cgroups@lfdr.de>; Fri, 14 Mar 2025 12:35:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A10C7A61028
+	for <lists+cgroups@lfdr.de>; Fri, 14 Mar 2025 12:39:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BF023A73AF
-	for <lists+cgroups@lfdr.de>; Fri, 14 Mar 2025 11:35:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A5C2170475
+	for <lists+cgroups@lfdr.de>; Fri, 14 Mar 2025 11:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F061FDA63;
-	Fri, 14 Mar 2025 11:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F1481FDE0A;
+	Fri, 14 Mar 2025 11:38:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pN4tX6ZF";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zXTBaDHq"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ih4I3N+v";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XLCPgL4T"
 X-Original-To: cgroups@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB36F1F4275;
-	Fri, 14 Mar 2025 11:35:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6942F3C6BA;
+	Fri, 14 Mar 2025 11:38:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741952138; cv=none; b=A7SAFQbIQIJUROj+IHeL2eNK5i8ENgrTTiHppJYG6pExmRyLkIZlYy0dUKyplzJDnS21Xq2746o0ijFuJ6Dbw7mQc6jYdCwK3nxJlVTHPAtR2PeV6I6PSf4GidZdNdJPISCr2LNxiZfznG+K/sgWk6bZPAwavlEKfqJaA8EDgKU=
+	t=1741952338; cv=none; b=MEUqF/qa4YwlYigEwXYe6R6CJXHF3X6E09qf0nLBm0OPZBx40W1hsS/HW9Riy75X7sT2c9P3I8UP2rPy8lwt5xxkek924nb/j7PVS01QiUIMVvah6F2cQ52K8mCiyRLIPUO5hizCKXOZGnbj7h9YQD3p6mZcminSuY82IVwoQW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741952138; c=relaxed/simple;
-	bh=R/tewh/p5atljgam4ymOvOpvh9GKdhUydr+c3OAOiBM=;
+	s=arc-20240116; t=1741952338; c=relaxed/simple;
+	bh=UlVs7tTvuR3bzxMovzx4t8nCJkplGvp1YKQe+o9GN3o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EZyC9eTr4AhlgLRzCRTzWyDbBPo9EOm0um2KGVHEgA9axvU5RVT0plhoVYhPXOFVoodH/y4cAt6tnMD0DV2i1PNzoibCyjp4pNRPhQ2r7GCAmNgXR3rBG4h2h1I0qrYnVHcv1JcCaeTOMKVMuuwWT+FUqqC8gDEwV4uzyc9uJhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pN4tX6ZF; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zXTBaDHq; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Content-Disposition:In-Reply-To; b=i8xy/95cNwC0SLW2Yuwo1saGVOcLWcg3WvQGxd8pG7dxJb0DD+Cou9wcks7Qhq8AQqiiLF1MoxboMMb25UIj/u3u/5Vu8sX+Cj75qxQQ6NWBgZFaszubzWVHl37iDUgZSBLd80gFkwR1fJ05FrgiEvHu9LWefUFRSM7BH/Zttkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ih4I3N+v; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XLCPgL4T; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 14 Mar 2025 12:35:33 +0100
+Date: Fri, 14 Mar 2025 12:38:52 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1741952134;
+	s=2020; t=1741952334;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2FQBo+G9NS5s5m9Or6v/ScN1p/wGWm+FuNiuvYY6ACA=;
-	b=pN4tX6ZFyWEQFOPQiTwkjg7y9qa0bRlaapCNyuWUSwaWTYb6mnN5jX66hpoHhHvRHeqO/D
-	e5YIXNbIzP/4PBhL8/oF85ZOhPimml3ONrtIqIl4/A93YRuXFNDfOF17lWNZTZ32yYcxEW
-	dbjTNDGhROHWb+VDHwyCQ7p2RmHALCiaGrgSgseztU7tzRHNTXhe1TxgYuN8gJOm5HLvFb
-	6LTOKKywuApbpXeJ3CeyTwG/2Qjzxor+bKZ59rhAE02gOyWufVjuGinYKcy4X71h2SNCHv
-	C+TH+gn3bjJJfT1ckqYb0Ro18B9zYaIbcj9CByFpM9Y+/qkXu/SJXC5YHGBQ8A==
+	bh=UUKSy7z6knz10WLm50dw1U0p3v0ZGMjBuqkfU3chOP4=;
+	b=ih4I3N+voi1ZC4I+jS1VH+ZZwB8v8dgqMzo5PZvx9VCBvy01qODQzVZNjPlnosZWfVt9FY
+	fHJnIlFCow7iwxKiUlYkUA5XSU4NZcYNv6cw0oSYcr4FR2ik2m6HyXVtgoKmVVrhhoY0CA
+	vlO56eEmQK467eDaZU0E4En9ERVQvMYv+3MLvALjCBkHOGCBC1K3ZK6frgmCC6RCCehzIX
+	gTTVJRcq8tT2RKHhJzq0N6ITFHXtedrpaGfmZEMJergiWzZmUROZZevZUshp6Jl5iGAznW
+	2FHL9FrAnobz3JtWz5FpG77h5f205z9i9bW+kLW107jD4MHXI8hLriO6JXOVlw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1741952134;
+	s=2020e; t=1741952334;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2FQBo+G9NS5s5m9Or6v/ScN1p/wGWm+FuNiuvYY6ACA=;
-	b=zXTBaDHqySfpFgV+G7VyJBWir7Y4Pm+Mk8JFgK1HGEVizypNRWcb7Pr8J8qMYe7F7G9K4D
-	RfkBFbVr4bcrWtAA==
+	bh=UUKSy7z6knz10WLm50dw1U0p3v0ZGMjBuqkfU3chOP4=;
+	b=XLCPgL4TroxdqQG2xY6MurgH9susfpQpR3PEVjibPzp/bApY+hKz364hQ8XCO6DnxPCZmW
+	ARr0VyTFEALfLTBw==
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@kernel.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
 	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [RFC PATCH 06/10] memcg: do obj_cgroup_put inside drain_obj_stock
-Message-ID: <20250314113533.jNrVXeyr@linutronix.de>
+Subject: Re: [RFC PATCH 07/10] memcg: use __mod_memcg_state in drain_obj_stock
+Message-ID: <20250314113852.O1pm0QWd@linutronix.de>
 References: <20250314061511.1308152-1-shakeel.butt@linux.dev>
- <20250314061511.1308152-7-shakeel.butt@linux.dev>
- <0b3ab5e5-e684-44ce-b6ed-276ad37784e6@suse.cz>
+ <20250314061511.1308152-8-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -75,27 +74,17 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0b3ab5e5-e684-44ce-b6ed-276ad37784e6@suse.cz>
+In-Reply-To: <20250314061511.1308152-8-shakeel.butt@linux.dev>
 
-On 2025-03-14 11:17:28 [+0100], Vlastimil Babka wrote:
-> On 3/14/25 07:15, Shakeel Butt wrote:
-> > Previously we could not call obj_cgroup_put() inside the local lock
-> > because on the put on the last reference, the release function
-> > obj_cgroup_release() may try to re-acquire the local lock. However that
-> > chain has been broken. Now simply do obj_cgroup_put() inside
-> > drain_obj_stock() instead of returning the old objcg.
-> > 
-> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+On 2025-03-13 23:15:08 [-0700], Shakeel Butt wrote:
+> For non-PREEMPT_RT kernels, drain_obj_stock() is always called with irq
+> disabled, so we can use __mod_memcg_state() instead of
+> mod_memcg_state(). For PREEMPT_RT, we need to add memcg_stats_[un]lock
+> in __mod_memcg_state().
 > 
-> Hm is this really safe? I can see obj_cgroup_release() doing
-> percpu_ref_exit() -> kfree(), do we have guaranteed that allocation won't be
-> also in a kmemcg and recurse?
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-This was like this until commit
-	5675114623872 ("mm/memcg: protect memcg_stock with a local_lock_t")
-
-at which point the put had to happen outside. This "percpu_ref_exit() ->
-kfree()" was also prior this commit.
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 Sebastian
 
