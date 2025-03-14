@@ -1,96 +1,95 @@
-Return-Path: <cgroups+bounces-7067-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7068-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C9F7A60ECE
-	for <lists+cgroups@lfdr.de>; Fri, 14 Mar 2025 11:27:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A71A2A60F62
+	for <lists+cgroups@lfdr.de>; Fri, 14 Mar 2025 11:54:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42C4F16BF4A
-	for <lists+cgroups@lfdr.de>; Fri, 14 Mar 2025 10:27:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCD481776CE
+	for <lists+cgroups@lfdr.de>; Fri, 14 Mar 2025 10:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF6D71F4261;
-	Fri, 14 Mar 2025 10:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AFAE1FCFF1;
+	Fri, 14 Mar 2025 10:54:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="m+jmdcM7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2Da2GVXQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="m+jmdcM7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2Da2GVXQ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZixxNQVp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/3WGbyQ+";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZixxNQVp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/3WGbyQ+"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE2D1F3BAE
-	for <cgroups@vger.kernel.org>; Fri, 14 Mar 2025 10:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414DE1F03F1
+	for <cgroups@vger.kernel.org>; Fri, 14 Mar 2025 10:54:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741948064; cv=none; b=Lr4Gz0y6IAb0/1MFS5uKihcfmMAah7MLSqCCDkVL4erLTXH5mbInqtgdCFW8vs8H29p0PcSpyDcpv/xyqH450dBwT2M6GB9l8iUrqPRFV199o3bVmPsyG7stvCwXAuFwoNj1PKgthGjVRpEIXz1qPCFnbmKipL9Y1t1Rytn0yuA=
+	t=1741949678; cv=none; b=DXM4tpkW7ZQF+eg2DSe/bimB4ZU5tGRw/YYwcAjRmu927cLk5ukoSUYZrK7gk4z0ug2iiGUweuB7xzONm9Wdah0GTcDz0ubtVjoU9C8vtYpuuT/b8WjLMgrxrtV77gUBURVkFw6MllQqPF9zkOysbRufJ+43Kfvz3G9StYLsXrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741948064; c=relaxed/simple;
-	bh=6MUnyoMqfWRXJzMvRu/uODIoNq/j211mmEZ2WIPba3E=;
+	s=arc-20240116; t=1741949678; c=relaxed/simple;
+	bh=vyy3Hkd+4sD/3EaFvivpYUpmWvIEgO9w6uQ/ZlZKbGQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YiM+QpsgP+18KPkVwktHDOjqk12toXb3La/Y+oCjnxLBsW4+5wtCSakHCEUbqjTW2az77Jkj0PHzznrAqQdQPudj8AHT3JbJntbymP/9ZXL8ABP9O55M2FncZgkrr9osxR1FDNiiNmJdWFFQB06wO2lsvxMqxBhtJeM0Ee3ca2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=m+jmdcM7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2Da2GVXQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=m+jmdcM7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2Da2GVXQ; arc=none smtp.client-ip=195.135.223.131
+	 In-Reply-To:Content-Type; b=JsH7Zbyf8GY8YM2f07LqhfWAZHFZTfA2+8hdsVxm/PyqLFJW2cDqoRrm7HPrQsMkWRCVpKKJ5qV3A9lElhwMqFkSn4mMurLHMReCio7nQMYrs3Rp98Od1ErlvXEhFbjMfPluZ/zteI2LSLAxH65cJaghgWSYAWgmVbTG3RIwmok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZixxNQVp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/3WGbyQ+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZixxNQVp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/3WGbyQ+; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 288B01F38E;
-	Fri, 14 Mar 2025 10:27:41 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 574201F388;
+	Fri, 14 Mar 2025 10:54:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741948061; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1741949674; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cgnd6h/8+X/DkEnqQwYn262MXQhZFGwUf0NqimX6ZLs=;
-	b=m+jmdcM7naaaJYDjiLUoxBoxJ1CUuX2Lg4vABxBJHyTXYB5MR9GuIes3/qRccuoKZF4HDU
-	3KeFroriA7gVH/riqYktnDgM1V4ZgY4otUSaZE9PNYqCuWikLFrAlwzSmMrvGPwgZ9YbHG
-	dCK2cYFsreK6SZ2EDzsLBlKDEL9qxuM=
+	bh=sVEcF79uzA4C2CoSVuP2r2XYz5yM9noYVSeby4OOVTE=;
+	b=ZixxNQVpA4v5+w2Grz2zLpxIlSmrVWM/Ej2xQbBtoSz0/cjXCRDnxMGkdlBHLmtnv7OXYp
+	Ewv5kTPecoMJMJ26wb9aPigFwryBlEa6KeK8bAKmM/QUciAdeM3gKw6n4Btq8o3U3qaogz
+	JG9zYi45KwyRbFzf9kNrwmLytNsiQEo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741948061;
+	s=susede2_ed25519; t=1741949674;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cgnd6h/8+X/DkEnqQwYn262MXQhZFGwUf0NqimX6ZLs=;
-	b=2Da2GVXQOSiDIHTxiRa89PZSJ4zgmkGZnKDEmxXRDLU6yAL5/8ePn1raLqhnLE6MJ5Yijm
-	e1ZU+M9xehJbbsCw==
+	bh=sVEcF79uzA4C2CoSVuP2r2XYz5yM9noYVSeby4OOVTE=;
+	b=/3WGbyQ+ZCNmcYtR/C6DLXI+Rs5re7stMb9n56ODer7gjt+ynLqCFaVe2tuYt/tdcXW8Dj
+	/gpkYM/JVZX0x9Cg==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=m+jmdcM7;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2Da2GVXQ
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741948061; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1741949674; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cgnd6h/8+X/DkEnqQwYn262MXQhZFGwUf0NqimX6ZLs=;
-	b=m+jmdcM7naaaJYDjiLUoxBoxJ1CUuX2Lg4vABxBJHyTXYB5MR9GuIes3/qRccuoKZF4HDU
-	3KeFroriA7gVH/riqYktnDgM1V4ZgY4otUSaZE9PNYqCuWikLFrAlwzSmMrvGPwgZ9YbHG
-	dCK2cYFsreK6SZ2EDzsLBlKDEL9qxuM=
+	bh=sVEcF79uzA4C2CoSVuP2r2XYz5yM9noYVSeby4OOVTE=;
+	b=ZixxNQVpA4v5+w2Grz2zLpxIlSmrVWM/Ej2xQbBtoSz0/cjXCRDnxMGkdlBHLmtnv7OXYp
+	Ewv5kTPecoMJMJ26wb9aPigFwryBlEa6KeK8bAKmM/QUciAdeM3gKw6n4Btq8o3U3qaogz
+	JG9zYi45KwyRbFzf9kNrwmLytNsiQEo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741948061;
+	s=susede2_ed25519; t=1741949674;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cgnd6h/8+X/DkEnqQwYn262MXQhZFGwUf0NqimX6ZLs=;
-	b=2Da2GVXQOSiDIHTxiRa89PZSJ4zgmkGZnKDEmxXRDLU6yAL5/8ePn1raLqhnLE6MJ5Yijm
-	e1ZU+M9xehJbbsCw==
+	bh=sVEcF79uzA4C2CoSVuP2r2XYz5yM9noYVSeby4OOVTE=;
+	b=/3WGbyQ+ZCNmcYtR/C6DLXI+Rs5re7stMb9n56ODer7gjt+ynLqCFaVe2tuYt/tdcXW8Dj
+	/gpkYM/JVZX0x9Cg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 11CDD13A31;
-	Fri, 14 Mar 2025 10:27:41 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D213132DD;
+	Fri, 14 Mar 2025 10:54:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mxH5A50E1GeiZQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 14 Mar 2025 10:27:41 +0000
-Message-ID: <c88739b4-1fe3-47dc-8ed6-22adf0aadcb4@suse.cz>
-Date: Fri, 14 Mar 2025 11:27:40 +0100
+	id dCx8DuoK1Gd9bgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 14 Mar 2025 10:54:34 +0000
+Message-ID: <9e1e3877-55ae-4546-a5c1-08ea730ea638@suse.cz>
+Date: Fri, 14 Mar 2025 11:54:34 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -98,7 +97,7 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 07/10] memcg: use __mod_memcg_state in drain_obj_stock
+Subject: Re: [RFC PATCH 10/10] memcg: no more irq disabling for stock locks
 Content-Language: en-US
 To: Shakeel Butt <shakeel.butt@linux.dev>,
  Andrew Morton <akpm@linux-foundation.org>
@@ -109,81 +108,305 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
  cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  Meta kernel team <kernel-team@meta.com>
 References: <20250314061511.1308152-1-shakeel.butt@linux.dev>
- <20250314061511.1308152-8-shakeel.butt@linux.dev>
+ <20250314061511.1308152-11-shakeel.butt@linux.dev>
 From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20250314061511.1308152-8-shakeel.butt@linux.dev>
+In-Reply-To: <20250314061511.1308152-11-shakeel.butt@linux.dev>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 288B01F38E
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	ARC_NA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_TLS_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,suse.cz:dkim,suse.cz:mid];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.51
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
 X-Spam-Flag: NO
+X-Spam-Level: 
 
 On 3/14/25 07:15, Shakeel Butt wrote:
-> For non-PREEMPT_RT kernels, drain_obj_stock() is always called with irq
-> disabled, so we can use __mod_memcg_state() instead of
-> mod_memcg_state(). For PREEMPT_RT, we need to add memcg_stats_[un]lock
-> in __mod_memcg_state().
-> 
+> Let's switch all memcg_stock locks acquire and release places to not
+> disable and enable irqs. There are two still functions (i.e.
+> mod_objcg_state() and drain_obj_stock) which needs to disable irqs to
+> update the stats on non-RT kernels. For now add a simple wrapper for
+> that functionality.
+
+BTW, which part of __mod_objcg_mlstate() really needs disabled irqs and not
+just preemption? I see it does rcu_read_lock() anyway, which disables
+preemption. Then in __mod_memcg_lruvec_state() we do some __this_cpu_add()
+updates. I think these also are fine with just disabled preemption as they
+are atomic vs irqs (but don't need LOCK prefix to be atomic vs other cpus
+updates).
+
+Is it just memcg_rstat_updated() which does READ_ONCE/WRITE_ONCE? Could we
+perhaps just change it to operations where disabled preemption is enough?
+
 > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-
-Maybe it'll make sense later but as of this patch itself it begs a question
-why put memcg_stats_lock()/unlock() in __mod_memcg_state itself and not just
-around the call in drain_obj_stock()?
-
 > ---
->  mm/memcontrol.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  mm/memcontrol.c | 83 ++++++++++++++++++++++++++++++++-----------------
+>  1 file changed, 54 insertions(+), 29 deletions(-)
 > 
 > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 3c4de384b5a0..dfe9c2eb7816 100644
+> index ba5d004049d3..fa28efa298f4 100644
 > --- a/mm/memcontrol.c
 > +++ b/mm/memcontrol.c
-> @@ -707,10 +707,12 @@ void __mod_memcg_state(struct mem_cgroup *memcg, enum memcg_stat_item idx,
->  	if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n", __func__, idx))
->  		return;
+> @@ -1796,22 +1796,17 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+>   *
+>   * returns true if successful, false otherwise.
+>   */
+> -static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages,
+> -			  gfp_t gfp_mask)
+> +static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  {
+>  	struct memcg_stock_pcp *stock;
+>  	unsigned int stock_pages;
+> -	unsigned long flags;
+>  	bool ret = false;
 >  
-> +	memcg_stats_lock();
->  	__this_cpu_add(memcg->vmstats_percpu->state[i], val);
->  	val = memcg_state_val_in_pages(idx, val);
->  	memcg_rstat_updated(memcg, val);
->  	trace_mod_memcg_state(memcg, idx, val);
-> +	memcg_stats_unlock();
+>  	if (nr_pages > MEMCG_CHARGE_BATCH)
+>  		return ret;
+>  
+> -	if (!localtry_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
+> -		if (!gfpflags_allow_spinning(gfp_mask))
+> +	if (!localtry_trylock(&memcg_stock.stock_lock))
+>  			return ret;
+> -		localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
+> -	}
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	stock_pages = READ_ONCE(stock->nr_pages);
+> @@ -1820,7 +1815,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages,
+>  		ret = true;
+>  	}
+>  
+> -	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	localtry_unlock(&memcg_stock.stock_lock);
+>  
+>  	return ret;
+>  }
+> @@ -1855,7 +1850,6 @@ static void drain_stock(struct memcg_stock_pcp *stock)
+>  static void drain_local_stock(struct work_struct *dummy)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> -	unsigned long flags;
+>  
+>  	lockdep_assert_once(in_task());
+>  
+> @@ -1864,14 +1858,14 @@ static void drain_local_stock(struct work_struct *dummy)
+>  	 * drain_stock races is that we always operate on local CPU stock
+>  	 * here with IRQ disabled
+>  	 */
+> -	localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	localtry_lock(&memcg_stock.stock_lock);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	drain_obj_stock(stock);
+>  	drain_stock(stock);
+>  	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+>  
+> -	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	localtry_unlock(&memcg_stock.stock_lock);
 >  }
 >  
->  #ifdef CONFIG_MEMCG_V1
-> @@ -2845,7 +2847,7 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+>  /* Should never be called with root_mem_cgroup. */
+> @@ -1879,9 +1873,8 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  {
+>  	struct memcg_stock_pcp *stock;
+>  	unsigned int stock_pages;
+> -	unsigned long flags;
 >  
->  			memcg = get_mem_cgroup_from_objcg(old);
+> -	if (!localtry_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
+> +	if (!localtry_trylock(&memcg_stock.stock_lock)) {
+>  		/*
+>  		 * In case of unlikely failure to lock percpu stock_lock
+>  		 * uncharge memcg directly.
+> @@ -1902,7 +1895,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  	if (stock_pages > MEMCG_CHARGE_BATCH)
+>  		drain_stock(stock);
 >  
-> -			mod_memcg_state(memcg, MEMCG_KMEM, -nr_pages);
-> +			__mod_memcg_state(memcg, MEMCG_KMEM, -nr_pages);
->  			memcg1_account_kmem(memcg, -nr_pages);
->  			if (!mem_cgroup_is_root(memcg))
->  				memcg_uncharge(memcg, nr_pages);
+> -	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	localtry_unlock(&memcg_stock.stock_lock);
+>  }
+>  
+>  /*
+> @@ -1953,17 +1946,12 @@ void drain_all_stock(struct mem_cgroup *root_memcg)
+>  static int memcg_hotplug_cpu_dead(unsigned int cpu)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> -	unsigned long flags;
+>  
+>  	lockdep_assert_once(in_task());
+>  
+>  	stock = &per_cpu(memcg_stock, cpu);
+>  
+> -	/* drain_obj_stock requires stock_lock */
+> -	localtry_lock_irqsave(&memcg_stock.stock_lock, flags);
+>  	drain_obj_stock(stock);
+> -	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> -
+>  	drain_stock(stock);
+>  
+>  	return 0;
+> @@ -2254,7 +2242,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	unsigned long pflags;
+>  
+>  retry:
+> -	if (consume_stock(memcg, nr_pages, gfp_mask))
+> +	if (consume_stock(memcg, nr_pages))
+>  		return 0;
+>  
+>  	if (!gfpflags_allow_spinning(gfp_mask))
+> @@ -2757,6 +2745,28 @@ static void replace_stock_objcg(struct memcg_stock_pcp *stock,
+>  	WRITE_ONCE(stock->cached_objcg, objcg);
+>  }
+>  
+> +static unsigned long rt_lock(void)
+> +{
+> +#ifdef CONFIG_PREEMPT_RT
+> +	migrate_disable();
+> +	return 0;
+> +#else
+> +	unsigned long flags = 0;
+> +
+> +	local_irq_save(flags);
+> +	return flags;
+> +#endif
+> +}
+> +
+> +static void rt_unlock(unsigned long flags)
+> +{
+> +#ifdef CONFIG_PREEMPT_RT
+> +	migrate_enable();
+> +#else
+> +	local_irq_restore(flags);
+> +#endif
+> +}
+> +
+>  static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  		     enum node_stat_item idx, int nr)
+>  {
+> @@ -2764,7 +2774,8 @@ static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  	unsigned long flags;
+>  	int *bytes;
+>  
+> -	if (!localtry_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
+> +	if (!localtry_trylock(&memcg_stock.stock_lock)) {
+> +		/* Do we need mix_rt_[un]lock here too. */
+>  		__mod_objcg_mlstate(objcg, pgdat, idx, nr);
+>  		return;
+>  	}
+> @@ -2783,6 +2794,8 @@ static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  		/* Flush the existing cached vmstat data */
+>  		struct pglist_data *oldpg = stock->cached_pgdat;
+>  
+> +		flags = rt_lock();
+> +
+>  		if (stock->nr_slab_reclaimable_b) {
+>  			__mod_objcg_mlstate(objcg, oldpg, NR_SLAB_RECLAIMABLE_B,
+>  					  stock->nr_slab_reclaimable_b);
+> @@ -2793,6 +2806,8 @@ static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  					  stock->nr_slab_unreclaimable_b);
+>  			stock->nr_slab_unreclaimable_b = 0;
+>  		}
+> +
+> +		rt_unlock(flags);
+>  		stock->cached_pgdat = pgdat;
+>  	}
+>  
+> @@ -2814,19 +2829,21 @@ static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  			nr = 0;
+>  		}
+>  	}
+> -	if (nr)
+> +	if (nr) {
+> +		flags = rt_lock();
+>  		__mod_objcg_mlstate(objcg, pgdat, idx, nr);
+> +		rt_unlock(flags);
+> +	}
+>  
+> -	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	localtry_unlock(&memcg_stock.stock_lock);
+>  }
+>  
+>  static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> -	unsigned long flags;
+>  	bool ret = false;
+>  
+> -	if (!localtry_trylock_irqsave(&memcg_stock.stock_lock, flags))
+> +	if (!localtry_trylock(&memcg_stock.stock_lock))
+>  		return ret;
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+> @@ -2835,7 +2852,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+>  		ret = true;
+>  	}
+>  
+> -	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	localtry_unlock(&memcg_stock.stock_lock);
+>  
+>  	return ret;
+>  }
+> @@ -2843,10 +2860,16 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+>  static void drain_obj_stock(struct memcg_stock_pcp *stock)
+>  {
+>  	struct obj_cgroup *old = READ_ONCE(stock->cached_objcg);
+> +	unsigned long flags;
+> +	bool locked = stock->nr_bytes || stock->nr_slab_reclaimable_b ||
+> +		stock->nr_slab_unreclaimable_b;
+>  
+>  	if (!old)
+>  		return;
+>  
+> +	if (locked)
+> +		flags = rt_lock();
+> +
+>  	if (stock->nr_bytes) {
+>  		unsigned int nr_pages = stock->nr_bytes >> PAGE_SHIFT;
+>  		unsigned int nr_bytes = stock->nr_bytes & (PAGE_SIZE - 1);
+> @@ -2897,6 +2920,9 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+>  		stock->cached_pgdat = NULL;
+>  	}
+>  
+> +	if (locked)
+> +		rt_unlock(flags);
+> +
+>  	WRITE_ONCE(stock->cached_objcg, NULL);
+>  	obj_cgroup_put(old);
+>  }
+> @@ -2920,10 +2946,9 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  			     bool allow_uncharge)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> -	unsigned long flags;
+>  	unsigned int nr_pages = 0;
+>  
+> -	if (!localtry_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
+> +	if (!localtry_trylock(&memcg_stock.stock_lock)) {
+>  		atomic_add(nr_bytes, &objcg->nr_charged_bytes);
+>  		return;
+>  	}
+> @@ -2940,7 +2965,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  		stock->nr_bytes &= (PAGE_SIZE - 1);
+>  	}
+>  
+> -	localtry_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	localtry_unlock(&memcg_stock.stock_lock);
+>  
+>  	if (nr_pages)
+>  		obj_cgroup_uncharge_pages(objcg, nr_pages);
 
 
