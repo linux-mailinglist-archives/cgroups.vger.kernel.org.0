@@ -1,100 +1,96 @@
-Return-Path: <cgroups+bounces-7084-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7085-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19644A6194B
-	for <lists+cgroups@lfdr.de>; Fri, 14 Mar 2025 19:20:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86518A630FB
+	for <lists+cgroups@lfdr.de>; Sat, 15 Mar 2025 18:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F6C17AC0C9
-	for <lists+cgroups@lfdr.de>; Fri, 14 Mar 2025 18:19:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 002337AC37E
+	for <lists+cgroups@lfdr.de>; Sat, 15 Mar 2025 17:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F248F20468F;
-	Fri, 14 Mar 2025 18:19:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14A1202C58;
+	Sat, 15 Mar 2025 17:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hSb1GWIB";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bdlMZGy4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ed6qPZeI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407CE202F96;
-	Fri, 14 Mar 2025 18:19:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6F0191F60
+	for <cgroups@vger.kernel.org>; Sat, 15 Mar 2025 17:49:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741976393; cv=none; b=cHlUlH9VaXHZfQvz/XLNPgA28XNbN2sbDG2OgwH2rQuAwVc6e+m00tlHYhe63kz7AO2I0VzU2g8bWCZDMFJoUY/fZtNRKycyIFmdyxjJxbuBasJ7/BW7LiGw7epS1AXXED9USzsaHURzxMiCBvwyra72Yf2fsGhMfErX9W6n1mI=
+	t=1742060984; cv=none; b=eOwlWmc8QXKg5jenRxuwJ4+JIrUk4Bwyp0Q93eZIvXNt+seDl7T8KnFEhnXhIK+MRIY4X+PNRTZ9GdXdbj35ddAdbCsQSUpR6Ur+jynBUmRx4hREw7SMtrwZxVweJKpJ6hDjPv8JsHfTJSj+cN9A+BsHeUcPa1RFQemDb4xO+3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741976393; c=relaxed/simple;
-	bh=p3lEx5AeDIot0RR3wPr6612f9S8LWcZEp9QT/e8nkC4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=ESOi4L+8aezIz/xgdXr72+3lSfC406abaRFR1ZKq+ddM2nwmDj5uWzRc4IEDWJPihfAMkohgOAPgTQy3R1McWyxwm3cwo7zyUjeXR4PbNzt4tFsncqEPr9/IGj/T10mQNg+47N+TJ2jWDNzR+r7x3KwJxmg4fSWW44o5u3BX0fk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hSb1GWIB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bdlMZGy4; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 14 Mar 2025 19:19:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1741976390;
+	s=arc-20240116; t=1742060984; c=relaxed/simple;
+	bh=8cNdWdSYzMhrZrBVVbo1LE44oP+rPuUJujztZ+GXkGI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=flcwJ81HQ0ZHlfg9pVqP/szSKmHrvTAlSaazY78nR+5P2JClounkiRM+HRYKs/Mxd2ZMk3f6ABriYNtqe/Ft7mF+n8kOYIq05atMjKb+BreoEKgjsb8mTPyv7W9yzIwxS+BHADD59zUcW9ubmJeHGEXLlJV9DshjrvFdC0Zaay4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ed6qPZeI; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1742060978;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=kPyPW+naAFlbw+Xbn145mrlsK5koPOENM07QgOBvPOk=;
-	b=hSb1GWIBOVE0BOuFpl5XdClM2mEBLIp1uIUdWCR8I+zfcY5Sdn9gitO56UzTe0m7dCXAyQ
-	0tAvFZzWXoq1UPqgPY1l420712+f+MnRZOMIqh/KiKTCp1+akGlSla5c6OF12yZhfH+5N+
-	rHmCe7NMrSaHdhqGHYg4hp0HOwz4nXePSBr5y4kSC3gR/BEjFvEajxuL1i8DD93HniWFOx
-	aHTYijk4rLMz4Vf+JsBVZ4vhlVGPPfJgDw5QrpeqKCldjnWhrgDNJ05vFLViKJbH4gkwZS
-	H7bzkgmBSNzUZfT16I04g8e8FHCyXNZ9vmR2094+lX2EzUUdWuf/YkAVtA3pmQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1741976390;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=kPyPW+naAFlbw+Xbn145mrlsK5koPOENM07QgOBvPOk=;
-	b=bdlMZGy4ApqFqNgI6RekFFiyr7GJTpLsP7DgYwDv0wToSDbymjVhJXgUI9s78Z9V4DP/f9
-	f/E6keN2I68610BA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Vlastimil Babka <vbabka@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ejPqcS6XBEDW+h9V+Y9XW4HLbyin3ylhe+1eBvNG0us=;
+	b=ed6qPZeIiPSadtsqQbti2BDAvMuGVp+62JrK8640TmWLwWGFfew+bL/75pqV9ke0yiBbXS
+	Fo+ndr5s/72UPECrjGjiTRietDubx7nZAtVIxRb0edimC5YSM1+foZr/mmQBiUBOhuJnV8
+	hkDYkWeeSM59NTfVL3C1eQlUo3DIIEg=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@kernel.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [RFC PATCH 10/10] memcg: no more irq disabling for stock locks
-Message-ID: <20250314181948.A5DQsYZB@linutronix.de>
+Subject: [PATCH 0/9] memcg: cleanup per-cpu stock
+Date: Sat, 15 Mar 2025 10:49:21 -0700
+Message-ID: <20250315174930.1769599-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <t6gqzrhipj3zxmev7pdmxbbbkx76eyscvkn4m66ifwcq3kfqtx@7jmqtzu5bs54>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2025-03-14 10:02:47 [-0700], Shakeel Butt wrote:
-> > 
-> > on arm64, __this_cpu_add will "load, add, store". preemptible.
-> > this_cpu_add() will "disable preemption, atomic-load, add, atomic-store or
-> > start over with atomic-load. if succeeded enable preemption and move an"
-> 
-> So, this_cpu_add() on arm64 is not protected against interrupts but is
-> protected against preemption. We have a following comment in
-> include/linux/percpu-defs.h. Is this not true anymore?
+This is a cleanup series which is trying to simplify the memcg per-cpu
+stock code, particularly it tries to remove unnecessary dependencies on
+local_lock of per-cpu memcg stock. The eight patch from Vlastimil
+optimizes the charge path by combining the charging and accounting.
 
-It performs an atomic update. So it loads exclusive from memory and then
-stores conditionally if the exclusive monitor did not observe another
-load on this address. Disabling preemption is only done to ensure that
-the operation happens on the local-CPU and task gets not moved another
-CPU during the operation. The concurrent update to the same memory
-address from an interrupt will be caught by the exclusive monitor.
+This series is based on next-20250314 plus two following patches:
 
-The reason to remain on the same CPU is probably to ensure that
-__this_cpu_add() in an IRQ-off region does not clash with an atomic
-update performed elsewhere.
+Link: https://lore.kernel.org/all/20250312222552.3284173-1-shakeel.butt@linux.dev/
+Link: https://lore.kernel.org/all/20250313054812.2185900-1-shakeel.butt@linux.dev/
 
-While looking at it, there is also the LSE extension which results in a
-single add _if_ atomic.
+Shakeel Butt (8):
+  memcg: remove root memcg check from refill_stock
+  memcg: decouple drain_obj_stock from local stock
+  memcg: introduce memcg_uncharge
+  memcg: manually inline __refill_stock
+  memcg: no refilling stock from obj_cgroup_release
+  memcg: do obj_cgroup_put inside drain_obj_stock
+  memcg: use __mod_memcg_state in drain_obj_stock
+  memcg: manually inline replace_stock_objcg
 
-Sebastian
+Vlastimil Babka (1):
+  memcg: combine slab obj stock charging and accounting
+
+ mm/memcontrol.c | 195 +++++++++++++++++++++++-------------------------
+ 1 file changed, 95 insertions(+), 100 deletions(-)
+
+-- 
+2.47.1
+
 
