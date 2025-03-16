@@ -1,118 +1,89 @@
-Return-Path: <cgroups+bounces-7094-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7095-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C4B4A63116
-	for <lists+cgroups@lfdr.de>; Sat, 15 Mar 2025 18:51:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8979A6337B
+	for <lists+cgroups@lfdr.de>; Sun, 16 Mar 2025 04:58:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4616F3AAF6A
-	for <lists+cgroups@lfdr.de>; Sat, 15 Mar 2025 17:51:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1FD73B0E2E
+	for <lists+cgroups@lfdr.de>; Sun, 16 Mar 2025 03:57:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0EDA206F0E;
-	Sat, 15 Mar 2025 17:50:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13EA3131E49;
+	Sun, 16 Mar 2025 03:58:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LHDQm3SA"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="IxhMmR7P"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C540A205517
-	for <cgroups@vger.kernel.org>; Sat, 15 Mar 2025 17:50:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B48042AE9A;
+	Sun, 16 Mar 2025 03:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742061016; cv=none; b=Z/iWobJCPSlwoLgsSB+BxwRB3oYFaSXYa7McB3D5GXVCnN2SqzPK2dTQvHl7ABJo+nNM4rSe9b7X+jvy+HubOcqphX4feW0zuTOPkrXy9gaCgKKSnEG2kthWYw+JDKqZHDHRzZIM2cxOtf339Y/9m5o+TIuM8VuPuKD7vgnX8nE=
+	t=1742097481; cv=none; b=YydLOV4ShYZ9pefYMfP4I2nKtM8oL0qe+qNVYBQxPyVVXnCdmnzJDVqDH91nEfJiCkS2vtuVSAoMeTxK9V8AqKb0P9ajAxV4qUvoUVPoLpn6hk8OycjNPDMVYMG4MTVjuPeQ0CkLeCBq1VnniU3G0TskLkN0kAZQW/Gn/fOldXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742061016; c=relaxed/simple;
-	bh=pX6LjMd9E3wFWwByfNIBXNtx/iaZ5LpUzpJ93/Soi6I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Puw8o575U8x894dKnMpLQV9IPaD+R2eXofj70BTc01EIXAi+CkjEInIbAXAXgqrP2oO+MRubRwsKRmOzihJxTC8d0tTWWgaOQ4uSWWgB1CfNgWNOC6vBC3pFAZHdbyraUz2RVcFvv2mYhQKwsMcZMshldy5L4p/vukXO0rrwU9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LHDQm3SA; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742061013;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TYGBaqcauUTYU40tZGtRDDBbg7pHPWXhJB6/pipNZSg=;
-	b=LHDQm3SAQHbOdOc/lx7xNRctT2V94M44B935v1mp0JKaFZD4ihZxYWRfQk1mXWZlM0YnV8
-	mUJPtgGxHSicxTjlkyDNWob2m9rowYzZQ0N2FbX6cTsr0uOiJu8tvTqevoPkB6VEYHtP9L
-	MnOPP/rrbzJKtED4KZRq6GaquCbHc40=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: [PATCH 9/9] memcg: manually inline replace_stock_objcg
-Date: Sat, 15 Mar 2025 10:49:30 -0700
-Message-ID: <20250315174930.1769599-10-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1742097481; c=relaxed/simple;
+	bh=9FGAGyH1LQtzxfMA7xgcYqIxmi2gZlRJ+AD9AfajveY=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=sjuY7pTWFYv9dRpzFgD5kaiDSp+lEoEBxAnrJdLaldsA+47enVtLbl7NFMIHF5rRsEjVUNCGxC5Jx2MaNEEiboXnkPMvBwG1agL+uRV+raoU47wBFrPG6ep8s0xXk+z+kMs0Rgxq4ZOQtCBD4+ihiPaLoH1SHX8kk+FcbsfTX0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=IxhMmR7P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ED42C4CEDD;
+	Sun, 16 Mar 2025 03:58:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1742097481;
+	bh=9FGAGyH1LQtzxfMA7xgcYqIxmi2gZlRJ+AD9AfajveY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=IxhMmR7Pjglyh5HkeMOcVf8apu8/nF7EdVW8Cxpnv4SAAtW2l6N53sXuhJnhTtSCT
+	 Kh0X7xTw149zzQ9JY1nveMUeR9IvIRF4iOCjw+950g8xDHLyCImdOWxTmVGX57U8Dv
+	 DyQzCL+Rw2epAYaxwjcKCqcym24hLCANDKnGKk0g=
+Date: Sat, 15 Mar 2025 20:57:59 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song
+ <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, Sebastian
+ Andrzej Siewior <bigeasy@linutronix.de>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, Meta kernel team
+ <kernel-team@meta.com>
+Subject: Re: [PATCH 0/9] memcg: cleanup per-cpu stock
+Message-Id: <20250315205759.c9f9cdfc2c20467e4106c41a@linux-foundation.org>
 In-Reply-To: <20250315174930.1769599-1-shakeel.butt@linux.dev>
 References: <20250315174930.1769599-1-shakeel.butt@linux.dev>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The replace_stock_objcg() is being called by only refill_obj_stock, so
-manually inline it.
+On Sat, 15 Mar 2025 10:49:21 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
 
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- mm/memcontrol.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+> 
+> This is a cleanup series which is trying to simplify the memcg per-cpu
+> stock code, particularly it tries to remove unnecessary dependencies on
+> local_lock of per-cpu memcg stock. The eight patch from Vlastimil
+> optimizes the charge path by combining the charging and accounting.
+> 
+> This series is based on next-20250314 plus two following patches:
+> 
+> Link: https://lore.kernel.org/all/20250312222552.3284173-1-shakeel.butt@linux.dev/
+> Link: https://lore.kernel.org/all/20250313054812.2185900-1-shakeel.butt@linux.dev/
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 553eb1d7250a..f6e3fc418866 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2742,17 +2742,6 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
- 	obj_cgroup_put(objcg);
- }
- 
--/* Replace the stock objcg with objcg, return the old objcg */
--static void replace_stock_objcg(struct memcg_stock_pcp *stock,
--				struct obj_cgroup *objcg)
--{
--	drain_obj_stock(stock);
--	obj_cgroup_get(objcg);
--	stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
--			? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
--	WRITE_ONCE(stock->cached_objcg, objcg);
--}
--
- static void __account_obj_stock(struct obj_cgroup *objcg,
- 				struct memcg_stock_pcp *stock, int nr,
- 				struct pglist_data *pgdat, enum node_stat_item idx)
-@@ -2913,7 +2902,12 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
- 
- 	stock = this_cpu_ptr(&memcg_stock);
- 	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
--		replace_stock_objcg(stock, objcg);
-+		drain_obj_stock(stock);
-+		obj_cgroup_get(objcg);
-+		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
-+				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
-+		WRITE_ONCE(stock->cached_objcg, objcg);
-+
- 		allow_uncharge = true;	/* Allow uncharge when objcg changes */
- 	}
- 	stock->nr_bytes += nr_bytes;
--- 
-2.47.1
+Unfortunately the bpf tree has been making changes in the same area of
+memcontrol.c.  01d37228d331 ("memcg: Use trylock to access memcg
+stock_lock.")
+
+Sigh.  We're at -rc7 and I don't think it's worth working around that
+for a cleanup series.  So I'm inclined to just defer this series until
+the next -rc cycle.
+
+If BPF merges reasonably early in the next merge window then please
+promptly send this along and I should be able to squeak it into
+6.15-rc1.
 
 
