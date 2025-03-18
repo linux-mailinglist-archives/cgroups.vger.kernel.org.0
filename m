@@ -1,80 +1,336 @@
-Return-Path: <cgroups+bounces-7116-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7117-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAF9FA664E7
-	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 02:21:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE3F1A6668F
+	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 03:52:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B76677A5708
-	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 01:20:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA478189E49A
+	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 02:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBD292B9A4;
-	Tue, 18 Mar 2025 01:21:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 820A518A959;
+	Tue, 18 Mar 2025 02:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JlxOWMYI"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="h0YYfd/B"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB88F9FE
-	for <cgroups@vger.kernel.org>; Tue, 18 Mar 2025 01:21:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE90E1E4B2;
+	Tue, 18 Mar 2025 02:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742260887; cv=none; b=i25IatAPJrrWhlzADqNE8S0oqqPnuZs6bDjwQAZ6DMINIfHZbp7rym/wLe4CL/dPyhkxiskvBeP7n6iymI9A0RBQX4EzcsKs0Rb4KlHCdSJ/5uCX08tAHzKq8Wt9Nx1ezbjqmwbh4Pzka0IDHhKz4Ynvx+f5wAXrsHZBQQTmTiM=
+	t=1742266361; cv=none; b=EUTkQ3dqMb2JmCUr6EmTYWlsOS/w6yL5Q9/m3pSQ718pXNCcddn3aMl/F7Uh08CG1crObjyKMUzK3RPCi3ax+QoDtetlCB9v9AccprCZ1STBmDWFslAmIiqYETzhrQbJPUxHFz5B27GlB5egeYd03zIuIdkixBiTCX7ylLWlQ0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742260887; c=relaxed/simple;
-	bh=sBFHSQE0rn7e7JTbDXKyCjvKr68LfORNzz0Om/X/0M0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tt9yXa2obP4U8Y6bVoPjHHHi3SShatMMkzCZyG3ry5qlZqZ9AFR6tTZJ08nTPz4a2KPmoB+27x24CSOpuz2JLuD8eQben6sCJGI8eTwV4C4gzACPPqOy3GRkIAEJUIvqBZB+kMFK3LtOHhejXKmdOGSopFPAx0CTjIzupD45mp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JlxOWMYI; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 18 Mar 2025 01:21:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742260883;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2FBfPf825uoBgnO3IKpXBpQUjfyHkv9HhTBzal5/jU0=;
-	b=JlxOWMYIsRLHvTktlD4cg62/b/Ze8GNm2i5K+/9eL6/f+EDBLeu8GR9yM7/WOl6lnmRX8E
-	spPjHiZhhkR5i/qevx1dYRnQGFGNZYa8+5DAEe0DKVFEheehY/rkvSlhFpNInVBF5FaF2k
-	wFTDd8P7wLCvVDVxnsKtZrRWk+lau74=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-mm@kvack.org, cgroups@vger.kernel.org,
+	s=arc-20240116; t=1742266361; c=relaxed/simple;
+	bh=Vt95DbqeCyIlJ8MU6h+2HPbVsq8NDYSfMFUjXB8VsqU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EClNZ5L1Cq13nHFPmLFL0oAPUnAAt0gEKL59l7Q+/QyLTTg7Pk/d17apUe+hZbxOkJoLMjWH+fd+mIXelJ6A6oQGTSyVy5AZFiNAF2BH4HKI9/1GhDGKA38pqu9I3q3R72EZafkqEVKUtr5tntAIt+xMR5tDVuyjN9pAzmz+9wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=h0YYfd/B; arc=none smtp.client-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=twhKD
+	HS2bhTthfmdF+zbTPqo8rT9kGcPJYWcAYK7wrg=; b=h0YYfd/BGw6VDCffz0AxD
+	qRiU04m9ROEDQ84zETrC6KBUQ9uIVcaFYtwn/4W86Ij7XZoU9RVlGnMjtB2ZF7/+
+	BlPdxrlKcvzo4W8JGIKW4dsvU9uC/jCc3huzR7SSQd/6gyAVvbfzcdqpXUM/MJLQ
+	bhCpOsOXk6QXNm8gCMhrMA=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wD3WJfE39hnuBWKAA--.1949S2;
+	Tue, 18 Mar 2025 10:51:50 +0800 (CST)
+From: Liu Ye <liuyerd@163.com>
+To: hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev
+Cc: akpm@linux-foundation.org,
+	willy@infradead.org,
+	david@redhat.com,
+	svetly.todorov@memverge.com,
+	vbabka@suse.cz,
+	liuyerd@163.com,
+	ran.xiaokai@zte.com.cn,
 	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH 9/9] memcg: manually inline replace_stock_objcg
-Message-ID: <Z9jKjxtlMExbmLkh@google.com>
-References: <20250315174930.1769599-1-shakeel.butt@linux.dev>
- <20250315174930.1769599-10-shakeel.butt@linux.dev>
+	linux-fsdevel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	Liu Ye <liuye@kylinos.cn>
+Subject: [PATCH v3] fs/proc/page: Refactoring to reduce code duplication.
+Date: Tue, 18 Mar 2025 10:51:38 +0800
+Message-Id: <20250318025138.170876-1-liuyerd@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250315174930.1769599-10-shakeel.butt@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3WJfE39hnuBWKAA--.1949S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxKr48XF43AF43tFWfurykXwb_yoWxXrW8pF
+	s8GF4jyrs5W3s0kw1xJ398Zas8G3s3Aa1Yy3y7G34fZa47JrnakFySyFnYvFyxGryUZr1U
+	ua909ry3CFWjyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j089NUUUUU=
+X-CM-SenderInfo: 5olx5vlug6il2tof0z/xtbBMRAUTGfY3fg8AwAAsc
 
-On Sat, Mar 15, 2025 at 10:49:30AM -0700, Shakeel Butt wrote:
-> The replace_stock_objcg() is being called by only refill_obj_stock, so
-> manually inline it.
-> 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+From: Liu Ye <liuye@kylinos.cn>
 
-Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+The function kpageflags_read and kpagecgroup_read is quite similar
+to kpagecount_read. Consider refactoring common code into a helper
+function to reduce code duplication.
 
-Thanks!
+Signed-off-by: Liu Ye <liuye@kylinos.cn>
+
+---
+V3 : Add a stub for page_cgroup_ino and remove the #ifdef CONFIG_MEMCG.
+V2 : Use an enumeration to indicate the operation to be performed
+to avoid passing functions.
+---
+---
+ fs/proc/page.c             | 161 ++++++++++++-------------------------
+ include/linux/memcontrol.h |   4 +
+ 2 files changed, 57 insertions(+), 108 deletions(-)
+
+diff --git a/fs/proc/page.c b/fs/proc/page.c
+index a55f5acefa97..cbadbf9568a1 100644
+--- a/fs/proc/page.c
++++ b/fs/proc/page.c
+@@ -22,6 +22,12 @@
+ #define KPMMASK (KPMSIZE - 1)
+ #define KPMBITS (KPMSIZE * BITS_PER_BYTE)
+ 
++enum kpage_operation {
++	KPAGE_FLAGS,
++	KPAGE_COUNT,
++	KPAGE_CGROUP,
++};
++
+ static inline unsigned long get_max_dump_pfn(void)
+ {
+ #ifdef CONFIG_SPARSEMEM
+@@ -37,19 +43,17 @@ static inline unsigned long get_max_dump_pfn(void)
+ #endif
+ }
+ 
+-/* /proc/kpagecount - an array exposing page mapcounts
+- *
+- * Each entry is a u64 representing the corresponding
+- * physical page mapcount.
+- */
+-static ssize_t kpagecount_read(struct file *file, char __user *buf,
+-			     size_t count, loff_t *ppos)
++static ssize_t kpage_read(struct file *file, char __user *buf,
++		size_t count, loff_t *ppos,
++		enum kpage_operation op)
+ {
+ 	const unsigned long max_dump_pfn = get_max_dump_pfn();
+ 	u64 __user *out = (u64 __user *)buf;
++	struct page *ppage;
+ 	unsigned long src = *ppos;
+ 	unsigned long pfn;
+ 	ssize_t ret = 0;
++	u64 info;
+ 
+ 	pfn = src / KPMSIZE;
+ 	if (src & KPMMASK || count & KPMMASK)
+@@ -59,19 +63,27 @@ static ssize_t kpagecount_read(struct file *file, char __user *buf,
+ 	count = min_t(unsigned long, count, (max_dump_pfn * KPMSIZE) - src);
+ 
+ 	while (count > 0) {
+-		struct page *page;
+-		u64 mapcount = 0;
+-
+-		/*
+-		 * TODO: ZONE_DEVICE support requires to identify
+-		 * memmaps that were actually initialized.
+-		 */
+-		page = pfn_to_online_page(pfn);
+-		if (page)
+-			mapcount = folio_precise_page_mapcount(page_folio(page),
+-							       page);
+-
+-		if (put_user(mapcount, out)) {
++		ppage = pfn_to_online_page(pfn);
++
++		if (ppage) {
++			switch (op) {
++			case KPAGE_FLAGS:
++				info = stable_page_flags(ppage);
++				break;
++			case KPAGE_COUNT:
++				info = folio_precise_page_mapcount(page_folio(ppage), ppage);
++				break;
++			case KPAGE_CGROUP:
++				info = page_cgroup_ino(ppage);
++				break;
++			default:
++				info = 0;
++				break;
++			}
++		} else
++			info = 0;
++
++		if (put_user(info, out)) {
+ 			ret = -EFAULT;
+ 			break;
+ 		}
+@@ -89,17 +101,23 @@ static ssize_t kpagecount_read(struct file *file, char __user *buf,
+ 	return ret;
+ }
+ 
++/* /proc/kpagecount - an array exposing page mapcounts
++ *
++ * Each entry is a u64 representing the corresponding
++ * physical page mapcount.
++ */
++static ssize_t kpagecount_read(struct file *file, char __user *buf,
++		size_t count, loff_t *ppos)
++{
++	return kpage_read(file, buf, count, ppos, KPAGE_COUNT);
++}
++
+ static const struct proc_ops kpagecount_proc_ops = {
+ 	.proc_flags	= PROC_ENTRY_PERMANENT,
+ 	.proc_lseek	= mem_lseek,
+ 	.proc_read	= kpagecount_read,
+ };
+ 
+-/* /proc/kpageflags - an array exposing page flags
+- *
+- * Each entry is a u64 representing the corresponding
+- * physical page flags.
+- */
+ 
+ static inline u64 kpf_copy_bit(u64 kflags, int ubit, int kbit)
+ {
+@@ -220,47 +238,17 @@ u64 stable_page_flags(const struct page *page)
+ #endif
+ 
+ 	return u;
+-};
++}
+ 
++/* /proc/kpageflags - an array exposing page flags
++ *
++ * Each entry is a u64 representing the corresponding
++ * physical page flags.
++ */
+ static ssize_t kpageflags_read(struct file *file, char __user *buf,
+-			     size_t count, loff_t *ppos)
++		size_t count, loff_t *ppos)
+ {
+-	const unsigned long max_dump_pfn = get_max_dump_pfn();
+-	u64 __user *out = (u64 __user *)buf;
+-	unsigned long src = *ppos;
+-	unsigned long pfn;
+-	ssize_t ret = 0;
+-
+-	pfn = src / KPMSIZE;
+-	if (src & KPMMASK || count & KPMMASK)
+-		return -EINVAL;
+-	if (src >= max_dump_pfn * KPMSIZE)
+-		return 0;
+-	count = min_t(unsigned long, count, (max_dump_pfn * KPMSIZE) - src);
+-
+-	while (count > 0) {
+-		/*
+-		 * TODO: ZONE_DEVICE support requires to identify
+-		 * memmaps that were actually initialized.
+-		 */
+-		struct page *page = pfn_to_online_page(pfn);
+-
+-		if (put_user(stable_page_flags(page), out)) {
+-			ret = -EFAULT;
+-			break;
+-		}
+-
+-		pfn++;
+-		out++;
+-		count -= KPMSIZE;
+-
+-		cond_resched();
+-	}
+-
+-	*ppos += (char __user *)out - buf;
+-	if (!ret)
+-		ret = (char __user *)out - buf;
+-	return ret;
++	return kpage_read(file, buf, count, ppos, KPAGE_FLAGS);
+ }
+ 
+ static const struct proc_ops kpageflags_proc_ops = {
+@@ -271,53 +259,10 @@ static const struct proc_ops kpageflags_proc_ops = {
+ 
+ #ifdef CONFIG_MEMCG
+ static ssize_t kpagecgroup_read(struct file *file, char __user *buf,
+-				size_t count, loff_t *ppos)
++		size_t count, loff_t *ppos)
+ {
+-	const unsigned long max_dump_pfn = get_max_dump_pfn();
+-	u64 __user *out = (u64 __user *)buf;
+-	struct page *ppage;
+-	unsigned long src = *ppos;
+-	unsigned long pfn;
+-	ssize_t ret = 0;
+-	u64 ino;
+-
+-	pfn = src / KPMSIZE;
+-	if (src & KPMMASK || count & KPMMASK)
+-		return -EINVAL;
+-	if (src >= max_dump_pfn * KPMSIZE)
+-		return 0;
+-	count = min_t(unsigned long, count, (max_dump_pfn * KPMSIZE) - src);
+-
+-	while (count > 0) {
+-		/*
+-		 * TODO: ZONE_DEVICE support requires to identify
+-		 * memmaps that were actually initialized.
+-		 */
+-		ppage = pfn_to_online_page(pfn);
+-
+-		if (ppage)
+-			ino = page_cgroup_ino(ppage);
+-		else
+-			ino = 0;
+-
+-		if (put_user(ino, out)) {
+-			ret = -EFAULT;
+-			break;
+-		}
+-
+-		pfn++;
+-		out++;
+-		count -= KPMSIZE;
+-
+-		cond_resched();
+-	}
+-
+-	*ppos += (char __user *)out - buf;
+-	if (!ret)
+-		ret = (char __user *)out - buf;
+-	return ret;
++	return kpage_read(file, buf, count, ppos, KPAGE_CGROUP);
+ }
+-
+ static const struct proc_ops kpagecgroup_proc_ops = {
+ 	.proc_flags	= PROC_ENTRY_PERMANENT,
+ 	.proc_lseek	= mem_lseek,
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 6e74b8254d9b..df4d28c7e1a3 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1794,6 +1794,10 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
+ {
+ }
+ 
++static inline ino_t page_cgroup_ino(struct page *page)
++{
++	return 0;
++}
+ #endif /* CONFIG_MEMCG */
+ 
+ #if defined(CONFIG_MEMCG) && defined(CONFIG_ZSWAP)
+-- 
+2.25.1
+
 
