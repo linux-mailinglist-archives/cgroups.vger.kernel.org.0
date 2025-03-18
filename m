@@ -1,137 +1,189 @@
-Return-Path: <cgroups+bounces-7123-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7124-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9B63A66D46
-	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 09:03:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFDADA66D31
+	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 09:01:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96BA918923EF
-	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 08:00:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF2AA3BD408
+	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 08:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574E21DE4C9;
-	Tue, 18 Mar 2025 07:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96BE51F8724;
+	Tue, 18 Mar 2025 07:59:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eXhJLyRV"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M2gfY0Us";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GdaaZzNn";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M2gfY0Us";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GdaaZzNn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9677D205517;
-	Tue, 18 Mar 2025 07:58:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A63C205E36
+	for <cgroups@vger.kernel.org>; Tue, 18 Mar 2025 07:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742284740; cv=none; b=OgwVpN2j+LuIYyo99I5dpqOGe9O/6/hUX46ZKJyt1e0jdYzD87SlHeUlecXp3aBP0RfKsgYIb1XjYJEXE9RPDrsjtK4FpjxuNe5a8C27aBk603xJ0GH7dDPSAPSmdA588ga5O15ZIT8bdFEKDejjaY/Rp7K27FBqbCOvEIsV/WU=
+	t=1742284743; cv=none; b=piDvxs77lln2oY12VwFSZvOc90HpH/FF2feJll2f2gZVT7gtt8egkbX2InQe5J5kqAH4UfeA38T+stgWxmB9GrW9gcrl85ZQdbTRWeBzlGKzb612XKdFyLHhmz8ipj1EOJ87OWVPTeQsWo20/IIfClVIY1gfnA3TgnOBk2GVQW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742284740; c=relaxed/simple;
-	bh=+KVFcHIwzStrciFn3y12/MmssBKVGWVfcdRpI1Dw/Zs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GcsnRW5ycrKidgigqXjdMMYfwoS693SczMXEiOD/6xUQ0/duadcGOMyNzNEFATf+rsU0K9b/HeJjYDO61pnPuR4WQT7tGXGeBucCqUKdyKowHWz2dk155V1bnKrrVrId4xRe+TAtVG1BOJHPj8CyvofkbCHm2Ow745shgJU+lfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eXhJLyRV; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2241053582dso467585ad.1;
-        Tue, 18 Mar 2025 00:58:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742284738; x=1742889538; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yYkie2WFFPh6MLf16Vdfl3mc2wE13ro8k5To4/q+ryc=;
-        b=eXhJLyRVpIak7XmBIvbe5TsIvhMZob1pQQgWke9mAzhNlefyZyQmiG12R0Mh3aiYYM
-         4qNVUN3oqr8yQ2PnHeGM6VfbtMSFVhYNYak3Zt9kY1XnyePSCyzUjuHRF2Q1TqsU5K06
-         pFFV+NKQDDdy2gjrozN+5tWoUyc+wXQxHIpet8/1WvXFoE3UgWIk2z6mOpPN7m0oCEEd
-         5fpu92O8ygqcxetezMXlGqBxfr3jaLFiscQ6dPh62QYTBfk82ZoRNzhpfRigrav4Qu1d
-         FHxEzHvHb1NjpycmZ1GzHfeQME25HCQNXQ0WK0wSL7pvkIJcQk9wnnkvzt7/rCYKl1GP
-         1v2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742284738; x=1742889538;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yYkie2WFFPh6MLf16Vdfl3mc2wE13ro8k5To4/q+ryc=;
-        b=RFREmkVrpdlng3oZjz7wKBi7ktjfxLVe0aIh/i0gaDpzfM4hivx4tbVdHZaUvZc2oS
-         ZxWepgz0PSekDgv0AHd3QNp+d1HflprpKozZqV2OmAWF46JZAeC4asRDmRRhyHDgWUA6
-         PVTwzKVbpemiewR2p0u+AYWPuSctqOcx0W8WSKyIhU/0Db3KdlBILp8Udcla8Xrq959f
-         rXU2rudSpJmaJCQhrVlXJRP22zFCpLpAdUt2iN9pO9I57FHpRsP6dgYlzgl641AYcjro
-         yaHvFBF/XvsuXxluD8TVkY1owfY4Y7emnFl38+zMbqBMxiTHYywMIks2JklmHwGXOGkl
-         cFmg==
-X-Forwarded-Encrypted: i=1; AJvYcCWTYhSyA0Ckdhy0XdarT2zAY+wxELaHCJA7iGlbULb2gychvOPi/Ld0yh7u1SWxGTghDb9Fzev5poWTNT34@vger.kernel.org, AJvYcCWjQo8SjCr/YvTbl+N2qvtHezWhfHUf70fBp3RDWBcBBJizF4+A0ektUiRTBKi4/bSvkYDVyyE6YjM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw6WLyQEn03I2qdxxM7HRpjNDZF5qRq/QUrbItIQ5j4Fi+yZ4DA
-	5K9UICJXRkkUVEGx1fUuY2USGdDELTiKAi6MPjg94NrWx0a4YbtgSCcRZg==
-X-Gm-Gg: ASbGncvnM5gIXi7vdj8LfW3YnlKcwwcSOdHrMcGxZW7lOQHRiixzfpk8enji18afDfQ
-	TLQ7tKGBOh7lH+ZuMzlrIMlZLioxxWSaqN+Z5ppdNhrMxuPLF3lEq3DSTsnqTnFhwvJZhMhQtm1
-	yD1v+eVETX2JQjtuK+sKaaPNiCi9Jhx/iJFydFXGN7LBcLgW0bS7CgyU0teajFVbTGkDDcb3HK9
-	10fKtPrGp8peGQfZvRCRBs7vYLF8E60HfjJUGAdO94yvkFUmruiJXDQ1MhgTdMQMcZJIAm2BvbD
-	fnsywy26xa8yfRW8mldwwoTaOsqgD8J7JjdmJEvF2o7J4HUGKmzHI+zbYiotxeve+JWBPJDMCw=
-	=
-X-Google-Smtp-Source: AGHT+IHZPc811NNLRZEIxP4R4zyaMG1jX2U3vYy0bi+ioTPSMd6Mg09k60Le2zemZ1Wb06bX8d7uHQ==
-X-Received: by 2002:a17:902:d584:b0:224:1234:5a3b with SMTP id d9443c01a7336-225e0b62e3dmr201449945ad.51.1742284737785;
-        Tue, 18 Mar 2025 00:58:57 -0700 (PDT)
-Received: from localhost.localdomain ([103.165.80.178])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-225c6bbfdfesm88149865ad.203.2025.03.18.00.58.53
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 18 Mar 2025 00:58:57 -0700 (PDT)
-From: Hao Jia <jiahao.kernel@gmail.com>
-To: hannes@cmpxchg.org,
-	akpm@linux-foundation.org,
-	tj@kernel.org,
-	corbet@lwn.net,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	Hao Jia <jiahao1@lixiang.com>
-Subject: [PATCH 2/2] cgroup: docs: Add pswpin and pswpout items in cgroup v2 doc
-Date: Tue, 18 Mar 2025 15:58:33 +0800
-Message-Id: <20250318075833.90615-3-jiahao.kernel@gmail.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
-In-Reply-To: <20250318075833.90615-1-jiahao.kernel@gmail.com>
-References: <20250318075833.90615-1-jiahao.kernel@gmail.com>
+	s=arc-20240116; t=1742284743; c=relaxed/simple;
+	bh=y6FUdqVL0RpA2aDaFdyihfsoYuqJe5hlUk2KbI9bmCE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=B4UE2NE6E1dn1n9zLx7lRZYwhcSBzWBFR4js8L+tHn8gALWULpIeUwtSSqXYNcKvissN5fUkBM3DVhu4IlF6eH+iDaRdPNDW3BmcKRKOzYVLptaqN0os/LGHalo/sRrz+12CO6ny2JpmphTCK+EKrdugrp1STJEb08bKeYRoeuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M2gfY0Us; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GdaaZzNn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M2gfY0Us; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GdaaZzNn; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2D1D921D85;
+	Tue, 18 Mar 2025 07:58:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1742284739; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LhvAj9f0vslq+dqnUVL7oqgaJNKSRMMwm6koO2lL4Fg=;
+	b=M2gfY0UsTD9UDg4vW6BrxWNDO6z32BccQJCWkQm7dsignIGrZhdsTB866ayR94XuGeMBfR
+	Ud7oUD+RgFX1G7j1FLLp/XcX8j/QKoms353Bfbto8Pb1XqKgwp3pjT2YWTajkwTie0rCG2
+	zVTwgBfULjigfu+rGLjwo2kfA2TGo1s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1742284739;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LhvAj9f0vslq+dqnUVL7oqgaJNKSRMMwm6koO2lL4Fg=;
+	b=GdaaZzNnmSyDXA6SRNZ9yMgodM1FCvWfXSfn+aQBLj2V2W83Nqd94l65d92qU5MHoaL/lL
+	uWb5f9Xa/8NZk1Aw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1742284739; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LhvAj9f0vslq+dqnUVL7oqgaJNKSRMMwm6koO2lL4Fg=;
+	b=M2gfY0UsTD9UDg4vW6BrxWNDO6z32BccQJCWkQm7dsignIGrZhdsTB866ayR94XuGeMBfR
+	Ud7oUD+RgFX1G7j1FLLp/XcX8j/QKoms353Bfbto8Pb1XqKgwp3pjT2YWTajkwTie0rCG2
+	zVTwgBfULjigfu+rGLjwo2kfA2TGo1s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1742284739;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LhvAj9f0vslq+dqnUVL7oqgaJNKSRMMwm6koO2lL4Fg=;
+	b=GdaaZzNnmSyDXA6SRNZ9yMgodM1FCvWfXSfn+aQBLj2V2W83Nqd94l65d92qU5MHoaL/lL
+	uWb5f9Xa/8NZk1Aw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0ECE11379A;
+	Tue, 18 Mar 2025 07:58:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id GpKrAsMn2WeEBQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 18 Mar 2025 07:58:59 +0000
+Message-ID: <5429e6f1-a050-4f2b-b83c-aba824636bb8@suse.cz>
+Date: Tue, 18 Mar 2025 08:58:58 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/9] memcg: manually inline __refill_stock
+Content-Language: en-US
+To: Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Muchun Song <muchun.song@linux.dev>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Meta kernel team <kernel-team@meta.com>
+References: <20250315174930.1769599-1-shakeel.butt@linux.dev>
+ <20250315174930.1769599-5-shakeel.butt@linux.dev>
+ <Z9jFPP7HsTzs_aW0@google.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <Z9jFPP7HsTzs_aW0@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-From: Hao Jia <jiahao1@lixiang.com>
+On 3/18/25 01:58, Roman Gushchin wrote:
+> On Sat, Mar 15, 2025 at 10:49:25AM -0700, Shakeel Butt wrote:
+>> There are no more multiple callers of __refill_stock(), so simply inline
+>> it to refill_stock().
+>> 
+>> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+>> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>> ---
+>>  mm/memcontrol.c | 32 ++++++++++++--------------------
+>>  1 file changed, 12 insertions(+), 20 deletions(-)
+>> 
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index b54e3a1d23bd..7054b0ebd207 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -1865,14 +1865,21 @@ static void drain_local_stock(struct work_struct *dummy)
+>>  	obj_cgroup_put(old);
+>>  }
+>>  
+>> -/*
+>> - * Cache charges(val) to local per_cpu area.
+>> - * This will be consumed by consume_stock() function, later.
+>> - */
+>> -static void __refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>> +/* Should never be called with root_mem_cgroup. */
+> 
+> How about adding something like this?
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 768d6b15dbfa..5c26002f2168 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1881,6 +1881,8 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  {
+>         unsigned long flags;
+> 
+> +       VM_WARN_ON_ONCE(mem_cgroup_is_root(memcg));
 
-The commit 15ff4d409e1a ("mm/memcontrol: add per-memcg pgpgin/pswpin
-counter") introduced the pswpin and pswpout items in the memory.stat
-of cgroup v2. Therefore, update them accordingly in the cgroup-v2
-documentation.
+Already in patch 1 though? But I agree.
 
-Signed-off-by: Hao Jia <jiahao1@lixiang.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index d6692607f80a..c0ae7a76005a 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1555,6 +1555,12 @@ The following nested keys are defined.
- 	  workingset_nodereclaim
- 		Number of times a shadow node has been reclaimed
- 
-+	  pswpin (npn)
-+		Number of pages swapped into memory
-+
-+	  pswpout (npn)
-+		Number of pages swapped out of memory
-+
- 	  pgscan (npn)
- 		Amount of scanned pages (in an inactive LRU list)
- 
--- 
-2.34.1
+> +
+>         local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>         __refill_stock(memcg, nr_pages);
+>         local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> 
+> 
+> Other than that,
+> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
 
