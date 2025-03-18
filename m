@@ -1,74 +1,138 @@
-Return-Path: <cgroups+bounces-7129-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7130-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 300BCA66F6D
-	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 10:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B49AA67104
+	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 11:18:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A06719A2BB2
-	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 09:13:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D712B189FD14
+	for <lists+cgroups@lfdr.de>; Tue, 18 Mar 2025 10:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553A52046B0;
-	Tue, 18 Mar 2025 09:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627E7207A2C;
+	Tue, 18 Mar 2025 10:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cleverwise.pl header.i=@cleverwise.pl header.b="Bvebgw4W"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="N24W0y4B"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail.cleverwise.pl (mail.cleverwise.pl [91.134.75.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8A61F4179
-	for <cgroups@vger.kernel.org>; Tue, 18 Mar 2025 09:12:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.134.75.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550122040B3
+	for <cgroups@vger.kernel.org>; Tue, 18 Mar 2025 10:17:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742289176; cv=none; b=IJpvLf9rOih7vUqNWTcx83lHH+AU7JHraFKUmAD3977eFuEcMG62K0NqjvbIhbL3X75BWw0SNYWV1BW3F/INQnErHiLuBHNLL5kf8yeVq7kDnUoJd/Bb6IIyYt8/J/yMU7m5nJjXkcMQU2Wqr7+xSSxxGwxJE5SjC5/H0F3n7R4=
+	t=1742293070; cv=none; b=mZHau3s8txOnPiUZP6tavhRMK2ekyBK4M4pWY7XF5LK+xUbfqVJOUHdEZakcKxre2oMpMUuLgMaNF8trUGobGYHpaGFe1N1RPbBO8hxJhA0oDaDpOxXwPo1sca/bOmgrCXnu5ejH1HklhX80XfldOld0Cs7pgXknMtpgsN8rL9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742289176; c=relaxed/simple;
-	bh=wuYpI4TZwpRIfxuDuyVvyGwa8UUEXOKnQMlV/41UZBY=;
-	h=Message-ID:Date:From:To:Subject:MIME-Version:Content-Type; b=RXSR3SjPBf56ccKuSddpUbvT3SXwCmV1Gl0D+lkyi/D1QEszbB0qQG/HgFFfwvsNZxfKqUagOtelhy2XtRoKlQc1lzndLXnG/a2AU/69i5MSYINDdJZY/vwoFnisVIeLPCo4+ngXFIvGsLhIH/W012vtfBiU95LROhA4aY9Tovs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cleverwise.pl; spf=pass smtp.mailfrom=cleverwise.pl; dkim=pass (2048-bit key) header.d=cleverwise.pl header.i=@cleverwise.pl header.b=Bvebgw4W; arc=none smtp.client-ip=91.134.75.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cleverwise.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cleverwise.pl
-Received: by mail.cleverwise.pl (Postfix, from userid 1002)
-	id E571D23747; Tue, 18 Mar 2025 09:05:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cleverwise.pl;
-	s=mail; t=1742288760;
-	bh=wuYpI4TZwpRIfxuDuyVvyGwa8UUEXOKnQMlV/41UZBY=;
-	h=Date:From:To:Subject:From;
-	b=Bvebgw4W0aG6ZmiqMsm4D1do+NZyLxej28JcHaEmCVJWqYt+Zz0sWRieYoE09XcJc
-	 s/aESSkcB15UKLLKZfO9RTTi+6cVsrJhjpxf/kOg/Ah5SJFr01lx97bzxjy0eaLTlH
-	 pVRVR//nQjeUK8GdvDWD0n5Uep+0srrHfpwQZtLiVot3n7k3Vt46+pcAEwCy5Gc0vy
-	 +DxgTc45nfFqO6uyV4C4uGV3gvJEYq/Be5BrMt1ukMvNjluxNhrLq+MPuQPCgsIoMn
-	 au3chIJA2TPV242dsEN/KjrmBLzS0RVUxWMQilKYN4Yo/+OXEtAgaop4gKkQI9GKuy
-	 4c6K6A05C0law==
-Received: by mail.cleverwise.pl for <cgroups@vger.kernel.org>; Tue, 18 Mar 2025 09:05:39 GMT
-Message-ID: <20250318074500-0.1.15.2rrb.0.p2h6pur8d5@cleverwise.pl>
-Date: Tue, 18 Mar 2025 09:05:39 GMT
-From: "Adam Trybura" <adam.tybura@cleverwise.pl>
-To: <cgroups@vger.kernel.org>
-Subject: Pozycjonowanie www
-X-Mailer: mail.cleverwise.pl
+	s=arc-20240116; t=1742293070; c=relaxed/simple;
+	bh=IFBxPeTjHI7TeObAp8XDFRUhMTnCq+H7JfaB8yzIjPY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PaATMoxucPZrNLTJ5eAfpOUrhxno7+aEG6bMa6Z+vu1SVZvxkn5qIEmklGEV8XMgHftK0/LhHp5+NUDIXIa9+pKeNaMAlfGdb7vEPXVo7LgTBBklGRI8+M++Yraq1yRAlOJaZ/jozoAMvotWQFfIC8OUbh/BCCHi2Zu85xXCAjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=N24W0y4B; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4394a0c65fcso28938365e9.1
+        for <cgroups@vger.kernel.org>; Tue, 18 Mar 2025 03:17:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1742293067; x=1742897867; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IFBxPeTjHI7TeObAp8XDFRUhMTnCq+H7JfaB8yzIjPY=;
+        b=N24W0y4BUC65V80kMsbWm+saRH/9kqOigHaw0N7gKMLK4/Z8bHLxGcvvTFjcJqmlHR
+         Cltzu5pAuTFtIwiRsmdoUwUagW7n/z7mzZZHdZAASYow/PwV5AXuSNW1hdSxynX+86FJ
+         b4NTbSrYdTFVinW2q9U6btF3WDPAz40oWc4vDpQb5HBizFKPP/c4AWC2daD+i2AhhlN9
+         nuM/YpU1F1jsnMUjrEkDT/HnV3Ol8cwbkk57W+pmX6Xbh7XXyx0gUOa/5O2R9BMAGegM
+         yi3qGLGehthcW2agJjFhLhWgmH02BdQuvQqdjzqCaiZFWGtPP71CcAofAI5U+D7kBYfI
+         hpCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742293067; x=1742897867;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IFBxPeTjHI7TeObAp8XDFRUhMTnCq+H7JfaB8yzIjPY=;
+        b=k6lbbVIYy4cYy8DquT+zTWt6bBk8Qbyg+nn0cEedCW9WEijug8hKAT7kh0KCoQEPLa
+         4U1NdNRtnaAgGeyt3OE1sGNCxDqJfkWvFTQrXP9LuKKe2tBIQ26CzYmhUIiwH9NhYEFI
+         AHvdThBX/8ZgSeewwBV+IMMRRZeIiCPtHQtxKLRNID3UbolfBde3fGkn/lzaALOf1DDK
+         rayEAPmI9D2sQb0qmhQEKKbqqxPtiZghlbMMKSIDxOcYbIR6K78lQ195Nz4ExXUbG/vg
+         yjf9Ivs6A+Ij202pif8fhNDUTLafyVq5j8GJMTv4KyqJXNJLyPbUfyMNG10YwHXfIXC8
+         nKkg==
+X-Forwarded-Encrypted: i=1; AJvYcCXTMBDshhB7JvzzWwEiCVf0QjCITCiiOjtULRR5iaQGAdxVTi4F3clYZe/XPEqg0rOyZmjNy+uJ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx2ISOYXl4+1VfdWreN2I7J0evAeKPVyZLZy+FzDXIfJ15oacQh
+	b3sdzOIpitq0SpgZ/S2Ro3prlOrVldSfs2yIU5Nr9VA9q5lYgtHjlvf3hBlT+Vo=
+X-Gm-Gg: ASbGncuoRU7QEozPJJBQVS07H89KtirCTR1DMEXAchDk1DNrmSfALBiIlItCLmb2Lo+
+	lSNMjnp1VZtK/7F+s5KwkjCHKHW0EWwMkD9JDiTpMoTg9OWZChNTeyzRWTHfaifzgyW0BkNQwQC
+	5fCvcHg+x3fhGRXUw2AlhEQREcFP/J/5X+72trSSXbXc6zgvyH0tPPxy/euahFaVMr1mW1RYWx8
+	+0GT0Lyqz4wM+YdQE+TVyBBa9XET3AkE39A50GTPEGvElMtqIa+HGD8FhBvRAZ8hWoJp9FlLozv
+	QUn57Dcb2IK4ogEgqHF9AbxulVmt7EVQlZjSISNm9+Xvt64=
+X-Google-Smtp-Source: AGHT+IGDLa5UPBGfrRVOOm3XvQnMemu2Schtcck+5EYcWBJ65baV+gaiWnBiXGOVUyqS4P0tACKxdg==
+X-Received: by 2002:a05:600c:4e8b:b0:43c:fa52:7d2d with SMTP id 5b1f17b1804b1-43d3b9dc596mr11587965e9.20.1742293066628;
+        Tue, 18 Mar 2025 03:17:46 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d3ae040f9sm13194615e9.0.2025.03.18.03.17.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Mar 2025 03:17:46 -0700 (PDT)
+Date: Tue, 18 Mar 2025 11:17:44 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Hao Jia <jiahao.kernel@gmail.com>
+Cc: hannes@cmpxchg.org, akpm@linux-foundation.org, tj@kernel.org, 
+	corbet@lwn.net, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	Hao Jia <jiahao1@lixiang.com>
+Subject: Re: [PATCH 1/2] mm: vmscan: Split proactive reclaim statistics from
+ direct reclaim statistics
+Message-ID: <qt73bnzu5k7ac4hnom7jwhsd3qsr7otwidu3ptalm66mbnw2kb@2uunju6q2ltn>
+References: <20250318075833.90615-1-jiahao.kernel@gmail.com>
+ <20250318075833.90615-2-jiahao.kernel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="m6wfz6q3cfwefzqq"
+Content-Disposition: inline
+In-Reply-To: <20250318075833.90615-2-jiahao.kernel@gmail.com>
+
+
+--m6wfz6q3cfwefzqq
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 1/2] mm: vmscan: Split proactive reclaim statistics from
+ direct reclaim statistics
+MIME-Version: 1.0
 
-Dzie=C5=84 dobry,
+Hello.
 
-jako specjali=C5=9Bci w dziedzinie SEO z przyjemno=C5=9Bci=C4=85 wesprzem=
-y Pa=C5=84stwa wysi=C5=82ki w dotarciu z ofert=C4=85 do szerszego grona K=
-lient=C3=B3w, wykorzystuj=C4=85c skuteczne strategie pozycjonowania w Goo=
-gle.
+On Tue, Mar 18, 2025 at 03:58:32PM +0800, Hao Jia <jiahao.kernel@gmail.com>=
+ wrote:
+> From: Hao Jia <jiahao1@lixiang.com>
+>=20
+> In proactive memory reclaim scenarios, it is necessary to
+> accurately track proactive reclaim statistics to dynamically
+> adjust the frequency and amount of memory being reclaimed
+> proactively. Currently, proactive reclaim is included in
+> direct reclaim statistics, which can make these
+> direct reclaim statistics misleading.
 
-Jeste=C5=9Bcie Pa=C5=84stwo zainteresowani niezobowi=C4=85zuj=C4=85c=C4=85=
- rozmow=C4=85 w tej sprawie?
+How silly is it to have multiple memory.reclaim writers?
+Would it make sense to bind those statistics to each such a write(r)
+instead of the aggregated totals?
 
+Michal
 
-Pozdrawiam
-Adam Trybura
+--m6wfz6q3cfwefzqq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ9lIRgAKCRAt3Wney77B
+SRN9AQCIE/qNRp6gU2k+xnK3FHJnFxAelfP/oIqk3z71MjMSZgD/cizNdVftiC2U
+CSpV9isE71qsCu5oCAFzbKznXsbF4Q8=
+=Bloy
+-----END PGP SIGNATURE-----
+
+--m6wfz6q3cfwefzqq--
 
