@@ -1,116 +1,136 @@
-Return-Path: <cgroups+bounces-7156-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7157-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8586A68C8B
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 13:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A96DFA69412
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 16:50:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EEDC3AEF0C
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 12:13:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 555BC3AFDF9
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 15:44:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A0A255259;
-	Wed, 19 Mar 2025 12:13:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9312F1D5CD7;
+	Wed, 19 Mar 2025 15:44:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BYHZ8oi6"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="tS+DbH+/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C31F255E40
-	for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 12:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550831C1F02
+	for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 15:44:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742386422; cv=none; b=KT4cYZdewsIk8upJKbLF7W7d8x1UVqb/TNRepL5r1RPsME5L+ND6O1bmDP3uN5vlUn6yMMEJKWXYyr1VnxqYQH2MyRwVR6fNIeNQPkc0FvqNzZtFrXOpLOXTWzSmuHvJOqjvOl+IZDlQ//U/b7rgdgqt+p+OkpmB+FstN08d7lk=
+	t=1742399077; cv=none; b=tywuwS+pvH5S5+iMBHuagY4AOJrYWmMPxJjlNV84J1ilJfX+U1TEwW4VUvtLWW2+ZQ72Swi5FOQzjWi43Eb/48eEh2bVs9oHxIKAkDy1ba6WP2SBdxugFdJRMbJL7h4Tyzlaqk58XyYzr//86BUVKTqWwhJDtJHgtvyHQeO7kCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742386422; c=relaxed/simple;
-	bh=LyJFMfmI/v7jDUiHaBkLE0VqQt6PFJLGMn02FPZ6ymY=;
+	s=arc-20240116; t=1742399077; c=relaxed/simple;
+	bh=ijx4QVA6cu7/bppMn4qjyQgrq7PDRcrE8h4ApLxVMGU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Me5RYM6Cv42plFAAsRl27/NhS8O829plKILRwDVy2rG+39SzMr5DaF/QOppWcisxXJA5bCJGKIv1vTVzi92exftdlIDkAusZMnJlzdyE7tcJl1q2a1TR3vhGCTEg34wJahIEPwTwP9UKBR2gCkY1NUrrgP/spMXRW5xZ0IYyGgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BYHZ8oi6; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1742386419;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YeN3DvlwH1vdQPd4hot2bQa9DxYxFDt9cRW/xAAcfPw=;
-	b=BYHZ8oi6606sJI6KiNpRPL6LpR8F/3oriSOMFSVxI3eiKoXKp9Ha/4FMtRw3uKQkvEvoZU
-	9gK91JfSB4E/oKHJDaLjSOG68Pin5aaBpjwRT9IKxTTuWkkpAST6AlXB3mJXhoxIu2bq4v
-	yqwC9mhEpabrspAYv3Oycyoips9e4Bg=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-673-2BqcAwIaOGKRFO6PEDK2Lg-1; Wed,
- 19 Mar 2025 08:13:36 -0400
-X-MC-Unique: 2BqcAwIaOGKRFO6PEDK2Lg-1
-X-Mimecast-MFC-AGG-ID: 2BqcAwIaOGKRFO6PEDK2Lg_1742386414
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 12D2C1800260;
-	Wed, 19 Mar 2025 12:13:34 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.7])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EBE8D180094A;
-	Wed, 19 Mar 2025 12:13:25 +0000 (UTC)
-Date: Wed, 19 Mar 2025 20:13:20 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Nilay Shroff <nilay@linux.ibm.com>
-Cc: linux-block@vger.kernel.org, cgroups@vger.kernel.org, hch@lst.de,
-	hare@suse.de, dlemoal@kernel.org, axboe@kernel.dk, tj@kernel.org,
-	josef@toxicpanda.com, gjoyce@ibm.com, lkp@intel.com,
-	oliver.sang@intel.com
-Subject: Re: [PATCH 1/2] block: release q->elevator_lock in ioc_qos_write
-Message-ID: <Z9q04AC0XUQ2DBwu@fedora>
-References: <20250319105518.468941-1-nilay@linux.ibm.com>
- <20250319105518.468941-2-nilay@linux.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FV4Iugqh4mxRUDFomdWqCfv5FxLLT082+ef0iMKXFBkGQBHl/RevyVoGQAD+d3rCZ91Y/H5xAwS6g5upWDoTGcOLFLSGmojZJRr248Z9PpiSGHzCXl50YPLQj4nG43ShUWU6y6oxt6I2yKyNmwU5UuO7NHDDqIiSI1esiN4u2iA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=tS+DbH+/; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-476ac73c76fso68427561cf.0
+        for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 08:44:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1742399074; x=1743003874; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9si6QKET998u7WyNlD/oIsbCSW0xvxa41wWw0Ozqipk=;
+        b=tS+DbH+/UZlkS/aF4DyezYHorNb/pFwXbKo/UvY4EVdZSx/jbqOVyIYd+CGgx8rLvo
+         1A3YrAzGY0AC0BNb6LYD/99322ufTOIkGMxSXN3xbcKoQuveAh9CvEdKiDKIcRlj58XE
+         xNk8BiJFfp3ZI0fZwMAf9AmRGcMc8dnZH1ZiHV4YZg3tkNDvQksIye2al2pAzgrmr2Sg
+         nAs/qua4G+YBw+Xp64j39s8orrFOsmFkZnTlQm9Okp91Zm0gf5W/6ealoTKFtGavAbYY
+         vA8NTnCI5m+fqKyU5IfgmAhJ6fANAHkHkoTJOUIu7Ka9xYe6t0psukdYy2Xw7cukP+n0
+         03Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742399074; x=1743003874;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9si6QKET998u7WyNlD/oIsbCSW0xvxa41wWw0Ozqipk=;
+        b=Ox1qfCiJUlyU0H/bvvNDGu5j1MaMFgbJunJANowZ5O6Mtqm3EKUNvrCp419GqYK7Co
+         dDAA7oky0ewdP5OjjCmadBR+hR/RhQL3djHmk63kG2At32Pb8BVAbojEvEOnZhnjiS9E
+         eixcgeHPNAAdjBRGcs2CsGpUcQllRAbhPaJfhdQ44Iye0TMU2K4EhQb3B2YMvMPM/0Dv
+         c2A9vnWXngKw7jJXeoImXGx3nk9y1ht/asc00X7Z+nWOipKW5L1/5Xa8ErMB7Yu3ZdpT
+         eJ1C5thW/99uX+fApTqvH1gY4wVsgFCXSPlZ1G6BjxVpi+O/VTOTY7zXn9WWycWeo1Y9
+         npWw==
+X-Forwarded-Encrypted: i=1; AJvYcCUE5Uv5SFVAK9VE3xkjx5ZqkF6AQv49ysgoP81ehf0u/XcdH7YMUWbj+d8XPRVHmXowM3ivmPyM@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxr7ZdLrTeduKFzhGX5OkFScJvUeZTA8T6YWFqTpovKR52mXKlc
+	1C4arba0q+/iN0kRFoHlOAJuy1PMIEIzPX+Sc+XH9emJ6vVO1O4jcCaI/XrODzM=
+X-Gm-Gg: ASbGnct6MEp5Cq2CLz/7od3jRZ2cfuP6zFynaGYl0UMvm0P5Gm9FvDG24WEhRRHMmE7
+	ZvOeQpQxSo4G+Z3OOQkYlFH2J9ZPyh5kJ0232BXcQZM5rt5skrpZth5vsI4u/9ypHAh9f0ErqEe
+	omgHPmiYy+CQlo6XsMkRgxn+UQK0Ti1ILXaTFEI9pPE6eq0ymInx0NxHyd/9wHp4negBv4ije6U
+	x5F4+8gySzXPKbPOK60WU/dA+x1IUXy9sAnOJHBc8Fay4XDKqrgA4D3Gwy3KAinCksY9fw91lr7
+	5nTAC1jBvflSEIysPc364kzhcU/7Ko+RefMdLWJSXq0=
+X-Google-Smtp-Source: AGHT+IH2ElysGznDqaVkF9K0dG1j3qwf6OVzHoFCKXB3QMfIF6k7b3yKuQfRi9aAY26/yEo88wfixQ==
+X-Received: by 2002:a05:622a:2b4a:b0:476:8296:17e5 with SMTP id d75a77b69052e-477082f00f2mr50488621cf.17.1742399074007;
+        Wed, 19 Mar 2025 08:44:34 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-476bb7f3c86sm81158871cf.54.2025.03.19.08.44.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Mar 2025 08:44:32 -0700 (PDT)
+Date: Wed, 19 Mar 2025 11:44:28 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Hao Jia <jiahao1@lixiang.com>, Hao Jia <jiahao.kernel@gmail.com>,
+	akpm@linux-foundation.org, tj@kernel.org, corbet@lwn.net,
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: vmscan: Split proactive reclaim statistics from
+ direct reclaim statistics
+Message-ID: <20250319154428.GA1876369@cmpxchg.org>
+References: <20250318075833.90615-1-jiahao.kernel@gmail.com>
+ <20250318075833.90615-2-jiahao.kernel@gmail.com>
+ <qt73bnzu5k7ac4hnom7jwhsd3qsr7otwidu3ptalm66mbnw2kb@2uunju6q2ltn>
+ <f62cb0c2-e2a4-e104-e573-97b179e3fd84@gmail.com>
+ <unm54ivbukzxasmab7u5r5uyn7evvmsmfzsd7zytrdfrgbt6r3@vasumbhdlyhm>
+ <b8c1a314-13ad-e610-31e4-fa931531aea9@gmail.com>
+ <hvdw5o6trz5q533lgvqlyjgaskxfc7thc7oicdomovww4pn6fz@esy4zzuvkhf6>
+ <3a7a14fb-2eb7-3580-30f8-9a8f1f62aad4@lixiang.com>
+ <rxgfvctb5a5plo2o54uegyocmofdcxfxfwwjsn2lrgazdxxbnc@b4xdyfsuplwd>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20250319105518.468941-2-nilay@linux.ibm.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <rxgfvctb5a5plo2o54uegyocmofdcxfxfwwjsn2lrgazdxxbnc@b4xdyfsuplwd>
 
-On Wed, Mar 19, 2025 at 04:23:45PM +0530, Nilay Shroff wrote:
-> The ioc_qos_write method acquires q->elevator_lock to protect
-> updates to blk-wbt parameters. Once these updates are complete,
-> the lock should be released before returning from ioc_qos_write.
+Hey Michal,
+
+On Wed, Mar 19, 2025 at 11:33:10AM +0100, Michal Koutný wrote:
+> On Wed, Mar 19, 2025 at 05:49:15PM +0800, Hao Jia <jiahao1@lixiang.com> wrote:
+> > 	root
+> >   	`- a `- b`- c
+> > 
+> > We have a userspace proactive memory reclaim process that writes to 
+> > a/memory.reclaim, observes a/memory.stat, then writes to 
+> > b/memory.reclaim and observes b/memory.stat. This pattern is the same 
+> > for other cgroups as well, so all memory cgroups(a, b, c) have the 
+> > **same writer**. So, I need per-cgroup proactive memory reclaim statistics.
 > 
-> However, in one code path, the release of q->elevator_lock was
-> mistakenly omitted, potentially leading to a lock leak. This commit
-> fixes the issue by ensuring that q->elevator_lock is properly
-> released in all return paths of ioc_qos_write.
-> 
-> Fixes: 245618f8e45f ("block: protect wbt_lat_usec using q->elevator_lock")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202503171650.cc082b66-lkp@intel.com
-> Signed-off-by: Nilay Shroff <nilay@linux.ibm.com>
-> ---
->  block/blk-iocost.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-> index 38e7bf3c3b4f..56e6fb51316d 100644
-> --- a/block/blk-iocost.c
-> +++ b/block/blk-iocost.c
-> @@ -3348,6 +3348,7 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
->  		wbt_enable_default(disk);
->  
->  	blk_mq_unquiesce_queue(disk->queue);
-> +	mutex_unlock(&disk->queue->elevator_lock);
->  	blk_mq_unfreeze_queue(disk->queue, memflags);
+> Sorry for unclarity, it got lost among the mails. Originally, I thought
+> about each write(2) but in reality it'd be per each FD. Similar to how
+> memory.peak allows seeing different values. WDYT?
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Can you clarify if you're proposing this as an addition or instead of
+the memory.stat items?
 
+The memory.stat items are quite useful to understand what happened to
+a cgroup in the past. In Meta prod, memory.stat is recorded over time,
+and it's go-to information when the kernel team gets looped into an
+investigation around unexpected workload behavior at some date/time X.
 
-Thanks,
-Ming
+The proactive reclaimer data points provide a nice bit of nuance to
+this. They can easily be aggregated over many machines etc.
 
+A usecase for per-fd stats would be interesting to hear about, but I
+don't think they would be a suitable replacement for memory.stat data.
 
