@@ -1,57 +1,57 @@
-Return-Path: <cgroups+bounces-7173-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7174-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD295A6999A
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 20:40:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF119A6998C
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 20:38:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E0C9880B64
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 19:34:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AE24480BA5
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 19:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAB7214812;
-	Wed, 19 Mar 2025 19:34:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A7F20AF6C;
+	Wed, 19 Mar 2025 19:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NmUCr7H6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TEIueVsF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 415422144C8
-	for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 19:34:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A361632D9
+	for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 19:36:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742412850; cv=none; b=ljc4qCx/Hzt3a8DsgKH4z/0r57Ij7EF4Q4QHLFtY7yBlDzHn7BB52B+F+6PIIjm0bXj4nq0UYnI2Pgq1igoiw78ECrrIqkZnTeFi7SPhW9zscUu0j+AXsWeRimc84KNmpUH1wxBXRIwO7LuIzc9fLX5xc9rFchVSqhvfimAUk9Y=
+	t=1742412988; cv=none; b=pnttsDDC8PSjId/rrSXZMYB/HBANNbl10MAkkkcNZ9ovXSd3GzoO1fPtRj8r7mrsQ0nwD2j3DCmptFwuTtmKotoqAFP2k+WTM5AwAmW8jhVFScG25uP/AXAKBzk1m1O1emxoLoGNGTwqLvn7pK+vuO3l6X7OPE6XRXXEK9QLGqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742412850; c=relaxed/simple;
-	bh=J/fCez060NOi+MlSRAXhwSfQCdFvJuRmx9tWZ38H9Y0=;
+	s=arc-20240116; t=1742412988; c=relaxed/simple;
+	bh=NyhiDgl6f/KUsW4Fsn2KqToAkLI9xTHj88+pRQOWUnA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ov7CFmRnpVFMK4aJAoZQoKXfORX6x5fzFCm5lyu6SP8F+utlUZ2AtsiGxv+RcXzB4cyfl0CnMpuoVHmm9Zl0xLr9C0itJvj8rj2d8WsJ7OGy0so3vDaJuHn4/ErkquwP+G2f6S6ZnsZv1bvdzcALhSrfWAyIfBus/dhYObfPWrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NmUCr7H6; arc=none smtp.client-ip=95.215.58.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fw8pcZu0tRkL+BG1jEhfpZVHE2QvdvKhwIYMsRXyBgMHWUURhcccrFeY1YKiE31lHPPc8iC7Wo90veji4s8+Srrlk77GN4dZqELVF+LItJa9BG8gNQneTAYgoFV2bE7b2Ruw18iVM6LLJlcwVXpV6CbcPV4Id1UhGu6wRnBsFeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TEIueVsF; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 19 Mar 2025 12:34:00 -0700
+Date: Wed, 19 Mar 2025 12:36:20 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742412845;
+	t=1742412984;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7iiFyfv8ZcZH4P9FmMSSbT74XJienNrg0Fu09eyZfBw=;
-	b=NmUCr7H6RP7IncbOChFoOSmP9R6xYH6qvsP2HZNDBfwBnEn7qbLk3K4GZJVLT415nd/Vny
-	y/qMy5hyBg4uABkfPfaBvFagE//kiW759upydTR1QjgkhUudT64O/iFIyueQD6KVnMPz0c
-	0cbsT6xrjfFAAzDVzmNBNsQF+4Ta6d0=
+	bh=DUhHul+GQB09ExhXQGylt0MFwmGkY50Obp7AgaSPFNY=;
+	b=TEIueVsFglnybKo8FFiwe8d5GLPH2u+QLf+3Il+MaswPlr/59POrUuE5tSIiPjjxwCSVmS
+	PeiJ1VlXSSCcDSnUdPUfk/YJKQKRMtNdnMKjtttRsSSm1Pkccio4ZV4iZS2Dmu0GuPXVIh
+	nprhIvmQaXlQXRlXeU5DSXCfqKst3Xk=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Jingxiang Zeng <linuszeng@tencent.com>
 Cc: akpm@linux-foundation.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
 	muchun.song@linux.dev, kasong@tencent.com
-Subject: Re: [RFC 2/5] memcontrol: add boot option to enable memsw account on
- dfl
-Message-ID: <m35wwnetfubjrgcikiia7aurhd4hkcguwqywjamxm4xnaximt7@cnscqcgwh4da>
+Subject: Re: [RFC 3/5] mm/memcontrol: do not scan anon pages if memsw limit
+ is hit
+Message-ID: <nlnwcpezzfmq4rh7oeckrl5nmc4sszd534bo3cx34rpkadhsph@mqphvl3zyanl>
 References: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
- <20250319064148.774406-3-jingxiangzeng.cas@gmail.com>
+ <20250319064148.774406-4-jingxiangzeng.cas@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -60,67 +60,57 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250319064148.774406-3-jingxiangzeng.cas@gmail.com>
+In-Reply-To: <20250319064148.774406-4-jingxiangzeng.cas@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Mar 19, 2025 at 02:41:45PM +0800, Jingxiang Zeng wrote:
+On Wed, Mar 19, 2025 at 02:41:46PM +0800, Jingxiang Zeng wrote:
 > From: Zeng Jingxiang <linuszeng@tencent.com>
 > 
-> Added cgroup.memsw_account_on_dfl startup parameter, which
-> is off by default. When enabled in cgroupv2 mode, the memory
-> accounting mode of swap will be reverted to cgroupv1 mode.
+> When memory recycling is triggered by the hard watermark of
+
+What is hard watermark?
+
+> memsw, anonymous pages do not want to be recycled any further.
+> This is consistent with the processing method of cgroup v2.
 > 
 > Signed-off-by: Zeng Jingxiang <linuszeng@tencent.com>
+
+Is this patch orthogonal to the series or is it needed for v1 as well?
+
 > ---
->  include/linux/memcontrol.h |  4 +++-
->  mm/memcontrol.c            | 11 +++++++++++
->  2 files changed, 14 insertions(+), 1 deletion(-)
+>  mm/memcontrol.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
 > 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index dcb087ee6e8d..96f2fad1c351 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -62,10 +62,12 @@ struct mem_cgroup_reclaim_cookie {
->  
->  #ifdef CONFIG_MEMCG
->  
-> +DECLARE_STATIC_KEY_FALSE(memsw_account_on_dfl);
->  /* Whether enable memory+swap account in cgroupv2 */
->  static inline bool do_memsw_account_on_dfl(void)
->  {
-> -	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL);
-> +	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL)
-> +				|| static_branch_unlikely(&memsw_account_on_dfl);
-
-Why || in above condition? Shouldn't it be && ?
-
->  }
->  
->  #define MEM_CGROUP_ID_SHIFT	16
 > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 768d6b15dbfa..c1171fb2bfd6 100644
+> index c1171fb2bfd6..623ebf610946 100644
 > --- a/mm/memcontrol.c
 > +++ b/mm/memcontrol.c
-> @@ -5478,3 +5478,14 @@ static int __init mem_cgroup_swap_init(void)
->  subsys_initcall(mem_cgroup_swap_init);
+> @@ -5072,14 +5072,21 @@ void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
 >  
->  #endif /* CONFIG_SWAP */
+>  long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>  {
+> +	struct page_counter *pg_counter;
+>  	long nr_swap_pages = get_nr_swap_pages();
+>  
+> -	if (mem_cgroup_disabled() || do_memsw_account())
+> +	if (mem_cgroup_disabled())
+>  		return nr_swap_pages;
+> -	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg))
+> +	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
+> +		if (do_memsw_account())
+> +			pg_counter = &memcg->memsw;
+> +		else
+> +			pg_counter = &memcg->swap;
 > +
-> +DEFINE_STATIC_KEY_FALSE(memsw_account_on_dfl);
-> +static int __init memsw_account_on_dfl_setup(char *s)
-> +{
-> +	if (!strcmp(s, "1"))
-> +		static_branch_enable(&memsw_account_on_dfl);
-> +	else if (!strcmp(s, "0"))
-> +		static_branch_disable(&memsw_account_on_dfl);
-> +	return 1;
-> +}
-> +__setup("cgroup.memsw_account_on_dfl=", memsw_account_on_dfl_setup);
-
-Please keep the above in memcontrol-v1.c
-
-> +
-> \ No newline at end of file
+>  		nr_swap_pages = min_t(long, nr_swap_pages,
+> -				      READ_ONCE(memcg->swap.max) -
+> -				      page_counter_read(&memcg->swap));
+> +				      READ_ONCE(pg_counter->max) -
+> +				      page_counter_read(pg_counter));
+> +	}
+>  	return nr_swap_pages;
+>  }
+>  
 > -- 
 > 2.41.1
 > 
