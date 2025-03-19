@@ -1,78 +1,78 @@
-Return-Path: <cgroups+bounces-7142-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7143-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4DD7A68537
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 07:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E204A68539
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 07:42:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67EDA42442F
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 06:42:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE5494243EA
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 06:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6E724EAAB;
-	Wed, 19 Mar 2025 06:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8239324EF77;
+	Wed, 19 Mar 2025 06:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JoJ8X2Gn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BhqkxPxt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02323212D96;
-	Wed, 19 Mar 2025 06:42:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4128211486;
+	Wed, 19 Mar 2025 06:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742366538; cv=none; b=YI2dGBecnwCcBGIiFQqXIbZpZarfc8HSCfxQuna3wXPsG5eXSIWgav4vWqCDDANZHWLY8s/sePf/c073an1X0/c6iIPW5ZWfHG6YFf/1zMghNo628dspolUtG6N8cIczUfNZmhhlZ7wqMQr22HUyWMmtEKfjicVIdwzovmQYcSU=
+	t=1742366548; cv=none; b=qUu3qmf/SaixNeUR9Jr3lwSXA6GFmmZvC4YKmWwCz941gziT5UW2ilwc4Qls+dHsc8vg3Nlh8W3gBzBnv+GGm5w194aqfLmkzjb042Rt5wTDG0KNC9sQYa0Q59KKNr5eHEMXWZDxPYvWDJXu7ku43NK05fvY+ReZ9wg1n8Pdu8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742366538; c=relaxed/simple;
-	bh=C48LCA0HEiMUWJYeligQIASJjtm3iqfLDOJl4K5/1pA=;
+	s=arc-20240116; t=1742366548; c=relaxed/simple;
+	bh=yFX+tNRG+cyoEMpYQZtrIgkGdqwU2A6wwNqYVnh2f90=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dzYNf7ck16yyKdUjYB4xYM5XQhVBSjtRscJdhfDZCOsTyQZcIo3XocCd+0EfZ2gclie7kqGhcsSed2BRZwXkoA3Kfqeej+ScOSMSlrnWDOYPYee94/GUi/VpTaBHtRskbI4flSsl+2nvIZ9eeUF/G8yeFIEte0QuK4pH1yZZ6Ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JoJ8X2Gn; arc=none smtp.client-ip=209.85.214.176
+	 MIME-Version; b=AqKyrAdn7Zz/2sCFy53UdG/wM0E/IZOU7rYkxG+DE7mm7QZP5iMvRLj9xaFUxSZEDSYINRAkV11nfM5iAWnzMsDEUnmdhFMjvf9c91zo0wn23fFrRHUXMRNxDQi1PF0htzGh8QFxCe/aqacH/cXrkW4Wi7EsEmkzBHNG4Hxi8rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BhqkxPxt; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2264aefc45dso8639015ad.0;
-        Tue, 18 Mar 2025 23:42:15 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-22403cbb47fso121806165ad.0;
+        Tue, 18 Mar 2025 23:42:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742366535; x=1742971335; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742366546; x=1742971346; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=pXItn2D3Vis84qRdx9jbeX/+b7biQMSa8SO4XBFLs9U=;
-        b=JoJ8X2Gntk8TiTte2/3NB/NbxO9awYYqc6SQ3Y947U8Ayz8mx+Vm4XY002oFli3VHH
-         kXw6y67/xs7ZMYy3s57eux4UGWLMPf6U3u5lqR9JTkkrSMk22A0GdZGSvQHOzjKftScg
-         K6FzrJPimo3Yfb5lrH2MAVs5GrKMaj3YJsdsibeNJX0t2xGZH9/au1Hyt2kyb3CUHz/j
-         ehmwVMHS9OTIK83ol62kYb8oNjw91H/wh9xWLG67lVPhzHPseX+sZjtMY5VsagfpXJ7H
-         2rnVPO0/ncre1fEfjaVHCxONtj9+JY9kMZmogg901f9EnlpX3O/Ju3712LsPbNtOALs+
-         JYCQ==
+        bh=sp0DFTtVb9BoLhEjuOHuZHKpQHrM7JXx2GisdIMoCLI=;
+        b=BhqkxPxtQ7+qiJzuuaTjM0BJZXMidG8sv8lknhpnfczftokJWSW3xf6VYm5AOlszpU
+         XrEsbSwGChUNYvib7l0QT/nv9kDVkCzbfURnc+RrcBBTmpe+UOTIIWFb2/LJhgSBFA+0
+         YgobXsJ+hTmGOGbxpyynKi18tgWfWYx5nEzPY+vNDK9QlmDyG+Rs7ejgzTH3Vu5MOEZk
+         UHQkgfajcR23d9ClS5LfPYF9Ek0QCQ6aUKgX0W0sKg4ukkLZ+44O5Q617X9hFHvk04WR
+         R4W1jBORxPPHX3sGzJV5Mk/iytNqZ6NFSknFrltuF4hc4L9x6xGOXDj+Ow4DA51+VV2k
+         LSiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742366535; x=1742971335;
+        d=1e100.net; s=20230601; t=1742366546; x=1742971346;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pXItn2D3Vis84qRdx9jbeX/+b7biQMSa8SO4XBFLs9U=;
-        b=uJPpUvKr5vBwexpjdEngoJ/VpTRi9e0fE6WwoyeSVgIHLVioKpSBvKNqPlTTnVmDNS
-         Lr+uPatew23n0pjrYDb0+jIfFaOhlKhnkm03TfWzxd3xJWxOXlt5d3pnktFyMAuR5PIq
-         XyrU5+VEhOmVsE8jv5YX6c9JEx9OrGHg2bBgwL4xd7mwucjCdSQyTJ9djkDkySJqRcPl
-         Akbs5lp3FcBo3Lb7vqVIdu4C+dmcZv1spMqXcX5y6LeLghlOx+R8XEcVfG/ridB24IE8
-         eeirtSGYDMJFd9rLzNKFyBHIEdsq/LjMo5xC/0uQTfVZOdWpdMygJHgRopZksFpetR0c
-         s2mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUSlZPAeS3zeD3pWpVepyUCGdF/FHxjACcQpOX2zOyK/0kdX6mC0gklsoEBOP/KCiS0iLZTlL/ajPH2i/Zw@vger.kernel.org, AJvYcCXQNVFwbBR3zpMU+k8LCLIhg7Ezkyt8L3U3cvdDCwZd5ODLBlUiF0PB77bR4O3JGi3Ph48wp86x@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRa/aeVIk182G1G3sJ8okhkSEIEVqul/MKMVITYarY1stvqULH
-	EgE8YlqbF6q3Tq4by1SoHPrrWCburlizmc9UPRbYt0O1kcOqQbz1
-X-Gm-Gg: ASbGnctmFk8ByBC4TfS6fLGxPYqNSUPKgIosgfWmCPmDhthod1BTlSsIq82iMCMW26K
-	MJOmtjS5T9MJU1w0ptCUUC4sgVLO2iw/FyZVYs+rrp8D4Wz7qWIZDyTSo8SKAnSBC5Emuj84WUG
-	CdAHwJSKHb3kI+LXsLXPkrkdusHv2k/wHOLGfqx3dDbJ8boG/58nGCnW+e/0ndd95osEwpVxpsz
-	mp7BOZmFAFwoZCcsYC4Sjrdzx6AC0aHotaf9fXr/jrRaZrlknAQFWIrCNLgdicA51t43jaj9vvp
-	sq8CoIOa3KqHE/YJRHWpAMcfREPw4AQB5bfI5h3bzFrRPsDMBeeXDwgqN1IovOQiYI4BX8yHZLy
-	4i3ftcGDlAclFOQ==
-X-Google-Smtp-Source: AGHT+IHAiybYnuUAbS1337n8MIKxXlM5d3eEixwdqICuE8kaYDo9G1K0ymmFrvbR4m08KEEHu5+UJA==
-X-Received: by 2002:a17:902:ce0f:b0:224:584:6f05 with SMTP id d9443c01a7336-22649c89560mr28245025ad.41.1742366535093;
-        Tue, 18 Mar 2025 23:42:15 -0700 (PDT)
+        bh=sp0DFTtVb9BoLhEjuOHuZHKpQHrM7JXx2GisdIMoCLI=;
+        b=Bzq4chmEUu+2aXQC8N8ea4Q3/OCHWnvIjGaOQrxEulJuExyK3/+UwLPoea5n76UeIH
+         QsMbjQLz49S0sw/GyRw/gL4/bgrGUnN58KZufsqP/mR+J1z67IH4U+3h5gDTiv1lHSjC
+         OQVFs6/86Pv4lq2t8MzNQEuoXfL4YX4rmunRA+/zG2+tqBD2L9yB8JQde8ZUwEf0f4Sy
+         QX9k+lgfRnesNxS8f49oFuJirusNBCYlGrIBfneYLE2fzz0ItDnrpZKJx9JlXjApPRLk
+         0Ynkd8yOCSb+xciYvDfAQKhHnOJmIn/sNv8mPK+Su9e71nmvW/UvqOLtmcOclpCjtoWo
+         z29A==
+X-Forwarded-Encrypted: i=1; AJvYcCUrTfKEDv4lpd2eYL97uvgg6fpf2FrSjnbF9LSz2jMK9ONeERVcSx6wtfoyZ1Zh1YqMX/zbb8ZJpi7WwS6g@vger.kernel.org, AJvYcCXTkWMG9TRdSaeBPVxT/ZSrjesv7pFiqdw51J7OgyhmCFMWepGYYKGkMroNhOSUq5O68usuVKgQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YyPr2+mNEmOr5IDa9gYQC47z3E7VIow48xD6fgYnPhCAYKlm1vT
+	QZTt1gE10ktf4FGXEHFafvT5PW58ruhAQPWu2dztw4PHBhI4T1ZE
+X-Gm-Gg: ASbGncv6S5BLpnw6D3SdZYGe60LgfVVYYfsGCECZSGMlCbgGt2V6suzm4nbPjaMJ3AJ
+	Q2D6KmFmxVCHnsjAeAPvA2QJ/OzxA6iee2uuZsAO7LIa6uXm6BqYJYVqlMEbkxjt6lVcZ2O8jXZ
+	ljw+l8gq8JSqU3jWoERlk7VCwCEbZ0AIPNqV8o9oE5I6b5muRHVA67rJBRsDJ9Y57oe/ec+3y98
+	FP0iBPXbooxxWICQJPWK8UMXOEgdIKbj3SF62/WiRrt2uGbbTFuc3+fxQPKO5I6a8/KN5sLYZg/
+	1xmVdBbqzIWVPqibru65oIfrafMcd/fAqEp7nkfweett/Gid43hC5yKCHYNWfFcDkQXQ194NgCq
+	uHbRWnde6i7ENyQ==
+X-Google-Smtp-Source: AGHT+IHEPdhlKFwFwnOTSvPf4IDO0wzZjBYO2qh3ge8Q7B0xYnKSmm8x+kb9JdKPYwCJ9YhdNLB2kg==
+X-Received: by 2002:a17:902:e5c9:b0:215:b9a6:5cb9 with SMTP id d9443c01a7336-2264982afffmr25696235ad.5.1742366546036;
+        Tue, 18 Mar 2025 23:42:26 -0700 (PDT)
 Received: from localhost.localdomain ([14.116.239.35])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-225c68a4876sm106191835ad.70.2025.03.18.23.42.11
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-225c68a4876sm106191835ad.70.2025.03.18.23.42.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Mar 2025 23:42:14 -0700 (PDT)
+        Tue, 18 Mar 2025 23:42:25 -0700 (PDT)
 From: Jingxiang Zeng <jingxiangzeng.cas@gmail.com>
 To: akpm@linux-foundation.org
 Cc: linux-mm@kvack.org,
@@ -85,9 +85,9 @@ Cc: linux-mm@kvack.org,
 	muchun.song@linux.dev,
 	kasong@tencent.com,
 	Zeng Jingxiang <linuszeng@tencent.com>
-Subject: [RFC 1/5] Kconfig: add SWAP_CHARGE_V1_MODE config
-Date: Wed, 19 Mar 2025 14:41:44 +0800
-Message-ID: <20250319064148.774406-2-jingxiangzeng.cas@gmail.com>
+Subject: [RFC 2/5] memcontrol: add boot option to enable memsw account on dfl
+Date: Wed, 19 Mar 2025 14:41:45 +0800
+Message-ID: <20250319064148.774406-3-jingxiangzeng.cas@gmail.com>
 X-Mailer: git-send-email 2.41.1
 In-Reply-To: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
 References: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
@@ -102,60 +102,55 @@ Content-Transfer-Encoding: 8bit
 
 From: Zeng Jingxiang <linuszeng@tencent.com>
 
-Added SWAP_CHARGE_V1_MODE config, which is disabled by default.
-When enabled in cgroupv2 mode, the memory accounting method of
-swap will be restored to cgroupv1 mode.
+Added cgroup.memsw_account_on_dfl startup parameter, which
+is off by default. When enabled in cgroupv2 mode, the memory
+accounting mode of swap will be reverted to cgroupv1 mode.
 
 Signed-off-by: Zeng Jingxiang <linuszeng@tencent.com>
 ---
- include/linux/memcontrol.h |  6 ++++++
- init/Kconfig               | 16 ++++++++++++++++
- 2 files changed, 22 insertions(+)
+ include/linux/memcontrol.h |  4 +++-
+ mm/memcontrol.c            | 11 +++++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 53364526d877..dcb087ee6e8d 100644
+index dcb087ee6e8d..96f2fad1c351 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -62,6 +62,12 @@ struct mem_cgroup_reclaim_cookie {
+@@ -62,10 +62,12 @@ struct mem_cgroup_reclaim_cookie {
  
  #ifdef CONFIG_MEMCG
  
-+/* Whether enable memory+swap account in cgroupv2 */
-+static inline bool do_memsw_account_on_dfl(void)
-+{
-+	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL);
-+}
-+
++DECLARE_STATIC_KEY_FALSE(memsw_account_on_dfl);
+ /* Whether enable memory+swap account in cgroupv2 */
+ static inline bool do_memsw_account_on_dfl(void)
+ {
+-	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL);
++	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL)
++				|| static_branch_unlikely(&memsw_account_on_dfl);
+ }
+ 
  #define MEM_CGROUP_ID_SHIFT	16
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 768d6b15dbfa..c1171fb2bfd6 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5478,3 +5478,14 @@ static int __init mem_cgroup_swap_init(void)
+ subsys_initcall(mem_cgroup_swap_init);
  
- struct mem_cgroup_id {
-diff --git a/init/Kconfig b/init/Kconfig
-index 7f67d8942a09..669e39214244 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1012,6 +1012,22 @@ config MEMCG_V1
- 
- 	  Say N if unsure.
- 
-+config MEMSW_ACCOUNT_ON_DFL
-+	bool "Whether enable memory+swap account in cgroup v2"
-+	depends on MEMCG && MEMCG_V1
-+	default n
-+	help
-+	  Say Y here to enable memory+swap account in cgroup v2. Enabling this
-+	  option means that the semantics of memory.swap.max will align with
-+	  memory.memsw.limit_in_bytes, and memory.swap.current will align with
-+	  memory.memsw.usage_in_bytes.
-+	  This is particularly useful for workloads that require strict memory
-+	  and swap limits.
+ #endif /* CONFIG_SWAP */
 +
-+	  If you are unsure whether to enable this option, it is recommended
-+	  to leave it disabled (N) unless you specifically need memory and swap
-+	  accounting features in your cgroup v2 setup.
++DEFINE_STATIC_KEY_FALSE(memsw_account_on_dfl);
++static int __init memsw_account_on_dfl_setup(char *s)
++{
++	if (!strcmp(s, "1"))
++		static_branch_enable(&memsw_account_on_dfl);
++	else if (!strcmp(s, "0"))
++		static_branch_disable(&memsw_account_on_dfl);
++	return 1;
++}
++__setup("cgroup.memsw_account_on_dfl=", memsw_account_on_dfl_setup);
 +
- config BLK_CGROUP
- 	bool "IO controller"
- 	depends on BLOCK
+\ No newline at end of file
 -- 
 2.41.1
 
