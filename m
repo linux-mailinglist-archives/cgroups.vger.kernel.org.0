@@ -1,78 +1,78 @@
-Return-Path: <cgroups+bounces-7143-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7144-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E204A68539
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 07:42:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D9C1A68540
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 07:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE5494243EA
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 06:42:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98AFC3A9291
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 06:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8239324EF77;
-	Wed, 19 Mar 2025 06:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8065D42A93;
+	Wed, 19 Mar 2025 06:42:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BhqkxPxt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MJmTxEzs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4128211486;
-	Wed, 19 Mar 2025 06:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E1924EF87;
+	Wed, 19 Mar 2025 06:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742366548; cv=none; b=qUu3qmf/SaixNeUR9Jr3lwSXA6GFmmZvC4YKmWwCz941gziT5UW2ilwc4Qls+dHsc8vg3Nlh8W3gBzBnv+GGm5w194aqfLmkzjb042Rt5wTDG0KNC9sQYa0Q59KKNr5eHEMXWZDxPYvWDJXu7ku43NK05fvY+ReZ9wg1n8Pdu8E=
+	t=1742366554; cv=none; b=FCMZ1ToEm4hZ8aLEIntwTCzBPTyqiMgOBDtNv/s+qlJ3ReyNMW0cOy4evc2JjN/hiAa3/E///wDU1woNpEwLgtxtqY3TuuEdqoPBNy9go7z9M70F14WAhzTRZBIPwFmspn1mNyywbAIs9S4t3khhRO+/Gp5CM5JLmSo9dsfhHg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742366548; c=relaxed/simple;
-	bh=yFX+tNRG+cyoEMpYQZtrIgkGdqwU2A6wwNqYVnh2f90=;
+	s=arc-20240116; t=1742366554; c=relaxed/simple;
+	bh=uwPVGWmIAA6vjSh3MMDGl0gpuzjGJtL12wVwx5zcRBQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AqKyrAdn7Zz/2sCFy53UdG/wM0E/IZOU7rYkxG+DE7mm7QZP5iMvRLj9xaFUxSZEDSYINRAkV11nfM5iAWnzMsDEUnmdhFMjvf9c91zo0wn23fFrRHUXMRNxDQi1PF0htzGh8QFxCe/aqacH/cXrkW4Wi7EsEmkzBHNG4Hxi8rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BhqkxPxt; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version; b=cci1+GArkd5rvxFEK5adcig8FWMBuKOiELXmHHiYDtXxev/U4UqNYgC7p1KZrdluPyEpwSGeeHKQ5Rttufb7Ve37f0aGygdzS+4eGev4Qo3F7PZRNUIPOY2r/f/WnmbBiF+Bwy9bGC6E6OViAEW1ukMETAF2TVq2Ul2WecyDoOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MJmTxEzs; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-22403cbb47fso121806165ad.0;
-        Tue, 18 Mar 2025 23:42:26 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2254e0b4b79so24660815ad.2;
+        Tue, 18 Mar 2025 23:42:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742366546; x=1742971346; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742366552; x=1742971352; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=sp0DFTtVb9BoLhEjuOHuZHKpQHrM7JXx2GisdIMoCLI=;
-        b=BhqkxPxtQ7+qiJzuuaTjM0BJZXMidG8sv8lknhpnfczftokJWSW3xf6VYm5AOlszpU
-         XrEsbSwGChUNYvib7l0QT/nv9kDVkCzbfURnc+RrcBBTmpe+UOTIIWFb2/LJhgSBFA+0
-         YgobXsJ+hTmGOGbxpyynKi18tgWfWYx5nEzPY+vNDK9QlmDyG+Rs7ejgzTH3Vu5MOEZk
-         UHQkgfajcR23d9ClS5LfPYF9Ek0QCQ6aUKgX0W0sKg4ukkLZ+44O5Q617X9hFHvk04WR
-         R4W1jBORxPPHX3sGzJV5Mk/iytNqZ6NFSknFrltuF4hc4L9x6xGOXDj+Ow4DA51+VV2k
-         LSiQ==
+        bh=eDGgoAuFU1j/4cPuHxdFsXeRUQzRKuxaJDEI2tA88sE=;
+        b=MJmTxEzsMfOWora5PAlwLqTUVhM6mTNaE0w7NtD3AxOE4ZBG/ltLpXCavVY/+dgcy4
+         QNBraYRA7d5Mj/L5Mq89E06jddhSOuNpdpJ2t15doWEZXYrblTF3WJBi5PX69N/2DQKP
+         v3mY+DHdlZrIVn1a0P9tOiePTbhV1a9bxAbOEzTd+4xmBZ7ZPw+kmDD9G6EBvqR9uy7M
+         jli6Cr3DCeNPU1JlCk3TMGB4jjMmtuh28tieZ6jkqAdefChR8RTEYiblv2R6kmsR1WUK
+         CN0UvmmuAiAhxgFZfFXV/t13b1lbKM1Cqlqn4Bhr8JqVhzS8pZchy0UmINdjDX0LJSpC
+         S/TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742366546; x=1742971346;
+        d=1e100.net; s=20230601; t=1742366552; x=1742971352;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=sp0DFTtVb9BoLhEjuOHuZHKpQHrM7JXx2GisdIMoCLI=;
-        b=Bzq4chmEUu+2aXQC8N8ea4Q3/OCHWnvIjGaOQrxEulJuExyK3/+UwLPoea5n76UeIH
-         QsMbjQLz49S0sw/GyRw/gL4/bgrGUnN58KZufsqP/mR+J1z67IH4U+3h5gDTiv1lHSjC
-         OQVFs6/86Pv4lq2t8MzNQEuoXfL4YX4rmunRA+/zG2+tqBD2L9yB8JQde8ZUwEf0f4Sy
-         QX9k+lgfRnesNxS8f49oFuJirusNBCYlGrIBfneYLE2fzz0ItDnrpZKJx9JlXjApPRLk
-         0Ynkd8yOCSb+xciYvDfAQKhHnOJmIn/sNv8mPK+Su9e71nmvW/UvqOLtmcOclpCjtoWo
-         z29A==
-X-Forwarded-Encrypted: i=1; AJvYcCUrTfKEDv4lpd2eYL97uvgg6fpf2FrSjnbF9LSz2jMK9ONeERVcSx6wtfoyZ1Zh1YqMX/zbb8ZJpi7WwS6g@vger.kernel.org, AJvYcCXTkWMG9TRdSaeBPVxT/ZSrjesv7pFiqdw51J7OgyhmCFMWepGYYKGkMroNhOSUq5O68usuVKgQ@vger.kernel.org
-X-Gm-Message-State: AOJu0YyPr2+mNEmOr5IDa9gYQC47z3E7VIow48xD6fgYnPhCAYKlm1vT
-	QZTt1gE10ktf4FGXEHFafvT5PW58ruhAQPWu2dztw4PHBhI4T1ZE
-X-Gm-Gg: ASbGncv6S5BLpnw6D3SdZYGe60LgfVVYYfsGCECZSGMlCbgGt2V6suzm4nbPjaMJ3AJ
-	Q2D6KmFmxVCHnsjAeAPvA2QJ/OzxA6iee2uuZsAO7LIa6uXm6BqYJYVqlMEbkxjt6lVcZ2O8jXZ
-	ljw+l8gq8JSqU3jWoERlk7VCwCEbZ0AIPNqV8o9oE5I6b5muRHVA67rJBRsDJ9Y57oe/ec+3y98
-	FP0iBPXbooxxWICQJPWK8UMXOEgdIKbj3SF62/WiRrt2uGbbTFuc3+fxQPKO5I6a8/KN5sLYZg/
-	1xmVdBbqzIWVPqibru65oIfrafMcd/fAqEp7nkfweett/Gid43hC5yKCHYNWfFcDkQXQ194NgCq
-	uHbRWnde6i7ENyQ==
-X-Google-Smtp-Source: AGHT+IHEPdhlKFwFwnOTSvPf4IDO0wzZjBYO2qh3ge8Q7B0xYnKSmm8x+kb9JdKPYwCJ9YhdNLB2kg==
-X-Received: by 2002:a17:902:e5c9:b0:215:b9a6:5cb9 with SMTP id d9443c01a7336-2264982afffmr25696235ad.5.1742366546036;
-        Tue, 18 Mar 2025 23:42:26 -0700 (PDT)
+        bh=eDGgoAuFU1j/4cPuHxdFsXeRUQzRKuxaJDEI2tA88sE=;
+        b=oLtALAyYEzP4SZsEcJwdit4wN1hTnMnsqXZlFEsXqxgT7c8LR6GlIRDNrbRFzTDp5t
+         RYP7KKSaURSvZC81zfevZBX77fD7/T1QkBHZq+IEWJXNQz7gMRfXWyiNrBC3AlSaPu9K
+         IaLanI+HEUkgmG4KSKSUB/KgOYsTzBvV1DNtoNXV3FE3wDCYMJr/HqgtzWg8ILEC2fMu
+         rgP4Pip2JWEzjJ1OQWSe8Pn7PWSfJFXbmzCTllKg6OKvItZQjRUf033EcrcAxy+I+6tP
+         iD8O555AnL2MaAKFrqTwIiQCVyZ0iDWTPHLiZ5rQjNwqhLDCs/HMbFTXsS2o23j00auS
+         yC+A==
+X-Forwarded-Encrypted: i=1; AJvYcCVOKdbYJaoL/yDZNP5g3ohByQw4QM+Atq393fTw79T4aNNjM5Iu1hCCetrQxlBzc+4ek0ce0KIx/KQmzTuq@vger.kernel.org, AJvYcCVSMeJHwadRwHnXtPivmwV71nE8iBiRfR/dPSu/2Cemc3rBlhGInkuXphbPdpCRnoP72C1ZR1Up@vger.kernel.org
+X-Gm-Message-State: AOJu0YypHs2VJMkLk2cXpbklIO3m6KSmhp/bGzUb/Lu1qJHHnmzSrokc
+	K3R+oKVNIdlpPkJ8IRFD2+hVZIp2/ipGPJfHecoRqSDpCapGmWO9
+X-Gm-Gg: ASbGncuczj6F0B7kMN87t6OQVZQ4QHtozlLiggYPV46oxmo+bZFzc2IyGjGsnCgXOwe
+	1qik9JQHmo/I92TxCRUlndU8bL/CD1rMEBcSrvIQqk+d+Q8vfbHsjQppxdZcW/IOfqWUfVhhUVo
+	Kcx+sikSuOJUnadOX3nnPT8+vfYOG3fl3LgJfGgel6VU2DgvJz0/JDxnGu9r8/udgHOuTuhdpF6
+	ix51kdaReHULqfhAFcY6DQoltrk4V4E8/XSkhs/IMBZpfGSnnti1MxLiFBQGZ71YB+ayVFD4mUY
+	GSqZO2FiKUS/EawCi8StbOhRQ8VcOpSn6MX7Adbgtnwd1xvo5OWQnbYLi37lq1aky/Q01Yd2lLp
+	HkEEg4RZOL3HGmQ==
+X-Google-Smtp-Source: AGHT+IFAyKOiSRtBqjl5fZO4kWvi3a/4Npr3QIWJv0iu9jfu+/+dq5oOshJJhEmDYcMoWP8ZUFn2hg==
+X-Received: by 2002:a17:902:f688:b0:220:e9ef:ec98 with SMTP id d9443c01a7336-22649935c2cmr20608265ad.19.1742366552101;
+        Tue, 18 Mar 2025 23:42:32 -0700 (PDT)
 Received: from localhost.localdomain ([14.116.239.35])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-225c68a4876sm106191835ad.70.2025.03.18.23.42.21
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-225c68a4876sm106191835ad.70.2025.03.18.23.42.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Mar 2025 23:42:25 -0700 (PDT)
+        Tue, 18 Mar 2025 23:42:31 -0700 (PDT)
 From: Jingxiang Zeng <jingxiangzeng.cas@gmail.com>
 To: akpm@linux-foundation.org
 Cc: linux-mm@kvack.org,
@@ -85,9 +85,9 @@ Cc: linux-mm@kvack.org,
 	muchun.song@linux.dev,
 	kasong@tencent.com,
 	Zeng Jingxiang <linuszeng@tencent.com>
-Subject: [RFC 2/5] memcontrol: add boot option to enable memsw account on dfl
-Date: Wed, 19 Mar 2025 14:41:45 +0800
-Message-ID: <20250319064148.774406-3-jingxiangzeng.cas@gmail.com>
+Subject: [RFC 3/5] mm/memcontrol: do not scan anon pages if memsw limit is hit
+Date: Wed, 19 Mar 2025 14:41:46 +0800
+Message-ID: <20250319064148.774406-4-jingxiangzeng.cas@gmail.com>
 X-Mailer: git-send-email 2.41.1
 In-Reply-To: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
 References: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
@@ -102,55 +102,45 @@ Content-Transfer-Encoding: 8bit
 
 From: Zeng Jingxiang <linuszeng@tencent.com>
 
-Added cgroup.memsw_account_on_dfl startup parameter, which
-is off by default. When enabled in cgroupv2 mode, the memory
-accounting mode of swap will be reverted to cgroupv1 mode.
+When memory recycling is triggered by the hard watermark of
+memsw, anonymous pages do not want to be recycled any further.
+This is consistent with the processing method of cgroup v2.
 
 Signed-off-by: Zeng Jingxiang <linuszeng@tencent.com>
 ---
- include/linux/memcontrol.h |  4 +++-
- mm/memcontrol.c            | 11 +++++++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ mm/memcontrol.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index dcb087ee6e8d..96f2fad1c351 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -62,10 +62,12 @@ struct mem_cgroup_reclaim_cookie {
- 
- #ifdef CONFIG_MEMCG
- 
-+DECLARE_STATIC_KEY_FALSE(memsw_account_on_dfl);
- /* Whether enable memory+swap account in cgroupv2 */
- static inline bool do_memsw_account_on_dfl(void)
- {
--	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL);
-+	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL)
-+				|| static_branch_unlikely(&memsw_account_on_dfl);
- }
- 
- #define MEM_CGROUP_ID_SHIFT	16
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 768d6b15dbfa..c1171fb2bfd6 100644
+index c1171fb2bfd6..623ebf610946 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -5478,3 +5478,14 @@ static int __init mem_cgroup_swap_init(void)
- subsys_initcall(mem_cgroup_swap_init);
+@@ -5072,14 +5072,21 @@ void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
  
- #endif /* CONFIG_SWAP */
+ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+ {
++	struct page_counter *pg_counter;
+ 	long nr_swap_pages = get_nr_swap_pages();
+ 
+-	if (mem_cgroup_disabled() || do_memsw_account())
++	if (mem_cgroup_disabled())
+ 		return nr_swap_pages;
+-	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg))
++	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
++		if (do_memsw_account())
++			pg_counter = &memcg->memsw;
++		else
++			pg_counter = &memcg->swap;
 +
-+DEFINE_STATIC_KEY_FALSE(memsw_account_on_dfl);
-+static int __init memsw_account_on_dfl_setup(char *s)
-+{
-+	if (!strcmp(s, "1"))
-+		static_branch_enable(&memsw_account_on_dfl);
-+	else if (!strcmp(s, "0"))
-+		static_branch_disable(&memsw_account_on_dfl);
-+	return 1;
-+}
-+__setup("cgroup.memsw_account_on_dfl=", memsw_account_on_dfl_setup);
-+
-\ No newline at end of file
+ 		nr_swap_pages = min_t(long, nr_swap_pages,
+-				      READ_ONCE(memcg->swap.max) -
+-				      page_counter_read(&memcg->swap));
++				      READ_ONCE(pg_counter->max) -
++				      page_counter_read(pg_counter));
++	}
+ 	return nr_swap_pages;
+ }
+ 
 -- 
 2.41.1
 
