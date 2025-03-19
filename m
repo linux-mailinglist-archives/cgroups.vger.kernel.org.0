@@ -1,93 +1,86 @@
-Return-Path: <cgroups+bounces-7149-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7150-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8371EA687AF
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 10:16:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFC1FA68958
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 11:20:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CBA318919AD
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 09:15:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81A933BB807
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 10:20:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85EF325291F;
-	Wed, 19 Mar 2025 09:15:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB1B253B69;
+	Wed, 19 Mar 2025 10:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="edF5KG9j"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HYcPHMJS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6633A250BEB
-	for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 09:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865802512F5
+	for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 10:20:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742375724; cv=none; b=PUY52eEsecuA+1J/3+U8BkqQaAv+l4ekt8TJSeLVUySoA0xET9dIESQsDb/rKK8aUt5axpp1lo+MNob82TUlaI3SytQApud6l9E4NVnj/ulMpZH5v2j9BX3yJ+6W+yyRN9PcD78L9P1n+XobLsyPRbkZ4XELdMzXc2eZb9r/jSc=
+	t=1742379632; cv=none; b=sWKlazj3RBPOTXA6WHaRuhZTcNNr07MjTLEfWT/7va8rSD+o8slwaC0ZaPGiXUvXkrNOF4mNP8M/E2YN92I5tijS8P0InQa9cUVgtt6X+GKYQn0gx4eRJ6DLXYuqkO5FPA6v4Ska/7UE+YKQIruZA7kVIwqMplLxwTwv4mx1dZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742375724; c=relaxed/simple;
-	bh=sdoWtmP8lcFKkLO6YKHdSDaFP6raFIU4DI5wjtYIURA=;
+	s=arc-20240116; t=1742379632; c=relaxed/simple;
+	bh=5uC/PftdPErtzjo8S3rNKeyr0qcS9CE4mc75WRiF7r4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kdJp2VuyNMO/apk+0E1QHaeCaqz9IhjQNN6SVAnqSJ7X8mcoVhWT2q0rOPwJlUtWfIV3k6vp2EXomyhY4U4DnhFDbCaBBrA+n1FsVqkcimp9ClaMPhTslFVejdqVvFxLACEj6ZNoxGA6HycuhDnKQ5Xw5VsmFaUmb8PFqp6GQnw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=edF5KG9j; arc=none smtp.client-ip=209.85.128.42
+	 Content-Type:Content-Disposition:In-Reply-To; b=iqAZ0s1gnhuiMQlRokvbFALhD5GwzdSQOLU++WtVUXCfCfXdKRXaBJqQNkliMU7ZWWDVaQVfo2PUZXsP0fc4ZQnfmAUs1JVpyVuvvLmTmP07xT4bZ45me65dxLzAjz/8BOHeWLkAFNCnweflk2cjK+vpdMyacHKaoplHIvlY7ds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HYcPHMJS; arc=none smtp.client-ip=209.85.128.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-43d0359b1fcso3036085e9.0
-        for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 02:15:22 -0700 (PDT)
+Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-4394345e4d5so30374065e9.0
+        for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 03:20:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1742375720; x=1742980520; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1742379629; x=1742984429; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ahIpFM+QNyoBpC1gPfBS5sPiHVhg0tBQ7r3MPVtw/d8=;
-        b=edF5KG9jLZLUN18XPd0AqVDW5B35OYV942dGR6Gam5ddWNuNE1O/QDkojmyhFLuJo6
-         R5OHvmHwe1ZwV1uYmb3hg4UdrmyVyoEOdaQHmP5EjROsMVl2qj1okO2BJ0m3u61FiBfA
-         TgDvnAlO4/tWPskMz1a9BzBevQU8dSBxdEpuy4deuveDuw4V40lbJg1UJRWszB133UAy
-         8AVUcyngjPNm65vIcbBVVrdwhJKP3DA6PhANX7fWO0gsTK24Vw+2ZZK5mUafT5st0Jj6
-         RVht+tdj//U7tIJ4ZxFrNQHwetJpV4ufw9hVmp5jxEQIkt49Amtn41U8mKec9BNVJ4u5
-         j/Kg==
+        bh=uRvazjyez6/I61YAL9k58Mn3QJZtFdatNwV/fP1ktrc=;
+        b=HYcPHMJSoLI6GdVIljriLHlFcgrUmFkXfeWysygUgyKHK+bqMC8/Hse7EzEPTESFh+
+         EGZkAMYawMx2/oPen8pp/MJ65U9Zgf6v2FnGK9P7peeYPO4k3rTj0nBYukebdRzi2JZP
+         6j4Z8N9ES3pxH18fLUyWmX0EPYzkFHpPQaCUqpcr2LzS/Txhn5TYmJSsvCiD10+TyXik
+         5l6H1hSyNLAt1tfGGuj+6aTTJ76COFNC/W0cEAIEmhD0B1CVyXRFIDq98pP5Uu8jCpqZ
+         2A+yYpLk1e1zbeaZBvtfMdyfyYk60YiBKYh5YidIQKpRcFk8+CiEamMoSA/WYQrW/xvC
+         mt6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742375720; x=1742980520;
+        d=1e100.net; s=20230601; t=1742379629; x=1742984429;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ahIpFM+QNyoBpC1gPfBS5sPiHVhg0tBQ7r3MPVtw/d8=;
-        b=TnvylQeZCN9/vvTI97geq06daYIRG2fTJbrJwI5GvRgPvx3Uq329ULYsfUEGY2aws9
-         3ehM4pt75t9f57Wm5QevgpsBioZvgcbRZ6vNASbaByT4DC/xFwqcvwA/RNmBbrJy9Mu4
-         mD8hmzj06yXmfnqOp0Ikhfy6QRQ8fYqVC8h/NKOtzznCZQv7OjT04xxmIPQPPmGB0+8Z
-         ntSiozGbuoT1bBmu+XgpumoCKN30Oxt9R+3zg7EedaZy4JCqXIiovE3EifZDUXC3xvvm
-         Mdz68NFyQJ2THZa13oEOZ9+gMR7KsjK35x2WY7nciZEvOeIHdqrlTR7nYvlqwlBlLUtq
-         95VQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUBoKvtrKa63FNLYztTS3eLO4mqUbhnt9IUS2Gwn7NVdxAg9UP9+CAVmJOU6Ht7z9dvR9qMb1OM@vger.kernel.org
-X-Gm-Message-State: AOJu0YzpKdCBxCm6dn82t5zuGV8++DPggqWYL2zg2dwkmgTg7QcoYja5
-	q5Pv74m98Xxr+uWdXqsiXj/dCuPyVErp75CmCGSSTC3pGgoJYilA4kRY/L9nMOo=
-X-Gm-Gg: ASbGnctT8bC4Y8BUhOibOSiw/lBWvxNHzNRSn6Tvvkv81Cb84EfY5hlFRolFI589nLn
-	0RK3R1eJQM5QpfVxJLHoCvWEtXtIrLwqZg6l0du1laiAyT3/aoMNREPgLy3GWwyUFtiackiGLRk
-	4BK66LuhAf9ZA4UqgXsEbSPfC8HpAnMHEMnGmm4i+f+OmdyWHd87Q5lI5rTzv4Uu/63InfBejLF
-	EHTy5DiN1gx/esO2d91ygh4GzqSQ1vfZxOugSCJWfKqHNacRnNFCb32vFsVIVmARj085LPJbAzF
-	tAwQxHxNaqIhuYXfucToq5FHVsjjAHvBSAXkkdLFHloa2FE=
-X-Google-Smtp-Source: AGHT+IEHJqVdsFhvFTJ0j9XFeF9mtqW2S/78HUhgtYFtcniJo8M+ZzwHHxF5ImTnWsi+nzTq3v24/g==
-X-Received: by 2002:a05:600c:46c7:b0:439:5f04:4f8d with SMTP id 5b1f17b1804b1-43d4309c628mr12508825e9.12.1742375720499;
-        Wed, 19 Mar 2025 02:15:20 -0700 (PDT)
+        bh=uRvazjyez6/I61YAL9k58Mn3QJZtFdatNwV/fP1ktrc=;
+        b=ern+KYBGr1i+VpOn4imVgYFjyyzhphTMjngqHBz/aTjpuwvwwVI7QiDmi8GJ9rOpbw
+         F6c50UIH1g2rgZL5uHpGmdOF1wBY+uiTFvpAqdT22A1h7B4N+GxJcDBpOoKpwC3wiBSC
+         hxXUUjR+QvVAElWAwL9F8imV0iHYsosQSeaj00tMifjxzI5sDlRtpOTovR/yYpErTrY0
+         EGQ9AqjVTiYiE8/05+ZbxfaXhkLXZCdY9kuDuCNdetfp5GMrDqY7wyGy43GuHVmzmZqJ
+         e1m+iNksT07xoHj0KJ+UrEpJ9DKsBg82P6cLlSDXXNliDJgTSFWEnZhkEh+qoJMl2jyb
+         amWw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2lzaey5nAQPCt1A4f/lqAUkkHsB/EclMA9RvZ3l4pb75GIijUV7M6mKccjL5eKx8P/nLX8Tu9@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzwjuy6CF9/6SdAFdTmhiJzMU4ZK2NnHjQClZjidzMfO8H3BJZN
+	lGFnaDsh1LBkzGodqRVw0IeDfh07IXf6QXFuKzO82IIXXW56b1Pk9+cK0yGvuzxEUqugzHwIvuT
+	igm1k5A==
+X-Gm-Gg: ASbGncsI8QkIyFWPZ+c1UllZT4qiQapPdFjdhzi+mbxMC9XFJ3B+HU4xnT+5uGkcSFP
+	iBLmyHwzsKLtXU8k/g5CnEULl7lU/LutXJvH6QoI9pdoXoMKnrP3pNX2QwSNe9Q5M1j+uOwEFTk
+	GwoMspJ1TIZKSxoetPRJpnauEInHfMAq5dYARnqvsZrVrF9T8Y9Kr8n2ziJwefwqicnuOyITIYU
+	mAEgDATiyz/Kvsb4taDtOIpGG9CO54R6L7iBvRj4E3vNf5LIIhWxwkTl/oJ0HwOCjpVxkJfhnZ4
+	TJ9QSuJlKF1mSu/0HIiUYQ9R5TvcNaciRzi90hYtO5rJviY=
+X-Google-Smtp-Source: AGHT+IFBijxngWJfWSrP0zxUR6KISoDK4M2HLz3EcfSwARMIp08CatCGZSMDqGgpT9PyUr4yPKbGrA==
+X-Received: by 2002:a05:600c:35cd:b0:43c:ec28:d301 with SMTP id 5b1f17b1804b1-43d4388dafamr10717475e9.26.1742379628671;
+        Wed, 19 Mar 2025 03:20:28 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d43f7460fsm12870405e9.28.2025.03.19.02.15.19
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d440ed4b8sm14200965e9.35.2025.03.19.03.20.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Mar 2025 02:15:20 -0700 (PDT)
-Date: Wed, 19 Mar 2025 10:15:18 +0100
+        Wed, 19 Mar 2025 03:20:28 -0700 (PDT)
+Date: Wed, 19 Mar 2025 11:20:26 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Hao Jia <jiahao.kernel@gmail.com>
-Cc: hannes@cmpxchg.org, akpm@linux-foundation.org, tj@kernel.org, 
-	corbet@lwn.net, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	shakeel.butt@linux.dev, muchun.song@linux.dev, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	Hao Jia <jiahao1@lixiang.com>
-Subject: Re: [PATCH 1/2] mm: vmscan: Split proactive reclaim statistics from
- direct reclaim statistics
-Message-ID: <hvdw5o6trz5q533lgvqlyjgaskxfc7thc7oicdomovww4pn6fz@esy4zzuvkhf6>
-References: <20250318075833.90615-1-jiahao.kernel@gmail.com>
- <20250318075833.90615-2-jiahao.kernel@gmail.com>
- <qt73bnzu5k7ac4hnom7jwhsd3qsr7otwidu3ptalm66mbnw2kb@2uunju6q2ltn>
- <f62cb0c2-e2a4-e104-e573-97b179e3fd84@gmail.com>
- <unm54ivbukzxasmab7u5r5uyn7evvmsmfzsd7zytrdfrgbt6r3@vasumbhdlyhm>
- <b8c1a314-13ad-e610-31e4-fa931531aea9@gmail.com>
+To: Greg Thelen <gthelen@google.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH] cgroup/rstat: avoid disabling irqs for O(num_cpu)
+Message-ID: <mvpuegbh5gttbflarqua5wa7ar42zy5d6hxqf7me6nxwk7yibm@bxwxkt4h5fx5>
+References: <20250319071330.898763-1-gthelen@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -95,55 +88,69 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2vr2zym4stjkfz33"
+	protocol="application/pgp-signature"; boundary="weublld6gas2cn5l"
 Content-Disposition: inline
-In-Reply-To: <b8c1a314-13ad-e610-31e4-fa931531aea9@gmail.com>
+In-Reply-To: <20250319071330.898763-1-gthelen@google.com>
 
 
---2vr2zym4stjkfz33
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+--weublld6gas2cn5l
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
 Content-Disposition: inline
-Subject: Re: [PATCH 1/2] mm: vmscan: Split proactive reclaim statistics from
- direct reclaim statistics
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] cgroup/rstat: avoid disabling irqs for O(num_cpu)
 MIME-Version: 1.0
 
-On Wed, Mar 19, 2025 at 10:38:01AM +0800, Hao Jia <jiahao.kernel@gmail.com> wrote:
-> However, binding the statistics to the memory.reclaim writers may not be
-> suitable for our scenario. The userspace proactive memory reclaimer triggers
-> proactive memory reclaim on different memory cgroups, and all memory reclaim
-> statistics would be tied to this userspace proactive memory reclaim process.
+Hello.
 
-It thought that was what you wanted -- have stats related precisely to
-the process so that you can feedback-control the reclaim.
+On Wed, Mar 19, 2025 at 12:13:30AM -0700, Greg Thelen <gthelen@google.com> =
+wrote:
+> cgroup_rstat_flush_locked() grabs the irq safe cgroup_rstat_lock while
+> iterating all possible cpus. It only drops the lock if there is
+> scheduler or spin lock contention. If neither, then interrupts can be
+> disabled for a long time. On large machines this can disable interrupts
+> for a long enough time to drop network packets. On 400+ CPU machines
+> I've seen interrupt disabled for over 40 msec.
 
-> This does not distinguish the proactive memory reclaim status of different
-> cgroups.
-
-	a
-	`- b
-	`- c
-
-Or do you mean that you write to a/memory.reclaim and want to observe
-respective results in {b,c}/memory.stat?
-
-(I think your addition to memory.stat is also natural. If the case above
-is the explanation why to prefer it over per-writer feedback, please
-mention that in next-rev commit message.)
-
-Thanks,
-Michal
+This is peanuts, watchdog_thresh defaults to 10000 msec.
+(Tongue-in-cheek, to put that threshold into relation but I see the
+problem.)
 
 
---2vr2zym4stjkfz33
+> The mode of memory.stat access latency after grouping by of 2 buckets:
+                                                        power
+
+> - without memory hogs: 64 usec =3D> 16 usec
+> -    with memory hogs: 64 usec =3D>  8 usec
+> The memory.stat latency improves.
+>=20
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Signed-off-by: Greg Thelen <gthelen@google.com>
+> Tested-by: Greg Thelen <gthelen@google.com>
+> ---
+>  kernel/cgroup/rstat.c | 12 +++++-------
+>  1 file changed, 5 insertions(+), 7 deletions(-)
+
+FTR, the lock may end up split per-subsys [1] but this would still make
+sense for memcg's one. (I wonder if Tejun would consider it small enough
+then to avoid interrupt disabling. Then this could be converted to more
+widely used cond_resched_lock().)
+
+[1] https://lore.kernel.org/r/20250227215543.49928-4-inwardvessel@gmail.com/
+
+But all in all, thanks for this and
+
+Acked-by: Michal Koutn=FD <mkoutny@suse.com>
+
+--weublld6gas2cn5l
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ9qLJAAKCRAt3Wney77B
-Sdz/AQDecvjUIrBbge909wB9b5M9WL2CyeFc32hNE+fRPTIFHAEA6LHJUMgFCinA
-+J9mJe//Ur+z8K0lQBS3T8v+E9CbmQQ=
-=VFn0
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ9qaaAAKCRAt3Wney77B
+SeofAQCRBDvo/r6sHgvgLjU9LafT+QwyWR/yByxGtg27ZjHPYwEAu/8pNOj+gJs7
+sHE/DC6ID2Jh43yFSkVu8Y00gr+HxQg=
+=qq/w
 -----END PGP SIGNATURE-----
 
---2vr2zym4stjkfz33--
+--weublld6gas2cn5l--
 
