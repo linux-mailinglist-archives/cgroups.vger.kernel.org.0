@@ -1,87 +1,92 @@
-Return-Path: <cgroups+bounces-7175-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7176-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AFE7A69994
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 20:39:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE14AA699B8
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 20:48:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 191A67A8774
-	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 19:37:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C1918A4CBF
+	for <lists+cgroups@lfdr.de>; Wed, 19 Mar 2025 19:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E8F2147EE;
-	Wed, 19 Mar 2025 19:38:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A79214801;
+	Wed, 19 Mar 2025 19:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="IglDzcCe"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="ml95u2be"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 834F91F4164
-	for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 19:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FC21E8855
+	for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 19:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742413126; cv=none; b=BbG7mVg89lQxbcsMpfWZAMyzY/PWdUTiHxYajDz1ndlHY1NnqMxjzTufNEdaZ+KZ5a9Jf11HLndY6Ep1LSdc1qX62tO5m9pQjtyX7Q/+vzBPV3fAw56key4pteVTR1YefwMNrAajXRIqtjpN2y9Tb0airOHtwEt9qt70USQjIao=
+	t=1742413576; cv=none; b=pjDXlbLbhFepvn2jI5z+zYkb6NA3HBZWP/spBM/mFO7rlD8pUpwAhBr52a1tC9hsDKysDin7vyr+hAEgjC8je1c4u8UouHyzGe0JUEtYUn5xNfVnqpei+69UwM0dsT7KZuINrow2E6q71P06o8J9+rbb34Oxx2djUVP4W8sEX3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742413126; c=relaxed/simple;
-	bh=iTVzyjVND7+F0XXvBx/0F1D8RMJY6QzOoyEcjmniBXo=;
+	s=arc-20240116; t=1742413576; c=relaxed/simple;
+	bh=qlvN6iAULWo5vrmeRzfDI9VaAi52aMTIKGtEDdG7464=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XnMYTGv6+6K+zLYcovZC0T6gfsfqU8oLJJWunXOZiszF0wiMWklxd5/K4/zbGmbGC96Xr6pnvFaTB1eZ92+eCvelf3NLxsncc0tscAHGZxZ80oRHYR2tGmd/+AwNTntkwOj9kN1SFchPvSJNKQc0BoIQifyMT41d+CvUAseJv/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=IglDzcCe; arc=none smtp.client-ip=209.85.160.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=S3cEJXMFoFqOkPVEMW1gkFIzenQ8isPPU+bA9QUwViNOpBvj1bnmHbQKX0NGbDA6MRmsGOpImluFM8HKTgtxw+tH5wt98mENENtIUI1HGrwBGREoAIqXp0KJsxKvBGBrD9NoFJMBsSTdcv6S90jfZ+JdUoqTDgtGwp2zVeRF4fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=ml95u2be; arc=none smtp.client-ip=209.85.219.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-4769bbc21b0so597581cf.2
-        for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 12:38:44 -0700 (PDT)
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6e8f7019422so78346d6.1
+        for <cgroups@vger.kernel.org>; Wed, 19 Mar 2025 12:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1742413123; x=1743017923; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1742413572; x=1743018372; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MOsixAo0ygM8pbnBoreCQ/wxYJRqmZpkjLr4PFhJr7E=;
-        b=IglDzcCeE+YAudSJLwaui9djKhAZxmY4ZElk6SRJWKTu8/scg8ianfxGmjGsgVijR0
-         RDkeX8rkyxN7cPzDnmXXdL2/RnH5MrLq/+jNRGB12L/j6mXkCyasrBvgXaTS2xrjDvVa
-         8f9PxbdMnUvsXXy9xcIGqmxjTWAvLDHgiOzU8L6dyDjQoc+eJqGzBJZ1smQEgorhO6xB
-         T7Gb9c87DoliY7MusUT4S+C8x3qW1nZJjomkNtUtqYFKQ9/jcDFB2tWbr0gaxYaDO1wr
-         7jW8DIgFjhtIA6ZvY0cYg9YP+sV5YhCNA557DkR6t3J+CPlv0TfAGV19zj+3wnfqHerc
-         4lRQ==
+        bh=EMGdQd+1GtsqkZyrmcturm7A0b+BWeuqV9nKfwmQHB8=;
+        b=ml95u2benNxrgrQJ3ZM0L+z97sokjxIn2GBTzPM7FPsatCO7sQvBQb2a93eO5770Gc
+         H+iK3fxOtHu+CpKdTCY5TbO6+TBe0b1gP6yjIDDMbzV4Rew7mHKN8/i4t1VfW65fgmlI
+         NyZIotrseobBq4wt3CFOsi48GnDazeG4oEVExeESnHOvfVwhWkskjO7Db3NRWVF4B102
+         rBJd/trhR/cz4lCf/XUAgU/VPp+86ePtnjfL3rDqXs400ARkfXw/mvZWqCfZhseWokNO
+         xZcRnBxNeLc3dlbhymWa8m59zzdEnpJFPWBMwhEpTWJD4UrdgizCU5Dsf6XYmEKQBgK/
+         F0ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742413123; x=1743017923;
+        d=1e100.net; s=20230601; t=1742413572; x=1743018372;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MOsixAo0ygM8pbnBoreCQ/wxYJRqmZpkjLr4PFhJr7E=;
-        b=ERsw3PcUo/h8MoGbI4afztZds1anrCCjIc3uZAWAR7z4B22lHOwBgIyKdKoC5qVHk3
-         9CLv5jGl4BQVpSjJ6A170pGL+xz+CbPAooBXeQFrhK/jJ7kLAUPKlbYLQcwtSMXudfno
-         BV6QeNSk9BiDsksYXqSR/enomDNfA49xqQFEpWfq8ndh00NLIBsA7tSuIdWKl6so8zp4
-         6by3sFknrm8zox0gV/CsvynJSyJUWoCW0rvuoreXvjgG0gMLFArInC+F4/N8q59jFTFu
-         Iwu1z5Ia3oa17fds3+MkbmSUom/GRoFkZqi0bWHjmpZpOJFWbWHe2wB4SQF0ODFGMGI0
-         jnBA==
-X-Forwarded-Encrypted: i=1; AJvYcCWs5k9gQ0vIRYkv/xLX5TJYe31S57G0nwKuEzMXkoSBXb2LglV6jFGdacDdciuhag/LTm+6GzsW@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/UJdrLeah8vJuO4nrvHQgMrxfow4ZJHyzl4Q2ZxOoTYJnxnVn
-	sbwWqkvNs3HqKh5C74BGRzrJEuCV0P79tt8QXpsmr9MeQaDmb4cNQ9Du6qj1wao=
-X-Gm-Gg: ASbGnctF+nUCjBdu2XCy0Nd00v+b08LwXIk60ERDA0BrbNmp0Yr0K4vsuDSA6tGz+BO
-	Wr947grhNzJrCW/9ZJ7tKpJa6oZHeYyVmP7PZz5o0GzLOtG2ycZIw4G/+0x1t4sBkFlVjAil/QH
-	lytctiG64rSPGCwyK+XdvbbVWYN+8m9lQzE/awxeNJ0MI+4FmmVuxc0CSiYS0J8jpH5zLNlGAcv
-	BmXmaSg25V8Uug66YbJxVceB3j3wds9mTzMPxPrQ9Daiflt9S1YRtucByv8zwae47Ir1Nrfr1I3
-	UDkz/8+bWOZlxlHOF+4lw7zrna3I+BXyI8OSTc9zO7w=
-X-Google-Smtp-Source: AGHT+IEnyT/QaZRGxSVvO87lm/uVpwiSi1//kCoa1GAM0k0kXVv6aSSGuoigVDhf/LPLiuSPY6r6Kw==
-X-Received: by 2002:a05:622a:1e1b:b0:476:91a5:c832 with SMTP id d75a77b69052e-47708378761mr64518621cf.32.1742413123208;
-        Wed, 19 Mar 2025 12:38:43 -0700 (PDT)
+        bh=EMGdQd+1GtsqkZyrmcturm7A0b+BWeuqV9nKfwmQHB8=;
+        b=ewyo0tEkV9jh+goQEuqMnmd5jqBNfZzavCSPBU4y21FU0g6oprEVWvYKcWzx3R+Frh
+         2YhUUw3QOxF6eojpnn2hZbx0p0fUhiAS/LbCqti0sSxfWhN5Lc2sNtH8SNBu8QofFLFa
+         o/hFz++Qbsh1lmXJmmEj4Pk6BLkavFc/ZM7gTZTPcW4FpHT4R4RYbmvsWyqFvA6kTEiv
+         qnNzFYykCA3FKImGjG9e3P0giuL/STSHM33yalNzdpblzBkTvbN54jot0wUJDZUGGyKm
+         sNbdopZl2BtrfEEAAwwxTsFrceDSFEmamLBtRXYSgQGOtWzidWYDdZK8uN3CKZvFVL+J
+         wL3A==
+X-Forwarded-Encrypted: i=1; AJvYcCXGgyAqGrQzosZMp3netARXLXpaz7FQ0dIGMpM3pghh9KR2eqwcOo5QomAOGxeq+Yr/TZWGhFYC@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywc7vnuRPinQNW54ZAtpsxV50qD5TzfqGC7/Yvtp5NUxdEANt9T
+	prQMToUTdgyv7P440lipi+NkmxaGWAUOYD/uasAgkZuAN7rzBW3EE5EGKzQDT2CxEqs2DSZTS2/
+	C
+X-Gm-Gg: ASbGncuUjpQmP4RHvc7+gU6jVZSvPLOY7W3ckXOa81vHk2jl7ywr4ThY2KR2IUw7wFu
+	bvGUReuQ36xcDgGD8Bsz6vHMzx3eUoeAh8olPxb8RYJX0RvF55uh+kMTkva1P/MN8d/9qJuXWtp
+	7S5CPCVotIb4/n78RqzR3suuRFqgdy3adDD4JckTEpsHvwxM7gQKJrTFKRYyVP+Dm1i2UDJ6/Xx
+	LJis5W15aCA6cIY/dDPFMcPHPjEfydduxrUpcgzKH4c32rwr2P/dSwQIYZlghX2axhVvW3OFQpQ
+	nCPwsSJlCn2+U3uDIIllWmxyX/cvi8+xxcDmNqoh7fY=
+X-Google-Smtp-Source: AGHT+IGBPtC/y//GuXQrmvUuvNI+AJ1VTUL//CIpJG88EeiQgsUx/MStOJniyzmiXVM1kRKKRMEnkw==
+X-Received: by 2002:ad4:4eae:0:b0:6e8:9dc9:1c03 with SMTP id 6a1803df08f44-6eb293a3360mr70586226d6.21.1742413572115;
+        Wed, 19 Mar 2025 12:46:12 -0700 (PDT)
 Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-476bb824a8csm83290581cf.65.2025.03.19.12.38.42
+        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6eb036e8b00sm49213526d6.17.2025.03.19.12.46.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Mar 2025 12:38:42 -0700 (PDT)
-Date: Wed, 19 Mar 2025 15:38:38 -0400
+        Wed, 19 Mar 2025 12:46:11 -0700 (PDT)
+Date: Wed, 19 Mar 2025 15:46:10 -0400
 From: Johannes Weiner <hannes@cmpxchg.org>
-To: Jingxiang Zeng <jingxiangzeng.cas@gmail.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, kasong@tencent.com,
-	Zeng Jingxiang <linuszeng@tencent.com>
-Subject: Re: [RFC 0/5] add option to restore swap account to cgroupv1 mode
-Message-ID: <20250319193838.GE1876369@cmpxchg.org>
-References: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
+To: Yosry Ahmed <yosry.ahmed@linux.dev>
+Cc: Greg Thelen <gthelen@google.com>, Tejun Heo <tj@kernel.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH] cgroup/rstat: avoid disabling irqs for O(num_cpu)
+Message-ID: <20250319194610.GF1876369@cmpxchg.org>
+References: <20250319071330.898763-1-gthelen@google.com>
+ <Z9r70jKJLPdHyihM@google.com>
+ <20250319180643.GC1876369@cmpxchg.org>
+ <Z9sOVsMtaZ9n02MZ@google.com>
+ <20250319191638.GD1876369@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,45 +95,29 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
+In-Reply-To: <20250319191638.GD1876369@cmpxchg.org>
 
-On Wed, Mar 19, 2025 at 02:41:43PM +0800, Jingxiang Zeng wrote:
-> From: Zeng Jingxiang <linuszeng@tencent.com>
+On Wed, Mar 19, 2025 at 03:16:42PM -0400, Johannes Weiner wrote:
+> On Wed, Mar 19, 2025 at 06:35:02PM +0000, Yosry Ahmed wrote:
+> > On Wed, Mar 19, 2025 at 02:06:43PM -0400, Johannes Weiner wrote:
+> > > (btw, why do we not have any locking around the root stats in
+> > > cgroup_base_stat_cputime_show()? There isn't anything preventing a
+> > > reader from seeing all zeroes if another reader runs the memset() on
+> > > cgrp->bstat, is there? Or double times...)
+> > 
+> > (I think root_cgroup_cputime() operates on a stack allocated bstat, not
+> > cgrp->bstat)
 > 
-> memsw account is a very useful knob for container memory
-> overcommitting: It's a great abstraction of the "expected total
-> memory usage" of a container, so containers can't allocate too
-> much memory using SWAP, but still be able to SWAP out.
+> That was the case until:
 > 
-> For a simple example, with memsw.limit == memory.limit, containers
-> can't exceed their original memory limit, even with SWAP enabled, they
-> get OOM killed as how they used to, but the host is now able to
-> offload cold pages.
-> 
-> Similar ability seems absent with V2: With memory.swap.max == 0, the
-> host can't use SWAP to reclaim container memory at all. But with a
-> value larger than that, containers are able to overuse memory, causing
-> delayed OOM kill, thrashing, CPU/Memory usage ratio could be heavily
-> out of balance, especially with compress SWAP backends.
-> 
-> This patch set adds two interfaces to control the behavior of the
-> memory.swap.max/current in cgroupv2:
-> 
-> CONFIG_MEMSW_ACCOUNT_ON_DFL
-> cgroup.memsw_account_on_dfl={0, 1}
-> 
-> When one of the interfaces is enabled: memory.swap.current and
-> memory.swap.max represents the usage/limit of swap.
-> When neither is enabled (default behavior),memory.swap.current and
-> memory.swap.max represents the usage/limit of memory+swap.
+> commit b824766504e49f3fdcbb8c722e70996a78c3636e
+> Author: Chen Ridong <chenridong@huawei.com>
+> Date:   Thu Jul 4 14:01:19 2024 +0000
 
-This should be new knobs, e.g. memory.memsw.current, memory.memsw.max.
+Nevermind, Tejun pointed me to the follow-up fix he's got already
+queued up:
 
-Overloading the existing swap knobs is confusing.
+https://web.git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/commit/?id=c4af66a95aa3bc1d4f607ebd4eea524fb58946e3
 
-And there doesn't seem to be a good reason to make the behavior
-either-or anyway. If memory.swap.max=max (default), it won't interfere
-with the memsw operation. And it's at least conceivable somebody might
-want to set both, memsw.max > swap.max, to get some flexibility while
-excluding the craziest edge cases.
+That brings it all back on the stack.
 
