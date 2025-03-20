@@ -1,154 +1,182 @@
-Return-Path: <cgroups+bounces-7196-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7197-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C124BA6A34C
-	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 11:07:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F854A6A887
+	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 15:30:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 566507AD929
-	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 10:06:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0572F163EBC
+	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 14:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75782215049;
-	Thu, 20 Mar 2025 10:07:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C388D22424D;
+	Thu, 20 Mar 2025 14:28:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=codethink.co.uk header.i=@codethink.co.uk header.b="eFGVSAT1"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="mnIx2gUj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F08D2F5E
-	for <cgroups@vger.kernel.org>; Thu, 20 Mar 2025 10:07:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.203.114
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E92D22371B
+	for <cgroups@vger.kernel.org>; Thu, 20 Mar 2025 14:28:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742465233; cv=none; b=QffQCZTaDZlu4KlglJNqse0cs+t347DGCgfVuBUleo2Q/yzbFamE2F+bsrRiRlxYN3q+uFH5Oth9huy0RwofSXzulH7TgY/rgwg/LwhjMkgPWy5I5/ZdqLe0+rHghQu06nHgIR1GO4hhQBzBdPernVBKFiGT8FuXmewKnpegBPg=
+	t=1742480936; cv=none; b=CXbVWOEFV2+UYEhr1QZkCg9PPDIctJKW5pICsYr7SoTj7dj4YZaBQlUTu3Z0XX8nUX94MN2KdTSIN/kA3S4Azxnmfcw3Mevl0l8Aiqhg63xz61QKYPHbZKopiFCEuSNzazoynolBGIjaXFiOB+qJs1/ozx0XvIFVUXf9XLlskGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742465233; c=relaxed/simple;
-	bh=vkwawwZVxF4+h0hJ5sIWXpeiwdGqdYyXlwKTVyFGoxY=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=EZvy8EtcSWAFUU5hx78p39LowNnhE2RWPF6x/iscu7m5GQGdpDd958F86qLebn9tdsLhSbHEsW3VK3Wek0De51+50ZvSpvR+cV3lB84Kj4W5rvuVPnj8StJkw0JwNH4YX06q+5HMELclyR6uf7OeQqlNd3PzfRae8AnGnLG32mA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=codethink.co.uk; spf=pass smtp.mailfrom=codethink.co.uk; dkim=pass (2048-bit key) header.d=codethink.co.uk header.i=@codethink.co.uk header.b=eFGVSAT1; arc=none smtp.client-ip=188.40.203.114
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=codethink.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codethink.co.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codethink.co.uk; s=imap4-20230908; h=Sender:Content-Transfer-Encoding:
-	Content-Type:Subject:From:To:MIME-Version:Date:Message-ID:Reply-To:Cc:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=vkwawwZVxF4+h0hJ5sIWXpeiwdGqdYyXlwKTVyFGoxY=; b=eFGVSAT1u6r76tGF/jJjoZcO5I
-	pL9mq6TpR677bswzZdHcVTpMP4MKU5/ZCUxlLWpbwE5mL+zixpror6RLhlvGxjOudfjjtcSds4WFS
-	PyQIkzDXSOyV1fLeAWrFM0OejTZVawX1vHpE/hUGIo2BtsikY6kmVIJM7H7R8sax/LeKTenXSe7lq
-	+t+ia0ncKsKy5EE/CX8eBf2X3eAr7doLgX7I+YrtdJflaUlsg6p9tvX/DQr2nlydffX7fAVu/UlNI
-	PVattP0C+WnM8MgUVq10rexzFz8bCm+JdNiu8vzA5wPAofZ18WLr6pEjeAKwueYGgPKXkKLjbYChG
-	b+PFnhsw==;
-Received: from [167.98.27.226] (helo=[10.35.4.191])
-	by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-	id 1tvCnk-000Hry-FL
-	for <cgroups@vger.kernel.org> ; Thu, 20 Mar 2025 10:07:01 +0000
-Message-ID: <c5c7fe20-61a6-4228-876e-055ee9ab43b6@codethink.co.uk>
-Date: Thu, 20 Mar 2025 10:07:00 +0000
+	s=arc-20240116; t=1742480936; c=relaxed/simple;
+	bh=e7SbSL6gVZh5tUbpFhDN0kH6G1Bj0Xle6+XlO+bCBwQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BgOWTb6nQS2qhBL08Mz/9XAxtubL5aat2ZDByXI2k8cJ4ikneMdhJfb/l4vy4VoZ1WhBg84662wnHNljvC++M81Do3kEix4eWUQG0k197krpWrtiBZ0JxcW/S5zlDPaRIsjX7jlIZhjmgoIEe/ZER2ynOoIjty1303iKI2S04hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=mnIx2gUj; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6eb1e09f7e4so10364256d6.3
+        for <cgroups@vger.kernel.org>; Thu, 20 Mar 2025 07:28:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1742480932; x=1743085732; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wCmrNL8RiiTrlyx/pTgIz0D5BwVSzJyDRl0mOvvunyI=;
+        b=mnIx2gUj9al960GDc89fGmlWc8SzwESQFwQpCVhwMKt/uaa+RT/hmmxPsIS40Nnvau
+         PxYZt21K6lR7y8+1+F2pDgyCkcjmO/5Wg58YG0e9Xz//VTk5vvdpVo5gZoKL7orf8D/3
+         xwP0us+qpk1i/UzCH7F0h+9te789cXikPwvoWK+OU5KGbiizNMr+cvYjNQMJ+1jDY6Kx
+         YfY9hrnsQ8GIP3lVwfGsabucQeRNI/68W1AZ93Fr6Im7trukTp2W3VhXeE6JQylYxuga
+         jmq7lxLrfauKTjzUxF9FNhP7QGdXdLOrzex++AcNqf4I9DcBLQhiPTXP5sKLJysCjgLN
+         84gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742480932; x=1743085732;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wCmrNL8RiiTrlyx/pTgIz0D5BwVSzJyDRl0mOvvunyI=;
+        b=V2+FnCNr0PcwGNeaUpb+RNPjJRzTPhW/xjR4TiDwV2oA7QTgz7H2hlMB3t5ofY0Jw8
+         R2l1CdJyZDECU5G62lf4556teiWeMHgV1OkAggH6BLpryko2B8p6jg77j+rmmuyMhOP/
+         Iz+tUyho9L7dWUtp3m7JWrGieUP8ghUnjYj0neXw1+LEW9CRtRN3O4bvyYzM/M+9zPY6
+         43/ioo4t9UZyhFahAAr6uvHLzAlXfVcpyx8NROStxNCIbdzcx/xZvHxgZZu18v0ne7Fn
+         v+/z8jMIQbp0HLJFyXtlwLrHWLfuDi9dlHJD86XJ1/qz0vM1S42svejLRC82O0UzmNm4
+         ZGpg==
+X-Forwarded-Encrypted: i=1; AJvYcCX6KggGvUS0rIGUGOL0hO2Ewv4h1s/YvYp841JkYLYMmSfn6cD4PN3HjnejIcZoN3xVzTVQSOAa@vger.kernel.org
+X-Gm-Message-State: AOJu0YziYe910JPMmJdG8slHSvuvsWGa/hdkojkL6BwTvMt1fZnqM27B
+	5hjBguusTxp+yKg/58NyKm4bQxk+Yb1z504tt/ddOgMoYhKUfOKCWUMGixdTDSTj+I7AJXp9u/j
+	5
+X-Gm-Gg: ASbGncsX1xNWybv76jaSFgmFBdTTWgeGHoIYAq4sV6yqETIXFsxiip2uFbz1zEivvpM
+	wY5Y8r1xJ/qxHgY88X1Yg2F7SQT4hVqUe9Hk6+0ipwieQUq1dt8KYDseg3F6cKi28HYLbrFfC6x
+	yZw0tdN/f6ByOlAn+rCIjPsyoRDal4mg4bIdWisv45E+I+bKUc5MACgWSXvI0k19wSV8AmraTPJ
+	Rx3rCdOtOL9hg859usfYZXNzlBUhmCF4C0pui+U4dYcM67hY84b10fRiXEfrl/knovH/UjzjRk2
+	FVf/108m+gtpAK77sULvQg4Q2AmXR9OtGKpDspgiiQw=
+X-Google-Smtp-Source: AGHT+IE7+PCwTGsOGLwiN064VEeFPiMK7pULniFiVFZQCjwVIsX+SEk801jpxuToEYuiEcsMECmVLA==
+X-Received: by 2002:a05:6214:2501:b0:6e8:9e9c:d20f with SMTP id 6a1803df08f44-6eb352b42b9mr46981316d6.21.1742480931559;
+        Thu, 20 Mar 2025 07:28:51 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6eade34beb0sm95297196d6.105.2025.03.20.07.28.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Mar 2025 07:28:50 -0700 (PDT)
+Date: Thu, 20 Mar 2025 10:28:46 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>,
+	Jingxiang Zeng <linuszeng@tencent.com>, akpm@linux-foundation.org,
+	linux-mm@kvack.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mhocko@kernel.org,
+	muchun.song@linux.dev, kasong@tencent.com
+Subject: Re: [RFC 2/5] memcontrol: add boot option to enable memsw account on
+ dfl
+Message-ID: <20250320142846.GG1876369@cmpxchg.org>
+References: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
+ <20250319064148.774406-3-jingxiangzeng.cas@gmail.com>
+ <m35wwnetfubjrgcikiia7aurhd4hkcguwqywjamxm4xnaximt7@cnscqcgwh4da>
+ <7ia4tt7ovekj.fsf@castle.c.googlers.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: cgroups@vger.kernel.org
-Content-Language: en-US
-From: James Thomas <james.thomas@codethink.co.uk>
-Subject: BUG in LTS 5.15.x cpusets with tasks launched by newer systemd
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Sender: james.thomas@codethink.co.uk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ia4tt7ovekj.fsf@castle.c.googlers.com>
 
-Hello all,
+On Wed, Mar 19, 2025 at 10:30:20PM +0000, Roman Gushchin wrote:
+> Shakeel Butt <shakeel.butt@linux.dev> writes:
+> 
+> > On Wed, Mar 19, 2025 at 02:41:45PM +0800, Jingxiang Zeng wrote:
+> >> From: Zeng Jingxiang <linuszeng@tencent.com>
+> >> 
+> >> Added cgroup.memsw_account_on_dfl startup parameter, which
+> >> is off by default. When enabled in cgroupv2 mode, the memory
+> >> accounting mode of swap will be reverted to cgroupv1 mode.
+> >> 
+> >> Signed-off-by: Zeng Jingxiang <linuszeng@tencent.com>
+> >> ---
+> >>  include/linux/memcontrol.h |  4 +++-
+> >>  mm/memcontrol.c            | 11 +++++++++++
+> >>  2 files changed, 14 insertions(+), 1 deletion(-)
+> >> 
+> >> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> >> index dcb087ee6e8d..96f2fad1c351 100644
+> >> --- a/include/linux/memcontrol.h
+> >> +++ b/include/linux/memcontrol.h
+> >> @@ -62,10 +62,12 @@ struct mem_cgroup_reclaim_cookie {
+> >>  
+> >>  #ifdef CONFIG_MEMCG
+> >>  
+> >> +DECLARE_STATIC_KEY_FALSE(memsw_account_on_dfl);
+> >>  /* Whether enable memory+swap account in cgroupv2 */
+> >>  static inline bool do_memsw_account_on_dfl(void)
+> >>  {
+> >> -	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL);
+> >> +	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL)
+> >> +				|| static_branch_unlikely(&memsw_account_on_dfl);
+> >
+> > Why || in above condition? Shouldn't it be && ?
+> >
+> >>  }
+> >>  
+> >>  #define MEM_CGROUP_ID_SHIFT	16
+> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> >> index 768d6b15dbfa..c1171fb2bfd6 100644
+> >> --- a/mm/memcontrol.c
+> >> +++ b/mm/memcontrol.c
+> >> @@ -5478,3 +5478,14 @@ static int __init mem_cgroup_swap_init(void)
+> >>  subsys_initcall(mem_cgroup_swap_init);
+> >>  
+> >>  #endif /* CONFIG_SWAP */
+> >> +
+> >> +DEFINE_STATIC_KEY_FALSE(memsw_account_on_dfl);
+> >> +static int __init memsw_account_on_dfl_setup(char *s)
+> >> +{
+> >> +	if (!strcmp(s, "1"))
+> >> +		static_branch_enable(&memsw_account_on_dfl);
+> >> +	else if (!strcmp(s, "0"))
+> >> +		static_branch_disable(&memsw_account_on_dfl);
+> >> +	return 1;
+> >> +}
+> >> +__setup("cgroup.memsw_account_on_dfl=", memsw_account_on_dfl_setup);
+> >
+> > Please keep the above in memcontrol-v1.c
+> 
+> Hm, I'm not sure about this. This feature might be actually useful with
+> cgroup v2, as some companies are dependent on the old cgroup v1
+> semantics here but otherwise would prefer to move to v2.
+> In other words, I see it as a cgroup v2 feature, not as a cgroup v1.
+> So there is no reason to move it into the cgroup v1 code.
 
-I encountered an issue with the CPU affinity of tasks launched by systemd in a
-slice, after updating from systemd 254 to by systemd >= 256, on the LTS 5.15.x
-branch (tested on v5.15.179).
+Agreed. Let's think of this proposal as making memsw tracking and
+control a full-fledged v2 feature.
 
-Despite the slice file stipulating AllowedCPUS=2 (and confirming this was set in
-/sys/fs/cgroup/test.slice/cpuset.cpus) tasks launched in the slice would have
-the CPU affinity of the system.slice (i.e all by default) rather than 2.
+> I think it deserves a separate config option (if we're really concerned
+> about the memory overhead in struct mem_cgroup) or IMO better a
+> boot/mount time option.
 
-To reproduce:
+Yeah, a config option forces distros to enable it :/
 
-* Check kernel version and systemd version (I used a debian testing image for
-testing)
+I'm hesitant to agree with making it optional in any manner. If you
+consider the functionality that is implemented, the overhead should be
+fairly minimal. It isn't right now, because page_counter contains a
+ton of stuff that isn't applicable to this new user. That overhead is
+still paid for unnecessarily by users who _do_ need to enable it.
 
-```
-# uname -r
-5.15.179
-# systemctl --version
-systemd 257 (257.4-3)
-...
-```
+It seems like a good opportunity to refactor struct page_counter.
 
-* Create a test.slice with AllowedCPUS=2
-
-```
-# cat <<EOF > /usr/lib/systemd/system/test.slice
-[Unit]
-Description=Test slice
-Before=slices.target
-[Slice]
-AllowedCPUs=2
-[Install]
-WantedBy=slices.target
-EOF
-# systemctl daemon-reload && systemctl start test.slice
-```
-
-* Confirm cpuset
-
-```
-# cat /sys/fs/cgroup/test.slice/cpuset.cpus
-2
-```
-
-* Launch task in slice
-
-```
-# systemd-run --slice test.slice yes
-Running as unit: run-r9187b97c6958498aad5bba213289ac56.service; invocation ID:
-f470f74047ac43b7a60861d03a7ef6f9
-# cat
-/sys/fs/cgroup/test.slice/run-r9187b97c6958498aad5bba213289ac56.service/cgroup.procs
-
-317
-```
-
-# Check affinity
-
-```
-# taskset -pc 317
-pid 317's current affinity list: 0-7
-```
-
-This issue is fixed by applying upstream commits:
-
-18f9a4d47527772515ad6cbdac796422566e6440
-cgroup/cpuset: Skip spread flags update on v2
-and
-42a11bf5c5436e91b040aeb04063be1710bb9f9c
-cgroup/cpuset: Make cpuset_fork() handle CLONE_INTO_CGROUP properly
-
-With these applied:
-
-```
-# systemd-run --slice test.slice yes
-Running as unit: run-r442c444559ff49f48c6c2b8325b3b500.service; invocation ID:
-5211167267154e9292cb6b854585cb91
-# cat /sys/fs/cgroup/test.slice/run-r442c444559ff49f48c6c2b8325b3b500.service
-291
-# taskset -pc 291
-pid 291's current affinity list: 2
-```
-
-Perhaps these are a good candidate for backport onto the 5.15 LTS branch?
-
-Thanks
-James
 
