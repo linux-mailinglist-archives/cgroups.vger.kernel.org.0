@@ -1,89 +1,141 @@
-Return-Path: <cgroups+bounces-7202-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7203-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 854F6A6AB81
-	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 17:53:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 734F7A6ABDD
+	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 18:24:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0415483F20
-	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 16:53:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B264E188D4C2
+	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 17:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E4082222AC;
-	Thu, 20 Mar 2025 16:53:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEEE7224231;
+	Thu, 20 Mar 2025 17:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QiENWtni"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FbqJ/6oa"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF81F1E9B02;
-	Thu, 20 Mar 2025 16:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D46223301;
+	Thu, 20 Mar 2025 17:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742489619; cv=none; b=tpy+gXPNpjjo2DduVz97gOeHYRJz5YbJSXOxC0Rz9Z4Er8RXQoah7saLxxwCs5+qBaSiDLHSsTEzz6Xt4tHKPtnOBmuPAz2juorXuxGs6FUrBs75acJYqBGN6dFrJa6GsMZyetIkHHwhZ4KCpfD4SdL4Tufl7vNVQYEqDjnu6kQ=
+	t=1742491437; cv=none; b=nGBMmuGDJtmr7ShQpV7tHDXGHyGgCMq1MU8P7Bxb7Ta8VhGiyvpDMw4XqQGtm9nQwqPVJsxPds2BqKannbp6zkQlUavJa00c+UHiobkl+cjteOsbk9dYEKZdHz+a98ODRp33PPk0I7tVfbjIh2i9hzAnSzxZJfbYMWEdAxqdHIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742489619; c=relaxed/simple;
-	bh=KjmCKp/NJf3R2sO9/vCh37J/TX7XxEOqD+tQzob08mE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ja/mLlLGbTgmNg8FI/SLfVUzvXLvbiNRh1LRp7eJspfDGZOUGwC0ObLhoYtZLBffrw0gT6s2siSJ9JKtBEYOd25U3qhDXAOsrmi9WLDkWq8tCMejZwsS+ol2FfMDC1lZAq9RDJ70gWwAkBRIxKATj8Pg0w64UxjJeHOOvQDWXc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QiENWtni; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 385F0C4CEDD;
-	Thu, 20 Mar 2025 16:53:39 +0000 (UTC)
+	s=arc-20240116; t=1742491437; c=relaxed/simple;
+	bh=gryFhtDu7XEGwiKBLSCriZUlTbrAYOqWjssTwooJpi8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=WvMxuipJ0b3JPR15B2Acg3FXYb6ow9ndjkXMht63nPdOKqlj2OvtC6GZxOHlXjy4kLRG7ZfSvkeXx3AvLI5UoHxLmDiu1Z3HxSe/2csjSZp66mUm7u7QTT6frnM5vEPUcthcm6oxHMZBWRS5d5lr/GrkUqWegM1cUy+0qpvzUW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FbqJ/6oa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB1A4C4CEDD;
+	Thu, 20 Mar 2025 17:23:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742489619;
-	bh=KjmCKp/NJf3R2sO9/vCh37J/TX7XxEOqD+tQzob08mE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QiENWtniDLagGjucMoGsLCdBIczU0VtB2Ls6tUsGSB/uStLw1aievd/4/uZAW4OAn
-	 gQ3x741HkyLwTE7qzq8NPUpLiJOPFU9JQrsw1t+uyL2d3bw08jJMBpwi8l5ydvDDbL
-	 pptMDHy6Mj7DCkVR5J2uzV4nLr7WJe7nMsBEPMbM+vcOdIdpkZbcqA6bCF1mwyAadO
-	 p201rVWLoc4r8gphb2+g5xqxv4dyMuRkAjkw9V+gnV7rTvRAq/ik5LjZQItQpzwIg/
-	 dKh8V/csYA/FEdu9are4nMBLXrUe5s1bLBHa4P/vIv+NvwUMYFQk2m7YzvdXPb0Jt3
-	 rWOOvp8o1jD3w==
-Date: Thu, 20 Mar 2025 06:53:38 -1000
+	s=k20201202; t=1742491437;
+	bh=gryFhtDu7XEGwiKBLSCriZUlTbrAYOqWjssTwooJpi8=;
+	h=Date:From:To:Cc:Subject:From;
+	b=FbqJ/6oaWNJa60N6rbl+vavRinTUxGW1nmvjAtmYtcS9cb6wSkJ0yqsQyBsDKXDll
+	 IQK4tJjHAySIXA1pl2cQHlA73ZVu7kENE0/7CgScvp1uPntzcr8NfGRBPcxaEAKOOC
+	 cL2EpyQiKqGtGiXRZFRgf47B9hTdgLZrkuwkchmQfLPunU+xxyN7/XFqB7klNgvUMF
+	 yhB0GYRBkB7wrB6EUoMr4pjHy8jfYcdv3nyAnljhgsRE5G1e4jlIs/v6G/JUQy3QnA
+	 fGkrCcjayaul0SQ1kLCAy5h1K5hfBdekYXO0L6Rcpcjzvso9Zt3Ov1uGZsxbHSn2fH
+	 52LrEKpDSS1Tg==
+Date: Thu, 20 Mar 2025 07:23:55 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Yosry Ahmed <yosry.ahmed@linux.dev>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
 	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Greg Thelen <gthelen@google.com>, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH cgroup/for-6.15] cgroup: rstat: Cleanup flushing
- functions and locking
-Message-ID: <Z9xIEgxoGfZIfSkz@slm.duckdns.org>
-References: <20250319210013.3572360-1-yosry.ahmed@linux.dev>
+	cgroups@vger.kernel.org
+Subject: [GIT PULL] cgroup: Changes for v6.15
+Message-ID: <Z9xPK55yOmH4YUsk@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20250319210013.3572360-1-yosry.ahmed@linux.dev>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 19, 2025 at 09:00:13PM +0000, Yosry Ahmed wrote:
-> Now that the rstat lock is being re-acquired on every CPU iteration in
-> cgroup_rstat_flush_locked(), having the initially acquire the lock is
-> unnecessary and unclear.
-> 
-> Inline cgroup_rstat_flush_locked() into cgroup_rstat_flush() and move
-> the lock/unlock calls to the beginning and ending of the loop body to
-> make the critical section obvious.
-> 
-> cgroup_rstat_flush_hold/release() do not make much sense with the lock
-> being dropped and reacquired internally. Since it has no external
-> callers, remove it and explicitly acquire the lock in
-> cgroup_base_stat_cputime_show() instead.
-> 
-> This leaves the code with a single flushing function,
-> cgroup_rstat_flush().
-> 
-> Signed-off-by: Yosry Ahmed <yosry.ahmed@linux.dev>
+The following changes since commit b9d8a295ed6bc3cee846f8e3f27c9c6e9ebe43f2:
 
-Applied to cgroup/for-6.15.
+  Merge tag 'x86_misc_for_v6.14_rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2025-01-21 09:38:52 -0800)
 
-Thanks.
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.15
+
+for you to fetch changes up to 093c8812de2d3436744fd10edab9bf816b94f833:
+
+  cgroup: rstat: Cleanup flushing functions and locking (2025-03-20 06:53:02 -1000)
+
+----------------------------------------------------------------
+cgroup: Changes for v6.15
+
+- Add deprecation info messages to cgroup1-only features.
+
+- rstat updates including a bug fix and breaking up a critical section to
+  reduce interrupt latency impact.
+
+- Other misc and doc updates.
+
+----------------------------------------------------------------
+Abel Wu (1):
+      cgroup/rstat: Fix forceidle time in cpu.stat
+
+Dr. David Alan Gilbert (1):
+      cgroup/misc: Remove unused misc_cg_res_total_usage
+
+Eric Dumazet (1):
+      cgroup/rstat: avoid disabling irqs for O(num_cpu)
+
+Haorui He (1):
+      cgroup: update comment about dropping cgroup kn refs
+
+Michal Koutný (12):
+      cgroup/cpuset: Move procfs cpuset attribute under cgroup-v1.c
+      cgroup/cpuset-v1: Add deprecation messages to sched_load_balance and memory_pressure_enabled
+      cgroup/cpuset-v1: Add deprecation messages to memory_spread_page and memory_spread_slab
+      cgroup/blkio: Add deprecation messages to reset_stats
+      cgroup: Print message when /proc/cgroups is read on v2-only system
+      cgroup/cpuset-v1: Add deprecation messages to mem_exclusive and mem_hardwall
+      cgroup/cpuset-v1: Add deprecation messages to memory_migrate
+      RFC cgroup/cpuset-v1: Add deprecation messages to sched_relax_domain_level
+      mm: Add transformation message for per-memcg swappiness
+      cgroup: Add deprecation message to legacy freezer controller
+      cgroup: Update file naming comment
+      blk-cgroup: Simplify policy files registration
+
+Shashank Balaji (1):
+      cgroup, docs: Be explicit about independence of RT_GROUP_SCHED and non-cpu controllers
+
+Tejun Heo (1):
+      mm: Fix a build breakage in memcontrol-v1.c
+
+Yosry Ahmed (1):
+      cgroup: rstat: Cleanup flushing functions and locking
+
+ .../admin-guide/cgroup-v1/freezer-subsystem.rst    |   4 +
+ Documentation/admin-guide/cgroup-v1/memory.rst     |   1 +
+ Documentation/admin-guide/cgroup-v2.rst            |  23 ++--
+ block/blk-cgroup.c                                 |   8 +-
+ block/blk-ioprio.c                                 |  23 ++--
+ include/linux/cgroup-defs.h                        |   5 +-
+ include/linux/cgroup.h                             |   3 +-
+ include/linux/misc_cgroup.h                        |   6 --
+ init/Kconfig                                       |   5 +-
+ kernel/cgroup/cgroup-internal.h                    |   1 +
+ kernel/cgroup/cgroup-v1.c                          |   7 ++
+ kernel/cgroup/cgroup.c                             |   6 +-
+ kernel/cgroup/cpuset-v1.c                          |  49 +++++++++
+ kernel/cgroup/cpuset.c                             |  45 --------
+ kernel/cgroup/legacy_freezer.c                     |   6 +-
+ kernel/cgroup/misc.c                               |  16 ---
+ kernel/cgroup/rstat.c                              | 116 +++++++--------------
+ mm/memcontrol-v1.c                                 |   6 +-
+ 18 files changed, 142 insertions(+), 188 deletions(-)
 
 -- 
 tejun
