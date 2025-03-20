@@ -1,152 +1,149 @@
-Return-Path: <cgroups+bounces-7192-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7193-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDBF8A6A0F2
-	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 09:11:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B548A6A192
+	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 09:40:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4A91462AA0
-	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 08:09:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D4F9888540
+	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 08:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AAF209695;
-	Thu, 20 Mar 2025 08:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BC220FA90;
+	Thu, 20 Mar 2025 08:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BpLMDD28"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gXbUlq+b"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF5C1E7C23;
-	Thu, 20 Mar 2025 08:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B671E503D;
+	Thu, 20 Mar 2025 08:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742458183; cv=none; b=lZJa7BcojtFCoT+M4McJaWYYiLeEr9Wj4yvoFpen5YaCYO5o3I0DSSEAHcnYiUKmKKm6r70yjjnvqz2ZYF9b22yPiMlvPraow2YEJAsha5PmbUCNb3ArQ3CGOgOGPKq6f5dkIw0MvmxgeUp5BxK5J9e9JEi+YXewcJWSWK+Ph9M=
+	t=1742460029; cv=none; b=hWJm3QT8TpgLzh9C0jcxv85iqjHlHXl1kesDX8flnTgkkuQnX/regr8s/xEGSE+04A0Z0lVVUsPjeXOupy/VCA7OeldlfX5XCW5y5msKSM+J8A/70P3zk7dhaZVpKfhhz7FKNA8K55x5uKpI7/8+jIcjBWckuLnpKb2M00fSWrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742458183; c=relaxed/simple;
-	bh=JMhkC/qzy7CJY247FAczSaMR9th3O24RtFPlon4S9k4=;
+	s=arc-20240116; t=1742460029; c=relaxed/simple;
+	bh=vpp98wUQSHNs/QKai9FKUYpZCK2bmHQh0DZXd3+SGyo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y6XphAz3tgydVUQYTs9zWqczXwhjVE6sVeyY2RjheXQX9Jz4ZHACpJxVy8SsO6qUdoAlfjiiVOWP5PnTrLAf797yRdug/kZS77Mnyi/P2Dl9ceBwG2gd3EjGcHOiWL6sFFe87z8aTVz3uP4VnbOJdqSuDCWQex32Ij38uK6wSZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BpLMDD28; arc=none smtp.client-ip=209.85.216.48
+	 To:Cc:Content-Type; b=Iwf2Yc26WQb6/F+wpMPqliNkBx+tBWRyrKS8BGUMJkGj5q8777CRpF2IrXEGIu6Cws5pYvEErJaXS3Jv5+vRIFDV/EGFdXzPAQzI6jYfRWgHSFc+dwBqlDeFOKXvPdf1SryiU2dXpugtUiIxtWNVgP8unSxkCZQqFyE9Ha96eqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gXbUlq+b; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2ff80290e44so1060159a91.0;
-        Thu, 20 Mar 2025 01:09:40 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-30155bbbed9so663124a91.1;
+        Thu, 20 Mar 2025 01:40:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742458180; x=1743062980; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742460027; x=1743064827; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JMhkC/qzy7CJY247FAczSaMR9th3O24RtFPlon4S9k4=;
-        b=BpLMDD28q6FfdptARc3ZyhkUN3WE/jwtx5No8PkEQPesXtvGHxPFlpotoSqRcOstm9
-         xecUrdvSJQwKmTESFaKLYGOfrxBZQ6MbDZGeoX4ySMNxOMAVdvt+3vxsZp2VzQ4qJwVk
-         JBy3nU6rjn6vZYeb8jAl4NC7WHF5UtWA454Nrv5j9kO3PsygBPHyELh73Id+eZyDb3f3
-         ia+KGjfKE5b6yCcr09q9QeYULYIh+H7z3L5RGtJeVCSnkbcOhpZ6fIVsBbIGU0h2dQH6
-         6SijttiAgUSaIeGI1XoxjUAJCMjHUFKOaAGCQSm0oy7c5H5rkz/5Zqnxom//fbPm24X6
-         K2Dw==
+        bh=dVd/ZBXvrG6lnjcdZIt7lLZlK0ue2XgKgxaXwwHZOX8=;
+        b=gXbUlq+b8WGZZdbFwP7d5H1o4Q66KH5WaFOFtCIIzmBRjc6SjNehzkibwimexk43qM
+         adLsmJn9ZcLXuaT4PnFSAheh1J71RSLCNTTGGECNueub7FMEPTG0JMwKH+97mJ6PKVX/
+         71SYpBTdXDtsFY8YmHAeQ/Zn/xLekWVvGRZYfRswkfRwT22fKiAMgYM+a7OZuAy5e3bv
+         kLU7IqtsoZoU4gKiW48wgUcQ6osegtRNcFKbMN+cpcCZeS5GrqtiFevkUTWqCr8xW2+K
+         hWtFquhMW6ypMqNlitxO+NiyWc/Up234iXWduvUn19Ba1QmWMHU7SJ0zGLK+XO33WYlr
+         /eMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742458180; x=1743062980;
+        d=1e100.net; s=20230601; t=1742460027; x=1743064827;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JMhkC/qzy7CJY247FAczSaMR9th3O24RtFPlon4S9k4=;
-        b=K5Nv5Nj732TIZfbWFh+JwYyoFbHR1Xokjwo2zhby0vIy1lAoTpjkD23cTQuPGjs5NP
-         uDLmM1tVznBEwKCc75YKQU4HFgsGc8DzVtwuegg4rX8JQbqoy/Puzgz9i1uVwx8FFkb7
-         8z1oqvM57+vxZATiSm7giGotgPOUsTg+gWPygz7RPZcdHjNs1BfRTRGIOP2p1puIitcg
-         33wU/NqXeaGzkd/+I2fRB7OgmXs3MM4eUEOisM2UIjShVxSpbknEs7GwJXALePYWJ0Zq
-         Ye5pwuU03ySSjBMJYhgdtJEglYQw5NeMqQUZI1wzCp+zaEsuHn7rpYZIeQb2ZXWGx9KS
-         Ob0w==
-X-Forwarded-Encrypted: i=1; AJvYcCUVtOBfFhBp0x+DhMjYV0VxK1NBj9WxD1Id5THpRJxe4c3Q60fP6XaR+76G66QygwXpOa+xR0I7OrZfpBR3@vger.kernel.org, AJvYcCVkKTI2B0/5KYHoKBMB3exyP2J0Q/c1TvyzPpZHs0zhvzbofxsj38yDT9MI9VmtzxSEXrHLn8O5@vger.kernel.org
-X-Gm-Message-State: AOJu0YyP6N26dlirrTQp7K+J5Ds/3CijHQAwPqycb/XlJ7GBYSqYYuzQ
-	CmujUZ3nk8qaJndQZu2x8z9lrOqpZvdWhGj4tfVQ3U03P5l77c2bUv9erlVT8rY3Nh8R+0/QCTB
-	RKNcJFLZSV4sL5j9YPQgPPPUkl6x8/Tg+uuk=
-X-Gm-Gg: ASbGncu6g6p/JCM9dem6LBsKirH+xhrpUJ2KBYzgmej1p/Uv2PNqxqojLUKTkqT8DnP
-	7pXRM/sOKyCyNPOsVfGlegPKE3+i4nooQC09Eqno+bTjkDB7ZtMDm5t4YM5TKEmD7c3au2oOzXw
-	q6zHzjjseFAa7YDRtbbHE0DErvlw==
-X-Google-Smtp-Source: AGHT+IEQiTKOt2LMSqy3PQHK3F1M7BdfLFWEHQ4J+Jl93iXKf+ApncxDTs9g4rgwDvOjOKsh5oKBLX2x98Ctz5xOddg=
-X-Received: by 2002:a17:90b:5285:b0:2fc:c262:ef4b with SMTP id
- 98e67ed59e1d1-301bdf93e0cmr10361659a91.18.1742458180445; Thu, 20 Mar 2025
- 01:09:40 -0700 (PDT)
+        bh=dVd/ZBXvrG6lnjcdZIt7lLZlK0ue2XgKgxaXwwHZOX8=;
+        b=N2l/+6rOrwLuQPMRexMYqsT+IK9zoG8dSFSrlF+D0phV2ZeX5mJhfk+6d0DM1dr9E1
+         TQwV/W0OyPCTb4UC96b+IDenEqalkCq3hTQe5sZ7TxRRFLo2HN5zA4WK4/zaQQ0o8y3e
+         ymN7lH/CDuPu0mk479v6fslFlH6p6t5u4/Onh0CrvdMy9g4YDsHTleKxccdlK2+r3328
+         gMC2ONTmNeYNyZWsP9HVSYOTsiBDz/6FMAYAxjW1kEgIEBoWB2xg9p+1QPv+b+pZGXwX
+         V0nqkInavJNFZ3WgFwrSdotOS/iRv0NEXXquBzMwsEhPj5Dxe1JDDqa/73sZ8w8VCRbr
+         +1sw==
+X-Forwarded-Encrypted: i=1; AJvYcCVdxiNqY4NO2hV/ecJBc2plUy3lrR+TpoO7MU4ZVHoUslrSw0ClnzHTKKv9jBA/ges4SENEUV4p@vger.kernel.org, AJvYcCWWZzf8L4FZ8D0TOUW2hYc60bm9AVBXBk7lo7Vk8AwwRd6PpyX9xxQh0U4FQZg+PgByPFi8TmkXVx52Yz7U@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2mVUfPuuznv0fNdVo14UwcxH0eRqtwZZJXX446ojAhm0tNsYl
+	G+J6ZoRhD2D43gg9ucuYEhTi7A4pcccSP9IRmmGPdMsnCpU9F2ueJ0C0pBTQMib8KAjUBlTowYq
+	Y8845jDJAQpLP2ad3oW9Ve1TjPhM=
+X-Gm-Gg: ASbGncsdTXInonTYclAaXD1sqUXwxgne3PUOPMEzbL6WV+aYpxWe0OvgBF3GbKL1QEK
+	czTdk2w2+wdGmP3CArkzkzhNr6Uba5nbIDtS+jRBRiq8qJzPwW09/wkITq2qfQQ8rAifIDdDv6k
+	MC9k4u+9P4yngRnB0QlaO1OyEV07xIqSDCq6ki
+X-Google-Smtp-Source: AGHT+IFnbz5qpFjRctSSuumMXr+KaUxXcHLgw2e5AyzG2DYxcLVSBzkyHZbKqDi1snIiVqAsLymg1Mn94/xMonoJpDM=
+X-Received: by 2002:a17:90b:1648:b0:2ff:6788:cc67 with SMTP id
+ 98e67ed59e1d1-301be206e87mr6955304a91.34.1742460026630; Thu, 20 Mar 2025
+ 01:40:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com> <20250319193838.GE1876369@cmpxchg.org>
-In-Reply-To: <20250319193838.GE1876369@cmpxchg.org>
+References: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
+ <20250319064148.774406-4-jingxiangzeng.cas@gmail.com> <nlnwcpezzfmq4rh7oeckrl5nmc4sszd534bo3cx34rpkadhsph@mqphvl3zyanl>
+In-Reply-To: <nlnwcpezzfmq4rh7oeckrl5nmc4sszd534bo3cx34rpkadhsph@mqphvl3zyanl>
 From: jingxiang zeng <jingxiangzeng.cas@gmail.com>
-Date: Thu, 20 Mar 2025 16:09:29 +0800
-X-Gm-Features: AQ5f1JrZZEoKedaMtWNsJLn9ST0hUA5wF5GIy5JQ7u50GlSaaHdntRsri3F9-y8
-Message-ID: <CAJqJ8ig7BrPp0H3Lzbd0u9R6RhS5V0-i3b4eMWf+4EhujRU-jw@mail.gmail.com>
-Subject: Re: [RFC 0/5] add option to restore swap account to cgroupv1 mode
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	shakeel.butt@linux.dev, muchun.song@linux.dev, kasong@tencent.com, 
-	Zeng Jingxiang <linuszeng@tencent.com>
+Date: Thu, 20 Mar 2025 16:40:15 +0800
+X-Gm-Features: AQ5f1Joe6olwPvvRJlL2ei-eL43OXN8oSn3ipfQx4xJ7f7Wo8JpKOMpsLQNudSM
+Message-ID: <CAJqJ8ihCoeHegvKtyq1oJ45+Y4XmxbjnMyxivGViYSTY1cD2iw@mail.gmail.com>
+Subject: Re: [RFC 3/5] mm/memcontrol: do not scan anon pages if memsw limit is hit
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Jingxiang Zeng <linuszeng@tencent.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, hannes@cmpxchg.org, 
+	mhocko@kernel.org, roman.gushchin@linux.dev, muchun.song@linux.dev, 
+	kasong@tencent.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 20 Mar 2025 at 03:38, Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Thu, 20 Mar 2025 at 03:36, Shakeel Butt <shakeel.butt@linux.dev> wrote:
 >
-> On Wed, Mar 19, 2025 at 02:41:43PM +0800, Jingxiang Zeng wrote:
+> On Wed, Mar 19, 2025 at 02:41:46PM +0800, Jingxiang Zeng wrote:
 > > From: Zeng Jingxiang <linuszeng@tencent.com>
 > >
-> > memsw account is a very useful knob for container memory
-> > overcommitting: It's a great abstraction of the "expected total
-> > memory usage" of a container, so containers can't allocate too
-> > much memory using SWAP, but still be able to SWAP out.
-> >
-> > For a simple example, with memsw.limit == memory.limit, containers
-> > can't exceed their original memory limit, even with SWAP enabled, they
-> > get OOM killed as how they used to, but the host is now able to
-> > offload cold pages.
-> >
-> > Similar ability seems absent with V2: With memory.swap.max == 0, the
-> > host can't use SWAP to reclaim container memory at all. But with a
-> > value larger than that, containers are able to overuse memory, causing
-> > delayed OOM kill, thrashing, CPU/Memory usage ratio could be heavily
-> > out of balance, especially with compress SWAP backends.
-> >
-> > This patch set adds two interfaces to control the behavior of the
-> > memory.swap.max/current in cgroupv2:
-> >
-> > CONFIG_MEMSW_ACCOUNT_ON_DFL
-> > cgroup.memsw_account_on_dfl={0, 1}
-> >
-> > When one of the interfaces is enabled: memory.swap.current and
-> > memory.swap.max represents the usage/limit of swap.
-> > When neither is enabled (default behavior),memory.swap.current and
-> > memory.swap.max represents the usage/limit of memory+swap.
+> > When memory recycling is triggered by the hard watermark of
 >
-> This should be new knobs, e.g. memory.memsw.current, memory.memsw.max.
+> What is hard watermark?
+
+memory.memsw.limit_in_bytes.
 >
-> Overloading the existing swap knobs is confusing.
+> > memsw, anonymous pages do not want to be recycled any further.
+> > This is consistent with the processing method of cgroup v2.
+> >
+> > Signed-off-by: Zeng Jingxiang <linuszeng@tencent.com>
 >
-> And there doesn't seem to be a good reason to make the behavior
-> either-or anyway. If memory.swap.max=max (default), it won't interfere
-> with the memsw operation. And it's at least conceivable somebody might
-> want to set both, memsw.max > swap.max, to get some flexibility while
-> excluding the craziest edge cases.
+> Is this patch orthogonal to the series or is it needed for v1 as well?
 
-Hi Johannes,
-
-If both memsw.max and swap.max are provided in cgroupv2, there will be some
-issues as follows:
-(1. As Shakeel Butt mentioned, currently memsw and swap share the page_counter,
-and we need to provide a separate page_counter for memsw.
-(2. Currently, the statistics for memsw and swap are mutually
-exclusive. For example,
-during uncharging, both memsw and swap call the __mem_cgroup_uncharge_swap
-function together, and this function currently only selects a single
-counter for statistics
-based on the static do_memsw_account.
-
-As mentioned above, this patch set considers the approach suggested by Roman
-Gushchin[1], which involves switching to cgroupv1 behavior through a
-configuration
-option, making it easier to implement.
-
-Link: https://lore.kernel.org/all/Zk-fQtFrj-2YDJOo@P9FQF9L96D.corp.robot.car/
-[1]
+Yes, it is needed for cgroupv1 as well
+>
+> > ---
+> >  mm/memcontrol.c | 15 +++++++++++----
+> >  1 file changed, 11 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index c1171fb2bfd6..623ebf610946 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -5072,14 +5072,21 @@ void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
+> >
+> >  long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+> >  {
+> > +     struct page_counter *pg_counter;
+> >       long nr_swap_pages = get_nr_swap_pages();
+> >
+> > -     if (mem_cgroup_disabled() || do_memsw_account())
+> > +     if (mem_cgroup_disabled())
+> >               return nr_swap_pages;
+> > -     for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg))
+> > +     for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
+> > +             if (do_memsw_account())
+> > +                     pg_counter = &memcg->memsw;
+> > +             else
+> > +                     pg_counter = &memcg->swap;
+> > +
+> >               nr_swap_pages = min_t(long, nr_swap_pages,
+> > -                                   READ_ONCE(memcg->swap.max) -
+> > -                                   page_counter_read(&memcg->swap));
+> > +                                   READ_ONCE(pg_counter->max) -
+> > +                                   page_counter_read(pg_counter));
+> > +     }
+> >       return nr_swap_pages;
+> >  }
+> >
+> > --
+> > 2.41.1
+> >
+>
 
