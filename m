@@ -1,132 +1,161 @@
-Return-Path: <cgroups+bounces-7199-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7200-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99D44A6A97C
-	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 16:16:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9645CA6A97D
+	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 16:16:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D0F718887A9
-	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 15:08:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CF668A27DA
+	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 15:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A5661E47CA;
-	Thu, 20 Mar 2025 15:08:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 558131E3DD6;
+	Thu, 20 Mar 2025 15:16:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="m3izvTXp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pD7NpAzN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 173681DE3BA
-	for <cgroups@vger.kernel.org>; Thu, 20 Mar 2025 15:08:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A33DF192B86
+	for <cgroups@vger.kernel.org>; Thu, 20 Mar 2025 15:16:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742483313; cv=none; b=jHVjFviNInnFYHnoX4mheBbI1CzBibRk/JYfN2oQkBiTeKWib0+SkLr7gJXsCMDQOpc+b2qOhlnO+u+CVwDRo/0s5wJ9M9/gOljpRzQMMzTG3UlDL1hm9Vm7J5eZhmC1j5GlS7NMdJP+sLGvbxydD+35+Kfye/urJpWwz0Uje78=
+	t=1742483785; cv=none; b=AdF2CBS82ooej6FXTACfMjR78cKYhL6VUt7rxDRl6v/w6ZmL3rAJryi+AMDTilGWYL5baxZV/WxvhMt5hhouE+etoF+OSJfAH2Tp5PX9sXFsERPRsY/dmzgwCynr/xE5M+0VM54oNJgLSayBI6/Hkx+G0xoCRvnh1Rtmhb+XiYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742483313; c=relaxed/simple;
-	bh=+wIue+d1fxHnxh1n/pxsYBdiSsRsmFYUmZTnYav+nCg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A8QHkoz/muhFOARfYffOQA06K8iWHpyXyVquBAXm3HNep/la5yHSm+po608IIxjE/YVzbJluxG4/gJMs8kjGSr7wzi9Gk1LNOmVTr1V11pncfMy6zGw90G/xyCHZ7jbM7MePhYlKzU0zEvEZXO+81slBFnFzqgpkN/wxHHKRX48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=m3izvTXp; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-476b89782c3so10439501cf.1
-        for <cgroups@vger.kernel.org>; Thu, 20 Mar 2025 08:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1742483309; x=1743088109; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+wIue+d1fxHnxh1n/pxsYBdiSsRsmFYUmZTnYav+nCg=;
-        b=m3izvTXpkq8MM8CAfUIKmfW77lVHpp7BZ+9eWIBDi4jytqMSeq5KvZgkm4JxUVgkr1
-         01l5Hlm/rPlczg/x+65Ratws2+oHGqfdEw1wI2LHjVY+npMo9sssCXwR2UcQkTEIeTt3
-         Nxt169msZ0nT28ER4yIZWQmsZPImwVQlzyIULufq76F1wGQKxRqFfwio1Frn0u3YFahF
-         Qiv6UhkGM6r0suZnh6mKo+yeEl9iKnpzS2VQXALgrk+UXQIXj9BA78fDF99mKADy75AG
-         2DiTDs99fomJHp8ODRsP2xATAjj1WJHydJN/ZNRaEhD+iZU4ttXFL5lJr9gC/WiOW48/
-         2eSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742483309; x=1743088109;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+wIue+d1fxHnxh1n/pxsYBdiSsRsmFYUmZTnYav+nCg=;
-        b=UtRAMCI4BUFsQhcQm/ToVD3MNbdHwl4P/6Arcjyy3pDncZylYuUDB2pj+9flihWuWF
-         ag1UEbHar5VbnP5RKdt9rIpIcPeOf+XSC6otME013/ywCNvW2HAeyfUJRJQ2/qzqMD22
-         LVO4zHYKjl9/LLlBewNAA7sYjA9auWbwSaaAO9Vc6qHPO+/LGb1obeTTurqEdfF03zFk
-         8bdTZjRCWC0rplcf6Vfo8rOPQ5Vf11Cjeve13X5g2cVYZ2M3MvWkIzOrpsWHA5wjH+OL
-         5VCC1rgVK++xoNm4is6YbJSnxEvlPtKBM4xKmZSwm1NjVSzSjt4ZdrCXY+bqPLPsohT6
-         Y3Bw==
-X-Forwarded-Encrypted: i=1; AJvYcCVYlyLVKR4Ys2B+F24KwOAKA0V6D/smf+0UayAepX2MUZYza3pCCBqWWaOH5bKB2exMLpgiDnNK@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBFXD+lOBEfaxj5MGCKMonkM62e1KJTbR9eBPDdKJreHFn1H5S
-	bXWAaEoJdifg3GioObpXcghWrqUFjdNEOsyNUgzWmsibVJkQPHvbxknKjWjbZlo=
-X-Gm-Gg: ASbGncunBUTEOMg5D0TQNiuLr5YclNLyiC9Bowtyo5NiEuFN3XMQ+71pOSLhaprd2n3
-	6K3XFeeFdt2IoZq4IX/nLeA0WYd3qZmq+uWG2FAu5YnMkKb9lxDVhuxQMzxRKG/zm4nXkom2H56
-	bYwkqzFXVjvFA3DwvFW55TgX/yZK6jr65JML0VI6LbgYymQwrnnJPJXHxxKMUaGdDNoSlJR4A26
-	2nqFaoudIJ33xnb7fVkUZMpYxfZm0JNOqvztGNyf3Tofqo6IYajtKOlhpFF0+MeAS/IoaaGmoQP
-	Dq9xK8jpoEiAbYvPIoOtSpAtSFGCxYhzdRNf8mmq97k=
-X-Google-Smtp-Source: AGHT+IEqDT7L31lKb+4Vt3imVDG99K/l6IxQtEuRxofKiOxuNW4VzwDmBVYfyocCiaVRZJSQ1vSRuw==
-X-Received: by 2002:a05:622a:4cc5:b0:476:6d30:8aed with SMTP id d75a77b69052e-4770839bf5emr111115461cf.49.1742483308620;
-        Thu, 20 Mar 2025 08:08:28 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-4771d176113sm209421cf.17.2025.03.20.08.08.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Mar 2025 08:08:27 -0700 (PDT)
-Date: Thu, 20 Mar 2025 11:08:23 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: jingxiang zeng <jingxiangzeng.cas@gmail.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, kasong@tencent.com,
-	Zeng Jingxiang <linuszeng@tencent.com>
-Subject: Re: [RFC 0/5] add option to restore swap account to cgroupv1 mode
-Message-ID: <20250320144722.GH1876369@cmpxchg.org>
+	s=arc-20240116; t=1742483785; c=relaxed/simple;
+	bh=m6RbaG5UBdPDJobW3JsiDnRlu3Sit1mKtD1fE5degHc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GWSU/dNcgvD+ZPfr8HRYJcKGV7o8U8lr2I1KjBZ2TghdivINkOwEnr1WFI/w4uvPk9g0ECyMDGQ8Uepy9vZEyxX5cNj99HvmxMvepANxBp8FwdJJ94vl1dYOIrQ/MK/mU9n+G6mIxyT/UWylXY8Sm6RtwBzxTCM8c0qdi1q9gcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pD7NpAzN; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1742483775;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gZZRLALnFywosQyAbfYxHqxa+mApnY/ujk8b1UZoQbg=;
+	b=pD7NpAzNuRwuLWgqSWOU8Zf1FkMoKvIyDExeNDjj8bm2eJvdnfzt2YjmX+w1iFIRGENLOG
+	kMmUvfKYuxJDtso+P8cbqEr9t9de543EW9597nKbdN3IxsD1cJ8p7HvbkkJENtRejOGZdQ
+	eGPVw+4P8l8ocOJepro6emUD+/v42kE=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>,  Jingxiang Zeng
+ <linuszeng@tencent.com>,  akpm@linux-foundation.org,  linux-mm@kvack.org,
+  cgroups@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  mhocko@kernel.org,  muchun.song@linux.dev,  kasong@tencent.com
+Subject: Re: [RFC 2/5] memcontrol: add boot option to enable memsw account
+ on dfl
+In-Reply-To: <20250320142846.GG1876369@cmpxchg.org> (Johannes Weiner's message
+	of "Thu, 20 Mar 2025 10:28:46 -0400")
 References: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
- <20250319193838.GE1876369@cmpxchg.org>
- <CAJqJ8ig7BrPp0H3Lzbd0u9R6RhS5V0-i3b4eMWf+4EhujRU-jw@mail.gmail.com>
+	<20250319064148.774406-3-jingxiangzeng.cas@gmail.com>
+	<m35wwnetfubjrgcikiia7aurhd4hkcguwqywjamxm4xnaximt7@cnscqcgwh4da>
+	<7ia4tt7ovekj.fsf@castle.c.googlers.com>
+	<20250320142846.GG1876369@cmpxchg.org>
+Date: Thu, 20 Mar 2025 15:16:10 +0000
+Message-ID: <7ia4plibspfp.fsf@castle.c.googlers.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJqJ8ig7BrPp0H3Lzbd0u9R6RhS5V0-i3b4eMWf+4EhujRU-jw@mail.gmail.com>
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Mar 20, 2025 at 04:09:29PM +0800, jingxiang zeng wrote:
-> If both memsw.max and swap.max are provided in cgroupv2, there will be some
-> issues as follows:
-> (1. As Shakeel Butt mentioned, currently memsw and swap share the page_counter,
-> and we need to provide a separate page_counter for memsw.
-> (2. Currently, the statistics for memsw and swap are mutually
-> exclusive. For example,
-> during uncharging, both memsw and swap call the __mem_cgroup_uncharge_swap
-> function together, and this function currently only selects a single
-> counter for statistics
-> based on the static do_memsw_account.
+Johannes Weiner <hannes@cmpxchg.org> writes:
 
-My suggestion is to factor out from struct page_counter all the stuff
-that is not necessary for all users, and then have separate counters
-for swap and memsw.
+> On Wed, Mar 19, 2025 at 10:30:20PM +0000, Roman Gushchin wrote:
+>> Shakeel Butt <shakeel.butt@linux.dev> writes:
+>> 
+>> > On Wed, Mar 19, 2025 at 02:41:45PM +0800, Jingxiang Zeng wrote:
+>> >> From: Zeng Jingxiang <linuszeng@tencent.com>
+>> >> 
+>> >> Added cgroup.memsw_account_on_dfl startup parameter, which
+>> >> is off by default. When enabled in cgroupv2 mode, the memory
+>> >> accounting mode of swap will be reverted to cgroupv1 mode.
+>> >> 
+>> >> Signed-off-by: Zeng Jingxiang <linuszeng@tencent.com>
+>> >> ---
+>> >>  include/linux/memcontrol.h |  4 +++-
+>> >>  mm/memcontrol.c            | 11 +++++++++++
+>> >>  2 files changed, 14 insertions(+), 1 deletion(-)
+>> >> 
+>> >> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> >> index dcb087ee6e8d..96f2fad1c351 100644
+>> >> --- a/include/linux/memcontrol.h
+>> >> +++ b/include/linux/memcontrol.h
+>> >> @@ -62,10 +62,12 @@ struct mem_cgroup_reclaim_cookie {
+>> >>  
+>> >>  #ifdef CONFIG_MEMCG
+>> >>  
+>> >> +DECLARE_STATIC_KEY_FALSE(memsw_account_on_dfl);
+>> >>  /* Whether enable memory+swap account in cgroupv2 */
+>> >>  static inline bool do_memsw_account_on_dfl(void)
+>> >>  {
+>> >> -	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL);
+>> >> +	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL)
+>> >> +				|| static_branch_unlikely(&memsw_account_on_dfl);
+>> >
+>> > Why || in above condition? Shouldn't it be && ?
+>> >
+>> >>  }
+>> >>  
+>> >>  #define MEM_CGROUP_ID_SHIFT	16
+>> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> >> index 768d6b15dbfa..c1171fb2bfd6 100644
+>> >> --- a/mm/memcontrol.c
+>> >> +++ b/mm/memcontrol.c
+>> >> @@ -5478,3 +5478,14 @@ static int __init mem_cgroup_swap_init(void)
+>> >>  subsys_initcall(mem_cgroup_swap_init);
+>> >>  
+>> >>  #endif /* CONFIG_SWAP */
+>> >> +
+>> >> +DEFINE_STATIC_KEY_FALSE(memsw_account_on_dfl);
+>> >> +static int __init memsw_account_on_dfl_setup(char *s)
+>> >> +{
+>> >> +	if (!strcmp(s, "1"))
+>> >> +		static_branch_enable(&memsw_account_on_dfl);
+>> >> +	else if (!strcmp(s, "0"))
+>> >> +		static_branch_disable(&memsw_account_on_dfl);
+>> >> +	return 1;
+>> >> +}
+>> >> +__setup("cgroup.memsw_account_on_dfl=", memsw_account_on_dfl_setup);
+>> >
+>> > Please keep the above in memcontrol-v1.c
+>> 
+>> Hm, I'm not sure about this. This feature might be actually useful with
+>> cgroup v2, as some companies are dependent on the old cgroup v1
+>> semantics here but otherwise would prefer to move to v2.
+>> In other words, I see it as a cgroup v2 feature, not as a cgroup v1.
+>> So there is no reason to move it into the cgroup v1 code.
+>
+> Agreed. Let's think of this proposal as making memsw tracking and
+> control a full-fledged v2 feature.
+>
+>> I think it deserves a separate config option (if we're really concerned
+>> about the memory overhead in struct mem_cgroup) or IMO better a
+>> boot/mount time option.
+>
+> Yeah, a config option forces distros to enable it :/
+>
+> I'm hesitant to agree with making it optional in any manner. If you
+> consider the functionality that is implemented, the overhead should be
+> fairly minimal. It isn't right now, because page_counter contains a
+> ton of stuff that isn't applicable to this new user. That overhead is
+> still paid for unnecessarily by users who _do_ need to enable it.
 
-The protection stuff is long overdue for this. It makes up nearly half
-of the struct's members, but is only used by the memory counter. Even
-before your patches this is unnecessary bloat in the swap/memsw, kmem
-and tcpmem counters.
+Agree. Memcg is already huge, so another page_counter won't add a lot
+percentage-wise.
 
-Fix that and having separate counters is a non-issue.
+>
+> It seems like a good opportunity to refactor struct page_counter.
 
-Overloading the memory.swap.* controls to mean "combined memory and
-swap" is unacceptable to me. They have established meaning on v2. It
-may well become a common setting, and there might well be usecases
-where people want one setting for one cgroup and another setting for
-another cgroup. Or maybe even both controls in one group. And why not?
+I don't think it's a hard dependency here, but otherwise fully agree.
 
-This is a user-visible interface that we'll have to support forever,
-and deployments will be forced to use forever. Tech debt in the
-current implementation is not a convincing argument to forever trap us
-all with a suboptimal choice.
-
-Nacked-by: Johannes Weiner <hannes@cmpxchg.org>
+Thanks!
 
