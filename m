@@ -1,182 +1,196 @@
-Return-Path: <cgroups+bounces-7197-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7198-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F854A6A887
-	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 15:30:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E75B7A6A8D9
+	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 15:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0572F163EBC
-	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 14:29:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87CDA88318B
+	for <lists+cgroups@lfdr.de>; Thu, 20 Mar 2025 14:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C388D22424D;
-	Thu, 20 Mar 2025 14:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C791DED46;
+	Thu, 20 Mar 2025 14:43:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="mnIx2gUj"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zXVQ3wIn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E92D22371B
-	for <cgroups@vger.kernel.org>; Thu, 20 Mar 2025 14:28:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73AF41E1A05
+	for <cgroups@vger.kernel.org>; Thu, 20 Mar 2025 14:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742480936; cv=none; b=CXbVWOEFV2+UYEhr1QZkCg9PPDIctJKW5pICsYr7SoTj7dj4YZaBQlUTu3Z0XX8nUX94MN2KdTSIN/kA3S4Azxnmfcw3Mevl0l8Aiqhg63xz61QKYPHbZKopiFCEuSNzazoynolBGIjaXFiOB+qJs1/ozx0XvIFVUXf9XLlskGw=
+	t=1742481830; cv=none; b=Dd45jSMmp32MLbbOyqGo8Ls+qiah6BfTO5hU+Zf7OJZ8btTpyGZ6B2ZrbJF3nYJzNuX03Z1c3SnJTCKgg7G/sqDRp6DdsywyQ/fyj7buRWaZKxCCPYhGKlaO7Y0AmOjdQA3Jzq4LsAKkeBHueuVtQwlK7wZ11z2KsNJ64vOv79g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742480936; c=relaxed/simple;
-	bh=e7SbSL6gVZh5tUbpFhDN0kH6G1Bj0Xle6+XlO+bCBwQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BgOWTb6nQS2qhBL08Mz/9XAxtubL5aat2ZDByXI2k8cJ4ikneMdhJfb/l4vy4VoZ1WhBg84662wnHNljvC++M81Do3kEix4eWUQG0k197krpWrtiBZ0JxcW/S5zlDPaRIsjX7jlIZhjmgoIEe/ZER2ynOoIjty1303iKI2S04hg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=mnIx2gUj; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6eb1e09f7e4so10364256d6.3
-        for <cgroups@vger.kernel.org>; Thu, 20 Mar 2025 07:28:52 -0700 (PDT)
+	s=arc-20240116; t=1742481830; c=relaxed/simple;
+	bh=TDBstvy7iYERI525OcEsjDYW1OgYXktNJP3vh6zOuxs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LB071bjo3t3pR8G4J78MCbLklHoaBpRwaZtUUfXERAy8fMMCkV7s+U94forQ1y0kJZ5dPfUDDHSSctjVwdWUETlXB2BTm42NPMuehIbOH3eT8fbueJeDjG4ikIsT5EsKH+B3IKVt676QuPj+yYHhk9wDJUMqovzoGN5ugOG30So=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zXVQ3wIn; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5e789411187so9188a12.1
+        for <cgroups@vger.kernel.org>; Thu, 20 Mar 2025 07:43:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1742480932; x=1743085732; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wCmrNL8RiiTrlyx/pTgIz0D5BwVSzJyDRl0mOvvunyI=;
-        b=mnIx2gUj9al960GDc89fGmlWc8SzwESQFwQpCVhwMKt/uaa+RT/hmmxPsIS40Nnvau
-         PxYZt21K6lR7y8+1+F2pDgyCkcjmO/5Wg58YG0e9Xz//VTk5vvdpVo5gZoKL7orf8D/3
-         xwP0us+qpk1i/UzCH7F0h+9te789cXikPwvoWK+OU5KGbiizNMr+cvYjNQMJ+1jDY6Kx
-         YfY9hrnsQ8GIP3lVwfGsabucQeRNI/68W1AZ93Fr6Im7trukTp2W3VhXeE6JQylYxuga
-         jmq7lxLrfauKTjzUxF9FNhP7QGdXdLOrzex++AcNqf4I9DcBLQhiPTXP5sKLJysCjgLN
-         84gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742480932; x=1743085732;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1742481827; x=1743086627; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wCmrNL8RiiTrlyx/pTgIz0D5BwVSzJyDRl0mOvvunyI=;
-        b=V2+FnCNr0PcwGNeaUpb+RNPjJRzTPhW/xjR4TiDwV2oA7QTgz7H2hlMB3t5ofY0Jw8
-         R2l1CdJyZDECU5G62lf4556teiWeMHgV1OkAggH6BLpryko2B8p6jg77j+rmmuyMhOP/
-         Iz+tUyho9L7dWUtp3m7JWrGieUP8ghUnjYj0neXw1+LEW9CRtRN3O4bvyYzM/M+9zPY6
-         43/ioo4t9UZyhFahAAr6uvHLzAlXfVcpyx8NROStxNCIbdzcx/xZvHxgZZu18v0ne7Fn
-         v+/z8jMIQbp0HLJFyXtlwLrHWLfuDi9dlHJD86XJ1/qz0vM1S42svejLRC82O0UzmNm4
-         ZGpg==
-X-Forwarded-Encrypted: i=1; AJvYcCX6KggGvUS0rIGUGOL0hO2Ewv4h1s/YvYp841JkYLYMmSfn6cD4PN3HjnejIcZoN3xVzTVQSOAa@vger.kernel.org
-X-Gm-Message-State: AOJu0YziYe910JPMmJdG8slHSvuvsWGa/hdkojkL6BwTvMt1fZnqM27B
-	5hjBguusTxp+yKg/58NyKm4bQxk+Yb1z504tt/ddOgMoYhKUfOKCWUMGixdTDSTj+I7AJXp9u/j
-	5
-X-Gm-Gg: ASbGncsX1xNWybv76jaSFgmFBdTTWgeGHoIYAq4sV6yqETIXFsxiip2uFbz1zEivvpM
-	wY5Y8r1xJ/qxHgY88X1Yg2F7SQT4hVqUe9Hk6+0ipwieQUq1dt8KYDseg3F6cKi28HYLbrFfC6x
-	yZw0tdN/f6ByOlAn+rCIjPsyoRDal4mg4bIdWisv45E+I+bKUc5MACgWSXvI0k19wSV8AmraTPJ
-	Rx3rCdOtOL9hg859usfYZXNzlBUhmCF4C0pui+U4dYcM67hY84b10fRiXEfrl/knovH/UjzjRk2
-	FVf/108m+gtpAK77sULvQg4Q2AmXR9OtGKpDspgiiQw=
-X-Google-Smtp-Source: AGHT+IE7+PCwTGsOGLwiN064VEeFPiMK7pULniFiVFZQCjwVIsX+SEk801jpxuToEYuiEcsMECmVLA==
-X-Received: by 2002:a05:6214:2501:b0:6e8:9e9c:d20f with SMTP id 6a1803df08f44-6eb352b42b9mr46981316d6.21.1742480931559;
-        Thu, 20 Mar 2025 07:28:51 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6eade34beb0sm95297196d6.105.2025.03.20.07.28.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Mar 2025 07:28:50 -0700 (PDT)
-Date: Thu, 20 Mar 2025 10:28:46 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>,
-	Jingxiang Zeng <linuszeng@tencent.com>, akpm@linux-foundation.org,
-	linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, mhocko@kernel.org,
-	muchun.song@linux.dev, kasong@tencent.com
-Subject: Re: [RFC 2/5] memcontrol: add boot option to enable memsw account on
- dfl
-Message-ID: <20250320142846.GG1876369@cmpxchg.org>
-References: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
- <20250319064148.774406-3-jingxiangzeng.cas@gmail.com>
- <m35wwnetfubjrgcikiia7aurhd4hkcguwqywjamxm4xnaximt7@cnscqcgwh4da>
- <7ia4tt7ovekj.fsf@castle.c.googlers.com>
+        bh=wGT8HOddMLQhY6sBbkKYQxOTAVe3/AEazyhK+vDdPHw=;
+        b=zXVQ3wInbS5RlofjJMiyPdmahmrA80YEy7y3JkY9rDbkJk5EBQKBegdiZ75zOhNeT6
+         s3l7qjOno5ceiZh2Lc8g7RFVVkHksqfsIbY0w7cIyE608Hqu+h7z9KYqM2D+E5AGhXKB
+         WL0H5E0XrjJeK4AIKT9qbenFvbtxf8dl1IJE5FJe91TdC7kCMIZA2Dkdh7YPjQaVOlJ5
+         pHzFAiA8s8eagJgj99pm8Amv0B5x5XcwwWOZZwC7ZPFQaNhDACSx7ELgwkxA+4oWlSLE
+         aYLb80LRJiTJGVXcD/7rFeaqMJchDWtbmKVySuCa0pnN/4zmDbkrCD/Ue8UdR9e1+BCI
+         B+IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742481827; x=1743086627;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wGT8HOddMLQhY6sBbkKYQxOTAVe3/AEazyhK+vDdPHw=;
+        b=X56tmlBjg5fYWRdWtfP29CPLytllC9uasHpf06+zPoSq6NjUVujuEPUhU3HeNfFjin
+         DNIjaSow0JSaC/VboMAI9kD4nrLrkl4hwauppyM5etoa/RApzpYKexWV+xOLYxvd+Z+m
+         nsMoyeGqu5p4NMVCuu0ZPaRk9I4BK/Odr6jdtJs7sS2Zzn22D/ItuSfPEFHB44L4KshF
+         MSePfPVmXy5OFJQcWbejiByvpU+X9i6MIoMfcLQKam8UqOXGd8RjMcX3OujSVITDjkqA
+         ipqOcNC/K8BsDUNYFwKVgmkAqBa151XtflGmAOFVkp+xt63slmpG3s0NBcUcOlp8+v7l
+         HmoA==
+X-Forwarded-Encrypted: i=1; AJvYcCWXodcSolCZyl0e0R50C3UA5JU7VnCa2Ppl8tBANA9gnNBtH8uDphqDURT0OTy0UIGzDMCqpXms@vger.kernel.org
+X-Gm-Message-State: AOJu0YwIxwo0JSP5xw5CmvL54XBQ6JwPph6f4oatq/rUdiUdZql1ADsa
+	gYYLUPHHZ0Z/BZJ90RRT51dPVVPnXTubgxn2NCrDexMxx/ZKhCDds2tP45IsO0aSkke2Qb+yi5U
+	zof4bD6hkCOuy58yQVQDPoFpSMrEuLzHxTWLw
+X-Gm-Gg: ASbGncttfLJ886KRXQ2zhQ1NHzVJntdk07CFtp84ZOGzCCehoOmME/NJNbE0mvZuzBU
+	LsdqPnHASGDyzWnA4QNGnEKS9Ng+EHR+c4mDFxpW7GRGTe2zWU4bslXmNcTeSS5vyBfe4vxqZYh
+	tIXOqelJvkk+PiHeA2dRBTuRS5qQ==
+X-Google-Smtp-Source: AGHT+IEIfxBJfgkvCqN7KZ1CjD2eqOP4kW0Od3M1A1rjOEVGB9a1+cYgt4BZRw48lCPJb9JyIB8HqibtwXhdyhauBk4=
+X-Received: by 2002:a50:cd93:0:b0:5de:bcd9:4aa with SMTP id
+ 4fb4d7f45d1cf-5ebb557340amr77436a12.3.1742481826376; Thu, 20 Mar 2025
+ 07:43:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ia4tt7ovekj.fsf@castle.c.googlers.com>
+References: <20250319071330.898763-1-gthelen@google.com> <54wer7lbgg4mgxv7ky5zzsgjv2vi4diu7clvcklxgmrp2u4gvn@tr2twe5xdtgt>
+In-Reply-To: <54wer7lbgg4mgxv7ky5zzsgjv2vi4diu7clvcklxgmrp2u4gvn@tr2twe5xdtgt>
+From: Greg Thelen <gthelen@google.com>
+Date: Thu, 20 Mar 2025 07:43:10 -0700
+X-Gm-Features: AQ5f1JrsBCAzWz7lOGHe9DRZZeo48XSMPjuZ3fiimpdEWqFCeYJ39zulqPDioKA
+Message-ID: <CAHH2K0ax2M+nXhVDSUvhagmFW+qEgGawSbkw6pAzYR+BAH6UuQ@mail.gmail.com>
+Subject: Re: [PATCH] cgroup/rstat: avoid disabling irqs for O(num_cpu)
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Eric Dumazet <edumzaet@google.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 19, 2025 at 10:30:20PM +0000, Roman Gushchin wrote:
-> Shakeel Butt <shakeel.butt@linux.dev> writes:
-> 
-> > On Wed, Mar 19, 2025 at 02:41:45PM +0800, Jingxiang Zeng wrote:
-> >> From: Zeng Jingxiang <linuszeng@tencent.com>
-> >> 
-> >> Added cgroup.memsw_account_on_dfl startup parameter, which
-> >> is off by default. When enabled in cgroupv2 mode, the memory
-> >> accounting mode of swap will be reverted to cgroupv1 mode.
-> >> 
-> >> Signed-off-by: Zeng Jingxiang <linuszeng@tencent.com>
-> >> ---
-> >>  include/linux/memcontrol.h |  4 +++-
-> >>  mm/memcontrol.c            | 11 +++++++++++
-> >>  2 files changed, 14 insertions(+), 1 deletion(-)
-> >> 
-> >> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> >> index dcb087ee6e8d..96f2fad1c351 100644
-> >> --- a/include/linux/memcontrol.h
-> >> +++ b/include/linux/memcontrol.h
-> >> @@ -62,10 +62,12 @@ struct mem_cgroup_reclaim_cookie {
-> >>  
-> >>  #ifdef CONFIG_MEMCG
-> >>  
-> >> +DECLARE_STATIC_KEY_FALSE(memsw_account_on_dfl);
-> >>  /* Whether enable memory+swap account in cgroupv2 */
-> >>  static inline bool do_memsw_account_on_dfl(void)
-> >>  {
-> >> -	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL);
-> >> +	return IS_ENABLED(CONFIG_MEMSW_ACCOUNT_ON_DFL)
-> >> +				|| static_branch_unlikely(&memsw_account_on_dfl);
+On Wed, Mar 19, 2025 at 10:53=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.d=
+ev> wrote:
+>
+> On Wed, Mar 19, 2025 at 12:13:30AM -0700, Greg Thelen wrote:
+> > From: Eric Dumazet <edumazet@google.com>
 > >
-> > Why || in above condition? Shouldn't it be && ?
+> > cgroup_rstat_flush_locked() grabs the irq safe cgroup_rstat_lock while
+> > iterating all possible cpus. It only drops the lock if there is
+> > scheduler or spin lock contention. If neither, then interrupts can be
+> > disabled for a long time. On large machines this can disable interrupts
+> > for a long enough time to drop network packets. On 400+ CPU machines
+> > I've seen interrupt disabled for over 40 msec.
+>
+> Which kernel was this observed on in production?
+>
 > >
-> >>  }
-> >>  
-> >>  #define MEM_CGROUP_ID_SHIFT	16
-> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >> index 768d6b15dbfa..c1171fb2bfd6 100644
-> >> --- a/mm/memcontrol.c
-> >> +++ b/mm/memcontrol.c
-> >> @@ -5478,3 +5478,14 @@ static int __init mem_cgroup_swap_init(void)
-> >>  subsys_initcall(mem_cgroup_swap_init);
-> >>  
-> >>  #endif /* CONFIG_SWAP */
-> >> +
-> >> +DEFINE_STATIC_KEY_FALSE(memsw_account_on_dfl);
-> >> +static int __init memsw_account_on_dfl_setup(char *s)
-> >> +{
-> >> +	if (!strcmp(s, "1"))
-> >> +		static_branch_enable(&memsw_account_on_dfl);
-> >> +	else if (!strcmp(s, "0"))
-> >> +		static_branch_disable(&memsw_account_on_dfl);
-> >> +	return 1;
-> >> +}
-> >> +__setup("cgroup.memsw_account_on_dfl=", memsw_account_on_dfl_setup);
+> > Prevent rstat from disabling interrupts while processing all possible
+> > cpus. Instead drop and reacquire cgroup_rstat_lock for each cpu.
+>
+> Doing for each cpu might be too extreme. Have you tried with some
+> batching?
+>
+> > This
+> > approach was previously discussed in
+> > https://lore.kernel.org/lkml/ZBz%2FV5a7%2F6PZeM7S@slm.duckdns.org/,
+> > though this was in the context of an non-irq rstat spin lock.
 > >
-> > Please keep the above in memcontrol-v1.c
-> 
-> Hm, I'm not sure about this. This feature might be actually useful with
-> cgroup v2, as some companies are dependent on the old cgroup v1
-> semantics here but otherwise would prefer to move to v2.
-> In other words, I see it as a cgroup v2 feature, not as a cgroup v1.
-> So there is no reason to move it into the cgroup v1 code.
+> > Benchmark this change with:
+> > 1) a single stat_reader process with 400 threads, each reading a test
+> >    memcg's memory.stat repeatedly for 10 seconds.
+> > 2) 400 memory hog processes running in the test memcg and repeatedly
+> >    charging memory until oom killed. Then they repeat charging and oom
+> >    killing.
+> >
+>
+> Though this benchmark seems too extreme but userspace holding off irqs
+> for that long time is bad. BTW are these memory hoggers, creating anon
+> memory or file memory? Is [z]swap enabled?
 
-Agreed. Let's think of this proposal as making memsw tracking and
-control a full-fledged v2 feature.
+The memory hoggers were anon, without any form of swap.
 
-> I think it deserves a separate config option (if we're really concerned
-> about the memory overhead in struct mem_cgroup) or IMO better a
-> boot/mount time option.
+I think the other questions were answered in other replies, but feel free t=
+o
+re-ask and I'll provide details.
 
-Yeah, a config option forces distros to enable it :/
 
-I'm hesitant to agree with making it optional in any manner. If you
-consider the functionality that is implemented, the overhead should be
-fairly minimal. It isn't right now, because page_counter contains a
-ton of stuff that isn't applicable to this new user. That overhead is
-still paid for unnecessarily by users who _do_ need to enable it.
-
-It seems like a good opportunity to refactor struct page_counter.
-
+> For the long term, I think we can use make this work without disabling
+> irqs, similar to how networking manages sock lock.
+>
+> > v6.14-rc6 with CONFIG_IRQSOFF_TRACER with stat_reader and hogs, finds
+> > interrupts are disabled by rstat for 45341 usec:
+> >   #  =3D> started at: _raw_spin_lock_irq
+> >   #  =3D> ended at:   cgroup_rstat_flush
+> >   #
+> >   #
+> >   #                    _------=3D> CPU#
+> >   #                   / _-----=3D> irqs-off/BH-disabled
+> >   #                  | / _----=3D> need-resched
+> >   #                  || / _---=3D> hardirq/softirq
+> >   #                  ||| / _--=3D> preempt-depth
+> >   #                  |||| / _-=3D> migrate-disable
+> >   #                  ||||| /     delay
+> >   #  cmd     pid     |||||| time  |   caller
+> >   #     \   /        ||||||  \    |    /
+> >   stat_rea-96532    52d....    0us*: _raw_spin_lock_irq
+> >   stat_rea-96532    52d.... 45342us : cgroup_rstat_flush
+> >   stat_rea-96532    52d.... 45342us : tracer_hardirqs_on <-cgroup_rstat=
+_flush
+> >   stat_rea-96532    52d.... 45343us : <stack trace>
+> >    =3D> memcg1_stat_format
+> >    =3D> memory_stat_format
+> >    =3D> memory_stat_show
+> >    =3D> seq_read_iter
+> >    =3D> vfs_read
+> >    =3D> ksys_read
+> >    =3D> do_syscall_64
+> >    =3D> entry_SYSCALL_64_after_hwframe
+> >
+> > With this patch the CONFIG_IRQSOFF_TRACER doesn't find rstat to be the
+> > longest holder. The longest irqs-off holder has irqs disabled for
+> > 4142 usec, a huge reduction from previous 45341 usec rstat finding.
+> >
+> > Running stat_reader memory.stat reader for 10 seconds:
+> > - without memory hogs: 9.84M accesses =3D> 12.7M accesses
+> > -    with memory hogs: 9.46M accesses =3D> 11.1M accesses
+> > The throughput of memory.stat access improves.
+> >
+> > The mode of memory.stat access latency after grouping by of 2 buckets:
+> > - without memory hogs: 64 usec =3D> 16 usec
+> > -    with memory hogs: 64 usec =3D>  8 usec
+> > The memory.stat latency improves.
+>
+> So, things are improving even without batching. I wonder if there are
+> less readers then how will this look like. Can you try with single
+> reader as well?
+>
+> >
+> > Signed-off-by: Eric Dumazet <edumazet@google.com>
+> > Signed-off-by: Greg Thelen <gthelen@google.com>
+> > Tested-by: Greg Thelen <gthelen@google.com>
+>
+> Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
+>
 
