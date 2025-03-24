@@ -1,87 +1,89 @@
-Return-Path: <cgroups+bounces-7224-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7225-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E51D0A6E1DC
-	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 18:59:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA61A6E1B2
+	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 18:55:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C33E13B6553
-	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 17:52:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA7BF7A35B8
+	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 17:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936422641FC;
-	Mon, 24 Mar 2025 17:48:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A86B265607;
+	Mon, 24 Mar 2025 17:49:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="S5RI1yF1"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="LXMvqYGb"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A2A26389D
-	for <cgroups@vger.kernel.org>; Mon, 24 Mar 2025 17:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1D8264FB3
+	for <cgroups@vger.kernel.org>; Mon, 24 Mar 2025 17:49:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742838503; cv=none; b=BM7H7fmiVBMYbXC37yz5U0N1isBoVJwgK4A0GJkUZgJ3QaJn3YqkyJVYey88r/HbE/0rtpflZP1FFFw2G9rl6uzCd2N9BJjxj8zwS7H7HI9q4hG9n33dFmXRSSTYGrj5Dxb7SvvspQC9dKCqoXvXbaxPpBA0kkj4P/LAV2SuBIs=
+	t=1742838559; cv=none; b=Yn/LZQ4drKXp2uk6gnYVlbC1PakiQHBK1Zq9MVndBl3dn4digG3ZLeqjqbg83KKMAEM02YyE+YjULmLo1cvB0ilEvaQN9Dm6zRksZDof8tO/jaXTdY4lqj7GLsV3LgMi2NRiWciYrsaUyb0lCWOv5ELrGZ5lJ7oQDvGEPBN08DU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742838503; c=relaxed/simple;
-	bh=XQYbNKGAa5tmW22LP2BhWc7/gSFU3vk9b4E2hDmbelk=;
+	s=arc-20240116; t=1742838559; c=relaxed/simple;
+	bh=9s1UtFGW6J6OH02Hx3K3DMcL4m07GE7GlG86o53rNug=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uE0+nlSA/aJyfvItrMscULZj6D29R1fvL58+9tVi8ygQN3b0vommic4iIeFqo+UFgUW8VcvM6+RaS9zqF9N3+FOAfEzoDrnt3e0WvArVdMWd/LJv7nauRU3EcjqcmzspxQusV0HEfJGJO4Ci9CksLOyuF2KvoYLGBdoWnuU+UfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=S5RI1yF1; arc=none smtp.client-ip=209.85.128.43
+	 Content-Type:Content-Disposition:In-Reply-To; b=XMdJE/YV698G3w4MReypGL7RgLFsxolhdV4jaI7huGazoj+p2rxhijAubTJuCNIFB3MONOfHCjE9H96U2adSM57oA+HNJGB28g58d/w4l6bO4AY83Z4fNYt9Y/sB4JEQB1YGQpy+1F8OsFoQAPw4qpbcOk0Bg7uw3aLr56vkFp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=LXMvqYGb; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43d0618746bso31931395e9.2
-        for <cgroups@vger.kernel.org>; Mon, 24 Mar 2025 10:48:21 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-38a25d4b9d4so2518336f8f.0
+        for <cgroups@vger.kernel.org>; Mon, 24 Mar 2025 10:49:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1742838499; x=1743443299; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1742838555; x=1743443355; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D2fnp6shvw9hnQWeNOFwj+HGFjOKb2GCTSLXK9jM82M=;
-        b=S5RI1yF1Gg5AgWWt2nUZi9XrxvdXWdH97dhVYl5XF8sT+bfwsgDNkN3rn+ePU5naam
-         ATddhBD072MGbPbmaTGzVJs290WKBClkmbYpYMQhEx9XshLf2ce+QJGdAbLo5TKeDHEF
-         7wJkAM4bh6mL1CQMsTtRrXHyTY1q/TJoag8lfM9qMTqr2a3ysEBlvwA7lKCQ408/qrm7
-         RYDUhFcS0A6QbNkyWmvtVlXTokHgx5eCNCn9T3tWFziHAjkQ2fNSVYmPS5C3blUl9dNX
-         XeO/KDd20OTgIqHY9Uspk/JvCNNd3NsEjyJYs+tkr+ZnNm0RVdbLOyqywFwTHQIBa49Y
-         WN3A==
+        bh=9s1UtFGW6J6OH02Hx3K3DMcL4m07GE7GlG86o53rNug=;
+        b=LXMvqYGbqApxuAd+pn96Lsca0oJobLwbNzwb1+DsGqtRPy/nbyCcgFVPjevcGUn2if
+         XMjxyeORTmYILWNeNLS/bsBCg4MYOdj+Yvm7g7TyqLSMlbxBf6GmFfupJsgJF8NFFfZZ
+         V0mM7Vo+wij936UPRhXX/M9Z2h8GSG6sJZnUEjWBDsR5fhrUWmPOq1TjqDwfhsQ2HuJe
+         XWYcGL5fWrl6I82c07Vhxa4Zvgn4wOO699lnxyckmWHsytXhixyB8kFy3pdm/XVOsA3H
+         nymxBpnSw9Zz4XHfgHoF9N+IF4qNAw9NdqoGTm0qHrO6sUq8sr2B6UwHxsDNtrjB2YQ+
+         W1DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742838499; x=1743443299;
+        d=1e100.net; s=20230601; t=1742838555; x=1743443355;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D2fnp6shvw9hnQWeNOFwj+HGFjOKb2GCTSLXK9jM82M=;
-        b=bsvO5SY/sw6ZuAeigx5htKuXqVu56O5qW2doS+BYOoN/bDNNcJCaVGEx3Yfox7Sntr
-         9g/filBqAigmSK69sSVINGi6+FwCfSgA2HSNUvvSzeXtV0zBQZn7uY7VXeqtzQ9IcLHd
-         1Vw9TrkODIOKI7LcBVkdaU0bgkpvIG0A3H/az5IBWK6Qw7Bz5/lOyYDGVdyCzQK/2t7s
-         zEjNKdlcCKVpDsU1y/lji971Lx9YeR1mSePs7L+lzAXN946UfMWMpWrjcS8NavSLpwnL
-         1WaATfxVotstc4s3o+dL21ff5kD6LMKOxgEb/7zA5zBS4/BKAfR+baxX0Xod2QbVcuXQ
-         vHpw==
-X-Forwarded-Encrypted: i=1; AJvYcCXGKb2ez6OyO/vThrwaDgNDMUvfstWhevIXG+L9xOYOS2dgg0ntfMy8WR+VCv5LDg2SywbKt9xT@vger.kernel.org
-X-Gm-Message-State: AOJu0Yza+eLTlNYHgOoaPJ5/023mMs/pAP1qSbmPwfaKautHe4Mml62p
-	HD2iTjLyb4egCaaQhn6zq1VNvSRNxucTxebOpaHqG1hCBiho48gbys0B5bY21zY=
-X-Gm-Gg: ASbGncuSn0u18SmP/kJ1d4MYYIWHXsWYTU/gg5cNbaprVjdLwXZ39WdZkB7TCo8JqvG
-	HYruPDyC5iOhZFKaFWuiDO8Tf4WHuMjKDGd1pWFNGEiul7tlPsoMTZsPQh2JuBfgzDZi5J8raXj
-	kMtv7CSrwlKo3/SwzsjFE+HS8V7cfHPCbptm1F4A7xoUqP5OoHvjbQMU4imFVER4yfAx+U1Aob+
-	NRuVe+L5pNRI1g/80o+qtmNvMttKH5iakIyekI5b61863sLvQs5o8wpUoRUJ182GobnVG3/ZC12
-	hfi4dOhKi0yz8p2KyG7gMzkTvMSY0Nl0JTke5AKSxfc2AVpWMNXOPAHrPQ==
-X-Google-Smtp-Source: AGHT+IExAHqqsKOcxE7n6h/EWdZmTNJMD3wEo3cTebnUNe87wsJOe5/915dDfyOx/qiguLvpWVNNzQ==
-X-Received: by 2002:a05:600c:83cf:b0:439:91dd:cf9c with SMTP id 5b1f17b1804b1-43d509ec70cmr161589055e9.10.1742838499485;
-        Mon, 24 Mar 2025 10:48:19 -0700 (PDT)
+        bh=9s1UtFGW6J6OH02Hx3K3DMcL4m07GE7GlG86o53rNug=;
+        b=f7ZzP5WnVHsU1zcz7woOJAx+YY5SCKq6gtK3Cav0HMciqrhHBMv28U5jxZG/GV/eri
+         YE1zo7GUfKDFKveMBkm7peNXju7cnJVMAVPnSq1p1lcogj+SR0oPA3jkxOEQZ/NsSiGe
+         ZfYQN21UgAsqfbsYIgHNhKlaGRYbnYuDutbzsMLOslkqKrIpEgbKngbWIYY4MXtZbV/R
+         QTxYqNouG5mn/zkUZRQDXkIxxRrAwo0WI71fM0TWxHu5gbSK/Z1BKeIhUizF7J+mZWlH
+         alDzXpWHSfeqPWsI7Vu+DGm4TUQCHAD5I0o19/x8DhtRT9JWKCCSWagdHdq+RGPFr6sb
+         aO4A==
+X-Forwarded-Encrypted: i=1; AJvYcCWUvWLY+yUUjztFKLB+mnWeRRNFLz5/mEGORJpnWEIuu/iiSxnSM69EXJMGzrS0pmh59ojGkYj9@vger.kernel.org
+X-Gm-Message-State: AOJu0YzE3e3RKc3Fn3Eo/qDjBsH3TQ7ZUR85bv8+N9qhF/CtbvKVt7aF
+	ixpF9hkuPhWgQ+oxugQ7y4Nn9crUsIFLASy1EEuu2RuRBpwbAp2lzvJamQTzzI0=
+X-Gm-Gg: ASbGncvj5CE0W5wEf9Ei/5MlOgekufgx2pUR0+E5d1YC/e5jHmV0oOG2oDZwSDxcmsT
+	X2OUjIMjJfsbg4y3Hf/zz98RzEg4IDxT5wyOWN50UYfHgtSuR1kkA1SH3LZ/DqfaZZ7agbPNFsE
+	CKKLp4WaKTULGmgoLet36kU2VA3vvhXd5DxZQyVnCSmJcqWoXSa6phaf+vsORmrBQLyhsxDXNL1
+	ROUPcSWhdv4Eml+rEgdUz0+GltqJiWB9SL0ToscTUJtnvPCDqaQqXiwoxeJrxlI9cSOWxNvV/Yg
+	quQhhoDC96RGRxIjyhOlQwrCF7sq9U0tCYY+CO6g9v71dVY=
+X-Google-Smtp-Source: AGHT+IFKIdJkgcPOjYK2onMS+G0viONx2v2z0cTwjpu9AmOQDm9Lchhrtjr5pI14oPRSjWDiCmfRvQ==
+X-Received: by 2002:a5d:6d81:0:b0:391:29c0:83f5 with SMTP id ffacd0b85a97d-3997f94da3bmr12113949f8f.44.1742838555271;
+        Mon, 24 Mar 2025 10:49:15 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d43f332adsm179041365e9.3.2025.03.24.10.48.18
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3997f9ef16csm11478577f8f.86.2025.03.24.10.49.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Mar 2025 10:48:19 -0700 (PDT)
-Date: Mon, 24 Mar 2025 18:48:17 +0100
+        Mon, 24 Mar 2025 10:49:14 -0700 (PDT)
+Date: Mon, 24 Mar 2025 18:49:13 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 To: JP Kobryn <inwardvessel@gmail.com>
-Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com, 
-	hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 3/4 v3] cgroup: use subsystem-specific rstat locks to
- avoid contention
-Message-ID: <p7uojyqriqy5qjen5zg45qxggwbnrvdf32pyabbah4arai4vin@g62jjsikdcqw>
+Cc: Tejun Heo <tj@kernel.org>, shakeel.butt@linux.dev, 
+	yosryahmed@google.com, hannes@cmpxchg.org, akpm@linux-foundation.org, 
+	linux-mm@kvack.org, cgroups@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 4/4 v3] cgroup: save memory by splitting cgroup_rstat_cpu
+ into compact and full versions
+Message-ID: <k377dcki5jhhnndbjokcw5jt6dfv2t53ka3xvjbdje4ujc6mqe@macvktyakgu2>
 References: <20250319222150.71813-1-inwardvessel@gmail.com>
- <20250319222150.71813-4-inwardvessel@gmail.com>
+ <20250319222150.71813-5-inwardvessel@gmail.com>
+ <Z9yMMzDo6L7GYGec@slm.duckdns.org>
+ <5062846a-7b4d-4c59-a990-ae9f7fd624a9@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,58 +91,37 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lpw6po2lm5fp2lam"
+	protocol="application/pgp-signature"; boundary="3kyzkk3sttxpmgqj"
 Content-Disposition: inline
-In-Reply-To: <20250319222150.71813-4-inwardvessel@gmail.com>
+In-Reply-To: <5062846a-7b4d-4c59-a990-ae9f7fd624a9@gmail.com>
 
 
---lpw6po2lm5fp2lam
+--3kyzkk3sttxpmgqj
 Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
-Subject: Re: [PATCH 3/4 v3] cgroup: use subsystem-specific rstat locks to
- avoid contention
+Subject: Re: [PATCH 4/4 v3] cgroup: save memory by splitting cgroup_rstat_cpu
+ into compact and full versions
 MIME-Version: 1.0
 
-On Wed, Mar 19, 2025 at 03:21:49PM -0700, JP Kobryn <inwardvessel@gmail.com> wrote:
-> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-> index a28c00b11736..ffd7ac6bcefc 100644
-> --- a/kernel/cgroup/rstat.c
-> +++ b/kernel/cgroup/rstat.c
-...
-> +static spinlock_t *ss_rstat_lock(struct cgroup_subsys *ss)
-> +{
-> +	if (ss)
-> +		return &ss->lock;
-> +
-> +	return &rstat_base_lock;
-> +}
-> +
-> +static raw_spinlock_t *ss_rstat_cpu_lock(struct cgroup_subsys *ss, int cpu)
-> +{
-> +	if (ss)
-> +		return per_cpu_ptr(ss->percpu_lock, cpu);
-> +
-> +	return per_cpu_ptr(&rstat_base_cpu_lock, cpu);
-> +}
+On Fri, Mar 21, 2025 at 10:45:29AM -0700, JP Kobryn <inwardvessel@gmail.com> wrote:
+> In general, I'll wait to see if Yosry, Michal, or Shakeel want any other
+> changes before sending out the next rev.
 
-rstat_ss_lock
-rstat_ss_cpu_lock
+Done.
 
-(judgment call only)
-
-
+Thanks,
 Michal
 
---lpw6po2lm5fp2lam
+--3kyzkk3sttxpmgqj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ+Ga3wAKCRAt3Wney77B
-SZYGAP9LUeQCF4HCTFUtka9FD6zGHaRPoUOtugfygxxe9p8oiAEAiTLlDTgTEUoE
-7s8ddTx2wfezw+zc3VWeSYokTOF1xgc=
-=yZiy
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ+GbFwAKCRAt3Wney77B
+SdTtAP0aL/fHTBlPxldTaYHYKRYqYm0zLbEK4xZ+kHEd6wXDeAD/a5sjnx8h11Pc
+x+uVVjxmk514Ju3RDfMag0Bah4+EfQ0=
+=bQ1E
 -----END PGP SIGNATURE-----
 
---lpw6po2lm5fp2lam--
+--3kyzkk3sttxpmgqj--
 
