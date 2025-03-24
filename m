@@ -1,144 +1,138 @@
-Return-Path: <cgroups+bounces-7221-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7222-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A2CA6E027
-	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 17:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50892A6E1DF
+	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 18:59:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8160B3B22D8
-	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 16:49:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57E433B643F
+	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 17:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E722641CD;
-	Mon, 24 Mar 2025 16:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15DDE2641C5;
+	Mon, 24 Mar 2025 17:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="wTRGOOI5";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="DCPnz+Gj"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cHAvbY+K"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7BB3261586;
-	Mon, 24 Mar 2025 16:49:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647A62641FC
+	for <cgroups@vger.kernel.org>; Mon, 24 Mar 2025 17:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742834967; cv=none; b=XXHwurOEwX7+LzM/HRtFoENrtbaL1kOvU0ktGu30ybLNc6ePubDQy90vavh7IQRps5mIx7wyQUbsQrWEH8O4Id7Qf6g3xgPVZbPKKYfFOb1GEKSjvzqcDTcvLAdNf5VAXcHVgfBDHll+9v8hw3Kl38AbGpB+dTHk99Xh61OYNI8=
+	t=1742838482; cv=none; b=dOJ2y2SPamvoD3ksQG63aYO15vc7eWKkZwL5IdaZh+TjGqE64egbclB4OTJrcB3OxZcARMGNjHnhDSz4x7kK0zUdIWsAVn7df5wM2FuuToWGmVKtE++8b/eJ20EyTzOSHzcXJriUVqEsHL9U8FGYeNvdoPkAdnukarS2XDpkFZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742834967; c=relaxed/simple;
-	bh=5fRaRRqoLXk9VvHYdcvASGdB+1Jt16QfeJgofkT4YqM=;
+	s=arc-20240116; t=1742838482; c=relaxed/simple;
+	bh=5dGcOKqdR8f2aJ+Dor9wDx9jrRk6G6izyiZhwniZkPk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RxN6Yyy6iext76ZYR5VWb8JhNm4yZXDxk1QLBI5YUqznYZyp7GvTcVoQ8UkYSCIqXBKvCoix6WsU7K1/Sv8wXZcU2Nl50TJ7xfjrpKrHYPyrFg/vi3+VMJI+Zbrg9D+DtwCEDUBwvLuWufE3NVdXc6xdDi2QDhICZU6rFImYd9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=wTRGOOI5; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=DCPnz+Gj; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 7E48860390; Mon, 24 Mar 2025 17:49:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1742834955;
-	bh=GGDJ9ToJtDJw+S47TSdM9cpM1oN2wQQEXFzOumVzNjU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=wTRGOOI5j5ondXNwLDawdD4j82Ru2vOHGWWppgQwjHax3kidJsU01JPVyWMvJWUuo
-	 mTlzALu2ndA/PN1/PV3qbS1jtE0gIN4MZn9Px+MTY3f1ooPuHrejXseAm98hsak18I
-	 0ILH2j9IWbHG2oFFPSGwrTcaTurXdJLWbXKXQfInp8slWtBuf4gkUm1Ew72dTEhXBa
-	 mKrOPVtkR5ATvo3p/FZHS+q1ji+LyRr5TGNJKBCTM3gWAH0U6soNJVcMjgv2eJhA+m
-	 +aTajPruzLQkeBcZLdm0gHq9G1Ipv+72SP/3qZgQJ3KpiidC7bHjO+0Et/bjpTUOR9
-	 S1H1zkeyaSRPQ==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id DB85C6034A;
-	Mon, 24 Mar 2025 17:49:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1742834952;
-	bh=GGDJ9ToJtDJw+S47TSdM9cpM1oN2wQQEXFzOumVzNjU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DCPnz+GjATTwDRX3cEAXYvzpHMgEbhxo+Um4+G4iZp77oga/M9H5MquqVeX/BV9IY
-	 KBZNU0v6OevhOTNQ3Zt+sPKh3MbwtFLMevwQc7cFBfhhymq0TR+bZ2u+knkWHspR4D
-	 FjNxNetEur4h+TmKXvzrUWhyyFKZ99Fcf0W3w6sTMgrrEbNKJEl3X4rhs+VPAEEigu
-	 NhJNR9cQ37cusjxHiPxAqgV2ODW4wl3GVVmq/ey9BgQAWCOgrALHDvsz87SUcheLH2
-	 6ZOb5qYNROVcBaoqnRK5zV1FTYqtwHgPv5JjHiun/ZZ6xcOvlRS4hnOlzdsn3c215i
-	 ncHJcpfKEceYw==
-Date: Mon, 24 Mar 2025 17:49:09 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, cgroups@vger.kernel.org,
-	Jan Engelhardt <ej@inai.de>, Florian Westphal <fw@strlen.de>
-Subject: Re: [PATCH v2] netfilter: Make xt_cgroup independent from net_cls
-Message-ID: <Z-GNBeCX0dg-rxgQ@calendula>
-References: <20250305170935.80558-1-mkoutny@suse.com>
- <Z9_SSuPu2TXeN2TD@calendula>
- <rpu5hl3jyvwhbvamjykjpxdxdvfmqllj4zyh7vygwdxhkpblbz@5i2abljyp2ts>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LO5deL8AAVC9VR+8k2HZDLNqtKFQ9M9QYpSNajtg+vNleR5/B+w25w9YdleLZVirxVHQelnQBko+zwqsMlA854pRHzX900JSqi91N2EnNERKxJy+TTlHSmwI6EKA+331DBaLttA3KszfU3QWRSoktfGm1qfXx57B8Iy6n8QOR7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cHAvbY+K; arc=none smtp.client-ip=209.85.128.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-43cfb6e9031so43076135e9.0
+        for <cgroups@vger.kernel.org>; Mon, 24 Mar 2025 10:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1742838477; x=1743443277; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5dGcOKqdR8f2aJ+Dor9wDx9jrRk6G6izyiZhwniZkPk=;
+        b=cHAvbY+KUbkalTdwljQHAQYB5Lo36FqRA2+mPw2t1zbJCNYErUAd3Tqha3utGj1Nv4
+         HP5G5duVNEYliJh29b4rT7IQEAhTyQ6rVrfCEs2ylxEj6j1GrMq0huqaEC4IOR3T40Pq
+         LXp8b0jcdSiv3rE5S1Nur1yeR5rCgtoN53w4tsxf96Dg9BmVoXRUWrc8fYO+W8tb1c1R
+         EZolLYtV5Sz9Dz8hC+ac42lvM16YBrbd/6/urKhL4ckj9Jp7f4e+nwgPdCXzOPYWOMv1
+         W1L5MEkZZFI93ZuDv0ax8Nr1nBzgSUeUl5nui986HiavjDQckvUU1dJnXrpRTERcnwX1
+         VtKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742838477; x=1743443277;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5dGcOKqdR8f2aJ+Dor9wDx9jrRk6G6izyiZhwniZkPk=;
+        b=DMh5eg7L5jr/JBcc/ZafeTuvoHyBdCYoasE55AmvbmGVpJxNGkAd4QLsI+RgGTKVL2
+         MfQtfZIOTLMLtEtD7Q82fvQ28Us8eKoUIv6qaNaIY0SjmKeQTHhU/0ISygAz/g5u3UHz
+         Tg7Qd9Ri8MTYvNXMYDZ8UcrjzW+BRUvgl2IcTinUxBKdMmsxSHWgaYnu11JsDVy9p+mV
+         U+aXnBf68V5SvM3a2yyJS2Bc3VeAnKEiTR77qEzmBoWTYs0+KWHP6Lf8kBwIuczjh0Dk
+         1Bcv++HChPCfpc5DigBgPgXyRrh51/E6JCHU88AsXknIYqLD+1m52bO8Ib50L1lV5R/t
+         ScTg==
+X-Forwarded-Encrypted: i=1; AJvYcCUnU3DBzJR8W6iquGO2XKzDTpuursaWhjbSa1QH6KpX1Q1tMJ/lPilZR00h38Cg06rQM6ZbpksC@vger.kernel.org
+X-Gm-Message-State: AOJu0YyvPVn5ROhSq6swPb5G1lpBPnF+P9J4UWgIF1728KIWfsVysh49
+	1Pa+jadZfkAp+e5d/cZRSDtmlWwVD63RhPHfEiZCFrlM6XAPmw6ABTZPEtemAkE=
+X-Gm-Gg: ASbGncsbkgfdk7L1D1tqHDFEupVK2LR/srLM/UZdQS/t4J9j0LQFRbbYH3VVofHvAl3
+	a+mhX26WCiRw1La2dM6S+IWXPERDIpZF0L6HzbDJxKsM4OrRj7I+37Q3ic9FuZq7SnMjBaeC/uo
+	+V9a+kVtSr7Y/iJlQ8PyMbSLngTnjsi1JoPgay0fzJnrXqTCi4kHCITVIsgPJ1OscAW83yBjdVK
+	DZ2HHerQAULkoIH42We0ZfuHtDDs/S3NfNw4CaGmjW/ZYxKz/pjvO0eJBdGoK02oXXoGyfy0nq6
+	muJewu8UsocxYQ8kFmdmQH6EOcW2U8qmUbqeBh9HwOujxZY=
+X-Google-Smtp-Source: AGHT+IGY96hhv1Pe89mvA2qg2E5EAjuzK2ndQsFz4Semuq/cymUUVStyqHWqEpfEcK4fhjLqzJMpyw==
+X-Received: by 2002:a05:600c:4693:b0:43c:ea36:9840 with SMTP id 5b1f17b1804b1-43d50a3780fmr107044285e9.22.1742838477389;
+        Mon, 24 Mar 2025 10:47:57 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39abe4971b0sm6495658f8f.26.2025.03.24.10.47.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Mar 2025 10:47:56 -0700 (PDT)
+Date: Mon, 24 Mar 2025 18:47:55 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com, 
+	hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 1/4 v3] cgroup: use separate rstat api for bpf programs
+Message-ID: <4akwk5uurrhqo4mb7rxijnwsgy35sotygnr5ugvp7xvwyofwn2@v6jx3qzq66ln>
+References: <20250319222150.71813-1-inwardvessel@gmail.com>
+ <20250319222150.71813-2-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="t2gp4crhufhfbb47"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <rpu5hl3jyvwhbvamjykjpxdxdvfmqllj4zyh7vygwdxhkpblbz@5i2abljyp2ts>
+In-Reply-To: <20250319222150.71813-2-inwardvessel@gmail.com>
 
-On Mon, Mar 24, 2025 at 01:56:07PM +0100, Michal Koutný wrote:
-> Hello Pablo.
-> 
-> On Sun, Mar 23, 2025 at 10:20:10AM +0100, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > why classid != 0 is accepted for cgroup_mt_check_v0()?
-> 
-> It is opposite, only classid == 0 is accepted (that should be same for
-> all of v0..v2). (OTOH, there should be no change in validation with
-> CONFIG_CGROUP_NET_CLASSID.)
 
-Thanks for clarifying this, more questions below.
+--t2gp4crhufhfbb47
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH 1/4 v3] cgroup: use separate rstat api for bpf programs
+MIME-Version: 1.0
 
-> > cgroup_mt_check_v0 represents revision 0 of this match, and this match
-> > only supports for clsid (groupsv1).
-> > 
-> > History of revisions of cgroupsv2:
-> > 
-> > - cgroup_mt_check_v0 added to match on clsid (initial version of this match)
-> > - cgroup_mt_check_v1 is added to support cgroupsv2 matching 
-> > - cgroup_mt_check_v2 is added to make cgroupsv2 matching more flexible
->  
-> > I mean, if !IS_ENABLED(CONFIG_CGROUP_NET_CLASSID) then xt_cgroup
-> > should fail for cgroup_mt_check_v0.
-> 
-> 
-> I considered classid == 0 valid (regardless of CONFIG_*) as counterpart
-> to implementation of sock_cgroup_classid() that collapses to 0 when
-> !CONFIG_CGROUP_NET_CLASSID (thus at least rules with classid=0 remain
-> acceptable).
+On Wed, Mar 19, 2025 at 03:21:47PM -0700, JP Kobryn <inwardvessel@gmail.com> wrote:
+> The rstat updated/flush API functions are exported as kfuncs so bpf
+> programs can make the same calls that in-kernel code can. Split these API
+> functions into separate in-kernel and bpf versions. Function signatures
+> remain unchanged. The kfuncs are named with the prefix "bpf_". This
+> non-functional change allows for future commits which will modify the
+> signature of the in-kernel API without impacting bpf call sites. The
+> implementations of the kfuncs serve as adapters to the in-kernel API.
 
-That is, 0 is the default value when !CONFIG_CGROUP_NET_CLASSID.
+This made me look up
+https://docs.kernel.org/bpf/kfuncs.html#bpf-kfunc-lifecycle-expectations
 
-> > But a more general question: why this check for classid == 0 in
-> > cgroup_mt_check_v1 and cgroup_mt_check_v2?
-> 
-> cgroup_mt_check_v1 is for cgroupv2 OR classid matching. Similar with
-> cgroup_mt_check_v2.
+The series reworks existing kfuncs anyway, is it necessary to have the
+bpf_ versions? The semantics is changed too from base+all subsystems
+flush to only base flush (bpf_rstat_flush()).
 
-Yes, and cgroup_mt_check_v0 only supports for classid matching.
+I'd perhaps do the changes freely w/out taking kfuncs into account and
+then add possible reconstructive patches towards the end of the series.
+(I'm not unsure whether the modified btf_type_tag_percpu.c selftest
+survives the latest unionization of base stats.)
 
-> IOW, all three versions accept classid=0 with !CONFIG_CGROUP_NET_CLASSID
-> equally because that is the value that sockets reported classid falls
-> back to.
 
-If !CONFIG_CGROUP_NET_CLASSID, then no classid matching is possible.
+Michal
 
-So why allow a rule to match on cgroup with classid == 0?
+--t2gp4crhufhfbb47
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Maybe simply do this instead?
+-----BEGIN PGP SIGNATURE-----
 
-static bool possible_classid(u32 classid)
-{
-       return IS_ENABLED(CONFIG_CGROUP_NET_CLASSID);
-}
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ+GayQAKCRAt3Wney77B
+Sf4aAQDjaV9fsIxeiOTJ3vG0+oTDundo09sTe/5vFK18VJVxbgEAn4OABiJDsyHA
+EdNDdndGE9dhTKUhhS3l0DmtMuLdAQM=
+=QYGL
+-----END PGP SIGNATURE-----
 
-Thanks.
+--t2gp4crhufhfbb47--
 
