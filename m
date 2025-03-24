@@ -1,150 +1,338 @@
-Return-Path: <cgroups+bounces-7217-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7218-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57A73A6D2F2
-	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 03:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 60C34A6D355
+	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 04:27:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A03B3B2DAE
-	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 02:06:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 706BE3B25E5
+	for <lists+cgroups@lfdr.de>; Mon, 24 Mar 2025 03:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5360F44C94;
-	Mon, 24 Mar 2025 02:06:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1C4D175D48;
+	Mon, 24 Mar 2025 03:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="CcNhVdVG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3DA1362;
-	Mon, 24 Mar 2025 02:06:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24F841C69;
+	Mon, 24 Mar 2025 03:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742782004; cv=none; b=oH8nWnjwkAd0oOqxkUEX4p191yTaiG2zubPAZUz0oTF7KRzqJsOQrHr2iQnA5lLF4UDc/YSlcENK/7ydrkprVMWQLdnuoOrhy0Btmy3uwdDIwntnjTklWfoGx3rgqxUNsuF0blqL3U9jCcoupdAVvBVWKRdLak7O0SueGFJSM3c=
+	t=1742786844; cv=none; b=bythI3eBKeyVCyz62B4G9tBKTES7fkxjWh3vyW/SePkRU3LF4ocVhOqGRbhCkByAInt9aZhT4090eK1Sv9SBa9YFbm0Gm5GeK9UL0lkINDcyisCEU/u+xM9aNpmErCNeilIMHEXVeufbgQR1M0IiWAnr9ovhDnScZ7gi6D6COE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742782004; c=relaxed/simple;
-	bh=Hi4oW6GyVoQTk60WFu4HDfjDhU2apN+Ms5+ZxheYusE=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=C/7BsMjVEKiXMC2cukMWkDZoNZSyA3tvpS/CXF1iJ3DzxghvytIsgNwMlfT93RzZum+yy/6CSjUCBaYgcZ0wmC8dmToEaeXX65/uuJ3len2/kwf+GUxSc3dzPeTJEw9Q1CzDZWvcRVt2sHNWgfWO0VHk9ecphC2abWkUn7Jxh2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZLbxy28Jhz4f3jtJ;
-	Mon, 24 Mar 2025 10:06:14 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id BB7341A1CA8;
-	Mon, 24 Mar 2025 10:06:31 +0800 (CST)
-Received: from [10.174.179.143] (unknown [10.174.179.143])
-	by APP4 (Coremail) with SMTP id gCh0CgCnCl8lvuBnEoqPHQ--.16986S3;
-	Mon, 24 Mar 2025 10:06:31 +0800 (CST)
-Subject: Re: [PATCH] blk-throttle: support io merge over iops_limit
-To: Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: Ming Lei <ming.lei@redhat.com>, axboe@kernel.dk, josef@toxicpanda.com,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20250307090152.4095551-1-yukuai1@huaweicloud.com>
- <Z8sZyElaHQQwKqpB@slm.duckdns.org>
- <5fc124c9-e202-99ca-418d-0f52d027640f@huaweicloud.com>
- <Z85LjhvkCzlqBVZy@fedora> <Z88K5JtR4rhhIFsY@slm.duckdns.org>
- <baba2f82-6c35-8c24-847c-32a002009b63@huaweicloud.com>
- <Z9CQOuJA-bo4xZkH@slm.duckdns.org>
- <c1e467a9-7499-e42b-88ed-b8e34b831515@huaweicloud.com>
- <Z9GrD-7tW6tKVimk@slm.duckdns.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <9d87351a-8ea6-9ed9-7359-3963672cdc17@huaweicloud.com>
-Date: Mon, 24 Mar 2025 10:06:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+	s=arc-20240116; t=1742786844; c=relaxed/simple;
+	bh=Xf2ozL92Gzlryg9xYd9n8bZc3aBJ+vAiIawfSXBJIis=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MX53ryNZRgTjEXRSW+9k008hUFB4XDo10Kycd/ww7CPYQ7yKa0qB7kXf4ZmAl5QbjQK3P1u03obyoDWUQCfSyaq1nVhGeWzDP8JzsJ7SA6sTQ39XdkkrUVYX6VLQvgRCoJgrhouL2lkT6mh80LzIqof9wl0pHP48jdJce0hhSJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=CcNhVdVG; arc=none smtp.client-ip=117.135.210.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
+	Content-Type; bh=HkbejiPMTMwvJkup0zgJvuVm3HcrQGNtexmCZvXZV6Q=;
+	b=CcNhVdVGCGSAQ1vmsePlw+MbAWWGDCHNksI+gvYxVcQd7oEDhfo8114/WCPUts
+	NK1PuigMIeeYzcnedKib2qve8ZEpMMeTxRUnk09b1WmzoP682Xn4AO9qckB7m3+o
+	6gjt7zcdP6QaQRqJMURxoRweGf7H934H63Pls5PyQ495U=
+Received: from [192.168.22.248] (unknown [223.70.253.31])
+	by gzsmtp5 (Coremail) with SMTP id QCgvCgA3eaaU0OBnwVitSA--.46911S2;
+	Mon, 24 Mar 2025 11:25:11 +0800 (CST)
+Message-ID: <c21dbc6b-3f1b-4015-9aee-44979ef0233e@163.com>
+Date: Mon, 24 Mar 2025 11:25:08 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Z9GrD-7tW6tKVimk@slm.duckdns.org>
-Content-Type: text/plain; charset=gbk; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] fs/proc/page: Refactoring to reduce code duplication.
+To: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+ shakeel.butt@linux.dev, muchun.song@linux.dev
+Cc: akpm@linux-foundation.org, willy@infradead.org, david@redhat.com,
+ svetly.todorov@memverge.com, vbabka@suse.cz, ran.xiaokai@zte.com.cn,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, Liu Ye <liuye@kylinos.cn>
+References: <20250318063226.223284-1-liuyerd@163.com>
+Content-Language: en-US
+From: Liu Ye <liuyerd@163.com>
+In-Reply-To: <20250318063226.223284-1-liuyerd@163.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCnCl8lvuBnEoqPHQ--.16986S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrW8Kw1xuw4fGw1UtF4Dtwb_yoW5Jw15pa
-	yfGwnayFs5W3ZrCFn3ur4xuryF9rZ5Gw45Jrn5Gr4DZr4Y93WxJr4xtayrAF929r4Sya42
-	qwn5Xas8Xas8Za7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7V
-	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CM-TRANSID:QCgvCgA3eaaU0OBnwVitSA--.46911S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxKr45tr4kKFyxZFW7Jw1DKFg_yoWxur4fpF
+	s8GF4jyw4xX34Ykr17Jws8Za45u3s5Za1Yy3y7G34fXa47twnakFySy3Z0vFy8GryUZF48
+	WFWq9r1akFWUtFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jwa93UUUUU=
+X-CM-SenderInfo: 5olx5vlug6il2tof0z/xtbBMQ8aTGfgx7fuFQAAsk
 
-Hi, Tejun!
+Friendly ping.
 
-ÔÚ 2025/03/12 23:41, Tejun Heo Ð´µÀ:
-> Hello,
-> 
-> On Wed, Mar 12, 2025 at 09:51:30AM +0800, Yu Kuai wrote:
-> ...
->> In the case of dirty pages writeback, BIO is 4k, while RQ can be up to
->> hw_sectors_kb. Our user are limiting iops based on real disk capacity
->> and they found BIO merge will be broken.
->>
->> The idea way really is rq-qos based iops limit, which is after BIO merge
->> and BIO merge is ensured not borken. In this case, I have to suggest
->> them set a high iops limit or just remove the iops limit.
-> 
-
-My apology for the late reply.
-
-> I get that that particular situation may be worked around with what you're
-> suggesting but you should be able to see that this would create the exact
-> opposite problem for people who are limiting by the IOs they issue, which
-> would be the majority of the existing users, so I don't think we can flip
-> the meaning of the existing knobs.
-
-Yes, I understand the current situation. I just feel blk-throttle have
-no such capacity to limit IOs that are issuing from user. There could
-also be filesystems, and data blocks can be fragmented.
-> 
-> re. introducing new knobs or a switch, one thing to consider is that
-> independent iops limits are not that useful to begin with. A device's iops
-> capacity can vary drastically depending on e.g. IO sizes and there usually
-> is no one good iops limit value that both doesn't get in the way and
-> isolates the impact on other users, so it does feel like trying to polish
-> something which is fundamentally flawed.
-
-It's not just fundamentally flawed, and the implementation is just too
-one-sided. So what is the next step?
-
-- remove iops limit since it's not that useful;
-- swith iops limit to against disk;
-- do nothing?
-> 
-> Whether bio or rq based, can you actually achieve meaningful isolation with
-> blk-throtl's iops/bw limits? If switching to rq based (or something
-> approximating that) substantially improves the situation, adding new sets of
-> knobs would make sense, but I'm skeptical this will be all that useful. If
-> this is just going to be a coarse safety mechanism to guard against things
-> going completely out of hands or throttle already known IO patterns, whether
-> the limits are based on bio or rq doesn't make whole lot of difference.
-
-Most of our users will just set meaningful bps limit, however, since
-iops limit is supported they will set it as well, without much knowledge
-how it really works, causing some unexpected phenomenon. And for now,
-we'll suggest not to set iops limit, no even a high limit.
-
-Thanks,
-Kuai
-
-> 
-> Thanks.
-> 
+åœ¨ 2025/3/18 14:32, Liu Ye å†™é“:
+> From: Liu Ye <liuye@kylinos.cn>
+>
+> The function kpageflags_read and kpagecgroup_read is quite similar
+> to kpagecount_read. Consider refactoring common code into a helper
+> function to reduce code duplication.
+>
+> Signed-off-by: Liu Ye <liuye@kylinos.cn>
+>
+> ---
+> V4 : Update code remake patch.
+> V3 : Add a stub for page_cgroup_ino and remove the #ifdef CONFIG_MEMCG.
+> V2 : Use an enumeration to indicate the operation to be performed
+> to avoid passing functions.
+> ---
+> ---
+>  fs/proc/page.c             | 161 +++++++++++++------------------------
+>  include/linux/memcontrol.h |   4 +
+>  2 files changed, 58 insertions(+), 107 deletions(-)
+>
+> diff --git a/fs/proc/page.c b/fs/proc/page.c
+> index 23fc771100ae..999af26c7298 100644
+> --- a/fs/proc/page.c
+> +++ b/fs/proc/page.c
+> @@ -22,6 +22,12 @@
+>  #define KPMMASK (KPMSIZE - 1)
+>  #define KPMBITS (KPMSIZE * BITS_PER_BYTE)
+>  
+> +enum kpage_operation {
+> +	KPAGE_FLAGS,
+> +	KPAGE_COUNT,
+> +	KPAGE_CGROUP,
+> +};
+> +
+>  static inline unsigned long get_max_dump_pfn(void)
+>  {
+>  #ifdef CONFIG_SPARSEMEM
+> @@ -37,19 +43,17 @@ static inline unsigned long get_max_dump_pfn(void)
+>  #endif
+>  }
+>  
+> -/* /proc/kpagecount - an array exposing page mapcounts
+> - *
+> - * Each entry is a u64 representing the corresponding
+> - * physical page mapcount.
+> - */
+> -static ssize_t kpagecount_read(struct file *file, char __user *buf,
+> -			     size_t count, loff_t *ppos)
+> +static ssize_t kpage_read(struct file *file, char __user *buf,
+> +		size_t count, loff_t *ppos,
+> +		enum kpage_operation op)
+>  {
+>  	const unsigned long max_dump_pfn = get_max_dump_pfn();
+>  	u64 __user *out = (u64 __user *)buf;
+> +	struct page *page;
+>  	unsigned long src = *ppos;
+>  	unsigned long pfn;
+>  	ssize_t ret = 0;
+> +	u64 info;
+>  
+>  	pfn = src / KPMSIZE;
+>  	if (src & KPMMASK || count & KPMMASK)
+> @@ -59,24 +63,34 @@ static ssize_t kpagecount_read(struct file *file, char __user *buf,
+>  	count = min_t(unsigned long, count, (max_dump_pfn * KPMSIZE) - src);
+>  
+>  	while (count > 0) {
+> -		struct page *page;
+> -		u64 mapcount = 0;
+> -
+>  		/*
+>  		 * TODO: ZONE_DEVICE support requires to identify
+>  		 * memmaps that were actually initialized.
+>  		 */
+>  		page = pfn_to_online_page(pfn);
+> -		if (page) {
+> -			struct folio *folio = page_folio(page);
+>  
+> -			if (IS_ENABLED(CONFIG_PAGE_MAPCOUNT))
+> -				mapcount = folio_precise_page_mapcount(folio, page);
+> -			else
+> -				mapcount = folio_average_page_mapcount(folio);
+> -		}
+> -
+> -		if (put_user(mapcount, out)) {
+> +		if (page) {
+> +			switch (op) {
+> +			case KPAGE_FLAGS:
+> +				info = stable_page_flags(page);
+> +				break;
+> +			case KPAGE_COUNT:
+> +				if (IS_ENABLED(CONFIG_PAGE_MAPCOUNT))
+> +					info = folio_precise_page_mapcount(page_folio(page), page);
+> +				else
+> +					info = folio_average_page_mapcount(page_folio(page));
+> +				break;
+> +			case KPAGE_CGROUP:
+> +				info = page_cgroup_ino(page);
+> +				break;
+> +			default:
+> +				info = 0;
+> +				break;
+> +			}
+> +		} else
+> +			info = 0;
+> +
+> +		if (put_user(info, out)) {
+>  			ret = -EFAULT;
+>  			break;
+>  		}
+> @@ -94,17 +108,23 @@ static ssize_t kpagecount_read(struct file *file, char __user *buf,
+>  	return ret;
+>  }
+>  
+> +/* /proc/kpagecount - an array exposing page mapcounts
+> + *
+> + * Each entry is a u64 representing the corresponding
+> + * physical page mapcount.
+> + */
+> +static ssize_t kpagecount_read(struct file *file, char __user *buf,
+> +		size_t count, loff_t *ppos)
+> +{
+> +	return kpage_read(file, buf, count, ppos, KPAGE_COUNT);
+> +}
+> +
+>  static const struct proc_ops kpagecount_proc_ops = {
+>  	.proc_flags	= PROC_ENTRY_PERMANENT,
+>  	.proc_lseek	= mem_lseek,
+>  	.proc_read	= kpagecount_read,
+>  };
+>  
+> -/* /proc/kpageflags - an array exposing page flags
+> - *
+> - * Each entry is a u64 representing the corresponding
+> - * physical page flags.
+> - */
+>  
+>  static inline u64 kpf_copy_bit(u64 kflags, int ubit, int kbit)
+>  {
+> @@ -225,47 +245,17 @@ u64 stable_page_flags(const struct page *page)
+>  #endif
+>  
+>  	return u;
+> -};
+> +}
+>  
+> +/* /proc/kpageflags - an array exposing page flags
+> + *
+> + * Each entry is a u64 representing the corresponding
+> + * physical page flags.
+> + */
+>  static ssize_t kpageflags_read(struct file *file, char __user *buf,
+> -			     size_t count, loff_t *ppos)
+> +		size_t count, loff_t *ppos)
+>  {
+> -	const unsigned long max_dump_pfn = get_max_dump_pfn();
+> -	u64 __user *out = (u64 __user *)buf;
+> -	unsigned long src = *ppos;
+> -	unsigned long pfn;
+> -	ssize_t ret = 0;
+> -
+> -	pfn = src / KPMSIZE;
+> -	if (src & KPMMASK || count & KPMMASK)
+> -		return -EINVAL;
+> -	if (src >= max_dump_pfn * KPMSIZE)
+> -		return 0;
+> -	count = min_t(unsigned long, count, (max_dump_pfn * KPMSIZE) - src);
+> -
+> -	while (count > 0) {
+> -		/*
+> -		 * TODO: ZONE_DEVICE support requires to identify
+> -		 * memmaps that were actually initialized.
+> -		 */
+> -		struct page *page = pfn_to_online_page(pfn);
+> -
+> -		if (put_user(stable_page_flags(page), out)) {
+> -			ret = -EFAULT;
+> -			break;
+> -		}
+> -
+> -		pfn++;
+> -		out++;
+> -		count -= KPMSIZE;
+> -
+> -		cond_resched();
+> -	}
+> -
+> -	*ppos += (char __user *)out - buf;
+> -	if (!ret)
+> -		ret = (char __user *)out - buf;
+> -	return ret;
+> +	return kpage_read(file, buf, count, ppos, KPAGE_FLAGS);
+>  }
+>  
+>  static const struct proc_ops kpageflags_proc_ops = {
+> @@ -276,53 +266,10 @@ static const struct proc_ops kpageflags_proc_ops = {
+>  
+>  #ifdef CONFIG_MEMCG
+>  static ssize_t kpagecgroup_read(struct file *file, char __user *buf,
+> -				size_t count, loff_t *ppos)
+> +		size_t count, loff_t *ppos)
+>  {
+> -	const unsigned long max_dump_pfn = get_max_dump_pfn();
+> -	u64 __user *out = (u64 __user *)buf;
+> -	struct page *ppage;
+> -	unsigned long src = *ppos;
+> -	unsigned long pfn;
+> -	ssize_t ret = 0;
+> -	u64 ino;
+> -
+> -	pfn = src / KPMSIZE;
+> -	if (src & KPMMASK || count & KPMMASK)
+> -		return -EINVAL;
+> -	if (src >= max_dump_pfn * KPMSIZE)
+> -		return 0;
+> -	count = min_t(unsigned long, count, (max_dump_pfn * KPMSIZE) - src);
+> -
+> -	while (count > 0) {
+> -		/*
+> -		 * TODO: ZONE_DEVICE support requires to identify
+> -		 * memmaps that were actually initialized.
+> -		 */
+> -		ppage = pfn_to_online_page(pfn);
+> -
+> -		if (ppage)
+> -			ino = page_cgroup_ino(ppage);
+> -		else
+> -			ino = 0;
+> -
+> -		if (put_user(ino, out)) {
+> -			ret = -EFAULT;
+> -			break;
+> -		}
+> -
+> -		pfn++;
+> -		out++;
+> -		count -= KPMSIZE;
+> -
+> -		cond_resched();
+> -	}
+> -
+> -	*ppos += (char __user *)out - buf;
+> -	if (!ret)
+> -		ret = (char __user *)out - buf;
+> -	return ret;
+> +	return kpage_read(file, buf, count, ppos, KPAGE_CGROUP);
+>  }
+> -
+>  static const struct proc_ops kpagecgroup_proc_ops = {
+>  	.proc_flags	= PROC_ENTRY_PERMANENT,
+>  	.proc_lseek	= mem_lseek,
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 53364526d877..5264d148bdd9 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1793,6 +1793,10 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
+>  {
+>  }
+>  
+> +static inline ino_t page_cgroup_ino(struct page *page)
+> +{
+> +	return 0;
+> +}
+>  #endif /* CONFIG_MEMCG */
+>  
+>  #if defined(CONFIG_MEMCG) && defined(CONFIG_ZSWAP)
 
 
