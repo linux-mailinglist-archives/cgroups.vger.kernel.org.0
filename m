@@ -1,122 +1,133 @@
-Return-Path: <cgroups+bounces-7231-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7232-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F210A70510
-	for <lists+cgroups@lfdr.de>; Tue, 25 Mar 2025 16:32:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7D8AA708B8
+	for <lists+cgroups@lfdr.de>; Tue, 25 Mar 2025 19:04:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5791816743D
-	for <lists+cgroups@lfdr.de>; Tue, 25 Mar 2025 15:32:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BFD4188ADE7
+	for <lists+cgroups@lfdr.de>; Tue, 25 Mar 2025 18:04:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3FAE19DF4D;
-	Tue, 25 Mar 2025 15:32:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2483264A81;
+	Tue, 25 Mar 2025 18:03:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="dqBa0NGx";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="q3qFTrXS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B3XwQfmv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1155442A96;
-	Tue, 25 Mar 2025 15:32:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A77626463D
+	for <cgroups@vger.kernel.org>; Tue, 25 Mar 2025 18:03:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742916726; cv=none; b=LWvTEx5McdhTeTdJP6M9wbNfFv5pq7zZF/FKzlRAXEbwblLIfVuN1D55f5kzUqmeUM1HwkEbOt5IgKL+BR99afQHE134PByH1tL6zTKWOvbTB8bMs4pKjpvct8ETDC2yOYMWm5w/bcJPCHxuoTAvT/TL7ECrbAJc1ASKm1iKmx4=
+	t=1742925811; cv=none; b=LXbIDwajx9kX1CJRJ1vRLB+ogOYKX+y+34n1q7DrtyOdcXLnao71LiRSQodhhFKmGlELgT0FpPehSCNX4lBWxALxKfN2QNq97uhuhiWOytkPLYKCocO/cWwj/b3dB/blUP60e9Yf37JRMcjKu+PNZm/W86Uugj6LwyibJkhJsTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742916726; c=relaxed/simple;
-	bh=x2NmSt9yLbVIJPlyS82xD2DGNKCq8MlMoH8SFczXq3E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OKPMlFiSMGQ8Z8ms4c/VR1lkYGdzKVS+/FXTxVEn9wwnbUCzB7KpNvf6MKRCedwB+k8GInWAqbRb3DiGcDF7ApfAKFEIewl+WzZb9Di2SvLNs/WfIrK4mOquZhlW+29Nx5IKRi0HauKhUHBWkM1fhpbv4BIbecAz1/RjXnhxX+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=dqBa0NGx; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=q3qFTrXS; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id DE3016032E; Tue, 25 Mar 2025 16:32:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1742916720;
-	bh=uqCXvfdB2apsnaT9FS0TOcbMaur2YtZsVJVBqKqOVhg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dqBa0NGxkoj44VfwN1i2rHQFWsvTKCPmfpuj7lnYou27otd2hiwa9RynLJfM39Jbf
-	 R2YAK1ZvEDr4aHAALJl4ZbDY5INvoqR50+cw93t4LeI3QnBL+C3ssbVFosNXGyvDxX
-	 ohy1mxW5luDd4JdEiWQdx7fujQu1cgq5OaY57Oo9tqGwphJ30RYE2CRThcJezbFsrl
-	 glnWX3Bh5x5/YIq8EQA2sV10KmgvMDJnNPLr40BmT/M8L82+zf9XFqY7afYp8R1+LO
-	 8CxkDu6ydQpfAK4Oe2W/jdUj0xH7kXTpDsFKqiJd8EjXkrBIycNyvyi085c5NXM+yR
-	 olJOiL0aquPFg==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 2F53960292;
-	Tue, 25 Mar 2025 16:31:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1742916718;
-	bh=uqCXvfdB2apsnaT9FS0TOcbMaur2YtZsVJVBqKqOVhg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=q3qFTrXSS2hEHC9r/3hWthMYvvglJvKbVle3F0+2hmRKzCoQ+jsZD2yNt83Wc1bJQ
-	 a39DMxUYuu2tblvm4pUi642xqNzPMqpHomiXBNaTnCsAEaQjfZpbV5DQ8PqlFDICV3
-	 dYAIcTW1Qzw2uvAh/dZKFRTErBbfwxeIjYqhJwNbUOyykemfDYv+Z03l4WO6zyQm/P
-	 S1kzLKcPme6R4/8EJBdwKkZuU1DgvvjZYpv9taiOrWKk7npBWiVr1mAh5Mt3oC+ZFc
-	 Qg+wdlx7OqKoTjPcxZzFcqKXtbys0gzH30zFctsq3hkH081K5M+GKaUyl5L8ckOlo1
-	 yIls4dFI5VUPA==
-Date: Tue, 25 Mar 2025 16:31:55 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, cgroups@vger.kernel.org,
-	Jan Engelhardt <ej@inai.de>, Florian Westphal <fw@strlen.de>
-Subject: Re: [PATCH v2] netfilter: Make xt_cgroup independent from net_cls
-Message-ID: <Z-LMa9k9q_tJolr3@calendula>
-References: <20250305170935.80558-1-mkoutny@suse.com>
- <Z9_SSuPu2TXeN2TD@calendula>
- <rpu5hl3jyvwhbvamjykjpxdxdvfmqllj4zyh7vygwdxhkpblbz@5i2abljyp2ts>
- <Z-GNBeCX0dg-rxgQ@calendula>
- <iy3wkjdtudq4m763oji7bhj6w7bj2pdst7sbtahtwgcjrhpx6i@a4cy47mlcnqf>
+	s=arc-20240116; t=1742925811; c=relaxed/simple;
+	bh=2DJdpTFXW7xELmylfCyOKTdfNRBbEu8KWXFcMDdga+E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cbsg+YpWWg257Q4CAaMdh+45XCnMYU83aiSKfWHCoaH8Kv18LEkPQNs3uCeRIoTEj8DHyndxcD+0mdYfodGvniS06WK05IbOTT04zJj3cweXk39LiG8z6/s7ImTmsmriNy+atF0uoRPmgYYkD98GtBgqQY4opNGqFouPlGF2Z60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B3XwQfmv; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-22398e09e39so123589895ad.3
+        for <cgroups@vger.kernel.org>; Tue, 25 Mar 2025 11:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742925809; x=1743530609; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2OFHC4oxGhg/toa6bpGo7PeSs9DiV3rh5O8lrz2FAFs=;
+        b=B3XwQfmv7xhI2FHFcRiLraqgEcXQuSUBHecmzHyiVQA4vnld4nPorlCxjAa6Qnx8BZ
+         SkEZpaShuv3fSTu4ojCD9WgrZDlFYfCcgj/thI7y9LPazyenYlNtg0BZUJ5Ghq5DZzmF
+         JKFJuHKrGE9eLmCMzAKfZO77jICr3DAuIatqwlOaIboga64i4tCF0duhccv24bTfjGbk
+         uzWZM8/BXGThE0CBzJN29R8erHrhpsH5o/9W4w0aUYNSxsQGB1RNThBhO6sYrEHVsZt8
+         dLVZlswgJ5VFQxvet5xCjRUpsuJ+HZ/vjCCIhxr372EapuONRQ9kxvpJc604+eIyVi0T
+         5Z7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742925809; x=1743530609;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2OFHC4oxGhg/toa6bpGo7PeSs9DiV3rh5O8lrz2FAFs=;
+        b=D1KXpZ8EQlZ+dsDnqJDXWMivV5JBCHTCo+hIP7jD4PHRqoSwYVegCw2kdKzEzNZCOs
+         d221OpoUQJ8Gk+2C3SKU4R8vdi+cUUWGOrfFw9D+eYaoW/ApmlY/1JOsSE0nN9BRqCfm
+         SD7NCYOXHf+K5ZrdNa9YYKOeuafYbY5HVAgCnMJnfdbK8uD8i1rji72EPWHBthpUZumA
+         wEtdxTMeDtE0e6fKPWI78pYhF2vbk7kIM7QiHmmjjgNRyfAMnBA3rfiByX+Ef9+VtcrC
+         DZpKOiv56Thph+tqkYC++ugU1XJoFaXsPsFJZ0xXTcrSy9iA5JCZPpgGUJ/I/ZwRLhSX
+         lGAw==
+X-Forwarded-Encrypted: i=1; AJvYcCWmwGODhcvzyfrEmy44GgUj6qzsFgszyZcWsIJhRYvR4+S29JSAqaushfm8hXoJgq4pXZk4yxKw@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw60k8rxbyofACP2E7Zs51hrUxZP94VDQlbyt0ipx5IMbSARa86
+	urMc4g6uUHEHNejd1peme8B80VS6t5q5gE9WXOrMh1zjBNE4ANxf
+X-Gm-Gg: ASbGncvFalaSq669N4RJjWYb6H6f4O7h4yPobWISl278RNaDVh8urLNLTYqW/YMbPNU
+	SGeXEm75k43/l6IIedzuq31iTUl2tv/cUP3XgE1JGmGgTvNziQfyQwlxcc8qKWSmFO1IgnULMgH
+	QPkeuYgWwIP+Ll338WlrgCBW6aNo9R/8VdnEdEUCGXM1dG9YnYt+l6gZm1qm89b4TB/eYwDqaY5
+	L6UmFj4RCvm/ZVVN455pw7zCLr2AOm6T9XliNjBW7uztzglTPIqbe3moSjlx5Sm2vuDJTlxjLrF
+	oLz20OpKn9TfYuAEn/bnK13QeDDHSk1up7274yD6o2bDKO7nHrJHLnd0uSfQC77+9S4TFWQCGiK
+	zM8aXx9oJPQq2JgurgQW46DEHFQ==
+X-Google-Smtp-Source: AGHT+IGRcIkV+T0NdTkjungee/b9D2PnTIi31LT82NdWbq9QwJcA4yfw4vLUE/v7qpb0mRjHF0RbHA==
+X-Received: by 2002:a05:6a21:688:b0:1f5:7353:c303 with SMTP id adf61e73a8af0-1fe42f2cbf3mr29019788637.11.1742925809037;
+        Tue, 25 Mar 2025 11:03:29 -0700 (PDT)
+Received: from [192.168.2.117] (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73905fa92bbsm10913499b3a.16.2025.03.25.11.03.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Mar 2025 11:03:28 -0700 (PDT)
+Message-ID: <11a80d4a-9776-4a43-8c61-5cc1ad4abbc7@gmail.com>
+Date: Tue, 25 Mar 2025 11:03:26 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4 v3] cgroup: use separate rstat api for bpf programs
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com,
+ hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, kernel-team@meta.com
+References: <20250319222150.71813-1-inwardvessel@gmail.com>
+ <20250319222150.71813-2-inwardvessel@gmail.com>
+ <4akwk5uurrhqo4mb7rxijnwsgy35sotygnr5ugvp7xvwyofwn2@v6jx3qzq66ln>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <4akwk5uurrhqo4mb7rxijnwsgy35sotygnr5ugvp7xvwyofwn2@v6jx3qzq66ln>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <iy3wkjdtudq4m763oji7bhj6w7bj2pdst7sbtahtwgcjrhpx6i@a4cy47mlcnqf>
 
-On Mon, Mar 24, 2025 at 07:01:14PM +0100, Michal Koutný wrote:
-> On Mon, Mar 24, 2025 at 05:49:09PM +0100, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > If !CONFIG_CGROUP_NET_CLASSID, then no classid matching is possible.
-> > 
-> > So why allow a rule to match on cgroup with classid == 0?
+On 3/24/25 10:47 AM, Michal Koutný wrote:
+> On Wed, Mar 19, 2025 at 03:21:47PM -0700, JP Kobryn <inwardvessel@gmail.com> wrote:
+>> The rstat updated/flush API functions are exported as kfuncs so bpf
+>> programs can make the same calls that in-kernel code can. Split these API
+>> functions into separate in-kernel and bpf versions. Function signatures
+>> remain unchanged. The kfuncs are named with the prefix "bpf_". This
+>> non-functional change allows for future commits which will modify the
+>> signature of the in-kernel API without impacting bpf call sites. The
+>> implementations of the kfuncs serve as adapters to the in-kernel API.
 > 
-> It is conservative approach to supposed users who may have filtering
-> rules with classid=0 but never mkdir any net_cls group. Only those who
-> eventually need to mkdir would realize there's nowhere to mkdir on (with
-> !CONFIG_CGROUP_NET_CLASSID). Admittedly, I have no idea if this helps to
-> 5% of net_cls users or 0.05% or 0%. Do you have any insights into that?
-
-I suspect this partial support will not help anyway, because user will
-be most likely matching to classid != 0 in their rulesets, and the
-ruleset loads via iptables-restore in an atomic fashion, ie. take it
-all or nothing.
-
-> > Maybe simply do this instead?
-> > 
-> > static bool possible_classid(u32 classid)
-> > {
-> >        return IS_ENABLED(CONFIG_CGROUP_NET_CLASSID);
-> > }
+> This made me look up
+> https://docs.kernel.org/bpf/kfuncs.html#bpf-kfunc-lifecycle-expectations
 > 
-> Yes, if the above carefulness is unnecessary, I'd like to accompany this
-> with complete removal of sock_cgroup_classid() function then (to have it
-> compile-checked that it's really impossible to compare any classids w/o
-> CONFIG_CGROUP_NET_CLASSID).
+> The series reworks existing kfuncs anyway, is it necessary to have the
+> bpf_ versions? The semantics is changed too from base+all subsystems
+> flush to only base flush (bpf_rstat_flush()).
 
-Go ahead remove this shim function and post v3.
+This patch was done based on some conversation in v2 around what to do
+with the kfuncs (bottom of [0]). It's true the kfunc API deviates from
+flush-specific-subsystem approach. Dropping this patch is fine by me and
+I assume it would be ok with Yosry (based on comments at end of [0]),
+but I'll wait and see if he has any input.
 
-Thanks.
+[0] https://lore.kernel.org/all/Z8IIxUdRpqxZyIHO@google.com/
+
+> 
+> I'd perhaps do the changes freely w/out taking kfuncs into account and
+> then add possible reconstructive patches towards the end of the series.
+> (I'm not unsure whether the modified btf_type_tag_percpu.c selftest
+> survives the latest unionization of base stats.)
+> 
+> 
+> Michal
+
 
