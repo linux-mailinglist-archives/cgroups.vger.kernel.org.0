@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-7237-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7238-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C8AA72817
-	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 02:25:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B06F3A7281A
+	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 02:25:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09F777A4553
-	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 01:24:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBD5F7A61CC
+	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 01:24:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDECD13C8F3;
-	Thu, 27 Mar 2025 01:24:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E30D14EC62;
+	Thu, 27 Mar 2025 01:24:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vDqshJIt"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KmrUwvL1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-vk1-f201.google.com (mail-vk1-f201.google.com [209.85.221.201])
+Received: from mail-ua1-f74.google.com (mail-ua1-f74.google.com [209.85.222.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0BB77DA95
-	for <cgroups@vger.kernel.org>; Thu, 27 Mar 2025 01:24:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AEA37DA95
+	for <cgroups@vger.kernel.org>; Thu, 27 Mar 2025 01:24:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743038696; cv=none; b=HtmMFBo4mPWhAQAfLJY44Ui1vcnFXxJRlwAgRe4SqRizSSe4KPdC5ydrJ/nKZgTlfRdv6Ri8Ae0DJaW1/Vsv0BqweNZ1qTLzgLAt6Y4ycCj8t/sZRpRb7RSA0++kSBnfzQF+iR7aqo9S8PMjs3LcmEbAvU6lQcsrZaMhKnctZPQ=
+	t=1743038699; cv=none; b=glGujtmQ9EKsuvTv/BDpDqHT7Y0rAQDw3HAMLFpAwa1qv5W98thtIfKPkdtDtFMZqDK0U49Tr/hks/Rfpnso96hjUcZvJyx5X7iWiW5gxWKG44/7j0ycz4VkfD98HnpiqBXmy9mrmjfgOkz4lyQ3IO8sUbRSgh19nndowyL+3jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743038696; c=relaxed/simple;
-	bh=t3Wu8WcpTKr4Hin+dqDU2xino9yOT2vt8H5/bautCRE=;
+	s=arc-20240116; t=1743038699; c=relaxed/simple;
+	bh=BfLa2QteAJuzJlCbZuLE5l/LTfJiKpsDE6KPN4nYm+Y=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=GTrE0MZ04Q6xlF5cASccV/HghArruzYyIyYx0yLjyTLAHpB2S5yVQ3q1rZroOejj0/ME8sYuvWdiozsAjj32t8kpiAZKLvTcZKrOs2iz5kn2aLlktTXjHTR3/7hFJamdgDTaTFbU5vVvrzUfRBGf6jjibGWdTb5JBDmnt8tnKcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vDqshJIt; arc=none smtp.client-ip=209.85.221.201
+	 To:Cc:Content-Type; b=dkldoebVFKrrX45Vxg6q0OPTRlwQGO9Iau8U2cIlmB8so67q1fIkZmuSad+OX0Sufmqrd/Og6M82Kb61vVAl9Ww61UgWr5RBbynhStm4TLSSsRN2qZdWcXasGDpIWubgxac1z5am2exV11oseWAl/S5EFkxvkTts44xaY/uLH+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KmrUwvL1; arc=none smtp.client-ip=209.85.222.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com
-Received: by mail-vk1-f201.google.com with SMTP id 71dfb90a1353d-525da74d0d7so120357e0c.1
-        for <cgroups@vger.kernel.org>; Wed, 26 Mar 2025 18:24:54 -0700 (PDT)
+Received: by mail-ua1-f74.google.com with SMTP id a1e0cc1a2514c-86d9fc9d467so123518241.2
+        for <cgroups@vger.kernel.org>; Wed, 26 Mar 2025 18:24:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1743038694; x=1743643494; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1743038696; x=1743643496; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=v0fJldEh3ljJ4akdD7WwAxn/Ekty9pCM03IX50ZdZwg=;
-        b=vDqshJIt4TrIrHLwYkq2s+Ews+BnUk+gqOBJzu7lltl4HgZpUlnj8+0JntsuC5Wx3C
-         zbWwuWKMohwzV3jg7+UmKhmZ8mlrUYYePEfzo0lAiatpG0UyKs5nEEi8i/2yQa6MQrpR
-         w8s6VxRF2ZYF5ukqSO4pC4DWI4IZCiqF+TTT/Rjyvoan9OdwR15WR/NMxym4n9l/sULa
-         DCQm/UQ3w8HjBtCu4/fDkLdd2f9W+Z5J8hiS8IdkHmAmBg+Wqrjslu4n3kVuvqcotiby
-         lzUZYXYLAS441qTEIGCFTr1EvmL8XKzdhqTSB9rOrmBxsh4LIt9y7XV8gwlev+RYwh/O
-         yLYA==
+        bh=gGqxd23a/0EjTo66Tj0AOPzp5tI+DdYta3+Brtl9zUU=;
+        b=KmrUwvL1hVwacRGIfD9buNw1suFiCTEnS1DkD0ZmATQfvusHIiyhG+yhWiMVlcndr/
+         DaVG43fkG5yGf5JQ4qpZV3SI5LSIgxD2DYreMBEw/mzq7/OHUs8+QFaZUeMQb+P+E15L
+         1qXsAM4ARcCBO6QskIHiAeFc/TOG1XHPbzgpx0Zqa5xfWuW2i7pYY1+p1A76ETyHozW4
+         UQkzVSfp662sY4Np3gZpegTZ//bCtCQKfI3KGbyftjc/x9sAShOyrrAjcYuw+uV2HFwl
+         KKK2iXwwK2DRWnvfVFVn7NDLr2gi2VRUEca6VKkBJcCrJXdPHqUwOkCc0mAUB9THa+rj
+         7eSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743038694; x=1743643494;
+        d=1e100.net; s=20230601; t=1743038696; x=1743643496;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v0fJldEh3ljJ4akdD7WwAxn/Ekty9pCM03IX50ZdZwg=;
-        b=Nh0NXyNg+bVFr8NTPufTkAYFMDTahhd8Tjqm5h2tcxFJRdLNovctZ9gkO9ecmQYFZG
-         cqrJSZJDIlMOTMrwBu3OkLg5DGHW34Y6XIb6WKPden7ljdh/n5F3RiWZbXSPqzqBqF2C
-         JwTQIEYhTm/MSV1G8ohYMOdykBMeek57ABiSQvdIn3MVMoe1QUlLp49SugayA4KvTKi6
-         rcbZRqPlAPDvDe+RowQXAAwTGy/ULVjCyVF9rFjYONcdEZXjgM5UN4+xixS4UBPYcM3v
-         cYNgz43YKRhL4cDGpg6eCEEhJriX/Kdja+d6K+wOkVfHnSej3JZddQea5I48011zbn4x
-         fllw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZtSzIU6cHHJYTGJBwuECplwHNGHcLKwMqkW2nRsT66lK3T3Q+z3jQEfBdslr5epb7a68T5Eaj@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzO9Feb5FIqrhX2HRDL1HluqOa/j1rfeeAQiPJ8GrzDNefFC2n
-	WeXxbVHSK3GxmJsbyeuUt/CdnctgBMVieZauHUkTIplv2guw5l7KsE6sU5D/BOhMLrgGchfQISI
-	moGaR5rgGl9vGNyHgsQ==
-X-Google-Smtp-Source: AGHT+IFSht9Rl/okSnd4o3+xfp04VCJSDQHoeYgTEaziVfScJ5lh7/JF2NmdZD1IhD0J/mpc5enurRpuXJWld2NG
-X-Received: from uabil9.prod.google.com ([2002:a05:6130:6009:b0:86b:9d15:75ab])
+        bh=gGqxd23a/0EjTo66Tj0AOPzp5tI+DdYta3+Brtl9zUU=;
+        b=g4h/ao83SjxrDMDF6V6rj567JrsSLMU33IeaRCqu7STpzC30cY4jUymV6mr3r1DhGI
+         xdkrab71Q58RUJtaTeSJPgo0RJVo5gjFM2Rc22Wpf9gTd/LhJP6EdoB9B7xE1vbJvAdX
+         eGimJNq/HMUq1xZKAVQKPbLJRPgD2kaqtQvXhd/klvgyyR74OEgzLLWqNAYbMEh5Mr4c
+         M6SZAO2jyUK3W42C4xHmiXojzsrJZOWuh19h40YjL5MQWykT3648uQmi/kq34BLlcBso
+         DLnrEqozGv2Ka5X86CNXeU5KHqBbtON/nQV99ARN5kh06EXGCrI2nGIjKuWqqMvyQilm
+         LwIg==
+X-Forwarded-Encrypted: i=1; AJvYcCWAAAoAQy5QRmf1gGPHnNspF1+dF7K9xR6M6Td++6NkWizZQ+YQlybeOnQ7lR7ZIaBy1gkTV1UQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQ1eRxv1ieTq28oRD96oRrAK91V1fNbEPNk18ZDiAW4sUoQu4h
+	c2XW3B5reDONXWPalRXVFuQEnQ6xH3dQLBQ4uswQ7TRVSgMCztDDrgRTJHXa172IzTiQiIjIWfA
+	do2u2PQBqk17bHD5yuQ==
+X-Google-Smtp-Source: AGHT+IHGl12nIoVpESkgRXoTlyIOOjXfd42fJqbcs3jdHsAlXFB74Da6kCtuJ1aDXxzdgLsg1P+I7e2U7pMaDK9c
+X-Received: from vsbby4.prod.google.com ([2002:a05:6102:5044:b0:4c5:5592:22ae])
  (user=jthoughton job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6102:3585:b0:4c5:1bff:4589 with SMTP id ada2fe7eead31-4c5870b7afcmr2199208137.22.1743038693829;
- Wed, 26 Mar 2025 18:24:53 -0700 (PDT)
-Date: Thu, 27 Mar 2025 01:23:47 +0000
+ 2002:a67:e716:0:b0:4c1:9cb2:8389 with SMTP id ada2fe7eead31-4c586efe52dmr2559753137.2.1743038696346;
+ Wed, 26 Mar 2025 18:24:56 -0700 (PDT)
+Date: Thu, 27 Mar 2025 01:23:48 +0000
 In-Reply-To: <20250327012350.1135621-1-jthoughton@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,180 +74,115 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250327012350.1135621-1-jthoughton@google.com>
 X-Mailer: git-send-email 2.49.0.395.g12beb8f557-goog
-Message-ID: <20250327012350.1135621-3-jthoughton@google.com>
-Subject: [PATCH 2/5] KVM: selftests: access_tracking_perf_test: Add option to
- skip the sanity check
+Message-ID: <20250327012350.1135621-4-jthoughton@google.com>
+Subject: [PATCH 3/5] cgroup: selftests: Move cgroup_util into its own library
 From: James Houghton <jthoughton@google.com>
 To: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org
 Cc: Maxim Levitsky <mlevitsk@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
 	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, 
 	Yu Zhao <yuzhao@google.com>, James Houghton <jthoughton@google.com>, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-From: Maxim Levitsky <mlevitsk@redhat.com>
+KVM selftests will soon need to use some of the cgroup creation and
+deletion functionality from cgroup_util.
 
-Add an option to skip sanity check of number of still idle pages,
-and set it by default to skip, in case hypervisor or NUMA balancing
-is detected.
-
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-Co-developed-by: James Houghton <jthoughton@google.com>
+Suggested-by: David Matlack <dmatlack@google.com>
 Signed-off-by: James Houghton <jthoughton@google.com>
 ---
- .../selftests/kvm/access_tracking_perf_test.c | 61 ++++++++++++++++---
- .../testing/selftests/kvm/include/test_util.h |  1 +
- tools/testing/selftests/kvm/lib/test_util.c   |  7 +++
- 3 files changed, 60 insertions(+), 9 deletions(-)
+ tools/testing/selftests/cgroup/Makefile       | 21 ++++++++++---------
+ .../selftests/cgroup/{ => lib}/cgroup_util.c  |  3 +--
+ .../cgroup/{ => lib/include}/cgroup_util.h    |  4 ++--
+ .../testing/selftests/cgroup/lib/libcgroup.mk | 12 +++++++++++
+ 4 files changed, 26 insertions(+), 14 deletions(-)
+ rename tools/testing/selftests/cgroup/{ => lib}/cgroup_util.c (99%)
+ rename tools/testing/selftests/cgroup/{ => lib/include}/cgroup_util.h (99%)
+ create mode 100644 tools/testing/selftests/cgroup/lib/libcgroup.mk
 
-diff --git a/tools/testing/selftests/kvm/access_tracking_perf_test.c b/tools/testing/selftests/kvm/access_tracking_perf_test.c
-index 447e619cf856e..0e594883ec13e 100644
---- a/tools/testing/selftests/kvm/access_tracking_perf_test.c
-+++ b/tools/testing/selftests/kvm/access_tracking_perf_test.c
-@@ -65,6 +65,16 @@ static int vcpu_last_completed_iteration[KVM_MAX_VCPUS];
- /* Whether to overlap the regions of memory vCPUs access. */
- static bool overlap_memory_access;
+diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
+index 1b897152bab6e..e01584c2189ac 100644
+--- a/tools/testing/selftests/cgroup/Makefile
++++ b/tools/testing/selftests/cgroup/Makefile
+@@ -21,14 +21,15 @@ TEST_GEN_PROGS += test_zswap
+ LOCAL_HDRS += $(selfdir)/clone3/clone3_selftests.h $(selfdir)/pidfd/pidfd.h
  
-+/*
-+ * If the test should only warn if there are too many idle pages (i.e., it is
-+ * expected).
-+ * -1: Not yet set.
-+ *  0: We do not expect too many idle pages, so FAIL if too many idle pages.
-+ *  1: Having too many idle pages is expected, so merely print a warning if
-+ *     too many idle pages are found.
-+ */
-+static int idle_pages_warn_only = -1;
-+
- struct test_params {
- 	/* The backing source for the region of memory. */
- 	enum vm_mem_backing_src_type backing_src;
-@@ -177,18 +187,12 @@ static void mark_vcpu_memory_idle(struct kvm_vm *vm,
- 	 * arbitrary; high enough that we ensure most memory access went through
- 	 * access tracking but low enough as to not make the test too brittle
- 	 * over time and across architectures.
--	 *
--	 * When running the guest as a nested VM, "warn" instead of asserting
--	 * as the TLB size is effectively unlimited and the KVM doesn't
--	 * explicitly flush the TLB when aging SPTEs.  As a result, more pages
--	 * are cached and the guest won't see the "idle" bit cleared.
- 	 */
- 	if (still_idle >= pages / 10) {
--#ifdef __x86_64__
--		TEST_ASSERT(this_cpu_has(X86_FEATURE_HYPERVISOR),
-+		TEST_ASSERT(idle_pages_warn_only,
- 			    "vCPU%d: Too many pages still idle (%lu out of %lu)",
- 			    vcpu_idx, still_idle, pages);
--#endif
-+
- 		printf("WARNING: vCPU%d: Too many pages still idle (%lu out of %lu), "
- 		       "this will affect performance results.\n",
- 		       vcpu_idx, still_idle, pages);
-@@ -328,6 +332,31 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	memstress_destroy_vm(vm);
- }
+ include ../lib.mk
++include lib/libcgroup.mk
  
-+static int access_tracking_unreliable(void)
-+{
-+#ifdef __x86_64__
-+	/*
-+	 * When running nested, the TLB size is effectively unlimited and the
-+	 * KVM doesn't explicitly flush the TLB when aging SPTEs.  As a result,
-+	 * more pages are cached and the guest won't see the "idle" bit cleared.
-+	 */
-+	if (this_cpu_has(X86_FEATURE_HYPERVISOR)) {
-+		puts("Skipping idle page count sanity check, because the test is run nested");
-+		return 1;
-+	}
+-$(OUTPUT)/test_core: cgroup_util.c
+-$(OUTPUT)/test_cpu: cgroup_util.c
+-$(OUTPUT)/test_cpuset: cgroup_util.c
+-$(OUTPUT)/test_freezer: cgroup_util.c
+-$(OUTPUT)/test_hugetlb_memcg: cgroup_util.c
+-$(OUTPUT)/test_kill: cgroup_util.c
+-$(OUTPUT)/test_kmem: cgroup_util.c
+-$(OUTPUT)/test_memcontrol: cgroup_util.c
+-$(OUTPUT)/test_pids: cgroup_util.c
+-$(OUTPUT)/test_zswap: cgroup_util.c
++$(OUTPUT)/test_core: $(LIBCGROUP_O)
++$(OUTPUT)/test_cpu: $(LIBCGROUP_O)
++$(OUTPUT)/test_cpuset: $(LIBCGROUP_O)
++$(OUTPUT)/test_freezer: $(LIBCGROUP_O)
++$(OUTPUT)/test_hugetlb_memcg: $(LIBCGROUP_O)
++$(OUTPUT)/test_kill: $(LIBCGROUP_O)
++$(OUTPUT)/test_kmem: $(LIBCGROUP_O)
++$(OUTPUT)/test_memcontrol: $(LIBCGROUP_O)
++$(OUTPUT)/test_pids: $(LIBCGROUP_O)
++$(OUTPUT)/test_zswap: $(LIBCGROUP_O)
+diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/lib/cgroup_util.c
+similarity index 99%
+rename from tools/testing/selftests/cgroup/cgroup_util.c
+rename to tools/testing/selftests/cgroup/lib/cgroup_util.c
+index 1e2d46636a0ca..d5649486a11df 100644
+--- a/tools/testing/selftests/cgroup/cgroup_util.c
++++ b/tools/testing/selftests/cgroup/lib/cgroup_util.c
+@@ -16,8 +16,7 @@
+ #include <sys/wait.h>
+ #include <unistd.h>
+ 
+-#include "cgroup_util.h"
+-#include "../clone3/clone3_selftests.h"
++#include <cgroup_util.h>
+ 
+ /* Returns read len on success, or -errno on failure. */
+ static ssize_t read_text(const char *path, char *buf, size_t max_len)
+diff --git a/tools/testing/selftests/cgroup/cgroup_util.h b/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
+similarity index 99%
+rename from tools/testing/selftests/cgroup/cgroup_util.h
+rename to tools/testing/selftests/cgroup/lib/include/cgroup_util.h
+index 19b131ee77072..7a0441e5eb296 100644
+--- a/tools/testing/selftests/cgroup/cgroup_util.h
++++ b/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
+@@ -2,9 +2,9 @@
+ #include <stdbool.h>
+ #include <stdlib.h>
+ 
+-#include "../kselftest.h"
+-
++#ifndef PAGE_SIZE
+ #define PAGE_SIZE 4096
 +#endif
-+	/*
-+	 * When NUMA balancing is enabled, guest memory can be mapped
-+	 * PROT_NONE, and the Accessed bits won't be queriable.
-+	 */
-+	if (is_numa_balancing_enabled()) {
-+		puts("Skipping idle page count sanity check, because NUMA balancing is enabled");
-+		return 1;
-+	}
+ 
+ #define MB(x) (x << 20)
+ 
+diff --git a/tools/testing/selftests/cgroup/lib/libcgroup.mk b/tools/testing/selftests/cgroup/lib/libcgroup.mk
+new file mode 100644
+index 0000000000000..2cbf07337c23f
+--- /dev/null
++++ b/tools/testing/selftests/cgroup/lib/libcgroup.mk
+@@ -0,0 +1,12 @@
++CGROUP_DIR := $(selfdir)/cgroup
 +
-+	return 0;
-+}
++LIBCGROUP_C := lib/cgroup_util.c
 +
- static void help(char *name)
- {
- 	puts("");
-@@ -342,6 +371,12 @@ static void help(char *name)
- 	printf(" -v: specify the number of vCPUs to run.\n");
- 	printf(" -o: Overlap guest memory accesses instead of partitioning\n"
- 	       "     them into a separate region of memory for each vCPU.\n");
-+	printf(" -w: Control whether the test warns or fails if more than 10%\n"
-+	       "     of pages are still seen as idle/old after accessing guest\n"
-+	       "     memory.  >0 == warn only, 0 == fail, <0 == auto.  For auto\n"
-+	       "     mode, the test fails by default, but switches to warn only\n"
-+	       "     if NUMA balancing is enabled or the test detects it's running\n"
-+	       "     in a VM.\n");
- 	backing_src_help("-s");
- 	puts("");
- 	exit(0);
-@@ -359,7 +394,7 @@ int main(int argc, char *argv[])
- 
- 	guest_modes_append_default();
- 
--	while ((opt = getopt(argc, argv, "hm:b:v:os:")) != -1) {
-+	while ((opt = getopt(argc, argv, "hm:b:v:os:w:")) != -1) {
- 		switch (opt) {
- 		case 'm':
- 			guest_modes_cmdline(optarg);
-@@ -376,6 +411,11 @@ int main(int argc, char *argv[])
- 		case 's':
- 			params.backing_src = parse_backing_src_type(optarg);
- 			break;
-+		case 'w':
-+			idle_pages_warn_only =
-+				atoi_non_negative("Idle pages warning",
-+						  optarg);
-+			break;
- 		case 'h':
- 		default:
- 			help(argv[0]);
-@@ -388,6 +428,9 @@ int main(int argc, char *argv[])
- 		       "CONFIG_IDLE_PAGE_TRACKING is not enabled");
- 	close(page_idle_fd);
- 
-+	if (idle_pages_warn_only == -1)
-+		idle_pages_warn_only = access_tracking_unreliable();
++LIBCGROUP_O := $(patsubst %.c, $(OUTPUT)/%.o, $(LIBCGROUP_C))
 +
- 	for_each_guest_mode(run_test, &params);
- 
- 	return 0;
-diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-index 77d13d7920cb8..c6ef895fbd9ab 100644
---- a/tools/testing/selftests/kvm/include/test_util.h
-+++ b/tools/testing/selftests/kvm/include/test_util.h
-@@ -153,6 +153,7 @@ bool is_backing_src_hugetlb(uint32_t i);
- void backing_src_help(const char *flag);
- enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
- long get_run_delay(void);
-+bool is_numa_balancing_enabled(void);
- 
- /*
-  * Whether or not the given source type is shared memory (as opposed to
-diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-index 3dc8538f5d696..03eb99af9b8de 100644
---- a/tools/testing/selftests/kvm/lib/test_util.c
-+++ b/tools/testing/selftests/kvm/lib/test_util.c
-@@ -176,6 +176,13 @@ size_t get_trans_hugepagesz(void)
- 	return get_sysfs_val("/sys/kernel/mm/transparent_hugepage/hpage_pmd_size");
- }
- 
-+bool is_numa_balancing_enabled(void)
-+{
-+	if (!test_sysfs_path("/proc/sys/kernel/numa_balancing"))
-+		return false;
-+	return get_sysfs_val("/proc/sys/kernel/numa_balancing") == 1;
-+}
++CFLAGS += -I$(CGROUP_DIR)/lib/include
 +
- size_t get_def_hugetlb_pagesz(void)
- {
- 	char buf[64];
++$(LIBCGROUP_O): $(OUTPUT)/%.o : $(CGROUP_DIR)/%.c
++	$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
++
++EXTRA_CLEAN += $(LIBCGROUP_O)
 -- 
 2.49.0.395.g12beb8f557-goog
 
