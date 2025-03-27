@@ -1,268 +1,214 @@
-Return-Path: <cgroups+bounces-7244-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7245-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1B24A73A7A
-	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 18:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FD27A73CB2
+	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 18:48:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 673CC189B875
-	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 17:30:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F55D189B796
+	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 17:48:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B9D721A437;
-	Thu, 27 Mar 2025 17:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1DE1AD3E0;
+	Thu, 27 Mar 2025 17:48:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lSzY06uC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hk6iKQWa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 189E31A5B98
-	for <cgroups@vger.kernel.org>; Thu, 27 Mar 2025 17:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D719433B1;
+	Thu, 27 Mar 2025 17:48:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743096609; cv=none; b=Bc8Wq5xW/HbYCLSzxkReZUG8R+uMYNlZMMoiJVHL7EHl0xOyicul/gK8JPq2AYKKm+Mq65ApUd62ICDlxY5NNGwE3w2WmrNlomapaCNxlPr287erpVdiskv4hu9ASMqCU9oSWPqUMhljXhNef17upKLx8TNqXUZWWLQddxQRcpE=
+	t=1743097693; cv=none; b=kb/ez5Udsbhm4gaSnpwK3EFxrqbtg9WcXrebbLIGYKrPNKe7oBUiEiG3BJx+z5pRGzODuaqalLc2sbWyLdDUs7Bg6AyoVUH6ic/PUEOgPTfpMOBJGeWWXHzG0HLwI7mzTm/Id9Q3M6hr/cIB5JAKBEGFxICIA3rCh8+UNhfEpEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743096609; c=relaxed/simple;
-	bh=K66Q38Lz90Nt3j6FO+oeTnlxzaJOsNINcLtmcpY+h10=;
+	s=arc-20240116; t=1743097693; c=relaxed/simple;
+	bh=9e8h+C2pdlvCU+8CMtrRPLcUHm9spPtbCKdoxLV65hY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iPLIXRW63ScnIcPy5nQhRmoPRg2fxLPEXm11Ic3W5ZYKDHnhrxuXF6rnduQZQNpDOAerhikamN3sFLCmOWUS/wGQeKiKQKV0/MtTd1mEwLK2B7LQtzMlfC/uarDUFcZF6b7CQ8IBhALs7LL/xU0MuYECS6zkuo5CSiZXZR6RlF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lSzY06uC; arc=none smtp.client-ip=209.85.221.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-52446b21cfdso590358e0c.1
-        for <cgroups@vger.kernel.org>; Thu, 27 Mar 2025 10:30:06 -0700 (PDT)
+	 To:Cc:Content-Type; b=Qz6yZCYbpfLgyhJdsat6mtNyP8LvO9zX8CxTR955bKhjAkYoevuYrHv/vXeyzEhHCzTW7uKX1TMKe5bu6UKIGGp2BjEvVJkBRgpTDBy84AKsmLDC1LTlUyZdAo7jHTEABHeFN7d0ppHrkuOPRDuiYo8dFshnSaop6nBUq8pw4z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hk6iKQWa; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5e677f59438so1991046a12.2;
+        Thu, 27 Mar 2025 10:48:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1743096606; x=1743701406; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WDN1VKUJwLebN0ryWgo3KULQHNLf140Ja4ddZir7PXQ=;
-        b=lSzY06uCq/AZ+mBfLQv2uI1GCPPeo82pbj9k8ByhEJZkXG2hpcgKvv/kz1995tx9DI
-         evIfGKhV6osj4Kjelzivzi/w1JiyxOm8oVCi3VL0BkNqldzPewxQuDfH2TSSxtjhdoi1
-         gBlHTz7mv5C9jZmzsO3xaU97uBKBttBtTd1rQT0BkJ6koNVX2FLJYuwpNoUJmmnidQ8n
-         hJI3/zGME+xKq6O7CuH5/ZxuWG4a9TwyFlNI5K5bvyJN/vEEaMF63baWrNvSO1CL4Gxg
-         Wx/MBKrLOkyTsJs03+ERKOMQzkqV9WI323s5ViP5UTlKPLosdpL9Hv0pYnwvBH88HVrA
-         BBNA==
+        d=gmail.com; s=20230601; t=1743097689; x=1743702489; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NHz+Ccq4y4In5QM8QHHqPDgkxTMlvKloGXrTWL6Om+g=;
+        b=Hk6iKQWasj1aaFYVPtmTur08ATVOIDjxtq4aPfhxMLudmRqT6/oKA4eKTt5achA4k5
+         bIuD+CjfRyl8P+DYcCQ8UZfeLRtMzBcSno7kgkcEI64O2MJnjpjAwz/Tf3PqRDqSRUON
+         N0OVb0uHh33Q7wlZ+SnERYvzHUDaZW5oZWHp+aGOtcdzAM20yfXfcCm2IkVylRLLFBZd
+         u8cL9enXWr3+H/0RUbiRA2Zqhr9kG4TfD2dXAmLrlTBbrxFx4hdwjTqJjTpZFdldWbMa
+         g10geMS11D218gPiqIVCXyI0I6MLdNVburuI6pupRRpSYiNY6QezPKEA+U7aUhA4NMgU
+         MUmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743096606; x=1743701406;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WDN1VKUJwLebN0ryWgo3KULQHNLf140Ja4ddZir7PXQ=;
-        b=CB59bC0jbWLqmmdOjk7bGA6pthXz0RgG5LaI8uNmv9E/9qxj1zCmOgieSGzEet/MU0
-         ywX9mBc7l6A58TcYuj4MjCLd+YOfON5FlPNCg24ROmWGRr//7ZN0eOrvoPOX5JRlUedo
-         svbEXR3afcTH6NI74q/rFyzNcHtk1pxjrm20G031ZOHJQ9qUr6hPzg+EQjyMyEI1w3Sj
-         dRvboZuEsH8wzgCp7B2DnF5YbKu2XlRklKQakDCChTpVRjEHKo4mzSUECBB8g4Hy6hKd
-         /GlWW6bCO5jejjIdOTB5XSb0Jn4M1J90FvkB8o2bLrS3FOlDgEjg9tabYThC4ovrulW6
-         ln4A==
-X-Forwarded-Encrypted: i=1; AJvYcCVT1lwJBs8puwyVi4OVE8td2QJZjTkHKplUQI0tfE9I/jCkaGhUXiNFQAjo1MMFrvZMxi7mAj30@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNT7znyb5F0VA07D9QU+BCJOkRst6T6hL3ok470uaSGrKSBw4a
-	UX6ciaggx9bC4emA9CnPQzkSJMF3oAlzHqJKSPFwVHhwNCO8O8kWZF96xa8TVForHo3qSYqo4Wt
-	MW6Jb2KvqqsI10OGxCN8rg3yAKOxtvRIGAndm5w==
-X-Gm-Gg: ASbGncsVvvGWtGMyAMMzvR/5z82835qHP8srlHuaQ3xqDFGI0YZcfX4HR0AhxE2/apA
-	mGDcvwHye22iZBBnD9lNYEYV7kKnUNbJ9QWlMz2MIDt7HnOFGN0BYqpUZi96Pzrkqxg6L6mgQMV
-	AK99wjuKLu55CcvxAPrJDB+QCusnbY03TIpYdjE3jnRqmOa0xyXDPwHYAAfBbCkojNmMMmpQ==
-X-Google-Smtp-Source: AGHT+IEztlgWSCIn71l6XVgidilEQsC+WgA0rVBDr66THcB1Yab03MEJKS8U8SF8aZ91Fp8ddjC6/zH3JJFfZRywj4k=
-X-Received: by 2002:a05:6122:887:b0:520:652b:ce18 with SMTP id
- 71dfb90a1353d-5260071ccf2mr3310045e0c.0.1743096605264; Thu, 27 Mar 2025
- 10:30:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1743097689; x=1743702489;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NHz+Ccq4y4In5QM8QHHqPDgkxTMlvKloGXrTWL6Om+g=;
+        b=ko4hzQ17zFDB8zvwtA9wyXmx7Hcytheif6XC3Rgj/deBbB8ZoSKBDAB8cfJPnlzBR0
+         GotlTMo1lY3WoXPVxNZW7UajxxAON7qPGR7brQu3+3I4MapPoCr0B8rGocQdzzPEAA8X
+         QXG2nh8+V6doL+RGgFmOe+ZEqQRlrLO/UKzKnBniTPqExD2shtIG5+DpZS0vaFhtuhzJ
+         8Lffob0CNyql4ou1M3qW1f+gRxBXXA6W/NFyLT6BtbR7FMIVG3PdfXKF4yGOIGS1H63n
+         laeAbaRzE4x9aY14sKh3dxUvjrVxMHjgVfzBdx94m3b7jY1NeLseHk9/tpievkr4HGji
+         BWeg==
+X-Forwarded-Encrypted: i=1; AJvYcCUCJX+nmMcXD94BfRhnZITFx4zHJ6VGchlmj8wAp9HUpjbbJ9geCuaUPi23jYKEddpSFmnHT8Z2Fh8tVrIW@vger.kernel.org, AJvYcCWUB4oUUtU00ouMZsu6WXZ4xz7xhjdTwvqAm0sa9NMTmO7Xxv1aEZznMYn/EPkr2QJDHbNhDChT@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUoUFC1qRXQemrjoQxI90QSIEBrmA4Lu9q30Eh7ILknTHf8Aw2
+	IJUeB93GVbi0AE8Z/DeG7rvUoseNCFsrmCLVcaYmW8nBVfZglJnT6eLLiKiZYs2Fe5S+qxIQk1t
+	SrZR0f9eojddowAWNO6PlG53u+hs=
+X-Gm-Gg: ASbGncsQq8NRl3faJrX8Hm6BzsBKYzTHmCSBJ7J2mrPzeQ5ivOf6Wa1Fj0sUsRCnMY7
+	OSZPEurMICSEWxESfRvODhrbKLdBCc0Jx/ZZdlUe9AY4JJOQY/Igz6ESI6lNdaNl6PRyVCkSOGf
+	TDSLxyfLzFIMCzvGja9znOXMMhehHsZvftq6Y=
+X-Google-Smtp-Source: AGHT+IHLz7Hd7zwr8CdH3MUmiQ27N1XbY21K7o2Ht6T9pVr9uanxh8tkVxriW4wUWJJi1IrGKk7/tBQ/Dwyel4aAsZI=
+X-Received: by 2002:a05:6402:278a:b0:5e7:f707:d7c4 with SMTP id
+ 4fb4d7f45d1cf-5ed8f902a81mr3792714a12.31.1743097688940; Thu, 27 Mar 2025
+ 10:48:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250326154349.272647840@linuxfoundation.org>
-In-Reply-To: <20250326154349.272647840@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 27 Mar 2025 22:59:52 +0530
-X-Gm-Features: AQ5f1JqUE3wEB4mA5ovU8cCdeyrT-Beu7WuvHFYj9Q6LMIcb26hTI9Y51kQelGw
-Message-ID: <CA+G9fYtHXcRhFd9BH3sDYBNBT2XcP42amy5QqpLhNKesLUb8WA@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/197] 6.1.132-rc2 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Shakeel Butt <shakeelb@google.com>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, hargar@microsoft.com, 
-	broonie@kernel.org, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Cgroups <cgroups@vger.kernel.org>, 
-	linux-mm <linux-mm@kvack.org>
+References: <20250319071330.898763-1-gthelen@google.com> <u5kcjffhyrjsxagpdzas7q463ldgqtptaafozea3bv64odn2xt@agx42ih5m76l>
+ <Z9r8TX0WiPWVffI0@google.com> <2vznaaotzkgkrfoi2qitiwdjinpl7ozhpz7w6n7577kaa2hpki@okh2mkqqhbkq>
+ <Z-WIDWP1o4g-N5mg@google.com>
+In-Reply-To: <Z-WIDWP1o4g-N5mg@google.com>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Thu, 27 Mar 2025 18:47:56 +0100
+X-Gm-Features: AQ5f1JrXAHRzHRyquIDDNJZAWzDXofV8J8rFba84g_qbEzkzCrXyFGy0GURok_Y
+Message-ID: <CAGudoHHgMOQuvi5SJwNQ58XB=tDasy_-5SULPykWXOca6b=sDQ@mail.gmail.com>
+Subject: Re: [PATCH] cgroup/rstat: avoid disabling irqs for O(num_cpu)
+To: Yosry Ahmed <yosry.ahmed@linux.dev>
+Cc: Greg Thelen <gthelen@google.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Eric Dumazet <edumzaet@google.com>, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Eric Dumazet <edumazet@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 26 Mar 2025 at 21:15, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Thu, Mar 27, 2025 at 6:17=E2=80=AFPM Yosry Ahmed <yosry.ahmed@linux.dev>=
+ wrote:
 >
-> This is the start of the stable review cycle for the 6.1.132 release.
-> There are 197 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Thu, Mar 27, 2025 at 03:38:50PM +0100, Mateusz Guzik wrote:
+> > On Wed, Mar 19, 2025 at 05:18:05PM +0000, Yosry Ahmed wrote:
+> > > On Wed, Mar 19, 2025 at 11:47:32AM +0100, Mateusz Guzik wrote:
+> > > > Is not this going a little too far?
+> > > >
+> > > > the lock + irq trip is quite expensive in its own right and now is
+> > > > going to be paid for each cpu, as in the total time spent executing
+> > > > cgroup_rstat_flush_locked is going to go up.
+> > > >
+> > > > Would your problem go away toggling this every -- say -- 8 cpus?
+> > >
+> > > I was concerned about this too, and about more lock bouncing, but the
+> > > testing suggests that this actually overall improves the latency of
+> > > cgroup_rstat_flush_locked() (at least on tested HW).
+> > >
+> > > So I don't think we need to do something like this unless a regressio=
+n
+> > > is observed.
+> > >
+> >
+> > To my reading it reduces max time spent with irq disabled, which of
+> > course it does -- after all it toggles it for every CPU.
+> >
+> > Per my other e-mail in the thread the irq + lock trips remain not cheap
+> > at least on Sapphire Rapids.
+> >
+> > In my testing outlined below I see 11% increase in total execution time
+> > with the irq + lock trip for every CPU in a 24-way vm.
+> >
+> > So I stand by instead doing this every n CPUs, call it 8 or whatever.
+> >
+> > How to repro:
+> >
+> > I employed a poor-man's profiler like so:
+> >
+> > bpftrace -e 'kprobe:cgroup_rstat_flush_locked { @start[tid] =3D nsecs; =
+} kretprobe:cgroup_rstat_flush_locked /@start[tid]/ { print(nsecs - @start[=
+tid]); delete(@start[tid]); } interval:s:60 { exit(); }'
+> >
+> > This patch or not, execution time varies wildly even while the box is i=
+dle.
+> >
+> > The above runs for a minute, collecting 23 samples (you may get
+> > "lucky" and get one extra, in that case remove it for comparison).
+> >
+> > A sysctl was added to toggle the new behavior vs old one. Patch at the
+> > end.
+> >
+> > "enabled"(1) means new behavior, "disabled"(0) means the old one.
+> >
+> > Sum of nsecs (results piped to: awk '{ sum +=3D $1 } END { print sum }'=
+):
+> > disabled:     903610
+> > enabled:      1006833 (+11.4%)
 >
-> Responses should be made by Fri, 28 Mar 2025 15:43:27 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.132-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> IIUC this calculates the amount of elapsed time between start and
+> finish, not necessarily the function's own execution time. Is it
+> possible that the increase in time is due to more interrupts arriving
+> during the function execution (which is what we want), rather than more
+> time being spent on disabling/enabling IRQs?
 
-In Addition to previous build regressions,
+I can agree irq handlers have more opportunities to execute in the
+toggling case and that the time accounted in the way above will
+include them. I don't think explains it, but why not, let's test
+without this problem.
 
-Regressions on arm and arm64 devices cpu hotplug tests failed and
-kernel oops triggered
-with gcc-13 and clang-20 the stable-rc 6.1.132-rc2.
+I feel compelled to note atomics on x86-64 were expensive for as long
+as the architecture was around so I'm confused what's up with the
+resistance to the notion that they remain costly even with modern
+uarchs. If anything, imo claims that they are cheap require strong
+evidence.
 
-First seen on the 6.1.132-rc1
-Good: v6.1.131
-Bad: Linux 6.1.132-rc1 and Linux 6.1.132-rc2
+That said, I modified the patch to add a section which issues
+conditional relock if needed and smp_mb otherwise -- irqs remain
+disabled, but we are still paying for a full fence. smp_mb is a lock
+add $0 on the stack pointer. Note this has less work to do than what
+was added in your patch.
 
-* Juno-r2, rockpi-4, dragonboard 845c, e850-96,
-  - selftests: cpu-hotplug: cpu-on-off-test.sh
-  - ltp-controllers: cpuset_hotplug_test.sh
-  - selftests: rseq: basic_percpu_ops_test
+It looks like this:
+switch (READ_ONCE(magic_tunable)) {
+case 1:
+        __cgroup_rstat_unlock(cgrp, cpu);
+        if (!cond_resched())
+                cpu_relax();
+        __cgroup_rstat_lock(cgrp, cpu);
+        break;
+case 2:
+        if (need_resched() || spin_needbreak(&cgroup_rstat_lock)) {
+                __cgroup_rstat_unlock(cgrp, cpu);
+                if (!cond_resched())
+                        cpu_relax();
+                __cgroup_rstat_lock(cgrp, cpu);
+        } else {
+                smp_mb();
+        }
+        break;
+default:
+        if (need_resched() || spin_needbreak(&cgroup_rstat_lock)) {
+                __cgroup_rstat_unlock(cgrp, cpu);
+                if (!cond_resched())
+                        cpu_relax();
+                __cgroup_rstat_lock(cgrp, cpu);
+        }
+        break;
+}
 
-Regression Analysis:
-- New regression? yes
-- Reproducibility? Yes
+With this in place I'm seeing about 4% increase in execution time
+measured the same way, so irq handlers sneaking in don't explain it.
+Note smp_mb() alone is a smaller cost than the locked instruction +
+func calls + irq trips. I also state I'm running this in a VM
+(24-way), where paravirt spinlocks also issue a lock-prefixed
+instruction to release the lock. I would say this very much justifies
+the original claim of 11% with the patch as proposed.
 
-Test regression: arm64 arm cpuhotplug kernel NULL pointer dereference
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Test log
-command: cpuset_hotplug_test.sh
-[ 1912.782804] /usr/local/bin/kirk[465]: starting test cpuset_hotplug
-(cpuset_hotplug_test.sh)
-cpuset_hotplug 1 TINFO: CPUs are numbered continuously starting at 0 (0-5)
-cpuset_hotplug 1 TINFO: Nodes are numbered continuously starting at 0 (0)
-[ 1917.567011] psci: CPU1 killed (polled 0 ms)
-cpuset_hotplug 1 TPASS: Cpuset vs CPU hotplug test succeeded.
-[ 1918.804896] Detected VIPT I-cache on CPU1
-[ 1918.805388] cacheinfo: Unable to detect cache hierarchy for CPU 1
-[ 1918.805957] GICv3: CPU1: found redistributor 1 region 0:0x00000000fef20000
-[ 1918.806683] CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
-[ 1919.086059] psci: CPU1 killed (polled 0 ms)
-[ 1919.120969] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000000
-[ 1919.121807] Mem abort info:
-[ 1919.122086]   ESR = 0x0000000096000004
-[ 1919.122451]   EC = 0x25: DABT (current EL), IL = 32 bits
-[ 1919.122956]   SET = 0, FnV = 0
-[ 1919.123262]   EA = 0, S1PTW = 0
-[ 1919.123574]   FSC = 0x04: level 0 translation fault
-[ 1919.124038] Data abort info:
-[ 1919.124380]   ISV = 0, ISS = 0x00000004
-[ 1919.124754]   CM = 0, WnR = 0
-[ 1919.125051] user pgtable: 4k pages, 48-bit VAs, pgdp=000000000a2b8000
-[ 1919.125655] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
-[ 1919.126341] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-[ 1919.126912] Modules linked in: snd_soc_hdmi_codec dw_hdmi_cec
-dw_hdmi_i2s_audio brcmfmac rockchipdrm hantro_vpu hci_uart brcmutil
-dw_mipi_dsi analogix_dp btqca v4l2_h264 btbcm v4l2_vp9 dw_hdmi
-panfrost v4l2_mem2mem cfg80211 cec bluetooth snd_soc_audio_graph_card
-videobuf2_v4l2 drm_display_helper gpu_sched snd_soc_simple_card
-videobuf2_dma_contig crct10dif_ce snd_soc_spdif_tx
-snd_soc_rockchip_i2s snd_soc_simple_card_utils videobuf2_memops
-phy_rockchip_pcie rockchip_saradc rtc_rk808 drm_shmem_helper
-drm_dma_helper videobuf2_common rfkill industrialio_triggered_buffer
-drm_kms_helper pcie_rockchip_host rockchip_thermal coresight_cpu_debug
-kfifo_buf fuse drm ip_tables x_tables
-[ 1919.132505] CPU: 0 PID: 67249 Comm: kworker/0:0 Not tainted 6.1.132-rc2 #1
-[ 1919.133132] Hardware name: Radxa ROCK Pi 4B (DT)
-[ 1919.133555] Workqueue: events work_for_cpu_fn
-[ 1919.133983] pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[ 1919.134617] pc : memcg_hotplug_cpu_dead
-(include/linux/percpu-refcount.h:174
-include/linux/percpu-refcount.h:332
-include/linux/percpu-refcount.h:351 include/linux/memcontrol.h:795
-mm/memcontrol.c:2382)
-[ 1919.135076] lr : memcg_hotplug_cpu_dead
-(include/linux/percpu-refcount.h:174
-include/linux/percpu-refcount.h:332
-include/linux/percpu-refcount.h:351 include/linux/memcontrol.h:795
-mm/memcontrol.c:2382)
-[ 1919.135528] sp : ffff80000e78bc60
-[ 1919.135835] x29: ffff80000e78bc60 x28: 0000000000000000 x27: ffff80000a1c81f8
-[ 1919.136501] x26: 0000000000000028 x25: ffff0000f7534778 x24: ffff80000a1aeb08
-[ 1919.137166] x23: 0000000000000000 x22: ffff80000a16e240 x21: 0000000000000000
-[ 1919.137830] x20: ffff8000ed3d5000 x19: 0000000000000000 x18: 00000000a2704302
-[ 1919.138495] x17: 0000000000000000 x16: 0000000000000312 x15: 0000040000000000
-[ 1919.139159] x14: 0000000000000000 x13: ffff80000e788000 x12: ffff80000e78c000
-[ 1919.139823] x11: 0bb2d4910b917800 x10: 0000000000000000 x9 : 0000000000000001
-[ 1919.140487] x8 : ffff000013406300 x7 : 00000072b5503510 x6 : 0000000000300000
-[ 1919.141151] x5 : 00000000801c0011 x4 : 0000000000000000 x3 : ffff80000e78bca0
-[ 1919.141815] x2 : ffff80000e78bbf8 x1 : ffff8000080a11e4 x0 : ffff0000f7543240
-[ 1919.142480] Call trace:
-[ 1919.142709] memcg_hotplug_cpu_dead
-(include/linux/percpu-refcount.h:174
-include/linux/percpu-refcount.h:332
-include/linux/percpu-refcount.h:351 include/linux/memcontrol.h:795
-mm/memcontrol.c:2382)
-[ 1919.143133] cpuhp_invoke_callback (kernel/cpu.c:193)
-[ 1919.143554] _cpu_down (kernel/cpu.c:0 kernel/cpu.c:724
-kernel/cpu.c:1157 kernel/cpu.c:1218)
-[ 1919.143882] __cpu_down_maps_locked (kernel/cpu.c:1249)
-[ 1919.144291] work_for_cpu_fn (kernel/workqueue.c:5184)
-[ 1919.144647] process_one_work (kernel/workqueue.c:2297)
-[ 1919.145028] worker_thread (include/linux/list.h:292
-kernel/workqueue.c:2352 kernel/workqueue.c:2444)
-[ 1919.145386] kthread (kernel/kthread.c:378)
-[ 1919.145687] ret_from_fork (arch/arm64/kernel/entry.S:865)
-[ 1919.146041] Code: d51b4235 8b160280 97ffec72 97f73691 (f9400269)
-All code
-========
-
-Code starting with the faulting instruction
-===========================================
-[ 1919.146592] ---[ end trace 0000000000000000 ]---
-
-
-## Test log 2
-kselftest: Running tests in rseq
-TAP version 13
-1..9
-timeout set to 0
-selftests: rseq: basic_test
-testing current cpu
-basic_test: basic_test.c:30: void test_cpu_pointer(void): Assertion
-`sched_getcpu() == i' failed.
-Aborted
-not ok 1 selftests: rseq: basic_test # exit=134
-timeout set to 0
-selftests: rseq: basic_percpu_ops_test
-Segmentation fault
-not ok 2 selftests: rseq: basic_percpu_ops_test # exit=139
-
-The bisection pointing to,
- memcg: drain obj stock on cpu hotplug teardown
-  upsteam commit 9f01b4954490d4ccdbcc2b9be34a9921ceee9cbb upstream.
-
-## Source
-* Kernel version: 6.1.132-rc2
-* Git tree: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-* Git sha: f5ad54ef021f6fb63ac97b3dec5efa9cc1a2eb51
-* Git describe: v6.1.131-198-gf5ad54ef021f
-* Project details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/Test/v6.1.131-198-gf5ad54ef021f/
-
-## Test
-* Test log: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.131-198-gf5ad54ef021f/testrun/27793089/suite/log-parser-test/test/internal-error-oops-oops-preempt-smp/log
-* Test history:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.131-198-gf5ad54ef021f/testrun/27793089/suite/log-parser-test/test/internal-error-oops-oops-preempt-smp-01e5a0f146f52056a08c01ad73b44c893f7748e5cd1533e30c989289a90e821b/history/
-* Test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.131-198-gf5ad54ef021f/testrun/27793089/suite/log-parser-test/test/internal-error-oops-oops-preempt-smp/
-* Test link: https://storage.tuxsuite.com/public/linaro/lkft/builds/2urSwSZQOGBhePbuN1hwUGDHIT8/
-* Kernel config:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2urSwSZQOGBhePbuN1hwUGDHIT8/config
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+--=20
+Mateusz Guzik <mjguzik gmail.com>
 
