@@ -1,159 +1,142 @@
-Return-Path: <cgroups+bounces-7234-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7235-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71AB8A72793
-	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 00:57:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EC8FA72811
+	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 02:24:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3115B18989FF
-	for <lists+cgroups@lfdr.de>; Wed, 26 Mar 2025 23:57:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9449D189544B
+	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 01:25:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2505F23C8CD;
-	Wed, 26 Mar 2025 23:57:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7C03597A;
+	Thu, 27 Mar 2025 01:24:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="noAec5Dl"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="smPIZ4DO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-vk1-f201.google.com (mail-vk1-f201.google.com [209.85.221.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431D81C8624;
-	Wed, 26 Mar 2025 23:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CE835977
+	for <cgroups@vger.kernel.org>; Thu, 27 Mar 2025 01:24:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743033454; cv=none; b=KPF9xrNuVls/5pEieSMhpMeeOrrPlzYrNB+9hSO26A1YUEsoZ1+2KtUbe6Nm0e6pWXXvC4DoIiHX9OAqtPmWrnDeXM/2GQH6oz0ioEcIr35tYa4XJDlVzYVciX7MCVnPhtiFZwJzaP5LxL5u6VoYmrpWSCnYLV7XNghynZNdwk8=
+	t=1743038688; cv=none; b=sFNXaZU/OpHRHZfMHfYdw8gpOeMLMSFd/ufVKpVbQg1vs/9QcsWKQ6ahqRY8nuXFmPXuvtOfJ6m1oAfFpnA0FBg1v6rAfS3SduJszZjiHdHOeq0j7z38ajj/Zu+5/Qdd0disBBLbGrzXE3MQq7D6gMqXaLCTx5Zh3a7IcoCCgcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743033454; c=relaxed/simple;
-	bh=/STihoPYXRHMOjpcglX1vRTqVYy77WjuYmkOE5ojoNg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fqQ3HDWsXRDq7b73HhLblFHMUOT87XXRAF4oIKTcGUbBA6k4y50o9MQRXbfspT3XjsZzYVXzoPM8sxFFbdi7gwf1qOMozb2qYZkQ6q7zA2PpECR/6VUNHV07WiAlJ8S1d+adtM1Burq1EKxG6m8xUtIeBhYnZExsvQo+VnCGndM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=noAec5Dl; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5e5cd420781so661336a12.2;
-        Wed, 26 Mar 2025 16:57:32 -0700 (PDT)
+	s=arc-20240116; t=1743038688; c=relaxed/simple;
+	bh=3kxkXpBhoJScEEurm+b8lsAO1U7qWl5x/4lmhlHIsxA=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=VJ3MiKgXBTD2xS1OPUXLtNhqgLAA9tpGOsfdsGG6IG9oWKiEG2zckYh91wHp4L9odOjxW1qzLMGZfWDrGlhXtxtJg4YS+1ZpGhNZ59z43jy0P3MHPZcxPuoDjblJF5e0AuHfT8PR6nL8zvZIaUgdPVC3/R8bIU1u1Ny6Hpce+B4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=smPIZ4DO; arc=none smtp.client-ip=209.85.221.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com
+Received: by mail-vk1-f201.google.com with SMTP id 71dfb90a1353d-523da75cae0so139939e0c.0
+        for <cgroups@vger.kernel.org>; Wed, 26 Mar 2025 18:24:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743033451; x=1743638251; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tfL0zZBVe1RxEvNcNmE6dfxCA/2Hz+Ouu0xAFqUlH9A=;
-        b=noAec5DlT40uQNDq+09GuZcbhIwqottn5Ws8dk4QTz1ljpTbSL5xFJfZrRuvRxxWJ6
-         oBO2eOK/iWd7jADHXmT0ymi3MPdVRDjVeSdOxFfM3m4OIeOACbVqrsDSGYS4EF+8J4U1
-         3lCe+QGa/O9l4TR4uGVqcvs0nAW2kHAE75ig3xWhgcW004PfOfYrjjg7TNhnhyRzHo2k
-         pO1uTatQd8qVjC6zwlwRKeltRwTiieKOajY9lyUwObm0Ld1j7EbmEopNyaFxuPSU5cQZ
-         Y36P0TNLCizVhPf6oI1RLEf6WlUZsiVzuQR/CAMdQFHZW2BbdDe8nJPEs8/UtABgvaR6
-         go7g==
+        d=google.com; s=20230601; t=1743038685; x=1743643485; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OnBfyElwB7pR2NOpIQEhHFwjTaj6cxlSHySqE1g9O24=;
+        b=smPIZ4DO9v02diZOUzVSnZP4+S4t8KfxLaB40rAD+oKbLjQEJDYakIVyYMLM6p6PyZ
+         IDBYG12flFMFcarU8zOWUITvgPgx9oQV4k8wxyom65D4TLRNwupvigR7/6UCRo/NNUQ8
+         Pmx6zSegz+5qZfGvcV0rVS6hi8xrKIaK6dmjzc7m/QDLbkvtvC03V4sZR3arGQ78j1K7
+         xRgZ5NPTjwq7g63QkEKrqQGqE3ZDac4vtsoT8PhG1oeuu4/jrZMDEMXqrwOkkjhk+FjL
+         PqfUisWScyqG6PtfDhgZMGSjvKSj1d4Ncl4qlW27pjGTvtMErEK6WWO7c3RN2GAVq80H
+         MYGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743033451; x=1743638251;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tfL0zZBVe1RxEvNcNmE6dfxCA/2Hz+Ouu0xAFqUlH9A=;
-        b=gxNjW2bjyKFsIokwW1ImhQ7rWO4Auv8prAWKfUqRbAITnIqfBLW+VZuub8M5W2O325
-         CQXTX1rrC1NDI+qpMofOGzVT0kvA1QOT28BYcD7MfZagQlM2PUm9b8qy0b/8VBdPREEa
-         IhqqhzVnUNgBUNIMLKN7Mnc3M2k7qNCueLjxkremK6ek/E60xo3eSdY477gGS++1qvsM
-         Ja2O+v766HnmwGMLsaEgwlrquHRzzsYSfkHLzy5wRqds0YsZH2YXLbBnFNVWDHaG0arf
-         e70gTp5fKhtqZyNrbkQseXTcGqlPekzNMKQpn2A3BPyBxRppgCoiRJOkFy/HsCivdaZX
-         mJsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX5KLn/Zc1LOnrOnSGWQcwmJJlJULV43Dis9/B82yw9jgiNYJIg9sfCIAHChMyIJWHiafAOFgd7@vger.kernel.org, AJvYcCXbBR6V44XnltvcD4h5d1ZECfkpQHVgF1QABTVzVkFv5zJAPf7aQMHOsTk4hHQ2ZL1/VOvrQ0yiTNS6ykJL@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyvb00CdkfI9iVJHlSL9m3EynUKmaoxpTJCQYGD2KD2N2nmE/Jc
-	Zs+s4DwqF0WSPU6r5mBY16VvYTPfjQz17xFnKu+IrKbPpTd2laa/scIxIsCsRLwd/Xe74HRilHf
-	HQv9Ymewz08XqHXF6PDzL51rzxCU=
-X-Gm-Gg: ASbGncvIknfOzdFUNhegwdtgc/zHHNrmSRQXKkj7aFHRWevV5h9g541x2qik/JINeCM
-	XT41pdrrQjxglHY4Qsli7xHwBYtZQL3TPm6XBniwWG9ElhJnvSzb50+Yc4FqUyNXFBbzHW9QUfY
-	MnRr2FbLqtEgwvcT/IbLWLlOxU
-X-Google-Smtp-Source: AGHT+IFN//Xoa5xJhfjM1LYOOVmakekz4BFhgDXTCCePBITSricx0HscPMedKrQZtphZGJnjbaiTDTJRdWnY+Rhiu3Q=
-X-Received: by 2002:a05:6402:3596:b0:5eb:ca97:7c60 with SMTP id
- 4fb4d7f45d1cf-5ed8df6a56bmr1585288a12.6.1743033451157; Wed, 26 Mar 2025
- 16:57:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1743038685; x=1743643485;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OnBfyElwB7pR2NOpIQEhHFwjTaj6cxlSHySqE1g9O24=;
+        b=R4fRjz9YKqASJCDTMSNpjOelXYIKvisZmxf/KRAjXy+mjHLuG26OZMkjJDSUZOGJiP
+         WpRrKLXxPxSPtYhKGNCnUXKRajei/UOvctTUabH+vDx1Am7UTLBMQUg8f/HNCn+dfmWi
+         BzfXV5GgmQz1KUWULPWoLC7aMubUPbIpIILSuOh22X50KQUdtdBcxp3qID8rD8c5ESoW
+         vvFj22svkPC0/nc36SpCd3QFlP6moSipStzfykKptK/di73fxIFKo2m4ffLCIYhF2L5q
+         6i6ElBlBoioxt3f5xi4aAPa8CB6XkT0g8VJKte+66Zqag2NTGVBfVKGyaWKDkrQeT1RW
+         Bi8A==
+X-Forwarded-Encrypted: i=1; AJvYcCWHjKXYJ9VDWN0akrdGuJIGRKQBJmUhiJuMBnBSf6uD+eUAjj451oV+XZVNlFAVD6+Zn4a3ER9a@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8MMCuMmkX5vN98wUAEba964YIA86grkEzxwOWBlVR3eBCKFhW
+	2SubecT8x2aBA4XhceoGtgIyFeVmzgJHKWBfY8GEKZ2fa11pMQeXYK2+0CiQAmLLxLkwzlSS68x
+	B2SY4XrECVvg/WNjUlw==
+X-Google-Smtp-Source: AGHT+IEMXalzFI1RmQMmbOxY3dwo1qPrh8Qx1TkLKs2CMrepip9P0Lapptz92/BHPG+Q/ecCwOSxQ1kdXgRemPD4
+X-Received: from vkb18.prod.google.com ([2002:a05:6122:8112:b0:51c:af44:e006])
+ (user=jthoughton job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6122:3d0e:b0:523:9ee7:7f8e with SMTP id 71dfb90a1353d-526009144f9mr1633987e0c.4.1743038685245;
+ Wed, 26 Mar 2025 18:24:45 -0700 (PDT)
+Date: Thu, 27 Mar 2025 01:23:45 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250319071330.898763-1-gthelen@google.com> <u5kcjffhyrjsxagpdzas7q463ldgqtptaafozea3bv64odn2xt@agx42ih5m76l>
- <Z9r-YQDAXIur81i0@slm.duckdns.org>
-In-Reply-To: <Z9r-YQDAXIur81i0@slm.duckdns.org>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Thu, 27 Mar 2025 00:57:19 +0100
-X-Gm-Features: AQ5f1JpbmDohO9ocCxEGWIoauJamJ5UA7T8ZC7rvjrjfnqAmW-PgRpsHSi5vYXc
-Message-ID: <CAGudoHHBs5Bo3PKS1SzrkUjTXFdGNDZ=3NyHuTezz1AUbauQ2A@mail.gmail.com>
-Subject: Re: [PATCH] cgroup/rstat: avoid disabling irqs for O(num_cpu)
-To: Tejun Heo <tj@kernel.org>
-Cc: Greg Thelen <gthelen@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Eric Dumazet <edumzaet@google.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.49.0.395.g12beb8f557-goog
+Message-ID: <20250327012350.1135621-1-jthoughton@google.com>
+Subject: [PATCH 0/5] KVM: selftests: access_tracking_perf_test fixes for NUMA
+ balancing and MGLRU
+From: James Houghton <jthoughton@google.com>
+To: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org
+Cc: Maxim Levitsky <mlevitsk@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, 
+	Yu Zhao <yuzhao@google.com>, James Houghton <jthoughton@google.com>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 19, 2025 at 6:26=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> On Wed, Mar 19, 2025 at 11:47:32AM +0100, Mateusz Guzik wrote:
-> ...
-> > Is not this going a little too far?
-> >
-> > the lock + irq trip is quite expensive in its own right and now is
-> > going to be paid for each cpu, as in the total time spent executing
-> > cgroup_rstat_flush_locked is going to go up.
->
-> Lock/unlock when the cacheline is already on the cpu is pretty cheap and =
-on
-> modern x86 cpus at least irq on/off are also only a few cycles, so you
-> probably wouldn't be able to tell the difference.
->
+This is a follow-up from Maxim's recent v2[1] and the selftest changes
+from the v8 of the x86 lockless aging series[2].
 
-This does not line up with what I had seen on x86-64 uarchs up to this
-point, including Sapphire Rapids, which I think still counts as
-reasonably new.
+With MGLRU, touching a page doesn't necessarily clear the Idle flag.
+This has come up in the past, and the recommendation was to use MGLRU
+generation numbers[3], which is what this series does.
 
-Most notably I see smp_mb() as a factor on my profiles, which compiles
-to lock add $0 to a stack pointer -- a very much cache hot variable.
+With NUMA balancing, pages are temporarily mapped as PROT_NONE, so the
+SPTEs will be zapped, losing the Accessed bits. The fix here is, in the
+event we have lost access information to print a warning and continue
+with the test, just like what we do if the test is running a nested VM.
 
-However, the cost of an atomic op has a lot of to do with state
-accumulated around it -- the more atomics in short succession, the
-lesser the impact. That is to say it may be given code is slow enough
-that adding a lock-prefixed instruction does not add notable overhead.
+A flag is added for the user to specify if they wish for the test to
+always enforce or always skip this check.
 
-In order to not just handwave, here is overhead of __legitimize_mnt()
-while performing a path lookup for access() on my test box. smp_mb()
-is the stock variant. irq() merely toggles interrupts, it does not
-provide any sanity for the routine, but lets me see the cost if it got
-planted there for some magic reason. Finally the last bit is what I
-expect the final routine to have -- merely a branch to account for bad
-mounts (taking advantage of synchronize_rcu() on unmount).
-smp_mb:         3.31%
-irq:            1.44%
-nothing:        0.63%
+Based on kvm/next.
 
-These would be higher if it was not for  the fact that memory
-allocation (for path buffer) is dog slow.
+[1]: https://lore.kernel.org/all/20250325015741.2478906-1-mlevitsk@redhat.com/
+[2]: https://lore.kernel.org/kvm/20241105184333.2305744-12-jthoughton@google.com/
+[3]: https://lore.kernel.org/all/CAOUHufZeADNp_y=Ng+acmMMgnTR=ZGFZ7z-m6O47O=CmJauWjw@mail.gmail.com/
 
-And indeed I get over a 3% speed up in access() rate by not suffering
-that smp_mb() [I note I don't have a viable patch for it, rather I
-whacked it for benchmarking purposes to see if pursuing proper removal
-is worth it]
+James Houghton (3):
+  cgroup: selftests: Move cgroup_util into its own library
+  KVM: selftests: Build and link selftests/cgroup/lib into KVM selftests
+  KVM: selftests: access_tracking_perf_test: Use MGLRU for access
+    tracking
 
-I'll note though that profiling open()+close() shows virtually no
-difference (less than 0.5%) -- but that's not an argument for atomics
-being cheap, instead it is an argument for open() in particular being
-slow (which it is, I'm working on it though).
+Maxim Levitsky (1):
+  KVM: selftests: access_tracking_perf_test: Add option to skip the
+    sanity check
 
-If you want I can ship you the test case, diffs and kernel config to
-reproduce on your own.
+Sean Christopherson (1):
+  KVM: selftests: Extract guts of THP accessor to standalone sysfs
+    helpers
+
+ tools/testing/selftests/cgroup/Makefile       |  21 +-
+ .../selftests/cgroup/{ => lib}/cgroup_util.c  |   3 +-
+ .../cgroup/{ => lib/include}/cgroup_util.h    |   4 +-
+ .../testing/selftests/cgroup/lib/libcgroup.mk |  12 +
+ tools/testing/selftests/kvm/Makefile.kvm      |   4 +-
+ .../selftests/kvm/access_tracking_perf_test.c | 263 ++++++++++--
+ .../selftests/kvm/include/lru_gen_util.h      |  51 +++
+ .../testing/selftests/kvm/include/test_util.h |   1 +
+ .../testing/selftests/kvm/lib/lru_gen_util.c  | 383 ++++++++++++++++++
+ tools/testing/selftests/kvm/lib/test_util.c   |  42 +-
+ 10 files changed, 726 insertions(+), 58 deletions(-)
+ rename tools/testing/selftests/cgroup/{ => lib}/cgroup_util.c (99%)
+ rename tools/testing/selftests/cgroup/{ => lib/include}/cgroup_util.h (99%)
+ create mode 100644 tools/testing/selftests/cgroup/lib/libcgroup.mk
+ create mode 100644 tools/testing/selftests/kvm/include/lru_gen_util.h
+ create mode 100644 tools/testing/selftests/kvm/lib/lru_gen_util.c
 
 
+base-commit: 782f9feaa9517caf33186dcdd6b50a8f770ed29b
+-- 
+2.49.0.395.g12beb8f557-goog
 
-
-
-
-
-
-
---
-Mateusz Guzik <mjguzik gmail.com>
 
