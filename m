@@ -1,907 +1,147 @@
-Return-Path: <cgroups+bounces-7240-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7241-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 314ADA72820
-	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 02:26:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 779B9A72CAA
+	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 10:43:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82FAA3BEFB6
-	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 01:25:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E36F176FB0
+	for <lists+cgroups@lfdr.de>; Thu, 27 Mar 2025 09:43:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F6C7DA82;
-	Thu, 27 Mar 2025 01:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD8A20CCF0;
+	Thu, 27 Mar 2025 09:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IvdH67h9"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AohM6zpU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-vk1-f202.google.com (mail-vk1-f202.google.com [209.85.221.202])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC44915F306
-	for <cgroups@vger.kernel.org>; Thu, 27 Mar 2025 01:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9430722615
+	for <cgroups@vger.kernel.org>; Thu, 27 Mar 2025 09:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743038708; cv=none; b=u8H5GoIhTOzAZrjF5R+CqI6cmYEz+PlGwIa2q4kp38G+e16+lR00Ei+2WGZ7UvPzrmk41z8wjau5AWQxDAMDbctPEEAppzWc61Vf19zAcyOy6oilyVCch+ZSwWNpSCHuhn2LQPXfFzUhBepU5OuELGY3ntZ32sVMU02m9jY7Tn0=
+	t=1743068605; cv=none; b=o8SS/CXQvUr/OvAZEnFghwIvNjP0rsgW1SYoFLALAekutKVHuKpTRx8iFc7v4IElmZCndGlbjKYYy4mnfSOEVxdfGTcJvjK6Gje7oK0/gxwH4Q4hcSwjgJLiC7u/mGQgb2rk/7NEgk1SZrAAufpm1QT3YZDWfINqh1VT0sKJfr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743038708; c=relaxed/simple;
-	bh=xHb0mMaSwF5wR+TP8oh+gOuI6NLha+LuKOnW7GOeuuk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=pp/fEGCPP9BIBo9EclEo8wKwah2XyRCYMginO6DtdhBL9eRO0gTMdgrfWxdeBSu8t29nR+u//CbCx0XAenwnyP9UDmv2M2/IfWSAr3r8plT3c+6QpVrdoLeRRzBcV193LfhSY7QPvS8kmDCK6BQ2zLnUu3XRZMIQdnxo06BSCq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IvdH67h9; arc=none smtp.client-ip=209.85.221.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com
-Received: by mail-vk1-f202.google.com with SMTP id 71dfb90a1353d-524048fbb0bso182994e0c.1
-        for <cgroups@vger.kernel.org>; Wed, 26 Mar 2025 18:25:05 -0700 (PDT)
+	s=arc-20240116; t=1743068605; c=relaxed/simple;
+	bh=RQI/b+5b2edO2Zw7Frn6Ca5fIDxB6ZihWM6BQJgkAiw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hz7eK/MGMDfG+HFkLPc7pe+KytORHF3ZE7oKWAYkR0ebz64PVr5uBFDgwHeAWDoQwgK45dZV/MDV9+ojrwedxpjoVseocp9ocU2fu2n0XUMTIC4mzxB6g0A4KCVJpRyfwY3vaXAEhyB1U9PuObG46K3DNul56Eb+oNPwfHewXIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AohM6zpU; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3912d2c89ecso621822f8f.2
+        for <cgroups@vger.kernel.org>; Thu, 27 Mar 2025 02:43:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1743038705; x=1743643505; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vrt5cNuKaC+KH0dLUPsP1/tctalnEZ+87XCE4qIF7WA=;
-        b=IvdH67h9ZhHCbDndVv6HewpqRA3VF7WomJ6/9ZAbLjSOPY2DFz+R+AjPwF452LqeFf
-         Cfo0fviI6h+7Z0u2l/9UGtdyYAfTA5Qegqrnv/UKU3Iz46rA4PwSQWOvZaKuH0ziBfvU
-         eIaX07tn/V0wlM4bgDQZ/89I/+sFYgyxDSCCOKL3KBLbL0hYPr8RepQsTK2N+lGxGcj5
-         Xp5XuVdLVZvqiEjOmH630fHqb72XeK2U2GEy3aGi75lhrrZSiraHL5HYd/OkXYC40CUg
-         nZ1bifNvxwaAVfn7SfpiUGSDp3Z8ZC29J7py7zNYznTEFwQNC4z37KrFD7uXdOKJFae6
-         2FoQ==
+        d=suse.com; s=google; t=1743068602; x=1743673402; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MH3oLkZ3QoHPrfnbUPiT0wxSJtA1cLOkJbbbBEVhhYs=;
+        b=AohM6zpU1vVZv+6TDKEGGgKFhtXqvoFpYBiE+bM3QOGQF8+YP8pydG5UMdnvE1Odnn
+         rQ1Ykh+PA0bM4uFTgpdR+0dwVcsbz5yEpB7BxC470vTsgMjMrwMcvU+5kAS8Gn/qzTtD
+         HscYRmgzMqSXZKW2ZIM/CBRI4bIVIK/1hCGkwsURXMkwedHiWXCGJMTX44Bl0nAcwz9w
+         oE1N7nhVUqRYoAGm0pv9bRsJ8Faopme4pHLwEvn7HUf6BLOpCJ2ebwf1vpeOR3NButi+
+         YyQjlmaL8mu+6I92atd5/SCFpaOlS2A1h/JtBlIH5jFQTeVxE2Us0njKcV1kL89Q/86D
+         SSJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743038705; x=1743643505;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vrt5cNuKaC+KH0dLUPsP1/tctalnEZ+87XCE4qIF7WA=;
-        b=W44Lv/q8NUG8mio5ipEeUKtvSZ7pBlXFhOO5lG4GarqeuZ2fA5EQyJTbQ9nbEPm7KF
-         bkGiacBBuYmwqIueaHXAkLtoRHd+hqhFqZQsW3wUpUqPUcO1nYGz6/6cuFNSBHnFPGZd
-         CYsL/1XrM4f410E6D2dHufH23p1FqAkp/efxq4h3q46ZETMlyPoPsEaIvi/zZrGGsD3q
-         m3rwPC83GmfHj5iVX70+ntKeLUmIwmQKc7B07NNAzVwnBenQNzxyHj1ywFnp7IF+cXP9
-         disxt8CC88DYD6wJZpDC2/Q0NvD3h8OPA1nwHfT4DmHTOPs3c+0cmqBWh9uEnYLB/zSA
-         +jSg==
-X-Forwarded-Encrypted: i=1; AJvYcCUUbDZW/uP48m/nZmrOHwBOGfCOpCRv861mY+f7Ou+aHyMWyQyvBvGQMxfSf0kQmqHsZxXdstoV@vger.kernel.org
-X-Gm-Message-State: AOJu0YwH1dHViXCqYw6A5VuZIo+TLiqKkLSp/+KjKWbHIeB0aSiYo6Hu
-	xD0T+XYxwnZpvrdXdFeuTusvyVGimoShnd59vdyVTAjXJY9Z8omnA7vVr5dNOzSI/MXNdACFP0e
-	RebEztdgm6loXlOZ8yg==
-X-Google-Smtp-Source: AGHT+IHAS6Q17X2gE5FR1UN5GUBGrxtXfrqd/wDiLtx9cW2QhRJIVGDDZx8QTfl54TSzXXslcANpuegZY24915dt
-X-Received: from vka15.prod.google.com ([2002:a05:6122:800f:b0:525:afa4:ae05])
- (user=jthoughton job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6122:1804:b0:520:42d3:91d2 with SMTP id 71dfb90a1353d-526008fb06emr1411612e0c.1.1743038704810;
- Wed, 26 Mar 2025 18:25:04 -0700 (PDT)
-Date: Thu, 27 Mar 2025 01:23:50 +0000
-In-Reply-To: <20250327012350.1135621-1-jthoughton@google.com>
+        d=1e100.net; s=20230601; t=1743068602; x=1743673402;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MH3oLkZ3QoHPrfnbUPiT0wxSJtA1cLOkJbbbBEVhhYs=;
+        b=o/Mi3OpTjntZmrZ8pd0hKLaf3zyXM03EPSuOIhtLF6OUrsI9Gnddw2+1HfycftbwRn
+         HKheVFm1/pKbSxrqs9qHY2QVhK1ZGwAXFLQduwHHiOGamS9+qKj+KCrKn9b6ZUhkJG04
+         dTCYa8dbpTbBWENzYx3L2rV4mjTsBz5s5rvJ0UCCdOKhoL2dxsjsxyKTVUewoUjak8gj
+         QKSgNHxYJCo1lbjJWznkPbZaU3hg2ILoCq4yrLLkpOjnsO7DknWh3ljpXVcWnOOm6vbb
+         aj8E03rDoGTKn24X/pYKlPvpbDSRbPbtKrErIObVzud0DvtBLCSRicN6VJSN6N494is/
+         YtBw==
+X-Forwarded-Encrypted: i=1; AJvYcCXMbNuSnSrslaotVfTpzNv8ClVuSkrGNwYTsu4r2hE7pbLlfjX26eY01CYRz9YhmdkaEMqUegIm@vger.kernel.org
+X-Gm-Message-State: AOJu0YxkyYdkLfkNli5aSwxwlt1415aRBMbNnShuwAMqFJztjb4rZdGR
+	mC4umtyoWGlpoUXHdYMbvbIRp64Nosk8sovUpRLHNLsiRGeedAoBythoj+3QCNs=
+X-Gm-Gg: ASbGncuBsw+qGVQN0eYzP1sBuWMjrJjbm2Zmt5FQaibzIhiBUr38Eeu1eoi+RX5BfJ0
+	vOn09ZuejQACSa/kqNcxcE3B2qt5pYWPOQfoteMmj2e0QAyKU1YemKLq5IJ/q4QSSaB0wxmkTGB
+	b7bSBVcm6iVCdgCsaraqOdeAEke/oCV6ICv0b0w/+XyK/syzUoR/Tc1izadlswNqhU1UmeaBJCL
+	S6F3NbbvyGxbD422hIw5ZsNOLRGNXEMrRkofJAwncW9otff/t/yXGgy0BTUY7cBFxH883HUz4b4
+	TvszPbM0QbMYQAsZRTbgR/Nsz3Tmi7Cf0pVSI3/RbbssG88=
+X-Google-Smtp-Source: AGHT+IH1WiFsXOivY3uNtWR03fqybSpj7EH4HsxNZKa+E51aIf//dEXmU1/S3e5uU474CO7buz/DFw==
+X-Received: by 2002:a05:6000:2cb:b0:39a:c8a8:4fdc with SMTP id ffacd0b85a97d-39ad175c052mr2145200f8f.16.1743068601849;
+        Thu, 27 Mar 2025 02:43:21 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d82e6ab48sm32678605e9.10.2025.03.27.02.43.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Mar 2025 02:43:21 -0700 (PDT)
+Date: Thu, 27 Mar 2025 10:43:19 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: James Houghton <jthoughton@google.com>
+Cc: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org, 
+	Maxim Levitsky <mlevitsk@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Yu Zhao <yuzhao@google.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	David Matlack <dmatlack@google.com>, Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH 3/5] cgroup: selftests: Move cgroup_util into its own
+ library
+Message-ID: <fg5owc6cvx7mkdq64ljc4byc5xmepddgthanynyvfsqhww7wx2@q5op3ltl2nip>
+References: <20250327012350.1135621-1-jthoughton@google.com>
+ <20250327012350.1135621-4-jthoughton@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250327012350.1135621-1-jthoughton@google.com>
-X-Mailer: git-send-email 2.49.0.395.g12beb8f557-goog
-Message-ID: <20250327012350.1135621-6-jthoughton@google.com>
-Subject: [PATCH 5/5] KVM: selftests: access_tracking_perf_test: Use MGLRU for
- access tracking
-From: James Houghton <jthoughton@google.com>
-To: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org
-Cc: Maxim Levitsky <mlevitsk@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, 
-	Yu Zhao <yuzhao@google.com>, James Houghton <jthoughton@google.com>, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="emghnkmnkyymych3"
+Content-Disposition: inline
+In-Reply-To: <20250327012350.1135621-4-jthoughton@google.com>
 
-By using MGLRU's debugfs for invoking test_young() and clear_young(), we
-avoid page_idle's incompatibility with MGLRU, and we can mark pages as
-idle (clear_young()) much faster.
 
-The ability to use page_idle is left in, as it is useful for kernels
-that do not have MGLRU built in. If MGLRU is enabled but is not usable
-(e.g. we can't access the debugfs mount), the test will fail, as
-page_idle is not compatible with MGLRU.
+--emghnkmnkyymych3
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 3/5] cgroup: selftests: Move cgroup_util into its own
+ library
+MIME-Version: 1.0
 
-cgroup utility functions have been borrowed so that, when running with
-MGLRU, we can create a memcg in which to run our test.
+Hello James.
 
-Other MGLRU-debugfs-specific parsing code has been added to
-lru_gen_util.{c,h}.
+On Thu, Mar 27, 2025 at 01:23:48AM +0000, James Houghton <jthoughton@google=
+=2Ecom> wrote:
+> KVM selftests will soon need to use some of the cgroup creation and
+> deletion functionality from cgroup_util.
 
-Co-developed-by: Axel Rasmussen <axelrasmussen@google.com>
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-Signed-off-by: James Houghton <jthoughton@google.com>
----
- tools/testing/selftests/kvm/Makefile.kvm      |   1 +
- .../selftests/kvm/access_tracking_perf_test.c | 208 ++++++++--
- .../selftests/kvm/include/lru_gen_util.h      |  51 +++
- .../testing/selftests/kvm/lib/lru_gen_util.c  | 383 ++++++++++++++++++
- 4 files changed, 617 insertions(+), 26 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/include/lru_gen_util.h
- create mode 100644 tools/testing/selftests/kvm/lib/lru_gen_util.c
+Thanks, I think cross-selftest sharing is better than duplicating
+similar code.=20
 
-diff --git a/tools/testing/selftests/kvm/Makefile.kvm b/tools/testing/selftests/kvm/Makefile.kvm
-index c86a680f52b28..6ab0441238a7f 100644
---- a/tools/testing/selftests/kvm/Makefile.kvm
-+++ b/tools/testing/selftests/kvm/Makefile.kvm
-@@ -8,6 +8,7 @@ LIBKVM += lib/elf.c
- LIBKVM += lib/guest_modes.c
- LIBKVM += lib/io.c
- LIBKVM += lib/kvm_util.c
-+LIBKVM += lib/lru_gen_util.c
- LIBKVM += lib/memstress.c
- LIBKVM += lib/guest_sprintf.c
- LIBKVM += lib/rbtree.c
-diff --git a/tools/testing/selftests/kvm/access_tracking_perf_test.c b/tools/testing/selftests/kvm/access_tracking_perf_test.c
-index 0e594883ec13e..1c8e43e18e4c6 100644
---- a/tools/testing/selftests/kvm/access_tracking_perf_test.c
-+++ b/tools/testing/selftests/kvm/access_tracking_perf_test.c
-@@ -7,9 +7,11 @@
-  * This test measures the performance effects of KVM's access tracking.
-  * Access tracking is driven by the MMU notifiers test_young, clear_young, and
-  * clear_flush_young. These notifiers do not have a direct userspace API,
-- * however the clear_young notifier can be triggered by marking a pages as idle
-- * in /sys/kernel/mm/page_idle/bitmap. This test leverages that mechanism to
-- * enable access tracking on guest memory.
-+ * however the clear_young notifier can be triggered either by
-+ *   1. marking a pages as idle in /sys/kernel/mm/page_idle/bitmap OR
-+ *   2. adding a new MGLRU generation using the lru_gen debugfs file.
-+ * This test leverages page_idle to enable access tracking on guest memory
-+ * unless MGLRU is enabled, in which case MGLRU is used.
-  *
-  * To measure performance this test runs a VM with a configurable number of
-  * vCPUs that each touch every page in disjoint regions of memory. Performance
-@@ -17,10 +19,11 @@
-  * predefined region.
-  *
-  * Note that a deterministic correctness test of access tracking is not possible
-- * by using page_idle as it exists today. This is for a few reasons:
-+ * by using page_idle or MGLRU aging as it exists today. This is for a few
-+ * reasons:
-  *
-- * 1. page_idle only issues clear_young notifiers, which lack a TLB flush. This
-- *    means subsequent guest accesses are not guaranteed to see page table
-+ * 1. page_idle and MGLRU only issue clear_young notifiers, which lack a TLB flush.
-+ *    This means subsequent guest accesses are not guaranteed to see page table
-  *    updates made by KVM until some time in the future.
-  *
-  * 2. page_idle only operates on LRU pages. Newly allocated pages are not
-@@ -48,9 +51,17 @@
- #include "guest_modes.h"
- #include "processor.h"
- 
-+#include "cgroup_util.h"
-+#include "lru_gen_util.h"
-+
-+static const char *TEST_MEMCG_NAME = "access_tracking_perf_test";
-+
- /* Global variable used to synchronize all of the vCPU threads. */
- static int iteration;
- 
-+/* The cgroup v2 root. Needed for lru_gen-based aging. */
-+char cgroup_root[PATH_MAX];
-+
- /* Defines what vCPU threads should do during a given iteration. */
- static enum {
- 	/* Run the vCPU to access all its memory. */
-@@ -75,6 +86,12 @@ static bool overlap_memory_access;
-  */
- static int idle_pages_warn_only = -1;
- 
-+/* Whether or not to use MGLRU instead of page_idle for access tracking */
-+static bool use_lru_gen;
-+
-+/* Total number of pages to expect in the memcg after touching everything */
-+static long total_pages;
-+
- struct test_params {
- 	/* The backing source for the region of memory. */
- 	enum vm_mem_backing_src_type backing_src;
-@@ -133,8 +150,24 @@ static void mark_page_idle(int page_idle_fd, uint64_t pfn)
- 		    "Set page_idle bits for PFN 0x%" PRIx64, pfn);
- }
- 
--static void mark_vcpu_memory_idle(struct kvm_vm *vm,
--				  struct memstress_vcpu_args *vcpu_args)
-+static void too_many_idle_pages(long idle_pages, long total_pages, int vcpu_idx)
-+{
-+	char prefix[18] = {};
-+
-+	if (vcpu_idx >= 0)
-+		snprintf(prefix, 18, "vCPU%d: ", vcpu_idx);
-+
-+	TEST_ASSERT(idle_pages_warn_only,
-+		    "%sToo many pages still idle (%lu out of %lu)",
-+		    prefix, idle_pages, total_pages);
-+
-+	printf("WARNING: %sToo many pages still idle (%lu out of %lu), "
-+	       "this will affect performance results.\n",
-+	       prefix, idle_pages, total_pages);
-+}
-+
-+static void pageidle_mark_vcpu_memory_idle(struct kvm_vm *vm,
-+					   struct memstress_vcpu_args *vcpu_args)
- {
- 	int vcpu_idx = vcpu_args->vcpu_idx;
- 	uint64_t base_gva = vcpu_args->gva;
-@@ -188,20 +221,81 @@ static void mark_vcpu_memory_idle(struct kvm_vm *vm,
- 	 * access tracking but low enough as to not make the test too brittle
- 	 * over time and across architectures.
- 	 */
--	if (still_idle >= pages / 10) {
--		TEST_ASSERT(idle_pages_warn_only,
--			    "vCPU%d: Too many pages still idle (%lu out of %lu)",
--			    vcpu_idx, still_idle, pages);
--
--		printf("WARNING: vCPU%d: Too many pages still idle (%lu out of %lu), "
--		       "this will affect performance results.\n",
--		       vcpu_idx, still_idle, pages);
--	}
-+	if (still_idle >= pages / 10)
-+		too_many_idle_pages(still_idle, pages,
-+				    overlap_memory_access ? -1 : vcpu_idx);
- 
- 	close(page_idle_fd);
- 	close(pagemap_fd);
- }
- 
-+int find_generation(struct memcg_stats *stats, long total_pages)
-+{
-+	/*
-+	 * For finding the generation that contains our pages, use the same
-+	 * 90% threshold that page_idle uses.
-+	 */
-+	int gen = lru_gen_find_generation(stats, total_pages * 9 / 10);
-+
-+	if (gen >= 0)
-+		return gen;
-+
-+	if (!idle_pages_warn_only) {
-+		TEST_FAIL("Could not find a generation with 90%% of guest memory (%ld pages).",
-+			   total_pages * 9 / 10);
-+		return gen;
-+	}
-+
-+	/*
-+	 * We couldn't find a generation with 90% of guest memory, which can
-+	 * happen if access tracking is unreliable. Simply look for a majority
-+	 * of pages.
-+	 */
-+	puts("WARNING: Couldn't find a generation with 90% of guest memory. "
-+	     "Performance results may not be accurate.");
-+	gen = lru_gen_find_generation(stats, total_pages / 2);
-+	TEST_ASSERT(gen >= 0,
-+		    "Could not find a generation with 50%% of guest memory (%ld pages).",
-+		    total_pages / 2);
-+	return gen;
-+}
-+
-+static void lru_gen_mark_memory_idle(struct kvm_vm *vm)
-+{
-+	struct timespec ts_start;
-+	struct timespec ts_elapsed;
-+	struct memcg_stats stats;
-+	int found_gens[2];
-+
-+	/* Find current generation the pages lie in. */
-+	lru_gen_read_memcg_stats(&stats, TEST_MEMCG_NAME);
-+	found_gens[0] = find_generation(&stats, total_pages);
-+
-+	/* Make a new generation */
-+	clock_gettime(CLOCK_MONOTONIC, &ts_start);
-+	lru_gen_do_aging(&stats, TEST_MEMCG_NAME);
-+	ts_elapsed = timespec_elapsed(ts_start);
-+
-+	/* Check the generation again */
-+	found_gens[1] = find_generation(&stats, total_pages);
-+
-+	/*
-+	 * This function should only be invoked with newly-accessed pages,
-+	 * so pages should always move to a newer generation.
-+	 */
-+	if (found_gens[0] >= found_gens[1]) {
-+		/* We did not move to a newer generation. */
-+		long idle_pages = lru_gen_sum_memcg_stats_for_gen(found_gens[1],
-+								  &stats);
-+
-+		too_many_idle_pages(min_t(long, idle_pages, total_pages),
-+				    total_pages, -1);
-+	}
-+	pr_info("%-30s: %ld.%09lds\n",
-+		"Mark memory idle (lru_gen)", ts_elapsed.tv_sec,
-+		ts_elapsed.tv_nsec);
-+}
-+
- static void assert_ucall(struct kvm_vcpu *vcpu, uint64_t expected_ucall)
- {
- 	struct ucall uc;
-@@ -241,7 +335,7 @@ static void vcpu_thread_main(struct memstress_vcpu_args *vcpu_args)
- 			assert_ucall(vcpu, UCALL_SYNC);
- 			break;
- 		case ITERATION_MARK_IDLE:
--			mark_vcpu_memory_idle(vm, vcpu_args);
-+			pageidle_mark_vcpu_memory_idle(vm, vcpu_args);
- 			break;
- 		}
- 
-@@ -293,15 +387,18 @@ static void access_memory(struct kvm_vm *vm, int nr_vcpus,
- 
- static void mark_memory_idle(struct kvm_vm *vm, int nr_vcpus)
- {
-+	if (use_lru_gen)
-+		return lru_gen_mark_memory_idle(vm);
-+
- 	/*
- 	 * Even though this parallelizes the work across vCPUs, this is still a
- 	 * very slow operation because page_idle forces the test to mark one pfn
--	 * at a time and the clear_young notifier serializes on the KVM MMU
-+	 * at a time and the clear_young notifier may serialize on the KVM MMU
- 	 * lock.
- 	 */
- 	pr_debug("Marking VM memory idle (slow)...\n");
- 	iteration_work = ITERATION_MARK_IDLE;
--	run_iteration(vm, nr_vcpus, "Mark memory idle");
-+	run_iteration(vm, nr_vcpus, "Mark memory idle (page_idle)");
- }
- 
- static void run_test(enum vm_guest_mode mode, void *arg)
-@@ -318,6 +415,15 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	pr_info("\n");
- 	access_memory(vm, nr_vcpus, ACCESS_WRITE, "Populating memory");
- 
-+	if (use_lru_gen) {
-+		struct memcg_stats stats;
-+
-+		/* Do an initial page table scan */
-+		lru_gen_read_memcg_stats(&stats, TEST_MEMCG_NAME);
-+		TEST_ASSERT(lru_gen_sum_memcg_stats(&stats) >= total_pages,
-+			    "Not all pages accounted for. Was the memcg set up correctly?");
-+	}
-+
- 	/* As a control, read and write to the populated memory first. */
- 	access_memory(vm, nr_vcpus, ACCESS_WRITE, "Writing to populated memory");
- 	access_memory(vm, nr_vcpus, ACCESS_READ, "Reading from populated memory");
-@@ -353,7 +459,12 @@ static int access_tracking_unreliable(void)
- 		puts("Skipping idle page count sanity check, because NUMA balancing is enabled");
- 		return 1;
- 	}
-+	return 0;
-+}
- 
-+int run_test_in_cg(const char *cgroup, void *arg)
-+{
-+	for_each_guest_mode(run_test, arg);
- 	return 0;
- }
- 
-@@ -371,7 +482,7 @@ static void help(char *name)
- 	printf(" -v: specify the number of vCPUs to run.\n");
- 	printf(" -o: Overlap guest memory accesses instead of partitioning\n"
- 	       "     them into a separate region of memory for each vCPU.\n");
--	printf(" -w: Control whether the test warns or fails if more than 10%\n"
-+	printf(" -w: Control whether the test warns or fails if more than 10%%\n"
- 	       "     of pages are still seen as idle/old after accessing guest\n"
- 	       "     memory.  >0 == warn only, 0 == fail, <0 == auto.  For auto\n"
- 	       "     mode, the test fails by default, but switches to warn only\n"
-@@ -382,6 +493,12 @@ static void help(char *name)
- 	exit(0);
- }
- 
-+void destroy_cgroup(char *cg)
-+{
-+	printf("Destroying cgroup: %s\n", cg);
-+	cg_destroy(cg);
-+}
-+
- int main(int argc, char *argv[])
- {
- 	struct test_params params = {
-@@ -389,6 +506,7 @@ int main(int argc, char *argv[])
- 		.vcpu_memory_bytes = DEFAULT_PER_VCPU_MEM_SIZE,
- 		.nr_vcpus = 1,
- 	};
-+	char *new_cg = NULL;
- 	int page_idle_fd;
- 	int opt;
- 
-@@ -423,15 +541,53 @@ int main(int argc, char *argv[])
- 		}
- 	}
- 
--	page_idle_fd = open("/sys/kernel/mm/page_idle/bitmap", O_RDWR);
--	__TEST_REQUIRE(page_idle_fd >= 0,
--		       "CONFIG_IDLE_PAGE_TRACKING is not enabled");
--	close(page_idle_fd);
-+	if (lru_gen_usable()) {
-+		if (cg_find_unified_root(cgroup_root, sizeof(cgroup_root), NULL))
-+			ksft_exit_skip("cgroup v2 isn't mounted\n");
-+
-+		new_cg = cg_name(cgroup_root, TEST_MEMCG_NAME);
-+		printf("Creating cgroup: %s\n", new_cg);
-+		if (cg_create(new_cg) && errno != EEXIST)
-+			ksft_exit_skip("could not create new cgroup: %s\n", new_cg);
-+
-+		use_lru_gen = true;
-+	} else {
-+		page_idle_fd = open("/sys/kernel/mm/page_idle/bitmap", O_RDWR);
-+		__TEST_REQUIRE(page_idle_fd >= 0,
-+			       "Couldn't open /sys/kernel/mm/page_idle/bitmap. "
-+			       "Is CONFIG_IDLE_PAGE_TRACKING enabled?");
-+
-+		close(page_idle_fd);
-+	}
- 
- 	if (idle_pages_warn_only == -1)
- 		idle_pages_warn_only = access_tracking_unreliable();
- 
--	for_each_guest_mode(run_test, &params);
-+	/*
-+	 * If guest_page_size is larger than the host's page size, the
-+	 * guest (memstress) will only fault in a subset of the host's pages.
-+	 */
-+	total_pages = params.nr_vcpus * params.vcpu_memory_bytes /
-+		      max(memstress_args.guest_page_size,
-+			  (uint64_t)getpagesize());
-+
-+	if (use_lru_gen) {
-+		int ret;
-+
-+		puts("Using lru_gen for aging");
-+		/*
-+		 * This will fork off a new process to run the test within
-+		 * a new memcg, so we need to properly propagate the return
-+		 * value up.
-+		 */
-+		ret = cg_run(new_cg, &run_test_in_cg, &params);
-+		destroy_cgroup(new_cg);
-+		if (ret)
-+			return ret;
-+	} else {
-+		puts("Using page_idle for aging");
-+		for_each_guest_mode(run_test, &params);
-+	}
- 
- 	return 0;
- }
-diff --git a/tools/testing/selftests/kvm/include/lru_gen_util.h b/tools/testing/selftests/kvm/include/lru_gen_util.h
-new file mode 100644
-index 0000000000000..d32ff5d8ffd05
---- /dev/null
-+++ b/tools/testing/selftests/kvm/include/lru_gen_util.h
-@@ -0,0 +1,51 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Tools for integrating with lru_gen, like parsing the lru_gen debugfs output.
-+ *
-+ * Copyright (C) 2025, Google LLC.
-+ */
-+#ifndef SELFTEST_KVM_LRU_GEN_UTIL_H
-+#define SELFTEST_KVM_LRU_GEN_UTIL_H
-+
-+#include <inttypes.h>
-+#include <limits.h>
-+#include <stdlib.h>
-+
-+#include "test_util.h"
-+
-+#define MAX_NR_GENS 16 /* MAX_NR_GENS in include/linux/mmzone.h */
-+#define MAX_NR_NODES 4 /* Maximum number of nodes supported by the test */
-+
-+#define LRU_GEN_DEBUGFS "/sys/kernel/debug/lru_gen"
-+#define LRU_GEN_ENABLED_PATH "/sys/kernel/mm/lru_gen/enabled"
-+#define LRU_GEN_ENABLED 1
-+#define LRU_GEN_MM_WALK 2
-+
-+struct generation_stats {
-+	int gen;
-+	long age_ms;
-+	long nr_anon;
-+	long nr_file;
-+};
-+
-+struct node_stats {
-+	int node;
-+	int nr_gens; /* Number of populated gens entries. */
-+	struct generation_stats gens[MAX_NR_GENS];
-+};
-+
-+struct memcg_stats {
-+	unsigned long memcg_id;
-+	int nr_nodes; /* Number of populated nodes entries. */
-+	struct node_stats nodes[MAX_NR_NODES];
-+};
-+
-+void lru_gen_read_memcg_stats(struct memcg_stats *stats, const char *memcg);
-+long lru_gen_sum_memcg_stats(const struct memcg_stats *stats);
-+long lru_gen_sum_memcg_stats_for_gen(int gen, const struct memcg_stats *stats);
-+void lru_gen_do_aging(struct memcg_stats *stats, const char *memcg);
-+int lru_gen_find_generation(const struct memcg_stats *stats,
-+			    unsigned long total_pages);
-+bool lru_gen_usable(void);
-+
-+#endif /* SELFTEST_KVM_LRU_GEN_UTIL_H */
-diff --git a/tools/testing/selftests/kvm/lib/lru_gen_util.c b/tools/testing/selftests/kvm/lib/lru_gen_util.c
-new file mode 100644
-index 0000000000000..783a1f1028a26
---- /dev/null
-+++ b/tools/testing/selftests/kvm/lib/lru_gen_util.c
-@@ -0,0 +1,383 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2025, Google LLC.
-+ */
-+
-+#include <time.h>
-+
-+#include "lru_gen_util.h"
-+
-+/*
-+ * Tracks state while we parse memcg lru_gen stats. The file we're parsing is
-+ * structured like this (some extra whitespace elided):
-+ *
-+ * memcg (id) (path)
-+ * node (id)
-+ * (gen_nr) (age_in_ms) (nr_anon_pages) (nr_file_pages)
-+ */
-+struct memcg_stats_parse_context {
-+	bool consumed; /* Whether or not this line was consumed */
-+	/* Next parse handler to invoke */
-+	void (*next_handler)(struct memcg_stats *,
-+			     struct memcg_stats_parse_context *, char *);
-+	int current_node_idx; /* Current index in nodes array */
-+	const char *name; /* The name of the memcg we're looking for */
-+};
-+
-+static void memcg_stats_handle_searching(struct memcg_stats *stats,
-+					 struct memcg_stats_parse_context *ctx,
-+					 char *line);
-+static void memcg_stats_handle_in_memcg(struct memcg_stats *stats,
-+					struct memcg_stats_parse_context *ctx,
-+					char *line);
-+static void memcg_stats_handle_in_node(struct memcg_stats *stats,
-+				       struct memcg_stats_parse_context *ctx,
-+				       char *line);
-+
-+struct split_iterator {
-+	char *str;
-+	char *save;
-+};
-+
-+static char *split_next(struct split_iterator *it)
-+{
-+	char *ret = strtok_r(it->str, " \t\n\r", &it->save);
-+
-+	it->str = NULL;
-+	return ret;
-+}
-+
-+static void memcg_stats_handle_searching(struct memcg_stats *stats,
-+					 struct memcg_stats_parse_context *ctx,
-+					 char *line)
-+{
-+	struct split_iterator it = { .str = line };
-+	char *prefix = split_next(&it);
-+	char *memcg_id = split_next(&it);
-+	char *memcg_name = split_next(&it);
-+	char *end;
-+
-+	ctx->consumed = true;
-+
-+	if (!prefix || strcmp("memcg", prefix))
-+		return; /* Not a memcg line (maybe empty), skip */
-+
-+	TEST_ASSERT(memcg_id && memcg_name,
-+		    "malformed memcg line; no memcg id or memcg_name");
-+
-+	if (strcmp(memcg_name + 1, ctx->name))
-+		return; /* Wrong memcg, skip */
-+
-+	/* Found it! */
-+
-+	stats->memcg_id = strtoul(memcg_id, &end, 10);
-+	TEST_ASSERT(*end == '\0', "malformed memcg id '%s'", memcg_id);
-+	if (!stats->memcg_id)
-+		return; /* Removed memcg? */
-+
-+	ctx->next_handler = memcg_stats_handle_in_memcg;
-+}
-+
-+static void memcg_stats_handle_in_memcg(struct memcg_stats *stats,
-+					struct memcg_stats_parse_context *ctx,
-+					char *line)
-+{
-+	struct split_iterator it = { .str = line };
-+	char *prefix = split_next(&it);
-+	char *id = split_next(&it);
-+	long found_node_id;
-+	char *end;
-+
-+	ctx->consumed = true;
-+	ctx->current_node_idx = -1;
-+
-+	if (!prefix)
-+		return; /* Skip empty lines */
-+
-+	if (!strcmp("memcg", prefix)) {
-+		/* Memcg done, found next one; stop. */
-+		ctx->next_handler = NULL;
-+		return;
-+	} else if (strcmp("node", prefix))
-+		TEST_ASSERT(false, "found malformed line after 'memcg ...',"
-+				   "token: '%s'", prefix);
-+
-+	/* At this point we know we have a node line. Parse the ID. */
-+
-+	TEST_ASSERT(id, "malformed node line; no node id");
-+
-+	found_node_id = strtol(id, &end, 10);
-+	TEST_ASSERT(*end == '\0', "malformed node id '%s'", id);
-+
-+	ctx->current_node_idx = stats->nr_nodes++;
-+	TEST_ASSERT(ctx->current_node_idx < MAX_NR_NODES,
-+		    "memcg has stats for too many nodes, max is %d",
-+		    MAX_NR_NODES);
-+	stats->nodes[ctx->current_node_idx].node = found_node_id;
-+
-+	ctx->next_handler = memcg_stats_handle_in_node;
-+}
-+
-+static void memcg_stats_handle_in_node(struct memcg_stats *stats,
-+				       struct memcg_stats_parse_context *ctx,
-+				       char *line)
-+{
-+	char *my_line = strdup(line);
-+	struct split_iterator it = { .str = my_line };
-+	char *gen, *age, *nr_anon, *nr_file;
-+	struct node_stats *node_stats;
-+	struct generation_stats *gen_stats;
-+	char *end;
-+
-+	TEST_ASSERT(it.str, "failed to copy input line");
-+
-+	gen = split_next(&it);
-+
-+	if (!gen)
-+		goto out_consume; /* Skip empty lines */
-+
-+	if (!strcmp("memcg", gen) || !strcmp("node", gen)) {
-+		/*
-+		 * Reached next memcg or node section. Don't consume, let the
-+		 * other handler deal with this.
-+		 */
-+		ctx->next_handler = memcg_stats_handle_in_memcg;
-+		goto out;
-+	}
-+
-+	node_stats = &stats->nodes[ctx->current_node_idx];
-+	TEST_ASSERT(node_stats->nr_gens < MAX_NR_GENS,
-+		    "found too many generation lines; max is %d",
-+		    MAX_NR_GENS);
-+	gen_stats = &node_stats->gens[node_stats->nr_gens++];
-+
-+	age = split_next(&it);
-+	nr_anon = split_next(&it);
-+	nr_file = split_next(&it);
-+
-+	TEST_ASSERT(age && nr_anon && nr_file,
-+		    "malformed generation line; not enough tokens");
-+
-+	gen_stats->gen = (int)strtol(gen, &end, 10);
-+	TEST_ASSERT(*end == '\0', "malformed generation number '%s'", gen);
-+
-+	gen_stats->age_ms = strtol(age, &end, 10);
-+	TEST_ASSERT(*end == '\0', "malformed generation age '%s'", age);
-+
-+	gen_stats->nr_anon = strtol(nr_anon, &end, 10);
-+	TEST_ASSERT(*end == '\0', "malformed anonymous page count '%s'",
-+		    nr_anon);
-+
-+	gen_stats->nr_file = strtol(nr_file, &end, 10);
-+	TEST_ASSERT(*end == '\0', "malformed file page count '%s'", nr_file);
-+
-+out_consume:
-+	ctx->consumed = true;
-+out:
-+	free(my_line);
-+}
-+
-+static void print_memcg_stats(const struct memcg_stats *stats, const char *name)
-+{
-+	int node, gen;
-+
-+	pr_debug("stats for memcg %s (id %lu):\n", name, stats->memcg_id);
-+	for (node = 0; node < stats->nr_nodes; ++node) {
-+		pr_debug("\tnode %d\n", stats->nodes[node].node);
-+		for (gen = 0; gen < stats->nodes[node].nr_gens; ++gen) {
-+			const struct generation_stats *gstats =
-+				&stats->nodes[node].gens[gen];
-+
-+			pr_debug("\t\tgen %d\tage_ms %ld"
-+				 "\tnr_anon %ld\tnr_file %ld\n",
-+				 gstats->gen, gstats->age_ms, gstats->nr_anon,
-+				 gstats->nr_file);
-+		}
-+	}
-+}
-+
-+/* Re-read lru_gen debugfs information for @memcg into @stats. */
-+void lru_gen_read_memcg_stats(struct memcg_stats *stats, const char *memcg)
-+{
-+	FILE *f;
-+	ssize_t read = 0;
-+	char *line = NULL;
-+	size_t bufsz;
-+	struct memcg_stats_parse_context ctx = {
-+		.next_handler = memcg_stats_handle_searching,
-+		.name = memcg,
-+	};
-+
-+	memset(stats, 0, sizeof(struct memcg_stats));
-+
-+	f = fopen(LRU_GEN_DEBUGFS, "r");
-+	TEST_ASSERT(f, "fopen(%s) failed", LRU_GEN_DEBUGFS);
-+
-+	while (ctx.next_handler && (read = getline(&line, &bufsz, f)) > 0) {
-+		ctx.consumed = false;
-+
-+		do {
-+			ctx.next_handler(stats, &ctx, line);
-+			if (!ctx.next_handler)
-+				break;
-+		} while (!ctx.consumed);
-+	}
-+
-+	if (read < 0 && !feof(f))
-+		TEST_ASSERT(false, "getline(%s) failed", LRU_GEN_DEBUGFS);
-+
-+	TEST_ASSERT(stats->memcg_id > 0, "Couldn't find memcg: %s\n"
-+		    "Did the memcg get created in the proper mount?",
-+		    memcg);
-+	if (line)
-+		free(line);
-+	TEST_ASSERT(!fclose(f), "fclose(%s) failed", LRU_GEN_DEBUGFS);
-+
-+	print_memcg_stats(stats, memcg);
-+}
-+
-+/*
-+ * Find all pages tracked by lru_gen for this memcg in generation @target_gen.
-+ *
-+ * If @target_gen is negative, look for all generations.
-+ */
-+long lru_gen_sum_memcg_stats_for_gen(int target_gen,
-+				     const struct memcg_stats *stats)
-+{
-+	int node, gen;
-+	long total_nr = 0;
-+
-+	for (node = 0; node < stats->nr_nodes; ++node) {
-+		const struct node_stats *node_stats = &stats->nodes[node];
-+
-+		for (gen = 0; gen < node_stats->nr_gens; ++gen) {
-+			const struct generation_stats *gen_stats =
-+				&node_stats->gens[gen];
-+
-+			if (target_gen >= 0 && gen_stats->gen != target_gen)
-+				continue;
-+
-+			total_nr += gen_stats->nr_anon + gen_stats->nr_file;
-+		}
-+	}
-+
-+	return total_nr;
-+}
-+
-+/* Find all pages tracked by lru_gen for this memcg. */
-+long lru_gen_sum_memcg_stats(const struct memcg_stats *stats)
-+{
-+	return lru_gen_sum_memcg_stats_for_gen(-1, stats);
-+}
-+
-+/*
-+ * If lru_gen aging should force page table scanning.
-+ *
-+ * If you want to set this to false, you will need to do eviction
-+ * before doing extra aging passes.
-+ */
-+static const bool force_scan = true;
-+
-+static void run_aging_impl(unsigned long memcg_id, int node_id, int max_gen)
-+{
-+	FILE *f = fopen(LRU_GEN_DEBUGFS, "w");
-+	char *command;
-+	size_t sz;
-+
-+	TEST_ASSERT(f, "fopen(%s) failed", LRU_GEN_DEBUGFS);
-+	sz = asprintf(&command, "+ %lu %d %d 1 %d\n",
-+		      memcg_id, node_id, max_gen, force_scan);
-+	TEST_ASSERT(sz > 0, "creating aging command failed");
-+
-+	pr_debug("Running aging command: %s", command);
-+	if (fwrite(command, sizeof(char), sz, f) < sz) {
-+		TEST_ASSERT(false, "writing aging command %s to %s failed",
-+			    command, LRU_GEN_DEBUGFS);
-+	}
-+
-+	TEST_ASSERT(!fclose(f), "fclose(%s) failed", LRU_GEN_DEBUGFS);
-+}
-+
-+void lru_gen_do_aging(struct memcg_stats *stats, const char *memcg)
-+{
-+	int node, gen;
-+
-+	pr_debug("lru_gen: invoking aging...\n");
-+
-+	/* Must read memcg stats to construct the proper aging command. */
-+	lru_gen_read_memcg_stats(stats, memcg);
-+
-+	for (node = 0; node < stats->nr_nodes; ++node) {
-+		int max_gen = 0;
-+
-+		for (gen = 0; gen < stats->nodes[node].nr_gens; ++gen) {
-+			int this_gen = stats->nodes[node].gens[gen].gen;
-+
-+			max_gen = max_gen > this_gen ? max_gen : this_gen;
-+		}
-+
-+		run_aging_impl(stats->memcg_id, stats->nodes[node].node,
-+			       max_gen);
-+	}
-+
-+	/* Re-read so callers get updated information */
-+	lru_gen_read_memcg_stats(stats, memcg);
-+}
-+
-+/*
-+ * Find which generation contains at least @pages pages, assuming that
-+ * such a generation exists.
-+ */
-+int lru_gen_find_generation(const struct memcg_stats *stats,
-+			    unsigned long pages)
-+{
-+	int node, gen, gen_idx, min_gen = INT_MAX, max_gen = -1;
-+
-+	for (node = 0; node < stats->nr_nodes; ++node)
-+		for (gen_idx = 0; gen_idx < stats->nodes[node].nr_gens;
-+		     ++gen_idx) {
-+			gen = stats->nodes[node].gens[gen_idx].gen;
-+			max_gen = gen > max_gen ? gen : max_gen;
-+			min_gen = gen < min_gen ? gen : min_gen;
-+		}
-+
-+	for (gen = min_gen; gen < max_gen; ++gen)
-+		/* See if this generation has enough pages. */
-+		if (lru_gen_sum_memcg_stats_for_gen(gen, stats) > pages)
-+			return gen;
-+
-+	return -1;
-+}
-+
-+bool lru_gen_usable(void)
-+{
-+	long required_features = LRU_GEN_ENABLED | LRU_GEN_MM_WALK;
-+	int lru_gen_fd, lru_gen_debug_fd;
-+	char mglru_feature_str[8] = {};
-+	long mglru_features;
-+
-+	lru_gen_fd = open(LRU_GEN_ENABLED_PATH, O_RDONLY);
-+	if (lru_gen_fd < 0) {
-+		puts("lru_gen: Could not open " LRU_GEN_ENABLED_PATH);
-+		return false;
-+	}
-+	if (read(lru_gen_fd, &mglru_feature_str, 7) < 7) {
-+		puts("lru_gen: Could not read from " LRU_GEN_ENABLED_PATH);
-+		close(lru_gen_fd);
-+		return false;
-+	}
-+	close(lru_gen_fd);
-+
-+	mglru_features = strtol(mglru_feature_str, NULL, 16);
-+	if ((mglru_features & required_features) != required_features) {
-+		printf("lru_gen: missing features, got: %s", mglru_feature_str);
-+		return false;
-+	}
-+
-+	lru_gen_debug_fd = open(LRU_GEN_DEBUGFS, O_RDWR);
-+	__TEST_REQUIRE(lru_gen_debug_fd >= 0,
-+		       "lru_gen: Could not open " LRU_GEN_DEBUGFS ", "
-+		       "but lru_gen is enabled, so cannot use page_idle.");
-+	close(lru_gen_debug_fd);
-+	return true;
-+}
--- 
-2.49.0.395.g12beb8f557-goog
++Cc: Yafang as it may worth porting/unifying with
+tools/testing/selftests/bpf/cgroup_helpers.h too
 
+> --- a/tools/testing/selftests/cgroup/cgroup_util.c
+> +++ b/tools/testing/selftests/cgroup/lib/cgroup_util.c
+> @@ -16,8 +16,7 @@
+>  #include <sys/wait.h>
+>  #include <unistd.h>
+> =20
+> -#include "cgroup_util.h"
+> -#include "../clone3/clone3_selftests.h"
+> +#include <cgroup_util.h>
+
+The clone3_selftests.h header is not needed anymore?
+
+
+Michal
+
+--emghnkmnkyymych3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ+UdtQAKCRAt3Wney77B
+SdMdAQCSfMUeyxs7jRY1DgHYPciU4P2a7+sr132y+/5NX5fJ/wD8Dp4tx7S5u978
+BgGpkmbqxF6HcGVx9Y4bacdDAkqBbwc=
+=kBp5
+-----END PGP SIGNATURE-----
+
+--emghnkmnkyymych3--
 
