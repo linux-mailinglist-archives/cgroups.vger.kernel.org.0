@@ -1,356 +1,148 @@
-Return-Path: <cgroups+bounces-7266-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7267-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F7BEA75CED
-	for <lists+cgroups@lfdr.de>; Sun, 30 Mar 2025 23:56:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE48BA7701C
+	for <lists+cgroups@lfdr.de>; Mon, 31 Mar 2025 23:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 428EA168D2B
-	for <lists+cgroups@lfdr.de>; Sun, 30 Mar 2025 21:56:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66D1A16AB64
+	for <lists+cgroups@lfdr.de>; Mon, 31 Mar 2025 21:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C93B61E47A8;
-	Sun, 30 Mar 2025 21:54:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 682E021A45F;
+	Mon, 31 Mar 2025 21:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hJcjDQKa"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CtRIxl4H"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f74.google.com (mail-ua1-f74.google.com [209.85.222.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893BD1E503C
-	for <cgroups@vger.kernel.org>; Sun, 30 Mar 2025 21:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883E4DDBC
+	for <cgroups@vger.kernel.org>; Mon, 31 Mar 2025 21:30:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743371648; cv=none; b=HKmjtk2kEmQJS2OrO3yQd+phAKM3n+5bYCaEpOocCqYnn2oToiKQ+XWnmkNUQM4b6gQNfn6IWBUOBJqD2f6JVns/cv9FDLxJrrIwaGqXLhXu2v46ovIURLzvvOb6agijH0YkPoPj8ClX+m1qbwi9MKcwI7UEPXMmBW4LEHJP+cg=
+	t=1743456634; cv=none; b=OndunxrIbn2JUvnT6SUzN+pG488aPni/mQWANuJZDVqhvo03NOxQR7Dqw7fYimD6i6JWc3UZLVT5sXzlLr5q6jCtT5A4DDwKtQqqSk72MqGu2Pbj/EF1anfUjqdGQLr/tM4jrYAs5rW8F6utW2Pvaq8YM3rF0R4JmhACShsvcrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743371648; c=relaxed/simple;
-	bh=kctpo9J9KWhQO+Td/9xcOa96QG1Xvi2mfONXtYgkJZc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kbeD9508NHHMo+shEctf1UqiMlzXdDd+rApG4g+rbhvOCVTMKWfiW5ImnbWdnaVMp/RJ4czqNVx6xTlRRCyLzcln5xy/u8oQhBrDNqaCoKUw4XCUduYAtI+6kjhKPUufr6HSKVkqg1nsk6OEU2eT/OFyVMsMaiz1Tbx77vkCFPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hJcjDQKa; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1743371645;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=d/gln7HjCzS4EQxgvfxBgXSkSYvBREZLHgr/rHkeCk0=;
-	b=hJcjDQKa7o3N/q+R9rGx1wPOYz0up0MCrqOyEaQ0CvwZ+qJmOFtbjSgKlwxgTpbVmjCMkr
-	M9Ai/VE+UsbARZ6dGIWsqTZpPdniEwYBmVzFnWZpmL+c+MqHz569NFXgR5LR1KEEn8q2K1
-	1HqD60A7p+MmAJMGvzhnmAYqOiifago=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-315-lKli_u7eMzuI_oQrxX44Cw-1; Sun,
- 30 Mar 2025 17:54:02 -0400
-X-MC-Unique: lKli_u7eMzuI_oQrxX44Cw-1
-X-Mimecast-MFC-AGG-ID: lKli_u7eMzuI_oQrxX44Cw_1743371641
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E1AF118EBE88;
-	Sun, 30 Mar 2025 21:54:00 +0000 (UTC)
-Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.64.34])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 60C0C1801750;
-	Sun, 30 Mar 2025 21:53:59 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH 10/10] selftest/cgroup: Add a remote partition transition test to test_cpuset_prs.sh
-Date: Sun, 30 Mar 2025 17:52:48 -0400
-Message-ID: <20250330215248.3620801-11-longman@redhat.com>
-In-Reply-To: <20250330215248.3620801-1-longman@redhat.com>
-References: <20250330215248.3620801-1-longman@redhat.com>
+	s=arc-20240116; t=1743456634; c=relaxed/simple;
+	bh=m+a1512eWC5Aolg7MHTyKu0JSZdfCl5aGM/QIhGmIPU=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=oQg2s8OsGmu+uG3RvL6IQeup0bJbC9CpIQbjp65dExFHFc+wAwgY5XzzyF0eF8UKhd3OzDiFAJaITcFnlLHllOfAyOAVMnlTRxIbhA8jOXPgMtm1dpaA3oojIJq5t9dAk9jw9fbaKY+0Jcj3azwhpESVE2dpf5vk1f1jwbuLyE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CtRIxl4H; arc=none smtp.client-ip=209.85.222.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com
+Received: by mail-ua1-f74.google.com with SMTP id a1e0cc1a2514c-86d04803f24so1476744241.0
+        for <cgroups@vger.kernel.org>; Mon, 31 Mar 2025 14:30:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1743456631; x=1744061431; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=YnBVRG7AqLb7xr89r4O+vGsRgEAXMy8MYL822Tz4er4=;
+        b=CtRIxl4HV+leW1rkrZzrwNC4YfTWr6UyN8yBSsUgDXPPOcLGDCTnbO5LIsaKmjDifI
+         XbDbAPRSVDG/LfY11OVjCxwS/oHxxTYH6VsxW2+E8n6UvclwSx7x5MIpFTaLh62pc4Qm
+         JtGKu80+RX7M3HojudsoIMpBKn8A7Fd2l98IbwbGGMdp5awGl0KpA4c9/haU+VU91tlC
+         DRdtNua/ZXy53NprsaHfFl8vdaaRB3AXdk/7QgeFxZ0qUqdBx7Xf4qnCgFnVNSjACVaS
+         XSQthcJWToHwk6gVYGdzskj2wmgWD6hFnOt2yoXooO3/LKmaVcgiguA1hxWJdYipldgk
+         tkTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743456631; x=1744061431;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YnBVRG7AqLb7xr89r4O+vGsRgEAXMy8MYL822Tz4er4=;
+        b=QMqeTMsYHDc0I/K0idinbQmX3VOz9c17Q299lwEp/3qVrfzfIYxyHYtO59wplA9vrV
+         ddlEMuZpwYR/T4psIwF7XZPcO1a6J9aJ5Rbp3eMuCOdwWYFviTwxvtMXmVy2NRzhXf0z
+         N3EZ7wCyw2DqY2SW2MAoMuS2YiD33ESUWgSfpaDpgHoVVSzgs0EhMlVtyMrhflDQBrKQ
+         3tcqblQR+CQjQde1gDxUMAZI8MHDIjGtFe47hnr2UL9cQ/5lIwncyzH/llgHRFSj+lCY
+         9Yaiw+aw8kFknghsNxVsi35vpL6kutPW6CsRGj0cgoNoJqprVyasIEX+d9ix2IE3iJT4
+         8AcA==
+X-Forwarded-Encrypted: i=1; AJvYcCXMkremeqq7aiX1ic1zyEaVlp2ZD0Wsi30bpM4oMd5QYEsOby7XJQKkr4n3rMBr+DyW0e2kQU72@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0MPRUkSnGfPb74hsPdrTuOqWRYrfNHNF1Voyk1Lg4VIY2MQlm
+	vmDwqYkImicmUNTPZYr1r9OAmagOYa47u2sB+ABJPk0TYLuHOgX7e/VH0KGC12oiOd8hwTRmv3Z
+	1M8Zcph1R85e48iA9uA==
+X-Google-Smtp-Source: AGHT+IFWVNNFOxiuezsuclw1+KNEMTqJF5KQh/veAmDaG6NDK/j85VNvjpwNcmZuM9lBmMP4/oNT8YmtEmU0cfcq
+X-Received: from vsvo20.prod.google.com ([2002:a05:6102:3f94:b0:4bb:c5bf:4524])
+ (user=jthoughton job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6102:3e08:b0:4bb:e511:15a3 with SMTP id ada2fe7eead31-4c6d38685demr7168495137.8.1743456631452;
+ Mon, 31 Mar 2025 14:30:31 -0700 (PDT)
+Date: Mon, 31 Mar 2025 21:30:20 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.49.0.472.ge94155a9ec-goog
+Message-ID: <20250331213025.3602082-1-jthoughton@google.com>
+Subject: [PATCH v2 0/5] KVM: selftests: access_tracking_perf_test fixes for
+ NUMA balancing and MGLRU
+From: James Houghton <jthoughton@google.com>
+To: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org
+Cc: Maxim Levitsky <mlevitsk@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Yu Zhao <yuzhao@google.com>, 
+	James Houghton <jthoughton@google.com>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The current cgroup directory layout for running the partition state
-transition tests is mainly suitable for testing local partitions as
-well as with a mix of local and remote partitions. It is not that
-suitable for doing extensive remote partition and nested remote/local
-partition testing.
+This series fixes some issues with access_tracking_perf_test when MGLRU
+or NUMA balancing are in use.
 
-Add a new set of remote partition tests REMOTE_TEST_MATRIX with another
-cgroup directory structure more tailored for remote partition testing
-to provide better code coverage.
+With MGLRU, touching a page doesn't necessarily clear the Idle flag.
+This has come up in the past, and the recommendation was to use MGLRU
+generation numbers[1], which this series does.
 
-Also add a few new test cases as well as adjusting existig ones for
-the original TEST_MATRIX.
+With NUMA balancing, pages are temporarily mapped as PROT_NONE, so the
+SPTEs will be zapped, losing the Accessed bits. The fix here is, in the
+event we have lost access information to print a warning and continue
+with the test, just like what we do if the test is running a nested VM.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- .../selftests/cgroup/test_cpuset_prs.sh       | 154 ++++++++++++++++--
- 1 file changed, 143 insertions(+), 11 deletions(-)
+A flag is added for the user to specify if they wish for the test to
+always enforce or always skip this check.
 
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-index d99412e7d196..a17256d9f88a 100755
---- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-+++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-@@ -112,6 +112,8 @@ cleanup()
- 	online_cpus
- 	cd $CGROUP2
- 	rmdir A1/A2/A3 A1/A2 A1 B1 test/A1 test/B1 test > /dev/null 2>&1
-+	rmdir rtest/p1/c11 rtest/p1/c12 rtest/p2/c21 \
-+	      rtest/p2/c22 rtest/p1 rtest/p2 rtest > /dev/null 2>&1
- 	[[ -n "$SCHED_DEBUG" ]] &&
- 		echo "$SCHED_DEBUG" > /sys/kernel/debug/sched/verbose
- }
-@@ -223,9 +225,9 @@ TEST_MATRIX=(
- 	"  C0-1:P1   .      .    C2-3  S+:C4-5   .      .      .     0 A1:4-5"
- 	"   C0-1     .      .   C2-3:P1   .      .      .     C2     0 "
- 	"   C0-1     .      .   C2-3:P1   .      .      .    C4-5    0 B1:4-5"
--	"C0-3:P1:S+ C2-3:P1 .      .      .      .      .      .     0 A1:0-1|A2:2-3"
--	"C0-3:P1:S+ C2-3:P1 .      .     C1-3    .      .      .     0 A1:1|A2:2-3"
--	"C2-3:P1:S+  C3:P1  .      .     C3      .      .      .     0 A1:|A2:3 A1:P1|A2:P1"
-+	"C0-3:P1:S+ C2-3:P1 .      .      .      .      .      .     0 A1:0-1|A2:2-3|XA2:2-3"
-+	"C0-3:P1:S+ C2-3:P1 .      .     C1-3    .      .      .     0 A1:1|A2:2-3|XA2:2-3"
-+	"C2-3:P1:S+  C3:P1  .      .     C3      .      .      .     0 A1:|A2:3|XA2:3 A1:P1|A2:P1"
- 	"C2-3:P1:S+  C3:P1  .      .     C3      P0     .      .     0 A1:3|A2:3 A1:P1|A2:P0"
- 	"C2-3:P1:S+  C2:P1  .      .     C2-4    .      .      .     0 A1:3-4|A2:2"
- 	"C2-3:P1:S+  C3:P1  .      .     C3      .      .     C0-2   0 A1:|B1:0-2 A1:P1|A2:P1"
-@@ -291,7 +293,7 @@ TEST_MATRIX=(
- 								       A1:P0|A2:P2|A3:P1 2"
- 	" C0-4:X2-4:S+ C1-4:X2-4:S+:P2 C2-4:X4:P1 \
- 				   .      .      X5      .      .    0 A1:0-4|A2:1-4|A3:2-4 \
--								       A1:P0|A2:P-2|A3:P-1"
-+								       A1:P0|A2:P-2|A3:P-1 ."
- 	" C0-4:X2-4:S+ C1-4:X2-4:S+:P2 C2-4:X4:P1 \
- 				   .      .      .      X1      .    0 A1:0-1|A2:2-4|A3:2-4 \
- 								       A1:P0|A2:P2|A3:P-1 2-4"
-@@ -303,13 +305,13 @@ TEST_MATRIX=(
- 	" C0-3:S+ C1-3:S+  C3      .    X2-3   X2-3   T:P2:O3=0  .   0 A1:0-2|A2:1-2|A3:1-2 A1:P0|A3:P-2 3|"
- 
- 	# An invalidated remote partition cannot self-recover from hotplug
--	" C0-3:S+ C1-3:S+  C2      .    X2-3   X2-3   T:P2:O2=0 O2=1 0 A1:0-3|A2:1-3|A3:2 A1:P0|A3:P-2"
-+	" C0-3:S+ C1-3:S+  C2      .    X2-3   X2-3   T:P2:O2=0 O2=1 0 A1:0-3|A2:1-3|A3:2 A1:P0|A3:P-2 ."
- 
- 	# cpus.exclusive.effective clearing test
- 	" C0-3:S+ C1-3:S+  C2      .   X2-3:X    .      .      .     0 A1:0-3|A2:1-3|A3:2|XA1:"
- 
- 	# Invalid to valid remote partition transition test
--	" C0-3:S+   C1-3    .      .      .    X3:P2    .      .     0 A1:0-3|A2:1-3|XA2: A2:P-2"
-+	" C0-3:S+   C1-3    .      .      .    X3:P2    .      .     0 A1:0-3|A2:1-3|XA2: A2:P-2 ."
- 	" C0-3:S+ C1-3:X3:P2
- 			    .      .    X2-3    P2      .      .     0 A1:0-2|A2:3|XA2:3 A2:P2 3"
- 
-@@ -318,7 +320,6 @@ TEST_MATRIX=(
- 	" C1-3:S+:P2 X4:P2  .      .      .    X3:P2    .      .     0 A1:1-2|XA1:1-3|A2:3:XA2:3 A1:P2|A2:P2 1-3"
- 	"  C0-3:P2   .      .    C4-6   C0-4     .      .      .     0 A1:0-4|B1:4-6 A1:P-2|B1:P0"
- 	"  C0-3:P2   .      .    C4-6 C0-4:C0-3  .      .      .     0 A1:0-3|B1:4-6 A1:P2|B1:P0 0-3"
--	"  C0-3:P2   .      .  C3-5:C4-5  .      .      .      .     0 A1:0-3|B1:4-5 A1:P2|B1:P0 0-3"
- 
- 	# Local partition invalidation tests
- 	" C0-3:X1-3:S+:P2 C1-3:X2-3:S+:P2 C2-3:X3:P2 \
-@@ -334,10 +335,10 @@ TEST_MATRIX=(
- 	# cpus_allowed/exclusive_cpus update tests
- 	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3 \
- 				   .    X:C4     .      P2     .     0 A1:4|A2:4|XA2:|XA3:|A3:4 \
--								       A1:P0|A3:P-2"
-+								       A1:P0|A3:P-2 ."
- 	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3 \
- 				   .     X1      .      P2     .     0 A1:0-3|A2:1-3|XA1:1|XA2:|XA3:|A3:2-3 \
--								       A1:P0|A3:P-2"
-+								       A1:P0|A3:P-2 ."
- 	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3 \
- 				   .      .     X3      P2     .     0 A1:0-2|A2:1-2|XA2:3|XA3:3|A3:3 \
- 								       A1:P0|A3:P2 3"
-@@ -385,7 +386,7 @@ TEST_MATRIX=(
- 	# A partition root with non-partition root parent is invalid| but it
- 	# can be made valid if its parent becomes a partition root too.
- 	"  C0-1:S+  C1      .    C2-3     .      P2     .      .     0 A1:0-1|A2:1 A1:P0|A2:P-2"
--	"  C0-1:S+ C1:P2    .    C2-3     P1     .      .      .     0 A1:0|A2:1 A1:P1|A2:P2"
-+	"  C0-1:S+ C1:P2    .    C2-3     P1     .      .      .     0 A1:0|A2:1 A1:P1|A2:P2 0-1|1"
- 
- 	# A non-exclusive cpuset.cpus change will invalidate partition and its siblings
- 	"  C0-1:P1   .      .    C2-3   C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P0"
-@@ -405,6 +406,17 @@ TEST_MATRIX=(
- 	# affect cpuset.cpus.exclusive.effective.
- 	" C1-4:X3:S+ C1:X3  .      .       .     C      .      .     0 A2:1-4|XA2:3"
- 
-+	# cpuset.cpus can contain CPUs that overlap a sibling cpuset with cpus.exclusive
-+	# but creating a local partition out of it is not allowed. Similarly and change
-+	# in cpuset.cpus of a local partition that overlaps sibling exclusive CPUs will
-+	# invalidate it.
-+	" CX1-4:S+ CX2-4:P2 .    C5-6      .     .      .      P1    0 A1:1|A2:2-4|B1:5-6|XB1:5-6 \
-+								       A1:P0|A2:P2:B1:P1 2-4"
-+	" CX1-4:S+ CX2-4:P2 .    C3-6      .     .      .      P1    0 A1:1|A2:2-4|B1:5-6 \
-+								       A1:P0|A2:P2:B1:P-1 2-4"
-+	" CX1-4:S+ CX2-4:P2 .    C5-6      .     .      .   P1:C3-6  0 A1:1|A2:2-4|B1:5-6 \
-+								       A1:P0|A2:P2:B1:P-1 2-4"
-+
- 	#  old-A1 old-A2 old-A3 old-B1 new-A1 new-A2 new-A3 new-B1 fail ECPUs Pstate ISOLCPUS
- 	#  ------ ------ ------ ------ ------ ------ ------ ------ ---- ----- ------ --------
- 	# Failure cases:
-@@ -419,6 +431,54 @@ TEST_MATRIX=(
- 	"   C0-3     .      .    C4-5   X3-5     .      .      .     1 A1:0-3|B1:4-5"
- )
- 
-+#
-+# Cpuset controller remote partition test matrix.
-+#
-+# Cgroup test hierarchy
-+#
-+#	      root
-+#	        |
-+#	      rtest (cpuset.cpus.exclusive=1-7)
-+#	        |
-+#	 +------+------+
-+#	 |             |
-+#	 p1            p2
-+#     +--+--+       +--+--+
-+#     |     |       |     |
-+#    c11   c12     c21   c22
-+#
-+# REMOTE_TEST_MATRIX uses the same notational convention as TEST_MATRIX.
-+# Only CPUs 1-7 should be used.
-+#
-+REMOTE_TEST_MATRIX=(
-+	#  old-p1 old-p2 old-c11 old-c12 old-c21 old-c22
-+	#  new-p1 new-p2 new-c11 new-c12 new-c21 new-c22 ECPUs Pstate ISOLCPUS
-+	#  ------ ------ ------- ------- ------- ------- ----- ------ --------
-+	" X1-3:S+ X4-6:S+ X1-2     X3     X4-5     X6 \
-+	      .      .     P2      P2      P2      P2    c11:1-2|c12:3|c21:4-5|c22:6 \
-+							 c11:P2|c12:P2|c21:P2|c22:P2 1-6"
-+	" CX1-4:S+   .   X1-2:P2   C3      .       .  \
-+	      .      .     .      C3-4     .       .     p1:3-4|c11:1-2|c12:3-4 \
-+							 p1:P0|c11:P2|c12:P0 1-2"
-+	" CX1-4:S+   .   X1-2:P2   .       .       .  \
-+	    X2-4     .     .       .       .       .     p1:1,3-4|c11:2 \
-+							 p1:P0|c11:P2 2"
-+	" CX1-5:S+   .   X1-2:P2 X3-5:P1   .       .  \
-+	    X2-4     .     .       .       .       .     p1:1,5|c11:2|c12:3-4 \
-+							 p1:P0|c11:P2|c12:P1 2"
-+	" CX1-4:S+   .   X1-2:P2 X3-4:P1   .       .  \
-+	      .      .     X2      .       .       .     p1:1|c11:2|c12:3-4 \
-+							 p1:P0|c11:P2|c12:P1 2"
-+	# p1 as member, will get its effective CPUs from its parent rtest
-+	" CX1-4:S+   .   X1-2:P2 X3-4:P1   .       .  \
-+	      .      .     X1     CX2-4    .       .     p1:5-7|c11:1|c12:2-4 \
-+							 p1:P0|c11:P2|c12:P1 1"
-+	" CX1-4:S+ X5-6:P1:S+ .    .       .       .  \
-+	      .      .   X1-2:P2  X4-5:P1  .     X1-7:P2 p1:3|c11:1-2|c12:4:c22:5-6 \
-+							 p1:P0|p2:P1|c11:P2|c12:P1|c22:P2 \
-+							 1-2,4-6|1-2,5-6"
-+)
-+
- #
- # Write to the cpu online file
- #  $1 - <c>=<v> where <c> = cpu number, <v> value to be written
-@@ -902,10 +962,11 @@ run_state_test()
- 		STATES=${11}
- 		ICPUS=${12}
- 
--		set_ctrl_state_noerr B1       $OLD_B1
- 		set_ctrl_state_noerr A1       $OLD_A1
- 		set_ctrl_state_noerr A1/A2    $OLD_A2
- 		set_ctrl_state_noerr A1/A2/A3 $OLD_A3
-+		set_ctrl_state_noerr B1       $OLD_B1
-+
- 		RETVAL=0
- 		set_ctrl_state A1       $NEW_A1; ((RETVAL += $?))
- 		set_ctrl_state A1/A2    $NEW_A2; ((RETVAL += $?))
-@@ -920,6 +981,76 @@ run_state_test()
- 	echo "All $I tests of $TEST PASSED."
- }
- 
-+#
-+# Run cpuset remote partition state transition test
-+#  $1 - test matrix name
-+#
-+run_remote_state_test()
-+{
-+	TEST=$1
-+	CONTROLLER=cpuset
-+	[[ -d rtest ]] || mkdir rtest
-+	cd rtest
-+	echo +cpuset > cgroup.subtree_control
-+	echo "1-7" > cpuset.cpus
-+	echo "1-7" > cpuset.cpus.exclusive
-+	CGROUP_LIST=".. . p1 p2 p1/c11 p1/c12 p2/c21 p2/c22"
-+	RESET_LIST="p1/c11 p1/c12 p2/c21 p2/c22 p1 p2"
-+	I=0
-+	eval CNT="\${#$TEST[@]}"
-+
-+	reset_cgroup_states
-+	console_msg "Running remote partition state transition test ..."
-+
-+	while [[ $I -lt $CNT ]]
-+	do
-+		echo "Running test $I ..." > $CONSOLE
-+		[[ $VERBOSE -gt 1 ]] && {
-+			echo ""
-+			eval echo \${$TEST[$I]}
-+		}
-+		eval set -- "\${$TEST[$I]}"
-+		OLD_p1=$1
-+		OLD_p2=$2
-+		OLD_c11=$3
-+		OLD_c12=$4
-+		OLD_c21=$5
-+		OLD_c22=$6
-+		NEW_p1=$7
-+		NEW_p2=$8
-+		NEW_c11=$9
-+		NEW_c12=${10}
-+		NEW_c21=${11}
-+		NEW_c22=${12}
-+		ECPUS=${13}
-+		STATES=${14}
-+		ICPUS=${15}
-+
-+		set_ctrl_state_noerr p1     $OLD_p1
-+		set_ctrl_state_noerr p2     $OLD_p2
-+		set_ctrl_state_noerr p1/c11 $OLD_c11
-+		set_ctrl_state_noerr p1/c12 $OLD_c12
-+		set_ctrl_state_noerr p2/c21 $OLD_c21
-+		set_ctrl_state_noerr p2/c22 $OLD_c22
-+
-+		RETVAL=0
-+		set_ctrl_state p1     $NEW_p1 ; ((RETVAL += $?))
-+		set_ctrl_state p2     $NEW_p2 ; ((RETVAL += $?))
-+		set_ctrl_state p1/c11 $NEW_c11; ((RETVAL += $?))
-+		set_ctrl_state p1/c12 $NEW_c12; ((RETVAL += $?))
-+		set_ctrl_state p2/c21 $NEW_c21; ((RETVAL += $?))
-+		set_ctrl_state p2/c22 $NEW_c22; ((RETVAL += $?))
-+
-+		[[ $RETVAL -ne 0 ]] && test_fail $I result
-+
-+		check_test_results $I "$ECPUS" "$STATES" "$ICPUS"
-+		((I++))
-+	done
-+	cd ..
-+	rmdir rtest
-+	echo "All $I tests of $TEST PASSED."
-+}
-+
- #
- # Testing the new "isolated" partition root type
- #
-@@ -1056,6 +1187,7 @@ test_inotify()
- 
- trap cleanup 0 2 3 6
- run_state_test TEST_MATRIX
-+run_remote_state_test REMOTE_TEST_MATRIX
- test_isolated
- test_inotify
- echo "All tests PASSED."
+Based on kvm/next.
+
+Changelog:
+
+v1[2] -> v2:
+- Re-add clone3_selftests.h for cgroup selftests (thanks Michal!)
+- Some comment fixes, patches 2 and 5 (thanks Maxim!).
+
+[1]: https://lore.kernel.org/all/CAOUHufZeADNp_y=Ng+acmMMgnTR=ZGFZ7z-m6O47O=CmJauWjw@mail.gmail.com/
+[2]: https://lore.kernel.org/kvm/20250327012350.1135621-1-jthoughton@google.com/
+
+James Houghton (3):
+  cgroup: selftests: Move cgroup_util into its own library
+  KVM: selftests: Build and link selftests/cgroup/lib into KVM selftests
+  KVM: selftests: access_tracking_perf_test: Use MGLRU for access
+    tracking
+
+Maxim Levitsky (1):
+  KVM: selftests: access_tracking_perf_test: Add option to skip the
+    sanity check
+
+Sean Christopherson (1):
+  KVM: selftests: Extract guts of THP accessor to standalone sysfs
+    helpers
+
+ tools/testing/selftests/cgroup/Makefile       |  21 +-
+ .../selftests/cgroup/{ => lib}/cgroup_util.c  |   2 +-
+ .../cgroup/{ => lib/include}/cgroup_util.h    |   4 +-
+ .../testing/selftests/cgroup/lib/libcgroup.mk |  14 +
+ tools/testing/selftests/kvm/Makefile.kvm      |   4 +-
+ .../selftests/kvm/access_tracking_perf_test.c | 263 ++++++++++--
+ .../selftests/kvm/include/lru_gen_util.h      |  51 +++
+ .../testing/selftests/kvm/include/test_util.h |   1 +
+ .../testing/selftests/kvm/lib/lru_gen_util.c  | 383 ++++++++++++++++++
+ tools/testing/selftests/kvm/lib/test_util.c   |  42 +-
+ 10 files changed, 728 insertions(+), 57 deletions(-)
+ rename tools/testing/selftests/cgroup/{ => lib}/cgroup_util.c (99%)
+ rename tools/testing/selftests/cgroup/{ => lib/include}/cgroup_util.h (99%)
+ create mode 100644 tools/testing/selftests/cgroup/lib/libcgroup.mk
+ create mode 100644 tools/testing/selftests/kvm/include/lru_gen_util.h
+ create mode 100644 tools/testing/selftests/kvm/lib/lru_gen_util.c
+
+
+base-commit: 782f9feaa9517caf33186dcdd6b50a8f770ed29b
 -- 
-2.48.1
+2.49.0.472.ge94155a9ec-goog
 
 
