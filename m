@@ -1,145 +1,156 @@
-Return-Path: <cgroups+bounces-7280-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7281-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2046EA77E64
-	for <lists+cgroups@lfdr.de>; Tue,  1 Apr 2025 17:00:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CE54A77F75
+	for <lists+cgroups@lfdr.de>; Tue,  1 Apr 2025 17:49:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D2AD7A410C
-	for <lists+cgroups@lfdr.de>; Tue,  1 Apr 2025 14:59:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA6043AF2C8
+	for <lists+cgroups@lfdr.de>; Tue,  1 Apr 2025 15:47:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5247205501;
-	Tue,  1 Apr 2025 15:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5250E20AF88;
+	Tue,  1 Apr 2025 15:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="U2OFy7cF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DViVJupI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB122046AE
-	for <cgroups@vger.kernel.org>; Tue,  1 Apr 2025 15:00:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624F81A5BB0;
+	Tue,  1 Apr 2025 15:46:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743519606; cv=none; b=RaWW5MvTjkOriRlbkfrT/BlZI2Fs9vPQWlzdVmHmqW4AR/9etzb99m922me2DBgv240NJUa7+qe3zSEdLxpRxI2VycZ7hhjbeoJ5ohJCr/lcCS1ZuMHRKKxUu+fHO55SgTFby7HrqLRvY2szweEdOc9GPebW+ll1Z6Slz6mjKEM=
+	t=1743522418; cv=none; b=oEddDURBk1mrq79R37phxX2Sg9XSeg1vD2cBnKkWiC2ufVdV58fZcHZclxG7eG3D7kIlA1iTWeO3XIQgn8zv73owRpG9tUn9pDn/8PFYDq6JKmbsk1yrrwg7vR5w7C1vaVeEmrhfGw9dp2VsbiAdowK/d3H0HhuszjF1nBV4Xaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743519606; c=relaxed/simple;
-	bh=zr0JB/HLjKttrKx+8iTToD2UVKmFBCMnGHEi26ulUYw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bKkoqFxX8enIi31yVqxdn5d7ocBL1FIIBxCNlSEXaP6wELoPZCYz4dJDdAIORpuG3phTlHHm0fh18TdBhm/XsxViJlKzsiHGtjgT/yiWjh97Rl1VaA1Juf3hpL710G230WQWVqfmVqnpDRJVOlrnYsda8HXpf67TvDM+QD3Btog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=U2OFy7cF; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4394a0c65fcso54873065e9.1
-        for <cgroups@vger.kernel.org>; Tue, 01 Apr 2025 08:00:04 -0700 (PDT)
+	s=arc-20240116; t=1743522418; c=relaxed/simple;
+	bh=2exn8/g/zCy7m9Fb6N5nhJsO1TkWXtqg+gMexa3uIWs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=C8uWIua7221BU0ObwOdQWzwKN+Lf2q3g1tEXxiOZt/zhWMBlAxU36fIBMBE7tX2U6dxwvnIOyXdA+gcidV4CszfCWxxasdNDuBhKyjEnQOqZVQIuJT0r+fS07rUO5CvUL9l7UTVe+BhDsVJ4+IP2ZVrCeC974PjzguhbsMQOJKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DViVJupI; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-ac2ab99e16eso48276866b.0;
+        Tue, 01 Apr 2025 08:46:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1743519603; x=1744124403; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zr0JB/HLjKttrKx+8iTToD2UVKmFBCMnGHEi26ulUYw=;
-        b=U2OFy7cFCfo2MeYGTLyxzJ/P7pD/d9EG/1hPIns2WCdRLDVUUjOW5UyUTz5DvIDJdx
-         etrGjCoLZu1WP3NCDg760YcO1FKGGJbDKG9fVEHQ3x8g0M48vazigGNwJNyEP1sm8sIb
-         Vw9uh9Jkt6ADmB1mMWxfwZMOWqn4PYOS2z8YfwW4h93sX9ZMAgStfzmK9zS6qNXgE384
-         5iGDC7Ve8PZp1TEgC2anA289xNA+rAmkKWM7cOoBOByD65bxRvB719zJ51nEOmRAlOGd
-         /onTEjZXKxfuh0VOl17k9+cKOsBzvdofbDJXjg1A4m21Rheoz5NS5kYc+3OXKC+OAyLk
-         kbRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743519603; x=1744124403;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1743522415; x=1744127215; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zr0JB/HLjKttrKx+8iTToD2UVKmFBCMnGHEi26ulUYw=;
-        b=P2Gfqjvkncc58yr2XjD+Ec4teB65/SXfivT+6g9YlO7CxafsOPTMrSFY0EchJFD5f/
-         D0JaxCaGOacHQG16fq5UAUcKaSEq4iKtr++dV1/RKbjhl/2testLK8064MDR6EQAV91r
-         yrgdVB8H+RYXzs2njX2RK3B6rW4y/F3TiM6hGx7gwI6/0O5vnTRlKvv1GuGCHxXr0q5o
-         pBUrWFTqGXFLElOTNOr75UZCcgQ52UdZNsb2glta6NhUE0KdU69dG+d+VYyrPhtLqUuy
-         KFBnhwuSOWXShSzijP6WZdqAW5/TqynF80MfunoMVcZlvk8M/1ZEDTEufZakY5dwvmot
-         Xy7g==
-X-Forwarded-Encrypted: i=1; AJvYcCVXuxjESudF5KN/ujw40sYV/cbEu4Xr5hBR4DTvN7PgC+B7DUoYvmap+r9fAo3CKsYxB9Deg629@vger.kernel.org
-X-Gm-Message-State: AOJu0YwEV/3+yPA0aNoT51iLSlFon52My+V1j3luAIwVjOohtPlhR4Fd
-	aQEruyZhMPznerHfNlBNZQ6SPLqNJAQJxo79b/M2xI3IgLhIvjKZAO1CxwYpqy4=
-X-Gm-Gg: ASbGncvU0vD4/zdMSHdNuV3JmjgxX+DGLaTijtrwODTZ9l0+xvnFxB5AeVfc/eycHj5
-	S+gOmA+gePD2N0Clb0HEX3nAlzqMRyvhlWa17f6IfBbrRmLh1hnb7bAFl9iIzLv9V1lGTdAKS4N
-	H3YcCI75fgy1PcPopHbNJIBrdtx0uYwP9hygDE605W4+oSGFgOUfv2MAfl1M4EJUwoL5Gv+1wBb
-	PHzS4EYRv7MaASslTA7oZYmnc2NBmVea+FWVS45bhpUygm5kEczRcFML8Es/JkCcAsEUJGxvsnw
-	LOlhKxJOgHEnsvRJahZIVc5EQJ5ctbLiwsm+EAJC8m/KNVY=
-X-Google-Smtp-Source: AGHT+IG9qiOpqHKnET2z+7+OYUzICkVCKNCjwa1bPumb3yrHpomG+RZkTXHeCPna/QWMaGS8InXddQ==
-X-Received: by 2002:a05:6000:400e:b0:391:2e31:c7e5 with SMTP id ffacd0b85a97d-39c120cc88bmr10593073f8f.6.1743519602797;
-        Tue, 01 Apr 2025 08:00:02 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d8fbbfebasm157897815e9.10.2025.04.01.08.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Apr 2025 08:00:02 -0700 (PDT)
-Date: Tue, 1 Apr 2025 17:00:00 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: Yosry Ahmed <yosry.ahmed@linux.dev>, Greg Thelen <gthelen@google.com>, 
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Eric Dumazet <edumzaet@google.com>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH] cgroup/rstat: avoid disabling irqs for O(num_cpu)
-Message-ID: <3mc7l6otsn4ufmyaiuqgpf64rfcukilgpjainslniwid6ajqm7@ltxbi5qennh7>
-References: <20250319071330.898763-1-gthelen@google.com>
- <u5kcjffhyrjsxagpdzas7q463ldgqtptaafozea3bv64odn2xt@agx42ih5m76l>
- <Z9r8TX0WiPWVffI0@google.com>
- <2vznaaotzkgkrfoi2qitiwdjinpl7ozhpz7w6n7577kaa2hpki@okh2mkqqhbkq>
- <Z-WIDWP1o4g-N5mg@google.com>
- <CAGudoHHgMOQuvi5SJwNQ58XB=tDasy_-5SULPykWXOca6b=sDQ@mail.gmail.com>
+        bh=2exn8/g/zCy7m9Fb6N5nhJsO1TkWXtqg+gMexa3uIWs=;
+        b=DViVJupI0U5IGEgDbY2k9OfWib+52x26vgkGK4cC2BEZOT46gbVjzZiv8BkqO3akDs
+         VHGJvOyLxpk97ZCxuu76kYNEyHHjeNGt0XLzOqnBAcG5VrnoCjtq/I1U2er/izK4cDMS
+         jHQB+selQBpNszJ3Wjp6tuUS0L+5MRDN0nqvDC8NwcuD86OJwZicxk2qsP1RJkvjipyr
+         1MhjW4+MYZfQWI5ZlDrXeg2is6TUKMisY1kuM+rHt6GlpOO8hK/P/5ojwDv30US8FTc+
+         FCy7xwumQSCVyXcVo1EhkpsquB1lmvzrpMPG0fTv8KzHMo2bpOSLcwaGAPpnCG0G+ID8
+         hSuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743522415; x=1744127215;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2exn8/g/zCy7m9Fb6N5nhJsO1TkWXtqg+gMexa3uIWs=;
+        b=o6uXBPDfMjBSATOVmD9QCUknw8j/ESK5BYVnZLak/zgiA5fWFJWNunk44wc4lnovcT
+         AYqRqcZwBgU4zbFav/WDPa1VSUypncblx7ugf/c8C9neJfRValOvaQn+bZVuzyP9S2EE
+         zFjo2iiUKffuXgOSIGb8kBp/ldc1GlH0UaHim3qD04XLdWmDFx6W3Fnj0QCIWKmhzkyc
+         D01ZPaJSvSTsA0fEylQniIPhNB2Mam1xU8NByJBaRXlau8Q/YmGwYKkovJJ/h9ekFLoZ
+         AzBVEYTBPojADfRCuV3jj6sZ5FVjKDqLciTYqob0LzvLbGbZSeKsDkBc0xhT1RNKr4mJ
+         vYdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVnl1rrsMcgcmnIIzPDrmC3kWCP0/G5y3qtePdot2jJr+zsE+DciMx45CZA7Id3dPyXa2pQ20CrZMrsJAPy@vger.kernel.org, AJvYcCWwA4PIrH3Zln/WnkxCMfyvoTDHTeSf5qFOoGXiZdb8WhaVrgrg3S3oYxk4v7JcOEwYBtzyCDmr@vger.kernel.org
+X-Gm-Message-State: AOJu0YyND7+9310177AVHQJX2UpicapMzPK7REFEUUGAytKRlxveSNr/
+	/G6Ax/daHiT+uJ8PxWCbmH+vPcM/UHPGXNzgzyTb5zZl/EkaoHpPzol6sj3QbQi6HRvzDFrI1NU
+	1YlmafeiowMOJDAdGsEq35QxuFP0=
+X-Gm-Gg: ASbGncvUHLsPxBACii10yNbSO/4FhR+ohlpoFcrDbuO/Y+wN+ci9O9QrQSQy1WaivaP
+	UG6B0uCx1SKZuWDPyMktmvuzUIXKvuSbgjcGW1LpZcMlQnm/y3P3jLHslszLaaF66yvTYjL0p/U
+	/RKCzdodIDiN/Rhf6Dq2uVGUuo
+X-Google-Smtp-Source: AGHT+IGSXvxdUrXZ2lnN0iPLAZDup7IGf6ZivA21FcXJjLnKJZtugd48GzBDlIr8iWl2CmynQ0cCnPmD28rAQZoUcj8=
+X-Received: by 2002:a17:906:6a22:b0:ac2:88df:6a5b with SMTP id
+ a640c23a62f3a-ac738bacaffmr1205063266b.42.1743522414446; Tue, 01 Apr 2025
+ 08:46:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lhtzb6rhkzysoxx3"
-Content-Disposition: inline
-In-Reply-To: <CAGudoHHgMOQuvi5SJwNQ58XB=tDasy_-5SULPykWXOca6b=sDQ@mail.gmail.com>
-
-
---lhtzb6rhkzysoxx3
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
+References: <20250319071330.898763-1-gthelen@google.com> <u5kcjffhyrjsxagpdzas7q463ldgqtptaafozea3bv64odn2xt@agx42ih5m76l>
+ <Z9r8TX0WiPWVffI0@google.com> <2vznaaotzkgkrfoi2qitiwdjinpl7ozhpz7w6n7577kaa2hpki@okh2mkqqhbkq>
+ <Z-WIDWP1o4g-N5mg@google.com> <CAGudoHHgMOQuvi5SJwNQ58XB=tDasy_-5SULPykWXOca6b=sDQ@mail.gmail.com>
+ <3mc7l6otsn4ufmyaiuqgpf64rfcukilgpjainslniwid6ajqm7@ltxbi5qennh7>
+In-Reply-To: <3mc7l6otsn4ufmyaiuqgpf64rfcukilgpjainslniwid6ajqm7@ltxbi5qennh7>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Tue, 1 Apr 2025 17:46:41 +0200
+X-Gm-Features: AQ5f1JroPhysgzd0ze9vsDBMoC1N2D5djQFkh-AXd9efTKxzlVR50N1KCOUO7dA
+Message-ID: <CAGudoHEF+dZmkoOJ2O_iaNEo5pR=BAbmYU8zuzKnfXcdKysj3A@mail.gmail.com>
 Subject: Re: [PATCH] cgroup/rstat: avoid disabling irqs for O(num_cpu)
-MIME-Version: 1.0
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Yosry Ahmed <yosry.ahmed@linux.dev>, Greg Thelen <gthelen@google.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Eric Dumazet <edumzaet@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello Mateusz.
+On Tue, Apr 1, 2025 at 5:00=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.com=
+> wrote:
+> On Thu, Mar 27, 2025 at 06:47:56PM +0100, Mateusz Guzik <mjguzik@gmail.co=
+m> wrote:
+> > I feel compelled to note atomics on x86-64 were expensive for as long
+> > as the architecture was around so I'm confused what's up with the
+> > resistance to the notion that they remain costly even with modern
+> > uarchs. If anything, imo claims that they are cheap require strong
+> > evidence.
+>
+> I don't there's strong resistance, your measurements show that it's not
+> negligible under given conditions.
+>
+> The question is -- how much benefit would flushers have in practice with
+> coalesced unlock-locks. There is the approach now with releasing for
+> each CPU that is simple and benefits latency of irq dependants.
+>
 
-On Thu, Mar 27, 2025 at 06:47:56PM +0100, Mateusz Guzik <mjguzik@gmail.com> wrote:
-> I feel compelled to note atomics on x86-64 were expensive for as long
-> as the architecture was around so I'm confused what's up with the
-> resistance to the notion that they remain costly even with modern
-> uarchs. If anything, imo claims that they are cheap require strong
-> evidence.
+Toggling every n cpus instead of every single time is trivial to do.
 
-I don't there's strong resistance, your measurements show that it's not
-negligible under given conditions.
+I'm trying to avoid sending a patch in hopes of not getting CC'ed for
+unrelated stuff later.
 
-The question is -- how much benefit would flushers have in practice with
-coalesced unlock-locks. There is the approach now with releasing for
-each CPU that is simple and benefits latency of irq dependants.
+> If you see practical issues with the limited throughputs of stat readers
+> (or flushers in general) because of this, please send a patch for
+> discussion that resolves it while preserving (some of) the irq freedom.
+>
 
-If you see practical issues with the limited throughputs of stat readers
-(or flushers in general) because of this, please send a patch for
-discussion that resolves it while preserving (some of) the irq freedom.
+This is some background maintenance work and it should do what's
+feasible to not eat CPU.
 
-Also there is ongoing work of splitting up flushing per controller --
-I'd like to see whether the given locks become "small" enough to require
-no _irq exclusion at all during flushing.
+The stock loop was behaving poorly in face of a high CPU count and it
+makes excellent sense make it toggle the lock in *some* capacity.
 
-Michal
+I just don't believe going from 400+ CPUs straight to literally 1
+every time is warranted. It seems the author felt justified with the
+notion that it does not add overhead on contemporary hardware, but per
+your own e-mail I demonstrated this does not hold.
 
---lhtzb6rhkzysoxx3
-Content-Type: application/pgp-signature; name="signature.asc"
+Is this really going to suffer for toggling every 8 CPUs? that's a 50x
+factor reduction
 
------BEGIN PGP SIGNATURE-----
+I would not be mailing here if the change was hard to do, but it
+really is not. it's literally a counter in a loop getting checked.
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ+v/bgAKCRAt3Wney77B
-SXa6AP9UY9UpmP/PK0EYqNZ2VFIM6F2xZ1gnkE8mn3oo41sCUwEAlM/YE51Kwt4+
-B5zUl6bs53aI6sxUZYxjYcpl1p3zbw0=
-=QqaZ
------END PGP SIGNATURE-----
+> Also there is ongoing work of splitting up flushing per controller --
+> I'd like to see whether the given locks become "small" enough to require
+> no _irq exclusion at all during flushing.
 
---lhtzb6rhkzysoxx3--
+the temp changes like the to stay for a long time.
+
+tl;dr I don't believe going straight from 400 to 1 was properly
+justified and I demonstrated how it hurts on a rather modest box. at
+the same time a (likely) more than enough improvement over the stock
+state can be trivially achieved while adding only a small fraction of
+the overhead.
+
+that said, there is bigger fish to fry elsewhere and I have no stake
+in this code, so I'm not going to mail any further about this.
+--=20
+Mateusz Guzik <mjguzik gmail.com>
 
