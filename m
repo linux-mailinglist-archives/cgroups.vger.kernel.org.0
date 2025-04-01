@@ -1,102 +1,87 @@
-Return-Path: <cgroups+bounces-7283-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7284-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F826A7812A
-	for <lists+cgroups@lfdr.de>; Tue,  1 Apr 2025 19:09:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E17A7818B
+	for <lists+cgroups@lfdr.de>; Tue,  1 Apr 2025 19:33:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50D23165209
-	for <lists+cgroups@lfdr.de>; Tue,  1 Apr 2025 17:09:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADE1218845FC
+	for <lists+cgroups@lfdr.de>; Tue,  1 Apr 2025 17:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4E720D509;
-	Tue,  1 Apr 2025 17:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9637120DD47;
+	Tue,  1 Apr 2025 17:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VJ18IaoB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PFW+cVhG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2664A2EAF7
-	for <cgroups@vger.kernel.org>; Tue,  1 Apr 2025 17:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 522CF9461;
+	Tue,  1 Apr 2025 17:33:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743527382; cv=none; b=kaM7R18v9ogRGTwe0eRP0BUl9ZP5foICL8l4niEpCzSaiPtdgfnejWceLbYPnXsyrVUL7s9HC1tKp0DphVgaRL0V7/VYfafKRDBhOsa1OTcDJmjCpmMibZa3WitSnNp3Tvo4xy+br0kZOfP5JGvU+chrvQrnAXeOqevScsn2hrI=
+	t=1743528829; cv=none; b=k+O/1EAOHK6QQlyCs8urMoN9zBQSa/fid1nwTvRmO/vRPnp9UzWRD+Ol+H2Qw0Z13rubS2whDmDWgigzk10qupsk9CWERwTwKJLWyxdPn+E5/YDiAqnujv4lOnXtdnUGCbNY4IbFCr+G1Db7yMDWU/usopI2kWm6+AuliuGloO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743527382; c=relaxed/simple;
-	bh=Vri8e4TPoGXUdzdKBijDhIyZkGhoJPzEHWiKCLNhT3E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fb1684x8OdJQT0nQ2Y/6bQhG9XxqVUwURyYyb8GaACJtqBjtOlwBmOwl4c9FFAJmhkstlXVrIyQHKS9n/t6HOtnmCNp/7mMcRKyoqaERtVGBA8gpnxNnTzcwsPz/rdgd6EAvnLC8W0SkUhaMxBI2sk6yaZarfwXBrkysQpAVhgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VJ18IaoB; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743527378;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=kBnwje6boVgUJxbB8QyKCSQJNJwRZTVBfAi5NgyEuuA=;
-	b=VJ18IaoBTFLbEqhjH/GJqSFX0CUSbMuXtCDIkqBd9RlIgYodyDWiMcVSRWvX9/mEIMTqyU
-	7qRcv7bLgfI+skHZYiqcEdbVNUjEHKMFcfkzvuV2wWmXNE5z9OInfX6RpUMJgef/FRBClH
-	RGpUIO8Q8JqC+eZyfJOcA3UM72wPBF4=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Tejun Heo <tj@kernel.org>
+	s=arc-20240116; t=1743528829; c=relaxed/simple;
+	bh=Ybi/75q3rVOd12LnlD05Pf2gzBLxdBOD04aayJo+Mlc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=axkrP++HJ/Jq7K43LtZ6ho3bBx1MJEmVdw3yYHpyEEvZxYSc8jwDh764PPkMPgpB+lCmhI2FekLDO9IeR/wlBoCVNWXRX7sj2lCANCukC9NqUGyHHk0szVSHUOqVuKm0PXXbxcU4LkFFnuqFAUih5wgjH0xbcw89Gnc5TEGAKIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PFW+cVhG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92EE1C4CEE4;
+	Tue,  1 Apr 2025 17:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743528827;
+	bh=Ybi/75q3rVOd12LnlD05Pf2gzBLxdBOD04aayJo+Mlc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PFW+cVhG/eeINvfuUc+YNO3aTlgH9IV9DlNoDlaVoo83t9qBC0+umU+9K4pfR0ydv
+	 dZSm3livdNmt5qqaQ/G9aA/z9A/0a0JfXasGVWJ8F85zSODLyMEBZJty8yX1X3V29/
+	 Z/wkleyjQz43Io2XStUaHIc888oE7tqzR37o6djtLm3TeSl+Z9bSYjPikKRR6dpbCm
+	 DDVekJDs7FDJb/uEZp8Lhm7GhLqoy0B0H9g2tCW4xGjeHIM/ak40/9Rd++SicMDlvG
+	 R0kA0v2X5QDaoAd/ZHh8oe7Jnf6PrtpMqrIgkPAx9jU/jeh7aw+8p3YBh+K7LtkWgG
+	 3QqCO4Uq2do8g==
+Date: Tue, 1 Apr 2025 07:33:46 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Breno Leitao <leitao@debian.org>,
+	Jakub Kicinski <kuba@kernel.org>, Breno Leitao <leitao@debian.org>,
 	Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Subject: [PATCH] cgroup: rstat: call cgroup_rstat_updated_list with cgroup_rstat_lock
-Date: Tue,  1 Apr 2025 10:09:12 -0700
-Message-ID: <20250401170912.2161953-1-shakeel.butt@linux.dev>
+Subject: Re: [PATCH] cgroup: rstat: call cgroup_rstat_updated_list with
+ cgroup_rstat_lock
+Message-ID: <Z-wjegcnvWTEfnnG@slm.duckdns.org>
+References: <20250401170912.2161953-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250401170912.2161953-1-shakeel.butt@linux.dev>
 
-The commit 093c8812de2d ("cgroup: rstat: Cleanup flushing functions and
-locking") during cleanup accidentally changed the code to call
-cgroup_rstat_updated_list() without cgroup_rstat_lock which is required.
-Fix it.
+On Tue, Apr 01, 2025 at 10:09:12AM -0700, Shakeel Butt wrote:
+> The commit 093c8812de2d ("cgroup: rstat: Cleanup flushing functions and
+> locking") during cleanup accidentally changed the code to call
+> cgroup_rstat_updated_list() without cgroup_rstat_lock which is required.
+> Fix it.
+> 
+> Fixes: 093c8812de2d ("cgroup: rstat: Cleanup flushing functions and locking")
+> Reported-by: Jakub Kicinski <kuba@kernel.org>
+> Reported-by: Breno Leitao <leitao@debian.org>
+> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+> Closes: https://lore.kernel.org/all/6564c3d6-9372-4352-9847-1eb3aea07ca4@linux.ibm.com/
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Fixes: 093c8812de2d ("cgroup: rstat: Cleanup flushing functions and locking")
-Reported-by: Jakub Kicinski <kuba@kernel.org>
-Reported-by: Breno Leitao <leitao@debian.org>
-Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Closes: https://lore.kernel.org/all/6564c3d6-9372-4352-9847-1eb3aea07ca4@linux.ibm.com/
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- kernel/cgroup/rstat.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Applied to cgroup/for-6.15-fixes.
 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 4bb587d5d34f..b2239156b7de 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -318,10 +318,11 @@ __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
- 
- 	might_sleep();
- 	for_each_possible_cpu(cpu) {
--		struct cgroup *pos = cgroup_rstat_updated_list(cgrp, cpu);
-+		struct cgroup *pos;
- 
- 		/* Reacquire for each CPU to avoid disabling IRQs too long */
- 		__cgroup_rstat_lock(cgrp, cpu);
-+		pos = cgroup_rstat_updated_list(cgrp, cpu);
- 		for (; pos; pos = pos->rstat_flush_next) {
- 			struct cgroup_subsys_state *css;
- 
+Thanks.
+
 -- 
-2.47.1
-
+tejun
 
