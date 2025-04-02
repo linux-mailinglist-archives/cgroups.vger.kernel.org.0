@@ -1,92 +1,93 @@
-Return-Path: <cgroups+bounces-7295-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7296-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 975BAA78F18
-	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 14:52:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A629BA78FA9
+	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 15:24:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3046B171E6D
-	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 12:51:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C49316C40D
+	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 13:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF21323A9B4;
-	Wed,  2 Apr 2025 12:49:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D6A239573;
+	Wed,  2 Apr 2025 13:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="b2Sh/U7m"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PecP5oMa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CCE23A58B
-	for <cgroups@vger.kernel.org>; Wed,  2 Apr 2025 12:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7644238152
+	for <cgroups@vger.kernel.org>; Wed,  2 Apr 2025 13:24:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743598183; cv=none; b=dMgjlcQ82loY1l7ooIKxm9CK7Dy4sq72UnXYkt2ssEJ2eYHD9b0XIinVkSO4KBbTNPNz3xLVkI1GUEMe1UQPo+DcfmN3i5I38g2GDNC7O3rpV3V6sh7988sHq7dKV3ZvtrSoFhaCYN9lyk2QedCnT6OHwxGjK0z51iN9cDYuY9o=
+	t=1743600290; cv=none; b=R/BDO+/xsc2ioneJyrmTNSJBedLWpYw3JxVbO/CjuKbn4WxWPgQ2Px3HsLHvxJZ7TxHc2ziVU0QK0P5LM4ge7+Jqx3SYn/asHJOMfqlLHOxkhkNo4Qy5MR3H5JXx9vPATV2LXfhML2CnAd3dByfoeGa5PVvpv1sa8DBI+Gsp2Fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743598183; c=relaxed/simple;
-	bh=aUi/Z8n9TTXLD5/8gJowzSAxrFxKSyhU6TOADq4w1uo=;
+	s=arc-20240116; t=1743600290; c=relaxed/simple;
+	bh=pYbm4oKrcbp95Dq1PTEEfwDfRZYpGx1EOdUtHv6e53Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X/o6L61e+1tFqGaQq+PwwGj/XA10Ql6/hfMlpPMjGWx2xongt9PH3eMHkaULUuNkHgGw/KpEmcd2EV6IVjyiw+tVaBBNzOlb5u76nvwdozPmTLhkNVhdl/lsgR9qWsM5jp6M1029A6I6gbguTpbtfEUxCR563X5/HEjSCI40zjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=b2Sh/U7m; arc=none smtp.client-ip=209.85.128.52
+	 Content-Type:Content-Disposition:In-Reply-To; b=Is6tLarFYAQixjcjTteSbbphxMz51j4R2rg4XDrJlyf58MtQSCTQCE5C4DXDVjyIKE8apdJ+QPxisUKAEdd+JFbd7IuMT4X+4ldkX4T9kL1vqFzvnC7Bw8BJjb+O3n0N3zBGzAikPAIEIqUyQNUX6rd/UC+lFbBAapy3VShO4nY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PecP5oMa; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-43d0c18e84eso31081335e9.3
-        for <cgroups@vger.kernel.org>; Wed, 02 Apr 2025 05:49:41 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4394a823036so62812585e9.0
+        for <cgroups@vger.kernel.org>; Wed, 02 Apr 2025 06:24:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1743598180; x=1744202980; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1743600287; x=1744205087; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aUi/Z8n9TTXLD5/8gJowzSAxrFxKSyhU6TOADq4w1uo=;
-        b=b2Sh/U7mr6oQzismt9NyLTxXITaBcbJLsTKvOQ0FOZyWNLzpAhqR62wiqJw5Gs1gqN
-         biQr0R34j621HFPCPFwR/a96V1tlkC7Tm72QrtLussMGWP+3vtgnG4A1olLlUc34KNew
-         WyghTFcBzojli/Ley5VIiG0FxtZDT+d++/Ket9aV0Tb9HkalhHk1iZXukHofviFmN9nf
-         H1IAoCcm/tunke2zSCfxinnVbtMwnl2+FSFKlatx6aUwaONsdfEuR31w0AebiFzq95CT
-         vMgpfv0leGJjSCPI5VMP5ERCctl50vdU30IyXRY0x8AI1JNi2m/5ZURMT3xlb0mI0zwj
-         5wFw==
+        bh=pYbm4oKrcbp95Dq1PTEEfwDfRZYpGx1EOdUtHv6e53Q=;
+        b=PecP5oMa8dowBg7EIkbM/rBwG1X7RkPAorXXoX7awMVINPcgk0Kpgr+YvwO8mdgmsc
+         KTzuaRZ1R2tKeJ/leN299rSfYWDWyPku21Awh/ild1mpuC87+Vr471mitfeCLkZ155Xx
+         rdmgEaSEioo5u0s0GaDlryIjkP3ejBNivSHiBtBW4WNimT0hfC7SFbwHc4J9hyJ1utPe
+         YCG/k9LjUfq6gr04FPPbiizOhEvmoJkApvM/vpHYuVFLn5Ptcnvhd4Ce3mQQAV9XSg0r
+         6UU4l/T/gY1llzpBEpBAzco0w3xQBd5Niua0c5KtHZg0Qf9SDjQ9drHuwotbmClPT+jP
+         AKQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743598180; x=1744202980;
+        d=1e100.net; s=20230601; t=1743600287; x=1744205087;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aUi/Z8n9TTXLD5/8gJowzSAxrFxKSyhU6TOADq4w1uo=;
-        b=Ih+MrJhYSZTxquTMHx02cWVS6MD+20mT1WXWT5+y2tGvcZw13KuZPv8jbKaH/HzlFS
-         98aKhxSeCuX1ZMBUOpJnfNlCfNpFKxpiMfWuwfSET66c+wr/Rlbi5vs/Gb64+i+jNM5+
-         AXFXbeFlDgTD5IALXsASuUsyxi7J8T3oq2f/fwhbTvzMWmM6ikTAAM7MofD7YJbFEYbx
-         cN/7RPMSw1a+34h3aH9pG89O/o68gOR/bINkSRl6GAn9jIgU6Mr6e6XbyjMlhNgBRXJg
-         ZRpptTbM59r+/iVOrs0n2rfEGvaPldv5XBlIP11tPNNm8m1CoK5b/trmuipfjK5cyNme
-         yGNg==
-X-Forwarded-Encrypted: i=1; AJvYcCUoD7DbBjUwdiaCGuhGCi8MIef/6nliRIhzrk3BHEu52oeOTRSZSP+7QomRg7SpTMWVP5SGl+zJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YyPYaK8dhRYeVd1uLqm+7r4QPQpEqpPkX9FiqBQ2A5S1izR96Pv
-	6QnG1k8T134gO0Olu/TlbV3QTaoX3vzFmb0+eqgED9EtwDQO0EEP2F5MhESohhk=
-X-Gm-Gg: ASbGncuvqHVvDyKJUv08b/yylXCw0Ej1pUA1tNWKYNN+cYbJuziykBAMEE8TpFPQo4P
-	AjLb3h9NbO2H+AsVmKd3l+WMkGWsJCQE58AaIxrBs6w0fydQTGTh5jOK7ekTV722FLPYdOEfmyn
-	CgC6Cxjd2TjUI4I+YEaSWjznUsmhNq1qmz9gRzjKk2N0ikjyzXEv29AGiddaLHTyIuI/6MMALRC
-	IDgtnQ2Pkn/9LR9kOtRiIq+mH3JPcABMhFu1YFNNnXkkF94FX+Uc8YH//bAkcxsmFgZlxR/Rk70
-	2y5jKJAw99vRs7s0mi2ryGV2coUN9vhi6Twy3JWgv9J9JoI15w/2HSg6gg==
-X-Google-Smtp-Source: AGHT+IHA46HXuPsXbY5rxefnfJga1zY4ePIGw6eCqg+pFZUSEaQdfx7+YGmvIZW2a9SOFb5L7a+GUg==
-X-Received: by 2002:a05:600c:4f0e:b0:43d:abd:ad1c with SMTP id 5b1f17b1804b1-43db61b3623mr137169545e9.6.1743598179759;
-        Wed, 02 Apr 2025 05:49:39 -0700 (PDT)
+        bh=pYbm4oKrcbp95Dq1PTEEfwDfRZYpGx1EOdUtHv6e53Q=;
+        b=o0byhGxCi7RkTNPR3td8FYiWdtElJRWT+D8rNWjfFTyX11CrtiOnMpINuXx9BpNftT
+         0iEL08izRYv9c/jcD/BGHB/uhHje+STbCxKnw4uqyao0GvN03l12qTcbpLz2aNoLa3Hu
+         2i5Dfc7DCkQf/41kIAL8fe0d/3XM0p5ESfdKgEcZkEIUKIgV0dTODAKnH8R2wA89734X
+         UjK909DbOyXKNIsq57Lm6HKkIWgM5xQQbdoFETG7rRtoXf1jPqgkHKCypeG3zJN4e6f9
+         AFnu4InZPdZKllq+7PWcfyBwED1p60sHzqrQEE7W8pN/0orkY2zeCgB5U4F9KaPxmhAT
+         vQjw==
+X-Forwarded-Encrypted: i=1; AJvYcCXBXrslumtvd3g/fm2YW7j84gY1DN8sI2UVJJL7+vXQsVBgHN2iKG8CvfEuC+PdWi5nNeiA2RFQ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4sUT1OiAn5US440zdr5dlsdx9kkSeLGvO5gspCxacF+ZijFWU
+	2nRsM44lj96ULlAH4mRHA3VMyMfoQQxZARL+qqftlywSc8OG3CZwX1HeqkHonQY=
+X-Gm-Gg: ASbGncvaFSqXvHqa+z9ZG4JCQ0zKWlEK06aBBpepq0HFHkNDcQLsfrmNy8lQfI1nBpT
+	qcvqYjKB8Unpn+dIG/hOBnwWJhd7HumKbDH3ATn7wert1Op4fFS4Y6EjidirCa5hWbSCIIkAo7t
+	HnR6BrYhLQ8FAdtZOgct0ohgl+R72O6kqfYq8o1uz4BPDwQ8nOEBMhzBGl6rKBDuLSBxNSWzvi+
+	qrVdS/O9JV8QvZi4p1JMEL2r1MExHmGEfChjXmpw2S0F0CK+YyEKFfLvFFYP/q4wq79jic79P5j
+	47Ef1YyN6CvNSfAKBvHq348kH3fU5aQb+RgW4XESQucCs5g=
+X-Google-Smtp-Source: AGHT+IEkZXhkt4dJXs5ZW/Wkxvhp30py7B3KBHkoW/nccx47rr6X5SfhnzuAV8/c487Johxbo/aSgw==
+X-Received: by 2002:a05:600c:1f0e:b0:43c:f78d:82eb with SMTP id 5b1f17b1804b1-43eb5c29e54mr28042485e9.15.1743600286855;
+        Wed, 02 Apr 2025 06:24:46 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43eb61116ffsm20164135e9.32.2025.04.02.05.49.39
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c0b79e467sm17067309f8f.79.2025.04.02.06.24.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Apr 2025 05:49:39 -0700 (PDT)
-Date: Wed, 2 Apr 2025 14:49:37 +0200
+        Wed, 02 Apr 2025 06:24:46 -0700 (PDT)
+Date: Wed, 2 Apr 2025 15:24:44 +0200
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: "Shashank.Mahadasyam@sony.com" <Shashank.Mahadasyam@sony.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Waiman Long <longman@redhat.com>, 
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Shinya.Takumi@sony.com" <Shinya.Takumi@sony.com>
-Subject: Re: [PATCH 2/2] cgroup, docs: Document interaction of RT processes
- with cpu controller
-Message-ID: <sgwmpdabmhcu3h7yxxjq3x4n6hk6p4m5bsopimfbmt46lokj7k@c4oood4anage>
-References: <20250305-rt-and-cpu-controller-doc-v1-0-7b6a6f5ff43d@sony.com>
- <20250305-rt-and-cpu-controller-doc-v1-2-7b6a6f5ff43d@sony.com>
- <thhej7ngafu6ivtpcjs2czjidd5xqwihvrgqskvcrd3w65fnp4@inmu3wuofcpr>
- <OSZPR01MB67118A17B171687DB2F6FBC993CA2@OSZPR01MB6711.jpnprd01.prod.outlook.com>
- <2vvwedzioiopvjhah4jxlc6a5gq4uayyj2s5gtjs455yojkhnn@rkxanxmh3hmu>
- <OSZPR01MB6711D710EC3199A654434D6193A02@OSZPR01MB6711.jpnprd01.prod.outlook.com>
+To: Chen Yu <yu.c.chen@intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Tim Chen <tim.c.chen@intel.com>, Aubrey Li <aubrey.li@intel.com>, 
+	Rik van Riel <riel@surriel.com>, Raghavendra K T <raghavendra.kt@amd.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
+	Xunlei Pang <xlpang@linux.alibaba.com>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, Chen Yu <yu.chen.surf@foxmail.com>
+Subject: Re: [PATCH] sched/numa: Add statistics of numa balance task
+ migration and swap
+Message-ID: <ufu5fuhwzzdhjoltgt5bpoqaonqur4t44phmz4oninzqlqpop7@hbwza7jri3ly>
+References: <20250402010611.3204674-1-yu.c.chen@intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -94,68 +95,52 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2kufip5v65ii35bl"
+	protocol="application/pgp-signature"; boundary="4tucdzeycj4q3iyr"
 Content-Disposition: inline
-In-Reply-To: <OSZPR01MB6711D710EC3199A654434D6193A02@OSZPR01MB6711.jpnprd01.prod.outlook.com>
+In-Reply-To: <20250402010611.3204674-1-yu.c.chen@intel.com>
 
 
---2kufip5v65ii35bl
+--4tucdzeycj4q3iyr
 Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 2/2] cgroup, docs: Document interaction of RT processes
- with cpu controller
+Subject: Re: [PATCH] sched/numa: Add statistics of numa balance task
+ migration and swap
 MIME-Version: 1.0
 
-Hello.
+Hello Chen.
 
-On Fri, Mar 28, 2025 at 10:45:02AM +0000, "Shashank.Mahadasyam@sony.com" <S=
-hashank.Mahadasyam@sony.com> wrote:
-> Given the different scheduling classes (fair, ext, rt, deadline), it woul=
-d be nice
-> to document which cpu interface files are related to which scheduling cla=
-sses.
-> Like, cpu.idle applies to only the fair class, cpu.weight applies to the =
-fair class,
-> as well as ext, if configured so, cpu.stat accounts for all classes
-> (I'm not sure about this, I haven't tested this yet), etc.
+On Wed, Apr 02, 2025 at 09:06:11AM +0800, Chen Yu <yu.c.chen@intel.com> wro=
+te:
+> On system with NUMA balancing enabled, it is found that tracking
+> the task activities due to NUMA balancing is helpful.
+=2E..
+> The following two new fields:
 >=20
-> The proposed patch is in this direction, but just for the rt class. Any s=
-uggestions
-> on how this intent can be made clearer? How about something like this:
-
-Classes are implementation terminology but userspace knows this under
-scheduling policies (SCHED_NORMAL,..., SCHED_EXT). It might be better to
-use that categories.
-
+> numa_task_migrated
+> numa_task_swapped
 >=20
-> CPU Interface Files
-> ~~~~~~~~~~~~~~~~~~~
->=20
-> All time durations are in microseconds. The scheduling classes mentioned =
-beside
-> the interface files are the only classes they are related to.
+> will be displayed in both
+> /sys/fs/cgroup/{GROUP}/memory.stat and /proc/{PID}/sched
 
-list of related <categories> is only indicative as implementation may change
+Why is the field /proc/$pid/sched not enough?
 
-(Even when talking about policies I think the relation still tends to be
-an implementation detail, so I'd also add something like the above. But
-I think it's good to have such an overview to know what is where
-implemented.)
+Also, you may want to update Documentation/admin-guide/cgroup-v2.rst
+too.
 
-HTH,
+Thanks,
 Michal
 
---2kufip5v65ii35bl
+--4tucdzeycj4q3iyr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ+0yXwAKCRAt3Wney77B
-Sen5AP0ZtZaIVCRo3cNtvvg0SOpN8uIKAvPRV5GdXzTIPDZ08AEA/czSx5CfQ1db
-EXVjwOZJPy3XFWGw9czhrUmytYWk5gs=
-=HEly
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ+06mgAKCRAt3Wney77B
+SW8CAQCXwIcQIqtvT1iWJCuoc6huUPtKvhF+cl6qPbYfLvIufwEAltSTP9q9VKKA
+ptKpUW0AUPlg9fYltaInQYPUopxCJgk=
+=/Gj8
 -----END PGP SIGNATURE-----
 
---2kufip5v65ii35bl--
+--4tucdzeycj4q3iyr--
 
