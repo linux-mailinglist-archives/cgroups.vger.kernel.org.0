@@ -1,146 +1,178 @@
-Return-Path: <cgroups+bounces-7296-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7297-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A629BA78FA9
-	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 15:24:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3119A78FF5
+	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 15:36:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C49316C40D
-	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 13:24:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E91317A576D
+	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 13:35:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D6A239573;
-	Wed,  2 Apr 2025 13:24:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511C923C397;
+	Wed,  2 Apr 2025 13:35:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PecP5oMa"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="hQvSdOGQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7644238152
-	for <cgroups@vger.kernel.org>; Wed,  2 Apr 2025 13:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B1723A9B0;
+	Wed,  2 Apr 2025 13:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743600290; cv=none; b=R/BDO+/xsc2ioneJyrmTNSJBedLWpYw3JxVbO/CjuKbn4WxWPgQ2Px3HsLHvxJZ7TxHc2ziVU0QK0P5LM4ge7+Jqx3SYn/asHJOMfqlLHOxkhkNo4Qy5MR3H5JXx9vPATV2LXfhML2CnAd3dByfoeGa5PVvpv1sa8DBI+Gsp2Fk=
+	t=1743600902; cv=none; b=F5WA0t7Z6uTDaJf78Wjp7rcDZPDkxQ0ZZAcAUXtp4xUXeeKiAm5GX4IY7VcXLtlElqwF3adxq1/Mrn/xXmJipjWdkVVmpFkMXknTX9VjoGCbFU8tjTa7IdXR5sQ7gnPiBjv10abTPnoH8o4Xv+wpFkimzHpeG4JXuBaniMmuz4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743600290; c=relaxed/simple;
-	bh=pYbm4oKrcbp95Dq1PTEEfwDfRZYpGx1EOdUtHv6e53Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Is6tLarFYAQixjcjTteSbbphxMz51j4R2rg4XDrJlyf58MtQSCTQCE5C4DXDVjyIKE8apdJ+QPxisUKAEdd+JFbd7IuMT4X+4ldkX4T9kL1vqFzvnC7Bw8BJjb+O3n0N3zBGzAikPAIEIqUyQNUX6rd/UC+lFbBAapy3VShO4nY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PecP5oMa; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4394a823036so62812585e9.0
-        for <cgroups@vger.kernel.org>; Wed, 02 Apr 2025 06:24:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1743600287; x=1744205087; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pYbm4oKrcbp95Dq1PTEEfwDfRZYpGx1EOdUtHv6e53Q=;
-        b=PecP5oMa8dowBg7EIkbM/rBwG1X7RkPAorXXoX7awMVINPcgk0Kpgr+YvwO8mdgmsc
-         KTzuaRZ1R2tKeJ/leN299rSfYWDWyPku21Awh/ild1mpuC87+Vr471mitfeCLkZ155Xx
-         rdmgEaSEioo5u0s0GaDlryIjkP3ejBNivSHiBtBW4WNimT0hfC7SFbwHc4J9hyJ1utPe
-         YCG/k9LjUfq6gr04FPPbiizOhEvmoJkApvM/vpHYuVFLn5Ptcnvhd4Ce3mQQAV9XSg0r
-         6UU4l/T/gY1llzpBEpBAzco0w3xQBd5Niua0c5KtHZg0Qf9SDjQ9drHuwotbmClPT+jP
-         AKQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743600287; x=1744205087;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pYbm4oKrcbp95Dq1PTEEfwDfRZYpGx1EOdUtHv6e53Q=;
-        b=o0byhGxCi7RkTNPR3td8FYiWdtElJRWT+D8rNWjfFTyX11CrtiOnMpINuXx9BpNftT
-         0iEL08izRYv9c/jcD/BGHB/uhHje+STbCxKnw4uqyao0GvN03l12qTcbpLz2aNoLa3Hu
-         2i5Dfc7DCkQf/41kIAL8fe0d/3XM0p5ESfdKgEcZkEIUKIgV0dTODAKnH8R2wA89734X
-         UjK909DbOyXKNIsq57Lm6HKkIWgM5xQQbdoFETG7rRtoXf1jPqgkHKCypeG3zJN4e6f9
-         AFnu4InZPdZKllq+7PWcfyBwED1p60sHzqrQEE7W8pN/0orkY2zeCgB5U4F9KaPxmhAT
-         vQjw==
-X-Forwarded-Encrypted: i=1; AJvYcCXBXrslumtvd3g/fm2YW7j84gY1DN8sI2UVJJL7+vXQsVBgHN2iKG8CvfEuC+PdWi5nNeiA2RFQ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4sUT1OiAn5US440zdr5dlsdx9kkSeLGvO5gspCxacF+ZijFWU
-	2nRsM44lj96ULlAH4mRHA3VMyMfoQQxZARL+qqftlywSc8OG3CZwX1HeqkHonQY=
-X-Gm-Gg: ASbGncvaFSqXvHqa+z9ZG4JCQ0zKWlEK06aBBpepq0HFHkNDcQLsfrmNy8lQfI1nBpT
-	qcvqYjKB8Unpn+dIG/hOBnwWJhd7HumKbDH3ATn7wert1Op4fFS4Y6EjidirCa5hWbSCIIkAo7t
-	HnR6BrYhLQ8FAdtZOgct0ohgl+R72O6kqfYq8o1uz4BPDwQ8nOEBMhzBGl6rKBDuLSBxNSWzvi+
-	qrVdS/O9JV8QvZi4p1JMEL2r1MExHmGEfChjXmpw2S0F0CK+YyEKFfLvFFYP/q4wq79jic79P5j
-	47Ef1YyN6CvNSfAKBvHq348kH3fU5aQb+RgW4XESQucCs5g=
-X-Google-Smtp-Source: AGHT+IEkZXhkt4dJXs5ZW/Wkxvhp30py7B3KBHkoW/nccx47rr6X5SfhnzuAV8/c487Johxbo/aSgw==
-X-Received: by 2002:a05:600c:1f0e:b0:43c:f78d:82eb with SMTP id 5b1f17b1804b1-43eb5c29e54mr28042485e9.15.1743600286855;
-        Wed, 02 Apr 2025 06:24:46 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c0b79e467sm17067309f8f.79.2025.04.02.06.24.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Apr 2025 06:24:46 -0700 (PDT)
-Date: Wed, 2 Apr 2025 15:24:44 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Yu <yu.c.chen@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Tim Chen <tim.c.chen@intel.com>, Aubrey Li <aubrey.li@intel.com>, 
-	Rik van Riel <riel@surriel.com>, Raghavendra K T <raghavendra.kt@amd.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	Xunlei Pang <xlpang@linux.alibaba.com>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, Chen Yu <yu.chen.surf@foxmail.com>
-Subject: Re: [PATCH] sched/numa: Add statistics of numa balance task
- migration and swap
-Message-ID: <ufu5fuhwzzdhjoltgt5bpoqaonqur4t44phmz4oninzqlqpop7@hbwza7jri3ly>
-References: <20250402010611.3204674-1-yu.c.chen@intel.com>
+	s=arc-20240116; t=1743600902; c=relaxed/simple;
+	bh=N/oBIehD8eRXwpCNk7k6ba24AxCMzaiO+1pmCM3xXfo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SdAQQegXawKHQOTdphj8EMMs2tRElm8v43WspLm3Fu5SJ2uTihT/PHkMUO/GXi7YSQfxPq7sauCCt2TxeC5kp3fUfjv1V3Mo/V7XxltearNA7iY+oPFH8DvzKWudz7UTC0ei74Jdz4IVCDrQ67p9jQwlZrylabnhgKyw3HmA18w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=hQvSdOGQ; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 532A7cOn032720;
+	Wed, 2 Apr 2025 13:34:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:to; s=pp1;
+	 bh=WyEyXUzQBG5YYWYNGano5THo76MoLBzhRYTP61tbVHg=; b=hQvSdOGQLXH1
+	biParECBb3mpF18P129RUrhEDgFDbZkodAxrPyaAahoufJkKahT8k3PqhYf7QpD+
+	+jSjMh1XdxuugkDsx2OJOG6m1NPdPOcJLObyrOD7ZuyE5s0xut/HUd+tFqdD+vKr
+	uepOc/HDhuNoYZNL3WAMiH5hVrwDvkObFtJXNYgEu657kE0xs/d1wo2qSR8y9LDH
+	B5Zb+JtGKGgPgBUhNlFQdtcrJo8pT7lAUG1UUjWyIuLsd+/1Ysf/hSnSoOsI10XX
+	XtsBq8g7Phj/GrERqKNjMN8LoSDyV0mSZsWJGswbmAgMEJpILisPF6zfWDCuaXIG
+	yRTE4ngZGw==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45rwmaaua7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 02 Apr 2025 13:34:06 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 532Cj0xn001558;
+	Wed, 2 Apr 2025 13:34:05 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45rwmaaua3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 02 Apr 2025 13:34:05 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 532D34Uk010394;
+	Wed, 2 Apr 2025 13:34:04 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 45pv6p0305-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 02 Apr 2025 13:34:04 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 532DY3Br29819586
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 2 Apr 2025 13:34:03 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 613155805E;
+	Wed,  2 Apr 2025 13:34:03 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8634B58056;
+	Wed,  2 Apr 2025 13:33:55 +0000 (GMT)
+Received: from [9.43.67.35] (unknown [9.43.67.35])
+	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  2 Apr 2025 13:33:55 +0000 (GMT)
+Message-ID: <3ba327b9-3020-4a63-9623-e6eea0120056@linux.ibm.com>
+Date: Wed, 2 Apr 2025 19:03:54 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4tucdzeycj4q3iyr"
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sched/numa: Add statistics of numa balance task migration
+ and swap
+To: Chen Yu <yu.c.chen@intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeel.butt@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@intel.com>, Aubrey Li <aubrey.li@intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Raghavendra K T <raghavendra.kt@amd.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Xunlei Pang <xlpang@linux.alibaba.com>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Chen Yu <yu.chen.surf@foxmail.com>,
+        Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+References: <20250402010611.3204674-1-yu.c.chen@intel.com>
+Content-Language: en-US
+Reply-To: 20250402010611.3204674-1-yu.c.chen@intel.com
+From: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
 In-Reply-To: <20250402010611.3204674-1-yu.c.chen@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: HXJV5Q-jqXHxdR2AcOHw3yx69yUfEuGO
+X-Proofpoint-ORIG-GUID: d9-NvWT-09rPiaSGGOiXdBzqDhqISW8d
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-04-02_05,2025-04-02_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 priorityscore=1501 impostorscore=0 phishscore=0 clxscore=1011
+ mlxlogscore=999 bulkscore=0 suspectscore=0 mlxscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502280000 definitions=main-2504020085
 
+Hi Chen Yu,
 
---4tucdzeycj4q3iyr
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] sched/numa: Add statistics of numa balance task
- migration and swap
-MIME-Version: 1.0
-
-Hello Chen.
-
-On Wed, Apr 02, 2025 at 09:06:11AM +0800, Chen Yu <yu.c.chen@intel.com> wro=
-te:
+On 02/04/25 06:36, Chen Yu wrote:
 > On system with NUMA balancing enabled, it is found that tracking
-> the task activities due to NUMA balancing is helpful.
-=2E..
+> the task activities due to NUMA balancing is helpful. NUMA balancing
+> has two mechanisms for task migration: one is to migrate the task to
+> an idle CPU in its preferred node, the other is to swap tasks on
+> different nodes if they are on each other's preferred node.
+> 
+> The kernel already has NUMA page migration statistics in
+> /sys/fs/cgroup/mytest/memory.stat and /proc/{PID}/sched.
+> but does not have statistics for task migration/swap.
+> Add the task migration and swap count accordingly.
+> 
 > The following two new fields:
->=20
+> 
 > numa_task_migrated
 > numa_task_swapped
->=20
+> 
 > will be displayed in both
 > /sys/fs/cgroup/{GROUP}/memory.stat and /proc/{PID}/sched
 
-Why is the field /proc/$pid/sched not enough?
+I applied this patch, but I still don't see the two new fields
+in /proc/{PID}/sched.
 
-Also, you may want to update Documentation/admin-guide/cgroup-v2.rst
-too.
+Am I missing any additional steps?
 
 Thanks,
-Michal
+Madadi Vineeth Reddy
 
---4tucdzeycj4q3iyr
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> Previous RFC version can be found here:
+> https://lore.kernel.org/lkml/1847c5ef828ad4835a35e3a54b88d2e13bce0eea.1740483690.git.yu.c.chen@intel.com/
+> 
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+> RFC->v1: Rename the nr_numa_task_migrated to
+>          numa_task_migrated, and nr_numa_task_swapped
+>          numa_task_swapped in /proc/{PID}/sched,
+>          so both cgroup's memory.stat and task's
+>          sched have the same field name.
+> ---
+>  include/linux/sched.h         |  4 ++++
+>  include/linux/vm_event_item.h |  2 ++
+>  kernel/sched/core.c           | 10 ++++++++--
+>  kernel/sched/debug.c          |  4 ++++
+>  mm/memcontrol.c               |  2 ++
+>  mm/vmstat.c                   |  2 ++
+>  6 files changed, 22 insertions(+), 2 deletions(-)
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ+06mgAKCRAt3Wney77B
-SW8CAQCXwIcQIqtvT1iWJCuoc6huUPtKvhF+cl6qPbYfLvIufwEAltSTP9q9VKKA
-ptKpUW0AUPlg9fYltaInQYPUopxCJgk=
-=/Gj8
------END PGP SIGNATURE-----
-
---4tucdzeycj4q3iyr--
 
