@@ -1,178 +1,142 @@
-Return-Path: <cgroups+bounces-7297-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7298-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3119A78FF5
-	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 15:36:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC98A79016
+	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 15:42:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E91317A576D
-	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 13:35:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF8013A9A3B
+	for <lists+cgroups@lfdr.de>; Wed,  2 Apr 2025 13:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511C923C397;
-	Wed,  2 Apr 2025 13:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA7CD23771C;
+	Wed,  2 Apr 2025 13:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="hQvSdOGQ"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BSwxymEM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B1723A9B0;
-	Wed,  2 Apr 2025 13:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C014A1DA5F
+	for <cgroups@vger.kernel.org>; Wed,  2 Apr 2025 13:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743600902; cv=none; b=F5WA0t7Z6uTDaJf78Wjp7rcDZPDkxQ0ZZAcAUXtp4xUXeeKiAm5GX4IY7VcXLtlElqwF3adxq1/Mrn/xXmJipjWdkVVmpFkMXknTX9VjoGCbFU8tjTa7IdXR5sQ7gnPiBjv10abTPnoH8o4Xv+wpFkimzHpeG4JXuBaniMmuz4w=
+	t=1743601231; cv=none; b=d+F5I0Oa21VAi6sjW25j+dDXqzYs+/yDVFzTl201um7JMH+dessMOlT+SLHhWNPAdBN2239dd9yECJg50jDXf415Jg5RvtwcmI88CCPfWImGvp0ze28vhHWjHHf/qi8iGcggU0wyzCzaIrFfcDceVpyPtlLzvQIB4AtSLuHdy5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743600902; c=relaxed/simple;
-	bh=N/oBIehD8eRXwpCNk7k6ba24AxCMzaiO+1pmCM3xXfo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SdAQQegXawKHQOTdphj8EMMs2tRElm8v43WspLm3Fu5SJ2uTihT/PHkMUO/GXi7YSQfxPq7sauCCt2TxeC5kp3fUfjv1V3Mo/V7XxltearNA7iY+oPFH8DvzKWudz7UTC0ei74Jdz4IVCDrQ67p9jQwlZrylabnhgKyw3HmA18w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=hQvSdOGQ; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 532A7cOn032720;
-	Wed, 2 Apr 2025 13:34:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:to; s=pp1;
-	 bh=WyEyXUzQBG5YYWYNGano5THo76MoLBzhRYTP61tbVHg=; b=hQvSdOGQLXH1
-	biParECBb3mpF18P129RUrhEDgFDbZkodAxrPyaAahoufJkKahT8k3PqhYf7QpD+
-	+jSjMh1XdxuugkDsx2OJOG6m1NPdPOcJLObyrOD7ZuyE5s0xut/HUd+tFqdD+vKr
-	uepOc/HDhuNoYZNL3WAMiH5hVrwDvkObFtJXNYgEu657kE0xs/d1wo2qSR8y9LDH
-	B5Zb+JtGKGgPgBUhNlFQdtcrJo8pT7lAUG1UUjWyIuLsd+/1Ysf/hSnSoOsI10XX
-	XtsBq8g7Phj/GrERqKNjMN8LoSDyV0mSZsWJGswbmAgMEJpILisPF6zfWDCuaXIG
-	yRTE4ngZGw==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45rwmaaua7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 02 Apr 2025 13:34:06 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 532Cj0xn001558;
-	Wed, 2 Apr 2025 13:34:05 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45rwmaaua3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 02 Apr 2025 13:34:05 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 532D34Uk010394;
-	Wed, 2 Apr 2025 13:34:04 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 45pv6p0305-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 02 Apr 2025 13:34:04 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 532DY3Br29819586
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 2 Apr 2025 13:34:03 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 613155805E;
-	Wed,  2 Apr 2025 13:34:03 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8634B58056;
-	Wed,  2 Apr 2025 13:33:55 +0000 (GMT)
-Received: from [9.43.67.35] (unknown [9.43.67.35])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  2 Apr 2025 13:33:55 +0000 (GMT)
-Message-ID: <3ba327b9-3020-4a63-9623-e6eea0120056@linux.ibm.com>
-Date: Wed, 2 Apr 2025 19:03:54 +0530
+	s=arc-20240116; t=1743601231; c=relaxed/simple;
+	bh=2fd8hxX+gYJ6lDhryumm3A0+ASoxP9QgI8YrdL3sitI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ChKF0Yw9pY6iOSIW7xZzTFhcqVXtGLnX7/meTN+UuYaz0x2H8DKz+kNIm0c/h2Z2/0YoqFwNG2Gr643VTMZC3lZULa4vD6ziF/7hGi5ux79KhPJcltYfSo+TbAhijzpYq7Zh8APmfj6ig6+zebVdRZJ8tNKlxnLI7qASzdSxP8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BSwxymEM; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4394a823036so63005325e9.0
+        for <cgroups@vger.kernel.org>; Wed, 02 Apr 2025 06:40:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1743601228; x=1744206028; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2fd8hxX+gYJ6lDhryumm3A0+ASoxP9QgI8YrdL3sitI=;
+        b=BSwxymEMWGQEv0WwG9y+SQhbBaxmTDNuGhba2N68jB6Dp8uJr12geMfXlAdUlw4w7l
+         y2wFgtHrklsuEGioEL8t3twNagSp95uhyAUV0hhWZNWkcF4e9cmoSatDmfnpEclizB66
+         N0bBAw5h/SbQEWfooqpIajO8Ie+A+bOyaxf/axuWNd+Ls4VqDGIvg/djBz4nhqr+EnPU
+         G9DWSf6RGnHU+xfbNMbvyY3w1S6UoKBBQPJ1HUVgbtyd5sJ/sczgtTh0nGjtVLsHuRjX
+         hjj/vXHTwmMTxdoQ3CjqvchhEK89pbI0zIJK7yKOH6KC69xZW9hPR+1pG857BMHLRvSj
+         Cxjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743601228; x=1744206028;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2fd8hxX+gYJ6lDhryumm3A0+ASoxP9QgI8YrdL3sitI=;
+        b=VwfKkKqsCDrcfCegCDAGmx6aWBxsfq1gAHpWYrtgv0+iW092Y+obUGEEJGjCyDY4cI
+         V8mwHGwDeB6KAS1XwDhqA/cAQlz+Z/lcHhkBh2h1d6ZbsUJC3hufYAzZqvYOQFLEih5P
+         lljW1K/Bj3lixJntHxZkgiQgcBXeGzDdYKLrNvMuTnviDlyhRAGeYfaP1+haRTOVdG5/
+         5pFQvfcFvWGc/YaHudj2VOSWomumF2NB57Ajwi65F1EestKknm/cogMeSg0osoL5hx3b
+         S1FLfwF6tFE48AYZdpbTH/lRk+y9d9LO/PtK6D5fIjO9e2DohN29ymyIa58KoX9U6AOA
+         F9OQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUC5HAw4szugHZMWAHtcoO1DoX8oz8PNf/Wt+MeffizRGtXP45Y39TFFjx8IB1mpgfoDMOWq+70@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxug/QZI/TYPHlErl8Q5iY+S1qYtWwaejz6r1Dj5fpRj0Tm5dp0
+	TizUTptbDS4SkE2OWaeoXGu5ZQKfJ9qiBkXERojCJwTycpWvlbYRPPs8m2FfjpA=
+X-Gm-Gg: ASbGncvPj6sQosavI+MMJnZBVtkwVhaUeXQZ67gBIAjul2rRroYjXmN9Fizv0j5oH3R
+	gmhy428zZZX0aqizkTDiScPv3OoH4W/xrzF6VEzjIgvr4bBKVWj5M8wZ+fIqcj/9OhgkTFVfHUf
+	mgwMpDtdh1jT+gL/m/vswE5qizu7BsD/qutI8SUff2izqXOZmpiLk8WNu7w1ULfaEznbW9+07fS
+	yyMS+fb1gz9Y033bvU8rrugqPedKoiFWC2RiKGljAoNWiod1LayFd9IyqHDCjGx4z7Xg2D+6Sba
+	ds7Q8CVjn+5w/mJaBzwoZwHRsFzKnBJsNx9rCzj+ihwG5g8=
+X-Google-Smtp-Source: AGHT+IFoylUzo0whZWEE0vZN2Ek48agc4KnhEC0CToW9yiEQ1Zbe2ioVf8m7e/VfOfiJfcet9PVsqQ==
+X-Received: by 2002:a05:600c:5026:b0:43c:f470:7605 with SMTP id 5b1f17b1804b1-43eb5c21036mr29632815e9.12.1743601228011;
+        Wed, 02 Apr 2025 06:40:28 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43eb60cba2dsm21467045e9.18.2025.04.02.06.40.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Apr 2025 06:40:27 -0700 (PDT)
+Date: Wed, 2 Apr 2025 15:40:26 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Jingxiang Zeng <linuszeng@tencent.com>, 
+	akpm@linux-foundation.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mhocko@kernel.org, muchun.song@linux.dev, kasong@tencent.com
+Subject: Re: [RFC 2/5] memcontrol: add boot option to enable memsw account on
+ dfl
+Message-ID: <4lygax4lgpkkmtmpxif6psl7broial2h74lel37faelc3dlsx3@s56hfvqiazgc>
+References: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
+ <20250319064148.774406-3-jingxiangzeng.cas@gmail.com>
+ <m35wwnetfubjrgcikiia7aurhd4hkcguwqywjamxm4xnaximt7@cnscqcgwh4da>
+ <7ia4tt7ovekj.fsf@castle.c.googlers.com>
+ <20250320142846.GG1876369@cmpxchg.org>
+ <ipskzxjtm656f5srrp42uxemh5e4jdwzsyj2isqlldfaokiyoo@ly4gfvldjc2p>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched/numa: Add statistics of numa balance task migration
- and swap
-To: Chen Yu <yu.c.chen@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeel.butt@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tim Chen <tim.c.chen@intel.com>, Aubrey Li <aubrey.li@intel.com>,
-        Rik van Riel <riel@surriel.com>,
-        Raghavendra K T <raghavendra.kt@amd.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Xunlei Pang <xlpang@linux.alibaba.com>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Chen Yu <yu.chen.surf@foxmail.com>,
-        Madadi Vineeth Reddy <vineethr@linux.ibm.com>
-References: <20250402010611.3204674-1-yu.c.chen@intel.com>
-Content-Language: en-US
-Reply-To: 20250402010611.3204674-1-yu.c.chen@intel.com
-From: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
-In-Reply-To: <20250402010611.3204674-1-yu.c.chen@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: HXJV5Q-jqXHxdR2AcOHw3yx69yUfEuGO
-X-Proofpoint-ORIG-GUID: d9-NvWT-09rPiaSGGOiXdBzqDhqISW8d
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-04-02_05,2025-04-02_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 impostorscore=0 phishscore=0 clxscore=1011
- mlxlogscore=999 bulkscore=0 suspectscore=0 mlxscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2502280000 definitions=main-2504020085
-
-Hi Chen Yu,
-
-On 02/04/25 06:36, Chen Yu wrote:
-> On system with NUMA balancing enabled, it is found that tracking
-> the task activities due to NUMA balancing is helpful. NUMA balancing
-> has two mechanisms for task migration: one is to migrate the task to
-> an idle CPU in its preferred node, the other is to swap tasks on
-> different nodes if they are on each other's preferred node.
-> 
-> The kernel already has NUMA page migration statistics in
-> /sys/fs/cgroup/mytest/memory.stat and /proc/{PID}/sched.
-> but does not have statistics for task migration/swap.
-> Add the task migration and swap count accordingly.
-> 
-> The following two new fields:
-> 
-> numa_task_migrated
-> numa_task_swapped
-> 
-> will be displayed in both
-> /sys/fs/cgroup/{GROUP}/memory.stat and /proc/{PID}/sched
-
-I applied this patch, but I still don't see the two new fields
-in /proc/{PID}/sched.
-
-Am I missing any additional steps?
-
-Thanks,
-Madadi Vineeth Reddy
-
-> 
-> Previous RFC version can be found here:
-> https://lore.kernel.org/lkml/1847c5ef828ad4835a35e3a54b88d2e13bce0eea.1740483690.git.yu.c.chen@intel.com/
-> 
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> ---
-> RFC->v1: Rename the nr_numa_task_migrated to
->          numa_task_migrated, and nr_numa_task_swapped
->          numa_task_swapped in /proc/{PID}/sched,
->          so both cgroup's memory.stat and task's
->          sched have the same field name.
-> ---
->  include/linux/sched.h         |  4 ++++
->  include/linux/vm_event_item.h |  2 ++
->  kernel/sched/core.c           | 10 ++++++++--
->  kernel/sched/debug.c          |  4 ++++
->  mm/memcontrol.c               |  2 ++
->  mm/vmstat.c                   |  2 ++
->  6 files changed, 22 insertions(+), 2 deletions(-)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="fpxy367fgz7uxy3l"
+Content-Disposition: inline
+In-Reply-To: <ipskzxjtm656f5srrp42uxemh5e4jdwzsyj2isqlldfaokiyoo@ly4gfvldjc2p>
 
 
+--fpxy367fgz7uxy3l
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC 2/5] memcontrol: add boot option to enable memsw account on
+ dfl
+MIME-Version: 1.0
+
+On Thu, Mar 20, 2025 at 08:33:09AM -0700, Shakeel Butt <shakeel.butt@linux.=
+dev> wrote:
+> However I want us to discuss and decide the semantics of
+> memsw from scratch rather than adopting v1 semantics.
+
++1
+
+> Also we should discuss how memsw and swap limits would interact and
+> what would be the appropriate default.
+
+Besides more complicated implementation, merged memsw won't represent an
+actual resource.
+
+So I'd be interested in use cases (other than "used to it from v1") that
+cannot be controlled with separate memory. and swap. limits.
+
+
+0.02=E2=82=AC,
+Michal
+
+--fpxy367fgz7uxy3l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ+0+SAAKCRAt3Wney77B
+SReaAP9PEf6fTG7T1DvIBCBKLHUb4pZJXbS4PrfsTVvv75/n5gEA2pS1+3FrrRz3
+Mw0xE0eo8DliHcSRXj528SqePrQKZw4=
+=Wsdl
+-----END PGP SIGNATURE-----
+
+--fpxy367fgz7uxy3l--
 
