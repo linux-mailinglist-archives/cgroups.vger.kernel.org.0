@@ -1,92 +1,87 @@
-Return-Path: <cgroups+bounces-7325-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7326-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6486A7A1C2
-	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 13:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 832F5A7A2A7
+	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 14:17:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D946B1894F03
-	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 11:17:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA96C18901FC
+	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 12:17:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE702417F8;
-	Thu,  3 Apr 2025 11:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3971E24502B;
+	Thu,  3 Apr 2025 12:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T5ZZax8e"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gaTcrXEU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C37B242901;
-	Thu,  3 Apr 2025 11:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F3A1C861F
+	for <cgroups@vger.kernel.org>; Thu,  3 Apr 2025 12:17:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743679048; cv=none; b=l37vSVG1H/XWt0wYRJTMRRiB6inmtpEReUrYrMgZouBAwHDn/gwh1o3IUJ9b6p+PvPr8F5tlBPfee9Izy8Pq6nRPFxH0zykI/3kRYN4xO7EHnpp6nTwa/hnyXlHX3fNtmGnQ8dU5d7FTP2rvDIWPZq82ROsZwi0DyUjuRksvx3E=
+	t=1743682629; cv=none; b=iYatfP+DYiTtBexQQBAnFb9by7w3JfeIEv4vw2tjcRItTz5jf0MllTK7fAfExm92gMdi1RKqNTLlq0GcqZY/IpA/45wvvFADBEn1TlLYptIscAapjwLMAIeV7HhU9a4rIHclfRQqWQwlwNg0RmKVrN5GD2q59q/uOyHWJm96f5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743679048; c=relaxed/simple;
-	bh=aRd1CbZN3L8wo+fthavp7HaP6EmzD4pkd+7LkSl58Qk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r2AAphiaJcLj1ffHJz951qzAa35hgnhFU4qJPSf5oo5opqBVvMs3bQiuWjwTk8QcuuXySHd90CfbJ4k9MDyjd99LP9mDBCuW+qfjV3TFxUif2s887a7jnBQFAQMNozMZwc/BihtyFjMMWlXhUayxFdqa5cvu7M2XAO4wjXUmX30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T5ZZax8e; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-54b10594812so874627e87.1;
-        Thu, 03 Apr 2025 04:17:26 -0700 (PDT)
+	s=arc-20240116; t=1743682629; c=relaxed/simple;
+	bh=wFIIa1FHRVFXLxxXeQ1gqaA1krM7d8OpZjMKjJyzLb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FPM4hte1yqvSAVyVgzCstJlnZiv/nn0bTELlcJDwhdWsDz6DNaxUxFuxeZHY5uisPjfS0zIvS/f+vMyVJjQ5CiP59vblmoQlmShE9FPS6Xf+K977rPCR401RSaS447seDtVAwvOBCj7FLL6IAsanck2yfrPocFB3MxO4nppfp+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gaTcrXEU; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-43cf034d4abso8716605e9.3
+        for <cgroups@vger.kernel.org>; Thu, 03 Apr 2025 05:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743679045; x=1744283845; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1743682625; x=1744287425; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9B6yGiKNwNdzmfscTDQkaW1QIyxljiYzQv2I/D7Krjs=;
-        b=T5ZZax8eP0PxJ/VbLU3AsNW9lJ4G4QrRAlrsNwm6I59CgkCAQXrZDV18RdD5k11akS
-         0hLLPJ2RG5B95C+xZUV9rPd0NphD9/De2jOQBtLvc0iR9KXJRwO7ST27nc4dozp+HZjm
-         yQ+BAp3RIY+A6us55VEEwJJRcvbI50RCzppahVMc4jGYISV74e7Nl5WTe+krotnWnLon
-         r4h8T7VftIvhXhW3aUPbAS78d/BjbeBWp59vBK/IAdgjkA3PAzCYT3OHCWwYzyorWsI3
-         VPhnkiKAh1V//8SSR72jkfVdSFV0evrf7zOW3x8pN+c2nsC76FbswNPw2F5+tAZAMR55
-         zEdw==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IHtjp6fV8bfAv06r0KHl+YilzLbX3SHLECV51Mil514=;
+        b=gaTcrXEUrEoVWnlLm3uoozXxVPXXHFW7T79+2pmlRs9LQYACFK/rPoaxuPt37UX4xO
+         k2wKwZIpmaumTdqvoFSw2NXVyHm9+MpQiKz06aL6/f1VI8Nmcq+6NprGapRr+pYTxc3U
+         S1Hpfo3VY/qotkoCcQB0AhYwlU/yTG6TYrr4l9UIyxl2zINdNXqv90IDzs1LagChIluE
+         /DjsacDW/fgKlnN1/cGhoYe+5aeh+rn1tZA7e9DhsK1qSkAzQjGnLt3/tJ82d7XeADwN
+         h8PXm2T86rHH7v2u0CxM93ikNVNlmKftXgts4yRo8PGujF/el9ovuEF+AwnMbvJ9o/Qj
+         7Csw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743679045; x=1744283845;
+        d=1e100.net; s=20230601; t=1743682625; x=1744287425;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9B6yGiKNwNdzmfscTDQkaW1QIyxljiYzQv2I/D7Krjs=;
-        b=GMDhffS54vuU8lupinRcS7AUzAgNSNDWOzbQfwc5UWU+L7tbyd4VgrJOhNkHmSpPfu
-         tEJCPB+fOHdaJfK+TYazHJjGVS8Mgb9wkqaTBtlaMjs8ASsLnKYq7N0tRCtT9zM7fmAI
-         7jZhWF7yuI/Bb5WYhlNkO2R+1llvDzl/8LX0ZUbFxYCbU8si3cUaGYxAcbODNoQshQYI
-         uRLV4QeA2xYJ6UqZsDjcxovJ/6p1kaBnO2rbfxwzGiYbYBCBjxjslFl/KJjhtz3vX+PL
-         k9LeNi+OIXbd+XFx/phminztsTkux/3yEM6cyALMTgi5etbk/4rwFBL/yxu4MY6wYbnW
-         CXkg==
-X-Forwarded-Encrypted: i=1; AJvYcCUPqnA6mP0Y9aKNROFKT6jQBHOjfKcb0z4o1qaBhZwo6CgEA2+RG6UwJouWdoa78j3QTON8Gk9z@vger.kernel.org, AJvYcCWcIRkX5jn5m+GiRTP5COJkin0JOMLCfiN+ZTTbfDAZpS63RDPflrdJ0Agm6/X90fOZxj6vYRC0lESFRY8y@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQBgfhbLW3LzTTyAw176F8NOthwSGqQosxDiIXDRtyeZf2y04h
-	9v0iUfsX1y6iUGdjxWtz6UAyq6q67txc3v+OWDVBtvKbsjwMONnhEqvqcA==
-X-Gm-Gg: ASbGncubtlYmN8LR/Kz5LwR6Rp/2mOJwBeyYG7woBGJwhQtNEH7j14gY1AZbMuu83F+
-	9vbngixi/vAKRsEeEcVBG+KF5qZh8guCKiUMXAQGCwWADTeo+z+vMZiKW1anj3Z4afUCEQDeRCe
-	mo1+9kLJoq08SIrESNPjaZNZ2Dtrw/TD9vyvxtp9AuEGIJ/XKWZPCNIZwI4KGix7qHXT70cvjuQ
-	fgilKZHtF73FmunGJJoISofcNyPOJ4W2n6ANcYDUwcjjXMmUIOifaVwV0/09GfyjoVvMyw4n9iH
-	1uBWh80TcJZZEAAqJnU4f7oeiLcSWRJfnQReA66AEp3SQoS2UM3EGjWZCjrEFLRGSdliKotXRX4
-	=
-X-Google-Smtp-Source: AGHT+IHZUpWn98mMs6DpAc2coIrgcsTFuvOSeRMOYSdkF01E5/yPiCCmRA+Nar7c6MZGly5Oz5h8gg==
-X-Received: by 2002:a05:6512:1253:b0:54b:1055:f4c3 with SMTP id 2adb3069b0e04-54b10db969amr6977015e87.11.1743679044928;
-        Thu, 03 Apr 2025 04:17:24 -0700 (PDT)
-Received: from pc636 (host-90-233-203-182.mobileonline.telia.com. [90.233.203.182])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54c1e5c188bsm125274e87.64.2025.04.03.04.17.23
+        bh=IHtjp6fV8bfAv06r0KHl+YilzLbX3SHLECV51Mil514=;
+        b=wopd3gp+R5N0tbQiUTc5JXjwoU5STe1/g2bfP9spgIo04QLQS6nYQ3F/nAs2n5chfN
+         oCkiofioUB/JV9Lho6IFdplJqDKoqbeC/u2fs0HlIojzqz+kBAG9Sp/vJJs3prEEkE13
+         gSq0J54etRJK2cma8gBdkJKJlVp0GBh+HCSmjKYlgUIKid8cSfHh4LWZ23vHr/erpnA6
+         y7qnHr7UqfgGLl8niyV8FmGbEjl2nUH4SFtkAdqrsL2VBRrkg2JXCGxN55fNn6g3jwqt
+         P0aIQXIIJu3nByLMb8BzwFH30/ZQlWrPyfXO83xvhHbqU2x02TC4DiLBDszbivArxSVE
+         eblQ==
+X-Gm-Message-State: AOJu0YxK9xW4n468GQijmlGiwqu7GYLbyfscNYt6GRMzQteXZ1C/O/Si
+	nM4rusEtx8YIVoTEY3VPPHbokIEYP8xox4VWJA9qR6mlTWlIhP+j4kUFgF3X1U4=
+X-Gm-Gg: ASbGncvhS8FKSECGocdOORmj8xy4X4gF9riiGKZvhNxqJulmqxyDpmNrfAY6VHc/PS5
+	GK4Xj/qqEb+CcBQZTzdiqQ2d4ViMAO7eQ/G3lWsNkTuQczgVl690L2LwKyvnuAu0vy+l87EN6Nv
+	BKI2UPB1bL1S5/mG6JIBfU+W5syKP3VHEBMVNq+LBB0ChFpDm4vBNoSY2ox1Sw/738JmK3sfG8Z
+	wgDc83NRet4X+7Qj1Qfwy/SsubRAtB/gKRgCoQeZvE9JixYBjeionp5nb3EiOq2kpIyJFeRMAwz
+	3Zqjtzq/IGPKuzIDEl7i8Okp3CqxIY7SLut2NUDvgBwBfvU=
+X-Google-Smtp-Source: AGHT+IHHZ6MLKNY6Dc5eXJkq9LfhDUgkdKNpEmRRRyJxO3Y9fBBgNgTXRDCTRWZppELhIa1Exeu9lA==
+X-Received: by 2002:a05:6000:40d9:b0:399:6d53:68d9 with SMTP id ffacd0b85a97d-39c297e42a2mr5819410f8f.38.1743682625285;
+        Thu, 03 Apr 2025 05:17:05 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c301a7045sm1678962f8f.39.2025.04.03.05.17.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Apr 2025 04:17:24 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 3 Apr 2025 13:17:22 +0200
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: vmalloc: simplify MEMCG_VMALLOC updates
-Message-ID: <Z-5uQlaPjZtB61C4@pc636>
-References: <20250403053326.26860-1-shakeel.butt@linux.dev>
+        Thu, 03 Apr 2025 05:17:04 -0700 (PDT)
+Date: Thu, 3 Apr 2025 14:17:02 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Frederic Weisbecker <fweisbecker@suse.com>
+Subject: Re: [PATCH v2 00/10] Add kernel cmdline option for rt_group_sched
+Message-ID: <s2omlhmorntg4bwjkmtbxhadeqfo667pbowzskdzbk3yxqdbfw@nvvw5bff6imc>
+References: <20250310170442.504716-1-mkoutny@suse.com>
+ <20250401110508.GH25239@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -95,39 +90,55 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250403053326.26860-1-shakeel.butt@linux.dev>
+In-Reply-To: <20250401110508.GH25239@noisy.programming.kicks-ass.net>
 
-On Wed, Apr 02, 2025 at 10:33:26PM -0700, Shakeel Butt wrote:
-> The vmalloc region can either be charged to a single memcg or none. At
-> the moment kernel traverses all the pages backing the vmalloc region to
-> update the MEMCG_VMALLOC stat. However there is no need to look at all
-> the pages as all those pages will be charged to a single memcg or none.
-> Simplify the MEMCG_VMALLOC update by just looking at the first page of
-> the vmalloc region.
+On Tue, Apr 01, 2025 at 01:05:08PM +0200, Peter Zijlstra <peterz@infradead.org> wrote:
+> > By default RT groups are available as originally but the user can
+> > pass rt_group_sched=0 kernel cmdline parameter that disables the
+> > grouping and behavior is like with !CONFIG_RT_GROUP_SCHED (with certain
+> > runtime overhead).
+> > 
+> ...
 > 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> ---
->  mm/vmalloc.c | 13 +++++--------
->  1 file changed, 5 insertions(+), 8 deletions(-)
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 3ed720a787ec..cdae76994488 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -3370,12 +3370,12 @@ void vfree(const void *addr)
->  
->  	if (unlikely(vm->flags & VM_FLUSH_RESET_PERMS))
->  		vm_reset_perms(vm);
-> +	if (vm->nr_pages && !(vm->flags & VM_MAP_PUT_PAGES))
-> +		mod_memcg_page_state(vm->pages[0], MEMCG_VMALLOC, -vm->nr_pages);
->
-Could you please add a comment stating that the first page should be
-modified?
+> Right, so at OSPM we had a proposal for a cgroup-v2 variant of all this
+> that's based on deadline servers.
 
-Yes, the comment is clear, but git blame/log takes time.
+Interesting, are there any slides or recording available?
 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> And I am hoping we can eventually either fully deprecate the v1 thing
+> or re-implement it sufficiently close without breaking the interface.
 
---
-Uladzislau Rezki
+I converged to discourate rt_groups for these reasons:
+1) They aren't RT guarantee for workloads
+  - especially when it's possible to configure different periods
+2) They aren't containment of RT tasks
+  - RT task throttled in a group may hold a shared resource and thus its
+    issues propagate to RT tasks in different groups
+3) The allocation model [2] is difficult to configure
+  - to honor delegation and reasonable default
+  - illustration of another allocation model resource are cpuset cpus,
+    whose abstraction in cgroup v2 is quite sophisticated
+
+Based on that, I'm not proponent of any RT groups support in cgroup v2
+(I'd need to see a use case where it could be justified). IIUC, the
+deadline servers could help with 1).
+
+> But this is purely about enabling cgroup-v1 usage, right?
+
+Yes, users need to explicitly be on cgroup v1 (IOW they're stuck on v1
+because of reliance on RT groups).
+
+> You meantion some overhead of having this on, is that measured and in
+> the patches?
+
+I expect most would be affected RT task users who go from
+!CONFIG_RT_GROUP_SCHED to CONFIG_RT_GROUP_SCHED and
+CONFIG_RT_GROUP_SCHED_DEFAULT_DISABLED. That's my perception from code
+that I touched but I haven't measured anything. Would this be
+an interesting datum?
+
+Thanks,
+Michal
+
+[1] https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html#allocations
 
