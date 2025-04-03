@@ -1,116 +1,130 @@
-Return-Path: <cgroups+bounces-7316-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7317-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55362A79B4D
-	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 07:34:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC49FA79B67
+	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 07:37:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6064E3B3E4A
-	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 05:33:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4793171719
+	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 05:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70CE19CCEC;
-	Thu,  3 Apr 2025 05:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Sd7RZ3+1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0DE19DFAB;
+	Thu,  3 Apr 2025 05:37:11 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from mxct.zte.com.cn (mxct.zte.com.cn [183.62.165.209])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42781156C72
-	for <cgroups@vger.kernel.org>; Thu,  3 Apr 2025 05:33:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9888E199EB0;
+	Thu,  3 Apr 2025 05:37:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=183.62.165.209
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743658437; cv=none; b=ejXdGdTEFaBSpAITQyG2VWnDFRg8DdVruJ9kCW/PUhKhj5NHKIFXrd0e3LcjpVNMF+Hkh9zLWiNXfRnrEDuylau4VIyTyUidfJRfVJpIxftYX2PkVKdvxRSc29YGtZgOmvC8EDhPuRm3Sj5zpbnYufWJTJRi8fUSUgm0sTE52hc=
+	t=1743658631; cv=none; b=ZGHpQhhbchigf9UGr9qZed+Fy3O1W8Bd2wxb7WvY03cuIrgBPhB9T/P0hdoeWIhqh5UUkNiP6uJFchciGcHnoFxcrMC6nDyUFLOPQjSeANIOwv0OHc14oggUKZf/P/HU1U5LuzWENxiy6lYZgMrMT+C0a86ENDipP3ZBlNeXtlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743658437; c=relaxed/simple;
-	bh=YLFcV7bEiG7OVMaq5sdUT3UZmmLf5VxniO8wU6+/8Cs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=clrK55elqvQPQOKEIrzhGxDQQndmgtZtiv+oASiItSNiZ8vV+PCW7+wG0jWva7nwQnZhqm3ORr4gfw717zdF1erypuKIQlooa7iEPMl2N9F2U6tJGjTuFcPYMjL61Vs6r0h3wFGQ3ZGs0OHtcB4DQ8PeSvZ/5CISxl7HF3Tu0Vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Sd7RZ3+1; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743658422;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=m82CvK78yYT/5lTQIxRkvnm+pZdrU14HxUh0Z7KEcQM=;
-	b=Sd7RZ3+1XIjf/4oyQaMfC5OG9cDChmzgoDmBmT9cTGZFAAsTFqXvT4B6Mht5mMBnTLLChf
-	2OJTzlLP2Nn624+VwKr3WxUZPnMYv7ejKI8VfK6pblRXU8ANwDkoTefKZJE35blzMJzpiE
-	5zOJyIYtJorWwQJCsjjYVP+pMSmDNwM=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: [PATCH] memcg: vmalloc: simplify MEMCG_VMALLOC updates
-Date: Wed,  2 Apr 2025 22:33:26 -0700
-Message-ID: <20250403053326.26860-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1743658631; c=relaxed/simple;
+	bh=DkPMlsDZjv5DSrQnUXpSBl1a/+EgHtPiqSIFYHVCbtE=;
+	h=Date:Message-ID:In-Reply-To:References:Mime-Version:From:To:Cc:
+	 Subject:Content-Type; b=aBGCZvLE2n06/upiPdjDG+jM0YwYg+gNGIPNQ52bPrOIaIL2t9bVh2v6Ib5JZVPGDHuZMOhCO+EabRvBDAInWu65p9MGBHxaa+sWOztuA8Xwvy+3fH9kYu38MbbOesuvpjpYuD619eyP7HILQkDhBB9XQOmRkOCDktRroW7O0Sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=183.62.165.209
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mxct.zte.com.cn (FangMail) with ESMTPS id 4ZSr8c1tDPz51SY9;
+	Thu,  3 Apr 2025 13:37:04 +0800 (CST)
+Received: from xaxapp04.zte.com.cn ([10.99.98.157])
+	by mse-fl2.zte.com.cn with SMTP id 5335ax06016459;
+	Thu, 3 Apr 2025 13:36:59 +0800 (+08)
+	(envelope-from xu.xin16@zte.com.cn)
+Received: from mapi (xaxapp01[null])
+	by mapi (Zmail) with MAPI id mid32;
+	Thu, 3 Apr 2025 13:37:00 +0800 (CST)
+Date: Thu, 3 Apr 2025 13:37:00 +0800 (CST)
+X-Zmail-TransId: 2af967ee1e7cffffffffe9c-7733f
+X-Mailer: Zmail v1.0
+Message-ID: <20250403133700772Rm5te7Iuqsi7ZGMGpFlok@zte.com.cn>
+In-Reply-To: <20250403132534636XLwK7CWiCj1J4-FENz0vk@zte.com.cn>
+References: 20250403132534636XLwK7CWiCj1J4-FENz0vk@zte.com.cn
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+From: <xu.xin16@zte.com.cn>
+To: <akpm@linux-foundation.org>, <mhocko@kernel.org>
+Cc: <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>, <muchun.song@linux.dev>,
+        <shakeel.butt@linux.dev>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <yang.yang29@zte.com.cn>, <chen.haonan2@zte.com.cn>,
+        <wang.yaxin@zte.com.cn>, <xu.xin16@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHQgNC82XSBtZW1jb250cm9sLXYxOiBhZGQga3NtX3plcm9fcGFnZXMgaW4KCiBjZ3JvdXAvbWVtb3J5LmtzbV9zdGF0?=
+Content-Type: text/plain;
+	charset="UTF-8"
+X-MAIL:mse-fl2.zte.com.cn 5335ax06016459
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 67EE1E80.002/4ZSr8c1tDPz51SY9
 
-The vmalloc region can either be charged to a single memcg or none. At
-the moment kernel traverses all the pages backing the vmalloc region to
-update the MEMCG_VMALLOC stat. However there is no need to look at all
-the pages as all those pages will be charged to a single memcg or none.
-Simplify the MEMCG_VMALLOC update by just looking at the first page of
-the vmalloc region.
+From: xu xin <xu.xin16@zte.com.cn>
 
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+Users can obtain ksm_zero_pages of a cgroup just by:
+
+/ # cat /sys/fs/cgroup/memory.ksm_stat
+ksm_rmap_items 76800
+ksm_zero_pages 0
+
+Current implementation supports cgroup v1 temporarily; cgroup v2
+compatibility is planned for future versions.
+
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
 ---
- mm/vmalloc.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ mm/memcontrol-v1.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 3ed720a787ec..cdae76994488 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -3370,12 +3370,12 @@ void vfree(const void *addr)
- 
- 	if (unlikely(vm->flags & VM_FLUSH_RESET_PERMS))
- 		vm_reset_perms(vm);
-+	if (vm->nr_pages && !(vm->flags & VM_MAP_PUT_PAGES))
-+		mod_memcg_page_state(vm->pages[0], MEMCG_VMALLOC, -vm->nr_pages);
- 	for (i = 0; i < vm->nr_pages; i++) {
- 		struct page *page = vm->pages[i];
- 
- 		BUG_ON(!page);
--		if (!(vm->flags & VM_MAP_PUT_PAGES))
--			mod_memcg_page_state(page, MEMCG_VMALLOC, -1);
- 		/*
- 		 * High-order allocs for huge vmallocs are split, so
- 		 * can be freed as an array of order-0 allocations
-@@ -3671,12 +3671,9 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 		node, page_order, nr_small_pages, area->pages);
- 
- 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
--	if (gfp_mask & __GFP_ACCOUNT) {
--		int i;
--
--		for (i = 0; i < area->nr_pages; i++)
--			mod_memcg_page_state(area->pages[i], MEMCG_VMALLOC, 1);
--	}
-+	if (gfp_mask & __GFP_ACCOUNT && area->nr_pages)
-+		mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC,
-+				     area->nr_pages);
- 
- 	/*
- 	 * If not enough pages were obtained to accomplish an
+diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
+index 95da877d5516..a6eea1deebff 100644
+--- a/mm/memcontrol-v1.c
++++ b/mm/memcontrol-v1.c
+@@ -11,6 +11,7 @@
+ #include <linux/sort.h>
+ #include <linux/file.h>
+ #include <linux/seq_buf.h>
++#include <linux/ksm.h>
+
+ #include "internal.h"
+ #include "swap.h"
+@@ -1824,6 +1825,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
+ #ifdef CONFIG_KSM
+ struct memcg_ksm_stat {
+ 	unsigned long ksm_rmap_items;
++	long ksm_zero_pages;
+ };
+
+ static int evaluate_memcg_ksm_stat(struct task_struct *task, void *arg)
+@@ -1834,6 +1836,7 @@ static int evaluate_memcg_ksm_stat(struct task_struct *task, void *arg)
+ 	mm = get_task_mm(task);
+ 	if (mm) {
+ 		ksm_stat->ksm_rmap_items += mm->ksm_rmap_items;
++		ksm_stat->ksm_zero_pages += mm_ksm_zero_pages(mm);
+ 		mmput(mm);
+ 	}
+
+@@ -1847,9 +1850,13 @@ static int memcg_ksm_stat_show(struct seq_file *m, void *v)
+
+ 	/* Initialization */
+ 	ksm_stat.ksm_rmap_items = 0;
++	ksm_stat.ksm_zero_pages = 0;
++
+ 	/* summing all processes'ksm statistic items of this cgroup hierarchy */
+ 	mem_cgroup_scan_tasks(memcg, evaluate_memcg_ksm_stat, &ksm_stat);
++
+ 	seq_printf(m, "ksm_rmap_items %lu\n", ksm_stat.ksm_rmap_items);
++	seq_printf(m, "ksm_zero_pages %ld\n", ksm_stat.ksm_zero_pages);
+
+ 	return 0;
+ }
 -- 
-2.47.1
-
+2.15.2
 
