@@ -1,100 +1,110 @@
-Return-Path: <cgroups+bounces-7311-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7312-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39689A79AC2
-	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 06:15:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D10BBA79B39
+	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 07:25:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4411D3AF1DA
-	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 04:15:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37D6318952A1
+	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 05:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F79014B959;
-	Thu,  3 Apr 2025 04:15:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="jBywIYdD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EEC919CC3D;
+	Thu,  3 Apr 2025 05:25:47 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011A82E3387;
-	Thu,  3 Apr 2025 04:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA12B5339D;
+	Thu,  3 Apr 2025 05:25:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.216.63.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743653744; cv=none; b=lhjGnZBWYVagKCPt/vOxlVkO3LhXitiqKL07hSUXiKXvOKxOsJg2h4cpROG4Ke57cD1/pfiqwB1MFEEbSoOR0wRA0CxI/v0B/O50hBFRKutAoQJY34F9AI1rGfGZe18ksJwah0xcISJBRgQqyzOmHio37pSdX4XYxM95V5j/beU=
+	t=1743657947; cv=none; b=NjjVOw/b4oUDTdg9MWXhLdv/rYMKZFQCRfTkImAUDsjGN17tnjeQmaZ1xiLFDobumBNv0AfdXB2bJateN9yv8Vpm6GBGmWaOEB/gaT5c5kLtnKm83sxSman8DPgV4q9jxFJFW1Wx7c6HdkfD6+vTQ7SUiV5wODD7GLTh74tPpgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743653744; c=relaxed/simple;
-	bh=cGKBxioptz7Nf5wl9y/wguPaG9HFs+hqPmKSo7At7Tw=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=gHrOLWfty0tDQ3idYUGryAssC6Ss9ERf2UyA3SQU3e1UUSlydQ+LpHoc5YylOqg96IR3WhDEAlAd3sCNdVuDHVf5E5BBNbtSJpws1UrfM1h4QwxM9dIqmHXSjbZqmsZ/qFLGC/prF/36ENl1oyYk2Y6L4Z4kLgs9kKeIP8enZ+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=jBywIYdD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06FF2C4CEE3;
-	Thu,  3 Apr 2025 04:15:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1743653743;
-	bh=cGKBxioptz7Nf5wl9y/wguPaG9HFs+hqPmKSo7At7Tw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jBywIYdDOXWFYkfEbnMHxBk604y0HTHpucz1Hi0XZzO6fzITzLsPH9TZSrR83r9oX
-	 PFFNmPip+2ATDWejuZSGZc7zKpkHYsIFEcvBRw0mxeEaHU+F+/vAhMI1zFd1x5XVWT
-	 kT1Q6pIiLVRZZ9Q1ZkoyKwlO/Nt0nBrxztQP87t0=
-Date: Wed, 2 Apr 2025 21:15:42 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt
- <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] memcg: Don't generate low/min events if either low/min
- or elow/emin is 0
-Message-Id: <20250402211542.6bfb9ab3a6511ea26ce3cdf8@linux-foundation.org>
-In-Reply-To: <20250403031212.317837-1-longman@redhat.com>
-References: <20250403031212.317837-1-longman@redhat.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1743657947; c=relaxed/simple;
+	bh=gMAjSp48Ugj5wxq2Lyt6sD3ImTh42BsXs7Jo1laFeWg=;
+	h=Date:Message-ID:Mime-Version:From:To:Cc:Subject:Content-Type; b=fJ5TTI3N4XMg9UceweBPScF0pGt/Rl6AgWqDrIDC1AgD/eM2dTcPX1KVZxI49pzPqUhb7Q1+X4VsjaPO9JUt9XhEWudh6nepfzCiEYkV5BG9WEKNgOHqCS3oH3kepBL55330YgTxpSgFwml64+g4MUfibwbhfdEx/z1HdqDCIs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=63.216.63.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4ZSqvS4D7yz5B1Jb;
+	Thu,  3 Apr 2025 13:25:40 +0800 (CST)
+Received: from xaxapp05.zte.com.cn ([10.99.98.109])
+	by mse-fl2.zte.com.cn with SMTP id 5335PWS5010892;
+	Thu, 3 Apr 2025 13:25:33 +0800 (+08)
+	(envelope-from xu.xin16@zte.com.cn)
+Received: from mapi (xaxapp05[null])
+	by mapi (Zmail) with MAPI id mid32;
+	Thu, 3 Apr 2025 13:25:34 +0800 (CST)
+Date: Thu, 3 Apr 2025 13:25:34 +0800 (CST)
+X-Zmail-TransId: 2afc67ee1bceffffffffc76-6612a
+X-Mailer: Zmail v1.0
+Message-ID: <20250403132534636XLwK7CWiCj1J4-FENz0vk@zte.com.cn>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: <xu.xin16@zte.com.cn>
+To: <akpm@linux-foundation.org>, <mhocko@kernel.org>
+Cc: <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>, <muchun.song@linux.dev>,
+        <shakeel.butt@linux.dev>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <xu.xin16@zte.com.cn>, <yang.yang29@zte.com.cn>,
+        <chen.haonan2@zte.com.cn>, <wang.yaxin@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHQgMC82XSBzdXBwb3J0IGtzbV9zdGF0IHNob3dpbmcgYXQgY2dyb3Vw?=
+Content-Type: text/plain;
+	charset="UTF-8"
+X-MAIL:mse-fl2.zte.com.cn 5335PWS5010892
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 67EE1BD4.002/4ZSqvS4D7yz5B1Jb
 
-On Wed,  2 Apr 2025 23:12:12 -0400 Waiman Long <longman@redhat.com> wrote:
+From: xu xin <xu.xin16@zte.com.cn>
 
-> The test_memcontrol selftest consistently fails its test_memcg_low
-> sub-test because of the fact that two of its test child cgroups which
-> have a memmory.low of 0 or an effective memory.low of 0 still have low
-> events generated for them since mem_cgroup_below_low() use the ">="
-> operator when comparing to elow.
-> 
-> The simple fix of changing the operator to ">", however, changes the
-> way memory reclaim works quite drastically leading to other failures.
-> So we can't do that without some relatively riskier changes in memory
-> reclaim.
-> 
-> Another simpler alternative is to avoid reporting below_low failure
-> if either memory.low or its effective equivalent is 0 which is done
-> by this patch.
-> 
-> With this patch applied, the test_memcg_low sub-test finishes
-> successfully without failure in most cases. Though both test_memcg_low
-> and test_memcg_min sub-tests may fail occasionally if the memory.current
-> values fall outside of the expected ranges.
-> 
+With the enablement of container-level KSM (e.g., via prctl [1]), there is
+a growing demand for container-level observability of KSM behavior. However,
+current cgroup implementations lack support for exposing KSM-related
+metrics.
 
-Well, maybe the selftest needs to be changed?
+This patch introduces a new interface named ksm_stat
+at the cgroup hierarchy level, enabling users to monitor KSM merging
+statistics specifically for containers where this feature has been
+activated, eliminating the need to manually inspect KSM information for
+each individual process within the cgroup.
 
-Please describe this patch in terms of "what is wrong with the code at
-present" and "how that is fixed" and "what is the impact upon
-userspace".
+Users can obtain the KSM information of a cgroup just by:
 
-Is this change backwardly compatible with existing userspace?
+# cat /sys/fs/cgroup/memory.ksm_stat
+ksm_rmap_items 76800
+ksm_zero_pages 0
+ksm_merging_pages 76800
+ksm_process_profit 309657600
 
-> To be consistent, similar change is appled to mem_cgroup_below_min()
-> as well.
+Current implementation supports cgroup v1 temporarily; cgroup v2
+compatibility is planned for future versions.
 
-Ditto.
+---
+[1] commit d7597f59d1d3 ("mm: add new api to enable ksm per process").
 
+xu xin (6):
+  memcontrol: rename mem_cgroup_scan_tasks()
+  memcontrol: introduce the new mem_cgroup_scan_tasks()
+  memcontrol-v1: introduce ksm_stat at cgroup level
+  memcontrol-v1: add ksm_zero_pages in cgroup/memory.ksm_stat
+  memcontrol-v1: add ksm_merging_pages in cgroup/memory.ksm_stat
+  memcontrol-v1: add ksm_profit in cgroup/memory.ksm_stat
 
+ include/linux/memcontrol.h |  7 ++++++
+ mm/memcontrol-v1.c         | 55 ++++++++++++++++++++++++++++++++++++++++++++++
+ mm/memcontrol.c            | 28 +++++++++++++++++++++--
+ mm/oom_kill.c              |  6 ++---
+ 4 files changed, 91 insertions(+), 5 deletions(-)
+
+-- 
+2.15.2
 
