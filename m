@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-7314-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7315-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D91FEA79B47
-	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 07:30:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 690A7A79B49
+	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 07:32:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56BE5189625C
-	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 05:30:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13CD1174809
+	for <lists+cgroups@lfdr.de>; Thu,  3 Apr 2025 05:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7F5719CD1B;
-	Thu,  3 Apr 2025 05:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E8B4194094;
+	Thu,  3 Apr 2025 05:32:04 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD0C11712;
-	Thu,  3 Apr 2025 05:30:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B23D26D;
+	Thu,  3 Apr 2025 05:32:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.216.63.40
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743658218; cv=none; b=oKmVGGmhwK6NdvZnUnPEFhpnpONDOr3YZsbnCVdsTkJgW3fo05A4I6jgOndMGHhInMuARcmf87yW3teZazK7VYbexnCo/F2bVrH/Nv1YCdYRM6Qx4eXBkpDeGGh0AFeOdq7WMh9JAWmnfHp+F9G9x78KmElfzMKz/vh66PdpMLc=
+	t=1743658323; cv=none; b=K8iz9Z/ogd+xuF1bZt64FhWw/wclGiGArVhPDSL/jhyEIHRSAAaUia3pcH0x0VyMfbMbNehzPoU0TUd80JGi8AaQNe7cxzvWBUYEbyvB3Xstl0ikMEv0HdxFGcJ9QdGT9iB3ds/aPYgV0dNtQ7R/kJIwp9MWYSQDaKvhJKyZFyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743658218; c=relaxed/simple;
-	bh=BM2a4g1TbHQGRp0LZlYp70MEjNeMliYqZpPQB2oBxvc=;
+	s=arc-20240116; t=1743658323; c=relaxed/simple;
+	bh=unUSdxUnKG+T7L+6CvqNgY2lpiikyaDL8t2v61GBeLI=;
 	h=Date:Message-ID:In-Reply-To:References:Mime-Version:From:To:Cc:
-	 Subject:Content-Type; b=Da2WL9rpOH4AHyOiNwDMVPAwsLtC0dC11cer+WZE8KtpTvZ/ivIjBk0oTXefYFJ2ng1OzN7FyHErPo4Shb7qv4DCoUXISOiqbGgriqbYqus08DJFSN7AWvYmfiFyCJ2tUvNplW3dQhsHgfjszfIiQJZ6Kni+0CfZC+LgCty8WIs=
+	 Subject:Content-Type; b=mvkIzgbiqVlJrnsg/az2RMXW+qEo8FvHjYut3KKk8fo2Upq4UwECeapI4jjziAyt98CIF7KdbnFGOExAZv7QfJqJeQC4UDhGHR5cX8o4OTH5CaS4Lmrh9WCuHbtoKbU95sZHpfRyQaVDwIXh80a8ahnMnl2FgCQ0k4Z/p+dMx6g=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=63.216.63.40
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
 Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4ZSr0f6xBDz8R042;
-	Thu,  3 Apr 2025 13:30:10 +0800 (CST)
-Received: from xaxapp01.zte.com.cn ([10.88.99.176])
-	by mse-fl1.zte.com.cn with SMTP id 5335U7at043271;
-	Thu, 3 Apr 2025 13:30:07 +0800 (+08)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4ZSr2j21sXz8R042;
+	Thu,  3 Apr 2025 13:31:57 +0800 (CST)
+Received: from xaxapp02.zte.com.cn ([10.88.97.241])
+	by mse-fl1.zte.com.cn with SMTP id 5335Vu70043767;
+	Thu, 3 Apr 2025 13:31:56 +0800 (+08)
 	(envelope-from xu.xin16@zte.com.cn)
 Received: from mapi (xaxapp02[null])
 	by mapi (Zmail) with MAPI id mid32;
-	Thu, 3 Apr 2025 13:30:09 +0800 (CST)
-Date: Thu, 3 Apr 2025 13:30:09 +0800 (CST)
-X-Zmail-TransId: 2afa67ee1ce1ffffffffd79-6c227
+	Thu, 3 Apr 2025 13:31:58 +0800 (CST)
+Date: Thu, 3 Apr 2025 13:31:58 +0800 (CST)
+X-Zmail-TransId: 2afa67ee1d4effffffff9e4-6de90
 X-Mailer: Zmail v1.0
-Message-ID: <20250403133009359JE5AjQxfNH7B3DWUgFHXi@zte.com.cn>
+Message-ID: <20250403133158436XF_dvGEyg6j0sZsH6VH9U@zte.com.cn>
 In-Reply-To: <20250403132534636XLwK7CWiCj1J4-FENz0vk@zte.com.cn>
 References: 20250403132534636XLwK7CWiCj1J4-FENz0vk@zte.com.cn
 Precedence: bulk
@@ -54,92 +54,104 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 From: <xu.xin16@zte.com.cn>
-To: <akpm@linux-foundation.org>
-Cc: <mhocko@kernel.org>, <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>,
-        <muchun.song@linux.dev>, <shakeel.butt@linux.dev>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <yang.yang29@zte.com.cn>,
-        <chen.haonan2@zte.com.cn>, <wang.yaxin@zte.com.cn>,
-        <xu.xin16@zte.com.cn>
-Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHQgMi82XSBtZW1jb250cm9sOiBpbnRyb2R1Y2UgdGhlIG5ldwoKIG1lbV9jZ3JvdXBfc2Nhbl90YXNrcygp?=
+To: <akpm@linux-foundation.org>, <mhocko@kernel.org>
+Cc: <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>, <muchun.song@linux.dev>,
+        <shakeel.butt@linux.dev>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <yang.yang29@zte.com.cn>, <chen.haonan2@zte.com.cn>,
+        <wang.yaxin@zte.com.cn>, <xu.xin16@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHQgMy82XSBtZW1jb250cm9sLXYxOiBpbnRyb2R1Y2Uga3NtX3N0YXQgYXQgY2dyb3VwCgogbGV2ZWw=?=
 Content-Type: text/plain;
 	charset="UTF-8"
-X-MAIL:mse-fl1.zte.com.cn 5335U7at043271
+X-MAIL:mse-fl1.zte.com.cn 5335Vu70043767
 X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 67EE1CE2.00B/4ZSr0f6xBDz8R042
+X-Fangmail-MID-QID: 67EE1D4D.000/4ZSr2j21sXz8R042
 
 From: xu xin <xu.xin16@zte.com.cn>
 
-Introduce a new mem_cgroup_scan_tasks function that strictly iterates
-processes only within the current memcgroup, aligning its behavior with
-its name.
+With the enablement of container-level KSM (e.g., via prctl), there is a
+growing demand for container-level observability of KSM behavior. However,
+current cgroup implementations lack support for exposing KSM-related
+metrics.
 
+This patch introduces a new interface named ksm_stat
+at the cgroup hierarchy level, enabling users to monitor KSM merging
+statistics specifically for containers where this feature has been
+activated, eliminating the need to manually inspect KSM information for
+each individual process within the cgroup.
+
+Users can obtain the KSM information of a cgroup just by:
+
+        `cat /sys/fs/cgroup/memory.ksm_stat`
+
+Current implementation supports cgroup v1 temporarily; cgroup v2
+compatibility is planned for future versions.
+
+Co-developed-by: Haonan Chen <chen.haonan2@zte.com.cn>
+Signed-off-by: Haonan Chen <chen.haonan2@zte.com.cn>
 Signed-off-by: xu xin <xu.xin16@zte.com.cn>
 ---
- include/linux/memcontrol.h |  7 +++++++
- mm/memcontrol.c            | 24 ++++++++++++++++++++++++
- 2 files changed, 31 insertions(+)
+ mm/memcontrol-v1.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 232cea80e71f..3af34e124ce6 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -795,6 +795,8 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *,
- 				   struct mem_cgroup *,
- 				   struct mem_cgroup_reclaim_cookie *);
- void mem_cgroup_iter_break(struct mem_cgroup *, struct mem_cgroup *);
-+void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
-+			   int (*)(struct task_struct *, void *), void *arg);
- void mem_cgroup_tree_scan_tasks(struct mem_cgroup *memcg,
- 			   int (*)(struct task_struct *, void *), void *arg);
-
-@@ -1289,6 +1291,11 @@ static inline void mem_cgroup_iter_break(struct mem_cgroup *root,
- {
+diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
+index 8660908850dc..95da877d5516 100644
+--- a/mm/memcontrol-v1.c
++++ b/mm/memcontrol-v1.c
+@@ -1821,6 +1821,40 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
  }
+ #endif /* CONFIG_NUMA */
 
-+static inline void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
-+		int (*fn)(struct task_struct *, void *), void *arg)
++#ifdef CONFIG_KSM
++struct memcg_ksm_stat {
++	unsigned long ksm_rmap_items;
++};
++
++static int evaluate_memcg_ksm_stat(struct task_struct *task, void *arg)
 +{
++	struct mm_struct *mm;
++	struct memcg_ksm_stat *ksm_stat = arg;
++
++	mm = get_task_mm(task);
++	if (mm) {
++		ksm_stat->ksm_rmap_items += mm->ksm_rmap_items;
++		mmput(mm);
++	}
++
++	return 0;
 +}
 +
- static inline void mem_cgroup_tree_scan_tasks(struct mem_cgroup *memcg,
- 		int (*fn)(struct task_struct *, void *), void *arg)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 9af30fbfe819..aff5a095b9e4 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1150,6 +1150,30 @@ static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
- 						dead_memcg);
- }
-
-+/* *
-+ * mem_cgroup_scan_tasks - iterate over tasks of only this memory cgroup.
-+ * @memcg: the specified memory cgroup.
-+ * @fn: function to call for each task
-+ * @arg: argument passed to @fn
-+ *
-+ * Unlike mem_cgroup_tree_scan_tasks(), this function only iterate over
-+ * these tasks attached to @memcg, not including any of its descendants
-+ * memcg. And this could be called for the root memory cgroup.
-+ */
-+void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
-+			  int (*fn)(struct task_struct *, void *), void *arg)
++static int memcg_ksm_stat_show(struct seq_file *m, void *v)
 +{
-+	int ret = 0;
-+	struct css_task_iter it;
-+	struct task_struct *task;
++	struct memcg_ksm_stat ksm_stat;
++	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
 +
-+	css_task_iter_start(&memcg->css, CSS_TASK_ITER_PROCS, &it);
-+	while (!ret && (task = css_task_iter_next(&it)))
-+		ret = fn(task, arg);
++	/* Initialization */
++	ksm_stat.ksm_rmap_items = 0;
++	/* summing all processes'ksm statistic items of this cgroup hierarchy */
++	mem_cgroup_scan_tasks(memcg, evaluate_memcg_ksm_stat, &ksm_stat);
++	seq_printf(m, "ksm_rmap_items %lu\n", ksm_stat.ksm_rmap_items);
 +
-+	css_task_iter_end(&it);
++	return 0;
 +}
++#endif
 +
- /**
-  * mem_cgroup_tree_scan_tasks - iterate over tasks of a memory cgroup hierarchy
-  * @memcg: hierarchy root
+ static const unsigned int memcg1_stats[] = {
+ 	NR_FILE_PAGES,
+ 	NR_ANON_MAPPED,
+@@ -2079,6 +2113,12 @@ struct cftype mem_cgroup_legacy_files[] = {
+ 		.name = "numa_stat",
+ 		.seq_show = memcg_numa_stat_show,
+ 	},
++#endif
++#ifdef CONFIG_KSM
++	{
++		.name = "ksm_stat",
++		.seq_show = memcg_ksm_stat_show,
++	},
+ #endif
+ 	{
+ 		.name = "kmem.limit_in_bytes",
 -- 
-2.15.
+2.15.2
 
