@@ -1,75 +1,77 @@
-Return-Path: <cgroups+bounces-7340-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7341-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59E9BA7B559
-	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 03:11:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9389A7B55A
+	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 03:11:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 432643B8739
-	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 01:10:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FC89172FE2
+	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 01:11:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B7A944E;
-	Fri,  4 Apr 2025 01:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B51AD517;
+	Fri,  4 Apr 2025 01:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J2Wjj2nN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NBiXHJvF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B372E62DA
-	for <cgroups@vger.kernel.org>; Fri,  4 Apr 2025 01:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438D9748D
+	for <cgroups@vger.kernel.org>; Fri,  4 Apr 2025 01:11:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743729064; cv=none; b=VsyUdMBzeQit8Y/oNlo4M70z1zjUF8NDT3uU3TWO6mF2tbyL14Tdk6fvX5WUQxJlVUgsOJNY6QBRF0dUYXLmbgfb0EVtmnNJBOX4z4Z7DIqKfzqBkuhYro9IqN0CQkGlTMZ1swbHI5JNg9urvxBAEThfZwTuWIMOfy5AZ51g6as=
+	t=1743729065; cv=none; b=MmhcQB+VvZT1/d3bYKizJSuzlliSLwbUk46bMVhhQqEswa3dplyB2syihyQS72bSedah17U8F3Y/IBqvJ8zwTzQThFGfDowBYk4l4K7IKcVkc+09gEQeb5WAJOu88aP6vli4uhkVibALWUK9v/BnRL2YMEUeJzCwv068f8Di9Og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743729064; c=relaxed/simple;
-	bh=O/C2/3m3DnCzaPEZjxqru8CVs/FgUg1XWM2h5OxwiuE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LHONh9cGd5jIMXsYNVAxuDby0YDDNCdKlHMbRZQ+aOiX9SgFZu5SGRsT5iO3EuSYrdIKwOs1opzcmGDePUzsD78d/m3KtQnj7tMvgaigXYskmAAxURf3YbD2OXphhrGtpsNnsO7HbNDlTSnuUGsmavnXw4XKorVUh2K8YraETW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J2Wjj2nN; arc=none smtp.client-ip=209.85.214.175
+	s=arc-20240116; t=1743729065; c=relaxed/simple;
+	bh=jqADKIhS5lxXZSKEuZcnSRW5k4YucZkrkhFMvzCl67I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ApguIvfgoB1RFrJuTCNJabqicTLc312Tep0qdJKNjY+9996VD5g7BVZWWqSnDREotH2RYQB8MdsVrhZbP/oqPM823v5dg20VsPJKLjcEY9pTPDp7HGjbqv3t9v5eIAcluh1wGcOfwvvRm4p32LT6aDpWxQxQ7e6e7Ms1sms0vLw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NBiXHJvF; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2240b4de12bso21983995ad.2
-        for <cgroups@vger.kernel.org>; Thu, 03 Apr 2025 18:11:02 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-227cf12df27so11682375ad.0
+        for <cgroups@vger.kernel.org>; Thu, 03 Apr 2025 18:11:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743729062; x=1744333862; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ewl/x4Zt26kQeJ50ssNokb9M5hP8pj7uoufInmgAhqY=;
-        b=J2Wjj2nNNWHlx5nk6NtKUkO/eo4zEE04WH7wSkKRwI/CRggx5tIpvmz0i4J41he2p5
-         HazwVMpY1fybgbTVtWiekqPfHq8dKv47LmsUzUMdou8xtyUe6cMhnwdHgZH8SF5cqzNl
-         X9xX2M13aa58nBnfqNNzrYc/oVqsZfMhIk6Ae8sR2A0mF+lz/1rmN8RSCp9yVQsv49fi
-         7STD/xO7EIULkC8ABTI/q/1GVqDzxyfO/TPTI1AsdAlBU8d9Q3iyU5vPayKnyn4WAIPK
-         tvMe68/T5WpLGhHq+YGJTKUbjxOHpchSjJc2VtL05mk0OI1gt5WNSLQK6pnFKYI4yjx2
-         UgIA==
+        d=gmail.com; s=20230601; t=1743729063; x=1744333863; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mZsU5fSVi28PbSL6szY7mdlMdjJc5ZoxpLKyts0s7sA=;
+        b=NBiXHJvFvUeGhrJ3zEFVLGlMc/8dRsmLbVsP0mQGr3u6eoIiDMaqRqHEwyasGNgg4l
+         DYDdcEBUBiglY/mq45JT51NV7wNKZtuFLv/XyM4JUc9YA40eUKaTav/WkFGza4umYQVX
+         muA4ZaGN7584rI13jthCf8IiDtP2Duk3nsoipSSvnEyFc/HXCRuV79f/k76Xgz5Wa45f
+         JsdXZlEe1jJFXUbviS6HKIL4j7/xuXLjRRsvSDwb7qKrRtCJBcdoWaZl2tunU1uxXVeE
+         DyAMrOSAN3kXk301HZ5vUhL1FP1jtkJTf5G6ABTvjs1CROm9UkUgUXAQEwKy4+8s0dxs
+         Nmlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743729062; x=1744333862;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ewl/x4Zt26kQeJ50ssNokb9M5hP8pj7uoufInmgAhqY=;
-        b=IjmPY24q8Z0196Ner1sSD/70XSUDVXGS6PKbaihpuMXKLBZqOszn2AmhUOyT84b/mq
-         rdEhKwhe/RChh+pq/FMep/QMsAGTuJlHzltnB3LLZT0kDyTeJ0K+Uxvw41ZMMerPsq5H
-         XKj2SZr44ZnU0vtEDcU6ipQSlQEnaml3PoRIXcXJfgw1/PCm7dOL781r8Cjrh+YPLy3l
-         ELA6Dyb9FmhnP28rOnVffiDKSKPDbR+1xHaleMt8I+zup4S77857zJRx3/e3IYEO8rwN
-         nYP3JRHPmXjKrlOiviHmnAqEBnUZIf+THZSMJydKcGiAT/qRYyg60/YCjglPclIrBLZK
-         m17A==
-X-Forwarded-Encrypted: i=1; AJvYcCXEFy0mLGOwEv77mF41YWiLoUexBu87IIGbpx7QoEKwDIGurAiTOxKZtG3JDLU1vHQ8+Ygvnae1@vger.kernel.org
-X-Gm-Message-State: AOJu0YxjsWJ0Cw3WZpa0LgOckWG/9a9tJAMHEiOltxIb11r1SyPctXde
-	0Wn4cgpk38yn8FllmGq6FCtkrWO123qpy/z2fhinRtTb5Je3FBjs
-X-Gm-Gg: ASbGncslNOf8cCG+gN3DHET63OKj34BXGkBz6RmvzLb1A8Uomp1lN9KAMmLMazsGUAs
-	f95kf6Bb0O6OmBjn/9HOi25ADSY5EVaNSZFP97z1rfvCxYctxTWKdBbqK2hQeCULxG1LDah3tp9
-	mboi2UZBu4XuRmhi/Y6/M8tREfTDrRJ+ttTA7j4WLShBGJEJSMovk0cFqkmI5zO9u/QLHQYmUH2
-	IS4ffA8hBIMJp6xF7RbNDOhLKM3bfuzFZwrbhcaX8BrehBS43xoMB9hSzAgX3DMr1+NO6+8vpju
-	dvd+HTFbAK8jYD/s9slM/YcL4AKZGelSdgxdffZ6/YuCXMwaPZ+PfiPgrHi56owZkINac9V0
-X-Google-Smtp-Source: AGHT+IGJGjJTFXlhYdVoZZw5ePtKECQtO2lm8eoSS8/qHKd6wtOVKwcq/4BLkFIsuWi85Roiom82fQ==
-X-Received: by 2002:a17:902:e5cf:b0:223:517a:d2e2 with SMTP id d9443c01a7336-22a8a0b4149mr17192995ad.53.1743729061680;
-        Thu, 03 Apr 2025 18:11:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1743729063; x=1744333863;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mZsU5fSVi28PbSL6szY7mdlMdjJc5ZoxpLKyts0s7sA=;
+        b=A5v5sCHMiXgD21+jOS881PAhdeVaKY+NfUxWVft1wAGjb0ckpvA4dduhcgeS4hJoRN
+         qwhVfkrcTOAOYi6Z/YvkR37J1J5TctG3yWo0KfxLGbrwwFdKKmW1GygwmRwvkJJbRQkR
+         nLrvkJO5BANBHNCruZLxUirx40PdbjfWb4VSpSXFWhDL1mTDyA4NRX11oHSEKXVfX9ub
+         7jqTrs7zM8J1HkQ4V5zQFQljslg1MQwWcaFp73aOV+Kj4BImGhpMh5L/QkD0Hc/0v3F8
+         21oCYIfw0htbVXrg7AskKUGZ5bwfnRsFvqWrZiAGX0UaJ1rwWmJ0Ar1cDMo2ZWWVazJC
+         vo4w==
+X-Forwarded-Encrypted: i=1; AJvYcCXx8oUdYMKuNjZm3TpYBbjXfo2HDwu+vX8hpWDI+0YcnHjaiEz0eQfCJJlUve+b33jBzRwHv87o@vger.kernel.org
+X-Gm-Message-State: AOJu0YzfL3onjHpr3nX4+9Rz4Y+wZM0/HHxcvpHgSySbGp4XiNVmjLDL
+	C0BYZ0WOpwjtpJG+urGolN8UCWI6PgyGH1Ihyv7IGaUj/4mJdvP/
+X-Gm-Gg: ASbGncsnzfUjqE3zEyomwVok1Hf4VKQXeFCBChee2/OXvvsRxp7tFI7iQBIFNeszkGw
+	vm50HoY0ubvQaQvPrzrLR2eNftuesEI4BlbYsVfMgEl6cC9bWbD8jZXRPKy0Zn4qHNEBGpmoFED
+	ZYtmISVfq8olkE6eOTLL7w96uS6P4Sc8/aRCdNiign2q5U2zpDOC4LB5vERBQkox+ha32E+4gm8
+	MbLJIl4OyV5sppinFzECXjzKZ9cvIq3P17ZLKXDb7Smvgl5PP8GXV5lnNnzEfSiVOS5xw+7g2cP
+	03yhRLoNCP+9IC1xSc2YWEYQSiXMiprb1HOcpbobEKGeWHrBNlDYlPJF1ug9fdgIxHzd4BWt
+X-Google-Smtp-Source: AGHT+IF8Od4xvEKN3/RaUfeo4N1bACCSjzvUpvp6Hxw/d1Soi6qjdw8eOYD9IyiMEadxhY9T/76/Gg==
+X-Received: by 2002:a17:902:be15:b0:221:751f:cfbe with SMTP id d9443c01a7336-22a89b8e034mr16115945ad.19.1743729063215;
+        Thu, 03 Apr 2025 18:11:03 -0700 (PDT)
 Received: from jpkobryn-fedora-PF5CFKNC.thefacebook.com ([2620:10d:c090:500::7:9b28])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-229785ad9a0sm21268675ad.39.2025.04.03.18.11.00
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-229785ad9a0sm21268675ad.39.2025.04.03.18.11.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Apr 2025 18:11:01 -0700 (PDT)
+        Thu, 03 Apr 2025 18:11:02 -0700 (PDT)
 From: JP Kobryn <inwardvessel@gmail.com>
 To: tj@kernel.org,
 	shakeel.butt@linux.dev,
@@ -80,10 +82,12 @@ To: tj@kernel.org,
 Cc: linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH v4 0/5] cgroup: separate rstat trees
-Date: Thu,  3 Apr 2025 18:10:45 -0700
-Message-ID: <20250404011050.121777-1-inwardvessel@gmail.com>
+Subject: [PATCH v4 1/5] cgroup: move rstat base stat objects into their own struct
+Date: Thu,  3 Apr 2025 18:10:46 -0700
+Message-ID: <20250404011050.121777-2-inwardvessel@gmail.com>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250404011050.121777-1-inwardvessel@gmail.com>
+References: <20250404011050.121777-1-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -92,249 +96,298 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The current design of rstat takes the approach that if one subsystem is to
-be flushed, all other subsystems with pending updates should also be
-flushed. A flush may be initiated by reading specific stats (like cpu.stat)
-and other subsystems will be flushed alongside. The complexity of flushing
-some subsystems has grown to the extent that the overhead of side flushes
-is causing noticeable delays in reading the desired stats.
+This non-functional change serves as preparation for moving to
+subsystem-based rstat trees. The base stats are not an actual subsystem,
+but in future commits they will have exclusive rstat trees just as other
+subsystems will.
 
-One big area where the issue comes up is system telemetry, where programs
-periodically sample cpu stats while the memory controller is enabled. It
-would be a benefit for programs sampling cpu.stat if the overhead of having
-to flush memory (and also io) stats was eliminated. It would save cpu
-cycles for existing stat reader programs and improve scalability in terms
-of sampling frequency and host volume.
+Moving the base stat objects into a new struct allows the cgroup_rstat_cpu
+struct to become more compact since it now only contains the minimum amount
+of pointers needed for rstat participation. Subsystems will (in future
+commits) make use of the compact cgroup_rstat_cpu struct while avoiding the
+memory overhead of the base stat objects which they will not use.
 
-This series changes the approach of "flush all subsystems" to "flush only
-the requested subsystem". The core design change is moving from a unified
-model where rstat trees are shared by subsystems to having separate trees
-for each subsystem. On a per-cpu basis, there will be separate trees for
-each enabled subsystem that implements css_rstat_flush plus one tree
-dedicated to the base stats. In order to do this, the rstat list pointers
-were moved off of the cgroup and onto the css. In the transition, these
-pointer types were changed to cgroup_subsys_state. Finally the API for
-updated/flush was changed to accept a reference to a css instead of a
-cgroup. This allows for a specific subsystem to be associated with a given
-update or flush. The result is that rstat trees will now be made up of css
-nodes, and a given tree will only contain nodes associated with a specific
-subsystem.
+An instance of the new struct cgroup_rstat_base_cpu was placed on the
+cgroup struct so it can retain ownership of these base stats common to all
+cgroups. A helper function was added for looking up the cpu-specific base
+stats of a given cgroup. Finally, initialization and variable names were
+adjusted where applicable.
 
-Since separate trees will now be in use, the locking scheme was adjusted.
-The global locks were split up in such a way that there are separate locks
-for the base stats and also for each subsystem (memory, io, etc). This
-allows different subsystems (and base stats) to use rstat in parallel with
-no contention.
+Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+---
+ include/linux/cgroup-defs.h | 38 ++++++++++-------
+ kernel/cgroup/cgroup.c      |  8 +++-
+ kernel/cgroup/rstat.c       | 84 ++++++++++++++++++++++---------------
+ 3 files changed, 79 insertions(+), 51 deletions(-)
 
-Breaking up the unified tree into separate trees eliminates the overhead
-and scalability issues explained in the first section, but comes at the
-cost of additional memory. Originally, each cgroup contained an instance of
-the cgroup_rstat_cpu. The design change of moving to css-based trees calls
-for each css having the rstat per-cpu objects instead. Moving these objects
-to every css is where this overhead is created. In an effort to minimize
-this, the cgroup_rstat_cpu struct was split into two separate structs. One
-is the cgroup_rstat_base_cpu struct which only contains the per-cpu base
-stat objects used in rstat. The other is the css_rstat_cpu struct which
-contains the minimum amount of pointers needed for a css to participate in
-rstat. Since only the cgroup::self css is associated with the base stats,
-an instance of the cgroup_rstat_base_cpu struct is placed on the cgroup.
-Meanwhile an instance of the css_rstat_cpu is placed on the
-cgroup_subsys_state. This allows for all css's to participate in rstat
-while avoiding the unnecessary inclusion of the base stats. The base stat
-objects will only exist once per-cgroup regardless of however many
-subsystems are enabled. With this division of rstat list pointers and base
-stats, the change in memory overhead on a per-cpu basis before/after is
-shown below.
-
-memory overhead before:
-	nr_cgroups * sizeof(struct cgroup_rstat_cpu)
-where
-	sizeof(struct cgroup_rstat_cpu) = 144 bytes /* config-dependent */
-resulting in
-	nr_cgroups * 144 bytes
-
-memory overhead after:
-	nr_cgroups * (
-		sizeof(struct cgroup_rstat_base_cpu) +
-			sizeof(struct css_rstat_cpu) * (1 + nr_rstat_controllers)
-		)
-where
-	sizeof(struct cgroup_rstat_base_cpu) = 128 bytes
-	sizeof(struct css_rstat_cpu) = 16 bytes
-	the constant "1" accounts for the cgroup::self css
-	nr_rstat_controllers = number of controllers defining css_rstat_flush
-when both memory and io are enabled
-	nr_rstat_controllers = 2
-resulting in
-	nr_cgroups * (128 + 16 * (1 + 2))
-	nr_cgroups * 176 bytes
-
-This leaves us with an increase in memory overhead of:
-	32 bytes per cgroup per cpu
-
-Validation was performed by reading some *.stat files of a target parent
-cgroup while the system was under different workloads. A test program was
-made to loop 1M times, reading the files cgroup.stat, cpu.stat, io.stat,
-memory.stat of the parent cgroup each iteration. Using a non-patched kernel
-as control and this series as experimental, the findings show perf gains
-when reading stats with this series.
-
-The first experiment consisted of a parent cgroup with memory.swap.max=0
-and memory.max=1G. On a 52-cpu machine, 26 child cgroups were created and
-within each child cgroup a process was spawned to frequently update the
-memory cgroup stats by creating and then reading a file of size 1T
-(encouraging reclaim). The test program was run alongside these 26 tasks in
-parallel. The results showed time and perf gains for the reader test
-program.
-
-test program elapsed time
-control:
-real    1m0.956s
-user    0m0.569s
-sys     1m0.195s
-
-experiment:
-real    0m37.660s
-user    0m0.463s
-sys     0m37.078s
-
-test program perf
-control:
-24.62% mem_cgroup_css_rstat_flush
- 4.97% __blkcg_rstat_flush
- 0.09% cpu_stat_show
- 0.05% cgroup_base_stat_cputime_show
-
-experiment:
-2.68% mem_cgroup_css_rstat_flush
-0.04% blkcg_print_stat
-0.07% cpu_stat_show
-0.06% cgroup_base_stat_cputime_show
-
-It's worth noting that memcg uses heuristics to optimize flushing.
-Depending on the state of updated stats at a given time, a memcg flush may
-be considered unnecessary and skipped as a result. This opportunity to skip
-a flush is bypassed when memcg is flushed as a consequence of sharing the
-tree with another controller.
-
-A second experiment was setup on the same host using a parent cgroup with
-two child cgroups. The same swap and memory max were used as in the
-previous experiment. In the two child cgroups, kernel builds were done in
-parallel, each using "-j 20". The perf comparison is shown below.
-
-test program elapsed time
-control:
-real    1m27.620s
-user    0m0.779s
-sys     1m26.258s
-
-experiment:
-real    0m45.805s
-user    0m0.723s
-sys     0m44.757s
-
-test program perf
-control:
-30.84% mem_cgroup_css_rstat_flush
- 6.75% __blkcg_rstat_flush
- 0.08% cpu_stat_show
- 0.04% cgroup_base_stat_cputime_show
-
-experiment:
-1.55% mem_cgroup_css_rstat_flush
-0.15% blkcg_print_stat
-0.10% cpu_stat_show
-0.09% cgroup_base_stat_cputime_show
-0.00% __blkcg_rstat_flush
-
-The final experiment differs from the previous two in that it measures
-performance from the stat updater perspective. A kernel build was run in a
-child node with -j 20 on the same host and cgroup setup. A baseline was
-established by having the build run while no stats were read. The builds
-were then repeated while stats were constantly being read. In all cases,
-perf appeared similar in cycles spent on cgroup_rstat_updated()
-(insignificant compared to the other recorded events). As for the elapsed
-build times, the results of the different scenarios are shown below,
-showing no significant drawbacks of the split tree approach.
-
-control with no readers
-real    3m21.003s
-user    55m52.133s
-sys     2m40.728s
-
-control with constant readers of {memory,io,cpu,cgroup}.stat
-real    3m26.164s
-user    56m49.474s
-sys     2m56.389s
-
-experiment with no readers
-real    3m22.740s
-user    56m18.972s
-sys     2m45.041s
-
-experiment with constant readers of {memory,io,cpu,cgroup}.stat
-real    3m26.971s
-user    57m11.540s
-sys     2m49.735s
-
-changelog
-v4:
-	drop bpf api patch
-	drop cgroup_rstat_cpu split and union patch,
-		replace with patch for moving base stats into new struct
-	new patch for renaming rstat api's from cgroup_* to css_*
-	new patch for adding css_is_cgroup() helper
-	rename ss->lock and ss->cpu_lock to ss->rstat_ss_lock and
-		ss->rstat_ss_cpu_lock respectively
-	rename root_self_stat_cpu to root_base_rstat_cpu
-	rename cgroup_rstat_push_children to css_rstat_push_children
-	format comments for consistency in wings and capitalization
-	update comments in bpf selftests
-
-v3:
-	new bpf kfunc api for updated/flush
-	rename cgroup_rstat_{updated,flush} and related to "css_rstat_*"
-	check for ss->css_rstat_flush existence where applicable
-	rename locks for base stats
-	move subsystem locks to cgroup_subsys struct
-	change cgroup_rstat_boot() to ss_rstat_init(ss) and init locks within
-	change lock helpers to accept css and perform lock selection within
-	fix comments that had outdated lock names
-	add open css_is_cgroup() helper
-	rename rstatc to rstatbc to reflect base stats in use
-	rename cgroup_dfl_root_rstat_cpu to root_self_rstat_cpu
-	add comments in early init code to explain deferred allocation
-	misc formatting fixes
-
-v2:
-	drop the patch creating a new cgroup_rstat struct and related code
-	drop bpf-specific patches. instead just use cgroup::self in bpf progs
-	drop the cpu lock patches. instead select cpu lock in updated_list func
-	relocate the cgroup_rstat_init() call to inside css_create()
-	relocate the cgroup_rstat_exit() cleanup from apply_control_enable()
-		to css_free_rwork_fn()
-v1:
-	https://lore.kernel.org/all/20250218031448.46951-1-inwardvessel@gmail.com/
-
-JP Kobryn (4):
-  cgroup: separate rstat api for bpf programs
-  cgroup: use separate rstat trees for each subsystem
-  cgroup: use subsystem-specific rstat locks to avoid contention
-  cgroup: split up cgroup_rstat_cpu into base stat and non base stat
-    versions
-
- block/blk-cgroup.c                            |   6 +-
- include/linux/cgroup-defs.h                   |  80 ++--
- include/linux/cgroup.h                        |  16 +-
- include/trace/events/cgroup.h                 |  10 +-
- kernel/cgroup/cgroup-internal.h               |   6 +-
- kernel/cgroup/cgroup.c                        |  69 +--
- kernel/cgroup/rstat.c                         | 412 +++++++++++-------
- mm/memcontrol.c                               |   4 +-
- .../selftests/bpf/progs/btf_type_tag_percpu.c |   5 +-
- .../bpf/progs/cgroup_hierarchical_stats.c     |   8 +-
- 10 files changed, 363 insertions(+), 253 deletions(-)
-
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 485b651869d9..6d177f770d28 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -344,10 +344,29 @@ struct cgroup_base_stat {
+  * frequency decreases the cost of each read.
+  *
+  * This struct hosts both the fields which implement the above -
+- * updated_children and updated_next - and the fields which track basic
+- * resource statistics on top of it - bsync, bstat and last_bstat.
++ * updated_children and updated_next.
+  */
+ struct cgroup_rstat_cpu {
++	/*
++	 * Child cgroups with stat updates on this cpu since the last read
++	 * are linked on the parent's ->updated_children through
++	 * ->updated_next.
++	 *
++	 * In addition to being more compact, singly-linked list pointing
++	 * to the cgroup makes it unnecessary for each per-cpu struct to
++	 * point back to the associated cgroup.
++	 *
++	 * Protected by per-cpu cgroup_rstat_cpu_lock.
++	 */
++	struct cgroup *updated_children;	/* terminated by self cgroup */
++	struct cgroup *updated_next;		/* NULL iff not on the list */
++};
++
++/*
++ * This struct hosts the fields which track basic resource statistics on
++ * top of it - bsync, bstat and last_bstat.
++ */
++struct cgroup_rstat_base_cpu {
+ 	/*
+ 	 * ->bsync protects ->bstat.  These are the only fields which get
+ 	 * updated in the hot path.
+@@ -374,20 +393,6 @@ struct cgroup_rstat_cpu {
+ 	 * deltas to propagate to the per-cpu subtree_bstat.
+ 	 */
+ 	struct cgroup_base_stat last_subtree_bstat;
+-
+-	/*
+-	 * Child cgroups with stat updates on this cpu since the last read
+-	 * are linked on the parent's ->updated_children through
+-	 * ->updated_next.
+-	 *
+-	 * In addition to being more compact, singly-linked list pointing
+-	 * to the cgroup makes it unnecessary for each per-cpu struct to
+-	 * point back to the associated cgroup.
+-	 *
+-	 * Protected by per-cpu cgroup_rstat_cpu_lock.
+-	 */
+-	struct cgroup *updated_children;	/* terminated by self cgroup */
+-	struct cgroup *updated_next;		/* NULL iff not on the list */
+ };
+ 
+ struct cgroup_freezer_state {
+@@ -518,6 +523,7 @@ struct cgroup {
+ 
+ 	/* per-cpu recursive resource statistics */
+ 	struct cgroup_rstat_cpu __percpu *rstat_cpu;
++	struct cgroup_rstat_base_cpu __percpu *rstat_base_cpu;
+ 	struct list_head rstat_css_list;
+ 
+ 	/*
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index ac2db99941ca..77349d07b117 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -161,10 +161,14 @@ static struct static_key_true *cgroup_subsys_on_dfl_key[] = {
+ };
+ #undef SUBSYS
+ 
+-static DEFINE_PER_CPU(struct cgroup_rstat_cpu, cgrp_dfl_root_rstat_cpu);
++static DEFINE_PER_CPU(struct cgroup_rstat_cpu, root_rstat_cpu);
++static DEFINE_PER_CPU(struct cgroup_rstat_base_cpu, root_rstat_base_cpu);
+ 
+ /* the default hierarchy */
+-struct cgroup_root cgrp_dfl_root = { .cgrp.rstat_cpu = &cgrp_dfl_root_rstat_cpu };
++struct cgroup_root cgrp_dfl_root = {
++	.cgrp.rstat_cpu = &root_rstat_cpu,
++	.cgrp.rstat_base_cpu = &root_rstat_base_cpu,
++};
+ EXPORT_SYMBOL_GPL(cgrp_dfl_root);
+ 
+ /*
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 4bb587d5d34f..a20e3ab3f7d3 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -19,6 +19,12 @@ static struct cgroup_rstat_cpu *cgroup_rstat_cpu(struct cgroup *cgrp, int cpu)
+ 	return per_cpu_ptr(cgrp->rstat_cpu, cpu);
+ }
+ 
++static struct cgroup_rstat_base_cpu *cgroup_rstat_base_cpu(
++		struct cgroup *cgrp, int cpu)
++{
++	return per_cpu_ptr(cgrp->rstat_base_cpu, cpu);
++}
++
+ /*
+  * Helper functions for rstat per CPU lock (cgroup_rstat_cpu_lock).
+  *
+@@ -351,12 +357,22 @@ int cgroup_rstat_init(struct cgroup *cgrp)
+ 			return -ENOMEM;
+ 	}
+ 
++	if (!cgrp->rstat_base_cpu) {
++		cgrp->rstat_base_cpu = alloc_percpu(struct cgroup_rstat_base_cpu);
++		if (!cgrp->rstat_cpu) {
++			free_percpu(cgrp->rstat_cpu);
++			return -ENOMEM;
++		}
++	}
++
+ 	/* ->updated_children list is self terminated */
+ 	for_each_possible_cpu(cpu) {
+ 		struct cgroup_rstat_cpu *rstatc = cgroup_rstat_cpu(cgrp, cpu);
++		struct cgroup_rstat_base_cpu *rstatbc =
++			cgroup_rstat_base_cpu(cgrp, cpu);
+ 
+ 		rstatc->updated_children = cgrp;
+-		u64_stats_init(&rstatc->bsync);
++		u64_stats_init(&rstatbc->bsync);
+ 	}
+ 
+ 	return 0;
+@@ -379,6 +395,8 @@ void cgroup_rstat_exit(struct cgroup *cgrp)
+ 
+ 	free_percpu(cgrp->rstat_cpu);
+ 	cgrp->rstat_cpu = NULL;
++	free_percpu(cgrp->rstat_base_cpu);
++	cgrp->rstat_base_cpu = NULL;
+ }
+ 
+ void __init cgroup_rstat_boot(void)
+@@ -419,9 +437,9 @@ static void cgroup_base_stat_sub(struct cgroup_base_stat *dst_bstat,
+ 
+ static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu)
+ {
+-	struct cgroup_rstat_cpu *rstatc = cgroup_rstat_cpu(cgrp, cpu);
++	struct cgroup_rstat_base_cpu *rstatbc = cgroup_rstat_base_cpu(cgrp, cpu);
+ 	struct cgroup *parent = cgroup_parent(cgrp);
+-	struct cgroup_rstat_cpu *prstatc;
++	struct cgroup_rstat_base_cpu *prstatbc;
+ 	struct cgroup_base_stat delta;
+ 	unsigned seq;
+ 
+@@ -431,15 +449,15 @@ static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu)
+ 
+ 	/* fetch the current per-cpu values */
+ 	do {
+-		seq = __u64_stats_fetch_begin(&rstatc->bsync);
+-		delta = rstatc->bstat;
+-	} while (__u64_stats_fetch_retry(&rstatc->bsync, seq));
++		seq = __u64_stats_fetch_begin(&rstatbc->bsync);
++		delta = rstatbc->bstat;
++	} while (__u64_stats_fetch_retry(&rstatbc->bsync, seq));
+ 
+ 	/* propagate per-cpu delta to cgroup and per-cpu global statistics */
+-	cgroup_base_stat_sub(&delta, &rstatc->last_bstat);
++	cgroup_base_stat_sub(&delta, &rstatbc->last_bstat);
+ 	cgroup_base_stat_add(&cgrp->bstat, &delta);
+-	cgroup_base_stat_add(&rstatc->last_bstat, &delta);
+-	cgroup_base_stat_add(&rstatc->subtree_bstat, &delta);
++	cgroup_base_stat_add(&rstatbc->last_bstat, &delta);
++	cgroup_base_stat_add(&rstatbc->subtree_bstat, &delta);
+ 
+ 	/* propagate cgroup and per-cpu global delta to parent (unless that's root) */
+ 	if (cgroup_parent(parent)) {
+@@ -448,73 +466,73 @@ static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu)
+ 		cgroup_base_stat_add(&parent->bstat, &delta);
+ 		cgroup_base_stat_add(&cgrp->last_bstat, &delta);
+ 
+-		delta = rstatc->subtree_bstat;
+-		prstatc = cgroup_rstat_cpu(parent, cpu);
+-		cgroup_base_stat_sub(&delta, &rstatc->last_subtree_bstat);
+-		cgroup_base_stat_add(&prstatc->subtree_bstat, &delta);
+-		cgroup_base_stat_add(&rstatc->last_subtree_bstat, &delta);
++		delta = rstatbc->subtree_bstat;
++		prstatbc = cgroup_rstat_base_cpu(parent, cpu);
++		cgroup_base_stat_sub(&delta, &rstatbc->last_subtree_bstat);
++		cgroup_base_stat_add(&prstatbc->subtree_bstat, &delta);
++		cgroup_base_stat_add(&rstatbc->last_subtree_bstat, &delta);
+ 	}
+ }
+ 
+-static struct cgroup_rstat_cpu *
++static struct cgroup_rstat_base_cpu *
+ cgroup_base_stat_cputime_account_begin(struct cgroup *cgrp, unsigned long *flags)
+ {
+-	struct cgroup_rstat_cpu *rstatc;
++	struct cgroup_rstat_base_cpu *rstatbc;
+ 
+-	rstatc = get_cpu_ptr(cgrp->rstat_cpu);
+-	*flags = u64_stats_update_begin_irqsave(&rstatc->bsync);
+-	return rstatc;
++	rstatbc = get_cpu_ptr(cgrp->rstat_base_cpu);
++	*flags = u64_stats_update_begin_irqsave(&rstatbc->bsync);
++	return rstatbc;
+ }
+ 
+ static void cgroup_base_stat_cputime_account_end(struct cgroup *cgrp,
+-						 struct cgroup_rstat_cpu *rstatc,
++						 struct cgroup_rstat_base_cpu *rstatbc,
+ 						 unsigned long flags)
+ {
+-	u64_stats_update_end_irqrestore(&rstatc->bsync, flags);
++	u64_stats_update_end_irqrestore(&rstatbc->bsync, flags);
+ 	cgroup_rstat_updated(cgrp, smp_processor_id());
+-	put_cpu_ptr(rstatc);
++	put_cpu_ptr(rstatbc);
+ }
+ 
+ void __cgroup_account_cputime(struct cgroup *cgrp, u64 delta_exec)
+ {
+-	struct cgroup_rstat_cpu *rstatc;
++	struct cgroup_rstat_base_cpu *rstatbc;
+ 	unsigned long flags;
+ 
+-	rstatc = cgroup_base_stat_cputime_account_begin(cgrp, &flags);
+-	rstatc->bstat.cputime.sum_exec_runtime += delta_exec;
+-	cgroup_base_stat_cputime_account_end(cgrp, rstatc, flags);
++	rstatbc = cgroup_base_stat_cputime_account_begin(cgrp, &flags);
++	rstatbc->bstat.cputime.sum_exec_runtime += delta_exec;
++	cgroup_base_stat_cputime_account_end(cgrp, rstatbc, flags);
+ }
+ 
+ void __cgroup_account_cputime_field(struct cgroup *cgrp,
+ 				    enum cpu_usage_stat index, u64 delta_exec)
+ {
+-	struct cgroup_rstat_cpu *rstatc;
++	struct cgroup_rstat_base_cpu *rstatbc;
+ 	unsigned long flags;
+ 
+-	rstatc = cgroup_base_stat_cputime_account_begin(cgrp, &flags);
++	rstatbc = cgroup_base_stat_cputime_account_begin(cgrp, &flags);
+ 
+ 	switch (index) {
+ 	case CPUTIME_NICE:
+-		rstatc->bstat.ntime += delta_exec;
++		rstatbc->bstat.ntime += delta_exec;
+ 		fallthrough;
+ 	case CPUTIME_USER:
+-		rstatc->bstat.cputime.utime += delta_exec;
++		rstatbc->bstat.cputime.utime += delta_exec;
+ 		break;
+ 	case CPUTIME_SYSTEM:
+ 	case CPUTIME_IRQ:
+ 	case CPUTIME_SOFTIRQ:
+-		rstatc->bstat.cputime.stime += delta_exec;
++		rstatbc->bstat.cputime.stime += delta_exec;
+ 		break;
+ #ifdef CONFIG_SCHED_CORE
+ 	case CPUTIME_FORCEIDLE:
+-		rstatc->bstat.forceidle_sum += delta_exec;
++		rstatbc->bstat.forceidle_sum += delta_exec;
+ 		break;
+ #endif
+ 	default:
+ 		break;
+ 	}
+ 
+-	cgroup_base_stat_cputime_account_end(cgrp, rstatc, flags);
++	cgroup_base_stat_cputime_account_end(cgrp, rstatbc, flags);
+ }
+ 
+ /*
 -- 
 2.47.1
 
