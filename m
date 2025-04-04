@@ -1,171 +1,162 @@
-Return-Path: <cgroups+bounces-7365-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7366-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6C84A7C360
-	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 21:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1222CA7C3F0
+	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 21:38:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 429B51B60C78
-	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 19:01:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82D37189F782
+	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 19:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715F220E6E0;
-	Fri,  4 Apr 2025 19:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0DA21D3F9;
+	Fri,  4 Apr 2025 19:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jWM0A95p"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="r2iv0ef4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BC020ADD8
-	for <cgroups@vger.kernel.org>; Fri,  4 Apr 2025 19:01:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADE3D21D3DC
+	for <cgroups@vger.kernel.org>; Fri,  4 Apr 2025 19:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743793276; cv=none; b=q38Ks0Wk1x5xaEp0mfjoPc2sD/0QSBzTyRgnkO3IjYNKiTxYE+W9Vf/mI/HOYHpi3MVTAb6vkUUPv/BKIA9yTTCXX9u7GeHjB1s4JwuAxNPoAuokQu4Ee7Zw14AgLbiBNlB8rA38vd4znPL82PE8g46HrqaKtfrhDVw0tq5ijoo=
+	t=1743795491; cv=none; b=a3vCg+m7xuznMAwNyvYk/vB6lj3HEMQeqvyRlPIfO9AFtievr7wWByBRZaPGl7ikwtlSAY78EBkzUbJ8m6TT5UsBEp2CDDz84wMON1vajlV3+DBFkf3Dva7ztZwdZ4NV2R2ERjf8j/cUDKhyHV1Bj9jEjWwHlNON4ZVmlqqQXqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743793276; c=relaxed/simple;
-	bh=1pLMCas5pwDT0a+/nUAiGb02bobVqC03NTC9w4ajQfM=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=UgtAgzldRcfB2pbxJi0GyLeZcpoNXvEHJehnogKQdrMczaBQQnbSZZnMR0pJzzv+LsVdad0CbsKsVuibNGhtsyupztHxTse47kDv/m710n6mkByxCrCMFuYTahU9MUBbVq91Zm5miS9EIsJDJsdFbNuZjrNRqhCc0mEe4//nlx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jWM0A95p; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1743793273;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G1MMtNiDnolUZJhUSU3/9gDr+oQodav3erGGx1lsb/g=;
-	b=jWM0A95pR0JmHQg9BVGRDbjVJhXtsf2LRWMDVumAaVvCwLpJjBbUyfCadaUVuo4TfkPovT
-	NaI/D31prQHDWRrQLLL9csbka1O4X0oy0oE/dd3u7Wzi6rTZjoh4RKkTgu3jPCyiOuCbEI
-	TzCnDSNNAYuXDuMRF0saxIy207AL4Vg=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-612-gl6kJDmWMzmPqXqqpzm9Og-1; Fri, 04 Apr 2025 15:01:11 -0400
-X-MC-Unique: gl6kJDmWMzmPqXqqpzm9Og-1
-X-Mimecast-MFC-AGG-ID: gl6kJDmWMzmPqXqqpzm9Og_1743793270
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7c54e7922a1so484825785a.2
-        for <cgroups@vger.kernel.org>; Fri, 04 Apr 2025 12:01:11 -0700 (PDT)
+	s=arc-20240116; t=1743795491; c=relaxed/simple;
+	bh=OWnTUtIeczm0jQ3tLKOSnVG07QY4zxIxvceyWqq7Rcg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VsrxOOdQVXa5f4EWr3f10zbPXRcD7nbJWvo9wVGoPCNd8Eef1pKSYIQhX8bNMspq9w1apRfFSBN3gm3T/Ql91wbn7b4D/pPNltrdZE3LGvVPqiagDZ5phkEb5h2g4xPO6OzmrpTsxEpvoltwq9ZlViS0s62DEniqObdF+hWU/6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=r2iv0ef4; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4769f3e19a9so16330481cf.0
+        for <cgroups@vger.kernel.org>; Fri, 04 Apr 2025 12:38:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1743795487; x=1744400287; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=n4jU9dZ1c7Yovc2ioTyNiJ82SX9/E9otfhXZzP1ZTJc=;
+        b=r2iv0ef4yKGEl8X3YPULea59OGt/Ztw4Gnxff+mVXhI+yZzM/xSWJe7xTVcbuvQksn
+         bX6jgrjiPcN+CI+GZX+ot2UMdjau0j1fP8SKQvL74Z9yi7+0faDXca8k/rRJ5ZLbqmgW
+         9H9Vzr/wj3tdiPmrEsN7PsnoesYqHtoOZ6lFANaUqfh6O6Gjz96zf492Yh8pYC05Qs6Z
+         CPD4P16Z+lr1quV7ZZHx+dOl5pT0pbYWDblD0kJjjymm04T/59RBEttaJUmY4mWx2l+h
+         WXOLQPwZ3P2q30CYFpn6bhNYetcdoFeEmkyQct6WNmZ/7iaXdoJQETbQPPRQrvZofMJy
+         OHrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743793270; x=1744398070;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
+        d=1e100.net; s=20230601; t=1743795487; x=1744400287;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G1MMtNiDnolUZJhUSU3/9gDr+oQodav3erGGx1lsb/g=;
-        b=AHkFhDMCAuxjInuQAzFS7e6u2VXQ9CNkXOmESN2aHodzz+OKuUC1dqFWL2pjua6WFj
-         eZ+YAMdjGKXeyMYHeI/OMGFD5yBAYbyGNdLw0MlzGYl59WEst9MzLIR39j7ZLz4eP6OX
-         /u4HJygslMuP1aNpGFdQjw6OHd0O6wdbpk/VQBp5vNqKi9fdE+8fV72f6NDISYUjklv0
-         vgoI67bm+9A4B7d1wKnc3AyrCkyDOpMf+IKj97JlVJx+HmiQg/gnGqT8pn36CHYFjcAd
-         xwCUrxWXO/9w1M7bdfqrSjdNbfnmDjZG64WvSSVN6EFACTqHDcVwNMKLPXiZgONu4thX
-         /j2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVo13FqzUn3WdnFG8xP6CUeJgNAXEGhbtDgiIUvrH7NFPgnErKfb30NqOeHTDteFJCqFP8xDMPW@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+J+rgxJY/NngmaikKxbAe0BBcJwCHaHq9baXpUhdp9xBuilFD
-	aI36Ai+5xAXgaX8434f+6j0k0epQGU0d/9obLD1SpsaQmE5f/dbGuXEffXJor/b7M8cXF4LgrXF
-	Y3nlsG3EUsNykNeixSuMz+dwpH41cB9FtsFaT7Ap0lxkgTkc1XmgcbUE=
-X-Gm-Gg: ASbGnct5fVQ6PxPginbH3oai2Ywh4KjiEULdMp2rk4GGK2N80Tsv4J8dtDEAX5VyYz5
-	UTbNNWsBRuyn1lEMCEnuqTVCTmtjpfb0q7IYFyAdxt+JXXZ20svxUPrHrPOv8Xdt4oK5J3dAa7G
-	wUTSbQXp/sGkWkLIZES9vN9CKZxqMGt8vLqP0JZpRS32AOD1uEMWqZ/P4kxTQqcIAvOfbtg2B49
-	4o35dpakU/W9hsmDwCKo4iC+vIGQjiXYhZmWkO1Fm/4slThmIkdE6bQQlhI2Az0p7yhtIDN+qWu
-	g5pHlhuiYM8RzmqPWEAnqB5MzMREOgbbt4uAE7L7VvURWzKRFviUBWhubgn9Zw==
-X-Received: by 2002:a05:620a:2846:b0:7c5:3b8d:9f34 with SMTP id af79cd13be357-7c774d71e83mr623398085a.34.1743793270590;
-        Fri, 04 Apr 2025 12:01:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE2pRizqiBzi0bsE2Dny26nsl1JiAGoprEnqGYgEVCSGkEWDheGOUcCAScM0Ciy8R9ST8/yug==
-X-Received: by 2002:a05:620a:2846:b0:7c5:3b8d:9f34 with SMTP id af79cd13be357-7c774d71e83mr623393285a.34.1743793270255;
-        Fri, 04 Apr 2025 12:01:10 -0700 (PDT)
-Received: from ?IPV6:2601:188:c100:5710:315f:57b3:b997:5fca? ([2601:188:c100:5710:315f:57b3:b997:5fca])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c76e5dc169sm255423485a.0.2025.04.04.12.01.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Apr 2025 12:01:09 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <89775280-c702-48cf-b430-07231759a8b7@redhat.com>
-Date: Fri, 4 Apr 2025 15:01:08 -0400
+        bh=n4jU9dZ1c7Yovc2ioTyNiJ82SX9/E9otfhXZzP1ZTJc=;
+        b=fg+UIb0NW8JsGu6hV7Ms5cY2D3Kx62ILTBbvDYMnlOGcwmqA4SKqb81zBva+uAM5O4
+         KHInFAA3xWEOQeqTzPZoKR3B2Z1RYJIr4JDFMVxvLmzOzO5bjUjHuL57Ea62ZvAY7XQh
+         q00vUPpIbUBhIYLQqSpffDOc+FRPi1ic9MmAyInaLauXFvM4Z0ZjCIZp8HCTcX/P8vPk
+         1mA0D/kLgKlM6amQIvELp9UERXQIdb2iqNrFGw6J9ffemS/8Fzrkd2qTDT/AuFq4NtDu
+         JigAqzeT+1LidTWFrLbd5JKN5lHCxiArAFLXVXiJ4hv6hkpBHMhJoWXLZ0MWPdB7NDux
+         DepQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWttoI3ldzF7TIL0KXFyB/Swd9IWPyhDiDewGuawgAmHOkktfiykOaScUjXauSptMtFy+YuX4qG@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYBbim5SxaPVqubdazq+wRy3UEGpYFtB71qVrGV5HGlOTC4eWq
+	LHiH2BjqRAOa8Xa7nz5zJSjnITli1ffzfV+AKD8VFp6wdb7EIZld/A/ljblpQ/U=
+X-Gm-Gg: ASbGncu7gTyfHA6VLYVZYDKRvmt+SanAhAkgdW3DEOvnj/mOOoOq711MOKY7svd3yk7
+	X/oCTTC2C4Kmb53NSPJwjr2u30dLVK1vwAfFpYIKA78AXFksZRRTQAjwmPd8hSSFLL+6M8St7qM
+	h5OyG1Blr7GO5vale/As57t2yZ98heHhhyxSxGCjxzXR3mC2aoMw779rF5K0ha+Xv0eVk0gZPQm
+	xIDky6sCaSLPlnDpkyHl29Dv7n8wVSjA3HV+ZIONmi8gG2WD6bq6OsVosR8ySvBJXRGWhWUk9pl
+	E8txLBCUztCK1+NhWYjUQawOdv2/BuecKKM/xFWYlc0=
+X-Google-Smtp-Source: AGHT+IFiV5JEVHf/H5z/o5TJU4SUbRPdcSgoWSnaiXwlzx82DlAB9Nhd813vrtCnLKQxfZsESH38BQ==
+X-Received: by 2002:a05:622a:1a27:b0:476:8a83:960f with SMTP id d75a77b69052e-4792595086emr52294121cf.17.1743795487399;
+        Fri, 04 Apr 2025 12:38:07 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-4791b142b9bsm25853551cf.66.2025.04.04.12.38.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Apr 2025 12:38:06 -0700 (PDT)
+Date: Fri, 4 Apr 2025 15:38:02 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Waiman Long <llong@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] memcg: Don't generate low/min events if either
+ low/min or elow/emin is 0
+Message-ID: <20250404193802.GA373778@cmpxchg.org>
+References: <20250404012435.656045-1-longman@redhat.com>
+ <Z_ATAq-cwtv-9Atx@slm.duckdns.org>
+ <1ac51e8e-8dc0-4cd8-9414-f28125061bb3@redhat.com>
+ <20250404181308.GA300138@cmpxchg.org>
+ <c4294852-cc94-401e-8335-02741005e5d7@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] memcg: Don't generate low/min events if either
- low/min or elow/emin is 0
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
- Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-References: <20250404012435.656045-1-longman@redhat.com>
- <aopkqb4bd6sag5mgvnvmoojlsz47lxrgxav7lsywkzeqtb5pco@ptxoqnloplzi>
-Content-Language: en-US
-In-Reply-To: <aopkqb4bd6sag5mgvnvmoojlsz47lxrgxav7lsywkzeqtb5pco@ptxoqnloplzi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <c4294852-cc94-401e-8335-02741005e5d7@redhat.com>
 
+On Fri, Apr 04, 2025 at 02:55:35PM -0400, Waiman Long wrote:
+> On 4/4/25 2:13 PM, Johannes Weiner wrote:
+> > * Waiman points out that the weirdness is seeing low events without
+> >    having a low configured. Eh, this isn't really true with recursive
+> >    propagation; you may or may not have an elow depending on parental
+> >    configuration and sibling behavior.
+> >
+> Do you mind if we just don't update the low event count if low isn't 
+> set, but leave the rest the same like
 
-On 4/4/25 2:26 PM, Michal KoutnÃ½ wrote:
-> Hello Waiman.
->
-> On Thu, Apr 03, 2025 at 09:24:34PM -0400, Waiman Long <longman@redhat.com> wrote:
->> 1) memory.low is set to 0, but low events can still be triggered and
->>     so the cgroup may have a non-zero low event count. I doubt users are
->>     looking for that as they didn't set memory.low at all.
-> I agree with this reasoning, been there [1] but fix ain't easy (also
-> consensus of whether such an event should count or not and whether
-> reclaim should happen or not). (See also [2] where I had tried other
-> approaches that _didn't_ work.)
->
->> 2) memory.low is set to a non-zero value but the cgroup has no task in
->>     it so that it has an effective low value of 0.
-> There maybe page cache remaining in the cgroup even with not present
-> task inside it.
+What's the motivation for doing anything beyond the skip-on-!usage?
 
-For the test_memcontrol case, a cgroup is created but no task has 
-already been moved into it. So the memory usage is 0. I agree that if a 
-task has ever lived in the cgroup, the usage will not be 0. In that case 
-memory reclaim is certainly justified.
+> @@ -659,21 +659,25 @@ static inline bool mem_cgroup_unprotected(struct 
+> mem_cgro>
+>   static inline bool mem_cgroup_below_low(struct mem_cgroup *target,
+>                                          struct mem_cgroup *memcg)
+>   {
+> +       unsigned long elow;
+> +
+>          if (mem_cgroup_unprotected(target, memcg))
+>                  return false;
+> 
+> -       return READ_ONCE(memcg->memory.elow) >=
+> -               page_counter_read(&memcg->memory);
+> +       elow = READ_ONCE(memcg->memory.elow);
+> +       return elow && (page_counter_read(&memcg->memory) <= elow);
+>   }
+> 
+>   static inline bool mem_cgroup_below_min(struct mem_cgroup *target,
+>                                          struct mem_cgroup *memcg)
+>   {
+> +       unsigned long emin;
+> +
+>          if (mem_cgroup_unprotected(target, memcg))
+>                  return false;
+> 
+> -       return READ_ONCE(memcg->memory.emin) >=
+> -               page_counter_read(&memcg->memory);
+> +       emin = READ_ONCE(memcg->memory.emin);
+> +       return emin && (page_counter_read(&memcg->memory) <= emin);
+>   }
 
+This still redefines the empty case to mean excess. That's a quirk I
+would have liked to avoid. I don't see why you would need it?
 
->>     Again it may have a non-zero low event count if memory reclaim
->>     happens. This is probably not a result expected by the users and it
->>     is really doubtful that users will check an empty cgroup with no
->>     task in it and expecting some non-zero event counts.
-> Well, if memory.current > 0, some reclaim events can be justified and
-> thus expected (e.g. by me).
->
->> The simple and naive fix of changing the operator to ">", however,
->> changes the memory reclaim behavior which can lead to other failures
->> as low events are needed to facilitate memory reclaim.  So we can't do
->> that without some relatively riskier changes in memory reclaim.
->>
->> Another simpler alternative is to avoid reporting below_low failure
->> if either memory.low or its effective equivalent is 0 which is done
->> by this patch specifically for the two failed use cases above.
-> Admittedly, I haven't seen any complaints from real world about these
-> events except for this test (which was ported from selftests to LTP
-> too).
->
->> With this patch applied, the test_memcg_low sub-test finishes
->> successfully without failure in most cases.
-> I'd say the simplest solution to make the test pass without figuring out
-> what semantics of low events should be correct is not to check the
-> memory.events:low at all with memory_recursiveprot (this is what was
-> done in the cloned LTP test).
+> @@ -5919,7 +5923,8 @@ static void shrink_node_memcgs(pg_data_t *pgdat, 
+> struct s>
+>                                  sc->memcg_low_skipped = 1;
+>                                  continue;
+>                          }
+> -                       memcg_memory_event(memcg, MEMCG_LOW);
+> +                       if (memcg->memory.low)
+> +                               memcg_memory_event(memcg, MEMCG_LOW);
 
-Another alternative is to modify the test to allow non-zero event count 
-even if low is not set.
-
-Cheers,
-Longman
-
->
-> Michal
->
-> [1] https://lore.kernel.org/all/20220322182248.29121-1-mkoutny@suse.com/
-> [2] https://bugzilla.suse.com/show_bug.cgi?id=1196298
-
+That's not right. In setups where protection comes from the parent, no
+breaches would ever be counted.
 
