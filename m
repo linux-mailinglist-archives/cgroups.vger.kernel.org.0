@@ -1,82 +1,60 @@
-Return-Path: <cgroups+bounces-7347-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7348-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27163A7B56B
-	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 03:25:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13803A7B576
+	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 03:39:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8C77188FDE9
-	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 01:25:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8CD93B971A
+	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 01:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50DD33597E;
-	Fri,  4 Apr 2025 01:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0DE7EEC3;
+	Fri,  4 Apr 2025 01:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VkpDivgF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qaxRiP9a"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D692E62C4
-	for <cgroups@vger.kernel.org>; Fri,  4 Apr 2025 01:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1CEE79F5
+	for <cgroups@vger.kernel.org>; Fri,  4 Apr 2025 01:39:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743729911; cv=none; b=QBkDR33YbNZZcbVd27m/SPfGxpxn1HNq3HZl3/9SZLUC+8MvF7zc9AJry4ZGJs/DSp6XDNtL8HKriPjeE9wpkpCsN5dQ9QflC8wN7TtUkzMX1fMlel5FBEXTq4AijCsY0cMUrL3l5It1phyAM7kDwyw9DWoYhXDMJdWDqSU7E6U=
+	t=1743730766; cv=none; b=aZOBbSJwRpdiqI0PEyc5X3/bI3yB2KSCMLHCjqfCbyqSO8K8H0wVRLxU3RFMuOTtKHdptFUD4xKvDfpnyvBnXdHC8gemTVmUbeezicYozAbZCrqvH6eYxl1xoF8DFdzIFqjnAPbCOMcRxIni4CGWUk1JyDxQsasr+jz/LggJzhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743729911; c=relaxed/simple;
-	bh=fmIqemItsSn8uWtmpSudYW9uL7027N4mcenfH6Fc3wI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jpM7nHKbxBkhh+nde9fW8up19PSm3dWPWBy41OZ8sRK+Ow+OwDurVN7Coohqmix18vBpUKPqgnColxrkhUBh+p4uPwtPZo+i6j/i8aV1u5sxfIRur0Q1GFIkjlNMP36V+6l4ZsHbiQzz84SSYcMFGeXp/d/jMbGvG7u6NDFPYd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VkpDivgF; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1743729908;
+	s=arc-20240116; t=1743730766; c=relaxed/simple;
+	bh=DtZAQweiMSk6FZO1f5P958x1appT4pTK+EhZwOYt7vM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sAxf0boEeW9SwLQyOMp/0qaRPIZwXUpjnb8rFVQeyiJ9VFH2WxvQPqAyR+cqKSbtHdoYx+ZNZQ+erxSpgCN2neyUE+AoavuGGdeEIupdG+xwCW4W3c2yLpe0hO6Mk2Vw3aR4bcGQeEHspQIdx700KTIxAaFGta5UpHdnXx5V8YA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qaxRiP9a; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1743730760;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=u40nOJ01a63ZVAi+7N9ee5JQSwTN52ClpcX6EeuMZm0=;
-	b=VkpDivgFOSBG+GowgTk78P+2a+5IXSqUMedjlL/OUcLNP6LG2M1T/RzpDK7kHJh26JC1SA
-	0iaqUSDL0QJqyzZEPvKkKClUO4RVadjEGFjuzdlrnq5UMUleXNkZXPciqNkUtyUnVfiQ6o
-	xN7FV59R0M35vXaWF8UnIw/Ju0sw6b4=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-619-KHq0k6vyOk6VLwGfDTM-rQ-1; Thu,
- 03 Apr 2025 21:25:03 -0400
-X-MC-Unique: KHq0k6vyOk6VLwGfDTM-rQ-1
-X-Mimecast-MFC-AGG-ID: KHq0k6vyOk6VLwGfDTM-rQ_1743729901
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 06D8419560B3;
-	Fri,  4 Apr 2025 01:25:01 +0000 (UTC)
-Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.89.4])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 1FAE51828A9F;
-	Fri,  4 Apr 2025 01:24:57 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Johannes Weiner <hannes@cmpxchg.org>,
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=IewN7pKcqzoLoYsB64biI0KFLTJjsc/YYNl0t3Vqevk=;
+	b=qaxRiP9aYtHeilLBF8FCIQ45S/UjgcGyx6omZ6M/mvXLulgLOqbAdA3pE2FbrgtIyaBqoG
+	89LFcAdVpvcB9y6uDF1bjFGyqXBqg4p+84wElumr1tNxpPXxEeT2etlnB1O6mjp6CBLc0P
+	mmnfNCj/jQFj/TNcZQhhvOV0A7mhhsc=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@kernel.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Tejun Heo <tj@kernel.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 2/2] selftests: memcg: Increase error tolerance of child memory.current check in test_memcg_protection()
-Date: Thu,  3 Apr 2025 21:24:35 -0400
-Message-ID: <20250404012435.656045-2-longman@redhat.com>
-In-Reply-To: <20250404012435.656045-1-longman@redhat.com>
-References: <20250404012435.656045-1-longman@redhat.com>
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: [PATCH v2 0/9] memcg: cleanup per-cpu stock
+Date: Thu,  3 Apr 2025 18:39:04 -0700
+Message-ID: <20250404013913.1663035-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -84,85 +62,35 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Migadu-Flow: FLOW_OUT
 
-The test_memcg_protection() function is used for the test_memcg_min and
-test_memcg_low sub-tests. This function generates a set of parent/child
-cgroups like:
+This is a cleanup series which is trying to simplify the memcg per-cpu
+stock code, particularly it tries to remove unnecessary dependencies on
+local_lock of per-cpu memcg stock. The eight patch from Vlastimil
+optimizes the charge path by combining the charging and accounting.
 
-  parent:  memory.min/low = 50M
-  child 0: memory.min/low = 75M,  memory.current = 50M
-  child 1: memory.min/low = 25M,  memory.current = 50M
-  child 2: memory.min/low = 0,    memory.current = 50M
+This series is based on mm-everything-2025-04-03-06-03. The main changes
+from v1 is collecting acks, adding warning in patch 1 and rebased on the
+latest local lock changes from Alexei.
 
-After applying memory pressure, the function expects the following
-actual memory usages.
 
-  parent:  memory.current ~= 50M
-  child 0: memory.current ~= 29M
-  child 1: memory.current ~= 21M
-  child 2: memory.current ~= 0
+Shakeel Butt (8):
+  memcg: remove root memcg check from refill_stock
+  memcg: decouple drain_obj_stock from local stock
+  memcg: introduce memcg_uncharge
+  memcg: manually inline __refill_stock
+  memcg: no refilling stock from obj_cgroup_release
+  memcg: do obj_cgroup_put inside drain_obj_stock
+  memcg: use __mod_memcg_state in drain_obj_stock
+  memcg: manually inline replace_stock_objcg
 
-In reality, the actual memory usages can differ quite a bit from the
-expected values. It uses an error tolerance of 10% with the values_close()
-helper.
+Vlastimil Babka (1):
+  memcg: combine slab obj stock charging and accounting
 
-Both the test_memcg_min and test_memcg_low sub-tests can fail
-sporadically because the actual memory usage exceeds the 10% error
-tolerance. Below are a sample of the usage data of the tests runs
-that fail.
+ mm/memcontrol.c | 196 ++++++++++++++++++++++++------------------------
+ 1 file changed, 96 insertions(+), 100 deletions(-)
 
-  Child   Actual usage    Expected usage    %err
-  -----   ------------    --------------    ----
-    1       16990208         22020096      -12.9%
-    1       17252352         22020096      -12.1%
-    0       37699584         30408704      +10.7%
-    1       14368768         22020096      -21.0%
-    1       16871424         22020096      -13.2%
-
-The current 10% error tolerenace might be right at the time
-test_memcontrol.c was first introduced in v4.18 kernel, but memory
-reclaim have certainly evolved quite a bit since then which may result
-in a bit more run-to-run variation than previously expected.
-
-Increase the error tolerance to 15% for child 0 and 20% for child 1 to
-minimize the chance of this type of failure. The tolerance is bigger
-for child 1 because an upswing in child 0 corresponds to a smaller
-%err than a similar downswing in child 1 due to the way %err is used
-in values_close().
-
-Before this patch, a 100 test runs of test_memcontrol produced the
-following results:
-
-     19 not ok 3 test_memcg_min
-     13 not ok 4 test_memcg_low
-
-After applying this patch, there were no test failure for test_memcg_min
-and test_memcg_low in 100 test runs.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- tools/testing/selftests/cgroup/test_memcontrol.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 16f5d74ae762..f442c0c3f5a7 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -495,10 +495,10 @@ static int test_memcg_protection(const char *root, bool min)
- 	for (i = 0; i < ARRAY_SIZE(children); i++)
- 		c[i] = cg_read_long(children[i], "memory.current");
- 
--	if (!values_close(c[0], MB(29), 10))
-+	if (!values_close(c[0], MB(29), 15))
- 		goto cleanup;
- 
--	if (!values_close(c[1], MB(21), 10))
-+	if (!values_close(c[1], MB(21), 20))
- 		goto cleanup;
- 
- 	if (c[3] != 0)
 -- 
-2.48.1
+2.47.1
 
 
