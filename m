@@ -1,157 +1,171 @@
-Return-Path: <cgroups+bounces-7362-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7363-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C2CFA7C318
-	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 20:13:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B75AA7C337
+	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 20:26:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97AF83BADE8
-	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 18:13:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E454E17D03B
+	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 18:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C09521B9C1;
-	Fri,  4 Apr 2025 18:13:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0875C211282;
+	Fri,  4 Apr 2025 18:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="00IvK2uO"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KHnCteTS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F26121ABC6
-	for <cgroups@vger.kernel.org>; Fri,  4 Apr 2025 18:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6524E1F0E5C
+	for <cgroups@vger.kernel.org>; Fri,  4 Apr 2025 18:26:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743790396; cv=none; b=RR3jPiLAu1DeHKvVyEDYRb9O0M7SdfbP9ZFM5xn8FOkBWJ47mc4kaaZB5qqqrCYPrM8QnDpeKKutr+G78yXAFI/ekT0YFdIYu9eOX0BKWBx+kQGTmdbHG5qhfgym16Oq/vw1vH9k9f7TKzcjQGSVOqP/3H8d3XgU6mtY4PKCobU=
+	t=1743791186; cv=none; b=ahEkwwMDWDjU3HMOm3E6frXXlzhpm7RV7yS9gSgkiqexwL7AAw9VFlJ3MtRxoa6vOvDxBO9+hGwbOPHEIwwvZHmMp4mHVdvNQu2k1TastEGURulEW6A+clXNkyKOQHOBNoJR0dSBayEMi9OZ+ui9sD6GXi3YZ5MIuUnsiqSA7FU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743790396; c=relaxed/simple;
-	bh=7rBihDPp9FTk+9h+YN3X6UN632wm8kddI1fTY9fA6gI=;
+	s=arc-20240116; t=1743791186; c=relaxed/simple;
+	bh=ZOTccLSgfI9cTOLRpsnzj9bwhsvfPOgW3jKDNeC0EZc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I5iXCs6u5YlbMz3g28sX14GHaPRqBiLv+aVc3WIe6SkosmWnhLGEW2NCmDTJZzKuFR6CWkfdqK+axkd3g7GXteIrVSPdAL/FkI/cSBDRkyZ7zKu3EF5isi6huaEQUglCcrh8rNrOK/5d4SIyWkqiKIQe7FNbJzJsDS6aDf7RCnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=00IvK2uO; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-7c56321b22cso214608485a.1
-        for <cgroups@vger.kernel.org>; Fri, 04 Apr 2025 11:13:13 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=CnqpiyrND9hvyNDTGiSoZNftM7DDsa2reMXZJaA2TZQxv8iHU32IDAi2HrOLtqhr+pLAIHRXpTjKyK64n5dYd+yIyj1tHtCZDcTITc6QPECoVwzonBch+RWMTM1rHtnUtzvcvWdGU5IWeGmgDjHoRmlFURmuhu55fmQ1z8NrdPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KHnCteTS; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-39c30d9085aso1381751f8f.1
+        for <cgroups@vger.kernel.org>; Fri, 04 Apr 2025 11:26:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1743790393; x=1744395193; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1743791183; x=1744395983; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z8cyC/DPxNVy17Lz/zroH2kHExcb4tpekU11b2nuA7o=;
-        b=00IvK2uOxq9Q2JG5F9RkhRyG5fPiDlKFA/3mwiN6pe5S/pqfySzSSMAI41NUHBJWOs
-         6eOKHpJoFSy1IEZnL+wu1ks9V8UhCHQmYcmxjMeuTFsOst7r2nQb1Mb75JUCxabo7Pzw
-         X51zHaB97rOp+l/yb3dk25G/99beROhMgUA0B0DhLOwUptUET1viYggNNIkDloJpTWWG
-         lwNN9SzhVCmO6/eiW0YiJmV+0JkfULRoleyvsxEgpmYJi9wCUhDQYTiEIRULlo9PjIed
-         Tjs/vxe4Pxrq3kA2AZVCtnS/xVBvmm4lljSDEhDyMTpF1ZYY4AAmmXwwCXTzGBU3J2Nc
-         mGsQ==
+        bh=TLhJnFT3Gwgfc4DYQiW9AZKUF72F44NtVJtW3JeRxAo=;
+        b=KHnCteTSyAw1pbj3+oxle6j5KlpYwwHRbQ0kr4eNBN/n8jasO9nCtGCQLG1VeViHr/
+         ELJGHfW7G+bZY+8nonSO9a1hQZVZuesptbz09xQnBYUSfmGRSBEySoKD1IHWxV8slmLQ
+         iU0Ow83iZFBq/TmVWZEUvrgMVxAJ3k7oZYNOKVDwORAtjhN4/eMET3PWbL/NSf5MPc/B
+         rAb6p7j6YrarUERYXlbnffT7TfSQb0As4FJDWW98+cdoxTPEFNUPENWRviM/eLKR0Pja
+         YsLLuVgGi/d2/Wl8NfefrK0EHwQlQ0f9mtmCfrNZJerdtYbFTOISpR/lNm2NvBwsiCmg
+         yxXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743790393; x=1744395193;
+        d=1e100.net; s=20230601; t=1743791183; x=1744395983;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z8cyC/DPxNVy17Lz/zroH2kHExcb4tpekU11b2nuA7o=;
-        b=wCb0gAZKorT2472s2DpZ6HEZWGai8DEgDFHbQEdj2OBUEGaCweVWQZTN7VxBjqadCE
-         xrKsnRr6cJiLEQXlu+o1MRR558CBKFQPFeA72/R+GbSPvagi74haZ8xraXJNDxpCXk6V
-         JR5J2Mzo445POX7tM1W2hmNWqhIcHIsgrvCxFeVLuWkgF2w6CbKXWeeRd1oXXUTYOesQ
-         dA6ryidfZDS2AZ7NFjQRowfmRdVzgb1aBMAtjU3ZXp4FjZjg+fs4UPZoBGc4EFbbM8VZ
-         i84Pv4LZww0+ZHDEO2TgiI4Wa7s3sL5KsnZYOPGbUFazdRL8o1kP5S5LHX1CM/6VwjKw
-         fK6g==
-X-Forwarded-Encrypted: i=1; AJvYcCXuJZPNpSMLLf9Wr4uveECQhIR1XfZ3Tj20C1FUDEREUUSd67TC82w204gQyQd7/ox1MzZv0W+F@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0OZk9P+YEj1wXLerIrUumsdTObYJSRV2PsVQY/k5HIkZON7Oh
-	rBAalz7jIsgh0TqBsIV/SHeUl9BJEErIseFDckAzVTrGRM4uzRHaHsUTwf8+3u0=
-X-Gm-Gg: ASbGnctaI7Pn6VgmJ0cX/8jOQbjoydhqsq86x8mMEGKh6z6Md1Vw2GUFXc1ed4Z3mTn
-	5f7LuGqj4mIlV25o9xLqksKF9YaGRMCwYh5BdwO7ti3aqElqIQIRtx40VR9x5CXFsxHXHyvLYWH
-	IQndWVAJNKhnblPJuix1mNJCsTprNL1xf2CSimSYfFkc3K87otDRsnThzdZYUAewHwia021bwLQ
-	9tuPLWhBVQxXAhZ14tdQQstd+HQf3R9P43NuC3/x7SWvilyZH68qK47qXh6+OCqU9F1mDhOGdPz
-	8agTFGeFM35qh2X7J4YAGWrv9tRT83Cik0uMkk2B7rE=
-X-Google-Smtp-Source: AGHT+IFDO9K2q73ZkHXh1q8bIV9QQbY3HITlSzjerFez+hyaMApgOpAFEuI1ij3Hx9STu1KB7K29hg==
-X-Received: by 2002:a05:620a:1aa6:b0:7b7:142d:53a8 with SMTP id af79cd13be357-7c774a3c100mr536465685a.19.1743790393005;
-        Fri, 04 Apr 2025 11:13:13 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7c76e96a1fcsm247409785a.54.2025.04.04.11.13.12
+        bh=TLhJnFT3Gwgfc4DYQiW9AZKUF72F44NtVJtW3JeRxAo=;
+        b=uunGwAF+86BZDWlUfoU088YTU9AWVF3gqhgenCzgcR81y5G3Y2Ra/7Bf0+7ph8kGM9
+         B058rLE1+kGN7pYxcb4/mnOTQkcLjmvsJwzoZX9265d4yZs4MHqcphXHc+X3NsVAxcFy
+         9scDbJJKAXIrUjUUJJ+D6ZCFgQZDRzgfwMi9j5SyM95GLG3v0gV2y3PRM23N+ZmfhMjt
+         rX6Vz0C37OisAeJODOYAYQyiNZLeuIl8hR1x2PWG/DRepe6PakBb0rAN2b2iVHt9jLbK
+         pmqa0j73hp4TXilKl8i3rAlymhoAwA5kF+EdAIXQfiqttjAW6z9FSY3hPWaME5C/syMS
+         hzmg==
+X-Forwarded-Encrypted: i=1; AJvYcCUcJPxukKen6RUq9C7VcrrtZ/gyv92JRVWW3pKFeoKWIop0KHcU1KtIq0JXdSPNyel8B31dI+0O@vger.kernel.org
+X-Gm-Message-State: AOJu0YwTTK5+P4iCmI3vLhPJiDGzoag2iy3C7BbmL29gk8/ozk7+FbHx
+	GgTR3zbCLs2npRavwXKKmN6tSKdEz4oVta5EQdekRH3Zzx3JuRTI9zFEXL9p3DE=
+X-Gm-Gg: ASbGncuA/GRO/osNDLMvDhC1WjCdu1KxmCqH5jshlYd4+LNwNkI2mUDifskWYrO86n3
+	QqhVqiGySO6ao9X1YxYY4Q4bR/ClZZuXUfJcplcZcqhn9Fc0HQCxhAmNE7/Dd/y1ITUjU6D8xp9
+	afawZzQRo2iHbKeyyFEAuM4Nv/Gp6g+gzV+nk+G1wnh8cwEVpm7BzLPFg3ABoK7sc0PQxMnhJYd
+	wdXImXAmjuTYEvlZeZruk0WAcawxodq7VZZugV3WqIETWqPM7xC2WGeo7cWzDFQhYxSChdosuat
+	t3hLMZk1OpPA1slaS3S65WRv4B64uCIRSMplRzlsz9wgY2g=
+X-Google-Smtp-Source: AGHT+IFVVzcvCxUkq7QqYrnEsRDzq8Ic4YqHD2DrlGgpG3HTOI3DOpixIDGv0syuaug71lzZJsL3oA==
+X-Received: by 2002:a05:6000:2406:b0:38f:3a89:fdb5 with SMTP id ffacd0b85a97d-39cb3575d97mr3948931f8f.11.1743791182544;
+        Fri, 04 Apr 2025 11:26:22 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c3020d975sm5041239f8f.75.2025.04.04.11.26.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Apr 2025 11:13:12 -0700 (PDT)
-Date: Fri, 4 Apr 2025 14:13:08 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Waiman Long <llong@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org
+        Fri, 04 Apr 2025 11:26:22 -0700 (PDT)
+Date: Fri, 4 Apr 2025 20:26:20 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Waiman Long <longman@redhat.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Tejun Heo <tj@kernel.org>, Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org
 Subject: Re: [PATCH v2 1/2] memcg: Don't generate low/min events if either
  low/min or elow/emin is 0
-Message-ID: <20250404181308.GA300138@cmpxchg.org>
+Message-ID: <aopkqb4bd6sag5mgvnvmoojlsz47lxrgxav7lsywkzeqtb5pco@ptxoqnloplzi>
 References: <20250404012435.656045-1-longman@redhat.com>
- <Z_ATAq-cwtv-9Atx@slm.duckdns.org>
- <1ac51e8e-8dc0-4cd8-9414-f28125061bb3@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3ezm3guyzo3fa3j5"
 Content-Disposition: inline
-In-Reply-To: <1ac51e8e-8dc0-4cd8-9414-f28125061bb3@redhat.com>
+In-Reply-To: <20250404012435.656045-1-longman@redhat.com>
 
-On Fri, Apr 04, 2025 at 01:25:33PM -0400, Waiman Long wrote:
-> 
-> On 4/4/25 1:12 PM, Tejun Heo wrote:
-> > Hello,
-> >
-> > On Thu, Apr 03, 2025 at 09:24:34PM -0400, Waiman Long wrote:
-> > ...
-> >> The simple and naive fix of changing the operator to ">", however,
-> >> changes the memory reclaim behavior which can lead to other failures
-> >> as low events are needed to facilitate memory reclaim.  So we can't do
-> >> that without some relatively riskier changes in memory reclaim.
-> > I'm doubtful using ">" would change reclaim behavior in a meaningful way and
-> > that'd be more straightforward. What do mm people think?
 
-The knob documentation uses "within low" and "above low" to
-distinguish whether you are protected or not, so at least from a code
-clarity pov, >= makes more sense to me: if your protection is N and
-you use exactly N, you're considered protected.
+--3ezm3guyzo3fa3j5
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 1/2] memcg: Don't generate low/min events if either
+ low/min or elow/emin is 0
+MIME-Version: 1.0
 
-That also means that by definition an empty cgroup is protected. It's
-not in excess of its protection. The test result isn't wrong.
+Hello Waiman.
 
-The real weirdness is issuing a "low reclaim" event when no reclaim is
-going to happen*.
+On Thu, Apr 03, 2025 at 09:24:34PM -0400, Waiman Long <longman@redhat.com> =
+wrote:
+> 1) memory.low is set to 0, but low events can still be triggered and
+>    so the cgroup may have a non-zero low event count. I doubt users are
+>    looking for that as they didn't set memory.low at all.
 
-The patch effectively special cases "empty means in excess" to avoid
-the event and fall through to reclaim, which then does nothing as a
-result of its own scan target calculations. That seems convoluted.
+I agree with this reasoning, been there [1] but fix ain't easy (also
+consensus of whether such an event should count or not and whether
+reclaim should happen or not). (See also [2] where I had tried other
+approaches that _didn't_ work.)
 
-Why not skip empty cgroups before running inapplicable checks?
+> 2) memory.low is set to a non-zero value but the cgroup has no task in
+>    it so that it has an effective low value of 0.=20
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b620d74b0f66..260ab238ec22 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -5963,6 +5963,9 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
- 
- 		mem_cgroup_calculate_protection(target_memcg, memcg);
- 
-+		if (!mem_cgroup_usage(memcg, false))
-+			continue;
-+
- 		if (mem_cgroup_below_min(target_memcg, memcg)) {
- 			/*
- 			 * Hard protection.
+There maybe page cache remaining in the cgroup even with not present
+task inside it.
 
-> I haven't looked deeply into why that is the case, but 
-> test_memcg_low/min tests had other failures when I made this change.
+>    Again it may have a non-zero low event count if memory reclaim
+>    happens. This is probably not a result expected by the users and it
+>    is really doubtful that users will check an empty cgroup with no
+>    task in it and expecting some non-zero event counts.
 
-It surprises me as well that it makes any practical difference.
+Well, if memory.current > 0, some reclaim events can be justified and
+thus expected (e.g. by me).
 
-* Waiman points out that the weirdness is seeing low events without
-  having a low configured. Eh, this isn't really true with recursive
-  propagation; you may or may not have an elow depending on parental
-  configuration and sibling behavior.
+> The simple and naive fix of changing the operator to ">", however,
+> changes the memory reclaim behavior which can lead to other failures
+> as low events are needed to facilitate memory reclaim.  So we can't do
+> that without some relatively riskier changes in memory reclaim.
+>=20
+> Another simpler alternative is to avoid reporting below_low failure
+> if either memory.low or its effective equivalent is 0 which is done
+> by this patch specifically for the two failed use cases above.
+
+Admittedly, I haven't seen any complaints from real world about these
+events except for this test (which was ported from selftests to LTP
+too).
+
+> With this patch applied, the test_memcg_low sub-test finishes
+> successfully without failure in most cases.
+
+I'd say the simplest solution to make the test pass without figuring out
+what semantics of low events should be correct is not to check the
+memory.events:low at all with memory_recursiveprot (this is what was
+done in the cloned LTP test).
+
+Michal
+
+[1] https://lore.kernel.org/all/20220322182248.29121-1-mkoutny@suse.com/
+[2] https://bugzilla.suse.com/show_bug.cgi?id=3D1196298
+
+--3ezm3guyzo3fa3j5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ/AkSQAKCRAt3Wney77B
+SXLwAQCLHjkGHqdonWWfAZmkRMLnnd/9GLDwQHs1pDPkdB+LygEAv1ILh4buquz3
+RL8ZpTYF0zHvtsUdp9Ow556iY7pSSw8=
+=fCfQ
+-----END PGP SIGNATURE-----
+
+--3ezm3guyzo3fa3j5--
 
