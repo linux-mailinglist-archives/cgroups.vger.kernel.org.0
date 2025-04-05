@@ -1,80 +1,88 @@
-Return-Path: <cgroups+bounces-7370-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7371-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9543A7C576
-	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 23:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98A11A7CB96
+	for <lists+cgroups@lfdr.de>; Sat,  5 Apr 2025 20:52:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC6F0189FF1C
-	for <lists+cgroups@lfdr.de>; Fri,  4 Apr 2025 21:21:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1CFB188FAF8
+	for <lists+cgroups@lfdr.de>; Sat,  5 Apr 2025 18:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A4C1C84A3;
-	Fri,  4 Apr 2025 21:21:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBDCC1A8419;
+	Sat,  5 Apr 2025 18:52:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I1OQy9fa"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hzMJ9mSy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B4AC8E0
-	for <cgroups@vger.kernel.org>; Fri,  4 Apr 2025 21:21:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F184B13B5A0
+	for <cgroups@vger.kernel.org>; Sat,  5 Apr 2025 18:52:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743801686; cv=none; b=CCiQWywLYYfwLzklzT+mpqzeic1aAur/HYPFkuOnj3g+8Zsa92SOCe22H3CMWxNXD8D8QlsDjkEcnIKruoj/lL5jHSC1XX5xaB6dhcdiBxOxnGA/ZVUmVIgN77ghsdcHfhdQs255l8qw2/zV+/ExPWY3H26Du2eG72m/6+QDlCs=
+	t=1743879132; cv=none; b=Lvhw8iJARCU74Oer6/ch8rtk+h7zh7dBhVY3pZshjPEM4sowA3d8getwvxdb355w61q/tbywAMII/MQjQDbCpIJKRJzfRKegxPRJ+aOtgZ26kjjmGT1xwwheqg2OlUtcwVDXZucJGIUdtZT8ag8iBdONZejoD17JYXPQYp3KkUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743801686; c=relaxed/simple;
-	bh=yOZaYPlc6TvzNQfRH8b3abqDo0J+KA7bDHM0i/JQ608=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cbliR5rJY3OWaL+fFX+dr35C+iGqhqljDN43A/bncQBrqqOFsWN3DJV14TCOnApe+OT3XoX/u/PM+OC/B+tIpgyTBEhiliTeDRJTmBKDEo1kEdz24L3SihBXKbTKL9nMFMxq0MBF/Ux94/+qypfux7G6nCBPp6+O6BmbxWkdjig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I1OQy9fa; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2240b4de12bso34416745ad.2
-        for <cgroups@vger.kernel.org>; Fri, 04 Apr 2025 14:21:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743801684; x=1744406484; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PCDFsmCLXNsZf0RsjmKJX1X6mpiwwMUVa78UqlfKrP0=;
-        b=I1OQy9faoTFc7UOgNptDfycBPVTsl7XkNyWy6Akk1oGuUKBBp46dpHC1GBySFeCMN9
-         4JBbwmMvd0Q72fUmVFH+ycOWIwSEMsx5d72GOOroWXmhmlP+yj5vqkWm8X/2iKfyg9fQ
-         sqlJI1WCavA+LPirXqkCNDLFqn9d7aYchFqqt+a25QyPqH+NENihWLmzYWMvyZNtVAiA
-         H31SRDAF9e36LfnOQ3bHR5L7Cxr6OTF2z9SJMTImYUQ8fG4vtHvUOVQ2Beo6hwJD2qp/
-         HFGllnAF+shp8+qxhk+PuYuKKAE+r7qVqddINTi/DQC1DCHc9G6OrR1wy0sJRXkcBdZ6
-         NRGQ==
+	s=arc-20240116; t=1743879132; c=relaxed/simple;
+	bh=yglMeQsz123gDcvxpHoJHPRefkgMmB+L1OHo5trNH0k=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=PFH2jLbF0Xz+30gGlWEx2NmpJrHn3hxHHt1vANRSiK6dBI+/s+1T/f7v5NlNolZ5O6I9iQ18nfb03vVkRXGBMwKG/DoWH+tZR6xVmDJIJKa3JbhU/qguapugYPt1I6IQs49MIHaxljkzfODeQH9cm6s42xPocUNmnfb721FSyRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hzMJ9mSy; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1743879129;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zl94fjucYs05RLWzioyJn3c96IDAkKlAGNSFTZYapG4=;
+	b=hzMJ9mSyiKmeo7tvuGNeCwhMasGGU0GoU9B1lqazxfii1G9rY3UGuvhLTqTOMAmbmLVFL6
+	vh3BY7DmRdR0M9QcAEEmeT34YOYvGb1qfAPPjb2C6cLBvBxG7wHJIcJvydgvHGA8TRPu1B
+	PF6gYTxMSJxuIVmWKA3p5UdU20OfObY=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-251-grx8LHrzMLmb1-zUD9BlEw-1; Sat, 05 Apr 2025 14:52:06 -0400
+X-MC-Unique: grx8LHrzMLmb1-zUD9BlEw-1
+X-Mimecast-MFC-AGG-ID: grx8LHrzMLmb1-zUD9BlEw_1743879126
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7c54e9f6e00so684656985a.0
+        for <cgroups@vger.kernel.org>; Sat, 05 Apr 2025 11:52:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743801684; x=1744406484;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1743879126; x=1744483926;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PCDFsmCLXNsZf0RsjmKJX1X6mpiwwMUVa78UqlfKrP0=;
-        b=hDd4dhxpVu9MMznB0pwF3LCsnaISBqNRogJzskL8Df49Guz9L+KlzmrsZPCAXBzvy1
-         WGkESnG/7DF0am0JdnY7CSCSmKMDKqO0NdvEHIjtw+gmhy2coPykQKDYfm8ZOgQwHbEi
-         zn1Fh39LoY3aBr6W0B2ROpoxlrp6WsI47D73K0oPBV+9O8FYJu4adE7wELd+FqoWqhZ2
-         93ButLKQlHLDwtE2DEbNcgXz5NcDul20ljPiYnMTwbbB7HWEZ73qZUsVVo82yyBdvw53
-         /oaPrBWVxJ6LB+T3/NX7QP9Y8LCIRm4HGemuq0/sTUAoCep/p1ExC/7/R/B9NylqOZAU
-         OS5A==
-X-Forwarded-Encrypted: i=1; AJvYcCXFAgwXtKcVVLwG7hNAH1y9lzXPRdsTouEMmptuaWlk3EnLIv3nD1mOkY/4UKtTPzRm2V+yA//7@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz04K9Md8GE94GqWwnNWe0Aipl958oZgxFVLc5cpALOhHJz52i5
-	3BG9I/nlE6Mih72ZuqeY735KNW7YBP/82vww7Q8AmOan0sMaLdOS
-X-Gm-Gg: ASbGncsu6905f/fEXzXkwxucNz5SZYtgijfeFVlbI7IcJC1KZtYbfSE0Mg87/0I0K1F
-	4RVyGZGVapzq3evORp74IaWXvZ0D+QFfEVXzhG8ucKid3B6EE9Ye4b5mWEtRG2ZMqNBY573fsUs
-	cQFBqGBO/i6k4QFeQ/10Rm58Xenw6WgyjXaxO8lmOqv/nXJsbDiOJ2P/bKaTQYU3oZ23Y8P1k9R
-	d4gdVI6MfR/xaeyw4Xm8gkPdm9cyAMAkH7MMBzxv3OudpK0L2+/+KqODe11gL/IJWmXbSY6gTOy
-	97qm2ovHYvbgEENUPkNYY1wCX+ne9+a/AC5TQAENvfLMvpqWmFk15+23PcDSdupsNKi+TWd3iHc
-	2tudo44WVhvEzuCs=
-X-Google-Smtp-Source: AGHT+IGLlcM3WioENcq4p23jy3bfRO+1RDbfA+DKFQTDFRa4ZtZ8MehPirkPRZR6rK1AZvGlE4xHNw==
-X-Received: by 2002:a17:903:8c7:b0:21f:71b4:d2aa with SMTP id d9443c01a7336-22a8a042b20mr69352375ad.5.1743801683861;
-        Fri, 04 Apr 2025 14:21:23 -0700 (PDT)
-Received: from [192.168.2.117] (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2297866e1ccsm37329615ad.174.2025.04.04.14.21.22
+        bh=Zl94fjucYs05RLWzioyJn3c96IDAkKlAGNSFTZYapG4=;
+        b=qIWSlIP4Aeak/SEck9RpPHvH0qz5rnbgUS++EqlwkIScA4khxV1JEvrFk/F+bEYKly
+         bLzKNIgLIiBl25e/WELXNICaKCGGnHpS3AZdRce/PzbwlWzTwn1bmf7bbfYsbIkcLhWz
+         hTbzVDZ0BjM8Dko/s0LXZkYjDeauksPwRGXUOQ5ab25SUau9WABhYc7mHS6SoqZwQlil
+         HjviLx0GxX90gQYCLPrS+MSzMRUB/f6lVCiyTnx0SLBJosiwdO83mxaI8pI0yYXOvOUN
+         fcCTYOJmR3DQQqyliZWf61iKslliIPAWyMisKWOXft1lsuIsipzvcoOYFvgp60MZbAd6
+         a5Xw==
+X-Forwarded-Encrypted: i=1; AJvYcCUrNLJIYQj32YviHxndvtaHcvHX99GOSAyp3kJbLYNdmfZRO4AUmUg86Tcea2835vACXCecx0mm@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz1DBigzcmHeFssc7yDe4oChHa06sIbuvGWviJ9VcotXnHGTDG/
+	Rk1cswRaRaMNLovTqfnw8an10lhrVAMuH+jqxPwy3u5S50LAsSeXACxCgpIBzZCtGC2fY4GCKhg
+	Ra/pkwZRyp4SbQ12KHM93jTtM58s61tP4ioHd3S6UFrAhCVFcKGxfvoI=
+X-Gm-Gg: ASbGncsI+U88sP6DB/tZPKCcZATi8pB5adk3YOgpsvWZ9Li5+0Zh50lyHRBzRYEiw6Q
+	LaXKt6xiYJCUbsSzHcgsIvZ3UbeM5zPiEdaWzyvFm/tFGIAdI7btXKignV7/mY1zz6vNWfnVcOL
+	ElvPU/lL1bfkan9OZR1gylDhV33T8lCUIvJPQkw5K63o+y1UPqCS7204Qa2n7ZBNwrGXiFIggFh
+	ltjFKj+8smsv7tBjdbYK4bvqorBryodsqZGiqjlNNcNMK/5WNnYaXqgEIT/y77KMx7cmmS1r930
+	5vz1/OIxL8nTYvSTmcRW/aY9YOVtyOMwZb6EUlKM85uDPD70fluWx2aHPlJ5kA==
+X-Received: by 2002:a05:620a:2891:b0:7c3:dd2d:c0e2 with SMTP id af79cd13be357-7c76c98f69dmr1949212185a.13.1743879126143;
+        Sat, 05 Apr 2025 11:52:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGkQV+pEi+TmbqcIT9YnR48A7CUH0qtIrkXsV397pZvj687wq1qfmiwok5il5SMAFPR0p8RYA==
+X-Received: by 2002:a05:620a:2891:b0:7c3:dd2d:c0e2 with SMTP id af79cd13be357-7c76c98f69dmr1949210485a.13.1743879125856;
+        Sat, 05 Apr 2025 11:52:05 -0700 (PDT)
+Received: from ?IPV6:2601:188:c100:5710:315f:57b3:b997:5fca? ([2601:188:c100:5710:315f:57b3:b997:5fca])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c76e968c1fsm371472485a.52.2025.04.05.11.52.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Apr 2025 14:21:23 -0700 (PDT)
-Message-ID: <5cafaf69-133c-42ad-a481-d4ea843298e5@gmail.com>
-Date: Fri, 4 Apr 2025 14:21:21 -0700
+        Sat, 05 Apr 2025 11:52:05 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <6712624c-c798-4ccf-afc1-6dfc9efc4b5e@redhat.com>
+Date: Sat, 5 Apr 2025 14:52:04 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -82,56 +90,88 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/5] cgroup: change rstat function signatures from
- cgroup-based to css-based
-To: Tejun Heo <tj@kernel.org>
-Cc: shakeel.butt@linux.dev, yosryahmed@google.com, mkoutny@suse.com,
- hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
- cgroups@vger.kernel.org, kernel-team@meta.com
-References: <20250404011050.121777-1-inwardvessel@gmail.com>
- <20250404011050.121777-4-inwardvessel@gmail.com>
- <Z_A6WXpNcybYssn6@slm.duckdns.org> <Z_A8jcXXKJp-snYA@slm.duckdns.org>
+Subject: Re: [PATCH v2 1/2] memcg: Don't generate low/min events if either
+ low/min or elow/emin is 0
+To: Johannes Weiner <hannes@cmpxchg.org>, Waiman Long <llong@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Shuah Khan <shuah@kernel.org>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org
+References: <20250404012435.656045-1-longman@redhat.com>
+ <Z_ATAq-cwtv-9Atx@slm.duckdns.org>
+ <1ac51e8e-8dc0-4cd8-9414-f28125061bb3@redhat.com>
+ <20250404181308.GA300138@cmpxchg.org>
+ <c4294852-cc94-401e-8335-02741005e5d7@redhat.com>
+ <20250404193802.GA373778@cmpxchg.org>
 Content-Language: en-US
-From: JP Kobryn <inwardvessel@gmail.com>
-In-Reply-To: <Z_A8jcXXKJp-snYA@slm.duckdns.org>
+In-Reply-To: <20250404193802.GA373778@cmpxchg.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 4/4/25 1:09 PM, Tejun Heo wrote:
-> On Fri, Apr 04, 2025 at 10:00:25AM -1000, Tejun Heo wrote:
->> On Thu, Apr 03, 2025 at 06:10:48PM -0700, JP Kobryn wrote:
->>> This non-functional change serves as preparation for moving to
->>> subsystem-based rstat trees. To simplify future commits, change the
->>> signatures of existing cgroup-based rstat functions to become css-based and
->>> rename them to reflect that.
+
+On 4/4/25 3:38 PM, Johannes Weiner wrote:
+> On Fri, Apr 04, 2025 at 02:55:35PM -0400, Waiman Long wrote:
+>> On 4/4/25 2:13 PM, Johannes Weiner wrote:
+>>> * Waiman points out that the weirdness is seeing low events without
+>>>     having a low configured. Eh, this isn't really true with recursive
+>>>     propagation; you may or may not have an elow depending on parental
+>>>     configuration and sibling behavior.
 >>>
->>> Though the signatures have changed, the implementations have not. Within
->>> these functions use the css->cgroup pointer to obtain the associated cgroup
->>> and allow code to function the same just as it did before this patch. At
->>> applicable call sites, pass the subsystem-specific css pointer as an
->>> argument or pass a pointer to cgroup::self if not in subsystem context.
->>>
->>> Note that cgroup_rstat_updated_list() and cgroup_rstat_push_children()
->>> are not altered yet since there would be a larger amount of css to
->>> cgroup conversions which may overcomplicate the code at this
->>> intermediate phase.
->>>
->>> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+>> Do you mind if we just don't update the low event count if low isn't
+>> set, but leave the rest the same like
+> What's the motivation for doing anything beyond the skip-on-!usage?
+It is to avoid making further change. I am fine with modifying the test 
+to allow low event even when low isn't set.
+>> @@ -659,21 +659,25 @@ static inline bool mem_cgroup_unprotected(struct
+>> mem_cgro>
+>>    static inline bool mem_cgroup_below_low(struct mem_cgroup *target,
+>>                                           struct mem_cgroup *memcg)
+>>    {
+>> +       unsigned long elow;
+>> +
+>>           if (mem_cgroup_unprotected(target, memcg))
+>>                   return false;
 >>
->> Applied 1-3 to cgroup/for-5.16.
-> 
-> There were some conflicts with the commits already in cgroup/for-5.15-fixes.
-> I resolved them but it'd be great if you can verify that I didn't do
-> anything silly.
+>> -       return READ_ONCE(memcg->memory.elow) >=
+>> -               page_counter_read(&memcg->memory);
+>> +       elow = READ_ONCE(memcg->memory.elow);
+>> +       return elow && (page_counter_read(&memcg->memory) <= elow);
+>>    }
+>>
+>>    static inline bool mem_cgroup_below_min(struct mem_cgroup *target,
+>>                                           struct mem_cgroup *memcg)
+>>    {
+>> +       unsigned long emin;
+>> +
+>>           if (mem_cgroup_unprotected(target, memcg))
+>>                   return false;
+>>
+>> -       return READ_ONCE(memcg->memory.emin) >=
+>> -               page_counter_read(&memcg->memory);
+>> +       emin = READ_ONCE(memcg->memory.emin);
+>> +       return emin && (page_counter_read(&memcg->memory) <= emin);
+>>    }
+> This still redefines the empty case to mean excess. That's a quirk I
+> would have liked to avoid. I don't see why you would need it?
+OK, I will drop that.
+>
+>> @@ -5919,7 +5923,8 @@ static void shrink_node_memcgs(pg_data_t *pgdat,
+>> struct s>
+>>                                   sc->memcg_low_skipped = 1;
+>>                                   continue;
+>>                           }
+>> -                       memcg_memory_event(memcg, MEMCG_LOW);
+>> +                       if (memcg->memory.low)
+>> +                               memcg_memory_event(memcg, MEMCG_LOW);
+> That's not right. In setups where protection comes from the parent, no
+> breaches would ever be counted.
 
-I'm thinking you meant 6.* instead of 5.* in the two branches above. The
-changes to resolve conflicts look good to me. Thanks for the quick
-review.
+OK. Will post a v3 to incorporate your suggestion.
 
-> 
->    git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.16
-> 
-> Thanks.
-> 
+Thanks,
+Longman
 
 
