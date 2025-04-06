@@ -1,68 +1,68 @@
-Return-Path: <cgroups+bounces-7377-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7378-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 416D3A7CCBB
-	for <lists+cgroups@lfdr.de>; Sun,  6 Apr 2025 06:28:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 873AAA7CCD6
+	for <lists+cgroups@lfdr.de>; Sun,  6 Apr 2025 07:09:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17E47188FC19
-	for <lists+cgroups@lfdr.de>; Sun,  6 Apr 2025 04:27:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32D5B3B4298
+	for <lists+cgroups@lfdr.de>; Sun,  6 Apr 2025 05:09:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633281B4F15;
-	Sun,  6 Apr 2025 04:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F56915381A;
+	Sun,  6 Apr 2025 05:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V2ygRcaX"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N3xz6tdg"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B078818C01D;
-	Sun,  6 Apr 2025 04:27:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED2914A82;
+	Sun,  6 Apr 2025 05:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743913659; cv=none; b=oDmJYgcxwyU6DPngKsMO0FvNknOBh8aXtu9quelT1VAWXHllcnXhcRhf8U+OQLKN79FK1hprYJmQkzis3k/9RnHEQZMS8qKE3IMcR0Igj9eug9BJ8KcnGNkjp3fZ/xTtZWTA9ch7cYZ9qaKH6jvpnfrXDMaEwGa3wOXmJoS1OsI=
+	t=1743916184; cv=none; b=PegYMD3Hvw5YyeP+ELlvIWYeCOZeqllAkiXWhksE7mlhRusA3XebSVi401fSj7Qpfl5XPpVl22ousNAJZjj7iGfwkiJ9e8+kq7xAIfyRD04dtMFr/gB03CTfGmustsCLAp6gKw045WvbKVRbZdERhwK8w8aStD8DDMj5BA8u/YI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743913659; c=relaxed/simple;
-	bh=O7btUqfuVN1YAH6kub7YKm5WCHvlzLjyS/fJH/XHq3g=;
+	s=arc-20240116; t=1743916184; c=relaxed/simple;
+	bh=2Vv16BmJQGGt1ruqb/MSgE5G4w4jvnFeftNhxmRK96Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mtNIeGXMZwm4PC15/TRu/wRRkeVOLbQ80NwCR7Xo5bqu9P6Wj7twGi0O6ukeKUDlZmEebhLW8WuGyzKnjokJsQ0nnSFGw8iCXkWKM71lLf7/ahyFMojSv61F5Do9Uh2vUttQ6+nvrD4fZ2j2B8B7JKmp5kxoHNDtXsHqD7u4gb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V2ygRcaX; arc=none smtp.client-ip=198.175.65.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=F8WrHohwSrVM+sJKYAztF/8tfyLXcZPIijNuYPmMFICuZ/T3ZbasaOxFaCXpzrUK8kc3aj2/Bp0HGzL68h6gNBT6Kifdg923xsEMkgtsgEgyvFXUmhbAlMkcON0fBblCxgSbMpIYvWotmJsWZAahqCSf0IWMHUs5Vv2BFJPdqYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N3xz6tdg; arc=none smtp.client-ip=192.198.163.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1743913656; x=1775449656;
+  t=1743916182; x=1775452182;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=O7btUqfuVN1YAH6kub7YKm5WCHvlzLjyS/fJH/XHq3g=;
-  b=V2ygRcaX9duJ96iOWr6bbaOPVnJDAbomg9sTx1HM3H/KXxTwgnePzDuq
-   0qlTqo4SlAfxQTtzVvvZ0XJ+SoJCZ+ZlRRNx/Y0y4w9Wxu983Fv9+nkQr
-   wSLJNqpjo1oZGuFPdsYdTus4ahibB5tP7M8waqpU3Tf/aYv0odm1VpvP7
-   zDiUI2/POg1Fefi8uq65OYc/w8Z5mRXp8gZG94LchJdsDzOKdIStSvNmn
-   y3aF4SdcKTWBAadEnrH7Pm7PrbPGq+8CDKK4Pi1hOrZDLMeuvOVkOYTJD
-   sZnLCNY+pE9aPOzMu9PLBk3hoeiK7/tdtlvRnOVjFtKMLbAEB13OctR5c
-   A==;
-X-CSE-ConnectionGUID: cr4CTfudQuaPAUlnsRVjLQ==
-X-CSE-MsgGUID: OrSakB0XRhmo7sb133eYqw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11395"; a="45451990"
+  bh=2Vv16BmJQGGt1ruqb/MSgE5G4w4jvnFeftNhxmRK96Q=;
+  b=N3xz6tdgDYyZjg8+6OHAxIbGh+a5pEfwi+leZFRYrl2gwD18LxCvv+iE
+   aI8wC27VtTqNMtZgrjbZkSS0mr8cC/M2wYNttd3QR1W1TgaucjrJADBSt
+   jHxeOhRYN6TGpVkP1O/xUq0/iJCE4/+IqE5uMPgCwd8+DvpHj4sCqDeKi
+   06Dd9M1AN2f2D9fAvyz4+uXwAGQ+varb0UDeJXfyzFGcc25K+csoJCjKD
+   JhCPrbpSNADdIEjDhxGjA0hQjWy4BKG7CuxCgXnaeBtU2dha7KGS1CZNo
+   6Hx/Vhs8NRMLtfUDWFMU/NZzaE5VIwRKl6FLS83khG6KstfXr9XRVpBNd
+   Q==;
+X-CSE-ConnectionGUID: 0C93XjmsQq2xv24+xl7wtw==
+X-CSE-MsgGUID: CyRoFPaERWagfF2d6RPlEQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11395"; a="32920992"
 X-IronPort-AV: E=Sophos;i="6.15,192,1739865600"; 
-   d="scan'208";a="45451990"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2025 21:27:35 -0700
-X-CSE-ConnectionGUID: 5gbXp1nST4GLoL1QIFuW8Q==
-X-CSE-MsgGUID: l4qFjh0ZR4OocMypNpzb2w==
+   d="scan'208";a="32920992"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2025 22:09:38 -0700
+X-CSE-ConnectionGUID: 9Z3oBZg/R0ipWzs40aYBCA==
+X-CSE-MsgGUID: BNJayHtETV6W0UmceMgCLQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,192,1739865600"; 
-   d="scan'208";a="127956790"
+   d="scan'208";a="128141955"
 Received: from lkp-server01.sh.intel.com (HELO b207828170a5) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 05 Apr 2025 21:27:31 -0700
+  by fmviesa010.fm.intel.com with ESMTP; 05 Apr 2025 22:09:35 -0700
 Received: from kbuild by b207828170a5 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1u1HbV-0002RD-1V;
-	Sun, 06 Apr 2025 04:27:29 +0000
-Date: Sun, 6 Apr 2025 12:27:28 +0800
+	id 1u1IGC-0002Rz-22;
+	Sun, 06 Apr 2025 05:09:32 +0000
+Date: Sun, 6 Apr 2025 13:08:57 +0800
 From: kernel test robot <lkp@intel.com>
 To: Waiman Long <longman@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@kernel.org>,
@@ -73,13 +73,13 @@ To: Waiman Long <longman@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>,
 	Tejun Heo <tj@kernel.org>,
 	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
 	Shuah Khan <skhan@linuxfoundation.org>
-Cc: oe-kbuild-all@lists.linux.dev,
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
 	Linux Memory Management List <linux-mm@kvack.org>,
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
 	linux-kselftest@vger.kernel.org, Waiman Long <longman@redhat.com>
 Subject: Re: [PATCH v3 1/2] mm/vmscan: Skip memcg with !usage in
  shrink_node_memcgs()
-Message-ID: <202504061257.GMkEJUOs-lkp@intel.com>
+Message-ID: <202504061254.DqfqHfM7-lkp@intel.com>
 References: <20250406024010.1177927-2-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -105,21 +105,24 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Waiman-Long/mm-vmscan-Ski
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
 patch link:    https://lore.kernel.org/r/20250406024010.1177927-2-longman%40redhat.com
 patch subject: [PATCH v3 1/2] mm/vmscan: Skip memcg with !usage in shrink_node_memcgs()
-config: arc-randconfig-002-20250406 (https://download.01.org/0day-ci/archive/20250406/202504061257.GMkEJUOs-lkp@intel.com/config)
-compiler: arc-linux-gcc (GCC) 11.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250406/202504061257.GMkEJUOs-lkp@intel.com/reproduce)
+config: arm-randconfig-001-20250406 (https://download.01.org/0day-ci/archive/20250406/202504061254.DqfqHfM7-lkp@intel.com/config)
+compiler: clang version 21.0.0git (https://github.com/llvm/llvm-project 92c93f5286b9ff33f27ff694d2dc33da1c07afdd)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250406/202504061254.DqfqHfM7-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202504061257.GMkEJUOs-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202504061254.DqfqHfM7-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   mm/vmscan.c: In function 'shrink_node_memcgs':
->> mm/vmscan.c:5929:46: error: invalid use of undefined type 'struct mem_cgroup'
+>> mm/vmscan.c:5929:32: error: incomplete definition of type 'struct mem_cgroup'
     5929 |                 if (!page_counter_read(&memcg->memory))
-         |                                              ^~
+         |                                         ~~~~~^
+   include/linux/mm_types.h:33:8: note: forward declaration of 'struct mem_cgroup'
+      33 | struct mem_cgroup;
+         |        ^
+   1 error generated.
 
 
 vim +5929 mm/vmscan.c
