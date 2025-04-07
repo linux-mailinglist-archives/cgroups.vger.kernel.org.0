@@ -1,121 +1,343 @@
-Return-Path: <cgroups+bounces-7379-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7380-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B84A7D0B4
-	for <lists+cgroups@lfdr.de>; Sun,  6 Apr 2025 23:34:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8479A7D1C7
+	for <lists+cgroups@lfdr.de>; Mon,  7 Apr 2025 03:41:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 160203ACB77
-	for <lists+cgroups@lfdr.de>; Sun,  6 Apr 2025 21:34:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A485016AEF9
+	for <lists+cgroups@lfdr.de>; Mon,  7 Apr 2025 01:41:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C311B3934;
-	Sun,  6 Apr 2025 21:34:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60847211A38;
+	Mon,  7 Apr 2025 01:41:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MFNDMnRu"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="ddscq2FF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0031E195811
-	for <cgroups@vger.kernel.org>; Sun,  6 Apr 2025 21:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DE12063F9;
+	Mon,  7 Apr 2025 01:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743975254; cv=none; b=GB/a/decKl+pbyJJmbmazsCgSTjkcLp6oWfTu03GlsB09zxssFJUlz5VGXnMmF5DD216qYGcQsjFyEAQtNsWP/l1zGkB3vx0Vi7d8210N1NIoBVxtmcQtoEzGmogF/09U5pmvwjg1cxOAHKmz39H7FkGd4JGwdLwgXfXUX13ELU=
+	t=1743990078; cv=none; b=PUMSHXSDeA0u3YAgkB43V9kT9Ckr+tucK/lVsAuzPpqZHCWOLGJ8INM32CivO9SnZtOu4/GpyGDT3F2t8riWA2LAxQIG8enDY3PEHCDdAD+4BrOPhB6vrIqeYBaiY631of/RYcZOSaFfFeVaDop5x8NmhwGUednvWO773XNlPV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743975254; c=relaxed/simple;
-	bh=1thCHGzusRG1ZlrUII7P1iJSUsOlzC1ZFkjlxRYfWZA=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Fb0BpR2OQwiGhW5+proxl4QtgFb1ZML1wMt3j/iIkFkZdDYzJZc5/B0mvsRWpI6xodLesF4KnTX3JUsETor7BNSnCxlJZIm4n9FRrgs18C0IkaLu2kMRv3LCZYO/A8nohaOi8pdMOUAu3d8nXe1VhLrn6FGa2WCfTEPSmg+eYlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MFNDMnRu; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2242ac37caeso224565ad.1
-        for <cgroups@vger.kernel.org>; Sun, 06 Apr 2025 14:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1743975252; x=1744580052; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bBPMncQ6TC7hw2oKsOjfoaHvrckjy1WxXt515TcLyfI=;
-        b=MFNDMnRuyueVh6iVaVV4O3hMRKCYZWOjD/jUDThbaeOhTcEAK438Zbk/QUhGpFNSnG
-         c7fryo3DSaA70vmFJZu+kF6PcwGST6wduQItZdgYqmim4qukZAJmeKXy1AFbuWplBbXS
-         fBBONgcbBjq/3i0KMV09uGX2DGnOlkWCMcKQv8w6JYwfIQBGAlyqQURVgjD46Pt4+uL6
-         opk1CBxusVxNBRiepx9p/NOXo6wrVoFmR9Ea9OD6/0bkK/JZgl3KoDQfUoZBNAr6gjpA
-         Tq958V7a6R6sfbTCN+wTHBHhPegXbeEGcPc4f2r2J1ZE7zrt4mrM6BfHX8bBK38npmks
-         atoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743975252; x=1744580052;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bBPMncQ6TC7hw2oKsOjfoaHvrckjy1WxXt515TcLyfI=;
-        b=p6LpvNhSAAx77XIfiAljtzoLfaOS3dMLeTYA4rELs5wIPcE5s/xm2vqTZjwuyfFHcx
-         IlNX3bpXc/O63SFIxtLZ8+hNtLQitnsDqyOlYgQBi7GKn7L+gNGYFdyxEymcJOoHY161
-         2+r43bnlb4PhoUBX+cexzXZlVZ4A0qhoL0aLBzA8fW3MbPX8GQB/V95Cdkf2fDuOiJ5K
-         tDAUxZHvbbhFUrvKsHTuOJ1yOEjchxfVdqqKkl57y/vGluGmlLpX38/TPnzDtSjWkB6h
-         EQKjhYeandIoxvhaFxCjH2BuwYqYIHKRKGAt/ec2wl0REIR60oNpVgz09RW+G/KSVGC4
-         M1vA==
-X-Forwarded-Encrypted: i=1; AJvYcCWDd4igOhD6G+KMc5GaqjcaJP6+8aAXM43cRITtPM3MpUxAkU7X8h7bDqq317mWP4RK+cgsImax@vger.kernel.org
-X-Gm-Message-State: AOJu0YwIFTyjr8pP3E3Xo2qjIqlhScb9YlIihpsupxTST69KlzC/AVl6
-	wmNsv28qODQR6/i/8+kPKJkKsRyu6FW8QomSBS6MKWIHejiaMISM9G6dlAdvbA==
-X-Gm-Gg: ASbGncsbByYYE5VLmslqld14R3q0QLp6Hs1TG8jsOdNHFLhgd0IBi1QVKUwdtonrWLE
-	ljYgx4U1kgdKZq5eW0SDPRmeHhnrTE0ZtF+1s8eL0Sbmi+LgKKjc0P9NuvRHAQ1yqo0w0be5d3K
-	iYntosSg8hHHP3SDB32wx8Ws9nTyKeAeyMxvYxJVfFLGrH8DTbnSvsvUmw5dS3h1l6ddIPRMtCS
-	j31lAcx07JPYstDwysa75IfYYgjRKdk+T6AoJWsnrKa4hiJY63v+557SLwha49qM3nvIMcfNQUO
-	Ew9wK3GrWVDGjH4jsHD7r35NdQmmjnphULFGlCzA93B4LEXKrtxAIU+DKw2y9XBnjjzbvBqKp1t
-	EsQP/ps9KVAcw1pQTJaQ9alcK1rTC5LdMjETn
-X-Google-Smtp-Source: AGHT+IHiRINMzxnjTrrhfoZBhhxSAkmIUO6KvhjzqPNAjX/wOWw4Id8jKa17QVFoK7hXxJREv7ldBA==
-X-Received: by 2002:a17:902:d591:b0:21f:631c:7fc9 with SMTP id d9443c01a7336-22a95daaff5mr3142305ad.0.1743975251735;
-        Sun, 06 Apr 2025 14:34:11 -0700 (PDT)
-Received: from [2a00:79e0:2eb0:8:2005:ca9c:736:e1f6] ([2a00:79e0:2eb0:8:2005:ca9c:736:e1f6])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-229785c27b3sm68020535ad.97.2025.04.06.14.34.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Apr 2025 14:34:10 -0700 (PDT)
-Date: Sun, 6 Apr 2025 14:34:09 -0700 (PDT)
-From: David Rientjes <rientjes@google.com>
-To: Michal Hocko <mhocko@kernel.org>
-cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-    Rik van Riel <riel@surriel.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-    Roman Gushchin <roman.gushchin@linux.dev>, 
-    Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-    cgroups mailinglist <cgroups@vger.kernel.org>, 
-    LKML <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH] memcg, oom: do not bypass oom killer for dying tasks
-In-Reply-To: <20250402090117.130245-1-mhocko@kernel.org>
-Message-ID: <ad2ce9e6-1651-8170-f944-1ba4ce4c14c9@google.com>
-References: <20250402090117.130245-1-mhocko@kernel.org>
+	s=arc-20240116; t=1743990078; c=relaxed/simple;
+	bh=GkbpG4zdHL7ZRFR+4B/BVoLar8zHOqpkqt14tGLhgBQ=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Vi0OmaYqtvGYdOWVawi2BUBRv2s1y0haagC7GTsxBzayuYKkT+z4aMwBYx8j6tSEvmtDR6RFSxbE+BB9Iy8pPDIe/G7za7AjV/4cgZl9TBrfAkpv4z2VJxNwwiPB8uWiT2d4wcvcVojjGXyp5uSiQ5X5Tn/Y8n3c03jt7DDhg9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=ddscq2FF; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
+	Content-Type; bh=FvmvB2Ur9V3JiBcAElYaFHJ791CrCzjrxmQzbqAxeIs=;
+	b=ddscq2FFzWrFERGU/97MnsJmGwncZGlGBvAU//oe2DaSN4C8aOKIYxp/ZGH++x
+	n9Ao6RQwvxI/TbaRqR0L6c6gmSUUyEynV5+C+tF58CtatFb9dLC5TNi7cT8trY+z
+	BXVwos7tIL0iEKE+0jutLjSm1g9tVPmWEHyYpGr8QaaMs=
+Received: from [192.168.22.248] (unknown [])
+	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wDHrzTuLPNnAZvpEg--.33341S2;
+	Mon, 07 Apr 2025 09:40:00 +0800 (CST)
+Message-ID: <6d1714a4-097e-4d8e-9f2a-907f031ac8f9@163.com>
+Date: Mon, 7 Apr 2025 09:39:58 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] fs/proc/page: Refactoring to reduce code duplication.
+From: Liu Ye <liuyerd@163.com>
+To: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+ shakeel.butt@linux.dev, muchun.song@linux.dev,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: willy@infradead.org, david@redhat.com, svetly.todorov@memverge.com,
+ vbabka@suse.cz, ran.xiaokai@zte.com.cn, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ Liu Ye <liuye@kylinos.cn>
+References: <20250318063226.223284-1-liuyerd@163.com>
+ <c21dbc6b-3f1b-4015-9aee-44979ef0233e@163.com>
+Content-Language: en-US
+In-Reply-To: <c21dbc6b-3f1b-4015-9aee-44979ef0233e@163.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDHrzTuLPNnAZvpEg--.33341S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxKr45Ww4fWF45Zr47CF1Utrb_yoW3Jry7pF
+	4kGF4jya18XFyYkr12qws5Za4av3s3AF4jyrW7G3WfXFyqqrnakFySyFnY9FyxCryUZF1x
+	XayqgrnxuFWjyFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jwa93UUUUU=
+X-CM-SenderInfo: 5olx5vlug6il2tof0z/xtbBMRoaTGfgx7fuMwACsV
 
-On Wed, 2 Apr 2025, Michal Hocko wrote:
+Friendly ping.
 
-> From: Michal Hocko <mhocko@suse.com>
-> 
-> 7775face2079 ("memcg: killed threads should not invoke memcg OOM killer") has added
-> a bypass of the oom killer path for dying threads because a very
-> specific workload (described in the changelog) could hit "no killable
-> tasks" path. This itself is not fatal condition but it could be annoying
-> if this was a common case.
-> 
-> On the other hand the bypass has some issues on its own. Without
-> triggering oom killer we won't be able to trigger async oom reclaim
-> (oom_reaper) which can operate on killed tasks as well as long as they
-> still have their mm available. This could be the case during futex
-> cleanup when the memory as pointed out by Johannes in [1]. The said case
-> is still not fully understood but let's drop this bypass that was mostly
-> driven by an artificial workload and allow dying tasks to go into oom
-> path. This will make the code easier to reason about and also help
-> corner cases where oom_reaper could help to release memory.
-> 
-> [1] https://lore.kernel.org/all/20241212183012.GB1026@cmpxchg.org/T/#u
-> 
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
+在 2025/3/24 11:25, Liu Ye 写道:
+> Friendly ping.
+>
+> 在 2025/3/18 14:32, Liu Ye 写道:
+>> From: Liu Ye <liuye@kylinos.cn>
+>>
+>> The function kpageflags_read and kpagecgroup_read is quite similar
+>> to kpagecount_read. Consider refactoring common code into a helper
+>> function to reduce code duplication.
+>>
+>> Signed-off-by: Liu Ye <liuye@kylinos.cn>
+>>
+>> ---
+>> V4 : Update code remake patch.
+>> V3 : Add a stub for page_cgroup_ino and remove the #ifdef CONFIG_MEMCG.
+>> V2 : Use an enumeration to indicate the operation to be performed
+>> to avoid passing functions.
+>> ---
+>> ---
+>>  fs/proc/page.c             | 161 +++++++++++++------------------------
+>>  include/linux/memcontrol.h |   4 +
+>>  2 files changed, 58 insertions(+), 107 deletions(-)
+>>
+>> diff --git a/fs/proc/page.c b/fs/proc/page.c
+>> index 23fc771100ae..999af26c7298 100644
+>> --- a/fs/proc/page.c
+>> +++ b/fs/proc/page.c
+>> @@ -22,6 +22,12 @@
+>>  #define KPMMASK (KPMSIZE - 1)
+>>  #define KPMBITS (KPMSIZE * BITS_PER_BYTE)
+>>  
+>> +enum kpage_operation {
+>> +	KPAGE_FLAGS,
+>> +	KPAGE_COUNT,
+>> +	KPAGE_CGROUP,
+>> +};
+>> +
+>>  static inline unsigned long get_max_dump_pfn(void)
+>>  {
+>>  #ifdef CONFIG_SPARSEMEM
+>> @@ -37,19 +43,17 @@ static inline unsigned long get_max_dump_pfn(void)
+>>  #endif
+>>  }
+>>  
+>> -/* /proc/kpagecount - an array exposing page mapcounts
+>> - *
+>> - * Each entry is a u64 representing the corresponding
+>> - * physical page mapcount.
+>> - */
+>> -static ssize_t kpagecount_read(struct file *file, char __user *buf,
+>> -			     size_t count, loff_t *ppos)
+>> +static ssize_t kpage_read(struct file *file, char __user *buf,
+>> +		size_t count, loff_t *ppos,
+>> +		enum kpage_operation op)
+>>  {
+>>  	const unsigned long max_dump_pfn = get_max_dump_pfn();
+>>  	u64 __user *out = (u64 __user *)buf;
+>> +	struct page *page;
+>>  	unsigned long src = *ppos;
+>>  	unsigned long pfn;
+>>  	ssize_t ret = 0;
+>> +	u64 info;
+>>  
+>>  	pfn = src / KPMSIZE;
+>>  	if (src & KPMMASK || count & KPMMASK)
+>> @@ -59,24 +63,34 @@ static ssize_t kpagecount_read(struct file *file, char __user *buf,
+>>  	count = min_t(unsigned long, count, (max_dump_pfn * KPMSIZE) - src);
+>>  
+>>  	while (count > 0) {
+>> -		struct page *page;
+>> -		u64 mapcount = 0;
+>> -
+>>  		/*
+>>  		 * TODO: ZONE_DEVICE support requires to identify
+>>  		 * memmaps that were actually initialized.
+>>  		 */
+>>  		page = pfn_to_online_page(pfn);
+>> -		if (page) {
+>> -			struct folio *folio = page_folio(page);
+>>  
+>> -			if (IS_ENABLED(CONFIG_PAGE_MAPCOUNT))
+>> -				mapcount = folio_precise_page_mapcount(folio, page);
+>> -			else
+>> -				mapcount = folio_average_page_mapcount(folio);
+>> -		}
+>> -
+>> -		if (put_user(mapcount, out)) {
+>> +		if (page) {
+>> +			switch (op) {
+>> +			case KPAGE_FLAGS:
+>> +				info = stable_page_flags(page);
+>> +				break;
+>> +			case KPAGE_COUNT:
+>> +				if (IS_ENABLED(CONFIG_PAGE_MAPCOUNT))
+>> +					info = folio_precise_page_mapcount(page_folio(page), page);
+>> +				else
+>> +					info = folio_average_page_mapcount(page_folio(page));
+>> +				break;
+>> +			case KPAGE_CGROUP:
+>> +				info = page_cgroup_ino(page);
+>> +				break;
+>> +			default:
+>> +				info = 0;
+>> +				break;
+>> +			}
+>> +		} else
+>> +			info = 0;
+>> +
+>> +		if (put_user(info, out)) {
+>>  			ret = -EFAULT;
+>>  			break;
+>>  		}
+>> @@ -94,17 +108,23 @@ static ssize_t kpagecount_read(struct file *file, char __user *buf,
+>>  	return ret;
+>>  }
+>>  
+>> +/* /proc/kpagecount - an array exposing page mapcounts
+>> + *
+>> + * Each entry is a u64 representing the corresponding
+>> + * physical page mapcount.
+>> + */
+>> +static ssize_t kpagecount_read(struct file *file, char __user *buf,
+>> +		size_t count, loff_t *ppos)
+>> +{
+>> +	return kpage_read(file, buf, count, ppos, KPAGE_COUNT);
+>> +}
+>> +
+>>  static const struct proc_ops kpagecount_proc_ops = {
+>>  	.proc_flags	= PROC_ENTRY_PERMANENT,
+>>  	.proc_lseek	= mem_lseek,
+>>  	.proc_read	= kpagecount_read,
+>>  };
+>>  
+>> -/* /proc/kpageflags - an array exposing page flags
+>> - *
+>> - * Each entry is a u64 representing the corresponding
+>> - * physical page flags.
+>> - */
+>>  
+>>  static inline u64 kpf_copy_bit(u64 kflags, int ubit, int kbit)
+>>  {
+>> @@ -225,47 +245,17 @@ u64 stable_page_flags(const struct page *page)
+>>  #endif
+>>  
+>>  	return u;
+>> -};
+>> +}
+>>  
+>> +/* /proc/kpageflags - an array exposing page flags
+>> + *
+>> + * Each entry is a u64 representing the corresponding
+>> + * physical page flags.
+>> + */
+>>  static ssize_t kpageflags_read(struct file *file, char __user *buf,
+>> -			     size_t count, loff_t *ppos)
+>> +		size_t count, loff_t *ppos)
+>>  {
+>> -	const unsigned long max_dump_pfn = get_max_dump_pfn();
+>> -	u64 __user *out = (u64 __user *)buf;
+>> -	unsigned long src = *ppos;
+>> -	unsigned long pfn;
+>> -	ssize_t ret = 0;
+>> -
+>> -	pfn = src / KPMSIZE;
+>> -	if (src & KPMMASK || count & KPMMASK)
+>> -		return -EINVAL;
+>> -	if (src >= max_dump_pfn * KPMSIZE)
+>> -		return 0;
+>> -	count = min_t(unsigned long, count, (max_dump_pfn * KPMSIZE) - src);
+>> -
+>> -	while (count > 0) {
+>> -		/*
+>> -		 * TODO: ZONE_DEVICE support requires to identify
+>> -		 * memmaps that were actually initialized.
+>> -		 */
+>> -		struct page *page = pfn_to_online_page(pfn);
+>> -
+>> -		if (put_user(stable_page_flags(page), out)) {
+>> -			ret = -EFAULT;
+>> -			break;
+>> -		}
+>> -
+>> -		pfn++;
+>> -		out++;
+>> -		count -= KPMSIZE;
+>> -
+>> -		cond_resched();
+>> -	}
+>> -
+>> -	*ppos += (char __user *)out - buf;
+>> -	if (!ret)
+>> -		ret = (char __user *)out - buf;
+>> -	return ret;
+>> +	return kpage_read(file, buf, count, ppos, KPAGE_FLAGS);
+>>  }
+>>  
+>>  static const struct proc_ops kpageflags_proc_ops = {
+>> @@ -276,53 +266,10 @@ static const struct proc_ops kpageflags_proc_ops = {
+>>  
+>>  #ifdef CONFIG_MEMCG
+>>  static ssize_t kpagecgroup_read(struct file *file, char __user *buf,
+>> -				size_t count, loff_t *ppos)
+>> +		size_t count, loff_t *ppos)
+>>  {
+>> -	const unsigned long max_dump_pfn = get_max_dump_pfn();
+>> -	u64 __user *out = (u64 __user *)buf;
+>> -	struct page *ppage;
+>> -	unsigned long src = *ppos;
+>> -	unsigned long pfn;
+>> -	ssize_t ret = 0;
+>> -	u64 ino;
+>> -
+>> -	pfn = src / KPMSIZE;
+>> -	if (src & KPMMASK || count & KPMMASK)
+>> -		return -EINVAL;
+>> -	if (src >= max_dump_pfn * KPMSIZE)
+>> -		return 0;
+>> -	count = min_t(unsigned long, count, (max_dump_pfn * KPMSIZE) - src);
+>> -
+>> -	while (count > 0) {
+>> -		/*
+>> -		 * TODO: ZONE_DEVICE support requires to identify
+>> -		 * memmaps that were actually initialized.
+>> -		 */
+>> -		ppage = pfn_to_online_page(pfn);
+>> -
+>> -		if (ppage)
+>> -			ino = page_cgroup_ino(ppage);
+>> -		else
+>> -			ino = 0;
+>> -
+>> -		if (put_user(ino, out)) {
+>> -			ret = -EFAULT;
+>> -			break;
+>> -		}
+>> -
+>> -		pfn++;
+>> -		out++;
+>> -		count -= KPMSIZE;
+>> -
+>> -		cond_resched();
+>> -	}
+>> -
+>> -	*ppos += (char __user *)out - buf;
+>> -	if (!ret)
+>> -		ret = (char __user *)out - buf;
+>> -	return ret;
+>> +	return kpage_read(file, buf, count, ppos, KPAGE_CGROUP);
+>>  }
+>> -
+>>  static const struct proc_ops kpagecgroup_proc_ops = {
+>>  	.proc_flags	= PROC_ENTRY_PERMANENT,
+>>  	.proc_lseek	= mem_lseek,
+>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> index 53364526d877..5264d148bdd9 100644
+>> --- a/include/linux/memcontrol.h
+>> +++ b/include/linux/memcontrol.h
+>> @@ -1793,6 +1793,10 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
+>>  {
+>>  }
+>>  
+>> +static inline ino_t page_cgroup_ino(struct page *page)
+>> +{
+>> +	return 0;
+>> +}
+>>  #endif /* CONFIG_MEMCG */
+>>  
+>>  #if defined(CONFIG_MEMCG) && defined(CONFIG_ZSWAP)
 
-Acked-by: David Rientjes <rientjes@google.com>
 
