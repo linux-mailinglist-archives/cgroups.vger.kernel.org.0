@@ -1,206 +1,220 @@
-Return-Path: <cgroups+bounces-7430-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7431-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64CEEA810C0
-	for <lists+cgroups@lfdr.de>; Tue,  8 Apr 2025 17:54:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 271E6A81236
+	for <lists+cgroups@lfdr.de>; Tue,  8 Apr 2025 18:25:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F4653BB44F
-	for <lists+cgroups@lfdr.de>; Tue,  8 Apr 2025 15:47:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD4B9165C00
+	for <lists+cgroups@lfdr.de>; Tue,  8 Apr 2025 16:23:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B956822E011;
-	Tue,  8 Apr 2025 15:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2302B22D799;
+	Tue,  8 Apr 2025 16:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="mdOBOdHW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uu/PVtL+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8132922ACF1
-	for <cgroups@vger.kernel.org>; Tue,  8 Apr 2025 15:45:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C8E1991CB;
+	Tue,  8 Apr 2025 16:23:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744127155; cv=none; b=pPyJeJNk2aQnfBlwQPQILQptJWkh7oJWvPU3Jn0lzwLDifVLFpbQwO28WlSbtLoUzReGU5Ef2Hbd86eLSKeKnedpHX5AAyal79L7cfgvMXXqKvNorYgwRpBk1l4HQceqpMYK30NncSoOa9lN2/ljvBbOg3I+n7u2PUAn0F96nuY=
+	t=1744129399; cv=none; b=Q5XMwjkgYk6X84LWpNDv6nYFvDatAzjgfAdpyDQjoMfe1susZDRJFoCmezVa96oLvyuae4dyCt+S1zck0bOqfjItIRP3vhI3pAmdivTKd3DrMRJY4k2b1P66VmLHZEm1YbolREiQgU5xcoy4THHbXf8pEerMObEnE2dzOqGk8ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744127155; c=relaxed/simple;
-	bh=0Vk4Q/tbcxmqoPdlz6UIUsDuIxw5cq/UVJKCtm5vkU4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FshRrz8B0nx+21hdj7yzbBAYB+s0Yu7g+Dl9ktCys/5ekLQTiseK1VkymFmRBC+y9wicmcZULRaT0T8oLs4HS9CZBBU+10Dd0tiKy3Iae8O4i+WNJHmpbWbUCjzYbYtN2ea7f1aNyoiMVN/xRgR59GIfdFknJ3Zr4Fx0/iLp4ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=mdOBOdHW; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6ed16ce246bso28115176d6.3
-        for <cgroups@vger.kernel.org>; Tue, 08 Apr 2025 08:45:53 -0700 (PDT)
+	s=arc-20240116; t=1744129399; c=relaxed/simple;
+	bh=RfS/RPt20xT1FRrwznKp2niS7/MlF89JXFfqnnkdXcQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Wj2fRhUMQ90s0KUvk56IDXHmecyr3dBv7b5QmuGz5zSn0Rc4ATM3bD03XiYT66Dk3jmFk1NE9+E0H2zswQ6GN0cpy9vBsb2jUToeulEx2m6U1x3l2qY5V4qpTT3xELk9jnVWPFYfk2xMgY5MDjsXHLOnMBRBCCWNh19moLEhIjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uu/PVtL+; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-30ddad694c1so60929781fa.2;
+        Tue, 08 Apr 2025 09:23:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1744127152; x=1744731952; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z4ws45xegNtEo3hyX9VLFGRAMSTn7tItQyk+TYKn5LE=;
-        b=mdOBOdHWh/fvGknv0gXu1ly70YBcK/mlc6XLthNm42wAwihn0QSyGIrZdMyIhEwsLh
-         eU17LAnpgdsRIv9EXQDRcveignOVir9nOnkym0VA36Ss96poFdxYd86RyMQj7Yy66kgn
-         2wAGdrb2POQMbO3dAKlqGaf9vzCW0TkpRvtxgIBjkuubY4c5ANKbz4wL8TMuQ18sjEDT
-         BiiLma7vLVSjuBK5JODSdopgmEHTap9QdOpNnlFyhURNmc4ZFZ3JZ0Q3qUV2C4OvkGL3
-         rODWUQx1Mn3xlKBAFW+vYt4XL+x3KkWlqSnX8fJsduQJqTobQAy0NLKDj/feuyRHC5ZX
-         JwdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744127152; x=1744731952;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1744129396; x=1744734196; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z4ws45xegNtEo3hyX9VLFGRAMSTn7tItQyk+TYKn5LE=;
-        b=F3Qzo2sFdjYq3kZbNrt1dMcRzBAAdn1mk1vBaQC3WRominZyB8q6Ho5G8ABk9UjH8v
-         PFO6jDLgD+H83F8ELTnrYUfNVSm6NxKxx65FwLAKIQgxBaMgBEgJI8m8VrpL3zYMj7C3
-         rjw+c261za4Xr6nykiBa2b0US3TzTwxOjuXjYWqqAcKxv1iLdDtIRMUxaS5lMX0+g4qs
-         eeTpUni8gAKJH7dFWw8+6FcAXPEHoZeqXi0NUla5vcfTjCpgWfC8nSd/Ocsj1kt3EbTf
-         T+bQvfKUMvYXzUuYQnKySZQ/XFgcECCoSE1px82uvHkOapsEVLuCdakUcRD+VePFrxEG
-         C9+A==
-X-Forwarded-Encrypted: i=1; AJvYcCVuApXmzCpg1n0v2c+dbKaCwraSSIB3iySrF84EykjXUbFwh+2K+n7aIZue6L07DsAwc9xja2Xu@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxf+IoCuxfKeh//m22gvPodVv768yjFIY8/FXaYCeotfk2C3I7+
-	KvgfGNip5U0RbthxpZqTuvkOqjQyKJnIfuohJ/dfGbnTG7lERHAXA1QM0zstp50=
-X-Gm-Gg: ASbGncsYS3jPoi7kHhP9LRaYOpK0N7mYDR4JC19IPQ+ECYV2NtpvSAZbCikWBngLbqq
-	1PcdpKQGXeJrJPK1IkXFZGCvLhg36eRjbimcK39o1v9pFKwj7Pdp0kyjBVoqAdppcT9Dm6bSCP/
-	zAQYDWXgVhbc/GLsxA/OKwHmr2Q0Rxm8C6hIMTW3HeXDI8DKd12WK3AOuPs1P0ajy3/YFiE2H+B
-	fp7wOSc7zdqHsdsZT+JiynLNfJktpaKvb+8X63J2hskO90fRlt3s/qQBK2RDGgANRRXobNOvP/g
-	VdaDEEFHZEyRXuK38jjjoGGxE45k98BXwpiwQAU+6TI=
-X-Google-Smtp-Source: AGHT+IFB93sjhMlD8Tc/Abwf4lsvbVA+UK3BQyylz33ogjZ0LPpUmiNISCzwhQcTDhyWWyzZaM2+Eg==
-X-Received: by 2002:a05:6214:2588:b0:6e6:5d61:4f01 with SMTP id 6a1803df08f44-6f0584a4650mr233144056d6.8.1744127152257;
-        Tue, 08 Apr 2025 08:45:52 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6ef0efc0a6csm75867956d6.14.2025.04.08.08.45.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Apr 2025 08:45:51 -0700 (PDT)
-Date: Tue, 8 Apr 2025 11:45:47 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Usama Arif <usamaarif642@gmail.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org,
-	akpm@linux-foundation.org, hughd@google.com, yosry.ahmed@linux.dev,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, len.brown@intel.com,
-	chengming.zhou@linux.dev, kasong@tencent.com, chrisl@kernel.org,
-	huang.ying.caritas@gmail.com, ryan.roberts@arm.com,
-	viro@zeniv.linux.org.uk, baohua@kernel.org, osalvador@suse.de,
-	lorenzo.stoakes@oracle.com, christophe.leroy@csgroup.eu,
-	pavel@kernel.org, kernel-team@meta.com,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH 00/14] Virtual Swap Space
-Message-ID: <20250408154547.GC816@cmpxchg.org>
-References: <20250407234223.1059191-1-nphamcs@gmail.com>
- <983965b6-2262-4f72-a672-39085dcdaa3c@gmail.com>
+        bh=cO/lkkmO99Xfr4W0KYk8tkPWToFmwEKNPxUMEMkq524=;
+        b=Uu/PVtL+YtgQNHRoT2lXkWKlwUn7oahLJL7QLlwUWBzMtbjHpGpnPG+1OBHmaGVUY2
+         ZhL7xzMGSRG95zW0ktP7TV7B7Y+JQCYlXtjz81Roh7zJblyhGt+jxQtLwn5iRtbO84Mn
+         JO5z0rimPfx/o9P9FJJqOsKy48r230LGpSOKuJ2hdIa2oDGRCQOxPyItA7xSveIhgTCG
+         7OZl8CuzOZ/Or1XfJSEDX6vKRMME6K8UEbAN5vJ7YJm2kCQsGBOL4gO8O0Y4CmSR0wTe
+         8WTIIswuQpUlbL4WB54/bfl4JCQNkEXB0JrGgmWoWBe9JlheUrhz/zP/THWgIUj0j1y9
+         qkzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744129396; x=1744734196;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cO/lkkmO99Xfr4W0KYk8tkPWToFmwEKNPxUMEMkq524=;
+        b=CzYjo5yUPR4pw71oCFj7W1Bjc51x992RG9HbzQN7f76O/9nyxOLJigOGoD9rlDvwqN
+         eWkbTK+JxvY+wO6oBlJFPrMKB9z1MwuAIid4Hi/nS6hAuUWUrZXq2nlzxPxIs++rH401
+         c2TZ7cFTsGsivMMeyI9lUTAuBUDKrURyICQDyFBCJoQy6/WUWFw+d/gMPCSHMAp96UDO
+         9AC0wC8oklX6g60JbUHROrUOCPY3DDnZlI5LRrjVZvaBZubipxXHsGG0goMOUMEOML5E
+         Lbf1lxS2QPfa+fRkxIQrT1TlvZOO4DDAXr5985jNrY2jirwPlxOuC61DlrgZBoQhkaD0
+         0K5A==
+X-Forwarded-Encrypted: i=1; AJvYcCVx3iaC/okTehDBVwGwRQpSoCKYcMwXu/vTrIOUPQUgeVDgGAQvD7H03NecoVYlKhslI3zl4UVP1UQ=@vger.kernel.org, AJvYcCWD0jF25fDhjo8uHdGPu+B/H4kngp8fYO4HPZbiiXLlTpWSLFO5+4gHaRKOX1UGXTVZVwUwqOVy@vger.kernel.org, AJvYcCWqcwhszvEFus1yAq324HhF6PccxhpPaHXXuZxUWflclGyy5PruUEBnVxWTIDfnkx39asc5QQx4eTs1kt/J@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYoNCcTfsR7/+I/PSuYefj8mj3jfM6HdWosnNGZXyLpCGw8SnY
+	bTz53EDqe5JhBr/uM8u1JeEFkxR+WUkj0BnsD0tTT7O0ITu5yV09BDCjiEJqLBv/bSNdYe4JHTO
+	cf1nshb/hFxAAQguz1aflZWqP7JA=
+X-Gm-Gg: ASbGncsBhU/6y4F6MtkzyDc+z37ja8ijXQDdZMJpTPt+VIH/GAeGyhVACudtkzqi7vb
+	fllZop8zjQ3FkLMmwTQk2QfHAIR5SeMAre8pf3vQrNvGWJo4QTplP1W5HDb/02eQ6jGoG3rNjTH
+	x6arW88C5rQua3SuuT7hYW3i/Cdw==
+X-Google-Smtp-Source: AGHT+IEP7Nh9wOKkc5/HcoAMiiR8n7ueANOAM3TtdGIfWyMJemlif/wFUDHgutRmKYSexGttnFcOIpdcHd1q2LgcJ/o=
+X-Received: by 2002:a2e:a553:0:b0:30d:b328:8394 with SMTP id
+ 38308e7fff4ca-30f0bf1eb07mr47215981fa.13.1744129395756; Tue, 08 Apr 2025
+ 09:23:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <983965b6-2262-4f72-a672-39085dcdaa3c@gmail.com>
+References: <20250407234223.1059191-1-nphamcs@gmail.com>
+In-Reply-To: <20250407234223.1059191-1-nphamcs@gmail.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Wed, 9 Apr 2025 00:22:58 +0800
+X-Gm-Features: ATxdqUFrOA5poLk2LCvT8r-ZavahScL1G90R_uOdgsK8qiGr9BEUgLKAk8ly3mA
+Message-ID: <CAMgjq7CdARdTEZB3ik4X9cAzNUFa6GRqjT61brygihGUYFBAeQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/14] Virtual Swap Space
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org, hannes@cmpxchg.org, 
+	hughd@google.com, yosry.ahmed@linux.dev, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
+	len.brown@intel.com, chengming.zhou@linux.dev, chrisl@kernel.org, 
+	huang.ying.caritas@gmail.com, ryan.roberts@arm.com, viro@zeniv.linux.org.uk, 
+	baohua@kernel.org, osalvador@suse.de, lorenzo.stoakes@oracle.com, 
+	christophe.leroy@csgroup.eu, pavel@kernel.org, kernel-team@meta.com, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 08, 2025 at 02:04:06PM +0100, Usama Arif wrote:
-> 
-> 
-> On 08/04/2025 00:42, Nhat Pham wrote:
-> > 
-> > V. Benchmarking
-> > 
-> > As a proof of concept, I run the prototype through some simple
-> > benchmarks:
-> > 
-> > 1. usemem: 16 threads, 2G each, memory.max = 16G
-> > 
-> > I benchmarked the following usemem commands:
-> > 
-> > time usemem --init-time -w -O -s 10 -n 16 2g
-> > 
-> > Baseline:
-> > real: 33.96s
-> > user: 25.31s
-> > sys: 341.09s
-> > average throughput: 111295.45 KB/s
-> > average free time: 2079258.68 usecs
-> > 
-> > New Design:
-> > real: 35.87s
-> > user: 25.15s
-> > sys: 373.01s
-> > average throughput: 106965.46 KB/s
-> > average free time: 3192465.62 usecs
-> > 
-> > To root cause this regression, I ran perf on the usemem program, as
-> > well as on the following stress-ng program:
-> > 
-> > perf record -ag -e cycles -G perf_cg -- ./stress-ng/stress-ng  --pageswap $(nproc) --pageswap-ops 100000
-> > 
-> > and observed the (predicted) increase in lock contention on swap cache
-> > accesses. This regression is alleviated if I put together the
-> > following hack: limit the virtual swap space to a sufficient size for
-> > the benchmark, range partition the swap-related data structures (swap
-> > cache, zswap tree, etc.) based on the limit, and distribute the
-> > allocation of virtual swap slotss among these partitions (on a per-CPU
-> > basis):
-> > 
-> > real: 34.94s
-> > user: 25.28s
-> > sys: 360.25s
-> > average throughput: 108181.15 KB/s
-> > average free time: 2680890.24 usecs
-> > 
-> > As mentioned above, I will implement proper dynamic swap range
-> > partitioning in a follow up work.
-> > 
-> > 2. Kernel building: zswap enabled, 52 workers (one per processor),
-> > memory.max = 3G.
-> > 
-> > Baseline:
-> > real: 183.55s
-> > user: 5119.01s
-> > sys: 655.16s
-> > 
-> > New Design:
-> > real: mean: 184.5s
-> > user: mean: 5117.4s
-> > sys: mean: 695.23s
-> > 
-> > New Design (Static Partition)
-> > real: 183.95s
-> > user: 5119.29s
-> > sys: 664.24s
-> > 
-> 
-> Hi Nhat,
-> 
-> Thanks for the patches! I have glanced over a couple of them, but this was the main question that came to my mind.
-> 
-> Just wanted to check if you had a look at the memory regression during these benchmarks?
-> 
-> Also what is sizeof(swp_desc)? Maybe we can calculate the memory overhead as sizeof(swp_desc) * swap size/PAGE_SIZE?
-> 
-> For a 64G swap that is filled with private anon pages, the overhead in MB might be (sizeof(swp_desc) in bytes * 16M) - 16M (zerobitmap) - 16M*8 (swap map)?
-> 
-> This looks like a sizeable memory regression?
+On Tue, Apr 8, 2025 at 7:47=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote:
+>
+> This RFC implements the virtual swap space idea, based on Yosry's
+> proposals at LSFMMBPF 2023 (see [1], [2], [3]), as well as valuable
+> inputs from Johannes Weiner. The same idea (with different
+> implementation details) has been floated by Rik van Riel since at least
+> 2011 (see [8]).
+>
+> The code attached to this RFC is purely a prototype. It is not 100%
+> merge-ready (see section VI for future work). I do, however, want to show
+> people this prototype/RFC, including all the bells and whistles and a
+> couple of actual use cases, so that folks can see what the end results
+> will look like, and give me early feedback :)
+>
+> I. Motivation
+>
+> Currently, when an anon page is swapped out, a slot in a backing swap
+> device is allocated and stored in the page table entries that refer to
+> the original page. This slot is also used as the "key" to find the
+> swapped out content, as well as the index to swap data structures, such
+> as the swap cache, or the swap cgroup mapping. Tying a swap entry to its
+> backing slot in this way is performant and efficient when swap is purely
+> just disk space, and swapoff is rare.
+>
+> However, the advent of many swap optimizations has exposed major
+> drawbacks of this design. The first problem is that we occupy a physical
+> slot in the swap space, even for pages that are NEVER expected to hit
+> the disk: pages compressed and stored in the zswap pool, zero-filled
+> pages, or pages rejected by both of these optimizations when zswap
+> writeback is disabled. This is the arguably central shortcoming of
+> zswap:
+> * In deployments when no disk space can be afforded for swap (such as
+>   mobile and embedded devices), users cannot adopt zswap, and are forced
+>   to use zram. This is confusing for users, and creates extra burdens
+>   for developers, having to develop and maintain similar features for
+>   two separate swap backends (writeback, cgroup charging, THP support,
+>   etc.). For instance, see the discussion in [4].
+> * Resource-wise, it is hugely wasteful in terms of disk usage, and
+>   limits the memory saving potentials of these optimizations by the
+>   static size of the swapfile, especially in high memory systems that
+>   can have up to terabytes worth of memory. It also creates significant
+>   challenges for users who rely on swap utilization as an early OOM
+>   signal.
+>
+> Another motivation for a swap redesign is to simplify swapoff, which
+> is complicated and expensive in the current design. Tight coupling
+> between a swap entry and its backing storage means that it requires a
+> whole page table walk to update all the page table entries that refer to
+> this swap entry, as well as updating all the associated swap data
+> structures (swap cache, etc.).
+>
+>
+> II. High Level Design Overview
+>
+> To fix the aforementioned issues, we need an abstraction that separates
+> a swap entry from its physical backing storage. IOW, we need to
+> =E2=80=9Cvirtualize=E2=80=9D the swap space: swap clients will work with =
+a dynamically
+> allocated virtual swap slot, storing it in page table entries, and
+> using it to index into various swap-related data structures. The
+> backing storage is decoupled from the virtual swap slot, and the newly
+> introduced layer will =E2=80=9Cresolve=E2=80=9D the virtual swap slot to =
+the actual
+> storage. This layer also manages other metadata of the swap entry, such
+> as its lifetime information (swap count), via a dynamically allocated
+> per-swap-entry descriptor:
+>
+> struct swp_desc {
+>         swp_entry_t vswap;
+>         union {
+>                 swp_slot_t slot;
+>                 struct folio *folio;
+>                 struct zswap_entry *zswap_entry;
+>         };
+>         struct rcu_head rcu;
+>
+>         rwlock_t lock;
+>         enum swap_type type;
+>
+>         atomic_t memcgid;
+>
+>         atomic_t in_swapcache;
+>         struct kref refcnt;
+>         atomic_t swap_count;
+> };
 
-One thing to keep in mind is that the swap descriptor is currently
-blatantly explicit, and many conversions and optimizations have not
-been done yet. There are some tradeoffs made here regarding code
-reviewability, but I agree it makes it hard to see what this would
-look like fully realized.
+Thanks for sharing the code, my initial idea after the discussion at
+LSFMM is that there is a simple way to combine this with the "swap
+table" [1] design of mine to solve the performance issue of this
+series: just store the pointer of this struct in the swap table. It's
+a bruteforce and glue like solution but the contention issue will be
+gone.
 
-I think what's really missing is an analysis of what the goal is and
-what the overhead will be then.
+Of course it's not a good approach, ideally the data structure can be
+simplified to an entry type in the swap table. The swap table series
+handles locking and synchronizations using either cluster lock
+(reusing swap allocator and existing swap logics) or folio lock (kind
+of like page cache). So many parts can be much simplified, I think it
+will be at most ~32 bytes per page with a virtual device (including
+the intermediate pointers).Will require quite some work though.
 
-The swapin path currently consults the swapcache, then the zeromap,
-then zswap, and finally the backend. The external swap_cgroup array is
-consulted to determine who to charge for the new page.
+The good side with that approach is we will have a much lower memory
+overhead and even better performance. And the virtual space part will
+be optional, for non virtual setup the memory consumption will be only
+8 bytes per page and also dynamically allocated, as discussed at
+LSFMM.
 
-With vswap, the descriptor is looked up and resolves to a type,
-location, cgroup ownership, a refcount. This means it replaces the
-swapcache, the zeromap, the cgroup map, and largely the swap_map.
+So sorry that I still have a few parts undone, looking forward to
+posting in about one week, eg. After this weekend it goes well. I'll
+also try to check your series first to see how these can be
+collaborated better.
 
-Nhat was not quite sure yet if the swap_map can be a single bit per
-entry or two bits to represent bad slots. In any case, it's a large
-reduction in static swap space overhead, and eliminates the tricky
-swap count continuation code.
+A draft version is available here though, just in case anyone is
+really anxious to see the code, I wouldn't recommend spend much effort
+check it though as it may change rapidly:
+https://github.com/ryncsn/linux/tree/kasong/devel/swap-unification
+
+But the good news is the total LOC should be reduced, or at least
+won't increase much, as it will unify a lot of swap infrastructures.
+So things might be easier to implement after that.
+
+[1] https://lore.kernel.org/linux-mm/CAMgjq7DHFYWhm+Z0C5tR2U2a-N_mtmgB4+idD=
+2S+-1438u-wWw@mail.gmail.com/T/
 
