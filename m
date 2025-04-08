@@ -1,196 +1,223 @@
-Return-Path: <cgroups+bounces-7426-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7427-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50086A80F8A
-	for <lists+cgroups@lfdr.de>; Tue,  8 Apr 2025 17:16:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E327A80FDA
+	for <lists+cgroups@lfdr.de>; Tue,  8 Apr 2025 17:25:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C20FD8A4B22
-	for <lists+cgroups@lfdr.de>; Tue,  8 Apr 2025 15:11:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D74AC4A47EB
+	for <lists+cgroups@lfdr.de>; Tue,  8 Apr 2025 15:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3EF5228CBE;
-	Tue,  8 Apr 2025 15:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508DF2253B2;
+	Tue,  8 Apr 2025 15:21:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U8qNatti"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QeOWHrus"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86F6227E96;
-	Tue,  8 Apr 2025 15:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725B81E1C1F;
+	Tue,  8 Apr 2025 15:21:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744125095; cv=none; b=EgEPmK5ijGlwgnvJfkDV97PlHSP2E4y9qPHAKZWuh9MhAOjcaCBGvaZkR4T9I89cwc5UUcITzDmBYZ+HxFozxWxIt1Ei3d0c04FENFYcSm539Sr3f0UFT28lCOeo688B0Eam7ekldPzPJ80q0fYUXtiGdJhCIAuMnQpqc96fcwA=
+	t=1744125664; cv=none; b=gfVU8mwdADDppNPnIvCiLJ2/a4seOkb3RktUN3bV5SPnoDDQtMaCQPMj2Mc4lCZI6pC0dBwmRSXRkqzE5pz6ZFZLpmYjJO/MOE2p5waDGchPe8nL39k/3+cfZa1xmdZ764Mn7SBWoiATrkbbunIcBg/LurVfsKX/PhZCjGUrKHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744125095; c=relaxed/simple;
-	bh=iAge/TCQFEQxz188bugCjBSt7K57C1F/d/6gwLwpoCw=;
+	s=arc-20240116; t=1744125664; c=relaxed/simple;
+	bh=BjrH2CVJhKWvS2ppzqRbScIuFc7QlVq8GFZa31rH4s4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UJLp85aK0h689+UOfgdFIgBK5CcMJMeu/6rD8r6n0VDAaWML2lzEQ1tVi460GPhLtSn2sjzOVe6B0UgapyBcGeO2ylLRalvDSl2WWBPJQ56zcA8M1yfkponcafROHBJNFC1gHassCrvEAEtcFDxZdSXJm/PTN3WrkcDz+1X/Iaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U8qNatti; arc=none smtp.client-ip=209.85.219.42
+	 To:Cc:Content-Type; b=L6EP0Pl7QalGCNyYX33fEYzz0XDOONTgdGvuzNj5t7fGsktOcnbjq6vxXj80NCFr0Jg7SahWQXiDPur8/YeOS3UBTqgzjBQrWpBAqNgw2PaOfo9OnUc6u+BJ2jkUoVnJkJ+aDchQuBpGs2IQMmweTQ4HbdCUM+Wsv7EIAQUE05g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QeOWHrus; arc=none smtp.client-ip=209.85.219.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6e8fb83e137so51574916d6.0;
-        Tue, 08 Apr 2025 08:11:33 -0700 (PDT)
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6f0c30a1cf8so27646356d6.2;
+        Tue, 08 Apr 2025 08:21:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744125092; x=1744729892; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744125661; x=1744730461; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fi2eBmkzJiBdyrJlnjIzeZPmXlpwSuN6LV/0MwZZJQk=;
-        b=U8qNatti0qrsZHGCzmGv6ql/rwWpZHtmzA50WAQ4421wkZqGdyl9JFha6twjgSdiEG
-         h8qJ7vSvKoJUev+0rWt626i6ltKZ6FOpeC8LbxDs3KkGoe/vzid+N6ZelIGKBnpa+z6n
-         QAvRiPiU6AakIk/1FC+3p4BlbSalFX96U97oBSejJFNGfJ1QT8xfDvCtFUgtny0FJc95
-         hKKDD8JuX5uJwbiddRTt6MgLn2FvMZs2Ur0vNxJrquSiSDxpuAkTzjOK6YLPjMKwF06+
-         +E5a1ZyY3S9sEJHaAXglWAcRzdvWRU9nYcTj18+utn2yWrMaTJtg17v2DecgkOjG63HU
-         8+4Q==
+        bh=Ey6nWCXg+L3TPWpZ7z3kTJsMGtn+HxgT/Jr3SmGd3uk=;
+        b=QeOWHruszbZ6suu8EyaQt8uMz/BYYLohgt7HvSBX4t+RpbbtkhX9ElLKh3rOM19Kzq
+         cO2n0ZcRLMaNgX66V01LQ+NewDEHombMEUH8Z+sy5kuPdSYd8n0SY2rQ1e3vLlZkwSvb
+         wsZ5Rb/RvFu5QedwDRhC8wLI9rVu59rgOeHQgvFgY6q+Ud8jpQTIiNwKV3Io5bH/9lIC
+         TzrvNzuDJ1qZeNdNhMlc51xm7ZB9I8p0wVIDvhGfD3Hk9uJeP7HS54ftSmeONhV6U3zL
+         Kirb7m40Kn0Vy3L2VVsJvHUW5Ut0O+wzf/a5EXRzt3LgGFDlwX2sQ5COiYeY53yVML8i
+         p2VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744125092; x=1744729892;
+        d=1e100.net; s=20230601; t=1744125661; x=1744730461;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fi2eBmkzJiBdyrJlnjIzeZPmXlpwSuN6LV/0MwZZJQk=;
-        b=LxLsFkSxYHTEZugp/ZEBiX0aESm/JpGC1UmfAqvNuxWX+BcUwvhz5lxx2o9L8wpvPT
-         0tQgQRuYU5HYJBQR51f+CNAKh2wXx1ch8XbPfWmi6MhfkuiPFTEUSDOn4yqdUW91fSzK
-         5BdyU1TfYSFgz//yxT/LQ5TjhaHvbWUq2PMucEdy1fB7sM1FWuFyJyNa1PGYs13LhCbC
-         x283g+svvqcjCr5k2nfv4XeDb/Y6renZJM2GBBj8GkhrnPO40/T4C1bkE1XB2IxPakdC
-         P+Ae9D458BhmnZhK3FsT2W/mJEuyZuuPIbhWqL/49D7mBzrQoC5TfLqBOt6WOQZhkk7I
-         dNig==
-X-Forwarded-Encrypted: i=1; AJvYcCUPO2hqRq8/gq78clrLHCRTU7TGV0AFGMxRHg3G4fHWJ1th4Pgpvdmi7tdFJRNujO65MdxPAQn00+g=@vger.kernel.org, AJvYcCUai74JV9RYvmbGBvBde2a552mywVKtTQG6evmmmtxKtvghgwPC4OZbzC1oMJRzwORwfphl4nte@vger.kernel.org, AJvYcCVbkomYQ75rcuU+sLmelldOPEtgYDrVA3VS9J8mMwmM2H2pLLWBYMVYp0Gc9IAYwHuyb7CJcUnMcUzPbpr/@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxugec4ui2UqWqTxjUgU2vsEwZHvyTg9GgRy8bQ/0/I2xJpjyYz
-	MfDnd9NzBjA/qwVZzG5VJY27e8FCFsNx3PxDpeOVDM6tRAo4cAO8uB8LDQhtBykuZy+gnbjGDFR
-	BpTgwNUmjysVlk6oXLvEc2EltIf4=
-X-Gm-Gg: ASbGncsCb4EpquGEroieiB8VLfKetR+0MsGNBf+N/KZ3xQf8dzc/eo+sW/T8EPCu/5o
-	fQgln+2GnpLXpqYGExbChNVXLyFPwrKe2vV1LQiVxuI5Tz46SSOzhoN4gqA3ZPpw/lvcE5UUcg3
-	4RcMQ80v1kHv+fQ2v5cu+MrU2JwLlr7NOtXfUWf3N2KwcSigOIRkFxLsqjpw==
-X-Google-Smtp-Source: AGHT+IEBzzayKvqC39EUgHVBWtu/wY1YXqZBYY6cBaTXuY1bD1506pK2P8WVCfFC0SJvQwUENGg3TY07BxlZ30qZMmY=
-X-Received: by 2002:a05:6214:20a1:b0:6ed:df6:cdcd with SMTP id
- 6a1803df08f44-6f0b749934amr221872706d6.21.1744125092487; Tue, 08 Apr 2025
- 08:11:32 -0700 (PDT)
+        bh=Ey6nWCXg+L3TPWpZ7z3kTJsMGtn+HxgT/Jr3SmGd3uk=;
+        b=cEL5OkPTxb2zfDlexHg3gzMvuHkyKVzwepMsA/T469KjHNnwfM2hMrtlFGU5I1styS
+         gmvzD+bnIb+Obu1ZCmzNxXGkhgn3OvUM4SjJTGRx9zVBMmW7U5/KrJlRitGEJoZJmTgh
+         t5ZVTtHEM7fMZqTAxfUm5ifZIf3dzqyUVBh2CYV0nVapSUW75frxI4IsVo79B8NKhDTd
+         VsX64idZZ5jLul/YfaKgvBgeiYIILaYBqdt228gnrxWoZNGxfqyeaAVUsrdj3sxKD7cv
+         PdLrZ8L488i0GiuAzEEoc4fAVMjM/HmdnZ+ilGcvdeO+d1obn/8PPUaO6gt4axWt7YaQ
+         tfHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUJ9raaqseSWMIxvFB5Kt9xusEII4wG8BNqtWE8jaQvbJlgLxxPqggNC8I3rvbRxW09ADuBCstd@vger.kernel.org, AJvYcCVRLuP5uq5pOeST6BQoUFe36nIts9rkskhZ3l4jU5U+EIzEA4EE8249MxZoVGqSEd3wyVXaDlQJklBDft/n@vger.kernel.org, AJvYcCVTbfwMXOkj1iTL2wILIfUzZvD4WQmMxpKCUIJZED2ReKQToANAVTBlKCccDBmSCu2pNNwbTM3ni6Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx7lBAA+UUAL0d4FbdsgyrWH2EY81WesyookLKQVt35WrN125gg
+	jR4RB2x4ueC9V5wxCaWG7bg51rej3sdNbw1xmLmUatWe0U7QrX+lG5OYTzNz2136uVFQNggFcoi
+	s3SbT6ymEUXpB4TKVRgkU8zuBHqU=
+X-Gm-Gg: ASbGncuNJzVmiQOwQlhIlAYFLcowVPIISKF/2kLtbdQsYW6HZ0QmfnReCP06EegBs0b
+	IGEY/Yf5npnDWaS6xISeFlGITo2aD2h/0Ec2MvGwfipYpi7LDm1CBJD+sxuVTugzEJhcqlSTdrh
+	vcumEW+LLwpufnyPKITfZpJJnRpf+J6xnPgQAs3Jl4n6/N1BKJQQ2FasW22Q==
+X-Google-Smtp-Source: AGHT+IGTRrDxwbNLzuvOqywnxn09Z9MIBiIW8jL7PYmbgeYEi936Vh8zP1vHoGOkooIJWXgAh2kitK9H48FMp+nw93M=
+X-Received: by 2002:a05:6214:4109:b0:6e8:f0fc:d6c4 with SMTP id
+ 6a1803df08f44-6f05830f669mr182684556d6.6.1744125660685; Tue, 08 Apr 2025
+ 08:21:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250407234223.1059191-1-nphamcs@gmail.com> <20250407234223.1059191-4-nphamcs@gmail.com>
- <20250408141555.GA816@cmpxchg.org>
-In-Reply-To: <20250408141555.GA816@cmpxchg.org>
+References: <20250407234223.1059191-1-nphamcs@gmail.com> <983965b6-2262-4f72-a672-39085dcdaa3c@gmail.com>
+In-Reply-To: <983965b6-2262-4f72-a672-39085dcdaa3c@gmail.com>
 From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 8 Apr 2025 08:11:21 -0700
-X-Gm-Features: ATxdqUHmaTfVyV2I-0EHfU2y-rKG2ACn3QSFVY1QEBvNDfhELczRDQ5ahbXOhYE
-Message-ID: <CAKEwX=PSK-f0mK=Ffsvqs72qicPAoUWW-MdcNurj4PO0NMuJ3w@mail.gmail.com>
-Subject: Re: [RFC PATCH 03/14] mm: swap: add a separate type for physical swap slots
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, hughd@google.com, 
-	yosry.ahmed@linux.dev, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	shakeel.butt@linux.dev, muchun.song@linux.dev, len.brown@intel.com, 
-	chengming.zhou@linux.dev, kasong@tencent.com, chrisl@kernel.org, 
-	huang.ying.caritas@gmail.com, ryan.roberts@arm.com, viro@zeniv.linux.org.uk, 
-	baohua@kernel.org, osalvador@suse.de, lorenzo.stoakes@oracle.com, 
-	christophe.leroy@csgroup.eu, pavel@kernel.org, kernel-team@meta.com, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+Date: Tue, 8 Apr 2025 08:20:49 -0700
+X-Gm-Features: ATxdqUG2C20-NmbiR2-sPu0qDu-T-1hXdwmt4JH5TA7kOt76dOuAJy2oi4SCmNo
+Message-ID: <CAKEwX=Nzp_sRhEV4rYjcOaK5mMnDsRmsFWpjzOt8o2EJagBWKg@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/14] Virtual Swap Space
+To: Usama Arif <usamaarif642@gmail.com>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org, hannes@cmpxchg.org, 
+	hughd@google.com, yosry.ahmed@linux.dev, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
+	len.brown@intel.com, chengming.zhou@linux.dev, kasong@tencent.com, 
+	chrisl@kernel.org, huang.ying.caritas@gmail.com, ryan.roberts@arm.com, 
+	viro@zeniv.linux.org.uk, baohua@kernel.org, osalvador@suse.de, 
+	lorenzo.stoakes@oracle.com, christophe.leroy@csgroup.eu, pavel@kernel.org, 
+	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
 	linux-pm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 8, 2025 at 7:16=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org>=
- wrote:
+On Tue, Apr 8, 2025 at 6:04=E2=80=AFAM Usama Arif <usamaarif642@gmail.com> =
+wrote:
 >
-> On Mon, Apr 07, 2025 at 04:42:04PM -0700, Nhat Pham wrote:
-> > In preparation for swap virtualization, add a new type to represent the
-> > physical swap slots of swapfile. This allows us to separates:
+>
+>
+> On 08/04/2025 00:42, Nhat Pham wrote:
 > >
-> > 1. The logical view of the swap entry (i.e what is stored in page table
-> >    entries and used to index into the swap cache), represented by the
-> >    old swp_entry_t type.
+> > V. Benchmarking
 > >
-> > from:
+> > As a proof of concept, I run the prototype through some simple
+> > benchmarks:
 > >
-> > 2. Its physical backing state (i.e the actual backing slot on the swap
-> >    device), represented by the new swp_slot_t type.
+> > 1. usemem: 16 threads, 2G each, memory.max =3D 16G
 > >
-> > The functions that operate at the physical level (i.e on the swp_slot_t
-> > types) are also renamed where appropriate (prefixed with swp_slot_* for
-> > e.g). We also take this opportunity to re-arrange the header files
-> > (include/linux/swap.h and swapops.h), grouping the swap API into the
-> > following categories:
+> > I benchmarked the following usemem commands:
 > >
-> > 1. Virtual swap API (i.e functions on swp_entry_t type).
+> > time usemem --init-time -w -O -s 10 -n 16 2g
 > >
-> > 2. Swap cache API (mm/swap_state.c)
+> > Baseline:
+> > real: 33.96s
+> > user: 25.31s
+> > sys: 341.09s
+> > average throughput: 111295.45 KB/s
+> > average free time: 2079258.68 usecs
 > >
-> > 3. Swap slot cache API (mm/swap_slots.c)
+> > New Design:
+> > real: 35.87s
+> > user: 25.15s
+> > sys: 373.01s
+> > average throughput: 106965.46 KB/s
+> > average free time: 3192465.62 usecs
 > >
-> > 4. Physical swap slots and device API (mm/swapfile.c).
->
-> This all makes sense.
->
-> However,
->
-> > @@ -483,50 +503,37 @@ static inline long get_nr_swap_pages(void)
-> >       return atomic_long_read(&nr_swap_pages);
-> >  }
+> > To root cause this regression, I ran perf on the usemem program, as
+> > well as on the following stress-ng program:
 > >
-> > -extern void si_swapinfo(struct sysinfo *);
-> > -swp_entry_t folio_alloc_swap(struct folio *folio);
-> > -bool folio_free_swap(struct folio *folio);
-> > -void put_swap_folio(struct folio *folio, swp_entry_t entry);
-> > -extern swp_entry_t get_swap_page_of_type(int);
-> > -extern int get_swap_pages(int n, swp_entry_t swp_entries[], int order)=
-;
-> > -extern int add_swap_count_continuation(swp_entry_t, gfp_t);
-> > -extern void swap_shmem_alloc(swp_entry_t, int);
-> > -extern int swap_duplicate(swp_entry_t);
-> > -extern int swapcache_prepare(swp_entry_t entry, int nr);
-> > -extern void swap_free_nr(swp_entry_t entry, int nr_pages);
-> > -extern void swapcache_free_entries(swp_entry_t *entries, int n);
-> > -extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
-> > +void si_swapinfo(struct sysinfo *);
-> > +swp_slot_t swap_slot_alloc_of_type(int);
-> > +int swap_slot_alloc(int n, swp_slot_t swp_slots[], int order);
-> > +void swap_slot_free_nr(swp_slot_t slot, int nr_pages);
-> > +void swap_slot_cache_free_slots(swp_slot_t *slots, int n);
-> >  int swap_type_of(dev_t device, sector_t offset);
-> > +sector_t swapdev_block(int, pgoff_t);
-> >  int find_first_swap(dev_t *device);
-> > -extern unsigned int count_swap_pages(int, int);
-> > -extern sector_t swapdev_block(int, pgoff_t);
-> > -extern int __swap_count(swp_entry_t entry);
-> > -extern int swap_swapcount(struct swap_info_struct *si, swp_entry_t ent=
-ry);
-> > -extern int swp_swapcount(swp_entry_t entry);
-> > -struct swap_info_struct *swp_swap_info(swp_entry_t entry);
-> > +unsigned int count_swap_pages(int, int);
-> > +struct swap_info_struct *swap_slot_swap_info(swp_slot_t slot);
-> >  struct backing_dev_info;
-> > -extern int init_swap_address_space(unsigned int type, unsigned long nr=
-_pages);
-> > -extern void exit_swap_address_space(unsigned int type);
-> > -extern struct swap_info_struct *get_swap_device(swp_entry_t entry);
-> > +struct swap_info_struct *swap_slot_tryget_swap_info(swp_slot_t slot);
-> >  sector_t swap_folio_sector(struct folio *folio);
+> > perf record -ag -e cycles -G perf_cg -- ./stress-ng/stress-ng  --pagesw=
+ap $(nproc) --pageswap-ops 100000
+> >
+> > and observed the (predicted) increase in lock contention on swap cache
+> > accesses. This regression is alleviated if I put together the
+> > following hack: limit the virtual swap space to a sufficient size for
+> > the benchmark, range partition the swap-related data structures (swap
+> > cache, zswap tree, etc.) based on the limit, and distribute the
+> > allocation of virtual swap slotss among these partitions (on a per-CPU
+> > basis):
+> >
+> > real: 34.94s
+> > user: 25.28s
+> > sys: 360.25s
+> > average throughput: 108181.15 KB/s
+> > average free time: 2680890.24 usecs
+> >
+> > As mentioned above, I will implement proper dynamic swap range
+> > partitioning in a follow up work.
+> >
+> > 2. Kernel building: zswap enabled, 52 workers (one per processor),
+> > memory.max =3D 3G.
+> >
+> > Baseline:
+> > real: 183.55s
+> > user: 5119.01s
+> > sys: 655.16s
+> >
+> > New Design:
+> > real: mean: 184.5s
+> > user: mean: 5117.4s
+> > sys: mean: 695.23s
+> >
+> > New Design (Static Partition)
+> > real: 183.95s
+> > user: 5119.29s
+> > sys: 664.24s
+> >
 >
-> this is difficult to review.
+> Hi Nhat,
 >
-> Can you please split out:
+> Thanks for the patches! I have glanced over a couple of them, but this wa=
+s the main question that came to my mind.
 >
-> 1. Code moves / cut-and-paste
+> Just wanted to check if you had a look at the memory regression during th=
+ese benchmarks?
 >
-> 2. Renames
->
-> 3. New code
->
-> into three separate steps
+> Also what is sizeof(swp_desc)? Maybe we can calculate the memory overhead=
+ as sizeof(swp_desc) * swap size/PAGE_SIZE?
 
-Makes sense, yeah.
+Yeah, it's pretty big right now (120 bytes). I haven't done any space
+optimization yet - I basically listed out all the required
+information, and add one field for each of them. A couple of
+optimizations I have in mind:
+1. Merged swap_count and in_swapcache (suggested by Yosry).
+2. Unionize the rcu field with other fields, because rcu head is only
+needed for the free paths (suggested by Shakeel for a different
+context, but should be applicable here). Or maybe just remove it and
+free the swap descriptors in-context.
+3. The type field is really only 2 bits - might be able to squeeze it
+in one of the other fields as well.
+4. The lock field might not be needed. I think the in_swapcache bit is
+already used as a form of "backing storage pinning" mechanism, which
+should allow pinners exclusive rights to the backing state.
 
-I will reorganize the series as follows:
+etc. etc.
 
-1. Rearrange in the first patch (which I already did for
-mm/swapfile.c, but now I'll also rearrange the functions in header
-files as well).
-2. One more patch to rename the function and add the new type.
-3. The rest of the series (new API, new code, etc.).
+The code will get uglier though, so I wanna at least send out one
+version with everything separate for clarity sake, before optimizing
+them away :)
+
+>
+> For a 64G swap that is filled with private anon pages, the overhead in MB=
+ might be (sizeof(swp_desc) in bytes * 16M) - 16M (zerobitmap) - 16M*8 (swa=
+p map)?
+
+That is true. I will note, however, that in the past the overhead was
+static (i.e it is incurred no matter how much swap space you are
+using). In fact, you have to often overprovision for swap, so the
+overhead goes beyond what you will (ever) need.
+
+Now the overhead is (mostly) dynamic - only incurred on demand, and
+reduced when you don't need it.
+
+
+>
+> This looks like a sizeable memory regression?
+>
+> Thanks,
+> Usama
+>
 
