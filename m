@@ -1,131 +1,122 @@
-Return-Path: <cgroups+bounces-7459-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7460-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8CB5A84CE8
-	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 21:25:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C81A84F01
+	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 23:06:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A90D89A6908
-	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 19:23:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91D73462487
+	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 21:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFFE290BDE;
-	Thu, 10 Apr 2025 19:20:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45ACE293B48;
+	Thu, 10 Apr 2025 21:06:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AKl0sbvL"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QwXVB+97"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAF8928FFD7
-	for <cgroups@vger.kernel.org>; Thu, 10 Apr 2025 19:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974CD6EB79
+	for <cgroups@vger.kernel.org>; Thu, 10 Apr 2025 21:05:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744312820; cv=none; b=jyzxiMiJ1iUcJrx4QD0XKZXqjo6J1uJmGnwJyB7doT8qieW/2AX4UIILak+O1l4kAW+RFa+dw4qqxDhWCaZ/5pPyuHHPn+hTT1S55E+pF9Oud9we5QHjSHzkziHox39l6IlxFj+SYEtAvHtP/DFJHNUUKuhTadUbY0C8DwT6nOA=
+	t=1744319162; cv=none; b=F4RVQuyLofMiEqUR/gOwrWQ3dIFxxdaANwUA89wiCmfXiI6U0m0yZziqfMQfIn03N6nuvR2ExDg4nv3MANIYSbPbYHUEF1yioPsag40vDgevmke2/0vD3ogrFp0VANbT+hERZVObUkTuOMc9pW+ESxMQpKXIQJVlfzDdrP+KT8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744312820; c=relaxed/simple;
-	bh=BUp6dVA/9/DIHAm8btLSsebQGLRoM6QqRKm/vQlyaG8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FLyrJfad4iBruifm5RXvEZ/ApFh9t7DgBbGFXyK3rxocSW/Y1kLiSQtzaNnjCV5q4fQRCu9+N2LNzux9fd1yEE8tFCRlmHFo4xRcDhE6Kdcn/HdFjF0bPeYgdSpKcGvK4fd6CR1ydE5ieIKqXbJQbX3NwVB4fMG0fF+NoBxXYz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AKl0sbvL; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744312817;
+	s=arc-20240116; t=1744319162; c=relaxed/simple;
+	bh=DtT89+uvLHfCiKyUys+FOCLOx9WHrt9Q23xHZioOQus=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NOFEaxGSG+DyrJ4IpTeTxlQoZvXMzkq2njpue0ZLBfX1O8o1KJx1KN4W65vNUhHOzrckAS4j7waK3TnTnQDUBHQBvgS2QxoTQ+o49oF+D3NGmC2PXdB60pEMW3ACtfANqQk7XCpBbEcUp7qsv7Rzsel14LuCnXa8MYOD9O0gxv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QwXVB+97; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1744319146;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7qyuCy71sNM096ptCCI9TtV8xzN/TLmJLvM6k58//nE=;
-	b=AKl0sbvLTqSfaHiwBrGFiZXPzgz6TrDW4jFZVydZQfNXV2qFOwbnZnk3NqxSWL0QbzHzZ5
-	x2YKKyE1jQ2MFR1BQypEqMb08hseDTX/xilnT4vfaLbF5ZlLIpPXSTbcttGfr2tQ9EobS9
-	3Q8PYtYhSF5RtHgXByyTZ/l6n/6U0DU=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-438-_HeX3q1HOlOIoLoSNkgCOA-1; Thu, 10 Apr 2025 15:20:16 -0400
-X-MC-Unique: _HeX3q1HOlOIoLoSNkgCOA-1
-X-Mimecast-MFC-AGG-ID: _HeX3q1HOlOIoLoSNkgCOA_1744312815
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-22aa75e6653so9423735ad.0
-        for <cgroups@vger.kernel.org>; Thu, 10 Apr 2025 12:20:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744312815; x=1744917615;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7qyuCy71sNM096ptCCI9TtV8xzN/TLmJLvM6k58//nE=;
-        b=KFldukAtYVgKFNHasz4TW4z9Rg1eQg2l1FNKmADfeiDonaIgzoJUnlN65SPTiDh3fb
-         y/MIxCO9yEu+swKfnXxmOoE86aq2PChxKdqQjRidrt+EsNDsjw4bogjj1P5MaiBK9XkI
-         N0shwBKUrw04+rKB2LnBsA4RP7ZoYKyBB6Vc09o256yn3ygt0uOTVwI1hIkzojZRKHMV
-         jrmyQH0E6PAMpdNIjZmRDft/A/g569V/W8nS0zdZqERggdDwbAuQUPh+EKc8KKHC/74a
-         Z5SbD6NXJ9cqv0PBWrMSCcoIUu+AZVZs9LvGnKyafq1gnPWEM95crijy8KRh2aBsTKQU
-         8s6g==
-X-Gm-Message-State: AOJu0Yzc44FAauY1N4tuWm4H+G6xcD5HCUGQF58wzl2J2nDt9UPskcQe
-	RHJvOd120oduvMWTYr/LVYUNYftOQgPfNkeOdcPtlpP3qAKYMVW00Ks2zsyRRO0R2TjZA2oC8vt
-	R2J3QFAZptyvXMdXbhTl8pf3UG3i4/ZGqBB87khBQ+3zTcQ6Mjiqq7XymICEWWYx8kSulFNpt6R
-	VtFGMcP3OWJPKO7B+KRf1j+ogsWGxyhA==
-X-Gm-Gg: ASbGnctes6PpXFvmbxvZ7+ePHo2Z/shhjPaCB1VeGWmv+09Vx/TC4wzscpWHCGk2BHV
-	o1dnKqTtLRkcOqwuLBALpuXDFOToPLtd/IRLYJhrM04I3hXZ/3j5MLsJ49Ij9aekDVmw=
-X-Received: by 2002:a17:902:e88f:b0:223:2aab:462c with SMTP id d9443c01a7336-22bea4ab85fmr71655ad.15.1744312815420;
-        Thu, 10 Apr 2025 12:20:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE6DNynR3qAzVJ5oYYe87012HehD64MJOEbZmJ5Zs6nbMEMT14kmxUjgfXc/J/nlg5RXQ5jsTdGAdgJRpiy1tQ=
-X-Received: by 2002:a17:902:e88f:b0:223:2aab:462c with SMTP id
- d9443c01a7336-22bea4ab85fmr71525ad.15.1744312815145; Thu, 10 Apr 2025
- 12:20:15 -0700 (PDT)
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=UySO3eXUO6+JFC4kGqzkj2HoZuMo1TTGk0FfxlKFpMM=;
+	b=QwXVB+9720cVeGPvm4RweqZqY9uk03RwZuPPIbJi7yo8oYE6rDz+86RbN2cTFoK3jKl8cL
+	6/QRY1wMQgGsSOZKJb2zfioVFhO73LVDHn3DtWkCGkjnv3VwKsBwIHRkshP7oLRRIQ8Ez7
+	4dcvuHhxmVe/p1M8dZSSootgyomMGcc=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>,
+	Waiman Long <llong@redhat.com>,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: [PATCH] memcg: no refill for offlined objcg
+Date: Thu, 10 Apr 2025 14:05:35 -0700
+Message-ID: <20250410210535.1005312-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250407182104.716631-1-agruenba@redhat.com> <20250407182104.716631-2-agruenba@redhat.com>
- <Z_eGVWwQ0zCo2aSR@infradead.org>
-In-Reply-To: <Z_eGVWwQ0zCo2aSR@infradead.org>
-From: Andreas Gruenbacher <agruenba@redhat.com>
-Date: Thu, 10 Apr 2025 21:20:03 +0200
-X-Gm-Features: ATxdqUHNINlL-pUTFVGgFjmH-0Yv2T34SdJ_H6wPly98qpm7VaT0OlGqfhHJNig
-Message-ID: <CAHc6FU4J6MsEaUFUfp_ZpuYKyXRpZ=FTJE9T=iRQgbByQWZOFA@mail.gmail.com>
-Subject: Re: [RFC 1/2] gfs2: replace sd_aspace with sd_inode
-To: Christoph Hellwig <hch@infradead.org>
-Cc: cgroups@vger.kernel.org, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
-	Jan Kara <jack@suse.cz>, Rafael Aquini <aquini@redhat.com>, gfs2@lists.linux.dev, 
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 10, 2025 at 11:01=E2=80=AFAM Christoph Hellwig <hch@infradead.o=
-rg> wrote:
-> On Mon, Apr 07, 2025 at 08:21:01PM +0200, Andreas Gruenbacher wrote:
-> > Use a dummy inode as mapping->host of the address spaces for global as
-> > well as per-inode metadata.  The global metadata address space is now
-> > accessed as gfs2_aspace(sdp) instead of sdp->sd_aspace.  The per-inode
-> > metadata address spaces are still accessed as
-> > gfs2_glock2aspace(GFS2_I(inode)->i_gl).
-> >
-> > Based on a previous version from Bob Peterson from several years ago.
->
-> Please explain why you are doing this, not just what.
+In our fleet, we are observing refill_obj_stock() spending a lot of cpu
+in obj_cgroup_get() and on further inspection it seems like the given
+objcg is offlined and the kernel has to take the slow path i.e. atomic
+operations for objcg reference counting.
 
-Right, I have this description now:
+Other than expensive atomic operations, refilling stock of an offlined
+objcg is a waster as there will not be new allocations for the offlined
+objcg. In addition, refilling triggers flush of the previous objcg which
+might be used in future. So, let's just avoid refilling the stock with
+the offlined objcg.
 
-    Currently, sdp->sd_aspace and the per-inode metadata address spaces use
-    sb->s_bdev->bd_mapping->host as their ->host.  Folios in those address
-    spaces will thus appear to be on "bdev" rather than on "gfs2"
-    filesystems.  Those "bdev" filesystems will have the SB_I_CGROUPWB flag
-    set to indicate cgroup writeback support.  In fact, gfs2 doesn't suppor=
-t
-    cgroup writeback, though.
+Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+---
+ mm/memcontrol.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-    To fix that, use a "dummy" gfs2 inode as ->host of those address spaces
-    instead.  This will then allow functions like inode_to_wb() to determin=
-e
-    that the folio belongs to a a filesystem without cgroup writeback
-    support.
-
-
-Thanks,
-Andreas
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 2178a051bd09..23c62ae6a8c6 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2474,6 +2474,17 @@ static inline void __mod_objcg_mlstate(struct obj_cgroup *objcg,
+ 	rcu_read_unlock();
+ }
+ 
++static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
++				     struct pglist_data *pgdat,
++				     enum node_stat_item idx, int nr)
++{
++	unsigned long flags;
++
++	local_irq_save(flags);
++	__mod_objcg_mlstate(objcg, pgdat, idx, nr);
++	local_irq_restore(flags);
++}
++
+ static __always_inline
+ struct mem_cgroup *mem_cgroup_from_obj_folio(struct folio *folio, void *p)
+ {
+@@ -2925,6 +2936,13 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+ 	unsigned long flags;
+ 	unsigned int nr_pages = 0;
+ 
++	if (unlikely(percpu_ref_is_dying(&objcg->refcnt))) {
++		atomic_add(nr_bytes, &objcg->nr_charged_bytes);
++		if (pgdat)
++			mod_objcg_mlstate(objcg, pgdat, idx, nr_acct);
++		return;
++	}
++
+ 	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+ 
+ 	stock = this_cpu_ptr(&memcg_stock);
+-- 
+2.47.1
 
 
