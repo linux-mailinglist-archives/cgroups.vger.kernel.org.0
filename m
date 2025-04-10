@@ -1,143 +1,148 @@
-Return-Path: <cgroups+bounces-7455-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7456-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B83BA84558
-	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 15:51:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06DE9A8458C
+	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 16:01:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37A024A55C8
-	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 13:47:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F1933B128A
+	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 13:58:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 335FD28A3FB;
-	Thu, 10 Apr 2025 13:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C2CA2857ED;
+	Thu, 10 Apr 2025 13:58:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Mk9oC8Ci"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OpVVKr0B"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB2771519A1
-	for <cgroups@vger.kernel.org>; Thu, 10 Apr 2025 13:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91BCF284B3D;
+	Thu, 10 Apr 2025 13:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744292833; cv=none; b=WOFuOBcZWaMk/PwJdq9ZklJZvTXCaW+aeKB8oUbJSz3WqzwTPuwWRDEWVYzGaezvGFDiLd+w4LyATQe+JJrxmQ13vtIWBTQFEM/0hwJuG1UYlsPSsqtwPDQgQBpXYbFNeEF12UHIv+YMY6w85Okngbv5zDXuaPxrzI/gKxD3jtA=
+	t=1744293513; cv=none; b=rfQ8A9TEXQdqcydH4F3hrfbxRv42X0TTBcxF3qV1k7Ex7o2QVHcUcA9XeZEV6AOYM3LePF3cYyVx2RK8X/LbHtta+3BufT48VioeYZ7HzHrrBLzMNz1ZExvBs5tmU4ydsmRjiX8ZewSxi8df3YyIOGAe6u5wWM/X9KQn0orT6/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744292833; c=relaxed/simple;
-	bh=4b9272PBm8zs6TURGhpg1ANgpmpR6PaBZxZkWeDeEHY=;
+	s=arc-20240116; t=1744293513; c=relaxed/simple;
+	bh=yCmoVsBset/qt1RxJ6GlsGyFRfgaOPxZBecAiL0QW1U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YYYpVVgLKTVRH54RuJT8t3nI20SkTvZ4Kd/ANmsSuv2IzS83efcAlNa4GtYvR7EGB0EDZHy/cmrT5uqFnfplBgRzcfstbosbeEjveoiQjzmPfntAZPOvteIyaLMIo3yLurSBOa12zod0TBSAUUfmS1XnUKGn/NWQuzDbAMGEAIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Mk9oC8Ci; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-43edb40f357so7444825e9.0
-        for <cgroups@vger.kernel.org>; Thu, 10 Apr 2025 06:47:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1744292829; x=1744897629; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z+9TWPr4cIFFLNnl4cBBmSOXCekcTbC/DxVvbdg+OgM=;
-        b=Mk9oC8Ciseix0Lc9kzOm7O/CrVcBc8ogo8t3nGu2efGsUpin5FPC/2BkM1D4lVl7gq
-         sbwpnxZTMlFNLdhnVwadktRsdl3q/mJkxZxr1OBBM2i6tlU4v0ppICZrrODtzKUg6kwr
-         y/PmrXN6Fip2HnGhrYMTxkuOu07dGHLyayrXn8jYLUMAFINTbZYSgNYVFfA8CWhtqe4O
-         tqwDtAIjtX0WLOoGP8aIwDCN66oTszueE6qNelX61SQTpWLsaiyqcoQYwx9QkDfuxgjz
-         yCsHSK4kZeU2HSI5yo7pZ8W+YqZGvufXIJHxix8nGUBSxdSVf3WgraVDTfcrCRG1/5RK
-         0iIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744292829; x=1744897629;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z+9TWPr4cIFFLNnl4cBBmSOXCekcTbC/DxVvbdg+OgM=;
-        b=Cqj0+BRlwXI+os1qvqYI8HwOwuuuEegN2acPQ3d9s67BNzwmOhvjtIjM1PRatZ1krk
-         9sDZn6AT/ytmz3mRXteZ/s6olZXcOYYbeROzkKFobPzOxOcycun9bBIvyk+y6JfFIo+V
-         h2Vf+bqqg7gXIQQXQ2YaibEweJO0y7vR95YtBwOxHRI9dBcZLOhswaIkLZ1+lGgH8hd5
-         eaP/Srt3LAtHCv3vF/pcGojPCt0+cWqeb/bK4qoYyo1MpTsMT1VhIAfk6tByefKDj2D9
-         F88fnjdx0exTlYv5bk/cIt7R6xSWakgD7hBEYtFWj6paqdpoynqlLTp36VXwG+Ttu0VY
-         fJ6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUifHxvlw5a2E/9P4dSohELJt0ZUToUFxOl5PkUxCbTfxcHXLzwkssuFYcsPZcCpZq6Aojdgxeg@vger.kernel.org
-X-Gm-Message-State: AOJu0YxwBGaLNIcFIB8rW3WFbywPWaxIMjg4fqC0xoARrgSXS2MnjNYt
-	LOQ8beRt9+XEzXTbJclHBLqdM6Ea0dH5ufoc+VN5qBnAS35eAJ2co0GTMLvao0I=
-X-Gm-Gg: ASbGncvRAFjiSDlMkt02twjl+WR0e96rBJim/sG54+34TBl0UAvA0/EWqQsfkelz7tW
-	T7gO2T/NSmQzDdI+rC5aNq8HCHO7jn1ipOhbyBZcyPzQy14H74BUHFIH82hN1n8Wu+pVBpk9U+j
-	TMe9v/TgIhcngOgBUdS7MUm2L9yYz3HiI62EsOxmfr+HatvwCFtZqsQZXaOza2kgU/FptZoVX0f
-	10ytgqWbjTWM7fSTzQtNzAT9q1EDAkOVD+s2/O4BXjjr6my8unnazqcshpA5mvUAXCgUjGquzbC
-	meJOn0MeKl3s23y71LSBhFMccaD0KHF6nJQFHfbnFLk=
-X-Google-Smtp-Source: AGHT+IGJpePNvVyjgvmav5Kd5AqQY4lDiNg+UquOUe0N4IN23Wm6xkWaUOUyn4V50aiJmmCXeU8IOg==
-X-Received: by 2002:a05:600c:5248:b0:43d:79:ae1b with SMTP id 5b1f17b1804b1-43f2d7bc45bmr27374935e9.14.1744292829089;
-        Thu, 10 Apr 2025 06:47:09 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43f2066d004sm57414615e9.18.2025.04.10.06.47.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Apr 2025 06:47:08 -0700 (PDT)
-Date: Thu, 10 Apr 2025 15:47:06 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Vishal Chourasia <vishalc@linux.ibm.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, corbet@lwn.net, 
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=tN1RxcA4LCA+Hfch2jPzioy+PwFcQKu5pz/W09QDRDIozQxDdKa+S2n7xquNX3p63AztUaKhmWIJvLMyNEYrGb9dc+qAfF9gfPPHq3JVzQedrtw0AKkLTmHXtnLNJBBRkhVCcG8uBm8N2XxaZVIEOp7nrS7P1reRQCCn7wsR3qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OpVVKr0B; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53ACS1JJ002961;
+	Thu, 10 Apr 2025 13:58:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=Dzww3L
+	KlrnUtIm0R5u+tO3syAZ1j8WxAkgmrtRtvAXs=; b=OpVVKr0B+wsZSXCfUeVbj+
+	yfR3I3kKvHuPRc6MiyESZAE05QJWqgry+iGJPe3f9u5qSYYpJkWnBPChJxuqB9IF
+	pqU7MH5OXj08qbxJz/75onxa5ckaikhGzFkZOSAi6avGuEYWNLkp9gquQzu1y3ND
+	1emlopCT8zAQIY4Qo/YKCztxvRIH5iVIZGb3ntVPRRKB087WozQWBe2Ek8UuxbJ0
+	cMLgnOzl8gIWQl4qx/y8wbEDwzOEF+89d0KkxQ4sfjKLv8DDpSnKLRkOkXvmxp2B
+	iWoylT0jt1pDTy1kcDb3nfcGBuKEDwtVxn2LTwmVPzhlrqD1JjBHgmpFtpd3rc8w
+	==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45xe13rfg3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Apr 2025 13:58:26 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 53ADaXAE025510;
+	Thu, 10 Apr 2025 13:58:25 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 45ugbm67c9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Apr 2025 13:58:25 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 53ADwN2B35652118
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 10 Apr 2025 13:58:23 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 17CED2004B;
+	Thu, 10 Apr 2025 13:58:23 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3244C20043;
+	Thu, 10 Apr 2025 13:58:21 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.109.245.223])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 10 Apr 2025 13:58:21 +0000 (GMT)
+Date: Thu, 10 Apr 2025 19:28:18 +0530
+From: Vishal Chourasia <vishalc@linux.ibm.com>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, corbet@lwn.net, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] doc,cgroup-v2: memory.max is reported in multiples of
  page size
-Message-ID: <la6q2koug4ohzcfc5eqguod7x6fdwhndqkhzfrttsfnjo5fbb3@xzxodtpjl6ww>
+Message-ID: <Z_fOenjfni55JsbV@linux.ibm.com>
 References: <20250410133439.4028817-2-vishalc@linux.ibm.com>
+ <la6q2koug4ohzcfc5eqguod7x6fdwhndqkhzfrttsfnjo5fbb3@xzxodtpjl6ww>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="cbkayfgiworvjsdj"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20250410133439.4028817-2-vishalc@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <la6q2koug4ohzcfc5eqguod7x6fdwhndqkhzfrttsfnjo5fbb3@xzxodtpjl6ww>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 4Gk_z1bq9BSjNQCwh15X2ZYL-Z3CsoPH
+X-Proofpoint-GUID: 4Gk_z1bq9BSjNQCwh15X2ZYL-Z3CsoPH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-04-10_03,2025-04-08_04,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 adultscore=0
+ suspectscore=0 priorityscore=1501 spamscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502280000 definitions=main-2504100101
 
+On Thu, Apr 10, 2025 at 03:47:06PM +0200, Michal Koutný wrote:
+> Hello.
+> 
+> On Thu, Apr 10, 2025 at 07:04:40PM +0530, Vishal Chourasia <vishalc@linux.ibm.com> wrote:
+> > Update documentation for memory.max to clarify that the reported value
+> > is in multiples of the system page_size. The following example
+> > demonstrates this behavior:
+> 
+> This applies to any of page_counter-based attribute, not only
+> memory.max.
+> 
+Yes. This is already documented, and I missed it.
 
---cbkayfgiworvjsdj
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] doc,cgroup-v2: memory.max is reported in multiples of
- page size
-MIME-Version: 1.0
+From Documentation/admin-api/cgroup-v2.rst:
+...
+Memory Interface Files
+~~~~~~~~~~~~~~~~~~~~~~
 
-Hello.
+All memory amounts are in bytes.  If a value which is not aligned to
+PAGE_SIZE is written, the value may be rounded up to the closest
+PAGE_SIZE multiple when read back.
+...
+> > --- a/Documentation/admin-guide/cgroup-v2.rst
+> > +++ b/Documentation/admin-guide/cgroup-v2.rst
+> > @@ -1316,6 +1316,9 @@ PAGE_SIZE multiple when read back.
+> >  	Caller could retry them differently, return into userspace
+> >  	as -ENOMEM or silently ignore in cases like disk readahead.
+> >  
+> > +        Note that the value set for memory.max is reported in units
+> > +        corresponding to the system's page size.
+> > +
+> 
+> There seems to be mismatch in whitespace to surrounding text.
+> 
+> Also the wording would be more precise if it referred to 'multiples',
+> not 'units' (units are simply bytes).
+> 
+> Michal
+>
+Got it. But, it seems this patch is redundant. So, I won't be sending
+another version.
 
-On Thu, Apr 10, 2025 at 07:04:40PM +0530, Vishal Chourasia <vishalc@linux.i=
-bm.com> wrote:
-> Update documentation for memory.max to clarify that the reported value
-> is in multiples of the system page_size. The following example
-> demonstrates this behavior:
+Thanks,
+Vishal
 
-This applies to any of page_counter-based attribute, not only
-memory.max.
-
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1316,6 +1316,9 @@ PAGE_SIZE multiple when read back.
->  	Caller could retry them differently, return into userspace
->  	as -ENOMEM or silently ignore in cases like disk readahead.
-> =20
-> +        Note that the value set for memory.max is reported in units
-> +        corresponding to the system's page size.
-> +
-
-There seems to be mismatch in whitespace to surrounding text.
-
-Also the wording would be more precise if it referred to 'multiples',
-not 'units' (units are simply bytes).
-
-Michal
-
---cbkayfgiworvjsdj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ/fL2AAKCRAt3Wney77B
-SRSNAP0bnJApWLajoXwxzl1ghVWKw5zQVjK3WrLIJrECXtDDewEAugoDnnl7QTvl
-4H/JYvFk91gyh5my4GuIExOBCwcMQQs=
-=2s8B
------END PGP SIGNATURE-----
-
---cbkayfgiworvjsdj--
 
