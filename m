@@ -1,60 +1,91 @@
-Return-Path: <cgroups+bounces-7449-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7450-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52204A836EE
-	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 04:58:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 111FBA83C95
+	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 10:22:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D4CD463C82
-	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 02:58:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B62FC1B665EF
+	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 08:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BEE1E47A8;
-	Thu, 10 Apr 2025 02:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A1620298A;
+	Thu, 10 Apr 2025 08:19:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P5Upj/0u"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="g922euQT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3027083C
-	for <cgroups@vger.kernel.org>; Thu, 10 Apr 2025 02:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5951C1D86DC
+	for <cgroups@vger.kernel.org>; Thu, 10 Apr 2025 08:19:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744253909; cv=none; b=bmv1zLPfjkbe2+1nTQj0Te+SiTk0ZLD4q/NSx/Uffn6TOAAzdLZGpZsL+X7dJ6Uwum7QihUQVfIStdjs3PROOjSY3eJBbxV5+Do3syq9mgys82JWSWRB4Zt2vKuu74znt4vYM9JT5lpKrUSOW3XlVqwda/YLSXd3PAwtdKD4Obk=
+	t=1744273161; cv=none; b=qjDnVaAlJJ6+M0gTafS1PhF9ZBMWNvEcrdjtm0gGb1K3YjzZjnaQgfnrpB77+JSsJ0/PcTPg6NVZn5qPrNZk/cN9GinK/gySrgN21S4e5E0j6QGYBAoDAKzqIbzWPe+xrSbA/Eb1JJSWgZvhK0oxfo02qPq8bFrkQ1t8qOlcAAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744253909; c=relaxed/simple;
-	bh=LuAq+qzEs7CyM6o872Ta+OyytP28QwvQVoFC/5Pxhxk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u93Aha7vA+7chml/LrvOM9a005IQbavDhaoypROAbf5DNA9uwVO/BYgr20DIr0ALqNFM3sONhY+W+c0CkTKNkxJxPGoAfH3VIGujxb6i3MRUUr3lsPyZsvmvsohgGii54sSGljqvgZ4URPGGrsgVm65okPWQ/d3q7g/m8Y4lQQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P5Upj/0u; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744253895;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=QbwnSKjPedkNReipVXQJ7J5oJfAs+GWPD73Z0sp3QZA=;
-	b=P5Upj/0uvQZRUZafgO9lcJ2NRz0DwA+nO8En1S9CmnkdxbBvgNuqCDjYPwvkEC423PjYhi
-	6kVxfYYaVNduhMcCiCucKBdrQtW0G5oCJPD+5ljzbb2XQBsR+Fo0ffzeZQO3zENuL1YIuM
-	WYSldIjr4U05ywf2DYQ3zumAM2YXM6U=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>,
-	Waiman Long <llong@redhat.com>,
-	linux-mm@kvack.org,
+	s=arc-20240116; t=1744273161; c=relaxed/simple;
+	bh=nWkV06hzLZs0d4VDgM6vwSU+B51VIwbN1xrlKxQrLmY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mlz3e0GkQDVFb5OT7GDDaE902ouTxRE6fyPIwJknDnAHMFZfMe5+BJrGfrl3NALI0dZX9IqwNkptP65xpdbypqgfOTrIfHZZtDl3kJNodwa/5ze9Y4ONg7QzEhJmcDePdcpx9qWTR0nQzC0w+0vPDXWprA7voormkQp6UyAOkAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=g922euQT; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2295d78b45cso7352115ad.0
+        for <cgroups@vger.kernel.org>; Thu, 10 Apr 2025 01:19:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1744273158; x=1744877958; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2WMNK4T/HAXbxP0c5nSxB7WqEQuDCDLUA/LOjFIKTw8=;
+        b=g922euQTreOET4oAGCidk9h15LBqjGx1BdtRPrQoBbDNWqiDN70H122gMpO/Kg5BK7
+         jo43UECOkdKfF7h3GOx6BUGJmbB8XeiVUAy7JPmPS/md0+6WvSbU7BhpZhl0Ois7wKrA
+         gKmv8CPESmvp8IOt2dmDXE7fV+yrI3kUvJ7MsRnmu0EOwc5pOvq+vcTDTk/syEXgtQA5
+         OqEwi8ljltABH8vQ2ROqxR6Qg6RmT989Ax1P0rQ1Q1HD9D1cPvlCmOP0Ni4t0wCjP4n/
+         4JFCNDK0q+knA+m4uUiZCIECMEyZs2qILILbFpVzxKVbxPtbyeGtFcxydhe2DfVFbcr6
+         qflw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744273158; x=1744877958;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2WMNK4T/HAXbxP0c5nSxB7WqEQuDCDLUA/LOjFIKTw8=;
+        b=bUhi5qlB+xyy73RKyDim2RbiTvrH5d7SlSZG8tXo1+/pf74S7QIteENN+M2Wcedk/O
+         5gfbkXvSxEpv06bSjy2b7ZmD7SOO0Z2L6FSPqydj8Q1Gdrs4Joqa6F69fDY00Yl/41WO
+         tFN5ECo1ryvSXvAJuoNZojvUATUc5F4m4KQHlM8VoTbMQv0IlZRE3zk3RwqVXU6Zf0aw
+         Rv+jI5m9TcCO1XzKSLGEYDs+htwWwFLD0kUE5YVu4wbe7z9X3i36DGjnbwv5ONgLods1
+         LD/MF4IoiRfE54JnFGtkCRIu0rk0W8vN5zh3M8wh974l46VGE2CTb5w2NVsuo7hr1HTS
+         YjAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVCFStDudWw3Z0DiKPQqVwz7Pdcfks5sd2MvSPVNpH87zZq29bT2Ov3q2IXcalB0S8vGVNLH5Kj@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9bK8lGLF5kS38eTm6WAhWiJHJ9Pot2PjbfviVjmiBxHUoY1vI
+	sQVhdipQofk/ph63QlqM0OpsS2VAhRubSKvvKE4PTK6xNqxZz0jBhYKUvQon6fI=
+X-Gm-Gg: ASbGncu4rBo3Zc4KQv6cK4tmOH+kvqqn2CbO1svMhH37IxB7b/MTNMX2CvteA0Sql+o
+	K7fYw5Nyakg/LaPwYHKErExrIycFM4z8K5HuIS64hiNrUH60nMr1qBViHj0EeiPum9v2zMSNSUo
+	PDB3G0mj1Qfl8WX3IuQNxuyn5BWE9iVVDEubkDDD+LKU7vRjVUfiluDIzKT568f/v81fvwbAWvw
+	Pf1JwG1rP1oNXZDCFBm5Hjj59BQskav8kwFazmbvgTKIkMTHE7tbpJ58WtH7UomTMmSM02b/4By
+	E2ATjbtjrLA1nl97WQAD3rwB6sfxf1Fw3yEKBWHtMYtSFUGviBtHEGIdT6ixpyQWDhY6vzQFPw=
+	=
+X-Google-Smtp-Source: AGHT+IGtxCPcjlOxTXUr2/79MqVJQWBnBVjOCUpd/dINEd2Wk8WKKzYVYItvH6r2Re1mb6kWmGXZnA==
+X-Received: by 2002:a17:903:2a87:b0:223:fabd:4f76 with SMTP id d9443c01a7336-22b37e1af80mr28407585ad.30.1744273158539;
+        Thu, 10 Apr 2025 01:19:18 -0700 (PDT)
+Received: from PXLDJ45XCM.bytedance.net ([61.213.176.12])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7b6284dsm24806755ad.38.2025.04.10.01.19.14
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Thu, 10 Apr 2025 01:19:17 -0700 (PDT)
+From: Muchun Song <songmuchun@bytedance.com>
+To: hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: [PATCH v2] memcg: optimize memcg_rstat_updated
-Date: Wed,  9 Apr 2025 19:57:52 -0700
-Message-ID: <20250410025752.92159-1-shakeel.butt@linux.dev>
+	linux-mm@kvack.org,
+	Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] mm: memcontrol: fix swap counter leak from offline cgroup
+Date: Thu, 10 Apr 2025 16:18:12 +0800
+Message-Id: <20250410081812.10073-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -62,65 +93,33 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Currently the kernel maintains the stats updates per-memcg which is
-needed to implement stats flushing threshold. On the update side, the
-update is added to the per-cpu per-memcg update of the given memcg and
-all of its ancestors. However when the given memcg has passed the
-flushing threshold, all of its ancestors should have passed the
-threshold as well. There is no need to traverse up the memcg tree to
-maintain the stats updates.
+The commit 73f839b6d2ed addressed an issue regarding the swap
+counter leak that occurred from an offline cgroup. However, the
+commit 89ce924f0bd4 modified the parameter from @swap_memcg to
+@memcg (presumably this alteration was introduced while resolving
+conflicts). Fix this problem by reverting this minor change.
 
-Perf profile collected from our fleet shows that memcg_rstat_updated is
-one of the most expensive memcg function i.e. a lot of cumulative CPU
-is being spent on it. So, even small micro optimizations matter a lot.
-This patch is microbenchmarked with multiple instances of netperf on a
-single machine with locally running netserver and we see couple of
-percentage of improvement.
-
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+Fixes: 89ce924f0bd4 ("mm: memcontrol: move memsw charge callbacks to v1")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
-Changes since v1:
-- Fix the condition (Longman)
-- Ran netperf
+ mm/memcontrol-v1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- mm/memcontrol.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 421740f1bcdc..3035c1595b32 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -585,18 +585,20 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- 	cgroup_rstat_updated(memcg->css.cgroup, cpu);
- 	statc = this_cpu_ptr(memcg->vmstats_percpu);
- 	for (; statc; statc = statc->parent) {
-+		/*
-+		 * If @memcg is already flushable then all its ancestors are
-+		 * flushable as well and also there is no need to increase
-+		 * stats_updates.
-+		 */
-+		if (memcg_vmstats_needs_flush(statc->vmstats))
-+			break;
-+
- 		stats_updates = READ_ONCE(statc->stats_updates) + abs(val);
- 		WRITE_ONCE(statc->stats_updates, stats_updates);
- 		if (stats_updates < MEMCG_CHARGE_BATCH)
- 			continue;
+diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
+index 8660908850dc8..4a9cf27a70af0 100644
+--- a/mm/memcontrol-v1.c
++++ b/mm/memcontrol-v1.c
+@@ -620,7 +620,7 @@ void memcg1_swapout(struct folio *folio, swp_entry_t entry)
+ 		mem_cgroup_id_get_many(swap_memcg, nr_entries - 1);
+ 	mod_memcg_state(swap_memcg, MEMCG_SWAP, nr_entries);
  
--		/*
--		 * If @memcg is already flush-able, increasing stats_updates is
--		 * redundant. Avoid the overhead of the atomic update.
--		 */
--		if (!memcg_vmstats_needs_flush(statc->vmstats))
--			atomic64_add(stats_updates,
--				     &statc->vmstats->stats_updates);
-+		atomic64_add(stats_updates, &statc->vmstats->stats_updates);
- 		WRITE_ONCE(statc->stats_updates, 0);
- 	}
- }
+-	swap_cgroup_record(folio, mem_cgroup_id(memcg), entry);
++	swap_cgroup_record(folio, mem_cgroup_id(swap_memcg), entry);
+ 
+ 	folio_unqueue_deferred_split(folio);
+ 	folio->memcg_data = 0;
 -- 
-2.47.1
+2.20.1
 
 
