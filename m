@@ -1,108 +1,138 @@
-Return-Path: <cgroups+bounces-7453-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7454-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83BF6A844B3
-	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 15:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2119A8450C
+	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 15:40:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43A7A4A5CF1
-	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 13:21:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A3A54C440D
+	for <lists+cgroups@lfdr.de>; Thu, 10 Apr 2025 13:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB22528A3FB;
-	Thu, 10 Apr 2025 13:20:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E358228A414;
+	Thu, 10 Apr 2025 13:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="PZcf8lqq"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pXWLultO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF2B2853F1
-	for <cgroups@vger.kernel.org>; Thu, 10 Apr 2025 13:20:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8456C28A3ED;
+	Thu, 10 Apr 2025 13:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744291248; cv=none; b=fIH9VC6FLhiKEV38dN1Y10MLTQoIFDUg4gT7elsy8CBAyNPW9/MvSrqoPbxk8Je6FT8ZWwsyRExG8rh/mwwpzozv2YWp6/HIknaxdKdgFCTIdPtcqjkhmQIATu77C81U8E9uaBJ9QWklTo/BP28PqQKLXubLQHH/FPi0E2K9nwo=
+	t=1744292169; cv=none; b=j3G3Y3X2vhKjI9udIBClZOOwHFQlIdmnHGYs+ebxzmL9vvhrchn0/61Ioah5bVpbsulPbTDIw7DtYB2Xvd0HM385Bh38E11plackYShu47gtbHwqzui/7vt9X0mCgLhYIiKgHCFGRNmDJgzIMzdBt4zfUFK2m7QNEByzOM6KrNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744291248; c=relaxed/simple;
-	bh=eF3229Ut/7oMgOC0TKNVSpPRDMuApGGwnqq+oOTJ5no=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GxPcoKYyXcpPaBN1SUQ9JBtV8vTuj1ltCupwwjm8E/0qADF6RTTgvVMjQY807BQu8WxaEzO3B8lFqqtZ+zmSgiLFMI6rCvXECIVQrGpBmKbtdIzoMricxHMM2iTJHNLVmn5hI5uC1WzInxbCor9j5pA7t3FAlBxRuGGR+W/EMqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=PZcf8lqq; arc=none smtp.client-ip=209.85.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6ecf0e07947so8003596d6.0
-        for <cgroups@vger.kernel.org>; Thu, 10 Apr 2025 06:20:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1744291245; x=1744896045; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uvjpkhdO+uAITJ9R+WF0zbYBfmINwYKjsiOVdhMgoeI=;
-        b=PZcf8lqqvrAaY63sOOmDIug7PYxfoffDKqKMQVQY5oEgTOIO0BCAcG3K0RZRqeOQ6c
-         sSuSUgyV2tauswe0jv7/OfAq24zp08/l0zJ7EW1AQIkN7SvIpcs6mHKi+fFCAhacMYcA
-         I4nBImutB5sKbuAkrqF2QHFLMBqwJifzsMf5+U4MHm456Eil0cwv7bEYReSFPQ3FL0Nv
-         N+cjQACbSe72Z/5V0mENkhwKaduIXIsSFfF9qey61jB3/IDMZ5UxJuKuvz8a59e4iN/7
-         fBuERL0bQ/V4hm6ZUYowH8njgXe76JmaH5u6u+TQ9BF+jSN3ZY5wUwXuqlKmAZ6wZhYZ
-         qIiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744291245; x=1744896045;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uvjpkhdO+uAITJ9R+WF0zbYBfmINwYKjsiOVdhMgoeI=;
-        b=TJLZff3wAGea4Gehff8qGIY4mIVRdLhedkP9zWC0EfxiueXZHodCvvF/7BfprTQHmO
-         Y7S/96Axs/bqW4aMyQ9a26buQLYIs097CcHXNbr97l1rhD7weJWo5dU4+H0I1VdBhVDY
-         sV9EgAKxHWRuS7yO2lwlUQC+HjO0dYo6+mtp0rw0jZLeNmc77WT7H2MFzyUjDXWSe4Rq
-         1RMl9phZPpzeHFYN2W9lgDavN4w430SdXrshxBlRcV/se3Vw2zWT6//7F95+VC9ZKqAN
-         gBy4QXLc+YS15/NzZ6hHdUMSyCvirCUrcj5sH53qHi3OWXbTaiJLZ4vap1SayE/IytCx
-         Kzeg==
-X-Forwarded-Encrypted: i=1; AJvYcCUPEfIkz7Z2BG+wvihGNlte1zvHaae7tuTZl18uzRB129RUhPTjpDE9GUlVjcG4Su2CugbT0mnk@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSJUNd3gSfPOa4Vzs0LN6kVJ5p+6tr+9T6O1G0ERIHE4sxjjIW
-	uP+Kn4srXDw7lMmESTwJYzcCS3awB6RxtpN3Kr4ZT5GAoK0YxYszBW7TtHLE494=
-X-Gm-Gg: ASbGncum75ZvSDgHwmglNIDZtZWC9OQVPwpcEnBwSsS34Z+cheSuk+6BjSJXrSw/DEY
-	ilSltb5YH5hyeL+shLUTI2cgetJ9VgD5CaFaezf3kZPwCDXjv39roFQHX680w4cizh5tPPuDKlP
-	TZ0F53OVUCV+VxPHsjXnfnkacYgzwHI8alXbr9XuVife1xMmknChSBTcyVDzBQcEJHpMWDxjQNw
-	sXpNwdSLm26xHR30yvu9OwLry6HUh+lt7199+qQ04OoYm1G7dK3hPyrPoI3aJFvKykTUaJNtcKW
-	1dw5S3Dex6r99Txx7+3j5I5FoPk3lHMQLAcWNgM=
-X-Google-Smtp-Source: AGHT+IF1TEpqq1y88DdCFclWrDEHt9sZ1im+VnXq/99xnonpkDH+Mjh4Wk8ppzfG3wbI3GnFX974wA==
-X-Received: by 2002:a05:6214:2129:b0:6ea:d604:9e4f with SMTP id 6a1803df08f44-6f0e61be51fmr45231716d6.19.1744291244756;
-        Thu, 10 Apr 2025 06:20:44 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6f0de95f774sm20638926d6.16.2025.04.10.06.20.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Apr 2025 06:20:43 -0700 (PDT)
-Date: Thu, 10 Apr 2025 09:20:39 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Muchun Song <songmuchun@bytedance.com>
-Cc: mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, akpm@linux-foundation.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH] mm: memcontrol: fix swap counter leak from offline cgroup
-Message-ID: <20250410132039.GB102987@cmpxchg.org>
-References: <20250410081812.10073-1-songmuchun@bytedance.com>
+	s=arc-20240116; t=1744292169; c=relaxed/simple;
+	bh=8w7p142ZI6H8+1uOKiDKtSC1X5Go4vUEdku/HxK6xEE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PBGqLEQWPgXsvo6pe/qKG1i3Z4yjIbvZn4kKyY+xWZ27gs7Q0svBP+flJrRAHxJKjWyAxSN0We63eMmxXKQrvblvj3Iix3sSXyAU7Vo/ryNpgW6NBsaqtRCFT5X9aXEXC7l7JygvsraYtSOjylh3jaCilIswG4ADqkzrOwPWYfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pXWLultO; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53A8FWKD026291;
+	Thu, 10 Apr 2025 13:36:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=yL9HWn+60Q9EVZ3uJcJqHtpRSmwUoWL83MLKIjRHr
+	8o=; b=pXWLultOX4xmtFyzi7qYc7BS38Ec6JwExL0Cw61ntWyxHQa1tVf4wzuLd
+	R39dDWQGofLSqMj1sRfE9jcpC7GOKRa8QGtt8xvHa7thV7DCrPsg3Yign0uelC3k
+	unckfI7u7AtL9Aqfp/dwIZIUI6KxML4gUd5Rq1tE6zmqr1BOPIet/pY3WUPWJlX8
+	0H+E1RHh9q40OVXW197xg2Dxzy8JHRSn4mOtxPE/IIrZVChTgwpeQUEINOmgXHS0
+	7CNCyQlxMHbSt9hoFi2XKF7oTXhBHZhET/BM+nlcoXXbP6e73bwdmKVp1l3fG+qc
+	Qb807dK8qPtZGh8rHHfL5WPyuDT6w==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45wtaq77qb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Apr 2025 13:36:02 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 53ACmZjX013860;
+	Thu, 10 Apr 2025 13:36:00 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 45ufunx5fr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Apr 2025 13:36:00 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 53ADZvhS59310496
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 10 Apr 2025 13:35:57 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E58EE20040;
+	Thu, 10 Apr 2025 13:35:56 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D8C0920043;
+	Thu, 10 Apr 2025 13:35:54 +0000 (GMT)
+Received: from vishalc-ibm.in.ibm.com (unknown [9.109.245.223])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 10 Apr 2025 13:35:54 +0000 (GMT)
+From: Vishal Chourasia <vishalc@linux.ibm.com>
+To: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, corbet@lwn.net,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc: Vishal Chourasia <vishalc@linux.ibm.com>
+Subject: [PATCH] doc,cgroup-v2: memory.max is reported in multiples of page size
+Date: Thu, 10 Apr 2025 19:04:40 +0530
+Message-ID: <20250410133439.4028817-2-vishalc@linux.ibm.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250410081812.10073-1-songmuchun@bytedance.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DcsFspk4L96Youfsu3210IadEjLZGFFa
+X-Proofpoint-ORIG-GUID: DcsFspk4L96Youfsu3210IadEjLZGFFa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-04-10_03,2025-04-08_04,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 suspectscore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ spamscore=0 malwarescore=0 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2502280000 definitions=main-2504100097
 
-On Thu, Apr 10, 2025 at 04:18:12PM +0800, Muchun Song wrote:
-> The commit 73f839b6d2ed addressed an issue regarding the swap
-> counter leak that occurred from an offline cgroup. However, the
-> commit 89ce924f0bd4 modified the parameter from @swap_memcg to
-> @memcg (presumably this alteration was introduced while resolving
-> conflicts). Fix this problem by reverting this minor change.
-> 
-> Fixes: 89ce924f0bd4 ("mm: memcontrol: move memsw charge callbacks to v1")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Update documentation for memory.max to clarify that the reported value
+is in multiples of the system page_size. The following example
+demonstrates this behavior:
 
-Ah, those patches got reordered because yours was a fix and mine a
-cleanup. Good catch.
+  # cd /sys/fs/cgroup/
+  # cat cgroup.subtree_control
+  cpu io memory pids
+  # mkdir mem
+  # cd mem
+  # echo 8000000 > memory.max
+  # cat memory.max
+  7995392
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+  # getconf PAGESIZE
+  65536
+
+  # echo $((8000000/65536*65536))
+  7995392
+
+Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 1a16ce68a4d7..577d05c03ffa 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1316,6 +1316,9 @@ PAGE_SIZE multiple when read back.
+ 	Caller could retry them differently, return into userspace
+ 	as -ENOMEM or silently ignore in cases like disk readahead.
+ 
++        Note that the value set for memory.max is reported in units
++        corresponding to the system's page size.
++
+   memory.reclaim
+ 	A write-only nested-keyed file which exists for all cgroups.
+ 
+-- 
+2.49.0
+
 
