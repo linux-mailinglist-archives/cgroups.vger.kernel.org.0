@@ -1,118 +1,152 @@
-Return-Path: <cgroups+bounces-7476-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7477-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B9A1A864EF
-	for <lists+cgroups@lfdr.de>; Fri, 11 Apr 2025 19:41:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3167CA86517
+	for <lists+cgroups@lfdr.de>; Fri, 11 Apr 2025 19:54:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A4264A1D5E
-	for <lists+cgroups@lfdr.de>; Fri, 11 Apr 2025 17:39:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EA94189CDBC
+	for <lists+cgroups@lfdr.de>; Fri, 11 Apr 2025 17:55:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8002623E342;
-	Fri, 11 Apr 2025 17:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB10258CC1;
+	Fri, 11 Apr 2025 17:54:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V4P+x8fZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jZ+JVaV6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB1D423BD0F
-	for <cgroups@vger.kernel.org>; Fri, 11 Apr 2025 17:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD142367DD;
+	Fri, 11 Apr 2025 17:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744393149; cv=none; b=ghMRVoISentZbmm7VLPBOg5a8HGjNxpau/eHigA5ddo+nldf4qn4UOxLvCLTnTcKRoJvKn5CzNHI8xJsxKRj0NyBaE7AuHmix23DPQO6WNi5xoThyviy0w9F8x7ti3DK237QXdAgtaLpggiyDt5gWxWTfu2EUEeRmb3w7rWj5+k=
+	t=1744394091; cv=none; b=BTvEKLgO4x8ubqtW0cS3Ex3W+M+XdDgh29yf5S65LRN3uwXGBcZS+RPrTMcVt5g5cdgeZUJzMwM5FiJeB6D3Brc26Gr+Ow7E+drNoJ1GDDl/D36MCeH/J54m167dyzIHHrizGNQvkiAeegLWXQ59kJ2PxynIUlC6/AUCIWEhA6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744393149; c=relaxed/simple;
-	bh=zGJwNblsKqEOAKwEuDeH3u+zc5jfILger+41mjo0QGQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d52FAOEiqtQIq3lon2Pej49G3Jzsi94NekbbvNTFtC5jCb67KxKvXVI2MLQLWB3Gw8GYmJiCQ6xqfjGZiMZT58D1kcVPBrspkrXZIeRayTSlmeK5Wslucv1v/fMbDvlXNa+Yw3f0ayT0KexLxgBsWkODHK2tilTA1n6Wwy9iT8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V4P+x8fZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744393146;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dva4W/D+dzFw10w19z6EzVLC4AZPhczTeYs/RvqJzPQ=;
-	b=V4P+x8fZQgmgRFq55Coxn3/8rQv5DBuBW8+AIDC4ub+jI80zTEsuFFFb1MLnAhvqMWfadQ
-	zBo8psAWYyGRplrD0VzDMyZNwVQg1ByQx17xiW6YEymUMNlFDTPFhYXQe8TJ5YidB7f9Eh
-	TV9E9NhTMTMKcrp8V1SGwkZuCH+ozZg=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-48-hn85JY29PSC-DeJZLdKDWg-1; Fri,
- 11 Apr 2025 13:39:02 -0400
-X-MC-Unique: hn85JY29PSC-DeJZLdKDWg-1
-X-Mimecast-MFC-AGG-ID: hn85JY29PSC-DeJZLdKDWg_1744393141
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 57B291800260;
-	Fri, 11 Apr 2025 17:39:01 +0000 (UTC)
-Received: from pasta.fast.eng.rdu2.dc.redhat.com (unknown [10.45.224.37])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 28C8E1956094;
-	Fri, 11 Apr 2025 17:38:57 +0000 (UTC)
-From: Andreas Gruenbacher <agruenba@redhat.com>
-To: cgroups@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Rafael Aquini <aquini@redhat.com>,
-	gfs2@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH v2 2/2] writeback: Fix false warning in inode_to_wb()
-Date: Fri, 11 Apr 2025 19:38:47 +0200
-Message-ID: <20250411173848.3755912-3-agruenba@redhat.com>
-In-Reply-To: <20250411173848.3755912-1-agruenba@redhat.com>
-References: <20250411173848.3755912-1-agruenba@redhat.com>
+	s=arc-20240116; t=1744394091; c=relaxed/simple;
+	bh=tyyox49HnOeNZgl4IFoSXhg7byGbPATXb8I6NlV8w0w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fBKvCOwhJLtUXBzzpFfn3IhUS2w29phO6gqmbHMvjJLVzyUvdpTDN9/r80dvfb/yFrway9AtRzXPYeYOkuSGbulb/H2exMTKYFFoFlIsMJAZOsUpI4mRbNH1ceWaU7qj+9FmBe4BCOPK1d37Voz75M7nvS3tBhOut/egPWIWlC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jZ+JVaV6; arc=none smtp.client-ip=209.85.222.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-86fbb48fc7fso938665241.2;
+        Fri, 11 Apr 2025 10:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744394089; x=1744998889; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ywkQx3u/4aownxE7hPIvWIFCLtDqYUgJXHHsxcNJYug=;
+        b=jZ+JVaV6+nyvASx5ShC3kya3kOcj85Bu3ORilgvMo6OPpAjUHBSrrajmQax8rTiPCp
+         hQhApW7jO3a2t9FAJG8692Z4DnoGX4i3fwHd8OZ1Bo+2Hv6FyGq1/MzwFXysbPNQB84j
+         VY38M9Hr6HId/oamtsj3OGDuYdNk4BhUjY6xQKCwDB6FSXEjTL9nieMQWRXnxrPqg1a7
+         u//+mu922sTKwamVcRYvrEtnvMbaqYpcJB2USu86VoNAbTmqYdfXhbzyln2XAJr+i04j
+         HmMQ+cvy0oQAKwaIWkHsvu3W+R8AYu79ojchx4QXN4wMkf74v9y6m/IW/lMpT/DuBl/8
+         Jmog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744394089; x=1744998889;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ywkQx3u/4aownxE7hPIvWIFCLtDqYUgJXHHsxcNJYug=;
+        b=oSAsM02/8BTougnePArSfYBkkGXoUOl001mmC/W/D1wijIseNm+KNDcdWjKVQdQN/V
+         nm1Fqkvg2urvrCXiY/YOtpy/h21sJpkFzNDaERPapK/421J7yVhqWZU8JIjFLhXLzmbE
+         RNfARcYS0sb4EbonADThQxWA8YRicnHxDkEhnP+va2jxV139WX44xoP+hKr8PBL0vXO7
+         b4WbfiQCXBZG0Ljs5XajMUEGxp+u0LTRwXrTV5xdj7X9L4MNs/k7nlVnvoStPAQuF5/v
+         YfzrxrwcF+KOD3tAXhZZ1wMdOQKsv10wKMa1u4o7Rw0TjstSlgg11NvNfM/p66JmNnJA
+         GTFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVms3jcovtwSh5pWbhfcCbZR9/mbAqWVqA0xUHI7pHiZNJerXsUGxv34I2ICh8jrzZPzillmWbI@vger.kernel.org, AJvYcCXUvrePHsBTLsZw3dMT01clOUsI61MFrf8gVE5bgBgXRIadwUynq7DSz9abP53hFuulj/nq9jczCG56TskX@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJ+vr78h3ujO4MHG9qJFFDNTP1aZTnX9YmSVDdTOSjWzqPyJ8B
+	3KAA+hSXgkdBEoYYfYA+NdnLPK+pfl8h4XujsO65vm7IuPwUBa7+ubeik/BrP3YjyOI035AXMbB
+	nYNhAJJ0/6WbYndyPkNJeVVlZcECCmLT+Exk=
+X-Gm-Gg: ASbGncsDvadP0Mxnlf6TJZN1JhteOaxLDUoy/xPDBB3P3rVEOpnBD3R/2KE/7EgETu0
+	S3Ix9P+kaUPHEmf3anISUw1FDIR4Dw8v4d63zJGdmob5yq3D4yc9fAzM3K/J99OWMZqLR5/eKf3
+	YLPg7lxHWKYbBEOIPLNVWVnyx9KjwX2wTeYimiTlF3QS8dyMo2Em727qZS
+X-Google-Smtp-Source: AGHT+IG9Gf4TMoSlwS41SzXYgEa8isUDPLUdrvCwJybGx3dUBlNtvJmto2C3Kb/Qh4F23GKeMRelpkSWv9NiJBxzXQU=
+X-Received: by 2002:a05:6102:4b85:b0:4c1:9159:859c with SMTP id
+ ada2fe7eead31-4c9e4f2079emr3137947137.15.1744394088951; Fri, 11 Apr 2025
+ 10:54:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+References: <20250410210623.1016767-1-shakeel.butt@linux.dev> <0e9e2d5d-ec64-4ad4-a184-0c53832ff565@suse.cz>
+In-Reply-To: <0e9e2d5d-ec64-4ad4-a184-0c53832ff565@suse.cz>
+From: Shakeel Butt <shakeel.butt@gmail.com>
+Date: Fri, 11 Apr 2025 13:54:37 -0400
+X-Gm-Features: ATxdqUEvGAuIZsSkxMfr_5OHtKy9t_zYrWp3bAl0ILZaS2YVXuD2eUp_XUPwSNI
+Message-ID: <CAGj-7pUxYUDdRGaiFon=V2EG+3Ex5s9i7VvWbDH5T0v-7SE-CQ@mail.gmail.com>
+Subject: Re: [PATCH] memcg: decouple memcg_hotplug_cpu_dead from stock_lock
+To: Vlastimil Babka <vbabka@suse.cz>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Waiman Long <llong@redhat.com>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Meta kernel team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Jan Kara <jack@suse.cz>
+(my migadu/linux.dev stopped working and I have to send through gmail,
+sorry for any formatting issue)
 
-inode_to_wb() is used also for filesystems that don't support cgroup
-writeback. For these filesystems inode->i_wb is stable during the
-lifetime of the inode (it points to bdi->wb) and there's no need to hold
-locks protecting the inode->i_wb dereference. Improve the warning in
-inode_to_wb() to not trigger for these filesystems.
+On Fri, Apr 11, 2025 at 04:06:46PM +0200, Sebastian Andrzej Siewior wrote:
+>
+> On 2025-04-11 10:55:31 [+0200], Vlastimil Babka wrote:
+>
+>  > @@ -1964,10 +1964,10 @@ static int memcg_hotplug_cpu_dead(unsigned int cpu)
+>
+>  >
+>
+>  > stock = &per_cpu(memcg_stock, cpu);
+>
+>  >
+>
+>  > - /* drain_obj_stock requires stock_lock */
+>
+>  > - local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>
+>  > - drain_obj_stock(stock);
+>
+>  > - local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+>
+>  > + local_irq_save(flag);
+>
+>  I think for RT this is not great?
+>
 
-Signed-off-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
----
- include/linux/backing-dev.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This is not a performance critical function, so I would not worry about
+that.
 
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index 8e7af9a03b41..b503a9a4fa65 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -245,10 +245,11 @@ wb_get_create_current(struct backing_dev_info *bdi, gfp_t gfp)
-  * holding either @inode->i_lock, the i_pages lock, or the
-  * associated wb's list_lock.
-  */
--static inline struct bdi_writeback *inode_to_wb(const struct inode *inode)
-+static inline struct bdi_writeback *inode_to_wb(struct inode *inode)
- {
- #ifdef CONFIG_LOCKDEP
- 	WARN_ON_ONCE(debug_locks &&
-+		     (inode->i_sb->s_iflags & SB_I_CGROUPWB) &&
- 		     (!lockdep_is_held(&inode->i_lock) &&
- 		      !lockdep_is_held(&inode->i_mapping->i_pages.xa_lock) &&
- 		      !lockdep_is_held(&inode->i_wb->list_lock)));
--- 
-2.48.1
+>
+> At least in theory, probably it's not
+>
+>  actually used together with cpu hotplug? As it relies on memcg_stats_lock()
+>
+>  I think no irq save/enable is necessary there. local_lock_irqsave wasn't
+>
+>  actually a irq disable on RT. I don't know if there's a handy wrapper for this.
+>
+>  No seeing the whole context but memcg_hotplug_cpu_dead() should be
+>
+>  invoked the control CPU while "cpu" is already gone. So the local_lock
+>
+>  should be acquired and the target CPU needs no locks since it is
+>
+>  offline. local_irq_save() will break things.
+>
 
+I don't see how local_irq_save() will break anything. We are working on
+a stock of a dead remote cpu. We actually don't even need to disable irq
+or need local cpu's local_lock. It is actually the calls to
+__mod_memcg_lruvec_state() and __mod_memcg_state() in
+__drain_obj_stock() which need irq-disabled on non-RT kernels and for
+RT-kernels they already have preempt_disable_nested().
+
+Disabling irq even on RT seems excessive but this is not a performance
+critical code, so I don't see an issue unless there is
+local_lock_irqsave() alternative which does not disables irqs on RT
+kernels.
 
