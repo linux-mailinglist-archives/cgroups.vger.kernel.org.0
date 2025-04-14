@@ -1,165 +1,152 @@
-Return-Path: <cgroups+bounces-7524-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7525-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7554A88A9D
-	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 20:01:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ADF1A88ABC
+	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 20:10:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5D0A17CF43
-	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 18:01:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 079F1177D74
+	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 18:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BBAF28B4F8;
-	Mon, 14 Apr 2025 18:01:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F7228B4E0;
+	Mon, 14 Apr 2025 18:10:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NI2KrdVN"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="synrLOQx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B44428B4E8
-	for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 18:01:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472BB2749E2
+	for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 18:10:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744653708; cv=none; b=HnlBZ3tJq4OiLwtabZczJXkLumAV2s4ZYX2N4iXdWcgkklCbXTMZd+snl6oLCNHqK+ryasKhxsF8KA0sTfttvHbqZZu+YIQsKj9ygE2Ei33Mti+McHgrE4h9uje7Nd28fVNN9Et6FY+6mzyBUu/aZ2QtdTwv/a2Spo6o3xjXhzM=
+	t=1744654219; cv=none; b=uZ6tStzcLl0gIBF3Bjor9nncug0eaSjYhi06MRVW7pSewwiXBAhjfnFuSzgcAR30iWXJQtXCZBn+jVeCj+TtxKnvnmvFuZNpfh7MqG0oc7iyg145YDoJpwPM8VlEMQq1b3BM4Re4MBFAddwPwQdfYAW4Eh8Ag0GsFJU5WWhKfTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744653708; c=relaxed/simple;
-	bh=iW3kH2HTEzdUPe3PMacgKc10LLcFWt408tAqpj5Ug38=;
+	s=arc-20240116; t=1744654219; c=relaxed/simple;
+	bh=WhMMyVEvthmWhAyPBPX4bGNG1muo/czpOPnPrkkB6yA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sunx8nfk3TsGXWM6OIrRpI84K71NKFWAnSGAv0McqKsLL4L/Ujf3QuEdhiFhRtjg9p3cYIAh4AByzmG55fpsHljGR7V8hz4uRfFHsktEI9+NGYExtNIYhkgcVwabe84VnP+lsEIZ4D3qIpEJEAe8jn3C9MkTLp+MQbl4hvgAvsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NI2KrdVN; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-39c30d9085aso2857136f8f.1
-        for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 11:01:45 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=b7I5gu69XeQ+Ps1arvXVx8ef8QYRl39J5YHoxcTztiqHaZpTrPud6mj6W90BC0pwA5FgjiA6RKVS8Eony0AVBHGobSIfvGqjCJZex/+nDosf/Jx4EShJWbS4qTZeXt2/d4btBbB17EpbwwbQCpSfNNf5YrRXMP61BMl8AMkJz0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=synrLOQx; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7c542ffec37so482439285a.2
+        for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 11:10:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1744653704; x=1745258504; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nBLuWbdtMel6i38ax54FckIfRTO54jFDOdfOeU/b1uA=;
-        b=NI2KrdVNy1gI5DLkGdbkUcn6RCAlzOGICv/nFe8gCoFZcs0AIbvZMBAJdEMIg7dSqZ
-         P4VcKF8s5+D7Yk2uM91Df38hiLoPVqzd20yjPZWmVULpVm4W4UftlhIfHTozErXjyABI
-         2aoN4991rewB8Sh8rLoNS7HsaI26/fvi7v6SfXSsAS8K0SnUX5Yg7eiVZldxhja6ePrX
-         3W0knjBG4k09gk9MQHf9h2gQl12pXZUkWcVJeXpRPDBhnRIXgYG47OvqhAF9P++LE80J
-         jbImAf5XyujuNEg6hDhCRUVr19fVNE6wfKMgGpdU4Kn4xZeqQpwN7elQhTCdNxAoyD2D
-         BsEA==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1744654216; x=1745259016; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wmxLTZDlUtyhjPG3LKgyqC3m7MkeZf8KO7nU/7lCHDI=;
+        b=synrLOQx9REgbd5vbwGt1fSFp3Ut6a6BWu2AB2ypqnO7zWXhJP4i3pZV4PmaZW6bDo
+         yh3gxJD+xEGgq37F4/iK9OcKUMCxk01WSxtGybrpIBq9j6ayttxrLqmQflPAwbBVYo0J
+         i7l5dGj6tG6eTwAH/Zguwlvt3FV2w9AdcyGeeQipsk+hAinhHS1a8zRn4YdJXAtTi99S
+         PgTsegJa6XETEHWPZC1rD5k3j4i3WwAajusiEyB8QhBa8YTPJIiC7y7pc4kHct00EO9C
+         c+OJZUvj8vqYfCNhQGB87primZKJEDmxIPYwTHGbbnD0d2Z8kTyTwJ0tSnI+Rj1qNhPT
+         hS4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744653704; x=1745258504;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nBLuWbdtMel6i38ax54FckIfRTO54jFDOdfOeU/b1uA=;
-        b=cH+JRHnutuTo6KgqanCOifeW+9f3BZZrjA+IbFb0RCmjYCHblDNDvqsDhtwksDB8T8
-         cuwmTU2oY0bWMpZWT3V8egbR/w68Cn07JvhP/ResFdYJH3i4kenNzPYn2GBjE7gqeytn
-         01L+OciRqXJzVVRbTQ+wNa51GnUKKd1UVNYd8w+oBzbf/YMunMxPK3rtKJ18GskWN1yC
-         jzpdBVR/fb7IYuclXt5p+SLzxAmMdU7TNNzoesUdCRtlMbnF2Thz1EVQK4wSjICXQofD
-         k4HKtapE5+iIOhrYoi4h5NkrHHW4NhlmSbBTiXVfCSWQJAFrMHjp6OBTbO6wCafzYujz
-         lXpA==
-X-Forwarded-Encrypted: i=1; AJvYcCVoDVsp5KjP1VqnR5eSIGPJ2y8F5yaaf5b9SI406LyWVXZ4TmgVSJTVw/BpdhuD1UkekPXu1gk/@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5NuFiA3AC/4ClowTUayPA2PFpqUyOrEwQF7JiR6ltNd93PGkA
-	2FenZfI20x7HyoV+gyXsc1wVj+4/fg4tcB+jy3bb3qNb9yO4VcRT8KYq7TyXMkE=
-X-Gm-Gg: ASbGncvRJBqafmm6Ew7o1qzswLcKISNs6wpVxLERnzSBLByPEFUQlI8MirVQXxva8oV
-	UHlQqwTpg3f0KI9KtPBIl/h+xpXsa1LX5cBPh4Qz1HwleLrjQVwV5kx6NS79St9CfAskF9UfwYa
-	oQlcFdGcPHmfylWzrb4Dil2asCYeNwbT0Dh6VH7B+/BcyrRr1CggspzYaSYftTEsQUx3/0JT07x
-	ZoNqBhXYr/TMHK3+no2HAUdOwLg0zKMMu21gITt0hOy1EpnrCsRG+QbX7iEWQpfg6Dd/EjfcKYX
-	eFyJ/EghpcMYsIWMd3Yqc1ZVGA/0UE5y9Qp8w5DaIp0=
-X-Google-Smtp-Source: AGHT+IEtQycgr4S3+PgCeHikW/Hyvr38HbspTFMfglvu/9qnMU6MbIV/XlhPDnBnlVxtCbAFfxNM+w==
-X-Received: by 2002:a5d:598e:0:b0:39c:3122:ad55 with SMTP id ffacd0b85a97d-39ea51f5b0dmr9250849f8f.18.1744653704398;
-        Mon, 14 Apr 2025 11:01:44 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39eae978023sm11710271f8f.47.2025.04.14.11.01.43
+        d=1e100.net; s=20230601; t=1744654216; x=1745259016;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wmxLTZDlUtyhjPG3LKgyqC3m7MkeZf8KO7nU/7lCHDI=;
+        b=oImRXVUFbSL/m1O/vEsSxOVAzXefzHWk5trcsXDkR7ypDaWYoCc8U+anzVPoc4HD/y
+         EsIJ9P0ox/6C0macwI7aCJiCigT5VApxUqYpvHPU7AC0mpL0T9IjGk6uvrCVfoj2on/M
+         QqILgUn+Z05VP5aDAaTJkmMGVVYCEOd6WMMtH80DRyYYLtaq+bORMAPa/9OHaK3Z8aCT
+         gB26y0l8HpE0htyR+R5oC1144xTKRitcLjVdXe59gFynQC2iI+WYWRFtVuDb/K7oKLXY
+         Aa5L13kmMXQu9Pz1O0GSdgqIbOw2RfNPIlSvkGvgMUOGEQWfqBGkLi7ZrKL6Gd3G/Ag0
+         AR6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXxyMSfQnu9a55eLWhNyjIVMzCAFtG0p6aVbuBXfyuEYlLtyg8Iqrg1UAySsBMu04wUSyhg15uG@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIjEB2JaEGP/dzSakR9GqWEKbb6s9i9H6RxyQhiCosJpKqJVpz
+	gUQjJD+ItKky9zUuaAeLvNFC8u2090Ubyhn5hYrRE7jyFFASTpj/e9F7ga2H4Xg=
+X-Gm-Gg: ASbGncsN+QZYlL6VjIv5eZ81NW/+t9tSLsamUcZOjJQbLlJmiXELwMEccLwT74POO2o
+	EFi4Nr49oT7Uggmk1H+k5frHcRyXYf3GAz3pjdM4/b9xG9fpxp771mcdn9shczBeTegyoGWfNcq
+	H/uadNI3mxNvELqKaRgtni6s7CLaCvBArWam9x45hGsN/DvcqWmIQrKbcN/rO98eDTVACboh+UM
+	szHQpAeFXzKMtxZAJF5mclf53NiHvh9LOnU7F8o8HuSogOcNygJJVOyof9/PGEIPmoLG0F6EhT3
+	XwJPTqx5/KBH97KQ8Y90m4rBXkX9qhIdsz98KEs=
+X-Google-Smtp-Source: AGHT+IE+XdJpOVhGEaj+Yv6sX3pIJj3/ALpArX3Fg1kdMboHe1klm4GlgsjQnZuIvjCGUk7JRR/efw==
+X-Received: by 2002:a05:620a:40c7:b0:7c5:5f19:c64f with SMTP id af79cd13be357-7c7af1182d8mr2068553185a.4.1744654215840;
+        Mon, 14 Apr 2025 11:10:15 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
+        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7c7a8a0c863sm768502585a.92.2025.04.14.11.10.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Apr 2025 11:01:43 -0700 (PDT)
-Date: Mon, 14 Apr 2025 20:01:42 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Waiman Long <llong@redhat.com>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Tejun Heo <tj@kernel.org>, Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+        Mon, 14 Apr 2025 11:10:15 -0700 (PDT)
+Date: Mon, 14 Apr 2025 14:10:14 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Waiman Long <llong@redhat.com>, Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Tejun Heo <tj@kernel.org>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kselftest@vger.kernel.org
 Subject: Re: [PATCH v6 1/2] mm/vmscan: Skip memcg with !usage in
  shrink_node_memcgs()
-Message-ID: <gpzfja7rsb6cy6r5mpfbakx7xp444xskdumooocytwhi6362fk@hdjhr7zampaj>
+Message-ID: <20250414181014.GB741145@cmpxchg.org>
 References: <20250414021249.3232315-1-longman@redhat.com>
  <20250414021249.3232315-2-longman@redhat.com>
  <kwvo4y6xjojvjf47pzv3uk545c2xewkl36ddpgwznctunoqvkx@lpqzxszmmkmj>
  <6572da04-d6d6-4f5e-9f17-b22d5a94b9fa@redhat.com>
  <uaxa3qttqmaqxsphwukrxdbfrx6px7t4iytjdksuroqiu6w7in@75o4bigysttw>
  <20250414164721.GA741145@cmpxchg.org>
+ <gpzfja7rsb6cy6r5mpfbakx7xp444xskdumooocytwhi6362fk@hdjhr7zampaj>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="s2v2mxjanhgmijod"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20250414164721.GA741145@cmpxchg.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <gpzfja7rsb6cy6r5mpfbakx7xp444xskdumooocytwhi6362fk@hdjhr7zampaj>
 
+On Mon, Apr 14, 2025 at 08:01:42PM +0200, Michal Koutný wrote:
+> On Mon, Apr 14, 2025 at 12:47:21PM -0400, Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > It's not a functional change to the protection semantics or the
+> > reclaim behavior.
+> 
+> Yes, that's how I understand it, therefore I'm wondering what does it
+> change.
+> 
+> If this is taken:
+>                if (!mem_cgroup_usage(memcg, false))
+>                        continue;
+> 
+> this would've been taken too:
+>                 if (mem_cgroup_below_min(target_memcg, memcg))
+>                         continue;
+> (unless target_memcg == memcg but that's not interesting for the events
+> here)
 
---s2v2mxjanhgmijod
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v6 1/2] mm/vmscan: Skip memcg with !usage in
- shrink_node_memcgs()
-MIME-Version: 1.0
+D'oh.
 
-On Mon, Apr 14, 2025 at 12:47:21PM -0400, Johannes Weiner <hannes@cmpxchg.o=
-rg> wrote:
-> It's not a functional change to the protection semantics or the
-> reclaim behavior.
+> > The problem is if we go into low_reclaim and encounter an empty group,
+> > we'll issue "low-protected group is being reclaimed" events,
+> 
+> How can this happen when
+> 	page_counter_read(&memcg->memory) <= memcg->memory.emin
+> ? (I.e. in this case 0 <= emin and emin >= 0.)
+> 
+> > which is kind of absurd (nothing will be reclaimed) and thus confusing
+> > to users (I didn't even configure any protection!)
+> 
+> Yes.
+>  
+> > I suggested, instead of redefining the protection definitions for that
+> > special case, to bypass all the checks and the scan count calculations
+> > when we already know the group is empty and none of this applies.
+> > 
+> > https://lore.kernel.org/linux-mm/20250404181308.GA300138@cmpxchg.org/
+> 
+> Is this non-functional change to make shrink_node_memcgs() robust
+> against possible future redefinitions of mem_cgroup_below_*()?
 
-Yes, that's how I understand it, therefore I'm wondering what does it
-change.
+No, this was really just aimed to stop low events on empty groups.
 
-If this is taken:
-               if (!mem_cgroup_usage(memcg, false))
-                       continue;
-
-this would've been taken too:
-                if (mem_cgroup_below_min(target_memcg, memcg))
-                        continue;
-(unless target_memcg =3D=3D memcg but that's not interesting for the events
-here)
-
-> The problem is if we go into low_reclaim and encounter an empty group,
-> we'll issue "low-protected group is being reclaimed" events,
-
-How can this happen when
-	page_counter_read(&memcg->memory) <=3D memcg->memory.emin
-? (I.e. in this case 0 <=3D emin and emin >=3D 0.)
-
-> which is kind of absurd (nothing will be reclaimed) and thus confusing
-> to users (I didn't even configure any protection!)
-
-Yes.
-=20
-> I suggested, instead of redefining the protection definitions for that
-> special case, to bypass all the checks and the scan count calculations
-> when we already know the group is empty and none of this applies.
->=20
-> https://lore.kernel.org/linux-mm/20250404181308.GA300138@cmpxchg.org/
-
-Is this non-functional change to make shrink_node_memcgs() robust
-against possible future redefinitions of mem_cgroup_below_*()?
-
-
-Michal
-
---s2v2mxjanhgmijod
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ/1NhAAKCRAt3Wney77B
-SRqTAP9ceEwBCy9asOHNELiBKAgokXBXGmLAsJ7NOFiKLG7XAgD/WuDqfbDSlDL8
-jqWttQx7fV7ktBUPZ6qqN4+sjbp5fgE=
-=UgxG
------END PGP SIGNATURE-----
-
---s2v2mxjanhgmijod--
+But as you rightfully point out, they should not get past the min
+check in the first place. So something seems missing here.
 
