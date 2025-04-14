@@ -1,152 +1,153 @@
-Return-Path: <cgroups+bounces-7528-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7529-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FDD5A88C3D
-	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 21:25:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB8BFA88CBA
+	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 22:09:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ABF517C173
-	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 19:25:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72A2F3B32FE
+	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 20:09:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD19E28B518;
-	Mon, 14 Apr 2025 19:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D81E1DBB37;
+	Mon, 14 Apr 2025 20:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KON0hFk6"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uHhTqbQR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f73.google.com (mail-ua1-f73.google.com [209.85.222.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9271289359
-	for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 19:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E521C861D
+	for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 20:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744658711; cv=none; b=toP3Ucw57xnN+Sqlsf3qflOlpknRgcUHVnCu/6wZPVV1JS3ay4LQ6m0PrWeC/hFOYdbvvZ/qWoDlTHrVlb3arfUCr3QnD0QOhN2ZjUYpXO7CTyc31q3DpsSEq52yEjc1zQM88J2Dd8Mtk3QKEY6GBBuyklHjn0s2kmPwXdMSfcY=
+	t=1744661376; cv=none; b=pnfklYlSvJ5bazT2bIsC7bQboR3SVut1hRSsHuS3ElOdMDyJl3fbtXqhBg+yqFgNr54DOhGgseoRZc1cYomlZT6h6g34dv5CaLlVZvbnFj0wOou4gqsBn5zZy1rIVZMD/851HZraUo94F5vQW+0PPKUAejfBg3qp250GtzOYxpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744658711; c=relaxed/simple;
-	bh=mSGv8XayopqXzqyv01axofeX1lhLmDHqL5JMVx2mR48=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=EgbzcMPNQw/tPr2n29ej/q8YKgrYcLR+jQY3JRDcVXqXI07RIcH4tF/aauZ1H2U3pmzvqlSipkU25NBEQSZ0WMh2Un+reN0i8xeZjUmoeChJ7hR2x4Plgr5N/iXwbZKjAHkPOXStN92bCQEILsWgRmgDTyi0nqk5zSP7XjeAZPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KON0hFk6; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744658708;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E0oKbr4kKS2qbRj/Sg6H3NOkvDBAaqSfhBlFVEGNmFs=;
-	b=KON0hFk64d/he1pRrlRkBh+JDBPeSY8yt///JSS5ZSuA4h0oNBvVjZZ87BEdXXSognchNa
-	K2AhLsyW4C+36y2pOr6fXwdkuodQJi8mXg4sd5olo8F/I0z661M/HcvY6kTWRcbNwAiBc5
-	JGf0rqryhKJW5LbU48Vu5KClGvwxvaU=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-64-amw0ZPDOOxGB0xHYhjS8DA-1; Mon, 14 Apr 2025 15:25:07 -0400
-X-MC-Unique: amw0ZPDOOxGB0xHYhjS8DA-1
-X-Mimecast-MFC-AGG-ID: amw0ZPDOOxGB0xHYhjS8DA_1744658706
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-851a991cf8bso468997339f.0
-        for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 12:25:07 -0700 (PDT)
+	s=arc-20240116; t=1744661376; c=relaxed/simple;
+	bh=hoRuSec7O/gOBiU6cRGLKLi2QMX0P2yXAb5skEgMRFs=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Vh8C70r73h/DqM4OukHcpNdcm2qfsW//kzliGSkB53IjDO5Bt8Le1LM4QB09f8EEeprkfWBOvUJWelJK/RKLZASJQZ51c1u/yaxTqNeQVhuGphOqm2+O/1BBdZGERRn4niIDRDysIPfS8kITxU0mklICnHN6SvOUakhVhbkCFvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uHhTqbQR; arc=none smtp.client-ip=209.85.222.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com
+Received: by mail-ua1-f73.google.com with SMTP id a1e0cc1a2514c-86d8c567446so1336362241.1
+        for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 13:09:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1744661374; x=1745266174; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=XiDc6SJ1mh8k7LeOCYg2CUSls9p4ca2akmEeWWUl1Eg=;
+        b=uHhTqbQRrNvOIT6VQd3odKZQUlBFHdn4hqSHczNNhH6A1dNXCrZaHsLq7PidMnbF6Y
+         FxvIQiblBGnJVMe69L7QbmH9Pe+RdXWH8hxx3iYDxkzKspywfICJnnWPfVdYuJ+tAmFd
+         jcQzaQzu0Gj+lp3iC9ZO1l6NbXqnmOHXAdg0q87CxQ/eby361op4ChsGwOe9hFFBcIXe
+         4sMceJVIDUA5kG4Mj04vxkYMxL3NsQxNfW75CJiHx0H6bPLb4FBC2dDlYyj0JBObYFXE
+         J/cGiDVIq9n/EFTGg4R+r9o/gyxaindKh/0SVKIewSoV03AyLM9CSC6B5MmrIr9reb61
+         WquQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744658706; x=1745263506;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=E0oKbr4kKS2qbRj/Sg6H3NOkvDBAaqSfhBlFVEGNmFs=;
-        b=VQezZBbvF4WhW/h3cAS0RcFCNPLe5I91IvA3/3FTytDTC7CMowZifWn25uPfGRws+w
-         gCBZ1fvUCTJekpVrbBFjYsBbywwl/w6Gre1GiCOdRHrM/0kRgvpGUSJ51sDT4B2JbmeL
-         2nDgiwDAlwIX19a6mKAMDHsJigbmdvjSL08wOVeNkAJVvR2Yclh9KEn7EtYWSCbcecl6
-         iwMCLBTjonLLOAzJ+3wqxdO+JMQUH0ao8C+fZM2RBWAIlZpcqef+BOQXjFTC2397ZKjA
-         Zx663aZXfm5boW9DDNHEMFhSRd8ECz5E4tTzeo67n8vYX9N3gIK4rLHU4WG8hObfiIW1
-         eYlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWgeFGr7vQwFRm6o3ZKcF77l02h91KPA8p/XEPLlTxbMdjnHcI6YzbAxyI+g4QlZZAccn5efl1q@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjsPQL0FiFMpCvH35JaZqep3LZnr22oaWr1f7MxbaeBbYQE9Wo
-	2m4e1s4+J2suw6PY9Te7Ehsne/8UOM6T8SHI+3eMbw7XSbEaqXz0qlYS539pVjT6JMNXuHkq9uQ
-	1Ib8kqpRpL55OZ7+TSneh6yD5v6rAZghn2VemCHjKWzLjuPeGdtbNnHc=
-X-Gm-Gg: ASbGncvAi2/+VpC1IxQ9WEjd65hBjEnzY97rDhnMchQ643a5fm6dQP1xOWerM4Vmp58
-	Q1fnNbrBeKfgkUMg9zyM9AVdJne+MjYPslJiIfR3j3ByGLdLHrKgFbulLLofZtGF6nOF02Xay/o
-	6L1XQ03TT9PFruQtKId1vMqr8QvNxSY8TJzl8J2meRgBoL/npSdof8JeTG3IlKep6GLzAUaexqh
-	qtwwXPaqFD+xRVhWIU2OJwiw1r6gaFXrTrCiJuW6gAkMM9e7BWKjxuqWvZZFLga0LPP1PCzPyx3
-	HwVmE4w2GmQ+h4UCLb2UWbRo4qBR48RrFOfk3F0BxDgtgDWFhXDxPcf32A==
-X-Received: by 2002:a5e:de42:0:b0:85e:16e9:5e8d with SMTP id ca18e2360f4ac-861b1903fecmr65512239f.7.1744658706487;
-        Mon, 14 Apr 2025 12:25:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE24mqzq/9JMt9xaqFo8zuLdM4dyfEF/N/Li2nupDLceIwyojLaqOylmpm30VyJDGcNLVELxw==
-X-Received: by 2002:a5e:de42:0:b0:85e:16e9:5e8d with SMTP id ca18e2360f4ac-861b1903fecmr65510239f.7.1744658706176;
-        Mon, 14 Apr 2025 12:25:06 -0700 (PDT)
-Received: from ?IPV6:2601:408:c101:1d00:6621:a07c:fed4:cbba? ([2601:408:c101:1d00:6621:a07c:fed4:cbba])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4f505d1873bsm2721724173.48.2025.04.14.12.25.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Apr 2025 12:25:05 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <45f38b98-43e0-4d0a-9106-f8b537f59a17@redhat.com>
-Date: Mon, 14 Apr 2025 15:25:03 -0400
+        d=1e100.net; s=20230601; t=1744661374; x=1745266174;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XiDc6SJ1mh8k7LeOCYg2CUSls9p4ca2akmEeWWUl1Eg=;
+        b=OLYJfwJVkC2Oa2yJi7oe8Xenup0KaQmUlRrZmaPZE/eT0eg277u7rf0B2X9Va0Q0kk
+         yl2Fo3R/zUfYagDn/XX+QQ+AbpTp6bV0bQueVG7AI0RgiJ0T+j+sFV4gmju4lO5LQxyt
+         unhAmAmgfxrKac0uANgADEfAqgfMpAOnJfPA3o4HZT/nHND8oeyC6zpxnRn0SvqkTYqO
+         hxzhrHL7MCKrJ4UleUutXUyVwv5s0/uaNlMEYoGy6cSr+xVFkQC8czEoiSUf1GgWvxbZ
+         jSHUFXPU1jSFl/cxD6MaowWbAoh+GuUmOWrTY0D8kBNP44xyT3EeBZ3zCBO6zfKh65Zi
+         DHLA==
+X-Forwarded-Encrypted: i=1; AJvYcCVpBsDocHaGRPBUWZ2wGq44MgQ3FBhtrSE9om9e7c3C6kVF8W67IavtKTtSEEVK2hfosFoHY5zw@vger.kernel.org
+X-Gm-Message-State: AOJu0YxaSzubMOjsWM8o3J5JuYgvESNvjZ1QlCdlvave2FPFit5dCTZm
+	r9PKHN56yx43NcdIuR4twmbElgCNSKMah1brUSvipy3P/p0FYKKtQwU+Erus59WDY4g4ORSTJNI
+	65YxIdFeOyx2OrX4fRg==
+X-Google-Smtp-Source: AGHT+IGuo7be8B4P3vY9QtZ1/PAZEf8kgO8U0u7S6xaDlVa8vsy8+mgzqAfiaRZ78PdHRIFfm42L7C+ao9DegXPF
+X-Received: from vscv12.prod.google.com ([2002:a05:6102:330c:b0:4c3:1981:80b])
+ (user=jthoughton job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6102:32d1:b0:4c1:7a08:9279 with SMTP id ada2fe7eead31-4c9e4f1f3d3mr8382414137.15.1744661374125;
+ Mon, 14 Apr 2025 13:09:34 -0700 (PDT)
+Date: Mon, 14 Apr 2025 20:09:24 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: KASAN: slab-use-after-free Read in cgroup_rstat_flush
-To: tj <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: ffhgfv <xnxc22xnxc22@qq.com>, hannes <hannes@cmpxchg.org>,
- cgroups <cgroups@vger.kernel.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
-References: <tencent_084EDA1878C098FFB951DC70F6FFCC896408@qq.com>
- <djupj4qfnd2izxhtzkmmhx6bfmnn3462dqi45qwbmdj46twart@424eqzhhh2s3>
- <Z_1JBt3RMATxnDgL@slm.duckdns.org>
-Content-Language: en-US
-In-Reply-To: <Z_1JBt3RMATxnDgL@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.49.0.604.gff1f9ca942-goog
+Message-ID: <20250414200929.3098202-1-jthoughton@google.com>
+Subject: [PATCH v3 0/5] KVM: selftests: access_tracking_perf_test fixes for
+ NUMA balancing and MGLRU
+From: James Houghton <jthoughton@google.com>
+To: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org
+Cc: Maxim Levitsky <mlevitsk@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Yu Zhao <yuzhao@google.com>, 
+	David Matlack <dmatlack@google.com>, James Houghton <jthoughton@google.com>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+
+This series fixes some issues with access_tracking_perf_test when MGLRU
+or NUMA balancing are in use.
+
+With MGLRU, touching a page doesn't necessarily clear the Idle flag.
+This has come up in the past, and the recommendation was to use MGLRU
+generation numbers[1], which this series does.
+
+With NUMA balancing, pages are temporarily mapped as PROT_NONE, so the
+SPTEs will be zapped, losing the Accessed bits. The fix here is, in the
+event we have lost access information to print a warning and continue
+with the test, just like what we do if the test is running a nested VM.
+
+A flag is added for the user to specify if they wish for the test to
+always enforce or always skip this check.
+
+Based on kvm/next.
+
+Changelog:
+
+v2[3] -> v3:
+- Applied David's directory fix on patch 3.
+- Added SoB-by, R-by (patch 2, missed in v2), and A-by.
+
+v1[2] -> v2:
+- Re-add clone3_selftests.h for cgroup selftests (thanks Michal!)
+- Some comment fixes, patches 2 and 5 (thanks Maxim!).
+
+[1]: https://lore.kernel.org/all/CAOUHufZeADNp_y=Ng+acmMMgnTR=ZGFZ7z-m6O47O=CmJauWjw@mail.gmail.com/
+[2]: https://lore.kernel.org/kvm/20250327012350.1135621-1-jthoughton@google.com/
+[3]: https://lore.kernel.org/kvm/20250331213025.3602082-1-jthoughton@google.com/
+
+James Houghton (3):
+  cgroup: selftests: Move cgroup_util into its own library
+  KVM: selftests: Build and link selftests/cgroup/lib into KVM selftests
+  KVM: selftests: access_tracking_perf_test: Use MGLRU for access
+    tracking
+
+Maxim Levitsky (1):
+  KVM: selftests: access_tracking_perf_test: Add option to skip the
+    sanity check
+
+Sean Christopherson (1):
+  KVM: selftests: Extract guts of THP accessor to standalone sysfs
+    helpers
+
+ tools/testing/selftests/cgroup/Makefile       |  21 +-
+ .../selftests/cgroup/{ => lib}/cgroup_util.c  |   2 +-
+ .../cgroup/{ => lib/include}/cgroup_util.h    |   4 +-
+ .../testing/selftests/cgroup/lib/libcgroup.mk |  19 +
+ tools/testing/selftests/kvm/Makefile.kvm      |   4 +-
+ .../selftests/kvm/access_tracking_perf_test.c | 263 ++++++++++--
+ .../selftests/kvm/include/lru_gen_util.h      |  51 +++
+ .../testing/selftests/kvm/include/test_util.h |   1 +
+ .../testing/selftests/kvm/lib/lru_gen_util.c  | 383 ++++++++++++++++++
+ tools/testing/selftests/kvm/lib/test_util.c   |  42 +-
+ 10 files changed, 733 insertions(+), 57 deletions(-)
+ rename tools/testing/selftests/cgroup/{ => lib}/cgroup_util.c (99%)
+ rename tools/testing/selftests/cgroup/{ => lib/include}/cgroup_util.h (99%)
+ create mode 100644 tools/testing/selftests/cgroup/lib/libcgroup.mk
+ create mode 100644 tools/testing/selftests/kvm/include/lru_gen_util.h
+ create mode 100644 tools/testing/selftests/kvm/lib/lru_gen_util.c
 
 
-On 4/14/25 1:42 PM, tj wrote:
-> On Mon, Apr 14, 2025 at 07:40:04PM +0200, Michal Koutný wrote:
->> Hello.
->>
->> On Mon, Apr 07, 2025 at 07:59:58AM -0400, ffhgfv <xnxc22xnxc22@qq.com> wrote:
->>> Hello, I found a bug titled "   KASAN: slab-use-after-free Read in cgroup_rstat_flush " with modified syzkaller in the Linux6.14.
->>> If you fix this issue, please add the following tag to the commit:  Reported-by: Jianzhou Zhao <xnxc22xnxc22@qq.com>,    xingwei lee <xrivendell7@gmail.com>,Penglei Jiang <superman.xpt@gmail.com>
->>> I use the same kernel as syzbot instance upstream: f6e0150b2003fb2b9265028a618aa1732b3edc8f
->>> kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&amp;x=da4b04ae798b7ef6
->>> compiler: gcc version 11.4.0
->>>
->>> Unfortunately, we do not have a repro.
->> Thanks for sharing the report.
->>
->>> ------------[ cut here ]-----------------------------------------
->>>   TITLE:  KASAN: slab-use-after-free Read in cgroup_rstat_flush
->>> ==================================================================
->>> bridge_slave_0: left allmulticast mode
->>> bridge_slave_0: left promiscuous mode
->>> bridge0: port 1(bridge_slave_0) entered disabled state
->>> ==================================================================
->>> BUG: KASAN: slab-use-after-free in cgroup_rstat_cpu kernel/cgroup/rstat.c:19 [inline]
->>> BUG: KASAN: slab-use-after-free in cgroup_base_stat_flush kernel/cgroup/rstat.c:422 [inline]
->>> BUG: KASAN: slab-use-after-free in cgroup_rstat_flush+0x16ce/0x2180 kernel/cgroup/rstat.c:328
->> I read this like the struct cgroup is gone when the code try flushing
->> its respective stats (its ->rstat_cpu more precisely).
->>
->> Namely,
->> 	__mem_cgroup_flush_stats
->> 		cgroup_rstat_flush(memcg->css.cgroup);
->> this reference is taken at cgroup creation in init_and_link_css()
->> and released only in css_free_rwork_fn().
-> Maybe another casualty of the bug fixed by a22b3d54de94 ("cgroup/cpuset: Fix
-> race between newly created partition and dying one")?
-
-You mean the rcu_read_lock isn't held for the entire flushing operation 
-so that the cgroup structure itself may have been freed near the end. Right?
-
-Cheers,
-Longman
-
->
-> Thanks.
->
+base-commit: fd02aa45bda6d2f2fedcab70e828867332ef7e1c
+-- 
+2.49.0.604.gff1f9ca942-goog
 
 
