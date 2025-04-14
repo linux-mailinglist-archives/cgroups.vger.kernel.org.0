@@ -1,128 +1,106 @@
-Return-Path: <cgroups+bounces-7535-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7536-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B7A6A88CDB
-	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 22:12:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5931A88CFE
+	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 22:26:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A24287A87CF
-	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 20:10:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C340317A9D1
+	for <lists+cgroups@lfdr.de>; Mon, 14 Apr 2025 20:26:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 251451DC9A8;
-	Mon, 14 Apr 2025 20:11:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C811DEFDB;
+	Mon, 14 Apr 2025 20:26:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Qwr3Ibyn"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KRKKA9KT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7101DE3BB
-	for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 20:11:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC06B155C82
+	for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 20:26:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744661497; cv=none; b=epqd8s/qe+8A/UN9Ca+4md/uo+mgIENcgsKwlCraQia0GPEfamE0thSIgJyxBtbs1/BFLDmQYKmK46PUny+aGLlAIIi/bxSBXhI/qxo9d/65+5N6kIMngRDZbREtlUB0elW3Xp+dj8/OnFhLu6qjCAE2bSezZ14kd1jmeJVeoD4=
+	t=1744662369; cv=none; b=qR4SeaJ5MhATqTw3y2hlbe4Iyv3H/R2nBD/3EowxiYTHF1zFriR6uExThlyZG5yBp6VhSPUA/QGrpQcXl15roPZYi2pcbKehHf3N+YIOCV1gaAwGlIXX7Ssd4earcSrQsylPb1eDmkmjTbMw3mv8fQhT45TyL57AdeP4/IoTadk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744661497; c=relaxed/simple;
-	bh=m9JPGoRtrzFiXzQ5JxSpphBesKZxdOJFyE2RAQr2itw=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=AeH0qliuADkJo3j4NcO4ec4gGtaSRMlV4RVEWax+jmSWlJSt8o5KVCQUjQk7DQ3O3ARMHEkyltlegbgaZRYkFSeF6sQrY2S5tjM4yMvSy2rg24iaXTKm7QukP1tl63inE1fqbk1RSZFoVA8La2UNjPeSPWeLy5TX97IhBsB64K8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Qwr3Ibyn; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744661495;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nXBMNalW9AKD2lIVI1ITSnwY/4rOc9i7I/RBVDU4908=;
-	b=Qwr3IbynYnfansnJj40EK7uITqpPlNCw6v87UnD4ycMJh2QXNSudZsW4j3CgiJ2ORQ5a2R
-	nT9gzAFK1yEnmCT+i/0yMh7RRiNZekveUtdDuIolUufeBa4iQ2D7cT5gogGVW4TjDTEBTr
-	EuRQcEaxk78POkVQVgPqD1QEVbUihuc=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-639-4gFBoPu3O6e8vtzVnNsXqQ-1; Mon, 14 Apr 2025 16:11:33 -0400
-X-MC-Unique: 4gFBoPu3O6e8vtzVnNsXqQ-1
-X-Mimecast-MFC-AGG-ID: 4gFBoPu3O6e8vtzVnNsXqQ_1744661493
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6e91b1ddb51so87721516d6.0
-        for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 13:11:33 -0700 (PDT)
+	s=arc-20240116; t=1744662369; c=relaxed/simple;
+	bh=e8RuQjvX7EC8rJIFazxow+KpM5ax/UsWJUoMj3kPKTI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z8qj1pd+i0od5mdm8/38+8bicMpqjvt3uW99rFTkAPTJgqjvLixlO2VJV6/OnxwAouH4v4Lja8P9kDI0g2oydIarU3zrwPUonpipvM4Kbak8VKaH7QEw0YAD7sb5qgyIY5BMKye3oekztMBcYvrFALSL0zaHBOOILalgPy7CXlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KRKKA9KT; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e6e2a303569so3601182276.0
+        for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 13:26:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1744662366; x=1745267166; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e8RuQjvX7EC8rJIFazxow+KpM5ax/UsWJUoMj3kPKTI=;
+        b=KRKKA9KTJLwDOv/j85iqeAteHbnRRThNrFG1v9dr9pIvRgMvzICKCPFyrZO2Y3oUbR
+         tutVDXS0X/8k1V/4dWxHPiqLZFSVfQGhXEAZZPdhCBUkYHOVKkeK5iwBWHcAYPZXLikA
+         CECW1DqWpq6jcDUMFF4GbmIZB+PxBz32qmragIPXFTGnZR3L2FlhKqTPwjIPAYBinGpo
+         HaxzZKEF/kHKeMFxWhs+woabXNqxnUrmYd7pe7DE20q/ldq+337zRrgGacCLMNKRVk9a
+         EnHhVWJeMir1zo60IwygqgZrRKwHeHf56sqyKN2fxMcM28nLHSQKQW22TnzpAHrH5PI9
+         8PkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744661493; x=1745266293;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nXBMNalW9AKD2lIVI1ITSnwY/4rOc9i7I/RBVDU4908=;
-        b=N07oID8ipCgHGLUIf8VKRh9/hx8moM4c+oYQFPcrG7LEY0uheXpD1Bt/JHr2bNH3Rg
-         r4kjaZYk1c9XMclaWSwbPUnkAUs0ni4Byestj9xlr09xWTeExwh6/ybiXMlPrePEdvLZ
-         xzPiVMY7lmGPOudU0HAtATER18uFkYHH6NZsjeO/UWFPbs0cMzBDT6smXa51k2MOZjj1
-         GTY5ihPVTcZCl/QcUKzuwIbW6ICWnWtCsVFTcxdJBAQdPIYyN1xXxnIWdjQ4o4ntYgyp
-         POd2gNs1VwS/LR2GbS9Aug/VOGbcAN9OFKZBQtJvAIpbEnZgJB6SNWm+AuW7aHlNg3J9
-         P7aA==
-X-Forwarded-Encrypted: i=1; AJvYcCVMAi7E4vtpqBSQ9vpt73Z48BWIeigft7b5RTus1+Sf7qa5wExwpWMhD4na/t5aknL8EErfKHQL@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxqomk5kaXlIv+IL0gLkPj2X996byS2QtfwgzD/lXDLDD53+liF
-	IuK075qLwAQVcF3f8xtdximnwh+tKhac/wFud9V0R2HEvdGIKJaLVXkhW06+1PoUxRjv6A0GfO+
-	Q2hmdNnyMIHNsWB7I+Q338GN20qB6Zk4v+vrfANPaD926pPBZ9gk7VUs=
-X-Gm-Gg: ASbGncsXvO4hBARXmsdZd3LWFexYmUNZC+fD9VM36QA6eY0Y2OrX72XGh1+n7BtUCSk
-	nj70SJqooFl2BwNHxX3287S4udSeJzHV4oECd0+WXD5cvlT4Ha3xVxbt7cdJ+8HauEkZhoQW4Fb
-	9xM118x+Kvbiddu6e/+viJ1DrRz9UM4svoJEEkWL9tlcs7fo/or0rpQWL3sR/h+VgbJOdP1LPrc
-	mBsQeqzswtMs6Kh0lI/qg+U1s1Ul0+t8l/9j9TAWL78Hzobfboh7ARTA4HJdAifu7oc+QDEdqeJ
-	MillZiiA4oey1uwBMavfqSTZfQUroxPnuAYk3jN82G6ZtA11d53HEHuB2w==
-X-Received: by 2002:a05:6214:1311:b0:6e8:f433:20a8 with SMTP id 6a1803df08f44-6f230cbd3b4mr196025366d6.9.1744661493091;
-        Mon, 14 Apr 2025 13:11:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH/AFC0dXfa/KAZ1s693oa/ZDYO9eQoMkKLPILSuBvxvLvl1Rt7HkM7Cdfsi6cJATP+A6fq6g==
-X-Received: by 2002:a05:6214:1311:b0:6e8:f433:20a8 with SMTP id 6a1803df08f44-6f230cbd3b4mr196025126d6.9.1744661492722;
-        Mon, 14 Apr 2025 13:11:32 -0700 (PDT)
-Received: from ?IPV6:2601:408:c101:1d00:6621:a07c:fed4:cbba? ([2601:408:c101:1d00:6621:a07c:fed4:cbba])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6f0dea080d5sm88501366d6.89.2025.04.14.13.11.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Apr 2025 13:11:30 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <8ba51391-d4fc-41e7-8d71-cebc0feb6399@redhat.com>
-Date: Mon, 14 Apr 2025 16:11:27 -0400
+        d=1e100.net; s=20230601; t=1744662366; x=1745267166;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e8RuQjvX7EC8rJIFazxow+KpM5ax/UsWJUoMj3kPKTI=;
+        b=YJvJl1oro19V9Zk7LNfbXi5UMJu2SLk0qtwFQn8ly10GONjjex4kfw2vcSO4NtwBXd
+         zhAahD+rgBgpPU8sXN9BB4VTUDpEVTUycBliKu+xqBJfk5tfwT0Fj+982k/PjgRS5lgh
+         2AZN+jV3OZDqsYMsj0jpfMr0jZTc6sKIpEz2GL6OYccE+/VlwyQjua9E05Lo0yNcs4UH
+         /hoa19qJUq9fEf05g4oyup54V70EsaihRdzEPa4KS6wmFoqSCtUEsCeoFgsHNexKJyOg
+         bT1UQpDrmk6GapP+hILJMYA16vqJz2U9ypFxH9JtbvLy6+AsyZd4vyrQSapm9w/j2gKo
+         jtGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXewXe7g7g79lW2ZbP5CsMegsCtX5cZ+oCMeAyu5rNp6xG20W/AuBrnnZaoU0MtCqPikcD7lavF@vger.kernel.org
+X-Gm-Message-State: AOJu0YwvmCdzhw3EQT4tyTM644214tmq6Ckb+laNNWDwc443YcwY7oXf
+	Q/6H9siKo+Yh9Lp2aEWEkFmhNsg53Q6dvwJ+66j5gyjW23PB4FcRZ6ckQt/sHNedSVn5sy2f71l
+	oJvUBUJtHmaxCYjBMYI/b9XuUfgI3nkK4qM+i
+X-Gm-Gg: ASbGncuTTTcAneI2sHTbXrG43qblOkPiPOqG7oEPOiDr3dqKlJ1POBaAYFJSM9fMTTf
+	tvI4vuEbO4QE6jA3J0+G6rHTXVYSt/jBZUn/OEr4q4+9HzDzdQxGkT40P6Jnx5Aze39oP8Kno/O
+	He6Q3Ap2VM9/61m9J1Id08DeBer/VuZooA/QTLS2C0JCY0Xy/KJG5MWWNgQ4iLAg==
+X-Google-Smtp-Source: AGHT+IHim7LKMVAssyTOnOfMgHoryUchjWHO0ARJ2hg5JmtdO8AhbqOEh3YOdPUF47H4HZYQwddbnu499M0vFJgq5eU=
+X-Received: by 2002:a05:6902:4912:b0:e58:a25c:2787 with SMTP id
+ 3f1490d57ef6-e704df84608mr21722964276.38.1744662366434; Mon, 14 Apr 2025
+ 13:26:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset-v1: Add missing support for cpuset_v2_mode
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- "T.J. Mercier" <tjmercier@google.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250414162842.3407796-1-tjmercier@google.com>
- <ysc4oguaisa7s5qvdevxyiqoerhmcvywhvfnmnpryaeookmjzc@667ethp4kp4p>
-Content-Language: en-US
-In-Reply-To: <ysc4oguaisa7s5qvdevxyiqoerhmcvywhvfnmnpryaeookmjzc@667ethp4kp4p>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20250414200929.3098202-1-jthoughton@google.com> <20250414200929.3098202-4-jthoughton@google.com>
+In-Reply-To: <20250414200929.3098202-4-jthoughton@google.com>
+From: James Houghton <jthoughton@google.com>
+Date: Mon, 14 Apr 2025 13:25:30 -0700
+X-Gm-Features: ATxdqUGwhQ01tB21e31AgRtLSVaaR6Jizfi-T6B2oRJ8KFk1W8QQrgJ2NgNsjhU
+Message-ID: <CADrL8HWfF84VLmrVkzXTdwi-xxbUTPRUBDx1URZOsYv1DuB1-Q@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] cgroup: selftests: Move cgroup_util into its own library
+To: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org
+Cc: Maxim Levitsky <mlevitsk@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Yu Zhao <yuzhao@google.com>, 
+	David Matlack <dmatlack@google.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 4/14/25 2:26 PM, Michal Koutný wrote:
-> Hello.
+On Mon, Apr 14, 2025 at 1:09=E2=80=AFPM James Houghton <jthoughton@google.c=
+om> wrote:
 >
-> On Mon, Apr 14, 2025 at 04:28:41PM +0000, "T.J. Mercier" <tjmercier@google.com> wrote:
->> Add cgroup v1 parameter parsing to the cpuset filesystem type so that it
->> works like the cgroup filesystem type:
-> Nothing against 'cpuset_v2_mode' for the cpuset_fs_type (when it's
-> available on cgroup v1) but isn't it too benevolent reusing all of
-> cgroup1_fs_parameters? AFAICS, this would allow overriding release agent
-> also for cpuset fs hierarchies among other options from
-> cgroup1_fs_parameters.
+> KVM selftests will soon need to use some of the cgroup creation and
+> deletion functionality from cgroup_util.
 >
-> (This would likely end up with a separate .parse_param callback but I
-> think that's better than adding so many extra features to cpuset fs.)
+> Suggested-by: David Matlack <dmatlack@google.com>
+> Signed-off-by: James Houghton <jthoughton@google.com>
 
-I concur. It should be a separate cpuset_fs_parameters() to handle it 
-instead of reusing cgroup1_fs_parameters() to allow so many other maybe 
-irrelevant cgroup1 parameters.
+Tejun had provided his Acked-by[1] and I somehow forgot to include it.
+(I know I should just use b4 and redownload the series with
+everything...) Sorry about that.
 
-Cheers,
-Longman
-
+[1]: https://lore.kernel.org/kvm/Z-sQ76PG14ai9jC0@slm.duckdns.org/
 
