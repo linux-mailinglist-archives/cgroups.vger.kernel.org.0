@@ -1,77 +1,78 @@
-Return-Path: <cgroups+bounces-7556-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7557-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC1E8A89218
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 04:49:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 183D6A8921A
+	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 04:50:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE398179819
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 02:49:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1111917D133
+	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 02:50:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2C2224243;
-	Tue, 15 Apr 2025 02:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76480224B05;
+	Tue, 15 Apr 2025 02:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="VupfZ/ky"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="izAJHX7h"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61EFE222565
-	for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 02:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67EA224AE9
+	for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 02:46:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744685211; cv=none; b=ahekMUNLtILk6FeedCN1K7MNG/3ee9GuUtyF0LtMhOMb8u9AyO8yh503EGC22919G21b/lp0iLI1xqp/0XYPNyQcyaA2Ounei/WiHSBk5hldX1P/tXZAxcBNR6L64G88JUbhLcnmAsDE0J+1JkeTlZLGAw1A0n3yppY38zQl7XA=
+	t=1744685216; cv=none; b=fjJM7YPLmhP+RfJWNLA9Rbsmsgh5yZZQDnjE2yhIIesTQhXPP7wsIfHiRaP9+ReAPxxg18u51B1L96pJgeHNnCrKzrnyo7GzvSQ/DHAP5uszDda4XvDAikHAPTlT9aPdY5cviQi4WPA1vHkXvnIL7GfuRUt69h3w0t1muzBtBMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744685211; c=relaxed/simple;
-	bh=QhuVhvtJc5MpA+UIZxyTNbtSjQ4aOVEDIQQnJjIAMyE=;
+	s=arc-20240116; t=1744685216; c=relaxed/simple;
+	bh=zozmMIIkyQB7vfg2WW3vcLqWkxJHli/zl3aRM3CRPPI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=e1a+TErtSQlgwBjdn/BZAK8v2qJRdF1vqalEXnTOXfWBSmTidSXRoYVpz16naIL/PFSd36WWqIiLfoLjhZTkt8UWyyqJIgGU28U2QuIeDSv5eRqASpmzwtlAe7DFvO26vwQfOxrDWH7Kt1/Tw1dfFYAfzK5Th581XL9ZI6SPC+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=VupfZ/ky; arc=none smtp.client-ip=209.85.215.171
+	 MIME-Version; b=YEZ68d2ar9+vS/Vn6u6JkBTyGqt6OEu1jrC/GJTUI+iMMJy8B4m5Yu5IUisoDOvaQT70Xmt5lv0GhO8jSEsfUHFo2WVrhkOHj3E7U3lFrxbJtiTnJmIH/Y52TEF0c2by1868ndTJ5SPC7ZkQ0pIDjlMETNwDW2A4E+Od7r1FrxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=izAJHX7h; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-af548cb1f83so4846744a12.3
-        for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 19:46:49 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2241053582dso69118115ad.1
+        for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 19:46:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1744685209; x=1745290009; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1744685214; x=1745290014; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IuDX2yZAES6U0UQApE3qruOoIN30Kn4u1JZ0iDLJzNw=;
-        b=VupfZ/kyYO80+4eVO6KxMJ9hVBAXycs6xxyQLIOB99DoOk021z9twtwJGcYr+gGEjm
-         SpCBkV3MMazTM/kuK3YabytKOIHPNKUGAXqXbVkyMSYxxFo5IemEakyfLAOwcWydx1J+
-         05r+2QljAbVX44VX7ZLwtFDNf3S4XIeBZ//mhhNttEOhTYMvO+w4uLN0fmozRh16FlKw
-         evp0q+8OqfZmjQdAMpn+IucEIwfLZx25A6gqhs5a6iReyeolWW/mkb/mSsMkLv1hSRSU
-         8fi7C3GFLQF6pHaNePV9NJYbRVgNV/gVdRWwpFekeC8n5MWr/+nhcz42WIcLjnpkmnbV
-         xMIQ==
+        bh=GDFiTtsYE3vsXL9LKCv2J9wFa6MHITbi7MDnimw67RY=;
+        b=izAJHX7htiBVyb8xAlCgBvEPj9eNwRXIty0+c3vv6IRU0PDTSTRs2NV8dsNzx3CwCC
+         m2X2OOXjuq6jLVgJaIgxhsk3VvBvIzVAmrxaTqFpCdX/D55HKLkNLtYJ+dBalryk75Qs
+         SXca/VIquUgJOsSwJXVA5fR4vws1DaciGlcPgS01T4U1F9RuFXVJCs7rhqmvT4QWR3Gr
+         bRKuhrAvnD/FSSQxY8NaZmevRQcXPcozOJ1woSPEgszqE7gkLq0iLYs0E934Dhj1vtnQ
+         it6wlms5CnZQmya22svuodlg4tt7CEaLxf0EFktqox/Y1dq88etZOfbHeHxJw4VjHuM5
+         o/YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744685209; x=1745290009;
+        d=1e100.net; s=20230601; t=1744685214; x=1745290014;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IuDX2yZAES6U0UQApE3qruOoIN30Kn4u1JZ0iDLJzNw=;
-        b=mEFocRLA4xYgct1aEzo50BUQAot+BIDYAWO4rOBE2TSODFapK/dOZYEQfjEBbhqdCn
-         2WTPS73KsICDwiOimv9gaeq+BIfjvvMvg80wLRmcsQQxBMub43bKj0ljvGjEwojnKml4
-         i5hREpajRGm+QSuMXuFIdeR+o8cmiMkk3e7nMu7Vhw7iRJinP5FIzfNDN4+souDBpngC
-         NReMFBx0VZNtuWApg0AaomS9YF3dnCoKaLHkmZCZKQUOuxTyTo4lVIc7mLevwEF3yU5u
-         j+5edwh/b92LMh5NNoCpEwvZ5p4p01cDZkQYi+KguZbTrGQ4dWLAtaILm0cMJc2jiSVX
-         w5Og==
-X-Forwarded-Encrypted: i=1; AJvYcCV8dwM4B6amPcc6fS2bXqQjXCiRO1w8R7ppP/sJkPGcuAYgc5nkbaY9i3q98U9Lp+vsYdglbiUw@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3FadlornADQmFGM+hJmGQytGI1U4TmpDgRurWGS84a3YoyZAj
-	P2ozUeb8QLvIlyuIyLaarvqypEXqlKjlhkFf+6b0bfcQdl1Q3VoSgMIW7o89mfs=
-X-Gm-Gg: ASbGncvP9rfy0G5z8Vvx57LPce718wyP7DpN09S0/R3n5yxz2eCDST3kmZpg3xmfPBE
-	ABkIPUB2UtkYa44wxD7OJeMXia4n7WADsz3SnJeRQ1ukJs2uHYVTTsLg7/Qimg6EvWS73Yr1Slf
-	cefs8XAZrd/UGeK4L951zWSqhvVtl+21234WACi/d2zNn1LLKQ0IvJTXXvC4zhZOLvFutC4Lfbd
-	fQx2mj6aVN8nqqs9N7i3C5U6uSubMk0xNo2PvzgMTnUI86UrzoGCJJZ0uJ6J9UduebSBKKNG1lu
-	yyzdVOdv3UsY01yq4N1qWLyhXTjgNCUAUfGuAIdqpss+0VP9RuuyWKHwhRy1UCu7RvEZ1ssZ
-X-Google-Smtp-Source: AGHT+IEiRiEAaC7KVEwbBorKdUbvn6lwcIuA3If1BEtGwUIR4XacRMxzFJ4y2u3Y4Nx1KigSul40og==
-X-Received: by 2002:a17:903:230e:b0:224:1234:5a3b with SMTP id d9443c01a7336-22bea50da98mr202894305ad.51.1744685208495;
-        Mon, 14 Apr 2025 19:46:48 -0700 (PDT)
+        bh=GDFiTtsYE3vsXL9LKCv2J9wFa6MHITbi7MDnimw67RY=;
+        b=ptnappH6n3a+krZttHRdOsYtSonvlddto3bhrAksNw7eQaGLb+h1cC4CKAhjLibmT9
+         HRA5/eV/qZAKcyDWSmXF8QwfArcHJRcooR2tBIeYhtbC2bz2+qKbVNCtycAmO2QcSJYR
+         wyjmw11Il8chfsOlSa7+RjhmY8NmlvXon29kB30AYNrvczOalUlG4DVUU7g7v/OAoZwV
+         R+t3UbJsYNXTVwfAhMcPknebtHE7anH0CgEGfnA3oUo3jLmK6IzAxFjfS4cHIXgNvFUo
+         dkd0s/1BwhDpVUPw9PqCASuUn/SSlb+n+l7HJ0lvJTEiWKa/SXRUUzG+i0ubC6qFKg97
+         ZqoA==
+X-Forwarded-Encrypted: i=1; AJvYcCXTu+IxxlhcZZOT8Ds178JlxwGmaOs+FannVbG39K6PeZgwiSFsEVjirtJjQkF7CiClE/8KrRwW@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+8mCymsnwFfx3AS95F1Y7MHTEGuCRbqJR3+6sEheWwUGon2/9
+	4HZ3fVXF6u3d4dgUWiaItGIkPk2XycJtBPtVXUtzzuxC3ukXEwA0jakpfTMpIoA=
+X-Gm-Gg: ASbGncta6794oWwRL3DI8rT5NPN+1tHucd5l26GmYpHgyHb0XQfLvJSUrCto/bPITYW
+	VaC27MWPSw8AiS47oEuTMNx4KwnKqyUfzMFcP+6eOnFNQh63Th8U7Tb+syOt61fvvZBbNlDWxkC
+	frteLhta8C/ZZmNTI3A0fsnTDtbaILXP6ZZlkQOhw0mVIGXvM0Mypr6AYY9TAxWgOT8FQNpfw32
+	x1EmXZyyH/+2UQYy4Res/FNPCbIR+mWpVdPJFMoUVyVIIhwiEHHIOBqA+b9JxPKvUhXZ+F9LRJy
+	YIt3Oxc6WYF3k0YRH5EvzUKtyU3FpBYgviGjOkXHVvAbsCnF7r8sT7t5+ScrMnX0WNhWu4R2jG7
+	5dnfLsLY=
+X-Google-Smtp-Source: AGHT+IFH7dR3wBmfihakVorT6Qxxwq/ncIuMTxmwaVROxMgkaq6cZIV7iNxi0oFb9UgfVvElafvYJA==
+X-Received: by 2002:a17:902:eb8a:b0:21f:6c81:f63 with SMTP id d9443c01a7336-22bea4b6141mr200724475ad.16.1744685213756;
+        Mon, 14 Apr 2025 19:46:53 -0700 (PDT)
 Received: from PXLDJ45XCM.bytedance.net ([61.213.176.5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7ccac49sm106681185ad.217.2025.04.14.19.46.43
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7ccac49sm106681185ad.217.2025.04.14.19.46.48
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 14 Apr 2025 19:46:48 -0700 (PDT)
+        Mon, 14 Apr 2025 19:46:53 -0700 (PDT)
 From: Muchun Song <songmuchun@bytedance.com>
 To: hannes@cmpxchg.org,
 	mhocko@kernel.org,
@@ -90,9 +91,9 @@ Cc: linux-kernel@vger.kernel.org,
 	hamzamahfooz@linux.microsoft.com,
 	apais@linux.microsoft.com,
 	Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH RFC 10/28] mm: memcontrol: return root object cgroup for root memory cgroup
-Date: Tue, 15 Apr 2025 10:45:14 +0800
-Message-Id: <20250415024532.26632-11-songmuchun@bytedance.com>
+Subject: [PATCH RFC 11/28] mm: memcontrol: prevent memory cgroup release in get_mem_cgroup_from_folio()
+Date: Tue, 15 Apr 2025 10:45:15 +0800
+Message-Id: <20250415024532.26632-12-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250415024532.26632-1-songmuchun@bytedance.com>
 References: <20250415024532.26632-1-songmuchun@bytedance.com>
@@ -104,247 +105,49 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Memory cgroup functions such as get_mem_cgroup_from_folio() and
-get_mem_cgroup_from_mm() return a valid memory cgroup pointer,
-even for the root memory cgroup. In contrast, the situation for
-object cgroups has been different.
+In the near future, a folio will no longer pin its corresponding
+memory cgroup. To ensure safety, it will only be appropriate to
+hold the rcu read lock or acquire a reference to the memory cgroup
+returned by folio_memcg(), thereby preventing it from being released.
 
-Previously, the root object cgroup couldn't be returned because
-it didn't exist. Now that a valid root object cgroup exists, for
-the sake of consistency, it's necessary to align the behavior of
-object-cgroup-related operations with that of memory cgroup APIs.
+In the current patch, the rcu read lock is employed to safeguard
+against the release of the memory cgroup in get_mem_cgroup_from_folio().
+
+This serves as a preparatory measure for the reparenting of the
+LRU pages.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- include/linux/memcontrol.h | 29 ++++++++++++++++++-------
- mm/memcontrol.c            | 44 ++++++++++++++++++++------------------
- mm/percpu.c                |  2 +-
- 3 files changed, 45 insertions(+), 30 deletions(-)
+ mm/memcontrol.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index bb4f203733f3..e74922d5755d 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -319,6 +319,7 @@ struct mem_cgroup {
- #define MEMCG_CHARGE_BATCH 64U
- 
- extern struct mem_cgroup *root_mem_cgroup;
-+extern struct obj_cgroup *root_obj_cgroup;
- 
- enum page_memcg_data_flags {
- 	/* page->memcg_data is a pointer to an slabobj_ext vector */
-@@ -528,6 +529,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
- 	return (memcg == root_mem_cgroup);
- }
- 
-+static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
-+{
-+	return objcg == root_obj_cgroup;
-+}
-+
- static inline bool mem_cgroup_disabled(void)
- {
- 	return !cgroup_subsys_enabled(memory_cgrp_subsys);
-@@ -752,23 +758,26 @@ struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css){
- 
- static inline bool obj_cgroup_tryget(struct obj_cgroup *objcg)
- {
-+	if (obj_cgroup_is_root(objcg))
-+		return true;
- 	return percpu_ref_tryget(&objcg->refcnt);
- }
- 
--static inline void obj_cgroup_get(struct obj_cgroup *objcg)
-+static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
-+				       unsigned long nr)
- {
--	percpu_ref_get(&objcg->refcnt);
-+	if (!obj_cgroup_is_root(objcg))
-+		percpu_ref_get_many(&objcg->refcnt, nr);
- }
- 
--static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
--				       unsigned long nr)
-+static inline void obj_cgroup_get(struct obj_cgroup *objcg)
- {
--	percpu_ref_get_many(&objcg->refcnt, nr);
-+	obj_cgroup_get_many(objcg, 1);
- }
- 
- static inline void obj_cgroup_put(struct obj_cgroup *objcg)
- {
--	if (objcg)
-+	if (objcg && !obj_cgroup_is_root(objcg))
- 		percpu_ref_put(&objcg->refcnt);
- }
- 
-@@ -1101,6 +1110,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
- 	return true;
- }
- 
-+static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
-+{
-+	return true;
-+}
-+
- static inline bool mem_cgroup_disabled(void)
- {
- 	return true;
-@@ -1684,8 +1698,7 @@ static inline struct obj_cgroup *get_obj_cgroup_from_current(void)
- {
- 	struct obj_cgroup *objcg = current_obj_cgroup();
- 
--	if (objcg)
--		obj_cgroup_get(objcg);
-+	obj_cgroup_get(objcg);
- 
- 	return objcg;
- }
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a6362d11b46c..4aadc1b87db3 100644
+index 4aadc1b87db3..4802ce1f49a4 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -81,6 +81,7 @@ struct cgroup_subsys memory_cgrp_subsys __read_mostly;
- EXPORT_SYMBOL(memory_cgrp_subsys);
- 
- struct mem_cgroup *root_mem_cgroup __read_mostly;
-+struct obj_cgroup *root_obj_cgroup __read_mostly;
- 
- /* Active memory cgroup to use from an interrupt context */
- DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
-@@ -2525,15 +2526,14 @@ struct mem_cgroup *mem_cgroup_from_slab_obj(void *p)
- 
- static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+@@ -983,14 +983,19 @@ struct mem_cgroup *get_mem_cgroup_from_current(void)
+  */
+ struct mem_cgroup *get_mem_cgroup_from_folio(struct folio *folio)
  {
--	struct obj_cgroup *objcg = NULL;
-+	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
-+		struct obj_cgroup *objcg = rcu_dereference(memcg->objcg);
+-	struct mem_cgroup *memcg = folio_memcg(folio);
++	struct mem_cgroup *memcg;
  
--	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
--		objcg = rcu_dereference(memcg->objcg);
- 		if (likely(objcg && obj_cgroup_tryget(objcg)))
--			break;
--		objcg = NULL;
-+			return objcg;
- 	}
--	return objcg;
+ 	if (mem_cgroup_disabled())
+ 		return NULL;
+ 
++	if (!folio_memcg_charged(folio))
++		return root_mem_cgroup;
 +
-+	return NULL;
- }
- 
- static struct obj_cgroup *current_objcg_update(void)
-@@ -2604,18 +2604,17 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
- 		 * Objcg reference is kept by the task, so it's safe
- 		 * to use the objcg by the current task.
- 		 */
--		return objcg;
-+		return objcg ? : root_obj_cgroup;
- 	}
- 
- 	memcg = this_cpu_read(int_active_memcg);
- 	if (unlikely(memcg))
- 		goto from_memcg;
- 
--	return NULL;
-+	return root_obj_cgroup;
- 
- from_memcg:
--	objcg = NULL;
--	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
-+	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
- 		/*
- 		 * Memcg pointer is protected by scope (see set_active_memcg())
- 		 * and is pinning the corresponding objcg, so objcg can't go
-@@ -2624,10 +2623,10 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
- 		 */
- 		objcg = rcu_dereference_check(memcg->objcg, 1);
- 		if (likely(objcg))
--			break;
-+			return objcg;
- 	}
- 
--	return objcg;
-+	return root_obj_cgroup;
- }
- 
- struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
-@@ -2641,14 +2640,8 @@ struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
- 		objcg = __folio_objcg(folio);
- 		obj_cgroup_get(objcg);
- 	} else {
--		struct mem_cgroup *memcg;
--
- 		rcu_read_lock();
--		memcg = __folio_memcg(folio);
--		if (memcg)
--			objcg = __get_obj_cgroup_from_memcg(memcg);
--		else
--			objcg = NULL;
-+		objcg = __get_obj_cgroup_from_memcg(__folio_memcg(folio));
- 		rcu_read_unlock();
- 	}
- 	return objcg;
-@@ -2733,7 +2726,7 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
- 	int ret = 0;
- 
- 	objcg = current_obj_cgroup();
--	if (objcg) {
-+	if (!obj_cgroup_is_root(objcg)) {
- 		ret = obj_cgroup_charge_pages(objcg, gfp, 1 << order);
- 		if (!ret) {
- 			obj_cgroup_get(objcg);
-@@ -3036,7 +3029,7 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
- 	 * obj_cgroup_get() is used to get a permanent reference.
- 	 */
- 	objcg = current_obj_cgroup();
--	if (!objcg)
-+	if (obj_cgroup_is_root(objcg))
- 		return true;
- 
- 	/*
-@@ -3708,6 +3701,9 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- 	if (!objcg)
- 		goto free_shrinker;
- 
-+	if (unlikely(mem_cgroup_is_root(memcg)))
-+		root_obj_cgroup = objcg;
-+
- 	objcg->memcg = memcg;
- 	rcu_assign_pointer(memcg->objcg, objcg);
- 	obj_cgroup_get(objcg);
-@@ -5302,6 +5298,9 @@ void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size)
- 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return;
- 
-+	if (obj_cgroup_is_root(objcg))
-+		return;
-+
- 	VM_WARN_ON_ONCE(!(current->flags & PF_MEMALLOC));
- 
- 	/* PF_MEMALLOC context, charging must succeed */
-@@ -5329,6 +5328,9 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
- 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return;
- 
-+	if (obj_cgroup_is_root(objcg))
-+		return;
-+
- 	obj_cgroup_uncharge(objcg, size);
- 
  	rcu_read_lock();
-diff --git a/mm/percpu.c b/mm/percpu.c
-index b35494c8ede2..3e54c6fca9bd 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1616,7 +1616,7 @@ static bool pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp,
- 		return true;
- 
- 	objcg = current_obj_cgroup();
--	if (!objcg)
-+	if (obj_cgroup_is_root(objcg))
- 		return true;
- 
- 	if (obj_cgroup_charge(objcg, gfp, pcpu_obj_full_size(size)))
+-	if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
+-		memcg = root_mem_cgroup;
++retry:
++	memcg = folio_memcg(folio);
++	if (unlikely(!css_tryget(&memcg->css)))
++		goto retry;
+ 	rcu_read_unlock();
+ 	return memcg;
+ }
 -- 
 2.20.1
 
