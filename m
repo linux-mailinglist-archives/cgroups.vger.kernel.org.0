@@ -1,60 +1,62 @@
-Return-Path: <cgroups+bounces-7586-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7588-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1983A8A9C0
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 23:04:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ADDFA8A9C7
+	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 23:05:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29FE0190232B
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 21:04:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 775A04427FE
+	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 21:05:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E18525742B;
-	Tue, 15 Apr 2025 21:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C86325DCE6;
+	Tue, 15 Apr 2025 21:04:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZjzA941S"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hUYgp6e6"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A4C14F9D9
-	for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 21:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E46259498
+	for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 21:04:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744751079; cv=none; b=RoprARh0OXLVHbYwi3vFdO5dkJyJn3w2Xmo+AmZg1n+iHBCqaVs1NjxTTo1xVb53OEQkCZwgisSvGgoDDoGubumU+OnDFERp04FZGIODV9+LmeNLTpJJywMRNf4MS747rNdZEq9B0Sf0zd0J4t8MxFm6aeXRkmEgCD8F+OKJvzM=
+	t=1744751083; cv=none; b=do9eTNFUw0I2B67sVduamP9YrzoEO+ep5+pRGtyozNRChUsA80EJENuszK1g16M3TePkcq2dDn+29ilow45Z12rWLZy+mnTVkE7EVbENM1NyQkEKi+pe7cQBip8sUfxLYCAbLpoje471w//lOPQM9lZLPSmAvMgx0HEpyChzeGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744751079; c=relaxed/simple;
-	bh=5zUudYqV340vynghSpjh6FRljA4V5Xb1a1ZKaVrUOkI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ubyEpxdFhJZH1+uFN4+BBRzz6MofB0i/C8OG80M2sls6kSmcBnccBGRSsAX11C2mTS85lIRbrSYGsRhXVpAVwITR2pE8CW6RpLj9Cox7bXt0/l/PjmBNwW0DXaRNPDobFnkcSrO1H0jOd+YNvLU/daNShDJdji4pOXS1qH5TFgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZjzA941S; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1744751083; c=relaxed/simple;
+	bh=Hrbb5sT13h5PBRfPbIX3NmiusU0k3HLWDNiuearqhyM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lZAHDVGNp5gaRLFIfWWwkmaPj7L3nitul/SAf9aBONKtIXSeFlze+lZEKkFGwttbdJ60nxHRD4oVUvtC6ZV/ik+Yuw8rEsq/G+zoXIeNQYLL3yyGOYfDlQLlsLtzcIiOjARclPrnkxmpNlF2V9O7vg5y49qoHyOq9Y68ST1fOHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hUYgp6e6; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744751074;
+	s=mimecast20190719; t=1744751080;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=GD3dcZZaAV8PGBsMmRQtcMpL9M1m9kBkUBv1lLYHAEA=;
-	b=ZjzA941S0m9jz9bgRQ2LZWjw46UhbcSg4uZiiE7xqfIeZ8TdcV/SGB8iAJJBdWSXyjcUdi
-	ROXRAmPUd6wuFOdPwT+/L+0S4VU4UjV5Ri1ggElTs1XH6N/m63GLWoPt2+2tEPpYPNzfyk
-	O1XirU3VjMS4nul4O//RZUKLdHn6dW4=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xFsllInDSe+SHojwQO4gcvZGi+BBau3/2pd7c11VFAU=;
+	b=hUYgp6e6sPhDOdZBMy7dctxcm2RhKdrV3uk72hApWNlDKbQtg7epZrW2qbhyhdZVuT0KiP
+	ZC2i7aWJlBLRfIBWgGD/qdjk/+sBuEAM0LLq33nb/fwN9uEaL2BZRZNn/tsyUAO6NoA1Z5
+	/80mt720PYPMegB4HnyXFMrxIuy+VrY=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-32-do-G7T1BObOjxM-zBSTeuA-1; Tue,
- 15 Apr 2025 17:04:29 -0400
-X-MC-Unique: do-G7T1BObOjxM-zBSTeuA-1
-X-Mimecast-MFC-AGG-ID: do-G7T1BObOjxM-zBSTeuA_1744751067
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-332-UXskAcDnNXizMDmIG5y0cQ-1; Tue,
+ 15 Apr 2025 17:04:34 -0400
+X-MC-Unique: UXskAcDnNXizMDmIG5y0cQ-1
+X-Mimecast-MFC-AGG-ID: UXskAcDnNXizMDmIG5y0cQ_1744751071
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B3E45195609F;
-	Tue, 15 Apr 2025 21:04:26 +0000 (UTC)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 942FB18007E1;
+	Tue, 15 Apr 2025 21:04:30 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.64.119])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5C4341956054;
-	Tue, 15 Apr 2025 21:04:21 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3D4171955D81;
+	Tue, 15 Apr 2025 21:04:26 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@kernel.org>,
@@ -70,9 +72,11 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-kselftest@vger.kernel.org,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH v7 0/2] memcg: Fix test_memcg_min/low test failures
-Date: Tue, 15 Apr 2025 17:04:13 -0400
-Message-ID: <20250415210415.13414-1-longman@redhat.com>
+Subject: [PATCH v7 1/2] selftests: memcg: Allow low event with no memory.low and memory_recursiveprot on
+Date: Tue, 15 Apr 2025 17:04:14 -0400
+Message-ID: <20250415210415.13414-2-longman@redhat.com>
+In-Reply-To: <20250415210415.13414-1-longman@redhat.com>
+References: <20250415210415.13414-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -83,34 +87,68 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-v7:
- - Skip the vmscan change as the mem_cgroup_usage() check for now as
-   it is currently redundant.
-
-v6:
- - The memcg_test_low failure is indeed due to the memory_recursiveprot
-   mount option which is enabled by default in systemd cgroup v2 setting.
-   So adopt Michal's suggestion to adjust the low event checking
-   according to whether memory_recursiveprot is enabled or not.
-
-v5:
- - Use mem_cgroup_usage() in patch 1 as originally suggested by Johannes.
-
 The test_memcontrol selftest consistently fails its test_memcg_low
-sub-test (with memory_recursiveprot enabled) and sporadically fails
-its test_memcg_min sub-test. This patchset fixes the test_memcg_min
-and test_memcg_low failures by adjusting the test_memcontrol selftest
-to fix these test failures.
+sub-test due to the fact that its 3rd test child cgroup which
+have a memmory.low of 0 have low event count. This happens when
+memory_recursiveprot mount option is enabled which is the default
+setting used by systemd to mount cgroup2 filesystem.
 
-Waiman Long (2):
-  selftests: memcg: Allow low event with no memory.low and
-    memory_recursiveprot on
-  selftests: memcg: Increase error tolerance of child memory.current
-    check in test_memcg_protection()
+Modify the test_memcontrol.c to allow non-zero low event count in this
+particular case with memory_recursiveprot on.
 
- .../selftests/cgroup/test_memcontrol.c        | 20 ++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+With this patch applied, the test_memcg_low sub-test finishes
+successfully without failure in most cases. Though both test_memcg_low
+and test_memcg_min sub-tests may still fail occasionally if the
+memory.current values fall outside of the expected ranges.
 
+The 4th test child cgroup has no memory usage and so has an effective
+low of 0. It has no low event count because the mem_cgroup_below_low()
+check in shrink_node_memcgs() is skipped as mem_cgroup_below_min()
+returns true. If we ever change mem_cgroup_below_min() in such a way
+that it no longer skips the no usage case, we will have to add code to
+explicitly skip it.
+
+Suggested-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ tools/testing/selftests/cgroup/test_memcontrol.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
+index 16f5d74ae762..5a5dcbe57b56 100644
+--- a/tools/testing/selftests/cgroup/test_memcontrol.c
++++ b/tools/testing/selftests/cgroup/test_memcontrol.c
+@@ -380,10 +380,10 @@ static bool reclaim_until(const char *memcg, long goal);
+  *
+  * Then it checks actual memory usages and expects that:
+  * A/B    memory.current ~= 50M
+- * A/B/C  memory.current ~= 29M
+- * A/B/D  memory.current ~= 21M
+- * A/B/E  memory.current ~= 0
+- * A/B/F  memory.current  = 0
++ * A/B/C  memory.current ~= 29M [memory.events:low > 0]
++ * A/B/D  memory.current ~= 21M [memory.events:low > 0]
++ * A/B/E  memory.current ~= 0   [memory.events:low == 0 if !memory_recursiveprot, > 0 otherwise]
++ * A/B/F  memory.current  = 0   [memory.events:low == 0]
+  * (for origin of the numbers, see model in memcg_protection.m.)
+  *
+  * After that it tries to allocate more than there is
+@@ -525,8 +525,14 @@ static int test_memcg_protection(const char *root, bool min)
+ 		goto cleanup;
+ 	}
+ 
++	/*
++	 * Child 2 has memory.low=0, but some low protection is still being
++	 * distributed down from its parent with memory.low=50M if cgroup2
++	 * memory_recursiveprot mount option is enabled. So the low event
++	 * count will be non-zero in this case.
++	 */
+ 	for (i = 0; i < ARRAY_SIZE(children); i++) {
+-		int no_low_events_index = 1;
++		int no_low_events_index = has_recursiveprot ? 2 : 1;
+ 		long low, oom;
+ 
+ 		oom = cg_read_key_long(children[i], "memory.events", "oom ");
 -- 
 2.49.0
 
