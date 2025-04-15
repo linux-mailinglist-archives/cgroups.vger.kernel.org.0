@@ -1,169 +1,171 @@
-Return-Path: <cgroups+bounces-7587-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7589-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9271CA8A9C1
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 23:04:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09BBCA8AC54
+	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 01:53:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1DA87AAF21
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 21:03:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91CC63B6CB1
+	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 23:53:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51BB9257AFD;
-	Tue, 15 Apr 2025 21:04:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414562D8DDF;
+	Tue, 15 Apr 2025 23:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gD41NTT0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KlAkekxK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E342256C64
-	for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 21:04:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F562D8DBA
+	for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 23:53:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744751080; cv=none; b=oAYbJlVbBKt9UQC3yIIv+jXpvcR1w0yqfMZHCuumKCf0ge0CD4JkS2G3hCuHUHZqjsw/4jURzWkb32g4UQqmMS0Hqogs0IVktqmn98K3ICpQL+RZtKhshXLadHCik27lnqPveRwbWbHlCHI5JUqXzEfsRMSgbHHKfPg8ORur8DQ=
+	t=1744761202; cv=none; b=AVYxGeFiC6WOBfSnKUw0mjHH0ZyQ72UhRBtVkEOtScYC1beSFqlN87Dk1Durz05gXL2NGF7cYGZmBtPs12aTzA0Fr4QqEIL8XFK4nrl5X23KXKGTkrLQtEFNS9knwodzSIOTtijLssZ4y8XgBQB69v1Wonv2a2VYb6/ZSxWvaHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744751080; c=relaxed/simple;
-	bh=h9sHC1QdfDR4YOoK0WmGnIHEWEqeP38aMKL48i3RraY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h4z3ZXqqlAOj0UVBQcuqDLMbTbNmd4m2aE2wHwUj8aCMfhgNyUIniEGPQOz2FRgpOoBX2rWO9AIr1LeT4rp71D0tdf6JYtfRRMDpGXWbMxMBUj+XoKEQT2vfkrDgmRGJlewY5a8sMPNuN/mvIlKIabCRZl3pE4dMvqAwQ9q2J9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gD41NTT0; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744751077;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G181R4Ce8Y0oezWUB5dkYUGLwtFvIKy14kWYL4Idox0=;
-	b=gD41NTT0xk72o33W3kSrE7NMJ1VeU0eRNpnl7U451m3y955JLtwTfWDhnZ300RYyUT8TO5
-	AEtnjoJN9eNbrnaNGsQG6uMxVkZZs4Kj2tvTEXnNXNjjuNWWhOQdzrqOGjtsR7ZkDQ0tHW
-	3vSZa/49SfM6e4lLO9eTq7mgS39ABRo=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-527-ja4OLp0VOwmG-_HocO_yiA-1; Tue,
- 15 Apr 2025 17:04:35 -0400
-X-MC-Unique: ja4OLp0VOwmG-_HocO_yiA-1
-X-Mimecast-MFC-AGG-ID: ja4OLp0VOwmG-_HocO_yiA_1744751074
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F213C1808985;
-	Tue, 15 Apr 2025 21:04:33 +0000 (UTC)
-Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.64.119])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 02B6C19792DC;
-	Tue, 15 Apr 2025 21:04:30 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Tejun Heo <tj@kernel.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH v7 2/2] selftests: memcg: Increase error tolerance of child memory.current check in test_memcg_protection()
-Date: Tue, 15 Apr 2025 17:04:15 -0400
-Message-ID: <20250415210415.13414-3-longman@redhat.com>
-In-Reply-To: <20250415210415.13414-1-longman@redhat.com>
-References: <20250415210415.13414-1-longman@redhat.com>
+	s=arc-20240116; t=1744761202; c=relaxed/simple;
+	bh=HXkqcx2ZNAR3MgBMkemVZlr6XaFgZx7DtM8Y81VBFzs=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=hCQ3R624YA6tb3zjIwLuJB2+xBbPSuuJReM+IEo6ekNPp55A+AfkL88/7kOljWkurHiOkuZeZXoizOuND7EyUdPnCFpvXyojhcMMrkKbXIow1V5oBHMrxcaNd/nvG7rU10K8BHcGioOcf/PGRSbkP+jqj9a8ouWSL1YsMfAIJ+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KlAkekxK; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-7394792f83cso4495967b3a.3
+        for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 16:53:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1744761199; x=1745365999; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/YGrgTL2+oDLw5q7YMCd5Rvj3aEMaQaNt09r3bkhF+Q=;
+        b=KlAkekxKtoiNjmjp8aOxbFckDoSGja0vL1MsKHleW/WJmK0Gc35pVJVkHdE9JylJjg
+         +/N6whVm0Vm8R0c1dINa2x9cateI4fvUQ1S/Qw2XcxV2n+0SOR9prCGNw4C7dS7cujWT
+         9VWb1yO91TyJMYTRLioIdEdr+1cHOIiiQHffS/ZPjkP44F36fE9+NR984ana8sTbzN8R
+         L+E/sWVCsg44kkCDEjRr5ne+vNsaU59p/kkYUn3njxO16eBg3640eXSBAK4DTmNxIzY0
+         kNGGaTZYQ2mNoME7C4P6WQu3ynRCzM82RREJ4w5KOdptSM/p9GLpy5X3CoNJuXp0xS5S
+         8RVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744761199; x=1745365999;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/YGrgTL2+oDLw5q7YMCd5Rvj3aEMaQaNt09r3bkhF+Q=;
+        b=kx3FT8r03KqnuSSVJH8glTNDl1KtyJzU2w7tVxqNiFPFftwP7sJqXr2WnN0Bb6adbs
+         tC7Sbn+1YsxN/QCIyokpPlEPde2YVyhyfuygb9KqreRalKP1o+zr7r4i+HAwIw1y5YLX
+         rhKj3QwAPPLhzP1zshYDqTikt5B6seLOJQkeLTqBtStURCiKV4jJmS9WFAzgOSnuoaOi
+         epMLJn/wRvwoF37mSqix57MDNEGke6zFeVEQTyj/KDnrIfMuOWOnHlPYcuhRqcAabJYx
+         /us4isQAt1x+ZQ3GeXm+T6SnoMKW+udUKFfWBHoOMjEqZYUVLZbZX6VyemPYjMGmqeVx
+         /5jw==
+X-Forwarded-Encrypted: i=1; AJvYcCWU+g7Zubg9IF9ADZI+lvQojyPNBNSbiRwSAd3LeqOOJokTDPohcR10jRQUOyh7H8O7KD25Fh0V@vger.kernel.org
+X-Gm-Message-State: AOJu0YxLRvwpLhjTAyBW1rcSiZpBc9TG0fhMLRxhTaNLGktPZ2CzpDDF
+	qvHqj74K6DWel4AGWaBRMp4vxNdPAPfdh2LQQlEu7Kivcpf9OZuhWnhOVCxTj+VdEB6R9bni0kf
+	tGeRvHpyPIqX5xg==
+X-Google-Smtp-Source: AGHT+IE7bA+Epf0Jw9RBloEojnGr5yL1MgbHZ3M/WXOieK8JDAU4vde/iJaqsYqpSx1NFMbLMFBdp5uyhqF4/ec=
+X-Received: from pfiu22.prod.google.com ([2002:a05:6a00:1256:b0:730:8b4c:546c])
+ (user=tjmercier job=prod-delivery.src-stubby-dispatcher) by
+ 2002:aa7:9308:0:b0:736:ab48:5b0 with SMTP id d2e1a72fcca58-73c1f8c3c9cmr1921173b3a.2.1744761198662;
+ Tue, 15 Apr 2025 16:53:18 -0700 (PDT)
+Date: Tue, 15 Apr 2025 23:53:07 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.49.0.777.g153de2bbd5-goog
+Message-ID: <20250415235308.424643-1-tjmercier@google.com>
+Subject: [PATCH v2] cgroup/cpuset-v1: Add missing support for cpuset_v2_mode
+From: "T.J. Mercier" <tjmercier@google.com>
+To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	"=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>, Waiman Long <longman@redhat.com>
+Cc: "T.J. Mercier" <tjmercier@google.com>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The test_memcg_protection() function is used for the test_memcg_min and
-test_memcg_low sub-tests. This function generates a set of parent/child
-cgroups like:
+Android has mounted the v1 cpuset controller using filesystem type
+"cpuset" (not "cgroup") since 2015 [1], and depends on the resulting
+behavior where the controller name is not added as a prefix for cgroupfs
+files. [2]
 
-  parent:  memory.min/low = 50M
-  child 0: memory.min/low = 75M,  memory.current = 50M
-  child 1: memory.min/low = 25M,  memory.current = 50M
-  child 2: memory.min/low = 0,    memory.current = 50M
+Later, a problem was discovered where cpu hotplug onlining did not
+affect the cpuset/cpus files, which Android carried an out-of-tree patch
+to address for a while. An attempt was made to upstream this patch, but
+the recommendation was to use the "cpuset_v2_mode" mount option
+instead. [3]
 
-After applying memory pressure, the function expects the following
-actual memory usages.
+An effort was made to do so, but this fails with "cgroup: Unknown
+parameter 'cpuset_v2_mode'" because commit e1cba4b85daa ("cgroup: Add
+mount flag to enable cpuset to use v2 behavior in v1 cgroup") did not
+update the special cased cpuset_mount(), and only the cgroup (v1)
+filesystem type was updated.
 
-  parent:  memory.current ~= 50M
-  child 0: memory.current ~= 29M
-  child 1: memory.current ~= 21M
-  child 2: memory.current ~= 0
+Add parameter parsing to the cpuset filesystem type so that
+cpuset_v2_mode works like the cgroup filesystem type:
 
-In reality, the actual memory usages can differ quite a bit from the
-expected values. It uses an error tolerance of 10% with the values_close()
-helper.
+$ mkdir /dev/cpuset
+$ mount -t cpuset -ocpuset_v2_mode none /dev/cpuset
+$ mount|grep cpuset
+none on /dev/cpuset type cgroup (rw,relatime,cpuset,noprefix,cpuset_v2_mode,release_agent=/sbin/cpuset_release_agent)
 
-Both the test_memcg_min and test_memcg_low sub-tests can fail
-sporadically because the actual memory usage exceeds the 10% error
-tolerance. Below are a sample of the usage data of the tests runs
-that fail.
+[1] https://cs.android.com/android/_/android/platform/system/core/+/b769c8d24fd7be96f8968aa4c80b669525b930d3
+[2] https://cs.android.com/android/platform/superproject/main/+/main:system/core/libprocessgroup/setup/cgroup_map_write.cpp;drc=2dac5d89a0f024a2d0cc46a80ba4ee13472f1681;l=192
+[3] https://lore.kernel.org/lkml/f795f8be-a184-408a-0b5a-553d26061385@redhat.com/T/
 
-  Child   Actual usage    Expected usage    %err
-  -----   ------------    --------------    ----
-    1       16990208         22020096      -12.9%
-    1       17252352         22020096      -12.1%
-    0       37699584         30408704      +10.7%
-    1       14368768         22020096      -21.0%
-    1       16871424         22020096      -13.2%
-
-The current 10% error tolerenace might be right at the time
-test_memcontrol.c was first introduced in v4.18 kernel, but memory
-reclaim have certainly evolved quite a bit since then which may result
-in a bit more run-to-run variation than previously expected.
-
-Increase the error tolerance to 15% for child 0 and 20% for child 1 to
-minimize the chance of this type of failure. The tolerance is bigger
-for child 1 because an upswing in child 0 corresponds to a smaller
-%err than a similar downswing in child 1 due to the way %err is used
-in values_close().
-
-Before this patch, a 100 test runs of test_memcontrol produced the
-following results:
-
-     17 not ok 1 test_memcg_min
-     22 not ok 2 test_memcg_low
-
-After applying this patch, there were no test failure for test_memcg_min
-and test_memcg_low in 100 test runs. However, these tests may still fail
-once in a while if the memory usage goes beyond the newly extended range.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
+Fixes: e1cba4b85daa ("cgroup: Add mount flag to enable cpuset to use v2 behavior in v1 cgroup")
+Signed-off-by: T.J. Mercier <tjmercier@google.com>
 ---
- tools/testing/selftests/cgroup/test_memcontrol.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/cgroup/cgroup.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 5a5dcbe57b56..2ef07b8fa718 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -495,10 +495,10 @@ static int test_memcg_protection(const char *root, bool min)
- 	for (i = 0; i < ARRAY_SIZE(children); i++)
- 		c[i] = cg_read_long(children[i], "memory.current");
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 27f08aa17b56..cf30ff2e7d60 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2353,9 +2353,37 @@ static struct file_system_type cgroup2_fs_type = {
+ };
  
--	if (!values_close(c[0], MB(29), 10))
-+	if (!values_close(c[0], MB(29), 15))
- 		goto cleanup;
+ #ifdef CONFIG_CPUSETS_V1
++enum cpuset_param {
++	Opt_cpuset_v2_mode,
++};
++
++const struct fs_parameter_spec cpuset_fs_parameters[] = {
++	fsparam_flag  ("cpuset_v2_mode", Opt_cpuset_v2_mode),
++	{}
++};
++
++static int cpuset_parse_param(struct fs_context *fc, struct fs_parameter *param)
++{
++	struct cgroup_fs_context *ctx = cgroup_fc2context(fc);
++	struct fs_parse_result result;
++	int opt;
++
++	opt = fs_parse(fc, cpuset_fs_parameters, param, &result);
++	if (opt < 0)
++		return opt;
++
++	switch (opt) {
++	case Opt_cpuset_v2_mode:
++		ctx->flags |= CGRP_ROOT_CPUSET_V2_MODE;
++		return 0;
++	}
++	return -EINVAL;
++}
++
+ static const struct fs_context_operations cpuset_fs_context_ops = {
+ 	.get_tree	= cgroup1_get_tree,
+ 	.free		= cgroup_fs_context_free,
++	.parse_param	= cpuset_parse_param,
+ };
  
--	if (!values_close(c[1], MB(21), 10))
-+	if (!values_close(c[1], MB(21), 20))
- 		goto cleanup;
- 
- 	if (c[3] != 0)
+ /*
+@@ -2392,6 +2420,7 @@ static int cpuset_init_fs_context(struct fs_context *fc)
+ static struct file_system_type cpuset_fs_type = {
+ 	.name			= "cpuset",
+ 	.init_fs_context	= cpuset_init_fs_context,
++	.parameters		= cpuset_fs_parameters,
+ 	.fs_flags		= FS_USERNS_MOUNT,
+ };
+ #endif
 -- 
-2.49.0
+2.49.0.777.g153de2bbd5-goog
 
 
