@@ -1,105 +1,134 @@
-Return-Path: <cgroups+bounces-7579-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7580-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEF18A8A271
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 17:10:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B70CA8A3A1
+	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 18:06:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9A583BB829
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 15:09:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E80E24403FB
+	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 16:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB5222973CA;
-	Tue, 15 Apr 2025 15:09:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14229217733;
+	Tue, 15 Apr 2025 16:06:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="UK5bJemo";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="pRh0tqPv"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gK7VuYa+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC9B199FA4;
-	Tue, 15 Apr 2025 15:09:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEF61AD41F
+	for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 16:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744729784; cv=none; b=N6AWF7HStfGiWbw9Gdu7UirdiJAot7QXsbRLFyRH8x4z+0LGWaNvgK2G7oU4UyChosbYRziGZiOFvO3NMYJkhOGjLx8BgvPwzivqlJav5UZZ1mOj08Fla4ePnaLtVFUR10yjGsfD/+kXWGBLvVCGgib4m1vS008nUnwBPyvJd4g=
+	t=1744733178; cv=none; b=XuhKfJ1WUR9iJlSiiVlnw8gXcle5WDkDaTfKWOcPg350rqBzURDQYocdFpZzsH00ibUaTCQy4zkhb79juvUkDYvWXBbU9cl0iu/Rca/NaWIpZuOUees1jK9lo2riHFOUB2qSPKybClj3QgFOqBOOE+vW6JF6AOSNLYpgI2gVT6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744729784; c=relaxed/simple;
-	bh=1sY8h35aN2Hmwd36JiY1vQFSG475B/5TTcTr4pmla/M=;
+	s=arc-20240116; t=1744733178; c=relaxed/simple;
+	bh=hgZy3Bs5bZtFb1xBAHv8Wk2VAlSG2m8POnP/PmcT6P4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I+0vvibdTDlXLydjcTuL5tbZiDapuIrKDyTeYoqfQ2a/mKbZz8nOaiC5n5nHsoWqXddr96ru1qhifx1Vq7rMJBIDoSWIHZGU6ZlF+jqLoXmXv8R8mGl2prYC8EalqDsALsK3HhDJ8AYmJafMip0rsd+aAm9HS6J9gvQnzDFttqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=UK5bJemo; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=pRh0tqPv; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 40BE660B8A; Tue, 15 Apr 2025 17:09:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1744729780;
-	bh=vGQh7X7rXzqZp7edqwor6awCdiBrTcxU9eCBdReDiyA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UK5bJemoSppoh2NRsRoyoVj4/gLHmnsPwH+OMNTQ7gS6MTRGGFYhUP2KJIUpymUsn
-	 wDP+prGuedR1RYt3+42LSw59ALvfJ3P8FW5qmMfHtgh5y72gVEEt3AD207Py702HLO
-	 ActJ0lT9U0IAlTQPC1n9HykjbCVTrov7IE/JavoV16XtKQp1pov+Ru1mlXin7zzPhB
-	 91RRYV6nKOv7YyeZ2F6+B6gArQlmhoy0max0OMulgoHDOuMNILNNHvWW1pQE+PqPsR
-	 5/NFymKqWot9G6z3GDKK2Q/uNLpJqjlYwcC/sTGhp2HPS0nSAFg6wAC3aa8X1cSX0v
-	 4S0OsDp01VwOg==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 92F5D60B76;
-	Tue, 15 Apr 2025 17:09:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1744729777;
-	bh=vGQh7X7rXzqZp7edqwor6awCdiBrTcxU9eCBdReDiyA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pRh0tqPv/J8UAh3jZ3ZSZVUlgwiqCdLBXy8YzG8tGeVG+Q5mPAhCARPFAVH1vXUdw
-	 VlZYTwWRrRIG2feir8w9zbpbmLnm/mX6aPHmLnafWKN/YO9o8IwkwneEvztum5mXT3
-	 Nnv7imQdfdoZHizskiyCXCYDnHU7auIyllSRiGmvi2aYB4/F413ukKbj+ixZI2RzZ+
-	 +W8oAGSbGNO0WesXEtSM3gqGG2ohYhb9fri8J4NuINNmPoCOFqYhwmf+AQW5BB8wEb
-	 AoXDucmQvphhX/LGNJgfxzcAHGUjsp5igTlcqk5kGAldMLKU2nVG7j0r1NeTfPObtJ
-	 y7iP/7bfkHg5g==
-Date: Tue, 15 Apr 2025 17:09:35 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: netfilter-devel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, David Ahern <dsahern@kernel.org>,
-	Tejun Heo <tj@kernel.org>, Eric Dumazet <edumazet@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SQhgJd8y7+unsUOgm+gRMqckgf2BAMhVR18ADxA2BvaPh3JzhwpHT/8PJ3NItqFU/Zw9xQgpqwboBsC1sTJpeOmNAK3A2djGWR1i5Zp2mOlszetS0G4IvxYJLISXU3cyoYXb9rM8BBQJ+tsD7qsOSe7zSsbswNgvGWmCFexwYPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gK7VuYa+; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43cf0d787eeso66329805e9.3
+        for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 09:06:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1744733174; x=1745337974; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hgZy3Bs5bZtFb1xBAHv8Wk2VAlSG2m8POnP/PmcT6P4=;
+        b=gK7VuYa+0pKQ4E+ZfumwQapOyIwoEcOhko7opvwZbU/Er5aCxvmq7iBYGbIEPX4SPC
+         1BvVEmV1+UhbXR1Ug6ywIATZbmywzZevnBBorWljaBiM+9D/zdg0OkJ7ExY1/Egvc8p1
+         CILBY+toPDLBEPrnUyjg2VJmjxe/g560NxNj1m3QwyPksABbpn09VbuxYrUq8lFJqjvQ
+         ikAxo+nWZavShlEk2JCeND19P44mQPKLLiIA0biH/Vx+Z6KLOGXJAUSWf/r3XThgSB8Z
+         26hPU9r7JHJUCPdbnjVeSk36G77uwdQDeA7+tTvs3BpRC/yjwi80bfkq0xRReExqT5YT
+         ajfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744733174; x=1745337974;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hgZy3Bs5bZtFb1xBAHv8Wk2VAlSG2m8POnP/PmcT6P4=;
+        b=KimpMFv2pZdGe2l2+ObgNp3Oa876TE9haEvju16nba/sFw/n9aF0rJFGI+tesu/CbP
+         VnAD9wx4Fq38FAuqdKdz32gHUjvRor9uhcBZ2vKyd/wOrNUVVG2wEiE6l+KBu8pMVLO4
+         X9zJekARa+Ba86686/EXVQC0yblJuroT6OL0VnICxvJ+StVf1dA/zndDIDvzOe9JkEau
+         d/WsF6OB2hjoahLZA8Ao74Ck7JsXbRiJPyicAGPcISla70Jz4kQbCAdiuiSWBPdEoOZC
+         SOYRa5FZKdIRLKnXcbCdeq1Zg4GtC4bZDjAPpy0nm2vE3gj2RjuIrIHDIc+kYOY8t/8i
+         zgvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXaMlAp9C2Ow/vTjnCxtDHH5zXh+evABaR+UTF1QLKi4nZlvX/sbBiF71zDGR1uVFegHiOk8CgI@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx9bDkgoDHRyVie8RDvLUCxrE1jTTFevV8uFGnSkgV6Uo93xO56
+	JAf3UuD/Pk41TgfkdH5qxIDrP0y3ZfL+OzJK2WkhVem6YoIPRobgMlPzTWkBwY8=
+X-Gm-Gg: ASbGncvMQ5khWO1BWs0XzhpXfeslE48TDmOo+aeESsJdMVij3vgAZNmE3QpQqr0AdeJ
+	B391sVO3zqJvNxePtxAFKdk40VwijHxjQhP4FCWBJqDSpistWSaLgGu0SMy1dJZlrdceBgVKeun
+	bFp0s0trvDQzwGGP+IzYTXcsxSFkVwcWslJj0P1V+mrqoMmKrRno8Pe2GDNxqYQGRGWhIdLRSJ3
+	E466kLu/eHxests+7+zfHkC4XqZwx3ne+zmuPdn08frhUpFcIq5hdCkxFb7WKNajvO7Dq8WBBa6
+	LIW1M9I0OUzifiNksgkFXuWOlznBhTG1y4syOk12qm0=
+X-Google-Smtp-Source: AGHT+IGTKkmP0oe0fauFieWns1mCFUH/1vQsWUwM+pO9VnG6/65IgNgDirpko2Yd+tXf8f74r72J5Q==
+X-Received: by 2002:a05:600c:1e02:b0:43d:22d9:4b8e with SMTP id 5b1f17b1804b1-43f86e1f246mr49614045e9.10.1744733173992;
+        Tue, 15 Apr 2025 09:06:13 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43f2338db0dsm219073455e9.7.2025.04.15.09.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Apr 2025 09:06:13 -0700 (PDT)
+Date: Tue, 15 Apr 2025 18:06:11 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	David Ahern <dsahern@kernel.org>, Tejun Heo <tj@kernel.org>, Eric Dumazet <edumazet@google.com>, 
+	"David S. Miller" <davem@davemloft.net>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Jozsef Kadlecsik <kadlec@netfilter.org>
 Subject: Re: [PATCH v3 0/3] netfilter: Make xt_cgroup independent from net_cls
-Message-ID: <Z_52r_v9-3JUzDT7@calendula>
+Message-ID: <zu5vvfmz2kfktu5tuedmcm5cpajt6dotkf72okrzxnyosbx7k7@kss7qnr4lenr>
 References: <20250401115736.1046942-1-mkoutny@suse.com>
  <o4q7vxrdblnuoiqbiw6qvb52bg5kb33helpfynphbbgt4bjttq@7344qly6lv5f>
+ <Z_52r_v9-3JUzDT7@calendula>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pqcmzdxhrghzvc3f"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <o4q7vxrdblnuoiqbiw6qvb52bg5kb33helpfynphbbgt4bjttq@7344qly6lv5f>
+In-Reply-To: <Z_52r_v9-3JUzDT7@calendula>
 
-On Wed, Apr 09, 2025 at 06:56:17PM +0200, Michal Koutný wrote:
-> On Tue, Apr 01, 2025 at 01:57:29PM +0200, Michal Koutný <mkoutny@suse.com> wrote:
-> > Changes from v2 (https://lore.kernel.org/r/20250305170935.80558-1-mkoutny@suse.com):
-> > - don't accept zero classid neither (Pablo N. A.)
-> > - eliminate code that might rely on comparison against zero with
-> >   !CONFIG_CGROUP_NET_CLASSID
-> 
-> Pablo, just to break possible dilemma with Tejun's routing [1], it makes
-> sense to me to route this series together via net(filter) git(s).
-> 
-> Also, let me (anyone) know should there be further remarks to this form.
 
-I am going to apply 1/3 and 2/3 to nf-next.git
+--pqcmzdxhrghzvc3f
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH v3 0/3] netfilter: Make xt_cgroup independent from net_cls
+MIME-Version: 1.0
 
-I suggest, then, you follow up to cgroups tree to submit 3/3.
+On Tue, Apr 15, 2025 at 05:09:35PM +0200, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> I am going to apply 1/3 and 2/3 to nf-next.git
 
-3/3 does not show up in my patchwork for some reason.
+Thanks.
+
+> I suggest, then, you follow up to cgroups tree to submit 3/3.
+
+OK.
+
+> 3/3 does not show up in my patchwork for some reason.
+
+The reason is -- my invocation of get_maintainer.pl on the 3rd patch
+excluded anything netdev. Sorry.
+
+Michal
+
+--pqcmzdxhrghzvc3f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ/6D8QAKCRAt3Wney77B
+SdAMAQDdLxRxMCm8JCPMZyX9ZYadyzJ6nkt7nq78k1iLIvQDawD+ICbdnSZr7N2t
+wIYe9I+drbFtQ44kwYWEDcKUdGL5wAs=
+=zr9E
+-----END PGP SIGNATURE-----
+
+--pqcmzdxhrghzvc3f--
 
