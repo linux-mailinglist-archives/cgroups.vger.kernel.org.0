@@ -1,167 +1,395 @@
-Return-Path: <cgroups+bounces-7574-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7575-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07EFBA8923F
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 04:53:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17C77A89250
+	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 04:55:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A99E93B7C14
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 02:53:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83C18189C07E
+	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 02:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028582356C7;
-	Tue, 15 Apr 2025 02:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08E46FC5;
+	Tue, 15 Apr 2025 02:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="kPovSJD3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ub4XAogb"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 374B32206B2
-	for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 02:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982553209;
+	Tue, 15 Apr 2025 02:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744685308; cv=none; b=pCdJA7QD7p+wNNZDd+mW/PCOzwlj1BUjF7tjhMkJtdaTWsORfPtCbgA8V5Ks3I0Iosc9obwxL6r3LcJKLhnS0ptQrLdcvSICAk2u3nE9GuBPyu2ooLgiytwFyNdryVLppuIEMjsa2z8ngaC9e0+IyQzBCLYIoVyJET5bf5E8Izk=
+	t=1744685654; cv=none; b=NGwdfi69l5E1obWZMEvU8bwvjNit73RjQvE7zr/HaYwSvQLuzod3qrqnv5hkkBDVYqZ1l5ywQvptoQNRcG1qWHKsfiMx4Z8iQxVQKqxcWBn8XjXj4CX3WX3C8JoaCKwkpdVKV5/XhVIlWnV4/WI9n59LGblHmC59aFvCGNCFDb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744685308; c=relaxed/simple;
-	bh=qfxs19SK10slyUO0O8nR8PbPqoZ9Hjoq9tzPkm4Mjx8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rGuOLSOintXvle5Z4jBEYBMHSrVHazti02rzJ2tTQTwfxphW8ifh28aNHwV894/M1ckQDCd6gcYZ97XcDJNbidzJ4JGJ81Hdu1gu5OAHo6DskZZWUIsTaoJBN85xIIJx7iiCVS5YnldKt/DpbVkqAqSY8Taz5CApOmlAkYj0aIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=kPovSJD3; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-af908bb32fdso4362999a12.1
-        for <cgroups@vger.kernel.org>; Mon, 14 Apr 2025 19:48:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1744685306; x=1745290106; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UXOKqlBcK7wmw0vjxin9AD5vy+d1LV8LiFHk+wC2Q/0=;
-        b=kPovSJD3T5k4Wp3/2QgSI2nVOJlsPBaE/mXyRp1yP1T6zU6bqQUUZhSFpTkX92hAp8
-         NyKFgvPOrkxzi5h02VVY1TgrEU+jwsbJm0BiQGSySJje5M4WwzU1K1u25UeFfTywUP97
-         ObhZIdxypCfmdzJrM8KfHu9aXX5KGFjt4qIwEp6W2pX0QTsyCiKNq9vOO6QkMOnJejmO
-         w4lConQT8sno2bzPxgMaf0kL70BTNgxcIEnEC8q0/WeP+HYuiI5PJ9INtcTnXu4Dexs3
-         wMj8VW4BUoQ0FhMw5HKji0VvypzhV6GrLBFUpo/OdljAHn/BA9L/ZhGX1aA76DUGKcip
-         7IkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744685306; x=1745290106;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UXOKqlBcK7wmw0vjxin9AD5vy+d1LV8LiFHk+wC2Q/0=;
-        b=tnTnJ6QgjvjL/xhks4lmK+aUSVfH1jSiC7B//7eXO+WXi8NZ5SLe4e0GFH+M7RMAjf
-         TqI7VCCvfC/1wcd5DptSXytHJVT5+mD3j9WXyUF9wNhKWSjj1qrU3L7zS4I4aqOQHIFQ
-         yoU3i2l7kaJDQB2GRJHERMIXfdUxmB8j8LORpKbOs2MyyrF3wDgxGWA2J/csqKZDrU69
-         j2Euy6lUxM+gwpF7QPA5gjyIElosBpUgxnpEeonPDtRcXiaAoyoGLhy3N/Y7Opsy0XBb
-         MDnW3mJO9WZfQO7zHVBJtdnimb3dTMFuQZJmAVLQZaE+PWkYvssuVY4Fqfx/GSIHVr36
-         4kyw==
-X-Forwarded-Encrypted: i=1; AJvYcCVNA0Xadt+qwtxGmFOCCNCH0qpnR9YnDVGi/YJM0RyJHCw+Ae3l931AJli08o2uyewiepubOczw@vger.kernel.org
-X-Gm-Message-State: AOJu0YytHLqc6Ve0DM69upkE6EJ7UhUETRLUJFOF5DUM21sxWhpRhKFn
-	ZzhpLsTC509PS2KiBkUlMGbfZuNOIUuXGvYjFon7+BLxUXk04MjsdKYHliIOficlt6kuCYKpuqx
-	9AiqQCA==
-X-Gm-Gg: ASbGncukEmslNoiy3VEJD9mOuhKnLPjGqAV6X1loF+Bv/euft4haYoxobu8lwwtMx+A
-	3SB+vCcNo2e7Pqd2mp9wkRxMk3QdnDxCdLwfMVwKoTddFbgFjpGdbVXu63TLSTwP/N4pnCWrxZC
-	Lxmq7DE7qGKTnI6PSLFg/KbprJlRc7+nyQq+O9EUVO8WLlImCMfimVKBYK8GgDgxrdAy3Ndug6f
-	gbaTdF4H9+DqLs8sXENOpUX88Oex5VbtBhep5HNYruzGwiaGa486c4jIbaQjEyJ/NUAJWBq2Pjd
-	tTbafAXWjhWW6RDCKKdjiSDS0oZl+Dgeh5R0+1WTPGEObTqwoOCsR047oq9eJr5Qjn3ETY0UUlO
-	gITxkXJs=
-X-Google-Smtp-Source: AGHT+IH7xXBf+pSvn3kHgRy6uEQ3xLaVZ8ScWHSC0IXjydDRK6JttBy5tPzuwSPN3xTseySeCrXp4w==
-X-Received: by 2002:a17:90b:28d0:b0:2ef:ad48:7175 with SMTP id 98e67ed59e1d1-3084f3d2a3amr2508095a91.15.1744685306495;
-        Mon, 14 Apr 2025 19:48:26 -0700 (PDT)
-Received: from PXLDJ45XCM.bytedance.net ([61.213.176.5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7ccac49sm106681185ad.217.2025.04.14.19.48.21
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 14 Apr 2025 19:48:26 -0700 (PDT)
-From: Muchun Song <songmuchun@bytedance.com>
-To: hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	akpm@linux-foundation.org,
-	david@fromorbit.com,
-	zhengqi.arch@bytedance.com,
-	yosry.ahmed@linux.dev,
-	nphamcs@gmail.com,
-	chengming.zhou@linux.dev
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	hamzamahfooz@linux.microsoft.com,
-	apais@linux.microsoft.com,
-	Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH RFC 28/28] mm: lru: add VM_WARN_ON_ONCE_FOLIO to lru maintenance helpers
-Date: Tue, 15 Apr 2025 10:45:32 +0800
-Message-Id: <20250415024532.26632-29-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250415024532.26632-1-songmuchun@bytedance.com>
-References: <20250415024532.26632-1-songmuchun@bytedance.com>
+	s=arc-20240116; t=1744685654; c=relaxed/simple;
+	bh=QHvpMCoyzx8Is3suCIFIYsQ8ahOL4Ymyr3fexcTqk3U=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=ieCAZpp2y3utOLtmaXIADeCZ5XBZk9FiunEnm4C/Q31B6YVv1ddDHDTjULiQB8yWbjjUmDydh28YjbVj141dEnMno6ycfFLq7/5dwcvcelNhHQjO6q6eceHuHo6+rPH8ai7KonHDs2kph7JnTKC1BEqTRiPASUiRBDY4oT+GNH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ub4XAogb; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1744685646;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JnXKXpCFLkpvKYaGY4cocvXQ+p6cGX1HWZGI67SObpY=;
+	b=ub4XAogbzymmMKs631kitcLFuc2AO3Zy65P3KbedkITNGKdL+bXCpHLWIFdPKYz9njBsGG
+	/sCCzJbYP5y97hmFCyRtWP0WZfhe+233LmASREX6KAwMC/Rg+0kIc5eNr2uRnrKJmDYBoP
+	TgCh9EqPIMj2CVAT7idiyqPQZLz2oI8=
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.400.131.1.6\))
+Subject: Re: [PATCH RFC 00/28] Eliminate Dying Memory Cgroup
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20250415024532.26632-1-songmuchun@bytedance.com>
+Date: Tue, 15 Apr 2025 10:53:25 +0800
+Cc: hannes@cmpxchg.org,
+ mhocko@kernel.org,
+ roman.gushchin@linux.dev,
+ shakeel.butt@linux.dev,
+ akpm@linux-foundation.org,
+ david@fromorbit.com,
+ zhengqi.arch@bytedance.com,
+ yosry.ahmed@linux.dev,
+ nphamcs@gmail.com,
+ chengming.zhou@linux.dev,
+ linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org,
+ linux-mm@kvack.org,
+ hamzamahfooz@linux.microsoft.com,
+ apais@linux.microsoft.com,
+ yuzhao@google.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <A6B3FA7C-857B-4588-9962-2FB91C8E0732@linux.dev>
+References: <20250415024532.26632-1-songmuchun@bytedance.com>
+To: Muchun Song <songmuchun@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
 
-We must ensure the folio is deleted from or added to the correct lruvec list.
-So, add VM_WARN_ON_ONCE_FOLIO() to catch invalid users. The VM_BUG_ON_PAGE()
-in move_pages_to_lru() can be removed as add_page_to_lru_list() will perform
-the necessary check.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
----
- include/linux/mm_inline.h | 6 ++++++
- mm/vmscan.c               | 1 -
- 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
-index f9157a0c42a5..f36491c42ace 100644
---- a/include/linux/mm_inline.h
-+++ b/include/linux/mm_inline.h
-@@ -341,6 +341,8 @@ void lruvec_add_folio(struct lruvec *lruvec, struct folio *folio)
- {
- 	enum lru_list lru = folio_lru_list(folio);
- 
-+	VM_WARN_ON_ONCE_FOLIO(!folio_matches_lruvec(folio, lruvec), folio);
-+
- 	if (lru_gen_add_folio(lruvec, folio, false))
- 		return;
- 
-@@ -355,6 +357,8 @@ void lruvec_add_folio_tail(struct lruvec *lruvec, struct folio *folio)
- {
- 	enum lru_list lru = folio_lru_list(folio);
- 
-+	VM_WARN_ON_ONCE_FOLIO(!folio_matches_lruvec(folio, lruvec), folio);
-+
- 	if (lru_gen_add_folio(lruvec, folio, true))
- 		return;
- 
-@@ -369,6 +373,8 @@ void lruvec_del_folio(struct lruvec *lruvec, struct folio *folio)
- {
- 	enum lru_list lru = folio_lru_list(folio);
- 
-+	VM_WARN_ON_ONCE_FOLIO(!folio_matches_lruvec(folio, lruvec), folio);
-+
- 	if (lru_gen_del_folio(lruvec, folio, false))
- 		return;
- 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index fbba14094c6d..a59268bf4112 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1952,7 +1952,6 @@ static unsigned int move_folios_to_lru(struct list_head *list)
- 			continue;
- 		}
- 
--		VM_BUG_ON_FOLIO(!folio_matches_lruvec(folio, lruvec), folio);
- 		lruvec_add_folio(lruvec, folio);
- 		nr_pages = folio_nr_pages(folio);
- 		nr_moved += nr_pages;
--- 
-2.20.1
+> On Apr 15, 2025, at 10:45, Muchun Song <songmuchun@bytedance.com> =
+wrote:
+>=20
+> This patchset is based on v6.15-rc2. It functions correctly only when
+> CONFIG_LRU_GEN (Multi-Gen LRU) is disabled. Several issues were =
+encountered
+> during rebasing onto the latest code. For more details and assistance, =
+refer
+> to the "Challenges" section. This is the reason for adding the RFC =
+tag.
+
+Sorry, I forgot to CC Yu Zhao. Now I've included him. I think he may
+offer useful value in this aspect.
+
+Muchun,
+Thanks.
+
+>=20
+> ## Introduction
+>=20
+> This patchset is intended to transfer the LRU pages to the object =
+cgroup
+> without holding a reference to the original memory cgroup in order to
+> address the issue of the dying memory cgroup. A consensus has already =
+been
+> reached regarding this approach recently [1].
+>=20
+> ## Background
+>=20
+> The issue of a dying memory cgroup refers to a situation where a =
+memory
+> cgroup is no longer being used by users, but memory (the metadata
+> associated with memory cgroups) remains allocated to it. This =
+situation
+> may potentially result in memory leaks or inefficiencies in memory
+> reclamation and has persisted as an issue for several years. Any =
+memory
+> allocation that endures longer than the lifespan (from the users'
+> perspective) of a memory cgroup can lead to the issue of dying memory
+> cgroup. We have exerted greater efforts to tackle this problem by
+> introducing the infrastructure of object cgroup [2].
+>=20
+> Presently, numerous types of objects (slab objects, non-slab kernel
+> allocations, per-CPU objects) are charged to the object cgroup without
+> holding a reference to the original memory cgroup. The final =
+allocations
+> for LRU pages (anonymous pages and file pages) are charged at =
+allocation
+> time and continues to hold a reference to the original memory cgroup
+> until reclaimed.
+>=20
+> File pages are more complex than anonymous pages as they can be shared
+> among different memory cgroups and may persist beyond the lifespan of
+> the memory cgroup. The long-term pinning of file pages to memory =
+cgroups
+> is a widespread issue that causes recurring problems in practical
+> scenarios [3]. File pages remain unreclaimed for extended periods.
+> Additionally, they are accessed by successive instances (second, =
+third,
+> fourth, etc.) of the same job, which is restarted into a new cgroup =
+each
+> time. As a result, unreclaimable dying memory cgroups accumulate,
+> leading to memory wastage and significantly reducing the efficiency
+> of page reclamation.
+>=20
+> ## Fundamentals
+>=20
+> A folio will no longer pin its corresponding memory cgroup. It is =
+necessary
+> to ensure that the memory cgroup or the lruvec associated with the =
+memory
+> cgroup is not released when a user obtains a pointer to the memory =
+cgroup
+> or lruvec returned by folio_memcg() or folio_lruvec(). Users are =
+required
+> to hold the RCU read lock or acquire a reference to the memory cgroup
+> associated with the folio to prevent its release if they are not =
+concerned
+> about the binding stability between the folio and its corresponding =
+memory
+> cgroup. However, some users of folio_lruvec() (i.e., the lruvec lock)
+> desire a stable binding between the folio and its corresponding memory
+> cgroup. An approach is needed to ensure the stability of the binding =
+while
+> the lruvec lock is held, and to detect the situation of holding the
+> incorrect lruvec lock when there is a race condition during memory =
+cgroup
+> reparenting. The following four steps are taken to achieve these =
+goals.
+>=20
+> 1. The first step  to be taken is to identify all users of both =
+functions
+>   (folio_memcg() and folio_lruvec()) who are not concerned about =
+binding
+>   stability and implement appropriate measures (such as holding a RCU =
+read
+>   lock or temporarily obtaining a reference to the memory cgroup for a
+>   brief period) to prevent the release of the memory cgroup.
+>=20
+> 2. Secondly, the following refactoring of folio_lruvec_lock() =
+demonstrates
+>   how to ensure the binding stability from the user's perspective of
+>   folio_lruvec().
+>=20
+>   struct lruvec *folio_lruvec_lock(struct folio *folio)
+>   {
+>           struct lruvec *lruvec;
+>=20
+>           rcu_read_lock();
+>   retry:
+>           lruvec =3D folio_lruvec(folio);
+>           spin_lock(&lruvec->lru_lock);
+>           if (unlikely(lruvec_memcg(lruvec) !=3D folio_memcg(folio))) =
+{
+>                   spin_unlock(&lruvec->lru_lock);
+>                   goto retry;
+>           }
+>=20
+>           return lruvec;
+>   }
+>=20
+>   =46rom the perspective of memory cgroup removal, the entire =
+reparenting
+>   process (altering the binding relationship between folio and its =
+memory
+>   cgroup and moving the LRU lists to its parental memory cgroup) =
+should be
+>   carried out under both the lruvec lock of the memory cgroup being =
+removed
+>   and the lruvec lock of its parent.
+>=20
+> 3. Thirdly, another lock that requires the same approach is the =
+split-queue
+>   lock of THP.
+>=20
+> 4. Finally, transfer the LRU pages to the object cgroup without =
+holding a
+>   reference to the original memory cgroup.
+>=20
+> ## Challenges
+>=20
+> In a non-MGLRU scenario, each lruvec of every memory cgroup comprises =
+four
+> LRU lists (i.e., two active lists for anonymous and file folios, and =
+two
+> inactive lists for anonymous and file folios). Due to the symmetry of =
+the
+> LRU lists, it is feasible to transfer the LRU lists from a memory =
+cgroup
+> to its parent memory cgroup during the reparenting process.
+>=20
+> In a MGLRU scenario, each lruvec of every memory cgroup comprises at =
+least
+> 2 (MIN_NR_GENS) generations and at most 4 (MAX_NR_GENS) generations.
+>=20
+> 1. The first question is how to move the LRU lists from a memory =
+cgroup to
+>   its parent memory cgroup during the reparenting process. This is due =
+to
+>   the fact that the quantity of LRU lists (aka generations) may differ
+>   between a child memory cgroup and its parent memory cgroup.
+>=20
+> 2. The second question is how to make the process of reparenting more
+>   efficient, since each folio charged to a memory cgroup stores its
+>   generation counter into its ->flags. And the generation counter may
+>   differ between a child memory cgroup and its parent memory cgroup =
+because
+>   the values of ->min_seq and ->max_seq are not identical. Should =
+those
+>   generation counters be updated correspondingly?
+>=20
+> I am uncertain about how to handle them appropriately as I am not an
+> expert at MGLRU. I would appreciate it if you could offer some =
+suggestions.
+> Moreover, if you are willing to directly provide your patches, I would =
+be
+> glad to incorporate them into this patchset.
+>=20
+> ## Compositions
+>=20
+> Patches 1-8 involve code refactoring and cleanup with the aim of
+> facilitating the transfer LRU folios to object cgroup infrastructures.
+>=20
+> Patches 9-10 aim to allocate the object cgroup for non-kmem scenarios,
+> enabling the ability that LRU folios could be charged to it and =
+aligning
+> the behavior of object-cgroup-related APIs with that of the memory =
+cgroup.
+>=20
+> Patches 11-19 aim to prevent memory cgroup returned by folio_memcg() =
+from
+> being released.
+>=20
+> Patches 20-23 aim to prevent lruvec returned by folio_lruvec() from =
+being
+> released.
+>=20
+> Patches 24-25 implement the core mechanism to guarantee binding =
+stability
+> between the folio and its corresponding memory cgroup while holding =
+lruvec
+> lock or split-queue lock of THP.
+>=20
+> Patches 26-27 are intended to transfer the LRU pages to the object =
+cgroup
+> without holding a reference to the original memory cgroup in order to
+> address the issue of the dying memory cgroup.
+>=20
+> Patch 28 aims to add VM_WARN_ON_ONCE_FOLIO to LRU maintenance helpers =
+to
+> ensure correct folio operations in the future.
+>=20
+> ## Effect
+>=20
+> Finally, it can be observed that the quantity of dying memory cgroups =
+will
+> not experience a significant increase if the following test script is
+> executed to reproduce the issue.
+>=20
+> ```bash
+> #!/bin/bash
+>=20
+> # Create a temporary file 'temp' filled with zero bytes
+> dd if=3D/dev/zero of=3Dtemp bs=3D4096 count=3D1
+>=20
+> # Display memory-cgroup info from /proc/cgroups
+> cat /proc/cgroups | grep memory
+>=20
+> for i in {0..2000}
+> do
+>    mkdir /sys/fs/cgroup/memory/test$i
+>    echo $$ > /sys/fs/cgroup/memory/test$i/cgroup.procs
+>=20
+>    # Append 'temp' file content to 'log'
+>    cat temp >> log
+>=20
+>    echo $$ > /sys/fs/cgroup/memory/cgroup.procs
+>=20
+>    # Potentially create a dying memory cgroup
+>    rmdir /sys/fs/cgroup/memory/test$i
+> done
+>=20
+> # Display memory-cgroup info after test
+> cat /proc/cgroups | grep memory
+>=20
+> rm -f temp log
+> ```
+>=20
+> ## References
+>=20
+> [1] https://lore.kernel.org/linux-mm/Z6OkXXYDorPrBvEQ@hm-sls2/
+> [2] https://lwn.net/Articles/895431/
+> [3] https://github.com/systemd/systemd/pull/36827
+>=20
+> Muchun Song (28):
+>  mm: memcontrol: remove dead code of checking parent memory cgroup
+>  mm: memcontrol: use folio_memcg_charged() to avoid potential rcu lock
+>    holding
+>  mm: workingset: use folio_lruvec() in workingset_refault()
+>  mm: rename unlock_page_lruvec_irq and its variants
+>  mm: thp: replace folio_memcg() with folio_memcg_charged()
+>  mm: thp: introduce folio_split_queue_lock and its variants
+>  mm: thp: use folio_batch to handle THP splitting in
+>    deferred_split_scan()
+>  mm: vmscan: refactor move_folios_to_lru()
+>  mm: memcontrol: allocate object cgroup for non-kmem case
+>  mm: memcontrol: return root object cgroup for root memory cgroup
+>  mm: memcontrol: prevent memory cgroup release in
+>    get_mem_cgroup_from_folio()
+>  buffer: prevent memory cgroup release in folio_alloc_buffers()
+>  writeback: prevent memory cgroup release in writeback module
+>  mm: memcontrol: prevent memory cgroup release in
+>    count_memcg_folio_events()
+>  mm: page_io: prevent memory cgroup release in page_io module
+>  mm: migrate: prevent memory cgroup release in folio_migrate_mapping()
+>  mm: mglru: prevent memory cgroup release in mglru
+>  mm: memcontrol: prevent memory cgroup release in
+>    mem_cgroup_swap_full()
+>  mm: workingset: prevent memory cgroup release in lru_gen_eviction()
+>  mm: workingset: prevent lruvec release in workingset_refault()
+>  mm: zswap: prevent lruvec release in zswap_folio_swapin()
+>  mm: swap: prevent lruvec release in swap module
+>  mm: workingset: prevent lruvec release in workingset_activation()
+>  mm: memcontrol: prepare for reparenting LRU pages for lruvec lock
+>  mm: thp: prepare for reparenting LRU pages for split queue lock
+>  mm: memcontrol: introduce memcg_reparent_ops
+>  mm: memcontrol: eliminate the problem of dying memory cgroup for LRU
+>    folios
+>  mm: lru: add VM_WARN_ON_ONCE_FOLIO to lru maintenance helpers
+>=20
+> fs/buffer.c                      |   4 +-
+> fs/fs-writeback.c                |  22 +-
+> include/linux/memcontrol.h       | 190 ++++++------
+> include/linux/mm_inline.h        |   6 +
+> include/trace/events/writeback.h |   3 +
+> mm/compaction.c                  |  43 ++-
+> mm/huge_memory.c                 | 218 +++++++++-----
+> mm/memcontrol-v1.c               |  15 +-
+> mm/memcontrol.c                  | 476 +++++++++++++++++++------------
+> mm/migrate.c                     |   2 +
+> mm/mlock.c                       |   2 +-
+> mm/page_io.c                     |   8 +-
+> mm/percpu.c                      |   2 +-
+> mm/shrinker.c                    |   6 +-
+> mm/swap.c                        |  22 +-
+> mm/vmscan.c                      |  73 ++---
+> mm/workingset.c                  |  26 +-
+> mm/zswap.c                       |   2 +
+> 18 files changed, 696 insertions(+), 424 deletions(-)
+>=20
+> --=20
+> 2.20.1
+>=20
 
 
