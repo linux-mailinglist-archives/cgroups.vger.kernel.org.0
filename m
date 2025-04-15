@@ -1,93 +1,117 @@
-Return-Path: <cgroups+bounces-7585-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7586-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4049A8A803
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 21:31:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1983A8A9C0
+	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 23:04:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB39F444C87
-	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 19:31:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29FE0190232B
+	for <lists+cgroups@lfdr.de>; Tue, 15 Apr 2025 21:04:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80FC724E4C1;
-	Tue, 15 Apr 2025 19:30:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E18525742B;
+	Tue, 15 Apr 2025 21:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fdAh6JKa"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZjzA941S"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6ED724E4AC
-	for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 19:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A4C14F9D9
+	for <cgroups@vger.kernel.org>; Tue, 15 Apr 2025 21:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744745437; cv=none; b=SpAvSHCpYdXVj4M+txsQ1idu/r32Z9iXyg+eB7CTIHsvPISffqKt9bVcvoHO8Yz5+t4QhViYTK318U/HMQ2+1I52wB4AwERn9Y0Wksm3unzpPjhtI5g0EoP4Qu9pvg3VgOg/7qcq11WXqq55LAHsyf/WmkT9baLBDxOqLTzGW0s=
+	t=1744751079; cv=none; b=RoprARh0OXLVHbYwi3vFdO5dkJyJn3w2Xmo+AmZg1n+iHBCqaVs1NjxTTo1xVb53OEQkCZwgisSvGgoDDoGubumU+OnDFERp04FZGIODV9+LmeNLTpJJywMRNf4MS747rNdZEq9B0Sf0zd0J4t8MxFm6aeXRkmEgCD8F+OKJvzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744745437; c=relaxed/simple;
-	bh=3fJM41hQlSy3O6CMcQPRPBH5R7jsuultqFk04SDMaKU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o4hYG+Mstla4usw/ozpF423kLMKt78juHKzSVsypZYMEWIAMgEXt6L1jnjP0lkNn1LjxH1i2fwcr8OCB5zXixaVPoIPUSsaAaTOm0WC45BjTmtkQFKIxnfbsI2xxBFIRqnAWdOYsKKJT+gBs0ofK3asrdVasrDpTPoNI8gppqhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fdAh6JKa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D77FC4AF09;
-	Tue, 15 Apr 2025 19:30:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744745436;
-	bh=3fJM41hQlSy3O6CMcQPRPBH5R7jsuultqFk04SDMaKU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fdAh6JKa5mh0/MqvHlpkLuJPgooksUSw1I03/zFOSRcjE51am+cnML3xs6q4R8cix
-	 p09soHyoMBtcQnxuaU/gbgRVdAFEvKbD02BKhtO444gzczGPAcXm+q56r65ycct5v/
-	 jf+GkPGBv0NRO39W4mRpSOmKLUnJnjhG4rSB2y7j0aPSHXEi468LylB61yoPDpD2zE
-	 t5D7YdShnUZP2dlGBKIahIJt4fIBdecR+o3WwuSaKPBnGqchGZTDgq5ngEFGMekDMC
-	 zFLytQWQ25FRnDLXZfH2TzSvMtuU4JAt3vuzNUrvzoCN8aZQvbnnH6WUMyDThx2q+8
-	 3wT3d947mXv8Q==
-Date: Tue, 15 Apr 2025 09:30:35 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: JP Kobryn <inwardvessel@gmail.com>, shakeel.butt@linux.dev,
-	yosryahmed@google.com, hannes@cmpxchg.org,
-	akpm@linux-foundation.org, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v4 5/5] cgroup: use subsystem-specific rstat locks to
- avoid contention
-Message-ID: <Z_6z2-qqLI7dbl8h@slm.duckdns.org>
-References: <20250404011050.121777-1-inwardvessel@gmail.com>
- <20250404011050.121777-6-inwardvessel@gmail.com>
- <3ngzq64vgka2ukk2mscgclu6pcr6blwt3cwwmdptpdb7l7stgv@vhpyjbzbh63h>
+	s=arc-20240116; t=1744751079; c=relaxed/simple;
+	bh=5zUudYqV340vynghSpjh6FRljA4V5Xb1a1ZKaVrUOkI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ubyEpxdFhJZH1+uFN4+BBRzz6MofB0i/C8OG80M2sls6kSmcBnccBGRSsAX11C2mTS85lIRbrSYGsRhXVpAVwITR2pE8CW6RpLj9Cox7bXt0/l/PjmBNwW0DXaRNPDobFnkcSrO1H0jOd+YNvLU/daNShDJdji4pOXS1qH5TFgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZjzA941S; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744751074;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=GD3dcZZaAV8PGBsMmRQtcMpL9M1m9kBkUBv1lLYHAEA=;
+	b=ZjzA941S0m9jz9bgRQ2LZWjw46UhbcSg4uZiiE7xqfIeZ8TdcV/SGB8iAJJBdWSXyjcUdi
+	ROXRAmPUd6wuFOdPwT+/L+0S4VU4UjV5Ri1ggElTs1XH6N/m63GLWoPt2+2tEPpYPNzfyk
+	O1XirU3VjMS4nul4O//RZUKLdHn6dW4=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-32-do-G7T1BObOjxM-zBSTeuA-1; Tue,
+ 15 Apr 2025 17:04:29 -0400
+X-MC-Unique: do-G7T1BObOjxM-zBSTeuA-1
+X-Mimecast-MFC-AGG-ID: do-G7T1BObOjxM-zBSTeuA_1744751067
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B3E45195609F;
+	Tue, 15 Apr 2025 21:04:26 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.64.119])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5C4341956054;
+	Tue, 15 Apr 2025 21:04:21 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Tejun Heo <tj@kernel.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH v7 0/2] memcg: Fix test_memcg_min/low test failures
+Date: Tue, 15 Apr 2025 17:04:13 -0400
+Message-ID: <20250415210415.13414-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3ngzq64vgka2ukk2mscgclu6pcr6blwt3cwwmdptpdb7l7stgv@vhpyjbzbh63h>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-On Tue, Apr 15, 2025 at 07:15:48PM +0200, Michal Koutný wrote:
-> On Thu, Apr 03, 2025 at 06:10:50PM -0700, JP Kobryn <inwardvessel@gmail.com> wrote:
-> > --- a/kernel/cgroup/rstat.c
-> > +++ b/kernel/cgroup/rstat.c
-> ...
-> >  static inline void __css_rstat_lock(struct cgroup_subsys_state *css,
-> >  		int cpu_in_loop)
-> > -	__acquires(&cgroup_rstat_lock)
-> > +	__acquires(lock)
-> 
-> Maybe
-> 	__acquires(ss_rstat_lock(css->ss))
-> 
-> It shouldn't matter anyway but that may be more specific than a
-> generic 'lock' expression [1].
+v7:
+ - Skip the vmscan change as the mem_cgroup_usage() check for now as
+   it is currently redundant.
 
-I don't know whether this is a controversial opinion but I personally would
-prefer to not have __acquires/__releases() notations at all. They add
-unverifiable clutter and don't really add anything valuable on top of
-lockdep.
+v6:
+ - The memcg_test_low failure is indeed due to the memory_recursiveprot
+   mount option which is enabled by default in systemd cgroup v2 setting.
+   So adopt Michal's suggestion to adjust the low event checking
+   according to whether memory_recursiveprot is enabled or not.
 
-Thanks.
+v5:
+ - Use mem_cgroup_usage() in patch 1 as originally suggested by Johannes.
+
+The test_memcontrol selftest consistently fails its test_memcg_low
+sub-test (with memory_recursiveprot enabled) and sporadically fails
+its test_memcg_min sub-test. This patchset fixes the test_memcg_min
+and test_memcg_low failures by adjusting the test_memcontrol selftest
+to fix these test failures.
+
+Waiman Long (2):
+  selftests: memcg: Allow low event with no memory.low and
+    memory_recursiveprot on
+  selftests: memcg: Increase error tolerance of child memory.current
+    check in test_memcg_protection()
+
+ .../selftests/cgroup/test_memcontrol.c        | 20 ++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
 -- 
-tejun
+2.49.0
+
 
