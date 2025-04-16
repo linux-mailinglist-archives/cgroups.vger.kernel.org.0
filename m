@@ -1,207 +1,284 @@
-Return-Path: <cgroups+bounces-7591-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7592-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69F2FA8B3C7
-	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 10:29:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 742B7A8B51A
+	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 11:19:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9D6F18845DB
-	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 08:29:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C658167BAC
+	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 09:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51A6422E3E7;
-	Wed, 16 Apr 2025 08:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6796E235361;
+	Wed, 16 Apr 2025 09:19:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZhiZO9on"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="G9LWetKh";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Iul2gkoj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5AC227EB9;
-	Wed, 16 Apr 2025 08:29:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744792167; cv=none; b=TPzk8WKt1x07jg2eEgwVlpAtXauPOiZ02x0z3utZUwat5jof4WPYIqzRuIFr/5DdaRtFt1gB1u5p2xyzrg+l1K0GFKt+BVrrBu/MI2lkSkR2JaIBBtQY57sUqnTFs6+HvcyWHkLCs5w+/P+4DQiiQ6nnZJtpUhFDCQNM4LPudDU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744792167; c=relaxed/simple;
-	bh=pKkKKqoTEolPnTa/YFx9qPHQlIeHPpzcluXgfKWEFT8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AoFYhgfU/JWokxs7PAgMOQib1L7TTT15bnmShL3F5ikL8qbK8FUB0yl5ELTiXh4O1HyAiPNDvRhSe+ZcDhXxB5VRz0qlgaAtDPoSJSx3iEEZ+rxTmmmZdjQLOrmt1F0Ck9W7alhhwqB1/xxJVI9hsp4c8fjCuXbI40eYePMk8DY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZhiZO9on; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-7fd581c2bf4so5671363a12.3;
-        Wed, 16 Apr 2025 01:29:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E3C13AF2;
+	Wed, 16 Apr 2025 09:19:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744795184; cv=fail; b=IEQNMkCm11AlMu6kzs0NU1uu9sBTUNtAuzQVwJstR35wNR5pWHIM1Nr5B2afOdmdgnOq2nnUoh49+/COoLN3sc0eLlWzmvdsXBoz5+GS3l1uahFWbvmQRCzgDIyUvN3pQsILhRNlx1/uSagy5CaZIf+JcgZWW+pnYFwxTmz2uCY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744795184; c=relaxed/simple;
+	bh=YTQCkqtBTjSr5PiF2TYsm8VoycqvjmgQCZuzI4bbPJU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=sVfRBbr8moj3zUmmwZ6rwFoO4A8iuDA6bewtu8Q/47UqgEQvtc23IqZB2NjARVxIiHKtrATcRIw0l+Iu29lW5nsbag7Cx30iNstx75wnT9cz2YTXnf3WUw2/tZJ4DiLOlgwIIamvO/8Mfk+6rDYCdY+ElhCm/ZIp6piSx5j0XeM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=G9LWetKh; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Iul2gkoj; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53G8N3jx012824;
+	Wed, 16 Apr 2025 09:19:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=D/JJqQz16fGVAMbVPhNFYwKBM3oiAaAWFwiRVbU8tRs=; b=
+	G9LWetKha6uiLOo26ugxghrYz56uTjWZBcjVVt/N4MXbbAraZewgYMOyTU4EDyK7
+	rOQPx+POI7X8/af/EOr0E03YQqjO3WxqTWBt+j8IgZZNWKIVnI6wiV9H7H/GXSa4
+	/zMsxYfmJjcUcYu4n/2zP4nZiXr1LQpNADOx2mbY5p/9MDLy1WsnJNCkQ7UcTbeK
+	AM+dEJNA5N5IKkNxrapCuoAkRSwAEQ64F6WmY1UU0tCdGTl1zZ0jisI6iugWfHak
+	fSYdrT9zGdQJOf8K26kNmA3oGsglDgEf54yHzHGyFNVJjYr6itfXTAHOO0AusLZ3
+	V5zWulnpPmyZ88sJZSPw+A==
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4618rd3grp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 16 Apr 2025 09:19:32 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 53G8Lq7Q038819;
+	Wed, 16 Apr 2025 09:19:31 GMT
+Received: from ch5pr02cu005.outbound.protection.outlook.com (mail-northcentralusazlp17012054.outbound.protection.outlook.com [40.93.20.54])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 460d4sm821-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 16 Apr 2025 09:19:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=nt64WJcXcqauLTyvmAwzTntghV+Kn1u6eQ+s2yzH+03XQzEDExy5AnTv5SZatFPQ47vGhPgOap8mlSXiqOBLFML25QQmh3FFR1JjEkYKbbj74y045e72w2I5HVsBCDiHFw/Zs5byhx/JRz/UhfG79uwKWz6f7Kl0PxpR8jCTXobnZhdc23qtqfIkzqtKI2jXGahkYBH7FNLQqZi5o2vU/g8L6EUkQquSVGu0VmfGtDgaXL6VYyb8/erj9aBLB6y64Y0M1EKLseVNxjOT7Cv0/j8ZkWh23u9f4XTtBUn4NLOt0dNj4se/BknoqDt/N4GKD7bUWalNO/lXcpI/rby08A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=D/JJqQz16fGVAMbVPhNFYwKBM3oiAaAWFwiRVbU8tRs=;
+ b=kNQhT3lVc8G9IBQk8FoIx9I42KJdcbYtEsHSl6haleisMZnR+6YJEDowSdpqwa0PWz08wxOSSX/sp1WdDl/48VldD2vG6KrToBhTjgKqbRsCjIMiGygsCtYRQyUWicIkCViQcYfw7Q6Tf6eqKHt2LVln6ey/w36Ds1ArkTbUH9q1q6g7upTYRRZ6iT/Gqbl/EKJjoXjLI3TcyhASixK0UKJHhz7acwbyvQlmuR/mQqmjc1ukrHFbx14HxZozZDAoi6kwx7Km4VDUQgk2O3dw107VId1w/yTn1ji/Wi2zptYu4NepXtdkYcry82tA8sHXw7RKyC69n0jIg2d7JIk2Tg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744792165; x=1745396965; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ovSlUrKCeKW3pPZbEQAJqu/9QO1u+A25+RyFvDwdr+Y=;
-        b=ZhiZO9onsC56+vjWpPOYm5nhe68RP0Zy6mU1Ww7SS7Z5h/W9iSX0T4zGUSRp5rj6BX
-         VvNW/ns0fiZ8VTKoBQAEiBdj5Vrk9ZtDoxM7aICLg+jmW5yd4nE/P3JHW1NQZ2+IXGLX
-         qvW+MrHlFk6En6893nJ+NMHYMvZkPBaIjiaCILH1Tur4B8bo8fIYjgPerjbtCgxxvosm
-         8pfmdN4qmo0Hr8359JPx0mOypS3iJ1xV2kA62G32ooNUwRLwOixNyTp5UVYMOv/g5xMc
-         apTNiZfALToDwmXXZU+41Roskuk2PVMeVt57SnU1ZGv7H4QHeB6N3wxF/BMPq9h0QbNs
-         m3hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744792165; x=1745396965;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ovSlUrKCeKW3pPZbEQAJqu/9QO1u+A25+RyFvDwdr+Y=;
-        b=Z7ogmA0b38OYG210t2Yx8rBPoYDJMyUz8sOxY4fFqrniivKGYT+Cggdg7doOXY1SIo
-         ufllvtjo3p/5a75CJMnLTEQCwv7p7UGjPq2NujddlAjQ+yvrdsoYPoFUVWTjXVrZAfZw
-         9BMsQJHcKlQIa9fgAsxdPW7MJe4PegdQkXmur6nECjuyEV5Q9Y9iTIWLdkZgRuOtAoje
-         etDPY4oqRWf87y64jwNsyDRwLUKUshy5BZWyz16Jc7i9ZOBLgDKpyLdIaj6KCfi5vFD6
-         hBA1qvNA8rKG7GQtV0on78lV2qI4/ulXRetC1oeUACxq4HvWdBqhn1QAUZAnSHZSfr0y
-         XEjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVT53g6iVNbWfDlglp3AY9fAUyXLxixEGMMMeK5wEKzdfnQk0mCYT/g4N9kndYQulA3DJArkI6EG14onsiP@vger.kernel.org, AJvYcCWomounWRW7fvkyiFkwsffuJMJFzAgaaK+AMVGF+XYArZ5c0fdm1/RZ9TqizhKcQ/+d4mMfTksV@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzd0b6NRzu9Ov/84jQ9MyiyupksdPgp8MAygqTY/uiapjfoxqkG
-	xvJa9vCyap4sd7LvANenwqXtZApW2Dutiy/DlZ1pViAJwQB1EHmygATQLcEtUXR4ex3z+X4+Da8
-	+b8ScSRbyCwFSpkuW5+1o65l8zQE=
-X-Gm-Gg: ASbGncuW4vDGIHGQZH1FR+kY0+OQ6WGM5B+oy8+QQiPDYv2aqP97+0GxTAldlJ6ycJ6
-	hNPXzVbgrYENht9asT0yyPiNIlK+iegJUfi7mVN79mAhA8yDua8qAj8W1iSHUO0Rk2d1ANLlS9w
-	SlMoH3UNsZmJVCHNrrsfmpvu3+41NCskWC
-X-Google-Smtp-Source: AGHT+IFPJsWFdxHLRn0A3K3T0Ttkaq59tPju15WeDboMAunp4Fr63JgpoiKfRarAkC7MF0/sucAkaLiHSi1wesRrcUY=
-X-Received: by 2002:a17:90a:d88d:b0:2f7:e201:a8cc with SMTP id
- 98e67ed59e1d1-30863f2f576mr1493568a91.18.1744792164501; Wed, 16 Apr 2025
- 01:29:24 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D/JJqQz16fGVAMbVPhNFYwKBM3oiAaAWFwiRVbU8tRs=;
+ b=Iul2gkojY5zAko+aGMS8qKpCCEb+7LuYPljvGe1Q6b+uyjmCa7nzSQy3WVWSiuULyNhOecJcg2ZX3uiaUdJ5a5q7C9m+DMG1+XM+Ba/CjeafAmesvbsTBVtdqJeJko1ONSYIy85fuXMx1imRrtaQGuXmc8u0hITuNZTdw3nCVEU=
+Received: from PH8PR10MB6387.namprd10.prod.outlook.com (2603:10b6:510:1c2::17)
+ by PH0PR10MB5730.namprd10.prod.outlook.com (2603:10b6:510:148::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8632.35; Wed, 16 Apr
+ 2025 09:19:28 +0000
+Received: from PH8PR10MB6387.namprd10.prod.outlook.com
+ ([fe80::f218:31a2:a748:3c21]) by PH8PR10MB6387.namprd10.prod.outlook.com
+ ([fe80::f218:31a2:a748:3c21%4]) with mapi id 15.20.8632.035; Wed, 16 Apr 2025
+ 09:19:28 +0000
+Message-ID: <46892bf4-006b-4be1-b7ce-d03eb38602b3@oracle.com>
+Date: Wed, 16 Apr 2025 14:49:22 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] cgroup/cpuset-v1: Add missing support for
+ cpuset_v2_mode
+To: "T.J. Mercier" <tjmercier@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250415235308.424643-1-tjmercier@google.com>
+Content-Language: en-US
+From: Kamalesh Babulal <kamalesh.babulal@oracle.com>
+In-Reply-To: <20250415235308.424643-1-tjmercier@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA0PR01CA0057.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:ac::15) To PH8PR10MB6387.namprd10.prod.outlook.com
+ (2603:10b6:510:1c2::17)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250319064148.774406-1-jingxiangzeng.cas@gmail.com>
- <20250319064148.774406-3-jingxiangzeng.cas@gmail.com> <m35wwnetfubjrgcikiia7aurhd4hkcguwqywjamxm4xnaximt7@cnscqcgwh4da>
- <7ia4tt7ovekj.fsf@castle.c.googlers.com> <20250320142846.GG1876369@cmpxchg.org>
- <ipskzxjtm656f5srrp42uxemh5e4jdwzsyj2isqlldfaokiyoo@ly4gfvldjc2p>
- <4lygax4lgpkkmtmpxif6psl7broial2h74lel37faelc3dlsx3@s56hfvqiazgc>
- <CACSyD1NisD-ZggRz0BaxUdJ9so4j-sKPZi361HJAum3+bHO+tQ@mail.gmail.com>
- <CAJqJ8ihLfcDROuCjMfoNzOtRRZhVDWEx04ik6cS9NO6hVua0xA@mail.gmail.com> <qfxzzbcfnojz3oz2ackzorwokhmr2dbkxfgbmewd74vtzrzxkh@rlqide3wg2v7>
-In-Reply-To: <qfxzzbcfnojz3oz2ackzorwokhmr2dbkxfgbmewd74vtzrzxkh@rlqide3wg2v7>
-From: jingxiang zeng <jingxiangzeng.cas@gmail.com>
-Date: Wed, 16 Apr 2025 16:29:13 +0800
-X-Gm-Features: ATxdqUHMcJS3GpWxSBSZsTcmQzVqWzPzHcmjHLMzsnvNr2EqwFUfW8_JXgsUyHE
-Message-ID: <CAJqJ8iiyVQxf1Kg_UKuRM_Zg6u4Hqb=DwpbOH_7CrAscAonD-g@mail.gmail.com>
-Subject: Re: [External] Re: [RFC 2/5] memcontrol: add boot option to enable
- memsw account on dfl
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Zhongkun He <hezhongkun.hzk@bytedance.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Jingxiang Zeng <linuszeng@tencent.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, mhocko@kernel.org, 
-	muchun.song@linux.dev, kasong@tencent.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6387:EE_|PH0PR10MB5730:EE_
+X-MS-Office365-Filtering-Correlation-Id: f8f56125-54d7-491a-225d-08dd7cc7c965
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|1800799024|10070799003|366016|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?c1E1NVdyQ3g5eXdFT1M0Z0NZWnZMODUxcGFtWkJQenMwOGdkOVI1clFkekRi?=
+ =?utf-8?B?QVRoQnNxRy9iSXFlMDVCbTExY2dQcjE0d2VScUI2dk9hMjdhc1N0bTloZW1i?=
+ =?utf-8?B?ZExXUjBWbjdpOVMyRDV3SVRrSjJRWDk5dkF4c3NqanRLMy9zTDFJUEtPcU5l?=
+ =?utf-8?B?QzFhYlJURTA4L0JtVytPbmhLb1FZTzZhRFdUempkaCtTcnN6YmtWQVRaM0xJ?=
+ =?utf-8?B?ck9tU0NXcnpBNzRZWmQ3bVhJdkxmOXA3d21vMnRXM1NZd1VqQ2I3U2ZuL2Zm?=
+ =?utf-8?B?SDZMY0UzYkNtamJwWWZVbUZxRzhYdTlVN3pQeXF0WkZJQ2R2c3pYaHdIaXh0?=
+ =?utf-8?B?cWpFdGZPTHZ5b1oyaUVkQ09LeG9yOUkrRlJ2NUhhN0RyUlRpMGhIbXpDRHQw?=
+ =?utf-8?B?KzlUZXQwUVovclppajRkR0NVNmNubGRsb01lWlVRSlpTZUlXUVFyMXlyU3gz?=
+ =?utf-8?B?NlI0b25JaC9CUXBrbTFUK3htV3I5WjAvUkM3UkVpS0pHZ2JSWFV2eXd6c0pv?=
+ =?utf-8?B?bXdRa3hwemdnNDBOZzRiMmVIU2Y0MmhzWlU3QW9GRnNOQ2ZRWmVGSGljQW1t?=
+ =?utf-8?B?VkowRG5JK29UWFcvaXJzNG9vaUFYa1hVNmFNZDVwUThiU213ODVwUXo1MEdZ?=
+ =?utf-8?B?UFpxR0FCdFRPT1ROaEw0aC9LaURvbVFxc2VKOTd2aFdmdWZJZHY3SGVUb1dj?=
+ =?utf-8?B?Q1dmdEVQRFdWU2FSWDRtclVBMys3UUFsRS9zTnlxVGlpNEZJWkRRb3prSk5L?=
+ =?utf-8?B?MVhIY25oZzdSV3NaY2VGalVOU09DalpVZmtNYm9tdDRaODNiSHVZZ2d2anVB?=
+ =?utf-8?B?NUJTRWlwSWFLeWJDRHg5UzB3aVA3NlVmNlhIc29JSkkzcjhUYlRCUkI3Ym9H?=
+ =?utf-8?B?UTJaQnl3RGZvakFPUS9LNVlsSjFmVnBNdDlSS01zOEpwWGZ2aHFMaFZNYW1D?=
+ =?utf-8?B?WC9IVis0SjNWY00xSFg3NVgxMWlrRGdLSmgrUGw0akxvRUR3Q0g0SWxCYzRX?=
+ =?utf-8?B?MVRCR2cvNEJjTFlHVmVSbFNFdFJpUmpXTFZIazNvb1ZIQ3pDNHY0cjNvK0dm?=
+ =?utf-8?B?VEpuZythVC9NOGlVNlpBczhDZUI5NnE2RTJiY0VXcmpvTFRRTkpSK3hrSUtq?=
+ =?utf-8?B?c25NRHcrMnUzUWtySnpFVXg5Z0trNkVCWHErU2l2dEVGVDNQNkM0YjIzVWN0?=
+ =?utf-8?B?UEpUaFZabDZvNFR0eFgwMUhTSDVIbU9OTW5VVUdlcUlHN0hObEh2ekh3OHJm?=
+ =?utf-8?B?aGRZSDJ4dkNRT1pjc3lsaFMvWlNCNDEwV0RtOUZaUXZzdG9PNng0cEY4ajY1?=
+ =?utf-8?B?SGZmaVlKYXRJTmJScFN4ckRiS25rYXgzQTJCcng4d0JtQkROYnc0K2cwRTYz?=
+ =?utf-8?B?QVlma1l1Qjd4K0FuRXRXZnN3RVBwSUVEcjZRbUIwT25QcVlTb2trSndxdTcx?=
+ =?utf-8?B?VVROb2FMUmRYczMzUlBvQlFEVTFXcmJqQmVGSmVYOUpnWjFiSXNQdkxlQ0Zz?=
+ =?utf-8?B?L2FPY2xZb2o4YjA1RmFOMURiVjQ1UFkrT2JQQW01QVYwSTdMaysraFNvK1RF?=
+ =?utf-8?B?SWpqT3dmak4ydkpSWnRmeDJtRGhuV3JZWERhcDdPYW9BNjhKdmxxeUtlNHFT?=
+ =?utf-8?B?VjJjWVZlMHJZN2Vlc1lNUDltS21CVDlrbTRrOGw5OXJrUm4wSjhqN1Raem9X?=
+ =?utf-8?B?NDU4NU8zaEdUWTliQmd6QXM5OVo2VlNRRTk1ejQvR21yZlRsYlNtY0R6OGdI?=
+ =?utf-8?B?WWRlN2RIUld2VGU2TFRsTi9SbzFJbU9CQlp2RlNMUVpPUDMyMWJJQ2t0TVRi?=
+ =?utf-8?B?QzBIN1F1ck9Vejl5YnB3ZDM1ME9hNmY0dC9Nc0JMVitjVU96MXdGb0ppOXhS?=
+ =?utf-8?Q?0JJS0l8B6P0nu?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6387.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(10070799003)(366016)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UlV3ek5YbVFWRytpVEZSUUluTTVEeUwvd25SMGozN2FDZ2lRUFJCSUFjT1Fm?=
+ =?utf-8?B?S202bk9nbWc1U2FtTEJuMjYrY0pBWmllV1M4VWlxb1M1L0lGRVpVWmRHdDgw?=
+ =?utf-8?B?TkpPVXV2SjQwUHdwYVdqRnNlNlZ4QVV1ZnhVOTAxb0lTWTJ1R3ZYWjdxQUwx?=
+ =?utf-8?B?NXpSS3o1dXFmZU83YWx2QkdNM2o3Wk05aWZ3eThxZ3JSNkxTakZ1RHpIQTZM?=
+ =?utf-8?B?cTJDRHFERlFYNjc1UVdGdlhFb1lib2NnY1cySDZHbkIwWE9GdnF4aWl1SE04?=
+ =?utf-8?B?YlRHUGRjQU16V3N4V1ZBazhuTlRNcVMrakF3cU5PUGxReFQvOUdlTkdYNW1S?=
+ =?utf-8?B?eGlzbnlxWTVCK3NwUUlyWW4vN0NPenNkVGVCVXpYU1dXU1dMTWlGWHkrNGwz?=
+ =?utf-8?B?c0k4RG9pV2QxWHRWTmphSnlLSGN4enZKT3NXeHlPTkQvSTJjeWQ3djdIUTV4?=
+ =?utf-8?B?QUVhOGtHSG81ZEJiWWdxamYzd3FFSmFrdjJKTVJLbkdnaGdobi9ET3VwUWZE?=
+ =?utf-8?B?SHdaeE1xMjlQZWpQVlZTSnhid0FTUU52cTEyZzRaWVFUeUV2M1U2bUowRkF2?=
+ =?utf-8?B?MnNoZWMzZ3MxKzNtVTFNUjJxcXBHZFlkbkdsK3RQQytJWlJ5TmgxL3podUY3?=
+ =?utf-8?B?QTloK3RyaFNzL3g4ZzJQOWNERU9wRjE5RlRzRytGTFI3YnI5QmJkdWhYT1BM?=
+ =?utf-8?B?ZVI3cTdQVldFc3VRUVdjZ2VscS9yeEVVTzV5ZmJoYnhiQTJXUjBWRVl2TXlx?=
+ =?utf-8?B?NkNsd25VT1BRdERKZS9RS3A3anZMeitWMDRVazN5T2pKSnRaRnFkd3FLdTJQ?=
+ =?utf-8?B?TElreFNTMU9xOTFySEliYkVNemlacSszSDZrdjBqNVBmdHZVd0xDWmRHWFlk?=
+ =?utf-8?B?VTc0Z0kxVk05VEdob2xXaE9mVGYvcTZnYjhQVnMzZW44bUZUYmN5OXF5aXYw?=
+ =?utf-8?B?UHJiWi9FMmo3UzNmTlVRZ1kyU01wcTVYdmdPUmcvZGh0Wng1bW5CNWQ0bVVV?=
+ =?utf-8?B?Y2tqeDUwcGtwOE95Wnd0dlZKL0ZLNFNmTXMxY2sycXNGSWJHaDUyeXN3WGY5?=
+ =?utf-8?B?cU9QQzJJQ252MUJEN09hVUhyeGRCNGFrekZXQ28vOWxON0lrb2ZaeDNLRk9O?=
+ =?utf-8?B?eXl1SkFjTDczeDF2eHhxeWZoVVBvSXplcHBiTEVlWjJZeTExNnFtSVluUlpr?=
+ =?utf-8?B?Q0EwY1B6aE16T3ZhQ2NFK1JxMFMwazlKRVowWDlNY0k2WitUUWpuYlkwbHNs?=
+ =?utf-8?B?TjJpVDlSWlhIdUxSV2h3ZDd2SWhKeHJJMWhDYlJFd085UDBVeFJiQzJlWkow?=
+ =?utf-8?B?SHdDekpHODJ0bHFwVFgwZDdyTkdRL0ppMmFuSkc5djhMRUtUY0c0SDVOQVJT?=
+ =?utf-8?B?dFRSR0pGSnVzalRnUXN6eVpZcFBIb0h5LzhQZ3dDcUJrbW0wTFozQ1pvaXlK?=
+ =?utf-8?B?d0Y4SENBU2xiMFZidnpaMmZ4emNXNGNVanNLOVVubnM2TUc3dDFGYkRWMzdh?=
+ =?utf-8?B?NGlxaU82dTljeUFYbFFkMDd3WVFGUklXUkUyR0VMT0NHVnkwK2ZRODB2clFY?=
+ =?utf-8?B?WVU3ZG8xZVpxZlVZMytlaWIxbVZKWUxMSTFLYmxzMHQ2ZUFRZllJbysvd1Ru?=
+ =?utf-8?B?Rjh5WFBnWVVDMlovNjZleThtUmxtM0k2aENFa09sanE3eEx1R3RoUmdZbE9K?=
+ =?utf-8?B?QU9SWjFuTkluVkdYWEJjNzB0ZmZrUGhlTWtvUjdCRFk0NnJqb05pMVRLU1pJ?=
+ =?utf-8?B?bFFWTWQ4eGxpR3V3L0lWVFA1bkhqSUxDaXB6ZmwxMHBkR016dVd0aGh5RVN6?=
+ =?utf-8?B?azZLZkZTdEFMNkcxQWZTUHFoTUM4MllCMWFnSFJXT096RHYyY2FpeGFaa2th?=
+ =?utf-8?B?QmF1cjZsR2hncHRwUStPb1NsUzFGYXE0cXY5RUxSMkQxOC9LdExXZ0EySm5h?=
+ =?utf-8?B?VG1icmtoblBFckF1UkZVQWJYcUhUVFRleExwK0dTdWRaNWtaSitLNTdsK005?=
+ =?utf-8?B?Yy9aTlk3ZUt4QUpUZnVyN1o4UXV0RFJscjBnMjE4dnBQZ0lvZVR0YVh6WUJr?=
+ =?utf-8?B?S2YxQk96bXV4S0lxS3hnVzlocmtKdnJ6bFd4RThscFRuRExON25NTGVoMzdP?=
+ =?utf-8?B?SFhOUlF6OEVuS2MrV0M5dVNZN09pOU1SNDVPWHR1T2NBK1FTTkV4SmU3TmFX?=
+ =?utf-8?B?dThmU1F0ZURRR1dXYXk0MTNpV1RYdktHMU41aWJvWVhoWnJadzNSbEZrZmNm?=
+ =?utf-8?B?cUlSOStKNTlob25vZ0oxc2xNU1F3PT0=?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	xGvw0lTu5LvhmQBevIL7XP3NG6lccMibRNLHmj+8TkebkBKt6zE5/G42I6NV1+w0UScPyVQlBlBTrPamjrRNg+prZkduYL1FNzY+x6ZvUHyrn0j1vG2MHB0C+Pa09xsH2jSIaG0QBfjAMtQxfvYEWdcCgU/IBT3rLRKhBR3K97bjH1vljfYIjzzw6Z9LN5VRWqMEtlroem4m6Y6q1ahFI6oNvhR0nLZLx+pJx3ycjCZ7VXMvEshPq6Za8fW+rm0gLBFCyEgoXksE1aLAZZFZo/yWQGA5MWxeRT6Qb8ZO1pj9ZXKSRDwNda0ZUkuo3SJp5FTH58jiDJEI6o9RebhAf7rq+do6QAU736KsHRh7GEZEI/9T+cWwbAQ+Skf1qAFLRFIXOLeSnf/0dduEauVBhu4NteqdfU2QaHMfkQjN2ML3u7Fod2w81cBWDcOjadhgZ9WIEU2LbxeVUEJbcfv5fh3QEOuU+HwyDSx2GQLutRkhJzlb/vzsFT+Bc20VN/0LzCghCxE2GRIS7aF149xD2DEv6x65yQ/pwUy9MrMz9Ts/HbIhWaYjCCCk7/TBmLalmKHMGXqtE5E4kEl5OKIpWTactPsuYFYA5Cw704GyO94=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8f56125-54d7-491a-225d-08dd7cc7c965
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6387.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2025 09:19:27.9037
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ud7tAd+IJJ/8e0rM1PjJJZE1BKvodmEl1t/NWY8HkS1DAXq96hZgvT8L3YSPYaCANChIOv/1x8b774LxvIBLmzICgPWkbn6uAzwAth8F1qI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5730
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-04-16_03,2025-04-15_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ bulkscore=0 mlxscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2502280000
+ definitions=main-2504160076
+X-Proofpoint-ORIG-GUID: ygxp56PWKDv4kCzGx33WjLRRZmZFSeWZ
+X-Proofpoint-GUID: ygxp56PWKDv4kCzGx33WjLRRZmZFSeWZ
 
-On Sat, 12 Apr 2025 at 00:57, Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
->
-> On Thu, Apr 03, 2025 at 05:16:45PM +0800, jingxiang zeng <jingxiangzeng.c=
-as@gmail.com> wrote:
-> > > We encountered an issue, which is also a real use case. With memory o=
-ffloading,
-> > > we can move some cold pages to swap. Suppose an application=E2=80=99s=
- peak memory
-> > > usage at certain times is 10GB, while at other times, it exists in a
-> > > combination of
-> > > memory and swap. If we set limits on memory or swap separately, it wo=
-uld lack
-> > > flexibility=E2=80=94sometimes it needs 1GB memory + 9GB swap, sometim=
-es 5GB
-> > > memory + 5GB swap, or even 10GB memory + 0GB swap. Therefore, we stro=
-ngly
-> > > hope to use the mem+swap charging method in cgroupv2
->
-> App's peak need determines memory.max=3D10G.
-> The apparent flexibility is dependency on how much competitors the app
-> has. It can run 5GB memory + 5GB swap with some competition or 1GB
-> memory + 9 GB with different competition (more memory demanding).
-> If you want to prevent faulty app to eating up all of swap for itself
-> (like it's possible with memsw), you may define some memory.swap.max.
-> (There's no unique correspondence between this and original memsw value
-> since the cost of mem<->swap is variable.)
->
->
-> > Yes, in the container scenario, if swap is enabled on the server and
-> > the customer's container requires 10GB of memory, we only need to set
-> > memory.memsw.limit_in_bytes=3D10GB, and the kernel can automatically
-> > swap out part of the business container's memory to swap according to
-> > the server's memory pressure, and it can be fully guaranteed that the
-> > customer's container will not use more memory because swap is enabled
-> > on the server.
->
-> This made me consider various causes of the pressure:
->
-> - global pressure
->   - it doesn't change memcg's total consuption (memsw.usage=3Dconst)
->   - memsw limit does nothing
-> - self-memcg pressure
->   - new allocations against own limit and memsw.usage hits memsw.limit
->   - memsw.limit prevents new allocations that would extend swap
->   - achievable with memory.swap.max=3D0
-> - ancestral pressure
->   - when sibling needs to allocate but limit is on ancestor
->   - similar to global pressure (memsw.usage=3Dconst), self memsw.limit
->     does nothing
->
-> - or there is no outer pressure but you want to prevent new allocations
->   when something has been swapped out already
->   - swapped out amount is a debt
->     - memsw.limit behavior is suboptimal until the debt needs to be
->       repaid
->       - repay is when someone else needs the swap space
->
-> The above is a free flow of thoughts but I'd condense such conversions:
-> - memory.max :=3D memory.memsw.limit_in_bytes
-> - memory.swap.max :=3D anything between 0 and memory.memsw.limit_in_bytes
->
-> Did I fail to capture some mode where memsw limits were superior?
->
-Hi, Michal
+Hi,
 
-In fact, the memsw counter is mainly effective in proactive memory offload
-scenarios.
+On 4/16/25 5:23 AM, T.J. Mercier wrote:
+> Android has mounted the v1 cpuset controller using filesystem type
+> "cpuset" (not "cgroup") since 2015 [1], and depends on the resulting
+> behavior where the controller name is not added as a prefix for cgroupfs
+> files. [2]
+> 
+> Later, a problem was discovered where cpu hotplug onlining did not
+> affect the cpuset/cpus files, which Android carried an out-of-tree patch
+> to address for a while. An attempt was made to upstream this patch, but
+> the recommendation was to use the "cpuset_v2_mode" mount option
+> instead. [3]
+> 
+> An effort was made to do so, but this fails with "cgroup: Unknown
+> parameter 'cpuset_v2_mode'" because commit e1cba4b85daa ("cgroup: Add
+> mount flag to enable cpuset to use v2 behavior in v1 cgroup") did not
+> update the special cased cpuset_mount(), and only the cgroup (v1)
+> filesystem type was updated.
+> 
+> Add parameter parsing to the cpuset filesystem type so that
+> cpuset_v2_mode works like the cgroup filesystem type:
+> 
+> $ mkdir /dev/cpuset
+> $ mount -t cpuset -ocpuset_v2_mode none /dev/cpuset
+> $ mount|grep cpuset
+> none on /dev/cpuset type cgroup (rw,relatime,cpuset,noprefix,cpuset_v2_mode,release_agent=/sbin/cpuset_release_agent)
+> 
+> [1] https://cs.android.com/android/_/android/platform/system/core/+/b769c8d24fd7be96f8968aa4c80b669525b930d3
+> [2] https://cs.android.com/android/platform/superproject/main/+/main:system/core/libprocessgroup/setup/cgroup_map_write.cpp;drc=2dac5d89a0f024a2d0cc46a80ba4ee13472f1681;l=192
+> [3] https://lore.kernel.org/lkml/f795f8be-a184-408a-0b5a-553d26061385@redhat.com/T/
+> 
+> Fixes: e1cba4b85daa ("cgroup: Add mount flag to enable cpuset to use v2 behavior in v1 cgroup")
+> Signed-off-by: T.J. Mercier <tjmercier@google.com>
 
-For example, the current container memory usage is as follows:
-memory.limit_in_bytes =3D 10GB
-memory.usage_in_bytes =3D 9GB
+The patch looks good to me, please feel free to add
 
-Theoretically, through the memory.reclaim proactive reclaim interface, the
-memory usage of [0GB, 9GB] can be reclaimed to the swap, so:
-memory.limit_in_bytes =3D 10GB
-memory.usage_in_bytes =3D 9GB - [0GB, 9GB]
+Reviewed-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
 
-In the case of proactive memory offload, the amount of memory that can be
-reclaimed is determined by the container's PSI and other indicators. It is
-difficult to set an accurate memory.swap.max value.
-memory.swap.current =3D [0GB, 9GB]
-memory.swap.max =3D ?
+One nit below:
 
-The memory space saved by swapping out to swap can continue to load
-the operation of system components or more workloads.
-memory.limit_in_bytes =3D 10GB
-memory.usage_in_bytes =3D 9GB - [0GB, 9GB]
-memory.swap.current =3D [0GB, 9GB]
+> ---
+>  kernel/cgroup/cgroup.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+> 
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 27f08aa17b56..cf30ff2e7d60 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -2353,9 +2353,37 @@ static struct file_system_type cgroup2_fs_type = {
+>  };
+>  
+>  #ifdef CONFIG_CPUSETS_V1
+> +enum cpuset_param {
+> +	Opt_cpuset_v2_mode,
+> +};
+> +
+> +const struct fs_parameter_spec cpuset_fs_parameters[] = {
+> +	fsparam_flag  ("cpuset_v2_mode", Opt_cpuset_v2_mode),
+> +	{}
+> +};
 
-The memory usage of memory.usage_in_bytes is reduced due to proactive
-offload to swap, which will cause additional problems, such as:
-1. There may be some memory leaks or abnormal imported network traffic
-in the container, which may cause OOM to fail to trigger or be triggered la=
-te;
-2. In the oversold scenario, if the container's memory requirement is 10GB,
-the container's memory+swap should only use 10GB.
+A minor optimization you may want to convert the cpuset_fs_parameters into
+a static const.
 
-In the above scenario, the memsw counter is very useful:
-memory.limit_in_bytes =3D 10GB
-memory.usage_in_bytes =3D 9GB - [0GB, 9GB]
+-- 
+Cheers,
+Kamalesh
 
-memory.memsw.limit_in_bytes =3D 10GB
-memory.memsw.usage_in_bytes =3D 9GB
-
-Above, thanks.
-> Thanks,
-> Michal
 
