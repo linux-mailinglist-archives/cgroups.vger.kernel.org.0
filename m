@@ -1,89 +1,85 @@
-Return-Path: <cgroups+bounces-7593-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7594-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F5DEA8B543
-	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 11:26:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88C74A8B552
+	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 11:29:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85DC3163452
-	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 09:26:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 134733BD1EA
+	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 09:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 039F7235348;
-	Wed, 16 Apr 2025 09:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F239235355;
+	Wed, 16 Apr 2025 09:29:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="J+HjLMTG"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fapwU1Ms"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C76581AA1E0
-	for <cgroups@vger.kernel.org>; Wed, 16 Apr 2025 09:26:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69126146D65
+	for <cgroups@vger.kernel.org>; Wed, 16 Apr 2025 09:29:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744795564; cv=none; b=AQnEekKMt1HePWxM+vc+weW6LG7Mq/6A494E5qRlu3gOzpyNJYjGHo+tJ+OkSRbsqKLIlxyJvpJG/cTdkzdOCjiZs+j6ibotfjRZ+HOiqZG+o1vjKQsJhuI79GjMbOknd3ORPZNL6KYEET+Ln7koX9Jgv+FR7zpdPSAK1DSBclo=
+	t=1744795752; cv=none; b=OtY/TBDs/wwt3lDcD7DoCnsJLD3YZn480k8dMtoA2j428f4bDw4FlPWDNcmC8mhAxZAsOiVQhYysF1vBw6bUgcnwj7pXvsjpZmOThTh134x9aWoaQCtuJCC5e9UU4/bXHBGX0w0EjFgvhpFW56L8z+YJufx2hIORdTbDMfpSyAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744795564; c=relaxed/simple;
-	bh=3ScT62wBFyj0bxCBuOyqKPS+JD3Y2QDmSfgdrnlRSmI=;
+	s=arc-20240116; t=1744795752; c=relaxed/simple;
+	bh=o55GeMY7B+wVncPex3pi9DLfKpWbxRoRoFGIzfLKFO8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VGPEJcBei+QGkbXCpiugel7lXsl7hjKmfH6Y6pRpT2xaGgqyXYbIIajOF3gAGKrTTkhtCYW1v1vV8rC/4fqbNJUySCd3ksgoS/k2pXuUy5AqtrHlhSScqzfhMbLBCRH1I/gsDegdW8Tid1vhv45vmoXdmGCNRi0FfVp0hyl5k3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=J+HjLMTG; arc=none smtp.client-ip=209.85.128.42
+	 Content-Type:Content-Disposition:In-Reply-To; b=OA1rGfsn5Qk1Eys32nfPcaCEyDdth71Al5xlHOe+nLcP384aA7CIeAsu6I0afHZE9rWecNZVLmaNkAdkYajTfI0zJGdII8WzYPhuzwk+p2tzPXdfMAovMxRAOpCrQeQiFeTiUhOe1Us1TaKnL5URW3Gyj0+SS7sGHSckxbvuJ9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fapwU1Ms; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-43cfecdd8b2so53188555e9.2
-        for <cgroups@vger.kernel.org>; Wed, 16 Apr 2025 02:26:02 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-39129fc51f8so5685693f8f.0
+        for <cgroups@vger.kernel.org>; Wed, 16 Apr 2025 02:29:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1744795561; x=1745400361; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1744795749; x=1745400549; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8ri2FPsioeyOMpww0lEYWXKz/xcfTIJFn+R/QcNtid0=;
-        b=J+HjLMTGMLPutOeqwSk7RUOcEEzYwnwfUvSfwaeGtvh/QZr/CE+Y2BydrRNni4B9Cm
-         ujxAlNi5idBHR/A+W7YI1SKZ/gTSSRCGWBx04/TGkVoiyB4pMZQa9Uf2VXFTMIIsCH4J
-         37Ps59SeKK7I8zOHhT3I9aI31lJ+YahGq1UcXg2Pdwy1Gzx8ZKKQSV3YiEU+R4ZzFzmW
-         J5pwWZaJdVdj+w2dy8+cUL3NNr13P6u8Cl7EfwNJMquKtRj1cOotf1o20gqYDR5CBebg
-         xwZHzAKoaOr+kJgWBi31/DP1M0SFhGXnWcIOeN+PtRjebmxZYGZ81L3/e1mzo9bbWJ2M
-         jZXg==
+        bh=iwFMU/CIUfhwkOB23SUiFhp0ktZpZfT3Pn6auhe4gJE=;
+        b=fapwU1MsfAEEj81+R76jC2w20mJDlmkAzf4VracvO5A+yRBGJYB6pSH9HH+Wgh7js8
+         mjE7D6fzn2nqyR5DCJu+cVFDsE2fGMYEgTZ4P3lm44oXh+5hxESq/MYvU4k8WZ5MV/jI
+         mzt3hFxOeQvSI7ZxDjqHMGhwDt0XnZ9+A55LWrizZMvE+fa1w7+IdWQrJwO0azZ1eX/L
+         plvR9i0tK7+x62sqFgMDbZB+0T2jRSCuIYOpyuEh0OLAhO5r8il5DKA30ud8sUocn0wj
+         PpbEbQISOGBs7cs329UGOtn3qMnPtPfSNnZ1RkEqF5N2SsqVoA6JXEoL+7qeWAPcx/QE
+         aHxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744795561; x=1745400361;
+        d=1e100.net; s=20230601; t=1744795749; x=1745400549;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8ri2FPsioeyOMpww0lEYWXKz/xcfTIJFn+R/QcNtid0=;
-        b=hmYBDqifvjf2NVa/UUSRBYGvV4bjvFKERxxvnJcY7XLXZVggSelYJnvAKXw/obKC4q
-         XI47UcE+p3BW/0SpGB+bOQCWN6hdQDtIOcdOD9+9a1QZSlFwuKQHwwYQW326Z7WULGzx
-         lr2OssMMCtP1OOEPCF2rVi8e4KHOw+Tro+qNiLyGtcP/Rpn0ddRy9coeP58nyQO7qD82
-         dl2aXTAvkUrZ9NzlkJ66kBl5fKqu4kGGws4ccyEq92bWj2NIy+EiwYW7+8NSeJogTXYA
-         +BfLn9n/A0b9OdXzT3s8YTuVfOPh37YACo+t4sC3RMHPWnCe5/lEGF6q12frnzFwUr8D
-         W1mg==
-X-Forwarded-Encrypted: i=1; AJvYcCW1gcRwyurzlvJE6PwXcY1LPc9i2BSfRkda/CPBCEWKUzbpHLtKuCnIFzhNb7DrSGm0kzZWJtcf@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBV1a9vRvEN/mU0Kajk8exGYJS7mqVYrwIV/izOI/dBOifBufq
-	sGv4iRY4NguPVWcjdqM3xPTdfjiWIU7esziwtNTGvxxoYlbsvtLrarJtCdlDQTk=
-X-Gm-Gg: ASbGncvN4W+UaVTVFhq5qod3aV8iHSdHQEQiOr6574pQyESqDM24V3CYPBx8adw5MWQ
-	n/9FDuH+3BmKdPCqWA5NAPujmv9pr93uYxz9MTR4MNE6f8a1gdMdV7Vw+d7+AuIY4sIJJEcAG9g
-	M5lNZ91hOUh1aNKZcvOrD9uCVLcqZUyjaeKMQvXbdMXU0snd6cnxD4hYk+31BgQDXU6nmz6ETVD
-	uGOb51DS+deFJX2X+X1N3uG+m9kbpikRONQ45qg2x1ddWmcXvhuUb83fU06cSyPsDHmhxkklzTl
-	FnH4MDps+aynqQPiVTdI9PPBe/mW6pDglJbcEVPjsrY=
-X-Google-Smtp-Source: AGHT+IG+DNt53Y1tj1r/NgZyeW/D6nAONrAJfUbDPzr4B6m4A9eSNWJlFy6wubzxu2mVoR+YMUc51A==
-X-Received: by 2002:a5d:6dac:0:b0:39c:268e:ae04 with SMTP id ffacd0b85a97d-39ee5add7admr1016490f8f.0.1744795560990;
-        Wed, 16 Apr 2025 02:26:00 -0700 (PDT)
+        bh=iwFMU/CIUfhwkOB23SUiFhp0ktZpZfT3Pn6auhe4gJE=;
+        b=sqfGfr3IMW7kRcTSo0P0fqHf7Q8JoT6JvatEI7HFBX1YrQAaZ6FdpCWeac5kl/oPtB
+         JDRiIEWBIsw7Z6kvEcYCrsdVvOGsbpev0Zlp1v9CQVkHT4+C34W7Q5fKtEwGbHK0Cj5v
+         +MtKouYdLLQ4h3BpT+VqZ+ohph1pRg/thzSz+K6kXSKzd33swtvJqf4w9CUcSanZ85gM
+         MkgMDd0VnJz/YQP9LwXze06fM2w3oKtgJ7ACTnq1I8ix6ZsFDPlAB6souKuFsMcNfert
+         ao6wQKQJlaEcVc/7iFgWt7obYAzN8IYYQ8oL6xaQ7q+srPsfa+KaSXaTfwjSUX/YqV2H
+         8NRA==
+X-Forwarded-Encrypted: i=1; AJvYcCWnNcl9Dp7Mrfz1DraMOxgVes5O8GhiCnEZXgBh/62VnKmJX0R3MYZmF4HzwDN0QdjRIKpaoGwz@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZGImPAfYw7nrNyXz8DSRTyEOQpQ7bGe9Y2qJG9lAm4bdJDzs2
+	o/AOMVrEvm8P/lpbWLYii89qvCU+rmulpbqeemXstlEA9q7/84qCBcY/lKSaUVs=
+X-Gm-Gg: ASbGnctbo51ZEzuBhKdHY+9rWASRg8E4PABEVk+Jk0JcT6k2IbWWcVWxG8vBi0fDFZK
+	PAlgkBiMe5PIMm3UGn+F2IzpWjvoeQUu+TnJFI5j9X6thJncFreAe2qC9xolX/+cUe0RmdfGRQ0
+	VaOBzlGu6pwT5PUM76Jettdjx0WUYH7Phtg9zGy5FO8Fyy3VPYwp8SVLxUyHq0n93NakBqpmMMk
+	7/mdIvxsR10FTjiHN3pJmMmugb7aq4KKPVpKVcB5o4jtqVdF1OIUTdshFDcIRif+IKWScweQmkd
+	+QPHLpVd0WsVL3sbs5cxwI3FDHfb72KpI9HsvUQnQN0=
+X-Google-Smtp-Source: AGHT+IHG24BI/s6GMoLVsPWuWiDfurxtiJ9IfZU2cz4E6a4f9Ru2A7MtNJxcyIrDsYjvapIyQSdlpg==
+X-Received: by 2002:a5d:47ab:0:b0:391:4889:5045 with SMTP id ffacd0b85a97d-39ee5b8b916mr1140442f8f.36.1744795748587;
+        Wed, 16 Apr 2025 02:29:08 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39eaf43cf42sm16763741f8f.64.2025.04.16.02.26.00
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39eaf445315sm16542282f8f.82.2025.04.16.02.29.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Apr 2025 02:26:00 -0700 (PDT)
-Date: Wed, 16 Apr 2025 11:25:58 +0200
+        Wed, 16 Apr 2025 02:29:08 -0700 (PDT)
+Date: Wed, 16 Apr 2025 11:29:06 +0200
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Tejun Heo <tj@kernel.org>, Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v7 1/2] selftests: memcg: Allow low event with no
- memory.low and memory_recursiveprot on
-Message-ID: <psbduszek3llnvsykbm3qld22crppq4z24hyhsp66ax3r2jji5@xhklroqn2254>
-References: <20250415210415.13414-1-longman@redhat.com>
- <20250415210415.13414-2-longman@redhat.com>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] cgroup/cpuset-v1: Add missing support for
+ cpuset_v2_mode
+Message-ID: <575w7vjlpcvh4yfyvmiqnurenzhdcpdfwjwswb4kulbdimxtuy@pzgqw5aqhn3m>
+References: <20250415235308.424643-1-tjmercier@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,62 +87,37 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="w3npzfkwfjuaenbx"
+	protocol="application/pgp-signature"; boundary="va3lsphxxw3lwntv"
 Content-Disposition: inline
-In-Reply-To: <20250415210415.13414-2-longman@redhat.com>
+In-Reply-To: <20250415235308.424643-1-tjmercier@google.com>
 
 
---w3npzfkwfjuaenbx
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+--va3lsphxxw3lwntv
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v7 1/2] selftests: memcg: Allow low event with no
- memory.low and memory_recursiveprot on
+Subject: Re: [PATCH v2] cgroup/cpuset-v1: Add missing support for
+ cpuset_v2_mode
 MIME-Version: 1.0
 
-On Tue, Apr 15, 2025 at 05:04:14PM -0400, Waiman Long <longman@redhat.com> =
-wrote:
-> +	/*
-> +	 * Child 2 has memory.low=3D0, but some low protection is still being
-> +	 * distributed down from its parent with memory.low=3D50M if cgroup2
-> +	 * memory_recursiveprot mount option is enabled. So the low event
-> +	 * count will be non-zero in this case.
+On Tue, Apr 15, 2025 at 11:53:07PM +0000, "T.J. Mercier" <tjmercier@google.=
+com> wrote:
+=2E..
+>  kernel/cgroup/cgroup.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
 
-I say: Child 2 should have zero effective low value in this test case.
-Johannes says (IIUC): One cannot argue whether there is or isn't
-effective low for Child 2, it depends on siblings.
-(I also say that low events should only be counted for nominal low
-breaches but that's not so important here.)
+Acked-by: Michal Koutn=FD <mkoutny@suse.com>
 
-But together this means no value of memory.events:low is valid or
-invalid in this testcase. Hence I suggested ignoring Child 2's value in
-checks.
-
-> +	 */
->  	for (i =3D 0; i < ARRAY_SIZE(children); i++) {
-> -		int no_low_events_index =3D 1;
-> +		int no_low_events_index =3D has_recursiveprot ? 2 : 1;
->  		long low, oom;
-> =20
->  		oom =3D cg_read_key_long(children[i], "memory.events", "oom ");
-
-But this is not what I Suggested-by: [1]
-
-Michal
-
-[1] https://lore.kernel.org/r/awgbdn6gwnj4kfaezsorvopgsdyoty3yahdeanqvoxstz=
-2w2ke@xc3sv43elkz5
-
---w3npzfkwfjuaenbx
+--va3lsphxxw3lwntv
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ/93nQAKCRAt3Wney77B
-SVIuAP96NW0fIlvRAMGyp434RzkvtOGnIESFYbQyryMjDaf0FAD/SnK/QY73TkA1
-aZVm14O+UjCgolPl/9j9t4ba0I+3fgM=
-=2iXD
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ/94WQAKCRAt3Wney77B
+SbSeAP9JkFLMSl4nksOMab6B62/csP+sac3doIRszWSDmJpZkwEAoCsPrJwLs2W8
+otFloLpMdklEoCUND+I45f0k3ytzcAM=
+=Kbk5
 -----END PGP SIGNATURE-----
 
---w3npzfkwfjuaenbx--
+--va3lsphxxw3lwntv--
 
