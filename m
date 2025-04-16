@@ -1,186 +1,124 @@
-Return-Path: <cgroups+bounces-7597-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7598-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 066A5A90AAE
-	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 20:01:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F999A90AB3
+	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 20:02:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B48E1907C93
-	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 18:01:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 202E17ADCDE
+	for <lists+cgroups@lfdr.de>; Wed, 16 Apr 2025 18:00:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6600021ABB7;
-	Wed, 16 Apr 2025 18:00:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 461E021771B;
+	Wed, 16 Apr 2025 18:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jPg5gYXa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hLRFaM0H"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72EFF21A42C
-	for <cgroups@vger.kernel.org>; Wed, 16 Apr 2025 18:00:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A017020E6EC
+	for <cgroups@vger.kernel.org>; Wed, 16 Apr 2025 18:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744826448; cv=none; b=BXt6di24agdZtWxkYAb7uGC0zJ3GC4hkXmKO8mbga00fufstoHWzXQqL2TZtvEmG0COsk+RQyRF6W8Zs9dCN/nFY39yTEhU2B6OxUgMMdd10tCL0GfwRLo/HXmZ7EK2HJo4T0pCM5SADu/JEk95saigLfk2lQhTTySveSEHZ5O0=
+	t=1744826514; cv=none; b=dzKcSC9qpA82IqkJT2WC40mfHmd2q3ha1HvhR5t2pg4KGWb/KrWgZzDz0tpPYJqQfqr7QRnmQrpnVyW+V4A7PjxyYBOrjZYrB2HrRF0wYLCvg/IUgUb8mErEtlG86oxmVkaCG/csfkUHbVNIiufrEQbXdymKL+T40V+ZsWvXPAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744826448; c=relaxed/simple;
-	bh=P9weY3ldi7FIMak0rp1fWR+FZZwuW0EwfA01UC/mLno=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BncW8o2bLKgdANp5K+M4wqOVfn4HrGe2nyqq5zeegIj7NtC5RRp5J2uNGJdMEvgB38F0SKgpSuRthyVuk+ucDzlkMbIlvmbYbo9lKzr+Zz4xkNMnTXg1a+KAcxw7bkehiPHXTdW5B+uBLYSrOprAIXKJ2jwI6kTA/296ucJkZfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jPg5gYXa; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-47681dba807so24181cf.1
-        for <cgroups@vger.kernel.org>; Wed, 16 Apr 2025 11:00:46 -0700 (PDT)
+	s=arc-20240116; t=1744826514; c=relaxed/simple;
+	bh=nnzix/mbkxFM3K6aL7nfmY3hyvLghSRivx/CuKFhAfo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JqUfQ/pFkyiIMkuZqZzVoupR/VHp/+OKKhpOgkGr617dAx8iFn41F0GjvnOjmMkCTfzhuJfmokfUvMgw0tsCBZCBLTS6UVaBqZQYiGIPKIyHohFkGb9e9yxqDxWuhwVd0odUgmp41XyQguxEd/+kOxkXOyQYPuUROS4sk6CX/iE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hLRFaM0H; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-476a720e806so60291661cf.0
+        for <cgroups@vger.kernel.org>; Wed, 16 Apr 2025 11:01:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1744826445; x=1745431245; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5vVhFNvbdydAJKcvh9ZAGYx+6XmXqXXve/KZNChtx7g=;
-        b=jPg5gYXa404EUKyvGFmhtPeOjfwy+VEtWadaI1XLL6SCgGP5AJtfqLqwcwWZL9Mh8o
-         yRMFB+H1Xbwexe3bfuCWv/GNSGshFWUxJYvvISqDj7Km/YpN99ZntwEkNMrPM6sgsj4c
-         TU7n5Xfckrs3LnWwVS0yj5UGfaaGR2/Sb1P88hmTQ2GSUdyKrlN9+zbj/1qribHjSE8V
-         oSvjq1Oqo7eWvy7cQtoy1Ry4plEcbQpVLIUphqrsuwrclL/iVZbYhzXdMuOyN1TCJnzJ
-         fNY4rvQajInYrEGXSj6Vh0NXqcw804PSzFCXs5N6QUNTaVdYJYRlpWIWtAvmC2eumRrl
-         zAyg==
+        d=gmail.com; s=20230601; t=1744826511; x=1745431311; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ke1YrxQQmLR6ajJYMYuAIitTVymOTGcJs7MZD2ruDpU=;
+        b=hLRFaM0HYrlrdck44ZQoxdpNfoGX1U1YJynUyJ9KJE9EMHZJ1mZvahQYz4KCfVznOU
+         DdwvSXrviaVUzv5o21/S8rtA+ow0IojVwdrM1Hfvf6E3lisOFGpFIBCNRvjFPhYkbLRM
+         Uc+swU2z9B/4Ci9Jx1fJWQY3UsUZn3UWqfAGb5gFirfbiW5UQr5wFKmfuCaomPQOw4xy
+         rQt4uA1vt/PeE99aTpO9IBe8QIPwdLyj+mxrZ31IWo8DUAmdNzp3Q4aj0uh2GJBt5PGq
+         WJ4JA2FdFvtbzdSo6dpJgj8dKRz1tTlDl+xT7NdAkCyf/zBecRSbJ/PJ8RMn1SXicfve
+         qMLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744826445; x=1745431245;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5vVhFNvbdydAJKcvh9ZAGYx+6XmXqXXve/KZNChtx7g=;
-        b=iEveNTG9nuLbmcHSNIdwFkUpp+45KOCzuD56PzsYEyKqJ3VtRaMRJnFjvYC9Z5wOlr
-         FLddpkZHLjGJ9vPevxR29Xtnnoy6fwPnsYrVIy05j1JEvnCGPTVkJ8PgVUhkPvbKSnKF
-         7fiPghNwwPlgDlX01LTA8ZckuXlJkkDem08ksUbXj0e9j4LeYTH+Pe6Z64Urg35EaZzE
-         yea4rHyREnRANUkeJpDhoLmQBQbS/IH0NUyumtFa6He1y0BQj2tt9zS4nSalUQddfUTT
-         FLZ5NgbSCFZX+NenrYhXUXmd4o2Gt0BcRmoP4ybacNhLtBwptLu+z85xfYh0iwS/M0qp
-         gKAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU9XUAygjq5pah/6wX1gYWinq+QsltvD039R40+cxaGUTVvlwATR5Xg7UK5h7RKZxE5XJXjGc4c@vger.kernel.org
-X-Gm-Message-State: AOJu0YxGFrs943S2mrG7lABYjuyvyYn+7c/aAqkg+FmSU2bjHvN9eDVO
-	phOz9R1rHQbXcxC+MjDK6icvMFDZdxnz398PsYpljab7Ra0aryqhOYUwZe7GYl7xxu/SgeYbEjm
-	GM6klBP+qEbYhAHri1OEsKbwO8KKDOx0GtL7s
-X-Gm-Gg: ASbGnctaCmc10DGOEaesZe+yLHGNCcZy7y4DKim7xumIHeErG9DeF0n+5iRWaNBHiqn
-	cGA7KROeILKo7ubKUdAzH1d1NUgO//pVIZeWEnF1p/hBqVZFaBSYVks1WiBhASEV1dga/SJlhaB
-	SP9YgK3adgIHBBKFairMpP0EY8T4bwmo1+zEODB2zalcbvT9a2j9Xh
-X-Google-Smtp-Source: AGHT+IHFd5DPl+obAAkkqCbWnarwZP7oq1mSWxeUsF1Ti7Q9Tgw3A/y6hpCO0rvtJuNDg1o//v4MKFbVNq88UoRgMyc=
-X-Received: by 2002:a05:622a:1903:b0:479:1958:d81a with SMTP id
- d75a77b69052e-47ade6170eemr124691cf.6.1744826444977; Wed, 16 Apr 2025
- 11:00:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1744826511; x=1745431311;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ke1YrxQQmLR6ajJYMYuAIitTVymOTGcJs7MZD2ruDpU=;
+        b=JI0xFq8yfSdBrc5j5Z7XSiLa8sIKvstSxHCQ9liynZ102ODgFxtG0VC+7hhJ302dE7
+         ljCkiE4Gs2PESFsgM5WTLGMrizyV7dGxFwaZMC4Dl59wJsRBnKynoqxY7vdVw7tFBhio
+         iv59zkv8D5i6enr+BIStE0lXPw3ZZ+1tzgvRxh04KiktTq7ZgEMPVdncFLGaXW1WSebt
+         mShXPs8WmgmgPusYakWdmFxcPpmsK+HIlOwY9L1Z61O/irEfP6SvOPr7nqyqWYzquwGI
+         Q9Zma0iE3JcS0PLUBFTmz/2QQ3bR9XVPlbzLw1hJ7wMvP8ZUtTLedBUvhMY5yVmd2f3f
+         RKEA==
+X-Forwarded-Encrypted: i=1; AJvYcCUXaioE7OdO7MT3cUxnrkjmLS7cwWB2BFwAanKfiYwyUWwwB/d+l2hjIxpOpj6iOGNTP9hdTx4R@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWfx8Sd/qpIKueJEcQrpbeUJ51yHiVaWWRvJ2nxxVplsi6HRpk
+	5Iu7SszqB3OWvkgEdq/y+XoD5b/tHuQfzzLmw6uHNYopwr9w4WM0
+X-Gm-Gg: ASbGncu/QJ9yRiX8RIIWaLC28k7pJlRvPoiVtr+kLVxJRwU8y7adJELSH8LLTG40Bxt
+	ZCn52scGfDIFDSnKsXv3KT/Hqr1OOvSbh2cYWvbat5394c/u8oC1OnBEL/j2wiXncPr1NmnxDbd
+	kJnzJxZcQMG1nlDgn+AZtnuC11Yjoiy8TNj4PyB/KyQimAw0pZaLgwc2xbaUNZ8KFaPWtfgOfbC
+	qc7PhZ3BPEmmlWZlFMKMM1NgNLKOKRTNmaYs3Y3gXZbc+oWSD95v6x9vw0TJZne4ZH4z41AnId0
+	rvRAeN16EMj0cYfbQ+S7Ct8CyFr1q7eYC3+HhnfoXrU5o97e08G0hocLjj4iWxOkTGWBGkEc
+X-Google-Smtp-Source: AGHT+IGhsO6K/MdxArhwu+UIFuP2aWlgtxAKLQqrnXCnrmpcCUGM9u/wAH1270OEw2RxBR4zOD7IjQ==
+X-Received: by 2002:ac8:7fcf:0:b0:477:c04:b511 with SMTP id d75a77b69052e-47ad80d3836mr46787771cf.31.1744826511232;
+        Wed, 16 Apr 2025 11:01:51 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1151:15:b31:ddc1:afa7:7c1e? ([2620:10d:c090:500::4:d585])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4796eb2bd8dsm111652001cf.35.2025.04.16.11.01.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Apr 2025 11:01:50 -0700 (PDT)
+Message-ID: <bdc5d0b9-8427-4bcb-b434-3ffde8905a68@gmail.com>
+Date: Wed, 16 Apr 2025 11:01:47 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250415235308.424643-1-tjmercier@google.com> <46892bf4-006b-4be1-b7ce-d03eb38602b3@oracle.com>
- <CABdmKX2zmQT=ZvRAHOjfxg9hgJ_9iCpQj_SDytHVG2UobdsfMw@mail.gmail.com>
-In-Reply-To: <CABdmKX2zmQT=ZvRAHOjfxg9hgJ_9iCpQj_SDytHVG2UobdsfMw@mail.gmail.com>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Wed, 16 Apr 2025 11:00:31 -0700
-X-Gm-Features: ATxdqUFWVjlyT3xruDHQcnvzQ1jd7bwRceap-OGpJygB9rNbA953SnuNmxgFfvg
-Message-ID: <CABdmKX1Lc2+A8xV2pH8C9_YZENCV4HAhb3uhLx7T0u2fcVP8Rw@mail.gmail.com>
-Subject: Re: [PATCH v2] cgroup/cpuset-v1: Add missing support for cpuset_v2_mode
-To: Kamalesh Babulal <kamalesh.babulal@oracle.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/5] cgroup: use subsystem-specific rstat locks to
+ avoid contention
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com,
+ hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, kernel-team@meta.com
+References: <20250404011050.121777-1-inwardvessel@gmail.com>
+ <20250404011050.121777-6-inwardvessel@gmail.com>
+ <3ngzq64vgka2ukk2mscgclu6pcr6blwt3cwwmdptpdb7l7stgv@vhpyjbzbh63h>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <3ngzq64vgka2ukk2mscgclu6pcr6blwt3cwwmdptpdb7l7stgv@vhpyjbzbh63h>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 16, 2025 at 10:55=E2=80=AFAM T.J. Mercier <tjmercier@google.com=
-> wrote:
->
-> On Wed, Apr 16, 2025 at 2:19=E2=80=AFAM Kamalesh Babulal
-> <kamalesh.babulal@oracle.com> wrote:
-> >
-> > Hi,
-> >
-> > On 4/16/25 5:23 AM, T.J. Mercier wrote:
-> > > Android has mounted the v1 cpuset controller using filesystem type
-> > > "cpuset" (not "cgroup") since 2015 [1], and depends on the resulting
-> > > behavior where the controller name is not added as a prefix for cgrou=
-pfs
-> > > files. [2]
-> > >
-> > > Later, a problem was discovered where cpu hotplug onlining did not
-> > > affect the cpuset/cpus files, which Android carried an out-of-tree pa=
-tch
-> > > to address for a while. An attempt was made to upstream this patch, b=
-ut
-> > > the recommendation was to use the "cpuset_v2_mode" mount option
-> > > instead. [3]
-> > >
-> > > An effort was made to do so, but this fails with "cgroup: Unknown
-> > > parameter 'cpuset_v2_mode'" because commit e1cba4b85daa ("cgroup: Add
-> > > mount flag to enable cpuset to use v2 behavior in v1 cgroup") did not
-> > > update the special cased cpuset_mount(), and only the cgroup (v1)
-> > > filesystem type was updated.
-> > >
-> > > Add parameter parsing to the cpuset filesystem type so that
-> > > cpuset_v2_mode works like the cgroup filesystem type:
-> > >
-> > > $ mkdir /dev/cpuset
-> > > $ mount -t cpuset -ocpuset_v2_mode none /dev/cpuset
-> > > $ mount|grep cpuset
-> > > none on /dev/cpuset type cgroup (rw,relatime,cpuset,noprefix,cpuset_v=
-2_mode,release_agent=3D/sbin/cpuset_release_agent)
-> > >
-> > > [1] https://cs.android.com/android/_/android/platform/system/core/+/b=
-769c8d24fd7be96f8968aa4c80b669525b930d3
-> > > [2] https://cs.android.com/android/platform/superproject/main/+/main:=
-system/core/libprocessgroup/setup/cgroup_map_write.cpp;drc=3D2dac5d89a0f024=
-a2d0cc46a80ba4ee13472f1681;l=3D192
-> > > [3] https://lore.kernel.org/lkml/f795f8be-a184-408a-0b5a-553d26061385=
-@redhat.com/T/
-> > >
-> > > Fixes: e1cba4b85daa ("cgroup: Add mount flag to enable cpuset to use =
-v2 behavior in v1 cgroup")
-> > > Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> >
-> > The patch looks good to me, please feel free to add
-> >
-> > Reviewed-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
-> >
-> > One nit below:
-> >
-> > > ---
-> > >  kernel/cgroup/cgroup.c | 29 +++++++++++++++++++++++++++++
-> > >  1 file changed, 29 insertions(+)
-> > >
-> > > diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> > > index 27f08aa17b56..cf30ff2e7d60 100644
-> > > --- a/kernel/cgroup/cgroup.c
-> > > +++ b/kernel/cgroup/cgroup.c
-> > > @@ -2353,9 +2353,37 @@ static struct file_system_type cgroup2_fs_type=
- =3D {
-> > >  };
-> > >
-> > >  #ifdef CONFIG_CPUSETS_V1
-> > > +enum cpuset_param {
-> > > +     Opt_cpuset_v2_mode,
-> > > +};
-> > > +
-> > > +const struct fs_parameter_spec cpuset_fs_parameters[] =3D {
-> > > +     fsparam_flag  ("cpuset_v2_mode", Opt_cpuset_v2_mode),
-> > > +     {}
-> > > +};
-> >
-> > A minor optimization you may want to convert the cpuset_fs_parameters i=
-nto
-> > a static const.
->
-> Thanks, I copied from cgroup1_fs_parameters since that's where
-> cpuset_v2_mode lives, which doesn't have the static currently
-> (cgroup2_fs_parameters does). Let me update cpuset_fs_parameters in
-> v3, and add a second patch for cgroup1_fs_parameters.
+On 4/15/25 10:15 AM, Michal Koutný wrote:
+> On Thu, Apr 03, 2025 at 06:10:50PM -0700, JP Kobryn <inwardvessel@gmail.com> wrote:
+>> --- a/kernel/cgroup/rstat.c
+>> +++ b/kernel/cgroup/rstat.c
+> ...
+>>   static inline void __css_rstat_lock(struct cgroup_subsys_state *css,
+>>   		int cpu_in_loop)
+>> -	__acquires(&cgroup_rstat_lock)
+>> +	__acquires(lock)
+> 
+> Maybe
+> 	__acquires(ss_rstat_lock(css->ss))
+> 
+> It shouldn't matter anyway but that may be more specific than a
+> generic 'lock' expression [1].
 
-Ah nevermind, cgroup1_fs_parameters needs to be accessible from
-cgroup.c. So just the v3 update then.
->
-> > --
-> > Cheers,
-> > Kamalesh
-> >
+Thanks. I see what you mean in terms of improving the output.
+
+> 
+> Besides that this patch LGTM.
+> 
+> Michal
+> 
+> [1] https://sparse.docs.kernel.org/en/latest/annotations.html#context-ctxt-entry-exit
+
 
