@@ -1,166 +1,154 @@
-Return-Path: <cgroups+bounces-7626-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7628-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F9BEA92B99
-	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 21:16:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15820A92C0A
+	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 22:10:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 330331B63105
-	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 19:16:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70F143BC257
+	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 20:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 129D620013A;
-	Thu, 17 Apr 2025 19:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A6E2063DA;
+	Thu, 17 Apr 2025 20:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="l3VAhCSU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OfmBXFjr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F98718DB01;
-	Thu, 17 Apr 2025 19:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B281DDA2F
+	for <cgroups@vger.kernel.org>; Thu, 17 Apr 2025 20:10:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744917371; cv=none; b=VILMi7oKKBVyJ3UvsvGSME2EQZafdoUgOwICN95C3jjRkBF7uoP/NcjdloLrloOY6NpIHMDP8WPglpgbqRjMILT/qp9/nax9zCQL+lu0yYeKyaDkhJGypGXgr+cXj24eBuWEgc/ISCYF3uu35WldeQvBEGE3fa20/u3iIrjauS4=
+	t=1744920620; cv=none; b=BTMlrzTYpRxpxaI/LBrGUvYRCHqdZsOFsDya4m0d8C3TJkOOPwGCZWiAw687EnHwWnv6OTKkCgJ4cFrFCWApbGYoRrsW/glFbjKq+jJ53iSIhVnKSIs6ZI/92gMeOuj9seDx+OYGb2oXcGV1hxbPfAuVke6j8PfTIHdEiO8zBRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744917371; c=relaxed/simple;
-	bh=2JuP65do8lb7EiTUnzT47VTUH4uHNr1zQVm9hENsFRI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nI1DCeVCUTIaukjHKWIADVUGXf0J8IoOdqHodyzOVFRyqhPp7QQrs27bvaeh8bi7ULu/TJrrIJhf62h0pUDmFUlwLOdYkCI/BHewJkaci5GThV6mU5M8lYuXYxG4nHE+iZwKSrayaOGvW3MsvDaHyi4TBIza3o73PR1VOAhBwwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=l3VAhCSU; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53HGMsu5023734;
-	Thu, 17 Apr 2025 19:15:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2023-11-20; bh=SHrmC
-	YsPUPShQ8c1vOKVOXXLdHNL3i/pJra//kF4YaQ=; b=l3VAhCSUryBXco9DJ/Tgz
-	IYgg3KWcxeQWoTKt8MYa/jHByBAaEDSmhD+xP69KWMr+sSNToPwmvasF0NSPGy4N
-	Tf9JhxiICrhPJNoCGyAXi+sRwR/E+sF7nB6sD5UchYP4IpHzEWHUj4lNG+wfJcwS
-	W3LV8ocCc8Tq2mt4lxnLlRuKp56Za/JTV6qs1VA6YZ8PkynZaqVC+t9uy2wCpfx6
-	aOZBVUVu0ijyEh+zwNX/908aIHVZSpSmCOXQamvZ2d8JMF975rRC2b1UxB48PJK/
-	RpUOV7M1/KS3eddbav1kHaDIuOFwtdlTC0DPpIP/0KnB7aYtDoucLhsx6DY90zsG
-	Q==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4619446yxc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 17 Apr 2025 19:15:52 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 53HI4fOZ009194;
-	Thu, 17 Apr 2025 19:15:51 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 460d3npdc5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 17 Apr 2025 19:15:51 +0000
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 53HJFjRw037615;
-	Thu, 17 Apr 2025 19:15:51 GMT
-Received: from clb-2-bm-ad2.osdevelopmeniad.oraclevcn.com (clb-2-bm-ad2.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.254.172])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 460d3npd8k-3;
-	Thu, 17 Apr 2025 19:15:50 +0000
-From: Libo Chen <libo.chen@oracle.com>
-To: peterz@infradead.org, mgorman@suse.de, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, tj@kernel.org,
-        akpm@linux-foundation.org, rostedt@goodmis.org, llong@redhat.com
-Cc: kprateek.nayak@amd.com, raghavendra.kt@amd.com, yu.c.chen@intel.com,
-        tim.c.chen@intel.com, vineethr@linux.ibm.com, chris.hyser@oracle.com,
-        daniel.m.jordan@oracle.com, lorenzo.stoakes@oracle.com,
-        mkoutny@suse.com, Dhaval.Giani@amd.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] sched/numa: Add tracepoint that tracks the skipping of numa balancing due to cpuset memory pinning
-Date: Thu, 17 Apr 2025 12:15:43 -0700
-Message-ID: <20250417191543.1781862-3-libo.chen@oracle.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250417191543.1781862-1-libo.chen@oracle.com>
-References: <20250417191543.1781862-1-libo.chen@oracle.com>
+	s=arc-20240116; t=1744920620; c=relaxed/simple;
+	bh=1ZR7rByE57xHmBI7814XXbJjV3yJ8MgPosTbLBX91zE=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=bDhMBhx5ZDyytiuWpiA4FDMmt92JGUlpDuOJCX1QmJtlEftxx3MG5nYRMP2SCyIMurgU1V9KW4mbJRzF4ZXxag7/tWXUuViIXrs1OFGjMmReyXtvX7qLXh6KW29w6UP2/z465jLjPmKJf0Xv0Ef3x+Wc8CU0LSCAg6lIyLkZ2wM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OfmBXFjr; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-22c33e4fdb8so14679235ad.2
+        for <cgroups@vger.kernel.org>; Thu, 17 Apr 2025 13:10:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744920618; x=1745525418; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UZ9CzFa621uATTSaULP4s96x8JmFYzdGBES+TbEIHRE=;
+        b=OfmBXFjrJb+ABzl6tqaY9c6Kl35hMqi8MjhqyRNdi0I5TcptfZe9/znuWNhRpg34/c
+         5c0S1YNFv/o88ii5m5mTfQIubNgkG1ogRgNpPhHMUJ2Xj2SPle60/J70dGRc5umFz962
+         4PMrcFM4P6y2NuwGuLg754Te7hFzbwDpMjHXbl1pMiCXrg0aX0uTrBfjvU1y4TeB+YpV
+         tdVbDbFT04BnWQfST/QGYOnMFGFs5O6x6F+SxvV1HVpinsaePjaN8yw34Ft9h2Xc5jgi
+         dZrVy1dLN3ZulRKqJ+yzLaKUxY9HCQgAXThd7LmIbsOdsn4bBwtxRhBiuEAoGQ718pn0
+         UCzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744920618; x=1745525418;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UZ9CzFa621uATTSaULP4s96x8JmFYzdGBES+TbEIHRE=;
+        b=mxBaTrkhX3FWROOtHNwuRryNhrXnL8jnFqYpdtlnqDoKUcvByQkNKVpoo995jzhNM+
+         Wlgl2ETv4ucCw1tpqVEAT6wi0mWL9Z0svgndIXkdpKSR+87aKMyMR+PyGtYAL4mjxe0Y
+         XqcdRQavSIVQ/TOrAyinSwYLAUJYOQ22I5GTBDybXqAZECVoEGj+PKo0RlY3n3Ghhj63
+         C2khtlFV0tScEsWtciGayJQaRqO8DlejspYUOTZPZkgV+oWtfUe5Fv0IBvwaTbc5He5w
+         AfvP6Lqo39/+zMYc+hfKh7XQKQ0ryjyn8FFd92F5dEEYfBKAV5QxLBA+ModslunRH/zT
+         UF/w==
+X-Forwarded-Encrypted: i=1; AJvYcCUaANaXI26OSu5XTZzwp9JrvGh/5Zp7pP+SRa6H4OddyN5a1MsRYB76J0z1MSc3pfRvdWOLw4S8@vger.kernel.org
+X-Gm-Message-State: AOJu0YxcmUMynn4IwBBv9JjccrmKbUAS9Xac+HD1ajxQEn5tFXM/qTcI
+	wpcwxgUXBOEINyeEMXswzZiTYQoKtN5JqgshLzXlkspmEoiADP2T
+X-Gm-Gg: ASbGncusR5rOSw4IMAMgbAvZq1IRl1s1PrgIGn5WKpSBU9uYdwxb1jAUgiuzpdRLkkR
+	1CWUKt9YhNLRYbYCR4/iKxXN2Y0QpwyI+XtBMtizTA6BPSX5lPrWlII37F9+rq14plph2FiBgHm
+	A+bbXFmWQmFzsLG7nHe0m5kd2/ZM0wFth682XRO5K/55H9b6iCY/4YXcZ33mtESuCeXZPx3Qsvi
+	hWiiXoTHAjt4Bk9EBwoSupRcYUz9zzixaBm3DekArr+LdU8n9qPrHbORncGw/Ya7abZILuFbTTS
+	KWJXLD+BDUuOW+GZZEAqpQxuc/HHSyFGzgfLKLmq9JL+2CMzz1zZhF6zlYDtZKknG8j23miv
+X-Google-Smtp-Source: AGHT+IFu8TvrOT7mfZlte7YEsHySoAvhmP73oO9Gk3cGuB1EeFBjmVGx38umUR/hSO0hUwEMZUynqw==
+X-Received: by 2002:a17:903:3202:b0:220:faa2:c917 with SMTP id d9443c01a7336-22c53611075mr3914835ad.34.1744920618125;
+        Thu, 17 Apr 2025 13:10:18 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1151:15:6f0c:5f5a:e370:874b? ([2620:10d:c090:500::5:a81])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22c50fdf1dbsm3988915ad.258.2025.04.17.13.10.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Apr 2025 13:10:17 -0700 (PDT)
+Message-ID: <f95735b9-5d92-47a7-a7d1-15bfb3ef8a9d@gmail.com>
+Date: Thu, 17 Apr 2025 13:10:16 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/5] cgroup: use separate rstat trees for each
+ subsystem
+From: JP Kobryn <inwardvessel@gmail.com>
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com,
+ hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, kernel-team@meta.com
+References: <20250404011050.121777-1-inwardvessel@gmail.com>
+ <20250404011050.121777-5-inwardvessel@gmail.com>
+ <2llytbsvkathgttzutwmrm2zwajls74p4eixxx3jyncawe5jfe@og3vps4y2tnc>
+ <88f07e01-ef0e-4e7d-933a-906c308f6ab4@gmail.com>
+ <oi3hgft2kh44ibwa2ep7qn2bzouzldpqd4kfwo55gn37sdvce4@xets5otregme>
+ <337ce68f-5309-4bb2-83ae-cb43268f447d@gmail.com>
+Content-Language: en-US
+In-Reply-To: <337ce68f-5309-4bb2-83ae-cb43268f447d@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-04-17_06,2025-04-17_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 suspectscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2502280000
- definitions=main-2504170141
-X-Proofpoint-GUID: 1kbh2zaaNz7PyBTYGp_lexWCAEVdSt_v
-X-Proofpoint-ORIG-GUID: 1kbh2zaaNz7PyBTYGp_lexWCAEVdSt_v
 
-Unlike sched_skip_vma_numa tracepoint which tracks skipped VMAs, this
-tracks the task subjected to cpuset.mems pinning and prints out its
-allowed memory node mask.
+On 4/17/25 12:05 PM, JP Kobryn wrote:
+> On 4/17/25 2:26 AM, Michal Koutný wrote:
+>> On Wed, Apr 16, 2025 at 02:43:57PM -0700, JP Kobryn 
+>> <inwardvessel@gmail.com> wrote:
+>>> Hmmm I checked my initial assumptions. I'm still finding that css's from
+>>> any subsystem regardless of rstat usage can reach this call to exit.
+>>> Without the guard there will be undefined behavior.
+>>
+>> At which place is the UB? (I saw that all funnels to css_rstat_flush()
+>> that does the check but I may have overlooked something in the diffs.)
+> 
+> It would occur on access to the per-cpu rstat pointer during the tree
+> building in the sequence below.
+> 
+> css_rstat_exit(css)
+>      css_rstat_flush(css)
+>          css_rstat_updated_list(css, cpu)
+>              rstatc = css_rstat_cpu(css, cpu)
+>                  per_cpu_ptr(css->rstat_cpu, cpu)
+> 
+> Since I'm doing the early checks in css_rstat_flush() in the next rev
+> though, I was thinking of this:
+> 
+> void css_rstat_flush(css)
+> {
+>      bool is_cgroup = css_is_cgroup(css);
+> 
+>      if (!is_cgroup && !css->ss->css_rstat_flush)
+>          return;
+> 
+>      ...
+> 
+>      for (...) {
+>          if (is_cgroup)
+>              /* flush base stats and bpf */
+>          else
+>              /* flush via css_rstat_flush */
+>      }
+> }
+> 
+> Then we could remove the two conditional guards in css_release_work_fn()
+> and css_free_rwork_fn(). Thoughts?
 
-Signed-off-by: Libo Chen <libo.chen@oracle.com>
----
- include/trace/events/sched.h | 30 ++++++++++++++++++++++++++++++
- kernel/sched/fair.c          |  4 +++-
- 2 files changed, 33 insertions(+), 1 deletion(-)
+Correction: just the one in css_release_work_fn(). In the case of
+css_free_rwork_fn(), there is a call to css_rstat_exit() which would
+still need to be guarded (or it will touch the per-cpu rstat pointer).
 
-diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-index 8994e97d86c13..25ee542fa0063 100644
---- a/include/trace/events/sched.h
-+++ b/include/trace/events/sched.h
-@@ -745,6 +745,36 @@ TRACE_EVENT(sched_skip_vma_numa,
- 		  __entry->vm_end,
- 		  __print_symbolic(__entry->reason, NUMAB_SKIP_REASON))
- );
-+
-+TRACE_EVENT(sched_skip_cpuset_numa,
-+
-+	TP_PROTO(struct task_struct *tsk, nodemask_t *mem_allowed_ptr),
-+
-+	TP_ARGS(tsk, mem_allowed_ptr),
-+
-+	TP_STRUCT__entry(
-+		__array( char,		comm,		TASK_COMM_LEN	)
-+		__field( pid_t,		pid				)
-+		__field( pid_t,		tgid				)
-+		__field( pid_t,		ngid				)
-+		__field( nodemask_t *,	mem_allowed_ptr			)
-+	),
-+
-+	TP_fast_assign(
-+		memcpy(__entry->comm, tsk->comm, TASK_COMM_LEN);
-+		__entry->pid		 = task_pid_nr(tsk);
-+		__entry->tgid		 = task_tgid_nr(tsk);
-+		__entry->ngid		 = task_numa_group_id(tsk);
-+		__entry->mem_allowed_ptr = mem_allowed_ptr;
-+	),
-+
-+	TP_printk("comm=%s pid=%d tgid=%d ngid=%d mem_nodes_allowed=%*pbl",
-+		  __entry->comm,
-+		  __entry->pid,
-+		  __entry->tgid,
-+		  __entry->ngid,
-+		  nodemask_pr_args(__entry->mem_allowed_ptr))
-+);
- #endif /* CONFIG_NUMA_BALANCING */
- 
- /*
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index c9903b1b39487..cc892961ce157 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3333,8 +3333,10 @@ static void task_numa_work(struct callback_head *work)
- 	 * Memory is pinned to only one NUMA node via cpuset.mems, naturally
- 	 * no page can be migrated.
- 	 */
--	if (cpusets_enabled() && nodes_weight(cpuset_current_mems_allowed) == 1)
-+	if (cpusets_enabled() && nodes_weight(cpuset_current_mems_allowed) == 1) {
-+		trace_sched_skip_cpuset_numa(current, &cpuset_current_mems_allowed);
- 		return;
-+	}
- 
- 	if (!mm->numa_next_scan) {
- 		mm->numa_next_scan = now +
--- 
-2.43.5
+> 
+> Note that I was also thinking of doing the same early check in
+> css_rstat_updated() since it is exposed as a kfunc and someone could
+> pass in a non-rstat css other than cgroup::self.
 
 
