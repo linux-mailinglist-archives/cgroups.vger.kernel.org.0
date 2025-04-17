@@ -1,77 +1,78 @@
-Return-Path: <cgroups+bounces-7616-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7617-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6930AA9204D
-	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 16:54:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69FBDA92088
+	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 16:58:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D03063BDD49
-	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 14:53:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09AD219E7B68
+	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 14:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF6252528EC;
-	Thu, 17 Apr 2025 14:54:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D364253333;
+	Thu, 17 Apr 2025 14:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="2hvLYvtj"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="QhOpWc30"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C775B1C5D61
-	for <cgroups@vger.kernel.org>; Thu, 17 Apr 2025 14:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02492252909
+	for <cgroups@vger.kernel.org>; Thu, 17 Apr 2025 14:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744901648; cv=none; b=WZp+Ewj5pNrdm8Y3TRTUjD5sS73QTocSLkxqjmUj8+4eKqq5qd+4glSFYjG8TEIbQ6//Don1mSqkUY5f8R6dqmM9wblIrsqpRUpw6OmZ2HnhQIlmbKB++Ghxm+NEyQtpz7U3mIozZSRgjYK7mNrEI7rRzO16dn7xZTuJ7U+JzG4=
+	t=1744901911; cv=none; b=VzRxGByXfSr3VCGi8BV/EnuLWkrfj25eqgtXVunYQljUhWiscSJeoeXm/j4XnfsJSaR80htmf9xRZ8dE6Efxg4OmXE6+t1zJgoSOofwLT0FzCyAOAkj9eCTyme8jj+ofLvpGdjBGWj6U1uHPb9uffvAAVdsU8xUxvedP8nVUXl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744901648; c=relaxed/simple;
-	bh=y6Qdwi2fYnYO3ZDvo+FJR12z46j08PUlYp0fEVJVKJc=;
+	s=arc-20240116; t=1744901911; c=relaxed/simple;
+	bh=769yCdBlANwbmRIbTWde2f3Il2Ej+D8N39f2RDuMZf4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F1yarPYy+DMUf3SmjitqoJv6I2wzk7rTTUVaMc+ZDRtvIWQM+IH8GZr61YkXHRHeAXvNwafIpswMI6UOyrAJnIJPvDsOHZKAx6E10JvbMtj4Y8A0jzY6YsmJUfo/H5c+GtbXIutgDxo9UXY6+wKUobyAmMk0r3dkjWX8eWS+WFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=2hvLYvtj; arc=none smtp.client-ip=209.85.160.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=Abv2J6KcATIaz3m94Duzlw7gOSRo/gIEezA3lOHvmZwxMxpGORfituQMEaB73L2SNnzWLEicP5+fRq+i9L+2JNJhm+Y3StP+XxeWSRayKMFT3irBwoVQ1eilWPvnMDltKmZiGHK/mkIZbCiAvx4Tz1iyY+m34ihHKp0NQ8pOb0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=QhOpWc30; arc=none smtp.client-ip=209.85.222.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4775ce8a4b0so13541301cf.1
-        for <cgroups@vger.kernel.org>; Thu, 17 Apr 2025 07:54:06 -0700 (PDT)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7c5aecec8f3so131583585a.1
+        for <cgroups@vger.kernel.org>; Thu, 17 Apr 2025 07:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1744901645; x=1745506445; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1744901908; x=1745506708; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=afIL/UiXUlFmHWbCDZq4bWploUK8mvFskJm951QNrQ8=;
-        b=2hvLYvtjOBv8vXQJA0SPbdipUsOVKhtjTdU2m81yKA5oA9ku8/1Bfq370WyAHMbEFJ
-         qo5h1hcx5CphXaXSumHjM03DM9JuoHU2Sil5cgNIgrQJf+l09ZKqONIp9EEqm0mBnr2g
-         DZvHBmInvN5FXEy6UuDvsGR/w+JS/fpUdCcGmqi0ZGDXPOaHuN0yf7fUurN872jpm5bp
-         hGi3KQOU7vlZk5cG1ZrbLP0ipJaLVyRR+b5aUlDb4ALOvQRzewFMAb5GLhUpSW1hEVTn
-         hiaGl4YQ6NbCYjdgsZB9JqInnwMA1OExexMglt6xYn/Huwd5v1ESkQNoj/kizH8nMGXH
-         80qw==
+        bh=j3gbCW+iQwhJd4DkAbGAG43g6uYzMnLXJAizDgyDC2w=;
+        b=QhOpWc30txO2afWq9hNHPiiyFQTWO5MP9nXWwQM8qAZjnRO6BJwSknzy6MLlEcqCfU
+         ntaKNO3HCuBzwVVfPLG3IY+LLnxo+DzJkNTccTAjKP9I5V12B1D0ZkH4ni0AQCaRfbw3
+         xj/uhcVcIZWwRJ8jGH3L2+0+2tCONw0g3czIPH/s2wA/xZzoUunqUOl6m+oibUfApd0C
+         a5ydjgpjBJYvmpBlEavn2Qc3F51MDM0dPru1PbhdR1fbPXhNNCtezFe1GGt+cvsKuREX
+         HKBbS9m/Zzl7mYL91tJM45faIWB4N8ModB1ekT0fhqcjmVSnRaQxAsmQJMuRtfFJseKN
+         ISuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744901645; x=1745506445;
+        d=1e100.net; s=20230601; t=1744901908; x=1745506708;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=afIL/UiXUlFmHWbCDZq4bWploUK8mvFskJm951QNrQ8=;
-        b=EeQPUV/K9QBF53ZReJLGgvgbZb98xb3aPCkdZIbloXqTS5L+DQTWBTL2GW4Yvl/JgR
-         oy2ZcJJKQEb1bhf4O6CaAu0ZRsUUOgTUHWKcQjfIe3ElCXFL3wG1X6lWh7au1Wdf+Wck
-         hDU5Edd66Da179LSubHoVqPKAxLwuUuHn5thsmUNUGfbXcg6sTxzojnRTKUAfYtoIAyw
-         QBY8DnhjTMedTWZxPUrSTP7Ku0XlkdrTXKde6FQ4CgDEg1DvirsUPEGFsKijeo6+fjVn
-         nliHQXCVyZC7K9YjELGdkTWSy8GBr7ihSYb7dQDkVyv4Knp2wYPe5bAUqdRw8rQXkByM
-         yUyg==
-X-Forwarded-Encrypted: i=1; AJvYcCWkUm09vn4FU03y/SyN2AWFf/dIdXLxVqgZjOySMqHTddej1fXiZIEKW8dNHFErvBKw8IeDnNTk@vger.kernel.org
-X-Gm-Message-State: AOJu0YzcILHsboSQ2fnDkVRaFXpp5pWFgBfZWS6AI24dE67P7H9BoCRc
-	I9KX20t6NUr3cya4lRjLVEA++MCUuX5Do3ExmOonc5XfKhsIYU7Iu65Azmyep68=
-X-Gm-Gg: ASbGnctNZgqlmPRiwWvBNjksG3fnf5iuP1HoERlCEUcZpiQVQfkkx5Tq26jLDUWV2kJ
-	gm0e4MCm603WHkEF4s6WVedh48upbltjSJ5vm0tC+tID2F+ORKX3GR+9DY1xxVTXbvT4RdYDv/P
-	34Nnml+lcw45Hf2y9+JZKd51IjwPzlV6BRTvl7iWFiI9zRx9AGuAAZgtORhlJIFZ8Mr1XFXB/co
-	kWerqGjSmrDZzckD8DBj7mQC560WlId2Ev07mzK9tNrzYLwxYDF+adEIbyhsmEC6W9NRatFC87T
-	CgLmUcSzvTdNK6Gr0ZGSGrOaE2w58vxWcjzhy1g=
-X-Google-Smtp-Source: AGHT+IEU+XimTfphBnwnpBz5KDBLi0B/ZA6zQlSXL2AwZKrTMTjVWTzfNzzazFeEPgvFvBFjvH48xw==
-X-Received: by 2002:ac8:6711:0:b0:476:bb72:f429 with SMTP id d75a77b69052e-47ad8119d76mr76603021cf.42.1744901645475;
-        Thu, 17 Apr 2025 07:54:05 -0700 (PDT)
+        bh=j3gbCW+iQwhJd4DkAbGAG43g6uYzMnLXJAizDgyDC2w=;
+        b=gEXR7SPYqYW93DTx6Y73Q8mfJ0FIsPNM4JP/0z+pqAuTbO1zAWg87g17T04gvZyLM2
+         HBypmSml4pZ+moLVgCSqeQBpR8fUoxQHzUisdMIpoFezNihl/CL7OlD/v91bbPOiCC5D
+         JGf/Xifbo0lYWbT6yMVFxZT/zFEGe3sjRE5vGuvUgtcjQAqEYaha2TCCLl8MIRCN67IT
+         /jHTlxX9NJdei9WTIl45R0kYHN92bZiZGqjYxcQ/FessCy6NA+JShKctgqHFwjHhmhNE
+         W2kdmCqR9+vjuQqQHWxcGHIEzv8B3aNJ3mWakrdWIvtxnrQSsWApi0ban4YpLxJL6rcD
+         E4Dw==
+X-Forwarded-Encrypted: i=1; AJvYcCU9D5e3cRx0c5jda0YcRa3QyzTIZBT5Wb+hLzoceSW2a8rgjBGpJMeemQiynPf+Oq+aeh7aoTbv@vger.kernel.org
+X-Gm-Message-State: AOJu0YxmaFWTyrsIZw/j8Ueu44O8/VzpMCD3e/nbPcKhoCfG6iOVIpxC
+	oa+N1gGTiMgpE+4iWw/z3imuOUAlM3HZa0Clpn2NZiJG4hDF26/s/mazWGFOfRzG8+/x5UnWhu5
+	i
+X-Gm-Gg: ASbGncu08JS6K8BrgGt5KHP0b2vyDmOJEsDdnuBA5JaqFJgbgaufPTurw7YXGOpUEGg
+	RL+OG4uKpBFBPHq9rlKmZB4BKlZf8KTY822N1BTCf/uHUj3wNjccqQF0ip6ahegG942EbW/A7aL
+	FgMVDeoLpPA12ZhIpGYKLykep1cqlwNiOV3M0s52HyUCCl+OJdgzNiz2GHQ0YGx2DpLwo+mO5qV
+	NP94ab+Yn9Q6EGZkNbzErYzZGd0bn9BaXOQvWs9dkzx4UN/6ZAmGSZZw2+9GHNx0AAJt0ZVJRdN
+	gXg7MDjlIsaaBJw3HPV+l+4E+VyF2ivBdlkNbyM=
+X-Google-Smtp-Source: AGHT+IG8pal8ArDJIAxk4zvmDxxTaWHTgc3rlYOQmxwiOrJrTtp4R4yKIBkfKdWD1Cu1lEd1pdGILQ==
+X-Received: by 2002:a05:620a:472c:b0:7c5:562d:ccf4 with SMTP id af79cd13be357-7c918fcecfcmr833341285a.4.1744901907842;
+        Thu, 17 Apr 2025 07:58:27 -0700 (PDT)
 Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-47ae9c3299esm49721cf.17.2025.04.17.07.54.04
+        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7c925a6ea26sm824585a.7.2025.04.17.07.58.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Apr 2025 07:54:04 -0700 (PDT)
-Date: Thu, 17 Apr 2025 10:54:03 -0400
+        Thu, 17 Apr 2025 07:58:27 -0700 (PDT)
+Date: Thu, 17 Apr 2025 10:58:26 -0400
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Muchun Song <songmuchun@bytedance.com>
 Cc: mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
@@ -81,11 +82,11 @@ Cc: mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
 	linux-mm@kvack.org, hamzamahfooz@linux.microsoft.com,
 	apais@linux.microsoft.com
-Subject: Re: [PATCH RFC 05/28] mm: thp: replace folio_memcg() with
- folio_memcg_charged()
-Message-ID: <20250417145403.GH780688@cmpxchg.org>
+Subject: Re: [PATCH RFC 06/28] mm: thp: introduce folio_split_queue_lock and
+ its variants
+Message-ID: <20250417145826.GI780688@cmpxchg.org>
 References: <20250415024532.26632-1-songmuchun@bytedance.com>
- <20250415024532.26632-6-songmuchun@bytedance.com>
+ <20250415024532.26632-7-songmuchun@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -94,12 +95,17 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250415024532.26632-6-songmuchun@bytedance.com>
+In-Reply-To: <20250415024532.26632-7-songmuchun@bytedance.com>
 
-On Tue, Apr 15, 2025 at 10:45:09AM +0800, Muchun Song wrote:
-> folio_memcg_charged() is intended for use when the user is unconcerned
-> about the returned memcg pointer. It is more efficient than folio_memcg().
-> Therefore, replace folio_memcg() with folio_memcg_charged().
+On Tue, Apr 15, 2025 at 10:45:10AM +0800, Muchun Song wrote:
+> In future memcg removal, the binding between a folio and a memcg may change,
+> making the split lock within the memcg unstable when held.
+> 
+> A new approach is required to reparent the split queue to its parent. This
+> patch starts introducing a unified way to acquire the split lock for future
+> work.
+> 
+> It's a code-only refactoring with no functional changes.
 > 
 > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
