@@ -1,109 +1,116 @@
-Return-Path: <cgroups+bounces-7620-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7621-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 416A9A92416
-	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 19:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 638B8A92435
+	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 19:39:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FA3D16A858
-	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 17:33:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C35EF171CE7
+	for <lists+cgroups@lfdr.de>; Thu, 17 Apr 2025 17:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 974272561A2;
-	Thu, 17 Apr 2025 17:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28672566D2;
+	Thu, 17 Apr 2025 17:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sDv+qvkc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G3mWB04d"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50FEB1DE8A0;
-	Thu, 17 Apr 2025 17:33:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3F62566CF;
+	Thu, 17 Apr 2025 17:39:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744911211; cv=none; b=T6H4m8OGxOLNT7dRoEZj40AyqOyCHnHyFqQBzKV7HUhLxnlZIlDP+W3PuBfTchXenHuAiONF/kJHufl4kvR1U1RKXw4bnKWe+D7cRLeSPtcLZ70yHGVItdWMbFfqgXu8Musp04mo2BZWJ334SA8WmLZH6XqxGQSCdxk1RFPd/9s=
+	t=1744911559; cv=none; b=r+5vp5CN0eMbGE2NIXGtcSJz4XjNj07pmpr32KGL6I+qaDmZoMFS3DfHJGJBHKpgB4NGuXAN5mFpg6qh0Xpxivjq3pOhEeXa+3PZKLMWOy0ikgEqteacf9t1xQyjCU+GsNRjPYBup8KANP29nZLcr25N7vlvyJsN4y6kFY6JgV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744911211; c=relaxed/simple;
-	bh=z5y2ACRsRRWqWKBImnsY6fBXdHefgYjwoqoWXfflW6c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M67Er392WICbrPHpAxi4Emtdmf/jIs6VcBu5hpRujJsYLQ8QvC1pFIUgELDHqQ7YyCn0rKWaOP71mB9cP23JFfJxaGBqLdVGc6fsacvnWe74iSgq47Lygjuoc10/1GqBX+XndDGopLSxG8EPB6h7+0LiNG9I4tf17AaqWt/zkI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sDv+qvkc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CE55C4CEE4;
-	Thu, 17 Apr 2025 17:33:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744911210;
-	bh=z5y2ACRsRRWqWKBImnsY6fBXdHefgYjwoqoWXfflW6c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sDv+qvkc3eDGVO31d1YKBtx7lP/vm+HHgWrxcNrSszFEvkuURckxBknoorTdkS75S
-	 091I9PO/FLNB/OAbWQgvDtyAQQu5ZcO7mm1uGTTBfeediBlo8o4ttkdPQXVgqroIN2
-	 qtsZydsRVvQCe6y30lYWJTr+nWpfpg9RF2LPmluobxiVsAAuVIYIqGP7NGAWpTUDwm
-	 qfYaGm6ySr8MCLCIP2tOgfhUt+afeBxvZ0NeGGc+3OyFFwohzaiwQBG2Y9u45Om2Ef
-	 fMj70dbev4Rlm6WHn89oZtI81B28E9qW3mrA8QxyAt3JQpvQ/sq9Vwex4t5AGjaQmy
-	 3isFhhLPJfw1Q==
-Date: Thu, 17 Apr 2025 07:33:29 -1000
-From: Tejun Heo <tj@kernel.org>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Waiman Long <longman@redhat.com>,
-	Kamalesh Babulal <kamalesh.babulal@oracle.com>,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] cgroup/cpuset-v1: Add missing support for
- cpuset_v2_mode
-Message-ID: <aAE7abLJLQy_ooBA@slm.duckdns.org>
-References: <20250416211752.945849-1-tjmercier@google.com>
+	s=arc-20240116; t=1744911559; c=relaxed/simple;
+	bh=IJOCoAbfESLPGcq0s+NtLK7+By4C1mnScFdgMd+jRPY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b6ddj0TF9TnUsU6rCsubhoZ2suXwtLJnQajcj6+nmvOLOk0A6YCnhoRQLe+Yk7ABF1505j4nifQ6wP3R1efV16s0dPDVMFB0S9yW0YFXLx5QMSOFWW6ysrpnZVDEonZ1VT7Z563aWUfeIJg5qEr7/pD66g2FJ9C8vQ9xRp0nnPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G3mWB04d; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6e8f43c1fa0so12573046d6.3;
+        Thu, 17 Apr 2025 10:39:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744911557; x=1745516357; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IJOCoAbfESLPGcq0s+NtLK7+By4C1mnScFdgMd+jRPY=;
+        b=G3mWB04dQNC2cRZ6dK3rvIhdzFMac5hwKu1xeA3t/aZnkQGmy/w9d0wx57IX3J5l13
+         iTZsAgpY41+R4GurxgkM6R4Qu1qklFmjiZOGJiZlsjBzZtmVlwdvKHgUUBzMNjC/XGVB
+         f3E32h2yuKX560vaNyhBEZ6TIEAWi/pGC9Y9JlvnACEsk15sTJZCea65jEZTdokxY0fY
+         pcydB8j/Ero6CN4kS/B46DBcJSKF7jjXGKKYaKtnyxH8aRRjUDbURwydUMXXg5bGX6g/
+         9RDRYulxIZp0P+zyU+9aGk+pqZIM91jdSdRHtEUnPdCy9wiM3v3n2DG4V4uaLc8GayCo
+         bxlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744911557; x=1745516357;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IJOCoAbfESLPGcq0s+NtLK7+By4C1mnScFdgMd+jRPY=;
+        b=K0uB+U2s/LPM+GHrT/Zwqc+6tt3SxnAQkL7Sz9aKTYY2ZjYTaaDxqRP9OP2LxFfsi1
+         hXdexfnpUt/L8gKARlQ4c7N8hWs33+GxrMLU2jKvufntfSK6VLaywxLo6iXRK9sWaxih
+         QLRa5BoWPhikN+Bz9wLjYak4+ejp1ETpQqzBK9Zkf89l5PJDCeAxOWza10SPV6DCw7Tg
+         dMMubtblQ9vLsAuEPznzSOdwMCSu08HI0Rl+HXYpUWADZOtXick7tn2n85ubdSTHqil8
+         q2TkxSqBKFbB5zZHc7Xldow/tipFVg6JRgeDM9pcTYHN2hjLg3zrC9IuXE5ce7dhpy4L
+         fH5w==
+X-Forwarded-Encrypted: i=1; AJvYcCWcUnq8L7SfDfupBd1h9ig/hVOr2bhmr5unJ3kIJ0uxEYDPLS81MSsxFbbHFX2IkoXLrmRF4JV1UmB9cKg+@vger.kernel.org, AJvYcCXXZVD0LwwhqUk2LUB1ejRWk9OAYbjVValOOGZmz4mqiaf8d7nBwTR+yYUQFmWsU/XVqowpHaj9@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOEY5SkeL4T8Lllg//3MvJv2d+R4DK8iQM34b9te0CifJV0DSE
+	t00LLTPwE3hYNBY2Ie1l5oCvma83v1+J6najCx79ZoJWE99jCevy3r232spwSIa9HNQO17B+Trw
+	Vh1cQKC2B65v+WFFjJwo/q2MMKu8=
+X-Gm-Gg: ASbGncvFrqY5npei2I7MAq/oSEWwwcdyD6cvVLwOfFIrEoShq+HA724Bx9WubWQyh12
+	O59dLwHmzKkzGuRINVRdKt+9k/N/ny3/7dUiqMWIcL2ldHeZYx3k6G94WWFU2j9LxtYmXG3wxRL
+	ESeumaitxcXh7srwDyed4++XyPUeHcvPIITg==
+X-Google-Smtp-Source: AGHT+IFsg3WsedqYYClWbiPfH/kZJGoZhJCSZlGHr/KP3lAIsVoxNjt85IcMoa3Fs4WaZYg3jHMvlVYzOXx7ANmPxAM=
+X-Received: by 2002:ad4:5b83:0:b0:6e8:fa7a:14ab with SMTP id
+ 6a1803df08f44-6f2b2f22f6amr87091256d6.6.1744911556885; Thu, 17 Apr 2025
+ 10:39:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250416211752.945849-1-tjmercier@google.com>
+References: <20250415024532.26632-1-songmuchun@bytedance.com> <20250415024532.26632-22-songmuchun@bytedance.com>
+In-Reply-To: <20250415024532.26632-22-songmuchun@bytedance.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Thu, 17 Apr 2025 10:39:05 -0700
+X-Gm-Features: ATxdqUHfTz5BvLkk64iIoNn6d0Ol7xPi_VzpoY4ezJknMWiDhkMbdgsF-jH6xBs
+Message-ID: <CAKEwX=O4MCgM=CrnWWNaan0g1xmAWeFxXM8=OpKuZM4v3ajDFw@mail.gmail.com>
+Subject: Re: [PATCH RFC 21/28] mm: zswap: prevent lruvec release in zswap_folio_swapin()
+To: Muchun Song <songmuchun@bytedance.com>
+Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org, 
+	david@fromorbit.com, zhengqi.arch@bytedance.com, yosry.ahmed@linux.dev, 
+	chengming.zhou@linux.dev, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, hamzamahfooz@linux.microsoft.com, 
+	apais@linux.microsoft.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 16, 2025 at 09:17:51PM +0000, T.J. Mercier wrote:
-> Android has mounted the v1 cpuset controller using filesystem type
-> "cpuset" (not "cgroup") since 2015 [1], and depends on the resulting
-> behavior where the controller name is not added as a prefix for cgroupfs
-> files. [2]
-> 
-> Later, a problem was discovered where cpu hotplug onlining did not
-> affect the cpuset/cpus files, which Android carried an out-of-tree patch
-> to address for a while. An attempt was made to upstream this patch, but
-> the recommendation was to use the "cpuset_v2_mode" mount option
-> instead. [3]
-> 
-> An effort was made to do so, but this fails with "cgroup: Unknown
-> parameter 'cpuset_v2_mode'" because commit e1cba4b85daa ("cgroup: Add
-> mount flag to enable cpuset to use v2 behavior in v1 cgroup") did not
-> update the special cased cpuset_mount(), and only the cgroup (v1)
-> filesystem type was updated.
-> 
-> Add parameter parsing to the cpuset filesystem type so that
-> cpuset_v2_mode works like the cgroup filesystem type:
-> 
-> $ mkdir /dev/cpuset
-> $ mount -t cpuset -ocpuset_v2_mode none /dev/cpuset
-> $ mount|grep cpuset
-> none on /dev/cpuset type cgroup (rw,relatime,cpuset,noprefix,cpuset_v2_mode,release_agent=/sbin/cpuset_release_agent)
-> 
-> [1] https://cs.android.com/android/_/android/platform/system/core/+/b769c8d24fd7be96f8968aa4c80b669525b930d3
-> [2] https://cs.android.com/android/platform/superproject/main/+/main:system/core/libprocessgroup/setup/cgroup_map_write.cpp;drc=2dac5d89a0f024a2d0cc46a80ba4ee13472f1681;l=192
-> [3] https://lore.kernel.org/lkml/f795f8be-a184-408a-0b5a-553d26061385@redhat.com/T/
-> 
-> Fixes: e1cba4b85daa ("cgroup: Add mount flag to enable cpuset to use v2 behavior in v1 cgroup")
-> Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> Acked-by: Waiman Long <longman@redhat.com>
-> Reviewed-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
-> Acked-by: Michal Koutný <mkoutny@suse.com>
+On Mon, Apr 14, 2025 at 7:47=E2=80=AFPM Muchun Song <songmuchun@bytedance.c=
+om> wrote:
+>
+> In the near future, a folio will no longer pin its corresponding
+> memory cgroup. So an lruvec returned by folio_lruvec() could be
+> released without the rcu read lock or a reference to its memory
+> cgroup.
+>
+> In the current patch, the rcu read lock is employed to safeguard
+> against the release of the lruvec in zswap_folio_swapin().
+>
+> This serves as a preparatory measure for the reparenting of the
+> LRU pages.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Applied to cgroup/for-6.15-fixes.
+No objections from my end. AFAICT, wrapping this in rcu should not
+break things, and we're in the slow path (disk swapping) anyway, so
+should not be a problem.
 
-Thanks.
-
--- 
-tejun
+Anyway:
+Acked-by: Nhat Pham <nphamcs@gmail.com>
 
