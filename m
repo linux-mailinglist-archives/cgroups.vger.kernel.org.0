@@ -1,422 +1,251 @@
-Return-Path: <cgroups+bounces-7637-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7638-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA14FA930B2
-	for <lists+cgroups@lfdr.de>; Fri, 18 Apr 2025 05:14:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D075EA933AD
+	for <lists+cgroups@lfdr.de>; Fri, 18 Apr 2025 09:47:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23AF98E00CA
-	for <lists+cgroups@lfdr.de>; Fri, 18 Apr 2025 03:13:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 586E21B606B7
+	for <lists+cgroups@lfdr.de>; Fri, 18 Apr 2025 07:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5DC5268689;
-	Fri, 18 Apr 2025 03:14:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC89268FE9;
+	Fri, 18 Apr 2025 07:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="U7fUyTIh"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="clKylB/e";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="aPXdGCXW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B1B267F61
-	for <cgroups@vger.kernel.org>; Fri, 18 Apr 2025 03:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744946044; cv=none; b=jWWpfqbGgnP2y9Ed0iUDxhpMbpIbqZh4l1jZtXY4J6Iv6TTYiXcgP0dBB8fHoe1OKOsLdyk8n0IjPDxvPnpYsDtoSN46asel2kpXhlEAiQNYk+g7YyBGCyRKlCzyoTKNXWc90NRMlo6NZljmIGfS5iwYVRcA/kXvuRlo/ihXPrg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744946044; c=relaxed/simple;
-	bh=Nn+auOPB1Pe3mdZJAcIUTIHjTFUV6LeI8x8O1PF0j3Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Quc7an3aB0V9FJ3Ci6Pn85/89HoF2oALbBjpiuGlOaXIyVfQjBPZ83syxoD3hEzlE/7sSdkmr3zTizXnyWdqnL40jn5PCyHwi0KPl9sjYu64a2BXpeu/cG4EXDe0/fRjnfM9umXi9KUFvfo+9JW/go7yE9lN6L6PaLSpDJb0wsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=U7fUyTIh; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6ecf99dd567so18374256d6.0
-        for <cgroups@vger.kernel.org>; Thu, 17 Apr 2025 20:14:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE5FB320F;
+	Fri, 18 Apr 2025 07:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744962446; cv=fail; b=MPwKX5rLabqiiqCFnJIH8N2MaFDnooSCVSSTqZshC/lYqkvVuHKzjVMdtXTHLiokQDqCRX33mOcql8PiK1ZM+C8DFwvkVca5OD/Nf64vl/VDqu4t+DFjxxdf9JrY7qx2u0O/GY5Fd+aN3KU8t6us6d4lQZk4pN2l820BupNn6g4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744962446; c=relaxed/simple;
+	bh=pKGutVLWki4/vqGeIlggaDOX++iEKNyXbW3TRZfKnQA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=aPqUO1w0pTYmEOOQ7eVdhglKpwjwBAYZCr/WL93YC+iHDjURkKURWScRcMQU/cZ+exb5Rz8InY7W8X6p5WmUIVbjz1Nzdykk73dT3wLQxZbt6J4GDsk8Sl8On/aYv7v2EBH5fyFhM9pgoOaFcAcKFbW6TM1kaHnVp+betjh2zJM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=clKylB/e; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=aPXdGCXW; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53I5tt4p015102;
+	Fri, 18 Apr 2025 07:47:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=2O3zbZmoIZJocXx3xThw5ozlsRRTnyPIog/LA/5h7Cw=; b=
+	clKylB/eA+x71HXA9suW/DGZ2gMFDES4IpRkOyXFALlaP5hrp6ulwkcKs+ZWMty5
+	oMI8cVogF/vlnjp/3+ABH/bKWCiRVgWznjPpvlvHGqgrx88C32WNtPuuSEOLVsMe
+	ysWUPs5nKj69jeFPd4KrfeWMdW8QVn5qJVcdi6cfEIM/73+rUhIX74wn/uTnLvso
+	dgrQEnaSrcK3w3m5nr7Ps9EHrhdEoY8/NqgKdgj7Roevd/MTX2MkNmD8VVKcBaxU
+	hDG0E2gb6L/gHJeLqLuGkuzpwHG++zZ61QKKe3WPCRR01T54VgDOkc/ozK755F4j
+	toPRA6nmAgYI9nBCAZ6x3w==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 461944fkwj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 18 Apr 2025 07:47:15 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 53I7c1MQ031024;
+	Fri, 18 Apr 2025 07:47:14 GMT
+Received: from ch1pr05cu001.outbound.protection.outlook.com (mail-northcentralusazlp17010003.outbound.protection.outlook.com [40.93.20.3])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 460dbevfa6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 18 Apr 2025 07:47:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=IzEodrVggu6RK/FSHp28uzHiv04bRcePQN/HOCf1q2PZphJLTlC650obFlwqzcr/mJCGbhMm0yOsQC0Z/ZbYAYqou+CU+UTvl0t/9ke11HeC2GGsCzSFIvpNN10TgDI6gOTjFiQ1dJtWstIXpriDG0GlbMoAeCAqOZM1vDg+OjNslpnEDSAH99ZOUmCmpR4vz2DxRgkQ8RrAICJw6C8FopWjAIgpJasi1A1myc598QuWhg8wMEMvpfYfysdsGr8nmIY+HMs6ovr4x9bXyXoYj33m+eVccu/h1mClufmkLHqVIio90mkcqsXY0D5GK5o4XyJWVAfGdCMzQAuuxIW0PQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2O3zbZmoIZJocXx3xThw5ozlsRRTnyPIog/LA/5h7Cw=;
+ b=xiXf5sfvn/fLPd9yXfk2uEeHTF+vv3uu2wLJjm/ILTDtYKl7xek+nfqmAi8ozjIO6FC4UarkDtoDYPMfTLQ4fYeGJ9NecdQBCqfGXAur+Uuipdr6q3EzNDuxyWO48mKqgJcDIaWRhy42kxqZfgf/+4FzHgCGkXmQmP0dC3oSv9kCIsSZJqsqcz8d1PMVv6wK4LR1BeArUbpyvwrQh9wU35L9I8JCX1nTZzarWZjWDVohyIp6sR6/fW8+835LBq+24LIxQ6Zez0DUCKfyH+xL1f3wn+y9q9qsq7W9yrvjoc3WruNntjJl8ePZ3AJAzWmBOAny7tNdG+pYTO7h7ZhCIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1744946041; x=1745550841; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5c4EiNLEzaH1kEu4rlybhAXBFQwwhe/VADHqdjirWGU=;
-        b=U7fUyTIhnu4FJcPlVteDoJUtq4viO7+6OlYb5DObeiESe4ArDZVJpL4+jSurliciW3
-         WWCZir47/C2hOV2UggxUt+gSiOhSDgD+CH9RC/wwyeEEqXUqq//PbNlueLc4EzL4gtrb
-         iefQrG5KzQhjC7hjPM/ec0LEBOFWAj6K0TRoNJfIcAs3y8KM7lnl9qVBzaY9hIPQSvGQ
-         kmxUeZDQu1k2OjDQbrYzkBoN+C5+29C5msCKa3M7zEaVZBaJDErxMzEOnQQWwWg4Jy9a
-         I1W9kOP+V6ese/UxWOwZhJX9lhkTSXoYCDio2wWzgn5GTqhgHwldFaBYAYCIovTks9gD
-         rt3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744946041; x=1745550841;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5c4EiNLEzaH1kEu4rlybhAXBFQwwhe/VADHqdjirWGU=;
-        b=lGvxgHDnIkrRc9eaEl8Gq9D0eklhIgrQkYQjkgb50mae2MUWxRJSXdF6iwFAj8T8fe
-         aC2YeUWXTLCQceS2A3DFjVHC4WUbF0Y+Zgm/5gFOaMxIBsNGDc85nC9b9EbR0cBw+QgX
-         sxorcA72J4qy0zvtxqPQtZ+p9+dwFKIwOrlv4dgHHCo6HHPg9ne7M45SjdqYNLlrR625
-         N25pAU0HdQZTr915tsia5MEqlmig2VOb2zRYrSTYqCq2LPey9eNXh40U417AqFCT9O8P
-         OY8GcO+3UMb0DbPxLmX2ZDZioMyDjwq+y1eYYC1T/sEbvjHIMJ8HQtX4MkfqZ2vHH8lK
-         hvfA==
-X-Gm-Message-State: AOJu0Yx0c1N4TwwDlthg7T/sD5Lfrycd6FJJUWd42+i01o2taC1VXv46
-	293NmcHVuRIPRYAc/GrMj90yu3JQpJ2L7gdrXuMvaKT4+wTU6/TIWb86GLQNpAoLWA5998Pk0x9
-	u
-X-Gm-Gg: ASbGncvjurORPbcUbi1f2VagZfs9j9MVttkk1GCz4UyNCqT/jQdgG5so3SmGvvCGj3u
-	+aEDpKichIdLrrFb5+MVAMLoW8Z+qfOqF05Dal4E7zuSSyyPIb2n0aPMTyjXd66X9xrXq6GvidK
-	DBCu2AwXh0JmdyDZuVGytzL2MuHEN+ygMdeMAM+e7+T8SzxzrGGJY2NH1VveVXeh4dhDnXh2Zbc
-	lWlr7ybfybQ7rSq2nBKNvBjlU04/6wEvGiXPZAvst2sLUJzvQ8QIlH/+IEFg4+JjE5lvifRJNlt
-	7et/Tb9YkM1Zte1GRrVZm98ctYBhp3K5NGcLa9TGVAWOGt2Nk8/5Z6hq2lt9c0JlfmVIIzhcvEB
-	RNrJRa2qsPw4cbMgAwtxEowiO1yoP
-X-Google-Smtp-Source: AGHT+IEsxXzvK+RuOTa9fUyb98lbKMDB18an/pe4G3IndVeUIywzKG7ffnqYQetM9ARvJ/Mn4afdqg==
-X-Received: by 2002:a05:6214:4012:b0:6ed:1da2:afb9 with SMTP id 6a1803df08f44-6f2c45750a8mr28479756d6.19.1744946040958;
-        Thu, 17 Apr 2025 20:14:00 -0700 (PDT)
-Received: from gourry-fedora-PF4VCD3F.lan (pool-173-79-56-208.washdc.fios.verizon.net. [173.79.56.208])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6f2c2af1717sm6231796d6.15.2025.04.17.20.14.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Apr 2025 20:14:00 -0700 (PDT)
-From: Gregory Price <gourry@gourry.net>
-To: cgroups@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	longman@redhat.com,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	akpm@linux-foundation.org
-Subject: [PATCH v2 2/2] vmscan,cgroup: apply mems_effective to reclaim
-Date: Thu, 17 Apr 2025 23:13:52 -0400
-Message-ID: <20250418031352.1277966-2-gourry@gourry.net>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250418031352.1277966-1-gourry@gourry.net>
-References: <20250418031352.1277966-1-gourry@gourry.net>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2O3zbZmoIZJocXx3xThw5ozlsRRTnyPIog/LA/5h7Cw=;
+ b=aPXdGCXW+YuXU8MVohw1Xn1Lbmr7zOt7rBJlX8JVD3LKowSnVGum3RVP4y4ZWOc5K7d/GJBvAtBOcpIkXKVJ6PaG13qnawA2IvxsnUJvcU7m0p8fCn0dC3uSQWqqHM8Mb4AsvfOX9G/OEjD3yfeJjIaPynWVYe8U46h2ozMCr7k=
+Received: from PH8PR10MB6387.namprd10.prod.outlook.com (2603:10b6:510:1c2::17)
+ by DS7PR10MB5053.namprd10.prod.outlook.com (2603:10b6:5:3a4::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8655.22; Fri, 18 Apr
+ 2025 07:47:11 +0000
+Received: from PH8PR10MB6387.namprd10.prod.outlook.com
+ ([fe80::f218:31a2:a748:3c21]) by PH8PR10MB6387.namprd10.prod.outlook.com
+ ([fe80::f218:31a2:a748:3c21%4]) with mapi id 15.20.8632.035; Fri, 18 Apr 2025
+ 07:47:11 +0000
+Message-ID: <af289b54-de43-4d7c-bf74-926abfad7808@oracle.com>
+Date: Fri, 18 Apr 2025 13:17:05 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] cgroup: Fix compilation issue due to cgroup_mutex not
+ being exported
+To: gaoxu <gaoxu2@honor.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "surenb@google.com" <surenb@google.com>,
+        yipengxiang <yipengxiang@honor.com>
+References: <5df9200f0e7c4bc586af76e21b380f67@honor.com>
+Content-Language: en-US
+From: Kamalesh Babulal <kamalesh.babulal@oracle.com>
+In-Reply-To: <5df9200f0e7c4bc586af76e21b380f67@honor.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA0PR01CA0006.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:80::10) To PH8PR10MB6387.namprd10.prod.outlook.com
+ (2603:10b6:510:1c2::17)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6387:EE_|DS7PR10MB5053:EE_
+X-MS-Office365-Filtering-Correlation-Id: b727c3bf-e2ad-45fb-73c1-08dd7e4d3a3b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016|10070799003;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?NllpZWREUDUyZ0YzT1h1UzhKdHUwRG5TTU5Pb2dYdzhRUmIyTXYxQTdVemEv?=
+ =?utf-8?B?U3ozbm5ZWnVMZkVOa2ZDRXVUV1hJcnFINmMzRU1ESjhDaW9TcVc3cEd0N2Fo?=
+ =?utf-8?B?bUc5Z3NwRXFCWTNReDYybkdxeGtBN1c0Yk00ZzNjQWIxc0FpUmxrQ205QmtP?=
+ =?utf-8?B?RG96d3JUUHhtUXhIdWZZOUY3SG5EbmZyZGNwb3M5WFErV3RGcXFoVURIK1F4?=
+ =?utf-8?B?VHBMaGxKSGhWRlQ2RmV5WWRBMjZ0bXJRdWVLSFhLK2t4Q21hZTFIakZ3N3RC?=
+ =?utf-8?B?aGdIemdvM3FKRFkxckkvODV3dUhweXUzc1NwVVp6bUlGelBjR015c3FYVTdH?=
+ =?utf-8?B?K2FjeVFnWUtBdmFwSWdacjg0VGFQdWYyR1lNQUtmU3FSUDh4andSWWhFdHVl?=
+ =?utf-8?B?N2Y4N3c2eDYyRkhzUGVWdy84ZWJNT0RLdUd6VnVRc2ZacDgvVEJkaUhvdG0r?=
+ =?utf-8?B?dkpZWFU0ZzdaZVkzbTJ5a1VVOWFEellHUndjM2UzQ0VocWJTTVViQXhlNXJy?=
+ =?utf-8?B?TThLbTVZUi96Y3ZtOXQ2NGlweGlQZTdnV0hpK0lTSlp3N2dhbHhsMzZ6c3pP?=
+ =?utf-8?B?eU4wSHZ4MHFRUGh2NmtBUGFQai9HTlJPWlFoNVZyQVZqTXljMzAvdTVORURr?=
+ =?utf-8?B?eGFZWE5sRDUvalFsOEdCdU5iQ2ZWV01pNlhHR3ppU0xNdGpScmFCSURsUGhL?=
+ =?utf-8?B?aitKQnpvY0ZUd3FBNnhrY29OUndmSDZBdFd5L3FFN0FrSE5weElzS1BpUGJT?=
+ =?utf-8?B?bng2aXpOL3Q0QjkvTmU3Y1NoMEVmRlE0V0JzMDQwYzFDR0RkeWRRYzlKeHpL?=
+ =?utf-8?B?Nk9IYzArTUdOS05uNlNHNzNvbExObGhOLzd4SnNPWCtBSjVBT3JyRHFvZ0U1?=
+ =?utf-8?B?bEk3NnFQZ0tTc2VOUGhVY1B6NHM1V3pSZXR4UjJBMm85ck1kd3ZkVnZZZHQx?=
+ =?utf-8?B?Q25KSnF4eGw2VVQ1SkZpcEo5SmR5VkdYREd6Z21zakgyelkvbWRVT05kblg3?=
+ =?utf-8?B?eE5sbWhMVDZiVnhBanF3MTF0Tlc5cUpGTytIdVRUUDZQN2FZaHFmWDV6SDBW?=
+ =?utf-8?B?eEZtY1BqYVR1Y0RIL3l3S0ppQ0ZTd2pSalAwYzFta20ydmo2LzZoYzg3bE0v?=
+ =?utf-8?B?aGVXcTJTRll0WlhyRVE0TkxCOXVncGk3cEc0V2NCVk5FL3RtMGZBRVQ1WnN4?=
+ =?utf-8?B?TEl0WmZiNXBaaGJQMGxBb1NLWE11RldzSHp2NW10NUh2L0QwVWF5MjdhT3FF?=
+ =?utf-8?B?eHl2WWpOdE1GSnBPY09sMFZ4ZmJRT1lFUW01TjIxNlNEOHd0WnJLZjVjZlNk?=
+ =?utf-8?B?Ung2T0JkTjN5eGg0OWJnVVRsV3laMnNnUDhKY21jMUwxang2S0FoeEZ3OXZ5?=
+ =?utf-8?B?cUxmRlAvYmx5bHNmZHlyNnpOWDBlZzJwS2NWN0x3MXBONDVXM3BOalhVZWVx?=
+ =?utf-8?B?Q2JYdW1wYmhqOW9IZS93UDY4RXU0Z1FpWXhFMTVCaWxEeXJhT1lTeE5WK2ho?=
+ =?utf-8?B?cU9MbzRYZ2hGK0l5aVE0UDNjWnJkSnUzK25YNjhNSjdVUkVRYTQwdGdyNmdx?=
+ =?utf-8?B?VUFIZzBQYlkvdndoWVArdEtHeFhBc1dTYUxLUjJEaFFNK3JXbFNtZEcwSGpC?=
+ =?utf-8?B?L0FjQVA5WDFjNjVjTE4zNW0yaENRS1RUNjZWYmtONkhxbW43WU5HRDNvL2Rv?=
+ =?utf-8?B?YVZ6Q1hzUUwreVZabXYvNHdEbDBTcEVuRkdiNGZ4RVFlLzROUHp5empUaity?=
+ =?utf-8?B?RER4elViMTBraFBJOUxWNlZRaVcvOSswSk43QmNqL01INmlqQjNXTEluQ1hs?=
+ =?utf-8?B?ZmZ3K1R3cm83NTRiT1ZWeVhDUlBqbnI1M3luZEdlSjExck9hUGFzT0ozaUg3?=
+ =?utf-8?B?RDhuN28zVnJJZ0luSUxGWDJUMjFRS3d0WGRkcHV6bGVycTIvOENRR2c2azJT?=
+ =?utf-8?Q?CLyhvZOnS2E=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6387.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(10070799003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ellWd3NZakhyR1dkeUdKRVBldzRZeXZGNWxCME41SnpqamFDeExScUxVMUZC?=
+ =?utf-8?B?bXp4M0s0M2tNWTFtbE4ybDRSYklVQzRQZmlPV3FRVmplNFBQSGhid29RMHVY?=
+ =?utf-8?B?ajF1REFtZUwyRnhjaVhsdE9oUjNzb2hqQVV6MWc2ODdTbllHRmdpbXRWRGRX?=
+ =?utf-8?B?aGMyRGl4ZDFnRFhlVzJ5UXVjVnB0clVOL1NaRG11Nk1ydVNJQmU4bVBSeXli?=
+ =?utf-8?B?ZlBNa1RmRUpqeTZnajBjRzE0SkVNcExwSXRGWnRrbGIzZHRtcFJPOVo4RVFE?=
+ =?utf-8?B?aXZRbmcrVWRIcUNuWVpwVWU4VkpWZzhFc3E2bEJlQ3FpTXljdTEvTThad2RN?=
+ =?utf-8?B?angycHFIM3habnFSRUtJbEJhWjg5cnBYaUlhbU5KcWZWVTFlVW5oaHBlNjZj?=
+ =?utf-8?B?MXp3MUttWk5EM1RrMkZZWjlNTEwvVmJhVXlOa1J6eVVhVlpYbmtRbUJ4QVJj?=
+ =?utf-8?B?K1c1eTJRRkJ0MnJvK1piUmNLMTV5Wm5hTzY1Zk5CQWY1M25HaXFnTW11OFd3?=
+ =?utf-8?B?bkE3eUJYVmVhNFZLV2s4d0NlNXpmRUFjcllkT3ZsTWpvK0R2VkoyZDJJNHZy?=
+ =?utf-8?B?WjhzSnNRZ0czZUtuM253QXlxUXJPbXRVaittcmFDVUZXUnJtaGViejU5VjJS?=
+ =?utf-8?B?ZllEV1lzRzB3Y3BTUEtvVHZtSFRpbW9pTStxdWVJa29WY1g4NlVpL1FpMGk2?=
+ =?utf-8?B?YldBNVVVTTQydmFlNVMwSlk1Q1BwbW14eG9nS3pOTENNWXlvWTNOVURyc053?=
+ =?utf-8?B?Y3NBZGtlcXEvbE8rNThLZkx2dmJVbnZpK0JPUHhZRzJWT1BHb04wMkFKb1Z4?=
+ =?utf-8?B?bnRtd240SEtHRGZCYU5aSXI3RHRwbTRpY0tkaWFOc2VXbU5jUVJ0L0VBQ05V?=
+ =?utf-8?B?TDdHcUliZVc5aDZwdU5yZVcrQ0hoVEhTN3R4UjNmTkRLUGxSMGRWdXpBUkM4?=
+ =?utf-8?B?SnlNZWRUSEFNcC8yUmhEM0tGa050QUM5YWpRbmJBUDhmeHM4Y0ZoTEEwN0xB?=
+ =?utf-8?B?UFFkLzlwM29HUDVyYmpuZ2xDVWtWaWVPcXRwaEJtcU9yTkZuYlRxNEg4bzl6?=
+ =?utf-8?B?UmRhRVpUQzlnVFRZUmlGT2xWdkg0dkYySnNValY1Mll3MkZRUER5MHVEMk9o?=
+ =?utf-8?B?dDMvTms3Y0Z0RW1rSnBZSC93N0RuVzhNSXhIanUrTmswYWg4Y2hESFZSRTZB?=
+ =?utf-8?B?ZnN2dWwxRDNaKytlTHptS0thOEI4WE4wWGhsYzM0VDZiakJxakJnTmJ2QXl1?=
+ =?utf-8?B?WE5oU0NxSnY4YXprWnJPbzJMODhab09aNDUyaUR6YkVCN3pEcjFXK01ibDJW?=
+ =?utf-8?B?c0NPWXVKNWp1MzRGajk1aVZKdFcrY3F0S2tLRFMrdC9xdHRndGNJdEJKZFFm?=
+ =?utf-8?B?NDhEemhHaXpXSHFVZ3lCSEdkMnAvTlM1aVowa3dZdCsyYnQ0V1pSQW90OG5l?=
+ =?utf-8?B?K1hzU2g4am1wZ3grUmdGSHFtRjdxSjhuenhsaiszdUNRRXBaRXpySlpKRzlp?=
+ =?utf-8?B?T0dRcEcrZGtOT3NIVFJBREdVWlVzNzBIYUxRUDUzNUJlYWJlbTR1c1ZUU3ha?=
+ =?utf-8?B?T3FLcDJVaHloWXZ0c0hkZmh4bkJCNkJhcHVZYzJldFdMZzA0Z0MwVHp1WDFh?=
+ =?utf-8?B?Tzl3dDdYWUlqdStmbWVYcHZwcmw5WGlMNUZTRjhXY1RkNVZxTEYxMk0weElC?=
+ =?utf-8?B?TktucG9UTUFzK285UUlVeFZYZ2IvTUhMVlFlY000WXByYjVDNmorTUtsNHZv?=
+ =?utf-8?B?MndpVzFFVzJqdGxENTY0djlPZ3pUVDgxNjJ3K0t3Z0RqSU43cGorbzgrQk1O?=
+ =?utf-8?B?UHlwaFJHcjI2MkVLbE5tcTB0MjBLczZYM0xPem14WEUwVEhXd1JCMnNtTkVL?=
+ =?utf-8?B?MkdRb0FaMlZZTUg2S2V5QTRtLzkwRVltS2w3VnBzdHBXZzZtT1ZoMHE3NEsw?=
+ =?utf-8?B?bkpRZncxR3J3OTJ1OEUwMDhTUTJ6SGRZWkduVG9zSGQzMkJlRzIxTE5Tdkxu?=
+ =?utf-8?B?cE56dzFlN0wyRVpJOEd3WkhDcVdtZGNRbk9rZkNGRFJrc1U3WUZHK3ZjYnJ0?=
+ =?utf-8?B?NUZka0Mzdk9MTkZNWlRNZHVZOVdKTUlpVktTVHFsa012QTJoOWN5UklWSjcw?=
+ =?utf-8?B?SDlWNmc2ZUNiL1ZmeEdxVm9lSDJsVnhFZFhIQm45byt3Skx3RXZ4WTEwc1gy?=
+ =?utf-8?B?Y3hvTjhkUjNxWTY3WlJVTU9aR1JKVEtZRjJ5Yk1jelZYaUd6bzVQZ3B3VnB1?=
+ =?utf-8?B?aDR5OG1LRkRWRm9CMmtPWEp1TU9nPT0=?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	uhVUOpR0fxzpH8FMWBx4UFUdsqWC4AIlmr9b8/zfijexqAz+XaNAcpJFI7r1Kz7JkGp1sbRMP1zg/zvxNqfEqg68X04a3VGkCfaNcapOufm7KcrT6sYfS37QwGHWP+aT3ArmFOC5F3vjHrt0vgLlQDRe4BNYhNN28z5PWijFJN2pL+xNJLhUuLwDrdNdSawcrqeZnJ53RZ1isYntCurR5UCTyIwsyAlLPQkaVF1R3Kq8ZEpLdwK8NzcoSl9oegzJo+b9Ad7P9JKOTyfZ8ylgp92jEpNHA1LR/D1ZC2Rgjf8sFdqK7mn60Ke2QKNRuy4U/kVkwjrnEe7Vc90f1z6c1khwd0xkpExUBKGpCr1YKNq5mlbcNTrhk7O5MNlY+dN4+QZdOicJhr1tYxSZCCMK/S67ZyNSFPWC4srvDsPcr7sHbVTvJvysVrpBMGmD4n52B70KFPRfypqB4zmpkfx/t6BLbm/5UJxXM1vTuAfzcT/XR5QCfmyF082lda7p5VKB8Z3XJpOng+MCVpCOGY+bfDOq4Qb94RYJYwOCN6ihUxknHvgNsvBuJzPGI3hbVfxEDFAWnyyiutTKMXWdVZ6wsTjkoNa1tYio9ToICEquSVY=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b727c3bf-e2ad-45fb-73c1-08dd7e4d3a3b
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6387.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2025 07:47:11.4830
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5CVKG+jAioigDnAKOBu2efCrjRISoH4XKotAJcd6iIe+60+7GwmRceE/EQxEamWXaiVwm/KzB/urD255uvLWan8LhY64RgALE1NTAODzvvg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5053
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-04-18_02,2025-04-17_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
+ mlxscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2502280000
+ definitions=main-2504180055
+X-Proofpoint-GUID: nx85xo04atG03p9du6JpnmniCyineazr
+X-Proofpoint-ORIG-GUID: nx85xo04atG03p9du6JpnmniCyineazr
 
-It is possible for a reclaimer to cause demotions of an lruvec belonging
-to a cgroup with cpuset.mems set to exclude some nodes. Attempt to apply
-this limitation based on the lruvec's memcg and prevent demotion.
+Hi,
 
-Notably, this may still allow demotion of shared libraries or any memory
-first instantiated in another cgroup. This means cpusets still cannot
-cannot guarantee complete isolation when demotion is enabled, and the
-docs have been updated to reflect this.
+On 4/18/25 8:12 AM, gaoxu wrote:
 
-This is useful for isolating workloads on a multi-tenant system from
-certain classes of memory more consistently - with the noted exceptions.
+[...]
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 447ac857e..c1bc51058 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -84,13 +84,13 @@
+>   * css_set_lock protects task->cgroups pointer, the list of css_set
+>   * objects, and the chain of tasks off each css_set.
+>   *
+> - * These locks are exported if CONFIG_PROVE_RCU so that accessors in
+> - * cgroup.h can use them for lockdep annotations.
+> + * These locks are exported if CONFIG_PROVE_RCU or CONFIG_LOCKDEP so that
+> + * accessors in cgroup.h can use them for lockdep annotations.
+>   */
 
-Signed-off-by: Gregory Price <gourry@gourry.net>
----
- .../ABI/testing/sysfs-kernel-mm-numa          | 14 ++++---
- include/linux/cgroup.h                        |  7 ++++
- include/linux/cpuset.h                        |  5 +++
- include/linux/memcontrol.h                    |  9 ++++
- kernel/cgroup/cgroup.c                        |  5 +++
- kernel/cgroup/cpuset.c                        | 22 ++++++++++
- mm/vmscan.c                                   | 41 +++++++++++--------
- 7 files changed, 82 insertions(+), 21 deletions(-)
+Tejun has already merged the initial version of the patch without
+the updated description. You may want to send the description change
+as a separate patch, rebased on top of the cgroup/for-next branch.
 
-diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-numa b/Documentation/ABI/testing/sysfs-kernel-mm-numa
-index 77e559d4ed80..27cdcab901f7 100644
---- a/Documentation/ABI/testing/sysfs-kernel-mm-numa
-+++ b/Documentation/ABI/testing/sysfs-kernel-mm-numa
-@@ -16,9 +16,13 @@ Description:	Enable/disable demoting pages during reclaim
- 		Allowing page migration during reclaim enables these
- 		systems to migrate pages from fast tiers to slow tiers
- 		when the fast tier is under pressure.  This migration
--		is performed before swap.  It may move data to a NUMA
--		node that does not fall into the cpuset of the
--		allocating process which might be construed to violate
--		the guarantees of cpusets.  This should not be enabled
--		on systems which need strict cpuset location
-+		is performed before swap if an eligible numa node is
-+		present in cpuset.mems for the cgroup. If cpusets.mems
-+		changes at runtime, it may move data to a NUMA node that
-+		does not fall into the cpuset of the new cpusets.mems,
-+		which might be construed to violate the guarantees of
-+		cpusets.  Shared memory, such as libraries, owned by
-+		another cgroup may still be demoted and result in memory
-+		use on a node not present in cpusets.mem. This should not
-+		be enabled on systems which need strict cpuset location
- 		guarantees.
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index f8ef47f8a634..2915250a3e5e 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -632,6 +632,8 @@ static inline void cgroup_kthread_ready(void)
- 
- void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen);
- struct cgroup *cgroup_get_from_id(u64 id);
-+
-+extern bool cgroup_node_allowed(struct cgroup *cgroup, int nid);
- #else /* !CONFIG_CGROUPS */
- 
- struct cgroup_subsys_state;
-@@ -681,6 +683,11 @@ static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
- 
- static inline void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen)
- {}
-+
-+static inline bool cgroup_node_allowed(struct cgroup *cgroup, int nid)
-+{
-+	return true;
-+}
- #endif /* !CONFIG_CGROUPS */
- 
- #ifdef CONFIG_CGROUPS
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index 893a4c340d48..c64b4a174456 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -171,6 +171,7 @@ static inline void set_mems_allowed(nodemask_t nodemask)
- 	task_unlock(current);
- }
- 
-+extern bool cpuset_node_allowed(struct cgroup *cgroup, int nid);
- #else /* !CONFIG_CPUSETS */
- 
- static inline bool cpusets_enabled(void) { return false; }
-@@ -282,6 +283,10 @@ static inline bool read_mems_allowed_retry(unsigned int seq)
- 	return false;
- }
- 
-+static inline bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-+{
-+	return false;
-+}
- #endif /* !CONFIG_CPUSETS */
- 
- #endif /* _LINUX_CPUSET_H */
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 53364526d877..2906e4bb12e9 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1736,6 +1736,11 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
- 	rcu_read_unlock();
- }
- 
-+static inline bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
-+{
-+	return memcg ? cgroup_node_allowed(memcg->css.cgroup, nid) : true;
-+}
-+
- #else
- static inline bool mem_cgroup_kmem_disabled(void)
- {
-@@ -1793,6 +1798,10 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
- {
- }
- 
-+static inline bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
-+{
-+	return true;
-+}
- #endif /* CONFIG_MEMCG */
- 
- #if defined(CONFIG_MEMCG) && defined(CONFIG_ZSWAP)
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index afc665b7b1fe..ba0b90cd774c 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -7038,6 +7038,11 @@ int cgroup_parse_float(const char *input, unsigned dec_shift, s64 *v)
- 	return 0;
- }
- 
-+bool cgroup_node_allowed(struct cgroup *cgroup, int nid)
-+{
-+	return cpuset_node_allowed(cgroup, nid);
-+}
-+
- /*
-  * sock->sk_cgrp_data handling.  For more info, see sock_cgroup_data
-  * definition in cgroup-defs.h.
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index d6ed3f053e62..31e4c4cbcdfc 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -4163,6 +4163,28 @@ bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
- 	return allowed;
- }
- 
-+bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-+{
-+	struct cgroup_subsys_state *css;
-+	unsigned long flags;
-+	struct cpuset *cs;
-+	bool allowed;
-+
-+	css = cgroup_get_e_css(cgroup, &cpuset_cgrp_subsys);
-+	if (!css)
-+		return true;
-+
-+	cs = container_of(css, struct cpuset, css);
-+	spin_lock_irqsave(&callback_lock, flags);
-+	/* At least one parent must have a valid node list */
-+	while (nodes_empty(cs->effective_mems))
-+		cs = parent_cs(cs);
-+	allowed = node_isset(nid, cs->effective_mems);
-+	spin_unlock_irqrestore(&callback_lock, flags);
-+	css_put(css);
-+	return allowed;
-+}
-+
- /**
-  * cpuset_spread_node() - On which node to begin search for a page
-  * @rotor: round robin rotor
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 2b2ab386cab5..32a7ce421e42 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -342,16 +342,22 @@ static void flush_reclaim_state(struct scan_control *sc)
- 	}
- }
- 
--static bool can_demote(int nid, struct scan_control *sc)
-+static bool can_demote(int nid, struct scan_control *sc,
-+		       struct mem_cgroup *memcg)
- {
-+	int demotion_nid;
-+
- 	if (!numa_demotion_enabled)
- 		return false;
- 	if (sc && sc->no_demotion)
- 		return false;
--	if (next_demotion_node(nid) == NUMA_NO_NODE)
-+
-+	demotion_nid = next_demotion_node(nid);
-+	if (demotion_nid == NUMA_NO_NODE)
- 		return false;
- 
--	return true;
-+	/* If demotion node isn't in the cgroup's mems_allowed, fall back */
-+	return mem_cgroup_node_allowed(memcg, demotion_nid);
- }
- 
- static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
-@@ -376,7 +382,7 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
- 	 *
- 	 * Can it be reclaimed from this node via demotion?
- 	 */
--	return can_demote(nid, sc);
-+	return can_demote(nid, sc, memcg);
- }
- 
- /*
-@@ -1096,7 +1102,8 @@ static bool may_enter_fs(struct folio *folio, gfp_t gfp_mask)
-  */
- static unsigned int shrink_folio_list(struct list_head *folio_list,
- 		struct pglist_data *pgdat, struct scan_control *sc,
--		struct reclaim_stat *stat, bool ignore_references)
-+		struct reclaim_stat *stat, bool ignore_references,
-+		struct mem_cgroup *memcg)
- {
- 	struct folio_batch free_folios;
- 	LIST_HEAD(ret_folios);
-@@ -1109,7 +1116,7 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 	folio_batch_init(&free_folios);
- 	memset(stat, 0, sizeof(*stat));
- 	cond_resched();
--	do_demote_pass = can_demote(pgdat->node_id, sc);
-+	do_demote_pass = can_demote(pgdat->node_id, sc, memcg);
- 
- retry:
- 	while (!list_empty(folio_list)) {
-@@ -1658,7 +1665,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 	 */
- 	noreclaim_flag = memalloc_noreclaim_save();
- 	nr_reclaimed = shrink_folio_list(&clean_folios, zone->zone_pgdat, &sc,
--					&stat, true);
-+					&stat, true, NULL);
- 	memalloc_noreclaim_restore(noreclaim_flag);
- 
- 	list_splice(&clean_folios, folio_list);
-@@ -2031,7 +2038,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
- 	if (nr_taken == 0)
- 		return 0;
- 
--	nr_reclaimed = shrink_folio_list(&folio_list, pgdat, sc, &stat, false);
-+	nr_reclaimed = shrink_folio_list(&folio_list, pgdat, sc, &stat, false,
-+					 lruvec_memcg(lruvec));
- 
- 	spin_lock_irq(&lruvec->lru_lock);
- 	move_folios_to_lru(lruvec, &folio_list);
-@@ -2214,7 +2222,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
- 		.no_demotion = 1,
- 	};
- 
--	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &stat, true);
-+	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &stat, true, NULL);
- 	while (!list_empty(folio_list)) {
- 		folio = lru_to_folio(folio_list);
- 		list_del(&folio->lru);
-@@ -2646,7 +2654,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
-  * Anonymous LRU management is a waste if there is
-  * ultimately no way to reclaim the memory.
-  */
--static bool can_age_anon_pages(struct pglist_data *pgdat,
-+static bool can_age_anon_pages(struct lruvec *lruvec,
- 			       struct scan_control *sc)
- {
- 	/* Aging the anon LRU is valuable if swap is present: */
-@@ -2654,7 +2662,8 @@ static bool can_age_anon_pages(struct pglist_data *pgdat,
- 		return true;
- 
- 	/* Also valuable if anon pages can be demoted: */
--	return can_demote(pgdat->node_id, sc);
-+	return can_demote(lruvec_pgdat(lruvec)->node_id, sc,
-+			  lruvec_memcg(lruvec));
- }
- 
- #ifdef CONFIG_LRU_GEN
-@@ -2732,7 +2741,7 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
- 	if (!sc->may_swap)
- 		return 0;
- 
--	if (!can_demote(pgdat->node_id, sc) &&
-+	if (!can_demote(pgdat->node_id, sc, memcg) &&
- 	    mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
- 		return 0;
- 
-@@ -4695,7 +4704,7 @@ static int evict_folios(struct lruvec *lruvec, struct scan_control *sc, int swap
- 	if (list_empty(&list))
- 		return scanned;
- retry:
--	reclaimed = shrink_folio_list(&list, pgdat, sc, &stat, false);
-+	reclaimed = shrink_folio_list(&list, pgdat, sc, &stat, false, memcg);
- 	sc->nr.unqueued_dirty += stat.nr_unqueued_dirty;
- 	sc->nr_reclaimed += reclaimed;
- 	trace_mm_vmscan_lru_shrink_inactive(pgdat->node_id,
-@@ -5850,7 +5859,7 @@ static void shrink_lruvec(struct lruvec *lruvec, struct scan_control *sc)
- 	 * Even if we did not try to evict anon pages at all, we want to
- 	 * rebalance the anon lru active/inactive ratio.
- 	 */
--	if (can_age_anon_pages(lruvec_pgdat(lruvec), sc) &&
-+	if (can_age_anon_pages(lruvec, sc) &&
- 	    inactive_is_low(lruvec, LRU_INACTIVE_ANON))
- 		shrink_active_list(SWAP_CLUSTER_MAX, lruvec,
- 				   sc, LRU_ACTIVE_ANON);
-@@ -6681,10 +6690,10 @@ static void kswapd_age_node(struct pglist_data *pgdat, struct scan_control *sc)
- 		return;
- 	}
- 
--	if (!can_age_anon_pages(pgdat, sc))
-+	lruvec = mem_cgroup_lruvec(NULL, pgdat);
-+	if (!can_age_anon_pages(lruvec, sc))
- 		return;
- 
--	lruvec = mem_cgroup_lruvec(NULL, pgdat);
- 	if (!inactive_is_low(lruvec, LRU_INACTIVE_ANON))
- 		return;
- 
+I've rephrased the description to clarify that lockdep annotations
+can occur even without CONFIG_PROVE_RCU. Feel free to use this
+version or modify it further:
+"Export locks for lockdep annotations. Use CONFIG_PROVE_RCU for
+accessors in cgroup.h, and CONFIG_LOCKDEP for accessors that do not
+require CONFIG_PROVE_RCU."
+
 -- 
-2.49.0
+Cheers,
+Kamalesh
 
 
