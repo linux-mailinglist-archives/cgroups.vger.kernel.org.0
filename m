@@ -1,119 +1,182 @@
-Return-Path: <cgroups+bounces-7646-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7647-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B2D8A94039
-	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 01:08:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A85B6A940F3
+	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 03:59:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D5851B60F8B
-	for <lists+cgroups@lfdr.de>; Fri, 18 Apr 2025 23:09:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF98B462F65
+	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 01:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C3724418F;
-	Fri, 18 Apr 2025 23:08:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6060381ACA;
+	Sat, 19 Apr 2025 01:59:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="H63bmwYb"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BqgSFJzz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D2F843AA9
-	for <cgroups@vger.kernel.org>; Fri, 18 Apr 2025 23:08:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3603F249EB
+	for <cgroups@vger.kernel.org>; Sat, 19 Apr 2025 01:59:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745017734; cv=none; b=MofecfBvhIDoMkmZhxZVhcBGKmiTj3aC8i1vukFIQEELXNzvysxUfhKcjwEMmfPujzWUmQpn16Xvfj1wedMiOT1FO4dAGK6Z0MMA54Srsb2S97b1Es8IbfUtcvvdxaHNTa3rOcYHXz0qbYyE5SURFT/9iMd2ByPPVU8BcWX/Tg4=
+	t=1745027955; cv=none; b=c15Bz/j0Tp7zL52y1aVWjKsfMC4j/s7OgCADkskM/uFORKkpPtYwtrEaoGfGyyuq4W8ZmAo+a9NUCcJ5c9yYTLe47JUAyWJptwCYLTPRGws4DwHOfWpV0XNhxTWgGLvz4HCcaHhPYhd8CTEE4Yecx5gR1C3AImSXN+P4kFdvN7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745017734; c=relaxed/simple;
-	bh=9X8Tzfhq9ZxqZe/qVDNK/X+opcPZECtOwh9ghN8VGCc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ifujEnEd3G1H717pqArEXJwcjLgWJT0tZn2TW3QckqfWyHzV+tU5NhEOk77ZVsmvFlbrJpfg2k4dDvCDsycD5T7x21uz10JFOX1BCoihK/rkz/BgWtFSmygIlnB56cpwE5A3odq3j9PIrKxb7lhd4G54f1TEMpIsuAVHcnae2cw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=H63bmwYb; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 18 Apr 2025 16:08:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745017728;
+	s=arc-20240116; t=1745027955; c=relaxed/simple;
+	bh=9n9HtjJv8+BJmPIFKBtxa5gCuPSM+N4P1U/vEDnhiSo=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=O882aEXmia1jiAj0hFU9bAYFAUnflKlVM5CKke4hKzHQnVnKgiZdp6CEbNsxDhtDw3qNmALdx7XhVAywk962yclHOlclmv1rfnbZV2PsQtHs0R3lUhd9ykyQ+HX8gEbdGS6jJGW41Ht04HVz7zkeCHGB1RsU7nMGn7hRwuj27ZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BqgSFJzz; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1745027950;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Gf1keAeswgSG6BC7E7LDJ6t02p3D0ki+aO0HlIuVQxI=;
-	b=H63bmwYbhXemae7q7EikEthIJXRxKQaYO7H9zavs20LiGbVNHPM0zDLBgsE5npjdB/qXrJ
-	1XYi2FGnBmMmHZ+NffzkapWq/bH7BfkwydV1TLk8BzsBEdqcNPA3YmfMa10RPHq9N/umcL
-	TW29XB5UmQeJd7nYE3xvkw+SE7+TnkQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Greg Thelen <gthelen@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
-	Yosry Ahmed <yosry.ahmed@linux.dev>, Tejun Heo <tj@kernel.org>, 
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: introduce non-blocking limit setting interfaces
-Message-ID: <nmdwfhfdboccgtymfhhcavjqe4pcvkxb3b2p2wfxbfqzybfpue@kgvwkjjagqho>
-References: <20250418195956.64824-1-shakeel.butt@linux.dev>
- <CAHH2K0as=b+EhxG=8yS9T9oP40U2dEtU0NA=wCJSb6ii9_DGaw@mail.gmail.com>
- <ohrgrdyy36us7q3ytjm3pewsnkh3xwrtz4xdixxxa6hbzsj2ki@sn275kch6zkh>
- <aALNIVa3zxl9HFK5@google.com>
+	bh=MyE2GzEt6O7iPqkt2gvQatRQFTaplB3Bd3IRBQ3niCU=;
+	b=BqgSFJzzwQhl8CT9dxhWYTMW3OwU5WbhLuvkBmjIKE/lKqjzg7ArrXIA4dBCtT07HFLzf1
+	DWJiWi2mWP8ts2sybYt1J/6+4LRhe++jYYNDQ3qB3tVN+7f8iHivLAh3SSPbNHhNq3gz64
+	GtyV+5HyMJFW5VGGCxFKnqJm+kc4vmc=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-235-dQR8l8S0M8SoTz-0nfBC1g-1; Fri, 18 Apr 2025 21:59:07 -0400
+X-MC-Unique: dQR8l8S0M8SoTz-0nfBC1g-1
+X-Mimecast-MFC-AGG-ID: dQR8l8S0M8SoTz-0nfBC1g_1745027947
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7c572339444so344844985a.3
+        for <cgroups@vger.kernel.org>; Fri, 18 Apr 2025 18:59:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745027947; x=1745632747;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MyE2GzEt6O7iPqkt2gvQatRQFTaplB3Bd3IRBQ3niCU=;
+        b=DLRGivlJE3p204iihj9fuGLYVy+LhxS6bEZHm8liTyr05sFdE2qs3moDryC2sDDEsM
+         DxldbjCRoguTpNHHZSWHCAiMeReuJF6s4ZyBGIlu6sarLy4XctyR5fW2fSuq9+dWs9dD
+         26xO72LtzgXwRcMXjTAh8IYnWcCBgaoJ5ClADKgvCTuVQsPENNJcuqoHYR+MtEAicGWr
+         WwcKGESt0jpzL9EB6b8DTIrf8I52yF4ot94RhUerO0IucAyHiz5QPkeRA9F69VcMn8fr
+         kno0qwE3lVxFHTqDiPFB9uBQRFWBRQSTz2dCArOPh5UK1+Xl60GAFg6ywfPx6x3ElZHi
+         6hiA==
+X-Forwarded-Encrypted: i=1; AJvYcCUNkzeBWpKyDjxeXZAHQDccdCXvBNkzXJLqf5LH+z1dvjpy7CG+ELqBZE2vOhRtZAvRmfm5Fj3d@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJuCg8nex+NVtGVH6bpkRB08CYVX/hjhalOL6n6L3BVxf8ajFb
+	BRvDWisw/uUblm2JZNTs/e4kj1tZQF1PNn+cujGt0CjI1rvyWm5qa06+ZfSbR71HptlLA+/XodB
+	t9p1rlOYRmBiGVqM70m7YtHS1BG9mAc3ZbHQh9emq4JgryjQ1M6HUCgo=
+X-Gm-Gg: ASbGnctEvEDoiMbR+ktDeSgo5NT5juCJGdFwaM6d0vYEFVIfKkURsV+wY9BRJ6/eyFf
+	qSjbvH7HaRXsYBU7Bzf6HzRy1sbQcFyNwnJUcrYhBL2fuQ/KCJCSWlQ3kXATx0c+Du1L0mnhp55
+	3AQiHmMziYL6rDreqR+k/smem0PHq3K1Nap5yeQwQL24LcV6Ribh7TADBxPjgMFb1E8mPWLzVJX
+	UpQGwcZSNCzdpVGlfNeyCz58LjHJugMo0yx8my8W9gTlPIMVBQxCklDEJddDb4h90wR4i6tPFNJ
+	ZXq1oh0hCs8JOPmhijd5XRE1YlzolSauDzw6P3bN1HGL+8Oa5A==
+X-Received: by 2002:a05:620a:2a12:b0:7c5:3b52:517d with SMTP id af79cd13be357-7c92804942dmr920493585a.54.1745027946868;
+        Fri, 18 Apr 2025 18:59:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHcXj4b/NM1OREe7QzWswzHIaHccrZVLgLJcaMbiSk/L6WwkHUEvx8kXDiJC2XmvPRO2v/pUg==
+X-Received: by 2002:a05:620a:2a12:b0:7c5:3b52:517d with SMTP id af79cd13be357-7c92804942dmr920491585a.54.1745027946562;
+        Fri, 18 Apr 2025 18:59:06 -0700 (PDT)
+Received: from [192.168.130.170] (67-212-218-66.static.pfnllc.net. [67.212.218.66])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c925a6ea8dsm168807885a.9.2025.04.18.18.59.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Apr 2025 18:59:06 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <9bcb139c-451b-4ea5-b4ff-21916372d94e@redhat.com>
+Date: Fri, 18 Apr 2025 21:59:04 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aALNIVa3zxl9HFK5@google.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] cpuset: rename cpuset_node_allowed to
+ cpuset_current_node_allowed
+To: Gregory Price <gourry@gourry.net>, cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+ tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, mhocko@kernel.org,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ akpm@linux-foundation.org
+References: <20250418031352.1277966-1-gourry@gourry.net>
+Content-Language: en-US
+In-Reply-To: <20250418031352.1277966-1-gourry@gourry.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 18, 2025 at 10:07:29PM +0000, Roman Gushchin wrote:
-> On Fri, Apr 18, 2025 at 01:30:03PM -0700, Shakeel Butt wrote:
-> > On Fri, Apr 18, 2025 at 01:18:53PM -0700, Greg Thelen wrote:
-> > > On Fri, Apr 18, 2025 at 1:00 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > > >
-> > > > Setting the max and high limits can trigger synchronous reclaim and/or
-> > > > oom-kill if the usage is higher than the given limit. This behavior is
-> > > > fine for newly created cgroups but it can cause issues for the node
-> > > > controller while setting limits for existing cgroups.
-> > > >
-> > > > In our production multi-tenant and overcommitted environment, we are
-> > > > seeing priority inversion when the node controller dynamically adjusts
-> > > > the limits of running jobs of different priorities. Based on the system
-> > > > situation, the node controller may reduce the limits of lower priority
-> > > > jobs and increase the limits of higher priority jobs. However we are
-> > > > seeing node controller getting stuck for long period of time while
-> > > > reclaiming from lower priority jobs while setting their limits and also
-> > > > spends a lot of its own CPU.
-> > > >
-> > > > One of the workaround we are trying is to fork a new process which sets
-> > > > the limit of the lower priority job along with setting an alarm to get
-> > > > itself killed if it get stuck in the reclaim for lower priority job.
-> > > > However we are finding it very unreliable and costly. Either we need a
-> > > > good enough time buffer for the alarm to be delivered after setting
-> > > > limit and potentialy spend a lot of CPU in the reclaim or be unreliable
-> > > > in setting the limit for much shorter but cheaper (less reclaim) alarms.
-> > > >
-> > > > Let's introduce new limit setting interfaces which does not trigger
-> > > > reclaim and/or oom-kill and let the processes in the target cgroup to
-> > > > trigger reclaim and/or throttling and/or oom-kill in their next charge
-> > > > request. This will make the node controller on multi-tenant
-> > > > overcommitted environment much more reliable.
-> > > 
-> > > Would opening the typical synchronous files (e.g. memory.max) with
-> > > O_NONBLOCK be a more general way to tell the kernel that the user
-> > > space controller doesn't want to wait? It's not quite consistent with
-> > > traditional use of O_NONBLOCK, which would make operations to
-> > > fully succeed or fail, rather than altering the operation being requested.
-> > > But O_NONBLOCK would allow for a semantics of non-blocking
-> > > reclaim, if that's fast enough for your controller.
-> 
-> +1
-> 
+On 4/17/25 11:13 PM, Gregory Price wrote:
+> Rename cpuset_node_allowed to reflect that the function checks the
+> current task's cpuset.mems.  This allows us to make a new
+> cpuset_node_allowed function that checks a target cgroup's cpuset.mems.
+>
+> Signed-off-by: Gregory Price <gourry@gourry.net>
+> ---
+>   include/linux/cpuset.h | 4 ++--
+>   kernel/cgroup/cpuset.c | 4 ++--
+>   mm/page_alloc.c        | 4 ++--
+>   3 files changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> index 835e7b793f6a..893a4c340d48 100644
+> --- a/include/linux/cpuset.h
+> +++ b/include/linux/cpuset.h
+> @@ -82,11 +82,11 @@ extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
+>   void cpuset_init_current_mems_allowed(void);
+>   int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask);
+>   
+> -extern bool cpuset_node_allowed(int node, gfp_t gfp_mask);
+> +extern bool cpuset_current_node_allowed(int node, gfp_t gfp_mask);
+>   
+>   static inline bool __cpuset_zone_allowed(struct zone *z, gfp_t gfp_mask)
+>   {
+> -	return cpuset_node_allowed(zone_to_nid(z), gfp_mask);
+> +	return cpuset_current_node_allowed(zone_to_nid(z), gfp_mask);
+>   }
+>   
+>   static inline bool cpuset_zone_allowed(struct zone *z, gfp_t gfp_mask)
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 0f910c828973..d6ed3f053e62 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -4090,7 +4090,7 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
+>   }
+>   
+>   /*
+> - * cpuset_node_allowed - Can we allocate on a memory node?
+> + * cpuset_current_node_allowed - Can current task allocate on a memory node?
+>    * @node: is this an allowed node?
+>    * @gfp_mask: memory allocation flags
+>    *
+> @@ -4129,7 +4129,7 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
+>    *	GFP_KERNEL   - any node in enclosing hardwalled cpuset ok
+>    *	GFP_USER     - only nodes in current tasks mems allowed ok.
+>    */
+> -bool cpuset_node_allowed(int node, gfp_t gfp_mask)
+> +bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
+>   {
+>   	struct cpuset *cs;		/* current cpuset ancestors */
+>   	bool allowed;			/* is allocation in zone z allowed? */
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 5079b1b04d49..233ce25f8f3d 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -3461,7 +3461,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+>   retry:
+>   	/*
+>   	 * Scan zonelist, looking for a zone with enough free.
+> -	 * See also cpuset_node_allowed() comment in kernel/cgroup/cpuset.c.
+> +	 * See also cpuset_current_node_allowed() comment in kernel/cgroup/cpuset.c.
+>   	 */
+>   	no_fallback = alloc_flags & ALLOC_NOFRAGMENT;
+>   	z = ac->preferred_zoneref;
+> @@ -4148,7 +4148,7 @@ gfp_to_alloc_flags(gfp_t gfp_mask, unsigned int order)
+>   		/*
+>   		 * Ignore cpuset mems for non-blocking __GFP_HIGH (probably
+>   		 * GFP_ATOMIC) rather than fail, see the comment for
+> -		 * cpuset_node_allowed().
+> +		 * cpuset_current_node_allowed().
+>   		 */
+>   		if (alloc_flags & ALLOC_MIN_RESERVE)
+>   			alloc_flags &= ~ALLOC_CPUSET;
+Acked-by: Waiman Long <longman@redhat.com>
 
-Any reasons to prefer one over the other? To me having separate
-files/interfaces seem more clean and are more script friendly. Also
-let's see what others have to say or prefer.
 
