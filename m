@@ -1,77 +1,77 @@
-Return-Path: <cgroups+bounces-7651-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7652-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9E1CA94168
-	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 05:28:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C581A94175
+	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 05:41:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D6134606AA
-	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 03:28:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E080819E3130
+	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 03:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F07C112CD88;
-	Sat, 19 Apr 2025 03:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8521413EFF3;
+	Sat, 19 Apr 2025 03:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="eCf7t4kQ"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="EZJEDGQ0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01E577DA9C
-	for <cgroups@vger.kernel.org>; Sat, 19 Apr 2025 03:27:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1651137C37
+	for <cgroups@vger.kernel.org>; Sat, 19 Apr 2025 03:41:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745033280; cv=none; b=FYjQ9CrsWwShdhPICrMYQ4ZU3TDDr0wW6/DtK8baaqlfVBs3Fum4N6AvefqEmD4xVTFgGZGL3oC92dNpBl71VBvHNlTjJzcwC6Q7bi/8Ka6TRXteSGTJEwxsh5TiYBYDYYF/hOtFy9w24oT9v99lMHUsE8tgNCwu+Swq6lwUAFE=
+	t=1745034068; cv=none; b=Fu1epG1RdeeS+ERK7O7+LsaWtXh7FzHBVuif31pznIVOHQ9FLOGON1pqTts90ALFSKMyULGNLYR0FmzHZnHMsQFnkHeqlDPn7LFCnRo6kLZfTbMdWy7lHL2ARbcEJEj+M/GoOS5gGp6YNPfQBA1P2qoolJdikndSrsaPi8elwEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745033280; c=relaxed/simple;
-	bh=EkdlhuUR/maeZPX8zcin25LaGkgfYCyCpyAOUj7+En0=;
+	s=arc-20240116; t=1745034068; c=relaxed/simple;
+	bh=PHdsXTX3X2tbXBA7ibrldPy1C6uFMyd0FcF6/SMQ3AY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EQ5RRVP97ZRT7c/KBTmfs+n/6Lkb9u3++31qAAg2QN9FBqo7wObRBb3LIprOG0wgbIgCu1PLDY5khgmOzGaKXhW72fFiEXkN7N1sNf6WDMELEW1AAIotqw/3fRm1d5TkAsyQjUFfKaXabPXUFQMJfxPvgP/CKbaVDiBUvXiXiD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=eCf7t4kQ; arc=none smtp.client-ip=209.85.222.177
+	 Content-Type:Content-Disposition:In-Reply-To; b=okRlJ21b64rTGkx9rlhN5PVkrgsTlo5JbU+sR0w7lSorOspP/KP2MfE4rCpWdIKhFrnQRfuMyMxnNwESRzcRQmtEAGmPbr/lBYxKcX7XVa+aXVl+9dMRPvo+MLsgQNwuwwwc6piNAnD1RtI+BeLWSKhxHk35/r+2RocPt8/uXc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=EZJEDGQ0; arc=none smtp.client-ip=209.85.222.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7c592764e54so290775285a.3
-        for <cgroups@vger.kernel.org>; Fri, 18 Apr 2025 20:27:58 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7c58974ed57so221949385a.2
+        for <cgroups@vger.kernel.org>; Fri, 18 Apr 2025 20:41:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1745033278; x=1745638078; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1745034065; x=1745638865; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yeXMXSSzOYM79gde1X46jJHnJZxA7c7jB0TbcbsMRB4=;
-        b=eCf7t4kQlccDo6yl4Nju9CImvydB+EzHmfZTpBWq67wmUuLhi1575mXROJ65FYweKx
-         hPFSBlKK49S6fqj/6i5wS8SmQxURNgd1RMkyKaDoezf3qA3TguY9LrlWoLKcYpPx0WjZ
-         IJXmd/sFNkkFLQdOZrB5UEMxszGS/+T+fuNkKbkST4E85Ugm/+XAvcfVJmMFVFX5oCg3
-         k5OnXQ2b9hBfJlRp6o7n09ngcP7P+01bVzF8e9o7HCHrQTC/JnNKv7ITNyLfDF9JIq5U
-         msgBuSOW3rI0SonHo9u/xsD+jSSm8IxQ88QMu62e9HAOug6wZLMyvo1BUqzdqNU/PVBN
-         86Zg==
+        bh=vf/SdZzWZ/97U55NJCW7xj0E3zqMD/eAiVLqyHOwDFs=;
+        b=EZJEDGQ0FmEbQ4lG28XHQFa7Z+5PvAWw2Foazq+K7DqaCDW1u1/k7dAdDMhYj00shn
+         ljFyV+anvi8XNichPVN6tnDhwULLdTqqS4a7HEIJZElhmWaRx0uvbk/h7fFKGtYjT1hP
+         PLi1IqCMF2NEH+RotV7pMTXl4iFlH+2B9OSh/6DayNhqnCziAlcDo+dB34q6iUkM23LO
+         L8edvFpYeRiE6WlOWd18Ee2kbRYoIpAI8Tz4gIHX2O9vjwOOY9QqMWTg95DjfD+wwKfw
+         7vzIEklhrL1BHebuW5unEjnEo5iTi2RxCjd/xaoEF9Sa0RUCR9tQXIt1oVjktlpLK9b9
+         k9ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745033278; x=1745638078;
+        d=1e100.net; s=20230601; t=1745034065; x=1745638865;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yeXMXSSzOYM79gde1X46jJHnJZxA7c7jB0TbcbsMRB4=;
-        b=oI2LT42teRneX9+ZdqJPrx5SU0AQatbrQXiaGKlr0J5vElLHjMNRNoWD/Fjh/ZwrcN
-         0ScANRCSIPEyHXjlu6I6R34UGJDzhtFxgqNnB3ir6l3fsDMITrX66XDbej8Z4+K8bstx
-         K4d/NA47UtLetp7bN2bdaJkIAdQGSMO98pLfr0q6i3Z4Mjo55DJMOGBKwY+9+ZCdfMIs
-         SCN20flRh4LSISZfDP945SirpfcryYH2QajtXgSjJMVQNDs9iPHBJDzoiF6l3XuKgpNs
-         0jgMqwfCBg+iVyCYo/ODIa/Qj6e9qT1xsPfmc+h5aRK9prtQhDIQT+LLMMnKCmKeiV06
-         j/FQ==
-X-Gm-Message-State: AOJu0Yw4U2Rb/n4NdfmiNCMlRHOX1G4UTFUCx5LHB6oj74ZDP+puPf33
-	/4rjdKC3+capg1ySkYrl0GqBlnqRAX9r3Z7se4IwIH9GGpddj3sqfyciYgNLfvM=
-X-Gm-Gg: ASbGncsS8Mj37aifMGEHJNqfBBsCxRf8BBtIWVpcH1XPrl+om0xRiupSyiZXWPnNDny
-	xNbnMUccP+SbxT/JO92pvR/qXm3zKLQtluDUlUd8K4piz3fSESvad2axoxNgzSMq+bCYvcBNxx4
-	NGOUZejh39t6zi+/ta+UAMZhr4k2xN+RmXdSZxRRactk9QSByyY7Ew5IdzWmDcOuxRdSLqzWbSQ
-	DjlQQTBZyCJJc1bEp53VYawrkK4w4CP2/zfDTV+/zZIZx3Fl7b8xpS1CWPWeGWAq99Wpp/efD4S
-	54n7I02ZOB6RT6b6qMYxzOQaYpHZWRCwk1lVBmDdT3rCFpeWeW/BD/Sv8Hu8D9+HpGrr9WJFwgr
-	qOwa9aOlwF7ZYte8p2kvN5Mg=
-X-Google-Smtp-Source: AGHT+IFI0fqsWNRil4RH53+meP9hxUVCCEQa8S74bFAShz56Lmc8QxXWWOZOtWwNV00SncAzpszxHg==
-X-Received: by 2002:a05:620a:199e:b0:7c5:3ca5:58fb with SMTP id af79cd13be357-7c927f6fedfmr857572785a.4.1745033277742;
-        Fri, 18 Apr 2025 20:27:57 -0700 (PDT)
+        bh=vf/SdZzWZ/97U55NJCW7xj0E3zqMD/eAiVLqyHOwDFs=;
+        b=kfLVSqdCCGo9S3SlwWSChrOmzktxKaH//OhRMJLq3+bB2PxSvj/eemas/C5AJTXr6R
+         Djkw91LxnPAfxwxtJw0PKcX4on4AX11FJVmiN/w6RYwPV7H9AEEbp4zyfRfT3NgRilbu
+         W09k55A6MNfZZ3Esx+EcY667m27cRaa6AkntA00rieyFyo+aGvFr0Qh1LNo+zMvyzZDN
+         KwtnZcl/JAE4ROJusbrnD9FZ70fRSZy8hnmZIdCc0/0XWLHrdEoPcgruT6+ZL3jKesTm
+         4sM8ILW4HCF3nCyDw3BPEzN6KQpvPEW4khvROQBWfBRjuIAc39jRPNRiQ4fD/5uhPlVz
+         UzBw==
+X-Gm-Message-State: AOJu0YwnFVn3b+pzBq66M7SP76c+nDmVSPZ5ciefLmQoAh60I54YYab8
+	Lsd8agklE0LG/wCKoeyq4+iJHx+ng12cQtwznLIy0ss2TcHoljdPJSgSo91Skk8=
+X-Gm-Gg: ASbGnctGXxJI+IXarXoHJxdjBUyZTEDsFJKF1ApYbO/deQusf3WxhJk+SgmceN3WFCD
+	M/UbqkDii6G4dkTi7dnF/XZZ5xqULSzy0XGvjPAG79nLnKakDk7JwBOoQW2veYenOPJby9AKgoI
+	I0miFi8sK0bXefFlfKSSwdgA2e8s+jyqx99rjXwBkCh0WMH6h8Gb2tFhI/SWLGeowKDeouuZlF/
+	CfpEtTOr3LwYXcya0HXbw8KIsHb2cItG6bpx9QEqpdHWtmasU1GRW0ezT2fPEz65GJyKUSTXH6H
+	ThzvzZ6woGaBS8SkQcusMcCmNfeLudk6c+Ck8Af6h1kGXBLHP9zci4HpdFURZNw2p/lYUhnrDAp
+	Brw7cZB7FRW0LQkY8lUMHwEY=
+X-Google-Smtp-Source: AGHT+IHBuLN56lYhOyNk3hQZI/IKMdqmk7y+jZIExTVI9cAFyXEhsXltOxcEYmpfFoMh81jIo2Y7oQ==
+X-Received: by 2002:a05:620a:260e:b0:7c5:94b2:99da with SMTP id af79cd13be357-7c927fb51f8mr786359885a.28.1745034065642;
+        Fri, 18 Apr 2025 20:41:05 -0700 (PDT)
 Received: from gourry-fedora-PF4VCD3F (pool-173-79-56-208.washdc.fios.verizon.net. [173.79.56.208])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c925a8f6d0sm174315185a.40.2025.04.18.20.27.56
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c9280de4adsm152367485a.114.2025.04.18.20.41.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Apr 2025 20:27:57 -0700 (PDT)
-Date: Fri, 18 Apr 2025 23:27:55 -0400
+        Fri, 18 Apr 2025 20:41:05 -0700 (PDT)
+Date: Fri, 18 Apr 2025 23:41:03 -0400
 From: Gregory Price <gourry@gourry.net>
 To: Tejun Heo <tj@kernel.org>
 Cc: cgroups@vger.kernel.org, linux-mm@kvack.org,
@@ -80,10 +80,11 @@ Cc: cgroups@vger.kernel.org, linux-mm@kvack.org,
 	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
 	muchun.song@linux.dev, akpm@linux-foundation.org
 Subject: Re: [PATCH v2 2/2] vmscan,cgroup: apply mems_effective to reclaim
-Message-ID: <aAMYOxSOrVpjhtzT@gourry-fedora-PF4VCD3F>
+Message-ID: <aAMbT0Qh6yyrSJqt@gourry-fedora-PF4VCD3F>
 References: <20250418031352.1277966-1-gourry@gourry.net>
  <20250418031352.1277966-2-gourry@gourry.net>
  <aAMTLKolO0GWCoMN@slm.duckdns.org>
+ <aAMYOxSOrVpjhtzT@gourry-fedora-PF4VCD3F>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -92,44 +93,49 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aAMTLKolO0GWCoMN@slm.duckdns.org>
+In-Reply-To: <aAMYOxSOrVpjhtzT@gourry-fedora-PF4VCD3F>
 
-On Fri, Apr 18, 2025 at 05:06:20PM -1000, Tejun Heo wrote:
-> Hello,
+On Fri, Apr 18, 2025 at 11:27:55PM -0400, Gregory Price wrote:
+> On Fri, Apr 18, 2025 at 05:06:20PM -1000, Tejun Heo wrote:
+> > Hello,
+> > 
+> > On Thu, Apr 17, 2025 at 11:13:52PM -0400, Gregory Price wrote:
+> > ...
+> > > +static inline bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
+> > > +{
+> > > +	return memcg ? cgroup_node_allowed(memcg->css.cgroup, nid) : true;
+> > > +}
+> > > +
+> > ...
+> > > +bool cgroup_node_allowed(struct cgroup *cgroup, int nid)
+> > > +{
+> > > +	return cpuset_node_allowed(cgroup, nid);
+> > > +}
+> > ...
+> > > +bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
+> > > +{
+> > 
+> > What does the indirection through cgroup_node_allowed() add? Why not just
+> > call cpuset directly?
+> > 
 > 
-> On Thu, Apr 17, 2025 at 11:13:52PM -0400, Gregory Price wrote:
-> ...
-> > +static inline bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
-> > +{
-> > +	return memcg ? cgroup_node_allowed(memcg->css.cgroup, nid) : true;
-> > +}
-> > +
-> ...
-> > +bool cgroup_node_allowed(struct cgroup *cgroup, int nid)
-> > +{
-> > +	return cpuset_node_allowed(cgroup, nid);
-> > +}
-> ...
-> > +bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-> > +{
+> This is an artifact of me trying to figure out how to get this to build
+> with allconfig (matrix of CPUSET and MEM_CGROUP).
 > 
-> What does the indirection through cgroup_node_allowed() add? Why not just
-> call cpuset directly?
-> 
+... snip ...
 
-This is an artifact of me trying to figure out how to get this to build
-with allconfig (matrix of CPUSET and MEM_CGROUP).
+Looking back through the include graph again
 
-I think you're right, I can probably drop it.  I was trying to write :
+The reason was lack of inclusion of cpuset.h in memcontrol.c while
+chasing the allconfig solution.
 
-bool cpuset_node_allowed(struct cpuset *cs, int nid);
+I was trying to following the current includes rather than making the
+graph more complex - it wasn't clear to me whether going directly to
+cpuset.h from memcontrol.c made sense - since memcontrol can be built
+without cpuset.
 
-and just couldn't do it, so eventually landed on passing the cgroup into
-the cpuset function, which means I think I can drop the indirection now.
-
-Will push it and see if allconfig builds.
-
-Thanks
+The graph here is a head scratcher.  I'll still try a build with
+cpuset.h included in memcontrol.c.
 
 ~Gregory
 
