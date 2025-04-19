@@ -1,183 +1,99 @@
-Return-Path: <cgroups+bounces-7660-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7661-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 036FAA943B8
-	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 16:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A4B0A94433
+	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 17:38:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59CA7189BA28
-	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 14:21:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4223B189BAD2
+	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 15:39:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88CC91D8A10;
-	Sat, 19 Apr 2025 14:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E65141D88D7;
+	Sat, 19 Apr 2025 15:38:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CWWIooYE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G9HIuaz8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B43274690
-	for <cgroups@vger.kernel.org>; Sat, 19 Apr 2025 14:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637ACBE4E;
+	Sat, 19 Apr 2025 15:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745072491; cv=none; b=S8H5gQGyjlDp+VFDK+NdSrzdLTUBHND7WZAxc9Q5+MsoGahybC66sDq1svfWcQ9um51uI6AM4hWS4CwV35oum5+P2jElLbMLq0+seGgrBx7oFdnOiYGXoHoQGbpKQtm1buTTZ88PLp510k/WRp5BRwc2IcXlcfww+Rw7J9dONqQ=
+	t=1745077132; cv=none; b=ejpAPQPU3dLYy0muHuPfrDmIZJnyx0ySwTVdqNzh8Jc+SK2JjPAscULQSL2Y9mhsRjICDAIep59fe7qRjtUBCr8zlfQFd6rJEqNB9biDjN+5c1CaMMWBrn3u6vyHS/FOp/UOv7nA6Z4zUQttZr9ooCq7KAGu6aqU8OX3L9aov84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745072491; c=relaxed/simple;
-	bh=yqejJTrEmgBbkB5/ozdmd+Tc7TA2sv5z1vo2J22fkWQ=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=FTanbhdD4SUgC/WARfVvMOX8HaU2sXsoiqFT33xoLWadYRAKC9O018UdZWvi4ZXc0uiiZG1DhvyXWvv3fC3GV6NbhS3+rdvhDSgKulVJLLBFwWPCF5IwflcP55Rx2MEUV4LfUiIyyYMrOOygpT9sYoWCcVpCaXkxSTdigtPoJCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CWWIooYE; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745072475;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=owGEYEvW/pvjQC1+jZhJzwVQIEbsWAz69NtVPwTDcJM=;
-	b=CWWIooYE0uJZ5OeLqPiPvRZaxRCwz9d2r+Rn7NcCpTyZoqvnQOeoCr8PI70qr+pHBEiDgh
-	C4J+OTX2pqSJCmBQyOnkZdQ/89oxelps296Lj5HisjXVwclQdX4plH1ehepJxatweQvX/U
-	bmyuZAEXi/rwWbG+UMzVzn6s2Y70S9c=
+	s=arc-20240116; t=1745077132; c=relaxed/simple;
+	bh=DlaA179pUDVk3UupX+xzdV09IgdpYtb62ICAwXFuDr0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=gM32+rwrj4jHXgIkzlbf8nvaEVoW7rpwLenbIZyf8ZjohfpBBY8A+xRyA+66/5A1DqrUe7jfa5ZzHXFE0WxD50x7qlHvV/9kPWQQbPvgq2/4KmRt7fHh285zwc9Zx3oIfLh1IY7/q91143OX05yIh11S08M18m+dipiUGaesD+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G9HIuaz8; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7398d65476eso2200369b3a.1;
+        Sat, 19 Apr 2025 08:38:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745077130; x=1745681930; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DlaA179pUDVk3UupX+xzdV09IgdpYtb62ICAwXFuDr0=;
+        b=G9HIuaz8kcVsKSPP80FPF/3iKrOuFDsTfJzMT3L21MPNPaqAVtlDzBgMkLxuanmc/V
+         1mjaQGgiznxvVuScBi0CUhHihbQRUD0O3uSvQRbNq9EFdNIBArGhgFeKTOBM3iFO25aP
+         gWJxzdTvlz2ppYUL/JXe+x8TX7Ziw5nzSRHZgl9BuGIs8wX2Kt2Bu2UayCtYkivVefQl
+         yFnwgC0VcTelF2bNCPc53WNR8op1lM9HDGX6JxVhGeL4FudjW+RIn02CP0jPvOvyKDE4
+         wM7KzaPmIUjLj3K2kCUOOdWE4AKqxkQxqLCnVLfKgXZLRFPS6MdNIUotOcQjNLsWwIYc
+         1Vig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745077130; x=1745681930;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DlaA179pUDVk3UupX+xzdV09IgdpYtb62ICAwXFuDr0=;
+        b=di7uwIF8NZFub7xUmwcA2G+gWXfUZtHuGBWUd/RmfvovvmhiHG57A+aV+L76o6N295
+         EQ7D22pBTYvNN1OpJ5bG6ENPUg5eZhqdEV2cE9k3XvcuqymcFV/R0S9CvOQBoE1FEDYx
+         VDDO1h4VOPWF7kN8UTruqzA50wd4R/pcu+P47/B6sxt7fAnsVyOfY4KYFGo2FY0TXPaQ
+         o4GCibWLzX5+nrp+5mhVZe+92enuiIG3lSA/wwjkfPPisE+YsOcRHKFcGftY01EIN2EN
+         QL8K4nYZY1p/k52nTiu08hP0o52WgerwJcoAKiU1ZJFQlcWdUghns2/dYoEWWbNcldx8
+         drLg==
+X-Forwarded-Encrypted: i=1; AJvYcCWPR3+o9mB+HsBE4TF3D2DDF3sWbZH/DG7/5pgMtC9yDMfLC3YdHVDwXT+8vWCTKAsROJz2p/GB1b5G2Tc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLonlzxZcCxEu795FmlkBlKaQPeHT84aSRiYVttIXW6KYvdshm
+	tV7s/wa47vK3yNC7LpVLciR0eq121I1XbQOVZGXCKNEkveTG3pb+
+X-Gm-Gg: ASbGnct6re5QEHO6PHScCpNfNrdwlIoirjThERQ49hrkMpYN8ppmP9yPeVpi192fM07
+	NAQDiow///9Q97aD1Hqaob7JD7yhZN4nqegj5yAoLhg9Pzwvkoy9UOdOIGlQk2lp4xkWCzVaijb
+	CWz9Feg9VUVRKhFSr6/n6xEKuhcv9+Hvh22roeQmKQbSZtfG/gk+IL65Vo2ySNGNzkwTj4h1hrw
+	hkXMqDk+xKnc0DyEZQZT5ByrfldHIk0m+FX6wgaC9vmfzpNhyJSOOFLEea7H1XlrFMM0ZevKzrw
+	O4erRABzWCAkPZovW75Jy+hLlR3h9lvpw2FUQf2IEHA8dzlnjH4AZZKSe31rRw==
+X-Google-Smtp-Source: AGHT+IGjMg5+kviz+gp0F1ryn7TU+yeHi6CJxEK1TEuwEw6ajfIscq2dZURhTwk4TSdmRlHCEZuALg==
+X-Received: by 2002:a05:6a00:114c:b0:736:5969:2b6f with SMTP id d2e1a72fcca58-73dc1829732mr8290477b3a.6.1745077130364;
+        Sat, 19 Apr 2025 08:38:50 -0700 (PDT)
+Received: from ubuntu.localdomain ([39.86.156.14])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73dbf8e3631sm3571421b3a.51.2025.04.19.08.38.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Apr 2025 08:38:49 -0700 (PDT)
+From: Penglei Jiang <superman.xpt@gmail.com>
+To: tj@kernel.org
+Cc: cgroups@vger.kernel.org,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	mkoutny@suse.com,
+	xnxc22xnxc22@qq.com
+Subject: Re: KASAN: slab-use-after-free Read in cgroup_rstat_flush
+Date: Sat, 19 Apr 2025 08:38:43 -0700
+Message-Id: <20250419153843.5035-1-superman.xpt@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <Z_1JBt3RMATxnDgL@slm.duckdns.org>
+References: <Z_1JBt3RMATxnDgL@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.400.131.1.6\))
-Subject: Re: [PATCH RFC 06/28] mm: thp: introduce folio_split_queue_lock and
- its variants
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20250418195013.GA877644@cmpxchg.org>
-Date: Sat, 19 Apr 2025 22:20:33 +0800
-Cc: Muchun Song <songmuchun@bytedance.com>,
- mhocko@kernel.org,
- roman.gushchin@linux.dev,
- shakeel.butt@linux.dev,
- akpm@linux-foundation.org,
- david@fromorbit.com,
- zhengqi.arch@bytedance.com,
- yosry.ahmed@linux.dev,
- nphamcs@gmail.com,
- chengming.zhou@linux.dev,
- linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org,
- linux-mm@kvack.org,
- hamzamahfooz@linux.microsoft.com,
- apais@linux.microsoft.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <555DF274-355C-4D96-A71F-8E74436D5587@linux.dev>
-References: <20250415024532.26632-1-songmuchun@bytedance.com>
- <20250415024532.26632-7-songmuchun@bytedance.com>
- <20250418195013.GA877644@cmpxchg.org>
-To: Johannes Weiner <hannes@cmpxchg.org>
-X-Migadu-Flow: FLOW_OUT
 
+On Mon, 14 Apr 2025 07:42:30 -1000, tj <tj@kernel.org> wrote:
 
+> Maybe another casualty of the bug fixed by a22b3d54de94 ("cgroup/cpuset: Fix
+> race between newly created partition and dying one")?
 
-> On Apr 19, 2025, at 03:50, Johannes Weiner <hannes@cmpxchg.org> wrote:
->=20
-> On Tue, Apr 15, 2025 at 10:45:10AM +0800, Muchun Song wrote:
->> @@ -4202,7 +4248,7 @@ static unsigned long deferred_split_scan(struct =
-shrinker *shrink,
->> if (!--sc->nr_to_scan)
->> break;
->> }
->> - 	spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
->> + 	split_queue_unlock_irqrestore(ds_queue, flags);
->>=20
->> 	list_for_each_entry_safe(folio, next, &list, _deferred_list) {
->> 		bool did_split =3D false;
->> @@ -4251,7 +4297,7 @@ static unsigned long deferred_split_scan(struct =
-shrinker *shrink,
->> 	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
->> 	list_splice_tail(&list, &ds_queue->split_queue);
->> 	ds_queue->split_queue_len -=3D removed;
->> - 	spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
->> + 	split_queue_unlock_irqrestore(ds_queue, flags);
->=20
-> These just tripped up in my testing. You use the new helpers for
-> unlock, but not for the lock path. That's fine in this patch, but when
-> "mm: thp: prepare for reparenting LRU pages for split queue lock" adds
-> the rcu locking to the helpers, it results in missing rcu read locks:
-
-Good catch! Thanks for pointing out. You are right, I shouldn't use the
-new unlock helpers here without the corresponding new lock helpers. I'll
-revert this change in this function.
-
-Muchun,
-Thanks.
-
->=20
-> [  108.814880]
-> [  108.816378] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [  108.821069] WARNING: bad unlock balance detected!
-> [  108.825762] 6.15.0-rc2-00028-g570c8034f057 #192 Not tainted
-> [  108.831323] -------------------------------------
-> [  108.836016] cc1/2031 is trying to release lock (rcu_read_lock) at:
-> [  108.842181] [<ffffffff815f9d05>] deferred_split_scan+0x235/0x4b0
-> [  108.848179] but there are no more locks to release!
-> [  108.853046]
-> [  108.853046] other info that might help us debug this:
-> [  108.859553] 2 locks held by cc1/2031:
-> [  108.863211]  #0: ffff88801ddbbd88 (vm_lock){....}-{0:0}, at: =
-do_user_addr_fault+0x19c/0x6b0
-> [  108.871544]  #1: ffffffff83042400 (fs_reclaim){....}-{0:0}, at: =
-__alloc_pages_slowpath.constprop.0+0x337/0xf20
-> [  108.881511]
-> [  108.881511] stack backtrace:
-> [  108.885862] CPU: 4 UID: 0 PID: 2031 Comm: cc1 Not tainted =
-6.15.0-rc2-00028-g570c8034f057 #192 PREEMPT(voluntary)
-> [  108.885865] Hardware name: Micro-Star International Co., Ltd. =
-MS-7B98/Z390-A PRO (MS-7B98), BIOS 1.80 12/25/2019
-> [  108.885866] Call Trace:
-> [  108.885867]  <TASK>
-> [  108.885868]  dump_stack_lvl+0x57/0x80
-> [  108.885871]  ? deferred_split_scan+0x235/0x4b0
-> [  108.885874]  print_unlock_imbalance_bug.part.0+0xfb/0x110
-> [  108.885877]  ? deferred_split_scan+0x235/0x4b0
-> [  108.885878]  lock_release+0x258/0x3e0
-> [  108.885880]  ? deferred_split_scan+0x85/0x4b0
-> [  108.885881]  deferred_split_scan+0x23a/0x4b0
-> [  108.885885]  ? find_held_lock+0x32/0x80
-> [  108.885886]  ? local_clock_noinstr+0x9/0xd0
-> [  108.885887]  ? lock_release+0x17e/0x3e0
-> [  108.885889]  do_shrink_slab+0x155/0x480
-> [  108.885891]  shrink_slab+0x33c/0x480
-> [  108.885892]  ? shrink_slab+0x1c1/0x480
-> [  108.885893]  shrink_node+0x324/0x840
-> [  108.885895]  do_try_to_free_pages+0xdf/0x550
-> [  108.885897]  try_to_free_pages+0xeb/0x260
-> [  108.885899]  __alloc_pages_slowpath.constprop.0+0x35c/0xf20
-> [  108.885901]  __alloc_frozen_pages_noprof+0x339/0x360
-> [  108.885903]  __folio_alloc_noprof+0x10/0x90
-> [  108.885904]  __handle_mm_fault+0xca5/0x1930
-> [  108.885906]  handle_mm_fault+0xb6/0x310
-> [  108.885908]  do_user_addr_fault+0x21e/0x6b0
-> [  108.885910]  exc_page_fault+0x62/0x1d0
-> [  108.885911]  asm_exc_page_fault+0x22/0x30
-> [  108.885912] RIP: 0033:0xf64890
-> [  108.885914] Code: 4e 64 31 d2 b9 01 00 00 00 31 f6 4c 89 45 98 e8 =
-66 b3 88 ff 4c 8b 45 98 bf 28 00 00 00 b9 08 00 00 00 49 8b 70 18 48 8b =
-56 58 <48> 89 10 48 8b 13 48 89 46 58 c7 46 60 00 00 00 00 e9 62 01 00 =
-00
-> [  108.885915] RSP: 002b:00007ffcf3c7d920 EFLAGS: 00010206
-> [  108.885916] RAX: 00007f7bf07c5000 RBX: 00007ffcf3c7d9a0 RCX: =
-0000000000000008
-> [  108.885917] RDX: 00007f7bf06aa000 RSI: 00007f7bf09dd400 RDI: =
-0000000000000028
-> [  108.885917] RBP: 00007ffcf3c7d990 R08: 00007f7bf080c540 R09: =
-0000000000000007
-> [  108.885918] R10: 000000000000009a R11: 000000003e969900 R12: =
-00007f7bf07bbe70
-> [  108.885918] R13: 0000000000000000 R14: 00007f7bf07bbec0 R15: =
-00007ffcf3c7d930
-> [  108.885920]  </TASK>
-
+This issue was maybe caused by commit 093c8812de2d3, and was later fixed
+by commit 7d6c63c319142.
 
