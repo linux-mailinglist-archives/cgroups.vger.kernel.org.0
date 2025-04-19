@@ -1,126 +1,152 @@
-Return-Path: <cgroups+bounces-7653-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7654-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0CF0A94179
-	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 05:47:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACE30A9417A
+	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 05:48:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 287827B2EA5
-	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 03:46:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2E793AF1F5
+	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 03:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 732684D599;
-	Sat, 19 Apr 2025 03:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C806213B280;
+	Sat, 19 Apr 2025 03:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="lHSPqzJ8"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BHOg8rJ4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6E374C85
-	for <cgroups@vger.kernel.org>; Sat, 19 Apr 2025 03:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9C74D599
+	for <cgroups@vger.kernel.org>; Sat, 19 Apr 2025 03:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745034458; cv=none; b=ato9YD5cHfskD5zDuAHwUvIfwNen6EIxWvqtjZxyuNmB/X0WvUlcwyedb3EcsfJPnt1E+jXYc0tRDTGJv+o78StaFUjq/0gPTLk0e80cyXXxV5Qo6+gtB8VZYtoJHNRx3E1Hb1ygpUtcxYm/rFKwlEMUKDXse1+9IH0PD9Y8Zq4=
+	t=1745034482; cv=none; b=svarR/ZoiWG/cj+6KAyWgUSQQzrNhuRfAKnZEPv/clGZT1eBvs3i/6iVxfEi3fDk60envQHbk8yiu57vRvNbVmBdmwmteeQkX0sT8PKpD5ahfRJ0kwYvlQQg6tCmGeQZWL1kovGGKqj1PE/kYT6ta9Gipe2F9xQPNFQ2mN9ApM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745034458; c=relaxed/simple;
-	bh=bDGf7ax5uP145Z/QywUJDacWIi6TfWyn1aWA58lT7uw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nBBED6UIH/R8uT3GoHVl+dfa5wCGihutPSwU3r4RsIcRnrLfYQdsQwMVQRjZ3+CX8yJXMku7/fXdlDV0JnZdR0GzaLiX1cSYb2Wbq26S45q8l0eq4XbQjmvB/CoIPfIcZaroOvhjGmawp/UFhEQQt8i7euLVMuGX5O8MBdBwA3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=lHSPqzJ8; arc=none smtp.client-ip=209.85.222.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7c07cd527e4so230596485a.3
-        for <cgroups@vger.kernel.org>; Fri, 18 Apr 2025 20:47:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1745034455; x=1745639255; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oGkr4hYBihWGh7JmZ8GOd7BMmZ2Z6d/IyfdB5vi5hx4=;
-        b=lHSPqzJ8gu/CYWVc6WvFFgDSRUE7tIs3dSF7guM+aO0BubMIjvkrY+PqR4YCeDdrLK
-         U/uKmfw9ytzv89LuGk/3zMmWqSAuDlE69jDCisZ6zpepI45y5x8Ios97GOWfQsP+ddp6
-         Q34NupwdEWIQ4435jbM7SZ6+nrElvstuaRn+cr7idflh55Lr8IfFGpPSB+zW+Qpvp1ZN
-         gLuIW6aCuYU3yz2LVgjD6kGf/th5YqU5+y4SWFKLIv2A+cYQLHXRu7gegc4OiEK3vtYb
-         D1HG7eBo9BkH7cCOUohqp3ylnFc2ULpqaPey5X9GQxDGqtIBcjS86/BwIVs3daY6Wo8M
-         r0sA==
+	s=arc-20240116; t=1745034482; c=relaxed/simple;
+	bh=aW+J9nwCbuGtf9DSQt/O9uZhkn0wSA1UgTiwYLdmLcg=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=lJjPPL1Ob9uGeJ7I/9oPGI7bs1ubm1mqEEFWvbbbjoeZT1Ihq+hea5vwEZiOHCZ89ndlyK+t/aLGdwtS5+zgyqxMiMyzKkXiTVu+nullhJi68x2iTOTLf3eQv90OZfvYce6DML14tekw/kbK7GUZ1U1d4kC1IXiEJb/F4vUQz2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BHOg8rJ4; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1745034479;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=euRBpjQMecmcoooO18bxyQ49tEv+DDvKLc7+lXs5X2Q=;
+	b=BHOg8rJ4LGGj+7obVHi1tfMEgQR26uqp9J5K9T1SStPSxvErXCzfD+vi/t9clVTFvQPP9E
+	w9UpqkmOIgkFJLvBTNP3i/lqdDU2wB2j0euW8C8CmdJFKnquYMYPXOWzMOOTwPGMl+/EMJ
+	HHPFPXZXO6Jeh0QFSAfMV7IuDuNkB8M=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-583-oUciPrjUNvq1ibWSORg5EA-1; Fri, 18 Apr 2025 23:47:57 -0400
+X-MC-Unique: oUciPrjUNvq1ibWSORg5EA-1
+X-Mimecast-MFC-AGG-ID: oUciPrjUNvq1ibWSORg5EA_1745034477
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6eeb5e86c5fso25592646d6.1
+        for <cgroups@vger.kernel.org>; Fri, 18 Apr 2025 20:47:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745034455; x=1745639255;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oGkr4hYBihWGh7JmZ8GOd7BMmZ2Z6d/IyfdB5vi5hx4=;
-        b=V3Y85fdzpTbvgNZxHeQSL2lp6kymeamYI4ixImXlsnsCBPNPD6Xaz9vdvGnjOgzvID
-         6hrJLGHTOmoCsWH+mab7rFc/PW/qNDzcCOaBigDwdQoS62FjcIkUC39f+j8vjIFuokIE
-         Y0jW7dpGfC02HvLemngvKhR00q3fK+g1ws5yz8xiejY+8m+aYWapmkwAjankE4HyFXZX
-         KqLh/aurkiZCpduAXzE240KPbDJxH/kcro2gITUi2DmMut+TTKCyq7Ev56F/la4zg4X6
-         aDkhVtmbx1Zy2oCZnhnanQU7YWE+mDxc2JPX882z7u9ieFpzE80qmRLtwNKKYSp9clI2
-         M6ow==
-X-Gm-Message-State: AOJu0YzVzeoERbeiACSoVFim4PsCdpnkVnZgQI7oP/WFixv8WnQJKcBI
-	41xhdT5HCo7phYb0b8mhy2BOAV96h3yDWq+1zm0YxEXRUF13PKVkQbJ3Tm+j8IU=
-X-Gm-Gg: ASbGnct3zvIZX+8PsxPKEYLtOpIg567pGnKutsrbwrDwdH+45tFjpKnhC9UA6kOlzwQ
-	w0u9agRVbia58QKyu+JbpAEhwFCQsCRrtOkO1LXr54n4e4DKJC+w3AxFlnACYXvqQ1Ua2EMqya7
-	Ox2rV+47r7kNQkZF7sOZoFkz0zp4mce/bb5noAL2j95nQxu4SiA6cD6FmVW+DFSGCQAY/5obW9E
-	4qIPiImOowV3qFV1NNZElM9YiL84JmwO4mfeTnOEx/JwOgUx4APO5oURj/KPT+W7PBdFSq+oBCt
-	fQfb5of1T6ctKEQOancG4ZBqfbcStTkmknswER5IqOI6WBHrVUVG+dD63eAyt3A8Wnblmp93Km4
-	ZDxy/VppNeWT1f6lUZyxXy5o=
-X-Google-Smtp-Source: AGHT+IHLpDeJmAWC8vn48omh/WZzD3TF09eoVh++JIk/Dh5S1v8tWk78RgXlZgP26pjlrMn9VABJOg==
-X-Received: by 2002:a05:620a:4413:b0:7c0:be39:1a34 with SMTP id af79cd13be357-7c928038eb8mr806824685a.43.1745034455556;
-        Fri, 18 Apr 2025 20:47:35 -0700 (PDT)
-Received: from gourry-fedora-PF4VCD3F (pool-173-79-56-208.washdc.fios.verizon.net. [173.79.56.208])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c925a6ee74sm177409985a.1.2025.04.18.20.47.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Apr 2025 20:47:32 -0700 (PDT)
-Date: Fri, 18 Apr 2025 23:47:30 -0400
-From: Gregory Price <gourry@gourry.net>
-To: Waiman Long <llong@redhat.com>
-Cc: cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, akpm@linux-foundation.org
-Subject: Re: [PATCH v2 2/2] vmscan,cgroup: apply mems_effective to reclaim
-Message-ID: <aAMc0ux6_jEhEskd@gourry-fedora-PF4VCD3F>
-References: <20250418031352.1277966-1-gourry@gourry.net>
- <20250418031352.1277966-2-gourry@gourry.net>
- <162f1ae4-2adf-4133-8de4-20f240e5469e@redhat.com>
+        d=1e100.net; s=20230601; t=1745034477; x=1745639277;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=euRBpjQMecmcoooO18bxyQ49tEv+DDvKLc7+lXs5X2Q=;
+        b=keuQOqtbrVAvBqBtcQ3t4QjkZbcv3CUF+O6ZbUv6DIsLYvrMaXDQLOaQ4UCzG+vm+r
+         BRoRLZfiOiUbsYZ8sSpWX576pBdlATFsurupziibgU+r030VhlM5N5DI7hsS+yQOO7oi
+         bmQIzVsDhGoTHPXyorF+tzJfdL9t+K2DmOrH9h+BE4YuzY6jmwu29BCRXYW7YcGK7u4d
+         OAuivNPSN8JJdKD+w6mJanzDw1ikD0Suf3gTEdf02Y4oCKbRYlAwaWyMe6RDiC+N8d9s
+         gf2Pccp9D5xhR4Be3eSSV51zSociyOYf62vqeJgMVDHHO0375iJZ3W2Fz5OmcKlzdrgq
+         2Yyg==
+X-Gm-Message-State: AOJu0Yy0s35EHil+HoEHRm7k0JLQqcm0KM+4O38j/UKVzNGgIZoSSXSd
+	LQP7NXWk/OTMNkllQ13pKUDDHUoR7ppAG0o2Fhut4P32vW/DoR/Y8qMfuRDlV5b1S5lr/EUywd1
+	nTSyY+VtOb8HU3UoRu8mXIwkEpfhDBTMDakeZ+Nu/oa0oEnlPRjzlWjs=
+X-Gm-Gg: ASbGncsHTQUCtZ/UO+NPNxCGBCcVFXL5SzNbkw7uS9HZawvlyo1GxF7/Ce6ODocfrgN
+	RwyDcdqWXhCK6jmIVWA4GTvvOfBonTP4ppfrvXyNRqPoDsiWe6BcLdwnpEpPm/3IYT3RESWul6t
+	W9GqBrT4Xye6yUz9gaxIyowwPJQe48C2za/30HSS+6ab6LOmD9vOEBj4BJWIb/wIIxYxT3jv04+
+	FKpsSyep6QieGkyEUCR2E98ktnEzM3e1+cJ2HG6QVsbAiQBFszCjxcXiA34JjkskZkCduY0magm
+	NSA4FrWUL0+fet/yLjGHu6yfOlVBGLpTT3fvcSClQt8QNJSXwA==
+X-Received: by 2002:a05:6214:21ee:b0:6e8:f9e6:c4e2 with SMTP id 6a1803df08f44-6f2c46458c0mr97829406d6.32.1745034477057;
+        Fri, 18 Apr 2025 20:47:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGkLsrK0DDA6WUJeYeccHnK40MNGALJUBAhTBwVewhL/xZHtjUTmB0r5Q5IR+oPqEiugxed9g==
+X-Received: by 2002:a05:6214:21ee:b0:6e8:f9e6:c4e2 with SMTP id 6a1803df08f44-6f2c46458c0mr97829276d6.32.1745034476762;
+        Fri, 18 Apr 2025 20:47:56 -0700 (PDT)
+Received: from [192.168.130.170] (67-212-218-66.static.pfnllc.net. [67.212.218.66])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6f2c2af13f9sm17594616d6.14.2025.04.18.20.47.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Apr 2025 20:47:56 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <fd97e9cc-50d7-4d99-a856-3151891eb397@redhat.com>
+Date: Fri, 18 Apr 2025 23:47:54 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162f1ae4-2adf-4133-8de4-20f240e5469e@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] vmscan,cgroup: apply mems_effective to reclaim
+To: Gregory Price <gourry@gourry.net>, Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, kernel-team@meta.com, hannes@cmpxchg.org,
+ mkoutny@suse.com, mhocko@kernel.org, roman.gushchin@linux.dev,
+ shakeel.butt@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org
+References: <20250418031352.1277966-1-gourry@gourry.net>
+ <20250418031352.1277966-2-gourry@gourry.net>
+ <aAMTLKolO0GWCoMN@slm.duckdns.org> <aAMYOxSOrVpjhtzT@gourry-fedora-PF4VCD3F>
+Content-Language: en-US
+In-Reply-To: <aAMYOxSOrVpjhtzT@gourry-fedora-PF4VCD3F>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 18, 2025 at 10:06:40PM -0400, Waiman Long wrote:
-> > +bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-> > +{
-> > +	struct cgroup_subsys_state *css;
-> > +	unsigned long flags;
-> > +	struct cpuset *cs;
-> > +	bool allowed;
-> > +
-> > +	css = cgroup_get_e_css(cgroup, &cpuset_cgrp_subsys);
-> > +	if (!css)
-> > +		return true;
-> > +
-> > +	cs = container_of(css, struct cpuset, css);
-> > +	spin_lock_irqsave(&callback_lock, flags);
-> > +	/* At least one parent must have a valid node list */
-> > +	while (nodes_empty(cs->effective_mems))
-> > +		cs = parent_cs(cs);
-> 
-> For cgroup v2, effective_mems should always be set and walking up the tree
-> isn't necessary. For v1, it can be empty, but memory cgroup and cpuset are
-> unlikely in the same hierarchy.
-> 
+On 4/18/25 11:27 PM, Gregory Price wrote:
+> On Fri, Apr 18, 2025 at 05:06:20PM -1000, Tejun Heo wrote:
+>> Hello,
+>>
+>> On Thu, Apr 17, 2025 at 11:13:52PM -0400, Gregory Price wrote:
+>> ...
+>>> +static inline bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
+>>> +{
+>>> +	return memcg ? cgroup_node_allowed(memcg->css.cgroup, nid) : true;
+>>> +}
+>>> +
+>> ...
+>>> +bool cgroup_node_allowed(struct cgroup *cgroup, int nid)
+>>> +{
+>>> +	return cpuset_node_allowed(cgroup, nid);
+>>> +}
+>> ...
+>>> +bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
+>>> +{
+>> What does the indirection through cgroup_node_allowed() add? Why not just
+>> call cpuset directly?
+>>
+> This is an artifact of me trying to figure out how to get this to build
+> with allconfig (matrix of CPUSET and MEM_CGROUP).
+>
+> I think you're right, I can probably drop it.  I was trying to write :
+>
+> bool cpuset_node_allowed(struct cpuset *cs, int nid);
 
-Hm, do i need different paths here for v1 vs v2 then?  Or is it
-sufficient to simply return true if effective_mems is empty (which
-implies v1)?
+The cpuset structure isn't exposed externally. So you can't use cpuset 
+from outside cpuset.c. Passing the cgroup structure is the right approach.
 
-Thanks,
-~Gregory
+Cheers,
+Longman
+
+>
+> and just couldn't do it, so eventually landed on passing the cgroup into
+> the cpuset function, which means I think I can drop the indirection now.
+>
+> Will push it and see if allconfig builds.
+>
+> Thanks
+>
+> ~Gregory
+>
+
 
