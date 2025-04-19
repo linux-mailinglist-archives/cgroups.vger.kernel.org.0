@@ -1,396 +1,307 @@
-Return-Path: <cgroups+bounces-7658-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7659-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCC39A941C8
-	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 07:38:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27520A9430F
+	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 13:17:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5333E189D85E
-	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 05:39:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6420D7AADCE
+	for <lists+cgroups@lfdr.de>; Sat, 19 Apr 2025 11:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B356A18E76B;
-	Sat, 19 Apr 2025 05:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E4C1D63C7;
+	Sat, 19 Apr 2025 11:17:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="J+nOK59V"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ydhj7kyw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99FEA18A6A5
-	for <cgroups@vger.kernel.org>; Sat, 19 Apr 2025 05:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745041115; cv=none; b=S+JSITcCRcEEK0MrPOxmFEkFgobt6DIeoMq4gYwUgdytXR7eDSTkLg7qdXilXZCRlKKdUryrgIPsyaMxhpfMlNYjD/lRNz0V3vreE5HrLz1AeMVIT/ehB+07FMJK4lJahQE73gUnsYo7mkQafzhYrWM9H+JzIu23iKglkttxJKs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745041115; c=relaxed/simple;
-	bh=j5nyS1jQOepDC8tMs075jfTRcxAytHTavkThiK4YD+0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iDc+7BeQGqM2KP+IQRhBMzeE0hzEuOsnS7MZj51FUq+7Aani4gx40ZiS2BDM5wce4yuKUzYKcLf8L78IAO524QRjP9+1AwijJ0VYNgbpyaHdFONUBCQTPBv4zu+qD2sSYeYlsmH+LTuucIqdx3WzWltcvV6K+onHlIN07cxLb8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=J+nOK59V; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6e8fce04655so22250076d6.3
-        for <cgroups@vger.kernel.org>; Fri, 18 Apr 2025 22:38:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1745041112; x=1745645912; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kphArVCSz0KLbAMkbfXsG72n7nuxXX/C7s3H9vWRSxo=;
-        b=J+nOK59VfNl9jJXcQ1RNA+1P39+yyKqdF2bKRZyimivzskqHa1MHUMDW/ABd4n/faW
-         75DVDlxvhcav/qGmg/IqfQf0uTkTfcuO+u3PYBCvgVT06zkguvoMBlP83C8W8/OGmh38
-         Xx79b921hgigSoiBAoG+Q3Vb36C5XgSPNlvOFjjzcv4bvBo4U9Xh9cv8gY+MLDDadGDl
-         IMiVznpFOd14xAnnBg2lqJ6ILQ2nJJwU0S/dGH0aXNYtXO5M7PXk8s1uf5lp0OkEw0cI
-         4TmHppl69EmmXZ/IF60So89f8VvwJ7ajZWSY4fJbyHVkq4ej+W0WvSqNKoMpdiF75aoy
-         28RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745041112; x=1745645912;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kphArVCSz0KLbAMkbfXsG72n7nuxXX/C7s3H9vWRSxo=;
-        b=iBDn8DXT4nSxhCpYxtym9+iZEfhymg6YIXSr8oJu6WVz+57INODwbO3Qfir/rkP0HM
-         XB3BtnXp43ZR5EbyOaE9YTkNf/Dm2FKqyvRSBAPGIP/gSHXprhKULghykaYOympQ7Sna
-         rTYwHA0/GFLj957vSGoVeAXAL85Zu/kXp2xJNYwE3HoBNmgIsNGqolYkDaAGfFdMQzY+
-         OSMCZ4YMGw1FNxBvJvO8OJZLSIV5dwBqMY6z3cJyHRNYepWChMsjeAL8THIf0gpq2yXE
-         a9UPUmmTJaR9jjUQf6RQ7j87GQUMssoV/mVNRP8KnRtMMjfUp1wjBfa0ReFpQjpMe6C7
-         XxhA==
-X-Gm-Message-State: AOJu0YxEiyURysWtCpV9WFlfYSkLpeBAUSbbLaChe9J0v/wo3fl451ke
-	JtsUv/OZm/KlG8owEdi0A4DrvJkI4Vn0SZtrkCudhj6STAGcd/2z/OoLH+k8arA=
-X-Gm-Gg: ASbGncstiNtFIiQjnFUrVYV9VdgFpDNbJ29II40bLNbbVYdPOB9KVmoBQOe+4lXsmxB
-	N1yo/4fnmEFUGidePQpD2NELFWZoFYYdDVoEXaLbmW1XnaaJJvGDrY6UyI6IDOCjLeqdk/y8aGw
-	3VcGVyXD+hSDNnjXtTuGBFuFtXxk9QYzAN9MYNXtQ6uAtMdisGVvhVwqF39wCaEJkaPjoBei9Tm
-	RG9FROrBJ8Z6jTOKyB5FNkKlrmWzd4eBVu5Bm2w/WV57fV2XTI58aM5dtvUStLOHyCaoCP4U6F+
-	Cg8+oeNGs0EfNcEWM9vKsVqeHIBZ7wbxzGyeC0to2NOzbOMWH6p33HrfwbAj8DMpTMMccD4yGue
-	FgGhrNrzFkgiRxOkHAgupA8aTAvDh
-X-Google-Smtp-Source: AGHT+IGokloKomTVMayniE6Mf++d9cjUZKWpbDcg5f1ADpmX7RSw+BGIJ9I5WqbA/PGhMdrqH+rBOQ==
-X-Received: by 2002:ad4:5d43:0:b0:6e8:f940:50af with SMTP id 6a1803df08f44-6f2c4688419mr88612006d6.44.1745041112115;
-        Fri, 18 Apr 2025 22:38:32 -0700 (PDT)
-Received: from gourry-fedora-PF4VCD3F.lan (pool-173-79-56-208.washdc.fios.verizon.net. [173.79.56.208])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6f2c2b30c65sm18341956d6.51.2025.04.18.22.38.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Apr 2025 22:38:31 -0700 (PDT)
-From: Gregory Price <gourry@gourry.net>
-To: linux-mm@kvack.org
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	longman@redhat.com,
-	hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	tj@kernel.org,
-	mkoutny@suse.com,
-	akpm@linux-foundation.org
-Subject: [PATCH v3 2/2] vmscan,cgroup: apply mems_effective to reclaim
-Date: Sat, 19 Apr 2025 01:38:24 -0400
-Message-ID: <20250419053824.1601470-3-gourry@gourry.net>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250419053824.1601470-1-gourry@gourry.net>
-References: <20250419053824.1601470-1-gourry@gourry.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 799131D5141;
+	Sat, 19 Apr 2025 11:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745061448; cv=fail; b=hkC6K+R9cL4iL9nHPEY/vihbIF1cs6epEOOcGwTMmLehEXqbJap+eTuCmErcJpcNA06haivcBlPQTw/ksKp7+HVDEwkg8GlhJ/AB265FlGompcwjdV3vm+RpbbFq5EjQXxFGvDVpaLKagX00kzM/Gl8HmbXYMC1VMPu155Ydml0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745061448; c=relaxed/simple;
+	bh=/y/srrGnTZhZ4t+KR7J028oRa8YxVCC5PJnQ5KMjx3s=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=IFi3yLgChEkvZfrUUCfLY9QrPK+Z/5CujbiYHbvNFEVm56rCMKa3HMmHLqhQZzZm7rnMXNLRlp9qGekmLG1+eIiOK2Fq9j7hII78wLZXvMh2Wx9mMRBTsvdQk2xRPhzcpPC0HXhlJhviuKVBnoLYAug3eIrANdfB5+8akmvHd5o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ydhj7kyw; arc=fail smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1745061446; x=1776597446;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=/y/srrGnTZhZ4t+KR7J028oRa8YxVCC5PJnQ5KMjx3s=;
+  b=Ydhj7kywl+pDU32CtO80AAoVDNlK9VMlP2CfNSDVpQAM+32g/9OkR4xw
+   5IF5K+u9J5HNqunrAzPZBXVOK0kKB91TY+LUtTOSFDjlrZ2Q9J4mehrqe
+   Aahs3uN8nbWknzCFz/O1+F9K3tVvqcBmrWdQWgVMSymIfol6IZJffl5vF
+   pBrfRZL26bKbnYlVN+KE2uuDpznt/LadkbFlGSOwuN52Vf24Ick5hrCVL
+   gjAI4TVuQdQfh4M++hCz1l+7rzbqEYDcnh07tl2PP/eIXZJRmXolhM9Er
+   PtlCGCX68sbNL18fc4dm1p/ZZDN9ZRf2hmKGQrj6aI1CY4dkQXWg7ED33
+   w==;
+X-CSE-ConnectionGUID: HD9FFng6QEy2WsJZd6Wh2A==
+X-CSE-MsgGUID: q45mEKlaQO69LmLshPbBEA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11407"; a="46680074"
+X-IronPort-AV: E=Sophos;i="6.15,224,1739865600"; 
+   d="scan'208";a="46680074"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2025 04:17:26 -0700
+X-CSE-ConnectionGUID: Sm/bZabAT5iTwgaFnPqM4A==
+X-CSE-MsgGUID: XoGEF9R+Qv655hcoMEkcrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,224,1739865600"; 
+   d="scan'208";a="136418390"
+Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2025 04:17:25 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Sat, 19 Apr 2025 04:17:24 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Sat, 19 Apr 2025 04:17:24 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.45) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Sat, 19 Apr 2025 04:17:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=XHGERvZOPXxZsFWyb1ksQpZcF4qTC47gcpsysOA+Pa/4xwQCXCEcT3D7IlShE/Io7J2HyVNuM0E3yEAVVj+j/+87j08+3XoyiknL01GapD7O3U5tshHnoU8BadhtKR+nOgIs3L+x7tzQdvTHUB/wFznRw9NBAUVD4pCUlvARRiWllnJeXEkBO99DRFEhTXEMQ+dm+d2Tv1D+tppEHkrATrGJy2lMk10JGrvxLIuhjVZyeDvpVO4QB2G7QT9SF1M/y0YxN3iLfDtCf+RNBTH6oajfKSUWdyGhkVJrhZ5+JC9yFqmkHdShR3Myb+yayx6IGO2m6vVf1iAOtJkawRewBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K/L4eit8JcrGWgXu5AjFeO38Wx5pkVXYqxC9GXLBuBY=;
+ b=dRxjFtSia5ujKCvBeP4cBsPvA1QIW49VzKajs513uXDLhlEd4Dn2ypbloTJrT5hfX2mPsPKx/i17iEobtQk/wH8zqnWyqjKCBQ8/NqZoEwvxfgBMPB9Vuf89w32HxGgRS5iujZw66VTxCCDl1t+zElhgSGkDASy11Q2CaHO0cZMZQVDYLjm6FlrT4F8AbllRMRi+d7Q+K5fxbDU9xwgflDb5aG3sVjq7kjPRpXi0FR/+ji2whhfNmDHtefHQCMFzNWAEioCHaLRO59p240frULl/YaHKqI5ChWCzG7R2S2LIKjKmqYnbjvdTBYveXdggf3q7UIAB4QD50lKzWM6DyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com (2603:10b6:8:61::19) by
+ SA1PR11MB5948.namprd11.prod.outlook.com (2603:10b6:806:23c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8632.45; Sat, 19 Apr
+ 2025 11:16:50 +0000
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::4af6:d44e:b6b0:fdce]) by DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::4af6:d44e:b6b0:fdce%7]) with mapi id 15.20.8632.030; Sat, 19 Apr 2025
+ 11:16:50 +0000
+Message-ID: <244cb537-7d43-4795-9cb6-fc10234c68a1@intel.com>
+Date: Sat, 19 Apr 2025 19:16:38 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] sched/numa: Skip VMA scanning on memory pinned to
+ one NUMA node via cpuset.mems
+To: Libo Chen <libo.chen@oracle.com>
+CC: <kprateek.nayak@amd.com>, <raghavendra.kt@amd.com>,
+	<tim.c.chen@intel.com>, <vineethr@linux.ibm.com>, <chris.hyser@oracle.com>,
+	<daniel.m.jordan@oracle.com>, <lorenzo.stoakes@oracle.com>,
+	<mkoutny@suse.com>, <Dhaval.Giani@amd.com>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <mingo@redhat.com>, <mgorman@suse.de>,
+	<vincent.guittot@linaro.org>, <rostedt@goodmis.org>, <llong@redhat.com>,
+	<akpm@linux-foundation.org>, <tj@kernel.org>, <juri.lelli@redhat.com>,
+	<peterz@infradead.org>, <yu.chen.surf@foxmail.com>
+References: <20250417191543.1781862-1-libo.chen@oracle.com>
+ <20250417191543.1781862-2-libo.chen@oracle.com>
+Content-Language: en-US
+From: "Chen, Yu C" <yu.c.chen@intel.com>
+In-Reply-To: <20250417191543.1781862-2-libo.chen@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR06CA0233.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::17) To DM4PR11MB6020.namprd11.prod.outlook.com
+ (2603:10b6:8:61::19)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6020:EE_|SA1PR11MB5948:EE_
+X-MS-Office365-Filtering-Correlation-Id: a9776988-2bb4-41b7-c3d3-08dd7f33ae74
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014|7053199007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?VjB3U1hlUTNNcjVKaTB5cnBaU3RSaVRsSnhqUUFOZDZ6NC95bzl2SmRCWk5F?=
+ =?utf-8?B?OThkZDBIS1UyYlpCOGNobVYzMXVEOElJS0JmQXNNa2FMeU0vQUU2T2dFTnBE?=
+ =?utf-8?B?bng3bm1QdkowK1RxaEovalJtV2pFci9yRVBGREVuSFl6UjdmMEJzd0Q0MmRW?=
+ =?utf-8?B?NVgyRWdxUW9jeUp2M25QdWpvc3B2QkRiU0NFdmE5ZEo5QTJva1RxVytoWENp?=
+ =?utf-8?B?bzlZS2VqOVhoTVgwS2JkU2FZZmEwV3Z3SmFIL3BXbnhrSGg3Qlp6WFdvbkhh?=
+ =?utf-8?B?L2VqczJSUnVYdVp2a2xuN1lFbzZTak50VmViSDdkRTE1ak1ydHExR2NTakVi?=
+ =?utf-8?B?cmMxQ1JVS1hETDV5TC9Cc2l6WGtRd2tTWkFkZHlzQUtnTTB6OWtJUy9TS2NZ?=
+ =?utf-8?B?aDc5TzR0U2RTREV1Qzd5bnZQeGo3YTBrZ3oyd29GeUFUOWlnaVpHbGJ6ZGZE?=
+ =?utf-8?B?VndTUEFtNUNrWkY4N3ZoQXhjdjNkQ3VWQ1lnMkNmRGNrWEFRZE1uMnJDbTkw?=
+ =?utf-8?B?RjY5YndrVUtjQngweHhsK3lMRFJiMkxBTzZxTkZaN0hSakxLaklxTXhod2RN?=
+ =?utf-8?B?YWRzNnJQOE1yWnJyM2dnSC9ra1U3ZnViVnhhMG5Dc2Q1TkI3QXRZV3hpTitO?=
+ =?utf-8?B?T25GTXBXdjVFNitoaXVydnY5d29jRXlCY2JYejJ4ams3MEgzcUNiQk5vK0wv?=
+ =?utf-8?B?SFVCOENHVFpNYU1IVzdhQXZiUC9tYUMzbWVVZkdFS05yc1VsaHBBQ1JWRXdZ?=
+ =?utf-8?B?ZC9qcWR5QlN1bzRxVGdUdEl0MGxGSmRIWG1ickVEeUo3Nkl0U1Y1WTJJOVJy?=
+ =?utf-8?B?TWswQTNESDJua3YyQWtFMUtIL3lydkNyNWxYcUo5Tit0RGU0OFJIWmxncEZy?=
+ =?utf-8?B?RUhvYjdEdmJReUg3cXhCSkgxdjNUL0RMWkVpbjU3YUV5aGRqanZudlJVbENZ?=
+ =?utf-8?B?RmRoWjkySnlkb2cvRitTNzlaNWFBZHhwM1VyTGZuOWxiSWwrR1Rhc2JjcTF5?=
+ =?utf-8?B?QklaYUJBdExEanJGZjJBSktJbXFQS2VWUWhlKzZJKzJpeXZjcmg5bWV0SlM0?=
+ =?utf-8?B?Ynh1bDFPZ29GWExGWUF4UDc5N2hyVTRGdzQwK2lFL0RWWTFndTUzdnB5anJ3?=
+ =?utf-8?B?OFFjVG9NalVCM1h1NHlaejR4STFCbnhQRVEvd1ZLdmYzK0tjeVgyYzgzTWNl?=
+ =?utf-8?B?VXh3TVYvN2E4L0lFVm00S0dQRWZjeHBDREYxaTM4d2ZLc1BWaG9td2M2L2JE?=
+ =?utf-8?B?d0tQTmFEdUo5ZEtvclRaMUtuc0ZZbk1rYUEvQUlTOWkzcXFkKzEzWFRqaXc2?=
+ =?utf-8?B?b3J4NXQwMlNuK21oMXBJc2JpbU11SFovVkxyalRCWjdnNmNkaWViWllzRDAw?=
+ =?utf-8?B?MmUzQkI5TWVNQWFLTU1kM3RlZWIzUFhUWjZ5cXRtRXd3RFBYK3VhNHZkMUhZ?=
+ =?utf-8?B?VjYraHhrVTJodkdBRWJIVmdHWkJPZjRHaHA0dlY2QjlJMkRLWXJQZUR6WUZU?=
+ =?utf-8?B?U3hHdWxnNWhnOG1CMlI4amF1dHduL2lZUmtjMS9CZUU1Zm1rRmFsaFNyTkZx?=
+ =?utf-8?B?L3ZmcmI1SVNhenRQQnFCQ0EzTGxOMWdhK0FjTVdZcE5FbDZhQmtCd1BOTmFp?=
+ =?utf-8?B?SG5nZWVkTGMyUFFhSFY4UHBuVnRRYlJKbW1TcnBPSnBMS0kyTFEvZzgrMnN5?=
+ =?utf-8?B?eERUOEl6Zk9DM0p6MUxSMVF0c2k3TE1xY3JPam43cGpMeG1wR3NwcG9qS3FZ?=
+ =?utf-8?B?Kzc0WDNZZS9uK1pZKzBSWXo2WGRsTGVTMnJZVzhhZmIxYXJkOXpkU0V4cGpN?=
+ =?utf-8?B?empsVnFVcjZKelltelZoWWRaOUM0SHdMVTdPelBDcFg3WGhjNjRtd3dtekNZ?=
+ =?utf-8?B?ekRPWTkyK3hNczh5Q1drekxoZVRuY0MvaC9VaDNISXZ2N1B2dWl6U2pHQ0cy?=
+ =?utf-8?Q?vSkLZWUYijU=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6020.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NThoU2RYcFVVdWxqdXJRNkZ2S3JrZy9ZSVExL0VhNW14NnJDcDVqcXR1OGZW?=
+ =?utf-8?B?Nmw3YWVTWTVabFNVLyt3MmZBRnhYWWV5dXUwTVJHSkkzd093dVBvOGdXT0ov?=
+ =?utf-8?B?SkYwSVhCL2RUWUNodlhCRUw5QjVIdGd2VnRMMktIZGtDUjJnSnFsTGRQV1g0?=
+ =?utf-8?B?TkNKcG9NdGc1LzIvN3NMcjdSYVJhMFdhSWt1R0M3SlBya0JmV1FGcHJha1N3?=
+ =?utf-8?B?K2w4RzlzUEMwbWUyTHQ0RGVOTXRHcU1qN3RVSXdWcEUrbmt0S2JCd1FBUHZP?=
+ =?utf-8?B?MFVKYjJDMXd5bUI2Q1UyVWhRanNNaWY2azFiZWxZazFvTmdkUVJOejN0OFpr?=
+ =?utf-8?B?L1QxZksxZTNjK2dZK2lJaHhZaWVNZTR2eGpwYWs5cWllQUhBQys0TDJRU0RW?=
+ =?utf-8?B?UWJ6WW5tdUp6djhIZEFndUFReW44cmdVaUlzNU1FUUE0ZmpZR21RZTJSQmx3?=
+ =?utf-8?B?OXZRRmFEbGUrcjgzZDJEckZnMGVzWmltR1FPejdYa2ZTQnVPYm02TVVpK0ty?=
+ =?utf-8?B?WktPRnQzZ0dnaHZKakI0VVluSjVRWFViNVNRN3lyN3ExODVCNFMzVm0wU0F0?=
+ =?utf-8?B?cEswb1BTRkhOWHNVWlF3amhKUTZUenRWWm5zdlRlSS8vc0FPSGVhZ0grMlMx?=
+ =?utf-8?B?VWo0RDlLeFQyRGNVZXlRUnZ6TSttd0xEOUVyejBldUwxMHBYdFd0ZFU0SWh2?=
+ =?utf-8?B?WGcxd3VGcUN4eGo4QndpQlFVYlNTMnBGOG1tTm01VkxoeEcwWE41TURSeXU0?=
+ =?utf-8?B?WktXRWNJQldld1ZLQUNmRlF0b1FiUWQ1TEJ2Mm9UVGR6ZFgyU0lNdWdmRnk0?=
+ =?utf-8?B?MUx4ZlBwZ1c2bmtpRnE2KzdxVGF5eS8yOFlRcWR0NnAramM1SXB0VFdIUmR6?=
+ =?utf-8?B?eHJlQnB5OUhyYWh6NzZNL0FjMWR4ZTZXMWhhS0s5MjJWczYxOUlkSWxCMmZ6?=
+ =?utf-8?B?TE52SkRaeUpPUktZMzkyVWJsUUhyYkZXdVp6azdKZzQ4SmZkYzBCSmt4a21J?=
+ =?utf-8?B?c0ZtRVB3UGJWcTVlcE1JdWo4MFpad05nZjFOclBGZmloS3c4WXk0eVhiWlU5?=
+ =?utf-8?B?aVAwR0V1M09NUTJsdU9SdTA3ZjRPMWFXOUVHdUJQNFlHWFVsNmpmaVJRclNF?=
+ =?utf-8?B?WHVHVzR2NVYzN3lvRFVmUlRERWlsQUYvcVltaUFKSkJ3SWdRQmJMUDRQbW1H?=
+ =?utf-8?B?N1E2T0pLMjRjUzZ5bS8vS2hJNktqYTgvVDQrbHFJaU9RUFUwYnRrOGVVcVpN?=
+ =?utf-8?B?YjhZS3o5WEhhWm9ZVElodnVjeVVSVzdZYmVCSi9xQWVLbnQzMHpOaG5icW4r?=
+ =?utf-8?B?dmVDUEtJQWtoTmhiRERXdVNIZ2FKNEl6WHZ1aDc3b0FLSGhzVXRmakxFTVBW?=
+ =?utf-8?B?V3pwUHR4R2VldGJya3IvZ2N4MnI0WXRXeEZCT1Y2VGpnaitOSXltNGlYN2Nj?=
+ =?utf-8?B?RlB1MHlUVW9KUktDT2w5Z3R4dmNnRmFzTGJSYnU1V1pDR1NXSzF0WlVldldo?=
+ =?utf-8?B?T1dXTlE5Yk5uUkQwYXBIRWN2Mk5QMFBVVUdCMlJOVVNqeWdEUkkvNjRZUmJE?=
+ =?utf-8?B?NkhyY0FUQ2R2UnNHaGN5ZjB1U2FnUXJ3WjE2VUdJREhJb1VEaldhVFlTSXV1?=
+ =?utf-8?B?QUtyZmFDbDlJQi96RFFaR2V4cUxESGM2UjQxcHJ0ME1NU3JXanlEN3p5Sjlq?=
+ =?utf-8?B?OGNRZzNUSHRHSXZxVXBSeGxJdW9Da0NIR3JIMlNpT01XVmZOOXR1c2VZRkFQ?=
+ =?utf-8?B?ZlIvcWRIdFp3b2NVU1RkcjUxWWo3YnBhd2JHWHZGTTBlSjNRS09FRkFzNEEw?=
+ =?utf-8?B?QnBmS2h0Q1lYVjluR05XSTRSTndxdGtldmtFenRqSVUza3NCbFcvT2xIb1R4?=
+ =?utf-8?B?djJ2SHhBR1BzM2VMVVRnOHZSbUhTVE03SEZOYU14R0VzeGxGUGloNlRaQ1lt?=
+ =?utf-8?B?VVB2T012U1JwYk1MY2p4Y3JWZU1JQjBqUmQ2UElmdnlvZngzK1JjM1lPbU1X?=
+ =?utf-8?B?cjNRbHlIMHZwZEVDbHJmbjNXNHRLUWlaazE1OElpb3FVQkZER0MxYThFZkNE?=
+ =?utf-8?B?UFViK0ViZGFNbVhDVk9lV0dsN090NVJUL0xucnQxUCtwQ0lhWlNib0FRb0o0?=
+ =?utf-8?Q?tIPMVM32aLqk6zNuoDgy3Xq9f?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9776988-2bb4-41b7-c3d3-08dd7f33ae74
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6020.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2025 11:16:50.6674
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HtucDtfQwVDV2zTPcUHqcNv77kp6V3zXBt9xrJxkXLyr0qttZVZ7W13L013H9ubz+MC4tctsJrcAHMDqQC0znw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB5948
+X-OriginatorOrg: intel.com
 
-It is possible for a reclaimer to cause demotions of an lruvec belonging
-to a cgroup with cpuset.mems set to exclude some nodes. Attempt to apply
-this limitation based on the lruvec's memcg and prevent demotion.
+Hi Libo,
 
-Notably, this may still allow demotion of shared libraries or any memory
-first instantiated in another cgroup. This means cpusets still cannot
-cannot guarantee complete isolation when demotion is enabled, and the
-docs have been updated to reflect this.
+On 4/18/2025 3:15 AM, Libo Chen wrote:
+> When the memory of the current task is pinned to one NUMA node by cgroup,
+> there is no point in continuing the rest of VMA scanning and hinting page
+> faults as they will just be overhead. With this change, there will be no
+> more unnecessary PTE updates or page faults in this scenario.
+> 
+> We have seen up to a 6x improvement on a typical java workload running on
+> VMs with memory and CPU pinned to one NUMA node via cpuset in a two-socket
+> AARCH64 system. With the same pinning, on a 18-cores-per-socket Intel
+> platform, we have seen 20% improvment in a microbench that creates a
+> 30-vCPU selftest KVM guest with 4GB memory, where each vCPU reads 4KB
+> pages in a fixed number of loops.
+> 
+> Signed-off-by: Libo Chen <libo.chen@oracle.com>
 
-This is useful for isolating workloads on a multi-tenant system from
-certain classes of memory more consistently - with the noted exceptions.
+I think this is a promising change that we can perform fine-grain NUMA
+balance control on a per-cgroup basis rather than system-wide NUMA
+balance for every task, which is costly.
 
-Signed-off-by: Gregory Price <gourry@gourry.net>
----
- .../ABI/testing/sysfs-kernel-mm-numa          | 14 ++++---
- include/linux/cpuset.h                        |  5 +++
- include/linux/memcontrol.h                    |  6 +++
- kernel/cgroup/cpuset.c                        | 21 ++++++++++
- mm/memcontrol.c                               |  6 +++
- mm/vmscan.c                                   | 41 +++++++++++--------
- 6 files changed, 72 insertions(+), 21 deletions(-)
+> ---
+>   kernel/sched/fair.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index e43993a4e5807..c9903b1b39487 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3329,6 +3329,13 @@ static void task_numa_work(struct callback_head *work)
+>   	if (p->flags & PF_EXITING)
+>   		return;
+>   
+> +	/*
+> +	 * Memory is pinned to only one NUMA node via cpuset.mems, naturally
+> +	 * no page can be migrated.
+> +	 */
+> +	if (cpusets_enabled() && nodes_weight(cpuset_current_mems_allowed) == 1)
+> +		return;
+> +
 
-diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-numa b/Documentation/ABI/testing/sysfs-kernel-mm-numa
-index 77e559d4ed80..27cdcab901f7 100644
---- a/Documentation/ABI/testing/sysfs-kernel-mm-numa
-+++ b/Documentation/ABI/testing/sysfs-kernel-mm-numa
-@@ -16,9 +16,13 @@ Description:	Enable/disable demoting pages during reclaim
- 		Allowing page migration during reclaim enables these
- 		systems to migrate pages from fast tiers to slow tiers
- 		when the fast tier is under pressure.  This migration
--		is performed before swap.  It may move data to a NUMA
--		node that does not fall into the cpuset of the
--		allocating process which might be construed to violate
--		the guarantees of cpusets.  This should not be enabled
--		on systems which need strict cpuset location
-+		is performed before swap if an eligible numa node is
-+		present in cpuset.mems for the cgroup. If cpusets.mems
-+		changes at runtime, it may move data to a NUMA node that
-+		does not fall into the cpuset of the new cpusets.mems,
-+		which might be construed to violate the guarantees of
-+		cpusets.  Shared memory, such as libraries, owned by
-+		another cgroup may still be demoted and result in memory
-+		use on a node not present in cpusets.mem. This should not
-+		be enabled on systems which need strict cpuset location
- 		guarantees.
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index 893a4c340d48..c64b4a174456 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -171,6 +171,7 @@ static inline void set_mems_allowed(nodemask_t nodemask)
- 	task_unlock(current);
- }
- 
-+extern bool cpuset_node_allowed(struct cgroup *cgroup, int nid);
- #else /* !CONFIG_CPUSETS */
- 
- static inline bool cpusets_enabled(void) { return false; }
-@@ -282,6 +283,10 @@ static inline bool read_mems_allowed_retry(unsigned int seq)
- 	return false;
- }
- 
-+static inline bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-+{
-+	return false;
-+}
- #endif /* !CONFIG_CPUSETS */
- 
- #endif /* _LINUX_CPUSET_H */
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 53364526d877..a6c4e3faf721 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1736,6 +1736,8 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
- 	rcu_read_unlock();
- }
- 
-+bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid);
-+
- #else
- static inline bool mem_cgroup_kmem_disabled(void)
- {
-@@ -1793,6 +1795,10 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
- {
- }
- 
-+static inline bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
-+{
-+	return true;
-+}
- #endif /* CONFIG_MEMCG */
- 
- #if defined(CONFIG_MEMCG) && defined(CONFIG_ZSWAP)
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index f8e6a9b642cb..8814ca8ec710 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -4163,6 +4163,27 @@ bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
- 	return allowed;
- }
- 
-+bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-+{
-+	struct cgroup_subsys_state *css;
-+	unsigned long flags;
-+	struct cpuset *cs;
-+	bool allowed;
-+
-+	css = cgroup_get_e_css(cgroup, &cpuset_cgrp_subsys);
-+	if (!css)
-+		return true;
-+
-+	cs = container_of(css, struct cpuset, css);
-+	spin_lock_irqsave(&callback_lock, flags);
-+	/* On v1 effective_mems may be empty, simply allow */
-+	allowed = node_isset(nid, cs->effective_mems) ||
-+		  nodes_empty(cs->effective_mems);
-+	spin_unlock_irqrestore(&callback_lock, flags);
-+	css_put(css);
-+	return allowed;
-+}
-+
- /**
-  * cpuset_spread_node() - On which node to begin search for a page
-  * @rotor: round robin rotor
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 40c07b8699ae..2f61d0060fd1 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -29,6 +29,7 @@
- #include <linux/page_counter.h>
- #include <linux/memcontrol.h>
- #include <linux/cgroup.h>
-+#include <linux/cpuset.h>
- #include <linux/sched/mm.h>
- #include <linux/shmem_fs.h>
- #include <linux/hugetlb.h>
-@@ -5437,3 +5438,8 @@ static int __init mem_cgroup_swap_init(void)
- subsys_initcall(mem_cgroup_swap_init);
- 
- #endif /* CONFIG_SWAP */
-+
-+bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
-+{
-+	return memcg ? cpuset_node_allowed(memcg->css.cgroup, nid) : true;
-+}
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 2b2ab386cab5..32a7ce421e42 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -342,16 +342,22 @@ static void flush_reclaim_state(struct scan_control *sc)
- 	}
- }
- 
--static bool can_demote(int nid, struct scan_control *sc)
-+static bool can_demote(int nid, struct scan_control *sc,
-+		       struct mem_cgroup *memcg)
- {
-+	int demotion_nid;
-+
- 	if (!numa_demotion_enabled)
- 		return false;
- 	if (sc && sc->no_demotion)
- 		return false;
--	if (next_demotion_node(nid) == NUMA_NO_NODE)
-+
-+	demotion_nid = next_demotion_node(nid);
-+	if (demotion_nid == NUMA_NO_NODE)
- 		return false;
- 
--	return true;
-+	/* If demotion node isn't in the cgroup's mems_allowed, fall back */
-+	return mem_cgroup_node_allowed(memcg, demotion_nid);
- }
- 
- static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
-@@ -376,7 +382,7 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
- 	 *
- 	 * Can it be reclaimed from this node via demotion?
- 	 */
--	return can_demote(nid, sc);
-+	return can_demote(nid, sc, memcg);
- }
- 
- /*
-@@ -1096,7 +1102,8 @@ static bool may_enter_fs(struct folio *folio, gfp_t gfp_mask)
-  */
- static unsigned int shrink_folio_list(struct list_head *folio_list,
- 		struct pglist_data *pgdat, struct scan_control *sc,
--		struct reclaim_stat *stat, bool ignore_references)
-+		struct reclaim_stat *stat, bool ignore_references,
-+		struct mem_cgroup *memcg)
- {
- 	struct folio_batch free_folios;
- 	LIST_HEAD(ret_folios);
-@@ -1109,7 +1116,7 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 	folio_batch_init(&free_folios);
- 	memset(stat, 0, sizeof(*stat));
- 	cond_resched();
--	do_demote_pass = can_demote(pgdat->node_id, sc);
-+	do_demote_pass = can_demote(pgdat->node_id, sc, memcg);
- 
- retry:
- 	while (!list_empty(folio_list)) {
-@@ -1658,7 +1665,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 	 */
- 	noreclaim_flag = memalloc_noreclaim_save();
- 	nr_reclaimed = shrink_folio_list(&clean_folios, zone->zone_pgdat, &sc,
--					&stat, true);
-+					&stat, true, NULL);
- 	memalloc_noreclaim_restore(noreclaim_flag);
- 
- 	list_splice(&clean_folios, folio_list);
-@@ -2031,7 +2038,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
- 	if (nr_taken == 0)
- 		return 0;
- 
--	nr_reclaimed = shrink_folio_list(&folio_list, pgdat, sc, &stat, false);
-+	nr_reclaimed = shrink_folio_list(&folio_list, pgdat, sc, &stat, false,
-+					 lruvec_memcg(lruvec));
- 
- 	spin_lock_irq(&lruvec->lru_lock);
- 	move_folios_to_lru(lruvec, &folio_list);
-@@ -2214,7 +2222,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
- 		.no_demotion = 1,
- 	};
- 
--	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &stat, true);
-+	nr_reclaimed = shrink_folio_list(folio_list, pgdat, &sc, &stat, true, NULL);
- 	while (!list_empty(folio_list)) {
- 		folio = lru_to_folio(folio_list);
- 		list_del(&folio->lru);
-@@ -2646,7 +2654,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
-  * Anonymous LRU management is a waste if there is
-  * ultimately no way to reclaim the memory.
-  */
--static bool can_age_anon_pages(struct pglist_data *pgdat,
-+static bool can_age_anon_pages(struct lruvec *lruvec,
- 			       struct scan_control *sc)
- {
- 	/* Aging the anon LRU is valuable if swap is present: */
-@@ -2654,7 +2662,8 @@ static bool can_age_anon_pages(struct pglist_data *pgdat,
- 		return true;
- 
- 	/* Also valuable if anon pages can be demoted: */
--	return can_demote(pgdat->node_id, sc);
-+	return can_demote(lruvec_pgdat(lruvec)->node_id, sc,
-+			  lruvec_memcg(lruvec));
- }
- 
- #ifdef CONFIG_LRU_GEN
-@@ -2732,7 +2741,7 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
- 	if (!sc->may_swap)
- 		return 0;
- 
--	if (!can_demote(pgdat->node_id, sc) &&
-+	if (!can_demote(pgdat->node_id, sc, memcg) &&
- 	    mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
- 		return 0;
- 
-@@ -4695,7 +4704,7 @@ static int evict_folios(struct lruvec *lruvec, struct scan_control *sc, int swap
- 	if (list_empty(&list))
- 		return scanned;
- retry:
--	reclaimed = shrink_folio_list(&list, pgdat, sc, &stat, false);
-+	reclaimed = shrink_folio_list(&list, pgdat, sc, &stat, false, memcg);
- 	sc->nr.unqueued_dirty += stat.nr_unqueued_dirty;
- 	sc->nr_reclaimed += reclaimed;
- 	trace_mm_vmscan_lru_shrink_inactive(pgdat->node_id,
-@@ -5850,7 +5859,7 @@ static void shrink_lruvec(struct lruvec *lruvec, struct scan_control *sc)
- 	 * Even if we did not try to evict anon pages at all, we want to
- 	 * rebalance the anon lru active/inactive ratio.
- 	 */
--	if (can_age_anon_pages(lruvec_pgdat(lruvec), sc) &&
-+	if (can_age_anon_pages(lruvec, sc) &&
- 	    inactive_is_low(lruvec, LRU_INACTIVE_ANON))
- 		shrink_active_list(SWAP_CLUSTER_MAX, lruvec,
- 				   sc, LRU_ACTIVE_ANON);
-@@ -6681,10 +6690,10 @@ static void kswapd_age_node(struct pglist_data *pgdat, struct scan_control *sc)
- 		return;
- 	}
- 
--	if (!can_age_anon_pages(pgdat, sc))
-+	lruvec = mem_cgroup_lruvec(NULL, pgdat);
-+	if (!can_age_anon_pages(lruvec, sc))
- 		return;
- 
--	lruvec = mem_cgroup_lruvec(NULL, pgdat);
- 	if (!inactive_is_low(lruvec, LRU_INACTIVE_ANON))
- 		return;
- 
--- 
-2.49.0
+I found that you had a proposal in V1 to address Peter's concern[1]:
+Allow the task to be migrated to its preferred Node, even if the task's
+memory policy is restricted to 1 Node. In your previous proposal, only 
+if the task's cpumask is bound to the same Node as its memory policy 
+node, the NUMA balance scanning is skipped, because a cgroup usually 
+binds its tasks and memory allocation policy to the same node. Not sure 
+if that could be turned into:
 
+If the task's memory policy node's CPU mask is a subset of the task's 
+cpumask, the NUMA balance scan is allowed.
+
+For example,
+Suppose p's memory is only allocated on node0, which contains CPU2, CPU3.
+1. If p's CPU affinity is CPU0, CPU1, there is no need to do NUMA 
+balancing scanning, because CPU0,1 are not in p's legitimate cpumask.
+2. If p's CPU affinity is CPU3, there is no need to do NUMA balancing 
+scanning. p is already on its preferred node.
+3. But if p's CPU affinity is CPU2, CPU3, CPU6, the NUMA balancing scan 
+should be allowed. Because it is possible to migrate p from CPU6 to 
+either CPU2 or CPU3.
+
+What I'm thinking of is something as follows(untested):
+if (cpusets_enabled() &&
+     nodes_weight(cpuset_current_mems_allowed) == 1 &&
+     !cpumask_subset(cpumask_of_node(cpuset_current_mems_allowed),
+		    p->cpus_ptr))
+	return;
+
+
+I tested your patch on top of the latest sched/core,
+binding task CPU affinity to Node1 and memory allocation node on
+Node1:
+echo "8-15" > /sys/fs/cgroup/mytest/cpuset.cpus
+echo "1" > /sys/fs/cgroup/mytest/cpuset.mems
+cgexec -g cpuset:mytest ./run-mmtests.sh --no-monitor --config 
+config-numa skip_scan
+
+And it works as expected:
+# bpftrace numa_trace.bt
+
+@sched_skip_cpuset_numa: 133
+
+
+thanks,
+Chenyu
+
+[1] 
+https://lore.kernel.org/lkml/cde7af54-5481-499e-8a42-0111f555f2b1@oracle.com/
+
+
+>   	if (!mm->numa_next_scan) {
+>   		mm->numa_next_scan = now +
+>   			msecs_to_jiffies(sysctl_numa_balancing_scan_delay);
 
