@@ -1,65 +1,59 @@
-Return-Path: <cgroups+bounces-7679-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7680-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D64D7A9554B
-	for <lists+cgroups@lfdr.de>; Mon, 21 Apr 2025 19:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB54A95561
+	for <lists+cgroups@lfdr.de>; Mon, 21 Apr 2025 19:40:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0890188710F
-	for <lists+cgroups@lfdr.de>; Mon, 21 Apr 2025 17:29:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 862AD188FBEE
+	for <lists+cgroups@lfdr.de>; Mon, 21 Apr 2025 17:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7BC1E5716;
-	Mon, 21 Apr 2025 17:29:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A63A1E7C11;
+	Mon, 21 Apr 2025 17:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FwPg2vh6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nhMeyPXf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0EA15C140
-	for <cgroups@vger.kernel.org>; Mon, 21 Apr 2025 17:29:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B478E1E7C23
+	for <cgroups@vger.kernel.org>; Mon, 21 Apr 2025 17:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745256548; cv=none; b=iZ1Q3S+zzyk+2Swj2S9ojEwAfEd5ZUqf5cgUJLnItAUzq9eiiCWZhPbrMjeC9wIMW6o+leX92RWra+C1uuL2PZsb3MBIvyKPnnsL2cht2qgCYuqpP6JJPgLGUyV6LIBmMpHmOmB8Zn8dtsyoNlxZBxQqmrZTB2sXqAdcVW+uJ9o=
+	t=1745257208; cv=none; b=syuJlFaK1G+8Bzy1rxVMfoJ+e24LM5nHRQ1/tIunTH2ca2z60eT23XfARleKq3aK8EugO+zTqLhkJ9iaWu/ec5oAW318eHlLFOPvAf6O3bQeGhjU7TdZksU3qFCGGmVIdtPO+bMHGhp6DUGoQPn3pJDboikNXVtMOWDDUv6J+lA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745256548; c=relaxed/simple;
-	bh=wSD15zZe1xhmLJKxFic7wEhhslrq+k0Kcd4AMKop3I8=;
+	s=arc-20240116; t=1745257208; c=relaxed/simple;
+	bh=useqJap+ezRoHVTkg1sAXR5EWKTh9ETeAM945golY8E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cjlNKdGeItVmpHK3T54Cxp6YfATPN/MbUvH19MFbJnsBl8m3NJuikHJyN6izOA0OnrUc1rOBhrTj4rVsgi33d+DBiJ5WX63SVmr+gvZhhR0bz8mPR9Fb29Qk0bDG5hiBEfwzl6IGvNs+bo743tbjTfBC5tXTw+LcMhhrqGwu0kM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FwPg2vh6; arc=none smtp.client-ip=95.215.58.188
+	 Content-Type:Content-Disposition:In-Reply-To; b=OqTWp88a5Q9dus0xvDa5Go29VmSzdYbbzJjaD5zDvL327wgIPypfHYKcNpUMk+11DMvMxoFJKqF6PLvJqbjgoamBBmXchTBx4lZbpLHed9YxiEx+zO3g+wJNIqZrtOYhpSzWwPf8E3yEESPXQQnVk5MFAfj8apILheXoliY5qGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nhMeyPXf; arc=none smtp.client-ip=91.218.175.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 21 Apr 2025 10:28:38 -0700
+Date: Mon, 21 Apr 2025 10:39:58 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745256533;
+	t=1745257203;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vG4L1oHMagTDUnGqJG8Pj6sUOyHcw1R8xhgw+ZpiQQY=;
-	b=FwPg2vh6/QXx0x8p+cDPsZYRgoRp1GzFG2qd3JJhdgVc9j7aSpDrd5zJK0XaX2J2clVX3y
-	M1uyNlT7F+0yQB7zwvi5uMMFjXBgbiMkg2FD5mmQqU7V74glo+wAq8fCummrAPBl0qjCI4
-	UBYbWpJ5L9Bh23t8rPnLug1cw8Mod8o=
+	bh=ic0U5IhV6YzKvNqJCWbnzKQPn3EXM2vY2FdYHIFi4Do=;
+	b=nhMeyPXfb/xhlGRDoRZa/FULAGL/+tgPjy7ix20MhqCwjvxqpwRtbHeugUorGOKVbJZH+v
+	JMSDGVHWrMHtvM6rRnEcqj/8QmZVRqo09RbMoynz/TcmZMjTZ8vUatAPqFG6d5xJ/DJ/P2
+	j6oY4ngT20gFuZsRBQEvNYigZLeoGQs=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Greg Thelen <gthelen@google.com>
-Cc: Tejun Heo <tj@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
-	Yosry Ahmed <yosry.ahmed@linux.dev>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: introduce non-blocking limit setting interfaces
-Message-ID: <awhadja7fr5uqkhj54mqlbrrcyzjnjhw7wayfa74llamlcd3ya@netfkab3mvee>
-References: <20250418195956.64824-1-shakeel.butt@linux.dev>
- <CAHH2K0as=b+EhxG=8yS9T9oP40U2dEtU0NA=wCJSb6ii9_DGaw@mail.gmail.com>
- <ohrgrdyy36us7q3ytjm3pewsnkh3xwrtz4xdixxxa6hbzsj2ki@sn275kch6zkh>
- <aALNIVa3zxl9HFK5@google.com>
- <nmdwfhfdboccgtymfhhcavjqe4pcvkxb3b2p2wfxbfqzybfpue@kgvwkjjagqho>
- <aAMVWsFbht3MdMEk@slm.duckdns.org>
- <rgze2xgrslssxoe7k3vcfg6fy2ywe4jowvwlbdsxrcrvhmklzv@jhyomycycs4n>
- <xr93ecxlsauy.fsf@gthelen-cloudtop.c.googlers.com>
+To: Waiman Long <llong@redhat.com>
+Cc: Gregory Price <gourry@gourry.net>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
+	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	muchun.song@linux.dev, tj@kernel.org, mkoutny@suse.com, akpm@linux-foundation.org
+Subject: Re: [PATCH v3 2/2] vmscan,cgroup: apply mems_effective to reclaim
+Message-ID: <7dtp6v5evpz5sdevwrexhwcdtl5enczssvuepkib2oiaexk3oo@ranij7pskrhe>
+References: <20250419053824.1601470-1-gourry@gourry.net>
+ <20250419053824.1601470-3-gourry@gourry.net>
+ <ro3uqeyri65voutamqttzipfk7yiya4zv5kdiudcmhacrm6tej@br7ebk2kanf4>
+ <babdca88-1461-4d47-989a-c7a011ddc2bd@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -68,35 +62,37 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <xr93ecxlsauy.fsf@gthelen-cloudtop.c.googlers.com>
+In-Reply-To: <babdca88-1461-4d47-989a-c7a011ddc2bd@redhat.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Apr 21, 2025 at 10:06:13AM -0700, Greg Thelen wrote:
-> Shakeel Butt <shakeel.butt@linux.dev> wrote:
+On Sat, Apr 19, 2025 at 08:14:29PM -0400, Waiman Long wrote:
 > 
-> > On Fri, Apr 18, 2025 at 05:15:38PM -1000, Tejun Heo wrote:
-> > > On Fri, Apr 18, 2025 at 04:08:42PM -0700, Shakeel Butt wrote:
-> > > > Any reasons to prefer one over the other? To me having separate
-> > > > files/interfaces seem more clean and are more script friendly. Also
-> > > > let's see what others have to say or prefer.
+> On 4/19/25 2:48 PM, Shakeel Butt wrote:
+> > On Sat, Apr 19, 2025 at 01:38:24AM -0400, Gregory Price wrote:
+> > > +bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
+> > > +{
+> > > +	struct cgroup_subsys_state *css;
+> > > +	unsigned long flags;
+> > > +	struct cpuset *cs;
+> > > +	bool allowed;
+> > > +
+> > > +	css = cgroup_get_e_css(cgroup, &cpuset_cgrp_subsys);
+> > > +	if (!css)
+> > > +		return true;
+> > > +
+> > > +	cs = container_of(css, struct cpuset, css);
+> > > +	spin_lock_irqsave(&callback_lock, flags);
+> > Do we really need callback_lock here? We are not modifying and I am
+> > wondering if simple rcu read lock is enough here (similar to
+> > update_nodemasks_hier() where parent's effective_mems is accessed within
+> > rcu read lock).
 > 
-> > > I kinda like O_NONBLOCK. The subtlety level of the interface seems
-> > > to match
-> > > that of the implemented behavior.
-> 
-> 
-> > Ok, it seems like more people prefer O_NONBLOCK, so be it. I will send
-> > v2 soon.
-> 
-> > Also I would request to backport to stable kernels. Let me know if
-> > anyone have concerns.
-> 
-> I don't feel strongly, but I thought LTS was generally intended for bug
-> fixes. So I assume that this new O_NONBLOCK support would not be LTS
-> worthy.
-> 
+> The callback_lock is required to ensure the stability of the effective_mems
+> which may be in the process of being changed if not taken.
 
-I got the request asking for this behavior for distributions on older
-LTS kernels and I think it is solving a real user pain, so worth
-backporting to stable kernels.
+Stability in what sense? effective_mems will not get freed under us
+here or is there a chance for corrupted read here? node_isset() and
+nodes_empty() seems atomic. What's the worst that can happen without
+callback_lock?
+
 
