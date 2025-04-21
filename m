@@ -1,120 +1,119 @@
-Return-Path: <cgroups+bounces-7677-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7678-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 772F7A954F0
-	for <lists+cgroups@lfdr.de>; Mon, 21 Apr 2025 18:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 468F3A95501
+	for <lists+cgroups@lfdr.de>; Mon, 21 Apr 2025 19:06:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE2111721CC
-	for <lists+cgroups@lfdr.de>; Mon, 21 Apr 2025 16:51:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B07C168010
+	for <lists+cgroups@lfdr.de>; Mon, 21 Apr 2025 17:06:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C3B1E0DCB;
-	Mon, 21 Apr 2025 16:51:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB281E0DB0;
+	Mon, 21 Apr 2025 17:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HkZ3d9HA"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0SnUsAOd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E650513D53B
-	for <cgroups@vger.kernel.org>; Mon, 21 Apr 2025 16:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B289719CD1D
+	for <cgroups@vger.kernel.org>; Mon, 21 Apr 2025 17:06:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745254286; cv=none; b=AzbM3qkc4eY2xHUEd0AVWHrmESYHnN2emIS/ZVVtRotcrTD3uAxASI6A3cPUUqRLPcMmr1J5POW98DKk4G2c8+LAzhSrERh+PcgF2OlbXHk5njZhfmtznQkaLT82s4UxP1Jb+1pcbegNCSm0n8N5LQ17dpKK/cuxLVa03zt9LIg=
+	t=1745255178; cv=none; b=lsFGeQbL4PnLTlj6Mr/6dVNtUZpVm6xNhXL54MP+KHdm00El6MiVkf2r/zqpaqdIVhaNpRuQDpgBy3IzcnOko31znYm4hSVBhMf3ddQSjviQ9kkIzLsiZ1Pz+1sLUOZEeVGL6LCuhUp23C38ZlfZPjrpUSVCGZJOfAjmSuPla6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745254286; c=relaxed/simple;
-	bh=MxWz+L622ED9nKOXgOXCWXyvFaWex+U69gr60KmHLGA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MSWa7fZvlghhU96F1ZMkZ+NTSL42n5QMI1gE/k78+sxAjJ3+zV+gd6AzWdI0VlbkS6V4gdUdnj+2IkFVe8td/L6JjvaryZZIaYE5Au4CROXNSC2Jwjn35/futu5aPvW3L0IfrDI9w86wZ9zrtYqUnuIu4Ev3Gduue/41rlV4zPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HkZ3d9HA; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2260c91576aso36115245ad.3
-        for <cgroups@vger.kernel.org>; Mon, 21 Apr 2025 09:51:24 -0700 (PDT)
+	s=arc-20240116; t=1745255178; c=relaxed/simple;
+	bh=yfkSwOMgh7jwOhoRL7xNX8B9gRCyDko2LfQ/jk2ZI6k=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=apGr6D3T7pZDBmWDiyLovZ0YV4yRm0Kez+pALMSh7o79bH/q93TtcKshwPdvr2o5CqWCOD2mGvuBMYPpkgg7qhYDDlbO6uaz5lPznCu5OM8/DKcATC/0gZkaCOwgb+A7z8LUXCWChKr5yilry/uEyO63+VXLWvawg5cFOIOxA+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--gthelen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0SnUsAOd; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--gthelen.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-308677f7d8cso3847223a91.1
+        for <cgroups@vger.kernel.org>; Mon, 21 Apr 2025 10:06:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745254284; x=1745859084; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/+rOR+lHDm1dZmDhSOyaB/VVBVbXjMRl4vE9TaWHktI=;
-        b=HkZ3d9HAUDabIbz+K39F7NXwzzA5S34iWnCYJn7q5PHdv/45mZDVZBJjveR28kcvrR
-         yDWG7FjIItrKpwVmK629qOHCkQ0KcycuryPGcr+gQf3ONtRNPi1/DooTvWWG534yOw+r
-         naZq5ieO5ax19ljzmS9MBqzifGmkwgPzefFmBnnOUZN0PSzRWaADgU1R8AshQJelv9j+
-         v95eBgahIsRnYSFX5a7TIcEejU9T/PynJM+3cutsHitkNwK5xIycFvAAMAboQ20rESUd
-         +Mydmtr6o2Z4ttX6TCGrkqryOWK7unlSVwy5vPYXiWL4svk7aEUa3TY4n+ghw0X7gaJS
-         cgIQ==
+        d=google.com; s=20230601; t=1745255176; x=1745859976; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zGVm6Iz284Y0SobVO77Gr/vtAHZx6PoDVFWOgbVwgEA=;
+        b=0SnUsAOdubshSd/bQOuL05TzErYZjZutaYksR9/xgbAMVpqJX22B5nDXIUdt1ub6nb
+         yY/mJLtWmsVEZVK3n9mwB3w4cYggDfMewot1s2Mkam7a7+0gPAKsi2lepmlxaJ3xO2pt
+         GHTrg0b7f4yE5qILc96tzar+bylVtVji24SQWya7wONFFeVSAZqc7mko3uySJ1Xdj7DD
+         zsffW7itH0E45RXZOVulhxQ+QWKbIRnsJ9+ZrpY7EVZBCcp6mM3+V+yk3/qAsOtl+2ez
+         +vtdIUHfc2m+SaJAFodf5uOF3sdLXalZAASrLyEUbD+9B55ewJDN0LcUlPTnhZuthOlO
+         sTXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745254284; x=1745859084;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/+rOR+lHDm1dZmDhSOyaB/VVBVbXjMRl4vE9TaWHktI=;
-        b=cTQNg7tY/LO/ZSwKY6ncw6bT8R2jYB0I8s2bK9N4gb5jgT2yGke6kOi2aWgBrdsi90
-         Og1iZ/uh/a2aztN3BH+7ewEYGmY87hNEkqEn4WMCtFxo42LO09FmQGXw7TxIhWWuukXy
-         +26SqoWMkP8y55mvPoKT35xOE6XeK/77wM+lVphJKy4yUcX+SqQfii0YE5xF8gWWAXb1
-         xo6a8BVmND9UQNNiTT2hrgJRJNDzUg4rEZVU9iPhSpyHqDj3gtWW1YcqnCZzyX014Hek
-         IBKtZr/ueSVRf55GYtW+oWCI1fqNZ8M41EQLM73S5lT6wzxupyFxN2Os06C8FU6XqyaB
-         ms/A==
-X-Forwarded-Encrypted: i=1; AJvYcCWSznQN0kxZQ1Ukh7PjEtbCJy50e8ZPxmjQ8hFH0cN4JTpTCZRGqSAjQW+5KpgpYIBNEnav53gE@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXmmKplNoCeYjlfEYtlByv2psaHEIYsQGlPKynouowzVkqj1Z3
-	ICUgLckeIyuiUmJ7swf9BDJqB8A8S8ZRpRo2xAcOrFimid83Vvms
-X-Gm-Gg: ASbGnctmdJ35vEZODXhKzy2YD+ow2v53eYwxDf2GN2v2sUkhtIQskgcZHfhbayYhOgb
-	oRUEinEiNz+pcaHObMSmkBDdXsqZTh0108CInUUozwtg0m/3FbR1UpRRoWlzSB6FJckaKadyd09
-	h0wkwVG0pPdV0aPLIozX3Y5K/8JYhmFc/loqitGoQefYWndlj5pIL2WW97K3rjDOIPu/q/jEanM
-	wkqGsyhT22HmDR6mrO1HD3XNXxaTNaLV4Mlw3CsrLiXnULoE8NfhTkgX4ITbrI+e+ojyvJGzB9X
-	PNbZdl1cTGuGPiSgvUQAfPXjFAAL7HzON9rG9cRcxmBA8GEzPpINLp81IO8XPnzVCduY8w2RJTi
-	m/ns=
-X-Google-Smtp-Source: AGHT+IGS1bc68NfnosaRr5ityJ1PmW4j2slTAsDqqojz7WBW45NP418vk0eEonKoO76I5e5kIFH2Iw==
-X-Received: by 2002:a17:902:e5cf:b0:21f:2ded:76ea with SMTP id d9443c01a7336-22c5360dca6mr184886245ad.36.1745254284161;
-        Mon, 21 Apr 2025 09:51:24 -0700 (PDT)
-Received: from jpkobryn-fedora-PF5CFKNC.thefacebook.com ([2620:10d:c090:500::6:17e0])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22c50bf1371sm67782375ad.57.2025.04.21.09.51.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Apr 2025 09:51:23 -0700 (PDT)
-From: JP Kobryn <inwardvessel@gmail.com>
-To: tj@kernel.org,
-	shakeel.butt@linux.dev,
-	yosryahmed@google.com,
-	mkoutny@suse.com,
-	hannes@cmpxchg.org,
-	akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	cgroups@vger.kernel.org
-Subject: [PATCH] cgroup: fix pointer check in css_rstat_init()
-Date: Mon, 21 Apr 2025 09:51:17 -0700
-Message-ID: <20250421165117.30975-1-inwardvessel@gmail.com>
-X-Mailer: git-send-email 2.49.0
+        d=1e100.net; s=20230601; t=1745255176; x=1745859976;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zGVm6Iz284Y0SobVO77Gr/vtAHZx6PoDVFWOgbVwgEA=;
+        b=psyKU+df0/j8fagaQCNZtRSulHLYyVcY/a8Db7N0tCuiUGjv3w2lJAdkvQsoMtJ8Ib
+         oAvPp/oNewFzXxfWuSKKLrPii2XVK5JJh5mA9ra02n/3u8x8k9PhYiZCCEY3LWtg2z9x
+         ATmXME/38NWTxi4V6xb0xiISp8Jr+vQnNT+4hwNVhBSrzvgRROOtV7qovcVoYVV2rF/9
+         xEb3GDwRtSGiHm+q3y1UcB4p1MKx++G8hV0yNlfptuHllmItbokTPBy56N1Almi3UMln
+         xCqrxk4JV3ij2GHsRh+3oVisk/1rS6IVf4lqVX5kZxRrbygGB9S/n6JZAYhaNRodR8iR
+         Krjw==
+X-Forwarded-Encrypted: i=1; AJvYcCUUwCfdidDKh6tpuBpgZH58NA3P9rfRV3MUKodhicoX1k6K8epyG4AUIc6FgvVz4wxjmnq8nGiY@vger.kernel.org
+X-Gm-Message-State: AOJu0YxRMqFQMSqRlXfwNASeUaYJADL/ucoV3qaVzu+nDZB9f6imEvg6
+	zfFf4FIdrUO4kNiVkECNXjitFStBZbKqS0KbYEd3+5F86A43G+Qq+NVN+xuTXIPM3327ZDgdJFn
+	7Jwm36w==
+X-Google-Smtp-Source: AGHT+IGJnoJr8pRxSRD/hhwYoroUkE+lGUx4/nXUcE18/FUK3RmYB2FZoc725vebNXgkeUgU5nmSHFss5Hw7
+X-Received: from pfij16.prod.google.com ([2002:aa7:8010:0:b0:73d:65cb:b18b])
+ (user=gthelen job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:2704:b0:2ee:94d1:7a89
+ with SMTP id 98e67ed59e1d1-3087bb36bb4mr16771781a91.1.1745255175978; Mon, 21
+ Apr 2025 10:06:15 -0700 (PDT)
+Date: Mon, 21 Apr 2025 10:06:13 -0700
+In-Reply-To: <rgze2xgrslssxoe7k3vcfg6fy2ywe4jowvwlbdsxrcrvhmklzv@jhyomycycs4n>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20250418195956.64824-1-shakeel.butt@linux.dev>
+ <CAHH2K0as=b+EhxG=8yS9T9oP40U2dEtU0NA=wCJSb6ii9_DGaw@mail.gmail.com>
+ <ohrgrdyy36us7q3ytjm3pewsnkh3xwrtz4xdixxxa6hbzsj2ki@sn275kch6zkh>
+ <aALNIVa3zxl9HFK5@google.com> <nmdwfhfdboccgtymfhhcavjqe4pcvkxb3b2p2wfxbfqzybfpue@kgvwkjjagqho>
+ <aAMVWsFbht3MdMEk@slm.duckdns.org> <rgze2xgrslssxoe7k3vcfg6fy2ywe4jowvwlbdsxrcrvhmklzv@jhyomycycs4n>
+Message-ID: <xr93ecxlsauy.fsf@gthelen-cloudtop.c.googlers.com>
+Subject: Re: [PATCH] memcg: introduce non-blocking limit setting interfaces
+From: Greg Thelen <gthelen@google.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>, Tejun Heo <tj@kernel.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Muchun Song <muchun.song@linux.dev>, Yosry Ahmed <yosry.ahmed@linux.dev>, 
+	"Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 
-In css_rstat_init() allocations are done for the cgroup's pointers
-rstat_cpu and rstat_base_cpu. Make sure the allocation checks are
-consistent with what they are allocating.
+Shakeel Butt <shakeel.butt@linux.dev> wrote:
 
-Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
----
- kernel/cgroup/rstat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Fri, Apr 18, 2025 at 05:15:38PM -1000, Tejun Heo wrote:
+>> On Fri, Apr 18, 2025 at 04:08:42PM -0700, Shakeel Butt wrote:
+>> > Any reasons to prefer one over the other? To me having separate
+>> > files/interfaces seem more clean and are more script friendly. Also
+>> > let's see what others have to say or prefer.
 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 4a8834a70ca6..4d5fd8d12bdd 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -371,7 +371,7 @@ int css_rstat_init(struct cgroup_subsys_state *css)
- 
- 	if (!cgrp->rstat_base_cpu) {
- 		cgrp->rstat_base_cpu = alloc_percpu(struct cgroup_rstat_base_cpu);
--		if (!cgrp->rstat_cpu) {
-+		if (!cgrp->rstat_base_cpu) {
- 			free_percpu(cgrp->rstat_cpu);
- 			return -ENOMEM;
- 		}
--- 
-2.47.1
+>> I kinda like O_NONBLOCK. The subtlety level of the interface seems to  
+>> match
+>> that of the implemented behavior.
 
+
+> Ok, it seems like more people prefer O_NONBLOCK, so be it. I will send
+> v2 soon.
+
+> Also I would request to backport to stable kernels. Let me know if
+> anyone have concerns.
+
+I don't feel strongly, but I thought LTS was generally intended for bug
+fixes. So I assume that this new O_NONBLOCK support would not be LTS
+worthy.
+
+> I asked AI how to do the nonblock write in a script and got following:
+
+> $ echo 10G | dd of=memory.max oflag=nonblock
+
+> Shakeel
 
