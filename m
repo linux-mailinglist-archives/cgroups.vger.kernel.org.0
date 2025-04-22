@@ -1,134 +1,131 @@
-Return-Path: <cgroups+bounces-7714-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7715-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5566A968F2
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 14:19:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D06DFA968F5
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 14:19:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01B8A3BAFF7
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 12:19:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC201189C902
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 12:20:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D67927CCE7;
-	Tue, 22 Apr 2025 12:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41D527CB06;
+	Tue, 22 Apr 2025 12:19:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="f6RPD7rZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SamnuCE5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5584F1F0E4E
-	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 12:19:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC37F221289
+	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 12:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745324343; cv=none; b=AAJS99lxdqgPQ+uMytDJztjFmrDmgu4G0FmSLO9uCQHtjvSlmhY1FdyfAKuW4RA/G4c2ZfprTtyWJrlEmDExcHiF5uaReDUlx6FSy7ylQQXOFIpsLDAdamqf680F48McKXd16Wn8XUc6h4FjqwLSdttzpeLSa/1ZdJYVAH78d5w=
+	t=1745324396; cv=none; b=OusPNq8oHQcYxU3l89fox2RypGZzMIioJ+SaPLoCKpjyuHAHqLQ/49vlQJF/QFdztcg/o4d6BNAThrXa3g5gHM9bSLnXemPRvrU6I6Q2zUg9qchi7f1NaWvXY/SwHXvg1xrKcvRuU5D6WCtFfN5RW9ZQ4M1sjPgyCsp6Ss0P2+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745324343; c=relaxed/simple;
-	bh=FEb1vp9zsmFr2JcPIb0VWNcIkxax01MRvDIaLi1NWfs=;
+	s=arc-20240116; t=1745324396; c=relaxed/simple;
+	bh=WsJLZ4Bv2O0zLqGe9n6k0wHZjTKwMMz/IOgYuODd7PU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wjr/AKIcbhg0x7J6cn5MzITCLILpkavkF5BIzk9IlaVp1AhaCyCECgYYaJ1UK7xwfsR9XBS8PYz2EVTm9tF22irSZRggZhZthd5lxKMojsYWJyUI2vY9+3JYs5d6DGlrIFr5DzbyBaFHLnCkAcioLhXYT3b3YPzzFbbygexHo5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=f6RPD7rZ; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ac41514a734so729377666b.2
-        for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 05:19:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1745324339; x=1745929139; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FEb1vp9zsmFr2JcPIb0VWNcIkxax01MRvDIaLi1NWfs=;
-        b=f6RPD7rZsrqWa0d3m5zGKyFjrT/Qv3Hx2VvG/aeUP/JRGP19hY2e53GaEjRSHPfJm5
-         e4E9F4Nj7ZMGqtF0dbA/iR2TVu5SNOL73HBv4yu/2WGc6ein9jUV/R26oKNMfMfKx+5a
-         OtuWdBQo2zysnD6BsfzVxvV2+rhDCdYDnAfolWhVorDt9Nq9BgQspro1Kw0zCTpotzbn
-         5lj05rxGkFcKZ9TO7rzDBgVlwOE0lg4cVyn+TIkF7jYQQMoMAu44iNsj7E9kVR44MvzH
-         LYh3QYCGG+7+A6AXX1/aTXHxVnrlVC5mfQxYQxQWH8vId0BZxkUZ58sbs31xcUA8c9A9
-         ssHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745324339; x=1745929139;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FEb1vp9zsmFr2JcPIb0VWNcIkxax01MRvDIaLi1NWfs=;
-        b=ix0w2ZU/qN8PawPJzNtjhlhEsIqk8tWT35T4sXq8CKDBDFXs2dUa6deb3B0a4VsGNx
-         7yC+Ia+0ribDhU+IpCZBQK+VYP2Irr0VmusczEQYl+omnklYAaiXJvFngAynaUdvH0x4
-         2WKjqlDT2/SOvBp5PU1rYZIFEn3VKGW1VHZDRlkoy81wo5Q/jK7YN+2EsmJSn0KzdTRl
-         Lkc5p1Pvk8tORuuIjWKPFmvPoh+80dTEa9wsWRXeQljZMf6fQuFEuFLmm0t2OlYAsCAk
-         WEjm+w3c/lMZdT8oNoFSjDwOjn7QQrCKBBUxW3hgTpgRbuXC/LWjBHbu3HvqkhIceff+
-         AzNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUXWH0LN3D7koW4Ru91Ep7SlEYtQs2DiD5Aw0e2zA+0AxjglKH92WhIohZPVfCvLlZnHR0ulJsb@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxdbghlb/0WPgLf2x0/T+vEBwwzCFwSqdZzUjr9JE1LGxyM1iJ9
-	BILMSaHgVYtw4hl9iCj28iuY4EDAJdako+hij8ofipVQ6RSatjj3an122+C0Osm9TlWz3mdcoZs
-	F
-X-Gm-Gg: ASbGncu+4GRXaEYioz6cX2/J5BTelnzHynSg4XY/LjN6GGRBwzhO9XOqOsSu0vWtpPf
-	PsRbeutSu4O1VCXv/FTL6a08jNAbgb2algF8p1Vz4TtOrlOskc5RHWqT5n2F9dSiN+XGX6ZVmkD
-	VEeSvDj47mry/OyRdmjrTs2Y2pM5CVaFKUFtt/L5MX9WrsSWtpqWW1n6ZIOI7mvP3wUZp8aD7Jr
-	6TXLh+VR2zGa42EzUVe8lh4chbk+u+0li8CP68tQ7hhFWzZ/eUZV2L9YOmFh7BeZA6lVROZm48t
-	rzpXIg18+z5mqZVNtng3y6YkRu9pp2T8VIpqI3cOHdw=
-X-Google-Smtp-Source: AGHT+IEvO4I0PXr3VK52/nbiHGb/HzcVEaKVg4zzxE5USQ7ElhY0GjljRx4O+2j+s6yFoHcQWu17EA==
-X-Received: by 2002:a17:907:9496:b0:ac3:446d:142 with SMTP id a640c23a62f3a-acb74ad9369mr1114924566b.2.1745324339474;
-        Tue, 22 Apr 2025 05:18:59 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acb6eefc6f3sm655834266b.106.2025.04.22.05.18.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Apr 2025 05:18:58 -0700 (PDT)
-Date: Tue, 22 Apr 2025 14:18:40 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Penglei Jiang <superman.xpt@gmail.com>
-Cc: tj@kernel.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, xnxc22xnxc22@qq.com
-Subject: Re: KASAN: slab-use-after-free Read in cgroup_rstat_flush
-Message-ID: <2eatfmps723vwbvqgqppswny73axxgbmmkaseqjkg2hxojpwvr@3fn36fsfed6x>
-References: <Z_1JBt3RMATxnDgL@slm.duckdns.org>
- <20250419153843.5035-1-superman.xpt@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OlkXEkNrstigVIbGYlXsRs+NWd0z5c6sKxZdkITB4z44ePo9KSIcNNBwJElZVy29oLG4/zbcJatcLgSCj+w0Bi9ABzVc1M7LMgrTMNqtlylR6uNCKfJf9d/dVs1T/o0pgbqjBE+lLeG9wIqCtmic/fyV9XwPusaRQ31a8YJDy2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SamnuCE5; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 22 Apr 2025 05:19:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745324391;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AZN/S6ZEB/OJYdPCK1ALmUFr/Qw2WKTr4CjCWyb5ueo=;
+	b=SamnuCE5AuaQnwULf2yCoQOuPi5KT+58AIilu9BDwGpQgfJ8of6sSMt63BbR2mOP8hwKlP
+	oikgToX4eQLP2r6vfizd/ix9guTNj2D4w2Ywf22405kpgqgJFvyHHrL336FlwpzJdjxgB9
+	NvqGw1nr3R7kyNpuU09WrxwIXnruKuw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yosry Ahmed <yosry.ahmed@linux.dev>
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com,
+	mkoutny@suse.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
+	linux-mm@kvack.org, cgroups@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v4 2/5] cgroup: add helper for checking when css is
+ cgroup::self
+Message-ID: <aAeJZO_Y3_IeDvwy@Asmaa.>
+References: <20250404011050.121777-1-inwardvessel@gmail.com>
+ <20250404011050.121777-3-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hiej3wsm4kzjo3ca"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250419153843.5035-1-superman.xpt@gmail.com>
+In-Reply-To: <20250404011050.121777-3-inwardvessel@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
+On Thu, Apr 03, 2025 at 06:10:47PM -0700, JP Kobryn wrote:
+> The cgroup struct has a css field called "self". The main difference
+> between this css and the others found in the cgroup::subsys array is that
+> cgroup::self has a NULL subsystem pointer. There are several places where
+> checks are performed to determine whether the css in question is
+> cgroup::self or not. Instead of accessing css->ss directly, introduce a
+> helper function that shows the intent and use where applicable.
+> 
+> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> ---
+>  include/linux/cgroup.h | 5 +++++
+>  kernel/cgroup/cgroup.c | 4 ++--
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+> index 28e999f2c642..7c120efd5e49 100644
+> --- a/include/linux/cgroup.h
+> +++ b/include/linux/cgroup.h
+> @@ -347,6 +347,11 @@ static inline bool css_is_dying(struct cgroup_subsys_state *css)
+>  	return !(css->flags & CSS_NO_REF) && percpu_ref_is_dying(&css->refcnt);
+>  }
+>  
+> +static inline bool css_is_cgroup(struct cgroup_subsys_state *css)
 
---hiej3wsm4kzjo3ca
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: KASAN: slab-use-after-free Read in cgroup_rstat_flush
-MIME-Version: 1.0
+I think css_is_self() or css_is_cgroup_self() may be clearer given that
+we are basically checking if css is the same as css->cgroup->self. As I
+write this out, I am wondering why don't we check css ==
+css->cgroup->self instead (and perhaps add a WARN to make sure css->ss
+is NULL as expected)?
 
-On Sat, Apr 19, 2025 at 08:38:43AM -0700, Penglei Jiang <superman.xpt@gmail=
-=2Ecom> wrote:
-> On Mon, 14 Apr 2025 07:42:30 -1000, tj <tj@kernel.org> wrote:
->=20
-> > Maybe another casualty of the bug fixed by a22b3d54de94 ("cgroup/cpuset=
-: Fix
-> > race between newly created partition and dying one")?
->=20
-> This issue was maybe caused by commit 093c8812de2d3, and was later fixed
-> by commit 7d6c63c319142.
+This seems clearer to me unless I am missing something.
 
-Ah, I overlooked that the original report is not for v6.14 but
-f6e0150b2003 actually (correct?), so this is sensible in that context.
-
-Does it mean you cannot attain the KASAN report post 7d6c63c319142?
-
-Thanks,
-Michal
-
---hiej3wsm4kzjo3ca
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCaAeJHgAKCRAt3Wney77B
-SVALAQCxpvY+YXDCaGceP86Ps37TAi1fztt+MjmyKf9IWzf4VQD+LGcIjiluUvvf
-3CDAaVURoOL8D/lTu6M3RIITuf41bQU=
-=V4iz
------END PGP SIGNATURE-----
-
---hiej3wsm4kzjo3ca--
+> +{
+> +	return css->ss == NULL;
+> +}
+> +
+>  static inline void cgroup_get(struct cgroup *cgrp)
+>  {
+>  	css_get(&cgrp->self);
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 77349d07b117..00eb882dc6e7 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -1719,7 +1719,7 @@ static void css_clear_dir(struct cgroup_subsys_state *css)
+>  
+>  	css->flags &= ~CSS_VISIBLE;
+>  
+> -	if (!css->ss) {
+> +	if (css_is_cgroup(css)) {
+>  		if (cgroup_on_dfl(cgrp)) {
+>  			cgroup_addrm_files(css, cgrp,
+>  					   cgroup_base_files, false);
+> @@ -1751,7 +1751,7 @@ static int css_populate_dir(struct cgroup_subsys_state *css)
+>  	if (css->flags & CSS_VISIBLE)
+>  		return 0;
+>  
+> -	if (!css->ss) {
+> +	if (css_is_cgroup(css)) {
+>  		if (cgroup_on_dfl(cgrp)) {
+>  			ret = cgroup_addrm_files(css, cgrp,
+>  						 cgroup_base_files, true);
+> -- 
+> 2.47.1
+> 
+> 
 
