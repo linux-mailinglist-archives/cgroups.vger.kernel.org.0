@@ -1,87 +1,134 @@
-Return-Path: <cgroups+bounces-7713-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7714-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD88AA968AB
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 14:14:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5566A968F2
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 14:19:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 059AA16D9D7
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 12:14:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01B8A3BAFF7
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 12:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF3927C841;
-	Tue, 22 Apr 2025 12:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D67927CCE7;
+	Tue, 22 Apr 2025 12:19:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O715COAL"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="f6RPD7rZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C977421481B
-	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 12:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5584F1F0E4E
+	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 12:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745324049; cv=none; b=QLajhcudH1/WiR6WUVyBx8puv2FG1gAu4y/DM3u/oErs//tCtzw3Gwgdyo3HSM/ykvK9Gr1g7u/D7a0pw+gZmCiisryVemEyLaTKfXfo7Oi0QHeIFuKfalFBmPvpo8MssTZUXeZA8qznW1OcMu5whstNConqk73ntjwgiaf+R64=
+	t=1745324343; cv=none; b=AAJS99lxdqgPQ+uMytDJztjFmrDmgu4G0FmSLO9uCQHtjvSlmhY1FdyfAKuW4RA/G4c2ZfprTtyWJrlEmDExcHiF5uaReDUlx6FSy7ylQQXOFIpsLDAdamqf680F48McKXd16Wn8XUc6h4FjqwLSdttzpeLSa/1ZdJYVAH78d5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745324049; c=relaxed/simple;
-	bh=jFegx/A4HLcu1aOJE58pk98gPRwBbRV/P1aYUgmVmaw=;
+	s=arc-20240116; t=1745324343; c=relaxed/simple;
+	bh=FEb1vp9zsmFr2JcPIb0VWNcIkxax01MRvDIaLi1NWfs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BHjGJHSYX6j0NfrMndRbY/w4pwbI1gyw2m/2We41txpMc7vP3uDpp/DMYgOq8gLltgrxlSh61KNrOaiUoK3zmBYVht2+vNz6A7k25lS1wwXjnCSVR/EGQHKLha2mHS2RNX/4n6xvl7qboztmA8cd77yjLLkn1wgXSGobzo0+zkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O715COAL; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 22 Apr 2025 05:13:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745324044;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DsgsuiDl6yNL7CcpFW9U5jdCE7K00yNVVhC4h3Ewig8=;
-	b=O715COALotWAPIYZxS6G6xu7LjevqZhmQRPS77lt7eCX8EdWbdHCI5Qwc+cRCqZWuKU9Eu
-	65BtbEnC/iEieGzzCFYLCVbywYSGFCqKAhaycOW3HBrzEsZzdmtIm3xmYGB5Raz24E4/U2
-	uvJ6bMe1Z/70zT6FHGf/nWjJQixHxKQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yosry Ahmed <yosry.ahmed@linux.dev>
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com,
-	mkoutny@suse.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
-	linux-mm@kvack.org, cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v4 1/5] cgroup: move rstat base stat objects into their
- own struct
-Message-ID: <aAeIBysbD6Zb_iTr@Asmaa.>
-References: <20250404011050.121777-1-inwardvessel@gmail.com>
- <20250404011050.121777-2-inwardvessel@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wjr/AKIcbhg0x7J6cn5MzITCLILpkavkF5BIzk9IlaVp1AhaCyCECgYYaJ1UK7xwfsR9XBS8PYz2EVTm9tF22irSZRggZhZthd5lxKMojsYWJyUI2vY9+3JYs5d6DGlrIFr5DzbyBaFHLnCkAcioLhXYT3b3YPzzFbbygexHo5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=f6RPD7rZ; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ac41514a734so729377666b.2
+        for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 05:19:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1745324339; x=1745929139; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FEb1vp9zsmFr2JcPIb0VWNcIkxax01MRvDIaLi1NWfs=;
+        b=f6RPD7rZsrqWa0d3m5zGKyFjrT/Qv3Hx2VvG/aeUP/JRGP19hY2e53GaEjRSHPfJm5
+         e4E9F4Nj7ZMGqtF0dbA/iR2TVu5SNOL73HBv4yu/2WGc6ein9jUV/R26oKNMfMfKx+5a
+         OtuWdBQo2zysnD6BsfzVxvV2+rhDCdYDnAfolWhVorDt9Nq9BgQspro1Kw0zCTpotzbn
+         5lj05rxGkFcKZ9TO7rzDBgVlwOE0lg4cVyn+TIkF7jYQQMoMAu44iNsj7E9kVR44MvzH
+         LYh3QYCGG+7+A6AXX1/aTXHxVnrlVC5mfQxYQxQWH8vId0BZxkUZ58sbs31xcUA8c9A9
+         ssHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745324339; x=1745929139;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FEb1vp9zsmFr2JcPIb0VWNcIkxax01MRvDIaLi1NWfs=;
+        b=ix0w2ZU/qN8PawPJzNtjhlhEsIqk8tWT35T4sXq8CKDBDFXs2dUa6deb3B0a4VsGNx
+         7yC+Ia+0ribDhU+IpCZBQK+VYP2Irr0VmusczEQYl+omnklYAaiXJvFngAynaUdvH0x4
+         2WKjqlDT2/SOvBp5PU1rYZIFEn3VKGW1VHZDRlkoy81wo5Q/jK7YN+2EsmJSn0KzdTRl
+         Lkc5p1Pvk8tORuuIjWKPFmvPoh+80dTEa9wsWRXeQljZMf6fQuFEuFLmm0t2OlYAsCAk
+         WEjm+w3c/lMZdT8oNoFSjDwOjn7QQrCKBBUxW3hgTpgRbuXC/LWjBHbu3HvqkhIceff+
+         AzNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUXWH0LN3D7koW4Ru91Ep7SlEYtQs2DiD5Aw0e2zA+0AxjglKH92WhIohZPVfCvLlZnHR0ulJsb@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxdbghlb/0WPgLf2x0/T+vEBwwzCFwSqdZzUjr9JE1LGxyM1iJ9
+	BILMSaHgVYtw4hl9iCj28iuY4EDAJdako+hij8ofipVQ6RSatjj3an122+C0Osm9TlWz3mdcoZs
+	F
+X-Gm-Gg: ASbGncu+4GRXaEYioz6cX2/J5BTelnzHynSg4XY/LjN6GGRBwzhO9XOqOsSu0vWtpPf
+	PsRbeutSu4O1VCXv/FTL6a08jNAbgb2algF8p1Vz4TtOrlOskc5RHWqT5n2F9dSiN+XGX6ZVmkD
+	VEeSvDj47mry/OyRdmjrTs2Y2pM5CVaFKUFtt/L5MX9WrsSWtpqWW1n6ZIOI7mvP3wUZp8aD7Jr
+	6TXLh+VR2zGa42EzUVe8lh4chbk+u+0li8CP68tQ7hhFWzZ/eUZV2L9YOmFh7BeZA6lVROZm48t
+	rzpXIg18+z5mqZVNtng3y6YkRu9pp2T8VIpqI3cOHdw=
+X-Google-Smtp-Source: AGHT+IEvO4I0PXr3VK52/nbiHGb/HzcVEaKVg4zzxE5USQ7ElhY0GjljRx4O+2j+s6yFoHcQWu17EA==
+X-Received: by 2002:a17:907:9496:b0:ac3:446d:142 with SMTP id a640c23a62f3a-acb74ad9369mr1114924566b.2.1745324339474;
+        Tue, 22 Apr 2025 05:18:59 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acb6eefc6f3sm655834266b.106.2025.04.22.05.18.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Apr 2025 05:18:58 -0700 (PDT)
+Date: Tue, 22 Apr 2025 14:18:40 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Penglei Jiang <superman.xpt@gmail.com>
+Cc: tj@kernel.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, xnxc22xnxc22@qq.com
+Subject: Re: KASAN: slab-use-after-free Read in cgroup_rstat_flush
+Message-ID: <2eatfmps723vwbvqgqppswny73axxgbmmkaseqjkg2hxojpwvr@3fn36fsfed6x>
+References: <Z_1JBt3RMATxnDgL@slm.duckdns.org>
+ <20250419153843.5035-1-superman.xpt@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="hiej3wsm4kzjo3ca"
 Content-Disposition: inline
-In-Reply-To: <20250404011050.121777-2-inwardvessel@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20250419153843.5035-1-superman.xpt@gmail.com>
 
-On Thu, Apr 03, 2025 at 06:10:46PM -0700, JP Kobryn wrote:
-> This non-functional change serves as preparation for moving to
-> subsystem-based rstat trees. The base stats are not an actual subsystem,
-> but in future commits they will have exclusive rstat trees just as other
-> subsystems will.
-> 
-> Moving the base stat objects into a new struct allows the cgroup_rstat_cpu
-> struct to become more compact since it now only contains the minimum amount
-> of pointers needed for rstat participation. Subsystems will (in future
-> commits) make use of the compact cgroup_rstat_cpu struct while avoiding the
-> memory overhead of the base stat objects which they will not use.
-> 
-> An instance of the new struct cgroup_rstat_base_cpu was placed on the
-> cgroup struct so it can retain ownership of these base stats common to all
-> cgroups. A helper function was added for looking up the cpu-specific base
-> stats of a given cgroup. Finally, initialization and variable names were
-> adjusted where applicable.
-> 
-> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
 
-Reviewed-by: Yosry Ahmed <yosry.ahmed@linux.dev>
+--hiej3wsm4kzjo3ca
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: KASAN: slab-use-after-free Read in cgroup_rstat_flush
+MIME-Version: 1.0
+
+On Sat, Apr 19, 2025 at 08:38:43AM -0700, Penglei Jiang <superman.xpt@gmail=
+=2Ecom> wrote:
+> On Mon, 14 Apr 2025 07:42:30 -1000, tj <tj@kernel.org> wrote:
+>=20
+> > Maybe another casualty of the bug fixed by a22b3d54de94 ("cgroup/cpuset=
+: Fix
+> > race between newly created partition and dying one")?
+>=20
+> This issue was maybe caused by commit 093c8812de2d3, and was later fixed
+> by commit 7d6c63c319142.
+
+Ah, I overlooked that the original report is not for v6.14 but
+f6e0150b2003 actually (correct?), so this is sensible in that context.
+
+Does it mean you cannot attain the KASAN report post 7d6c63c319142?
+
+Thanks,
+Michal
+
+--hiej3wsm4kzjo3ca
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCaAeJHgAKCRAt3Wney77B
+SVALAQCxpvY+YXDCaGceP86Ps37TAi1fztt+MjmyKf9IWzf4VQD+LGcIjiluUvvf
+3CDAaVURoOL8D/lTu6M3RIITuf41bQU=
+=V4iz
+-----END PGP SIGNATURE-----
+
+--hiej3wsm4kzjo3ca--
 
