@@ -1,90 +1,92 @@
-Return-Path: <cgroups+bounces-7710-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7711-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9FD3A96504
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 11:48:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33690A967F4
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 13:42:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AC837A15EE
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 09:47:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF751188A4A1
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 11:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B8D202990;
-	Tue, 22 Apr 2025 09:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E634B274FD0;
+	Tue, 22 Apr 2025 11:41:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Us9FFHOQ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OrJ4b/Ry"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005411F0E2D;
-	Tue, 22 Apr 2025 09:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A374A2AEE9
+	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 11:41:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745315309; cv=none; b=pXoXPyN3kpGo0tp/gU5Yl8fIGp0jeYLwNteT6B5GWk+Kh2RMCJOJYPkkO8M+mbuAPMuRVOOVmH2HwBYDsJkhauFZXYYkQHpEpWrhyiv4yfkz16lSxJzDw6aMUGAPbT4mB9G8gFetBT+YQEoKxjrguhuch80CP1d/u3jN4A/FYS8=
+	t=1745322092; cv=none; b=d3hNMJ8LACESWstIhyDREO88kdVU+8BGfLy3tSDQp2N7UxPf4bNWTc4zaF5UmNFKLvAIu+FJS7VsigeDoHCNhDRKwt4J7VwNJwNBLuTzRhv3vSnmXsfVZjLWf9svatsmwJXwFL2eS00tCnfYS1QI+eYb1ZwDIcRrSjLWxs5dPoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745315309; c=relaxed/simple;
-	bh=F/z8c26wHkzHaROXkny7shU6M6OS0DqFGLKEbifOWY8=;
+	s=arc-20240116; t=1745322092; c=relaxed/simple;
+	bh=Z0xoBCce+obPuklML8DLSrfIsk7iPcapdXWIqrL45pM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ER0oXFi7sAijsxy+xvJyNpTJPx31or/udw9ftwN43q+2kbesivHM1SaRvqqM/uCP8XXDe/y3eSLqegc2hRCI14MOldx8BGgk+TivSeipseYKDXsnTbImdjM1LW7+QYk3SXiokr1hgfi8c3HkArJGxHKcOqoCI95zOuc5yhN0zH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Us9FFHOQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 558CBC4CEE9;
-	Tue, 22 Apr 2025 09:48:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745315308;
-	bh=F/z8c26wHkzHaROXkny7shU6M6OS0DqFGLKEbifOWY8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Us9FFHOQmjkpBlN5cn6xPNP+Qjsi1tmLPi/jlEzyQChYIvmiOaPHdtzBV7eFfWFr/
-	 +DMMbfAunIkFbDyqite2Q8uyHo6cE8FPt0jMpG9DpbJ6IM10UbpDqZEKBjqo7S9X05
-	 vxvCc35NNem4wJrB3JllSLj+1e8zuYP0vMNQ9KXF8wRqdnkgbUX+9R3GZxzLKjZuWP
-	 CRajPI9VHh+OEwC/FCbWOqldTphYl5rRUoBQCXkzx2rqKAr6aJz7haxDh30UpW8Pck
-	 lew8DA4NzX6AYIHDkOg+0COZacePRaH183p7oG2KHxN8nc652OLFJJdiWP6aKN448v
-	 8j6i8lk80aZkg==
-Date: Tue, 22 Apr 2025 11:48:23 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Yosry Ahmed <yosry.ahmed@linux.dev>, Tejun Heo <tj@kernel.org>, 
-	Greg Thelen <gthelen@google.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH v2] memcg: introduce non-blocking limit setting option
-Message-ID: <20250422-synergie-bauabschnitt-5f724f1d9866@brauner>
-References: <20250419183545.1982187-1-shakeel.butt@linux.dev>
- <20250422-daumen-ozonbelastung-93d90ca81dfa@brauner>
- <jqlq7y3bco4r3jpth23ymf7ghrtxbvc2kthvbqjahlkzsl4mik@euvvqaygeafd>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MR814nj0C7ruqBNBIaYQCjjvK7TPIcReIFuwJUxbTYvDu4mwzCSeuzEp0dHSuucDhs0akXp07C7Qn8szLYkh2qmOx/eBMJS933L2BcWaIVc+wXhUUN6Bmp1l5FW4c1odDUHbDNPVurBiWQG/63mpvgzWpjk2u+l8HY7fW2FurVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OrJ4b/Ry; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 22 Apr 2025 04:41:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745322078;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aGjfUa0VdFNE7pAhfj1k3sXWx23PmVKsC+WEqb2v1XU=;
+	b=OrJ4b/RydEPGLVaiWvtAx95vFvpu/zp46RuMAmWS9/Cr+90MRK1LqVWwpdv/Hz+Mt82UTo
+	trAATCdjYc4rBJ3UmmsIKTRGqbBcib7sjLJG2PWf19npjz+4cbk+5UFlL72k1dEN3aJHDt
+	ggPkHh9W7H6TCuUS83qhIBmwtwMDZmI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yosry Ahmed <yosry.ahmed@linux.dev>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, Waiman Long <llong@redhat.com>,
+	linux-mm@kvack.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v2] memcg: optimize memcg_rstat_updated
+Message-ID: <aAeAWVeLJT9bygA3@Asmaa.>
+References: <20250410025752.92159-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <jqlq7y3bco4r3jpth23ymf7ghrtxbvc2kthvbqjahlkzsl4mik@euvvqaygeafd>
+In-Reply-To: <20250410025752.92159-1-shakeel.butt@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Apr 22, 2025 at 11:31:23AM +0200, Michal Koutný wrote:
-> On Tue, Apr 22, 2025 at 11:23:17AM +0200, Christian Brauner <brauner@kernel.org> wrote:
-> > As written this isn't restricted to admin processes though, no? So any
-> > unprivileged container can open that file O_NONBLOCK and avoid
-> > synchronous reclaim?
-> > 
-> > Which might be fine I have no idea but it's something to explicitly
-> > point out 
+On Wed, Apr 09, 2025 at 07:57:52PM -0700, Shakeel Butt wrote:
+> Currently the kernel maintains the stats updates per-memcg which is
+> needed to implement stats flushing threshold. On the update side, the
+> update is added to the per-cpu per-memcg update of the given memcg and
+> all of its ancestors. However when the given memcg has passed the
+> flushing threshold, all of its ancestors should have passed the
+> threshold as well. There is no need to traverse up the memcg tree to
+> maintain the stats updates.
+
+Nice. We also skip updating the per-CPU stats updates counter, which is
+unnecessary in this case as well.
+
 > 
-> It occurred to me as well but I think this is fine -- changing the
-> limits of a container is (should be) a privileged operation already
-> (ensured by file permissions at opening).
-> IOW, this doesn't allow bypassing the limits to anyone who couldn't have
-> been able to change them already.
+> Perf profile collected from our fleet shows that memcg_rstat_updated is
+> one of the most expensive memcg function i.e. a lot of cumulative CPU
+> is being spent on it. So, even small micro optimizations matter a lot.
+> This patch is microbenchmarked with multiple instances of netperf on a
+> single machine with locally running netserver and we see couple of
+> percentage of improvement.
+> 
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Hm, can you explain what you mean by a privileged operation here? If I
-have nested containers with user namespaces with delegated cgroup tress,
-i.e., chowned to them and then some PID 1 or privileged container
-_within the user namespace_ lowers the limit and uses O_NONBLOCK then it
-won't trigger synchronous reclaim. Again, this might all be fine I'm
-just trying to understand.
+Reviewed-by: Yosry Ahmed <yosry.ahmed@linux.dev>
 
