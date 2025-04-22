@@ -1,377 +1,164 @@
-Return-Path: <cgroups+bounces-7720-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7721-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8549CA96E36
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 16:20:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A7B7A96F20
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 16:41:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B389216935A
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 14:20:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28A203A4A88
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 14:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9F01EB19F;
-	Tue, 22 Apr 2025 14:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AEB3289356;
+	Tue, 22 Apr 2025 14:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qVLT8s0N"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KkmYdZRA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C9A188A3A
-	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 14:20:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB5D285407
+	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 14:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745331640; cv=none; b=U1K3ByfutVkKGils/ki1Pj+wv2kbVp6CHbS92OtwZkiUW89m6Yz6JWKopr9jJ0UOB+bhlt8aoQr+qsmFZkZIO2NG2SUkPYxBxhk84bkzlY7nLBsATeO10+NM4jxihBE4LAOuwCVQYhOG081NT+DBQAFX4KWDwcvaYsIixRP2/Wc=
+	t=1745332910; cv=none; b=Af5o0/oC4D/+9jXM9BRLH2Z3XZf6LYWhsAJ253aJ2Ax8RSaqwi2RTjmmMTOF6fs2erdZrvL4vrahadpHixmbmmVsy3Ge8HQAM19wPT7Nvi9VyYYfGg8XX4SSx6Y/QZzko2WvZ9LE8AieNTZsKAc8ttSw1s+NONyH1OWAogtdFcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745331640; c=relaxed/simple;
-	bh=hdT61DqesHTNiQPvvNSg4aOb3v3gKvFJhwAlQgTYuvE=;
+	s=arc-20240116; t=1745332910; c=relaxed/simple;
+	bh=zHWh4uSIApkmGP5MhyX7KcUm0obTMv71a5TDLmbBQ2A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AWEjIjrrDi2DnVGseDUh91Rn4gKA1Wpf9iH1jRevubBhCW+cvIlJ3mihEF2gggBl0yRwWIMOJnPcre9a7VPMWpSTelJDjpP7teHyV6KnOYI9BIkkg9qQlD2Ro2pY5XRi9mzRHiqM7FUzovMlVsULo+3dFVeCcA3Seb1a5tPpdts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qVLT8s0N; arc=none smtp.client-ip=91.218.175.184
+	 Content-Type:Content-Disposition:In-Reply-To; b=cPsLa+juNXAjEzfCUSZrgeLjKkvP50AZKW0uV8bgriVXQp0MXmnZQVGxLo1ZmzONEZKr+riQlcIH+b2TjBcG7wnrQ/iyXh7k2CP/zYOicN1dQI/kr5T2TV6XyqqJ1MssPe3XOk1cIvGC4y4WLZvM1R8XX4e33PpWXR007oKnI+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KkmYdZRA; arc=none smtp.client-ip=95.215.58.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 22 Apr 2025 07:20:27 -0700
+Date: Tue, 22 Apr 2025 07:41:24 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745331634;
+	t=1745332896;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rQ0FM7weLDvnn9IvSsmeRvdWmjV6LEguMdvEbOvN5L4=;
-	b=qVLT8s0NXGq6fYaG1pGxJg73rHPdCLdjp/BKQtvM0A35ADNI7T3c4zSN5ur4A3JrW/o1se
-	LOhfu/qbAzbiDvqjq8klyNryJ1NvAo5tInWZUOQtvV0jly2YUVIyv8kbjerCZEUo/sV3LY
-	aQStAg5QGlSAHAuAkI3//v6yCff/RCM=
+	bh=Vyd+N7ix2s2qiHf7u+8PYPa1V/Nz2f9Sgk8z0rzIogw=;
+	b=KkmYdZRAY57gqhIHaTcv3T4asZSyWxp+41awkJRHBMwHupZ+Ny0P8O25Uj98mqp2/XNb5v
+	zgkEyJxfgTh7/dSUqRKZapHjKrUx8FURAEQcPkl1WQ4KndYhUNMmqHi1i1JsRoKRF6YSs7
+	hQ6pA4setMf7aM/il45tyGApQfXsNCY=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yosry Ahmed <yosry.ahmed@linux.dev>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: Muchun Song <muchun.song@linux.dev>,
-	Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	akpm@linux-foundation.org, david@fromorbit.com,
-	zhengqi.arch@bytedance.com, nphamcs@gmail.com,
-	chengming.zhou@linux.dev, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
-	yuzhao@google.com
-Subject: Re: [PATCH RFC 00/28] Eliminate Dying Memory Cgroup
-Message-ID: <aAelq2ITcSbXwO5B@Asmaa.>
-References: <20250415024532.26632-1-songmuchun@bytedance.com>
- <CAMgjq7BAfh-op06++LEgXf4UM47Pp1=ER+1WvdOn3-6YYQHYmw@mail.gmail.com>
- <F9BDE357-C7DA-4860-A167-201B01A274FC@linux.dev>
- <CAMgjq7D+GXce=nTzxPyR+t6YZSLWf-8eByo+0NpprQf61gXjPA@mail.gmail.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org,
+	akpm@linux-foundation.org, hughd@google.com, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, len.brown@intel.com,
+	chengming.zhou@linux.dev, kasong@tencent.com, chrisl@kernel.org,
+	huang.ying.caritas@gmail.com, ryan.roberts@arm.com,
+	viro@zeniv.linux.org.uk, baohua@kernel.org, osalvador@suse.de,
+	lorenzo.stoakes@oracle.com, christophe.leroy@csgroup.eu,
+	pavel@kernel.org, kernel-team@meta.com,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH 03/14] mm: swap: add a separate type for physical
+ swap slots
+Message-ID: <aAeqlE95yQA16HT3@Asmaa.>
+References: <20250407234223.1059191-1-nphamcs@gmail.com>
+ <20250407234223.1059191-4-nphamcs@gmail.com>
+ <20250408141555.GA816@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMgjq7D+GXce=nTzxPyR+t6YZSLWf-8eByo+0NpprQf61gXjPA@mail.gmail.com>
+In-Reply-To: <20250408141555.GA816@cmpxchg.org>
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, Apr 18, 2025 at 02:22:12AM +0800, Kairui Song wrote:
-> On Tue, Apr 15, 2025 at 4:02 PM Muchun Song <muchun.song@linux.dev> wrote:
-> >
-> >
-> >
-> > > On Apr 15, 2025, at 14:19, Kairui Song <ryncsn@gmail.com> wrote:
-> > >
-> > > On Tue, Apr 15, 2025 at 10:46 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> > >>
-> > >> This patchset is based on v6.15-rc2. It functions correctly only when
-> > >> CONFIG_LRU_GEN (Multi-Gen LRU) is disabled. Several issues were encountered
-> > >> during rebasing onto the latest code. For more details and assistance, refer
-> > >> to the "Challenges" section. This is the reason for adding the RFC tag.
-> > >>
-> > >> ## Introduction
-> > >>
-> > >> This patchset is intended to transfer the LRU pages to the object cgroup
-> > >> without holding a reference to the original memory cgroup in order to
-> > >> address the issue of the dying memory cgroup. A consensus has already been
-> > >> reached regarding this approach recently [1].
-> > >>
-> > >> ## Background
-> > >>
-> > >> The issue of a dying memory cgroup refers to a situation where a memory
-> > >> cgroup is no longer being used by users, but memory (the metadata
-> > >> associated with memory cgroups) remains allocated to it. This situation
-> > >> may potentially result in memory leaks or inefficiencies in memory
-> > >> reclamation and has persisted as an issue for several years. Any memory
-> > >> allocation that endures longer than the lifespan (from the users'
-> > >> perspective) of a memory cgroup can lead to the issue of dying memory
-> > >> cgroup. We have exerted greater efforts to tackle this problem by
-> > >> introducing the infrastructure of object cgroup [2].
-> > >>
-> > >> Presently, numerous types of objects (slab objects, non-slab kernel
-> > >> allocations, per-CPU objects) are charged to the object cgroup without
-> > >> holding a reference to the original memory cgroup. The final allocations
-> > >> for LRU pages (anonymous pages and file pages) are charged at allocation
-> > >> time and continues to hold a reference to the original memory cgroup
-> > >> until reclaimed.
-> > >>
-> > >> File pages are more complex than anonymous pages as they can be shared
-> > >> among different memory cgroups and may persist beyond the lifespan of
-> > >> the memory cgroup. The long-term pinning of file pages to memory cgroups
-> > >> is a widespread issue that causes recurring problems in practical
-> > >> scenarios [3]. File pages remain unreclaimed for extended periods.
-> > >> Additionally, they are accessed by successive instances (second, third,
-> > >> fourth, etc.) of the same job, which is restarted into a new cgroup each
-> > >> time. As a result, unreclaimable dying memory cgroups accumulate,
-> > >> leading to memory wastage and significantly reducing the efficiency
-> > >> of page reclamation.
-> > >>
-> > >> ## Fundamentals
-> > >>
-> > >> A folio will no longer pin its corresponding memory cgroup. It is necessary
-> > >> to ensure that the memory cgroup or the lruvec associated with the memory
-> > >> cgroup is not released when a user obtains a pointer to the memory cgroup
-> > >> or lruvec returned by folio_memcg() or folio_lruvec(). Users are required
-> > >> to hold the RCU read lock or acquire a reference to the memory cgroup
-> > >> associated with the folio to prevent its release if they are not concerned
-> > >> about the binding stability between the folio and its corresponding memory
-> > >> cgroup. However, some users of folio_lruvec() (i.e., the lruvec lock)
-> > >> desire a stable binding between the folio and its corresponding memory
-> > >> cgroup. An approach is needed to ensure the stability of the binding while
-> > >> the lruvec lock is held, and to detect the situation of holding the
-> > >> incorrect lruvec lock when there is a race condition during memory cgroup
-> > >> reparenting. The following four steps are taken to achieve these goals.
-> > >>
-> > >> 1. The first step  to be taken is to identify all users of both functions
-> > >>   (folio_memcg() and folio_lruvec()) who are not concerned about binding
-> > >>   stability and implement appropriate measures (such as holding a RCU read
-> > >>   lock or temporarily obtaining a reference to the memory cgroup for a
-> > >>   brief period) to prevent the release of the memory cgroup.
-> > >>
-> > >> 2. Secondly, the following refactoring of folio_lruvec_lock() demonstrates
-> > >>   how to ensure the binding stability from the user's perspective of
-> > >>   folio_lruvec().
-> > >>
-> > >>   struct lruvec *folio_lruvec_lock(struct folio *folio)
-> > >>   {
-> > >>           struct lruvec *lruvec;
-> > >>
-> > >>           rcu_read_lock();
-> > >>   retry:
-> > >>           lruvec = folio_lruvec(folio);
-> > >>           spin_lock(&lruvec->lru_lock);
-> > >>           if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
-> > >>                   spin_unlock(&lruvec->lru_lock);
-> > >>                   goto retry;
-> > >>           }
-> > >>
-> > >>           return lruvec;
-> > >>   }
-> > >>
-> > >>   From the perspective of memory cgroup removal, the entire reparenting
-> > >>   process (altering the binding relationship between folio and its memory
-> > >>   cgroup and moving the LRU lists to its parental memory cgroup) should be
-> > >>   carried out under both the lruvec lock of the memory cgroup being removed
-> > >>   and the lruvec lock of its parent.
-> > >>
-> > >> 3. Thirdly, another lock that requires the same approach is the split-queue
-> > >>   lock of THP.
-> > >>
-> > >> 4. Finally, transfer the LRU pages to the object cgroup without holding a
-> > >>   reference to the original memory cgroup.
-> > >>
-> > >
-> > > Hi, Muchun, thanks for the patch.
-> >
-> > Thanks for your reply and attention.
-> >
-> > >
-> > >> ## Challenges
-> > >>
-> > >> In a non-MGLRU scenario, each lruvec of every memory cgroup comprises four
-> > >> LRU lists (i.e., two active lists for anonymous and file folios, and two
-> > >> inactive lists for anonymous and file folios). Due to the symmetry of the
-> > >> LRU lists, it is feasible to transfer the LRU lists from a memory cgroup
-> > >> to its parent memory cgroup during the reparenting process.
-> > >
-> > > Symmetry of LRU lists doesn't mean symmetry 'hotness', it's totally
-> > > possible that a child's active LRU is colder and should be evicted
-> > > first before the parent's inactive LRU (might even be a common
-> > > scenario for certain workloads).
-> >
-> > Yes.
-> >
-> > > This only affects the performance not the correctness though, so not a
-> > > big problem.
-> > >
-> > > So will it be easier to just assume dying cgroup's folios are colder?
-> > > Simply move them to parent's LRU tail is OK. This will make the logic
-> > > appliable for both active/inactive LRU and MGLRU.
-> >
-> > I think you mean moving all child LRU list to the parent memcg's inactive
-> > list. It works well for your case. But sometimes, due to shared page cache
-> > pages, some pages in the child list may be accessed more frequently than
-> > those in the parent's. Still, it's okay as they can be promoted quickly
-> > later. So I am fine with this change.
-> >
-> > >
-> > >>
-> > >> In a MGLRU scenario, each lruvec of every memory cgroup comprises at least
-> > >> 2 (MIN_NR_GENS) generations and at most 4 (MAX_NR_GENS) generations.
-> > >>
-> > >> 1. The first question is how to move the LRU lists from a memory cgroup to
-> > >>   its parent memory cgroup during the reparenting process. This is due to
-> > >>   the fact that the quantity of LRU lists (aka generations) may differ
-> > >>   between a child memory cgroup and its parent memory cgroup.
-> > >>
-> > >> 2. The second question is how to make the process of reparenting more
-> > >>   efficient, since each folio charged to a memory cgroup stores its
-> > >>   generation counter into its ->flags. And the generation counter may
-> > >>   differ between a child memory cgroup and its parent memory cgroup because
-> > >>   the values of ->min_seq and ->max_seq are not identical. Should those
-> > >>   generation counters be updated correspondingly?
-> > >
-> > > I think you do have to iterate through the folios to set or clear
-> > > their generation flags if you want to put the folio in the right gen.
-> > >
-> > > MGLRU does similar thing in inc_min_seq. MGLRU uses the gen flags to
-> > > defer the actual LRU movement of folios, that's a very important
-> > > optimization per my test.
-> >
-> > I noticed that, which is why I asked the second question. It's
-> > inefficient when dealing with numerous pages related to a memory
-> > cgroup.
-> >
-> > >
-> > >>
-> > >> I am uncertain about how to handle them appropriately as I am not an
-> > >> expert at MGLRU. I would appreciate it if you could offer some suggestions.
-> > >> Moreover, if you are willing to directly provide your patches, I would be
-> > >> glad to incorporate them into this patchset.
-> > >
-> > > If we just follow the above idea (move them to parent's tail), we can
-> > > just keep the folio's tier info untouched here.
-> > >
-> > > For mapped file folios, they will still be promoted upon eviction if
-> > > their access bit are set (rmap walk), and MGLRU's table walker might
-> > > just promote them just fine.
-> > >
-> > > For unmapped file folios, if we just keep their tier info and add
-> > > child's MGLRU tier PID counter back to the parent. Workingset
-> > > protection of MGLRU should still work just fine.
-> > >
-> > >>
-> > >> ## Compositions
-> > >>
-> > >> Patches 1-8 involve code refactoring and cleanup with the aim of
-> > >> facilitating the transfer LRU folios to object cgroup infrastructures.
-> > >>
-> > >> Patches 9-10 aim to allocate the object cgroup for non-kmem scenarios,
-> > >> enabling the ability that LRU folios could be charged to it and aligning
-> > >> the behavior of object-cgroup-related APIs with that of the memory cgroup.
-> > >>
-> > >> Patches 11-19 aim to prevent memory cgroup returned by folio_memcg() from
-> > >> being released.
-> > >>
-> > >> Patches 20-23 aim to prevent lruvec returned by folio_lruvec() from being
-> > >> released.
-> > >>
-> > >> Patches 24-25 implement the core mechanism to guarantee binding stability
-> > >> between the folio and its corresponding memory cgroup while holding lruvec
-> > >> lock or split-queue lock of THP.
-> > >>
-> > >> Patches 26-27 are intended to transfer the LRU pages to the object cgroup
-> > >> without holding a reference to the original memory cgroup in order to
-> > >> address the issue of the dying memory cgroup.
-> > >>
-> > >> Patch 28 aims to add VM_WARN_ON_ONCE_FOLIO to LRU maintenance helpers to
-> > >> ensure correct folio operations in the future.
-> > >>
-> > >> ## Effect
-> > >>
-> > >> Finally, it can be observed that the quantity of dying memory cgroups will
-> > >> not experience a significant increase if the following test script is
-> > >> executed to reproduce the issue.
-> > >>
-> > >> ```bash
-> > >> #!/bin/bash
-> > >>
-> > >> # Create a temporary file 'temp' filled with zero bytes
-> > >> dd if=/dev/zero of=temp bs=4096 count=1
-> > >>
-> > >> # Display memory-cgroup info from /proc/cgroups
-> > >> cat /proc/cgroups | grep memory
-> > >>
-> > >> for i in {0..2000}
-> > >> do
-> > >>    mkdir /sys/fs/cgroup/memory/test$i
-> > >>    echo $$ > /sys/fs/cgroup/memory/test$i/cgroup.procs
-> > >>
-> > >>    # Append 'temp' file content to 'log'
-> > >>    cat temp >> log
-> > >>
-> > >>    echo $$ > /sys/fs/cgroup/memory/cgroup.procs
-> > >>
-> > >>    # Potentially create a dying memory cgroup
-> > >>    rmdir /sys/fs/cgroup/memory/test$i
-> > >> done
-> > >>
-> > >> # Display memory-cgroup info after test
-> > >> cat /proc/cgroups | grep memory
-> > >>
-> > >> rm -f temp log
-> > >> ```
-> > >>
-> > >> ## References
-> > >>
-> > >> [1] https://lore.kernel.org/linux-mm/Z6OkXXYDorPrBvEQ@hm-sls2/
-> > >> [2] https://lwn.net/Articles/895431/
-> > >> [3] https://github.com/systemd/systemd/pull/36827
-> > >
-> > > How much overhead will it be? Objcj has some extra overhead, and we
-> > > have some extra convention for retrieving memcg of a folio now, not
-> > > sure if this will have an observable slow down.
-> >
-> > I don't think there'll be an observable slowdown. I think objcg is
-> > more effective for slab objects as they're more sensitive than user
-> > pages. If it's acceptable for slab objects, it should be acceptable
-> > for user pages too.
+On Tue, Apr 08, 2025 at 10:15:55AM -0400, Johannes Weiner wrote:
+> On Mon, Apr 07, 2025 at 04:42:04PM -0700, Nhat Pham wrote:
+> > In preparation for swap virtualization, add a new type to represent the
+> > physical swap slots of swapfile. This allows us to separates:
+> > 
+> > 1. The logical view of the swap entry (i.e what is stored in page table
+> >    entries and used to index into the swap cache), represented by the
+> >    old swp_entry_t type.
+> > 
+> > from:
+> > 
+> > 2. Its physical backing state (i.e the actual backing slot on the swap
+> >    device), represented by the new swp_slot_t type.
+> > 
+> > The functions that operate at the physical level (i.e on the swp_slot_t
+> > types) are also renamed where appropriate (prefixed with swp_slot_* for
+> > e.g). We also take this opportunity to re-arrange the header files
+> > (include/linux/swap.h and swapops.h), grouping the swap API into the
+> > following categories:
+> > 
+> > 1. Virtual swap API (i.e functions on swp_entry_t type).
+> > 
+> > 2. Swap cache API (mm/swap_state.c)
+> > 
+> > 3. Swap slot cache API (mm/swap_slots.c)
+> > 
+> > 4. Physical swap slots and device API (mm/swapfile.c).
+> 
+> This all makes sense.
+> 
+> However,
+> 
+> > @@ -483,50 +503,37 @@ static inline long get_nr_swap_pages(void)
+> >  	return atomic_long_read(&nr_swap_pages);
+> >  }
+> >  
+> > -extern void si_swapinfo(struct sysinfo *);
+> > -swp_entry_t folio_alloc_swap(struct folio *folio);
+> > -bool folio_free_swap(struct folio *folio);
+> > -void put_swap_folio(struct folio *folio, swp_entry_t entry);
+> > -extern swp_entry_t get_swap_page_of_type(int);
+> > -extern int get_swap_pages(int n, swp_entry_t swp_entries[], int order);
+> > -extern int add_swap_count_continuation(swp_entry_t, gfp_t);
+> > -extern void swap_shmem_alloc(swp_entry_t, int);
+> > -extern int swap_duplicate(swp_entry_t);
+> > -extern int swapcache_prepare(swp_entry_t entry, int nr);
+> > -extern void swap_free_nr(swp_entry_t entry, int nr_pages);
+> > -extern void swapcache_free_entries(swp_entry_t *entries, int n);
+> > -extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
+> > +void si_swapinfo(struct sysinfo *);
+> > +swp_slot_t swap_slot_alloc_of_type(int);
+> > +int swap_slot_alloc(int n, swp_slot_t swp_slots[], int order);
+> > +void swap_slot_free_nr(swp_slot_t slot, int nr_pages);
+> > +void swap_slot_cache_free_slots(swp_slot_t *slots, int n);
+> >  int swap_type_of(dev_t device, sector_t offset);
+> > +sector_t swapdev_block(int, pgoff_t);
+> >  int find_first_swap(dev_t *device);
+> > -extern unsigned int count_swap_pages(int, int);
+> > -extern sector_t swapdev_block(int, pgoff_t);
+> > -extern int __swap_count(swp_entry_t entry);
+> > -extern int swap_swapcount(struct swap_info_struct *si, swp_entry_t entry);
+> > -extern int swp_swapcount(swp_entry_t entry);
+> > -struct swap_info_struct *swp_swap_info(swp_entry_t entry);
+> > +unsigned int count_swap_pages(int, int);
+> > +struct swap_info_struct *swap_slot_swap_info(swp_slot_t slot);
+> >  struct backing_dev_info;
+> > -extern int init_swap_address_space(unsigned int type, unsigned long nr_pages);
+> > -extern void exit_swap_address_space(unsigned int type);
+> > -extern struct swap_info_struct *get_swap_device(swp_entry_t entry);
+> > +struct swap_info_struct *swap_slot_tryget_swap_info(swp_slot_t slot);
+> >  sector_t swap_folio_sector(struct folio *folio);
+> 
+> this is difficult to review.
+> 
+> Can you please split out:
+> 
+> 1. Code moves / cut-and-paste
+> 
+> 2. Renames
+> 
+> 3. New code
+> 
+> into three separate steps
 
-It would be nice if we can get some numbers to make sure there are no
-regressions in common workloads, especially those that trigger a lot of
-calls to folio_memcg() and friends.
++1, I agree with the fundamental change (and is something that I
+attempted before), but it's really difficult to parse :)
 
-> 
-> We currently have some workloads running with `nokmem` due to objcg
-> performance issues. I know there are efforts to improve them, but so
-> far it's still not painless to have. So I'm a bit worried about
-> this...
-> 
-> > >
-> > > I'm still thinking if it be more feasible to just migrate (NOT that
-> > > Cgroup V1 migrate, just set the folio's memcg to parent for dying
-> > > cgroup and update the memcg charge) and iterate the folios on
-> > > reparenting in a worker or something like that. There is already
-> > > things like destruction workqueue and offline waitqueue. That way
-> > > folios will still just point to a memcg, and seems would avoid a lot
-> > > of complexity.
-> >
-> > I didn't adopt this approach for two reasons then:
-> >
-> >   1) It's inefficient to change `->memcg_data` to the parent when
-> >      iterating through all pages associated with a memory cgroup.
-> 
-> This is a problem indeed, but isn't reparenting a rather rare
-> operation? So a slow async worker might be just fine?
-> 
-> >   2) During iteration, we might come across pages isolated by other
-> >      users. These pages aren't in any LRU list and will thus miss
-> >      being reparented to the parent memory cgroup.
-> 
-> Hmm, such pages will have to be returned at some point, adding
-> convention for isolate / return seems cleaner than adding convention
-> for all folio memcg retrieving?
-
-Apart from isolated folios, we may come across folios that are locked or
-have their refs frozen by someone else. I assume we wouldn't want to
-mess with those folios. Such indetermenistic behavior was the main
-reason my recharging approach was turned down:
-https://lore.kernel.org/lkml/20230720070825.992023-1-yosryahmed@google.com/
+Also, weren't the swap slots scheduled for removal or is my brain making
+stuff up again?
 
