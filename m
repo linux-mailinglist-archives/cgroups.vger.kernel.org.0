@@ -1,57 +1,57 @@
-Return-Path: <cgroups+bounces-7718-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7719-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25159A96D01
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 15:37:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F0BAA96DD2
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 16:04:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B89740145B
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 13:34:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D4DE1886FB9
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 14:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6B52836AC;
-	Tue, 22 Apr 2025 13:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7CCC27C158;
+	Tue, 22 Apr 2025 14:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Zv0Ngf4b"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QBRFHDv1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54AA82836B9
-	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 13:33:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3CF2283CA2
+	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 14:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745328812; cv=none; b=FjD6xYB5PCGmO59cQYmz2P69zbmr0agqe38tPoCFMpRpWV3yqc/nqys3ouhbiyOJYoxweuVpSjE/HUNS5uEoq5TQBs20mqYwUbaMhEArDmdDRYCln59e4C5t28ulz+5ToyLr3ek6BAM+PhT09XK8NjrcXZtOUXCqPJZCA3ttTIQ=
+	t=1745330485; cv=none; b=UtXVj1UReXOWUjHvHj6i1hilDLUPmPrpglsP5autNefIw6T31nybnMu+zt6ZNDs32YNXPMhQuTnhOgmIIANFZ3ly6j1/aL5ETTtSZa71MtdYwQ0We1bnGI8yoPOyEPfhTgm7Kg6OYmcQMGccdPJVPbNxwAe7pOylBsFV1xEeREg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745328812; c=relaxed/simple;
-	bh=vJgHwd67bP5kkfk58TGOP/SpxesF1FSegW6/a2eXw3s=;
+	s=arc-20240116; t=1745330485; c=relaxed/simple;
+	bh=EUtVRZlknL+jkCp/Gy5Lt/cTLRVdSo6k3i4SLY6MZVQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o5NJSx0FGi+S7ArcL4jjB39GCjkbTxga+p6iQD75ruq8MFIh2Yr/Osx7jrf9wONje0WfInEjsgOlHhOANzi/zVdiLHg6qhL87T7lUMkgurwdxslPFCYxjMfnxGtGQiDLoxC+qxmquLcDFHh9IODyHglElqETOCHqaA42ZufjzPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Zv0Ngf4b; arc=none smtp.client-ip=91.218.175.184
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ks27nc1JkkwvTHKPw1ibPpPgRJQG07LTiFmjBKYIWuvZvsC+bjtBGCoN0msLqnBGi7OpsNK/4DbRA8qNvMlGoYdZdsXiXLc3N60/fmGpzgZmr26FmLJQtpkoCt2Uo/55OTHbgNCdNLR68ZrrTJfiNPiduXO+FbGHNBnax10q5vA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QBRFHDv1; arc=none smtp.client-ip=91.218.175.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 22 Apr 2025 06:33:23 -0700
+Date: Tue, 22 Apr 2025 07:01:15 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745328807;
+	t=1745330480;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AY4fKwl2w/0Y+OFsSf3SMakvPUO3ks8cM5I2ij4eDiw=;
-	b=Zv0Ngf4bz0eYmnFNTs1TPIxd+MjPqkyuKBdUzXCJQ4kdaiFkD3t8E5nGWb80KRNIBcxf28
-	+0JTgeVV0oSMlcY7vDC2/g/dmnBTnBBl0zup6+YYM+z7o9N2dss0uYzLP7zeWWcAVuWL9f
-	Ah2hZgZ5oiyNbl0FzO2YL9QfuqIcVRM=
+	bh=KZiyAKGmgRNuRBsZBpRX/xVMhFS+3p/30Wi1DCLvGIo=;
+	b=QBRFHDv1EvPS1zuu6ArnOt8XsHWRYR3F8ozD+tjUPysKe5ofjqULjfrAJKg2qxBmlIHq3Q
+	16+1tmHmJU9+znGcrRm1Z+G+p0nbgd8qdOvFgDh7VdhJBjeHqh2Sad9ZFxFZBEaBfCqzqV
+	KCFEl/TZJIsbTdHKRdoNjok+Sfwq6fE=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yosry Ahmed <yosry.ahmed@linux.dev>
 To: JP Kobryn <inwardvessel@gmail.com>
 Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com,
 	mkoutny@suse.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
 	linux-mm@kvack.org, cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v4 4/5] cgroup: use separate rstat trees for each
- subsystem
-Message-ID: <aAeao_0s8fBY0gC2@Asmaa.>
+Subject: Re: [PATCH v4 5/5] cgroup: use subsystem-specific rstat locks to
+ avoid contention
+Message-ID: <aAehK23MNX1FsRjF@Asmaa.>
 References: <20250404011050.121777-1-inwardvessel@gmail.com>
- <20250404011050.121777-5-inwardvessel@gmail.com>
+ <20250404011050.121777-6-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -60,234 +60,172 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250404011050.121777-5-inwardvessel@gmail.com>
+In-Reply-To: <20250404011050.121777-6-inwardvessel@gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 03, 2025 at 06:10:49PM -0700, JP Kobryn wrote:
-> Different subsystems may call cgroup_rstat_updated() within the same
-> cgroup, resulting in a tree of pending updates from multiple subsystems.
-> When one of these subsystems is flushed via cgroup_rstat_flushed(), all
-> other subsystems with pending updates on the tree will also be flushed.
+On Thu, Apr 03, 2025 at 06:10:50PM -0700, JP Kobryn wrote:
+> It is possible to eliminate contention between subsystems when
+> updating/flushing stats by using subsystem-specific locks. Let the existing
+> rstat locks be dedicated to the cgroup base stats and rename them to
+> reflect that. Add similar locks to the cgroup_subsys struct for use with
+> individual subsystems.
 > 
-> Change the paradigm of having a single rstat tree for all subsystems to
-> having separate trees for each subsystem. This separation allows for
-> subsystems to perform flushes without the side effects of other subsystems.
-> As an example, flushing the cpu stats will no longer cause the memory stats
-> to be flushed and vice versa.
+> Lock initialization is done in the new function ss_rstat_init(ss) which
+> replaces cgroup_rstat_boot(void). If NULL is passed to this function, the
+> global base stat locks will be initialized. Otherwise, the subsystem locks
+> will be initialized.
 > 
-> In order to achieve subsystem-specific trees, change the tree node type
-> from cgroup to cgroup_subsys_state pointer. Then remove those pointers from
-> the cgroup and instead place them on the css. Finally, change update/flush
-> functions to make use of the different node type (css). These changes allow
-> a specific subsystem to be associated with an update or flush. Separate
-> rstat trees will now exist for each unique subsystem.
-> 
-> Since updating/flushing will now be done at the subsystem level, there is
-> no longer a need to keep track of updated css nodes at the cgroup level.
-> The list management of these nodes done within the cgroup (rstat_css_list
-> and related) has been removed accordingly.
+> Change the existing lock helper functions to accept a reference to a css.
+> Then within these functions, conditionally select the appropriate locks
+> based on the subsystem affiliation of the given css. Add helper functions
+> for this selection routine to avoid repeated code.
 > 
 > Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
-[..]
-> @@ -219,6 +219,13 @@ struct cgroup_subsys_state {
->  	 * Protected by cgroup_mutex.
->  	 */
->  	int nr_descendants;
-> +
-> +	/*
-> +	 * A singly-linked list of css structures to be rstat flushed.
-> +	 * This is a scratch field to be used exclusively by
-> +	 * css_rstat_flush_locked() and protected by cgroup_rstat_lock.
-> +	 */
-
-Ditto obsolete function name.
-
-> +	struct cgroup_subsys_state *rstat_flush_next;
->  };
->  
->  /*
-> @@ -329,10 +336,10 @@ struct cgroup_base_stat {
->  
->  /*
->   * rstat - cgroup scalable recursive statistics.  Accounting is done
-> - * per-cpu in cgroup_rstat_cpu which is then lazily propagated up the
-> + * per-cpu in css_rstat_cpu which is then lazily propagated up the
->   * hierarchy on reads.
->   *
-> - * When a stat gets updated, the cgroup_rstat_cpu and its ancestors are
-> + * When a stat gets updated, the css_rstat_cpu and its ancestors are
->   * linked into the updated tree.  On the following read, propagation only
->   * considers and consumes the updated tree.  This makes reading O(the
->   * number of descendants which have been active since last read) instead of
-> @@ -346,7 +353,7 @@ struct cgroup_base_stat {
->   * This struct hosts both the fields which implement the above -
->   * updated_children and updated_next.
->   */
-> -struct cgroup_rstat_cpu {
-> +struct css_rstat_cpu {
+> ---
+>  block/blk-cgroup.c              |   2 +-
+>  include/linux/cgroup-defs.h     |  16 +++--
+>  include/trace/events/cgroup.h   |  12 +++-
+>  kernel/cgroup/cgroup-internal.h |   2 +-
+>  kernel/cgroup/cgroup.c          |  10 +++-
+>  kernel/cgroup/rstat.c           | 101 +++++++++++++++++++++++---------
+>  6 files changed, 103 insertions(+), 40 deletions(-)
+> 
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index 0560ea402856..62d0bf1e1a04 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -1074,7 +1074,7 @@ static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
 >  	/*
->  	 * Child cgroups with stat updates on this cpu since the last read
->  	 * are linked on the parent's ->updated_children through
-> @@ -358,8 +365,8 @@ struct cgroup_rstat_cpu {
+>  	 * For covering concurrent parent blkg update from blkg_release().
 >  	 *
->  	 * Protected by per-cpu cgroup_rstat_cpu_lock.
+> -	 * When flushing from cgroup, cgroup_rstat_lock is always held, so
+> +	 * When flushing from cgroup, the subsystem lock is always held, so
+>  	 * this lock won't cause contention most of time.
 >  	 */
-> -	struct cgroup *updated_children;	/* terminated by self cgroup */
-> -	struct cgroup *updated_next;		/* NULL iff not on the list */
-> +	struct cgroup_subsys_state *updated_children;	/* terminated by self cgroup */
-> +	struct cgroup_subsys_state *updated_next;	/* NULL iff not on the list */
+>  	raw_spin_lock_irqsave(&blkg_stat_lock, flags);
+> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+> index c58c21c2110a..bb5a355524d6 100644
+> --- a/include/linux/cgroup-defs.h
+> +++ b/include/linux/cgroup-defs.h
+> @@ -223,7 +223,10 @@ struct cgroup_subsys_state {
+>  	/*
+>  	 * A singly-linked list of css structures to be rstat flushed.
+>  	 * This is a scratch field to be used exclusively by
+> -	 * css_rstat_flush_locked() and protected by cgroup_rstat_lock.
+> +	 * css_rstat_flush_locked().
+> +	 *
+> +	 * Protected by rstat_base_lock when css is cgroup::self.
+> +	 * Protected by css->ss->rstat_ss_lock otherwise.
+>  	 */
+>  	struct cgroup_subsys_state *rstat_flush_next;
+>  };
+> @@ -359,11 +362,11 @@ struct css_rstat_cpu {
+>  	 * are linked on the parent's ->updated_children through
+>  	 * ->updated_next.
+>  	 *
+> -	 * In addition to being more compact, singly-linked list pointing
+> -	 * to the cgroup makes it unnecessary for each per-cpu struct to
+> -	 * point back to the associated cgroup.
+> +	 * In addition to being more compact, singly-linked list pointing to
+> +	 * the css makes it unnecessary for each per-cpu struct to point back
+> +	 * to the associated css.
+>  	 *
+> -	 * Protected by per-cpu cgroup_rstat_cpu_lock.
+> +	 * Protected by per-cpu css->ss->rstat_ss_cpu_lock.
+>  	 */
+>  	struct cgroup_subsys_state *updated_children;	/* terminated by self cgroup */
+
+This rename belongs in the previous patch, also the comment about
+updated_children should probably say "self css" now.
+
+>  	struct cgroup_subsys_state *updated_next;	/* NULL iff not on the list */
+> @@ -793,6 +796,9 @@ struct cgroup_subsys {
+>  	 * specifies the mask of subsystems that this one depends on.
+>  	 */
+>  	unsigned int depends_on;
+> +
+> +	spinlock_t rstat_ss_lock;
+> +	raw_spinlock_t __percpu *rstat_ss_cpu_lock;
+
+Can we use local_lock_t here instead? I guess it would be annoying
+because we won't be able to have common code for locking/unlocking. It's
+annoying because the local lock is a spinlock under the hood for non-RT
+kernels anyway..
+
 >  };
 >  
->  /*
-> @@ -521,25 +528,16 @@ struct cgroup {
->  	struct cgroup *dom_cgrp;
->  	struct cgroup *old_dom_cgrp;		/* used while enabling threaded */
->  
-> -	/* per-cpu recursive resource statistics */
-> -	struct cgroup_rstat_cpu __percpu *rstat_cpu;
-> +	/* per-cpu recursive basic resource statistics */
-
-This comment should probably be dropped now as it's only providing
-partial info and is potentially confusing.
-
->  	struct cgroup_rstat_base_cpu __percpu *rstat_base_cpu;
-> -	struct list_head rstat_css_list;
->  
->  	/*
-> -	 * Add padding to separate the read mostly rstat_cpu and
-> -	 * rstat_css_list into a different cacheline from the following
-> -	 * rstat_flush_next and *bstat fields which can have frequent updates.
-> +	 * Add padding to keep the read mostly rstat per-cpu pointer on a
-> +	 * different cacheline than the following *bstat fields which can have
-> +	 * frequent updates.
->  	 */
->  	CACHELINE_PADDING(_pad_);
->  
-> -	/*
-> -	 * A singly-linked list of cgroup structures to be rstat flushed.
-> -	 * This is a scratch field to be used exclusively by
-> -	 * css_rstat_flush_locked() and protected by cgroup_rstat_lock.
-> -	 */
-> -	struct cgroup	*rstat_flush_next;
-> -
->  	/* cgroup basic resource statistics */
->  	struct cgroup_base_stat last_bstat;
->  	struct cgroup_base_stat bstat;
+>  extern struct percpu_rw_semaphore cgroup_threadgroup_rwsem;
 [..]
-> @@ -5425,6 +5417,9 @@ static void css_free_rwork_fn(struct work_struct *work)
->  		struct cgroup_subsys_state *parent = css->parent;
->  		int id = css->id;
+> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> index 37d9e5012b2d..bcc253aec774 100644
+> --- a/kernel/cgroup/rstat.c
+> +++ b/kernel/cgroup/rstat.c
+> @@ -9,8 +9,8 @@
 >  
-> +		if (ss->css_rstat_flush)
-> +			css_rstat_exit(css);
+>  #include <trace/events/cgroup.h>
+>  
+> -static DEFINE_SPINLOCK(cgroup_rstat_lock);
+> -static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
+> +static DEFINE_SPINLOCK(rstat_base_lock);
+> +static DEFINE_PER_CPU(raw_spinlock_t, rstat_base_cpu_lock);
+
+Can we do something like this (not sure the macro usage is correct):
+
+static DEFINE_PER_CPU(raw_spinlock_t, rstat_base_cpu_lock) = __SPIN_LOCK_UNLOCKED(rstat_base_cpu_lock);
+
+This should initialize the per-CPU spinlocks the same way
+DEFINE_SPINLOCK does IIUC.
+
+>  
+>  static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu);
+>  
+[..]
+> @@ -422,12 +443,36 @@ void css_rstat_exit(struct cgroup_subsys_state *css)
+>  	css->rstat_cpu = NULL;
+>  }
+>  
+> -void __init cgroup_rstat_boot(void)
+> +/**
+> + * ss_rstat_init - subsystem-specific rstat initialization
+> + * @ss: target subsystem
+> + *
+> + * If @ss is NULL, the static locks associated with the base stats
+> + * are initialized. If @ss is non-NULL, the subsystem-specific locks
+> + * are initialized.
+> + */
+> +int __init ss_rstat_init(struct cgroup_subsys *ss)
+>  {
+>  	int cpu;
+>  
+> +	if (!ss) {
+> +		spin_lock_init(&rstat_base_lock);
+
+IIUC locks defined with DEFINE_SPINLOCK() do not need to be initialized,
+and I believe we can achieve the same for the per-CPU locks as I
+described above and eliminate this branch completely.
+
 > +
-
-This call now exists in both branches (self css or not), so it's
-probably best to pull it outside. We should probably also pull the call
-in cgroup_destroy_root() outside into css_free_rwork_fn() so that we end
-up with a single call to css_rstat_exit() (apart from failure paths).
-
-We can probably also use css_is_cgroup() here instead of 'if (ss)' for
-consistency.
-
->  		ss->css_free(css);
->  		cgroup_idr_remove(&ss->css_idr, id);
->  		cgroup_put(cgrp);
-[..]  
-> @@ -5659,6 +5647,12 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
->  		goto err_free_css;
->  	css->id = err;
->  
-> +	if (ss->css_rstat_flush) {
-> +		err = css_rstat_init(css);
-> +		if (err)
-> +			goto err_free_css;
+> +		for_each_possible_cpu(cpu)
+> +			raw_spin_lock_init(per_cpu_ptr(&rstat_base_cpu_lock, cpu));
+> +
+> +		return 0;
 > +	}
 > +
->  	/* @css is ready to be brought online now, make it visible */
->  	list_add_tail_rcu(&css->sibling, &parent_css->children);
->  	cgroup_idr_replace(&ss->css_idr, css, css->id);
-> @@ -5672,7 +5666,6 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
->  err_list_del:
->  	list_del_rcu(&css->sibling);
->  err_free_css:
-> -	list_del_rcu(&css->rstat_css_node);
->  	INIT_RCU_WORK(&css->destroy_rwork, css_free_rwork_fn);
->  	queue_rcu_work(cgroup_destroy_wq, &css->destroy_rwork);
->  	return ERR_PTR(err);
-> @@ -6104,11 +6097,17 @@ static void __init cgroup_init_subsys(struct cgroup_subsys *ss, bool early)
->  	css->flags |= CSS_NO_REF;
->  
->  	if (early) {
-> -		/* allocation can't be done safely during early init */
-> +		/*
-> +		 * Allocation can't be done safely during early init.
-> +		 * Defer IDR and rstat allocations until cgroup_init().
-> +		 */
->  		css->id = 1;
->  	} else {
->  		css->id = cgroup_idr_alloc(&ss->css_idr, css, 1, 2, GFP_KERNEL);
->  		BUG_ON(css->id < 0);
+> +	spin_lock_init(&ss->rstat_ss_lock);
+> +	ss->rstat_ss_cpu_lock = alloc_percpu(raw_spinlock_t);
+> +	if (!ss->rstat_ss_cpu_lock)
+> +		return -ENOMEM;
 > +
-> +		if (ss->css_rstat_flush)
-> +			BUG_ON(css_rstat_init(css));
->  	}
->  
->  	/* Update the init_css_set to contain a subsys
-> @@ -6207,9 +6206,17 @@ int __init cgroup_init(void)
->  			struct cgroup_subsys_state *css =
->  				init_css_set.subsys[ss->id];
->  
-> +			/*
-> +			 * It is now safe to perform allocations.
-> +			 * Finish setting up subsystems that previously
-> +			 * deferred IDR and rstat allocations.
-> +			 */
->  			css->id = cgroup_idr_alloc(&ss->css_idr, css, 1, 2,
->  						   GFP_KERNEL);
->  			BUG_ON(css->id < 0);
+>  	for_each_possible_cpu(cpu)
+> -		raw_spin_lock_init(per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu));
+> +		raw_spin_lock_init(per_cpu_ptr(ss->rstat_ss_cpu_lock, cpu));
 > +
-> +			if (ss->css_rstat_flush)
-> +				BUG_ON(css_rstat_init(css));
-
-The calls to css_rstat_init() are really difficult to track. Let's
-recap, before this change we had two calls:
-- In cgroup_setup_root(), for root cgroups.
-- In cgroup_create(), for non-root cgroups.
-
-This patch adds 3 more, so we end up with 5 calls as follows:
-- In cgroup_setup_root(), for root self css's.
-- In cgroup_create(), for non-root self css's.
-- In cgroup_subsys_init(), for root subsys css's without early
-  initialization.
-- In cgroup_init(), for root subsys css's with early
-  initialization, as we cannot call it from cgroup_subsys_init() early
-  as allocations are not allowed during early init.
-- In css_create(), for non-root non-self css's.
-
-We should try to consolidate as much as possible. For example:
-- Can we always make the call for root subsys css's in cgroup_init(),
-  regardless of early initialization status? Is there a need to make the
-  call early for subsystems that use early in cgroup_subsys_init()
-  initialization?
-
-- Can we always make the call for root css's in cgroup_init(),
-  regardless of whether the css is a self css or a subsys css? I imagine
-  we'd still need two separate calls, one outside the loop for the self
-  css's, and one in the loop for subsys css's, but having them in the
-  same place should make things easier.
-
-Ideally if we can do both the above, we'd end up with 3 calling
-functions only:
-- cgroup_init() -> for all root css's.
-- cgroup_create() -> for non-root self css's.
-- css_create() -> for non-root subsys css's.
-
-Also, we should probably document all the different call paths for
-css_rstat_init() and css_rstat_exit() somewhere.
-
-
->  		} else {
->  			cgroup_init_subsys(ss, false);
->  		}
+> +	return 0;
+>  }
+>  
+>  /*
+> -- 
+> 2.47.1
+> 
+> 
 
