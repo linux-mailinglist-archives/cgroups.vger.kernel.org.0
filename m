@@ -1,155 +1,226 @@
-Return-Path: <cgroups+bounces-7731-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7732-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60B93A9744C
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 20:12:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B28A974AE
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 20:51:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DE4A4402BD
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 18:12:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB0823BCCF7
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 18:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F74296D06;
-	Tue, 22 Apr 2025 18:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A6C2980C2;
+	Tue, 22 Apr 2025 18:50:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="UHjNv6vB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RKF8n26K"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F9028FFFD
-	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 18:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE66228541A;
+	Tue, 22 Apr 2025 18:50:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745345546; cv=none; b=e1QjvWsuD+5gTtdKOv9NdmLTxmA2Qejs8nAVfoVmZ7o6ugnyotlxaHbvpKxMSbp5vju3G9q2iN/pVO6ZmgckmT7S1+tZm6hbZEkaeDR5+LN+j1/dyh82zZddVqWETE54ZbTVothm58XuEF+a6LXTCM2+mv+2ymvMZe0ewI2VHio=
+	t=1745347851; cv=none; b=ScmWd+/HCFyo5+T+5kXdNKL8gXTbK/MMcLS45X9hkmm6kdGMEbedVvQE5dKy5Hejf1Vzee7H1ye2AYYgrfUhaHhiJn5vju3nQQKSeRohmhdowTH5zpY3bMO8KOABwgS+3tvIrBCf3s+AwS0otF/61Pg//5P854cE9EbZ7wBaSRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745345546; c=relaxed/simple;
-	bh=clj/7NiCGcVOiMu1ySLcl7Hi0OIoaRSBMSxeFaLMzIw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ioa5bwYN6aQaD8id1EaxjmnUSrK5AUEXEpyErO82wf+shB2Qmue5ftOpTH2A7z8M5KKFFCA5RwBgtgkN4PVdcSAPYu1mwD5eQZc8GKSeHKJfI10nXOVO5E/jWwePrgPutSAPcSTPD2B9NBjiqPEG9iAhGI4Rr5oE2bWyAUuKkFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=UHjNv6vB; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-47688ae873fso56998301cf.0
-        for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 11:12:23 -0700 (PDT)
+	s=arc-20240116; t=1745347851; c=relaxed/simple;
+	bh=zf/I1OqVjKhOlwy28hqS9k0+xMjwj+ajq0soJSE4Q9k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=byefcf4yq5Rg+SZCFlGW1qZHC1wkfvRxV4Vj7FJY3FRHagyiEMXIdCOyEhrPR9FCnX00Yz5q5ljc2K1gvjc5N0DomJt8rp1QUZDIQPnHVLjnrCVsIHWZGqdBHsbABzF2VjqvjIsRlfFEwqVQSpPL9agH6zdbeddmz6beUYMlO8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RKF8n26K; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-54af20849bbso6055851e87.0;
+        Tue, 22 Apr 2025 11:50:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1745345542; x=1745950342; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s2MxjZUGMrKR2DMGYAmofr4Hh7XRlldZp9rSBjUPMDM=;
-        b=UHjNv6vBL1vwgTJDTKRqlmWZoaG/KudTlWwAW+vjAA13e1ntvBv4AL5E1DmgtaerOk
-         5S04BvfHmaB0RsOcMsZpsNbFXhLtEY7MBbfXtsDFvaxyPCP52iIahL0SC2FKGlLMoAGA
-         Kc9TUancnyx32eoRsBckLN+zWIIMZ9nwoaPLwUJBMwLFE/Qmj/Yc9cYLBF3V2ssgKPhg
-         xvyEBmOcuPWfZIPADVu3iFATWmOVNxcSFnQDtL9R86/4MCH8ZnzSbvma/1cf5uihIIkS
-         9KjLC+TIjQ4ZNfU0f8xL0sR5dovE3C5638ZxN4RJz0TO7Rj/EIJcawFsQdO2WZQcjYdk
-         8cOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745345542; x=1745950342;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1745347848; x=1745952648; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s2MxjZUGMrKR2DMGYAmofr4Hh7XRlldZp9rSBjUPMDM=;
-        b=xSYbPNU0KhpxWOI+kE5RmiAty2DjEaU8a+BTXN8YoeHewTk4Fpbqv+Nsad+GZ2pwAf
-         ukg+AW328G900c1NEyS/mQehOadICHgSecwuKLvsYSAliZLAwzj8CzgQIrZ0ur9pPmpE
-         KgQcLPLtsq2w126ZzOWBiRC6rJpoCYXRhg0oaaW4f+K0evyAINkMyiAE9W2319GtHMjz
-         jOvBvOKpwEyisL6X6tPbT50wfQs7qFFa8bIA8YQRJR2KH6O5lE1p/tYEs0ch9RgPwrbq
-         ALgKxSFGhhpZV30fxNlpvr0LWVTdAPEmwUqNsN2gEZQ/b86tM1XSQjsE74GBLK3OQrzY
-         Dc2g==
-X-Forwarded-Encrypted: i=1; AJvYcCV0lStIOMcnpTA45uLJq465lIEw8UyuY3RWx/kfIja4mb3qMbYkagMRtW5CD816+CLrhQptFw0J@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqTkOR8QXdlURRNbOtG5jR8faE0bWTb/dODGkbM6EjsGlM/Q05
-	bzTgcdG+HLNbJz8lKqDMr9r4TYUzmgMkDBhOk/tO0aG90S0GjPUOCihCEkJ/jXo=
-X-Gm-Gg: ASbGncvEYyeJPU7xyu+FstjLA0di1bSrA5t45fDJvVjh03mucdyDCRW/Zx1gPG2NFF9
-	L6DF9AyRNGRj4k6ULSe0Wd98Iyz22/bm2GfVK22LhACAelZ5YGotI+w6Oriq3Dx2ZTzzybKhvLT
-	Ya/Sh9nFbq2WhluLconm4IV2FKKWLTNJrgG8EQwRGuygs26v68aS/oy3I3wHMu9a+yOEZfTBLtP
-	O7U96pDd6wRySoh0RaRdQMQ3fv9I9X/C6SLgHduDfvLbknxqV7IpkodyvvnKfc8T3425TszvyhI
-	XUx8Vuf39x2BekTKg1BT8T+kPgytpHMPjUFw9cI=
-X-Google-Smtp-Source: AGHT+IFSl5Z1DP+LoH0/jj1kUp0S4uovmAA5DbtTz8uDb7qyAwSb2oRgO+qtT/+KNaCsFK0ZjmtCfw==
-X-Received: by 2002:ac8:5811:0:b0:477:1e85:1e1b with SMTP id d75a77b69052e-47aec35503amr265505431cf.8.1745345542401;
-        Tue, 22 Apr 2025 11:12:22 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-47ae9ce293bsm58048581cf.56.2025.04.22.11.12.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Apr 2025 11:12:21 -0700 (PDT)
-Date: Tue, 22 Apr 2025 14:12:17 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>, Tejun Heo <tj@kernel.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Greg Thelen <gthelen@google.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH v2] memcg: introduce non-blocking limit setting option
-Message-ID: <20250422181217.GE1853@cmpxchg.org>
-References: <20250419183545.1982187-1-shakeel.butt@linux.dev>
+        bh=Ik4wMhUz7DWmnlFro2ty1aoiaCrY7XiTZ8hSwwJ7ppI=;
+        b=RKF8n26K0pq41y8WBKS51BCk5s4aVnn+w6Vbmb1daDmfK5uDETAabYcg4HCgq0+Irx
+         bc+vyXvK7bNwmnAlpmJTYC+2sKV6jq8H/niNIYOxwad3phSAqBpPvTeYgM8a6tybMD+q
+         pF90tRfhTfg489AMnf0uPy0E+jJq+pb3TWp5h77LDQnXs7WOxxFK2kfJaycLnVuk0/cI
+         kG4iOyHQREJZE8LiSTa+upx+5XM8icS2X3/do6oPpdAMQ04BiFN74mg76l2i8r1DoQbP
+         LwH3XqKlkObgs+FBpMKIt4K7A1FgiidRiJqk5gV2Qf9Yq2yBazOSvVTcGm05HNYIF9AF
+         PvKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745347848; x=1745952648;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ik4wMhUz7DWmnlFro2ty1aoiaCrY7XiTZ8hSwwJ7ppI=;
+        b=O/4bkaN8oSZgRpQuM6SKbagMUtRHI+CWRZJuXJcEhE78OdxlNMrQPKdFefwojOZKxC
+         HdyXhS9hWm78EKzeMSw1oXUqMjZ892RdI44YKix/dJmQ7UTSU04r0Qmonqg3i5vyDr1d
+         rYLXAE2NRHAD3WSwCZtZ0kt/rRXIghQXnVIdgvFFRpQFmNsMHwhXJYcGV/c4jONqGDcB
+         vR35Y8urSovoopFOvc1tIzIG8Xeijtq82WbOyo+o8Nrn3QQnA3ELmMlEKDe/Hgm4E2Zg
+         t/KUH3uWTiRhdXRqCEuWlcx56x9RdvwCk+W0LjMlS7Ojbkp/E0yb1/IJ4Qpoms0Y0GU7
+         ATWg==
+X-Forwarded-Encrypted: i=1; AJvYcCVFJMzluOpXRDmUcXZbUAWWJxU/IN+8tzGZkNeJ2Tbv1rxJhhZruKi08nQoEM54odydMg9H0cYb@vger.kernel.org, AJvYcCWhAT1moZgO5QMK7qJUI4e8boYyJoHELzn9+s8V8y3BAXSOC5RSMKZohJj8O0In6dPFTGQeCvu7wg7nEj82@vger.kernel.org, AJvYcCXFuI0n3U6uzT/Tq8EpCC9aiveUVxwSLKBazFEHQqMGG+jb8dRXg2m+IkQfrIVmPcPjD90M6LPcDF4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YznK36rxl65CiY+2eEW+P5nm8n1TJd+OINdzaK9DehMogSPqGfG
+	PO5kzfCrwC0mOoI70UXWdsP3tFIeio0dzwXXKh9NTIeBTB5t1wP94G8QhTTKaV39yCOQKBVyTyw
+	iCmsbpg+y3dRuEdWzSsIRzzZkdwA=
+X-Gm-Gg: ASbGncvsffaoczMT4zq9Rj9l8q1LyLVYlYVyGk4ZBtIvqBVRwSZjJyVPxJMyP3LzHcg
+	6VkUoLIEbfKHhAinQ00Q+R2XhivG2RkdKEbLiTnitPAzLowW7G6q9t7k3DiEZKPjFZ/d2Vazhu0
+	5QjLB2KpzAyWGdcL/drYgAiw==
+X-Google-Smtp-Source: AGHT+IFECvUxK/U/6K7wE1qIHI7cyjrKwKN10Zq6Tl5Y1zH18ONpTEa9mG5f0LF53kkT9psSYucYWpdLvLEmfUvl9B0=
+X-Received: by 2002:a05:6512:3c87:b0:549:8924:2212 with SMTP id
+ 2adb3069b0e04-54d6e62c0damr5429654e87.17.1745347847305; Tue, 22 Apr 2025
+ 11:50:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250419183545.1982187-1-shakeel.butt@linux.dev>
+References: <20250407234223.1059191-1-nphamcs@gmail.com> <20250407234223.1059191-4-nphamcs@gmail.com>
+ <20250408141555.GA816@cmpxchg.org> <6807ab09.670a0220.152ca3.502fSMTPIN_ADDED_BROKEN@mx.google.com>
+ <CAKEwX=Mjx4LYe60ErJasFofkq-uH_R9R0TZD9ROdN1vn4V=Yjw@mail.gmail.com>
+In-Reply-To: <CAKEwX=Mjx4LYe60ErJasFofkq-uH_R9R0TZD9ROdN1vn4V=Yjw@mail.gmail.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Wed, 23 Apr 2025 02:50:29 +0800
+X-Gm-Features: ATxdqUGmNlJy_pbW-0fTae4V13peiJz7II-wVjd0eabDB5V7Nz6eDeyVg6cui1w
+Message-ID: <CAMgjq7BNP9PbvuQSLH90dhb1vUtbA7nVHw5TGJxXDfzpmWfbVQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 03/14] mm: swap: add a separate type for physical swap slots
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Yosry Ahmed <yosry.ahmed@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org, 
+	akpm@linux-foundation.org, hughd@google.com, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
+	len.brown@intel.com, chengming.zhou@linux.dev, chrisl@kernel.org, 
+	huang.ying.caritas@gmail.com, ryan.roberts@arm.com, viro@zeniv.linux.org.uk, 
+	baohua@kernel.org, osalvador@suse.de, lorenzo.stoakes@oracle.com, 
+	christophe.leroy@csgroup.eu, pavel@kernel.org, kernel-team@meta.com, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 19, 2025 at 11:35:45AM -0700, Shakeel Butt wrote:
-> Setting the max and high limits can trigger synchronous reclaim and/or
-> oom-kill if the usage is higher than the given limit. This behavior is
-> fine for newly created cgroups but it can cause issues for the node
-> controller while setting limits for existing cgroups.
-> 
-> In our production multi-tenant and overcommitted environment, we are
-> seeing priority inversion when the node controller dynamically adjusts
-> the limits of running jobs of different priorities. Based on the system
-> situation, the node controller may reduce the limits of lower priority
-> jobs and increase the limits of higher priority jobs. However we are
-> seeing node controller getting stuck for long period of time while
-> reclaiming from lower priority jobs while setting their limits and also
-> spends a lot of its own CPU.
-> 
-> One of the workaround we are trying is to fork a new process which sets
-> the limit of the lower priority job along with setting an alarm to get
-> itself killed if it get stuck in the reclaim for lower priority job.
-> However we are finding it very unreliable and costly. Either we need a
-> good enough time buffer for the alarm to be delivered after setting
-> limit and potentialy spend a lot of CPU in the reclaim or be unreliable
-> in setting the limit for much shorter but cheaper (less reclaim) alarms.
-> 
-> Let's introduce new limit setting option which does not trigger
-> reclaim and/or oom-kill and let the processes in the target cgroup to
-> trigger reclaim and/or throttling and/or oom-kill in their next charge
-> request. This will make the node controller on multi-tenant
-> overcommitted environment much more reliable.
-> 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+On Tue, Apr 22, 2025 at 11:51=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
+>
+> On Tue, Apr 22, 2025 at 7:43=E2=80=AFAM Yosry Ahmed <yosry.ahmed@linux.de=
+v> wrote:
+> >
+> > On Tue, Apr 08, 2025 at 10:15:55AM -0400, Johannes Weiner wrote:
+> > > On Mon, Apr 07, 2025 at 04:42:04PM -0700, Nhat Pham wrote:
+> > > > In preparation for swap virtualization, add a new type to represent=
+ the
+> > > > physical swap slots of swapfile. This allows us to separates:
+> > > >
+> > > > 1. The logical view of the swap entry (i.e what is stored in page t=
+able
+> > > >    entries and used to index into the swap cache), represented by t=
+he
+> > > >    old swp_entry_t type.
+> > > >
+> > > > from:
+> > > >
+> > > > 2. Its physical backing state (i.e the actual backing slot on the s=
+wap
+> > > >    device), represented by the new swp_slot_t type.
+> > > >
+> > > > The functions that operate at the physical level (i.e on the swp_sl=
+ot_t
+> > > > types) are also renamed where appropriate (prefixed with swp_slot_*=
+ for
+> > > > e.g). We also take this opportunity to re-arrange the header files
+> > > > (include/linux/swap.h and swapops.h), grouping the swap API into th=
+e
+> > > > following categories:
+> > > >
+> > > > 1. Virtual swap API (i.e functions on swp_entry_t type).
+> > > >
+> > > > 2. Swap cache API (mm/swap_state.c)
+> > > >
+> > > > 3. Swap slot cache API (mm/swap_slots.c)
+> > > >
+> > > > 4. Physical swap slots and device API (mm/swapfile.c).
+> > >
+> > > This all makes sense.
+> > >
+> > > However,
+> > >
+> > > > @@ -483,50 +503,37 @@ static inline long get_nr_swap_pages(void)
+> > > >     return atomic_long_read(&nr_swap_pages);
+> > > >  }
+> > > >
+> > > > -extern void si_swapinfo(struct sysinfo *);
+> > > > -swp_entry_t folio_alloc_swap(struct folio *folio);
+> > > > -bool folio_free_swap(struct folio *folio);
+> > > > -void put_swap_folio(struct folio *folio, swp_entry_t entry);
+> > > > -extern swp_entry_t get_swap_page_of_type(int);
+> > > > -extern int get_swap_pages(int n, swp_entry_t swp_entries[], int or=
+der);
+> > > > -extern int add_swap_count_continuation(swp_entry_t, gfp_t);
+> > > > -extern void swap_shmem_alloc(swp_entry_t, int);
+> > > > -extern int swap_duplicate(swp_entry_t);
+> > > > -extern int swapcache_prepare(swp_entry_t entry, int nr);
+> > > > -extern void swap_free_nr(swp_entry_t entry, int nr_pages);
+> > > > -extern void swapcache_free_entries(swp_entry_t *entries, int n);
+> > > > -extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
+> > > > +void si_swapinfo(struct sysinfo *);
+> > > > +swp_slot_t swap_slot_alloc_of_type(int);
+> > > > +int swap_slot_alloc(int n, swp_slot_t swp_slots[], int order);
+> > > > +void swap_slot_free_nr(swp_slot_t slot, int nr_pages);
+> > > > +void swap_slot_cache_free_slots(swp_slot_t *slots, int n);
+> > > >  int swap_type_of(dev_t device, sector_t offset);
+> > > > +sector_t swapdev_block(int, pgoff_t);
+> > > >  int find_first_swap(dev_t *device);
+> > > > -extern unsigned int count_swap_pages(int, int);
+> > > > -extern sector_t swapdev_block(int, pgoff_t);
+> > > > -extern int __swap_count(swp_entry_t entry);
+> > > > -extern int swap_swapcount(struct swap_info_struct *si, swp_entry_t=
+ entry);
+> > > > -extern int swp_swapcount(swp_entry_t entry);
+> > > > -struct swap_info_struct *swp_swap_info(swp_entry_t entry);
+> > > > +unsigned int count_swap_pages(int, int);
+> > > > +struct swap_info_struct *swap_slot_swap_info(swp_slot_t slot);
+> > > >  struct backing_dev_info;
+> > > > -extern int init_swap_address_space(unsigned int type, unsigned lon=
+g nr_pages);
+> > > > -extern void exit_swap_address_space(unsigned int type);
+> > > > -extern struct swap_info_struct *get_swap_device(swp_entry_t entry)=
+;
+> > > > +struct swap_info_struct *swap_slot_tryget_swap_info(swp_slot_t slo=
+t);
+> > > >  sector_t swap_folio_sector(struct folio *folio);
+> > >
+> > > this is difficult to review.
+> > >
+> > > Can you please split out:
+> > >
+> > > 1. Code moves / cut-and-paste
+> > >
+> > > 2. Renames
+> > >
+> > > 3. New code
+> > >
+> > > into three separate steps
+> >
+> > +1, I agree with the fundamental change (and is something that I
+> > attempted before), but it's really difficult to parse :)
+> >
+> > Also, weren't the swap slots scheduled for removal or is my brain makin=
+g
+> > stuff up again?
+>
+> You mean the swap slot cache? That's the one Kairui wants to remove (I
+> think he removed a huge chunk of it already).
 
-It's usually the allocating tasks inside the group bearing the cost of
-limit enforcement and reclaim. This allows a (privileged) updater from
-outside the group to keep that cost in there - instead of having to
-help, from a context that doesn't necessarily make sense.
+Right, I wanted to remove it to simplify the code and it is already complet=
+ely
+gone now, see 0ff67f990bd45726e0d9e91111d998e7a3595b32, it's in 6.14
 
-I suppose the tradeoff with that - and the reason why this was doing
-sync reclaim in the first place - is that, if the group is idle and
-not trying to allocate more, it can take indefinitely for the new
-limit to actually be met.
+And the whole HAS_CACHE pinning thing will be gone too after the swap
+table series if it went smoothly.
 
-It should be okay in most scenarios in practice. As the capacity is
-reallocated from group A to B, B will exert pressure on A once it
-tries to claim it and thereby shrink it down. If A is idle, that
-shouldn't be hard. If A is running, it's likely to fault/allocate
-soon-ish and then join the effort.
+My bad, the series I promoted is still not posted yet :(, which is not
+as I planned... encountered several mysterious WARNs testing with
+the mm-unstable, some are related to swap table and recent
+unstable changes, so spent quite some time checking other
+components and revisiting the series for better debugging
+and sanity checks.
 
-It does leave a (malicious) corner case where A is just busy-hitting
-its memory to interfere with the clawback. This is comparable to
-reclaiming memory.low overage from the outside, though, which is an
-acceptable risk. Users of O_NONBLOCK just need to be aware.
-
-Maybe this and what Christian brought up deserves a mention in the
-changelog / docs though?
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Good thing is there seems to be no more blocking issues now.
 
