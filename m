@@ -1,88 +1,91 @@
-Return-Path: <cgroups+bounces-7730-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7731-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 053EAA973E5
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 19:47:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60B93A9744C
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 20:12:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4174316C149
-	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 17:47:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DE4A4402BD
+	for <lists+cgroups@lfdr.de>; Tue, 22 Apr 2025 18:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123F8296170;
-	Tue, 22 Apr 2025 17:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F74296D06;
+	Tue, 22 Apr 2025 18:12:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="a+DbMgbC"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="UHjNv6vB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57AD8292908
-	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 17:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F9028FFFD
+	for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 18:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745344022; cv=none; b=XJx82vmydjHUKKGLTROukvTpVzLyZJ8X5n3k/6WgT31XTQaZ0e8lh9+z8CO/r1xifRttt4c7gSiQSrTfQkdpXTyEsqoK92TeiCVNc52KBdoepU0wmrlSY28dertTzsWf17qXQ3BBrkK6/iLwKxx3yX1EIj8rM42GMdqEi0NNwL4=
+	t=1745345546; cv=none; b=e1QjvWsuD+5gTtdKOv9NdmLTxmA2Qejs8nAVfoVmZ7o6ugnyotlxaHbvpKxMSbp5vju3G9q2iN/pVO6ZmgckmT7S1+tZm6hbZEkaeDR5+LN+j1/dyh82zZddVqWETE54ZbTVothm58XuEF+a6LXTCM2+mv+2ymvMZe0ewI2VHio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745344022; c=relaxed/simple;
-	bh=wbD5RZ5SZDo3XaLXUPNWQ8D+urq+eTsm3HGrZa3mm8I=;
+	s=arc-20240116; t=1745345546; c=relaxed/simple;
+	bh=clj/7NiCGcVOiMu1ySLcl7Hi0OIoaRSBMSxeFaLMzIw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PDBFTBf+jWMMeMA4x2mj+nKutGlgEcOdlsJMu4eyH3sY2QhvZTPCyPVLxSebhUf9LNO58CzzClXYhPzRN4CUncg2Iu2Q/VvITqvhgbSVU8cHVKiqH0B7K3djwgs6ESeSliVcRQXUnhnbyZQlHY2/L9LRTu8qZgyABmdbEWMPmvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=a+DbMgbC; arc=none smtp.client-ip=209.85.160.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ioa5bwYN6aQaD8id1EaxjmnUSrK5AUEXEpyErO82wf+shB2Qmue5ftOpTH2A7z8M5KKFFCA5RwBgtgkN4PVdcSAPYu1mwD5eQZc8GKSeHKJfI10nXOVO5E/jWwePrgPutSAPcSTPD2B9NBjiqPEG9iAhGI4Rr5oE2bWyAUuKkFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=UHjNv6vB; arc=none smtp.client-ip=209.85.160.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4774ce422easo59228491cf.1
-        for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 10:46:59 -0700 (PDT)
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-47688ae873fso56998301cf.0
+        for <cgroups@vger.kernel.org>; Tue, 22 Apr 2025 11:12:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1745344019; x=1745948819; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1745345542; x=1745950342; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JpSUt/W7rzxG5ba1nOA8p416bP5hsdNLtoV24xeN0Vc=;
-        b=a+DbMgbCdjAASwE8rxE5jgtXkxTOXHutxrUP9+AoZPTxFS0ZzN48U13TDLHNeJEQ0A
-         FtY6JsQoeLK1WaMxE94VxrtSWUNhxXMcao6s4tP+hmbG+JqB2/XaORMl5PeCBIj/2TSW
-         i2rPKBcmOGCreIR3ZTtuDLaHuqXjS2IublcjzcxmenMLjUZuJIKdeYWNPKNWUNWgSE6y
-         cfEInbAhsA1Vg43MVWpWnCECRNxMdqb11zHCVqtcQlklMoOrUhfmEWzrRsIDvg9WtSiJ
-         Vm+LS6rByMYb8sVHLm1V36VZQX4CjVrKdsKmvZaQtggc7bhlwrQnSn3iGum4htEQvF4r
-         sUJA==
+        bh=s2MxjZUGMrKR2DMGYAmofr4Hh7XRlldZp9rSBjUPMDM=;
+        b=UHjNv6vBL1vwgTJDTKRqlmWZoaG/KudTlWwAW+vjAA13e1ntvBv4AL5E1DmgtaerOk
+         5S04BvfHmaB0RsOcMsZpsNbFXhLtEY7MBbfXtsDFvaxyPCP52iIahL0SC2FKGlLMoAGA
+         Kc9TUancnyx32eoRsBckLN+zWIIMZ9nwoaPLwUJBMwLFE/Qmj/Yc9cYLBF3V2ssgKPhg
+         xvyEBmOcuPWfZIPADVu3iFATWmOVNxcSFnQDtL9R86/4MCH8ZnzSbvma/1cf5uihIIkS
+         9KjLC+TIjQ4ZNfU0f8xL0sR5dovE3C5638ZxN4RJz0TO7Rj/EIJcawFsQdO2WZQcjYdk
+         8cOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745344019; x=1745948819;
+        d=1e100.net; s=20230601; t=1745345542; x=1745950342;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JpSUt/W7rzxG5ba1nOA8p416bP5hsdNLtoV24xeN0Vc=;
-        b=b+B+sWMnaMner7I9iE96Xfyc0KSQ9cN2Fvo34/LFJk31y9pHOpLbfhTlrFqXdcdNMB
-         A7BtV7xzJhKgMVLEAOcXUQeKe9vz7X66yjgSP+JS+s3/k31Yccq9rd5JgKv44svyJdh5
-         PvAKhj80fxQqp3nzLmphOmoN6BaJzTRimBP+KxODFHxxNEeZPh1hs/JzVsJLN2Catv8q
-         GDb6/Omu5DSRWzA9eUIG8soCUNDRHMOoUxKo/8ZJYPGkgvDYpSndM9rAUS9Vxx+7lsCP
-         H0rOy1t3yIcc5/r2RHNlxTYJTRfKVeehatxf0/TNa/hDy03CFaacOx/iLTrL1bmuO9fy
-         OwBg==
-X-Forwarded-Encrypted: i=1; AJvYcCXkScVId7bno9877IwH5q4KWx6MDEcPFx/uRDsS6Ew7XKw+tdrFfU2lIdC2RMx3ncCoyXlCcZqm@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw42tgtqlHmVdleXR3sAzyrpwNm4egdybXBy/0p+4z7A5cHwgs1
-	rS9GOsjXkOV3VRPPtkdn4YOqMXbjuKy3FdCSw6bZJ9pVsYSu+TiM4uz/4D+1qn4=
-X-Gm-Gg: ASbGncugVZlf+qfVlQgO07fqs8gW4Asa/qceUgCAN+FT0Z4kFtawaKdhYGPv7qausVl
-	0Mdn4jbhQ96MRfVGdg6NeXuj3J7UFP8OzUPgPm2hWwf4wIejvU6xAw6fnZ5X1A33XKQFRO5wjsg
-	a7qa3Dy6EaRbGAlo/Z4NiCrKBaapfJMPAhyEDw00w+y4jtmF9UodQ3V8BwLNum9e44mEVmpEpkN
-	zNKrVYcXPHGG7UWDa4ViKHuEzEDBW+unbd8xO0V54KBJSYXBHYUagOrGvge79f+h/Jh2M2vZWH3
-	g1Mqvo/mSQIvVdOS0OGMGlv+hXNvFV5+krfojPSCiOhYkX3u0Q==
-X-Google-Smtp-Source: AGHT+IFDMianZxQRcH0bw5Lmh7bTgr34wYKo3F4wCNpAKa7ksVo4bSSqVBtt2MR3jcNS2ouH63sd8g==
-X-Received: by 2002:ac8:57ce:0:b0:476:6625:eed4 with SMTP id d75a77b69052e-47aec4c5881mr295092471cf.38.1745344019069;
-        Tue, 22 Apr 2025 10:46:59 -0700 (PDT)
+        bh=s2MxjZUGMrKR2DMGYAmofr4Hh7XRlldZp9rSBjUPMDM=;
+        b=xSYbPNU0KhpxWOI+kE5RmiAty2DjEaU8a+BTXN8YoeHewTk4Fpbqv+Nsad+GZ2pwAf
+         ukg+AW328G900c1NEyS/mQehOadICHgSecwuKLvsYSAliZLAwzj8CzgQIrZ0ur9pPmpE
+         KgQcLPLtsq2w126ZzOWBiRC6rJpoCYXRhg0oaaW4f+K0evyAINkMyiAE9W2319GtHMjz
+         jOvBvOKpwEyisL6X6tPbT50wfQs7qFFa8bIA8YQRJR2KH6O5lE1p/tYEs0ch9RgPwrbq
+         ALgKxSFGhhpZV30fxNlpvr0LWVTdAPEmwUqNsN2gEZQ/b86tM1XSQjsE74GBLK3OQrzY
+         Dc2g==
+X-Forwarded-Encrypted: i=1; AJvYcCV0lStIOMcnpTA45uLJq465lIEw8UyuY3RWx/kfIja4mb3qMbYkagMRtW5CD816+CLrhQptFw0J@vger.kernel.org
+X-Gm-Message-State: AOJu0YwqTkOR8QXdlURRNbOtG5jR8faE0bWTb/dODGkbM6EjsGlM/Q05
+	bzTgcdG+HLNbJz8lKqDMr9r4TYUzmgMkDBhOk/tO0aG90S0GjPUOCihCEkJ/jXo=
+X-Gm-Gg: ASbGncvEYyeJPU7xyu+FstjLA0di1bSrA5t45fDJvVjh03mucdyDCRW/Zx1gPG2NFF9
+	L6DF9AyRNGRj4k6ULSe0Wd98Iyz22/bm2GfVK22LhACAelZ5YGotI+w6Oriq3Dx2ZTzzybKhvLT
+	Ya/Sh9nFbq2WhluLconm4IV2FKKWLTNJrgG8EQwRGuygs26v68aS/oy3I3wHMu9a+yOEZfTBLtP
+	O7U96pDd6wRySoh0RaRdQMQ3fv9I9X/C6SLgHduDfvLbknxqV7IpkodyvvnKfc8T3425TszvyhI
+	XUx8Vuf39x2BekTKg1BT8T+kPgytpHMPjUFw9cI=
+X-Google-Smtp-Source: AGHT+IFSl5Z1DP+LoH0/jj1kUp0S4uovmAA5DbtTz8uDb7qyAwSb2oRgO+qtT/+KNaCsFK0ZjmtCfw==
+X-Received: by 2002:ac8:5811:0:b0:477:1e85:1e1b with SMTP id d75a77b69052e-47aec35503amr265505431cf.8.1745345542401;
+        Tue, 22 Apr 2025 11:12:22 -0700 (PDT)
 Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-47ae9c16ba0sm57824681cf.4.2025.04.22.10.46.58
+        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-47ae9ce293bsm58048581cf.56.2025.04.22.11.12.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Apr 2025 10:46:58 -0700 (PDT)
-Date: Tue, 22 Apr 2025 13:46:57 -0400
+        Tue, 22 Apr 2025 11:12:21 -0700 (PDT)
+Date: Tue, 22 Apr 2025 14:12:17 -0400
 From: Johannes Weiner <hannes@cmpxchg.org>
-To: Gregory Price <gourry@gourry.net>
-Cc: linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	longman@redhat.com, mhocko@kernel.org, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev, tj@kernel.org,
-	mkoutny@suse.com, akpm@linux-foundation.org
-Subject: Re: [PATCH] cpuset: relax locking on cpuset_node_allowed
-Message-ID: <20250422174657.GD1853@cmpxchg.org>
-References: <20250422012616.1883287-3-gourry@gourry.net>
- <20250422043055.1932434-1-gourry@gourry.net>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Tejun Heo <tj@kernel.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Greg Thelen <gthelen@google.com>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v2] memcg: introduce non-blocking limit setting option
+Message-ID: <20250422181217.GE1853@cmpxchg.org>
+References: <20250419183545.1982187-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,43 +94,62 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250422043055.1932434-1-gourry@gourry.net>
+In-Reply-To: <20250419183545.1982187-1-shakeel.butt@linux.dev>
 
-On Tue, Apr 22, 2025 at 12:30:55AM -0400, Gregory Price wrote:
-> The cgroup_get_e_css reference protects the css->effective_mems, and
-> calls of this interface would be subject to the same race conditions
-> associated with a non-atomic access to cs->effective_mems.
+On Sat, Apr 19, 2025 at 11:35:45AM -0700, Shakeel Butt wrote:
+> Setting the max and high limits can trigger synchronous reclaim and/or
+> oom-kill if the usage is higher than the given limit. This behavior is
+> fine for newly created cgroups but it can cause issues for the node
+> controller while setting limits for existing cgroups.
 > 
-> So while this interface cannot make strong guarantees of correctness,
-> it can therefore avoid taking a global or rcu_read_lock for performance.
+> In our production multi-tenant and overcommitted environment, we are
+> seeing priority inversion when the node controller dynamically adjusts
+> the limits of running jobs of different priorities. Based on the system
+> situation, the node controller may reduce the limits of lower priority
+> jobs and increase the limits of higher priority jobs. However we are
+> seeing node controller getting stuck for long period of time while
+> reclaiming from lower priority jobs while setting their limits and also
+> spends a lot of its own CPU.
 > 
-> Drop the rcu_read_lock from cpuset_node_allowed.
+> One of the workaround we are trying is to fork a new process which sets
+> the limit of the lower priority job along with setting an alarm to get
+> itself killed if it get stuck in the reclaim for lower priority job.
+> However we are finding it very unreliable and costly. Either we need a
+> good enough time buffer for the alarm to be delivered after setting
+> limit and potentialy spend a lot of CPU in the reclaim or be unreliable
+> in setting the limit for much shorter but cheaper (less reclaim) alarms.
 > 
-> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Suggested-by: Waiman Long <longman@redhat.com>
-> Signed-off-by: Gregory Price <gourry@gourry.net>
-> ---
->  kernel/cgroup/cpuset.c | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
+> Let's introduce new limit setting option which does not trigger
+> reclaim and/or oom-kill and let the processes in the target cgroup to
+> trigger reclaim and/or throttling and/or oom-kill in their next charge
+> request. This will make the node controller on multi-tenant
+> overcommitted environment much more reliable.
 > 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index c52348bfd5db..1dc41758c62c 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -4181,10 +4181,20 @@ bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
->  	if (!css)
->  		return true;
->  
-> +	/*
-> +	 * Normally, accessing effective_mems would require the cpuset_mutex
-> +	 * or RCU read lock - but node_isset is atomic and the reference
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-              ^^^^^^^^^^^^^
+It's usually the allocating tasks inside the group bearing the cost of
+limit enforcement and reclaim. This allows a (privileged) updater from
+outside the group to keep that cost in there - instead of having to
+help, from a context that doesn't necessarily make sense.
 
-This should be callback_lock. rcu_read_lock() was intended for css
-lifetime - which is ensured by css_get_e_css() - not a stable mask.
+I suppose the tradeoff with that - and the reason why this was doing
+sync reclaim in the first place - is that, if the group is idle and
+not trying to allocate more, it can take indefinitely for the new
+limit to actually be met.
 
-Otherwise looks good, makes sense to lampshade the lockless access.
+It should be okay in most scenarios in practice. As the capacity is
+reallocated from group A to B, B will exert pressure on A once it
+tries to claim it and thereby shrink it down. If A is idle, that
+shouldn't be hard. If A is running, it's likely to fault/allocate
+soon-ish and then join the effort.
+
+It does leave a (malicious) corner case where A is just busy-hitting
+its memory to interfere with the clawback. This is comparable to
+reclaiming memory.low overage from the outside, though, which is an
+acceptable risk. Users of O_NONBLOCK just need to be aware.
+
+Maybe this and what Christian brought up deserves a mention in the
+changelog / docs though?
 
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
