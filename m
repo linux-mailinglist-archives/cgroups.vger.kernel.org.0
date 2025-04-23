@@ -1,120 +1,91 @@
-Return-Path: <cgroups+bounces-7763-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7766-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EF67A99AEE
-	for <lists+cgroups@lfdr.de>; Wed, 23 Apr 2025 23:45:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81CB1A99B0B
+	for <lists+cgroups@lfdr.de>; Wed, 23 Apr 2025 23:59:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72368463D5A
-	for <lists+cgroups@lfdr.de>; Wed, 23 Apr 2025 21:45:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B0D45A675F
+	for <lists+cgroups@lfdr.de>; Wed, 23 Apr 2025 21:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 419491FC7CB;
-	Wed, 23 Apr 2025 21:45:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF39020010C;
+	Wed, 23 Apr 2025 21:59:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="a8b0MZA8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BFCB1ACED5
-	for <cgroups@vger.kernel.org>; Wed, 23 Apr 2025 21:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.211.30.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489D82701CA;
+	Wed, 23 Apr 2025 21:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745444704; cv=none; b=fe1XRprKozV0t3aBIeMD+CsENEGURoaUBC+0vY1FJ88Lsv7ZFAIz2mG+xQlJqdaMyB82dzOi8h2w0bAKEdlKRV0F6r0WDhig9BpQRMqNwsS9y4XHzCCTZEimxpr6Ga+LKm18Ya+gmSkoai3ey6pPL2BMgN/2c3Awq2Duz7Ttmwg=
+	t=1745445554; cv=none; b=EMUA1UEuMQBD/G5uEA7i0bvZCWK6qYcpXfhou4lSih0Xqk2vuApolFkjcwbDidAbaKWZgDVZSynaN8L2kQyiO+rbhVOOK/+BEIHd/w1oKsNlbm88TDA2hW+XLPu2mjqJdh85f+qfTV68Ogzuka/ajyWvLUrTP6V5JDTWd4wW+Mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745444704; c=relaxed/simple;
-	bh=iM+Ehssksiwqs3V/UXzissQZ3lgYVY7hEZ/rM9UC73Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:content-type; b=C3WO661guN1K8IBwqxA1gAgGepUkPvdlIW4b89iqcv+NKPnTdJZhLFeeHR9ulc/iSVz0zGlQgfKuJ5S9x5OsYCcPepEfLVEpjEZl/ehEWCPI7S2rly0UtBKwySebFWSPLsY1dSFzb4RcOQ4acRslawzdbKuWWunQkSHNcXIcibE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=207.211.30.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-450-vfVj3AFxNNalbAJ0dxTCsQ-1; Wed,
- 23 Apr 2025 17:43:43 -0400
-X-MC-Unique: vfVj3AFxNNalbAJ0dxTCsQ-1
-X-Mimecast-MFC-AGG-ID: vfVj3AFxNNalbAJ0dxTCsQ_1745444622
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id ADC461956087;
-	Wed, 23 Apr 2025 21:43:42 +0000 (UTC)
-Received: from dreadlord.redhat.com (unknown [10.64.136.98])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8B94919560A3;
-	Wed, 23 Apr 2025 21:43:40 +0000 (UTC)
-From: Dave Airlie <airlied@gmail.com>
-To: dri-devel@lists.freedesktop.org,
-	tj@kernel.org,
-	christian.koenig@amd.com
-Cc: cgroups@vger.kernel.org
-Subject: [PATCH 5/5] nouveau: add memcg integration
-Date: Thu, 24 Apr 2025 07:37:07 +1000
-Message-ID: <20250423214321.100440-6-airlied@gmail.com>
-In-Reply-To: <20250423214321.100440-1-airlied@gmail.com>
-References: <20250423214321.100440-1-airlied@gmail.com>
+	s=arc-20240116; t=1745445554; c=relaxed/simple;
+	bh=Miz9NzWnAK/CmNDcN+idx6rTUbeCo5M/yRi7KWMyvNo=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=QWDGw4+7CKe0XhSzh9h4IQzHNKnDuA5tUWAZPiD4rIHhVeEIxN0V0kUu6NuJhc3P7vU1ZeUQhWMB4SGoDQDNpA4ER3aKEaNy713TLGVwloKYlXWRn+THYBa0iOoUSW+nUouzfo2mVE4KHUvrsCjeBPONWJRlD8DltTmmRjEgq8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=a8b0MZA8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47B2FC4CEE2;
+	Wed, 23 Apr 2025 21:59:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1745445553;
+	bh=Miz9NzWnAK/CmNDcN+idx6rTUbeCo5M/yRi7KWMyvNo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=a8b0MZA8XSIoNLMnm+Ac5ypsUHn8EM7NNXSX+bVAWtewvIavk7rAlPbeurLfchJfB
+	 3HSdgyJjsG3+NvIZtYC/T95BvvbKz5jqOxaOYTQgwRbAinynQAQelaf1UTaoevSNOE
+	 WsBgGp1yw7GGL68uNUm8hN0x/9wUEuU8uTCRRPAk=
+Date: Wed, 23 Apr 2025 14:59:12 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Huan Yang <link@vivo.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt
+ <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ opensource.kernel@vivo.com
+Subject: Re: [PATCH 1/2] mm/memcg: use kmem_cache when alloc memcg
+Message-Id: <20250423145912.3e0062864b6969b3623c8ff6@linux-foundation.org>
+In-Reply-To: <20250423084306.65706-2-link@vivo.com>
+References: <20250423084306.65706-1-link@vivo.com>
+	<20250423084306.65706-2-link@vivo.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: Ti0_E8O0D-IZSioBfl-hIpiACv8IdSd2wTZynqhZ96w_1745444622
-X-Mimecast-Originator: gmail.com
-Content-Transfer-Encoding: quoted-printable
-content-type: text/plain; charset=WINDOWS-1252; x-default=true
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Dave Airlie <airlied@redhat.com>
+On Wed, 23 Apr 2025 16:43:04 +0800 Huan Yang <link@vivo.com> wrote:
 
-This just adds the memcg init and account_op support.
+> @@ -3652,7 +3654,10 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
+>  	int __maybe_unused i;
+>  	long error;
+>  
+> -	memcg = kzalloc(struct_size(memcg, nodeinfo, nr_node_ids), GFP_KERNEL);
+> +	memcg = likely(memcg_cachep) ?
+> +			kmem_cache_zalloc(memcg_cachep, GFP_KERNEL) :
+> +			kzalloc(struct_size(memcg, nodeinfo, nr_node_ids),
+> +				GFP_KERNEL);
 
-Signed-off-by: Dave Airlie <airlied@redhat.com>
----
- drivers/gpu/drm/nouveau/nouveau_bo.c  | 1 +
- drivers/gpu/drm/nouveau/nouveau_gem.c | 2 ++
- 2 files changed, 3 insertions(+)
+Why are we testing for memcg_cachep=NULL?
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau=
-/nouveau_bo.c
-index 2016c1e7242f..8e2da4d48ce3 100644
---- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-@@ -350,6 +350,7 @@ nouveau_bo_init(struct nouveau_bo *nvbo, u64 size, int =
-align, u32 domain,
- =09struct ttm_operation_ctx ctx =3D {
- =09=09.interruptible =3D false,
- =09=09.no_wait_gpu =3D false,
-+=09=09.account_op =3D true,
- =09=09.resv =3D robj,
- =09};
-=20
-diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c b/drivers/gpu/drm/nouvea=
-u/nouveau_gem.c
-index 67e3c99de73a..56899c89bdd8 100644
---- a/drivers/gpu/drm/nouveau/nouveau_gem.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
-@@ -87,6 +87,7 @@ nouveau_gem_object_del(struct drm_gem_object *gem)
- =09=09return;
- =09}
-=20
-+=09mem_cgroup_put(nvbo->bo.memcg);
- =09ttm_bo_put(&nvbo->bo);
-=20
- =09pm_runtime_mark_last_busy(dev);
-@@ -254,6 +255,7 @@ nouveau_gem_new(struct nouveau_cli *cli, u64 size, int =
-align, uint32_t domain,
- =09if (IS_ERR(nvbo))
- =09=09return PTR_ERR(nvbo);
-=20
-+=09nvbo->bo.memcg =3D get_mem_cgroup_from_mm(current->mm);
- =09nvbo->bo.base.funcs =3D &nouveau_gem_object_funcs;
- =09nvbo->no_share =3D domain & NOUVEAU_GEM_DOMAIN_NO_SHARE;
-=20
---=20
-2.49.0
+> @@ -5055,6 +5061,10 @@ static int __init mem_cgroup_init(void)
+>  		INIT_WORK(&per_cpu_ptr(&memcg_stock, cpu)->work,
+>  			  drain_local_stock);
+>  
+> +	memcg_size = struct_size_t(struct mem_cgroup, nodeinfo, nr_node_ids);
+> +	memcg_cachep = kmem_cache_create("mem_cgroup", memcg_size, 0,
+> +					 SLAB_PANIC | SLAB_HWCACHE_ALIGN, NULL);
+
+If it's because this allocation might have failed then let's not
+bother.  If an __init-time allocation failed, this kernel is unusable
+anyway.
+
 
 
