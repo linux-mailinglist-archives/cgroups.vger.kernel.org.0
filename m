@@ -1,125 +1,90 @@
-Return-Path: <cgroups+bounces-7799-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7800-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83D73A9AF22
-	for <lists+cgroups@lfdr.de>; Thu, 24 Apr 2025 15:36:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA416A9B337
+	for <lists+cgroups@lfdr.de>; Thu, 24 Apr 2025 18:00:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 378223BFFCC
-	for <lists+cgroups@lfdr.de>; Thu, 24 Apr 2025 13:35:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE11F7B4AD1
+	for <lists+cgroups@lfdr.de>; Thu, 24 Apr 2025 15:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920CF1581E1;
-	Thu, 24 Apr 2025 13:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162A9221283;
+	Thu, 24 Apr 2025 16:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="WpFPaRKz"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ATCUFXeC"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E3CF14F9EB
-	for <cgroups@vger.kernel.org>; Thu, 24 Apr 2025 13:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B096727F751
+	for <cgroups@vger.kernel.org>; Thu, 24 Apr 2025 16:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745501759; cv=none; b=FDC1JOK6z3Ovr5OYM2PRzXuPeCanbRUB+MsNoBzRknpGROyiglOpRdWGCu3TrHDH5irlo+ZIIYq1tuk74qW7OhLsMwZgtYkobxc+Vv2RrFnlWdohv6mtr2Fms2c5u/pSjwZT46v4YMJyPF7uXNYrRYig8VrFBvaZtyFxULOP41s=
+	t=1745510424; cv=none; b=GA+UhVYSG4pdk9kivoWsXZHM3wX9G2q+63jJZFK0N2Na8uNFctpDBFHMdcPVdrDbjkAIn8ruLBGygA+tf66JdmbkQLsGkap3WgAOg2sBaZLPvD33OhNX78NJzNw+6dXp8RmddJYYrFcJ7P/FwDKKXM1yzYrSyhPh1pRvMuOTWOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745501759; c=relaxed/simple;
-	bh=WPtzaI6gzO+Ao9RQi1VweoMaU/O7Z60bQSJbDKqCmOY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=uhem751kvFYPeZjwqomYDOizcqBOsKltf/AemEap6PAfoGIKz+23rT/78HMEGF1jVAbduZdE/cj1HJWIqh98bWGvCnEw4g2LkUJns9RzU8voCB90THQ/PE6iJNAMlBG9vvCOHQ3rIqksbC8tXGEEc7n0K6SLxYtnCuSSSi5+MK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=WpFPaRKz; arc=none smtp.client-ip=209.85.166.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-3cfce97a3d9so4125485ab.2
-        for <cgroups@vger.kernel.org>; Thu, 24 Apr 2025 06:35:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1745501756; x=1746106556; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5y3kb7tbL35mrW374ozZ5zHoQ8x5ddd9COLH2ecrXT4=;
-        b=WpFPaRKz0O7NIIA9IeGDNE5RIzQrP6u281XLpXkUtjG7MK31SOudfgRBWn6ciC/o74
-         y/PPLkG6LYFqxeOnBxb55sXuZdg3W93rzV42d+CoRpFm2BpzVGzrfVJUdfnGbo26TXbG
-         TRDcWNb/4PIOTTvTLx7lgY+qknDf8EPZq41YKaTUmJiiB9LZWwpmMQs9sEScLUMpQ5Zs
-         ADN4+bouAJJ9Yt2lH524moLBwuMmZNs39/V84+QhlwtiGIlGNESImiz61sK5xu1Vyqhb
-         3o38osX/jGESNj/opUoWouLXOqO3EEkwtb4wllC888SV38CTOfzVcP7B+QCtGlD+V6OJ
-         Htww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745501756; x=1746106556;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5y3kb7tbL35mrW374ozZ5zHoQ8x5ddd9COLH2ecrXT4=;
-        b=TztaJkdyWSAsGKbkuTjK94TPlN5OmuifI6mzEDQqsOLWz4uHQSUXf8H6feBJCbuCxO
-         JmHTKyrWCqosHfOHSj+Nlea8a8+8B0HtaydGKxhXASsPFsv8JZeXI2zFbtwg2xKG7f7S
-         syg7x3VSOsdtIf1+VnKkYlis7awPwzIaUJ2EBX2RsEB9vmVbcOPwp8XSnTPlW3W94+Bm
-         s6MwS1w8WSQKG8SpuQ2O3PnPYykhh2sizKeg/gOCniEVyYt9v4xpw5NrnOzlw/TlfbFz
-         SlISGllNbI+Nz8cb3+t1ghc83ky10tlhmau3qpTpOX/4cOrQz/zxrmOrjEU4qavYX7MC
-         gclQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUc3rkZGWzvbkbwLueqPujfL0/pB0Z5I63paqSDWZAzgC9uExThVjjXw6nfLvz+l3KYyU9wdjcy@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJqaT+JdOzfJW5qMSnZvzO53imm3BVRzQZtHgEjvvPK2+wCQ8I
-	6CIGRA0mJ+MoPUm05KrV3oCOoUZ7v0YrS/at5+uJg4C3cpmj1Rw+B2ya9FOCjSAcoQ+wAj38Xj9
-	H
-X-Gm-Gg: ASbGnctttHbt9tLRcW1WP+Ffux4LiPyl+hAhazmvy2lYtB1Ti+JHFEb2HBrYatVTufE
-	AwMNg7YyfR5JJ1As8o+QCyx5kwam4x2eHong3HFNzvEU3WBmjOoh2/MJjndSI+yWs4+TpSbjXec
-	P+1qdeNzKywm3cdZrHxkNuSfi+KtsPWrIXmLHuimMjLwBxK9DjMHv4wHe2JyqRnbokbQ9ZbLQJg
-	jnD/ih2SWz7emtyZNcOpFozHJqOLVBzcVZG5tqvw2xk3fR7LflCyCJZTwydR93wHagtW/E7AMUq
-	uU3FCP0k9f9nmqigHkB4hH9ogQMoqBk=
-X-Google-Smtp-Source: AGHT+IHGUYup65Csh37WQAuNVZgmXMs0428N1C4YOSpFb5unVA+hY8Q9IKjnnn2p20qNo3hrxDTuOA==
-X-Received: by 2002:a05:6e02:398e:b0:3d4:276:9a1b with SMTP id e9e14a558f8ab-3d93041e398mr26411495ab.16.1745501755935;
-        Thu, 24 Apr 2025 06:35:55 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4f824b80d63sm286172173.94.2025.04.24.06.35.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Apr 2025 06:35:55 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
- linux-block@vger.kernel.org, cgroups@vger.kernel.org, 
- Christian Brauner <brauner@kernel.org>
-In-Reply-To: <20250423053810.1683309-1-hch@lst.de>
-References: <20250423053810.1683309-1-hch@lst.de>
-Subject: Re: don't autoload block drivers on stat (and cgroup
- configuration)
-Message-Id: <174550175513.658353.8577093198336589021.b4-ty@kernel.dk>
-Date: Thu, 24 Apr 2025 07:35:55 -0600
+	s=arc-20240116; t=1745510424; c=relaxed/simple;
+	bh=yD7uIFF95ST+JIhn03gdVlJEUkB9/jkQpYVriJhB8aw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KB2MTu8n1NTcPxSexgIVV83B5nuC/RhP4ulj0UElxiXeB4J/7kqxc2Uo/71WeZC7vaTo27P/oSQe5+b0I8DBZRiNQw14rjYWtEJePkd++6Xru7SonF8U6SOiQklWlO4V87oT6l2oQ4ZXEfKzaBBMy9WLuf68LEOD3beyrMw9kB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ATCUFXeC; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 24 Apr 2025 09:00:01 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745510409;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tfFeYhapSdYD47FaFtGx4OWFt+GeEThh16hCxsDhCu4=;
+	b=ATCUFXeCXCrRKWTChbKTH6WuHu0R5tnkFKBwadCsGgV77j6ZkKqSDe0jgQ/yQmQ79Ztmla
+	MABvQr713842br1Ug5U2vuNJ0tvFs6CXjFiovr6hwukjE9D+WlpnWYGjmuF/KvikZkFzyU
+	3U6GPaaYNHbI0GjPY2FGBpfsKUTs2IM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Huan Yang <link@vivo.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Petr Mladek <pmladek@suse.com>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Francesco Valla <francesco@valla.it>, 
+	Huang Shijie <shijie@os.amperecomputing.com>, KP Singh <kpsingh@kernel.org>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, 
+	"Uladzislau Rezki (Sony)" <urezki@gmail.com>, Guo Weikang <guoweikang.kernel@gmail.com>, 
+	Raul E Rangel <rrangel@chromium.org>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Paul Moore <paul@paul-moore.com>, 
+	"Mike Rapoport (Microsoft)" <rppt@kernel.org>, opensource.kernel@vivo.com
+Subject: Re: [PATCH v2 3/3] mm/memcg: introduce mem_cgroup_early_init
+Message-ID: <2u4vpqa6do7tgtukqb7orgxmlixguexsxilhnsiwv7atssnht4@o4cwziz26wrs>
+References: <20250424120937.96164-1-link@vivo.com>
+ <20250424120937.96164-4-link@vivo.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.3-dev-7b9b9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250424120937.96164-4-link@vivo.com>
+X-Migadu-Flow: FLOW_OUT
 
-
-On Wed, 23 Apr 2025 07:37:38 +0200, Christoph Hellwig wrote:
-> Christian pointed out that the addition of the block device lookup
-> from stat can cause the legacy driver autoload to trigger from a plain
-> stat, which is a bad idea.
+On Thu, Apr 24, 2025 at 08:09:29PM +0800, Huan Yang wrote:
+> When cgroup_init() creates root_mem_cgroup through css_online callback,
+> some critical resources might not be fully initialized, forcing later
+> operations to perform conditional checks for resource availability.
 > 
-> This series fixes that and also stops autoloading from blk-cgroup
-> configuration, which isn't quite as bad but still silly.
+> This patch introduces mem_cgroup_early_init() to address the init order,
+> it invoke before cgroup_init, so, compare mem_cgroup_init which invoked
+> by initcall, mem_cgroup_early_init can use to prepare some key resources
+> before root_mem_cgroup alloc.
 > 
-> [...]
+> Signed-off-by: Huan Yang <link@vivo.com>
+> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Applied, thanks!
-
-[1/4] block: move blkdev_{get,put} _no_open prototypes out of blkdev.h
-      commit: c63202140d4b411d27380805c4d68eb11407b7f2
-[2/4] block: remove the backing_inode variable in bdev_statx
-      commit: d13b7090b2510abaa83a25717466decca23e8226
-[3/4] block: don't autoload drivers on stat
-      commit: 5f33b5226c9d92359e58e91ad0bf0c1791da36a1
-[4/4] block: don't autoload drivers on blk-cgroup configuration
-      commit: c4d2519c6ad854dc2114e77d693b3cf1baf55330
-
-Best regards,
--- 
-Jens Axboe
-
-
-
+Please move this patch as the first patch of the series and also remove
+the "early" from the function name as it has a different meaning in the
+context of cgroup init. Something like either memcg_init() or
+memcg_kmem_caches_init().
 
