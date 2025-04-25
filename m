@@ -1,254 +1,226 @@
-Return-Path: <cgroups+bounces-7814-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7815-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05DE1A9BBB3
-	for <lists+cgroups@lfdr.de>; Fri, 25 Apr 2025 02:18:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 534B8A9BBF9
+	for <lists+cgroups@lfdr.de>; Fri, 25 Apr 2025 02:53:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC50F9A3EAF
-	for <lists+cgroups@lfdr.de>; Fri, 25 Apr 2025 00:17:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FBBF4A3339
+	for <lists+cgroups@lfdr.de>; Fri, 25 Apr 2025 00:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446DBA29;
-	Fri, 25 Apr 2025 00:18:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 081918C1F;
+	Fri, 25 Apr 2025 00:53:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tw7C3dor"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Q4tvfboB";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="ELlLotGU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C68314A8B
-	for <cgroups@vger.kernel.org>; Fri, 25 Apr 2025 00:18:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745540288; cv=none; b=buj6CDboTOY45iK8Qw8Nz6xh6duepKULnkOhAnOETZLpV+e0TnG3PNPN2k2sHGkbyFP7R6L9dSzJmfM2AVHv+0v7KceWCNhhxxUc8nwM+ofOQ7RUgaz9j2WHZmmmsUN7+1kab2kA2uoOy26v2HJ9HhkYPC4hgT22sUJTBA8SoCg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745540288; c=relaxed/simple;
-	bh=z1+NZGp4HAHzzfGaXnGkJxONrWFWMtBcC1lFR5dWNow=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tIwRg5SWrU2geA4qY9LsMUL0UC5q7G7dIdHH/1yzNpSz4Eo+oNmtJuxtkgPEm2TxuFty8N9eHH1y+fBj0eWsT1etjwVKQ3INDzKIAZBctx48/fzbND+itHVagv3ESkTlft4iBWZnsrwEtA0jHSUQuFR700pLk9hP4yPwD8KN+1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tw7C3dor; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2264aefc45dso26805865ad.0
-        for <cgroups@vger.kernel.org>; Thu, 24 Apr 2025 17:18:05 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F278F66;
+	Fri, 25 Apr 2025 00:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745542397; cv=fail; b=c/IYqzPmt0OHpwQEr8ERNhIIdexzRl08pLqActDPicUrj52HzLqRC79BI6Wm4HPibUQHz2tuohlF6KvvyyU6uKjvNCP15ze4eH/3W0ukIJ0M86cy+IusW7rUUE+eKt+jeM8HbxguMhe2B6TYNitTOIMRgesecrLcAowXcyWn7tI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745542397; c=relaxed/simple;
+	bh=o9gETWeGS5PcThy526HDZMv8TfKO4eUqe/RD1oONOQE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ABYV9crgqArnJhZePIUNqc/Lfv+ohMg4Lo0WM4EypketFh6yPh3OPs6/cjOqMJF5iKfUTVLZpNPDl4jdhscMT27AnCPmWtZbd2B1fAvBi3p4cyM8ge93WnJG0zH2Q49KfNZucDJdQ0thOkww4Zho2SFKgqYdbtJzk95vKt+7bjM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Q4tvfboB; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=ELlLotGU; arc=fail smtp.client-ip=216.71.154.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1745542395; x=1777078395;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=o9gETWeGS5PcThy526HDZMv8TfKO4eUqe/RD1oONOQE=;
+  b=Q4tvfboBWbskaMsF9+0dalB8XvYvZQi+0a3tCjPR0dA1ceiYhsxifzpk
+   CO8AuAaHel6qB9W4pKxXHkUM9+utEmQ/UmxifNs0RBaGGd0TcvDLNsZoX
+   rLxG59HLZuXzCrV6w93tM+Q+mQJaXDGL086Qa/U//gaiRIdvR88Otacgm
+   9pwWmuSQ1tblE6NFPjPVffcv3B/BsrjuUJfqTbOEEUNuOUvsHmmFpq4cg
+   nzaZcbDIi7ceoLkDCxsOPsH/bOvvElDQZPWHnP3dLbUMU1BpcXdL8tDwN
+   mE4XqwOTwn9BQccv6F/qdz6FAkm82Ork9+xc218NTKYGx0J99KXt8mEfa
+   Q==;
+X-CSE-ConnectionGUID: mrb74eLtQamu2FtxaEQjWQ==
+X-CSE-MsgGUID: 7npAiciLQXS0M6pz9/YuiQ==
+X-IronPort-AV: E=Sophos;i="6.15,237,1739808000"; 
+   d="scan'208";a="79292460"
+Received: from mail-centralusazlp17010003.outbound.protection.outlook.com (HELO DM1PR04CU001.outbound.protection.outlook.com) ([40.93.13.3])
+  by ob1.hgst.iphmx.com with ESMTP; 25 Apr 2025 08:53:08 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=dBYo7kfKBKXCEIbadh9dgjA4Vncd4Gai4tlxqbqt8jyc0325Mg3HcI/mk8dauS91zsNbnxiEJF6zLm41k2zIFZR98DQk15fyLeNbsCgbEN1r7yKJleBTfs+tz6NbzKxDV8+vhUKmxw11HD1BkhPJoZgg5xWd9D5WQRNO9M+Qflnzf+/nolxaNefw2HwayIBIwI+SgLuZxAljGbtEd0/a4VOMjGieVxchccX5VizfZLE8K1HPEfc1eZ2b9VMLU2ktHAOxi0d3lTxXKYuOx/LoASyJwJ04K2RTyhdxGkQNCYrjJTgbzjDd5kZZOD4g8zhs1NUxHv2A2mRSQDcP7KM0Mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VDg7YCozpha6xER5KiV4Mcj4kuoon0up3l09Drd5AbQ=;
+ b=T8OGgnVfjwOc1fv2MYl665gRKDf2Md8+DLQeYDShVxJZFohVmX6etbJthf/PniXcZXdxuZUsBjhoADEyuA2zSUJKX8O2Vwt9bE8LJcYjOWXH46yOtZ5ziZHqU3/yzNXZHykq6fhMSuOoh06r4L/8glVxRg4qwdbmv6bC9G6p6gjmbudwSOw/oWh7N2GvMQcwsEXBjqysDZGKzPCfgg5Pw826qnSnvrosgLtCvFDp/c8iUljQj+L+F91o3+TB9bDnrB7aAT3r4NsKM8EQ+2XpFMrXWBcBuYMR4yTIodjqzbzbiXYRh87ac+v0UsZg9khdvjTRRmbZs2kpcAa8ymXBfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745540284; x=1746145084; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HRDr9PeSGcFtwz0oZ2PUUdR/OCyAfw+nh1U48kUyY2E=;
-        b=Tw7C3dorVqyKQi0QWd+I5FW0YeUqVW32OvFgvb5y/p9SOopNOyu+aLnHnWtyVBHPW1
-         gq+ycldECqPZCjqmqXVQKbAJqeycZbxtNnBiLgaPiuErZkCRWsP18JMdIw/mTimCDFL5
-         htn3AF8wi4joEwpS/zR3JBbo9VCZ9qVngJrYpZp/zlugVkmszVaCT7ywo3az1lGH+A+R
-         ERIUSbhYkIrESLvpgmfOyMX+RGzLKdYA8Cco900ljC042x6Fm8gCGogvey4cVP4ENMaW
-         5fUf8pVmglZVzk0jxIBU0XoxWooCBOkG+JXVqnmw1gugc4LqOcnzDWc56TmZ+/WKbYWI
-         VyEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745540284; x=1746145084;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HRDr9PeSGcFtwz0oZ2PUUdR/OCyAfw+nh1U48kUyY2E=;
-        b=e5UiXhADt4hunqnMXat7xcq8FupMltb4tBQBeeU25goCHAX9FV8J6u6nZINaHqeSjz
-         pHTLSODJlMEIjE7xdX+76wAI+TnQPbLdycACnw+qPA86bu4/PVTRQ4cXPoNYPRyg6aU7
-         Ftcn/nkMzwFsGhumcspcg+lRVaQzXwwn5e6sibx9UQAopVJ0RGznzWixDlgDefpuPdcj
-         axdWUFtEho6MZIXWq9WpwBvOzshzEsxGaKIBAwHq0CjoBnHF8MUTIWq7YEDmR1nZcDb4
-         6O6Ufhtzje8XSiZWJOZvUO5MGHlGbuTzq6BbbzeTRAf14NynYEgfwE+6x/BzGdKWArVk
-         ipCg==
-X-Forwarded-Encrypted: i=1; AJvYcCVmNtA1eS+ncFmVobhwr/Vl5BQMHefBtnWtFr9tsazwfJv4Qw1DRiDTzlNYwVYuFhSYK36Mkmhm@vger.kernel.org
-X-Gm-Message-State: AOJu0YwAjt9q2fv3NA/G2TmQlYHkkk/dNshymOQavOXGVzE+ANVUsat1
-	LRHQNiQowb5yqp6R4xg1YJ0d89f9i2Aqo2Jq+6JruuM0KRCJXJ9D
-X-Gm-Gg: ASbGncvCbpofEy96dxC627LsAvG/kmXVJf6owwUEBs173G/y20VNFgnXXxMI4lT/bSz
-	5UcyLNT+rgOxo/tDBwI1AZuFxMQRHDMCI6fYM7zoHk5ESfUP1oZ+6IvbZTRoFRWNCBObV9oAB3+
-	XwMCczqpDKlpsnAD0qAzSaMwOx2bHeE7YKpb1Qksba90sfadtv3cgtAfLX7s0iX3FaG457ZCz+f
-	WoDOUvFmSd9sMKM2LklunNecEtmMx861g3N6HLllhwEqCTglmxXkbqJRGFe5BRMs25MYKP6e855
-	PzlNVrMjvMuql/kSgvFG9yeasDj0rpYnMd925zM+54jMe2jEyUpkOtvY+ae0drGsHc8XiKsx
-X-Google-Smtp-Source: AGHT+IHRKmQAD3A5aGZ76IlaEDszcu2IoUYRj8gVhbMRFBOPSHJkXzVXq/4Zg5EmL+uBpbtYJtR22g==
-X-Received: by 2002:a17:902:ef50:b0:22d:b2c9:7fd7 with SMTP id d9443c01a7336-22dbf5ef7fcmr4819875ad.21.1745540284473;
-        Thu, 24 Apr 2025 17:18:04 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1151:15:fd6c:bb6:36da:5926? ([2620:10d:c090:500::5:5d68])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db5216998sm19907915ad.229.2025.04.24.17.18.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Apr 2025 17:18:03 -0700 (PDT)
-Message-ID: <9d261429-a1bc-4ab0-b68b-d18ecdfd0766@gmail.com>
-Date: Thu, 24 Apr 2025 17:18:02 -0700
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VDg7YCozpha6xER5KiV4Mcj4kuoon0up3l09Drd5AbQ=;
+ b=ELlLotGUAzvv5vxBB0Voh0lV6s87LobIN1CdT0XxnVejFfsUnxQ4ZynQmOJ/wlRQAw06xOurtaWsEYJ+8doSTFI8ZcBxaCDr0FASCcnzYf1E/qWkIY6uQpeH6emWYEVPrwFJS9JMfuFqernjCperBzf2spUhUQwWri+h7HmcVTw=
+Received: from BY5PR04MB6849.namprd04.prod.outlook.com (2603:10b6:a03:228::17)
+ by CO6PR04MB7825.namprd04.prod.outlook.com (2603:10b6:303:13b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.26; Fri, 25 Apr
+ 2025 00:53:06 +0000
+Received: from BY5PR04MB6849.namprd04.prod.outlook.com
+ ([fe80::b2a6:2bbf:ed0a:7320]) by BY5PR04MB6849.namprd04.prod.outlook.com
+ ([fe80::b2a6:2bbf:ed0a:7320%6]) with mapi id 15.20.8678.025; Fri, 25 Apr 2025
+ 00:53:06 +0000
+From: Kamaljit Singh <Kamaljit.Singh1@wdc.com>
+To: Waiman Long <llong@redhat.com>, "cgroups@vger.kernel.org"
+	<cgroups@vger.kernel.org>
+CC: "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: cgroup null pointer dereference
+Thread-Topic: cgroup null pointer dereference
+Thread-Index: AQHbs867Ho4DUg/FyECYHcuhUwZmwbOxxQUAgAHKuW0=
+Date: Fri, 25 Apr 2025 00:53:06 +0000
+Message-ID:
+ <BY5PR04MB684951591DE83E6FD0CBD364BC842@BY5PR04MB6849.namprd04.prod.outlook.com>
+References:
+ <BY5PR04MB68495E9E8A46CA9614D62669BCBB2@BY5PR04MB6849.namprd04.prod.outlook.com>
+ <a5eac08e-bdb4-4aa2-bb46-aa89b6eb1871@redhat.com>
+In-Reply-To: <a5eac08e-bdb4-4aa2-bb46-aa89b6eb1871@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR04MB6849:EE_|CO6PR04MB7825:EE_
+x-ms-office365-filtering-correlation-id: f4c11e17-da3a-4576-bd6b-08dd83938a76
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|366016|1800799024|376014|38070700018;
+x-microsoft-antispam-message-info:
+ =?iso-8859-1?Q?E4HNWdRFmojAdYWSfYMTgXEU9ikjZugXh+Vgm9XC0tAaZ4wTIC41+wjtlB?=
+ =?iso-8859-1?Q?tPmybLupWZkZanKVdikm6V4sKJAE8RHWrnsyNtPV2ZbimJpkUvm7nAddON?=
+ =?iso-8859-1?Q?2BPexkEZ0ncylrNKvd+pYNqh/0BbbUdnPZHQy1YXB/fP34FcWydTzHQrVr?=
+ =?iso-8859-1?Q?e6HsDat/UNd+wXpVi4qQfWx0uKA0sRiSP5SD8/dNwDrd1ZZAeekswiHmRG?=
+ =?iso-8859-1?Q?IIIdehqGceHlyE8g53qvwF+epwO1z04ScigKOObs0iD55E8Ag5yvj43v2K?=
+ =?iso-8859-1?Q?M9lJQ0yMD2GbwGRfZU9WxJHxjOoi8fsHQcNh9nwj0OPwg4DkMiPuwOy3KG?=
+ =?iso-8859-1?Q?FNwnMj1XLNCmryC+xUqGRonY3GgIRhUzAHAyphpIX+/qHN17MeZ0ElNc6i?=
+ =?iso-8859-1?Q?8bx9FRd5Ps+FWnt7fqfXqN81dnsjhQ5DXGCs0R/jFvLwoCjmOOBQc6a3ov?=
+ =?iso-8859-1?Q?ka+aYGV8o6QwnL/L59dgI4lKvXn4bBlwgN0ggyw8oShFVbnqgk6DRSsKwF?=
+ =?iso-8859-1?Q?Ik3khYrPUn8/CZatoHzR9oVa3pIuOOFfV8jQ5eJyGwikti0UfTtB+XSFve?=
+ =?iso-8859-1?Q?f4HYpibB3zDGSH83GaEOExkazXgMbxg7jgyvn7gw/qXFYEIz9/l6mO0H8Z?=
+ =?iso-8859-1?Q?ahhhCnVKX4m6ZGDxdiNnXtUlacvhyjMe/Li97QuOl4MPfbiRlUR/b4Vn9d?=
+ =?iso-8859-1?Q?97NH3J7p3GIQHljiRZh1khAuKCq2rJifCAOfXlQeS/9YASwwmNsbewx6YU?=
+ =?iso-8859-1?Q?LHDa7qfnqG0qqsq2CW16MaoffMs7by/heKeEXxz77qew7fStqzYXkpVmK5?=
+ =?iso-8859-1?Q?evQeO6UOy1k1dwjd3sjUYxZv88b8Lx5BYuWwf5mBAVFsffxeLq5fiqCKz+?=
+ =?iso-8859-1?Q?TQVReV0Ql8uhxlWuQVZQYvVB58HDgheXLTj0wBsQN0VhcazRhqhiU9IISs?=
+ =?iso-8859-1?Q?PaPiyWsxBfOz8EECcLiwvc6wBL5m5cbMLcx/cRl7+pauxV3+KhfnFAqW5u?=
+ =?iso-8859-1?Q?B0AE0p+oQRtcb78dZouHAcSRqz5vdBhiRN6m/a9/wlrBrKvnfPKzpYiir/?=
+ =?iso-8859-1?Q?D3U8NbahyMzORuG1E0/k6JhonCcP68QwZC3xDYi0KcyAJdEoBluK8NcPNR?=
+ =?iso-8859-1?Q?GN4Ob2eXvdlmXJmGsLpHk9TZUQREtst5eJKtuLzsrgDsZVgjMh7lPz3jGF?=
+ =?iso-8859-1?Q?09a7FuXSfPHXibvTjd/Un2VHmE5hQOpf2eX71lp0j50RZDZ1eQBcQVAQ3t?=
+ =?iso-8859-1?Q?B2+miXL2t3k6FTLqbgnkmL5fp45Jwtf+bd+6+s/XfwWJiMfL5FOiFNF7yO?=
+ =?iso-8859-1?Q?nKDkRw+6NwD3OHNepIR9q2BpQs380I6+KA3DgJNbB/DzXmTZInPCSn9N7P?=
+ =?iso-8859-1?Q?Rrqc4OOwWIzNg+h+ROvtcQWUWRRPBjkZziJEfakMGQylTFTfiFaCmoZs0X?=
+ =?iso-8859-1?Q?7yOrGCJ3tT9CmT7XvqJdQ/qnQg5Rvjmup+wuFJAppao663DSZWG9aB8Ype?=
+ =?iso-8859-1?Q?zP3/nBau2MtPZGTzXkZYvgfkUwkEAW0cYSWwS25XMVmA=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6849.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?fYqFM/Vetrm5UXiE14AeNKyd+WXGvXfAwVlRuvhmseTu1xTwJgNuOSYncb?=
+ =?iso-8859-1?Q?FJQtX4mOc3aVXW2l9b4BOjQ7UN7giqgx2ruM3VnwftlhuWIxeaHCFwjMKa?=
+ =?iso-8859-1?Q?Ech39QpDMYW+i4NRIU+4/zSpFcfPNvkZEihvT4Io4Vf/94zttH0MuZUDOm?=
+ =?iso-8859-1?Q?RMzo+AZ2OVReiD2XYHt1D49HuFYp+2VfJlLZqM1Z3UkD91bLNM1fZjXJ3v?=
+ =?iso-8859-1?Q?Wb+KcGejDbVi/Olnf0rMboJoUQsbEADXLDhnkj0GSIf4KAs46WUTHTTPtC?=
+ =?iso-8859-1?Q?NS04PyzNjWWth8AQHkMmRRyeJmkBdi/snIFtvjNUCh36HGV/xu7Uo+U/YH?=
+ =?iso-8859-1?Q?2zqYLctRBioN3DvPtmHP3k/GFRW0j5fkJBhUscNdqS1UPlPfDoUIMp9CDi?=
+ =?iso-8859-1?Q?vX3OYueBxf5mj7me0VSqOLkG+5Z13DFIzzubEUM8u5KS4p9WrsHsFT5ozU?=
+ =?iso-8859-1?Q?XjFyd/pAmNdSNpZ9mEFzEHPFuqgMNd8msIQJw0/jlV6QPIf2ZoR5ml50eA?=
+ =?iso-8859-1?Q?6RtDdvKj/+OrivJHo8Zkwj2mVEbI8GbDK5Bqqlr9gvQt54t6Nv5p+IC/PY?=
+ =?iso-8859-1?Q?TIW9IlvpBSct/j+kptb3Fqz9D6At657No9jOyS/7du7FDxK1icf8iNaT8m?=
+ =?iso-8859-1?Q?BFQ6Ng45esfGCuYzi01ezjDR/7Hyj9jI8W39lDYe8+TRhhHqi21AoTGpIT?=
+ =?iso-8859-1?Q?gCDMwBKKXUitlI7bz1Ssjdy0Qqdo6ZufSr+kIFT6lrx0r+EHYP7LRhOXwo?=
+ =?iso-8859-1?Q?QvkOKOTBsPSPpqA16itR8JFO9tGoJAIwkgYNr/FBjz22sfRD1BXiDXMrpy?=
+ =?iso-8859-1?Q?ZiQZPOsVrJY2wPMAd3XkYpo1iswRoTnH3qR8C2OfwkBk2fKPH+XaBnQwl5?=
+ =?iso-8859-1?Q?84VwLAZpoQN4QlUtZz83D9+TuB5CfJHBoWROV1XRCZiBCdrH68LD0q1GHU?=
+ =?iso-8859-1?Q?Bbd8wQjabLIcRgc2mVxzLCpgVx3UBwrAY1gQnGRGQ4hPaVMyGJGnKKRKZC?=
+ =?iso-8859-1?Q?trnmW+nM4y8ZwEF4KTj1Qtr+yPmhocCorfiiGSDTqKNU5kqy5rGciTk+Ow?=
+ =?iso-8859-1?Q?R2n6IygntUvi2RGU8a7Xycb39+mwuEweGwDsZQurAZ0z/rytp/zo8w/S/U?=
+ =?iso-8859-1?Q?dLGK5OSoKNgQTkeuCbEv9Hq1D5h6VJRvlvloisNgWCecOA4AT8n08l4vl1?=
+ =?iso-8859-1?Q?BmZpQjbWFrFCwW8MidI5in1iQhDPVSf7D9XzGuOgH3j2a4d2iueFQcZkPy?=
+ =?iso-8859-1?Q?GN5ZHIBm67PggK4m2Z417StxPli+uSWVAk7dEgtyOAFjfoRjRzyKnKrHw3?=
+ =?iso-8859-1?Q?5B+1KHzkHWlIkiwttGSLSuhXjQ6uDMH8BaKyeS/filUe+baGEqk1QYN82A?=
+ =?iso-8859-1?Q?4a5h7vU6l5GzefgfMr3lk4inertWueDUjXfhX1kqJseWmUoYT4pUV6Fm84?=
+ =?iso-8859-1?Q?zZOYVpbGXrPKh620husqocGUs5TupJPcP6nJD4PobG0t2HOJdATY5ed3NH?=
+ =?iso-8859-1?Q?4LBtmVltVvb4iEP46+zCdJIV1OwCoK6urrkdza27TigbtP1HwNWPgh/9no?=
+ =?iso-8859-1?Q?dXKDxnAdUNwS/Nc3Y+IvpEMm4gj8i45q3Yy3tnWFWV6JMrm002rHnmmy8b?=
+ =?iso-8859-1?Q?7x9EZZLAxUBQTenRVbBueCK/IXmCkIH7EV?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/5] cgroup: use subsystem-specific rstat locks to
- avoid contention
-To: Yosry Ahmed <yosry.ahmed@linux.dev>
-Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com,
- mkoutny@suse.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
- linux-mm@kvack.org, cgroups@vger.kernel.org, kernel-team@meta.com
-References: <20250404011050.121777-1-inwardvessel@gmail.com>
- <20250404011050.121777-6-inwardvessel@gmail.com>
- <6807a132.df0a0220.28dc80.a1f0SMTPIN_ADDED_BROKEN@mx.google.com>
-Content-Language: en-US
-From: JP Kobryn <inwardvessel@gmail.com>
-In-Reply-To: <6807a132.df0a0220.28dc80.a1f0SMTPIN_ADDED_BROKEN@mx.google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	GFz4FXFpzGbMQYb7NWifUB4g3wGxLs0Ad9JFSHTsE1ZICp9cX9WidTCEks4Ung6EVQ5fWgjoD9S39X49EaI3p5iVZWd0YfV7h8o2JV8SQpZj01tsQCM2aTjaBsUZyQdaD8CqfKefR85aAeabQ6k0TjFBASmOEIzoVHJqSf6QCyFz6gm36BXnHYbiS5JANsHL0q8FaSSRviogZP5QGHy6dofH0W0QiYnQ58iYwEKK61rxdp3jNdfpG06O2f4lr0wd+Djc9GbSbgUPoemWQb3V/O/xZ/lf7O7VJX6rRjzYaQPZASJN1+bTzfO4lnxdbhSLPHrKgyovDuVD6Am1Kdt3lkxvybhS+6xHiArw5nbUb14qs+XbS/eK3yEySoZieR+MTMIh2rFvEi9RgRElOPA6PHxEaazhJlI4t8+Vx96e7jRnArZs7df+rRveTHHAxqRXNcVvbF/fWDfEF6/zx/nwHFPxySl6+fiu+tlilweoX2CCAOo+szFlgwTskHuxCBFlSoEm+/Ct+NrjTOw+8vj5K1F8C+KxmczKU7S5fNPoX5cVOjLppoj1mTlWybKl9QinLpJu0+T/qeyFUvnzqIyRhynq8PkZBa0ZLhGmn3daYx1V4NCeeHrbJED9PVDxasRC
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6849.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4c11e17-da3a-4576-bd6b-08dd83938a76
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Apr 2025 00:53:06.2316
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bvrNHowRzxOApisl0fW8lO4KlQfspJYhiBEHdhqTBK9gG7GkUwMipndgwrOuvcwksA3I2mAdguObiA1AonOpcg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR04MB7825
 
-On 4/22/25 7:01 AM, Yosry Ahmed wrote:
-> On Thu, Apr 03, 2025 at 06:10:50PM -0700, JP Kobryn wrote:
->> It is possible to eliminate contention between subsystems when
->> updating/flushing stats by using subsystem-specific locks. Let the existing
->> rstat locks be dedicated to the cgroup base stats and rename them to
->> reflect that. Add similar locks to the cgroup_subsys struct for use with
->> individual subsystems.
->>
->> Lock initialization is done in the new function ss_rstat_init(ss) which
->> replaces cgroup_rstat_boot(void). If NULL is passed to this function, the
->> global base stat locks will be initialized. Otherwise, the subsystem locks
->> will be initialized.
->>
->> Change the existing lock helper functions to accept a reference to a css.
->> Then within these functions, conditionally select the appropriate locks
->> based on the subsystem affiliation of the given css. Add helper functions
->> for this selection routine to avoid repeated code.
->>
->> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
->> ---
->>   block/blk-cgroup.c              |   2 +-
->>   include/linux/cgroup-defs.h     |  16 +++--
->>   include/trace/events/cgroup.h   |  12 +++-
->>   kernel/cgroup/cgroup-internal.h |   2 +-
->>   kernel/cgroup/cgroup.c          |  10 +++-
->>   kernel/cgroup/rstat.c           | 101 +++++++++++++++++++++++---------
->>   6 files changed, 103 insertions(+), 40 deletions(-)
->>
->> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
->> index 0560ea402856..62d0bf1e1a04 100644
->> --- a/block/blk-cgroup.c
->> +++ b/block/blk-cgroup.c
->> @@ -1074,7 +1074,7 @@ static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
->>   	/*
->>   	 * For covering concurrent parent blkg update from blkg_release().
->>   	 *
->> -	 * When flushing from cgroup, cgroup_rstat_lock is always held, so
->> +	 * When flushing from cgroup, the subsystem lock is always held, so
->>   	 * this lock won't cause contention most of time.
->>   	 */
->>   	raw_spin_lock_irqsave(&blkg_stat_lock, flags);
->> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
->> index c58c21c2110a..bb5a355524d6 100644
->> --- a/include/linux/cgroup-defs.h
->> +++ b/include/linux/cgroup-defs.h
->> @@ -223,7 +223,10 @@ struct cgroup_subsys_state {
->>   	/*
->>   	 * A singly-linked list of css structures to be rstat flushed.
->>   	 * This is a scratch field to be used exclusively by
->> -	 * css_rstat_flush_locked() and protected by cgroup_rstat_lock.
->> +	 * css_rstat_flush_locked().
->> +	 *
->> +	 * Protected by rstat_base_lock when css is cgroup::self.
->> +	 * Protected by css->ss->rstat_ss_lock otherwise.
->>   	 */
->>   	struct cgroup_subsys_state *rstat_flush_next;
->>   };
->> @@ -359,11 +362,11 @@ struct css_rstat_cpu {
->>   	 * are linked on the parent's ->updated_children through
->>   	 * ->updated_next.
->>   	 *
->> -	 * In addition to being more compact, singly-linked list pointing
->> -	 * to the cgroup makes it unnecessary for each per-cpu struct to
->> -	 * point back to the associated cgroup.
->> +	 * In addition to being more compact, singly-linked list pointing to
->> +	 * the css makes it unnecessary for each per-cpu struct to point back
->> +	 * to the associated css.
->>   	 *
->> -	 * Protected by per-cpu cgroup_rstat_cpu_lock.
->> +	 * Protected by per-cpu css->ss->rstat_ss_cpu_lock.
->>   	 */
->>   	struct cgroup_subsys_state *updated_children;	/* terminated by self cgroup */
-> 
-> This rename belongs in the previous patch, also the comment about
-> updated_children should probably say "self css" now.
-
-Thanks, will adjust in next rev.
-
-> 
->>   	struct cgroup_subsys_state *updated_next;	/* NULL iff not on the list */
->> @@ -793,6 +796,9 @@ struct cgroup_subsys {
->>   	 * specifies the mask of subsystems that this one depends on.
->>   	 */
->>   	unsigned int depends_on;
->> +
->> +	spinlock_t rstat_ss_lock;
->> +	raw_spinlock_t __percpu *rstat_ss_cpu_lock;
-> 
-> Can we use local_lock_t here instead? I guess it would be annoying
-> because we won't be able to have common code for locking/unlocking. It's
-> annoying because the local lock is a spinlock under the hood for non-RT
-> kernels anyway..
-> 
->>   };
->>   
->>   extern struct percpu_rw_semaphore cgroup_threadgroup_rwsem;
-> [..]
->> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
->> index 37d9e5012b2d..bcc253aec774 100644
->> --- a/kernel/cgroup/rstat.c
->> +++ b/kernel/cgroup/rstat.c
->> @@ -9,8 +9,8 @@
->>   
->>   #include <trace/events/cgroup.h>
->>   
->> -static DEFINE_SPINLOCK(cgroup_rstat_lock);
->> -static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
->> +static DEFINE_SPINLOCK(rstat_base_lock);
->> +static DEFINE_PER_CPU(raw_spinlock_t, rstat_base_cpu_lock);
-> 
-> Can we do something like this (not sure the macro usage is correct):
-> 
-> static DEFINE_PER_CPU(raw_spinlock_t, rstat_base_cpu_lock) = __SPIN_LOCK_UNLOCKED(rstat_base_cpu_lock);
-> 
-> This should initialize the per-CPU spinlocks the same way
-> DEFINE_SPINLOCK does IIUC.
-
-Yes, this could work. There was some earlier discussion and it was
-decided against though [0].
-
-> 
->>   
->>   static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu);
->>   
-> [..]
->> @@ -422,12 +443,36 @@ void css_rstat_exit(struct cgroup_subsys_state *css)
->>   	css->rstat_cpu = NULL;
->>   }
->>   
->> -void __init cgroup_rstat_boot(void)
->> +/**
->> + * ss_rstat_init - subsystem-specific rstat initialization
->> + * @ss: target subsystem
->> + *
->> + * If @ss is NULL, the static locks associated with the base stats
->> + * are initialized. If @ss is non-NULL, the subsystem-specific locks
->> + * are initialized.
->> + */
->> +int __init ss_rstat_init(struct cgroup_subsys *ss)
->>   {
->>   	int cpu;
->>   
->> +	if (!ss) {
->> +		spin_lock_init(&rstat_base_lock);
-> 
-> IIUC locks defined with DEFINE_SPINLOCK() do not need to be initialized,
-> and I believe we can achieve the same for the per-CPU locks as I
-> described above and eliminate this branch completely.
-
-True. I'll remove in next rev, but will keep the initialization for the
-per-cpu locks based on [0].
-
-[0] 
-https://lore.kernel.org/all/jtqkpzqv4xqy4vajm6fljin6ospot37qg252dfk3yldzq6aubu@icg3ndtg3k7i/
-
+Hi Waiman,=0A=
+=0A=
+>On 4/23/25 1:30 PM, Kamaljit Singh wrote:=0A=
+>> Hello,=0A=
+>>=0A=
+>> While running IOs to an nvme fabrics target we're hitting this null poin=
+ter which causes=0A=
+>> CPU hard lockups and NMI. Before the lockups, the Medusa IOs ran success=
+fully for ~23 hours.=0A=
+>>=0A=
+>> I did not find any panics listing nvme or block driver calls.=0A=
+>>=0A=
+>> RIP: 0010:cgroup_rstat_flush+0x1d0/0x750=0A=
+>> points to rstat.c, cgroup_rstat_push_children(), line 162 under second w=
+hile() to the following code.=0A=
+>>=0A=
+>> 160                 /* updated_next is parent cgroup terminated */=0A=
+>> 161                 while (child !=3D parent) {=0A=
+>> 162                         child->rstat_flush_next =3D head;=0A=
+>> 163                         head =3D child;=0A=
+>> 164                         crstatc =3D cgroup_rstat_cpu(child, cpu);=0A=
+>> 165                         grandchild =3D crstatc->updated_children;=0A=
+>>=0A=
+>> In my test env I've added a null check to 'child' and re-running the lon=
+g-term test.=0A=
+>> I'm wondering if this patch is sufficient to address any underlying issu=
+e or is just a band-aid.=0A=
+>> Please share any known patches or suggestions.=0A=
+>>               -          while (child !=3D parent) {=0A=
+>>               +         while (child && child !=3D parent) {=0A=
+>=0A=
+>Child can become NULL only if the updated_next list isn't parent=0A=
+>terminated. This should not happen. A warning is needed if it really=0A=
+>happens. I will take a further look to see if there is a bug somewhere.=0A=
+=0A=
+My test re-ran for 36+ hours without any CPU lockups or NMI. This patch see=
+ms to have helped.=
 
