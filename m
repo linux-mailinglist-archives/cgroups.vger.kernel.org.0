@@ -1,142 +1,140 @@
-Return-Path: <cgroups+bounces-7842-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7843-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08C1AA9D2D4
-	for <lists+cgroups@lfdr.de>; Fri, 25 Apr 2025 22:18:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1BDDA9D6B0
+	for <lists+cgroups@lfdr.de>; Sat, 26 Apr 2025 02:31:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71AB69C4332
-	for <lists+cgroups@lfdr.de>; Fri, 25 Apr 2025 20:18:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B6607B9D0A
+	for <lists+cgroups@lfdr.de>; Sat, 26 Apr 2025 00:30:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5978221D90;
-	Fri, 25 Apr 2025 20:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3022B1E0E0A;
+	Sat, 26 Apr 2025 00:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BIk2XVRN"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QI642TQa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E648B218E9F
-	for <cgroups@vger.kernel.org>; Fri, 25 Apr 2025 20:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7975613C8E8
+	for <cgroups@vger.kernel.org>; Sat, 26 Apr 2025 00:31:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745612330; cv=none; b=ZXKrRGxyKKkKJIIarOwYinbBR4SFFCLxpDht2wnmraMXHI/aAcjkKCrLODgdp7yfzZjgS7bwoq5XKLhVdKXqlHWWLghJUnXYwZSCBSBoLpvekdk+DMaXMdeHP6M0y59TOVJn7y5awBQkmFjuqsDR9gAUXznD5BUpJW/2l9/Sv/Y=
+	t=1745627487; cv=none; b=AXeruaFgGcIg7wECxOZGXCT6C0GMax5UFRu/Mkj38TvGNIIEj+C0qOdLfzERxnzxx77jGu1dQC6qGdu+svQOpZ6lKuD79Tsy1XLNrQk4bZtx/Cj1yZWxvaEHdNW8yfkNriaqx8DKihvdbYDLKbUtsz9s72Mb4OH9R29Fwcrpzzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745612330; c=relaxed/simple;
-	bh=J+AK7wunnpEB2JMYQXv1n/WSaKOAkcue33/P70CTFH4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rEbT7ZjFEyeq1WyJKXTnxxz4K/mGY6jBw3ioOdVbzTaRU/G5ai5hBKOowFzCDiQhkQp1mDoidIovG+joSFXzTRLIIfohRTKv6U2HVdesvy6HlpkdB4hJ39D4r33ZtoyugIIY1SzyE7UBq0U7ZpraiRwX7JsAN5CUnGt0pqMiwBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BIk2XVRN; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 25 Apr 2025 13:18:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745612324;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FNLMf/5dW9WvMGj/QQPYDD8kv32KN5l1w2IaTPelp/4=;
-	b=BIk2XVRNb4D0juBRNjJUrBrAmiC3GfLU66rJWolBEHCXWioRWFqLyuvixVTkjjMXiykt8D
-	nZGs1le6vWy3J+gO2LBm/ZmpoY6yT/enKU6OryPyHe5nL9g7IvtIc7Vq/bbRnl4eHc6YDS
-	u+S7cVpqd9DnGVX2fpLUV6g5u94/34U=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Vlastimil Babka <vbabka@suse.cz>, Jakub Kicinski <kuba@kernel.org>, 
-	Eric Dumazet <edumazet@google.com>, Soheil Hassas Yeganeh <soheil@google.com>, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: multi-memcg percpu charge cache
-Message-ID: <as5cdsm4lraxupg3t6onep2ixql72za25hvd4x334dsoyo4apr@zyzl4vkuevuv>
-References: <20250416180229.2902751-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1745627487; c=relaxed/simple;
+	bh=9sS1jQlaw0aSh3DzVS54yCwHjJWlT7MMzb9Lp5mX0Iw=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=mi2gKK0sfepRKPdNttXtEx17o36vL0LS1P0neAw6pIf1Lgzx07UpWM89O7C1V6Z+6jhQ2ATk59eaeUPl/YFEf7PgMMOCdj6PZWWHLSOd+UpVOdUwYYc409048qPV2FkS7DUpRd5djnhvY3Dnyg6YhUc8qZ5hMp01X+mmkD82fCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QI642TQa; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ff8a2c7912so2195569a91.1
+        for <cgroups@vger.kernel.org>; Fri, 25 Apr 2025 17:31:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1745627485; x=1746232285; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b3IOGBjTq7O8fLAPAnxSaHu8qhCTmDkeWLsMrPMzyQw=;
+        b=QI642TQaiIkjK6ognItduvPNPmZ+zYZ9/4R0j7CquVNNqsAGbR4pp+CZAxk9QvBwKn
+         88OXCZjYSvmRndr1W6dibBqlHegldB2A7XVNYKar/LnW3vGXXqSoeTqcIWw5dvQDXaQg
+         eIWMDaiU1kXH8S7s0ZYglWtJx9K8RyuJ9qwEG/CeSvTNSUEkhgL7CRgGXCwsRRdcIfJ7
+         G2b9fTNA662PlF12MrwNGXrN/7SiFsXRyIQKgThQ7Pg4xCBS+TWHlCMuxdfXmp+9zo0X
+         kfIrp5nr1B5hSsKRF0RB/qO+DSdSTPD79FtuVEQpstvJknJIFR/jLfPQlJ/TZCN3Zof9
+         oyFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745627485; x=1746232285;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b3IOGBjTq7O8fLAPAnxSaHu8qhCTmDkeWLsMrPMzyQw=;
+        b=FuYPYuqlwEND3JgRsKKaHaV0rDpgjTLey/8PdsaaVhFwk18YoWkt8KM24mvSheo5LM
+         ArAZjsIzksXrp90IQF5Tm17k1K1atFw38Uybk6V6XDVw0iRB2VAtSbWGijCA2hMnZfHm
+         LZbJfTv/T29enH56IGzuG4XIkYFcbK3Q7zDeYE63t8kPM61B+SkIdxtRaJGDG2rQhIjs
+         AHiL+P7r5532iL11VfZYqThpuan5z4oZ5NJiGHTpK8ZRGttrm6jHtN+qk+S357UKX71+
+         aLnfKaL5uVdizXfOr/jbElPGjDNkQ+kvRF+cnjwghxBldUXq2C/gGXE9kCwBwU4GBuLR
+         DeSA==
+X-Forwarded-Encrypted: i=1; AJvYcCXsHGURN5A1/iIeJj7pipU7B05Cd7XCNGG78s2MsDbNUdGrbhsVKmFlaRaJO/g95WidFN0ZOKEB@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxg0JaMOSWY7lFeUBzH8DexfQFuCR6+nh8bGOM/QvulC/TTzUt4
+	nV0ckZ0iaTqrB5nvjlMbkyzO0G1oY15AbjGkOaWx3m+xcJYB4SQh0Qlk5RvMM4IpyWg/x278Ltl
+	CVg==
+X-Google-Smtp-Source: AGHT+IGaqe210ByAqDm+K8vGUEeK+g5oQ8arD5NGMbUumTCn7JblOSFTW5m4cc+cQQlAJi5i/WKfSnsklF0=
+X-Received: from pjoo7.prod.google.com ([2002:a17:90b:5827:b0:308:867e:1ced])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90a:fc46:b0:302:fc48:4f0a
+ with SMTP id 98e67ed59e1d1-309f8786e57mr6500844a91.0.1745627484755; Fri, 25
+ Apr 2025 17:31:24 -0700 (PDT)
+Date: Fri, 25 Apr 2025 17:31:23 -0700
+In-Reply-To: <20250414200929.3098202-6-jthoughton@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250416180229.2902751-1-shakeel.butt@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+References: <20250414200929.3098202-1-jthoughton@google.com> <20250414200929.3098202-6-jthoughton@google.com>
+Message-ID: <aAwpWwMIJEjtL5F9@google.com>
+Subject: Re: [PATCH v3 5/5] KVM: selftests: access_tracking_perf_test: Use
+ MGLRU for access tracking
+From: Sean Christopherson <seanjc@google.com>
+To: James Houghton <jthoughton@google.com>
+Cc: kvm@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>, 
+	Axel Rasmussen <axelrasmussen@google.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, Yosry Ahmed <yosry.ahmed@linux.dev>, 
+	Yu Zhao <yuzhao@google.com>, David Matlack <dmatlack@google.com>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Andrew,
+On Mon, Apr 14, 2025, James Houghton wrote:
+> By using MGLRU's debugfs for invoking test_young() and clear_young(), we
+> avoid page_idle's incompatibility with MGLRU, and we can mark pages as
+> idle (clear_young()) much faster.
+> 
+> The ability to use page_idle is left in, as it is useful for kernels
+> that do not have MGLRU built in. If MGLRU is enabled but is not usable
+> (e.g. we can't access the debugfs mount), the test will fail, as
+> page_idle is not compatible with MGLRU.
+> 
+> cgroup utility functions have been borrowed so that, when running with
+> MGLRU, we can create a memcg in which to run our test.
+> 
+> Other MGLRU-debugfs-specific parsing code has been added to
+> lru_gen_util.{c,h}.
 
-Another fix for this patch. Basically simplification of refill_stock and
-avoiding multiple cached entries of a memcg.
+This fails on my end due to not being able to find the cgroup.  I spent about 15
+minutes poking at it and gave it.  FWIW, this is on our devrez hosts, so it's
+presumably similar hardware to what you tested on.
 
-From 6f6f7736799ad8ca5fee48eca7b7038f6c9bb5b9 Mon Sep 17 00:00:00 2001
-From: Shakeel Butt <shakeel.butt@linux.dev>
-Date: Fri, 25 Apr 2025 13:10:43 -0700
-Subject: [PATCH] memcg: multi-memcg percpu charge cache - fix 2
+Even if this turns out to be PEBKAC or some CONFIG_XXX incompatibility, there
+needs to be better hints provided to the user of how they can some this.
 
-Simplify refill_stock by avoiding goto and doing the operations inline
-and make sure the given memcg is not cached multiple times.
+And this would be a perfect opportunity to clean up this:
 
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- mm/memcontrol.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+ 	__TEST_REQUIRE(page_idle_fd >= 0,
+		       "CONFIG_IDLE_PAGE_TRACKING is not enabled");
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 997e2da5d2ca..9dfdbb2fcccc 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1907,7 +1907,8 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
- 	struct mem_cgroup *cached;
- 	uint8_t stock_pages;
- 	unsigned long flags;
--	bool evict = true;
-+	bool success = false;
-+	int empty_slot = -1;
- 	int i;
- 
- 	/*
-@@ -1931,26 +1932,28 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
- 
- 	stock = this_cpu_ptr(&memcg_stock);
- 	for (i = 0; i < NR_MEMCG_STOCK; ++i) {
--again:
- 		cached = READ_ONCE(stock->cached[i]);
--		if (!cached) {
--			css_get(&memcg->css);
--			WRITE_ONCE(stock->cached[i], memcg);
--		}
--		if (!cached || memcg == READ_ONCE(stock->cached[i])) {
-+		if (!cached && empty_slot == -1)
-+			empty_slot = i;
-+		if (memcg == READ_ONCE(stock->cached[i])) {
- 			stock_pages = READ_ONCE(stock->nr_pages[i]) + nr_pages;
- 			WRITE_ONCE(stock->nr_pages[i], stock_pages);
- 			if (stock_pages > MEMCG_CHARGE_BATCH)
- 				drain_stock(stock, i);
--			evict = false;
-+			success = true;
- 			break;
- 		}
- 	}
- 
--	if (evict) {
--		i = get_random_u32_below(NR_MEMCG_STOCK);
--		drain_stock(stock, i);
--		goto again;
-+	if (!success) {
-+		i = empty_slot;
-+		if (i == -1) {
-+			i = get_random_u32_below(NR_MEMCG_STOCK);
-+			drain_stock(stock, i);
-+		}
-+		css_get(&memcg->css);
-+		WRITE_ONCE(stock->cached[i], memcg);
-+		WRITE_ONCE(stock->nr_pages[i], stock_pages);
- 	}
- 
- 	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
--- 
-2.47.1
+I can't count the number of times I've forgotten to run the test with root
+privileges, and wasted a bunch of time remembering it's not that the kernel
+doesn't have CONFIG_IDLE_PAGE_TRACKING, but that /sys/kernel/mm/page_idle/bitmap
+isn't accessible.
 
+I mention that, because on a kernel with MGRLU available but disabled, and
+CONFIG_IDLE_PAGE_TRACKING=n, the user has no idea that they _can_ run the test
+without mucking with their kernel.
+
+==== Test Assertion Failure ====
+  lib/lru_gen_util.c:229: stats->memcg_id > 0
+  pid=423298 tid=423298 errno=2 - No such file or directory
+     1	0x0000000000408b45: lru_gen_read_memcg_stats at lru_gen_util.c:229
+     2	0x0000000000402e4c: run_test at access_tracking_perf_test.c:421
+     3	0x0000000000403694: for_each_guest_mode at guest_modes.c:96
+     4	0x00000000004023dd: run_test_in_cg at access_tracking_perf_test.c:467
+     5	0x000000000041ba65: cg_run at cgroup_util.c:362
+     6	0x0000000000402042: main at access_tracking_perf_test.c:583
+     7	0x000000000041c753: __libc_start_call_main at libc-start.o:?
+     8	0x000000000041e9ac: __libc_start_main_impl at ??:?
+     9	0x0000000000402280: _start at ??:?
+  Couldn't find memcg: access_tracking_perf_test
+Did the memcg get created in the proper mount?
+Destroying cgroup: /sys/fs/cgroup/access_tracking_perf_test
 
