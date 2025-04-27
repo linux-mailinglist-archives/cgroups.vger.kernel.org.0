@@ -1,140 +1,122 @@
-Return-Path: <cgroups+bounces-7843-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7844-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1BDDA9D6B0
-	for <lists+cgroups@lfdr.de>; Sat, 26 Apr 2025 02:31:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4643AA9E2D7
+	for <lists+cgroups@lfdr.de>; Sun, 27 Apr 2025 13:46:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B6607B9D0A
-	for <lists+cgroups@lfdr.de>; Sat, 26 Apr 2025 00:30:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AFF217E982
+	for <lists+cgroups@lfdr.de>; Sun, 27 Apr 2025 11:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3022B1E0E0A;
-	Sat, 26 Apr 2025 00:31:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D112522A1;
+	Sun, 27 Apr 2025 11:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QI642TQa"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="RdjKIPch"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7975613C8E8
-	for <cgroups@vger.kernel.org>; Sat, 26 Apr 2025 00:31:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 931F512E5B
+	for <cgroups@vger.kernel.org>; Sun, 27 Apr 2025 11:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745627487; cv=none; b=AXeruaFgGcIg7wECxOZGXCT6C0GMax5UFRu/Mkj38TvGNIIEj+C0qOdLfzERxnzxx77jGu1dQC6qGdu+svQOpZ6lKuD79Tsy1XLNrQk4bZtx/Cj1yZWxvaEHdNW8yfkNriaqx8DKihvdbYDLKbUtsz9s72Mb4OH9R29Fwcrpzzg=
+	t=1745754375; cv=none; b=TEEY2aJESu4Por1GVNOCJTr6oeqPuMmgb5iV8daqHtka+BhspiF3JxqCu+/Jvn4xIUoyhm9TVzewjHhVFVm1Qkn+o2ibq7TiJeBKKARbdJy6jw0wzMMmaDeQZ7bzxE8Rv+Zs9aWZsLpzW5WX2M4PQektRN7l1VYgxHQvE/LM9p0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745627487; c=relaxed/simple;
-	bh=9sS1jQlaw0aSh3DzVS54yCwHjJWlT7MMzb9Lp5mX0Iw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=mi2gKK0sfepRKPdNttXtEx17o36vL0LS1P0neAw6pIf1Lgzx07UpWM89O7C1V6Z+6jhQ2ATk59eaeUPl/YFEf7PgMMOCdj6PZWWHLSOd+UpVOdUwYYc409048qPV2FkS7DUpRd5djnhvY3Dnyg6YhUc8qZ5hMp01X+mmkD82fCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QI642TQa; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ff8a2c7912so2195569a91.1
-        for <cgroups@vger.kernel.org>; Fri, 25 Apr 2025 17:31:25 -0700 (PDT)
+	s=arc-20240116; t=1745754375; c=relaxed/simple;
+	bh=GVctOdu9pd1Tstg7D7UihQBXqtIW/DBOfarRRGN6PSc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bPVY9Y6ugp9fjqOcB47+aZl1QTFRakcweXYfHqMZJQpCiS4NC6cDmvA32mb8nELoajVPbnlUQIdaJ7RVRjM6U/gCTzYwR6z4bxogS8/ISnTJ5OlQqqY1YtfDdIyI/VonOsKwwWXW65jRI0Qb6lmCcI5B37ccHLJZIKj89EXqols=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=RdjKIPch; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-6f0ad74483fso44403716d6.1
+        for <cgroups@vger.kernel.org>; Sun, 27 Apr 2025 04:46:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1745627485; x=1746232285; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b3IOGBjTq7O8fLAPAnxSaHu8qhCTmDkeWLsMrPMzyQw=;
-        b=QI642TQaiIkjK6ognItduvPNPmZ+zYZ9/4R0j7CquVNNqsAGbR4pp+CZAxk9QvBwKn
-         88OXCZjYSvmRndr1W6dibBqlHegldB2A7XVNYKar/LnW3vGXXqSoeTqcIWw5dvQDXaQg
-         eIWMDaiU1kXH8S7s0ZYglWtJx9K8RyuJ9qwEG/CeSvTNSUEkhgL7CRgGXCwsRRdcIfJ7
-         G2b9fTNA662PlF12MrwNGXrN/7SiFsXRyIQKgThQ7Pg4xCBS+TWHlCMuxdfXmp+9zo0X
-         kfIrp5nr1B5hSsKRF0RB/qO+DSdSTPD79FtuVEQpstvJknJIFR/jLfPQlJ/TZCN3Zof9
-         oyFw==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1745754371; x=1746359171; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iZGJbKlltLESsmy2RtQuwiQRyRDouUOJMZvq+iV0S+c=;
+        b=RdjKIPchcnhZ7A7je/Inq2yWc0Ofon2ElA6dvrqZiBNtN1qaqj58MhmEJVlot5qZmu
+         Qq/Z7BWBibl32V8eqeq8NEjP3PQtlDEFgA8K3LC1oH5y6uC4BoGQb6NYctRg7ElL5XnP
+         lDjT3+/AfIQw1G/lqXMDyj7/1rDcWYlYIkhdrV9SrOSgOOei0rlDxfS349N7SIVS3ZsQ
+         l6TkQAdbXelF6sSFEhI+v/q8OkPA3SS3Yj2TROacp+dVY1qK7qupN3LGwhagUuOY45Wr
+         Zi5u9HstpSjYroc93T7vJ7FmQg07Aw2ltn3L20vwsVYcZgmOo+3CtdQxKwpnyva5MROz
+         G7NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745627485; x=1746232285;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b3IOGBjTq7O8fLAPAnxSaHu8qhCTmDkeWLsMrPMzyQw=;
-        b=FuYPYuqlwEND3JgRsKKaHaV0rDpgjTLey/8PdsaaVhFwk18YoWkt8KM24mvSheo5LM
-         ArAZjsIzksXrp90IQF5Tm17k1K1atFw38Uybk6V6XDVw0iRB2VAtSbWGijCA2hMnZfHm
-         LZbJfTv/T29enH56IGzuG4XIkYFcbK3Q7zDeYE63t8kPM61B+SkIdxtRaJGDG2rQhIjs
-         AHiL+P7r5532iL11VfZYqThpuan5z4oZ5NJiGHTpK8ZRGttrm6jHtN+qk+S357UKX71+
-         aLnfKaL5uVdizXfOr/jbElPGjDNkQ+kvRF+cnjwghxBldUXq2C/gGXE9kCwBwU4GBuLR
-         DeSA==
-X-Forwarded-Encrypted: i=1; AJvYcCXsHGURN5A1/iIeJj7pipU7B05Cd7XCNGG78s2MsDbNUdGrbhsVKmFlaRaJO/g95WidFN0ZOKEB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxg0JaMOSWY7lFeUBzH8DexfQFuCR6+nh8bGOM/QvulC/TTzUt4
-	nV0ckZ0iaTqrB5nvjlMbkyzO0G1oY15AbjGkOaWx3m+xcJYB4SQh0Qlk5RvMM4IpyWg/x278Ltl
-	CVg==
-X-Google-Smtp-Source: AGHT+IGaqe210ByAqDm+K8vGUEeK+g5oQ8arD5NGMbUumTCn7JblOSFTW5m4cc+cQQlAJi5i/WKfSnsklF0=
-X-Received: from pjoo7.prod.google.com ([2002:a17:90b:5827:b0:308:867e:1ced])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90a:fc46:b0:302:fc48:4f0a
- with SMTP id 98e67ed59e1d1-309f8786e57mr6500844a91.0.1745627484755; Fri, 25
- Apr 2025 17:31:24 -0700 (PDT)
-Date: Fri, 25 Apr 2025 17:31:23 -0700
-In-Reply-To: <20250414200929.3098202-6-jthoughton@google.com>
+        d=1e100.net; s=20230601; t=1745754371; x=1746359171;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iZGJbKlltLESsmy2RtQuwiQRyRDouUOJMZvq+iV0S+c=;
+        b=es/cHnUgMsRaVKB/TaU0cq7s4tLzfAb4iDx2rmo3ow3CYzreh4N3pcG7jzFYhwQl/K
+         J3d10cUlZS7WWKJHM8BxzwF1K026Oj4hGZjdLUkj3ZqZ0VnSC6DqneuqD3YSIUz4DA/2
+         VN82+g1uuZJxN5bbsNn2P9xbmWD06pFPEbZv5Mqp7NRFzUpU/36bj+CI1mBtLylY/sV+
+         uaGsvg20AqlNXljAZXG5WqkI4gpwuhcQXUdqeGW+XXLODY/4WXJmj+Z5rbipCWE4eX6O
+         TnPD1RgibYkQ8lpmR+mzbbB/+MCAaKybL3N9Zrc/ASZxXeXj9Mw/QSgZHFErTcHhkevb
+         iESg==
+X-Forwarded-Encrypted: i=1; AJvYcCWy25slBstn9ZYw1Rd3UkEX/4MW30ELqinNY8AcUGTCpr8hQMmFQtWH5GPy+heUqAtNcnEGamRf@vger.kernel.org
+X-Gm-Message-State: AOJu0YwHPEaQS3iRM5UF4DcpbY0VAKLYmLnLXZ9rctLbLo59SmQAEKDK
+	i+udMjJQ9x6pMsx3BTmG+XXDjbUnXvGLhQb3LyrouumkdFTMhd1Xcenbdv0Qwv4=
+X-Gm-Gg: ASbGncvyJ0CIfQQmpoxxGw/59O2sdQVJmPopCrTm1vv+7uAU57tzRP5CqTSm5O39maw
+	BUcfxHDScZoFOxzTpcw+NuEdAdTB3Ma7gKaRLIQJTv9JN024aUBmnCsQ83mURR6LpupabGSFG1k
+	Pf+6T02DQHIHP82cT0eZCcPgo74IXRih9S2nK75WDBmK0RCZqUrpLs/3jMjRsKEjf9eGPpj0Crt
+	h4KefLKXOr804g4VDd8JdXiwT5sYZmqF8p6OcyOEmA8WxDGrgzQrO4VNr1JBdijbVRFAfOsBmYc
+	Fc6tB1vFPZncQti8KcrmUO3hwj4RJVY8kcP2uiI=
+X-Google-Smtp-Source: AGHT+IGYlNv9jjm589wH0WvcGrTx5hwBX5PzvIp+I5YJ3ZPlUly+7OZNNemuhxWqi75Nw+gnuzcHFw==
+X-Received: by 2002:a05:6214:2aab:b0:6e4:4331:aae0 with SMTP id 6a1803df08f44-6f4cb9ba3a9mr120420376d6.1.1745754371307;
+        Sun, 27 Apr 2025 04:46:11 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
+        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6f4c0aaf98dsm43731706d6.108.2025.04.27.04.46.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Apr 2025 04:46:10 -0700 (PDT)
+Date: Sun, 27 Apr 2025 07:46:09 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Huan Yang <link@vivo.com>
+Cc: Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Petr Mladek <pmladek@suse.com>, Vlastimil Babka <vbabka@suse.cz>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Francesco Valla <francesco@valla.it>,
+	Raul E Rangel <rrangel@chromium.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Huang Shijie <shijie@os.amperecomputing.com>,
+	Guo Weikang <guoweikang.kernel@gmail.com>,
+	"Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Boqun Feng <boqun.feng@gmail.com>, opensource.kernel@vivo.com
+Subject: Re: [PATCH v3 1/3] mm/memcg: move mem_cgroup_init() ahead of
+ cgroup_init()
+Message-ID: <20250427114609.GA116315@cmpxchg.org>
+References: <20250425031935.76411-1-link@vivo.com>
+ <20250425031935.76411-2-link@vivo.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250414200929.3098202-1-jthoughton@google.com> <20250414200929.3098202-6-jthoughton@google.com>
-Message-ID: <aAwpWwMIJEjtL5F9@google.com>
-Subject: Re: [PATCH v3 5/5] KVM: selftests: access_tracking_perf_test: Use
- MGLRU for access tracking
-From: Sean Christopherson <seanjc@google.com>
-To: James Houghton <jthoughton@google.com>
-Cc: kvm@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>, 
-	Axel Rasmussen <axelrasmussen@google.com>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, Yosry Ahmed <yosry.ahmed@linux.dev>, 
-	Yu Zhao <yuzhao@google.com>, David Matlack <dmatlack@google.com>, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250425031935.76411-2-link@vivo.com>
 
-On Mon, Apr 14, 2025, James Houghton wrote:
-> By using MGLRU's debugfs for invoking test_young() and clear_young(), we
-> avoid page_idle's incompatibility with MGLRU, and we can mark pages as
-> idle (clear_young()) much faster.
+On Fri, Apr 25, 2025 at 11:19:23AM +0800, Huan Yang wrote:
+> When cgroup_init() creates root_mem_cgroup through css_alloc callback,
+> some critical resources might not be fully initialized, forcing later
+> operations to perform conditional checks for resource availability.
 > 
-> The ability to use page_idle is left in, as it is useful for kernels
-> that do not have MGLRU built in. If MGLRU is enabled but is not usable
-> (e.g. we can't access the debugfs mount), the test will fail, as
-> page_idle is not compatible with MGLRU.
+> This patch move mem_cgroup_init() to address the init order, it invoke
+> before cgroup_init, so, compare to subsys_initcall, it can use to prepare
+> some key resources before root_mem_cgroup alloc.
 > 
-> cgroup utility functions have been borrowed so that, when running with
-> MGLRU, we can create a memcg in which to run our test.
-> 
-> Other MGLRU-debugfs-specific parsing code has been added to
-> lru_gen_util.{c,h}.
+> Signed-off-by: Huan Yang <link@vivo.com>
+> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-This fails on my end due to not being able to find the cgroup.  I spent about 15
-minutes poking at it and gave it.  FWIW, this is on our devrez hosts, so it's
-presumably similar hardware to what you tested on.
-
-Even if this turns out to be PEBKAC or some CONFIG_XXX incompatibility, there
-needs to be better hints provided to the user of how they can some this.
-
-And this would be a perfect opportunity to clean up this:
-
- 	__TEST_REQUIRE(page_idle_fd >= 0,
-		       "CONFIG_IDLE_PAGE_TRACKING is not enabled");
-
-I can't count the number of times I've forgotten to run the test with root
-privileges, and wasted a bunch of time remembering it's not that the kernel
-doesn't have CONFIG_IDLE_PAGE_TRACKING, but that /sys/kernel/mm/page_idle/bitmap
-isn't accessible.
-
-I mention that, because on a kernel with MGRLU available but disabled, and
-CONFIG_IDLE_PAGE_TRACKING=n, the user has no idea that they _can_ run the test
-without mucking with their kernel.
-
-==== Test Assertion Failure ====
-  lib/lru_gen_util.c:229: stats->memcg_id > 0
-  pid=423298 tid=423298 errno=2 - No such file or directory
-     1	0x0000000000408b45: lru_gen_read_memcg_stats at lru_gen_util.c:229
-     2	0x0000000000402e4c: run_test at access_tracking_perf_test.c:421
-     3	0x0000000000403694: for_each_guest_mode at guest_modes.c:96
-     4	0x00000000004023dd: run_test_in_cg at access_tracking_perf_test.c:467
-     5	0x000000000041ba65: cg_run at cgroup_util.c:362
-     6	0x0000000000402042: main at access_tracking_perf_test.c:583
-     7	0x000000000041c753: __libc_start_call_main at libc-start.o:?
-     8	0x000000000041e9ac: __libc_start_main_impl at ??:?
-     9	0x0000000000402280: _start at ??:?
-  Couldn't find memcg: access_tracking_perf_test
-Did the memcg get created in the proper mount?
-Destroying cgroup: /sys/fs/cgroup/access_tracking_perf_test
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
