@@ -1,227 +1,226 @@
-Return-Path: <cgroups+bounces-7866-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7867-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E478A9EE2B
-	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 12:43:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB2A2A9EE30
+	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 12:43:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06AD117CE54
-	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 10:43:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 555CB189E321
+	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 10:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6586B25F7AE;
-	Mon, 28 Apr 2025 10:43:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2A12036E2;
+	Mon, 28 Apr 2025 10:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Kazm+oxf"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="cH5FAebY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2077.outbound.protection.outlook.com [40.107.236.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404E638F9C
-	for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 10:43:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745836997; cv=none; b=QR1YRQTPaToe0miDEZbrT8UrBGOn7vY4pAXwGveFVWT+faizql3QT1NAHK3I8P5tKmlXqaeQGf9yJUFJFzT983D01E9s/FWROidV5WqaPy0pbPgkvhlAAzldzJi3lPIKMeooecy4NnmQ7p3VlbQZn/Nif3a3I6xXXimFdsPGF98=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745836997; c=relaxed/simple;
-	bh=nkbUVd8tt1EFPFLGh6p3WeF8nyIWVjkHQiFP1VJdPug=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YV+u3+OdBfJsAkdcNvqg+e9vKdox4bdZ1nl8DruuoDOYDli2X1izecTR+2v8LGlC6zOc8w9l/lUZZgtBwaAbHmj6h+U2ajKg1D5VXCykUK3NKkd6oulZrHILQ4A1PtIWRX3v7GmxkhCcs/TS3hl9wuqSILeIVJXr+t1J2FrjXLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Kazm+oxf; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-ace98258d4bso238804366b.1
-        for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 03:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1745836993; x=1746441793; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IK7dIbpaTofEG9W0MKimUJmh49eq3Exd9JjSGC+MWSc=;
-        b=Kazm+oxfKwjAj8M4zdio0rwbB3UiNl9mbUPujQVzUE2VQS15oF9/xWv15pwhVhniEo
-         mccfcly5VH6fZyiqoTwXczifk4OLBXAOzSdqULuh1R/+BGHRY+XHcj/2JkfWYEH++KAj
-         SjTd3R/q1d04aVmjAUwtxDImXZ+xLTSh546HbyLsAVQRW5dm6kE44l4ispIwTnEu9Wu9
-         EAh+UeJ6VLcBw+rG34K1XEedN/SpLO6qw9/h7Vd/V5BZ9UzD4ezZ0omn9FqyFmjyw7WG
-         ls0uGmru0K+eIz3D5uM6LPIviNxlHUBEqTPoNHK9faad1QQHu+jyQbGSQsikBQTo6fzs
-         Qo+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745836993; x=1746441793;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IK7dIbpaTofEG9W0MKimUJmh49eq3Exd9JjSGC+MWSc=;
-        b=PXmt0fny14im2jfCeRJ1XAkidFyifGFcDMHb2iQ1ZAMz7H7MZ9ohvavojMHeJrbk3n
-         EtCK1t1xYCr0RUDvIhqEGq9aHYTZl/uJqtAuow7bkCm5IORPezuNcTFwzAZ4/iKSoXwQ
-         OyiCTsHqoPNkejNhaBnKNz8mA5yphJBJz/kDqd4LNHgeT4z1uXvxUtB/XQ+DNjr4DwwC
-         jne39u2r6kMgS2R1Hcp8oZSvMaWQJhuRLGgZRPn0AdlIb0vPLtncKwjuwE/pDQHceLwN
-         xClH313OLDz486kM+JCMFuCeCy77BxjcECXM2vCZr/J7W1g1+GTvFf1cFgCYHcQA2Tvv
-         ESXA==
-X-Forwarded-Encrypted: i=1; AJvYcCWrRERgujuRig9/V9iVYsYXixX+EtiNJfwPa3t1p1D9ptS3xihpf5qx+0jIr4bfjuWZDqACwPQZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YzoyUgnVFJaofKxwF4oUDhXJOGVx+ZmsDn8C50znZIy3l7ku4Ga
-	PniGd2g72TWsEihB3CHsw44yn2B23eWPunWQPH1k3XG/0USebZPeu1zPxs0UoA==
-X-Gm-Gg: ASbGncuH9UtvJNynnBeBs0BaV+79r79m97ZxRj760Mhe5eTgBSvD5ewIsU1TaVdbW9B
-	cnwS9kTfszz4DsbUcnXijyylRtLHqfDAVAWCUui/C28ke8zuHJyv2ZavAxTwAg40J0vtUlfP+Ir
-	B+yvo5SZPtt1PrmszA5DsEsT1kmmbdlNj45DTkLdbxnSGbIlFy+xl3xCo/ZeMmhRg0WP3RNmZi8
-	nsFkA5s9NylDJIdJkocnwBUxJKpsv3glwTdE6m2gIUxZ+D6rro+aOqgdBhECJckFquR14/4CFDl
-	uX8/SvbF7yto+g7p+xGXO40pP6qe3yfKo7s5SVbb/CbIxFEYl05k1Pw3J4q5oeGYflJ1IMQARdF
-	Jd/SjbtU=
-X-Google-Smtp-Source: AGHT+IHt49FasoPmpJdwq6ZuKmCYrd001aZAosiZ+1FBattCQmgQzn5vUSNbKU2Sq0zUGcO1M3eAxQ==
-X-Received: by 2002:a17:907:7b9a:b0:ace:be13:64e5 with SMTP id a640c23a62f3a-acebe136fabmr63079166b.26.1745836993362;
-        Mon, 28 Apr 2025 03:43:13 -0700 (PDT)
-Received: from google.com (201.31.90.34.bc.googleusercontent.com. [34.90.31.201])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace733aa401sm569796166b.35.2025.04.28.03.43.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Apr 2025 03:43:12 -0700 (PDT)
-Date: Mon, 28 Apr 2025 10:43:07 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Suren Baghdasaryan <surenb@google.com>,
-	David Rientjes <rientjes@google.com>, Josh Don <joshdon@google.com>,
-	Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, bpf@vger.kernel.org
-Subject: Re: [PATCH rfc 00/12] mm: BPF OOM
-Message-ID: <aA9bu7UJOCTQGk6L@google.com>
-References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74EB1AC44D
+	for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 10:43:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745837021; cv=fail; b=SgPfVwibOTe9aXRwDiASTIXmnCqKKQaoJjvWPtFfhN1MrGvAQ2cYYZyjitdDppE+3A9W2izSD9BzNPljGPOnSZkddKxT6DUtVkZu6ToNj4c0vx2VCM9w/Wf/L1U321Xn87nTbU9lcK75JSzNqRioh+hzb0+PfKG9RPihn9zood0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745837021; c=relaxed/simple;
+	bh=fQQWN8zOU2zgYFkXrYQ1KfXtW5IcKrABHDyBp8RXNuc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=MOWPTaku8XeHZvl0mRKiL2D6Qs9KmSlYQe7sAXL84ZbzzKE1AvsbsLuSOvnbUrtGSnuofW0QapIqkPMOgfs9aV18Eff89etCecjCUeBe6dIi964vKaOcfiRT0rcFD4VPkQaEDDJPkRh+eon0pTWLyfmgErwXknhtFThRXubnOqw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=cH5FAebY; arc=fail smtp.client-ip=40.107.236.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=o//KkP1pWbSSntXRCaJhsaDddA5DHGKuqUaCM+pvn6M6O+Xh5IP4tW9U68/s2UqO6OjJ7oBxq9T1PY6L0pbvBEBqtNKrYFJmHIDhKaC1AnFNc0mScTvoQC/S2AOPsWz+Quvm45Ao/5Ow4I+aB/tudr/aoEtqhQ72HIzwzOt9j9NZ6HAlo8H6tR61TmPoV5kTFlfbUMY/ET3m/T97C5uW1S2JPsgZ6Wnt1Grr0d0O7sIbJm0lZfdPeL1dJhMDBbKWTAwg3n3Pk6zbqgBfrndtqVe3YhWZtUfCKqLj81FzIRTvB/Rs2bJEwzCXiBxfzCQjx8YP37zl23anzjsVFiBL9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HeheR5fvS4+mCrmz2M/R8i4eFsIcA9dy3LAsupslRYE=;
+ b=EP6MMfp+7dZMJh8qsW9jomMH9xTxl+N+vHv0oP+kqnYKmLzEjSMvzqtGtPnyr/4WGqP21P9o/UPD0BSWXLpb7B5N7OORvRmN4cLKEoygvXOvOez8xM2URQvg1s7JKduSJwo3iUElHIVttSbwyE1GnVfb8nhWqd7/8b+f7UIoIhZN+hz7PF8KMMoXuiQFF4Ru2x50/5if8vqNZtpMdAVzb+gvcuWLr/LFrFoj39Ylf1BUGj+LMak1nhLx+EZ2sJZH6v7cxpspWdrwDHIHsBj+gdM2NiO4P2b6Cub2fCXy8sYfJi+z+lWzLdkBljgdbue7LzCP9vC/2yRSEu6K2qUs2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HeheR5fvS4+mCrmz2M/R8i4eFsIcA9dy3LAsupslRYE=;
+ b=cH5FAebYwHrp8d5zTR+lBhIcikohHNg9bPqAgG3KcelPyreJusE+e/g0XAIH72WyBvAxtiCAUmByVqDpbduM/iTXAGijjTldd3ltzoO0ipqQV96xq84R7dMpF6QGz3eVw0SxuSWJmIzg2Uz/ggPlA06YJ/htsG6wfwDwiT/98Q0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by MW4PR12MB5625.namprd12.prod.outlook.com (2603:10b6:303:168::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.31; Mon, 28 Apr
+ 2025 10:43:37 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5%7]) with mapi id 15.20.8678.028; Mon, 28 Apr 2025
+ 10:43:36 +0000
+Message-ID: <4bac662a-228e-4739-b627-5d81df3d4842@amd.com>
+Date: Mon, 28 Apr 2025 12:43:30 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration
+To: Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
+ tj@kernel.org
+Cc: cgroups@vger.kernel.org
+References: <20250423214321.100440-1-airlied@gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20250423214321.100440-1-airlied@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0166.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:99::13) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250428033617.3797686-1-roman.gushchin@linux.dev>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|MW4PR12MB5625:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2d79d7fb-d9f3-47a4-0484-08dd8641878c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?aGJKemwrcGdEbDNnUlJYb2Mrb1o3Q0srbE9BNlc2UU0ydmp4UGZZVVFvT2Jx?=
+ =?utf-8?B?WmdNbFBLK09PbndTRjhUMFp0YVRJT2MrSGV4enhid0g0QmFCS2N5SnJxbjRp?=
+ =?utf-8?B?MGtmdWZSRXd4R1VrTkNmTERvSmkxb2YrY3JkRk1TaEZLZWdGcnUwdHVmbjR5?=
+ =?utf-8?B?ODl6R2xOcE5ISnRVTkNueHk4Zkh2SHFyajZZODJRYzFjdDZJd0pwZWNDeHVu?=
+ =?utf-8?B?TFVBUDBpVDlVMEJoekRJS0l1YXZXTzZNbE1SNVpoSkozNHk2Z2FEVy9lZU5x?=
+ =?utf-8?B?UFR0azF1L0NUelRJTWdXd1pYUW9QM09wczZGRVJJbkVuMkxDakhxeUtlSzd4?=
+ =?utf-8?B?VXEwZHE0ZHdrb2J4ZjRqdTdDL1paalVVSzd2bklxdzZlaDg5Unl1dVZnVUJk?=
+ =?utf-8?B?Q1htYnFjbjNTRnBLNzhBaHlNZEZMTXMxWFQ1aGx0Z3p3MHNhQWtFcStoU0NF?=
+ =?utf-8?B?Vk0xa0o0VkZ4dXpCcWJEQ0pTZ1ZycUVUYS9hRy9YWFM2UWg2MXg4L2k3VjJ3?=
+ =?utf-8?B?TXY0Y3BwQ295YVVlLzdhL2N5RmRJVGtyTDZlckNpTlROV1VOYW1mZ2s0MkNV?=
+ =?utf-8?B?aVRrdnZqNHpQenA3OUxaa2xOR09WS2diZnlueGV6bUp5dXJTTEtLeTZQSlkx?=
+ =?utf-8?B?Tm1nOWpjUnNJQkh5YVlpOXYydWh2eEhPbmtHZWp5NzZLMk0xRWRYak92SEx6?=
+ =?utf-8?B?dFlkdEwvZFNUeEZNT2pXaUdXRC9ZZXJiT1psMVFZS1hFY3NSRlJKaDNPMzV2?=
+ =?utf-8?B?eFRLMDF1eHMxeFNlNjMrT1lIOHRkbXVBMXNMcmhTV0kvSnRZcEFJTUllNGFp?=
+ =?utf-8?B?YmtaV2I0MDZETHkxeHRVZ1ZNbjNNY0lNNm1SemMxWUdsRW44Ryt0UzcySHBx?=
+ =?utf-8?B?YUFvU2tPeFpsUGVvTk1ZUE41TjFrOVZCRHcwVDFEYm5TcXM4V0hWUUVQM21N?=
+ =?utf-8?B?dEJKeUxNNGdjQzlsVmZWOVg5aitITlozN2RJYUc0WmpidlNyR2c0RER0aEhE?=
+ =?utf-8?B?V3hCdkZqbzBUaklHU0hrWkNhVG9LdDNQREdkM2pWOEZGNk14Z2o2RkFWaWJh?=
+ =?utf-8?B?R3ZzQmg0d0YrYVZ0dlJmblNDRDM5YXBpRlBxU0IxRjFXUmhUdEtLUDdMVEY1?=
+ =?utf-8?B?RUZndHlIUzl3ZDNzU3g0SmZTQnpqQmRaeVd6dm9kMUdQSEovSWhGSCt1ckRx?=
+ =?utf-8?B?MVFKa2VNYWVROFM0RzN0b0xhWU4vb2pITDBuMFhXMTVGZUpIR0ZDT3htdzA0?=
+ =?utf-8?B?OHREOXVtMzZENkFDUW96ZmdHZEdkUmp4SEdQWDYxQTdiMGM1bjF4aTdLZDJK?=
+ =?utf-8?B?Mit2WjZLNnFQVzNlOEY0UEZteTZVQ1VKTkxNelFxRytXVmpLdGFSdy9oMDRP?=
+ =?utf-8?B?Mktwa01EZ3lYbUMra0QyVXhsWG9iZ1hZTEVKUHFhaHY1ODQ3YmxaTlhacEF2?=
+ =?utf-8?B?anFrekEwVlVBblptaytSK0xqRFVySzhLU1gxazUySFNHVEk2ajBnTnpDS3hM?=
+ =?utf-8?B?VnhndDVjd2NvQXFSc09NWDJVOWNZTUtLYXFrbWVEekduOFFWakd4dk9NSnZF?=
+ =?utf-8?B?WjhiNE5vcmc3T0dreVIyZ1VsbWkzNlIrbW9ic3FnU0RBbENrWktab2tXSUV0?=
+ =?utf-8?B?U0tmaDV6V0NrR1A4ejEveDZmOUMxc1FRdkpOMjM2K29BSllHSXdRc3JFQ2ZB?=
+ =?utf-8?B?ZDVlQk9GTnRiODQ4MTBiR2JKSTYyTXN4c0N6ajI4VnJud3plV204UEw1YUli?=
+ =?utf-8?B?OHhKUVNsODdpTjQ3R0pGY3BZR1FLQzBlVm1adnRORzJyK3g5WjkrZ0FDVCt4?=
+ =?utf-8?B?MDBWWTVQYnpjLzNpMUViMjBjVlBhMHQzcmY0bUU1SzBnV0RHSXBsd0FCemR4?=
+ =?utf-8?B?eVp0MTlLVkRvbnA4Y21Ja2hMMFdvbXZyQjJ2VnBscWFwQXQwTU15eGlDYjl4?=
+ =?utf-8?Q?zSXsjnJTZuY=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?aU5HS0tMbVIwUHRrQllrUDRyM3ZvUHJGQ1FEa09sQUZZWld1ckVSekR6RUNx?=
+ =?utf-8?B?UGljTUJ0SEcrZVpDcTc0amhvMks0OGNOL1FHcVBOV244MVJ5bW9WRjc3RzBZ?=
+ =?utf-8?B?bTdkRy8zRUhzTWxZU0dsQ3pnSU1CVTU4UUxGangxZHRTN3RLR0gxTStPY3ZF?=
+ =?utf-8?B?eEhLdWtQTVBBVzY3QktvZXBuRTY1K1M1Y3NYNEZPakI1OXlWeWd4SjVBM2dm?=
+ =?utf-8?B?MUdWeEZydUJKdXZBMU1Va28vdTl3NXI5bS9ZcHVkTTRMdjFKNS9KcUNaWS9O?=
+ =?utf-8?B?UjIraFVpRzdQWThhMWZBYjlyeXRTWjBqR3dCTEwvZ2V0dTlaRE1pdElWRlJn?=
+ =?utf-8?B?U2QwZzBxL21VK2oydzhmVWtqTGRMUmVCNHduUE1TT3VRYnNUVzJ2N3lLS1pK?=
+ =?utf-8?B?ZHFmemtzUVRDWXp5ZlM2ZlBvcVYxOHRUbjk2T3puSlZ2TGdSd2VVVHc2NDVl?=
+ =?utf-8?B?NkxEYmJpTlZld3MybVZhY1pYWVUzZ3l4Nksyc1hXRGg5ZitrbXFkWTh3RVNI?=
+ =?utf-8?B?WXNrdTVjVGd4L0lEL3M5SEM5VTJvSzRnTlZ0Y3pJdE1UKzJML3lGejVIeHZ1?=
+ =?utf-8?B?OGoyK0o3b3RIS3kwb3NYUXlOaHZyT3paYktHQk91aHJPUDdBb3hmRFdwSWNV?=
+ =?utf-8?B?emdsM3BTKzFOcDFtRzR6Njg0OWRZeFoyQnl1d0JGVG9YZVBnenpNUDBYdU14?=
+ =?utf-8?B?enFnblVJRFcraGlsZ0pXMkZtbFBLamF0dVlCZEM0SHpkNUs2TTlYUGZaOENF?=
+ =?utf-8?B?Y1ZmdXJwNUxyZm9RMmRUb1NMbEJvR2hQM1lQQkI5SFFsWkEwWThZbW0rSzZI?=
+ =?utf-8?B?bU9uRmN4dU5HSmJBQklKR3NSN0NkV0tBM2FKcEJWZEVNSUxDNVNuMEZwc3hY?=
+ =?utf-8?B?QTBGWUd2Sm5IUDlEUlVQRzRPT3IwSVUrdlo3RnY0dm42ckdBQXZ5ci94LzRN?=
+ =?utf-8?B?bzMzZnBqbXFNOUxhN2g2VnlqQWh2WkxpL2VlMTlxdEdXTUJrVXpiTExUZDlx?=
+ =?utf-8?B?S0FyL3NObytManhyS0FaYnRJbE1Hd0JhejBHcEtoT204clhQRGxURjcvK0FH?=
+ =?utf-8?B?YzNwVkZPQitzQjlja0lHWTZSU3dOclZQVFdXdTk4NDh3UTJXM3RqTzZ4WGh3?=
+ =?utf-8?B?QjlQd0d4cGpGcWg0L08vNGp5WGtobW9jdmNjRWNXRjR2VUVQeS9Pd08wbmVB?=
+ =?utf-8?B?QytlY0FuaFc3VWVGckJ4UlBZb3BBWEw3b1VIUGxpbk1pNmxUNUtrK2RITUJh?=
+ =?utf-8?B?RjJLc3V2Y29EVHRQNFV3a2Q4WlprS2ZCeGduc3JER3k1L2ZtQ0ZxZTBwOWZF?=
+ =?utf-8?B?UmtoWlVMN3lwQU5DRkZLOVMwZUdjeXdkVkFlSER3dStjZWNjdW1OaTh2cmNj?=
+ =?utf-8?B?amxlUG9vamZzelNJYnhCNHpBd2hFZU5Db1l4bmlDc2R2VmhUREZPeG4vV0Y4?=
+ =?utf-8?B?VFcvL1YwZE1uVFBNdWNDNXJLVkN2Q0ZRbm1LZFNySFRTdkc0bjdQVGlXZU81?=
+ =?utf-8?B?aUxHWW9kM0FDeDJ2R1dYMExvYTBxTjZlekVTN25GY1hlQXhoTjQ1RFU5NSt6?=
+ =?utf-8?B?UVB4YmhJc0Q0MmFGYnVRamhRbm9hWHdRdWtvWGRFSDlUQUVQTDZzZm90ZlRS?=
+ =?utf-8?B?Y1o0REhBVmlKZThsSkFBaEVFdXgxVHAyWHVuYUNiRXI5ZFRTWE9wSExQeEFw?=
+ =?utf-8?B?STBpM0dFSEVFckthcWd2c3RqWWNSS2paa0tNSmRoNG5sMGJOOWhXaDJhNmxl?=
+ =?utf-8?B?RjliMk44cWc0aldTdGQvbWQrblN1Tk1kZmZiVUFGdkRJd1NrMWxNVVpiYVFi?=
+ =?utf-8?B?S0hDbU56UnJmeVBQQWVHSHYzZlJ0M2w5UlBaMVdORXJwQ2R0SWNjKzVicE9u?=
+ =?utf-8?B?aXZBaWQ4N0tUUldQRnhKa3JzSGVIUE9UeFlwUWFqd2Nzc2dEamRTaWhJdTF6?=
+ =?utf-8?B?K1drZkgwRGR0SFZPc1lzeDZFUkZyRENmNFZ0dDE5WHRVVkgrVzhXeGpnVm9y?=
+ =?utf-8?B?RG1ONUhhMndQa21NYjhlVlFzYUg3d0JweTRWTjZQOHdSaUVPcDd1bXF0cG5w?=
+ =?utf-8?B?bTVmUFRCY1M2K1hnWVZDcm9BZEU3QStBMmdtQTVMa0xLbWdxN0Z2WVdqaG9C?=
+ =?utf-8?Q?f6dQ=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d79d7fb-d9f3-47a4-0484-08dd8641878c
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2025 10:43:36.3005
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: txQFZn8OznXBnYGo12BoZIOV2y3OPWinURy4goJSBvmN5fqOEO36l6cX06ab4WUh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5625
 
-On Mon, Apr 28, 2025 at 03:36:05AM +0000, Roman Gushchin wrote:
-> This patchset adds an ability to customize the out of memory
-> handling using bpf.
+On 4/23/25 23:37, Dave Airlie wrote:
+> Hey,
 > 
-> It focuses on two parts:
-> 1) OOM handling policy,
-> 2) PSI-based OOM invocation.
-> 
-> The idea to use bpf for customizing the OOM handling is not new, but
-> unlike the previous proposal [1], which augmented the existing task
-> ranking-based policy, this one tries to be as generic as possible and
-> leverage the full power of the modern bpf.
-> 
-> It provides a generic hook which is called before the existing OOM
-> killer code and allows implementing any policy, e.g.  picking a victim
-> task or memory cgroup or potentially even releasing memory in other
-> ways, e.g. deleting tmpfs files (the last one might require some
-> additional but relatively simple changes).
-> 
-> The past attempt to implement memory-cgroup aware policy [2] showed
-> that there are multiple opinions on what the best policy is.  As it's
-> highly workload-dependent and specific to a concrete way of organizing
-> workloads, the structure of the cgroup tree etc, a customizable
-> bpf-based implementation is preferable over a in-kernel implementation
-> with a dozen on sysctls.
-> 
-> The second part is related to the fundamental question on when to
-> declare the OOM event. It's a trade-off between the risk of
-> unnecessary OOM kills and associated work losses and the risk of
-> infinite trashing and effective soft lockups.  In the last few years
-> several PSI-based userspace solutions were developed (e.g. OOMd [3] or
-> systemd-OOMd [4]). The common idea was to use userspace daemons to
-> implement custom OOM logic as well as rely on PSI monitoring to avoid
-> stalls. In this scenario the userspace daemon was supposed to handle
-> the majority of OOMs, while the in-kernel OOM killer worked as the
-> last resort measure to guarantee that the system would never deadlock
-> on the memory. But this approach creates additional infrastructure
-> churn: userspace OOM daemon is a separate entity which needs to be
-> deployed, updated, monitored. A completely different pipeline needs to
-> be built to monitor both types of OOM events and collect associated
-> logs. A userspace daemon is more restricted in terms on what data is
-> available to it. Implementing a daemon which can work reliably under a
-> heavy memory pressure in the system is also tricky.
-> 
-> [1]: https://lwn.net/ml/linux-kernel/20230810081319.65668-1-zhouchuyi@bytedance.com/
-> [2]: https://lore.kernel.org/lkml/20171130152824.1591-1-guro@fb.com/
-> [3]: https://github.com/facebookincubator/oomd
-> [4]: https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
-> 
-> ----
-> 
-> This is an RFC version, which is not intended to be merged in the current form.
-> Open questions/TODOs:
-> 1) Program type/attachment type for the bpf_handle_out_of_memory() hook.
->    It has to be able to return a value, to be sleepable (to use cgroup iterators)
->    and to have trusted arguments to pass oom_control down to bpf_oom_kill_process().
->    Current patchset has a workaround (patch "bpf: treat fmodret tracing program's
->    arguments as trusted"), which is not safe. One option is to fake acquire/release
->    semantics for the oom_control pointer. Other option is to introduce a completely
->    new attachment or program type, similar to lsm hooks.
+> I've been tasked to look into this, and I'm going start from hopeless
+> naivety and see how far I can get. This is an initial attempt to hook
+> TTM system memory allocations into memcg and account for them.
 
-Thinking out loud now, but rather than introducing and having a single
-BPF-specific function/interface, and BPF program for that matter,
-which can effectively be used to short-circuit steps from within
-out_of_memory(), why not introduce a
-tcp_congestion_ops/sched_ext_ops-like interface which essentially
-provides a multifaceted interface for controlling OOM killing
-(->select_bad_process, ->oom_kill_process, etc), optionally also from
-the context of a BPF program (BPF_PROG_TYPE_STRUCT_OPS)?
+Yeah, this looks mostly like what we had already discussed.
 
-I don't know whether that's what you meant by introducing a new
-attachment, or program type, but an approach like this is what
-immediately comes to mind when wanting to provide more than a single
-implementation for a set of operations within the Linux kernel,
-particularly also from the context of a BPF program.
+> 
+> It does:
+> 1. Adds memcg GPU statistic,
+> 2. Adds TTM memcg pointer for drivers to set on their user object
+> allocation paths
+> 3. Adds a singular path where we account for memory in TTM on cached
+> non-pooled non-dma allocations. Cached memory allocations used to be
+> pooled but we dropped that a while back which makes them the best target
+> to start attacking this from.
 
-> 2) Currently lockdep complaints about a potential circular dependency because
->    sleepable bpf_handle_out_of_memory() hook calls might_fault() under oom_lock.
->    One way to fix it is to make it non-sleepable, but then it will require some
->    additional work to allow it using cgroup iterators. It's intervened with 1).
-> 3) What kind of hierarchical features are required? Do we want to nest oom policies?
->    Do we want to attach oom policies to cgroups? I think it's too complicated,
->    but if we want a full hierarchical support, it might be required.
->    Patch "mm: introduce bpf_get_root_mem_cgroup() bpf kfunc" exposes the true root
->    memcg, which is potentially outside of the ns of the loading process. Does
->    it require some additional capabilities checks? Should it be removed?
-> 4) Documentation is lacking and will be added in the next version.
+I think that should go into the resource like the existing dmem approach instead. That allows drivers to control the accounting through the placement which is far less error prone than the context.
+
+It would also completely avoid the pooled vs unpooled problematic.
+
+
+> 4. It only accounts for memory that is allocated directly from a userspace
+> TTM operation (like page faults or validation). It *doesn't* account for
+> memory allocated in eviction paths due to device memory pressure.
+
+Yeah, that's something I totally agree on.
+
+But the major show stopper is still accounting to memcg will break existing userspace. E.g. display servers can get attacked with a deny of service with that.
+
+The feature would need to be behind a module option or not account allocations for DRM masters or something like that.
+
 > 
+> This seems to work for me here on my hacked up tests systems at least, I
+> can see the GPU stats moving and they look sane.
 > 
-> Roman Gushchin (12):
->   mm: introduce a bpf hook for OOM handling
->   bpf: mark struct oom_control's memcg field as TRUSTED_OR_NULL
->   bpf: treat fmodret tracing program's arguments as trusted
->   mm: introduce bpf_oom_kill_process() bpf kfunc
->   mm: introduce bpf kfuncs to deal with memcg pointers
->   mm: introduce bpf_get_root_mem_cgroup() bpf kfunc
->   bpf: selftests: introduce read_cgroup_file() helper
->   bpf: selftests: bpf OOM handler test
->   sched: psi: bpf hook to handle psi events
->   mm: introduce bpf_out_of_memory() bpf kfunc
->   bpf: selftests: introduce open_cgroup_file() helper
->   bpf: selftests: psi handler test
+> Future work:
+> Account for pooled non-cached
+> Account for pooled dma allocations (no idea how that looks)
+> Figure out if accounting for eviction is possible, and what it might look
+> like.
+
+T.J. suggested to account but don't limit the evictions and I think that should work.
+
+Regards,
+Christian.
+
 > 
->  include/linux/memcontrol.h                   |   2 +
->  include/linux/oom.h                          |   5 +
->  kernel/bpf/btf.c                             |   9 +-
->  kernel/bpf/verifier.c                        |   5 +
->  kernel/sched/psi.c                           |  36 ++-
->  mm/Makefile                                  |   3 +
->  mm/bpf_memcontrol.c                          | 108 +++++++++
->  mm/oom_kill.c                                | 140 +++++++++++
->  tools/testing/selftests/bpf/cgroup_helpers.c |  67 ++++++
->  tools/testing/selftests/bpf/cgroup_helpers.h |   3 +
->  tools/testing/selftests/bpf/prog_tests/oom.c | 227 ++++++++++++++++++
->  tools/testing/selftests/bpf/prog_tests/psi.c | 234 +++++++++++++++++++
->  tools/testing/selftests/bpf/progs/test_oom.c | 103 ++++++++
->  tools/testing/selftests/bpf/progs/test_psi.c |  43 ++++
->  14 files changed, 983 insertions(+), 2 deletions(-)
->  create mode 100644 mm/bpf_memcontrol.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/oom.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/psi.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_oom.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_psi.c
+> Dave.
 > 
-> -- 
-> 2.49.0.901.g37484f566f-goog
-> 
+
 
