@@ -1,170 +1,191 @@
-Return-Path: <cgroups+bounces-7870-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7871-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50788A9F98A
-	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 21:32:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 844A8A9FA00
+	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 21:55:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 597215A30E1
-	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 19:31:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1AC31896FB9
+	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 19:55:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8BD71B423B;
-	Mon, 28 Apr 2025 19:32:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FA022973A9;
+	Mon, 28 Apr 2025 19:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="khYxIsfG"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3KKFYV3+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C718C1E
-	for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 19:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1F9B1C5D46
+	for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 19:55:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745868725; cv=none; b=XHjq+kmnAMeEkfTr3xbimtDGJemqMs7w6yT64S/kFXmj7fhsK6bx+OL9rlqjPyav/7YGnlUrioPxind+uFEQFZjXuFBy2Azdx6k57xkKzwbf899/0z3qgvsrd4NQrFLCY3eE9iehVbU7rsYolNAqWE/YSASacYWe0qP4R7exOwI=
+	t=1745870120; cv=none; b=R2Bzi6mRlNPIOEbjgsv3sa4H4gCofCtOv8gf9s9RG1mp8D4kmGbDpnyiyV2AILRwaX8vCDFdWObwSnXNVVK5ZgvTPLmwWcju3vRCjsHpcb4EAz30IPr/8gt8SeWwc6yVEcStHy0C19ZgFd/vIvk0icOxGVnGQEvFsIrKthRs36k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745868725; c=relaxed/simple;
-	bh=clvMixzUlwXVdP1MVYhs8dd5jD9W6xD/V/kA/2PWTsA=;
+	s=arc-20240116; t=1745870120; c=relaxed/simple;
+	bh=Ul2mCutafIkcCO47yAMR6kqOc2J45J0V3vs2YNHmMwc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cC3KcMELGSvWKdjQvCdZe2vPMsfxjfVubS9ci7VtQe8Fi8NhQrDL04eegnOUofCUDRMOhdjG1Vz62sbO5GhmkWB4ZQFadhUAQ3S1pqTnDCNhcdRDW9kMHUAcUHOHL/9Sq48WNCstYw022aRKZg+Gd69e3KgFM0o8go11ENh4pFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=khYxIsfG; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-acae7e7587dso775007466b.2
-        for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 12:32:00 -0700 (PDT)
+	 To:Cc:Content-Type; b=AOP36DpUj/FdSYT6XYQt1cSOEwJuRWEL4qzLHh6EOofX19FXJNj8KAvOFAbnlzdlPRiPWShh1D4cyTpzc0yG99+I8fxn2Bv1cz3boRO1bdt6zLJmCIy2LbMs4NC3xMxBfaBXdkIwDOg3mD6QN3U6vyK7qDRiCOPlsT/OSgeQxBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3KKFYV3+; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e733a6ff491so1504200276.2
+        for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 12:55:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745868719; x=1746473519; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1745870117; x=1746474917; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=clvMixzUlwXVdP1MVYhs8dd5jD9W6xD/V/kA/2PWTsA=;
-        b=khYxIsfGjQKIUOgPRJSUnAnOTtnKMkuVPim1LijlNDXJV7ZqcI8WXOKkG2n/gqXvqi
-         mKQk7KTbDXIu4B1S9CTBsHTZu5GJ/ra4I4m+tm45Jks1ExiBt+T/gzd/iG9jYDSYMoLJ
-         xxrQset6DuGsigJvTfxhThgO6bMzssWp3+OAPgLUZTq0W7mEhwybfy6mJNu8gUOrlVjc
-         8ORhuabIPojKJ3jWjIXxBoUZrub+nWaD5T1EqGhu1tekrAixvN3QRlfsPbEzaymiUEv0
-         0gUyWdXbiySlXJ5QpIeO3GG8I5lp6b6Nr8w7WzfYp1a5zMou46AaoRDtFPgVgK6X/m7M
-         +nng==
+        bh=sfHwTscWO/jloUEDudbJlwyzGCxdwaIO+zKhNAi9qAo=;
+        b=3KKFYV3+p3v2jSotn8S17qNg6iLfFORgrecvlTs+F5PXcg3qYHRkP+rkOpwB4Zcgu8
+         EGrXOBlVNHj4qNBjxRbUUBTvDzQn/D0nMSdiJCfRjfpNNO5EczooJ5nOZIJ3Qi1E1YR7
+         ttqujG29KAMjVSQilHTNUi0vsk7hmJxXme5Szn73wM4/eOMr4s2YvH/a89vUmF6kJvCc
+         7pXsjJHngHJD+AA3p0cL/0aYRsT+uz4UdOvcL0wcf4yk/rBHiv7cek36resku5ov9gg+
+         bgklrDEDQnwZTY+uf2+yYqZ4AKvkRjjMMwybUicw7IrIzAPq2bkA1yB2COkVYw3io9Cr
+         VoYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745868719; x=1746473519;
+        d=1e100.net; s=20230601; t=1745870117; x=1746474917;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=clvMixzUlwXVdP1MVYhs8dd5jD9W6xD/V/kA/2PWTsA=;
-        b=ocIvvzxejehfyeqgBr/iqMpv8m/kHmbV+P1L+qTbDgp4KwyN0HHm5CUOBnNOZh+iH5
-         7JZTqUsCmhQASdfgfM6DsSQ33aP+XAVDKw4LftCtzPvyECZEwA1E8Gs3UwGkINjklo1I
-         d6Rbwcb+3WxGplVhlXVwaZFvwe1PW3wuwKWx6u+9WwXYcCWLb9UuLP8aN6iBLb/BNpxo
-         I2zozh31c4s6VI6A+0AqQlfwNo5aqMQzHgAcVntR5NPrKkeMgvmJi7Pr65M7LoTYyu8G
-         6qt5OYGF9l6SMtyN6iEBpGjDR2E0OdwrfS0btfdvTlOnfoEcNfSfvlaQ5XxKXkwGy9BJ
-         s0UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUuckXU0t2vUgv3Yw+XKe60Xk782fWaCSwi9dAFS+uoLQp9O0ipsIJbMQNQ27s3AwYK5WcHdtr@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4lBTLrs/Y33t9rhySZW4LAg20TpsTIiMt+gnXw2Xmq2ogWk6Y
-	3C/dw8YyNRp6VZnM4aLVgLttJu5HupZ75MMQQvzfollooV+y5NkLkhN+vNHpBJEZ9J51iXUWqGi
-	l832nAWtwxuheCVh5tiY5+wvKNEn4rQ==
-X-Gm-Gg: ASbGncvR5/zmtMsQQ54o0IddcfyYrQpZdRCZr7DnHjt3mx56f8e17lTOVpoZUr/rVoh
-	Ovxq8BOD+hfizdpAPNYD9Y4bs2j06gW23IHWswBJYN2traYH12LxoeMV78cpcpOh96ny7otMB/1
-	qBlKRTa66yFrWmX+0kEsf4TZNNCB/uVl8=
-X-Google-Smtp-Source: AGHT+IFLuUocUdQmizosojpHdukguxfQt2DZzVHhIIuVAmlSuN8A3ZHMSJnYr5cbpnG+GpgGCSNqqRto8AJov4Lc9X0=
-X-Received: by 2002:a17:907:7f8c:b0:aca:e33d:48af with SMTP id
- a640c23a62f3a-acec4f20479mr85905966b.61.1745868718523; Mon, 28 Apr 2025
- 12:31:58 -0700 (PDT)
+        bh=sfHwTscWO/jloUEDudbJlwyzGCxdwaIO+zKhNAi9qAo=;
+        b=aMXF4OXA74oM+j8LoXCrxr7l/U8FFfxq84H9q6Sc/M6qX4BCVTu3HgC6D0RtU8EqxT
+         n/j22grB5xH9as3KerKGp9g10L6/j7lWhXqCgGq/RyCB9J3bclXtFKnl7f1ZzK0SWZcR
+         xkxAwUymB5rS80dBbeYMhAdvYvrAZmHqjZCn65CGo0k6P6smJqWU9zq86jqq8c3G1BiN
+         i38ZyxoBH35B2QL3nB2+SJ42rIi3ZZhU7bmGawGIKhJzqK7Uc5uSidC8Ah31DiBYhxxN
+         019FCRAprkQo10RmtRQFNBSJSsw8LrrHahRusUGNMFDQCDdB2pFVKCBxGJb+MARfuuCT
+         d6Aw==
+X-Forwarded-Encrypted: i=1; AJvYcCUQL5NVWIVCfsA5En1EjraI5BcA0A+OEOgIIqNLFo6Wi2zI/zAk2gcs/nH89qZKcNWQzJL9tlFE@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6FS8qj0O8JcWvqaBQ6DrhsR23NFNNFO5LeSZSEWyXzUpymEij
+	dBnMmRKnd0VEiajcd3J0nPtCpIAb2SAoqsh6bfWGoMI3SW39+fi6gBJ8akG8iPcCuWzstsyoZa3
+	RrPnKr9BrgCAR2TvhT7IwFbyXtUbJZK38sjS2
+X-Gm-Gg: ASbGncsDtGrUVvWeNtL1a7fm3sbiqy7WpC4daPg4iT2tdX+i0MtZGG7x11QzjBENtRq
+	f+naJAvq2NpFV1QwRUAueIR0SmbyZUfEf0Ot1EPVGdE1KzQYAoVUndgHNJFG/9XOirYMIHfB/kH
+	47s4CyvllyZxdITlyJBr6sAE/POhP9APRdCfVoYiMnEhqVyp+0P2yW2TLGgjylVFUFWqY=
+X-Google-Smtp-Source: AGHT+IF5bOE8NaQox434M5XmykiOoFpfiOOstY8512J8SiE44O+53iDRI95fhIJQcDKl1pHA+A5H/zkhcUhoVNEAjiw=
+X-Received: by 2002:a05:6902:158e:b0:e6e:667:911d with SMTP id
+ 3f1490d57ef6-e73233a6dc2mr13962923276.21.1745870117123; Mon, 28 Apr 2025
+ 12:55:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250423214321.100440-1-airlied@gmail.com> <4bac662a-228e-4739-b627-5d81df3d4842@amd.com>
-In-Reply-To: <4bac662a-228e-4739-b627-5d81df3d4842@amd.com>
-From: Dave Airlie <airlied@gmail.com>
-Date: Tue, 29 Apr 2025 05:31:46 +1000
-X-Gm-Features: ATxdqUFX8TlA8SB5and9ojCYJazRG2Xwfktm6GA_G0-fvfnIIHi7VfxOzfvDHjk
-Message-ID: <CAPM=9tzVijMmf8P=Kthc-UcaYXK28Gy3e3W+F8i3NKdYzhL_BA@mail.gmail.com>
-Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc: dri-devel@lists.freedesktop.org, tj@kernel.org, cgroups@vger.kernel.org
+References: <20250414200929.3098202-1-jthoughton@google.com>
+ <20250414200929.3098202-6-jthoughton@google.com> <aAwpWwMIJEjtL5F9@google.com>
+In-Reply-To: <aAwpWwMIJEjtL5F9@google.com>
+From: James Houghton <jthoughton@google.com>
+Date: Mon, 28 Apr 2025 15:54:41 -0400
+X-Gm-Features: ATxdqUFyYu3QFWzs4o008gMYEtq4uvUsSn7Emn7MJoROAS3_0BzmZZrNMQlZ_Ss
+Message-ID: <CADrL8HX03P1f2E7NzufXU3enW1EXz2Bk2qNh5KQg-X1KFQed8g@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] KVM: selftests: access_tracking_perf_test: Use
+ MGLRU for access tracking
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>, 
+	Axel Rasmussen <axelrasmussen@google.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, Yosry Ahmed <yosry.ahmed@linux.dev>, 
+	Yu Zhao <yuzhao@google.com>, David Matlack <dmatlack@google.com>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 28 Apr 2025 at 20:43, Christian K=C3=B6nig <christian.koenig@amd.co=
-m> wrote:
+On Fri, Apr 25, 2025 at 8:31=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
 >
-> On 4/23/25 23:37, Dave Airlie wrote:
-> > Hey,
+> On Mon, Apr 14, 2025, James Houghton wrote:
+> > By using MGLRU's debugfs for invoking test_young() and clear_young(), w=
+e
+> > avoid page_idle's incompatibility with MGLRU, and we can mark pages as
+> > idle (clear_young()) much faster.
 > >
-> > I've been tasked to look into this, and I'm going start from hopeless
-> > naivety and see how far I can get. This is an initial attempt to hook
-> > TTM system memory allocations into memcg and account for them.
->
-> Yeah, this looks mostly like what we had already discussed.
->
+> > The ability to use page_idle is left in, as it is useful for kernels
+> > that do not have MGLRU built in. If MGLRU is enabled but is not usable
+> > (e.g. we can't access the debugfs mount), the test will fail, as
+> > page_idle is not compatible with MGLRU.
 > >
-> > It does:
-> > 1. Adds memcg GPU statistic,
-> > 2. Adds TTM memcg pointer for drivers to set on their user object
-> > allocation paths
-> > 3. Adds a singular path where we account for memory in TTM on cached
-> > non-pooled non-dma allocations. Cached memory allocations used to be
-> > pooled but we dropped that a while back which makes them the best targe=
+> > cgroup utility functions have been borrowed so that, when running with
+> > MGLRU, we can create a memcg in which to run our test.
+> >
+> > Other MGLRU-debugfs-specific parsing code has been added to
+> > lru_gen_util.{c,h}.
+>
+> This fails on my end due to not being able to find the cgroup.  I spent a=
+bout 15
+> minutes poking at it and gave it.  FWIW, this is on our devrez hosts, so =
+it's
+> presumably similar hardware to what you tested on.
+
+Ah sorry, yes, this selftest needs to be patched when running the
+devrez userspace, which uses a combination of cgroup-v1 and cgroup-v2.
+Simply hard-coding the root to "/dev/cgroup/memory" (which is in fact
+a cgroup-v1 mount) should be what you need if you want to give it
+another go.
+
+> Even if this turns out to be PEBKAC or some CONFIG_XXX incompatibility, t=
+here
+> needs to be better hints provided to the user of how they can some this.
+
+Yeah this can be better. I should at least check that the found
+cgroup-v2 root's cgroup.controllers contains "memory". In your case,
+it did not.
+
+(cgroup.controllers is not available for cgroup-v1 -- because it
+doesn't make sense -- so if I patch the selftest to check this file,
+using cgroup-v1 mounts will stop working. So, again, you'd need to
+patch the test to work on devrez.)
+
+> And this would be a perfect opportunity to clean up this:
+>
+>         __TEST_REQUIRE(page_idle_fd >=3D 0,
+>                        "CONFIG_IDLE_PAGE_TRACKING is not enabled");
+
+I think the change I've already made to this string is sufficient
+(happy to change it further if you like):
+> > +               __TEST_REQUIRE(page_idle_fd >=3D 0,
+> > +                              "Couldn't open /sys/kernel/mm/page_idle/=
+bitmap. "
+> > +                              "Is CONFIG_IDLE_PAGE_TRACKING enabled?")=
+;
+
+> I can't count the number of times I've forgotten to run the test with roo=
 t
-> > to start attacking this from.
+> privileges, and wasted a bunch of time remembering it's not that the kern=
+el
+> doesn't have CONFIG_IDLE_PAGE_TRACKING, but that /sys/kernel/mm/page_idle=
+/bitmap
+> isn't accessible.
 >
-> I think that should go into the resource like the existing dmem approach =
-instead. That allows drivers to control the accounting through the placemen=
-t which is far less error prone than the context.
+> I mention that, because on a kernel with MGRLU available but disabled, an=
+d
+> CONFIG_IDLE_PAGE_TRACKING=3Dn, the user has no idea that they _can_ run t=
+he test
+> without mucking with their kernel.
 
-I'll reconsider this, but I'm not sure it'll work at that level,
-because we have to handle the fact that when something gets put back
-into the pool it gets removed from the cgroup kmem accounting and
-taken from the pool gets added to the cgroup kmem account, but
-otherwise we just use __GFP_ACCOUNT on allocations. I've added cached
-pool support yesterday, which just leaves the dma paths which probably
-aren't too insane, but I'll re-evaluate this and see if higher level
-makes sense.
+Fair enough, I'll change the output from the test for that
+configuration to say something like: "please either enable the missing
+MGLRU features (e.g. `echo 3 > /sys/kernel/mm/lru_gen/enabled`) or
+recompile your kernel with CONFIG_IDLE_PAGE_TRACKING=3Dy."
 
-> > 4. It only accounts for memory that is allocated directly from a usersp=
-ace
-> > TTM operation (like page faults or validation). It *doesn't* account fo=
-r
-> > memory allocated in eviction paths due to device memory pressure.
->
-> Yeah, that's something I totally agree on.
->
-> But the major show stopper is still accounting to memcg will break existi=
-ng userspace. E.g. display servers can get attacked with a deny of service =
-with that.
+> =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
+>   lib/lru_gen_util.c:229: stats->memcg_id > 0
+>   pid=3D423298 tid=3D423298 errno=3D2 - No such file or directory
+>      1  0x0000000000408b45: lru_gen_read_memcg_stats at lru_gen_util.c:22=
+9
+>      2  0x0000000000402e4c: run_test at access_tracking_perf_test.c:421
+>      3  0x0000000000403694: for_each_guest_mode at guest_modes.c:96
+>      4  0x00000000004023dd: run_test_in_cg at access_tracking_perf_test.c=
+:467
+>      5  0x000000000041ba65: cg_run at cgroup_util.c:362
+>      6  0x0000000000402042: main at access_tracking_perf_test.c:583
+>      7  0x000000000041c753: __libc_start_call_main at libc-start.o:?
+>      8  0x000000000041e9ac: __libc_start_main_impl at ??:?
+>      9  0x0000000000402280: _start at ??:?
+>   Couldn't find memcg: access_tracking_perf_test
+> Did the memcg get created in the proper mount?
+> Destroying cgroup: /sys/fs/cgroup/access_tracking_perf_test
 
-The thing with modern userspace, I'm not sure this out of the box is a
-major problem, we usually run the display server and the user
-processes in the same cgroup, so they share limits. Most modern
-distros don't run X.org servers as root in a separate cgroup, even
-running X is usually in the same cgroup as the users of it, Android
-might have different opinions of course, but I'd probably suggest we
-Kconfig this stuff and let distros turn it on once we agree on a
-baseline.
-
-> >
-> > This seems to work for me here on my hacked up tests systems at least, =
-I
-> > can see the GPU stats moving and they look sane.
-> >
-> > Future work:
-> > Account for pooled non-cached
-> > Account for pooled dma allocations (no idea how that looks)
-> > Figure out if accounting for eviction is possible, and what it might lo=
-ok
-> > like.
->
-> T.J. suggested to account but don't limit the evictions and I think that =
-should work.
->
-
-I was going to introduce an gpu eviction stat counter as a start, I
-also got the idea that might be a bit hard to pull off, but if a
-process needs to evict from VRAM, but the original process has no
-space in it's cgroup, we just fail the VRAM allocation for the current
-process, which didn't sound insane, but I haven't considered how
-implementing that in TTM might look.
-
-Dave.
+Thanks for taking a look!
 
