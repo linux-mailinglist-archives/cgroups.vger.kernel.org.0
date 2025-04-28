@@ -1,208 +1,152 @@
-Return-Path: <cgroups+bounces-7868-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7869-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F3D8A9F50A
-	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 18:00:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAF0AA9F73E
+	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 19:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77E611A80807
-	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 16:00:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C44346182D
+	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 17:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD412309A3;
-	Mon, 28 Apr 2025 16:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8BB28E607;
+	Mon, 28 Apr 2025 17:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="ZTuE5ba1"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TpvR1GjV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08157184524
-	for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 16:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4402A184E
+	for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 17:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745856031; cv=none; b=TB1zbbYL58o9nbIT665NhFCJVZCuJGaxaNi7mG5eKgC2ar8o95qX5larDVzbC/YrXaodsfPOCwMnKMN/bF03VmICjOsDXUktOVyP95vLg831YK18Kzz7G576NcgMdsrniEcGfYqhaNZ82ToaplEm/662X1t9i/NKR+fsWbnJPE4=
+	t=1745861077; cv=none; b=IAloN39vf2Pm0Gy4cBkJc1uyAiVmJTmRqCyF+091J2aaIZQft3BDBglOf6HJSLaiLljD4zo+8uyIS2FXEvOlnWOUxAm6WnsKvfqyS5uiX7KDUSGbCS8sS1dkVekslDMejmIfftD9gpaqccIqptzfhU5T8uI14ANRy688AVlaehs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745856031; c=relaxed/simple;
-	bh=Lkp3DFpM/08XDHCUfGAUxNdCmhsRrnO/mdnrUbVlqoI=;
+	s=arc-20240116; t=1745861077; c=relaxed/simple;
+	bh=Qru/N5etYMDgKDbGqQ8YMJgmR5v/nrj+QFG5OB41UY8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a8NoihzH7Qr8WJspnt/Zx/udc64FKoJS8sfOlBPvPbTe0Z+zKR0rYh/JzpDWiZg+EbDalW1iavweRevTOHqc991X9Ei02Gtq4zQ7C7AkL5PqIteV2Y6wm8XR9zSh9T/dIShxzsHaIsJJCySZp3uNBpXZpirW6a3rofzCsv6m+AE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=ZTuE5ba1; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5e61d91a087so7767616a12.0
-        for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 09:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1745856027; x=1746460827; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ju0m/te+QHiEcI4eXrGOD7HxlePKof8EZ1iR5gDsFoA=;
-        b=ZTuE5ba1ShG6TUMeGJqZVybkYC5JogbDXhWRUS1XrBm/YK9zRzuIMIwiNVsOrQHoGO
-         050jXDvVTF/nawDQ9yEZGnWuk35i4u5fCtZ22gDwbClRbV8K0r4BB+2anIm9sMEZhGMz
-         IKcLMM7cvg+2aXgBAY5AxFe40ficUiYubiM8U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745856027; x=1746460827;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ju0m/te+QHiEcI4eXrGOD7HxlePKof8EZ1iR5gDsFoA=;
-        b=WpyGijl3o5UCrGZjG9nQ2RAlCai4ZkW3EWq+VmRZH/NevuAl9JjdAadZzXosu2NXA7
-         zvk52GYmQ5yuLzrktjAFVJcd07l7tcrxttUv5ZsDWVo6YEW6eEMo3q2wdn5S+WpdDSk0
-         7QEnQ9uogKEGmJ/XRU3Lur1ua7kVwuaGGm+5QfTGCQNao3aFaU8g7DAcD8r2kRdf50wf
-         846nJzLyqzWp3/kmyi9Cx5nCZTbvGRkpCJgJw6msfPjDso+RsB/2ZHnCwTM/KNWHANK2
-         OeI94gzTXHTYZt0eGGT/CRsLSh75IrhNyzH93uXM8dYRMUiNjMOKD+cQx2KM+nfM8tuw
-         Y3GA==
-X-Forwarded-Encrypted: i=1; AJvYcCX/AUzv/LKykSKqvZDzYTh+OfzJKhwIQMzgRrZOSx3EAf893GHpA1xM2d1uRtq/GfiGdY1k7rNb@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWdblJBw8USp35sge2e19RfX0JS4Mq5YoirgLvCaEL146Rci99
-	V0Cnv4NEH8/ucChvBw9GHudr0ldM44Aizezcyuu4ioT8ebEA0wA8voRy53Kixk8=
-X-Gm-Gg: ASbGncufIkyWsGG8IIRe1LVvEoDNTSdjifrQpbQ1s2x2n0nbA2pYqMg8oG833ALkk88
-	X8zLUbXSRG+fuD3N+r1XvdsMiB6SuImHP+Jco8/CDs+mNQ7V0dsjo0IrqpC4d+QTU0xYYv5fadb
-	NsNU2PVyNFF2tb8s6rGZ8VdqPAL7Cz7PsAKmTZo7/atqv9gvagePu5X/pQL1JkveAn0kQB9IXvF
-	DbHlhDRrlY2duhKC/MqOJIAa+VU+qipF7tIp/nWcgeLc6TUcBDxKmj1XzXCpot0W5zR4Cf2NQxb
-	I7Y3S8f8ezFbLre0nl8zYpEZ+d93Lo8H9i4zdu4g90+6Vs6bWxAq
-X-Google-Smtp-Source: AGHT+IGobhrNlPW8PAYgax+LM4vV2hUFDS1mN92blyYJKuh5RqZBSLMeJEn91SiPcJWgZJR9F0eutQ==
-X-Received: by 2002:a17:907:971f:b0:acb:5ae1:f6b8 with SMTP id a640c23a62f3a-ace848c0465mr950005366b.7.1745856026876;
-        Mon, 28 Apr 2025 09:00:26 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:5485:d4b2:c087:b497])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace6ecfb35bsm646493866b.100.2025.04.28.09.00.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Apr 2025 09:00:26 -0700 (PDT)
-Date: Mon, 28 Apr 2025 18:00:24 +0200
-From: Simona Vetter <simona.vetter@ffwll.ch>
-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc: Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
-	tj@kernel.org, cgroups@vger.kernel.org
-Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration
-Message-ID: <aA-mGO547zETZpFK@phenom.ffwll.local>
-References: <20250423214321.100440-1-airlied@gmail.com>
- <4bac662a-228e-4739-b627-5d81df3d4842@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ybla8+jg44z8VsOuNYoQl1VsE8Dk2EFvtigPQOc0wmn3/WA0BFPtRg4jmmkY8TRVEr1lscaziyFZLW+qPk10QXlPMZ7WteKUtLypi5lLapO3TGJN+Ml6pXvoBSMoiPoXf2QGUT/rVnV4UxUZNHDuzN46TB7YivaHZblM6Osm6/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TpvR1GjV; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 28 Apr 2025 17:24:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745861072;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3N6Gu9hVtB/Cv1roQIKXZF1bYSRyAou66/1fwioQv54=;
+	b=TpvR1GjVHTYzAAjnpsn9UT708g+KuvwgX8A+fvoaPVW7p1Kjym9fxKNnbAUXsurKIoirwH
+	yH5nFUe8Wn1wwYedGua5HhjZ/nyNTsi+53pPt+zwzVsJuLTFJ/Bquk5fnhCJPkw4I0DX0g
+	MufBgO4yz4HDaKopHiQpLY2uInLz48A=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Matt Bobrowski <mattbobrowski@google.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Suren Baghdasaryan <surenb@google.com>,
+	David Rientjes <rientjes@google.com>, Josh Don <joshdon@google.com>,
+	Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, bpf@vger.kernel.org
+Subject: Re: [PATCH rfc 00/12] mm: BPF OOM
+Message-ID: <aA-5xX10nXE2C2Dn@google.com>
+References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
+ <aA9bu7UJOCTQGk6L@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4bac662a-228e-4739-b627-5d81df3d4842@amd.com>
-X-Operating-System: Linux phenom 6.12.17-amd64 
+In-Reply-To: <aA9bu7UJOCTQGk6L@google.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Apr 28, 2025 at 12:43:30PM +0200, Christian König wrote:
-> On 4/23/25 23:37, Dave Airlie wrote:
-> > Hey,
+On Mon, Apr 28, 2025 at 10:43:07AM +0000, Matt Bobrowski wrote:
+> On Mon, Apr 28, 2025 at 03:36:05AM +0000, Roman Gushchin wrote:
+> > This patchset adds an ability to customize the out of memory
+> > handling using bpf.
 > > 
-> > I've been tasked to look into this, and I'm going start from hopeless
-> > naivety and see how far I can get. This is an initial attempt to hook
-> > TTM system memory allocations into memcg and account for them.
-> 
-> Yeah, this looks mostly like what we had already discussed.
-> 
+> > It focuses on two parts:
+> > 1) OOM handling policy,
+> > 2) PSI-based OOM invocation.
 > > 
-> > It does:
-> > 1. Adds memcg GPU statistic,
-> > 2. Adds TTM memcg pointer for drivers to set on their user object
-> > allocation paths
-> > 3. Adds a singular path where we account for memory in TTM on cached
-> > non-pooled non-dma allocations. Cached memory allocations used to be
-> > pooled but we dropped that a while back which makes them the best target
-> > to start attacking this from.
-> 
-> I think that should go into the resource like the existing dmem approach
-> instead. That allows drivers to control the accounting through the
-> placement which is far less error prone than the context.
-> 
-> It would also completely avoid the pooled vs unpooled problematic.
-> 
-> 
-> > 4. It only accounts for memory that is allocated directly from a userspace
-> > TTM operation (like page faults or validation). It *doesn't* account for
-> > memory allocated in eviction paths due to device memory pressure.
-> 
-> Yeah, that's something I totally agree on.
-> 
-> But the major show stopper is still accounting to memcg will break
-> existing userspace. E.g. display servers can get attacked with a deny of
-> service with that.
-> 
-> The feature would need to be behind a module option or not account
-> allocations for DRM masters or something like that.
-
-The trouble is that support is very uneven, and it will be even more
-uneven going forward. Especially if we then also add in SoC drivers, which
-have all kinds of fun between system memory, cma, carveout and userptr all
-being differently accounted for.
-
-Which means I think we need two pieces here:
-
-1. opt-in enabling, or things break
-
-2. some way to figure out whether what userspace expects in term of
-enforcement matches what the kernel actually does
-
-Without two we'll never manage to get this beyond the initial demo stage I
-fear, and we'll have a really hard time rolling out the various pieces to
-various drivers.
-
-But I have no idea what this should look like at all unfortuantely. Best I
-can come up with is a set of flags of what kind of enforcement the kernel
-does, and every time we add something new we set a new flag. And if the
-flags userspace or the modoption opt-in sets don't match what the kernel
-supports, you get a fallback to no enforcment.
-
-But a module option flag approach doesn't cover at all per-driver or
-per-device changes. I think for that we need the kernel to provide enough
-information to userspace in sysfs, which userspace then needs to use to
-set/update cgroup limits to fit whatever use-case it case. Or maybe a
-per-device opt-in flag set.
-
-Also I think the only fallback we can realistically provide is "no
-enforcement", and that would technically be a regression every time we add
-a new enforcement feature and hence another opt-in flag. And see below
-with just the eviction example, I think there's plenty of really tricky
-areas where we will just never get to the end state in one step, because
-it's too much work and too hard to get right from the first attempt.
-
-I think once we have a decent opt-in/forward-compatible strategy for
-cgroups gpu features, adding not-entirely-complete solutions to get this
-moving is the right thing to do.
-
-> > This seems to work for me here on my hacked up tests systems at least, I
-> > can see the GPU stats moving and they look sane.
+> > The idea to use bpf for customizing the OOM handling is not new, but
+> > unlike the previous proposal [1], which augmented the existing task
+> > ranking-based policy, this one tries to be as generic as possible and
+> > leverage the full power of the modern bpf.
 > > 
-> > Future work:
-> > Account for pooled non-cached
-> > Account for pooled dma allocations (no idea how that looks)
-> > Figure out if accounting for eviction is possible, and what it might look
-> > like.
+> > It provides a generic hook which is called before the existing OOM
+> > killer code and allows implementing any policy, e.g.  picking a victim
+> > task or memory cgroup or potentially even releasing memory in other
+> > ways, e.g. deleting tmpfs files (the last one might require some
+> > additional but relatively simple changes).
+> > 
+> > The past attempt to implement memory-cgroup aware policy [2] showed
+> > that there are multiple opinions on what the best policy is.  As it's
+> > highly workload-dependent and specific to a concrete way of organizing
+> > workloads, the structure of the cgroup tree etc, a customizable
+> > bpf-based implementation is preferable over a in-kernel implementation
+> > with a dozen on sysctls.
+> > 
+> > The second part is related to the fundamental question on when to
+> > declare the OOM event. It's a trade-off between the risk of
+> > unnecessary OOM kills and associated work losses and the risk of
+> > infinite trashing and effective soft lockups.  In the last few years
+> > several PSI-based userspace solutions were developed (e.g. OOMd [3] or
+> > systemd-OOMd [4]). The common idea was to use userspace daemons to
+> > implement custom OOM logic as well as rely on PSI monitoring to avoid
+> > stalls. In this scenario the userspace daemon was supposed to handle
+> > the majority of OOMs, while the in-kernel OOM killer worked as the
+> > last resort measure to guarantee that the system would never deadlock
+> > on the memory. But this approach creates additional infrastructure
+> > churn: userspace OOM daemon is a separate entity which needs to be
+> > deployed, updated, monitored. A completely different pipeline needs to
+> > be built to monitor both types of OOM events and collect associated
+> > logs. A userspace daemon is more restricted in terms on what data is
+> > available to it. Implementing a daemon which can work reliably under a
+> > heavy memory pressure in the system is also tricky.
+> > 
+> > [1]: https://lwn.net/ml/linux-kernel/20230810081319.65668-1-zhouchuyi@bytedance.com/
+> > [2]: https://lore.kernel.org/lkml/20171130152824.1591-1-guro@fb.com/
+> > [3]: https://github.com/facebookincubator/oomd
+> > [4]: https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
+> > 
+> > ----
+> > 
+> > This is an RFC version, which is not intended to be merged in the current form.
+> > Open questions/TODOs:
+> > 1) Program type/attachment type for the bpf_handle_out_of_memory() hook.
+> >    It has to be able to return a value, to be sleepable (to use cgroup iterators)
+> >    and to have trusted arguments to pass oom_control down to bpf_oom_kill_process().
+> >    Current patchset has a workaround (patch "bpf: treat fmodret tracing program's
+> >    arguments as trusted"), which is not safe. One option is to fake acquire/release
+> >    semantics for the oom_control pointer. Other option is to introduce a completely
+> >    new attachment or program type, similar to lsm hooks.
 > 
-> T.J. suggested to account but don't limit the evictions and I think that
-> should work.
+> Thinking out loud now, but rather than introducing and having a single
+> BPF-specific function/interface, and BPF program for that matter,
+> which can effectively be used to short-circuit steps from within
+> out_of_memory(), why not introduce a
+> tcp_congestion_ops/sched_ext_ops-like interface which essentially
+> provides a multifaceted interface for controlling OOM killing
+> (->select_bad_process, ->oom_kill_process, etc), optionally also from
+> the context of a BPF program (BPF_PROG_TYPE_STRUCT_OPS)?
 
-I think this will need a ladder of implementations, where we slowly get to
-a full featured place. Maybe something like:
+It's certainly an option and I thought about it. I don't think we need a bunch
+of hooks though. This patchset adds 2 and they belong to completely different
+subsystems (mm and sched/psi), so Idk how well they can be gathered
+into a single struct ops. But maybe it's fine.
 
-1. Don't account evicted buffers. Pretty obvious gap if you're on a dgpu,
-but entirely fine with an igpu without stolen memory.
+The only potentially new hook I can envision now is one to customize
+the oom reporting.
 
-2. Account, but don't enforce any limits on evictions. This could already
-get funny if then system memory allocations start failing for random
-reasons due to memory pressure from other processes.
+Thanks for the suggestion!
 
-3. Probably at this point we need a memcg aware shrinker in ttm drivers
-that want to go further.
-
-4. Start enforcing limits even on eviction.
-
-I probably missed a few steps, like about enforcing dmem limits. And
-memory pin limits also tie into this all in interesting ways (both for
-system and device memory).
-
-Cheers, Sima
--- 
-Simona Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
 
