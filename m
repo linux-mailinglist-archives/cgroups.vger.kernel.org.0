@@ -1,131 +1,98 @@
-Return-Path: <cgroups+bounces-7864-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7865-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9270EA9E803
-	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 08:12:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69B3FA9EA16
+	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 09:54:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B618D3A90FE
-	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 06:11:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1FB718952BD
+	for <lists+cgroups@lfdr.de>; Mon, 28 Apr 2025 07:54:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2FD1BD9C1;
-	Mon, 28 Apr 2025 06:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RAQlzICX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9B92376E4;
+	Mon, 28 Apr 2025 07:54:32 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B65C1714B3;
-	Mon, 28 Apr 2025 06:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E6742356C6
+	for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 07:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745820727; cv=none; b=fjnNSE0CC30pYkE+10xAQe+bWHDrJW0kgVr5dO2uJS9GBfTuQAwyyskLIuGr8/FDQjIfoskFWc8/YIrdXUsl+113AzLn+owi0RxMMcPVGHZbmHu5wPy5LAnSpGnNsQG/RioDFDXXrz16RYxedw4+Xux96cVKrf2tVsXC+FSTP4w=
+	t=1745826872; cv=none; b=YUxyJP+w/MVjyALTEdVsEItZb0LkNKZK2TKlW4y19dtyLF/R52IhBA2f/R3zgRfqqQOR+UIATWLGSPWmGxmfDHyA1FbYtlcfWBgxtJ5oX78WkQvfOT7nyHGsa9LRSLXBzDV1aDgf99iwl9eh2R9tfP3M3hS3u3mLTL+sUgorOnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745820727; c=relaxed/simple;
-	bh=9VFKEeiK6JI4XVbE/KksWzGslEhHpjfYU+UURnodd6M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a98uy6P8oGrnEmYpWPktxgIoytqqLrezveOKFPJmHEZuDG8mxI2qXIZ1Ol7Ng7jX6R45jFXHepS9p63bCLKLLtQF50JnF3qsL/9bBxGBeKk16F1bM7Oi0a1JAboNwNPp3Mz3bLAOlAWe9Gg3mzRebGV8V2AnXaKwGD1d2FyBywM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RAQlzICX; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1745820725; x=1777356725;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9VFKEeiK6JI4XVbE/KksWzGslEhHpjfYU+UURnodd6M=;
-  b=RAQlzICXBchaNII48Xe0MgvbpNJAT8Q4VI7kWFXX2IQcWkiBIyVNg90i
-   oB9Ij3ujtWpRrf9WCRfhk4XVipMCSWo8+Tat6E/SAkUAMKMh3wQtbPD3z
-   hPdg4tkp+SoY3uPYwwMSr+veBc6N0ebKwQeEIR73gP0kLvXOfl7D0C99z
-   QWQAs52WjrNh0R7WtyG/d6K3W+v0SKHhBdW/FBkTGX7yZrnF1HomyqK+R
-   ikcihAPwSC7Y11AzX+rlSbq7iSD62Kge/swsW40Uy5C+u+jB4AP40f/Mc
-   Y9yQb+BqZOlceoNAZqAjXPI75aqWI5eIp6rVDyi7rx2R9yOhO+oodtPcu
-   A==;
-X-CSE-ConnectionGUID: kZJl5FjwT8S1sZMyGyfjBA==
-X-CSE-MsgGUID: H6N5xXFaTQ22j7EgEfKihw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11416"; a="58380874"
-X-IronPort-AV: E=Sophos;i="6.15,245,1739865600"; 
-   d="scan'208";a="58380874"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2025 23:12:04 -0700
-X-CSE-ConnectionGUID: 1+/wircxSC+zaa1j+jwsmw==
-X-CSE-MsgGUID: i3LZolW/SKSAhNUcSdgi4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,245,1739865600"; 
-   d="scan'208";a="133730131"
-Received: from lkp-server01.sh.intel.com (HELO 050dd05385d1) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 27 Apr 2025 23:12:01 -0700
-Received: from kbuild by 050dd05385d1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1u9Hig-0006fZ-25;
-	Mon, 28 Apr 2025 06:11:58 +0000
-Date: Mon, 28 Apr 2025 14:11:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Suren Baghdasaryan <surenb@google.com>,
-	David Rientjes <rientjes@google.com>, Josh Don <joshdon@google.com>,
-	Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org,
-	bpf@vger.kernel.org, Roman Gushchin <roman.gushchin@linux.dev>
-Subject: Re: [PATCH rfc 09/12] sched: psi: bpf hook to handle psi events
-Message-ID: <202504281309.smYiDStM-lkp@intel.com>
-References: <20250428033617.3797686-10-roman.gushchin@linux.dev>
+	s=arc-20240116; t=1745826872; c=relaxed/simple;
+	bh=51AoXsXVp7yiHR185Rby8tv3yG4dzn89op8/N9TGwsg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Xfn3Inpx3JjGEw+QdNqzAMfG5SfdOIMrvrb5AZIf/LN6sXsXGcoSun9bxg8IjzH0uHkcVSOcbj+CjveiiPUpASn03aFLa7w2cegtWpL6CaRUBGVTNQFBXraGH7Bof1qtnmrQIf7m4d1rsp4t0CfU7c2T2oYs6YGcjXN5MNISo+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-85e4f920dacso338234739f.2
+        for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 00:54:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745826870; x=1746431670;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B3mQV4GgW9ucfCGH5ohcvWSs8E4D8ePWgUerNiBqhAs=;
+        b=gmFLpf5SfLILeNAg2u7S6v2UIsQq/VP4CubveI3hxAEpqkb856tquknTwR9ALpyen9
+         SvOPxkqkK/7qvxn4oGBNPavZBUMDfD/LTPwLUQZxC1GjLghCbAb0f69RvHNGMoN8MNrD
+         V3YQRExkMpsQSORgdqIM/LPJgQwF8JPSMzF/21vMN4s8Y8q/oAEpfxLubGpIZqtuhOE4
+         TiOqK67hsGOWPRzuPvRC7iUjtHh8LengwLSvDPFFtpIX5QUVcQsbdaef68sEmon1d5O+
+         msxFaQxx9HvHN/4ayCUWzGS2DGfcakUthr6UbXjq+i1cAWtrLYybSEqKIahxQNdb6i3H
+         npjw==
+X-Gm-Message-State: AOJu0YyZn/E9Uyq2HPKj9bsvYN/igrhibJ5PZ8R27dnRHkHzy1snKV50
+	5PXchA45/BrzDy28zIdAjK/SZcki+jRyywT9WdyZCcRgmTbhz3cCI+LTNo3puJ9I2RxecTPvWGp
+	FuYq2MXV42iQftel3tYI0xFH+pHW/RSZp4JZOtDZtiQcROheYs09wDfw=
+X-Google-Smtp-Source: AGHT+IHVAcxNFeITuhMUgOArHuMxEJhyad2kWanyw0wZTdzwPho1YpgTg1bCztAQ38J2oogBJ7vXZxoDWmE/Pz9gyxGF71xsm6aR
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250428033617.3797686-10-roman.gushchin@linux.dev>
+X-Received: by 2002:a05:6602:26ca:b0:861:7237:9021 with SMTP id
+ ca18e2360f4ac-8645cc87ae0mr1163470439f.3.1745826870203; Mon, 28 Apr 2025
+ 00:54:30 -0700 (PDT)
+Date: Mon, 28 Apr 2025 00:54:30 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <680f3436.a70a0220.23e4d2.002d.GAE@google.com>
+Subject: [syzbot] Monthly cgroups report (Apr 2025)
+From: syzbot <syzbot+listd6e9f2d108f77c2e22b7@syzkaller.appspotmail.com>
+To: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Roman,
+Hello cgroups maintainers/developers,
 
-kernel test robot noticed the following build warnings:
+This is a 31-day syzbot report for the cgroups subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/cgroups
 
-[auto build test WARNING on akpm-mm/mm-everything]
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 8 issues are still open and 38 have already been fixed.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Roman-Gushchin/mm-introduce-a-bpf-hook-for-OOM-handling/20250428-113742
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20250428033617.3797686-10-roman.gushchin%40linux.dev
-patch subject: [PATCH rfc 09/12] sched: psi: bpf hook to handle psi events
-config: sh-randconfig-001-20250428 (https://download.01.org/0day-ci/archive/20250428/202504281309.smYiDStM-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 10.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250428/202504281309.smYiDStM-lkp@intel.com/reproduce)
+Some of the still happening issues:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202504281309.smYiDStM-lkp@intel.com/
+Ref Crashes Repro Title
+<1> 4982    Yes   possible deadlock in console_flush_all (3)
+                  https://syzkaller.appspot.com/bug?extid=18cfb7f63482af8641df
+<2> 3902    Yes   possible deadlock in task_rq_lock
+                  https://syzkaller.appspot.com/bug?extid=ca14b36a46a8c541b509
+<3> 838     Yes   possible deadlock in console_lock_spinning_enable (5)
+                  https://syzkaller.appspot.com/bug?extid=622acb507894a48b2ce9
 
-All warnings (new ones prefixed by >>):
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-   In file included from kernel/sched/build_utility.c:94:
->> kernel/sched/psi.c:193:38: warning: 'bpf_psi_hook_set' defined but not used [-Wunused-const-variable=]
-     193 | static const struct btf_kfunc_id_set bpf_psi_hook_set = {
-         |                                      ^~~~~~~~~~~~~~~~
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-vim +/bpf_psi_hook_set +193 kernel/sched/psi.c
-
-   192	
- > 193	static const struct btf_kfunc_id_set bpf_psi_hook_set = {
-   194		.owner = THIS_MODULE,
-   195		.set   = &bpf_psi_hooks,
-   196	};
-   197	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+You may send multiple commands in a single email message.
 
