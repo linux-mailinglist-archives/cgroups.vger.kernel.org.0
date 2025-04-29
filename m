@@ -1,85 +1,83 @@
-Return-Path: <cgroups+bounces-7874-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7875-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AE63A9FE9F
-	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 02:56:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 232D6A9FEB6
+	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 03:03:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DAB74621CD
-	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 00:56:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A46F3ACFF0
+	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 01:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84D4913C9B3;
-	Tue, 29 Apr 2025 00:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D01713BC0E;
+	Tue, 29 Apr 2025 01:03:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FZg+en0g"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bB08tbqF"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A91E4AEE0
-	for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 00:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6E378F58
+	for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 01:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745888168; cv=none; b=XKfvEMD3d4aIqncTUy4sUObKAVUwRhTeGmDaUP3Vzo7hrMtopMFx+AewBeX5NeHBYw4oBGw7+YRqLuSFWMka1JarPS8ucInR3pZ7wvFO+0ZzswIhoSrAjc3KrW//ZKh6T/pLG99UoQkghHqm7cumnxvn5RJI0NSv/JhkxA3SyWw=
+	t=1745888630; cv=none; b=BWWK0HGSavbPU7/iTsg0ien1MpQcPRcck1+vQ3iu+o3vcCMBD17hVbK9+zz6fklLBNogkJLRzCvKC+PDtrL2yJE9ahAbK/ISUb4juA1J97grYVt2jXkVylJWllcd8OzP7xX4Sg8MV2I00Z2VijGFcP0u3YuEiCky79iwEXrXnHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745888168; c=relaxed/simple;
-	bh=R3qiCOKricv0V7guueM+WNlKjYrj/xlSi1gJS3t7yhU=;
+	s=arc-20240116; t=1745888630; c=relaxed/simple;
+	bh=NMyHvEndM32QeMidto5Mn6t7yVRhd/4xcM1I2rtn6KQ=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=cFs1V06hcArgKM/iHS2iET0h7uC0WrmKlvLZV6s5XYh00/Hl1gk3fIedB70kmVymVatF26kgT95ieKz866HA1hgokRbYx5x9LrS/CH5s6tlZZ0pMrNGeyXlT0mvQp5m8hikSYnHhs/irocZE+gCbFHnGggTCYH/atKb9WZPkRvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FZg+en0g; arc=none smtp.client-ip=209.85.214.201
+	 To:Cc:Content-Type; b=NZRE1ZWGExTUlo7/w+vqrpDFpvF1vLzxDB01S2cg/wCn4hkR7lvrRIfWOGDt9Rm7xUlMjFz+f7tLB5TKV4sekScvojnvvyxccLPUmK/LFT7mK5KUZ2oe9R6ZeLcoiB3+SmI/0w9AG0fx47uYcq/ArTUzuqUOvHDtd7lg4yEt3Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bB08tbqF; arc=none smtp.client-ip=209.85.214.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-2242ade807fso87315155ad.2
-        for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 17:56:06 -0700 (PDT)
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-22650077995so77129745ad.3
+        for <cgroups@vger.kernel.org>; Mon, 28 Apr 2025 18:03:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1745888166; x=1746492966; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1745888628; x=1746493428; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:from:subject:message-id:references
          :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=qIfl9sldI2oYnELP7cv05KQ/pnmI23d3v+rJeb6lnZA=;
-        b=FZg+en0gDpc2QXlRb2mFJdA+TzdRGyY889OIZm+qOCRrzU5pSyyWOgGVvlNGA6LWaY
-         HLM8BhVYk5glD0oEkxEqbuqfd4FNHq14hSYLBetNGaO6sx6t7GHUvcbYB9Go2fiZxHkZ
-         e684PYi5Hm6rAhJ61DblPZenE8XEBvd+UIjvXWxgcZXQGcnZYkH4mASzab4mNVRv6fS/
-         YFKL06Uc8Z6SNzRYyMgZB1+hL34GwLTzFJKrFVWHK26wFfoOqw2Te1B2GQxM3xAKFGar
-         o/jvRRjsOZbvgPY0re2ZjNSQXbbjSgOgpuUb4ZaVjCKQtEtIA1lh+ZH5KEHo/rMmPqLx
-         GmsQ==
+        bh=0N6vnpk8vIOh+0TQjKECTwgmvexWONMh7U9hSe/aVEc=;
+        b=bB08tbqFKJCwNBJmMDpLUVxAl/VNkoGE8dwGSIu4xCZwN9YaJ2cIhzJ1mizLdY++He
+         Vpl+wVOLchq2KF5FftvwNdMH+lOm5wEYVo0YhIMK0usrkc4svAgdpOAr0a90IcNh7iDt
+         JHJp+XL4WhtuXNon7hQDxuWjXdr0mblEjH2nKkoM5Xfei1+QDMyrhbcD8I5Oa7ng15O5
+         6Dxbb1qSUSGTqFl7SithGLL8pRYJtRXwvGqEKccsW/+FfrvM2lhY/NV7fRBsDiOEG9tU
+         sNdszg3Um1rIebIGqIyMGffuIJbRoOWcrC9IRAnU2p2X50ygGb5D8LoCd6xrbVleKpI7
+         oqcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745888166; x=1746492966;
+        d=1e100.net; s=20230601; t=1745888628; x=1746493428;
         h=content-transfer-encoding:cc:to:from:subject:message-id:references
          :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=qIfl9sldI2oYnELP7cv05KQ/pnmI23d3v+rJeb6lnZA=;
-        b=Nf1sU27VfwZSc9aa6tue4gWq+heQGDlgQbgMFXzfRNc/nd4jqCr6u2BFkB78/nm/VY
-         BWxl6yebx1J1egjpqsYe8sA5xkTLAxmHkCbzzVDN9jUwPUV/F+Qy/qE7AuEDPMCNgFY0
-         QSaQ6yGfmV3fq1U2MqeOC44thd7UrlDyqoWs10zZPCthhZI1APUU0QIVMPtS8VJaTAX4
-         vPPgEbAU/gt1+gpFK4QSX7evHga7OV4npj9cPR4TyJ632qtsK1YitY2X6K+eqvIGOig+
-         eXALiCvHTLdpcb8Rs4F9iseha7xgrmwYesVUofQP2oh9k/zcZYxd88qX+u9NM5xmy24u
-         Zppg==
-X-Forwarded-Encrypted: i=1; AJvYcCW1IrQjdqngZy6Unqto22HkuOR+DIRRmQlQ74eeHEO+yOMizEzqR7xoScdWQA0iXrU53CD6okla@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDdeA9zCKsnRHgMC7mIbURgiBlPOgPKJwovnbj4cfj+Wrpcy6e
-	izH8SwCF/t+ByAGn+lirW8DAnaJBLygZ4uwyuybf1h/4a+vd/4EXHigbaakjvAt8cYhqHyxJ3Zr
-	+SQ==
-X-Google-Smtp-Source: AGHT+IFRDAQmXGqF9t6A1AUN9GWgCt2IQIKU/j6VszK3kGzTc9EySIp4JBSSxgQ/BZg7rQbLlNIadMMTltw=
-X-Received: from pjboe15.prod.google.com ([2002:a17:90b:394f:b0:2ea:448a:8cd1])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:d4c1:b0:227:e74a:a05a
- with SMTP id d9443c01a7336-22de60702a3mr26654175ad.44.1745888165925; Mon, 28
- Apr 2025 17:56:05 -0700 (PDT)
-Date: Mon, 28 Apr 2025 17:56:04 -0700
-In-Reply-To: <CADrL8HX03P1f2E7NzufXU3enW1EXz2Bk2qNh5KQg-X1KFQed8g@mail.gmail.com>
+        bh=0N6vnpk8vIOh+0TQjKECTwgmvexWONMh7U9hSe/aVEc=;
+        b=jOjbaKyiV2yx5y6xd5gWkIwJBMlc2q/zgZTmnFca6/ocZQD8KMARF4dz1HVRy991dx
+         fBJfz6/aMts5OQd3p4G0s6e8sC0W7f7/Cq0sWw3eeV43ojwh0vzIXezhT5Qx822AdAtJ
+         d6TMSqGvKIV0y5gzeNjlL7WINHYXFePhOOJfapFG+OCzQpFyUerW+LYx9QNDqXUCvKAr
+         rwixB5HgYd5DJ+amEiMLKVgpkXMONeCtBg9kQNDJZpAoPTxKBmj96yU9N8UWHoAIRvUe
+         xBbJFfxbbmDVrevS8kYX7dS7xVDHvPhB0OXDfzFjtU7hNpjuWZT64QFM3HxwnmUpQ/hh
+         VtHA==
+X-Forwarded-Encrypted: i=1; AJvYcCXFsafuxLsbYiQFkt7ked6RciI2tERrvPwPzLa1mVRWKVP+AuEMcbTimUGutOOKhSBoe/8635tr@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfL8IYLPkSMPtmpcKrYbwwmHYbA7iBNM5gbeTttpFyS2Jsuv47
+	JVRBvnB6X7UXHgd/X5SHfd4C6yPrkAsKFMMaX7nMU9f26bDM6yOsb7Q9+9Gk3BJDIYQRpLG1O9u
+	k5g==
+X-Google-Smtp-Source: AGHT+IHM/661ZgZTepSBi2SA8Zn8aAamYmT/Kekoyia+DCTLnkUFlpflJKv4vilM+e8xUe42MNChePiEZoA=
+X-Received: from plqw20.prod.google.com ([2002:a17:902:a714:b0:220:e952:af68])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:da88:b0:224:5a8:ba2c
+ with SMTP id d9443c01a7336-22de703cff0mr15246705ad.52.1745888628471; Mon, 28
+ Apr 2025 18:03:48 -0700 (PDT)
+Date: Mon, 28 Apr 2025 18:03:46 -0700
+In-Reply-To: <20250414200929.3098202-5-jthoughton@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20250414200929.3098202-1-jthoughton@google.com>
- <20250414200929.3098202-6-jthoughton@google.com> <aAwpWwMIJEjtL5F9@google.com>
- <CADrL8HX03P1f2E7NzufXU3enW1EXz2Bk2qNh5KQg-X1KFQed8g@mail.gmail.com>
-Message-ID: <aBAjpKvXoT62zG6h@google.com>
-Subject: Re: [PATCH v3 5/5] KVM: selftests: access_tracking_perf_test: Use
- MGLRU for access tracking
+References: <20250414200929.3098202-1-jthoughton@google.com> <20250414200929.3098202-5-jthoughton@google.com>
+Message-ID: <aBAlcrTtBDeQCL0X@google.com>
+Subject: Re: [PATCH v3 4/5] KVM: selftests: Build and link selftests/cgroup/lib
+ into KVM selftests
 From: Sean Christopherson <seanjc@google.com>
 To: James Houghton <jthoughton@google.com>
 Cc: kvm@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>, 
@@ -90,212 +88,260 @@ Cc: kvm@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 28, 2025, James Houghton wrote:
-> On Fri, Apr 25, 2025 at 8:31=E2=80=AFPM Sean Christopherson <seanjc@googl=
-e.com> wrote:
-> >
-> > On Mon, Apr 14, 2025, James Houghton wrote:
-> > > By using MGLRU's debugfs for invoking test_young() and clear_young(),=
- we
-> > > avoid page_idle's incompatibility with MGLRU, and we can mark pages a=
-s
-> > > idle (clear_young()) much faster.
-> > >
-> > > The ability to use page_idle is left in, as it is useful for kernels
-> > > that do not have MGLRU built in. If MGLRU is enabled but is not usabl=
-e
-> > > (e.g. we can't access the debugfs mount), the test will fail, as
-> > > page_idle is not compatible with MGLRU.
-> > >
-> > > cgroup utility functions have been borrowed so that, when running wit=
-h
-> > > MGLRU, we can create a memcg in which to run our test.
-> > >
-> > > Other MGLRU-debugfs-specific parsing code has been added to
-> > > lru_gen_util.{c,h}.
-> >
-> > This fails on my end due to not being able to find the cgroup.  I spent=
- about 15
-> > minutes poking at it and gave it.  FWIW, this is on our devrez hosts, s=
-o it's
-> > presumably similar hardware to what you tested on.
->=20
-> Ah sorry, yes, this selftest needs to be patched when running the
-> devrez userspace, which uses a combination of cgroup-v1 and cgroup-v2.
-> Simply hard-coding the root to "/dev/cgroup/memory" (which is in fact
-> a cgroup-v1 mount) should be what you need if you want to give it
-> another go.
->
-> > Even if this turns out to be PEBKAC or some CONFIG_XXX incompatibility,=
- there
-> > needs to be better hints provided to the user of how they can some this=
-.
->=20
-> Yeah this can be better. I should at least check that the found
-> cgroup-v2 root's cgroup.controllers contains "memory". In your case,
-> it did not.
->=20
-> (cgroup.controllers is not available for cgroup-v1 -- because it
-> doesn't make sense -- so if I patch the selftest to check this file,
-> using cgroup-v1 mounts will stop working. So, again, you'd need to
-> patch the test to work on devrez.)
+On Mon, Apr 14, 2025, James Houghton wrote:
+> libcgroup.o is built separately from KVM selftests and cgroup selftests,
+> so different compiler flags used by the different selftests will not
+> conflict with each other.
 
-Or, and I know this going to sound crazy, what if we simply make the test w=
-ork
-with v1 or v2?  That is not hard to do, at all.  Please slot the below into=
- the
-next version of the series.  Feel free to modify it as needed, e.g. to addr=
-ess
-other maintainer feedback.  The only thing I care about is the selftest not=
- failing.
+This fails to build on some of my systems.  And it generates a warning, whi=
+ch
+thanks to me building KVM selftests with -Werror, is the only such warning =
+in
+all of KVM selftests.
 
-> > And this would be a perfect opportunity to clean up this:
-> >
-> >         __TEST_REQUIRE(page_idle_fd >=3D 0,
-> >                        "CONFIG_IDLE_PAGE_TRACKING is not enabled");
->=20
-> I think the change I've already made to this string is sufficient
-> (happy to change it further if you like):
+tools/testing/selftests/cgroup/lib/cgroup_util.c:511:17: warning: ignoring =
+return value of =E2=80=98read=E2=80=99 declared with attribute =E2=80=98war=
+n_unused_result=E2=80=99 [-Wunused-result]
+  511 |                 read(fd, buf, sizeof(buf));
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Doh, I missed that your patch did already improve the skip message to spit =
-out
-/sys/kernel/mm/page_idle/bitmap; that part I definitely like.
+In file included from /usr/include/fcntl.h:314,
+                 from tools/testing/selftests/cgroup/lib/cgroup_util.c:6:
+In function =E2=80=98open=E2=80=99,
+    inlined from =E2=80=98get_temp_fd=E2=80=99 at tools/testing/selftests/c=
+group/lib/cgroup_util.c:493:9:
+/usr/include/x86_64-linux-gnu/bits/fcntl2.h:50:11: error: call to =E2=80=98=
+__open_missing_mode=E2=80=99 declared with attribute error: open with O_CRE=
+AT or O_TMPFILE in second argument needs 3 arguments
+   50 |           __open_missing_mode ();
+      |           ^~~~~~~~~~~~~~~~~~~~~~
 
-> > > +               __TEST_REQUIRE(page_idle_fd >=3D 0,
-> > > +                              "Couldn't open /sys/kernel/mm/page_idl=
-e/bitmap. "
-> > > +                              "Is CONFIG_IDLE_PAGE_TRACKING enabled?=
-");
->=20
-> > I can't count the number of times I've forgotten to run the test with r=
-oot
-> > privileges, and wasted a bunch of time remembering it's not that the ke=
-rnel
-> > doesn't have CONFIG_IDLE_PAGE_TRACKING, but that /sys/kernel/mm/page_id=
-le/bitmap
-> > isn't accessible.
-> >
-> > I mention that, because on a kernel with MGRLU available but disabled, =
-and
-> > CONFIG_IDLE_PAGE_TRACKING=3Dn, the user has no idea that they _can_ run=
- the test
-> > without mucking with their kernel.
->=20
-> Fair enough, I'll change the output from the test for that
-> configuration to say something like: "please either enable the missing
-> MGLRU features (e.g. `echo 3 > /sys/kernel/mm/lru_gen/enabled`) or
-> recompile your kernel with CONFIG_IDLE_PAGE_TRACKING=3Dy."
 
-That's still misleading.  In my case, my kernels are already built with
-CONFIG_IDLE_PAGE_TRACKING=3Dy.
+Given that the code in question has nothing to do with cgroups and is used =
+only
+by test_memcontrol.c, my vote is to move it into test_memcontrol.c and let =
+the
+cgroups folks sort things out at their leisure (if it even ever becomes an =
+issue
+for them).
 
-Looking at this again, we can do much better.  For my permissions issue, op=
-en()
-should fail with -EACCES, whereas the CONFIG_IDLE_PAGE_TRACKING=3Dn case sh=
-ould
-fail with ENOENT.  And that is easy enough to handle in open_path_or_exit()=
-.
-
-I'll send a small series to clean that up, and then will apply this series =
-on top.
-The resulting conflict will be trivial to resolve, so don't worry about reb=
-asing
-on top of my mini-series.
+E.g. slot this is before making cgroup_util.c a library?
 
 --
 From: Sean Christopherson <seanjc@google.com>
-Date: Mon, 28 Apr 2025 17:36:06 -0700
-Subject: [PATCH] cgroup: selftests: Add API to find root of specific
- controller
+Date: Mon, 28 Apr 2025 17:38:14 -0700
+Subject: [PATCH] selftests: cgroup: Move memcontrol specific helpers out of
+ common cgroup_util.c
 
-Add an API in the cgroups library to find the root of a specific
-controller.  KVM selftests will use the API to find the memory controller.
-
-Search for the controller on both v1 and v2 mounts, as KVM selftests'
-usage will be completely oblivious of v1 versus v2.
+Move a handful of helpers out of cgroup_util.c and into test_memcontrol.c
+that have nothing to with cgroups in general, in anticipation of making
+cgroup_util.c a generic library that can be used by other selftests.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/cgroup/lib/cgroup_util.c        | 32 +++++++++++++++----
- .../cgroup/lib/include/cgroup_util.h          |  1 +
- 2 files changed, 27 insertions(+), 6 deletions(-)
+ tools/testing/selftests/cgroup/cgroup_util.c  | 78 -------------------
+ tools/testing/selftests/cgroup/cgroup_util.h  |  5 --
+ .../selftests/cgroup/test_memcontrol.c        | 78 +++++++++++++++++++
+ 3 files changed, 78 insertions(+), 83 deletions(-)
 
-diff --git a/tools/testing/selftests/cgroup/lib/cgroup_util.c b/tools/testi=
-ng/selftests/cgroup/lib/cgroup_util.c
-index 69a68f43e3fa..4e7e7329b226 100644
---- a/tools/testing/selftests/cgroup/lib/cgroup_util.c
-+++ b/tools/testing/selftests/cgroup/lib/cgroup_util.c
-@@ -217,7 +217,8 @@ int cg_write_numeric(const char *cgroup, const char *co=
-ntrol, long value)
- 	return cg_write(cgroup, control, buf);
+diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/s=
+elftests/cgroup/cgroup_util.c
+index 1e2d46636a0c..023a87ff7ebc 100644
+--- a/tools/testing/selftests/cgroup/cgroup_util.c
++++ b/tools/testing/selftests/cgroup/cgroup_util.c
+@@ -488,84 +488,6 @@ int cg_run_nowait(const char *cgroup,
+ 	return pid;
  }
 =20
--int cg_find_unified_root(char *root, size_t len, bool *nsdelegate)
-+static int cg_find_root(char *root, size_t len, const char *controller,
-+			bool *nsdelegate)
+-int get_temp_fd(void)
+-{
+-	return open(".", O_TMPFILE | O_RDWR | O_EXCL);
+-}
+-
+-int alloc_pagecache(int fd, size_t size)
+-{
+-	char buf[PAGE_SIZE];
+-	struct stat st;
+-	int i;
+-
+-	if (fstat(fd, &st))
+-		goto cleanup;
+-
+-	size +=3D st.st_size;
+-
+-	if (ftruncate(fd, size))
+-		goto cleanup;
+-
+-	for (i =3D 0; i < size; i +=3D sizeof(buf))
+-		read(fd, buf, sizeof(buf));
+-
+-	return 0;
+-
+-cleanup:
+-	return -1;
+-}
+-
+-int alloc_anon(const char *cgroup, void *arg)
+-{
+-	size_t size =3D (unsigned long)arg;
+-	char *buf, *ptr;
+-
+-	buf =3D malloc(size);
+-	for (ptr =3D buf; ptr < buf + size; ptr +=3D PAGE_SIZE)
+-		*ptr =3D 0;
+-
+-	free(buf);
+-	return 0;
+-}
+-
+-int is_swap_enabled(void)
+-{
+-	char buf[PAGE_SIZE];
+-	const char delim[] =3D "\n";
+-	int cnt =3D 0;
+-	char *line;
+-
+-	if (read_text("/proc/swaps", buf, sizeof(buf)) <=3D 0)
+-		return -1;
+-
+-	for (line =3D strtok(buf, delim); line; line =3D strtok(NULL, delim))
+-		cnt++;
+-
+-	return cnt > 1;
+-}
+-
+-int set_oom_adj_score(int pid, int score)
+-{
+-	char path[PATH_MAX];
+-	int fd, len;
+-
+-	sprintf(path, "/proc/%d/oom_score_adj", pid);
+-
+-	fd =3D open(path, O_WRONLY | O_APPEND);
+-	if (fd < 0)
+-		return fd;
+-
+-	len =3D dprintf(fd, "%d", score);
+-	if (len < 0) {
+-		close(fd);
+-		return len;
+-	}
+-
+-	close(fd);
+-	return 0;
+-}
+-
+ int proc_mount_contains(const char *option)
  {
- 	char buf[10 * PAGE_SIZE];
- 	char *fs, *mount, *type, *options;
-@@ -237,17 +238,36 @@ int cg_find_unified_root(char *root, size_t len, bool=
- *nsdelegate)
- 		strtok(NULL, delim);
- 		strtok(NULL, delim);
+ 	char buf[4 * PAGE_SIZE];
+diff --git a/tools/testing/selftests/cgroup/cgroup_util.h b/tools/testing/s=
+elftests/cgroup/cgroup_util.h
+index 19b131ee7707..bdc50a8e6b85 100644
+--- a/tools/testing/selftests/cgroup/cgroup_util.h
++++ b/tools/testing/selftests/cgroup/cgroup_util.h
+@@ -49,11 +49,6 @@ extern int cg_enter_current_thread(const char *cgroup);
+ extern int cg_run_nowait(const char *cgroup,
+ 			 int (*fn)(const char *cgroup, void *arg),
+ 			 void *arg);
+-extern int get_temp_fd(void);
+-extern int alloc_pagecache(int fd, size_t size);
+-extern int alloc_anon(const char *cgroup, void *arg);
+-extern int is_swap_enabled(void);
+-extern int set_oom_adj_score(int pid, int score);
+ extern int cg_wait_for_proc_count(const char *cgroup, int count);
+ extern int cg_killall(const char *cgroup);
+ int proc_mount_contains(const char *option);
+diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testi=
+ng/selftests/cgroup/test_memcontrol.c
+index 16f5d74ae762..5414ca4df24c 100644
+--- a/tools/testing/selftests/cgroup/test_memcontrol.c
++++ b/tools/testing/selftests/cgroup/test_memcontrol.c
+@@ -24,6 +24,84 @@
+ static bool has_localevents;
+ static bool has_recursiveprot;
 =20
--		if (strcmp(type, "cgroup2") =3D=3D 0) {
--			strncpy(root, mount, len);
--			if (nsdelegate)
--				*nsdelegate =3D !!strstr(options, "nsdelegate");
--			return 0;
-+		if (strcmp(type, "cgroup") =3D=3D 0) {
-+			if (!controller || !strstr(options, controller))
-+				continue;
-+		} else if (strcmp(type, "cgroup2") =3D=3D 0) {
-+			if (controller &&
-+			    cg_read_strstr(mount, "cgroup.controllers", controller))
-+				continue;
-+		} else {
-+			continue;
- 		}
-+		strncpy(root, mount, len);
-+
-+		if (nsdelegate)
-+			*nsdelegate =3D !!strstr(options, "nsdelegate");
-+		return 0;
- 	}
-=20
- 	return -1;
- }
-=20
-+int cg_find_controller_root(char *root, size_t len, const char *controller=
-)
++static int get_temp_fd(void)
 +{
-+	return cg_find_root(root, len, controller, NULL);
++	return open(".", O_TMPFILE | O_RDWR | O_EXCL);
 +}
 +
-+int cg_find_unified_root(char *root, size_t len, bool *nsdelegate)
++static int alloc_pagecache(int fd, size_t size)
 +{
-+	return cg_find_root(root, len, NULL, nsdelegate);
++	char buf[PAGE_SIZE];
++	struct stat st;
++	int i;
++
++	if (fstat(fd, &st))
++		goto cleanup;
++
++	size +=3D st.st_size;
++
++	if (ftruncate(fd, size))
++		goto cleanup;
++
++	for (i =3D 0; i < size; i +=3D sizeof(buf))
++		read(fd, buf, sizeof(buf));
++
++	return 0;
++
++cleanup:
++	return -1;
 +}
 +
- int cg_create(const char *cgroup)
- {
- 	return mkdir(cgroup, 0755);
-diff --git a/tools/testing/selftests/cgroup/lib/include/cgroup_util.h b/too=
-ls/testing/selftests/cgroup/lib/include/cgroup_util.h
-index cbe6f0b4247d..d9e6e3090b3f 100644
---- a/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
-+++ b/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
-@@ -21,6 +21,7 @@ static inline int values_close(long a, long b, int err)
- 	return labs(a - b) <=3D (a + b) / 100 * err;
- }
-=20
-+extern int cg_find_controller_root(char *root, size_t len, const char *con=
-troller);
- extern int cg_find_unified_root(char *root, size_t len, bool *nsdelegate);
- extern char *cg_name(const char *root, const char *name);
- extern char *cg_name_indexed(const char *root, const char *name, int index=
-);
++static int alloc_anon(const char *cgroup, void *arg)
++{
++	size_t size =3D (unsigned long)arg;
++	char *buf, *ptr;
++
++	buf =3D malloc(size);
++	for (ptr =3D buf; ptr < buf + size; ptr +=3D PAGE_SIZE)
++		*ptr =3D 0;
++
++	free(buf);
++	return 0;
++}
++
++static int is_swap_enabled(void)
++{
++	char buf[PAGE_SIZE];
++	const char delim[] =3D "\n";
++	int cnt =3D 0;
++	char *line;
++
++	if (read_text("/proc/swaps", buf, sizeof(buf)) <=3D 0)
++		return -1;
++
++	for (line =3D strtok(buf, delim); line; line =3D strtok(NULL, delim))
++		cnt++;
++
++	return cnt > 1;
++}
++
++static int set_oom_adj_score(int pid, int score)
++{
++	char path[PATH_MAX];
++	int fd, len;
++
++	sprintf(path, "/proc/%d/oom_score_adj", pid);
++
++	fd =3D open(path, O_WRONLY | O_APPEND);
++	if (fd < 0)
++		return fd;
++
++	len =3D dprintf(fd, "%d", score);
++	if (len < 0) {
++		close(fd);
++		return len;
++	}
++
++	close(fd);
++	return 0;
++}
++
+ /*
+  * This test creates two nested cgroups with and without enabling
+  * the memory controller.
 
-base-commit: 65a87fcc85da28361af2a5718c109dbc2f8d54a2
+base-commit: 4a243ec9b255aeb0f033c646148aaf662fd92c64
 --
 
