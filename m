@@ -1,77 +1,77 @@
-Return-Path: <cgroups+bounces-7927-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7928-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F760AA3CC1
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 01:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF08FAA3CC6
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 01:42:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A5314E22E5
-	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 23:42:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 720574E1FED
+	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 23:42:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A578D24677B;
-	Tue, 29 Apr 2025 23:39:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C875E2DCB6E;
+	Tue, 29 Apr 2025 23:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k26FpIr2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dc9cd7oW"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1347F2E62D8;
-	Tue, 29 Apr 2025 23:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A28231841;
+	Tue, 29 Apr 2025 23:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745969946; cv=none; b=Ix8ldi58j6UFZUwfxzzxQUV6iSOny9VTRDEy8GRGvAn7kR0buU6qJNrFT3rotoop9Tcsh4NichW4m5gzKvRMFQKMM+HG8FSssKHltd0JI1vELlWVJzF/3NwoRsja4x9J3RhujFL3co587aug3YQQxNhi6kmmjpPKa5Y2bWgOB68=
+	t=1745969947; cv=none; b=klwOT3QvLSxLED42mmHx2+3U8fegDpOvhzkIPEQEWfx7ikwV8Uv3jZzklw24XB1bQmtgzM6Lpa5PnLVLy32vY3l1lypyZPTymtZg9orBDZnayckbkhzJxe/wYSEwVz/3zFae7hk/fQV8tLHxdHRUe85VNkdzbixLSKc02b9maY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745969946; c=relaxed/simple;
-	bh=PrhZu9UGS1Zo3iBepaZyF3RiCrxHnnORdIJ+ZCLi0eQ=;
+	s=arc-20240116; t=1745969947; c=relaxed/simple;
+	bh=D+juSeb9xcE/sRXQik3RBgvKgnBuFTBq66GM8WioyWs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LmKPk8FKiiwzaFMWfxj18V/LY8cuVYalYZ9oCQHYKUGjba4Xdz8Zb65CTxTBXMAjmu9TEA32cD5O4VBbWytD5yGYr8jAJ8JB7s/F0n31WmVR4/7sQrSDQlFnMzKWJHUpyabb69KDDlExSLZkftv3Rw0uvKUUqD99VDxwDCSu3PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k26FpIr2; arc=none smtp.client-ip=209.85.128.179
+	 MIME-Version; b=UtUyS9w09Fwm+9G1Skx9a08s/cxPKb869NvVZrpD1zHslZOclAPKuaueOnq4OfzublSYQTm7+euO6jexohrxK6JFNo2XXBCkBLApapo6rsCMj9832mw+EzOXU3WEJQBdBF7lDjtT6QTrFtap08YRqHrGLuxn4P/4Pz+xYAurgsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dc9cd7oW; arc=none smtp.client-ip=209.85.128.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-7082ad1355bso56757557b3.1;
-        Tue, 29 Apr 2025 16:39:03 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-707d3c12574so3207877b3.1;
+        Tue, 29 Apr 2025 16:39:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745969943; x=1746574743; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745969944; x=1746574744; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tMZjxyYXXDk1gidKnzSq/7a4QhnBooZEU1T9UUeNwgw=;
-        b=k26FpIr2TTHTrppxgZmi5qXBcqFOUorYpWlkhI73rC86i+KyfGYf9V8W4RDU4lt24b
-         kpXnZ9A8djTGo0wzhCuJ5deWlgky/ov7/xZT+bWm9q/yp+Ef0UVb+iE+3L4k073itHlq
-         bTs1seApQp5i20W54TYsh0XX8fatwCeNaS1VukT4eMQVmKDF7KvIeNYSi6auBfEuBAm4
-         JzJaFC6Lv2CqLbPVbw4qxU3uU/iWU6LB60b8Ff0pxEIoiGaMuJQkHbLV+dqnEqyxOOTm
-         xebB6549DCx/iFskyfAykTiw4Q9LN8vnrE3vzV2OY5zJH6kM6mkw9brlaZ+pwuXWTBMA
-         tA8w==
+        bh=fJ/RbZZlo/UkCDv1xusfLlmapZEwEXtY5fDz/xwPMAE=;
+        b=dc9cd7oW0SQS4KZa3Br5P6gX169mY+UtxLIPiz0bQvRP1Ngy/FPlkbyDJj3NGpXbl4
+         XweKWXbw/wNgLqzBJUsZpvnFJNuMaRdbo8piM8fFCH5xO9kZooJz2DHTq/4/SBAcwet9
+         Z5o5RVNla9oSD8StoFK15Yd5dSkff1NFMhu7IV72Wu1Gs/EiPnTRE7AG6N935r6whKjp
+         sd0cOQIGBKUfalZWMQj5BeDerXe0ByCwHVC3Fq2jEselEQlGOfikLACnwj5ytm6yg0W/
+         i6kzAE0uYJkzQD63Ns5LZBJpxasRIRsbyK1oI49iYDAXc/26iVfnxYqtyVgSo1yS8VqF
+         dMdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745969943; x=1746574743;
+        d=1e100.net; s=20230601; t=1745969944; x=1746574744;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tMZjxyYXXDk1gidKnzSq/7a4QhnBooZEU1T9UUeNwgw=;
-        b=TyLpqJKVihY7FmK2oXW8IwLaQWVh0NkejnYhc5vlTiL6VZ4D8Pj8nIem0JfFR8ag8X
-         9eSyett2vENpNfs98LcU/2QO16MI8fLS6dBABS7ZmEgR7p666hgXR2G7KzI6LHAosSuc
-         NB5chvBqWzGgqrm7t2P65pZCGZnXt9nzAjjhASR9oZcrOT2ZFghcKEz9zxwvNi87JQED
-         7SdzUC5VZkrAk/RUoQg+MHZ2WCCWScqjBXbplGRegSVH6BnzffiSJ/STDiXzS+b0tyZC
-         1I8sroUCnpn2xO+9LPzydKL3xKyZw9Ra/QAWFL/IerBEXLiO58cSeQ03QbtUMuwayggY
-         DqZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVCjt/ks4LnGd+tFGw+Dd135pagiqS8lRKxDolmaK0pyjhIjIzekYEKRrXzcx7XtN6B54MwEOvWJUA=@vger.kernel.org, AJvYcCWHyk5aZ9DjdlHP+R5rCPQb3Gj18R9TFgnreou+1ngzePZAE/Y9XOx1zvCGzm4JObqnnqjs8zYnZ/sjK5X3@vger.kernel.org, AJvYcCWr5dafU8Cnj5yoDE1jgd2XvWLmMea5qwdNxfUr3RV36YYKYYtTG9Z1QMsLiE0uTmkNb6YK6vsx@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNhqGVt658j6EvuWLM2Vj9v1JthtCqHXTUHTuCJzN0s9i/V3rW
-	cs5ukmW36RoGyRmQVpUtiNYGeBcUh87mzQdUik+bdAqXLcy7WxXx
-X-Gm-Gg: ASbGnculfxJiA/twUQICiU0GMLhY+bYBv7At04/zDDRSi3JwA4gI1+YRCyx1/NnQ4oA
-	crGyU92mBPqEqpdebkp2UxRBhBXsY5glIdQ+Zyk+suBBvFiCGSWpB12T4IwaSK9YumpStY8863z
-	DHW3lcb4D5fLPHm3uTduRHSN/L1DOnfV8hDuL3NW/A9jtkfpPEt0qzQK9w0hL+Z8koP63JwuWmt
-	kvwOA5vrcfZgR86FoWrNmXAtgjv1nau+RovV1jP66+59QiVfso7zwl0GjgatiG7811Lia5PBEjC
-	1DZbjPR7iWABfCyYdd5F8tkNu0sGUGI=
-X-Google-Smtp-Source: AGHT+IGELX37yPB7pWIFLWi40woXsWK753X8DNcmjzLObYxT76mYAq69pGlTXHByb9H+htTw1h1vuw==
-X-Received: by 2002:a05:690c:6e01:b0:6fb:a4e6:7d52 with SMTP id 00721157ae682-708abe47dfdmr21530177b3.35.1745969942983;
-        Tue, 29 Apr 2025 16:39:02 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff:7::])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-708ae1e9ea3sm701667b3.105.2025.04.29.16.39.02
+        bh=fJ/RbZZlo/UkCDv1xusfLlmapZEwEXtY5fDz/xwPMAE=;
+        b=NQdGF5BxZse6UlWPX7Ei5/H8VFRfSQIMjOuu8p7Vzi12YhVRgldumMVBfnra/BOaco
+         6tyRaHjSNLLBecsARenJwWU1ppLLjBeQ1LprRYawNXrXTPRFDyWSSEmqsxKt2MrXyu8s
+         pnqDpmyPiLAtUCu72wuv+28F9PuN37H0CM9dhJDqChX1WsjselXeG1zK6Q8b9auaH0rJ
+         ZCOCOtqZlSVO0o5Asv9eRl+y2jaxlrt+9jV12OJSv452v7npHgC2WU2v+5BwNOOMBNwG
+         AnvrfJOcDqYY5MZhpCqpQ5+U2ZbdCY53ITA06j53bqEx3wSst7vz3kWOYoyV3/AVWFtq
+         y5yg==
+X-Forwarded-Encrypted: i=1; AJvYcCU2bPxTW09HYvfGadsyQQwgVnPX+r9zOae6uzocIJTyNjKSOp1dj3hGa/FJIHtLuM3OqGOzKNMf4EYOK941@vger.kernel.org, AJvYcCUNaNMJjtYGfo7zDnSYHI7cO7FFX3a7FkDGMDLjElx7LzpYOTajPI6KE3rrsiqFyXzzg/a/G/VP@vger.kernel.org, AJvYcCXPO7zBYFIJIqVHgTUjZ/u7751CCJR4jYhwF4SDB20TYg7dVpsBXRXw/1EZB4wZKsBODSBRSx4bjG4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxcJACnyMmje75jYYnT7w/Dp9SCDcE4IYkULOGIT4srtSR6lyxL
+	Q0J3ekUYRLx/epGRN4eQwI7Xs7rSMvo9xl70Wfl3X58iyWJuoixX
+X-Gm-Gg: ASbGncuA6w0pL9kjEWk6eJD9ByLdHNrdv7WApC79rhJbd2G8K7UjWpPjys4dJqbTFM4
+	/JhmU2cHvtdTJQfAmk2F9QiuBjSPpIyZTGcO72igYnd7LvGJW6bB0pFXLnJ4tvdVA7p3qcHyBS8
+	jw+ggZ6Vz1xiCtSPZdbb70aHMihyPE0tcCDNr3fPV9x2OW4C1dW6oXHuR3wu/X4BPza00YQNu4Y
+	eRRYYIruKOOjs/2Ng8TydJdfA+hqbb8xmBBcz8xT+/2Jd9qsWgO7ALmEY7ZEva/AEiShbHmauQr
+	KjQmXYz871Aoi0CQ7D5hqa9jMi8wWiZKLhV3u61Srwo=
+X-Google-Smtp-Source: AGHT+IEHV428ZSbiu1+j7VMUxhVNZCUuk+j6iHkhzjjso97SHfk0dHLLiY+/9yco0G/qMlrTow3Phg==
+X-Received: by 2002:a05:690c:7a1:b0:6ea:8901:dad8 with SMTP id 00721157ae682-708ad07cabamr9860267b3.3.1745969944028;
+        Tue, 29 Apr 2025 16:39:04 -0700 (PDT)
+Received: from localhost ([2a03:2880:25ff:73::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-708adfc3eadsm768377b3.12.2025.04.29.16.39.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Apr 2025 16:39:02 -0700 (PDT)
+        Tue, 29 Apr 2025 16:39:03 -0700 (PDT)
 From: Nhat Pham <nphamcs@gmail.com>
 To: linux-mm@kvack.org
 Cc: akpm@linux-foundation.org,
@@ -99,9 +99,9 @@ Cc: akpm@linux-foundation.org,
 	cgroups@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	peterx@redhat.com
-Subject: [RFC PATCH v2 15/18] vswap: support THP swapin and batch free_swap_and_cache
-Date: Tue, 29 Apr 2025 16:38:43 -0700
-Message-ID: <20250429233848.3093350-16-nphamcs@gmail.com>
+Subject: [RFC PATCH v2 16/18] swap: simplify swapoff using virtual swap
+Date: Tue, 29 Apr 2025 16:38:44 -0700
+Message-ID: <20250429233848.3093350-17-nphamcs@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250429233848.3093350-1-nphamcs@gmail.com>
 References: <20250429233848.3093350-1-nphamcs@gmail.com>
@@ -113,244 +113,308 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch implements the required functionalities for THP swapin and
-batched free_swap_and_cache() in the virtual swap space design.
+This patch presents the second applications of virtual swap design -
+simplifying and optimizing swapoff.
 
-The central requirement is the range of entries we are working with must
-have no mixed backing states:
+With virtual swap slots stored at page table entries and used as indices
+to various swap-related data structures, we no longer have to perform a
+page table walk in swapoff. Simply iterate through all the allocated
+swap slots on the swapfile, invoke the backward map and fault them in.
 
-1. For now, zswap-backed entries are not supported for these batched
-   operations.
-2. All the entries must be backed by the same type.
-3. If the swap entries in the batch are backed by in-memory folio, it
-   must be the same folio (i.e they correspond to the subpages of that
-   folio).
-4. If the swap entries in the batch are backed by slots on swapfiles, it
-   must be the same swapfile, and these physical swap slots must also be
-   contiguous.
+This is significantly cleaner, as well as slightly more performant,
+especially when there are a lot of unrelated VMAs (since the old swapoff
+code would have to traverse through all of them).
+
+In a simple benchmark, in which we swapoff a 32 GB swapfile that is 50%
+full, and in which there is a process that maps a 128GB file into
+memory:
+
+Baseline:
+real: 25.54s
+user: 0.00s
+sys: 11.48s
+
+New Design:
+real: 11.69s
+user: 0.00s
+sys: 9.96s
+
+Disregarding the real time reduction (which is mostly due to more IO
+asynchrony), the new design reduces the kernel CPU time by about 13%.
 
 Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 ---
- include/linux/swap.h |  6 +++
- mm/internal.h        | 14 +------
- mm/memory.c          | 16 ++++++--
- mm/vswap.c           | 91 +++++++++++++++++++++++++++++++++++++++++++-
- 4 files changed, 110 insertions(+), 17 deletions(-)
+ include/linux/shmem_fs.h |   3 +
+ include/linux/swap.h     |   1 +
+ mm/shmem.c               |   2 +
+ mm/swapfile.c            | 127 +++++++++++++++++++++++++++++++++++++++
+ mm/vswap.c               |  61 +++++++++++++++++++
+ 5 files changed, 194 insertions(+)
 
+diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
+index 0b273a7b9f01..668b6add3b8f 100644
+--- a/include/linux/shmem_fs.h
++++ b/include/linux/shmem_fs.h
+@@ -108,7 +108,10 @@ extern void shmem_unlock_mapping(struct address_space *mapping);
+ extern struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
+ 					pgoff_t index, gfp_t gfp_mask);
+ extern void shmem_truncate_range(struct inode *inode, loff_t start, loff_t end);
++
++#ifndef CONFIG_VIRTUAL_SWAP
+ int shmem_unuse(unsigned int type);
++#endif
+ 
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ unsigned long shmem_allowable_huge_orders(struct inode *inode,
 diff --git a/include/linux/swap.h b/include/linux/swap.h
-index a65b22de4cdd..c5a16f1ca376 100644
+index c5a16f1ca376..0c585103d228 100644
 --- a/include/linux/swap.h
 +++ b/include/linux/swap.h
-@@ -773,6 +773,7 @@ bool vswap_folio_backed(swp_entry_t entry, int nr);
- void vswap_store_folio(swp_entry_t entry, struct folio *folio);
+@@ -774,6 +774,7 @@ void vswap_store_folio(swp_entry_t entry, struct folio *folio);
  void swap_zeromap_folio_set(struct folio *folio);
  void vswap_assoc_zswap(swp_entry_t entry, struct zswap_entry *zswap_entry);
-+bool vswap_can_swapin_thp(swp_entry_t entry, int nr);
+ bool vswap_can_swapin_thp(swp_entry_t entry, int nr);
++void vswap_swapoff(swp_entry_t entry, struct folio *folio, swp_slot_t slot);
  #else /* CONFIG_VIRTUAL_SWAP */
  static inline int vswap_init(void)
  {
-@@ -839,6 +840,11 @@ static inline void vswap_assoc_zswap(swp_entry_t entry,
- 				struct zswap_entry *zswap_entry)
- {
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 609971a2b365..fa792769e422 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1380,6 +1380,7 @@ static void shmem_evict_inode(struct inode *inode)
+ #endif
  }
+ 
++#ifndef CONFIG_VIRTUAL_SWAP
+ static int shmem_find_swap_entries(struct address_space *mapping,
+ 				   pgoff_t start, struct folio_batch *fbatch,
+ 				   pgoff_t *indices, unsigned int type)
+@@ -1525,6 +1526,7 @@ int shmem_unuse(unsigned int type)
+ 
+ 	return error;
+ }
++#endif /* CONFIG_VIRTUAL_SWAP */
+ 
+ /*
+  * Move the page from the page cache to the swap cache.
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 83016d86eb1c..3aa3df10c3be 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -2089,6 +2089,132 @@ static unsigned int find_next_to_unuse(struct swap_info_struct *si,
+ 	return i;
+ }
+ 
++#ifdef CONFIG_VIRTUAL_SWAP
++#define	for_each_allocated_offset(si, offset)	\
++	while (swap_usage_in_pages(si) && \
++		!signal_pending(current) && \
++		(offset = find_next_to_unuse(si, offset)) != 0)
 +
-+static inline bool vswap_can_swapin_thp(swp_entry_t entry, int nr)
++static struct folio *pagein(swp_entry_t entry, struct swap_iocb **splug,
++		struct mempolicy *mpol)
 +{
-+	return true;
-+}
- #endif /* CONFIG_VIRTUAL_SWAP */
- 
- static inline bool trylock_swapoff(swp_entry_t entry,
-diff --git a/mm/internal.h b/mm/internal.h
-index 51061691a731..6694e7a14745 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -268,14 +268,7 @@ static inline swp_entry_t swap_nth(swp_entry_t entry, long n)
- 	return (swp_entry_t) { entry.val + n };
- }
- 
--/* temporary disallow batched swap operations */
--static inline swp_entry_t swap_move(swp_entry_t entry, long delta)
--{
--	swp_entry_t next_entry;
--
--	next_entry.val = 0;
--	return next_entry;
--}
-+swp_entry_t swap_move(swp_entry_t entry, long delta);
- #else
- static inline swp_entry_t swap_nth(swp_entry_t entry, long n)
- {
-@@ -344,8 +337,6 @@ static inline pte_t pte_next_swp_offset(pte_t pte)
-  * max_nr must be at least one and must be limited by the caller so scanning
-  * cannot exceed a single page table.
-  *
-- * Note that for virtual swap space, we will not batch anything for now.
-- *
-  * Return: the number of table entries in the batch.
-  */
- static inline int swap_pte_batch(pte_t *start_ptep, int max_nr, pte_t pte)
-@@ -360,9 +351,6 @@ static inline int swap_pte_batch(pte_t *start_ptep, int max_nr, pte_t pte)
- 	VM_WARN_ON(!is_swap_pte(pte));
- 	VM_WARN_ON(non_swap_entry(entry));
- 
--	if (IS_ENABLED(CONFIG_VIRTUAL_SWAP))
--		return 1;
--
- 	cgroup_id = lookup_swap_cgroup_id(entry);
- 	while (ptep < end_ptep) {
- 		pte = ptep_get(ptep);
-diff --git a/mm/memory.c b/mm/memory.c
-index d9c382a5e157..b0b23348d9be 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4230,10 +4230,8 @@ static struct folio *alloc_swap_folio(struct vm_fault *vmf)
- 	 * A large swapped out folio could be partially or fully in zswap. We
- 	 * lack handling for such cases, so fallback to swapping in order-0
- 	 * folio.
--	 *
--	 * We also disable THP swapin on the virtual swap implementation, for now.
- 	 */
--	if (!zswap_never_enabled() || IS_ENABLED(CONFIG_VIRTUAL_SWAP))
-+	if (!zswap_never_enabled())
- 		goto fallback;
- 
- 	entry = pte_to_swp_entry(vmf->orig_pte);
-@@ -4423,6 +4421,18 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 				}
- 				need_clear_cache = true;
- 
-+				/*
-+				 * Recheck to make sure the entire range is still
-+				 * THP-swapin-able. Note that before we call
-+				 * swapcache_prepare(), entries in the range can
-+				 * still have their backing status changed.
-+				 */
-+				if (IS_ENABLED(CONFIG_VIRTUAL_SWAP) &&
-+						!vswap_can_swapin_thp(entry, nr_pages)) {
-+					schedule_timeout_uninterruptible(1);
-+					goto out_page;
-+				}
++	bool folio_was_allocated;
++	struct folio *folio = __read_swap_cache_async(entry, GFP_KERNEL, mpol,
++			NO_INTERLEAVE_INDEX, &folio_was_allocated, false);
 +
- 				mem_cgroup_swapin_uncharge_swap(entry, nr_pages);
++	if (folio_was_allocated)
++		swap_read_folio(folio, splug);
++	return folio;
++}
++
++static int try_to_unuse(unsigned int type)
++{
++	struct swap_info_struct *si = swap_info[type];
++	struct swap_iocb *splug = NULL;
++	struct mempolicy *mpol;
++	struct blk_plug plug;
++	unsigned long offset;
++	struct folio *folio;
++	swp_entry_t entry;
++	swp_slot_t slot;
++	int ret = 0;
++
++	if (!atomic_long_read(&si->inuse_pages))
++		goto success;
++
++	mpol = get_task_policy(current);
++	blk_start_plug(&plug);
++
++	/* first round - submit the reads */
++	offset = 0;
++	for_each_allocated_offset(si, offset) {
++		slot = swp_slot(type, offset);
++		entry = swp_slot_to_swp_entry(slot);
++		if (!entry.val)
++			continue;
++
++		folio = pagein(entry, &splug, mpol);
++		if (folio)
++			folio_put(folio);
++	}
++	blk_finish_plug(&plug);
++	swap_read_unplug(splug);
++	lru_add_drain();
++
++	/* second round - updating the virtual swap slots' backing state */
++	offset = 0;
++	for_each_allocated_offset(si, offset) {
++		slot = swp_slot(type, offset);
++retry:
++		entry = swp_slot_to_swp_entry(slot);
++		if (!entry.val)
++			continue;
++
++		/* try to allocate swap cache folio */
++		folio = pagein(entry, &splug, mpol);
++		if (!folio) {
++			if (!swp_slot_to_swp_entry(swp_slot(type, offset)).val)
++				continue;
++
++			ret = -ENOMEM;
++			pr_err("swapoff: unable to allocate swap cache folio for %lu\n",
++						entry.val);
++			goto finish;
++		}
++
++		folio_lock(folio);
++		/*
++		 * We need to check if the folio is still in swap cache. We can, for
++		 * instance, race with zswap writeback, obtaining the temporary folio
++		 * it allocated for decompression and writeback, which would be
++		 * promply deleted from swap cache. By the time we lock that folio,
++		 * it might have already contained stale data.
++		 *
++		 * Concurrent swap operations might have also come in before we
++		 * reobtain the lock, deleting the folio from swap cache, invalidating
++		 * the virtual swap slot, then swapping out the folio again.
++		 *
++		 * In all of these cases, we must retry the physical -> virtual lookup.
++		 *
++		 * Note that if everything is still valid, then virtual swap slot must
++		 * corresponds to the head page (since all previous swap slots are
++		 * freed).
++		 */
++		if (!folio_test_swapcache(folio) || folio->swap.val != entry.val) {
++			folio_unlock(folio);
++			folio_put(folio);
++			if (signal_pending(current))
++				break;
++			schedule_timeout_uninterruptible(1);
++			goto retry;
++		}
++
++		folio_wait_writeback(folio);
++		vswap_swapoff(entry, folio, slot);
++		folio_unlock(folio);
++		folio_put(folio);
++	}
++
++finish:
++	if (ret == -ENOMEM)
++		return ret;
++
++	/* concurrent swappers might still be releasing physical swap slots... */
++	while (swap_usage_in_pages(si)) {
++		if (signal_pending(current))
++			return -EINTR;
++		schedule_timeout_uninterruptible(1);
++	}
++
++success:
++	/*
++	 * Make sure that further cleanups after try_to_unuse() returns happen
++	 * after swap_range_free() reduces si->inuse_pages to 0.
++	 */
++	smp_mb();
++	return 0;
++}
++#else
+ static inline int pte_same_as_swp(pte_t pte, pte_t swp_pte)
+ {
+ 	return pte_same(pte_swp_clear_flags(pte), swp_pte);
+@@ -2479,6 +2605,7 @@ static int try_to_unuse(unsigned int type)
+ 	smp_mb();
+ 	return 0;
+ }
++#endif /* CONFIG_VIRTUAL_SWAP */
  
- 				shadow = get_shadow_from_swap_cache(entry);
+ /*
+  * After a successful try_to_unuse, if no swap is now in use, we know
 diff --git a/mm/vswap.c b/mm/vswap.c
-index c51ff5c54480..4aeb144921b8 100644
+index 4aeb144921b8..35261b5664ee 100644
 --- a/mm/vswap.c
 +++ b/mm/vswap.c
-@@ -9,6 +9,7 @@
- #include <linux/swap.h>
- #include <linux/swapops.h>
- #include <linux/swap_cgroup.h>
-+#include "internal.h"
- #include "swap.h"
- 
- /*
-@@ -984,7 +985,7 @@ void swap_zeromap_folio_set(struct folio *folio)
-  *
-  * Note that this check is racy unless we can ensure that the entire range
-  * has their backing state stable - for instance, if the caller was the one
-- * who set the in_swapcache flag of the entire field.
-+ * who set the swap cache pin.
-  */
- static int vswap_check_backing(swp_entry_t entry, enum swap_type *type, int nr)
- {
-@@ -1067,6 +1068,94 @@ bool vswap_folio_backed(swp_entry_t entry, int nr)
- 				&& type == VSWAP_FOLIO;
+@@ -1252,6 +1252,67 @@ void put_swap_folio(struct folio *folio, swp_entry_t entry)
+ 	swapcache_clear(NULL, entry, nr);
  }
  
 +/**
-+ * vswap_can_swapin_thp - check if the swap entries can be swapped in as a THP.
++ * vswap_swapoff - unlink a range of virtual swap slots from their backing
++ *                 physical swap slots on a swapfile that is being swapped off,
++ *                 and associate them with the swapped in folio.
 + * @entry: the first virtual swap slot in the range.
-+ * @nr: the number of slots in the range.
-+ *
-+ * For now, we can only swap in a THP if the entire range is zero-filled, or if
-+ * the entire range is backed by a contiguous range of physical swap slots on a
-+ * swapfile.
++ * @folio: the folio swapped in and loaded into swap cache.
++ * @slot: the first physical swap slot in the range.
 + */
-+bool vswap_can_swapin_thp(swp_entry_t entry, int nr)
++void vswap_swapoff(swp_entry_t entry, struct folio *folio, swp_slot_t slot)
 +{
-+	enum swap_type type;
++	int i = 0, nr = folio_nr_pages(folio);
++	struct swp_desc *desc;
++	unsigned int type = swp_slot_type(slot);
++	unsigned int offset = swp_slot_offset(slot);
 +
-+	return vswap_check_backing(entry, &type, nr) == nr &&
-+		(type == VSWAP_ZERO || type == VSWAP_SWAPFILE);
-+}
-+
-+/**
-+ * swap_move - increment the swap slot by delta, checking the backing state and
-+ *             return 0 if the backing state does not match (i.e wrong backing
-+ *             state type, or wrong offset on the backing stores).
-+ * @entry: the original virtual swap slot.
-+ * @delta: the offset to increment the original slot.
-+ *
-+ * Note that this function is racy unless we can pin the backing state of these
-+ * swap slots down with swapcache_prepare().
-+ *
-+ * Caller should only rely on this function as a best-effort hint otherwise,
-+ * and should double-check after ensuring the whole range is pinned down.
-+ *
-+ * Return: the incremented virtual swap slot if the backing state matches, or
-+ *         0 if the backing state does not match.
-+ */
-+swp_entry_t swap_move(swp_entry_t entry, long delta)
-+{
-+	struct swp_desc *desc, *next_desc;
-+	swp_entry_t next_entry;
-+	bool invalid = true;
-+	struct folio *folio;
-+	enum swap_type type;
-+	swp_slot_t slot;
-+
-+	next_entry.val = entry.val + delta;
++	XA_STATE(xas, &vswap_map, entry.val);
 +
 +	rcu_read_lock();
-+	desc = xa_load(&vswap_map, entry.val);
-+	next_desc = xa_load(&vswap_map, next_entry.val);
++	xas_for_each(&xas, desc, entry.val + nr - 1) {
++		if (xas_retry(&xas, desc))
++			continue;
 +
-+	if (!desc || !next_desc) {
-+		rcu_read_unlock();
-+		return (swp_entry_t){0};
++		write_lock(&desc->lock);
++		/*
++		 * There might be concurrent swap operations that might invalidate the
++		 * originally obtained virtual swap slot, allowing it to be
++		 * re-allocated, or change its backing state.
++		 *
++		 * We must re-check here to make sure we are not performing bogus backing
++		 * store changes.
++		 */
++		if (desc->type != VSWAP_SWAPFILE ||
++				swp_slot_type(desc->slot) != type) {
++			/* there should not be mixed backing states among the subpages */
++			VM_WARN_ON(i);
++			write_unlock(&desc->lock);
++			break;
++		}
++
++		VM_WARN_ON(swp_slot_offset(desc->slot) != offset + i);
++
++		xa_erase(&vswap_rmap, desc->slot.val);
++		desc->type = VSWAP_FOLIO;
++		desc->folio = folio;
++		write_unlock(&desc->lock);
++		i++;
 +	}
-+
-+	read_lock(&desc->lock);
-+	if (desc->type == VSWAP_ZSWAP) {
-+		read_unlock(&desc->lock);
-+		goto rcu_unlock;
-+	}
-+
-+	type = desc->type;
-+	if (type == VSWAP_FOLIO)
-+		folio = desc->folio;
-+
-+	if (type == VSWAP_SWAPFILE)
-+		slot = desc->slot;
-+	read_unlock(&desc->lock);
-+
-+	read_lock(&next_desc->lock);
-+	if (next_desc->type != type)
-+		goto next_unlock;
-+
-+	if (type == VSWAP_SWAPFILE &&
-+			(swp_slot_type(next_desc->slot) != swp_slot_type(slot) ||
-+				swp_slot_offset(next_desc->slot) !=
-+							swp_slot_offset(slot) + delta))
-+		goto next_unlock;
-+
-+	if (type == VSWAP_FOLIO && next_desc->folio != folio)
-+		goto next_unlock;
-+
-+	invalid = false;
-+next_unlock:
-+	read_unlock(&next_desc->lock);
-+rcu_unlock:
 +	rcu_read_unlock();
-+	return invalid ? (swp_entry_t){0} : next_entry;
++
++	if (i) {
++		/*
++		 * If we update the virtual swap slots' backing, mark the folio as
++		 * dirty so that reclaimers will try to page it out again.
++		 */
++		folio_mark_dirty(folio);
++		swap_slot_free_nr(slot, nr);
++		/* folio is in swap cache, so entries are guaranteed to be valid */
++		mem_cgroup_uncharge_swap(entry, nr);
++	}
 +}
 +
- /*
-  * Return the count of contiguous swap entries that share the same
-  * VSWAP_ZERO status as the starting entry. If is_zeromap is not NULL,
+ #ifdef CONFIG_MEMCG
+ static unsigned short vswap_cgroup_record(swp_entry_t entry,
+ 				unsigned short memcgid, unsigned int nr_ents)
 -- 
 2.47.1
 
