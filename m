@@ -1,214 +1,111 @@
-Return-Path: <cgroups+bounces-7930-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7931-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEDCFAA3CCC
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 01:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EDDEAA3D3C
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 01:54:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 396544A4385
-	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 23:42:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 363F44E2513
+	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 23:54:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0242F255F55;
-	Tue, 29 Apr 2025 23:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 167DE2E62CC;
+	Tue, 29 Apr 2025 23:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k9jFu3cz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T9Y35YvA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1470246779;
-	Tue, 29 Apr 2025 23:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C59122E62C3;
+	Tue, 29 Apr 2025 23:50:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745969948; cv=none; b=jx3h1wWsr7Wgv7RZRtvgMbxCJB4Dny/7fLjJrnlPRN22h6HM8zBdOPiBv0joGRBvCA/GByOku5EQMnC77TGUltN+fFhX08DTgR2QM9Mzy2PMf9Pb8S/zKwIq6FVRNdk1N1WL4+8GAjMwJrpCkxR2ZWCJ1lUR3qyH6wyRL6nTe3I=
+	t=1745970643; cv=none; b=pUQe/T6PKuPqODy7VpNFyHK6WZMBcimt9jWmBKHp+u7uHKwTQaYJT3C3I9KU+dJ99u1DIenh6pPA4y89RvctTiZVmeRslKn+lt5ASLiHNFDFwbilsFCr2k6FSZcMqLR9KhccIHH85f/Mgp9DhvQ+m7Rxfg9JqRDPvp3dHnwk41w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745969948; c=relaxed/simple;
-	bh=kgzMDwXSzbL/BzkDP8KOyhv89b4/e2QeN1j/eudgfgs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Izm+M8LRPUHwbJR/MTz7HGfjrQ4H7pa4fLH6nGyL4rrg/aPrWp932eXyyjx+uXc7nhjjm8CmfOQs0NQpRtMoW24vjcW24V+PswnLrelsidRwsFRNRpLfFHgNQT7iwfIJGon50Xb1oaoSrZhTnQNB6WL5tBa4AQp5coJCgMywbmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k9jFu3cz; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6ff4faf858cso46293167b3.2;
-        Tue, 29 Apr 2025 16:39:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745969945; x=1746574745; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n7Y1LUcjO0i0d9KEbjRFxqx4ocs8427R84SBdDQ2ggo=;
-        b=k9jFu3czpzY3WCQqNMvyOQLDYvHqeeH+s9g/k5CqGMJF6ANAfm9qQILmiL1icnk+WJ
-         BUNN/lgnllIcwXRpr/ED1BA8h6vlw7GwN+saxEzDa33+T2ai9jQTQ6T8x3nUzfZpfRg1
-         Aii8ciRs5+HVQ/UXCISeiV9F1afbV7EgK7zIuZsGNHDmCcIheaqmN5uQS3jAT8cLQSjM
-         2yun1rJyVq3kNvwmbaYA7CEdcYs11JQeIRj60eI1Gaxoj4HUo72nxFeTLR5QCy0bJ8BB
-         mzTfcv3hqbXhla60aQe9z01VKcCyOW7n7ajwfU6AquizyA7T1Jxp1oCGg13MxSfnMARt
-         JVmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745969945; x=1746574745;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n7Y1LUcjO0i0d9KEbjRFxqx4ocs8427R84SBdDQ2ggo=;
-        b=eemKO0yvbeU5jSbzRcKjYEDR19y4xHrWf/QOOMREKtZfCtC7hSffAS3cDjEvtWI0nc
-         mrJ8tlvNCCidfmMJ5JtNTKsw5IMhQTwZ+LjMeohV21IhznupFAi2GF8NmswR2duv7S1s
-         aG6FF9Uv5ZOcw7ap+NMVEkX/v5yM+4Og5AMViYBXmSv3jLU9tOpmw3A1cQB6TNlTX4Zd
-         3jSrT7BdAgtxEijfsJHP7h5tKyp8c0b4HYq38Yj55Ig52kUwKvQX/w+M1il9UwcvsRtk
-         FND73AhEQe+DchvmOitkaNKrwirG4YP1TDxHcd2k6X72eEdys3MBlb4Y1Z7xz4epkhSA
-         BEMw==
-X-Forwarded-Encrypted: i=1; AJvYcCVqGz1oodZk3svNihA3pyG9mvF2GbgrbdO/ymnSilpOFjlwAqEL501BhkbEE+ikZxjr/zBCnIi3UYs=@vger.kernel.org, AJvYcCXXhNwy68oWfvrADj6ZtCv6YZhJGZIMFeqZ5+CYF+HoMeFKmdaP8UfFCtGOwk3rLrJ6ZR4AKwr9kXWnZ3YH@vger.kernel.org, AJvYcCXnrgncbcRclZVSyS0DpTCt2L7AjTnsLZYgOfWAKbqsD07LcbXVG9E2emKjaZ8dwJgXPOWsjmes@vger.kernel.org
-X-Gm-Message-State: AOJu0YwzG970gcPWPTV/CweSGb9eY4e1FI/cjdsqSVDWZkiz/31N73ER
-	z/A5F38mfudy1MAt4HYRA4QCVFWi8jyTxk2bZYSxWkiaSGznLy/1
-X-Gm-Gg: ASbGncu/ylqlLYl7XsOxHhEWrAC3bKvzFDjjai/Ns3a2qyrnxvhPf03IZ4WDbemn5et
-	TvXdAdd5YQJjdBBJRHoOnKpQ38EheGdvSwZpMlPalkaIj8UjG2WKpOz/Ocb1TA0rFDX91LQeuY1
-	dslgjj7jjtuOxIX7zGhZGC5cniFTwLIRx94GiRlLSuwMRl4Mso2g45M1mZYpZPOPTHZDvuHHnv0
-	utaozFDn9wuF3cDgEifC0ZcLfFAVbH2RKQliHciZMprL9LhamU2L2ceo6JCgvtAbvB9YZkb1lYy
-	a/HA91XbodnPS/aE+VPvXYj+k2Y3
-X-Google-Smtp-Source: AGHT+IGWumwdLV+HkJwjKnK300YNBa45olDNOQIScWwSpDt70t/8c1Fec7a0C3Mk2LkTlhHYM6Jf2A==
-X-Received: by 2002:a05:690c:39b:b0:703:c3be:24ad with SMTP id 00721157ae682-708abd7d5a6mr19013757b3.14.1745969945613;
-        Tue, 29 Apr 2025 16:39:05 -0700 (PDT)
-Received: from localhost ([2a03:2880:25ff::])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-708ae1e6038sm707687b3.97.2025.04.29.16.39.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Apr 2025 16:39:05 -0700 (PDT)
-From: Nhat Pham <nphamcs@gmail.com>
-To: linux-mm@kvack.org
-Cc: akpm@linux-foundation.org,
+	s=arc-20240116; t=1745970643; c=relaxed/simple;
+	bh=RFckZoqr3GbTVCJyvxzPdI/Ff1f3qW26zT5hV+au7tY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=A47O/gt0fAGsXizd2YUUQpvqgAU2ZvPlUw1avgvCQcxVyg3SVgK16eDLNf5a4Spwpod1NLkn1w7Q7Lj4ISZtzgVusMbFd6Kutu6gmpRXkEOE/eYOG+HKMf+OzAqwmc0dcC2ZX06eo1NLMn1mGK+jNYiTlotSmwAa6Lai9me5GJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T9Y35YvA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67306C4CEE3;
+	Tue, 29 Apr 2025 23:50:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745970643;
+	bh=RFckZoqr3GbTVCJyvxzPdI/Ff1f3qW26zT5hV+au7tY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=T9Y35YvA3D+HaIdqZYPlwS0lq9zK/rDf4xXLh3R6N2e6ty9+zdpo/368QdLDd3wv9
+	 cWVdf4rsSmBKcnLQLz1PnWzRnzwifux1I/LZNg+JqFvI0C+kWiPUObPWBd3mkzWaSs
+	 9rh4Lg43fnuE8VXPZN1yvq6o8WSy/o/DtyPf5Ve3cci4ZQbhBxpHiAiBByTwcDRfOm
+	 t9RXzeLXOAiZOHm/JMEAA6rktofWCbtO2mMmjexAGYJ7hgbLAlu3NYGrsfiQmMIi/U
+	 XoEzOYvGo5dsEz2rh/cwRaSb+kEoBxRYRK8alkVqJcQIBCUqluOPbUJotLDW/E8alz
+	 ZjIEOnGOSmFLQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: gaoxu <gaoxu2@honor.com>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Tejun Heo <tj@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
 	hannes@cmpxchg.org,
-	hughd@google.com,
-	yosry.ahmed@linux.dev,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	len.brown@intel.com,
-	chengming.zhou@linux.dev,
-	kasong@tencent.com,
-	chrisl@kernel.org,
-	huang.ying.caritas@gmail.com,
-	ryan.roberts@arm.com,
-	viro@zeniv.linux.org.uk,
-	baohua@kernel.org,
-	osalvador@suse.de,
-	lorenzo.stoakes@oracle.com,
-	christophe.leroy@csgroup.eu,
-	pavel@kernel.org,
-	kernel-team@meta.com,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	peterx@redhat.com
-Subject: [RFC PATCH v2 18/18] swapfile: remove zeromap in virtual swap implementation
-Date: Tue, 29 Apr 2025 16:38:46 -0700
-Message-ID: <20250429233848.3093350-19-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250429233848.3093350-1-nphamcs@gmail.com>
-References: <20250429233848.3093350-1-nphamcs@gmail.com>
+	cgroups@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.14 19/39] cgroup: Fix compilation issue due to cgroup_mutex not being exported
+Date: Tue, 29 Apr 2025 19:49:46 -0400
+Message-Id: <20250429235006.536648-19-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250429235006.536648-1-sashal@kernel.org>
+References: <20250429235006.536648-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.14.4
 Content-Transfer-Encoding: 8bit
 
-We are not using the zeromap for swapped out zero-filled pages in the
-virtual swap implementation. Remove it. This saves about 1 bit per
-physical swap slot.
+From: gaoxu <gaoxu2@honor.com>
 
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+[ Upstream commit 87c259a7a359e73e6c52c68fcbec79988999b4e6 ]
+
+When adding folio_memcg function call in the zram module for
+Android16-6.12, the following error occurs during compilation:
+ERROR: modpost: "cgroup_mutex" [../soc-repo/zram.ko] undefined!
+
+This error is caused by the indirect call to lockdep_is_held(&cgroup_mutex)
+within folio_memcg. The export setting for cgroup_mutex is controlled by
+the CONFIG_PROVE_RCU macro. If CONFIG_LOCKDEP is enabled while
+CONFIG_PROVE_RCU is not, this compilation error will occur.
+
+To resolve this issue, add a parallel macro CONFIG_LOCKDEP control to
+ensure cgroup_mutex is properly exported when needed.
+
+Signed-off-by: gao xu <gaoxu2@honor.com>
+Acked-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/swap.h |  2 ++
- mm/swapfile.c        | 12 ++++++++++++
- 2 files changed, 14 insertions(+)
+ kernel/cgroup/cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 0c585103d228..408368d56dfb 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -312,7 +312,9 @@ struct swap_info_struct {
- 	signed char	type;		/* strange name for an index */
- 	unsigned int	max;		/* extent of the swap_map */
- 	unsigned char *swap_map;	/* vmalloc'ed array of usage counts */
-+#ifndef CONFIG_VIRTUAL_SWAP
- 	unsigned long *zeromap;		/* kvmalloc'ed bitmap to track zero pages */
-+#endif
- 	struct swap_cluster_info *cluster_info; /* cluster info. Only for SSD */
- 	struct list_head free_clusters; /* free clusters list */
- 	struct list_head full_clusters; /* full clusters list */
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 3ed7edc800fe..3d99bd02ede9 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -2824,7 +2824,9 @@ static void enable_swap_info(struct swap_info_struct *si, int prio,
- 	spin_lock(&swap_lock);
- 	spin_lock(&si->lock);
- 	setup_swap_info(si, prio, swap_map, cluster_info);
-+#ifndef CONFIG_VIRTUAL_SWAP
- 	si->zeromap = zeromap;
-+#endif
- 	spin_unlock(&si->lock);
- 	spin_unlock(&swap_lock);
- 	/*
-@@ -2885,7 +2887,9 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
- {
- 	struct swap_info_struct *p = NULL;
- 	unsigned char *swap_map;
-+#ifndef CONFIG_VIRTUAL_SWAP
- 	unsigned long *zeromap;
-+#endif
- 	struct swap_cluster_info *cluster_info;
- 	struct file *swap_file, *victim;
- 	struct address_space *mapping;
-@@ -3000,8 +3004,10 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
- 	p->max = 0;
- 	swap_map = p->swap_map;
- 	p->swap_map = NULL;
-+#ifndef CONFIG_VIRTUAL_SWAP
- 	zeromap = p->zeromap;
- 	p->zeromap = NULL;
-+#endif
- 	cluster_info = p->cluster_info;
- 	p->cluster_info = NULL;
- 	spin_unlock(&p->lock);
-@@ -3014,7 +3020,9 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
- 	kfree(p->global_cluster);
- 	p->global_cluster = NULL;
- 	vfree(swap_map);
-+#ifndef CONFIG_VIRTUAL_SWAP
- 	kvfree(zeromap);
-+#endif
- 	kvfree(cluster_info);
- 	/* Destroy swap account information */
- 	swap_cgroup_swapoff(p->type);
-@@ -3601,6 +3609,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 		goto bad_swap_unlock_inode;
- 	}
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 81f078c059e86..d1b4409ed1723 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -90,7 +90,7 @@
+ DEFINE_MUTEX(cgroup_mutex);
+ DEFINE_SPINLOCK(css_set_lock);
  
-+#ifndef CONFIG_VIRTUAL_SWAP
- 	/*
- 	 * Use kvmalloc_array instead of bitmap_zalloc as the allocation order might
- 	 * be above MAX_PAGE_ORDER incase of a large swap file.
-@@ -3611,6 +3620,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 		error = -ENOMEM;
- 		goto bad_swap_unlock_inode;
- 	}
-+#endif
- 
- 	if (si->bdev && bdev_stable_writes(si->bdev))
- 		si->flags |= SWP_STABLE_WRITES;
-@@ -3722,7 +3732,9 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	si->flags = 0;
- 	spin_unlock(&swap_lock);
- 	vfree(swap_map);
-+#ifndef CONFIG_VIRTUAL_SWAP
- 	kvfree(zeromap);
-+#endif
- 	kvfree(cluster_info);
- 	if (inced_nr_rotate_swap)
- 		atomic_dec(&nr_rotate_swap);
+-#ifdef CONFIG_PROVE_RCU
++#if (defined CONFIG_PROVE_RCU || defined CONFIG_LOCKDEP)
+ EXPORT_SYMBOL_GPL(cgroup_mutex);
+ EXPORT_SYMBOL_GPL(css_set_lock);
+ #endif
 -- 
-2.47.1
+2.39.5
 
 
