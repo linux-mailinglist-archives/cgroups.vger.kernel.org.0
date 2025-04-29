@@ -1,291 +1,353 @@
-Return-Path: <cgroups+bounces-7888-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7889-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58B85AA08C0
-	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 12:42:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 828B0AA0967
+	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 13:18:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE077483AD6
-	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 10:42:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D81B31A85416
+	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 11:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C952BEC51;
-	Tue, 29 Apr 2025 10:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8FAF2BD5B0;
+	Tue, 29 Apr 2025 11:18:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H1R9zHcK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE6A29B23E
-	for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 10:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745923354; cv=none; b=VA8iXvnvumxScHRgTVwLmNPZoknx1ipPGujeNRn47J9ltukuQ/TlS48ErvraOzc17oMd9DfW1GRBOcAJ0GH5oydpkzo4ua6HL2LGSkJvwsqcOTVWEQP7Bz47KCzRzkyR+k3imtW/X1+7az8ltClnJFiPxSgGNJhGQ1yzS1MRk7E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745923354; c=relaxed/simple;
-	bh=vdoTOrYjJwnGOC8m9sJkAjTzIX37lcVCVXD/5r1RONA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=VKJGzT21l7ivLbE1FEig8tbgt6KeIZ2IR9aqOmULvQY5GM6IIuy8WwgTjigvJzZ4gUkJOAf//EdTMwIOvTNYS3UY9tklwwMx7spvnBRLXsdpJPXBv722Mkcn+DsJNJ6It4dzFiJtpwymlrmuvXFDkkmaPOhM9DDq3TJqrJVQq6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-85b5875e250so655713439f.0
-        for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 03:42:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745923351; x=1746528151;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PRophdm8oDs35m84I8oLizHZRLNW8xoAE45y80ihuZU=;
-        b=sGjTRihHXQWaVS5p32DiVMZQy6XzVThoIITRQKAeq9XY6LxBFbGM0cHRFAbaUXHuqk
-         wRr2sktvSefuJp/tr/uStqCrpC0b2lFXjgCsAOuUwZL8CYCTY4SokJgj2SzKmKHkJQvI
-         fEc8BjmrnTtetzTLkSyAtHkakdeRI/OSOdyHV5YhicLBGCArR+FQtS3WSvwme7fR4uM5
-         o0jj3sg/F/XPIN8jQZSvB5rfjf6JVcJey67LWXT4nHtNqRbZiduKtvepx+IEDWq0bfS1
-         bPOQn54CEeI5SjHMyFRXe4TJ44JRi28+qVfaiNtRuca3F8UjKCyE+8xX23oj2BL300qb
-         ph+g==
-X-Forwarded-Encrypted: i=1; AJvYcCV6effa0KnRLr9ydsDhAWIl3b7epNfNJgWx0PwHZ0j9zJ1quE2PbgiZOjg/yjGo6AypDU3JFzH1@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx55ZJUMeKFZ+s1f2C1f0jdPSXfez3bIBk+kNA1LrDxJfmACeT/
-	SWy7bd7qDNZW8Pd6CMHpnAd0r82RF/BqKpBWLLH8NnIJLxS1DHySBvb6XL6CFrPlJVw0ZseHq6i
-	7GMeE9m6X7cKAqCepEh++B7YyGouhghpz6uARHWYYiwuwJynvzR3M0Yk=
-X-Google-Smtp-Source: AGHT+IGw7moHf+nCnGMJd2aBCM/S+fJnJrsHsOkGXVJpN6c4An9HQFyCyZBYVRYF6E/eURVCXhzpjbvGROOh+RnsF/b/O1PbeaaL
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB541E515;
+	Tue, 29 Apr 2025 11:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745925531; cv=fail; b=YQP0DLLHQIsKtz+4zd3JbZPA5bDfBgg5JKf5HoBPYNZQEoekxa3AQKd7bPB9mJYDLcpdV5YS/AQZ0mkrq/58zZ5G6/N7FiZ/EOQ4XNmlQTNugDyj1IK0dqvFmNxAucdwApfCHrmf/t8EEMfSHTsPMQ1DVNUQxz7eGwcWIj11SMA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745925531; c=relaxed/simple;
+	bh=oW7pO8/QjlvYqD6SrOsPFtUhBX7fsBDTo1t+6Bis9AU=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=DPA0Cocxl7blVVoUzRWUmVhyCw0QTDi5ir0KxI+EJF7flfsCKbHxf7kpHJVHawhtvJIe8VaL+ux3iau8OMov6/3nLwB04usifHlQ7Qi9ZRHdZ2nE18MBKOio7bCuaxkp3k4oDjSGMe48rygzLFC6I9a2hxKHLIB4teugZIIKmnk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H1R9zHcK; arc=fail smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1745925530; x=1777461530;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=oW7pO8/QjlvYqD6SrOsPFtUhBX7fsBDTo1t+6Bis9AU=;
+  b=H1R9zHcKn9+Yhk4Zn4goE/ItVc+qkS7y/nR9KY7SMApsQuzM1uslNyUG
+   AQGtCY/WiEYf5yWG0N7uzWItEB05oH9kDP7KdagPFuyy9hjMM+FhNvU+B
+   P/Slc6JW0e43Oe0NVNhXDmAPhdt0vmjJhW2bUavJqxTetpAA38WacrCF8
+   ltKnH6GvEpYIuUtW77MdShYtIVPRqd9BXma4nO9nUuQ3VZ5FCg6lhdQP2
+   rqsHH/MVkUaeMXmBHqk+7QeCuzn/KBNJKzhhNcZiN2ur/n7+ag9qf/iDC
+   7fN+vWjAGuiUckluc1H8xDc0oUr107cJOiU+AwpYtsCqSGfvlFl6+Ye9u
+   w==;
+X-CSE-ConnectionGUID: gE2ltR/jSS2UpJy6UGcodg==
+X-CSE-MsgGUID: +354nPlbTB+A6PAScW3m2g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11417"; a="58912320"
+X-IronPort-AV: E=Sophos;i="6.15,249,1739865600"; 
+   d="scan'208";a="58912320"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2025 04:18:48 -0700
+X-CSE-ConnectionGUID: cQ1iDvWrTAu2a8MdmU8tLQ==
+X-CSE-MsgGUID: W/Tv//7QSg+XediYhXPbgw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,249,1739865600"; 
+   d="scan'208";a="138604030"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2025 04:18:47 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Tue, 29 Apr 2025 04:18:46 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Tue, 29 Apr 2025 04:18:46 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.42) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Tue, 29 Apr 2025 04:18:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=tlEw1pQOc58YGWn/JPmMzqixrCxhtFzCHoDMeUDsobcthbGdS791ETbqi2c9wIhB7bmxERUXy7dig48jcVKGj91Q/1GQWWZpk0Os7pu9N7TIyGZZOREYOD57bXWYkxIohpyIiq79PMvbwv0e0gSlTBsII0jT+ds2GMlJBptuwIYNBJxSuIwlXOCYD3S9MWlMxw1rjVNTtAajp53CxcM5LwmrqVKEGu7bvluQAT25JDwr+u+8cvVvz/3B721jAkFirdmQWfQP0xTnpqEI6bqqOedc2xvnUj1KtOBDyXKXlflP9wiUbdejN7I1UnJm5G6WhplLq2r3vDQEm2+4CldU7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s9HnegRDUii8P+G0Nj+EjWJ2sfplHLJgVf6OzF0y1V0=;
+ b=dLvI5m3CJhH9sGXMepPEaPGezzrhex4CcRTP9J2Ol/01q1olWcy0g0HSMBlq599jFRiCIv/WdyrxLyj7sMWprnHB/gzsitMauQ+YzBZP9avoev7eh8Fy77WQov021GQvoRkWK0llFIStiLYE+rAb2MHDhm1m663e93KzrwOrTh4yRHuJpzZKKb8rAqBbCbdUJxZBm3qY1klhzvjLcq+sPCrQ+eNOxM1b9bNYRBjE/PVHESjxMrZEcIPKZf08uuJEK6CkZ/0F+NSA/ZalbfpKCDHtdpx8loOmRU/LUwFyEaWN0IgSgG4C6GRxTlRnJ21HG8IoRoFk9d6glq3Qw+5tYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com (2603:10b6:8:61::19) by
+ PH0PR11MB5094.namprd11.prod.outlook.com (2603:10b6:510:3f::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8699.19; Tue, 29 Apr 2025 11:18:43 +0000
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::4af6:d44e:b6b0:fdce]) by DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::4af6:d44e:b6b0:fdce%5]) with mapi id 15.20.8678.028; Tue, 29 Apr 2025
+ 11:18:43 +0000
+Message-ID: <8caab4ad-4525-4d11-8512-bf83f607bd76@intel.com>
+Date: Tue, 29 Apr 2025 19:18:27 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] sched/numa: Add statistics of numa balance task
+ migration and swap
+To: Libo Chen <libo.chen@oracle.com>
+CC: <cgroups@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>, Tim Chen
+	<tim.c.chen@intel.com>, Aubrey Li <aubrey.li@intel.com>, Chen Yu
+	<yu.chen.surf@foxmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, "Madadi
+ Vineeth Reddy" <vineethr@linux.ibm.com>, Muchun Song <muchun.song@linux.dev>,
+	Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>,
+	Mel Gorman <mgorman@suse.de>, Jonathan Corbet <corbet@lwn.net>, "Johannes
+ Weiner" <hannes@cmpxchg.org>, Michal Koutny <mkoutny@suse.com>, Tejun Heo
+	<tj@kernel.org>, Ingo Molnar <mingo@redhat.com>, Shakeel Butt
+	<shakeel.butt@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, "Peter
+ Zijlstra" <peterz@infradead.org>
+References: <20250408101444.192519-1-yu.c.chen@intel.com>
+ <9b64be76-b5b1-4695-97c2-bd2af777ec71@oracle.com>
+Content-Language: en-US
+From: "Chen, Yu C" <yu.c.chen@intel.com>
+In-Reply-To: <9b64be76-b5b1-4695-97c2-bd2af777ec71@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2P153CA0006.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::22) To DM4PR11MB6020.namprd11.prod.outlook.com
+ (2603:10b6:8:61::19)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:360c:b0:85b:619e:4083 with SMTP id
- ca18e2360f4ac-8648aed753emr240851339f.10.1745923351637; Tue, 29 Apr 2025
- 03:42:31 -0700 (PDT)
-Date: Tue, 29 Apr 2025 03:42:31 -0700
-In-Reply-To: <66ec3506.050a0220.29194.002c.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6810ad17.a70a0220.23e4d2.0039.GAE@google.com>
-Subject: Re: [syzbot] [mm] INFO: rcu detected stall in shmem_fault (6)
-From: syzbot <syzbot+4145b11cdf925264bff4@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hughd@google.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6020:EE_|PH0PR11MB5094:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4af9904e-8b38-4f47-49b3-08dd870f99e0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?czB4cnpEZjFFVWQ1eDdPVUxUSTlxUnppVjlkMFNKQXp5Qm5MVXpySTJQUEVS?=
+ =?utf-8?B?VjlRS2lXZmZKbFd5b2tMNkhIODZYSGI0Q2JuOGdyMW56ajNkV0pMU1FSZnJD?=
+ =?utf-8?B?blVqZzlRSUNVd2pHalVUYktLdnRpS0xPcmphRmdXS0VHNThtYlVYZXZubkRI?=
+ =?utf-8?B?ZnYyalRlVVRBUWFEWUxybDE3RWdSZ1BadW54WkdsQU9ubGgrRm5STTlLMkc5?=
+ =?utf-8?B?aE1QOVZ2UTR1VjB3dTI0RXhIWEZvNCtlTVJvT3JpZklFWm5pTWRrYmk5c05K?=
+ =?utf-8?B?TnpEbENHdkJEenpQNkM1T2N1MXNYalJSZFdjMVZkd2lQT3RCNTlsR0d1T1pp?=
+ =?utf-8?B?d2J4bnc4alRqRnRFNkg2a2orRFk1RHlrS0VKM081YUVUalBmc3B2L25EMmsw?=
+ =?utf-8?B?ZjAvRHVyajFvdm9WdytTclBReUZPQ1NrSWNXQ3VjVzdzZTJZRWdlc1hSN3Nm?=
+ =?utf-8?B?bFJLUFp6SHNoZ0xzSkFuQ1dFYXA0MnN1d24vd2k1UUJMOVFidzRmZDllN2RE?=
+ =?utf-8?B?MkFLUW0xVWJDWnhnNG5QOWx2MnhpZWltbmZYaFFocGZNTTFWSXovalZoU0RX?=
+ =?utf-8?B?MFZKdElvajlndW93c1ZsUlg0YVR1THVkcGVMa2h0MHhPMmRSU1JsZ1NwNXJX?=
+ =?utf-8?B?Z2paM0llZFJpNDhOQlJuY3hCcHV4NFBkck42RmppQUNQNlIzMGxWdXBuVWQ1?=
+ =?utf-8?B?eEFGdmdxSFc4VkQxVFQ4MWs1NS8remtoS3hxSmN1MzJ3SVBIL21HZDlUT3hW?=
+ =?utf-8?B?RWpUcG5HTlY3aUMraU5yMERVSVh4cy9WQktjQytIbEFoWXJBaGIwSkEyUnlV?=
+ =?utf-8?B?Yks1My9sTk4vQnpxUmpqVHMwdDhGQjg0MVEwZDYxMmJGT3B1ZnJBRmtoMFVt?=
+ =?utf-8?B?dzc3U0F2cFhtaFpQaVZsaDhqM1ZWaktPUGVhZmhsRkxPbzFFVnRvbld4WWJj?=
+ =?utf-8?B?SnBaR3VITk9ERzNHaW02WVUvcFhXNUxYYVF0eE9uWUpiMUZuNEFsRUs1dUZi?=
+ =?utf-8?B?MDVmY1psSEdOQXNmcjZ4Zi9BQ3Vjam81WkdDbCtFcVIrMm0vT3pWaDlrT3Bv?=
+ =?utf-8?B?Q0RHS0t5aHBzQkNVVk9SUkNWRkZmODRLeEE4Wm8wUitIck9SR3dFMWVxbkR2?=
+ =?utf-8?B?THMrQ05sRnRaeFQwd2lJQm5WTW1Ob0Y4czRnU2ZjU3JKSURyRFMvWVo5Z3k1?=
+ =?utf-8?B?OHdKUmlycDcweU9Hc2dYbWdzRzhyVWhvRzB1SjFsZUZiSDVFallLeFgyUUdq?=
+ =?utf-8?B?NTh5WUZ6eEMrM2Y1YWFYb3o5dXRtYzhDSDBJZVk3Y1VuTjEzb0VuMTJBbjlL?=
+ =?utf-8?B?ekk1dGVVMnJlNy9PbytEc1BzYk1yb0hVblh5bHEveVRDd2VPbUNJU1gwYVVH?=
+ =?utf-8?B?dkRGZUovWmltMnF1Q2FKVm9LMncvOTNrK1FCMTIrYmlTaXkrenZwL2ZVTDNM?=
+ =?utf-8?B?Y2Q4dnczWC9LYjlXSDAvNnp1S1N4a1kxdW9xU2FCdGlaSjJGWFVnRnF6Tnk1?=
+ =?utf-8?B?OEpvRVVCRFk0cTBkdS9uTGFMNEdyOEFLTVNCTFB1UllTempmWHJLOW1tZTNh?=
+ =?utf-8?B?disyTEVtbkltS05HL1pWYTFDUk9GNm5GTGpFL1lOdjNpYzM4UVBScHJkbTBW?=
+ =?utf-8?B?dXlDYkIwcmpmNko0aEFTSGl0RGF1L0NGU3ZNVlNacWZhelROQVFnWHNzNE1k?=
+ =?utf-8?B?QU5PQ0tXTWM3L1RCQnFqUVNqTFNOWFNycWliZzNoY0dYaUpQb1h3ZlZDRFRB?=
+ =?utf-8?B?S3RLUFFQQzRKMy92QnBVZE1DeEpuVnpZcDhla3ZmY3N1aUVDakZZbDFsRTNn?=
+ =?utf-8?B?RkV3OENVa1MvT1RQNjY3SklSRDFDUlVPNEdRNFBmSGZGaUpES2kzMFArS21a?=
+ =?utf-8?B?Y1k1TlVYMmJObGpoSlQySDN0Ym0xaE1EK2ozak5idFppdTBNM1VUbjN3NWY0?=
+ =?utf-8?Q?H9rJ7aYhbCQ=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6020.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L2loaGRKdTNQTVFRc1ZOREw1MWdFYWc4WXVQQkN5dWlLMWcydFBIWjZha2Jq?=
+ =?utf-8?B?M1ZkTy8zckU2dXcyNmJJU0FBMDlLcmFlemJBUGRUOElDS2JCZUY0RXdKZkkr?=
+ =?utf-8?B?aHBFdmY3K1hYKzJGV015aStYTW9tdzhZM0k1NjZKSHByU0QybU1WdkhrbmVu?=
+ =?utf-8?B?eTdxdnp2d2RnOTZZQ2dvckxDTkxtMkNZOVBZeC9NV2hKdGtldHMyUUdIdEpL?=
+ =?utf-8?B?N0xraVNvN29RZE1yazdRek9SZmJIYnpVMVVJRTZUUVA2Zkg1QVQxdk0xTmQv?=
+ =?utf-8?B?dW8zOWtYYXRNdXhWQi9VMU8yZjF6NzBuelBPL1BYaUkyeVlTeWVDc2lTaTl5?=
+ =?utf-8?B?cXcwQmxHTFpHYkRoV1ZxZFdKTmlPYStYM05VbXdSdUtjZG0yRjZlNnQwOERT?=
+ =?utf-8?B?TXdaQWlRcXpNUUVIamFreFg3K0NFZi84WGpNME1oUVhTWFVrc3NqR2x5S0pL?=
+ =?utf-8?B?MmdaMnZkZk5qcDc4WWdpU0VlUThQUnd5N1c1Z3NzaHFDZ1FtMm9oNnNzT3Vi?=
+ =?utf-8?B?Z0lONDVoVStaNitzbHVxK1docW93c2N4RmFZRFE5ZklBUXBKR0ZLQml3RVVG?=
+ =?utf-8?B?TnFwcmE0S3ZzL1JqRWlsUVZhS3RWTGtnekxjSW5SdlF0TDhkMGFBTTRYTDFF?=
+ =?utf-8?B?NHRyWS9JQzgxelh0d1hOTFNMZ0cybFo1STRwOUNUZVU0dEJYV0N3eTlvN21P?=
+ =?utf-8?B?SUU5WHlCaHE3c1JPcGlmYlVxZ3BGc01GNCtqQnJQeDlBMFNpZUk4WUdkenly?=
+ =?utf-8?B?RFlHS1NnWnRXY2MrQ3RzeWh5WU1aUGRwam5WbHNzUHY2QnErK1VyREViQXFs?=
+ =?utf-8?B?RGl4RllxcFNyK0Mxa2lmZmQ5WjB1RnA0bHJCekdYS09wTC9MOUJkc3c2cUp4?=
+ =?utf-8?B?QnhYVW1VaHZHQUVmTUQrZHFhenZmeG9aSW1FWHdwVzJzeFR3QmxrWno3Zmh1?=
+ =?utf-8?B?RVFSUy83VmtiTm0vbzRGek54U21kTXRsVURjcVJhdFVaRytaVXlVaVBhWEdM?=
+ =?utf-8?B?SVFRLzZHU0Z6NHNBNjcxN1NyUHlxd3ZtZ0NZZytOcjVWdkZpclNnK0JBNnVH?=
+ =?utf-8?B?RElCcjRHZXdhQzdZMDh1RHdWQkltYnUvd1k3a2E1VE00azkzc1VZZ0NTRGtz?=
+ =?utf-8?B?QjNnaEExZVF4VmhCaXFIOUFjYVBReVdOOUZoVWtMOFovenNpWjFiMWU4RHF6?=
+ =?utf-8?B?VE1rcXdqNFJXcWd2T2trY0t4UmNlbXVNdlZDRWt1RWJQdzVtT1V5cUozaWRp?=
+ =?utf-8?B?NzEyclR2VWV5MCtIU3I5ZitTTlUycDIvb091aElSQ292MGZTWVhZVmtXS2lV?=
+ =?utf-8?B?QXpZN0NvUWhteUNDdy8raVc4dXMrWUJYMVpSZ3d1cHNPQVFWUWgvT0thbWxT?=
+ =?utf-8?B?ak1iUmFaU2xpcXcwcTVIS0FLdnY4TnkwRU9ZSmR5Tnp4MWhCalFoSHlFTWEx?=
+ =?utf-8?B?eFlxUXE1OVNKZDduSVlMUldPdUJMRGovdHFoQUlqc0poanlobG9vWVRFKyt6?=
+ =?utf-8?B?VWNMMmFWSFV6eEw2SXRFa3c5Uzl1M2RwVGQweSs3NzEwQ1JhMU5TdmQ4OGxD?=
+ =?utf-8?B?U3h1Z25DMEMrNXRLOWJrc0dhTTU2dmpuT3M4VHFqK2Y0NE1MK1Vtb0tDbVVL?=
+ =?utf-8?B?dUdIanNVeUNxNzkyQ3ZHWWphbjFpSXdYL2FIRC9hK1o5bmp3bGg3WkRncUQ3?=
+ =?utf-8?B?TzJoYXpPSVM1MzNLRnlCVlBNbzdiMEhoVDArNkN3b0Vja05Bb2t2YWx1QUor?=
+ =?utf-8?B?MTFPS25jUk12T0dCUmRZUk9CREQ4cXNQdWRFQlB5Z3FRMGNsT002dDNINDg4?=
+ =?utf-8?B?c0IrVXhZek9sTzVSRTZra0JTZkw3MkVGVEZ1OGlYL2RsM3EvOWZKbzFndTE3?=
+ =?utf-8?B?UE1FcEVqSG1hZU8yYWdQNGZBVXorRE9DTW1tVlNPTnN0aWZGdTUzVUx5dE1R?=
+ =?utf-8?B?TXBmQ0FvRU1MU3h1QUZ5ZlJuNVFBanJhaG5zOEtvN2FncFNaNTVDRFpQdnpS?=
+ =?utf-8?B?Y3RJVHRxTEt6WEkrTm9yUjVCTEw0WWl3QitxSUJKRlgzK1RZS1Qzc1k1T1dC?=
+ =?utf-8?B?a0UrRHBmQWVlYWJ3VzBkaXI0UzlYZGtQVmFlSWtxaDRFS0xOMXRvSFhPcUxJ?=
+ =?utf-8?Q?VGHasQE+C518WruTmY8H9Jx/W?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4af9904e-8b38-4f47-49b3-08dd870f99e0
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6020.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2025 11:18:43.3527
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 84PlLJMdF+EyEPRcWLC4GKC+S2b0xJHTEVRvIXM4zyL3ZXcplYWIw7hPmyblJihT2w95YDg4UpIWWc3TzH7Uaw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5094
+X-OriginatorOrg: intel.com
 
-syzbot has found a reproducer for the following issue on:
+Hi Libo,
 
-HEAD commit:    ca91b9500108 Merge tag 'v6.15-rc4-ksmbd-server-fixes' of g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=146608d4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=714654674710be70
-dashboard link: https://syzkaller.appspot.com/bug?extid=4145b11cdf925264bff4
-compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15093374580000
+On 4/29/2025 7:10 AM, Libo Chen wrote:
+> Hi Chen Yu,
+> 
+> I think this is quite useful! I hope it can be picked up.
+> 
+> I have one comment below
+> 
+> On 4/8/25 03:14, Chen Yu wrote:
+>> On systems with NUMA balancing enabled, it is found that tracking
+>> the task activities due to NUMA balancing is helpful. NUMA balancing
+>> has two mechanisms for task migration: one is to migrate the task to
+>> an idle CPU in its preferred node, the other is to swap tasks on
+>> different nodes if they are on each other's preferred node.
+>>
+>> The kernel already has NUMA page migration statistics in
+>> /sys/fs/cgroup/mytest/memory.stat and /proc/{PID}/sched,
+>> but does not have statistics for task migration/swap.
+>> Add the task migration and swap count accordingly.
+>>
+>> The following two new fields:
+>>
+>> numa_task_migrated
+>> numa_task_swapped
+>>
+>> will be displayed in both
+>> /sys/fs/cgroup/{GROUP}/memory.stat and /proc/{PID}/sched
+>>
+>> Introducing both pertask and permemcg NUMA balancing statistics helps
+>> to quickly evaluate the performance and resource usage of the target
+>> workload. For example, the user can first identify the container which
+>> has high NUMA balance activity and then narrow down to a specific task
+>> within that group, and tune the memory policy of that task.
+>> In summary, it is plausible to iterate the /proc/$pid/sched to find the
+>> offending task, but the introduction of per memcg tasks' Numa balancing
+>> aggregated  activity can further help users identify the task in a
+>> divide-and-conquer way.
+>>
+>> Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
+>> Tested-by: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+>> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+>> ---
+>> v1->v2:
+>> Update the Documentation/admin-guide/cgroup-v2.rst. (Michal)
+>> ---
+>>   Documentation/admin-guide/cgroup-v2.rst |  6 ++++++
+>>   include/linux/sched.h                   |  4 ++++
+>>   include/linux/vm_event_item.h           |  2 ++
+>>   kernel/sched/core.c                     | 10 ++++++++--
+>>   kernel/sched/debug.c                    |  4 ++++
+>>   mm/memcontrol.c                         |  2 ++
+>>   mm/vmstat.c                             |  2 ++
+>>   7 files changed, 28 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+>> index f293a13b42ed..b698be14942c 100644
+>> --- a/Documentation/admin-guide/cgroup-v2.rst
+>> +++ b/Documentation/admin-guide/cgroup-v2.rst
+>> @@ -1652,6 +1652,12 @@ The following nested keys are defined.
+>>   	  numa_hint_faults (npn)
+>>   		Number of NUMA hinting faults.
+>>   
+>> +	  numa_task_migrated (npn)
+>> +		Number of task migration by NUMA balancing.
+>> +
+>> +	  numa_task_swapped (npn)
+>> +		Number of task swap by NUMA balancing.
+>> +
+>>   	  pgdemote_kswapd
+>>   		Number of pages demoted by kswapd.
+>>   
+>> diff --git a/include/linux/sched.h b/include/linux/sched.h
+>> index 56ddeb37b5cd..2e91326c16ec 100644
+>> --- a/include/linux/sched.h
+>> +++ b/include/linux/sched.h
+>> @@ -549,6 +549,10 @@ struct sched_statistics {
+>>   	u64				nr_failed_migrations_running;
+>>   	u64				nr_failed_migrations_hot;
+>>   	u64				nr_forced_migrations;
+>> +#ifdef CONFIG_NUMA_BALANCING
+>> +	u64				numa_task_migrated;
+>> +	u64				numa_task_swapped;
+>> +#endif
+>>   
+>>   	u64				nr_wakeups;
+>>   	u64				nr_wakeups_sync;
+>> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+>> index 5a37cb2b6f93..df8a1b30930f 100644
+>> --- a/include/linux/vm_event_item.h
+>> +++ b/include/linux/vm_event_item.h
+>> @@ -64,6 +64,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+>>   		NUMA_HINT_FAULTS,
+>>   		NUMA_HINT_FAULTS_LOCAL,
+>>   		NUMA_PAGE_MIGRATE,
+>> +		NUMA_TASK_MIGRATE,
+>> +		NUMA_TASK_SWAP,
+>>   #endif
+>>   #ifdef CONFIG_MIGRATION
+>>   		PGMIGRATE_SUCCESS, PGMIGRATE_FAIL,
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index b434c2f7e3c1..54e7d63f7785 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -3352,6 +3352,11 @@ void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
+>>   #ifdef CONFIG_NUMA_BALANCING
+>>   static void __migrate_swap_task(struct task_struct *p, int cpu)
+>>   {
+>> +	__schedstat_inc(p->stats.numa_task_swapped);
+>> +
+>> +	if (p->mm)
+>> +		count_memcg_events_mm(p->mm, NUMA_TASK_SWAP, 1);
+>> +
+> 
+> Is p->mm check necessary? I am pretty sure a !p->mm task cannot reach to this point,
+> task_tick_numa() will filter out those tasks, no hinting page fault on such ones.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-ca91b950.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d1aed2fe3946/vmlinux-ca91b950.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1acc08824f75/bzImage-ca91b950.xz
+Right, kernel thread is not supposed to reach here.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4145b11cdf925264bff4@syzkaller.appspotmail.com
+The swap task is obtained from env->best_task, which is assigned by the 
+functions task_numa_compare() and task_numa_assign(), iff that task has
+a valid numa_preferred_nid . In other words, only when the swap task is 
+a non-kernel thread will it possess a valid numa_preferred_nid.
 
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-0): P5753/1:b..l P5752/3:b..l P5754/1:b..l
-rcu: 	(detected by 0, t=10502 jiffies, g=25409, q=12 ncpus=1)
-task:syz.1.103       state:R  running task     stack:25912 pid:5754  tgid:5754  ppid:5448   task_flags:0x400040 flags:0x00004002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x16e2/0x4cd0 kernel/sched/core.c:6767
- preempt_schedule_irq+0xb5/0x150 kernel/sched/core.c:7090
- irqentry_exit+0x6f/0x90 kernel/entry/common.c:354
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-RIP: 0010:lockdep_enabled kernel/locking/lockdep.c:121 [inline]
-RIP: 0010:lock_release+0x70/0x3e0 kernel/locking/lockdep.c:5879
-Code: e8 c5 c8 08 00 84 c0 75 0d f6 05 1d a3 ca 0d 01 0f 84 ad 02 00 00 83 3d fd da e0 0d 00 0f 84 44 02 00 00 65 8b 05 e0 5e d7 10 <85> c0 0f 85 35 02 00 00 65 4c 8b 3c 25 08 40 75 92 41 83 bf ec 0a
-RSP: 0018:ffffc90002dbec90 EFLAGS: 00000202
-RAX: 0000000000000000 RBX: ffffffff9017e101 RCX: 6bb510f00c406100
-RDX: ffffc90002dbee01 RSI: ffffffff8bc1cdc0 RDI: ffffffff8bc1cd80
-RBP: dffffc0000000000 R08: ffffc90002dbf748 R09: 0000000000000000
-R10: ffffc90002dbee18 R11: fffff520005b7dc5 R12: ffffc90002dbf758
-R13: ffffffff817199f5 R14: ffffffff8df3b860 R15: ffffffff817199f5
- rcu_lock_release include/linux/rcupdate.h:341 [inline]
- rcu_read_unlock include/linux/rcupdate.h:871 [inline]
- class_rcu_destructor include/linux/rcupdate.h:1155 [inline]
- unwind_next_frame+0x19a9/0x2390 arch/x86/kernel/unwind_orc.c:680
- arch_stack_walk+0x11c/0x150 arch/x86/kernel/stacktrace.c:25
- stack_trace_save+0x9c/0xe0 kernel/stacktrace.c:122
- save_stack+0xf7/0x1f0 mm/page_owner.c:156
- __set_page_owner+0x8d/0x4a0 mm/page_owner.c:329
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x1d8/0x230 mm/page_alloc.c:1718
- prep_new_page mm/page_alloc.c:1726 [inline]
- get_page_from_freelist+0x21ce/0x22b0 mm/page_alloc.c:3688
- __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:4970
- alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2301
- folio_alloc_mpol_noprof+0x39/0x70 mm/mempolicy.c:2320
- shmem_alloc_folio mm/shmem.c:1854 [inline]
- shmem_alloc_and_add_folio+0x447/0xf60 mm/shmem.c:1893
- shmem_get_folio_gfp+0x597/0x15f0 mm/shmem.c:2533
- shmem_fault+0x179/0x390 mm/shmem.c:2734
- __do_fault+0x135/0x390 mm/memory.c:5098
- do_read_fault mm/memory.c:5518 [inline]
- do_fault mm/memory.c:5652 [inline]
- do_pte_missing mm/memory.c:4160 [inline]
- handle_pte_fault mm/memory.c:5997 [inline]
- __handle_mm_fault+0x363e/0x5380 mm/memory.c:6140
- handle_mm_fault+0x3f6/0x8c0 mm/memory.c:6309
- faultin_page mm/gup.c:1193 [inline]
- __get_user_pages+0x16f0/0x2a40 mm/gup.c:1491
- populate_vma_page_range+0x26b/0x340 mm/gup.c:1929
- __mm_populate+0x24c/0x380 mm/gup.c:2032
- mm_populate include/linux/mm.h:3487 [inline]
- vm_mmap_pgoff+0x3f0/0x4c0 mm/util.c:584
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fb958f8e969
-RSP: 002b:00007ffde50a3fa8 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
-RAX: ffffffffffffffda RBX: 00007fb9591b5fa0 RCX: 00007fb958f8e969
-RDX: b635773f06ebbeee RSI: 0000000000b36000 RDI: 0000200000000000
-RBP: 00007fb959010ab1 R08: ffffffffffffffff R09: 0000000000000000
-R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fb9591b5fa0 R14: 00007fb9591b5fa0 R15: 0000000000000006
- </TASK>
-task:syz.3.101       state:R  running task     stack:26008 pid:5752  tgid:5752  ppid:5463   task_flags:0x400040 flags:0x00004002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x16e2/0x4cd0 kernel/sched/core.c:6767
- preempt_schedule_common+0x83/0xd0 kernel/sched/core.c:6947
- preempt_schedule+0xae/0xc0 kernel/sched/core.c:6971
- preempt_schedule_thunk+0x16/0x30 arch/x86/entry/thunk.S:12
- __raw_spin_unlock include/linux/spinlock_api_smp.h:143 [inline]
- _raw_spin_unlock+0x3f/0x50 kernel/locking/spinlock.c:186
- spin_unlock include/linux/spinlock.h:391 [inline]
- filemap_map_pages+0x1115/0x1740 mm/filemap.c:3748
- do_fault_around mm/memory.c:5476 [inline]
- do_read_fault mm/memory.c:5509 [inline]
- do_fault mm/memory.c:5652 [inline]
- do_pte_missing mm/memory.c:4160 [inline]
- handle_pte_fault mm/memory.c:5997 [inline]
- __handle_mm_fault+0x34d8/0x5380 mm/memory.c:6140
- handle_mm_fault+0x3f6/0x8c0 mm/memory.c:6309
- faultin_page mm/gup.c:1193 [inline]
- __get_user_pages+0x16f0/0x2a40 mm/gup.c:1491
- populate_vma_page_range+0x26b/0x340 mm/gup.c:1929
- __mm_populate+0x24c/0x380 mm/gup.c:2032
- mm_populate include/linux/mm.h:3487 [inline]
- vm_mmap_pgoff+0x3f0/0x4c0 mm/util.c:584
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f3d22d8e969
-RSP: 002b:00007ffdda08b858 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
-RAX: ffffffffffffffda RBX: 00007f3d22fb5fa0 RCX: 00007f3d22d8e969
-RDX: b635773f06ebbeee RSI: 0000000000b36000 RDI: 0000200000000000
-RBP: 00007f3d22e10ab1 R08: ffffffffffffffff R09: 0000000000000000
-R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f3d22fb5fa0 R14: 00007f3d22fb5fa0 R15: 0000000000000006
- </TASK>
-task:syz.5.102       state:R  running task     stack:25816 pid:5753  tgid:5753  ppid:5468   task_flags:0x400040 flags:0x00004002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x16e2/0x4cd0 kernel/sched/core.c:6767
- preempt_schedule_irq+0xb5/0x150 kernel/sched/core.c:7090
- irqentry_exit+0x6f/0x90 kernel/entry/common.c:354
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-RIP: 0010:lock_release+0x2b5/0x3e0 kernel/locking/lockdep.c:5891
-Code: 51 48 c7 44 24 20 00 00 00 00 9c 8f 44 24 20 f7 44 24 20 00 02 00 00 75 56 f7 c3 00 02 00 00 74 01 fb 65 48 8b 05 7b 20 d7 10 <48> 3b 44 24 28 0f 85 8b 00 00 00 48 83 c4 30 5b 41 5c 41 5d 41 5e
-RSP: 0018:ffffc9000ce7f918 EFLAGS: 00000206
-RAX: 6383ecbdc47abd00 RBX: 0000000000000206 RCX: 6383ecbdc47abd00
-RDX: 0000000000000001 RSI: ffffffff8d93404f RDI: ffffffff8bc1cde0
-RBP: ffff888000aa5398 R08: ffff888056076303 R09: 1ffff1100ac0ec60
-R10: dffffc0000000000 R11: ffffed100ac0ec61 R12: 0000000000000001
-R13: 0000000000000001 R14: ffffffff8df3b860 R15: ffff888000aa4880
- rcu_lock_release include/linux/rcupdate.h:341 [inline]
- rcu_read_unlock include/linux/rcupdate.h:871 [inline]
- pte_unmap include/linux/pgtable.h:136 [inline]
- follow_page_pte+0xde9/0x13c0 mm/gup.c:941
- follow_pmd_mask mm/gup.c:-1 [inline]
- follow_pud_mask mm/gup.c:1027 [inline]
- follow_p4d_mask mm/gup.c:1044 [inline]
- follow_page_mask mm/gup.c:1087 [inline]
- __get_user_pages+0x8eb/0x2a40 mm/gup.c:1489
- populate_vma_page_range+0x26b/0x340 mm/gup.c:1929
- __mm_populate+0x24c/0x380 mm/gup.c:2032
- mm_populate include/linux/mm.h:3487 [inline]
- vm_mmap_pgoff+0x3f0/0x4c0 mm/util.c:584
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xf6/0x210 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f0fa6d8e969
-RSP: 002b:00007fff5c171558 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
-RAX: ffffffffffffffda RBX: 00007f0fa6fb5fa0 RCX: 00007f0fa6d8e969
-RDX: b635773f06ebbeee RSI: 0000000000b36000 RDI: 0000200000000000
-RBP: 00007f0fa6e10ab1 R08: ffffffffffffffff R09: 0000000000000000
-R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f0fa6fb5fa0 R14: 00007f0fa6fb5fa0 R15: 0000000000000006
- </TASK>
-rcu: rcu_preempt kthread timer wakeup didn't happen for 10499 jiffies! g25409 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-rcu: 	Possible timer handling issue on cpu=0 timer-softirq=17963
-rcu: rcu_preempt kthread starved for 10500 jiffies! g25409 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=0
-rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-rcu: RCU grace-period kthread stack dump:
-task:rcu_preempt     state:I stack:27864 pid:16    tgid:16    ppid:2      task_flags:0x208040 flags:0x00004000
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x16e2/0x4cd0 kernel/sched/core.c:6767
- __schedule_loop kernel/sched/core.c:6845 [inline]
- schedule+0x165/0x360 kernel/sched/core.c:6860
- schedule_timeout+0x12b/0x270 kernel/time/sleep_timeout.c:99
- rcu_gp_fqs_loop+0x301/0x1540 kernel/rcu/tree.c:2046
- rcu_gp_kthread+0x99/0x390 kernel/rcu/tree.c:2248
- kthread+0x70e/0x8a0 kernel/kthread.c:464
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:153
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-rcu: Stack dump where RCU GP kthread last ran:
-CPU: 0 UID: 0 PID: 1311 Comm: aoe_tx0 Not tainted 6.15.0-rc4-syzkaller-00021-gca91b9500108 #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:check_kcov_mode kernel/kcov.c:194 [inline]
-RIP: 0010:write_comp_data kernel/kcov.c:246 [inline]
-RIP: 0010:__sanitizer_cov_trace_const_cmp1+0x37/0x90 kernel/kcov.c:300
-Code: 08 40 75 92 65 8b 0d 48 7e b5 10 81 e1 00 01 ff 00 74 11 81 f9 00 01 00 00 75 5b 83 ba 3c 16 00 00 00 74 52 8b 8a 18 16 00 00 <83> f9 03 75 47 48 8b 8a 20 16 00 00 44 8b 8a 1c 16 00 00 49 c1 e1
-RSP: 0018:ffffc90002b7f7e8 EFLAGS: 00000246
-RAX: ffffffff853aa1d2 RBX: ffffffff99b4c7c8 RCX: 0000000000000000
-RDX: ffff8880355ca440 RSI: 0000000000000000 RDI: 0000000000000002
-RBP: 0000000000000001 R08: ffff888000ad8f87 R09: 1ffff1100015b1f0
-R10: dffffc0000000000 R11: ffffed100015b1f1 R12: dffffc0000000000
-R13: 0000000000000000 R14: 1ffffffff33698f9 R15: ffff888000ad8b00
-FS:  0000000000000000(0000) GS:ffff88808d6cc000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555574dc5808 CR3: 0000000011179000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- arch_atomic_dec_and_test arch/x86/include/asm/atomic.h:67 [inline]
- raw_atomic_dec_and_test include/linux/atomic/atomic-arch-fallback.h:2278 [inline]
- atomic_dec_and_test include/linux/atomic/atomic-instrumented.h:1384 [inline]
- uart_port_deref drivers/tty/serial/serial_core.c:74 [inline]
- uart_write_room+0x412/0x840 drivers/tty/serial/serial_core.c:649
- handle_tx+0x163/0x610 drivers/net/caif/caif_serial.c:212
- __netdev_start_xmit include/linux/netdevice.h:5203 [inline]
- netdev_start_xmit include/linux/netdevice.h:5212 [inline]
- xmit_one net/core/dev.c:3776 [inline]
- dev_hard_start_xmit+0x2ff/0x880 net/core/dev.c:3792
- __dev_queue_xmit+0x1adf/0x3a70 net/core/dev.c:4629
- dev_queue_xmit include/linux/netdevice.h:3350 [inline]
- tx+0x6b/0x190 drivers/block/aoe/aoenet.c:62
- kthread+0x1cd/0x3e0 drivers/block/aoe/aoecmd.c:1237
- kthread+0x70e/0x8a0 kernel/kthread.c:464
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:153
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
+Let me remove these checks both in __migrate_swap_task and 
+migrate_task_to().
+
+Thanks,
+Chenyu
+
+> We can add a likely() macro here to minimize the overhead if there is a reason to
+> keep that check.
+> 
+> Same comment to the other one in migrate_task_to().
+> 
+> 
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
