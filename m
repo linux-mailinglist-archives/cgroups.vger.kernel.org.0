@@ -1,231 +1,640 @@
-Return-Path: <cgroups+bounces-7903-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7904-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9612AA3BB0
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 00:44:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95569AA3BD2
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 00:56:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 113B44E07DF
-	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 22:44:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 567271888441
+	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 22:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF71277813;
-	Tue, 29 Apr 2025 22:44:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D57312BE0F4;
+	Tue, 29 Apr 2025 22:55:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NHSrQDYu"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Hg+JPUgi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+Received: from mail-vk1-f202.google.com (mail-vk1-f202.google.com [209.85.221.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E9825F7B2
-	for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 22:44:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7C22BD5AF
+	for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 22:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745966669; cv=none; b=s5LE5OAYBemp6kin0o8m5nbfar362WKdN7ySM9A2TM4RoWfDcptWyCHYFmg8vDQt4w6u9BtJ0gIIlx5Ov3HcWha6Rb7frPnb9RQn45hCxrWX17YfUelyd2bD3nBabFc1Xxt6M26+A5MXGuytcgBlhRl9t2JZJWmGwvc5C4QFY3c=
+	t=1745967356; cv=none; b=dEwKugFB9qMdg+jKyfbGzMhQcszAnHNWLjJ7jjDMz1mTZpy+2Tk1FHmw8PLgmPx0gmBWlNwDhp3Gq06x9DWCddWPFM0iElLCDch91ynFcYmdz8hPAH/You3TOGKH1ZI2MBdrhdfZ+dNi3SFdfe1lA073H1P6/tgqW/LIQcfm/7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745966669; c=relaxed/simple;
-	bh=wY9say8tGiLCWO3IU3LClcUQ6iwxEoNogz9c5HCWbbQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AcoJtlFLe/kqXrpQESmRgzz1XP+mFWqeHYnUQ2yc6P2JB/bD/rTyx8oUt6ytfRp6NGz2n4KHhlstMF4JwwKmAqSZmm3c+CB7tVVxtU5UQb+SpdNLCZHmITW0V4ltsliChRGQU00iAN9DAss1FfCeASx3eX5Mak7bWHl83iiUbNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NHSrQDYu; arc=none smtp.client-ip=209.85.160.177
+	s=arc-20240116; t=1745967356; c=relaxed/simple;
+	bh=h3fpiKz+pE3i6o07OLUk6tXnOM7tD6i3OVlgEEr1xTw=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=A2rQCwKnB/NqhINFtwoFklc/lfU7a5nuFDu6sEoPbauQ9fB8IyXGmJ1pGtFCfbs6E3gPIJD9oAZ7NVwOWFxmjEDyHZvs54arX1QmboPLowdZdZKpfIvQ3bMdqGJvjRgOZfg+ZenkE/rwAEx64QTDPPYGcAkCUo5qi99rp/MsY1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Hg+JPUgi; arc=none smtp.client-ip=209.85.221.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-47681dba807so119361cf.1
-        for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 15:44:26 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com
+Received: by mail-vk1-f202.google.com with SMTP id 71dfb90a1353d-523ddfc9788so951162e0c.0
+        for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 15:55:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1745966666; x=1746571466; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4Q+2haq7XwAv6J5PtSHPQ69YS6DBi9vH+XHrN06jFIM=;
-        b=NHSrQDYuvvtQkXmwavpy/3IET/FzBVQm0xjMRiXZljjwwMmFD6OLpzvnFMkcQyr9ah
-         ptIY/Vxk/47yqOcuulVEUK5FeuDNr3lf00mexcKLHKa4hFksHPIF6k3klrWZSZruCCE3
-         UyOrY+qIZ02sfiiKo3OZE4GmgXCIIh6dRNKL8HoVLdfWvnKhs1w4SU2ftP5Zq9p0dLL2
-         yrKi5rg++VZnSAW5LiVif51uTtlfCJPMTWb4COxECm/jN8UIJdlN3o3ONlCq+OYrQQpM
-         5hQ81AwGeEZpx5jD7OKdrDzJraenifSn/Wb/vKhYTv7Ot7yAaqfLhJb1S9Fc+Rs7PtaT
-         zSNw==
+        d=google.com; s=20230601; t=1745967352; x=1746572152; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=15+w1LKig+rz0q1ujX2cae9z+DBN+Uiv96OK22YVpKE=;
+        b=Hg+JPUgiMBgEQ1CJHQHGgGWuacXDsYWz6x9GN2pd7UshngKNzZFqDa3n+uScux5pwz
+         +yJch/34N5LnWqo1JRNpWorBaNm2ykhV7+mYO8zVivCQtBKor9sC75eazUJONHMr2TWw
+         dQDezX43LsHC2o/67lfACqiGMIMpxqHyJYh7Vmmw4xDSG+uF9s5Su5sUzltmDXpqBbFN
+         2mC5y7LbLmwjxLY9hru97jaSgIVloQE7m1jmJDYP3qH6+wePlFd/bcumbvO8GGWkf8pJ
+         tMHNR7xEUZljj7+RdRTOtJ6JgBczNYHTGsr9XTo/xGqozUBz8HnXnG2gzM+nNgQuqZ0t
+         lzXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745966666; x=1746571466;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4Q+2haq7XwAv6J5PtSHPQ69YS6DBi9vH+XHrN06jFIM=;
-        b=NZmLK51Ej2M21jERy8jTlVo8MxvdnfUgJZUIptzEPE1Rv4mX4J+BgvFQE6Z5aq3FnR
-         +RYuSQXDNWbXXYglVWbUur+hY58v5j5h3UuxrH/RTdUhg5QOn0tLjnKX0D8xZ/t/uW7O
-         rRYMuVeBtnLWUa/2hS7mTlEkISjibJ+Msz5D7/ZAGHUeYtaCu/MlD+HzUIfqm6ecerU0
-         MXPcaMV6W0e9WBUWSiJSIT+6S81i3p8GxZC4vJPC8dqwON0xjhAWbbrvOKFO2jzyVsWD
-         lHe0/NbetY5YGXWrMtQzJc93g9+tg9NtG04jJke9WxUq7hv7QVNxEREHL4tyFO3c6hJp
-         eroA==
-X-Forwarded-Encrypted: i=1; AJvYcCXeRPIEYJ7kQCFDdk8rIKWWIlwyyLm1EWbwmst2pOya5ZewYBPz05ph2r5PNvpRwJrUKfJHLNjv@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQmXXRtlhJYVg6z+WE470dP+m875i8FfpuqN6ju2Z8QSt6q+K4
-	x/4PPOFx7UCNn39AYY9r43Itq2n4jNgiCjxYoX8FqCV6c+tE+0kqHZSJgwy7g0MRfz4RpX5fIK3
-	lo+aKPqcVoxYpAPh23y4JwxXf/hZE40JGZVaD
-X-Gm-Gg: ASbGncv36CTwlxRiHAPu2QbZ0lzVX50iXAurKmWWUpDjfo9GzjA4ZWu+jMIQjXzpK06
-	qXSRNAgqaXRXzmDdf/vmwsX6khGF0BeglKhWqa8oAqXayOv0D3Gx9IPn7f08fjhjHinulIVuqoQ
-	26dY8GMh3GaDpaZOT8GWWW5UY9h4oXKbOtiWIoX3s5oub5TNbDeadW+59pRbiLvVY=
-X-Google-Smtp-Source: AGHT+IGp3ol19l66XpIR0HRveaM+/EwEn2dP2bkpY0B9zrpxdPZiZBnty9O1i5cicSDF8bDdT7SZ8k6g1jsNGNxwKCI=
-X-Received: by 2002:a05:622a:44e:b0:477:63b7:3523 with SMTP id
- d75a77b69052e-489b9935eafmr1740991cf.4.1745966665576; Tue, 29 Apr 2025
- 15:44:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1745967352; x=1746572152;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=15+w1LKig+rz0q1ujX2cae9z+DBN+Uiv96OK22YVpKE=;
+        b=vxhka4S5J3yZs9ib7sHwUWDRWpzuXMEy0BAn6oKZNt06pwl8sLMYgsPxbd1ma0u+08
+         ZlVCkoFM6n56fEwy7Gf0pIButxAQhDyVHQ009bVIU4gI369HQ/nLBxSVzj82JIO/T/Qv
+         7okqeXGMmiSN5TedmaDAiGer6yzuAmOIzUE1U4eOkw7uBv2Xu8p1btLg1RgfKYjXBvCl
+         QaVTGPfXP1WDJK/h+Txvv7JWWbfv2r0TgqMIgLLmJ8PePT9OQUmMrtgFIxfKznrXgYiV
+         OUGtapPXhi2oivDg7mZrO31k0hPzsBZjnu418QiYlo3h1+V6x6zjcY+oNooDfVxX5h1p
+         t9eg==
+X-Forwarded-Encrypted: i=1; AJvYcCUcntfx9UC4qrO4AdnkVFiiUSKka9ZeWV8/yNbIO+kOyQg1jYM7AA+XnbmzCT67v2trYJZhCv7H@vger.kernel.org
+X-Gm-Message-State: AOJu0YyY2XGpjBp3zyVbhPdhqIqmiwg5Ak84g1yQYqFNRbtcGPsuyXCB
+	/RuaxTILvgVUEqhKXVxqSG6EI20M28WdctOK7inDQJTOcmc7bBwvWG+yYf8xa9DkyTUzxOUksQM
+	xOeKRAFSmb6ZrdrhYbA==
+X-Google-Smtp-Source: AGHT+IH8/MQ9qKgb4txdq/HEmbpSuMHa1UCUOGEjmDp8HZIZ5TJWsC7v0uWPI2N95yUgO03XmzCm4O5PYHnCLQ/t
+X-Received: from vkbby11.prod.google.com ([2002:a05:6122:248b:b0:52a:9a03:a241])
+ (user=jthoughton job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6122:179a:b0:527:67c7:50f with SMTP id 71dfb90a1353d-52acd8923b6mr997554e0c.11.1745967352309;
+ Tue, 29 Apr 2025 15:55:52 -0700 (PDT)
+Date: Tue, 29 Apr 2025 22:55:49 +0000
+In-Reply-To: <aBApDSHblacSBaFH@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
-In-Reply-To: <20250428033617.3797686-1-roman.gushchin@linux.dev>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 29 Apr 2025 15:44:14 -0700
-X-Gm-Features: ATxdqUFgwg8VjWDE02DoJhjYn9FVXzG-oTsO_zJH_wM8K_TPzbvSWrGdfiA0Du4
-Message-ID: <CAJuCfpHnND1UJ1ZqiyshPqwbZDfeN41HOUuc7DWQfSM1cATBmQ@mail.gmail.com>
-Subject: Re: [PATCH rfc 00/12] mm: BPF OOM
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, David Rientjes <rientjes@google.com>, 
-	Josh Don <joshdon@google.com>, Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, bpf@vger.kernel.org
+Mime-Version: 1.0
+References: <aBApDSHblacSBaFH@google.com>
+X-Mailer: git-send-email 2.49.0.901.g37484f566f-goog
+Message-ID: <20250429225550.106865-1-jthoughton@google.com>
+Subject: Re: [PATCH v3 5/5] KVM: selftests: access_tracking_perf_test: Use
+ MGLRU for access tracking
+From: James Houghton <jthoughton@google.com>
+To: seanjc@google.com
+Cc: axelrasmussen@google.com, cgroups@vger.kernel.org, dmatlack@google.com, 
+	hannes@cmpxchg.org, jthoughton@google.com, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mkoutny@suse.com, mlevitsk@redhat.com, 
+	tj@kernel.org, yosry.ahmed@linux.dev, yuzhao@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 27, 2025 at 8:36=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
-x.dev> wrote:
+On Mon, Apr 28, 2025 at 9:19=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
 >
-> This patchset adds an ability to customize the out of memory
-> handling using bpf.
+> On Mon, Apr 14, 2025, James Houghton wrote:
+> > By using MGLRU's debugfs for invoking test_young() and clear_young(), w=
+e
+> > avoid page_idle's incompatibility with MGLRU, and we can mark pages as
+> > idle (clear_young()) much faster.
+> >
+> > The ability to use page_idle is left in, as it is useful for kernels
+> > that do not have MGLRU built in. If MGLRU is enabled but is not usable
+> > (e.g. we can't access the debugfs mount), the test will fail, as
+> > page_idle is not compatible with MGLRU.
+> >
+> > cgroup utility functions have been borrowed so that, when running with
+> > MGLRU, we can create a memcg in which to run our test.
+> >
+> > Other MGLRU-debugfs-specific parsing code has been added to
+> > lru_gen_util.{c,h}.
 >
-> It focuses on two parts:
-> 1) OOM handling policy,
-> 2) PSI-based OOM invocation.
+> This is not a proper changelog, at least not by upstream KVM standards. =
+=C2=A0Please
+> rewrite it describe the changes being made, using imperative mood/tone. =
+=C2=A0From
+> Documentation/process/maintainer-kvm-x86.rst:
 >
-> The idea to use bpf for customizing the OOM handling is not new, but
-> unlike the previous proposal [1], which augmented the existing task
-> ranking-based policy, this one tries to be as generic as possible and
-> leverage the full power of the modern bpf.
->
-> It provides a generic hook which is called before the existing OOM
-> killer code and allows implementing any policy, e.g.  picking a victim
-> task or memory cgroup or potentially even releasing memory in other
-> ways, e.g. deleting tmpfs files (the last one might require some
-> additional but relatively simple changes).
->
-> The past attempt to implement memory-cgroup aware policy [2] showed
-> that there are multiple opinions on what the best policy is.  As it's
-> highly workload-dependent and specific to a concrete way of organizing
-> workloads, the structure of the cgroup tree etc, a customizable
-> bpf-based implementation is preferable over a in-kernel implementation
-> with a dozen on sysctls.
->
-> The second part is related to the fundamental question on when to
-> declare the OOM event. It's a trade-off between the risk of
-> unnecessary OOM kills and associated work losses and the risk of
-> infinite trashing and effective soft lockups.  In the last few years
-> several PSI-based userspace solutions were developed (e.g. OOMd [3] or
-> systemd-OOMd [4]). The common idea was to use userspace daemons to
-> implement custom OOM logic as well as rely on PSI monitoring to avoid
-> stalls. In this scenario the userspace daemon was supposed to handle
-> the majority of OOMs, while the in-kernel OOM killer worked as the
-> last resort measure to guarantee that the system would never deadlock
-> on the memory. But this approach creates additional infrastructure
-> churn: userspace OOM daemon is a separate entity which needs to be
-> deployed, updated, monitored. A completely different pipeline needs to
-> be built to monitor both types of OOM events and collect associated
-> logs. A userspace daemon is more restricted in terms on what data is
-> available to it. Implementing a daemon which can work reliably under a
-> heavy memory pressure in the system is also tricky.
+> =C2=A0 Changelog
+> =C2=A0 ~~~~~~~~~
+> =C2=A0 Most importantly, write changelogs using imperative mood and avoid=
+ pronouns.
 
-I didn't read the whole patchset yet but want to mention couple
-features that we should not forget:
-- memory reaping. Maybe you already call oom_reap_task_mm() after BPF
-oom-handler kills a process or maybe BPF handler is expected to
-implement it?
-- kill reporting to userspace. I think BPF handler would be expected
-to implement it?
+Right. I'll rewrite the changelog properly.
 
 >
-> [1]: https://lwn.net/ml/linux-kernel/20230810081319.65668-1-zhouchuyi@byt=
-edance.com/
-> [2]: https://lore.kernel.org/lkml/20171130152824.1591-1-guro@fb.com/
-> [3]: https://github.com/facebookincubator/oomd
-> [4]: https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd=
-.service.html
+> > @@ -354,7 +459,12 @@ static int access_tracking_unreliable(void)
+> > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 puts("Skipping idle pa=
+ge count sanity check, because NUMA balancing is enabled");
+> > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return 1;
+> > =C2=A0 =C2=A0 =C2=A0 }
+> > + =C2=A0 =C2=A0 return 0;
+> > +}
+> >=20
+> > +int run_test_in_cg(const char *cgroup, void *arg)
 >
-> ----
+> static
+
+Will change.
+
 >
-> This is an RFC version, which is not intended to be merged in the current=
- form.
-> Open questions/TODOs:
-> 1) Program type/attachment type for the bpf_handle_out_of_memory() hook.
->    It has to be able to return a value, to be sleepable (to use cgroup it=
-erators)
->    and to have trusted arguments to pass oom_control down to bpf_oom_kill=
-_process().
->    Current patchset has a workaround (patch "bpf: treat fmodret tracing p=
-rogram's
->    arguments as trusted"), which is not safe. One option is to fake acqui=
-re/release
->    semantics for the oom_control pointer. Other option is to introduce a =
-completely
->    new attachment or program type, similar to lsm hooks.
-> 2) Currently lockdep complaints about a potential circular dependency bec=
-ause
->    sleepable bpf_handle_out_of_memory() hook calls might_fault() under oo=
-m_lock.
->    One way to fix it is to make it non-sleepable, but then it will requir=
-e some
->    additional work to allow it using cgroup iterators. It's intervened wi=
-th 1).
-> 3) What kind of hierarchical features are required? Do we want to nest oo=
-m policies?
->    Do we want to attach oom policies to cgroups? I think it's too complic=
-ated,
->    but if we want a full hierarchical support, it might be required.
->    Patch "mm: introduce bpf_get_root_mem_cgroup() bpf kfunc" exposes the =
-true root
->    memcg, which is potentially outside of the ns of the loading process. =
-Does
->    it require some additional capabilities checks? Should it be removed?
-> 4) Documentation is lacking and will be added in the next version.
+> > +{
+> > + =C2=A0 =C2=A0 for_each_guest_mode(run_test, arg);
 >
+> Having "separate" flows for MGLRU vs. page_idle is unnecessary. =C2=A0Giv=
+e the helper
+> a more common name and use it for both:
 >
-> Roman Gushchin (12):
->   mm: introduce a bpf hook for OOM handling
->   bpf: mark struct oom_control's memcg field as TRUSTED_OR_NULL
->   bpf: treat fmodret tracing program's arguments as trusted
->   mm: introduce bpf_oom_kill_process() bpf kfunc
->   mm: introduce bpf kfuncs to deal with memcg pointers
->   mm: introduce bpf_get_root_mem_cgroup() bpf kfunc
->   bpf: selftests: introduce read_cgroup_file() helper
->   bpf: selftests: bpf OOM handler test
->   sched: psi: bpf hook to handle psi events
->   mm: introduce bpf_out_of_memory() bpf kfunc
->   bpf: selftests: introduce open_cgroup_file() helper
->   bpf: selftests: psi handler test
+> static int run_test_for_each_guest_mode(const char *cgroup, void *arg)
+> {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 for_each_guest_mode(run_test, arg);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 return 0;
+> }
+
+Applied for my next version, thanks.
+
 >
->  include/linux/memcontrol.h                   |   2 +
->  include/linux/oom.h                          |   5 +
->  kernel/bpf/btf.c                             |   9 +-
->  kernel/bpf/verifier.c                        |   5 +
->  kernel/sched/psi.c                           |  36 ++-
->  mm/Makefile                                  |   3 +
->  mm/bpf_memcontrol.c                          | 108 +++++++++
->  mm/oom_kill.c                                | 140 +++++++++++
->  tools/testing/selftests/bpf/cgroup_helpers.c |  67 ++++++
->  tools/testing/selftests/bpf/cgroup_helpers.h |   3 +
->  tools/testing/selftests/bpf/prog_tests/oom.c | 227 ++++++++++++++++++
->  tools/testing/selftests/bpf/prog_tests/psi.c | 234 +++++++++++++++++++
->  tools/testing/selftests/bpf/progs/test_oom.c | 103 ++++++++
->  tools/testing/selftests/bpf/progs/test_psi.c |  43 ++++
->  14 files changed, 983 insertions(+), 2 deletions(-)
->  create mode 100644 mm/bpf_memcontrol.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/oom.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/psi.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_oom.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_psi.c
+> > =C2=A0 =C2=A0 =C2=A0 return 0;
+> > =C2=A0}
+> >=20
+> > @@ -372,7 +482,7 @@ static void help(char *name)
+> > =C2=A0 =C2=A0 =C2=A0 printf(" -v: specify the number of vCPUs to run.\n=
+");
+> > =C2=A0 =C2=A0 =C2=A0 printf(" -o: Overlap guest memory accesses instead=
+ of partitioning\n"
+> > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0" =C2=A0 =C2=A0 them in=
+to a separate region of memory for each vCPU.\n");
+> > - =C2=A0 =C2=A0 printf(" -w: Control whether the test warns or fails if=
+ more than 10%\n"
+> > + =C2=A0 =C2=A0 printf(" -w: Control whether the test warns or fails if=
+ more than 10%%\n"
+> > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0" =C2=A0 =C2=A0 of page=
+s are still seen as idle/old after accessing guest\n"
+> > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0" =C2=A0 =C2=A0 memory.=
+ =C2=A0>0 =3D=3D warn only, 0 =3D=3D fail, <0 =3D=3D auto. =C2=A0For auto\n=
+"
+> > =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0" =C2=A0 =C2=A0 mode, t=
+he test fails by default, but switches to warn only\n"
+> > @@ -383,6 +493,12 @@ static void help(char *name)
+> > =C2=A0 =C2=A0 =C2=A0 exit(0);
+> > =C2=A0}
+> >=20
+> > +void destroy_cgroup(char *cg)
 >
-> --
-> 2.49.0.901.g37484f566f-goog
+> static. =C2=A0But this is a pointless wrapper, just delete it.
+
+Will do.
+
+> Using MGLRU on my home box fails. =C2=A0It's full cgroup v2, and has both
+> CONFIG_IDLE_PAGE_TRACKING=3Dy and MGLRU enabled.
 >
+> =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
+> =C2=A0 access_tracking_perf_test.c:244: false
+> =C2=A0 pid=3D114670 tid=3D114670 errno=3D17 - File exists
+> =C2=A0 =C2=A0 =C2=A01 =C2=A00x00000000004032a9: find_generation at access=
+_tracking_perf_test.c:244
+> =C2=A0 =C2=A0 =C2=A02 =C2=A00x00000000004032da: lru_gen_mark_memory_idle =
+at access_tracking_perf_test.c:272
+> =C2=A0 =C2=A0 =C2=A03 =C2=A00x00000000004034e4: mark_memory_idle at acces=
+s_tracking_perf_test.c:391
+> =C2=A0 =C2=A0 =C2=A04 =C2=A0 (inlined by) run_test at access_tracking_per=
+f_test.c:431
+> =C2=A0 =C2=A0 =C2=A05 =C2=A00x0000000000403d84: for_each_guest_mode at gu=
+est_modes.c:96
+> =C2=A0 =C2=A0 =C2=A06 =C2=A00x0000000000402c61: run_test_for_each_guest_m=
+ode at access_tracking_perf_test.c:492
+> =C2=A0 =C2=A0 =C2=A07 =C2=A00x000000000041d8e2: cg_run at cgroup_util.c:3=
+82
+> =C2=A0 =C2=A0 =C2=A08 =C2=A00x00000000004027fa: main at access_tracking_p=
+erf_test.c:572
+> =C2=A0 =C2=A0 =C2=A09 =C2=A00x00007fa1cb629d8f: ?? ??:0
+> =C2=A0 =C2=A0 10 =C2=A00x00007fa1cb629e3f: ?? ??:0
+> =C2=A0 =C2=A0 11 =C2=A00x00000000004029d4: _start at ??:?
+> =C2=A0 Could not find a generation with 90% of guest memory (235929 pages=
+).
+>
+> Interestingly, if I force the test to use /sys/kernel/mm/page_idle/bitmap=
+, it
+> passes.
+>
+> Please try to reproduce the failure (assuming you haven't already tested =
+that
+> exact combination of cgroups v2, MGLRU=3Dy, and CONFIG_IDLE_PAGE_TRACKING=
+=3Dy). I
+> don't have bandwidth to dig any further at this time.
+
+Sorry... please see the bottom of this message for a diff that should fix t=
+his.
+It fixes these bugs:
+
+1.  Tracking generation numbers without hardware Accessed bit management.
+    (This is addition of lru_gen_last_gen.)
+1.5 It does an initial aging pass so that pages always move to newer
+    generations in (or before) the subsequent aging passes. This probably
+    isn't needed given the change I made for (1).
+2.  Fixes the expected number of pages for guest page sizes > PAGE_SIZE.
+    (This is the move of test_pages. test_pages has also been renamed to av=
+oid
+    shadowing.)
+3.  Fixes an off-by-one error when looking for the generation with the most
+    pages. Previously it failed to check the youngest generation, which I t=
+hink
+    is the bug you ran into. (This is the change to lru_gen_util.c.)
+
+It might take a couple tweaks to compile in your tree. (It is just a WIP di=
+ff
+from when I was applying changes from your feedback, so it contains partial
+changes you asked for.
+
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (cg_find_unified_root(cg=
+roup_root, sizeof(cgroup_root), NULL))
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ ksft_exit_skip("cgroup v2 isn't mounted\n");
+> > +
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 new_cg =3D cg_name(cgroup_r=
+oot, TEST_MEMCG_NAME);
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printf("Creating cgroup: %s=
+\n", new_cg);
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (cg_create(new_cg) && er=
+rno !=3D EEXIST)
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ ksft_exit_skip("could not create new cgroup: %s\n", new_cg);
+> > +
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 use_lru_gen =3D true;
+> > + =C2=A0 =C2=A0 } else {
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 page_idle_fd =3D open("/sys=
+/kernel/mm/page_idle/bitmap", O_RDWR);
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 __TEST_REQUIRE(page_idle_fd=
+ >=3D 0,
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0"Couldn't open /sys/kernel/mm/page_idle/bitmap.=
+ "
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0"Is CONFIG_IDLE_PAGE_TRACKING enabled?");
+> > +
+> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 close(page_idle_fd);
+> > + =C2=A0 =C2=A0 }
+>
+> Splitting the "check" and "execute" into separate if-else statements resu=
+lts in
+> some compilers complaining about new_cg possibly being unused. =C2=A0The =
+compiler is
+> probably being a bit stupid, but the code is just as must to blame. =C2=
+=A0There's zero
+> reason to split this in two, just do everything after the idle_pages_warn=
+_only
+> and total_pages processing. =C2=A0Code at the bottom (note, you'll have t=
+o rebase on
+> my not-yet-posted series, or undo the use of __open_path_or_exit()).
+
+I have applied the below suggestion for the next version of the series. Tha=
+nks.
+
+> static int run_test_for_each_guest_mode(const char *cgroup, void *arg)
+> {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 for_each_guest_mode(run_test, arg);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 return 0;
+> }
+>
+> int main(int argc, char *argv[])
+> {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 struct test_params params =3D {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .backing_src =3D =
+DEFAULT_VM_MEM_SRC,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .vcpu_memory_byte=
+s =3D DEFAULT_PER_VCPU_MEM_SIZE,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .nr_vcpus =3D 1,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 };
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 int page_idle_fd;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 int opt;
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 guest_modes_append_default();
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 while ((opt =3D getopt(argc, argv, "hm:b:v:os=
+:w:")) !=3D -1) {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 switch (opt) {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 case 'm':
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 guest_modes_cmdline(optarg);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 break;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 case 'b':
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 params.vcpu_memory_bytes =3D parse_size(optarg);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 break;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 case 'v':
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 params.nr_vcpus =3D atoi_positive("Number of vCPUs", optarg);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 break;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 case 'o':
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 overlap_memory_access =3D true;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 break;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 case 's':
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 params.backing_src =3D parse_backing_src_type(optarg);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 break;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 case 'w':
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 idle_pages_warn_only =3D
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 atoi_non_negative("Idle pages warnin=
+g",
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 optarg);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 break;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 case 'h':
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 default:
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 help(argv[0]);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 break;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (idle_pages_warn_only =3D=3D -1)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 idle_pages_warn_o=
+nly =3D access_tracking_unreliable();
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 /*
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0* If guest_page_size is larger than the=
+ host's page size, the
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0* guest (memstress) will only fault in =
+a subset of the host's pages.
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0*/
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 total_pages =3D params.nr_vcpus * params.vcpu=
+_memory_bytes /
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 max_t(uint64_t, memstress_args.guest_page_size, getpagesize());
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (lru_gen_usable()) {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 bool cg_created =
+=3D true;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 char *test_cg =3D=
+ NULL;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 int ret;
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 puts("Using lru_g=
+en for aging");
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 use_lru_gen =3D t=
+rue;
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (cg_find_contr=
+oller_root(cgroup_root, sizeof(cgroup_root), "memory"))
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 ksft_exit_skip("Cannot find memory group controller\n");
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 test_cg =3D cg_na=
+me(cgroup_root, TEST_MEMCG_NAME);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printf("Creating =
+cgroup: %s\n", test_cg);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (cg_create(tes=
+t_cg)) {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 if (errno =3D=3D EEXIST)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 cg_created =3D false;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 else
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ksft_exit_skip("could not create new=
+ cgroup: %s\n", test_cg);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /*
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0* This will=
+ fork off a new process to run the test within
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0* a new mem=
+cg, so we need to properly propagate the return
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0* value up.
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0*/
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D cg_run(te=
+st_cg, &run_test_for_each_guest_mode, &params);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (cg_created)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 cg_destroy(test_cg);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return ret;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 puts("Using page_idle for aging");
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 page_idle_fd =3D __open_path_or_exit("/sys/ke=
+rnel/mm/page_idle/bitmap", O_RDWR,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0"Is CONFIG_IDLE_PAGE_TRACKING enabled?");
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 close(page_idle_fd);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 run_test_for_each_guest_mode(NULL, &params);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 return 0;
+> }
+
+And here is the diff that make the test start working for you:
+
+diff --git a/tools/testing/selftests/kvm/access_tracking_perf_test.c b/tool=
+s/testing/selftests/kvm/access_tracking_perf_test.c
+index d4ef201b67055..d4ae29c7dfe35 100644
+--- a/tools/testing/selftests/kvm/access_tracking_perf_test.c
++++ b/tools/testing/selftests/kvm/access_tracking_perf_test.c
+@@ -90,7 +90,10 @@ static int idle_pages_warn_only =3D -1;
+ static bool use_lru_gen;
+=20
+ /* Total number of pages to expect in the memcg after touching everything =
+*/
+-static long total_pages;
++static long test_pages;
++
++/* Last generation we found the pages in */
++static int lru_gen_last_gen =3D -1;
+=20
+ struct test_params {
+ 	/* The backing source for the region of memory. */
+@@ -265,11 +268,7 @@ static void lru_gen_mark_memory_idle(struct kvm_vm *vm=
+)
+ 	struct timespec ts_start;
+ 	struct timespec ts_elapsed;
+ 	struct memcg_stats stats;
+-	int found_gens[2];
+-
+-	/* Find current generation the pages lie in. */
+-	lru_gen_read_memcg_stats(&stats, TEST_MEMCG_NAME);
+-	found_gens[0] =3D find_generation(&stats, total_pages);
++	int new_gen;
+=20
+ 	/* Make a new generation */
+ 	clock_gettime(CLOCK_MONOTONIC, &ts_start);
+@@ -277,23 +276,24 @@ static void lru_gen_mark_memory_idle(struct kvm_vm *v=
+m)
+ 	ts_elapsed =3D timespec_elapsed(ts_start);
+=20
+ 	/* Check the generation again */
+-	found_gens[1] =3D find_generation(&stats, total_pages);
++	new_gen =3D find_generation(&stats, test_pages);
+=20
+ 	/*
+ 	 * This function should only be invoked with newly-accessed pages,
+ 	 * so pages should always move to a newer generation.
+ 	 */
+-	if (found_gens[0] >=3D found_gens[1]) {
++	if (new_gen <=3D lru_gen_last_gen) {
+ 		/* We did not move to a newer generation. */
+-		long idle_pages =3D lru_gen_sum_memcg_stats_for_gen(found_gens[1],
++		long idle_pages =3D lru_gen_sum_memcg_stats_for_gen(lru_gen_last_gen,
+ 								  &stats);
+=20
+-		too_many_idle_pages(min_t(long, idle_pages, total_pages),
+-				    total_pages, -1);
++		too_many_idle_pages(min_t(long, idle_pages, test_pages),
++				    test_pages, -1);
+ 	}
+ 	pr_info("%-30s: %ld.%09lds\n",
+ 		"Mark memory idle (lru_gen)", ts_elapsed.tv_sec,
+ 		ts_elapsed.tv_nsec);
++	lru_gen_last_gen =3D new_gen;
+ }
+=20
+ static void assert_ucall(struct kvm_vcpu *vcpu, uint64_t expected_ucall)
+@@ -410,6 +410,14 @@ static void run_test(enum vm_guest_mode mode, void *ar=
+g)
+ 	vm =3D memstress_create_vm(mode, nr_vcpus, params->vcpu_memory_bytes, 1,
+ 				 params->backing_src, !overlap_memory_access);
+=20
++	/*
++	 * If guest_page_size is larger than the host's page size, the
++	 * guest (memstress) will only fault in a subset of the host's pages.
++	 */
++	test_pages =3D params->nr_vcpus * params->vcpu_memory_bytes /
++		      max(memstress_args.guest_page_size,
++			  (uint64_t)getpagesize());
++
+ 	memstress_start_vcpu_threads(nr_vcpus, vcpu_thread_main);
+=20
+ 	pr_info("\n");
+@@ -418,9 +426,18 @@ static void run_test(enum vm_guest_mode mode, void *ar=
+g)
+ 	if (use_lru_gen) {
+ 		struct memcg_stats stats;
+=20
+-		lru_gen_read_memcg_stats(&stats, TEST_MEMCG_NAME);
+-		TEST_ASSERT(lru_gen_sum_memcg_stats(&stats) >=3D total_pages,
+-			    "Not all pages accounted for. Was the memcg set up correctly?");
++		/*
++		 * Do a page table scan now. After initial population, aging
++		 * may not cause the pages to move to a newer generation. Do
++		 * an aging pass now so that future aging passes always move
++		 * pages to a newer generation.
++		 */
++		printf("Initial aging pass (lru_gen)\n");
++		lru_gen_do_aging(&stats, TEST_MEMCG_NAME);
++		TEST_ASSERT(lru_gen_sum_memcg_stats(&stats) >=3D test_pages,
++			    "Not all pages accounted for (looking for %ld). "
++			    "Was the memcg set up correctly?", test_pages);
++		access_memory(vm, nr_vcpus, ACCESS_WRITE, "Re-populating memory");
+ 	}
+=20
+ 	/* As a control, read and write to the populated memory first. */
+@@ -496,7 +513,6 @@ static void help(char *name)
+ void destroy_cgroup(char *cg)
+ {
+ 	printf("Destroying cgroup: %s\n", cg);
+-	cg_destroy(cg);
+ }
+=20
+ int main(int argc, char *argv[])
+@@ -541,50 +557,48 @@ int main(int argc, char *argv[])
+ 		}
+ 	}
+=20
+-	if (lru_gen_usable()) {
+-		if (cg_find_unified_root(cgroup_root, sizeof(cgroup_root), NULL))
+-			ksft_exit_skip("cgroup v2 isn't mounted\n");
+-
+-		new_cg =3D cg_name(cgroup_root, TEST_MEMCG_NAME);
+-		printf("Creating cgroup: %s\n", new_cg);
+-		if (cg_create(new_cg) && errno !=3D EEXIST)
+-			ksft_exit_skip("could not create new cgroup: %s\n", new_cg);
+-
+-		use_lru_gen =3D true;
+-	} else {
+-		page_idle_fd =3D open("/sys/kernel/mm/page_idle/bitmap", O_RDWR);
+-		__TEST_REQUIRE(page_idle_fd >=3D 0,
+-			       "Couldn't open /sys/kernel/mm/page_idle/bitmap. "
+-			       "Is CONFIG_IDLE_PAGE_TRACKING enabled?");
+-
+-		close(page_idle_fd);
+-	}
+-
+ 	if (idle_pages_warn_only =3D=3D -1)
+ 		idle_pages_warn_only =3D access_tracking_unreliable();
+=20
+-	/*
+-	 * If guest_page_size is larger than the host's page size, the
+-	 * guest (memstress) will only fault in a subset of the host's pages.
+-	 */
+-	total_pages =3D params.nr_vcpus * params.vcpu_memory_bytes /
+-		      max(memstress_args.guest_page_size,
+-			  (uint64_t)getpagesize());
+-
+-	if (use_lru_gen) {
++	if (lru_gen_usable()) {
++		bool cg_created =3D true;
+ 		int ret;
+=20
+ 		puts("Using lru_gen for aging");
++		use_lru_gen =3D true;
++
++		if (cg_find_controller_root(cgroup_root, sizeof(cgroup_root), "memory"))
++			ksft_exit_skip("Cannot find memory cgroup controller\n");
++
++		new_cg =3D cg_name(cgroup_root, TEST_MEMCG_NAME);
++		printf("Creating cgroup: %s\n", new_cg);
++		if (cg_create(new_cg)) {
++			if (errno =3D=3D EEXIST) {
++				printf("Found existing cgroup");
++				cg_created =3D false;
++			}
++			else
++				ksft_exit_skip("could not create new cgroup: %s\n", new_cg);
++		}
++
+ 		/*
+ 		 * This will fork off a new process to run the test within
+ 		 * a new memcg, so we need to properly propagate the return
+ 		 * value up.
+ 		 */
+ 		ret =3D cg_run(new_cg, &run_test_in_cg, &params);
+-		destroy_cgroup(new_cg);
++		if (cg_created)
++			cg_destroy(new_cg);
+ 		if (ret)
+ 			return ret;
+ 	} else {
++		page_idle_fd =3D open("/sys/kernel/mm/page_idle/bitmap", O_RDWR);
++		__TEST_REQUIRE(page_idle_fd >=3D 0,
++			       "Couldn't open /sys/kernel/mm/page_idle/bitmap. "
++			       "Is CONFIG_IDLE_PAGE_TRACKING enabled?");
++
++		close(page_idle_fd);
++
+ 		puts("Using page_idle for aging");
+ 		for_each_guest_mode(run_test, &params);
+ 	}
+diff --git a/tools/testing/selftests/kvm/lib/lru_gen_util.c b/tools/testing=
+/selftests/kvm/lib/lru_gen_util.c
+index 783a1f1028a26..cab54935b160a 100644
+--- a/tools/testing/selftests/kvm/lib/lru_gen_util.c
++++ b/tools/testing/selftests/kvm/lib/lru_gen_util.c
+@@ -341,7 +341,7 @@ int lru_gen_find_generation(const struct memcg_stats *s=
+tats,
+ 			min_gen =3D gen < min_gen ? gen : min_gen;
+ 		}
+=20
+-	for (gen =3D min_gen; gen < max_gen; ++gen)
++	for (gen =3D min_gen; gen <=3D max_gen; ++gen)
+ 		/* See if this generation has enough pages. */
+ 		if (lru_gen_sum_memcg_stats_for_gen(gen, stats) > pages)
+ 			return gen;
 
