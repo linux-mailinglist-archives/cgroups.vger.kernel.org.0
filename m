@@ -1,109 +1,103 @@
-Return-Path: <cgroups+bounces-7896-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7897-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6A18AA0FA3
-	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 16:53:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F330BAA0FD8
+	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 17:01:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F91A3A8D47
-	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 14:50:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E502921413
+	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 14:59:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF3721CC74;
-	Tue, 29 Apr 2025 14:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F99521ABB7;
+	Tue, 29 Apr 2025 14:59:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wczpRYnM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="H3QXKoWO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74D12219A75
-	for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 14:50:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E453D76
+	for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 14:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745938228; cv=none; b=XNmoqisVaSqm8VDqKqAitZgHTxZx/Qe8f4YcZE330HZz0PUMwb5KFPlXQF7bfAKo4fQBZFR013DYcUiQGp8C2agHHkzlWedy/NfBbNgCkIhPb2YpGaxlzxZs1Wq+G8G4pAl8bBNhvZxabkBpb1jTIHPff9WE8cwnGyYjZ5p/d7g=
+	t=1745938785; cv=none; b=Hadz5+//Ya1TffAFV1I3qQSJ0fH7t8RzCeg6h+89VLddj4LQbfs9ah78v4KDgaCQci6ico7NRV85s3B2iwc8Ayex2RgvQhV10HMZ39nSrTGzmMLMoT3sNLQP+ObVBP1c+AhxjvVfNWmzUBDypQJNaNQdS24qOkyQqT1BTI8p6rU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745938228; c=relaxed/simple;
-	bh=YPSGgkh2TVolXHWVk33rF3hFvn3iDnfwqVva4PVFS04=;
+	s=arc-20240116; t=1745938785; c=relaxed/simple;
+	bh=1R/UVYZsHx8uy1xeBMN3faf8LhuTSWZAK1tYdGatObc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VqKVOEerAy3FUe8N6tMer+sOUtP4xS8MMWFCXJXXchtWl0U3pvKaZi+Q+l2OtvaL7hEUJWnhclPtVoQmROjjimpQVkOLWHs6//VM8wKhCSyqox8KI7MIJNhGUher298Lq4UBJQXakJRVus9kGq9UVUQtxhUajfHtj1lzhLqTSc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wczpRYnM; arc=none smtp.client-ip=91.218.175.182
+	 To:Cc:Content-Type; b=cjjPW4DEMllZjB6anAuAdwTeISZFrLHgSCBBH6YMdYswx2Hm573LxgTRP/Tjr+OSHfotGLsYDpDbfSAhmNRr7u9U6Hci0GieWyvyvaNvhofvzC+CkenMkX9GofaynlqPfon0CAjdXUbzPdIR/E5YygKQGcbEtMwdyG2cdgg5e4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=H3QXKoWO; arc=none smtp.client-ip=91.218.175.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Forwarded-Encrypted: i=1; AJvYcCVjUFTRUIzPb0J19lPaGWg8e2gTYSn33Ufgj92oYj6IPsteMU+MT/pnrJUZf0ObATxYx7I3QrzpWh6wnXoq@vger.kernel.org, AJvYcCWin20KlXnL2ejMrvUV9P8VKAZAsiwNdwhnJsgOX172mTKddcV37E/EEKa0haf8PFBhpMd7JAVn@vger.kernel.org, AJvYcCXeocXyJTaofwMbXmJND01dLUhcMi/X79vjMdigfg7WtjEb/jsXTRLAzjysyzCj6A08HCGxez29@vger.kernel.org
+X-Forwarded-Encrypted: i=1; AJvYcCUL5XdfR4CR6h1x9Pws4FmvZdnRPkk0WtvXekKM016G7RoPL4hhzYlJ4bkEJNmQ1OTSZhACeE6C@vger.kernel.org, AJvYcCW7zf5GUKLaAie1lzwbv4xLx4cHp2NCWeisiOVrSYwatTJMAzCqbmeDhxbu1nTi7vHpT/trrpZRaPOmIIdV@vger.kernel.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745938223;
+	t=1745938769;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sG/t2zXSuC4284IbLbTWykBNuA1OkgkeykHvhILihlA=;
-	b=wczpRYnMdLsuSqcKn48qq1wORHnsxDW6JsUewxk6PeAKZke6iq7RzJRtPpSrGpNVMlkHcs
-	oDlGQlzykdzUg7rjp8HwD+2qY8y0VGX45iv4ntwJEwycOnZ6pRTJxrTnAT/0EZVxrerAvH
-	Ut3jyUsod3NsZaQTg8c1BmBHwSs9d1U=
-X-Gm-Message-State: AOJu0YzEDMgmB9pPFBpIRBMXIm6tQY8fcNP0u7Ea8smtxlKwas33st8n
-	XbOaT1DdytxSaAvU6jzOHex/48mU1tpTUlmMO2P7pzE4OmdK2yucJ28I8f2xxQvLXFI3Wrlgyol
-	uxnP6bT3ywYid3T1GQrJPOHiw6OM=
-X-Google-Smtp-Source: AGHT+IGNOvGy3kBxT/7U0dYFYLFlS3jS3+6ZPtjfckwWaQFxqtwhzH0vx78mbKcV1/Az431zoUcIbk2mXjaIZvhAeyg=
-X-Received: by 2002:a05:6102:5707:b0:4bd:22d5:fbd7 with SMTP id
- ada2fe7eead31-4daa9332342mr2397273137.11.1745938221113; Tue, 29 Apr 2025
- 07:50:21 -0700 (PDT)
+	bh=wnYluQNsvwlFJXZXZj0tS+5xHhVlsh145ES7SSJ3WhI=;
+	b=H3QXKoWO6FfFubQHdrSgo4pdu7CgpD7J2i1M/U4nlqoBZEf1uyEz+b0y9Ygm63B0xRYQbS
+	EslfhOgBt10gQIo/W2CpDAkI7XWpDYsdB3fs55Le4MwgMoA2tFXWi0D3Dn+ATaC81Y1nn0
+	ixK6vl5iFtIH6s46eGv9Ot4oWkWFrvQ=
+X-Gm-Message-State: AOJu0YwCbxIvkrDVpDp4wuBFxjCWnaVA/Ci2VFkwtYdnm1tkIiY4uSBj
+	fIJTWFJAIdWotJaJfP94cEq2nd2TpfVqO+KboNupFb4IwnRwoyGNdgzMWJcOua5aiExeSqyOKpg
+	jAWPxzFGsQEzoYYI2SsxRiqp7fcY=
+X-Google-Smtp-Source: AGHT+IGNBQScKbdOSUo8Y+Mw6oKw1PdkWWkRwZHqGviaYcint33ZBDfQezOKgc8bDBLZGCiwHYX56txfSJvKt7VyWNE=
+X-Received: by 2002:a05:6102:c93:b0:4cb:5d6c:9933 with SMTP id
+ ada2fe7eead31-4d6406915ccmr8292361137.8.1745938767376; Tue, 29 Apr 2025
+ 07:59:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250416180229.2902751-1-shakeel.butt@linux.dev>
- <as5cdsm4lraxupg3t6onep2ixql72za25hvd4x334dsoyo4apr@zyzl4vkuevuv> <d542d18f-1caa-6fea-e2c3-3555c87bcf64@google.com>
-In-Reply-To: <d542d18f-1caa-6fea-e2c3-3555c87bcf64@google.com>
+References: <CA+G9fYut=1TFvFUvkRPizj97v-JGyg0kKW7aH9XjPbss_Rwg1g@mail.gmail.com>
+In-Reply-To: <CA+G9fYut=1TFvFUvkRPizj97v-JGyg0kKW7aH9XjPbss_Rwg1g@mail.gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
-Date: Tue, 29 Apr 2025 07:50:09 -0700
-X-Gmail-Original-Message-ID: <CAGj-7pWpPkJQj6f975FKYBVY=aLQtoYp_Qn-nmRY1x=+KLr5Yw@mail.gmail.com>
-X-Gm-Features: ATxdqUHdcNwx1MHWsVfsCWAIdhFCYRv7C1N8Tk9pEbSWytPPXoXSMfUfvwyV-gs
-Message-ID: <CAGj-7pWpPkJQj6f975FKYBVY=aLQtoYp_Qn-nmRY1x=+KLr5Yw@mail.gmail.com>
-Subject: Re: [PATCH] memcg: multi-memcg percpu charge cache
-To: Hugh Dickins <hughd@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+Date: Tue, 29 Apr 2025 07:59:15 -0700
+X-Gmail-Original-Message-ID: <CAGj-7pViAbqP8pNy2vbvwJEcVG_b77FxNJigdQ5ibWqJd3X8Qg@mail.gmail.com>
+X-Gm-Features: ATxdqUGO8uv0C3KNe5vLyk-Im36DpLSwPCH86ZIO26AAD6a4CoByaREnphBWonE
+Message-ID: <CAGj-7pViAbqP8pNy2vbvwJEcVG_b77FxNJigdQ5ibWqJd3X8Qg@mail.gmail.com>
+Subject: Re: next-20250428: warning mm page_counter.c page_counter_cancel page_counter_cancel
+To: Naresh Kamboju <naresh.kamboju@linaro.org>, Hugh Dickins <hughd@google.com>
+Cc: linux-mm <linux-mm@kvack.org>, open list <linux-kernel@vger.kernel.org>, 
+	lkft-triage@lists.linaro.org, Linux Regressions <regressions@lists.linux.dev>, 
+	Cgroups <cgroups@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
 	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, Jakub Kicinski <kuba@kernel.org>, 
-	Eric Dumazet <edumazet@google.com>, Soheil Hassas Yeganeh <soheil@google.com>, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>
+	Johannes Weiner <hannes@cmpxchg.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Anders Roxell <anders.roxell@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Apr 29, 2025 at 2:40=E2=80=AFAM Hugh Dickins <hughd@google.com> wro=
-te:
+On Tue, Apr 29, 2025 at 5:22=E2=80=AFAM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
 >
-> [PATCH mm-unstable] memcg: multi-memcg percpu charge cache - fix 3
+> Regression while booting the Linux next-20250428 the following kernel war=
+nings
+> on the arm, arm64 and x86_64.
 >
-> Fix 2 has been giving me lots of memcg OOM kills not seen before:
-> it's better to stock nr_pages than the uninitialized stock_pages.
+> Regression Analysis:
+>  - New regression? Yes
+>  - Reproducibility? Yes
 >
-> Signed-off-by: Hugh Dickins <hughd@google.com>
+> First seen on the next-20250428.
+> Good: next-20250424
+> Bad:  next-20250428
+>
+> Boot regression: warning mm page_counter.c page_counter_cancel
+> page_counter_cancel
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
 
-Thanks a lot Hugh for catching this.
+Thanks for the report. Hugh has already posted the fix.
 
-> ---
->  mm/memcontrol.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 178d79e68107..02c6f553dc53 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1952,7 +1952,7 @@ static void refill_stock(struct mem_cgroup *memcg, =
-unsigned int nr_pages)
->                 }
->                 css_get(&memcg->css);
->                 WRITE_ONCE(stock->cached[i], memcg);
-> -               WRITE_ONCE(stock->nr_pages[i], stock_pages);
-> +               WRITE_ONCE(stock->nr_pages[i], nr_pages);
->         }
->
->         local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+https://lore.kernel.org/all/d542d18f-1caa-6fea-e2c3-3555c87bcf64@google.com=
+/
 
