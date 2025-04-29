@@ -1,120 +1,147 @@
-Return-Path: <cgroups+bounces-7891-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7892-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DBDDAA0AAA
-	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 13:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CFC8EAA0B1D
+	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 14:07:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE0531A814EE
-	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 11:51:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF4281A85545
+	for <lists+cgroups@lfdr.de>; Tue, 29 Apr 2025 12:07:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E882D9983;
-	Tue, 29 Apr 2025 11:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5009D2D1915;
+	Tue, 29 Apr 2025 12:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="a7C2cKzz"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NKJsXX/S"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BFF2D4B57
-	for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 11:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83532D0295
+	for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 12:05:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745927173; cv=none; b=ksL7+OR5HiDNma0MI9SN0DhC2BwNSgCEO7LJH1evW5h4/e4TvySE+DouyfqfEPfrFSc+GTFAAIj7KFTjkxbXh3od8AdAjZ5ZrXP8e7all/kj2jOT5gKHXOTU2BX5TPjW8tz5ro1z1/sdBeWFXO9FJv/wHjvDGLUVKScPV6xc4O0=
+	t=1745928347; cv=none; b=PKYML2HSXpXZJNhLDOhHVjnkqq6PXhSuLzC/5nbH8TKVkycVE7Zgyl3/z3y7M193n4aPu8Gy7yVVhB1homPhDQrx+o2f2wjsebBOtxDJ8qnNpBvxlGD3yv0oGjqPWow3TFrwYEX26n+lNBP1012FonYSjGucQzWdV3Hb2B6bD0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745927173; c=relaxed/simple;
-	bh=ULcK5tqpMbySYpVfeIJT28xVpefLfkaAs7WExUaK2V8=;
+	s=arc-20240116; t=1745928347; c=relaxed/simple;
+	bh=PAAjyCxZGBIUTEBraJHgwf/vjhPZsyRdV+OwUH1P2mg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AwcckfMfO2Q8RTeg2/0g8FNJzhLISaNvyawJDomTHFP3bIbr9eKasGsxMBxOcV1NEhL4oa4ZC5jUY0wWgr4X5QmaJQbaM8f+bRhh/C97/WabGUdOGluiMZo+D0BvfWPHrfHiRiYWL6iLw3kuAxvIoj3ViTyt6baKmJLCT2zBvi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=a7C2cKzz; arc=none smtp.client-ip=209.85.218.43
+	 Content-Type:Content-Disposition:In-Reply-To; b=qC06YhonOmvumMHDmG718Kr3b6cBs4DbMa+sqncaqJhhaAdXK7KGRO6UesYlGq+6rcwlKny0XfuGykgSP9A1qfJk1IMCTyshictnCgKdzJ5nW3oMM8bIBrUzwAx1LW0ro8zZQAmNUit9xacoMV2DGN35JBx3uds5VagRot7YiDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NKJsXX/S; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-acb39c45b4eso935886766b.1
-        for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 04:46:10 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-ac34257295dso1003333066b.2
+        for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 05:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1745927169; x=1746531969; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1745928343; x=1746533143; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=znQpdTxcq5Q59q25hWrDZ7jqcfAs7XVIcl5H5jOTHxU=;
-        b=a7C2cKzzs5yVR2SxJNS71x0+DFcvalG3AghOtS2uiVLM5AZ76PHFlHPLtsu+ES8sed
-         dF3/kWuVEjSlUIFMzEOd6nSF7Vfjm6vI6/iaC3zfpvzaqJhVoSapa0yfYBhifS9YysHR
-         Epy9teKgO4XaTz3RKnVxaNOHW+xfh4m0R3RZqyrl9yJZaXa222G1KsxfJYmOjD8V+tyW
-         ocd1SHaDznCXG0cIoctclzO700ie6+UkRtK6f642d/JD4a4bc0pEyk1KHU6yvSJL9xiN
-         HJHcwE2yCQ8nsdCv65douqA26vAUpeeXtT2busSV/SXz5AluR/fletWR4Q33uH9cibEo
-         l6Uw==
+        bh=9r/4N+f+7PaHLHb2f9S5WBuIucietvGqQf43oEfV+AM=;
+        b=NKJsXX/S4mQpUzYC8hLgeAoYUivbm85cBtVbnBRHElFO5U8pnqYJ3gzrdErCG2/7vw
+         alCkkN5unLXdODOiz1AJojgJANOjE8nQQe4sVH8pHrigW4Mqb4KL+O+kOPYsNsW8x53j
+         cXNK7wb+nbrkIkWcszOxzgBpYn1qEIYLt+GguFMb6IiqClMoOkqioRWa/2WarfV2fIeg
+         NJKzWA1q7j9L3HyrSZtY05j1LCh0HOPOXBRAZJJ2rG7JNt8dWhgXabTdLzqQw8nfC3G1
+         ELQhC7atiF4v2ep+YPIwUR0MEiE5+4YJMlrIte36Cmhl3kduZ3UwG7WDO2trn82EM7SA
+         iXYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745927169; x=1746531969;
+        d=1e100.net; s=20230601; t=1745928343; x=1746533143;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=znQpdTxcq5Q59q25hWrDZ7jqcfAs7XVIcl5H5jOTHxU=;
-        b=sfqoi1zOf/0w10/UqBYr1CI3+CmNPOCy6cZFsDk/I18tLq2gpPeflibXuJNnSLV3Xk
-         PLjGjP8LNywZ7ka/RYLhQciPVK5rD4qNPdnxo4G0ayRVxi/TzhKOpoGJ3UnKSPtqCa9+
-         Wkg2TvQtwcAXQqGpT3507Rl5oiwMpvIUqD74F3WtgOuboVSy5UbpMcfxhX1VvlIdcQ0d
-         hjPseFdtg7czZbuHVg2VxDt/67/DA14X56RUdGKE6HAJLbGzPqQBg1Q2IZaVmLmyn+pN
-         Sn6ejpt184oCQ6QVFmB0+GQU5nAMY6RYTxT7Ar0I119rnJ2ZMwXluqrbtvRwhzeIVSEa
-         lPvw==
-X-Forwarded-Encrypted: i=1; AJvYcCVNogiC4CXnQuZsZEWQWsYJZXGyXcuayXS338piCZ731iisGh0X7mm+ksLVeG+tGPFFsKHT9OL9@vger.kernel.org
-X-Gm-Message-State: AOJu0YytRc5eyRNkfTA0VjBWvfP/3WG3Lohhrc0KzzDpfgFpXQW0q/40
-	prYV7Vih5AnLMxkMUtIqSbyMprnkW8qk4x8Vn5tvjBB75YzL7daWAuUwyQASIRk=
-X-Gm-Gg: ASbGncsWfyFx/QBa4xe5ty7fdyI4vgIcUPlxofP3BgdpxhORSTBhQ30T79/J08yqgQq
-	LMci8KKQ5EGWdfRJDY54d5V95T2Qc6XsghQXkYVkUZk8lZDq4VMA3QJ7r3jgO0Dps9V9IveUr2Y
-	PE60oL23nuFQKmvwiblF2WXSC1nS28LAwFWPVBqnM7fVL5GqIOctK0WhGR48kwfyxpEZkyY1a3w
-	4ILtU1IShzkVsHZRmU98+K3NVi9CrijonUWO3xBsw+FTClr1B2ArFFc2wxjZrZZBOn86CflH+Z7
-	4mfzeFlAipT8cb0D0QY116vPq/sN8PnnTvXvVh8iEZLn9FjP3QUihA==
-X-Google-Smtp-Source: AGHT+IHdwrLpQIpUiiyBR38B/ZttRSS4g/Wv80xkTkGlVkMPcowVbaa+12lFPhCvhIOfAu66scr/kQ==
-X-Received: by 2002:a17:907:60c9:b0:ac7:cfcc:690d with SMTP id a640c23a62f3a-acec6ab3db1mr282121166b.40.1745927168683;
-        Tue, 29 Apr 2025 04:46:08 -0700 (PDT)
-Received: from localhost (109-81-85-148.rct.o2.cz. [109.81.85.148])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-ace6ecfa33csm760681066b.119.2025.04.29.04.46.08
+        bh=9r/4N+f+7PaHLHb2f9S5WBuIucietvGqQf43oEfV+AM=;
+        b=oeEVCtMIHXXZmu3cegknYjUxdXGMhZ9VAb7P/5oV30l4In2xaofnsb37todYbB//JL
+         up3t8252G8l3pPy0J9oJePIvGAa0uH38aggR4wRQKirMZypdRelEzok1cghHxSKP+jxS
+         zWEBGLIXeZCIZHR2ISs4vsBGbv54hiG+RGMvXpBoQRd4RlQV31PmX0I5jIfQMaPwtAhF
+         42fjVusMVN6dcG0QtvkgWysrz0qhhdjXKrRR2g4E5T5bNuF5RY9Ux7rDO0XmjInEYCOp
+         8U0Mg0DSiWOy7LdflcEL0Xnddlc9CjiHPxN43/mel0botnwmRx0vHKVKTqjmCnR+OwVZ
+         QmPg==
+X-Forwarded-Encrypted: i=1; AJvYcCUqOXHLxkN8gfjGY4qhM+UpC+QL8MQ3CqlAIXsk0h2B36H6B5Q+C9cb7CxRyvi4XPVX4nPazRYc@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXCWRtKhM3HT0+xDym8IrGlXPqwv4t9QYSOGxDEc4AmZyFCNBL
+	/tRr66DwDCiQNq6FkqJeV7dyKFTa5ggcaQ49ko7HkNOL+9BZ6Ja90axwc5gzXso=
+X-Gm-Gg: ASbGncvNo4UIIzcX5ppbbZoMexmwvBw0HdKdGSbkS/o9lwB9j/cOulaiMzMRn9AT/kI
+	uw/kLc7o187SWjbq2OP2yCkzsXkvQAG9p5adzdZ3Sps2EwnI8lGqQDdTMDqYy5ZDzg1urqFXyg6
+	pVtj2vp+CDTD8dXXXpcvkWCBH0ykxtH3XBj155nlR86coTdB8yLByML16lAY0LyBhDlsXiVRJXF
+	GBk6fjqdEX1Q3yG1c+WB2mQ/Ex8j9AGmKuJUx4s+d3qYCyiwxlOlOyU70mEIl7f2SE/99HkWCr7
+	qarwrUysK97XZ28hEPgfiAO0wdP2xKfy4oXXEFnFM4c=
+X-Google-Smtp-Source: AGHT+IHmuO1Gx5rMmBnuAer3bucqMZAIYa2NRJ4DgmXE88/sxb/L8pifgAqHItutkUFGsnCnWrzcmg==
+X-Received: by 2002:a17:907:1b0e:b0:ac2:842c:8d04 with SMTP id a640c23a62f3a-acec4e0506fmr403932166b.17.1745928342825;
+        Tue, 29 Apr 2025 05:05:42 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace6e4e6a05sm778144466b.57.2025.04.29.05.05.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Apr 2025 04:46:08 -0700 (PDT)
-Date: Tue, 29 Apr 2025 13:46:07 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Suren Baghdasaryan <surenb@google.com>,
-	David Rientjes <rientjes@google.com>, Josh Don <joshdon@google.com>,
-	Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, bpf@vger.kernel.org
-Subject: Re: [PATCH rfc 10/12] mm: introduce bpf_out_of_memory() bpf kfunc
-Message-ID: <aBC7_2Fv3NFuad4R@tiehlicka>
-References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
- <20250428033617.3797686-11-roman.gushchin@linux.dev>
+        Tue, 29 Apr 2025 05:05:42 -0700 (PDT)
+Date: Tue, 29 Apr 2025 14:05:40 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: James Houghton <jthoughton@google.com>, kvm@vger.kernel.org, 
+	Maxim Levitsky <mlevitsk@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Yu Zhao <yuzhao@google.com>, David Matlack <dmatlack@google.com>, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/5] KVM: selftests: Build and link
+ selftests/cgroup/lib into KVM selftests
+Message-ID: <gbuucm74bt32ozem6o2p2kd26xwnwpizbk5ihrwr2swboblfio@jw7pilz2pjjr>
+References: <20250414200929.3098202-1-jthoughton@google.com>
+ <20250414200929.3098202-5-jthoughton@google.com>
+ <aBAlcrTtBDeQCL0X@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="52kytrr5hdefn2m4"
 Content-Disposition: inline
-In-Reply-To: <20250428033617.3797686-11-roman.gushchin@linux.dev>
+In-Reply-To: <aBAlcrTtBDeQCL0X@google.com>
 
-On Mon 28-04-25 03:36:15, Roman Gushchin wrote:
-> Introduce bpf_out_of_memory() bpf kfunc, which allows to declare
-> an out of memory events and trigger the corresponding kernel OOM
-> handling mechanism.
-> 
-> It takes a trusted memcg pointer (or NULL for system-wide OOMs)
-> as an argument, as well as the page order.
-> 
-> Only one OOM can be declared and handled in the system at once,
-> so if the function is called in parallel to another OOM handling,
-> it bails out with -EBUSY.
 
-This makes sense for the global OOM handler because concurrent handlers
-are cooperative. But is this really correct for memcg ooms which could
-happen for different hierarchies? Currently we do block on oom_lock in
-that case to make sure one oom doesn't starve others. Do we want the
-same behavior for custom OOM handlers?
+--52kytrr5hdefn2m4
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 4/5] KVM: selftests: Build and link
+ selftests/cgroup/lib into KVM selftests
+MIME-Version: 1.0
 
--- 
-Michal Hocko
-SUSE Labs
+On Mon, Apr 28, 2025 at 06:03:46PM -0700, Sean Christopherson <seanjc@googl=
+e.com> wrote:
+=2E..
+> E.g. slot this is before making cgroup_util.c a library?
+>=20
+> --
+> From: Sean Christopherson <seanjc@google.com>
+> Date: Mon, 28 Apr 2025 17:38:14 -0700
+> Subject: [PATCH] selftests: cgroup: Move memcontrol specific helpers out =
+of
+>  common cgroup_util.c
+>=20
+> Move a handful of helpers out of cgroup_util.c and into test_memcontrol.c
+> that have nothing to with cgroups in general, in anticipation of making
+> cgroup_util.c a generic library that can be used by other selftests.
+>=20
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  tools/testing/selftests/cgroup/cgroup_util.c  | 78 -------------------
+>  tools/testing/selftests/cgroup/cgroup_util.h  |  5 --
+>  .../selftests/cgroup/test_memcontrol.c        | 78 +++++++++++++++++++
+>  3 files changed, 78 insertions(+), 83 deletions(-)
+
+This reorg makes sense to me,
+
+Acked-by: Michal Koutn=FD <mkoutny@suse.com>
+
+--52kytrr5hdefn2m4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCaBDAkgAKCRAt3Wney77B
+ScQbAQCK3C6jnGaSeFIPYQcKO55mROcnzexc8fp4M92Ozbpb1wD+PM1uo+nC/F3w
+HBvm09u1g8FO4HnRhVxrvuDQzXj+pAY=
+=SDcj
+-----END PGP SIGNATURE-----
+
+--52kytrr5hdefn2m4--
 
