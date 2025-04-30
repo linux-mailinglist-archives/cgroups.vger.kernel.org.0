@@ -1,60 +1,94 @@
-Return-Path: <cgroups+bounces-7942-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7943-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47019AA4202
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 06:37:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A1F7AA434B
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 08:48:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD5211894E79
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 04:37:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B867A1B642E4
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 06:48:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B6279FE;
-	Wed, 30 Apr 2025 04:37:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F72F1E9B09;
+	Wed, 30 Apr 2025 06:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xYVbdazZ"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Q/PoeP17"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B311C15D1
-	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 04:37:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED51B1C8632
+	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 06:48:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745987858; cv=none; b=kgYNCU95qW9fahSErK83Oa7jURQcbyzfEmJOBE7k/EudxpaswHxR76lN7ldyfi7Jv3l37GU4eLR+Zbc6C2v0Lz0Cwga+LVs/hTAmDUsZI5cJauTRnkzMI7pTZyjgE961c1YoJt3/2fepj9OyYpDawlSOZzLDBqDfI+CQYXZQ2qk=
+	t=1745995708; cv=none; b=aCV98xB8AwYKqKSTy7rmtB15/xAjxeXo9XylBhwIGWVTMwrF1Oss3fy4c21uRSCPbcc1jhfmPM03iRtIgNpfQOmJTckA1QuK2tdDUVbR9Jzn5vdthp77hxx63PLnO83mtQ+ABfl+RV6DUfSCGsvqm98fLNqV9BVHkTZp9kqJr/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745987858; c=relaxed/simple;
-	bh=f3ULwdz3E+FT0nhtRA9uWt9Tazclrc2kktUie/YwiJQ=;
+	s=arc-20240116; t=1745995708; c=relaxed/simple;
+	bh=PLN6NCA6PHzK2vowJ9PJFQeTe/Z2MIvKVVvm73D7mzk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mpPkfUYjbng1Whb0+gzcvGsuJ0GsXw/qZvzbu3oZ4mC1WO3NYRZPL2J0ej9X9pxaEh0bj072GQUY9rKeOc0eN0F6JzE9Gl88tnj2gMHtpF8cAVG+QbuAekUv+XRV5EWIVjVF4wUc1B9j132Rn5mo0V7kR71XGYfyAL90pmklfFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xYVbdazZ; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 29 Apr 2025 21:37:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745987853;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Nk++kZUym1lInKgvd6euou9nW/mbCsjkNUrb182STy8=;
-	b=xYVbdazZKtwWLsUH/QfCw2fysf6554U6sfclBklEutued09XIvwNg/PqHt5eJ8mrUGtPGe
-	9tJOEtXp5wi1kQPR1ezcvanMiJuB/eO14DYEhHHEhHv6TMrxUa2TaKbZUIp5j2WxY3TbEF
-	ZF/uOK14ntiqWdwtJWLleirD1q6pp+c=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH 1/4] memcg: simplify consume_stock
-Message-ID: <ik3yjjt6evxexkaculyiibgrgxtvimwx7rzalpbecb75gpmmck@pcsmy6kxzynb>
-References: <20250429230428.1935619-1-shakeel.butt@linux.dev>
- <20250429230428.1935619-2-shakeel.butt@linux.dev>
- <dvyyqubghf67b3qsuoreegqk4qnuuqfkk7plpfhhrck5yeeuic@xbn4c6c7yc42>
+	 Content-Type:Content-Disposition:In-Reply-To; b=d5CHEnUavQRMXC5Xr49QuKeXQtgFAApSRktl43WRksM8u6WvI/nGJ/AQj4iXNZ/UP7qRpwxQxy8bFtshfUDY87kHz5viMLJK4JZMnDhy/lljRvaJKFZvWy+IuKR7UVEjD5oKQCdGfbKvlaaVPiLeTd5MkHcN2OqbY1b0hn+gydk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Q/PoeP17; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5efe8d9ebdfso3340779a12.3
+        for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 23:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1745995704; x=1746600504; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5gJ92PtyNc3uFgKzWrC3UQrDRf0Vc6MoU7lP4izaMto=;
+        b=Q/PoeP17gJPCcGUa2sluScG2mEgr9c4qDILQLJGkWKciUawRd8EouJOeDiPA9AEi0+
+         FFrp1nw2y2pASVuxgfRQq9WSKFhdY7eCJP1FJohfIJ0hl5Tqg1Y0LQTJMa5bHx7OWvCD
+         ZOu2UHNrqVKb6gERBtjTPKUi99azxm28sDvhGyYaeC3KRkClzdxW60o+xxhNO+Mr/SsO
+         0IN9XZWMzLeRp19DzR+Upe8XpJdpS9ptbWRAIacFMAZgUR/T3fnSxqIYSNBpokAwipiQ
+         pU8d3bkGb7qCXnoKrNxYeLs/VOyXvja1SykcALvNYGZOWqVHAeXm5gy2BWgQZRjn79Zr
+         1nVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745995704; x=1746600504;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5gJ92PtyNc3uFgKzWrC3UQrDRf0Vc6MoU7lP4izaMto=;
+        b=flNFaGkmFh3t67NdClCNlaYenstW7pTPoDm3KeG3ezC1iPFq6jV7//Mec2VrlGME1o
+         +Z2yLPHqfXbUH93ZrwberKbVJlrnuwoHtvlQ6gWIxkbYNWktKqhH7BDbF5I6iCjiym2F
+         qwa3ySTWgDQ3a4JBxdryrkRPbsedxxpWmBUkn1p2AUSR5lT6kkGYcULl4aHK+GKWxitV
+         thxgFhUdFsvSSYrcPtPHtDzhtMr1VdmFhZfumYJlyLq9pVucQePMIxKG9fk6P+h73Ndj
+         Mh7ce5rS1hhYf9LudYEJGY9qLI4jiyU4sqnkGFu7kjX8cBtNiQioUcwqrwqKq75RXWK3
+         i3UQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWrZoSNRZNirfy9J0QpQ+juA6BCMbXzyT6wlzKJgsfAVdso+TouG7e72GAOEKVWAL4Z7v73jN4W@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPkegSVxyqFmxkAby6I8WqDdJRKwlGoMvEvRE3dmiC6AMPSNbB
+	WGNiv2OJYf3tEjdnnm8dQS/LhGm4RGoV+rCcTA0mkYYVC79ngtcQwcuzMCY31XU=
+X-Gm-Gg: ASbGnctx3vOV3Yge8m6HwRlvmnAoJ+eHlA/+VP2jY04EvJ+3od5R/KivXAH9Ed/UEm1
+	+VTKkAOCinC3aklgBVbh+Tiu0Lgn1r1JmBwwmv6v4abTnK2Ukee8o4g4o7JgYw5Tb7SAjsuo8D6
+	ngCbk6QWW4Vva4O+QapXT8E7QHHTn0U76LNCcxTciHy1ekSBbcxz0xhtaGVelCy7YCzTM15kpvx
+	piMekiO/eAZf3ABIo2aVxEuzhAkD/l9QENyEKG2hHFcQ4cICpkcytQDQJv0Ru0iH01EQn+NWqsy
+	NYPeH9B84VN1531myhoqQp4+4KB7wwQ=
+X-Google-Smtp-Source: AGHT+IG+39qW8j7pMcUfNcRNZlvzFRRTpTPxxGngSv3XVrBTzw6ESYdByYqN2IRu7Qx4KY3myhmFKg==
+X-Received: by 2002:a17:907:968b:b0:ace:6c36:cd13 with SMTP id a640c23a62f3a-acee21642a4mr155109666b.3.1745995704239;
+        Tue, 29 Apr 2025 23:48:24 -0700 (PDT)
+Received: from localhost ([193.86.92.181])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-ace6e41ad27sm877283266b.5.2025.04.29.23.48.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Apr 2025 23:48:23 -0700 (PDT)
+Date: Wed, 30 Apr 2025 08:48:23 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>, Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Soheil Hassas Yeganeh <soheil@google.com>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH] memcg: multi-memcg percpu charge cache
+Message-ID: <aBHHt9_ruks4q4Ll@tiehlicka>
+References: <20250416180229.2902751-1-shakeel.butt@linux.dev>
+ <aBDCXB_Tb2Iaihua@tiehlicka>
+ <qt5jtbsgjym655tbnoddlo5c7cemndcgsqwy4wp7m7ki3venxz@cfp637s7eqo6>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -63,83 +97,47 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dvyyqubghf67b3qsuoreegqk4qnuuqfkk7plpfhhrck5yeeuic@xbn4c6c7yc42>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <qt5jtbsgjym655tbnoddlo5c7cemndcgsqwy4wp7m7ki3venxz@cfp637s7eqo6>
 
-On Tue, Apr 29, 2025 at 04:51:03PM -0700, Alexei Starovoitov wrote:
-> On Tue, Apr 29, 2025 at 04:04:25PM -0700, Shakeel Butt wrote:
-> > The consume_stock() does not need to check gfp_mask for spinning and can
-> > simply trylock the local lock to decide to proceed or fail. No need to
-> > spin at all for local lock.
+On Tue 29-04-25 11:43:29, Shakeel Butt wrote:
+> On Tue, Apr 29, 2025 at 02:13:16PM +0200, Michal Hocko wrote:
 > > 
-> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > ---
-> >  mm/memcontrol.c | 20 +++++++-------------
-> >  1 file changed, 7 insertions(+), 13 deletions(-)
+> > > Some of the design choices are:
+> > > 
+> > > 1. Fit all caches memcgs in a single cacheline.
 > > 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 650fe4314c39..40d0838d88bc 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -1804,16 +1804,14 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
-> >   * consume_stock: Try to consume stocked charge on this cpu.
-> >   * @memcg: memcg to consume from.
-> >   * @nr_pages: how many pages to charge.
-> > - * @gfp_mask: allocation mask.
-> >   *
-> > - * The charges will only happen if @memcg matches the current cpu's memcg
-> > - * stock, and at least @nr_pages are available in that stock.  Failure to
-> > - * service an allocation will refill the stock.
-> > + * Consume the cached charge if enough nr_pages are present otherwise return
-> > + * failure. Also return failure for charge request larger than
-> > + * MEMCG_CHARGE_BATCH or if the local lock is already taken.
-> >   *
-> >   * returns true if successful, false otherwise.
-> >   */
-> > -static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages,
-> > -			  gfp_t gfp_mask)
-> > +static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
-> >  {
-> >  	struct memcg_stock_pcp *stock;
-> >  	uint8_t stock_pages;
-> > @@ -1821,12 +1819,8 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages,
-> >  	bool ret = false;
-> >  	int i;
-> >  
-> > -	if (nr_pages > MEMCG_CHARGE_BATCH)
-> > -		return ret;
-> > -
-> > -	if (gfpflags_allow_spinning(gfp_mask))
-> > -		local_lock_irqsave(&memcg_stock.stock_lock, flags);
-> > -	else if (!local_trylock_irqsave(&memcg_stock.stock_lock, flags))
-> > +	if (nr_pages > MEMCG_CHARGE_BATCH ||
-> > +	    !local_trylock_irqsave(&memcg_stock.stock_lock, flags))
+> > Could you be more specific about the reasoning? I suspect it is for the
+> > network receive path you are mentioning above, right?
+> > 
 > 
-> I don't think it's a good idea.
-> spin_trylock() will fail often enough in PREEMPT_RT.
-> Even during normal boot I see preemption between tasks and they
-> contend on the same cpu for the same local_lock==spin_lock.
-> Making them take slow path is a significant behavior change
-> that needs to be carefully considered.
-
-I didn't really think too much about PREEMPT_RT kernels as I assume
-performance is not top priority but I think I get your point. Let me
-explain and correct me if I am wrong. On PREEMPT_RT kernel, the local
-lock is a spin lock which is actually a mutex but with priority
-inheritance. A task having the local lock can still get context switched
-(but will remain on same CPU run queue) and the newer task can try to
-acquire the memcg stock local lock. If we just do trylock, it will
-always go to the slow path but if we do local_lock() then it will sleeps
-and possibly gives its priority to the task owning the lock and possibly
-make that task to get the CPU. Later the task slept on memcg stock lock
-will wake up and go through fast path.
-
-
-Ok, I will drop the first patch. Please let me know your comments on the
-remaining series.
-
+> Here I meant why I chose NR_MEMCG_STOCK to be 7. Basically the first
+> cacheline of per-cpu stock has all the cached memcg, so checking if a
+> given memcg is cached or not should be comparable cheap as single cached
+> memcg. You suggested comment already mentioned this.
 > 
-> Also please cc bpf@vger in the future for these kind of changes.
+> However please note that we may find in future that 2 cachelines worth of
+> cached memcgs are better for wider audience/workloads but for simplicity
+> let's start with single cacheline worth of cached memcgs.
 
-Sounds good.
+Right, and this is exactly why an extended reasoning is really due. We
+have introduced magic constants in the past and then we were struggling
+to decide whether this might regress something.
+
+I can imagine that we could extend the caching to be adaptive in the
+future and scale with the number of cgroups in some way.
+> 
+> [...]
+> > 
+> > Just a minor suggestion below. Other than that looks good to me (with
+> > follow up fixes) in this thread.
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+> > Thanks!
+> > 
+> 
+> Thanks, I will send a diff for Andrew to squash it into original patch.
+
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
 
