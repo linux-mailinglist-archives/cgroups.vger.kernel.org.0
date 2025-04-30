@@ -1,258 +1,280 @@
-Return-Path: <cgroups+bounces-7949-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7950-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3670BAA491B
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 12:47:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F845AA4A4D
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 13:43:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA3291893CCF
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 10:44:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5ABC67B1185
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 11:41:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB3B2586CC;
-	Wed, 30 Apr 2025 10:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC6A2248F53;
+	Wed, 30 Apr 2025 11:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U2letWcU"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="l54wFE/F";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5BKmIgpf";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="l54wFE/F";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5BKmIgpf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7BFB253327;
-	Wed, 30 Apr 2025 10:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FF4221F35
+	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 11:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746009748; cv=none; b=KD7sxyJJzl5cQW1a7LkFanHMJW/U5gGJpj/ViEXkwM+l84f5jpBiopwPMyTNU6g1GEbeEtuQIQGkgpwDMJOx/wWSgtuO+TG8n5zdPuug0XVzbqUXYz2fLMMDVTSs3gLZPTSieMrzNtvXBJ0LOqvNsCQ//aghSJU7sD5W5XoRmlw=
+	t=1746013371; cv=none; b=I+uEeAVRM4H47Z+LSWUaT+GvOI1Bx4ESed//KO4XLSng00PPFU3CCb051aCuxNdHZpw5Zo93VnFXd7rYYzGObtsMTrs6Su9oEojURbcDmEnxKxwZ5wAhxU2grZK0NTiJcWdfAmfvFyPJeytjjZ3MpD/IkNYbbAGsWVQiatuE57E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746009748; c=relaxed/simple;
-	bh=VOI7vS/Hx63Qc2jd9lMpXR2iXNmohRhb+XxgADkUU14=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=B+vQIfZ1Vz3dB61nLtWF6bWFI+mwTKnJA+hBFTU6xOxAU1mHvv7m+uul2IHQXQqQNmFeScS5gVBQsjdu/E0X2AIW3PujePmnYHuChsnwiq0JTw5BrPeJVst6osiOI8sGexgshRxUUm3FTRPlc0U7J9egyxXBUKgYldeu9Pp67ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U2letWcU; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1746009746; x=1777545746;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=VOI7vS/Hx63Qc2jd9lMpXR2iXNmohRhb+XxgADkUU14=;
-  b=U2letWcUZE+S4cpQiNsf4wlcjJSNrpybqc6ssWoSxIL+kMZDxRmvrE5k
-   MPmYo5RtQ2CJpRsOfUjhypOch0lPUTMjvoDLQvldml4ULETMk73p4VmOn
-   xGnqPyJPm/K2Yv3WcE2FRpRJYuGLvK5mJDPD0qjkToX1KaI79IqCpofw8
-   HRiVCLuCBsnHooYporHyuRhmRSuJXHCkpWwZ4QPwJdqjT6+0YdFrvX08j
-   /FOR4V38yGvP9WHxSjJcH4+lCjXvNnY9T/OV18mcHVtwZvA6MmQifW/Hi
-   TvOOENFBJn2bompdFPFcO07hgKaAdmD3WerlYwZn4CDeyA2HivWHmj221
-   g==;
-X-CSE-ConnectionGUID: 1JNMoUdgQSi0rEAs64C4ZQ==
-X-CSE-MsgGUID: QkYLB4moRUaCirdNsxGx5Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11418"; a="51326304"
-X-IronPort-AV: E=Sophos;i="6.15,251,1739865600"; 
-   d="scan'208";a="51326304"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2025 03:42:25 -0700
-X-CSE-ConnectionGUID: yYbopDp1TwOcHFALwXyC4g==
-X-CSE-MsgGUID: vjyOm4ajRs6T5uxyOPgSmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,251,1739865600"; 
-   d="scan'208";a="138899488"
-Received: from chenyu-dev.sh.intel.com ([10.239.62.107])
-  by orviesa003.jf.intel.com with ESMTP; 30 Apr 2025 03:42:20 -0700
-From: Chen Yu <yu.c.chen@intel.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Ingo Molnar <mingo@redhat.com>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Mel Gorman <mgormanmgorman@suse.de>,
-	Michal Hocko <mhocko@kernel.org>,
-	Michal Koutny <mkoutny@suse.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	"Chen, Tim C" <tim.c.chen@intel.com>,
-	Aubrey Li <aubrey.li@intel.com>,
-	Libo Chen <libo.chen@oracle.com>,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Chen Yu <yu.c.chen@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Madadi Vineeth Reddy <vineethr@linux.ibm.com>
-Subject: [PATCH v3] sched/numa: add statistics of numa balance task migration
-Date: Wed, 30 Apr 2025 18:36:23 +0800
-Message-Id: <20250430103623.3349842-1-yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1746013371; c=relaxed/simple;
+	bh=w1HsfbiZ81GXZWTYVUQqkmtNBU8SZdyaw75xVYEcFPg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iLJVlP3qAuBOc7oh37RINTeDF1T6fLYyMBPwzrowFA3A/71NUo4B6hF1rkUr8mO8N1mx8GjhJsHoupo3My8Gf2hunxboUECayb4q1UbSUbOrzu6+w4a4eQLxbJ5O4vZaVt+Vp/nVUnPksJiTEIFIY11tbyDsY+GMzOsvLcbwcko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=l54wFE/F; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5BKmIgpf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=l54wFE/F; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5BKmIgpf; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C17BD21200;
+	Wed, 30 Apr 2025 11:42:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746013367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DMdUf+G8z9UwnFqiI+Ohf1SNPY5q3W5xNuNqMGtKlLI=;
+	b=l54wFE/Fyyayk3OovslwsQ4asa1Pi4AgvAffXiZwgZOzttH/oxC6jk5LjGchupx3kPFXu3
+	1Dv6JpgyR2B2/d3tYnXBDgrPzVao0HiIpRChPS1nNLDwz7u75B57Bq7GzxtbiXk3IvA2IN
+	4HcJjTvXQVTQ/ds84rUN4C3XKP9jh3I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746013367;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DMdUf+G8z9UwnFqiI+Ohf1SNPY5q3W5xNuNqMGtKlLI=;
+	b=5BKmIgpfXflKaDnFG8V+ORenoH4P1/jhNQAt+HptR/T4clMTesTivFo7cDDi58rCuVgla/
+	DwZdggVsGeegzCDA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="l54wFE/F";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5BKmIgpf
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1746013367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DMdUf+G8z9UwnFqiI+Ohf1SNPY5q3W5xNuNqMGtKlLI=;
+	b=l54wFE/Fyyayk3OovslwsQ4asa1Pi4AgvAffXiZwgZOzttH/oxC6jk5LjGchupx3kPFXu3
+	1Dv6JpgyR2B2/d3tYnXBDgrPzVao0HiIpRChPS1nNLDwz7u75B57Bq7GzxtbiXk3IvA2IN
+	4HcJjTvXQVTQ/ds84rUN4C3XKP9jh3I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1746013367;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DMdUf+G8z9UwnFqiI+Ohf1SNPY5q3W5xNuNqMGtKlLI=;
+	b=5BKmIgpfXflKaDnFG8V+ORenoH4P1/jhNQAt+HptR/T4clMTesTivFo7cDDi58rCuVgla/
+	DwZdggVsGeegzCDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A858F139E7;
+	Wed, 30 Apr 2025 11:42:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id K3zJKLcMEmhsUAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 30 Apr 2025 11:42:47 +0000
+Message-ID: <a9977cb2-3dce-4be1-81a3-23e760082922@suse.cz>
+Date: Wed, 30 Apr 2025 13:42:47 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] memcg: separate local_trylock for memcg and obj
+Content-Language: en-US
+To: Shakeel Butt <shakeel.butt@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Meta kernel team <kernel-team@meta.com>, bpf <bpf@vger.kernel.org>
+References: <20250429230428.1935619-1-shakeel.butt@linux.dev>
+ <20250429230428.1935619-3-shakeel.butt@linux.dev>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20250429230428.1935619-3-shakeel.butt@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: C17BD21200
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.51
+X-Spam-Flag: NO
 
-On systems with NUMA balancing enabled, it is found that tracking
-the task activities due to NUMA balancing is helpful. NUMA balancing
-has two mechanisms for task migration: one is to migrate the task to
-an idle CPU in its preferred node, the other is to swap tasks on
-different nodes if they are on each other's preferred node.
+On 4/30/25 01:04, Shakeel Butt wrote:
+> The per-cpu stock_lock protects cached memcg and cached objcg and their
+> respective fields. However there is no dependency between these fields
+> and it is better to have fine grained separate locks for cached memcg
+> and cached objcg. This decoupling of locks allows us to make the memcg
+> charge cache and objcg charge cache to be nmi safe independently.
+> 
+> At the moment, memcg charge cache is already nmi safe and this
+> decoupling will allow to make memcg charge cache work without disabling
+> irqs.
+> 
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> ---
+>  mm/memcontrol.c | 52 +++++++++++++++++++++++++++----------------------
+>  1 file changed, 29 insertions(+), 23 deletions(-)
 
-The kernel already has NUMA page migration statistics in
-/sys/fs/cgroup/mytest/memory.stat and /proc/{PID}/sched,
-but does not have statistics for task migration/swap.
-Add the task migration and swap count accordingly.
+> @@ -1883,19 +1885,22 @@ static void drain_local_stock(struct work_struct *dummy)
+>  	struct memcg_stock_pcp *stock;
+>  	unsigned long flags;
+>  
+> -	/*
+> -	 * The only protection from cpu hotplug (memcg_hotplug_cpu_dead) vs.
+> -	 * drain_stock races is that we always operate on local CPU stock
+> -	 * here with IRQ disabled
+> -	 */
+> -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	if (WARN_ONCE(!in_task(), "drain in non-task context"))
+> +		return;
+>  
+> +	preempt_disable();
+>  	stock = this_cpu_ptr(&memcg_stock);
+> +
+> +	local_lock_irqsave(&memcg_stock.obj_lock, flags);
+>  	drain_obj_stock(stock);
+> +	local_unlock_irqrestore(&memcg_stock.obj_lock, flags);
+> +
+> +	local_lock_irqsave(&memcg_stock.memcg_lock, flags);
+>  	drain_stock_fully(stock);
+> -	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+> +	local_unlock_irqrestore(&memcg_stock.memcg_lock, flags);
+>  
+> -	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+> +	preempt_enable();
 
-The following two new fields:
+This usage of preempt_disable() looks rather weird and makes RT unhappy as
+the local lock is a mutex, so it gives you this:
 
-numa_task_migrated
-numa_task_swapped
+BUG: sleeping function called from invalid context at
+kernel/locking/spinlock_rt.c:48
 
-will be displayed in both
-/sys/fs/cgroup/{GROUP}/memory.stat and /proc/{PID}/sched
+I know the next patch removes it again but for bisectability purposes it
+should be avoided. Instead of preempt_disable() we can extend the local lock
+scope here?
 
-Introducing both pertask and permemcg NUMA balancing statistics helps
-to quickly evaluate the performance and resource usage of the target
-workload. For example, the user can first identify the container which
-has high NUMA balance activity and then narrow down to a specific task
-within that group, and tune the memory policy of that task.
-In summary, it is plausible to iterate the /proc/$pid/sched to find the
-offending task, but the introduction of per memcg tasks' Numa balancing
-aggregated  activity can further help users identify the task in a
-divide-and-conquer way.
-
-Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
-Tested-by: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
-v2->v3:
-Remove unnecessary p->mm check because kernel threads are
-not supported by Numa Balancing. (Libo Chen)
-v1->v2:
-Update the Documentation/admin-guide/cgroup-v2.rst. (Michal)
----
- Documentation/admin-guide/cgroup-v2.rst | 6 ++++++
- include/linux/sched.h                   | 4 ++++
- include/linux/vm_event_item.h           | 2 ++
- kernel/sched/core.c                     | 7 +++++--
- kernel/sched/debug.c                    | 4 ++++
- mm/memcontrol.c                         | 2 ++
- mm/vmstat.c                             | 2 ++
- 7 files changed, 25 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 1a16ce68a4d7..d346f3235945 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1670,6 +1670,12 @@ The following nested keys are defined.
- 	  numa_hint_faults (npn)
- 		Number of NUMA hinting faults.
- 
-+	  numa_task_migrated (npn)
-+		Number of task migration by NUMA balancing.
-+
-+	  numa_task_swapped (npn)
-+		Number of task swap by NUMA balancing.
-+
- 	  pgdemote_kswapd
- 		Number of pages demoted by kswapd.
- 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index f96ac1982893..1c50e30b5c01 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -549,6 +549,10 @@ struct sched_statistics {
- 	u64				nr_failed_migrations_running;
- 	u64				nr_failed_migrations_hot;
- 	u64				nr_forced_migrations;
-+#ifdef CONFIG_NUMA_BALANCING
-+	u64				numa_task_migrated;
-+	u64				numa_task_swapped;
-+#endif
- 
- 	u64				nr_wakeups;
- 	u64				nr_wakeups_sync;
-diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-index 9e15a088ba38..91a3ce9a2687 100644
---- a/include/linux/vm_event_item.h
-+++ b/include/linux/vm_event_item.h
-@@ -66,6 +66,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
- 		NUMA_HINT_FAULTS,
- 		NUMA_HINT_FAULTS_LOCAL,
- 		NUMA_PAGE_MIGRATE,
-+		NUMA_TASK_MIGRATE,
-+		NUMA_TASK_SWAP,
- #endif
- #ifdef CONFIG_MIGRATION
- 		PGMIGRATE_SUCCESS, PGMIGRATE_FAIL,
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index c81cf642dba0..25a92f2abda4 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3352,6 +3352,9 @@ void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
- #ifdef CONFIG_NUMA_BALANCING
- static void __migrate_swap_task(struct task_struct *p, int cpu)
- {
-+	__schedstat_inc(p->stats.numa_task_swapped);
-+	count_memcg_events_mm(p->mm, NUMA_TASK_SWAP, 1);
-+
- 	if (task_on_rq_queued(p)) {
- 		struct rq *src_rq, *dst_rq;
- 		struct rq_flags srf, drf;
-@@ -7953,8 +7956,8 @@ int migrate_task_to(struct task_struct *p, int target_cpu)
- 	if (!cpumask_test_cpu(target_cpu, p->cpus_ptr))
- 		return -EINVAL;
- 
--	/* TODO: This is not properly updating schedstats */
--
-+	__schedstat_inc(p->stats.numa_task_migrated);
-+	count_memcg_events_mm(p->mm, NUMA_TASK_MIGRATE, 1);
- 	trace_sched_move_numa(p, curr_cpu, target_cpu);
- 	return stop_one_cpu(curr_cpu, migration_cpu_stop, &arg);
- }
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 56ae54e0ce6a..f971c2af7912 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -1206,6 +1206,10 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
- 		P_SCHEDSTAT(nr_failed_migrations_running);
- 		P_SCHEDSTAT(nr_failed_migrations_hot);
- 		P_SCHEDSTAT(nr_forced_migrations);
-+#ifdef CONFIG_NUMA_BALANCING
-+		P_SCHEDSTAT(numa_task_migrated);
-+		P_SCHEDSTAT(numa_task_swapped);
-+#endif
- 		P_SCHEDSTAT(nr_wakeups);
- 		P_SCHEDSTAT(nr_wakeups_sync);
- 		P_SCHEDSTAT(nr_wakeups_migrate);
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index c96c1f2b9cf5..cdaab8a957f3 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -463,6 +463,8 @@ static const unsigned int memcg_vm_event_stat[] = {
- 	NUMA_PAGE_MIGRATE,
- 	NUMA_PTE_UPDATES,
- 	NUMA_HINT_FAULTS,
-+	NUMA_TASK_MIGRATE,
-+	NUMA_TASK_SWAP,
- #endif
- };
- 
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 4c268ce39ff2..ed08bb384ae4 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1347,6 +1347,8 @@ const char * const vmstat_text[] = {
- 	"numa_hint_faults",
- 	"numa_hint_faults_local",
- 	"numa_pages_migrated",
-+	"numa_task_migrated",
-+	"numa_task_swapped",
- #endif
- #ifdef CONFIG_MIGRATION
- 	"pgmigrate_success",
--- 
-2.25.1
+>  }
+>  
+>  static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+> @@ -1918,10 +1923,10 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  	VM_WARN_ON_ONCE(mem_cgroup_is_root(memcg));
+>  
+>  	if (nr_pages > MEMCG_CHARGE_BATCH ||
+> -	    !local_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
+> +	    !local_trylock_irqsave(&memcg_stock.memcg_lock, flags)) {
+>  		/*
+>  		 * In case of larger than batch refill or unlikely failure to
+> -		 * lock the percpu stock_lock, uncharge memcg directly.
+> +		 * lock the percpu memcg_lock, uncharge memcg directly.
+>  		 */
+>  		memcg_uncharge(memcg, nr_pages);
+>  		return;
+> @@ -1953,7 +1958,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  		WRITE_ONCE(stock->nr_pages[i], nr_pages);
+>  	}
+>  
+> -	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	local_unlock_irqrestore(&memcg_stock.memcg_lock, flags);
+>  }
+>  
+>  static bool is_drain_needed(struct memcg_stock_pcp *stock,
+> @@ -2028,11 +2033,12 @@ static int memcg_hotplug_cpu_dead(unsigned int cpu)
+>  
+>  	stock = &per_cpu(memcg_stock, cpu);
+>  
+> -	/* drain_obj_stock requires stock_lock */
+> -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	/* drain_obj_stock requires obj_lock */
+> +	local_lock_irqsave(&memcg_stock.obj_lock, flags);
+>  	drain_obj_stock(stock);
+> -	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	local_unlock_irqrestore(&memcg_stock.obj_lock, flags);
+>  
+> +	/* no need for the local lock */
+>  	drain_stock_fully(stock);
+>  
+>  	return 0;
+> @@ -2885,7 +2891,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  	unsigned long flags;
+>  	bool ret = false;
+>  
+> -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	local_lock_irqsave(&memcg_stock.obj_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (objcg == READ_ONCE(stock->cached_objcg) && stock->nr_bytes >= nr_bytes) {
+> @@ -2896,7 +2902,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  			__account_obj_stock(objcg, stock, nr_bytes, pgdat, idx);
+>  	}
+>  
+> -	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	local_unlock_irqrestore(&memcg_stock.obj_lock, flags);
+>  
+>  	return ret;
+>  }
+> @@ -2985,7 +2991,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  	unsigned long flags;
+>  	unsigned int nr_pages = 0;
+>  
+> -	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+> +	local_lock_irqsave(&memcg_stock.obj_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
+> @@ -3007,7 +3013,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  		stock->nr_bytes &= (PAGE_SIZE - 1);
+>  	}
+>  
+> -	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	local_unlock_irqrestore(&memcg_stock.obj_lock, flags);
+>  
+>  	if (nr_pages)
+>  		obj_cgroup_uncharge_pages(objcg, nr_pages);
 
 
