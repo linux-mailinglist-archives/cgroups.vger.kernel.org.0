@@ -1,115 +1,152 @@
-Return-Path: <cgroups+bounces-7961-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7962-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD49EAA4FE4
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 17:15:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3271AAA4FF4
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 17:17:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4B689C3296
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 15:11:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BED28189C56A
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 15:17:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71AFC1C5D62;
-	Wed, 30 Apr 2025 15:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C535E18CBFB;
+	Wed, 30 Apr 2025 15:16:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="y7niSezD";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="b0y9yWDl"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tbPh85mq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1A2190676;
-	Wed, 30 Apr 2025 15:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A441AF0AF
+	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 15:16:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746025913; cv=none; b=YnlleY3lFV7VjDzbwgwIcIDTvKp2UlJu0VApjvNNMsqKxv9oFfXlGxYC7fuT/rkG8KJZD7AfOObLfxJq0tdksRAzM+b59ZMmKtQmXe87s73kdwGahn7EtK1iTYZz5wCzRH1U8nS1QsmSuwTI57k6IzKTi7HCNsPmwXE5b3ptaQ4=
+	t=1746026210; cv=none; b=TywVXyty/mBafH6b0+e2YmOguyjaJueJT93PvGjgIAgU7CEM8dNpoxo5Xco7kX14TQ7QeehTF1ENMiEQH7a8Sl0MvhHrC9LiK3LLgAzId1goMavtW/Wq6/aQZfdbMX9+f32i4/nHMP3OnpJ6gtD+nig6S3JWak/xag3gyD5ICTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746025913; c=relaxed/simple;
-	bh=gwNreDt2XmAk6fEeKAjvZndQq/2M8drfbIRxele9Qsc=;
+	s=arc-20240116; t=1746026210; c=relaxed/simple;
+	bh=QG8bqgr3qWo8btyscx6Pg1np246S/tBDUlpyBuH76hI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JGZIGJvaFsrzvYg1ukcWXfzfLKbVc3oWpvHPxGG3Id1myxG98SoiuvNpp54yi+DVWHdGovxi1HqwaNPOX4Fc9Zbd1ExDPtPZFVyKnfVbOuVaKHNlimDLy2F954+yC5a9Fz7aH8NsrGHQ0qoktTRyUIHvtu/rK92LPi0rRsUOq1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=y7niSezD; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=b0y9yWDl; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 30 Apr 2025 17:11:48 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1746025910;
+	 Content-Type:Content-Disposition:In-Reply-To; b=RvEsI87fp+gXwQRkrta/OLGADymnKbfvYE8aqPwJ78BA+nS83Xzxyru7/O9v28G0cwlnyF1lUIV7qLP5EeFo22MGrfD82QCkcfxN0PmQQiY7q446cT4Ip2Cr99TAV9GUdiNfQhOfw4/TETlEOlT93wOFPn+DqQW+7xHlTvPHn4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tbPh85mq; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 30 Apr 2025 08:16:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746026206;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2c3K2d5Af1MygOHpxIZVc/MSwzvBfxMXWYEj6fNYrpY=;
-	b=y7niSezDbu5dRuluihwjKJIoTeAwB2SEcHuOaSf6t6kTHInm3WEez8yl3FB+fcx+INymyg
-	X8V/iCDTVJLLp2G8T56aHRMbA+9a2crgjGwYMWCA/lX/1TK4LlBr+8gzK0svgJ43tQyeIY
-	1xbmj3lJD+ZtxcSdx61UxCOAvRioYdS2BNxBe5wwgMTOylqMl+a5XrpwTXZLJwjxU5jbqm
-	ITqpI14w2hIioGFqTbuw48gy6S3Ye0RT2kGTWo2nNCIZHs4IyiGFnL7CfzJqJ9rY4bGa5B
-	w4sXbNKSJQGOcPlOiZv3Rdni5jzEWrs0lWdHyhgZBIlezvZchoZrlxGuDBcqgA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1746025910;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2c3K2d5Af1MygOHpxIZVc/MSwzvBfxMXWYEj6fNYrpY=;
-	b=b0y9yWDlT5hm7iouGh2JxKI9KK4Ca+wXCLV8YKrB/X2zXUQhNg/r/VTv9e8Xg/OAjoWlGu
-	73a0+O7fBDpAwvDQ==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH 1/4] memcg: simplify consume_stock
-Message-ID: <20250430151148.-SqLG7kP@linutronix.de>
-References: <20250429230428.1935619-1-shakeel.butt@linux.dev>
- <20250429230428.1935619-2-shakeel.butt@linux.dev>
- <dvyyqubghf67b3qsuoreegqk4qnuuqfkk7plpfhhrck5yeeuic@xbn4c6c7yc42>
- <ik3yjjt6evxexkaculyiibgrgxtvimwx7rzalpbecb75gpmmck@pcsmy6kxzynb>
+	bh=QuMn9HO2ylHkudtJJgWW+uAsUFq7j0ybDWnjZm1chbA=;
+	b=tbPh85mqFuFE68zG9wwsyzvn0w6q9QuM+tyJK8/hQ/ZBmw8hoZyObkmHYHybSvoObi4+cv
+	QGRo+e36qf+yddQwfi4mYAWAiyTM3HNdl9YrzzAL4Hs0r7nwS2o1DdyRTdYMBuCIWmCZNT
+	3JvPQLMoYKh/+B36R4CstLUfTjk0YDo=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>, 
+	Soheil Hassas Yeganeh <soheil@google.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Meta kernel team <kernel-team@meta.com>, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH] memcg: multi-memcg percpu charge cache
+Message-ID: <mjmayud53r2ypus22ab75c7kfaq7izaidde2bju536e2ghifdi@lslljpj2hdtm>
+References: <20250416180229.2902751-1-shakeel.butt@linux.dev>
+ <as5cdsm4lraxupg3t6onep2ixql72za25hvd4x334dsoyo4apr@zyzl4vkuevuv>
+ <ae4b9ac8-d67d-471f-89b9-7eeaf58dd1b8@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ik3yjjt6evxexkaculyiibgrgxtvimwx7rzalpbecb75gpmmck@pcsmy6kxzynb>
+In-Reply-To: <ae4b9ac8-d67d-471f-89b9-7eeaf58dd1b8@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On 2025-04-29 21:37:26 [-0700], Shakeel Butt wrote:
-> > > -	if (gfpflags_allow_spinning(gfp_mask))
-> > > -		local_lock_irqsave(&memcg_stock.stock_lock, flags);
-> > > -	else if (!local_trylock_irqsave(&memcg_stock.stock_lock, flags))
-> > > +	if (nr_pages > MEMCG_CHARGE_BATCH ||
-> > > +	    !local_trylock_irqsave(&memcg_stock.stock_lock, flags))
+On Wed, Apr 30, 2025 at 12:05:48PM +0200, Vlastimil Babka wrote:
+> On 4/25/25 22:18, Shakeel Butt wrote:
+> > Hi Andrew,
 > > 
-> > I don't think it's a good idea.
-> > spin_trylock() will fail often enough in PREEMPT_RT.
-> > Even during normal boot I see preemption between tasks and they
-> > contend on the same cpu for the same local_lock==spin_lock.
-> > Making them take slow path is a significant behavior change
-> > that needs to be carefully considered.
+> > Another fix for this patch. Basically simplification of refill_stock and
+> > avoiding multiple cached entries of a memcg.
+> > 
+> > From 6f6f7736799ad8ca5fee48eca7b7038f6c9bb5b9 Mon Sep 17 00:00:00 2001
+> > From: Shakeel Butt <shakeel.butt@linux.dev>
+> > Date: Fri, 25 Apr 2025 13:10:43 -0700
+> > Subject: [PATCH] memcg: multi-memcg percpu charge cache - fix 2
+> > 
+> > Simplify refill_stock by avoiding goto and doing the operations inline
+> > and make sure the given memcg is not cached multiple times.
+> > 
+> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 > 
-> I didn't really think too much about PREEMPT_RT kernels as I assume
-> performance is not top priority but I think I get your point. Let me
+> It seems to me you could simplify further based on how cached/nr_pages
+> arrays are filled from 0 to higher index and thus if you see a NULL it means
+> all higher indices are also NULL. At least I don't think there's ever a
+> drain_stock() that would "punch a NULL" in the middle? When it's done in
+> refill_stock() for the random index, it's immediately reused.
+> 
+> Of course if that invariant was made official and relied upon, it would need
+> to be documented and care taken not to break it.
+> 
+> But then I think:
+> - refill_stock() could be further simplified
+> - loops in consume_stop() and is_drain_needed() could stop on first NULL
+> cached[i] encountered.
+> 
+> WDYT?
+> 
 
-Not sure if this is performance nor simply failing to allocate memory.
+Please see below.
 
-> explain and correct me if I am wrong. On PREEMPT_RT kernel, the local
-> lock is a spin lock which is actually a mutex but with priority
-> inheritance. A task having the local lock can still get context switched
-> (but will remain on same CPU run queue) and the newer task can try to
-> acquire the memcg stock local lock. If we just do trylock, it will
-> always go to the slow path but if we do local_lock() then it will sleeps
-> and possibly gives its priority to the task owning the lock and possibly
-> make that task to get the CPU. Later the task slept on memcg stock lock
-> will wake up and go through fast path.
+> > ---
+> >  mm/memcontrol.c | 27 +++++++++++++++------------
+> >  1 file changed, 15 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 997e2da5d2ca..9dfdbb2fcccc 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -1907,7 +1907,8 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+> >  	struct mem_cgroup *cached;
+> >  	uint8_t stock_pages;
+> >  	unsigned long flags;
+> > -	bool evict = true;
+> > +	bool success = false;
+> > +	int empty_slot = -1;
+> >  	int i;
+> >  
+> >  	/*
+> > @@ -1931,26 +1932,28 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+> >  
+> >  	stock = this_cpu_ptr(&memcg_stock);
+> >  	for (i = 0; i < NR_MEMCG_STOCK; ++i) {
+> > -again:
+> >  		cached = READ_ONCE(stock->cached[i]);
+> > -		if (!cached) {
+> > -			css_get(&memcg->css);
+> > -			WRITE_ONCE(stock->cached[i], memcg);
+> > -		}
+> > -		if (!cached || memcg == READ_ONCE(stock->cached[i])) {
+> > +		if (!cached && empty_slot == -1)
+> > +			empty_slot = i;
+> > +		if (memcg == READ_ONCE(stock->cached[i])) {
+> >  			stock_pages = READ_ONCE(stock->nr_pages[i]) + nr_pages;
+> >  			WRITE_ONCE(stock->nr_pages[i], stock_pages);
+> >  			if (stock_pages > MEMCG_CHARGE_BATCH)
+> >  				drain_stock(stock, i);
 
-So far correct. On PREEMPT_RT a task with spinlock_t or local_lock_t can
-get preempted while owning the lock. The local_lock_t is a per-CPU lock.
+So, this drain_stock() above can punch a NULL hole in the array but I
+think I do see your point. We can fill this hole by moving the last
+non-NULL here. For now I plan to keep it as is as I have some followup
+plans to make this specific drain_stock() conditional on the caller
+(somewhat similar to commit 5387c90490f7f) and then I will re-check if
+we can eliminate this NULL hole.
 
-Sebastian
+Thanks a lot for the reviews and suggestions.
+
 
