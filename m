@@ -1,148 +1,156 @@
-Return-Path: <cgroups+bounces-7964-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7965-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 646ACAA53C1
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 20:34:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 450CFAA579D
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 23:42:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07C791893398
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 18:34:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70FDD3B377E
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 21:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78601265CCF;
-	Wed, 30 Apr 2025 18:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C1B2224FA;
+	Wed, 30 Apr 2025 21:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EVvDZim4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="p96prS/2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2F31C8FB5
-	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 18:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB0BA270ED2
+	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 21:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746038041; cv=none; b=iRHBMDIqfMhCI5ZwnXWvrMpZxZdGSU6DrSIcZUPBpQzYn1QMGGHzhYriiExOkJ0K6ceU/2v6omH3Xw2uUkx7cSv60pZfaq7P9XnIxUgjJ5qDZ/V1cIIwMyrPW1E42//Rh6Yp/Nt9OgOeiDT2D55tWUjLxavC40WUNxjR+TMvJ4w=
+	t=1746049316; cv=none; b=unwE8ssTRRPFCbgJa4jHCf5afktorYxb1HsnFNu2NwX+0mvriSxQPAkvIROAq/Xdb3yKvswnTB1EyEGALZdEDH+mmhALTyJwHm6+mf1cBV2PQMm3Qcy3AHpt39KXvb2ermmvBPC4zPnbh/I8k/ZsXGu56ZtPj4mmej/0bUuSHAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746038041; c=relaxed/simple;
-	bh=3XmVokB/CifUAMIBnKlc5SdMT9bEBK4AljkT9etnU6Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dMDBLAgkJuaep+I2fdqufdA4KZUNeOPyJdqhvYu0ZAvaQ0aGz2dmf9/W5B3eS+Ke1MGxKYqNji4AFBwkT8e4+tLWKmrxqtUW4RhwuL7YXVrjj/3UejvoWzxdUFN5pdsC+DGhHU8yiO7KbNz3F34MzxkqEaqiqUfYkZ14oSUpEWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EVvDZim4; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ac2c663a3daso22140066b.2
-        for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 11:33:58 -0700 (PDT)
+	s=arc-20240116; t=1746049316; c=relaxed/simple;
+	bh=mGwiaQ7TH+sIKDNrEb7lzXc0Qw8YiXCCaz5ackF09Ng=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=E/AT/xOSPdDSQx0qNZkdSTBpH5gkLgp3sdQHlI5HwyxYX7fA1xnW65FTrEnAOQO8TGJyNxUkKDUXXgo3Jfth7HRSskrdt0bc/ySCkth7OMZ6UHk2dIXDcqQPBiLDMgsch7bKcfi1mC2quZMRFqG3XIR0fmjS4jE/B0sfxM9+pm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=p96prS/2; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ff52e1c56fso480376a91.2
+        for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 14:41:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1746038037; x=1746642837; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uIwuIgznvi17Hp6RFjo5Q2QMaBhu5w5IFRJKWtuqdac=;
-        b=EVvDZim4PHuzY4ldp2os4l6hECzuIMqxehHqU5rkklEnIkri23tE+HShvoLYw3aN1L
-         TuNqUT3PYRqey4/C8PrDmDe5AJ2O8Wff2G4WuDSkzDKKlPLNIKYOLf+BTGrGMBqXsPr8
-         DOjsnGh3OMjPaUYFZS+zjUILgQhRMrHP3ZiBhAQWHWiMARY/OKJpFwfTXeqAM5rmcZGj
-         ItUjeZxK9BSSVqGaVMRuZGB5cly0hE6WIy1y7yGXdAV0bAJY3dmrMk4UrVup6fi73FnL
-         rwnvuibjTDVzoadvxG+L8C1EBqJ6GYNfsl63nPtQ91rRxX8fqC5hlyP36MrXoDO9l3BP
-         cltQ==
+        d=google.com; s=20230601; t=1746049314; x=1746654114; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rPPCPUomRK7S/tvky4KsIS9QMkz8k3qEWnlfYdUkuh0=;
+        b=p96prS/2QT4wDqctyKih1COtym1o9eBdQ+mFQIgl/EJK3pLKv/SAkiv4ARDeeddZvx
+         70O7MYFaYZRYTEcdMJBfvBeXSxAJ6NpN63LYYYKyW2SeNTgm2O04VMkFgJ//6F53CaQ6
+         0DgeOUl3BJiY4zERt+tOMxIGvWQvHlC8IvlqkRg21Nf4KqKvEB6P8jKMMim+HTw3EFLn
+         zKcnAqNWsJg/CjM1f8gN5Xe7rZVPSqBgxjIY09ifU5ghF/eEeCt+7unK1KA4YSk+NXE9
+         eO5wEfyR0sLHJsEbD27C0lp5nLvXSmEI5LXsrq2YcoDv89YiTVli9/OBxKlFHRZgWsz7
+         fQ8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746038037; x=1746642837;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uIwuIgznvi17Hp6RFjo5Q2QMaBhu5w5IFRJKWtuqdac=;
-        b=Tht+muAPPcUCrUV+hRdiAEs5MPJgXCn80eBso2nYf8kT313LNThDW4ao/ErlRhZ1C+
-         pNQRKKqLoeWvegdE7XCsVMDq6vRpT1c6fKHUjhZn/cPQevi5Rnpx7v6Z8Ka/y0MeMmGG
-         JVpf740Dc53QavGsGZ7+ogCJ5Rr5sBuC0SA61gsdVEB2q0s05dfT7LPnwR9wN4p4ilS0
-         llDB6sspWZ0e0LM/Jjsue7pPwQBQwMQR1yxyLpgPubgBFlb8ELFFfoxtYKZ/3nVS8VWd
-         cp8kSfHEiJUaFFtPT07W61RE5hk5vDSXyE6dXV76ZltqaXSNF6iujexXVGUNwI9a3RDb
-         CInQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXUFYJRCNlPoan/AOFEvEhW0HGSIvO0y4skvv8Tx2fOZMTBqlxT/vUJwiqKN9MrqDmv8ukasO5s@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywbrtdv7G3+Rs7MXI+g7sSFYCD2/05omJOsridu2K5E0/VhOjZm
-	m502DmafyEd3uJYS0t9w/ycLRIBkHzrecTCIymz4PCkZBQl4MXZegktT2IHIPllRHl73sahbaiF
-	V
-X-Gm-Gg: ASbGnctmH1qUdHrQre3S23vTCFqQhntD1WeI+fExcA3xw0sgCQ8soS9Jn8tTxiddgUT
-	MbniPgbJnGxNv3wJeIzA337nymYO0YdgvWQ65SQAnxMc4Z6kLe+Sq4W+jVO9S+c9zmelFDvLOdp
-	L1U+nyArIvwnzmn1k7++PhNDJ2Lo6oImGep8pxoitvu3i9hfBW2eDgZGVcukACY9vQohdXaEKzc
-	YLR82bzlEn0/Q9wDMFaZ1F7VhvBn/bJCNrWKxnLZbtRZ/4eblEefsNlazmmZiN4ofgE8ArIdzdl
-	ab1Ry9VxbieV5hTrp5r1snuNRgNKB2/GEL3YFLDwEWg=
-X-Google-Smtp-Source: AGHT+IG88zM/KKN9CmIYW/jIAN02wv66F1WQldIGaiBbeFZOI1UfS80/b8VS6aqUQAp09ki+ghY4OA==
-X-Received: by 2002:a17:907:72c7:b0:acb:5ec4:e944 with SMTP id a640c23a62f3a-acef425c486mr40305866b.15.1746038037390;
-        Wed, 30 Apr 2025 11:33:57 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acecefedd25sm255311966b.134.2025.04.30.11.33.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Apr 2025 11:33:57 -0700 (PDT)
-Date: Wed, 30 Apr 2025 20:33:55 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, longman@redhat.com, 
-	roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, chenridong@huawei.com, wangweiyang2@huawei.com
-Subject: Re: [PATCH v1] cgroup/cpuset: remove kernfs active break
-Message-ID: <kmmrseckjctb4gxcx2rdminrjnq2b4ipf7562nvfd432ld5v5m@2byj5eedkb2o>
-References: <20241220013106.3603227-1-chenridong@huaweicloud.com>
- <6zxqs3ms52uvgsyryubna64xy5a6zxogssomsgiyhzishwmfbd@lylwjd6cdkli>
- <6bdac218-a18a-4cb5-b10e-c369d90b502c@huaweicloud.com>
+        d=1e100.net; s=20230601; t=1746049314; x=1746654114;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rPPCPUomRK7S/tvky4KsIS9QMkz8k3qEWnlfYdUkuh0=;
+        b=Y2Lx9wnS1EsB7JzQsKYNlWz0cXY+SHKAy507aUc+WdG2XwT5g8sR5e8mibyLqHH27W
+         Lu3PWf7XuKkPWOWfhQ99E9fy75YAmfZfK9J0z6rSA83nKQ5KPd/NdMtP97yHBvMCYdPO
+         tA1ZZ51axRRPHnRGWRQFzbIX3QyZOGr6YYbGSg5BF7RpAtOg8NSFu7xwNC3IUm61BzgM
+         TW7al24PkP6K42MlpsEg1F9fHHmyG3xmYXDZhmHYhQ8QW/nWTDVqMcGZ6vYo1fBSoX3q
+         EIUmwOAdo3IcPd1tIqPd6bbcL/WO5N0hpCkDvZa4gomIEh/gC73QDTMrCIVarMm9N0PJ
+         YcUw==
+X-Forwarded-Encrypted: i=1; AJvYcCVzkfL8qas5UsswM8SLezjwEYBVZaa6HNjCbRS5al89qu2gHiAry0K0WGGnpNGwj50Qlubad+0H@vger.kernel.org
+X-Gm-Message-State: AOJu0YwvCWit6gIK6NBwpTP2U8MxSgPzcDe5LrksCkchBe90M0e/2kfS
+	AhUKehtwATNexnr4Mb+VoqtWJ8qu+xzgiyqdoaYJhRz8L+XLaloxSAiQhWPaZfwdqyyauCzDleP
+	qJw==
+X-Google-Smtp-Source: AGHT+IESizk+VPqy/xkdt1Ruy0dJJHg5vbR/3pjM/O8Vds4uhqDFE+H6/SOjjRDEx34ufKVjoWEbNuxyNbE=
+X-Received: from pjbqi13.prod.google.com ([2002:a17:90b:274d:b0:2fc:2b96:2d4b])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:2cc7:b0:308:65d4:9dda
+ with SMTP id 98e67ed59e1d1-30a400d3543mr1059213a91.16.1746049314110; Wed, 30
+ Apr 2025 14:41:54 -0700 (PDT)
+Date: Wed, 30 Apr 2025 14:41:52 -0700
+In-Reply-To: <20250429225550.106865-1-jthoughton@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6bdac218-a18a-4cb5-b10e-c369d90b502c@huaweicloud.com>
+Mime-Version: 1.0
+References: <aBApDSHblacSBaFH@google.com> <20250429225550.106865-1-jthoughton@google.com>
+Message-ID: <aBKZILBdDfx-Gwi3@google.com>
+Subject: Re: [PATCH v3 5/5] KVM: selftests: access_tracking_perf_test: Use
+ MGLRU for access tracking
+From: Sean Christopherson <seanjc@google.com>
+To: James Houghton <jthoughton@google.com>
+Cc: axelrasmussen@google.com, cgroups@vger.kernel.org, dmatlack@google.com, 
+	hannes@cmpxchg.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	mkoutny@suse.com, mlevitsk@redhat.com, tj@kernel.org, yosry.ahmed@linux.dev, 
+	yuzhao@google.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 03, 2025 at 10:22:33AM +0800, Chen Ridong <chenridong@huaweicloud.com> wrote:
-> I think the commit 76bb5ab8f6e3 ("cpuset: break kernfs active protection
-> in cpuset_write_resmask()") is causing the warning I observed.
+On Tue, Apr 29, 2025, James Houghton wrote:
+> On Mon, Apr 28, 2025 at 9:19=E2=80=AFPM Sean Christopherson <seanjc@googl=
+e.com> wrote:
+> > Using MGLRU on my home box fails. =C2=A0It's full cgroup v2, and has bo=
+th
+> > CONFIG_IDLE_PAGE_TRACKING=3Dy and MGLRU enabled.
+> >
+> > =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
+> > =C2=A0 access_tracking_perf_test.c:244: false
+> > =C2=A0 pid=3D114670 tid=3D114670 errno=3D17 - File exists
+> > =C2=A0 =C2=A0 =C2=A01 =C2=A00x00000000004032a9: find_generation at acce=
+ss_tracking_perf_test.c:244
+> > =C2=A0 =C2=A0 =C2=A02 =C2=A00x00000000004032da: lru_gen_mark_memory_idl=
+e at access_tracking_perf_test.c:272
+> > =C2=A0 =C2=A0 =C2=A03 =C2=A00x00000000004034e4: mark_memory_idle at acc=
+ess_tracking_perf_test.c:391
+> > =C2=A0 =C2=A0 =C2=A04 =C2=A0 (inlined by) run_test at access_tracking_p=
+erf_test.c:431
+> > =C2=A0 =C2=A0 =C2=A05 =C2=A00x0000000000403d84: for_each_guest_mode at =
+guest_modes.c:96
+> > =C2=A0 =C2=A0 =C2=A06 =C2=A00x0000000000402c61: run_test_for_each_guest=
+_mode at access_tracking_perf_test.c:492
+> > =C2=A0 =C2=A0 =C2=A07 =C2=A00x000000000041d8e2: cg_run at cgroup_util.c=
+:382
+> > =C2=A0 =C2=A0 =C2=A08 =C2=A00x00000000004027fa: main at access_tracking=
+_perf_test.c:572
+> > =C2=A0 =C2=A0 =C2=A09 =C2=A00x00007fa1cb629d8f: ?? ??:0
+> > =C2=A0 =C2=A0 10 =C2=A00x00007fa1cb629e3f: ?? ??:0
+> > =C2=A0 =C2=A0 11 =C2=A00x00000000004029d4: _start at ??:?
+> > =C2=A0 Could not find a generation with 90% of guest memory (235929 pag=
+es).
+> >
+> > Interestingly, if I force the test to use /sys/kernel/mm/page_idle/bitm=
+ap, it
+> > passes.
+> >
+> > Please try to reproduce the failure (assuming you haven't already teste=
+d that
+> > exact combination of cgroups v2, MGLRU=3Dy, and CONFIG_IDLE_PAGE_TRACKI=
+NG=3Dy). I
+> > don't have bandwidth to dig any further at this time.
+>=20
+> Sorry... please see the bottom of this message for a diff that should fix=
+ this.
+> It fixes these bugs:
+>=20
+> 1.  Tracking generation numbers without hardware Accessed bit management.
+>     (This is addition of lru_gen_last_gen.)
+> 1.5 It does an initial aging pass so that pages always move to newer
+>     generations in (or before) the subsequent aging passes. This probably
+>     isn't needed given the change I made for (1).
+> 2.  Fixes the expected number of pages for guest page sizes > PAGE_SIZE.
+>     (This is the move of test_pages. test_pages has also been renamed to =
+avoid
+>     shadowing.)
+> 3.  Fixes an off-by-one error when looking for the generation with the mo=
+st
+>     pages. Previously it failed to check the youngest generation, which I=
+ think
+>     is the bug you ran into. (This is the change to lru_gen_util.c.)
 
-
-I was considering
-bdb2fd7fc56e1 ("kernfs: Skip kernfs_drain_open_files() more aggressively") 
-in conjunction (the warning didn't exist back then).
-
-
-> writing to 'cpuset_write_resmask' cannot avoid concurrent removal of
-> the cgroup directory. Therefore, this could cause the warning.
-> 
-> > As I read kernfs_break_active_protection() comment, I don't see cpuset
-> > code violating its conditions:
-> > a) it's broken/unbroken from withing a kernfs file operation handler,
-> > b) it pins the needed struct cpuset independently of kernfs_node (it's
-> >    ok to be removed)
-> > 
-> I am not sure if it is safe to call
-> kernfs_unbreak_active_protection(atomic_inc(&kn->active)); after the
-> 'kn' has been removed. 
-
-Thit'd render the break/unbreak mechanism useless if unbreak cannot be
-safely used. Users of unbreak know that they may get an inactive
-reference. IOW in this part of the race:
-
-                                                                         kernfs_unbreak_active_protection
-                                                                         // active = 0x80000002
-    ...
-    kernfs_should_drain_open_files
-    WARN_ON_ONCE(atomic_read(&kn->active) != KN_DEACTIVATED_BIAS);
-                                                                         kernfs_put_active
-
-the WARN_ON_ONCE seems misplaced if there are expected users of
-inactivated reference.
-
-For your concern about atomic_inc(&kn->active)); after the 'kn' has been
-removed -- that's a different reference tracking (kn->count) and that
-should be enshured by generic VFS due to existence of inode that pins
-inode->i_private form kerfs_init_node().
-
-All in all, the patch makes sense as a code cleanup (the deadlock is
-gone already) but it doesn't tackle any reference underflow (I'm
-bringing this up again because of CVE-2025-21634).
-
-If anything, the warning in kernfs_should_drain_open_files() should be
-reviewed. 
-
-WDYT?
-
-Michal
+Ya, this was the bug I initially ran into, I also encountered more failues =
+after
+applying just that fix.  But, with the full diff applied, it's passing, so =
+good
+to go for the next version from my end.
 
