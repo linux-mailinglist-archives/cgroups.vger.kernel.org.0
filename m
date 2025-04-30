@@ -1,80 +1,84 @@
-Return-Path: <cgroups+bounces-7945-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7946-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 672D7AA44E8
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 10:10:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DB0EAA453A
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 10:25:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDC641BA00FA
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 08:10:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06ADC4C4B23
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 08:25:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2C4213E7D;
-	Wed, 30 Apr 2025 08:09:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECECB21421A;
+	Wed, 30 Apr 2025 08:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nBIidhEV"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="A8FVBVVc"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8444D213E71
-	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 08:09:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF562FB2
+	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 08:25:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746000597; cv=none; b=CCMAKgLQ3lipzpxv8Z1Fq3jVhw5bZQ3J+kWy/gwhDH9e4rr4NvnjstjF6EOeQ87nhlaWbsTD7ja6DLb5BTA71jurto/+4fpzF+cbQ562OhsLYq3O+5KTsiJZiTBq80+xhIik4POL+WxIBo2UzAqZ4Z6KIlyzTU93lwgaw8Q65Ho=
+	t=1746001530; cv=none; b=Es7H5Pn6rm9UtP3ly62TO+j7FQQXSCdAbTf0M0/n3q64T4ioPCKDY5ZqrdntKPPXgAOvkRBgg8Zl991w1G5S5ucz89vcnv+D5awdtl4abg2Yb9NkjpLFHafFSM2kfO6gzsgIM4xx9mnF5NLX1JAue+oUkcEUxjFh906D6bM3Hs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746000597; c=relaxed/simple;
-	bh=V92/VPWOsqNOTJPRh0DfHBcACPxnH83qmTthFQECo8M=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=OxPHugEtqP2r+lZXa2HulRS7dl53VDEq0ZViyFSENfrC2t57BZ00HlTpsmMe4Awfa+7Dtt8rLZhyiFNc+j5fexInwGpmv4dPYOE7sUWqJL3ae5/wfGS1wqm+evXtxTqghH+ZQHFJJnMQB+11+FVebopL/aB+iZtsrMLSmA8flcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nBIidhEV; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-39c30d9085aso5088001f8f.1
-        for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 01:09:55 -0700 (PDT)
+	s=arc-20240116; t=1746001530; c=relaxed/simple;
+	bh=y04tEkznaf/r7EDL7uK8dny8auZ/0Be5Iq+Tj6tHOVU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wh7KK4IEj3cVQv+DZVOqPw7udqkzDrCguGAn6hKiIY8dugJheJTym/nsnuCJpM75z6FhUmBEJouQ0fnX3aYdHXCdhoTDIbXJ2kfpqgXY/SVii8x4rfE4d7cvbVOBPjtKpzTNbsNxKTD3llp1zvduDIrOuTLxSK5Z1dLHiQI+30c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=A8FVBVVc; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-acb415dd8faso973996666b.2
+        for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 01:25:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1746000594; x=1746605394; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=17bhJA8AZQ7Vt532tDF2LwCcxcU9MVtR3GoRV0UAhKY=;
-        b=nBIidhEVyxg1czy+vE/+gXLmoY8R7RakVyYpEOiulhT9l14BLhhiJfPDfd0ANGDGWX
-         xuWOzekMf/XbiA4K9B1jZ3t798S9unt2WW3jWNU2CmDLlMz4NiZGY4/UZuz5FmWPmrDh
-         nc/5AOSknYh4Gvtm5lwwUiedHyqq7IbfxM4E4uJIajbH5BHu6faUQ64PFtRM3ZIb9GIt
-         eQIuCLaXrox5WpjqpblKBFJAwFEbmPiZqRYupfPlzYCcn2ICJUR0tj+ZtwZeJzr/iLl5
-         9rGgB7BptAv82qihkjQVKzkquQEKD8xMbl+a0DelQb1PxYd3qzeqP5dch4vcm9xIM6oR
-         2uQw==
+        d=suse.com; s=google; t=1746001527; x=1746606327; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hapNsvwk/Rnf0mgmDnPu3qGgijaYgiJF1WxcjPg9iO4=;
+        b=A8FVBVVcYt+bDLRKEd1NUbPKaeCHq2iCxy987HgvgDerS6ubNTJRLjGiVcdCEVz4vY
+         qvdeuSm52VzQgBymFss365na7qgDqJn5qhZTQn//O7rRX3vIJM30wzVT0zLK9zXN2yYC
+         Zs68/mhVk/CblPp84GfMSE//2s9E6MtPVxvOqlqdkKgynine1mY8i7uxSLgwrdcj9cpi
+         oMboL7hd3iscbvPo/ST1Tmi8QbqpD8t+5tquJwhyHv4pu+cITiBsvrdLtJ2UarJR5llv
+         T2wNsUrYP5XPdsE2pMIHb/VkBNdSUVoIhY/8j++WFIt34ot3CmlqYMH9iiSmRbPHcAaT
+         lQ+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746000594; x=1746605394;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=17bhJA8AZQ7Vt532tDF2LwCcxcU9MVtR3GoRV0UAhKY=;
-        b=cFElVmY5mfis1bg60tk9m8EcnmWPY8WqeEuNNw1zvGNTuy+O2eFh7nfge6ZIG6gaDY
-         Rt36HsSlbn/Heo95qC3o+nnSI9lluaXl/84ucPZGeVm/ao4tT1FaZJAQFIMNPz6R37t3
-         V8rp/JXqhqbYyQPwiTRiIo42K77s5nOvEcMbMCMr6jUVmMjmsJ0SDnzxFz8MgL0778VS
-         izP5cS0oiA0Jpc27c0hegTOfsIuYSsPx9ql0fx+jOh5mLZIyizuVaXk8KzrqUgCYy4ph
-         dWtUZh6sm+KpehSA8eRb2b0wtRQoC92cba5L9MjaPXE0hLNAcqL4y7D6A0lEmM9vg2ED
-         jlpA==
-X-Gm-Message-State: AOJu0YwviTpH36/lgKRS3hS8oLhME6/dqQKfK7rI9jL64EbRQmDdZafH
-	9RWtakoaZvZ4s3EtHo9jPz0IXQZTJpDKiN8XLv68qNETOzXXjCRzX5nAx86Kh40=
-X-Gm-Gg: ASbGncsQ2U9CjX4NT1C/OS1w4PWSN+1aasSbz4i6bA7wfg1Ja8nbU6dM6BQmQnd24O4
-	Kezr2nIHXdZJgBXbEdvQVIqOK4GeccjWSE5rtI9Kl82MBBIsvTS/pkEAnC2mU3fNl4hLMX1hNij
-	vkA5X2Kx1dbXCqTWks9oY2N4SCFhLCp5m8LaIM/L051xyqKyCiZo3TouJiR3uD5siYzyUO2TQpT
-	mAROZpM3RB6UnGGUReqc5fZ+75555aVXxAwdXUgKpy32S/z++BUckByhbwQpngvDdw3IgcGRXFB
-	ddpW+ajjj6hJZ772mm8PL0i0sEXA4n59c0s2elzg/VLEIw==
-X-Google-Smtp-Source: AGHT+IEwMjB/zU0Nrl29aazIXZVdeChuhWRO2pXfV9OFMwJ44f5w1RUnGtR1GuBexWs2MQgVEn40jQ==
-X-Received: by 2002:a5d:64c6:0:b0:390:e5c6:920 with SMTP id ffacd0b85a97d-3a08ff32fe8mr1273060f8f.3.1746000593758;
-        Wed, 30 Apr 2025 01:09:53 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3a073c8d495sm15920037f8f.2.2025.04.30.01.09.52
+        d=1e100.net; s=20230601; t=1746001527; x=1746606327;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hapNsvwk/Rnf0mgmDnPu3qGgijaYgiJF1WxcjPg9iO4=;
+        b=aw0Xha1NwjwmQnsybBOUAKvavAPjuJdgI36hp5KWsfJbz7bjVsVBy/sTktGs8ka5PB
+         Z8EA0JH3sZyhh64gEbRZQg90l4ea6JnLkXtPXmINfEm8vXAuk4UhXzKZiOPFKO4nrBcb
+         JqEEFZnip1AvIdUONLw+5RVUCLZ2tCk0R8iQmOmaRmz0606sxvsdzswnChKSrO7N4U8I
+         4W3tU8ZxVipAI1OgbrVkIOIGcKSQo8rlWQc8hbu7DmsHnSP3RDUwEzopylZk3xtyEZA1
+         JHxJjD5SYftdEvk5qe0pM4YNMonDswxQp5wx/n7jyT0vElCHDNCVJb4aqvyhLeGW47ZF
+         pxww==
+X-Forwarded-Encrypted: i=1; AJvYcCVKpH2QUB/GZ5ejlv+iu6ERtMjxwL56PV85Em6qnq0XB+QgCbKMRBPWTXDONJ0k+wFyJ/jy61Si@vger.kernel.org
+X-Gm-Message-State: AOJu0YxrHQSwqZPWRKnTlKcR6GnOo5qQjTaWLq892AefGBcssy871+qy
+	r1ikzjgQxsDHYpvJ1jW01nMPLE1zzkDtNK1J0iiZ5HCqc2Ak6DfT3reIOz5CpHk=
+X-Gm-Gg: ASbGncva6c9hvIIA6gWWwtlk2iHRHniuKXHVHVymVOhnAqpaPG3tTr6vwqLCWypZ8Ij
+	uAnqNkKVN7tyd3iMFRVbeMk4VBTOrYb4Q+iFCCe6HXF8G6TUflZ+IEIu0iL+Vbs0ywxyWsLpPY4
+	LnT9LHQ0EAXsUdEdH+w2RLWZ2oDig5rfEB2HQ152jwCAU/2S21AgfsZSnccNUZYh7UomuSbo0hs
+	7GFiTDdASzUAbQ5iR3tRRcYH02iC2Q24yksg/HP8vKgBWYsb3r/TLU+ExIYfCPbXVGFNF39IrQb
+	AB0VnnToTFQd1Lvb26f1RdrU9Gpfb4k=
+X-Google-Smtp-Source: AGHT+IGtcUQ2cQc6JXumuzWFyrkuxQZag6xvpMj3QJ+YKaYVGKukb9EGVqZXQKT5u85cjhqul4Yy8A==
+X-Received: by 2002:a17:907:3d46:b0:ace:9ded:3292 with SMTP id a640c23a62f3a-acedc629414mr282686466b.29.1746001526755;
+        Wed, 30 Apr 2025 01:25:26 -0700 (PDT)
+Received: from localhost ([193.86.92.181])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-aced892712csm111462166b.161.2025.04.30.01.25.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Apr 2025 01:09:53 -0700 (PDT)
-Date: Wed, 30 Apr 2025 11:09:50 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: [bug report] memcg: multi-memcg percpu charge cache - fix 2
-Message-ID: <aBHazntT1ypcMPfD@stanley.mountain>
+        Wed, 30 Apr 2025 01:25:26 -0700 (PDT)
+Date: Wed, 30 Apr 2025 10:25:26 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [bug report] memcg: multi-memcg percpu charge cache - fix 2
+Message-ID: <aBHeduANJBgQlyeD@tiehlicka>
+References: <aBHazntT1ypcMPfD@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -83,87 +87,22 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <aBHazntT1ypcMPfD@stanley.mountain>
 
-Hello Shakeel Butt,
+On Wed 30-04-25 11:09:50, Dan Carpenter wrote:
+> Hello Shakeel Butt,
+> 
+> Commit 1db4ee9862f9 ("memcg: multi-memcg percpu charge cache - fix
+> 2") from Apr 25, 2025 (linux-next), leads to the following Smatch
+> static checker warning:
+> 
+> 	mm/memcontrol.c:1959 refill_stock()
+> 	error: uninitialized symbol 'stock_pages'.
 
-Commit 1db4ee9862f9 ("memcg: multi-memcg percpu charge cache - fix
-2") from Apr 25, 2025 (linux-next), leads to the following Smatch
-static checker warning:
+Thanks for the report. I believe this should be addressed by the follow
+up fix from Hugh d542d18f-1caa-6fea-e2c3-3555c87bcf64@google.com
 
-	mm/memcontrol.c:1959 refill_stock()
-	error: uninitialized symbol 'stock_pages'.
-
-mm/memcontrol.c
-    1907 static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
-    1908 {
-    1909         struct memcg_stock_pcp *stock;
-    1910         struct mem_cgroup *cached;
-    1911         uint8_t stock_pages;
-                         ^^^^^^^^^^^
-
-    1912         unsigned long flags;
-    1913         bool success = false;
-    1914         int empty_slot = -1;
-    1915         int i;
-    1916 
-    1917         /*
-    1918          * For now limit MEMCG_CHARGE_BATCH to 127 and less. In future if we
-    1919          * decide to increase it more than 127 then we will need more careful
-    1920          * handling of nr_pages[] in struct memcg_stock_pcp.
-    1921          */
-    1922         BUILD_BUG_ON(MEMCG_CHARGE_BATCH > S8_MAX);
-    1923 
-    1924         VM_WARN_ON_ONCE(mem_cgroup_is_root(memcg));
-    1925 
-    1926         if (nr_pages > MEMCG_CHARGE_BATCH ||
-    1927             !local_trylock_irqsave(&memcg_stock.stock_lock, flags)) {
-    1928                 /*
-    1929                  * In case of larger than batch refill or unlikely failure to
-    1930                  * lock the percpu stock_lock, uncharge memcg directly.
-    1931                  */
-    1932                 memcg_uncharge(memcg, nr_pages);
-    1933                 return;
-    1934         }
-    1935 
-    1936         stock = this_cpu_ptr(&memcg_stock);
-    1937         for (i = 0; i < NR_MEMCG_STOCK; ++i) {
-    1938                 cached = READ_ONCE(stock->cached[i]);
-    1939                 if (!cached && empty_slot == -1)
-    1940                         empty_slot = i;
-    1941                 if (memcg == READ_ONCE(stock->cached[i])) {
-    1942                         stock_pages = READ_ONCE(stock->nr_pages[i]) + nr_pages;
-    1943                         WRITE_ONCE(stock->nr_pages[i], stock_pages);
-    1944                         if (stock_pages > MEMCG_CHARGE_BATCH)
-    1945                                 drain_stock(stock, i);
-    1946                         success = true;
-                                 ^^^^^^^^^^^^^^
-When stock_pages is initialized then success is true.
-
-    1947                         break;
-    1948                 }
-    1949         }
-    1950 
-    1951         if (!success) {
-                     ^^^^^^^^
-success is false.
-
-    1952                 i = empty_slot;
-    1953                 if (i == -1) {
-    1954                         i = get_random_u32_below(NR_MEMCG_STOCK);
-    1955                         drain_stock(stock, i);
-    1956                 }
-    1957                 css_get(&memcg->css);
-    1958                 WRITE_ONCE(stock->cached[i], memcg);
---> 1959                 WRITE_ONCE(stock->nr_pages[i], stock_pages);
-                                                        ^^^^^^^^^^^
-This is always uninitialized at this point.  Probably on your test system
-you are automatically initializing stack variables to zero.
-
-    1960         }
-    1961 
-    1962         local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
-    1963 }
-
-regards,
-dan carpenter
+-- 
+Michal Hocko
+SUSE Labs
 
