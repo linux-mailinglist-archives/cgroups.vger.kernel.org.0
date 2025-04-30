@@ -1,156 +1,276 @@
-Return-Path: <cgroups+bounces-7965-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7966-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 450CFAA579D
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 23:42:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2454AA58CC
+	for <lists+cgroups@lfdr.de>; Thu,  1 May 2025 01:43:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70FDD3B377E
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 21:41:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 343321BC877B
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 23:44:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C1B2224FA;
-	Wed, 30 Apr 2025 21:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBCAD22A4DB;
+	Wed, 30 Apr 2025 23:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="p96prS/2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FvCJrFA6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB0BA270ED2
-	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 21:41:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224E4224FA
+	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 23:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746049316; cv=none; b=unwE8ssTRRPFCbgJa4jHCf5afktorYxb1HsnFNu2NwX+0mvriSxQPAkvIROAq/Xdb3yKvswnTB1EyEGALZdEDH+mmhALTyJwHm6+mf1cBV2PQMm3Qcy3AHpt39KXvb2ermmvBPC4zPnbh/I8k/ZsXGu56ZtPj4mmej/0bUuSHAU=
+	t=1746056625; cv=none; b=Cqj5YWDDfYtg1HRYURsSA/1JjQQwXBhzjyuspdig2YdfFEgVqli1YsX0ZhmTr2EONAvrxU5/FzmlybtQdZknU67Au/ccfUrLq34+ZbTNuROektzUdcn7goj2MAMEtWXT3bUpP9gYCJbAsfvFBwKFtL/OqKIuFQcN0jacygr0rCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746049316; c=relaxed/simple;
-	bh=mGwiaQ7TH+sIKDNrEb7lzXc0Qw8YiXCCaz5ackF09Ng=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=E/AT/xOSPdDSQx0qNZkdSTBpH5gkLgp3sdQHlI5HwyxYX7fA1xnW65FTrEnAOQO8TGJyNxUkKDUXXgo3Jfth7HRSskrdt0bc/ySCkth7OMZ6UHk2dIXDcqQPBiLDMgsch7bKcfi1mC2quZMRFqG3XIR0fmjS4jE/B0sfxM9+pm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=p96prS/2; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ff52e1c56fso480376a91.2
-        for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 14:41:54 -0700 (PDT)
+	s=arc-20240116; t=1746056625; c=relaxed/simple;
+	bh=VkX209KwHNFTOBcPl2BmZWl3z2PcwO3G4gmEA2YreUE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QOjAnTQ+GYaEHppdWRTjgRtwX+OjhmJJtKx7nHmsAuMhv8b2tYgo7Z6vSz47FfIQpvrkKsU1BNze9cA64mTCfH+zIcB2b59RWBMbOKWqA8Sb1FxCrigqLjjtM1OyPgHjx/0dkY4igTsh3FhGD6D/HEtjNJvZn6ylPFtj2IeDuWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FvCJrFA6; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-22c33e5013aso4963405ad.0
+        for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 16:43:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746049314; x=1746654114; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rPPCPUomRK7S/tvky4KsIS9QMkz8k3qEWnlfYdUkuh0=;
-        b=p96prS/2QT4wDqctyKih1COtym1o9eBdQ+mFQIgl/EJK3pLKv/SAkiv4ARDeeddZvx
-         70O7MYFaYZRYTEcdMJBfvBeXSxAJ6NpN63LYYYKyW2SeNTgm2O04VMkFgJ//6F53CaQ6
-         0DgeOUl3BJiY4zERt+tOMxIGvWQvHlC8IvlqkRg21Nf4KqKvEB6P8jKMMim+HTw3EFLn
-         zKcnAqNWsJg/CjM1f8gN5Xe7rZVPSqBgxjIY09ifU5ghF/eEeCt+7unK1KA4YSk+NXE9
-         eO5wEfyR0sLHJsEbD27C0lp5nLvXSmEI5LXsrq2YcoDv89YiTVli9/OBxKlFHRZgWsz7
-         fQ8Q==
+        d=gmail.com; s=20230601; t=1746056623; x=1746661423; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=trrg9W1nidtTS4DlfIahIOyZJBnc1zJhZ4QyQKNercU=;
+        b=FvCJrFA6gRcisH58w89j3HrxhhkIaBOPAyDxuTTA5PscjLKm95RLmJxu0R3S9lkyaX
+         B+dJELhrCAWfxGsE2BoURDHUjHmgJWO11AqyQ8vzvxisIxGXnmMPlYpC3Aa/tpDDVYYt
+         lnz+N+Fkw5EXvW4w6geQ2DGUwsMKD2MW/hHmziSKD7DUKsUVLn6IVvYAvApnIntBUIEJ
+         hdVyVdBn2K/68N9pYID1dyzX45rhZRPvzIT9lNLDmIIZfICOW/yK8HMCJHS2JSLwBixH
+         hUvHaDbTz2FiH8phWaOhG81U9ItPpf7qYR0aODuc0HPok3xbO7599Fo1meUUPfXZZz86
+         72Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746049314; x=1746654114;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rPPCPUomRK7S/tvky4KsIS9QMkz8k3qEWnlfYdUkuh0=;
-        b=Y2Lx9wnS1EsB7JzQsKYNlWz0cXY+SHKAy507aUc+WdG2XwT5g8sR5e8mibyLqHH27W
-         Lu3PWf7XuKkPWOWfhQ99E9fy75YAmfZfK9J0z6rSA83nKQ5KPd/NdMtP97yHBvMCYdPO
-         tA1ZZ51axRRPHnRGWRQFzbIX3QyZOGr6YYbGSg5BF7RpAtOg8NSFu7xwNC3IUm61BzgM
-         TW7al24PkP6K42MlpsEg1F9fHHmyG3xmYXDZhmHYhQ8QW/nWTDVqMcGZ6vYo1fBSoX3q
-         EIUmwOAdo3IcPd1tIqPd6bbcL/WO5N0hpCkDvZa4gomIEh/gC73QDTMrCIVarMm9N0PJ
-         YcUw==
-X-Forwarded-Encrypted: i=1; AJvYcCVzkfL8qas5UsswM8SLezjwEYBVZaa6HNjCbRS5al89qu2gHiAry0K0WGGnpNGwj50Qlubad+0H@vger.kernel.org
-X-Gm-Message-State: AOJu0YwvCWit6gIK6NBwpTP2U8MxSgPzcDe5LrksCkchBe90M0e/2kfS
-	AhUKehtwATNexnr4Mb+VoqtWJ8qu+xzgiyqdoaYJhRz8L+XLaloxSAiQhWPaZfwdqyyauCzDleP
-	qJw==
-X-Google-Smtp-Source: AGHT+IESizk+VPqy/xkdt1Ruy0dJJHg5vbR/3pjM/O8Vds4uhqDFE+H6/SOjjRDEx34ufKVjoWEbNuxyNbE=
-X-Received: from pjbqi13.prod.google.com ([2002:a17:90b:274d:b0:2fc:2b96:2d4b])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:2cc7:b0:308:65d4:9dda
- with SMTP id 98e67ed59e1d1-30a400d3543mr1059213a91.16.1746049314110; Wed, 30
- Apr 2025 14:41:54 -0700 (PDT)
-Date: Wed, 30 Apr 2025 14:41:52 -0700
-In-Reply-To: <20250429225550.106865-1-jthoughton@google.com>
+        d=1e100.net; s=20230601; t=1746056623; x=1746661423;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=trrg9W1nidtTS4DlfIahIOyZJBnc1zJhZ4QyQKNercU=;
+        b=otv2XX68c2F89Ax9TPHIQA1vojdtn1UQhVQy11iJx6upCQWTuLBp9YBwdYu74bG9Ro
+         sgvXdm/fo7A0LIqdCrV9NW3J3V/mqB56PjLbMoKVRXMMUd04SoJxJPB2i0AWn7qPBwk3
+         EAj4C1OaQkyr5c82bHG7KFsd4MBzeUmc3j6L4d0xeASuXfktXRrah5uBzIIZeSUEEPbO
+         pvJvs2XEcRjV1CoqnEn/HbXczcnQ8BNtpaPSWJ4pOswvFtE0tvAml+Q4qJpmu+HcCjwU
+         1DucayMFkAvTS8mEGVN0fkkS0An2Yq1UdA2ZnxD0vMMvsODiZh4pkhIPDLUYTXXg4ZvM
+         xNLw==
+X-Forwarded-Encrypted: i=1; AJvYcCVGVqTAOKxaMkJ8V8AQVy7ahhtxFhdr0dLZbToE2wNjjIkOkfTtQnx4zVq9wxeEb17XT+L1g5yr@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/JeFjhijNNmuaLVlvt+HhuOsrV57h9XR6swbzWSCLslMp8HAD
+	iL1zHKASCuyFP6g31NlATsE4uJv2ZbVRou51OvEMaKD5BAh0DV2G
+X-Gm-Gg: ASbGnctfUqL07jQ67KgbntUWOJzEGD7iC92fa4jm9Hy04BRu9pikcbwxE6zLbPWYNt3
+	aUZoMcfsk4q2sHH13vhVW6GOF7Tc5I4cucmiadySmJwgwMVmfb6r1t1MQ7q2YLdBmQEZMJrA1W9
+	Lr/tQj3fJAPCcpRcOB6yX1BkaKzfxAXTF8LSq6cXuyTduI5oktGvq/dnMBPqGwHxJxFrtPRmusn
+	g3XoBOAMq25RVP4z+Yy4ZZISlBEz8jOljK7gZjo7YowVbYVmqV/BNS08D6gYmZBnq1vh9pYzE6g
+	gDHVRLGn51Lj9OcHNe6ZuQyqnH/McXdoKZayk7cyTtPMCWXDUfpoeYHEFFcpbMQE/TPDsyX0ww=
+	=
+X-Google-Smtp-Source: AGHT+IHuiRYYQi9vmblq0Qh1SJ7ySSma5yx29+dgQfBF4xpvGJlIP7kbk/Z9xi99THgw1a8tjzZ+SQ==
+X-Received: by 2002:a17:902:ecc3:b0:224:76f:9e59 with SMTP id d9443c01a7336-22e040b0136mr15620515ad.10.1746056623178;
+        Wed, 30 Apr 2025 16:43:43 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1151:15:661a:2fad:77ee:b1ad? ([2620:10d:c090:500::5:69e5])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b15f7ec1faasm9350159a12.29.2025.04.30.16.43.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Apr 2025 16:43:42 -0700 (PDT)
+Message-ID: <e8de82fe-feea-4be2-93eb-620b8ece6748@gmail.com>
+Date: Wed, 30 Apr 2025 16:43:41 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <aBApDSHblacSBaFH@google.com> <20250429225550.106865-1-jthoughton@google.com>
-Message-ID: <aBKZILBdDfx-Gwi3@google.com>
-Subject: Re: [PATCH v3 5/5] KVM: selftests: access_tracking_perf_test: Use
- MGLRU for access tracking
-From: Sean Christopherson <seanjc@google.com>
-To: James Houghton <jthoughton@google.com>
-Cc: axelrasmussen@google.com, cgroups@vger.kernel.org, dmatlack@google.com, 
-	hannes@cmpxchg.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	mkoutny@suse.com, mlevitsk@redhat.com, tj@kernel.org, yosry.ahmed@linux.dev, 
-	yuzhao@google.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/5] cgroup: use separate rstat trees for each
+ subsystem
+To: Yosry Ahmed <yosry.ahmed@linux.dev>
+Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com,
+ mkoutny@suse.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
+ linux-mm@kvack.org, cgroups@vger.kernel.org, kernel-team@meta.com
+References: <20250404011050.121777-1-inwardvessel@gmail.com>
+ <20250404011050.121777-5-inwardvessel@gmail.com>
+ <68079aa7.df0a0220.30a1a0.cbb2SMTPIN_ADDED_BROKEN@mx.google.com>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <68079aa7.df0a0220.30a1a0.cbb2SMTPIN_ADDED_BROKEN@mx.google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 29, 2025, James Houghton wrote:
-> On Mon, Apr 28, 2025 at 9:19=E2=80=AFPM Sean Christopherson <seanjc@googl=
-e.com> wrote:
-> > Using MGLRU on my home box fails. =C2=A0It's full cgroup v2, and has bo=
-th
-> > CONFIG_IDLE_PAGE_TRACKING=3Dy and MGLRU enabled.
-> >
-> > =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
-> > =C2=A0 access_tracking_perf_test.c:244: false
-> > =C2=A0 pid=3D114670 tid=3D114670 errno=3D17 - File exists
-> > =C2=A0 =C2=A0 =C2=A01 =C2=A00x00000000004032a9: find_generation at acce=
-ss_tracking_perf_test.c:244
-> > =C2=A0 =C2=A0 =C2=A02 =C2=A00x00000000004032da: lru_gen_mark_memory_idl=
-e at access_tracking_perf_test.c:272
-> > =C2=A0 =C2=A0 =C2=A03 =C2=A00x00000000004034e4: mark_memory_idle at acc=
-ess_tracking_perf_test.c:391
-> > =C2=A0 =C2=A0 =C2=A04 =C2=A0 (inlined by) run_test at access_tracking_p=
-erf_test.c:431
-> > =C2=A0 =C2=A0 =C2=A05 =C2=A00x0000000000403d84: for_each_guest_mode at =
-guest_modes.c:96
-> > =C2=A0 =C2=A0 =C2=A06 =C2=A00x0000000000402c61: run_test_for_each_guest=
-_mode at access_tracking_perf_test.c:492
-> > =C2=A0 =C2=A0 =C2=A07 =C2=A00x000000000041d8e2: cg_run at cgroup_util.c=
-:382
-> > =C2=A0 =C2=A0 =C2=A08 =C2=A00x00000000004027fa: main at access_tracking=
-_perf_test.c:572
-> > =C2=A0 =C2=A0 =C2=A09 =C2=A00x00007fa1cb629d8f: ?? ??:0
-> > =C2=A0 =C2=A0 10 =C2=A00x00007fa1cb629e3f: ?? ??:0
-> > =C2=A0 =C2=A0 11 =C2=A00x00000000004029d4: _start at ??:?
-> > =C2=A0 Could not find a generation with 90% of guest memory (235929 pag=
-es).
-> >
-> > Interestingly, if I force the test to use /sys/kernel/mm/page_idle/bitm=
-ap, it
-> > passes.
-> >
-> > Please try to reproduce the failure (assuming you haven't already teste=
-d that
-> > exact combination of cgroups v2, MGLRU=3Dy, and CONFIG_IDLE_PAGE_TRACKI=
-NG=3Dy). I
-> > don't have bandwidth to dig any further at this time.
->=20
-> Sorry... please see the bottom of this message for a diff that should fix=
- this.
-> It fixes these bugs:
->=20
-> 1.  Tracking generation numbers without hardware Accessed bit management.
->     (This is addition of lru_gen_last_gen.)
-> 1.5 It does an initial aging pass so that pages always move to newer
->     generations in (or before) the subsequent aging passes. This probably
->     isn't needed given the change I made for (1).
-> 2.  Fixes the expected number of pages for guest page sizes > PAGE_SIZE.
->     (This is the move of test_pages. test_pages has also been renamed to =
-avoid
->     shadowing.)
-> 3.  Fixes an off-by-one error when looking for the generation with the mo=
-st
->     pages. Previously it failed to check the youngest generation, which I=
- think
->     is the bug you ran into. (This is the change to lru_gen_util.c.)
+On 4/22/25 6:33 AM, Yosry Ahmed wrote:
+> On Thu, Apr 03, 2025 at 06:10:49PM -0700, JP Kobryn wrote:
+[..]
+>> @@ -5425,6 +5417,9 @@ static void css_free_rwork_fn(struct work_struct *work)
+>>   		struct cgroup_subsys_state *parent = css->parent;
+>>   		int id = css->id;
+>>   
+>> +		if (ss->css_rstat_flush)
+>> +			css_rstat_exit(css);
+>> +
+> 
+> This call now exists in both branches (self css or not), so it's
+> probably best to pull it outside. We should probably also pull the call
+> in cgroup_destroy_root() outside into css_free_rwork_fn() so that we end
+> up with a single call to css_rstat_exit() (apart from failure paths).
 
-Ya, this was the bug I initially ran into, I also encountered more failues =
-after
-applying just that fix.  But, with the full diff applied, it's passing, so =
-good
-to go for the next version from my end.
+This can be done if css_rstat_exit() is modified to guard against
+invalid css's like being a subsystem css and not having implemented
+css_rstat_flush.
+
+> 
+> We can probably also use css_is_cgroup() here instead of 'if (ss)' for
+> consistency.
+> 
+>>   		ss->css_free(css);
+>>   		cgroup_idr_remove(&ss->css_idr, id);
+>>   		cgroup_put(cgrp);
+> [..]
+>> @@ -5659,6 +5647,12 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
+>>   		goto err_free_css;
+>>   	css->id = err;
+>>   
+>> +	if (ss->css_rstat_flush) {
+>> +		err = css_rstat_init(css);
+>> +		if (err)
+>> +			goto err_free_css;
+>> +	}
+>> +
+>>   	/* @css is ready to be brought online now, make it visible */
+>>   	list_add_tail_rcu(&css->sibling, &parent_css->children);
+>>   	cgroup_idr_replace(&ss->css_idr, css, css->id);
+>> @@ -5672,7 +5666,6 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
+>>   err_list_del:
+>>   	list_del_rcu(&css->sibling);
+>>   err_free_css:
+>> -	list_del_rcu(&css->rstat_css_node);
+>>   	INIT_RCU_WORK(&css->destroy_rwork, css_free_rwork_fn);
+>>   	queue_rcu_work(cgroup_destroy_wq, &css->destroy_rwork);
+>>   	return ERR_PTR(err);
+>> @@ -6104,11 +6097,17 @@ static void __init cgroup_init_subsys(struct cgroup_subsys *ss, bool early)
+>>   	css->flags |= CSS_NO_REF;
+>>   
+>>   	if (early) {
+>> -		/* allocation can't be done safely during early init */
+>> +		/*
+>> +		 * Allocation can't be done safely during early init.
+>> +		 * Defer IDR and rstat allocations until cgroup_init().
+>> +		 */
+>>   		css->id = 1;
+>>   	} else {
+>>   		css->id = cgroup_idr_alloc(&ss->css_idr, css, 1, 2, GFP_KERNEL);
+>>   		BUG_ON(css->id < 0);
+>> +
+>> +		if (ss->css_rstat_flush)
+>> +			BUG_ON(css_rstat_init(css));
+>>   	}
+>>   
+>>   	/* Update the init_css_set to contain a subsys
+>> @@ -6207,9 +6206,17 @@ int __init cgroup_init(void)
+>>   			struct cgroup_subsys_state *css =
+>>   				init_css_set.subsys[ss->id];
+>>   
+>> +			/*
+>> +			 * It is now safe to perform allocations.
+>> +			 * Finish setting up subsystems that previously
+>> +			 * deferred IDR and rstat allocations.
+>> +			 */
+>>   			css->id = cgroup_idr_alloc(&ss->css_idr, css, 1, 2,
+>>   						   GFP_KERNEL);
+>>   			BUG_ON(css->id < 0);
+>> +
+>> +			if (ss->css_rstat_flush)
+>> +				BUG_ON(css_rstat_init(css));
+> 
+> The calls to css_rstat_init() are really difficult to track. Let's
+> recap, before this change we had two calls:
+> - In cgroup_setup_root(), for root cgroups.
+> - In cgroup_create(), for non-root cgroups.
+> 
+> This patch adds 3 more, so we end up with 5 calls as follows:
+> - In cgroup_setup_root(), for root self css's.
+> - In cgroup_create(), for non-root self css's.
+> - In cgroup_subsys_init(), for root subsys css's without early
+>    initialization.
+> - In cgroup_init(), for root subsys css's with early
+>    initialization, as we cannot call it from cgroup_subsys_init() early
+>    as allocations are not allowed during early init.
+> - In css_create(), for non-root non-self css's.
+> 
+> We should try to consolidate as much as possible. For example:
+> - Can we always make the call for root subsys css's in cgroup_init(),
+>    regardless of early initialization status? Is there a need to make the
+>    call early for subsystems that use early in cgroup_subsys_init()
+>    initialization?
+> 
+> - Can we always make the call for root css's in cgroup_init(),
+>    regardless of whether the css is a self css or a subsys css? I imagine
+>    we'd still need two separate calls, one outside the loop for the self
+>    css's, and one in the loop for subsys css's, but having them in the
+>    same place should make things easier.
+
+The answer might be the same for the two questions above. I think at
+best, we can eliminate the single call below to css_rstat_init():
+
+cgroup_init()
+	for_each_subsys(ss, ssid)
+		if (ss->early_init)
+			css_rstat_init(css) /* remove */
+
+I'm not sure if it's by design and also an undocumented constraint but I
+find that it is not possible to have a cgroup subsystem that is
+designated for "early init" participate in rstat at the same time. The
+necessary ordering of actions should be:
+
+init_and_link_css(css, ss, ...)
+css_rstat_init(css)
+css_online(css)
+
+This sequence occurs within cgroup_init_subsys() when ss->early_init is
+false. However, when early_init is true, the last two calls are
+effectively inverted:
+
+css_online(css)
+css_rstat_init(css) /* too late */
+
+This needs to be avoided or else failures will occur during boot.
+
+Note that even before this series, this constraint seems to have
+existed. Using branch for-6.16 as a base, I experimented with a minimal
+custom test cgroup in which I implement css_rstat_flush while early_init
+is on. The system fails during boot because online_css() is called
+before cgroup_rstat_init().
+
+cgroup_init_early()
+	for_each_subsys(ss, ssid)
+		if (ss->early)
+			cgroup_init_subsys(ss, true)
+				css = ss->css_alloc()
+				online_css(css)
+cgroup_init()
+	cgroup_setup_root()
+		cgroup_rstat_init(root_cgrp) /* too late */
+
+Unless I"m missing something, do you think this constraint is worthy of
+a separate patch? Something like this that prevents the combination of
+rstat with early_init:
+
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -6130,7 +6130,8 @@ int __init cgroup_init_early(void)
+     for_each_subsys(ss, i) {
+-       WARN(!ss->css_alloc || !ss->css_free || ss->name || ss->id,
++       WARN(!ss->css_alloc || !ss->css_free || ss->name || ss->id ||
++           (ss->early_init && ss->css_rstat_flush),
+
+> 
+> Ideally if we can do both the above, we'd end up with 3 calling
+> functions only:
+> - cgroup_init() -> for all root css's.
+> - cgroup_create() -> for non-root self css's.
+> - css_create() -> for non-root subsys css's.
+> 
+> Also, we should probably document all the different call paths for
+> css_rstat_init() and css_rstat_exit() somewhere.
+
+Will do.
 
