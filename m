@@ -1,161 +1,163 @@
-Return-Path: <cgroups+bounces-7952-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7953-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B29AAA4B1A
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 14:26:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3BC8AA4B7E
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 14:46:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 702D97BBBFE
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 12:25:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C7B84E4129
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 12:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 963EF253F32;
-	Wed, 30 Apr 2025 12:26:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7406725B1CE;
+	Wed, 30 Apr 2025 12:45:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="V2UpSzfa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hCXx4fFh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uU/XDOlP";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="H4SlGNt3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ERwIhe2K"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12B11DF25A
-	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 12:26:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4157925C70E
+	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 12:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746015976; cv=none; b=In4zl9oqP8QMyApVcZRSIcbSgMCaIY8+lcrlQwE2VLx7bOFlgFDlvHeKaRFP2/hG0Zt00b9ZguPLEKgau31jvpCkNW3iLdFPCQLcs2952SHsd5QLJ1VovjM6P8btwkpd2S45ZKy1ThpWl8Kt0mkgLWhxKPWxSb3PzW4p4b8wPps=
+	t=1746017118; cv=none; b=GrSa4tm/0jiZAO3fYduIgeoEZb2EtXISusEG6ek2bGFaxPC1vId4xKwGLvo8xTCAlbhDYKgUgwdkTfnihts1LS3o0Z5CVKqfjTVJp5Rw/5Fw5BqViJGxWwbhDqCsGNUq4K5k2KKYrRYXRBsnqJNLZiRe3zdRhSj7MmTDNCJMKao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746015976; c=relaxed/simple;
-	bh=YMzETgjDji9IBqxi3AJIqogNPK3rCWR7xLHGOD6pIMU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QrBrmIpVMA85UtergBFLbMze9QeLhuQMjGkANPVBBFpp6FKfacMsVO5aH94W0UNKl3csJ5KpoeEFJmLiLi308WZrLa2tSYhpPNxksbX0NdvsjKlYsZtqVVKu6xAzfEc1brmqc/+jofau3CYFp4IdhmGr75WEAyDgo9c/Lnf6uHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=V2UpSzfa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hCXx4fFh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uU/XDOlP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=H4SlGNt3; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D17481F449;
-	Wed, 30 Apr 2025 12:26:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746015973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=arc-20240116; t=1746017118; c=relaxed/simple;
+	bh=raxdQ2PUzo4294bXe2kpUGFCV0Y0wngoPwLYkkeWKRk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b9K13IhIdq69+KNud4+zrOMIGsTZpoyj6DQtI8NCEmxLDGnesis3qdTC1lhAWNbsc7ZKHeYJG2YzIpfGmu1eB+kIhdcQCk+cT/lMQIXKyBakrJCfgvQe9Hl41pDjyTlN+iKXcvZV25LvDsalvt91BoKJkCCW0/sXgPy2+fdot4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ERwIhe2K; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 30 Apr 2025 05:44:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746017103;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gY9W9ZPcorYk3BZB9sftT//K8NCsGTdu0UYiorZFpHo=;
-	b=V2UpSzfa1B/GIwv4L+6EHheZCuaf/GQsh63ETA/WnPmwk81JPV0sfjE4H1rVyF65/+UuHp
-	xj/e62ue1rouiYVv0oV9xYbHRR+8eparGQQpJ2sHpUDroaE9PXuHMeOkHE8hXDTtGBJ6ZB
-	wmxkx8Pq+2DLTyoTzplrTMd0WX+AUqY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746015973;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gY9W9ZPcorYk3BZB9sftT//K8NCsGTdu0UYiorZFpHo=;
-	b=hCXx4fFh26zP2Noo9M4RX6/tGgavOhftxFlGA8KfRd+ResFH6rjqerDuMg6WzzAnwwvG26
-	cseYO3hn3ICvJZBg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="uU/XDOlP";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=H4SlGNt3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746015972; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gY9W9ZPcorYk3BZB9sftT//K8NCsGTdu0UYiorZFpHo=;
-	b=uU/XDOlPFmCfherreyEfiVjx51RoC12sXp0K+qbGj1LawDte1K5obBg2d28xoVPbtQkKDS
-	I5i5SkyIm95qgTS77R8hf9t8Enj0JTkLB3kVigNBA9mTp5xSGSraI914oKlXG9AuhmEQXD
-	zliOF4WyJzoQYNY8LOooL2dBpijOKUM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746015972;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gY9W9ZPcorYk3BZB9sftT//K8NCsGTdu0UYiorZFpHo=;
-	b=H4SlGNt3URQyUwi0/LIzGHFtG/42R1p4I+7/W/4OBk0vst9y2sZAA07IAnbITy6cF0ixCQ
-	cknZPuCgUZIQtMAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BC6B7139E7;
-	Wed, 30 Apr 2025 12:26:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id //KbLeQWEmhdXgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 30 Apr 2025 12:26:12 +0000
-Message-ID: <69871de2-af48-4ce9-9612-f87132337a84@suse.cz>
-Date: Wed, 30 Apr 2025 14:26:12 +0200
+	bh=OL6pMpPrHxyalMOEj7Fjs8lPAUCwXWRv7qPE6i/mzfw=;
+	b=ERwIhe2KSaPvDzZid2uMe37+8TaX+7mKx4+9WR7jMGe8+VJZdwPZmH2/xOXwnWqVITMkiR
+	Ui97Kbpco+3k4kBbX4xeHq+Iuy6Q4h8AANT93TUkd1Hps8TLlTlxh2fTZmSCTYODBRpvcE
+	hX7V3ZbTLrXw956QCoYrR+LCdSU0HVQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yosry Ahmed <yosry.ahmed@linux.dev>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	JP Kobryn <inwardvessel@gmail.com>, bpf@vger.kernel.org,
+	linux-mm@kvack.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [RFC PATCH 1/3] llist: add list_add_iff_not_on_list()g
+Message-ID: <aBIbRhLjmO-fKKGr@Asmaa.>
+References: <20250429061211.1295443-1-shakeel.butt@linux.dev>
+ <20250429061211.1295443-2-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] memcg: no irq disable for memcg stock lock
-Content-Language: en-US
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Meta kernel team <kernel-team@meta.com>
-References: <20250429230428.1935619-1-shakeel.butt@linux.dev>
- <20250429230428.1935619-5-shakeel.butt@linux.dev>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20250429230428.1935619-5-shakeel.butt@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: D17481F449
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.51
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250429061211.1295443-2-shakeel.butt@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On 4/30/25 01:04, Shakeel Butt wrote:
-> There is no need to disable irqs to use memcg per-cpu stock, so let's
-> just not do that. One consequence of this change is if the kernel while
-> in task context has the memcg stock lock and that cpu got interrupted.
-> The memcg charges on that cpu in the irq context will take the slow path
-> of memcg charging. However that should be super rare and should be fine
-> in general.
+On Mon, Apr 28, 2025 at 11:12:07PM -0700, Shakeel Butt wrote:
+> As the name implies, list_add_iff_not_on_list() adds the given node to
+> the given only if the node is not on any list. Many CPUs can call this
+> concurrently on the same node and only one of them will succeed.
+> 
+> This is also useful to be used by different contexts like task, irq and
+> nmi. In the case of failure either the node as already present on some
+> list or the caller can lost the race to add the given node to a list.
+> That node will eventually be added to a list by the winner.
 > 
 > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> ---
+>  include/linux/llist.h |  3 +++
+>  lib/llist.c           | 30 ++++++++++++++++++++++++++++++
+>  2 files changed, 33 insertions(+)
+> 
+> diff --git a/include/linux/llist.h b/include/linux/llist.h
+> index 2c982ff7475a..030cfec8778b 100644
+> --- a/include/linux/llist.h
+> +++ b/include/linux/llist.h
+> @@ -236,6 +236,9 @@ static inline bool __llist_add_batch(struct llist_node *new_first,
+>  	return new_last->next == NULL;
+>  }
+>  
+> +extern bool llist_add_iff_not_on_list(struct llist_node *new,
+> +				      struct llist_head *head);
+> +
+>  /**
+>   * llist_add - add a new entry
+>   * @new:	new entry to be added
+> diff --git a/lib/llist.c b/lib/llist.c
+> index f21d0cfbbaaa..9d743164720f 100644
+> --- a/lib/llist.c
+> +++ b/lib/llist.c
+> @@ -36,6 +36,36 @@ bool llist_add_batch(struct llist_node *new_first, struct llist_node *new_last,
+>  }
+>  EXPORT_SYMBOL_GPL(llist_add_batch);
+>  
+> +/**
+> + * llist_add_iff_not_on_list - add an entry if it is not on list
+> + * @new:	entry to be added
+> + * @head:	the head for your lock-less list
+> + *
+> + * Adds the given entry to the given list only if the entry is not on any list.
+> + * This is useful for cases where multiple CPUs tries to add the same node to
+> + * the list or multiple contexts (process, irq or nmi) may add the same node to
+> + * the list.
+> + *
+> + * Return true only if the caller has successfully added the given node to the
+> + * list. Returns false if entry is already on some list or if another inserter
+> + * wins the race to eventually add the given node to the list.
+> + */
+> +bool llist_add_iff_not_on_list(struct llist_node *new, struct llist_head *head)
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+What about llist_try_add()?
 
+> +{
+> +	struct llist_node *first = READ_ONCE(head->first);
+> +
+> +	if (llist_on_list(new))
+> +		return false;
+> +
+> +	if (cmpxchg(&new->next, new, first) != new)
+> +		return false;
+
+Here we will set new->next to the current head of the list, but this may
+change from under us, and the next loop will then set it correctly
+anyway. This is a bit confusing though.
+
+Would it be better if we set new->next to NULL here, and then completely
+rely on the loop below to set it properly?
+
+> +
+> +	while (!try_cmpxchg(&head->first, &first, new))
+> +		new->next = first;
+
+Not a big deal, but should we use llist_add_batch() here instead?
+
+> +	return true;
+> +}
+> +EXPORT_SYMBOL_GPL(llist_add_iff_not_on_list);
+> +
+>  /**
+>   * llist_del_first - delete the first entry of lock-less list
+>   * @head:	the head for your lock-less list
+> -- 
+> 2.47.1
+> 
 
