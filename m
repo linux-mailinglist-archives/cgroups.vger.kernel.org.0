@@ -1,94 +1,93 @@
-Return-Path: <cgroups+bounces-7943-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7944-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A1F7AA434B
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 08:48:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C50FAA43E9
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 09:27:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B867A1B642E4
-	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 06:48:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B288E467012
+	for <lists+cgroups@lfdr.de>; Wed, 30 Apr 2025 07:27:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F72F1E9B09;
-	Wed, 30 Apr 2025 06:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B6520C00B;
+	Wed, 30 Apr 2025 07:27:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Q/PoeP17"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AMMURuwr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED51B1C8632
-	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 06:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39721EC01B
+	for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 07:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745995708; cv=none; b=aCV98xB8AwYKqKSTy7rmtB15/xAjxeXo9XylBhwIGWVTMwrF1Oss3fy4c21uRSCPbcc1jhfmPM03iRtIgNpfQOmJTckA1QuK2tdDUVbR9Jzn5vdthp77hxx63PLnO83mtQ+ABfl+RV6DUfSCGsvqm98fLNqV9BVHkTZp9kqJr/w=
+	t=1745998064; cv=none; b=PmY7MD4JEdGw+FQJZ1dZcKiyqeb45J8YCCZ5lfcRjv8QTGyzIjY1ctpgEYRrXsQlXwUh9fkapb3K37xQ2f8f5uW9c1wzofUnpxjlm01kf0cqMxMiYbUy3L/4b1cmOSSQIf5u0HxAG7lWgTR20n9zXuZ2fUgJxSmmyz3Og7+of+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745995708; c=relaxed/simple;
-	bh=PLN6NCA6PHzK2vowJ9PJFQeTe/Z2MIvKVVvm73D7mzk=;
+	s=arc-20240116; t=1745998064; c=relaxed/simple;
+	bh=zDGaPsNn+sHsyuMSVVCvcKEN9xOybH1pQe4tKyhYIbQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d5CHEnUavQRMXC5Xr49QuKeXQtgFAApSRktl43WRksM8u6WvI/nGJ/AQj4iXNZ/UP7qRpwxQxy8bFtshfUDY87kHz5viMLJK4JZMnDhy/lljRvaJKFZvWy+IuKR7UVEjD5oKQCdGfbKvlaaVPiLeTd5MkHcN2OqbY1b0hn+gydk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Q/PoeP17; arc=none smtp.client-ip=209.85.208.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=KYe8jVs8RmpPZ66ptPWrxXMDAmOwinNwHS/owXbTo3DY89DnlMx5M0MMDhwmEw/WsnDlHk2wUKNV/TixFTQXq3s6CDQ/NByIt4Qix2ON/6w6AmXrYzB9fePynzKOzsyX8RlzxAy7ZnXsXv0Dn1ZNfCdpSlouol1L7b6rp9t/Tsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AMMURuwr; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5efe8d9ebdfso3340779a12.3
-        for <cgroups@vger.kernel.org>; Tue, 29 Apr 2025 23:48:25 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-acb615228a4so124322566b.0
+        for <cgroups@vger.kernel.org>; Wed, 30 Apr 2025 00:27:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1745995704; x=1746600504; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1745998060; x=1746602860; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5gJ92PtyNc3uFgKzWrC3UQrDRf0Vc6MoU7lP4izaMto=;
-        b=Q/PoeP17gJPCcGUa2sluScG2mEgr9c4qDILQLJGkWKciUawRd8EouJOeDiPA9AEi0+
-         FFrp1nw2y2pASVuxgfRQq9WSKFhdY7eCJP1FJohfIJ0hl5Tqg1Y0LQTJMa5bHx7OWvCD
-         ZOu2UHNrqVKb6gERBtjTPKUi99azxm28sDvhGyYaeC3KRkClzdxW60o+xxhNO+Mr/SsO
-         0IN9XZWMzLeRp19DzR+Upe8XpJdpS9ptbWRAIacFMAZgUR/T3fnSxqIYSNBpokAwipiQ
-         pU8d3bkGb7qCXnoKrNxYeLs/VOyXvja1SykcALvNYGZOWqVHAeXm5gy2BWgQZRjn79Zr
-         1nVA==
+        bh=TlBz7iF1hek+FTGw3X4aAHw5f1S4jYqTggUPhRMIVXc=;
+        b=AMMURuwrJ5A5njlldNIV6popjXuhXpRp056f0DCoCYg9aodP5BPku5C/GCqupBLy9w
+         tBc/YDVjDSrWikWqRLwE+RwIf6hWyuc+8vCSP6Rio0NJ/U6Nfd3WfVUJ0jil/NVHMyhX
+         0L5M2GSlcu8/Z0v0B0xzPAEwmqgCynZY38GTwp+tDDH59OLoCKyYqns7UAVgWS7bY+Ei
+         qjdXntdbDuwuoTMRBt/W9J4ZuZL7ddTWeuQ3uDMshqPGmssBIblLBTNu40IG5cE9YIvh
+         +qg0zhgayhMexJOuFwiBd9o2fUUUSMCB/XaZVe20s99v7bUH929ZWpqw+83QqALJN4mr
+         avbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745995704; x=1746600504;
+        d=1e100.net; s=20230601; t=1745998060; x=1746602860;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5gJ92PtyNc3uFgKzWrC3UQrDRf0Vc6MoU7lP4izaMto=;
-        b=flNFaGkmFh3t67NdClCNlaYenstW7pTPoDm3KeG3ezC1iPFq6jV7//Mec2VrlGME1o
-         +Z2yLPHqfXbUH93ZrwberKbVJlrnuwoHtvlQ6gWIxkbYNWktKqhH7BDbF5I6iCjiym2F
-         qwa3ySTWgDQ3a4JBxdryrkRPbsedxxpWmBUkn1p2AUSR5lT6kkGYcULl4aHK+GKWxitV
-         thxgFhUdFsvSSYrcPtPHtDzhtMr1VdmFhZfumYJlyLq9pVucQePMIxKG9fk6P+h73Ndj
-         Mh7ce5rS1hhYf9LudYEJGY9qLI4jiyU4sqnkGFu7kjX8cBtNiQioUcwqrwqKq75RXWK3
-         i3UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrZoSNRZNirfy9J0QpQ+juA6BCMbXzyT6wlzKJgsfAVdso+TouG7e72GAOEKVWAL4Z7v73jN4W@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPkegSVxyqFmxkAby6I8WqDdJRKwlGoMvEvRE3dmiC6AMPSNbB
-	WGNiv2OJYf3tEjdnnm8dQS/LhGm4RGoV+rCcTA0mkYYVC79ngtcQwcuzMCY31XU=
-X-Gm-Gg: ASbGnctx3vOV3Yge8m6HwRlvmnAoJ+eHlA/+VP2jY04EvJ+3od5R/KivXAH9Ed/UEm1
-	+VTKkAOCinC3aklgBVbh+Tiu0Lgn1r1JmBwwmv6v4abTnK2Ukee8o4g4o7JgYw5Tb7SAjsuo8D6
-	ngCbk6QWW4Vva4O+QapXT8E7QHHTn0U76LNCcxTciHy1ekSBbcxz0xhtaGVelCy7YCzTM15kpvx
-	piMekiO/eAZf3ABIo2aVxEuzhAkD/l9QENyEKG2hHFcQ4cICpkcytQDQJv0Ru0iH01EQn+NWqsy
-	NYPeH9B84VN1531myhoqQp4+4KB7wwQ=
-X-Google-Smtp-Source: AGHT+IG+39qW8j7pMcUfNcRNZlvzFRRTpTPxxGngSv3XVrBTzw6ESYdByYqN2IRu7Qx4KY3myhmFKg==
-X-Received: by 2002:a17:907:968b:b0:ace:6c36:cd13 with SMTP id a640c23a62f3a-acee21642a4mr155109666b.3.1745995704239;
-        Tue, 29 Apr 2025 23:48:24 -0700 (PDT)
+        bh=TlBz7iF1hek+FTGw3X4aAHw5f1S4jYqTggUPhRMIVXc=;
+        b=LBgTBZS/Jy72JakkDXG0Mv7ZjnWoPY9kiLC/a43VyKTKEuMKlNZWKy/qv3tRwxPDlH
+         kQvSaKXL9lXuU7YP6Bn9HGhr3cn4uHAgguW1YM0LWDxgB7kIx91UegXJXGMv/F44ij5L
+         Xe2zsgoNhGYqw1ym/uSTNW9a5DhcnvPzV4QUN1aN0aErVSJjiRfKc/+PdkpQKoSU8O6u
+         PInHdbpw6EskIWHeLpywmS/J+yXJuWAAV5wOKrpWUFCrhZJO9X+U9Nw6jtrGdKS/H5Qd
+         4fqHBRrDHYj0iusek4FvxQjpxMxUgoUD5yiI5TsjPS7pzkrKX3vSQsXSsUDalxBxXTmm
+         Tfyg==
+X-Forwarded-Encrypted: i=1; AJvYcCV1GjHlgw2LcJBXZ5XgkOWpjJgxES5IB4KZYhHLhfYDwm+CrpopObGLS/zVYaU75HA94yLJ2sog@vger.kernel.org
+X-Gm-Message-State: AOJu0YzhpaelRUQZ7bMUm991r2pKqinkQKpPeqD6m0ar9CEpVvX1L0Xf
+	tgEpxQ+IXlXE9EsVCXdHtG55YviUVxA4m7gNS9PBSfdesDVmStYl5Y2XGhE41lE=
+X-Gm-Gg: ASbGncugdrb4ExPyApmrkkDW52y0OGJwHQRtR9kkWe2sCKwhDe6GOvouSeaY6VdvUET
+	uC/H2Ug/EpIsvmCDgIcimQODkv7/Trypa0usDEUUAwseCKKYeJ7SDgDfK4F9vbuVMzGdlCKi7lT
+	uxJdiAZEtvunuBgv9OaJ11ObxRaf4UHbulEfVGWPWKHN1Smv5UgVzzEV3UJAe/Ig6Tz5STr3lvX
+	3dTRfdcmigP3muJidtLJKz6UAq7ryq/u+2qmwqM2D+QDE1VE3Z0SkNP9XgFzPKbgwjtNZSGofm2
+	CPEBpGuCREVwDPtowHjdB1eWNM9im6A=
+X-Google-Smtp-Source: AGHT+IGHXR5iYRXyJph1iKrCVhcSCgbOSnDW32/4au9VmEwpUAXHvuV7+98LviohpFzXoUW7wi3S0Q==
+X-Received: by 2002:a17:907:f495:b0:ace:4ed9:a8c3 with SMTP id a640c23a62f3a-acedf68c196mr173112266b.7.1745998060149;
+        Wed, 30 Apr 2025 00:27:40 -0700 (PDT)
 Received: from localhost ([193.86.92.181])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-ace6e41ad27sm877283266b.5.2025.04.29.23.48.23
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-ace6ed6affesm884107766b.130.2025.04.30.00.27.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Apr 2025 23:48:23 -0700 (PDT)
-Date: Wed, 30 Apr 2025 08:48:23 +0200
+        Wed, 30 Apr 2025 00:27:39 -0700 (PDT)
+Date: Wed, 30 Apr 2025 09:27:39 +0200
 From: Michal Hocko <mhocko@suse.com>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>, Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Soheil Hassas Yeganeh <soheil@google.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: multi-memcg percpu charge cache
-Message-ID: <aBHHt9_ruks4q4Ll@tiehlicka>
-References: <20250416180229.2902751-1-shakeel.butt@linux.dev>
- <aBDCXB_Tb2Iaihua@tiehlicka>
- <qt5jtbsgjym655tbnoddlo5c7cemndcgsqwy4wp7m7ki3venxz@cfp637s7eqo6>
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Suren Baghdasaryan <surenb@google.com>,
+	David Rientjes <rientjes@google.com>, Josh Don <joshdon@google.com>,
+	Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, bpf@vger.kernel.org
+Subject: Re: [PATCH rfc 10/12] mm: introduce bpf_out_of_memory() bpf kfunc
+Message-ID: <aBHQ69_rCqjnDaDl@tiehlicka>
+References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
+ <20250428033617.3797686-11-roman.gushchin@linux.dev>
+ <aBC7_2Fv3NFuad4R@tiehlicka>
+ <aBFFNyGjDAekx58J@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -97,46 +96,42 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <qt5jtbsgjym655tbnoddlo5c7cemndcgsqwy4wp7m7ki3venxz@cfp637s7eqo6>
+In-Reply-To: <aBFFNyGjDAekx58J@google.com>
 
-On Tue 29-04-25 11:43:29, Shakeel Butt wrote:
-> On Tue, Apr 29, 2025 at 02:13:16PM +0200, Michal Hocko wrote:
-> > 
-> > > Some of the design choices are:
+On Tue 29-04-25 21:31:35, Roman Gushchin wrote:
+> On Tue, Apr 29, 2025 at 01:46:07PM +0200, Michal Hocko wrote:
+> > On Mon 28-04-25 03:36:15, Roman Gushchin wrote:
+> > > Introduce bpf_out_of_memory() bpf kfunc, which allows to declare
+> > > an out of memory events and trigger the corresponding kernel OOM
+> > > handling mechanism.
 > > > 
-> > > 1. Fit all caches memcgs in a single cacheline.
+> > > It takes a trusted memcg pointer (or NULL for system-wide OOMs)
+> > > as an argument, as well as the page order.
+> > > 
+> > > Only one OOM can be declared and handled in the system at once,
+> > > so if the function is called in parallel to another OOM handling,
+> > > it bails out with -EBUSY.
 > > 
-> > Could you be more specific about the reasoning? I suspect it is for the
-> > network receive path you are mentioning above, right?
-> > 
+> > This makes sense for the global OOM handler because concurrent handlers
+> > are cooperative. But is this really correct for memcg ooms which could
+> > happen for different hierarchies? Currently we do block on oom_lock in
+> > that case to make sure one oom doesn't starve others. Do we want the
+> > same behavior for custom OOM handlers?
 > 
-> Here I meant why I chose NR_MEMCG_STOCK to be 7. Basically the first
-> cacheline of per-cpu stock has all the cached memcg, so checking if a
-> given memcg is cached or not should be comparable cheap as single cached
-> memcg. You suggested comment already mentioned this.
+> It's a good point and I had similar thoughts when I was working on it.
+> But I think it's orthogonal to the customization of the oom handling.
+> Even for the existing oom killer it makes no sense to serialize memcg ooms
+> in independent memcg subtrees. But I'm worried about the dmesg reporting,
+> it can become really messy for 2+ concurrent OOMs.
 > 
-> However please note that we may find in future that 2 cachelines worth of
-> cached memcgs are better for wider audience/workloads but for simplicity
-> let's start with single cacheline worth of cached memcgs.
+> Also, some memory can be shared, so one OOM can eliminate a need for another
+> OOM, even if they look independent.
+> 
+> So my conclusion here is to leave things as they are until we'll get signs
+> of real world problems with the (lack of) concurrency between ooms.
 
-Right, and this is exactly why an extended reasoning is really due. We
-have introduced magic constants in the past and then we were struggling
-to decide whether this might regress something.
-
-I can imagine that we could extend the caching to be adaptive in the
-future and scale with the number of cgroups in some way.
-> 
-> [...]
-> > 
-> > Just a minor suggestion below. Other than that looks good to me (with
-> > follow up fixes) in this thread.
-> > Acked-by: Michal Hocko <mhocko@suse.com>
-> > Thanks!
-> > 
-> 
-> Thanks, I will send a diff for Andrew to squash it into original patch.
-
-Thanks!
+How do we learn about that happening though? I do not think we have any
+counters to watch to suspect that some oom handlers cannot run.
 -- 
 Michal Hocko
 SUSE Labs
