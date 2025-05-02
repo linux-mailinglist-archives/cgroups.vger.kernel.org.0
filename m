@@ -1,108 +1,139 @@
-Return-Path: <cgroups+bounces-7990-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7991-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA6F9AA78A5
-	for <lists+cgroups@lfdr.de>; Fri,  2 May 2025 19:26:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E11BAA7945
+	for <lists+cgroups@lfdr.de>; Fri,  2 May 2025 20:29:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D96D179E2E
-	for <lists+cgroups@lfdr.de>; Fri,  2 May 2025 17:26:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4A894602E4
+	for <lists+cgroups@lfdr.de>; Fri,  2 May 2025 18:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CC8256C8B;
-	Fri,  2 May 2025 17:26:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F44A1DDA24;
+	Fri,  2 May 2025 18:29:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D1lcqp3G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CO6IWdf8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 394E04A32;
-	Fri,  2 May 2025 17:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B663C15350B;
+	Fri,  2 May 2025 18:29:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746206786; cv=none; b=unQY/X6By+JeSn7ii6Iv4f/FL0Qne3VZOYgXy6GOsp02bwK2y0GJmoBQa1QOkLvKPUsS20xdyd3Q/rW/vsx/upEicUtr8UKbSnpI+j1EW/OSlmPQHSvPUzaOKGa317BdCJJ+y4SMFmygIvgPvCfm7QLfz5ggCJzm6XPs2tzQyzg=
+	t=1746210571; cv=none; b=oKgQPQQ2KdgiKUEJ0cs1L4nAHDcG1ZnHOO8W82rmE3v2X1ktN2yOwHLNi++piItLIesat89wNt7pxU0vCr0FCD1fpS58auy17mIzS6VUic4BPRCobjuOvl07XsDptUytYXsb5rX2vLqktLLCiJybhFuU45QvUHEL6Hf03TKcQdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746206786; c=relaxed/simple;
-	bh=hbcahI7wFdZDBZyC5w9sU4ssdyxYtjLb0rj/djnehC8=;
+	s=arc-20240116; t=1746210571; c=relaxed/simple;
+	bh=mQDY/AJR/89Z2jexEMxyjLo7VznybV3SxIwQ6cA0Cl0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N5ycO+noioP7y7vfDyOuGfRMCgW/EPeoZXNc3wYb62EC1g/IPshB4YNAbTC43KXbv2nNJaMLCbFWCZpX6aWJLxJcafjNjH9XaQFbt7g93GN3xS24CIxqXh5ZBR+R49t5iIyvWWrsEEKR38b1/Z9Z3QBiLZHSAGGJ32tFT4WvulU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D1lcqp3G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5517C4CEE9;
-	Fri,  2 May 2025 17:26:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746206785;
-	bh=hbcahI7wFdZDBZyC5w9sU4ssdyxYtjLb0rj/djnehC8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=D1lcqp3Gjvt6sCLzWAy20Mo5aGxNqjqqb+AjVH8aalQIuRKYDg2SOfCZua7xayTzh
-	 fbNx3aK2btW8eS4fMZruEPdeKjxZNUl5FKlLPO1TRvbegIu9myO7oX+hmmNM4VEbZq
-	 5N7kgVU29bn8kIWa006Lz/+erbBN2e10xyq/O3p0Rkt9cCCoFbFBdQlSbcCc2C7lp+
-	 Jt5e/0rDLbM4Ufvf0exiRrRKzAWXBn/xax5bbscyO9oCXkE/cGOINaiO4D49GfHDxR
-	 0p+btKYjifTXixVRazK8TdBq4C+p2tNiBf6Ild1+DYb6BxH80K3q2JxAtz+sIyPI+r
-	 aZqgwhcoRr49w==
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6e8f7019422so24533686d6.1;
-        Fri, 02 May 2025 10:26:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVlDhF6xqQ3psLlMplx+DiDhfdae3w2u0wgGL54aEje7ohRzOdFTw+M8YOiC0nW2GhhoBHDiPkY8w==@vger.kernel.org, AJvYcCWPmsj6AaGqWwwdeocC5wp8aTtpqiD+vuJrQXFDn9EGxUBaXKAt7Zy8cASS1/gXqodPSdk=@vger.kernel.org, AJvYcCXlf6eQer7ixS5tQweTxFhqDrQ5V+gTr54MiFs4bJeuyzhuKFruNyY+Z4w8dAmqdOvnFsN+4YwQtsX2sIx5@vger.kernel.org
-X-Gm-Message-State: AOJu0YwI5PPmhtyAhLdZI/u0CmsHnaTEQC/+ZeQCAqJCpvF/RMti0tJk
-	8HHb1A/Ipk1YTA64NBAA736I++VdTo/jNTzghEw1dk5ReC9jsx0k4/pqE5pPj7uDfpmlDz3dInP
-	RGH0/17QMKnHfPC/VPo0O6ga+e70=
-X-Google-Smtp-Source: AGHT+IEhZx5zD8yvmvEs2lwLC7jhdDHIub8F3jphQG6t+/Qcqbn4ET6dyyzb12UcrVhVjjlh/VUhyhTnZS1toMBam58=
-X-Received: by 2002:a05:6214:19c5:b0:6e8:c713:321f with SMTP id
- 6a1803df08f44-6f515619481mr67835656d6.35.1746206784870; Fri, 02 May 2025
- 10:26:24 -0700 (PDT)
+	 To:Cc:Content-Type; b=C6U36SatgYwMqCVOlRCwINpmAUrVtGpgbAJXOveoWj5qsYt466K5SnlTlfYwKeT0J3mROTMQNbCXp+my6ZENzofXxUPDAiLaXJ+fjZpjav9nZyusPq6BoAqdghmH4aP8LfR5DtOHHoby5LJURAvr8EJWmlrHuMGUfHr2mkxINz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CO6IWdf8; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-39ee5a5bb66so1379521f8f.3;
+        Fri, 02 May 2025 11:29:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746210567; x=1746815367; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zFHm1tfv35vyjBSvb7AN3OxjMGjn0tT8+FpYF9gx+rc=;
+        b=CO6IWdf8gARLteDIxormqgTLFueeulguIjXR4CQ0CnGKiD/fodsI8DzFKJO5yt+rjQ
+         CI2YMD9YE1DPtK+/qoIHm6xNQLLIYZLI5zge/WAvIimlrX+k5wtlt3kLfUoOHyyMEL8+
+         qgL+0/oJhCBxxvFlzZSeMFpMVA9hpahmjjsoptIds7QiMncrrY3AQbgmVVvtHURwE/Fd
+         vW4Sgw1i1UdnD1TcPevyi/mOmlaRq8aWI3Qkbw7PQU7hd/h+3Lj/gzLMBOwygqwU4InR
+         Sv+4aSarK+jA/Oc7Aak7nf+Fg635+/OIAXhW4rPy2MSjwIaTuFbO+TvNb85JgKLbC0w+
+         9vEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746210567; x=1746815367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zFHm1tfv35vyjBSvb7AN3OxjMGjn0tT8+FpYF9gx+rc=;
+        b=P8kTxn6a1+/KuDszcw+XXlFHg954PBbHVdwUihsFdY9N2AXDD1nu2vQgerSLMXH6ge
+         xbhPVLeFAi0Qpmg7ETh3bE7g6Y5j1EZniUNoGO+nPK7HHd7WrKB08BNc1vZrvC4FGFgl
+         NtSapb0x0u6zR8ILA3CyNiGht188dGQgmYWo3rMipKMqBj3Fnp5oImXbVrG7kNodiETI
+         MHwyRcubz9GiqLwVItbFpWBRAqX0bXUpyuBFfsKsCrcOGpH9pGr54vLiTnEeupOodwUK
+         kJuSHsAN6L9E0fjrG7dEPlTorC33sK6kazhKgWHwn1mF0TTYhejh2stRKA3Gg8OdIz0/
+         U/dg==
+X-Forwarded-Encrypted: i=1; AJvYcCU185cVMm+M6y52mmCiJPHCqzbMIfCESXK71udifi+r2677VTRY/Fm288z8iIc5hWsQob0lOCHKjg==@vger.kernel.org, AJvYcCUm3w5zmKCm1yLB4YnwsWmU7lxCEAYKelbIORzwK6eJome8OwxnbWqtPim5jvy1rvHYylo=@vger.kernel.org, AJvYcCVBVXEusKS2CaoPUze5bSBE84uKXh6/NmBvDo2AaO5l2ZkMWARXbZCVVL24I9YihhzfYv7fqf44WaspSzpZ@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywttq/gCdx2McM95OUsmsh77RIdbvVNc5z8LZqBah9ZhmKwAc+F
+	e7wKiKr3myTLRoApEPS6iVr30Ce1bPC1+D0KxHOXloDaSPC1/8jz0X9ANGqiNVhQDrrH9yFgLKe
+	N/rJnccbch8veTN1uc+q/Ho8FIXg=
+X-Gm-Gg: ASbGnctuNh074oKK3JuPpKOGMHxq+BDacB63BYrCEiC3zk6JCz2OS/R04N4yeFAHQNg
+	9zL5JyNYup5saTh1ZU1OSo/US+6Of13q6Da8km6O8fCUO5esDLyTDlIcu3Z/o9r1h674vztp4DS
+	bphqKs4b6ybakHRTSBwge5+JWvCLjHu0IstbfpSA==
+X-Google-Smtp-Source: AGHT+IGZDVjNbQY0k7XiguUPy1qRwoEN4lzehDc7xAB6HtEldTcvHbiAVFR6uTiVw4aghdr0oalOFquu/9roPKdUkII=
+X-Received: by 2002:a5d:5984:0:b0:3a0:99e9:bcd7 with SMTP id
+ ffacd0b85a97d-3a09cea72c1mr184420f8f.5.1746210566946; Fri, 02 May 2025
+ 11:29:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
- <aA9bu7UJOCTQGk6L@google.com> <aA-5xX10nXE2C2Dn@google.com> <CAP01T76Wv+swbT9xuQ-YhQ=-qOFggw6u1RziJNGjJBiNO233OQ@mail.gmail.com>
-In-Reply-To: <CAP01T76Wv+swbT9xuQ-YhQ=-qOFggw6u1RziJNGjJBiNO233OQ@mail.gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Fri, 2 May 2025 10:26:13 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6rh=L6uz7sA8iCyRnqxJj8Eok4rqhQRXqFw=4tuqae+A@mail.gmail.com>
-X-Gm-Features: ATxdqUFRV-jbWynKud--5JYm-b1VhDwA684cpaHQle-nRCzMtQq6Bv3ULYdoS7s
-Message-ID: <CAPhsuW6rh=L6uz7sA8iCyRnqxJj8Eok4rqhQRXqFw=4tuqae+A@mail.gmail.com>
-Subject: Re: [PATCH rfc 00/12] mm: BPF OOM
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>, Matt Bobrowski <mattbobrowski@google.com>, 
-	linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Suren Baghdasaryan <surenb@google.com>, 
-	David Rientjes <rientjes@google.com>, Josh Don <joshdon@google.com>, 
-	Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	bpf@vger.kernel.org
+References: <20250502001742.3087558-1-shakeel.butt@linux.dev> <20250502001742.3087558-4-shakeel.butt@linux.dev>
+In-Reply-To: <20250502001742.3087558-4-shakeel.butt@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 2 May 2025 11:29:16 -0700
+X-Gm-Features: ATxdqUHqug0Pj9O_29hq5eWY4vn7NLIM1dbUiX1mC592l5Jn0vudNn1sTCMtTQE
+Message-ID: <CAADnVQJ-XEEwVppk-qY2mmGB4R18_nqH-wdv5nuJf2LST5=Aaw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] memcg: no irq disable for memcg stock lock
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Meta kernel team <kernel-team@meta.com>, 
+	Vlastimil Babka <vbabka@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 28, 2025 at 6:57=E2=80=AFPM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
-[...]
-> >
-> > It's certainly an option and I thought about it. I don't think we need =
-a bunch
-> > of hooks though. This patchset adds 2 and they belong to completely dif=
-ferent
-> > subsystems (mm and sched/psi), so Idk how well they can be gathered
-> > into a single struct ops. But maybe it's fine.
-> >
-> > The only potentially new hook I can envision now is one to customize
-> > the oom reporting.
-> >
+On Thu, May 1, 2025 at 5:18=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
+> wrote:
 >
-> If you're considering scoping it down to a particular cgroup (as you
-> allude to in the TODO), or building a hierarchical interface, using
-> struct_ops will be much better than fmod_ret etc., which is global in
-> nature. Even if you don't support it now. I don't think a struct_ops
-> is warranted only when you have more than a few callbacks. As an
-> illustration, sched_ext started out without supporting hierarchical
-> attachment, but will piggy-back on the struct_ops interface to do so
-> in the near future.
+> There is no need to disable irqs to use memcg per-cpu stock, so let's
+> just not do that. One consequence of this change is if the kernel while
+> in task context has the memcg stock lock and that cpu got interrupted.
+> The memcg charges on that cpu in the irq context will take the slow path
+> of memcg charging. However that should be super rare and should be fine
+> in general.
+>
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/memcontrol.c | 17 +++++++----------
+>  1 file changed, 7 insertions(+), 10 deletions(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index cd81c70d144b..f8b9c7aa6771 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1858,7 +1858,6 @@ static bool consume_stock(struct mem_cgroup *memcg,=
+ unsigned int nr_pages,
+>  {
+>         struct memcg_stock_pcp *stock;
+>         uint8_t stock_pages;
+> -       unsigned long flags;
+>         bool ret =3D false;
+>         int i;
+>
+> @@ -1866,8 +1865,8 @@ static bool consume_stock(struct mem_cgroup *memcg,=
+ unsigned int nr_pages,
+>                 return ret;
+>
+>         if (gfpflags_allow_spinning(gfp_mask))
+> -               local_lock_irqsave(&memcg_stock.lock, flags);
+> -       else if (!local_trylock_irqsave(&memcg_stock.lock, flags))
+> +               local_lock(&memcg_stock.lock);
+> +       else if (!local_trylock(&memcg_stock.lock))
+>                 return ret;
 
-+1 for using struct_ops, which is the best way to enable BPF in
-existing use cases.
-
-Song
+I don't think it works.
+When there is a normal irq and something doing regular GFP_NOWAIT
+allocation gfpflags_allow_spinning() will be true and
+local_lock() will reenter and complain that lock->acquired is
+already set... but only with lockdep on.
 
