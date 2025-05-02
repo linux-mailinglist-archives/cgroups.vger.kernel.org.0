@@ -1,145 +1,442 @@
-Return-Path: <cgroups+bounces-7985-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-7986-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A68EAA6E5E
-	for <lists+cgroups@lfdr.de>; Fri,  2 May 2025 11:43:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45539AA710E
+	for <lists+cgroups@lfdr.de>; Fri,  2 May 2025 14:01:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B07261730D4
-	for <lists+cgroups@lfdr.de>; Fri,  2 May 2025 09:43:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F26F518857B4
+	for <lists+cgroups@lfdr.de>; Fri,  2 May 2025 12:01:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40004231840;
-	Fri,  2 May 2025 09:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F1EA24337C;
+	Fri,  2 May 2025 12:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="FNh6wRok"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="vuBhRLxX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2076.outbound.protection.outlook.com [40.107.95.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD02422688C
-	for <cgroups@vger.kernel.org>; Fri,  2 May 2025 09:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746178990; cv=none; b=DGg9FxSjKoR/GNxKB4Uhojgu+nZRPTe6lHEmZoRzjZ13/BsJM0yJvwi2U1I69g8oLOqEY50bHjQb8tx//FvKrv7s/GoVQxX2bHmEEp6Dr8lAF60Tz9s/5o3ZNRgXZq1etXTD9opFKeNKnhG15yzFy/3FVybNYy/8bQo1yh6oJAU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746178990; c=relaxed/simple;
-	bh=EOXqPqomDY5NAmOBb/66KqDnP+k/LNaa1HXt0xFQ2zI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pqDA7n9VQ6iMsI9ozph8KLOhCAoOtLyc7AKTgP2L+E9Cp9MaqpfJJPW4zIsrT466OIjjiKF/eXmYt0YHMRtz520JQybbhqAseond5ZJ7NjoWHzOSwgARN/DolZ5lJOkFdKqSxGguSSpSRVathMJ4zJUhuLC6/GYbjR5vorut5Pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=FNh6wRok; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5f6c3f7b0b0so3621089a12.0
-        for <cgroups@vger.kernel.org>; Fri, 02 May 2025 02:43:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1746178985; x=1746783785; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EOXqPqomDY5NAmOBb/66KqDnP+k/LNaa1HXt0xFQ2zI=;
-        b=FNh6wRokeH/ZCOx305hS36t3HW2+EwT+Do9ehclCuwwr+qGSa/GJbRNbSo96uup9MA
-         Li4bnKCQCRy9YIIS2e/lT7F5Gvo5WsQHmOrEwdXsx9PRplZHbrZLmQ/f6wAO5vEp1cNJ
-         8S/hqtBxJal+gGXb3n+j43uZKENhG3bdnMCLV3jZdVEg5EnA4XlhkRCiiru3cHhfYQ66
-         dbEnFUUUUZWDuLg87insbdA0X9C/eUAknM1kuac6oUV4uvlBKmQg148blv2+ACJknt8F
-         KEU97tU08Nj4/daV5QVi/yMqlQcLcSAT24sTu92N9W+UkAQx8LDPOrGPie/NK8PFC2LI
-         Je6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746178985; x=1746783785;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EOXqPqomDY5NAmOBb/66KqDnP+k/LNaa1HXt0xFQ2zI=;
-        b=e4HImVNjhWwBn/x16W63Gm+Y4hZ4T08WO6wbF3QE7WM3cHrrJR5d0o3F2YF1zBa16O
-         peicGCXRAcUzHBe/C6433/8NPZ0di3UuRbWIlQNnKIvsQJZl335pwxk9+72K/fWb7ZHI
-         afcDGI2637t+5boTG2l+gv7nFmdcExMgNpyXv9J1MXOgDmo4wkxDfYltYYZ+fBVh7d4m
-         Q1JV/VNOOaEX73pfq4dV4D7LSSyuUKszgSxPOH6Vee2f0Qb26oWIulIS/TbqwffASr8F
-         /nbYeFstcIKAxUgr3pLWJ4nYweGLJfW52xExB3aARr2jy+xINpHMaJuOl8vEX6zM+Sgf
-         2dAw==
-X-Forwarded-Encrypted: i=1; AJvYcCU30U19sL6TZcOZpVzhKPbEwSzu2L973FQJkMHm4q2QZ7AC8+rprSFg61t9qyz+LJOvBsT6hj6V@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8WII7OOt0G4GiT2wOxrTfTcYMiQUzZNWihUYevA66syWsln3G
-	RM+8peEh6jnao9CzoZKXQZk9F1oxQPEMv+l+TvOTSaepTRczUFpKnWSydwLWSfA=
-X-Gm-Gg: ASbGnctCYRo0z0qUXbH2+Q5e8tXqJPExrIrR/FC8SjaWHYeZcUep6LXXexn1eVU4rHH
-	iiA9S6XYP1IhQsOUi24JDB0ova+b9Ss8oL1rcr3EOtYw77oKF2NQoK54f5UA2QEgL5iTcw3OawB
-	gM7Kgs+2ssFP2I0L+diepXbQeThQY37HbIFVjExBE5ajrXf1xwt+/g9ipQp6GYVKCkoOX3nlXF8
-	BBuhZJX2OqEVoH1ZewYBUO+N6UADHn9BpZ+Z/hNevowa6RcjTHrjPyfEIleENamlpqHFYnr94QU
-	rHQBxVha4JVQrfGjOoJVhFm3P5RO+zM/H0ZizTd9/pM=
-X-Google-Smtp-Source: AGHT+IFgoRhv9PuW/EWdVGOS2zvRloJtSnlLvctJGmfk/l9H9pNgE/zk8qe2KUDmO+lth2FLCAP8OA==
-X-Received: by 2002:a05:6402:d08:b0:5ee:497:89fc with SMTP id 4fb4d7f45d1cf-5fa7891aae1mr1661907a12.33.1746178985017;
-        Fri, 02 May 2025 02:43:05 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5fa7781bf5fsm942719a12.36.2025.05.02.02.43.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 May 2025 02:43:04 -0700 (PDT)
-Date: Fri, 2 May 2025 11:43:02 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Tejun Heo <tj@kernel.org>, Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v8 1/2] selftests: memcg: Allow low event with no
- memory.low and memory_recursiveprot on
-Message-ID: <vki6asa3arxitfgio3goox6hiyzmytxskoje6e2z55j3xrskly@4jq4btqz5nwd>
-References: <20250502010443.106022-1-longman@redhat.com>
- <20250502010443.106022-2-longman@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1525423C500
+	for <cgroups@vger.kernel.org>; Fri,  2 May 2025 12:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.76
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1746187283; cv=fail; b=DeMgnF1IoizEt/wWCpZRF7hBUuMHNAsY9+/5sDb19itqSL+9HAhY9wmCBer7R4wZA/Oh/qjunRx4CUFfwMXs/mfXr8FBTiDrikrCbJTlH/EmgLYdaUo7CO9pbur0qq3cTgmGxR+fWMOT22CzxOqqP9ZgVMENfZCwebWz03hUIec=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1746187283; c=relaxed/simple;
+	bh=ArzFY3zRaYiZ0D0J928d7+DVrp8QsmGpgnhjiMjB3P0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=lSkfYdm2gsP2GLQY6waBouwRljv29iFu/plyWjvbogCZk5oJVza5tRH2OyYxC+Bz9/dntGZ5R2/4MArEjMAaXpzL0+n7UYbHTMGcIw5Kq2IY/6MKblLPfjPM+49Z3wqIN6HuiiljyVEneCZvaFNp8Uoxdw+gYBitYlsjbtIShp8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=vuBhRLxX; arc=fail smtp.client-ip=40.107.95.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=mtu7cfxE8d99/BzZIUE8ukXKFDq5aslecmhsIUhiWK04KWZJdvISiE39wUtDi6uFJUyoGsqA8otsfQZaYEG8gMSwYI7yDjDo2XQhRyclCFKGotSO/rYyZaLG991wWXMq6b9eBKrL5zKHxNK+kM+Ael/L48OEOp5qAR7waQLbrn0OipOvIvSQnGjdtROhEjs8vm4uilqe1G/QuH6FcEMgYug87PlckVjYtT9oo6VMXjv47pGJpCiRuaNTuPywgNfYhCGHwUgtAvPerjqqB6iAsNZa1ZklTWUxFTT/HpzrdxCqWVF4aWBnu2lsCmWLB8lrBj+T7a7vQ4C+eo38MZcFwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZJ1UZBySybbIYi3/CnkP8wnOTtFANtKXNZ6rXIZCivc=;
+ b=Ssb61pCbuQ8GA8mjCAJVr9HD00OEUm+IxBpTiurzZb+u8r99i31v8tPGaH/j4E4y3puTCsjEQAEKY36TAcTd8YXE+6YXBS1fXUyX5/JkzMFvB/M1ZuFjClWMbw/8MInvSJNrofmBl/PBRgdvZBLYOcIIkm+FScxqGWDegtA0NAZrvDW6LFNniMCLqdphdVEZv1Dvrug9bzD8nb7NVla6hWqO+LuEEUSvYJsrOKiZaxTkFd95mpKrYZrtFtnJlBCFWWKYTg0jnQa0NBUQ6nRn37nDzJpa5WaZfcmmUS9c+THF8rUF191a/4U1fEJF0JBiMgYeybFAVvAMQhdup9vk2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZJ1UZBySybbIYi3/CnkP8wnOTtFANtKXNZ6rXIZCivc=;
+ b=vuBhRLxXVOg/tm2G48i2LU8cQ3yzlNhJLfRM12ZZaUjx0rzMLwgA5+pQEqooV0xF+qYcT6KyeFyaMj6MKN7OD0+zttouveDJA2DWgM2gfDacW5tDGZiQburLB+r6/t2WU22ZdcaoD3xHwCzAPQLthi54PvOXTzg6PnffNysEUys=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by DS5PPFF8845FFFB.namprd12.prod.outlook.com (2603:10b6:f:fc00::66a) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.29; Fri, 2 May
+ 2025 12:01:18 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5%7]) with mapi id 15.20.8678.028; Fri, 2 May 2025
+ 12:01:18 +0000
+Message-ID: <841d7108-2591-4f26-9126-cb55f3f46858@amd.com>
+Date: Fri, 2 May 2025 14:01:13 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/5] ttm: add initial memcg integration. (v2)
+To: Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
+ tj@kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>
+Cc: cgroups@vger.kernel.org, Waiman Long <longman@redhat.com>, simona@ffwll.ch
+References: <20250502034046.1625896-1-airlied@gmail.com>
+ <20250502034046.1625896-4-airlied@gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20250502034046.1625896-4-airlied@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BLAPR03CA0148.namprd03.prod.outlook.com
+ (2603:10b6:208:32e::33) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="55lyjcmxpait3n53"
-Content-Disposition: inline
-In-Reply-To: <20250502010443.106022-2-longman@redhat.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|DS5PPFF8845FFFB:EE_
+X-MS-Office365-Filtering-Correlation-Id: c2364673-37d9-46a0-72c3-08dd89710bd4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?VDZvaUtnWkxRNW83TktkaGRqbDA3V2hURUpMbklMY0pLblJtLzV1bFhLdHp5?=
+ =?utf-8?B?OFFWQ3dlTGVRZ2V3WHp2Y0FMT2hubkV4RmhVNjYyZ0FENlNkbWhITXJ2d0xY?=
+ =?utf-8?B?elZLeEliVTRnb0dvTi83OGFWVUphbFpKVE00ZHRYMEVMUGVsblJVUGYzSjJi?=
+ =?utf-8?B?ZEdtSnBySlVPZ2h6cDZ5V1pDNDlWM2N0SkpEcnk1eGNENk9RTGZqQWJhZHBZ?=
+ =?utf-8?B?dUZLVGhlTDc0MWY1Q09UQVhEU29hR0h3bDdid2lzQ1lEN3NBZ2ZKRUV3bFRp?=
+ =?utf-8?B?SjU0SU1JRlFGeHVWN004ZFZENWtPYXE2MTQyT0MxUk5IY1QzLzE0RHAyT0l3?=
+ =?utf-8?B?S0dXUEFMY0dtT3ZZRGxZRTJoSnJVV05PYVdaRWVraXFidmNVVENlcFZWK0g3?=
+ =?utf-8?B?TTBjTGdhNWFWNGVkelAxdUJKN0dlUkgvbGc1VnBxT2pLVDdHZGZNVUp2SUli?=
+ =?utf-8?B?WWlTeU9WVjRQaGhUWGRnbm0vdmhhSk1jcnFySFpkbDNsc0ZvSCs1aEE3ekJF?=
+ =?utf-8?B?a2xTWmNNUzlZOFI3eFU3WlUzcXg5K1hHZEFqdEFIS2laZ2I1MnpJUHRsU2RO?=
+ =?utf-8?B?YXlqcUFIcTJyNE9EeEFKWjBiNlYvVjdwYkZuZFMwU2xJL0djRC9kWE1Bc2Fw?=
+ =?utf-8?B?YlV1ajNxRUo5Z09TZnM2ZWl1SHA2SGJITTNFSXRLLzEvTS9CdXYyYTdUemxv?=
+ =?utf-8?B?TUdQUFA5TDE5VHZSekVzMmxqRmF6TWdCNnRPeGV3Ykh3VG5GQTJNQk5MWnU3?=
+ =?utf-8?B?cTdsN3NnbkxsZ0JCUjF1cHZ6Nm5oazhzVDdWaklWNGZYSFNhVjh6YkZaYlFw?=
+ =?utf-8?B?NERWR25acXJGTnNPZE5ZdkxISXFuRU55UHE3bnV3OWhsSG5yMSs5a3ZWdkR1?=
+ =?utf-8?B?VkxjMHUvZFhuQ1d6TWRudGlTMm9qL0tUeWV1NWZIWHVPelBWazNlK2tBSW9X?=
+ =?utf-8?B?ano5UnZuZHBWbFVMOUxOK2xnalc0b1FoZVdxU0ZoNHl0YjNwWk16YU4wTXRh?=
+ =?utf-8?B?ZmNPZWQvbkVyR0RrWUN0V2xwK3lzN3pxc0UzRVZTUm5DUFAvc2RPb1JKNmdG?=
+ =?utf-8?B?SlBYcGdxbG5XT0lFUmkxUC90dUZDbDNGUmFWZGxoR3QrTFRvNkovN2xwQmht?=
+ =?utf-8?B?OXNUNk1wVVd4cXNVdVBBR2Z4L3l3a0x3NFBqcjcxcFJ5RE4rN1lYU2VZRnZ1?=
+ =?utf-8?B?SGh5WU9wd28vMitVUE5wYUt6c1RuaHI1SlIvOGpqcDk5WHhXRm5nSyt2Nmt4?=
+ =?utf-8?B?MllJeHFrWUF4ZW55VFNzbTZLYjduRkhURGNXM2dCbTkyNjd6R2JNS3BaNjR3?=
+ =?utf-8?B?U2E0bklpL0w3STRrODlpV1ZwbU9MalpFcDE1bll3NE5BdjNoc0N3dWFmVU1k?=
+ =?utf-8?B?cEpQaWV5ZWxGTkZEZC81YUtFRSs1UHpBdVRUc0RXRHk5bjVDNm5WTFE1cUJt?=
+ =?utf-8?B?TFlES2ppaTZySTRKMVE2TXB2NnRYTVhaQllLMmpKbDNMTllqcCs3QVVnOUlI?=
+ =?utf-8?B?KzJuNlFxc1Z6UVRTZWljbE1xQk84YjU5aXJnbkFzYVJ1UmlNb3FBSytYRUpL?=
+ =?utf-8?B?ck5oN2JxRjVwNjNnc21NM2hkYkhFSTdnUFJLbUlHYjZBLy9Zdi9obDloWCt0?=
+ =?utf-8?B?c2E2amdvTGgvd0k4YkVIQWxhTWFEekFUV1NQV0YxTm5YKzdUSmNMT0IyWTdu?=
+ =?utf-8?B?aFBQRlU0Mk5VMjREUGdFZWdqTThzREk1S2RvNER0TTBuM3JnU0NrTWd1ZkhL?=
+ =?utf-8?B?cDFJMTc1QjlqT1NQT2daREpuY2Y1cm13c1JHWVpVVFRMTUJnbHpuRjVXZXU4?=
+ =?utf-8?B?N3pDNm5QT0hZeHZlSTg1SkVrMUNFSTlzbXh4WUo1Z2hvc3g3Zi9rcXpkMGh6?=
+ =?utf-8?B?YkpuRFdoajdnaU4vcEhtOXB2RXF1NDk3U3VVR1p0N294QmpJZHk5dnR5YVU5?=
+ =?utf-8?Q?OFdRiQK0X7Q=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?QnVjOG45U3ZQdm8vRVdQbzJvYjNpd1NoMFR2UFZBbWhkNWppTG9NWGc0RG9L?=
+ =?utf-8?B?MGxpcytMZWdUaXZpbzF2bXpLcjhBai9jMjVwNGFyd2hDckdNR2xuVER2bHlo?=
+ =?utf-8?B?c3ZIZkZkY1FqZnZWSk0rUjJwZXRHLzkzTEtNNC90blJkWDF5eU9KeGlmNFZz?=
+ =?utf-8?B?UnFUNFUwOXMwRW1lSnB6bUhFS01UVXBVNWIzaEdKZHQydDJ0YWZ4YmY4OFdL?=
+ =?utf-8?B?c0JpcVNPNjF6aE0weUZkRHlmY0xLaVYzOWl6d1JPYUZiaERSRTl4L3VEZEY2?=
+ =?utf-8?B?bmhScjZLR1l4LzdZdkQwREowekpUcDFqaFgveDFDR3hmNXVLRURmWjlYNW4x?=
+ =?utf-8?B?M0FvMFd4QTE0K3RoUUUzek5LVjBJWDBBN0VSZDdOUlM5Ykp2dlhENEFyOEVw?=
+ =?utf-8?B?OWRrTGI4ZVZBTnYwWWtMQ0IrRXNrbUlPZDhnNmJjNlNUTEhqOG5QeFY1d1pH?=
+ =?utf-8?B?a1ZrRnE3eURmakxMQmczTkhwQ3FWamVFUkJMc1Bzd2pucXVNY1lNTHZaZUE3?=
+ =?utf-8?B?N242cnF0bllXYmRGVE9ocmRXWmJqVkppbmoyNHE2c0pnS09aVk5TWVZtSnlG?=
+ =?utf-8?B?UGZxOUxBYW41UTZCOVlhWFVtZmxrNW5yRWtBNlhneXh1djI4dDZPNWJlSzNS?=
+ =?utf-8?B?ZGZwSW9aa2tzckJzS3Fid3AwcGhKYkdGcWs1OXVaVEs2bEFGVHFJd2FEaTdP?=
+ =?utf-8?B?RmU1ZXJOOHhxWVdycDJKdlloeGhwbUlZdmFKaHNoZm5pZjFqam10NG85VnFF?=
+ =?utf-8?B?Vkk4dHJiU29pRkRxNDg4eGhmaCtkbFJiSXlYY2M1UVhRUXhjT2lBQWY4VXdu?=
+ =?utf-8?B?VkRNTEJQSVNPYzc5bmRoODZuaEwzbmlpaDFrZ3pMeEwyaU9EWm11MnFacmo0?=
+ =?utf-8?B?SjlpdHBIcGxxRFZOQXFVaU1XL0RRbFdtZmRjblNTZUFqRnB1eUJlNjVEMlFK?=
+ =?utf-8?B?VVZlSExQR2RTVWhwRWR2UGxjbG1mYlQyaG5BdzFOVGNXUmhxUWsxTVpYNlkv?=
+ =?utf-8?B?bUFEUHQ1YUZSeGVTUGxxclpDaDJKSG9SaUZzekRWQkNXM3lUcDRNNUlBODVZ?=
+ =?utf-8?B?RFI4aThWRUxtWktrUmZWZS9yOVV3a3oyUTQ0Sk1MSlk0MFZGSlRtU2lPbW55?=
+ =?utf-8?B?VW1yU0FDeE9jNVBGZGZ6cGdOSGFoTGswemI2bHRRUURobCs1MllBbDBMTFVG?=
+ =?utf-8?B?ZktiYXpNaVVsQTdwMGh4cmR4S2ZIRkRWRDVQSGxPa2dVaTFHZjBjOTBqRmI5?=
+ =?utf-8?B?eUYxam5kUGk0WmV6Yy9uVHFVZ2NVcWFqVTFiUEQyKzdMM3UwdmtpOHk0VDg4?=
+ =?utf-8?B?WkliT0Ewa21sU2FBK2ZpZjZlN1R5UkdHeCtNNnR5Z3NZSkRJS3Zua2x1Rllv?=
+ =?utf-8?B?NkJFM0JxTFdad0dVOWJFdldsR2RGdUc2aTAyUktkVWxGUkpMUk1LMnN1eENX?=
+ =?utf-8?B?ZXRCbWVreSs1U3BwOHRFRWhtMUlhYmorMGtZQU91TWJoMEs3N2dvY2RZc1Fh?=
+ =?utf-8?B?RDBkTW13TGd0SkxldWNaWCtSczhHN3JxRG12YlZ0V0ZYUzN6UE42NllPZzM2?=
+ =?utf-8?B?dG5JeUltTVVQNExwa1ZNa1R5Ly9GQnNiWWE5Zk5PazBJb3RPWXliTVMrTzMx?=
+ =?utf-8?B?c2tsQThCbGdHZHpYQTk3SDBscWNURmlGNExSNkFSaXVjdHdDNlZLOWZuRWNB?=
+ =?utf-8?B?NW5wK3BGTEVPaUhlcGJNSi9nN3N1WGZLYTJZWHhIMXF1eDZOU2cvUVZQSkNR?=
+ =?utf-8?B?ZGdtenJzTVlNYWxxcWlMTTFBYlJWZmRXZ3liaG1jMHpjcERJUW9LYnFNQzNU?=
+ =?utf-8?B?M0JISk1jUHJMcDFaMm5CelFHVHZOUzR5cHVZWDZLRGhKaDNGVm5QbHdZdVNF?=
+ =?utf-8?B?ZDM4U3lFSmpQeXBoUElDM2ZMOEt5ZzdnaHo0ZlJsUGs3cXJmajM5N0VKUGNC?=
+ =?utf-8?B?SU12VTUrcS9HUWYwdHZwNElvS3FiVG44UE5HcXcyNXBzOHcxUisyQzFZK0hl?=
+ =?utf-8?B?ZGw5UXB3N0pQUXQvT3l2blpjZXlBajRuT3czckRSK0pzRXYrTC9TdThMWStG?=
+ =?utf-8?B?OHQvZnNMSHN3eUZDMzBUUXZyT0hSTE53c1RkWTdZSzFobXBnSUpnTVhJSldE?=
+ =?utf-8?Q?qVPObPqFNLFsvI//se4nELqX4?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2364673-37d9-46a0-72c3-08dd89710bd4
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2025 12:01:18.1303
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TLNVid649p0H/phc1n0VugbDFtF6ZbasgkXHtIEL9qb1YMYaPR+KWLsLJdieO0DM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS5PPFF8845FFFB
+
+On 5/2/25 05:36, Dave Airlie wrote:
+> From: Dave Airlie <airlied@redhat.com>
+> 
+> Doing proper integration of TTM system memory allocations with
+> memcg is a difficult ask, primarily due to difficulties around
+> accounting for evictions properly.
+> 
+> However there are systems where userspace will be allocating
+> objects in system memory and they won't be prone to migrating
+> or evicting and we should start with at least accounting those.
+> 
+> This adds a memcg group to ttm bo and resource objects.
+> 
+> This memcg is used when:
+> a) resource is allocated in system/tt memory
+> b) the account_op is set in the operation context
+> 
+> This patch disables the flag around object evictions,
+> but any operation that could populate a TTM tt object in process context
+> should set the account_op flag.
+> 
+> This v2 moves the charging up a level and also no longer uses
+> __GFP_ACCOUNT, or attaches the memcg to object pages, it instead
+> uses the same approach as socket memory and just charges/uncharges
+> at the object level. This was suggested by Christian.
+> 
+> Signed-off-by: Dave Airlie <airlied@redhat.com>
+> ---
+>  drivers/gpu/drm/ttm/ttm_bo.c       |  9 +++++++--
+>  drivers/gpu/drm/ttm/ttm_bo_vm.c    |  3 ++-
+>  drivers/gpu/drm/ttm/ttm_resource.c | 20 ++++++++++++++++++++
+>  include/drm/ttm/ttm_bo.h           |  8 ++++++++
+>  include/drm/ttm/ttm_resource.h     |  6 +++++-
+>  5 files changed, 42 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+> index 95b86003c50d..89d2df246ed2 100644
+> --- a/drivers/gpu/drm/ttm/ttm_bo.c
+> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
+> @@ -537,6 +537,7 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *
+>  	evict_walk->evicted++;
+>  	if (evict_walk->res)
+>  		lret = ttm_resource_alloc(evict_walk->evictor, evict_walk->place,
+> +					  walk->ctx,
+>  					  evict_walk->res, NULL);
+>  	if (lret == 0)
+>  		return 1;
+> @@ -733,7 +734,7 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
+>  			continue;
+>  
+>  		may_evict = (force_space && place->mem_type != TTM_PL_SYSTEM);
+> -		ret = ttm_resource_alloc(bo, place, res, force_space ? &limit_pool : NULL);
+> +		ret = ttm_resource_alloc(bo, place, ctx, res, force_space ? &limit_pool : NULL);
+>  		if (ret) {
+>  			if (ret != -ENOSPC && ret != -EAGAIN) {
+>  				dmem_cgroup_pool_state_put(limit_pool);
+> @@ -744,8 +745,12 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
+>  				continue;
+>  			}
+>  
+> +			/* we don't want to account evictions at this point */
+> +			bool old_ctx_account = ctx->account_op;
+> +			ctx->account_op = false;
+>  			ret = ttm_bo_evict_alloc(bdev, man, place, bo, ctx,
+>  						 ticket, res, limit_pool);
+> +			ctx->account_op = old_ctx_account;
+>  			dmem_cgroup_pool_state_put(limit_pool);
+>  			if (ret == -EBUSY)
+>  				continue;
+> @@ -1145,7 +1150,7 @@ ttm_bo_swapout_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *bo)
+>  
+>  		memset(&hop, 0, sizeof(hop));
+>  		place.mem_type = TTM_PL_SYSTEM;
+> -		ret = ttm_resource_alloc(bo, &place, &evict_mem, NULL);
+> +		ret = ttm_resource_alloc(bo, &place, ctx, &evict_mem, NULL);
+>  		if (ret)
+>  			goto out;
+>  
+> diff --git a/drivers/gpu/drm/ttm/ttm_bo_vm.c b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+> index a194db83421d..163039cf40a5 100644
+> --- a/drivers/gpu/drm/ttm/ttm_bo_vm.c
+> +++ b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+> @@ -220,7 +220,8 @@ vm_fault_t ttm_bo_vm_fault_reserved(struct vm_fault *vmf,
+>  		struct ttm_operation_ctx ctx = {
+>  			.interruptible = true,
+>  			.no_wait_gpu = false,
+> -			.force_alloc = true
+> +			.force_alloc = true,
+> +			.account_op = true,
+>  		};
+>  
+>  		ttm = bo->ttm;
+> diff --git a/drivers/gpu/drm/ttm/ttm_resource.c b/drivers/gpu/drm/ttm/ttm_resource.c
+> index 7e5a60c55813..da257678a5ba 100644
+> --- a/drivers/gpu/drm/ttm/ttm_resource.c
+> +++ b/drivers/gpu/drm/ttm/ttm_resource.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/iosys-map.h>
+>  #include <linux/scatterlist.h>
+>  #include <linux/cgroup_dmem.h>
+> +#include <linux/memcontrol.h>
+>  
+>  #include <drm/ttm/ttm_bo.h>
+>  #include <drm/ttm/ttm_placement.h>
+> @@ -373,12 +374,14 @@ EXPORT_SYMBOL(ttm_resource_fini);
+>  
+>  int ttm_resource_alloc(struct ttm_buffer_object *bo,
+>  		       const struct ttm_place *place,
+> +		       struct ttm_operation_ctx *ctx,
+>  		       struct ttm_resource **res_ptr,
+>  		       struct dmem_cgroup_pool_state **ret_limit_pool)
+>  {
+>  	struct ttm_resource_manager *man =
+>  		ttm_manager_type(bo->bdev, place->mem_type);
+>  	struct dmem_cgroup_pool_state *pool = NULL;
+> +	struct mem_cgroup *memcg = NULL;
+>  	int ret;
+>  
+>  	if (man->cg) {
+> @@ -387,13 +390,26 @@ int ttm_resource_alloc(struct ttm_buffer_object *bo,
+>  			return ret;
+>  	}
+>  
+> +	if ((place->mem_type == TTM_PL_SYSTEM || place->mem_type == TTM_PL_TT) &&
+> +	    ctx->account_op && bo->memcg) {
 
 
---55lyjcmxpait3n53
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v8 1/2] selftests: memcg: Allow low event with no
- memory.low and memory_recursiveprot on
-MIME-Version: 1.0
+I suggest to make that a placement flag instead of putting it into the ctx.
 
-On Thu, May 01, 2025 at 09:04:42PM -0400, Waiman Long <longman@redhat.com> =
-wrote:
-> Modify the test_memcontrol.c to ignore low event in the 3rd child cgroup
-> with memory_recursiveprot on.
->=20
-> The 4th child cgroup has no memory usage and so has an effective
-> low of 0. It has no low event count because the mem_cgroup_below_low()
-> check in shrink_node_memcgs() is skipped as mem_cgroup_below_min()
-> returns true. If we ever change mem_cgroup_below_min() in such a way
-> that it no longer skips the no usage case, we will have to add code to
-> explicitly skip it.
->=20
-> With this patch applied, the test_memcg_low sub-test finishes
-> successfully without failure in most cases. Though both test_memcg_low
-> and test_memcg_min sub-tests may still fail occasionally if the
-> memory.current values fall outside of the expected ranges.
->=20
-> Suggested-by: Michal Koutn=FD <mkoutny@suse.com>
-> Signed-off-by: Waiman Long <longman@redhat.com>
+E.g. something like "if (place->flags TTM_PL_FLAG_MEMCG)" here and then just set the flag in amdgpu_bo_placement_from_domain() and clear it in amdgpu_evict_flags().
 
-Acked-by: Michal Koutn=FD <mkoutny@suse.com>
+This wopuld not only simplify the handling here but also gives a potential solution to the eviction handling.
 
-(Thank you. Not sure if this can be both with Suggested-by, so either of
-them alone is fine by me.)
+In other words allocations don't get charged to memcg on eviction, but when the next CS says during validation that the BO should stay in GTT we then charge the memory to the application.
+
+Background is that then the right application get's the potential ENOMEM from their CS IOCTL.
+
+Apart from that the solution looks totally sane to me as well.
+
+> +		memcg = bo->memcg;
+> +		gfp_t gfp_flags = GFP_USER;
+> +		if (ctx->gfp_retry_mayfail)
+> +			gfp_flags |= __GFP_RETRY_MAYFAIL;
+
+BTW: gfp_retry_mayfail is kind of deprecated. Sima is strictly against that.
+
+I was about to remove it but then XE picked it up as well.
+
+I never kicked of the discussion on what to do with that.
+
+Regards,
+Christian.
 
 
---55lyjcmxpait3n53
-Content-Type: application/pgp-signature; name="signature.asc"
+> +
+> +		if (!mem_cgroup_charge_gpu(memcg, bo->base.size >> PAGE_SHIFT, gfp_flags))
+> +			return -ENOMEM;
+> +	}
+>  	ret = man->func->alloc(man, bo, place, res_ptr);
+>  	if (ret) {
+>  		if (pool)
+>  			dmem_cgroup_uncharge(pool, bo->base.size);
+> +		if (memcg)
+> +			mem_cgroup_uncharge_gpu(memcg, bo->base.size >> PAGE_SHIFT);
+>  		return ret;
+>  	}
+>  
+> +	(*res_ptr)->memcg = memcg;
+>  	(*res_ptr)->css = pool;
+>  
+>  	spin_lock(&bo->bdev->lru_lock);
+> @@ -407,6 +423,7 @@ void ttm_resource_free(struct ttm_buffer_object *bo, struct ttm_resource **res)
+>  {
+>  	struct ttm_resource_manager *man;
+>  	struct dmem_cgroup_pool_state *pool;
+> +	struct mem_cgroup *memcg;
+>  
+>  	if (!*res)
+>  		return;
+> @@ -416,11 +433,14 @@ void ttm_resource_free(struct ttm_buffer_object *bo, struct ttm_resource **res)
+>  	spin_unlock(&bo->bdev->lru_lock);
+>  
+>  	pool = (*res)->css;
+> +	memcg = (*res)->memcg;
+>  	man = ttm_manager_type(bo->bdev, (*res)->mem_type);
+>  	man->func->free(man, *res);
+>  	*res = NULL;
+>  	if (man->cg)
+>  		dmem_cgroup_uncharge(pool, bo->base.size);
+> +	if (memcg)
+> +		mem_cgroup_uncharge_gpu(memcg, bo->base.size >> PAGE_SHIFT);
+>  }
+>  EXPORT_SYMBOL(ttm_resource_free);
+>  
+> diff --git a/include/drm/ttm/ttm_bo.h b/include/drm/ttm/ttm_bo.h
+> index 903cd1030110..56a33b5f5c41 100644
+> --- a/include/drm/ttm/ttm_bo.h
+> +++ b/include/drm/ttm/ttm_bo.h
+> @@ -135,6 +135,12 @@ struct ttm_buffer_object {
+>  	 * reservation lock.
+>  	 */
+>  	struct sg_table *sg;
+> +
+> +	/**
+> +	 * @memcg: memory cgroup to charge this to if it ends up using system memory.
+> +	 * NULL means don't charge.
+> +	 */
+> +	struct mem_cgroup *memcg;
+>  };
+>  
+>  #define TTM_BO_MAP_IOMEM_MASK 0x80
+> @@ -174,6 +180,7 @@ struct ttm_bo_kmap_obj {
+>   * BOs share the same reservation object.
+>   * @force_alloc: Don't check the memory account during suspend or CPU page
+>   * faults. Should only be used by TTM internally.
+> + * @account_op: account for any memory allocations by a bo with an memcg.
+>   * @resv: Reservation object to allow reserved evictions with.
+>   * @bytes_moved: Statistics on how many bytes have been moved.
+>   *
+> @@ -186,6 +193,7 @@ struct ttm_operation_ctx {
+>  	bool gfp_retry_mayfail;
+>  	bool allow_res_evict;
+>  	bool force_alloc;
+> +	bool account_op;
+>  	struct dma_resv *resv;
+>  	uint64_t bytes_moved;
+>  };
+> diff --git a/include/drm/ttm/ttm_resource.h b/include/drm/ttm/ttm_resource.h
+> index e52bba15012f..1ab515c6ec00 100644
+> --- a/include/drm/ttm/ttm_resource.h
+> +++ b/include/drm/ttm/ttm_resource.h
+> @@ -45,6 +45,7 @@ struct ttm_resource;
+>  struct ttm_place;
+>  struct ttm_buffer_object;
+>  struct ttm_placement;
+> +struct ttm_operation_ctx;
+>  struct iosys_map;
+>  struct io_mapping;
+>  struct sg_table;
+> @@ -245,7 +246,8 @@ struct ttm_bus_placement {
+>   * @placement: Placement flags.
+>   * @bus: Placement on io bus accessible to the CPU
+>   * @bo: weak reference to the BO, protected by ttm_device::lru_lock
+> - * @css: cgroup state this resource is charged to
+> + * @css: cgroup state this resource is charged to for dmem
+> + * @memcg: memory cgroup this resource is charged to for sysmem
+>   *
+>   * Structure indicating the placement and space resources used by a
+>   * buffer object.
+> @@ -264,6 +266,7 @@ struct ttm_resource {
+>  	 * @lru: Least recently used list, see &ttm_resource_manager.lru
+>  	 */
+>  	struct ttm_lru_item lru;
+> +	struct mem_cgroup *memcg;
+>  };
+>  
+>  /**
+> @@ -444,6 +447,7 @@ void ttm_resource_fini(struct ttm_resource_manager *man,
+>  
+>  int ttm_resource_alloc(struct ttm_buffer_object *bo,
+>  		       const struct ttm_place *place,
+> +		       struct ttm_operation_ctx *ctx,
+>  		       struct ttm_resource **res,
+>  		       struct dmem_cgroup_pool_state **ret_limit_pool);
+>  void ttm_resource_free(struct ttm_buffer_object *bo, struct ttm_resource **res);
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCaBSTpAAKCRAt3Wney77B
-SclRAP4sVLHHxS41vhM1p+JYRz4x68kM1ToNUs7M3I1xd7X9XQEA9Lg0Obh9pUcU
-RmcQibMDF9amuynS7EPQ0DQjGlQ+lQ0=
-=iotP
------END PGP SIGNATURE-----
-
---55lyjcmxpait3n53--
 
