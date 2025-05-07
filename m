@@ -1,203 +1,172 @@
-Return-Path: <cgroups+bounces-8071-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8072-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1E71AAE4DB
-	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 17:31:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B3ACAAE7C4
+	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 19:24:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DEA2188C205
-	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 15:30:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 879607BDF9B
+	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 17:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 728EE28AAE9;
-	Wed,  7 May 2025 15:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A4F528C85E;
+	Wed,  7 May 2025 17:23:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ox9dtVa4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PKGsGhv1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F1C28A40A;
-	Wed,  7 May 2025 15:29:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84EAF1EB5DD
+	for <cgroups@vger.kernel.org>; Wed,  7 May 2025 17:23:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746631744; cv=none; b=B5aw58/ttpaVBDptWzLVubELnY/BdP/Y8UdquNUhio2FEX1Iz2xW+GuTkcyTCdDfV0a7mU0wq984SEvv2GgDBrqeRZn50zRc1saMTQHqW+/gX2TFjvko2B2HCW9Tm+btpQOXPAzebCbaaFMD2cziJRm7vUn0g9K8eZb3OUVi4ek=
+	t=1746638620; cv=none; b=iSx0k5hoZApq0cats+M7I4GFkJen0DpeLqW1Ts27EqVXCi2ZWCWg+nmwtUXMN4vzjH2B9dsRvceBhUEH2PXBkfrVTqCY0CIYeWSA2CS/uepv1u08BV3cMK3kBzbjKfu0EwB1BvQNZo7sZPKHWSzzUgbB+B+7cGBLlXVVDx46Zx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746631744; c=relaxed/simple;
-	bh=9LRAMcBN26c2uDe55In7inkisD5iByxob2dso7OqTjo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=as1iLMNs/gf5+ILfexFdpgL1GHRTZvwPNDso1h1m1WqilIHMazkt0LtIK9sDvgBGTSYgsECXYGeg1za2Icf89/ehHWVnBGjWqjFHrrBlvr36Uaf6sbyKjq18Q8hJDLaIsv/9BKXgJRnJjrCMbNKAqRmToThKNxRGCHT366tjERk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ox9dtVa4; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 547AfGrY032104;
-	Wed, 7 May 2025 15:28:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=NNi1XU
-	SXtf55iTgGz1muDN2xXiRwxJp0klNS1lsUg/I=; b=ox9dtVa4AgnDxE78PN86fY
-	4yEk4wW0dG6o1tMUuPCyR1cJ7wXDx8OzPcvj21xKSD8na92335yutQLgLIeMiSEr
-	MDUWluL15DKy1lYbkXMfWm7Jm39hiJFj2fjR2xgp93+jj7YZg7QlgsYhLF1XIAzx
-	2VsJrWxciupQhRUZDTwucIOsmETUe/3qGziwbjPVisRYBcWlC5fT6xGKjZjselsx
-	lGWa5/vEdq3rzZyfL646H/ezkYS0jtSLEjAZwJCXg2qbovIgjaSJQZgiLHCXYZ1z
-	oKnC7zqR7vXG36YLv4Csv6Q5pTNtjuPQsnXmAvqpleRi6r+aycZXnUSBqZaHbsuw
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46g5yrsj85-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 May 2025 15:28:29 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 547FMpRN002913;
-	Wed, 7 May 2025 15:28:29 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46g5yrsj80-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 May 2025 15:28:29 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 547E4vJT014583;
-	Wed, 7 May 2025 15:28:28 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 46dypks4nc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 May 2025 15:28:28 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 547FSSdT24773288
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 7 May 2025 15:28:28 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 05A6058051;
-	Wed,  7 May 2025 15:28:28 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 61D035805A;
-	Wed,  7 May 2025 15:28:20 +0000 (GMT)
-Received: from [9.61.241.123] (unknown [9.61.241.123])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  7 May 2025 15:28:20 +0000 (GMT)
-Message-ID: <2648c494-8eff-4841-b942-4f538f1f5eca@linux.ibm.com>
-Date: Wed, 7 May 2025 20:58:18 +0530
+	s=arc-20240116; t=1746638620; c=relaxed/simple;
+	bh=ewlV+sRszF9muSFOX7hfJtjSreVRo33zhmUq1+5wQOI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SF2Cyogw4azAiWl8mgOYmT28qgzeJTHCmE5eQGGZeU0kTx/WVH2cP31s1WxEVglyObtLJmHWbqXi4Jzg03TYhbzLmF1Z+rZ5Vv2QZfl/gchEq3nvAo+2Z+N4BtwM9js1C40t4c9SXjaHcedFpGDxSabyEj2EwRzHAHfl7y2s+no=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PKGsGhv1; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5faaddb09feso95893a12.2
+        for <cgroups@vger.kernel.org>; Wed, 07 May 2025 10:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1746638617; x=1747243417; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZY+h6X2XedSZi20l91/QA51b9ryXVScf2CPooruo8DE=;
+        b=PKGsGhv1AClwXcr7KW0FtJA7JSW15uu20tCrRbcTIF7g1+GScXhQ58noRQ6kL0Ssxb
+         OlKg/uAhOSzI5X2VDJM9JS7acPs/w+cE/YwZ3LzeI06riSGAph+vhkiV6N6+Y5NEyQ4V
+         8AMh5SW2CI10KyAJV69wuNaCv6FhpbwfWCGKtZaVwrPfAq/u+3CNMWxvvkTXbSVpPaUl
+         CPYASNGHf22UMXkwiXFVjVAnkrm0ROENEjb5CVIsfxpY9fooi6n9tFthzC3tjQPN7gvB
+         6p17FPpAP2/E7ZsXW3+W+CRCnCwM96kZtESShYrlHOBfmVc3E7guFfi0Qt4NUD4vhVBF
+         62dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746638617; x=1747243417;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZY+h6X2XedSZi20l91/QA51b9ryXVScf2CPooruo8DE=;
+        b=NG+ju+Ql9+EEP12BZOhDOzgdpFWuX8RBx36PdtPIvXOINxOVu+EX9UG7kGVRRfGicA
+         4zSldeQRs6InRLhRE+5LdwrZ6+uthrx+pW9Z5BX3d9THvtPUMGDEJJVF5qoFNlaweZho
+         m1Q+YyW1QQKMoqiY4bibGlZO9PiOaNg+T9wGMNXbpXYO9TK6lVR963P2hXStRamq0/JK
+         /CJUAdpZRihIIPkPbIPZrAc13BZ/Lg8XeaQOVDgjZkTGZKgSA3FhnA/RVEveF4UlXz0L
+         nYGudRAL5XMfKOvevvTdBXz7HBHGFHp3SG+zGwlrQAJ6HR2PQ/S+UIzVIvxf2t/40mfJ
+         6sRA==
+X-Forwarded-Encrypted: i=1; AJvYcCXIhdXiHBKDTdZmdyWA4c3WhaSmXYPbuGWlM4NvCRo6Et25Ls8BM+hCN+iEJKXUEKj5I9Gtzwsz@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1gQB4IQvKMrYGnb64VADXuu0EaZnAVXjcGkzSYZIVp7iuDVD6
+	VyTFAWtUdm6ji23FklIpfbQ0nqZ04URDUyQhufTk+1AIbqzTdZHcblBie+7EaMdetgC78SW12pe
+	w/JMpzQwIJpMr0cVjyAuHH/JFyVuiUkuDJ8mZ
+X-Gm-Gg: ASbGncuMkr4KipVo+ZgM46KIl0RpQrATO9RXSJuSPfN0S3VCzMnEFSa2wJGqHOwKoYh
+	fpJIpsClNHYqapASuqGFe1zTwZYmSir/UGWxvRoMzazXmvmPBK5zRVchs8+TH8MwwlRsZs9Phbe
+	E/QpnUKL2UHhjGZ+s/f5oYxK+7sYitPpKPkk7AHioKYZ2O8ORYFQ==
+X-Google-Smtp-Source: AGHT+IF0pJTKi36N0DAA0O9JgGyEtGDnfSk8P/Zj5vvwMQ+L6BFmKylLNPDtOHBsd9fX8CQa3qUfPG5Tl2Sv0KGaShg=
+X-Received: by 2002:a17:907:d046:b0:ace:c180:e3b with SMTP id
+ a640c23a62f3a-ad1fe6f6113mr2941566b.31.1746638616671; Wed, 07 May 2025
+ 10:23:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/2] sched/numa: add statistics of numa balance task
- migration
-Content-Language: en-GB
-To: "Chen, Yu C" <yu.c.chen@intel.com>
-Cc: mkoutny@suse.com, Ingo Molnar <mingo@redhat.com>,
-        Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, Mel Gorman <mgorman@suse.de>,
-        Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeel.butt@linux.dev>,
-        "Chen, Tim C" <tim.c.chen@intel.com>, Aubrey Li <aubrey.li@intel.com>,
-        Libo Chen <libo.chen@oracle.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Madadi Vineeth Reddy <vineethr@linux.ibm.com>,
-        "Jain, Ayush"
- <ayushjai@amd.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Chen Yu <yu.chen.surf@foxmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <cover.1746611892.git.yu.c.chen@intel.com>
- <363632bc-ce31-4a6d-8271-ecae6f6c2d0a@linux.ibm.com>
- <c4757667-6d6a-4010-80c5-f5203630557a@intel.com>
-From: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-In-Reply-To: <c4757667-6d6a-4010-80c5-f5203630557a@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=cuybk04i c=1 sm=1 tr=0 ts=681b7c1e cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=zd2uoN0lAAAA:8 a=5hPzrwBVPW74md0RgpEA:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: 1kUnbGk__TJ7w150l1Ieo15RTM0521r5
-X-Proofpoint-ORIG-GUID: oll6XN-rVZ_skXEdZd5A6C0-UAYqZ3Zx
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTA3MDE0MiBTYWx0ZWRfXyd3R3iN8Gagu y56PA6v0d9L2eLSiSmUegspAHgRopboKEIyjaQRsJFTWMZVG1uHoIeKZKcrNLxa3fmprJYJ6UPs ibO4EUiZmiegQMV6sJoG9B26NakxwFcpBlwzmDHGiKBe+9Rd8YHuALU83RuPLevM4QbAbh3iahh
- VY0Z5Aaqvya2pC16Bzy3/ZWG7A7M0QYi0m+TvyIEMxKUIOlL/lM04EDwxAPBoxhJkT0kdmyQT5J C/QzPCBrh8xpMmnlDj+aThrXpMx3IpkjdMLiJUdGmh1me3d3DoM32+ca/RaUcYXCFadsYCx+7t9 3c4kBOZ5w96JNxrR5zH2QRO9v7TfPfvhJ17T6iFKpjGoCLFed7ODNrQ5XtzZ30ZNONuUEuQgQ6A
- 33dwIBsq/HsBc8FUkIFM7krgnqNknrlgBGQvpx52CmmLzLkkBiYba5UmaQF7qZUWCPrHk+lD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-07_04,2025-05-06_01,2025-02-21_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- suspectscore=0 adultscore=0 spamscore=0 clxscore=1015 bulkscore=0
- malwarescore=0 impostorscore=0 mlxscore=0 priorityscore=1501 phishscore=0
- lowpriorityscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
- definitions=main-2505070142
+References: <20250506183533.1917459-1-xii@google.com> <aBqmmtST-_9oM9rF@slm.duckdns.org>
+ <CAOBoifh4BY1f4B3EfDvqWCxNSV8zwmJPNoR3bLOA7YO11uGBCQ@mail.gmail.com> <aBtp98E9q37FLeMv@localhost.localdomain>
+In-Reply-To: <aBtp98E9q37FLeMv@localhost.localdomain>
+From: Xi Wang <xii@google.com>
+Date: Wed, 7 May 2025 10:23:24 -0700
+X-Gm-Features: ATxdqUEiwuZBXPQM5AxuYr3cRC8Jy0fmaTsk7TiDCQLyU3wbnCFO16CEVv3w2rQ
+Message-ID: <CAOBoifgp=oEC9SSgFC+4_fYgDgSH_Z_TMgwhOxxaNZmyD-ijig@mail.gmail.com>
+Subject: Re: [RFC/PATCH] sched: Support moving kthreads into cpuset cgroups
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, David Rientjes <rientjes@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Waiman Long <longman@redhat.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Dan Carpenter <dan.carpenter@linaro.org>, Chen Yu <yu.c.chen@intel.com>, 
+	Kees Cook <kees@kernel.org>, Yu-Chun Lin <eleanor15x@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	jiangshanlai@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 07/05/25 8:22 pm, Chen, Yu C wrote:
-> Hi Venkat,
+On Wed, May 7, 2025 at 7:11=E2=80=AFAM Frederic Weisbecker <frederic@kernel=
+.org> wrote:
 >
-> On 5/7/2025 10:32 PM, Venkat Rao Bagalkote wrote:
->> Hello Chenyu,
->>
->>
->> On 07/05/25 4:44 pm, Chen Yu wrote:
->>> Introducing the task migration and swap statistics in the following 
->>> places:
->>> /sys/fs/cgroup/{GROUP}/memory.stat
->>> /proc/{PID}/sched
->>> /proc/vmstat
->>>
->>> These statistics facilitate a rapid evaluation of the performance 
->>> and resource
->>> utilization of the target workload.
->>>
->>> Patch 1 is a fix from Libo to avoid task swapping for kernel threads,
->>> because Numa balance only cares about the user pages via VMA.
->>>
->>> Patch 2 is the major change to expose the statistics of task 
->>> migration and
->>> swapping in corresponding files.
->>>
->>> The reason to fold patch 1 and patch 2 into 1 patch set is that 
->>> patch 1 is
->>> necessary for patch 2 to avoid accessing a NULL mm_struct from a kernel
->>> thread, which causes NULL pointer exception.
->>>
->>> The Tested-by and Acked-by tags are preserved, because these tags 
->>> are provided
->>> in version 1 which has the p->mm check.
->>
->> I see below tags from version 1 are missing. I think, its 
->> contridicting to the above line. Please correct me, If I am wrong.
->>
->>
->> Tested-by: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
->> Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
->>
+> Le Tue, May 06, 2025 at 08:43:57PM -0700, Xi Wang a =C3=A9crit :
+> > On Tue, May 6, 2025 at 5:17=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+> > For the use cases, there are two major requirements at the moment:
+> >
+> > Dynamic cpu affinity based isolation: CPUs running latency sensitive th=
+reads
+> > (vcpu threads) can change over time. We'd like to configure kernel thre=
+ad
+> > affinity at run time too.
 >
-> These tags are in the patch 2/2, because Madadi and Prateek mainly
-> tested patch 2/2.
-
-
-Understood. Thanks for clarification.
-
+> I would expect such latency sensitive application to run on isolated
+> partitions. And those already don't pull unbound kthreads.
 >
->>
->> For some reason, I am not able to apply this patch on top of 
->> next-20250506. I see patch002 fails to apply. Please find the errors 
->> below.
->>
+> > Changing cpu affinity at run time requires cpumask
+> > calculations and thread migrations. Sharing cpuset code would be nice.
 >
-> next-20250507 should be OK(I just checked on top of commit 08710e696081).
-> next-20250506 might still have the old patch 2/2, and next-20250507 has
-> reverted it.
+> There is already some (recent) affinity management in the kthread subsyst=
+em.
+> A list of kthreads having a preferred affinity (but !PF_NO_SETAFFINITY)
+> is maintained and automatically handled against hotplug events and housek=
+eeping
+> state.
 >
-With next-20250507, there is a build issue [1] 
-<https://lore.kernel.org/all/1bcc235f-b139-4423-a7bd-2dd16065e08c@linux.ibm.com/> 
-, I will test this, once the build issue fixed.
+> >
+> > Support numa based memory daemon affinity: We'd like to restrict kernel=
+ memory
+> > daemons but maintain their numa affinity at the same time. cgroup hiera=
+rchies
+> > can be helpful, e.g. create kernel, kernel/node0 and kernel/node1 and m=
+ove the
+> > daemons to the right cgroup.
+>
+> The kthread subsystem also handles node affinity. See kswapd / kcompactd.=
+ And it
+> takes care of that while still honouring isolated / isolcpus partitions:
+>
+>       d1a89197589c ("kthread: Default affine kthread to its preferred NUM=
+A node")
+>
+> >
+> > Workqueue coverage is optional. kworker threads can use their separate
+> > mechanisms too.
+> >
+> > Since the goal is isolation, we'd like to restrict as many kthreads as =
+possible,
+> > even the ones that don't directly interact with user applications.
+> >
+> > The kthreadd case is handled - a new kthread can be forked inside a non=
+ root
+> > cgroup, but based on flags it can move itself to the root cgroup before=
+ threadfn
+> > is called.
+>
+> kthreadd and other kthreads that don't have a preferred affinity are also
+> affine outside isolcpus/nohz_full. And since isolated cpuset partitions
+> create NULL domains, those kthreads won't run there either.
+>
+> What am I missing?
 
+Overall I think your arguments depend on kernel and application threads are
+significantly different for cpu affinity management, but there isn't enough
+evidence for it. If cpuset is a bad idea for kernel threads it's probably n=
+ot
+a good idea for user threads either. Maybe we should just remove cpuset fro=
+m
+kernel and let applications threads go with boot time global variables and
+set their own cpu affinities.
 
-Regards,
-
-Venkat.
-
-> thanks,
-> Chenyu
+-Xi
 
