@@ -1,93 +1,146 @@
-Return-Path: <cgroups+bounces-8061-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8062-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8126FAADB90
-	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 11:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DA20AADD2F
+	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 13:22:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EA543BDCFC
-	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 09:38:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A38D69A19ED
+	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 11:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF5B1F5834;
-	Wed,  7 May 2025 09:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1134421A94F;
+	Wed,  7 May 2025 11:22:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HYHZgKr6"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k7lU0qj1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54160157A72
-	for <cgroups@vger.kernel.org>; Wed,  7 May 2025 09:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3041120CCED;
+	Wed,  7 May 2025 11:22:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746610728; cv=none; b=KRjE+asZgJVXLIg3n7K/5yQlmDwMRXh3eB3PsfpDVsrjIrHYWPNY46OqtxssEyE9HBjoJLTXiiFhlYvT7paG5S03//ElRl6A6N4zRER7b18IKx1CtBaqijo5WzwgkULjf/W8xlPJOiGbDDTOhbERK0v4vI1H7V6t3bH8YxAZFmc=
+	t=1746616934; cv=none; b=eQuzosE1kYszZHY26HlaTn0GBusAlvX1USr5Wigt0OJVc387rvbH7z+I/2w/yZfkVrgNX4oRKTYDraKjUrbl5FXIqceO7yNW2T+bk0RvYqZ25i1XVwR2/HDvdbD95OgzT8aahkb6BGkupNTYfYp100fB9SaSsKFC6LzxPAhxzCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746610728; c=relaxed/simple;
-	bh=YjajqRRZeePhATubqyje9sKAOFGtyTFKjGhYi25L+kE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hk1uajLEL/x+KEXBuk7HR/2LY5nLDSaFnNiw6LaGkWNkSn0nzZqDiTRksAV4VyCPTdv9soJFnFGGYIvVEvmgkG8WXdIcGFNaWsWJ/pPTn9nLO6Mz27k8vxin6fd3w9DkNf6QjIRFD84yPfAobOnCXCTpTqDBCTJAvKnhvrquKpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HYHZgKr6; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 7 May 2025 09:38:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746610724;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NFJGp1RVClSap0AYnwWSAeFb8sS4M8MlcNAXXd2fIRw=;
-	b=HYHZgKr6fw2U7WWF8/GIHd7+PmX+DNR8Q+7Gj1KhiyGsEl349NvOrqHaVTFqCP4Cc2jq3D
-	2ue5UHAsGEhuonEqMjkPSAeDU6ergJDIETm0YnQFN+MoMCjqkB5rJVFOFu9bO79TlyHu5r
-	DAidx/TT6gD3KJpPBtl7bJRKmKpvEFQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yosry Ahmed <yosry.ahmed@linux.dev>
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: tj@kernel.org, shakeel.butt@linux.dev, mkoutny@suse.com,
-	hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v5 4/5] cgroup: helper for checking rstat participation
- of css
-Message-ID: <aBsqH3uV9f3ZLSfP@google.com>
-References: <20250503001222.146355-1-inwardvessel@gmail.com>
- <20250503001222.146355-5-inwardvessel@gmail.com>
+	s=arc-20240116; t=1746616934; c=relaxed/simple;
+	bh=keSFJ17byZIacrkA9Q+V/bwj92nFNZoHf+fY/qM0Me0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YMQmt56Gm7vT9W0R/oVAOgcHOwbTRXID2W6LNyG0jGjykrAFIFB9MNuWqhG9m7PnttlCo0qSOglXeZgqEQLixDIj7ntDnIQy7SWz/CgXNPqUmAMG8CE46EX0PXB7Y+WxM2XuF42lwq0u3t0L8da6/nbpfjhuTCpLsSZXAwbypGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k7lU0qj1; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1746616933; x=1778152933;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=keSFJ17byZIacrkA9Q+V/bwj92nFNZoHf+fY/qM0Me0=;
+  b=k7lU0qj1/I3oO66APas+JruigaBfXaP5LVobdSZZtamaVKXmupfTCydy
+   uOni5hshBq1jUl3ns4keypNrDNbTeVgU7K/OMfRPk6NAxqy+0/Xjn6Xht
+   LV3QF8OJ0Of6fkvq2rezfHWKAPyHPDiEd/of/uyARxfI/8ySYR5Jr1wo1
+   A+vTPF1zem6rfE5Mirz94Qmy/OCLahuafqUF2UXAantSEpncSpyxb0MT5
+   Arad9QDo7w/3s95+eEQJ/Xp3BWchZRd6MP/L5ir0b7FN+Z/QZJDF+yB5f
+   E14FE/dHGy1ereMPZHo5SKjR6XakmWpC8qs8lw0lHqcrJSZie/SqtU3DU
+   A==;
+X-CSE-ConnectionGUID: YluFXpkeQaqp/1aiWmMK3Q==
+X-CSE-MsgGUID: uR24XAleQvWsIy7A1njhNg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11425"; a="52155806"
+X-IronPort-AV: E=Sophos;i="6.15,269,1739865600"; 
+   d="scan'208";a="52155806"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2025 04:22:11 -0700
+X-CSE-ConnectionGUID: jFtpUtg3R3G77mWFegnbEA==
+X-CSE-MsgGUID: tJLTWUbyT1SwHxuf0Oe82Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,269,1739865600"; 
+   d="scan'208";a="166974025"
+Received: from chenyu-dev.sh.intel.com ([10.239.62.107])
+  by fmviesa001.fm.intel.com with ESMTP; 07 May 2025 04:22:06 -0700
+From: Chen Yu <yu.c.chen@intel.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: mkoutny@suse.com,
+	Ingo Molnar <mingo@redhat.com>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Mel Gorman <mgorman@suse.de>,
+	Michal Hocko <mhocko@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	"Chen, Tim C" <tim.c.chen@intel.com>,
+	Aubrey Li <aubrey.li@intel.com>,
+	Libo Chen <libo.chen@oracle.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Madadi Vineeth Reddy <vineethr@linux.ibm.com>,
+	Venkat Rao Bagalkote <venkat88@linux.ibm.com>,
+	"Jain, Ayush" <ayushjai@amd.com>,
+	cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Chen Yu <yu.chen.surf@foxmail.com>,
+	Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH v4 0/2] sched/numa: add statistics of numa balance task migration
+Date: Wed,  7 May 2025 19:14:53 +0800
+Message-Id: <cover.1746611892.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250503001222.146355-5-inwardvessel@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 02, 2025 at 05:12:21PM -0700, JP Kobryn wrote:
-> There are a few places where a conditional check is performed to validate a
-> given css on its rstat participation. This new helper tries to make the
-> code more readable where this check is performed.
-> 
-> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
-> ---
->  kernel/cgroup/rstat.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-> index e1e9dd7de705..15bc7ab458dc 100644
-> --- a/kernel/cgroup/rstat.c
-> +++ b/kernel/cgroup/rstat.c
-> @@ -14,6 +14,17 @@ static DEFINE_PER_CPU(raw_spinlock_t, rstat_base_cpu_lock);
->  
->  static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu);
->  
-> +/*
-> + * Determines whether a given css can participate in rstat.
-> + * css's that are cgroup::self use rstat for base stats.
-> + * Other css's associated with a subsystem use rstat when they
-> + * define the ss->css_rstat_flush callback.
-> + */
-> +static inline bool is_rstat_css(struct cgroup_subsys_state *css)
+Introducing the task migration and swap statistics in the following places:
+/sys/fs/cgroup/{GROUP}/memory.stat
+/proc/{PID}/sched
+/proc/vmstat
 
-css_uses_rstat() is probably a better name.
+These statistics facilitate a rapid evaluation of the performance and resource
+utilization of the target workload.
+
+Patch 1 is a fix from Libo to avoid task swapping for kernel threads,
+because Numa balance only cares about the user pages via VMA.
+
+Patch 2 is the major change to expose the statistics of task migration and
+swapping in corresponding files.
+
+The reason to fold patch 1 and patch 2 into 1 patch set is that patch 1 is
+necessary for patch 2 to avoid accessing a NULL mm_struct from a kernel
+thread, which causes NULL pointer exception.
+
+The Tested-by and Acked-by tags are preserved, because these tags are provided
+in version 1 which has the p->mm check.
+
+Previous version:
+v3:
+https://lore.kernel.org/lkml/20250430103623.3349842-1-yu.c.chen@intel.com/
+v2:
+https://lore.kernel.org/lkml/20250408101444.192519-1-yu.c.chen@intel.com/
+v1:
+https://lore.kernel.org/lkml/20250402010611.3204674-1-yu.c.chen@intel.com/
+
+Chen Yu (1):
+  sched/numa: add statistics of numa balance task migration
+
+Libo Chen (1):
+  sched/numa: fix task swap by skipping kernel threads
+
+ Documentation/admin-guide/cgroup-v2.rst | 6 ++++++
+ include/linux/sched.h                   | 4 ++++
+ include/linux/vm_event_item.h           | 2 ++
+ kernel/sched/core.c                     | 9 +++++++--
+ kernel/sched/debug.c                    | 4 ++++
+ kernel/sched/fair.c                     | 3 ++-
+ mm/memcontrol.c                         | 2 ++
+ mm/vmstat.c                             | 2 ++
+ 8 files changed, 29 insertions(+), 3 deletions(-)
+
+-- 
+2.25.1
+
 
