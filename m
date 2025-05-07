@@ -1,164 +1,135 @@
-Return-Path: <cgroups+bounces-8067-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8068-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EA3CAADDAB
-	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 13:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DEFCAAE295
+	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 16:22:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0A484A0DFE
-	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 11:46:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D533526F91
+	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 14:17:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BAE6257AE8;
-	Wed,  7 May 2025 11:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC47289839;
+	Wed,  7 May 2025 14:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xsB8VV/w";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QTFCvD3N";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xsB8VV/w";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QTFCvD3N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FRaVJAQI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62148233129
-	for <cgroups@vger.kernel.org>; Wed,  7 May 2025 11:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 366AE78F4F;
+	Wed,  7 May 2025 14:11:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746618381; cv=none; b=a4QPROmHVEdrjFM2+Xng51N7ZcuM6tPGnRVEzdsn3Vg5o4DEzfCzk0DbmBpXYKbPq9IGYPv/zY8b3h5EKTZVxoL2/rHfW2Wm4SiehjelwV7MlJgz14dwXlDAmG4Fou2nUIqTo3YwbMTg6GXZ2RV88Wcy00kJvPY3FK/Ppr9j5sE=
+	t=1746627066; cv=none; b=WcDpqMqevcTzf27uRz8pPGcRY4RcqKZLBNGN76Y4nHwzVR86i5w6lGI4wnR3Z+kVVHNM2YSBH3vqUrqj9cMaFCDg8m8lu8LEWpICqJyYSWZCnX8eFKTvSMZNAeDddYXFa0DPMKtZhbbCym6uNgyUsYBckc7XVvgkIYNbY0tXq8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746618381; c=relaxed/simple;
-	bh=vzwf0tIYzNuQhU2aD2nOcCDkbhgSc+b+ohdnlMe0oWU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nt6gcRBhleZKq1x9mbTe4fXFXJQ4+NFtO5my01yusZCC746s8Kj0mAgj7tZVgmDU6xJ5I2cJMtTULMglGHsgk+ooYaR6WKKkBwhiHlDVgfNVWl1xD7DPLpinNYCayzvxwVIFdcjO3wBo2+Y4J3q8P/8knE5gBkLmh4Jp03PGLy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xsB8VV/w; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QTFCvD3N; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xsB8VV/w; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QTFCvD3N; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5D30E1F393;
-	Wed,  7 May 2025 11:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746618378; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uy7d/ZjeDgzXAL0tpPZUP+r0mJI7QK6Hc7BG5cAHyRo=;
-	b=xsB8VV/wzKxOWv3JjdL4y9sQmiZtRmou+che2Gz6zp2spSn9+DcCINwEJWez4+P+69teeZ
-	axm5ofnvbGPJoafoQSRnI0pgwzvXt6Ny1pPDCMzGd2rfNfN9a/THsPWQiN1b88/EwSsHeO
-	iOSqpnhmhbMn+7grroA1AJWdilmBZss=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746618378;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uy7d/ZjeDgzXAL0tpPZUP+r0mJI7QK6Hc7BG5cAHyRo=;
-	b=QTFCvD3NoBkIcmwZUzC3U/Sbx4odTDDQdBtPCbCw/gO/ofLmtbbV+TvKCHOnCVSzovweqq
-	kdhdx9Wm00T4d6Dg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="xsB8VV/w";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=QTFCvD3N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1746618378; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uy7d/ZjeDgzXAL0tpPZUP+r0mJI7QK6Hc7BG5cAHyRo=;
-	b=xsB8VV/wzKxOWv3JjdL4y9sQmiZtRmou+che2Gz6zp2spSn9+DcCINwEJWez4+P+69teeZ
-	axm5ofnvbGPJoafoQSRnI0pgwzvXt6Ny1pPDCMzGd2rfNfN9a/THsPWQiN1b88/EwSsHeO
-	iOSqpnhmhbMn+7grroA1AJWdilmBZss=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1746618378;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uy7d/ZjeDgzXAL0tpPZUP+r0mJI7QK6Hc7BG5cAHyRo=;
-	b=QTFCvD3NoBkIcmwZUzC3U/Sbx4odTDDQdBtPCbCw/gO/ofLmtbbV+TvKCHOnCVSzovweqq
-	kdhdx9Wm00T4d6Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 46CB013882;
-	Wed,  7 May 2025 11:46:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Ch4SEQpIG2gEJQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 07 May 2025 11:46:18 +0000
-Message-ID: <3d99da0d-b08e-416e-82bb-cd44179a424f@suse.cz>
-Date: Wed, 7 May 2025 13:46:51 +0200
+	s=arc-20240116; t=1746627066; c=relaxed/simple;
+	bh=EPtZPdWnf1JqNFcjM9ySpu3634mu6I6XC7Kid0ic0Ww=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eWFPQY1eFA1c5P/Ufu+1YhGR3kXQNea+6SqcYKMusn1GCIAdiIyHPNh+pZyYx7IUbm+Zmx1Y8vx1E1AtL/t+EAEjEyurRVbKfTiihxHv0ZZ9cC35RbB8EzkL1knwtu6J334YxajWJ3yMXavBz/T50uerL84WT3H3uAqNcZj89Mw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FRaVJAQI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9934DC4CEE2;
+	Wed,  7 May 2025 14:11:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746627065;
+	bh=EPtZPdWnf1JqNFcjM9ySpu3634mu6I6XC7Kid0ic0Ww=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FRaVJAQI54Mmnlp4Qgi6njmN2yKwk8a/NdTyWMtHpREoUNR0fP/Uh3iZeVFH4L2eG
+	 Sy57euXUcExqr6jhACBAy6GTwZJfmbOSXTl349z4UiLYBveRHexnMOB9N7nOYRMEbX
+	 4OEkmsLNLM3+MEDmJRSUnKXlYDoSMc//0oDMLtdgg31FMUiZQHglY1QG2a1FY6C1Jg
+	 rTSROS5eHvypCpuw0RIkcOvJWS23EGNzvAkwlN6cqAkzDVOdSD09PvB1m78vqtB8dw
+	 eL6yAYWAmlmfGZGzMInYfI7UAU30t4S5HruofoK/MI0/HeLHspHg2rLAGB/17Rx4xl
+	 ohRQMwQYmPjjg==
+Date: Wed, 7 May 2025 16:11:03 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Xi Wang <xii@google.com>
+Cc: Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	David Rientjes <rientjes@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Waiman Long <longman@redhat.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com1>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Chen Yu <yu.c.chen@intel.com>, Kees Cook <kees@kernel.org>,
+	Yu-Chun Lin <eleanor15x@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Subject: Re: [RFC/PATCH] sched: Support moving kthreads into cpuset cgroups
+Message-ID: <aBtp98E9q37FLeMv@localhost.localdomain>
+References: <20250506183533.1917459-1-xii@google.com>
+ <aBqmmtST-_9oM9rF@slm.duckdns.org>
+ <CAOBoifh4BY1f4B3EfDvqWCxNSV8zwmJPNoR3bLOA7YO11uGBCQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] memcg: separate local_trylock for memcg and obj
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
- linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, netdev@vger.kernel.org,
- Meta kernel team <kernel-team@meta.com>
-References: <20250506225533.2580386-1-shakeel.butt@linux.dev>
- <20250506225533.2580386-3-shakeel.butt@linux.dev>
-From: Vlastimil Babka <vbabka@suse.cz>
-Content-Language: en-US
-In-Reply-To: <20250506225533.2580386-3-shakeel.butt@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 5D30E1F393
-X-Spam-Flag: NO
-X-Spam-Score: -3.51
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:dkim,suse.cz:mid];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOBoifh4BY1f4B3EfDvqWCxNSV8zwmJPNoR3bLOA7YO11uGBCQ@mail.gmail.com>
 
-On 5/7/25 12:55 AM, Shakeel Butt wrote:
-> The per-cpu stock_lock protects cached memcg and cached objcg and their
-> respective fields. However there is no dependency between these fields
-> and it is better to have fine grained separate locks for cached memcg
-> and cached objcg. This decoupling of locks allows us to make the memcg
-> charge cache and objcg charge cache to be nmi safe independently.
+Le Tue, May 06, 2025 at 08:43:57PM -0700, Xi Wang a écrit :
+> On Tue, May 6, 2025 at 5:17 PM Tejun Heo <tj@kernel.org> wrote:
+> For the use cases, there are two major requirements at the moment:
 > 
-> At the moment, memcg charge cache is already nmi safe and this
-> decoupling will allow to make memcg charge cache work without disabling
-> irqs.
+> Dynamic cpu affinity based isolation: CPUs running latency sensitive threads
+> (vcpu threads) can change over time. We'd like to configure kernel thread
+> affinity at run time too.
+
+I would expect such latency sensitive application to run on isolated
+partitions. And those already don't pull unbound kthreads.
+
+> Changing cpu affinity at run time requires cpumask
+> calculations and thread migrations. Sharing cpuset code would be nice.
+
+There is already some (recent) affinity management in the kthread subsystem.
+A list of kthreads having a preferred affinity (but !PF_NO_SETAFFINITY)
+is maintained and automatically handled against hotplug events and housekeeping
+state.
+
 > 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Support numa based memory daemon affinity: We'd like to restrict kernel memory
+> daemons but maintain their numa affinity at the same time. cgroup hierarchies
+> can be helpful, e.g. create kernel, kernel/node0 and kernel/node1 and move the
+> daemons to the right cgroup.
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+The kthread subsystem also handles node affinity. See kswapd / kcompactd. And it
+takes care of that while still honouring isolated / isolcpus partitions:
 
+      d1a89197589c ("kthread: Default affine kthread to its preferred NUMA node")
+
+> 
+> Workqueue coverage is optional. kworker threads can use their separate
+> mechanisms too.
+> 
+> Since the goal is isolation, we'd like to restrict as many kthreads as possible,
+> even the ones that don't directly interact with user applications.
+> 
+> The kthreadd case is handled - a new kthread can be forked inside a non root
+> cgroup, but based on flags it can move itself to the root cgroup before threadfn
+> is called.
+
+kthreadd and other kthreads that don't have a preferred affinity are also
+affine outside isolcpus/nohz_full. And since isolated cpuset partitions
+create NULL domains, those kthreads won't run there either.
+
+What am I missing?
+
+Thanks.
+
+-- 
+Frederic Weisbecker
+SUSE Labs
 
