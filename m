@@ -1,124 +1,120 @@
-Return-Path: <cgroups+bounces-8051-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8052-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56726AAD217
-	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 02:17:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E952AAD274
+	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 02:53:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B9387B1B6F
-	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 00:16:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46C083A9A6D
+	for <lists+cgroups@lfdr.de>; Wed,  7 May 2025 00:53:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52D2D79EA;
-	Wed,  7 May 2025 00:17:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A9BE57C9F;
+	Wed,  7 May 2025 00:53:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cRcjwgGe"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="CkQtGhw/"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E3AA94A;
-	Wed,  7 May 2025 00:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E5232C9D;
+	Wed,  7 May 2025 00:53:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746577052; cv=none; b=WU1PE9UjTzXrfNNI+0e1kF+M/CY57mK/SU96It3bKBGDoseVzkW1RLMFHfK7I/X166dRE8aiY8WCH+Jl9UjtCdLQvjXCiJE7ps+oScJgMFBU3bK2OqeUflUQFL7SQAiIEixIIfIIX1ih1MZllTzchteycFg4qUHwjWcUu0DSsyc=
+	t=1746579201; cv=none; b=BtmGa86E8a2IH+AbacxraDLyDda1fvWIFJ0aFyQjJhNkOoZrf3VYE2rdgUC74dDwW2yDB2HbLciV5LrUfPmKoZpOwnaYd9ERe8GP1bK4yzLTcj1weZfaoGE9VIzc+UjgjdWwEUNsPFk07BS8z/xWivQxz3sPcKWELYoyH/FnNXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746577052; c=relaxed/simple;
-	bh=MakT+WYmxK41bmc2ErA6nAOXCn5sVq4HGRU81gTqA6Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZzIR0gtQTi5lMRusidWoDN7c0ASyMiUVCnpM9SmZ7796+AcOwMyw9Aj39xOBkr6mKKSpeylhiSeb4p8OoMap4ciqXvTFalz7+k6P8GsZjaL3wkCnEOL5WpRsHUE1w0cIX48csgXMdGUJZe4UCUUO/D+i/tery+HwZvPyS68nyCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cRcjwgGe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F276C4CEEE;
-	Wed,  7 May 2025 00:17:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746577051;
-	bh=MakT+WYmxK41bmc2ErA6nAOXCn5sVq4HGRU81gTqA6Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cRcjwgGebtyFUZ46LrW76G6InKntPpJqUapu6xKxZnjpIlLUnoxiDLKvkCDX9gFnd
-	 hUFYdKHCM0h9+nvZZOgQfb7HymIig7Rk6+ICXiBBgHHXtJg9UzNL9kbaTR70TYs2bn
-	 wUzFlp1omC49+s635X2G28BMVp8sYqsaeWOQ5hJE1UvFlT5Z9mpcSE5i1f4QHDYa1t
-	 JODxovu/KhYHQYW8to0sJM8Qu1PL9vaHEJ7D+L0fdg9D2C4OpU3Pw3qjKCbbsYseoq
-	 mN7VcugPNARcIQAnhVEJ7Smlssnrncl+Ol5ViPKxxR6h1pF4806J1gkRHtrUDaupkP
-	 9uAYJZOd/BV0g==
-Date: Tue, 6 May 2025 14:17:30 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Xi Wang <xii@google.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	David Rientjes <rientjes@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Waiman Long <longman@redhat.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com1>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Chen Yu <yu.c.chen@intel.com>, Kees Cook <kees@kernel.org>,
-	Yu-Chun Lin <eleanor15x@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Subject: Re: [RFC/PATCH] sched: Support moving kthreads into cpuset cgroups
-Message-ID: <aBqmmtST-_9oM9rF@slm.duckdns.org>
-References: <20250506183533.1917459-1-xii@google.com>
+	s=arc-20240116; t=1746579201; c=relaxed/simple;
+	bh=JwkdJHtqnzvr9ic2vjKO3jhMa3Gd1ozvG9IU1T7YEhg=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=ApVGp8+JcAE45CPwZfrRFlRxdVaFROTIZM6R4HAQ6x31VP/2yyZ3oWNC3fO8K2SipmGBsRrN2mPDuOUnSDUpWavB1bvII703Ychbamn7lsHS1Q6hduurYfnbfWNm8335nKfXMBYSB/PuVLZEML6IOyFHyanlK14GgyneTosHVAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=CkQtGhw/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D53F1C4CEE4;
+	Wed,  7 May 2025 00:53:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1746579197;
+	bh=JwkdJHtqnzvr9ic2vjKO3jhMa3Gd1ozvG9IU1T7YEhg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CkQtGhw/Yd9EkUf7MUO1G7J3nDCeeAlvtshzPKG5RPDaGLCAv5ipdLxRpGQN64lFS
+	 S4t9XscXFAttV98w3NZsr2iIroFrSMbxknG1qvzju6HNRXZXQ3y8QhypNC1KDpSbbU
+	 SwtMVkmbjHcUjisQaJ2Ac/JoguSKXTG8xHqtE5mw=
+Date: Tue, 6 May 2025 17:53:16 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song
+ <muchun.song@linux.dev>, linux-mm@kvack.org, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, Greg
+ Thelen <gthelen@google.com>, Michal =?ISO-8859-1?Q?Koutn=FD?=
+ <mkoutny@suse.com>, Tejun Heo <tj@kernel.org>, Yosry Ahmed
+ <yosry.ahmed@linux.dev>, Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v3] memcg: introduce non-blocking limit setting option
+Message-Id: <20250506175316.1ca96d3aab2a28086fffa33a@linux-foundation.org>
+In-Reply-To: <20250506232833.3109790-1-shakeel.butt@linux.dev>
+References: <20250506232833.3109790-1-shakeel.butt@linux.dev>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250506183533.1917459-1-xii@google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+Thanks, I queued this as a -fix:
 
-On Tue, May 06, 2025 at 11:35:32AM -0700, Xi Wang wrote:
-> In theory we should be able to manage kernel tasks with cpuset
-> cgroups just like user tasks, would be a flexible way to limit
-> interferences to real-time and other sensitive workloads. This is
-> however not supported today: When setting cpu affinity for kthreads,
-> kernel code uses a simpler control path that directly lead to
-> __set_cpus_allowed_ptr or __ktread_bind_mask. Neither honors cpuset
-> restrictions.
-> 
-> This patch adds cpuset support for kernel tasks by merging userspace
-> and kernel cpu affinity control paths and applying the same
-> restrictions to kthreads.
-> 
-> The PF_NO_SETAFFINITY flag is still supported for tasks that have to
-> run with certain cpu affinities. Kernel ensures kthreads with this
-> flag have their affinities locked and they stay in the root cpuset:
-> 
-> If userspace moves kthreadd out of the root cpuset (see example
-> below), a newly forked kthread will be in a non root cgroup as well.
-> If PF_NO_SETAFFINITY is detected for the kthread, it will move itself
-> into the root cpuset before the threadfn is called. This does depend
-> on the kthread create -> kthread bind -> wake up sequence.
 
-Can you describe the use cases in detail? This is not in line with the
-overall direction. e.g. We're making cpuset work with housekeeping mechanism
-and tell workqueue which CPUs can be used for unbound execution and kthreads
-which are closely tied to userspace activities are spawned into the same
-cgroups as the user thread and subject to usual resource control.
+--- a/Documentation/admin-guide/cgroup-v2.rst~memcg-introduce-non-blocking-limit-setting-option-v3
++++ a/Documentation/admin-guide/cgroup-v2.rst
+@@ -1299,12 +1299,17 @@ PAGE_SIZE multiple when read back.
+ 	monitors the limited cgroup to alleviate heavy reclaim
+ 	pressure.
+ 
+-        If memory.high is opened with O_NONBLOCK then the synchronous
+-        reclaim is bypassed. This is useful for admin processes that
+-        need to dynamically adjust the job's memory limits without
+-        expending their own CPU resources on memory reclamation. The
+-        job will trigger the reclaim and/or get throttled on its
+-        next charge request.
++	If memory.high is opened with O_NONBLOCK then the synchronous
++	reclaim is bypassed. This is useful for admin processes that
++	need to dynamically adjust the job's memory limits without
++	expending their own CPU resources on memory reclamation. The
++	job will trigger the reclaim and/or get throttled on its
++	next charge request.
++
++	Please note that with O_NONBLOCK, there is a chance that the
++	target memory cgroup may take indefinite amount of time to
++	reduce usage below the limit due to delayed charge request or
++	busy-hitting its memory to slow down reclaim.
+ 
+   memory.max
+ 	A read-write single value file which exists on non-root
+@@ -1323,12 +1328,17 @@ PAGE_SIZE multiple when read back.
+ 	Caller could retry them differently, return into userspace
+ 	as -ENOMEM or silently ignore in cases like disk readahead.
+ 
+-        If memory.max is opened with O_NONBLOCK, then the synchronous
+-        reclaim and oom-kill are bypassed. This is useful for admin
+-        processes that need to dynamically adjust the job's memory limits
+-        without expending their own CPU resources on memory reclamation.
+-        The job will trigger the reclaim and/or oom-kill on its next
+-        charge request.
++	If memory.max is opened with O_NONBLOCK, then the synchronous
++	reclaim and oom-kill are bypassed. This is useful for admin
++	processes that need to dynamically adjust the job's memory limits
++	without expending their own CPU resources on memory reclamation.
++	The job will trigger the reclaim and/or oom-kill on its next
++	charge request.
++
++	Please note that with O_NONBLOCK, there is a chance that the
++	target memory cgroup may take indefinite amount of time to
++	reduce usage below the limit due to delayed charge request or
++	busy-hitting its memory to slow down reclaim.
+ 
+   memory.reclaim
+ 	A write-only nested-keyed file which exists for all cgroups.
+_
 
-There are a lot of risks in subjecting arbitrary kthreads to all cgroup
-resource controls and just allowing cpuset doesn't seem like a great idea.
-Integration through housekeeping makes a lot more sense to me. Note that
-even for just cpuset thread level control doesn't really work that well. All
-kthreads are forked by kthreadd. If you move the kthreadd into a cgroup, all
-kthreads includling kworkers for all workqueues will be spawned there. The
-granularity of control isn't much better than going through housekeeping.
-
-Thanks.
-
--- 
-tejun
 
