@@ -1,139 +1,202 @@
-Return-Path: <cgroups+bounces-8099-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8100-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2197EAB03BE
-	for <lists+cgroups@lfdr.de>; Thu,  8 May 2025 21:36:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A05CBAB0606
+	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 00:40:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07EDB3AE9F4
-	for <lists+cgroups@lfdr.de>; Thu,  8 May 2025 19:36:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72E097BBE18
+	for <lists+cgroups@lfdr.de>; Thu,  8 May 2025 22:38:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168BF28A713;
-	Thu,  8 May 2025 19:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB65722A811;
+	Thu,  8 May 2025 22:39:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NEtfDoTs"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="v3xsq192"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 461FF21D581
-	for <cgroups@vger.kernel.org>; Thu,  8 May 2025 19:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F5F4317D
+	for <cgroups@vger.kernel.org>; Thu,  8 May 2025 22:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746732984; cv=none; b=frbFVKnUUCZI6wHrM1Ql2van1g2Wn9/UkQXsL4/6zD1ix6gDFP990bPCwkb9nd/1awY3tTfIwPxxWIIEIXMgD3wldqp/77UHj7lQ7xLpo/Kld6Pkcnelt6MhowLvmn9zY0M45gFA1oFUjnS/ixFGDVSgrroQiyHJzQyf2dnl+dw=
+	t=1746743992; cv=none; b=eDJZ6hFt6V4pReHkIp5gh7vDNARe/fpo1dt/c4BbC0hrWNJRhDZi73CtfC53i/nZjOejIexYXflOPG3uotvHFlk2W3GiXhbjZbjJj5E1OKWFZsIMFuttU0EZdcILymle+9GPhHhgHOXun63KT8c/UkJ5kk0dRUp+0BcAgbAVANQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746732984; c=relaxed/simple;
-	bh=sskzmfRBKrtyrvaDO+90bHXI7VeTet/0CWNnw2B6jzM=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:References:
-	 In-Reply-To:Content-Type; b=S+4Gjl2lUw1Tr192JInVyWZRlzEw/hB2zdMa2uW07yMXs4xPjMVXGs+5P3z4lWI8MWIDZXemevc4cXX0uBL3AtdVOmmzZ8NXWIyrGsrfia5rtGS5qIQt1B/dcTKMvZG8Alu53lMrbCQNfz9Qk+6OfI5BT4Z2HIFJC583ZM6gUPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NEtfDoTs; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1746732982;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sMSK5ZAn41rIA+tVFhgcK/VSjG2CjNRjiAb9AYqMURE=;
-	b=NEtfDoTsR+iSJUfunLxxRzIKu58B/IX3W/KH5VfWm4KOIswWCMVZoHexU0v4reEhBTlRze
-	WAnFXS4KW9PePLvg4sJmGF/ifVmyU2WMrBAYAN5JvCHynM2xcvoLuqBK8DsNiGXwdYOgYO
-	dd5ciqSg0pTS7BUEAQ3idIU/32m5IcU=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-665-7FFW5mW_Oj6u5M-dvgeLAA-1; Thu, 08 May 2025 15:36:20 -0400
-X-MC-Unique: 7FFW5mW_Oj6u5M-dvgeLAA-1
-X-Mimecast-MFC-AGG-ID: 7FFW5mW_Oj6u5M-dvgeLAA_1746732980
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-6f53d9cf004so24385886d6.2
-        for <cgroups@vger.kernel.org>; Thu, 08 May 2025 12:36:20 -0700 (PDT)
+	s=arc-20240116; t=1746743992; c=relaxed/simple;
+	bh=QzD2qbw3hSmQ04LZ66P4Z/xgHwYXJG0TxSk0W6ROdg4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ES76gS4hRVA/w8nfcQ04wMk850URWVLFDF6ltiB6e+jnFvYDKhji7+NsD4cU0hRGdQddtiTz6tio1XASKnwEYvjBFE/sWp7zCztw+V2+7qL3mRZu+A8j0g+28MgPeZXJmnvnAIJCffnHW+XSI5TT3D+4Gzm3K41sYfXyTOZrumY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=v3xsq192; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ac3b12e8518so309434966b.0
+        for <cgroups@vger.kernel.org>; Thu, 08 May 2025 15:39:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1746743989; x=1747348789; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QzD2qbw3hSmQ04LZ66P4Z/xgHwYXJG0TxSk0W6ROdg4=;
+        b=v3xsq1921GYbPRB6MBSavFISWnE4UD8dNp9R0kYFWmOXqn7lbV9ZJP6AaWJMesRGAF
+         jILYjC7QpM9rJq/LsgN1AFoYXMp7Zznt57LDOIgfLc3QyKNNYmSRr1OoxTbOQ4PEGdQC
+         zfGWTChYd2QDLbMgQsmV1/Ai0eSlwyBirR2tcqDjg9OTQ/warxh9oSZ/95/DjoKsYOYc
+         jq7omzJdGJ3BjyGsg1T7WCCMiifRoSxE7LTi7tQ1GRuLlbjIJ+k/Soc8Bzq87mN3pl2R
+         2Vf+QrcyhcP9WfB8Gvo0uvFghn5ThwWdPrSuXAlvgQn8fxsrAtjHrcKSqMD6jwAk8BfI
+         z2jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746732980; x=1747337780;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sMSK5ZAn41rIA+tVFhgcK/VSjG2CjNRjiAb9AYqMURE=;
-        b=rT2fjrlyqiEmqXJ5MAScSubLxxhZL6ZTSLw2QNyrHhdGhGeHQC+5QUvYvoavYBP27i
-         Kdw786bgJIkWFM4JypRr6AuWQ/NJSkwQtLd0IBaBixHz0Hf8dgT949uNYx71mrg5lF0Y
-         52vFfK+fO3S6sBML0Fllle4Y0snIw/SZNgaTY5LU9EDydfVyjngsTe5qPhosl/hVLGtU
-         +ff0zDwtJDHBAClonxQtCgvBrmX4O+QkCmgZuHQO07e2AOikieEQB3mj80WyJK6LbgOL
-         t8/vKyO910wJaNXBVJKLBQPwqD7LSiRDsaYd1VXAMGNCPsSKw0dc/uUWTFBdPDfPTg77
-         61Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCWCxTmgpdEf7GubPk17Mq2BVJaY9IawSxa/bgOgjZtZ4wxtMCURHMEBwHwU7JBm2ZGc+Jex5c5E@vger.kernel.org
-X-Gm-Message-State: AOJu0YwWafZrzW/2hpQF/ltL8nlHDZqAI5E1jPTdbgfk6YrRihP9Hy5L
-	GmrgeYWYjmHVs3lL+HE8PLJYlDW6zFigQPune60wJ7OZ9H8ZtoN3KYIlyRwUEWnMcjGyRvXN65B
-	QAvCqH5W3wrFX8IGQbaVkHoZFJjCSbjus36IORGqWTQJOOWJRp17KVAw=
-X-Gm-Gg: ASbGnct8I+wAuaHbGbaxnxANXKVoSfRbhnOK1TRqkkFcv22voEnwFXP50HxPOISqPD5
-	Ss17MR3qoZZuJWwkP6n1b8VcyFvOVFV+smMlsPgLbE09YpAUKZA2nxVRCE60Ep5M7fft2/rHlAq
-	0eXTTNryfSvKDA+gmuEYh+lkS7YZPVVAWp2g0Mh3Uew0eqW9V6oC2nDThtYftyfsb8fsn/6KNuY
-	goZQcP0RKfiCU5Al1ZMhXnurgcq8o0qcEh2lci02gdSiL8+vf0Ni+HyZ+/wOJPaGxGj+q9LK0pg
-	Km98+oioGFHDsc3cechd2CZ7oas+KF5lnIvNEhW+6z0e2TiBovgoskPgCA==
-X-Received: by 2002:ad4:5dcf:0:b0:6e8:f4a1:68a4 with SMTP id 6a1803df08f44-6f6e480e30bmr7967996d6.39.1746732980491;
-        Thu, 08 May 2025 12:36:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG0Sy72JbcvF90NKSywmPl3GyTkaZYXxFFXeLkdg2Kj45kGhvABU/5pAtNzbQo2gxKgW2G90A==
-X-Received: by 2002:ad4:5dcf:0:b0:6e8:f4a1:68a4 with SMTP id 6a1803df08f44-6f6e480e30bmr7967546d6.39.1746732979922;
-        Thu, 08 May 2025 12:36:19 -0700 (PDT)
-Received: from ?IPV6:2601:188:c102:9c40:1f42:eb97:44d3:6e9a? ([2601:188:c102:9c40:1f42:eb97:44d3:6e9a])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6f6e3a538f8sm3316976d6.114.2025.05.08.12.36.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 May 2025 12:36:19 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <1b558608-6496-4078-afde-5f0e10086781@redhat.com>
-Date: Thu, 8 May 2025 15:36:18 -0400
+        d=1e100.net; s=20230601; t=1746743989; x=1747348789;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QzD2qbw3hSmQ04LZ66P4Z/xgHwYXJG0TxSk0W6ROdg4=;
+        b=ZiEkbNkIQ2drMgoYVHcxQh0M+df2JRkw6XTbWy0mMpRiXie4TSrMC40j+R7pqaV+7S
+         ya1tf9uEPSp346r/H92xoHZ6Ins2gWZ/OPBTHqAfCpkHvup97XuJ2EB+iMwivgLH+b6m
+         q+wcyAuA7rVO5SZjiPoDuytDUaelSWTmnwbDHg7OD7K+fOyozjzfqjF/BHWTzMZYkiZG
+         ddY406aL2mkYLGhUtA2TrbX54VT2dL9jkElFa+AnIJf8Z3pfKP7MrfarsAa5XCyDN84k
+         HW29pp2Eu+x8FyyMWrTT6r4tcrfrfeAH21DhLcNJTLX0Klshs9K1rGwcSwhTx4dP7sC+
+         H/TQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUGvC7AraarQnOwj9wrZSZmWnBGdBObEoYi4cZls0C36mIYWIsOFC1CF/fKzygV+gF0leCMIpJ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzqm8cxJOnLjbBtj3AGiU+eNLhg7hrftxH/lP+dSCbeHH/yp5lV
+	5IH3Kku84MSCsaKY+BBVGDseWKQkTBUufRoxhWBTmtx85eXKtSkoiKODXWeGFwHWytLB2m7i289
+	JE7VVB0iD8/Ysa5XDZkGmKzc2Ce9sZCEZyrrH
+X-Gm-Gg: ASbGncsOgyGdELHgMEqi81M9CkngCtMMGnlAvcgCy8TEUzfg0GpcqyhNzCrHkxHZ6bn
+	AwUxxT0DSDEuWqDtBE/PtvqyVFJrW2k1safqpgtFtQK+RlWJq6BrmvmQyUQV7QBO5Fxc0CMSUeV
+	jMNc+E/d/LkMarOxD2G0TywRvZe9crL9fgGqdmRVoyebca+cQwFiC+U57JVpryOOsZMMs=
+X-Google-Smtp-Source: AGHT+IHEZEZcdQ6fKWsGsng5og7pZBg3gQtRVYyJEPAHwma2WhiqgM5OfwYcsXbJJ4oQ6cXZc7aWeuUYpKxQiOsGyDs=
+X-Received: by 2002:a17:907:86a0:b0:ac4:76d:6d2c with SMTP id
+ a640c23a62f3a-ad219171dc9mr139734466b.40.1746743988932; Thu, 08 May 2025
+ 15:39:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset: drop useless cpumask_empty() in
- compute_effective_exclusive_cpumask()
-To: Yury Norov <yury.norov@gmail.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250508193207.388041-1-yury.norov@gmail.com>
-Content-Language: en-US
-In-Reply-To: <20250508193207.388041-1-yury.norov@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20250506183533.1917459-1-xii@google.com> <aBqmmtST-_9oM9rF@slm.duckdns.org>
+ <CAOBoifh4BY1f4B3EfDvqWCxNSV8zwmJPNoR3bLOA7YO11uGBCQ@mail.gmail.com>
+ <aBtp98E9q37FLeMv@localhost.localdomain> <CAOBoifgp=oEC9SSgFC+4_fYgDgSH_Z_TMgwhOxxaNZmyD-ijig@mail.gmail.com>
+ <aBuaN-xtOMs17ers@slm.duckdns.org> <CAOBoifiv2GCeeDjax8Famu7atgkGNV0ZxxG-cfgvC857-dniqA@mail.gmail.com>
+ <aBv2AG-VbZ4gcWpi@pavilion.home> <CAOBoifhWNi-j6jbP6B9CofTrT+Kr6TCSYYPMv7SQdbY5s930og@mail.gmail.com>
+ <b7aa4b10-1afb-476f-ac5d-d8db7151d866@redhat.com>
+In-Reply-To: <b7aa4b10-1afb-476f-ac5d-d8db7151d866@redhat.com>
+From: Xi Wang <xii@google.com>
+Date: Thu, 8 May 2025 15:39:37 -0700
+X-Gm-Features: ATxdqUHca2Nia6mAxzFzZLx3W3dHkkjvOWT6yf9BvizXLviHa80VT2AUL1n5m4A
+Message-ID: <CAOBoifjzJ=-siSR=2=3FtKwajSgkXsL40XO2pox0XR4c8vvkzg@mail.gmail.com>
+Subject: Re: [RFC/PATCH] sched: Support moving kthreads into cpuset cgroups
+To: Waiman Long <llong@redhat.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>, Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+	David Rientjes <rientjes@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Dan Carpenter <dan.carpenter@linaro.org>, Chen Yu <yu.c.chen@intel.com>, 
+	Kees Cook <kees@kernel.org>, Yu-Chun Lin <eleanor15x@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	jiangshanlai@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 5/8/25 3:32 PM, Yury Norov wrote:
-> Empty cpumasks can't intersect with any others. Therefore, testing for
-> non-emptyness is useless.
+On Thu, May 8, 2025 at 12:35=E2=80=AFPM Waiman Long <llong@redhat.com> wrot=
+e:
 >
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->   kernel/cgroup/cpuset.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
+> On 5/8/25 1:51 PM, Xi Wang wrote:
+> > I think our problem spaces are different. Perhaps your problems are clo=
+ser to
+> > hard real-time systems but our problems are about improving latency of =
+existing
+> > systems while maintaining efficiency (max supported cpu util).
+> >
+> > For hard real-time systems we sometimes throw cores at the problem and =
+run no
+> > more than one thread per cpu. But if we want efficiency we have to shar=
+e cpus
+> > with scheduling policies. Disconnecting the cpu scheduler with isolcpus=
+ results
+> > in losing too much of the machine capacity. CPU scheduling is needed fo=
+r both
+> > kernel and userspace threads.
+> >
+> > For our use case we need to move kernel threads away from certain vcpu =
+threads,
+> > but other vcpu threads can share cpus with kernel threads. The ratio ch=
+anges
+> > from time to time. Permanently putting aside a few cpus results in a re=
+duction
+> > in machine capacity.
+> >
+> > The PF_NO_SETAFFINTIY case is already handled by the patch. These threa=
+ds will
+> > run in root cgroup with affinities just like before.
+> >
+> > The original justifications for the cpuset feature is here and the reas=
+ons are
+> > still applicable:
+> >
+> > "The management of large computer systems, with many processors (CPUs),=
+ complex
+> > memory cache hierarchies and multiple Memory Nodes having non-uniform a=
+ccess
+> > times (NUMA) presents additional challenges for the efficient schedulin=
+g and
+> > memory placement of processes."
+> >
+> > "But larger systems, which benefit more from careful processor and memo=
+ry
+> > placement to reduce memory access times and contention.."
+> >
+> > "These subsets, or =E2=80=9Csoft partitions=E2=80=9D must be able to be=
+ dynamically adjusted, as
+> > the job mix changes, without impacting other concurrently executing job=
+s."
+> >
+> > https://docs.kernel.org/admin-guide/cgroup-v1/cpusets.html
+> >
+> > -Xi
+> >
+> If you create a cpuset root partition, we are pushing some kthreads
+> aways from CPUs dedicated to the newly created partition which has its
+> own scheduling domain separate from the cgroup root. I do realize that
+> the current way of excluding only per cpu kthreads isn't quite right. So
+> I send out a new patch to extend to all the PF_NO_SETAFFINITY kthreads.
 >
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 306b60430091..df308072f268 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1388,14 +1388,12 @@ static int compute_effective_exclusive_cpumask(struct cpuset *cs,
->   		if (sibling == cs)
->   			continue;
->   
-> -		if (!cpumask_empty(sibling->exclusive_cpus) &&
-> -		    cpumask_intersects(xcpus, sibling->exclusive_cpus)) {
-> +		if (cpumask_intersects(xcpus, sibling->exclusive_cpus)) {
->   			cpumask_andnot(xcpus, xcpus, sibling->exclusive_cpus);
->   			retval++;
->   			continue;
->   		}
-> -		if (!cpumask_empty(sibling->effective_xcpus) &&
-> -		    cpumask_intersects(xcpus, sibling->effective_xcpus)) {
-> +		if (cpumask_intersects(xcpus, sibling->effective_xcpus)) {
->   			cpumask_andnot(xcpus, xcpus, sibling->effective_xcpus);
->   			retval++;
->   		}
+> So instead of putting kthreads into the dedicated cpuset, we still keep
+> them in the root cgroup. Instead we can create a separate cpuset
+> partition to run the workload without interference from the background
+> kthreads. Will that functionality suit your current need?
+>
+> Cheers,
+> Longman
+>
 
-You are right. Non-emptiness check is useless.
+It's likely a major improvement over a fixed partition but maybe still not =
+fully
+flexible. I am not familiar with cpuset partitions but I wonder if the foll=
+owing
+case can be supported:
 
-Reviewed-by: Waiman Long <longman@redhat.com>
+Starting from
+16 cpus
+Root has cpu 0-3, 8-15
+Job A has cpu 4-7 exclusive
+Kernel threads cannot run on cpu 4-8 which is good.
 
+Now adding best effort Job B, which is under SCHED_IDLE and rarely enters k=
+ernel
+mode. As we expect C can be easily preempted we allow it to share cpus with=
+ A
+and kernel threads to maximize throughput. Is there a layout that supports =
+the
+requirements below?
+
+Job C threads on cpu 0-15
+Job A threads on cpu 4-7
+No kernel threads on cpu 4-7
+
+-Xi
 
