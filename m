@@ -1,72 +1,87 @@
-Return-Path: <cgroups+bounces-8096-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8097-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25792AB03A1
-	for <lists+cgroups@lfdr.de>; Thu,  8 May 2025 21:25:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1819AB03B6
+	for <lists+cgroups@lfdr.de>; Thu,  8 May 2025 21:32:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 953F55261A8
-	for <lists+cgroups@lfdr.de>; Thu,  8 May 2025 19:25:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 115121C40CEC
+	for <lists+cgroups@lfdr.de>; Thu,  8 May 2025 19:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF17C28A720;
-	Thu,  8 May 2025 19:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7241B28A1D7;
+	Thu,  8 May 2025 19:32:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MJ+vUbzv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PU7Hv44y"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0CE28A408
-	for <cgroups@vger.kernel.org>; Thu,  8 May 2025 19:24:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB73921D581;
+	Thu,  8 May 2025 19:32:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746732293; cv=none; b=S/MPpxp1CaY9Vly3tG5KM1ftmQf56tsZuhWRm5ez8wopFnDH1ln+KmDZTrCq2+lApQ/ZOe2nAVVGs56vfM9WoID65raMqrDxVwFLYizoUr3bRnzFcYSY2AtmPD+AyC3vMMkJSDMDvX6Hr8WT/OcKtG4neNQQagO1VEifO370W+k=
+	t=1746732738; cv=none; b=paCIznQ/QUVIQ50JfYD51w02U3Ik+/i8XWusiU8rdRbu1yuyIsC8h6B8sJOeK5SHgwwQe/mV0IL0zAAy1ZcjY6hGGy0jlPv4a1zkv3ypcNCSfEfC62wjfkmgY9wt/XFxQ89iRFlVr5FuzgIsU89/QUMrKLqNLprx5/n/K33B4kE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746732293; c=relaxed/simple;
-	bh=kkV+F1ByaoKZGM9d+pbw2Ilzb3owLbh+EnVo+YHDRK8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iiUmkxpwVde42oHao5gZa8iiLGRDcDskNAJNRVkEu0/Zt7dKC8KRxCBqDY2A7rP41QCBm0Zyl8HYTPJebuB2jtCziGfkqgUrrXz92uxYAcdlNgjHs4YUHpNHKayfxcWBUATD9C5BUYSNwv9Qw9vWgGk1P5ZeuDScXApBjQbY5Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MJ+vUbzv; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1746732291;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=7Jk9BcAtjAQU7ACRspfJrIgdim0aAe9DgFo93JV5TtM=;
-	b=MJ+vUbzv54ToTlupDmopWtYIT82Zda135lEY/kOordEWfXFkQ2Rn9yV9lzKVDw9nYj2Tro
-	bIRCwBecwn6lkH4RIOL6NW+ml9GbLE8vWTis/zVZFQg1cEMD55WIuALvkj6gTj+tqKPNvU
-	v4X55CI5qVUihOK7vcGcgRc/J0ERWsw=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-96-7h6oFesUMZyGiv2dv63_-A-1; Thu,
- 08 May 2025 15:24:39 -0400
-X-MC-Unique: 7h6oFesUMZyGiv2dv63_-A-1
-X-Mimecast-MFC-AGG-ID: 7h6oFesUMZyGiv2dv63_-A_1746732268
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2D0A21955DB9;
-	Thu,  8 May 2025 19:24:28 +0000 (UTC)
-Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.80.141])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 23D901955F24;
-	Thu,  8 May 2025 19:24:25 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
+	s=arc-20240116; t=1746732738; c=relaxed/simple;
+	bh=LV1oM25sHfr1IGLgdugGnJdy5/k3VJfK6VzW5usI15M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qCR2sSBbirF/jMWaLD6o45t9DScnuTULO1vaNtqPxlxO8xpbp/8/EFtLxp3E3fVNhy3uG81inaVyrJ35G06aPsF6zsoGMd8yOHsbBD8tTS26INdAnLY3CWYpiZkYJ7n19rDocx1U8nFcf3qOWlVxEGMo4bdU5aLDeQ1jHkx4tGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PU7Hv44y; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-736c277331eso2324073b3a.1;
+        Thu, 08 May 2025 12:32:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746732734; x=1747337534; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1dOeW2IURHuKsgiuZAD4JqkGfUkGdRsmp9Oj1CNDNic=;
+        b=PU7Hv44ySiL8JDGCmzgLoYVm+N3b6gwUUWn+qTGN6fKd3qQWssCjCAfWEQOfvx8btk
+         sP09//MhTgywMrnl4UkHxl+jB+WTTP6a8UGBvyxT9J53okde6RNdtbFlZH0ypLZ6Te8T
+         jbXT5W1PB3TuellQRGMNf3prMLWaPfTp7QAKaPUiNCHRBmdH9wAcicdQbFadqpKmrqDy
+         2fAWmGceTpqeyMn51QcoKYe63/N7IA80TKaPzNSL6AiYdBVHh+kJPAvZ98faM+ZrvsCQ
+         jlXrsfy8STK4P+kHjdAk3jWmKle0/i5HY9XYnDQg95F3uVm/iWb37o8bIpft1ypIiwTS
+         8GJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746732734; x=1747337534;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1dOeW2IURHuKsgiuZAD4JqkGfUkGdRsmp9Oj1CNDNic=;
+        b=cEezO1vPNt+ulP+xTNkX4kgBgkNWn5Y4j3O6GxKYs657rZy9loNteSCvj+lS2i4nj7
+         gFsdWBsB4veDqKP+3fw8qL4SCVIk+21EUpMztTm7uHJfkYA7gb4KR2ZW4NYeMzOhwpob
+         87e4OPNx55yidEzrRInfG5bDqW7Llr831QBgnaqD1+e8miJoMTWxbkOVi9DK9JWwyLmK
+         zBMwtCWPuE+JKh/cu0D1ThmPzIltZAbATUZmDxkaJm6gn8v0wW4GsDHon9t+7GLb1dN8
+         xhVlQ3kpSrgm0sT+GdmJFVu0fcxCDUXZvFx9mVeT3fSUFrUilcJylflakxb/2sT3GPqp
+         idlA==
+X-Forwarded-Encrypted: i=1; AJvYcCVex2YY5fj4OlPwoV3mY5B63bvCvc1zzfHXEiDRMEFJDc5TkZS3IqOqVYjAlzReUHE/ctHCF824jxV+GDBk@vger.kernel.org, AJvYcCVgg10p6VKp1/3dyy9GqMqF01Yfs2Y3/RNe+GXSKZz0IkwTvRHJx7cMVl9VM7DoQ2peqI35nKwf@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywh81o5Iq94vhfdkOAJ4BSNLs8FO3Ecp716jLSJevaQCa+NzlS/
+	Dyoht2iaVWCA1/1pnkHE84C/MoD6TuRwVfUTt7hkibrbO+NCrQkjPcP00cWs
+X-Gm-Gg: ASbGnctd1mZot4vwLw1DlYC3nok0/fZ0h6qo0CFMub3ZP/duOK3BateKd3U+Z95537g
+	XLYd01cgWWuhhAEdMyjBLHnavNzf5NVqvoKwSTqqfXIItMS5TTpm2tgbRe965T/SQMRL4eOV6+q
+	/+6D6S2vaYem4hwC0+cyRAwqZ8+3cWIbWMgNPaTRvCDklZVettSZs0eCb0JasUIPQoVlu5mt2dK
+	PQjXNEfIQ1IIQHPdtlh25h0extPhBORawLm1SlL2DhmhcOkT+WON7rnJnFah06tsIT8Y2wUDGTd
+	XPG2g8Hx9Ox6KfvbTx4NMyIny8hABQOn59Ih2Tt9
+X-Google-Smtp-Source: AGHT+IHinXyNOBnJU50QOSFnQfh3DksluzyXN8rhN9sQPnBHN6NS4at1rkk8bpst/cQkKwz4gFasxA==
+X-Received: by 2002:a05:6a20:1586:b0:1f3:1ebc:ea4a with SMTP id adf61e73a8af0-215ab67d7c7mr737752637.20.1746732733990;
+        Thu, 08 May 2025 12:32:13 -0700 (PDT)
+Received: from localhost ([216.228.127.129])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74237a0ce5asm397498b3a.97.2025.05.08.12.32.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 May 2025 12:32:13 -0700 (PDT)
+From: Yury Norov <yury.norov@gmail.com>
+To: Waiman Long <longman@redhat.com>,
+	Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xi Wang <xii@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH v2] cgroup/cpuset: Extend kthread_is_per_cpu() check to all PF_NO_SETAFFINITY tasks
-Date: Thu,  8 May 2025 15:24:13 -0400
-Message-ID: <20250508192413.615512-1-longman@redhat.com>
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Yury Norov <yury.norov@gmail.com>
+Subject: [PATCH] cgroup/cpuset: drop useless cpumask_empty() in compute_effective_exclusive_cpumask()
+Date: Thu,  8 May 2025 15:32:06 -0400
+Message-ID: <20250508193207.388041-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -74,46 +89,37 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-Commit ec5fbdfb99d1 ("cgroup/cpuset: Enable update_tasks_cpumask()
-on top_cpuset") enabled us to pull CPUs dedicated to child partitions
-from tasks in top_cpuset by ignoring per cpu kthreads. However, there
-can be other kthreads that are not per cpu but have PF_NO_SETAFFINITY
-flag set to indicate that we shouldn't mess with their CPU affinity.
-For other kthreads, their affinity will be changed to skip CPUs dedicated
-to child partitions whether it is an isolating or a scheduling one.
+Empty cpumasks can't intersect with any others. Therefore, testing for
+non-emptyness is useless.
 
-As all the per cpu kthreads have PF_NO_SETAFFINITY set, the
-PF_NO_SETAFFINITY tasks are essentially a superset of per cpu kthreads.
-Fix this issue by dropping the kthread_is_per_cpu() check and checking
-the PF_NO_SETAFFINITY flag instead.
-
-Fixes: ec5fbdfb99d1 ("cgroup/cpuset: Enable update_tasks_cpumask() on top_cpuset")
-Signed-off-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- kernel/cgroup/cpuset.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ kernel/cgroup/cpuset.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index d0143b3dce47..967603300ee3 100644
+index 306b60430091..df308072f268 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -1130,9 +1130,11 @@ void cpuset_update_tasks_cpumask(struct cpuset *cs, struct cpumask *new_cpus)
+@@ -1388,14 +1388,12 @@ static int compute_effective_exclusive_cpumask(struct cpuset *cs,
+ 		if (sibling == cs)
+ 			continue;
  
- 		if (top_cs) {
- 			/*
--			 * Percpu kthreads in top_cpuset are ignored
-+			 * PF_NO_SETAFFINITY tasks are ignored.
-+			 * All per cpu kthreads should have PF_NO_SETAFFINITY
-+			 * flag set, see kthread_set_per_cpu().
- 			 */
--			if (kthread_is_per_cpu(task))
-+			if (task->flags & PF_NO_SETAFFINITY)
- 				continue;
- 			cpumask_andnot(new_cpus, possible_mask, subpartitions_cpus);
- 		} else {
+-		if (!cpumask_empty(sibling->exclusive_cpus) &&
+-		    cpumask_intersects(xcpus, sibling->exclusive_cpus)) {
++		if (cpumask_intersects(xcpus, sibling->exclusive_cpus)) {
+ 			cpumask_andnot(xcpus, xcpus, sibling->exclusive_cpus);
+ 			retval++;
+ 			continue;
+ 		}
+-		if (!cpumask_empty(sibling->effective_xcpus) &&
+-		    cpumask_intersects(xcpus, sibling->effective_xcpus)) {
++		if (cpumask_intersects(xcpus, sibling->effective_xcpus)) {
+ 			cpumask_andnot(xcpus, xcpus, sibling->effective_xcpus);
+ 			retval++;
+ 		}
 -- 
-2.49.0
+2.43.0
 
 
