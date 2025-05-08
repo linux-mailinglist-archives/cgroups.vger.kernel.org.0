@@ -1,247 +1,171 @@
-Return-Path: <cgroups+bounces-8084-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8085-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86858AB01CF
-	for <lists+cgroups@lfdr.de>; Thu,  8 May 2025 19:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB603AB031A
+	for <lists+cgroups@lfdr.de>; Thu,  8 May 2025 20:46:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAAE71B63570
-	for <lists+cgroups@lfdr.de>; Thu,  8 May 2025 17:52:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3F63189AF8A
+	for <lists+cgroups@lfdr.de>; Thu,  8 May 2025 18:47:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC604286D44;
-	Thu,  8 May 2025 17:51:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73B42874F6;
+	Thu,  8 May 2025 18:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DOw85hl3"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JIbJ3uCf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-vk1-f201.google.com (mail-vk1-f201.google.com [209.85.221.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF1821D3F9
-	for <cgroups@vger.kernel.org>; Thu,  8 May 2025 17:51:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F6627875C
+	for <cgroups@vger.kernel.org>; Thu,  8 May 2025 18:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746726702; cv=none; b=pikhizaTlgoNwEu16g3V94IZIyJIPPiyGUxDsAKkMKcMp9fMMVTmOQXT9PTpYKM1Vy7P7JAxTD76IZ6i5LC47l7OItPG3p4EmrFSftxCEHjCmvAJ3aRlFgCPHXVzMCp9xmm1IKJAy2LdTEQE9OxOH4HYQ1hgBq9dqLaXtpT9AdA=
+	t=1746730013; cv=none; b=bN6V6Z6MYd4pQ9s0Wx091lygC87JZEbGqsKJLudRoZ0ykkhiQgNatB4n+zafDQ4GGEbcvlkhzw3ke99Aahj+F/vvH3/3v+VF+VFgJMp/IP/bPM2Diguh8YBkpasNtHP8U/hvPBQb7QQBVPYJbKmYhDo1KGqot5g3fT1+HrW1pVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746726702; c=relaxed/simple;
-	bh=9vAzFk3ej36C8l8EyjCCniQrUpBP+z4T56uDvNxUQm0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GPm6UkFUj20UsiGOVqSKLzM0bl7CV79AvygnjGsk6mUL+D2pVc2ckQDypztcDGljuXPp4Seq7wBuwLXThjjmghJ9KT5Le3k28X5fwD6Va2y33APniNMC3rA+5ncHpM89ruuwflL/+sFDtXXXVWyyEjWUkYNB2AQ2v839jc22kXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DOw85hl3; arc=none smtp.client-ip=209.85.208.52
+	s=arc-20240116; t=1746730013; c=relaxed/simple;
+	bh=cEYIzm/T90Mdhu+u61QCs2qDWMrrQfrENpbfSSHD5gw=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=XdliPvDbnaKXJS4WW9itO7NqWHmS7slqdpCohiaFjcuf8Ahkt5WrV/FTVjtyYs8cJhPBptiTu+HEl3riJx4CBw3Xs4Nc4dW0vcUhtOeajvNkOYAx6rNVYop1xEF6Psy0iynox8IX5cDNSE2jdNmlxvTfUgBNQVEudGRXs0FS6YU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JIbJ3uCf; arc=none smtp.client-ip=209.85.221.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5e6f4b3ebe5so2426893a12.0
-        for <cgroups@vger.kernel.org>; Thu, 08 May 2025 10:51:40 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com
+Received: by mail-vk1-f201.google.com with SMTP id 71dfb90a1353d-523fa15384aso1165740e0c.3
+        for <cgroups@vger.kernel.org>; Thu, 08 May 2025 11:46:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746726699; x=1747331499; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9vAzFk3ej36C8l8EyjCCniQrUpBP+z4T56uDvNxUQm0=;
-        b=DOw85hl3AJ61w+hMVetrqM15WFIxyi6c5SkG/BUGeAdLUM49oEoxmBmQ3KbmzGitCe
-         ImS9/9S9dH2fN6wz0WBe2t3IbyI8Lj9J4+9Ea2ShmG2rIkHSw/alcG+U6UrhDobsCvn3
-         wCsPWd6s58h77KiZ7XvHvOoXaxBSXpysxmGNu2i7giheelUX8I4aQESYbXee67KjFepr
-         0Afahb28Mq/VPWXvHBR+q2nLgxRJUOCDsGfQHwzbwzMFeYRN0cbGLW0a+EeqUckjfAlH
-         4gzmKKnG9u6W7eHwBXQT8D17GIGRMwNhZxyA/EfzGUrCNETVFIjcow5Bhppt3Z/m7AGR
-         hICA==
+        d=google.com; s=20230601; t=1746730011; x=1747334811; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3g5FPzsmLcEhVEHZ4NjqMXRkBxeDVnDHLfZENlQDEc0=;
+        b=JIbJ3uCfjNJQzgmefMvX91yvUuWXHYWehEJNPqN1S735BlUUw5sxVWYYL9gS/FHxcd
+         Ax6IuIV471u3kRJ/u9b9qEb4ZKmMceQI+zH259OHofF73+mkMjx5Yes+12Mt1tydJ766
+         ZRLx0bwBNkevU4RnCbd2+soBzCWWfeUG/fQdHAhL2D0x53bEKu11Upb5vfQlvXc361Qh
+         yVCBt3EHhVT0vLmaDS352tZNg7eIk6fx2j6azjjT5ZI4ZoedH4Bc6vxt/PcWsPArVdaS
+         Ak612jjN3QtnUQgsyfmGz7mbAcQwNFwpWxEOfEh6wy6M9Zbw8HBRJ0cwMe+q6Tq0GGk/
+         Pbtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746726699; x=1747331499;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9vAzFk3ej36C8l8EyjCCniQrUpBP+z4T56uDvNxUQm0=;
-        b=TBpN3oBV94WP0A4BNeMwp9YCh3hNvPwVWlVfxECASvl4IkM7pt1a8su95sDnLGlDq2
-         WRWJw2MuCla8TsqQ0ywKNyQEw3qNS+4Effbwjszi/l76H1uEmWeunS3I+/U8tS6m6nh7
-         am6b9iAPNbtG7Wgg3ADsGWHfYJVr146SPx+EVZaIG//wQc1Lu0sxF4N9fKRn30UwaTiU
-         lnsi6dYk00LwGh6EOxk3jqhvugBM+xvDhqsLKjuRRZUwjFZqLw0mXOqFa+pRc5/2oJi6
-         /yi5FoLasYa/ZerAR/1K1+/0tUc4CzZ9DeDeEfwKWwnnUakrV9026pasm4c8JWuYjc2A
-         8vRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWWBl7fPEVeEhIW/xxtFO0O4fUZBDIp5UuRWjo0yIY7Xo9fm5wyfB2NE+bmntxpa63j79Y23Smu@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy48g7Jocc6INEyGNXVS9tefW8/d7x+3H1K42fmxQ7ocqCr6kh1
-	Kh+xZE4/XKJ3yaBFJ0gFVz3Hu0G7l6E9gISZADDIXi97SBNarJK8uxPJE8ANZIUXOTF/b4OZi8b
-	UhUSRePPRilckQxPLaKLOoXgihQykJO2o6IQr
-X-Gm-Gg: ASbGnct+a+1OrVttKEU+AIDYg9e4vaTJPZCzeQjlhtYEpPlI4/hlvnOt1XGjYn+PsuW
-	W88DEOPXnMS75/wZRgxQY2NaBcRcfonVbDhcZbLpktGnWhnmXpgsKchneSkcNgVrBRc1HACQsnw
-	wt3FoKA71t7dQphm6CJJVdnI+djtQFnMHVaiNaMdwQJ78EqXriipZkwGyr
-X-Google-Smtp-Source: AGHT+IFiG34ocNaePZQu/GwsnHYMExr9loCqHISwhlhRSjlrs+ftDtZwnqSmiOG2ytHr2NPo/xMxS/swhzKAA8M9jhY=
-X-Received: by 2002:a17:907:97d6:b0:ad1:fa32:b608 with SMTP id
- a640c23a62f3a-ad219170628mr57695466b.42.1746726698675; Thu, 08 May 2025
- 10:51:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1746730011; x=1747334811;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3g5FPzsmLcEhVEHZ4NjqMXRkBxeDVnDHLfZENlQDEc0=;
+        b=E3f+KDEwQy//AbjwHlxIWbLTsPlLciMpTMMVh/wDDbOY/OgjyM0d/jdhEvaxtoZml8
+         q3UAuOfBSIvq2KlO7UP5ElP/0k53S5yFaFpPFBfU5uGqcEDhQim1xPm6fARdic2USUEk
+         ge3InEhRKnoX9qzUmwxUZtvVdM/gi7YmF/FX0WpiX9IXuNwSTPtl43b634k/mnUmlTKs
+         Wj6uWH2HdY7xHyTD7BRTll+ae9DcxXZEZPqYDGuw0P57pe2tGP3sWtYNuAC4VukuNB4I
+         Rc5RbfY76qUBSnmB9pKDWPZ/C1pEDmVH5CxZyYcwpREWVzPmzjAQPNyGsrnNS8hkrUCP
+         uAnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWf42ZhwVb77vVLzjFHuEbGOgXsWj83KKFyTHROHQWQlxASwvkzc3QhgoKvAkVIdAAHxC9RxiNH@vger.kernel.org
+X-Gm-Message-State: AOJu0YzotRxub//dbqxrTC+pNA6T3JmSly3rbThbcRLvGTTabQnxRD33
+	k1mdebQQclgpGTqKuX2dGLRGVmnyejwZXOOdg7/75bsz6QiUNvQS5ux3L7yLJ78HRQi5OtRPHth
+	ksDRgCEBLM/mkWeZxdA==
+X-Google-Smtp-Source: AGHT+IFpkJbQ152C8gUuCHDjN7GlB0H2WXKBSGKbjiVxbzv2G9JOo14I0G4pGBVWjLQJVqTip5Gh+kIyA9M40mbh
+X-Received: from vkbaz27.prod.google.com ([2002:a05:6122:d1b:b0:52a:9a03:a241])
+ (user=jthoughton job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6122:828d:b0:520:62ce:98ed with SMTP id 71dfb90a1353d-52c53d2ff33mr1085749e0c.6.1746730010919;
+ Thu, 08 May 2025 11:46:50 -0700 (PDT)
+Date: Thu,  8 May 2025 18:46:41 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250506183533.1917459-1-xii@google.com> <aBqmmtST-_9oM9rF@slm.duckdns.org>
- <CAOBoifh4BY1f4B3EfDvqWCxNSV8zwmJPNoR3bLOA7YO11uGBCQ@mail.gmail.com>
- <aBtp98E9q37FLeMv@localhost.localdomain> <CAOBoifgp=oEC9SSgFC+4_fYgDgSH_Z_TMgwhOxxaNZmyD-ijig@mail.gmail.com>
- <aBuaN-xtOMs17ers@slm.duckdns.org> <CAOBoifiv2GCeeDjax8Famu7atgkGNV0ZxxG-cfgvC857-dniqA@mail.gmail.com>
- <aBv2AG-VbZ4gcWpi@pavilion.home>
-In-Reply-To: <aBv2AG-VbZ4gcWpi@pavilion.home>
-From: Xi Wang <xii@google.com>
-Date: Thu, 8 May 2025 10:51:26 -0700
-X-Gm-Features: ATxdqUGmHNfwE-8VkB6qpw0w9vEhgm8bSSonqkVq6btmJis37oJqz-zs928L9ro
-Message-ID: <CAOBoifhWNi-j6jbP6B9CofTrT+Kr6TCSYYPMv7SQdbY5s930og@mail.gmail.com>
-Subject: Re: [RFC/PATCH] sched: Support moving kthreads into cpuset cgroups
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ben Segall <bsegall@google.com>, David Rientjes <rientjes@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Valentin Schneider <vschneid@redhat.com>, Waiman Long <longman@redhat.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, Dan Carpenter <dan.carpenter@linaro.org>, Chen Yu <yu.c.chen@intel.com>, 
-	Kees Cook <kees@kernel.org>, Yu-Chun Lin <eleanor15x@gmail.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	jiangshanlai@gmail.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.49.0.1015.ga840276032-goog
+Message-ID: <20250508184649.2576210-1-jthoughton@google.com>
+Subject: [PATCH v4 0/7] KVM: selftests: access_tracking_perf_test fixes for
+ NUMA balancing and MGLRU
+From: James Houghton <jthoughton@google.com>
+To: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org
+Cc: Maxim Levitsky <mlevitsk@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Yu Zhao <yuzhao@google.com>, 
+	David Matlack <dmatlack@google.com>, James Houghton <jthoughton@google.com>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 7, 2025 at 5:08=E2=80=AFPM Frederic Weisbecker <frederic@kernel=
-.org> wrote:
->
-> Le Wed, May 07, 2025 at 01:07:16PM -0700, Xi Wang a =C3=A9crit :
-> > On Wed, May 7, 2025 at 10:36=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote=
-:
-> > >
-> > > Hello,
-> > >
-> > > On Wed, May 07, 2025 at 10:23:24AM -0700, Xi Wang wrote:
-> > > > Overall I think your arguments depend on kernel and application thr=
-eads are
-> > > > significantly different for cpu affinity management, but there isn'=
-t enough
-> > > > evidence for it. If cpuset is a bad idea for kernel threads it's pr=
-obably not
-> > > > a good idea for user threads either. Maybe we should just remove cp=
-uset from
-> > > > kernel and let applications threads go with boot time global variab=
-les and
-> > > > set their own cpu affinities.
-> > >
-> > > I can't tell whether you're making a good faith argument. Even if you=
- are,
-> > > you're making one bold claim without much substance and then jumping =
-to the
-> > > other extreme based on that. This isn't a productive way to discuss t=
-hese
-> > > things.
-> > >
-> > > Thanks.
-> > >
-> > > --
-> > > tejun
-> >
-> > Yes this is still serious technical discussion. Frederic made several "=
-we can't
-> > have b because we already have / are working on a" statements which wer=
-e not
-> > very actionable. Deducing to a particular case is a quick way to simpli=
-fy.
->
-> I referred to a particular case (isolation) because you said this is your
-> usecase. You still haven't explained us why the current affinity manageme=
-nt for
-> kthreads doesn't work for you.
->
-> > I'd prefer to focus more on higher level technical tradeoffs.
-> >
-> > Overall compartmentalization limits resource (cpu) sharing which limits
-> > overcommit thus efficiency.
-> > cpumask restrictions are not ideal but sometimes
-> > necessary. Dynamically configurable cpumasks are better than statically
-> > reserved cpus.
->
-> For which usecase?
->
-> > I do think the cgroup tree structure sometimes helps and we don't have =
-to use
-> > it for all cases.
->
-> Also kernel threads are special beasts, even some !PF_NO_SETAFFINTIY kthr=
-eads
-> have actual affinity preferences. If they can go through cpusets, this mu=
-st be
-> dealt with. And admins will need to know about those affinity preferences=
- for
-> each kthreads.
->
-> Also do we want to be able to expose all the cgroup limits to kthreads? E=
-ven
-> if only cpusets is allowed to have kthreads, does cpusets.mems make
-> sense to be exposed for example?
->
-> If your issue is ever resolved through cpusets, this will have to be main=
-tained
-> forever with all those subtleties in mind.
->
-> I tend to think that CPU isolation is a very straightforward cpusets usec=
-ase:
-> no load balancing, NULL domains and tasks usually don't compete much for =
-the
-> CPU since the point is to not be disturbed anyway.
->
-> And NULL domains already exclude kernel threads, dynamically. So please g=
-ive
-> us a compelling reason for doing this.
->
-> Thanks.
->
-> --
-> Frederic Weisbecker
-> SUSE Labs
+This series fixes some issues with access_tracking_perf_test when MGLRU
+or NUMA balancing are in use.
 
-I think our problem spaces are different. Perhaps your problems are closer =
-to
-hard real-time systems but our problems are about improving latency of exis=
-ting
-systems while maintaining efficiency (max supported cpu util).
+With MGLRU, touching a page doesn't necessarily clear the Idle flag.
+This has come up in the past, and the recommendation was to use MGLRU
+generation numbers[1], which this series does.
 
-For hard real-time systems we sometimes throw cores at the problem and run =
-no
-more than one thread per cpu. But if we want efficiency we have to share cp=
-us
-with scheduling policies. Disconnecting the cpu scheduler with isolcpus res=
-ults
-in losing too much of the machine capacity. CPU scheduling is needed for bo=
-th
-kernel and userspace threads.
+With NUMA balancing, pages are temporarily mapped as PROT_NONE, so the
+SPTEs will be zapped, losing the Accessed bits. The fix here is, in the
+event we have lost access information to print a warning and continue
+with the test, just like what we do if the test is running a nested VM.
 
-For our use case we need to move kernel threads away from certain vcpu thre=
-ads,
-but other vcpu threads can share cpus with kernel threads. The ratio change=
-s
-from time to time. Permanently putting aside a few cpus results in a reduct=
-ion
-in machine capacity.
+A flag is added for the user to specify if they wish for the test to
+always enforce or always skip this check.
 
-The PF_NO_SETAFFINTIY case is already handled by the patch. These threads w=
-ill
-run in root cgroup with affinities just like before.
+Based on kvm/next.
 
-The original justifications for the cpuset feature is here and the reasons =
-are
-still applicable:
+Changelog:
 
-"The management of large computer systems, with many processors (CPUs), com=
-plex
-memory cache hierarchies and multiple Memory Nodes having non-uniform acces=
-s
-times (NUMA) presents additional challenges for the efficient scheduling an=
-d
-memory placement of processes."
+v3[4] -> v4:
+- Multiple fixes to access_tracking_perf_test:
+  1. Fix for software-managed A/D-bit configs.
+  2. Fix for expected number of pages when guest page size is >
+     PAGE_SIZE.
+  3. Properly check youngest generation when looking for pages.
+- Do an initial aging pass for MGLRU. This allows us to check that pages
+  move back to the youngest generation after the first access pass.
+- Add controller-root location logic in the cgroup utils, and use this
+  to make the test work for cgroup-v1 (thanks Sean!).
+- Some cleanup for access_tracking_perf_test code, comments, warning
+  messages, and the commit message (thanks Sean!).
 
-"But larger systems, which benefit more from careful processor and memory
-placement to reduce memory access times and contention.."
+v2[3] -> v3:
+- Applied David's directory fix on patch 3.
+- Added SoB-by, R-by (patch 2, missed in v2), and A-by.
 
-"These subsets, or =E2=80=9Csoft partitions=E2=80=9D must be able to be dyn=
-amically adjusted, as
-the job mix changes, without impacting other concurrently executing jobs."
+v1[2] -> v2:
+- Re-add clone3_selftests.h for cgroup selftests (thanks Michal!)
+- Some comment fixes, patches 2 and 5 (thanks Maxim!).
 
-https://docs.kernel.org/admin-guide/cgroup-v1/cpusets.html
+[1]: https://lore.kernel.org/all/CAOUHufZeADNp_y=Ng+acmMMgnTR=ZGFZ7z-m6O47O=CmJauWjw@mail.gmail.com/
+[2]: https://lore.kernel.org/kvm/20250327012350.1135621-1-jthoughton@google.com/
+[3]: https://lore.kernel.org/kvm/20250331213025.3602082-1-jthoughton@google.com/
+[4]: https://lore.kernel.org/kvm/20250414200929.3098202-1-jthoughton@google.com/
 
--Xi
+James Houghton (3):
+  cgroup: selftests: Move cgroup_util into its own library
+  KVM: selftests: Build and link selftests/cgroup/lib into KVM selftests
+  KVM: selftests: access_tracking_perf_test: Use MGLRU for access
+    tracking
+
+Maxim Levitsky (1):
+  KVM: selftests: access_tracking_perf_test: Add option to skip the
+    sanity check
+
+Sean Christopherson (3):
+  KVM: selftests: Extract guts of THP accessor to standalone sysfs
+    helpers
+  cgroup: selftests: Move memcontrol specific helpers out of common
+    cgroup_util.c
+  cgroup: selftests: Add API to find root of specific controller
+
+ tools/testing/selftests/cgroup/Makefile       |  21 +-
+ .../selftests/cgroup/{ => lib}/cgroup_util.c  | 118 ++----
+ .../cgroup/{ => lib/include}/cgroup_util.h    |  13 +-
+ .../testing/selftests/cgroup/lib/libcgroup.mk |  19 +
+ .../selftests/cgroup/test_memcontrol.c        |  78 ++++
+ tools/testing/selftests/kvm/Makefile.kvm      |   4 +-
+ .../selftests/kvm/access_tracking_perf_test.c | 281 +++++++++++--
+ .../selftests/kvm/include/lru_gen_util.h      |  51 +++
+ .../testing/selftests/kvm/include/test_util.h |   1 +
+ .../testing/selftests/kvm/lib/lru_gen_util.c  | 386 ++++++++++++++++++
+ tools/testing/selftests/kvm/lib/test_util.c   |  42 +-
+ 11 files changed, 865 insertions(+), 149 deletions(-)
+ rename tools/testing/selftests/cgroup/{ => lib}/cgroup_util.c (88%)
+ rename tools/testing/selftests/cgroup/{ => lib/include}/cgroup_util.h (91%)
+ create mode 100644 tools/testing/selftests/cgroup/lib/libcgroup.mk
+ create mode 100644 tools/testing/selftests/kvm/include/lru_gen_util.h
+ create mode 100644 tools/testing/selftests/kvm/lib/lru_gen_util.c
+
+
+base-commit: 45eb29140e68ffe8e93a5471006858a018480a45
+-- 
+2.49.0.1015.ga840276032-goog
+
 
