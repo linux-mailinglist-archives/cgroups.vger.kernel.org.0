@@ -1,130 +1,133 @@
-Return-Path: <cgroups+bounces-8103-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8104-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9B29AB14FB
-	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 15:26:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D10BAB1557
+	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 15:36:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C20E1A21019
-	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 13:22:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 831A7500307
+	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 13:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA7D29671C;
-	Fri,  9 May 2025 13:18:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718F22900B6;
+	Fri,  9 May 2025 13:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mDfo1z0S"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gstMkIx9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97AF29375A;
-	Fri,  9 May 2025 13:18:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2900D2AC17
+	for <cgroups@vger.kernel.org>; Fri,  9 May 2025 13:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746796700; cv=none; b=FBjWXIOm9Paovq7ucxz+4t3HdiZ24ifOxVLncZ41zYtP5d+5UsM//KKMWM6DBuyncj/GEysj7deQ8MaSOXjrju5YfhygzORTTMSNTZ/sxXFyJ1zfZlxtEES8q8SeG1DDBQxewOu+XOF3cs8tc0t9JHQ2HsPrX5ebqYDcGiEGsso=
+	t=1746797749; cv=none; b=uYWWTvdAmYV1psyin1EIZBScvdNBLzShyuU/+AcclHi7BmansmAjIyW3Mu9R3fp+zolvdoIsTZypzH3T66im0Wh4fjPGukaNHrHSGGBvPW4YeC8Ud04A27T+hvA0xJRsa9PoltNxi5SfMVgq4I5FKSBRzPiqt0jBrVv1d4i4CJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746796700; c=relaxed/simple;
-	bh=u0KhINI0YhCaw7x4o4t2KmY7tH8jFbQqrmNdRuvwe6k=;
+	s=arc-20240116; t=1746797749; c=relaxed/simple;
+	bh=Dx+DkEzhbxvytOQXjorEQqxJ6zeAnsoM4QWfOqiHclo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uYQ2OCvLE09EPIRr39IllzvpUOu9VWuM6QReN4B6r+ZztfmldJPmxtDbKryh3hFxjT8nEbeXkegyDmYoO1mRAYpA/IhJTUDCWldEh8O6xsX1rKskQyjUHVyaCvrUKumlB34XpP7qUAXNQ2dzTCEzo26nyncHPDAXFKIFP6KcESk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mDfo1z0S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3160C4CEEB;
-	Fri,  9 May 2025 13:18:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746796700;
-	bh=u0KhINI0YhCaw7x4o4t2KmY7tH8jFbQqrmNdRuvwe6k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mDfo1z0SKP/X0hJkPuVqoKVaBYGHIGz9on0dtLQJw8qMLI3wwOfjFg0HdWTmWN3h8
-	 eC4DDzcBOg+F0vuwtKxTFGBz0GMkWIcwjOrru+hJ3Mke5ai7MmzPJPYtWqyqOh3xOS
-	 dz5xFT9slLw8TFknGWAodbF/YdTfFXPh1oQVPEMH/rlqzQMfU66eJxM9uoK80t67Tc
-	 F36EXAmAXlagOIUMem4rdkh3qfFx4/fjp9+euabvFgdRGv6OK5NdgEFRKSdTbEfXgQ
-	 zr5Jogjiw8BOb5FMvwZ2GoUPkYZOyoBx7Wvxx0VhY9lonBUBuQd6H46JioilHeqPcB
-	 MTJ1skiSMGaeA==
-Date: Fri, 9 May 2025 15:18:17 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Xi Wang <xii@google.com>
-Subject: Re: [PATCH v2] cgroup/cpuset: Extend kthread_is_per_cpu() check to
- all PF_NO_SETAFFINITY tasks
-Message-ID: <aB4AmUtEM-qQ1Xoa@localhost.localdomain>
-References: <20250508192413.615512-1-longman@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pk3iInc4K69rsVE0l3j+xRbdeNv0IvMimF7dUHb3SO31qOhE0BKwCCLWMPZHHPZp3bdY+3U7vFieHjKgJTKIEEJs+2WD6eHyiPb4upTVF8mvbdquGdX0x2W2jD9tjmy3AnyfxTqD0Tl3VlifjMbD44cYeqJ44/GuZ+c9XJJVUJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gstMkIx9; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5f6fb95f431so6051004a12.0
+        for <cgroups@vger.kernel.org>; Fri, 09 May 2025 06:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1746797745; x=1747402545; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CjxNnSRsyTmUOjnyHt3URsc7lY8Eum3urENUO1QtEX8=;
+        b=gstMkIx9ACSlXcuNxvTuVvVo1zG1k3w/rFVWKTxJ2FrNM3oKg8eyfB1WmQZlv9FJD/
+         bo7Ium2xOI8Wlter6mNOOJpxfSHZAwFVedfV1NRvHJAOPk08uJ2lMGR8gJ/9h2KtVb1f
+         ek1jzdWVHatzCWlNQ1aHOTnblunExrZvhQCi2VOQsnIed7EmRGdhGxobGL0dre6MyI5p
+         g9MYDC3dkp7Wtyv7i5DIEZmsGtrWEtb9oRdHx3T4FgiXGBBUvQXgk9oS1czBuYn0YzWb
+         PuGVqpy/FyHkqevQ0ZxWas7+umIj4+mETSRBmInuHLscuac2dbQTERnFUa0gP8N+f128
+         aFBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746797745; x=1747402545;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CjxNnSRsyTmUOjnyHt3URsc7lY8Eum3urENUO1QtEX8=;
+        b=NJi4c6YM/Vz0VQpBZzVIvPb8wSrzxX0/prAfTzl4kfVnYtZUqRjizSOlO95mseIzJ/
+         8SREa6RO7BJb4tvZ6p8uqsexqEQlRmZZ/AmOCmhHBbB6E1IE37PVjuH/nrzusvrrPgLy
+         yg0SzqOHjQ4vmTm5LFysoqcrD0SXO7VV2zKlm2RthLdDn9+MUzI9KNyuALJ8zek/oRGR
+         JLC/lzmrQ/inMa58x+j+cXl2nFA8lfcfK+47dxAGoJLn6fUA0MqdGAZrsnOclbC9qfsa
+         RJWhEjxj10NpjMe0ZUNVIeZWIoB2xfcyTuXz59oCklldLw5a/x9xX3g/KkwFGvZLPoDW
+         HeFg==
+X-Forwarded-Encrypted: i=1; AJvYcCVXPCfuXG+klYKMDxGtL7hUgq4jqFIQf0v95JxwF8WFYScfx0jQAMzWs+P1q/j4v1WO3cJHkFxO@vger.kernel.org
+X-Gm-Message-State: AOJu0YxP+Hhqq30ejy7Z3A/3IbUjTTPaDP0XB1xp7xL11GGkQzxy/Rn/
+	CgH4BVFsQgAfnl2iwVmaY5UtH0fplgu5H6wS8uFbToL9bTRtsZJUw1b2rg7MvGs=
+X-Gm-Gg: ASbGncsTa45vIcbFL6cy6/6v/cTjREEJg/sqJa1v9BdQ1ut5bFgpIcXuwWzsKcXGGEX
+	3vJU6W1ivEjv/4BNnVTBK9K+LcPN8GEGEbfaTywyawc0lPc2Xz71TvpDZbt4xHJzVkycuox0gmM
+	2c0CPZysKZ3/edfkGW8UmcAqfNDOBEh+tPNf5fIq9QukUxJKdt99nxbKUBl2tyA5sz2D+z5L9HF
+	1YjeyeECYyxjejgrIwMRQ2OQnxF5HSZtuL6hP/TlypRdR8E7PB1Av8PRTkPGF1HznzGhlZcJ+jN
+	gUtWu1N7Nz19DbaLTVz1rmdBOT8iZDxO6uPTFA8CdMJpsWeAL6wlIA==
+X-Google-Smtp-Source: AGHT+IEC92HkUWApzjxSiVUUdHJiD7B2GP+/NDWqDaw0SPDYKaXpVgjz3afQ5uNreNHfpLDNqtzMrQ==
+X-Received: by 2002:a17:907:94d5:b0:acb:3acd:2845 with SMTP id a640c23a62f3a-ad1fccfced9mr670506766b.25.1746797745416;
+        Fri, 09 May 2025 06:35:45 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad21933be9esm150415666b.46.2025.05.09.06.35.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 May 2025 06:35:44 -0700 (PDT)
+Date: Fri, 9 May 2025 15:35:43 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Joel Savitz <jsavitz@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Christian Brauner <brauner@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] include/cgroup: separate {get,put}_cgroup_ns
+ no-op case
+Message-ID: <mknmd2234xviy6lv632hruk2sgc4senbrodlkt4xju6w7lo6zr@l5ky5h4uxddz>
+References: <20250508184930.183040-1-jsavitz@redhat.com>
+ <20250508184930.183040-3-jsavitz@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="oljps4cr2ouzgs4l"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250508192413.615512-1-longman@redhat.com>
+In-Reply-To: <20250508184930.183040-3-jsavitz@redhat.com>
 
-Le Thu, May 08, 2025 at 03:24:13PM -0400, Waiman Long a écrit :
-> Commit ec5fbdfb99d1 ("cgroup/cpuset: Enable update_tasks_cpumask()
-> on top_cpuset") enabled us to pull CPUs dedicated to child partitions
-> from tasks in top_cpuset by ignoring per cpu kthreads. However, there
-> can be other kthreads that are not per cpu but have PF_NO_SETAFFINITY
-> flag set to indicate that we shouldn't mess with their CPU affinity.
-> For other kthreads, their affinity will be changed to skip CPUs dedicated
-> to child partitions whether it is an isolating or a scheduling one.
-> 
-> As all the per cpu kthreads have PF_NO_SETAFFINITY set, the
-> PF_NO_SETAFFINITY tasks are essentially a superset of per cpu kthreads.
-> Fix this issue by dropping the kthread_is_per_cpu() check and checking
-> the PF_NO_SETAFFINITY flag instead.
-> 
-> Fixes: ec5fbdfb99d1 ("cgroup/cpuset: Enable update_tasks_cpumask() on top_cpuset")
-> Signed-off-by: Waiman Long <longman@redhat.com>
+
+--oljps4cr2ouzgs4l
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 2/2] include/cgroup: separate {get,put}_cgroup_ns
+ no-op case
+MIME-Version: 1.0
+
+On Thu, May 08, 2025 at 02:49:30PM -0400, Joel Savitz <jsavitz@redhat.com> =
+wrote:
+> When CONFIG_CGROUPS is not selected, {get,put}_cgroup_ns become no-ops
+> and therefore it is not necessary to compile in the code for changing
+> the reference count.
+>=20
+> When CONFIG_CGROUP is selected, there is no valid case where
+> either of {get,put}_cgroup_ns() will be called with a NULL argument.
+>=20
+> Signed-off-by: Joel Savitz <jsavitz@redhat.com>
 > ---
->  kernel/cgroup/cpuset.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index d0143b3dce47..967603300ee3 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1130,9 +1130,11 @@ void cpuset_update_tasks_cpumask(struct cpuset *cs, struct cpumask *new_cpus)
->  
->  		if (top_cs) {
->  			/*
-> -			 * Percpu kthreads in top_cpuset are ignored
-> +			 * PF_NO_SETAFFINITY tasks are ignored.
-> +			 * All per cpu kthreads should have PF_NO_SETAFFINITY
-> +			 * flag set, see kthread_set_per_cpu().
->  			 */
-> -			if (kthread_is_per_cpu(task))
-> +			if (task->flags & PF_NO_SETAFFINITY)
->  				continue;
->  			cpumask_andnot(new_cpus, possible_mask, subpartitions_cpus);
+>  include/linux/cgroup.h | 26 ++++++++++++++------------
+>  1 file changed, 14 insertions(+), 12 deletions(-)
 
-Acked-by: Frederic Weisbecker <frederic@kernel.org>
+Acked-by: Michal Koutn=FD <mkoutny@suse.com>
 
-But this makes me realize I overlooked that when I introduced the unbound kthreads
-centralized affinity.
+--oljps4cr2ouzgs4l
+Content-Type: application/pgp-signature; name="signature.asc"
 
-cpuset_update_tasks_cpumask() seem to blindly affine to subpartitions_cpus
-while unbound kthreads might have their preferences (per-nodes or random cpumasks).
+-----BEGIN PGP SIGNATURE-----
 
-So I need to make that pass through kthread API.
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCaB4ErQAKCRAt3Wney77B
+SQsrAP0VTZn7auE6/HrbxVoNF7Vv8NJvFJ1/IdLWOsVS78MmbgEA0yEfBtfcjj5h
+rZ2Rv7wf/M+OODWfIF2BQm05c/pI7A4=
+=LhpG
+-----END PGP SIGNATURE-----
 
-It seems that subpartition_cpus doesn't contain nohz_full= CPUs.
-But it excludes isolcpus=. And it's usually sane to assume that
-nohz_full= CPUs are isolated.
-
-I think I can just rename update_unbound_workqueue_cpumask()
-to update_unbound_kthreads_cpumask() and then handle unbound
-kthreads from there along with workqueues. And then completely
-ignore kthreads from cpuset_update_tasks_cpumask().
-
-Let me think about it (but feel free to apply the current patch meanwhile).
-
-Thanks.
-
--- 
-Frederic Weisbecker
-SUSE Labs
+--oljps4cr2ouzgs4l--
 
