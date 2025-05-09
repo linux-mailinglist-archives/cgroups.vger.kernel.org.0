@@ -1,185 +1,227 @@
-Return-Path: <cgroups+bounces-8105-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8106-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CB1DAB16D6
-	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 16:08:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1347AB1B10
+	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 18:57:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74CFA1BC3E1E
-	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 14:08:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A55AA406CE
+	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 16:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E2A29117E;
-	Fri,  9 May 2025 14:08:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA02238C19;
+	Fri,  9 May 2025 16:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e3SklT4z"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GhFFnxqp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D022F23D2A0
-	for <cgroups@vger.kernel.org>; Fri,  9 May 2025 14:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459D523958D
+	for <cgroups@vger.kernel.org>; Fri,  9 May 2025 16:52:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746799709; cv=none; b=LXbDqGqKL7lmgnQU7JSAOYSD/m7AZIPj+tDpJ9bIdldRYp3TNrOsLsVM4P5E1yUT/dPgoqlW/JgFk1yskxXfW8cnBupL1kLB6wYcipLzt6KNI76zmcDTD7v/Xh/pjIFZ0dOsxL1sGR2FkXt7OLSiiAbLxqkQAcEh0C+Sgxhn0AI=
+	t=1746809537; cv=none; b=DCXXHE7ik9MJrSgcoNNdy1+dTb8q0oEPKHrK6rFBA7jpCfyEF1XsRB09XddsqJuIb4mKdtp2HUnZlLEit/i1tGCkACmbCv7iBEGE4UgoKK5LdY54x8PeOzhkjg8xv6nnq3+CKTAZg1cp3nVWqda0gdPWtTrE4hJ8DYfV8AVkAa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746799709; c=relaxed/simple;
-	bh=X9iz6P76WZ68MCdyBBEFJ8enInOF4Wt1tDNwUwmlQ7M=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=JZ9bFNa9cfXzH+VCumQG5b/IPeuKEHhek6LzfGBy7UgQKB9P8N9IUXPWFzC5mdpVTfwxBRzDix9yNqI4LKHO8ED+R+S2tlesja3rp/j4Y35DPWEGZ/ZrzClHGcub0Ne4H5A6W+Ch0uPsBnP5/E12k0FvJYOCreQzhnfw7LnO570=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e3SklT4z; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1746799706;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RBV5n+cOtIYSXjAw/bARiUgJOPuRK0VrTiHcE+JbX9s=;
-	b=e3SklT4z4QhswWmaY1M7zuQLfCOW1CWEEr/p7sgs2vS7sxgvNItcKikI4En/e48ZjGN9TM
-	tZ4frwU1XhAB1uF3iSIEOGbC5FR41/KNz5c13q1TDLTVoj3CSyrR2DADWp+jF5/A2OQ0Y6
-	M3UsttuA2v7loloLY/jkq75cjMdbg74=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-119-4K0HpFSCMlK2P2JyNROfzg-1; Fri, 09 May 2025 10:08:25 -0400
-X-MC-Unique: 4K0HpFSCMlK2P2JyNROfzg-1
-X-Mimecast-MFC-AGG-ID: 4K0HpFSCMlK2P2JyNROfzg_1746799705
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-6f53d2613easo41663396d6.0
-        for <cgroups@vger.kernel.org>; Fri, 09 May 2025 07:08:25 -0700 (PDT)
+	s=arc-20240116; t=1746809537; c=relaxed/simple;
+	bh=MPYhgm6iWVqeKJ5zbCg/gVgBRawAwkQ4rc6APfeAXl8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BaqPefAUPl3sdBJ5nm7bODgQNOfAXtejX4nYqVZi8v8BdcwDErEiZtG0UqjcP8D5S6DMYS3RTZynt6joDmLZsBeJg/+Qa+TXpgnaasfwoe5h/J1vF9tiq3d0bCgI2nrqLM2w6RLc8lkWwlqvzZvt2xwITLMmFL4HNTIrQThQNS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GhFFnxqp; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-ad228552355so102086366b.3
+        for <cgroups@vger.kernel.org>; Fri, 09 May 2025 09:52:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1746809533; x=1747414333; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MPYhgm6iWVqeKJ5zbCg/gVgBRawAwkQ4rc6APfeAXl8=;
+        b=GhFFnxqpJA7XA/M7DImGvVQ0XcQGphxLWvfzgqjdBX+bVL8Io4KqEm+4Rjk5mYt67o
+         JtWzFdu+2HOoFfHxbP0yGhLI8+iKyCEFdA5ac5GuSj6IFt3Hxxc23CvJnapYT/cJo3NP
+         avTlY4DyiJHylTsmGV9Ne9yWC8Aq1+7ZgcOkemUucBXxHO3w1+I5hpHtq0ZwxAOIhZx+
+         1dSz4Ne94uF9Q3qGrrKMUnSDJawizn/ZTGJ4HOx0QYgK6e+4n9Qrc4R90fC0qQUREyhI
+         WsAQ5CEM7K9Wclny+dryuPS0zauj3NuyAmjLnEHshuhk4bD1nBfcT8sI6S5PWmuJi5Zp
+         dCXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746799705; x=1747404505;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RBV5n+cOtIYSXjAw/bARiUgJOPuRK0VrTiHcE+JbX9s=;
-        b=A9xYuelnS5TmGe7BGA22a4EmdY89XMpI7kwG4tCYvLObnc4TG1tidnneBVu5aaI7oO
-         Zee/qDNW9lz95NsTzzKrvJHcuK5JAnV+/aeFrJV0z9IYw2GLsbqjQP64Cl7MLznURb5C
-         J0TxAhPGQoba0sbGJzyeJjml1B4+jDzvEbEhQWicnfLf+sJvQIhQ+W97Y2VfYVlqHaty
-         TqoUiBGlRC7yj7/NGMEdBx2j1KnkMXC/N6OTlkn57rMcl1MiiNSVKMVKkhtYU7Yjf/qQ
-         ebXvk6haAVP6iByPVvSvM34bMJjSuhYHYTtNH/U88h+nVcra6hTu01dni0C3TIBOuZO6
-         cY8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV1kvom/IrB8+aQdJ/mW0ZCyFTtBBZzydM5vEefWg1dzkwyS3Ub5cdnGIRB8opTQQ1XIvXjhW4v@vger.kernel.org
-X-Gm-Message-State: AOJu0YyT6uBXVc7BgULpdQAZXcNafM5nCpwzT6QVvpVkezeVaBnTnVwy
-	nvpCPhA2bGX9BCRY/Bk/l/uwD0/pWLbzEmlmQ9lhdPGse/w84QYuxX61fzxGG6HHjF2gd21ubTI
-	h7d9p0aoTHGCPnzngyTdQI0cd58PGBLxeVvyJxFpLww4XzjjJYJrSQHQ=
-X-Gm-Gg: ASbGnctjuySDqSziKyQ8JmYmmL0dtZP1fB4ESgpMMm7PbbQheXshS81wwJCuVdzEOoJ
-	kUihLNVvr5VdGCwl0EWZDxGLvS5J8unc/kRgjPB2Czdnen1miy7pH6WBOqDYs2mI0a62770tbiE
-	E/gCIeDf12t5HWWg/RNa0olJJn3V+G/e9Wl1WeO40pNauLLDJ0QZLbRrHun9if4twuWydbyOuOw
-	kXq32JW/pd5Yi23eVX99rfQW3RzMXKUV7BdvgpaVZpIu7w905ZVb0R8c+XvFq7vKvWJn1+qu92I
-	ZvmyKSZEyWtvNW0rYSOdYuYh0Di90iABMN0T6/fMQSXMy8g1SWoSbc6ydw==
-X-Received: by 2002:ad4:5cc3:0:b0:6f4:f157:40ad with SMTP id 6a1803df08f44-6f6e472aeefmr47633496d6.2.1746799704168;
-        Fri, 09 May 2025 07:08:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHjW5ihql95VIFn4D6lluOrxDlaaWN63vachESmfkEf+xj2cH8flgqNMrUnq3ak28c50V49oA==
-X-Received: by 2002:ad4:5cc3:0:b0:6f4:f157:40ad with SMTP id 6a1803df08f44-6f6e472aeefmr47631366d6.2.1746799701726;
-        Fri, 09 May 2025 07:08:21 -0700 (PDT)
-Received: from ?IPV6:2601:188:c102:9c40:1f42:eb97:44d3:6e9a? ([2601:188:c102:9c40:1f42:eb97:44d3:6e9a])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6f6e39e070bsm14154226d6.10.2025.05.09.07.08.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 May 2025 07:08:21 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <71c45a3d-747a-4e47-8c65-2b982656ab3a@redhat.com>
-Date: Fri, 9 May 2025 10:08:20 -0400
+        d=1e100.net; s=20230601; t=1746809533; x=1747414333;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MPYhgm6iWVqeKJ5zbCg/gVgBRawAwkQ4rc6APfeAXl8=;
+        b=pYMfRC/M2dA031o69DGqr3LDjqpk1bTrh6nFwEuY8kI0FHA08VYwJk3fcNfQuf+K0V
+         rsQCdcXdglFpPXtaof73W18ZrTvmdpD5xMNFD7cJ27V8nM3VRUrVNy2cdCzp1+2Ch9ZL
+         WLQ/1RiBAbRuzqEdyPicWJ5Yw+dPJw2nh9EhWW3GaZ0B/9RAlLaVQyP+Wa7zIMbl2wOY
+         ZuKu4lVcg2jXKFHMz/IXebYnubF3CUw6KBZijY3tWbdJvGMyQkcBUhDiGHhhU56A1jls
+         KKUbdEDAUeKjKmsiayjmOU6IjS6ZPnC9S0Fz4AVDbLMM3rwnlZq4VCFkoXwJ83tSEvLt
+         PgCg==
+X-Forwarded-Encrypted: i=1; AJvYcCUx9g0SqXBOox+YOBrslwrB1vHcxWqHEULv+FIcuUGo6YBu0i9E14KGQ/MDel8t9pRFJYQtVKZX@vger.kernel.org
+X-Gm-Message-State: AOJu0YxftO9EIHpR/t46sYlHROj64w5wvaRitmc2ZvyJLeisPSN8BmiZ
+	cJtRxNyvOWpwr0yL8+uW/yYspJDZ4PogsWfRZjFGoV2dozyNh1FRRI64ggy1kz/BH2zptFQAQ8A
+	DEwVc6mgxSUFVvKUok4G79YxxLy71JQAofshY
+X-Gm-Gg: ASbGnctT+TU9pOPqO60Tt0bSuWFsVJy5t00+0yb/p0nDKWmcOUaXgmqJuWcrIVKL1cC
+	ZmAjo+RwplBul5A9iIAwwQTvLvknH9J1TH++GrjbVBvUlbdjyp6DFnMw5nErzqNCC4ja5zBthNT
+	0dWkfh//1vnI3cU8p5yi15SW3uZbEyXCL0yuMO3PteYAqzGLpVo+xEgJKN
+X-Google-Smtp-Source: AGHT+IGNmQDZ3Zs7DCjn3XA55T3gmgFTAE0YeeoKqQyv8kpQZk9x6BYPeAUbrAL1cDPCvsiyga6f3luTtHZOxuwBYJM=
+X-Received: by 2002:a17:907:3e8d:b0:ad2:3555:f535 with SMTP id
+ a640c23a62f3a-ad23555f608mr18764466b.5.1746809533397; Fri, 09 May 2025
+ 09:52:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] cgroup/cpuset: Extend kthread_is_per_cpu() check to
- all PF_NO_SETAFFINITY tasks
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, Xi Wang <xii@google.com>
-References: <20250508192413.615512-1-longman@redhat.com>
- <aB4AmUtEM-qQ1Xoa@localhost.localdomain>
-Content-Language: en-US
-In-Reply-To: <aB4AmUtEM-qQ1Xoa@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20250506183533.1917459-1-xii@google.com> <aBqmmtST-_9oM9rF@slm.duckdns.org>
+ <CAOBoifh4BY1f4B3EfDvqWCxNSV8zwmJPNoR3bLOA7YO11uGBCQ@mail.gmail.com>
+ <aBtp98E9q37FLeMv@localhost.localdomain> <CAOBoifgp=oEC9SSgFC+4_fYgDgSH_Z_TMgwhOxxaNZmyD-ijig@mail.gmail.com>
+ <aBuaN-xtOMs17ers@slm.duckdns.org> <CAOBoifiv2GCeeDjax8Famu7atgkGNV0ZxxG-cfgvC857-dniqA@mail.gmail.com>
+ <aBv2AG-VbZ4gcWpi@pavilion.home> <CAOBoifhWNi-j6jbP6B9CofTrT+Kr6TCSYYPMv7SQdbY5s930og@mail.gmail.com>
+ <b7aa4b10-1afb-476f-ac5d-d8db7151d866@redhat.com> <CAOBoifjzJ=-siSR=2=3FtKwajSgkXsL40XO2pox0XR4c8vvkzg@mail.gmail.com>
+ <9fdad98e-9042-4781-9d73-19f00266711b@redhat.com>
+In-Reply-To: <9fdad98e-9042-4781-9d73-19f00266711b@redhat.com>
+From: Xi Wang <xii@google.com>
+Date: Fri, 9 May 2025 09:52:01 -0700
+X-Gm-Features: ATxdqUGQZI0u5dKFxPdPebOwNGcQTibf5jos_nhRRXIYthHWVUId2xtFCY7q4S8
+Message-ID: <CAOBoifhXFKu-Y7ZtSBErEZTc+Zp_0-VY6o4A1KM5ii1uzN5iqQ@mail.gmail.com>
+Subject: Re: [RFC/PATCH] sched: Support moving kthreads into cpuset cgroups
+To: Waiman Long <llong@redhat.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>, Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+	David Rientjes <rientjes@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Dan Carpenter <dan.carpenter@linaro.org>, Chen Yu <yu.c.chen@intel.com>, 
+	Kees Cook <kees@kernel.org>, Yu-Chun Lin <eleanor15x@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	jiangshanlai@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 5/9/25 9:18 AM, Frederic Weisbecker wrote:
-> Le Thu, May 08, 2025 at 03:24:13PM -0400, Waiman Long a écrit :
->> Commit ec5fbdfb99d1 ("cgroup/cpuset: Enable update_tasks_cpumask()
->> on top_cpuset") enabled us to pull CPUs dedicated to child partitions
->> from tasks in top_cpuset by ignoring per cpu kthreads. However, there
->> can be other kthreads that are not per cpu but have PF_NO_SETAFFINITY
->> flag set to indicate that we shouldn't mess with their CPU affinity.
->> For other kthreads, their affinity will be changed to skip CPUs dedicated
->> to child partitions whether it is an isolating or a scheduling one.
->>
->> As all the per cpu kthreads have PF_NO_SETAFFINITY set, the
->> PF_NO_SETAFFINITY tasks are essentially a superset of per cpu kthreads.
->> Fix this issue by dropping the kthread_is_per_cpu() check and checking
->> the PF_NO_SETAFFINITY flag instead.
->>
->> Fixes: ec5fbdfb99d1 ("cgroup/cpuset: Enable update_tasks_cpumask() on top_cpuset")
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   kernel/cgroup/cpuset.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index d0143b3dce47..967603300ee3 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -1130,9 +1130,11 @@ void cpuset_update_tasks_cpumask(struct cpuset *cs, struct cpumask *new_cpus)
->>   
->>   		if (top_cs) {
->>   			/*
->> -			 * Percpu kthreads in top_cpuset are ignored
->> +			 * PF_NO_SETAFFINITY tasks are ignored.
->> +			 * All per cpu kthreads should have PF_NO_SETAFFINITY
->> +			 * flag set, see kthread_set_per_cpu().
->>   			 */
->> -			if (kthread_is_per_cpu(task))
->> +			if (task->flags & PF_NO_SETAFFINITY)
->>   				continue;
->>   			cpumask_andnot(new_cpus, possible_mask, subpartitions_cpus);
-> Acked-by: Frederic Weisbecker <frederic@kernel.org>
+On Thu, May 8, 2025 at 5:30=E2=80=AFPM Waiman Long <llong@redhat.com> wrote=
+:
 >
-> But this makes me realize I overlooked that when I introduced the unbound kthreads
-> centralized affinity.
+> On 5/8/25 6:39 PM, Xi Wang wrote:
+> > On Thu, May 8, 2025 at 12:35=E2=80=AFPM Waiman Long <llong@redhat.com> =
+wrote:
+> >> On 5/8/25 1:51 PM, Xi Wang wrote:
+> >>> I think our problem spaces are different. Perhaps your problems are c=
+loser to
+> >>> hard real-time systems but our problems are about improving latency o=
+f existing
+> >>> systems while maintaining efficiency (max supported cpu util).
+> >>>
+> >>> For hard real-time systems we sometimes throw cores at the problem an=
+d run no
+> >>> more than one thread per cpu. But if we want efficiency we have to sh=
+are cpus
+> >>> with scheduling policies. Disconnecting the cpu scheduler with isolcp=
+us results
+> >>> in losing too much of the machine capacity. CPU scheduling is needed =
+for both
+> >>> kernel and userspace threads.
+> >>>
+> >>> For our use case we need to move kernel threads away from certain vcp=
+u threads,
+> >>> but other vcpu threads can share cpus with kernel threads. The ratio =
+changes
+> >>> from time to time. Permanently putting aside a few cpus results in a =
+reduction
+> >>> in machine capacity.
+> >>>
+> >>> The PF_NO_SETAFFINTIY case is already handled by the patch. These thr=
+eads will
+> >>> run in root cgroup with affinities just like before.
+> >>>
+> >>> The original justifications for the cpuset feature is here and the re=
+asons are
+> >>> still applicable:
+> >>>
+> >>> "The management of large computer systems, with many processors (CPUs=
+), complex
+> >>> memory cache hierarchies and multiple Memory Nodes having non-uniform=
+ access
+> >>> times (NUMA) presents additional challenges for the efficient schedul=
+ing and
+> >>> memory placement of processes."
+> >>>
+> >>> "But larger systems, which benefit more from careful processor and me=
+mory
+> >>> placement to reduce memory access times and contention.."
+> >>>
+> >>> "These subsets, or =E2=80=9Csoft partitions=E2=80=9D must be able to =
+be dynamically adjusted, as
+> >>> the job mix changes, without impacting other concurrently executing j=
+obs."
+> >>>
+> >>> https://docs.kernel.org/admin-guide/cgroup-v1/cpusets.html
+> >>>
+> >>> -Xi
+> >>>
+> >> If you create a cpuset root partition, we are pushing some kthreads
+> >> aways from CPUs dedicated to the newly created partition which has its
+> >> own scheduling domain separate from the cgroup root. I do realize that
+> >> the current way of excluding only per cpu kthreads isn't quite right. =
+So
+> >> I send out a new patch to extend to all the PF_NO_SETAFFINITY kthreads=
+.
+> >>
+> >> So instead of putting kthreads into the dedicated cpuset, we still kee=
+p
+> >> them in the root cgroup. Instead we can create a separate cpuset
+> >> partition to run the workload without interference from the background
+> >> kthreads. Will that functionality suit your current need?
+> >>
+> >> Cheers,
+> >> Longman
+> >>
+> > It's likely a major improvement over a fixed partition but maybe still =
+not fully
+> > flexible. I am not familiar with cpuset partitions but I wonder if the =
+following
+> > case can be supported:
+> >
+> > Starting from
+> > 16 cpus
+> > Root has cpu 0-3, 8-15
+> > Job A has cpu 4-7 exclusive
+> > Kernel threads cannot run on cpu 4-8 which is good.
+> There will still be some kernel threads with PF_NO_SETAFFINITY flag set.
 >
-> cpuset_update_tasks_cpumask() seem to blindly affine to subpartitions_cpus
-> while unbound kthreads might have their preferences (per-nodes or random cpumasks).
+> >
+> > Now adding best effort Job B, which is under SCHED_IDLE and rarely ente=
+rs kernel
+> > mode. As we expect C can be easily preempted we allow it to share cpus =
+with A
+> > and kernel threads to maximize throughput. Is there a layout that suppo=
+rts the
+> > requirements below?
+> >
+> > Job C threads on cpu 0-15
 >
-> So I need to make that pass through kthread API.
-AFAIU, the kthread_bind_mask() or the kthread_bin_cpu() functions will 
-set PF_NO_SETAFFINITY.
+> A task/thread can only be in one cpuset. So it cannot span all the CPUs.
+> However, if there are multiples threads within the process, some of the
+> threads can be moved to a different cpuset as it is threaded. With
+> proper thread setting, you can have a job with threads spanning all the
+> CPUs.
 >
-> It seems that subpartition_cpus doesn't contain nohz_full= CPUs.
-> But it excludes isolcpus=. And it's usually sane to assume that
-> nohz_full= CPUs are isolated.
-Most users that want isolated CPUs will set both isolcpus and nohz_full 
-to the same set of CPUs. I do see that RH OpenShift can set nohz_full 
-for a collection of CPUs that may be dynamically isolated later on via 
-cpuset partition.
+> Cheers,
+> Longman
 >
-> I think I can just rename update_unbound_workqueue_cpumask()
-> to update_unbound_kthreads_cpumask() and then handle unbound
-> kthreads from there along with workqueues. And then completely
-> ignore kthreads from cpuset_update_tasks_cpumask().
+> > Job A threads on cpu 4-7
+> > No kernel threads on cpu 4-7
+> >
+> > -Xi
+> >
+>
 
-I guess we can do that. Right now, update_unbound_workqueue_cpumask() is 
-only called to excluded isolated CPUs. The 
-cpuset_update_tasks_cpumasks() will updated affinity for both isolated 
-and scheduling partitions. I agree that there is code duplication here. 
-To suit Xi Wang use case, we may have to add a sysctl parameter, for 
-instance, to decide if we have to update unbound kthreads in the 
-scheduling partition case.
+Partitions cannot have overlapping cpus but regular cpusets can. This is
+probably where regular cpusets are still more flexible.
 
-Cheers,
-Longman
-
-> Let me think about it (but feel free to apply the current patch meanwhile).
->
-> Thanks.
->
-
+-Xi
 
