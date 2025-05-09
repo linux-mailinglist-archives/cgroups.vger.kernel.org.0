@@ -1,136 +1,179 @@
-Return-Path: <cgroups+bounces-8111-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8112-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B32CAB1BCE
-	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 19:54:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F372AB1D1C
+	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 21:05:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FABC189C724
-	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 17:54:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5A3DA029B1
+	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 19:04:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4CCE23498E;
-	Fri,  9 May 2025 17:53:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mzOSsgxy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB2A24290C;
+	Fri,  9 May 2025 19:04:28 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078178F77
-	for <cgroups@vger.kernel.org>; Fri,  9 May 2025 17:53:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9D7241661
+	for <cgroups@vger.kernel.org>; Fri,  9 May 2025 19:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746813236; cv=none; b=M0lmQTwDxOpsndGmxg3FmwqFw8VZ59wNSzpApKLZNRVuMemb8AvLHRJxB+XmPeHFfjvGvgsvtOXvRhso9c9vlYML6KFp9Tf/oDm3NmBvCJZ4quh2+HerQDLM0X1tzdwJDif5ua5DgRp6A/p11EPiBO8stWAN5Pvvso6Q8xPTL6s=
+	t=1746817468; cv=none; b=MLPn4lS7GTSyG+/aBta4jyGEI3Hxh4Kd+qlCRkcDznr2eoAzgkzWdKXakApJOXhUgxHOoDUIFRs7FQeYzwifb91eh32NzQ8Y2dITkv+mqhsWFw0a5+FhTv239vI6ZSWlM6JFEMBouSSjtGYR51to7IYj7GU3ivFLhi92B1lN9zI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746813236; c=relaxed/simple;
-	bh=B8Gfsu2ISY2ydQ1Lmgi2bR4n8vkNZ1culE8ZEb1PRJc=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=fsHN44OiMLj2GuoHau5ySLZpzs6/5ANr7qI4rcx99OH85gpzG65p+HSBzApc92GnCt3bWlw0CkPkg95ec11t3WP/YvTVyC+VyuL64Rr9uHMxSrGdtsI/DmW/0XERwR+xR+NGP7PieTOYFIltuCLchE8BpSoU4kHhkMo+vt+4rok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mzOSsgxy; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-736e52948ebso2910764b3a.1
-        for <cgroups@vger.kernel.org>; Fri, 09 May 2025 10:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746813233; x=1747418033; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AFB0VgN6jshFs8oHLmHjl8DGH2asagtJmEA8b7Wfb9c=;
-        b=mzOSsgxyD8yjIFm/sL1/kqwTts/+HS2m0G9gDzxhpPu0qvQK5f699ge1L9SQIae1SN
-         otruAzgVBMhMgkNMEuphO30da3rw9cw0a6Y+0LsFjOpI7BczJJCb5mJZL8M+sF+KVHdw
-         HGoGxjyHuLr+/F4Sd77iy6TEhgapWkbbpr7oQrN85YdOX/eH/t9+uZ6bqIWUmcSy9ED8
-         nO6DZ4/rgHLiXh9tCrK8zcAmKxogYBeceFvi98nk40qXz4qkkDr1AGg9Mwz2XKCT6swq
-         unO92K4Ld89w6PEmAsrZSLFeDO7I1ISu+sJPXPhOgQglroSzQM2fVnux2B4ORMBw42c+
-         aEhg==
+	s=arc-20240116; t=1746817468; c=relaxed/simple;
+	bh=THgDNr9PNvboh5Gv7bSf91/lHKOaEXvmCoefmhxESRU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZuZdS1653LoTT9bEZSvWCUkMqMT7Hw1XD51WQWVQF60s8jpO6fEo6ApwRntvRQcMBhZ6qQFMa6Mw3wqZ9uEZP9jHyU8wz40L4tnnZi/XCIctDRkgxL/6veIcQhhJn4tbf+kGo1qKjcY2VVbFKxhUNcvC3WaArikrdszxr2yEfyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3d6e10f8747so28091785ab.3
+        for <cgroups@vger.kernel.org>; Fri, 09 May 2025 12:04:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746813233; x=1747418033;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AFB0VgN6jshFs8oHLmHjl8DGH2asagtJmEA8b7Wfb9c=;
-        b=JMhszfORp2ZQSnGqR9rf826RtPgD1DhK9jTUIjEhYxzmPLtKs8Fw+IBsFOKcuyZVvo
-         oLTPJKIBbUBn/QKIdNh4uAF1nRu8Eaw2E5bp+o24ZCBTcF6Cwbl/O/PkkNRRDs5R6EI4
-         bRZdOE8wALgZb1z/FFq85Mf159ni/cVzYF8i0YrYHqB58uCkNyLkkvRx4+Cyjc9zp7hP
-         H0Qxstgum2EYajPZnxg8cUcEY/xJcktc23RJG7nZPhGA69fgvJ4yr+Z4p2qbuh54TCbw
-         Esr9GGfpLDmcGu2jqHOF/rTLHp8CywRLBs6Kk4YCJrpFCrXplSRKfnwxq3SnF26BolaV
-         q8Cw==
-X-Forwarded-Encrypted: i=1; AJvYcCVh+V+UPmBShmS731TQLdNr4up1TQAHQxWAtc4aiwuI8dtgUFXZHdFXPLwvzeRCWHkb3F6gzCuA@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxrf+TbxSkpOz+GSnQ3iO4bd/BAAf0T5RS8aLKxiL+mXzwF2aNi
-	00ErYkBSJ2irinnVLOPa267U9YLz2t2pL78N5gNT2vxzJiEzwO/+928TXw==
-X-Gm-Gg: ASbGnctSY/WapSYzUO0CFk13BkAUFSdA1fOcvTnq9E8PGJVKzjENGLsZYTzvRtGRwY2
-	m59LBj8dtIKnpYVM0ukE8N0Cqp8thGdWoEwEfFN49CkKzGb7CJp0JkKLAnextvSM6SPh5v+jT+5
-	tJywqphz5gwwSKN0mLKFtnGPej5xDsCqL868ZubTibiHgUzPc7rarH2TuSk3Ovb65NquyVlfql6
-	ObJuB+sbZkH633hPMWfMevl0A+flCDhLLoOshb7TSxYznq77hcOzGE22zY+87XNS378RLYWgKx9
-	AgdUch9I3t1ngV59gplcuUQjObLloa08wl0cnDEd0HrOxNvc78tAXMq+hzhYGnDP0r5Xt8+fIL5
-	2ymPexI6JXdU=
-X-Google-Smtp-Source: AGHT+IF8Pqbc0KrpXByjaRVZMvgR0r7bGqi+uUdALYete6gAYw3tv3cg9NGYp0wW7orxCO5/5kksuQ==
-X-Received: by 2002:a05:6a00:3d43:b0:740:5927:bb8b with SMTP id d2e1a72fcca58-7423b3f75b3mr6043089b3a.0.1746813233145;
-        Fri, 09 May 2025 10:53:53 -0700 (PDT)
-Received: from [192.168.2.117] (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74237a402d6sm2039371b3a.146.2025.05.09.10.53.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 May 2025 10:53:52 -0700 (PDT)
-Message-ID: <77ddbd18-894e-4187-a5b1-66e52deec980@gmail.com>
-Date: Fri, 9 May 2025 10:53:51 -0700
+        d=1e100.net; s=20230601; t=1746817466; x=1747422266;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VNUNcYv0Ke/2vqZcy7/UF3xFz/CGqB6MR0l8UgL0O5Q=;
+        b=Ijqg8ul4P1nEA/rr3bHGtkMmtG1/Hofzhpq90+PZHWRkrc5NpN7unq4yYiwGKKHe2H
+         tPXflFX1kIHeoghJNBexHxxf9M8Xq9vdqLnKAJQtPntE3SmfwrdpeHrFp0gMzcouhqnC
+         c0mesisjCpzDrDCbeuX2oZXiSO4nsdNPaGi0ziJLINPmEFtUoHAOxQax2obfePK6yLI2
+         m9+R+8DcNMwAOzJ3MpbuUfpyGgoIduVzkDkAx9WA3YSv/6lmcb8CF61YGI4SENLeVhC0
+         l1ybDhI378F2viWo5jq6X3M/sGuq4+pPYm8/q5wfUOHfdTfUe8gw/0v5WQ6NOGf2bF5K
+         e0JA==
+X-Gm-Message-State: AOJu0YxbjJOKqGeO1NygT49BacsZJso9GNs0brneBqWdxUC8QNnjtL/g
+	B6G/wkb63iimMdBGUou8zgNaDjOvt+bV7bnvts6Vs30wnwGPpfcMM7mI3poO+wT/uygxzGKj2hr
+	QtJd8VncOx6OAF/qcIZN3nhqwMpQzJKDDNIBHEI0D0csmrLoUvBOX6meFVA==
+X-Google-Smtp-Source: AGHT+IEdbhgGBnDiY1W79Tp3QKZk/O/WEbEDIP471AC3y1To2+WDq+ta0v2fiysy6CtNi9ZWwfNrqK5jA1mnGTOTsktj3sIdg3uI
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: JP Kobryn <inwardvessel@gmail.com>
-Subject: Re: [PATCH v5 2/5] cgroup: use separate rstat trees for each
- subsystem
-To: Yosry Ahmed <yosry.ahmed@linux.dev>
-Cc: tj@kernel.org, shakeel.butt@linux.dev, mkoutny@suse.com,
- hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
- cgroups@vger.kernel.org, kernel-team@meta.com
-References: <20250503001222.146355-1-inwardvessel@gmail.com>
- <20250503001222.146355-3-inwardvessel@gmail.com>
- <aBsm22A8qWjGJgY9@google.com>
-Content-Language: en-US
-In-Reply-To: <aBsm22A8qWjGJgY9@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:2611:b0:3da:715a:dde4 with SMTP id
+ e9e14a558f8ab-3da7e1e77f5mr53142775ab.9.1746817466141; Fri, 09 May 2025
+ 12:04:26 -0700 (PDT)
+Date: Fri, 09 May 2025 12:04:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <681e51ba.050a0220.a19a9.013a.GAE@google.com>
+Subject: [syzbot] [cgroups?] general protection fault in cgroup_rstat_flush
+From: syzbot <syzbot+175b931e69c9ad9e1945@syzkaller.appspotmail.com>
+To: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
+	mkoutny@suse.com, syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 5/7/25 2:24 AM, Yosry Ahmed wrote:
-> On Fri, May 02, 2025 at 05:12:19PM -0700, JP Kobryn wrote:
-[..]
->> @@ -6101,6 +6087,8 @@ static void __init cgroup_init_subsys(struct cgroup_subsys *ss, bool early)
->>   	} else {
->>   		css->id = cgroup_idr_alloc(&ss->css_idr, css, 1, 2, GFP_KERNEL);
->>   		BUG_ON(css->id < 0);
->> +
->> +		BUG_ON(css_rstat_init(css));
-> 
-> We call css_rstat_init() here for subsys css's that are not early
-> initialized, and in cgroup_setup_root() self css's. We can probably move
-> both calls into cgroup_init() as I mentioned earlier?
+Hello,
 
-I think it should stay here for two reasons. The first is because it
-must precede the call to online_css(). There is a stated assumption that
-css->css_online() is called (within online_css()) "after cgrp
-successfully completed all allocations" in the admin-guide. There is an
-example of this assumption in memcg_cgroup_css_online() in which the
-work for periodic flushing is enqueued. So if online_css() is called
-before css_rstat_init() there would be a race between flushing and 
-initializing rstat for the css.
-The second reason is that calling css_rstat_init() on a subsystem css
-must also follow the call to init_and_link_css(), or else the css will
-not have any subsystem association at the point of rstat init. It would
-result in a subsystem css appearing to be the cgroup::self css since the
-cgroup_subsys_state::ss field would be NULL.
+syzbot found the following issue on:
 
-> 
-> Also, I think this version just skips calling css_rstat_init() for early
-> initialized subsys css's, without adding the patch that you talked about
-> earlier which protects against early initialized subsystems using rstat.
-> 
+HEAD commit:    9c69f8884904 Merge tag 'bcachefs-2025-05-08' of git://evil..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1440acf4580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b9683d529ec1b880
+dashboard link: https://syzkaller.appspot.com/bug?extid=175b931e69c9ad9e1945
+compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
 
-Right, that was a pre-existing constraint but I'll create that patch and
-prepend it to this series in the next rev.
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/062b75278fb3/disk-9c69f888.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/868b31a2cf71/vmlinux-9c69f888.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e773657fdf9c/bzImage-9c69f888.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+175b931e69c9ad9e1945@syzkaller.appspotmail.com
+
+Oops: general protection fault, probably for non-canonical address 0xe7ffed1c349f36f7: 0000 [#1] SMP KASAN PTI
+KASAN: maybe wild-memory-access in range [0x3fff88e1a4f9b7b8-0x3fff88e1a4f9b7bf]
+CPU: 0 UID: 0 PID: 52 Comm: kworker/u8:3 Not tainted 6.15.0-rc5-syzkaller-00136-g9c69f8884904 #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/29/2025
+Workqueue: events_unbound flush_memcg_stats_dwork
+RIP: 0010:cgroup_rstat_push_children kernel/cgroup/rstat.c:165 [inline]
+RIP: 0010:cgroup_rstat_updated_list kernel/cgroup/rstat.c:245 [inline]
+RIP: 0010:cgroup_rstat_flush+0x840/0x1e70 kernel/cgroup/rstat.c:325
+Code: 70 74 08 48 89 df e8 ef e6 66 00 4c 8b 23 4b 8d 1c 3c 48 81 c3 a0 00 00 00 49 89 dd 49 c1 ed 03 48 b8 00 00 00 00 00 fc ff df <41> 80 7c 05 00 00 74 08 48 89 df e8 c0 e6 66 00 48 8b 03 48 3b 44
+RSP: 0018:ffffc90000bd7920 EFLAGS: 00010003
+RAX: dffffc0000000000 RBX: 3fff88e1a4f9b7bd RCX: 1ffffffff1b2b383
+RDX: 0000000000000000 RSI: ffffffff8bc0fec0 RDI: ffff88806481c5c1
+RBP: ffffc90000bd7b08 R08: ffffffff8f7da777 R09: 1ffffffff1efb4ee
+R10: dffffc0000000000 R11: fffffbfff1efb4ef R12: ffff888126200000
+R13: 07fff11c349f36f7 R14: 0000000000000000 R15: 400000607ed9b71d
+FS:  0000000000000000(0000) GS:ffff888126100000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005598d2923440 CR3: 000000005d74e000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ flush_memcg_stats_dwork+0x15/0x60 mm/memcontrol.c:653
+ process_one_work kernel/workqueue.c:3238 [inline]
+ process_scheduled_works+0xadb/0x17a0 kernel/workqueue.c:3319
+ worker_thread+0x8a0/0xda0 kernel/workqueue.c:3400
+ kthread+0x70e/0x8a0 kernel/kthread.c:464
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:153
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:cgroup_rstat_push_children kernel/cgroup/rstat.c:165 [inline]
+RIP: 0010:cgroup_rstat_updated_list kernel/cgroup/rstat.c:245 [inline]
+RIP: 0010:cgroup_rstat_flush+0x840/0x1e70 kernel/cgroup/rstat.c:325
+Code: 70 74 08 48 89 df e8 ef e6 66 00 4c 8b 23 4b 8d 1c 3c 48 81 c3 a0 00 00 00 49 89 dd 49 c1 ed 03 48 b8 00 00 00 00 00 fc ff df <41> 80 7c 05 00 00 74 08 48 89 df e8 c0 e6 66 00 48 8b 03 48 3b 44
+RSP: 0018:ffffc90000bd7920 EFLAGS: 00010003
+RAX: dffffc0000000000 RBX: 3fff88e1a4f9b7bd RCX: 1ffffffff1b2b383
+RDX: 0000000000000000 RSI: ffffffff8bc0fec0 RDI: ffff88806481c5c1
+RBP: ffffc90000bd7b08 R08: ffffffff8f7da777 R09: 1ffffffff1efb4ee
+R10: dffffc0000000000 R11: fffffbfff1efb4ef R12: ffff888126200000
+R13: 07fff11c349f36f7 R14: 0000000000000000 R15: 400000607ed9b71d
+FS:  0000000000000000(0000) GS:ffff888126100000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005598d2923440 CR3: 000000005d74e000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	70 74                	jo     0x76
+   2:	08 48 89             	or     %cl,-0x77(%rax)
+   5:	df e8                	fucomip %st(0),%st
+   7:	ef                   	out    %eax,(%dx)
+   8:	e6 66                	out    %al,$0x66
+   a:	00 4c 8b 23          	add    %cl,0x23(%rbx,%rcx,4)
+   e:	4b 8d 1c 3c          	lea    (%r12,%r15,1),%rbx
+  12:	48 81 c3 a0 00 00 00 	add    $0xa0,%rbx
+  19:	49 89 dd             	mov    %rbx,%r13
+  1c:	49 c1 ed 03          	shr    $0x3,%r13
+  20:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  27:	fc ff df
+* 2a:	41 80 7c 05 00 00    	cmpb   $0x0,0x0(%r13,%rax,1) <-- trapping instruction
+  30:	74 08                	je     0x3a
+  32:	48 89 df             	mov    %rbx,%rdi
+  35:	e8 c0 e6 66 00       	call   0x66e6fa
+  3a:	48 8b 03             	mov    (%rbx),%rax
+  3d:	48                   	rex.W
+  3e:	3b                   	.byte 0x3b
+  3f:	44                   	rex.R
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
