@@ -1,126 +1,82 @@
-Return-Path: <cgroups+bounces-8120-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8121-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBC22AB2048
-	for <lists+cgroups@lfdr.de>; Sat, 10 May 2025 01:31:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8859AB20C2
+	for <lists+cgroups@lfdr.de>; Sat, 10 May 2025 03:26:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 514269E87C1
-	for <lists+cgroups@lfdr.de>; Fri,  9 May 2025 23:30:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15E2E1C27F20
+	for <lists+cgroups@lfdr.de>; Sat, 10 May 2025 01:26:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71422267B10;
-	Fri,  9 May 2025 23:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE98263F5F;
+	Sat, 10 May 2025 01:26:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jO54i0gB"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ErIWNpYq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6537B266F16
-	for <cgroups@vger.kernel.org>; Fri,  9 May 2025 23:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88952E401;
+	Sat, 10 May 2025 01:26:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746833398; cv=none; b=bYq0pqvns5hKjHXNSw6bPxJ+6Ile+u2sNvILLcpUDWeuqMXNxmNIrG8yKjpgAaLNk5dtYSE0vmBsbXZM+TULLV1ti7KN8cbyhoCl5XH10HkIOUbsH+VGGE7OTPFsVTckRFh88Dn9r2mE8sQ0QTJRjvnzXiCGt0lvDY9/QxiD2GI=
+	t=1746840394; cv=none; b=hG+uJarDEfwyiHOPlGJx4FuqwGk+o92rXGPi6bQ8QWMZJamgIGwctglx70MVaXn5oYvZdMOWdMJQxodd+D5O5OJYelTeZdWVruonPRKMoIbIF7c4aaLroFSSdNHfrlJ83bsTZ8HS6It7eOjKYgg7nW6G2+werqOyAv5/XG3xImM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746833398; c=relaxed/simple;
-	bh=AKyXGOGVKSPuvLYS3bA9GrhLG5FKkEMoHJdXPl0VcwU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m5/oVy6kpt55pxKcApQ0Y5LJpTmY57PCKcgcWJ1r1A+85Sw46jwleaA5x/Mn05lEgY6LEgMsXntQq7njWVmEAScLP43TXg2aufXkBFLtFWEY3f370YpvawwivQxgB2CPSxnH+tbTUpTek2zk5/i0yJTG9a1xW5twO7uZyvpHEW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jO54i0gB; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746833394;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kOY56VtkuEsaEOIjh23t6VcD+q32Hzr2b1NcpUgpvDE=;
-	b=jO54i0gBEBaFktQDWRNMuv4pLq+uKpVvOSG8rTGoHARaxg8BKTT6XbD+GIS15P62AwsIgo
-	GN6rjfqV9p4hIv4kuKltdlIFtazFX1Sdk5xLUX4DldmlmVbQcCnTMwi4oc6iq5souJ0Adb
-	19j4Qj8OvDs/mAh60jbhxHW5ENDLVBw=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	bpf@vger.kernel.org,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: [PATCH 4/4] memcg: make objcg charging nmi safe
-Date: Fri,  9 May 2025 16:28:59 -0700
-Message-ID: <20250509232859.657525-5-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1746840394; c=relaxed/simple;
+	bh=G3646iFM/PSXY7R167/rsBSW0S3KtjrzdAQFJQP3ynA=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Bx+Ib3bkaB0mfxrhdVM6cV3es4kBQHfxugLFzrWIkVaVTJ4gcUnao7o0mlhC+C45lKZ1HYaIrQ/bjWkydlBqoTjlVmeG5vc6PgQ546xKmWAx5mU3+5evF3m9fiNUa4qv0mdyLGJS6AB1q5oXjRnpLqirwshrNXzHIXe3obcqG/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ErIWNpYq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C94B0C4CEE4;
+	Sat, 10 May 2025 01:26:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1746840393;
+	bh=G3646iFM/PSXY7R167/rsBSW0S3KtjrzdAQFJQP3ynA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ErIWNpYqkcqsxM+6XhEBHioSO4BSy2GdXycbHxGuYxRyI7TcDv8EWg5IQv8p19V3E
+	 c1Kk2rSN8N1i/rpbwyR5GGWgU3uk+0XvBxzB6xijkNQbiHU1wYI9L7RcUU/8zVLAL3
+	 BEw2KTmp6++ckQxBYqyL5BDwKh8P7/YhkNNz5m/Q=
+Date: Fri, 9 May 2025 18:26:32 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song
+ <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, Alexei
+ Starovoitov <ast@kernel.org>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>, bpf@vger.kernel.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, Meta kernel team
+ <kernel-team@meta.com>
+Subject: Re: [PATCH 0/4] memcg: nmi-safe kmem charging
+Message-Id: <20250509182632.8ab2ba932ca5e0f867d21fc2@linux-foundation.org>
 In-Reply-To: <20250509232859.657525-1-shakeel.butt@linux.dev>
 References: <20250509232859.657525-1-shakeel.butt@linux.dev>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-To enable memcg charged kernel memory allocations from nmi context,
-consume_obj_stock() and refill_obj_stock() needs to be nmi safe. With
-the simple in_nmi() check, take the slow path of the objcg charging
-which handles the charging and memcg stats updates correctly for the nmi
-context.
+On Fri,  9 May 2025 16:28:55 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
 
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- mm/memcontrol.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+> BPF programs can trigger memcg charged kernel allocations in nmi
+> context. However memcg charging infra for kernel memory is not equipped
+> to handle nmi context. This series adds support for kernel memory
+> charging for nmi context.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index bba549c1f18c..6cfa3550f300 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2965,6 +2965,9 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
- 	unsigned long flags;
- 	bool ret = false;
- 
-+	if (unlikely(in_nmi()))
-+		return ret;
-+
- 	local_lock_irqsave(&obj_stock.lock, flags);
- 
- 	stock = this_cpu_ptr(&obj_stock);
-@@ -3068,6 +3071,15 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
- 	unsigned long flags;
- 	unsigned int nr_pages = 0;
- 
-+	if (unlikely(in_nmi())) {
-+		if (pgdat)
-+			__mod_objcg_mlstate(objcg, pgdat, idx, nr_bytes);
-+		nr_pages = nr_bytes >> PAGE_SHIFT;
-+		nr_bytes = nr_bytes & (PAGE_SIZE - 1);
-+		atomic_add(nr_bytes, &objcg->nr_charged_bytes);
-+		goto out;
-+	}
-+
- 	local_lock_irqsave(&obj_stock.lock, flags);
- 
- 	stock = this_cpu_ptr(&obj_stock);
-@@ -3091,7 +3103,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
- 	}
- 
- 	local_unlock_irqrestore(&obj_stock.lock, flags);
--
-+out:
- 	if (nr_pages)
- 		obj_cgroup_uncharge_pages(objcg, nr_pages);
- }
--- 
-2.47.1
+The patchset adds quite a bit of material to core MM on behalf of a
+single caller.  So can we please take a close look at why BPF is doing
+this?
+
+What would be involved in changing BPF to avoid doing this, or of
+changing BPF to handle things locally?  What would be the end-user
+impact of such an alteration?  IOW, what is the value to our users of
+the present BPF behavior?
+
 
 
