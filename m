@@ -1,141 +1,130 @@
-Return-Path: <cgroups+bounces-8144-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8145-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80C1CAB4424
-	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 20:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C8FCAB44AE
+	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 21:16:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27E9919E53D9
-	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 18:56:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C75201899DA8
+	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 19:16:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83030297120;
-	Mon, 12 May 2025 18:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72FA297A51;
+	Mon, 12 May 2025 19:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="REzRzN6E"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GEWi9xep"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F5144C63
-	for <cgroups@vger.kernel.org>; Mon, 12 May 2025 18:56:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC5A298247
+	for <cgroups@vger.kernel.org>; Mon, 12 May 2025 19:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747076173; cv=none; b=q70/MjPFby0B65nw0GNrx2GQKoAQe9MctfNLAvbp/74TWDHujfiJNYDTs4DSiGHO8kIEyCJFc0/x15XFBCmBpGxiaZR1KFLDqi5SALQPasK4wJ7XcmM3uVz8m2h2aU/3gQx+UA6ZDV0H3Sj/3OVZn6FBpYUYnCPy8ZqG01FvYaw=
+	t=1747077181; cv=none; b=btXXqA7Y31LIDojeBtKJEGCBeuTNGBKgz9Y8385MCFvDpSftVW9HDlwAXaf8laQ7IEUJeNnRiIh252mpZvuq1tAlr1cfEB5wV3OUQsw/dZRCo4qaRMXSDF6oAObPR/BlBk2ontRIFNKUTnZLcVXG06qMIk9oKMLGNSKcJ8+JG8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747076173; c=relaxed/simple;
-	bh=R9Oi8PhHsn0Iqgoq3Kuo2vY/g67j2m74WQmsNoKbiDg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BNxyWQHEpbZszTRxyZwWfW6WIAEssD6YBsYpdd+v5bf3jaBr/Z1q13kYofvT7NjWiTYZTE54x0ZjaDi5hgBWeBdnLekrWQPWwsyvNDaebdqNUdLdlrmBIm6gRQUSos0Nxir7j6vW75gQXdqRNGeh9mC270e6+a953ZfbrZHdd40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=REzRzN6E; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5f624291db6so8213888a12.3
-        for <cgroups@vger.kernel.org>; Mon, 12 May 2025 11:56:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1747076170; x=1747680970; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R9Oi8PhHsn0Iqgoq3Kuo2vY/g67j2m74WQmsNoKbiDg=;
-        b=REzRzN6EJwLd6jkvOc2HILBwBgbhLcxCfe6nq3wLePWM6WdZvrhkJ/i5JQPPE62kqK
-         LeQz6AYyceWAyEwBUI69F6U5tIkPIZ4JkUPTxj6qKDz1PD+YXW2skpqobii8yh4SwPno
-         fhQGQxfCf/pTuWMd1vFPqKUjcsLSnL2+OSUqW0VZF6qeIr9H07SLjcRPnkbBGo+CClvO
-         S7l62Yri+QQiPC9jz5NOt4Po0v0RjWuKEmPDVcW2gOCrlJI1pMLGOqdbjueeupXbqUyt
-         MnJvgq0kiOTBjq5lqHq7M/vhbjtz5lJZBVyMmx5oTRRWdHuntSpcOEjKDIHC2ItK1syP
-         943A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747076170; x=1747680970;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R9Oi8PhHsn0Iqgoq3Kuo2vY/g67j2m74WQmsNoKbiDg=;
-        b=bEmNRn1/eax4H0qst9Kodq1uJsb1H1infLJsEAcqTlusG35Cw8hXy+ga1hRP63zrpI
-         Wnbb3xqohotN9L5ZV6F/p9xrFKKUgX2T/77xxph40/Uf3ckLY/eEGrVfwFhV47oDZsxx
-         WSPm44uLJDcWDPC2UpK8auCh6H8+1jLzxYSf8ReHWnyQ68uEzRfM5+xkK17vFkGMz+fZ
-         TlhQmWiKGDJ+QVDqS1X1ICgqbp8I/y05kDuMY2HVXRdo0disire4Qv/NiSLG6h3ixS9o
-         JUKKaQmTLJU9q/p15ZiYoO2tiyfl6P9Ix4kowiAsb7SZNr9ynJinLxCtyLJ/i+NO6o4Q
-         N52Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUGxprk9ao8lYkm8xTI+fzShBTAvwXB8IM5TZoyff2I+weWdoO5vVY9SQm2XxSRzmIgmhcNLw/u@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8CsYh4RQ7055X1P/cWAfS+Rql2tBvzSu2YqH8MPaOgzyRPF4U
-	K9QFMuot4hM97NF45FiMqWbzYWTBLRXRzuLvK1iW/f4qkTgY0SH/FFuvK0GxK55+tInDM7bwi6T
-	zSYaeS9FHrn7TtPf+SQRsBClHd7VdDwFDhjYb
-X-Gm-Gg: ASbGncv9olLApM0lVp36DlfPPzNEpk2hA+qOOInzwWaOzEWHe+gHjnCE5BlIedaAAat
-	IoJAcuObY2TH6sxwee+HQGrHPil9CbXAjBQ37MT9YAWMKwn+9BCimhkkw5QryxGt2f57hWu4VaN
-	Oa9k1naA9PkmoplZ1p+ufWKdCnhm8r4eA/yWqY34VeDm/LV/fbMFbPm3zGNl0wovqj9VQ=
-X-Google-Smtp-Source: AGHT+IGSxf21cydcKSaeqGdWQfCMq/i1Jw1c1h3iOLfTnyifJEAxgbYTWe1QXdk0KWz98TodjdO76SfECkN7Q4EznqM=
-X-Received: by 2002:a17:907:1b1c:b0:ac2:7a6d:c927 with SMTP id
- a640c23a62f3a-ad2192d4b63mr1294443666b.50.1747076169603; Mon, 12 May 2025
- 11:56:09 -0700 (PDT)
+	s=arc-20240116; t=1747077181; c=relaxed/simple;
+	bh=x23mxA82De3cXdZgj34aQv76fZozL81umdIXokRJ4MM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t79M5u3XOgqAfFtUhM3IIxb0Elc3aHG+KCSKF85y9HZO4IOWHbZ2b30n1b4J7hSyyQJvdfOC1gZRvT/qI6Br8XyyidtnlCfOxYDiXIbqxWHvbmcIkz+JMpCRuLlthEMDNHEgIwq5jgv4bfs5/QtbNu1VNusejIh+e9ej8lkRfA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GEWi9xep; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 12 May 2025 12:12:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747077174;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sqVwqlZm0Qlg6KxhYJj/U/iuxKDNt6d7QLnu+Tbwxmg=;
+	b=GEWi9xepBuUD84Xj6HySZwI1fUdZ1NMcdnQxSfPl28Sz4E2JabYfQWGfYtVKaSfs3gWfd7
+	vZzse9fB54pbGKa9+vqFt0R8nEldYEJgJ5Js2BD3+rLgFEvvnPZYyDi4aM+W4h8F978mTp
+	R2WWBjsuU51IuooEqJXc7vpYirmx8dM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH 0/4] memcg: nmi-safe kmem charging
+Message-ID: <mzrsx4x5xluljyxy5h5ha6kijcno3ormac3sobc3k7bkj5wepr@cuz2fluc5m5d>
+References: <20250509232859.657525-1-shakeel.butt@linux.dev>
+ <2e2f0568-3687-4574-836d-c23d09614bce@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250506183533.1917459-1-xii@google.com> <avxk2p2dr3bywzhujwnvbakjyv4gsnshssvgwj5276aojh7qbl@llhdz2e55iai>
-In-Reply-To: <avxk2p2dr3bywzhujwnvbakjyv4gsnshssvgwj5276aojh7qbl@llhdz2e55iai>
-From: Xi Wang <xii@google.com>
-Date: Mon, 12 May 2025 11:55:57 -0700
-X-Gm-Features: AX0GCFtN5E-ewrK2qktSybXmdK4lo0FOtGq_i9xSb1_nkn6X8o0AyCvqgWj55u8
-Message-ID: <CAOBoifiYV3YX6nAf9v5PwkkKPt4qhV8af47mWoJQ1B_tFJ7D-g@mail.gmail.com>
-Subject: Re: [RFC/PATCH] sched: Support moving kthreads into cpuset cgroups
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ben Segall <bsegall@google.com>, David Rientjes <rientjes@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Valentin Schneider <vschneid@redhat.com>, Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Lai Jiangshan <jiangshanlai@gmail.com1>, 
-	Frederic Weisbecker <frederic@kernel.org>, Vlastimil Babka <vbabka@suse.cz>, 
-	Dan Carpenter <dan.carpenter@linaro.org>, Chen Yu <yu.c.chen@intel.com>, 
-	Kees Cook <kees@kernel.org>, Yu-Chun Lin <eleanor15x@gmail.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e2f0568-3687-4574-836d-c23d09614bce@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, May 12, 2025 at 3:36=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
->
-> Hello.
->
-> On Tue, May 06, 2025 at 11:35:32AM -0700, Xi Wang <xii@google.com> wrote:
-> > In theory we should be able to manage kernel tasks with cpuset
-> > cgroups just like user tasks, would be a flexible way to limit
-> > interferences to real-time and other sensitive workloads.
->
-> I can see that this might be good for PF_USER_WORKER type of kernel
-> tasks. However, generic kernel tasks are spawned by kernel who
-> knows/demands which should run where and therefore they should not be
-> subject to cpuset restrictions. When limiting interference is
-> considered, there's CPU isolation for that.
->
-> The migratable kthreadd seems too coarse grained approach to me (also
-> when compared with CPU isolation).
-> I'd mostly echo Tejun's comment [1].
->
-> Regards,
-> Michal
->
-> [1] https://lore.kernel.org/r/aBqmmtST-_9oM9rF@slm.duckdns.org/
+I forgot to CC Tejun, so doing it now.
 
-Kernel doesn't actually have the best information because it doesn't know w=
-hich
-user threads are more important. Giving the root user more power for fine t=
-uning
-is a common practice.
+On Mon, May 12, 2025 at 05:56:09PM +0200, Vlastimil Babka wrote:
+> On 5/10/25 01:28, Shakeel Butt wrote:
+> > BPF programs can trigger memcg charged kernel allocations in nmi
+> > context. However memcg charging infra for kernel memory is not equipped
+> > to handle nmi context. This series adds support for kernel memory
+> > charging for nmi context.
+> > 
+> > The initial prototype tried to make memcg charging infra for kernel
+> > memory re-entrant against irq and nmi. However upon realizing that
+> > this_cpu_* operations are not safe on all architectures (Tejun), this
+> 
+> I assume it was an off-list discussion?
+> Could we avoid this for the architectures where these are safe, which should
+> be the major ones I hope?
 
-The most important reason for moving kthreadd is to prevent a kthread from
-interfering with important user threads right after forking. It can still b=
-e
-moved to other cgroups later. Moving kthreadd allows better control rather =
-than
-worse control.
+Yes it was an off-list discussion. The discussion was more about the
+this_cpu_* ops vs atomic_* ops as on x86 this_cpu_* does not have lock
+prefix and how I should prefer this_cpu_* over atomic_* for my series on
+objcg charging without disabling irqs. Tejun pointed out this_cpu_* are
+not nmi safe for some archs and it would be better to handle nmi context
+separately. So, I am not that worried about optimizing for NMI context
+but your next comment on generic_atomic64_* ops is giving me headache.
 
-CPU isolation is more narrowly focused compared to generic cpuset based con=
-trol.
+> 
+> > series took a different approach targeting only nmi context. Since the
+> > number of stats that are updated in kernel memory charging path are 3,
+> > this series added special handling of those stats in nmi context rather
+> > than making all >100 memcg stats nmi safe.
+> 
+> Hmm so from patches 2 and 3 I see this relies on atomic64_add().
+> But AFAIU lib/atomic64.c has the generic fallback implementation for
+> architectures that don't know better, and that would be using the "void
+> generic_atomic64_##op" macro, which AFAICS is doing:
+> 
+>         local_irq_save(flags);                                          \
+>         arch_spin_lock(lock);                                           \
+>         v->counter c_op a;                                              \
+>         arch_spin_unlock(lock);                                         \
+>         local_irq_restore(flags);                                       \
+> 
+> so in case of a nmi hitting after the spin_lock this can still deadlock?
+> 
+> Hm or is there some assumption that we only use these paths when already
+> in_nmi() and then another nmi can't come in that context?
+> 
+> But even then, flush_nmi_stats() in patch 1 isn't done in_nmi() and uses
+> atomic64_xchg() which in generic_atomic64_xchg() implementation also has the
+> irq_save+spin_lock. So can't we deadlock there?
 
--Xi
+I was actually assuming that atomic_* ops are safe against nmis for all
+archs. I looked at atomic_* ops in include/asm-generic/atomic.h and it
+is using arch_cmpxchg() for CONFIG_SMP and it seems like for archs with
+cmpxchg should be fine against nmi. I am not sure why atomic64_* are not
+using arch_cmpxchg() instead. I will dig more.
+
+I also have the followup series on objcg charging without irq almost
+ready. I will send it out as rfc soon.
+
+Thanks a lot for awesome and insightful comments.
+Shakeel
 
