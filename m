@@ -1,95 +1,80 @@
-Return-Path: <cgroups+bounces-8142-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8143-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B835FAB3CCA
-	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 17:56:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23EAFAB3F02
+	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 19:30:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 352657ABE21
-	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 15:55:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7913419E432E
+	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 17:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1A6242D67;
-	Mon, 12 May 2025 15:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82D3248F71;
+	Mon, 12 May 2025 17:30:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KKMaIo2j";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="q3vtoZ/D";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KKMaIo2j";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="q3vtoZ/D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PmEJxIhe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A03242909
-	for <cgroups@vger.kernel.org>; Mon, 12 May 2025 15:56:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1890D2522BA
+	for <cgroups@vger.kernel.org>; Mon, 12 May 2025 17:30:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747065372; cv=none; b=GOSO+Z9p8wqKLgla6mQ/vlFAGLpUrc2XNMGHrzGaf2iGlz0o7UttQ4or0kjsJBNjEO1nA31L67TYDwM6LHwj27dXmEHbXAeXoOVwsj1KJGO2PV5eOj8/kqvgiCmWpmx7rxyBTWBLsHCpQagXs4WpwqUpIgW9Q/4WzsttywGSyeg=
+	t=1747071015; cv=none; b=C5tw8paDfI1qdpZOR8huYxb8nD0Oujeu6vYbJEN6TkxnAwbcL19IVvK21Teqw3mT/2m0XoHFZkmtSK/JeScI4FhkjLmBkXIbO8wkTK/nusFPZ9G+iClfya6Bbo3rHfwo8CuBdJ9CYYy7Yx5eQC4d+1sbvZp2kEFEktzuwsD05cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747065372; c=relaxed/simple;
-	bh=f2jWGaOfJzxueHAb4yFdMaMw58Z+YVOXeRTOkExZLiI=;
+	s=arc-20240116; t=1747071015; c=relaxed/simple;
+	bh=QpR6FTmdLt83epWjtUAngP8jfpfjpY/z0lo6xg9Hv5I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=saLE6i5IHu1jI7DWZqoBicm/DmHKKLFuDsqgh+9fdzF1PLYMIr9FlWR9GN1G8ReYAdWJa24ifICLHhdtQpa9yl6zPgafdOpRXESWV3X2dJ9P210Ce7biP4H9eQmSmS1ZuvrhBaKVM/woJFLroFeB/pernUQUwlzqC7GKwXpaQFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KKMaIo2j; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=q3vtoZ/D; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KKMaIo2j; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=q3vtoZ/D; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5FB3F21180;
-	Mon, 12 May 2025 15:56:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747065369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Tnje18TSkZvQ01oa5Qf7ZCcFzYVyVvw2JPB7RKiqgcI=;
-	b=KKMaIo2jKbpBGkx/fBNsQS+Z+VWI5kTkYrJ95CpK/fczbBsRUOv/rYInjEW9AJI4aoHvrs
-	lLG4L1aBQDT76uppQxClwIgM+FL/XJolkekRaTfzbGh62Y78KrotxQIshRcfWptXEDW236
-	X65jU5Iatd2FJ/CmTGr7VsiDW5yDjZ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747065369;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Tnje18TSkZvQ01oa5Qf7ZCcFzYVyVvw2JPB7RKiqgcI=;
-	b=q3vtoZ/DRldVfOtcjsrqEFeV3/LXb691myGUPK/O6Fd8T2qHtzagR6dYbrz3pElKtNVUFM
-	7MKhYj+/BF0H8LAg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747065369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Tnje18TSkZvQ01oa5Qf7ZCcFzYVyVvw2JPB7RKiqgcI=;
-	b=KKMaIo2jKbpBGkx/fBNsQS+Z+VWI5kTkYrJ95CpK/fczbBsRUOv/rYInjEW9AJI4aoHvrs
-	lLG4L1aBQDT76uppQxClwIgM+FL/XJolkekRaTfzbGh62Y78KrotxQIshRcfWptXEDW236
-	X65jU5Iatd2FJ/CmTGr7VsiDW5yDjZ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747065369;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Tnje18TSkZvQ01oa5Qf7ZCcFzYVyVvw2JPB7RKiqgcI=;
-	b=q3vtoZ/DRldVfOtcjsrqEFeV3/LXb691myGUPK/O6Fd8T2qHtzagR6dYbrz3pElKtNVUFM
-	7MKhYj+/BF0H8LAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4739B1397F;
-	Mon, 12 May 2025 15:56:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id WZAPERkaImhdWQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 12 May 2025 15:56:09 +0000
-Message-ID: <2e2f0568-3687-4574-836d-c23d09614bce@suse.cz>
-Date: Mon, 12 May 2025 17:56:09 +0200
+	 In-Reply-To:Content-Type; b=n0r96pFE2Nfq1zUIDxBFV8sIO9Io9BYDEnj0/01UbbRh56s0TIGQXM+aY8F5aInQX3jnofS2sKBWkBJxGQltbom0Kl467FyIqEVwk6k5ntKIBntG0seJG63JGqKuXp4mh16ucH2Po4bcHfDmLepta9UVLqDTFa1aR14m2Qn92LM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PmEJxIhe; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-22e45088d6eso61360905ad.0
+        for <cgroups@vger.kernel.org>; Mon, 12 May 2025 10:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747071012; x=1747675812; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=m3Oohpf1ZkVjODZV3gPAW0cFtjTk5gH8ECsCQ1p0CS0=;
+        b=PmEJxIheFQ5TwaKAFyhjLeGxwYSA73HUeZLek/+PdNvxobk9DWF7Az+i7yjK9hFEKS
+         8mk2KMvwdu0+vrPZAbO8PWu/7jkqpekl84vMG8FE2qtXVpAyHuiodzxheFpkXxv3sTJv
+         5O44MFuTqbp/h6rf2PcfiSQ+2rpFXW8AlDhg0bz+R+9QFDOUMjgUDq2gUvxv6Yi08ZYP
+         qdkD/P5axnH7THT/Nqmp+hVR5q0LKxu78XtPGX3MtCw7Nl9n2qW34jk4FELkGpBhngGE
+         Md3shnteN3+Pms36mep+YfUiZ20XqSEycOI4GOF8YKdMsfdIrnXbsvEUCGtUJ7e96wAK
+         l8lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747071012; x=1747675812;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m3Oohpf1ZkVjODZV3gPAW0cFtjTk5gH8ECsCQ1p0CS0=;
+        b=hqQ+Q8OZinzJVsO53U1UsTOTNbYVk1jkCMOL7d1GVUEn/FTRWyrvYjdKoocmPqenQm
+         S1MXjSnRBL+tWmh/riI4T3Xxc/GBTo4+gh2aUzyLnUlk0LiE1libCiZERBRQYcxFlC8w
+         Z6ySVZab/TQ34ciZlu42TXW9zPcZbcT4ubzuN3G5TGrF7wfC7iH1PQFNqd2CeMBrxWre
+         UL3xPWk8f/WenbLy2A6CUwzsoHgtSJDjHge1Y2OA/gLCytz0kRMmDOzen6sVve/pnQ5A
+         aIiGtrmyITUZ73xHW4HaOPmRjWlwlSe0bujnETBBVdf59YnzxJDlQDRKgwg8a7E66nD9
+         tYhw==
+X-Forwarded-Encrypted: i=1; AJvYcCVUfrxTwKaqEMjUqdcN55y+WVFGGlWt1hk4T14z0P9abKJ35Ydc5razpw9Rd5TgfV9MyZjtocSB@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzy8xx8EiSv5mv/vbBSCDW5/ERsXLQTrGRNpf0pUNtVK+GYUGTb
+	1UuBNwo9eUY7KDyIz6UpiOJdoZbN+xFHMmO9o9DYht0eOaAlFvx2
+X-Gm-Gg: ASbGncsF0OcTa8OqA/tsmUBVGFFj+B8I9YkYUd6bx6Gi5dLfHIRMiZ7HYRAyXEIG/Dl
+	vE1+ke28rJdLTqsywNnLI8n53ebKWsBZ2LhXEXwUGrTL2nsRFdMTmmfTuDuXc0J3evGls1XaSdC
+	dUzoxQN+6mF/4MEQrl7NxrDtmNYWoHfOPoZ5C/ZhYbjCXtAsiAMU5+/QuOX7Sw2i4XeGzyODM/y
+	O5j80mIPSGkvZIUye0Y01dSBnjS+kVmLUorXwFUF8jPJR2o2Pnvz5QoOlwS7sLNtmp9qpYuEOoM
+	YpDdSl0Xu+YzWtIQi4jtyZPj/Fs/uVOBeiHaMgO0BXMn/9b34Jd1TOiCJojjkenenndU6PvTGbA
+	2XEDYlpEe
+X-Google-Smtp-Source: AGHT+IEaSyLJVmLs7PPhJpaV0pzj326vzlBTcqgbKYJa9OH2+AXRMs3xkrTBdexAwpUy3ZC9uOwIRQ==
+X-Received: by 2002:a17:902:f682:b0:224:a79:5fe9 with SMTP id d9443c01a7336-22fc8b59bd0mr186119875ad.30.1747071011993;
+        Mon, 12 May 2025 10:30:11 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1151:15:fe23:5aa8:9def:b916? ([2620:10d:c090:500::4:17ac])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc7742e2asm65561935ad.88.2025.05.12.10.30.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 May 2025 10:30:11 -0700 (PDT)
+Message-ID: <d532450f-42b0-42a8-9a43-31f46e2143e2@gmail.com>
+Date: Mon, 12 May 2025 10:30:10 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -97,99 +82,70 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] memcg: nmi-safe kmem charging
+Subject: Re: [PATCH v5 2/5] cgroup: use separate rstat trees for each
+ subsystem
+To: Yosry Ahmed <yosry.ahmed@linux.dev>
+Cc: tj@kernel.org, shakeel.butt@linux.dev, mkoutny@suse.com,
+ hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, kernel-team@meta.com
+References: <20250503001222.146355-1-inwardvessel@gmail.com>
+ <20250503001222.146355-3-inwardvessel@gmail.com>
+ <aBsm22A8qWjGJgY9@google.com>
 Content-Language: en-US
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org,
- linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Meta kernel team <kernel-team@meta.com>
-References: <20250509232859.657525-1-shakeel.butt@linux.dev>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20250509232859.657525-1-shakeel.butt@linux.dev>
-Content-Type: text/plain; charset=UTF-8
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <aBsm22A8qWjGJgY9@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -4.30
 
-On 5/10/25 01:28, Shakeel Butt wrote:
-> BPF programs can trigger memcg charged kernel allocations in nmi
-> context. However memcg charging infra for kernel memory is not equipped
-> to handle nmi context. This series adds support for kernel memory
-> charging for nmi context.
+On 5/7/25 2:24 AM, Yosry Ahmed wrote:
+> On Fri, May 02, 2025 at 05:12:19PM -0700, JP Kobryn wrote:
+[..]
+>> @@ -383,32 +395,45 @@ __bpf_kfunc void css_rstat_flush(struct cgroup_subsys_state *css)
+>>   
+>>   int css_rstat_init(struct cgroup_subsys_state *css)
+>>   {
+>> -	struct cgroup *cgrp = css->cgroup;
+>> +	struct cgroup *cgrp;
+>>   	int cpu;
+>> +	bool is_cgroup = css_is_cgroup(css);
+>>   
+>> -	/* the root cgrp has rstat_cpu preallocated */
+>> -	if (!cgrp->rstat_cpu) {
+>> -		cgrp->rstat_cpu = alloc_percpu(struct cgroup_rstat_cpu);
+>> -		if (!cgrp->rstat_cpu)
+>> -			return -ENOMEM;
+>> -	}
+>> +	if (is_cgroup) {
+>> +		cgrp = css->cgroup;
 > 
-> The initial prototype tried to make memcg charging infra for kernel
-> memory re-entrant against irq and nmi. However upon realizing that
-> this_cpu_* operations are not safe on all architectures (Tejun), this
-
-I assume it was an off-list discussion?
-Could we avoid this for the architectures where these are safe, which should
-be the major ones I hope?
-
-> series took a different approach targeting only nmi context. Since the
-> number of stats that are updated in kernel memory charging path are 3,
-> this series added special handling of those stats in nmi context rather
-> than making all >100 memcg stats nmi safe.
-
-Hmm so from patches 2 and 3 I see this relies on atomic64_add().
-But AFAIU lib/atomic64.c has the generic fallback implementation for
-architectures that don't know better, and that would be using the "void
-generic_atomic64_##op" macro, which AFAICS is doing:
-
-        local_irq_save(flags);                                          \
-        arch_spin_lock(lock);                                           \
-        v->counter c_op a;                                              \
-        arch_spin_unlock(lock);                                         \
-        local_irq_restore(flags);                                       \
-
-so in case of a nmi hitting after the spin_lock this can still deadlock?
-
-Hm or is there some assumption that we only use these paths when already
-in_nmi() and then another nmi can't come in that context?
-
-But even then, flush_nmi_stats() in patch 1 isn't done in_nmi() and uses
-atomic64_xchg() which in generic_atomic64_xchg() implementation also has the
-irq_save+spin_lock. So can't we deadlock there?
-
-> 
-> There will be a followup series which will make kernel memory charging
-> reentrant for irq and will be able to do without disabling irqs.
-> 
-> We ran network intensive workload on this series and have not seen any
-> significant performance differences with and without the series.
-> 
-> Shakeel Butt (4):
->   memcg: add infra for nmi safe memcg stats
->   memcg: add nmi-safe update for MEMCG_KMEM
->   memcg: nmi-safe slab stats updates
->   memcg: make objcg charging nmi safe
-> 
->  include/linux/memcontrol.h |  6 +++
->  mm/memcontrol.c            | 87 +++++++++++++++++++++++++++++++++++---
->  2 files changed, 88 insertions(+), 5 deletions(-)
+> You can keep 'cgrp' initialized at the top of the function to avoid the
+> extra level of indentation here, right?
 > 
 
+I can move this initialization to the top but the indentation of this
+conditional branch will remain. See more thoughts below related to this
+block.
+
+>>   
+>> -	if (!cgrp->rstat_base_cpu) {
+>> -		cgrp->rstat_base_cpu = alloc_percpu(struct cgroup_rstat_base_cpu);
+>> +		/* the root cgrp has rstat_base_cpu preallocated */
+>>   		if (!cgrp->rstat_base_cpu) {
+>> -			free_percpu(cgrp->rstat_cpu);
+>> +			cgrp->rstat_base_cpu = alloc_percpu(struct cgroup_rstat_base_cpu);
+>> +			if (!cgrp->rstat_base_cpu)
+>> +				return -ENOMEM;
+>> +		}
+>> +	} else if (css->ss->css_rstat_flush == NULL)
+>> +		return 0;
+> 
+> We can probably just do this at the beginning of the function to be able
+> to use the helper:
+> 
+> 	if (!css_is_cgroup(css) && css->ss->css_rstat_flush == NULL)
+> 		return 0;
+
+If we did this we would be wasting extra memory allocating the base
+stats for every subsystem css. The intention behind the way I wrote it
+was to optimize the memory overhead needed for split rstat trees.
 
