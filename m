@@ -1,143 +1,215 @@
-Return-Path: <cgroups+bounces-8139-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8140-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F60EAB3505
-	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 12:36:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D04A2AB3AEC
+	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 16:44:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78145189DE37
-	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 10:37:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 778501652D8
+	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 14:44:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2A9266B73;
-	Mon, 12 May 2025 10:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E5D22A4EE;
+	Mon, 12 May 2025 14:43:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="RqLZha3W"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cncGeDDP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82322255F4D
-	for <cgroups@vger.kernel.org>; Mon, 12 May 2025 10:36:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1199A229B0E
+	for <cgroups@vger.kernel.org>; Mon, 12 May 2025 14:43:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747046210; cv=none; b=Xsa7oHeZrCy6S8ShBXuQe8s4ZnNAZzFfS10sbCxA4vTD41qywtyYhWjmR9HM8vUnMwvZHMPiQ3hTG9Mpkd5ORhS1BqdwT6ADkjeJuV1KkTaG/FrUeRhOSaBxLMuVZi+SK19HDn0UtppQCrG597w1ZDyqvU/KBWRQWpmY+co4jK8=
+	t=1747061034; cv=none; b=AE67oxognDvAJD5GJU+C67o4VBf3erprRkTW2+aDqlC9USTKS87SOY0wQ3h6VMBA+wRDWfPuDLVY7HQuz5Up7z9o4j7pLzYe+aFvFtnwDMWxWMaarkQJfZjgqMEP8GKFt3ytTfaM7SuyZxP8GBCn1mOQxZa7HyagCyyVOmGxUME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747046210; c=relaxed/simple;
-	bh=grWKcuszBYfX5XjvmYER5UpUwXN2KPvsZQy+qbn88KY=;
+	s=arc-20240116; t=1747061034; c=relaxed/simple;
+	bh=aMcY98rvT3+Gv3S6jFWEKI7EYVNx8+l+hDVnIdzv3cE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=td9URQI/8xiS5URnV53ESj/stVeL5llKPRt4YU2Y6QllHT3uK1/QWAFrX6fK8WBPFp1Gt6xr/EjJW7ImkpVug7uBjJjF5DvQ0iYIDVz14tGhN3I6/dsnXBcqUPg+4E7OZM0BUkNfqOeCbw2dhMUhW4LitNDxtilL1e2O/xmBeJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=RqLZha3W; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ac3eb3fdd2eso783996166b.0
-        for <cgroups@vger.kernel.org>; Mon, 12 May 2025 03:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1747046207; x=1747651007; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=grWKcuszBYfX5XjvmYER5UpUwXN2KPvsZQy+qbn88KY=;
-        b=RqLZha3WoHdCgSW6yGKjpDGnL0IcUoRQiujPU1QXs1mlDOXuAFx2YO48aau3pwkwnE
-         gLKj45LtuORUQO2ewNWeCXY2G8IuhdCgToOOqYJjjLVlsTYLstvqO6OeJwxz/qHLA4oO
-         hkSdwARTIuLU6cDnE9GrR8Kk2z79rSY9mpBANhqhvMi0qjyi6RHdFLvQq87QAK1c4x+u
-         x2yd8BxZfCXH6lk6yNB7S9R18OS7YfrjEyQQSaiOTsnDvPI5T+4/1iPMu9/XBaDz3vmj
-         05/2TMmgfF/aYBi/QjX2BkzcSodYlNmKKWtMDWEbBrwZ0B/wjaf/NgJDZRoPaVchncSx
-         NBKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747046207; x=1747651007;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=grWKcuszBYfX5XjvmYER5UpUwXN2KPvsZQy+qbn88KY=;
-        b=BUJEf1BiUNcAioZsAjzhUGu3bWTesKNEoUs1WB7zK0/YR7OT42oS+XTuWTZWUrltpd
-         vMFLOOE4F93d4EzuQ0CpqC8Oi/uCmp+YUJYuF8ugfOJdYnbNbwpiksRYXA32Y+9dZjPL
-         nAunYtdRsyPwXvfC71khLtR2Ve19qWs9HpKtZ4zYJWUR4eJW0Gt7+3m00lZgnl0sLG8u
-         cNbV3gv9melv9XStAILMW1rKTE+LweCbBZesz2OT/PCGv3H+GsngKZ9DW0/bFU3YMLIv
-         vgGoHjpqLN4xDrwmDDQKQC+5u+J0wRcGRBP1CfRTWP0xlz1t//z6aV6yzY3wvMkcXvpi
-         ZjLg==
-X-Forwarded-Encrypted: i=1; AJvYcCWgVkKaQJE4t5Htl2c/o5/rxDZDVQ7r8iSVOpRS6xfN6UJy+CBqSe4ADHXNk+7gXu7gMCrQkhab@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxr2hRFsM4EQ+DguVbU+i51xO0vgQFKySF7oHrGboxRi9cq4rkk
-	UvyxfWtlpYw1vzVv/j/ey4X0kYktqMMxgHn7fEcFj/Vzx0cqfgmUbQqk25MH4iI=
-X-Gm-Gg: ASbGnctlbyLhlCTCLJ8HH6qeFnb+lLJp0H9qQkNwlYnAONS8TEGGvys66KwXtoCdUIY
-	Eiq6JrzMmlpuZDYxYrxltIy9tEBj70vx+4zYt32ImSIwXCn2hUFh7pvWmvFK9g8ngZr8q6GIRiO
-	rG0YeYXnZLkJDJAh6r3SQeWakZb7VYBRIAQ/u2puKna6M7d1jLYQjY/FdhF6nx4fvCYKmU24TR/
-	4rEvIRNmNEywG/Fm4RJD18tesPMqu62Xpi80hcP9HZPGRRTUbXAzPZ/Oa/0RmYmO7nXymzEPV6M
-	YzV7o5c25xbzcjcQexzl20scQ0Y7RJh7rvUpWUGStW10GIsFWEP0Uw==
-X-Google-Smtp-Source: AGHT+IHPn3opWPuGz4biVathI6IuKk2eNFCTG4feYuGEpgYqHsGeEkZnfVt67vF/3B+VhYi0n3xoQw==
-X-Received: by 2002:a17:907:7fa6:b0:ad2:54c5:42e8 with SMTP id a640c23a62f3a-ad254c54483mr208102766b.8.1747046206673;
-        Mon, 12 May 2025 03:36:46 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad22a3a1501sm475507966b.121.2025.05.12.03.36.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 May 2025 03:36:46 -0700 (PDT)
-Date: Mon, 12 May 2025 12:36:44 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Xi Wang <xii@google.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ben Segall <bsegall@google.com>, David Rientjes <rientjes@google.com>, 
-	Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, 
-	Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Lai Jiangshan <jiangshanlai@gmail.com1>, Frederic Weisbecker <frederic@kernel.org>, 
-	Vlastimil Babka <vbabka@suse.cz>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Chen Yu <yu.c.chen@intel.com>, Kees Cook <kees@kernel.org>, Yu-Chun Lin <eleanor15x@gmail.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Subject: Re: [RFC/PATCH] sched: Support moving kthreads into cpuset cgroups
-Message-ID: <avxk2p2dr3bywzhujwnvbakjyv4gsnshssvgwj5276aojh7qbl@llhdz2e55iai>
-References: <20250506183533.1917459-1-xii@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XTREV4ZK+N150DJ3QoHLytt82rQkb6V1GWEO3f9nzolX7qxIjwFeSePHTp7/Y9/+13RXNZ2Spv8+P0X2da7sv2L3NMo48nwaoLFxPHM5eeK5H3dhIBesTe+R8AqkIMEf5Dor6kBcV5XdjUQ6m1mTY/6bwZVh7YodcSdj5Qujm1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cncGeDDP; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1747061032; x=1778597032;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=aMcY98rvT3+Gv3S6jFWEKI7EYVNx8+l+hDVnIdzv3cE=;
+  b=cncGeDDPXbc+Z8aJeagg5ZrzG7kTIV+4tC+u51MsX3u1vtSPxBDlZ4sX
+   zJchlb3UxClKCToOkR6YhxZFeBuhKRoXsK51qY/oavzbk0BHbvotKMiy/
+   nHMPdadwI9InZsMRi+bs8KF5ojtD5MA31xf2Z4tdfhWZr/ZIWJsyw/VdA
+   FDYSgQYzyhL9j7XoiKexb6A1wNroBV4K/YIMl9EkV+Hr5kR2ph+yJPLJR
+   GSD4jatzbHFtVD0fRR3F9dMcrEETDvxXLMeFgppCbSob7MHy7p59ku8gA
+   ydjcm5M8uK3WEYfpO7Oa7GwYCHMMZXmPoaAJ950zLdsPG4Bl4DNPqp51w
+   A==;
+X-CSE-ConnectionGUID: 3LGcDJbzQo+ibZ1l5g80Ew==
+X-CSE-MsgGUID: WqdGhioOSi+O4n08+lkJ4A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11431"; a="52509452"
+X-IronPort-AV: E=Sophos;i="6.15,282,1739865600"; 
+   d="scan'208";a="52509452"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2025 07:43:51 -0700
+X-CSE-ConnectionGUID: GcXqWT1qRNSSUDl8fsiP2A==
+X-CSE-MsgGUID: 53vPXQh7RgWAf3vxil6W6w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,282,1739865600"; 
+   d="scan'208";a="174518166"
+Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 12 May 2025 07:43:48 -0700
+Received: from kbuild by 1992f890471c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uEUNd-000EVX-38;
+	Mon, 12 May 2025 14:43:45 +0000
+Date: Mon, 12 May 2025 22:42:46 +0800
+From: kernel test robot <lkp@intel.com>
+To: Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
+	tj@kernel.org, christian.koenig@amd.com,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>
+Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
+	Waiman Long <longman@redhat.com>, simona@ffwll.ch
+Subject: Re: [PATCH 5/7] ttm: add initial memcg integration. (v4)
+Message-ID: <202505122244.IEuTPfWF-lkp@intel.com>
+References: <20250512061913.3522902-6-airlied@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7glneb545a7qokgx"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20250506183533.1917459-1-xii@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250512061913.3522902-6-airlied@gmail.com>
+
+Hi Dave,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Dave-Airlie/ttm-use-gpu-mm-stats-to-track-gpu-memory-allocations/20250512-182204
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20250512061913.3522902-6-airlied%40gmail.com
+patch subject: [PATCH 5/7] ttm: add initial memcg integration. (v4)
+config: riscv-randconfig-001-20250512 (https://download.01.org/0day-ci/archive/20250512/202505122244.IEuTPfWF-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250512/202505122244.IEuTPfWF-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202505122244.IEuTPfWF-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+   drivers/gpu/drm/xe/xe_bo.c: In function 'xe_bo_evict_pinned':
+>> drivers/gpu/drm/xe/xe_bo.c:1147:2: warning: the address of 'ctx' will always evaluate as 'true' [-Waddress]
+     ret = ttm_bo_populate(&bo->ttm, &ctx);
+     ^~~
+>> drivers/gpu/drm/xe/xe_bo.c:1147:8: error: too few arguments to function 'ttm_bo_populate'
+     ret = ttm_bo_populate(&bo->ttm, &ctx);
+           ^~~~~~~~~~~~~~~
+   In file included from drivers/gpu/drm/xe/xe_bo_types.h:12:0,
+                    from drivers/gpu/drm/xe/xe_bo.h:11,
+                    from drivers/gpu/drm/xe/xe_bo.c:6:
+   include/drm/ttm/ttm_bo.h:494:5: note: declared here
+    int ttm_bo_populate(struct ttm_buffer_object *bo,
+        ^~~~~~~~~~~~~~~
+   drivers/gpu/drm/xe/xe_bo.c: In function 'xe_bo_restore_pinned':
+   drivers/gpu/drm/xe/xe_bo.c:1208:2: warning: the address of 'ctx' will always evaluate as 'true' [-Waddress]
+     ret = ttm_bo_populate(&bo->ttm, &ctx);
+     ^~~
+   drivers/gpu/drm/xe/xe_bo.c:1208:8: error: too few arguments to function 'ttm_bo_populate'
+     ret = ttm_bo_populate(&bo->ttm, &ctx);
+           ^~~~~~~~~~~~~~~
+   In file included from drivers/gpu/drm/xe/xe_bo_types.h:12:0,
+                    from drivers/gpu/drm/xe/xe_bo.h:11,
+                    from drivers/gpu/drm/xe/xe_bo.c:6:
+   include/drm/ttm/ttm_bo.h:494:5: note: declared here
+    int ttm_bo_populate(struct ttm_buffer_object *bo,
+        ^~~~~~~~~~~~~~~
 
 
---7glneb545a7qokgx
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Subject: Re: [RFC/PATCH] sched: Support moving kthreads into cpuset cgroups
-MIME-Version: 1.0
+vim +/ttm_bo_populate +1147 drivers/gpu/drm/xe/xe_bo.c
 
-Hello.
+00c8efc3180f0c Thomas Hellström 2025-03-05  1096  
+36919ebeaacab3 Matthew Auld     2023-04-06  1097  /**
+36919ebeaacab3 Matthew Auld     2023-04-06  1098   * xe_bo_evict_pinned() - Evict a pinned VRAM object to system memory
+36919ebeaacab3 Matthew Auld     2023-04-06  1099   * @bo: The buffer object to move.
+36919ebeaacab3 Matthew Auld     2023-04-06  1100   *
+75fd04f276de31 Nitin Gote       2025-01-06  1101   * On successful completion, the object memory will be moved to system memory.
+36919ebeaacab3 Matthew Auld     2023-04-06  1102   *
+36919ebeaacab3 Matthew Auld     2023-04-06  1103   * This is needed to for special handling of pinned VRAM object during
+36919ebeaacab3 Matthew Auld     2023-04-06  1104   * suspend-resume.
+36919ebeaacab3 Matthew Auld     2023-04-06  1105   *
+36919ebeaacab3 Matthew Auld     2023-04-06  1106   * Return: 0 on success. Negative error code on failure.
+36919ebeaacab3 Matthew Auld     2023-04-06  1107   */
+36919ebeaacab3 Matthew Auld     2023-04-06  1108  int xe_bo_evict_pinned(struct xe_bo *bo)
+36919ebeaacab3 Matthew Auld     2023-04-06  1109  {
+36919ebeaacab3 Matthew Auld     2023-04-06  1110  	struct ttm_place place = {
+36919ebeaacab3 Matthew Auld     2023-04-06  1111  		.mem_type = XE_PL_TT,
+36919ebeaacab3 Matthew Auld     2023-04-06  1112  	};
+36919ebeaacab3 Matthew Auld     2023-04-06  1113  	struct ttm_placement placement = {
+36919ebeaacab3 Matthew Auld     2023-04-06  1114  		.placement = &place,
+36919ebeaacab3 Matthew Auld     2023-04-06  1115  		.num_placement = 1,
+36919ebeaacab3 Matthew Auld     2023-04-06  1116  	};
+36919ebeaacab3 Matthew Auld     2023-04-06  1117  	struct ttm_operation_ctx ctx = {
+36919ebeaacab3 Matthew Auld     2023-04-06  1118  		.interruptible = false,
+6bd49cc1a8924c Thomas Hellström 2024-10-31  1119  		.gfp_retry_mayfail = true,
+36919ebeaacab3 Matthew Auld     2023-04-06  1120  	};
+36919ebeaacab3 Matthew Auld     2023-04-06  1121  	struct ttm_resource *new_mem;
+36919ebeaacab3 Matthew Auld     2023-04-06  1122  	int ret;
+36919ebeaacab3 Matthew Auld     2023-04-06  1123  
+36919ebeaacab3 Matthew Auld     2023-04-06  1124  	xe_bo_assert_held(bo);
+36919ebeaacab3 Matthew Auld     2023-04-06  1125  
+36919ebeaacab3 Matthew Auld     2023-04-06  1126  	if (WARN_ON(!bo->ttm.resource))
+36919ebeaacab3 Matthew Auld     2023-04-06  1127  		return -EINVAL;
+36919ebeaacab3 Matthew Auld     2023-04-06  1128  
+36919ebeaacab3 Matthew Auld     2023-04-06  1129  	if (WARN_ON(!xe_bo_is_pinned(bo)))
+36919ebeaacab3 Matthew Auld     2023-04-06  1130  		return -EINVAL;
+36919ebeaacab3 Matthew Auld     2023-04-06  1131  
+a19d1db9a3fa89 Matthew Brost    2024-10-31  1132  	if (!xe_bo_is_vram(bo))
+a19d1db9a3fa89 Matthew Brost    2024-10-31  1133  		return 0;
+36919ebeaacab3 Matthew Auld     2023-04-06  1134  
+36919ebeaacab3 Matthew Auld     2023-04-06  1135  	ret = ttm_bo_mem_space(&bo->ttm, &placement, &new_mem, &ctx);
+36919ebeaacab3 Matthew Auld     2023-04-06  1136  	if (ret)
+36919ebeaacab3 Matthew Auld     2023-04-06  1137  		return ret;
+36919ebeaacab3 Matthew Auld     2023-04-06  1138  
+36919ebeaacab3 Matthew Auld     2023-04-06  1139  	if (!bo->ttm.ttm) {
+36919ebeaacab3 Matthew Auld     2023-04-06  1140  		bo->ttm.ttm = xe_ttm_tt_create(&bo->ttm, 0);
+36919ebeaacab3 Matthew Auld     2023-04-06  1141  		if (!bo->ttm.ttm) {
+36919ebeaacab3 Matthew Auld     2023-04-06  1142  			ret = -ENOMEM;
+36919ebeaacab3 Matthew Auld     2023-04-06  1143  			goto err_res_free;
+36919ebeaacab3 Matthew Auld     2023-04-06  1144  		}
+36919ebeaacab3 Matthew Auld     2023-04-06  1145  	}
+36919ebeaacab3 Matthew Auld     2023-04-06  1146  
+fc5d96670eb254 Thomas Hellström 2024-09-11 @1147  	ret = ttm_bo_populate(&bo->ttm, &ctx);
+36919ebeaacab3 Matthew Auld     2023-04-06  1148  	if (ret)
+36919ebeaacab3 Matthew Auld     2023-04-06  1149  		goto err_res_free;
+36919ebeaacab3 Matthew Auld     2023-04-06  1150  
+36919ebeaacab3 Matthew Auld     2023-04-06  1151  	ret = dma_resv_reserve_fences(bo->ttm.base.resv, 1);
+36919ebeaacab3 Matthew Auld     2023-04-06  1152  	if (ret)
+36919ebeaacab3 Matthew Auld     2023-04-06  1153  		goto err_res_free;
+36919ebeaacab3 Matthew Auld     2023-04-06  1154  
+36919ebeaacab3 Matthew Auld     2023-04-06  1155  	ret = xe_bo_move(&bo->ttm, false, &ctx, new_mem, NULL);
+36919ebeaacab3 Matthew Auld     2023-04-06  1156  	if (ret)
+36919ebeaacab3 Matthew Auld     2023-04-06  1157  		goto err_res_free;
+36919ebeaacab3 Matthew Auld     2023-04-06  1158  
+36919ebeaacab3 Matthew Auld     2023-04-06  1159  	return 0;
+36919ebeaacab3 Matthew Auld     2023-04-06  1160  
+36919ebeaacab3 Matthew Auld     2023-04-06  1161  err_res_free:
+36919ebeaacab3 Matthew Auld     2023-04-06  1162  	ttm_resource_free(&bo->ttm, &new_mem);
+36919ebeaacab3 Matthew Auld     2023-04-06  1163  	return ret;
+36919ebeaacab3 Matthew Auld     2023-04-06  1164  }
+36919ebeaacab3 Matthew Auld     2023-04-06  1165  
 
-On Tue, May 06, 2025 at 11:35:32AM -0700, Xi Wang <xii@google.com> wrote:
-> In theory we should be able to manage kernel tasks with cpuset
-> cgroups just like user tasks, would be a flexible way to limit
-> interferences to real-time and other sensitive workloads.
-
-I can see that this might be good for PF_USER_WORKER type of kernel
-tasks. However, generic kernel tasks are spawned by kernel who
-knows/demands which should run where and therefore they should not be
-subject to cpuset restrictions. When limiting interference is
-considered, there's CPU isolation for that.
-
-The migratable kthreadd seems too coarse grained approach to me (also
-when compared with CPU isolation).
-I'd mostly echo Tejun's comment [1].
-
-Regards,
-Michal
-
-[1] https://lore.kernel.org/r/aBqmmtST-_9oM9rF@slm.duckdns.org/
-
---7glneb545a7qokgx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCaCHPOQAKCRAt3Wney77B
-SVYEAP0Z/JUxAkFu4aDyuiT90IBTasBvJ2EsEmMP4MGjnahpUAEA1KAPjq8QHIRv
-YGcQlipcEFx4WvZFEk5JBaHodIcCvQA=
-=LnfL
------END PGP SIGNATURE-----
-
---7glneb545a7qokgx--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
