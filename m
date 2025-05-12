@@ -1,151 +1,141 @@
-Return-Path: <cgroups+bounces-8143-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8144-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23EAFAB3F02
-	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 19:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80C1CAB4424
+	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 20:56:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7913419E432E
-	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 17:30:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27E9919E53D9
+	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 18:56:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82D3248F71;
-	Mon, 12 May 2025 17:30:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83030297120;
+	Mon, 12 May 2025 18:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PmEJxIhe"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="REzRzN6E"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1890D2522BA
-	for <cgroups@vger.kernel.org>; Mon, 12 May 2025 17:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F5144C63
+	for <cgroups@vger.kernel.org>; Mon, 12 May 2025 18:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747071015; cv=none; b=C5tw8paDfI1qdpZOR8huYxb8nD0Oujeu6vYbJEN6TkxnAwbcL19IVvK21Teqw3mT/2m0XoHFZkmtSK/JeScI4FhkjLmBkXIbO8wkTK/nusFPZ9G+iClfya6Bbo3rHfwo8CuBdJ9CYYy7Yx5eQC4d+1sbvZp2kEFEktzuwsD05cg=
+	t=1747076173; cv=none; b=q70/MjPFby0B65nw0GNrx2GQKoAQe9MctfNLAvbp/74TWDHujfiJNYDTs4DSiGHO8kIEyCJFc0/x15XFBCmBpGxiaZR1KFLDqi5SALQPasK4wJ7XcmM3uVz8m2h2aU/3gQx+UA6ZDV0H3Sj/3OVZn6FBpYUYnCPy8ZqG01FvYaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747071015; c=relaxed/simple;
-	bh=QpR6FTmdLt83epWjtUAngP8jfpfjpY/z0lo6xg9Hv5I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n0r96pFE2Nfq1zUIDxBFV8sIO9Io9BYDEnj0/01UbbRh56s0TIGQXM+aY8F5aInQX3jnofS2sKBWkBJxGQltbom0Kl467FyIqEVwk6k5ntKIBntG0seJG63JGqKuXp4mh16ucH2Po4bcHfDmLepta9UVLqDTFa1aR14m2Qn92LM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PmEJxIhe; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-22e45088d6eso61360905ad.0
-        for <cgroups@vger.kernel.org>; Mon, 12 May 2025 10:30:12 -0700 (PDT)
+	s=arc-20240116; t=1747076173; c=relaxed/simple;
+	bh=R9Oi8PhHsn0Iqgoq3Kuo2vY/g67j2m74WQmsNoKbiDg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BNxyWQHEpbZszTRxyZwWfW6WIAEssD6YBsYpdd+v5bf3jaBr/Z1q13kYofvT7NjWiTYZTE54x0ZjaDi5hgBWeBdnLekrWQPWwsyvNDaebdqNUdLdlrmBIm6gRQUSos0Nxir7j6vW75gQXdqRNGeh9mC270e6+a953ZfbrZHdd40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=REzRzN6E; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5f624291db6so8213888a12.3
+        for <cgroups@vger.kernel.org>; Mon, 12 May 2025 11:56:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747071012; x=1747675812; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=m3Oohpf1ZkVjODZV3gPAW0cFtjTk5gH8ECsCQ1p0CS0=;
-        b=PmEJxIheFQ5TwaKAFyhjLeGxwYSA73HUeZLek/+PdNvxobk9DWF7Az+i7yjK9hFEKS
-         8mk2KMvwdu0+vrPZAbO8PWu/7jkqpekl84vMG8FE2qtXVpAyHuiodzxheFpkXxv3sTJv
-         5O44MFuTqbp/h6rf2PcfiSQ+2rpFXW8AlDhg0bz+R+9QFDOUMjgUDq2gUvxv6Yi08ZYP
-         qdkD/P5axnH7THT/Nqmp+hVR5q0LKxu78XtPGX3MtCw7Nl9n2qW34jk4FELkGpBhngGE
-         Md3shnteN3+Pms36mep+YfUiZ20XqSEycOI4GOF8YKdMsfdIrnXbsvEUCGtUJ7e96wAK
-         l8lg==
+        d=google.com; s=20230601; t=1747076170; x=1747680970; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R9Oi8PhHsn0Iqgoq3Kuo2vY/g67j2m74WQmsNoKbiDg=;
+        b=REzRzN6EJwLd6jkvOc2HILBwBgbhLcxCfe6nq3wLePWM6WdZvrhkJ/i5JQPPE62kqK
+         LeQz6AYyceWAyEwBUI69F6U5tIkPIZ4JkUPTxj6qKDz1PD+YXW2skpqobii8yh4SwPno
+         fhQGQxfCf/pTuWMd1vFPqKUjcsLSnL2+OSUqW0VZF6qeIr9H07SLjcRPnkbBGo+CClvO
+         S7l62Yri+QQiPC9jz5NOt4Po0v0RjWuKEmPDVcW2gOCrlJI1pMLGOqdbjueeupXbqUyt
+         MnJvgq0kiOTBjq5lqHq7M/vhbjtz5lJZBVyMmx5oTRRWdHuntSpcOEjKDIHC2ItK1syP
+         943A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747071012; x=1747675812;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m3Oohpf1ZkVjODZV3gPAW0cFtjTk5gH8ECsCQ1p0CS0=;
-        b=hqQ+Q8OZinzJVsO53U1UsTOTNbYVk1jkCMOL7d1GVUEn/FTRWyrvYjdKoocmPqenQm
-         S1MXjSnRBL+tWmh/riI4T3Xxc/GBTo4+gh2aUzyLnUlk0LiE1libCiZERBRQYcxFlC8w
-         Z6ySVZab/TQ34ciZlu42TXW9zPcZbcT4ubzuN3G5TGrF7wfC7iH1PQFNqd2CeMBrxWre
-         UL3xPWk8f/WenbLy2A6CUwzsoHgtSJDjHge1Y2OA/gLCytz0kRMmDOzen6sVve/pnQ5A
-         aIiGtrmyITUZ73xHW4HaOPmRjWlwlSe0bujnETBBVdf59YnzxJDlQDRKgwg8a7E66nD9
-         tYhw==
-X-Forwarded-Encrypted: i=1; AJvYcCVUfrxTwKaqEMjUqdcN55y+WVFGGlWt1hk4T14z0P9abKJ35Ydc5razpw9Rd5TgfV9MyZjtocSB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzy8xx8EiSv5mv/vbBSCDW5/ERsXLQTrGRNpf0pUNtVK+GYUGTb
-	1UuBNwo9eUY7KDyIz6UpiOJdoZbN+xFHMmO9o9DYht0eOaAlFvx2
-X-Gm-Gg: ASbGncsF0OcTa8OqA/tsmUBVGFFj+B8I9YkYUd6bx6Gi5dLfHIRMiZ7HYRAyXEIG/Dl
-	vE1+ke28rJdLTqsywNnLI8n53ebKWsBZ2LhXEXwUGrTL2nsRFdMTmmfTuDuXc0J3evGls1XaSdC
-	dUzoxQN+6mF/4MEQrl7NxrDtmNYWoHfOPoZ5C/ZhYbjCXtAsiAMU5+/QuOX7Sw2i4XeGzyODM/y
-	O5j80mIPSGkvZIUye0Y01dSBnjS+kVmLUorXwFUF8jPJR2o2Pnvz5QoOlwS7sLNtmp9qpYuEOoM
-	YpDdSl0Xu+YzWtIQi4jtyZPj/Fs/uVOBeiHaMgO0BXMn/9b34Jd1TOiCJojjkenenndU6PvTGbA
-	2XEDYlpEe
-X-Google-Smtp-Source: AGHT+IEaSyLJVmLs7PPhJpaV0pzj326vzlBTcqgbKYJa9OH2+AXRMs3xkrTBdexAwpUy3ZC9uOwIRQ==
-X-Received: by 2002:a17:902:f682:b0:224:a79:5fe9 with SMTP id d9443c01a7336-22fc8b59bd0mr186119875ad.30.1747071011993;
-        Mon, 12 May 2025 10:30:11 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1151:15:fe23:5aa8:9def:b916? ([2620:10d:c090:500::4:17ac])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc7742e2asm65561935ad.88.2025.05.12.10.30.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 May 2025 10:30:11 -0700 (PDT)
-Message-ID: <d532450f-42b0-42a8-9a43-31f46e2143e2@gmail.com>
-Date: Mon, 12 May 2025 10:30:10 -0700
+        d=1e100.net; s=20230601; t=1747076170; x=1747680970;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R9Oi8PhHsn0Iqgoq3Kuo2vY/g67j2m74WQmsNoKbiDg=;
+        b=bEmNRn1/eax4H0qst9Kodq1uJsb1H1infLJsEAcqTlusG35Cw8hXy+ga1hRP63zrpI
+         Wnbb3xqohotN9L5ZV6F/p9xrFKKUgX2T/77xxph40/Uf3ckLY/eEGrVfwFhV47oDZsxx
+         WSPm44uLJDcWDPC2UpK8auCh6H8+1jLzxYSf8ReHWnyQ68uEzRfM5+xkK17vFkGMz+fZ
+         TlhQmWiKGDJ+QVDqS1X1ICgqbp8I/y05kDuMY2HVXRdo0disire4Qv/NiSLG6h3ixS9o
+         JUKKaQmTLJU9q/p15ZiYoO2tiyfl6P9Ix4kowiAsb7SZNr9ynJinLxCtyLJ/i+NO6o4Q
+         N52Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUGxprk9ao8lYkm8xTI+fzShBTAvwXB8IM5TZoyff2I+weWdoO5vVY9SQm2XxSRzmIgmhcNLw/u@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8CsYh4RQ7055X1P/cWAfS+Rql2tBvzSu2YqH8MPaOgzyRPF4U
+	K9QFMuot4hM97NF45FiMqWbzYWTBLRXRzuLvK1iW/f4qkTgY0SH/FFuvK0GxK55+tInDM7bwi6T
+	zSYaeS9FHrn7TtPf+SQRsBClHd7VdDwFDhjYb
+X-Gm-Gg: ASbGncv9olLApM0lVp36DlfPPzNEpk2hA+qOOInzwWaOzEWHe+gHjnCE5BlIedaAAat
+	IoJAcuObY2TH6sxwee+HQGrHPil9CbXAjBQ37MT9YAWMKwn+9BCimhkkw5QryxGt2f57hWu4VaN
+	Oa9k1naA9PkmoplZ1p+ufWKdCnhm8r4eA/yWqY34VeDm/LV/fbMFbPm3zGNl0wovqj9VQ=
+X-Google-Smtp-Source: AGHT+IGSxf21cydcKSaeqGdWQfCMq/i1Jw1c1h3iOLfTnyifJEAxgbYTWe1QXdk0KWz98TodjdO76SfECkN7Q4EznqM=
+X-Received: by 2002:a17:907:1b1c:b0:ac2:7a6d:c927 with SMTP id
+ a640c23a62f3a-ad2192d4b63mr1294443666b.50.1747076169603; Mon, 12 May 2025
+ 11:56:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/5] cgroup: use separate rstat trees for each
- subsystem
-To: Yosry Ahmed <yosry.ahmed@linux.dev>
-Cc: tj@kernel.org, shakeel.butt@linux.dev, mkoutny@suse.com,
- hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org,
- cgroups@vger.kernel.org, kernel-team@meta.com
-References: <20250503001222.146355-1-inwardvessel@gmail.com>
- <20250503001222.146355-3-inwardvessel@gmail.com>
- <aBsm22A8qWjGJgY9@google.com>
-Content-Language: en-US
-From: JP Kobryn <inwardvessel@gmail.com>
-In-Reply-To: <aBsm22A8qWjGJgY9@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20250506183533.1917459-1-xii@google.com> <avxk2p2dr3bywzhujwnvbakjyv4gsnshssvgwj5276aojh7qbl@llhdz2e55iai>
+In-Reply-To: <avxk2p2dr3bywzhujwnvbakjyv4gsnshssvgwj5276aojh7qbl@llhdz2e55iai>
+From: Xi Wang <xii@google.com>
+Date: Mon, 12 May 2025 11:55:57 -0700
+X-Gm-Features: AX0GCFtN5E-ewrK2qktSybXmdK4lo0FOtGq_i9xSb1_nkn6X8o0AyCvqgWj55u8
+Message-ID: <CAOBoifiYV3YX6nAf9v5PwkkKPt4qhV8af47mWoJQ1B_tFJ7D-g@mail.gmail.com>
+Subject: Re: [RFC/PATCH] sched: Support moving kthreads into cpuset cgroups
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, David Rientjes <rientjes@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Lai Jiangshan <jiangshanlai@gmail.com1>, 
+	Frederic Weisbecker <frederic@kernel.org>, Vlastimil Babka <vbabka@suse.cz>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Chen Yu <yu.c.chen@intel.com>, 
+	Kees Cook <kees@kernel.org>, Yu-Chun Lin <eleanor15x@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 5/7/25 2:24 AM, Yosry Ahmed wrote:
-> On Fri, May 02, 2025 at 05:12:19PM -0700, JP Kobryn wrote:
-[..]
->> @@ -383,32 +395,45 @@ __bpf_kfunc void css_rstat_flush(struct cgroup_subsys_state *css)
->>   
->>   int css_rstat_init(struct cgroup_subsys_state *css)
->>   {
->> -	struct cgroup *cgrp = css->cgroup;
->> +	struct cgroup *cgrp;
->>   	int cpu;
->> +	bool is_cgroup = css_is_cgroup(css);
->>   
->> -	/* the root cgrp has rstat_cpu preallocated */
->> -	if (!cgrp->rstat_cpu) {
->> -		cgrp->rstat_cpu = alloc_percpu(struct cgroup_rstat_cpu);
->> -		if (!cgrp->rstat_cpu)
->> -			return -ENOMEM;
->> -	}
->> +	if (is_cgroup) {
->> +		cgrp = css->cgroup;
-> 
-> You can keep 'cgrp' initialized at the top of the function to avoid the
-> extra level of indentation here, right?
-> 
+On Mon, May 12, 2025 at 3:36=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> Hello.
+>
+> On Tue, May 06, 2025 at 11:35:32AM -0700, Xi Wang <xii@google.com> wrote:
+> > In theory we should be able to manage kernel tasks with cpuset
+> > cgroups just like user tasks, would be a flexible way to limit
+> > interferences to real-time and other sensitive workloads.
+>
+> I can see that this might be good for PF_USER_WORKER type of kernel
+> tasks. However, generic kernel tasks are spawned by kernel who
+> knows/demands which should run where and therefore they should not be
+> subject to cpuset restrictions. When limiting interference is
+> considered, there's CPU isolation for that.
+>
+> The migratable kthreadd seems too coarse grained approach to me (also
+> when compared with CPU isolation).
+> I'd mostly echo Tejun's comment [1].
+>
+> Regards,
+> Michal
+>
+> [1] https://lore.kernel.org/r/aBqmmtST-_9oM9rF@slm.duckdns.org/
 
-I can move this initialization to the top but the indentation of this
-conditional branch will remain. See more thoughts below related to this
-block.
+Kernel doesn't actually have the best information because it doesn't know w=
+hich
+user threads are more important. Giving the root user more power for fine t=
+uning
+is a common practice.
 
->>   
->> -	if (!cgrp->rstat_base_cpu) {
->> -		cgrp->rstat_base_cpu = alloc_percpu(struct cgroup_rstat_base_cpu);
->> +		/* the root cgrp has rstat_base_cpu preallocated */
->>   		if (!cgrp->rstat_base_cpu) {
->> -			free_percpu(cgrp->rstat_cpu);
->> +			cgrp->rstat_base_cpu = alloc_percpu(struct cgroup_rstat_base_cpu);
->> +			if (!cgrp->rstat_base_cpu)
->> +				return -ENOMEM;
->> +		}
->> +	} else if (css->ss->css_rstat_flush == NULL)
->> +		return 0;
-> 
-> We can probably just do this at the beginning of the function to be able
-> to use the helper:
-> 
-> 	if (!css_is_cgroup(css) && css->ss->css_rstat_flush == NULL)
-> 		return 0;
+The most important reason for moving kthreadd is to prevent a kthread from
+interfering with important user threads right after forking. It can still b=
+e
+moved to other cgroups later. Moving kthreadd allows better control rather =
+than
+worse control.
 
-If we did this we would be wasting extra memory allocating the base
-stats for every subsystem css. The intention behind the way I wrote it
-was to optimize the memory overhead needed for split rstat trees.
+CPU isolation is more narrowly focused compared to generic cpuset based con=
+trol.
+
+-Xi
 
