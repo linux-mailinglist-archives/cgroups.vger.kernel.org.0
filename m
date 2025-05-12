@@ -1,149 +1,109 @@
-Return-Path: <cgroups+bounces-8129-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8134-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AD3BAB264E
-	for <lists+cgroups@lfdr.de>; Sun, 11 May 2025 05:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A19AB2F7E
+	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 08:20:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E209A7A4D3F
-	for <lists+cgroups@lfdr.de>; Sun, 11 May 2025 03:07:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A55097A9BA4
+	for <lists+cgroups@lfdr.de>; Mon, 12 May 2025 06:19:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE98817A300;
-	Sun, 11 May 2025 03:08:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FeKj45kc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E876255247;
+	Mon, 12 May 2025 06:20:42 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B63F1487D1;
-	Sun, 11 May 2025 03:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81872550C4
+	for <cgroups@vger.kernel.org>; Mon, 12 May 2025 06:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.211.30.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746932919; cv=none; b=tYFb/KO+q9Yq2ZY7C1IBLfzunX85OgT9OekGCGt/JOy7SAIgwSTGV+Sz4mr/ZBahw8FWqYZxeNhKCztabn9ER21GVKXJuPJUP1jM3bTFq7NjEDz4tUTpGZm6tiZ8MU+Kzv6UXR/KqCVva9cfkGMOIkzVKpA/gy85RMLeeNaFbZU=
+	t=1747030842; cv=none; b=cewlWS5MUpg/lKi4vQhLnXWVvMz2sZdW0CFPodUmOdjneIT9d37HmOTXnBXOFmOdmtLF9xegVwIbxS5+LBckrZWRdxtCgs4dKIeeSt75/ByIcgXLAtv9+i7uq6FB2AiFlWXmxhD75Bp1+q39t1I8LOl2sQesYWU27BFCpsPrW70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746932919; c=relaxed/simple;
-	bh=r+vkn0eEIdcMigpTHj0eqKwWUdStj46jhNQGLfY2V9U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=M1nPLPi55cI37/mb7+HkF57L8QKtxrWiqVQSuCtHDcQu5td3jvxoFLhtua0xHDjP3GpylZ4CgOcszslTy/fqjOLwrpOUmhO/cNQeL5tEhsigqi76drhS0iLmMpoZrBG4QpCgH9b3+KJM5d0jGFBix+yIGaxeja0x6KWbkoqJMCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FeKj45kc; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7376dd56f8fso4474073b3a.2;
-        Sat, 10 May 2025 20:08:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746932917; x=1747537717; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1lTKKd7diRQJTYNbFHCqlVfIA24BlZl71qqXWQO/K1A=;
-        b=FeKj45kcZSghynZBIji2xbK2Jjg3Q1Rs8qh/wsueYTEoM+/MTKYlE6H9406UvEws5Q
-         +mdQxFshaOhMUeHZIB6j7CY7XhICYYFtW7Vqdq7IPyNr1XdqS+jeR7AtqQnMmhhOnxJJ
-         GRwsNuJMdD6wRYWD0F1F7vcKOvVQ0ykE/o9ShI9y67rmKRnQiCENDw47GkdOpOemIN3k
-         hC9Y9YsBvGLPsDK4aLMma9BE4iLM/yx2wMbeYZgIAo9lt+X1jsubsXQiCXMMbN/nyavq
-         bgEgOCrpWqRa+NmKAq3grrforwLbLdbaH8+thAYtJ8Cd8JzIeL1rnegm2lw3rKf9NTTO
-         7MSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746932917; x=1747537717;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1lTKKd7diRQJTYNbFHCqlVfIA24BlZl71qqXWQO/K1A=;
-        b=lnTqqVWFXT1d2HRhM5hZqb5IRyHGgsAaz2erMGNb9g4ViK4PxnJ4Wd3MBpY/3c37us
-         BNJvc9fdq6nE1mf/GWj1ZDzY+N0WiBURpG5BmYrdhMt+7utocaf4vlku15/Ut3c6PQNk
-         5ULctBy6CuOJ2JGT4HAU7Y/l3Bb+VDJDaYzZNAPRRCPo7QGs8uGGVSrmRkkT+h1LEcjg
-         sOl0R1ljCdE4f8BDYCIAiUktjuKo9C9YBD8qpvDviGAlPAqKl8/Y1Vseh0NfndgVq1B7
-         yhrZfJD4isPZI/2rqSCOYwjjC1brBQ6ocob/6EmM4FaM9AYHtzozlIcgg2przks2bAVp
-         3BAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUIGGk+Eo8fukfklvpvfb8k/HrHw8qLQDL6sQeD7ppdYSs/d0WnGmb4z+E4ugUBkgLK0e/KM9VWwRC5byV/@vger.kernel.org, AJvYcCVVDp0J8Qg9GL6KMx5U08FwZe1tUlbQcGjZbB/cWgzeiHl4F2TfYTvUiIaBrnQyeY3voSLbVcHz@vger.kernel.org
-X-Gm-Message-State: AOJu0YwsGGCcGEGmD1QpzHgiY+U1tSIZyctRK6i5DFzccug19kgQFC6Q
-	IPnCo4c1zUEPvZzrygkJdMNHMSls/EOZeHdTs9TdSZuNeCcfIVDd
-X-Gm-Gg: ASbGncstKJMew0UxC/94xDVliwN871nA+QkosKk34k6bj1XlIFnb7Zk7YmSI32d8p7d
-	wSKFTe/viih66yTltVYxeInpeU9OHnYeZFmorI43Xaa/pWf2+mzUkBb8YbF34g8Qdokn4UWBKyQ
-	ZREnWAzRR6JyZwSbHYOR/QzbN0vCzqbB/KO9dt3d0q+tur9M7K/GGMgDrduPrLrZ3bKfavbUyCF
-	TPu8NZaX40Q6kNvvFp7U+l1bHcgoZ5sdVRN10w2kESCHJHwVfDKvxS+nx/qOY5+GVVptN2bQSnN
-	X8aZNhSBWGDm229tdiJc4Y6oSpD3QqlijqJ9Og6NKGUr0WtYAN7QVtCN62oBV/mhzH2McBPu3tf
-	u
-X-Google-Smtp-Source: AGHT+IFA0e+IZ50Drym0CBcMDdhFz1H3piGuyTG0prah5+c2i+dJpAsPtAP72MkkFB/AVs91R+pcPg==
-X-Received: by 2002:a05:6a00:2d08:b0:740:67ce:1d8b with SMTP id d2e1a72fcca58-7423bbf68e9mr13179579b3a.7.1746932917339;
-        Sat, 10 May 2025 20:08:37 -0700 (PDT)
-Received: from localhost.localdomain ([39.144.107.128])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74237a105fdsm3956883b3a.100.2025.05.10.20.08.32
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 10 May 2025 20:08:36 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: mingo@redhat.com,
-	peterz@infradead.org,
-	mkoutny@suse.com,
-	hannes@cmpxchg.org
-Cc: juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	vschneid@redhat.com,
-	surenb@google.com,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	lkp@intel.com,
-	Yafang Shao <laoar.shao@gmail.com>,
-	Eric Dumazet <edumazet@google.com>
-Subject: [PATCH v9 2/2] sched: Annotate sched_clock_irqtime with __read_mostly
-Date: Sun, 11 May 2025 11:08:00 +0800
-Message-Id: <20250511030800.1900-3-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20250511030800.1900-1-laoar.shao@gmail.com>
-References: <20250511030800.1900-1-laoar.shao@gmail.com>
+	s=arc-20240116; t=1747030842; c=relaxed/simple;
+	bh=GgRr7EQvOf4xJonpu4t5PALoaGC1+8Rwm1kf5s/v4bY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:content-type; b=tpgf2M2PXSJX059AjkDXVRByUJtzT8Cb7YEMZvN916IZxGsL9ZBgWN7nPTZ/t3qKR6gm+3I8BXs6rT2SaXp1GspNUBVuhBL23EXy/2OAg8J3MBgy4AuWRYFfdQewMa2cGyDX8wBIaCQ79D9FwCaEiJFmpD1xy265IKYsUoJGeCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=207.211.30.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-650-4WutLAkXMKOEofd8dd3e8A-1; Mon,
+ 12 May 2025 02:19:25 -0400
+X-MC-Unique: 4WutLAkXMKOEofd8dd3e8A-1
+X-Mimecast-MFC-AGG-ID: 4WutLAkXMKOEofd8dd3e8A_1747030763
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F0D3319560AA;
+	Mon, 12 May 2025 06:19:22 +0000 (UTC)
+Received: from dreadlord.redhat.com (unknown [10.64.136.70])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 844AD19560B0;
+	Mon, 12 May 2025 06:19:17 +0000 (UTC)
+From: Dave Airlie <airlied@gmail.com>
+To: dri-devel@lists.freedesktop.org,
+	tj@kernel.org,
+	christian.koenig@amd.com,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>
+Cc: cgroups@vger.kernel.org,
+	Waiman Long <longman@redhat.com>,
+	simona@ffwll.ch
+Subject: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (series v3)
+Date: Mon, 12 May 2025 16:12:06 +1000
+Message-ID: <20250512061913.3522902-1-airlied@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: E39OAwRLf3_DA-DiPowBLyeCJBzFh2qIY7rzPyoX9vs_1747030763
+X-Mimecast-Originator: gmail.com
+Content-Transfer-Encoding: quoted-printable
+content-type: text/plain; charset=WINDOWS-1252; x-default=true
 
-Eric reported an issue [0] as follows,
-: rebalance_domains() can attempt to change sched_balance_running
-: more than 350,000 times per second on our servers.
+Hey,
 
-: If sched_clock_irqtime and sched_balance_running share the
-: same cache line, we see a very high cost on hosts with 480 threads
-: dealing with many interrupts.
+This is my 3rd attempt to try and integrate ttm and memcg accounting.
 
-While the rebalance_domains() issue has been resolved [1], we should
-proactively annotate sched_clock_irqtime with __read_mostly to prevent
-potential cacheline false sharing. This optimization is particularly
-justified since sched_clock_irqtime is only modified during TSC instability
-events.
+I've tried to take on board the feedback given on the last series, and
+made some compromises to try and close in on the solution.
 
-Link: https://lore.kernel.org/all/20250423174634.3009657-1-edumazet@google.com/ [0]
-Link: https://lore.kernel.org/all/20250416035823.1846307-1-tim.c.chen@linux.intel.com/ [1]
+Feedback:
+1. memcg folks didn't really like the gpu specific stats due to a lack
+of global stats being exposed.
+2. After consideration of the resource level memcg accounting, I tried
+to reason about swap evictions a bit and couldn't come up with a good
+way to make it work, so I moved back down to ttm.
+3. Use a placement flag instead of ctx flag.
 
-Reported-by: Eric Dumazet <edumazet@google.com>
-Debugged-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Eric Dumazet <edumazet@google.com>
----
- kernel/sched/cputime.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This series starts by adding two per-node stats to the mm layers,
+to track memory allocated to the gpu in active use, and memory sitting
+in the reclaimable ttm pools.
+Then it adds the memcg stat for active gpu as before,=20
+(reclaimable is not accounted to a memcg at all).
+I didn't go back to use __GFP_ACCOUNT and manual stat tweaking, because
+kmem is definitely not the correct place to account this memory. This
+memory is never used by the kernel, it's used by userspace and the GPU
+in nearly all cases, so I think accounting it under kmem is very wrong.
+I'm hoping adding the global stats might alleviate any concerns.
 
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index 6dab4854c6c0..c499a42ceda4 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -22,7 +22,7 @@
-  */
- DEFINE_PER_CPU(struct irqtime, cpu_irqtime);
- 
--int sched_clock_irqtime;
-+int __read_mostly sched_clock_irqtime;
- 
- void enable_sched_clock_irqtime(void)
- {
--- 
-2.43.5
+I had to move back to ttm_tt accounting instead of ttm_resource, as
+when a resource gets evicted to swap, the memory is freed and the memcg
+accounting should be updated correctly, as such I ended up going back
+to adding the accounting in ttm_tt population paths.
+
+Regards,
+Dave.
 
 
