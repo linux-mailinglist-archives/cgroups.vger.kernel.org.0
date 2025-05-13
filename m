@@ -1,113 +1,79 @@
-Return-Path: <cgroups+bounces-8154-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8155-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 730C0AB4A0B
-	for <lists+cgroups@lfdr.de>; Tue, 13 May 2025 05:16:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2171AB4A2F
+	for <lists+cgroups@lfdr.de>; Tue, 13 May 2025 05:33:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67FA5462BA8
-	for <lists+cgroups@lfdr.de>; Tue, 13 May 2025 03:15:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 954DD1B42B2C
+	for <lists+cgroups@lfdr.de>; Tue, 13 May 2025 03:33:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E84841E521A;
-	Tue, 13 May 2025 03:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD5C1E0083;
+	Tue, 13 May 2025 03:32:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VHLI3S18"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W+A4/dZw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6EAE1DFD96
-	for <cgroups@vger.kernel.org>; Tue, 13 May 2025 03:14:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE223D529;
+	Tue, 13 May 2025 03:32:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747106092; cv=none; b=spmzZj9j/KYx5xXCP2h5rWT1RZF4gDSVC7Ue2HN3cLWJOR8U5RSgIClFRZVd68IuzOflDaSMyWfFHqenbE05EG/6yCG7tqcED10gm5IT7z5MwUzYM29wGad+rxvgYYROcITRRt+fNtdeULFJ612g773IMtFdlZ70OOywScjTl8E=
+	t=1747107168; cv=none; b=S286qm5wHzquaJC7M+LOD2zlmBEte8DFCtzxkz4E3r1uGWPtmne+Ncq/j8N5VZZklOljTk6chkL0RfmpEm0zGdg6+73+QXBD+pRoYO/D3s9GQ0NoPmlaGqfATeaSv3NANuO2Y9h/9m+oNuKqrjY8yuoSNkJeTdSDdL0TP0OS5IE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747106092; c=relaxed/simple;
-	bh=bq4n+CapkiEufHmuXYXMnRfxZsa90fHutL5r54oLDFw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UBsTpzVLXRCo20nD2ndkOSD2V3c6FuNjDgVTCoNpxiX/ruAtrYeoyKbKbN1YSbcyHoVDZudjn4nSdODXUHqAecy3KDB0/yDDZAkyjMxRsdX/17lMxWvMF+liWrNgfphUq5JediKVWH91edho+5aQtBwHCgOvKNIt7az0ye5Re8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VHLI3S18; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747106089;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FByBL+Uk6nVPajbs5jWaOtV9bA6rKUCuGTge/ypRKI4=;
-	b=VHLI3S18C0ilRJtHPuy5DdQfm7qGScWd+9hI+WlIJvZueihhycJEFqGZU2rpRElPW0R7dG
-	eRrrEvnQdBtAUsWD0dya+31904+ICeO+NjH2WCcHY18grx/0I+CEACOvkXQojrVYoAv2gN
-	mjw9+y9HBGPc9spYYkZCsrqOavp9eyE=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Harry Yoo <harry.yoo@oracle.com>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>,
-	bpf@vger.kernel.org,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: [RFC PATCH 7/7] memcg: no stock lock for cpu hot-unplug
-Date: Mon, 12 May 2025 20:13:16 -0700
-Message-ID: <20250513031316.2147548-8-shakeel.butt@linux.dev>
-In-Reply-To: <20250513031316.2147548-1-shakeel.butt@linux.dev>
-References: <20250513031316.2147548-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1747107168; c=relaxed/simple;
+	bh=4ZpuRm/rWnIt8cBt9aMZCGpXNxBNEUvJFCjUueodcS0=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=lwMi9gWULsgmLN9CbC6XeDnAJzEnsNkUDguETpOTRccLV/rxE71ZChXt9uBFhyoRm+obdLINMCGfCOCIbWqUIB5P8xZxSQfUaEZwxo65hoYRnjFdxNkPMCL27Eq+3bKWLNb6QNJFoimBzdLefUjNjbSX+Tux/XatDcedL0Rd0PY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W+A4/dZw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEC6CC4CEE7;
+	Tue, 13 May 2025 03:32:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747107167;
+	bh=4ZpuRm/rWnIt8cBt9aMZCGpXNxBNEUvJFCjUueodcS0=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=W+A4/dZwtj3v6qjYKfPdK6tZ/uQXTWC4zYh9Hxz484m59dMmB4ATcxIJ2HVhOi420
+	 iqa87eFlqAEwbFaT9KFj7CtyIvYe2qFRXnEqrpAI4St0Bul11rDNQxtwCYj3IcF3BC
+	 83EXmqAR7dcB09DpklydJ4urW8Rhd/A1U1KONgRilGF12OTb78InTNBPCc17hCq7fy
+	 k/E317XkVLYu1SfOH/S/6SnwmeQ46kNd509RzTemwLOyfbqNt/1I+OgByBg7l95KO7
+	 W5lMNzT0GV8a+hLr37n0bNhfhw/F8fQXsZO9dyBwSenwNuozTMzptmUiOHPmNWEHkE
+	 Srgk3NGlnXKsw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADBAE39D6541;
+	Tue, 13 May 2025 03:33:26 +0000 (UTC)
+Subject: Re: [GIT PULL] cgroup: A fix for v6.15-rc6
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <aCKV6jvb5Cej5wlF@slm.duckdns.org>
+References: <aCKV6jvb5Cej5wlF@slm.duckdns.org>
+X-PR-Tracked-List-Id: <cgroups.vger.kernel.org>
+X-PR-Tracked-Message-Id: <aCKV6jvb5Cej5wlF@slm.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.15-rc6-fixes
+X-PR-Tracked-Commit-Id: 39b5ef791d109dd54c7c2e6e87933edfcc0ad1ac
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d471045e757e941ca802bca3147aab45bf770754
+Message-Id: <174710720517.1163096.1522779546894472787.pr-tracker-bot@kernel.org>
+Date: Tue, 13 May 2025 03:33:25 +0000
+To: Tejun Heo <tj@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, Waiman Long <longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Previously on the cpu hot-unplug, the kernel would call
-drain_obj_stock() with objcg local lock. However local lock was not
-neede as the stock which was accessed belongs to a dead cpu but we kept
-it there to disable irqs as drain_obj_stock() may call
-mod_objcg_mlstate() which required irqs disabled. However there is no
-need to disable irqs now for mod_objcg_mlstate(), so we can remove the
-lcoal lock altogether from cpu hot-unplug path.
+The pull request you sent on Mon, 12 May 2025 14:44:26 -1000:
 
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- mm/memcontrol.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.15-rc6-fixes
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index af7df675d733..539cd76e1492 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2060,16 +2060,8 @@ void drain_all_stock(struct mem_cgroup *root_memcg)
- 
- static int memcg_hotplug_cpu_dead(unsigned int cpu)
- {
--	struct obj_stock_pcp *obj_st;
--
--	obj_st = &per_cpu(obj_stock, cpu);
--
--	/* drain_obj_stock requires objstock.lock */
--	local_lock(&obj_stock.lock);
--	drain_obj_stock(obj_st);
--	local_unlock(&obj_stock.lock);
--
- 	/* no need for the local lock */
-+	drain_obj_stock(&per_cpu(obj_stock, cpu));
- 	drain_stock_fully(&per_cpu(memcg_stock, cpu));
- 
- 	return 0;
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d471045e757e941ca802bca3147aab45bf770754
+
+Thank you!
+
 -- 
-2.47.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
