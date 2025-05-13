@@ -1,234 +1,222 @@
-Return-Path: <cgroups+bounces-8156-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8157-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38DE5AB4C88
-	for <lists+cgroups@lfdr.de>; Tue, 13 May 2025 09:15:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B051AB4D63
+	for <lists+cgroups@lfdr.de>; Tue, 13 May 2025 09:55:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B597F16E591
-	for <lists+cgroups@lfdr.de>; Tue, 13 May 2025 07:15:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0BFA17D103
+	for <lists+cgroups@lfdr.de>; Tue, 13 May 2025 07:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DF71F03DE;
-	Tue, 13 May 2025 07:15:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894491F1524;
+	Tue, 13 May 2025 07:55:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2ROraWs7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="p0MMbgRl";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2ROraWs7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="p0MMbgRl"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="tDm5V4Sp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B73B433B1
-	for <cgroups@vger.kernel.org>; Tue, 13 May 2025 07:15:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D40E11F151D
+	for <cgroups@vger.kernel.org>; Tue, 13 May 2025 07:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747120528; cv=none; b=ZEq8J2hWVHxrebD5soclBCNk7Qm80HLQn5Ta6jEZs0kccl/G2NUWnkJhmv6GUsdZNTWBJuyAh6WbOSjeGhZcaApZ7Y7FOwdCuDpV277wZ8A7xQ/nCU5dIj3qcI0ERH5UzYQRIoJGlo+DX/fPeacL43zj27pL7GAdIq13HiiBfZI=
+	t=1747122904; cv=none; b=guMwniIFJwtQX3mD0Nl9RRga44meVV4pTfxuIzBalV7aZptw3LMy8tzWDbkPid34lMQzTCJ9tQiUZzA3WsKreoyn10Xl/AYlnkdiuulgg8UKj4UFJe9vHo8IMksEH54O4sk1uTKAj2kBv6TmPOyK8iKwYcBIcS7vyXhCM7dfQKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747120528; c=relaxed/simple;
-	bh=jVZ5/2j32r5gSro7eUI5O2QTGiEFQ0aQT1niktiUiGU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IAOdLkBhrqsKKfsMtUiy6SNwh4QVRcTWQzsd7+0zC0zvTx38cl2U3rjK3tOLNf30w0E6goGqgaaP5A1sC3FEgo32Smz+SfiK8I/qAA1bAF/hxm5womJIjyMJ3ptFIFezvWaMeSTI8QryGOxKcYW5sGG9ig8mzimEfgAvcV6yK8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2ROraWs7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=p0MMbgRl; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2ROraWs7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=p0MMbgRl; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 447B01F443;
-	Tue, 13 May 2025 07:15:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747120524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=be8oLaF1XY+ew3NrcaBsZrwtLFQ8Y+wmaaeGX1M5udQ=;
-	b=2ROraWs7n7h8YDCl7bDSG0oIj+Cp+2cg0DPODFWCnbfdYwjSLEMsUAXWHkhExob9HSav53
-	7heEoJS9XabZoDlnx4ALiNtc2xJ1J7v0Yi1Mb3NjL1RFFpBt7CaKSlwZIFpS7qYiLoDYDJ
-	w4JwIciqwPCSp6Mv8cI1ydsaPNDVxxg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747120524;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=be8oLaF1XY+ew3NrcaBsZrwtLFQ8Y+wmaaeGX1M5udQ=;
-	b=p0MMbgRlMPZl8K82MK4rdhKr93W8rKYimUD6vBwRNDQRO7CUrXOKiewqO0K5dWALz44m1Y
-	DkIVOHi56A1xQ8Cg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2ROraWs7;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=p0MMbgRl
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747120524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=be8oLaF1XY+ew3NrcaBsZrwtLFQ8Y+wmaaeGX1M5udQ=;
-	b=2ROraWs7n7h8YDCl7bDSG0oIj+Cp+2cg0DPODFWCnbfdYwjSLEMsUAXWHkhExob9HSav53
-	7heEoJS9XabZoDlnx4ALiNtc2xJ1J7v0Yi1Mb3NjL1RFFpBt7CaKSlwZIFpS7qYiLoDYDJ
-	w4JwIciqwPCSp6Mv8cI1ydsaPNDVxxg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747120524;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=be8oLaF1XY+ew3NrcaBsZrwtLFQ8Y+wmaaeGX1M5udQ=;
-	b=p0MMbgRlMPZl8K82MK4rdhKr93W8rKYimUD6vBwRNDQRO7CUrXOKiewqO0K5dWALz44m1Y
-	DkIVOHi56A1xQ8Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F31981365D;
-	Tue, 13 May 2025 07:15:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id S4mxLYvxImjwVgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 13 May 2025 07:15:23 +0000
-Message-ID: <07e4e8d9-2588-41bf-89d4-328ca6afd263@suse.cz>
-Date: Tue, 13 May 2025 09:15:23 +0200
+	s=arc-20240116; t=1747122904; c=relaxed/simple;
+	bh=aIQDWby2Q3zAkmKNBvw9NqpmEtYzPXnxL7Iull/2kYM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YfJqGlC+rbSQphNCo0+t/AMNw/Q6o4zfFy2urJbtkHtmPfyO12zcKc0ck7VGcJkU/JmdgWVArV4Qryb3j77r6dLzma1+SUPclR39yglvDqrron1jk1BpquGQWVUSVCYssI67iW2ivCdY3zlg818y5Yk1QhWaPPXKJofzmHINEak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=tDm5V4Sp; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-30c3a038acfso5657417a91.3
+        for <cgroups@vger.kernel.org>; Tue, 13 May 2025 00:55:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1747122901; x=1747727701; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/jEONSQrb0GplIyO9WcUqAzqgpFTdN8SbHvG20l01KM=;
+        b=tDm5V4Spj0ecFpgR6lsO2S4RMIavwxgznkR/y6HOfQ0MWmM2rma9QswUylkCCf0d3Y
+         ni43fdYU5jH4NYLlcmmM8nxfHEn1xr+Spez19kLSWbaoQMKI9r16HRRIj/sd8VBIJUFQ
+         mRx0SN9do8zlQ5edmy9pcLd3udD1Cshx8jleXCzVvziRNOq84NX+4/fQXmbt1Zs0wxkQ
+         XwW++KT4NGTs01X4NgHERLQv7z0sR1+UwwZYTkUt9mjmOl52xo+B7d0TQCP+rBrWmfEA
+         ffwMv4WnSdllAqUXLvdhljGTbD+R7jU6wI+j31fIe1Rgj8zwjukWIbSmLs9yR5M5PKin
+         So4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747122901; x=1747727701;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/jEONSQrb0GplIyO9WcUqAzqgpFTdN8SbHvG20l01KM=;
+        b=Zz/j6MBLkRzRiYks7PKR0inB6HQDS0fZwC922yJ/K0/3lZkSjxXXrD9bXbncIZG8CS
+         Ke67XaWc8Y0HV79Nw8GdhqnYgM2eCaQRoReJzkLFu8Wg6P3TfWyTH0d0eDAA85p1Iu+e
+         YqXqwY9sBkcpcSI7ompogzfduIlgbT8tkk4o2eYrh7J/mWT+wOoTdZlyd0EVUY4YCOI2
+         JSxBQPtswtpD87Utea/OUH5g68lJu1aMtVaQNHxUhh400I96aCrKB65BPDZQSL7GhxLL
+         deJS7jewEiI0idXn1Jw1tNqSpmMegWIVT31ilsRNejYl3ZL4YBsI2WSlNduYjZHrPumy
+         rvnw==
+X-Forwarded-Encrypted: i=1; AJvYcCXe57v98OT80PmpC3jY4Ae11KyrzfnDX4NzWrYUGJ1II7NPgN0+qKrr5b8ecBppOkEqMRw3/LGw@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz9l+77hHbRqLm+m6RpjKJYofJUrMOQrftc4mRjpGWbiqdKYB+B
+	JlPV9XO7ZvNndzorsVGR//lSUpzPZfGYRi6Haqfw26e47QyU9pkZBrzGV8XrgNR2U3lpgS2nyRZ
+	FIG8=
+X-Gm-Gg: ASbGncu+HVSobdTGlKwmc7epCLwg9n4yUumXez3Yt3xxNVprm1IfmnotPrnymQlzTlV
+	IKQ6mh1gI721zfJG+cYZX+UWhvKdysosI84VneUbMAXfkaXZzHlliRpjjaNTbf97P1DdKBCV/6r
+	VRmuoqg2mpLQaBwWX7SM/zv7K/SGBJx+wXjHMNBAo57txtyHEWvPeomZSeb4HFM8xoHIhleRuEZ
+	hKhphLxWKgproC23Lbhz+D/9hZyn/bMLesoVmM6OZOe6RxKrGZpce/0ekBtIM523lJau2zEq3TP
+	qd7mM+hz3EM9tmKDdvhyubaFIMNHMMsq9CG9U+Elscw1PXG7Uw==
+X-Google-Smtp-Source: AGHT+IGdFP2tYLyRgTqkad6ApDG307wXzvKgMWWW5GFY5O81R4K4l6nukBTkVX3+OVGWDNaY4wb8pw==
+X-Received: by 2002:ad4:5d64:0:b0:6e4:2dd7:5c88 with SMTP id 6a1803df08f44-6f6e4828156mr335049666d6.38.1747122890791;
+        Tue, 13 May 2025 00:54:50 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
+        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6f6e39e0b8bsm64653936d6.20.2025.05.13.00.54.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 May 2025 00:54:50 -0700 (PDT)
+Date: Tue, 13 May 2025 03:54:46 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Dave Airlie <airlied@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, tj@kernel.org,
+	christian.koenig@amd.com, Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+	Waiman Long <longman@redhat.com>, simona@ffwll.ch
+Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (v2)
+Message-ID: <20250513075446.GA623911@cmpxchg.org>
+References: <20250502034046.1625896-1-airlied@gmail.com>
+ <20250507175238.GB276050@cmpxchg.org>
+ <CAPM=9tw0hn=doXVdH_hxQMvUhyAQvWOp+HT24RVGA7Hi=nhwRA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] memcg: nmi-safe kmem charging
-Content-Language: en-US
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org,
- linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Meta kernel team <kernel-team@meta.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Peter Zijlstra <peterz@infradead.org>
-References: <20250509232859.657525-1-shakeel.butt@linux.dev>
- <2e2f0568-3687-4574-836d-c23d09614bce@suse.cz>
- <mzrsx4x5xluljyxy5h5ha6kijcno3ormac3sobc3k7bkj5wepr@cuz2fluc5m5d>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <mzrsx4x5xluljyxy5h5ha6kijcno3ormac3sobc3k7bkj5wepr@cuz2fluc5m5d>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 447B01F443
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.51
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPM=9tw0hn=doXVdH_hxQMvUhyAQvWOp+HT24RVGA7Hi=nhwRA@mail.gmail.com>
 
-On 5/12/25 21:12, Shakeel Butt wrote:
-> I forgot to CC Tejun, so doing it now.
+On Thu, May 08, 2025 at 08:03:49AM +1000, Dave Airlie wrote:
+> On Thu, 8 May 2025 at 03:52, Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > Hello Dave,
+> >
+> > On Fri, May 02, 2025 at 01:35:59PM +1000, Dave Airlie wrote:
+> > > Hey all,
+> > >
+> > > This is my second attempt at adding the initial simple memcg/ttm
+> > > integration.
+> > >
+> > > This varies from the first attempt in two major ways:
+> > >
+> > > 1. Instead of using __GFP_ACCOUNT and direct calling kmem charges
+> > > for pool memory, and directly hitting the GPU statistic, Waiman
+> > > suggested I just do what the network socket stuff did, which looks
+> > > simpler. So this adds two new memcg apis that wrap accounting.
+> > > The pages no longer get assigned the memcg, it's owned by the
+> > > larger BO object which makes more sense.
+> >
+> > Unfortunately, this was bad advice :(
+> >
+> > Naked-charging like this is quite awkward from the memcg side. It
+> > requires consumer-specific charge paths in the memcg code, adds stat
+> > counters that are memcg-only with no system-wide equivalent, and it's
+> > difficult for the memcg maintainers to keep track of the link between
+> > what's in the counter and the actual physical memory that is supposed
+> > to be tracked.
+> >
+> > The network and a few others like it are rather begrudging exceptions
+> > because they do not have a suitable page context or otherwise didn't
+> > fit the charging scheme. They're not good examples to follow if it can
+> > at all be avoided.
 > 
-> On Mon, May 12, 2025 at 05:56:09PM +0200, Vlastimil Babka wrote:
->> On 5/10/25 01:28, Shakeel Butt wrote:
->> > BPF programs can trigger memcg charged kernel allocations in nmi
->> > context. However memcg charging infra for kernel memory is not equipped
->> > to handle nmi context. This series adds support for kernel memory
->> > charging for nmi context.
->> > 
->> > The initial prototype tried to make memcg charging infra for kernel
->> > memory re-entrant against irq and nmi. However upon realizing that
->> > this_cpu_* operations are not safe on all architectures (Tejun), this
->> 
->> I assume it was an off-list discussion?
->> Could we avoid this for the architectures where these are safe, which should
->> be the major ones I hope?
+> I unfortunately feel GPU might fit in this category as well, we aren't
+> allocating pages in the traditional manner, so we have a number of
+> problems with doing it at the page level.
 > 
-> Yes it was an off-list discussion. The discussion was more about the
-> this_cpu_* ops vs atomic_* ops as on x86 this_cpu_* does not have lock
-> prefix and how I should prefer this_cpu_* over atomic_* for my series on
-> objcg charging without disabling irqs. Tejun pointed out this_cpu_* are
-> not nmi safe for some archs and it would be better to handle nmi context
-> separately. So, I am not that worried about optimizing for NMI context
+> I think the biggest barrier to doing page level tracking is with the
+> page pools we have to keep. When we need CPU uncached pages, we
+> allocate a bunch of pages and do the work to fix their cpu mappings to
+> be uncached, this work is costly, so when we no longer need the
+> uncached pages in an object, we return them to a pool rather than to
+> the central allocator. We then use a shrinker to empty the pool and
+> undo the cpu mapping change. We also do equivalent pools for dma able
+> and 32-bit dma able pages if they are used.
 
-Well, we're introducing in_nmi() check and different execution paths to all
-charging. This could be e.g. compiled out for architectures where this_cpu*
-is NMI safe or they don't have NMIs in the first place.
+Thanks for explaining the background, this is quite helpful. And I can
+see where you're coming from with this.
 
-> but your next comment on generic_atomic64_* ops is giving me headache.
-> 
->> 
->> > series took a different approach targeting only nmi context. Since the
->> > number of stats that are updated in kernel memory charging path are 3,
->> > this series added special handling of those stats in nmi context rather
->> > than making all >100 memcg stats nmi safe.
->> 
->> Hmm so from patches 2 and 3 I see this relies on atomic64_add().
->> But AFAIU lib/atomic64.c has the generic fallback implementation for
->> architectures that don't know better, and that would be using the "void
->> generic_atomic64_##op" macro, which AFAICS is doing:
->> 
->>         local_irq_save(flags);                                          \
->>         arch_spin_lock(lock);                                           \
->>         v->counter c_op a;                                              \
->>         arch_spin_unlock(lock);                                         \
->>         local_irq_restore(flags);                                       \
->> 
->> so in case of a nmi hitting after the spin_lock this can still deadlock?
->> 
->> Hm or is there some assumption that we only use these paths when already
->> in_nmi() and then another nmi can't come in that context?
->> 
->> But even then, flush_nmi_stats() in patch 1 isn't done in_nmi() and uses
->> atomic64_xchg() which in generic_atomic64_xchg() implementation also has the
->> irq_save+spin_lock. So can't we deadlock there?
-> 
-> I was actually assuming that atomic_* ops are safe against nmis for all
-> archs. I looked at atomic_* ops in include/asm-generic/atomic.h and it
-> is using arch_cmpxchg() for CONFIG_SMP and it seems like for archs with
-> cmpxchg should be fine against nmi. I am not sure why atomic64_* are not
-> using arch_cmpxchg() instead. I will dig more.
+But I'm actually not so sure it's a good idea to uncharge upon release
+into the pool. Those pages might be unused from a GPU driver POV, but
+they're not readily available for, say, a heap fault in another group.
 
-Yeah I've found https://docs.kernel.org/core-api/local_ops.html and since it
-listed Mathieu we discussed on IRC and he mentioned the same thing that
-atomic_ ops are fine, but the later added 64bit variant isn't, which PeterZ
-(who added it) acknowledged.
+For example, AFAIU a cgroup can allocate all of its memory allowance
+in GPU memory, free it back into the pool, then fill the resulting
+headroom inside the group with other allocations, like page cache or
+heap. This lets a cgroup directly trigger allocations worth up to
+twice its memory allowance. Do that on an ongoing basis, and you can
+really tie up other containers in the shrinkers picking up after you -
+just to get to the memory they've been rightfully assigned.
 
-But there could be way out if we could somehow compile-time assert that
-either is true:
-- CONFIG_HAVE_NMI=n - we can compile out all the nmi code
-- this_cpu is safe on that arch - we can also compile out the nmi code
-- (if the above leaves any 64bit arch) its 64bit atomics implementation is safe
-- (if there are any 32bit applicable arch left) 32bit atomics should be
-enough for the nmi counters even with >4GB memory as we flush them? and we
-know the 32bit ops are safe
+That's a clear containment problem.
 
-> I also have the followup series on objcg charging without irq almost
-> ready. I will send it out as rfc soon.
-> 
-> Thanks a lot for awesome and insightful comments.
-> Shakeel
+System-wide, if I'm looking at the right code, the pool can be up to
+50% of memory. That's a lot of used memory not attributed to any
+cgroup, even though each allocation is directly triggered by one.
 
+Container people are no fans of big, unattributed pools like this.
+Imagine you start with a certain amount of memory in the system and
+have a number of containers you would like to run. How much global
+memory headroom do you need to set aside, not assigned to any
+particular cgroup, to get a gpu cache that serves all cgroups well?
+
+Caching itself is not an issue. A large part of cgroup-tracked memory
+is some kind of cache. But what's usually done is to make the cache
+itself per cgroup, and tie the size and the lifetime of entries to the
+group's memory allowance. That gets you isolation and control.
+
+E.g. if one cgroup in the system is more important than the others,
+you can let it have a bigger cache by increasing its memory
+allowance. Whereas if the pool is shared, you have no control over
+that - less important groups could consume the cache and negatively
+impact hit rates of the important group.
+
+So in the GPU case, you'd charge on allocation, free objects into a
+cgroup-specific pool, and shrink using a cgroup-specific LRU
+list. Freed objects can be reused by this cgroup, but nobody else.
+They're reclaimed through memory pressure inside the cgroup, not due
+to the action of others. And all allocated memory is accounted for.
+
+I have to admit I'm pretty clueless about the gpu driver internals and
+can't really judge how feasible this is. But from a cgroup POV, if you
+want proper memory isolation between groups, it seems to me that's the
+direction you'd have to take this in.
+
+> This means that if userspace allocates a large uncached object, and we
+> account it to the current memcg with __GFP_ACCOUNT, then when it gets
+> handed back to the pool we have to remove it from the memcg
+> accounting. This was where I used the memcg kmem charge/uncharges,
+> uncharge on adding to pool and charge on reuse. However kmem seems
+> like the wrong place to charge, but it's where the initial
+> __GFP_ACCOUNT will put those pages.
+
+Ah, no need to worry about it. The name is just a historical memcgism,
+from back when we first started charging "kernel" allocations, as
+opposed to the conventional, pageable userspace memory. It's no longer
+a super meaningful distinction, tbh.
+
+You can still add a separate counter for GPU memory.
+
+> This is why the suggestions to use the network solution worked
+> better for me, I can do all the work outside the pool code at a
+> slightly higher level (the same level where we charge/uncharge
+> dmem), and I don't have to worry about handling the different pool
+> types etc. We also don't need page->memcg to be set for these pages
+> I don't think as all pages are part of a large object and the object
+> is what gets swapped or freed, not parts of it.
+
+I agree this doesn't need to be a goal in itself. It would just be a
+side effect of charging through __GFP_ACCOUNT and uncharging inside
+__free_pages(). What's more important is that the charge lifetime is
+correlated with the actual memory allocation.
 
