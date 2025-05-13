@@ -1,214 +1,158 @@
-Return-Path: <cgroups+bounces-8171-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8172-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83951AB5F33
-	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 00:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 60DDCAB5F47
+	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 00:25:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F5F9467FB4
-	for <lists+cgroups@lfdr.de>; Tue, 13 May 2025 22:17:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFD2A4A1F8E
+	for <lists+cgroups@lfdr.de>; Tue, 13 May 2025 22:25:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A6820B215;
-	Tue, 13 May 2025 22:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD7120CCE4;
+	Tue, 13 May 2025 22:25:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wx9K/XDN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W94iHPgP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7151F03D9;
-	Tue, 13 May 2025 22:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E4B20C461;
+	Tue, 13 May 2025 22:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747174633; cv=none; b=ZsAM248C3OY+56z/IK3xnht1rWLfHxzOXo0VoqgI9yszB8Xgw3+zTRZp31WFf9Ef2VPxDyo9izneS7G6Fx+LtyrhWz2CSckxLN4Wl8lNtF5GdWirUchf+3FmUcEF2FARJy2TvuvY1lTVYhOahqCObKRvt3SLcGHGGSXFOM0wbKo=
+	t=1747175145; cv=none; b=B4W6i/gqrO2QucwRcHntEahYd3tXoaeXV97Hs0eu+fcX9LcJkpPs8XosPshY2+jxbeREOV5bQkniuggHS6KSRi45L+dEN2C22kD0MQhuBNB8sIbdzRyZPnudLlFLvOkftotVCvGygQuYnXpD5g08R37UhTrY1TGtydE2MNwp/KY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747174633; c=relaxed/simple;
-	bh=yNLqlPWASut9p1xEAFv4YgaFRmFtpdfW1XyDhbCPf5k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nj5M4QkMFEAOPSUlLwbgPic1s8/F3v8tpmQiv/ApaMAIR0baEX3BSDP/+b9l8KlBh0kmOlIZVXOY1drv+9tQwZmub3oVV4P78LATqTBowfmpBFrLDHhfpm/vOyw8UYvbFszoLkTDcT2lNAXHzJMvuMUPxRoeAvcU8NHDkfTN/8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wx9K/XDN; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 13 May 2025 15:17:00 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747174626;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rahQYu1hjcaoMkOQ2Z62DrFUneDFZMeqj32rynYl3Ak=;
-	b=wx9K/XDNsqu6pyfaRN9KPelr685TgwkIZ1xr5mFHW+x3b9xZQLu1VZrf/0N2qg1XVpfB9O
-	0Hf3zWfQM3ZlD4p5dlaRY6pGJFUrKBK+9vQaQJjTOPRT8PivyYeNxB1GUui0ARnNei+Os6
-	I8+Ybr+04GBOUr87R0gPSswu14rvZx4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>, 
-	Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH 0/4] memcg: nmi-safe kmem charging
-Message-ID: <ct2h2eyuepa2g2ltl5fucfegwyuqspvz6d4uugcs4szxwnggdc@6m4ks3hp3tjj>
-References: <20250509232859.657525-1-shakeel.butt@linux.dev>
- <2e2f0568-3687-4574-836d-c23d09614bce@suse.cz>
- <mzrsx4x5xluljyxy5h5ha6kijcno3ormac3sobc3k7bkj5wepr@cuz2fluc5m5d>
- <07e4e8d9-2588-41bf-89d4-328ca6afd263@suse.cz>
- <20250513114125.GE25763@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1747175145; c=relaxed/simple;
+	bh=rf3JppW/78wO/r4B/y0eX4WT7rbL9KH6NSFoGLZ/3Fg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZF5qupP4w3u3CRCVHgBiSWy0sGOCg5I96L/jwyFVZ06Lc2xDpcc3b+mZ+lbqtT8YQpuvM48rFcO796Xzs/FDjTwdCZgKQtadkIEac77AfS4BrL1CQtXHw/rLrjDEIW9fqaNUSQ2x00cKPa8kCfuQlAM/imRYZlVM7gfBd9NEOk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W94iHPgP; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3a108684f90so3753202f8f.1;
+        Tue, 13 May 2025 15:25:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747175142; x=1747779942; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wAwr1O0koPzIlKh8epOygSIaJtugVEfkRrBmy7awSbw=;
+        b=W94iHPgPJz/INngo0cRpnhtWyjCUrDSuU969bPC3SZCkg4QLlB4bUabuaMGw9vB2YL
+         rFZXONTEsy/ATGwR8a3B0C1vEeNvHQdu6JroeCBXsU5Axsfgc88XkaCZKDcvY/ycc/RS
+         FW0lA72pKufLy+rIikDlmaYdhGzy7r5mEIWSwrcoPdSGY3CAc7dZeGJ5Tg8PQEmiA/xx
+         rklBm4KvN6ZJZcwBc4ApKGCUMPIIR7URNvN1sIh8qcOLuQeKB2ogbGwcpJpMUDd6ZAhe
+         Czjl8Smd3cosAGUXYrCcLWJL2+zGsmVRDfRdlEGWfTMkZNr5WZnqbXJom2X7GdoQRfqP
+         FMxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747175142; x=1747779942;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wAwr1O0koPzIlKh8epOygSIaJtugVEfkRrBmy7awSbw=;
+        b=PkFg+ktOKngMwKFbBoitHafYWlJUpYTexVzvdmIe7fym0XYQRysgR8drK3tGHn+XBe
+         zISSDcH5Yx/LX5leYlJkYoZI0nAbNcvOx2ahXcVeaOsCBQSJliW2iLHKBQHoVTI8z33w
+         W3FONirhkdjBnLQRStIRGhjUrGXTA9nhodz/+1XCFx2dtrGChhApDQXmbWlYpFt16pSC
+         s0kWcUnmzocM+iPjLA7eMXHy1zv3Jz06tdrvL7WdEd7JUQowbkHDtx/sI3yKTu4Ssq3v
+         vgZHwS1TMN+p1ivxQUzifg5n9p4WyczDqDLUxk1JrmJ5NYXNBiYSot0jMkF3jw1j82l4
+         Do+A==
+X-Forwarded-Encrypted: i=1; AJvYcCUSTbNd9SGY1uEFZNzWEpoZPQWNDpjTtWUDQ7/p4g5TLcumPsuzF5zrV8Cp9QJPZgytaTA=@vger.kernel.org, AJvYcCUh8SmE56CWg0Z3wY61BPIIYPhoSZdT5n//iDeuBmGhndOVBEl40EmVXi5Q8pF2cGr00uSs+Pw2Og==@vger.kernel.org, AJvYcCXZ6RgE7ONlGdYLS4uKSjDapGRe43cntP+dD1960Vx55jSj24wb0/V+yxE3Ecp6fHylR/95tS6qjHbERopB@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+2xpPKY9cXwGFyl/aEKVU05ACEJiOAjzQlYGCDp8BaDVkYP/P
+	p7HNUeWbidrjiXeRlSppAqKMPuWSyIkAWJF3cUkxmUeldO5kFlHaCvM8WU/sLq24YYvZH8xXmAZ
+	Kl6dd3lEAXDXF4jmSWsk5D2UUcPk=
+X-Gm-Gg: ASbGncvGrKpNRVcFWOOtilzbFfw0ERNRN4jL8Gt3CygJGqqqmbptKCFGH1UhHHHOBMF
+	DZSLVyAf/Bmjl5h3aOjsSXhwCTQ5i5l7qAN1GjUaPzq+KB5iv6gYPKOoCOxD8M9Plg+2WvLC3rC
+	pbpXQKd7H18KOwTOKgpw90dwPf/GhpJOzpGBRcb6GALe7WeHH7ZfzhHZNYZ1Bv8w==
+X-Google-Smtp-Source: AGHT+IGCSV1CW2V8g3e0buvKmCKp4+U6DS5ChJ8qy9B6coY/qGEWuanukGv1ONA7/0rEN2Xci8nFgq7f5PO+enTp454=
+X-Received: by 2002:a05:6000:430d:b0:3a0:b4f1:8bd1 with SMTP id
+ ffacd0b85a97d-3a3499532b6mr669366f8f.52.1747175141983; Tue, 13 May 2025
+ 15:25:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250513114125.GE25763@noisy.programming.kicks-ass.net>
-X-Migadu-Flow: FLOW_OUT
+References: <20250509232859.657525-1-shakeel.butt@linux.dev> <20250509232859.657525-5-shakeel.butt@linux.dev>
+In-Reply-To: <20250509232859.657525-5-shakeel.butt@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 13 May 2025 15:25:31 -0700
+X-Gm-Features: AX0GCFu-xAuvef9BfHGE2CGCgnqITmOEvaYA7dWvW7qUfVnFWb0NhsjFDSFfKcA
+Message-ID: <CAADnVQ+8w7huzJFqqm40KVetnQC-SoFKSMjq2uJHEHuAkCR7YA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] memcg: make objcg charging nmi safe
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, 
+	Alexei Starovoitov <ast@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf <bpf@vger.kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Meta kernel team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 13, 2025 at 01:41:25PM +0200, Peter Zijlstra wrote:
-> On Tue, May 13, 2025 at 09:15:23AM +0200, Vlastimil Babka wrote:
-> 
-> > >> > The initial prototype tried to make memcg charging infra for kernel
-> > >> > memory re-entrant against irq and nmi. However upon realizing that
-> > >> > this_cpu_* operations are not safe on all architectures (Tejun), this
-> > >> 
-> > >> I assume it was an off-list discussion?
-> > >> Could we avoid this for the architectures where these are safe, which should
-> > >> be the major ones I hope?
-> 
-> IIRC Power64 has issues here, 'funnily' their local_t is NMI safe.
-> Perhaps we could do the same for their this_cpu_*(), but ideally someone
-> with actual power hardware should do this ;-)
-> 
-
-Is CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS the right config to
-differentiate between such archs? I see Power64 does not have that
-enabled.
-
-> > > Yes it was an off-list discussion. The discussion was more about the
-> > > this_cpu_* ops vs atomic_* ops as on x86 this_cpu_* does not have lock
-> > > prefix and how I should prefer this_cpu_* over atomic_* for my series on
-> > > objcg charging without disabling irqs. Tejun pointed out this_cpu_* are
-> > > not nmi safe for some archs and it would be better to handle nmi context
-> > > separately. So, I am not that worried about optimizing for NMI context
-> > 
-> > Well, we're introducing in_nmi() check and different execution paths to all
-> > charging. This could be e.g. compiled out for architectures where this_cpu*
-> > is NMI safe or they don't have NMIs in the first place.
-> 
-> Very few architectures one would care about do not have NMIs. Risc-V
-> seems to be the exception here ?!?
-> 
-> > > but your next comment on generic_atomic64_* ops is giving me headache.
-> > > 
-> > >> 
-> > >> > series took a different approach targeting only nmi context. Since the
-> > >> > number of stats that are updated in kernel memory charging path are 3,
-> > >> > this series added special handling of those stats in nmi context rather
-> > >> > than making all >100 memcg stats nmi safe.
-> > >> 
-> > >> Hmm so from patches 2 and 3 I see this relies on atomic64_add().
-> > >> But AFAIU lib/atomic64.c has the generic fallback implementation for
-> > >> architectures that don't know better, and that would be using the "void
-> > >> generic_atomic64_##op" macro, which AFAICS is doing:
-> > >> 
-> > >>         local_irq_save(flags);                                          \
-> > >>         arch_spin_lock(lock);                                           \
-> > >>         v->counter c_op a;                                              \
-> > >>         arch_spin_unlock(lock);                                         \
-> > >>         local_irq_restore(flags);                                       \
-> > >> 
-> > >> so in case of a nmi hitting after the spin_lock this can still deadlock?
-> > >> 
-> > >> Hm or is there some assumption that we only use these paths when already
-> > >> in_nmi() and then another nmi can't come in that context?
-> > >> 
-> > >> But even then, flush_nmi_stats() in patch 1 isn't done in_nmi() and uses
-> > >> atomic64_xchg() which in generic_atomic64_xchg() implementation also has the
-> > >> irq_save+spin_lock. So can't we deadlock there?
-> > > 
-> > > I was actually assuming that atomic_* ops are safe against nmis for all
-> > > archs.
-> 
-> We have HAVE_NMI_SAFE_CMPXCHG for this -- there are architectures where
-> this is not the case -- but again, those are typically oddball archs you
-> don't much care about.
-> 
-> But yes, *64 on 32bit archs is generally not NMI safe.
-> 
-> > I looked at atomic_* ops in include/asm-generic/atomic.h and it
-> > > is using arch_cmpxchg() for CONFIG_SMP and it seems like for archs with
-> > > cmpxchg should be fine against nmi. I am not sure why atomic64_* are not
-> > > using arch_cmpxchg() instead. I will dig more.
-> 
-> Not many 32bit architectures have 64bit cmpxchg. We're only now dropping
-> support for x86 chips without CMPXCHG8b.
-> 
-
-As Vlastimil pointed out (last point), I don't think I will need 64bit
-cmpxchg, 32bit cmpxchg will be fine.
-
-> > Yeah I've found https://docs.kernel.org/core-api/local_ops.html and since it
-> > listed Mathieu we discussed on IRC and he mentioned the same thing that
-> > atomic_ ops are fine, but the later added 64bit variant isn't, which PeterZ
-> > (who added it) acknowledged.
-> > 
-> > But there could be way out if we could somehow compile-time assert that
-> > either is true:
-> > - CONFIG_HAVE_NMI=n - we can compile out all the nmi code
-> 
-> Note that in_nmi() is not depending on HAVE_NMI -- nor can it be. Many
-> architectures treat various traps as NMI-like, even though they might
-> not have real NMIs.
-> 
-> > - this_cpu is safe on that arch - we can also compile out the nmi code
-> 
-> There is no config symbol for this presently.
-
-Hmm what about CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS?
-
-> 
-> > - (if the above leaves any 64bit arch) its 64bit atomics implementation is safe
-> 
-> True, only because HPPA does not in fact have NMIs.
-
-What is HPPA?
-
-> 
-> > - (if there are any 32bit applicable arch left) 32bit atomics should be
-> > enough for the nmi counters even with >4GB memory as we flush them? and we
-> > know the 32bit ops are safe
-> 
-> Older ARM might qualify here.
-
-Thanks a lot Vlastimil & Peter for the suggestions. Let me summarize
-what I plan to do and please point out if I am doing something wrong:
+On Fri, May 9, 2025 at 4:29=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
+> wrote:
+>
+> To enable memcg charged kernel memory allocations from nmi context,
+> consume_obj_stock() and refill_obj_stock() needs to be nmi safe. With
+> the simple in_nmi() check, take the slow path of the objcg charging
+> which handles the charging and memcg stats updates correctly for the nmi
+> context.
+>
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> ---
+>  mm/memcontrol.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index bba549c1f18c..6cfa3550f300 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2965,6 +2965,9 @@ static bool consume_obj_stock(struct obj_cgroup *ob=
+jcg, unsigned int nr_bytes,
+>         unsigned long flags;
+>         bool ret =3D false;
+>
+> +       if (unlikely(in_nmi()))
+> +               return ret;
+> +
+>         local_lock_irqsave(&obj_stock.lock, flags);
+>
+>         stock =3D this_cpu_ptr(&obj_stock);
+> @@ -3068,6 +3071,15 @@ static void refill_obj_stock(struct obj_cgroup *ob=
+jcg, unsigned int nr_bytes,
+>         unsigned long flags;
+>         unsigned int nr_pages =3D 0;
+>
+> +       if (unlikely(in_nmi())) {
+> +               if (pgdat)
+> +                       __mod_objcg_mlstate(objcg, pgdat, idx, nr_bytes);
+> +               nr_pages =3D nr_bytes >> PAGE_SHIFT;
+> +               nr_bytes =3D nr_bytes & (PAGE_SIZE - 1);
+> +               atomic_add(nr_bytes, &objcg->nr_charged_bytes);
+> +               goto out;
+> +       }
 
 
-#if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || !defined(CONFIG_HAVE_NMI)
+Now I see what I did incorrectly in my series and how this patch 4
+combined with patch 3 is doing accounting properly.
 
-// Do normal this_cpu* ops
+The only issue here and in other patches is that in_nmi() is
+an incomplete condition to check for.
+The reentrance is possible through kprobe or tracepoint.
+In PREEMP_RT we will be fully preemptible, but
+obj_stock.lock will be already taken by the current task.
+To fix it you need to use local_lock_is_locked(&obj_stock.lock)
+instead of in_nmi() or use local_trylock_irqsave(&obj_stock.lock).
 
-#elif defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
-
-// Do 32 bit atomic ops with in_nmi() checks
-
-#else
-
-// Build error or ignore nmi stats??
-
-#endif
-
-
-WDYT?
-
-(BTW Vlastimil, I might rebase send out the irq-safe series before this
-nmi one.)
-
-thanks,
-Shakeel
+local_trylock_irqsave() is cleaner and works today,
+while local_lock_is_locked() hasn't landed yet, but if we go
+is_locked route we can decouple reentrant obj_stock operation vs normal.
+Like the if (!local_lock_is_locked(&obj_stock.lock))
+can be done much higher up the stack from
+__memcg_slab_post_alloc_hook() the way I did in my series,
+and if locked it can do atomic_add()-style charging.
+So refill_obj_stock() and friends won't need to change.
 
