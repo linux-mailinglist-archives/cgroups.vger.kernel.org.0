@@ -1,47 +1,47 @@
-Return-Path: <cgroups+bounces-8194-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8196-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BB8CAB749D
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28DD5AB749C
 	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 20:44:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 959198C34C0
-	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 18:43:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0F594C5D49
+	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 18:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86EF28C2C2;
-	Wed, 14 May 2025 18:42:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C7E28C860;
+	Wed, 14 May 2025 18:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Sd0foDw8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XsH+sSP2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72BFF289809
-	for <cgroups@vger.kernel.org>; Wed, 14 May 2025 18:42:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC18628C5B8
+	for <cgroups@vger.kernel.org>; Wed, 14 May 2025 18:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747248168; cv=none; b=LBuLFm1PgK9ocwz71hy0GdHYR2qApdL3eBev9qeZs/xCO1RtGUDhIC3M82FbdCCSamNvjAQ1XvByW5Xhmi3Lo0Pwf/L4/TEsG13gb4owwS+gehMl2gp+nmvqTXQ7jEbvaNdvcpEA0wlcD+bq7jlHQV6zLVLGe0R2U4yYi8+I00w=
+	t=1747248171; cv=none; b=GIWy9Ma3pC7I3LBjubOIETy/m+OU0RLZRHd3W1q1sIZF+B3Z/4bofPr1f0sZxHvfniN3PAgR3G69MKPTRjzGRXOPs8z6wa6XK54sxy1W3XKEGSWTyHy6v2L0PLxsenHiW1ircKiTLpo5aw7N9nH0ETnZQKlFUbL7PuCceTre4xo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747248168; c=relaxed/simple;
-	bh=c7f1JqYL+N+gc3929U7LX1WduHuibXWR30XjLdvV0mg=;
+	s=arc-20240116; t=1747248171; c=relaxed/simple;
+	bh=F3WEBTPiQLWz9cCb+hjP8Ux7u/ANXbxtzcyn85cfhmw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Gx3C7TQ1Ao7rVCNeHtR39A7BzmF5me0HMfkvt5ZG/w5q6fhRZi2bEcBBmclfpRUDPw+x4kY9OKXD8KvLwwe68V5CuwJPptpFJlSAco+agTq+WidiSCTGzejeWCSk4JEk+GvSKb00FPzpJJ3FqW861fz06jc6dZh1tchDUdTWifI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Sd0foDw8; arc=none smtp.client-ip=91.218.175.179
+	 MIME-Version; b=Sb0yatj5dzMu439A++76SXXUu/R9u6W1rZzOAUehqWRRfyydNMhS3tUsjg9ZCAlCKNGuOSWfFiVdnyeI4NKe92aa43dprk7w3dUK54sRp5L9eFu03w0yE3w5oMxqQLmGuX2KtTuQ7AqnfkDjWCkd1y8Hh+NdIuueVEH62n5l6QI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XsH+sSP2; arc=none smtp.client-ip=91.218.175.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747248164;
+	t=1747248167;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=etryLQv1PQn8hNrBUm3oFgL1RI4JaFP1NEKUUORZ0W4=;
-	b=Sd0foDw8hTyLha3GBCyFbPszUlMlfOiyuB8MM6D8ax08Ur18pDkzsPgo1ZDU3tADiJcFvR
-	hVs8N0Z1cEs0GP6UaeqjfCC82z82c2jtj2Ne/PlQ3IriJckhYtsZjTWmvLcDzZL8WWGw1H
-	QFJPu8f70R7oPFAHu4ZOBGSQ4RIE7B8=
+	bh=tl4rUg93LkTokTk1IS4m9ISxrd6enFA07YnhN9En2KU=;
+	b=XsH+sSP2IqgV4b7JFzKmne3RJ7B8fs6sll5nB5jaO2ynnf01GgAFSgEyNXGG86e9Z7QQ1C
+	xAVYpXslEoie+4agb0gtbili30uXYuaShK5I8zmCyUoS39PXhQWaMMqSpDmDEFLEr7kO7A
+	tKA3XPMFfwrhihunQK+imHxFUbmwrx0=
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
@@ -58,9 +58,9 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>
-Subject: [PATCH v2 5/7] memcg: make __mod_memcg_lruvec_state re-entrant safe against irqs
-Date: Wed, 14 May 2025 11:41:56 -0700
-Message-ID: <20250514184158.3471331-6-shakeel.butt@linux.dev>
+Subject: [PATCH v2 6/7] memcg: no stock lock for cpu hot-unplug
+Date: Wed, 14 May 2025 11:41:57 -0700
+Message-ID: <20250514184158.3471331-7-shakeel.butt@linux.dev>
 In-Reply-To: <20250514184158.3471331-1-shakeel.butt@linux.dev>
 References: <20250514184158.3471331-1-shakeel.butt@linux.dev>
 Precedence: bulk
@@ -72,113 +72,43 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Let's make __mod_memcg_lruvec_state re-entrant safe and name it
-mod_memcg_lruvec_state(). The only thing needed is to convert the usage
-of __this_cpu_add() to this_cpu_add(). There are two callers of
-mod_memcg_lruvec_state() and one of them i.e. __mod_objcg_mlstate() will
-be re-entrant safe as well, so, rename it mod_objcg_mlstate(). The last
-caller __mod_lruvec_state() still calls __mod_node_page_state() which is
-not re-entrant safe yet, so keep it as is.
+Previously on the cpu hot-unplug, the kernel would call
+drain_obj_stock() with objcg local lock. However local lock was not
+needed as the stock which was accessed belongs to a dead cpu but we kept
+it there to disable irqs as drain_obj_stock() may call
+mod_objcg_mlstate() which required irqs disabled. However there is no
+need to disable irqs now for mod_objcg_mlstate(), so we can remove the
+local lock altogether from cpu hot-unplug path.
 
 Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/memcontrol.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ mm/memcontrol.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0923072386c2..1071db0b1df8 100644
+index 1071db0b1df8..04d756be708b 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -727,7 +727,7 @@ unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
- }
- #endif
+@@ -2025,17 +2025,8 @@ void drain_all_stock(struct mem_cgroup *root_memcg)
  
--static void __mod_memcg_lruvec_state(struct lruvec *lruvec,
-+static void mod_memcg_lruvec_state(struct lruvec *lruvec,
- 				     enum node_stat_item idx,
- 				     int val)
+ static int memcg_hotplug_cpu_dead(unsigned int cpu)
  {
-@@ -745,10 +745,10 @@ static void __mod_memcg_lruvec_state(struct lruvec *lruvec,
- 	cpu = get_cpu();
+-	struct obj_stock_pcp *obj_st;
+-	unsigned long flags;
+-
+-	obj_st = &per_cpu(obj_stock, cpu);
+-
+-	/* drain_obj_stock requires objstock.lock */
+-	local_lock_irqsave(&obj_stock.lock, flags);
+-	drain_obj_stock(obj_st);
+-	local_unlock_irqrestore(&obj_stock.lock, flags);
+-
+ 	/* no need for the local lock */
++	drain_obj_stock(&per_cpu(obj_stock, cpu));
+ 	drain_stock_fully(&per_cpu(memcg_stock, cpu));
  
- 	/* Update memcg */
--	__this_cpu_add(memcg->vmstats_percpu->state[i], val);
-+	this_cpu_add(memcg->vmstats_percpu->state[i], val);
- 
- 	/* Update lruvec */
--	__this_cpu_add(pn->lruvec_stats_percpu->state[i], val);
-+	this_cpu_add(pn->lruvec_stats_percpu->state[i], val);
- 
- 	val = memcg_state_val_in_pages(idx, val);
- 	memcg_rstat_updated(memcg, val, cpu);
-@@ -775,7 +775,7 @@ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 
- 	/* Update memcg and lruvec */
- 	if (!mem_cgroup_disabled())
--		__mod_memcg_lruvec_state(lruvec, idx, val);
-+		mod_memcg_lruvec_state(lruvec, idx, val);
- }
- 
- void __lruvec_stat_mod_folio(struct folio *folio, enum node_stat_item idx,
-@@ -2527,7 +2527,7 @@ static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
- 	folio->memcg_data = (unsigned long)memcg;
- }
- 
--static inline void __mod_objcg_mlstate(struct obj_cgroup *objcg,
-+static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
- 				       struct pglist_data *pgdat,
- 				       enum node_stat_item idx, int nr)
- {
-@@ -2537,7 +2537,7 @@ static inline void __mod_objcg_mlstate(struct obj_cgroup *objcg,
- 	rcu_read_lock();
- 	memcg = obj_cgroup_memcg(objcg);
- 	lruvec = mem_cgroup_lruvec(memcg, pgdat);
--	__mod_memcg_lruvec_state(lruvec, idx, nr);
-+	mod_memcg_lruvec_state(lruvec, idx, nr);
- 	rcu_read_unlock();
- }
- 
-@@ -2847,12 +2847,12 @@ static void __account_obj_stock(struct obj_cgroup *objcg,
- 		struct pglist_data *oldpg = stock->cached_pgdat;
- 
- 		if (stock->nr_slab_reclaimable_b) {
--			__mod_objcg_mlstate(objcg, oldpg, NR_SLAB_RECLAIMABLE_B,
-+			mod_objcg_mlstate(objcg, oldpg, NR_SLAB_RECLAIMABLE_B,
- 					  stock->nr_slab_reclaimable_b);
- 			stock->nr_slab_reclaimable_b = 0;
- 		}
- 		if (stock->nr_slab_unreclaimable_b) {
--			__mod_objcg_mlstate(objcg, oldpg, NR_SLAB_UNRECLAIMABLE_B,
-+			mod_objcg_mlstate(objcg, oldpg, NR_SLAB_UNRECLAIMABLE_B,
- 					  stock->nr_slab_unreclaimable_b);
- 			stock->nr_slab_unreclaimable_b = 0;
- 		}
-@@ -2878,7 +2878,7 @@ static void __account_obj_stock(struct obj_cgroup *objcg,
- 		}
- 	}
- 	if (nr)
--		__mod_objcg_mlstate(objcg, pgdat, idx, nr);
-+		mod_objcg_mlstate(objcg, pgdat, idx, nr);
- }
- 
- static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
-@@ -2947,13 +2947,13 @@ static void drain_obj_stock(struct obj_stock_pcp *stock)
- 	 */
- 	if (stock->nr_slab_reclaimable_b || stock->nr_slab_unreclaimable_b) {
- 		if (stock->nr_slab_reclaimable_b) {
--			__mod_objcg_mlstate(old, stock->cached_pgdat,
-+			mod_objcg_mlstate(old, stock->cached_pgdat,
- 					  NR_SLAB_RECLAIMABLE_B,
- 					  stock->nr_slab_reclaimable_b);
- 			stock->nr_slab_reclaimable_b = 0;
- 		}
- 		if (stock->nr_slab_unreclaimable_b) {
--			__mod_objcg_mlstate(old, stock->cached_pgdat,
-+			mod_objcg_mlstate(old, stock->cached_pgdat,
- 					  NR_SLAB_UNRECLAIMABLE_B,
- 					  stock->nr_slab_unreclaimable_b);
- 			stock->nr_slab_unreclaimable_b = 0;
+ 	return 0;
 -- 
 2.47.1
 
