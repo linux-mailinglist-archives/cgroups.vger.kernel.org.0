@@ -1,364 +1,113 @@
-Return-Path: <cgroups+bounces-8189-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8191-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB07BAB725F
-	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 19:08:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 071A8AB7492
+	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 20:43:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 441893BFB78
-	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 17:07:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61EB18C1FCD
+	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 18:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C7427BF83;
-	Wed, 14 May 2025 17:08:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F39B288C8C;
+	Wed, 14 May 2025 18:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P8wGW7MJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2170E1EFF81
-	for <cgroups@vger.kernel.org>; Wed, 14 May 2025 17:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E2D8289E06
+	for <cgroups@vger.kernel.org>; Wed, 14 May 2025 18:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747242486; cv=none; b=FFzWsWatOuB43Xkgk7gfXuv6i6IuRn7w/r3DnyBpUhWhBWmt8W/tvtlCjOXqLhNcuYl6gmgVqkHQBB0/QRGV54XlfIuMFbfqWRgrPncCKNzN921hyFLBEulbQuH8kDTxtUYo1Wq5ibNUecRTQ3PTho+UYyNHbxXYXkET+1/8XkE=
+	t=1747248148; cv=none; b=UqRscnhufu/LP5sHgTvOsP2KHolpb2urp5NIpe4H+IXfHVEcY0/WLEdH8brls32FDwgdvzlAxG5Y+KwXFwmXy27jznyYrcPOCCIcoQe0e1/LHunvB3bxk4RRkot7hjiMmnM1uK+0JNpa1ojJFZXwIKSuBcVzWPNpdrj8l0ZzlkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747242486; c=relaxed/simple;
-	bh=6bTkh/1vXQ2fM8ejeQ+hNrWyZGqVaG0FzNZat9QCmRQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=odczhBp7LLoEqz684aP1mWn251AYy/DehOgIDXQDqKxb1IGuF9agQUP/Iwnsgu7q3Z1D69CBRqYtKqG8lIkqlpPex+wbTAag3yJTnPnuiCpoN3mKVtCaP4fCLXYV7y+MP4Y2mz+JqWelAyujmDO5x38l2jPs6B/HxRXroeD0GpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lankhorst.se; spf=pass smtp.mailfrom=lankhorst.se; arc=none smtp.client-ip=141.105.120.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lankhorst.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lankhorst.se
-Message-ID: <7a070692-c6e6-4dfa-aae8-5155988ca3eb@lankhorst.se>
-Date: Wed, 14 May 2025 19:07:59 +0200
+	s=arc-20240116; t=1747248148; c=relaxed/simple;
+	bh=q5ui5UAA6sDZXoXLBnSfIAbWomRc12PZFrAUaIo0Yng=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dLjsDzkHX/U19WVXzOw+4DADBbbXdXJh4Bma/fq3z9+M0h6uKkWwInZCLDcftqbhpPkveLOL8b1KxPbLiLBvlaB9vEPVXQxbIxOXqcNxRVlskcYUTOxIgVXwToPMscLWKNI0Agtsmlw8cv3e2iTVpWGMzIFZx5j4Q+U/JSb2mTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P8wGW7MJ; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747248134;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=YEf1BORBOsBfo/7P9FA9WA9o/wcYctYmHhlHLcMB2F8=;
+	b=P8wGW7MJnEsuLTwzuaIdy5oghtUCutOUk7BEW93Dp+0lHf1rTbBInjISZQqBj6qTjL32AF
+	uRgwwPtFy+qSahTFpwam6wMOGvzpZRcebdeTC5YyqJ5mv2uNhe6xUKmbw9OUKRs9wDzd/y
+	nl1MyifIpr2ZSWRbhhgNdUVofCVyA8M=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Harry Yoo <harry.yoo@oracle.com>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>,
+	bpf@vger.kernel.org,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: [PATCH v2 0/7] memcg: make memcg stats irq safe
+Date: Wed, 14 May 2025 11:41:51 -0700
+Message-ID: <20250514184158.3471331-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [5/7] ttm: add initial memcg integration. (v4)
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
- tj@kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>
-Cc: cgroups@vger.kernel.org, Waiman Long <longman@redhat.com>, simona@ffwll.ch
-References: <20250512061913.3522902-6-airlied@gmail.com>
- <ea70e6fa-22a1-4adc-927a-5e9c2563f784@lankhorst.se>
- <6a41fa3e-6ca7-4791-b491-4908971275a5@amd.com>
-Content-Language: en-US
-From: Maarten Lankhorst <dev@lankhorst.se>
-In-Reply-To: <6a41fa3e-6ca7-4791-b491-4908971275a5@amd.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hey,
+This series converts memcg stats to be irq safe i.e. memcg stats can be
+updated in any context (task, softirq or hardirq) without disabling the
+irqs. This is still not nmi-safe on all architectures but after this
+series converting memcg charging and stats nmi-safe will be easier.
 
-On 2025-05-14 13:55, Christian König wrote:
-> On 5/14/25 13:41, Maarten Lankhorst wrote:
->> Hi Dave,
->>
->> We've had a small discussion on irc, so I wanted to summarize it here:
->>
->> All memory allocated should be accounted, even memory that is being
->> evicted from VRAM.
-> 
-> That sounds like a really bad idea to me.
-> 
->> This may cause the process that originally allocated
->> the VRAM to go over the memcg limit, that should be solved by invoking
->> OOM condition on the original process, which may have ways to solve it
->> like purging purgeable memory, or as last resort OOM killing.
-> 
-> You are basically suggesting to kill an application for something it never requested in the first place.
-> 
-> In other words when an application requested a buffer to be placed in VRAM we can't make it responsible that the buffer had to be moved to system memory because of over allocation.
-> 
-> As far as I can see and have discussed with others so far this approach is a clear no-go.
-There is absolutely no need to kill an application. You can set dmem limits in such a way that a buffer will never be evicted.
-Killing would be an absolute last resort, and only happens when maximum amount of memory is set.
+Changes since v1:
+-----------------
+1. Rebased on mm-new.
+2. Cleanups in first patch as suggested by Vlastimil.
 
-Alternatively we could count memory in VRAM similar to swapped out memory, since it's just another placement of allocated memory. :)
+Changes since RFC[1]:
+--------------------
+1. Rebased on next-20250513 (mm tree has some conflicts with cgroup
+   tree).
+2. Does not depend of nmi-safe memcg series [2].
+3. Made memcg_rstat_updated re-entrant using this_cpu_* ops as suggested
+   by Vlastimil.
+4. Fixes some spelling mistakes as suggested by Vlastimil.
+5. Rearranged the 6th and 7th patch as suggested by Vlastimil.
 
-> 
-> 
->> The VRAM evicter is already memcg aware, so it should be possible to do
->> the same for the shrinker. I created a patch to use the same cgroup for
->> memcg as for dmem, we should probably extract the cgroup from mm->owner,
->> and create a function to charge dmemcg and memcg with a specified cgroup.
->>
->> For applications that use a centralised allocator, it might be needed to
->> charge a different cgroup when exporting.
->>
->> Kind regards,
->> Maarten
->>
->> On 2025-05-12 08:12, Dave Airlie wrote:
->>> From: Dave Airlie <airlied@redhat.com>
->>>
->>> Doing proper integration of TTM system memory allocations with
->>> memcg is a difficult ask, primarily due to difficulties around
->>> accounting for evictions properly.
->>>
->>> However there are systems where userspace will be allocating
->>> objects in system memory and they won't be prone to migrating
->>> or evicting and we should start with at least accounting those.
->>>
->>> This adds a memcg group to ttm bo and tt objects.
->>>
->>> This memcg is used when:
->>> a) when a tt is populated (and unpopulated)
->>> b) the TTM_PL_FLAG_MEMCG is set on the placement for the
->>> bo when the tt is allocated.
->>>
->>> The placement flag is set for all non-eviction placements.
->>>
->>> This version moves back from the resource to the tt layer,
->>> when accounting at the resource layer, if an object is swapped
->>> out there was no way to remove it from the accounting, whereas
->>> the tt layer has more info for this.
->>>
->>> v4: move back to the tt layer from the resource layer to
->>> handle swap, but keep the memcg charging hooks for now.
->>> v3: moves from having a flags on the op ctx to the using a
->>> placement flag.
->>> v2: moved the charging up a level and also no longer used
->>> __GFP_ACCOUNT, or attached the memcg to object pages, it instead
->>> uses the same approach as socket memory and just charges/uncharges
->>> at the object level. This was suggested by Christian.
->>>
->>> Signed-off-by: Dave Airlie <airlied@redhat.com>
->>> ---
->>>  drivers/gpu/drm/ttm/ttm_bo.c      |  6 ++++--
->>>  drivers/gpu/drm/ttm/ttm_bo_util.c |  6 +++---
->>>  drivers/gpu/drm/ttm/ttm_bo_vm.c   |  4 +++-
->>>  drivers/gpu/drm/ttm/ttm_tt.c      | 17 ++++++++++++++++-
->>>  include/drm/ttm/ttm_bo.h          |  7 +++++++
->>>  include/drm/ttm/ttm_placement.h   |  3 +++
->>>  include/drm/ttm/ttm_tt.h          |  9 ++++++++-
->>>  7 files changed, 44 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
->>> index 5bf3c969907c..1630ef28e5a8 100644
->>> --- a/drivers/gpu/drm/ttm/ttm_bo.c
->>> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
->>> @@ -140,7 +140,7 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
->>>  			goto out_err;
->>>  
->>>  		if (mem->mem_type != TTM_PL_SYSTEM) {
->>> -			ret = ttm_bo_populate(bo, ctx);
->>> +			ret = ttm_bo_populate(bo, mem->placement & TTM_PL_FLAG_MEMCG, ctx);
->>>  			if (ret)
->>>  				goto out_err;
->>>  		}
->>> @@ -1237,6 +1237,7 @@ void ttm_bo_tt_destroy(struct ttm_buffer_object *bo)
->>>  /**
->>>   * ttm_bo_populate() - Ensure that a buffer object has backing pages
->>>   * @bo: The buffer object
->>> + * @memcg_account: account this memory with memcg if needed
->>>   * @ctx: The ttm_operation_ctx governing the operation.
->>>   *
->>>   * For buffer objects in a memory type whose manager uses
->>> @@ -1250,6 +1251,7 @@ void ttm_bo_tt_destroy(struct ttm_buffer_object *bo)
->>>   * is set to true.
->>>   */
->>>  int ttm_bo_populate(struct ttm_buffer_object *bo,
->>> +		    bool memcg_account,
->>>  		    struct ttm_operation_ctx *ctx)
->>>  {
->>>  	struct ttm_tt *tt = bo->ttm;
->>> @@ -1262,7 +1264,7 @@ int ttm_bo_populate(struct ttm_buffer_object *bo,
->>>  		return 0;
->>>  
->>>  	swapped = ttm_tt_is_swapped(tt);
->>> -	ret = ttm_tt_populate(bo->bdev, tt, ctx);
->>> +	ret = ttm_tt_populate(bo->bdev, tt, memcg_account, ctx);
->>>  	if (ret)
->>>  		return ret;
->>>  
->>> diff --git a/drivers/gpu/drm/ttm/ttm_bo_util.c b/drivers/gpu/drm/ttm/ttm_bo_util.c
->>> index 15cab9bda17f..7d599d0707e4 100644
->>> --- a/drivers/gpu/drm/ttm/ttm_bo_util.c
->>> +++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
->>> @@ -163,7 +163,7 @@ int ttm_bo_move_memcpy(struct ttm_buffer_object *bo,
->>>  	src_man = ttm_manager_type(bdev, src_mem->mem_type);
->>>  	if (ttm && ((ttm->page_flags & TTM_TT_FLAG_SWAPPED) ||
->>>  		    dst_man->use_tt)) {
->>> -		ret = ttm_bo_populate(bo, ctx);
->>> +		ret = ttm_bo_populate(bo, dst_mem->placement & TTM_PL_FLAG_MEMCG, ctx);
->>>  		if (ret)
->>>  			return ret;
->>>  	}
->>> @@ -350,7 +350,7 @@ static int ttm_bo_kmap_ttm(struct ttm_buffer_object *bo,
->>>  
->>>  	BUG_ON(!ttm);
->>>  
->>> -	ret = ttm_bo_populate(bo, &ctx);
->>> +	ret = ttm_bo_populate(bo, mem->placement & TTM_PL_FLAG_MEMCG, &ctx);
->>>  	if (ret)
->>>  		return ret;
->>>  
->>> @@ -507,7 +507,7 @@ int ttm_bo_vmap(struct ttm_buffer_object *bo, struct iosys_map *map)
->>>  		pgprot_t prot;
->>>  		void *vaddr;
->>>  
->>> -		ret = ttm_bo_populate(bo, &ctx);
->>> +		ret = ttm_bo_populate(bo, mem->placement & TTM_PL_FLAG_MEMCG, &ctx);
->>>  		if (ret)
->>>  			return ret;
->>>  
->>> diff --git a/drivers/gpu/drm/ttm/ttm_bo_vm.c b/drivers/gpu/drm/ttm/ttm_bo_vm.c
->>> index a194db83421d..02aea23a34e7 100644
->>> --- a/drivers/gpu/drm/ttm/ttm_bo_vm.c
->>> +++ b/drivers/gpu/drm/ttm/ttm_bo_vm.c
->>> @@ -224,7 +224,9 @@ vm_fault_t ttm_bo_vm_fault_reserved(struct vm_fault *vmf,
->>>  		};
->>>  
->>>  		ttm = bo->ttm;
->>> -		err = ttm_bo_populate(bo, &ctx);
->>> +		err = ttm_bo_populate(bo,
->>> +				      bo->resource->placement & TTM_PL_FLAG_MEMCG,
->>> +				      &ctx);
->>>  		if (err) {
->>>  			if (err == -EINTR || err == -ERESTARTSYS ||
->>>  			    err == -EAGAIN)
->>> diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.c
->>> index 698cd4bf5e46..81c4cbbeb130 100644
->>> --- a/drivers/gpu/drm/ttm/ttm_tt.c
->>> +++ b/drivers/gpu/drm/ttm/ttm_tt.c
->>> @@ -161,6 +161,7 @@ static void ttm_tt_init_fields(struct ttm_tt *ttm,
->>>  	ttm->caching = caching;
->>>  	ttm->restore = NULL;
->>>  	ttm->backup = NULL;
->>> +	ttm->memcg = bo->memcg;
->>>  }
->>>  
->>>  int ttm_tt_init(struct ttm_tt *ttm, struct ttm_buffer_object *bo,
->>> @@ -365,7 +366,9 @@ int ttm_tt_swapout(struct ttm_device *bdev, struct ttm_tt *ttm,
->>>  EXPORT_SYMBOL_FOR_TESTS_ONLY(ttm_tt_swapout);
->>>  
->>>  int ttm_tt_populate(struct ttm_device *bdev,
->>> -		    struct ttm_tt *ttm, struct ttm_operation_ctx *ctx)
->>> +		    struct ttm_tt *ttm,
->>> +		    bool memcg_account_tt,
->>> +		    struct ttm_operation_ctx *ctx)
->>>  {
->>>  	int ret;
->>>  
->>> @@ -376,6 +379,14 @@ int ttm_tt_populate(struct ttm_device *bdev,
->>>  		return 0;
->>>  
->>>  	if (!(ttm->page_flags & TTM_TT_FLAG_EXTERNAL)) {
->>> +		if (ttm->memcg && memcg_account_tt) {
->>> +			gfp_t gfp_flags = GFP_USER;
->>> +			if (ctx->gfp_retry_mayfail)
->>> +				gfp_flags |= __GFP_RETRY_MAYFAIL;
->>> +			if (!mem_cgroup_charge_gpu(ttm->memcg, ttm->num_pages, gfp_flags))
->>> +				return -ENOMEM;
->>> +			ttm->page_flags |= TTM_TT_FLAG_ACCOUNTED;
->>> +		}
->>>  		atomic_long_add(ttm->num_pages, &ttm_pages_allocated);
->>>  		if (bdev->pool.use_dma32)
->>>  			atomic_long_add(ttm->num_pages,
->>> @@ -437,6 +448,10 @@ void ttm_tt_unpopulate(struct ttm_device *bdev, struct ttm_tt *ttm)
->>>  		ttm_pool_free(&bdev->pool, ttm);
->>>  
->>>  	if (!(ttm->page_flags & TTM_TT_FLAG_EXTERNAL)) {
->>> +		if (ttm->page_flags & TTM_TT_FLAG_ACCOUNTED) {
->>> +			mem_cgroup_uncharge_gpu(ttm->memcg, ttm->num_pages);
->>> +			ttm->page_flags &= ~TTM_TT_FLAG_ACCOUNTED;
->>> +		}
->>>  		atomic_long_sub(ttm->num_pages, &ttm_pages_allocated);
->>>  		if (bdev->pool.use_dma32)
->>>  			atomic_long_sub(ttm->num_pages,
->>> diff --git a/include/drm/ttm/ttm_bo.h b/include/drm/ttm/ttm_bo.h
->>> index 903cd1030110..d7c0dd9e0746 100644
->>> --- a/include/drm/ttm/ttm_bo.h
->>> +++ b/include/drm/ttm/ttm_bo.h
->>> @@ -135,6 +135,12 @@ struct ttm_buffer_object {
->>>  	 * reservation lock.
->>>  	 */
->>>  	struct sg_table *sg;
->>> +
->>> +	/**
->>> +	 * @memcg: memory cgroup to charge this to if it ends up using system memory.
->>> +	 * NULL means don't charge.
->>> +	 */
->>> +	struct mem_cgroup *memcg;
->>>  };
->>>  
->>>  #define TTM_BO_MAP_IOMEM_MASK 0x80
->>> @@ -486,6 +492,7 @@ pgprot_t ttm_io_prot(struct ttm_buffer_object *bo, struct ttm_resource *res,
->>>  		     pgprot_t tmp);
->>>  void ttm_bo_tt_destroy(struct ttm_buffer_object *bo);
->>>  int ttm_bo_populate(struct ttm_buffer_object *bo,
->>> +		    bool memcg_account,
->>>  		    struct ttm_operation_ctx *ctx);
->>>  
->>>  /* Driver LRU walk helpers initially targeted for shrinking. */
->>> diff --git a/include/drm/ttm/ttm_placement.h b/include/drm/ttm/ttm_placement.h
->>> index b510a4812609..668798072292 100644
->>> --- a/include/drm/ttm/ttm_placement.h
->>> +++ b/include/drm/ttm/ttm_placement.h
->>> @@ -70,6 +70,9 @@
->>>  /* Placement is only used during eviction */
->>>  #define TTM_PL_FLAG_FALLBACK	(1 << 4)
->>>  
->>> +/* Placement causes memcg accounting */
->>> +#define TTM_PL_FLAG_MEMCG	(1 << 5)
->>> +
->>>  /**
->>>   * struct ttm_place
->>>   *
->>> diff --git a/include/drm/ttm/ttm_tt.h b/include/drm/ttm/ttm_tt.h
->>> index 406437ad674b..2790fc82edc3 100644
->>> --- a/include/drm/ttm/ttm_tt.h
->>> +++ b/include/drm/ttm/ttm_tt.h
->>> @@ -90,6 +90,8 @@ struct ttm_tt {
->>>  	 * TTM_TT_FLAG_BACKED_UP: TTM internal only. This is set if the
->>>  	 * struct ttm_tt has been (possibly partially) backed up.
->>>  	 *
->>> +	 * TTM_TT_FLAG_ACCOUNTED: TTM internal. This tt has been accounted.
->>> +	 *
->>>  	 * TTM_TT_FLAG_PRIV_POPULATED: TTM internal only. DO NOT USE. This is
->>>  	 * set by TTM after ttm_tt_populate() has successfully returned, and is
->>>  	 * then unset when TTM calls ttm_tt_unpopulate().
->>> @@ -101,8 +103,9 @@ struct ttm_tt {
->>>  #define TTM_TT_FLAG_EXTERNAL_MAPPABLE	BIT(3)
->>>  #define TTM_TT_FLAG_DECRYPTED		BIT(4)
->>>  #define TTM_TT_FLAG_BACKED_UP	        BIT(5)
->>> +#define TTM_TT_FLAG_ACCOUNTED	        BIT(6)
->>>  
->>> -#define TTM_TT_FLAG_PRIV_POPULATED	BIT(6)
->>> +#define TTM_TT_FLAG_PRIV_POPULATED	BIT(7)
->>>  	uint32_t page_flags;
->>>  	/** @num_pages: Number of pages in the page array. */
->>>  	uint32_t num_pages;
->>> @@ -126,6 +129,8 @@ struct ttm_tt {
->>>  	enum ttm_caching caching;
->>>  	/** @restore: Partial restoration from backup state. TTM private */
->>>  	struct ttm_pool_tt_restore *restore;
->>> +	/** @memcg: Memory cgroup for this TT allocation */
->>> +	struct mem_cgroup *memcg;
->>>  };
->>>  
->>>  /**
->>> @@ -245,11 +250,13 @@ int ttm_tt_swapout(struct ttm_device *bdev, struct ttm_tt *ttm,
->>>   *
->>>   * @bdev: the ttm_device this object belongs to
->>>   * @ttm: Pointer to the ttm_tt structure
->>> + * @mem_account_tt: Account this population to the memcg
->>>   * @ctx: operation context for populating the tt object.
->>>   *
->>>   * Calls the driver method to allocate pages for a ttm
->>>   */
->>>  int ttm_tt_populate(struct ttm_device *bdev, struct ttm_tt *ttm,
->>> +		    bool mem_account_tt,
->>>  		    struct ttm_operation_ctx *ctx);
->>>  
->>>  /**
-> 
+Link: http://lore.kernel.org/20250513031316.2147548-1-shakeel.butt@linux.dev [1]
+Link: http://lore.kernel.org/20250509232859.657525-1-shakeel.butt@linux.dev [2]
+
+Shakeel Butt (7):
+  memcg: memcg_rstat_updated re-entrant safe against irqs
+  memcg: move preempt disable to callers of memcg_rstat_updated
+  memcg: make mod_memcg_state re-entrant safe against irqs
+  memcg: make count_memcg_events re-entrant safe against irqs
+  memcg: make __mod_memcg_lruvec_state re-entrant safe against irqs
+  memcg: no stock lock for cpu hot-unplug
+  memcg: objcg stock trylock without irq disabling
+
+ include/linux/memcontrol.h |  41 +--------
+ mm/memcontrol-v1.c         |   6 +-
+ mm/memcontrol.c            | 170 +++++++++++++++----------------------
+ mm/swap.c                  |   8 +-
+ mm/vmscan.c                |  14 +--
+ 5 files changed, 86 insertions(+), 153 deletions(-)
+
+-- 
+2.47.1
 
 
