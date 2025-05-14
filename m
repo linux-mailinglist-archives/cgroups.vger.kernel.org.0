@@ -1,245 +1,478 @@
-Return-Path: <cgroups+bounces-8185-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8186-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DFB6AB67F3
-	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 11:50:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29129AB6AA4
+	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 13:55:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56ED13AF887
-	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 09:50:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D2747A6CAA
+	for <lists+cgroups@lfdr.de>; Wed, 14 May 2025 11:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A2B25D8F0;
-	Wed, 14 May 2025 09:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C184E27466E;
+	Wed, 14 May 2025 11:55:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TrmG4wc6";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="21ZFuNDM";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TrmG4wc6";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="21ZFuNDM"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="AL2M8WSr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2077.outbound.protection.outlook.com [40.107.92.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C2225C809
-	for <cgroups@vger.kernel.org>; Wed, 14 May 2025 09:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747216220; cv=none; b=EISqLzVJHVKjPswFtcmvy4DMk97mAlXA/4uszHDjIrguB2UZmRbeGOaYZFUu/7p1cDDKJSAANGkpQIcGpRd7e5szzJso4bfLw0ADUpJkotZODpKK8Z8tDf+p4GRCS3j6SHTA0lvpVnuKWZ+x87ZxKGN95pS+HwNoUPT/5krxfRQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747216220; c=relaxed/simple;
-	bh=VCuo3wqPiHvzECJEw/YJ76AUwqcSvIX3zwjYHe84X4A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T8pt4GLuT3pK/6DFX38604EJtnE/wqYei2PelmBZeGCKMIQBpNVBKQBluT8c5JP6EcbZq8oZlkGUk1j1ttnTPpZQSkta8G1MjM4sSvpxdphIk/eckNRIHY2DYNAM4i1Dz+KtgNJN0UEjhE8kYFCcboOWYdo60kdoDgVveQAfRnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TrmG4wc6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=21ZFuNDM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TrmG4wc6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=21ZFuNDM; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B2245211EC;
-	Wed, 14 May 2025 09:50:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747216216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E8xE4+dHqZC6ImaRc6KUtuJd+c5Z6FNFmwXh/MDWcHs=;
-	b=TrmG4wc62xzMt53ssOXdXjGh39jIJ0daYnNdwkQkMlWhOGEbrUOtW0rysP2o3yzRQkGPAD
-	irZN71xRQBF0Q8t1h/iHznKUPhDg9bgAoTuZcZGckZmhLP0vA14/QojPKtH0y6JM2pYFlK
-	lFh2/uCYcukcyKNSRaTgj1EEO0vOcX8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747216216;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E8xE4+dHqZC6ImaRc6KUtuJd+c5Z6FNFmwXh/MDWcHs=;
-	b=21ZFuNDMxz55Vzk3XadOKDM6/ka3RDzFDL0+v0pvQIN90an8mH5SnY6FF3625GJIjZcfK6
-	3mfgW/VcXqgzw/Cg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=TrmG4wc6;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=21ZFuNDM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747216216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E8xE4+dHqZC6ImaRc6KUtuJd+c5Z6FNFmwXh/MDWcHs=;
-	b=TrmG4wc62xzMt53ssOXdXjGh39jIJ0daYnNdwkQkMlWhOGEbrUOtW0rysP2o3yzRQkGPAD
-	irZN71xRQBF0Q8t1h/iHznKUPhDg9bgAoTuZcZGckZmhLP0vA14/QojPKtH0y6JM2pYFlK
-	lFh2/uCYcukcyKNSRaTgj1EEO0vOcX8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747216216;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E8xE4+dHqZC6ImaRc6KUtuJd+c5Z6FNFmwXh/MDWcHs=;
-	b=21ZFuNDMxz55Vzk3XadOKDM6/ka3RDzFDL0+v0pvQIN90an8mH5SnY6FF3625GJIjZcfK6
-	3mfgW/VcXqgzw/Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8943813306;
-	Wed, 14 May 2025 09:50:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /+sXIVhnJGiQMgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 14 May 2025 09:50:16 +0000
-Message-ID: <cb50a1c8-1f94-4a49-b5b3-8d2008c9f272@suse.cz>
-Date: Wed, 14 May 2025 11:50:16 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CCB521770D
+	for <cgroups@vger.kernel.org>; Wed, 14 May 2025 11:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747223740; cv=fail; b=Wl52285OjjbtopVNolOgxN3Ts99v/9XFX2+BgCH6BEDUW5nuJpm2+3aJntTJQDBmqujmx92W4VPW+N6d+PMOwoVoCcrso9ittud4QOGHKtDCnd1VZcoYV+UaR84a3eLB7JghaJ7iRlgp93TYHSwZuDSt0K0lim1qbmmOyVeuXjI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747223740; c=relaxed/simple;
+	bh=jRsoj6p3xwPqwI76td/OCvGQQ3dUTBUObUK1tuVZVjk=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=kefDFBnTw+M7MaTpoDAH4OoXNUthqeYhFjkayqFqMKBSmaHZ9tqOHBhNt0w8oudI8dvMqQYoqJhOrwgV4MpIbhBqf8jvs1LKpgcjwXox0b9UVKXd3BRWZqO0DTltMWM8ilUBiHZ3mxXvh5RBIvmTCKYdN9yxZ6XDGiNpzwWKhqM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=AL2M8WSr; arc=fail smtp.client-ip=40.107.92.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=jKV3JfTUM3wreUlSS3bw/50Jr1Pcpv7Q5XGLGl2aXn8LEl5amEM4bSaPhEstlZQSxhm3trY7y1yJ681+9RMW8sHgm0XoTCsYv0EzB4YkYjJ6jVLi1p9nZVNZvbvB52SaZcKZmwuki0NEe1A3IB+vb4BQy/NZrqWx4mCGPCeAbvlFxAhd36g0ewaDmJ6EfFEqfHetylyk46P6sSdOesNzoTB6QQlxwfT7xKpfNQHyByRdHcjVr6OVqPa2lRDXGQEA8fhIIAjWH3KGah/0phgN7LsAjA1HFdSJFu5atjlZqdUOtsSCWClxZudBrddpL3CkvhE6KHPwuTT+JVPx/qICLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kZsknU7yWcUsFg/j0iq2HpKJVV+0880RiKd7TlyNPRU=;
+ b=acOIwMi3X7x1gbJpLiahtlramFbY/7Pl+tAV8IZ5mbcsLzr1VgCY7m5jpEjYmQ4Sqi8xIq6qwbaMwN8bEFc0uKhqpRk1gZwKPffONuuB/gIe5EP+HOVH229qVRe0BJ8O+KJ5GiYH8goHm0muMDEh0e8jzT+7SseK972B/eFS4AFkBevAJfpzF9Cj2HJfYrRyaSZVXjVrPxLndiC+p7GgCnt7G9jqdYk1YxBEzdkVssP1YzCoUG98dpOJZL0JrRbzWPfx8USyEH32tt6RuIyc5zOZWI3K9V4kVmMQZUe6hpG2dDglZSrgSIngjGlTkcNFbyMPELI7n94uJ0HK36ORZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kZsknU7yWcUsFg/j0iq2HpKJVV+0880RiKd7TlyNPRU=;
+ b=AL2M8WSrn426nd+0wMLZ8qxCzd4qN8ToAhaBm6QEfsyTQohdiKqqr1RZZuhw544OKMVpqPSkFu1/0zPCWRW01tj0aqtlPcoxOjnQZqH17PzA6wAs7LET0BhZ1wH6zAVC+lzztBCeyVNOaxugeq686pM1dHi3/Kp4R4PXFjWgfeA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by IA1PR12MB9524.namprd12.prod.outlook.com (2603:10b6:208:596::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.29; Wed, 14 May
+ 2025 11:55:34 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5%7]) with mapi id 15.20.8722.027; Wed, 14 May 2025
+ 11:55:34 +0000
+Message-ID: <6a41fa3e-6ca7-4791-b491-4908971275a5@amd.com>
+Date: Wed, 14 May 2025 13:55:28 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [5/7] ttm: add initial memcg integration. (v4)
+To: Maarten Lankhorst <dev@lankhorst.se>, Dave Airlie <airlied@gmail.com>,
+ dri-devel@lists.freedesktop.org, tj@kernel.org,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>
+Cc: cgroups@vger.kernel.org, Waiman Long <longman@redhat.com>, simona@ffwll.ch
+References: <20250512061913.3522902-6-airlied@gmail.com>
+ <ea70e6fa-22a1-4adc-927a-5e9c2563f784@lankhorst.se>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <ea70e6fa-22a1-4adc-927a-5e9c2563f784@lankhorst.se>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL0PR05CA0005.namprd05.prod.outlook.com
+ (2603:10b6:208:91::15) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] memcg: memcg_rstat_updated re-entrant safe against
- irqs
-Content-Language: en-US
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Harry Yoo <harry.yoo@oracle.com>, Yosry Ahmed <yosry.ahmed@linux.dev>,
- bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
-References: <20250514050813.2526843-1-shakeel.butt@linux.dev>
- <20250514050813.2526843-2-shakeel.butt@linux.dev>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20250514050813.2526843-2-shakeel.butt@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: B2245211EC
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.cz:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|IA1PR12MB9524:EE_
+X-MS-Office365-Filtering-Correlation-Id: 983a288c-c846-4676-533d-08dd92de3be8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?aXh3Y01RYzFBdzVNSFYwbHNMRDFaUjJsNURJZGpxbnNmREVjN0IySlkydEUx?=
+ =?utf-8?B?MGZCTDhOMllTQ3VCdlJpSndta3NDRmNIclVEbm94T3dMM1JHQjFSMStlMk55?=
+ =?utf-8?B?aUR6dURFR3RmbGJuL0R4dnlRTWIvYXYzOHRlNXphR0dwVlBDQWVKQlhwVTk5?=
+ =?utf-8?B?V1ZNYUJlcklWR1NiL0VyQmVkTEZJUUl2cjRXYVdKaGZpSEFPcFVwY2RYV0l4?=
+ =?utf-8?B?YXJGSjZTU2FXMkRvNDhsWXAvY3hoWkt6SlBGSWNzNUQ1OTMxcklCaHdrdm5i?=
+ =?utf-8?B?RlgxZGRjTHF1SHB4MGlBdFBBQkdyUCtqR3BrMFZvaGRsK2lQTWQvQ2tYTlRv?=
+ =?utf-8?B?L0JjWEZTK0NDSExkVnVxWkU4NDhFbGk5SXZnVkl2NWcybzVRdjFNRmtqb1hU?=
+ =?utf-8?B?NXNtMjB4MW53TDBxellETE9qZFFJZEJtYUN2anpNeU9CV3NxZ3V4TDdrMkRu?=
+ =?utf-8?B?SS9Bbk1sbGtBS2g0NXYxT2FZc2xYeFFLMGNXdDhxTk1Ma3YzTDZpWGVVSkc2?=
+ =?utf-8?B?cmhQK2NXeUdDVjFrdmZpY2FFSmR3MVVSZVk0V0dhOTNvcmd2Slh2VlhpcnAv?=
+ =?utf-8?B?eGEvZTg1akNYUkQ1ajVzdzJvV3piRWl6R2JnbVdYYi9nc1NXekZMNy81eEc2?=
+ =?utf-8?B?eVRQUCs1QTViVWtlREs1T1ViWmJNZnpvcElnTmgwUmRoSGxWSnpUYk9uM1ZT?=
+ =?utf-8?B?ZnViUHhTUFF0M0NBV2wvZnlEaDJXbkdTdWRwVDdCekVpWnpPT0xDbHpOcitZ?=
+ =?utf-8?B?M05MZW5xNUdYU1NqdXRSWkQxRDZObEdzMTdJM1A3UWJzR1J5eG9sWXNteXo5?=
+ =?utf-8?B?K3dJYnBTUlFNSFJrRkNIc2dVRCthYlkvdnVXckdyZjlSMURoVmNwM0lDYWNR?=
+ =?utf-8?B?Z29RYUFVRlcwOWwvNUN4a3dUT2NKTHhhUDFlUGlVS3RlZHl3WWZFMWNEV0Vp?=
+ =?utf-8?B?dXpTa0U2d3pVQkhOZnN5UGR2WmhvM0ovQWNFaWhuamNtbkQ2b01teFdJUXlV?=
+ =?utf-8?B?OVI3bEJWKzJyM25uT2dJUWVkUWpiTm1RSTE2VGN5dlNnYzgxYkdGZTJ5TkJv?=
+ =?utf-8?B?SEsyMFh1L3NpY2RxdFJYbWdUOHBSUFhteWRkSkY5TFlCUEhLYXFlZ3VOUUcw?=
+ =?utf-8?B?SVV6bjhjeDd6R1UycDVFZko4V2FZOVdKL2pVdklLSlZGMXVJNGNSWkFiNWtr?=
+ =?utf-8?B?NzlTdzU0b3E5ZWV6QmdiWCtpZFozbHQvREZmbjlrYXZYSDdUaVRDNUVLdmFX?=
+ =?utf-8?B?ZTlkdFhDdHZJQVlBODQrYWNxY3I4YU5nZHJZaEs4RVVJQ3prUlc1ZDlOQnFj?=
+ =?utf-8?B?b3BOaFRJdGprRWJRdmR1NW5RQm5iN3BsVzlUdVRwaW5ZWmVHOVN0c0Z3QUYv?=
+ =?utf-8?B?elVEV3BsNXBXbWE3aHNORVNFWU0yTlFRVjludWx4M21YQWVtbzU5d3dzSmR1?=
+ =?utf-8?B?T3EvRHlxeGJZSXAySVBTV3A5SnVSckRjRkpQMU8wNUFlNHdTSU4yVVhISWJy?=
+ =?utf-8?B?QU1ZanNRZE03UDE0QjNEWHI0S0FFdkFKWEpzTVgrSTVQUUdkV3hCTVdPQmU5?=
+ =?utf-8?B?bnd4amFDN0I4U0hkNG1YSXhRYW85RGc3TC9EOHk4Z1FFVEFGQkgvYVZFUU8v?=
+ =?utf-8?B?SUtyTkkyMnJvYTRWZy94cEhBYmlhNEVSRHVNSHcvTVhhR1dtM20zYVU0ZmUz?=
+ =?utf-8?B?RThncUxZcXZaOWxWbXI0SlgzQnRIa1dISS9Sb1F0YWJNMUtlb09oYkFrc0Ry?=
+ =?utf-8?B?QUdwY0EyS3MrMW1uT2Q0Rk11M3N1aXBNckIvYTR6VmVaMlNPRFhaNG9OQWdB?=
+ =?utf-8?B?T04zNHpDMFZ6dHczR0t6Z0JuM3lxV0hpWGFNdjdjY0lrRFA5RmdDK01QMVBW?=
+ =?utf-8?B?S0svajErOVBFbFNIVDY2cVhMcGtwRi9acHpnTlovQzI2ditnWGVvck51YWk3?=
+ =?utf-8?Q?mYRVZqAPzc0=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bWp1cUFYQ0QzSnE0L3BLY0dwUUp3YzNjUlMzN1M2NUdVOCt0cC9VS1RHQWJh?=
+ =?utf-8?B?S0t3a1Rpa2RTMWJ6bU5YVmpTekZ4S282SmNZZCtxMGh1UU9YNXhnUGN4TzRI?=
+ =?utf-8?B?ZHNlOGtFc0draGdOUVVSY2RWemtOQVIxOUNXVmh5NDR2Mm1WRHVHMWpoYnh0?=
+ =?utf-8?B?WFBTeDc3dkwyT3B5Z2Y2cnk3S0xoWXdTR1l2N0xkU0NyMVRNZjJyckQrSDQ1?=
+ =?utf-8?B?R2l3WGpxTmxHVnora3ExNU5OK21sakxQaStFa2lOSmN0UTBFcTVsREx4N1o4?=
+ =?utf-8?B?dk9CU3I5czFMa045SWpWcUhCUUhJaXd1T01HcVE4U0gwUEdYekxiOVNtZC9h?=
+ =?utf-8?B?M2lMcWhiWXUyZkwzNmt6YVpwY1JOY0pDT2hiaUZ2WmtLbk5sN3FJUjNLVFhL?=
+ =?utf-8?B?cTZCNll1MzVxK3FvZGxFT0ZJczBKVGR1dENURlFBWlNDczlNV0l4VEpSbitB?=
+ =?utf-8?B?VU1PNlErUzJCVE84Z2lyNDJkQXd2L0ZsZnpLaElKeUZTSy9UeitPTnQ3L3I3?=
+ =?utf-8?B?VVVOdXRIbEFZTHRHbWtNaGt1WkZ2eGUyVU5SWkgwb2xqa2tPcDA5a2ZGYmdH?=
+ =?utf-8?B?bS8waGJseGIzdldLaU1TZ1FyaDJOejdlcndlRCsxUkp6NFFHaHdpdzNsRkoz?=
+ =?utf-8?B?bGFZUDlRSzdqVnVQQ0RQQ1dsaDVHbHQvZUpoQ3ZFNDdlWVJvcU1pcFFreVFo?=
+ =?utf-8?B?ak9iNmRwMS94N1p3RkVjVnR0SE5PaWVJT0dVQmhYbmQ2NDl1YjViVFdMM0kr?=
+ =?utf-8?B?MUx5NmZPSWkwdXNoNUg2SlpSalhFNVJGK3FTQ212NjNHOVZNdjFKUDVQQTVv?=
+ =?utf-8?B?Yk1vTUxhRS9FalFOS2Q1L0ZYeVl1SXRIZnJuWENqaWp6ZjRaRjJqTlpENUlk?=
+ =?utf-8?B?c1VEajhEcDdTaU9JendLeDJJWlpuejRtOGRtY3YxUGhSNGxIelRjTnBpU2ly?=
+ =?utf-8?B?ZWlMMFNGNnVMMXY3VVF0ajRRRUQ5OUlKaHhDT0N0YTNTUWl1eXlhc201cFBZ?=
+ =?utf-8?B?ZHJZbUtnN2I5bzRUK3VPQmxES3BLdlY2VitTc1BKMWl2TFBiOHhqM1l4Slhl?=
+ =?utf-8?B?bmpNQVlkcXJNVkpHVkV5OG5odWlzQ2UxVEVxaGNSdjlGRkRzYkxVQ214Y0NI?=
+ =?utf-8?B?b0x3b2VYMFVxcnVsbnArR040NDlQOVlUemxzQ3lRR08vNXA5WHppQk1OamlI?=
+ =?utf-8?B?b2o1bWY1U3c0WHRyTkFuNjdJS1p2dW41anl0NjM2RUhjSy8rdWVCaEE4YTln?=
+ =?utf-8?B?SXJ0c0YvMzRtck9JSmJXZURtYW5wd3JMcFh0RlZsVUxUWmpRcTlYUXo4SXQ2?=
+ =?utf-8?B?OUFldUdqb0NRQzlKZHFUZHZWY3M4YjlkNmZwSTEzUTM2RHBjRGtESkZjNEd3?=
+ =?utf-8?B?bjFpT3lDZG1XR0l6WE5GeWd2YUJsaHNXQzIybUttV0VmR3pYTkFhZnduS1VO?=
+ =?utf-8?B?bmJHVHU2YXVqUjZNYlRBMkRZT250UEFZQkNMdVI4WEIyTTVwZ0wvM0pBR3lk?=
+ =?utf-8?B?cUZYTXZscWVDUDRKa2Y0b21vTEMyVDlrV01DTjU2bGJaUEEwSG1YNThKWTI4?=
+ =?utf-8?B?Mk1Ta3JMK1AzVHArenNoS3dNVmVhaGRHWFlKK1VlUC80dmt0elhKVW5kMDRz?=
+ =?utf-8?B?cHBwYUVYYW1NMzQyakF1N1FQRzh4VnR6Smh1Z2p1c0t4QjVDR3YzWGE1RWNt?=
+ =?utf-8?B?Q1Yydk5MYVVKdGJCSzI1Y0hNWmcybCswSTFjNlZBYk9CVkJaUkR4UDJNaGRr?=
+ =?utf-8?B?a1NpLzlUeUVtOHJBbUprZnRKejFUZkdNWitxU25Fb3JJRHc1eGdWWXZRY1g3?=
+ =?utf-8?B?NGpCbDYxOVlQZ2RaWXhpeWxsdCtJWTBFSE00ditZQ0RmZFRsV3ZHcG5kMm0w?=
+ =?utf-8?B?NWw3dTV5MTRpWFNqcEdiY1RnbERzWVlrUGkwUkhabzRZVTk0cFprQUh2eUhu?=
+ =?utf-8?B?THBTdGt6ZUQxTFVZeXJEZkZkRkVQTjFwT2xlVGFYbTlwNXJ2ZFdwMkk3VVhN?=
+ =?utf-8?B?VkVXd0dPOHlDUk9hbWYrenJMV2FjdGwvb2lqRGo3bU1BcEFvODRYeWE0OVFT?=
+ =?utf-8?B?enNmQ0RLdERqMVBHbVRZTWFvejFOeXNzaFhIOURJSDd0QktMbkhUbStPMFlj?=
+ =?utf-8?Q?bWqw=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 983a288c-c846-4676-533d-08dd92de3be8
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2025 11:55:34.5505
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kaEaDl6TCMMh6Aeul2CuGo6lwOiMfKIR07nf60BH0zzDzxnFoPWg91bAcuJjrTfd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB9524
 
-On 5/14/25 07:08, Shakeel Butt wrote:
-> The function memcg_rstat_updated() is used to track the memcg stats
-> updates for optimizing the flushes. At the moment, it is not re-entrant
-> safe and the callers disabled irqs before calling. However to achieve
-> the goal of updating memcg stats without irqs, memcg_rstat_updated()
-> needs to be re-entrant safe against irqs.
+On 5/14/25 13:41, Maarten Lankhorst wrote:
+> Hi Dave,
 > 
-> This patch makes memcg_rstat_updated() re-entrant safe using this_cpu_*
-> ops. On archs with CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS, this patch is
-> also making memcg_rstat_updated() nmi safe.
+> We've had a small discussion on irc, so I wanted to summarize it here:
 > 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> All memory allocated should be accounted, even memory that is being
+> evicted from VRAM.
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+That sounds like a really bad idea to me.
 
-Some nits:
+> This may cause the process that originally allocated
+> the VRAM to go over the memcg limit, that should be solved by invoking
+> OOM condition on the original process, which may have ways to solve it
+> like purging purgeable memory, or as last resort OOM killing.
 
->  static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
->  {
-> -	struct memcg_vmstats_percpu *statc;
-> -	int cpu = smp_processor_id();
-> +	struct memcg_vmstats_percpu __percpu *statc_pcpu;
-> +	int cpu;
->  	unsigned int stats_updates;
->  
->  	if (!val)
->  		return;
->  
-> +	/* Don't assume callers have preemption disabled. */
-> +	cpu = get_cpu();
-> +
->  	css_rstat_updated(&memcg->css, cpu);
-> -	statc = this_cpu_ptr(memcg->vmstats_percpu);
-> -	for (; statc; statc = statc->parent) {
-> +	statc_pcpu = memcg->vmstats_percpu;
+You are basically suggesting to kill an application for something it never requested in the first place.
 
-Wonder if extracting the this_cpu_ptr() statc pointer would still make the
-code a bit simpler when accessing parent_pcpu and vmstats later on.
+In other words when an application requested a buffer to be placed in VRAM we can't make it responsible that the buffer had to be moved to system memory because of over allocation.
 
-> +	for (; statc_pcpu; statc_pcpu = this_cpu_ptr(statc_pcpu)->parent_pcpu) {
->  		/*
->  		 * If @memcg is already flushable then all its ancestors are
->  		 * flushable as well and also there is no need to increase
->  		 * stats_updates.
->  		 */
-> -		if (memcg_vmstats_needs_flush(statc->vmstats))
-> +		if (memcg_vmstats_needs_flush(this_cpu_ptr(statc_pcpu)->vmstats))
->  			break;
->  
-> -		stats_updates = READ_ONCE(statc->stats_updates) + abs(val);
-> -		WRITE_ONCE(statc->stats_updates, stats_updates);
-> +		stats_updates = this_cpu_add_return(statc_pcpu->stats_updates,
-> +						    abs(val));
->  		if (stats_updates < MEMCG_CHARGE_BATCH)
->  			continue;
->  
-> -		atomic64_add(stats_updates, &statc->vmstats->stats_updates);
-> -		WRITE_ONCE(statc->stats_updates, 0);
-> +		stats_updates = this_cpu_xchg(statc_pcpu->stats_updates, 0);
-> +		if (stats_updates)
+As far as I can see and have discussed with others so far this approach is a clear no-go.
 
-I think this is very likely to be true (given stats_updates >=
-MEMCG_CHARGE_BATCH from above), only an irq can change it at this point? So
-we could just do this unconditionally, and if we very rarely add a zero, it
-doesn't matter?
+Regards,
+Christian.
 
-> +			atomic64_add(stats_updates,
-> +				&this_cpu_ptr(statc_pcpu)->vmstats->stats_updates);
->  	}
-> +	put_cpu();
->  }
->  
->  static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool force)
-> @@ -3716,7 +3722,7 @@ static void mem_cgroup_free(struct mem_cgroup *memcg)
->  
->  static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
->  {
-> -	struct memcg_vmstats_percpu *statc, *pstatc;
-> +	struct memcg_vmstats_percpu *statc, __percpu *pstatc_pcpu;
->  	struct mem_cgroup *memcg;
->  	int node, cpu;
->  	int __maybe_unused i;
-> @@ -3747,9 +3753,9 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
->  
->  	for_each_possible_cpu(cpu) {
->  		if (parent)
-> -			pstatc = per_cpu_ptr(parent->vmstats_percpu, cpu);
-> +			pstatc_pcpu = parent->vmstats_percpu;
->  		statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
-> -		statc->parent = parent ? pstatc : NULL;
-> +		statc->parent_pcpu = parent ? pstatc_pcpu : NULL;
->  		statc->vmstats = memcg->vmstats;
->  	}
->  
+
+> The VRAM evicter is already memcg aware, so it should be possible to do
+> the same for the shrinker. I created a patch to use the same cgroup for
+> memcg as for dmem, we should probably extract the cgroup from mm->owner,
+> and create a function to charge dmemcg and memcg with a specified cgroup.
+> 
+> For applications that use a centralised allocator, it might be needed to
+> charge a different cgroup when exporting.
+> 
+> Kind regards,
+> Maarten
+> 
+> On 2025-05-12 08:12, Dave Airlie wrote:
+>> From: Dave Airlie <airlied@redhat.com>
+>>
+>> Doing proper integration of TTM system memory allocations with
+>> memcg is a difficult ask, primarily due to difficulties around
+>> accounting for evictions properly.
+>>
+>> However there are systems where userspace will be allocating
+>> objects in system memory and they won't be prone to migrating
+>> or evicting and we should start with at least accounting those.
+>>
+>> This adds a memcg group to ttm bo and tt objects.
+>>
+>> This memcg is used when:
+>> a) when a tt is populated (and unpopulated)
+>> b) the TTM_PL_FLAG_MEMCG is set on the placement for the
+>> bo when the tt is allocated.
+>>
+>> The placement flag is set for all non-eviction placements.
+>>
+>> This version moves back from the resource to the tt layer,
+>> when accounting at the resource layer, if an object is swapped
+>> out there was no way to remove it from the accounting, whereas
+>> the tt layer has more info for this.
+>>
+>> v4: move back to the tt layer from the resource layer to
+>> handle swap, but keep the memcg charging hooks for now.
+>> v3: moves from having a flags on the op ctx to the using a
+>> placement flag.
+>> v2: moved the charging up a level and also no longer used
+>> __GFP_ACCOUNT, or attached the memcg to object pages, it instead
+>> uses the same approach as socket memory and just charges/uncharges
+>> at the object level. This was suggested by Christian.
+>>
+>> Signed-off-by: Dave Airlie <airlied@redhat.com>
+>> ---
+>>  drivers/gpu/drm/ttm/ttm_bo.c      |  6 ++++--
+>>  drivers/gpu/drm/ttm/ttm_bo_util.c |  6 +++---
+>>  drivers/gpu/drm/ttm/ttm_bo_vm.c   |  4 +++-
+>>  drivers/gpu/drm/ttm/ttm_tt.c      | 17 ++++++++++++++++-
+>>  include/drm/ttm/ttm_bo.h          |  7 +++++++
+>>  include/drm/ttm/ttm_placement.h   |  3 +++
+>>  include/drm/ttm/ttm_tt.h          |  9 ++++++++-
+>>  7 files changed, 44 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+>> index 5bf3c969907c..1630ef28e5a8 100644
+>> --- a/drivers/gpu/drm/ttm/ttm_bo.c
+>> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
+>> @@ -140,7 +140,7 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
+>>  			goto out_err;
+>>  
+>>  		if (mem->mem_type != TTM_PL_SYSTEM) {
+>> -			ret = ttm_bo_populate(bo, ctx);
+>> +			ret = ttm_bo_populate(bo, mem->placement & TTM_PL_FLAG_MEMCG, ctx);
+>>  			if (ret)
+>>  				goto out_err;
+>>  		}
+>> @@ -1237,6 +1237,7 @@ void ttm_bo_tt_destroy(struct ttm_buffer_object *bo)
+>>  /**
+>>   * ttm_bo_populate() - Ensure that a buffer object has backing pages
+>>   * @bo: The buffer object
+>> + * @memcg_account: account this memory with memcg if needed
+>>   * @ctx: The ttm_operation_ctx governing the operation.
+>>   *
+>>   * For buffer objects in a memory type whose manager uses
+>> @@ -1250,6 +1251,7 @@ void ttm_bo_tt_destroy(struct ttm_buffer_object *bo)
+>>   * is set to true.
+>>   */
+>>  int ttm_bo_populate(struct ttm_buffer_object *bo,
+>> +		    bool memcg_account,
+>>  		    struct ttm_operation_ctx *ctx)
+>>  {
+>>  	struct ttm_tt *tt = bo->ttm;
+>> @@ -1262,7 +1264,7 @@ int ttm_bo_populate(struct ttm_buffer_object *bo,
+>>  		return 0;
+>>  
+>>  	swapped = ttm_tt_is_swapped(tt);
+>> -	ret = ttm_tt_populate(bo->bdev, tt, ctx);
+>> +	ret = ttm_tt_populate(bo->bdev, tt, memcg_account, ctx);
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> diff --git a/drivers/gpu/drm/ttm/ttm_bo_util.c b/drivers/gpu/drm/ttm/ttm_bo_util.c
+>> index 15cab9bda17f..7d599d0707e4 100644
+>> --- a/drivers/gpu/drm/ttm/ttm_bo_util.c
+>> +++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
+>> @@ -163,7 +163,7 @@ int ttm_bo_move_memcpy(struct ttm_buffer_object *bo,
+>>  	src_man = ttm_manager_type(bdev, src_mem->mem_type);
+>>  	if (ttm && ((ttm->page_flags & TTM_TT_FLAG_SWAPPED) ||
+>>  		    dst_man->use_tt)) {
+>> -		ret = ttm_bo_populate(bo, ctx);
+>> +		ret = ttm_bo_populate(bo, dst_mem->placement & TTM_PL_FLAG_MEMCG, ctx);
+>>  		if (ret)
+>>  			return ret;
+>>  	}
+>> @@ -350,7 +350,7 @@ static int ttm_bo_kmap_ttm(struct ttm_buffer_object *bo,
+>>  
+>>  	BUG_ON(!ttm);
+>>  
+>> -	ret = ttm_bo_populate(bo, &ctx);
+>> +	ret = ttm_bo_populate(bo, mem->placement & TTM_PL_FLAG_MEMCG, &ctx);
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> @@ -507,7 +507,7 @@ int ttm_bo_vmap(struct ttm_buffer_object *bo, struct iosys_map *map)
+>>  		pgprot_t prot;
+>>  		void *vaddr;
+>>  
+>> -		ret = ttm_bo_populate(bo, &ctx);
+>> +		ret = ttm_bo_populate(bo, mem->placement & TTM_PL_FLAG_MEMCG, &ctx);
+>>  		if (ret)
+>>  			return ret;
+>>  
+>> diff --git a/drivers/gpu/drm/ttm/ttm_bo_vm.c b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+>> index a194db83421d..02aea23a34e7 100644
+>> --- a/drivers/gpu/drm/ttm/ttm_bo_vm.c
+>> +++ b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+>> @@ -224,7 +224,9 @@ vm_fault_t ttm_bo_vm_fault_reserved(struct vm_fault *vmf,
+>>  		};
+>>  
+>>  		ttm = bo->ttm;
+>> -		err = ttm_bo_populate(bo, &ctx);
+>> +		err = ttm_bo_populate(bo,
+>> +				      bo->resource->placement & TTM_PL_FLAG_MEMCG,
+>> +				      &ctx);
+>>  		if (err) {
+>>  			if (err == -EINTR || err == -ERESTARTSYS ||
+>>  			    err == -EAGAIN)
+>> diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.c
+>> index 698cd4bf5e46..81c4cbbeb130 100644
+>> --- a/drivers/gpu/drm/ttm/ttm_tt.c
+>> +++ b/drivers/gpu/drm/ttm/ttm_tt.c
+>> @@ -161,6 +161,7 @@ static void ttm_tt_init_fields(struct ttm_tt *ttm,
+>>  	ttm->caching = caching;
+>>  	ttm->restore = NULL;
+>>  	ttm->backup = NULL;
+>> +	ttm->memcg = bo->memcg;
+>>  }
+>>  
+>>  int ttm_tt_init(struct ttm_tt *ttm, struct ttm_buffer_object *bo,
+>> @@ -365,7 +366,9 @@ int ttm_tt_swapout(struct ttm_device *bdev, struct ttm_tt *ttm,
+>>  EXPORT_SYMBOL_FOR_TESTS_ONLY(ttm_tt_swapout);
+>>  
+>>  int ttm_tt_populate(struct ttm_device *bdev,
+>> -		    struct ttm_tt *ttm, struct ttm_operation_ctx *ctx)
+>> +		    struct ttm_tt *ttm,
+>> +		    bool memcg_account_tt,
+>> +		    struct ttm_operation_ctx *ctx)
+>>  {
+>>  	int ret;
+>>  
+>> @@ -376,6 +379,14 @@ int ttm_tt_populate(struct ttm_device *bdev,
+>>  		return 0;
+>>  
+>>  	if (!(ttm->page_flags & TTM_TT_FLAG_EXTERNAL)) {
+>> +		if (ttm->memcg && memcg_account_tt) {
+>> +			gfp_t gfp_flags = GFP_USER;
+>> +			if (ctx->gfp_retry_mayfail)
+>> +				gfp_flags |= __GFP_RETRY_MAYFAIL;
+>> +			if (!mem_cgroup_charge_gpu(ttm->memcg, ttm->num_pages, gfp_flags))
+>> +				return -ENOMEM;
+>> +			ttm->page_flags |= TTM_TT_FLAG_ACCOUNTED;
+>> +		}
+>>  		atomic_long_add(ttm->num_pages, &ttm_pages_allocated);
+>>  		if (bdev->pool.use_dma32)
+>>  			atomic_long_add(ttm->num_pages,
+>> @@ -437,6 +448,10 @@ void ttm_tt_unpopulate(struct ttm_device *bdev, struct ttm_tt *ttm)
+>>  		ttm_pool_free(&bdev->pool, ttm);
+>>  
+>>  	if (!(ttm->page_flags & TTM_TT_FLAG_EXTERNAL)) {
+>> +		if (ttm->page_flags & TTM_TT_FLAG_ACCOUNTED) {
+>> +			mem_cgroup_uncharge_gpu(ttm->memcg, ttm->num_pages);
+>> +			ttm->page_flags &= ~TTM_TT_FLAG_ACCOUNTED;
+>> +		}
+>>  		atomic_long_sub(ttm->num_pages, &ttm_pages_allocated);
+>>  		if (bdev->pool.use_dma32)
+>>  			atomic_long_sub(ttm->num_pages,
+>> diff --git a/include/drm/ttm/ttm_bo.h b/include/drm/ttm/ttm_bo.h
+>> index 903cd1030110..d7c0dd9e0746 100644
+>> --- a/include/drm/ttm/ttm_bo.h
+>> +++ b/include/drm/ttm/ttm_bo.h
+>> @@ -135,6 +135,12 @@ struct ttm_buffer_object {
+>>  	 * reservation lock.
+>>  	 */
+>>  	struct sg_table *sg;
+>> +
+>> +	/**
+>> +	 * @memcg: memory cgroup to charge this to if it ends up using system memory.
+>> +	 * NULL means don't charge.
+>> +	 */
+>> +	struct mem_cgroup *memcg;
+>>  };
+>>  
+>>  #define TTM_BO_MAP_IOMEM_MASK 0x80
+>> @@ -486,6 +492,7 @@ pgprot_t ttm_io_prot(struct ttm_buffer_object *bo, struct ttm_resource *res,
+>>  		     pgprot_t tmp);
+>>  void ttm_bo_tt_destroy(struct ttm_buffer_object *bo);
+>>  int ttm_bo_populate(struct ttm_buffer_object *bo,
+>> +		    bool memcg_account,
+>>  		    struct ttm_operation_ctx *ctx);
+>>  
+>>  /* Driver LRU walk helpers initially targeted for shrinking. */
+>> diff --git a/include/drm/ttm/ttm_placement.h b/include/drm/ttm/ttm_placement.h
+>> index b510a4812609..668798072292 100644
+>> --- a/include/drm/ttm/ttm_placement.h
+>> +++ b/include/drm/ttm/ttm_placement.h
+>> @@ -70,6 +70,9 @@
+>>  /* Placement is only used during eviction */
+>>  #define TTM_PL_FLAG_FALLBACK	(1 << 4)
+>>  
+>> +/* Placement causes memcg accounting */
+>> +#define TTM_PL_FLAG_MEMCG	(1 << 5)
+>> +
+>>  /**
+>>   * struct ttm_place
+>>   *
+>> diff --git a/include/drm/ttm/ttm_tt.h b/include/drm/ttm/ttm_tt.h
+>> index 406437ad674b..2790fc82edc3 100644
+>> --- a/include/drm/ttm/ttm_tt.h
+>> +++ b/include/drm/ttm/ttm_tt.h
+>> @@ -90,6 +90,8 @@ struct ttm_tt {
+>>  	 * TTM_TT_FLAG_BACKED_UP: TTM internal only. This is set if the
+>>  	 * struct ttm_tt has been (possibly partially) backed up.
+>>  	 *
+>> +	 * TTM_TT_FLAG_ACCOUNTED: TTM internal. This tt has been accounted.
+>> +	 *
+>>  	 * TTM_TT_FLAG_PRIV_POPULATED: TTM internal only. DO NOT USE. This is
+>>  	 * set by TTM after ttm_tt_populate() has successfully returned, and is
+>>  	 * then unset when TTM calls ttm_tt_unpopulate().
+>> @@ -101,8 +103,9 @@ struct ttm_tt {
+>>  #define TTM_TT_FLAG_EXTERNAL_MAPPABLE	BIT(3)
+>>  #define TTM_TT_FLAG_DECRYPTED		BIT(4)
+>>  #define TTM_TT_FLAG_BACKED_UP	        BIT(5)
+>> +#define TTM_TT_FLAG_ACCOUNTED	        BIT(6)
+>>  
+>> -#define TTM_TT_FLAG_PRIV_POPULATED	BIT(6)
+>> +#define TTM_TT_FLAG_PRIV_POPULATED	BIT(7)
+>>  	uint32_t page_flags;
+>>  	/** @num_pages: Number of pages in the page array. */
+>>  	uint32_t num_pages;
+>> @@ -126,6 +129,8 @@ struct ttm_tt {
+>>  	enum ttm_caching caching;
+>>  	/** @restore: Partial restoration from backup state. TTM private */
+>>  	struct ttm_pool_tt_restore *restore;
+>> +	/** @memcg: Memory cgroup for this TT allocation */
+>> +	struct mem_cgroup *memcg;
+>>  };
+>>  
+>>  /**
+>> @@ -245,11 +250,13 @@ int ttm_tt_swapout(struct ttm_device *bdev, struct ttm_tt *ttm,
+>>   *
+>>   * @bdev: the ttm_device this object belongs to
+>>   * @ttm: Pointer to the ttm_tt structure
+>> + * @mem_account_tt: Account this population to the memcg
+>>   * @ctx: operation context for populating the tt object.
+>>   *
+>>   * Calls the driver method to allocate pages for a ttm
+>>   */
+>>  int ttm_tt_populate(struct ttm_device *bdev, struct ttm_tt *ttm,
+>> +		    bool mem_account_tt,
+>>  		    struct ttm_operation_ctx *ctx);
+>>  
+>>  /**
 
 
