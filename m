@@ -1,95 +1,88 @@
-Return-Path: <cgroups+bounces-8213-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8214-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 567A4AB8A0D
-	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 16:57:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAA64AB8A4C
+	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 17:09:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52CAA163E38
-	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 14:57:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1BD8A07AC4
+	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 15:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14CF1FF1B4;
-	Thu, 15 May 2025 14:57:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3039D1F8691;
+	Thu, 15 May 2025 15:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CvVx4kFR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rxlkYI3r";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CvVx4kFR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rxlkYI3r"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VlHWVk82"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F051A08DB
-	for <cgroups@vger.kernel.org>; Thu, 15 May 2025 14:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5971E13E41A
+	for <cgroups@vger.kernel.org>; Thu, 15 May 2025 15:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747321034; cv=none; b=JAVqbGsRy9O0MJBIrIMNTWMlNT9QNREDO1OnWzsYdMjCFWvfq1gAdIYT8gerkfAtmybdbrKVAJ80PBJGU/sO2TDWPPZ6+Ohybg1jWFOICY3lLSlje5Dyq3hNTD1TnJhKAIHeNYyMg5Mni6Qp790pk93z53/dsKvwM2whboJ7utk=
+	t=1747321475; cv=none; b=KwCYPwAdg5MwZ3a0+rJMdIuAqvuhk6+5XsVLgK0SraLXBHIsMYXpgkPnthExi1nJN1We6cEO43uQEGib1l9WufdZOaa/TZ2NehdwJ4VzGm8ZrYx5CceM2m/qcwDNLltggiyxxgsYT/4L5vKRdcq4TBGhC/Dw13Ek/GptLHXlpug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747321034; c=relaxed/simple;
-	bh=8fQq0PWQLuVp0FRzU6NvxKJHedMYCE+xtQUO7iyL6Z4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LVJ+po5vri2P/3XuK9hpC3cdj4Z7eqmoLYytQoBvkD71KDZofbURkjfDAC0UKQ7ojVOwmz+D+T0sGx/nnOBS6hNd//Yr1UXkNZKWpRIVK18KDZlgt3v00tOIxgErJraACPmjZgFXFftlSWqet1gKyHoqcXqysOg0Hzfpmrh79d4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CvVx4kFR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rxlkYI3r; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CvVx4kFR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rxlkYI3r; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 36B35211D5;
-	Thu, 15 May 2025 14:57:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747321031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1747321475; c=relaxed/simple;
+	bh=t9PySZ0VBU1axL/lXcwGk0yZ3wHp57t23ggTR737eSw=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=of9TSgiTasXfveAT9CjTd4Z1bIv+2AtvhXxHEXJ1nvt0UPavgPyoYiMSesAxnBpX0d4nVI20HAWzzS6rn4fHMCDDmuV9MZMMgBLUzUnO+YMJgICY9GatkPHuBbp1s/vTptOBL/BlqgqiGUvy97qt0m7e92ubMSXXBH3x2OyEsSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VlHWVk82; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1747321472;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=275R20YMq0CMl3mWxLHSxXzp2q9navMzLEtYmOMEG1k=;
-	b=CvVx4kFRIVHJBnwzffrXPD2IfV0JTCgFMMcYSzyBXMXx9qT+yYnWs2nc5z0szrXgturl0P
-	Um1/tmg4APcIW+7f1QeKUN8Fx/aJNui8oUdaQp9LDJX0Wzvh7+TU3zmf7LG8/fRncAXGLK
-	SH8FyWGIA6B1T8l8xhCTatyh/eBJSh0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747321031;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=275R20YMq0CMl3mWxLHSxXzp2q9navMzLEtYmOMEG1k=;
-	b=rxlkYI3rlhrl4Bj6OZGwHlXSH7Fr5OXZtpvdr2NbixnFSFyu0a3WLgtaEV2LgQdp7k1mfQ
-	KeQB7K8Rdzr4/xAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747321031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=275R20YMq0CMl3mWxLHSxXzp2q9navMzLEtYmOMEG1k=;
-	b=CvVx4kFRIVHJBnwzffrXPD2IfV0JTCgFMMcYSzyBXMXx9qT+yYnWs2nc5z0szrXgturl0P
-	Um1/tmg4APcIW+7f1QeKUN8Fx/aJNui8oUdaQp9LDJX0Wzvh7+TU3zmf7LG8/fRncAXGLK
-	SH8FyWGIA6B1T8l8xhCTatyh/eBJSh0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747321031;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=275R20YMq0CMl3mWxLHSxXzp2q9navMzLEtYmOMEG1k=;
-	b=rxlkYI3rlhrl4Bj6OZGwHlXSH7Fr5OXZtpvdr2NbixnFSFyu0a3WLgtaEV2LgQdp7k1mfQ
-	KeQB7K8Rdzr4/xAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0F748139D0;
-	Thu, 15 May 2025 14:57:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yWrcAscAJmgHPAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 15 May 2025 14:57:11 +0000
-Message-ID: <2d517f89-3bb4-4de2-8c14-8bb1e4235c7a@suse.cz>
-Date: Thu, 15 May 2025 16:57:10 +0200
+	bh=Be4KEquqHLgMFgrTaQhow/F5UFD9Qx8DOcirjEfZuRY=;
+	b=VlHWVk82ZjREgfvC5+sOX+BRwe1bqTWRR63M84+aeWRmcj+IR75XFaClxaPRKgoa5KAALH
+	Ul5YzqzpWwxfJZVwMygIB+aEz4+FEzPa6V+66Mh/TONx4t0v03SSu9v6wEJdfq4wwMFIms
+	hYTLFuqLtSHEhkLjrPpWKXs23CBtGXI=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-46-KFTNZkEbO4iUxj-_5ZtNeg-1; Thu, 15 May 2025 11:04:31 -0400
+X-MC-Unique: KFTNZkEbO4iUxj-_5ZtNeg-1
+X-Mimecast-MFC-AGG-ID: KFTNZkEbO4iUxj-_5ZtNeg_1747321470
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-476623ba226so16179281cf.0
+        for <cgroups@vger.kernel.org>; Thu, 15 May 2025 08:04:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747321470; x=1747926270;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Be4KEquqHLgMFgrTaQhow/F5UFD9Qx8DOcirjEfZuRY=;
+        b=mYOYPFDj131qGBPtoSRsuh4ueyxlQ+BMAxYLsA5zsOw9wvTmNivzrYPnefaLMt/WPR
+         mtYYIgn4YJiOxNhkIy52BEGsVeN9lg6LnwhbBSPfoC087U1vTbXu5UxjZlAEoCwwR427
+         rJVh0R/sD4hWZlWG4GTgo93BNn7gCC52KGlZTY13/GFVDjjwgEWdrpC60ATbXDtigwPl
+         LyFBrb7jFF4cQ7gVlUWG6xLuFR/cjIvPEFTWe+PTLi4uC62iK5ZKcUXwhH79cHKwSUq9
+         9rPCeNvQ/Kb6vh34iwUotSVPLpHNRpAxQAKuELZK8LeBxVi3BD8j4eVSx2c6MthkXAbb
+         OahA==
+X-Forwarded-Encrypted: i=1; AJvYcCV5FTmNvHRRKDMqv02cKZ2CyhF4zgQ/tOuNCj9rq5GF2Fmoitmn8zoZuYSRQfWHuYU9yYj+UnL+@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnOxPEfSNGAAQL6S/hlZpXFE0XQ7YsSMkHKwXAyxJMZeOvTp3K
+	jciUeE9Sn/vz1DZI8j2dpJEANhjDpkx/7EAv8nP18yiAuOxbwqiX+S2zu7+wzniIJ/pcLrN75f1
+	TpIB0GEXkSgkpGIfGeHCKNue3YlE1EFXQmJCdtCWD9hSH9qfXUN3SU24=
+X-Gm-Gg: ASbGncsj2vYoIPsBGKFHPh+QaIDM8w0cV6lunp0dZsFHxOcTs6mvEQvwU/vRCzLnRdZ
+	n9mXHhsag0af1vmkjIjl9fGEjZSSi8wZzRz+vdbWo9bIK+Q+hpKNZNJ22ZJNDI4EdDP4sF5Jqqf
+	rA5iP1pF5qrqmbchsBpbfOgrtjBpOg37+2LojeEQCQvcqeDQUBIEiRNFrh/Mzyu7Q+SPL4tAnux
+	VpmcisyzmOqNfJKxrVf/fL7aMhOriEYYUJQ9u8OvvZOQS8LsDVDKIoM2TP2turWX3eqUkKHs1IS
+	aUw+1PEKiAIOwbaCLVxY1WeIpZLRY+f89+wckR5tqYpkVbk19llLIHFHmg==
+X-Received: by 2002:a05:622a:22a6:b0:48a:6af8:58a5 with SMTP id d75a77b69052e-49495cf9359mr115871531cf.29.1747321470128;
+        Thu, 15 May 2025 08:04:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHw/c5TKHyoij8GGYCAmY2jQxbRtsvyzNfyutXVO25tG8IdumpngugYMLx+TE/G1RpwhKqcYw==
+X-Received: by 2002:a05:622a:22a6:b0:48a:6af8:58a5 with SMTP id d75a77b69052e-49495cf9359mr115871051cf.29.1747321469430;
+        Thu, 15 May 2025 08:04:29 -0700 (PDT)
+Received: from ?IPV6:2601:408:c101:1d00:6621:a07c:fed4:cbba? ([2601:408:c101:1d00:6621:a07c:fed4:cbba])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6f8b08c024fsm234256d6.65.2025.05.15.08.04.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 May 2025 08:04:28 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <4ec2dd5a-3cdb-48cf-a459-4d384a48c671@redhat.com>
+Date: Thu, 15 May 2025 11:04:27 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -97,94 +90,86 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/7] memcg: memcg_rstat_updated re-entrant safe against
- irqs
+Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (v2)
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Dave Airlie <airlied@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>
+Cc: dri-devel@lists.freedesktop.org, tj@kernel.org,
+ Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ cgroups@vger.kernel.org, simona@ffwll.ch
+References: <20250502034046.1625896-1-airlied@gmail.com>
+ <20250507175238.GB276050@cmpxchg.org>
+ <CAPM=9tw0hn=doXVdH_hxQMvUhyAQvWOp+HT24RVGA7Hi=nhwRA@mail.gmail.com>
+ <20250513075446.GA623911@cmpxchg.org>
+ <CAPM=9txLcFNt-5hfHtmW5C=zhaC4pGukQJ=aOi1zq_bTCHq4zg@mail.gmail.com>
+ <b0953201-8d04-49f3-a116-8ae1936c581c@amd.com>
 Content-Language: en-US
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Harry Yoo <harry.yoo@oracle.com>, Yosry Ahmed <yosry.ahmed@linux.dev>,
- bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
-References: <20250514184158.3471331-1-shakeel.butt@linux.dev>
- <20250514184158.3471331-2-shakeel.butt@linux.dev>
- <22f69e6e-7908-4e92-96ca-5c70d535c439@lucifer.local>
- <CAGj-7pUJQZD59Sx7E69Uvi1++dB59R8wWkDYvSTGYhU-18AHXg@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAGj-7pUJQZD59Sx7E69Uvi1++dB59R8wWkDYvSTGYhU-18AHXg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <b0953201-8d04-49f3-a116-8ae1936c581c@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,suse.cz:mid]
-X-Spam-Score: -4.30
 
-On 5/15/25 16:31, Shakeel Butt wrote:
-> On Thu, May 15, 2025 at 5:47 AM Lorenzo Stoakes
-> <lorenzo.stoakes@oracle.com> wrote:
+On 5/15/25 4:55 AM, Christian König wrote:
+> On 5/15/25 05:02, Dave Airlie wrote:
+>>> I have to admit I'm pretty clueless about the gpu driver internals and
+>>> can't really judge how feasible this is. But from a cgroup POV, if you
+>>> want proper memory isolation between groups, it seems to me that's the
+>>> direction you'd have to take this in.
+>> Thanks for this insight, I think you have definitely shown me where
+>> things need to go here, and I agree that the goal should be to make
+>> the pools and the shrinker memcg aware is the proper answer,
+>> unfortunately I think we are long way from that at the moment, but
+>> I'll need to do a bit more research. I wonder if we can agree on some
+>> compromise points in order to move things forward from where they are
+>> now.
 >>
->> Shakeel - This breaks the build in mm-new for me:
+>> Right now we have 0 accounting for any system memory allocations done
+>> via GPU APIs, never mind the case where we have pools and evictions.
 >>
->>   CC      mm/pt_reclaim.o
->> In file included from ./arch/x86/include/asm/rmwcc.h:5,
->>                  from ./arch/x86/include/asm/bitops.h:18,
->>                  from ./include/linux/bitops.h:68,
->>                  from ./include/linux/radix-tree.h:11,
->>                  from ./include/linux/idr.h:15,
->>                  from ./include/linux/cgroup-defs.h:13,
->>                  from mm/memcontrol.c:28:
->> mm/memcontrol.c: In function ‘mem_cgroup_alloc’:
->> ./arch/x86/include/asm/percpu.h:39:45: error: expected identifier or ‘(’ before ‘__seg_gs’
->>    39 | #define __percpu_seg_override   CONCATENATE(__seg_, __percpu_seg)
->>       |                                             ^~~~~~
->> ./include/linux/args.h:25:24: note: in definition of macro ‘__CONCAT’
->>    25 | #define __CONCAT(a, b) a ## b
->>       |                        ^
->> ./arch/x86/include/asm/percpu.h:39:33: note: in expansion of macro ‘CONCATENATE’
->>    39 | #define __percpu_seg_override   CONCATENATE(__seg_, __percpu_seg)
->>       |                                 ^~~~~~~~~~~
->> ./arch/x86/include/asm/percpu.h:93:33: note: in expansion of macro ‘__percpu_seg_override’
->>    93 | # define __percpu_qual          __percpu_seg_override
->>       |                                 ^~~~~~~~~~~~~~~~~~~~~
->> ././include/linux/compiler_types.h:60:25: note: in expansion of macro ‘__percpu_qual’
->>    60 | # define __percpu       __percpu_qual BTF_TYPE_TAG(percpu)
->>       |                         ^~~~~~~~~~~~~
->> mm/memcontrol.c:3700:45: note: in expansion of macro ‘__percpu’
->>  3700 |         struct memcg_vmstats_percpu *statc, __percpu *pstatc_pcpu;
->>       |                                             ^~~~~~~~
->> mm/memcontrol.c:3731:25: error: ‘pstatc_pcpu’ undeclared (first use in this function); did you mean ‘kstat_cpu’?
->>  3731 |                         pstatc_pcpu = parent->vmstats_percpu;
->>       |                         ^~~~~~~~~~~
->>       |                         kstat_cpu
->> mm/memcontrol.c:3731:25: note: each undeclared identifier is reported only once for each function it appears in
+>> I think I sort of see 3 stages:
+>> 1. Land some sort of accounting so you can at least see the active GPU
+>> memory usage globally, per-node and per-cgroup - this series mostly
+>> covers that, modulo any other feedback I get.
+>> 2. Work on making the ttm subsystem cgroup aware and achieve the state
+>> where we can shrink inside the cgroup first.
+>> 3. Work on what to do with evicted memory for VRAM allocations, and
+>> how best to integrate with dmem to possibly allow userspace to define
+>> policy for this.
 >>
->> The __percpu macro seems to be a bit screwy with comma-delimited decls, as it
->> seems that putting this on its own line fixes this problem:
+>>> Ah, no need to worry about it. The name is just a historical memcgism,
+>>> from back when we first started charging "kernel" allocations, as
+>>> opposed to the conventional, pageable userspace memory. It's no longer
+>>> a super meaningful distinction, tbh.
+>>>
+>>> You can still add a separate counter for GPU memory.
+>> Okay that's interesting, so I guess the only question vs the bespoke
+>> ones is whether we use __GFP_ACCOUNT and whether there is benefit in
+>> having page->memcg set.
 >>
-> 
-> Which compiler (and version) is this? Thanks for the fix.
+>>> I agree this doesn't need to be a goal in itself. It would just be a
+>>> side effect of charging through __GFP_ACCOUNT and uncharging inside
+>>> __free_pages(). What's more important is that the charge lifetime is
+>>> correlated with the actual memory allocation.
+>> How much flexibility to do we have to evolve here, like if we start
+>> with where the latest series I posted gets us (maybe with a CONFIG
+>> option), then work on memcg aware shrinkers for the pools, then with
+>> that in place it might make more sense to account across the complete
+>> memory allocation. I think I'm also not sure if passing __GFP_ACCOUNT
+>> to the dma allocators is supported, which is also something we need to
+>> do, and having the bespoke API allows that to be possible.
+> Stop for a second.
+>
+> As far as I can see the shrinker for the TTM pool should *not* be memcg aware. Background is that pages who enter the pool are considered freed by the application.
+>
+> The only reason we have the pool is to speed up allocation of uncached and write combined pages as well as work around for performance problems of the coherent DMA API.
+>
+> The shrinker makes sure that the pages can be given back to the core memory management at any given time.
 
-Hm right I see the same errors with gcc 7, 13, 14, 15 but not with clang.
+I think what Johannes is suggesting that we can have a separate cgroup 
+just for the memory pool so that if the system is running into global 
+memory pressure, the shrinker can force the uncached pool to release 
+memory back into the system.
+
+Cheers,
+Longman
+
 
