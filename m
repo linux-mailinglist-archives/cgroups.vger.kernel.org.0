@@ -1,154 +1,113 @@
-Return-Path: <cgroups+bounces-8204-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8205-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAA90AB7A7F
-	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 02:20:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F24FAB7B25
+	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 03:50:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A1621BA523A
-	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 00:20:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8E2817CD1A
+	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 01:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F173B1AB;
-	Thu, 15 May 2025 00:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042122512EB;
+	Thu, 15 May 2025 01:49:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IWOxDFI5"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZY2twBwc"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12EFF8F66
-	for <cgroups@vger.kernel.org>; Thu, 15 May 2025 00:19:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3E641C63
+	for <cgroups@vger.kernel.org>; Thu, 15 May 2025 01:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747268398; cv=none; b=PwPMFl7PgDb9/CArzDYzn9Rq9EDxnw/DHYiRQ424G3r7Jyj8RKIPbuB+i2r+B6uVUQRsRIwqXXXIayDQCQJpVzlacAPZmm0/RU6+37bUT0zy+9/tMROarVxqpo+lpAzfzh4+tTeXu5kVkm3D3Qzlgh1DHMp0oAyA8wcqCj/F2pg=
+	t=1747273796; cv=none; b=fQb+OzIFssp2w1O+jDLATx3aMIOiDhbsu55N+Il8g3ukdFnHIw1CcJTVpFeyIwTnnen7BiLogm/WOw6CgnyNOPD/03yakbPJBtJJzHA7T2/4Z7UOzfjFAfO/SCg2k8w+mNmX5BPsX4kbOoREtdTIKGgldml+Iwj1WP9sXrE51Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747268398; c=relaxed/simple;
-	bh=LkZIpsK3Mi1bphXnDp0o91N0kMilUYXqN8hR7NoMO1U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oxuztjNOPKvlZFHM849jY3Y6ZhI4utLE68wpzTD/wQVJRbXbonrfMZn+u21qGopVxspToR8Yp1OowLsbw+2DCyvspOSRTQ6vgV+ko5vzWQ/wvBFPOO/BYpZ6OPR5L1S+cK/byizUmYmG/6r2BizjBB8/Pe64mKd0e8ZICXICW7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IWOxDFI5; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b268e4bfd0dso258959a12.2
-        for <cgroups@vger.kernel.org>; Wed, 14 May 2025 17:19:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747268396; x=1747873196; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WN3i0opWFFgoPhDlqtGA7gSsvOJi1iyTpU2ngkR9euI=;
-        b=IWOxDFI5J+b4oOAgBlXxgMjcVYrtdW7vLcqX5ipn3LFUfi/OiDleWnesYvq7j5wWu2
-         z3CA+opDMY2Fh5nykO0uHgLS6A4NUS4IUAWu8FTzmB3bytYOS9+KAIw3JyGuzGNGoKD+
-         rMCl0IFtU1Gzpdy0Ow/QrX22fIDNv4WcbT9M5fsrbg/F6vuqYh/ETX/UvXg+kc2ni7y/
-         CQXuisUWyDEfMCTpSstNlytM5pRMpCfgtbrTelbIyh1ypp6nFU53WVKl2muzMNBYbLbJ
-         VwYeLPTeQIX3CbWwIgcvGTLiQbEcjR9BQ2K94MIiE+ZQlbHxr/XQx61gOj1s6F5P385t
-         EH1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747268396; x=1747873196;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WN3i0opWFFgoPhDlqtGA7gSsvOJi1iyTpU2ngkR9euI=;
-        b=k2rSYHssXGcoQkQ0IRry8Mt39+18tcZOF+jtjH31ttiM6cBvEew/D3VEnpNMYym3qn
-         SF+PQxZZ0K3rTIlzuI+1S0bOJoUbaF9Y4eeR4zUwljWthtB7Ac/T+hnsbB3AsGcLN1pr
-         1KQw7LCHM+R68X9FNG1OvqkalcJWz2zKdESFAlmJgZa65zVIStD0Pmv1ZU6nXGiQAHYp
-         jb04SJVV/dD9HMSedfDmBkBVwqeTL/Y+SKe6EUHWJYMN8KVRB94BVuZX8ZeN1ZvQDvuD
-         g8B8T/t3w9PNfDSuHlUg6ETpdZ5twacBLWpHZWctDF4e0v1LVmAvWFAKJrJSJsfqS3jw
-         7DMg==
-X-Forwarded-Encrypted: i=1; AJvYcCWWou064jyzGXQg1g4Cxcw9eP188VqIOPzH1WbEAKx+sf/MUhJ57GS0d0VZ+jBx7//cZ6Q3rvCI@vger.kernel.org
-X-Gm-Message-State: AOJu0YznZKdbqt0A60vejXt0QSegy3luTx5EhZjFh2+5LkVn4d+3H0Lp
-	GwEMD+odpgHxsPuqnokSmR8p5DRI5gmzEv0o9voDCtmRSjUxJXD7
-X-Gm-Gg: ASbGncsQZTxluj5isjIdwDZHgEHiRitrYfEj0gzHEhZFeMgZtWRFQLD1vt+qSxtLbl6
-	jPcapW4mOWtoNLuM2LY+YSDnO6r650mJVlXiOtFuvEISqQhhIcDFQFtHGw6i7kzdXTEHUw5bGe6
-	B7C6PtrGkMWWuctuKaZbyrNkXej4zfvN4qNS82d8ycuVajzGTMDrPn4Zro6dfbPJp/Ur4OlX/fr
-	amyJxhOtRRMbPIywjLIP+cLik/wuQ5EqVszeWj0hwdrIupGdZb7cShy9r9tfSbvDi81LtA1jvuR
-	t18vk/FxNFinkeAJePrj7CySAKg6gTahgsIZUpW/KayKapaVpUn3nlgjH6TBPa3dNgrECpp4SDK
-	vKgkyH2YhuF1zjaOQe80r96OHYJgy8u4AbUS7Xwc=
-X-Google-Smtp-Source: AGHT+IHcsGPXI2IJK0DMoByt6I2lVstaLtvv88DSzENHeqwH7ic2GIrYMhvqXJPcaik8ofyHSACSlQ==
-X-Received: by 2002:a17:903:2448:b0:224:24d5:f20a with SMTP id d9443c01a7336-231982c6ecdmr84291555ad.48.1747268396344;
-        Wed, 14 May 2025 17:19:56 -0700 (PDT)
-Received: from jpkobryn-fedora-PF5CFKNC.lan (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc754785bsm105939545ad.20.2025.05.14.17.19.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 May 2025 17:19:55 -0700 (PDT)
-From: JP Kobryn <inwardvessel@gmail.com>
-To: tj@kernel.org,
-	shakeel.butt@linux.dev,
-	yosryahmed@google.com,
-	mkoutny@suse.com,
-	hannes@cmpxchg.org,
-	akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH v6 6/6] cgroup: document the rstat per-cpu initialization
-Date: Wed, 14 May 2025 17:19:37 -0700
-Message-ID: <20250515001937.219505-7-inwardvessel@gmail.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250515001937.219505-1-inwardvessel@gmail.com>
-References: <20250515001937.219505-1-inwardvessel@gmail.com>
+	s=arc-20240116; t=1747273796; c=relaxed/simple;
+	bh=NjYefZJ+G12d8ZbQGjEoN4hKEc0qOfGCUdQw7dcIbHA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rXRQkUud6aNtc6nE50vQvmB+tdoo8P+Fvmguy2JTimjfqHbw89Dr48rQZwC5F5yRqa4ZxhTmRAlJVEYRyuE+FTjbMKoOLFoRv1b1xfdIU5/kAqL10VNnyUz9mkOMShn98CChyOKS/kSbnICwVBIRHoAGgNnabZPBUjLNGHjhOuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZY2twBwc; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 14 May 2025 18:49:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747273792;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FS/yE07A4Cv6zJAjjeYcVdij2I9QfJ/UEHQCtSmp7sw=;
+	b=ZY2twBwc4USR7Gw2dEDffmf4FeaE58904GvYVMl8BBdMJ5qN/u0DfcmyYma+K6jrE7PiC0
+	oPgNdcW/JD4cXwgyOTJdig85MQLmkbDAzNvKm2gopHzIhI34ha3xipM565sjzzo1GG1FCa
+	SBsKU99aiO6NoMDwptx09g8x6aZMbig=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Peter Zijlstra <peterz@infradead.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH 0/4] memcg: nmi-safe kmem charging
+Message-ID: <mezzzvbplz2jtt6wjel7dwic25owtydcu3hp2mkqlhp2q3zb7x@js2bm7oheljs>
+References: <20250509232859.657525-1-shakeel.butt@linux.dev>
+ <2e2f0568-3687-4574-836d-c23d09614bce@suse.cz>
+ <mzrsx4x5xluljyxy5h5ha6kijcno3ormac3sobc3k7bkj5wepr@cuz2fluc5m5d>
+ <07e4e8d9-2588-41bf-89d4-328ca6afd263@suse.cz>
+ <20250513114125.GE25763@noisy.programming.kicks-ass.net>
+ <ct2h2eyuepa2g2ltl5fucfegwyuqspvz6d4uugcs4szxwnggdc@6m4ks3hp3tjj>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ct2h2eyuepa2g2ltl5fucfegwyuqspvz6d4uugcs4szxwnggdc@6m4ks3hp3tjj>
+X-Migadu-Flow: FLOW_OUT
 
-The calls to css_rstat_init() occur at different places depending on the
-context. Document the conditions that determine which point of
-initialization is used.
+On Tue, May 13, 2025 at 03:17:00PM -0700, Shakeel Butt wrote:
+[...]
+> 
+> Thanks a lot Vlastimil & Peter for the suggestions. Let me summarize
+> what I plan to do and please point out if I am doing something wrong:
+> 
+> 
+> #if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || !defined(CONFIG_HAVE_NMI)
+> 
+> // Do normal this_cpu* ops
+> 
+> #elif defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
+> 
+> // Do 32 bit atomic ops with in_nmi() checks
+> 
+> #else
+> 
+> // Build error or ignore nmi stats??
+> 
+> #endif
+> 
+> 
 
-Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
----
- include/linux/cgroup-defs.h | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Just wanted to circle back on the updated plan:
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 5b8127d29dc5..e61687d5e496 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -169,6 +169,21 @@ struct cgroup_subsys_state {
- 	/* reference count - access via css_[try]get() and css_put() */
- 	struct percpu_ref refcnt;
- 
-+	/*
-+	 * Depending on the context, this field is initialized
-+	 * via css_rstat_init() at different places:
-+	 *
-+	 * when css is associated with cgroup::self
-+	 *   when css->cgroup is the root cgroup
-+	 *     performed in cgroup_init()
-+	 *   when css->cgroup is not the root cgroup
-+	 *     performed in cgroup_create()
-+	 * when css is associated with a subsystem
-+	 *   when css->cgroup is the root cgroup
-+	 *     performed in cgroup_init_subsys() in the non-early path
-+	 *   when css->cgroup is not the root cgroup
-+	 *     performed in css_create()
-+	 */
- 	struct css_rstat_cpu __percpu *rstat_cpu;
- 
- 	/*
-@@ -530,6 +545,15 @@ struct cgroup {
- 	struct cgroup *dom_cgrp;
- 	struct cgroup *old_dom_cgrp;		/* used while enabling threaded */
- 
-+	/*
-+	 * Depending on the context, this field is initialized via
-+	 * css_rstat_init() at different places:
-+	 *
-+	 * when cgroup is the root cgroup
-+	 *   performed in cgroup_setup_root()
-+	 * otherwise
-+	 *   performed in cgroup_create()
-+	 */
- 	struct cgroup_rstat_base_cpu __percpu *rstat_base_cpu;
- 
- 	/*
--- 
-2.47.1
+#if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || !defined(CONFIG_HAVE_NMI)
 
+- Allow memcg charging in nmi context
+- Use this_cpu_ops for memcg stats even in nmi context
+
+#elif defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
+
+- Allow memcg charging in nmi context
+- Use atomic* ops for selected memcg stats in nmi context
+
+#else
+
+- Do not allow memcg charging in nmi context
+
+#endif
 
