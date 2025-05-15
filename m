@@ -1,256 +1,124 @@
-Return-Path: <cgroups+bounces-8215-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8216-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DFF0AB8A7F
-	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 17:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 38226AB8AA4
+	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 17:28:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AB023B21B3
-	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 15:16:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D292CA03FCE
+	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 15:21:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A723C20FA81;
-	Thu, 15 May 2025 15:16:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F7C21578D;
+	Thu, 15 May 2025 15:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="NEuviYea"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f2RhhZz5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2066.outbound.protection.outlook.com [40.107.236.66])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A052718FC91
-	for <cgroups@vger.kernel.org>; Thu, 15 May 2025 15:16:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747322217; cv=fail; b=RqytNzPLxcVVAi25kgAk2nzPj/wc8dCrzCS6hoAr55xaYRSFE9/cmfipR/M/SblNC2zk1BiD16j9Us1eF2+WX9/yRua9jNKWnHXxWqJbe9Emi0d0m03tNfLBUj5peiroj7ho4fKWYCHJzBghlrzxidulj1yvFk34Te3dYun3Nf4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747322217; c=relaxed/simple;
-	bh=FNRoFKcqi6WoGGQQmS4oaCDMyEZUofFgWkHML+JW+xk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=fpbl3Kamol3rOA8ThADZp1lApiTgi/HEXD6/kWy9902fdb6tX8ipuXS6xyqbe540oJxdv5OsXyoGYZFSrRm1gGPaaLSth/oHA4diA6Jm2qX2DyJ/6Eg9M55b8Ma0CbT+cq5srPODusV51yX0GtiOm6nIG6Dg5tkxOUQoAkYq5fY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=NEuviYea; arc=fail smtp.client-ip=40.107.236.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=lkxgBSYP6rI0hD4EExa6RxByxdedtzyPJfWHOai6sFiuZO2JymNcBpgPb3mNLs7UlEKrruzJ9b59bgVtbyzkq4cHL/h+Jvfyoc1+uBRDDeVaGLO0Xt9FxgwwMpQHDqlfTTnzIK5lArW1Gwv0FhmFgX44+nSzu5yZV3/IODjlA10OiX/SXK4KqfM79GQFF2qJb08bFPhh88vEB+Z02CNF7ZD3oMLkvsqTCkqk4CoF3kOOOJQijehRcly5Lw/IvJQ3j5f0LXLzWjmq+fH4XSAtSA9OlRTv330EqImOC/Cx3uzxj1N4HEBDwJ4PnAGPdMdMG2sKtFzYyNlt2Z5RPrQ7IQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3v11kWqi3i8Qr10e11xOCDXMISrcnGx0y7C2sBKX8jY=;
- b=WA+LWVfdmi1vd0SZ8cm6wHEs85vxHNZTNpC1g79D1turRWpCRbwv/WsfX+QF/i7EmoDEpe2urlVvywiMlFR7xP3g9khXu6AgIeACrQDXlRIM/kpNnIvxiXbpq1a9ARFallblMHZGuUqI8wSH9RcYU+pxm3+ozxRn/TcU/BDRj0oNOrefI3ncb2O6ugdjqaSiKveusuqZFMc8NFF+oS8BR+Ay9Kb5PuvZnN5e/qtjeLt60Jd8dAmlztx1W52Wb2GzwGbunVg2tjKzQqwNo0w/1dyOezOg36wxWQ7DQrRxEWwu5RlHkahOrXSvj23i3ArnOeVT/KbCL6MjuK8/dGeSzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3v11kWqi3i8Qr10e11xOCDXMISrcnGx0y7C2sBKX8jY=;
- b=NEuviYeaWa5p/6W3b2zrOdt0xIL4t33n8oZlnJs55PiMhn3grVL2CmUDRfxyoWcO7LNsiGjzQC84QSP8FAb0P2ftTq9Qax8DSqHBzBfcmbm+q6xQxnZbgx1uQoBcHC8EjDAgPlAy4G7v/9cV+EdKz6K4fuhLphJlTZDckZBN16Y=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by PH0PR12MB5646.namprd12.prod.outlook.com (2603:10b6:510:143::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.29; Thu, 15 May
- 2025 15:16:51 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::46fb:96f2:7667:7ca5%7]) with mapi id 15.20.8722.027; Thu, 15 May 2025
- 15:16:51 +0000
-Message-ID: <b5aabc46-6b83-4525-841e-64d1e7398f4c@amd.com>
-Date: Thu, 15 May 2025 17:16:47 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (v2)
-To: Waiman Long <llong@redhat.com>, Dave Airlie <airlied@gmail.com>,
- Johannes Weiner <hannes@cmpxchg.org>
-Cc: dri-devel@lists.freedesktop.org, tj@kernel.org,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- cgroups@vger.kernel.org, simona@ffwll.ch
-References: <20250502034046.1625896-1-airlied@gmail.com>
- <20250507175238.GB276050@cmpxchg.org>
- <CAPM=9tw0hn=doXVdH_hxQMvUhyAQvWOp+HT24RVGA7Hi=nhwRA@mail.gmail.com>
- <20250513075446.GA623911@cmpxchg.org>
- <CAPM=9txLcFNt-5hfHtmW5C=zhaC4pGukQJ=aOi1zq_bTCHq4zg@mail.gmail.com>
- <b0953201-8d04-49f3-a116-8ae1936c581c@amd.com>
- <4ec2dd5a-3cdb-48cf-a459-4d384a48c671@redhat.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <4ec2dd5a-3cdb-48cf-a459-4d384a48c671@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0306.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f6::17) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4F9C18FC91
+	for <cgroups@vger.kernel.org>; Thu, 15 May 2025 15:21:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747322505; cv=none; b=sL20k1Tf97fQMpTcBCHG7hlFTWCz5jAfStiPwmDwK6BtfC4tXvOe1YpL769jBKRpifSz+xLOxV/lg446gL0YgGH3APNVI4tFLVxEImAo4fSkaHorgSIp0mRfiX4ZikbqOI1sVnm0rWNalR+Mp8pdM0IAvlwoWMWB0I8Xz/B34lU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747322505; c=relaxed/simple;
+	bh=iWSX4Lju/uclKKCH3oy7b2JkRHS8v7CmRHmmEd3vadc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KX5l+bt7tbGmfAxDzp8e7EMhYyKPr8UXb0THIVZjSF1KXWnorboV+iy+0Ow7HsVYi1qrzNmkIJ4w66bHLnfjrXiVe2PwHOSs0GEaYIp1jjA1i9hwfccjRNeVNYRkVvdmyDJLK/6wOQJmlvLNALmh1ek0b4Iu0GV64yDuvisCIXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f2RhhZz5; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 15 May 2025 08:21:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747322491;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vNQ362kPh2DAdnB+ckUbQSAnkMVDAHgeooSh5BHonV0=;
+	b=f2RhhZz5GTNImie0TBvWXUh6tKuxj+d+dSQyeRxcyIxUPzyeYz3yGUoWQ+dZ6nCKrLcmST
+	rKyfkemIxryRt9zwqMVYyPc9lGs4Cc1HptTDtwbsUARhkCBUBNcogHcn1i9ydwJ8FuCXym
+	m+rJ4+jr/48NgW11U0/p/AEjp79HL9Q=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Harry Yoo <harry.yoo@oracle.com>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v2 1/7] memcg: memcg_rstat_updated re-entrant safe
+ against irqs
+Message-ID: <oqw3rhbai4zzr3g7mpjbq7zosatifn5lpbuqu4w732ksnfxxn2@hhut62hpdl2h>
+References: <20250514184158.3471331-1-shakeel.butt@linux.dev>
+ <20250514184158.3471331-2-shakeel.butt@linux.dev>
+ <22f69e6e-7908-4e92-96ca-5c70d535c439@lucifer.local>
+ <CAGj-7pUJQZD59Sx7E69Uvi1++dB59R8wWkDYvSTGYhU-18AHXg@mail.gmail.com>
+ <2d517f89-3bb4-4de2-8c14-8bb1e4235c7a@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|PH0PR12MB5646:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7432733f-3bab-4c43-bd93-08dd93c384e8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?a21OUzlYN1lUZ2k3QnZKd3N4Uk9SbEhuSFNXMGxoYVphbmhjMUJITVNQd3hP?=
- =?utf-8?B?bjNCUGtQNy9oeVY0YTB2YzZrOVYwem5HYWM4NGZ3QzdWZkJ4Y0xST3ZONTJx?=
- =?utf-8?B?K2xqNmk3NlhIOGdvU0VKTmQzSGRNOEtCM202eWxQR3VDWm04emxoM3p0M09K?=
- =?utf-8?B?NFNzUHdhenNSb29BZkJPSVYzRW9HYmZjWW1rbFNOUVVpZ3A0OTRJeXJDQmlz?=
- =?utf-8?B?N01ZNCtKM0w3K1ZCRkUyUUVrZm5iMm1JNUFCVGJaL3dnc09qbnFmRFVNRnVt?=
- =?utf-8?B?K3l4Mkh3bFpVSUZHaFU2Y3BTVHBEYW5RVjU3S2ZSb0ZnMEZyOEE2VnhjT2kw?=
- =?utf-8?B?SEw2b2ltQlpIK1F6TisraFBEcXEvejhaUTE0a2k1MXRiSE5sd1VCS2FSUU5p?=
- =?utf-8?B?SWNRc0hkUlhQa3p6dFNSTDkrUzFVd3BsckhBc2U0M05rdUhJSG9iQ0VqQ1Fr?=
- =?utf-8?B?ZVVNd0tKd1A4eTlXdXVkSkV2b1pjdHpFOGE4czVIeEN6cjZBRW9QVTRnc0x5?=
- =?utf-8?B?WEdnYWZlVTQwUERhSjU1NG9FYzUvT01jc1JGS2RMOHJVQ0MyVzk1SkFzR01R?=
- =?utf-8?B?amxMZ2V4YjN5cmpsUzZZZ2ZxbTAyeDF5VW14Vi8zeEpGbTRrR3R2eEpBdXp3?=
- =?utf-8?B?TDRML2t6cVlkblF5TUdFU0UvTUNpTTE4eUp5cmhGdVozdGpIeG1oalV1NUtv?=
- =?utf-8?B?RHFua1p4Uk1tRkdvaUFNZS9XTHJWZzVvR3BXVFE5MWZHbXV3amlLRUc0dnlN?=
- =?utf-8?B?eHV1a2dia2ROdE9ERFV5Z2JpUHlQU1lNb2lUcjN3V2NZbWNFc3RYVVhvV3F5?=
- =?utf-8?B?anVML2JOWllFVG9OWGtMMWgxSThGWURSRFltaU1kQU8vTnRrVHc4WjVsWWdF?=
- =?utf-8?B?VDFlRmhta3pLVnpKT3FLR25yWklRNHowRWRKN2NQd29hVjl2b3ZLc2N1Tk1V?=
- =?utf-8?B?Q0k1bDhHL3NWcFFpVmsxK1Zvb0hCWnVtWGNnem1NbDlKUXhjRXh3Z0xzSnJT?=
- =?utf-8?B?bWJ1M0plaDZRZk85d2hyTE1Eak1uQmV5Qm40YWQwdDg1dUJFZHFsQ2F6OHVi?=
- =?utf-8?B?VnM2UmFCQTYvNmphMkwxYlFuMldQMHVNNVh1Q2JleHNiNGpEUWQ4d1lhMS9m?=
- =?utf-8?B?bVVSTTZwSUdGcWNNeVBtbWVGQlkrR3cwcEhtazhPNHlRSDZFV3VrMGhvRnJv?=
- =?utf-8?B?d3FpQU1xajhPYUkxWmxlQ1d6RkIvam1mN2d1aTRIMGNIMkpWRVN1eGtkR01O?=
- =?utf-8?B?UmYrL212ODJXWVVSRzZycjRmYW9BaXRjdDVUYXhyY2tJa21KenZFNmNYQXlH?=
- =?utf-8?B?SFIwdUJoSXR6bDY1ZjIvRVZBOWJBSlRKbnVaSU9ZeG9NTnNhQ0R0OXk0TGNz?=
- =?utf-8?B?Q3l4dWdWNzJYOTEveFltSjFtUXo1UkY3N2ZJLzJETG5wckpGUitFWmN4Uk1G?=
- =?utf-8?B?ajFrSFI2UGU0Wi9mMVI2Y3ZMTU83MHlqeHZIdU41L1JJT3Nyd1V6L08rRy9a?=
- =?utf-8?B?ZDhZbTZLNGdmM3pjL1A3TkpkSEFHT0FLRlVtdmFtdkJSZnpIRmlNclR4V1Fi?=
- =?utf-8?B?YzIvS2t2Z2tQWm1ITjlpd09MbjVucFgybFh6NTk3MVlGelBleWZZL3V1Tmcz?=
- =?utf-8?B?SllTNStOWWdJcnExTEtFYWVaRFdhdS94TVh4R1NvT0FROWpENEc2cXVUem96?=
- =?utf-8?B?NVo5RWF2c1NFaUdJOUllamd5TDFIcUR2UlBLWEFFamFLT0RjMXp2OUFwYkR4?=
- =?utf-8?B?dnJqTk1xRmVkY0ZOdGNrY2ZzR0J4b0FNRUVuYkxOWEZURjJBUVlpdmhUNGtk?=
- =?utf-8?B?Q3R1UHNTckIxRER0UHRRSXphdTdGZlBlY2srampWWThyR3Z0MERDcGVRNnFL?=
- =?utf-8?B?bWVyWlhXMm5Tay9xSUJobFV1TC9CRzhkMi91R3FxMWE3azQ3cUE1Y1BlbnF0?=
- =?utf-8?Q?gzWNS/8XxdQ=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Vnh1bHZTeUtUZXU2Z3VRWlBBMVdySGVxcFBGdHV4ZVQrMiswNkZEODZBbzVw?=
- =?utf-8?B?N3hEVk92WGVMLzNzMlpxYzlJb2tVTkZiNUxyVTQ5UlZWeC9zQ016cXM1VWcr?=
- =?utf-8?B?NVphUWFiZkRmSWRxUFp4S1NLeGVxWVRSMW12Z3lZOFV6UE42bUtKS09lKzJB?=
- =?utf-8?B?NFZoa2JLQmFDRW8wZTg3SnE5QXh6cW5GcFcxR0hiVjFYSTF1VEttMnFyUnUz?=
- =?utf-8?B?aFJEdUJFdWZOU3pyWTY2TjZHcWliQ2U5US9nOUF5RDBPdkhlU0ZuNTBWaU5J?=
- =?utf-8?B?ajdFdW5ub25lOVNTRXVWWEhDTlQ1ZjI4TzRMU01oN1ZaTWJaOXgxUTdKWG9k?=
- =?utf-8?B?RTYxTnhLK202Mm0weEJkTWduWUdNOGxBa0VqVVRBWWtMWHdzWVgwbG4rWHQr?=
- =?utf-8?B?ZUlXZ0FUQnFQSHI1dEg5SHR0cWFuc3pvd3lqaW1Xd25XeWt5clFIRTJ4YmN1?=
- =?utf-8?B?ZTlNN3ZVSExVRDNJU3BQc0dRRGc4cWhGeVRIOEhlS3RTVW1iWVgxN2U1bUk0?=
- =?utf-8?B?VStKcFJncGNINFdST1JyWXpvOVFlYzhKeGwyTG03cVNrOHcwZDY0eFY2T2hn?=
- =?utf-8?B?U1VYSDVJSmV4M3ZUd2M0TUdKMXpHdXBGKzc4TGJ1dFIvZGVFK1Zob3plcURK?=
- =?utf-8?B?dEd1L01FT2krbFZRNkdlQVF4R1NoZmFhZFo5cUsyU1hueGNnejNxMnZOSWp6?=
- =?utf-8?B?dE1EMzd0cFlSQjkyaTAyRE5OVGY2d2hhanR2RmY1SmRWVlNTTTJiUWhYYitE?=
- =?utf-8?B?UWg2TUMrRlJidGFlOFk5SC8zQlZURzZselVkOWJsYWJYSG9iSHQ5RUc4VklI?=
- =?utf-8?B?Nk1xNm9rVlMrZ2NGZVU4Z1c0aU9yS1ZJVGYyam9rWWZCSlJqcW5JREdocWty?=
- =?utf-8?B?cHR6Q2dERWJZZExadnFRd0VLYkFqRTdXVFFxR21Wclo3d3d6NWxNNjZLTU0v?=
- =?utf-8?B?SU5xNXZEU3JYT0ZHeEhER29UMmpUR2JwY1ZLYXB4RHY4b3FDL3RjaFBranY1?=
- =?utf-8?B?UzZ4UzdWVGtlZ2RJdlczVGMwZTdUWTA4dXRRM2NBajJYRitPNGpJeFNxc1Mv?=
- =?utf-8?B?S3o5bTgyWmRmV0ltMHJqUWJRS0s1Y3U5R255ZjhZajNhRzlhQjlKOTNXK0Nn?=
- =?utf-8?B?eWJpclYvNzhPUE9GZzE2REN6clEzZTN6ZzUwMEMwVmVqMHNoZXhqWm9MTGox?=
- =?utf-8?B?NXJuMFQ5OE1abFZwb1NVZHg2MkZwRjFVSWI4MzArdjRnWktUMkNhdlVxcXdJ?=
- =?utf-8?B?R3BaaS9lQlM0b2lhemlrVUw2TXdBVm5NTkt3SkhKV25PUUNkOCthUkw5bjBD?=
- =?utf-8?B?RiszQzBwWUE2YW9sT3NFV1huYWZLcjBSSnBnU3E0a0IzOEFNb0JwanoxL1JC?=
- =?utf-8?B?TXk4VVNBeHNoMVE5WUJEd2xMbFUwWjZOQklwdFZwY3l0VTV3M0tBOGg2dDBM?=
- =?utf-8?B?eE9rTXVCb2JuTWwybTg0Y28zdm5LQlpqdXFVUUFzSkNOZktvZE05M1VnSFRO?=
- =?utf-8?B?bWxJUGo5RDRLSXQvQVZuM1RqWWI5NGRQMU5ZejhVeWwrWGVDY0hHcmYvV2Jo?=
- =?utf-8?B?aGJ5ZEdNTm94UGJnZEt2RmhIZXdWZFcvSXJVYURkWkp5Ykd5WU5PNkppRFVu?=
- =?utf-8?B?QW9MWGJxcElDUWRRUWxDUkFYYlIzS0NYMVB3TnhUckpBWDBsOCtabUNLMmk1?=
- =?utf-8?B?TzRKR3c5SDR1aVBDZGlxTlgzKzFyc0pwSUJnaHRqdG9EU3R3UHFncGJDRUxR?=
- =?utf-8?B?VnlxS29NUzV2ODhOZEFHd2JlVW5lTlpESzUwQTdZZTFIbS9qYnFOZ3BQZkYy?=
- =?utf-8?B?dmovM1prckloRENxcjJoYkFPL21qYmNiSUltU0pCVnNiODBtRXZPRDlNQ0xu?=
- =?utf-8?B?QmprSWZnOTlXR2thYVVlbkU1UGJMcmpiUWlwbjdWWjhneGR5cmxha1pKZ3I1?=
- =?utf-8?B?dC9JZHhBZEFNK3ZYcVNyNnJrNDAvTjA2SmkyK0NyV2E0Z1ZFMDY0YldjYTcr?=
- =?utf-8?B?anVRUjdlMlR1bTlhUkRyQ1NEZytFYlVwaS9uSVdoY2Z0UVR2WEdVS2htZXpk?=
- =?utf-8?B?NFVmZ1VjM0p5RDd2VWdPYmdqRnQ2Sk5qblhHRjB1MUdFbWFYZHJWMnJZOW5k?=
- =?utf-8?Q?lq3m3z77/sm8tptkGbRvbB4h3?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7432733f-3bab-4c43-bd93-08dd93c384e8
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2025 15:16:51.5840
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1GWr1/xalFXTwmXxx58d8Z+ABc22lJiDUeXPDDnN6uXI+Ccby2mi+7FJ/IbWFO4z
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5646
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2d517f89-3bb4-4de2-8c14-8bb1e4235c7a@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On 5/15/25 17:04, Waiman Long wrote:
-> On 5/15/25 4:55 AM, Christian König wrote:
->> On 5/15/25 05:02, Dave Airlie wrote:
->>>> I have to admit I'm pretty clueless about the gpu driver internals and
->>>> can't really judge how feasible this is. But from a cgroup POV, if you
->>>> want proper memory isolation between groups, it seems to me that's the
->>>> direction you'd have to take this in.
->>> Thanks for this insight, I think you have definitely shown me where
->>> things need to go here, and I agree that the goal should be to make
->>> the pools and the shrinker memcg aware is the proper answer,
->>> unfortunately I think we are long way from that at the moment, but
->>> I'll need to do a bit more research. I wonder if we can agree on some
->>> compromise points in order to move things forward from where they are
->>> now.
->>>
->>> Right now we have 0 accounting for any system memory allocations done
->>> via GPU APIs, never mind the case where we have pools and evictions.
->>>
->>> I think I sort of see 3 stages:
->>> 1. Land some sort of accounting so you can at least see the active GPU
->>> memory usage globally, per-node and per-cgroup - this series mostly
->>> covers that, modulo any other feedback I get.
->>> 2. Work on making the ttm subsystem cgroup aware and achieve the state
->>> where we can shrink inside the cgroup first.
->>> 3. Work on what to do with evicted memory for VRAM allocations, and
->>> how best to integrate with dmem to possibly allow userspace to define
->>> policy for this.
->>>
->>>> Ah, no need to worry about it. The name is just a historical memcgism,
->>>> from back when we first started charging "kernel" allocations, as
->>>> opposed to the conventional, pageable userspace memory. It's no longer
->>>> a super meaningful distinction, tbh.
->>>>
->>>> You can still add a separate counter for GPU memory.
->>> Okay that's interesting, so I guess the only question vs the bespoke
->>> ones is whether we use __GFP_ACCOUNT and whether there is benefit in
->>> having page->memcg set.
->>>
->>>> I agree this doesn't need to be a goal in itself. It would just be a
->>>> side effect of charging through __GFP_ACCOUNT and uncharging inside
->>>> __free_pages(). What's more important is that the charge lifetime is
->>>> correlated with the actual memory allocation.
->>> How much flexibility to do we have to evolve here, like if we start
->>> with where the latest series I posted gets us (maybe with a CONFIG
->>> option), then work on memcg aware shrinkers for the pools, then with
->>> that in place it might make more sense to account across the complete
->>> memory allocation. I think I'm also not sure if passing __GFP_ACCOUNT
->>> to the dma allocators is supported, which is also something we need to
->>> do, and having the bespoke API allows that to be possible.
->> Stop for a second.
->>
->> As far as I can see the shrinker for the TTM pool should *not* be memcg aware. Background is that pages who enter the pool are considered freed by the application.
->>
->> The only reason we have the pool is to speed up allocation of uncached and write combined pages as well as work around for performance problems of the coherent DMA API.
->>
->> The shrinker makes sure that the pages can be given back to the core memory management at any given time.
+On Thu, May 15, 2025 at 04:57:10PM +0200, Vlastimil Babka wrote:
+> On 5/15/25 16:31, Shakeel Butt wrote:
+> > On Thu, May 15, 2025 at 5:47 AM Lorenzo Stoakes
+> > <lorenzo.stoakes@oracle.com> wrote:
+> >>
+> >> Shakeel - This breaks the build in mm-new for me:
+> >>
+> >>   CC      mm/pt_reclaim.o
+> >> In file included from ./arch/x86/include/asm/rmwcc.h:5,
+> >>                  from ./arch/x86/include/asm/bitops.h:18,
+> >>                  from ./include/linux/bitops.h:68,
+> >>                  from ./include/linux/radix-tree.h:11,
+> >>                  from ./include/linux/idr.h:15,
+> >>                  from ./include/linux/cgroup-defs.h:13,
+> >>                  from mm/memcontrol.c:28:
+> >> mm/memcontrol.c: In function ‘mem_cgroup_alloc’:
+> >> ./arch/x86/include/asm/percpu.h:39:45: error: expected identifier or ‘(’ before ‘__seg_gs’
+> >>    39 | #define __percpu_seg_override   CONCATENATE(__seg_, __percpu_seg)
+> >>       |                                             ^~~~~~
+> >> ./include/linux/args.h:25:24: note: in definition of macro ‘__CONCAT’
+> >>    25 | #define __CONCAT(a, b) a ## b
+> >>       |                        ^
+> >> ./arch/x86/include/asm/percpu.h:39:33: note: in expansion of macro ‘CONCATENATE’
+> >>    39 | #define __percpu_seg_override   CONCATENATE(__seg_, __percpu_seg)
+> >>       |                                 ^~~~~~~~~~~
+> >> ./arch/x86/include/asm/percpu.h:93:33: note: in expansion of macro ‘__percpu_seg_override’
+> >>    93 | # define __percpu_qual          __percpu_seg_override
+> >>       |                                 ^~~~~~~~~~~~~~~~~~~~~
+> >> ././include/linux/compiler_types.h:60:25: note: in expansion of macro ‘__percpu_qual’
+> >>    60 | # define __percpu       __percpu_qual BTF_TYPE_TAG(percpu)
+> >>       |                         ^~~~~~~~~~~~~
+> >> mm/memcontrol.c:3700:45: note: in expansion of macro ‘__percpu’
+> >>  3700 |         struct memcg_vmstats_percpu *statc, __percpu *pstatc_pcpu;
+> >>       |                                             ^~~~~~~~
+> >> mm/memcontrol.c:3731:25: error: ‘pstatc_pcpu’ undeclared (first use in this function); did you mean ‘kstat_cpu’?
+> >>  3731 |                         pstatc_pcpu = parent->vmstats_percpu;
+> >>       |                         ^~~~~~~~~~~
+> >>       |                         kstat_cpu
+> >> mm/memcontrol.c:3731:25: note: each undeclared identifier is reported only once for each function it appears in
+> >>
+> >> The __percpu macro seems to be a bit screwy with comma-delimited decls, as it
+> >> seems that putting this on its own line fixes this problem:
+> >>
+> > 
+> > Which compiler (and version) is this? Thanks for the fix.
 > 
-> I think what Johannes is suggesting that we can have a separate cgroup just for the memory pool so that if the system is running into global memory pressure, the shrinker can force the uncached pool to release memory back into the system.
+> Hm right I see the same errors with gcc 7, 13, 14, 15 but not with clang.
 
-That's something we already have.
-
-TTM already has a limit on the maximum size of the pool.
-
-Additional to that the shrinker makes sure that the memory is given back to the system immediately when running into global memory pressure.
-
-Regards,
-Christian.
-
-
-> 
-> Cheers,
-> Longman
-> 
-
+It seems to work with gcc 11.5.0, so weird.
 
