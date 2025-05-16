@@ -1,47 +1,47 @@
-Return-Path: <cgroups+bounces-8222-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8223-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7998AAB963A
-	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 08:50:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3ABCAB963F
+	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 08:50:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11F047AB624
-	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 06:49:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AFE61B663EB
+	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 06:50:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AED6228CB5;
-	Fri, 16 May 2025 06:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E45A22AE6B;
+	Fri, 16 May 2025 06:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WSR4/oQs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eUrZE+qT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194C1227E8B
-	for <cgroups@vger.kernel.org>; Fri, 16 May 2025 06:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C66226D07
+	for <cgroups@vger.kernel.org>; Fri, 16 May 2025 06:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747378187; cv=none; b=SHnj2Zje0wXARp+Ilx2lACl9FmDIE5v+rByfwQjZZ4uCcAVPdn9vQnm6jFL4lyVMeXCkB7qmfj3jVPl5IXOmgls/ARFO/rWIumRuJnaWu+UmYNHh2oOyT5DptGgvdZ8bRBWuJUEe5UnETK/Kk4NMhthKbVXzvOEsxKuSQ9M0owM=
+	t=1747378200; cv=none; b=KIKXBaflHhERDsyLOYMAor6hJyqigTZooVVeOCJAHw27JiusGvuQ+eKjhEj2/ZlcqoGI8NPsye8pfZladloPmPexR/D1yTip67z79APkYnNgRLHPZm58H3PkdGNd9cwKZp4kPgwW1XXewWefqbWm5CSQuRqB856rpMDRAJgrqGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747378187; c=relaxed/simple;
-	bh=tEf3IX+SKfryTgjjjr+5wg6/0dH9CvOVe0W0Gxmney4=;
+	s=arc-20240116; t=1747378200; c=relaxed/simple;
+	bh=/T3ZsKT8VNYbD3xOoG59SO/PpCy0LoJnigPxVN5Air4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FvqFPv9+cNvu3jECxEGnYKWhFNu1EyS11i7FYMDkEDi9w7DdN/3T9bMLnp2He/qqppvkb7CXySkrFJ1gUogJiNpYCxBig4Ufcv9JZdmc54dCsmMmY9VePTw0mbjSLjzw+VT6d3fQ/8R76YtUu6Vabu43pBevFh9rNoFZLYRozdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WSR4/oQs; arc=none smtp.client-ip=91.218.175.172
+	 MIME-Version; b=gQccbAEItCkd9F6p8S5qUczZDltq0qzedjGV4Ow6CwcYI4p2OPSuFUB5Ryg7HGlkEh/ju+n8ZupZDXmgS+1WxJIz0WdIttH8feClNUZd5gOx2GPgo6b4cOGYiubeva1HujCQYtII8xydpBDz1SWApo3Xsv0yzwP4cTtPcKigyg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eUrZE+qT; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747378183;
+	t=1747378196;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wjgeN2qjXaFT2yhGcnf6ojnEDqDgQ6jiTAUoDbWljT0=;
-	b=WSR4/oQsdzkHgky5kgsfe7Q3covs1cTkeEfb8OaN46IWjcemjgSUOJOSDHT4tf9q8JeusI
-	f3f8hayqZo9C32j3hvK/L+zPzmYInvz8GgshCBLLJP5qKhCIT7a0GiQI/HtJW0fGIIkigw
-	dj+8morZoI+7sBShj5rXkhBOH0jZGtk=
+	bh=CI0Bp2IqmZG3mdccHhETvzHB03Kjr+cVmvCiU8mxhk8=;
+	b=eUrZE+qTBmqtnw5qgpMu5Xy5nqqfp4nL5OQwO/cMx1nhkP5cl2G1N0FzLVHsYX+AHOAX0R
+	6r+IDuqrlnNMWzF5B7mNhK+NW7AjBBMC6xFKS6uO7B3olBoUWEoUYgewvnNkpuTfE3GGub
+	1Bvoop0NQFZkgT+rvHVR4ZkpVSP33pk=
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
@@ -60,9 +60,9 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>
-Subject: [PATCH 2/5] memcg: nmi safe memcg stats for specific archs
-Date: Thu, 15 May 2025 23:49:09 -0700
-Message-ID: <20250516064912.1515065-3-shakeel.butt@linux.dev>
+Subject: [PATCH 3/5] memcg: add nmi-safe update for MEMCG_KMEM
+Date: Thu, 15 May 2025 23:49:10 -0700
+Message-ID: <20250516064912.1515065-4-shakeel.butt@linux.dev>
 In-Reply-To: <20250516064912.1515065-1-shakeel.butt@linux.dev>
 References: <20250516064912.1515065-1-shakeel.butt@linux.dev>
 Precedence: bulk
@@ -74,136 +74,61 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-There are archs which have NMI but does not support this_cpu_* ops
-safely in the nmi context but they support safe atomic ops in nmi
-context. For such archs, let's add infra to use atomic ops for the memcg
-stats which can be updated in nmi.
-
-At the moment, the memcg stats which get updated in the objcg charging
-path are MEMCG_KMEM, NR_SLAB_RECLAIMABLE_B & NR_SLAB_UNRECLAIMABLE_B.
-Rather than adding support for all memcg stats to be nmi safe, let's
-just add infra to make these three stats nmi safe which this patch is
-doing.
+The objcg based kmem charging and uncharging code path needs to update
+MEMCG_KMEM appropriately. Let's add support to update MEMCG_KMEM in
+nmi-safe way for those code paths.
 
 Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
- include/linux/memcontrol.h | 20 ++++++++++++++--
- mm/memcontrol.c            | 49 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 67 insertions(+), 2 deletions(-)
+ mm/memcontrol.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 53920528821f..b10ae2388c27 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -62,9 +62,15 @@ struct mem_cgroup_reclaim_cookie {
- 
- #ifdef CONFIG_MEMCG
- 
--#if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || \
--	!defined(CONFIG_HAVE_NMI) || defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
-+#if defined(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS) || !defined(CONFIG_HAVE_NMI)
-+
-+#define MEMCG_SUPPORTS_NMI_CHARGING
-+
-+#elif defined(ARCH_HAVE_NMI_SAFE_CMPXCHG)
-+
- #define MEMCG_SUPPORTS_NMI_CHARGING
-+#define MEMCG_NMI_NEED_ATOMIC
-+
- #endif
- 
- #define MEM_CGROUP_ID_SHIFT	16
-@@ -118,6 +124,12 @@ struct mem_cgroup_per_node {
- 	CACHELINE_PADDING(_pad2_);
- 	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
- 	struct mem_cgroup_reclaim_iter	iter;
-+
-+#ifdef MEMCG_NMI_NEED_ATOMIC
-+	/* slab stats for nmi context */
-+	atomic_t		slab_reclaimable;
-+	atomic_t		slab_unreclaimable;
-+#endif
- };
- 
- struct mem_cgroup_threshold {
-@@ -241,6 +253,10 @@ struct mem_cgroup {
- 	atomic_long_t		memory_events[MEMCG_NR_MEMORY_EVENTS];
- 	atomic_long_t		memory_events_local[MEMCG_NR_MEMORY_EVENTS];
- 
-+#ifdef MEMCG_NMI_NEED_ATOMIC
-+	/* MEMCG_KMEM for nmi context */
-+	atomic_t		kmem_stat;
-+#endif
- 	/*
- 	 * Hint of reclaim pressure for socket memroy management. Note
- 	 * that this indicator should NOT be used in legacy cgroup mode
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index dface07f69bb..102fdec3f49e 100644
+index 102fdec3f49e..899a31e6b087 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -3979,6 +3979,53 @@ static void mem_cgroup_stat_aggregate(struct aggregate_control *ac)
- 	}
+@@ -2729,6 +2729,23 @@ struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
+ 	return objcg;
  }
  
 +#ifdef MEMCG_NMI_NEED_ATOMIC
-+static void flush_nmi_stats(struct mem_cgroup *memcg, struct mem_cgroup *parent,
-+			    int cpu)
++static inline void account_kmem_nmi_safe(struct mem_cgroup *memcg, int val)
 +{
-+	int nid;
-+
-+	if (atomic_read(&memcg->kmem_stat)) {
-+		int kmem = atomic_xchg(&memcg->kmem_stat, 0);
-+		int index = memcg_stats_index(MEMCG_KMEM);
-+
-+		memcg->vmstats->state[index] += kmem;
-+		if (parent)
-+			parent->vmstats->state_pending[index] += kmem;
-+	}
-+
-+	for_each_node_state(nid, N_MEMORY) {
-+		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
-+		struct lruvec_stats *lstats = pn->lruvec_stats;
-+		struct lruvec_stats *plstats = NULL;
-+
-+		if (parent)
-+			plstats = parent->nodeinfo[nid]->lruvec_stats;
-+
-+		if (atomic_read(&pn->slab_reclaimable)) {
-+			int slab = atomic_xchg(&pn->slab_reclaimable, 0);
-+			int index = memcg_stats_index(NR_SLAB_RECLAIMABLE_B);
-+
-+			lstats->state[index] += slab;
-+			if (plstats)
-+				plstats->state_pending[index] += slab;
-+		}
-+		if (atomic_read(&pn->slab_unreclaimable)) {
-+			int slab = atomic_xchg(&pn->slab_unreclaimable, 0);
-+			int index = memcg_stats_index(NR_SLAB_UNRECLAIMABLE_B);
-+
-+			lstats->state[index] += slab;
-+			if (plstats)
-+				plstats->state_pending[index] += slab;
-+		}
++	if (likely(!in_nmi())) {
++		mod_memcg_state(memcg, MEMCG_KMEM, val);
++	} else {
++		/* TODO: add to cgroup update tree once it is nmi-safe. */
++		atomic_add(val, &memcg->kmem_stat);
 +	}
 +}
 +#else
-+static void flush_nmi_stats(struct mem_cgroup *memcg, struct mem_cgroup *parent,
-+			    int cpu)
-+{}
++static inline void account_kmem_nmi_safe(struct mem_cgroup *memcg, int val)
++{
++	mod_memcg_state(memcg, MEMCG_KMEM, val);
++}
 +#endif
 +
- static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-@@ -3987,6 +4034,8 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- 	struct aggregate_control ac;
- 	int nid;
+ /*
+  * obj_cgroup_uncharge_pages: uncharge a number of kernel pages from a objcg
+  * @objcg: object cgroup to uncharge
+@@ -2741,7 +2758,7 @@ static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
  
-+	flush_nmi_stats(memcg, parent, cpu);
-+
- 	statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
+ 	memcg = get_mem_cgroup_from_objcg(objcg);
  
- 	ac = (struct aggregate_control) {
+-	mod_memcg_state(memcg, MEMCG_KMEM, -nr_pages);
++	account_kmem_nmi_safe(memcg, -nr_pages);
+ 	memcg1_account_kmem(memcg, -nr_pages);
+ 	if (!mem_cgroup_is_root(memcg))
+ 		refill_stock(memcg, nr_pages);
+@@ -2769,7 +2786,7 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
+ 	if (ret)
+ 		goto out;
+ 
+-	mod_memcg_state(memcg, MEMCG_KMEM, nr_pages);
++	account_kmem_nmi_safe(memcg, nr_pages);
+ 	memcg1_account_kmem(memcg, nr_pages);
+ out:
+ 	css_put(&memcg->css);
 -- 
 2.47.1
 
