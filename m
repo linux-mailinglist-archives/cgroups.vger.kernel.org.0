@@ -1,191 +1,116 @@
-Return-Path: <cgroups+bounces-8219-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8220-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09BAFAB8BEB
-	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 18:09:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C1DCAB9636
+	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 08:49:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68B641640B6
-	for <lists+cgroups@lfdr.de>; Thu, 15 May 2025 16:09:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEE8C1B62E4C
+	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 06:50:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD8E21ABB1;
-	Thu, 15 May 2025 16:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C5251F4621;
+	Fri, 16 May 2025 06:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="ZhPfb4jy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IS2daRuV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBCDA1DED5B
-	for <cgroups@vger.kernel.org>; Thu, 15 May 2025 16:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BC8686250
+	for <cgroups@vger.kernel.org>; Fri, 16 May 2025 06:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747325345; cv=none; b=XEC00MYq4pscG6rQxs7abnp6VEeH4NuVOws7jdHMaHX8zouIBNWEsyCTYTRyJa/u7NqYAjEE1oLc96SiAqnlq5Xy2imR9XfafVkeRZbLMY+MFpcJh27cWekt6rhuHPucx5DdpJQFA/h96KI8g0z4f3Cn0nq5iqFmKBbT6yRZFGw=
+	t=1747378179; cv=none; b=rUfUNxcT8UdGFCpJWc8W/w1R0LaOQKhdrzBytow/AkO/shGmRYLpocPb4lZVGWWMXwm8h3m9M7jTGPb0gPUKSsFgv3fKYDuZBHZN3WoG9Sw6RGAK2hvGELP04DPi+6oyDDs0WtIJZhoju0fDSKDfNY5uj20j/tohieoPtkq2Sdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747325345; c=relaxed/simple;
-	bh=VsfRUJAJTN0GNV3d8yHQsCAhEmD10n5+rkos2EETYCA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AkycaLmorl5VYWiX5hNgSANusTJt56/d4zGPyQ4gda0qjJ2OyV2YkjLODSfL3iLCOOfVk1MWEtsaDBHvbeWokwhcnbW+d67X0b14RwEDwoIpflyVqRbX6iQOfmJ61nLFFEhzD9NNb5FX2urW35BV5vcN5K0uQD2h083rCvrgm6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=ZhPfb4jy; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-605f7d3215cso697539eaf.0
-        for <cgroups@vger.kernel.org>; Thu, 15 May 2025 09:09:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1747325342; x=1747930142; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=91NKOSTv5YT/1qhPptldg9b2q5Yv92CmJPsNir2fXYw=;
-        b=ZhPfb4jyG3qvrBY+OUcgzRUG1firIp12orZZy/C5v7NQUUGKuguRKtu5Q0GB2a701y
-         hDGCDs1XIZ+Tkr5C/Cs1Kv6vE+AF2adG504ccSN6NMd4TV13wDG7A8XWFpuNRzga377g
-         zMEfIHJiaA9Zq9oBUonbcBB3NvGJY0bhTv8moI9ydDnhyOiA+qH/seTxhqjFF/lbK6qs
-         uoEGUAebyH5lScwpvS5pU8JDHcEwM5V3d3yvphU8nMnYR+r3lwv6+lUpRprk2Zj7FW0E
-         3dUF2oXvrecsD6GZm3l/6L5NKnkByfQ9e2oCS9S6NwskbCRGfIjPl/HYURFiBDmmEjow
-         Ob9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747325342; x=1747930142;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=91NKOSTv5YT/1qhPptldg9b2q5Yv92CmJPsNir2fXYw=;
-        b=VCiJPrEuXG389uO2ps0MZ9lDNg/Pr/JR3yELaT5zxfRoT0XU3RGmwqo+ziYrmotU+c
-         8KkkhVyVF0CGfhCe0KYC3c+b6R4XaVJOu2POJPhpj9z5OBKjYJPUQC6j25WMGfqE07B2
-         Vnw4fqM/gS6nOuViTVvEDsWbR5X2FiV5IdkfkJDPNhDXthHVqGjlXaikEP/T23joUhHB
-         Vq9gxGmaiLErb6l7UtD7yRC6pz0XeMy9fgvB6PurHy3XolbE2HHLPcRK3p8Xf4inbzI4
-         h3kddypVMPmsdRrJON41U2jowwRnKH5NYSEYWT0NzrecwBKR6qZ3dvjZxjM6HhQfPjX/
-         7Izg==
-X-Forwarded-Encrypted: i=1; AJvYcCWZ1VpOnBkBaEBBpeL4Og23Y1nFD65KAJqMuBe4vki4zulzUBh/FZJZMrFtF99i/sSNiFQ3Sjdn@vger.kernel.org
-X-Gm-Message-State: AOJu0YxxrEDYXwBbyXuyzCRuJ0/ayTYfOVzUkAbJiljNikfVR9Zqv5qt
-	MXpce338rL6xc9Inw5089/OjCCnrAI5U38Cj5980ZhY1XnkAO9H+cQ5phtNTdBOz6aqzq3rwxov
-	smzY=
-X-Gm-Gg: ASbGnctTHfeYlK9svgEOPP1Kg6cURiWYLPwkREYLK4JQVqHrnQlD+Er2/8lI2+P+Fi/
-	hNDT6eMBXoSTBF1T4ur61+3K7S5JhoEAjfUYsXkbwO7vYORyY+3O3zGCcXSdmuAqf5phXdiggGK
-	4GnrVAcISuPN6kCJ5WusKR+NY/EMt6sKzfV07mLJPbQbc98S7vLdKnIyrmzhCEacBUtO9nNy//9
-	4nF6J14iB3agon5s6VmWbfSoJvNF6yRmmPInVHu8CXiNKRurIJFLR+mrJjnlUIHBR+BRoiPDTvj
-	7wvMiVh0tX9hzYH+j71TLV5zNzhGQ4Bqd1S6N0re/uxnw2SHyg==
-X-Google-Smtp-Source: AGHT+IGpkpYl6XAu5rX0wJRFiMGQkB9re0fNH5Pwjd+2ZxwedWGAjP2jcG+V3KGtIv5tIrXRqvrUIA==
-X-Received: by 2002:a05:620a:1726:b0:7c5:f696:f8e5 with SMTP id af79cd13be357-7cd4672499amr14457785a.14.1747325330931;
-        Thu, 15 May 2025 09:08:50 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7cd467bde34sm2281085a.8.2025.05.15.09.08.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 May 2025 09:08:49 -0700 (PDT)
-Date: Thu, 15 May 2025 12:08:42 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc: Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
-	tj@kernel.org, Michal Hocko <mhocko@kernel.org>,
+	s=arc-20240116; t=1747378179; c=relaxed/simple;
+	bh=e8r1SG5uF0AGuIuWMo1sjUPbjjtceKfnrtYwGLiHFFA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LyDFy0h2Xvp9CjWeJoBhDTxQqtJOPN4kGnHqZL6rrC4ZGzrQQ/4JdnSBceHOa3jI+o3S3YBtMD/N49XjdxlcIk5+Qc7n2ebRBz6sRFL/QBwS07pYMPRSGulitNiwhONwOmnwsGGfT1mZhroTpq/HVJ8d8E/1kfoN5TXNEF2BetM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IS2daRuV; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747378165;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=N8MF/1Uk3+uCWuILTHwuEMDSb4CJ6HZopL8JvlOIAxY=;
+	b=IS2daRuVt6grSmCBySyYJFrYDTQq2xzVVh98f5j6v/FVRycDKx5zl9i8cYVR7XovQBgeQJ
+	NR0bCPZrJHRM/QALkFwoqJpfJpG04xcz9lnChUQojZSNLATLNmKdkaZYT/rJbPHQM+W6rn
+	rvC3kucOzu0LVhLIQlnmiWYOvAsKVSU=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	Waiman Long <longman@redhat.com>, simona@ffwll.ch
-Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (v2)
-Message-ID: <20250515160842.GA720744@cmpxchg.org>
-References: <20250502034046.1625896-1-airlied@gmail.com>
- <20250507175238.GB276050@cmpxchg.org>
- <CAPM=9tw0hn=doXVdH_hxQMvUhyAQvWOp+HT24RVGA7Hi=nhwRA@mail.gmail.com>
- <20250513075446.GA623911@cmpxchg.org>
- <CAPM=9txLcFNt-5hfHtmW5C=zhaC4pGukQJ=aOi1zq_bTCHq4zg@mail.gmail.com>
- <b0953201-8d04-49f3-a116-8ae1936c581c@amd.com>
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Harry Yoo <harry.yoo@oracle.com>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	bpf@vger.kernel.org,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: [PATCH v2 0/5] memcg: nmi-safe kmem charging
+Date: Thu, 15 May 2025 23:49:07 -0700
+Message-ID: <20250516064912.1515065-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b0953201-8d04-49f3-a116-8ae1936c581c@amd.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, May 15, 2025 at 10:55:51AM +0200, Christian König wrote:
-> On 5/15/25 05:02, Dave Airlie wrote:
-> >> I have to admit I'm pretty clueless about the gpu driver internals and
-> >> can't really judge how feasible this is. But from a cgroup POV, if you
-> >> want proper memory isolation between groups, it seems to me that's the
-> >> direction you'd have to take this in.
-> > 
-> > Thanks for this insight, I think you have definitely shown me where
-> > things need to go here, and I agree that the goal should be to make
-> > the pools and the shrinker memcg aware is the proper answer,
-> > unfortunately I think we are long way from that at the moment, but
-> > I'll need to do a bit more research. I wonder if we can agree on some
-> > compromise points in order to move things forward from where they are
-> > now.
-> > 
-> > Right now we have 0 accounting for any system memory allocations done
-> > via GPU APIs, never mind the case where we have pools and evictions.
-> > 
-> > I think I sort of see 3 stages:
-> > 1. Land some sort of accounting so you can at least see the active GPU
-> > memory usage globally, per-node and per-cgroup - this series mostly
-> > covers that, modulo any other feedback I get.
-> > 2. Work on making the ttm subsystem cgroup aware and achieve the state
-> > where we can shrink inside the cgroup first.
-> > 3. Work on what to do with evicted memory for VRAM allocations, and
-> > how best to integrate with dmem to possibly allow userspace to define
-> > policy for this.
-> > 
-> >> Ah, no need to worry about it. The name is just a historical memcgism,
-> >> from back when we first started charging "kernel" allocations, as
-> >> opposed to the conventional, pageable userspace memory. It's no longer
-> >> a super meaningful distinction, tbh.
-> >>
-> >> You can still add a separate counter for GPU memory.
-> > 
-> > Okay that's interesting, so I guess the only question vs the bespoke
-> > ones is whether we use __GFP_ACCOUNT and whether there is benefit in
-> > having page->memcg set.
-> > 
-> >>
-> >> I agree this doesn't need to be a goal in itself. It would just be a
-> >> side effect of charging through __GFP_ACCOUNT and uncharging inside
-> >> __free_pages(). What's more important is that the charge lifetime is
-> >> correlated with the actual memory allocation.
-> > 
-> > How much flexibility to do we have to evolve here, like if we start
-> > with where the latest series I posted gets us (maybe with a CONFIG
-> > option), then work on memcg aware shrinkers for the pools, then with
-> > that in place it might make more sense to account across the complete
-> > memory allocation. I think I'm also not sure if passing __GFP_ACCOUNT
-> > to the dma allocators is supported, which is also something we need to
-> > do, and having the bespoke API allows that to be possible.
-> 
-> Stop for a second.
-> 
-> As far as I can see the shrinker for the TTM pool should *not* be
-> memcg aware. Background is that pages who enter the pool are
-> considered freed by the application.
+Users can attached their BPF programs at arbitrary execution points in
+the kernel and such BPF programs may run in nmi context. In addition,
+these programs can trigger memcg charged kernel allocations in the nmi
+context. However memcg charging infra for kernel memory is not equipped
+to handle nmi context for all architectures.
 
-They're not free from a system POV until they're back in the page
-allocator.
+This series removes the hurdles to enable kmem charging in the nmi
+context for most of the archs. For archs without CONFIG_HAVE_NMI, this
+series is a noop. For archs with NMI support and have
+CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS, the previous work to make memcg
+stats re-entrant is sufficient for allowing kmem charging in nmi
+context. For archs with NMI support but without
+CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS and with
+ARCH_HAVE_NMI_SAFE_CMPXCHG, this series added infra to support kmem
+charging in nmi context. Lastly those archs with NMI support but without
+CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS and ARCH_HAVE_NMI_SAFE_CMPXCHG,
+kmem charging in nmi context is not supported at all.
 
-> The only reason we have the pool is to speed up allocation of
-> uncached and write combined pages as well as work around for
-> performance problems of the coherent DMA API.
-> 
-> The shrinker makes sure that the pages can be given back to the core
-> memory management at any given time.
+Mostly used archs have support for CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
+and this series should be almost a noop (other than making
+memcg_rstat_updated nmi safe) for such archs. 
 
-That's work. And it's a direct result of some cgroup having allocated
-this memory. Why should somebody else have to clean it up?
+Changes since v1:
+- The main change was to explicitly differentiate between archs which
+  have sane NMI support from others and make the series almost a noop
+  for such archs. (Suggested by Vlastimil)
+- This version very explicitly describes where kmem charging in nmi
+  context is supported and where it is not.
 
-The shrinker also doesn't run in isolation. It's invoked in the
-broader context of there being a memory shortage, along with all the
-other shrinkers in the system, along with file reclaim, and
-potentially even swapping.
+Shakeel Butt (5):
+  memcg: disable kmem charging in nmi for unsupported arch
+  memcg: nmi safe memcg stats for specific archs
+  memcg: add nmi-safe update for MEMCG_KMEM
+  memcg: nmi-safe slab stats updates
+  memcg: make memcg_rstat_updated nmi safe
 
-Why should all of this be externalized to other containers?
+ include/linux/memcontrol.h |  21 ++++++
+ mm/memcontrol.c            | 136 +++++++++++++++++++++++++++++++++----
+ 2 files changed, 145 insertions(+), 12 deletions(-)
 
-For proper memory isolation, the cleanup cost needs to be carried by
-the cgroup that is responsible for it in the first place - not some
-other container that's just trying to read() a file or malloc().
+-- 
+2.47.1
 
-This memory isn't special. The majority of memcg-tracked memory is
-shrinkable/reclaimable. In every single case it stays charged until
-the shrink work has been completed, and the pages are handed back to
-the allocator.
 
