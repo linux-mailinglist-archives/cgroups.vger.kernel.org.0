@@ -1,159 +1,97 @@
-Return-Path: <cgroups+bounces-8245-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8246-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10C37ABA2FD
-	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 20:35:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E910ABA318
+	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 20:47:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EC9FA2782F
-	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 18:34:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EF633B72F4
+	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 18:46:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC03727E7E3;
-	Fri, 16 May 2025 18:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F6F2798E5;
+	Fri, 16 May 2025 18:47:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wGT+sTxw"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xmoktlVs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BC842701A7
-	for <cgroups@vger.kernel.org>; Fri, 16 May 2025 18:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DECD2215043
+	for <cgroups@vger.kernel.org>; Fri, 16 May 2025 18:47:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747420417; cv=none; b=qX4q391QeAUtziANJ5CAU5fD62rfPPboXldS+hvZQTo7KAfzUU/SjPbPcfdJdBEvEmjr+k/WTtI8nfiqKvyNjQ475kSMOwFyPGkk+qrlCCrOPcRpTIL4yyhSSey9DIaBMRJn+LTkWNEu53OAwXDkRZq8sIj0H4647vuZgh+XFAE=
+	t=1747421228; cv=none; b=m4HhCWdjIVd4ULzmBnShP8orZv2GgeOvRKvaaieAoWVRG23ia29PcV6FY201ngcDGN++CJ/YFxgv3Iy8MXQAN44i7WSNaAKxqEeFT5IGdJQqwMtzPe/mp5uuybHvN71YGaC7sXkD7LQn7qUbewkwCH/vDCSNlKOgRx3y0XoNxLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747420417; c=relaxed/simple;
-	bh=L1FANs75GnyENPpCSObB44OAjAEmVoUmb9ZL9SNNgvw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PD0v8lNVroSKtGyt1NgT/hSgZ1JB2mMYpJr2rXbMCL4mVWyse4lyPYIyZ76dFoTrQEFyAK7+ugE/OTMfZEFRc0w8Ina6oTRIYAZjqt+/Y4IfIbbor5vTwTYGKqzarbyzk+KDwDKHjySJKC6J2fayX9zbLFE2GVaI/8v7C4ejtX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wGT+sTxw; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1747420413;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1SZJx0aaLO11/z+3A95G9xQwNAh1dQNdtZG0PH2m5B0=;
-	b=wGT+sTxw8c5WygTZyHNWxHhaBeB2Db0T1IwGsnrjo6DRHxIVPalq/OKAbL348LKt8va1ok
-	aKSVg6JumoxRhbeUydIJnLCYaUZl1g3qyRWzBYmuyhOu/Iqm6w+cA2tmqB2KV7rna+FWdP
-	5QoUGw+Hj0IkXGCzjaLre2twvGqg3tg=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Harry Yoo <harry.yoo@oracle.com>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Tejun Heo <tj@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: [PATCH v3 5/5] memcg: make memcg_rstat_updated nmi safe
-Date: Fri, 16 May 2025 11:32:31 -0700
-Message-ID: <20250516183231.1615590-6-shakeel.butt@linux.dev>
-In-Reply-To: <20250516183231.1615590-1-shakeel.butt@linux.dev>
-References: <20250516183231.1615590-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1747421228; c=relaxed/simple;
+	bh=XQzr/P8LSzc1fGmKf5TzJFNWuKpMYhmvBe/dgZKthmA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=cNamipeSbHn2mVtilvz6hk7zUQqdFW8fOoCdIKtOMhUcND8MEbAs6k1njZhPlEoViOfqNH6VLQO6F8cRoXHKvXD3OQ1VDjEFuThVKWbvBIraSqz/lASfOaPiVbopRWZ1qPasb4bp880nmZkbuYlF4WcKF/Df3aZyQSL+v6DcjYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xmoktlVs; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-b26cdc70befso1543383a12.1
+        for <cgroups@vger.kernel.org>; Fri, 16 May 2025 11:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1747421226; x=1748026026; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qmq5yOzKEYHGMlWUHQrdCglzBtv7bOn/Y4UXiljdeIs=;
+        b=xmoktlVs5hMz9PDKC8NIaTrKDZRwzdbCk4gj1oH3op/wJ9crQFte+iJl8WtOSDuW13
+         j+55aZFs4lVQU9VNhg7Puk38H7HQzqFnYeE/flXuxOqrx44kNm5juM/5NumeacWOgIUn
+         h5w8RJVRgSd1/7WYX2PNff7ySpEYsZLkqPMIO0LVRl1yQVaOkQKHX3Ttq7vE0mKBSER7
+         YQ/blYHQtfhLUMod6mfVDb+/Ls8SdB2zAlLvc2HjnyiNMtZcBCRmJe5VGxotqkF+JLGV
+         RYRB55wwxrqy7yCl+RzR9g84g0pObt5boQBp8jfig4xSZqf/PHZCuKpc0UaIIJjp33kY
+         K90w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747421226; x=1748026026;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qmq5yOzKEYHGMlWUHQrdCglzBtv7bOn/Y4UXiljdeIs=;
+        b=ePck5rAQ6nUj4vNoDu3GrqbLEMZ0zrWFTRLBm3elegRaFs/hmdiE6fz31Hxwwi7BBU
+         qUsQUIFT3yP7HJ2gFJSR9p5a0YTEggxaGnpd+K3zQsDX/KpU/yqz4FOyv5ExWCeqPRUp
+         7YubAA8lhtbJqfY4+mxJPoYjmC6GZi1ihQjDf/Xh0eAyYPY0dG8mqWf45Vn4IhXtLadI
+         VXaOp7+PSlZoSWSm+B/eBtTYUTZ7xJiUWq7WNzN4YRpsBN5FZSxvzqL6q5QHEvtbD0e6
+         3wpAyWYWLWMHUfttM2KVzjF0CTyKu6kEXSJRmOI1eEiQbu1k5bElVKxbgbDzeITym3QW
+         Eo5w==
+X-Forwarded-Encrypted: i=1; AJvYcCVth4C7G39R0nWWwjKIPu5EwZXH/SaAN6cYSQnE0hfbxibm7ZefMeGWRIiC1TMWhgkFImzDgKGs@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy8MRt8y7eLjMWbG1kzUhhYbTl8AWNCML2CMCI8ThASlqinBKW9
+	gjDtyFi26SLz6gd/Ffckjjw8t/9MyXDAN1LHu0URSt74djPNhMVxFX5diPIuOe/cKK31l8Q8BPZ
+	NVlNpaw==
+X-Google-Smtp-Source: AGHT+IEoABAHTdXlaeskcgYJu03drz+RNn79bIJemm7dWQc6taI6oQUGfiZBOrFd1GdJMi2Hp8JwioagtxQ=
+X-Received: from pllb5.prod.google.com ([2002:a17:902:e945:b0:231:e3f0:e373])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:d4d2:b0:231:faf5:c1d0
+ with SMTP id d9443c01a7336-231faf5c3ecmr19177195ad.24.1747421226086; Fri, 16
+ May 2025 11:47:06 -0700 (PDT)
+Date: Fri, 16 May 2025 11:47:04 -0700
+In-Reply-To: <20250508184649.2576210-8-jthoughton@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+References: <20250508184649.2576210-1-jthoughton@google.com> <20250508184649.2576210-8-jthoughton@google.com>
+Message-ID: <aCeIKDbwVIlBLtGz@google.com>
+Subject: Re: [PATCH v4 7/7] KVM: selftests: access_tracking_perf_test: Use
+ MGLRU for access tracking
+From: Sean Christopherson <seanjc@google.com>
+To: James Houghton <jthoughton@google.com>
+Cc: kvm@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>, 
+	Axel Rasmussen <axelrasmussen@google.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, Yosry Ahmed <yosry.ahmed@linux.dev>, 
+	Yu Zhao <yuzhao@google.com>, David Matlack <dmatlack@google.com>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-Currently kernel maintains memory related stats updates per-cgroup to
-optimize stats flushing. The stats_updates is defined as atomic64_t
-which is not nmi-safe on some archs. Actually we don't really need 64bit
-atomic as the max value stats_updates can get should be less than
-nr_cpus * MEMCG_CHARGE_BATCH. A normal atomic_t should suffice.
+On Thu, May 08, 2025, James Houghton wrote:
+> @@ -372,7 +501,7 @@ static void help(char *name)
+>  	printf(" -v: specify the number of vCPUs to run.\n");
+>  	printf(" -o: Overlap guest memory accesses instead of partitioning\n"
+>  	       "     them into a separate region of memory for each vCPU.\n");
+> -	printf(" -w: Control whether the test warns or fails if more than 10%\n"
+> +	printf(" -w: Control whether the test warns or fails if more than 10%%\n"
 
-Also the function cgroup_rstat_updated() is still not nmi-safe but there
-is parallel effort to make it nmi-safe, so until then let's ignore it in
-the nmi context.
-
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/memcontrol.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e96c5d1ca912..2ace30fcd0e6 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -533,7 +533,7 @@ struct memcg_vmstats {
- 	unsigned long		events_pending[NR_MEMCG_EVENTS];
- 
- 	/* Stats updates since the last flush */
--	atomic64_t		stats_updates;
-+	atomic_t		stats_updates;
- };
- 
- /*
-@@ -559,7 +559,7 @@ static u64 flush_last_time;
- 
- static bool memcg_vmstats_needs_flush(struct memcg_vmstats *vmstats)
- {
--	return atomic64_read(&vmstats->stats_updates) >
-+	return atomic_read(&vmstats->stats_updates) >
- 		MEMCG_CHARGE_BATCH * num_online_cpus();
- }
- 
-@@ -573,7 +573,9 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val,
- 	if (!val)
- 		return;
- 
--	cgroup_rstat_updated(memcg->css.cgroup, cpu);
-+	/* TODO: add to cgroup update tree once it is nmi-safe. */
-+	if (!in_nmi())
-+		cgroup_rstat_updated(memcg->css.cgroup, cpu);
- 	statc_pcpu = memcg->vmstats_percpu;
- 	for (; statc_pcpu; statc_pcpu = statc->parent_pcpu) {
- 		statc = this_cpu_ptr(statc_pcpu);
-@@ -591,7 +593,7 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val,
- 			continue;
- 
- 		stats_updates = this_cpu_xchg(statc_pcpu->stats_updates, 0);
--		atomic64_add(stats_updates, &statc->vmstats->stats_updates);
-+		atomic_add(stats_updates, &statc->vmstats->stats_updates);
- 	}
- }
- 
-@@ -599,7 +601,7 @@ static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool force)
- {
- 	bool needs_flush = memcg_vmstats_needs_flush(memcg->vmstats);
- 
--	trace_memcg_flush_stats(memcg, atomic64_read(&memcg->vmstats->stats_updates),
-+	trace_memcg_flush_stats(memcg, atomic_read(&memcg->vmstats->stats_updates),
- 		force, needs_flush);
- 
- 	if (!force && !needs_flush)
-@@ -4132,8 +4134,8 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- 	}
- 	WRITE_ONCE(statc->stats_updates, 0);
- 	/* We are in a per-cpu loop here, only do the atomic write once */
--	if (atomic64_read(&memcg->vmstats->stats_updates))
--		atomic64_set(&memcg->vmstats->stats_updates, 0);
-+	if (atomic_read(&memcg->vmstats->stats_updates))
-+		atomic_set(&memcg->vmstats->stats_updates, 0);
- }
- 
- static void mem_cgroup_fork(struct task_struct *task)
--- 
-2.47.1
-
+This belongs in patch 2.  I'll fixup when applying.
 
