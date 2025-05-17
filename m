@@ -1,216 +1,135 @@
-Return-Path: <cgroups+bounces-8248-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8249-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5BACABA4A7
-	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 22:25:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 450ECABA759
+	for <lists+cgroups@lfdr.de>; Sat, 17 May 2025 02:25:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ED114A8361
-	for <lists+cgroups@lfdr.de>; Fri, 16 May 2025 20:25:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25FE21BC091A
+	for <lists+cgroups@lfdr.de>; Sat, 17 May 2025 00:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E3127FD58;
-	Fri, 16 May 2025 20:25:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62654C92;
+	Sat, 17 May 2025 00:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jTHXdt1c"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eh2Cwady"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F031C84A1
-	for <cgroups@vger.kernel.org>; Fri, 16 May 2025 20:25:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081A7BE67;
+	Sat, 17 May 2025 00:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747427117; cv=none; b=nZRJkEBFYHS6HtEcxWdzGkHc0xct5ySVdrQqxNlWQ3Lu0F7mfkQ1MGN7CNhENgLZv9sQ6DvwvlSsPcfZryEUZiT/Zy2ZikLh3h66QQ9n37zV6pHNDnZUa62S6Q2VDIFYwpaS2k6/G2AiBhz7181RV/xvlfInfyn5BdZvt2N8M8A=
+	t=1747441512; cv=none; b=S4avitRxVbrm4zFwRekXEMpmzk3GFYX3UQwYHLqwWKFKK15SrJGGUqLGTY1EZ1WlEYs54bJxqJgfyEhQKJ732nhAkG9Nq/svEbx6LNqVWgQisS4AR2DQwJtUEdyn3y5xvDacFup/1VZ4FEMfkrfNbgApi2JhRZK1LJDdxTgysng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747427117; c=relaxed/simple;
-	bh=SJtI08ZdLCcw6bkpJ+rEQSFFcud7levmwZFe8IxZZO0=;
+	s=arc-20240116; t=1747441512; c=relaxed/simple;
+	bh=yHNas+zBX1TtFHbM1Y0ytAz1kHK3CF9a9C6155gaS7I=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hFt/VxJCz1LUKOf8guaS0v6BUuOgtZcNA+zyEdM+kYomf7lhTRzymhNJsO0So6t5O92qbh1WOVTY52eMzXA93b7Re0euqxAiYqfyWW1OkLuzFLtjbWLSDzfWNKbliJHMb0mT/IuJukFXsfZb49QNJyJBQSgB47YH6DxpqXpRQDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jTHXdt1c; arc=none smtp.client-ip=209.85.208.49
+	 To:Cc:Content-Type; b=YuWNgsYRA7Xn3s99X6V/I4LxcXyVId1SifHcLGyh/ZadI/ifbGYLWEPh9vt32zk75PwfIU+QxDvCtVWwlTwLpWhWFw4WRwBNUB4kcFigbkwmIbWqYjyHJ7jUvpxmmBwTw8pG1YWzq684a7/x926oMOwMUpGa31tW5BWqFh44Xq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eh2Cwady; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5fca2805ca4so3826877a12.1
-        for <cgroups@vger.kernel.org>; Fri, 16 May 2025 13:25:15 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43edb40f357so19905225e9.0;
+        Fri, 16 May 2025 17:25:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747427114; x=1748031914; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747441509; x=1748046309; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SJtI08ZdLCcw6bkpJ+rEQSFFcud7levmwZFe8IxZZO0=;
-        b=jTHXdt1cXosWlTtAPnf+wXXSXXhy3qkuH87KXcSm6BiOCUtU7l4CS7tFRO7AiIoqAJ
-         DwHFNi4T6XdinvdYEATD6We2Q4PYReJQaW7M4XaUZfbAxEdLMm9Ftlp8X4JOy8IYWz3O
-         oe77FaSfsb3dH7W+kMTp0gxqyFV+zV0sUBLsq66m3xZtFLzq944XlMdD3m6TzXo3b/F2
-         5dsLfwzuf2gRM4u07UmiSit/CW72kx3XuaiRdiuazbuIWwvkDQzwinuy4NDNR6sZMsgE
-         IoRyvZ1azLIAILd3Bt4TQdgrNZ4J4A+/dheBto2ZdOpGqKTmhkGnh4O++HlkyV0ACoNf
-         A1Ww==
+        bh=4oOZcroL9pDTCrImg+h0BCJtERSmMeYUbJFw/m22M8A=;
+        b=eh2CwadyClH543KJlkYeRe1qfaVQaeVfpBJ+VwxThOuqp9qFM+2S4T1JbnKIQwkTEZ
+         hJjtZKxULYC2Kp4A2euf9lWfvWj/DrfN+BpUK4R3DdsG/rNioCMvfjrd58ycQoc05liB
+         JY82dUY3f4CcvYTpwB0s4WcvOZgtE7A0s6kjVhG8R0NNenxSvtKQn10h8S7u5WQsABVK
+         GmO4DjdHzgd7x36q9ncM08d236SWkEgC6KOr9G1c5BkcDrAcHW9P/bqq39ju9OtY3q5D
+         2ROQWfqfO5miCFNXnPnQuJIgRDadkBPfrx/QDpRY3BvjbKKZiYlEiKot4OT8XUfOvRTn
+         gtaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747427114; x=1748031914;
+        d=1e100.net; s=20230601; t=1747441509; x=1748046309;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SJtI08ZdLCcw6bkpJ+rEQSFFcud7levmwZFe8IxZZO0=;
-        b=nYAsN4DE1bMc7d95QzF/BvzBlIRJ2ueCYZNa/OHQ+ntKBVA2rmj87TfY5nRBIP/wzo
-         HAJDsIkSRG4Gv6umvVH9ySZ2+Q5F8JlF7W7LHfvFZoGJPiGuBkSbG/PrExcqJ+Skg2pg
-         gN8tbSvzlqgo9wKnmHLHYO3PoZhplsEzTuSToAQyq+lXM81rc68SvZ1dQt20D55a0psU
-         WOfpUXrK4Mb22TzsuXaG9uCYA56aLHOJiz7vpRKOgpZPA9tA3AyStsLIsWEUTnmo/7vK
-         31JZQGLu0KkKVWWaw8gm4l3XEMFEcpOWyFqHhsdvEj4HIB2nuBbsoGwBQLeokrnK3VaC
-         An0w==
-X-Forwarded-Encrypted: i=1; AJvYcCXfm6Rk9rhBCGtNhW/E4gGMQRPluOOzXxICvwJME6IaFYdh3Zn+odR5F8Yiz2yOVPq7FALrql9G@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5SWm5QjM1SmDTq7MKNv9dsVVK6GnNbPq4asdfaiSjb/KuSRSb
-	hfs+vsg0/xmAIKrpvoneqMItwUVtmFUtn45In1fX/ajYi+oI5kkNvKtzMEQYAsHYfJsrUpzoEWG
-	Gf21TWbr/xzROiLA3ZEBXuVGPWtblPYE=
-X-Gm-Gg: ASbGncutfdjbl6OxJxrimA+CJKjkKJBEsyAWcg+i/znfv8u4F856xyx7FNi7EyD9vw+
-	UfSo6hCsR1kchvSR0cqgQ5Ug+5gunVYktfMAzCBTgR69Ix8Ovgf1UQ9dBpaxDfSnwHw4VzczPCA
-	jj1qc/3Ffxx3kjdNXvwCux5c1xVke5QaY=
-X-Google-Smtp-Source: AGHT+IF6IesSsloSzfaxg/M64Zjm1vE5MlDFW1s1cX1z2megWPE7Es4e+n2QFcDLhy0sKjm5auuB7s7yMTSxPsfEPL8=
-X-Received: by 2002:a17:907:7d89:b0:ad2:5408:bf1a with SMTP id
- a640c23a62f3a-ad52d64216fmr467700466b.61.1747427113583; Fri, 16 May 2025
- 13:25:13 -0700 (PDT)
+        bh=4oOZcroL9pDTCrImg+h0BCJtERSmMeYUbJFw/m22M8A=;
+        b=Md3n/yde4I8nQlRFYVRYoEoDKF55oNWgllCSVK/4RU9ZP7nxg1vLLm+mur2Z50hCOt
+         xgKRYgobZ+sn4Q5ysLemQU7QI2XU/8SZ3nWrJa5H0cazRMAb1JbFnUXlHn8aOrlbZ+W5
+         F69WRzcPDUXhkKX09EdP9gjFnkwcyr7VpmpoWvVq905zxsniHtevbF2/+1llv0log/Fe
+         kIU/EBOVCX+bgpzRwWuoVz2dPzwwPCn1au95JapjNtF9+FU5TF9NDX0TPTZ0HzXM4HfV
+         oSqKITffR4j/Fr9/A8I6ARKgDtCWskszkdxYc+ID7NN5zHMvRAXCiscREmqN1tJ+LBec
+         lAJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7aqG7WcgAupzCEL93DWyZ5VKbpsP/xnxwXAmfq7ZmzVKx4lbTYO0afpHTlrtL8Q3eHI1p/Xm011CAW49+@vger.kernel.org, AJvYcCWP58nGRW7/Y3axCi+1xx4K+Jp6TrwXL2v5KbtwQaGkEAktFywqZaTIoyOmPMD+OYm5cZhYxdURCg==@vger.kernel.org, AJvYcCXF4IWrLw9RZmAZfziC5IYFI98CoK6M38Prd46loGstSFuwJ1D7izbeF1ndTZ2ummoEzAo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyz9q07lUccozdkHnS5Z9JLkQUVOikgVF2Jk1ackxtxmd9P53Xu
+	0Ui+bmi29ktXRt32rF3OxFKxoEJAW996bzOXONzzv+q8th+84TWEN8xXhlGEXZJ3Luqv1TAPGGP
+	Z8FT8riB9/n1RD8iLi0pnxKVOMn1rcYw=
+X-Gm-Gg: ASbGncv7ffclNZwysi0NSgIdF2N0MRcNAwXxKY5FapkwnOmRjwYLavIrK6V+WxGL91L
+	yZkC3WwP+l6RtXxYtf8/ukuGAV7xZq9xELSgkxX7MnON9njgbsQ3d4BKEx4zl98jwx06et+Xoje
+	P4VZlZRhioRxiY9V2SPYFE53nNTIp7kZgJQ+5Icyl7D04OZTOQho0RZT7UCNu1eQ==
+X-Google-Smtp-Source: AGHT+IHDBDQOUrEVqoduv6ipIjFRPqEDCxoY3BbawJyJ71yHpe7/4KGFieaxXjUTK7EgTMViaD5tSlX97DWzKhg8ZUg=
+X-Received: by 2002:a05:6000:22c1:b0:3a2:35c:4474 with SMTP id
+ ffacd0b85a97d-3a35c84d725mr5415633f8f.46.1747441508907; Fri, 16 May 2025
+ 17:25:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAPM=9tw0hn=doXVdH_hxQMvUhyAQvWOp+HT24RVGA7Hi=nhwRA@mail.gmail.com>
- <20250513075446.GA623911@cmpxchg.org> <CAPM=9txLcFNt-5hfHtmW5C=zhaC4pGukQJ=aOi1zq_bTCHq4zg@mail.gmail.com>
- <b0953201-8d04-49f3-a116-8ae1936c581c@amd.com> <20250515160842.GA720744@cmpxchg.org>
- <bba93237-9266-4e25-a543-e309eb7bb4ec@amd.com> <20250516145318.GB720744@cmpxchg.org>
- <5000d284-162c-4e63-9883-7e6957209b95@amd.com> <20250516164150.GD720744@cmpxchg.org>
- <eff07695-3de2-49b7-8cde-19a1a6cf3161@amd.com> <20250516200423.GE720744@cmpxchg.org>
-In-Reply-To: <20250516200423.GE720744@cmpxchg.org>
-From: Dave Airlie <airlied@gmail.com>
-Date: Sat, 17 May 2025 06:25:02 +1000
-X-Gm-Features: AX0GCFtasG3sWnbvC4qlI42fwzXP33Z7Y2iUUh9fyHDZOgHKzoSPu0dwVStFEkg
-Message-ID: <CAPM=9txLaTjfjgC_h9PLR4H-LKpC9_Fet7=HYBpyeoCL6yAQJg@mail.gmail.com>
-Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (v2)
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	dri-devel@lists.freedesktop.org, tj@kernel.org, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
-	Waiman Long <longman@redhat.com>, simona@ffwll.ch
+References: <20250514184158.3471331-1-shakeel.butt@linux.dev>
+ <20250514184158.3471331-2-shakeel.butt@linux.dev> <22f69e6e-7908-4e92-96ca-5c70d535c439@lucifer.local>
+In-Reply-To: <22f69e6e-7908-4e92-96ca-5c70d535c439@lucifer.local>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 16 May 2025 17:24:57 -0700
+X-Gm-Features: AX0GCFt2-G58LKzfQ5yuhBPBvfaljiJP0swpn_ogR8ycZqKQVIHzNqom9pytzdk
+Message-ID: <CAADnVQKkY+ner_ZjPK9ZO7vjyvBdDA56emmgh9+MqVzaisCWfQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] memcg: memcg_rstat_updated re-entrant safe against irqs
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Vlastimil Babka <vbabka@suse.cz>, Alexei Starovoitov <ast@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Harry Yoo <harry.yoo@oracle.com>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Meta kernel team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 17 May 2025 at 06:04, Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Thu, May 15, 2025 at 5:47=E2=80=AFAM Lorenzo Stoakes
+<lorenzo.stoakes@oracle.com> wrote:
 >
-> On Fri, May 16, 2025 at 07:42:08PM +0200, Christian K=C3=B6nig wrote:
-> > On 5/16/25 18:41, Johannes Weiner wrote:
-> > >>> Listen, none of this is even remotely new. This isn't the first cac=
-he
-> > >>> we're tracking, and it's not the first consumer that can outlive th=
-e
-> > >>> controlling cgroup.
-> > >>
-> > >> Yes, I knew about all of that and I find that extremely questionable
-> > >> on existing handling as well.
-> > >
-> > > This code handles billions of containers every day, but we'll be sure
-> > > to consult you on the next redesign.
-> >
-> > Well yes, please do so. I'm working on Linux for around 30 years now an=
-d halve of that on device memory management.
-> >
-> > And the subsystems I maintain is used by literally billion Android devi=
-ces and HPC datacenters
-> >
-> > One of the reasons we don't have a good integration between device memo=
-ry and cgroups is because specific requirements have been ignored while des=
-igning cgroups.
-> >
-> > That cgroups works for a lot of use cases doesn't mean that it does for=
- all of them.
-> >
-> > >> Memory pools which are only used to improve allocation performance
-> > >> are something the kernel handles transparently and are completely
-> > >> outside of any cgroup tracking whatsoever.
-> > >
-> > > You're describing a cache. It doesn't matter whether it's caching CPU
-> > > work, IO work or network packets.
-> >
-> > A cache description doesn't really fit this pool here.
-> >
-> > The memory properties are similar to what GFP_DMA or GFP_DMA32
-> > provide.
-> >
-> > The reasons we haven't moved this into the core memory management is
-> > because it is completely x86 specific and only used by a rather
-> > specific group of devices.
+> ----8<----
+> From 28275e5d054506746d310cf5ebd1fafdb0881dba Mon Sep 17 00:00:00 2001
+> From: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+> Date: Thu, 15 May 2025 13:43:46 +0100
+> Subject: [PATCH] fix
 >
-> I fully understand that. It's about memory properties.
+> Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+> ---
+>  mm/memcontrol.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> What I think you're also saying is that the best solution would be
-> that you could ask the core MM for pages with a specific property, and
-> it would hand you pages that were previously freed with those same
-> properties. Or, if none such pages are on the freelists, it would grab
-> free pages with different properties and convert them on the fly.
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 2464a58fbf17..40fcc2259e5f 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3697,7 +3697,8 @@ static void mem_cgroup_free(struct mem_cgroup *memc=
+g)
 >
-> For all intents and purposes, this free memory would then be trivially
-> fungible between drm use, non-drm use, and different cgroups - except
-> for a few CPU cycles when converting but that's *probably* negligible?
-> And now you could get rid of the "hack" in drm and didn't have to hang
-> on to special-property pages and implement a shrinker at all.
->
-> So far so good.
->
-> But that just isn't the implementation of today. And the devil is very
-> much in the details with this:
->
-> Your memory attribute conversions are currently tied to a *shrinker*.
->
-> This means the conversion doesn't trivially happen in the allocator,
-> it happens from *reclaim context*.
->
-> Now *your* shrinker is fairly cheap to run, so I do understand when
-> you're saying in exasperation: We give this memory back if somebody
-> needs it for other purposes. What *is* the big deal?
->
-> The *reclaim context* is the big deal. The problem is *all the other
-> shrinkers that run at this time as well*. Because you held onto those
-> pages long enough that they contributed to a bonafide, general memory
-> shortage situation. And *that* has consequences for other cgroups.
+>  static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
+>  {
+> -       struct memcg_vmstats_percpu *statc, __percpu *pstatc_pcpu;
+> +       struct memcg_vmstats_percpu *statc;
+> +       struct memcg_vmstats_percpu __percpu *pstatc_pcpu;
+>         struct mem_cgroup *memcg;
+>         int node, cpu;
+>         int __maybe_unused i;
+> --
+> 2.49.0
 
-I think this is where we have 2 options:
-(a) moving this stuff into core mm and out of shrinker context
-(b) fix our shrinker to be cgroup aware and solve that first.
+Tested-by: Alexei Starovoitov <ast@kernel.org>
 
-The main question I have for Christian, is can you give me a list of
-use cases that this will seriously negatively effect if we proceed
-with (b).
+Andrew,
 
-From my naive desktop use case and HPC use case scenarios, I'm not
-seeing a massive hit, now maybe I see more consistency from an
-application overheads inside a cgroup.
-
-Desktop use-case:
-The user session and everything inside the user-session, compositor,
-apps are all in a single cgroup, any pools memory usage will be
-reusable between all the users active session, if there are multiple
-users, they won't have the benefit of pages from others but their own
-pool will be available.
-
-HPC use-case:
-One cgroup per application running in some sort of batch system. There
-will be a downside at app launch if there has already been a bunch of
-other applications launched on the machine the have filled the pool,
-but by default in the cold start case the app won't get any worse
-behaviour than it's current worst case, it will get consistent
-behaviour of initial allocations being worst case in a new cgroup vs
-now where they might benefit from previously running cgroups having
-allocated pooled memory, but I'm not sure the benefit outweighs the
-upside here since they reallly want containers contained.
-
-Android? I've no idea.
-
-Like what can we live with here, vs what needs to be a Kconfig option
-vs what needs to be a kernel command line option,
-
-I'm also happy to look at (a) but I think for (a) it's not just
-uncached pool that is the problem, the dma pools will be harder to
-deal with.
-
-Dave.
+Please pick up Lorenzo's fix into mm-new.
 
