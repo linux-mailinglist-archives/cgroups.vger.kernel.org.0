@@ -1,292 +1,190 @@
-Return-Path: <cgroups+bounces-8252-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8253-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B094ABB0D4
-	for <lists+cgroups@lfdr.de>; Sun, 18 May 2025 18:29:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D34BABB503
+	for <lists+cgroups@lfdr.de>; Mon, 19 May 2025 08:19:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18B2518954D4
-	for <lists+cgroups@lfdr.de>; Sun, 18 May 2025 16:29:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2915E3A9D5A
+	for <lists+cgroups@lfdr.de>; Mon, 19 May 2025 06:18:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5B39F4E2;
-	Sun, 18 May 2025 16:28:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618B4243364;
+	Mon, 19 May 2025 06:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="kms597Hj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EDlKHHTr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2045.outbound.protection.outlook.com [40.107.236.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC9D33EA
-	for <cgroups@vger.kernel.org>; Sun, 18 May 2025 16:28:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747585735; cv=fail; b=dX3coMcDEGbBLOMVvarbJp+CBccEeh9saWRkxQSzSd4naQvDVKNtTtxr8mQT2jnQUqd0DS5vMAFxjdRo9h0HKvQ2eS7RNhs9I6Oaqnx8KGikqUihdALlCSc8iBevwpSBmwN8chu8T7FyGB2LdoCeoTEMNNCvlo3b/Wi0x72z5gI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747585735; c=relaxed/simple;
-	bh=YCYFcbqQqROWjB7BmODO8y9K+JnUw8iPAA+FY+274FQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=BT59g6d8hwZ4R40xIovoUPqGUI0nI9VtIFjj3iZ7qey+gCyeJsF7F8azZLLZD8L5i9Rg+27TPqZ7BjGZgZuCgMo9d8rYTp5xyYZJq5Ay0aI+YPkwhfm1NVcBZeyXtJDnck6Qr4OvXngpkxkSBpijoLjS3suRbErPKbZzhAZoe28=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=kms597Hj; arc=fail smtp.client-ip=40.107.236.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=nrJ6wDg6FxGb5IaK4MT+AvOs7VS+RP//V5/B/iUJ/A0BrHkJjWz8rn2qv5XARDvjT3qxQl6BQyBM06DMqgV9U2ioMm7rGYs8vNvIzqWJK9diN2ZnFO6P6SUTRbHmtnXi54TLm98ol2ZN+RnU6pVybmqVwMRD4EYchBW0ARcjkmEd+QyMDClaPnF4ZENwu/YuVjHHsiZb15vzSGg3hXUUfG48wMlduo0a3lUhnhdejY4fERgYmIQ4/YolHppmAyX4plfS4a1a6oYwmkY50uHYVx0mTV9sTjvGKzpbgxeLr445YcYfY8UNN3bi6dk3gB1GfKZ03Ek1pVkT+hzGX8z/bw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zbZ6ws+SWh+rbvvOzbOHNLd1p+xwcUz5kSyiuu0MsQE=;
- b=lq2N59IAry2+zqpXwfdNeWPE7ikU8IPbDiZsgvih9Bbl2O7BNjwLBsc9W1P6aLEzcjUscvdisD2g/7t16HeRbl21ErlF9R04z2VT7/6apMPn+Bpgrvvwevjw/OWqDcwJXqj7xk5xeXGz/IHIDDRwAoFdWe6GGYV/f5KhXPeEtjYBWBmTLmO0+ncwU2VIsgFm/DJdYmuIAOW2Qoe7l6tB6nPSUb6OF2rGiNCBQH+ahiqdnYnnFPC8F023FounNqblh20yQ4Pk39Mb/4mKX+U1GgdBT5irKh5uLW8VBzmioaXQTCArc7Pmb2Hh55Efu1bypEih0CctrtskxWvzUpXN6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zbZ6ws+SWh+rbvvOzbOHNLd1p+xwcUz5kSyiuu0MsQE=;
- b=kms597HjUn5Vom0Liemfy7jNylh4l/FEJwEO1gXjraE/8KOFaexGF3uzdM2i/mwN5z8R9eccTLwP82eBpId5VSdVm266BPpZQqe9RQDZYXyS3ExRyaFiK0gS/2fJcY7jj7h7zrTvt0t6TSHG+aHDf08qUC1f/XiTs7x7mOToBzE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by SA1PR12MB8723.namprd12.prod.outlook.com (2603:10b6:806:385::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.30; Sun, 18 May
- 2025 16:28:48 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::46fb:96f2:7667:7ca5%7]) with mapi id 15.20.8722.031; Sun, 18 May 2025
- 16:28:48 +0000
-Message-ID: <5c0df728-2100-4078-8020-4aac8eb31d2b@amd.com>
-Date: Sun, 18 May 2025 18:28:43 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (v2)
-To: Dave Airlie <airlied@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>
-Cc: dri-devel@lists.freedesktop.org, tj@kernel.org,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- cgroups@vger.kernel.org, Waiman Long <longman@redhat.com>, simona@ffwll.ch
-References: <CAPM=9tw0hn=doXVdH_hxQMvUhyAQvWOp+HT24RVGA7Hi=nhwRA@mail.gmail.com>
- <20250513075446.GA623911@cmpxchg.org>
- <CAPM=9txLcFNt-5hfHtmW5C=zhaC4pGukQJ=aOi1zq_bTCHq4zg@mail.gmail.com>
- <b0953201-8d04-49f3-a116-8ae1936c581c@amd.com>
- <20250515160842.GA720744@cmpxchg.org>
- <bba93237-9266-4e25-a543-e309eb7bb4ec@amd.com>
- <20250516145318.GB720744@cmpxchg.org>
- <5000d284-162c-4e63-9883-7e6957209b95@amd.com>
- <20250516164150.GD720744@cmpxchg.org>
- <eff07695-3de2-49b7-8cde-19a1a6cf3161@amd.com>
- <20250516200423.GE720744@cmpxchg.org>
- <CAPM=9txLaTjfjgC_h9PLR4H-LKpC9_Fet7=HYBpyeoCL6yAQJg@mail.gmail.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <CAPM=9txLaTjfjgC_h9PLR4H-LKpC9_Fet7=HYBpyeoCL6yAQJg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0142.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:b8::6) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6982A223DC4
+	for <cgroups@vger.kernel.org>; Mon, 19 May 2025 06:18:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747635533; cv=none; b=r5Jap20RInWPwl7/7hpQl0OK6XciWSeoc2gMRmss5DHU2oT15SvD4YrE8TmWptdCFCJT3myhh+nPYVrMTqBYLRhEE/Ekcu9xZyLHo8EryA5wY2VGsf6A+cPOLuEaH/3AKDT3ao7VIHuEJ3fVSVMXA6oB0Zq54YlwJ/xGIUYTZFE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747635533; c=relaxed/simple;
+	bh=vK0gx1ykqEks3iig04qjuy13U8xSjbAqQzrJA0P4uP4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UtsansFPS6BjQmJUXczjOqTIzoqyhttNaFaGTiXu2f/RLHKLMNazMdIMhGbASIyfBJMEUkXSYxyRbb7c3YH8r6FwPCbBo25BNAy5rIILUX5WUHHbVr6JgwTowEp7f53ZeeAQPfMFYd/ZC9pFGwpZUu/TxXG62d65MdxKG0NTGls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EDlKHHTr; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-ad563b69908so133307966b.3
+        for <cgroups@vger.kernel.org>; Sun, 18 May 2025 23:18:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747635530; x=1748240330; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vK0gx1ykqEks3iig04qjuy13U8xSjbAqQzrJA0P4uP4=;
+        b=EDlKHHTrcXx7r98EwB+U8Ua6RrL1azUuS/OYDnZuPuzVN1QWI9C5KeLC6Nzhb5blHP
+         W+EV9oySWMwebyHeIoI4+krAvmhqPAa6eeQ+V35RLP5BSXg29anffCgGWDlS3gHcvpcQ
+         3dyQQnQlzdENv4UCES4MuvhBi893NgImi0LwZ0UNnqaI8jh9TWIrWnQKTjvJ9/YXNKF9
+         EKAAvHi4yIEJGTdZ40dMaWKYayqpygu1kCManYrosJBXDd1klwXUAxXB5g/OOw+fQlD2
+         bDJgYuAdfUyyFMzn1EOSQPEdTt7Fz3NMo77aKpbP/tyLyIEHYQTow2xNWMUfdljl7bCj
+         56dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747635530; x=1748240330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vK0gx1ykqEks3iig04qjuy13U8xSjbAqQzrJA0P4uP4=;
+        b=fdVgV6fBWOZ7hr2zi+p8UNvR25Rnt/i2SyxnZr4B/Ar1TJSHw2eC8ho06bRG2uhNEl
+         QcSw3JUk5J5PgJFxGSWgnloR9RpkORULQsP7zpNPZ7NGxSYz8D1d8slYMF8fUBwyMRfv
+         xTcwMXRVS9rM9Bfvj2OUdZ03RUl6vJO1Xs2kb1sn/zCGvnGrOqgpcn5Puqa2bmqY81ES
+         7n1q34w6ZbiurDVyLdwGBgmVqsxFHw/H0i+c5tLrKJ04uo6grTGjRTzV6fUahK4E01rC
+         b0mtLwu26Tkqr6v+cJ15f4LgtQWgrpzT4In2BLJatLBgLwQBuAoeIUu7oSyDoXx9jiqW
+         MwxA==
+X-Forwarded-Encrypted: i=1; AJvYcCU/NMS/UjQU2pTEPjsqrguFwQ3jM9E9fCX/udVQUv358z/0cec9wvCcSwLcRJE0yCFI9AyHh8Pw@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzgdd3wc0GSVlCN5LUFasWHZZXz0+A+Y/vFX5fUSzRHKqS53y53
+	Pgs2qcCp4fmOxx9YOSZxdIB4qOg17jDe2cNHy/WMQbaBPuBhPlxZdBRiui7QNqT5roGdOB6S0wa
+	RwfF3+oQAVvAeODd/2VaVVaQBd1HmQCk=
+X-Gm-Gg: ASbGncvEgDAgRJDTeRH1JjpkCOs3IYNzn+cWQSIcG1v/bbqkuDzqlAjBs0dDMVZ1d0h
+	3pcR9IdRP6IAv3OsE4ADwXqSNj16LDXDvogCxD4N/ziW89uKHLEMrq4+bndPZe7MTawQ4BZ+YIK
+	J0RgTBnQ5NxXVVyQ/zgZls3cFn601JOVI=
+X-Google-Smtp-Source: AGHT+IED1MGrTJUgDiXAUoxy2ZS37P5iCwFTBvVZgDuAbwR2oTt4wpSQ5cSDfGjdU1nNJ3yVKy67BGxv6DklZhbROQ0=
+X-Received: by 2002:a17:907:1c2a:b0:ad2:3fa9:751f with SMTP id
+ a640c23a62f3a-ad536dce3demr987314466b.38.1747635529329; Sun, 18 May 2025
+ 23:18:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SA1PR12MB8723:EE_
-X-MS-Office365-Filtering-Correlation-Id: 351335d2-2dd3-477a-2bdb-08dd962910f3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?a1NBQ0loaVNJVnFkbHAxZ2tlZVNkMXRzWEMwM0hpVzA4clZxK2xNbDdMbHd3?=
- =?utf-8?B?cCs5QWZuWDJyR004WmVWQm8rdUhlaFV6NTdBQ2ZWNjhiYkoySy9VMUNuaWRx?=
- =?utf-8?B?blduanNMaUZ0VGtjOU9kSUdGMTBWZ0hlUkprUVpZQ2M5MnlqUWo4cUVjOU5h?=
- =?utf-8?B?Mmtjdkd5bktzV2J1SjF0TXMzbmdrNE0weFJGeGE3TkFLQkdDVndQdnRINkJj?=
- =?utf-8?B?by80L2dXSUlEU2tEVlp4YnpVQ3N2bG5udE1ObWMxbm1HQU54YS9BTUlIS2Rz?=
- =?utf-8?B?SGxBWUFYTi9pdUZoUUhTRjdOSFREbDdFNWNySWlJWWNDVTFCdjF1TEwzT0hD?=
- =?utf-8?B?VjVwSG8zSlRHZUdwTWp5bTJjeFBDMGU0Ti9lSW5kdlVrdHZ5YXNoYUs2WlVi?=
- =?utf-8?B?TmROSE9DTkd2OWhxQzdoTTZ3MkVmbEVwZlhMOWJmeXNvR1F2M1c4ak0veUlm?=
- =?utf-8?B?dEdUdjl4Y3IxQ29OMzRYdGFsZzJ3eHBEVGM0aVlDRndpOFE0MkNYVlhnSFYv?=
- =?utf-8?B?ZGFxRk1wR3pIZFE5NytjZW9KTXk2SlQrOEJDTlkzZDhtSTlwNVFLanlWSjBx?=
- =?utf-8?B?WThhNEM0MG5ldHdsQXhZY0VhTTM1RkxoZ1NZU3RIL0M3ZGswVmFDVGRvWm5y?=
- =?utf-8?B?UTd5NTM5NkJYNlhpZTgxb3RIT08yMzU1TkhKaDY1SXhuSk1KRGFLQnNPVHhD?=
- =?utf-8?B?dk4zV2drWlMraTFzWEI1TGFxcmgwSkVrVWRTTlBneUU0T2ZxUmhlQ0k1RnhZ?=
- =?utf-8?B?bDVFVm1Od05PcjVJcUE1cFJ6aVJvWHJuaTBJdVdtcWY1dWJORjhhRHJFdlBp?=
- =?utf-8?B?U1FuYkw4RUpzT1hwVFFDTksxNk1tK0NCTlVaSkhhRHJ2OC9ycXhWWVRwbHlO?=
- =?utf-8?B?SDdYUit0c0N6TFJEV3ZDNldMTUpEVHdUcTR4QVA0OGlGQ2hXSnExNTAzbVEw?=
- =?utf-8?B?QS9BOE9yWGNZditTTFdvMzV6MXl3cGhNTmY4eWIyMUh3UkcxM0dXSDJwbENz?=
- =?utf-8?B?Z1JBM0k1NkJoRUdRbm1iMzc2MkZqU2dta2RYcE0vRGZtMjJEeis1V3ZudGdF?=
- =?utf-8?B?SVdhOXhvWENsNkQvYzB6cThrNlIrQ1Jyb1lCa2V5WWQxRHRId0tESUM5cEx5?=
- =?utf-8?B?cjV5cUVSK0V1TXBjTUk3N3dhdDBFREpiMG56STZScWp6RFRzcFJ4bmsxM21t?=
- =?utf-8?B?bkNGVnhaVllyYU1tV1d0NWt6dFlyakZDODQ0OVhGM09UUmVSY0FsbUxBUGhR?=
- =?utf-8?B?Y2FIaHcvODFkaGhTOFhSSHpWdllKaUZ1NlBzanU5R1dzbWhVZm1CdVNQTnE3?=
- =?utf-8?B?NEk1UkJrZCt4RmlqeHJiL0c3a2szVGFqVmk2b1BpVWtPN0d6dFhjdll3MGJm?=
- =?utf-8?B?UVdhbkFMY05NVzFBYzgxQU5ReHEydjExdkZFdDF4MjhWOWFxVnZSWHFDUmRo?=
- =?utf-8?B?SlZGYUpWbzFQZVQ0VVB3VkFjUzU2NWF2eUFJVDJLM1VobThsSk5kaGQ3MDZY?=
- =?utf-8?B?a0xBWkU0Y0daK21mblBkQzRxTFdxYVEvN2RsM0o5aE9vdTQzUDJhUDBjZmJX?=
- =?utf-8?B?dUJNVFpSdFp2MDEyTWJpMHJod3NrRFBUdnJkYXg1M1M0cTZmWHBqY1VNRzJE?=
- =?utf-8?B?VzhtMUFidUthemdBcFA4dytsem1ySUhPczRLa3h3UTdNOUhKMzYrRUZnWVl0?=
- =?utf-8?B?UzhDRnI2b3RUVVUvZW03cVh3cHp3QlBEZEQ3Uzc5UWxnbm51bHEvdmpFZjJX?=
- =?utf-8?B?YzNhUXdKUmZYUnREMlYrVmxJYU90eDlGektrblNTd00wYjQvMWRlTkNNRkVX?=
- =?utf-8?B?SzFTRnNqVEVtREowMHgvSmdNbFVBb1lGcXFBSEliOTB0U2RNeXljb1dlbnEx?=
- =?utf-8?B?dENDNDIzMHJuRmI3OVRXT2hzVENmckdXcWxmMjFqaERzcG9HOHZta1M3Vjg5?=
- =?utf-8?Q?ZcxF4cYH79o=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?M2RJdnY3Z0VUMnloY1dXeXBiNW04N0ltSk44VXJLWDV5bSt5eS9qYUplZWpY?=
- =?utf-8?B?RE9ib1pPaUlZY2FGM2xKL0RYTG51U1ZlU3crOWtyZzNwZndEUDRzYk9PUnBn?=
- =?utf-8?B?NG0zM3ZCeHdiNUlTUG9Oa3lxbDZ0QS9md3NkanhzRUJyQy92cUtZVEtlM2Nv?=
- =?utf-8?B?ek1iSnJFV0diNnMzc1IvUHB1dHBEK2F6VXAraFFCbGlOcUwwMDlaTTJ3RnRO?=
- =?utf-8?B?dDczMmN0TzVKaDBuR3ZENmRKUmFCbHVMSGMwUmN3dVBpeTZOdnZzbXNmUHBJ?=
- =?utf-8?B?L0FadWwrOWQyN1QvMnNqREdCV055Vzd1dmlJMjJ5ZTZWU1ZlTllqNzhKSytw?=
- =?utf-8?B?Tk1xWUNGWllNQWRhVjYwT2wvRFM5L1czRmNNNXlxVHp5WTB4MTFoZ3V6K2t4?=
- =?utf-8?B?UWpMbmZJbkxWbFkxekE5cUl6dy81UXRVZUlaWFFsSlJ1YkRwMXJUYktGcnBw?=
- =?utf-8?B?WjFXMmNRd3NGQzJYNndhRDNQdWExZVBJR1JPZVJRSktnNlVhK1V6L3FOTGZE?=
- =?utf-8?B?dnZWTktZUEQ0cDJjMjhlQW92VjZNajhwK2llNmJsaEg0MWd5VS9Tek4waDQr?=
- =?utf-8?B?eUEyRU1ZTE9pL01XU21vR2pzZ2FoUDNTeGRWc2k4ck9VSTE2UWNOYkE1Sk96?=
- =?utf-8?B?Y29NNXFoVEZLQTEyZEtxRXkydWg4TWNrQVRDUjFmNGd6dms4bDR3UWY2Slc3?=
- =?utf-8?B?RHA1SEIzWGNkU2ZzZ2NsUDNkQjNBeUdhNnd5NnBva2Z4cjlLSUNtWGRhT3pY?=
- =?utf-8?B?UVBpZFRjUE4zaVRkMmtTZUQ1M0I5ZzZEcU9HNWhSVGsyeXRXMitGUVhsQkdp?=
- =?utf-8?B?YmNlek5MWkZPTFZZVGovMlVpaVphZ2pNNGJWWjVpL2tIWlFiK2t1TFNTNy9X?=
- =?utf-8?B?VG9sLzJMbWpQUUNZejRRa2FpYnR6N0F4S1VlKzhrTTRTa2w2ODFzdUpMdGs1?=
- =?utf-8?B?bTBscHFtVEY5bGpJMHpOQkdhTFFJNGNuNFQ3MGFMQ3JPamcyNFFJUHB3UnJa?=
- =?utf-8?B?SzJWdDA2YXFoYi9iaU42NVNQTkdpRjErRmZ6T2xpa3ZpczJEYVd3Y2NRd0V4?=
- =?utf-8?B?R1c2RkUwUk5URHpXU1B0bDh0Y0xIVFVjTmMrVDJ3WHRzNHJqQjJTQmhxb1Bw?=
- =?utf-8?B?U1JtSUE1KzQ4OG82TDVLeEZHbm5OUmZJcDl5VkYxR1lrM200TEVndExWNTZF?=
- =?utf-8?B?ZlJNSXhyM2hjM3dsQnlMU2JGVUxnMGNYbnRFWEFPcGtIaUE4Qlo4M3I0VVg1?=
- =?utf-8?B?UEt6VS81aUhYWHNGSXJndW42bzZjaWk0bmlCNVdHWUxycFRXRk00MEVSOUx0?=
- =?utf-8?B?eWxpakwxbDhRb1lXTmZuODE3YjFjRE1COGFpdGM5ZVVQbEhJUldKTHcyWlhj?=
- =?utf-8?B?aUZSVjREV1RDa2lnZlJCQ0sxUFNvbERBQ2lNbUE1V1diWGNrang1ZXVtTEpy?=
- =?utf-8?B?TGYwTFNmbnlFak9jTnBKZ2ovKzRBcDBFelh4SGU1NDlNZTFNMDNRUDk1UTRk?=
- =?utf-8?B?WWEvN1hKcTIvUTRGRjROenIrQW1NandFOXlsdUJWSUN5N3k5Q1A5OUJlZUV4?=
- =?utf-8?B?Q0RCcEZ5YXlGYzAzdllWUHJocVU4YkNtM0lKR2U5dFlQT3E4WWx2VmtlNU9K?=
- =?utf-8?B?cjY1S1NVUG13WjV6MGNPRkVZV1N6RTR0VldicnlFQ2s4YUxZQjNOVlBQdHh3?=
- =?utf-8?B?MkIzajA2aXdhRGd5WlBJckZQeHFnUzNYdXZoUFgvTnFPakVVT0RxUUN5eE52?=
- =?utf-8?B?MkdCOEJteEF0VFRuL094RFljWFp4dUNoQ2xMN0dnRjlRRTA4alM0NjEwYkYw?=
- =?utf-8?B?UThObHo5cmEwZStPY3Q1YVBoTDRiTEJUT1pSRmNkTHpDUkpseEZzc25TNHp6?=
- =?utf-8?B?VGVTZHFnTFcvSHQ2dFQ1cGdQRTd3ZVh1YW5MNUxXWEpPZGJKaDZhUDdaQ2Rq?=
- =?utf-8?B?eksxb0JUUGhlOFZ2Q0sxSU1QK3RQMkNqOW1ONGxwd2J1aUhDNC9ONE9IV0pF?=
- =?utf-8?B?NzR2anBPbzJXa3hWZXJIU1RSQ21rcVRnOHhuSnI3M0J6THA3UzlLUDVFYjZh?=
- =?utf-8?B?SXEvRmlzRlJUQ2dzWmFHSmR6ZjY0MlNxSE9jU0xydm96alUvNkVrdWpzbER3?=
- =?utf-8?Q?lgpw=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 351335d2-2dd3-477a-2bdb-08dd962910f3
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2025 16:28:48.1691
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0V1SiP6Sea61gz9yhz1NcWmFwvZA7R3Vk/LhCJzCYPN1xTVUW1jISnNVOM/0nYoT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8723
+References: <CAPM=9tw0hn=doXVdH_hxQMvUhyAQvWOp+HT24RVGA7Hi=nhwRA@mail.gmail.com>
+ <20250513075446.GA623911@cmpxchg.org> <CAPM=9txLcFNt-5hfHtmW5C=zhaC4pGukQJ=aOi1zq_bTCHq4zg@mail.gmail.com>
+ <b0953201-8d04-49f3-a116-8ae1936c581c@amd.com> <20250515160842.GA720744@cmpxchg.org>
+ <bba93237-9266-4e25-a543-e309eb7bb4ec@amd.com> <20250516145318.GB720744@cmpxchg.org>
+ <5000d284-162c-4e63-9883-7e6957209b95@amd.com> <20250516164150.GD720744@cmpxchg.org>
+ <eff07695-3de2-49b7-8cde-19a1a6cf3161@amd.com> <20250516200423.GE720744@cmpxchg.org>
+ <CAPM=9txLaTjfjgC_h9PLR4H-LKpC9_Fet7=HYBpyeoCL6yAQJg@mail.gmail.com> <5c0df728-2100-4078-8020-4aac8eb31d2b@amd.com>
+In-Reply-To: <5c0df728-2100-4078-8020-4aac8eb31d2b@amd.com>
+From: Dave Airlie <airlied@gmail.com>
+Date: Mon, 19 May 2025 16:18:37 +1000
+X-Gm-Features: AX0GCFuphdrkbUIehiBml6CnXJWdoRvQjaJ47FArohPiypk3t12x3bE1pnOOt84
+Message-ID: <CAPM=9tysB4iNkGViN1iaGXjPC7y=YwB05ReHdUVR_-4zHahEFg@mail.gmail.com>
+Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (v2)
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, dri-devel@lists.freedesktop.org, tj@kernel.org, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
+	Waiman Long <longman@redhat.com>, simona@ffwll.ch
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 5/16/25 22:25, Dave Airlie wrote:
-> On Sat, 17 May 2025 at 06:04, Johannes Weiner <hannes@cmpxchg.org> wrote:
->>> The memory properties are similar to what GFP_DMA or GFP_DMA32
->>> provide.
->>>
->>> The reasons we haven't moved this into the core memory management is
->>> because it is completely x86 specific and only used by a rather
->>> specific group of devices.
->>
->> I fully understand that. It's about memory properties.
->>
->> What I think you're also saying is that the best solution would be
->> that you could ask the core MM for pages with a specific property, and
->> it would hand you pages that were previously freed with those same
->> properties. Or, if none such pages are on the freelists, it would grab
->> free pages with different properties and convert them on the fly.
->>
->> For all intents and purposes, this free memory would then be trivially
->> fungible between drm use, non-drm use, and different cgroups - except
->> for a few CPU cycles when converting but that's *probably* negligible?
->> And now you could get rid of the "hack" in drm and didn't have to hang
->> on to special-property pages and implement a shrinker at all.
->>
->> So far so good.
->>
->> But that just isn't the implementation of today. And the devil is very
->> much in the details with this:
->>
->> Your memory attribute conversions are currently tied to a *shrinker*.
->>
->> This means the conversion doesn't trivially happen in the allocator,
->> it happens from *reclaim context*.
+On Mon, 19 May 2025 at 02:28, Christian K=C3=B6nig <christian.koenig@amd.co=
+m> wrote:
+>
+> On 5/16/25 22:25, Dave Airlie wrote:
+> > On Sat, 17 May 2025 at 06:04, Johannes Weiner <hannes@cmpxchg.org> wrot=
+e:
+> >>> The memory properties are similar to what GFP_DMA or GFP_DMA32
+> >>> provide.
+> >>>
+> >>> The reasons we haven't moved this into the core memory management is
+> >>> because it is completely x86 specific and only used by a rather
+> >>> specific group of devices.
+> >>
+> >> I fully understand that. It's about memory properties.
+> >>
+> >> What I think you're also saying is that the best solution would be
+> >> that you could ask the core MM for pages with a specific property, and
+> >> it would hand you pages that were previously freed with those same
+> >> properties. Or, if none such pages are on the freelists, it would grab
+> >> free pages with different properties and convert them on the fly.
+> >>
+> >> For all intents and purposes, this free memory would then be trivially
+> >> fungible between drm use, non-drm use, and different cgroups - except
+> >> for a few CPU cycles when converting but that's *probably* negligible?
+> >> And now you could get rid of the "hack" in drm and didn't have to hang
+> >> on to special-property pages and implement a shrinker at all.
+> >>
+> >> So far so good.
+> >>
+> >> But that just isn't the implementation of today. And the devil is very
+> >> much in the details with this:
+> >>
+> >> Your memory attribute conversions are currently tied to a *shrinker*.
+> >>
+> >> This means the conversion doesn't trivially happen in the allocator,
+> >> it happens from *reclaim context*.
+>
+> Ah! At least I now understand your concern here.
+>
+> >> Now *your* shrinker is fairly cheap to run, so I do understand when
+> >> you're saying in exasperation: We give this memory back if somebody
+> >> needs it for other purposes. What *is* the big deal?
+> >>
+> >> The *reclaim context* is the big deal. The problem is *all the other
+> >> shrinkers that run at this time as well*. Because you held onto those
+> >> pages long enough that they contributed to a bonafide, general memory
+> >> shortage situation. And *that* has consequences for other cgroups.
+>
+> No it doesn't, or at least not as much as you think.
+>
+> We have gone back and forth on this multiple times already when discussio=
+n the shrinker implementations. See the DRM mailing list about both the TTM=
+ and the GEM shared mem shrinker.
+>
+> The TTM pool shrinker is basically just a nice to have feature which is u=
+sed to avoid deny of service attacks and allows to kick in when use cases c=
+hange. E.g. between installing software (gcc) and running software (Blender=
+, ROCm etc..).
+>
+> In other words the TTM shrinker is not even optimized and spends tons of =
+extra CPU cycles because the expectation is that it never really triggers i=
+n practice.
+>
+> > I think this is where we have 2 options:
+> > (a) moving this stuff into core mm and out of shrinker context
+> > (b) fix our shrinker to be cgroup aware and solve that first.
+>
+> (c) give better priorities to the shrinker API.
+>
+> E.g. the shrinker for example assumes that the users of the API must scan=
+ the pages to be able to clean them up.
 
-Ah! At least I now understand your concern here.
+Well my again naive approach is to just add simpler low-overhead
+shrinkers to the start of the shrinker list and if they free up enough
+memory then win, otherwise we were in reclaim anyways,
 
->> Now *your* shrinker is fairly cheap to run, so I do understand when
->> you're saying in exasperation: We give this memory back if somebody
->> needs it for other purposes. What *is* the big deal?
->>
->> The *reclaim context* is the big deal. The problem is *all the other
->> shrinkers that run at this time as well*. Because you held onto those
->> pages long enough that they contributed to a bonafide, general memory
->> shortage situation. And *that* has consequences for other cgroups.
+however this asks the question if just going into reclaim and having
+to touch any shrinkers at all is bad, if the overheads of just doing
+that aren't acceptable then we would need to come up with a better way
+I suspect?
 
-No it doesn't, or at least not as much as you think.
+adding a single shrinker flag to put the ttm shrinker at the top of
+the list is pretty trivial.
 
-We have gone back and forth on this multiple times already when discussion the shrinker implementations. See the DRM mailing list about both the TTM and the GEM shared mem shrinker.
+Thanks for use-cases that probably matter, I can see the online gaming
+workloads being useful overhead reduction.
 
-The TTM pool shrinker is basically just a nice to have feature which is used to avoid deny of service attacks and allows to kick in when use cases change. E.g. between installing software (gcc) and running software (Blender, ROCm etc..).
+There probably isn't much appetite to just migrate the ttm pools into
+the core mm, I see a couple of other users like sound do set_memory_*
+calls, but I doubt they are on the radar for how much it costs.
 
-In other words the TTM shrinker is not even optimized and spends tons of extra CPU cycles because the expectation is that it never really triggers in practice.
-
-> I think this is where we have 2 options:
-> (a) moving this stuff into core mm and out of shrinker context
-> (b) fix our shrinker to be cgroup aware and solve that first.
-
-(c) give better priorities to the shrinker API.
-
-E.g. the shrinker for example assumes that the users of the API must scan the pages to be able to clean them up.
-
-But implementations like the TTM pool could basically just throw away pages as many as necessary.
-
-So by saying to the shrinker please ask us on reclaim first we would completely solve the problem.
-
-That was considered before but never done because it's basically just nice to have and most likely not really important.
-
-> The main question I have for Christian, is can you give me a list of
-> use cases that this will seriously negatively effect if we proceed
-> with (b).
-
-It would basically render the whole TTM pool useless, or at least massively limit its usefulness.
-
-See the main benefit is to be able to quickly allocate buffers on HW use cases which needs then, e.g. scanout on APUs, PSP for secure playback etc....
-
-The idea is that when you alt+tab or swipe between applications that the new application can just grab the memory the previous application has just released.
-
-And yes, it is explicitly required that those applications can be in different cgroups.
-
-> From my naive desktop use case and HPC use case scenarios, I'm not
-> seeing a massive hit, now maybe I see more consistency from an
-> application overheads inside a cgroup.
-
-Yeah for HPC it is most likely completely irrelevant, for desktop it might have some minor use cases.
-
-But the killer argument is that we do have some cloud gaming and embedded use cases where it is really important to get this right.
-
-> Android? I've no idea.
-
-Mainline Android currently has it's complete own way of doing mostly the same what cgroup does, but in userspace.
-
-The problem is that this doesn't account for memory allocated in kernel space. See the discussion on DMA-buf accounting with T.J. and the older discussion with Greg (sysfs) about that.
-
-In my opinion it would make sense to just use cgroups for a lot of that as well, but we would need to convince Google of that.
-
-Regards,
-Christian.
-
-> Like what can we live with here, vs what needs to be a Kconfig option
-> vs what needs to be a kernel command line option,
-> 
-> I'm also happy to look at (a) but I think for (a) it's not just
-> uncached pool that is the problem, the dma pools will be harder to
-> deal with.
-> 
-> Dave.
-
+Dave.
 
