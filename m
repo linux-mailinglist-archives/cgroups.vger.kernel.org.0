@@ -1,118 +1,93 @@
-Return-Path: <cgroups+bounces-8276-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8277-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97035ABE115
-	for <lists+cgroups@lfdr.de>; Tue, 20 May 2025 18:48:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CD7AABE485
+	for <lists+cgroups@lfdr.de>; Tue, 20 May 2025 22:11:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C6781BA49B9
-	for <lists+cgroups@lfdr.de>; Tue, 20 May 2025 16:48:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B42CD3B0946
+	for <lists+cgroups@lfdr.de>; Tue, 20 May 2025 20:11:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 024FF27BF6F;
-	Tue, 20 May 2025 16:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A5F4288C07;
+	Tue, 20 May 2025 20:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MAL9HM2n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GOsTVKi5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB7A252297
-	for <cgroups@vger.kernel.org>; Tue, 20 May 2025 16:48:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50DE127C863;
+	Tue, 20 May 2025 20:11:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747759707; cv=none; b=ZZFlRvhfdC7IM6ajQUIfBNDQyM8nJIQOBT3L11/uCW0gVeh/3EepHHLp7V5rII9voTa7xT03b4z8/Y3x7rSdshQWYmqtjJYjEwenKNrYTmsilu4a2Q2So3f3t75SWn9eqoMKs0zBzxZdsYlnzqFhkR00WcQEg4L0e5+cukWA8eA=
+	t=1747771910; cv=none; b=up8BklG13yNYGE0M7Oa4uZEOSt6INw1LgYW6SW0JLBcd7VWOcxebzNFm8WqkNgm7Bbqyrjp8iCC1epIcyF8vLl3KmX+LegatX6/YezVtH9UHOU/l7CUGI4mdBV/E8BITbBij+PqAJdyOydKNFenFcNZZNr97n/ZQ5XM6/AijBG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747759707; c=relaxed/simple;
-	bh=VKOLyd+fTgXxi0xSU7seE7QvEy9DHjhT9JyUqMZjDXk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=CaE+bnsJSEqOTCPSf4qySIRFy8naI4uh+74zJR8iPjfBSSkKxs0i7qdTP2k9OmPV4OUEOWuXmvFmfEcUgylUCR0QiwKlovd3ciPBqVS/Y5fJAE1ruw6ADweL34b5ZbBPshMkjbxBvCHfRKFFXReAXGK7dg3InBk5dsxItPYSY84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MAL9HM2n; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-30ed6bd1b4cso3881698a91.0
-        for <cgroups@vger.kernel.org>; Tue, 20 May 2025 09:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1747759704; x=1748364504; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wcl6TqUwD54tFkNVg+Ri/3Cun2a33c9FWRAhj6V56jQ=;
-        b=MAL9HM2nG1K00TOdPGQrZMeQdy+sdujtHwdyk8bwp0aI9KalteiNX67XmAIs4Osnnv
-         kGHhYbzi+jamSyQHP+eJ6Rzoc/RMGbmcSw3r2BoTrXHVRvI+IWi42BVnVTHEC1/OKRjK
-         NW1XeGs2QNp73agFaMJtZ2Qru3L2QYP5n3pR70PevR+yW38HV682xxBaYg8q/dhaTj3L
-         uEeFl/I4p7gq/FewAVotkSETtLS87Zho26NA5PfOd36hOuAr73jHQdyz4i6PQGvraYnF
-         FzI/zlktwm8WGshF3G0q9ByYjQVvvNsixDomALSjMCxjtR7JdwbksLdrV4OsLid0RcEh
-         pbZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747759704; x=1748364504;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wcl6TqUwD54tFkNVg+Ri/3Cun2a33c9FWRAhj6V56jQ=;
-        b=YWJQHn/SClm157ZGhQF7WnGr4SOoOQbcebx3XsMvLKM4pMcLoviCwp7+D3rebDnuCH
-         C7M5q3xLiBolpPCRAGEnqRXIJxZaiqh+vpe6GjBpB3IislfFbcjaRlWfcml3dkb1TOT2
-         hm4lOhTywkn2Owe2fulU0f0GqvqoQHaO1jdfQijRZpz8ImXglhSP2BaS6zcGo/xKbpUj
-         OcWlEpb0nro4VLlG1ngJAAMnwL2xCfiUmcbrVuaFnUhy/Pd64WVyPi5NMD+phWViRASB
-         2Lsj3SDH2OxVlPT0S4lirfXe6L+rjQjgZQ1+DAr1E56AVBk9YSSQY32gXX5v094sWuZ3
-         oTcw==
-X-Forwarded-Encrypted: i=1; AJvYcCVSnykII2iJFRnSCQiBbJ9P2w4Bji6+hCmgUKSgGSa/DKSnGA8WPcHR+ZXgepQOvCQhcPwQ6Gh/@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZnZnQvibYdB7PLSrNSh0KJWW4RK/wA+FUvbh0AICYKJChJpws
-	qdKhu5oWwn3zqHSARMJdcfz5dp19v8ckNGoyPCy1Da/tGdx4+b2vFDylPx6KVof58O6/mVFZ5zb
-	0/5n5dA==
-X-Google-Smtp-Source: AGHT+IHWuapVqe0x+t6XHz6AnLhy46gF3CLB1xUoma8BHmFx0DTfNmTB/vRYZiHtoCJbxgU+GsCHbokk230=
-X-Received: from pjbee16.prod.google.com ([2002:a17:90a:fc50:b0:2fa:15aa:4d1e])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:33c2:b0:2ff:58b8:5c46
- with SMTP id 98e67ed59e1d1-30e830f7b18mr26615931a91.8.1747759704142; Tue, 20
- May 2025 09:48:24 -0700 (PDT)
-Date: Tue, 20 May 2025 09:48:06 -0700
-In-Reply-To: <20250508184649.2576210-1-jthoughton@google.com>
+	s=arc-20240116; t=1747771910; c=relaxed/simple;
+	bh=3naj0bjbvDnkEd9GJtDdldNR7frDExsIaFCZiA5vpkQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ncv168NsNnKqbKmnomP/4/GNNNlh1YEYgZ3UITow3+wc4egwFrhqYwWbjAHrLrk7iroeya2XUldDwel3jWDaTX48+CgAjgnMl+LCuH8/jy6UzMpPZabkOtV9o/I4clfKeivPEHmks1MOvT1ycxruicak8pBU9sRMiDMLe8jAY3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GOsTVKi5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9429FC4CEE9;
+	Tue, 20 May 2025 20:11:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747771909;
+	bh=3naj0bjbvDnkEd9GJtDdldNR7frDExsIaFCZiA5vpkQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GOsTVKi5WWDOcGNVPRsqVqE63azerDqF4l+YLT8Fwi7D7vVdpMwo61KTyhNScJpf/
+	 zeOywi3Se7KOMH7KrYds7hoor/cZdLTDkfqtjYW15VIOuRBSO6y1Mwn11MqcwV4gp3
+	 Fx1oNj7DPuBb6rrFY4zSzhDax+tpgUEqcPwlxmlqSP60fUhGc9a408SAosu9NQqEu7
+	 hMVnEaehfsu2NSu+L15BqByd28YHwYd8vISJ1FLv1AP3jql+7dNtsuBUi3NlZ0u612
+	 /xmVV4YsAZPgP/Sz/ZyDkctQUTxrI21m4kDbenozQ7/8LH6TQFWNPpXS4+r2JWEaH1
+	 yAQnaUV47Ppvw==
+Date: Tue, 20 May 2025 10:11:47 -1000
+From: Tejun Heo <tj@kernel.org>
+To: shashank.mahadasyam@sony.com
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Shinya Takumi <shinya.takumi@sony.com>
+Subject: Re: [PATCH v2 1/3] cgroup, docs: be specific about bandwidth control
+ of rt processes
+Message-ID: <aCziA1tUAnnGId6_@slm.duckdns.org>
+References: <20250520-rt-and-cpu-controller-doc-v2-0-70a2b6a1b703@sony.com>
+ <20250520-rt-and-cpu-controller-doc-v2-1-70a2b6a1b703@sony.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250508184649.2576210-1-jthoughton@google.com>
-X-Mailer: git-send-email 2.49.0.1101.gccaa498523-goog
-Message-ID: <174767770635.2666521.3146495513676301743.b4-ty@google.com>
-Subject: Re: [PATCH v4 0/7] KVM: selftests: access_tracking_perf_test fixes
- for NUMA balancing and MGLRU
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org, 
-	James Houghton <jthoughton@google.com>
-Cc: Maxim Levitsky <mlevitsk@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, 
-	Yosry Ahmed <yosry.ahmed@linux.dev>, Yu Zhao <yuzhao@google.com>, 
-	David Matlack <dmatlack@google.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250520-rt-and-cpu-controller-doc-v2-1-70a2b6a1b703@sony.com>
 
-On Thu, 08 May 2025 18:46:41 +0000, James Houghton wrote:
-> This series fixes some issues with access_tracking_perf_test when MGLRU
-> or NUMA balancing are in use.
+On Tue, May 20, 2025 at 11:07:45PM +0900, Shashank Balaji via B4 Relay wrote:
+> From: Shashank Balaji <shashank.mahadasyam@sony.com>
 > 
-> With MGLRU, touching a page doesn't necessarily clear the Idle flag.
-> This has come up in the past, and the recommendation was to use MGLRU
-> generation numbers[1], which this series does.
+> Signed-off-by: Shashank Balaji <shashank.mahadasyam@sony.com>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> [...]
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 1a16ce68a4d7f6f8c9070be89c4975dbfa79077e..3b3685736fe9b12e96a273248dfb4a8c62a4b698 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1076,7 +1076,7 @@ cpufreq governor about the minimum desired frequency which should always be
+>  provided by a CPU, as well as the maximum desired frequency, which should not
+>  be exceeded by a CPU.
+>  
+> -WARNING: cgroup2 cpu controller doesn't yet fully support the control of
+> +WARNING: cgroup2 cpu controller doesn't yet support the (bandwidth) control of
 
-Applied to kvm-x86 selftests, thanks!
+This reads weird to me. Without the () part, it becomes "doesn't yet support
+the control of". Maybe rephrase it a bit more?
 
-[1/7] KVM: selftests: Extract guts of THP accessor to standalone sysfs helpers
-      https://github.com/kvm-x86/linux/commit/d761c14d902e
-[2/7] KVM: selftests: access_tracking_perf_test: Add option to skip the sanity check
-      https://github.com/kvm-x86/linux/commit/26dcdfa01c33
-[3/7] cgroup: selftests: Move memcontrol specific helpers out of common cgroup_util.c
-      https://github.com/kvm-x86/linux/commit/3a7f9e518c6a
-[4/7] cgroup: selftests: Move cgroup_util into its own library
-      https://github.com/kvm-x86/linux/commit/2c754a84ff16
-[5/7] cgroup: selftests: Add API to find root of specific controller
-      https://github.com/kvm-x86/linux/commit/38e1dd578142
-[6/7] KVM: selftests: Build and link selftests/cgroup/lib into KVM selftests
-      https://github.com/kvm-x86/linux/commit/b11fcb51e2b2
-[7/7] KVM: selftests: access_tracking_perf_test: Use MGLRU for access tracking
-      https://github.com/kvm-x86/linux/commit/d166453ebd29
+Thanks.
 
---
-https://github.com/kvm-x86/linux/tree/next
+-- 
+tejun
 
