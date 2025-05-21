@@ -1,134 +1,97 @@
-Return-Path: <cgroups+bounces-8287-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8288-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7213FABF817
-	for <lists+cgroups@lfdr.de>; Wed, 21 May 2025 16:44:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B2CABFB43
+	for <lists+cgroups@lfdr.de>; Wed, 21 May 2025 18:30:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36BF01BC3ED9
-	for <lists+cgroups@lfdr.de>; Wed, 21 May 2025 14:43:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 485B616E97F
+	for <lists+cgroups@lfdr.de>; Wed, 21 May 2025 16:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DBBC194A59;
-	Wed, 21 May 2025 14:43:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F9C221DA1;
+	Wed, 21 May 2025 16:30:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="SL0K3G/i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SRICNdHn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA661D63C2
-	for <cgroups@vger.kernel.org>; Wed, 21 May 2025 14:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E364A1C5F09;
+	Wed, 21 May 2025 16:30:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747838603; cv=none; b=AlcoAeiZOgRBCjThSv6ldjVRCe5sDIqePhtmjJYXs7m3V/tgOfZr6trzP84mKWsuaed7wDiwia7VyAsjp/lAXFkcRs5R8vc6Pt5Ml+O3EGIu90/bUjRCErl9Z5naOlRsh36zMm81ZRBTreosGwnWIiojE1Fo1Z2uOId3WPNHp9M=
+	t=1747845021; cv=none; b=sVkeKsinY1y3OQV10NUjq+QReArBqUwbxaw8caCDgEhrBW0DQxk1iC1nvYqAuooRFlHUTw9pN44mpD4uauW6G05GFRTmt4c25AtZ+E09EXF3rs7twc4V9YVtb4aB0h01AMYpuGFVJ75MKyWlRFi4RLuv//6jnrPbl1/Hc3rggYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747838603; c=relaxed/simple;
-	bh=JJvx61FeAXZ1grZ60FxV672PTvRPiKP8AhdYp50uQHg=;
+	s=arc-20240116; t=1747845021; c=relaxed/simple;
+	bh=TBKT53j1ZzWAdU9ZNkIj6bRV4r88F4Q4v6goyOVmE40=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FQKucMlQIpUr/yIWrdl3OpoVEaZFnbJaX+KtGMj9V82F+G91ODU77ggcdFFvh0inpsy6IKBbDIdcITCNY/x6z1S/18LvVgWTwfmR03Ig2sc/P9jzKODQjb0F2ET7TW86rDzq+bXaRI0STDXGBQFpXoiFm5VqIHfdZbaxjIw4dw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=SL0K3G/i; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6f8d96499e7so57607966d6.3
-        for <cgroups@vger.kernel.org>; Wed, 21 May 2025 07:43:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1747838596; x=1748443396; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tm5t+Bgq7540ocHTCpxJRFMuSZJmOFrIbkmxzwr4YdE=;
-        b=SL0K3G/iCEWAIx4s/DW0Scgx1GZPkVFowrHdCiM0SjKajmnFioZCABoiv4iig/3ylM
-         c57tIUbdsY0MZoV5LvylvIKqlzoaICDmG7uNM1WPnJbR2p08x/htBAqDGfZWmlSX1fcs
-         J5p5Fj3v12CQkyhcniR8rzjyMqT1eyxfnM9dWnZ1rIjumSJxAHYLOjfcJ+SVSuNgd05G
-         J6UoyJXeKIRPjQ9LTpL5Rm/sEieWdg+U+KENF60vDDI4debP8EXqdSFRX8t6OwE/2c+x
-         VC9r3CiFfN7Vl0t706wQeJ3M4U5tmNl3i9m/mSPlo6qzdnGV0aClMzow6d1E8ltpn2+z
-         Zdqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747838596; x=1748443396;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tm5t+Bgq7540ocHTCpxJRFMuSZJmOFrIbkmxzwr4YdE=;
-        b=b+D7vsdjynVANwRijpVyosvnMGVp9f5omLKOocYGEH9AgduDYOMCzuIQlcNQ6jKcMC
-         gaGdVi7N9iU/M51LGggc6QYVVJuTbD7E1kJUiwnZ5HUAi0UPtxanZxVse/8I7aun4zFR
-         9TfolH/+luJfWRD8Bs4opCmTycmtw3dBOqoCtzn4XTpcSB+U6/6k2rp+X+LkUKdOmDFR
-         J86fmvhEo+9Wjjxp3ByO2abS99R8F85ySwcfM6FCGy9ubLEh0ZBROk0CunMwuTTrqOLp
-         ulChJZYjZONfEaju4jtjVwbE3hKqk/Rs/R1a5Cmv+3Cq0MnT8y87FAqBlKG4FSgf99kj
-         037g==
-X-Forwarded-Encrypted: i=1; AJvYcCVVWA7CR2Jfr4SEcPhKUa9ji35DuC5eO9dc+nOhu23QfjsyLivRmSKqwDtiPv7hk66Bj11TMoZV@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzf2p+VmvnOEC1DTqsJ4nAOM5I7e5/T7uL0CS/FRhFQNL+Mkf14
-	qO377lHlru8pRcbIhZ0LXUPQj/qQ+r1IJJslQ2MZ4jdTxK29z5LKo+CzkHPNO7T1ekI=
-X-Gm-Gg: ASbGncu0yYrgNctRsKeEov0AJG1z1F1Ky9bNxBB8J+/WTGKHwuX6cORST7CyHwxj45y
-	jDiR4qz0ZjdR8g/DTVtzgx7vAdWwS6cYxm9DKZFrKVZ5UkZZCT+dqD69gr/XI9zNg5238fF95Tb
-	OMA2dE4sh4NVrIW8dG4naeTwHKSvkiWTF0tHMzAlTp0n70HUFJwbm7PRAH2Ppoux2/K2O+3SLD3
-	i5bV/7FyTwLwoGSvX8wwIKzazPySCKcwuIO1lus87KyVq96BFthKuiEhmUnFuTnyqu9gcWVrgwu
-	zjYT+qgDKh1BAT1GYdxVq6ReIo09XmsGhSOfrx+EAzmQAbLQ8Q==
-X-Google-Smtp-Source: AGHT+IHEM+wvUcEaGmWTryHjewq8bJ6N/GLkNLp803DMsIdPw7rLGbMkCkeiFVtKhclLf9k4Ii/+7Q==
-X-Received: by 2002:a05:6214:932:b0:6f8:b73e:8e65 with SMTP id 6a1803df08f44-6f8b73ea51bmr256380506d6.18.1747838596519;
-        Wed, 21 May 2025 07:43:16 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6f986a86b90sm7541296d6.97.2025.05.21.07.43.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 May 2025 07:43:15 -0700 (PDT)
-Date: Wed, 21 May 2025 10:43:12 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Dave Airlie <airlied@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, tj@kernel.org,
-	christian.koenig@amd.com, Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	Waiman Long <longman@redhat.com>, simona@ffwll.ch
-Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (v2)
-Message-ID: <20250521144312.GE773385@cmpxchg.org>
-References: <20250502034046.1625896-1-airlied@gmail.com>
- <20250507175238.GB276050@cmpxchg.org>
- <CAPM=9tw0hn=doXVdH_hxQMvUhyAQvWOp+HT24RVGA7Hi=nhwRA@mail.gmail.com>
- <20250513075446.GA623911@cmpxchg.org>
- <CAPM=9tw+DE5-q2o6Di2POEPcXq2kgE4DXbn_uoN+LAXYKMp06g@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pgnlV8jjhzd8449RR8dtHW/Ig1O2cNOx8mqMLopFrQLzcYTwN/LJloNUptT9UjA6ABk3tbS5RqKGhMG/r0QuhKgtkT7dgcuVyRWk9T5Mn5PdqwQIxsLWPaOdg1Vwi64iJfQo5d9XUuL4nOrJX/QR6gNwEX/eJwmcECUq4ipmVnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SRICNdHn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39A0BC4CEE4;
+	Wed, 21 May 2025 16:30:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747845019;
+	bh=TBKT53j1ZzWAdU9ZNkIj6bRV4r88F4Q4v6goyOVmE40=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SRICNdHnk5ZfQ4BZ12LbWKVqwbmkQvECkH6aACSqU73mdY74isIny/u2rhKTpcu1N
+	 AdquhS23K+yjXMvElYq4Ej+EUzi2WKVVzuvZLWpZMhvmOjtrclHYrftgNEq2Cy1bne
+	 0SNBF2VxZtbWaxmvzbQuDL4BVCVvLsma1RAGRnSsEb56tpIhsPZB29F8+9v+9M5d1+
+	 vQ2bxlZciEahwGjz43tpRhH9h4Yn0c5m0SqQl8/D+fkRkOhZpBOPGreJaHJCS/QH26
+	 QtyiCXvmrpunlXy5r75hhpplw7OrQ8Whum5rrHpmjliyEJSPHAtOhAWqPpfrvdU3Ou
+	 xVF3FSG6Zv4YA==
+Date: Wed, 21 May 2025 06:30:18 -1000
+From: Tejun Heo <tj@kernel.org>
+To: "Shashank.Mahadasyam@sony.com" <Shashank.Mahadasyam@sony.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Shinya.Takumi@sony.com" <Shinya.Takumi@sony.com>
+Subject: Re: [PATCH v2 1/3] cgroup, docs: be specific about bandwidth control
+ of rt processes
+Message-ID: <aC3_moeLiTc4x85y@slm.duckdns.org>
+References: <20250520-rt-and-cpu-controller-doc-v2-0-70a2b6a1b703@sony.com>
+ <20250520-rt-and-cpu-controller-doc-v2-1-70a2b6a1b703@sony.com>
+ <aCziA1tUAnnGId6_@slm.duckdns.org>
+ <OSZPR01MB67115CCC104221C27EE63709939EA@OSZPR01MB6711.jpnprd01.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAPM=9tw+DE5-q2o6Di2POEPcXq2kgE4DXbn_uoN+LAXYKMp06g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <OSZPR01MB67115CCC104221C27EE63709939EA@OSZPR01MB6711.jpnprd01.prod.outlook.com>
 
-On Wed, May 21, 2025 at 12:23:58PM +1000, Dave Airlie wrote:
+Hello,
+
+On Wed, May 21, 2025 at 01:14:53AM +0000, Shashank.Mahadasyam@sony.com wrote:
+> Hi Tejun,
+> 
+> On 21 May 2025 5:11, Tejun Heo wrote:
+> > > -WARNING: cgroup2 cpu controller doesn't yet fully support the control of
+> > > +WARNING: cgroup2 cpu controller doesn't yet support the (bandwidth) control of
 > >
-> > So in the GPU case, you'd charge on allocation, free objects into a
-> > cgroup-specific pool, and shrink using a cgroup-specific LRU
-> > list. Freed objects can be reused by this cgroup, but nobody else.
-> > They're reclaimed through memory pressure inside the cgroup, not due
-> > to the action of others. And all allocated memory is accounted for.
-> >
-> > I have to admit I'm pretty clueless about the gpu driver internals and
-> > can't really judge how feasible this is. But from a cgroup POV, if you
-> > want proper memory isolation between groups, it seems to me that's the
-> > direction you'd have to take this in.
+> > This reads weird to me. Without the () part, it becomes "doesn't yet support
+> > the control of". Maybe rephrase it a bit more?
 > 
-> I've been digging into this a bit today, to try and work out what
-> various paths forward might look like and run into a few impedance
-> mismatches.
-> 
-> 1. TTM doesn't pool objects, it pools pages. TTM objects are varied in
-> size, we don't need to keep any sort of special allocator that we
-> would need if we cached sized objects (size buckets etc). list_lru
-> doesn't work on pages, if we were pooling the ttm objects I can see
-> being able to enable list_lru. But I'm seeing increased complexity for
-> no major return, but I might dig a bit more into whether caching
-> objects might help.
-> 
-> 2. list_lru isn't suitable for pages, AFAICS we have to stick the page
-> into another object to store it in the list_lru, which would mean we'd
-> be allocating yet another wrapper object. Currently TTM uses the page
-> LRU pointer to add it to the shrinker_list, which is simple and low
-> overhead.
+> I'm not sure how to rephrase it. It sounds fine to me 😅 Moreover, "doesn't
+> yet support the control of" was the wording when the warning paragraph on
+> RT_GROUP_SCHED was added in commit c2f31b79 (cgroup: add warning about RT
+> not being supported on cgroup2). Would removing the parentheses, making it
+> "doesn't yet support the bandwidth control of", sound better?
 
-Why wouldn't you be able to use the page LRU list_head with list_lru?
+You're right. I was thinking about sched_ext not RT. Lemme apply the patch
+as-is.
 
-list_lru_add(&ttm_pool_lru, &page->lru, page_to_nid(page), page_memcg(page));
+Thanks.
+
+-- 
+tejun
 
