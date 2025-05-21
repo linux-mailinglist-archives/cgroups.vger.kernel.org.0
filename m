@@ -1,94 +1,75 @@
-Return-Path: <cgroups+bounces-8288-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8289-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88B2CABFB43
-	for <lists+cgroups@lfdr.de>; Wed, 21 May 2025 18:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39D72ABFB53
+	for <lists+cgroups@lfdr.de>; Wed, 21 May 2025 18:35:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 485B616E97F
-	for <lists+cgroups@lfdr.de>; Wed, 21 May 2025 16:30:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF4CF17F2B5
+	for <lists+cgroups@lfdr.de>; Wed, 21 May 2025 16:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F9C221DA1;
-	Wed, 21 May 2025 16:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98732222582;
+	Wed, 21 May 2025 16:35:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SRICNdHn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ib09jWN1"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E364A1C5F09;
-	Wed, 21 May 2025 16:30:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE071537C6;
+	Wed, 21 May 2025 16:35:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747845021; cv=none; b=sVkeKsinY1y3OQV10NUjq+QReArBqUwbxaw8caCDgEhrBW0DQxk1iC1nvYqAuooRFlHUTw9pN44mpD4uauW6G05GFRTmt4c25AtZ+E09EXF3rs7twc4V9YVtb4aB0h01AMYpuGFVJ75MKyWlRFi4RLuv//6jnrPbl1/Hc3rggYo=
+	t=1747845306; cv=none; b=JGX9AIQbfBL2PtQYnuChHSwX/EFBgIfYGsQLeJ7CQb7rkOeL7nT9l093nFcLKyrEjZpDbMlD5JRoOwi8IoMxKtHeTNH1+M5FbXsu7L/myzXkdsktJCavtwY5fmnU3xP2IWV1q7XTnHJkU0ElnIqaPGPNfg/kSRAe1vjuiIeFktI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747845021; c=relaxed/simple;
-	bh=TBKT53j1ZzWAdU9ZNkIj6bRV4r88F4Q4v6goyOVmE40=;
+	s=arc-20240116; t=1747845306; c=relaxed/simple;
+	bh=WlSMZxIVGKgk3pfDff8mZ2qggiwFRsXoxjNQzoTE4yU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pgnlV8jjhzd8449RR8dtHW/Ig1O2cNOx8mqMLopFrQLzcYTwN/LJloNUptT9UjA6ABk3tbS5RqKGhMG/r0QuhKgtkT7dgcuVyRWk9T5Mn5PdqwQIxsLWPaOdg1Vwi64iJfQo5d9XUuL4nOrJX/QR6gNwEX/eJwmcECUq4ipmVnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SRICNdHn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39A0BC4CEE4;
-	Wed, 21 May 2025 16:30:19 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jc+f/QzdPfivETbcRkbUGA9jdr8RP+rIFH30zhFd4dD7/7npLO/xku2PyWASOyEDAzKAlbUnmRCC7GZ+FYr+NSZdmaoNkqExq3+OrBBUirGizGVuKCExhRGTd7yBspaPcGqXME+JMAQ12GEviDhasvsGK2XiBrq7NUWHAruwamY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ib09jWN1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B843C4CEE7;
+	Wed, 21 May 2025 16:35:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747845019;
-	bh=TBKT53j1ZzWAdU9ZNkIj6bRV4r88F4Q4v6goyOVmE40=;
+	s=k20201202; t=1747845305;
+	bh=WlSMZxIVGKgk3pfDff8mZ2qggiwFRsXoxjNQzoTE4yU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SRICNdHnk5ZfQ4BZ12LbWKVqwbmkQvECkH6aACSqU73mdY74isIny/u2rhKTpcu1N
-	 AdquhS23K+yjXMvElYq4Ej+EUzi2WKVVzuvZLWpZMhvmOjtrclHYrftgNEq2Cy1bne
-	 0SNBF2VxZtbWaxmvzbQuDL4BVCVvLsma1RAGRnSsEb56tpIhsPZB29F8+9v+9M5d1+
-	 vQ2bxlZciEahwGjz43tpRhH9h4Yn0c5m0SqQl8/D+fkRkOhZpBOPGreJaHJCS/QH26
-	 QtyiCXvmrpunlXy5r75hhpplw7OrQ8Whum5rrHpmjliyEJSPHAtOhAWqPpfrvdU3Ou
-	 xVF3FSG6Zv4YA==
-Date: Wed, 21 May 2025 06:30:18 -1000
+	b=Ib09jWN1SgKcjMnB2M3jGaKTGHxhqDlLfyCnHFsYMXbVBnzO81zsrSQ9Jxl8f5Ca8
+	 kaF7AXEvWuNAGosppZFgLlDM5v860PiXMMe3KH2ctrS4ugFWP+0/iPUtbHrS3ntQf6
+	 vjfCY4ZXGGzzlJNlUkSy7rYYp39j4oFt3qkquOY2tDiS8Tb0cf6mF9A6AAq6liAaal
+	 gp+ER8nx/JS6EUecFN/TLCE6SNKa3xXOiqKzlghoD71xoqE1CamaVCuW3W0mIspv0U
+	 yS8g7kiozI190moOp45WVLM2ztta701B+TqjChFz90dxsHeurSYJ5RKymGBn9qPAM5
+	 abNhUd+4XYRaw==
+Date: Wed, 21 May 2025 06:35:04 -1000
 From: Tejun Heo <tj@kernel.org>
-To: "Shashank.Mahadasyam@sony.com" <Shashank.Mahadasyam@sony.com>
+To: shashank.mahadasyam@sony.com
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Shinya.Takumi@sony.com" <Shinya.Takumi@sony.com>
+	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Shinya Takumi <shinya.takumi@sony.com>
 Subject: Re: [PATCH v2 1/3] cgroup, docs: be specific about bandwidth control
  of rt processes
-Message-ID: <aC3_moeLiTc4x85y@slm.duckdns.org>
+Message-ID: <aC4AuPxKGcTf1A5t@slm.duckdns.org>
 References: <20250520-rt-and-cpu-controller-doc-v2-0-70a2b6a1b703@sony.com>
  <20250520-rt-and-cpu-controller-doc-v2-1-70a2b6a1b703@sony.com>
- <aCziA1tUAnnGId6_@slm.duckdns.org>
- <OSZPR01MB67115CCC104221C27EE63709939EA@OSZPR01MB6711.jpnprd01.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <OSZPR01MB67115CCC104221C27EE63709939EA@OSZPR01MB6711.jpnprd01.prod.outlook.com>
+In-Reply-To: <20250520-rt-and-cpu-controller-doc-v2-1-70a2b6a1b703@sony.com>
 
-Hello,
-
-On Wed, May 21, 2025 at 01:14:53AM +0000, Shashank.Mahadasyam@sony.com wrote:
-> Hi Tejun,
+On Tue, May 20, 2025 at 11:07:45PM +0900, Shashank Balaji via B4 Relay wrote:
+> From: Shashank Balaji <shashank.mahadasyam@sony.com>
 > 
-> On 21 May 2025 5:11, Tejun Heo wrote:
-> > > -WARNING: cgroup2 cpu controller doesn't yet fully support the control of
-> > > +WARNING: cgroup2 cpu controller doesn't yet support the (bandwidth) control of
-> >
-> > This reads weird to me. Without the () part, it becomes "doesn't yet support
-> > the control of". Maybe rephrase it a bit more?
-> 
-> I'm not sure how to rephrase it. It sounds fine to me 😅 Moreover, "doesn't
-> yet support the control of" was the wording when the warning paragraph on
-> RT_GROUP_SCHED was added in commit c2f31b79 (cgroup: add warning about RT
-> not being supported on cgroup2). Would removing the parentheses, making it
-> "doesn't yet support the bandwidth control of", sound better?
+> Signed-off-by: Shashank Balaji <shashank.mahadasyam@sony.com>
 
-You're right. I was thinking about sched_ext not RT. Lemme apply the patch
-as-is.
+Applied to cgroup/for-6.16.
 
 Thanks.
 
