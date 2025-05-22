@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-8303-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8304-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5425AC0248
-	for <lists+cgroups@lfdr.de>; Thu, 22 May 2025 04:08:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C193AC024C
+	for <lists+cgroups@lfdr.de>; Thu, 22 May 2025 04:09:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AB501BC374A
-	for <lists+cgroups@lfdr.de>; Thu, 22 May 2025 02:09:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3C4B3B2540
+	for <lists+cgroups@lfdr.de>; Thu, 22 May 2025 02:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDBF840C03;
-	Thu, 22 May 2025 02:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2238913B293;
+	Thu, 22 May 2025 02:08:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="g1FtZDTQ"
+	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="X/BbIOCB"
 X-Original-To: cgroups@vger.kernel.org
 Received: from jpms-ob02.noc.sony.co.jp (jpms-ob02.noc.sony.co.jp [211.125.140.165])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B92610D;
-	Thu, 22 May 2025 02:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF7365D8F0;
+	Thu, 22 May 2025 02:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.125.140.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747879721; cv=none; b=JerMdV1w95iPTkHigEapjUR10gflL15pREbYjp5w6/J3jkb78abb4HcGQ5h6zq6UVmNVcKF1O06+HVEt7mcX84BiogT2pbjVSstVO+MdHSYF7e1XTzADvqJCxrU6TfPPVTm1tfYGpXRnSKxZeyJz7+PS6RPKzQ/D5txpLwfvReo=
+	t=1747879724; cv=none; b=PBAg5lUDRnDEyiPKHF7YSY+KPz38BTsmgT8h8m66xiK3a6BgdWfRQyEtlS13Tgev5yJNJc9myeQ+vyLqMFMDdHm7uyP+oAf/IYxXV4I9b9nfKSFeQNhNsdcx0/jeFWTUHXtxvEX2vz5YwaFsc6U/OAEyneZWHYVr/GYAoHpYlbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747879721; c=relaxed/simple;
-	bh=/2xv4T5GnAsCDJLXVz2LJBcpTe9h0DDljTwugSSUNK0=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=i+Co8ddMlyptNPwGrCu0y9H4Aiiak6rCK2FgIFykUfCl3AzEsfZUj+8TpBEwsEuHk9+BTbohIlxtrf1vgLoPup2qJAJzCa6sJIVbpCnUfdEYUgM5+0fyHES0TpW0+yBRbQzHJU5Sbw4304bT508IOUgWgJl309/Bl+hZpIZJzyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=pass smtp.mailfrom=sony.com; dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b=g1FtZDTQ; arc=none smtp.client-ip=211.125.140.165
+	s=arc-20240116; t=1747879724; c=relaxed/simple;
+	bh=F17YJTre7W8ETwjYAoQoTHhUJ0XEXPmZDTHsHCtLFyo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=FdU0QneBzyV6lg1g12Vz892/8KIc7eAyiZmo+/tFNNmy8szAQ/zcVoxp4mO5mcw3YiZtUVYc2sb8a2Ss/kDN/hwX5jXb/Rp6PRVe28xY5z3lP1ewKSXSgrQJwz64dvg+GmMP4zxW7tQabtkeeBhSRq/6TKOq6lpFnyca60v4DaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=pass smtp.mailfrom=sony.com; dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b=X/BbIOCB; arc=none smtp.client-ip=211.125.140.165
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sony.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=sony.com; s=s1jp; t=1747879719; x=1779415719;
-  h=from:subject:date:message-id:mime-version:
-   content-transfer-encoding:to:cc;
-  bh=CM0gkP0omB3y7XaEysVhdhhpKRTQjedl49eUwjMubMo=;
-  b=g1FtZDTQFUqllWcj/c32q9pCWeHvwiTANk6PgGLeb5P+ZlVSUNQvizey
-   rAprzTqv+vnJ8lqT3A8uHLCKiU73w5JRejiywsBAkQyzgENB5cmRx8ZMB
-   O7LB7M7XLI9JXS85QrlkivQ7K06w2Wx0mY4Vm7hNaJ+2QAUJYhBc78GS5
-   0jxLgzBjnOapfXnAXdb1qHSXR+XXh3U+/uPr2CwEHYxEfZx4wlH0rgZWA
-   nfk2rLKuzcyGRpWRvp+FydN3id6eE9esh3sgadxMF2akei9MYJNq8xyWd
-   ZYIUd5LENS+KHPbhnldo10un1PCvHSFmLWDGiEv54cYL3OX0S/WsNCn/R
-   Q==;
+  d=sony.com; s=s1jp; t=1747879722; x=1779415722;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:references:in-reply-to:to:cc;
+  bh=Gl9iGIrJoqNq1g0Gx7GgNroGdFROGDZiL+YPwHC/zd8=;
+  b=X/BbIOCBlGXQdVUjAAQY6qW7dw4mMU/sXYtGb6DXxy2aXHyluRlbRfuk
+   EoiWToOsZGP2HTP/6MggrsJr3ZrBNjfnHGcESxO2ZPeNztHW1evd2FOnu
+   c0VuSVWbLNuT7vN8UxRcHhKp4nxc6GLOux4VMwQtrSLMS87DWBoM7pNH/
+   gtUyeVRj+nBSbOOtJuZ0S41W5WOP7xa2BNtB+0tI2M63sjmouN0a8dt57
+   7X52ydwEwBCpT1EdfyWu6bF3ca40HC8p4P61L4ktGZbvqM8mcC71O6dxT
+   f8zegEnBY0XM7Nw7P0OiCkei3QvNFpIEgXGktmNIEQavBSgttez3PkmL8
+   w==;
 Received: from unknown (HELO jpmta-ob1.noc.sony.co.jp) ([IPv6:2001:cf8:0:6e7::6])
   by jpms-ob02.noc.sony.co.jp with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2025 11:08:37 +0900
 X-IronPort-AV: E=Sophos;i="6.15,304,1739804400"; 
-   d="scan'208";a="562451313"
+   d="scan'208";a="562451314"
 Received: from unknown (HELO [127.0.1.1]) ([IPv6:2001:cf8:1:573:0:dddd:6b3e:119e])
   by jpmta-ob1.noc.sony.co.jp with ESMTP; 22 May 2025 11:08:37 +0900
 From: Shashank Balaji <shashank.mahadasyam@sony.com>
-Subject: [PATCH v3 0/3] cgroup, docs: cpu controller interaction with
- various scheduling policies
-Date: Thu, 22 May 2025 11:08:11 +0900
-Message-Id: <20250522-rt-and-cpu-controller-doc-v3-0-483fc9cca591@sony.com>
+Date: Thu, 22 May 2025 11:08:12 +0900
+Subject: [PATCH v3 1/3] cgroup, docs: convert space indentation to tab
+ indentation
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -61,11 +61,9 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAuHLmgC/33NTQ6CMBCG4auQrh1TphaIK+5hXJT+SBNsSYuNh
- HB3Cy50xfL9knlmIVEHqyO5FgsJOtlovcvBTgWRvXAPDVblJkiRU8QKwgTCKZDjC6R3U/DDoAM
- oL6ERjRCS12iYJvl+DNrY927f7rl7Gycf5v1VKrf1qzLKD9RUAoW6q0RluDEXptro3XyW/kk2N
- OEP4kiPINwgKjBbZVdT9get6/oBmC6nEAoBAAA=
-X-Change-ID: 20250226-rt-and-cpu-controller-doc-8a8aac572f3e
+Message-Id: <20250522-rt-and-cpu-controller-doc-v3-1-483fc9cca591@sony.com>
+References: <20250522-rt-and-cpu-controller-doc-v3-0-483fc9cca591@sony.com>
+In-Reply-To: <20250522-rt-and-cpu-controller-doc-v3-0-483fc9cca591@sony.com>
 To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
  =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
  Jonathan Corbet <corbet@lwn.net>
@@ -73,47 +71,80 @@ Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
  linux-kernel@vger.kernel.org, Shinya Takumi <shinya.takumi@sony.com>, 
  Shashank Balaji <shashank.mahadasyam@sony.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1350;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3179;
  i=shashank.mahadasyam@sony.com; h=from:subject:message-id;
- bh=/2xv4T5GnAsCDJLXVz2LJBcpTe9h0DDljTwugSSUNK0=;
- b=owGbwMvMwCV2mPH4Ij++H1mMp9WSGDL02pWlfgVO+1v8TuLHVbPngc5PrC/LPeXjlTtYwr2tb
- u4t3u7dHaUsDGJcDLJiiizvZNZdOGhl2fT1OMM3mDmsTCBDGLg4BWAiJVMYGY5wc5gorXy6bXak
- dLF1x52p3dsST/iv+cQeOM0+l93L+TJQxW2zhWdXuLF5PXizZtts72ndN9YHBrrnWTDaunkFLhH
- mAQA=
+ bh=F17YJTre7W8ETwjYAoQoTHhUJ0XEXPmZDTHsHCtLFyo=;
+ b=owGbwMvMwCV2mPH4Ij++H1mMp9WSGDL02pWT7tgr1536cGZHwglDg4Nzog5tOLSp9KHGttCzO
+ wvucPCu6yhlYRDjYpAVU2R5J7PuwkEry6avxxm+wcxhZQIZwsDFKQATKVdn+KfTcnLax3TJw76a
+ ZaZeIevWt52c7v0zqjVceIXIlW+b171nZJh8fseEf4vvfGhJXCWz/E6HVNKhrfxKP3/fuOF6zsi
+ N/SQzAA==
 X-Developer-Key: i=shashank.mahadasyam@sony.com; a=openpgp;
  fpr=EE1CAED0C13A3982F5C700F6C301C7A24E0EF86A
 
-The cgroup v2 cpu controller interface files interact with processes
-differently based on their scheduling policy and the underlying
-scheduler used (fair-class vs. BPF scheduler). This patchset
-documents these differences.
+The paragraphs on cpu.uclamp.{min,max} are space indented. Convert them to
+tab indentation to make them uniform with the other paragraphs.
 
 Signed-off-by: Shashank Balaji <shashank.mahadasyam@sony.com>
 ---
-Changes in v3:
-- Refer to sched-ext.rst for fair-class vs. BPF scheduler instead of repeating
-the details in cgroup-v2.rst
-- Link to v2: https://lore.kernel.org/r/20250520-rt-and-cpu-controller-doc-v2-0-70a2b6a1b703@sony.com
+ Documentation/admin-guide/cgroup-v2.rst | 36 +++++++++++++++++----------------
+ 1 file changed, 19 insertions(+), 17 deletions(-)
 
-Changes in v2:
-- Expanded scope from only RT processes to all scheduling policies
-- Link to v1: https://lore.kernel.org/all/20250305-rt-and-cpu-controller-doc-v1-0-7b6a6f5ff43d@sony.com/
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 1a16ce68a4d7f6f8c9070be89c4975dbfa79077e..226fc7f9212eafcbf83c81f5b08391f215c1d894 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1162,30 +1162,32 @@ All time durations are in microseconds.
+ 	:ref:`Documentation/accounting/psi.rst <psi>` for details.
+ 
+   cpu.uclamp.min
+-        A read-write single value file which exists on non-root cgroups.
+-        The default is "0", i.e. no utilization boosting.
++	A read-write single value file which exists on non-root cgroups.
++	The default is "0", i.e. no utilization boosting.
+ 
+-        The requested minimum utilization (protection) as a percentage
+-        rational number, e.g. 12.34 for 12.34%.
++	The requested minimum utilization (protection) as a percentage
++	rational number, e.g. 12.34 for 12.34%.
+ 
+-        This interface allows reading and setting minimum utilization clamp
+-        values similar to the sched_setattr(2). This minimum utilization
+-        value is used to clamp the task specific minimum utilization clamp.
++	This interface allows reading and setting minimum utilization clamp
++	values similar to the sched_setattr(2). This minimum utilization
++	value is used to clamp the task specific minimum utilization clamp,
++	including those of realtime processes.
+ 
+-        The requested minimum utilization (protection) is always capped by
+-        the current value for the maximum utilization (limit), i.e.
+-        `cpu.uclamp.max`.
++	The requested minimum utilization (protection) is always capped by
++	the current value for the maximum utilization (limit), i.e.
++	`cpu.uclamp.max`.
+ 
+   cpu.uclamp.max
+-        A read-write single value file which exists on non-root cgroups.
+-        The default is "max". i.e. no utilization capping
++	A read-write single value file which exists on non-root cgroups.
++	The default is "max". i.e. no utilization capping
+ 
+-        The requested maximum utilization (limit) as a percentage rational
+-        number, e.g. 98.76 for 98.76%.
++	The requested maximum utilization (limit) as a percentage rational
++	number, e.g. 98.76 for 98.76%.
+ 
+-        This interface allows reading and setting maximum utilization clamp
+-        values similar to the sched_setattr(2). This maximum utilization
+-        value is used to clamp the task specific maximum utilization clamp.
++	This interface allows reading and setting maximum utilization clamp
++	values similar to the sched_setattr(2). This maximum utilization
++	value is used to clamp the task specific maximum utilization clamp,
++	including those of realtime processes.
+ 
+   cpu.idle
+ 	A read-write single value file which exists on non-root cgroups.
 
----
-Shashank Balaji (3):
-      cgroup, docs: convert space indentation to tab indentation
-      sched_ext, docs: convert mentions of "CFS" to "fair-class scheduler"
-      cgroup, docs: cpu controller's interaction with various scheduling policies
-
- Documentation/admin-guide/cgroup-v2.rst | 77 ++++++++++++++++++++++++---------
- Documentation/scheduler/sched-ext.rst   |  8 ++--
- 2 files changed, 60 insertions(+), 25 deletions(-)
----
-base-commit: 036ee8a17bd046d7a350de0aae152307a061cc46
-change-id: 20250226-rt-and-cpu-controller-doc-8a8aac572f3e
-
-Best regards,
 -- 
-Shashank Balaji <shashank.mahadasyam@sony.com>
+2.43.0
 
 
