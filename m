@@ -1,283 +1,136 @@
-Return-Path: <cgroups+bounces-8326-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8327-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3693AC233C
-	for <lists+cgroups@lfdr.de>; Fri, 23 May 2025 14:58:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B906AAC2691
+	for <lists+cgroups@lfdr.de>; Fri, 23 May 2025 17:36:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C17C1BA2C8A
-	for <lists+cgroups@lfdr.de>; Fri, 23 May 2025 12:58:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C21F13B5997
+	for <lists+cgroups@lfdr.de>; Fri, 23 May 2025 15:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CDC7DA95;
-	Fri, 23 May 2025 12:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFAD8246798;
+	Fri, 23 May 2025 15:36:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FKplNDH9"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="DYNG3rqR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F5410A1F;
-	Fri, 23 May 2025 12:57:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C374523C51B
+	for <cgroups@vger.kernel.org>; Fri, 23 May 2025 15:36:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748005073; cv=none; b=bAWdAhBFTgpjYitlUiEaM0yQ0ZFIZdLj3svWD0Jk9PtVUNQr7jw7q+buOq9aN2bfaCvuykXn2BheuhsxE24suQ3K+kRB2/bs7gV1MLeifd04IuyJ07pjZuBCAGVluKGlbuhOui0oRuQt8UsQS0BWVjVkdAS2nn6Hww43Zil/8Q4=
+	t=1748014600; cv=none; b=sYCZcKwBTUhDR2rlJAu5PANVb68iOPRRf4jMVOAKDz1mRyr3Xt4nAiif1CCHoCvHoWiL4X6CVrhTF814zXlgV5wSUvoz9b1oTa4LUqspZxkbJZP5ZKLuWYZ5Hs32ymh+7LgxT3pgDx3ED09I6hOye658TOGhw5Vw7DWdeoURBXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748005073; c=relaxed/simple;
-	bh=rRs9XseLreLZ799IlzhB0KoGHd9fK4lDSsY4Z7uNsZE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OneVIvRHbKryhZkC1ZrPNTSSPY+twev87S9pV8JsULzOVbYT17W7dj4dUGci/cOUQZU6GBQA+QrxxQj3DqVje+bHqm1N7sNsYdU+/0fL1L+naVYA6uG3x3lwX2ZIeHaxER1nP3D6ut5H/3YSTEmPsy6qd+VnvL7eXpiJqdEBwG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FKplNDH9; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748005071; x=1779541071;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=rRs9XseLreLZ799IlzhB0KoGHd9fK4lDSsY4Z7uNsZE=;
-  b=FKplNDH9wmg/PWIG75Ib2k+SKgKZHgQobuHeYEfBADsqyyYwR9ZjD3zV
-   7iucXk9juWrYVTirRhRw3YQHVNINt/uqaBcAPeONpGcjajH4cuxEaCjlQ
-   OB1EZpv1NdQcTLhwSbeqykqylpS/SFXXDwllOlXwiBI5Gs6taxc8TkBQ7
-   H1oZ6Tg6ICnG38wOWv1s8Ft5ErOU60ThUeHp7GVIsPMTpyDh/iNev0LzN
-   miu10mKnohxxDtCln6KWx6oDAOaKGKLy7KbPb8K7MuxFll+1uGLObWDE0
-   Cf49RaXahq6wn9nbU1SG+jbe2I8cbhjspxhcewr/mjB4E2lffI8ikzINn
-   g==;
-X-CSE-ConnectionGUID: nAWanG1PQq2NMM9U+V/nFw==
-X-CSE-MsgGUID: H21LbeGHR6WYQovb8K8uzg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11441"; a="49177632"
-X-IronPort-AV: E=Sophos;i="6.15,308,1739865600"; 
-   d="scan'208";a="49177632"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2025 05:57:50 -0700
-X-CSE-ConnectionGUID: w07W8+JUToKmjsvrozAm9w==
-X-CSE-MsgGUID: PVtsidVES4GxFwfdkylrBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,308,1739865600"; 
-   d="scan'208";a="145087474"
-Received: from chenyu-dev.sh.intel.com ([10.239.62.107])
-  by fmviesa003.fm.intel.com with ESMTP; 23 May 2025 05:57:45 -0700
-From: Chen Yu <yu.c.chen@intel.com>
-To: peterz@infradead.org,
-	akpm@linux-foundation.org
-Cc: mkoutny@suse.com,
-	mingo@redhat.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	corbet@lwn.net,
-	mgorman@suse.de,
-	mhocko@kernel.org,
-	muchun.song@linux.dev,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	tim.c.chen@intel.com,
-	aubrey.li@intel.com,
-	libo.chen@oracle.com,
-	kprateek.nayak@amd.com,
-	vineethr@linux.ibm.com,
-	venkat88@linux.ibm.com,
-	ayushjai@amd.com,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	yu.chen.surf@foxmail.com,
-	Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH v5 2/2] sched/numa: add statistics of numa balance task
-Date: Fri, 23 May 2025 20:51:15 +0800
-Message-Id: <7ef90a88602ed536be46eba7152ed0d33bad5790.1748002400.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1748002400.git.yu.c.chen@intel.com>
-References: <cover.1748002400.git.yu.c.chen@intel.com>
+	s=arc-20240116; t=1748014600; c=relaxed/simple;
+	bh=mBoyiUX6cNGmBI/RVAoVtGY+TJHKe8LjzoZW8vjRCY4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LLw5Z3KnFIctxS2oZm0DIgHVzzwNN1Tc4mrll3wifpZEXc3vuuMZmg+XNnj1uRfVgUB8fT6MS0oiy/HZo/oDbqFk6wUuToh60YcysL2BMBAYqjjpQeKltgVUgktckNsBoVBuwfg4FjBvrPDd6NtZqf9q3wUKbF8vEy8ns9fp9Us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=DYNG3rqR; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-550edba125bso8018240e87.3
+        for <cgroups@vger.kernel.org>; Fri, 23 May 2025 08:36:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1748014597; x=1748619397; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aBTug0/NeMZd6Qk9EUzJxCkzpzI4b0/AjBa3843O+Gk=;
+        b=DYNG3rqRk8pJAfG7sGnOkJsid4jRlus793Hi4KqUHsbwV+4rcsggO3l24pEmtnR4DO
+         OG31/RC/GJFuByJjRT7LaEP+OYr2NHJbrD4pj5qCoPHTKLPY6xTnO7u+SD278QpEItcC
+         9ic0RaLFG2WidDn6y/IHAN5XrhG5Nt+aw+zBs8GJSUGAd7c4WfsNv5EbbCEGkNm6LBnn
+         R0Ete8dTFqIZncVrz06rI/n/UAbu6EgsttL6byxJs1SPUbUOL4uYDePC7xuRmGWDC7qi
+         xCkFwaccDk97wPEnnNtUaxiNi85JklHiJUTe1T01yMR9stTegBgN5BmAzzwZ5vKxhBXs
+         jzsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748014597; x=1748619397;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aBTug0/NeMZd6Qk9EUzJxCkzpzI4b0/AjBa3843O+Gk=;
+        b=My2aD35IB66NAukMC4r2hBDPnQ9hx2nvNHcVelXly1dNInfy6bAsJ6TeG3qhXN0Gf0
+         BwhjZBLgVzvxpF8A9oDHUVbrwfh25MxTNNgyfL2sP9BICDl17JvfNnjOeutPh3YGfZZ0
+         t2dVthLAtoOnucFZ/F92nIIZIFcIX+YjCTUNoA+qZQOqsBmp7qiSD5A1NQ3V6hhH/jxY
+         fe1Hmr4xb5046NIwleOvd7bfH249F6YI3a/vnlJvGkE6c6q65ieC9wAo3EJfWM9VmtZg
+         m3Ntp9f1pGLPvxBeHhSFwPg8tIiKLMto5gK7rDeiiHeqI5n4uAwVkbXmQYdjgZrkigec
+         L6UQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnuacXX14kt71d+c2DOI0tlHVu/gMF6MCLg8hMsX+7XatLfzcz6uTy8nGnFKDQQQvwYJlhQMQ6@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOnRpgbYmHZylKSvrdmBJ3YFiG1r/x1aBIygv5+arctM5vym9p
+	bAW8k8KHCJwI9uxo5RNA/VGimKsOKa6rvMiGFeFDWQf07Vp2RKSlfPen0i05OpLu6tttcl8J9Qu
+	aYYyxIy0lsvR2JTzO6wK1hlDxW5Ufc/xchQ5+3Nddsw==
+X-Gm-Gg: ASbGnctrlijJA7iT8c44KL7DxgYdn95Z7EWc5xoz/rvas7SAazttJniYxDMDGwt79uI
+	hoHbTl5jmmSNI7FHUliVwi+9WoH5Ox8zXK3t1HGN59xBkHEmssRR/pdKMpeymvUyF0IguKkhlBA
+	JoG+M8hT77IeGaNG++B70WgJfqz9ya2ybDS3k=
+X-Google-Smtp-Source: AGHT+IHAij+IkAtUHU5WlmmWLtmmWgHF+NpmCZ7ttFYGpc17RlUZBN41Ag3XoQmzFn5988CXaFljyU58oThRKVVdiT8=
+X-Received: by 2002:a05:6512:650e:b0:549:8cbb:5443 with SMTP id
+ 2adb3069b0e04-550e724a21emr9751477e87.47.1748014596646; Fri, 23 May 2025
+ 08:36:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250520031552.1931598-1-hezhongkun.hzk@bytedance.com>
+ <8029d719-9dc2-4c7d-af71-4f6ae99fe256@redhat.com> <CACSyD1Mmt54dVRiBibcGsum_rRV=_SwP=dxioAxq=EDmPRnY2Q@mail.gmail.com>
+ <aC4J9HDo2LKXYG6l@slm.duckdns.org> <CACSyD1MvwPT7i5_PnEp32seeb7X_svdCeFtN6neJ0=QPY1hDsw@mail.gmail.com>
+ <aC90-jGtD_tJiP5K@slm.duckdns.org>
+In-Reply-To: <aC90-jGtD_tJiP5K@slm.duckdns.org>
+From: Zhongkun He <hezhongkun.hzk@bytedance.com>
+Date: Fri, 23 May 2025 23:35:57 +0800
+X-Gm-Features: AX0GCFt0sS7VYPB52zeUI_3_ZpYBGiasCDtLJweGgJzUP78rp8YvdTmx5WfX8CE
+Message-ID: <CACSyD1P+wuSP2jhMsLHBAXDxGoBkWzK54S5BRzh63yby4g0OHw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] cpuset: introduce non-blocking cpuset.mems
+ setting option
+To: Tejun Heo <tj@kernel.org>
+Cc: Waiman Long <llong@redhat.com>, hannes@cmpxchg.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, muchun.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On systems with NUMA balancing enabled, it has been found
-that tracking task activities resulting from NUMA balancing
-is beneficial. NUMA balancing employs two mechanisms for task
-migration: one is to migrate a task to an idle CPU within its
-preferred node, and the other is to swap tasks located on
-different nodes when they are on each other's preferred nodes.
+On Fri, May 23, 2025 at 3:03=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Thu, May 22, 2025 at 11:37:44AM +0800, Zhongkun He wrote:
+> > > I don't think this is a good idea. O_NONBLOCK means "don't wait", not=
+ "skip
+> > > this".
+> >
+> > Yes, I agree.  However, we have been experiencing this issue for a long=
+ time,
+> > so we hope to have an option to disable memory migration in v2.
+> >
+> > Would it be possible to re-enable the memory.migrate interface and
+> > disable memory migration by default in v2?
+> >
+> > Alternatively, could we introduce an option in cpuset.mems to explicitl=
+y
+> > indicate that memory migration should not occur?
+> >
+> > Please feel free to share any suggestions you might have.
+>
+> Is this something you want on the whole machine? If so, would global cgro=
+up
+> mount option work?
 
-The kernel already provides NUMA page migration statistics in
-/sys/fs/cgroup/mytest/memory.stat and /proc/{PID}/sched. However,
-it lacks statistics regarding task migration and swapping.
-Therefore, relevant counts for task migration and swapping should
-be added.
+It doesn't apply to the whole machine. It is only relevant to the pod
+with huge pages,
+where the service will be unavailable for over ten seconds if modify
+the cpuset.mems.
+Therefore, it would be ideal if there were an option to disable the migrati=
+on
+for this special case.
 
-The following two new fields:
+Thanks.
 
-numa_task_migrated
-numa_task_swapped
-
-will be shown in /sys/fs/cgroup/{GROUP}/memory.stat, /proc/{PID}/sched
-and /proc/vmstat
-
-Introducing both per-task and per-memory cgroup (memcg) NUMA
-balancing statistics facilitates a rapid evaluation of the
-performance and resource utilization of the target workload.
-For instance, users can first identify the container with high
-NUMA balancing activity and then further pinpoint a specific
-task within that group, and subsequently adjust the memory policy
-for that task. In short, although it is possible to iterate through
-/proc/$pid/sched to locate the problematic task, the introduction
-of aggregated NUMA balancing activity for tasks within each memcg
-can assist users in identifying the task more efficiently through
-a divide-and-conquer approach.
-
-As Libo Chen pointed out, the memcg event relies on the text
-names in vmstat_text, and /proc/vmstat generates corresponding items
-based on vmstat_text. Thus, the relevant task migration and swapping
-events introduced in vmstat_text also need to be populated by
-count_vm_numa_event(), otherwise these values are zero in
-/proc/vmstat.
-
-Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
-Tested-by: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
-v4->v5:
-no change.
-v3->v4:
-Populate the /prov/vmstat otherwise the items are all zero.
-(Libo)
-v2->v3:
-Remove unnecessary p->mm check because kernel threads are
-not supported by Numa Balancing. (Libo Chen)
-v1->v2:
-Update the Documentation/admin-guide/cgroup-v2.rst. (Michal)
----
- Documentation/admin-guide/cgroup-v2.rst | 6 ++++++
- include/linux/sched.h                   | 4 ++++
- include/linux/vm_event_item.h           | 2 ++
- kernel/sched/core.c                     | 9 +++++++--
- kernel/sched/debug.c                    | 4 ++++
- mm/memcontrol.c                         | 2 ++
- mm/vmstat.c                             | 2 ++
- 7 files changed, 27 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 1a16ce68a4d7..d346f3235945 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1670,6 +1670,12 @@ The following nested keys are defined.
- 	  numa_hint_faults (npn)
- 		Number of NUMA hinting faults.
- 
-+	  numa_task_migrated (npn)
-+		Number of task migration by NUMA balancing.
-+
-+	  numa_task_swapped (npn)
-+		Number of task swap by NUMA balancing.
-+
- 	  pgdemote_kswapd
- 		Number of pages demoted by kswapd.
- 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index f96ac1982893..1c50e30b5c01 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -549,6 +549,10 @@ struct sched_statistics {
- 	u64				nr_failed_migrations_running;
- 	u64				nr_failed_migrations_hot;
- 	u64				nr_forced_migrations;
-+#ifdef CONFIG_NUMA_BALANCING
-+	u64				numa_task_migrated;
-+	u64				numa_task_swapped;
-+#endif
- 
- 	u64				nr_wakeups;
- 	u64				nr_wakeups_sync;
-diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-index 9e15a088ba38..91a3ce9a2687 100644
---- a/include/linux/vm_event_item.h
-+++ b/include/linux/vm_event_item.h
-@@ -66,6 +66,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
- 		NUMA_HINT_FAULTS,
- 		NUMA_HINT_FAULTS_LOCAL,
- 		NUMA_PAGE_MIGRATE,
-+		NUMA_TASK_MIGRATE,
-+		NUMA_TASK_SWAP,
- #endif
- #ifdef CONFIG_MIGRATION
- 		PGMIGRATE_SUCCESS, PGMIGRATE_FAIL,
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index c81cf642dba0..62b033199e9c 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3352,6 +3352,10 @@ void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
- #ifdef CONFIG_NUMA_BALANCING
- static void __migrate_swap_task(struct task_struct *p, int cpu)
- {
-+	__schedstat_inc(p->stats.numa_task_swapped);
-+	count_vm_numa_event(NUMA_TASK_SWAP);
-+	count_memcg_event_mm(p->mm, NUMA_TASK_SWAP);
-+
- 	if (task_on_rq_queued(p)) {
- 		struct rq *src_rq, *dst_rq;
- 		struct rq_flags srf, drf;
-@@ -7953,8 +7957,9 @@ int migrate_task_to(struct task_struct *p, int target_cpu)
- 	if (!cpumask_test_cpu(target_cpu, p->cpus_ptr))
- 		return -EINVAL;
- 
--	/* TODO: This is not properly updating schedstats */
--
-+	__schedstat_inc(p->stats.numa_task_migrated);
-+	count_vm_numa_event(NUMA_TASK_MIGRATE);
-+	count_memcg_event_mm(p->mm, NUMA_TASK_MIGRATE);
- 	trace_sched_move_numa(p, curr_cpu, target_cpu);
- 	return stop_one_cpu(curr_cpu, migration_cpu_stop, &arg);
- }
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 56ae54e0ce6a..f971c2af7912 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -1206,6 +1206,10 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
- 		P_SCHEDSTAT(nr_failed_migrations_running);
- 		P_SCHEDSTAT(nr_failed_migrations_hot);
- 		P_SCHEDSTAT(nr_forced_migrations);
-+#ifdef CONFIG_NUMA_BALANCING
-+		P_SCHEDSTAT(numa_task_migrated);
-+		P_SCHEDSTAT(numa_task_swapped);
-+#endif
- 		P_SCHEDSTAT(nr_wakeups);
- 		P_SCHEDSTAT(nr_wakeups_sync);
- 		P_SCHEDSTAT(nr_wakeups_migrate);
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index c96c1f2b9cf5..cdaab8a957f3 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -463,6 +463,8 @@ static const unsigned int memcg_vm_event_stat[] = {
- 	NUMA_PAGE_MIGRATE,
- 	NUMA_PTE_UPDATES,
- 	NUMA_HINT_FAULTS,
-+	NUMA_TASK_MIGRATE,
-+	NUMA_TASK_SWAP,
- #endif
- };
- 
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 4c268ce39ff2..ed08bb384ae4 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1347,6 +1347,8 @@ const char * const vmstat_text[] = {
- 	"numa_hint_faults",
- 	"numa_hint_faults_local",
- 	"numa_pages_migrated",
-+	"numa_task_migrated",
-+	"numa_task_swapped",
- #endif
- #ifdef CONFIG_MIGRATION
- 	"pgmigrate_success",
--- 
-2.25.1
-
+>
+> Thanks.
+>
+> --
+> tejun
+>
 
