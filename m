@@ -1,154 +1,187 @@
-Return-Path: <cgroups+bounces-8342-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8343-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0A96AC309D
-	for <lists+cgroups@lfdr.de>; Sat, 24 May 2025 19:33:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B159AC31E6
+	for <lists+cgroups@lfdr.de>; Sun, 25 May 2025 02:43:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7770D3BCB1E
-	for <lists+cgroups@lfdr.de>; Sat, 24 May 2025 17:32:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFC083BD46A
+	for <lists+cgroups@lfdr.de>; Sun, 25 May 2025 00:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36CBD17B506;
-	Sat, 24 May 2025 17:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DJyxKc7m"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 733B1DDC1;
+	Sun, 25 May 2025 00:43:32 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706802DCBE3
-	for <cgroups@vger.kernel.org>; Sat, 24 May 2025 17:32:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC978462
+	for <cgroups@vger.kernel.org>; Sun, 25 May 2025 00:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748107975; cv=none; b=ju/B5rIgbJSqV5vaHcgVT4V5oxMmv/24Y3XG2LjI/Vu5ZmCokU5y0PeDTuBlolVjDosGwBZ0hdebEopHUlNb09+VVH7qiQeUcBdAT4jCyevnthdyS9WXHGbba+SKXOyXaDV224AfpDQfo6U+GuKOq00DfLUiEZzEXTJX8CS23/s=
+	t=1748133812; cv=none; b=rykRK6aVoSbkM8nFmiEUKI+JGfQMHCcqsq4e02165n6rMazrAMSoSF9qBBox76ByLdTqibed4VoTHOknAy9VbFM3iIS4rJxKWpPozw7qmDnjK2k6cYq/UOz3aYA/IPet5G3flIoE5/wptVgSOlA70aYaTfpUbvE1nXLH9tHCwxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748107975; c=relaxed/simple;
-	bh=WROu/pu0ybtezcTtiIfVSav31rQxzPNSRZ+C+QZg8tc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s1vlwv4+5oZwRiMqkrozXfAp+oQel3gm88YxgOyuTC6IXqssm1A+jqmdVHgRvZIx0ggiU6qqJcQ1o3C/E/bbYMX8ynDGOqzII1QC8VfOvESvPhpApK+4+lg1p+UW+BodzEM2rrfrrb5k2lrqIRHQTqJT2PDfEorW5Z8TocJoAhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DJyxKc7m; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Forwarded-Encrypted: i=1; AJvYcCWjC39xMqo+b58J77GU/m11ovSM/aPrxdhujC78zvC9Q0hMQdtO0D4LhXo41iATy64i8okWg/ig26UYBjOm@vger.kernel.org, AJvYcCXP4e6n5CoELH3Dm7FKoGc2qi7L/egV/5/vdSMtvsaGgUOCc69SAhU7rhJmq16KEpT9WRF6zTjl@vger.kernel.org, AJvYcCXReQUYSAgG6UrWxEjqvc9kV/nCjgCGdyjYvrkmZkiG6u1noBA3mVD6n1yvYVsDVrVhajcMdAypmiAw@vger.kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748107960;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WROu/pu0ybtezcTtiIfVSav31rQxzPNSRZ+C+QZg8tc=;
-	b=DJyxKc7mlCCeK+zTphZNOmJBUOFtzUEu6bjlEnzHvuQ3c9lvj+w+UHJVXWYS2KasNOpUO9
-	IM5GfJPDpw1PMAmyVnLSilvrFT5GPF+JxAdTVO3N4vOcFBiYi/X8QxRwbrVBlgT+PyQmS+
-	XGyqMiJ5cOl3/ikSKFp7e+hRsIqPVRM=
-X-Gm-Message-State: AOJu0YzHrs56pHOk78FVi4bb2aHLIpDo/UNQTmZhFCztRNWjNtiabRXJ
-	gMBObbwm3SCGSzxgj3a6tXMNwfTDWt2d23nkTHf+oChHWbA5tCE2ucwcrXFk3P3q1TKvXsscPn6
-	LeTeTvwKyoolqkhqbBJGrgtJ/YPOQBMA=
-X-Google-Smtp-Source: AGHT+IHLfzVJ2UpaVUCWlm1zWAshulOa7vscD+okP1uymiyJvIt0gCpGOGxAHvcaNuNdCBxsLb/J5w4FXXuPCngwndM=
-X-Received: by 2002:a67:e446:0:b0:4e4:3c3a:f163 with SMTP id
- ada2fe7eead31-4e43c3af25bmr1133636137.7.1748107953734; Sat, 24 May 2025
- 10:32:33 -0700 (PDT)
+	s=arc-20240116; t=1748133812; c=relaxed/simple;
+	bh=su7qm94gAficTMpg8rSWDP3Y4+nKz6pRk9RIjP329yA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=J0M94HX+zZrgD9En1/2aUSk/4GXAx0n2sNId/pGKWDSN1/PLaljt9nNJPk+oZSWOcN32Go3zdaSkqVFl43xxhlVUFGvewz+/vIjj9mcKXON/8fNZnZS3c+m7A5/GjGa9fev6MYEBDn4uDDAkQuWF0QAPT0x+FMKg3VDDXnbeQfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-85b4ee2e69bso122295439f.2
+        for <cgroups@vger.kernel.org>; Sat, 24 May 2025 17:43:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748133810; x=1748738610;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rqHOmJFA8m2npjmyEJaevf7yl2IWLjfL6jgyzgqaidk=;
+        b=HQeq6srhpAbOh7sSXux1Ycm/5ffbG63TnnfM4h9RtjJy8xRv+JTtyOde8q7qA8wVCL
+         aG0OKwByIzTvhAShyrq8LATKqIe9HouBBHTFB3WDksbBvCUvkKoegX8Zwx8QTjCBO8RY
+         ueUR3oSanWetWJCZ1NUqM4S+a3Om6W4tAPvor1/2AQcgAIrh2EZ/Ur+UY2LbVReEuEe9
+         06TtHU861GnTzhmgcUr/dWIw+oT1N9txiXL9LvIEJHrUlvT7KhJfRvWk5VoNulHmEtC/
+         nDVlQEg7wQzfsMri59cexUOczg1CSlWo6g07RKX0Z9i85OrhjeGE/N2RS5bPzgBzbnJ/
+         JQHg==
+X-Forwarded-Encrypted: i=1; AJvYcCX0RxUDiPwVPp+XqPzzsxenuo4K0NLyGxb8CkitFdJW+QqoFmAI/fdOBT1TNRWZIZ7nCGRyxR8b@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBrrEZPEDJLhxsIUL+0xlRM/xx5THXMfeLVrZuF8r0adzVyLum
+	lbNvtEcK7AT/WTkm/GcYygP+kxBOpiaFskN0nODzvafiuPHaftlhRZY7cELdvt5SRQgMlcBHoA9
+	LmbTj5X3QTzd0EQQeTupA+cYucDGaxk7TrC/v+Z9MgV/4JdlNWdFDBGjZJuU=
+X-Google-Smtp-Source: AGHT+IEbIqtk7AHxOIHwCk054aGSUpS0LwyjSCm1XJFLsoqOwLzNpJZBKZd4KKS1gQSsEk1MSUnECsOhenvprvw55AclTe1oxrtk
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1748002400.git.yu.c.chen@intel.com> <7ef90a88602ed536be46eba7152ed0d33bad5790.1748002400.git.yu.c.chen@intel.com>
- <cx4s4pnw5ymr4bxxmvrkhc457krq46eh6zamlr4ikp7tn3jsno@xzchjlnnawe5> <ad9f8af5-6bac-48c0-924b-498863370079@intel.com>
-In-Reply-To: <ad9f8af5-6bac-48c0-924b-498863370079@intel.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-Date: Sat, 24 May 2025 10:32:23 -0700
-X-Gmail-Original-Message-ID: <CAGj-7pX9yFFEFuMPgXBL_gsWevX8MtUZix5qyUQxOqWGKcbFzA@mail.gmail.com>
-X-Gm-Features: AX0GCFtAGKYvnyUctUx8VirEg3z97hG3ViBkmzEXKrnSY_iFkoXIYVHb96S8e1c
-Message-ID: <CAGj-7pX9yFFEFuMPgXBL_gsWevX8MtUZix5qyUQxOqWGKcbFzA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] sched/numa: add statistics of numa balance task
-To: "Chen, Yu C" <yu.c.chen@intel.com>
-Cc: peterz@infradead.org, akpm@linux-foundation.org, mkoutny@suse.com, 
-	mingo@redhat.com, tj@kernel.org, hannes@cmpxchg.org, corbet@lwn.net, 
-	mgorman@suse.de, mhocko@kernel.org, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, tim.c.chen@intel.com, aubrey.li@intel.com, 
-	libo.chen@oracle.com, kprateek.nayak@amd.com, vineethr@linux.ibm.com, 
-	venkat88@linux.ibm.com, ayushjai@amd.com, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	yu.chen.surf@foxmail.com
+X-Received: by 2002:a05:6602:4192:b0:85b:538e:1fad with SMTP id
+ ca18e2360f4ac-86cbb7f02admr480478539f.6.1748133809751; Sat, 24 May 2025
+ 17:43:29 -0700 (PDT)
+Date: Sat, 24 May 2025 17:43:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <683267b1.a70a0220.253bc2.007b.GAE@google.com>
+Subject: [syzbot] [cgroups?] [mm?] BUG: unable to handle kernel paging request
+ in percpu_ref_get_many (2)
+From: syzbot <syzbot+3109abc43c8fcf15212b@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
+	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Migadu-Flow: FLOW_OUT
 
-On Sat, May 24, 2025 at 2:07=E2=80=AFAM Chen, Yu C <yu.c.chen@intel.com> wr=
-ote:
->
-> Hi Shakeel,
->
-> On 5/24/2025 7:42 AM, Shakeel Butt wrote:
-> > On Fri, May 23, 2025 at 08:51:15PM +0800, Chen Yu wrote:
-> >> On systems with NUMA balancing enabled, it has been found
-> >> that tracking task activities resulting from NUMA balancing
-> >> is beneficial. NUMA balancing employs two mechanisms for task
-> >> migration: one is to migrate a task to an idle CPU within its
-> >> preferred node, and the other is to swap tasks located on
-> >> different nodes when they are on each other's preferred nodes.
-> >>
-> >> The kernel already provides NUMA page migration statistics in
-> >> /sys/fs/cgroup/mytest/memory.stat and /proc/{PID}/sched. However,
-> >> it lacks statistics regarding task migration and swapping.
-> >> Therefore, relevant counts for task migration and swapping should
-> >> be added.
-> >>
-> >> The following two new fields:
-> >>
-> >> numa_task_migrated
-> >> numa_task_swapped
-> >>
-> >> will be shown in /sys/fs/cgroup/{GROUP}/memory.stat, /proc/{PID}/sched
-> >> and /proc/vmstat
-> >
-> > Hmm these are scheduler events, how are these relevant to memory cgroup
-> > or vmstat?
-> > Any reason to not expose these in cpu.stat?
-> >
->
-> I understand that in theory they are scheduling activities.
-> The reason for including these statistics here was mainly that
-> I assumed there is a close relationship between page migration
-> and task migration in Numa Balance. Specifically, task migration
-> is triggered when page migration fails.
-> Placing these statistics closer to the existing Numa Balance page
-> statistics in /sys/fs/cgroup/{GROUP}/memory.stat and /proc/vmstat
-> may help users query relevant data from a single file, avoiding
-> the need to search through scattered files.
-> Notably, these events are associated with a task=E2=80=99s working set
-> (footprint) rather than pure CPU cycles IMO. I took a look at
-> the cpu_cfs_stat_show() for cpu.stat, it seems that a lot of
-> code is needed if we want to expose them in cpu.stat, while
-> reusing existing interface of count_memcg_event_mm() is simpler.
+Hello,
 
-Let me address two of your points first:
+syzbot found the following issue on:
 
-(1) cpu.stat currently contains cpu cycles stats. I don't see an issue
-adding these new events in it as you can see memory.stat exposes stats
-and events as well.
+HEAD commit:    d7fa1af5b33e Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=155428e8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89c13de706fbf07a
+dashboard link: https://syzkaller.appspot.com/bug?extid=3109abc43c8fcf15212b
+compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
+userspace arch: arm64
 
-(2) You can still use count_memcg_event_mm() and related infra while
-exposing the stats/events in cpu.stat.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Now your point on having related stats within a single interface is
-more convincing. Let me ask you couple of simple questions:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/da97ad659b2c/disk-d7fa1af5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/659e123552a8/vmlinux-d7fa1af5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6ec5dbf4643e/Image-d7fa1af5.gz.xz
 
-I am not well versed with numa migration, can you expand a bit more on
-these two events (numa_task_migrated & numa_task_swapped)? How are
-these related to numa memory migration? You mentioned these events
-happen on page migration failure, can you please give an end-to-end
-flow/story of all these events happening on a timeline.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3109abc43c8fcf15212b@syzkaller.appspotmail.com
 
-Beside that, do you think there might be some other scheduling events
-(maybe unrelated to numa balancing) which might be suitable for
-memory.stat? Basically I am trying to find if having sched events in
-memory.stat be an exception for numa balancing or more general.
+Unable to handle kernel paging request at virtual address fffe8001ffe7cc00
+KASAN: maybe wild-memory-access in range [0xfff8000fff3e6000-0xfff8000fff3e6007]
+Mem abort info:
+  ESR = 0x0000000096000004
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x04: level 0 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000002079fa000
+[fffe8001ffe7cc00] pgd=0000000000000000, p4d=1000000210124003, pud=0000000000000000
+Internal error: Oops: 0000000096000004 [#1]  SMP
+Modules linked in:
+CPU: 0 UID: 0 PID: 6597 Comm: udevd Not tainted 6.15.0-rc7-syzkaller-gd7fa1af5b33e #0 PREEMPT 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
+pstate: 404000c5 (nZcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : __percpu_add_case_64 arch/arm64/include/asm/percpu.h:127 [inline]
+pc : percpu_ref_get_many+0xc4/0x1f4 include/linux/percpu-refcount.h:205
+lr : rcu_read_lock include/linux/rcupdate.h:842 [inline]
+lr : percpu_ref_get_many+0x3c/0x1f4 include/linux/percpu-refcount.h:202
+sp : ffff8000a42973a0
+x29: ffff8000a42973b0 x28: 0000000000000000 x27: 0000000000000000
+x26: dfff800000000000 x25: ffff8000a42974e0 x24: ffff00019c365780
+x23: ffff00019c365738 x22: 1fffe000193557a1 x21: dfff800000000000
+x20: ffff0000c9aabd08 x19: 0000000000000001 x18: 0000000000000000
+x17: 0000000000000000 x16: ffff80008adbe9e4 x15: 0000000000000001
+x14: 1fffe00019b16b33 x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000087fac5b3 x10: 0000000000000003 x9 : ffff80010d0e8000
+x8 : fffe8001ffe7cc00 x7 : ffff800080c9fbbc x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000000 x3 : 0000000000000002
+x2 : 0000000000000008 x1 : ffff80008b3ebc40 x0 : 0000000000000001
+Call trace:
+ percpu_ref_get_many+0xc4/0x1f4 include/linux/percpu-refcount.h:205 (P)
+ percpu_ref_get include/linux/percpu-refcount.h:222 [inline]
+ obj_cgroup_get include/linux/memcontrol.h:760 [inline]
+ replace_stock_objcg mm/memcontrol.c:2774 [inline]
+ refill_obj_stock+0x150/0x470 mm/memcontrol.c:2952
+ obj_cgroup_uncharge mm/memcontrol.c:3015 [inline]
+ __memcg_slab_free_hook+0x110/0x228 mm/memcontrol.c:3102
+ memcg_slab_free_hook mm/slub.c:2205 [inline]
+ slab_free mm/slub.c:4639 [inline]
+ kmem_cache_free+0x270/0x550 mm/slub.c:4744
+ anon_vma_chain_free mm/rmap.c:147 [inline]
+ unlink_anon_vmas+0x224/0x520 mm/rmap.c:421
+ free_pgtables+0x200/0x63c mm/memory.c:370
+ vms_clear_ptes+0x358/0x45c mm/vma.c:1189
+ vms_complete_munmap_vmas+0x1d4/0x7e4 mm/vma.c:1233
+ do_vmi_align_munmap+0x2c4/0x310 mm/vma.c:1492
+ do_vmi_munmap+0x1dc/0x260 mm/vma.c:1540
+ __vm_munmap+0x218/0x390 mm/vma.c:3013
+ __do_sys_munmap mm/mmap.c:1084 [inline]
+ __se_sys_munmap mm/mmap.c:1081 [inline]
+ __arm64_sys_munmap+0x64/0x7c mm/mmap.c:1081
+ __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+ el0_svc+0x58/0x17c arch/arm64/kernel/entry-common.c:767
+ el0t_64_sync_handler+0x78/0x108 arch/arm64/kernel/entry-common.c:786
+ el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
+Code: 11000529 b9000289 d538d089 8b080128 (f833011f) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	11000529 	add	w9, w9, #0x1
+   4:	b9000289 	str	w9, [x20]
+   8:	d538d089 	mrs	x9, tpidr_el1
+   c:	8b080128 	add	x8, x9, x8
+* 10:	f833011f 	stadd	x19, [x8] <-- trapping instruction
 
-thanks,
-Shakeel
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
