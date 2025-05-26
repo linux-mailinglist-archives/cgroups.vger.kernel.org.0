@@ -1,131 +1,220 @@
-Return-Path: <cgroups+bounces-8347-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8348-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC26AC408D
-	for <lists+cgroups@lfdr.de>; Mon, 26 May 2025 15:35:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6C37AC444A
+	for <lists+cgroups@lfdr.de>; Mon, 26 May 2025 22:13:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 327033B8BD5
-	for <lists+cgroups@lfdr.de>; Mon, 26 May 2025 13:35:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 279BA178003
+	for <lists+cgroups@lfdr.de>; Mon, 26 May 2025 20:13:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CCA31F4CA0;
-	Mon, 26 May 2025 13:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F3323DEB6;
+	Mon, 26 May 2025 20:13:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fzjEJjgp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T1is5L/4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6425146D6A
-	for <cgroups@vger.kernel.org>; Mon, 26 May 2025 13:35:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BBE187FEC
+	for <cgroups@vger.kernel.org>; Mon, 26 May 2025 20:13:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748266553; cv=none; b=pTspkTnmhhyBIqb2LcmMVJa987Sk/cZ0MoP2Z/rDNuPMcxkh41ciCQCDepTX6iP9xJrDHty78J0KOO+UuXMRHbBlR2htSyUbRWQJj2K1Ch/XucjnBWdAwdzLGrqvd8cSRVX7Qvwbk8HrAlVjNh7h3W9DHIsuNFqgl0ODKGmdLTc=
+	t=1748290395; cv=none; b=lUYl+oTOQBY+YGiSdXmwrqTm8eUDRz2sbFoTE8u3KcDDqvARUXKrsgh4C+QncAQnT46pc1zgcJUDIe5aQ9Y6Nj/leUTDzA1c3PveKZdnwe6/UgB61K5LouWZvLh9AYVJpq+dUMgxlcYFeOT+RXNv1LdZKW7EN5OhzASCIWb7lEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748266553; c=relaxed/simple;
-	bh=1Aul9o/qUilCj8W7iefEpcgzSu+rgeASpP39xJzntn8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=id/TMbj+bM8DOJHVfYQvNaUi39ffDEd95jEk9dcbGkDX/piCoeqORkjQG4zbtdPdNZ1DTYohnaIb0An4QneI+iXlMaLifkKQU8rr+sfl99y7raTbKSCX0/I901QONrPI4wxsRYnVosaPoSH8//Xc8tec/qoVodJ/wcjRrtF/Yrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fzjEJjgp; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3a366843fa6so1379567f8f.1
-        for <cgroups@vger.kernel.org>; Mon, 26 May 2025 06:35:51 -0700 (PDT)
+	s=arc-20240116; t=1748290395; c=relaxed/simple;
+	bh=LPLcXmjEvN5zgaCrDZpj44vsIHK9O6nGZ4JenY/PDtE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OER8hPGMDZx5zIMX2ZCtlzKKYFih+Bfl2IjlCr5JynzczmkLYQOX9/V1g38wUmcgpiK91uoqppbBUO5/S4FzLnpWE5tXZ0MgI+VQxMgDfAaZ70Dvic9DcaqXPqQGTcBTg0EhX9bL/zWQ8GtxmnEh7QWnbFE0qaX0aiFSRgr+bL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T1is5L/4; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-ad53cd163d9so426342666b.0
+        for <cgroups@vger.kernel.org>; Mon, 26 May 2025 13:13:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1748266550; x=1748871350; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Aul9o/qUilCj8W7iefEpcgzSu+rgeASpP39xJzntn8=;
-        b=fzjEJjgpUfwgKBKy0pUYsfRVl43F/9y/4D3mVFsanD9Q+QxA59OlRMZ1kO/exJqyJC
-         i/JMQ02N/oFZEwhTdBLRtUTQRHIMwAsOX0Jgdfr1r0/YHOFbHIhBXBKqShfp0Pu8JfAU
-         9hOxfZTaR/Sd88sB06O69BAZo4grv4ZakPshtZxw1hkapAVIccRiKkeYmZJfsHW2m5ww
-         gJ13YFYzn5zL/aqhFEOLsViY12rTsjZKuuKNQ3Svb1eGbpbevEYi4VDCK0+4hSwE7Adi
-         g/DM+/16DqZQwU3DKDlTrF9kdRSZcOBzFn82D0qpVbsr/193DBMNmGVaPmKPETU81UuN
-         0Wyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748266550; x=1748871350;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1748290392; x=1748895192; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1Aul9o/qUilCj8W7iefEpcgzSu+rgeASpP39xJzntn8=;
-        b=ZXzUcnEX6vVNnx3RROyizRH1zRI7reI2dmN8Qrse4g4xxfM0AoXQFKJsGY5zeQAcXV
-         0TTDn+cr4nZ57+2cLvu80mjbNlqKNzROJvxhYXe34YSrnqwL0aG1nVf4xY8RksJZkylK
-         ybfGnjfUuc4ZHLciW94kg9NAz5ZsqXQUV8aZfGPuhz/Z9nnjgcfj/Kpy2f8FUNxKRvix
-         Emhq2eccunX12s2eEExP0Po7mAH98GQ5VkLdXLiOr47m/ayKHkH0JALBjc++rYQp6f92
-         WjE+OL4oWg/0aFLIaKcO275Xk6mi3AJKBR9DBDXaoPJU6iF32iE/oqgT33I9hGIedIIM
-         5cEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWDN760qxQvA7uOF4HgZvTtc4kOCzcNw+7sEpEg+MSoEu7ZT6miQb2BnKY/BlQ7JfY4XtXoMjx0@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWjUpDuh6cImO8kfYVp4k+H8iVNl2Z2IVvfJTM1NrqPp4czeHw
-	SZrkRrdHrzg1XNbEyc+VC5jLAfFym5r3GdYPkjE8SBi0E77WxlYZGbVTPtw0ktTN6V4=
-X-Gm-Gg: ASbGncsryxmWyEgq+ki04z77A189TrMLYvfP4Kc+KnDd5hFvrcN6DRcv2PGjZh/mLFS
-	XsZkKYSr6yGCyYu6H5Tk7Jjw+FDEFYtf+A8gsbM4B/QnoRKGLT6bE9dnyAqyXd2xlce43gzcnNa
-	VLKL1xMhdJiE3QBm/CkKI4pt5nyPcQDFgPaSH4656wzgVk2v2DBgtumn6ImQpSGYOKdD/5ooXge
-	Y5LdMgMTBo84f+2fZeojTYMuLjIqJ+7HkyAiKQRMO+mzJPiRwe+3BIX2gVCiXwgjKnuwGGDSJN+
-	GG0gt51gBmugssBCjaaoNr7GmvEMU0cqEaP0eo/A2h5ip9bONqqJjZmfujrlOQmc
-X-Google-Smtp-Source: AGHT+IH9z+RmjKbKlugE59RcSaIQ+1M7ULOdQMV8GitsPIwHN1Wg9MPj97qR1ijZaSygllLPsUw4Bw==
-X-Received: by 2002:a05:6000:40df:b0:3a4:d18b:736f with SMTP id ffacd0b85a97d-3a4d18b753fmr5067346f8f.56.1748266549895;
-        Mon, 26 May 2025 06:35:49 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-447f3dd99edsm235481665e9.36.2025.05.26.06.35.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 May 2025 06:35:49 -0700 (PDT)
-Date: Mon, 26 May 2025 15:35:47 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Chen Yu <yu.c.chen@intel.com>, peterz@infradead.org, 
-	akpm@linux-foundation.org, mingo@redhat.com, tj@kernel.org, hannes@cmpxchg.org, 
-	corbet@lwn.net, mgorman@suse.de, mhocko@kernel.org, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, tim.c.chen@intel.com, aubrey.li@intel.com, libo.chen@oracle.com, 
-	kprateek.nayak@amd.com, vineethr@linux.ibm.com, venkat88@linux.ibm.com, ayushjai@amd.com, 
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, yu.chen.surf@foxmail.com
-Subject: Re: [PATCH v5 2/2] sched/numa: add statistics of numa balance task
-Message-ID: <uuhyie7udxyvbdpccwi7dl5cy26ygkkuxjixpl247u5nqwpcqm@5whxlt5ddswo>
-References: <cover.1748002400.git.yu.c.chen@intel.com>
- <7ef90a88602ed536be46eba7152ed0d33bad5790.1748002400.git.yu.c.chen@intel.com>
- <cx4s4pnw5ymr4bxxmvrkhc457krq46eh6zamlr4ikp7tn3jsno@xzchjlnnawe5>
+        bh=5QVxUxZwHwg4uTuTfEDeJdtWwn5qD8fnwcw3GYkwYxQ=;
+        b=T1is5L/4Qh+ORQhW3M5Hrr3MUeVrOJYUz6KDo4sKsaLE22KNkkGS+rdAwLMtYMFXX4
+         lSM2XziEj5W4/fahAvRp+uZ6LnrlqA3E6tW+OpuYv7r5bFHzAtjOC7xWnUtqJGqxT2Rj
+         uFmSeu7jVNVigLMu4tmemf5jNU/v+XXLHXn08YkB8BgOF1u3GQy4v/+do3JNM+tg9rYm
+         les/wApo41z0peG9BumSKE08k+eiP0gUZx52/ebJKQAB8lC0SmLUehwybCw5GDxMOM/0
+         0IUZVjcBcljMzevD933AL+MSNmRTNgGy8oVceHtHaEJhSVxufsFSww1A8ArtG0f86Agl
+         LzVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748290392; x=1748895192;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5QVxUxZwHwg4uTuTfEDeJdtWwn5qD8fnwcw3GYkwYxQ=;
+        b=TgcsuqYhOG1qfnRwAuq66FPeJ3Sv3cHEmK+IT41X3R3DtrrTi3PaTbbznLflRTLfI8
+         2TDkZkZXiOwSB3QLWZQlIQqY0sArxmzIXbJvbEs+cKMMsnHqSYnAQgo/tci/VrqjRr72
+         2dV2PbXqRgk0gfTCZr9xEMoVRR+JVPQtktgVp4DUb9RlATNOKg5BD2NBquiJ9l1whE05
+         LdfhyZjK5ZD1KSDSkzUY4ESuIqhBz7Cy+ZV44lHqWyif1XTs/6lgnpKcIdMKtqomNFio
+         k/z/piGTqcXXvf4bcEVNcXGl9NAHzswecjJWNTht7veZHhy6XFsiA4llksg4iRlq1HKF
+         GOtA==
+X-Forwarded-Encrypted: i=1; AJvYcCWtczkDLfnFVoRiu+4R2Op8ZdLbR1J9BuDucswNJ0hLU1w3t7gHqTIgDCla+FVcIm3zsVfs38yv@vger.kernel.org
+X-Gm-Message-State: AOJu0YxikODBM6H/vnh6ccU8+NrWotUdZ04AjptkTjmCL/lC8kr5rwSe
+	egJxAf0vscAoL3ejaliKaiRL/e4VhDMrLZnEBGw6Mw4HyN0nEKRUPPM2oTZVFy4fB0BEAnHa9e8
+	ZMoLm1B+9MZPp0rFBntH+/PToEqqUlv4=
+X-Gm-Gg: ASbGncszGIjOC6Nmdvt6BBYOeMKbee4BvPnkWGw3YXDzrRuTRPCIOUmQDUGWFkQQ3ri
+	QBIHeK/6G7TSfMdqrujgDbsqOPy7RtqgQDgCNy5wnU2aes7R2MCMkVBmCe0XbfDiThWDdzHXXGn
+	1eeJKIEgF1ansR1AT8kjIYRGSVQsYWaQs=
+X-Google-Smtp-Source: AGHT+IEsLYMgdQaUEnxvSZpAzIznC3EYpmZakrcUwGrnSFgON5g1rgCn/LiPfFkI7A+TmLHbAEO0IfoL89+CqOhsa+s=
+X-Received: by 2002:a17:907:1b2a:b0:ad6:53a8:32ad with SMTP id
+ a640c23a62f3a-ad85b338a28mr943470966b.57.1748290391718; Mon, 26 May 2025
+ 13:13:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pba5ial65ghy3cht"
-Content-Disposition: inline
-In-Reply-To: <cx4s4pnw5ymr4bxxmvrkhc457krq46eh6zamlr4ikp7tn3jsno@xzchjlnnawe5>
+References: <20250515160842.GA720744@cmpxchg.org> <bba93237-9266-4e25-a543-e309eb7bb4ec@amd.com>
+ <20250516145318.GB720744@cmpxchg.org> <5000d284-162c-4e63-9883-7e6957209b95@amd.com>
+ <20250516164150.GD720744@cmpxchg.org> <eff07695-3de2-49b7-8cde-19a1a6cf3161@amd.com>
+ <20250516200423.GE720744@cmpxchg.org> <CAPM=9txLaTjfjgC_h9PLR4H-LKpC9_Fet7=HYBpyeoCL6yAQJg@mail.gmail.com>
+ <aC-ALtcs8RF1yZ1y@slm.duckdns.org> <de476962-194f-4c77-aabb-559a74caf5ac@amd.com>
+ <aDCrLTNoWC8oSS7Z@slm.duckdns.org> <d21be860-9cb2-4c21-af30-2c724ab58756@amd.com>
+In-Reply-To: <d21be860-9cb2-4c21-af30-2c724ab58756@amd.com>
+From: Dave Airlie <airlied@gmail.com>
+Date: Tue, 27 May 2025 06:13:00 +1000
+X-Gm-Features: AX0GCFvvHdd7Hcm15H2tyzhV0DazUrjPKTrGJfpLMdSyHMJpn-ef4wjs0ccd16c
+Message-ID: <CAPM=9txhOq9NvTJ9sYpntQ5ajSXrCPAKwkPqBssycwAxqn05dg@mail.gmail.com>
+Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (v2)
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, dri-devel@lists.freedesktop.org, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
+	Waiman Long <longman@redhat.com>, simona@ffwll.ch
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, 26 May 2025 at 18:19, Christian K=C3=B6nig <christian.koenig@amd.co=
+m> wrote:
+>
+> Hi Tejun,
+>
+> On 5/23/25 19:06, Tejun Heo wrote:
+> > Hello, Christian.
+> >
+> > On Fri, May 23, 2025 at 09:58:58AM +0200, Christian K=C3=B6nig wrote:
+> > ...
+> >>> - There's a GPU workload which uses a sizable amount of system memory=
+ for
+> >>>   the pool being discussed in this thread. This GPU workload is very
+> >>>   important, so we want to make sure that other activities in the sys=
+tem
+> >>>   don't bother it. We give it plenty of isolated CPUs and protect its=
+ memory
+> >>>   with high enough memory.low.
+> >>
+> >> That situation simply doesn't happen. See isolation is *not* a require=
+ment
+> >> for the pool.
+> > ...
+> >> See the submission model of GPUs is best effort. E.g. you don't guaran=
+tee
+> >> any performance isolation between processes whatsoever. If we would st=
+art
+> >> to do this we would need to start re-designing the HW.
+> >
+> > This is a radical claim. Let's table the rest of the discussion for now=
+. I
+> > don't know enough to tell whether this claim is true or not, but for th=
+is to
+> > be true, the following should be true:
+> >
+> >  Whether the GPU memory pool is reclaimed or not doesn't have noticeabl=
+e
+> >  performance implications on the GPU performance.
+> >
+> > Is this true?
+>
+> Yes, that is true. Today the GPUs need the memory for correctness, not fo=
+r performance anymore.
+>
+> The performance improvements we have seen with this approach 15 or 20 yea=
+rs ago are negligible by todays standards.
+>
+> It's just that Windows still offers the functionality today and when you =
+bringup hardware on Linux you sometimes run into problems and find that the=
+ engineers who designed the hardware/firmware relied on having this.
+>
+> > As for the scenario that I described above, I didn't just come up with =
+it.
+> > I'm only supporting from system side but that's based on what our ML fo=
+lks
+> > are doing right now. We have a bunch of lage machines with multiple GPU=
+s
+> > running ML workloads. The workloads can run for a long time spread acro=
+ss
+> > many machines and they synchronize frequently, so any performance drop =
+on
+> > one GPU lowers utiliization on all involved GPUs which can go up to thr=
+ee
+> > digits. For example, any scheduling disturbances on the submitting thre=
+ad
+> > propagates through the whole cluster and slows down all involved GPUs.
+>
+> For the HPC/ML use case this feature is completely irrelevant. ROCm, Cuda=
+, OpenCL, OpenMP etc... don't even expose something like this in their high=
+er level APIs as far as I know.
 
---pba5ial65ghy3cht
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Subject: Re: [PATCH v5 2/2] sched/numa: add statistics of numa balance task
-MIME-Version: 1.0
+What do we consider higher level here btw? HIP and CUDA both expose
+something like hipHostMallocWriteCombined, there is also
+hipHostMallocCoherent which may or may not have an effect.
 
-On Fri, May 23, 2025 at 04:42:50PM -0700, Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> Hmm these are scheduler events, how are these relevant to memory cgroup
-> or vmstat? Any reason to not expose these in cpu.stat?
+>
+> Where this here matters is things like scanout on certain laptops, digita=
+l rights management in cloud gaming, hacks for getting high end GPUs to wor=
+k on ARM boards (e.g. rasberry pie etc...).
+>
+> > Also, because these machines are large on the CPU and memory sides too =
+and
+> > aren't doing whole lot other than managing the GPUs, people want to put=
+ on a
+> > significant amount of CPU work on them which can easily create at least
+> > moderate memory pressure. Is the claim that the combined write memory p=
+ool
+> > doesn't have any meaningful impact on the GPU workload performance?
+>
+> When the memory pool is active on such systems I would strongly advise to=
+ question why it is used in the first place.
+>
+> The main reason why we still need it for business today is cloud gaming. =
+And for this particular use case you absolutely do want to share the pool b=
+etween cgroups or otherwise the whole use case breaks.
 
-Good point. If I take it further -- this functionality needs neither
-memory controller (CONFIG_MEMCG) nor CPU controller
-(CONFIG_CGROUP_SCHED), so it might be technically calculated and exposed
-in _any_ cgroup (which would be same technical solution how cpu time is
-counted in cpu.stat regardless of CPU controller, cpu_stat_show()).
+I'm still not convinced on this being totally true, which means either
+I'm misunderstanding how cloud gaming works or you are underestimating
+how cgroups work,
 
-Michal
+My model for cloud gaming is, you have some sort of orchestrator
+service running that spawns a bunch of games in their own cgroups and
+those games would want to operate as independently as possible.
 
---pba5ial65ghy3cht
-Content-Type: application/pgp-signature; name="signature.asc"
+Now if the toplevel cgroup or if none the root cgroup exists and the
+game cgroups are all underneath it, then I think this would operate
+more optimally for each game, since
 
------BEGIN PGP SIGNATURE-----
+a) if a game uses uncached memory continuously it will have it's own
+pool of uncached memory that doesn't get used by anyone else, thus
+making that game more consistent.
+b) if and when the game exits, the pool will be returned to the parent
+cgroup to use, this memory should then be reused by other games the
+are started subsequently.
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCaDRuMQAKCRAt3Wney77B
-SW8BAP4t+Hvi0LKP9OmSUAPwS3bA8QPQUvrZoDQmC08aYtF5/gD/dmVgrB6xQ1yK
-HAuRq6/nLpVwAY1doEUJs9ch7iqtfQk=
-=/lHO
------END PGP SIGNATURE-----
+The only thing I'm not sure is how the parent pool gets used once it's
+built up for new children, need to spend more time reading list_lru
+code.
 
---pba5ial65ghy3cht--
+The list_lru change might actually be useful for us without cgroups as
+it might be able to hide some of our per-numa stuff.
+
+Dave.
 
