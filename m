@@ -1,220 +1,253 @@
-Return-Path: <cgroups+bounces-8348-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8349-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6C37AC444A
-	for <lists+cgroups@lfdr.de>; Mon, 26 May 2025 22:13:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E46DAC49D1
+	for <lists+cgroups@lfdr.de>; Tue, 27 May 2025 10:01:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 279BA178003
-	for <lists+cgroups@lfdr.de>; Mon, 26 May 2025 20:13:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE6847AC7F1
+	for <lists+cgroups@lfdr.de>; Tue, 27 May 2025 08:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F3323DEB6;
-	Mon, 26 May 2025 20:13:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E9A1F78F2;
+	Tue, 27 May 2025 08:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T1is5L/4"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="firTspXH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2049.outbound.protection.outlook.com [40.107.220.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BBE187FEC
-	for <cgroups@vger.kernel.org>; Mon, 26 May 2025 20:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748290395; cv=none; b=lUYl+oTOQBY+YGiSdXmwrqTm8eUDRz2sbFoTE8u3KcDDqvARUXKrsgh4C+QncAQnT46pc1zgcJUDIe5aQ9Y6Nj/leUTDzA1c3PveKZdnwe6/UgB61K5LouWZvLh9AYVJpq+dUMgxlcYFeOT+RXNv1LdZKW7EN5OhzASCIWb7lEk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748290395; c=relaxed/simple;
-	bh=LPLcXmjEvN5zgaCrDZpj44vsIHK9O6nGZ4JenY/PDtE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OER8hPGMDZx5zIMX2ZCtlzKKYFih+Bfl2IjlCr5JynzczmkLYQOX9/V1g38wUmcgpiK91uoqppbBUO5/S4FzLnpWE5tXZ0MgI+VQxMgDfAaZ70Dvic9DcaqXPqQGTcBTg0EhX9bL/zWQ8GtxmnEh7QWnbFE0qaX0aiFSRgr+bL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T1is5L/4; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-ad53cd163d9so426342666b.0
-        for <cgroups@vger.kernel.org>; Mon, 26 May 2025 13:13:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748290392; x=1748895192; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5QVxUxZwHwg4uTuTfEDeJdtWwn5qD8fnwcw3GYkwYxQ=;
-        b=T1is5L/4Qh+ORQhW3M5Hrr3MUeVrOJYUz6KDo4sKsaLE22KNkkGS+rdAwLMtYMFXX4
-         lSM2XziEj5W4/fahAvRp+uZ6LnrlqA3E6tW+OpuYv7r5bFHzAtjOC7xWnUtqJGqxT2Rj
-         uFmSeu7jVNVigLMu4tmemf5jNU/v+XXLHXn08YkB8BgOF1u3GQy4v/+do3JNM+tg9rYm
-         les/wApo41z0peG9BumSKE08k+eiP0gUZx52/ebJKQAB8lC0SmLUehwybCw5GDxMOM/0
-         0IUZVjcBcljMzevD933AL+MSNmRTNgGy8oVceHtHaEJhSVxufsFSww1A8ArtG0f86Agl
-         LzVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748290392; x=1748895192;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5QVxUxZwHwg4uTuTfEDeJdtWwn5qD8fnwcw3GYkwYxQ=;
-        b=TgcsuqYhOG1qfnRwAuq66FPeJ3Sv3cHEmK+IT41X3R3DtrrTi3PaTbbznLflRTLfI8
-         2TDkZkZXiOwSB3QLWZQlIQqY0sArxmzIXbJvbEs+cKMMsnHqSYnAQgo/tci/VrqjRr72
-         2dV2PbXqRgk0gfTCZr9xEMoVRR+JVPQtktgVp4DUb9RlATNOKg5BD2NBquiJ9l1whE05
-         LdfhyZjK5ZD1KSDSkzUY4ESuIqhBz7Cy+ZV44lHqWyif1XTs/6lgnpKcIdMKtqomNFio
-         k/z/piGTqcXXvf4bcEVNcXGl9NAHzswecjJWNTht7veZHhy6XFsiA4llksg4iRlq1HKF
-         GOtA==
-X-Forwarded-Encrypted: i=1; AJvYcCWtczkDLfnFVoRiu+4R2Op8ZdLbR1J9BuDucswNJ0hLU1w3t7gHqTIgDCla+FVcIm3zsVfs38yv@vger.kernel.org
-X-Gm-Message-State: AOJu0YxikODBM6H/vnh6ccU8+NrWotUdZ04AjptkTjmCL/lC8kr5rwSe
-	egJxAf0vscAoL3ejaliKaiRL/e4VhDMrLZnEBGw6Mw4HyN0nEKRUPPM2oTZVFy4fB0BEAnHa9e8
-	ZMoLm1B+9MZPp0rFBntH+/PToEqqUlv4=
-X-Gm-Gg: ASbGncszGIjOC6Nmdvt6BBYOeMKbee4BvPnkWGw3YXDzrRuTRPCIOUmQDUGWFkQQ3ri
-	QBIHeK/6G7TSfMdqrujgDbsqOPy7RtqgQDgCNy5wnU2aes7R2MCMkVBmCe0XbfDiThWDdzHXXGn
-	1eeJKIEgF1ansR1AT8kjIYRGSVQsYWaQs=
-X-Google-Smtp-Source: AGHT+IEsLYMgdQaUEnxvSZpAzIznC3EYpmZakrcUwGrnSFgON5g1rgCn/LiPfFkI7A+TmLHbAEO0IfoL89+CqOhsa+s=
-X-Received: by 2002:a17:907:1b2a:b0:ad6:53a8:32ad with SMTP id
- a640c23a62f3a-ad85b338a28mr943470966b.57.1748290391718; Mon, 26 May 2025
- 13:13:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D994A04
+	for <cgroups@vger.kernel.org>; Tue, 27 May 2025 08:01:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1748332880; cv=fail; b=Y16wdmfFv835lteEoiJdHs41aeUWG6do931h8dRoP0Gko7P/A162ndDcvy+kRfvR0mCNG/lZ54aj5cRQ0PWfHCIMnm8chLlsjg34K6XrYTw07/428CeXfXBdU4Qxup8CHIEO2rasiIJqVSg+bx/j/xMQtbr7bvrezGlbt8fXAq4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1748332880; c=relaxed/simple;
+	bh=1oi9EDCxL0BQLMqwgd7GzVayH/bkzwXp0Mvm5HOekCU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Orf8/fCySar/iCLJ2UMA/+M2PtSqG3HOrymN3fg8yHLMIzJMLXSRfQFvy5jQNdJdeRNhDkjvBmU2pjXw1OXK8gBArLyrw7cvX65xQQVmy/qe9SGgXeeR+tHZN19DNLmOY6/HV2Nl2/+wOH1VDmFVA2xWAj95zwo9Up7sZTPUc+o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=firTspXH; arc=fail smtp.client-ip=40.107.220.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=H9tIz11lI3XCTdtjjrkVXDoFZACnOn03nYtlb0eoT8I0U0f6/peLaZexVrXlfjRyI0oQEo2jC4C2QNmeT/iLdTTBfBWSs+/ZbaDEFx8axYKwC1N9xvthNc+M8NbmwhfdyjoTbE8n34INrZebY8AjxEaOtkgopcd0IZQhF9z/sRbPuA/ooTaIy/KJaxTypK0gruY2YNHdi2GmzWHx3fdITEu6h4Ghc48LWfolYSlAkELHyzzh7GcHQQN5HGZ3nQc6lfeHX73uLPzyguM5dMNpCnMw3M4uYtD+8MXXUW8Orxpvhqq/1V/7u6OCfIpMrtKytFDAxKgXhTLOl5lx5YJQFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sOxmJFBqDRuDn5MivIsId0G5Q9u9wiYik43ICBbjQpM=;
+ b=ZOzaFrfxyeeHmWJCteQiTzIYhwN+5JWJ2XTsUPi9kGc+qQqlJc6iHYnOuINgM5oWyrQkYKgPbbJM3Tukf0+D4hScMTbDuejdgIcPq/Gyq9DbqYJ/9OZ/k5hCfSutw0aWXdndXqkZ/95s9BWupceX96bEwXF+lF8viX2asFkOQ2QQjx+iY4QDR2ipqKSN/ymzXblza1Jv3cg25manPghPjWzwEO1iz9iPRNsF8P7pqTtk72Hy/kPttPcntcKpU9CTMMu/Ux7lyGrJxJNhYPaCp5qRDJGXpyt+feMRoeAGKPjboT0ec4LAwJFLYZCKAZexlOMeuWjVoXU8IiMKzsS7WQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sOxmJFBqDRuDn5MivIsId0G5Q9u9wiYik43ICBbjQpM=;
+ b=firTspXHCBAMhk4pTWkVopFdAw1u4fobXcsJ5eQlgYjcE1wE9mP/YSzoklqFz8kIRpPBPwl/nM5NWmT1UkLV7kyn73/yFfZFztx3BIs7arculPCOzPJlOvjsQbqMfjhGOpc1wKcDlB+Bmbdau8T09bwAgddF3qTt29TxrRk4nl4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by CY5PR12MB6348.namprd12.prod.outlook.com (2603:10b6:930:f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.31; Tue, 27 May
+ 2025 08:01:15 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5%7]) with mapi id 15.20.8722.031; Tue, 27 May 2025
+ 08:01:15 +0000
+Message-ID: <97abe9f0-38f9-41ac-9f56-05ad37a61250@amd.com>
+Date: Tue, 27 May 2025 10:01:10 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (v2)
+To: Dave Airlie <airlied@gmail.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ cgroups@vger.kernel.org, Waiman Long <longman@redhat.com>, simona@ffwll.ch
+References: <20250515160842.GA720744@cmpxchg.org>
+ <bba93237-9266-4e25-a543-e309eb7bb4ec@amd.com>
+ <20250516145318.GB720744@cmpxchg.org>
+ <5000d284-162c-4e63-9883-7e6957209b95@amd.com>
+ <20250516164150.GD720744@cmpxchg.org>
+ <eff07695-3de2-49b7-8cde-19a1a6cf3161@amd.com>
+ <20250516200423.GE720744@cmpxchg.org>
+ <CAPM=9txLaTjfjgC_h9PLR4H-LKpC9_Fet7=HYBpyeoCL6yAQJg@mail.gmail.com>
+ <aC-ALtcs8RF1yZ1y@slm.duckdns.org>
+ <de476962-194f-4c77-aabb-559a74caf5ac@amd.com>
+ <aDCrLTNoWC8oSS7Z@slm.duckdns.org>
+ <d21be860-9cb2-4c21-af30-2c724ab58756@amd.com>
+ <CAPM=9txhOq9NvTJ9sYpntQ5ajSXrCPAKwkPqBssycwAxqn05dg@mail.gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <CAPM=9txhOq9NvTJ9sYpntQ5ajSXrCPAKwkPqBssycwAxqn05dg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR4P281CA0426.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:d1::9) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250515160842.GA720744@cmpxchg.org> <bba93237-9266-4e25-a543-e309eb7bb4ec@amd.com>
- <20250516145318.GB720744@cmpxchg.org> <5000d284-162c-4e63-9883-7e6957209b95@amd.com>
- <20250516164150.GD720744@cmpxchg.org> <eff07695-3de2-49b7-8cde-19a1a6cf3161@amd.com>
- <20250516200423.GE720744@cmpxchg.org> <CAPM=9txLaTjfjgC_h9PLR4H-LKpC9_Fet7=HYBpyeoCL6yAQJg@mail.gmail.com>
- <aC-ALtcs8RF1yZ1y@slm.duckdns.org> <de476962-194f-4c77-aabb-559a74caf5ac@amd.com>
- <aDCrLTNoWC8oSS7Z@slm.duckdns.org> <d21be860-9cb2-4c21-af30-2c724ab58756@amd.com>
-In-Reply-To: <d21be860-9cb2-4c21-af30-2c724ab58756@amd.com>
-From: Dave Airlie <airlied@gmail.com>
-Date: Tue, 27 May 2025 06:13:00 +1000
-X-Gm-Features: AX0GCFvvHdd7Hcm15H2tyzhV0DazUrjPKTrGJfpLMdSyHMJpn-ef4wjs0ccd16c
-Message-ID: <CAPM=9txhOq9NvTJ9sYpntQ5ajSXrCPAKwkPqBssycwAxqn05dg@mail.gmail.com>
-Subject: Re: [rfc] drm/ttm/memcg: simplest initial memcg/ttm integration (v2)
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, dri-devel@lists.freedesktop.org, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
-	Waiman Long <longman@redhat.com>, simona@ffwll.ch
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|CY5PR12MB6348:EE_
+X-MS-Office365-Filtering-Correlation-Id: 06b3f7d0-24de-4eae-ac63-08dd9cf4a76d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?ZUg3dHRvZldOa1ZkUWkzNithRVd2NFBQbG5hb2pwYi85ajlJUWE0Yk9LTFhD?=
+ =?utf-8?B?dnVyUk9yVlAzd08vYnBZOC83aisrT21sMWVRRnJyNWhCSnI1djRVeDh0MWc5?=
+ =?utf-8?B?bjlMemJubU5SN2g0ZkRJc0xMZ1p1ZVVhd2RNV2xZZFRLQlkyWlpxU2hUdnZj?=
+ =?utf-8?B?TDI0ZGVnN3VlbG5GZmRwK1l2czR0WlBrNnlZdjlKVlIzazQ3aGZpYXdTYW1a?=
+ =?utf-8?B?RFNGV29vUU1id0Q1NUphMU0rSVlIbEVZY24rbGlSU0g2TzlnZEMzUUZaNHVE?=
+ =?utf-8?B?T3l6SXk4S3hwVGJ2UFFNVWNNYXpxa2kyMHBhM1JZUXdoRUFtN3RRTGk5WEhm?=
+ =?utf-8?B?M1ZSdEtrRzR2aHZuNWFRQTBMU3ZGdVcvRy9pNmxlemtlZjVyRmVKL01zK2dC?=
+ =?utf-8?B?emZ0WUVnd25DRHdPWmloQmZ1UlFxZlpsYzdZbUpBWHhRZzFCUGJlMjhEUHdB?=
+ =?utf-8?B?bm14MTE4eTlUWTBiYUhSeEZONFF5SGpiSGpkQ3ZzQ2dpejZkT3NGSjNyMHRq?=
+ =?utf-8?B?Wno1d1dpb2pWWHdxVCs3VWRVeXdsNkV4aThmMTAvRVRjT2liZU41ekZJcjRH?=
+ =?utf-8?B?NTZxNUNhZ2xZZFZ5aVpPVHJTdGNBR2xxMlRTT1NYTi9LTDNWRnp4U2swb1Az?=
+ =?utf-8?B?M3RFQWZ2d01pZzNidm96cE5ibUo2d2JQZVlzWndsQWRrR21hZmRKbGJpVnBN?=
+ =?utf-8?B?VUh0dGpRWndDbTlOa0xSTERJYzJmOU5WZnVZWDNkSEd4ZTR2R28rQ0NIVW5q?=
+ =?utf-8?B?MTd3K1Y2eVpsWDg0d0ozQklpSGsrdHl6UVdIUWlNRFhLbklnOEx1M0tHNHdV?=
+ =?utf-8?B?R0Z5SUxqWSs5SXJOREEySzl2cUUvZEg4ZWNJU1pCRmJoN0RQdkdvVHZ3Zi9F?=
+ =?utf-8?B?OENpMGRLdFZCd1E2NmVRZkN4RkF0aG9qUW8xWFFhR1kzRmRsRFJVNXdlblpC?=
+ =?utf-8?B?QUpKd01QcDFJUzZPVXFRdVVWSE9mQXNwNVRDMWtmRHhmY3F5OUhtQTNNOEhW?=
+ =?utf-8?B?bEtsbTlDamEyNXZkOURzTkVxd0N6S0ZiKytJUHVvcnFOWVNFUmxJa3BZOGUv?=
+ =?utf-8?B?S1ZvZDNSSkgrSFdNRGhVUlVpZDNkVUFybGFvY2d3R2l5Tmc3Mnp0UEdmbXM5?=
+ =?utf-8?B?RWJuVEJNSTBIVUxlS1N2Z1hLNUpyYTlUTU1qMTBwakZuSUEweXdQUDRudFNV?=
+ =?utf-8?B?VEI4ZVYydU56RjNUSzdxeWs5dU84N0lsM2duRC9FTElBNllLZFhaRUIvalhn?=
+ =?utf-8?B?VmRhNEF4Zi9odEllclkzNDNDRUZIWjBpczBsbzZvQUR4ek5tYWNIU2Y0RVhE?=
+ =?utf-8?B?U2MzbHZUSFBhN0VPNjdKRG1LM1l1VWVweFp1M3VCUWk3aW9rWFlJS0tUdElX?=
+ =?utf-8?B?cWc5OHFJbUV6QWtna2FiMDRaR0xFMnB3cnVmbmdyZ2J4S2ZkbER3ZmNHSkdX?=
+ =?utf-8?B?ekN2cVpxVk4zM0Fzem1HMVFoTkdET29ZeFdaUnpPTDJXTDFaUXBPM2N5MVB3?=
+ =?utf-8?B?NWlJcitFNVhnd1JFdkVvSGw5dlR4dER3aHlDZEF4S2ZDK245eHpjNWs2d09R?=
+ =?utf-8?B?a1NTRlkwMFVtYmtzVFZpd0liMlBMcy9Fb3VZRkdpSklpMnBwZmZRM2JNVWtz?=
+ =?utf-8?B?bE84Y2NYNDhLNFI2WE1WbEpxUWJIOFlWemlvOThSQml2clNnSnRnNml2aE0y?=
+ =?utf-8?B?akJpSXBDNWNNcDdPalY1cTRwaEljSUZsdjluMHFxVnJrWkNqUkdYN0RRY1BX?=
+ =?utf-8?B?MzRJTHVqMWM0WmdDdmc5aGJhZlJyVXd1UGgwTGp0Y1ZZbno1eDdIUVhEYUh0?=
+ =?utf-8?B?dERDekppSDlYWUZPRHdwZWNDQWV5VW9wSTZ2RHFCSE5XdDdxckRwZzdQOVk1?=
+ =?utf-8?B?a3VzdUk5S0YybmtTY2g1ZkdPQkdSOWJpelN3MEJaUkZQK21NYThQMG1xMFE0?=
+ =?utf-8?Q?3Xjry3YCd/I=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZFVoeC8rMXRVdS9EQW8vbWtidndZd1NtK1IzZXZlQ2FHc1FTYkpqWEc1RmVp?=
+ =?utf-8?B?N0Iwc01XNzVlMWVOVmE2aDcwakd1blh0aGd6b1Ywc0NUZTNVNnNvdEJETkNy?=
+ =?utf-8?B?QjFOVmIxZktoWHQrcjRtRkRCNnptdElPNzlQQ3NMTVoyam1jUWNnekoxUWhh?=
+ =?utf-8?B?S1dFam8zQWIzTFJ6S1k2bS81Z3pUbkJaUUlMY1NDaFVBakdmaytLWU1iU3pv?=
+ =?utf-8?B?VVMwZUlaZzdCcHFReXpWUzg4dlIvMDY4R0szVW1JTjFWUVhRSGZPQ3JISXF3?=
+ =?utf-8?B?TVZMQWN2clJqSStoL29SMFh5VDdvcW8zZno3ZGx4d0N3QkNWYm5Sazd3Z0sy?=
+ =?utf-8?B?UUp4VEdaREp3OEhTK1g1dUZyck1ZNmtsc08xcUJQdURwV2xHVldRZ0hENExz?=
+ =?utf-8?B?S3A2T3ZNV0pmZ0lZT3pkTlNrOTY4VWF5dUxuYVR4ZUl4bk1VbVNabEZCeUJ5?=
+ =?utf-8?B?L2xlSWdFTnhtckhxbGdaK29qTkVybGVqVDlhamhGM3BUZldUdStucHYzOENI?=
+ =?utf-8?B?UGFNOHZyL2V6ZFVzc05VSVcyS251eE5wM252UklLU0psY3VoTlFsVjE0TTRH?=
+ =?utf-8?B?TmZwZDNTY01rcStKeXUwSVJXSzNDN0UyREpRaFphdWc3c0NqTUltd1dkazFC?=
+ =?utf-8?B?Z2NuR2JNMXg0SXRJOC9NSkN3STRmSVE0enZFbDhyWkNTNG85dUlNdWNJaTQ5?=
+ =?utf-8?B?WmoxdVNyZ2p6aUk2Q09BeThwM0ZVeFVaTkczbEFHKzdTMm9Yck9hT29FZHN2?=
+ =?utf-8?B?eUlwekliZ01Ub1R1cWgrcTNocElIc3lFSTFyU1VSVzcvb3h1aGJ0UURlaFF3?=
+ =?utf-8?B?b1hxQm0xSXRDN3cvMHltZGlQUGp5Rms5blBxWjA3UTc0d2lTdDR4b0sySElr?=
+ =?utf-8?B?M05PMmN4UlA0MHdyTWYvSUVMWnErbkIva09kdFNiLzgyQzgxVXRRbDVSWWVG?=
+ =?utf-8?B?bVJqSEQ5RXh0cGxyc2VJdmVUMlltMTBlK3ZoUXpXYlJ3WTJDakFEWGlrOTgy?=
+ =?utf-8?B?L0tJdHZ3TG0wVnFPNm52VU55MWZqSkFZNXVqUjV1QU9NWjRjRG1CRCtnSXk5?=
+ =?utf-8?B?Rmc4ZG9qNUdlblVYamQyN0FUZ1Y0M2ZNWmhEeDR2d24vTk5wWDRZRW5mV1c0?=
+ =?utf-8?B?ZGZscFRJRG9QdC9DajU1RmsycHpzdnB5M3lLaEZCT3QzWXV4N1ZPVFZVZDVT?=
+ =?utf-8?B?dnArUld2cW1PUXRBSTZxMDhBL0diMmR6UDBwamRQYjF6V1QwVzM5OUljWG1x?=
+ =?utf-8?B?elkyTlMrRWtQaVdXamtpQndrNFJJWGlTQkFZNTg1SE9hK2JWWVV2V1V2NU9D?=
+ =?utf-8?B?dWpLdmRNVjEvWVpLMEpMVW90K0dhU1J1Z0d2WFFUSzNxNy9pSVpodVRNNXVi?=
+ =?utf-8?B?UjhDZEcxem9UUDNybTZpUzVYeFc0K0lhOXlvVXdxdUR3bW9IbCtEeTJqMlBl?=
+ =?utf-8?B?Wk1Lb2NHbW5BajMvNm1FVkp3YzlNaWRTL2tGNmxZbE5FUGQ2K01lcXB3NUxW?=
+ =?utf-8?B?SnJWN0xGMnNCS2lVSHFuUXY1TzRVN0Z4eERWTEJiMEJnR3NOTTBMSE9qc3cy?=
+ =?utf-8?B?Z2UvSW5sRlk3aFF0dnloUFFTRE1ReFFaaGg0bnBFc1pFb0hsQ2oxck8vajdR?=
+ =?utf-8?B?SUhRVGo0Nk54UGpYN25GbXYzQVlHUFZkWHhYZ2RFbHIyWFYwZm80RWwyaFFn?=
+ =?utf-8?B?YlNBeHVRbmw2ZGptNlNBWHNLQTFYK1F3d2tmSExwTm9OMTB1eXRjVWtRSTlU?=
+ =?utf-8?B?T3ZTNEZvRmJrSU5WbklxQkRPM1RUdUl1US9OdlhFeXBRVEd5YlJPMGFYdXEz?=
+ =?utf-8?B?U1ZjaVRremRjVS9SWTFtYWhudUgzWS91MVg4MHRWc2JtQk5sOGN4QmpWRWpE?=
+ =?utf-8?B?YXBhNnU4UTRGbHRmTER6VjB0cFRIYzVYaXljVzUrVzJFVllRc0JrbmxNQUVT?=
+ =?utf-8?B?V2I3RTFlOVZiYjgyWDdFWmlhQlhndjBUM2h2NXJxeEFLL2o2Ynh0Q3ltM1hB?=
+ =?utf-8?B?d2h0cWI4SU04MXp4RTd5WHFPc3FOKzAzUTFQc3BBbWlEUGZQeDl5MHptbW50?=
+ =?utf-8?B?TzYxTGd4QzR3QitjUnY5bExtRXdrd2NFTmtvM1BOMXdGb09XeDlqRmhkdjRH?=
+ =?utf-8?Q?ZjZA=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06b3f7d0-24de-4eae-ac63-08dd9cf4a76d
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2025 08:01:15.3363
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6YdR1F28LjbiuJ6CVsG+gKhjwrUpthvCPG49pmYcdBG9Li32s1FLRjNV4IkyEEHN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6348
 
-On Mon, 26 May 2025 at 18:19, Christian K=C3=B6nig <christian.koenig@amd.co=
-m> wrote:
->
-> Hi Tejun,
->
-> On 5/23/25 19:06, Tejun Heo wrote:
-> > Hello, Christian.
-> >
-> > On Fri, May 23, 2025 at 09:58:58AM +0200, Christian K=C3=B6nig wrote:
-> > ...
-> >>> - There's a GPU workload which uses a sizable amount of system memory=
- for
-> >>>   the pool being discussed in this thread. This GPU workload is very
-> >>>   important, so we want to make sure that other activities in the sys=
-tem
-> >>>   don't bother it. We give it plenty of isolated CPUs and protect its=
- memory
-> >>>   with high enough memory.low.
-> >>
-> >> That situation simply doesn't happen. See isolation is *not* a require=
-ment
-> >> for the pool.
-> > ...
-> >> See the submission model of GPUs is best effort. E.g. you don't guaran=
-tee
-> >> any performance isolation between processes whatsoever. If we would st=
-art
-> >> to do this we would need to start re-designing the HW.
-> >
-> > This is a radical claim. Let's table the rest of the discussion for now=
-. I
-> > don't know enough to tell whether this claim is true or not, but for th=
-is to
-> > be true, the following should be true:
-> >
-> >  Whether the GPU memory pool is reclaimed or not doesn't have noticeabl=
-e
-> >  performance implications on the GPU performance.
-> >
-> > Is this true?
->
-> Yes, that is true. Today the GPUs need the memory for correctness, not fo=
-r performance anymore.
->
-> The performance improvements we have seen with this approach 15 or 20 yea=
-rs ago are negligible by todays standards.
->
-> It's just that Windows still offers the functionality today and when you =
-bringup hardware on Linux you sometimes run into problems and find that the=
- engineers who designed the hardware/firmware relied on having this.
->
-> > As for the scenario that I described above, I didn't just come up with =
-it.
-> > I'm only supporting from system side but that's based on what our ML fo=
-lks
-> > are doing right now. We have a bunch of lage machines with multiple GPU=
-s
-> > running ML workloads. The workloads can run for a long time spread acro=
-ss
-> > many machines and they synchronize frequently, so any performance drop =
-on
-> > one GPU lowers utiliization on all involved GPUs which can go up to thr=
-ee
-> > digits. For example, any scheduling disturbances on the submitting thre=
-ad
-> > propagates through the whole cluster and slows down all involved GPUs.
->
-> For the HPC/ML use case this feature is completely irrelevant. ROCm, Cuda=
-, OpenCL, OpenMP etc... don't even expose something like this in their high=
-er level APIs as far as I know.
+On 5/26/25 22:13, Dave Airlie wrote:
+> On Mon, 26 May 2025 at 18:19, Christian König <christian.koenig@amd.com> wrote:
+>>
+>> For the HPC/ML use case this feature is completely irrelevant. ROCm, Cuda, OpenCL, OpenMP etc... don't even expose something like this in their higher level APIs as far as I know.
+> 
+> What do we consider higher level here btw? HIP and CUDA both expose
+> something like hipHostMallocWriteCombined, there is also
+> hipHostMallocCoherent which may or may not have an effect.
 
-What do we consider higher level here btw? HIP and CUDA both expose
-something like hipHostMallocWriteCombined, there is also
-hipHostMallocCoherent which may or may not have an effect.
+High level in the sense as things which applications actually use.
 
->
-> Where this here matters is things like scanout on certain laptops, digita=
-l rights management in cloud gaming, hacks for getting high end GPUs to wor=
-k on ARM boards (e.g. rasberry pie etc...).
->
-> > Also, because these machines are large on the CPU and memory sides too =
-and
-> > aren't doing whole lot other than managing the GPUs, people want to put=
- on a
-> > significant amount of CPU work on them which can easily create at least
-> > moderate memory pressure. Is the claim that the combined write memory p=
-ool
-> > doesn't have any meaningful impact on the GPU workload performance?
->
-> When the memory pool is active on such systems I would strongly advise to=
- question why it is used in the first place.
->
-> The main reason why we still need it for business today is cloud gaming. =
-And for this particular use case you absolutely do want to share the pool b=
-etween cgroups or otherwise the whole use case breaks.
+And yes hip used to have flags for WC memory, but because of allocating system memory through the KFD node never worked as intended we abandoned that approach long time ago.
 
-I'm still not convinced on this being totally true, which means either
-I'm misunderstanding how cloud gaming works or you are underestimating
-how cgroups work,
+What could be is that the userspace components (like hip) now use the render node interface with the AMDGPU_GEM_CREATE_CPU_GTT_USWC flag to allocate WC memory. That is one thing I need to double check.
 
-My model for cloud gaming is, you have some sort of orchestrator
-service running that spawns a bunch of games in their own cgroups and
-those games would want to operate as independently as possible.
+>> The main reason why we still need it for business today is cloud gaming. And for this particular use case you absolutely do want to share the pool between cgroups or otherwise the whole use case breaks.
+> 
+> I'm still not convinced on this being totally true, which means either
+> I'm misunderstanding how cloud gaming works or you are underestimating
+> how cgroups work,
+> 
+> My model for cloud gaming is, you have some sort of orchestrator
+> service running that spawns a bunch of games in their own cgroups and
+> those games would want to operate as independently as possible.
+> 
+> Now if the toplevel cgroup or if none the root cgroup exists and the
+> game cgroups are all underneath it, then I think this would operate
+> more optimally for each game, since
+> 
+> a) if a game uses uncached memory continuously it will have it's own
+> pool of uncached memory that doesn't get used by anyone else, thus
+> making that game more consistent.
+> b) if and when the game exits, the pool will be returned to the parent
+> cgroup to use, this memory should then be reused by other games the
+> are started subsequently.
 
-Now if the toplevel cgroup or if none the root cgroup exists and the
-game cgroups are all underneath it, then I think this would operate
-more optimally for each game, since
+Mhm, my impression was that cgroups are not hierarchically any more these days. So pages would stay allocated to the cgroup until it is fully destroyed and then given back to the core memory management. But I could certainly be wrong on that.
 
-a) if a game uses uncached memory continuously it will have it's own
-pool of uncached memory that doesn't get used by anyone else, thus
-making that game more consistent.
-b) if and when the game exits, the pool will be returned to the parent
-cgroup to use, this memory should then be reused by other games the
-are started subsequently.
+When an application continuously uses write combined memory it would allocate that only once and then re-use it over and over again. The background is that even with the pool we don't make any allocation performance guarantees, the operation is purely best effort.
 
-The only thing I'm not sure is how the parent pool gets used once it's
-built up for new children, need to spend more time reading list_lru
-code.
+So the important advantage of the pool is to share the memory between applications which are otherwise not aware of each other. And that is exactly what you have in a cloud gaming use case.
 
-The list_lru change might actually be useful for us without cgroups as
-it might be able to hide some of our per-numa stuff.
+If we would want to make performance guarantees we would need to approach that from a different side, e.g. have per cgroup config options on the pool size, background workers which refills the pool for each cgroup etc... That is certainly possible, I just don't see the use case for that.
 
-Dave.
+One additional side note: A big original motivation for the pool was to avoid the WBINVD CPU instruction, because that is disruptive not only to the current process but to the system as a whole. This is not an issue any more on modern CPUs because we now have the CFLUSH instruction.
+
+So the motivation of having the pool is really not that high any more.
+
+> The only thing I'm not sure is how the parent pool gets used once it's
+> built up for new children, need to spend more time reading list_lru
+> code.
+> 
+> The list_lru change might actually be useful for us without cgroups as
+> it might be able to hide some of our per-numa stuff.
+
+Yes, having proper NUMA integration would be a really really big argument in favor of having this.
+
+I also explicitly asked that Waiman Long, but it seems like that cgroups doesn't have the NUMA capabilities we actually need here.  
+
+Regards,
+Christian.
+
+> 
+> Dave.
+
 
