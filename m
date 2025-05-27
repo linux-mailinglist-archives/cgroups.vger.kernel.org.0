@@ -1,56 +1,64 @@
-Return-Path: <cgroups+bounces-8359-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8360-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB06DAC5848
-	for <lists+cgroups@lfdr.de>; Tue, 27 May 2025 19:43:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEDDAAC58BB
+	for <lists+cgroups@lfdr.de>; Tue, 27 May 2025 19:48:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57B564A1441
-	for <lists+cgroups@lfdr.de>; Tue, 27 May 2025 17:43:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CB143ADFA6
+	for <lists+cgroups@lfdr.de>; Tue, 27 May 2025 17:48:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFC627CCF0;
-	Tue, 27 May 2025 17:42:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F25527FB10;
+	Tue, 27 May 2025 17:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="M5tVtZVC"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZHBAysI3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC5A42A9B
-	for <cgroups@vger.kernel.org>; Tue, 27 May 2025 17:42:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6110442A9B
+	for <cgroups@vger.kernel.org>; Tue, 27 May 2025 17:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748367775; cv=none; b=h2AEB9tbgWyYnD6f/nHzC2hVVYo8LL0otNa3sovju6+0EDK3Kxy60y3IbEaxB9+5rLvGIpmsiIGdQvBzmY1o8Intjb01uMJw3xe/bqzimsTi0SLDydUKmjhJZLMNjpBJYdFMoOXzWfnFUhUDAPtaSYnJHfFgXqLtl+MTOBOdFSQ=
+	t=1748368118; cv=none; b=rVlYySlLbi9TCCwzWuA9Y6FcueLIcNSsjkY4aG9ybS5HgA1XZi6YC8xz0fg+a+/Jz1iuV9nSC0CZ+Iwcjc+BECdUdwYJPMUyqqO07Xh20j5/u4/D/an+4TWiXjgVs44SCdg85AOZ4Kv99RfEweKkbwU3t7+5pjuGNWMqDjCNEWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748367775; c=relaxed/simple;
-	bh=rSUmK6PvljT86o4KrKERVWT2kGyd3UxU1gg63ZGbtLw=;
+	s=arc-20240116; t=1748368118; c=relaxed/simple;
+	bh=zacgsMYOqWILDnDHjYRXe7knHpcE0yjWJV54mpR//9o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FQzdjwSpLjKLD0rCNdzAmQZQ/vfqpMhzWhw/Zp3YGGVN8AnXmIlTsrfuwBaMBxtH6jRwCS+F8PvM+4C5o/k3eZH01NAqAJgkJJiSdtKF1Vu10JSWifKxpB4XW1x5mD3Lo80+ixOlb81nMpcJmjcbc3zVBFL9qtukcQ19u47x6Pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=M5tVtZVC; arc=none smtp.client-ip=91.218.175.189
+	 Content-Type:Content-Disposition:In-Reply-To; b=SCtADKpjG9U9M3JeijdEW6vP38KcGasbgYO2GZjOBm0XBFvVnlbuvH8Wid/FUrui85kyYWjqnNbpOS+c6CzgYFJL6P90B38cELkCaIC3UY0kQA4st82zdASABitBqLhcORUR86i5q427/CHwcQQAWeZOkTWA6bRF1i5fGKf3MDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZHBAysI3; arc=none smtp.client-ip=95.215.58.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 27 May 2025 10:42:29 -0700
+Date: Tue, 27 May 2025 10:48:23 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748367760;
+	t=1748368112;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BgFCUnj+eNo5iwuZeQQfKX2DgvuAt+lMF54AtNJcgY8=;
-	b=M5tVtZVCwqb9HLLle5o9rQMtrkFsyQ+bHQqFxt+gHb2sug1Ft4r39gBnFdd7/sHXT6Z/TK
-	L3KyWRk45HRyf79JuJzm1GDsPcuuwLeXU5/QKDzladLYDqOfe6enUXSDBXm1zx72xM2Z8D
-	Ht/eGLH6hNwupY/KPkU+XzPjZib5xtc=
+	bh=eTgeKip1dFEF8TN491NA/pilIthAMBoQOcmCRidVyX8=;
+	b=ZHBAysI3TGX9PbZFh2Ha984UVBpYhYZH9MEejkZiWAWahrYeFnFSeHrnCLyH4p4/7871H8
+	68ehRduLxEcj1NthLGOgi80gP6he0VYxbHYjSK95djwgQKhAN6n08wz7dXCxq2XqF58WVK
+	/0uKxEJuzz7+hqp7z79Kggd6trMieEw=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: syzbot <syzbot+5dd4e428fa723938e6fd@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [mm?] [cgroups?] general protection fault in
- refill_obj_stock
-Message-ID: <loiano2kji2pin44d7btrufm5ovdi5rm4fdmajhlvarsbfrbru@olcbsrrrdrh3>
-References: <6835c01c.a70a0220.253bc2.00b7.GAE@google.com>
+To: "Chen, Yu C" <yu.c.chen@intel.com>
+Cc: peterz@infradead.org, akpm@linux-foundation.org, mkoutny@suse.com, 
+	mingo@redhat.com, tj@kernel.org, hannes@cmpxchg.org, corbet@lwn.net, 
+	mgorman@suse.de, mhocko@kernel.org, muchun.song@linux.dev, 
+	roman.gushchin@linux.dev, tim.c.chen@intel.com, aubrey.li@intel.com, libo.chen@oracle.com, 
+	kprateek.nayak@amd.com, vineethr@linux.ibm.com, venkat88@linux.ibm.com, ayushjai@amd.com, 
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, yu.chen.surf@foxmail.com
+Subject: Re: [PATCH v5 2/2] sched/numa: add statistics of numa balance task
+Message-ID: <qcasnjdjet57uxhwavfiaxepq7anf2zvmi4rzkp5lxysovqwme@wwcyh4nvlxiv>
+References: <cover.1748002400.git.yu.c.chen@intel.com>
+ <7ef90a88602ed536be46eba7152ed0d33bad5790.1748002400.git.yu.c.chen@intel.com>
+ <cx4s4pnw5ymr4bxxmvrkhc457krq46eh6zamlr4ikp7tn3jsno@xzchjlnnawe5>
+ <ad9f8af5-6bac-48c0-924b-498863370079@intel.com>
+ <CAGj-7pX9yFFEFuMPgXBL_gsWevX8MtUZix5qyUQxOqWGKcbFzA@mail.gmail.com>
+ <52a1b56b-9598-499d-ac9c-de99479d5166@intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -59,30 +67,62 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6835c01c.a70a0220.253bc2.00b7.GAE@google.com>
+In-Reply-To: <52a1b56b-9598-499d-ac9c-de99479d5166@intel.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, May 27, 2025 at 06:37:32AM -0700, syzbot wrote:
-> Hello,
+On Sun, May 25, 2025 at 08:35:24PM +0800, Chen, Yu C wrote:
+> On 5/25/2025 1:32 AM, Shakeel Butt wrote:
+[...]
+> > can you please give an end-to-end> flow/story of all these events
+> happening on a timeline.
+> > 
 > 
-> syzbot found the following issue on:
+> Yes, sure, let me have a try.
 > 
-> HEAD commit:    914873bc7df9 Merge tag 'x86-build-2025-05-25' of git://git..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12dcf882580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=231a962e5fdb804b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=5dd4e428fa723938e6fd
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> The goal of NUMA balancing is to co-locate a task and its
+> memory pages on the same NUMA node. There are two strategies:
+> migrate the pages to the task's node, or migrate the task to
+> the node where its pages reside.
 > 
-> Unfortunately, I don't have any reproducer for this issue yet.
+> Suppose a task p1 is running on Node 0, but its pages are
+> located on Node 1. NUMA page fault statistics for p1 reveal
+> its "page footprint" across nodes. If NUMA balancing detects
+> that most of p1's pages are on Node 1:
 > 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/ecae640d0786/disk-914873bc.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/d451e50efeae/vmlinux-914873bc.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/8f7363263e49/bzImage-914873bc.xz
+> 1.Page Migration Attempt:
+> The Numa balance first tries to migrate p1's pages to Node 0.
+> The numa_page_migrate counter increments.
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+5dd4e428fa723938e6fd@syzkaller.appspotmail.com
+> 2.Task Migration Strategies:
+> After the page migration finishes, Numa balance checks every
+> 1 second to see if p1 can be migrated to Node 1.
+> 
+> Case 2.1: Idle CPU Available
+> If Node 1 has an idle CPU, p1 is directly scheduled there. This event is
+> logged as numa_task_migrated.
+> Case 2.2: No Idle CPU (Task Swap)
+> If all CPUs on Node1 are busy, direct migration could cause CPU contention
+> or load imbalance. Instead:
+> The Numa balance selects a candidate task p2 on Node 1 that prefers
+> Node 0 (e.g., due to its own page footprint).
+> p1 and p2 are swapped. This cross-node swap is recorded as
+> numa_task_swapped.
+> 
 
-#syz dup: [syzbot] [cgroups?] [mm?] BUG: unable to handle kernel paging request in percpu_ref_get_many (2)
+Thanks for the explanation, this is really helpful and I would like this
+to be included in the commit message.
+
+> > Beside that, do you think there might be some other scheduling events
+> > (maybe unrelated to numa balancing) which might be suitable for
+> > memory.stat? Basically I am trying to find if having sched events in
+> > memory.stat be an exception for numa balancing or more general.
+> 
+> If the criterion is a combination of task scheduling strategy and
+> page-based operations, I cannot find any other existing scheduling
+> events. For now, NUMA balancing seems to be the only case.
+
+Mainly I was looking if in future we need to add more sched events to
+memory.stat file.
+
+Let me reply on the other email chain on what should we do next.
 
