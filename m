@@ -1,148 +1,148 @@
-Return-Path: <cgroups+bounces-8369-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8370-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0AC5AC658F
-	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 11:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56BEBAC6A2F
+	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 15:18:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EAE6189430B
-	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 09:19:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E17E1BC23DF
+	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 13:19:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 181FF275858;
-	Wed, 28 May 2025 09:18:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9EE2286D69;
+	Wed, 28 May 2025 13:18:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="swqB3TSB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2860E275842;
-	Wed, 28 May 2025 09:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17349279903;
+	Wed, 28 May 2025 13:18:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748423938; cv=none; b=T6hx5vcTTVSDBuwdePLdxe9PuGx109VvwSoAhpu0zDb2L9WMHDrmKXSjMLPONi3TAHmjdfsZP4xuSw/tN7dlnCeJ31yipekBcwwSoxROsMZqPE8tH53GPMT8OHIsgkj1HYMR8rGxGQ+1u2FxooJMnyvFcpMsaRwEhg2fSIHgH9Q=
+	t=1748438332; cv=none; b=gFkpm5dbBshHgN6LsuzYaNBWcf+AhqvMCXR8ic8ZVDLTvdcZfOhXmfceRMie3oXPVBoEPo7km2cMiAwGNYeFGpeOoYRCAqbVdOX4+rQOvvkxwa/++lOy7q6/2jZix+iFu2gRq/3qIP8gvby02Apgy3fi0KbjKAS51NUlWK+5/7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748423938; c=relaxed/simple;
-	bh=VZ+mBZ7sZVKrevaJyUxvu7xHNhh5PUFzarPAmfRJRUg=;
+	s=arc-20240116; t=1748438332; c=relaxed/simple;
+	bh=7HyDbaSY7vbBw4ErHLqBEibTA7gjG9fAwM9QL6eQWEE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m5V8AJ5p/ajbP6Sf8B8j1f45+Qe605qsl13pDqflqQnoLaNvFCi7mLuS+dVEhVbGhf4JEyZRmrwxjlxl9AbCDpwTmUykA+bbYk4W7XRngBExne4ta6+eQfyIk5QqEcK3n9HwKVT0ymYau8/DlYdiHfypL7ZkIYDGxHwfIYYxswA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ad89ee255easo99985166b.3;
-        Wed, 28 May 2025 02:18:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748423935; x=1749028735;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0pW4psWyw4mqAnBUvE51G8YcPcvTVt9THPNyFYZHPLU=;
-        b=EMUd8iwUP6j0NRqLT5BRvtgqwrUVaDPAmeUGCMaGpO01fqEfXS+yN8copjyPfMuwvU
-         PHWIejoUEWupIoVkBkkYxYY6hgKla8kV20FNSE+mcDUoCbS5LFIce8bngPD2shNSR3sk
-         xbA1YjFbq9hNcde0iBdBSyTJbjaD2hFmD7tGPiRkEVz1k+Dbix8yKDUXcVAICv+lfoLr
-         zrOqsEGgVOVR084YXYdu96kNuhkZSDPOZiB2gotM7TZABAtqGzAAWxdgpvUJKilAIF6U
-         4FW9Ncj2RSNWQyT0MsptfPdC7JJOn8382vbWAJCKL4ETl+Z5WFK8fi+OIwSxkdy7GJnU
-         ysyA==
-X-Forwarded-Encrypted: i=1; AJvYcCUXegXyFI9+w6uAg5aCOd2uYKHRpAdYMT2RizrWksG4RZT061rj/oOcGE8BSzxobmGr+s4fKgGXwLRSgESL@vger.kernel.org, AJvYcCVSiYWZbjbtMVQmBRkUlHGsJY1OKwu1d3dDfpSkaKL1SuQDThgihGTqpm4JLpExWWeKHLQ2J6t8@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQjvLDv5OB0srS/z8iaSUjMPz5faiqshyw6tYoHoH+oZ2j+iRI
-	dpSWKq/wtlDKJYwABck9vV6henDK/WnyCiJiFX+4GuvFvgFHFA189Byr
-X-Gm-Gg: ASbGncvqGVc0QJTxCz7y91eUMMEGwWfvKddpS09XNuav2HYdoZBycY6LXemJjvtaxcU
-	WQFPtwIqa/9WoM5MK+XDkKa/o5rq5zV35JGm+VYf3vdBVK2AQCFZuVD/YeYnWAyUgPtl9XOXWUX
-	tci4Nk3kF1VKptkIe8o/q7Cd8BXlHwvadwnb+KEtKUkEwpTkfQ2iX/oMzzvvU7xBL1CAEcMjwb4
-	me3yZs71eJXonkXQ8024+UQ7+lywYCse3QffPiASp4qJ1S11RZGSQ502C+USSljU4QDLZUF2Aru
-	bbRlUbNjxUeZdzhv+pz4mOUOiRpcN8sruT7WrOXuQY3dEi584zgG
-X-Google-Smtp-Source: AGHT+IGoYdO47+oM6ou2U9T7Lb1yWxp8JxvcXflAlkbBf+bOi50F2wX/HLD+grDtDSMRecSopi9I/g==
-X-Received: by 2002:a17:907:25c7:b0:ad5:3156:2c06 with SMTP id a640c23a62f3a-ad85b076d18mr1584393166b.28.1748423935039;
-        Wed, 28 May 2025 02:18:55 -0700 (PDT)
-Received: from gmail.com ([2a03:2880:30ff:6::])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad8a19ad4bbsm76379266b.15.2025.05.28.02.18.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 May 2025 02:18:54 -0700 (PDT)
-Date: Wed, 28 May 2025 02:18:52 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Chen Ridong <chenridong@huawei.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com, Michael van der Westhuizen <rmikey@meta.com>,
-	Usama Arif <usamaarif642@gmail.com>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Rik van Riel <riel@surriel.com>
-Subject: Re: [PATCH] memcg: Always call cond_resched() after fn()
-Message-ID: <aDbU/ApoHK9SRXzv@gmail.com>
-References: <20250523-memcg_fix-v1-1-ad3eafb60477@debian.org>
- <ucarls72c6j7xzhdjsbb2wj5ovlzthatmh7kzwhepvudszap4h@xetgnupdm5ui>
- <aDWN9mP3wPQnwo4m@gmail.com>
- <zxorog2mv54v5dpl5cmmkd3j4hznyxbj435hjtbtzljwspm6mt@tj446cjrclcg>
+	 Content-Type:Content-Disposition:In-Reply-To; b=udMn2d7KxXelz7xFMPWr3zspSUSMmT7HDlbE8aF+6iGWQJtoKISiMRLOYvfjvvMb+xLAy8Dx8q+rArzhvyhk4QLapr+bXLxzgs3OrHU2/fu4aOqwaPL2J/udguXjSE41zenrPqFyXAl8xdIaAiqSOO7kQMpi9PSiDCVNxjzFaC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=swqB3TSB; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54S2XrjN012354;
+	Wed, 28 May 2025 13:18:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=i7TrvR
+	j1Oh8eIIYCbVDuZ00tzac1Amn0ypbuJeHijFo=; b=swqB3TSB/cWJG8cQzXKMJb
+	uGGBXFDlHgDAs2WkR7xFdENjsZ7CUZ2d+bLeKV1H0u63Srbo3Qjmfr5hJ5xLbcj8
+	WXqssT+eo1Abhhf1C+FPXp38wB1sfT3VlCLEtnmBqnZqe6PHm7aTb2xe3IvyJTPW
+	N8s28tnNZXys7tqWiMQe3dc/9Gy1n4FOOD2Lq/QQZkzuSMxqgDQTzDXXr3QfdhkI
+	xwpmfh7yrNrULImZr7Dgs59qttHKFGgSjagMvKu/XuMgsLFrr1et07aQO+DbZPFj
+	Xa07F5o8pLINVX69ZqHUqO6bYeajXVgQmDY+YlCcweLE1m29qcWFccWWx+uI9feg
+	==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46wgsgd19b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 May 2025 13:18:45 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54SAhupU021309;
+	Wed, 28 May 2025 13:18:44 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 46utnmqds9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 May 2025 13:18:44 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54SDIgXZ22086032
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 28 May 2025 13:18:42 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9583120043;
+	Wed, 28 May 2025 13:18:42 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B454E20040;
+	Wed, 28 May 2025 13:18:40 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.124.209.136])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 28 May 2025 13:18:40 +0000 (GMT)
+Date: Wed, 28 May 2025 18:48:37 +0530
+From: Vishal Chourasia <vishalc@linux.ibm.com>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: cgroup: clarify controller enabling
+ semantics
+Message-ID: <aDcNLTA2JfoLXdIM@linux.ibm.com>
+References: <20250527085335.256045-2-vishalc@linux.ibm.com>
+ <vzdrzqphpjnvrfynx7ajdrgfraavebig4edipde3kulxp2euqh@7p32zx7ql6k6>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <zxorog2mv54v5dpl5cmmkd3j4hznyxbj435hjtbtzljwspm6mt@tj446cjrclcg>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <vzdrzqphpjnvrfynx7ajdrgfraavebig4edipde3kulxp2euqh@7p32zx7ql6k6>
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=OIIn3TaB c=1 sm=1 tr=0 ts=68370d35 cx=c_pps a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17 a=8nJEP1OIZ-IA:10 a=dt9VzEwgFbYA:10 a=VnNF1IyMAAAA:8 a=sJNq94hGihU767Vwfd0A:9 a=3ZKOabzyN94A:10 a=wPNLvfGTeEIA:10
+X-Proofpoint-GUID: gZa7q5qYtC7tZPcdzV8irWfpZBYMoIy-
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTI4MDExNCBTYWx0ZWRfX2i0x2PtMVyNe WNd4x+G9moReVzqwHJVaW2rnDGAFW7ON7PDNgUJuHf1CpZ0u1346LDUK9PWNBUH6kuRJUf2jGFm Dy4g4lYq8Xt+I3wr6U09pbljwqD84IHGVD5j3B9VMLXz1NG8TpCj+E3tw8KLJPhC7VVm8bej4L1
+ 4bj7dZvbaPoKPOkP+Z/hiDmk9+7nkTU3Pgk2vWAmlFGSFHHC0sWsj/5EV8hr6mpO/39OCBtAMa2 q0ndco+fi8G86dOfc5GfpT89+xXE9tGeL40E9MEyAdTnu8F3+WNVA8HaZt531bq0GBT0mbxf1hB 0DJOeI/JutGdo7YonxPMwhiinqzmltpKB18gqPS/dGJEMfyLzB0RAdTNDA6xgpGz/sZKMCwGryJ
+ u+bJ7aCGxsuwq+ZMNVKqhsbk21BDz5XV2K5CIkAQ8qLP13qgyR2Skg6z9m3iu2gDtJRdtL3+
+X-Proofpoint-ORIG-GUID: gZa7q5qYtC7tZPcdzV8irWfpZBYMoIy-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-28_06,2025-05-27_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ bulkscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=478 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505160000
+ definitions=main-2505280114
 
-Hello Shakeel,
-
-On Tue, May 27, 2025 at 09:54:10AM -0700, Shakeel Butt wrote:
-> On Tue, May 27, 2025 at 03:03:34AM -0700, Breno Leitao wrote:
-> > 
-> > Not sure I followed you here. __oom_kill_process is doing the following:
-> > 
-> >   static void __oom_kill_process(struct task_struct *victim, const char *message)
-> >   {
-> > 	...
-> >         pr_err("%s: Killed process %d (%s) total-vm:%lukB, anon-rss:%lukB, file-rss:%lukB, shmem-rss:%lukB, UID:%u pgtables:%lukB oom_score_adj:%hd\n",
-> > 
-> > 
-> > Would you use a buffer to print to, and them flush it at the same time
-> > (with pr_err()?)
-> > 
+On Tue, May 27, 2025 at 11:58:50AM +0200, Michal Koutný wrote:
+> Hello.
 > 
-> Something similar to what mem_cgroup_print_oom_meminfo() does with
-> seq_buf.
+> On Tue, May 27, 2025 at 02:23:36PM +0530, Vishal Chourasia <vishalc@linux.ibm.com> wrote:
+> > --- a/Documentation/admin-guide/cgroup-v2.rst
+> > +++ b/Documentation/admin-guide/cgroup-v2.rst
+> > @@ -438,8 +438,8 @@ Controlling Controllers
+> >  Enabling and Disabling
+> >  ~~~~~~~~~~~~~~~~~~~~~~
+> >  
+> > -Each cgroup has a "cgroup.controllers" file which lists all
+> > -controllers available for the cgroup to enable::
+> > +Each cgroup has a cgroup.controllers file, which lists all the controllers
+> > +available for that cgroup and which can be enabled for its children.
+> >  
+> >    # cat cgroup.controllers
+> >    cpu io memory
+> 
+> Honestly, I see little difference between the two resulting formulations.
+> Could you perhaps add an example where the documentation confused you or
+> behavior was not what you expected based on the docs?
+Hello Michal,
 
-Right, where do you want to flush this buffer? I suppose we want to do
-it at once, in the caller (mem_cgroup_scan_tasks()), otherwise we will
-have the same problem, I would say.
+The part that was confused me, was the meaning behind controller being
+available vs. enabled in a cgroup.
 
-This is the code flow we are executing when I got this issue:
+Though, the documentation does mention what it means for a controller to
+be enabled in a cgroup later in the text. But at the point of the
+change it is unclear.
 
-mem_cgroup_scan_tasks() {
-	for_each_mem_cgroup_tree(iter, memcg) {
-		ret = fn(task, arg); 		 //where fn() is oom_kill_memcg_member()
-			oom_kill_memcg_member() {
-				__oom_kill_process() {
-					pr_info()
-					pr_err()
-				}
-			}
-	}
-}
+Thanks
+Vishal
 
-So, basically it prints one/two message(s) for each process, and goes to
-2k processes, so, __oom_kill_process() is called 2k times when the memcg
-is dying out.
 
-mem_cgroup_print_oom_meminfo() seems a bit different, where it coalesces
-a bunch of message in the same function and print them all at the same
-time.
+> 
+> Thanks,
+> Michal
 
-Another option is to create a buffer to mem_cgroup_scan_tasks(), but
-then we need to pass it to all fn(), and pushing down the
-replacement of printk() by seq_buf_printf(). Is this what you meant?
 
-If so, another concern I have is the buffer size to be printed at once.
-Let's suppose we have 2k "Killed process..." message in the buffer. Do
-we want to print it at once? (without a cond_resched()?)
-
-Thanks for the discussion,
---breno
 
