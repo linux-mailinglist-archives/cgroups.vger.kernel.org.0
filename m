@@ -1,163 +1,142 @@
-Return-Path: <cgroups+bounces-8365-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8366-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5C4CAC5F17
-	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 04:11:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E016AC5F1C
+	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 04:13:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F55A17FD0A
-	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 02:11:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AD937A14C2
+	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 02:12:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A401B0F33;
-	Wed, 28 May 2025 02:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 462831BC9F4;
+	Wed, 28 May 2025 02:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IZNiwBun"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cz6jtAEl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C7654764;
-	Wed, 28 May 2025 02:11:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF811EB3E;
+	Wed, 28 May 2025 02:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748398290; cv=none; b=Rq7CjD+dyVxz8qcd7T692pAnvM5+pXzxhJMq1kH0HmpyuSA4swug0kh75zD5Nf9DhJKhVWaUjcSa3A9ojcS9ftkm1SKhq4HlnHsmZed7KoSXa32P+8DtuLPa4oEUUH5WnOC/6jgGCdNwNeQHkVrUfN/L1lSd9Isw6q5cbXJvLbo=
+	t=1748398420; cv=none; b=le7hq62muJrzTQdajZuV5WnSnHcdGMQVPmyg7xiypf8K98zNCTmGrDxnssHvoIvwTGUtD/2AScO0e0f3XBSh0xGHm9wHdDSi3HC4Xh6Jrqct+wjRAOZM2NokoBBPp1RafY25YOI5+cqWFDXezGaPbWl5WQDB1TGXnur34cBXDPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748398290; c=relaxed/simple;
-	bh=pOkeTJAMxL0EATITKTnUKdNuGMng0EDHbknS08HfamE=;
+	s=arc-20240116; t=1748398420; c=relaxed/simple;
+	bh=0vv8YDwrXvASiaI0Y21BNyVbZj1ZH1ZWyCc6Wy7jXU4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QjpGlIfiJPCCfj5apOTn7pfnn5sC3Q9r6mXOCy7st8DwWhySK5533ODK1d9/b1glSXuPPAzzzLCFvBqrH8tEZvxqYYrxhZglLS8LYaBQ/tNldEcf+DDodbDY+eO+87FLEWN4el6GgXCZrAqOhhepQHDGI3hJmGUUFfYizQkL/6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IZNiwBun; arc=none smtp.client-ip=209.85.219.43
+	 To:Cc:Content-Type; b=tIIdD2bInlcasphk0+lR38nVrdwUeEnFQiRLeEOGikQcM6DJMtR8LEYKgniZo2+oj7mJcwMISL+v93WxNTMJD0zRbrX3qxnJ623ieNu7a6ThL+ZMx/LIjGUXna5sz+v2DxX6X5Rt+AZOxeNMaIdX80N4erNwyY7iMtUS3BX3PvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cz6jtAEl; arc=none smtp.client-ip=209.85.219.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6fa9ce24d44so80034366d6.1;
-        Tue, 27 May 2025 19:11:28 -0700 (PDT)
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6fa956f0f16so40274556d6.3;
+        Tue, 27 May 2025 19:13:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748398287; x=1749003087; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1748398417; x=1749003217; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t+IW/tbaDggglZV+0MU4J5fQthnAp+Rb913Pmy/jkw0=;
-        b=IZNiwBunmYJPuPA2NWDtuureQ5FT7f9YXUA4O6BZKfrCQSa1ya0TdYRKyGxiMNxB43
-         GxpKFpTntq0/wKpzT6jNTwop3TvHsGmrBLCfaKdEIybHcO5/JVLjDsOxR/XxoI/jeEw9
-         QN4xjBbw+QQZ2HkoBjLVR/pDKjhIbQwfpCjwZ7VMhF68jz/T9BzJaryGjHShD8HBwVGc
-         /HyEK+YOFYjEzWe9WoV1rNdvviLtEqfvhsn3YfpXQIzZwzSv+I42MxhkWu7c2k0DyN+7
-         CJF9XJBsAZmrta44ZM00aEUhqKkQdKS7O3z30KiJgsUGqYUlQPDvb+MovMuCybcm780R
-         wfew==
+        bh=0vv8YDwrXvASiaI0Y21BNyVbZj1ZH1ZWyCc6Wy7jXU4=;
+        b=Cz6jtAEld+PVJON90lYPp94AaESuKfpqXFqA0Plsy60eO9bx1BUlDqq3ACtHlVQ1RP
+         8T8OhsndqGuWbmV6dk9eDWrEKuQVWWUAyErhPM2qEu2fme/TxVKdh3UgC/7SJIMfcX6g
+         6QKtLWzAeyl5jfFCQqE/N1htJh1ikymIwyK5LMpAodCU56pLwE8UH9Jc08b4pTxwC2rB
+         GTed3Pf4soa5+amNUbfY/rUCyjKKNvwhxOVdtfQK66RqUpDWByXVk7dIgsTtsoWxjWGu
+         Lw0aRhrUjiyeYD/7nqmZudNPbcg833aYDKVJbdFiMqkCd/PIjnkZrG+QNm6eSLrGkDiY
+         RIQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748398287; x=1749003087;
+        d=1e100.net; s=20230601; t=1748398417; x=1749003217;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t+IW/tbaDggglZV+0MU4J5fQthnAp+Rb913Pmy/jkw0=;
-        b=WbnJlUfBafcg9mhQG8GobHhLlDgQ9pME9JqBgMdsWWHVr6pVBV7ZKb2Gy23da6kUa0
-         ghws65OSkZLfTy9iz0SM7eFAWYuPiJ35D6MKeElvBEA1r+G5Q/K44NUwFWuPLj9qdWWc
-         ZACKhDvJsaRuHH1sgnjE9m1rfQD8z3SSoY+pDux0XMDCbebmtipHzIToGSwENylaYYk4
-         BZiWfGxOJxj+0muIWqisT0WqagYKxFh2kAxnE5m9NEFPvJ9acXo5ewgMl+LNJ/mkRwqi
-         U+5wCs9ZAhLF0tjQqf+cAOtuD7I4rNOWf23gNPjvJ6TUdbxv/5At+dU/L/2PboyNnGDj
-         HhYw==
-X-Forwarded-Encrypted: i=1; AJvYcCU77HCe3Av0R3NRGUVl28OpLxh+YetQ+j6cr8AZO7lvD56eoeSDzVV0tRlr9k2j4D2i3e6s8Dzy@vger.kernel.org, AJvYcCWPyoTparn8Hslscs/5+2hqiLd1MiDFqSVcYWeM6zC50V5jeutKmrM04ekN+jw3DJ5smF0Dq9yuh9MG7nLi@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTHcAuRfIESoSYrVItYkQa7D/+mxPlZ4e1e+52YNnQ8VO0AAne
-	UKK3OecJDq0jmdLGEnizbi5wZN9LBRsujV9uWY+zYHvZ5A0PQwNOOGjYIpHg10svTPEX6QDbBae
-	N5cosdwA4PQiKxwIyUZVIXwBtLgoJ0LA=
-X-Gm-Gg: ASbGncv+rerqxHy61Zp6Koh5T/bEJ9RsQzZoQ1Iqt7mRx0PWP5NPRAp695fyR/NuVVH
-	UxqFts2vUedynmLNAu7IBjzqgRSXaYGTTjQ3ojzo6ZHsylpgZilfRRbnPutVERml1oYpFnsEwh8
-	hhn6G8U571qewbqfQeFyJS6uUWKWgRFg+7xd6Pw/rOUMrX
-X-Google-Smtp-Source: AGHT+IFqGoiUYCgGrbA5DxzQtE0trjSe6SrEJmB9sYlmq9AqpiNwyRutGDaPq8aMbxqXgNunrJfRsi8Q2v0lW20nS0o=
-X-Received: by 2002:a05:6214:4016:b0:6e8:fa33:2965 with SMTP id
- 6a1803df08f44-6fa9d281ceamr245758656d6.14.1748398287548; Tue, 27 May 2025
- 19:11:27 -0700 (PDT)
+        bh=0vv8YDwrXvASiaI0Y21BNyVbZj1ZH1ZWyCc6Wy7jXU4=;
+        b=U09M8LF/BxhDQcMA/NUJWvpO7cNx48cQsW230hnqxTfIXHscWSf838B88gJbDAMfjq
+         rghVpX+ynMCLhyFmN5+dkm9NeHuPkJg2hfRl+HwAW1NpR2DCMqbIgRBIkNnqsfG3Cqne
+         ypUWw38rZ1xMl239X0e9Prv7Hs9j898hbvI5rRUtzuoSApSIOD3CFKH6164ciRC8NNqG
+         TeZE07CqHjO7Q/t6vD0h9FZhqua6V/GPG4R2fDNU2dZ9ZDtR5emlaV26OwKg+1vqpYRE
+         P+FLBCXNSKmPbfxIEKELKSw5P7Dx24MhOuqgMw61Iv8V4LQ3Uh11WjkBP8QWnHMmcfmn
+         A+1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVAWjtgI0D0qXLT/uVBSbJNTHUdZsFIcakKp6zGa6KmAhIPfrhB+zxljKVGv+ny03OxUe1SAkzQ@vger.kernel.org, AJvYcCWYpjXm/o3jASBgXkFF22C2qeh/zymvW5/QNWXAxxQxTXJUOKF3LZzyyeNt1V85tZni+srkGI1VQVA4rkA5@vger.kernel.org
+X-Gm-Message-State: AOJu0YzIARXTRETztdSL+a+GWq7dS67gxesBxYdWqAmwBZENMR0ReJ0W
+	eeJo1kkIKe4n3rSY9fln7To47dadz2+rZN21eZMfiIEvFbMbjrPRrY1YdXgLdamfTvwMEXaaKrj
+	up9xW2fgaURsfbUAVzbb0iMC35b9i24Q=
+X-Gm-Gg: ASbGnctuxbkggS7UiuVJt52fRqbL1g4VL6O8diMMfxij2FiTBhIbA7m84tx4pojT27Z
+	NGTZLJKziXY9uJ1pC2U8KMy6yCO3MJbF40ChqQufVkqrYOW7rFvIYRC/3Zq8PmwJxW9STe9rHSm
+	4WRJYM6zWPuCP3R05vMZs9DFNBxsoIH7fEnMVc/fRdUsvcQw9UXoVrIN4=
+X-Google-Smtp-Source: AGHT+IEmn7LOIXOqzn94ygtrgYOdYuISQJpF/KL7y3Q6iZwh20kDfRclQ7Wn9Fm0BTI+5nzBDZcxtCzZgBc3XbPO7+w=
+X-Received: by 2002:ad4:4ea9:0:b0:6f8:aa6f:438b with SMTP id
+ 6a1803df08f44-6fa9cfff0b8mr227915346d6.3.1748398417228; Tue, 27 May 2025
+ 19:13:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250511030800.1900-1-laoar.shao@gmail.com> <20250511030800.1900-2-laoar.shao@gmail.com>
- <2e3mby62lswkw454sq4b4wnjmcr6etoug5bazafutb6dbbpozl@juhpci6ebev2>
-In-Reply-To: <2e3mby62lswkw454sq4b4wnjmcr6etoug5bazafutb6dbbpozl@juhpci6ebev2>
+References: <20250511030800.1900-1-laoar.shao@gmail.com> <20250511030800.1900-3-laoar.shao@gmail.com>
+ <umy4kicwvlsaszajo62pcpgptcdqi2yp7pponvlch5h6tirabb@mhhq2en3piel>
+In-Reply-To: <umy4kicwvlsaszajo62pcpgptcdqi2yp7pponvlch5h6tirabb@mhhq2en3piel>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 28 May 2025 10:10:51 +0800
-X-Gm-Features: AX0GCFs-iee39CFIkSuN-rGZvbGheNTuMekcfo6HWdqcULPDoQGXbErWiG2nuok
-Message-ID: <CALOAHbBQXSuUmz8C2CKA2o-Menup8uz3qOX34JsZCCG68GhaWg@mail.gmail.com>
-Subject: Re: [PATCH v9 1/2] sched: Fix cgroup irq time for CONFIG_IRQ_TIME_ACCOUNTING
+Date: Wed, 28 May 2025 10:13:01 +0800
+X-Gm-Features: AX0GCFv7oMXfKN2u6YrYssepdLwylVhGKiw41GScgqmD-kM6FEB8melzxvcy-FI
+Message-ID: <CALOAHbCuYS6gcc4zMT3Pgo1ZcueuCMsTd3xSi-FkhLb3fBU8gA@mail.gmail.com>
+Subject: Re: [PATCH v9 2/2] sched: Annotate sched_clock_irqtime with __read_mostly
 To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
 Cc: mingo@redhat.com, peterz@infradead.org, hannes@cmpxchg.org, 
 	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
 	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, 
 	surenb@google.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	lkp@intel.com
+	lkp@intel.com, Eric Dumazet <edumazet@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Tue, May 27, 2025 at 11:33=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.c=
 om> wrote:
 >
-> Hello.
->
-> On Sun, May 11, 2025 at 11:07:59AM +0800, Yafang Shao <laoar.shao@gmail.c=
+> On Sun, May 11, 2025 at 11:08:00AM +0800, Yafang Shao <laoar.shao@gmail.c=
 om> wrote:
-> > The CPU usage of the cgroup is relatively low at around 55%, but this u=
-sage
-> > doesn't increase, even with more netperf tasks. The reason is that CPU0=
- is
-> > at 100% utilization, as confirmed by mpstat:
+> > Eric reported an issue [0] as follows,
+> > : rebalance_domains() can attempt to change sched_balance_running
+> > : more than 350,000 times per second on our servers.
 > >
-> >   02:56:22 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %st=
-eal  %guest  %gnice   %idle
-> >   02:56:23 PM    0    0.99    0.00   55.45    0.00    0.99   42.57    0=
-.00    0.00    0.00    0.00
-> >
-> >   02:56:23 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %st=
-eal  %guest  %gnice   %idle
-> >   02:56:24 PM    0    2.00    0.00   55.00    0.00    0.00   43.00    0=
-.00    0.00    0.00    0.00
-> >
-> > It is clear that the %soft is excluded in the cgroup of the interrupted
-> > task. This behavior is unexpected. We should include IRQ time in the
-> > cgroup to reflect the pressure the group is under.
+> > : If sched_clock_irqtime and sched_balance_running share the
+> > : same cache line, we see a very high cost on hosts with 480 threads
+> > : dealing with many interrupts.
 >
-> I think this would go against intention of CONFIG_IRQ_TIME_ACCOUNTING
-> (someony more familiar may chime in).
+> I'd say this patch could be independent from the "series".
 
-Please refer to the discussion with Ingo :
-https://lore.kernel.org/all/aBsGXCKX8-2_Cn9x@gmail.com/
+I will send it separately.
 
 >
-> > After a thorough analysis, I discovered that this change in behavior is=
- due
-> > to commit 305e6835e055 ("sched: Do not account irq time to current task=
-"),
-> > which altered whether IRQ time should be charged to the interrupted tas=
-k.
-> > While I agree that a task should not be penalized by random interrupts,=
- the
-> > task itself cannot progress while interrupted. Therefore, the interrupt=
-ed
-> > time should be reported to the user.
+> > While the rebalance_domains() issue has been resolved [1], we should
+> > proactively annotate sched_clock_irqtime with __read_mostly to prevent
+> > potential cacheline false sharing. This optimization is particularly
+> > justified since sched_clock_irqtime is only modified during TSC instabi=
+lity
+> > events.
 > >
-> > The system metric in cpuacct.stat is crucial in indicating whether a
-> > container is under heavy system pressure, including IRQ/softirq activit=
-y.
-> > Hence, IRQ/softirq time should be included in the cpuacct system usage,
-> > which also applies to cgroup2=E2=80=99s rstat.
+> > Link: https://lore.kernel.org/all/20250423174634.3009657-1-edumazet@goo=
+gle.com/ [0]
+> > Link: https://lore.kernel.org/all/20250416035823.1846307-1-tim.c.chen@l=
+inux.intel.com/ [1]
+> >
+> > Reported-by: Eric Dumazet <edumazet@google.com>
+> > Debugged-by: Eric Dumazet <edumazet@google.com>
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > Cc: Eric Dumazet <edumazet@google.com>
 >
-> So I guess, it'd be better to add a separate entry in cpu.stat with
-> irq_usec (instead of bundling it into system_usec in spite of
-> CONFIG_IRQ_TIME_ACCOUNTING).
+> I can say
+> Reviewed-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+
+Thanks for the review.
+
 >
-> I admit, I'd be happier if irq.pressure values could be used for
-> that. Maybe not the PSI ratio itself but irq.pressure:total should be
-> that amount. WDYT?
-
-Thank you for your suggestion. Both methods can effectively retrieve
-the container=E2=80=99s IRQ usage. However, I prefer adding a new entry
-irq_usec to cpu.stat since it aligns better with CPU utilization
-metrics.
+> but it'd be good to have also Tested-by: wrt the cache traffic
+> reduction.
 
 
---
+--=20
 Regards
 Yafang
 
