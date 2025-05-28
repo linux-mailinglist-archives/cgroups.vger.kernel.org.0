@@ -1,93 +1,163 @@
-Return-Path: <cgroups+bounces-8364-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8365-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB48BAC5E28
-	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 02:21:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5C4CAC5F17
+	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 04:11:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DF739E68F9
-	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 00:20:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F55A17FD0A
+	for <lists+cgroups@lfdr.de>; Wed, 28 May 2025 02:11:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AAE487BE;
-	Wed, 28 May 2025 00:21:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A401B0F33;
+	Wed, 28 May 2025 02:11:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Hnu9QoPI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IZNiwBun"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45AAC1367;
-	Wed, 28 May 2025 00:21:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C7654764;
+	Wed, 28 May 2025 02:11:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748391674; cv=none; b=Npzl4eyOv1EERibZ8wOlCe2Or3Y6fOTnU/EKjaz+4sji1L3VW251J6DcmLSGrG5Md+tCTnRwiGt+UDpUssM5+sqDTg9axDpuXf6beSFrbvAhmdMEWOdDDBj/QJDkZFcn06vgp0XrBALQVpuGMfim+0xO5Sv+bwHHoGjuCgV/3bg=
+	t=1748398290; cv=none; b=Rq7CjD+dyVxz8qcd7T692pAnvM5+pXzxhJMq1kH0HmpyuSA4swug0kh75zD5Nf9DhJKhVWaUjcSa3A9ojcS9ftkm1SKhq4HlnHsmZed7KoSXa32P+8DtuLPa4oEUUH5WnOC/6jgGCdNwNeQHkVrUfN/L1lSd9Isw6q5cbXJvLbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748391674; c=relaxed/simple;
-	bh=MiplJaSXo9+qkAJjfFdFOEBgp25rtyEwQyCkvimB9gQ=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=rJF8q2qGyGa+YQdT7cd6sm53Ow3plF767cwAgfnsdwKoiw9tLofeUwYWApfLVF59eI6lHrXh9wP3X3yl31ZDBn3Hrbq3Uxh0ANeh8bC3EGWPUPQqtqRrCZJkNtJexJvU+Fw0vor99o3mXHLali9HmXiH5WBGrhI82UbCg/sndd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Hnu9QoPI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D46FC4CEE9;
-	Wed, 28 May 2025 00:21:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1748391674;
-	bh=MiplJaSXo9+qkAJjfFdFOEBgp25rtyEwQyCkvimB9gQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Hnu9QoPIsDm/qvQexRpVo4Y2RW0eOPfck2LEZ76NoCdaT5ZNilp1/YhMH2rzmAVcq
-	 d95jUYWe56OjtCCL8rWcNfoYpPxtBWzJCQzcIXLlyY81aX+IOGQWys6pm3dyexLN3V
-	 jPhHi32H4pklSJgSjZMTejYsJmCHvHQ6r/f5iP3k=
-Date: Tue, 27 May 2025 17:21:12 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Chen Yu <yu.c.chen@intel.com>, peterz@infradead.org, mkoutny@suse.com,
- mingo@redhat.com, tj@kernel.org, hannes@cmpxchg.org, corbet@lwn.net,
- mgorman@suse.de, mhocko@kernel.org, muchun.song@linux.dev,
- roman.gushchin@linux.dev, tim.c.chen@intel.com, aubrey.li@intel.com,
- libo.chen@oracle.com, kprateek.nayak@amd.com, vineethr@linux.ibm.com,
- venkat88@linux.ibm.com, ayushjai@amd.com, cgroups@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, yu.chen.surf@foxmail.com
-Subject: Re: [PATCH v5 0/2] sched/numa: add statistics of numa balance task
- migration
-Message-Id: <20250527172112.18612286e9a193089d42a027@linux-foundation.org>
-In-Reply-To: <qob64enpuewivcne2b7prnuahs3nr6v6kuil7suskcsfgdoqew@pdxpbd4ghrxk>
-References: <cover.1748002400.git.yu.c.chen@intel.com>
-	<20250523150635.5901dbb92b8379c9d88f88ca@linux-foundation.org>
-	<qob64enpuewivcne2b7prnuahs3nr6v6kuil7suskcsfgdoqew@pdxpbd4ghrxk>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1748398290; c=relaxed/simple;
+	bh=pOkeTJAMxL0EATITKTnUKdNuGMng0EDHbknS08HfamE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QjpGlIfiJPCCfj5apOTn7pfnn5sC3Q9r6mXOCy7st8DwWhySK5533ODK1d9/b1glSXuPPAzzzLCFvBqrH8tEZvxqYYrxhZglLS8LYaBQ/tNldEcf+DDodbDY+eO+87FLEWN4el6GgXCZrAqOhhepQHDGI3hJmGUUFfYizQkL/6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IZNiwBun; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6fa9ce24d44so80034366d6.1;
+        Tue, 27 May 2025 19:11:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748398287; x=1749003087; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t+IW/tbaDggglZV+0MU4J5fQthnAp+Rb913Pmy/jkw0=;
+        b=IZNiwBunmYJPuPA2NWDtuureQ5FT7f9YXUA4O6BZKfrCQSa1ya0TdYRKyGxiMNxB43
+         GxpKFpTntq0/wKpzT6jNTwop3TvHsGmrBLCfaKdEIybHcO5/JVLjDsOxR/XxoI/jeEw9
+         QN4xjBbw+QQZ2HkoBjLVR/pDKjhIbQwfpCjwZ7VMhF68jz/T9BzJaryGjHShD8HBwVGc
+         /HyEK+YOFYjEzWe9WoV1rNdvviLtEqfvhsn3YfpXQIzZwzSv+I42MxhkWu7c2k0DyN+7
+         CJF9XJBsAZmrta44ZM00aEUhqKkQdKS7O3z30KiJgsUGqYUlQPDvb+MovMuCybcm780R
+         wfew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748398287; x=1749003087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t+IW/tbaDggglZV+0MU4J5fQthnAp+Rb913Pmy/jkw0=;
+        b=WbnJlUfBafcg9mhQG8GobHhLlDgQ9pME9JqBgMdsWWHVr6pVBV7ZKb2Gy23da6kUa0
+         ghws65OSkZLfTy9iz0SM7eFAWYuPiJ35D6MKeElvBEA1r+G5Q/K44NUwFWuPLj9qdWWc
+         ZACKhDvJsaRuHH1sgnjE9m1rfQD8z3SSoY+pDux0XMDCbebmtipHzIToGSwENylaYYk4
+         BZiWfGxOJxj+0muIWqisT0WqagYKxFh2kAxnE5m9NEFPvJ9acXo5ewgMl+LNJ/mkRwqi
+         U+5wCs9ZAhLF0tjQqf+cAOtuD7I4rNOWf23gNPjvJ6TUdbxv/5At+dU/L/2PboyNnGDj
+         HhYw==
+X-Forwarded-Encrypted: i=1; AJvYcCU77HCe3Av0R3NRGUVl28OpLxh+YetQ+j6cr8AZO7lvD56eoeSDzVV0tRlr9k2j4D2i3e6s8Dzy@vger.kernel.org, AJvYcCWPyoTparn8Hslscs/5+2hqiLd1MiDFqSVcYWeM6zC50V5jeutKmrM04ekN+jw3DJ5smF0Dq9yuh9MG7nLi@vger.kernel.org
+X-Gm-Message-State: AOJu0YzTHcAuRfIESoSYrVItYkQa7D/+mxPlZ4e1e+52YNnQ8VO0AAne
+	UKK3OecJDq0jmdLGEnizbi5wZN9LBRsujV9uWY+zYHvZ5A0PQwNOOGjYIpHg10svTPEX6QDbBae
+	N5cosdwA4PQiKxwIyUZVIXwBtLgoJ0LA=
+X-Gm-Gg: ASbGncv+rerqxHy61Zp6Koh5T/bEJ9RsQzZoQ1Iqt7mRx0PWP5NPRAp695fyR/NuVVH
+	UxqFts2vUedynmLNAu7IBjzqgRSXaYGTTjQ3ojzo6ZHsylpgZilfRRbnPutVERml1oYpFnsEwh8
+	hhn6G8U571qewbqfQeFyJS6uUWKWgRFg+7xd6Pw/rOUMrX
+X-Google-Smtp-Source: AGHT+IFqGoiUYCgGrbA5DxzQtE0trjSe6SrEJmB9sYlmq9AqpiNwyRutGDaPq8aMbxqXgNunrJfRsi8Q2v0lW20nS0o=
+X-Received: by 2002:a05:6214:4016:b0:6e8:fa33:2965 with SMTP id
+ 6a1803df08f44-6fa9d281ceamr245758656d6.14.1748398287548; Tue, 27 May 2025
+ 19:11:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20250511030800.1900-1-laoar.shao@gmail.com> <20250511030800.1900-2-laoar.shao@gmail.com>
+ <2e3mby62lswkw454sq4b4wnjmcr6etoug5bazafutb6dbbpozl@juhpci6ebev2>
+In-Reply-To: <2e3mby62lswkw454sq4b4wnjmcr6etoug5bazafutb6dbbpozl@juhpci6ebev2>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 28 May 2025 10:10:51 +0800
+X-Gm-Features: AX0GCFs-iee39CFIkSuN-rGZvbGheNTuMekcfo6HWdqcULPDoQGXbErWiG2nuok
+Message-ID: <CALOAHbBQXSuUmz8C2CKA2o-Menup8uz3qOX34JsZCCG68GhaWg@mail.gmail.com>
+Subject: Re: [PATCH v9 1/2] sched: Fix cgroup irq time for CONFIG_IRQ_TIME_ACCOUNTING
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: mingo@redhat.com, peterz@infradead.org, hannes@cmpxchg.org, 
+	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, 
+	surenb@google.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	lkp@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 23 May 2025 16:52:46 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
+On Tue, May 27, 2025 at 11:33=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.c=
+om> wrote:
+>
+> Hello.
+>
+> On Sun, May 11, 2025 at 11:07:59AM +0800, Yafang Shao <laoar.shao@gmail.c=
+om> wrote:
+> > The CPU usage of the cgroup is relatively low at around 55%, but this u=
+sage
+> > doesn't increase, even with more netperf tasks. The reason is that CPU0=
+ is
+> > at 100% utilization, as confirmed by mpstat:
+> >
+> >   02:56:22 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %st=
+eal  %guest  %gnice   %idle
+> >   02:56:23 PM    0    0.99    0.00   55.45    0.00    0.99   42.57    0=
+.00    0.00    0.00    0.00
+> >
+> >   02:56:23 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %st=
+eal  %guest  %gnice   %idle
+> >   02:56:24 PM    0    2.00    0.00   55.00    0.00    0.00   43.00    0=
+.00    0.00    0.00    0.00
+> >
+> > It is clear that the %soft is excluded in the cgroup of the interrupted
+> > task. This behavior is unexpected. We should include IRQ time in the
+> > cgroup to reflect the pressure the group is under.
+>
+> I think this would go against intention of CONFIG_IRQ_TIME_ACCOUNTING
+> (someony more familiar may chime in).
 
-> On Fri, May 23, 2025 at 03:06:35PM -0700, Andrew Morton wrote:
-> > On Fri, 23 May 2025 20:48:02 +0800 Chen Yu <yu.c.chen@intel.com> wrote:
-> > 
-> > > Introducing the task migration and swap statistics in the following places:
-> > > /sys/fs/cgroup/{GROUP}/memory.stat
-> > > /proc/{PID}/sched
-> > > /proc/vmstat
-> > > 
-> > > These statistics facilitate a rapid evaluation of the performance and resource
-> > > utilization of the target workload.
-> > 
-> > Thanks.  I added this.
-> > 
-> > We're late in -rc7 but an earlier verison of this did have a run in
-> > linux-next.  Could reviewers please take a look relatively soon, let us
-> > know whether they believe this looks suitable for 6.16-rc1?
-> > 
-> 
-> The stats seems valuable but I am not convinced that memcg is the right
-> home for these stats. So, please hold until that is resolved.
+Please refer to the discussion with Ingo :
+https://lore.kernel.org/all/aBsGXCKX8-2_Cn9x@gmail.com/
 
-No probs, I'll keep these in mm-new until something changes.
+>
+> > After a thorough analysis, I discovered that this change in behavior is=
+ due
+> > to commit 305e6835e055 ("sched: Do not account irq time to current task=
+"),
+> > which altered whether IRQ time should be charged to the interrupted tas=
+k.
+> > While I agree that a task should not be penalized by random interrupts,=
+ the
+> > task itself cannot progress while interrupted. Therefore, the interrupt=
+ed
+> > time should be reported to the user.
+> >
+> > The system metric in cpuacct.stat is crucial in indicating whether a
+> > container is under heavy system pressure, including IRQ/softirq activit=
+y.
+> > Hence, IRQ/softirq time should be included in the cpuacct system usage,
+> > which also applies to cgroup2=E2=80=99s rstat.
+>
+> So I guess, it'd be better to add a separate entry in cpu.stat with
+> irq_usec (instead of bundling it into system_usec in spite of
+> CONFIG_IRQ_TIME_ACCOUNTING).
+>
+> I admit, I'd be happier if irq.pressure values could be used for
+> that. Maybe not the PSI ratio itself but irq.pressure:total should be
+> that amount. WDYT?
+
+Thank you for your suggestion. Both methods can effectively retrieve
+the container=E2=80=99s IRQ usage. However, I prefer adding a new entry
+irq_usec to cpu.stat since it aligns better with CPU utilization
+metrics.
+
+
+--
+Regards
+Yafang
 
