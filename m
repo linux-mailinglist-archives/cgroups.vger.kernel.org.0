@@ -1,62 +1,63 @@
-Return-Path: <cgroups+bounces-8382-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8383-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0CC8AC775C
-	for <lists+cgroups@lfdr.de>; Thu, 29 May 2025 07:00:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96C98AC775F
+	for <lists+cgroups@lfdr.de>; Thu, 29 May 2025 07:02:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 313DB1BA6792
-	for <lists+cgroups@lfdr.de>; Thu, 29 May 2025 05:00:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDCD17ABCDB
+	for <lists+cgroups@lfdr.de>; Thu, 29 May 2025 05:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D789252296;
-	Thu, 29 May 2025 05:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 967F825229C;
+	Thu, 29 May 2025 05:02:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bwTaqbeH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mnmWJtIk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E3C0374D1;
-	Thu, 29 May 2025 05:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6523C374D1;
+	Thu, 29 May 2025 05:02:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748494826; cv=none; b=YWsdCpsVahKOz5eowRDeQtPisrek2oM7PbpMBadgi6sjsF5qIaV7H5zGFLpFmlJA9/4YduGEu2hHh6wWL9jB7PHdl7J309zlSS6Vxj2F4DyciulVH4EeyD+EAfIotTFKs6dXvJgOjh2asGvJBJy9e+RWUZ1LlnNg0pSvAu5F93U=
+	t=1748494932; cv=none; b=IH7Kv/+VuFmpmHeBPcp85pnxAsYthr0cFLR91eN4cMTDOn8epRgmGuxdTteh2vwB8DZ7fiTr76YGmtu58A0YsqGFkcGSTtyh8D3GoMlJZ+8LiopqNFxpatzfcppecFnXmPm2zjSneP7Ky8TesZvJQu3yyhGybrSfB4VTzkeA7GQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748494826; c=relaxed/simple;
-	bh=Uj9KaTlKjZ04OwLsCy31/baS+zN3iU7xI+0xVMtauG4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=blY3boxyVzq7wA0sB3vxiYKLUjcY9hZ4Bhzkd12Nj6mHQ5STX0+4CyLe+ILeCFYxdZZKNux6+2sufelJ4UUE0i8eU3gmZmM03AxgKUehbkcIsHS2vkfDi6hkDL2za74bwsY8iTQEsuvnQSbgVa8nozAVprGwy6CbiZMRuQb2ENQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bwTaqbeH; arc=none smtp.client-ip=192.198.163.18
+	s=arc-20240116; t=1748494932; c=relaxed/simple;
+	bh=K3tT8ayPay0EwSKZy1JU8tEbONSykiQ4PlOtU3Ckvn4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Y+YDQEiEqd+KMHO0U/KfZO3rUpTNZlCPA6DjZxajy1UeMV2WvyhDxNjhxDSnF1ctcVfLoFJtIk303EOjNwV3fq3WfdtYbqPIpHiWg1bdJCoXFvdXoiRu9uhg8XhVEhHAv5aOp6d43VQsff4xbjv06A6vpacLW5mwHT/D5m+GmBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mnmWJtIk; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748494825; x=1780030825;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Uj9KaTlKjZ04OwLsCy31/baS+zN3iU7xI+0xVMtauG4=;
-  b=bwTaqbeHE7O0inZMQrsNMOvcMZxmN6D0VIhuAmLM/LkkLXMyeFreILqq
-   jc6njbzTn0Gr2XXuTIFiYDHmetYDgF/F/2JSuMj0FpOS4M0DO2PMNQuYY
-   nDUz0h9QeRwI5UUiip6dE2sbePr+dWzbekhhMNcuVNFDlRvIW4n2cASpr
-   YRccChTND/Qk9xYEBKTKsMsUYc3zLkpTTD1Tpr+D5p4cQbHYdIer87MrO
-   8HkzKqDKxMNWvTYfcBBpyBvvBMQm8Wl8iIEzdiaOhV8CnoDRwyFu6ZlRL
-   62VN51LynEr8/MCu+Q1tvcsYNu5obtof4pHQEpQn0my9Q13w2GdsomKhI
-   g==;
-X-CSE-ConnectionGUID: R5dJkOS7Rye9pGcrNI3RTQ==
-X-CSE-MsgGUID: KLdUBbklQFC6xmiEBj/lvQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11447"; a="49789212"
+  t=1748494931; x=1780030931;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=K3tT8ayPay0EwSKZy1JU8tEbONSykiQ4PlOtU3Ckvn4=;
+  b=mnmWJtIkr3V/4bgOOV5LKVyDw+jeTxMJ5zfJ1B1uAblA6csMQLfQ67/2
+   ++CeRS9P9n9nC3gQR6bnnRu6CdAxW019HCFGfU7KtzDhcnjNtTLWEwJZi
+   Xthz+cxw9JGwtaBIahzHoF/AH9UlQz4vguhhy/XrRflElWwnUau5lMUW1
+   TmpUOoO2m9XTQj1jEKDt1Qs/D7ETd3xNBkncZDwZgx235No54jKtNkD8R
+   lestXhU1su2rhuNFaZSgmd8h4MV3HZxRq1jx3uJflvUh/bNOhrNB0axyd
+   o6+N4UUmtaQ9PAaqi42NPh75hn9AuHdRpaOJOivr1djYHkGhl2bWdzOBb
+   A==;
+X-CSE-ConnectionGUID: nhMpptmNSQOkmdAUeniI8Q==
+X-CSE-MsgGUID: suRZ2cSkRauz0VFEX4YWlw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11447"; a="61595272"
 X-IronPort-AV: E=Sophos;i="6.15,323,1739865600"; 
-   d="scan'208";a="49789212"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 22:00:24 -0700
-X-CSE-ConnectionGUID: 6Yc4bf51SwCaqGHQMXw8dg==
-X-CSE-MsgGUID: JbXJOqJWTOyPuhklUBvESA==
+   d="scan'208";a="61595272"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2025 22:02:10 -0700
+X-CSE-ConnectionGUID: J0O0Tn4mTC2aWNBc8tvOYQ==
+X-CSE-MsgGUID: mHzp68MQRZCdkoW42DzvQw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,323,1739865600"; 
-   d="scan'208";a="143778407"
+   d="scan'208";a="148737864"
 Received: from chenyu-dev.sh.intel.com ([10.239.62.107])
-  by fmviesa008.fm.intel.com with ESMTP; 28 May 2025 22:00:19 -0700
+  by orviesa005.jf.intel.com with ESMTP; 28 May 2025 22:02:04 -0700
 From: Chen Yu <yu.c.chen@intel.com>
 To: peterz@infradead.org,
 	akpm@linux-foundation.org,
@@ -82,11 +83,14 @@ Cc: mingo@redhat.com,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	yu.chen.surf@foxmail.com,
+	Ayush Jain <Ayush.jain3@amd.com>,
 	Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH v6 0/2] sched/numa: add statistics of numa balance task migration
-Date: Thu, 29 May 2025 12:53:36 +0800
-Message-Id: <cover.1748493462.git.yu.c.chen@intel.com>
+Subject: [PATCH v6 1/2] sched/numa: fix task swap by skipping kernel threads
+Date: Thu, 29 May 2025 12:54:04 +0800
+Message-Id: <43d68b356b25d124f0d222ebedf3859e86eefb9f.1748493462.git.yu.c.chen@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1748493462.git.yu.c.chen@intel.com>
+References: <cover.1748493462.git.yu.c.chen@intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -95,57 +99,67 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introducing the task migration and swap statistics in the following places:
-/sys/fs/cgroup/{GROUP}/memory.stat
-/proc/{PID}/sched
-/proc/vmstat
+From: Libo Chen <libo.chen@oracle.com>
 
-These statistics facilitate a rapid evaluation of the performance and resource
-utilization of the target workload.
+Task swapping is triggered when there are no idle CPUs in
+task A's preferred node. In this case, the NUMA load balancer
+chooses a task B on A's preferred node and swaps B with A. This
+helps improve NUMA locality without introducing load imbalance
+between nodes. In the current implementation, B's NUMA node
+preference is not mandatory. That is to say, a kernel thread
+might be incorrectly chosen as B. However, kernel thread and
+user space thread that does not have mm are not supposed to be
+covered by NUMA balancing because NUMA balancing only considers
+user pages via VMAs.
 
-Patch 1 is a fix from Libo to avoid task swapping for kernel threads
-and user thread that does not have mm, because Numa balance only cares
-about the user pages via VMA.
+According to Peter's suggestion for fixing this issue, we use
+PF_KTHREAD to skip the kernel thread. curr->mm is also checked
+because it is possible that user_mode_thread() might create a
+user thread without an mm. As per Prateek's analysis, after
+adding the PF_KTHREAD check, there is no need to further check
+the PF_IDLE flag:
+"
+- play_idle_precise() already ensures PF_KTHREAD is set before adding
+  PF_IDLE
 
-Patch 2 is the major change to expose the statistics of task migration and
-swapping in corresponding files.
+- cpu_startup_entry() is only called from the startup thread which
+  should be marked with PF_KTHREAD (based on my understanding looking at
+  commit cff9b2332ab7 ("kernel/sched: Modify initial boot task idle
+  setup"))
+"
 
-The reason to fold patch 1 and patch 2 into 1 patch set is that patch 1 is
-necessary for patch 2 to avoid accessing a NULL mm_struct from a kernel
-thread, which causes NULL pointer exception.
+In summary, the check in task_numa_compare() now aligns with
+task_tick_numa().
 
-Changes since v5:
-Enhance the git commit message to describe the reason why these events
-are introduced in memory.stat/vmstat rather than cpu.stat.
+Suggested-by: Michal Koutny <mkoutny@suse.com>
+Tested-by: Ayush Jain <Ayush.jain3@amd.com>
+Signed-off-by: Libo Chen <libo.chen@oracle.com>
+Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+v5->v6:
+Add Reviewed-by from Shakeel.
+v4->v5:
+Add PF_KTHREAD check, and remove PF_IDLE check(Prateek).
+---
+ kernel/sched/fair.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Previous version:
-v5:
-https://lore.kernel.org/all/cover.1748002400.git.yu.c.chen@intel.com/
-v4:
-https://lore.kernel.org/all/cover.1746611892.git.yu.c.chen@intel.com/
-v3:
-https://lore.kernel.org/lkml/20250430103623.3349842-1-yu.c.chen@intel.com/
-v2:
-https://lore.kernel.org/lkml/20250408101444.192519-1-yu.c.chen@intel.com/
-v1:
-https://lore.kernel.org/lkml/20250402010611.3204674-1-yu.c.chen@intel.com/
-
-Chen Yu (1):
-  sched/numa: add statistics of numa balance task
-
-Libo Chen (1):
-  sched/numa: fix task swap by skipping kernel threads
-
- Documentation/admin-guide/cgroup-v2.rst | 6 ++++++
- include/linux/sched.h                   | 4 ++++
- include/linux/vm_event_item.h           | 2 ++
- kernel/sched/core.c                     | 9 +++++++--
- kernel/sched/debug.c                    | 4 ++++
- kernel/sched/fair.c                     | 3 ++-
- mm/memcontrol.c                         | 2 ++
- mm/vmstat.c                             | 2 ++
- 8 files changed, 29 insertions(+), 3 deletions(-)
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 125912c0e9dd..68aa5941c8ba 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -2273,7 +2273,8 @@ static bool task_numa_compare(struct task_numa_env *env,
+ 
+ 	rcu_read_lock();
+ 	cur = rcu_dereference(dst_rq->curr);
+-	if (cur && ((cur->flags & PF_EXITING) || is_idle_task(cur)))
++	if (cur && ((cur->flags & (PF_EXITING | PF_KTHREAD)) ||
++		    !cur->mm))
+ 		cur = NULL;
+ 
+ 	/*
 -- 
 2.25.1
 
