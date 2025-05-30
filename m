@@ -1,140 +1,159 @@
-Return-Path: <cgroups+bounces-8394-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8395-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED33BAC8B89
-	for <lists+cgroups@lfdr.de>; Fri, 30 May 2025 11:58:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 289BDAC90D8
+	for <lists+cgroups@lfdr.de>; Fri, 30 May 2025 16:02:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64051650BB
-	for <lists+cgroups@lfdr.de>; Fri, 30 May 2025 09:58:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FADE3BCB7F
+	for <lists+cgroups@lfdr.de>; Fri, 30 May 2025 14:01:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719E0221287;
-	Fri, 30 May 2025 09:58:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF6E22CBD0;
+	Fri, 30 May 2025 14:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NtEsHjOm"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FWqJRA8w"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BC7221CA0A
-	for <cgroups@vger.kernel.org>; Fri, 30 May 2025 09:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3967FBF0;
+	Fri, 30 May 2025 14:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748599092; cv=none; b=MzzgyCi9sGDH7WHbf4gFjTNXMmaENQEeb0sUbuoSbQX+ZiJuGa/P5i3R2ohC6Llsx8oq+0+7N74ZyuJV5lBdHdZlCilFSWg15KyoN7HEnXHf2jzqmwe0Hzq/OEq8O3sTXRAGt2/WU0ZmUVb7Oqho/wiIZxh3g4QlwA72MOjvgQs=
+	t=1748613710; cv=none; b=RfXci0DCIYT+UCLDA1/apXVwMi3gn0Vi69Iy/jO+mxwTnpRAvtVDI/IHfAqANOVsh1woDQoAAngZpA+l/Fp7loBPaa2R7y/Z3NEgFKaR3QiVPtGfaHuZc412Q3dvkaWV9QJHpuwbSAun5dB5CX41+6hzlsxARCij1QzChGJ2Tgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748599092; c=relaxed/simple;
-	bh=06rysxkXnUrExFnGgrvtJc+zY6h+gcD7eGfOJ+tWEu4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k2sL8eXOjtrfpBKTQDqboI5S7y/Rs2bAvohjvRGiWFaKTi0g27vNsZqh7SO4KBkQ8yRmuDlzBwi5rh88PpP4HfnHwh0ApWIlgcKfOV30TEO5uVZsYCP7Mq7j/ShLIYXO0r++LfhNrH3t0KE1M1WdH27mmCSvA6HMWbOG1DX6AME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NtEsHjOm; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3a4f89c6e61so233029f8f.3
-        for <cgroups@vger.kernel.org>; Fri, 30 May 2025 02:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1748599088; x=1749203888; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DEvii1pOVk9lN8GqyI1B0fzW7CXipnBmMJVaTrcONTw=;
-        b=NtEsHjOmhPuJrA1efMfonPZ8axV/AvkuH6XO1KPMaZVcic5aia9guRQqaMIlayxz+2
-         F09oVHTPw1g4dkozZDTFEmXtdxKOZraMwG8pfPm3lqpzaXBUst4RAuFPXy5kaIZekADv
-         nmUEF2+0gbK1Y09lUPAGT4sznOVIiG9ujWt/eO8Vi+mnQb6HuInhtEpiC1YJtYt94Yp4
-         k3b9yPh6+8ewdIpxS+unjxIW4s5obrFOwC/zoJMNgloAwZ9Giouf84E2LkMX441i/NhP
-         rcDnUX469d4LqvNpngwBNqEIT68CWQVJC0MYysl538HQjv6lbzTQLYYo5hyy74I5DxxC
-         AyBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748599088; x=1749203888;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DEvii1pOVk9lN8GqyI1B0fzW7CXipnBmMJVaTrcONTw=;
-        b=UxUtNxn6ALbkFVSg3a+ICZz7MuvxmWwDHwGYF6lwEIkmXhYoBK5EvvFuVc0GSiXMbF
-         hk2pTqJatWQSK6B+QcOL/DppSo4DAFUyOHUKVpI6N9g5kFDvF9cg1KsD+Y+4OWcX9N99
-         6ZzGTWbUcbLpltyTFvVuVVqz52YseLyI/qMsrmEsHQCAJcCDDwFyMLptIDSeVp8UHzbv
-         w6XFY7lG8IpVN7t0JBnYXAfPRD5KrjhtK+uS1fko9rsSJr2XFQWB+ZojDLljTWQ9NIeg
-         kSTw8lNl/KpvViCkHYF4i8Y6wdRKc1QmLt8Jk2ne9uq8xiJj7oilo3EGvZguWhKMtgP2
-         ma4A==
-X-Forwarded-Encrypted: i=1; AJvYcCWNhy/BAWgvf+YZ+bqtsWSTddlRRO3QbxlEpfQmgKfpJ6+Lw8ZBbcjAxgpYfvK5Af5J5g4Mry1b@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZGdgokeVUXxx91nGsMwr8E7DqjrIcnGV8rmZOqEaCwGWLUjnX
-	BkZqE9XTKDmRyY++TRd6tRfxL14hPk3GWDqHfR7lZH7RCsAMnNMRPNEwMMs5xruLJ5o=
-X-Gm-Gg: ASbGncvYRgrbbH29i/cILi9POAh/lqZ9WVoLHj5uCdxvofAyHT4iLDiPwKsdln+FnHl
-	/Q5r3POCp9Rnjz9CDI/eK4lFO2C0Ex/xffmeyen5LHHFtwjkbel8YDqC9LVjvN0Srq7R74JvD/z
-	OeEO62wyTaJY+ioKZvMBskktKOJ/1naxA/Xvhrstb4QUgcvdSKBXB8/WWpMWWBv9ypzOQ5fOxc8
-	P03lBTDyKx+BvFc718yvw8SzNxKEhArsfFn+zjpwEfQFAmlb/j5kCUbTIBG42n4vm9ba/veUDsP
-	00CnmX+tlII1UQWJeSzpfhShQffaypMXu+fe5QHLZmq2eUvID6XpJg==
-X-Google-Smtp-Source: AGHT+IHxkayBOoksQdAIBCZb83R6LdCpek0pSUeOdEVaY1qIzGNrRd8I6KP16PXYgxeoEwy+Qfa00w==
-X-Received: by 2002:a05:6000:25c2:b0:3a4:f786:4fa1 with SMTP id ffacd0b85a97d-3a4f7a3bd69mr2056066f8f.2.1748599088138;
-        Fri, 30 May 2025 02:58:08 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4f009757fsm4400704f8f.78.2025.05.30.02.58.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 May 2025 02:58:07 -0700 (PDT)
-Date: Fri, 30 May 2025 11:58:05 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: tj@kernel.org, llong@redhat.com, klarasmodin@gmail.com, 
-	shakeel.butt@linux.dev, yosryahmed@google.com, hannes@cmpxchg.org, 
-	akpm@linux-foundation.org, cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH linus/master] cgroup: adjust criteria for rstat subsystem
- cpu lock access
-Message-ID: <eqodyyacsde3gv7mbi2q4iik6jeg5rdrix26ztj3ihqqr7gqk4@eefifftc7cld>
-References: <20250528235130.200966-1-inwardvessel@gmail.com>
+	s=arc-20240116; t=1748613710; c=relaxed/simple;
+	bh=IiWa3QYm+SUHUfGrRvdvNCqI8L5mMRzMn8FrCEm9dMw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cENqEtKyzG9n0GiXpoYwf5IutSLgVzPqkRRt8Pzg0+GdqOCDYwpWvXKQ7MijINPPR68WveUCYjqXAUiEzLedJHTBP9ZOicFhBi6fO+4GDvNAts5lHjukMfZPhNaQH+cEEuvvWWNNsyzo8UVWG8IAuAbRcSZd4nQYvJulKpAYfuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FWqJRA8w; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54UCUU3v016369;
+	Fri, 30 May 2025 14:01:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=6hHECg
+	npQEPXpU2l4pVIj6oEuY8kux5ThRyZ5rj5SM0=; b=FWqJRA8wMcLzzcu9gK/yag
+	96Poaw/AoeKadZdfLGfUKXOMVJF+nwXKHb78cGh6IVhBvqCzuu++I+YfFNabfnFu
+	xuHeQ2i/w0KBGQLCjhE2KcX+1iVObZhc2iMzkcD1LH9HHhVp/NDcOdgyUZNMFt7L
+	qhrSFfiVUVKPL0OLb1VRr7bBpDXekbfSujCLrQhI+dgE+jYlkZmCUkUX2iEcq6Qw
+	pGMLiMgfazOzKqUvU0Ahn7MSywZdScPu8XXCeEQ8C5Z8j+0w6Nfar/DelcJLYsXr
+	64++q+66dXjDinlOUFGnQSrMkjtfgX8UMP7Pqw/pTFpXFgAZoYS9/fdaXqD+vyFg
+	==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46x40kkxa6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 30 May 2025 14:01:36 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54UBMU6U027314;
+	Fri, 30 May 2025 14:01:35 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46useq9meg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 30 May 2025 14:01:34 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54UE1YS441353562
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 30 May 2025 14:01:34 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8AE9458059;
+	Fri, 30 May 2025 14:01:34 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4B3665806F;
+	Fri, 30 May 2025 14:01:30 +0000 (GMT)
+Received: from [9.67.145.202] (unknown [9.67.145.202])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 30 May 2025 14:01:29 +0000 (GMT)
+Message-ID: <f33af0f8-6d7b-479c-9d57-e5fd485d0f6e@linux.ibm.com>
+Date: Fri, 30 May 2025 19:31:28 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="q4wzbz5gvgo6qhhf"
-Content-Disposition: inline
-In-Reply-To: <20250528235130.200966-1-inwardvessel@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [linus:master] [block] 245618f8e4: stress-ng.fpunch.fail
+To: Oliver Sang <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Hannes Reinecke <hare@suse.de>, Ming Lei <ming.lei@redhat.com>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org
+References: <202505221030.760980df-lkp@intel.com>
+ <95753732-9714-42e0-8097-e2b4c3dd5820@linux.ibm.com>
+ <aDe9y3Ef+TEacRr3@xsang-OptiPlex-9020>
+Content-Language: en-US
+From: Nilay Shroff <nilay@linux.ibm.com>
+In-Reply-To: <aDe9y3Ef+TEacRr3@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: qbn8N2la_ccNjfFWSCbkNQG9aciyTlrs
+X-Authority-Analysis: v=2.4 cv=fuPcZE4f c=1 sm=1 tr=0 ts=6839ba40 cx=c_pps a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=i3X5FwGiAAAA:8 a=QyXUC8HyAAAA:8 a=CJm8QiaJa0guGxYXfB8A:9 a=QEXdDO2ut3YA:10
+ a=mmqRlSCDY2ywfjPLJ4af:22
+X-Proofpoint-GUID: qbn8N2la_ccNjfFWSCbkNQG9aciyTlrs
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTMwMDExOSBTYWx0ZWRfXxukEhbtcb9tu 0AaTGS/i8A2WZ1oNPnnB36fITs2g4pOgUmd9bWlV2Qx/zzapmEqoVr4u0fr+1bfOkaSAvW/d/Bv nlLEZ2ywOawmFRpEhL7Rqxi5gpsDGsX3heI2aeCVA8hmYQvc/PAkZGq7/6rcJR4O9VqKH9Z1G4A
+ 3/i7xkydqUD3R3saf+aHXl6VHCntPdSxGLLBOkSH3j4+Ko6EUPQxWDjreRxtOA236vvHqWKuhsx tKfd0ersEv/d9SO4nk+CBb45xjQDcLeOmiTABGUj5EsEE/6boB3wwwI2g0A5Xt1Qd3S498NHvf1 /YguK0b8oT7RILhW67h/yvoGxn8geqxpIVPZ0yfca7e8PrOplojUpEev1dyNPA/LMLYkZmJ6aGp
+ dAPFthvw9vjlavhuy71PLhUDX2PTHGPiX0Hu0XRO6s8BtbCr6Mf0NpSkcAsi4dGhcd8Fcjbz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-05-30_05,2025-05-30_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 malwarescore=0 mlxscore=0 phishscore=0
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2505160000
+ definitions=main-2505300119
 
 
---q4wzbz5gvgo6qhhf
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Subject: Re: [PATCH linus/master] cgroup: adjust criteria for rstat subsystem
- cpu lock access
-MIME-Version: 1.0
 
-On Wed, May 28, 2025 at 04:51:30PM -0700, JP Kobryn <inwardvessel@gmail.com> wrote:
-> -	if (ss) {
-> +	if (ss && sizeof(*ss->rstat_ss_cpu_lock)) {
->  		ss->rstat_ss_cpu_lock = alloc_percpu(raw_spinlock_t);
->  		if (!ss->rstat_ss_cpu_lock)
->  			return -ENOMEM;
-<snip>
-> +		 *                                                       When the
-> +		 * lock type is zero in size, the corresponding lock functions are
-> +		 * no-ops so passing them NULL is acceptable.
+On 5/29/25 7:22 AM, Oliver Sang wrote:
+> hi, Nilay,
+> 
+> sorry for late.
+No worries... 
 
-In the ideal world this consumer code (cgroup) shouldn't care about this
-at all, no?
+[...]
+>>>
+>>> The kernel config and materials to reproduce are available at:
+>>> https://download.01.org/0day-ci/archive/20250522/202505221030.760980df-lkp@intel.com
+>>>
+>>
+>> I tried reproducing this issue but I couldn't recreate it. Is it possible
+>> for you to run this test on your setup using stress-ng option "--iostat 1"
+>> as shown below ?
+>>
+>> # stress-ng --timeout 60 --times --verify --metrics --no-rand-seed --fpunch 128 --iostat 1
+>>
+>> If you can run test with above option then please collect logs and share it.
+>> That might help to further debug this.
+> 
+> the log is attached as stress-ng-245618f8e4.
+> also attached the dmesg-245618f8e4.xz.
+> 
+> another log from parent is attached as stress-ng-3efe7571c3.
+> 
+Thanks for trying out --iostat option and sharing logs. I looked through logs and it seems 
+that (my guess) in case of failures (i.e. bogo ops reported as 0) disk read operations are
+either blocked or never completed. However it might be useful to further debug this. 
+Unfortunately, I tried hard but failed to recreate on my setup, so need your help. 
 
-I.e. this
-  		ss->rstat_ss_cpu_lock = alloc_percpu(raw_spinlock_t);
-should work transparently on !CONFIG_SMP (return NULL or some special
-value) and the locking functions would be specialized for this value
-properly !CONFIG_SMP (no-ops as you write).
+I have few follow up questions:
+1. Are you able to recreate this issue even on the recent upstream kernel?
+2. Did you try formatting the disk using ext4 instead of xfs?
 
-Or is my proposition not so ideal?
+Anyways, is it possible to rerun test with following options to further analyze it?
+# stress-ng --timeout 60 --times --metrics --verify --no-rand-seed --fpunch 128 --verbose --klog-check --stressor-time --status 1
+
+Above options shall help generate verbose output as well as log why stressors are not exiting 
+after timeout of 60 seconds. Moreover, it'd be helpful if you can also repeat the test specifying 
+"--fpunch 1". Just wanted to see whether limiting stressors to only 1 recreate the issue. 
 
 Thanks,
-Michal
+--Nilay
 
---q4wzbz5gvgo6qhhf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCaDmBKwAKCRAt3Wney77B
-Se4oAP0TgOK74gdlOsml80NrVPVWYnZ54wPfOuvReAYZfSrx0QEAgjTeoeUpau8l
-1kQ2XBbURSGvSXAga2jJLBg5Hw2ZQAw=
-=0XKk
------END PGP SIGNATURE-----
-
---q4wzbz5gvgo6qhhf--
 
