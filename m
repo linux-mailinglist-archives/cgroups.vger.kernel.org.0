@@ -1,159 +1,225 @@
-Return-Path: <cgroups+bounces-8395-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8396-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 289BDAC90D8
-	for <lists+cgroups@lfdr.de>; Fri, 30 May 2025 16:02:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D55AC926B
+	for <lists+cgroups@lfdr.de>; Fri, 30 May 2025 17:19:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FADE3BCB7F
-	for <lists+cgroups@lfdr.de>; Fri, 30 May 2025 14:01:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B37FE503A64
+	for <lists+cgroups@lfdr.de>; Fri, 30 May 2025 15:19:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF6E22CBD0;
-	Fri, 30 May 2025 14:01:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D11322DF9D;
+	Fri, 30 May 2025 15:19:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FWqJRA8w"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bNnyH7pH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3967FBF0;
-	Fri, 30 May 2025 14:01:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5322119F10A
+	for <cgroups@vger.kernel.org>; Fri, 30 May 2025 15:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748613710; cv=none; b=RfXci0DCIYT+UCLDA1/apXVwMi3gn0Vi69Iy/jO+mxwTnpRAvtVDI/IHfAqANOVsh1woDQoAAngZpA+l/Fp7loBPaa2R7y/Z3NEgFKaR3QiVPtGfaHuZc412Q3dvkaWV9QJHpuwbSAun5dB5CX41+6hzlsxARCij1QzChGJ2Tgw=
+	t=1748618360; cv=none; b=WTk1FH4BKUmOGuk5KAB14wQ2iOz8nQBA+rPC8R7xKjgtgbnsuSL23fId+WB4j9vdCYFOL55d+iVEpudCO0O/sXsYCepXydXSsr2oIWPMx3PP49p9xxSiWf4shOD1l1y9GF0R68BzfY7w7jutava8eBel7NZotfJ2gvHEBClvUo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748613710; c=relaxed/simple;
-	bh=IiWa3QYm+SUHUfGrRvdvNCqI8L5mMRzMn8FrCEm9dMw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cENqEtKyzG9n0GiXpoYwf5IutSLgVzPqkRRt8Pzg0+GdqOCDYwpWvXKQ7MijINPPR68WveUCYjqXAUiEzLedJHTBP9ZOicFhBi6fO+4GDvNAts5lHjukMfZPhNaQH+cEEuvvWWNNsyzo8UVWG8IAuAbRcSZd4nQYvJulKpAYfuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FWqJRA8w; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 54UCUU3v016369;
-	Fri, 30 May 2025 14:01:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=6hHECg
-	npQEPXpU2l4pVIj6oEuY8kux5ThRyZ5rj5SM0=; b=FWqJRA8wMcLzzcu9gK/yag
-	96Poaw/AoeKadZdfLGfUKXOMVJF+nwXKHb78cGh6IVhBvqCzuu++I+YfFNabfnFu
-	xuHeQ2i/w0KBGQLCjhE2KcX+1iVObZhc2iMzkcD1LH9HHhVp/NDcOdgyUZNMFt7L
-	qhrSFfiVUVKPL0OLb1VRr7bBpDXekbfSujCLrQhI+dgE+jYlkZmCUkUX2iEcq6Qw
-	pGMLiMgfazOzKqUvU0Ahn7MSywZdScPu8XXCeEQ8C5Z8j+0w6Nfar/DelcJLYsXr
-	64++q+66dXjDinlOUFGnQSrMkjtfgX8UMP7Pqw/pTFpXFgAZoYS9/fdaXqD+vyFg
-	==
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 46x40kkxa6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 30 May 2025 14:01:36 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 54UBMU6U027314;
-	Fri, 30 May 2025 14:01:35 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 46useq9meg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 30 May 2025 14:01:34 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 54UE1YS441353562
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 30 May 2025 14:01:34 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8AE9458059;
-	Fri, 30 May 2025 14:01:34 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4B3665806F;
-	Fri, 30 May 2025 14:01:30 +0000 (GMT)
-Received: from [9.67.145.202] (unknown [9.67.145.202])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 30 May 2025 14:01:29 +0000 (GMT)
-Message-ID: <f33af0f8-6d7b-479c-9d57-e5fd485d0f6e@linux.ibm.com>
-Date: Fri, 30 May 2025 19:31:28 +0530
+	s=arc-20240116; t=1748618360; c=relaxed/simple;
+	bh=Vyajyv9gcTyhCO1q8L9tdCgBFcmfGA4h41nYZiOAYPk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TFGyYbhixC3csxjPfE8C7dBdm0O09o0T1jx5IsE87bH8tqHduqGxmhprlSgVAApNm8xc5v28lQ39Gsm0hiJmlmDil1Z6MR59oGMEGUciDAeAFxa/939PrWDUFVc7skXBkNa9ly4tTBV0C7NN6H/nu+4sbo9cyyIMX6Dza0VQGo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bNnyH7pH; arc=none smtp.client-ip=209.85.128.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-450cfb790f7so14552385e9.0
+        for <cgroups@vger.kernel.org>; Fri, 30 May 2025 08:19:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1748618355; x=1749223155; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rHzLL+KnCdbgcbNQWzWBQ9D1stAOWVmlpwTkZFpyF58=;
+        b=bNnyH7pHkBxEuTZFx5o985yjuj/mTwyCowwGSojK3dpBHiuUpI9+fIhvu5YNz63eg+
+         1WWj9fVC8AEvOMTfMzoNQrxL1y/vhO23tyox4harp4Gdpyq6fg0UZex9xJjtXnrxZehX
+         oMzHJv86ES+EBdA2kSWXwzLN35BxQ6oedmozU1fMJY02tMeyqa4SFC48RZaNxwrPuhhS
+         nd5gingd626Gc/jbJLUkZLdzlrlmHzvpudHusAo14oyWM3MBeSMEGVRqj8TADM0QvLwW
+         CLjsiC3BjLy7qfRskSonDgm2hmIQMVpKDHQoKWvVQ4jqBvRn3YBdkiC7i64jYTEAFOW6
+         03Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748618355; x=1749223155;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rHzLL+KnCdbgcbNQWzWBQ9D1stAOWVmlpwTkZFpyF58=;
+        b=rRNeY482nRcet4IaR6ZCm0yAJRGv7Fxwy+hLX6RDsqhSfscV+yzSAwwg1XsEwXhc6E
+         ZSOmwFKizfSTQDubyT3DN5D4EA0Rcn+/XHUDfDEjU1h3F0VHZYSN9QrayzYhBOsBl6B0
+         d5AFlMA89vbKQkdGtbvWr94ddnE+PbA9rTldoy6+pnjGtDoPrfn1+fGNJDG16g5BCRcj
+         KsrHr3eCFX5Io0SgGvmKQ0z12AZlF+SqHRMZicx67BmkvDOq3nZ1nUyGQvFDPL2zJZci
+         rdjaRj1+5nT+kMd2EdCVYI37uprSYuL/XDPG8Q3eiicWc242DtrF2papff5a4UuDDTXK
+         oMcQ==
+X-Gm-Message-State: AOJu0YzQTDtMnm2BhGmUc6Ntj5cllQ4z4S6vpbV4aeMLcOaEK1oTPpoe
+	Pvhb7v0vZf9YYbAm8luMBURK1kd6Yzc7DmxJyenEGg4ADLkxN+TSMTn58SGL6iPHETU/M3fnAEj
+	eTyL5uRLZKw==
+X-Gm-Gg: ASbGnctQIrU6fACGi4QLM+ycDCdE1S2RpccIcneD97fMgJYst/U3OI2BbkxKF3bBbiR
+	wFV7j+7s1sQVwRsdJCSu4uhqMcTRtZQ1tPIc2djzoIdY3iOAKxTQDS0TYMO4pW5j4iOydZv+rls
+	jDUWyREQXJ39O3mTIexLdJ0YbhP4eR1zun29qMovDyavNTSJuWpLOS+2VeTWJLjxk9Kx+mmRbHP
+	oR8qp+SxtsMm2NHy1Phx4p/vZQwmvpcUwfc8HNjke7nrLVwf0SuG44zS1uk/Gm11UnciyDufLo4
+	+dpJVLuk4iteF6NdX4/mHOjyahuwF53gt83Vefddd7LSUCyBNUaDqsh5pvgKHmBJ
+X-Google-Smtp-Source: AGHT+IFfgE9YkP6zKgTOBVVj8OU3ZF8h4Ob5dU10DqOggrcEUUPJXi1L8Z4gcTvobVCqNojEWm9B7g==
+X-Received: by 2002:a05:600c:4f8b:b0:442:e147:bea6 with SMTP id 5b1f17b1804b1-450d6514eaemr35846435e9.11.1748618355407;
+        Fri, 30 May 2025 08:19:15 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4f0097813sm5112533f8f.72.2025.05.30.08.19.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 May 2025 08:19:15 -0700 (PDT)
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To: cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Martin Doucha <mdoucha@suse.cz>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: [RFC PATCH] memcontrol: Wait for draining of remote stocks to avoid OOM when charging
+Date: Fri, 30 May 2025 17:18:57 +0200
+Message-ID: <20250530151858.672391-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [linus:master] [block] 245618f8e4: stress-ng.fpunch.fail
-To: Oliver Sang <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Hannes Reinecke <hare@suse.de>, Ming Lei <ming.lei@redhat.com>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org
-References: <202505221030.760980df-lkp@intel.com>
- <95753732-9714-42e0-8097-e2b4c3dd5820@linux.ibm.com>
- <aDe9y3Ef+TEacRr3@xsang-OptiPlex-9020>
-Content-Language: en-US
-From: Nilay Shroff <nilay@linux.ibm.com>
-In-Reply-To: <aDe9y3Ef+TEacRr3@xsang-OptiPlex-9020>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qbn8N2la_ccNjfFWSCbkNQG9aciyTlrs
-X-Authority-Analysis: v=2.4 cv=fuPcZE4f c=1 sm=1 tr=0 ts=6839ba40 cx=c_pps a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17 a=IkcTkHD0fZMA:10 a=dt9VzEwgFbYA:10 a=i3X5FwGiAAAA:8 a=QyXUC8HyAAAA:8 a=CJm8QiaJa0guGxYXfB8A:9 a=QEXdDO2ut3YA:10
- a=mmqRlSCDY2ywfjPLJ4af:22
-X-Proofpoint-GUID: qbn8N2la_ccNjfFWSCbkNQG9aciyTlrs
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNTMwMDExOSBTYWx0ZWRfXxukEhbtcb9tu 0AaTGS/i8A2WZ1oNPnnB36fITs2g4pOgUmd9bWlV2Qx/zzapmEqoVr4u0fr+1bfOkaSAvW/d/Bv nlLEZ2ywOawmFRpEhL7Rqxi5gpsDGsX3heI2aeCVA8hmYQvc/PAkZGq7/6rcJR4O9VqKH9Z1G4A
- 3/i7xkydqUD3R3saf+aHXl6VHCntPdSxGLLBOkSH3j4+Ko6EUPQxWDjreRxtOA236vvHqWKuhsx tKfd0ersEv/d9SO4nk+CBb45xjQDcLeOmiTABGUj5EsEE/6boB3wwwI2g0A5Xt1Qd3S498NHvf1 /YguK0b8oT7RILhW67h/yvoGxn8geqxpIVPZ0yfca7e8PrOplojUpEev1dyNPA/LMLYkZmJ6aGp
- dAPFthvw9vjlavhuy71PLhUDX2PTHGPiX0Hu0XRO6s8BtbCr6Mf0NpSkcAsi4dGhcd8Fcjbz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-30_05,2025-05-30_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- mlxlogscore=999 priorityscore=1501 malwarescore=0 mlxscore=0 phishscore=0
- impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
- classifier=spam authscore=0 authtc=n/a authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2505160000
- definitions=main-2505300119
+Content-Transfer-Encoding: 8bit
 
+The LTP memcontrol03.c checks behavior of memory.min protection under
+relatively tight conditions -- there is 2MiB margin for allocating task
+below test's memory.max.
 
+MEMCG_CHARGE_BATCH might be over-charged to page_counters temporarily
+but this alone should not lead to OOM because this overcharged amount is
+retrieved by draining stock. Or is it?
 
-On 5/29/25 7:22 AM, Oliver Sang wrote:
-> hi, Nilay,
-> 
-> sorry for late.
-No worries... 
+I suspect this may cause troubles when there is >MEMCG_CHARGE_BATCH charge
+preceded by a small charge:
 
-[...]
->>>
->>> The kernel config and materials to reproduce are available at:
->>> https://download.01.org/0day-ci/archive/20250522/202505221030.760980df-lkp@intel.com
->>>
->>
->> I tried reproducing this issue but I couldn't recreate it. Is it possible
->> for you to run this test on your setup using stress-ng option "--iostat 1"
->> as shown below ?
->>
->> # stress-ng --timeout 60 --times --verify --metrics --no-rand-seed --fpunch 128 --iostat 1
->>
->> If you can run test with above option then please collect logs and share it.
->> That might help to further debug this.
-> 
-> the log is attached as stress-ng-245618f8e4.
-> also attached the dmesg-245618f8e4.xz.
-> 
-> another log from parent is attached as stress-ng-3efe7571c3.
-> 
-Thanks for trying out --iostat option and sharing logs. I looked through logs and it seems 
-that (my guess) in case of failures (i.e. bogo ops reported as 0) disk read operations are
-either blocked or never completed. However it might be useful to further debug this. 
-Unfortunately, I tried hard but failed to recreate on my setup, so need your help. 
+  try_charge_memcg(memcg, ..., 1);
+    // counter->usage += 64
+    // local stock = 63
+    // no OOM but counter->usage > counter->max
+  // running on different CPU
+  try_charge_memcg(memcg, ..., 65);
+    // 4M in stock + 148M new charge, only 150M w/out hard protection to reclaim
+    try_to_free_mem_cgroup_pages
+      if (cpu == curcpu)
+        drain_local_stock // this would be ok
+      else
+        schedule_work_on(cpu, &stock->work); // this is asynchronous
+      // charging+(no more)reclaim is retried MAX_RECLAIM_RETRIES = 16 times
+      // if other cpu stock aren't flushed by now, this may cause OOM
 
-I have few follow up questions:
-1. Are you able to recreate this issue even on the recent upstream kernel?
-2. Did you try formatting the disk using ext4 instead of xfs?
+This effect is pronounced on machines with 64k page size where it makes
+MEMCG_CHARGE_BATCH worth whopping 4MiB (per CPU).
 
-Anyways, is it possible to rerun test with following options to further analyze it?
-# stress-ng --timeout 60 --times --metrics --verify --no-rand-seed --fpunch 128 --verbose --klog-check --stressor-time --status 1
+Prevent the premature OOM by waiting for stock flushing (even) from remote
+CPUs.
 
-Above options shall help generate verbose output as well as log why stressors are not exiting 
-after timeout of 60 seconds. Moreover, it'd be helpful if you can also repeat the test specifying 
-"--fpunch 1". Just wanted to see whether limiting stressors to only 1 recreate the issue. 
+Link: https://lore.kernel.org/ltp/144b6bac-edba-470a-bf87-abf492d85ef5@suse.cz/
+Reported-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+Tested-by: Martin Doucha <mdoucha@suse.cz>
+---
+ mm/memcontrol-v1.h |  2 +-
+ mm/memcontrol.c    | 15 ++++++++++-----
+ 2 files changed, 11 insertions(+), 6 deletions(-)
 
-Thanks,
---Nilay
+My reason(s) for RFC:
+1) I'm not sure if there isn't a simpler way than flushing stocks over
+   all CPUs (also the guard with gfpflags_allow_blocking() is there only
+   for explicitness, in case the code was moved over).
+2) It requires specific scheduling over CPUs, so it may not be so common
+   and severe in practice.
+
+diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
+index 6358464bb4160..3e57645d0c175 100644
+--- a/mm/memcontrol-v1.h
++++ b/mm/memcontrol-v1.h
+@@ -24,7 +24,7 @@
+ 
+ unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap);
+ 
+-void drain_all_stock(struct mem_cgroup *root_memcg);
++void drain_all_stock(struct mem_cgroup *root_memcg, bool sync);
+ 
+ unsigned long memcg_events(struct mem_cgroup *memcg, int event);
+ unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 2d4d65f25fecd..ddf905baab12d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1911,7 +1911,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+  * Drains all per-CPU charge caches for given root_memcg resp. subtree
+  * of the hierarchy under it.
+  */
+-void drain_all_stock(struct mem_cgroup *root_memcg)
++void drain_all_stock(struct mem_cgroup *root_memcg, bool sync)
+ {
+ 	int cpu, curcpu;
+ 
+@@ -1948,6 +1948,11 @@ void drain_all_stock(struct mem_cgroup *root_memcg)
+ 				schedule_work_on(cpu, &stock->work);
+ 		}
+ 	}
++	if (sync)
++		for_each_online_cpu(cpu) {
++			struct memcg_stock_pcp *stock = &per_cpu(memcg_stock, cpu);
++			flush_work(&stock->work);
++		}
+ 	migrate_enable();
+ 	mutex_unlock(&percpu_charge_mutex);
+ }
+@@ -2307,7 +2312,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 		goto retry;
+ 
+ 	if (!drained) {
+-		drain_all_stock(mem_over_limit);
++		drain_all_stock(mem_over_limit, gfpflags_allow_blocking(gfp_mask));
+ 		drained = true;
+ 		goto retry;
+ 	}
+@@ -3773,7 +3778,7 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
+ 	wb_memcg_offline(memcg);
+ 	lru_gen_offline_memcg(memcg);
+ 
+-	drain_all_stock(memcg);
++	drain_all_stock(memcg, false);
+ 
+ 	mem_cgroup_id_put(memcg);
+ }
+@@ -4205,7 +4210,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+ 			break;
+ 
+ 		if (!drained) {
+-			drain_all_stock(memcg);
++			drain_all_stock(memcg, false);
+ 			drained = true;
+ 			continue;
+ 		}
+@@ -4253,7 +4258,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
+ 			break;
+ 
+ 		if (!drained) {
+-			drain_all_stock(memcg);
++			drain_all_stock(memcg, false);
+ 			drained = true;
+ 			continue;
+ 		}
+
+base-commit: 0ff41df1cb268fc69e703a08a57ee14ae967d0ca
+-- 
+2.49.0
 
 
