@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-8400-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8401-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 403ACAC98A4
-	for <lists+cgroups@lfdr.de>; Sat, 31 May 2025 02:37:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80912AC98A5
+	for <lists+cgroups@lfdr.de>; Sat, 31 May 2025 02:39:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EA1A3B50D9
-	for <lists+cgroups@lfdr.de>; Sat, 31 May 2025 00:37:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B724503B5B
+	for <lists+cgroups@lfdr.de>; Sat, 31 May 2025 00:39:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89706320B;
-	Sat, 31 May 2025 00:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22C7E320B;
+	Sat, 31 May 2025 00:39:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mcfwvsi7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eCmZhmzr"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44325846F
-	for <cgroups@vger.kernel.org>; Sat, 31 May 2025 00:37:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D26C1846F
+	for <cgroups@vger.kernel.org>; Sat, 31 May 2025 00:39:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748651852; cv=none; b=G+z1O5TWCH59Rr5EeL1huYh/ACn/jZXQoLWJhWAhCiAnDRdLVordLHefEkUNETE00/yLqmi8QLTS2ib9VWKfvNf7qnUtLL0+/yl5URl75xGtmj6oTOAMdYZPb15kfeMfslWG6V2JhREkBTBIyJ6bj/CDQiXcJ2UZQQtsMpGJDfI=
+	t=1748651941; cv=none; b=SW079btSUqNb4UYAidXuIlzIWePvu8LkL6kXQuP3XlL6cUIDX92QkFK++67XB/L52dPdBHiWd+WrxxR+dGd6rrC6QpLyoqb14cSHLAAK1BMkyfUOA5HZI6PGY716wkglNTNZGaJ0mrUCtngNGRw97R1crl289gGbwOL+7LeKAdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748651852; c=relaxed/simple;
-	bh=q1h4Y3BbifnxE3SpnCM+nf/Lth0Z0xKzR5qYr8s81QM=;
+	s=arc-20240116; t=1748651941; c=relaxed/simple;
+	bh=Q9PLx6uigXhGtzoA5kZnfTd0GvA+/ynEF+LALfL+zSQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uZ9CLQlfQ9mwea5hjD7q+3QGu2hhmszGXP9iMVmCMcuuNvRHOI8g02X8j4SlIuCkZ8FaGDXCoLQ1NoXGGius/iqzU7BIJ3K0KtsKgeG3PCQtrnz6iYhY0wmPSBtPjRK77fg1xZ+Wn0kTWpQmXvVPM7zif8fIepQGedA+VpYzdsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mcfwvsi7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87F7EC4CEE9;
-	Sat, 31 May 2025 00:37:31 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=pL4Xtj4xdBeVYgqeX9hszny5SPpZqBjM574MNdYKuVrC+LKeYRAhXxQMirrqMDNT5Tz0pUx9qbBMR6q2FqBrDvehtEL6K+4aisFxXh9Mh25jG4DM31KMAQ5AZboIkeqJyambNtHY562mWzGiX00+M5H5ZmyqPCc4SzEw5O+X7s4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eCmZhmzr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B67FC4CEE9;
+	Sat, 31 May 2025 00:39:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748651851;
-	bh=q1h4Y3BbifnxE3SpnCM+nf/Lth0Z0xKzR5qYr8s81QM=;
+	s=k20201202; t=1748651941;
+	bh=Q9PLx6uigXhGtzoA5kZnfTd0GvA+/ynEF+LALfL+zSQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mcfwvsi7wDUl3w0iBJTMCQShQp5dOx2HZmVqGaqDzQu9R05QcAuGC8thEwXlr0cDV
-	 gWP0NYG77uA+RJWCNK5Oa+dp7HDv6SGE/cBX3h5OIzqBd1I78CVYadc3BpicdNtJo0
-	 HQwFRkeJd1wQE4ayME74j/TSL4SqVRnNJ+EBK8Ok+rHM7yHQ0ttGnE2zOdFFGb6tPM
-	 rthViDKsKvjB2Q1eGlihPXzReW4E5a/qFmC3In1XdaVl1kkMa3WSiIbkJnOPH5hi4T
-	 ERTDIPfwaoa2X14e2q7gfjK6ys17uG7+8NPat8B6ri8rqs45SnaNgna+QW3Y9jfK4g
-	 CaNlA6lef/haA==
-Date: Fri, 30 May 2025 14:37:30 -1000
+	b=eCmZhmzrRUqyM9Xzv2jsY1qdS2z/d5WL+b2gHEwSgV6wfyyuMbrDRaAAqXSipO2OD
+	 GdtenOkvQ3+NHf8dXaszui9yt8lN7fjG9D/mZqpUNtGfZZoPWvzb/44FCS96BxZWLx
+	 Ed1r6KH9rg5Rg4Ny3aVkfvClBAegzB/mo7xqN3lcbNmWpzg00/chtl6I7KcJL+v+ky
+	 ALkcAOLB33qhIJDxeUjbAHxu39svblgGDBySHMklxqCekc7EUAsmnLKulDdivwRS34
+	 q/txof0jo+53oeYXyYd6jUmXDr2NJGXA6R7vzZ4kGQs9vgbh+cF+ZOVSUDF0sdlMBG
+	 IyhCdivcNnnNQ==
+Date: Fri, 30 May 2025 14:39:00 -1000
 From: Tejun Heo <tj@kernel.org>
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: llong@redhat.com, klarasmodin@gmail.com, shakeel.butt@linux.dev,
-	yosryahmed@google.com, mkoutny@suse.com, hannes@cmpxchg.org,
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: JP Kobryn <inwardvessel@gmail.com>, llong@redhat.com,
+	klarasmodin@gmail.com, shakeel.butt@linux.dev,
+	yosryahmed@google.com, hannes@cmpxchg.org,
 	akpm@linux-foundation.org, cgroups@vger.kernel.org,
 	kernel-team@meta.com
 Subject: Re: [PATCH linus/master] cgroup: adjust criteria for rstat subsystem
  cpu lock access
-Message-ID: <aDpPSvqIxmOmMjn8@slm.duckdns.org>
+Message-ID: <aDpPpE6WHY4GplkT@slm.duckdns.org>
 References: <20250528235130.200966-1-inwardvessel@gmail.com>
+ <eqodyyacsde3gv7mbi2q4iik6jeg5rdrix26ztj3ihqqr7gqk4@eefifftc7cld>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20250528235130.200966-1-inwardvessel@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eqodyyacsde3gv7mbi2q4iik6jeg5rdrix26ztj3ihqqr7gqk4@eefifftc7cld>
 
-On Wed, May 28, 2025 at 04:51:30PM -0700, JP Kobryn wrote:
-> Previously it was found that on uniprocessor machines the size of
-> raw_spinlock_t could be zero so a pre-processor conditional was used to
-> avoid the allocation of ss->rstat_ss_cpu_lock. The conditional did not take
-> into account cases where lock debugging features were enabled. Cover these
-> cases along with the original non-smp case by explicitly using the size of
-> size of the lock type as criteria for allocation/access where applicable.
-> 
-> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
-> Fixes: 748922dcfabd "cgroup: use subsystem-specific rstat locks to avoid contention"
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202505281034.7ae1668d-lkp@intel.com
+Hello,
 
-Applied to cgroup/for-6.16-fixes.
+On Fri, May 30, 2025 at 11:58:05AM +0200, Michal Koutný wrote:
+>   		ss->rstat_ss_cpu_lock = alloc_percpu(raw_spinlock_t);
+> should work transparently on !CONFIG_SMP (return NULL or some special
+> value) and the locking functions would be specialized for this value
+> properly !CONFIG_SMP (no-ops as you write).
+
+alloc_percpu() triggers warn when called with zero size, so we at least need
+something guarding that. I applied as-is for now but further cleanups are
+welcome.
 
 Thanks.
 
