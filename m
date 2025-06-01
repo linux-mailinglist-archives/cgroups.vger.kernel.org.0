@@ -1,277 +1,219 @@
-Return-Path: <cgroups+bounces-8403-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8404-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29B4DAC9B17
-	for <lists+cgroups@lfdr.de>; Sat, 31 May 2025 14:57:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C876EAC9E8B
+	for <lists+cgroups@lfdr.de>; Sun,  1 Jun 2025 14:56:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EE4B3B2480
-	for <lists+cgroups@lfdr.de>; Sat, 31 May 2025 12:56:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FC0417597A
+	for <lists+cgroups@lfdr.de>; Sun,  1 Jun 2025 12:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A806323AE60;
-	Sat, 31 May 2025 12:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P8E+i7+R"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C00E1D54EE;
+	Sun,  1 Jun 2025 12:56:21 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB6F42AA6
-	for <cgroups@vger.kernel.org>; Sat, 31 May 2025 12:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC3E2DCBFC
+	for <cgroups@vger.kernel.org>; Sun,  1 Jun 2025 12:56:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748696233; cv=none; b=SpnhwEf1waIzaiE9I20Hnk7dEqpsnd17RJ7HNyvEhwLAA/nKM9yGubhVl1Kzk6W1FDk8hamBSrHrcljw1LkuNvQOpSL1Vk6V0HkVZRkF2R/ulJ3cLvmzEODm1B4E4fNQnRALMbYLeC8KGQFoytk/CFJk2i1+vNCyhOJlhps11Qk=
+	t=1748782581; cv=none; b=kIY+UEgpPKa7MOJNZYui6bOaguDKzjQhl507RgvGlvwBQPqeF/Si8ExL4QSxp2c/RtZtSy7y7JeVLmnmy0YLX5IV/uZMEl5Lz+7On3k2Ws7ZInccw4dxLTEMO1PdqHiHD1UEHhMdmw00R64/PmrukBUdgsklJCUVejXcyL56BcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748696233; c=relaxed/simple;
-	bh=bIKDBY5LgTxiRxS6h5Nq5FCleNizm/wexZmP79hVB1A=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=CzvI0Ijgh4uV//MrT5NCPpDPtFakV5yjKS/qITkyU3porFvZkqFkq1NacjF6vfm2epWtWcdZiAPrL+j5FWXRQOb40xB3Lre5vJ2/KsF9vytX5dvO0nzsPRyztZRGGtO6hEcfONTO7lGDd2JZzkNyUnj4z9NqWhhV2KMkf2d6h+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P8E+i7+R; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748696232; x=1780232232;
-  h=date:from:to:cc:subject:message-id;
-  bh=bIKDBY5LgTxiRxS6h5Nq5FCleNizm/wexZmP79hVB1A=;
-  b=P8E+i7+RIWTAQ4rZhX59fKxwL15Jy2fsIGSCb3Qik0bngs+WEhtPxG9r
-   SGOElMoh+lWqsuD0pdWXoJRcgRaqehRGyCnqDPa9SPo22ua2InuLd/h4P
-   h/PfZfRo4TrwIMiQDbpPHJDIKTsArmxBj05JSoU7BFNVzalVgX8+gk5jV
-   nZFTrPJhHBAJ+0a7YFDrMaKA5tinj10VfpHPoZm4uuRC1R/hWjOAgZot0
-   kPCJK4n7thBRrjVh0XmvHoITymhFmRJ4GFw9xvMGrydWgBSGITyn4Jsw6
-   AEDVoTxg7Viis+JnQwhqttLDZoufGaQk0V8T5LANbP6kNfZWvOb/tX7jg
-   w==;
-X-CSE-ConnectionGUID: RJKmXLiiSnKXqFQaNDZ+JA==
-X-CSE-MsgGUID: kc4aVCdbTKq5jyPECFvQeQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11450"; a="50923797"
-X-IronPort-AV: E=Sophos;i="6.16,198,1744095600"; 
-   d="scan'208";a="50923797"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2025 05:57:11 -0700
-X-CSE-ConnectionGUID: fg4waKq4T7W9xI5hYO4LmA==
-X-CSE-MsgGUID: l2NL0u9iTqq9amlnLyrI4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,198,1744095600"; 
-   d="scan'208";a="144145697"
-Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by orviesa009.jf.intel.com with ESMTP; 31 May 2025 05:57:10 -0700
-Received: from kbuild by 1992f890471c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uLLlr-000YPc-3C;
-	Sat, 31 May 2025 12:57:07 +0000
-Date: Sat, 31 May 2025 20:56:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:test-merge] BUILD SUCCESS
- 32aedcff6b315913ba5fe5e8fea3d44bc7c33be1
-Message-ID: <202505312025.3EXAg2Im-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1748782581; c=relaxed/simple;
+	bh=cvrtNIWyrmKBib2SZoOx+LHxXS7ime+bJoCGWvN0elo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FcwGfoEyvn+jq+xcWptEMe2KUN/Mk3BTv1oDCF3lfiposvgwHk4poEkGqOvHcMiB4R4367M1YUwHuGTO7wJfQ8N/skWTMlBDE43QmDFICDeq7R+o1M/lsBqiQIDdxAuHEnl2OKlU8Myp2J4OZiXWQ0/8+x+oLLkuQT3PCyRNJ+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
+Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
+	by 156.147.51.102 with ESMTP; 1 Jun 2025 21:56:10 +0900
+X-Original-SENDERIP: 10.177.112.156
+X-Original-MAILFROM: youngjun.park@lge.com
+Date: Sun, 1 Jun 2025 21:56:10 +0900
+From: YoungJun Park <youngjun.park@lge.com>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
+	hughd@google.com, yosry.ahmed@linux.dev, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, len.brown@intel.com,
+	chengming.zhou@linux.dev, kasong@tencent.com, chrisl@kernel.org,
+	huang.ying.caritas@gmail.com, ryan.roberts@arm.com,
+	viro@zeniv.linux.org.uk, baohua@kernel.org, osalvador@suse.de,
+	lorenzo.stoakes@oracle.com, christophe.leroy@csgroup.eu,
+	pavel@kernel.org, kernel-team@meta.com,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-pm@vger.kernel.org, peterx@redhat.com, gunho.lee@lge.com,
+	taejoon.song@lge.com, iamjoonsoo.kim@lge.com
+Subject: Re: [RFC PATCH v2 00/18] Virtual Swap Space
+Message-ID: <aDxN6oz86TD5H4IL@yjaykim-PowerEdge-T330>
+References: <20250429233848.3093350-1-nphamcs@gmail.com>
+ <aDlUgVFdA7rCUvHx@yjaykim-PowerEdge-T330>
+ <CAKEwX=MjyEsoyDmMBCRr0QnBfgkTA5bfrshPbfSgNp887zaxVw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKEwX=MjyEsoyDmMBCRr0QnBfgkTA5bfrshPbfSgNp887zaxVw@mail.gmail.com>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git test-merge
-branch HEAD: 32aedcff6b315913ba5fe5e8fea3d44bc7c33be1  Merge branch 'for-6.16' into test-merge
+On Fri, May 30, 2025 at 09:52:42AM -0700, Nhat Pham wrote:
+> On Thu, May 29, 2025 at 11:47 PM YoungJun Park <youngjun.park@lge.com> wrote:
+> >
+> > On Tue, Apr 29, 2025 at 04:38:28PM -0700, Nhat Pham wrote:
+> > > Changelog:
+> > > * v2:
+> > >       * Use a single atomic type (swap_refs) for reference counting
+> > >         purpose. This brings the size of the swap descriptor from 64 KB
+> > >         down to 48 KB (25% reduction). Suggested by Yosry Ahmed.
+> > >       * Zeromap bitmap is removed in the virtual swap implementation.
+> > >         This saves one bit per phyiscal swapfile slot.
+> > >       * Rearrange the patches and the code change to make things more
+> > >         reviewable. Suggested by Johannes Weiner.
+> > >       * Update the cover letter a bit.
+> >
+> > Hi Nhat,
+> >
+> > Thank you for sharing this patch series.
+> > I’ve read through it with great interest.
+> >
+> > I’m part of a kernel team working on features related to multi-tier swapping,
+> > and this patch set appears quite relevant
+> > to our ongoing discussions and early-stage implementation.
+> 
+> May I ask - what's the use case you're thinking of here? Remote swapping?
+> 
 
-elapsed time: 737m
+Yes, that's correct.  
+Our usage scenario includes remote swap, 
+and we're experimenting with assigning swap tiers per cgroup 
+in order to improve specific scene of our target device performance.
 
-configs tested: 184
-configs skipped: 6
+We’ve explored several approaches and PoCs around this, 
+and in the process of evaluating 
+whether our direction could eventually be aligned 
+with the upstream kernel, 
+I came across your patchset and wanted to ask whether 
+similar efforts have been discussed or attempted before.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> >
+> > I had a couple of questions regarding the future direction.
+> >
+> > > * Multi-tier swapping (as mentioned in [5]), with transparent
+> > >   transferring (promotion/demotion) of pages across tiers (see [8] and
+> > >   [9]). Similar to swapoff, with the old design we would need to
+> > >   perform the expensive page table walk.
+> >
+> > Based on the discussion in [5], it seems there was some exploration
+> > around enabling per-cgroup selection of multiple tiers.
+> > Do you envision the current design evolving in a similar direction
+> > to those past discussions, or is there a different direction you're aiming for?
+> 
+> IIRC, that past design focused on the interface aspect of the problem,
+> but never actually touched the mechanism to implement a multi-tier
+> swapping solution.
+> 
+> The simple reason is it's impossible, or at least highly inefficient
+> to do it in the current design, i.e without virtualizing swap. Storing
 
-tested configs:
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    clang-19
-alpha                            allyesconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                      axs103_smp_defconfig    gcc-15.1.0
-arc                            hsdk_defconfig    gcc-15.1.0
-arc                        nsimosci_defconfig    gcc-15.1.0
-arc                   randconfig-001-20250531    gcc-15.1.0
-arc                   randconfig-002-20250531    gcc-15.1.0
-arm                              allmodconfig    gcc-15.1.0
-arm                               allnoconfig    clang-21
-arm                               allnoconfig    gcc-15.1.0
-arm                              allyesconfig    gcc-15.1.0
-arm                         axm55xx_defconfig    clang-21
-arm                          ep93xx_defconfig    clang-21
-arm                      footbridge_defconfig    gcc-15.1.0
-arm                           h3600_defconfig    gcc-15.1.0
-arm                            hisi_defconfig    gcc-15.1.0
-arm                        mvebu_v7_defconfig    gcc-15.1.0
-arm                   randconfig-001-20250531    gcc-13.3.0
-arm                   randconfig-002-20250531    gcc-13.3.0
-arm                   randconfig-003-20250531    gcc-7.5.0
-arm                   randconfig-004-20250531    gcc-7.5.0
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-15.1.0
-arm64                 randconfig-001-20250531    gcc-10.5.0
-arm64                 randconfig-002-20250531    clang-20
-arm64                 randconfig-003-20250531    clang-21
-arm64                 randconfig-004-20250531    clang-21
-csky                              allnoconfig    gcc-15.1.0
-csky                  randconfig-001-20250531    gcc-12.4.0
-csky                  randconfig-001-20250531    gcc-7.5.0
-csky                  randconfig-002-20250531    gcc-15.1.0
-csky                  randconfig-002-20250531    gcc-7.5.0
-hexagon                          allmodconfig    clang-17
-hexagon                          allmodconfig    clang-19
-hexagon                           allnoconfig    clang-21
-hexagon                           allnoconfig    gcc-15.1.0
-hexagon                          allyesconfig    clang-19
-hexagon                          allyesconfig    clang-21
-hexagon               randconfig-001-20250531    clang-21
-hexagon               randconfig-001-20250531    gcc-7.5.0
-hexagon               randconfig-002-20250531    clang-21
-hexagon               randconfig-002-20250531    gcc-7.5.0
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250531    gcc-12
-i386        buildonly-randconfig-002-20250531    gcc-12
-i386        buildonly-randconfig-003-20250531    gcc-12
-i386        buildonly-randconfig-004-20250531    clang-20
-i386        buildonly-randconfig-005-20250531    clang-20
-i386        buildonly-randconfig-006-20250531    clang-20
-i386                                defconfig    clang-20
-i386                  randconfig-001-20250531    clang-20
-i386                  randconfig-002-20250531    clang-20
-i386                  randconfig-003-20250531    clang-20
-i386                  randconfig-004-20250531    clang-20
-i386                  randconfig-005-20250531    clang-20
-i386                  randconfig-006-20250531    clang-20
-i386                  randconfig-007-20250531    clang-20
-i386                  randconfig-011-20250531    clang-20
-i386                  randconfig-012-20250531    clang-20
-i386                  randconfig-013-20250531    clang-20
-i386                  randconfig-014-20250531    clang-20
-i386                  randconfig-015-20250531    clang-20
-i386                  randconfig-016-20250531    clang-20
-i386                  randconfig-017-20250531    clang-20
-loongarch                        allmodconfig    gcc-15.1.0
-loongarch                         allnoconfig    gcc-15.1.0
-loongarch             randconfig-001-20250531    gcc-15.1.0
-loongarch             randconfig-001-20250531    gcc-7.5.0
-loongarch             randconfig-002-20250531    gcc-15.1.0
-loongarch             randconfig-002-20250531    gcc-7.5.0
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-m68k                       bvme6000_defconfig    gcc-15.1.0
-microblaze                       allmodconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-mips                        omega2p_defconfig    gcc-15.1.0
-mips                           xway_defconfig    gcc-15.1.0
-nios2                             allnoconfig    gcc-14.2.0
-nios2                 randconfig-001-20250531    gcc-10.5.0
-nios2                 randconfig-001-20250531    gcc-7.5.0
-nios2                 randconfig-002-20250531    gcc-5.5.0
-nios2                 randconfig-002-20250531    gcc-7.5.0
-openrisc                          allnoconfig    clang-21
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                         allyesconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-12
-parisc                           allmodconfig    gcc-15.1.0
-parisc                            allnoconfig    clang-21
-parisc                            allnoconfig    gcc-15.1.0
-parisc                           allyesconfig    gcc-15.1.0
-parisc                              defconfig    gcc-12
-parisc                randconfig-001-20250531    gcc-7.5.0
-parisc                randconfig-002-20250531    gcc-10.5.0
-parisc                randconfig-002-20250531    gcc-7.5.0
-powerpc                          allmodconfig    gcc-15.1.0
-powerpc                           allnoconfig    clang-21
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                          allyesconfig    clang-21
-powerpc                      bamboo_defconfig    clang-21
-powerpc                      cm5200_defconfig    clang-21
-powerpc                       ebony_defconfig    gcc-15.1.0
-powerpc                 mpc836x_rdk_defconfig    gcc-15.1.0
-powerpc                      pasemi_defconfig    clang-21
-powerpc                      ppc44x_defconfig    gcc-15.1.0
-powerpc               randconfig-001-20250531    gcc-11.5.0
-powerpc               randconfig-001-20250531    gcc-7.5.0
-powerpc               randconfig-002-20250531    gcc-5.5.0
-powerpc               randconfig-002-20250531    gcc-7.5.0
-powerpc               randconfig-003-20250531    gcc-7.5.0
-powerpc               randconfig-003-20250531    gcc-8.5.0
-powerpc64             randconfig-001-20250531    clang-21
-powerpc64             randconfig-001-20250531    gcc-7.5.0
-powerpc64             randconfig-003-20250531    clang-17
-powerpc64             randconfig-003-20250531    gcc-7.5.0
-riscv                            allmodconfig    clang-21
-riscv                             allnoconfig    clang-21
-riscv                             allnoconfig    gcc-15.1.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    gcc-12
-riscv                 randconfig-001-20250531    gcc-15.1.0
-riscv                 randconfig-002-20250531    clang-21
-s390                             allmodconfig    clang-18
-s390                             allmodconfig    gcc-15.1.0
-s390                              allnoconfig    clang-21
-s390                             allyesconfig    gcc-15.1.0
-s390                                defconfig    gcc-12
-s390                  randconfig-001-20250531    gcc-9.3.0
-s390                  randconfig-002-20250531    clang-21
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                         apsh4a3a_defconfig    gcc-15.1.0
-sh                                  defconfig    gcc-12
-sh                    randconfig-001-20250531    gcc-15.1.0
-sh                    randconfig-002-20250531    gcc-10.5.0
-sh                          rsk7201_defconfig    gcc-15.1.0
-sh                        sh7763rdp_defconfig    gcc-15.1.0
-sparc                            allmodconfig    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                 randconfig-001-20250531    gcc-8.5.0
-sparc                 randconfig-002-20250531    gcc-6.5.0
-sparc64                             defconfig    gcc-12
-sparc64               randconfig-001-20250531    gcc-12.4.0
-sparc64               randconfig-002-20250531    gcc-9.3.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-21
-um                               allyesconfig    clang-19
-um                               allyesconfig    gcc-12
-um                                  defconfig    gcc-12
-um                             i386_defconfig    gcc-12
-um                    randconfig-001-20250531    gcc-12
-um                    randconfig-002-20250531    gcc-11
-um                           x86_64_defconfig    gcc-12
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20250531    clang-20
-x86_64      buildonly-randconfig-002-20250531    gcc-12
-x86_64      buildonly-randconfig-003-20250531    gcc-12
-x86_64      buildonly-randconfig-004-20250531    gcc-12
-x86_64      buildonly-randconfig-005-20250531    clang-20
-x86_64      buildonly-randconfig-006-20250531    clang-20
-x86_64                              defconfig    gcc-11
-x86_64                randconfig-071-20250531    clang-20
-x86_64                randconfig-072-20250531    clang-20
-x86_64                randconfig-073-20250531    clang-20
-x86_64                randconfig-074-20250531    clang-20
-x86_64                randconfig-075-20250531    clang-20
-x86_64                randconfig-076-20250531    clang-20
-x86_64                randconfig-077-20250531    clang-20
-x86_64                randconfig-078-20250531    clang-20
-x86_64                          rhel-9.4-rust    clang-18
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                randconfig-001-20250531    gcc-9.3.0
-xtensa                randconfig-002-20250531    gcc-13.3.0
-xtensa                    xip_kc705_defconfig    gcc-15.1.0
+As you pointed out, there are certainly inefficiencies 
+in supporting this use case with the current design, 
+but if there is a valid use case,
+I believe there’s room for it to be supported in the current model
+—possibly in a less optimized form—
+until a virtual swap device becomes available 
+and provides a more efficient solution.
+What do you think about?
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> the physical swap location in PTEs means that changing the swap
+> backend requires a full page table walk to update all the PTEs that
+> refer to the old physical swap location. So you have to pick your
+> poison - either:
+> 1. Pick your backend at swap out time, and never change it. You might
+> not have sufficient information to decide at that time. It prevents
+> you from adapting to the change in workload dynamics and working set -
+> the access frequency of pages might change, so their physical location
+> should change accordingly.
+> 
+> 2. Reserve the space in every tier, and associate them with the same
+> handle. This is kinda what zswap is doing. It is space efficient, and
+> create a lot of operational issues in production.
+> 
+> 3. Bite the bullet and perform the page table walk. This is what
+> swapoff is doing, basically. Raise your hands if you're excited about
+> a full page table walk every time you want to evict a page from zswap
+> to disk swap. Booo.
+> 
+> This new design will give us an efficient way to perform tier transfer
+> - you need to figure out how to obtain the right to perform the
+> transfer (for now, through the swap cache - but you can perhaps
+> envision some sort of locks), and then you can simply make the change
+> at the virtual layer.
+>
+
+One idea that comes to mind is whether the backend swap tier for
+a page could be lazily adjusted at runtime—either reactively 
+or via an explicit interface—before the tier changes.  
+Alternatively, if it's preferable to leave pages untouched
+when the tier configuration changes at runtime, 
+perhaps we could consider making this behavior configurable as well. 
+
+> >
+> > >   This idea is very similar to Kairui's work to optimize the (physical)
+> > >   swap allocator. He is currently also working on a swap redesign (see
+> > >   [11]) - perhaps we can combine the two efforts to take advantage of
+> > >   the swap allocator's efficiency for virtual swap.
+> >
+> > I noticed that your patch appears to be aligned with the work from Kairui.
+> > It seems like the overall architecture may be headed toward introducing
+> > a virtual swap device layer.
+> > I'm curious if there’s already been any concrete discussion
+> > around this abstraction, especially regarding how it might be layered over
+> > multiple physical swap devices?
+> >
+> > From a naive perspective, I imagine that while today’s swap devices
+> > are in a 1:1 mapping with physical devices,
+> > this virtual layer could introduce a 1:N relationship —
+> > one virtual swap device mapped to multiple physical ones.
+> > Would this virtual device behave as a new swappable block device
+> > exposed via `swapon`, or is the plan to abstract it differently?
+> 
+> That was one of the ideas I was thinking of. Problem is this is a very
+> special "device", and I'm not entirely sure opting in through swapon
+> like that won't cause issues. Imagine the following scenario:
+> 
+> 1. We swap on a normal swapfile.
+> 
+> 2. Users swap things with the swapfile.
+> 
+> 2. Sysadmin then swapon a virtual swap device.
+> 
+> It will be quite nightmarish to manage things - we need to be extra
+> vigilant in handling a physical swap slot for e.g, since it can back a
+> PTE or a virtual swap slot. Also, swapoff becomes less efficient
+> again. And the physical swap allocator, even with the swap table
+> change, doesn't quite work out of the box for virtual swap yet (see
+> [1]).
+> 
+> I think it's better to just keep it separate, for now, and adopt
+> elements from Kairui's work to make virtual swap allocation more
+> efficient. Not a hill I will die on though,
+> 
+> [1]: https://lore.kernel.org/linux-mm/CAKEwX=MmD___ukRrx=hLo7d_m1J_uG_Ke+us7RQgFUV2OSg38w@mail.gmail.com/
+> 
+
+I also appreciate your thoughts on keeping the virtual 
+and physical swap paths separate for now. 
+Thanks for sharing your perspective
+—it was helpful to understand the design direction.
+
+Best regards,  
+YoungJun Park
 
