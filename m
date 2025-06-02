@@ -1,220 +1,141 @@
-Return-Path: <cgroups+bounces-8411-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8412-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F849ACB7FE
-	for <lists+cgroups@lfdr.de>; Mon,  2 Jun 2025 17:34:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05B47ACB6C4
+	for <lists+cgroups@lfdr.de>; Mon,  2 Jun 2025 17:21:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC79F1C228F9
-	for <lists+cgroups@lfdr.de>; Mon,  2 Jun 2025 15:11:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B1F6168471
+	for <lists+cgroups@lfdr.de>; Mon,  2 Jun 2025 15:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A1E6226CF1;
-	Mon,  2 Jun 2025 15:04:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E2822B8B0;
+	Mon,  2 Jun 2025 15:07:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dQZvvNMo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA755221FC3
-	for <cgroups@vger.kernel.org>; Mon,  2 Jun 2025 15:04:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B10AEEEBD
+	for <cgroups@vger.kernel.org>; Mon,  2 Jun 2025 15:07:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748876643; cv=none; b=Nkt7PcGPJzSqIxrPo1sezVynMfBAk0x8RMPKUl7wA0cNZ0xDxKzshTM2zhETnnlfI5B7YmZkN0lKtHnJrKObLvbe16YUuhWalFVXrp4zsCtSFeq7SyYQIXMoSoi5nOVP9Sc5aPPEsUSC2Dm9upDUarKroNXNgHL6Ueh8WjEmYg8=
+	t=1748876866; cv=none; b=q98fr6UOqPQzwK3eigec0dYzTku438FNpArxWWDgPgQyADBEUHmmGE9y/4qq2A5xAwe0XyPLXOaX6atHZdq21e6PEW5rstbpl/cttAr4bAmeXXa+uCznOEC76zOVFMYRgi8eM3EM7iTI4bYAJl8kdBMwsVyt6OIylYfdVZNaw+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748876643; c=relaxed/simple;
-	bh=boJhymIaaEQ9M7ltEnszNrAVcAVirzSEjRdlBJp11ZM=;
+	s=arc-20240116; t=1748876866; c=relaxed/simple;
+	bh=YS7JBPHbS6sCNPOiRhuoVUZgpPJBUX9cs2X5mWxMiZ4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MoA5jVrLT7uFUsPo3B3hF/L322UT3XmnxccRJukrkVBH6YLuMdg8ZkTjVucAqAHsB5YZaZlNUTajbQsCLFWNwElwPiMbAOjWVIqeL2UrEhkTgLJ0ZEIP3u9/53ME3COPOEEVskEkABcTzUVdf8P5rsdgTy7uCQz1sppPuatioCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.102 with ESMTP; 3 Jun 2025 00:03:52 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Tue, 3 Jun 2025 00:03:52 +0900
-From: YoungJun Park <youngjun.park@lge.com>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
-	hughd@google.com, yosry.ahmed@linux.dev, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, len.brown@intel.com,
-	chengming.zhou@linux.dev, kasong@tencent.com, chrisl@kernel.org,
-	huang.ying.caritas@gmail.com, ryan.roberts@arm.com,
-	viro@zeniv.linux.org.uk, baohua@kernel.org, osalvador@suse.de,
-	lorenzo.stoakes@oracle.com, christophe.leroy@csgroup.eu,
-	pavel@kernel.org, kernel-team@meta.com,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-pm@vger.kernel.org, peterx@redhat.com, gunho.lee@lge.com,
-	taejoon.song@lge.com, iamjoonsoo.kim@lge.com
-Subject: Re: [RFC PATCH v2 00/18] Virtual Swap Space
-Message-ID: <aD29WJLms0CJVh8A@yjaykim-PowerEdge-T330>
-References: <20250429233848.3093350-1-nphamcs@gmail.com>
- <aDlUgVFdA7rCUvHx@yjaykim-PowerEdge-T330>
- <CAKEwX=MjyEsoyDmMBCRr0QnBfgkTA5bfrshPbfSgNp887zaxVw@mail.gmail.com>
- <aDxN6oz86TD5H4IL@yjaykim-PowerEdge-T330>
- <CAKEwX=NFrWyFkyd5XhXEb_qYtWBk4yPUMPPJN0qHPAvzPUq_Dg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sW7mEy9YOmWA7DYv5gFisM4Ppkgj/FLsIcqM0YyhP7msfwfpux+JJ1ivod04Pn8Na1N0kjndQhIpiW3zrONepjp7n7XzQ0QFTKAXyV8IuHGbclMPZDg2u2leX53swoy7+bwWeo2A7Wzk7YTfK07ENBr99sWSyQiSHsa1vOCP+dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dQZvvNMo; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-441d437cfaaso30487565e9.1
+        for <cgroups@vger.kernel.org>; Mon, 02 Jun 2025 08:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1748876863; x=1749481663; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nmZbX0hlsaI3hZ8qq+l4gSqxZaZCX/s2ZALq5WLxKE8=;
+        b=dQZvvNMoEvGoJYpCcHGcll5p8jJ8u2dlv9VpCaO9pibvvbNCEKH+dtqqM6aRQmqT/p
+         f75gWERJ1i9NIYh3hbmIDQrCkaMYb/6fp3TaQU22UFdkbeNZXq4voa9C6LOxKix8nGYf
+         IEfMy5EuaJAQZLqFun7CRYMlk9MjgPMwfHRYE4QVcDYMprPJFy3BkevWdZrMez6ZUr5l
+         SbY09De5xrWOcgbU0tFY9RnIAOrZUgAWYt5hkBcBCLOyjcvqwAYfeOHkiOSISce9LPEf
+         C0SYxhIZmGvS5VQQzaTeGEIbQsKxFFscUU1bV1VyENn2UDEjbaoe7nwz3jf59Z57RZhQ
+         HM6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748876863; x=1749481663;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nmZbX0hlsaI3hZ8qq+l4gSqxZaZCX/s2ZALq5WLxKE8=;
+        b=H2SPpw6aAdjCYCIDtAxghE5/AOjZ+mIVMfRrpABMuEdyf9fTh+QFfooTPKnif/obAr
+         LAFU5OtBgixSbCHtNJXgD2geAZBtLy1ma9MDRyafLASpsHg1aqTsy7fj2jYXVHSVu8Po
+         j55qxanTXbEJ4Fzu91ZmXzkdifvircIj3f+/hxWOMw4slTziW0Ymj87U1njyRgsLZgPM
+         xDrC9Wn2Dr/xCHPnt9kWHS/EQAama/u02k9YLSwzSkO/Pv5boqtj1A6hn+24c6YCvUhP
+         vljINrbThEKh7pBFFUWY10Q6CrMUjxf0lfTb7haq4w2S96PDttZmU64IYHzmUokmVVQb
+         o1oA==
+X-Forwarded-Encrypted: i=1; AJvYcCW2HlFn2dHuF9Q2FFgN8KvzHHHCKo50uK4GON0PTYsULuk3GUM/ttJ4T18cTpqd8sKqEPuyKyXP@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz9AHi2BJrSQL3+IvdKPN7ivYMR+W1o2/JLn+Xw4C4jwoOMGetN
+	m0fi4H/wsBy+6KXYB5LxwhMsFtfEb5spQVvLgcqKuP7EQShikxj6YYF+7gm+2g0vRkU=
+X-Gm-Gg: ASbGncsShalj+5zhGYqduG2Ktdu2QbUWx9Bz06Ws0Sjc5IDSPsWRvtVKRtKp4CoQXna
+	XxOEA3S8xTjfN3YG27b2KUA1h/sFXmfD88fQwqUXPkxoA5R2zI3CMrRpM26ykD/vVDqTGhqQXAJ
+	JwDHrXPW1/blKzbYVD+fwwO5pcDG1CHzFBDxBdvU8WAFxcOtEBURRrO1j9uj7JiiWGE6ZHUjVGd
+	huQA0W+tGJ/x4q1ZYx+y0gFceCn2kxhb8qclbpZDhy5vwF6I5X3SJGQMmARbo5VEycFcWVjDUz4
+	qYfqcxLxCoGraNQaFo3xSPMc4ojbAVWGzbfXRERz5W53m9cil61L8tWDz3hkz3KE
+X-Google-Smtp-Source: AGHT+IEV3ITHhmGwWx2FlchqXvrVWIl3FpfBnBI/wAlqdH3JCQ/rjbxCxS0wIzpVGp9Z5bEQIbTdVA==
+X-Received: by 2002:a05:600c:4e92:b0:440:9b1a:cd78 with SMTP id 5b1f17b1804b1-450d882488dmr131286665e9.10.1748876861445;
+        Mon, 02 Jun 2025 08:07:41 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-450d7fa2342sm129350345e9.10.2025.06.02.08.07.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Jun 2025 08:07:40 -0700 (PDT)
+Date: Mon, 2 Jun 2025 17:07:39 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 2/3 cgroup/for-6.16] sched_ext: Introduce
+ cgroup_lifetime_notifier
+Message-ID: <kzgswr6dlvzvcxcd6yajoqshpumus7fiwft7mmsh5vcygdc5zd@mfauedvifz7f>
+References: <aCQfffBvNpW3qMWN@mtj.duckdns.org>
+ <aCQfvCuVWOYkv_X5@mtj.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7mpvcqhixvxwskac"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKEwX=NFrWyFkyd5XhXEb_qYtWBk4yPUMPPJN0qHPAvzPUq_Dg@mail.gmail.com>
+In-Reply-To: <aCQfvCuVWOYkv_X5@mtj.duckdns.org>
 
-On Sun, Jun 01, 2025 at 02:08:22PM -0700, Nhat Pham wrote:
-> On Sun, Jun 1, 2025 at 5:56 AM YoungJun Park <youngjun.park@lge.com> wrote:
-> >
-> > On Fri, May 30, 2025 at 09:52:42AM -0700, Nhat Pham wrote:
-> > > On Thu, May 29, 2025 at 11:47 PM YoungJun Park <youngjun.park@lge.com> wrote:
-> > > >
-> > > > On Tue, Apr 29, 2025 at 04:38:28PM -0700, Nhat Pham wrote:
-> > > > > Changelog:
-> > > > > * v2:
-> > > > >       * Use a single atomic type (swap_refs) for reference counting
-> > > > >         purpose. This brings the size of the swap descriptor from 64 KB
-> > > > >         down to 48 KB (25% reduction). Suggested by Yosry Ahmed.
-> > > > >       * Zeromap bitmap is removed in the virtual swap implementation.
-> > > > >         This saves one bit per phyiscal swapfile slot.
-> > > > >       * Rearrange the patches and the code change to make things more
-> > > > >         reviewable. Suggested by Johannes Weiner.
-> > > > >       * Update the cover letter a bit.
-> > > >
-> > > > Hi Nhat,
-> > > >
-> > > > Thank you for sharing this patch series.
-> > > > I’ve read through it with great interest.
-> > > >
-> > > > I’m part of a kernel team working on features related to multi-tier swapping,
-> > > > and this patch set appears quite relevant
-> > > > to our ongoing discussions and early-stage implementation.
-> > >
-> > > May I ask - what's the use case you're thinking of here? Remote swapping?
-> > >
-> >
-> > Yes, that's correct.
-> > Our usage scenario includes remote swap,
-> > and we're experimenting with assigning swap tiers per cgroup
-> > in order to improve specific scene of our target device performance.
-> 
-> Hmm, that can be a start. Right now, we have only 2 swap tiers
-> essentially, so memory.(z)swap.max and memory.zswap.writeback is
-> usually sufficient to describe the tiering interface. But if you have
-> an alternative use case in mind feel free to send a RFC to explore
-> this!
->
 
-Yes, sounds good.
-I've organized the details of our swap tiering approach 
-including the specific use case we are trying to solve.
-This approach is based on leveraging 
-the existing priority mechanism in the swap subsystem.
-I’ll be sharing it as an RFC shortly.
- 
-> >
-> > We’ve explored several approaches and PoCs around this,
-> > and in the process of evaluating
-> > whether our direction could eventually be aligned
-> > with the upstream kernel,
-> > I came across your patchset and wanted to ask whether
-> > similar efforts have been discussed or attempted before.
-> 
-> I think it is occasionally touched upon in discussion, but AFAICS
-> there has not been really an actual upstream patch to add such an
-> interface.
-> 
-> >
-> > > >
-> > > > I had a couple of questions regarding the future direction.
-> > > >
-> > > > > * Multi-tier swapping (as mentioned in [5]), with transparent
-> > > > >   transferring (promotion/demotion) of pages across tiers (see [8] and
-> > > > >   [9]). Similar to swapoff, with the old design we would need to
-> > > > >   perform the expensive page table walk.
-> > > >
-> > > > Based on the discussion in [5], it seems there was some exploration
-> > > > around enabling per-cgroup selection of multiple tiers.
-> > > > Do you envision the current design evolving in a similar direction
-> > > > to those past discussions, or is there a different direction you're aiming for?
-> > >
-> > > IIRC, that past design focused on the interface aspect of the problem,
-> > > but never actually touched the mechanism to implement a multi-tier
-> > > swapping solution.
-> > >
-> > > The simple reason is it's impossible, or at least highly inefficient
-> > > to do it in the current design, i.e without virtualizing swap. Storing
-> >
-> > As you pointed out, there are certainly inefficiencies
-> > in supporting this use case with the current design,
-> > but if there is a valid use case,
-> > I believe there’s room for it to be supported in the current model
-> > —possibly in a less optimized form—
-> > until a virtual swap device becomes available
-> > and provides a more efficient solution.
-> > What do you think about?
-> 
-> Which less optimized form are you thinking of?
->
+--7mpvcqhixvxwskac
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 2/3 cgroup/for-6.16] sched_ext: Introduce
+ cgroup_lifetime_notifier
+MIME-Version: 1.0
 
-Just mentioning current swap design would be less optimized regardless 
-of the form of tiering applied.
-Not meaninig my approach is less optimized.
-That may have come across differently than I intended.
-Please feel free to disregard that assumption — 
-I believe it would be more appropriate 
-to evaluate this based on the RFC I plan to share soon.
- 
-> >
-> > > the physical swap location in PTEs means that changing the swap
-> > > backend requires a full page table walk to update all the PTEs that
-> > > refer to the old physical swap location. So you have to pick your
-> > > poison - either:
-> > > 1. Pick your backend at swap out time, and never change it. You might
-> > > not have sufficient information to decide at that time. It prevents
-> > > you from adapting to the change in workload dynamics and working set -
-> > > the access frequency of pages might change, so their physical location
-> > > should change accordingly.
-> > >
-> > > 2. Reserve the space in every tier, and associate them with the same
-> > > handle. This is kinda what zswap is doing. It is space efficient, and
-> > > create a lot of operational issues in production.
-> > >
-> > > 3. Bite the bullet and perform the page table walk. This is what
-> > > swapoff is doing, basically. Raise your hands if you're excited about
-> > > a full page table walk every time you want to evict a page from zswap
-> > > to disk swap. Booo.
-> > >
-> > > This new design will give us an efficient way to perform tier transfer
-> > > - you need to figure out how to obtain the right to perform the
-> > > transfer (for now, through the swap cache - but you can perhaps
-> > > envision some sort of locks), and then you can simply make the change
-> > > at the virtual layer.
-> > >
-> >
-> > One idea that comes to mind is whether the backend swap tier for
-> > a page could be lazily adjusted at runtime—either reactively
-> > or via an explicit interface—before the tier changes.
-> > Alternatively, if it's preferable to leave pages untouched
-> > when the tier configuration changes at runtime,
-> > perhaps we could consider making this behavior configurable as well.
-> >
-> 
-> I don't quite understand - could you expand on this?
->
+On Wed, May 14, 2025 at 12:44:44AM -0400, Tejun Heo <tj@kernel.org> wrote:
+> Other subsystems may make use of the cgroup hierarchy with the cgroup_bpf
+> support being one such example. For such a feature, it's useful to be able
+<snip>
 
-Regarding your point, 
-my understanding was that you were referring
-to an immediate migration once a new swap tier is selected at runtime. 
-I was suggesting whether a lazy migration approach
-—or even skipping migration altogether—might 
-be worth considering as alternatives.
-I only mentioned it because, from our use case perspective, 
-immediate migration is not strictly necessary.
+> other uses are planned.
+<snip>
 
-Best regards,
-YoungJun Park
+> @@ -5753,6 +5765,15 @@ static struct cgroup *cgroup_create(stru
+>  			goto out_psi_free;
+>  	}
+> =20
+> +	ret =3D blocking_notifier_call_chain_robust(&cgroup_lifetime_notifier,
+> +						  CGROUP_LIFETIME_ONLINE,
+> +						  CGROUP_LIFETIME_OFFLINE, cgrp);
+
+This is with cgroup_mutex taken.
+
+Wouldn't it be more prudent to start with atomic or raw notifier chain?
+(To prevent future unwitting expansion of cgroup_mutex.)
+
+
+Thanks,
+Michal
+
+--7mpvcqhixvxwskac
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCaD2+OAAKCRAt3Wney77B
+SYMKAP4kKLubHhxkJ4m+25CaI+uUpkXSQYSkq6ZvnVwycFJtHwD9FXw1ryxaxlez
+wPFLo2G1jfcEoXRQWwzLuL6Qe0BsdA0=
+=KPDi
+-----END PGP SIGNATURE-----
+
+--7mpvcqhixvxwskac--
 
