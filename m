@@ -1,97 +1,79 @@
-Return-Path: <cgroups+bounces-8430-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8431-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B2E5ACD01C
-	for <lists+cgroups@lfdr.de>; Wed,  4 Jun 2025 01:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 01A49ACD02D
+	for <lists+cgroups@lfdr.de>; Wed,  4 Jun 2025 01:19:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EBB63A6B37
-	for <lists+cgroups@lfdr.de>; Tue,  3 Jun 2025 23:03:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 817DE3A742C
+	for <lists+cgroups@lfdr.de>; Tue,  3 Jun 2025 23:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25CCC1A841E;
-	Tue,  3 Jun 2025 23:03:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9024D22A4F0;
+	Tue,  3 Jun 2025 23:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wzhjy3Yk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jh5U+yo3"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B43AD51;
-	Tue,  3 Jun 2025 23:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B46017A30A;
+	Tue,  3 Jun 2025 23:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748991833; cv=none; b=S9NjjSLEDwR3s7qQzTSrvxkZGDXZJzC3h3tacvJZDy8+eB4uHGmMBpZJmeEU2fhi5gkae2fZ1ga+6A6OiQYmjRB/UxhbROnHnQnnFfFoxcoZL6UepEUVoNlsSL1LBqHc27rzaBJNK6ffMpq6A6d3pw3sbr6SezN2Rci/+EChoIs=
+	t=1748992774; cv=none; b=qu/SRzv8TMKYjDtOTxulA/Wv2QABgdSynvDEqsL9PWGJZFmcrQHaSHxijBkOTX4sFn/8DV1mFp+ITV6Vh4T1t0UQXgm/HJbB9ONX6Yn6LPEia093w/MRZz/CbRCj4Lrb3UwV7Me6KGbZ0PvSHBo1FVPoZTn0iRBDBqBhB2wNmgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748991833; c=relaxed/simple;
-	bh=A4oj6OPfT1mxvNI32b61Y5z402+URhsCBCG9q2dcoQg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h+wI64GioCJFDpXvhgVYfs5mvy3+80nw3N3vKVGz/m5gMB+K+rwFcaP0htzO2zIcMhx/zZLtZub7rKSj2WLsrmQGwZ47NcPIPiOz72uLvwdZ/jyprbX/9pTI4U3RCaE5/IsiYtppGCg2LDBc+J5B8mi0BqqWGelY19Z9BWe9ZGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wzhjy3Yk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BC69C4CEED;
-	Tue,  3 Jun 2025 23:03:53 +0000 (UTC)
+	s=arc-20240116; t=1748992774; c=relaxed/simple;
+	bh=RG1+4q8Me5BzyOLg9KVTM7b/Ji24D6d1EwJ9zRTJ/9U=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=eYcq+LnaccLlIjbT/4eCpCAB6TApFbYI2wyg5690ZrZ5+EL6UVXoQ91E+kPpL8DGt/hVL3s7xK7e6Fq/NwHbU/G7hCL1eaLKxdOM/fxZBXFGU36HSf8a2GSehX3CM/TOGPTMx2ZNweVgTG6OaeMj5shQbN/fXop3dMUKotXgXVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jh5U+yo3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2908CC4CEED;
+	Tue,  3 Jun 2025 23:19:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748991833;
-	bh=A4oj6OPfT1mxvNI32b61Y5z402+URhsCBCG9q2dcoQg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Wzhjy3YkZIV3Lqppzw053X5JGMdhkCh0br5X3j5C0BhGXVtu2+c+BSP9gqA1uEFIP
-	 OqGsX6ogYQcFp0Lvp83tfP2lM1xRnuYHIwcdn65/g9S90a1TJZ0K62YTwZCZ8BfcTX
-	 pX44dBzKRkQGiKJXXcTCVbTmHioh+FY3ywHz2D2bmgAR5/ZnRUxLlwSy0EW4ptx46D
-	 OlhAc5I2/WJWOlAnzBJECl62AaAiuqLkm8yjouz6PFOzIWjIJeORmA0PRwc3TlKn/k
-	 DxwbpYOdm6eS/sT82vHyGM9Z+6e/CmEXS2AqLnStmmlRdwn1uD5iovipU6CXSj+ZiK
-	 5Sh/AEMD8IKYg==
-Date: Tue, 3 Jun 2025 13:03:51 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Tiffany Yang <ynaffit@google.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	kernel-team@android.com, John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Chen Ridong <chenridong@huawei.com>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>
-Subject: Re: [RFC PATCH] cgroup: Track time in cgroup v2 freezer
-Message-ID: <aD9_V1rSqqESFekK@slm.duckdns.org>
-References: <20250603224304.3198729-3-ynaffit@google.com>
+	s=k20201202; t=1748992774;
+	bh=RG1+4q8Me5BzyOLg9KVTM7b/Ji24D6d1EwJ9zRTJ/9U=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=Jh5U+yo3y5YdIhzF7Y2l6PYnG08rLHJ2+5sFkMe86GEUAeqDw0kQ7QmUMrI45i0nB
+	 EatfOA1JXYRM+tZCYyhCAtLKxN2bV5s3Rf92pt1lGehRxEVwWaZIXz2DnuKoKevTXy
+	 zDmB1x0TvgNnzTUP7h0CAr0PA9gHYg1GREICgB5wfz0vke73jVoJfCtS8MfpSq6dHP
+	 JHpp0/dMronk2DH98MidwsoLYT2ZjLYraFlEvUSAwjff+DBUK+XNVGcTKuiCadpD1u
+	 ltYqvYxNurni59v8gAz6VxTKRdODLdgNCHUFIKxBtpD6liEbj+dj6ur7SqvwK+rEJ7
+	 lGj/jsTo5/Jrg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B0A39380DBEC;
+	Tue,  3 Jun 2025 23:20:07 +0000 (UTC)
+Subject: Re: [GIT PULL] cgroup: A fix for v6.16-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <aD9CL3oO5LFgKNXY@slm.duckdns.org>
+References: <aD9CL3oO5LFgKNXY@slm.duckdns.org>
+X-PR-Tracked-List-Id: <cgroups.vger.kernel.org>
+X-PR-Tracked-Message-Id: <aD9CL3oO5LFgKNXY@slm.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.16-rc1-fixes
+X-PR-Tracked-Commit-Id: c853d18706de8c9525126b362f747d2e480e93df
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: def5b099a6452856801da71ad07c601ae2dbf6ef
+Message-Id: <174899280643.1701538.1613065180797034574.pr-tracker-bot@kernel.org>
+Date: Tue, 03 Jun 2025 23:20:06 +0000
+To: Tejun Heo <tj@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, JP Kobryn <inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250603224304.3198729-3-ynaffit@google.com>
 
-On Tue, Jun 03, 2025 at 10:43:05PM +0000, Tiffany Yang wrote:
-> The cgroup v2 freezer controller allows user processes to be dynamically
-> added to and removed from an interruptible frozen state from
-> userspace. This feature is helpful for application management, as it
-> allows background tasks to be frozen to prevent them from being
-> scheduled or otherwise contending with foreground tasks for resources.
-> Still, applications are usually unaware of their having been placed in
-> the freezer cgroup, so any watchdog timers they may have set will fire
-> when they exit. To address this problem, I propose tracking the per-task
-> frozen time and exposing it to userland via procfs.
+The pull request you sent on Tue, 3 Jun 2025 08:42:55 -1000:
 
-Just on a glance, it feels rather odd to be tracking this per task given
-that the state is per cgroup. Can you account this per cgroup?
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.16-rc1-fixes
 
-Thanks.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/def5b099a6452856801da71ad07c601ae2dbf6ef
+
+Thank you!
 
 -- 
-tejun
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
