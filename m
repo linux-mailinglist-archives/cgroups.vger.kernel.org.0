@@ -1,122 +1,157 @@
-Return-Path: <cgroups+bounces-8435-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8436-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3127ACE4EB
-	for <lists+cgroups@lfdr.de>; Wed,  4 Jun 2025 21:36:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C2EFACE521
+	for <lists+cgroups@lfdr.de>; Wed,  4 Jun 2025 21:39:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8287C172011
-	for <lists+cgroups@lfdr.de>; Wed,  4 Jun 2025 19:36:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C32123A91B0
+	for <lists+cgroups@lfdr.de>; Wed,  4 Jun 2025 19:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B6E214223;
-	Wed,  4 Jun 2025 19:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA192212B28;
+	Wed,  4 Jun 2025 19:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kaGSAuzb"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="W5RvQoip"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FE8720E03C
-	for <cgroups@vger.kernel.org>; Wed,  4 Jun 2025 19:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F411420DD63
+	for <cgroups@vger.kernel.org>; Wed,  4 Jun 2025 19:39:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749065790; cv=none; b=nv1XrRBPzvOqbap5ksRSH19044zoNkJ83Eg1Ef0O4rJSA8vft8I3eIc8IiIypz+X6zG3yuQEk27T1MMoF329COPbpCIAO8WcTowvPD7K5RM/EumfcwUqKbMtA5MBg28bFasLWYiUms9s4Cjygmi40gz5UwrHiZse7bQxTwc8nTY=
+	t=1749065973; cv=none; b=e69LjUiKhb8yw6ZWle/2cQKRR2ItGXQwLGQzuiG7z1Jw6zVTduy2ahzmi3ZgI4qAe89RseIMh9pF07OQU0Xgh6+Ui6+xBjJ6jqayqj8WSQobazQ1f34YYK2ywjx7x6KnwAX8yB1I+N7mwNLPyz+qLLe/MdyaA201REhnMqc4Sto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749065790; c=relaxed/simple;
-	bh=+wlEcUbm9eqeXTec8Ywxmy+qdvNa5zi+eyUT4ONT5RA=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=AJBW1BH13tul6GtQEcY9BxB9NjAK1HrlF74ksI5DYNs0vDghzISywcyh18oRPOF+VwDvjN1HlhZ2kN/wLnyyYmNPooI7jdrvpjtZLwBNWEnlYg69uX7PApKDF2ZXt4ZPkxgTZ49aw+5pl/HRjUzUscYfGaXl2BQ8qdRPzEgK0Vg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kaGSAuzb; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1749065788; x=1780601788;
-  h=date:from:to:cc:subject:message-id;
-  bh=+wlEcUbm9eqeXTec8Ywxmy+qdvNa5zi+eyUT4ONT5RA=;
-  b=kaGSAuzbfAc0um2X1rz8R3jOL3amtXNB5eaLoQfDaEB/zlkeKPP0RE8Z
-   29yxeHEjpCCFfx8+chJAd2baKsR9+HCVMTui7IwTaI0EQ1h2t8Ym86dN2
-   2vCdvngZH9kNDCDm9jfRDUPVoqsxnxwz8liO1dRewGXUi3hYaqfv/lVGh
-   KPWtxQ+mI048HnvMBIzsI+V0wYcpKKzjCT3q+9W51VMsyxrcbYcbNFUNn
-   EppSo3v4IK30CoYfbu/E+4y6qesvELvhp1PBQR+UK1eGWCFGwtGofx847
-   E4bsH+dXmHh1gebpy0qyp/W9JisyvUSn32VE19hwHgWWg5tc6jd9hyiH1
-   g==;
-X-CSE-ConnectionGUID: 7/qHcrwoQuehcsO1smQOrA==
-X-CSE-MsgGUID: RF4gHIPNTletaNRdBYGzew==
-X-IronPort-AV: E=McAfee;i="6800,10657,11454"; a="53797402"
-X-IronPort-AV: E=Sophos;i="6.16,210,1744095600"; 
-   d="scan'208";a="53797402"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2025 12:36:27 -0700
-X-CSE-ConnectionGUID: vLqNwgHeSGK4WGib94gCjg==
-X-CSE-MsgGUID: yVwjNKjKRGuaUMW1j6sP7A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,210,1744095600"; 
-   d="scan'208";a="150072443"
-Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 04 Jun 2025 12:36:27 -0700
-Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uMtuS-0003Pl-2U;
-	Wed, 04 Jun 2025 19:36:24 +0000
-Date: Thu, 05 Jun 2025 03:35:28 +0800
-From: kernel test robot <lkp@intel.com>
+	s=arc-20240116; t=1749065973; c=relaxed/simple;
+	bh=uqrrh5XKhj0JhJlvb7JWbUd5mMKx4NAS1ZTa4avFBd8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NPwKP62j80iX34P2uswSuo1PuI5tZ+qVWseV+2bmyH1JT7SLJlVe1mscbb/HluLBHyTAMdA6Ju6hbWoRMfWDLiU1ImLxDs43RdpV5V1mVMHs3JJeH8+dr4hphWNkJr5+1Qc26lhHqb0McArWWVFn9alnc5sdPMIT6xDUEZeTu/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=W5RvQoip; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-72d3b48d2ffso296888b3a.2
+        for <cgroups@vger.kernel.org>; Wed, 04 Jun 2025 12:39:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1749065971; x=1749670771; darn=vger.kernel.org;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WSxWqox5bdiWzZ5tn/4s8/4uvycqiAbImkblkNnSipg=;
+        b=W5RvQoipny5k8mRsT1J6bTVWx1MFL8QGoOk0sehkgeBzzAty+hy+//w+g9R30otO0H
+         7r44Y5FqsyLzz8ixUYh0I6KEc+NH7eXP5jKrlHGv0E1TjKVow+NHJtxEk6ijN2u6jMFm
+         nMU6Jbw5hPKxopJmjjoBUmTzh1y1IpGAqiGvFeYOLdDUJ8Zpt8BCO1voaoqn1d2KGnjw
+         taHHoPmCX5+MKWj9Ipshl4u9MvcY41XyqiM+XWdzHApm/NIzc747ZjT/eVMujojHQ4nV
+         Wb8CjC2VY/sfLcg/t5Dg65lNrzVCRzoKKruW77XNzYoRQHTTVldQsG9NLqCEIUKlat3b
+         KWBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749065971; x=1749670771;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WSxWqox5bdiWzZ5tn/4s8/4uvycqiAbImkblkNnSipg=;
+        b=UCKjmlqBjTiokzvlQFMllH05IU025qoDJc8cpO5bDUF+sA2jNdncgq6biQN6NjMQsE
+         eU3tUIq3uS8QghKhP3aZfyYowB0xbitscITZZJ65Xt1Ztxy2yYROlX+/GAvre2htManN
+         o+XdyYOUsoKAlJUe3PzPq/RM+BrBp0wfcIzIB6JHXq2eF24kza82yad8xJ85wXVVVMkF
+         pnnvyk3itXUcVFB+OLmhRv3yEi4QAu11c+etTK0L4rDycfIQCPHwgm7phTm7K8AFHyrb
+         f3arq0wnx2l/PGp1Nnof04wwFTo4frax8pyhurmolTRlO4KhKYBZBNlxXMtnzKCNPTnp
+         YsPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXQ7bAVoscyB0BBireUvIVGkuLOPOIeSNtifvBakstW39KoT42vD3keZ1K02j464Xm4V6G5e3RI@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxuj7VGtFrz4BhXY2g/uLgQWbpvbo6S700h2zsSq0P5ou+nBFEn
+	4sL2mDNJFJMuPYJSYkqXQ+X3+3aCIH8W/jwzbFkkh06uIZf9Ncvx30oAZgP2nde7Ow==
+X-Gm-Gg: ASbGncvQOBqoT5YEm6FXW8PTwLi8IfMfxzEUl7EAaWqOUpvEDYInuNMnrbwFuRpLkMH
+	BSOoBdGUrKwW6aKE6i9TTadu9sVLsfM3ZNfkh8+AbjdPbt4s3tY34qIePfSdKRLvM9So8IigPr5
+	cfzW3BgPA2ENYBArvr9YHPJK0bQJmcYB/tpPrzW2un959wDftx8v/P+rsEZLw+T/w+GejKGy2PC
+	678/AXjs2UbJZrWReJVZFnjiTBAMoue26SVKje1A5sKK/Lov3dhps/KhG/jrn94qZyDP/gh4qK8
+	P0zLaCT5DBRQNl21EP+GB980PdMUQGs9Miu8L7jwtINvWRtFIocNzcRdjUU8V1mz3dRxOOb91Gx
+	5zbMRTaufD4pUWCDt1tVYm2Y4nfWHlrUc5+4eH4wnDVGFD6QVMlvjgh6VHGU=
+X-Google-Smtp-Source: AGHT+IEUUgzAKKhwwQ9XugqEZgLxNnWmGOGv4hdFCRqrrqKmlL/qaqsBWbsCyy4gSxXaS0EWkVrpPg==
+X-Received: by 2002:a05:6a00:4fc2:b0:736:34a2:8a20 with SMTP id d2e1a72fcca58-7480b46113bmr5411347b3a.21.1749065970983;
+        Wed, 04 Jun 2025 12:39:30 -0700 (PDT)
+Received: from ynaffit-andsys.c.googlers.com (163.192.16.34.bc.googleusercontent.com. [34.16.192.163])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-747afeab4acsm11479575b3a.43.2025.06.04.12.39.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Jun 2025 12:39:30 -0700 (PDT)
+From: Tiffany Yang <ynaffit@google.com>
 To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.17] BUILD SUCCESS
- edfc4c8a1edffa6849e19ffade1be8dd824989d0
-Message-ID: <202506050318.LIIF7xTd-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+Cc: linux-kernel@vger.kernel.org,  cgroups@vger.kernel.org,
+  kernel-team@android.com,  John Stultz <jstultz@google.com>,  Thomas
+ Gleixner <tglx@linutronix.de>,  Stephen Boyd <sboyd@kernel.org>,
+  Anna-Maria Behnsen <anna-maria@linutronix.de>,  Frederic Weisbecker
+ <frederic@kernel.org>,  Johannes Weiner <hannes@cmpxchg.org>,  Michal
+ =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,  "Rafael J. Wysocki"
+ <rafael@kernel.org>,
+  Pavel Machek <pavel@kernel.org>,  Roman Gushchin
+ <roman.gushchin@linux.dev>,  Chen Ridong <chenridong@huawei.com>,  Ingo
+ Molnar <mingo@redhat.com>,  Peter Zijlstra <peterz@infradead.org>,  Juri
+ Lelli <juri.lelli@redhat.com>,  Vincent Guittot
+ <vincent.guittot@linaro.org>,  Dietmar Eggemann
+ <dietmar.eggemann@arm.com>,  Steven Rostedt <rostedt@goodmis.org>,  Ben
+ Segall <bsegall@google.com>,  Mel Gorman <mgorman@suse.de>,  Valentin
+ Schneider <vschneid@redhat.com>
+Subject: Re: [RFC PATCH] cgroup: Track time in cgroup v2 freezer
+In-Reply-To: <aD9_V1rSqqESFekK@slm.duckdns.org> (Tejun Heo's message of "Tue,
+	3 Jun 2025 13:03:51 -1000")
+References: <20250603224304.3198729-3-ynaffit@google.com>
+	<aD9_V1rSqqESFekK@slm.duckdns.org>
+User-Agent: mu4e 1.12.8; emacs 30.1
+Date: Wed, 04 Jun 2025 19:39:29 +0000
+Message-ID: <dbx8y0u7i9e6.fsf@ynaffit-andsys.c.googlers.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.17
-branch HEAD: edfc4c8a1edffa6849e19ffade1be8dd824989d0  cgroup: Drop sock_cgroup_classid() dummy implementation
+Tejun Heo <tj@kernel.org> writes:
 
-elapsed time: 1449m
+> On Tue, Jun 03, 2025 at 10:43:05PM +0000, Tiffany Yang wrote:
+>> The cgroup v2 freezer controller allows user processes to be dynamically
+>> added to and removed from an interruptible frozen state from
+>> userspace. This feature is helpful for application management, as it
+>> allows background tasks to be frozen to prevent them from being
+>> scheduled or otherwise contending with foreground tasks for resources.
+>> Still, applications are usually unaware of their having been placed in
+>> the freezer cgroup, so any watchdog timers they may have set will fire
+>> when they exit. To address this problem, I propose tracking the per-task
+>> frozen time and exposing it to userland via procfs.
+>
+> Just on a glance, it feels rather odd to be tracking this per task given
+> that the state is per cgroup. Can you account this per cgroup?
+>
+> Thanks.
 
-configs tested: 29
-configs skipped: 2
+Hi Tejun!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks for taking a look! In this case, I would argue that the value we
+are accounting for (time that a task has not been able to run because it
+is in the cgroup v2 frozen state) is task-specific and distinct from the
+time that the cgroup it belongs to has been frozen.
 
-tested configs:
-alpha       allyesconfig    gcc-15.1.0
-arc         allmodconfig    gcc-15.1.0
-arc         allyesconfig    gcc-15.1.0
-arm         allmodconfig    gcc-15.1.0
-arm         allyesconfig    gcc-15.1.0
-arm64       allmodconfig    clang-19
-hexagon     allmodconfig    clang-17
-hexagon     allyesconfig    clang-21
-loongarch   allmodconfig    gcc-15.1.0
-m68k        allmodconfig    gcc-15.1.0
-m68k        allyesconfig    gcc-15.1.0
-microblaze  allmodconfig    gcc-15.1.0
-microblaze  allyesconfig    gcc-15.1.0
-openrisc    allyesconfig    gcc-15.1.0
-parisc      allmodconfig    gcc-15.1.0
-parisc      allyesconfig    gcc-15.1.0
-powerpc     allmodconfig    gcc-15.1.0
-powerpc     allyesconfig    clang-21
-riscv       allmodconfig    clang-21
-riscv       allyesconfig    clang-16
-s390        allmodconfig    clang-18
-s390        allyesconfig    gcc-15.1.0
-sh          allmodconfig    gcc-15.1.0
-sh          allyesconfig    gcc-15.1.0
-sparc       allmodconfig    gcc-15.1.0
-um          allmodconfig    clang-19
-um          allyesconfig    gcc-12
-x86_64       allnoconfig    clang-20
-x86_64         defconfig    gcc-11
+A cgroup is not considered frozen until all of its members are frozen,
+and if one task then leaves the frozen state, the entire cgroup is
+considered no longer frozen, even if its other members stay in the
+frozen state. Similarly, even if a task is migrated from one frozen
+cgroup (A) to another frozen cgroup (B), the time cgroup B has been
+frozen would not be representative of that task even though it is a
+member.
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+There is also latency between when each task in a cgroup is marked as
+to-be-frozen/unfrozen and when it actually enters the frozen state, so
+each descendant task has a different frozen time. For watchdogs that
+elapse on a per-task basis, a per-cgroup time-in-frozen value would
+underreport the actual time each task spent unable to run. Tasks that
+miss a deadline might incorrectly be considered misbehaving when the
+time they spent suspended was not correctly accounted for.
+
+Please let me know if that answers your question or if there's something
+I'm missing. I agree that it would be cleaner/preferable to keep this
+accounting under a cgroup-specific umbrella, so I hope there is some way
+to get around these issues, but it doesn't look like cgroup fs has a
+good way to keep task-specific stats at the moment.
+
+-- 
+Tiffany Y. Yang
 
