@@ -1,192 +1,181 @@
-Return-Path: <cgroups+bounces-8432-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8433-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 598F3ACD788
-	for <lists+cgroups@lfdr.de>; Wed,  4 Jun 2025 07:45:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A205EACDD9B
+	for <lists+cgroups@lfdr.de>; Wed,  4 Jun 2025 14:14:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E622167818
-	for <lists+cgroups@lfdr.de>; Wed,  4 Jun 2025 05:45:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 532EE188DB5B
+	for <lists+cgroups@lfdr.de>; Wed,  4 Jun 2025 12:14:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF0AE1C7005;
-	Wed,  4 Jun 2025 05:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="O1CXBuoa"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08CA428ECE0;
+	Wed,  4 Jun 2025 12:13:44 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1794F2581;
-	Wed,  4 Jun 2025 05:45:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0B628D8FB
+	for <cgroups@vger.kernel.org>; Wed,  4 Jun 2025 12:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749015924; cv=none; b=WGoyNlYKao3VkYESw48EmPYOMdXKdR2NKVJiBNJ0yhbx3ca7nyFjXYn5v68zxTz0C+lsa7dxoW73nT8P51Jr1Ep5MJZVWQ6WrDyovkVIza+tctab6rqC2IrBZFLYE4KIVKmIoTCkj5PH7zdsHPNNEAL05JYYGqt4HjoW9GUGU+k=
+	t=1749039223; cv=none; b=o0or8PslDGJiHeXB9No20DZ59pAlEi3l8w0JKhIrSRs6xpH12hE91vciAiYgA/Slj67SrJlMKuG1kQbKi8oqAaxjuVVWzSZ4sgJsPhWeqLOiyfV+CuwI+W32H6vSrbevrF38CmjcMxk6v8kE19Dzq3SbasO0LJnhV0q/6mR2IQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749015924; c=relaxed/simple;
-	bh=CfLtqzHHaY4doOrdi8xjRk+IFtdUdKN3wsI17JcTQDo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SwU+2ACDk76tvNFaudEShFbklp2zWe4uzwhXRD/qF6MuxFA+4nBXGfV62QrnF71uVDs/idg2L8ovhNISG357kSkLd20pYfTyHZuqa0g6RwCCKT7jBSXFsCN+HOLEUSSxE+HZdSY0naHym+Ifpf07BLqJDNlwQqciWyYt/6kD4jQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=O1CXBuoa; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5543sB3g027925;
-	Wed, 4 Jun 2025 05:45:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=pp1; bh=MGwMCcbZnV/E5roc53l8Op6u4fYi
-	fdCCWTjLFLVW9rQ=; b=O1CXBuoac4NeV/Tmn3ouXkdo9TRSWPiowI9DhZuAcqAg
-	f00dait1ZdF1N0f0xLdV1M3dezehBes2Ac8IDhJdI50zIPJ3Z5fTW5CqCwRDbkPR
-	V39djxRMyNzG7gm8ODm9p3yg+cXCtdoEFpmINOVvxXo2oV/pxhW+leCNpVWGPaF2
-	1BUkrUIIfVgKp5W5HUeT4+8rVqq4XyGfCvTaTxi2PwcTQrp8iof8KHyr9/83K3WT
-	HH6H8iog+ThmQZm+6tJrqff9I/0lD8jfN3pU//xBTVph2IXiIRwHJs1FEUxdiqRc
-	kTda9p/TQtve1ZyUmFI7h8evV7DTtZHCYU2hMG7SqA==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 471gey8m20-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 04 Jun 2025 05:45:13 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 5545jDNX013249;
-	Wed, 4 Jun 2025 05:45:13 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 471gey8m1v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 04 Jun 2025 05:45:13 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5542i6L1019883;
-	Wed, 4 Jun 2025 05:45:12 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 470d3nx8v1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 04 Jun 2025 05:45:11 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5545jAgq10092986
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 4 Jun 2025 05:45:10 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0C55E20043;
-	Wed,  4 Jun 2025 05:45:10 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 76D2520040;
-	Wed,  4 Jun 2025 05:45:07 +0000 (GMT)
-Received: from vishalc-ibm.ibm.com (unknown [9.39.20.96])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  4 Jun 2025 05:45:07 +0000 (GMT)
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bagasdotme@gmail.com, llong@redhat.com
-Cc: Vishal Chourasia <vishalc@linux.ibm.com>
-Subject: [PATCH] Documentation: cgroup: add section explaining controller availability
-Date: Wed,  4 Jun 2025 11:13:53 +0530
-Message-ID: <20250604054352.76641-2-vishalc@linux.ibm.com>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1749039223; c=relaxed/simple;
+	bh=l/tgeUW9ZxWkBuGuZhUNYwAeSn3krAwQzrrUkzZ4wj0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=fXroxaTRobhUiE+jpSQE02SfDrcentWAEPiv+ImjrzxcrypH+MmD0zu7EEpC5/gaYB6MuUSwDXrza2fqSWddYFcFmyS/YFlvs0ls8i2smJ7r2CtmQlIvtTU2vVbloiVTAemQlaztMokbl1WRmxVeU5LzbM3GIkOTcp80v4Iv5UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3ddc07eea46so4712695ab.0
+        for <cgroups@vger.kernel.org>; Wed, 04 Jun 2025 05:13:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749039221; x=1749644021;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CzajI+MYpH3SgRs9ff/pJQ6x8nBJe2DTOmSzXzu4lqg=;
+        b=X5GC8Xt82RH2HKP9lQbyRWxaDaM6Dh3/1cd95wdnAtbXssxHcOaCw5lubFJ2ONTzQS
+         vFYX8ucQCRk9dGyyDe+hXS0NoXuku42RoF8XzkbAIT0xi8pBoh1BiNd8uYiikEq08FBB
+         5GxIDy8Is1WTnA3PT/2pAWbLGMADWt+IbOeRfenHtq4IWM3el7KACfCwcd/n4P2oathE
+         Ldy3fxOnH0yKACyRUaD8MBZObq2XA+28Z/zJQZ8q5RrDFlUiap+VhKlOb+rvajJ/9Cc8
+         r2aRPhNtG2z561oQxzvIieLQeJ/JD374cYXeYB6H3+KigB4Zo01GFVVr6PySpAKzZXtM
+         JdsA==
+X-Gm-Message-State: AOJu0Yw/K/ZJbgsrtF3uY45RgWGxZmGppH69fwAhG9HJv63oBMFELoaR
+	ZKYZNX3gFKZaugKiIJVh6rzmGgpb1SYnoejMqihGP++zwTce8nsOPA4jRPmQwQ6BzTSjhPh5Q4/
+	bTa1nZ6aEisdxeNUNbotA/r0Y08opXlCV9YrNEXmjAW/ZSbKmsa3n0i4uISZO/g==
+X-Google-Smtp-Source: AGHT+IEGPEDHtyiuVX0WqAOQbTgWXRbowiKe0WnfH17r6Ih6V1RLgxslPgXXOvL+SoXMwK0pVeGoy4Tc3tkL8CL2X6FaMcEtNXZs
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=ea09f6EH c=1 sm=1 tr=0 ts=683fdd69 cx=c_pps a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17 a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=VnNF1IyMAAAA:8 a=HQQEU_knwVeOKeFEU2cA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: C81rhpJsaUpP4mt53DogBzq6cg6qhRV_
-X-Proofpoint-ORIG-GUID: 5O1nNfm1u2pw_IpNjj3ZO2JwPUFHqsGb
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjA0MDA0NSBTYWx0ZWRfX0D3w9cCZFXjF Gpt+l/EdTl85b5F/7EcRhOPrPRByNaxTuwcgn3TJcuI+ZhtbJu98scv2Bw3Ux10+LlLkxafPCD6 //TWGygtHGAlppnm8pBnrNy1Y4/5n/2DzIyE+Fv1vjFlen9a0978yOo7aJDNwzhHwXAY1Y/rAAU
- mW4ahCocSdfzeAzGeUuyV5PF5QTNyBeaeMYYW5k00B4C6Cex5g7nOviR8KoV01iTi5qDwobc15P HIDe56bpM0f8DeMhCWBMxDcYONFWBbtW1pA4GKzN7tu5amcxHR98jgxfiM9WkjbKscWTxiqYCtw 6eGhV8oJqNt9nwOE3y04jF9k8SVSDXztYEJmehsPVNfUb9WESl1yqxXc5IvmsgTmFMB3Gk8LKPi
- 4Ai3V3eRkWTOjV1SpshJIQ5tsaw2liJskDQhxiNyziU4RkfuxD5Fr7HcvTBAIFbpJdZlo9xS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-06-04_01,2025-06-03_02,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=842 bulkscore=0
- spamscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0
- impostorscore=0 phishscore=0 mlxscore=0 adultscore=14 clxscore=1015
- priorityscore=1501 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2506040045
+X-Received: by 2002:a05:6e02:1a87:b0:3dd:8136:a687 with SMTP id
+ e9e14a558f8ab-3ddbebd825emr25413805ab.8.1749039221210; Wed, 04 Jun 2025
+ 05:13:41 -0700 (PDT)
+Date: Wed, 04 Jun 2025 05:13:41 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68403875.a00a0220.d4325.000a.GAE@google.com>
+Subject: [syzbot] [cgroups?] BUG: unable to handle kernel paging request in css_rstat_flush
+From: syzbot <syzbot+36ca05bdc071f7ba8f75@syzkaller.appspotmail.com>
+To: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
+	mkoutny@suse.com, syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-A new documentation section titled "Availability" has been added to
-describe the meaning of a controller being available in a cgroup,
-complementing the existing "Enabling and Disabling" section.
+Hello,
 
-This update improves the clarity of cgroup controller management by
-explicitly distinguishing between:
+syzbot found the following issue on:
 
-1. Availability – when a controller is supported by the kernel and
-   listed in "cgroup.controllers", making its interface files accessible
-   in the cgroup's directory.
-2. Enabling – when a controller is enabled via explicitly writing the
-   name of the controller to "cgroup.subtree_control" to control
-   distribution of resource across the cgroup's immediate children.
+HEAD commit:    4cb6c8af8591 selftests/filesystems: Fix build of anon_inod..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17967ed4580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=43b7075a5c42ffca
+dashboard link: https://syzkaller.appspot.com/bug?extid=36ca05bdc071f7ba8f75
+compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=170d9970580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e88c82580000
 
-As an example, consider
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-4cb6c8af.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/91b28032d866/vmlinux-4cb6c8af.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7cf2a9f8c096/bzImage-4cb6c8af.xz
 
-/sys/fs/cgroup # cat cgroup.controllers
-cpuset cpu io memory hugetlb pids misc
-/sys/fs/cgroup # cat cgroup.subtree_control # No controllers enabled by default
-/sys/fs/cgroup # echo +cpu +memory > cgroup.subtree_control # enabling "cpu" and "memory"
-/sys/fs/cgroup # cat cgroup.subtree_control
-cpu memory                   # cpu and memory enabled in /sys/fs/cgroup
-/sys/fs/cgroup # mkdir foo_cgrp
-/sys/fs/cgroup # cd foo_cgrp/
-/sys/fs/cgroup/foo_cgrp # cat cgroup.controllers
-cpu memory                   # cpu and memory available in 'foo_cgrp'
-/sys/fs/cgroup/foo_cgrp # cat cgroup.subtree_control  # empty by default
-/sys/fs/cgroup/foo_cgrp # ls
-cgroup.controllers      cpu.max.burst           memory.numa_stat
-cgroup.events           cpu.pressure            memory.oom.group
-cgroup.freeze           cpu.stat                memory.peak
-cgroup.kill             cpu.stat.local          memory.pressure
-cgroup.max.depth        cpu.weight              memory.reclaim
-cgroup.max.descendants  cpu.weight.nice         memory.stat
-cgroup.pressure         io.pressure             memory.swap.current
-cgroup.procs            memory.current          memory.swap.events
-cgroup.stat             memory.events           memory.swap.high
-cgroup.subtree_control  memory.events.local     memory.swap.max
-cgroup.threads          memory.high             memory.swap.peak
-cgroup.type             memory.low              memory.zswap.current
-cpu.idle                memory.max              memory.zswap.max
-cpu.max                 memory.min              memory.zswap.writeback
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+36ca05bdc071f7ba8f75@syzkaller.appspotmail.com
 
-In this example, "cpu" and "memory" are enabled in the root cgroup,
-making them available in "foo_cgrp". This exposes the corresponding
-interface files in "foo_cgrp/", allowing resource control of processes
-in that cgroup. However, these controllers are not yet enabled in
-"foo_cgrp" itself.
+BUG: unable to handle page fault for address: ffffed1011a4ca01
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 5ffcd067 P4D 5ffcd067 PUD 2fff7067 PMD 0 
+Oops: Oops: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5328 Comm: kworker/0:3 Not tainted 6.15.0-syzkaller-10402-g4cb6c8af8591 #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Workqueue: cgroup_destroy css_free_rwork_fn
+RIP: 0010:css_rstat_updated_list kernel/cgroup/rstat.c:284 [inline]
+RIP: 0010:css_rstat_flush+0x5ff/0x1fa0 kernel/cgroup/rstat.c:413
+Code: 1e 75 d1 0d 01 0f 85 e6 14 00 00 e8 1b 1e 07 00 4c 03 6c 24 20 4d 8d 7d 08 4c 89 fb 48 c1 eb 03 48 b8 00 00 00 00 00 fc ff df <80> 3c 03 00 74 08 4c 89 ff e8 e3 51 6a 00 49 83 3f 00 0f 84 5d 01
+RSP: 0018:ffffc9000d68f780 EFLAGS: 00010802
+RAX: dffffc0000000000 RBX: 1ffff11011a4ca01 RCX: ffff88801f4ea440
+RDX: 0000000000000000 RSI: ffffffff8be266a0 RDI: ffffffff8be26660
+RBP: ffffc9000d68f9b8 R08: ffffffff8fa0aaf7 R09: 1ffffffff1f4155e
+R10: dffffc0000000000 R11: fffffbfff1f4155f R12: ffff88801fc42590
+R13: ffff88808d265000 R14: 0000000000000000 R15: ffff88808d265008
+FS:  0000000000000000(0000) GS:ffff88808d265000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffed1011a4ca01 CR3: 0000000042fe0000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ css_rstat_exit+0xa9/0x320 kernel/cgroup/rstat.c:479
+ css_free_rwork_fn+0x8b/0xc50 kernel/cgroup/cgroup.c:5449
+ process_one_work kernel/workqueue.c:3238 [inline]
+ process_scheduled_works+0xade/0x17b0 kernel/workqueue.c:3321
+ worker_thread+0x8a0/0xda0 kernel/workqueue.c:3402
+ kthread+0x711/0x8a0 kernel/kthread.c:464
+ ret_from_fork+0x3fc/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+Modules linked in:
+CR2: ffffed1011a4ca01
+---[ end trace 0000000000000000 ]---
+RIP: 0010:css_rstat_updated_list kernel/cgroup/rstat.c:284 [inline]
+RIP: 0010:css_rstat_flush+0x5ff/0x1fa0 kernel/cgroup/rstat.c:413
+Code: 1e 75 d1 0d 01 0f 85 e6 14 00 00 e8 1b 1e 07 00 4c 03 6c 24 20 4d 8d 7d 08 4c 89 fb 48 c1 eb 03 48 b8 00 00 00 00 00 fc ff df <80> 3c 03 00 74 08 4c 89 ff e8 e3 51 6a 00 49 83 3f 00 0f 84 5d 01
+RSP: 0018:ffffc9000d68f780 EFLAGS: 00010802
+RAX: dffffc0000000000 RBX: 1ffff11011a4ca01 RCX: ffff88801f4ea440
+RDX: 0000000000000000 RSI: ffffffff8be266a0 RDI: ffffffff8be26660
+RBP: ffffc9000d68f9b8 R08: ffffffff8fa0aaf7 R09: 1ffffffff1f4155e
+R10: dffffc0000000000 R11: fffffbfff1f4155f R12: ffff88801fc42590
+R13: ffff88808d265000 R14: 0000000000000000 R15: ffff88808d265008
+FS:  0000000000000000(0000) GS:ffff88808d265000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffed1011a4ca01 CR3: 0000000042fe0000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 5 bytes skipped:
+   0:	0f 85 e6 14 00 00    	jne    0x14ec
+   6:	e8 1b 1e 07 00       	call   0x71e26
+   b:	4c 03 6c 24 20       	add    0x20(%rsp),%r13
+  10:	4d 8d 7d 08          	lea    0x8(%r13),%r15
+  14:	4c 89 fb             	mov    %r15,%rbx
+  17:	48 c1 eb 03          	shr    $0x3,%rbx
+  1b:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  22:	fc ff df
+* 25:	80 3c 03 00          	cmpb   $0x0,(%rbx,%rax,1) <-- trapping instruction
+  29:	74 08                	je     0x33
+  2b:	4c 89 ff             	mov    %r15,%rdi
+  2e:	e8 e3 51 6a 00       	call   0x6a5216
+  33:	49 83 3f 00          	cmpq   $0x0,(%r15)
+  37:	0f                   	.byte 0xf
+  38:	84 5d 01             	test   %bl,0x1(%rbp)
 
-Once a controller is available in a cgroup it can be used to resource
-control processes of the cgroup.
 
-Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
 ---
- Documentation/admin-guide/cgroup-v2.rst | 9 +++++++++
- 1 file changed, 9 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 0cc35a14afbe..202bf39867ea 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -435,6 +435,15 @@ both cgroups.
- Controlling Controllers
- -----------------------
- 
-+Availablity
-+~~~~~~~~~~~
-+
-+A controller is available in a cgroup when it is supported by the kernel and
-+listed in the "cgroup.controllers" file. Availability means the controller's
-+interface files are exposed in the cgroup’s directory, allowing the
-+distribution of the target resource to be observed or controlled within
-+that cgroup.
-+
- Enabling and Disabling
- ~~~~~~~~~~~~~~~~~~~~~~
- 
--- 
-2.49.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
