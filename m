@@ -1,138 +1,127 @@
-Return-Path: <cgroups+bounces-8442-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8443-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B173ACF263
-	for <lists+cgroups@lfdr.de>; Thu,  5 Jun 2025 16:55:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FCFEACF36B
+	for <lists+cgroups@lfdr.de>; Thu,  5 Jun 2025 17:50:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5203188FD1C
-	for <lists+cgroups@lfdr.de>; Thu,  5 Jun 2025 14:55:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE3FC176833
+	for <lists+cgroups@lfdr.de>; Thu,  5 Jun 2025 15:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30CD19047F;
-	Thu,  5 Jun 2025 14:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4020D1E1DEE;
+	Thu,  5 Jun 2025 15:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GVDE04oH"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Hvn1lwir"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1740415746F;
-	Thu,  5 Jun 2025 14:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B485139D1B
+	for <cgroups@vger.kernel.org>; Thu,  5 Jun 2025 15:50:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749135322; cv=none; b=ApyjGp2FW3epAy1IoFkWPKltqF0lvGRp1HjH0I47CU+hWYG2QZnQqVmcSMtoIdm5+SKIAbjpHB+X2ObqVa+DsqwPRQQ4BdWRKTTB9pCJuHjd1s5JEfPTutAYQouhG90gV1NfMra0wGDKsYW7F2XILhgya7z86OU2Vlw8OVuQxxY=
+	t=1749138629; cv=none; b=sUJdbXCEt5lT3Hq5A5jzIe6x6N9Wjv6qCjzRwchuIfnqadCAMEpop0k7mGPfDu/eP3Y7LzLINsv2VAeiFpY0u1EL/zF+z5TyAa0gJbAXy+DJH5P8yaUqID6OX5rGgMR45e2Dji48B5VQwyBzi3awY1hhAypdcsYymfb7K10g+LE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749135322; c=relaxed/simple;
-	bh=p0T6YklgVc/kE7J3KrEpxvJGi7M9mrfxVk2al7JemAE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MybjXOIrh6PHYr16a3p9A86rY+WqDBOsWInswrVhqJg49mhLcWHmLb1TyXTzISNkAtD1RORPC7iN3XaLpz5uTnQ2Zo+qnF6XdlH8+axsjKqWqCE2SoxeB9oumNv014IUV6WdMAl1OA+WXeocwVTQcUHPDJtfz8NzW7DCikb1Kjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GVDE04oH; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5557HZMJ023831;
-	Thu, 5 Jun 2025 14:55:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=p0T6Yk
-	lgVc/kE7J3KrEpxvJGi7M9mrfxVk2al7JemAE=; b=GVDE04oHO+Aqj9r4AsvLj6
-	OeyOJhNsHFM+5YHGpmU1A3PM0g/Zd2pnqCO1Wd4zkU9kExs7GlJ6G1fCF7So7ida
-	YVa4JnQxXNdEdKwK1X9A63a9X7lbAnd81tv44pEVRlXCD5V/iQ8H/KkLYkfMRVwP
-	W7ZFzSCXf85untp3wkHSO/q3vocuHaG01ovvQZBcagTTNzwNeTFTPczBd5AdWavs
-	b30fz3Q8WK5dR1KXemAwHf2Va3lSl/B/nrNQtE9tl9KRTwqAfmarvKVyYlH9RJJM
-	PrDjZ4jRD/lcknWMKgOHGCbFuvn2m92jZXV75PRf+HChr0VlYpUP9YY+uUnznQDw
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 471gf01d31-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 05 Jun 2025 14:55:15 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 555EtEWQ032175;
-	Thu, 5 Jun 2025 14:55:14 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 471gf01d2w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 05 Jun 2025 14:55:14 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 555DPqMa024899;
-	Thu, 5 Jun 2025 14:55:13 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 470dkmn3k7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 05 Jun 2025 14:55:13 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 555EtBYE45220144
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 5 Jun 2025 14:55:11 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5116C20043;
-	Thu,  5 Jun 2025 14:55:11 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2C51520040;
-	Thu,  5 Jun 2025 14:55:09 +0000 (GMT)
-Received: from [9.124.213.71] (unknown [9.124.213.71])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu,  5 Jun 2025 14:55:08 +0000 (GMT)
-Message-ID: <9cf8f840-ff3f-4978-a454-9f2bba28c763@linux.ibm.com>
-Date: Thu, 5 Jun 2025 20:25:07 +0530
+	s=arc-20240116; t=1749138629; c=relaxed/simple;
+	bh=PH2gg5/25bWwXBMWyv5HpO0mhwg5KYPWfIuk4bNNBPM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jGH0sIi92egazZz1P07bqWNIVSYYIaDQOBK38OBeOMB828TXSxmOqGEytCo0p32Wa5qEm23W5WwMQBTC9WF0yrwR7sAI24MCuP/oXp/iszw5+oTSulqQ1BZVXWP1SLE3KlNn2gAHKSZWXnjqD/QU6in6NL1bryFsC+1oGjozTFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Hvn1lwir; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a507e88b0aso1093672f8f.1
+        for <cgroups@vger.kernel.org>; Thu, 05 Jun 2025 08:50:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1749138624; x=1749743424; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JRCqLN5L4Rr3WE8pJIILtJZPUbBl7/a5g9L3/1Mvsfo=;
+        b=Hvn1lwirJd9qggJQ5xoWI5LFYst7HV5ityrA7rsdjNxzkAPIBpTjqfjY1KWxr4wV79
+         gE+ihtJ+FXEgQI6WUk5AC6rRnQlOGnqqKkasmxFkTdQr4M1dNCGeA00K9U9/KW7Lud1J
+         MMJk8PYLCJ16TAK9mTM7LPfMKnAobWv4tUKSgv0uNbwGkva/je25pwKoCH0tem1KH4wi
+         TnB/xLzpi3g0H1Sf76oXX0MH9vJrF5CxKe/Kc5X6vHJnPergEeaBjWJEPku2xw/pTeiz
+         7IHhtNu7tczRUn0spjpWAa7hUPa7BsbDxTWbkUOy81a3rm2j13Ek5XLxF3uwfVuY6jTq
+         /Y1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749138624; x=1749743424;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JRCqLN5L4Rr3WE8pJIILtJZPUbBl7/a5g9L3/1Mvsfo=;
+        b=F4w4qwa+bcZStNBUPoHJX7rVaxs4Lvqvbzifsj+ypPYlTEJZZYSVvCr6Pd04sUQizp
+         O1Xb6zMeeXPDIp4X19gUgXPdXnql63SFfvSVRj0pGVeBQk4PaGbbNZa8IoexqpQSv+bC
+         hy9V+CREkTOFLrANi/7h2a1y/03FPJop+zJW2vl8fUQre0aoFSRO3uwONFr5ESFxFyAI
+         fuBixX4cjLzWg2E/T9vlaAH79XfYsIotDrb4fI530TZ5SSjlK7mtcVdpK/O1rgnXVS8N
+         5TvDMQpldVu9JcutZD10oQ8TtJiux/En311mM3/uMUF0jcSlfEEL3UQgm6BmJw6M/DV5
+         Xt7g==
+X-Forwarded-Encrypted: i=1; AJvYcCXKqYuncC3Vb+X8Yv+iyN3ZK4XYevx81nD06QVAtbW8LgX179l8juQAepFqptJP+92cOPooppAy@vger.kernel.org
+X-Gm-Message-State: AOJu0Yybdpbj+QQ4VtpPVy+KsN+Ng9Ufe1mIlGvEHrLuhmsS7h55YSDd
+	HCcFyXksCFp5oNrSBFzKOeT3VHiTXkU5uOxEXcdciOuZ6NkRfGz06zduypDlEcxR9P8=
+X-Gm-Gg: ASbGncsZSyZkMVJtVg5qUpd9BUSISRK3sEaPqBCh0j+GYBByOXOkY9S5teLxyrKda50
+	iWjFVXAMhtfYqZ5Y2mdg9uTHjozcPd798ed4h7McyWmiLoCpwqAOLjAWt1boOkr/lOQcJcHQ8Vm
+	gMiZSZkPAbTk5YyY7pRO4yloETFvW7sWN0ZGqFH/CDiS4lkzJwzR667hoOzlY2HmtGodJoxlKEW
+	Xt74K6P6WENL2Y3Z3F/Al9WQ3R5sQDkcvNqMtiZLdtWgItyVH1tJUqdiswbi01WJQLyTJLojk1H
+	M4HanTrMIUlVSQmj5JsiU59ez9fm6exDUccn0YariQABd8Tajn+i9A==
+X-Google-Smtp-Source: AGHT+IELoMlwsCu+FjoJVCzoFEowpMUAlbq++KbjZI5GGOu59FebaVIM2y+qSY8qYZiSkvqrwc1U4A==
+X-Received: by 2002:a05:6000:220d:b0:3a4:eed7:15f2 with SMTP id ffacd0b85a97d-3a51d96ae39mr6337955f8f.43.1749138624495;
+        Thu, 05 Jun 2025 08:50:24 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4efe7414fsm25349729f8f.55.2025.06.05.08.50.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Jun 2025 08:50:24 -0700 (PDT)
+Date: Thu, 5 Jun 2025 17:50:22 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Vishal Chourasia <vishalc@linux.ibm.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llong@redhat.com, bagasdotme@gmail.com
+Subject: Re: [PATCH v2] Documentation: cgroup: add section explaining
+ controller availability
+Message-ID: <xn2sq6byy2qvylmnhzgzhjuac44t5qnndq5eo2rp23xjndbhlg@oymknwf3cxw5>
+References: <20250605145421.193189-2-vishalc@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Documentation: cgroup: add section explaining controller
- availability
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bagasdotme@gmail.com, llong@redhat.com
-References: <20250604054352.76641-2-vishalc@linux.ibm.com>
- <mzki6zhrnxdvuqgu56rztrkw473u2r4uqt5mu3t3nv2afyhaub@4qneqmlxgwog>
-Content-Language: en-US, en-IN
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-In-Reply-To: <mzki6zhrnxdvuqgu56rztrkw473u2r4uqt5mu3t3nv2afyhaub@4qneqmlxgwog>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=Pq2TbxM3 c=1 sm=1 tr=0 ts=6841afd3 cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=VnNF1IyMAAAA:8 a=GxmAIsd5OcVHd3j8ewQA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjA1MDEyNSBTYWx0ZWRfX0ceUVp5Pc7CD Ufya8y2QyGeGhLdJ4N/fVahHIC/UMkGanajrXI8QpUVXtsguVGS7NarUk2IanQjYPWMAE+SkzGg HSWqMtpSacnl/Uw3ks33AwnSdF4DCxNCFJ86JMt2abu0hHSnStW/LWLf4QMvTh5H4PNPSaOTTmt
- MytnECdeAunIlEAvlpmaKyWLm90om6s2G6sigdbCfcpTcENB7An0GJVR3kKeySvwcoMz8ZliIBs E6PaXUyL1etee/JTeWj6rOeOzA+oNqJyHi+BOpdYJFNrBEpbp5FLWNlu7d3o5YLXJL/ceQk/uyd u0caMyTwduv4eny98mf8V/7ikNYilTpITBcsdXxpyQo1C01V1OpoT7kVdTW+u6JPigKB2vyXRUt
- IRZS9AKClInfiOberTx2m+bapYRnh2p/4FnJ5yQOSz7JqHhrSSPnqtBwZGCfu4zH2xNs+UoV
-X-Proofpoint-GUID: LMrcLdyAHaGgPgMDpd8JoeeMvrlp64Ll
-X-Proofpoint-ORIG-GUID: OnE3_pgoGwbZ84Kiv2IEI_khJbzI1N8P
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-06-05_03,2025-06-05_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 clxscore=1015 malwarescore=0 mlxlogscore=886
- phishscore=0 bulkscore=0 spamscore=0 suspectscore=0 priorityscore=1501
- mlxscore=0 adultscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2505280000
- definitions=main-2506050125
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bayaay3n4q7jtjk7"
+Content-Disposition: inline
+In-Reply-To: <20250605145421.193189-2-vishalc@linux.ibm.com>
 
-On 05/06/25 15:15, Michal Koutný wrote:
-> On Wed, Jun 04, 2025 at 11:13:53AM +0530, Vishal Chourasia <vishalc@linux.ibm.com> wrote:
->> +Availablity
->> +~~~~~~~~~~~
->> +
->> +A controller is available in a cgroup when it is supported by the kernel and
-> +A controller is available in a cgroup when it is supported by the
-> +kernel (compiled, not disabled and not attached to a v1 hierarchy) and
->
-> Maybe this point about v1 exclusion. But altogether this section as
-> drafted looks sensible to me.
 
-I will add this.
+--bayaay3n4q7jtjk7
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] Documentation: cgroup: add section explaining
+ controller availability
+MIME-Version: 1.0
 
-Thanks,
-Vishal
+On Thu, Jun 05, 2025 at 08:24:22PM +0530, Vishal Chourasia <vishalc@linux.i=
+bm.com> wrote:
+=2E..
+>=20
+> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 
->
-> Thanks,
-> Michal
+Acked-by: Michal Koutn=FD <mkoutny@suse.com>
+
+--bayaay3n4q7jtjk7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCaEG8vAAKCRAt3Wney77B
+SXmRAQDPQPSQbPWaqiXwU4vsbDRInrcwQad8DauYGFYkN3J/UQD/RsuAsYUG7+pd
+13hnOACyQdZK9AGRKldC1S4PUT8p6ws=
+=Vr5j
+-----END PGP SIGNATURE-----
+
+--bayaay3n4q7jtjk7--
 
