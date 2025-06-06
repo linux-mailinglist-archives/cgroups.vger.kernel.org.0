@@ -1,169 +1,117 @@
-Return-Path: <cgroups+bounces-8453-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8454-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E04AAD0384
-	for <lists+cgroups@lfdr.de>; Fri,  6 Jun 2025 15:52:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98E99AD067E
+	for <lists+cgroups@lfdr.de>; Fri,  6 Jun 2025 18:18:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00C2F7A265F
-	for <lists+cgroups@lfdr.de>; Fri,  6 Jun 2025 13:51:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61AE117B19D
+	for <lists+cgroups@lfdr.de>; Fri,  6 Jun 2025 16:18:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A98B2289830;
-	Fri,  6 Jun 2025 13:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A0227E7CF;
+	Fri,  6 Jun 2025 16:18:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y4by5+4S"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bOncAOwa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11D1328981B;
-	Fri,  6 Jun 2025 13:51:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DD1925776;
+	Fri,  6 Jun 2025 16:18:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749217912; cv=none; b=P1sfK6KgCE6Wj3w1FsgzhJqznbGc6qspEh3+VSaNX9/AprrL1ESv6onSlBXP+ffmH2Yh0HCokV9QxlbbdppA7M7vxPvH5yge14Y7/VGPEHgrfMXQuo+wpJfJaHU3I2bcr0MkJoMW0gsmzr6M4Hbfh2EQeO31DCtrms+8GRCEISI=
+	t=1749226732; cv=none; b=RNy16OPQhg24FTFNM02LfDi6HflQ0T+9AdRgJLSFY6PWB2rVhhAPi6GcOzmWFANk5tG3B6Dr8HpUMF2ST4qhNConbUOZ1DKtqDJZOAhCwK36Nva9myONu/mQ2ck3+e0+4SgT9Qw+y+3ibXNdvW2OdNJxdVJfvMB+dEN591EPRic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749217912; c=relaxed/simple;
-	bh=IIrcHjOJF0WUmf3dP0J4tD5Xi1dZ+WzmtH3IV/CQrbY=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=E07AL849BQejg9mejPPsxMT6OsgXaEiZvcGybRhuxo6H5xCVChWReNt/F9VrkfYrQ8OBSCYrgqgDsXYY4ZdsTsBPo//U1gxG8Td3ACopK5cUSl7RfJkmJNkhYcXjLyroI0uBtC9n/iE2ftJ5YMrLsZHFIzTfO87XynpU9S/j9CA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y4by5+4S; arc=none smtp.client-ip=209.85.210.171
+	s=arc-20240116; t=1749226732; c=relaxed/simple;
+	bh=dWnFfR86+yRV1AqMW+1ZmDq/fHzV4eGNUZ9bqCtwo0k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b7C8HKXiFVPQ4nvu9bVNbsBcXBM4769xMTBeGMHbjy0oj7W03uGXDAXvhHTDa+ObihCAt/Lkv+jRQlscBzwtyLSnWNc/xVjentPZOWnTkk6b5EcIfg+7JYtxbun6OT0Ati2W886gUQBHLfdzZZt7l26A51BB69IvcEy7QUpUXEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bOncAOwa; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7482377b086so847443b3a.1;
-        Fri, 06 Jun 2025 06:51:50 -0700 (PDT)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-742caef5896so2032843b3a.3;
+        Fri, 06 Jun 2025 09:18:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749217910; x=1749822710; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IIrcHjOJF0WUmf3dP0J4tD5Xi1dZ+WzmtH3IV/CQrbY=;
-        b=Y4by5+4SqzjvREvK80VwpUn9C04PLcGI7p1SlVfvNn0DziG9WGqGhCSIbKFCSw4aNw
-         aQ1FzropuAZFXREBRQ57XfqeI2HL0Jco14cFs8mTLQ67klHXQ/M9C0mhjpfVyu5y16PA
-         ROrjMZa2MHNsvJ01uczrmyDZR0hnVnJWgqr2sEw7M0xhQFZfmPMKRsrmmx+r/4LF5sgf
-         ykO8Iqn8X/Gt9mTwYJPKjlmA0A6RihqC9YIT3Rct3wMYb4axv7jLe1z6y0vNP2McQSaz
-         hLp2qyIqPChJiaVy1EY+f5fuAeRYg7+JUshJoB+kz2GBYyLqR3z6XAW6Rq2V1cX6+9RZ
-         18yQ==
+        d=gmail.com; s=20230601; t=1749226730; x=1749831530; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=khnZK0HxH+RVmPgUu4L2j9Kp/5clVYx6qzOMk6qDvaI=;
+        b=bOncAOwazRTmIzUAIAxu58VNoRBHlmYHrtIwc1ugWcNoNFd32MdOHtrt/aLn/Evvw8
+         Ri9dkTC5ZobMrilzNhwBDmvZ4FGRX9M9PzpSPhGogFDexwWXB3kE1g5VRIZtxF/zFc1/
+         16I2uaL8NEzbfNZiQOl/iiJRrPlD20Xi8HzIaiPzoFvrX2MOLBKw6Xga2GNYxxAfeCyl
+         w42NQ7cGU29Hoxk45w+A1XDyF1Xnxufx/UMiOqBPIkfzaqEfGTRxZh4RlyTG4KtjoBlP
+         xeJi3ir8vjpoFd/VYQDDMK40GAlwpy1GDyW4ao5GJ852P3mpDnJYoWISRU/iJ2iEVZ/Q
+         QI3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749217910; x=1749822710;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IIrcHjOJF0WUmf3dP0J4tD5Xi1dZ+WzmtH3IV/CQrbY=;
-        b=Uw457F15KbEUEf81Afufv0KfaphMCYAbplpHD2lsIWd3nbH+FL5oNa/+DFjy1wjNLC
-         6RJltSUvy1X3wbHoo6cPXQO+Zak2NzwVsQ1tqUWHOQDep3HJXNVv1NPl2rumQVtD6Sow
-         C1S/aMZoAUDPnwRYbGtnWOQBaVOs2p1W4i1sH6nJIMjuQTL73Z4QIL1ZEFcFyk3mnF4X
-         fYrYvTzPzE24M6ZfN32w3gWAPT51q8ME4+AdxmX28mPwXVnHahV+nbYiAKZQWWpQ97WY
-         R3QZPIX2S/P13zFG9r14s3syHU5hjHOzvA9Sc0yqERsxqnE3D+CI9GADVrzaSPp8mDyS
-         sCCA==
-X-Forwarded-Encrypted: i=1; AJvYcCUEKIaoX/wOFiqkNBLboHAdZNbtE8Iu+tMA5vNCqrmU+bXdfAV0M4yANTl7zPyNlapFc7M6yyQsOaRc68QB@vger.kernel.org, AJvYcCVtdLx+AzUPpxfYiWd4DZZ3ZrUPHwlWYzIE4ccCaFnNJg0XktfxtJIVFrLBlVY7Xm9n7kwDwJcs@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx5WXHDsXqepIFT6smOueg49hn94oU6ni97Uha6E0/w/8W3JmTQ
-	yWqbzuS/EblXtVT+EUp9MGthT1cSKnHMUfkZ5QYTfc/ySmOU3V0ZKLtK
-X-Gm-Gg: ASbGnctIqylbLYIsIdb1lKC1Jdv72+TITtCiPR3KZMN/KZrk1bc43Vj+ZYAjcBm+Qxm
-	VesF9T7KxuF3zLBKM980EPNFVgALkUJV7gDCtFhqHAkUxO2dIvqNVtn3wEtq7AKfkh6/YntKuHi
-	U/n/oGg3sv1g6wZSPaLXvOkw8K8AdDvrCWn0S4OMQ0pFPx8yhPq5bQL2tq8mSLLFR0l14iGpwg4
-	I0Ly75p2uIvuzl0shx1lNaZHtTjXX51DqNMHQozNS+a+vj5I+39jZnWsq+4/44vmNOOIaZt/o9T
-	FO10MqQ9ShzwmpOe1DtuLDGDEtSS29gnQwJwp/ZB7UxNVYZgXMDdth13TpyUHUyraLERAuhx
-X-Google-Smtp-Source: AGHT+IGhKffUcoovZoLmF4robbIk7xZYJEyrjgrjfdxA9yu1fAwpBy+RuF1KnZIN80fq3t/tsXzygw==
-X-Received: by 2002:a05:6a21:e8c:b0:218:5954:128c with SMTP id adf61e73a8af0-21ee2532c61mr4608410637.21.1749217910233;
-        Fri, 06 Jun 2025 06:51:50 -0700 (PDT)
-Received: from smtpclient.apple ([202.8.105.124])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7482b084f60sm1315192b3a.101.2025.06.06.06.51.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Jun 2025 06:51:49 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+        d=1e100.net; s=20230601; t=1749226730; x=1749831530;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=khnZK0HxH+RVmPgUu4L2j9Kp/5clVYx6qzOMk6qDvaI=;
+        b=D11jYeaharIC3iN7QgWCG715TyV0iLJ2drZUxJxP/K9Fstoisn+FyL3YtHxTjX7ufD
+         hvFdDONmaWVrzLwhs+YkCw5406SVfRCOSLby9n0FrkmzNixPEc7qarLJAHkpBRW/YgAT
+         +CBJ40OMeEeLDKc4MqZcMWPfV7cTCC9iFN5aLOygSAhmqJD5RdlGPTvUC4A7225mAdmZ
+         Nh9Y+Tn5EoOrNKKOr94B3ZnN/yEEtCXqOcwKGpUvT399OhV2N7Om2RpjsVYWWz5129KB
+         k5ktcArvd5vGw77S0R4D6kj/LpxCiNj/9vgiNc+m2VgOIKFUFYFtsGwt5C7fMSDo9LkV
+         FJ2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU4XP3CuY+BIEoJsIpiV287+HyN5zyQBpjpdZ8j12JrE5qGsan9wdl7VyH+aCWpm8Kd5mycqBqG@vger.kernel.org, AJvYcCWmv77Irmw/3Al5JewN7UlsUVG59nlnTw84TO/VzHj0yDQU/WSiMu19NvlnytINasVnP/0b1pvDQQ+uJs9T@vger.kernel.org
+X-Gm-Message-State: AOJu0YzY+59qcTsbakGZUxXjIVwVuvYjzB+5z+sBSJXRuNynvN7Y/rVo
+	tieW+LvDY08tQf0bvzJDNEQmDZ8nJ0V7gISw792d2h2fDU6MC249kXfR
+X-Gm-Gg: ASbGncsxZRFv0NPgHNOPKYlZU+GRYim9Hy3LhOkq8h8EcVbARy6ejJar9ZLpFQpLapt
+	Jkb49arShKksMc2VKK28DwbvUpJQZmSDMV80oZr8glj8b8nv7iCYyVS2ZRZ1m0ez5KLnyx5zHsH
+	W3h9E4IxOt21N6B2lGxxrK/VrCQcz9z9ocZoYC76rdRA/eYI5fAXegm0FPy4XKIVQj7rQE8Mmgh
+	OycuyYe6HaWiM443eXV8vhkQgMA+AkvPU5caPFunaH4oSwujvEO3K8xpq9vmU1yXeNiK3w6OjDw
+	A9TOfW6bbkxi8nuYOVbdiRgpZabDvJdOCyD+A6w8q+1j4h6OkfZ05LSsqSN1Pw==
+X-Google-Smtp-Source: AGHT+IHg3rn/J5WiRw4n46BOfiR1gQXAzMgYDco05ru6GjD/i//8yDpuC7tIQ7TeWHWyfqVEqAso9g==
+X-Received: by 2002:a05:6a00:3c88:b0:742:3fb4:f992 with SMTP id d2e1a72fcca58-74827fd5f47mr5154507b3a.10.1749226730178;
+        Fri, 06 Jun 2025 09:18:50 -0700 (PDT)
+Received: from jemmy.. ([180.172.46.169])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7482af38353sm1518675b3a.10.2025.06.06.09.18.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Jun 2025 09:18:49 -0700 (PDT)
+From: Jemmy Wong <jemmywong512@gmail.com>
+To: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Waiman Long <longman@redhat.com>,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/3] cgroup: Add lock guard support
+Date: Sat,  7 Jun 2025 00:18:38 +0800
+Message-ID: <20250606161841.44354-1-jemmywong512@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.600.51.1.1\))
-Subject: Re: [PATCH v0] cgroup: Add lock guard support
-From: Jemmy Wong <jemmywong512@gmail.com>
-In-Reply-To: <fo5le4uonsrv24z5gikojq7hxwaqaidgco25pypnppk5h2czap@egdwx6yte4lf>
-Date: Fri, 6 Jun 2025 21:51:34 +0800
-Cc: Jemmy <jemmywong512@gmail.com>,
- Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>,
- cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <64D97068-D44C-4B29-9847-82F87A006D14@gmail.com>
-References: <20250605211053.19200-1-jemmywong512@gmail.com>
- <fo5le4uonsrv24z5gikojq7hxwaqaidgco25pypnppk5h2czap@egdwx6yte4lf>
-To: =?utf-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-X-Mailer: Apple Mail (2.3826.600.51.1.1)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Hi Michal,
+v1 changes:
+- remove guard support for BPF
+- split patch into parts
 
-> On Jun 6, 2025, at 5:34=E2=80=AFPM, Michal Koutn=C3=BD =
-<mkoutny@suse.com> wrote:
->=20
-> Hello.
->=20
-> On Fri, Jun 06, 2025 at 05:10:53AM +0800, Jemmy Wong =
-<jemmywong512@gmail.com> wrote:
->> This change replaces manual lock acquisition and release with lock =
-guards
->> to improve code robustness and reduce the risk of lock mismanagement.
->> No functional changes to the cgroup logic are introduced.
->=20
-> I like this.
-> Could you possible split it to individual commits to ease the review
-> for: cgroup_mutex, css_set_lock, RCU and the rest?
->=20
+v0 link:
+https://lore.kernel.org/all/20250605211053.19200-1-jemmywong512@gmail.com/
 
-Thanks for your support. I=E2=80=99ll split the patch into several =
-parts.
+Jemmy Wong (3):
+  cgroup: add lock guard support for cgroup_muetx
+  cgroup: add lock guard support for css_set_lock and rcu
+  cgroup: add lock guard support for others
 
-> ...
->> --- a/include/linux/cgroup.h
->> +++ b/include/linux/cgroup.h
->> @@ -382,6 +382,10 @@ static inline void cgroup_put(struct cgroup =
-*cgrp)
->>=20
->> extern struct mutex cgroup_mutex;
->>=20
->> +DEFINE_LOCK_GUARD_0(cgroup_mutex,
->> + mutex_lock(&cgroup_mutex),
->> + mutex_unlock(&cgroup_mutex))
->> +
->> static inline void cgroup_lock(void)
->> {
->> mutex_lock(&cgroup_mutex);
->> @@ -656,6 +660,9 @@ struct cgroup *cgroup_get_from_id(u64 id);
->> struct cgroup_subsys_state;
->> struct cgroup;
->>=20
->> +extern struct mutex cgroup_mutex;
->=20
-> I assume this was because of the BPF code, which wouldn't be needed in
-> the end.
->=20
+ include/linux/cgroup.h          |   7 +
+ kernel/cgroup/cgroup-internal.h |   8 +-
+ kernel/cgroup/cgroup-v1.c       |  56 ++-
+ kernel/cgroup/cgroup.c          | 720 +++++++++++++++-----------------
+ kernel/cgroup/cpuset-v1.c       |  16 +-
+ kernel/cgroup/debug.c           | 185 ++++----
+ kernel/cgroup/freezer.c         |  28 +-
+ kernel/cgroup/namespace.c       |   8 +-
+ 8 files changed, 483 insertions(+), 545 deletions(-)
 
-Yeah, other modules also need cgroup_mutex, cgroup_lock/unlock must be =
-retained.
-
-> ...
->=20
-> Thanks,
-> Michal
-
-Best,=20
-Jemmy
+-- 
+2.43.0
 
 
