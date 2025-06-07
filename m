@@ -1,362 +1,127 @@
-Return-Path: <cgroups+bounces-8457-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8458-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1379BAD0683
-	for <lists+cgroups@lfdr.de>; Fri,  6 Jun 2025 18:19:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73D84AD0B84
+	for <lists+cgroups@lfdr.de>; Sat,  7 Jun 2025 08:42:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 527D13B1FED
-	for <lists+cgroups@lfdr.de>; Fri,  6 Jun 2025 16:19:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF6347A63F2
+	for <lists+cgroups@lfdr.de>; Sat,  7 Jun 2025 06:41:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6009E28A1CC;
-	Fri,  6 Jun 2025 16:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02FE11CAA92;
+	Sat,  7 Jun 2025 06:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JvfOMurp"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="R2PYVFmk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8287628A1CE;
-	Fri,  6 Jun 2025 16:19:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6505C1E4AE
+	for <cgroups@vger.kernel.org>; Sat,  7 Jun 2025 06:42:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749226742; cv=none; b=Q02eMB5WQN/efE4OvnIR6SUSknxpogN25O/LTGyJRF2VpzShogqHe4jgg+dWTGTPBoTVZWJMaWlzh/VMlfTtSHl0Uqq585T3ct75dNKNss/ZizMd/qghHzhRI8g1FFMDyezgnU+AAzA8KKdfQpW374yMYQX9vQgvYWcl1w+3OOU=
+	t=1749278565; cv=none; b=dI95UFTm4OIWjdxBCoiS6hIEI2C+gk7sVdD7yvOFCp9+2/5qGOriduWigwdksdAeI5Hl3sZ7ApqjuekJEBRlxYFwFXhYGAR2EekiCKC5xDDagF+19fximff+TbIsWgaeRxnTM5iCZ/q8lBGj8B0xOeZRme5Gynp7QC+xckQY8Pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749226742; c=relaxed/simple;
-	bh=lLb+jNOrtfcqwgNscb056qIBxvga8xPQUWy2hvwYULk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kv3YVW3lgYZJoyRLRMTuhllY5n85asDFThUerTbmrK3XJi4l+pSx4jnhC3LEgUnLBOrVwjXpf4Ed/frHCD9IxXlGvHNXLbp3chCswOsrE27Vx9KmgX832ohhJfKxV0xDEZ7T+8xZdg7gvg9CsTgwOgdgAu1RTjU1S6ZazkmGXmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JvfOMurp; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-72d3b48d2ffso1912247b3a.2;
-        Fri, 06 Jun 2025 09:19:00 -0700 (PDT)
+	s=arc-20240116; t=1749278565; c=relaxed/simple;
+	bh=VJmbmCgF+h4TF2aWcygj6lorshc4MEmHAvIoss8/ZZE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AvqefKOUY8VFWDz5rSP3l+ftrDPPg1ynfqp2Y79YamxciEZn0XeMaU4awxEFuZhAV7OMlG4NBuCj883tXkNrh4p4H+01hLjySeH/v8BPf5XF72ofYZxiwbqZbgWKZiWsEpm7m6NoqldkkdHEJsPvQJTtRPh81oJlYLgS86uan80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=R2PYVFmk; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3a528243636so1594132f8f.3
+        for <cgroups@vger.kernel.org>; Fri, 06 Jun 2025 23:42:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749226740; x=1749831540; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WmddC+fvugcNh6NPL5Z6V5D8fMLub+35xnJ4f4NuuCY=;
-        b=JvfOMurpwNZkdo5/SkBpxrhg7n1NReDOujg2lnxmifhJ3zThO6fnSOiZv2L1KmTO13
-         4OLlmAWhz9GmC7T/RRMRQetl5UsWT8G0AGzYDEUAbN5NIqOprard2nTtVVAwvGzU4lFI
-         8q43M5m1jpioPfu0AxgmFmi6ieFiz5aIcBdkiDcbnww7/CO7bA6SPR5gMhO9oaX2DYDf
-         /UXxFwiVSELirSkpMD2oKWdvJDJTZrpOYS3zxbua0mj/SgHKLdkOZhpzU8XmjKd4+7He
-         aVDdo2nHURy7kVVJJpOO4q5hyO/y/oo3Kcfx51jhm5a/CXoi/r6uVfKyFMDxGUtfkyHZ
-         sNgA==
+        d=suse.com; s=google; t=1749278562; x=1749883362; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mrUXViwDkqJhoI4YedUPeKtoVXSUs9aUlsZd2VKVLQk=;
+        b=R2PYVFmkjgZ9PK60/34LrVxbuodQAPqYeunnzVu0BtfNjkGA9jo4iDEW+LQq0aEu1V
+         qqI42ME++kovC1F8thp0iJ5+4WyVeusMoO5LrF0ZtxIbMRWLIXEuJEwi8weqBxEj9Aq7
+         pwQY7PoR0gBU1Rub1NWawDXUm09za5iytitJi5C/gIeUo4P4gsHmENjZp3wQsgaSUyxr
+         I4yqMOtNL7vuMYhtN70OFM6AypQdPoiMWz39KoRTueHxe8aEXMqLOJAP9nCN/SQgt02d
+         tBSLmli+Ut/9PpDLL1/sX6+H31eOGEStFdRPeQBVlhiT36xE8JmKcvW3SnUbM0UtV2aX
+         Q6aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749226740; x=1749831540;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WmddC+fvugcNh6NPL5Z6V5D8fMLub+35xnJ4f4NuuCY=;
-        b=Rz4/X62ozB8MM0JudsOZETocJ9I3QgwpMvqS2RBHtUQcozIXaKnark066tZeAoAS/E
-         YLBcQMcw3qfz6Hq4rvki1U5dOQqkanR5Lpc+mSXgkLzbAImLiXR3ydtY00VAORcXhf/L
-         yyxnSVYxSXTbqOfvTni5kvLPe2K5uZrDX0wiJBg1yyh/+o6HwAiNExaYkf7e6G4/Hs0H
-         yWpvgzj38R1IzasSLHe+yTJQfkRd9gfP/C/A167aGwcWS5d3OGqYNJYahyWCeQ5cnIT6
-         gejxIACPKUwpVEXPsQvpbn8/jwoXNWvtSD0xER3d45e3h7bYk1v3+JtaFeu2wcUS2h//
-         oDsg==
-X-Forwarded-Encrypted: i=1; AJvYcCV1Gr4k06cbg1Etx70if3399gHw4xwo/W5xdvvGy8dv+6qBIKMfX6RC/qJjfUW2Fma27Di0dtlfXAbBRzUu@vger.kernel.org, AJvYcCWQklR7TqNtjESjFp3v13ZpXkv+EbFOMdLm0izv2L8ihr2fn6CjgqkbkaFZB4DKdtWVgGyZM+s3@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywg1LqKXP38TQtVk7RJXjurUEc++RVE+tpVi9ZSmYJ/Iby3Ny0x
-	9lKtwMaYAkpNd5UhvunBwrHVM+Ir97bct4c24tqYHcVMEX+bJTe9wRKd
-X-Gm-Gg: ASbGncvpRSHkXfqav0egCunitZ8nsfOmeCw7T18/CN5/pwe0zkc5a29b9TojNGDTurF
-	3AXj/8TBnV1/aimswrA8NfvhiY4EP6fYB/FtEcgl5YDje6l8Ez3UYh50ekYuwhxN8Ni2CK4Dbi8
-	DTYBKCfuMqwZ6Ud2Hq2eOKXYtrHhP886hhIupbcaQST3yGMxR/zMKW9lrpKq9jPn2m3P4hvXjVM
-	wIaRzvk1zvfBa3BaArhGp7dXAdsACLEPnMDmrqNJ1tAt4aEz+r4/1RoCCoR2/UHibWJbb1c3kug
-	/LDADIhjsmCfkUYfWFXUbeY76gxmDeYTqzWeP6Ae/Fz+bwGYvXK023lTph22cA==
-X-Google-Smtp-Source: AGHT+IFcXtPfFGYXvkgSpvJ7vtSOpxnnhRLikBp1U3gJWE6ad36suuVrBjAV85Ov9GEOGtdfNwEpHg==
-X-Received: by 2002:a05:6a00:4646:b0:73e:1566:5960 with SMTP id d2e1a72fcca58-748280ab71bmr6362559b3a.19.1749226739523;
-        Fri, 06 Jun 2025 09:18:59 -0700 (PDT)
-Received: from jemmy.. ([180.172.46.169])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7482af38353sm1518675b3a.10.2025.06.06.09.18.56
+        d=1e100.net; s=20230601; t=1749278562; x=1749883362;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mrUXViwDkqJhoI4YedUPeKtoVXSUs9aUlsZd2VKVLQk=;
+        b=L5VopYk2iXWdfaCepH2MiXIM1YmaAYRkl/hpgORCZ7+ZCVAhTm1yRT8DmwRAH7CCwS
+         BnvfiXRI+GeWilZMUFMx8Vp8rcIWZqdavLjYOJI0433GnbYf/E2i3Cj9ri/HkXPmlj2T
+         VX4L3PnG5hj/aMwZLCguyhKpClY2K0b9cmgkwX4bnXE3/gc4JvEe6JLS63a+UYLW7Mdm
+         27nQQWxFNzTqVuh1Me55BgGef7DM9gbLaZJcoRhqwVCP9EbVUFeoda+FUbnzNA+kyo9r
+         hajmT86I34GkO4botUqc0z1I0145Dsagy0GIWtWDz7Evcu7scrzgkeQUHR3piqbGYHOW
+         UPHw==
+X-Forwarded-Encrypted: i=1; AJvYcCViB8arsp+7whkcwZ8CI05CoYHG6dhhYhBUuUEij6KMoFwFKD7e/VcaKAzgLmiEnDleqADBdtyD@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw0Dryo1u2npEdx7UN8IcOQmEwfDTmySwh76AuLl27nFrxbb+PH
+	zotMig4E/z8RGOhoDryAazy3wys+6OtnMBFvhrDrQxaTydGqHjhRAjpxGf4wai2pZw==
+X-Gm-Gg: ASbGncsX3480+NHgiFxlqfCf7e0ZTIv87mFPtzSsxZHrNcW9QD+pdz0h1SC30ZD5xMg
+	/KqiGRjk0ydRTAamQdc9DGIrCoudKTDUAjcbPU1n+zT7yTIj73BDVwI+4g1pzZ/SeU0AZ1hKJFW
+	uEW6vWHMDQDac/MMW4zYRm23Nz0f6UbjzQTjZhYuGWdslxtvoxq/8HK0JiLpS1WsgetkJ82bXiV
+	aEW6lue9LabYnlTCXs50fayhyZEHkSErP4TT9KyDncgXk4AszDpkiPB0DIPVNQ6tVvGCdnWCIzz
+	RYI2VXU/n62ZlB0s3P5AJ+nxTYhUQa3ZwJZSr976m8P2FdmABF+vvqlLWlzRVA==
+X-Google-Smtp-Source: AGHT+IEQpXVKIqGfsJsoMkweH+85T0leIdWCXGXZFYX0Iygo8VSgKAgnvV96Ffv+VcOEWsJk83bygQ==
+X-Received: by 2002:a05:6000:2304:b0:3a4:d3ff:cef2 with SMTP id ffacd0b85a97d-3a53188dea2mr5422014f8f.27.1749278561634;
+        Fri, 06 Jun 2025 23:42:41 -0700 (PDT)
+Received: from MiWiFi-CR6608-srv ([202.127.77.110])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23603092f38sm21889275ad.79.2025.06.06.23.42.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Jun 2025 09:18:59 -0700 (PDT)
-From: Jemmy Wong <jemmywong512@gmail.com>
-To: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Waiman Long <longman@redhat.com>,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/3] cgroup: add lock guard support for others
-Date: Sat,  7 Jun 2025 00:18:41 +0800
-Message-ID: <20250606161841.44354-4-jemmywong512@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250606161841.44354-1-jemmywong512@gmail.com>
-References: <20250606161841.44354-1-jemmywong512@gmail.com>
+        Fri, 06 Jun 2025 23:42:41 -0700 (PDT)
+Date: Sat, 7 Jun 2025 14:42:22 -0400
+From: Wei Gao <wegao@suse.com>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it,
+	Li Wang <liwang@redhat.com>, cgroups@vger.kernel.org
+Subject: Re: [LTP] [PATCH v1] sched_rr_get_interval01.c: Put test process
+ into absolute root cgroup (0::/)
+Message-ID: <aESIDuS42cY_sLBe@MiWiFi-CR6608-srv>
+References: <20250605142943.229010-1-wegao@suse.com>
+ <20250605094019.GA1206250@pevik>
+ <orzx7vfokvwuceowwjctea4yvujn75djunyhsqvdfr5bw7kqe7@rkn5tlnzwllu>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <orzx7vfokvwuceowwjctea4yvujn75djunyhsqvdfr5bw7kqe7@rkn5tlnzwllu>
 
-Signed-off-by: Jemmy Wong <jemmywong512@gmail.com>
+On Thu, Jun 05, 2025 at 05:56:11PM +0200, Michal Koutný wrote:
+> On Thu, Jun 05, 2025 at 11:40:19AM +0200, Petr Vorel <pvorel@suse.cz> wrote:
+> > @Michal @Li WDYT?
+> 
+> RT_GROUP scheduling is v1 feature as of now.
+> 
+> Testing cgroup v2 makes only sense with 
+> CONFIG_RT_GROUP_SCHED=y and CONFIG_RT_GROUP_SCHED_DEFAULT_DISABLED=y
+> (this combination is equivalent to CONFIG_RT_GROUP_SCHED=n on v2).
 
----
- kernel/cgroup/cgroup-internal.h |  8 ++--
- kernel/cgroup/cgroup-v1.c       | 11 +++--
- kernel/cgroup/cgroup.c          | 73 ++++++++++++---------------------
- 3 files changed, 35 insertions(+), 57 deletions(-)
+@Michal Koutný  So we should skip test cgroupv2 with CONFIG_RT_GROUP_SCHED=yes, correct? Like following change?
 
-diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-index b14e61c64a34..5430454d38ca 100644
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -198,8 +198,6 @@ void put_css_set_locked(struct css_set *cset);
- 
- static inline void put_css_set(struct css_set *cset)
- {
--	unsigned long flags;
--
- 	/*
- 	 * Ensure that the refcount doesn't hit zero while any readers
- 	 * can see it. Similar to atomic_dec_and_lock(), but for an
-@@ -208,9 +206,9 @@ static inline void put_css_set(struct css_set *cset)
- 	if (refcount_dec_not_one(&cset->refcount))
- 		return;
- 
--	spin_lock_irqsave(&css_set_lock, flags);
--	put_css_set_locked(cset);
--	spin_unlock_irqrestore(&css_set_lock, flags);
-+	scoped_guard(spinlock_irqsave, &css_set_lock) {
-+		put_css_set_locked(cset);
-+	}
- }
- 
- /*
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index fcc2d474b470..91c6ba4e441d 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -1291,7 +1291,6 @@ struct cgroup *task_get_cgroup1(struct task_struct *tsk, int hierarchy_id)
- {
- 	struct cgroup *cgrp = ERR_PTR(-ENOENT);
- 	struct cgroup_root *root;
--	unsigned long flags;
- 
- 	guard(rcu)();
- 	for_each_root(root) {
-@@ -1300,11 +1299,11 @@ struct cgroup *task_get_cgroup1(struct task_struct *tsk, int hierarchy_id)
- 			continue;
- 		if (root->hierarchy_id != hierarchy_id)
- 			continue;
--		spin_lock_irqsave(&css_set_lock, flags);
--		cgrp = task_cgroup_from_root(tsk, root);
--		if (!cgrp || !cgroup_tryget(cgrp))
--			cgrp = ERR_PTR(-ENOENT);
--		spin_unlock_irqrestore(&css_set_lock, flags);
-+		scoped_guard(spinlock_irqsave, &css_set_lock) {
-+			cgrp = task_cgroup_from_root(tsk, root);
-+			if (!cgrp || !cgroup_tryget(cgrp))
-+				cgrp = ERR_PTR(-ENOENT);
-+		}
- 		break;
- 	}
- 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 46b677a066d1..ea98679b01e1 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -335,28 +335,23 @@ static int cgroup_idr_alloc(struct idr *idr, void *ptr, int start, int end,
- 	int ret;
- 
- 	idr_preload(gfp_mask);
--	spin_lock_bh(&cgroup_idr_lock);
--	ret = idr_alloc(idr, ptr, start, end, gfp_mask & ~__GFP_DIRECT_RECLAIM);
--	spin_unlock_bh(&cgroup_idr_lock);
-+	scoped_guard(spinlock_bh, &cgroup_idr_lock) {
-+		ret = idr_alloc(idr, ptr, start, end, gfp_mask & ~__GFP_DIRECT_RECLAIM);
-+	}
- 	idr_preload_end();
- 	return ret;
- }
- 
- static void *cgroup_idr_replace(struct idr *idr, void *ptr, int id)
- {
--	void *ret;
--
--	spin_lock_bh(&cgroup_idr_lock);
--	ret = idr_replace(idr, ptr, id);
--	spin_unlock_bh(&cgroup_idr_lock);
--	return ret;
-+	guard(spinlock_bh)(&cgroup_idr_lock);
-+	return idr_replace(idr, ptr, id);
- }
- 
- static void cgroup_idr_remove(struct idr *idr, int id)
- {
--	spin_lock_bh(&cgroup_idr_lock);
-+	guard(spinlock_bh)(&cgroup_idr_lock);
- 	idr_remove(idr, id);
--	spin_unlock_bh(&cgroup_idr_lock);
- }
- 
- static bool cgroup_has_tasks(struct cgroup *cgrp)
-@@ -583,20 +578,19 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct cgroup *cgrp,
- 	if (!CGROUP_HAS_SUBSYS_CONFIG)
- 		return NULL;
- 
--	rcu_read_lock();
-+	guard(rcu)();
- 
- 	do {
- 		css = cgroup_css(cgrp, ss);
- 
- 		if (css && css_tryget_online(css))
--			goto out_unlock;
-+			return css;
- 		cgrp = cgroup_parent(cgrp);
- 	} while (cgrp);
- 
- 	css = init_css_set.subsys[ss->id];
- 	css_get(css);
--out_unlock:
--	rcu_read_unlock();
-+
- 	return css;
- }
- EXPORT_SYMBOL_GPL(cgroup_get_e_css);
-@@ -1691,9 +1685,9 @@ static void cgroup_rm_file(struct cgroup *cgrp, const struct cftype *cft)
- 		struct cgroup_subsys_state *css = cgroup_css(cgrp, cft->ss);
- 		struct cgroup_file *cfile = (void *)css + cft->file_offset;
- 
--		spin_lock_irq(&cgroup_file_kn_lock);
--		cfile->kn = NULL;
--		spin_unlock_irq(&cgroup_file_kn_lock);
-+		scoped_guard(spinlock_irq, &cgroup_file_kn_lock) {
-+			cfile->kn = NULL;
-+		}
- 
- 		timer_delete_sync(&cfile->notify_timer);
- 	}
-@@ -4277,9 +4271,9 @@ static int cgroup_add_file(struct cgroup_subsys_state *css, struct cgroup *cgrp,
- 
- 		timer_setup(&cfile->notify_timer, cgroup_file_notify_timer, 0);
- 
--		spin_lock_irq(&cgroup_file_kn_lock);
--		cfile->kn = kn;
--		spin_unlock_irq(&cgroup_file_kn_lock);
-+		scoped_guard(spinlock_irq, &cgroup_file_kn_lock) {
-+			cfile->kn = kn;
-+		}
- 	}
- 
- 	return 0;
-@@ -4534,9 +4528,7 @@ int cgroup_add_legacy_cftypes(struct cgroup_subsys *ss, struct cftype *cfts)
-  */
- void cgroup_file_notify(struct cgroup_file *cfile)
- {
--	unsigned long flags;
--
--	spin_lock_irqsave(&cgroup_file_kn_lock, flags);
-+	guard(spinlock_irqsave)(&cgroup_file_kn_lock);
- 	if (cfile->kn) {
- 		unsigned long last = cfile->notified_at;
- 		unsigned long next = last + CGROUP_FILE_NOTIFY_MIN_INTV;
-@@ -4548,7 +4540,6 @@ void cgroup_file_notify(struct cgroup_file *cfile)
- 			cfile->notified_at = jiffies;
- 		}
- 	}
--	spin_unlock_irqrestore(&cgroup_file_kn_lock, flags);
- }
- 
- /**
-@@ -4560,10 +4551,10 @@ void cgroup_file_show(struct cgroup_file *cfile, bool show)
- {
- 	struct kernfs_node *kn;
- 
--	spin_lock_irq(&cgroup_file_kn_lock);
--	kn = cfile->kn;
--	kernfs_get(kn);
--	spin_unlock_irq(&cgroup_file_kn_lock);
-+	scoped_guard(spinlock_irq, &cgroup_file_kn_lock) {
-+		kn = cfile->kn;
-+		kernfs_get(kn);
-+	}
- 
- 	if (kn)
- 		kernfs_show(kn, show);
-@@ -4987,11 +4978,10 @@ static void css_task_iter_advance(struct css_task_iter *it)
- void css_task_iter_start(struct cgroup_subsys_state *css, unsigned int flags,
- 			 struct css_task_iter *it)
- {
--	unsigned long irqflags;
- 
- 	memset(it, 0, sizeof(*it));
- 
--	spin_lock_irqsave(&css_set_lock, irqflags);
-+	guard(spinlock_irqsave)(&css_set_lock);
- 
- 	it->ss = css->ss;
- 	it->flags = flags;
-@@ -5004,8 +4994,6 @@ void css_task_iter_start(struct cgroup_subsys_state *css, unsigned int flags,
- 	it->cset_head = it->cset_pos;
- 
- 	css_task_iter_advance(it);
--
--	spin_unlock_irqrestore(&css_set_lock, irqflags);
- }
- 
- /**
-@@ -5018,14 +5006,12 @@ void css_task_iter_start(struct cgroup_subsys_state *css, unsigned int flags,
-  */
- struct task_struct *css_task_iter_next(struct css_task_iter *it)
- {
--	unsigned long irqflags;
--
- 	if (it->cur_task) {
- 		put_task_struct(it->cur_task);
- 		it->cur_task = NULL;
- 	}
- 
--	spin_lock_irqsave(&css_set_lock, irqflags);
-+	guard(spinlock_irqsave)(&css_set_lock);
- 
- 	/* @it may be half-advanced by skips, finish advancing */
- 	if (it->flags & CSS_TASK_ITER_SKIPPED)
-@@ -5038,8 +5024,6 @@ struct task_struct *css_task_iter_next(struct css_task_iter *it)
- 		css_task_iter_advance(it);
- 	}
- 
--	spin_unlock_irqrestore(&css_set_lock, irqflags);
--
- 	return it->cur_task;
- }
- 
-@@ -5051,13 +5035,10 @@ struct task_struct *css_task_iter_next(struct css_task_iter *it)
-  */
- void css_task_iter_end(struct css_task_iter *it)
- {
--	unsigned long irqflags;
--
- 	if (it->cur_cset) {
--		spin_lock_irqsave(&css_set_lock, irqflags);
-+		guard(spinlock_irqsave)(&css_set_lock);
- 		list_del(&it->iters_node);
- 		put_css_set_locked(it->cur_cset);
--		spin_unlock_irqrestore(&css_set_lock, irqflags);
- 	}
- 
- 	if (it->cur_dcset)
-@@ -6737,10 +6718,10 @@ void cgroup_post_fork(struct task_struct *child,
- 				 * too. Let's set the JOBCTL_TRAP_FREEZE jobctl bit to
- 				 * get the task into the frozen state.
- 				 */
--				spin_lock(&child->sighand->siglock);
--				WARN_ON_ONCE(child->frozen);
--				child->jobctl |= JOBCTL_TRAP_FREEZE;
--				spin_unlock(&child->sighand->siglock);
-+				scoped_guard(spinlock, &child->sighand->siglock) {
-+					WARN_ON_ONCE(child->frozen);
-+					child->jobctl |= JOBCTL_TRAP_FREEZE;
-+				}
- 
- 				/*
- 				 * Calling cgroup_update_frozen() isn't required here,
--- 
-2.43.0
+diff --git a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+index 55516ec89..b12bd7857 100644
+--- a/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
++++ b/testcases/kernel/syscalls/sched_rr_get_interval/sched_rr_get_interval01.c
+@@ -43,10 +43,9 @@ static void setup(void)
+
+        tp.type = tv->ts_type;
+
++       static const char * const kconf[] = {"CONFIG_RT_GROUP_SCHED=y", NULL};
++       if ((access("/sys/fs/cgroup/cgroup.controllers", F_OK) == 0) && !tst_kconfig_check(kconf_strict)) {
++               tst_brk(TCONF, "CONFIG_RT_GROUP_SCHED not support on cgroupv2");
++       }
+
+> 
+> HTH,
+> Michal
+
 
 
