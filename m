@@ -1,130 +1,118 @@
-Return-Path: <cgroups+bounces-8464-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8465-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47292AD254E
-	for <lists+cgroups@lfdr.de>; Mon,  9 Jun 2025 20:05:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4585AD29FD
+	for <lists+cgroups@lfdr.de>; Tue, 10 Jun 2025 00:56:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14CEC1890F4D
-	for <lists+cgroups@lfdr.de>; Mon,  9 Jun 2025 18:06:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A80FA170F72
+	for <lists+cgroups@lfdr.de>; Mon,  9 Jun 2025 22:56:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ACDD21A443;
-	Mon,  9 Jun 2025 18:05:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C00D2253F8;
+	Mon,  9 Jun 2025 22:56:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oz7KIscY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eswxoG3G"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB9C74C14;
-	Mon,  9 Jun 2025 18:05:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD57F221FB5
+	for <cgroups@vger.kernel.org>; Mon,  9 Jun 2025 22:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749492353; cv=none; b=dU0k0WZj0mxlqRHCgnogDkg5Dsf6uwRAe/33xIj68wpro/MYoNucIvWMySYJCL7fhpnJX+hF15onYgwtxs4qbNDDsdrcMFXnMPEIuQR4EkFXyWpiuFvYhluAfIEYJ9l0GgE86R29Z0DoI3yu728cNrRa8I5WDlAi5Wf0KJud4DM=
+	t=1749509786; cv=none; b=VumEw0/auEhkVCZUp1AYVZ4rAIxUt7Hb5MnGM7irSeqEErFszKFdirZriw2Qk6S0YFcocfoBcgyQnyPi+mO75h44PsDtDINnmRPt4aUUrADn0aw6qBYloR25MuzGtenS8fcVy14athc8V9W/jjz8tWd4NjhpKarpxJ7m44fDwpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749492353; c=relaxed/simple;
-	bh=6RQ6jbjvg8dHr6Ls6CSjBRueq9yvVGm8MRlRUyIDPMo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uy4au4fKnZTkBR0sTm0yuRFDW1M9FuNQ0S2h+JGQ63Unr2NPiHGZjrb7kZSqz0I0vEljuvNRge/Eu086FZRP9EzXGYIciUqKUx7Tp6JkbpJgtJxnVcSKvvRN2RmMHCER3bUXCYIFlJVA0ih8ajlijIfZolL1IKxEWOwOIp8Z9qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oz7KIscY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 358F8C4CEEB;
-	Mon,  9 Jun 2025 18:05:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749492352;
-	bh=6RQ6jbjvg8dHr6Ls6CSjBRueq9yvVGm8MRlRUyIDPMo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oz7KIscYiBzBq3Fscdr5H95rVV7+ARwjUObDyem48cqrT0uw9ce/OpOATe87OF6Y7
-	 00DjBC/teHzn4dvItravGSsen++9BbcHy7FRm7ybMWElQWJuL9yi4pILlZBwWowkRd
-	 e3+extvKJeKhPE+tXWjTMnNYJxV0u22CUBXmHFuikJ0y5A/9wTW6hI1RK7uEq5cuYD
-	 WQd1Whm1ko2SVMxidi9kW7t6nksBwtgtqm48/hdCH68khRlKP+HA+gCuyRLEZG3dOu
-	 g3SDON5ZPC6gC5ow+pwiucA6uC2OC3foiX4EHzFtI9T2mRuqRrE2Pai21eYB4/7zO2
-	 UJ8FFLg+YxYvA==
-Date: Mon, 9 Jun 2025 08:05:51 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Vishal Chourasia <vishalc@linux.ibm.com>
+	s=arc-20240116; t=1749509786; c=relaxed/simple;
+	bh=fnvgnGU/oZtXEwKHJwF4oXb0QENWEDEDPSOTdAb7sqc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tom5KABlbMVClZcXJK8t6ME8C0Naii6ucLSuQ9GhMpNn99atVuf28I0B44E/yp9pTsuzZM/mM6r/TvCXT7BJ+Dw5Nbo9qPTTGBmrgyfqeztgS383fTu82moY5Q5Jb9a1WwVE/hae14Wpa+soU6mDMDHGIGfG6yEOq/9X5XHJhk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eswxoG3G; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1749509781;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=j3bC3QS+YLVQDjDxB/dMj/zdRv0EphT3+T18L+fEShg=;
+	b=eswxoG3GLoy2gFPGrmXzRUrJQnzdp7StbXSBdaIEFckRQ+Xr1i44A8obRqGLQyOcuIJA2g
+	NATLzItcQAxPHnD5rHiC/nBSU/rC8PGx9wR01no1RefepK2ElUk/5mQJukswVhj1sryRJE
+	5SiXj4Br0I35cLEZ1F4doWgqWizaF5Y=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Tejun Heo <tj@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bagasdotme@gmail.com, llong@redhat.com
-Subject: Re: [PATCH v3] Documentation: cgroup: add section explaining
- controller availability
-Message-ID: <aEcif8PgY3GAbBWI@slm.duckdns.org>
-References: <20250606041004.12753-2-vishalc@linux.ibm.com>
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Harry Yoo <harry.yoo@oracle.com>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>,
+	bpf@vger.kernel.org,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: [PATCH 0/3] cgroup: nmi safe css_rstat_updated
+Date: Mon,  9 Jun 2025 15:56:08 -0700
+Message-ID: <20250609225611.3967338-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250606041004.12753-2-vishalc@linux.ibm.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jun 06, 2025 at 09:40:05AM +0530, Vishal Chourasia wrote:
-> Add "Availability" section to Control Group v2 docs. It describes the
-> meaning of a controller being available in a cgroup, complementing the
-> existing "Enabling and Disabling" section.
-> 
-> This update improves the clarity of cgroup controller management by
-> explicitly distinguishing between:
-> 
-> 1. Availability – when a controller is supported by the kernel and
->    listed in "cgroup.controllers", making its interface files accessible
->    in the cgroup's directory.
-> 2. Enabling – when a controller is enabled via explicitly writing the
->    name of the controller to "cgroup.subtree_control" to control
->    distribution of resource across the cgroup's immediate children.
-> 
-> As an example, consider
-> 
-> /sys/fs/cgroup # cat cgroup.controllers
-> cpuset cpu io memory hugetlb pids misc
-> /sys/fs/cgroup # cat cgroup.subtree_control # No controllers enabled by default
-> /sys/fs/cgroup # echo +cpu +memory > cgroup.subtree_control # enabling "cpu" and "memory"
-> /sys/fs/cgroup # cat cgroup.subtree_control
-> cpu memory                   # cpu and memory enabled in /sys/fs/cgroup
-> /sys/fs/cgroup # mkdir foo_cgrp
-> /sys/fs/cgroup # cd foo_cgrp/
-> /sys/fs/cgroup/foo_cgrp # cat cgroup.controllers
-> cpu memory                   # cpu and memory available in 'foo_cgrp'
-> /sys/fs/cgroup/foo_cgrp # cat cgroup.subtree_control  # empty by default
-> /sys/fs/cgroup/foo_cgrp # ls
-> cgroup.controllers      cpu.max.burst           memory.numa_stat
-> cgroup.events           cpu.pressure            memory.oom.group
-> cgroup.freeze           cpu.stat                memory.peak
-> cgroup.kill             cpu.stat.local          memory.pressure
-> cgroup.max.depth        cpu.weight              memory.reclaim
-> cgroup.max.descendants  cpu.weight.nice         memory.stat
-> cgroup.pressure         io.pressure             memory.swap.current
-> cgroup.procs            memory.current          memory.swap.events
-> cgroup.stat             memory.events           memory.swap.high
-> cgroup.subtree_control  memory.events.local     memory.swap.max
-> cgroup.threads          memory.high             memory.swap.peak
-> cgroup.type             memory.low              memory.zswap.current
-> cpu.idle                memory.max              memory.zswap.max
-> cpu.max                 memory.min              memory.zswap.writeback
-> 
-> In this example, "cpu" and "memory" are enabled in the root cgroup,
-> making them available in "foo_cgrp". This exposes the corresponding
-> interface files in "foo_cgrp/", allowing resource control of processes
-> in that cgroup. However, these controllers are not yet enabled in
-> "foo_cgrp" itself.
-> 
-> Once a controller is available in a cgroup it can be used to resource
-> control processes of the cgroup.
-> 
-> Acked-by: Michal Koutný <mkoutny@suse.com>
-> Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
+BPF programs can run in nmi context and may trigger memcg charged memory
+allocation in such context. Recently linux added support to nmi safe
+page allocation along with memcg charging of such allocations. However
+the kmalloc/slab support and corresponding memcg charging is still
+lacking,
 
-Applied to cgroup/for-6.17.
+To provide nmi safe support for memcg charging for kmalloc/slab
+allocations, we need nmi safe memcg stats and for that we need nmi safe
+css_rstat_updated() which adds the given cgroup state whose stats are
+updated into the per-cpu per-ss update tree. This series took the aim to
+make css_rstat_updated() nmi safe.
 
-Thanks.
+This series made css_rstat_updated by using per-cpu lockless lists whose
+node in embedded in individual struct cgroup_subsys_state and the
+per-cpu head is placed in struct cgroup_subsys. For rstat users without
+cgroup_subsys, a global per-cpu lockless list head is created. The main
+challenge to use lockless in this scenario was the potential multiple
+inserters using the same lockless node of a cgroup_subsys_state which is
+different from traditional users of lockless lists.
+
+The multiple inserters using potentially same lockless node was resolved
+by making one of them succeed on reset the lockless node and the winner
+gets to insert the lockless node in the corresponding lockless list.
+
+
+Changelog since v1:
+- Based on Yosry's suggestion always use llist on the update side and
+  create the update tree on flush side
+
+[v1] https://lore.kernel.org/cgroups/20250429061211.1295443-1-shakeel.butt@linux.dev/
+ 
+
+Shakeel Butt (3):
+  cgroup: support to enable nmi-safe css_rstat_updated
+  cgroup: make css_rstat_updated nmi safe
+  memcg: cgroup: call memcg_rstat_updated irrespective of in_nmi()
+
+ include/linux/cgroup-defs.h |  4 ++
+ kernel/cgroup/rstat.c       | 80 ++++++++++++++++++++++++++++++-------
+ mm/memcontrol.c             | 10 ++---
+ 3 files changed, 75 insertions(+), 19 deletions(-)
 
 -- 
-tejun
+2.47.1
+
 
