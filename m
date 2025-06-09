@@ -1,133 +1,189 @@
-Return-Path: <cgroups+bounces-8461-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8462-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30879AD1C88
-	for <lists+cgroups@lfdr.de>; Mon,  9 Jun 2025 13:44:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A002AD1EF7
+	for <lists+cgroups@lfdr.de>; Mon,  9 Jun 2025 15:33:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E20C616B29E
-	for <lists+cgroups@lfdr.de>; Mon,  9 Jun 2025 11:44:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 003D5188D558
+	for <lists+cgroups@lfdr.de>; Mon,  9 Jun 2025 13:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900B125228E;
-	Mon,  9 Jun 2025 11:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4816254AF0;
+	Mon,  9 Jun 2025 13:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KbCNGTy8"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OL+gSCOH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jh7CpW7I";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x8fgWWPZ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZSfhp70B"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0274C1C8604
-	for <cgroups@vger.kernel.org>; Mon,  9 Jun 2025 11:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F12CF18027
+	for <cgroups@vger.kernel.org>; Mon,  9 Jun 2025 13:33:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749469458; cv=none; b=SyUdSVEqhe+vbPdV7NWzMhBXIL5Jc4/81b/Fr1y7OJFP6R0Z/1msG6/VA+5Xg9uz7ilZBknQ5epe/Q2Z0iCCid4jrb9JZ6WOMGQtzQPEa6yC3aVbC+aNdy6IdfXB7FE8hI60Jpb7XZjcYlsYLHaXdUnEbwYu1gaPkVJtOCefA2I=
+	t=1749476019; cv=none; b=SQzv251G75hV/ZQZCJvnUjx2NJAPC0TVI7CLx3pwPd9kVR+kn/skODxn2r/yHWGGlQKOVI9D8H5YmfrdcScKRtJvY++KAWbOlCNyvILr3Yxn6h0ZFjTyCAw2x5dKRYjB1AHFtaKsWD46X2espbvulL7gV7MZeLKN94dY73VZ7uw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749469458; c=relaxed/simple;
-	bh=zeHzgmvMo4kT+nqZaZUlerAkM5GChqsGWSsjTjcoogs=;
+	s=arc-20240116; t=1749476019; c=relaxed/simple;
+	bh=uy/v/SnUTsDKYyCwhC8AFTTpTshbTPCnrIWHXQSTiTs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tWiF9HhUVLYsnVRHKkrX4nMN8B/1bxzb+HTwplWPNV7jDSG4jZS6umC5TaeoZRexxsUxWTr4iBlyeyxXrnhU2MZvFKEt3Z5ULA8dqWL8b3V5HWUqLjjpShQJrDB/w7vChJzIFKsnwrR9DVHjdo41RFgy8CffryEgdU5hehi2l2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KbCNGTy8; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3a503d9ef59so3497782f8f.3
-        for <cgroups@vger.kernel.org>; Mon, 09 Jun 2025 04:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1749469454; x=1750074254; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QDJBJhjg5OJ53rHN+kjssK0nNcY+e5meMvsnHTIe/NE=;
-        b=KbCNGTy8tk2LR+uOm17P5deEksR42Vf/xFaRCySSWN5qQuuIkPvxXF9TF8JQrhFHwk
-         +J+kXX8tC/dxaf19KJ9ErtXiZdxXDPfVQdtvurLgwMQEdH/yyt/yDPIML+7urqMLfQzT
-         9rjgux3cOtArag5oPz4BYfiRX1qHuHzIpklgyLupNegsfvhSEALhdpQIMAkr6sS5bYNM
-         MZFrPP+Va7VV7l47mt2fhj2Cvt19fog+AKn83T86N0SLsGofZC+dBY8/IEIG6CEC+GhV
-         V2nHXYVyAxOqYdE3LFiuYFT51OKYrbPEcsEP2QFVp/i+OUWzSai587GSwrk3XnBh10JP
-         VuPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749469454; x=1750074254;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QDJBJhjg5OJ53rHN+kjssK0nNcY+e5meMvsnHTIe/NE=;
-        b=WzADN7KoWstQZ2sRI2tvjtbqUKIzs09DohXNa6ldFA2NHztC+TYH2XytMjOyqs3SMI
-         IfgvcWIYmvEdnf/zo249WU2KHKI4cFS5et+8qInV4OUX1AqcVTFQRgc2Cro4SnyBkWE2
-         xlfAQYu8F2fSoLYFI9Pd+ptXP4eJ6ul9V6Mmzy+79830WEyYxjg4Yo+8ET6cCfU1otcg
-         tG0wHi/P1aOw4V4FMm2Sjl+hXC701FT+znDXKPQxXU1AqyTMLmiEuIJRm9ZpDkWBuuuv
-         z0GKoPHpwI3yBbC2+dOVdhdZyxZqMWvCvh8KMIaTQV6ODSYenv+mBrn8paarrFCw7Z7e
-         mrGg==
-X-Forwarded-Encrypted: i=1; AJvYcCW3IEJpZnFSJKoaJSVcToJAhVLGomrTMN08rJneYd38+6gF0F4H70ZKpf/ZXJrDkQEpvdsKfAN7@vger.kernel.org
-X-Gm-Message-State: AOJu0YyVn9vCqi1dfONpFiwBZVPa8uvb30K6VsarfjMwCpwS6D4Jz1ph
-	jRMNR+VI/uMZItbqZ4zyvdKcipgsAa6j9giqLGImIFewBC0xz6L3gI5BK/vBnP7rS5w=
-X-Gm-Gg: ASbGncuKNZtlqMM4e8hZyGNSDhTM6deXBX7ktYnwzvkkyPhlznMI9+mNg+NI4nhAZAx
-	p6HVsw/tdazDM/eRflQyugC4l1NYCDSN8jWipeLhCd0aEzmPKXaxbhi3gr+VnsVIJB1w6RPgRYb
-	ZszyCcXr+GvvRbxPC/Cf1vTD20YcvgbvI8927oHzM92n9wHmhqaXWpLoE6fa0tkl4/0Rd7fLTpa
-	5dprkABWN1TI571t+lfMOn8FzVPDLz4qUna+xTc3OnXgfSetTM8LDDIflkvPWt+ZLdbQEiHzV+e
-	GgGDBz9jgcXBRQOipaHqUpuccq+W0FzQi9obuGewSYSdWM+KnnSjXQ==
-X-Google-Smtp-Source: AGHT+IEqVTlmLfphpuy8ag0CYOQqHWfNuxJKrQowvkGCIt+x0WvJgUBgA21mrVlVzbLRWzR2FoeSMQ==
-X-Received: by 2002:a05:6000:178f:b0:3a5:2694:d75f with SMTP id ffacd0b85a97d-3a531ce73bbmr10195650f8f.52.1749469454236;
-        Mon, 09 Jun 2025 04:44:14 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45213754973sm108852525e9.35.2025.06.09.04.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Jun 2025 04:44:13 -0700 (PDT)
-Date: Mon, 9 Jun 2025 13:44:12 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Wei Gao <wegao@suse.com>
-Cc: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it, 
+	 Content-Type:Content-Disposition:In-Reply-To; b=hdYPdsFW1Mf9OPH3iHrgstKjNvjtkTZ/QXNroa8KOPWImtlQ0oQhI4Z5LZohkWIKE2Z3vAKiSALIGc5r4rb0ugmI+zve38L894mGRtgFFhRgxxNAsL0uynKoj1T7AStGuD5t/JKWGQFcKCcjlvFvTUJyz4mDANnWRpNVLTVXAXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OL+gSCOH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Jh7CpW7I; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x8fgWWPZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZSfhp70B; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DA7221F38F;
+	Mon,  9 Jun 2025 13:33:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1749476015;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3oT43xovplUHySslryULLRttrqsdZDzMb2KNCso4qHw=;
+	b=OL+gSCOHDEO40LnbXQcApFlxl/Qo2JV3wy8Z+HfE6nOkiMNvQQLYkpEmjpzf+BCjZf4Dh5
+	XgLibyAGgUjE2opsu65gcJWGisFbTkupVLKNyfqTq1F7Ih0lztn21UEEz2NrCavAuD7x3O
+	qAUifPKOgpNIFMKy3GAQnBWTWO1Pbys=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1749476015;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3oT43xovplUHySslryULLRttrqsdZDzMb2KNCso4qHw=;
+	b=Jh7CpW7Iclk0uR8ExgkYk36ZWwMlxvm15e3SotoEc30YcBKOFXws6HrZjFTYecYX27uFMq
+	pL+DRSbHluOfSfBQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=x8fgWWPZ;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZSfhp70B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1749476014;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3oT43xovplUHySslryULLRttrqsdZDzMb2KNCso4qHw=;
+	b=x8fgWWPZrIkBwz2TxebT4FA1J1h+MauIAUjGA5cqRV1EYVoOJ3FZx0ovkKmlsLC7ho1Mtd
+	S11CtNAqQEgpByustrfxAl2Px6CBWV+aLiLZ+h7LBN0XrW8zDSYKglHEmsJD4hhUIyA40o
+	ws8Lc6bo/bzonHZXiX/PtbZ8LmeXVjg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1749476014;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3oT43xovplUHySslryULLRttrqsdZDzMb2KNCso4qHw=;
+	b=ZSfhp70BaQ16dVatKl/kkzrAoQN+by/yRfwxFY1PAtoUCrFgDVcA5aBPdTmK+iFM9cGOT1
+	hxTuvToVs03Ei0AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C727137FE;
+	Mon,  9 Jun 2025 13:33:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id D0NZG67iRmjNXwAAD6G6ig
+	(envelope-from <pvorel@suse.cz>); Mon, 09 Jun 2025 13:33:34 +0000
+Date: Mon, 9 Jun 2025 15:33:32 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Michal =?iso-8859-2?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Wei Gao <wegao@suse.com>, ltp@lists.linux.it,
 	Li Wang <liwang@redhat.com>, cgroups@vger.kernel.org
 Subject: Re: [LTP] [PATCH v1] sched_rr_get_interval01.c: Put test process
  into absolute root cgroup (0::/)
-Message-ID: <rugkmu3bcsrqgehibgy3dn7nsisuv6lip7b5cmo3bewq4zjcdn@zuo6hg25pqyz>
+Message-ID: <20250609133332.GA1501907@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 References: <20250605142943.229010-1-wegao@suse.com>
  <20250605094019.GA1206250@pevik>
  <orzx7vfokvwuceowwjctea4yvujn75djunyhsqvdfr5bw7kqe7@rkn5tlnzwllu>
  <aESIDuS42cY_sLBe@MiWiFi-CR6608-srv>
+ <rugkmu3bcsrqgehibgy3dn7nsisuv6lip7b5cmo3bewq4zjcdn@zuo6hg25pqyz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qt3frmna7xgxwqh7"
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <aESIDuS42cY_sLBe@MiWiFi-CR6608-srv>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <rugkmu3bcsrqgehibgy3dn7nsisuv6lip7b5cmo3bewq4zjcdn@zuo6hg25pqyz>
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: DA7221F38F
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-3.71 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_DN_SOME(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	URIBL_BLOCKED(0.00)[suse.cz:dkim,suse.cz:replyto,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,suse.com:email];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	MISSING_XM_UA(0.00)[];
+	REPLYTO_EQ_FROM(0.00)[]
+X-Spam-Score: -3.71
+X-Spam-Level: 
+
+Hi all,
+
+> On Sat, Jun 07, 2025 at 02:42:22PM -0400, Wei Gao <wegao@suse.com> wrote:
+> > @Michal Koutný  So we should skip test cgroupv2 with CONFIG_RT_GROUP_SCHED=yes, correct? 
+
+> Ideally, no one should run v2 with CONFIG_RT_GROUP_SCHED=y, so this
+> would never fail :-p
+
+@Michal thanks for a clarification. It's default n and
+Documentation/scheduler/sched-rt-group.rst which mentions CONFIG_RT_GROUP_SCHED
+also mentions Documentation/admin-guide/cgroup-v1/cgroups.rst, that should be a
+good hint for people changing the defaults :).
+
+Also, there are 3 old mips and sh boards which set CONFIG_RT_GROUP_SCHED=y.
+Probably nobody cares much nowadays, but maybe it should be deleted.
+
+> > Like following change?
+
+> But if there are such poor souls, that skip should make the test not
+> obstruct the rest of LTP.
+
+@Andrea, you claimed it's merged, but maybe you reply to a wrong thread
+because it's not merged.
+https://lore.kernel.org/ltp/b15fa0cb-e893-4642-9aa0-05f732b75131@suse.com/
+
+I agree with Cyril to have a custom function in lib/tst_cgroup.c, which would be
+called by affected tests.
+
+Kind regards,
+Petr
+
+> Thanks,
+> Michal
 
 
---qt3frmna7xgxwqh7
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [LTP] [PATCH v1] sched_rr_get_interval01.c: Put test process
- into absolute root cgroup (0::/)
-MIME-Version: 1.0
-
-On Sat, Jun 07, 2025 at 02:42:22PM -0400, Wei Gao <wegao@suse.com> wrote:
-> @Michal Koutn=FD  So we should skip test cgroupv2 with CONFIG_RT_GROUP_SC=
-HED=3Dyes, correct?=20
-
-Ideally, no one should run v2 with CONFIG_RT_GROUP_SCHED=3Dy, so this
-would never fail :-p
-
-> Like following change?
-
-But if there are such poor souls, that skip should make the test not
-obstruct the rest of LTP.
-
-Thanks,
-Michal
-
---qt3frmna7xgxwqh7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCaEbJAwAKCRAt3Wney77B
-Sb7qAP90GPa1SJAkY3j3BiLhujkNOrdENJP+gG9OL+jpDILnEgD/b89X7a2GiqP5
-lnjXvOho9Bt2q+qPmst+4z6QUTg3hQE=
-=9dwR
------END PGP SIGNATURE-----
-
---qt3frmna7xgxwqh7--
 
