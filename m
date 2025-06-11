@@ -1,73 +1,78 @@
-Return-Path: <cgroups+bounces-8495-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8496-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CFA7AD6294
-	for <lists+cgroups@lfdr.de>; Thu, 12 Jun 2025 00:40:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0C15AD6296
+	for <lists+cgroups@lfdr.de>; Thu, 12 Jun 2025 00:40:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87FA13AB34B
-	for <lists+cgroups@lfdr.de>; Wed, 11 Jun 2025 22:40:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FFC31E0A1F
+	for <lists+cgroups@lfdr.de>; Wed, 11 Jun 2025 22:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2DD124BD03;
-	Wed, 11 Jun 2025 22:40:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298F824E4AF;
+	Wed, 11 Jun 2025 22:40:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="nUjxgWSC"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="W6EwsrQJ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDCEFDF49;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D9124728D;
 	Wed, 11 Jun 2025 22:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749681631; cv=none; b=UcdhkhYvizIpGGV38Q1uyq9YGvu+24zirkMUXp1ehYq7xdwahvsnjQcOjfMcC7lZ+snM2EY7omsVG/+nGau55sqInLK0J2OqNtKzrmlxVF2PzSILTY8Q+mXrmbV8ImFa3cDPUWyEGQcjWFU1L4BXo00beIwMD1dj8XqltqFDJGI=
+	t=1749681631; cv=none; b=FJh4lnCcXteTx4qzJQGSNstxkysc+dPUjHPHPXFJc/PNWlvE1knuMlpFqrdE4Ihf74GxiTCWwBBjRGXQ32baCXZX6hLnXYYDA49M9ONMF/Nx6LwhiJt7on56DjJPSzE2IeGmdqRStTBBOscgjXfVOfY6WxI19QEkzsTFymaucxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1749681631; c=relaxed/simple;
-	bh=tqcQIa+ZKMMv+FxVs+6upISHy3GJKMFoMRsshIbhJ54=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L8MPEFPQmCemue5b1buSR77WYJjm4Ktm5OHxVAoy2CsKdCBXiw0HIL23mMXSbZ9x+5zm0LffOu7h2Oa2XwIhBvOLl08DddgnEE75VgNySf/Oyan01ViJGB68LgTHfr0SV5AZiAIBwDLfmLtvAPRF/iiMjhhozzYxUY8g2Efzhbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=nUjxgWSC; arc=none smtp.client-ip=205.220.177.32
+	bh=bhg6VV5fefD5/D2dMoTu5GchPBluVIuYo6VdkzioHd8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AdmdNUUXFVE4rIh7AYTf8tUzMw4FJd0fXaRc8xfPkcFaZmXAOe7BqJ+GuNBa3zO4uDMta1aq287FZwNwHTggtsreJJFsMxNnCnPIqKWhpjGBu9C4/zO+kXlAl6AmAf+iohbBVfjbhmimyXINwS+SnTYzoJWV/PQttcBhLaR6I6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=W6EwsrQJ; arc=none smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55BMPQiS007414;
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55BMPKeB016901;
 	Wed, 11 Jun 2025 22:40:23 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=corp-2025-04-25; bh=N2UiDtG3F5sbaCXZqBA6GWF4/z633
-	RE00lAXhHLMGTk=; b=nUjxgWSCFK5MYMaNstpLVc2LvUWYyx129lcsEf65JD6Kw
-	oz4w/f94kZbRNIoPAalQ2jZxENLlNemBiAWNVTHWugyDhCwD2MelnS47vhFlEC4d
-	NIqXNso7d0AgSll6yFwF5eQ+sjX2BpIQogijt37HHMZ9BveeHkP0l9qvktshriKt
-	BjQ2m6R/LSdXygM6/y5e9GOnXgI0mqbuXZ7sZTJCvzMBc8MvVcxhtTp6WP7d8pOw
-	b6e1cfDwc3ylENh5zcXWlt784TVevNKkxMDuIdsG4wTK7GR4Ar6hMe3J0WhjyKsO
-	IhMIHukv2vqdRW2BeMOWckKSLftUVCZqAv8IWs26g==
+	:content-transfer-encoding:date:from:in-reply-to:message-id
+	:mime-version:references:subject:to; s=corp-2025-04-25; bh=c2rub
+	8hiefcE3BLuft3zzQ4IjsFpqXPHaMjPhaIqefU=; b=W6EwsrQJIXudQ5Dem7II8
+	r7KQN/LISmIkXO20bHINZGLqZuCG8LgjyNmvZQnGt9II/Jcn1QRbmprccjie6okJ
+	2QGUGJx5uVldNm86z4IxpKftJSSyKqcm8VB6UiZCi9cOk75/P6Rh85+4JFZHa/+k
+	stLgkLSoWlxyahaRo8GsE4VnDSy5wnqw7NMfyi42EQDnpbvD4y6ypW8Eef45vNXz
+	jYmiQS5fOzRIwHoswmP9IQPz6mDWWUcBGImFxhd/hzNPzWazRP8Ei+9j/KqAUcGC
+	RpBMAFJGOFQjjVq8zCbDfD6uLySmWkLG41LXb9+msM4LLdHax+O0SaNvEmGmNe5R
+	Q==
 Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 474buf8k3d-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 474c750nb1-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Wed, 11 Jun 2025 22:40:23 +0000 (GMT)
 Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 55BKoJbG020342;
-	Wed, 11 Jun 2025 22:40:22 GMT
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 55BLrBr7021009;
+	Wed, 11 Jun 2025 22:40:23 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 474bvh2j41-1
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 474bvh2j4e-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 11 Jun 2025 22:40:22 +0000
+	Wed, 11 Jun 2025 22:40:23 +0000
 Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 55BMeMxR024452;
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 55BMeMxU024452;
 	Wed, 11 Jun 2025 22:40:22 GMT
 Received: from konrad-char-us-oracle-com.osdevelopmeniad.oraclevcn.com (konrad-char-us-oracle-com.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.249.23])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 474bvh2j3t-1;
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 474bvh2j3t-2;
 	Wed, 11 Jun 2025 22:40:22 +0000
 From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 To: allison.henderson@oracle.com, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, tj@kernel.org,
         andrew@lunn.ch
-Cc: hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
-Subject: [PATCH v2] Expose RDS features via sysfs.
-Date: Wed, 11 Jun 2025 18:39:18 -0400
-Message-ID: <20250611224020.318684-1-konrad.wilk@oracle.com>
+Cc: hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Subject: [PATCH v2] rds: Expose feature parameters via sysfs
+Date: Wed, 11 Jun 2025 18:39:19 -0400
+Message-ID: <20250611224020.318684-2-konrad.wilk@oracle.com>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <20250611224020.318684-1-konrad.wilk@oracle.com>
+References: <20250611224020.318684-1-konrad.wilk@oracle.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -82,33 +87,108 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxsc
  bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
  definitions=main-2506110192
-X-Authority-Analysis: v=2.4 cv=RZGQC0tv c=1 sm=1 tr=0 ts=684a05d7 b=1 cx=c_pps a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17 a=6IFa9wvqVegA:10 a=xjO9cqGlMa9R-XWzUmgA:9 cc=ntf awl=host:13207
-X-Proofpoint-GUID: ICo7S6KqboMdPrNTn7aOzEdKdIMWe5oI
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjExMDE5MiBTYWx0ZWRfX+FkAX+ieSSNd Qws1T+R6xwD8GdMqKFDE7HJ+bFjryJuqQzgmoeKbomuzObF1QICihpa/LObKbOjW1KeR9XCYWML tvWHaA6fwL79KNMVLKSVTsrUkK9iudy477/UWXIHcH/CVEe/rwioaM16Y19Qey9YTAdagLJCN7Y
- 7mQJF2hTn7iEarNEOxtvs+dNWaRCAVUPeAsarsiIH+4/r0v2SLRMgVEBEdc9cmSpp0O7H/Sl5L4 AJJOihYHNtD2gFV1VkShLgDa23KnAWET86Oc7pTS27QSRx4yUdGg4Up8iAe0s9HLWVpZa7XL0PK pbgQgGzXnBhrHq5MQm/SdEK9ZIRupafF1LuiWE6QGrLQici7JZaofhzkYjLOc1THDm4oDkv1gC6
- yEH2vCstQNClf7UjFaDWwdRbI6jeLUwOf67qA0dsTBLf21BoTl3Bdtq3Y69O5argmNFYJVnF
-X-Proofpoint-ORIG-GUID: ICo7S6KqboMdPrNTn7aOzEdKdIMWe5oI
+X-Authority-Analysis: v=2.4 cv=LIpmQIW9 c=1 sm=1 tr=0 ts=684a05d7 b=1 cx=c_pps a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17 a=6IFa9wvqVegA:10 a=yPCof4ZbAAAA:8 a=8U2Zs_ofZIoWyWS-D5wA:9 cc=ntf awl=host:13207
+X-Proofpoint-ORIG-GUID: OaKRnGAI33T3a5nS2pRQGSHr3Llj6BWJ
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjExMDE5MiBTYWx0ZWRfX45D4M3k4em7C eAwK3ucmwGML1K05V6E4cdqpu1yWZfTOOHPM4xnRb4Js7Nt4xnEVFEdzmu5rGHYRdU8TVvxiAcl aAVUf0OtcQhvvXM2s2rteeVxSgZStrI3Z0CivOQlSuMoy9HSiMjqYMnLh+1yM/yeFYsfw0zCSF1
+ 7Yx9dNOlsNCGws++p7cUtGL4+YMQPoESwDJOW/hDpLbVmjce0zvXPkzaJ9lRcsRdJ1mf5YDFdjT 1a3yC/bRpYQxNTI7DKc1zSsNt3A6edGkrRcBkot4ZA0uyTxDFEU11d+3ygbAXdT4L8yioY9XtAd 1WpdVF4tp7KzGZIf0Qq2AP5zyfNzif6EqKqnAjhTRHdWdj2yAiP7S+jrHKIzaZRKMrwi3jmq4Yn
+ 9r5hugiBIOO5tjzydSnCjeEHDWfxX8MiNXkG5uBmYAluMKWVr/YI8MELyQ4fCCJSj4YA2rjG
+X-Proofpoint-GUID: OaKRnGAI33T3a5nS2pRQGSHr3Llj6BWJ
 
-Hi folks,
+We would like to have a programatic way for applications
+to query which of the features defined in include/uapi/linux/rds.h
+are actually implemented by the kernel.
 
-Changelog:
-+ Since v2:
- - Changed it to use sysfs and expose a 'features' file with the data.
- 
-This patch addresses an issue where we have applications compiled against
-against older (or newer) kernels. RDS does not have any ioctls to query
-for what version of ABIs it has or what features it has. Hence this solution
-that proposes to put this ABI information in sysfs space.
+The problem is that applications can be built against newer
+kernel (or older) and they may have the feature implemented or not.
 
-Please take a look and thank you for spending your time reading over the
-patch and providing feedback on the right way forward.
+The lack of a certain feature would signify that the kernel
+does not support it. The presence of it signifies the existence
+of it.
 
-Thank you!
+This would provide the application to query the sysfs and figure
+out what is supported.
 
-Konrad Rzeszutek Wilk (1):
-      rds: Expose feature parameters via sysfs
+This patch would expose this extra sysfs file:
 
+/sys/kernel/rds/features
+
+which would contain string values of what the RDS driver supports.
+
+Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+---
  net/rds/af_rds.c | 37 +++++++++++++++++++++++++++++++++++++
  1 file changed, 37 insertions(+)
+
+diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
+index 8435a20968ef..46cb8655df20 100644
+--- a/net/rds/af_rds.c
++++ b/net/rds/af_rds.c
+@@ -33,6 +33,7 @@
+ #include <linux/module.h>
+ #include <linux/errno.h>
+ #include <linux/kernel.h>
++#include <linux/kobject.h>
+ #include <linux/gfp.h>
+ #include <linux/in.h>
+ #include <linux/ipv6.h>
+@@ -871,6 +872,33 @@ static void rds6_sock_info(struct socket *sock, unsigned int len,
+ }
+ #endif
+ 
++#ifdef CONFIG_SYSFS
++static ssize_t features_show(struct kobject *kobj, struct kobj_attribute *attr,
++			     char *buf)
++{
++	return snprintf(buf, PAGE_SIZE, "get_tos\n"
++			"set_tos\n"
++			"socket_cancel_sent_to\n"
++			"socket_get_mr\n"
++			"socket_free_mr\n"
++			"socket_recverr\n"
++			"socket_cong_monitor\n"
++			"socket_get_mr_for_dest\n"
++			"socket_so_transport\n"
++			"socket_so_rxpath_latency\n");
++}
++static struct kobj_attribute rds_features_attr = __ATTR_RO(features);
++
++static struct attribute *rds_sysfs_attrs[] = {
++	&rds_features_attr.attr,
++	NULL,
++};
++static const struct attribute_group rds_sysfs_attr_group = {
++	.attrs = rds_sysfs_attrs,
++	.name = "rds",
++};
++#endif
++
+ static void rds_exit(void)
+ {
+ 	sock_unregister(rds_family_ops.family);
+@@ -882,6 +910,9 @@ static void rds_exit(void)
+ 	rds_stats_exit();
+ 	rds_page_exit();
+ 	rds_bind_lock_destroy();
++#ifdef CONFIG_SYSFS
++	sysfs_remove_group(kernel_kobj, &rds_sysfs_attr_group);
++#endif
+ 	rds_info_deregister_func(RDS_INFO_SOCKETS, rds_sock_info);
+ 	rds_info_deregister_func(RDS_INFO_RECV_MESSAGES, rds_sock_inc_info);
+ #if IS_ENABLED(CONFIG_IPV6)
+@@ -923,6 +954,12 @@ static int __init rds_init(void)
+ 	if (ret)
+ 		goto out_proto;
+ 
++#ifdef CONFIG_SYSFS
++	ret = sysfs_create_group(kernel_kobj, &rds_sysfs_attr_group);
++	if (ret)
++		goto out_proto;
++#endif
++
+ 	rds_info_register_func(RDS_INFO_SOCKETS, rds_sock_info);
+ 	rds_info_register_func(RDS_INFO_RECV_MESSAGES, rds_sock_inc_info);
+ #if IS_ENABLED(CONFIG_IPV6)
+-- 
+2.43.5
 
 
