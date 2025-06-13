@@ -1,197 +1,119 @@
-Return-Path: <cgroups+bounces-8516-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8517-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30ABEAD89CA
-	for <lists+cgroups@lfdr.de>; Fri, 13 Jun 2025 12:45:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01AB4AD9116
+	for <lists+cgroups@lfdr.de>; Fri, 13 Jun 2025 17:21:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB593177E37
-	for <lists+cgroups@lfdr.de>; Fri, 13 Jun 2025 10:45:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF60F1BC3A22
+	for <lists+cgroups@lfdr.de>; Fri, 13 Jun 2025 15:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A102C325C;
-	Fri, 13 Jun 2025 10:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9692F1E1E1F;
+	Fri, 13 Jun 2025 15:21:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="FDbTjOBm"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BA6257AF8
-	for <cgroups@vger.kernel.org>; Fri, 13 Jun 2025 10:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF401C5F35;
+	Fri, 13 Jun 2025 15:21:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749811527; cv=none; b=mGwOWspbpJLa6m3TxNI1oItyYWDvpY3j0LX9KscbLzCRXV3MmEWwDJ0McDE2y8JNnqi4kNgPj0+0bDcM0yXg1f4wk/6s3pNcdk6dJaocV9c7oHHWTAB+/BqNX3U7yyYzfp4XUw93jNj1F3SbwsqhCY5GkR4bj0OqmDgs7PUpE1Q=
+	t=1749828085; cv=none; b=ipsFcOPRrgZZChrrvrWophZ+1dck9WaWV6iEz3JQm2ZxzoHFndfV3oAVpWyaxMr84bvlRsXICFU+vJCRGcxWozNbIYEo9vMA4ARVDsgAiQRP/uCqGHQ6KthsnoBzTI+ERcIAHD85OwhQnlghRqIeXNlp5ZzQiMVJ2JXphZFQV2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749811527; c=relaxed/simple;
-	bh=ZuFlF01f04Ql+aEJFM/KMn2qbrjLWQUDyCJ7lnDU9S0=;
+	s=arc-20240116; t=1749828085; c=relaxed/simple;
+	bh=8sJjFWPMSLC+qodY0LblnKFoZqyEo+d0EIpXPR1ArDQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NG86c9XEBog7YdFCPc9pHn159k4JyKC7PvxOTZU05qsyyxTquwlU0t9PXetTsEnPbcWj58Fwo5npXUpu6jamk697mxPVAZNyM7h+bO6svXJSjljvVBRw5Svh1OIbKNWrzGd8zSMiHMoVTanYgGTnonZrH1xHIRTuIx+9mQY29xY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.103 with ESMTP; 13 Jun 2025 19:45:16 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Fri, 13 Jun 2025 19:45:16 +0900
-From: YoungJun Park <youngjun.park@lge.com>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org,
-	akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	shikemeng@huaweicloud.com, bhe@redhat.com, baohua@kernel.org,
-	chrisl@kernel.org, muchun.song@linux.dev, iamjoonsoo.kim@lge.com,
-	taejoon.song@lge.com, gunho.lee@lge.com
-Subject: Re: [RFC PATCH 2/2] mm: swap: apply per cgroup swap priority
- mechansim on swap layer
-Message-ID: <aEwBPG8mvZ06YQEA@yjaykim-PowerEdge-T330>
-References: <20250612103743.3385842-1-youngjun.park@lge.com>
- <20250612103743.3385842-3-youngjun.park@lge.com>
- <CAMgjq7BJE9ALFG4N8wb-hdkC+b-8d1+ckXL9D6pbbfgiXfuzPA@mail.gmail.com>
- <CAKEwX=PsGKS5JHqQ-G29Fg8xLssPhM+E-4wV_QakhqrDOsV36g@mail.gmail.com>
- <CAMgjq7Aq1LW9wFgyQ4oCS5Su23X62S+5ZW_d5OydJj-pp2n21Q@mail.gmail.com>
- <CAKEwX=PD+P_wugkAJ83ti6YRo4-6QNM7HDFs+KDURVwx2JrnZg@mail.gmail.com>
- <aEvPBSObBrrQCsa3@yjaykim-PowerEdge-T330>
- <CAMgjq7BzQ8bKKXuHB=TiQnkdSdCuABXrRf8Z8w2QkjpD44jdgA@mail.gmail.com>
- <CAMgjq7BPQx93GhaUU0sURVkhf7AofE-qqzSwXS22RXnJhE=3Rw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=S8lvfqPFM1qFrp6YXZ2TTixL66vLB3lt3/y19cjLpA4cxZ7OCDv5C858hNSYFcG0KLSKt/g8CChkcsW1/EE+6i1NFBqfb5FfklAzIF6XIE8C7lzZiVXvbHsUCgtRxKaEtBdq6Y/kP21Du6jwNnuAjpcf4pgWc4Lid1cRviXlCQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=FDbTjOBm; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=HBFJcgqfJ2Wrz52AH0HmBBmtGo2Dy9oUkdqK/ph6rYI=; b=FDbTjOBmd33GRB1rYSuPHTeJ1S
+	GUyHm3F+sXqiRHsOczF9ACUREmmX3hkSodEq8w2k1WnYwQUtKA2u4nqpG0L/XeakiXy+50wd8yfK7
+	Af50gAPDQEHkufBKtkAku5bJsLCs97LADSVIbJALD/gwdjbnpK7C7uB45OQU0kQE2zSE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1uQ6DT-00FjbM-7Y; Fri, 13 Jun 2025 17:21:15 +0200
+Date: Fri, 13 Jun 2025 17:21:15 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: allison.henderson@oracle.com, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, tj@kernel.org,
+	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2] rds: Expose feature parameters via sysfs
+Message-ID: <05ac7bdf-999c-487c-beb2-74153d03f6b1@lunn.ch>
+References: <20250611224020.318684-1-konrad.wilk@oracle.com>
+ <20250611224020.318684-2-konrad.wilk@oracle.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMgjq7BPQx93GhaUU0sURVkhf7AofE-qqzSwXS22RXnJhE=3Rw@mail.gmail.com>
+In-Reply-To: <20250611224020.318684-2-konrad.wilk@oracle.com>
 
-On Fri, Jun 13, 2025 at 03:38:37PM +0800, Kairui Song wrote:
-> On Fri, Jun 13, 2025 at 3:36 PM Kairui Song <ryncsn@gmail.com> wrote:
-> >
-> > On Fri, Jun 13, 2025 at 3:11 PM YoungJun Park <youngjun.park@lge.com> wrote:
-> > >
-> > > On Thu, Jun 12, 2025 at 01:08:08PM -0700, Nhat Pham wrote:
-> > > > On Thu, Jun 12, 2025 at 11:20 AM Kairui Song <ryncsn@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Jun 13, 2025 at 1:28 AM Nhat Pham <nphamcs@gmail.com> wrote:
-> > > > > >
-> > > > > > On Thu, Jun 12, 2025 at 4:14 AM Kairui Song <ryncsn@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Thu, Jun 12, 2025 at 6:43 PM <youngjun.park@lge.com> wrote:
-> > > > > > > >
-> > > > > > > > From: "youngjun.park" <youngjun.park@lge.com>
-> > > > > > > >
-> > > > > > >
-> > > > > > > Hi, Youngjun,
-> > > > > > >
-> > > > > > > Thanks for sharing this series.
-> > > > > > >
-> > > > > > > > This patch implements swap device selection and swap on/off propagation
-> > > > > > > > when a cgroup-specific swap priority is set.
-> > > > > > > >
-> > > > > > > > There is one workaround to this implementation as follows.
-> > > > > > > > Current per-cpu swap cluster enforces swap device selection based solely
-> > > > > > > > on CPU locality, overriding the swap cgroup's configured priorities.
-> > > > > > >
-> > > > > > > I've been thinking about this, we can switch to a per-cgroup-per-cpu
-> > > > > > > next cluster selector, the problem with current code is that swap
-> > > > > >
-> > > > > > What about per-cpu-per-order-per-swap-device :-? Number of swap
-> > > > > > devices is gonna be smaller than number of cgroups, right?
-> > > > >
-> > > > > Hi Nhat,
-> > > > >
-> > > > > The problem is per cgroup makes more sense (I was suggested to use
-> > > > > cgroup level locality at the very beginning of the implementation of
-> > > > > the allocator in the mail list, but it was hard to do so at that
-> > > > > time), for container environments, a cgroup is a container that runs
-> > > > > one type of workload, so it has its own locality. Things like systemd
-> > > > > also organize different desktop workloads into cgroups. The whole
-> > > > > point is about cgroup.
-> > > >
-> > > > Yeah I know what cgroup represents. Which is why I mentioned in the
-> > > > next paragraph that are still making decisions based per-cgroup - we
-> > > > just organize the per-cpu cache based on swap devices. This way, two
-> > > > cgroups with similar/same priority list can share the clusters, for
-> > > > each swapfile, in each CPU. There will be a lot less duplication and
-> > > > overhead. And two cgroups with different priority lists won't
-> > > > interfere with each other, since they'll target different swapfiles.
-> > > >
-> > > > Unless we want to nudge the swapfiles/clusters to be self-partitioned
-> > > > among the cgroups? :) IOW, each cluster contains pages mostly from a
-> > > > single cgroup (with some stranglers mixed in). I suppose that will be
-> > > > very useful for swap on rotational drives where read contiguity is
-> > > > imperative, but not sure about other backends :-?
-> > > > Anyway, no strong opinions to be completely honest :) Was just
-> > > > throwing out some ideas. Per-cgroup-per-cpu-per-order sounds good to
-> > > > me too, if it's easy to do.
-> > >
-> > > Good point!
-> > > I agree with the mention that self-partitioned clusters and duplicated priority.
-> > > One concern is the cost of synchronization.
-> > > Specifically the one incurred when accessing the prioritized swap device
-> > > From a simple performance perspective, a per-cgroup-per-CPU implementation
-> > > seems favorable - in line with the current swap allocation fastpath.
-> > >
-> > > It seems most reasonable to carefully compare the pros and cons of the
-> > > tow approaches.
-> > >
-> > > To summaraize,
-> > >
-> > > Option 1. per-cgroup-per-cpu
-> > > Pros: upstream fit. performance.
-> > > Cons: duplicate priority(some memory structure consumtion cost),
-> > > self partioned cluster
-> > >
-> > > Option 2. per-cpu-per-order(per-device)
-> > > Pros: Cons of Option1
-> > > Cons: Pros of Option1
-> > >
-> > > It's not easy to draw a definitive conclusion right away,
-> > > I should also evaluate other pros and cons that may arise during actual
-> > > implementation.
-> > > so I'd like to take some time to review things in more detail
-> > > and share my thoughs and conclusions in the next patch series.
-> > >
-> > > What do you think, Nhat and Kairui?
-> >
-> > Ah, I think what might be best fits here is, each cgroup have a pcp
-> > device list,  and each device have a pcp cluster list:
-> >
-> > folio -> mem_cgroup -> swap_priority (maybe a more generic name is
-> > better?) -> swap_device_pcp (recording only the *si per order)
-> > swap_device_info -> swap_cluster_pcp (cluster offset per order)
+On Wed, Jun 11, 2025 at 06:39:19PM -0400, Konrad Rzeszutek Wilk wrote:
+> We would like to have a programatic way for applications
+> to query which of the features defined in include/uapi/linux/rds.h
+> are actually implemented by the kernel.
 > 
-> Sorry the truncate made this hard to read, let me try again:
+> The problem is that applications can be built against newer
+> kernel (or older) and they may have the feature implemented or not.
 > 
-> folio ->
->   mem_cgroup ->
->     swap_priority (maybe a more generic name is better?) ->
->       swap_device_pcp (recording only the *si per order)
+> The lack of a certain feature would signify that the kernel
+> does not support it. The presence of it signifies the existence
+> of it.
 > 
-> And:
-> swap_device_info ->
->   swap_cluster_pcp (cluster offset per order)
+> This would provide the application to query the sysfs and figure
+> out what is supported.
 > 
-> And if mem_cgroup -> swap_priority is NULL,
-> fallback to a global swap_device_pcp.
+> This patch would expose this extra sysfs file:
+> 
+> /sys/kernel/rds/features
 
-Thank you for quick and kind feedback. This is a really good idea :)
-On my workaround proposal, I just need to add the swap_device_pcp part 
-along with some refactoring.
+This should probably be documented somewhere under
+Documentation/ABI/stable.
 
-And the naming swap_cgroup_priority...
-I adopted the term "swap_cgorup_priority" based on the
-perspective of the functionality I'm aiming to implement.
-Here are some words that immediately come to mind.
-(Like I said, just come to mind)
-* swap_tier, swap_order, swap_selection, swap_cgroup_tier, swap_cgroup_order,
-swap_cgroup_selection....
+> which would contain string values of what the RDS driver supports.
+> 
+> Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> ---
+>  net/rds/af_rds.c | 37 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+> 
+> diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
+> index 8435a20968ef..46cb8655df20 100644
+> --- a/net/rds/af_rds.c
+> +++ b/net/rds/af_rds.c
+> @@ -33,6 +33,7 @@
+>  #include <linux/module.h>
+>  #include <linux/errno.h>
+>  #include <linux/kernel.h>
+> +#include <linux/kobject.h>
+>  #include <linux/gfp.h>
+>  #include <linux/in.h>
+>  #include <linux/ipv6.h>
+> @@ -871,6 +872,33 @@ static void rds6_sock_info(struct socket *sock, unsigned int len,
+>  }
+>  #endif
+>  
+> +#ifdef CONFIG_SYSFS
 
-I'll try to come up with a more suitable conceptual name as I continue working
-on the patch.
-In the meantime, I'd appreciate any suggestions or feedback you may have.
+include/linux/sysfs.h has a stub for when SYSFS is not enabled. So you
+should not need any #ifdefs
 
-Thanks again your feedback and suggestions.
+    Andrew
+
+---
+pw-bot: cr
 
