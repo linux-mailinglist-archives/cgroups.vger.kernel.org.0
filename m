@@ -1,42 +1,43 @@
-Return-Path: <cgroups+bounces-8521-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8523-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2D49AD9BC2
-	for <lists+cgroups@lfdr.de>; Sat, 14 Jun 2025 11:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F021AD9BC7
+	for <lists+cgroups@lfdr.de>; Sat, 14 Jun 2025 11:32:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E12B9189611C
-	for <lists+cgroups@lfdr.de>; Sat, 14 Jun 2025 09:32:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA8FB18979C0
+	for <lists+cgroups@lfdr.de>; Sat, 14 Jun 2025 09:32:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B67F1B4236;
-	Sat, 14 Jun 2025 09:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3004A23E356;
+	Sat, 14 Jun 2025 09:31:49 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49CA2E11B1;
-	Sat, 14 Jun 2025 09:31:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA8A3594F;
+	Sat, 14 Jun 2025 09:31:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749893507; cv=none; b=Lnkig/O2FTE4H2pkESgAEl4EA3LRiY7I5OWdHeeBGl1htbboHJqYbirvALcaKptpUdWTzSnmI+d3AsQESlHnH8F6ZrqCzvZpcaQu/1ervzgYIqheqI9u8Z3QFBjuG5BBsCbqmVvtbQBtU+lEFibynJDVJuXLCKkIWk2C7Vhx1qk=
+	t=1749893509; cv=none; b=ksTjpcg31S4SkYU8FEvUNqQdnZr4aCSfNPCRvjhiH5xzLUsCVkKL+zYbI0TWGLRayw2yc+9EfkTSb8h6KesmJUeWFMxiyISL7Qto68TJKcbIR0n4HvhqV5e9lludOiMEsZTeJUGCSR4exD2pg+xD2rNfL2eOh8vB71N4ani2P1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749893507; c=relaxed/simple;
-	bh=JshamBfwvE68wdRFcf5ss03G78d6bXwNFx1IUnHVYcI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HCnmiinMPdJeDPBuvl+l8DoLhG4yqCOr7yuUekd4rQHGseSn9EFBTzjSFlfKM3gTGbPfg7glnPVbUF3Rl3c+RwstJg6jHG6Dww1RVSaOXRqSEBaI4TzBUPeqsgpEGs9I7Pw8M5KdpxzYSlx+0Vcg5HkcMXVVz24UK9yT6lOjfi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	s=arc-20240116; t=1749893509; c=relaxed/simple;
+	bh=wEQGdWGsmpfrovUYNN+akxZhK07M41/34FemLEAhQbE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=LAXGq4dki7NiYCC9ftx5IgS/JOVWPNkMf4YbmM2uZPMjZk3apIgtk0k1D71Z2p87qkky7zWr/RK+/B5t7D10FVqXTK3ssXl7NgwcxRJqm4K03MRnWRXwM+Yt3WINN6Kpk2s/mLFo4rgoBQ2gkHjH7g5KJNe6MX6XXrWR2op5ygg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bK9y71XjZzYQv24;
-	Sat, 14 Jun 2025 17:31:43 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bK9y82Tg6zKHNQy;
+	Sat, 14 Jun 2025 17:31:44 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 2F2C21A0F46;
+	by mail.maildlp.com (Postfix) with ESMTP id AA8AC1A0DEE;
 	Sat, 14 Jun 2025 17:31:42 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgAni19zQU1oHxfvPQ--.9099S4;
-	Sat, 14 Jun 2025 17:31:41 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgAni19zQU1oHxfvPQ--.9099S5;
+	Sat, 14 Jun 2025 17:31:42 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: ming.lei@redhat.com,
 	yukuai3@huawei.com,
@@ -50,10 +51,12 @@ Cc: linux-block@vger.kernel.org,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com,
 	johnny.chenyi@huawei.com
-Subject: [PATCH RFC v2 0/5] blk-mq-sched: support request batch dispatching for sq elevator
-Date: Sat, 14 Jun 2025 17:25:23 +0800
-Message-Id: <20250614092528.2352680-1-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v2 1/5] elevator: introduce global lock for sq_shared elevator
+Date: Sat, 14 Jun 2025 17:25:24 +0800
+Message-Id: <20250614092528.2352680-2-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20250614092528.2352680-1-yukuai1@huaweicloud.com>
+References: <20250614092528.2352680-1-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -61,84 +64,178 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAni19zQU1oHxfvPQ--.9099S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cw17Kry8uFWrJF1DAw47Jwb_yoW8AF4Upr
-	WfG3ZxKr1DWFnIqryS9w17Jw1rG3y8Wry3JrsxJF48tr17Ar17XF1vq3W8ZFW7XryfJFsr
-	W3WDJF93GFyUC3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
-	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
-	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
-	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-	nIWIevJa73UjIFyTuYvjfUoWlkDUUUU
+X-CM-TRANSID:gCh0CgAni19zQU1oHxfvPQ--.9099S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF45GF4fuF48AF4xtrWDurg_yoWrtF4kpF
+	45Jan0kr4qqr47Za4xAa17Jw43t3929ry3ZrWfAw45tFyxGrWxXF18GFy8ZF4xZrs3CFsF
+	qr4ktFZ8WFyIg3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUm014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+	Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+	IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+	Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
+	xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
+	JVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
+	kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY
+	6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
+	vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
+	vjDU0xZFpf9x0JUIiiDUUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Before this patch, each dispatch context will hold a global lock to
-dispatch one request at a time, which introduce intense lock competition:
+Currently, both mq-deadline and bfq have internal global lock, prepare
+to convert them to use this high level lock and support batch request
+dispatching.
 
-lock
-ops.dispatch_request
-unlock
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ block/blk-mq-sched.c |  4 +--
+ block/blk-mq.c       |  5 ++--
+ block/elevator.c     |  1 +
+ block/elevator.h     | 61 ++++++++++++++++++++++++++++++++++++++++++--
+ 4 files changed, 64 insertions(+), 7 deletions(-)
 
-Hence support dispatch a batch of requests while holding the lock to
-reduce lock contention.
-
-nullblk setup:
-modprobe null_blk nr_devices=0 &&
-    udevadm settle &&
-    cd /sys/kernel/config/nullb &&
-    mkdir nullb0 &&
-    cd nullb0 &&
-    echo 0 > completion_nsec &&
-    echo 512 > blocksize &&
-    echo 0 > home_node &&
-    echo 0 > irqmode &&
-    echo 128 > submit_queues &&
-    echo 1024 > hw_queue_depth &&
-    echo 1024 > size &&
-    echo 0 > memory_backed &&
-    echo 2 > queue_mode &&
-    echo 1 > power ||
-    exit $?
-
-Test script:
-fio -filename=/dev/$disk -name=test -rw=randwrite -bs=4k -iodepth=32 \
-  -numjobs=16 --iodepth_batch_submit=8 --iodepth_batch_complete=8 \
-  -direct=1 -ioengine=io_uring -group_reporting -time_based -runtime=30
-
-Test result(elevator is deadline): iops
-|                 | null_blk | scsi hdd |
-| --------------- | -------- | -------- |
-| before this set | 263k     | 24       |
-| after this set  | 475k     | 272      |
-
-Yu Kuai (5):
-  elevator: introduce global lock for sq_shared elevator
-  mq-deadline: switch to use elevator lock
-  block, bfq: switch to use elevator lock
-  blk-mq-sched: refactor __blk_mq_do_dispatch_sched()
-  blk-mq-sched: support request batch dispatching for sq elevator
-
- block/bfq-cgroup.c   |   4 +-
- block/bfq-iosched.c  |  53 ++++------
- block/bfq-iosched.h  |   2 +-
- block/blk-mq-sched.c | 226 +++++++++++++++++++++++++++++--------------
- block/blk-mq.c       |   5 +-
- block/blk-mq.h       |  21 ++++
- block/elevator.c     |   1 +
- block/elevator.h     |  61 +++++++++++-
- block/mq-deadline.c  |  58 +++++------
- 9 files changed, 282 insertions(+), 149 deletions(-)
-
+diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+index 55a0fd105147..c1390d3e6381 100644
+--- a/block/blk-mq-sched.c
++++ b/block/blk-mq-sched.c
+@@ -113,7 +113,7 @@ static int __blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
+ 		if (budget_token < 0)
+ 			break;
+ 
+-		rq = e->type->ops.dispatch_request(hctx);
++		rq = elevator_dispatch_request(hctx);
+ 		if (!rq) {
+ 			blk_mq_put_dispatch_budget(q, budget_token);
+ 			/*
+@@ -342,7 +342,7 @@ bool blk_mq_sched_bio_merge(struct request_queue *q, struct bio *bio,
+ 	enum hctx_type type;
+ 
+ 	if (e && e->type->ops.bio_merge) {
+-		ret = e->type->ops.bio_merge(q, bio, nr_segs);
++		ret = elevator_bio_merge(q, bio, nr_segs);
+ 		goto out_put;
+ 	}
+ 
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 4806b867e37d..2650b7b28d1e 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2637,7 +2637,7 @@ static void blk_mq_insert_request(struct request *rq, blk_insert_t flags)
+ 		WARN_ON_ONCE(rq->tag != BLK_MQ_NO_TAG);
+ 
+ 		list_add(&rq->queuelist, &list);
+-		q->elevator->type->ops.insert_requests(hctx, &list, flags);
++		elevator_insert_requests(hctx, &list, flags);
+ 	} else {
+ 		trace_block_rq_insert(rq);
+ 
+@@ -2912,8 +2912,7 @@ static void blk_mq_dispatch_list(struct rq_list *rqs, bool from_sched)
+ 		spin_unlock(&this_hctx->lock);
+ 		blk_mq_run_hw_queue(this_hctx, from_sched);
+ 	} else if (this_hctx->queue->elevator) {
+-		this_hctx->queue->elevator->type->ops.insert_requests(this_hctx,
+-				&list, 0);
++		elevator_insert_requests(this_hctx, &list, 0);
+ 		blk_mq_run_hw_queue(this_hctx, from_sched);
+ 	} else {
+ 		blk_mq_insert_requests(this_hctx, this_ctx, &list, from_sched);
+diff --git a/block/elevator.c b/block/elevator.c
+index ab22542e6cf0..91df270d9d91 100644
+--- a/block/elevator.c
++++ b/block/elevator.c
+@@ -144,6 +144,7 @@ struct elevator_queue *elevator_alloc(struct request_queue *q,
+ 	eq->type = e;
+ 	kobject_init(&eq->kobj, &elv_ktype);
+ 	mutex_init(&eq->sysfs_lock);
++	spin_lock_init(&eq->lock);
+ 	hash_init(eq->hash);
+ 
+ 	return eq;
+diff --git a/block/elevator.h b/block/elevator.h
+index a07ce773a38f..8399dfe5c3b6 100644
+--- a/block/elevator.h
++++ b/block/elevator.h
+@@ -110,12 +110,12 @@ struct request *elv_rqhash_find(struct request_queue *q, sector_t offset);
+ /*
+  * each queue has an elevator_queue associated with it
+  */
+-struct elevator_queue
+-{
++struct elevator_queue {
+ 	struct elevator_type *type;
+ 	void *elevator_data;
+ 	struct kobject kobj;
+ 	struct mutex sysfs_lock;
++	spinlock_t lock;
+ 	unsigned long flags;
+ 	DECLARE_HASHTABLE(hash, ELV_HASH_BITS);
+ };
+@@ -186,4 +186,61 @@ extern struct request *elv_rb_find(struct rb_root *, sector_t);
+ void blk_mq_sched_reg_debugfs(struct request_queue *q);
+ void blk_mq_sched_unreg_debugfs(struct request_queue *q);
+ 
++#define elevator_lock(e)	spin_lock_irq(&(e)->lock)
++#define elevator_unlock(e)	spin_unlock_irq(&(e)->lock)
++
++static inline struct request *elevator_dispatch_request(
++		struct blk_mq_hw_ctx *hctx)
++{
++	struct request_queue *q = hctx->queue;
++	struct elevator_queue *e = q->elevator;
++	bool sq_shared = blk_queue_sq_sched(q);
++	struct request *rq;
++
++	if (sq_shared)
++		elevator_lock(e);
++
++	rq = e->type->ops.dispatch_request(hctx);
++
++	if (sq_shared)
++		elevator_unlock(e);
++
++	return rq;
++}
++
++static inline void elevator_insert_requests(struct blk_mq_hw_ctx *hctx,
++					    struct list_head *list,
++					    blk_insert_t flags)
++{
++	struct request_queue *q = hctx->queue;
++	struct elevator_queue *e = q->elevator;
++	bool sq_shared = blk_queue_sq_sched(q);
++
++	if (sq_shared)
++		elevator_lock(e);
++
++	e->type->ops.insert_requests(hctx, list, flags);
++
++	if (sq_shared)
++		elevator_unlock(e);
++}
++
++static inline bool elevator_bio_merge(struct request_queue *q, struct bio *bio,
++				      unsigned int nr_segs)
++{
++	struct elevator_queue *e = q->elevator;
++	bool sq_shared = blk_queue_sq_sched(q);
++	bool ret;
++
++	if (sq_shared)
++		elevator_lock(e);
++
++	ret = e->type->ops.bio_merge(q, bio, nr_segs);
++
++	if (sq_shared)
++		elevator_unlock(e);
++
++	return ret;
++}
++
+ #endif /* _ELEVATOR_H */
 -- 
 2.39.2
 
