@@ -1,59 +1,61 @@
-Return-Path: <cgroups+bounces-8543-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8544-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16CACADB940
-	for <lists+cgroups@lfdr.de>; Mon, 16 Jun 2025 21:01:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7C3EADB97A
+	for <lists+cgroups@lfdr.de>; Mon, 16 Jun 2025 21:21:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7855A3AFDEE
-	for <lists+cgroups@lfdr.de>; Mon, 16 Jun 2025 19:01:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C89E23B48CF
+	for <lists+cgroups@lfdr.de>; Mon, 16 Jun 2025 19:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CE31E2312;
-	Mon, 16 Jun 2025 19:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC7B428A1E4;
+	Mon, 16 Jun 2025 19:20:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="yxhmWNlz"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pw6lUFpi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E992BEFF8;
-	Mon, 16 Jun 2025 19:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9575628A1CF
+	for <cgroups@vger.kernel.org>; Mon, 16 Jun 2025 19:20:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750100480; cv=none; b=ss21ntOsBbdCZxlO1qdRq/B5YHZepNd53PzwTzoP8//AXSC4lDFQ/EwDJ+kzG45h1lbdV1uBa3QL0MGcBCMhpZ0sICs3tvu5frzDx8HNuRx6u2ONWDOczZzMDrhw5xucNkLV+/Oh4WZ/veLkrLeU12zdiGRyWqrSOYO1BI7Cybk=
+	t=1750101642; cv=none; b=soxJr9JrZJLWhxffuJhfH20KTUOoTv4UQwwD0X8qG5Uj7Gw8dDpoJvAK432qxDAUf06b51Ckysms6gcnl4aB/oZSjYop+YyCUwdXKfBWDeUg/f1RVaVB8w5pHpJg23vaSd1KooVGrtt6Kw+M58ptjWPwp5unNLnINtxKD8/4Vzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750100480; c=relaxed/simple;
-	bh=USxgzpl7+hY7G+QKeg4JLcc5y4PD6NU5jyW03ggM+7w=;
+	s=arc-20240116; t=1750101642; c=relaxed/simple;
+	bh=HumAqwnOsGSWMa46buCT1W25Zg7tuj/RQxmzzbSfJWE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RvLuwhU7H680bM5In8RRBYsKpxLwY3BnfjjuUJv6eDG1LO4JEknZOc/zDUiwMrDuGr4LbBz7m/iAXbwnVQOEUTRwV4qnVBOQElxYYoSkeB2Yooit9a5C+p0HLn/asEHkFzAxkUaHF3wRpX6QQH4w5ULiQ4dErVZjAaq9KUgCVAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=yxhmWNlz; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=NAvcocV1hx7+8hA+DnXfce45O70Tw2fyTGzwBQS2idY=; b=yxhmWNlz1LbYftvFFhwws/TBf2
-	Rdei/1IW/XI/M1GrLUkW5WdXD0e4+fD0VA4iD3AVWN84ydajb/qY9SRwMgwsUPGJuL+X2kphrLaoD
-	036DlptDRiyTQbvrLdd5NdT3cztXWgAOtRIaXoxVsSjEnqSsb03AVJgbm2mQaO3ZZEmU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1uRF4w-00G4wb-Q5; Mon, 16 Jun 2025 21:01:10 +0200
-Date: Mon, 16 Jun 2025 21:01:10 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc: allison.henderson@oracle.com, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2] rds: Expose feature parameters via sysfs
-Message-ID: <b71efc64-89b7-4f4b-af0e-9bf081cc9518@lunn.ch>
-References: <20250611224020.318684-1-konrad.wilk@oracle.com>
- <20250611224020.318684-2-konrad.wilk@oracle.com>
- <05ac7bdf-999c-487c-beb2-74153d03f6b1@lunn.ch>
- <aFBlHiguQpdB1e86@char.us.oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fBwWCKFVzlErTyx6G7RbIw2WrCTJneAdIxSIsOxtlsOs+K0IXNHKi9QbwBP+l5O4dChTDEmdkvsNBjktl5ScbFYR3EgGa/XSdRQbVV10mc6Si2xUWgRY4LXwleiKh6ijmnE4OnhhhFii2H2Ti89cGIJALm96lEIeOTk0mc5WYu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pw6lUFpi; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 16 Jun 2025 12:20:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1750101637;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KCx8G8iB4GFG7YkzRAgMeNEZrvPEgTU8KFH3idAR55g=;
+	b=pw6lUFpivOAs6oOemvC5IEw3UOHeLHr5jtTonYoczi8z44yrYDdW+ohDx3uEyy8CzH1j9E
+	XKAil2+qZoqJzqkJx80vOoEcpxA62QGV8Me2Vy+G6Bb98Dpmj5xjuo9rIpd/+uiIMShywt
+	Wk7SwFw9gmHVHqzSDuAgjqgyApK6Tr0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	JP Kobryn <inwardvessel@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, 
+	Alexei Starovoitov <ast@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Harry Yoo <harry.yoo@oracle.com>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, bpf@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v2 0/4] cgroup: nmi safe css_rstat_updated
+Message-ID: <qtudjvrdvbsz6rrygb5bt32dzps6ocwefhr5hyfgtam65jowdo@colgnna6ogqm>
+References: <20250611221532.2513772-1-shakeel.butt@linux.dev>
+ <aFBfNRVAyE1FU9aQ@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -62,74 +64,27 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aFBlHiguQpdB1e86@char.us.oracle.com>
+In-Reply-To: <aFBfNRVAyE1FU9aQ@slm.duckdns.org>
+X-Migadu-Flow: FLOW_OUT
 
-> I could not for the life of me get the kernel to compile without
-> CONFIG_SYSFS, but here is the patch with the modifications you
-> enumerated:
+On Mon, Jun 16, 2025 at 08:15:17AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Wed, Jun 11, 2025 at 03:15:28PM -0700, Shakeel Butt wrote:
+> > Shakeel Butt (4):
+> >   cgroup: support to enable nmi-safe css_rstat_updated
+> >   cgroup: make css_rstat_updated nmi safe
+> >   cgroup: remove per-cpu per-subsystem locks
+> >   memcg: cgroup: call css_rstat_updated irrespective of in_nmi()
+> 
+> The patches look good to me. How should it be routed? Should I take all
+> four, just the first three or would it better to route all through -mm?
+> 
 
-Please take a read of:
+I would like all four to be together and since most of the code is in
+cgroup, cgroup tree makes more sense unless Andrew has different
+opinion.
 
-https://docs.kernel.org/process/submitting-patches.html
-
-and
-
-https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html
-
-You need a new thread for every version of the patch. You should also
-put the tree into the Subject: line, etc.
-
-> diff --git a/Documentation/ABI/stable/sysfs-driver-rds b/Documentation/ABI/stable/sysfs-driver-rds
-
-I could be bike shedding too much, but RDS is not a driver. It is a
-socket protocol, which you can layer on top of a few different
-transport protocols. So i don't think it should have -driver- in the
-filename.
-
-> new file mode 100644
-> index 000000000000..d0b4fe0d3ce4
-> --- /dev/null
-> +++ b/Documentation/ABI/stable/sysfs-driver-rds
-> @@ -0,0 +1,10 @@
-> +What:          /sys/kernel/rds/features
-> +Date:          June 2025
-> +KernelVersion: 6.17
-> +Contact:       rds-devel@oss.oracle.com 
-> +Description:   This file will contain the features that correspond
-> +               to the include/uapi/linux/rds.h in a string format.
-> +
-> +	       The intent is for applications compiled against rds.h
-> +	       to be able to query and find out what features the
-> +	       driver supports.
-
-Is that enough Documentation for somebody to make use of this file
-without having to do a deep dive into the kernel sources? If i need to
-do a deep dive, i might just as well handle the EOPNOTSUPP return
-values.
-
-> +static ssize_t features_show(struct kobject *kobj, struct kobj_attribute *attr,
-> +			     char *buf)
-> +{
-> +	return snprintf(buf, PAGE_SIZE, "get_tos\n"
-> +			"set_tos\n"
-> +			"socket_cancel_sent_to\n"
-> +			"socket_get_mr\n"
-> +			"socket_free_mr\n"
-> +			"socket_recverr\n"
-> +			"socket_cong_monitor\n"
-> +			"socket_get_mr_for_dest\n"
-> +			"socket_so_transport\n"
-> +			"socket_so_rxpath_latency\n");
-
-This is ABI. User space is going to start parsing this. Maybe we
-should add both here, and in the documentation, something like:
-
-  New lines will be added at random places within the file as new
-  features are added.
-
-This makes it clear that any code which tests line 4 for
-"socket_free_mr" could break in the future. The whole file needs to be
-searched for a feature.
-
-	Andrew
+thanks,
+Shakeel
 
