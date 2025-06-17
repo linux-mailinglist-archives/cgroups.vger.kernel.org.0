@@ -1,134 +1,178 @@
-Return-Path: <cgroups+bounces-8546-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8547-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BADCADBAA1
-	for <lists+cgroups@lfdr.de>; Mon, 16 Jun 2025 22:13:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0501ADC10C
+	for <lists+cgroups@lfdr.de>; Tue, 17 Jun 2025 06:47:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3259F189179B
-	for <lists+cgroups@lfdr.de>; Mon, 16 Jun 2025 20:13:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FB8A173EC8
+	for <lists+cgroups@lfdr.de>; Tue, 17 Jun 2025 04:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0915D28852C;
-	Mon, 16 Jun 2025 20:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD52221F09;
+	Tue, 17 Jun 2025 04:46:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZQ3dcc5k"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="elMGTWUG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE60721767A
-	for <cgroups@vger.kernel.org>; Mon, 16 Jun 2025 20:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C80157493;
+	Tue, 17 Jun 2025 04:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750104819; cv=none; b=loVN41UR+ZxUbJcmo/LCLvK0lz8681SQ+hKIy9DzhOP70Et9Rz8CJYc/v0LezEsZwKZJFYbKSFThUsFI7I8mFqXX6E5vYP5CoW2FzvpUAQdDTKnIpAIQyHmGInUfw8I4zLFTkg9/gfpb/XL4YEG0BmzXbP5d/b6uNo+LcWdpMx4=
+	t=1750135617; cv=none; b=NWgp5AWr4RvNfDWT2vao2bxC8lRFPu2BTUyeTEHgHY7snML/qosKuP6oUeRpRFXayU7wkHnQtX0s/GRrgiKCIUlv6AN3iEAKdNrpOx07DQVG5N/kKXqJ5ya+tTBOxXKL/zbw4ETC2E8pjIFZjg3ZlQ+er0JuTL12KqJyNqVpFXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750104819; c=relaxed/simple;
-	bh=ls4VGECiCBtg2JlEG7yNXWSKEOGCxJcawxWh97L01Y0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N7mNk8mWoTZOCocqs+vcXGGDlBR31kFVGRHX/WWwGKiHQx6ptv3zel6DBMgL6A/U8vGTomIstORxvijE2mfyT7tYa4TXzLzlriENYamlZ9e7NvLYpDtjYQEJfDr8MdMenHXVASDZ8zm8mowBFZREJ1HQWT9e2/mi7y0qrPL38Ug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZQ3dcc5k; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 16 Jun 2025 13:13:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750104806;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7sWRkpC4J/fwZ8hiPeG9n9Tg+PgJKdAZANW52vn8x6Y=;
-	b=ZQ3dcc5kh6ona5ww/0k7/JsyT8NLs1JyZaMkcZsHB8MCT7NnZx9bcpaIRCYtFp4nCcIwk0
-	+ra73movQM5WaTKViT6cCTci195lS0YRX0dS53qVXMs5qfy0UNo4dx2kMkqRylshivfGhu
-	KDTh3eVjr0zGjK3bY08lspkLe6PKVXg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Vlastimil Babka <vbabka@suse.cz>, Alexei Starovoitov <ast@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Harry Yoo <harry.yoo@oracle.com>, Yosry Ahmed <yosry.ahmed@linux.dev>, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH v2 0/4] cgroup: nmi safe css_rstat_updated
-Message-ID: <nv7p4v6jpc7fc4dw6by4dqciqcfkzqtt74enyymx7s764f2dce@o5xlm5njrvwo>
-References: <20250611221532.2513772-1-shakeel.butt@linux.dev>
- <218e8b26-6b83-46a4-a57c-2346130a1597@gmail.com>
+	s=arc-20240116; t=1750135617; c=relaxed/simple;
+	bh=djZGuBBs2bsUg5GxthdovqBoIv6XV8G/LNNBeQWCUR8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jtS/Qq8p/z4m7LRZDzhmXq2gP8BE0OexP8VjytPM8lAomZmn+Q2u9FB9On8BLkyqb1DcqLuIzHfa6dNHtvXm/mm45h5JY25DxWRir3jTIr8odv4zV3NESSJr6VumtX2HPtZoWFQIYk1RjYd3aLr6nOBwy+smFr2WOan3zl5VicQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=elMGTWUG; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-235f9ea8d08so51305495ad.1;
+        Mon, 16 Jun 2025 21:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750135615; x=1750740415; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Gwf6lWVh6vwPUXI7y6Hbn0uM9RsO0bm1Y2buQTA5FFU=;
+        b=elMGTWUGeXTeHumBWL9OJl6ftvOSXAVIkFnStgn5xj0hyrQ0wiQVM8h50gJOSBF7P1
+         e3cnDQuinXw0t5XIT41A320yQECPER2xTM7ps1jjGW5n+ZASLd8EY0GZrs8jLf38yQL/
+         NG1kbuMhC4MdVKjyiTZ2tW0BLeii1DASM6XQk2SNReDzMb3NaUkalT9GRCc0R3Lu94Ho
+         qZi9H+rMBsRYeBVWC+GwGQAvq3LLxv5/rKvGhpiwqJZkpCCZzglYtkwZfOu9Iah4xOpa
+         eDqriJbE+q3jnVOb31s30bt4fDUwtrxbQ3izsgI6nHy3heVS4KIy1Cm5qGR8yBdV2jCf
+         tBww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750135615; x=1750740415;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gwf6lWVh6vwPUXI7y6Hbn0uM9RsO0bm1Y2buQTA5FFU=;
+        b=pXacfPgF9u1b81MT5kLs9NSlyEcXJ2PJVf6IZspHd5GKTeuE82ajYG0VHG0+5G+3fw
+         3docQyjrwxGYP9NthwrBhKhxMlaWHtPNrF5YjrmRti6GbeZYKbIrcwZFUx2kYnF8OWVz
+         Gkworrmr3LGWdzVoFN+Ulg1UMtWevXoF2scv9yhdr9GhtmfaiRW3urUr/NKvUW31QyDf
+         22Ir40jRG22lbmSEUTTbmJM/zGcryKs4QyZVaWk49XFS4XvMlsL1y20k5b0RVHw3a0FU
+         nAp7zlSXFjViMGkTU2BWB2gPOIhtlUGtXmP1NyUfLb3x+J6XIbDGbh+7YpuNm8YseKVH
+         TDSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWDA8UBXu+8m/cHZYUuCGHQaf2b/aCLNyvKll7yAxd0B30RWQ29+h3da1qmsmYmGHI8aUpy10gHVH4qJFE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy8xD9PSiFy8sHJdVwDeVIeK+zSgjdhZAA/YfTT26dkzm+9kv0d
+	CZjxCqv8hkkZaQQ0Zo0TlzPRfXV6rQz3dk9diGKEpOBREVtm7RJh28Ci
+X-Gm-Gg: ASbGncshC7c8FBnMtZTwmqwXphBkJyu5ripX8C8+im4d4grNTRokKOiJX9lDbUdQ28T
+	ZUtwUt/BPocxJ92+XSLIMpWcQ37g8F4lJO9kyx2GLtb9cIQ3vMsYYAcmwoHQEwqnMNp7ZT54+Si
+	kjpFV1s4ZCRAbUT5iXGIaukxbwfSzKbBd+hzMFTlJ5A2JNTq7QtH22PxZb/MuTHKzaA4LrJxLZV
+	8PmlU+EPooxf+kI4NudzImBUwcG4x4a6UUCo8uzppCie5uW6WqOcGLMmvrcUN1wSqhyqBSrfrBW
+	x0iGdXAls3YLjrxTvZfD/kuavl/GWOQNBAg8EbJru9G7o35zyCFqNKVv1uLxfevhjC5denDa9Ke
+	BbQ/kA2X5lEIa7uSzRXr0VznNlRmiETgXT9pifVi6+wbIrw==
+X-Google-Smtp-Source: AGHT+IES3JanLGHOqo1V63xOcHE62kJ3TKusfZClZfSOdERJWLtKmwCffG/GZvC+YncOi67AYw3+Ew==
+X-Received: by 2002:a17:902:fb90:b0:234:9374:cfae with SMTP id d9443c01a7336-2366afe7d06mr128134785ad.19.1750135614694;
+        Mon, 16 Jun 2025 21:46:54 -0700 (PDT)
+Received: from ?IPV6:2601:648:8100:3b5:c6ef:bbff:fec0:9e95? ([2601:648:8100:3b5:c6ef:bbff:fec0:9e95])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365d88c239sm70416975ad.11.2025.06.16.21.46.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Jun 2025 21:46:54 -0700 (PDT)
+Message-ID: <fd40f2db-66e2-4bc1-9a16-4a301d807a88@gmail.com>
+Date: Mon, 16 Jun 2025 21:46:52 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <218e8b26-6b83-46a4-a57c-2346130a1597@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [cgroups?] WARNING in css_rstat_exit
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ syzbot <syzbot+8d052e8b99e40bc625ed@syzkaller.appspotmail.com>
+Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
+ linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org
+References: <684c5802.a00a0220.279073.0016.GAE@google.com>
+ <vjqyx3bkhyomb6zafk5xmjpfsitmqll3wcoean3orwpl7vkgb3@pbo33km36ek2>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <vjqyx3bkhyomb6zafk5xmjpfsitmqll3wcoean3orwpl7vkgb3@pbo33km36ek2>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jun 16, 2025 at 01:08:49PM -0700, JP Kobryn wrote:
-> On 6/11/25 3:15 PM, Shakeel Butt wrote:
-> > BPF programs can run in nmi context and may trigger memcg charged memory
-> > allocation in such context. Recently linux added support to nmi safe
-> > page allocation along with memcg charging of such allocations. However
-> > the kmalloc/slab support and corresponding memcg charging is still
-> > lacking,
-> > 
-> > To provide nmi safe support for memcg charging for kmalloc/slab
-> > allocations, we need nmi safe memcg stats because for kernel memory
-> > charging and stats happen together. At the moment, memcg charging and
-> > memcg stats are nmi safe and the only thing which is not nmi safe is
-> > adding the cgroup to the per-cpu rstat update tree. i.e.
-> > css_rstat_updated() which this series is doing.
-> > 
-> > This series made css_rstat_updated by using per-cpu lockless lists whose
-> > node in embedded in individual struct cgroup_subsys_state and the
-> > per-cpu head is placed in struct cgroup_subsys. For rstat users without
-> > cgroup_subsys, a global per-cpu lockless list head is created. The main
-> > challenge to use lockless in this scenario was the potential multiple
-> > inserters from the stacked context i.e. process, softirq, hardirq & nmi,
-> > potentially using the same per-cpu lockless node of a given
-> > cgroup_subsys_state. The normal lockless list does not protect against
-> > such scenario.
-> > 
-> > The multiple stacked inserters using potentially same lockless node was
-> > resolved by making one of them succeed on reset the lockless node and the
-> > winner gets to insert the lockless node in the corresponding lockless
-> > list. The losers can assume the lockless list insertion will eventually
-> > succeed and continue their operation.
-> > 
-> > Changelog since v2:
-> > - Add more clear explanation in cover letter and in the comment as
-> >    suggested by Andrew, Michal & Tejun.
-> > - Use this_cpu_cmpxchg() instead of try_cmpxchg() as suggested by Tejun.
-> > - Remove the per-cpu ss locks as they are not needed anymore.
-> > 
-> > Changelog since v1:
-> > - Based on Yosry's suggestion always use llist on the update side and
-> >    create the update tree on flush side
-> > 
-> > [v1] https://lore.kernel.org/cgroups/20250429061211.1295443-1-shakeel.butt@linux.dev/
-> > 
-> > 
-> > Shakeel Butt (4):
-> >    cgroup: support to enable nmi-safe css_rstat_updated
-> >    cgroup: make css_rstat_updated nmi safe
-> >    cgroup: remove per-cpu per-subsystem locks
-> >    memcg: cgroup: call css_rstat_updated irrespective of in_nmi()
-> > 
-> >   include/linux/cgroup-defs.h   |  11 +--
-> >   include/trace/events/cgroup.h |  47 ----------
-> >   kernel/cgroup/rstat.c         | 169 +++++++++++++---------------------
-> >   mm/memcontrol.c               |  10 +-
-> >   4 files changed, 74 insertions(+), 163 deletions(-)
-> > 
-> 
-> I tested this series by doing some updates/flushes on a cgroup hierarchy
-> with four levels. This tag can be added to the patches in this series.
-> 
-> Tested-by: JP Kobryn <inwardvessel@gmail.com>
-> 
+On 6/16/25 2:49 AM, Michal Koutný wrote:
+> +Cc: JP
 
-Thanks a lot.
+Thanks. Looking into this.
+
+> 
+> On Fri, Jun 13, 2025 at 09:55:30AM -0700, syzbot <syzbot+8d052e8b99e40bc625ed@syzkaller.appspotmail.com> wrote:
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    27605c8c0f69 Merge tag 'net-6.16-rc2' of git://git.kernel...
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=103b1e0c580000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=89df02a4e09cb64d
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=8d052e8b99e40bc625ed
+>> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+>>
+>> Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>> Downloadable assets:
+>> disk image: https://storage.googleapis.com/syzbot-assets/79ab1e186123/disk-27605c8c.raw.xz
+>> vmlinux: https://storage.googleapis.com/syzbot-assets/d37bf85b966d/vmlinux-27605c8c.xz
+>> kernel image: https://storage.googleapis.com/syzbot-assets/eed2865abf8f/bzImage-27605c8c.xz
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+8d052e8b99e40bc625ed@syzkaller.appspotmail.com
+>>
+>> ------------[ cut here ]------------
+>> WARNING: CPU: 0 PID: 5887 at kernel/cgroup/rstat.c:497 css_rstat_exit+0x368/0x470 kernel/cgroup/rstat.c:497
+>> Modules linked in:
+>> CPU: 0 UID: 0 PID: 5887 Comm: kworker/0:5 Not tainted 6.16.0-rc1-syzkaller-00101-g27605c8c0f69 #0 PREEMPT(full)
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+>> Workqueue: cgroup_destroy css_free_rwork_fn
+>> RIP: 0010:css_rstat_exit+0x368/0x470 kernel/cgroup/rstat.c:497
+>> Code: 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 0e 01 00 00 49 c7 85 70 05 00 00 00 00 00 00 e9 00 ff ff ff e8 c9 07 07 00 90 <0f> 0b 90 e9 3e ff ff ff e8 bb 07 07 00 90 0f 0b 90 e9 30 ff ff ff
+>> RSP: 0000:ffffc9000b6afbc0 EFLAGS: 00010293
+>> RAX: 0000000000000000 RBX: ffff888057c7a800 RCX: ffff888124754000
+>> RDX: ffff8880308b8000 RSI: ffffffff81b514e7 RDI: ffffffff8df26da0
+>> RBP: ffff888057c7a808 R08: 0000000000000005 R09: 0000000000000007
+>> R10: 0000000000000000 R11: 0000000000000001 R12: ffff888057c7a820
+>> R13: 0000000000000000 R14: 0000000000000003 R15: dffffc0000000000
+>> FS:  0000000000000000(0000) GS:ffff888124754000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 0000001b31b10ff8 CR3: 0000000079092000 CR4: 00000000003526f0
+>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>> Call Trace:
+>>   <TASK>
+>>   css_free_rwork_fn+0x80/0x12e0 kernel/cgroup/cgroup.c:5449
+>>   process_one_work+0x9cf/0x1b70 kernel/workqueue.c:3238
+>>   process_scheduled_works kernel/workqueue.c:3321 [inline]
+>>   worker_thread+0x6c8/0xf10 kernel/workqueue.c:3402
+>>   kthread+0x3c5/0x780 kernel/kthread.c:464
+>>   ret_from_fork+0x5d4/0x6f0 arch/x86/kernel/process.c:148
+>>   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+>>   </TASK>
+>>
+>>
+>> ---
+>> This report is generated by a bot. It may contain errors.
+>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>
+>> syzbot will keep track of this issue. See:
+>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>>
+>> If the report is already addressed, let syzbot know by replying with:
+>> #syz fix: exact-commit-title
+>>
+>> If you want to overwrite report's subsystems, reply with:
+>> #syz set subsystems: new-subsystem
+>> (See the list of subsystem names on the web dashboard)
+>>
+>> If the report is a duplicate of another one, reply with:
+>> #syz dup: exact-subject-of-another-report
+>>
+>> If you want to undo deduplication, reply with:
+>> #syz undup
+
 
