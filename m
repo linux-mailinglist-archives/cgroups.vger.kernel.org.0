@@ -1,85 +1,97 @@
-Return-Path: <cgroups+bounces-8551-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8552-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEB6CADC5DA
-	for <lists+cgroups@lfdr.de>; Tue, 17 Jun 2025 11:11:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2678ADC66A
+	for <lists+cgroups@lfdr.de>; Tue, 17 Jun 2025 11:31:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B53F3AEF72
-	for <lists+cgroups@lfdr.de>; Tue, 17 Jun 2025 09:10:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94F161898E4D
+	for <lists+cgroups@lfdr.de>; Tue, 17 Jun 2025 09:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B44292B41;
-	Tue, 17 Jun 2025 09:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9784A29188C;
+	Tue, 17 Jun 2025 09:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SjRmPx41"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gEJANKM7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F6D292B29
-	for <cgroups@vger.kernel.org>; Tue, 17 Jun 2025 09:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BA92951D7
+	for <cgroups@vger.kernel.org>; Tue, 17 Jun 2025 09:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750151429; cv=none; b=f+4T8Gy4H+Bo4m9Fbz+sYFNhBR62g5FIkOOvZxgZE2FT/0hngAd4kRg8DgYOfDjdbhpG6TVBhXExXLQmQG8ItSIbVF7rIMIk9rVNKkQ5qyArlz1PMjEQn61Ro48pom+Ap+oidfgeGSFfkqeSdjHOGpg+M3NBTVMat+MvD5fiS7g=
+	t=1750152625; cv=none; b=PCEX1N9HQmul6W5eJuWPYuvf4dOv+TvgWafzc4qxKmPDNj/l+D2RFaXlzr1CNypcVjKdczLMz5wb24PjNmHVgSXh8/dakYHlPrzqu1sN5n0TptmP+u+cjrpAjiRvu/In7S4lrauIjyhOWkNnQVKMKUA7xHnN+sdCZXPSAXwC7H4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750151429; c=relaxed/simple;
-	bh=otoScECg61+ltEOPLG5w32zlzqXsj7xk7GQT57bBCA8=;
+	s=arc-20240116; t=1750152625; c=relaxed/simple;
+	bh=HfuUqmD+8hRychMyqs4FAw+9cfKLzYZB1tT/S12Ulwg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bzE1alK1+7pRYxqEuXYINd/s1BbppryqOppHH4ItkvGltGnDZOtV17wqlvqsHGqoHUdkxqXlBErAWhzVoTDmsXgAeL3wtHY1flZDXtK2u9u6OIZKrnyiCGP3BaBdswrjEGkoVmiwqWrf96ruwkJXsscmP8td66e2eNDsKACLf6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SjRmPx41; arc=none smtp.client-ip=209.85.221.46
+	 Content-Type:Content-Disposition:In-Reply-To; b=fMYBUtRTDs+xh/P/v0F64/dEYovx5vuKawBEbX7BjALMzOhsSD3IhwWahP2pMb01RP7Xm86lxi8KP5QFanebc9tywQxrCwjIUIwHc8jEplNJ8e0Qf7s3CQlt00yf6UzLl31gTuF96/ht6qq9hKTqOuMS46D6g5KMFOzR1T7mJcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gEJANKM7; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3a575a988f9so1949761f8f.0
-        for <cgroups@vger.kernel.org>; Tue, 17 Jun 2025 02:10:26 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3a4fea34e07so3067343f8f.1
+        for <cgroups@vger.kernel.org>; Tue, 17 Jun 2025 02:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1750151425; x=1750756225; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1750152622; x=1750757422; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=p85MWLRSl7tSClGDzgcJNqp9okEsiysUB+XfmcVwvTk=;
-        b=SjRmPx41d23SlAcwWvdKpDTtvPybZ7nawwkf5nD+8YtM92oGGnCeMkIbLD5Yb4epCw
-         7gC6oaAyyeDOP0R1nCiVuvQyawzDi3XRcDQ7/C5bdkb3/wxPgNEWQGs7bkjJQOJ14trc
-         KfUzuDJMnt+aOEqbjyVP7vZ9pn4jnRr9DvL2YrKh1lZZx7o8YDfO05qGZhJZDwxOyPil
-         mJkDeMu5rQU20HISKzy6o+rn0P//Sgh2aO3REdzMSex4DmoVxeJo0rBzj1QDbtqgMaME
-         YOARyn0Ck8srvGtrfBGqjNWCt12e/ooPkr8hVGbTMKZAzZJ3eDrXPg3EzF3aydU+NQy8
-         YJYw==
+        bh=HfuUqmD+8hRychMyqs4FAw+9cfKLzYZB1tT/S12Ulwg=;
+        b=gEJANKM7hKjGbEGRdxLSqHdSsDnvO6jpX7F2uTnhzIQSMNbC8SmkmRLeVgzcfz1gqX
+         ubbwxMlebElQ6MneRDjiwjH6EPPtNAK9aioBjPiBV9CdTeLA58NahcWng26+2Zq/Uopp
+         GFk2TedBE8MC3+bChRDj4w8ytfz/D484hguC+/GfTPBJwM9tDkrwm6ytJyH55519g+15
+         V/cNizIVX1KerkBirCF7qRv3HDTx6E87zH0glO/3xbsYzIwehCPETBR+imyVzBzJbG2S
+         71lOJdGMnhWXcPALNICjT/4mIDV6ohdtRLlz3r5xI39HwGmiDdldktS67EPZ4Bju3Q8+
+         boyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750151425; x=1750756225;
+        d=1e100.net; s=20230601; t=1750152622; x=1750757422;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=p85MWLRSl7tSClGDzgcJNqp9okEsiysUB+XfmcVwvTk=;
-        b=T7isFLheblcyvkN/IxR0oW87oHMkscLotNYUxWjnnf9eGYRarvqZT2YqZyxcXYlhOJ
-         Kh2TWtskzBVsTiN14ghlmRsSLzgHhkDJXdib3ma77dTpkFyLNb3DvcqVGUzTp1t60jrV
-         mqb32QSaLRoCEoVfQ7uqzyOZ7A32SLeRBidTr39WhCVDz4c9pMvr1LjF2i13WNffl+ni
-         RECz/D6gwJM2I/GmtgBObZ3Q9pmIPOyT1S/UGsPeh/6Coo2IXF4UIbMUhhjMCgc+iBbX
-         FAxdguMb3EVqz3QODNE8LZXbL2eb9UVj/5ZDCSA4w7jSB21wkuGnixuVDfI4kB8yI0KC
-         kwYA==
-X-Forwarded-Encrypted: i=1; AJvYcCVfypz2T6wFaMSap1cPY36cTHs9wdN2Te2FK5WDTUpW3tjbPX+S1YJuNxktmpTAaTaq3jleZwH5@vger.kernel.org
-X-Gm-Message-State: AOJu0YxsF58xRX6zu9Hsw7xnQ7jJhu/vj9e422tozhLxZW0XWKwkqfxC
-	xBf3DbQYrqm9qS7lkO5d+cLjDczKe5V2xJpAfsrYAR+m7KY3PkD0h02Jc/mv7i9XO7A=
-X-Gm-Gg: ASbGncu92+yflcRHrXV+rlY9u6LJSolX1/lfefoCly+2VQm9MvWgnAt8qCa+s2SrRLe
-	51lIy9ca0I8MZCi3UTrbC1eRTIuSPBO7000qW3UMSQxzN8K0NroQmV/OIXhNqRFGcW9YQ51g00f
-	XR5nLaki+DfCqEH1CZxrUOsdAfO35EIiLeplQVqgTk/xpSe/K+PsUS2EnQTyeOhXDkSjhkokXBg
-	hOBJ+eLre6NFYOT0xdWzqgsZTqbquA/Hbjgx70KAjOC1sHMxohEESF0wJhD4g8GPoSRZFbphIIY
-	C4Mq2ppSoOB8F+G4aLG8lyRLCFrebsvdZTWuXyEb2l+CiHSxeTt2a89oSwjpU/0O
-X-Google-Smtp-Source: AGHT+IGhCrY1n0bCSGTojtFVhMrVZUB+uu0uVlbZ4FWlM9pGVwvZlgKGgNo60UlIBTF8KDhhsJtBWg==
-X-Received: by 2002:a05:6000:2486:b0:3a5:2465:c0c8 with SMTP id ffacd0b85a97d-3a5723978aamr10028419f8f.7.1750151425315;
-        Tue, 17 Jun 2025 02:10:25 -0700 (PDT)
+        bh=HfuUqmD+8hRychMyqs4FAw+9cfKLzYZB1tT/S12Ulwg=;
+        b=BGsRPtx+EcMm0tsmyTYuvH4LLG7v2IWWc9BB0Sd1kxpuJcyIa/IvM+gnszIqJtfh8A
+         RjUo9Ty9lvmdFhtfzRGqbIYLC8A464XH+OAKYfqN97pjUQZS9B2yE58jNVJrbOgav3s4
+         kmBHfrUHxYl78+Y0V2/f38ZjYJKNKlhYtb3YABwAXXM7kPFy9kGdYpJa9cYYzYuHHeZT
+         ueZklRUM8t3exhs5LpUIA8SxiNtfnF25LQsrwWrqxfRtK68CCS4blG5WU3Qsq4mdJWCX
+         ow46fKhh8Uq3MkhtaVYBAq9TJfr+M26F5EBC51mViZX1hjA2BDg7WQUFbiRywHZIVtjv
+         ibhw==
+X-Forwarded-Encrypted: i=1; AJvYcCXiZgbxFqOR7XzzL8jhXIkEi8wHRejRGr8l1S6Ct2lCaghMfETfrI/kgFQKUiUpOK+Kb1mB7O3F@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWpi8RMtxJG4SiTuYf4fhyxLK2Mu2pPIykHwBHsw1H8zst02Qn
+	esF1ijW+hOHyPG5tiTvk1H2Sf7J0p09EMXEYFlGfQhrrIQyYS79MTnMFnpd8MHmZdaE=
+X-Gm-Gg: ASbGncsWu4Eo52fi+LXmTTrMUZTzxHYUQWLFTIj22nN0Pwt0A8o0RX0nM3INXPWLojm
+	+HeH8n0/7pGcTA70HqGQbI/6dRlbHTl3mRW2eD9IHmojw0WeP4+EC72Jwn0rwIUELr6Rkk9tdsi
+	5Ki7WJi6Er7n5YiggRPrC3VbflFMD16JXbQOc4QN5rIlKiOrb+MWSoUs4uDGhkWvYv+5MFi0qQf
+	4RqaVSIgrlksf8e7xERu7TbW1FX/poPjXOY7mp36zzuOI5Ha6ro6zYhDXkmiY+RPBDhR/c55Y4p
+	vKIzTuCkqwLTBRM+nMluCCJdmhqEPRaE65M7nr1buAbPdla0+bYFxgUKyodNvUPvEqJRtesEosI
+	=
+X-Google-Smtp-Source: AGHT+IHSxdx77Y/6piDqFDE4kXjRy2Rd1MG8l4DBGj+2ZCwsClRdIWxnpk7JW9DxCB2MVEmaflCBSQ==
+X-Received: by 2002:a5d:5847:0:b0:3a4:cfbf:51a0 with SMTP id ffacd0b85a97d-3a57237ca69mr10145241f8f.21.1750152621643;
+        Tue, 17 Jun 2025 02:30:21 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4532e261ebdsm175226505e9.39.2025.06.17.02.10.24
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a568a800d9sm13275459f8f.45.2025.06.17.02.30.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Jun 2025 02:10:24 -0700 (PDT)
-Date: Tue, 17 Jun 2025 11:10:23 +0200
+        Tue, 17 Jun 2025 02:30:21 -0700 (PDT)
+Date: Tue, 17 Jun 2025 11:30:19 +0200
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Jemmy Wong <jemmywong512@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] cgroup: add lock guard support for others
-Message-ID: <zgfcsd3rsaxrdqhu4kinv7fouurcy6gixsfavx4xx2op3sgynd@s7avawjn7sb4>
-References: <20250606161841.44354-1-jemmywong512@gmail.com>
- <20250606161841.44354-4-jemmywong512@gmail.com>
+To: "Chen, Yu C" <yu.c.chen@intel.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, peterz@infradead.org, 
+	akpm@linux-foundation.org, mingo@redhat.com, tj@kernel.org, hannes@cmpxchg.org, 
+	corbet@lwn.net, mgorman@suse.de, mhocko@kernel.org, muchun.song@linux.dev, 
+	roman.gushchin@linux.dev, tim.c.chen@intel.com, aubrey.li@intel.com, libo.chen@oracle.com, 
+	kprateek.nayak@amd.com, vineethr@linux.ibm.com, venkat88@linux.ibm.com, ayushjai@amd.com, 
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, yu.chen.surf@foxmail.com
+Subject: Re: [PATCH v5 2/2] sched/numa: add statistics of numa balance task
+Message-ID: <h4chrmiscs66vwl4icda2emof4pbhqabpkklpql2azc5iujilm@o2ttlcanwztc>
+References: <cover.1748002400.git.yu.c.chen@intel.com>
+ <7ef90a88602ed536be46eba7152ed0d33bad5790.1748002400.git.yu.c.chen@intel.com>
+ <cx4s4pnw5ymr4bxxmvrkhc457krq46eh6zamlr4ikp7tn3jsno@xzchjlnnawe5>
+ <uuhyie7udxyvbdpccwi7dl5cy26ygkkuxjixpl247u5nqwpcqm@5whxlt5ddswo>
+ <a8314889-f036-49ff-9cda-01367ddccf51@intel.com>
+ <fpa42ohp54ewxxymaclnmiafdlfs7lbddnqhtv7haksdd5jq6z@mb6jxk3pl2m2>
+ <djkzirwswrvhuuloyitnhxcm3sh7ebk6i22tvq2zzm4cb6pl45@t64jvtpl3ys6>
+ <c6bfa201-ed88-47df-9402-ead65d7be475@intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -87,331 +99,72 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="z7ayi4izy43l2hlq"
+	protocol="application/pgp-signature"; boundary="q522php5dxz4ohq7"
 Content-Disposition: inline
-In-Reply-To: <20250606161841.44354-4-jemmywong512@gmail.com>
+In-Reply-To: <c6bfa201-ed88-47df-9402-ead65d7be475@intel.com>
 
 
---z7ayi4izy43l2hlq
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+--q522php5dxz4ohq7
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v1 3/3] cgroup: add lock guard support for others
+Subject: Re: [PATCH v5 2/2] sched/numa: add statistics of numa balance task
 MIME-Version: 1.0
 
-On Sat, Jun 07, 2025 at 12:18:41AM +0800, Jemmy Wong <jemmywong512@gmail.co=
-m> wrote:
-> Signed-off-by: Jemmy Wong <jemmywong512@gmail.com>
+On Tue, Jun 03, 2025 at 10:46:06PM +0800, "Chen, Yu C" <yu.c.chen@intel.com=
+> wrote:
+> My understanding is that the "misplaced" container is not strictly tied
+> to set_mempolicy or cpuset configuration, but is mainly caused by the
+> scheduler's generic load balancer.
+
+You are convincing me with this that, cpu.stat fits the concept better.
+Doesn't that sound like that to you?
+
+> Regarding the threaded subtrees mode, I was previously unfamiliar with
+> it and have been trying to understand it better.
+
+No problem.
+
+> If I understand correctly, if threads within a single process are
+> placed in different cgroups via cpuset, we might need to scan
+> /proc/<PID>/sched to collect NUMA task migration/swap statistics.
+
+The premise of your series was that you didn't want to do that :-)
+
+> I agree with your prior point that NUMA balancing task activity is not
+> directly
+> associated with either the Memory controller or the CPU controller. Altho=
+ugh
+> showing this data in cpu.stat might seem more appropriate, we expose it in
+> memory.stat due to the following trade-offs(or as an exception for
+> NUMA balancing):
 >=20
-> ---
->  kernel/cgroup/cgroup-internal.h |  8 ++--
->  kernel/cgroup/cgroup-v1.c       | 11 +++--
->  kernel/cgroup/cgroup.c          | 73 ++++++++++++---------------------
->  3 files changed, 35 insertions(+), 57 deletions(-)
->=20
-> diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-inter=
-nal.h
-> index b14e61c64a34..5430454d38ca 100644
-> --- a/kernel/cgroup/cgroup-internal.h
-> +++ b/kernel/cgroup/cgroup-internal.h
-> @@ -198,8 +198,6 @@ void put_css_set_locked(struct css_set *cset);
-> =20
->  static inline void put_css_set(struct css_set *cset)
->  {
-> -	unsigned long flags;
-> -
->  	/*
->  	 * Ensure that the refcount doesn't hit zero while any readers
->  	 * can see it. Similar to atomic_dec_and_lock(), but for an
-> @@ -208,9 +206,9 @@ static inline void put_css_set(struct css_set *cset)
->  	if (refcount_dec_not_one(&cset->refcount))
->  		return;
-> =20
-> -	spin_lock_irqsave(&css_set_lock, flags);
-> -	put_css_set_locked(cset);
-> -	spin_unlock_irqrestore(&css_set_lock, flags);
-> +	scoped_guard(spinlock_irqsave, &css_set_lock) {
-> +		put_css_set_locked(cset);
-> +	}
->  }
+> 1.It aligns with existing NUMA-related metrics already present in
+> memory.stat.
 
-This should go to the css_set_lock patch.
+That one I'd buy into. OTOH, I'd hope this could be overcome with
+documentation.
 
->  /*
-> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-> index fcc2d474b470..91c6ba4e441d 100644
-> --- a/kernel/cgroup/cgroup-v1.c
-> +++ b/kernel/cgroup/cgroup-v1.c
-> @@ -1291,7 +1291,6 @@ struct cgroup *task_get_cgroup1(struct task_struct =
-*tsk, int hierarchy_id)
->  {
->  	struct cgroup *cgrp =3D ERR_PTR(-ENOENT);
->  	struct cgroup_root *root;
-> -	unsigned long flags;
-> =20
->  	guard(rcu)();
->  	for_each_root(root) {
-> @@ -1300,11 +1299,11 @@ struct cgroup *task_get_cgroup1(struct task_struc=
-t *tsk, int hierarchy_id)
->  			continue;
->  		if (root->hierarchy_id !=3D hierarchy_id)
->  			continue;
-> -		spin_lock_irqsave(&css_set_lock, flags);
-> -		cgrp =3D task_cgroup_from_root(tsk, root);
-> -		if (!cgrp || !cgroup_tryget(cgrp))
-> -			cgrp =3D ERR_PTR(-ENOENT);
-> -		spin_unlock_irqrestore(&css_set_lock, flags);
-> +		scoped_guard(spinlock_irqsave, &css_set_lock) {
-> +			cgrp =3D task_cgroup_from_root(tsk, root);
-> +			if (!cgrp || !cgroup_tryget(cgrp))
-> +				cgrp =3D ERR_PTR(-ENOENT);
-> +		}
+> 2.It simplifies code implementation.
 
-Ditto.
+I'd say that only applies when accepting memory.stat as the better
+place. I think the appropriately matching API should be picked first and
+implementation is only secondary to that.
+=46rom your reasoning above, I think that the concept is closer to be in
+cpu.stat =C2=AF\_(=E3=83=84)_/=C2=AF
 
->  		break;
->  	}
-> =20
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 46b677a066d1..ea98679b01e1 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -335,28 +335,23 @@ static int cgroup_idr_alloc(struct idr *idr, void *=
-ptr, int start, int end,
->  	int ret;
-> =20
->  	idr_preload(gfp_mask);
-> -	spin_lock_bh(&cgroup_idr_lock);
-> -	ret =3D idr_alloc(idr, ptr, start, end, gfp_mask & ~__GFP_DIRECT_RECLAI=
-M);
-> -	spin_unlock_bh(&cgroup_idr_lock);
-> +	scoped_guard(spinlock_bh, &cgroup_idr_lock) {
-> +		ret =3D idr_alloc(idr, ptr, start, end, gfp_mask & ~__GFP_DIRECT_RECLA=
-IM);
-> +	}
->  	idr_preload_end();
->  	return ret;
->  }
-> =20
->  static void *cgroup_idr_replace(struct idr *idr, void *ptr, int id)
->  {
-> -	void *ret;
-> -
-> -	spin_lock_bh(&cgroup_idr_lock);
-> -	ret =3D idr_replace(idr, ptr, id);
-> -	spin_unlock_bh(&cgroup_idr_lock);
-> -	return ret;
-> +	guard(spinlock_bh)(&cgroup_idr_lock);
-> +	return idr_replace(idr, ptr, id);
->  }
-> =20
->  static void cgroup_idr_remove(struct idr *idr, int id)
->  {
-> -	spin_lock_bh(&cgroup_idr_lock);
-> +	guard(spinlock_bh)(&cgroup_idr_lock);
->  	idr_remove(idr, id);
-> -	spin_unlock_bh(&cgroup_idr_lock);
->  }
-> =20
->  static bool cgroup_has_tasks(struct cgroup *cgrp)
-> @@ -583,20 +578,19 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct=
- cgroup *cgrp,
->  	if (!CGROUP_HAS_SUBSYS_CONFIG)
->  		return NULL;
-> =20
-> -	rcu_read_lock();
-> +	guard(rcu)();
-> =20
->  	do {
->  		css =3D cgroup_css(cgrp, ss);
-> =20
->  		if (css && css_tryget_online(css))
-> -			goto out_unlock;
-> +			return css;
->  		cgrp =3D cgroup_parent(cgrp);
->  	} while (cgrp);
-> =20
->  	css =3D init_css_set.subsys[ss->id];
->  	css_get(css);
-> -out_unlock:
-> -	rcu_read_unlock();
-> +
->  	return css;
->  }
->  EXPORT_SYMBOL_GPL(cgroup_get_e_css);
+Michal
 
-This should go to the RCU patch.
-
-> @@ -1691,9 +1685,9 @@ static void cgroup_rm_file(struct cgroup *cgrp, con=
-st struct cftype *cft)
->  		struct cgroup_subsys_state *css =3D cgroup_css(cgrp, cft->ss);
->  		struct cgroup_file *cfile =3D (void *)css + cft->file_offset;
-> =20
-> -		spin_lock_irq(&cgroup_file_kn_lock);
-> -		cfile->kn =3D NULL;
-> -		spin_unlock_irq(&cgroup_file_kn_lock);
-> +		scoped_guard(spinlock_irq, &cgroup_file_kn_lock) {
-> +			cfile->kn =3D NULL;
-> +		}
-> =20
->  		timer_delete_sync(&cfile->notify_timer);
->  	}
-> @@ -4277,9 +4271,9 @@ static int cgroup_add_file(struct cgroup_subsys_sta=
-te *css, struct cgroup *cgrp,
-> =20
->  		timer_setup(&cfile->notify_timer, cgroup_file_notify_timer, 0);
-> =20
-> -		spin_lock_irq(&cgroup_file_kn_lock);
-> -		cfile->kn =3D kn;
-> -		spin_unlock_irq(&cgroup_file_kn_lock);
-> +		scoped_guard(spinlock_irq, &cgroup_file_kn_lock) {
-> +			cfile->kn =3D kn;
-> +		}
->  	}
-> =20
->  	return 0;
-> @@ -4534,9 +4528,7 @@ int cgroup_add_legacy_cftypes(struct cgroup_subsys =
-*ss, struct cftype *cfts)
->   */
->  void cgroup_file_notify(struct cgroup_file *cfile)
->  {
-> -	unsigned long flags;
-> -
-> -	spin_lock_irqsave(&cgroup_file_kn_lock, flags);
-> +	guard(spinlock_irqsave)(&cgroup_file_kn_lock);
->  	if (cfile->kn) {
->  		unsigned long last =3D cfile->notified_at;
->  		unsigned long next =3D last + CGROUP_FILE_NOTIFY_MIN_INTV;
-> @@ -4548,7 +4540,6 @@ void cgroup_file_notify(struct cgroup_file *cfile)
->  			cfile->notified_at =3D jiffies;
->  		}
->  	}
-> -	spin_unlock_irqrestore(&cgroup_file_kn_lock, flags);
->  }
-> =20
->  /**
-> @@ -4560,10 +4551,10 @@ void cgroup_file_show(struct cgroup_file *cfile, =
-bool show)
->  {
->  	struct kernfs_node *kn;
-> =20
-> -	spin_lock_irq(&cgroup_file_kn_lock);
-> -	kn =3D cfile->kn;
-> -	kernfs_get(kn);
-> -	spin_unlock_irq(&cgroup_file_kn_lock);
-> +	scoped_guard(spinlock_irq, &cgroup_file_kn_lock) {
-> +		kn =3D cfile->kn;
-> +		kernfs_get(kn);
-> +	}
-> =20
->  	if (kn)
->  		kernfs_show(kn, show);
-> @@ -4987,11 +4978,10 @@ static void css_task_iter_advance(struct css_task=
-_iter *it)
->  void css_task_iter_start(struct cgroup_subsys_state *css, unsigned int f=
-lags,
->  			 struct css_task_iter *it)
->  {
-> -	unsigned long irqflags;
-> =20
->  	memset(it, 0, sizeof(*it));
-> =20
-> -	spin_lock_irqsave(&css_set_lock, irqflags);
-> +	guard(spinlock_irqsave)(&css_set_lock);
-> =20
->  	it->ss =3D css->ss;
->  	it->flags =3D flags;
-> @@ -5004,8 +4994,6 @@ void css_task_iter_start(struct cgroup_subsys_state=
- *css, unsigned int flags,
->  	it->cset_head =3D it->cset_pos;
-> =20
->  	css_task_iter_advance(it);
-> -
-> -	spin_unlock_irqrestore(&css_set_lock, irqflags);
->  }
-> =20
-
-css_set_lock
-
->  /**
-> @@ -5018,14 +5006,12 @@ void css_task_iter_start(struct cgroup_subsys_sta=
-te *css, unsigned int flags,
->   */
->  struct task_struct *css_task_iter_next(struct css_task_iter *it)
->  {
-> -	unsigned long irqflags;
-> -
->  	if (it->cur_task) {
->  		put_task_struct(it->cur_task);
->  		it->cur_task =3D NULL;
->  	}
-> =20
-> -	spin_lock_irqsave(&css_set_lock, irqflags);
-> +	guard(spinlock_irqsave)(&css_set_lock);
-> =20
->  	/* @it may be half-advanced by skips, finish advancing */
->  	if (it->flags & CSS_TASK_ITER_SKIPPED)
-> @@ -5038,8 +5024,6 @@ struct task_struct *css_task_iter_next(struct css_t=
-ask_iter *it)
->  		css_task_iter_advance(it);
->  	}
-> =20
-> -	spin_unlock_irqrestore(&css_set_lock, irqflags);
-> -
->  	return it->cur_task;
->  }
-> =20
-
-css_set_lock
-
-> @@ -5051,13 +5035,10 @@ struct task_struct *css_task_iter_next(struct css=
-_task_iter *it)
->   */
->  void css_task_iter_end(struct css_task_iter *it)
->  {
-> -	unsigned long irqflags;
-> -
->  	if (it->cur_cset) {
-> -		spin_lock_irqsave(&css_set_lock, irqflags);
-> +		guard(spinlock_irqsave)(&css_set_lock);
->  		list_del(&it->iters_node);
->  		put_css_set_locked(it->cur_cset);
-> -		spin_unlock_irqrestore(&css_set_lock, irqflags);
->  	}
-> =20
->  	if (it->cur_dcset)
-
-css_set_lock
-
-> @@ -6737,10 +6718,10 @@ void cgroup_post_fork(struct task_struct *child,
->  				 * too. Let's set the JOBCTL_TRAP_FREEZE jobctl bit to
->  				 * get the task into the frozen state.
->  				 */
-> -				spin_lock(&child->sighand->siglock);
-> -				WARN_ON_ONCE(child->frozen);
-> -				child->jobctl |=3D JOBCTL_TRAP_FREEZE;
-> -				spin_unlock(&child->sighand->siglock);
-> +				scoped_guard(spinlock, &child->sighand->siglock) {
-> +					WARN_ON_ONCE(child->frozen);
-> +					child->jobctl |=3D JOBCTL_TRAP_FREEZE;
-> +				}
-> =20
->  				/*
->  				 * Calling cgroup_update_frozen() isn't required here,
-> --=20
-> 2.43.0
->=20
-
---z7ayi4izy43l2hlq
+--q522php5dxz4ohq7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaFEw/AAKCRB+PQLnlNv4
-COhkAP0bs1P9uZ0S6HoPGA8hFuBWiun70gS3IVnF9IkbkChl9wEAnx1ut7HG6VwP
-X4WQguNd0f9A30kzYGrpmar5SD6rdAg=
-=GmHH
+iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaFE1qQAKCRB+PQLnlNv4
+CAvDAQClJdOJ0v+nc22UzxOE8RNWod98jZVrUDcK730qHKFJJwEA18yLv+cZIXXl
+mdhsA08UxzTGxv2zWwOY5iIzS+UDGQc=
+=CM6f
 -----END PGP SIGNATURE-----
 
---z7ayi4izy43l2hlq--
+--q522php5dxz4ohq7--
 
