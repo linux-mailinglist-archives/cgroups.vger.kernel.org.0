@@ -1,204 +1,131 @@
-Return-Path: <cgroups+bounces-8560-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8561-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA0DDADCD3F
-	for <lists+cgroups@lfdr.de>; Tue, 17 Jun 2025 15:32:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4500BADCDA1
+	for <lists+cgroups@lfdr.de>; Tue, 17 Jun 2025 15:40:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67FE1164207
-	for <lists+cgroups@lfdr.de>; Tue, 17 Jun 2025 13:32:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 890B43A6DA2
+	for <lists+cgroups@lfdr.de>; Tue, 17 Jun 2025 13:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781CC2E719F;
-	Tue, 17 Jun 2025 13:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 379EB2356C6;
+	Tue, 17 Jun 2025 13:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l9okf8T8"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eeeubEMo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E97C4A3E;
-	Tue, 17 Jun 2025 13:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734702E2643
+	for <cgroups@vger.kernel.org>; Tue, 17 Jun 2025 13:37:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750167158; cv=none; b=g+WOqKVOUnucQlaek8kUHmfL/7Gc84l73XY5Ap7H7ttRrm+s718cBRtWr52spvqMBn+Gs74grNaYUgAfjieewrW9gnPmhdKKxodCVO4EGNtV6jevZd4WsKmor3r6fBhXXWfMqopNsSQJb2fz8023sMmf3F8tIGxYLVEtx0KwZN4=
+	t=1750167433; cv=none; b=d2vAW1n6oow/les1Kzpxo353zjgjIi3n8yFkH7IMcKynQs9+5O1NCiMEtRGvXuf4HcxhZvfM8IL8VRI8flelilq+vFttoxJt9+6VwbelPNB6SNK5Hzyd5MERv/JaiSRlv0tXFhOebmnI3NEBrClePo+LXZPL+mScN7J1rwlCZF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750167158; c=relaxed/simple;
-	bh=eh8viEGAV28ATzr3c9fmVwCL5U5uu4w7at/swAkPuFM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SV9ZcjtGFY4Q+I2nk12OmUFWWoiUudA432UUa0Cu/or1rINXyLrsfG+zlOevhtzFEvOGTzd9Jnppb4wjIKL5zcRXFqrH19Qb44pgYCwQ1SWosp3QZkY61BFVUlzeQEpy5naZre2ldAoedqArXQkbUkxD8jlTCJYKtLIG3z5in+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l9okf8T8; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1750167156; x=1781703156;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=eh8viEGAV28ATzr3c9fmVwCL5U5uu4w7at/swAkPuFM=;
-  b=l9okf8T8KSHpA8qPE+VK2ujQctKBgpvKgRMgsrPPZgYPrlIVTB/i4/HF
-   8LnX6xf5szjHFuHy1uj8du7gDhf6W75QUeZ0IxBw/ZYtPNDcX6gmKyyJk
-   oVmOmf1peB9F24q3x91bocGvIIQ3Hn36xjJsR8wF4FpMm827c33Kk+49X
-   GXiuyF2LT6g8QeylquEdpyREu+KAAaaeav9rAp6jLixrYiRkeH9tDM/FF
-   73O2jSuVaV7vAmFGqFqFkdamcc9EPH+vWTbzqG7axn//Lb25RnojUHDyT
-   MZ17MhpoouD3W90n5VNXgikFDe4JR1lZfrYM+36ytk24NkvY5TV3tye0w
-   A==;
-X-CSE-ConnectionGUID: HEqu41+6S5yedCQQIZyCGQ==
-X-CSE-MsgGUID: qJpVg4GtTxqC7p11emaoZA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11467"; a="56154387"
-X-IronPort-AV: E=Sophos;i="6.16,243,1744095600"; 
-   d="scan'208";a="56154387"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2025 06:32:36 -0700
-X-CSE-ConnectionGUID: Bl1IqfEQTzKSNnUl84zDtQ==
-X-CSE-MsgGUID: FHLnVg/iQkymF4EeZibAJQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,243,1744095600"; 
-   d="scan'208";a="149147833"
-Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 17 Jun 2025 06:32:34 -0700
-Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uRWQR-000G1q-36;
-	Tue, 17 Jun 2025 13:32:31 +0000
-Date: Tue, 17 Jun 2025 21:32:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: Bertrand Wlodarczyk <bertrand.wlodarczyk@intel.com>, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Bertrand Wlodarczyk <bertrand.wlodarczyk@intel.com>
-Subject: Re: [PATCH] cgroup/rstat: change cgroup_base_stat to atomic
-Message-ID: <202506172158.OEJ5qjT6-lkp@intel.com>
-References: <20250617102644.752201-2-bertrand.wlodarczyk@intel.com>
+	s=arc-20240116; t=1750167433; c=relaxed/simple;
+	bh=syEOF23WYnR+m4ZXDu5w2UCFevHV0uRwaU7OFMcE7RY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Zp2OJXHr75zZlyWr8XHAEHFv78ZckKTaSKYKmaIWb4EE0xgv0il6sBAzmTLDv36DzMjlnGSSK2OQDV+CS3Hz9hzJoiyYDgn036PJeiSAA1z+UW09BWv4MZL/Q7e1vJooJvjOrDh4S481qR9/A+WcDAyFtQA86x6QDTOcH/Yjs6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=eeeubEMo; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-45347d6cba3so6940235e9.0
+        for <cgroups@vger.kernel.org>; Tue, 17 Jun 2025 06:37:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1750167429; x=1750772229; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zAb6vAt4cs//1SvpF4Ccxpw3YC8TLR2gb172yFffxHY=;
+        b=eeeubEMojDy8IavtdzD88nb70r8zDEOBGSONI9yUjo8UqzFDIGqlTE1j/a1PXJ29z7
+         f8m1JJ0PiT8S223orRhpW1QTRerbgaFXLXv6b4TQtMsPgh0I0RWP9sOTR2EEnw0ebY+2
+         wRHMKxP6Jc2C5hYk6kgc2kgXp4G9z/ob7F6vANYHUO1IJU+UzD48bhHxAmMlXzT3ha9r
+         1NhceHyrJ9Y1CpKCaB9KzEJ1BK/BitLLsXTY284RUvzI0De+aqvC25e+iWMy6vdnPLDX
+         dFhsCnKTth+CTIy8vNTjG7SRiAIoxvOWkBYgOKjVePGlsDV4eYeNr+jYIqAsovEkZbDD
+         VAVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750167429; x=1750772229;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zAb6vAt4cs//1SvpF4Ccxpw3YC8TLR2gb172yFffxHY=;
+        b=aeXhBv1qGtflGnW0INONXwjDKI78pyawD/OMg8Tka7KK6BxF/qdyIcgsMqmYbbhl7U
+         MQJXt/CGA1WZ3mLw7CpMs51ou1N78Zz/f8B612yAlRskq4d4qMONQ6Bcw0IT3BLj76QB
+         itOmNHM7kPbMMZ/gdhjntF2BA9zRNUcnF/ghoUsyxOwyuaYK4eaC/F5c4RRSbcxaJX3Z
+         YS7jOp5kDhCWRYoJ9qDwFdWqKXXbeFsS1a9hOmzkTjj8/Rsb9JX9c5jSfxYelQi+VyNv
+         oIAuCJHrvOyJJcvwNq5v2tynLOxfohJOtWz8VnJwTvkfK1+xRyLcSv81U/6QoWyJ5Txl
+         vF9w==
+X-Forwarded-Encrypted: i=1; AJvYcCXZWQuRLPO4G034E/6/RpjlyTjK1u4kxlxJmRO0bsDy7QxviO05O3HispzJEuTJJQODi17ym3KS@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3AnJSX5CeaN4gDO88V33bTm8/+g/MSByIBcM40LHcxgsQbvR/
+	7ikW7c+NXc7gZVd9Fga5IMsDtbXx2Kk7hMy0QxPHcoVuVpwBaJwGJhgtUj6eybSEEjQ=
+X-Gm-Gg: ASbGncuRtK/ngSviVE17T5orhKqh05l6bYKdYTjZoUdwk8x3QMgcmVD/GgrVQ9LvCuB
+	4MyJaxmY/vbtJhzO3ewIIrPkNgc+4TRveHmojRsMVDwSsTr6CFfjptgHp9VPyB6BDw6rQ4ER/Zh
+	Sg4ERCUdWCgjIaNYnKXqP4klsdOmBHcL5ZMZofv1Wa9PQRV3EEQxM4ul2FELECsxwwPR+Hw4P0O
+	wr6Do6ddW9D2+fFp8wVAZ0KbXgp7JAc/uSOP4HBQ+VYTKPQsHtYrwrWPV6p+ak2bNHlmuNXCsKM
+	+QNAEy16eLNQdsJ24qx1OLGtPF3X8eE0NOqGwW0T6AWVCyJ3YSZm0FfAXnfpf6MbQcchEpI7eOk
+	=
+X-Google-Smtp-Source: AGHT+IGyp/xTGp5oc1Flc0suMmUx+z84Pn68KeWyBolHGZeBeRUJhIRXZcDbZoi8bBEnqcyDMtHfRg==
+X-Received: by 2002:a05:600c:470c:b0:442:f482:c429 with SMTP id 5b1f17b1804b1-4533caf534cmr134483935e9.8.1750167428760;
+        Tue, 17 Jun 2025 06:37:08 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4532e224888sm179494365e9.1.2025.06.17.06.37.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Jun 2025 06:37:08 -0700 (PDT)
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To: linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Tejun Heo <tj@kernel.org>,
+	Shuah Khan <shuah@kernel.org>
+Subject: [PATCH 0/4] selftests: cgroup: Add support for named v1 hierarchies in test_core
+Date: Tue, 17 Jun 2025 15:36:52 +0200
+Message-ID: <20250617133701.400095-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250617102644.752201-2-bertrand.wlodarczyk@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Bertrand,
+This comes useful when using selftests from mainline on older
+kernels/setups that still rely on cgroup v1 while maintains single
+variant of selftests.
+The core tests that rely on v2 specific features are skipped, the
+remaining ones are adjusted to work with a v1 hierarchy.
 
-kernel test robot noticed the following build errors:
+The expected output on v1 system:
+    ok 1 # SKIP test_cgcore_internal_process_constraint
+    ok 2 # SKIP test_cgcore_top_down_constraint_enable
+    ok 3 # SKIP test_cgcore_top_down_constraint_disable
+    ok 4 # SKIP test_cgcore_no_internal_process_constraint_on_threads
+    ok 5 # SKIP test_cgcore_parent_becomes_threaded
+    ok 6 # SKIP test_cgcore_invalid_domain
+    ok 7 # SKIP test_cgcore_populated
+    ok 8 test_cgcore_proc_migration
+    ok 9 test_cgcore_thread_migration
+    ok 10 test_cgcore_destroy
+    ok 11 test_cgcore_lesser_euid_open
+    ok 12 # SKIP test_cgcore_lesser_ns_open
 
-[auto build test ERROR on tj-cgroup/for-next]
-[also build test ERROR on linus/master v6.16-rc2 next-20250617]
-[cannot apply to trace/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Michal Koutný (4):
+  selftests: cgroup_util: Add helpers for testing named v1 hierarchies
+  selftests: cgroup: Add support for named v1 hierarchies in test_core
+  selftests: cgroup: Optionally set up v1 environment
+  selftests: cgroup: Fix compilation on pre-cgroupns kernels
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bertrand-Wlodarczyk/cgroup-rstat-change-cgroup_base_stat-to-atomic/20250617-183242
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-patch link:    https://lore.kernel.org/r/20250617102644.752201-2-bertrand.wlodarczyk%40intel.com
-patch subject: [PATCH] cgroup/rstat: change cgroup_base_stat to atomic
-config: arc-randconfig-001-20250617 (https://download.01.org/0day-ci/archive/20250617/202506172158.OEJ5qjT6-lkp@intel.com/config)
-compiler: arc-linux-gcc (GCC) 11.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250617/202506172158.OEJ5qjT6-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202506172158.OEJ5qjT6-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   kernel/cgroup/rstat.c: In function 'css_rstat_init':
-   kernel/cgroup/rstat.c:415:55: warning: variable 'rstatbc' set but not used [-Wunused-but-set-variable]
-     415 |                         struct cgroup_rstat_base_cpu *rstatbc;
-         |                                                       ^~~~~~~
-   kernel/cgroup/rstat.c: In function 'root_cgroup_cputime':
->> kernel/cgroup/rstat.c:629:42: error: passing argument 2 of 'atomic64_add' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     629 |                 atomic64_add(sys + user, &cputime->sum_exec_runtime);
-         |                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~
-         |                                          |
-         |                                          atomic_long_t * {aka atomic_t *}
-   In file included from include/linux/atomic.h:82,
-                    from include/asm-generic/bitops/lock.h:5,
-                    from arch/arc/include/asm/bitops.h:188,
-                    from include/linux/bitops.h:67,
-                    from include/linux/thread_info.h:27,
-                    from include/linux/sched.h:14,
-                    from include/linux/cgroup.h:12,
-                    from kernel/cgroup/cgroup-internal.h:5,
-                    from kernel/cgroup/rstat.c:2:
-   include/linux/atomic/atomic-instrumented.h:1680:33: note: expected 'atomic64_t *' but argument is of type 'atomic_long_t *' {aka 'atomic_t *'}
-    1680 | atomic64_add(s64 i, atomic64_t *v)
-         |                     ~~~~~~~~~~~~^
-   In file included from ./arch/arc/include/generated/asm/div64.h:1,
-                    from include/linux/math.h:6,
-                    from include/linux/kernel.h:27,
-                    from include/linux/cpumask.h:11,
-                    from include/linux/smp.h:13,
-                    from include/linux/lockdep.h:14,
-                    from include/linux/spinlock.h:63,
-                    from include/linux/sched.h:2209,
-                    from include/linux/cgroup.h:12,
-                    from kernel/cgroup/cgroup-internal.h:5,
-                    from kernel/cgroup/rstat.c:2:
-   kernel/cgroup/rstat.c: In function 'cgroup_base_stat_cputime_show':
-   include/asm-generic/div64.h:183:35: warning: comparison of distinct pointer types lacks a cast
-     183 |         (void)(((typeof((n)) *)0) == ((uint64_t *)0));  \
-         |                                   ^~
-   kernel/cgroup/rstat.c:677:9: note: in expansion of macro 'do_div'
-     677 |         do_div(utime, NSEC_PER_USEC);
-         |         ^~~~~~
-   include/asm-generic/div64.h:183:35: warning: comparison of distinct pointer types lacks a cast
-     183 |         (void)(((typeof((n)) *)0) == ((uint64_t *)0));  \
-         |                                   ^~
-   kernel/cgroup/rstat.c:681:9: note: in expansion of macro 'do_div'
-     681 |         do_div(stime, NSEC_PER_USEC);
-         |         ^~~~~~
-   include/asm-generic/div64.h:183:35: warning: comparison of distinct pointer types lacks a cast
-     183 |         (void)(((typeof((n)) *)0) == ((uint64_t *)0));  \
-         |                                   ^~
-   kernel/cgroup/rstat.c:685:9: note: in expansion of macro 'do_div'
-     685 |         do_div(ntime, NSEC_PER_USEC);
-         |         ^~~~~~
-   cc1: some warnings being treated as errors
+ .../selftests/cgroup/lib/cgroup_util.c        |  4 +-
+ .../cgroup/lib/include/cgroup_util.h          |  5 ++
+ tools/testing/selftests/cgroup/test_core.c    | 84 ++++++++++++++++---
+ 3 files changed, 82 insertions(+), 11 deletions(-)
 
 
-vim +/atomic64_add +629 kernel/cgroup/rstat.c
-
-   599	
-   600	/*
-   601	 * compute the cputime for the root cgroup by getting the per cpu data
-   602	 * at a global level, then categorizing the fields in a manner consistent
-   603	 * with how it is done by __cgroup_account_cputime_field for each bit of
-   604	 * cpu time attributed to a cgroup.
-   605	 */
-   606	static void root_cgroup_cputime(struct cgroup_base_stat *bstat)
-   607	{
-   608		struct atomic_task_cputime *cputime = &bstat->cputime;
-   609		int i;
-   610	
-   611		memset(bstat, 0, sizeof(*bstat));
-   612		for_each_possible_cpu(i) {
-   613			struct kernel_cpustat kcpustat;
-   614			u64 *cpustat = kcpustat.cpustat;
-   615			u64 user = 0;
-   616			u64 sys = 0;
-   617	
-   618			kcpustat_cpu_fetch(&kcpustat, i);
-   619	
-   620			user += cpustat[CPUTIME_USER];
-   621			user += cpustat[CPUTIME_NICE];
-   622			atomic64_add(user, &cputime->utime);
-   623	
-   624			sys += cpustat[CPUTIME_SYSTEM];
-   625			sys += cpustat[CPUTIME_IRQ];
-   626			sys += cpustat[CPUTIME_SOFTIRQ];
-   627			atomic64_add(sys, &cputime->stime);
-   628	
- > 629			atomic64_add(sys + user, &cputime->sum_exec_runtime);
-   630	
-
+base-commit: 9afe652958c3ee88f24df1e4a97f298afce89407
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.49.0
+
 
