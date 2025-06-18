@@ -1,136 +1,157 @@
-Return-Path: <cgroups+bounces-8580-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8581-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B7CCADE4BE
-	for <lists+cgroups@lfdr.de>; Wed, 18 Jun 2025 09:45:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 016D3ADE5DB
+	for <lists+cgroups@lfdr.de>; Wed, 18 Jun 2025 10:42:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0677418988A3
-	for <lists+cgroups@lfdr.de>; Wed, 18 Jun 2025 07:46:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3E7116F07E
+	for <lists+cgroups@lfdr.de>; Wed, 18 Jun 2025 08:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E695C1EF092;
-	Wed, 18 Jun 2025 07:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 892091F542A;
+	Wed, 18 Jun 2025 08:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="geWLGPvH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C51E27726;
-	Wed, 18 Jun 2025 07:45:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E2F127E7D8
+	for <cgroups@vger.kernel.org>; Wed, 18 Jun 2025 08:42:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750232747; cv=none; b=n4bP3Vq+ywgI6L4kpIEZNA3mRnEtW1SpiO/aK5W5ICTAVflfS7cU6zK+tngKT4yAj/TZKZ1ESGTiee4wpFuuKVv1HxCbDhPD0Q4N5e2Im/sqKkBEtCTssEn4sAu6RBqp5/x7B20sVfUsQEZn02Y+kWUP0jB1KsKILsoMmlU5sdo=
+	t=1750236134; cv=none; b=MN+NTLvAj/Naun9wstej3PI05WzkUvauFUjaBqt+pk2XouFgQnUTlcbB4srzViR9bMi5RpS/wcDEE62e3sO6CfjrUuxOVr5k9Rlpnx4NeYR8+AzqtWpP2xC6rcBPyP4faKjPefsnDoU0hzeM0Z0vo+5De3+udNe9p+1aIXDP4Aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750232747; c=relaxed/simple;
-	bh=s3stRVI86PiNtFalnZP+84R5foygh190H1muvOIo1pI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=B2nbXlQH7qziWsMl/xD2XPIFaP0x2N4Sf+a8w8qgvsJF5AEuu9EikheFCpxkYzghku4kGzsI6kjDMYUu+SIAkOKasQag0ArPLV3FUOME0LK0IIezsK+XxLQwrDfkK/JLOFWZToZdb5XO1cRo/Vi3Hp6tA+yZDctSi9az30DGHQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bMbPy0hmxzYQvtL;
-	Wed, 18 Jun 2025 15:45:42 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 100501A093A;
-	Wed, 18 Jun 2025 15:45:41 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP2 (Coremail) with SMTP id Syh0CgCXoWSTblJo+pwEPw--.55813S2;
-	Wed, 18 Jun 2025 15:45:40 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	rafael.j.wysocki@intel.com,
-	mingo@kernel.org,
-	peterz@infradead.org
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com,
-	chenridong@huawei.com
-Subject: [next] cgroup,freezer: fix incomplete freezing when attaching tasks
-Date: Wed, 18 Jun 2025 07:32:17 +0000
-Message-Id: <20250618073217.2983275-1-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1750236134; c=relaxed/simple;
+	bh=tLuMERFkhkMvyc4RUg0kVrXZFLmMUYPq2RC7G9Wn0DI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vAPp+MUMQQzsWFzfqjIiOgeDVv8YaqinBJsHqPtX0uW+hVg6wxFPYL8GuyHl02gB6wyx+8n7JgzowEVPvX81/yPrSUGCJlg5Nlzi9W3wMhvfsYa2HYJ+FaRHAsLV209lQwUYw7n8Mv833FHsK0I/4uLXxJckgx6v4tCvhr4Z/TM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=geWLGPvH; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45347d6cba3so9707975e9.0
+        for <cgroups@vger.kernel.org>; Wed, 18 Jun 2025 01:42:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1750236130; x=1750840930; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=E4gyiOM+R6q4LAtiBITFj3HVk+KRLwjIRJzv+V7V2gA=;
+        b=geWLGPvHltxTWo55IuvC5G6SPamU78oFFs+0dSyYlzrrGaLQSW8C83aZfN3RtGdbl9
+         aoXTlpMp97QxAvLmmZ/EoIGI3MswiwU2qJFr7+xT9Q1GcLAJ28wELV3l14LaSRcaaMHt
+         4T1u/G/HK+Q8jwYXCWAjeAIqiWtqoOqdYaR7Opk9Lf1vmMThyyGNeopXQjiOBFQ70Cs0
+         o7TQ/KXcoeQ5PYp5pK4MSt2+VB0yqEoSHmgvcEITsPQMlYfqk4jnoIw+eJk151XRx2ue
+         Zl7cfrvcAkFmpo/arg4aWgmfrVtcJc0fnw2zEsbHEaKdeex1VDMq1WxUypWQLDbYveuO
+         P0Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750236130; x=1750840930;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E4gyiOM+R6q4LAtiBITFj3HVk+KRLwjIRJzv+V7V2gA=;
+        b=BykkaPLviTtFLb6J4x0svbElLyaBcOQ4G1QYBCMuEE2G8HVKOPivmxmpDbChuwAt3A
+         yWYD3r+n9aOIKZ7MWt+gVNYaiCJfAroaaBp3VA2u2OSEdfqgXwBqP9Rh8xwOXUSnRW0F
+         ezmFKJdwRlpffb0t5JsRZxe+wVuvZ578ZIi4va996rxRhzxMP7vFzlQPTobCjKKmkYDX
+         +pBKskDkoipykc8poAegBOSWZuBc9/1tlMrL7JFqY+xFbOAwqHARNbWmx5sk7wr+mRI3
+         h+S4rlRlLl6JRikfWhrcvF5cmKUrxmwP6urW9r8N/NKcgTC1TT/WLBkpREOtM1kcuXqg
+         rdcg==
+X-Forwarded-Encrypted: i=1; AJvYcCXV9/nZscHH1Hbwr5/Q5HFoSN/cm1wr13Iswv2Ilz9wyKmkBfCREkhVDAqtMS7p8iUA1n6r7ezk@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywn7v495mcXapEDx6uvFkSZniAa5ypun1K57gU3Y3zuektPISCx
+	FPO+PEO633KjghCaQMwbxwOunBM5pxs0ziZ8e7Ym6TYPlwPe/XV4a7/7H/Swcm121WE=
+X-Gm-Gg: ASbGncsxocPBSbhaoUBO7INF3TJgdkk2dOzIsWgjuHKX6R3aPHJHoMPgBVuld3S3QIr
+	Kv5AnjqEa4/rn4gjEiKUdAHFaMGZCrpiJlseuwAEYfTpDq8WGvmFazHiyOVxfxeA+CzMv6tyiQO
+	FV5XlZhFqSfO5X36lm8NB1UL1RVKN+699pVH1Ro74onCH1SjHmMteaZpvB0KKgBoLek+zf0yF8+
+	qXoXDhwx0uIn6L3HH5ajG23Efqkh89GdKa2KxQt8LzmbX/xegP6oF6UATvBsiLZNuSEUNfNfj6R
+	SctDqaZbEbsjoVfy5DIv/xeZzE8r8S24y3YEh3Q3ebtmD9lCpekj7FPXsRvx9Kew
+X-Google-Smtp-Source: AGHT+IH87VAwC/pIDh8SB1lVx0PiK/TX81W5Y3bCglq4KyJ4mokgrwmhsvbaOnDPi+FmoaFjsfeO5Q==
+X-Received: by 2002:a05:600c:5025:b0:43e:afca:808f with SMTP id 5b1f17b1804b1-4533cb5ddabmr168887675e9.31.1750236130292;
+        Wed, 18 Jun 2025 01:42:10 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4534172d2b0sm131736755e9.35.2025.06.18.01.42.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Jun 2025 01:42:09 -0700 (PDT)
+Date: Wed, 18 Jun 2025 10:42:08 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, rafael.j.wysocki@intel.com, 
+	mingo@kernel.org, peterz@infradead.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, lujialin4@huawei.com, chenridong@huawei.com
+Subject: Re: [next] cgroup,freezer: fix incomplete freezing when attaching
+ tasks
+Message-ID: <sfmtpva4z4jxrlmmeyigz4n7wozfveii3cuaks3s4dgf6noyfg@gutbimmbjfbb>
+References: <20250618073217.2983275-1-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCXoWSTblJo+pwEPw--.55813S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJryUCFyrAry3AF17Gw1xZrb_yoW8Wryxpw
-	s8Xw4UWw4FkF1jyryDZ3W0gr95KFs7Ar4UGFyjqr18XF1fXa4qvr4xC345WayUJFWIqrWU
-	Ja1YvryIk34DA3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
-	w2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07
-	UAwIDUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4hq7nl43p24s2oqa"
+Content-Disposition: inline
+In-Reply-To: <20250618073217.2983275-1-chenridong@huaweicloud.com>
 
-From: Chen Ridong <chenridong@huawei.com>
 
-An issue was found:
+--4hq7nl43p24s2oqa
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [next] cgroup,freezer: fix incomplete freezing when attaching
+ tasks
+MIME-Version: 1.0
 
-	# cd /sys/fs/cgroup/freezer/
-	# mkdir test
-	# echo FROZEN > test/freezer.state
-	# cat test/freezer.state
-	FROZEN
-	# sleep 1000 &
-	[1] 863
-	# echo 863 > test/cgroup.procs
-	# cat test/freezer.state
-	FREEZING
+On Wed, Jun 18, 2025 at 07:32:17AM +0000, Chen Ridong <chenridong@huaweiclo=
+ud.com> wrote:
+> From: Chen Ridong <chenridong@huawei.com>
+>=20
+> An issue was found:
 
-When tasks are migrated to a frozen cgroup, the freezer fails to
-immediately freeze the tasks, causing the cgroup to remain in the
-"FREEZING".
+An obligatory reminder to move to freezer in the unifier hierarchy if
+possible. Thanks for the fix though.
 
-The freeze_task() function is called before clearing the CGROUP_FROZEN
-flag. This causes the freezing() check to incorrectly return false,
-preventing __freeze_task() from being invoked for the migrated task.
+>=20
+> 	# cd /sys/fs/cgroup/freezer/
+> 	# mkdir test
+> 	# echo FROZEN > test/freezer.state
+> 	# cat test/freezer.state
+> 	FROZEN
+> 	# sleep 1000 &
+> 	[1] 863
+> 	# echo 863 > test/cgroup.procs
+> 	# cat test/freezer.state
+> 	FREEZING
+>=20
+> When tasks are migrated to a frozen cgroup, the freezer fails to
+> immediately freeze the tasks, causing the cgroup to remain in the
+> "FREEZING".
+>=20
+> The freeze_task() function is called before clearing the CGROUP_FROZEN
+> flag. This causes the freezing() check to incorrectly return false,
+> preventing __freeze_task() from being invoked for the migrated task.
+>=20
+> To fix this issue, clear the CGROUP_FROZEN state before calling
+> freeze_task().
+>=20
+> Fixes: f5d39b020809 ("freezer,sched: Rewrite core freezer logic")
+> Reported-by: Zhong Jiawei <zhongjiawei1@huawei.com>
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> ---
+>  kernel/cgroup/legacy_freezer.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-To fix this issue, clear the CGROUP_FROZEN state before calling
-freeze_task().
+Acked-by: Michal Koutn=FD <mkoutny@suse.com>
 
-Fixes: f5d39b020809 ("freezer,sched: Rewrite core freezer logic")
-Reported-by: Zhong Jiawei <zhongjiawei1@huawei.com>
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/legacy_freezer.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+--4hq7nl43p24s2oqa
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/kernel/cgroup/legacy_freezer.c b/kernel/cgroup/legacy_freezer.c
-index 039d1eb2f215..507b8f19a262 100644
---- a/kernel/cgroup/legacy_freezer.c
-+++ b/kernel/cgroup/legacy_freezer.c
-@@ -188,13 +188,12 @@ static void freezer_attach(struct cgroup_taskset *tset)
- 		if (!(freezer->state & CGROUP_FREEZING)) {
- 			__thaw_task(task);
- 		} else {
--			freeze_task(task);
--
- 			/* clear FROZEN and propagate upwards */
- 			while (freezer && (freezer->state & CGROUP_FROZEN)) {
- 				freezer->state &= ~CGROUP_FROZEN;
- 				freezer = parent_freezer(freezer);
- 			}
-+			freeze_task(task);
- 		}
- 	}
- 
--- 
-2.34.1
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaFJ73gAKCRB+PQLnlNv4
+CMmyAQDJRxBSTIfHPzpApy+1rHScxGgAgsN0L474auzdBb6b9gD+Nc0TpNMWLQFw
+/yFDdplMCfczlpqXSh4ubUeOqUiaqwM=
+=6f0q
+-----END PGP SIGNATURE-----
+
+--4hq7nl43p24s2oqa--
 
