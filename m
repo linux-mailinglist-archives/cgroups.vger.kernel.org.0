@@ -1,78 +1,57 @@
-Return-Path: <cgroups+bounces-8579-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8580-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F56EADE18B
-	for <lists+cgroups@lfdr.de>; Wed, 18 Jun 2025 05:15:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B7CCADE4BE
+	for <lists+cgroups@lfdr.de>; Wed, 18 Jun 2025 09:45:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7529B3BB32E
-	for <lists+cgroups@lfdr.de>; Wed, 18 Jun 2025 03:15:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0677418988A3
+	for <lists+cgroups@lfdr.de>; Wed, 18 Jun 2025 07:46:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F86E1D61AA;
-	Wed, 18 Jun 2025 03:15:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="KEv7+wB+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E695C1EF092;
+	Wed, 18 Jun 2025 07:45:47 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1547081C;
-	Wed, 18 Jun 2025 03:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C51E27726;
+	Wed, 18 Jun 2025 07:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750216541; cv=none; b=lAOS8EYoxiwEwq1LRG3Hv+6/Zzeqvvqhkg/HLmKDcRFn8eyKQGamc8FNwUyw7QMSXuTJFuSBHHw3y/muVoz5PfU1qZPIx8eUc8ye9YDyVjjZe5i1fElCL1m7g68TSa0Rj4HuWPygCcnoW4vqljpB/ClR5UX6Kglw0rEKZB5xYS8=
+	t=1750232747; cv=none; b=n4bP3Vq+ywgI6L4kpIEZNA3mRnEtW1SpiO/aK5W5ICTAVflfS7cU6zK+tngKT4yAj/TZKZ1ESGTiee4wpFuuKVv1HxCbDhPD0Q4N5e2Im/sqKkBEtCTssEn4sAu6RBqp5/x7B20sVfUsQEZn02Y+kWUP0jB1KsKILsoMmlU5sdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750216541; c=relaxed/simple;
-	bh=c+vEJdDJsRwQHhI1CpUzuBcNkccnDg+9ty9uoEZzDcU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lFadndhbEY7RfgDhEXyZjNFt9zGvPqoG9GRZ/lSgtb3Z1nt08ZrEG52wzPBuwmnC8+Zjr9co2BJUWdO8TPnChd6UxRIgc/ERtFZeoNxLIpOmkJIm659gAgAfhcc4wpEGlObYVEhwpnftBitEO5SFRCrIZr0Lse3uw3U+uhErWjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=KEv7+wB+; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55I1tZZl003415;
-	Wed, 18 Jun 2025 03:15:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=ilc0x
-	ElubqWzUTRKoEIEMaqZ3ILEy4Lu1+zZo2uWQaQ=; b=KEv7+wB+QSNcnJogAsHej
-	E6TSY0CfLWFRAlHuTaphY9lY460QLcAJduQrBBmSvjTw1DRUAhmWtyDmS+IIl7XC
-	GCzsDmDkO4YlGhL2MAgmAAkERCbZlkcIAypw77ZcYGL7MzNiXn25kUZdczzXx8wi
-	+7gXqOeFBLi1noqFTyHSprPQVP6UkuSXKoPK7QvRJWLF1YmKkpBeHENvCIh0pqOI
-	ANmQdnIDeGiYdz8TiV0wFQiLDHhJwt6mFr7mLb7a2MPx0Qjt7IKOl2r3T42qmJfo
-	el7ydXkvFqjHFU4e/GotSFbKsyvsj+pab8kxK2XPLvvh+SkY4hMwj8pqJOoY4VE+
-	Q==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 47900exw82-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 18 Jun 2025 03:15:31 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 55I0K7ZZ026880;
-	Wed, 18 Jun 2025 03:15:30 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 478yhgb9rr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 18 Jun 2025 03:15:30 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 55I3FTuf002711;
-	Wed, 18 Jun 2025 03:15:29 GMT
-Received: from konrad-char-us-oracle-com.osdevelopmeniad.oraclevcn.com (konrad-char-us-oracle-com.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.249.23])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 478yhgb9r7-2;
-	Wed, 18 Jun 2025 03:15:29 +0000
-From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To: allison.henderson@oracle.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, tj@kernel.org,
-        andrew@lunn.ch
-Cc: hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Subject: [PATCH net v3] rds: Expose feature parameters via sysfs (and ELF)
-Date: Tue, 17 Jun 2025 23:13:09 -0400
-Message-ID: <20250618031522.3859138-2-konrad.wilk@oracle.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250618031522.3859138-1-konrad.wilk@oracle.com>
-References: <20250618031522.3859138-1-konrad.wilk@oracle.com>
+	s=arc-20240116; t=1750232747; c=relaxed/simple;
+	bh=s3stRVI86PiNtFalnZP+84R5foygh190H1muvOIo1pI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=B2nbXlQH7qziWsMl/xD2XPIFaP0x2N4Sf+a8w8qgvsJF5AEuu9EikheFCpxkYzghku4kGzsI6kjDMYUu+SIAkOKasQag0ArPLV3FUOME0LK0IIezsK+XxLQwrDfkK/JLOFWZToZdb5XO1cRo/Vi3Hp6tA+yZDctSi9az30DGHQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bMbPy0hmxzYQvtL;
+	Wed, 18 Jun 2025 15:45:42 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 100501A093A;
+	Wed, 18 Jun 2025 15:45:41 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP2 (Coremail) with SMTP id Syh0CgCXoWSTblJo+pwEPw--.55813S2;
+	Wed, 18 Jun 2025 15:45:40 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	rafael.j.wysocki@intel.com,
+	mingo@kernel.org,
+	peterz@infradead.org
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lujialin4@huawei.com,
+	chenridong@huawei.com
+Subject: [next] cgroup,freezer: fix incomplete freezing when attaching tasks
+Date: Wed, 18 Jun 2025 07:32:17 +0000
+Message-Id: <20250618073217.2983275-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -80,252 +59,78 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-06-18_01,2025-06-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 phishscore=0
- adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
- definitions=main-2506180025
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjE4MDAyNSBTYWx0ZWRfX04CVDqYtRVW+ Dy3loey4RLlVAOAmEhdTq8dHqvotMXjoIKog8AggAOVm1mCQ+7JUF1+yps86Kv3uBP1Qakk9lB4 36aL/Nhb+PcAKV0X8GgFnvhqIsYuSyh8Au3uWCNs1GJkYkPL7sQVWTiflCTe/74vyOWsA6gisPd
- rXFvGcBpqNc97l2S8kHADuaXON84n6nj6TVh+BLXmsZqseexyZl2N6K3DgQx0RRwwN0Uz7OaSGr Xe8QTtr1kiuMVXPOL2xijF2WBPd2Tzwn9uZolpKgEu+rJ+AsUtX44GG3K4c5zw7WlBCT86iXuWD nPCeuLVuJ2nL+qy4uR77uJzaMBRS7+wAp1FAwOa0vzb8OGcwm+EaYTTOU3n6rWAJBkOdYDeSFY8
- PIbAlGSZTgwhrYKQ1t7JR6gICGv2Cvtg4ZHUFKLc/8AL0oGGbajw7/SisQ8WX5MXXSRwpM3R
-X-Proofpoint-ORIG-GUID: q4UoCfT7CCMlSABd7WTVllV7vQEVFbpz
-X-Authority-Analysis: v=2.4 cv=X/5SKHTe c=1 sm=1 tr=0 ts=68522f53 b=1 cx=c_pps a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17 a=6IFa9wvqVegA:10 a=yPCof4ZbAAAA:8 a=m4ZG2DmCZvx6Djf13nYA:9 cc=ntf awl=host:13207
-X-Proofpoint-GUID: q4UoCfT7CCMlSABd7WTVllV7vQEVFbpz
+X-CM-TRANSID:Syh0CgCXoWSTblJo+pwEPw--.55813S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJryUCFyrAry3AF17Gw1xZrb_yoW8Wryxpw
+	s8Xw4UWw4FkF1jyryDZ3W0gr95KFs7Ar4UGFyjqr18XF1fXa4qvr4xC345WayUJFWIqrWU
+	Ja1YvryIk34DA3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
+	w2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07
+	UAwIDUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-We would like to have a programmatic way for applications
-to query which of the features defined in include/uapi/linux/rds.h
-are actually implemented by the kernel.
+From: Chen Ridong <chenridong@huawei.com>
 
-The problem is that applications can be built against newer
-kernel (or older) and they may have the feature implemented or not.
+An issue was found:
 
-The lack of a certain feature would signify that the kernel
-does not support it. The presence of it signifies the existence
-of it.
+	# cd /sys/fs/cgroup/freezer/
+	# mkdir test
+	# echo FROZEN > test/freezer.state
+	# cat test/freezer.state
+	FROZEN
+	# sleep 1000 &
+	[1] 863
+	# echo 863 > test/cgroup.procs
+	# cat test/freezer.state
+	FREEZING
 
-This would provide the application to query the sysfs and figure
-out what is supported on a running system.
+When tasks are migrated to a frozen cgroup, the freezer fails to
+immediately freeze the tasks, causing the cgroup to remain in the
+"FREEZING".
 
-This patch would expose this extra sysfs file:
+The freeze_task() function is called before clearing the CGROUP_FROZEN
+flag. This causes the freezing() check to incorrectly return false,
+preventing __freeze_task() from being invoked for the migrated task.
 
-/sys/kernel/rds/features/ioctl_get_tos
-/sys/kernel/rds/features/ioctl_set_tos
-/sys/kernel/rds/features/socket_cancel_sent_to
-/sys/kernel/rds/features/socket_cong_monitor
-/sys/kernel/rds/features/socket_free_mr
-/sys/kernel/rds/features/socket_get_mr
-/sys/kernel/rds/features/socket_get_mr_for_dest
-/sys/kernel/rds/features/socket_recverr
-/sys/kernel/rds/features/socket_so_rxpath_latency
-/sys/kernel/rds/features/socket_so_transport
+To fix this issue, clear the CGROUP_FROZEN state before calling
+freeze_task().
 
-With the value of 'supported' in them. In the future this value
-could change to say 'deprecated' or have other values (for example
-different versions) or can be runtime changed.
-
-The choice to use sysfs and this particular way is modeled on the
-filesystems usage exposing their features.
-
-Alternative solution such as exposing one file ('features') with
-each feature enumerated (which cgroup does) is a bit limited in
-that it does not provide means to provide extra content in the future
-for each feature. For example if one of the features had three
-modes and one wanted to set a particular one at runtime - that
-does not exist in cgroup (albeit it can be implemented but it would
-be quite hectic to have just one single attribute).
-
-Another solution of using an ioctl to expose a bitmask has the
-disadvantage of being less flexible in the future and while it can
-have a bit of supported/unsupported, it is not clear how one would
-change modes or expose versions. It is most certainly feasible
-but it can get seriously complex fast.
-
-As such this mechanism offers the basic support we require
-now and offers the flexibility for the future.
-
-Lastly, we also utilize the ELF note macro to expose these via
-so that applications that have not yet initialized RDS transport
-can inspect the kernel module to see if they have the appropiate
-support and choose an alternative protocol if they wish so.
-
-Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Fixes: f5d39b020809 ("freezer,sched: Rewrite core freezer logic")
+Reported-by: Zhong Jiawei <zhongjiawei1@huawei.com>
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
-v3: Add the missing documentation
-    Remove the CONFIG_SYSFS #ifdef machinations
-    Redo it with each feature as a seperate file in 'features'
-    directory.
----
- Documentation/ABI/stable/sysfs-transport-rds | 55 +++++++++++++++++
- net/rds/af_rds.c                             | 62 +++++++++++++++++++-
- 2 files changed, 116 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/ABI/stable/sysfs-transport-rds
+ kernel/cgroup/legacy_freezer.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/ABI/stable/sysfs-transport-rds b/Documentation/ABI/stable/sysfs-transport-rds
-new file mode 100644
-index 000000000000..db4de277f717
---- /dev/null
-+++ b/Documentation/ABI/stable/sysfs-transport-rds
-@@ -0,0 +1,55 @@
-+What:          /sys/kernel/rds/features/*
-+Date:          June 2025
-+KernelVersion: 6.17
-+Contact:       rds-devel@oss.oracle.com
-+Description:   This directory contains the features that this kernel
-+               has been built with and supports. They correspond
-+               to the include/uapi/linux/rds.h features.
-+
-+	       The intent is for applications compiled against rds.h
-+	       to be able to query and find out what features the
-+	       driver supports. The current expected value is 'supported'.
-+
-+	       The features so far are:
-+
-+	       ioctl_get_tos
-+	       ioctl_set_tos
-+
-+		Allows the user to set on the socket a type of
-+		service(tos) value associated forever.
-+
-+	       socket_cancel_sent_to
-+
-+		Allows to cancel all pending messages to a given destination.
-+
-+	       socket_cong_monitor
-+
-+		RDS provides an explicit monitoring wherein a 64-bit mask value
-+		on the socket and each bit corresponds to a group of ports.
-+
-+		When a congestion update arrives, RDS checks the set of ports
-+		that became uncongested against the bit mask.
-+
-+		If they overlap, a control messages is enqueued on the socket,
-+		and the application is woken up.
-+
-+	       socket_get_mr
-+	       socket_get_mr_for_dest
-+	       socket_free_mr
-+
-+		RDS allows a process to register or release memory ranges for
-+		RDMA.
-+
-+	       socket_recverr
-+
-+		RDS will send RDMA notification messages to the application for
-+		any RDMA operation that fails. By default this is off.
-+
-+	       socket_so_rxpath_latency
-+
-+		Receive path latency in various stages of receive path.
-+
-+	       socket_so_transport
-+
-+		Attach the socket to the underlaying transport (TCP or RDMA)
-+		before invoking bind on the socket.
-diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
-index 8435a20968ef..449b20f236a5 100644
---- a/net/rds/af_rds.c
-+++ b/net/rds/af_rds.c
-@@ -32,7 +32,9 @@
-  */
- #include <linux/module.h>
- #include <linux/errno.h>
-+#include <linux/elfnote.h>
- #include <linux/kernel.h>
-+#include <linux/kobject.h>
- #include <linux/gfp.h>
- #include <linux/in.h>
- #include <linux/ipv6.h>
-@@ -871,6 +873,53 @@ static void rds6_sock_info(struct socket *sock, unsigned int len,
- }
- #endif
- 
-+static ssize_t supported_show(struct kobject *kobj, struct kobj_attribute *attr,
-+			     char *buf)
-+{
-+	return sysfs_emit(buf, "supported\n");
-+}
-+
-+#define SYSFS_ATTR(_name)					\
-+ELFNOTE64("rds." #_name, 0, 1);				\
-+static struct kobj_attribute rds_attr_##_name = {		\
-+	.attr = {.name = __stringify(_name), .mode = 0444 },	\
-+	.show = supported_show,					\
-+}
-+
-+SYSFS_ATTR(ioctl_set_tos);
-+SYSFS_ATTR(ioctl_get_tos);
-+SYSFS_ATTR(socket_cancel_sent_to);
-+SYSFS_ATTR(socket_cong_monitor);
-+SYSFS_ATTR(socket_get_mr);
-+SYSFS_ATTR(socket_get_mr_for_dest);
-+SYSFS_ATTR(socket_free_mr);
-+SYSFS_ATTR(socket_recverr);
-+SYSFS_ATTR(socket_so_rxpath_latency);
-+SYSFS_ATTR(socket_so_transport);
-+
-+#define ATTR_LIST(_name) &rds_attr_##_name.attr
-+
-+static struct attribute *rds_feat_attrs[] = {
-+	ATTR_LIST(ioctl_set_tos),
-+	ATTR_LIST(ioctl_get_tos),
-+	ATTR_LIST(socket_cancel_sent_to),
-+	ATTR_LIST(socket_cong_monitor),
-+	ATTR_LIST(socket_get_mr),
-+	ATTR_LIST(socket_get_mr_for_dest),
-+	ATTR_LIST(socket_free_mr),
-+	ATTR_LIST(socket_recverr),
-+	ATTR_LIST(socket_so_rxpath_latency),
-+	ATTR_LIST(socket_so_transport),
-+	NULL,
-+};
-+
-+static const struct attribute_group rds_feat_group = {
-+	.attrs = rds_feat_attrs,
-+	.name = "features",
-+};
-+
-+static struct kobject *rds_sysfs_kobj;
-+
- static void rds_exit(void)
- {
- 	sock_unregister(rds_family_ops.family);
-@@ -882,6 +931,8 @@ static void rds_exit(void)
- 	rds_stats_exit();
- 	rds_page_exit();
- 	rds_bind_lock_destroy();
-+	sysfs_remove_group(rds_sysfs_kobj, &rds_feat_group);
-+	kobject_put(rds_sysfs_kobj);
- 	rds_info_deregister_func(RDS_INFO_SOCKETS, rds_sock_info);
- 	rds_info_deregister_func(RDS_INFO_RECV_MESSAGES, rds_sock_inc_info);
- #if IS_ENABLED(CONFIG_IPV6)
-@@ -923,6 +974,14 @@ static int __init rds_init(void)
- 	if (ret)
- 		goto out_proto;
- 
-+	rds_sysfs_kobj = kobject_create_and_add("rds", kernel_kobj);
-+	if (!rds_sysfs_kobj)
-+		goto out_proto;
-+
-+	ret = sysfs_create_group(rds_sysfs_kobj, &rds_feat_group);
-+	if (ret)
-+		goto out_kobject;
-+
- 	rds_info_register_func(RDS_INFO_SOCKETS, rds_sock_info);
- 	rds_info_register_func(RDS_INFO_RECV_MESSAGES, rds_sock_inc_info);
- #if IS_ENABLED(CONFIG_IPV6)
-@@ -931,7 +990,8 @@ static int __init rds_init(void)
- #endif
- 
- 	goto out;
+diff --git a/kernel/cgroup/legacy_freezer.c b/kernel/cgroup/legacy_freezer.c
+index 039d1eb2f215..507b8f19a262 100644
+--- a/kernel/cgroup/legacy_freezer.c
++++ b/kernel/cgroup/legacy_freezer.c
+@@ -188,13 +188,12 @@ static void freezer_attach(struct cgroup_taskset *tset)
+ 		if (!(freezer->state & CGROUP_FREEZING)) {
+ 			__thaw_task(task);
+ 		} else {
+-			freeze_task(task);
 -
-+out_kobject:
-+	kobject_put(rds_sysfs_kobj);
- out_proto:
- 	proto_unregister(&rds_proto);
- out_stats:
+ 			/* clear FROZEN and propagate upwards */
+ 			while (freezer && (freezer->state & CGROUP_FROZEN)) {
+ 				freezer->state &= ~CGROUP_FROZEN;
+ 				freezer = parent_freezer(freezer);
+ 			}
++			freeze_task(task);
+ 		}
+ 	}
+ 
 -- 
-2.43.5
+2.34.1
 
 
