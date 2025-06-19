@@ -1,180 +1,156 @@
-Return-Path: <cgroups+bounces-8601-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8602-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BBD2ADFF68
-	for <lists+cgroups@lfdr.de>; Thu, 19 Jun 2025 10:05:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D9ADAE04F0
+	for <lists+cgroups@lfdr.de>; Thu, 19 Jun 2025 14:05:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D6273ABBFC
-	for <lists+cgroups@lfdr.de>; Thu, 19 Jun 2025 08:04:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC2861898891
+	for <lists+cgroups@lfdr.de>; Thu, 19 Jun 2025 12:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93BA25DB10;
-	Thu, 19 Jun 2025 08:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qV4ZAk1x";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DCwPT26y";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="F14/RhsO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D0fulWgP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98E482441A7;
+	Thu, 19 Jun 2025 12:02:34 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3724825D903
-	for <cgroups@vger.kernel.org>; Thu, 19 Jun 2025 08:05:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3ED242902
+	for <cgroups@vger.kernel.org>; Thu, 19 Jun 2025 12:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750320301; cv=none; b=tzOW+KCqEakAN1eZEx+qn8/A42asUo0ek/pb0n/L2iKqcf6q31rfQu7Gv9EfbQbEFxYr/xJMHx8AM8Y4KylC+RC995oTCmhSRnf2FrGD8L1OE1QcqlqZ9ozUp6OpKKHof6mFQtNzr2rUQjJ04RK2vEgSa9299+aZew9oOMSb2Dk=
+	t=1750334554; cv=none; b=dWO6aB+Y3r3WRqXx/skNdFl68LS6+0K8lDo7KNf/6s+mUr+itffaKRmWkU+tBLQA1+XC1WUYysU4UEazpsf2ncid++i6auc5XWXQed1hy1jKv1M0sTaLcIIZZ8YyogKfiuRphxWHrzY+bo7LJ2Zj90W3WzuSkweiqG6c//rvlEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750320301; c=relaxed/simple;
-	bh=kMUwQy5yS/0UyV2suBDJYNHnJnmJCAsNt2MeM163mxo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YGZKqxQjTgmctdt5HXrwQA535dA/jvQJxfrW29+l83AfC6Ftqfz/a2Bm0rvdRhJAtTwf/2yI62WU/6JjoIQjQAG2s2eWuseylt6A1duK9HRvPWRf3kDcDvG0ZrbgAJpo9NAI9n/LKICeZ1SgSrJzeuMu0doI6I+2u5rmKtKqjEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qV4ZAk1x; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DCwPT26y; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=F14/RhsO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=D0fulWgP; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 10B6B1F38D;
-	Thu, 19 Jun 2025 08:04:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750320298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T9tK8I/Q1RuDUNKJbS5HFbDvN87u0BlSb6P1raJhR/Y=;
-	b=qV4ZAk1xOpeep+2wuxQ9eVRiMcnmcq7d5nQk+FcnPAUvTaxCKSE3xrVAMJt03ZyMf59D8m
-	wR1bi6/sJ1X1nQU3GCVEoatGvzfxM3+s1Fqm8oyksAkyrk7iKkltWA0V2Dw6d4uMvm3F0W
-	GdMZRglRKoQ/HPiveUvlUnH4K1qkhSo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750320298;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T9tK8I/Q1RuDUNKJbS5HFbDvN87u0BlSb6P1raJhR/Y=;
-	b=DCwPT26ympUpgRDG5u31i3DmStOmi2k8OHp00O/tw2SXmu9/tGFrW9GZwqB2ebs+xKILIA
-	lPIhESnGR4YJNDCw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="F14/RhsO";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=D0fulWgP
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750320297; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T9tK8I/Q1RuDUNKJbS5HFbDvN87u0BlSb6P1raJhR/Y=;
-	b=F14/RhsOG85KUrUZtUhzvqbUUmz9ZYsPR+P48pPUZh+d6cjAtMGaPxMJ5w3msp3obKCfAU
-	KeD+qUXnnVC1wHEYyj1IKRG+Msn41PZqhwPI3rK2K6TbJhmbfgZsvWO9J5RFBlbVZjYHrt
-	yxee3S1EdMWbxNruyMT2xYBFaX2sRs4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750320297;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T9tK8I/Q1RuDUNKJbS5HFbDvN87u0BlSb6P1raJhR/Y=;
-	b=D0fulWgPAXA28aOQkWf1m3PkSOVzGVFu04vFk8DFtU+htyrvU7MtKaMASx+ibAv9qf/sEh
-	Y3CUVkHsekSkgxBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 00B56136CC;
-	Thu, 19 Jun 2025 08:04:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ROUkAKnEU2g4LgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 19 Jun 2025 08:04:57 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id AD44DA29F1; Thu, 19 Jun 2025 10:04:56 +0200 (CEST)
-Date: Thu, 19 Jun 2025 10:04:56 +0200
-From: Jan Kara <jack@suse.cz>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Zhongkun He <hezhongkun.hzk@bytedance.com>, akpm@linux-foundation.org, 
-	tytso@mit.edu, jack@suse.com, hannes@cmpxchg.org, mhocko@kernel.org, 
-	muchun.song@linux.dev, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH 0/2] Postpone memcg reclaim to return-to-user path
-Message-ID: <bkql5n7vg7zoxxf3rwfceioenwkifw7iw4tev4jkljzkvpbrci@6uofefhkdzrx>
-References: <cover.1750234270.git.hezhongkun.hzk@bytedance.com>
- <a57jjrtddjc4wjbrrjpyhfdx475zwpuetmkibeorboo7csc7aw@foqsmf5ipr73>
+	s=arc-20240116; t=1750334554; c=relaxed/simple;
+	bh=BYKuCV9M64mQhbaDKHTfDnmetVYcpDwkMASwExKUrd8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Z4wDx6r9GAc4PBbtUtQzSee32fTdKQij6Vbo/7tf01dbBWmo276Hel9AWAOkHYXLZw2T+/J40k/jJRYXjFUf/nP2lECswjk/0tLOmlwJxoqfOOMFDvyXnesRBW27ExdLXtjtVY/y6B5RSkrPZH/uo90YYks0odVYt7CYsNs104Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-86f4f032308so138955839f.1
+        for <cgroups@vger.kernel.org>; Thu, 19 Jun 2025 05:02:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750334552; x=1750939352;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7y5j2JBAlW/36clXSZNKqoUukF2n112h8sNTaQ5TG7E=;
+        b=HpMKZ6FEzK8tyKTWEHbD1lu7wr9oFz2FfYzekwTE00WHgtsQXzBHyzwV7iNpLc0UNP
+         o9WlvaV1b1l3/rhLnM1cPw0HYgQQOqt3XmtrX/b57Gg8DCXd0VWTuC5YDh6VJpLLRTNg
+         2pRGJnAV9rg1Jp4QIZr+DAEs7sxjMllZeR+fe4ZB5mUvIQ9IA07qVwRWtDgH5qEiglCI
+         quuoV38Pcg+Rz8K7jtQgOIS6eRe+c0IKRtjQ03wdCuJDWke2Td8iFvmmMDcUHLDNXJcl
+         laTaCdLSxo3gIRuO0ts2H3VrhAFU5z8/L9uagdwROyPPfG6KgCbpVNZuQH+beXjuewmV
+         Dvhw==
+X-Forwarded-Encrypted: i=1; AJvYcCXF/imTRmRxBbmUijvgnM0TJlFZY5D5WK3HNQ2PyXRmc4K/Kb2sGfaqIrhIDBFb3oOS4WcI94J5@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyj5oUglQ9+dq+RKruQ/oG5J1Jn7a1+nQUifEhmMRf4RSdWIfZK
+	EWIymoXDHhsSjbo6rHNjo/Tsl02F6MNpAXX2WqYPD8+mVax7U/xQzUErlAAc/csL5zg6geguqDq
+	F120r4xe66h4pCumXpGbkifgIBQH9sjZPpHoHgVZLVPC0k8/lCcEVJNbfy6w=
+X-Google-Smtp-Source: AGHT+IGSqDCI6Q2927k9VKmm8G21vKiI1k9bL2sKeMEI0T3+Q+VZYcl5TxH7DPSpl8qNfvFEuXpZsGwC4UMFhj3ojY4Nq9Kfc0ZY
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a57jjrtddjc4wjbrrjpyhfdx475zwpuetmkibeorboo7csc7aw@foqsmf5ipr73>
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 10B6B1F38D
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.com:email];
-	MISSING_XM_UA(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.01
-X-Spam-Level: 
+X-Received: by 2002:a05:6e02:2482:b0:3dc:79e5:e6a8 with SMTP id
+ e9e14a558f8ab-3de07ccd64amr273170815ab.15.1750334551928; Thu, 19 Jun 2025
+ 05:02:31 -0700 (PDT)
+Date: Thu, 19 Jun 2025 05:02:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6853fc57.a00a0220.137b3.0009.GAE@google.com>
+Subject: [syzbot] [cgroups?] [mm?] WARNING in folio_lruvec_lock
+From: syzbot <syzbot+a74a028d848147bc5931@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
+	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed 18-06-25 15:37:20, Shakeel Butt wrote:
-> > This is
-> > beneficial for users who perform over-max reclaim while holding multiple
-> > locks or other resources (especially resources related to file system
-> > writeback). If a task needs any of these resources, it would otherwise
-> > have to wait until the other task completes reclaim and releases the
-> > resources. Postponing reclaim to the return-to-user path helps avoid this issue.
-> > 
-> > # Background
-> > 
-> > We have been encountering an hungtask issue for a long time. Specifically,
-> > when a task holds the jbd2 handler 
-> 
-> Can you explain a bit more about jbd2 handler? Is it some global shared
-> lock or a workqueue which can only run single thread at a time.
-> Basically is there a way to get the current holder/owner of jbd2 handler
-> programmatically?
+Hello,
 
-There's a typo in the original email :). It should be "jbd2 handle". And
-that is just a reference to the currently running transaction in ext4
-filesystem. There can be always at most one running transaction in ext4
-filesystem and until the last reference is dropped it cannot commit. This
-eventually (once the transaction reaches its maximum size) blocks all the
-other modifications to the filesystem. So it is shared global resource
-that's held by the process doing reclaim.
+syzbot found the following issue on:
 
-Since there can be many holders of references to the currently running
-transaction there's no easy way to iterate processes that are holding the
-references... That being said ext4 sets current->journal_info when
-acquiring a journal handle but other filesystems use this field for other
-purposes so current->journal_info being non-NULL does not mean jbd2 handle
-is held.
+HEAD commit:    bc6e0ba6c9ba Add linux-next specific files for 20250613
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1126090c580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2f7a2e4d17ed458f
+dashboard link: https://syzkaller.appspot.com/bug?extid=a74a028d848147bc5931
+compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2430bb0465cc/disk-bc6e0ba6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/436a39deef0a/vmlinux-bc6e0ba6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e314ca5b1eb3/bzImage-bc6e0ba6.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a74a028d848147bc5931@syzkaller.appspotmail.com
+
+ handle_mm_fault+0x740/0x8e0 mm/memory.c:6397
+ faultin_page mm/gup.c:1186 [inline]
+ __get_user_pages+0x1aef/0x30b0 mm/gup.c:1488
+ populate_vma_page_range+0x29f/0x3a0 mm/gup.c:1922
+ __mm_populate+0x24c/0x380 mm/gup.c:2025
+ mm_populate include/linux/mm.h:3354 [inline]
+ vm_mmap_pgoff+0x3f0/0x4c0 mm/util.c:584
+ ksys_mmap_pgoff+0x587/0x760 mm/mmap.c:607
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+page_owner free stack trace missing
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 38 at ./include/linux/memcontrol.h:732 folio_lruvec include/linux/memcontrol.h:732 [inline]
+WARNING: CPU: 0 PID: 38 at ./include/linux/memcontrol.h:732 folio_lruvec_lock+0x150/0x1a0 mm/memcontrol.c:1211
+Modules linked in:
+CPU: 0 UID: 0 PID: 38 Comm: ksmd Not tainted 6.16.0-rc1-next-20250613-syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+RIP: 0010:folio_lruvec include/linux/memcontrol.h:732 [inline]
+RIP: 0010:folio_lruvec_lock+0x150/0x1a0 mm/memcontrol.c:1211
+Code: 7c 25 00 00 74 08 4c 89 ff e8 7c 66 f8 ff 4d 89 2f eb c4 48 89 df 48 c7 c6 60 4f 98 8b e8 58 9b dc ff c6 05 01 85 5f 0d 01 90 <0f> 0b 90 e9 d5 fe ff ff 44 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 4d
+RSP: 0018:ffffc90000ae7660 EFLAGS: 00010046
+RAX: b21d845e3554e000 RBX: ffffea0002108000 RCX: b21d845e3554e000
+RDX: 0000000000000002 RSI: ffffffff8db792e4 RDI: ffff88801de83c00
+RBP: ffffea0002108000 R08: 0000000000000003 R09: 0000000000000004
+R10: dffffc0000000000 R11: fffffbfff1bfaa14 R12: ffffea0002108000
+R13: ffffea0002108008 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff888125c41000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f475c15ef98 CR3: 000000005f95a000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __split_unmapped_folio+0x42e/0x2cb0 mm/huge_memory.c:3487
+ __folio_split+0xf78/0x1300 mm/huge_memory.c:3891
+ cmp_and_merge_page mm/ksm.c:2358 [inline]
+ ksm_do_scan+0x499b/0x6530 mm/ksm.c:2665
+ ksm_scan_thread+0x10b/0x4b0 mm/ksm.c:2687
+ kthread+0x711/0x8a0 kernel/kthread.c:464
+ ret_from_fork+0x3f9/0x770 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
