@@ -1,142 +1,180 @@
-Return-Path: <cgroups+bounces-8600-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8601-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE529ADFBF9
-	for <lists+cgroups@lfdr.de>; Thu, 19 Jun 2025 05:50:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BBD2ADFF68
+	for <lists+cgroups@lfdr.de>; Thu, 19 Jun 2025 10:05:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E0173BE9D7
-	for <lists+cgroups@lfdr.de>; Thu, 19 Jun 2025 03:50:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D6273ABBFC
+	for <lists+cgroups@lfdr.de>; Thu, 19 Jun 2025 08:04:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB334228CBC;
-	Thu, 19 Jun 2025 03:50:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93BA25DB10;
+	Thu, 19 Jun 2025 08:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="et0by071"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qV4ZAk1x";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DCwPT26y";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="F14/RhsO";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D0fulWgP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B586F1C549F
-	for <cgroups@vger.kernel.org>; Thu, 19 Jun 2025 03:50:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3724825D903
+	for <cgroups@vger.kernel.org>; Thu, 19 Jun 2025 08:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750305040; cv=none; b=Z8uWSt5FfTEzymooKlJveZa6nrxI5gGrUne561nc/8mifXPKrf8QReD22zgWFod2dxYIt6bf9Q2k1/G5JvbSQTNralCJO+2mchZV9izAZ3nCFMiUn87q7IQ7Pw2EFnvXraiaUu/PoiukX5CSQBbIHmLqlb1K4LIFYFwKuj42daU=
+	t=1750320301; cv=none; b=tzOW+KCqEakAN1eZEx+qn8/A42asUo0ek/pb0n/L2iKqcf6q31rfQu7Gv9EfbQbEFxYr/xJMHx8AM8Y4KylC+RC995oTCmhSRnf2FrGD8L1OE1QcqlqZ9ozUp6OpKKHof6mFQtNzr2rUQjJ04RK2vEgSa9299+aZew9oOMSb2Dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750305040; c=relaxed/simple;
-	bh=pqrw6/9BHgywfLi/lqVFm9DkWmg99AULXG9dRn96nww=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C/YKL8KPXBr7WgxaUYOfiet1IFbNZiROcqLyLfBB9IF7CQ3RK/PJcYdBnK7PT8eKjkrt+w75gmqwO90EhbJqu/8N42Mlk9pGrnBAJJaa9xn/z9CaOuby/HV52mqdK2lDGJt1+Mt7NoJuqwBhi9fwb69BdMrUEjFNRKTKnTFXC/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=et0by071; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-54e98f73850so259633e87.1
-        for <cgroups@vger.kernel.org>; Wed, 18 Jun 2025 20:50:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1750305037; x=1750909837; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YolbIVvniBT6751HPBANG23kZ3+67ebn78JoEy5EXfU=;
-        b=et0by071JYesZMGFbJS/1l2LxGRkML9qAC3ulbjxsL4HJuoxN1+AzccOvDeZ9u5KI7
-         U1PNGnn+UNaqIY84DwMjXUMITUuxP7fFBVN13sKeZYjIYI+vbpbkROfQ7T5ZeAwpOqdn
-         8vPnb2nXb6rjl2bQZVXvQgQWiRClrI80Ly4F8Xnr5WloopWp6It3bLVAdymPDF0nSvJ0
-         4xm2FtA0+vaFQLsvbzHRyl6NgaNZJCjmlxMRHK+5ehoJAuubHxyVikepbel3l4FzgBJd
-         RZFf3MQt14Aj+NeMx8dUfoKOlWC/+pknWu8bCZ3lbL5Bcd3uAH9LWtspcVn2bFW6pFxm
-         iQBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750305037; x=1750909837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YolbIVvniBT6751HPBANG23kZ3+67ebn78JoEy5EXfU=;
-        b=qsLWSlv9Htx/4Bug+B1aAkRPCXUgX9Pqqn7NHZhYyeZFkKSpIXzcb3BF02+fDyiB9K
-         UXny0rZklZyL/etcakEevl/dJif20ojKuXZcy4MtzPLppSP16Tav+/XR10U8Rnu8WcQO
-         XXX94tdirndYPEaIKtLKHwGF0Lhda9f4KInu8RcekfV+hYjSIUMbIsrr6bFXznWy5NMl
-         4EdHjp87HUZZKGd5O2yPtAVzMSUgMLNbiwHCJHnTXz3PkJAf8u/GrqRc97viOUutt5J5
-         co2MjVuLw7Vcy0FmQirsGkrJkgYijYnsbGcljYEKp4H133bOiCrSmpbUod1NO1Gznuby
-         CArQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUuDckvj2WtqFi8cAA6jLTXvn90/D3SdeLPtArUllSsRtXZGUN/WyHzs9eHyfWyD/limitwbwfa@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyu3HrLkiEJS+8+vezujmkYP9PPmVniryh+hhIZ4XPLWLuH0uNL
-	bGqAT109Hre/ZUkcsDGhlV20MXAHZmCHqE23gS8ix8Im2PHBetATq+l6gd2Os7crGa2zV9LpppM
-	77Qcr/xoAxu29lOluKsTBz4KwgiD3Uiry6zOXZ6Geaw==
-X-Gm-Gg: ASbGnctMU2tI6h+WMYW0kho2RaWFsQdcNGd+sGf39UwhT1A1iTgJ4F0BvcVQ9Sp4Rf0
-	vk1Jo4NmX7+esUsw8n2g6mTrzpqBLafAhf+8cZn+3pV1LlTxk7NloBDZ/bE0IvivlMM/r8yg6Zd
-	Z10nGpLR45TgdxQn3bwiwFygWiYn9FDZ6IfX0zFdIjF3kL/AB/5amQRU9SkA==
-X-Google-Smtp-Source: AGHT+IHpltUrLNuq9nIorOoo+2iB2Q1zkjadBe7Khn4P/l9/IDmG1oDSjSumBXfasQEgDqAn9JdNEGve8qxaN277HJw=
-X-Received: by 2002:a05:6512:3989:b0:553:543d:d996 with SMTP id
- 2adb3069b0e04-553b6f0f91bmr5767343e87.33.1750305036765; Wed, 18 Jun 2025
- 20:50:36 -0700 (PDT)
+	s=arc-20240116; t=1750320301; c=relaxed/simple;
+	bh=kMUwQy5yS/0UyV2suBDJYNHnJnmJCAsNt2MeM163mxo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YGZKqxQjTgmctdt5HXrwQA535dA/jvQJxfrW29+l83AfC6Ftqfz/a2Bm0rvdRhJAtTwf/2yI62WU/6JjoIQjQAG2s2eWuseylt6A1duK9HRvPWRf3kDcDvG0ZrbgAJpo9NAI9n/LKICeZ1SgSrJzeuMu0doI6I+2u5rmKtKqjEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qV4ZAk1x; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DCwPT26y; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=F14/RhsO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=D0fulWgP; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 10B6B1F38D;
+	Thu, 19 Jun 2025 08:04:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750320298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T9tK8I/Q1RuDUNKJbS5HFbDvN87u0BlSb6P1raJhR/Y=;
+	b=qV4ZAk1xOpeep+2wuxQ9eVRiMcnmcq7d5nQk+FcnPAUvTaxCKSE3xrVAMJt03ZyMf59D8m
+	wR1bi6/sJ1X1nQU3GCVEoatGvzfxM3+s1Fqm8oyksAkyrk7iKkltWA0V2Dw6d4uMvm3F0W
+	GdMZRglRKoQ/HPiveUvlUnH4K1qkhSo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750320298;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T9tK8I/Q1RuDUNKJbS5HFbDvN87u0BlSb6P1raJhR/Y=;
+	b=DCwPT26ympUpgRDG5u31i3DmStOmi2k8OHp00O/tw2SXmu9/tGFrW9GZwqB2ebs+xKILIA
+	lPIhESnGR4YJNDCw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="F14/RhsO";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=D0fulWgP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750320297; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T9tK8I/Q1RuDUNKJbS5HFbDvN87u0BlSb6P1raJhR/Y=;
+	b=F14/RhsOG85KUrUZtUhzvqbUUmz9ZYsPR+P48pPUZh+d6cjAtMGaPxMJ5w3msp3obKCfAU
+	KeD+qUXnnVC1wHEYyj1IKRG+Msn41PZqhwPI3rK2K6TbJhmbfgZsvWO9J5RFBlbVZjYHrt
+	yxee3S1EdMWbxNruyMT2xYBFaX2sRs4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750320297;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T9tK8I/Q1RuDUNKJbS5HFbDvN87u0BlSb6P1raJhR/Y=;
+	b=D0fulWgPAXA28aOQkWf1m3PkSOVzGVFu04vFk8DFtU+htyrvU7MtKaMASx+ibAv9qf/sEh
+	Y3CUVkHsekSkgxBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 00B56136CC;
+	Thu, 19 Jun 2025 08:04:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ROUkAKnEU2g4LgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 19 Jun 2025 08:04:57 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id AD44DA29F1; Thu, 19 Jun 2025 10:04:56 +0200 (CEST)
+Date: Thu, 19 Jun 2025 10:04:56 +0200
+From: Jan Kara <jack@suse.cz>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Zhongkun He <hezhongkun.hzk@bytedance.com>, akpm@linux-foundation.org, 
+	tytso@mit.edu, jack@suse.com, hannes@cmpxchg.org, mhocko@kernel.org, 
+	muchun.song@linux.dev, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH 0/2] Postpone memcg reclaim to return-to-user path
+Message-ID: <bkql5n7vg7zoxxf3rwfceioenwkifw7iw4tev4jkljzkvpbrci@6uofefhkdzrx>
+References: <cover.1750234270.git.hezhongkun.hzk@bytedance.com>
+ <a57jjrtddjc4wjbrrjpyhfdx475zwpuetmkibeorboo7csc7aw@foqsmf5ipr73>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8029d719-9dc2-4c7d-af71-4f6ae99fe256@redhat.com>
- <CACSyD1Mmt54dVRiBibcGsum_rRV=_SwP=dxioAxq=EDmPRnY2Q@mail.gmail.com>
- <aC4J9HDo2LKXYG6l@slm.duckdns.org> <CACSyD1MvwPT7i5_PnEp32seeb7X_svdCeFtN6neJ0=QPY1hDsw@mail.gmail.com>
- <aC90-jGtD_tJiP5K@slm.duckdns.org> <CACSyD1P+wuSP2jhMsLHBAXDxGoBkWzK54S5BRzh63yby4g0OHw@mail.gmail.com>
- <aDCnnd46qjAvoxZq@slm.duckdns.org> <CACSyD1OWe-PkUjmcTtbYCbLi3TrxNQd==-zjo4S9X5Ry3Gwbzg@mail.gmail.com>
- <x7wdhodqgp2qcwnwutuuedhe6iuzj2dqzhazallamsyzdxsf7k@n2tcicd4ai3u>
- <CACSyD1My_UJxhDHNjvRmTyNKHcxjhQr0_SH=wXrOFd+dYa0h4A@mail.gmail.com> <pkzbpeu7w6jc6tzijldiqutv4maft2nyfjsbmobpjfr5kkn27j@e6bflvg7mewi>
-In-Reply-To: <pkzbpeu7w6jc6tzijldiqutv4maft2nyfjsbmobpjfr5kkn27j@e6bflvg7mewi>
-From: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Date: Thu, 19 Jun 2025 11:49:58 +0800
-X-Gm-Features: Ac12FXx40uf43iyBgKM0BLFSLGPsXPQ2pByqjOiXn1b6gvpuapC4lhHK5kvY7Zo
-Message-ID: <CACSyD1MhCaAzycSUSQfirLaLp22mcabVr3jfaRbJqFRkX2VoFw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] cpuset: introduce non-blocking cpuset.mems
- setting option
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, muchun.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a57jjrtddjc4wjbrrjpyhfdx475zwpuetmkibeorboo7csc7aw@foqsmf5ipr73>
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 10B6B1F38D
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.com:email];
+	MISSING_XM_UA(0.00)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spam-Score: -4.01
+X-Spam-Level: 
 
-On Wed, Jun 18, 2025 at 5:05=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
->
-> On Wed, Jun 18, 2025 at 10:46:02AM +0800, Zhongkun He <hezhongkun.hzk@byt=
-edance.com> wrote:
-> > It is unnecessary to adjust memory affinity periodically from userspace=
-,
-> > as it is a costly operation.
->
-> It'd be always costly when there's lots of data to migrate.
->
-> > Instead, we need to shrink cpuset.mems to explicitly specify the NUMA
-> > node from which newly allocated pages should come, and migrate the
-> > pages once in userspace slowly  or adjusted by numa balance.
->
-> IIUC, the issue is that there's no set_mempolicy(2) for 3rd party
-> threads (it only operates on current) OR that the migration path should
-> be optimized to avoid those latencies -- do you know what is the
-> contention point?
+On Wed 18-06-25 15:37:20, Shakeel Butt wrote:
+> > This is
+> > beneficial for users who perform over-max reclaim while holding multiple
+> > locks or other resources (especially resources related to file system
+> > writeback). If a task needs any of these resources, it would otherwise
+> > have to wait until the other task completes reclaim and releases the
+> > resources. Postponing reclaim to the return-to-user path helps avoid this issue.
+> > 
+> > # Background
+> > 
+> > We have been encountering an hungtask issue for a long time. Specifically,
+> > when a task holds the jbd2 handler 
+> 
+> Can you explain a bit more about jbd2 handler? Is it some global shared
+> lock or a workqueue which can only run single thread at a time.
+> Basically is there a way to get the current holder/owner of jbd2 handler
+> programmatically?
 
-Hi Michal
+There's a typo in the original email :). It should be "jbd2 handle". And
+that is just a reference to the currently running transaction in ext4
+filesystem. There can be always at most one running transaction in ext4
+filesystem and until the last reference is dropped it cannot commit. This
+eventually (once the transaction reaches its maximum size) blocks all the
+other modifications to the filesystem. So it is shared global resource
+that's held by the process doing reclaim.
 
-In our scenario, when we shrink the allowed cpuset.mems =E2=80=94for exampl=
-e,
-from nodes 1, 2, 3 to just nodes 2,3=E2=80=94there may still be a large num=
-ber of pages
-residing on node 1. Currently, modifying cpuset.mems triggers synchronous m=
-emory
-migration, which results in prolonged and unacceptable service downtime und=
-er
-cgroup v2. This behavior has become a major blocker for us in adopting
-cgroup v2.
+Since there can be many holders of references to the currently running
+transaction there's no easy way to iterate processes that are holding the
+references... That being said ext4 sets current->journal_info when
+acquiring a journal handle but other filesystems use this field for other
+purposes so current->journal_info being non-NULL does not mean jbd2 handle
+is held.
 
-Tejun suggested adding an interface to control the migration rate, and
-I plan to try
-that later. However, we believe that the cpuset.migrate interface in
-cgroup v1 is also
-sufficient for our use case and is easier to work with.  :)
-
-Thanks,
-Zhongkun
-
->
-> Thanks,
-> Michal
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
