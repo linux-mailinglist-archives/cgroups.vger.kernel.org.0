@@ -1,123 +1,118 @@
-Return-Path: <cgroups+bounces-8623-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8624-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1AC1AE45FD
-	for <lists+cgroups@lfdr.de>; Mon, 23 Jun 2025 16:09:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39010AE494D
+	for <lists+cgroups@lfdr.de>; Mon, 23 Jun 2025 17:53:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C62B163D83
-	for <lists+cgroups@lfdr.de>; Mon, 23 Jun 2025 14:03:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B91217A5969
+	for <lists+cgroups@lfdr.de>; Mon, 23 Jun 2025 15:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D722151C5A;
-	Mon, 23 Jun 2025 14:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1917828BAAF;
+	Mon, 23 Jun 2025 15:53:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="aCKMsV68"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="KYAiZida"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A9E5FEE6
-	for <cgroups@vger.kernel.org>; Mon, 23 Jun 2025 14:03:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398C126E175;
+	Mon, 23 Jun 2025 15:53:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750687412; cv=none; b=kXmPqvi46nufL0GM+AOKVYcUXSHNF+YuMWwLzNyI+Gryk/8rdw6yXfEWpvDq1MIwSb/Wgw9ang3bVR3PXUaof7KtOUHA3KDyHnhJ3NzWEoY2nO3ThXmId3/IW1MjIh11Usds/UMohxUFUFfAZdFUXwTMmeuel2PfandFlSe6z9U=
+	t=1750693999; cv=none; b=awzZybKNeiB40HQD5Kr78xvUt6B1rkGm7tEicZNl+IQ63qs+6kP3HPKekcLITvevCbbe0zq4poHX0HR2i5eioiZzd5G7wHRaQJ09ZJQdwYLe/EzPxUzrVugvsLHkS3sW/RtFmKCFpyXL70tbCNe7GF3NYoiu+R283xdMFvaEJNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750687412; c=relaxed/simple;
-	bh=vx1K4qKQZ1DteZ5J0H6N54934o4J8mjSRBbMleFn/9Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fV7urBHCUxTFzGJrxVh8KS7wdoYqsgKaZdiAfjrnq2o9sgGVIOe8DjlHcLk0YWEVYwuqNcQNSdXtR2Jt/7098C4Db6RaQm0fL5N9n0MgxT1WIBonyTednJD0dmgsBRJT8Oxj83HYQatuAEyyAJsUVg+dDZQF3ItIF2U+t4U5HRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=aCKMsV68; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6fafaa60889so25761066d6.3
-        for <cgroups@vger.kernel.org>; Mon, 23 Jun 2025 07:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1750687409; x=1751292209; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oHQvKS3TWKn2OxZSW1oU1l5YoOyNfHzqUoMyvQKiXDk=;
-        b=aCKMsV68qMXBc1IMOcZWSdZ5FDIZgx1wX0QgtCB0tcTP0jmOuRVN1m3Pel+iRQm6aZ
-         QzPAyZP2UqTnLxvpKxdp3M+5PnNHDvbgdFxmJYB9ooDJOAJgRmKgpsjxSEsDEwa1CRws
-         a+pST7SPp/aqrwCo4Dd28XS741kdcbxMdTtkR5DAnhkmxOh3oq6sootQSms17SibLlcq
-         k8XmZUMY293CfEkvMaq2vFC0VqLOpJOtAjPEmnmi5feo1W1Q9FXEam5NTf6w0GrIFx8R
-         /6wKyrOorWt3AYp99h6GG+PSSaM3eo1/lwYUlxzDXTBC7xIHXIfpA7i7LIgwzmpavvji
-         4VIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750687409; x=1751292209;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oHQvKS3TWKn2OxZSW1oU1l5YoOyNfHzqUoMyvQKiXDk=;
-        b=ELDmXKetlngNezE4YxPyi2hW4fxLAVgX6sFRPx/tIRqwDvl1lx9Jx1Hyw38GU5zGVA
-         SUkaKp9BMbQXB3UTDWLN9fvGnKa/lNr05+kx/CxOOhDlJ487x0JkSYchPNIGdb6UqAEx
-         vSfmFzHz0iN+3r9NzNDt1F4pAkeJ+euPU3KyFW+EHqiM2/j26/OO6Pv8zR5COuYBFLQX
-         WvVCJgX6rHLet7x7zMnJy8UsEAYhgfXCChbOyAXzN+ze5JKb42kKjC9qe/GzksF3y9Vr
-         H015Ei9ab/yEACdPPpEGmQQUedr70yJ6fjr2sYoodbx3/wRFiiyeaF7Kg076eWeHlyGh
-         g1lw==
-X-Forwarded-Encrypted: i=1; AJvYcCVTXRYRcgUNsaC5jVgpsCiukQcgUp1w5ZiwfROKol82meRUA1+DVvwvUFpvpXtSkhxG8Mr3UQ8K@vger.kernel.org
-X-Gm-Message-State: AOJu0YyaEQ2PTY3DWFxD6Yu6vjRDvQ76rvNAXtrhNsX+zLh+SRe6G5rn
-	e7rm1qPe/I+lAvT8ZBcIrVuCVCxthhdM65vk8C8lQGjEvIEw6galD2GuZBWcd0pSgf4=
-X-Gm-Gg: ASbGncv3QfPNcZF42MQrB5UZNoCi+T4VBCUYx2p6jdr+xSo9j4rbuZNtypXEVsHHVXn
-	523p2t2vcRF4gou5bPfzyCg7D6Ixwyg8WGIuWj2IjNW4jUIj//nBwWNcV9cLddH+JDsA35bXbpi
-	0uxELm6SCDbirCPd4tgeuTR2V24Ha2zx+MqO1D3lpNuEGG/ksxmD6eVn7m8bH/BBb4f2zyHOWjt
-	RlJ+53rhjoGGNZD/cL2v/+N9nYQI5QE0A+UUhuJG6RRay+kyeqG2X6NNSre9dlHyNfOwHeTzFdg
-	Tx8i6W7C4PEvOplOnmGpgTIIaGOVP+hQw2tnMV/maSbFzvCXgiJ3jlqEY4LLB4LhDi6vy3HfDlW
-	9dfZizg0O4D9Js/fesOc=
-X-Google-Smtp-Source: AGHT+IHV2G54kD9pRv09My18az6RnUtamNkzetpd9U2aimjaqJNjn9lxVwmwJSl2uRadS7czP/BLFg==
-X-Received: by 2002:a05:6214:568e:b0:6e8:ddf6:d136 with SMTP id 6a1803df08f44-6fd0a5dd8fdmr213376516d6.45.1750687408570;
-        Mon, 23 Jun 2025 07:03:28 -0700 (PDT)
-Received: from localhost (syn-067-251-217-001.res.spectrum.com. [67.251.217.1])
-        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6fd095c7fe4sm45030926d6.121.2025.06.23.07.03.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Jun 2025 07:03:27 -0700 (PDT)
-Date: Mon, 23 Jun 2025 16:03:21 +0200
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Jemmy Wong <jemmywong512@gmail.com>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/3] cgroup: Add lock guard support
-Message-ID: <20250623140321.GA3372@cmpxchg.org>
-References: <20250606161841.44354-1-jemmywong512@gmail.com>
- <2dd7rwkxuirjqpxzdvplt26vgfydomu56j3dkmr37765zk67pd@aou7jw4d6wtq>
- <9BDD726A-2EAE-46C3-9D00-004E051B8F5B@gmail.com>
- <aFYeU_dL0VOvyeYs@slm.duckdns.org>
+	s=arc-20240116; t=1750693999; c=relaxed/simple;
+	bh=eKiXvCPGG7WLlm26Hmb3q6+HD966RHLLuhjnSiZlll4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KhntzDIhETxI0n31yicFCV/KuURX9F/+tBuKaXn3KOeXRnMgRNHYc9MOIDl82SDORUUcfiOlKuBwbjuikvWjEqmB7Fu6GGEY4jZsZZsISC8+4g+p6Npo/AZ2oXPaBWHIRE3quQXUNliN7wh44lTmlshnydoxqDZh16vwKMnlCF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=KYAiZida; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55NCiZOO002102;
+	Mon, 23 Jun 2025 15:53:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2025-04-25; bh=PxxPxgF2ODXpDFZkHWm+P8oA/NR5X
+	Y0G9EVuhakE/zQ=; b=KYAiZida+OyzOMzZExsedHOxYKbS28zeuAYDxEE5MMHI0
+	9MziLVOBEk8af0MIusyWJPkQs3fqk9P8UtrAMBONnfqvcb28N6meuaoL7icm9tkM
+	tzx56KFRCB3soo76R7qBukXD1sPlHs+plZ6DgaSptq0iiviSwxAXg5G+4TMBzjAq
+	qnTz+lQ4XTUoVzxd0tlZQzGKyvoAegIGCj5A7N6CRNe/n0QbHjP21KaCnjtM82Tb
+	CSpy18fX5+rHktbTbSzEVCKIZqhrZ6DS3FzZrkr9YMNF1MCH5icKgBBJ3bwed05P
+	9hZtDtUZdD8zh8pF8upp32vditBZWZ0iroFYQRaIg==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 47egumhyg9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 23 Jun 2025 15:53:10 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 55NFSveK009051;
+	Mon, 23 Jun 2025 15:53:10 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 47ehq2h5v7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 23 Jun 2025 15:53:09 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 55NFr9NV013518;
+	Mon, 23 Jun 2025 15:53:09 GMT
+Received: from konrad-char-us-oracle-com.osdevelopmeniad.oraclevcn.com (konrad-char-us-oracle-com.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.249.23])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 47ehq2h5tu-1;
+	Mon, 23 Jun 2025 15:53:09 +0000
+From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To: allison.henderson@oracle.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, tj@kernel.org,
+        andrew@lunn.ch
+Cc: hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
+Subject: [PATCH net-next v4.1] Expose RDS features via sysfs.
+Date: Mon, 23 Jun 2025 11:51:35 -0400
+Message-ID: <20250623155305.3075686-1-konrad.wilk@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aFYeU_dL0VOvyeYs@slm.duckdns.org>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
+ definitions=2025-06-23_04,2025-06-23_06,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ spamscore=0 malwarescore=0 suspectscore=0 mlxscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2505160000 definitions=main-2506230096
+X-Proofpoint-ORIG-GUID: duWBwEmbLxf3o-T2KorWfTeXqc9tcnAR
+X-Proofpoint-GUID: duWBwEmbLxf3o-T2KorWfTeXqc9tcnAR
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjIzMDA5NiBTYWx0ZWRfX7xL1wh4By42L Xd4AGC8Kwwt249NClkEGf0EYzdSm/w3GgpppJIskKdwwZ6I77HvTUS9OENSV/DyeRxCh1n5m9rD QMDJCRu0z27iRa5gYGBiXa75/1ZTbzKq6bf+DjyBVLzt0rz/Brv1W55Q6dlS5WIzMN2gOOaTbaD
+ 7xMc8i6H0bvI1GF0yWsKAIZCM4DITQUnF8kGC7GcEVpslXpErrTaolhhUR3/PPzhre243Euw1mR cKAwsMvBuxAnl4kHsky5hecwkW0TbpctQ+BHLUmWSxiIzdzzJeYoXwFAVZl8YoMf/xDP6AcYemB H8BMBDGSz1Kyz/4ye3rjY0CMwsho+0bII8QX4Xndt5+VUyc4GcyJil0zJTXDFRiacUE2H2JamLT
+ p5SR+U7jCqHp94EdGYm/J9YlecN65xT/QyHkPM0QYoYONjDvaNO4e+yaZjdJeh6LRzelVjea
+X-Authority-Analysis: v=2.4 cv=S5rZwJsP c=1 sm=1 tr=0 ts=68597867 cx=c_pps a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17 a=6IFa9wvqVegA:10 a=xjO9cqGlMa9R-XWzUmgA:9
 
-On Fri, Jun 20, 2025 at 04:52:03PM -1000, Tejun Heo wrote:
-> On Fri, Jun 20, 2025 at 06:45:54PM +0800, Jemmy Wong wrote:
-> ...
-> > > Tejun:
-> > >> There are no practical benefits to converting the code base at this point.
-> > > 
-> > > I'd expect future backports (into such code) to be more robust wrt
-> > > pairing errors.
-> > > At the same time this is also my biggest concern about this change, the
-> > > wide-spread diff would make current backporting more difficult.  (But
-> > > I'd counter argue that one should think forward here.)
-> 
-> Well, I'm not necessarily against it but I generally dislike wholesale
-> cleanups which create big patch application boundaries. If there are enough
-> practical benefits, sure, we should do it, but when it's things like this -
-> maybe possibly it's a bit better in the long term - the calculus isn't clear
-> cut. People can argue these things to high heavens on abstract grounds, but
-> if you break it down to practical gains vs. costs, it's not a huge
-> difference.
-> 
-> But, again, I'm not against it. Johannes, any second thoughts?
+Hi folks,
 
-Yeah, letting the primitives get used organically in new code and
-patches sounds better to me than retrofitting it into an existing
-function graph that wasn't designed with these in mind.
+Changelog:
++ Since v1:
+ - Changed it to use sysfs and expose a 'features' file with the data.
++ Since v2:
+ - Use a 'features' directory similar to ext4, btrfs and expose each feature.
++ Since v3:
+ - Fix ret returning 0 if kobject_create_and_add fails
+ - Follow the syntax of Documentation/ABI/stable/sysfs-module.
++ Since v4:
+ - Changed period to coma in ABI documentation.
+ - Added Allison's Reviewed-by
+ 
+This patch addresses an issue where we have applications compiled against
+against older (or newer) kernels. RDS does not have any ioctls to query
+for what version of ABIs it has or what features it has. Hence this solution
+that proposes to put this ABI information in sysfs space.
+
+ Documentation/ABI/stable/sysfs-transport-rds | 43 +++++++++++++++++++
+ net/rds/af_rds.c                             | 63 +++++++++++++++++++++++++++-
+ 2 files changed, 105 insertions(+), 1 deletion(-)
+
+Konrad Rzeszutek Wilk (1):
+      rds: Expose feature parameters via sysfs (and ELF)
+
 
