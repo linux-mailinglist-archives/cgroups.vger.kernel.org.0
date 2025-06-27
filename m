@@ -1,167 +1,118 @@
-Return-Path: <cgroups+bounces-8645-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8646-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A491AEBF50
-	for <lists+cgroups@lfdr.de>; Fri, 27 Jun 2025 20:54:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35AE4AEBF62
+	for <lists+cgroups@lfdr.de>; Fri, 27 Jun 2025 21:01:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B395B1734DD
-	for <lists+cgroups@lfdr.de>; Fri, 27 Jun 2025 18:54:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2A053ACA72
+	for <lists+cgroups@lfdr.de>; Fri, 27 Jun 2025 19:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003BA1EA7CF;
-	Fri, 27 Jun 2025 18:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627C81FA178;
+	Fri, 27 Jun 2025 19:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UfDGsv/i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R7gAnHqu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111BA4502A;
-	Fri, 27 Jun 2025 18:54:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DFE31F473C;
+	Fri, 27 Jun 2025 19:01:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751050491; cv=none; b=uoW2zNFdROdvkPqvYAiz5TF7pw1jVMORqytQI4AwDHTZs4EQgNNhPvny7puIhG9763QY/4TavAAZ/VO2cLx0ZYy7EgNvB8+yfDUrl1JvdRPq+xrQwY8SV+Cjq7JDy5NfmNqifjq9EhszKaop2vdyX12KZmndLCmSB8Rxa5dYbg4=
+	t=1751050894; cv=none; b=H1e2x5z9HQwahKHwsEmS08KxdCaNeVuOEFBYKm8rgdfc7r95iOHU0hgH+3h46RSzbBHXvLhnNpvEJ/P5th4dV+JsOJAqp8v8o7kncf8uj5wjTmOOcaSmzGvUYG5mddAL8P5RTr6HQOdUmCGdaYjAjX0S3iL/WzW2207jBJeTFO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751050491; c=relaxed/simple;
-	bh=MkZf/rGrOyK/HyrljMZNxwNo/mJruqVicCPTs40b2Ts=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hn3y+lr4kEmks5B6i6yk98w8cmhFIQP9FXCpCQl0vCL86Z9BRIqgnUAJpFTeKujQgY4+BnRu05M36zSn5Vnco1rma4M+IJnyhoEsIDLHieD8G1zaW+zkotvpIaCtw0NCjpFvTKKPYTJlgEN7+BMXscOkyXGLSgRJpUaLZaPVTBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UfDGsv/i; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-32addf54a01so26769801fa.3;
-        Fri, 27 Jun 2025 11:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751050488; x=1751655288; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MkZf/rGrOyK/HyrljMZNxwNo/mJruqVicCPTs40b2Ts=;
-        b=UfDGsv/i3I2rDvc55KBfN+qQhUbEWEklzdcMYLRdaDs8i5HPH23/QAabzh+lA4rIQu
-         AKVLahMvBSyPzE/hwaLBP1/aWNWs/xAEkfpKqfxdtNf7C1vecoGQ13WAzuuG0GiIM3fu
-         I26fQDMbOEDMqy1lnoNRH7q8P2CqUZS2ELyS/2weZq7kf0a4bc8fcvPRBSl2vDdg/pbr
-         p2Sv/09ev/lyV0REzpGn5e+41b77Y1T11Ng46OErAY3pYaNLLBBpC4a72BgPdvK25cUo
-         wg2gOxqsjdDmG9uUJ6twJ5zYSnk2K31cuDSSoPeWjIB00SnhRUeEGGOL4Ps2dHglxZAH
-         oh4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751050488; x=1751655288;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MkZf/rGrOyK/HyrljMZNxwNo/mJruqVicCPTs40b2Ts=;
-        b=vXSXJLmicCyeexmfF5Z6cftGjx6IhFeAi/WlUZVws3ynuhbkVMu3DI5aQuZbgSGaU0
-         AAST1WTOsAFKo5KzjRgQEFMZcbKd+Q1MZ+XgX3Ow2XtcX6R8lvPtkdAMbjXAIwsHdE1j
-         lqAw1Mzlw3wGNfnePIv+ky54Oj9h4vfOoCXgo4qPlQcCTGbWfkwn69Ksop4w7hv7c1fQ
-         qWH4QgMb4ORB5jl4mEDSTj9HeuCEJSso047D2f9HXaVIleqxj3w7PyDcY0B6tjpgJrgx
-         HnxhmXFf9kC7VdJqh6A/s1nQ3UfQWH8tJ6srVm8TwtPKye7BE2be5aE9tCwKtNMYCN4F
-         ze+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWi5Go/3UbaKj/0Om5V4KDelSwjS89Wz4MdTo1WeBfg6SmpdKhf28H3w4TbgCWcEH8fIYP3w2AX@vger.kernel.org, AJvYcCXq/hfBwX2QwhtkNYMPYGOfFj76v+aFdSk0keTeIJ/2pTtFETd+XhWDVUADLckAw3qp8kII9097OQJzkxiw@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBVkr/KZdDnt8xOtI2NlKC8d11bgeI/2vv8G7/bWKNn7znyk60
-	BI4LJjd7g/MXLuh6+EGv7uUHS2DCrquA4FOvYYdh9CoiFOIfm6EpojBPDiojT1Nz7ZdhwLWOJ9y
-	v8fodnnQwMXGw0fL/LLmCgIvvXyNQyJ0=
-X-Gm-Gg: ASbGncsdWHhJcVswA31syS0/PPyG4l62p2Q3pBFYHOw4bIipycsYuqxEnUQhKwL7fHI
-	F0AUjcqHI7C1h9IcEc08qilts2pQdfD2pjdl39udzNCb1fbjltoFCtzdskT4+MYwYQmtgXIXEps
-	FF8F1/XtbhOTd/rzsqaaIHhT5tPs5trFT3j90+ZV9B1hjhR0NyaT7CVw==
-X-Google-Smtp-Source: AGHT+IEEWJL2fzTT6sp/iFnXIOYPN7CNjGrDkAoMvUyzyseYP2O8kfk5drk0YGN9ll3GTdOreVTaWBEIEhSZBaQSC1w=
-X-Received: by 2002:a05:651c:32a:b0:32b:5eb3:280 with SMTP id
- 38308e7fff4ca-32cdc50e821mr13050961fa.29.1751050487729; Fri, 27 Jun 2025
- 11:54:47 -0700 (PDT)
+	s=arc-20240116; t=1751050894; c=relaxed/simple;
+	bh=+Z2dOnNvbRwQSRsG3QSBXopAVTxVsPdAeLmcJniGFe8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FwwWqfUQaN5cf27CfZelg2TRH9BlSoHjAh3Y0Ov3+8Wslaw2IZlF52E643kLeDUXRb7kfjwmcPH1X6n7CDcG6MpZulpqBgZP+dkfwkGmiv+dkp/9XBnOKM8aLHZdd4EG9xx3Chk4QVVBy/iwd4b/noq1WZBva9U1favrikvizEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R7gAnHqu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E0BBC4CEE3;
+	Fri, 27 Jun 2025 19:01:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751050893;
+	bh=+Z2dOnNvbRwQSRsG3QSBXopAVTxVsPdAeLmcJniGFe8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R7gAnHquxOHVtG5p5NGkfjGDzC62fDfpV/uWOn4o+TOULgIue20tQQarfy3898/tX
+	 S7bx2GGcTs6nEmtzWf7YsXYQjIDbD5CbzDB/t6CWFxaMM1LbYnQyyFkTcw1PSKOhJ+
+	 WAtc+TasJhy+dRHOuktM1SSOiAqIchtpXrROoW4w5SDkHkuEg5B2f3Ed3V1txTTFJK
+	 kSo72YTQ3SwLdNSmUurBO7SAQDUGfkGGKzf13wa0AOByd/f5fTiQPdzjn+Rzvr4LFQ
+	 R9OCHykZA2A8Jgk6nj12NNhaJA1OnoPsY/DC6jXJ/s0SDQhnHQhEPo/aIK4e+rP/0O
+	 YLzPrK2xJhJIA==
+Date: Fri, 27 Jun 2025 09:01:32 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Tiffany Yang <ynaffit@google.com>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	kernel-team@android.com, John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Chen Ridong <chenridong@huawei.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [RFC PATCH] cgroup: Track time in cgroup v2 freezer
+Message-ID: <aF7qjAkwXhjTVmT-@slm.duckdns.org>
+References: <20250603224304.3198729-3-ynaffit@google.com>
+ <aD9_V1rSqqESFekK@slm.duckdns.org>
+ <dbx8y0u7i9e6.fsf@ynaffit-andsys.c.googlers.com>
+ <aEDM_s7y8xMKJHph@slm.duckdns.org>
+ <dbx8y0tej595.fsf@ynaffit-andsys.c.googlers.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250415024532.26632-1-songmuchun@bytedance.com>
- <CAMgjq7BAfh-op06++LEgXf4UM47Pp1=ER+1WvdOn3-6YYQHYmw@mail.gmail.com>
- <F9BDE357-C7DA-4860-A167-201B01A274FC@linux.dev> <CAMgjq7D+GXce=nTzxPyR+t6YZSLWf-8eByo+0NpprQf61gXjPA@mail.gmail.com>
- <aAF2eUG26_xDYIDU@google.com> <CAMgjq7BNUMFzsFCOt--mvTqSmgdA65PWcn57G_6-gEj0ps-jCg@mail.gmail.com>
- <5f622eec-a039-4e82-9f37-3cad1692f268@huaweicloud.com>
-In-Reply-To: <5f622eec-a039-4e82-9f37-3cad1692f268@huaweicloud.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Sat, 28 Jun 2025 02:54:10 +0800
-X-Gm-Features: Ac12FXwDAS0QUytrD_AyHHgfvBJCFweeNF9Ytnf0eONhRRe-M_Ek30p9WmZQNCE
-Message-ID: <CAMgjq7ASpGjJme4OwHu+=ys95W4jNZaJd3Yn9t2cL-qeCs4W-Q@mail.gmail.com>
-Subject: Re: [PATCH RFC 00/28] Eliminate Dying Memory Cgroup
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org, mhocko@kernel.org, 
-	shakeel.butt@linux.dev, akpm@linux-foundation.org, david@fromorbit.com, 
-	zhengqi.arch@bytedance.com, yosry.ahmed@linux.dev, nphamcs@gmail.com, 
-	chengming.zhou@linux.dev, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, hamzamahfooz@linux.microsoft.com, 
-	apais@linux.microsoft.com, yuzhao@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbx8y0tej595.fsf@ynaffit-andsys.c.googlers.com>
 
-On Fri, Jun 27, 2025 at 5:02=E2=80=AFPM Chen Ridong <chenridong@huaweicloud=
-.com> wrote:
-> On 2025/4/28 11:43, Kairui Song wrote:
-> > On Fri, Apr 18, 2025 at 5:45=E2=80=AFAM Roman Gushchin <roman.gushchin@=
-linux.dev> wrote:
-> >>
-> >> On Fri, Apr 18, 2025 at 02:22:12AM +0800, Kairui Song wrote:
-> >>>
-> >>> We currently have some workloads running with `nokmem` due to objcg
-> >>> performance issues. I know there are efforts to improve them, but so
-> >>> far it's still not painless to have. So I'm a bit worried about
-> >>> this...
-> >>
-> >> Do you mind sharing more details here?
-> >>
-> >> Thanks!
-> >
-> > Hi,
-> >
-> > Sorry for the late response, I was busy with another series and other w=
-orks.
-> >
-> > It's not hard to observe such slow down, for example a simple redis
-> > test can expose it:
-> >
-> > Without nokmem:
-> > redis-benchmark -h 127.0.0.1 -q -t set,get -n 80000 -c 1
-> > SET: 16393.44 requests per second, p50=3D0.055 msec
-> > GET: 16956.34 requests per second, p50=3D0.055 msec
-> >
-> > With nokmem:
-> > redis-benchmark -h 127.0.0.1 -q -t set,get -n 80000 -c 1
-> > SET: 17263.70 requests per second, p50=3D0.055 msec
-> > GET: 17410.23 requests per second, p50=3D0.055 msec
-> >
-> > And I'm testing with latest kernel:
-> > uname -a
-> > Linux localhost 6.15.0-rc2+ #1594 SMP PREEMPT_DYNAMIC Sun Apr 27
-> > 15:13:27 CST 2025 x86_64 GNU/Linux
-> >
-> > This is just an example. For redis, it can be a workaround by using
-> > things like redis pipeline, but not all workloads can be adjusted
-> > that flexibly.
-> >
-> > And the slowdown could be amplified in some cases.
->
-> Hi Kairui,
->
-> We've also encountered this issue in our Redis scenario. May I confirm
-> whether your testing is based on cgroup v1 or v2?
->
-> In our environment using cgroup v1, we've identified memcg_account_kmem
-> as the critical performance bottleneck function - which, as you know, is
-> specific to the v1 implementation.
->
-> Best regards,
-> Ridong
+Hello,
 
-Hi Ridong
+On Thu, Jun 26, 2025 at 07:19:18PM -0700, Tiffany Yang wrote:
+...
+> Fortunately, since this same latency is present when we
+> unfreeze a cgroup and each member task, it's effectively canceled out
+> when we look at the freezing duration for tasks in cgroups that are not
+> currently frozen. For a running task, the measurement of how long it had
+> spent frozen in the past was within 1-2 ticks of its cgroup's. Our use
+> case does not look at this accounting until after a task has become
+> unfrozen, so the per-cgroup values seem like a reasonable substitution
+> for our purposes!
 
-I can confirm I was testing using Cgroup V2, and I can still reproduce
-it, it seems the performance gap is smaller with the latest upstream
-though, but still easily observable.
+Glad that worked out, but I'm curious what are the involved time scales.
+Let's say you get things off by some tens of msecs, or maybe even hundreds,
+does that matter for your purpose?
 
-My previous observation is that the performance drain behaves
-differently with different CPUs, my current test machine is an Intel
-8255C. I'll do a more detailed performance analysis of this when I
-have time to work on this. Thanks for the tips!
+> That being said, I realized from Michal's reply that the tracked value
+> doesn't have to be as narrow as the cgroup v2 freezing time. Basically,
+> we just want to give userspace some measure of time that a task cannot
+> run when it expects to be running. It doesn't seem practical to give an
+> exact accounting, but maybe tracking the time that each task spends in
+> some combination of stopped or frozen would provide a useful estimate.
+
+While it's not my call, I'm not necessarily against. However, as you noted
+in another reply, the challenge is that there are multiple states and it's
+not clear what combinations would be useful for whom. When/if we encounter
+more real world use cases tha twould require these numbers, they may shed
+light on what the right combination / interface is. IOW, I'm not sure this
+is a case where adding something preemptively is a good idea.
+
+Thanks.
+
+-- 
+tejun
 
