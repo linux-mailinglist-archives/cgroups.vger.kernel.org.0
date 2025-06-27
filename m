@@ -1,195 +1,213 @@
-Return-Path: <cgroups+bounces-8637-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8638-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68A67AEACC3
-	for <lists+cgroups@lfdr.de>; Fri, 27 Jun 2025 04:19:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65DBAAEB06F
+	for <lists+cgroups@lfdr.de>; Fri, 27 Jun 2025 09:47:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE51E4A79CA
-	for <lists+cgroups@lfdr.de>; Fri, 27 Jun 2025 02:19:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2BF84E2077
+	for <lists+cgroups@lfdr.de>; Fri, 27 Jun 2025 07:47:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A38B7191F6A;
-	Fri, 27 Jun 2025 02:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCB70223322;
+	Fri, 27 Jun 2025 07:47:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="k4wYBXQ0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ES0oAnmK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F22D92AF03
-	for <cgroups@vger.kernel.org>; Fri, 27 Jun 2025 02:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15DA0221F32
+	for <cgroups@vger.kernel.org>; Fri, 27 Jun 2025 07:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750990764; cv=none; b=DleeXDxINHuAOYmLMJCVCT4pr7ppW4lD8oYOkpkOEka6EpzK8LaX7/nyuGicvdRK4QWytQOZdU6T3HollcdZCCuI47cZOjFyKQpwqkqQVxrbmdJRz1jMqgAVbzQ99DUZ07kb4Ym9Zhe4bU17N/CvlV4orXWlKNcb/V5Ht42dfA4=
+	t=1751010461; cv=none; b=XUV/ROjJm8pKZ6U0R9l8a6NZj1AqYDuRBateceRBKPqLCUFhpdwLOyAGSIr2031nK15SCwsbrvmhAbZX6VD/rJdKsD8ZhnTLZfdp/eAxbgjLdTIWIeCQQ8gLWRBkNcmNrNooiqGhH1+JAK+jta3wJ76dLiYRxibfh78pjc1qnjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750990764; c=relaxed/simple;
-	bh=8q6CJM/GFRlLq9Smxp01oFMgHVTi2ex5Wzz319Dh4eM=;
+	s=arc-20240116; t=1751010461; c=relaxed/simple;
+	bh=Y7St4JhZZZq+mleq1bXqKtP6Z7Ps1WQG5WZmwKtliYo=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=i86Sv6oxoTpt+WT65tXhgKkQAWzdGIv2+0r3xWwTardhzSzlSDZxqAMo1ZeIAHaAjYmVBosq65PF3B9FGCt7hX5LMUlK1maZBbX5hASvxHjUPd356wmLLxrATnAjbtHK63AxQDK0cjnUxF3DpqNWI0YOt6IawiCHfFAkz5mwTcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=k4wYBXQ0; arc=none smtp.client-ip=209.85.215.176
+	 MIME-Version:Content-Type; b=PZJx6NalsHssSW50fDvbP3hJnqW9yIj4tW9Dx4Y4fEfqQd+cTEcPaP6jTR4kuDFXGQTZ2Z5JOebyNcA0bTd5UGPEf2rPIn9B35FSb5Y3XLILLupIS49f9psOwaieofL+2iVl2EBNzkWcaorStSjS9N4cli7ZQZXxHbCru2u1aBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ES0oAnmK; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-7fd35b301bdso1780921a12.2
-        for <cgroups@vger.kernel.org>; Thu, 26 Jun 2025 19:19:21 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-742c3d06de3so2225028b3a.0
+        for <cgroups@vger.kernel.org>; Fri, 27 Jun 2025 00:47:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1750990761; x=1751595561; darn=vger.kernel.org;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZWwZXUo62mcX92TFX431sVQuGGLnxjqGO4qZhUCoR54=;
-        b=k4wYBXQ0weAUwcfC+L1LUrQ9W3G9aYh7Y4bfx4ExV+RW1hl9ICTcVSphfqyxR50AzW
-         sUib7aT/gIxglQhlnYy0N+w7KEwQ3TIVJGG9uee708PkO9fkKWw5NvGqAQV2m3/u1u6Y
-         atn6N+7wDUjoDz6KmphsWx+xq+GExeOat7V2FHufRI9crcFGMWV9P7zOZhcc6w4jIZag
-         CKGe90q41mNd64oDTKL5/zH6PoHMeuUPS7vGpaZEUtcj2UHMjX/pPSqDw24UGoQbI4wI
-         qCCEkmiIOd3mL7EwWMInQXDjqly7LGfC/dEag+hiF6ChUUmcqcQepVKv1RGtqwF0lajG
-         KT+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750990761; x=1751595561;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1751010459; x=1751615259; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZWwZXUo62mcX92TFX431sVQuGGLnxjqGO4qZhUCoR54=;
-        b=Ew2Qvv/iFwdipdyKVP64Xhkr/iIfeG1Fz4i0YurqPiWiGCfVGTzwBwq6tcz1maixM7
-         7t4wN39aac9lq98H0B4yhRLxz2zMLA66Cl4hOlZEia9wZZrrCQe6JaubdMo0SrRvaIeM
-         ikT2xka6n1agQwJMMKNtcRsj2PU2LrM8z/U90yNfP266cR/jMmSPMsVJnthSLOaY6PNr
-         PhKSzrTSrjnkii6IG8/HfXDhQgAj5ffSLdY+dh+7pkyvhFG6llLyu9DB1g/334t+0VHM
-         +4apUyzu1bqr0Oma2qDtcN93h3H9DfZh3EMp9TkjRewAME7h2p5NeKYpuHK7uEkpOjPB
-         OBZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUls5/Qw3gZTr0xZCZl8/N7GV9y8NGm9pJL8gFFLwHMPbryabZIh5xgK10tUX/BwY0Fd+AtvOTT@vger.kernel.org
-X-Gm-Message-State: AOJu0YzAMFu63fXRoFqLV+TTPitCx2FEOS6RzS6NujH5u7U6JZQGdyTc
-	2Muz3aIfPR4Qik8wrby50HHaEOOZ751FFBYRWnFIagujwU0mB0Ihk6Bfq5kq/U0iaA==
-X-Gm-Gg: ASbGncvulO/slyhK9adOoslLtxc6IDo2sSOJzgi+09A5RlV401Dy+XAxp7esgL1m7D0
-	LYhveHFx/reznhrNls1X80h9rQybo0ytuaxFE3fELI6c7p7rkcKnyPo4iPBUMcWNqJ9uWcZV1si
-	SZwWLIjXJn9bfTL4Kgioncd4o0VtyG9Ol5FOn59egKKIINrI9rY264WLVnua6lf6xtJdZe2+x/O
-	pLV/NqNjASJYylxSeMJz2u/NnITbYte9zuqCRM3UHzpocQkfAl54u+M6LolOM1tgDCDdj5FaV3i
-	18IPZSS3egnXCf9dnrc9It4a6h/s1KLAiT7gyq1CUZp1xNTlkNqRpD3+CrWwvcbd9pxSVYQu9is
-	AUkoKyi2nbzb3BbYkuUGFfkWHaAUHxKSskndxzr3N4namPkD1
-X-Google-Smtp-Source: AGHT+IG/s6ATLPSKxfmzWXxp3UkhyhFpRn9zyuTIyeOzxumVvJMn1cbO+0L/Fo75LsD0jPY+4+ZCXg==
-X-Received: by 2002:a17:90b:278e:b0:311:ffe8:20e6 with SMTP id 98e67ed59e1d1-318c8ecd20cmr1903986a91.3.1750990760898;
-        Thu, 26 Jun 2025 19:19:20 -0700 (PDT)
+        bh=Y7St4JhZZZq+mleq1bXqKtP6Z7Ps1WQG5WZmwKtliYo=;
+        b=ES0oAnmKXkVzacDiPmUHRWXrAEykJTjm/ofhO+1cIDiaybO0WA4I9Z/ZymmY84XyWY
+         rAd3mcy2g2pWcjVeX1IE5nqjZPqB/e5lCzO0bxJuHJ2KXiDfuWLz2pfL0omWRIr2pb/x
+         bihCfAIfZtlcxLGEfBeND4frevUKkxB1fshMsrXxXkj2nHp1XiQ9xqdxdb7OoLNKiExY
+         6mdng2BDDTelS0+zxEkkAxjKL1L7l8Srb8a4sDj7mcNT9sAPWxP1ASberKTsWPDG/VtO
+         R72dTSwnAhvad8PPsbBzQ/wvlSQVOKt7Ad8MTEkfIsVqicnPYMbBRalfMNJ9zpMqOojk
+         c/vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751010459; x=1751615259;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Y7St4JhZZZq+mleq1bXqKtP6Z7Ps1WQG5WZmwKtliYo=;
+        b=sG+nITDxDn/DCf9LaOZitG9q1Zl1S5dVKrBDqRtgx/AGJ4gCPCTjLP/YZgm2nLloEA
+         J5FO3zecTfekPHCRZVkYyhsr45OSPWhjX/+W2NmEpPbD0D1tKv+uJ2/7hCd7g9wGNGJo
+         1Y4c4b6jOQ6sGuStC82EpFHA7j5h9pEopL/nZWV9wTbVBKsYVKgTY2GT4wBamuo9Vnef
+         Ih3Xs2EztoZjcbfdZuQQUA2jAVFURjG9IfbOCRcqeBKO9KMCRBFMpfJm9oA8uaXzx/c9
+         dFesz9vuJ4B0dA98cUHhn1/Q2marK+Mg18LVhSc2V77oPGjvFWoHvljP9qLhFw096y3Q
+         /8BQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVJJkMunfyUVwESSsxrBn81RHUIdRuvSIp85xKbybdG4jtQl1uC4a9T4FDwUNbgX3SUppsS8loo@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWC3w/yOOL7KYgiC8n4+9KkqfZ/Xf/rS3WpZQvr1hh1/6XM6pN
+	oAQaxUuOqbMCJZCquYLAQdudq5BNU6UfuATOvywjWjr5JHlhpCEp1B5ewEfsJBLbQw==
+X-Gm-Gg: ASbGncu8P68WUFVMVmqv/xXCZ+L26QqKTMLr+rD3zk7EPwRudp+IC0soff7GOx7W6GE
+	vxzgi4wpsoePgNsMgJ4+3a9SxkzQ4/9lwjtq61dZbNh0Z6ypCAML8rrGBlFzf7sGMrXLaSiUSDi
+	8bgyf9jtmH5RxW4hyoNrmg7zFo+WTSXM+4ixBp70SJUOXvUaCYVJoNp2zli72GLvgNCdwtrWLoU
+	olEaGiM0SdmphQnvPG0lnEbvEZBSW1svfafjDSXRE2ewqL9DwLcRuS6ZKsyJIrlduyg38oB0tkq
+	4UnrCplLTHxL8ig6ODUIy9KzyA5G6QssijzKWBwdtCEuBOCa0SNPpdEmkesny1T4ywxiDYjBqew
+	z/htce5JxDprVOpHg8fDMTxDIhYcRgXbXLDTHu8uTFzK/J1IS
+X-Google-Smtp-Source: AGHT+IHK/BoiWDoAeamudHKZKa3R7+0iiaHI3QMpkhmGL/UdBwZdH+9dnYc6xSPV6R2mIvwNGBWEvQ==
+X-Received: by 2002:a05:6a00:3cd5:b0:74a:f611:484 with SMTP id d2e1a72fcca58-74af70a825cmr3440203b3a.24.1751010459048;
+        Fri, 27 Jun 2025 00:47:39 -0700 (PDT)
 Received: from ynaffit-andsys.c.googlers.com (225.193.16.34.bc.googleusercontent.com. [34.16.193.225])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-318c1394288sm962304a91.2.2025.06.26.19.19.19
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74af56d91edsm1728051b3a.140.2025.06.27.00.47.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Jun 2025 19:19:20 -0700 (PDT)
+        Fri, 27 Jun 2025 00:47:38 -0700 (PDT)
 From: Tiffany Yang <ynaffit@google.com>
-To: Tejun Heo <tj@kernel.org>
+To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 Cc: linux-kernel@vger.kernel.org,  cgroups@vger.kernel.org,
   kernel-team@android.com,  John Stultz <jstultz@google.com>,  Thomas
  Gleixner <tglx@linutronix.de>,  Stephen Boyd <sboyd@kernel.org>,
   Anna-Maria Behnsen <anna-maria@linutronix.de>,  Frederic Weisbecker
- <frederic@kernel.org>,  Johannes Weiner <hannes@cmpxchg.org>,  Michal
- =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,  "Rafael J. Wysocki"
- <rafael@kernel.org>,
-  Pavel Machek <pavel@kernel.org>,  Roman Gushchin
- <roman.gushchin@linux.dev>,  Chen Ridong <chenridong@huawei.com>,  Ingo
- Molnar <mingo@redhat.com>,  Peter Zijlstra <peterz@infradead.org>,  Juri
- Lelli <juri.lelli@redhat.com>,  Vincent Guittot
- <vincent.guittot@linaro.org>,  Dietmar Eggemann
- <dietmar.eggemann@arm.com>,  Steven Rostedt <rostedt@goodmis.org>,  Ben
- Segall <bsegall@google.com>,  Mel Gorman <mgorman@suse.de>,  Valentin
- Schneider <vschneid@redhat.com>
+ <frederic@kernel.org>,  Tejun Heo <tj@kernel.org>,  Johannes Weiner
+ <hannes@cmpxchg.org>,  "Rafael J. Wysocki" <rafael@kernel.org>,  Pavel
+ Machek <pavel@kernel.org>,  Roman Gushchin <roman.gushchin@linux.dev>,
+  Chen Ridong <chenridong@huawei.com>,  Ingo Molnar <mingo@redhat.com>,
+  Peter Zijlstra <peterz@infradead.org>,  Juri Lelli
+ <juri.lelli@redhat.com>,  Vincent Guittot <vincent.guittot@linaro.org>,
+  Dietmar Eggemann <dietmar.eggemann@arm.com>,  Steven Rostedt
+ <rostedt@goodmis.org>,  Ben Segall <bsegall@google.com>,  Mel Gorman
+ <mgorman@suse.de>,  Valentin Schneider <vschneid@redhat.com>
 Subject: Re: [RFC PATCH] cgroup: Track time in cgroup v2 freezer
-In-Reply-To: <aEDM_s7y8xMKJHph@slm.duckdns.org> (Tejun Heo's message of "Wed,
-	4 Jun 2025 12:47:26 -1000")
+In-Reply-To: <gn6xiuqczaoiepdczg364cj46riiskvqwgvyaawbb3bpaybaw4@5iiohkyscrek>
+	("Michal =?utf-8?Q?Koutn=C3=BD=22's?= message of "Tue, 17 Jun 2025 11:49:36
+ +0200")
 References: <20250603224304.3198729-3-ynaffit@google.com>
-	<aD9_V1rSqqESFekK@slm.duckdns.org>
-	<dbx8y0u7i9e6.fsf@ynaffit-andsys.c.googlers.com>
-	<aEDM_s7y8xMKJHph@slm.duckdns.org>
+	<gn6xiuqczaoiepdczg364cj46riiskvqwgvyaawbb3bpaybaw4@5iiohkyscrek>
 User-Agent: mu4e 1.12.9; emacs 30.1
-Date: Thu, 26 Jun 2025 19:19:18 -0700
-Message-ID: <dbx8y0tej595.fsf@ynaffit-andsys.c.googlers.com>
+Date: Fri, 27 Jun 2025 00:47:23 -0700
+Message-ID: <dbx8h601k4ms.fsf@ynaffit-andsys.c.googlers.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Tejun Heo <tj@kernel.org> writes:
+Michal Koutn=C3=BD <mkoutny@suse.com> writes:
 
-> Hello, Tiffany.
+Hello! Thanks for taking the time to respond!
+
+> Hello.
 >
-> On Wed, Jun 04, 2025 at 07:39:29PM +0000, Tiffany Yang wrote:
-> ...
->> Thanks for taking a look! In this case, I would argue that the value we
->> are accounting for (time that a task has not been able to run because it
->> is in the cgroup v2 frozen state) is task-specific and distinct from the
->> time that the cgroup it belongs to has been frozen.
->> 
->> A cgroup is not considered frozen until all of its members are frozen,
->> and if one task then leaves the frozen state, the entire cgroup is
->> considered no longer frozen, even if its other members stay in the
->> frozen state. Similarly, even if a task is migrated from one frozen
->> cgroup (A) to another frozen cgroup (B), the time cgroup B has been
->> frozen would not be representative of that task even though it is a
->> member.
->> 
->> There is also latency between when each task in a cgroup is marked as
->> to-be-frozen/unfrozen and when it actually enters the frozen state, so
->> each descendant task has a different frozen time. For watchdogs that
->> elapse on a per-task basis, a per-cgroup time-in-frozen value would
->> underreport the actual time each task spent unable to run. Tasks that
->> miss a deadline might incorrectly be considered misbehaving when the
->> time they spent suspended was not correctly accounted for.
->> 
->> Please let me know if that answers your question or if there's something
->> I'm missing. I agree that it would be cleaner/preferable to keep this
->> accounting under a cgroup-specific umbrella, so I hope there is some way
->> to get around these issues, but it doesn't look like cgroup fs has a
->> good way to keep task-specific stats at the moment.
+> On Tue, Jun 03, 2025 at 10:43:05PM +0000, Tiffany Yang <ynaffit@google.co=
+m> wrote:
+>> The cgroup v2 freezer controller allows user processes to be dynamically
+>> added to and removed from an interruptible frozen state from
+>> userspace.
 >
-> I'm not sure freezing/frozen distinction is that meaningful. If each cgroup
-> tracks total durations for both states, most threads should be able to rely
-> on freezing duration delta, right? There shouldn't be significant time gap
-> between freezing starting and most threads being frozen although the cgroup
-> may not reach full frozen state due to e.g. NFS and what not.
+> Beware of freezing by migration vs freezing by cgroup attribute change.
+> The latter is primary design of cgroup v2, the former is "only" for
+> consistency.
 >
-> As long as threads are not migrated across cgroups, it should be able to do
-> something like:
+>> This feature is helpful for application management, as it
+>> allows background tasks to be frozen to prevent them from being
+>> scheduled or otherwise contending with foreground tasks for resources.
 >
-> 1. Read /proc/self/cgroup to determine the current cgroup.
-> 2. Read and remember freezing duration $CGRP/cgroup.stat.
-> 3. Do time taking operation.
-> 4. Read $CGRP/cgrp.stat and calculate delta and deduct that from time taken.
+>> Still, applications are usually unaware of their having been placed in
+>> the freezer cgroup, so any watchdog timers they may have set will fire
+>> when they exit. To address this problem, I propose tracking the per-task
+>> frozen time and exposing it to userland via procfs.
 >
-> Would that work?
+> But the watchdog fires rightfully when the application does not run,
+> doesn't it?
+
+Good question. I should've been clearer about our use case. In both
+cases, the watchdog is being used to ensure that a job is completed
+before some deadline. When the deadline is relative to the system time,
+then yes, it would be firing correctly. In our case, the deadline is
+meant to be relative to the time our task spends running; since we don't
+have a clock for that, we set our timer against the system time
+(CLOCK_MONOTONIC, in this case) as an approximation.
+
+This timer may fire (correctly) while our application is still frozen,
+but our watchdog task won't run until it's unfrozen. At that point, it
+can check how much time has been spent in the cgroup v2 freezer and
+decide whether to rearm the timer or to initiate a corrective action.
+
+> It should be responsibility of the "freezing agent" to prepare or notify
+> the application about expected latencies.
 >
-> Thanks.
 
-Hi Tejun,
+Fair point! The freezing agent could roughly track freeze-entrance and
+freeze-exit times, but how it would communicate those values to every
+application being frozen along with who would be responsible for
+keeping track of per-thread accumulated frozen times make this a little
+messy. The accuracy of those user timestamps compared to ones taken in
+the kernel may be further degraded by possible preemptions, etc.
 
-Thank you for your feedback! You made a good observation that it's
-really the duration delta that matters here. I looked at tracking the
-time from when we set/clear a cgroup's CGRP_FREEZE flag and compared
-that to the per-task measurements of its members. For large (1000+
-thread) cgroups, the latency between when a cgroup starts freezing and
-when a task near the tail end of its cset->tasks actually enters the
-handler is fairly significant. On an x86 VM, I saw a difference of about
-1 tick per hundred tasks (i.e., the 6000th task would have been frozen
-for 60 ticks less than the duration reported by its cgroup). We'd expect
-this latency to accumulate more slowly on bare metal, but it would still
-grow linearly.
+>> but the main focus in this initial submission is establishing the
+>> right UAPI for this accounting information.
+>
+> /proc/<pid>/cgroup_v2_freezer_time_frozen looks quite extraordinary with
 
-Fortunately, since this same latency is present when we
-unfreeze a cgroup and each member task, it's effectively canceled out
-when we look at the freezing duration for tasks in cgroups that are not
-currently frozen. For a running task, the measurement of how long it had
-spent frozen in the past was within 1-2 ticks of its cgroup's. Our use
-case does not look at this accounting until after a task has become
-unfrozen, so the per-cgroup values seem like a reasonable substitution
-for our purposes!
+Agreed.
 
-That being said, I realized from Michal's reply that the tracked value
-doesn't have to be as narrow as the cgroup v2 freezing time. Basically,
-we just want to give userspace some measure of time that a task cannot
-run when it expects to be running. It doesn't seem practical to give an
-exact accounting, but maybe tracking the time that each task spends in
-some combination of stopped or frozen would provide a useful estimate.
+> other similar metrics, my first thought would be a field in
+> /proc/<pid>/stat (or track it per cgroup as Tejun suggests).
+>
 
-What do you think?
+Adding it to /proc/<pid>/stat is an option, but because this metric
+isn't very widely used and exactly what it measures is pretty particular
+("freezer time, but no, cgroup freezer time, but v2 and not v1"), we
+were hesitant to add it there and make this interface even more
+difficult for folks to parse.
 
--- 
+> Could you please primarily explain why the application itself should
+> care about the frozen time (and not other causes of delay)?
+>
+
+Thank you for asking this! This is a very helpful question. My answer is
+that other causes of delay may be equally important, but this is another
+place where things get messy because of the spectrum of types of
+"delay". If we break delays into 2 categories, delays that were
+requested (sleep) and delays that were not (SIGSTOP), I can say that we
+are primarily interested in delays that were not requested. However,
+there are many cases that fall somewhere in between, like the wakeup
+latency after a sleep, or that are difficult to account for, like
+blocking on a futex (requested), where the owner might be preempted (not
+requested).
+
+Which is all to say that this is a hard thing to really pin down
+generalized semantics for.
+
+We can usually ignore the smaller sources of delay on a time-shared
+system, but larger causes of delay (e.g., cgroup v2 freezer, SIGSTOP,
+or really bad cases of scheduler starvation) can cause problems.
+
+In this case, we've focused on a narrowish solution to just the cgroup
+v2 freezer delays because it's fairly tractable. Ideally, we could
+abstract this out in a more general way to other delays (like SIGSTOP),
+but the challenge here is that there isn't a clear line that separates a
+problematic delay from an acceptable delay. Suggestions for a framework
+to approach this more generally are very welcome.
+
+In the meantime, focusing on task frozen/stopped time seems like the
+most reasonable approach. Maybe that would be clear enough to make it
+palatable for proc/<pid>/stat ?
+
+--=20
 Tiffany Y. Yang
 
