@@ -1,284 +1,338 @@
-Return-Path: <cgroups+bounces-8648-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8649-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6290AEC399
-	for <lists+cgroups@lfdr.de>; Sat, 28 Jun 2025 02:45:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19FB1AEC467
+	for <lists+cgroups@lfdr.de>; Sat, 28 Jun 2025 05:09:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56ED74A8072
-	for <lists+cgroups@lfdr.de>; Sat, 28 Jun 2025 00:45:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ADD03AC8D5
+	for <lists+cgroups@lfdr.de>; Sat, 28 Jun 2025 03:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B67812EBE7;
-	Sat, 28 Jun 2025 00:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="bXaKWkvj";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="EwM+VSYu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DF43215F7D;
+	Sat, 28 Jun 2025 03:09:47 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5238A2F1FCB;
-	Sat, 28 Jun 2025 00:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751071521; cv=fail; b=H8g6oTUShev2X3FPFfGo2C+xEc7y4J2HpdDhmwDXktqjdXFcVPoJ9GpBiiU2WgTBOWKxOVpGCgW7CxTV1so8DhceFOMtGxSbHorzcX6ApimNosVzdhTKdsfUle7fN+qicRQLrmvNrHLVOJWytTQiZ9F+PzQO8ga7ksiKyXtSCbg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751071521; c=relaxed/simple;
-	bh=XawHKTpNJuFzaayGEBo1pOHg/26ltkgeJdvat0LIjoc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=qgUWCwx91Q3wYjSTf4KPirHhRobfu4aapYnzePl+BundSUuJ5mf256cVnuIY7IP8MpJlSvhJlSx3GeyJHnrf5vfca9draFqzfKOMn96StNYIYcRcQxTIhZwotLQjN6P4Cke1b9Vg0ekwJ80UX+tKDXQTYfO/7LvwZK5CGUGlk3s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=bXaKWkvj; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=EwM+VSYu; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55S0QYUE016968;
-	Sat, 28 Jun 2025 00:45:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=5RBKiA3xIhAu4WGvvj
-	Fib4cSW3v0dUpbXbZxr5xHfis=; b=bXaKWkvjkRVDunTXPBw13fsJGUu3WIlbxM
-	bgkW4294Rx0HH7zpX3M2nDyk1EKxDR6Szt8MAs3v5S4a2RTT2tJnYjG9v2yTOCPV
-	dfJQrQ09zrSx7GGWs0b5+KRI7YzDP0aCy9VFui54un8zvf5Jh9+IRa7ntku042ja
-	qDF3RGx6rcRNgmMGbThgQRvDzGDpHKEl1cggnGuDNw9mQRLIuJnNYlX5kQ06fNUm
-	swIGeNJUJF6oD53uGRRtAyibTEixkax4wcN3ISUpfDASJ4qEFalhLAL0pQ1vZuKP
-	sWCMfsIdyy8R+84zyb781ZiIADgJlVyLtI1Qy2Hd7y0THl5nTU1Q==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 47egt1kkau-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 28 Jun 2025 00:45:10 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 55RMjRJM017876;
-	Sat, 28 Jun 2025 00:45:10 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10on2063.outbound.protection.outlook.com [40.107.93.63])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 47ehw206hr-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 28 Jun 2025 00:45:10 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DSN2Dsc9amf9S/tGMO4/bSGNbFq4uHC7paBj5FBgwHdzOJseF2eu1NC4ZPmBHJ76toOM0udsY5vwxnkcunG6tK0fSjeHKOsP4YmfFQaMEbeiTsL4kIhD4ZJHg9+2VVFqVk0EY40yA9ijIRYhj6po+/CgBu2Co48R2llzXcCN2pM13Egl/FMC6GPa3Z+LPTSfyAD+lQPuxRcNviYHyiAGuFmTkOWzwdFiqPIPK+ir9UV2iLlvCWRJyZyWImY7W/qeCRWJKHVSqlKSgqmUXen9vEpcLt1VUEl0XUoWB8GfpB7BYIlEeQgvETnGpTLzoCWSA3Wl7dOSTTVCSzroo5RZEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5RBKiA3xIhAu4WGvvjFib4cSW3v0dUpbXbZxr5xHfis=;
- b=bZxyXCJ57HdgJXEnSC1qPMWMlXYTYoHIEYIQsYDVpvPSLdofKK/7prBSBPcrkFwQ0VYaq0Ip8sPjo+q3miVXoeD0J+VIgceEaFsP8FxpwMXWApM2VS03q+Ui0fAF1QSl+qz2L5pWZxjDCllfX/rRDCVJHnNpsmlLGYPXnKp2MnLIPpmHGV4MvVcFZfz+Z0XL8eDlBlK5RHK0RJmD+HbFfhk6k2LTF9HDmsRbwopU5NjT7oO1oZL+I8HMZPRqUkMqmKzkM3yhaD1SvO/HcUIbsiI8ukJSragDxSRV8hCt8uzVUsx0zSXwGFjtMtwqz8URkc/PJl8lV04TFiFONSH2Yw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5RBKiA3xIhAu4WGvvjFib4cSW3v0dUpbXbZxr5xHfis=;
- b=EwM+VSYuHMEN64Z4JHxFZU1xvohnpJ1Q7oMzCnDuf1Rc4PWN+rA1Sfh1vadQAOWatFiOHOTWBKSDp/iPU6fmRXkK4evtvLJPjaIDhXBLoXEmaY9iAd+lelWIGyuMfgSaxxoLjbEo09J63RgrgNrSZ58JNxM3aoZ/s0e3Tez1IG4=
-Received: from IA1PR10MB8211.namprd10.prod.outlook.com (2603:10b6:208:463::7)
- by CH3PR10MB7332.namprd10.prod.outlook.com (2603:10b6:610:130::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8857.27; Sat, 28 Jun
- 2025 00:45:07 +0000
-Received: from IA1PR10MB8211.namprd10.prod.outlook.com
- ([fe80::ec0a:e847:383e:1c40]) by IA1PR10MB8211.namprd10.prod.outlook.com
- ([fe80::ec0a:e847:383e:1c40%7]) with mapi id 15.20.8857.026; Sat, 28 Jun 2025
- 00:45:07 +0000
-Date: Fri, 27 Jun 2025 20:44:49 -0400
-From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: allison.henderson@oracle.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, tj@kernel.org,
-        andrew@lunn.ch, hannes@cmpxchg.org, mkoutny@suse.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v4.1] rds: Expose feature parameters via sysfs
- (and ELF)
-Message-ID: <aF87ATSJH3Q9rkju@char.us.oracle.com>
-References: <20250623155305.3075686-1-konrad.wilk@oracle.com>
- <20250623155305.3075686-2-konrad.wilk@oracle.com>
- <20250625163009.7b3a9ae1@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250625163009.7b3a9ae1@kernel.org>
-X-ClientProxiedBy: BYAPR04CA0022.namprd04.prod.outlook.com
- (2603:10b6:a03:40::35) To IA1PR10MB8211.namprd10.prod.outlook.com
- (2603:10b6:208:463::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C080F2B9BF;
+	Sat, 28 Jun 2025 03:09:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1751080186; cv=none; b=D2D8zifZHTHIVDC8s8JWQZ5uTgSIqSMIfUj6II0VW5yhGCuGKUMYDXoQX0gXq2Jd7Q6yK4BQ7E9FereetWS9HuCTnfYVl0ZxMoq50phjK/saj0ug0t3M+4o79D4UJYgwADAWPYfNgbTL9UjbKYsUIbbBzf0652pJGOASbkoHLKM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1751080186; c=relaxed/simple;
+	bh=Q7q9S/xhkDWWI8fBhvNJklMqJ6k6atlOZOnlJ72aLkU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WfN1iBCucbqeVE+J5wuAZsi7rGsZXsrLque4ylKBShZIFRO5j2o1lC52srNZpnMD6nL8ugnV/PZL2XPWB4GfEn3az5YB1iMCOwqjH9EXzQc+nCMiADaRQSWHMk22Ol18G9AnBrX41MN2C1iLdUmy14qrx+OL32tarVzOUye691k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bTcpt4X5PzKHMkd;
+	Sat, 28 Jun 2025 11:09:42 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 0643A1A13BD;
+	Sat, 28 Jun 2025 11:09:41 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP3 (Coremail) with SMTP id _Ch0CgAHWcPzXF9oEV2CQg--.34775S2;
+	Sat, 28 Jun 2025 11:09:40 +0800 (CST)
+Message-ID: <d84092a7-fc3d-4c3c-98b3-341d63a21b18@huaweicloud.com>
+Date: Sat, 28 Jun 2025 11:09:39 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR10MB8211:EE_|CH3PR10MB7332:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2fe325ff-5e49-421c-61d0-08ddb5dd073c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?bmFx5f+voRgO+xEeYYWpHINs9FdqCrKAPAXVWrNFxXXQLrlFXqlJsRoqfraH?=
- =?us-ascii?Q?1qoofBBxDofr6UGCeuDlVM8NSsXjeWHljK+Y9PNccKffAWFD663ZSqAVSfli?=
- =?us-ascii?Q?wGsoftpHAq+H6JM7o4hWGa1aWslp8TJCqAdIrgMChUMTcul4TafBKC8MgXcW?=
- =?us-ascii?Q?lZuNcXQb7xQavaBLdP7ylgmD7QDCB0uVVXhppkN2guH+0QS8XpBN7/5L+A7e?=
- =?us-ascii?Q?sZsGRAKD4HhKef3StcgaPld4d2m+Dk909gxlMulwVjYmp13o7Ew8M+l4SIUW?=
- =?us-ascii?Q?d+WmreJw/Jnotmo157yCqDUPjWv2sXKBeBGAVSQdLihdNHSwZFpHiWMyVqWB?=
- =?us-ascii?Q?gFrwJOg1HiMgV5YL0MWGUiXyJLGm6LGcc8G9bOm/IKRsY5tJatqPFBlCgQVW?=
- =?us-ascii?Q?MdOoZnwUa36GLjeKGeZAo8UDA054p+hD/4NSdIk2exbUS4CZY71qMTTQ5a9h?=
- =?us-ascii?Q?F0mCsrRVSlqxCoAYNAhlKB/WMi2ChcYUhWMw+/obuPg7hBCYHUPnlsHTW7a/?=
- =?us-ascii?Q?ggnOqfsau0jrC1Bma56lZAuGwyEureYk/GNeZwF7/wcIKnieaaovOu5KD90m?=
- =?us-ascii?Q?qYGZLR4PYEX5d5O49tL64Pup13aUkNqYZXY1qhc8cEUlPfmMaacyBV0ZLCZF?=
- =?us-ascii?Q?uavA4hAB/+xgnHxkpFGQekF0tAJX1PnkU4+Yn5rKAd5c8sG2c+I9GtlkNhCx?=
- =?us-ascii?Q?dsjBoCPYZic8fdnBw6xXyoGlRQc4KA5GOX2Q1zHrUKSWG6dTAGYzEb2XpIgR?=
- =?us-ascii?Q?PWoORCB1a1J5hX0e9FsNY7GWSGdc+6K4Fyg+XQV9YYUMpTHyRrQ14cEsjiwy?=
- =?us-ascii?Q?H11FBsrewSMRJ0GWSJpYEAwpiwviooAT7qzayFdp5S+L6mfAd1P2yGk6Dii8?=
- =?us-ascii?Q?0hX8t2Xa8/wWqumwKEADowgDnGZY+v/DSZUIJ/aDYDPQeySctZEtYUFce5tC?=
- =?us-ascii?Q?Uqw9ulsuWgzvVlIq4KgJ4IwpFD3mpSrZiUQk5t7zngB7D2aZuovwyRXILuWW?=
- =?us-ascii?Q?S6lCtQiUt3zacbPhjHjV8e9QL/sbg2hfCq2xkEjsYb7zXWq7VBjHwi6bCKco?=
- =?us-ascii?Q?cDVRY5RZALy2U+PzJda3PiavLJoiLiZmLLjTrCjZSFUA96ZHwfmYh2a7VLEa?=
- =?us-ascii?Q?Zyz7oZQg7h90DdQ80QGDUS06iM90f2gA8w/TIuGeNoqsuCmlPHagYIe4BVPA?=
- =?us-ascii?Q?2bDvYivbViG6k+MipM0VRt8WgBP/Sv0TPg3CCcBkGciX03WXuOgEAgP4yeJC?=
- =?us-ascii?Q?/ouoGVEPyd2JiOUtz4dYWSWLUXr4a7zG3Gr/WJpsvfsEjp5TfHiNbPJ22hnk?=
- =?us-ascii?Q?loZiQePaU2PsBoWhrBw9XKPts2pjPVGkfMtAn6NhNv5XYottfE5cNUmHeVuJ?=
- =?us-ascii?Q?3S941jnxXzN6zsrz1D5h2uyrgydsoklrzb/ILUKuNHrBzLdYibsjbU64DfPo?=
- =?us-ascii?Q?sIJLeVdvJl4=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR10MB8211.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?gmrFZSvpN/ojNXfU2UWPK+jkwrYomO1lm75QLpOygXvM0wS7L2lXqD7hmxhA?=
- =?us-ascii?Q?V6WWVirMhViHDquLHIKcaPLBLLIpKy9QX+37XdUFYY1O8uiM1NhjKPPTMlaK?=
- =?us-ascii?Q?O9nwNSp/7hY8KXTvrN+qfiJld42ro3fQbD1nifm0Q+Z/TmE30h68miNMlnXx?=
- =?us-ascii?Q?DQBoJiOapaSoFzFUIc+Qh+5bXxtwNBp7iUER6XoeN9Plbge0SO99E6hm5mlc?=
- =?us-ascii?Q?0J3m+CfBqiec441UF09khc7Y3F9WbI76armxzDIq3Bn8LcXo8CtS7LLzkHWk?=
- =?us-ascii?Q?CpZezIRIpkzQaTOxkOL+xZ3rqLtR09C/9z26cDPG4wC6N92ZGBIdEyo/sIAF?=
- =?us-ascii?Q?zxXKWlQtsJwPidyHS9g8SOcn4QQtdt1z15R4ANfQo9yuXpU0ABrVkEdssXVI?=
- =?us-ascii?Q?oZSbPWezDTJzkkU5S6PzhuuvwV4GdzBzuJhAYudF83vtznYXoMVH1cemRZZl?=
- =?us-ascii?Q?SkDcGYdU6HFqSQ4wH49ujmtalRlttXYXZZxed2fKF/9++3ZDCX0KG0SR9wm2?=
- =?us-ascii?Q?rAQrLGRwID7MhHUy+tZOh9/CQuZ9GEBOPJR1X/5BifQ5WlcMGOkDV2BbETww?=
- =?us-ascii?Q?jRC5/rt+W5H9/XgcUn6a0IU2akBO8G7rbr+8r6aHAEXZDyaGB2qPNK7Vtnam?=
- =?us-ascii?Q?py7yi2mM64gHy+XiY/ObVUn15k59exCrkbcqZe9Jy0Q2PKfVYB+FnGpPIY78?=
- =?us-ascii?Q?7QKW22tAjKOQHkwr9MkytFJgTisjG9t2En6yxn5z4cDT5I5pOvZoC8cYef4b?=
- =?us-ascii?Q?NfjnbjVt2kQ4hxSQtOP44g5eHy/oMmsJivfqPsXKeHwcV+GE1q0aQ5ULScd/?=
- =?us-ascii?Q?fQ6aBCA6k/NiGs25B9Z6/CWhDSssHUd9A+9BxQblHzlJoeDjsGa13ptMKk7R?=
- =?us-ascii?Q?Y6+s8u6ctGXnwvS3MMeOmhnCPSSLyYR2M1VWVkH1vO2TezwM4aUr7XJhj+YO?=
- =?us-ascii?Q?jnlMX7k6g2vsYWVUs2uRJQwCSXvZKvMkg4Kw6Lo9wIBjdu7H4sRggque5U79?=
- =?us-ascii?Q?dYgAoKFb1j62+xQhvxvLB8HuZc/+eGYJc2sb3H/QSpe99cFPfT4XnaUIw7AF?=
- =?us-ascii?Q?ipQCYCh9HxtLtCj2Fj/vqPBhoWSas8S8/S/vReD/IQWElRX1qF058BGyKNJu?=
- =?us-ascii?Q?Ii8WkhLXTpHP5DzJeBxj4RCGNGdSFBey68c7BjWQfGiPr1ZxcqybV6IYSC4l?=
- =?us-ascii?Q?FkJc/MvvR3UtYMoF83xtuZwjy4Xo6IU5FBOL4QtBU8q7Ml3uFpsAzqQtcEWi?=
- =?us-ascii?Q?hK2zT4lvoAwOk/xi4/UlJHnMkk+nNocBwr+ZhN6AUQSeLsbk34e9s2xlRWGn?=
- =?us-ascii?Q?IumriBaCe6pzjgvF11euDfXNlXzMmNuiap1i3q/QKrC41h8kGX46/a36ABCP?=
- =?us-ascii?Q?A+BLO3ePJbkKIuAKxL+qZgD+sbrTNOQeeufRL8s5xRojKy0pPQIS6JtKRfQ4?=
- =?us-ascii?Q?ZHMAAOO0DwO9T5VqeTA2iINeDFMxcRd1NaLprj2sd3bfdNVAzIiv6upBVJiS?=
- =?us-ascii?Q?YA45J6nmEgAA0MqoxM7tV3leSXnJG8k3CRUegIVaUnNmumLdr70xQjNt9Cu0?=
- =?us-ascii?Q?MJHzyFj1J+FZ/Ye8CLv754FkZCA/72iMQ6j3YPlg7yjJwY9KnT9d4IKO8jse?=
- =?us-ascii?Q?Ng=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	Y7GNUvCDZBWFub3ywCi8xfPE8ECkrJp+KuFvibz36GLg3gbYftkPd3tFZY8OJOIgS/DUrw4cYsmTpXhD4zh3Kkn3F4eJbzlh5Rc8RDcJOOA9RBIl/V86tdvocF+Z4UPYXcpQK0j1fZo7Lo25y9UElAUgtnV1GL+kS4YR93tw+UQ3aNKc6H2x6jxyrcnyIz5fbwzs1g730QU/tt7Awo/AwanEvZgGfvWnV2MI7dcJBW+oz6pn5HQJoAFbbHFdBv9TxkPmUATCvI1ihlEMuUR5T/VwSY4grkxrACII2f/5KaDM606tSr0cmblz3N6f2gVxFbUxXB9DiUzgvOKpGVthamKu2cFGDPzqoBaDn4+HcL3cZzwkY1EbqNBi7+kOW6/ohTNHvtPqN/sQge91vmrxdCeIhZHP4Ihuz1U+7Ga0B00hR9XBIj7QwN69KO3J9gjTozFLEAjK2clgRtfFP3kTMQIt91XyFcZvprS5dCrPU/93EmbO9YfedA/7LVodRRrjxd7rBQmwzKvHOhKg3gP6FR3BPztZKA+cDXECQjRfYKRu7Zf3VKs9oTu3LoYPbMy4a2w0GA08WiVnpraz2npLU1DJPWXsx1SLiCMEnTAWjwY=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2fe325ff-5e49-421c-61d0-08ddb5dd073c
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR10MB8211.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2025 00:45:07.1800
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /ennLq8b8qSaCcV3HWPCy99jQR1K9FNPSYnjtNUByjYVvLyvOIlgz85g8mGWD6HPqW2IZkRsCXAKwmcyOeJrwQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB7332
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-06-27_05,2025-06-27_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 spamscore=0
- phishscore=0 adultscore=0 malwarescore=0 suspectscore=0 mlxlogscore=978
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
- definitions=main-2506280003
-X-Proofpoint-GUID: bxN4YUIPGY_9puHueg3XDWFWa9B0KkUZ
-X-Proofpoint-ORIG-GUID: bxN4YUIPGY_9puHueg3XDWFWa9B0KkUZ
-X-Authority-Analysis: v=2.4 cv=cpebk04i c=1 sm=1 tr=0 ts=685f3b16 b=1 cx=c_pps a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10 a=6IFa9wvqVegA:10 a=GoEa3M9JfhUA:10 a=VwQbUJbxAAAA:8 a=OdtpqN1j7cOETiBu9_AA:9 a=CjuIK1q_8ugA:10 cc=ntf awl=host:14723
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjI4MDAwMyBTYWx0ZWRfX2JKDn5ejBuKR 9SCNSQSvNxyQQZ2Hi8KqJda9iNZ5Fsys8o383MAGGhysr7zSiG9Jg2mi8EW8gk2hVM2VAUWbUov dHGk5S+yCEJqqoGfJCmm4PXNeAoCWvPxqqkkX4A7bj6LVLKv1jUVhoieHWg3+ZkfkeeQDGLNlNo
- uLZSgR4aRn1o6v75Zb68OLTik5M6l5VeIvrONZjvTYwOthPlsY7gsAefLNrV0veAurSoIOePJvR 4SGiHUFscUfVUhl8AMPe7XUiPjmhvSDO75HOtOpDB4YBMmbWETWGmMkESFbKBCQVDda0XluLVtO YfZ+AQ0w3O0or+9lFQ1S3fiuIY+woIjfADWRwtFFAJigfJdXpkeKVvWFrEmebvUJVIpcAxHk5Zl
- SfmUR9B4O9tAOnx0cFiAO/UvqeA3hq7uQVfrJhyQxB3xseUevvaP4NmUClXuvWPB6/D2LKYI
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 10/28] mm: memcontrol: return root object cgroup for
+ root memory cgroup
+To: Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org,
+ mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+ muchun.song@linux.dev, akpm@linux-foundation.org, david@fromorbit.com,
+ zhengqi.arch@bytedance.com, yosry.ahmed@linux.dev, nphamcs@gmail.com,
+ chengming.zhou@linux.dev
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-mm@kvack.org, hamzamahfooz@linux.microsoft.com,
+ apais@linux.microsoft.com
+References: <20250415024532.26632-1-songmuchun@bytedance.com>
+ <20250415024532.26632-11-songmuchun@bytedance.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20250415024532.26632-11-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_Ch0CgAHWcPzXF9oEV2CQg--.34775S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xr4DWry7KF1xuF13Cw4DArb_yoW3CF4xpa
+	nrCF9xtw4rA3yDGr4Sgayqva4rZa18Xr45JryxGwn7AF4aq3ZxJr1ayr1jyFyrAFZxGry7
+	Jrs0yF43CFW2yFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Wed, Jun 25, 2025 at 04:30:09PM -0700, Jakub Kicinski wrote:
-> On Mon, 23 Jun 2025 11:51:36 -0400 Konrad Rzeszutek Wilk wrote:
-> > With the value of 'supported' in them. In the future this value
-> > could change to say 'deprecated' or have other values (for example
-> > different versions) or can be runtime changed.
+
+
+On 2025/4/15 10:45, Muchun Song wrote:
+> Memory cgroup functions such as get_mem_cgroup_from_folio() and
+> get_mem_cgroup_from_mm() return a valid memory cgroup pointer,
+> even for the root memory cgroup. In contrast, the situation for
+> object cgroups has been different.
 > 
-> I'm curious how this theoretical 'deprecated' value would work
-> in context of uAPI which can never regress..
-
-Kind of sad considering there are some APIs that should really
-be fixed. Perhaps more of 'it-is-busted-use-this-other-API'?
-
+> Previously, the root object cgroup couldn't be returned because
+> it didn't exist. Now that a valid root object cgroup exists, for
+> the sake of consistency, it's necessary to align the behavior of
+> object-cgroup-related operations with that of memory cgroup APIs.
 > 
-> > The choice to use sysfs and this particular way is modeled on the
-> > filesystems usage exposing their features.
-> > 
-> > Alternative solution such as exposing one file ('features') with
-> > each feature enumerated (which cgroup does) is a bit limited in
-> > that it does not provide means to provide extra content in the future
-> > for each feature. For example if one of the features had three
-> > modes and one wanted to set a particular one at runtime - that
-> > does not exist in cgroup (albeit it can be implemented but it would
-> > be quite hectic to have just one single attribute).
-> > 
-> > Another solution of using an ioctl to expose a bitmask has the
-> > disadvantage of being less flexible in the future and while it can
-> > have a bit of supported/unsupported, it is not clear how one would
-> > change modes or expose versions. It is most certainly feasible
-> > but it can get seriously complex fast.
-> > 
-> > As such this mechanism offers the basic support we require
-> > now and offers the flexibility for the future.
-> > 
-> > Lastly, we also utilize the ELF note macro to expose these via
-
-.. <missing>
-
-> > so that applications that have not yet initialized RDS transport
-> > can inspect the kernel module to see if they have the appropiate
-> > support and choose an alternative protocol if they wish so.
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  include/linux/memcontrol.h | 29 ++++++++++++++++++-------
+>  mm/memcontrol.c            | 44 ++++++++++++++++++++------------------
+>  mm/percpu.c                |  2 +-
+>  3 files changed, 45 insertions(+), 30 deletions(-)
 > 
-> Looks like this paragraph had a line starting with #, presumably
-> talking about the ELF note and it got eaten by git? Please fix.
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index bb4f203733f3..e74922d5755d 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -319,6 +319,7 @@ struct mem_cgroup {
+>  #define MEMCG_CHARGE_BATCH 64U
+>  
+>  extern struct mem_cgroup *root_mem_cgroup;
+> +extern struct obj_cgroup *root_obj_cgroup;
+>  
+>  enum page_memcg_data_flags {
+>  	/* page->memcg_data is a pointer to an slabobj_ext vector */
+> @@ -528,6 +529,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+>  	return (memcg == root_mem_cgroup);
+>  }
+>  
+> +static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
+> +{
+> +	return objcg == root_obj_cgroup;
+> +}
+> +
+>  static inline bool mem_cgroup_disabled(void)
+>  {
+>  	return !cgroup_subsys_enabled(memory_cgrp_subsys);
+> @@ -752,23 +758,26 @@ struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css){
+>  
+>  static inline bool obj_cgroup_tryget(struct obj_cgroup *objcg)
+>  {
+> +	if (obj_cgroup_is_root(objcg))
+> +		return true;
+>  	return percpu_ref_tryget(&objcg->refcnt);
+>  }
+>  
+> -static inline void obj_cgroup_get(struct obj_cgroup *objcg)
+> +static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
+> +				       unsigned long nr)
+>  {
+> -	percpu_ref_get(&objcg->refcnt);
+> +	if (!obj_cgroup_is_root(objcg))
+> +		percpu_ref_get_many(&objcg->refcnt, nr);
+>  }
+>  
+> -static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
+> -				       unsigned long nr)
+> +static inline void obj_cgroup_get(struct obj_cgroup *objcg)
+>  {
+> -	percpu_ref_get_many(&objcg->refcnt, nr);
+> +	obj_cgroup_get_many(objcg, 1);
+>  }
+>  
+>  static inline void obj_cgroup_put(struct obj_cgroup *objcg)
+>  {
+> -	if (objcg)
+> +	if (objcg && !obj_cgroup_is_root(objcg))
+>  		percpu_ref_put(&objcg->refcnt);
+>  }
+>  
+> @@ -1101,6 +1110,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+>  	return true;
+>  }
+>  
+> +static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
+> +{
+> +	return true;
+> +}
+> +
+>  static inline bool mem_cgroup_disabled(void)
+>  {
+>  	return true;
+> @@ -1684,8 +1698,7 @@ static inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+>  {
+>  	struct obj_cgroup *objcg = current_obj_cgroup();
+>  
+> -	if (objcg)
+> -		obj_cgroup_get(objcg);
+> +	obj_cgroup_get(objcg);
+>  
+>  	return objcg;
+>  }
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index a6362d11b46c..4aadc1b87db3 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -81,6 +81,7 @@ struct cgroup_subsys memory_cgrp_subsys __read_mostly;
+>  EXPORT_SYMBOL(memory_cgrp_subsys);
+>  
+>  struct mem_cgroup *root_mem_cgroup __read_mostly;
+> +struct obj_cgroup *root_obj_cgroup __read_mostly;
+>  
+>  /* Active memory cgroup to use from an interrupt context */
+>  DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
+> @@ -2525,15 +2526,14 @@ struct mem_cgroup *mem_cgroup_from_slab_obj(void *p)
+>  
+>  static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+>  {
+> -	struct obj_cgroup *objcg = NULL;
+> +	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
+> +		struct obj_cgroup *objcg = rcu_dereference(memcg->objcg);
+>  
+> -	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
+> -		objcg = rcu_dereference(memcg->objcg);
+>  		if (likely(objcg && obj_cgroup_tryget(objcg)))
+> -			break;
+> -		objcg = NULL;
+> +			return objcg;
+>  	}
+> -	return objcg;
+> +
+> +	return NULL;
+>  }
+>  
 
-Yup
-> 
-> 
-> FWIW to me this series has a strong whiff of "we have an OOT module
-> which has much more functionality and want to support a degraded /
-> upstream-only mode in the user space stack". I'm probably over-
-> -interpreting, and you could argue this will help you make real
-> use of the upstream RDS. I OTOH would argue that it's a technical
-> solution to a non-technical problem of not giving upstreaming 
-> sufficient priority; I'd prefer to see code flowing upstream _first_ 
-> and then worry about compatibility.
+It appears that the return NULL statement might be dead code in this
+context. And would it be preferable to use return root_obj_cgroup instead?
 
-The goal here was to lay the groundwork for another patch series that
-Allison had in her backlog which was to introduce the reset functionality.
+Best regards,
+Ridong
 
-Let me work with Allison on adding this to that patch series.
+>  static struct obj_cgroup *current_objcg_update(void)
+> @@ -2604,18 +2604,17 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
+>  		 * Objcg reference is kept by the task, so it's safe
+>  		 * to use the objcg by the current task.
+>  		 */
+> -		return objcg;
+> +		return objcg ? : root_obj_cgroup;
+>  	}
+>  
+>  	memcg = this_cpu_read(int_active_memcg);
+>  	if (unlikely(memcg))
+>  		goto from_memcg;
+>  
+> -	return NULL;
+> +	return root_obj_cgroup;
+>  
+>  from_memcg:
+> -	objcg = NULL;
+> -	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
+> +	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
+>  		/*
+>  		 * Memcg pointer is protected by scope (see set_active_memcg())
+>  		 * and is pinning the corresponding objcg, so objcg can't go
+> @@ -2624,10 +2623,10 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
+>  		 */
+>  		objcg = rcu_dereference_check(memcg->objcg, 1);
+>  		if (likely(objcg))
+> -			break;
+> +			return objcg;
+>  	}
+>  
+> -	return objcg;
+> +	return root_obj_cgroup;
+>  }
+>  
+>  struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
+> @@ -2641,14 +2640,8 @@ struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
+>  		objcg = __folio_objcg(folio);
+>  		obj_cgroup_get(objcg);
+>  	} else {
+> -		struct mem_cgroup *memcg;
+> -
+>  		rcu_read_lock();
+> -		memcg = __folio_memcg(folio);
+> -		if (memcg)
+> -			objcg = __get_obj_cgroup_from_memcg(memcg);
+> -		else
+> -			objcg = NULL;
+> +		objcg = __get_obj_cgroup_from_memcg(__folio_memcg(folio));
+>  		rcu_read_unlock();
+>  	}
+>  	return objcg;
+> @@ -2733,7 +2726,7 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
+>  	int ret = 0;
+>  
+>  	objcg = current_obj_cgroup();
+> -	if (objcg) {
+> +	if (!obj_cgroup_is_root(objcg)) {
+>  		ret = obj_cgroup_charge_pages(objcg, gfp, 1 << order);
+>  		if (!ret) {
+>  			obj_cgroup_get(objcg);
+> @@ -3036,7 +3029,7 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+>  	 * obj_cgroup_get() is used to get a permanent reference.
+>  	 */
+>  	objcg = current_obj_cgroup();
+> -	if (!objcg)
+> +	if (obj_cgroup_is_root(objcg))
+>  		return true;
+>  
+>  	/*
+> @@ -3708,6 +3701,9 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
+>  	if (!objcg)
+>  		goto free_shrinker;
+>  
+> +	if (unlikely(mem_cgroup_is_root(memcg)))
+> +		root_obj_cgroup = objcg;
+> +
+>  	objcg->memcg = memcg;
+>  	rcu_assign_pointer(memcg->objcg, objcg);
+>  	obj_cgroup_get(objcg);
+> @@ -5302,6 +5298,9 @@ void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size)
+>  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>  		return;
+>  
+> +	if (obj_cgroup_is_root(objcg))
+> +		return;
+> +
+>  	VM_WARN_ON_ONCE(!(current->flags & PF_MEMALLOC));
+>  
+>  	/* PF_MEMALLOC context, charging must succeed */
+> @@ -5329,6 +5328,9 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
+>  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>  		return;
+>  
+> +	if (obj_cgroup_is_root(objcg))
+> +		return;
+> +
+>  	obj_cgroup_uncharge(objcg, size);
+>  
+>  	rcu_read_lock();
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index b35494c8ede2..3e54c6fca9bd 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -1616,7 +1616,7 @@ static bool pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp,
+>  		return true;
+>  
+>  	objcg = current_obj_cgroup();
+> -	if (!objcg)
+> +	if (obj_cgroup_is_root(objcg))
+>  		return true;
+>  
+>  	if (obj_cgroup_charge(objcg, gfp, pcpu_obj_full_size(size)))
 
-> 
-> $ git log --oneline --since='6 months ago' -- net/rds/ 
-> 433dce0692a0 rds: Correct spelling
-> 6e307a873d30 rds: Correct endian annotation of port and addr assignments
-> 5bccdc51f90c replace strncpy with strscpy_pad
-> c50d295c37f2 rds: Use nested-BH locking for rds_page_remainder
-> 0af5928f358c rds: Acquire per-CPU pointer within BH disabled section
-> aaaaa6639cf5 rds: Disable only bottom halves in rds_page_remainder_alloc()
-> 357660d7596b Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net
-> 5c70eb5c593d net: better track kernel sockets lifetime
-> c451715d78e3 net/rds: Replace deprecated strncpy() with strscpy_pad()
-> 7f5611cbc487 rds: sysctl: rds_tcp_{rcv,snd}buf: avoid using current->nsproxy
-> $
-> 
-> IOW applying this patch is a bit of a leap of faith that RDS
-> upstreaming will restart. I don't have anything against the patch
-
-It has to. We have to make the RDS TCP be bug-free as there are
-customers demanding that. 
-
-> per se, but neither do I have much faith in this. So if v5 is taking 
-> a long time to get applied it will be because its waiting for DaveM or
-> Paolo to take it.
 
