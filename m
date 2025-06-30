@@ -1,135 +1,148 @@
-Return-Path: <cgroups+bounces-8656-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8657-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CCA8AEE303
-	for <lists+cgroups@lfdr.de>; Mon, 30 Jun 2025 17:48:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F95AEE5FE
+	for <lists+cgroups@lfdr.de>; Mon, 30 Jun 2025 19:40:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A5073BE733
-	for <lists+cgroups@lfdr.de>; Mon, 30 Jun 2025 15:47:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F19457AB846
+	for <lists+cgroups@lfdr.de>; Mon, 30 Jun 2025 17:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D352F28F94E;
-	Mon, 30 Jun 2025 15:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D0F2E5408;
+	Mon, 30 Jun 2025 17:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EqV1JNfi"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="F0MsI79S"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB7D28F92F;
-	Mon, 30 Jun 2025 15:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DDF72E4255
+	for <cgroups@vger.kernel.org>; Mon, 30 Jun 2025 17:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751298494; cv=none; b=PE82SEr0KfF5OAQBxyyCUYk/nTyFOiFDyMR2rt6ZMnbhU0Je/+HiPIAq7oRIF4sph4oQktIyZ3SunaCf2c7wYLRjacJDo5gv/UfPkl/Q4ogMZxZqLTDg2I6sOU+NtqMRoeirA6WrbR1TZddNl+hjPrfbc4qjQknwlUaFkmOImcg=
+	t=1751305193; cv=none; b=esYiHi6Q/8C+IhIR4YzZdz5ypB67hYWbQdyTNQ1yl0VpAsjUqVw92SZN5zIQMg35ysEXcA63Bf7ctzU2lkMl8Rkpxea/UwOH7SVKJeBLaYPsUgxKwzj2fzpfjtUwgC/EWgYrNqM7zMLt16QAAjNSE2Sk02oNEMbtwEYEP0CtK/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751298494; c=relaxed/simple;
-	bh=eIE0i202yBSVq2vFvn7H0pZzWtP/NNzlLy34uoqAuCE=;
+	s=arc-20240116; t=1751305193; c=relaxed/simple;
+	bh=2Y9uMTwID9j6ls06ernf7fmJNC/MA8FlRHuc49tIeXI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GooX3mxTl73ZC8fsIgriWLB3LemkGf8O/cVFihvX1Nbj/+sEUHYlBZ4A4bqDzQVPbTy5HImjV1woEk8sWWRDyxcr6J9aPv4AVCEsXDE2qTaWNWjZz+Qdy6uxmMDFlmok53B9kDZxQ2bwlnXoPQPbOS+f5+hOYK+3nwV9S1GrrlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EqV1JNfi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4147AC4CEE3;
-	Mon, 30 Jun 2025 15:48:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751298494;
-	bh=eIE0i202yBSVq2vFvn7H0pZzWtP/NNzlLy34uoqAuCE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EqV1JNfiEoc5CZt4vqohqNOYgJodmRJGG3smmMQJ1+KiCvNI753OSDqD+Zqq6EKIz
-	 9pPzYfZJQT+KGw2lSLCRk+t618nmU54t7/W9QghzuKFAot2y+qi1zviTyO1V6plAqS
-	 YF0Hh4OTLbfTqO36YinjdVPht1K6mHGJL8MisQaK9pdE+I/l6PkDQuP0BqzRkXGVDy
-	 n1fxI7rBCgoqAvFCeFsC1pCTZnwpei3AvXRIAyHgWn5CtoqwVJGgn8TYXcePaeH5lj
-	 9DZWUV7vPkiBif7cjNTLKARjyS0f6SqPhV3ZYNqfoiObPcur9yTlvWziPEGYcqXOMZ
-	 kcflmECOlx45Q==
-Date: Mon, 30 Jun 2025 05:48:13 -1000
-From: "tj@kernel.org" <tj@kernel.org>
-To: "Wlodarczyk, Bertrand" <bertrand.wlodarczyk@intel.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>,
-	"hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-	"mkoutny@suse.com" <mkoutny@suse.com>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"inwardvessel@gmail.com" <inwardvessel@gmail.com>
-Subject: Re: [PATCH v2] cgroup/rstat: change cgroup_base_stat to atomic
-Message-ID: <aGKxvQdAZ-vSd48D@slm.duckdns.org>
-References: <20250624144558.2291253-1-bertrand.wlodarczyk@intel.com>
- <ykbwsq7xckhjaeoe6ba7tqm55vxrth74tmep4ey7feui3lblcf@vt43elwkqqf7>
- <CH3PR11MB7894DDEE6C630D5A3A4D23A1F145A@CH3PR11MB7894.namprd11.prod.outlook.com>
- <aF7L8jRkWm1TrwSu@slm.duckdns.org>
- <CH3PR11MB7894D2570AEA9AB67DBF706DF146A@CH3PR11MB7894.namprd11.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=em2fZ6jyw2yh91qZTHa1J1ETAMWsNNK8LtUFfRi5s39dlxloFv0Mw43zuUNkALHRUQC2Dur0pgcbOUpduyVWzcZMbs29RA9CUOoVZEP7C+AUzHOJc1CBkMxhWrZMk2TJMTBFcLdvVM8dtxxdMCEJayLEGTCKydeCyqLReFcY86U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=F0MsI79S; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-453066fad06so32101945e9.2
+        for <cgroups@vger.kernel.org>; Mon, 30 Jun 2025 10:39:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1751305189; x=1751909989; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Y9uMTwID9j6ls06ernf7fmJNC/MA8FlRHuc49tIeXI=;
+        b=F0MsI79Svly9l7hdwSJ1OTrFDSUBy+wqbufyOlCtDhDGkACxNPNI7Bm6buxPGyHRdk
+         Ea0OMhNtnWdI7ojFcy2oPlKu0B/5iGWiDHHc/LvGeofggStKan7SNowxK/gdjnvFWJA0
+         vY8WgDKRxqy3DespFezjas+aiBDj8rvUwQIIOE7mFFzQzfsMplgmDJcyETUerymqHogV
+         peWpw0w49K2XAdRDk+rKU2nqwxq3KiJmXa50Qs1w6ESZSamwju0YnjWJLv3tC96flZLy
+         0YR9PLgiF7l40kaay6Ybl1mu0FWEhwgX0LM85Hhm7+eX99hWqW81wnBTQ1jG8tBs1aw/
+         NrYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751305189; x=1751909989;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Y9uMTwID9j6ls06ernf7fmJNC/MA8FlRHuc49tIeXI=;
+        b=WCqu+9q3/J9oLA339MHI/Y1kmvTBl/yyjPMHiQ80qC8Bzwapf3W3Evyq2+Cj7Zv59k
+         hg6QeWo5Nk8Gs6d91FVar31/SRTA5RwjDrI0zTr6io5HVcRRFAD51oDQbD13NJeuNgWX
+         b6lUVItU9xhzqYmelnDnMo7Lg0O+CfGXER+QFU5IEK+MfEDe2jS6DM7XZur3v8AMm5Kb
+         p3LE8Pm5RZaTQzXT/HZJ+wW9vdE6r46NR+rtGD+woRwvWml3om9/78LU5Kg36AKvhEOs
+         MqlMCpvsXx5TidE52tgji7JtPjIoU6vv++luOFEp1dpNx7LmZAy7KCMX0LdIcw2KimPW
+         Uw1A==
+X-Forwarded-Encrypted: i=1; AJvYcCXXedJHgy5K8Sz3hTq29s305Hma/duAWjsQJtMbaYDJ2Za3F7VluFgOS3XAJoPPdEQQVV7X7zmx@vger.kernel.org
+X-Gm-Message-State: AOJu0YzEQRZJ+zOjbcobvPJ5Sj5268aXslswInwoph5dw4TtVTC11PV6
+	lVBKbiP2qlehnxzBKPbVjnvzBTb5ubn2WN5jqY4xOQIt9VwZhx6fX5/fBfE2e16ZYYQ=
+X-Gm-Gg: ASbGncuz0LqnKVg6DWhqBi7k9X6PUb8KE07nR7LqcKh3HyMLv/sdJ3CSxNHepVzcBjY
+	o9upPbyA4t5jOpPcc9ttT5GHFdDTEwf1uTPjRuQQum2sl4Ta0uyIHZlvttwyBffizeLz8z6YwUl
+	Re8NPlEbN3kfFDjSIqcAid9Ob2tFQkz2KH/0h4Nphd7h9ft17n+NwKMF3OTt4mczm8InFJfMmEx
+	jRKT8ijIc61Oq0N0pE78xShfTzK6Yl3GSV4DGbaOMJuc5oaMzgjLrYMbq90fbxb7cbSecPOWICL
+	Nj8vjBnFgdncojq2Jg8M4ZGa6S1zTCBZt3lQTt0Huzc5I5N6YNsLz9O+8zIDQkF6
+X-Google-Smtp-Source: AGHT+IHJy4btGv0fVS1tLOScDjwEh+rbzrQMUABP+ayXSxOTT48qfvdOfpAA/8f2BAYnhuti0aw65A==
+X-Received: by 2002:a05:600c:c4ac:b0:442:d9fc:7de with SMTP id 5b1f17b1804b1-4538ee85615mr124990995e9.22.1751305189383;
+        Mon, 30 Jun 2025 10:39:49 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-453923a22fbsm100856365e9.34.2025.06.30.10.39.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Jun 2025 10:39:48 -0700 (PDT)
+Date: Mon, 30 Jun 2025 19:39:47 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: YoungJun Park <youngjun.park@lge.com>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org, hannes@cmpxchg.org, 
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, shikemeng@huaweicloud.com, 
+	kasong@tencent.com, nphamcs@gmail.com, bhe@redhat.com, baohua@kernel.org, 
+	chrisl@kernel.org, muchun.song@linux.dev, iamjoonsoo.kim@lge.com, 
+	taejoon.song@lge.com, gunho.lee@lge.com
+Subject: Re: [RFC PATCH 1/2] mm/swap, memcg: basic structure and logic for
+ per cgroup swap priority control
+Message-ID: <bhcx37fve7sgyod3bxsky5wb3zixn4o3dwuiknmpy7fsbqgtli@rmrxmvjro4ht>
+References: <20250612103743.3385842-1-youngjun.park@lge.com>
+ <20250612103743.3385842-2-youngjun.park@lge.com>
+ <pcji4n5tjsgjwbp7r65gfevkr3wyghlbi2vi4mndafzs4w7zs4@2k4citaugdz2>
+ <aFIJDQeHmTPJrK57@yjaykim-PowerEdge-T330>
+ <rivwhhhkuqy7p4r6mmuhpheaj3c7vcw4w4kavp42avpz7es5vp@hbnvrmgzb5tr>
+ <aFKsF9GaI3tZL7C+@yjaykim-PowerEdge-T330>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="fpnjag4xaqb26ddt"
 Content-Disposition: inline
-In-Reply-To: <CH3PR11MB7894D2570AEA9AB67DBF706DF146A@CH3PR11MB7894.namprd11.prod.outlook.com>
+In-Reply-To: <aFKsF9GaI3tZL7C+@yjaykim-PowerEdge-T330>
 
-Hello,
 
-On Mon, Jun 30, 2025 at 02:25:27PM +0000, Wlodarczyk, Bertrand wrote:
-> >  > Also the response to the tearing issue explained by JP is not satisfying.
-> > 
-> > In other words, the claim is: "it's better to stall other cpus in 
-> > spinlock plus disable IRQ every time in order to serve outdated snapshot instead of providing user to the freshest statistics much, much faster".
-> > In term of statistics, freshest data served fast to the user is, in my opinion, better behavior.
-> 
-> > This is a false choice, I think. e.g. We can easily use seqlock to remove strict synchronization only from user side, right?
-> 
-> Yes, that's second possibility to solve a problem.
-> I choose atomics approach because, in my opinion, incremental statistics are somewhat natural use case for them.
+--fpnjag4xaqb26ddt
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH 1/2] mm/swap, memcg: basic structure and logic for
+ per cgroup swap priority control
+MIME-Version: 1.0
 
-They're good for individual counters but I'm not sure they're natural fit
-for a group of stats. A series of atomic ops can be significantly more
-expensive than locked updates and it also comes with problems like split
-updates as discussed in this thread. I think most of resistance is from the
-use of atomics. Can you please try a different approach?
+On Wed, Jun 18, 2025 at 09:07:51PM +0900, YoungJun Park <youngjun.park@lge.=
+com> wrote:
+> This is because cgroups can still restrict swap device usage and control=
+=20
+> device order without requiring explicit priorities for all devices.
+> In this view, the cgroup interface serves more as a limit or preference=
+=20
+> mechanism across the full set of available swap devices, rather than
+> requiring full enumeration and configuration.
 
-> > I wouldn't be addressing this issue if there were no customers 
-> > affected by rstat latency in multi-container multi-cpu scenarios.
-> 
-> > Out of curiosity, can you explain the case that you observed in more detail?
-> > What were the customer doing?
-> 
-> Single hierarchy, hundreds of the containers on one server, multiple independent owners.
-> Some of them wants to have current stats available in their webgui.
-> They are hammering the stats for their cgroups. 
-> Server experience inefficiencies, perf shows visible percentage of cpu cycles spent in cgroup_rstat_flush.
-> 
-> I prepared benchmark which can be example of the issue faced by the customer:
-> https://gist.github.com/bwlodarcz/21bbc24813bced8e6ffc9e5ca3150fcc
-> 
-> qemu vm:
->                +---------+---------+
->      mean (s)  |8dcb0ed8 | patched |
-> +--------------+---------+---------+
-> |cpu, KCSAN on |16.13*   |3.75     |
-> +--------------+---------+---------+
-> |cpu, KCSAN off|4.45     |0.81     |
-> +--------------+---------+---------+
-> *race condition still present
-> 
-> It's not hammering the lock so much as previous stressor, so the results are better for for-6.17 branch.
-> The customer has much bigger scale than 4 cgroups in benchmark. 
-> There are workarounds implemented so it's not that hot now (for them).
-> Anyway, I think it's worth to try improving the scalability situation, 
-> especially that as far as I see it, there are no downsides.
->  
-> There also reports about similar problems in memory rstats but I didn't look on them yet. 
+I was wondering whether your use cases would be catered by having
+memory.swap.max limit per device (essentially disable swap to undesired
+device(s) for given group). The disadvantage is that memory.swap.max is
+already existing as scalar. Alternatively, remapping priorities to
+memory.swap.weight -- with sibling vs sibling competition and children
+treated with weight of parent when approached from the top. I find this
+weight semantics little weird as it'd clash with other .weight which are
+dual to this (cgroups compete over one device vs cgroup is choosing
+between multiple devices).
 
-Yeah, I saw the benchmark but I was more curious what actual use case would
-lead to behaviors like that because you'd have to hammer on those stats
-really hard for this to be a problem. In most use cases that I'm aware of,
-the polling frequencies of these stats are >= 1sec. I guess the users in
-your use case were banging on them way harder, at least previously.
+Please try to take the existing distribution models into account not to
+make something overly unidiomatic,
+Michal
 
-I don't think switching to atomics is a good idea, but improving the read
-scalability would definitely be nice.
+--fpnjag4xaqb26ddt
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks.
+-----BEGIN PGP SIGNATURE-----
 
--- 
-tejun
+iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaGLL4AAKCRB+PQLnlNv4
+CI2lAP9cNd8Fw/efDHTo0CbYimuJjQR8y9PUoLFpqTT1zfv2CQEAmh2uxUSEceTY
+Y2x0oL70yfEQ4Y16HdkMDSN3MpuANAA=
+=Xz7b
+-----END PGP SIGNATURE-----
+
+--fpnjag4xaqb26ddt--
 
