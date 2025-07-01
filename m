@@ -1,252 +1,117 @@
-Return-Path: <cgroups+bounces-8662-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8663-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C942AEFA78
-	for <lists+cgroups@lfdr.de>; Tue,  1 Jul 2025 15:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 51D24AEFBD9
+	for <lists+cgroups@lfdr.de>; Tue,  1 Jul 2025 16:16:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D6304E3B59
-	for <lists+cgroups@lfdr.de>; Tue,  1 Jul 2025 13:26:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB3884E0B69
+	for <lists+cgroups@lfdr.de>; Tue,  1 Jul 2025 14:15:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54276278768;
-	Tue,  1 Jul 2025 13:23:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2A5277C9C;
+	Tue,  1 Jul 2025 14:14:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="ljnSiiB8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
+Received: from jpms-ob01-os7.noc.sony.co.jp (jpms-ob01-os7.noc.sony.co.jp [211.125.139.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C86427466D
-	for <cgroups@vger.kernel.org>; Tue,  1 Jul 2025 13:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C80A275108;
+	Tue,  1 Jul 2025 14:14:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.125.139.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751376231; cv=none; b=IKWt51YR2O1VEHX9t/GwzUi/78tavX6V3HdLKUqTfLTKEFSQvN+h9Bc0ivm8JF1mqGTDMjcXs9Y2nsqx7kgItW9yY6tjSyzUYRYFK2yOdwUlUZlAQemjON7Pn9sg7rls4SUziS3SQy9oYC+Ct8xf02fnz4jsgTM/iH09+qbUCL4=
+	t=1751379271; cv=none; b=tZsKxnVBDC31ONQ6IKSih6NdKkRCrhqZj6v56Y1SNv2CyTo2V6NMhWGoMYm4j8sSeQ3wXhULRLMrwHkPj5hGFaD+L0htD8YdnIv7quutSDuwMI17uc5NTJ8KDkTyeKMQ+GO6vUHO9cs3K3skHPI5C8ZVxhZyCYVAa16vyRWZ/ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751376231; c=relaxed/simple;
-	bh=r0Qq+d5yiYc+tQ/JPUYcbNQRbrbArG3O8z/RqToMgaU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gIviYU3/SJD53A6Au/Z0SBh7pi6lLp/mbFs+kkho/X7N0Dcyb/crxkFYNVJmcswg3gUethorP/8+z9BzK2FBwwUbHrb5YMPTlXZGI+A2yawfqIeRBsWlz7peL6aJXuTx1766KdHyzEo4S3J2/8yrbgBu2JW59NhIY/cpuYE1bC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.103 with ESMTP; 1 Jul 2025 22:08:46 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Tue, 1 Jul 2025 22:08:46 +0900
-From: YoungJun Park <youngjun.park@lge.com>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	shikemeng@huaweicloud.com, kasong@tencent.com, nphamcs@gmail.com,
-	bhe@redhat.com, baohua@kernel.org, chrisl@kernel.org,
-	muchun.song@linux.dev, iamjoonsoo.kim@lge.com, taejoon.song@lge.com,
-	gunho.lee@lge.com
-Subject: Re: [RFC PATCH 1/2] mm/swap, memcg: basic structure and logic for
- per cgroup swap priority control
-Message-ID: <aGPd3hIuEVF2Ykoy@yjaykim-PowerEdge-T330>
-References: <20250612103743.3385842-1-youngjun.park@lge.com>
- <20250612103743.3385842-2-youngjun.park@lge.com>
- <pcji4n5tjsgjwbp7r65gfevkr3wyghlbi2vi4mndafzs4w7zs4@2k4citaugdz2>
- <aFIJDQeHmTPJrK57@yjaykim-PowerEdge-T330>
- <rivwhhhkuqy7p4r6mmuhpheaj3c7vcw4w4kavp42avpz7es5vp@hbnvrmgzb5tr>
- <aFKsF9GaI3tZL7C+@yjaykim-PowerEdge-T330>
- <bhcx37fve7sgyod3bxsky5wb3zixn4o3dwuiknmpy7fsbqgtli@rmrxmvjro4ht>
+	s=arc-20240116; t=1751379271; c=relaxed/simple;
+	bh=smrHCjS0lhHMzmYuBaUKg6EvwfHNRIvCFgnZSletBGs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=TjoObVqFyjDMtEATBSvr3bUZsuHDtq2qxjFvxuPqQ6FtFFnRc9Ia6m/F6FyBRVccTpnADaZIFF6u2lD+MVBuxO/arKTQ0QTWI9OZ1ZIEnjp5ibzj4qaNr9LonshQPne/KPHg65/Vo87hLwRBPkq+i3xoko7kIUCin128Q5+zHWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=fail smtp.mailfrom=sony.com; dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b=ljnSiiB8; arc=none smtp.client-ip=211.125.139.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sony.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=sony.com; s=s1jp; t=1751379269; x=1782915269;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=1iIPpxIgmlkOMy8+JW+qYAUCVTUKOXEYoeF8gab8xO0=;
+  b=ljnSiiB8b4MYMHC5/aq1LyxX87ho9c4OeTbU3hYsCYvPBMd0wbctpmx9
+   WLFMz0laMUiehGhgXH0mm37CYPJjXbceRLyKGPyuyGJJwWgqJHmp2/Iog
+   RCoSM5h9zxcWQuls2IdvkxbncY1kjCLG3Zf5giViD0HWcVBDcayds1p83
+   +Z5Rn+TpTV1c+cQ+ZM5IX6IGG1pwUOOeDs/qS7K7UJCkXKwfFLEtYtXPl
+   98oUDOHBjH46DLlziBpUYg40un41y0G8s85XM9kp7HQFP77TJkyVNTmQz
+   OF8dwdMx67v0240QieKIWeJ2gbZYiZucYL7CJqaalZ+xG3Tp2GBuxPU9t
+   Q==;
+Received: from unknown (HELO jpmta-ob02-os7.noc.sony.co.jp) ([IPv6:2001:cf8:acf:1104::7])
+  by jpms-ob01-os7.noc.sony.co.jp with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2025 23:14:22 +0900
+X-IronPort-AV: E=Sophos;i="6.16,279,1744038000"; 
+   d="scan'208";a="3310507"
+Received: from unknown (HELO [127.0.1.1]) ([IPv6:2001:cf8:1:573:0:dddd:eb3e:119e])
+  by jpmta-ob02-os7.noc.sony.co.jp with ESMTP; 01 Jul 2025 23:14:22 +0900
+From: Shashank Balaji <shashank.mahadasyam@sony.com>
+Subject: [PATCH 0/2] selftests/cgroup: better bound for cpu.max tests
+Date: Tue, 01 Jul 2025 23:13:54 +0900
+Message-Id: <20250701-kselftest-cgroup-fix-cpu-max-v1-0-049507ad6832@sony.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bhcx37fve7sgyod3bxsky5wb3zixn4o3dwuiknmpy7fsbqgtli@rmrxmvjro4ht>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACLtY2gC/x3M2wpAQBCA4VfRXJtiymG9ilywBpPTtoOUvLvN5
+ ddf/wPKXlihih7wfInKvgWkcQR2areRUfpgoISyhKjAWXkZDtYD7ej30+EgN1p34tremOV5agy
+ VbEwHYeE8h/zv6+Z9P+oi6l9uAAAA
+X-Change-ID: 20250227-kselftest-cgroup-fix-cpu-max-56619928e99b
+To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Shinya Takumi <shinya.takumi@sony.com>, 
+ Shashank Balaji <shashank.mahadasyam@sony.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1313;
+ i=shashank.mahadasyam@sony.com; h=from:subject:message-id;
+ bh=smrHCjS0lhHMzmYuBaUKg6EvwfHNRIvCFgnZSletBGs=;
+ b=owGbwMvMwCV2mPH4Ij++H1mMp9WSGDKS31r+P5fo1cPIYmjOLu6z4LQDc+HHj1kHy5eU1nZ1r
+ zFx2dHYUcrCIMbFICumyPJOZt2Fg1aWTV+PM3yDmcPKBDKEgYtTACbi0MLwv3aCd8fnicaha4PC
+ v+0OOa3Uo6Bzy2iqROkiZgPunIWTChgZpjuUuEv4XDN0Orzm2oUfaSYFCnPkX5TWfTJg+/hnzbQ
+ XvAA=
+X-Developer-Key: i=shashank.mahadasyam@sony.com; a=openpgp;
+ fpr=EE1CAED0C13A3982F5C700F6C301C7A24E0EF86A
 
-On Mon, Jun 30, 2025 at 07:39:47PM +0200, Michal Koutný wrote:
-> On Wed, Jun 18, 2025 at 09:07:51PM +0900, YoungJun Park <youngjun.park@lge.com> wrote:
-> > This is because cgroups can still restrict swap device usage and control 
-> > device order without requiring explicit priorities for all devices.
-> > In this view, the cgroup interface serves more as a limit or preference 
-> > mechanism across the full set of available swap devices, rather than
-> > requiring full enumeration and configuration.
+cpu.max selftests (both the normal one and the nested one) test the
+working of throttling by setting up cpu.max, running a cpu hog process
+for a specified duration, and comparing usage_usec as reported by
+cpu.stat with the duration of the cpu hog: they should be far enough.
 
-Hello Michal,
+Currently, this is done by using values_close, which has two problems:
 
-Thank you very much for your thoughtful review and for sharing your
-insights.
+1. Semantic: values_close is used with an error percentage of 95%, which
+   one will not expect on seeing "values close". The intent it's
+actually going for is "values far".
 
-I’d like to share my thoughts and the reasoning behind my current
-direction, including some points I considered in relation to your
-suggestions.
+2. Accuracy: the tests can pass even if usage_usec is upto around double
+   the expected amount. That's too high of a margin for usage_usec.
 
-> I was wondering whether your use cases would be catered by having
-> memory.swap.max limit per device (essentially disable swap to undesired
-> device(s) for given group). The disadvantage is that memory.swap.max is
-> already existing as scalar. Alternatively, remapping priorities to
+Overall, this patchset improves the readability and accuracy of the
+cpu.max tests.
 
-I did consider implementing this kind of control.
-In that design, it would work similarly to memory.swap.max but per
-device: the implementation would iterate through the swap devices in
-priority order and maintain per-cgroup counters for each device’s usage.
-It would also need to handle proper counter cleanup after use, and
-ensure that usage checks also happen on the fastpath where per-CPU
-caches for swap device clusters come into play.
+Signed-off-by: Shashank Balaji <shashank.mahadasyam@sony.com>
+---
+Shashank Balaji (2):
+      selftests/cgroup: rename `expected` to `duration` in cpu.max tests
+      selftests/cgroup: better bound in cpu.max tests
 
-From a runtime behavior perspective, the priority-based approach seemed
-preferable, as it allows more flexible control: the configured cgroup
-can strongly prefer the desired device and benefit from faster selection
-at allocation time.
+ tools/testing/selftests/cgroup/test_cpu.c | 42 ++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 18 deletions(-)
+---
+base-commit: 66701750d5565c574af42bef0b789ce0203e3071
+change-id: 20250227-kselftest-cgroup-fix-cpu-max-56619928e99b
 
-I also considered how this would coexist with the existing swap.max
-interface, but given the additional implementation and runtime overhead
-this would introduce, I decided to hold it back and chose a priority-based
-approach instead.
+Best regards,
+-- 
+Shashank Balaji <shashank.mahadasyam@sony.com>
 
-> already existing as scalar. Alternatively, remapping priorities to
-> memory.swap.weight -- with sibling vs sibling competition and children
-> treated with weight of parent when approached from the top. I find this
-> weight semantics little weird as it'd clash with other .weight which are
-> dual to this (cgroups compete over one device vs cgroup is choosing
-> between multiple devices).
-
-Your point about the semantic mismatch is very valid. I agree that
-reusing .weight semantics here could be confusing: .weight usually
-expresses competition among siblings for a shared resource, whereas
-here, the goal is to steer selection among multiple devices within a
-single cgroup’s scope.
-
-The swap priority concept already exists as an
-independent mechanism, so mapping it into a .weight field might not
-align well in practice.
- 
-> Please try to take the existing distribution models into account not to
-> make something overly unidiomatic,
-
-I also thought about possible alignment with existing mechanisms like
-zswap.writeback. One alternative could be to adopt an on/off style mechanism
-similar to zswap.writeback including propagation strategy. 
-On implementation-wise, this could be handled by including
-or excluding devices from the cgroup’s swap device priority list.
-(The direction I suggested on)
-
-However, this approach also has limitations in certain use cases. For
-example, if we want to enforce a different ordering than the global
-system swap priority, an on/off switch alone is not sufficient.
-
-One possible example would be:
-(Some cgroup use the slowest available swap device but with a larger capacity
-avoiding swap failure.)
-
-Global swap: A (fast) -> B (slower) -> C (slowest)
-Cgroup swap: C (slowest) -> B (slower) -> A (fast)
-
-This kind of configuration cannot be achieved only with an on/off
-switch.
-
-I think that priority approach might not map perfectly to the existing
-major distribution models (like limit, weight, etc.),
-I cautiously see this as an extension of the resource control interfaces, 
-building on the solid foundation that the cgroup mechanism already provides.
-
-I am working to ensure that the proposed interface and propagation
-behavior integrate properly with parent cgroups and follow the same
-interface style. Here is the current version I am working on now.
-(It turned out a bit long, but I felt it might be useful to share it with you.)
-
-  memory.swap.priority
-        A read-write flat-keyed file which exists on non-root cgroups.
-
-        Example: (after swapon)
-          $ swapon
-          NAME     TYPE      SIZE  USED PRIO
-          /dev/sdb partition 300M   0B   10
-          /dev/sdc partition 300M   0B    5
-          /dev/sdd partition 300M   0B   -2
-
-        To assign priorities to swap devices in the current cgroup,
-        write one or more lines in the following format:
-
-          <swap_device_unique_id> <priority>
-
-        Example: (writing priorities)
-          $ echo "1 4" > memory.swap.priority
-          $ echo "2 -2" > memory.swap.priority
-          $ echo "3 -1" > memory.swap.priority
-
-        Example: (reading after write)
-          $ cat memory.swap.priority
-          1 4
-          2 -2
-          3 -1
-
-        The priority semantics are consistent with the global swap
-        system:
-
-          - Higher values indicate higher preference.
-          - See Documentation/admin-guide/mm/swap_numa.rst for swap numa
-            autobinding.
-
-        Note:
-          A special value of -1 means the swap device is completely
-          excluded from use by this cgroup. Unlike the global swap
-          priority, where negative values simply lower the priority,
-          setting -1 here disables allocation from that device for the
-          current cgroup only.
-
-        If any ancestor cgroup has set a swap priority configuration, it
-        is inherited by all descendants. In that case, the child’s own
-        configuration is ignored and the topmost configured ancestor
-        determines the effective priority ordering.
-
-  memory.swap.priority.effective
-        A read-only file showing the effective swap priority ordering
-        actually applied to this cgroup, after resolving inheritance
-        from ancestors.
-
-        If there is no configuration in the current cgroup and its
-        ancestors, this file shows the global swap device priority from
-        `swapon`, in the form of unique_id priority pairs.
-
-        Example: (global only)
-          $ swapon
-          NAME     TYPE      SIZE  USED PRIO
-          /dev/sdb partition 300M   0B   10
-          /dev/sdc partition 300M   0B    5
-          /dev/sdd partition 300M   0B   -2
-
-          $ cat /sys/fs/cgroup/parent/child/memory.swap.priority.effective
-          1 10
-          2 5
-          3 -2
-
-        Example: (with parent override)
-          # Parent cgroup configuration
-          $ cat /sys/fs/cgroup/parent/memory.swap.priority
-          1 4
-          2 -2
-
-          # Child cgroup configuration (ignored because parent overrides)
-          $ cat /sys/fs/cgroup/parent/child/memory.swap.priority
-          1 8
-          2 5
-
-          # Effective priority seen by the child
-          $ cat /sys/fs/cgroup/parent/child/memory.swap.priority.effective
-          1 4
-          2 -2
-
-        In this case:
-          - If no cgroup sets any configuration, the output matches the
-            global `swapon` priority.
-          - If an ancestor has a configuration, the child inherits it
-            and ignores its own setting.
-
-I hope my explanation clarifies my intention, 
-and I would truly appreciate your positive consideration 
-and any further thoughts you might have.
-
-Best regards, 
-Youngjun Park
 
