@@ -1,112 +1,140 @@
-Return-Path: <cgroups+bounces-8669-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8670-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0875CAF5EE1
-	for <lists+cgroups@lfdr.de>; Wed,  2 Jul 2025 18:40:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B00FDAF6745
+	for <lists+cgroups@lfdr.de>; Thu,  3 Jul 2025 03:41:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 342CA162BFD
-	for <lists+cgroups@lfdr.de>; Wed,  2 Jul 2025 16:40:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99A317A9798
+	for <lists+cgroups@lfdr.de>; Thu,  3 Jul 2025 01:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC43E2F508C;
-	Wed,  2 Jul 2025 16:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9557716D9C2;
+	Thu,  3 Jul 2025 01:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y/z1kNqZ"
+	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="r6Iy0lyY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from jpms-ob02-os7.noc.sony.co.jp (jpms-ob02-os7.noc.sony.co.jp [211.125.139.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1834179A7
-	for <cgroups@vger.kernel.org>; Wed,  2 Jul 2025 16:40:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22EC724B26;
+	Thu,  3 Jul 2025 01:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.125.139.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751474420; cv=none; b=C5FyoP5O3qQfrFaL3AU9GW5vn7IHaykHVb5JIjZbbhk/9TJxL5yhwOZ2HV0Ahty+U4kg6UzP/NHyN2jZfl/meomCZriZP1Qt3t732sZtkVIx6UX1j6BISFwPOLdH41WhBHdF+uvZLbTmrmPBer6uZto9uzUL+5PtHwJIlPjtEOA=
+	t=1751506891; cv=none; b=PoIX/QYCyGAls1yzkY/+G00f57KpcjkpnHR190fD5wjUYoQuRTaCqaBpTtLChnF9Z1yFAhBIzK34ffvI35aOUWdnRphIIl4eH0bOXpCw94WNHfeF+YGYXOs8bBl0bHIt77n6qfEnNNyduOjNu/mJGtD39CjOqpNBf/ApFDOT7fg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751474420; c=relaxed/simple;
-	bh=kBWu8vFnnKdFQ2W4ZeBgGknT/XFCB4pu3lSwCZCvQkQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jJusl0rBkGGD3ooBZHlEaaOhHwJiF5zoBS5CAEesd5kWnDSbcUeJM35Xyneh5jYZus6iJt3T8tq91ucJURRY8nKHi8cLA4WUDauqBXtlnB+vwTatkUu2p9Q3n5IljBQwx+v3FihOcvxSyBiHsOtkyFUH77RSQqY7TN9iXNRpyzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y/z1kNqZ; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3a536ecbf6fso4156009f8f.2
-        for <cgroups@vger.kernel.org>; Wed, 02 Jul 2025 09:40:18 -0700 (PDT)
+	s=arc-20240116; t=1751506891; c=relaxed/simple;
+	bh=2EceiW0EBoYu3OMAf0fB5Q4prjSjyExozqB+r6b+7U0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kVUTJmIG9VrDPaeR2W7JXlp9GCr/A62viL4G2gWDOudI+zijhDCwaaF3y8j1Yuc68J0u7Lm2ELTbuZkVm0bOUK121UjhOmk7M3zh8K4iKV9iDTD1z35brVx0z5Z1rfSH4/JtOtES0zpL33/gjkuGgVageeEMo86OCyw3eAUK+ZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=fail smtp.mailfrom=sony.com; dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b=r6Iy0lyY; arc=none smtp.client-ip=211.125.139.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sony.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751474417; x=1752079217; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LYT9JW6r88EyVDlNRFXW7BnBMbTsGCIOQXAVcj0hrFQ=;
-        b=Y/z1kNqZ/HhZrLcaO84r4+d6dfoYjgcrOZ26zS6cRVfoTqH8EkdjTef969aQJ4898+
-         JhuUPtsWEh7AcCRXsmv/Sxm3YeunXVKA97P4uDInHo6yrpiLkAKoDrOkSrhExlZ2fQ/S
-         cHeqyW9iHNWGHXH2mHuxjEOBFERBeaScgECY+V9A5ZS74/dbUPgYvkCrJHUTrjE1PzZX
-         b6lWsrMP2rzvEz1b1Zzgv8YdaqccUQ4zZf6vA7D0y1i0ZXmaO6VTrxRYjb+ooyrKisBE
-         JinnppsZbnbfGYsUPuuZSYpRn1sDjqyN0WAIA7AWcCjeBcPKFoqeiRGD/UwG+s/MLVbw
-         cnsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751474417; x=1752079217;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LYT9JW6r88EyVDlNRFXW7BnBMbTsGCIOQXAVcj0hrFQ=;
-        b=VxM33uuMLWuPefL1diuT1ZOHp2CbuQIl0JyAZ6I5IPN/Jb8kouW+jQpqkYorcuHzcj
-         bHwKUc0Fx5Qdpy/E2z1DamtOreI8gMi7RCGzfHeZCZLNf9uycn7/rhWNSg/FIkmBqWI5
-         OG2KVXyoeV17Fqg768Eek3dRejHaPO10j2CqUpLds4c1O4u/QNP7rGplVzXrl5k8sIe3
-         xj+O2dGeusGBKOu414Nrk7EBNqRbwdjJiLJkXshNrQ2gL0WBb+mI/kyzacxWbeu7F5su
-         cBf3jlO1bM94ytQXbWGuCcIjyomgeN/VI8OFEt11yqWuFQpZ4x48j2KjlQDJKho3CS1B
-         3h5Q==
-X-Gm-Message-State: AOJu0Ywp4Ov4QjEI00sCVLKYXJpnaQwbUwzYtjLCYiRUMAjWxXM9HQYY
-	WPnfaqrDFwWPLyQFZBsZLOOg5oN/JHHmNEABas481QlTwYPslKhf6+aZwjjxJA==
-X-Gm-Gg: ASbGncsTrpKazDWdFL0cGdFSUWALwf7oDtgvsyfSFTiM0KaE89speufxs2F7gCqeYEg
-	+8lvTA3R5Rcp6uWF7y4L6m+hIFgZPrRf6ckR3HGTAhuMhqbUatsrN7dzMpXZZCPDSKQgWOxHZtW
-	vRENG3HkYiMYkZE+sSs4I/a7ubNzZg3xY+3ItgJ5AWlepbGMQdg4yey19rEnXGbyhRII3MJ9th0
-	NDxLH4h3VMl/enjglAbEzq6gKgI9mPSAYGmMBg+26WrLROzkya8ejhASbmIvqyqQlE4r3qHBybw
-	SMUorluJ9pEAt/XCWA/u+5ki7WTntdbAUdxwbVtzAmiknd1Z/3RzAJkOjBpwD0y/MDuIAl2GQBY
-	=
-X-Google-Smtp-Source: AGHT+IFeIaTQqe6FlNIzP1UHmY6tYXC13gNTJEpcLnrSBPmjWamAWB+RyR8KCmdbFJf7biu152h1Fw==
-X-Received: by 2002:a05:6000:310b:b0:3a3:63d3:369a with SMTP id ffacd0b85a97d-3b1fe2ddc3bmr2826215f8f.25.1751474416597;
-        Wed, 02 Jul 2025 09:40:16 -0700 (PDT)
-Received: from localhost.suse.cz ([37.109.164.12])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a892e5f8absm16756670f8f.95.2025.07.02.09.40.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jul 2025 09:40:15 -0700 (PDT)
-From: Sebastian Chlad <sebastianchlad@gmail.com>
-X-Google-Original-From: Sebastian Chlad <sebastian.chlad@suse.com>
-To: cgroups@vger.kernel.org
-Cc: Sebastian Chlad <sebastian.chlad@suse.com>
-Subject: [PATCH] selftests: cgroup: Fix missing newline in test_zswap_writeback_one
-Date: Wed,  2 Jul 2025 18:40:10 +0200
-Message-Id: <20250702164010.8874-1-sebastian.chlad@suse.com>
-X-Mailer: git-send-email 2.35.3
+  d=sony.com; s=s1jp; t=1751506888; x=1783042888;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=BCu3mx1TAsqBn24Mp2CrmUIIO7P1rfXinDh/8nC5uu8=;
+  b=r6Iy0lyY+NtmiQJkIdhiS5tNGC6ZHUlaNGbxsGncN6N5Xc8Hdci3u8Jw
+   wS4KvHT8a9R3w/z01+v3+ao5/zYw4oCLBYRfIP0Hcud1+eIzC1nmpRsLx
+   FwmEb7ubvtYbpB4c7x8JwCwjQvMflNnZA8CuS5xzKSvYmzUBL3/JDOvVm
+   tDZmHAUNdH9B0eqjUN5mDwvDuUKwU4+voXTH6dZuR7Wk55J06778tby/r
+   ZW6uK3g+iCFz2dNBl1pskx8JMJ42CMWihAA72JrMUjonT7IOtKBlHPFME
+   2iZ6/ilzsm/ZXDnCEe7FJpBomQ1T87SLRmH1e7Ev/Xg19OMW0ndYDfvjO
+   g==;
+Received: from unknown (HELO jpmta-ob02-os7.noc.sony.co.jp) ([IPv6:2001:cf8:acf:1104::7])
+  by jpms-ob02-os7.noc.sony.co.jp with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2025 10:41:21 +0900
+X-IronPort-AV: E=Sophos;i="6.16,282,1744038000"; 
+   d="scan'208";a="4014289"
+Received: from unknown (HELO JPC00244420) ([IPv6:2001:cf8:1:573:0:dddd:eb3e:119e])
+  by jpmta-ob02-os7.noc.sony.co.jp with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2025 10:41:21 +0900
+Date: Thu, 3 Jul 2025 10:41:17 +0900
+From: Shashank Balaji <shashank.mahadasyam@sony.com>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+	Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Shinya Takumi <shinya.takumi@sony.com>
+Subject: Re: [PATCH 0/2] selftests/cgroup: better bound for cpu.max tests
+Message-ID: <aGXfvfKOjWlH3d0q@JPC00244420>
+References: <20250701-kselftest-cgroup-fix-cpu-max-v1-0-049507ad6832@sony.com>
+ <4bqk62cqsv3b4sid76zf3jwvyswdym7bl5wf7r6ouwqvmmvsfv@qztfmjdd7nvc>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <4bqk62cqsv3b4sid76zf3jwvyswdym7bl5wf7r6ouwqvmmvsfv@qztfmjdd7nvc>
 
-Fixes malformed test output due to missing newline
+Hi Michal, 
 
-Signed-off-by: Sebastian Chlad <sebastian.chlad@suse.com>
----
- tools/testing/selftests/cgroup/test_zswap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for the reply!
 
-diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-index 40de679248b8..e1f578ca2841 100644
---- a/tools/testing/selftests/cgroup/test_zswap.c
-+++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -338,7 +338,7 @@ static int test_zswap_writeback_one(const char *cgroup, bool wb)
- 		return -1;
- 
- 	if (wb != !!zswpwb_after) {
--		ksft_print_msg("zswpwb_after is %ld while wb is %s",
-+		ksft_print_msg("zswpwb_after is %ld while wb is %s\n",
- 				zswpwb_after, wb ? "enabled" : "disabled");
- 		return -1;
- 	}
--- 
-2.35.3
+On Wed, Jul 02, 2025 at 02:34:29PM +0200, Michal Koutný wrote:
+> Hello Shashank.
+> 
+> On Tue, Jul 01, 2025 at 11:13:54PM +0900, Shashank Balaji <shashank.mahadasyam@sony.com> wrote:
+> > cpu.max selftests (both the normal one and the nested one) test the
+> > working of throttling by setting up cpu.max, running a cpu hog process
+> > for a specified duration, and comparing usage_usec as reported by
+> > cpu.stat with the duration of the cpu hog: they should be far enough.
+> > 
+> > Currently, this is done by using values_close, which has two problems:
+> > 
+> > 1. Semantic: values_close is used with an error percentage of 95%, which
+> >    one will not expect on seeing "values close". The intent it's
+> > actually going for is "values far".
+> > 
+> > 2. Accuracy: the tests can pass even if usage_usec is upto around double
+> >    the expected amount. That's too high of a margin for usage_usec.
+> > 
+> > Overall, this patchset improves the readability and accuracy of the
+> > cpu.max tests.
+> > 
+> > Signed-off-by: Shashank Balaji <shashank.mahadasyam@sony.com>
+> 
+> I think you're getting at an actual bug in the test definition. 
+> 
+> I think that the test_cpucg_max should either run hog_cpus_timed with
+> CPU_HOG_CLOCK_PROCESS instead of CPU_HOG_CLOCK_WALL to make sense or the
+> expected_usage_usec should be defined with the configured quota in mind
+> (i.e. 1/100).  (The latter seems to make the test more natural.)
 
+Going with the more natural way of sticking to CPU_HOG_CLOCK_WALL, the
+second patch does calculate expected_usage_usec based on the configured
+quota, as the code comment explains. So I'm guessesing we're on the same page
+about this?
+
+> With such defined metrics, the asserted expression could be
+> 	values_close(usage_usec, expected_usage_usec, 10)
+> based on your numbers, error is around 20% so our helper's argument is
+> roughly half of that. (I'd be fine even with err=20 to prevent some
+> false positives.)
+> 
+> I think those changes could even be in one patch but I leave that up to
+> you. My comment to your 2nd patch is that I'd like to stick to relative
+> errors and keep positive values_close() predicate that's used in other
+> selftests too. (But those 95% in the current code are clumsy given two
+> different qualities are compared.)
+
+Do you mean something like,
+
+	if (values_close(usage_usec, expected_usage_usec, 10))
+			goto cleanup;
+
+using the positive values_close() predicate. If so, I'm not sure I
+understand because if usage_usec and expected_usage_usec _are_ close,
+then we want the test to pass! We should be using the negative
+predicate.
+
+And sure, I'll send v2 as a single patch.
+
+Thanks
+
+Shashank
 
