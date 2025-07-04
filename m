@@ -1,64 +1,86 @@
-Return-Path: <cgroups+bounces-8686-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8687-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37704AF8E35
-	for <lists+cgroups@lfdr.de>; Fri,  4 Jul 2025 11:19:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81B36AF8EEC
+	for <lists+cgroups@lfdr.de>; Fri,  4 Jul 2025 11:41:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0D441CA7615
-	for <lists+cgroups@lfdr.de>; Fri,  4 Jul 2025 09:18:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D678C16D414
+	for <lists+cgroups@lfdr.de>; Fri,  4 Jul 2025 09:41:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA05C2EFD84;
-	Fri,  4 Jul 2025 09:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9544C2E8E03;
+	Fri,  4 Jul 2025 09:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="Z1pG+42B"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="g3P1jk+B"
 X-Original-To: cgroups@vger.kernel.org
-Received: from jpms-ob01-os7.noc.sony.co.jp (jpms-ob01-os7.noc.sony.co.jp [211.125.139.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB5B2EF66B;
-	Fri,  4 Jul 2025 09:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.125.139.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8884DA2D
+	for <cgroups@vger.kernel.org>; Fri,  4 Jul 2025 09:41:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751620561; cv=none; b=HwyxoEPzQrvJV8qe/dv2iHxY00A3aqQ9dLX8OAZLG6GmCY8FVBIl29rc1ZovbrySA691XgNBlz2Qu5B0kLYeK/OUzA2Y+2HPFtXH68xvmEJK0bk4VUjoqTyFJwPbM6CzyjgKiFcTDi//FkLfJCli0YFAiSsABXlwqCAAO3dnUL4=
+	t=1751622107; cv=none; b=RNsTPc8m+zmOmMe9gp7OKrFUFQCw/Wrbn+kNTToDk8fQFxzEh4dZ560DGLtr/5crCZrKk++KOP+8PxnXk8mGAtetNfxYAL9Ntnixjjx34QnRxeSx1rAo40a66MLRGm5wIjUl8U7+Ygf5iF5lnO7XV13nxj+x+qqW4Hh0rCvGZMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751620561; c=relaxed/simple;
-	bh=5/rnuy+1f9ZFp0QSN91h1vj2LZOYoPBNuzCVHxWsUKI=;
+	s=arc-20240116; t=1751622107; c=relaxed/simple;
+	bh=f8KJwsnNMzDSXCcr+Avb2AwztgI5qoTLwLOR6IeBS/c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m+8tm35dop3kjd/MgfaakFF6ElVYKheKC4q9UHVehgkszTLLVSdjsFMa/pfI7AOx8WEVYk5C57ajli/rME8i7JgCABIdae+97tbd4WTX00YyRySo1AHdzDGZHqHUW7D0lyB1HETqhsmNYH+X7t7miBSWrBTTuiNc0ZFRjY2WSpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=fail smtp.mailfrom=sony.com; dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b=Z1pG+42B; arc=none smtp.client-ip=211.125.139.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sony.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=o+Y1y2FD/EHoMZBrAjmZILmjZo4hfEo3Tpq7ezKb0QeeiqbJB/ZSqHqb0QBWLKAA7Q5xwPypT8R6LFuVwJSK8bJIUFEI0Aazol0LqFiTbi+Rf66vm2YzEvNMJoGd8Bb848T6mZvxUXY/2TxUX6ofRtaWuL/Bug7zjktn8neGyEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=g3P1jk+B; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4535fbe0299so3780555e9.3
+        for <cgroups@vger.kernel.org>; Fri, 04 Jul 2025 02:41:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=sony.com; s=s1jp; t=1751620559; x=1783156559;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=btYJQmsa0mQHvJvl4VaCgrJUwxKb2AyZxRtp+4lLNe0=;
-  b=Z1pG+42BTKjwvjfh2S9Vkhjxm8Lf4D56v1zFYocbngBaaF8qT+72hJLE
-   KhAQFH6dTcFbc01fIlbtzONMzVteG5iqx44vvWAD69IF9AGrhq4rmx2/H
-   q4j4AGvgZN2+UEDXnbylr+OIFtO4PN+E0CLH7o8EMkLgd04obBJ582RU8
-   G0JVLougheh/KBsb0bWNiuAWrWH0JU0BU2DVcVhQK9/LC3pFlm0agubIr
-   FqkhBGRnw8o/trmGST1jPyO1MQ2d5E+/+CjeL4AvMOALAynU8PRZzAtoP
-   tCaMVtnNb79xGDVO/cwImkzQc04nFfS3XfT7Am0mr9UJBz+8qsQZnw50w
-   w==;
-Received: from unknown (HELO jpmta-ob01-os7.noc.sony.co.jp) ([IPv6:2001:cf8:acf:1104::6])
-  by jpms-ob01-os7.noc.sony.co.jp with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2025 18:15:56 +0900
-X-IronPort-AV: E=Sophos;i="6.16,286,1744038000"; 
-   d="scan'208";a="3335550"
-Received: from unknown (HELO JPC00244420) ([IPv6:2001:cf8:1:573:0:dddd:eb3e:119e])
-  by jpmta-ob01-os7.noc.sony.co.jp with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2025 18:15:56 +0900
-Date: Fri, 4 Jul 2025 18:15:54 +0900
-From: Shashank Balaji <shashank.mahadasyam@sony.com>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Shinya Takumi <shinya.takumi@sony.com>
+        d=suse.com; s=google; t=1751622104; x=1752226904; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=f8KJwsnNMzDSXCcr+Avb2AwztgI5qoTLwLOR6IeBS/c=;
+        b=g3P1jk+BlfXibf9qbAcB0lx+KlcwRFQhHefsB1vY4n68GFZ4oD9LovXHi+BObnB4ao
+         mSAqepJ/qHOCWnisdOXorGRyj+zBFt06cZlccbaigWfpHSFgPSNp1qXlXW9kTzdLnEe0
+         c1gl5F19Srx5tBldA1QtG4qQ3SPub/6xFzvTjcman8Mi8MiNevthyfUq+rfeMlCJhtQ6
+         QdV3GU72brhtOJBH9yP2W2VLRSQ7ohbifKSNvegnLlMxweo18tudG/M5G1eg6jhCElzi
+         T5K81oRAO0OOT8PwT9N/bvY2X21md4TqciP8lGXBKoWay6/ajYJZ6uhjpyyxf7G+IttA
+         UP5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751622104; x=1752226904;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f8KJwsnNMzDSXCcr+Avb2AwztgI5qoTLwLOR6IeBS/c=;
+        b=g7P4HO5xZmzwQs5L5+RoKnFRNTE/wbrYLcF5tAUk6Mo6kLlQfmn5bkbMQqWQ9a+CvT
+         S/SyQ1JmLRT21JpaB+ImAIbEDN4yiJOCRX3eyAQrlKx/Nic/7xUlwGrH8LO/BbTl9v47
+         /p2bQYbLAAYqfjgomdrTWKFmPPGPMJagvfXnxab4K/OfJJ0VJsV8fCtTgjPqU2KezMAX
+         VRlZpAhFLkUpXB2aaKQOfGpYsVWcPleSVXHxKhBPmObh6//0pY8FWYWvAjBhXZdoqKHX
+         TLRMfPnIousPteiMD09Rc0FU333S/ag02OLcFyMG5S5Y33AtW6QMn14EBEYGj0MZ1Ubd
+         lM+A==
+X-Forwarded-Encrypted: i=1; AJvYcCWAOf/40T3RvlyUGON5fzAUo+tjoI39NK18qugWElFt1hvinisBTwXEofSiJ8EsYIfMRWLjQuZu@vger.kernel.org
+X-Gm-Message-State: AOJu0YzG/QbyL1FXCPr9TdgwhQZZAcOE+hRaUvrwS3Byrn+/Aqu2CSSm
+	uIFd3LcaQsDs8XTpcsmDmTMEqav4y2DfTfWRn8ZnUvTGG/P6yB4gQQQsvHVcNpYcHSY=
+X-Gm-Gg: ASbGncuYtL3yIBhjh25oPwshZJYLJ1wrp6c254Yceoada0wIf8hwRRC1NC0gWvbO9lm
+	6jx9amUaAa2D6xhuLM2RgqqTL6RmbWnVx+zUuI5XQUe8nBd30XioDqXs936Qi/GPH2EfSUxSc3m
+	2NYxGriTn/HJ96bnXXS0Vk4VggpypDX4A+4tIvewv+9J8+2usVwpE5y0lqKeOcCWJtzw07Z95un
+	G73i97GrcbkkMRulLphzaiyGHbX0A6/WVzLsWmfpx+ilcanswWhSxilolpsGnODkA3UEN1VXnNx
+	VHUa3gAQviRHinIq6D6cOAROD0B6wB6d6s9GcX5NinTwz52vyl1ghshtfD4tcT6YYZJ8uTdAHO0
+	=
+X-Google-Smtp-Source: AGHT+IGUjYMUD08GoD1AoiKFpUXCYjS+U0f2xn5DR+TvetLvteDx1zxFn8QzKiN0Fr5rObhFCHiOcg==
+X-Received: by 2002:a05:600c:19c9:b0:43c:f629:66f4 with SMTP id 5b1f17b1804b1-454b305fcb1mr20498375e9.0.1751622103886;
+        Fri, 04 Jul 2025 02:41:43 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454adc71aadsm38629065e9.25.2025.07.04.02.41.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jul 2025 02:41:43 -0700 (PDT)
+Date: Fri, 4 Jul 2025 11:41:41 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Shashank Balaji <shashank.mahadasyam@sony.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Shinya Takumi <shinya.takumi@sony.com>
 Subject: Re: [PATCH v2] selftests/cgroup: improve the accuracy of cpu.max
  tests
-Message-ID: <aGebynaCuASn3t4s@JPC00244420>
+Message-ID: <bc2igjpyzuzkxjrbdhixsuldxatnqqwm666enqkbrm5x2hj7u7@uhe6xouufklc>
 References: <20250701-kselftest-cgroup-fix-cpu-max-v1-0-049507ad6832@sony.com>
  <20250703120325.2905314-1-shashank.mahadasyam@sony.com>
  <l3sal6zkvo4lqnfs6fepxytnrmqmqwfvtxudnjm53oigtuatpd@7czfeursgwyh>
@@ -66,60 +88,50 @@ References: <20250701-kselftest-cgroup-fix-cpu-max-v1-0-049507ad6832@sony.com>
  <aGd5lrUvm9Bhh-b8@JPC00244420>
  <wnoymxwdikh6iawrcvhewq6er4si75oqzjdbibhl6n57swq3ff@glkzfmbaots7>
  <aGeZwLAuysAmyX-q@JPC00244420>
+ <aGebynaCuASn3t4s@JPC00244420>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ctjxpi437gfzjwsr"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aGeZwLAuysAmyX-q@JPC00244420>
+In-Reply-To: <aGebynaCuASn3t4s@JPC00244420>
 
-On Fri, Jul 04, 2025 at 06:07:12PM +0900, Shashank Balaji wrote:
-> Hi Michal,
-> 
-> On Fri, Jul 04, 2025 at 10:59:15AM +0200, Michal Koutný wrote:
-> > On Fri, Jul 04, 2025 at 03:49:58PM +0900, Shashank Balaji <shashank.mahadasyam@sony.com> wrote:
-> > > > 1. We don't need to separately check user_usec because it'll always be
-> > > > less than user_usec^W usage_usec, and usage_usec is what's directly
-> > > > affected by throttling.
-> > 
-> > When kernel is not preemptible, I'd expect the system time may more
-> > easily excess the quota, so I considered the user_usage check less prone
-> > to false results. But...
-> > 
-> > > > 2. I changed the >= to > because, not that it'll ever happen, but we can
-> > > > let usage_usec = expected_usage_usec pass. Afterall, it's called
-> > > > "expected" for a reason.
-> > > 
-> > > Hmm, here is something interesting. The following patch adds printfs to the
-> > > existing code to see what user_usec, usage_usec, the expected_usage_usec used in
-> > > the code, and the theoretical expected_usage_usec are. On running the modified test
-> > > a couple of times, here is the output:
-> > 
-> > ...thanks for checking. I was misled by the previous test implementation
-> > (the expected_usage_usec had no relation to actual throttled usage in
-> > there). What you observe is thus likely explained by the default
-> > sched_cfs_bandwidth_slice (5 times the tested quota) and CONFIG_HZ.
-> > 
-> > So I'd say keep only the two-sided tolerant check. (I want to avoid the
-> > test to randomly fail when there's no gaping issue.)
-> 
-> Yep, patch v2 is doing just that. So, I assume I have your Acked-by?
-> 
-> Thanks
-> 
-> Shashank
 
-I forgot to add the fixes tags:
-Fixes: a79906570f9646ae17 ("cgroup: Add test_cpucg_max_nested() testcase")
-Fixes: 889ab8113ef1386c57 ("cgroup: Add test_cpucg_max() testcase")
+--ctjxpi437gfzjwsr
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] selftests/cgroup: improve the accuracy of cpu.max
+ tests
+MIME-Version: 1.0
 
-Should I send a v3 with your ack and the tags?
+On Fri, Jul 04, 2025 at 06:15:54PM +0900, Shashank Balaji <shashank.mahadas=
+yam@sony.com> wrote:
+> I forgot to add the fixes tags:
+> Fixes: a79906570f9646ae17 ("cgroup: Add test_cpucg_max_nested() testcase")
+> Fixes: 889ab8113ef1386c57 ("cgroup: Add test_cpucg_max() testcase")
+>=20
+> Should I send a v3 with your ack and the tags?
 
-Thanks
+Yeah, I think it'd be simpler to apply.
 
-Shashank
+Thanks,
+Michal
+
+--ctjxpi437gfzjwsr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaGeh0wAKCRB+PQLnlNv4
+CFu8AP9oYIVYY2GTEEdyLaoXHQ4+JBuGrYba76X7wg8t7IV/YAD9GvS9tVBxg9Lj
+QT/cJhIuyDcmy+TdsQbo5gmsAgMQ7wY=
+=aScy
+-----END PGP SIGNATURE-----
+
+--ctjxpi437gfzjwsr--
 
