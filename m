@@ -1,137 +1,296 @@
-Return-Path: <cgroups+bounces-8687-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8688-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81B36AF8EEC
-	for <lists+cgroups@lfdr.de>; Fri,  4 Jul 2025 11:41:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0D41AF910C
+	for <lists+cgroups@lfdr.de>; Fri,  4 Jul 2025 13:09:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D678C16D414
-	for <lists+cgroups@lfdr.de>; Fri,  4 Jul 2025 09:41:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 422AB5648C2
+	for <lists+cgroups@lfdr.de>; Fri,  4 Jul 2025 11:09:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9544C2E8E03;
-	Fri,  4 Jul 2025 09:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CED962C158E;
+	Fri,  4 Jul 2025 11:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="g3P1jk+B"
+	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="w9HYPVjy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from jpms-ob01-os7.noc.sony.co.jp (jpms-ob01-os7.noc.sony.co.jp [211.125.139.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8884DA2D
-	for <cgroups@vger.kernel.org>; Fri,  4 Jul 2025 09:41:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC98285CBC;
+	Fri,  4 Jul 2025 11:09:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.125.139.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751622107; cv=none; b=RNsTPc8m+zmOmMe9gp7OKrFUFQCw/Wrbn+kNTToDk8fQFxzEh4dZ560DGLtr/5crCZrKk++KOP+8PxnXk8mGAtetNfxYAL9Ntnixjjx34QnRxeSx1rAo40a66MLRGm5wIjUl8U7+Ygf5iF5lnO7XV13nxj+x+qqW4Hh0rCvGZMI=
+	t=1751627357; cv=none; b=hR072ajEM+9h6MbMX9FGJtKzKePbUEO7nRKiMc6h8DCE25aAZdGkbCIFvrpmlmcL6Ug1Kh6Ol2nEDUNO5+Mm3fLXbMlOMLwXu8L6hLx9vm79KUnouj7eJb22N/GxCAwOQNBq4TmrVTlga2Zq5meMs89R0JMYnO4wpjFD/EYwo0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751622107; c=relaxed/simple;
-	bh=f8KJwsnNMzDSXCcr+Avb2AwztgI5qoTLwLOR6IeBS/c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o+Y1y2FD/EHoMZBrAjmZILmjZo4hfEo3Tpq7ezKb0QeeiqbJB/ZSqHqb0QBWLKAA7Q5xwPypT8R6LFuVwJSK8bJIUFEI0Aazol0LqFiTbi+Rf66vm2YzEvNMJoGd8Bb848T6mZvxUXY/2TxUX6ofRtaWuL/Bug7zjktn8neGyEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=g3P1jk+B; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4535fbe0299so3780555e9.3
-        for <cgroups@vger.kernel.org>; Fri, 04 Jul 2025 02:41:45 -0700 (PDT)
+	s=arc-20240116; t=1751627357; c=relaxed/simple;
+	bh=TV/7w58bjfLB6WXsgckFzwAaVso0lFgSwbVf0M/jOrM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=eau8uuoTLArGqpvVhDXvvfl0H5tOAl6UhCoTYRZjjMsAE3OyH+001J52ZIXfLIJzkUWMv07aK/sopQHTG2YyyI3LWTVfDQPOw2HLzAYAT33xjECDFsIZpjf+g3KfOlJzZ0E1xNLLMb/7l9fp+0n0NQrtK+NY+vL2ClWbFW4AfIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com; spf=fail smtp.mailfrom=sony.com; dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b=w9HYPVjy; arc=none smtp.client-ip=211.125.139.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sony.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1751622104; x=1752226904; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f8KJwsnNMzDSXCcr+Avb2AwztgI5qoTLwLOR6IeBS/c=;
-        b=g3P1jk+BlfXibf9qbAcB0lx+KlcwRFQhHefsB1vY4n68GFZ4oD9LovXHi+BObnB4ao
-         mSAqepJ/qHOCWnisdOXorGRyj+zBFt06cZlccbaigWfpHSFgPSNp1qXlXW9kTzdLnEe0
-         c1gl5F19Srx5tBldA1QtG4qQ3SPub/6xFzvTjcman8Mi8MiNevthyfUq+rfeMlCJhtQ6
-         QdV3GU72brhtOJBH9yP2W2VLRSQ7ohbifKSNvegnLlMxweo18tudG/M5G1eg6jhCElzi
-         T5K81oRAO0OOT8PwT9N/bvY2X21md4TqciP8lGXBKoWay6/ajYJZ6uhjpyyxf7G+IttA
-         UP5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751622104; x=1752226904;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f8KJwsnNMzDSXCcr+Avb2AwztgI5qoTLwLOR6IeBS/c=;
-        b=g7P4HO5xZmzwQs5L5+RoKnFRNTE/wbrYLcF5tAUk6Mo6kLlQfmn5bkbMQqWQ9a+CvT
-         S/SyQ1JmLRT21JpaB+ImAIbEDN4yiJOCRX3eyAQrlKx/Nic/7xUlwGrH8LO/BbTl9v47
-         /p2bQYbLAAYqfjgomdrTWKFmPPGPMJagvfXnxab4K/OfJJ0VJsV8fCtTgjPqU2KezMAX
-         VRlZpAhFLkUpXB2aaKQOfGpYsVWcPleSVXHxKhBPmObh6//0pY8FWYWvAjBhXZdoqKHX
-         TLRMfPnIousPteiMD09Rc0FU333S/ag02OLcFyMG5S5Y33AtW6QMn14EBEYGj0MZ1Ubd
-         lM+A==
-X-Forwarded-Encrypted: i=1; AJvYcCWAOf/40T3RvlyUGON5fzAUo+tjoI39NK18qugWElFt1hvinisBTwXEofSiJ8EsYIfMRWLjQuZu@vger.kernel.org
-X-Gm-Message-State: AOJu0YzG/QbyL1FXCPr9TdgwhQZZAcOE+hRaUvrwS3Byrn+/Aqu2CSSm
-	uIFd3LcaQsDs8XTpcsmDmTMEqav4y2DfTfWRn8ZnUvTGG/P6yB4gQQQsvHVcNpYcHSY=
-X-Gm-Gg: ASbGncuYtL3yIBhjh25oPwshZJYLJ1wrp6c254Yceoada0wIf8hwRRC1NC0gWvbO9lm
-	6jx9amUaAa2D6xhuLM2RgqqTL6RmbWnVx+zUuI5XQUe8nBd30XioDqXs936Qi/GPH2EfSUxSc3m
-	2NYxGriTn/HJ96bnXXS0Vk4VggpypDX4A+4tIvewv+9J8+2usVwpE5y0lqKeOcCWJtzw07Z95un
-	G73i97GrcbkkMRulLphzaiyGHbX0A6/WVzLsWmfpx+ilcanswWhSxilolpsGnODkA3UEN1VXnNx
-	VHUa3gAQviRHinIq6D6cOAROD0B6wB6d6s9GcX5NinTwz52vyl1ghshtfD4tcT6YYZJ8uTdAHO0
-	=
-X-Google-Smtp-Source: AGHT+IGUjYMUD08GoD1AoiKFpUXCYjS+U0f2xn5DR+TvetLvteDx1zxFn8QzKiN0Fr5rObhFCHiOcg==
-X-Received: by 2002:a05:600c:19c9:b0:43c:f629:66f4 with SMTP id 5b1f17b1804b1-454b305fcb1mr20498375e9.0.1751622103886;
-        Fri, 04 Jul 2025 02:41:43 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454adc71aadsm38629065e9.25.2025.07.04.02.41.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jul 2025 02:41:43 -0700 (PDT)
-Date: Fri, 4 Jul 2025 11:41:41 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Shashank Balaji <shashank.mahadasyam@sony.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Shinya Takumi <shinya.takumi@sony.com>
-Subject: Re: [PATCH v2] selftests/cgroup: improve the accuracy of cpu.max
- tests
-Message-ID: <bc2igjpyzuzkxjrbdhixsuldxatnqqwm666enqkbrm5x2hj7u7@uhe6xouufklc>
-References: <20250701-kselftest-cgroup-fix-cpu-max-v1-0-049507ad6832@sony.com>
- <20250703120325.2905314-1-shashank.mahadasyam@sony.com>
- <l3sal6zkvo4lqnfs6fepxytnrmqmqwfvtxudnjm53oigtuatpd@7czfeursgwyh>
- <aGcf0Prl-hVX2j4Q@JPC00244420>
- <aGd5lrUvm9Bhh-b8@JPC00244420>
- <wnoymxwdikh6iawrcvhewq6er4si75oqzjdbibhl6n57swq3ff@glkzfmbaots7>
- <aGeZwLAuysAmyX-q@JPC00244420>
- <aGebynaCuASn3t4s@JPC00244420>
+  d=sony.com; s=s1jp; t=1751627355; x=1783163355;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ovcOttaXl9UWHiQRmJlTkj3Gz0h6p0BU5i0IVTunyR8=;
+  b=w9HYPVjypiAOmi3zcOY8y+R3V9IsQIxoknuI9il4Yi6BQUsH8gbABW28
+   4u+sLjvrHUPLUbfN+gdseo2mKthtPas4cEjkp/oueD07UXywUJWKK6INP
+   9Sureo8dLJ/Us049uATG8ZqCF8ijiUiaMgbgBYHZkelw8+bLmaus4Car5
+   jgrtzzDTn0xvwHOx1V2bk963WuzyMl3zF7Hy9wMpPOGhYV7qCo3b8OigV
+   Hjo/H0oFXor7Pt/JYn1Ai/fP5ODuYhDYMOuL+OpiTsE9I9pIazW+Xod6G
+   YgRJ8z2bQCCO2CLcs/3glrNGLLsTU/2MQ3PLDjQLhzeUH9MYVnOE+7DtR
+   A==;
+Received: from unknown (HELO jpmta-ob02-os7.noc.sony.co.jp) ([IPv6:2001:cf8:acf:1104::7])
+  by jpms-ob01-os7.noc.sony.co.jp with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2025 20:09:13 +0900
+X-IronPort-AV: E=Sophos;i="6.16,287,1744038000"; 
+   d="scan'208";a="4728064"
+Received: from unknown (HELO JPC00244420..) ([IPv6:2001:cf8:1:573:0:dddd:eb3e:119e])
+  by jpmta-ob02-os7.noc.sony.co.jp with ESMTP; 04 Jul 2025 20:09:13 +0900
+From: Shashank Balaji <shashank.mahadasyam@sony.com>
+To: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Shashank Balaji <shashank.mahadasyam@sony.com>,
+	cgroups@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Shinya Takumi <shinya.takumi@sony.com>
+Subject: [PATCH v3] selftests/cgroup: fix cpu.max tests
+Date: Fri,  4 Jul 2025 20:08:41 +0900
+Message-ID: <20250704110843.1022518-1-shashank.mahadasyam@sony.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250703120325.2905314-1-shashank.mahadasyam@sony.com>
+References: <20250703120325.2905314-1-shashank.mahadasyam@sony.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ctjxpi437gfzjwsr"
-Content-Disposition: inline
-In-Reply-To: <aGebynaCuASn3t4s@JPC00244420>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Current cpu.max tests (both the normal one and the nested one) are broken.
 
---ctjxpi437gfzjwsr
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2] selftests/cgroup: improve the accuracy of cpu.max
- tests
-MIME-Version: 1.0
+They setup cpu.max with 1000 us quota and the default period (100,000 us).
+A cpu hog is run for a duration of 1s as per wall clock time. This corresponds
+to 10 periods, hence an expected usage of 10,000 us. We want the measured
+usage (as per cpu.stat) to be close to 10,000 us.
 
-On Fri, Jul 04, 2025 at 06:15:54PM +0900, Shashank Balaji <shashank.mahadas=
-yam@sony.com> wrote:
-> I forgot to add the fixes tags:
-> Fixes: a79906570f9646ae17 ("cgroup: Add test_cpucg_max_nested() testcase")
-> Fixes: 889ab8113ef1386c57 ("cgroup: Add test_cpucg_max() testcase")
->=20
-> Should I send a v3 with your ack and the tags?
+Previously, this approximate equality test was done by
+`!values_close(usage_usec, expected_usage_usec, 95)`: if the absolute
+difference between usage_usec and expected_usage_usec is greater than 95% of
+their sum, then we pass. And expected_usage_usec was set to 1,000,000 us.
+Mathematically, this translates to the following being true for pass:
 
-Yeah, I think it'd be simpler to apply.
+	|usage - expected_usage| > (usage + expected_usage)*0.95
 
-Thanks,
-Michal
+	If usage > expected_usage:
+		usage - expected_usage > (usage + expected_usage)*0.95
+		0.05*usage > 1.95*expected_usage
+		usage > 39*expected_usage = 39s
 
---ctjxpi437gfzjwsr
-Content-Type: application/pgp-signature; name="signature.asc"
+	If usage < expected_usage:
+		expected_usage - usage > (usage + expected_usage)*0.95
+		0.05*expected_usage > 1.95*usage
+		usage < 0.0256*expected_usage = 25,600 us
 
------BEGIN PGP SIGNATURE-----
+Combined,
 
-iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaGeh0wAKCRB+PQLnlNv4
-CFu8AP9oYIVYY2GTEEdyLaoXHQ4+JBuGrYba76X7wg8t7IV/YAD9GvS9tVBxg9Lj
-QT/cJhIuyDcmy+TdsQbo5gmsAgMQ7wY=
-=aScy
------END PGP SIGNATURE-----
+	Pass if usage < 25,600 us or > 39 s,
 
---ctjxpi437gfzjwsr--
+which makes no sense given that all we need is for usage_usec to be close to
+10,000 us.
+
+Fix this by explicitly calcuating the expected usage duration based on the
+configured quota, default period, and the duration, and compare usage_usec
+and expected_usage_usec using values_close() with a 10% error margin.
+
+Also, use snprintf to get the quota string to write to cpu.max instead of
+hardcoding the quota, ensuring a single source of truth.
+
+Remove the check comparing user_usec and expected_usage_usec, since on running
+this test modified with printfs, it's seen that user_usec and usage_usec can
+regularly exceed the theoretical expected_usage_usec:
+
+	$ sudo ./test_cpu
+	user: 10485, usage: 10485, expected: 10000
+	ok 1 test_cpucg_max
+	user: 11127, usage: 11127, expected: 10000
+	ok 2 test_cpucg_max_nested
+	$ sudo ./test_cpu
+	user: 10286, usage: 10286, expected: 10000
+	ok 1 test_cpucg_max
+	user: 10404, usage: 11271, expected: 10000
+	ok 2 test_cpucg_max_nested
+
+Hence, a values_close() check of usage_usec and expected_usage_usec is
+sufficient.
+
+Fixes: a79906570f9646ae17 ("cgroup: Add test_cpucg_max_nested() testcase")
+Fixes: 889ab8113ef1386c57 ("cgroup: Add test_cpucg_max() testcase")
+Acked-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Shashank Balaji <shashank.mahadasyam@sony.com>
+
+---
+
+Changes in v3:
+- Simplified commit message
+- Explained why the "user_usec >= expected_usage_usec" check is removed
+- Added fixes tags and Michal's Acked-by
+- No code changes
+- v2: https://lore.kernel.org/all/20250703120325.2905314-1-shashank.mahadasyam@sony.com/
+
+Changes in v2:
+- Incorporate Michal's suggestions:
+	- Merge two patches into one
+	- Generate the quota string from the variable instead of hardcoding it
+	- Use values_close() instead of labs()
+	- Explicitly calculate expected_usage_usec
+- v1: https://lore.kernel.org/all/20250701-kselftest-cgroup-fix-cpu-max-v1-0-049507ad6832@sony.com/
+---
+ tools/testing/selftests/cgroup/test_cpu.c | 63 ++++++++++++++++-------
+ 1 file changed, 43 insertions(+), 20 deletions(-)
+
+diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
+index a2b50af8e9ee..2a60e6c41940 100644
+--- a/tools/testing/selftests/cgroup/test_cpu.c
++++ b/tools/testing/selftests/cgroup/test_cpu.c
+@@ -2,6 +2,7 @@
+ 
+ #define _GNU_SOURCE
+ #include <linux/limits.h>
++#include <sys/param.h>
+ #include <sys/sysinfo.h>
+ #include <sys/wait.h>
+ #include <errno.h>
+@@ -645,10 +646,16 @@ test_cpucg_nested_weight_underprovisioned(const char *root)
+ static int test_cpucg_max(const char *root)
+ {
+ 	int ret = KSFT_FAIL;
+-	long usage_usec, user_usec;
+-	long usage_seconds = 1;
+-	long expected_usage_usec = usage_seconds * USEC_PER_SEC;
++	long quota_usec = 1000;
++	long default_period_usec = 100000; /* cpu.max's default period */
++	long duration_seconds = 1;
++
++	long duration_usec = duration_seconds * USEC_PER_SEC;
++	long usage_usec, n_periods, remainder_usec, expected_usage_usec;
+ 	char *cpucg;
++	char quota_buf[32];
++
++	snprintf(quota_buf, sizeof(quota_buf), "%ld", quota_usec);
+ 
+ 	cpucg = cg_name(root, "cpucg_test");
+ 	if (!cpucg)
+@@ -657,13 +664,13 @@ static int test_cpucg_max(const char *root)
+ 	if (cg_create(cpucg))
+ 		goto cleanup;
+ 
+-	if (cg_write(cpucg, "cpu.max", "1000"))
++	if (cg_write(cpucg, "cpu.max", quota_buf))
+ 		goto cleanup;
+ 
+ 	struct cpu_hog_func_param param = {
+ 		.nprocs = 1,
+ 		.ts = {
+-			.tv_sec = usage_seconds,
++			.tv_sec = duration_seconds,
+ 			.tv_nsec = 0,
+ 		},
+ 		.clock_type = CPU_HOG_CLOCK_WALL,
+@@ -672,14 +679,19 @@ static int test_cpucg_max(const char *root)
+ 		goto cleanup;
+ 
+ 	usage_usec = cg_read_key_long(cpucg, "cpu.stat", "usage_usec");
+-	user_usec = cg_read_key_long(cpucg, "cpu.stat", "user_usec");
+-	if (user_usec <= 0)
++	if (usage_usec <= 0)
+ 		goto cleanup;
+ 
+-	if (user_usec >= expected_usage_usec)
+-		goto cleanup;
++	/*
++	 * The following calculation applies only since
++	 * the cpu hog is set to run as per wall-clock time
++	 */
++	n_periods = duration_usec / default_period_usec;
++	remainder_usec = duration_usec - n_periods * default_period_usec;
++	expected_usage_usec
++		= n_periods * quota_usec + MIN(remainder_usec, quota_usec);
+ 
+-	if (values_close(usage_usec, expected_usage_usec, 95))
++	if (!values_close(usage_usec, expected_usage_usec, 10))
+ 		goto cleanup;
+ 
+ 	ret = KSFT_PASS;
+@@ -698,10 +710,16 @@ static int test_cpucg_max(const char *root)
+ static int test_cpucg_max_nested(const char *root)
+ {
+ 	int ret = KSFT_FAIL;
+-	long usage_usec, user_usec;
+-	long usage_seconds = 1;
+-	long expected_usage_usec = usage_seconds * USEC_PER_SEC;
++	long quota_usec = 1000;
++	long default_period_usec = 100000; /* cpu.max's default period */
++	long duration_seconds = 1;
++
++	long duration_usec = duration_seconds * USEC_PER_SEC;
++	long usage_usec, n_periods, remainder_usec, expected_usage_usec;
+ 	char *parent, *child;
++	char quota_buf[32];
++
++	snprintf(quota_buf, sizeof(quota_buf), "%ld", quota_usec);
+ 
+ 	parent = cg_name(root, "cpucg_parent");
+ 	child = cg_name(parent, "cpucg_child");
+@@ -717,13 +735,13 @@ static int test_cpucg_max_nested(const char *root)
+ 	if (cg_create(child))
+ 		goto cleanup;
+ 
+-	if (cg_write(parent, "cpu.max", "1000"))
++	if (cg_write(parent, "cpu.max", quota_buf))
+ 		goto cleanup;
+ 
+ 	struct cpu_hog_func_param param = {
+ 		.nprocs = 1,
+ 		.ts = {
+-			.tv_sec = usage_seconds,
++			.tv_sec = duration_seconds,
+ 			.tv_nsec = 0,
+ 		},
+ 		.clock_type = CPU_HOG_CLOCK_WALL,
+@@ -732,14 +750,19 @@ static int test_cpucg_max_nested(const char *root)
+ 		goto cleanup;
+ 
+ 	usage_usec = cg_read_key_long(child, "cpu.stat", "usage_usec");
+-	user_usec = cg_read_key_long(child, "cpu.stat", "user_usec");
+-	if (user_usec <= 0)
++	if (usage_usec <= 0)
+ 		goto cleanup;
+ 
+-	if (user_usec >= expected_usage_usec)
+-		goto cleanup;
++	/*
++	 * The following calculation applies only since
++	 * the cpu hog is set to run as per wall-clock time
++	 */
++	n_periods = duration_usec / default_period_usec;
++	remainder_usec = duration_usec - n_periods * default_period_usec;
++	expected_usage_usec
++		= n_periods * quota_usec + MIN(remainder_usec, quota_usec);
+ 
+-	if (values_close(usage_usec, expected_usage_usec, 95))
++	if (!values_close(usage_usec, expected_usage_usec, 10))
+ 		goto cleanup;
+ 
+ 	ret = KSFT_PASS;
+-- 
+2.43.0
+
 
