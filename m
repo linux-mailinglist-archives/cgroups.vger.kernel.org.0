@@ -1,151 +1,232 @@
-Return-Path: <cgroups+bounces-8697-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8699-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E63BAFB2B8
-	for <lists+cgroups@lfdr.de>; Mon,  7 Jul 2025 13:57:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62A42AFB6A7
+	for <lists+cgroups@lfdr.de>; Mon,  7 Jul 2025 17:00:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D69794A1562
-	for <lists+cgroups@lfdr.de>; Mon,  7 Jul 2025 11:57:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A055E3A8745
+	for <lists+cgroups@lfdr.de>; Mon,  7 Jul 2025 15:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4BF29A9C3;
-	Mon,  7 Jul 2025 11:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30D092BEC39;
+	Mon,  7 Jul 2025 15:00:29 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F76294A17
-	for <cgroups@vger.kernel.org>; Mon,  7 Jul 2025 11:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA311A238A
+	for <cgroups@vger.kernel.org>; Mon,  7 Jul 2025 15:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751889453; cv=none; b=d77khhkFctVyCqsGoa5DbLLiOVmBMvC4+hn/DDRxTeZVKBYP8TaTxRdzVTcKgCBYtPpzhPy0q6GwQmihwWDaUCPeucFhA68JgrYC48cOf4krOriZUz+CZbI37Ygi3mGz95CzhWrrgc8PN5Z1XApCuw/R4Q+tu+utWy5nC1CIP6Y=
+	t=1751900429; cv=none; b=T+ifUHW9P8RzB+Bx8cUR3GeVhaD+jG+dMzCEl/DaKh+YNAhICyqmoWWI5Xfy7ytDOHUBqgTJhLnxyS09D3Hp1iY2htFyrUzNMBM4jBRCDQ43zoYhHXp9CbaWERVvxljaT98c+tPi1iihQiMm4gTkSjPcbxyuTZlIazQrl/7+MfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751889453; c=relaxed/simple;
-	bh=lBatdydMr1UbrD6ITIl1XJhYoHkZ1L7B7CzZEV88NwU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=S4YOnkj3tQ2Azna612C+gr8yw/htDlwuQMh2objh4L6oG6AFt4M60aHf71htolHpc9s9PnUwQyK2cGMvrSFJen1kZLwPBnozdBt8jF2/AVcnFo9DcehtLxbbi2wx+utP9qKA6JJoCNhmOOZutItt6GN3pgXS1y5m00oWzckvFqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-86d126265baso284579039f.0
-        for <cgroups@vger.kernel.org>; Mon, 07 Jul 2025 04:57:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751889451; x=1752494251;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5TRauz+CW9RrwFgg/EnD6rf4LP2K7mvnWRyp76QyUoY=;
-        b=C2neOiNbtr3uWbq8IBvogJA5/LL/asSs1I19353c57bqWflq3P3kPlRUn1nGMlXgOK
-         DxJF1GTDZek9IXsP3We/NS/FTz+PpVRNh+AiqoATgog22rXclwHtxD+0b3VpnXql/QqD
-         NvArHLlYK06uwVka24J7yuU5D9nQl7rhFpkpAmQ+IJd2R9mUTjUXsTR9e5vjGSfgnep4
-         bp8MbNsdsjLT93be5SLj+n+WdkxZbKhbo2duM3MniiDN7JBVUdfzfMJbMKYUyITl5zxF
-         WXEB1G1HsddZopQBMR+IK57GlXtPj7+XUf5MDAQ8HuY7reDfUGxzWb6JzU80IYIXgPC1
-         wuWA==
-X-Gm-Message-State: AOJu0YwzRyi5+yWiDWAae00R5KDRLeNkATksmdfhCeTXvOmHjDNgzb8g
-	xoNHz241AxabxEbgrwZZUdP+YTkbEcDyms5FtUO6OSbjwv9VOZCIwl2qSsgOlcGGqY05w1ZFyrR
-	AKaStD2wvlPUpKx/ZFVTQSYABrQ5gVsWQ7wfQO55jlMTBlthYEFMa2WRYFv+gfg==
-X-Google-Smtp-Source: AGHT+IH0zbsaedvYiTcoa5SpT+03pinfOsDYpE1rs6o13TrhrLa7Dsrb8o1tjvsxD8Z90QIYgE2PQ3emY+x8B8PDJLaC3ZiGAtJj
+	s=arc-20240116; t=1751900429; c=relaxed/simple;
+	bh=tzJDDfDgVvwSOVvEga/nDK+KU2Bmv+Hr9yybDjPvMFo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hD3gN5g2xFC6EYUG+ZFY45kSM14hzj89eGPXM55eHGO9z4hlhy/mEHLZXvF/e8KCpjwP7WkkE9bVNchMEK1VfFPKkxsERpktQnUfqya62MaNBkKAU3takCGDNwhkHFJcLyEWslZmKe0ldYDyFa+6tYFDlFjresMMhnrEcQNh4aI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
+Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
+	by 156.147.51.102 with ESMTP; 7 Jul 2025 23:45:25 +0900
+X-Original-SENDERIP: 10.177.112.156
+X-Original-MAILFROM: youngjun.park@lge.com
+Date: Mon, 7 Jul 2025 23:45:25 +0900
+From: YoungJun Park <youngjun.park@lge.com>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	shikemeng@huaweicloud.com, kasong@tencent.com, nphamcs@gmail.com,
+	bhe@redhat.com, baohua@kernel.org, chrisl@kernel.org,
+	muchun.song@linux.dev, iamjoonsoo.kim@lge.com, taejoon.song@lge.com,
+	gunho.lee@lge.com
+Subject: Re: [RFC PATCH 1/2] mm/swap, memcg: basic structure and logic for
+ per cgroup swap priority control
+Message-ID: <aGvdhXFtVDR60MMn@yjaykim-PowerEdge-T330>
+References: <20250612103743.3385842-1-youngjun.park@lge.com>
+ <20250612103743.3385842-2-youngjun.park@lge.com>
+ <pcji4n5tjsgjwbp7r65gfevkr3wyghlbi2vi4mndafzs4w7zs4@2k4citaugdz2>
+ <aFIJDQeHmTPJrK57@yjaykim-PowerEdge-T330>
+ <rivwhhhkuqy7p4r6mmuhpheaj3c7vcw4w4kavp42avpz7es5vp@hbnvrmgzb5tr>
+ <aFKsF9GaI3tZL7C+@yjaykim-PowerEdge-T330>
+ <bhcx37fve7sgyod3bxsky5wb3zixn4o3dwuiknmpy7fsbqgtli@rmrxmvjro4ht>
+ <aGPd3hIuEVF2Ykoy@yjaykim-PowerEdge-T330>
+ <nyzhn5e5jxk2jscf7rrsrcpgoblppdrbi7odgkwl5elgkln4bq@mdhevtbwp7co>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cd8b:0:b0:3d9:6cb6:fa52 with SMTP id
- e9e14a558f8ab-3e13eefa3c0mr77137375ab.12.1751889451289; Mon, 07 Jul 2025
- 04:57:31 -0700 (PDT)
-Date: Mon, 07 Jul 2025 04:57:31 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <686bb62b.a00a0220.c7b3.0083.GAE@google.com>
-Subject: [syzbot] [cgroups?] KCSAN: data-race in cgroup_migrate_execute / memcpy_and_pad
-From: syzbot <syzbot+f3188428a0ed36870056@syzkaller.appspotmail.com>
-To: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
-	mkoutny@suse.com, syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <nyzhn5e5jxk2jscf7rrsrcpgoblppdrbi7odgkwl5elgkln4bq@mdhevtbwp7co>
 
-Hello,
+On Mon, Jul 07, 2025 at 11:59:49AM +0200, Michal Koutný wrote:
+> Hello.
+> 
+> On Tue, Jul 01, 2025 at 10:08:46PM +0900, YoungJun Park <youngjun.park@lge.com> wrote:
+> >   memory.swap.priority
+> ...
+> 
+> >         To assign priorities to swap devices in the current cgroup,
+> >         write one or more lines in the following format:
+> > 
+> >           <swap_device_unique_id> <priority>
+> 
+> How would the user know this unique_id? (I don't see it in /proc/swaps.)
 
-syzbot found the following issue on:
+The unique_id is a new concept I introduced to refer to assigned
+swap devices. It's allocated whenever a swap device is turned on. I did
+explore other key identifiers like the swap device path, but I
+determined that providing a separate unique_id is more suitable for
+this context. Initially, I proposed printing it directly from
+memory.swap.priority to facilitate usage like:
 
-HEAD commit:    d7b8f8e20813 Linux 6.16-rc5
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=176e828c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ce48b74bcedce10f
-dashboard link: https://syzkaller.appspot.com/bug?extid=f3188428a0ed36870056
-compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+$ swapon
+NAME       TYPE      SIZE USED PRIO
+/dev/sdb   partition 300M  0B   10
+/dev/sdc   partition 300M  0B    5
 
-Unfortunately, I don't have any reproducer for this issue yet.
+$ cat memory.swap.priority
+Active
+/dev/sdb   unique:1  prio:10
+/dev/sdc   unique:2  prio:5
+Following your suggestion, I've deprecated this initial proposal and
+considered four alternatives. I'm currently leaning towards
+options 2 and 4, and I plan to propose option 4 as the primary
+approach:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6a4c012a3b93/disk-d7b8f8e2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e3a6050563a6/vmlinux-d7b8f8e2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2bdc7eedebcd/bzImage-d7b8f8e2.xz
+1. /proc/swaps with ID: We've rejected this due to potential ABI
+changes.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f3188428a0ed36870056@syzkaller.appspotmail.com
+2. New /proc interface: This could be /proc/swaps with the ID,
+or a dedicated swapdevice file with the ID. While viable, I prefer
+not to add new /proc interfaces if we can avoid it.
 
-==================================================================
-BUG: KCSAN: data-race in cgroup_migrate_execute / memcpy_and_pad
+3. /sys/kernel/mm/swap/ location: (Similar to vma_ra_enabled)
+This was rejected because sysfs typically shows configured values,
+not dynamic identifiers, which would be inconsistent with existing
+conventions.
 
-write to 0xffff888133646ad0 of 8 bytes by task 4554 on cpu 1:
- __list_splice include/linux/list.h:533 [inline]
- list_splice_tail_init include/linux/list.h:589 [inline]
- cgroup_migrate_execute+0x6b5/0x7f0 kernel/cgroup/cgroup.c:2689
- cgroup_update_dfl_csses kernel/cgroup/cgroup.c:3135 [inline]
- cgroup_apply_control+0x3ab/0x410 kernel/cgroup/cgroup.c:3375
- cgroup_subtree_control_write+0x7d5/0xb80 kernel/cgroup/cgroup.c:3520
- cgroup_file_write+0x194/0x350 kernel/cgroup/cgroup.c:4183
- kernfs_fop_write_iter+0x1be/0x2d0 fs/kernfs/file.c:334
- new_sync_write fs/read_write.c:593 [inline]
- vfs_write+0x49d/0x8e0 fs/read_write.c:686
- ksys_write+0xda/0x1a0 fs/read_write.c:738
- __do_sys_write fs/read_write.c:749 [inline]
- __se_sys_write fs/read_write.c:746 [inline]
- __x64_sys_write+0x40/0x50 fs/read_write.c:746
- x64_sys_call+0x2cdd/0x2fb0 arch/x86/include/generated/asm/syscalls_64.h:2
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xd2/0x200 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+4. Align memory.swap.priority.effective with /proc/swaps:
+Aligning the order of id prio pairs in
+memory.swap.priority.effective with the output order of
+/proc/swaps would allow users to infer which swap device
+corresponds to which ID. For example:
 
-read to 0xffff888133646180 of 3200 bytes by task 4561 on cpu 0:
- memcpy_and_pad+0x48/0x80 lib/string_helpers.c:1007
- arch_dup_task_struct+0x2c/0x40 arch/x86/kernel/process.c:98
- dup_task_struct+0x83/0x6a0 kernel/fork.c:873
- copy_process+0x399/0x1f90 kernel/fork.c:1999
- kernel_clone+0x16c/0x5b0 kernel/fork.c:2599
- __do_sys_clone3 kernel/fork.c:2903 [inline]
- __se_sys_clone3+0x1c2/0x200 kernel/fork.c:2882
- __x64_sys_clone3+0x31/0x40 kernel/fork.c:2882
- x64_sys_call+0x10c9/0x2fb0 arch/x86/include/generated/asm/syscalls_64.h:436
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xd2/0x200 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+$ swapon
+NAME       TYPE      SIZE USED PRIO
+/dev/sdb   partition 300M  0B   10
+/dev/sdc   partition 300M  0B    5
 
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 UID: 0 PID: 4561 Comm: syz.2.316 Not tainted 6.16.0-rc5-syzkaller #0 PREEMPT(voluntary) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-==================================================================
+$ cat memory.swap.priority.effective
+Active
+1 10     // this is /dev/sdb
+2 5      // this is /dev/sdc
 
+> >         Note:
+> >           A special value of -1 means the swap device is completely
+> >           excluded from use by this cgroup. Unlike the global swap
+> >           priority, where negative values simply lower the priority,
+> >           setting -1 here disables allocation from that device for the
+> >           current cgroup only.
+> 
+> The divergence from the global semantics is little bit confusing.
+> There should better be a special value (like 'disabled') in the interface.
+> And possible second special value like 'none' that denotes the default
+> (for new (unconfigured) cgroups or when a new swap device is activated).
+> 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Thank you for your insightful comments and suggestions regarding the
+default values. I was initially focused on providing numerical values
+for these settings. However, using keywords like "none" and
+"disabled" for default values makes the semantics much more natural
+and user-friendly.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Based on your feedback and the cgroup-v2.html documentation on default
+values, I propose the following semantics:
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+none: This applies priority based on the global swap
+priority. It's important to note that for negative priorities,
+this implies following NUMA auto-binding rules, rather than a direct
+application of the negative value itself.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+disabled: This keyword explicitly excludes the swap device
+from use by this cgroup.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+Here's how these semantics would translate into usage:
 
-If you want to undo deduplication, reply with:
-#syz undup
+echo "default none" > memory.swap.priority or
+echo "none" > memory.swap.priority:
+* When swapon is active, the cgroup's swap device priority will
+follow the global swap priority.
+
+echo "default disabled" > memory.swap.priority or
+echo "default" > memory.swap.priority:
+* When swapon is active, the swap device will be excluded from
+allocation within this cgroup.
+
+echo "<id> none" > memory.swap.priority:
+* The specified swap device will follow its global swap priority.
+
+echo "<id> disabled" > memory.swap.priority:
+* The specified swap device will be excluded from allocation for
+this cgroup.
+
+echo "<id> <prio>" > memory.swap.priority:
+* This sets a specific priority for the specified swap device.
+
+> ...
+> >         In this case:
+> >           - If no cgroup sets any configuration, the output matches the
+> >             global `swapon` priority.
+> >           - If an ancestor has a configuration, the child inherits it
+> >             and ignores its own setting.
+> 
+> The child's priority could be capped by ancestors' instead of wholy
+> overwritten? (So that remains some effect both.)
+
+Regarding the child's priority being capped or refined by ancestors'
+settings, I've considered allowing the child's priority to resolve its
+own settings when the sorted priority order is consistent and the
+child's swap devices are a subset of the parent's. Here's a visual
+representation of how that might work:
+
++-----------------+
+| Parent cgroup   |
+| (Swaps: A, B, C)|
++--------+--------+
+         |
+         | (Child applies settings to its own children)
+         v
++--------+--------+
+| Child cgroup    |
+| (Swaps: B, C)   |
+| (B & C resolved by child's settings)
++--------+--------+
+         |
+         +-------------------+
+         |                   |
+         v                   v
++--------+--------+   +--------+--------+
+| Grandchild cgroup |   | Grandchild 2 cgroup |
+| (Swaps: C)        |   | (Swaps: A)        |
+| (C resolved by    |   | (A not in B,C;    |
+|  grandchild's     |   |  resolved by      |
+|  child's settings)|   |  child's settings)|
++-------------------+   +-------------------+
+
+However, this feature isn't currently required for our immediate use
+case, and it adds notable complexity to the implementation. I suggest
+we consider this as a next step if the current feature is integrated
+into the kernel and sees widespread adoption or
+any further use cases or requirements.
+
+Best regards,
+Youngjun Park
 
