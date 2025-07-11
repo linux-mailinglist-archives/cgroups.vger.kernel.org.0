@@ -1,91 +1,73 @@
-Return-Path: <cgroups+bounces-8708-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8709-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62DFCB01D05
-	for <lists+cgroups@lfdr.de>; Fri, 11 Jul 2025 15:10:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 792F0B01EBC
+	for <lists+cgroups@lfdr.de>; Fri, 11 Jul 2025 16:12:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B868A17B0B1
-	for <lists+cgroups@lfdr.de>; Fri, 11 Jul 2025 13:10:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F9763B715A
+	for <lists+cgroups@lfdr.de>; Fri, 11 Jul 2025 14:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09EFB2D0C8F;
-	Fri, 11 Jul 2025 13:10:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D782DE6F4;
+	Fri, 11 Jul 2025 14:12:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="A0FSEsNa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MvXkYTKZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D981727EC99
-	for <cgroups@vger.kernel.org>; Fri, 11 Jul 2025 13:10:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFA4F27EC98;
+	Fri, 11 Jul 2025 14:12:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752239450; cv=none; b=fDKJp627S/78UYa1P9uQTTQhybxfN7WpCOkB2ZNtypDtzPm3WONMBs6Cj1rxhFJLt9aZfpIHzfYLiTaMo/Dy/9jdeAiZQnxsgXsf7ZW9OPHhqNBTidFrs3ivz6tVK0jRgZ5t2gdljMma+y6MpFEerxWXDF1jyy86dEHPYWKcHeI=
+	t=1752243163; cv=none; b=H+KHIAYTgN4ELA+mBbjJihiMSLRgHSBnw9UXnZfz512vlCPYIQErIQJlmXfiwF6Nkqn6zCBaZ066gSXHfXMtequxrU4Zd+wrMMMuRI4b1BFgfwlt1PNFVqHIQzjYKAXD6D5Znhaj6Lvr12GNGm1N8GerMO4os9KCscL75W1RSxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752239450; c=relaxed/simple;
-	bh=NVO1zCDHv3ROadHLdK6tuJ+N4zlgm56IubjILAS0Pvk=;
+	s=arc-20240116; t=1752243163; c=relaxed/simple;
+	bh=U6cxtSHyOQ9QCaoBodqp6zYZ+8VXJFakc92XcJD5XCw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aqVgdEYrobKhgmrXYfyfJ3oK7PkYzY1c73dzYnrluV6OB7KhphFvoB/beEnxxtMP0/h0YSgIGeiUqwPyvtDLenBdDDzosMZa834g0cuRd6Yt1u9j9DfE5s5jqLdM6P2ABtdNeqNVwdHSfJhs8bVvhS6m424V3mQmQzmlZyTsOQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=A0FSEsNa; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-451d6ade159so16037365e9.1
-        for <cgroups@vger.kernel.org>; Fri, 11 Jul 2025 06:10:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1752239447; x=1752844247; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NVO1zCDHv3ROadHLdK6tuJ+N4zlgm56IubjILAS0Pvk=;
-        b=A0FSEsNaEy4W9xAXt+1JP6DRy3As3ecGcfCwvqU1pasFOTXXPPpGespkTCjQSwMdeo
-         rhIsF8XVZZJrs7+jjcqnTZwdRYZ5lTF0fwQTLyeiUYS3HKJnJWdjmZNI+dQcy2z8XVsj
-         rZncVDnnCx72vxa37jGbESghg1xElgcvAzyPjjQailpWvGGlaape2uZl4uJAvrVcCdtQ
-         t6CUVi2HBRJVTXeQDpdJlxEFF2UTkgetbImQbS44CKUTp/BZzo4kNvox66YRx1EnnSIW
-         Dms4sRYCAfe+9ddJP2MFJGChwQWMzxL6b+Yn1AkGvvIryTerSRtZwImpUzM00sey9U90
-         0ccQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752239447; x=1752844247;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NVO1zCDHv3ROadHLdK6tuJ+N4zlgm56IubjILAS0Pvk=;
-        b=SLR0MZ8bnyiL7B7sDMlUrQb45R6P6scP1Gd5c7ydUhiYGNLoUH5JI4VvU8dyL6Ik4a
-         fE3VbLKkiOJOGK8uFZWDNsSKhjJ4pkGVo/sJETZ9d7RZD4IEDU7ma7Er4Q824peX2hvP
-         y33t/vja2CuzR+RbwOw/dPHUrUs84b/0zLKklTFKGw60Q+sfXI8O3zLkVdur99+EFIH9
-         ErNpQpJs3kcTKcbMxcFY7FkasWSD9JTXuYDoHqHtslRJLYhr6mtXJIwYHgTwshVGJaVl
-         PLgICm4iNbsinWqqFZDwkcuo6Ymc6CrdoGYucj88zqJWW4DYVHbbitz4EEIIakapjDgB
-         zbUw==
-X-Gm-Message-State: AOJu0YxcVHLCF40iTVatXen+pVHn/yXPmEMnO49S+x6w/qkdMgPY9WLj
-	9XWcIcaguSctvhYt2yQVTN6VAGNzvFf698HJ2ANFYjKVjkwED3VyYvj2556EH6iHuHg=
-X-Gm-Gg: ASbGncvochIihqJhiL2qAK/fX/tGx3rILPHJuXAp2EMIOExmaS8jHegZf+CMUUQH55X
-	4so+SLRGaXYGk+dSWzNIWj3XUFjI0+bajnY4e9MEuOf8cs5yQ0AFdnNzXObVsnbesuxRQV3Toyf
-	JQYVcBeUuKzbpn48iHImYzRWjLIUx/TyncE3E5NhKuYqxGbuMjjE6CJHDtgEj4BRfU/NObFfGYp
-	NwtHr+eAKITp6IAUl8XLbpLaYHJrxfQtuczrpZLo44hORY9ZeqrrZcOR9beOx5wUSi3mG51jEkZ
-	8vzOfa8Kmumbo1EQlj5wLri8Aj3scuCUydkzcObX1nJGsRsnpFdeL4f5aj9KpMd2dN+x1ctwCd7
-	ydug52aLLP86zllyqBNlpEv1s
-X-Google-Smtp-Source: AGHT+IEP8mpu0Iuuf0a1ln8zktC/M79WYzkXuE4a7OZhLTCL2N1ClTroKbqdRnpP4IMAAWbs4Tnjuw==
-X-Received: by 2002:a05:600c:3b9c:b0:43d:77c5:9c1a with SMTP id 5b1f17b1804b1-454ec13bf6amr28698115e9.4.1752239447146;
-        Fri, 11 Jul 2025 06:10:47 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454dd47528fsm46969975e9.13.2025.07.11.06.10.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jul 2025 06:10:46 -0700 (PDT)
-Date: Fri, 11 Jul 2025 15:10:44 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Chen Ridong <chenridong@huawei.com>, 1108294@bugs.debian.org
-Subject: Re: [PATCH 4/4] cgroup: Do not report unavailable v1 controllers in
- /proc/cgroups
-Message-ID: <bio4h3soa5a64zqca66fbtmur3bzwhggobplzg535erpfr2qxe@xsgzgxihirpa>
-References: <20240909163223.3693529-1-mkoutny@suse.com>
- <20240909163223.3693529-5-mkoutny@suse.com>
- <b26b60b7d0d2a5ecfd2f3c45f95f32922ed24686.camel@decadent.org.uk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iy2RlXxKFK1QaVQXo9xRTgRafMGRGffy/7DSyeZRb8ixEgX39+voQTSKmEPtO6CO11MxrDUUczY3P8od2zGLZ1JZTcjC8jzww3hHrUT9YtRIcIwZ1rveHlevXD16wi1TPVEtdVmRRoYLbsb2EvIeLhFJv/hPWsfBYArR+Kt0wxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MvXkYTKZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E8C3C4CEED;
+	Fri, 11 Jul 2025 14:12:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752243162;
+	bh=U6cxtSHyOQ9QCaoBodqp6zYZ+8VXJFakc92XcJD5XCw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=MvXkYTKZnshtOXEpmgxG1eAYZ5T4ybDEiM8la83RFl3X+yCJN6HV0lvD4KaKaaCHd
+	 4d2/LIbSOq8ePdaTsubspT7Oshhw4WUFejE8+6pqlIczEoE0RU8zohMrMFNLNVGgHG
+	 euIHEET071Fy4tEbTspOjxtty7WYLcj23SAUheVcZCOiMucBljX4nGKhj06jkGWGSQ
+	 TacqM+6FhnMnSi5N7eNFuS51bSy56ZRTAnE2VJ/Xw45FLGVkhQDfFWp0INvrOs4Bbo
+	 1s48fVLYxJr8FQAEpb/FDOyW+na2nnMbg/S0o21vn1jtKmMmDET8Ax1SkUJ/gE/SUo
+	 tWZpDtL25alRg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id EF5C1CE0841; Fri, 11 Jul 2025 07:12:41 -0700 (PDT)
+Date: Fri, 11 Jul 2025 07:12:41 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Maarten Lankhorst <dev@lankhorst.se>,
+	Natalie Vock <natalie.vock@gmx.de>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, cgroups@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, Maxime Ripard <mripard@kernel.org>,
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH v1 1/1] rculist: move list_for_each_rcu() to where it
+ belongs
+Message-ID: <a90c8ad5-e016-40bc-873b-8bb6e7b8b441@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250710121528.780875-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -94,27 +76,88 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b26b60b7d0d2a5ecfd2f3c45f95f32922ed24686.camel@decadent.org.uk>
+In-Reply-To: <20250710121528.780875-1-andriy.shevchenko@linux.intel.com>
 
-Hello Ben.
+On Thu, Jul 10, 2025 at 03:15:28PM +0300, Andy Shevchenko wrote:
+> The list_for_each_rcu() relies on the rcu_dereference() API which is not
+> provided by the list.h. At the same time list.h is a low-level basic header
+> that must not have dependencies like RCU, besides the fact of the potential
+> circular dependencies in some cases. With all that said, move RCU related
+> API to the rculist.h where it belongs.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-On Wed, Jul 09, 2025 at 08:22:09PM +0200, Ben Hutchings <ben@decadent.org.uk> wrote:
-> Would you consider reverting this change for the sake of compatibility?
+I cannot see why this would not work, and it does pass testing, but I
+am adding David Howells in case there is some subtle reason why this
+must remain in include/linux/list.h.
 
-As you write, it's not fatally broken and it may be "just" an issue of
-container images that got no fresh rebuild. (And I think it should be
-generally discouraged running containers with stale deps in them.)
+ad25f5cb3987 ("rxrpc: Fix locking issue")
 
-The original patch would mainly serve legacy userspace (host) setups on
-top of contemporary kernel (besides API purity reasons). Admittedly,
-these should be rare and eventually extinct in contrast with your
-example where it's a containerized userspace (which typically could do
-no cgroup setup) that may still have some user demand.
+In the absence of such a reason, from an RCU viewpoint:
 
-So, I'd be more confident with the revert if such an adjustment was
-carried downstream by some distro and proven its viability first. Do you
-know of any in the wild?
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-I appreciate your report,
-Michal
+> ---
+>  include/linux/list.h    | 10 ----------
+>  include/linux/rculist.h | 10 ++++++++++
+>  kernel/cgroup/dmem.c    |  1 +
+>  3 files changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/linux/list.h b/include/linux/list.h
+> index e7e28afd28f8..e7bdad9b8618 100644
+> --- a/include/linux/list.h
+> +++ b/include/linux/list.h
+> @@ -686,16 +686,6 @@ static inline void list_splice_tail_init(struct list_head *list,
+>  #define list_for_each(pos, head) \
+>  	for (pos = (head)->next; !list_is_head(pos, (head)); pos = pos->next)
+>  
+> -/**
+> - * list_for_each_rcu - Iterate over a list in an RCU-safe fashion
+> - * @pos:	the &struct list_head to use as a loop cursor.
+> - * @head:	the head for your list.
+> - */
+> -#define list_for_each_rcu(pos, head)		  \
+> -	for (pos = rcu_dereference((head)->next); \
+> -	     !list_is_head(pos, (head)); \
+> -	     pos = rcu_dereference(pos->next))
+> -
+>  /**
+>   * list_for_each_continue - continue iteration over a list
+>   * @pos:	the &struct list_head to use as a loop cursor.
+> diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+> index 1b11926ddd47..2abba7552605 100644
+> --- a/include/linux/rculist.h
+> +++ b/include/linux/rculist.h
+> @@ -42,6 +42,16 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
+>   */
+>  #define list_bidir_prev_rcu(list) (*((struct list_head __rcu **)(&(list)->prev)))
+>  
+> +/**
+> + * list_for_each_rcu - Iterate over a list in an RCU-safe fashion
+> + * @pos:	the &struct list_head to use as a loop cursor.
+> + * @head:	the head for your list.
+> + */
+> +#define list_for_each_rcu(pos, head)		  \
+> +	for (pos = rcu_dereference((head)->next); \
+> +	     !list_is_head(pos, (head)); \
+> +	     pos = rcu_dereference(pos->next))
+> +
+>  /**
+>   * list_tail_rcu - returns the prev pointer of the head of the list
+>   * @head: the head of the list
+> diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+> index 10b63433f057..e12b946278b6 100644
+> --- a/kernel/cgroup/dmem.c
+> +++ b/kernel/cgroup/dmem.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/mutex.h>
+>  #include <linux/page_counter.h>
+>  #include <linux/parser.h>
+> +#include <linux/rculist.h>
+>  #include <linux/slab.h>
+>  
+>  struct dmem_cgroup_region {
+> -- 
+> 2.47.2
+> 
 
