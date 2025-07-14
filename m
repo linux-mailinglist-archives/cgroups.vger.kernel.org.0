@@ -1,92 +1,92 @@
-Return-Path: <cgroups+bounces-8721-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8722-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAD4EB03538
-	for <lists+cgroups@lfdr.de>; Mon, 14 Jul 2025 06:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8333B03566
+	for <lists+cgroups@lfdr.de>; Mon, 14 Jul 2025 06:56:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B9773B8B83
-	for <lists+cgroups@lfdr.de>; Mon, 14 Jul 2025 04:44:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEBE73BA5CC
+	for <lists+cgroups@lfdr.de>; Mon, 14 Jul 2025 04:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCDE91F1909;
-	Mon, 14 Jul 2025 04:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55F8C211290;
+	Mon, 14 Jul 2025 04:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QVivIINL"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wIbsefYh"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+Received: from mail-oa1-f74.google.com (mail-oa1-f74.google.com [209.85.160.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C517FBA2
-	for <cgroups@vger.kernel.org>; Mon, 14 Jul 2025 04:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91CFC204F9B
+	for <cgroups@vger.kernel.org>; Mon, 14 Jul 2025 04:53:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752468292; cv=none; b=EFReD8Vbo6CyhmNwjbZfhR+WKYVx6KDkxL3Jbkm+AUJIpARTtJlFrFI+5WuzsysLFN7oIfEx3iEhAg1LP0HPmP1oG8AgskzTI/xXvXFNHOF8u78JTk0JPHXXA7/b26WGaH2zsIMlpYgmsH/r49Z5ZQ8wMxYriMYw6crnWQ6B66s=
+	t=1752468829; cv=none; b=UbVVOZW/MvQZCr68UVIyRk1EBwkj96oIcCN+LsWt5NYCp9yu2wPZHIf1VlDa4AGJA7wVfqSbQoKMfP/2BrH1Zz15X6CjBCGzk3achr+/111c8/rcW35DZxijeucdlzqZ9Otv8jAYMXCcc+GDQiSvwONB3L8M8vauGNpVcpgPYRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752468292; c=relaxed/simple;
-	bh=5vNg5iLm5fQUUSPoWLFmK0LPoRl1f1jq9DvfznsWj1k=;
+	s=arc-20240116; t=1752468829; c=relaxed/simple;
+	bh=7bXjRHiI47UNMRzrGl1d7MXm4Qp3OxzayVbsyPKgo/U=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=dVgtLE/JiM1ACEZEs99kU34ovTlpiFSvExyzJBX7N5+bwfDuzNjxwRWgH+NriHoqYFIWV5YvOZ6E17fq6/JlRJTQcRz36YSQj7U0AZCxO8LYG9vTelCZuxX4XDnJ73/iL1VZxLwWqPPCi7/kl8e7TOnnOriMN8f+BrL4Y8KYDrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QVivIINL; arc=none smtp.client-ip=209.85.210.201
+	 To:Cc:Content-Type; b=UpsX+OlGk81yMG3dzxfHxL2dtAtbYK/ggnHUwqp9f/gOQS17tpKpbvs4q4CUZhUQHBJIEr/HN3QNb0lmJsAXeBSAkqzMk3OkTVpmlCXvtWzEULM0Cz9Lj9A4cAo8Zng9/VFMwz4e5a0Yxg6QsGtQLd+ZCcuRto+xeY+bklxiMns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wIbsefYh; arc=none smtp.client-ip=209.85.160.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-74ea83a6c1bso1724671b3a.0
-        for <cgroups@vger.kernel.org>; Sun, 13 Jul 2025 21:44:51 -0700 (PDT)
+Received: by mail-oa1-f74.google.com with SMTP id 586e51a60fabf-2d9ea524aa6so4256028fac.0
+        for <cgroups@vger.kernel.org>; Sun, 13 Jul 2025 21:53:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752468290; x=1753073090; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:user-agent:references:mime-version
-         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vz4nZeT2Phnj2r45yuIHWOY+oW8/KY+q0YqmSchxW00=;
-        b=QVivIINLKE0CEJZ/0Rs8RcPTHlPb50OyFBt0X7jS835PVSEYzQaAh1Tzd5Frh7SPbE
-         MuBjE9Ju3oJIeGOWaRXDbVXIX3tGcjxQStNYpaaxeCkm+xAAWepvwRxYb/IwgpzLG+Wc
-         8CJM5L/4+i1PQaSgPHbO0rMgBZLuSTj94jrZJcM/L4FknHvHhSLB+7Vut3L9hWs6CgLW
-         PizwcmxOmH9mOZznkuMO1zYZNHRQgDuJLTaAflSNMqzOUi6s2+PEph983XGrckB0ABxD
-         E2Q6aY36Wo6oePbTHu2ThaePuB7PUinJONAouQispQzlJm8OtIGyWAKIvnOPsFXH/gEU
-         t84w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752468290; x=1753073090;
-        h=cc:to:from:subject:message-id:user-agent:references:mime-version
-         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1752468826; x=1753073626; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:user-agent
+         :references:mime-version:in-reply-to:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vz4nZeT2Phnj2r45yuIHWOY+oW8/KY+q0YqmSchxW00=;
-        b=J5hq4OONSF9HYvRZSOwLVMNEdonQhAyDa7EAI+2vMIWt0z0nLeRbMk7NMEqK9/CVwd
-         kWdQG6gf8Yb2+t9i+p6DdnSbQjoemfHTtrjr7DLBno+QTWyKXaC4D6sH9Ufr99HAlcPa
-         RK4Xw1lz8J/HayQ3odNu4Oh8PXB1WAkORkQpXJbOW5+/3Oef9hdU0dEQEhqL2O2KygYi
-         qYO86f7Gqp3SCzqFiirRVnEwKTgjZOG/TLzFnPw4bMQoTWCCFBNEyWjW4vfFCAe9n/fq
-         Cr13DgB7A8QNKpaH+iJiWvQANNwem2MH2NQxrzXvpyWo5tgOeWQu9Flgnvdi6zNXaT10
-         plCA==
-X-Forwarded-Encrypted: i=1; AJvYcCXmdqMbuv/2J6Fv3tjS7WUSn95rbUZcHunIgs7VGDRbak5rzsRazru/Pl8sDSFuL1uYBwq9Wcx4@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6MKb04IJX0L6/m1MXSOFv7i0TOpG44mRHsUzJXT3pnKnZjH7c
-	pXD5NGq6hPKn3u4JbIgpS+AZKioLe9dHpKr5F+DaJ8x+HwherRjuFb/LDesw5adloThgi2+wDcy
-	sx+15epIRnw==
-X-Google-Smtp-Source: AGHT+IHS8Q/px8WH9ZbMmObz8rlW7f6xuLYox5HUzwM+jzX5Ungse5eiCulnCr9QVrut7RAYQNYZbnb9n6yx
-X-Received: from pfble3.prod.google.com ([2002:a05:6a00:4fc3:b0:748:f4a1:ae2e])
- (user=ynaffit job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:23c6:b0:742:aecc:c47c
- with SMTP id d2e1a72fcca58-74ee0ab59d6mr13933650b3a.7.1752468290477; Sun, 13
- Jul 2025 21:44:50 -0700 (PDT)
-Date: Sun, 13 Jul 2025 21:44:48 -0700
-In-Reply-To: <aF7qjAkwXhjTVmT-@slm.duckdns.org> (Tejun Heo's message of "Fri,
- 27 Jun 2025 09:01:32 -1000")
+        bh=7bXjRHiI47UNMRzrGl1d7MXm4Qp3OxzayVbsyPKgo/U=;
+        b=wIbsefYhKvMLqoyxdjEphpe3+hvaDNQemgEhdzFbxvXG5DS6bqMW3+IYYtPZVBaP5m
+         2K4nwP4+UbTKC9BafoK6mEGtCDmuoSbD0tXh7TyTn6RB7LqSzcBfJpsseflCIkvyJ8V6
+         OQ8LQglYHBUMafmcHlmtaPvbTUEFz3ED7yGiorBgWRMfNGUp8pI4TF2GDW4LQtJ9y6kI
+         K4Mt8Q15Oi1hu+MynqIvPJX+xg5CiqxiG25ZpiPwlZAXOWSyay2v4cw1DIAvEI+DYoum
+         2B49MVIuIlT4j/5WHJw3nzq5cqNGC2ds+3RdXjZTbCDrFSNqTs3258UhdCiwfWQ7GsFL
+         Bjxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752468826; x=1753073626;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:user-agent
+         :references:mime-version:in-reply-to:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7bXjRHiI47UNMRzrGl1d7MXm4Qp3OxzayVbsyPKgo/U=;
+        b=R27WnfZm3O6DNsyb+w5JWfmoNUAI/ymsU/+x5KRFl4084W2q/Wo61pT/L8fncCEQza
+         tIQHp9S8yUYJpQdyqrxSAflK07rQ+r/RFHbj7HncfUWF2p6Q8r4/gmaOlibDlXDgB21g
+         /3HSOsuzqzp2ZVW4/nQkWQaZxDJBNFzt/8AEmKilIR0KLnawdQ57V/fLN6eQ4SyNy7zq
+         XZnwF3N4vwZE6rereAwpT7hcpxiWIkoYarpzroJ80OOVc9MAUjexgp2R14jFRZFwo1Ba
+         ZAa0jqZWFqfD0VN/0HiTlXdoOLmW11lifFTcGIv1JUQ0aAa2FM3bF2+FKr7nT7JkN83S
+         NzLw==
+X-Forwarded-Encrypted: i=1; AJvYcCX4/L+8dzrsqkSRgG/j8YkvAIH9a339L1SUuadNagJCx72vNA8RaFDVPRLOA/mBBHOzIUdJfmZw@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+l+p5wb8V9bzce+Cr2B7Dvf0XaCEgMERdBJ0MoaqX4QbMi3cj
+	JGSQgIf030wJdB8FlG7Qg/dvFevJsponep2Zn2AOY1DNlJBEd+ORgqhflY4mqHrfmRxoFcLL4hE
+	/ilrWwyMG0g==
+X-Google-Smtp-Source: AGHT+IFycs6ExMKIq4iAOKf4cU4uPB/I0zZjZbEXW6RgDMEwKTVejcJf1yepScN61AgHIGEO2UnV5ttGNtrh
+X-Received: from oabhi25.prod.google.com ([2002:a05:6870:c999:b0:295:ef58:6002])
+ (user=ynaffit job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6871:2b20:b0:2c2:c92a:5789
+ with SMTP id 586e51a60fabf-2ff26e4a12cmr8334191fac.5.1752468826465; Sun, 13
+ Jul 2025 21:53:46 -0700 (PDT)
+Date: Sun, 13 Jul 2025 21:53:45 -0700
+In-Reply-To: <ry6p5w3p4l7pnsovyapu6n2by7f4zl63c7umwut2ngdxinx6fs@yu53tunbkxdi>
+ ("Michal =?utf-8?Q?Koutn=C3=BD=22's?= message of "Mon, 30 Jun 2025 19:40:28 +0200")
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20250603224304.3198729-3-ynaffit@google.com> <aD9_V1rSqqESFekK@slm.duckdns.org>
- <dbx8y0u7i9e6.fsf@ynaffit-andsys.c.googlers.com> <aEDM_s7y8xMKJHph@slm.duckdns.org>
- <dbx8y0tej595.fsf@ynaffit-andsys.c.googlers.com> <aF7qjAkwXhjTVmT-@slm.duckdns.org>
+References: <20250603224304.3198729-3-ynaffit@google.com> <gn6xiuqczaoiepdczg364cj46riiskvqwgvyaawbb3bpaybaw4@5iiohkyscrek>
+ <dbx8h601k4ms.fsf@ynaffit-andsys.c.googlers.com> <ry6p5w3p4l7pnsovyapu6n2by7f4zl63c7umwut2ngdxinx6fs@yu53tunbkxdi>
 User-Agent: mu4e 1.12.9; emacs 30.1
-Message-ID: <dbx8wm8b8jpb.fsf@ynaffit-andsys.c.googlers.com>
+Message-ID: <dbx8o6tn8jae.fsf@ynaffit-andsys.c.googlers.com>
 Subject: Re: [RFC PATCH] cgroup: Track time in cgroup v2 freezer
 From: Tiffany Yang <ynaffit@google.com>
-To: Tejun Heo <tj@kernel.org>
+To: "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>
 Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
 	kernel-team@android.com, John Stultz <jstultz@google.com>, 
 	Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>, 
 	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>, 
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
 	"Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>, 
 	Roman Gushchin <roman.gushchin@linux.dev>, Chen Ridong <chenridong@huawei.com>, 
 	Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -95,40 +95,76 @@ Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
 	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
 	Valentin Schneider <vschneid@redhat.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
 
-Hello!
-
-> ...
-> Glad that worked out, but I'm curious what are the involved time scales.
-> Let's say you get things off by some tens of msecs, or maybe even  
-> hundreds,
-> does that matter for your purpose?
-
-
-Our wotchdog timers are on the order of a few seconds. Tens of msecs
-would be acceptable, but I think variances of hundreds of msecs would be
-large enough to cause issues. I mainly wanted to include the rough
-numbers in case anybody was curious about the actual magnitude of the
-offsets (if they wanted this accounting for a different use case, for
-example).
-
-
-> While it's not my call, I'm not necessarily against. However, as you noted
-> in another reply, the challenge is that there are multiple states and it's
-> not clear what combinations would be useful for whom. When/if we encounter
-> more real world use cases tha twould require these numbers, they may shed
-> light on what the right combination / interface is. IOW, I'm not sure this
-> is a case where adding something preemptively is a good idea.
-
-Ack. The per-cgroup accounting gets us most of the way there, so I'll be
-sending out that updated version shortly! I agree that another relevant
-use case would be immensely helpful for figuring out a way to describe
-the broader problem we are trying to solve and what shape a solution
-should take.
-
-Thank you for your feedback and for helping me to arrive at (what I hope
-is) a reasonable approach.
-
--- 
-Tiffany Y. Yang
+TWljaGFsIEtvdXRuw70gPG1rb3V0bnlAc3VzZS5jb20+IHdyaXRlczoNCg0KPiBXb3VsZCBpdCBi
+ZSBzdWZmaWNpZW50IHRvIG1lYXN1cmUgdGhhdCBkZWFkbGluZSBhZ2FpbnN0DQo+IGNwdS5zdGF0
+OnVzYWdlX3VzZWMgKENQVSB0aW1lIGNvbnN1bWVkIGJ5IHRoZSBjZ3JvdXApPyBPciBkbyBJDQo+
+IG1pc3VuZGVyc3RhbmQgeW91ciBsYXR0ZXIgZGVhZGxpbmUgbWV0cmljPw0KDQpDUFUgdGltZSBp
+cyBhIGdvb2Qgd2F5IHRvIHRoaW5rIGFib3V0IHRoZSBxdWFudGl0eSB3ZSBhcmUgdHJ5aW5nIHRv
+DQptZWFzdXJlIGFnYWluc3QsIGJ1dCBpdCBkb2VzIG5vdCBhY2NvdW50IGZvciBzbGVlcCB0aW1l
+IChlaXRoZXINCnZvbHVudGFyaWx5IG9yIHdhaXRpbmcgb24gYSBmdXRleCwgZXRjLikuIFVubGlr
+ZSBmcmVlemUgdGltZSwgd2Ugd291bGQNCndhbnQgc2xlZXAgdGltZSB0byBjb3VudCBhZ2FpbnN0
+IG91ciBkZWFkbGluZSBiZWNhdXNlIGEgdGltZW91dCB3b3VsZA0KbGlrZWx5IGluZGljYXRlIGEg
+cHJvYmxlbSBpbiB0aGUgYXBwbGljYXRpb24ncyBsb2dpYy4NCg0KPiAoTm90ZSB0aGF0IFNJR1NU
+T1AgbWF5IGJlIHNlbnQgdG8gc2VsZiBvciB3aXRoaW4gdGhlIGdyb3VwIGJ1dCkgbWluZA0KPiB0
+aGF0IGV2ZW4gdGhlIGNhdGVnb3J5ICJub3QgcmVxdWVzdGVkIiBpcyBzcGxpdCBpbnRvIHR3byBv
+dGhlcjogcmVzb3VyY2UNCj4gY29udGVudGlvbiBhbmQgZnJlZXppbmcgbWFuYWdlbWVudC4gQW5k
+IHRoZSBsYXR0ZXIgc2hvdWxkIGJlIHVuZGVyDQo+IGNvbnRyb2wgb2YgdGhlIGFnZW50IHRoYXQg
+c2V0cyB0aGUgZGVhZGxpbmVzLg0KDQoNClRoaXMgd291bGQgYmUgaWRlYWwsIGJ1dCBpbiBvdXIg
+Y2FzZSwgdGhlIGFnZW50IHRoYXQgc2V0cy9lbmZvcmNlcyB0aGUNCmRlYWRsaW5lcyBpcyBhIHRh
+c2sgaW4gdGhlIHNhbWUgYXBwbGljYXRpb24uIEl0IGhhcyBubyBjb250cm9sIG92ZXINCmZyZWV6
+aW5nIGV2ZW50cyBhbmQgKGN1cnJlbnRseSkgbm8gd2F5IHRvIGtub3cgd2hlbiBvbmUgaGFzDQpv
+Y2N1cnJlZC4gQ29uc2VxdWVudGx5LCBldmVuIGlmIHRoZSBmcmVlemluZyBtYW5hZ2VyIHdlcmUg
+dG8gc2VuZCB0aGUNCnJlbGV2YW50IGluZm9ybWF0aW9uIHRvIG91ciBhZ2VudCwgbm9uZSBvZiB0
+aG9zZSBtZXNzYWdlcyBjb3VsZCBiZQ0KcHJvY2Vzc2VkIHVudGlsIHRoZSBhcHBsaWNhdGlvbiB3
+YXMgdW5mcm96ZW4uDQoNClRoZSByZXN1bHQgd291bGQgYmUgY29tcGV0aW5nIGRpcmVjdGx5IGFn
+YWluc3QgdGhlIHRhc2sgdW5kZXIgZGVhZGxpbmUNCih0byBoYW5kbGUgY29tbXVuaWNhdGlvbiBh
+cyBpdCBjYW1lIGluKSBvciBkZWxheWluZyBjb3JyZWN0aXZlIGFjdGlvbg0KZGVjaXNpb25zICh0
+byB3YWl0IHVudGlsIHRoZSBkZWFkbGluZSB0byBkZWFsIHdpdGggYW55IG1lc3NhZ2VzKS4gSWYg
+dGhlDQphcHBsaWNhdGlvbiB3ZXJlIGZyb3plbiBtdWx0aXBsZSB0aW1lcyBkdXJpbmcgdGhlIHRp
+bWVyIGludGVydmFsLCB0aGF0DQpjb3N0IHdvdWxkIGJlIGluY3VycmVkIGVhY2ggdGltZS4gQXMg
+YW4gYWx0ZXJuYXRpdmUsIHRoZSB3YXRjaGRvZyBjb3VsZA0KcmVxdWVzdCB0aGlzIGluZm9ybWF0
+aW9uIGZyb20gdGhlIGZyZWV6aW5nIG1hbmFnZXIgdXBvbiB0aW1lciBlbGFwc2UsDQpidXQgdGhh
+dCB3b3VsZCBhbHNvIGludHJvZHVjZSBzaWduaWZpY2FudCBsYXRlbmN5IHRvIGRlYWRsaW5lDQpl
+bmZvcmNlbWVudC4NCg0KPiBUaG9zZSBhcmUgb3JkZXIocykgb2YgbWFnbml0dWRlIGRpZmZlcmVu
+dC4gSSBjYW4ndCBpbWFnaW5lIHRoYXQgdXNpbmcNCj4gZnJlZXplciBmb3Igam9icyB3aGVyZSBh
+bHNvIHdha2V1cCBsYXRlbmN5IG1hdHRlcnMuDQoNClRoaXMgaXMgdHJ1ZSEgVGhlc2UgZXhhbXBs
+ZXMgd2VyZSBtYWlubHkgdG8gaWxsdXN0cmF0ZSB0aGUgYnJlYWR0aCBvZg0KdGhlIHByb2JsZW0g
+c3BhY2UvaG93IHNsaXBwZXJ5IGl0IGNhbiBiZSB0byBnZW5lcmFsaXplLg0KDQo+IFdlbGwsIHRo
+ZXJlIGFyZSBtdWx0aXBsZSBzaW1pbGFyIG1ldHJpY3M6IHZhcmlvdXMgKGNncm91cCkgUFNJLCAo
+Z2xvYmFsKQ0KPiBzdGVhbCB0aW1lLCBjcHUuc3RhdDp0aHJvdHRsZWRfdXNhZ2UgYW5kIHBlcmhh
+cHMgc29tZSBtb3JlLg0KDQpBaCEgVGhhbmtzIGZvciBub3RpbmcgdGhlc2UuIEl0J3MgaGVscGZ1
+bCB0byBoYXZlIHRoZXNlIGNvbmNyZXRlDQpleGFtcGxlcyB0byBmaW5kIHdheXMgdG8gdGhpbmsg
+YWJvdXQgdGhpcyBwcm9ibGVtLg0KDQpQaGlsb3NvcGhpY2FsbHksIEkgdGhpbmsgdGhlIHRpbWUg
+d2UncmUgdHJ5aW5nIHRvIGFjY291bnQgZm9yIGlzIG1vc3QNCnNpbWlsYXIgdG8gc3RlYWwgdGlt
+ZSBiZWNhdXNlIGl0IGFsbG93cyBhIFZNIHRvIGNvcnJlY3QgdGhlIGludGVybmFsDQphY2NvdW50
+aW5nIGl0IHVzZXMgdG8gZW5mb3JjZSBwb2xpY3kuIEFmdGVyIGNvbnNpZGVyaW5nIGhvdyB0aGUg
+ZGVsYXkNCndlJ3JlIHRyeWluZyB0byB0cmFjayBmaXRzIGFtb25nIHRoZXNlLCBJIHRoaW5rIG9u
+ZSBxdWFsaXR5IHRoYXQgbWFrZXMNCml0IHNvbWV3aGF0IGRpZmZpY3VsdCB0byBmb3JtYWxpemUg
+aXMgdGhhdCB3ZSBhcmUgdHJ5aW5nIHRvIGFjY291bnQgZm9yDQptdWx0aXBsZSBleHRlcm5hbCBz
+b3VyY2VzIG9mIGRlbGF5LCBidXQgd2UgYWxzbyB3YW50IHRvIGV4Y2x1ZGUNCiJpbnRlcm5hbCIg
+ZGVsYXkgKGNvbnRlbnRpb24sIHZvbHVudGFyeSBzbGVlcCkuIFRoZSBzcGVjaWZpY2l0eSBvZiB0
+aGlzDQppcyBtYWtpbmcgYW4gaXRlcmF0aXZlIGFwcHJvYWNoIHNlZW0gbW9yZSBhcHBlYWxpbmcu
+Li4NCg0KPiBUZWp1bidzIHN1Z2dlc3Rpb24gd2l0aCB0cmFja2luZyBjZ3JvdXAncyBmcm96ZW4g
+dGltZSBvZiB3aG9sZSBjZ3JvdXANCj4gY291bGQgY29tcGxlbWVudCBvdGhlciAiZGVidWdnaW5n
+IiBzdGF0cyBwcm92aWRlZCBieSBjZ3JvdXBzIGJ5IEkgdGVuZA0KPiB0byB0aGluayB0aGF0IGl0
+J3Mgbm90IGdvb2QgKGFuZCBjZXJ0YWlubHkgbm90IGNvbXBsZXRlKSBzb2x1dGlvbiB0bw0KPiB5
+b3VyIHByb2JsZW0uDQoNCkkgYWdyZWUgdGhhdCBpdCBkb2Vzbid0IG5lY2Vzc2FyaWx5IGZlZWwg
+Y29tcGxldGUsIGJ1dCBhZnRlciBzcGVuZGluZw0KdGhpcyB0aW1lIG11bGxpbmcgb3ZlciB0aGUg
+cHJvYmxlbSwgSSB0aGluayBpdCBzdGlsbCBmZWVscyB0b28gbmFycm93IHRvDQprbm93IHdoYXQg
+YSBtb3JlIGdlbmVyYWwgc29sdXRpb24gc2hvdWxkIGxvb2sgbGlrZS4NCg0KU2luY2UgdGhlcmUg
+aXNuJ3QgeWV0IGEgY2xlYXIgd2F5IHRvIGlkZW50aWZ5IGEgc2V0IG9mICJsb3N0IiB0aW1lIHRo
+YXQNCmV2ZXJ5b25lIChvciBhdCBsZWFzdCBhIHdpZGVyIGdyb3VwIG9mIHVzZXJzKSBjYXJlcyBh
+Ym91dCwgaXQgc2VlbXMgbGlrZQ0KaXRlcmF0aW5nIG92ZXIgY29tcG9uZW50cyBvZiBpbnRlcmVz
+dCBpcyB0aGUgYmVzdCB3YXkgdG8gbWFrZSBwcm9ncmVzcw0KZm9yIG5vdy4gVGhhdCB3YXksIGF0
+IGxlYXN0IGZvbGtzIGNhbiB0cmFjayBzb21lIGNvbWJpbmF0aW9uIG9mIHRoZQ0KdmFsdWVzIHRo
+YXQgbWF0dGVyIHRvIHRoZW0uIChPbmUgYXNwZWN0IG9mIHRoaXMgSSBmaW5kIGludGVyZXN0aW5n
+IGlzDQp0aW1lIHRoYXQgaXMgYWNjb3VudGVkIGZvciBpbiBtdWx0aXBsZSBtZXRyaWNzLiBNYXli
+ZSBhIGJldHRlciB3YXkgdG8NCnRoaW5rIGFib3V0IHRoaXMgcHJvYmxlbSBjYW4gYmUgZm91bmQg
+aW4gc29tZSByZWxhdGlvbiBiZXR3ZWVuIHRoZXNlDQpvdmVybGFwcy4pDQoNCkkgcmVhbGx5IGFw
+cHJlY2lhdGUgdGhlIGVmZm9ydCB0aGF0IHlvdSd2ZSBwdXQgaW50byB0cnlpbmcgdG8gdW5kZXJz
+dGFuZA0KdGhlIGxhcmdlciBwcm9ibGVtIGFuZCB0aGUgcXVlc3Rpb25zIHlvdSd2ZSBhc2tlZCB0
+byBoZWxwIG1lIHRoaW5rIGFib3V0DQppdC4gVGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgeW91ciB0
+aW1lIQ0KDQotLSANClRpZmZhbnkgWS4gWWFuZw0K
 
