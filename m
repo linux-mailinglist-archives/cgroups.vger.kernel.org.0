@@ -1,280 +1,121 @@
-Return-Path: <cgroups+bounces-8723-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8724-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1946B0356D
-	for <lists+cgroups@lfdr.de>; Mon, 14 Jul 2025 07:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 58C27B037F9
+	for <lists+cgroups@lfdr.de>; Mon, 14 Jul 2025 09:29:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64E011897E4A
-	for <lists+cgroups@lfdr.de>; Mon, 14 Jul 2025 05:00:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92A4A189C390
+	for <lists+cgroups@lfdr.de>; Mon, 14 Jul 2025 07:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F061F91C5;
-	Mon, 14 Jul 2025 05:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NswDMG6t"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F021233739;
+	Mon, 14 Jul 2025 07:29:31 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D36CF1CD0C
-	for <cgroups@vger.kernel.org>; Mon, 14 Jul 2025 05:00:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D104A1CD1F
+	for <cgroups@vger.kernel.org>; Mon, 14 Jul 2025 07:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752469227; cv=none; b=sOLU169o7IaZf0VhDo81JfdbSMxo7pv5/H3+9gjwsxQl4QywxYuyvI/H8VIYv7aEoTfWtKaGy83J/ENmDbCDPljcXgrFsqF1DQiQYypuCUOUeCaUWc7ahRwVvRZjweaUOEajcUjoJGtc8t0W9aC+nxBCkBul7x3J462UpcPQj3I=
+	t=1752478171; cv=none; b=FSu1iUxpWWeS5DIpU4m+EhY77Yn5u+RNyFBbnFJn6cJy4NPN0XTG2kmsN8q8zTw90Q614mY4UXW/xjErJ0Expwh98qI04u0BFRigPlQatlmNkhCN5wwETFQcT3sEvZ3GOsv2yDAzLHoA/WZssJTkwxY0V7dhs0qh1LzTkkyvuHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752469227; c=relaxed/simple;
-	bh=gHxlnA6LgZxKV5dmbJqffiJrRw82NzIBqp5YGau3qC4=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=LFihA0oIdwdTqtpg10XGEIfdXSkXioGgunB3WgrDOW8aRVaIGKM7eOgNe2B6gl9Au12jkIKxQUL+134hrQSOFVAlgRcEfyxdU0g2lLHLK6E0bVoBTNvvNFSCG8TDJoNSka4WZG4CQoS0Az9k3lgGvnfAZNMHdkqgkyWxAJfbbw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NswDMG6t; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-7489ac848f3so6094994b3a.1
-        for <cgroups@vger.kernel.org>; Sun, 13 Jul 2025 22:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752469224; x=1753074024; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fu+1xKZsCbp8EBtYxAQNv93eMws3Yjoib2aAx/i+j5Y=;
-        b=NswDMG6t8zRVA+9eHnMvHFqPb6btgHCc0VCDKH6gF514Fk+LQuRa9RufBwQijc6ft9
-         m69VymXAQMGODwC7vp9Jx91JVZXtfbrp3TzUOwabm/Futxty9HyN7p4SIRlk1s/u2HF4
-         XGYBGpxuPJtEwVVJ2s2Tkw2NiBLfsMgauyqz42MFQ8wYU/aSy9YSH5T9IkZ801Hd7Qli
-         DIcSochVegsS8zJshtOFsUNmRskWP0KoDVtUQcdcAs84kSqT8+ci6VochdB1636OB2oc
-         1rGPnQj2x4JWxZp8rU8OBlxt7LkxjTidTRiRBla1AugzP0C0VTRHFIrKKByfRq5WwX59
-         IT8Q==
+	s=arc-20240116; t=1752478171; c=relaxed/simple;
+	bh=QH1Jhej0FzVPznPIYzddw1W8EAKLzgdh7BWu6DGYLUY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Th6GnqZb7sk4qwvk7Biqfr7lFJnWkw2TsxBxC6PH/k8C9UftgacOtfdvPgmewTFSocYLSImkArPfu9sgyAeKn8291ziGYsHxEtFcxZBlP0ZlPQaUGUBx8KqzdCPrOKWd6UBR2dd1zgracJn7rZvLEJ5w6cHOCdHszGw3sIy95JU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-876b1339851so183566739f.3
+        for <cgroups@vger.kernel.org>; Mon, 14 Jul 2025 00:29:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752469224; x=1753074024;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fu+1xKZsCbp8EBtYxAQNv93eMws3Yjoib2aAx/i+j5Y=;
-        b=Gm8XhkXYxOqcIgVowBtRvx31my1SmscHby5QdHr9rQbmkpxL550Ipc1ww1RDpnxrNz
-         SCYR3pF9SJJDgY+MLSxkyJ6BbEf+gUaLXesnCCK3ry94d5z9js3ONUHVgG++DUpSyDhw
-         f3+fFvehhihV3Sr0yV4UDoWRxPloo3uXHTMWqRqFP6EhdN4C2FlfNQG0WTvp6OOVEVp5
-         fdy6tDzJ6hLVKTcXVBjXmGx1cFYfSbHjRBLJamDPz7Q+E7CiHB9PHra+EkeWDgCAvxKN
-         MFR3Hm35a5qxUULCFP3NKxr/7gfioNyaJnYQ1jqz5luTCAcvB3qThuLtJJCDn8x6xPYz
-         /Esw==
-X-Forwarded-Encrypted: i=1; AJvYcCXZzAbfbcyqNNJd0pSVvLKpsVLu6L+W0FBiwzzbd9wP6EWF+uFyjVqrSPvnRyFAS0+OQMUtm2k1@vger.kernel.org
-X-Gm-Message-State: AOJu0YxIYHI88OlZCW9So9+Ot9T+bMBtCZNgoZY9YpKRbg654PjubELL
-	lTDCootT/eCxYan5jt8Us2U5IUyt4/8YAAxT8PvASkNFxXYcNpun5KQvCde1OeRqVo2IwtDKAgb
-	ZaskJxsW/gQ==
-X-Google-Smtp-Source: AGHT+IFbwA9z7fuUsgLulCfX8O7JSbtjEH69zVTrR3Yzy6t4R4xWD7fwFlIaHEfCxHu+gxOEYb/yjeEvZe02
-X-Received: from pfbbv3.prod.google.com ([2002:a05:6a00:4143:b0:749:8f7:e14e])
- (user=ynaffit job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:1743:b0:74a:e29c:287d
- with SMTP id d2e1a72fcca58-74ee244a366mr17343044b3a.11.1752469224214; Sun, 13
- Jul 2025 22:00:24 -0700 (PDT)
-Date: Sun, 13 Jul 2025 22:00:09 -0700
+        d=1e100.net; s=20230601; t=1752478169; x=1753082969;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nH5zph4Aa8oUh/nc9g75ZN2VbOgnEtXQu3zZzhdoh1s=;
+        b=r7/Oj4A2ZFXl9eXZd/XpX3PcOz0mRE3fiKu/Gb4gJ51wVjJuHxKsHnrHEaK0e5NzsP
+         eBbWW1u8ZD8ZsOgz9dPaDfRN2Li8dEzPjbIQoDefB24WCtBszA34vVrTRHEZf2+AY25D
+         aOOdDJLr5zS/WFF+qoSGw5k4LdJrnK9e4xxTG3ZwsHlkcQyTAHnwZfC2zvpfml9awjs5
+         6y+DSlrdKU30VpOtfPR6fpe+dmgVPcpKFE0zz7KLTmkvroUgZRqkdwb8T7UAEDiK6ON3
+         ur2yaOcXc357uOQMTxtf6YR4GCTicwu1ZkzYr5GtNCbTT9LDdHS4LFHnuhVgDC6JzVgp
+         VqWA==
+X-Gm-Message-State: AOJu0Yyzode0c4tZ4KTYh28rHiT1mWCPC/d5eQM0vuktmhTbJBvMHC6s
+	iww4wwBYKtTyNoYshOq2bwl1Z53E2qCoAdxSLlJvuNXJTIg44m6taOpHm5hA642/hyCMH+pEMBh
+	5ZpAfPbqRmrmiTK3P1OSoPYMWl7zGqEb4hbBP1IlU8KOeUR6emOH7VWpD4wNHRA==
+X-Google-Smtp-Source: AGHT+IHvLH6ReDSIQEoy4p4zFIDgnNtY1ZeV4HdKb3HQjHfScbwlrlrGfrxqkxwIShGbKe+YDOeXtRNshuKNsb1G5NX2so7LgbtG
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.50.0.727.gbf7dc18ff4-goog
-Message-ID: <20250714050008.2167786-2-ynaffit@google.com>
-Subject: [RFC PATCH v2] cgroup: Track time in cgroup v2 freezer
-From: Tiffany Yang <ynaffit@google.com>
-To: linux-kernel@vger.kernel.org
-Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Stephen Boyd <sboyd@kernel.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
-	Frederic Weisbecker <frederic@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Chen Ridong <chenridong@huawei.com>, 
-	kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org
+MIME-Version: 1.0
+X-Received: by 2002:a05:6602:1481:b0:876:bb73:b709 with SMTP id
+ ca18e2360f4ac-87977fa3ab0mr1384963239f.11.1752478168979; Mon, 14 Jul 2025
+ 00:29:28 -0700 (PDT)
+Date: Mon, 14 Jul 2025 00:29:28 -0700
+In-Reply-To: <684c5802.a00a0220.279073.0016.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6874b1d8.a70a0220.3b380f.0051.GAE@google.com>
+Subject: Re: [syzbot] [cgroups?] WARNING in css_rstat_exit
+From: syzbot <syzbot+8d052e8b99e40bc625ed@syzkaller.appspotmail.com>
+To: cgroups@vger.kernel.org, hannes@cmpxchg.org, inwardvessel@gmail.com, 
+	linux-kernel@vger.kernel.org, mkoutny@suse.com, 
+	syzkaller-bugs@googlegroups.com, tj@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-The cgroup v2 freezer controller allows user processes to be dynamically
-added to and removed from an interruptible frozen state from
-userspace. This feature is helpful for application management, as
-a background app can be frozen to prevent its threads from being
-scheduled or otherwise contending with foreground tasks for
-resources. However, the application is usually unaware that it was
-frozen, which can cause issues by disrupting any internal monitoring
-that it is performing.
+syzbot has found a reproducer for the following issue on:
 
-As an example, an application may implement a watchdog thread for one of
-its high priority maintenance tasks that operates by checking some state
-of that task at a set interval to ensure it has made progress. The key
-challenge here is that the task is only expected to make progress when
-the application it belongs to has the opportunity to run, but there's no
-application-relative time to set the watchdog timer against. Instead,
-the next timeout is set relative to system time, using an approximation
-that assumes the application will continue to be scheduled as
-normal. If the task misses that approximate deadline because the
-application was frozen, without any way to know that, the watchdog may
-kill the healthy process.
+HEAD commit:    5d5d62298b8b Merge tag 'x86_urgent_for_v6.16_rc6' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11dabd82580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=84eae426cbd8669c
+dashboard link: https://syzkaller.appspot.com/bug?extid=8d052e8b99e40bc625ed
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=162c47d4580000
 
-Other sources of delay can cause similar issues, but this change focuses
-on allowing frozen time to be accounted for in particular because of how
-large it can grow and how unevenly it can affect applications running on
-the system. To allow an application to better account for the time it
-spends running, I propose tracking the time each cgroup spends freezing
-and exposing it to userland via a new core interface file in
-cgroupfs (cgroup.freeze.stat). I used this naming because utility
-controllers like "kill" and "freeze" are exposed as cgroup v2 core
-interface files, but I'm happy to change it if there's a convention
-others would prefer!
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d2d0d46a0e87/disk-5d5d6229.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/0bf6381177a8/vmlinux-5d5d6229.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2f3ae8f165f2/bzImage-5d5d6229.xz
 
-Currently, the cgroup css_set_lock is used to serialize accesses to the
-CGRP_FREEZE bit of cgrp->flags and the new cgroup_freezer_state counters
-(freeze_time_start_ns and freeze_time_total_ns). If we start to see
-higher contention on this lock, we may want to introduce a v2 freezer
-state-specific lock to avoid having to take the global lock every time
-a cgroup.freeze.stat file is read.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8d052e8b99e40bc625ed@syzkaller.appspotmail.com
 
-Any feedback would be much appreciated!
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 9 at kernel/cgroup/rstat.c:497 css_rstat_exit+0x368/0x470 kernel/cgroup/rstat.c:497
+Modules linked in:
+CPU: 0 UID: 0 PID: 9 Comm: kworker/0:0 Not tainted 6.16.0-rc5-syzkaller-00276-g5d5d62298b8b #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+Workqueue: cgroup_destroy css_free_rwork_fn
+RIP: 0010:css_rstat_exit+0x368/0x470 kernel/cgroup/rstat.c:497
+Code: 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 0e 01 00 00 49 c7 85 70 05 00 00 00 00 00 00 e9 00 ff ff ff e8 d9 09 07 00 90 <0f> 0b 90 e9 3e ff ff ff e8 cb 09 07 00 90 0f 0b 90 e9 30 ff ff ff
+RSP: 0018:ffffc900000e7bc0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff8881404a4e00 RCX: ffff888124720000
+RDX: ffff88801e298000 RSI: ffffffff81b45507 RDI: ffffffff8df37da0
+RBP: ffff8881404a4e08 R08: 0000000000000005 R09: 0000000000000007
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8881404a4e20
+R13: 0000000000000000 R14: 0000000000000003 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff888124720000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000034892000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ css_free_rwork_fn+0x80/0x12e0 kernel/cgroup/cgroup.c:5449
+ process_one_work+0x9cf/0x1b70 kernel/workqueue.c:3238
+ process_scheduled_works kernel/workqueue.c:3321 [inline]
+ worker_thread+0x6c8/0xf10 kernel/workqueue.c:3402
+ kthread+0x3c2/0x780 kernel/kthread.c:464
+ ret_from_fork+0x5d7/0x6f0 arch/x86/kernel/process.c:148
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
 
-Thank you,
-Tiffany
 
-Signed-off-by: Tiffany Yang <ynaffit@google.com>
 ---
-v2:
-* Track per-cgroup freezing time instead of per-task frozen time as
-  suggested by Tejun Heo
-
-Cc: John Stultz <jstultz@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Koutn=C3=BD <mkoutny@suse.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Pavel Machek <pavel@kernel.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Chen Ridong <chenridong@huawei.com>
----
- Documentation/admin-guide/cgroup-v2.rst |  8 ++++++++
- include/linux/cgroup-defs.h             |  6 ++++++
- kernel/cgroup/cgroup.c                  | 24 ++++++++++++++++++++++++
- kernel/cgroup/freezer.c                 |  8 ++++++--
- 4 files changed, 44 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-=
-guide/cgroup-v2.rst
-index bd98ea3175ec..9fbf3a959bdf 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1018,6 +1018,14 @@ All cgroup core files are prefixed with "cgroup."
- 	it's possible to delete a frozen (and empty) cgroup, as well as
- 	create new sub-cgroups.
-=20
-+  cgroup.freeze.stat
-+	A read-only flat-keyed file which exists in non-root cgroups.
-+	The following entry is defined:
-+
-+	  freeze_time_total_ns
-+		Cumulative time that this cgroup has spent in the freezing
-+		state, regardless of whether or not it reaches "frozen".
-+
-   cgroup.kill
- 	A write-only single value file which exists in non-root cgroups.
- 	The only allowed value is "1".
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index e61687d5e496..86332d83fa22 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -436,6 +436,12 @@ struct cgroup_freezer_state {
- 	 * frozen, SIGSTOPped, and PTRACEd.
- 	 */
- 	int nr_frozen_tasks;
-+
-+	/* Time when the cgroup was requested to freeze */
-+	u64 freeze_time_start_ns;
-+
-+	/* Total duration the cgroup has spent freezing */
-+	u64 freeze_time_total_ns;
- };
-=20
- struct cgroup {
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index a723b7dc6e4e..1f54d16a8713 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4050,6 +4050,23 @@ static ssize_t cgroup_freeze_write(struct kernfs_ope=
-n_file *of,
- 	return nbytes;
- }
-=20
-+static int cgroup_freeze_stat_show(struct seq_file *seq, void *v)
-+{
-+	struct cgroup *cgrp =3D seq_css(seq)->cgroup;
-+	u64 freeze_time =3D 0;
-+
-+	spin_lock_irq(&css_set_lock);
-+	if (test_bit(CGRP_FREEZE, &cgrp->flags))
-+		freeze_time =3D ktime_get_ns() - cgrp->freezer.freeze_time_start_ns;
-+
-+	freeze_time +=3D cgrp->freezer.freeze_time_total_ns;
-+	spin_unlock_irq(&css_set_lock);
-+
-+	seq_printf(seq, "freeze_time_total_ns %llu\n", freeze_time);
-+
-+	return 0;
-+}
-+
- static void __cgroup_kill(struct cgroup *cgrp)
- {
- 	struct css_task_iter it;
-@@ -5355,6 +5372,11 @@ static struct cftype cgroup_base_files[] =3D {
- 		.seq_show =3D cgroup_freeze_show,
- 		.write =3D cgroup_freeze_write,
- 	},
-+	{
-+		.name =3D "cgroup.freeze.stat",
-+		.flags =3D CFTYPE_NOT_ON_ROOT,
-+		.seq_show =3D cgroup_freeze_stat_show,
-+	},
- 	{
- 		.name =3D "cgroup.kill",
- 		.flags =3D CFTYPE_NOT_ON_ROOT,
-@@ -5758,6 +5780,7 @@ static struct cgroup *cgroup_create(struct cgroup *pa=
-rent, const char *name,
- 	 * if the parent has to be frozen, the child has too.
- 	 */
- 	cgrp->freezer.e_freeze =3D parent->freezer.e_freeze;
-+	cgrp->freezer.freeze_time_total_ns =3D 0;
- 	if (cgrp->freezer.e_freeze) {
- 		/*
- 		 * Set the CGRP_FREEZE flag, so when a process will be
-@@ -5766,6 +5789,7 @@ static struct cgroup *cgroup_create(struct cgroup *pa=
-rent, const char *name,
- 		 * consider it frozen immediately.
- 		 */
- 		set_bit(CGRP_FREEZE, &cgrp->flags);
-+		cgrp->freezer.freeze_time_start_ns =3D ktime_get_ns();
- 		set_bit(CGRP_FROZEN, &cgrp->flags);
- 	}
-=20
-diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
-index bf1690a167dd..6f3fab252140 100644
---- a/kernel/cgroup/freezer.c
-+++ b/kernel/cgroup/freezer.c
-@@ -179,10 +179,14 @@ static void cgroup_do_freeze(struct cgroup *cgrp, boo=
-l freeze)
- 	lockdep_assert_held(&cgroup_mutex);
-=20
- 	spin_lock_irq(&css_set_lock);
--	if (freeze)
-+	if (freeze) {
- 		set_bit(CGRP_FREEZE, &cgrp->flags);
--	else
-+		cgrp->freezer.freeze_time_start_ns =3D ktime_get_ns();
-+	} else {
- 		clear_bit(CGRP_FREEZE, &cgrp->flags);
-+		cgrp->freezer.freeze_time_total_ns +=3D (ktime_get_ns() -
-+			cgrp->freezer.freeze_time_start_ns);
-+	}
- 	spin_unlock_irq(&css_set_lock);
-=20
- 	if (freeze)
---=20
-2.50.0.727.gbf7dc18ff4-goog
-
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
