@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-8749-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8747-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1535B08907
-	for <lists+cgroups@lfdr.de>; Thu, 17 Jul 2025 11:11:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D87C6B088FB
+	for <lists+cgroups@lfdr.de>; Thu, 17 Jul 2025 11:10:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7312D1888E28
-	for <lists+cgroups@lfdr.de>; Thu, 17 Jul 2025 09:10:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AC9D4E4C56
+	for <lists+cgroups@lfdr.de>; Thu, 17 Jul 2025 09:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0E728982A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8E6288C96;
 	Thu, 17 Jul 2025 09:09:59 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103922853E3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE771E2312;
 	Thu, 17 Jul 2025 09:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752743399; cv=none; b=jUJsdLMBNBzs8gGk+F8X03v3zBDkESLcRW8Qi/XaRcomBinm4Yuyuie0RRVKaI8WICgB2yFTKT486J909DDiAHa3wcj3gg761t0xjrF2/jsG2EXZt7spBy4tdG9EV2rKXxJQcevv3giBtHfa0+0dpcOAmNrokdY/yaL4rRLoiWQ=
+	t=1752743398; cv=none; b=o9gGzI8DFZ3tntWyCGMfsiNG88tiFWcqBA6g95DM8aejnnKRe6bb+HM1cZJ/4x2XzGTf2UiCBvk11/y0M6jqU3XqSjGQXGl754RwNKKLrV7DX9R8cwUf0967mwV+g//1o5e4upx9pvzaxAbcMQzDXfXkISs15hKMJLPyMDygOx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752743399; c=relaxed/simple;
-	bh=o3gwy3cmXZ5u7CCyVRTqx5YCgW2C5UAu/72gyYlsKAU=;
+	s=arc-20240116; t=1752743398; c=relaxed/simple;
+	bh=Tz1X3rKDGGmdkfb/lujQSuj2LWCWnoB0eFMaPnmhEEQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DD5w3+Vk1Ht3OqX92CRW4pw8kQ8r+7J7lHHYSQ1WeHOir65BeEwAL5zmFoScjERAyXTYQXC2jI7+T9ZC66aiIefWnpcQY7KK+//QIxqJr3HuQGyTVyd8sA75Ru0Rto+QlDOIn5GbTNNJe+RKIAr4l3e03fv0MVKLpxboTpNRt2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=ND47INELsUAlcExCDuXk8JDDDN6XnrrkqF29QbnrHdTO+43mKxsXF/m9JxIeSCwNJjADuKbhcvwbm7NAriQqUX/6fOBc0Szsd2sXWNMkZ/77QsWLjt7jlei7B7+bmHySd7JR6SJf2HpKNzPQiKsA2v925LU/N5tL5IoAzzRVIpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bjRvf3c9LzKHSbD;
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bjRvf2yktzYR0hf;
 	Thu, 17 Jul 2025 17:09:50 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 1AB101A4497;
+	by mail.maildlp.com (Postfix) with ESMTP id 2BD7E1A45FC;
 	Thu, 17 Jul 2025 17:09:49 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP4 (Coremail) with SMTP id gCh0CgCnIhPNvXhosUc4Ag--.62465S3;
-	Thu, 17 Jul 2025 17:09:48 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgCnIhPNvXhosUc4Ag--.62465S4;
+	Thu, 17 Jul 2025 17:09:49 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: tj@kernel.org,
 	hannes@cmpxchg.org,
@@ -50,9 +50,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	lujialin4@huawei.com,
 	chenridong@huawei.com
-Subject: [PATCH v2 -next 1/2] sched,freezer: Remove unnecessary warning in __thaw_task
-Date: Thu, 17 Jul 2025 08:55:49 +0000
-Message-Id: <20250717085550.3828781-2-chenridong@huaweicloud.com>
+Subject: [PATCH v2 -next 2/2] Revert "cgroup_freezer: cgroup_freezing: Check if not frozen"
+Date: Thu, 17 Jul 2025 08:55:50 +0000
+Message-Id: <20250717085550.3828781-3-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250717085550.3828781-1-chenridong@huaweicloud.com>
 References: <20250717085550.3828781-1-chenridong@huaweicloud.com>
@@ -63,13 +63,13 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCnIhPNvXhosUc4Ag--.62465S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr15JrykWFWrGF48Xr47Jwb_yoW8KFW3pw
-	s3Gw47Kr48tr1jyrWUJa1jqFyDKws3Xw4UGrykWr1rXF43XasYqrn7Ar90gryjvF97KryY
-	y3Z0gr40y3ykZ3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmmb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+X-CM-TRANSID:gCh0CgCnIhPNvXhosUc4Ag--.62465S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXF18ZF4xGF1kZFy5Jw4UXFb_yoW5Gr4Upa
+	n5Gw1UGws5KF17ArZrAws2qr95KrZ7Xa1UGrykur18XF43Xas7Ars7Aw15G34UAF97KryU
+	Xas8KrWIk34qv3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUmmb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	WxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
 	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
@@ -80,10 +80,12 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7Kr15JrykWFWrGF48Xr47Jwb_yoW8KFW3pw
 	1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
 	JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r
 	1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1U
-	YxBIdaVFxhVjvjDU0xZFpf9x07jehFxUUUUU=
+	YxBIdaVFxhVjvjDU0xZFpf9x07UCZXrUUUUU=
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
+
+This reverts commit cff5f49d433fcd0063c8be7dd08fa5bf190c6c37.
 
 Commit cff5f49d433f ("cgroup_freezer: cgroup_freezing: Check if not
 frozen") modified the cgroup_freezing() logic to verify that the FROZEN
@@ -111,45 +113,41 @@ __set_current_state(TASK_RUNNING);
 
 The existing !frozen(p) check in __thaw_task makes the
 WARN_ON_ONCE(freezing(p)) warning redundant. Removing this warning enables
-reverting commit cff5f49d433f ("cgroup_freezer: cgroup_freezing: Check if
-not frozen") to resolve the issue.
+reverting the commit cff5f49d433f ("cgroup_freezer: cgroup_freezing: Check
+if not frozen") to resolve the issue.
 
-This patch removes the warning from __thaw_task. A subsequent patch will
-revert commit cff5f49d433f ("cgroup_freezer: cgroup_freezing: Check if
-not frozen") to complete the fix.
+The warning has been removed in the previous patch. This patch revert the
+commit cff5f49d433f ("cgroup_freezer: cgroup_freezing: Check if not
+frozen") to complete the fix.
 
+Fixes: cff5f49d433f ("cgroup_freezer: cgroup_freezing: Check if not frozen")
 Reported-by: Zhong Jiawei<zhongjiawei1@huawei.com>
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/freezer.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ kernel/cgroup/legacy_freezer.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/kernel/freezer.c b/kernel/freezer.c
-index 8d530d0949ff..6a96149aede9 100644
---- a/kernel/freezer.c
-+++ b/kernel/freezer.c
-@@ -201,18 +201,9 @@ static int __restore_freezer_state(struct task_struct *p, void *arg)
- 
- void __thaw_task(struct task_struct *p)
+diff --git a/kernel/cgroup/legacy_freezer.c b/kernel/cgroup/legacy_freezer.c
+index 507b8f19a262..dd9417425d92 100644
+--- a/kernel/cgroup/legacy_freezer.c
++++ b/kernel/cgroup/legacy_freezer.c
+@@ -66,15 +66,9 @@ static struct freezer *parent_freezer(struct freezer *freezer)
+ bool cgroup_freezing(struct task_struct *task)
  {
--	unsigned long flags;
--
--	spin_lock_irqsave(&freezer_lock, flags);
--	if (WARN_ON_ONCE(freezing(p)))
--		goto unlock;
--
--	if (!frozen(p) || task_call_func(p, __restore_freezer_state, NULL))
--		goto unlock;
--
--	wake_up_state(p, TASK_FROZEN);
--unlock:
--	spin_unlock_irqrestore(&freezer_lock, flags);
-+	guard(spinlock_irqsave)(&freezer_lock);
-+	if (frozen(p) && !task_call_func(p, __restore_freezer_state, NULL))
-+		wake_up_state(p, TASK_FROZEN);
- }
+ 	bool ret;
+-	unsigned int state;
  
- /**
+ 	rcu_read_lock();
+-	/* Check if the cgroup is still FREEZING, but not FROZEN. The extra
+-	 * !FROZEN check is required, because the FREEZING bit is not cleared
+-	 * when the state FROZEN is reached.
+-	 */
+-	state = task_freezer(task)->state;
+-	ret = (state & CGROUP_FREEZING) && !(state & CGROUP_FROZEN);
++	ret = task_freezer(task)->state & CGROUP_FREEZING;
+ 	rcu_read_unlock();
+ 
+ 	return ret;
 -- 
 2.34.1
 
