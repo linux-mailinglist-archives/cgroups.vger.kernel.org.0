@@ -1,76 +1,78 @@
-Return-Path: <cgroups+bounces-8766-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8767-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A5A8B0A3A4
-	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 13:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 68BE2B0A3A7
+	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 13:56:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3572A853C5
-	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 11:54:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 620AAA862B8
+	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 11:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5711E2D94AD;
-	Fri, 18 Jul 2025 11:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546872DA760;
+	Fri, 18 Jul 2025 11:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VeiVE1Tq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CS4ka61F"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9DC72C08D4;
-	Fri, 18 Jul 2025 11:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F622D9EFB;
+	Fri, 18 Jul 2025 11:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752839666; cv=none; b=Z5RURl+dmCrEyOyILZb4gYax8PXuUxV9FZVF9iJCNOpnzyW6beJ8kTLYCaOWQmPDnGfbcySQ994BGyNnouJb4+sOKXfzqqUtueWeQfJ3RYIF4voC1hIqLauOoZP5iweLGpItbAVLXZ9Xwur6MATBPDNeOtZJyePqNT5plwqrBtM=
+	t=1752839669; cv=none; b=Al3ihGxtzryqVcWaVIb4Q2w9My0RA/58MIej2RS4mUWeGMa77Htw8W14fqAWx0UO3ogE7Tp9zj2tX5EjNxjwsLHzAd5uCfbNGpR8Jip0C/fhibBWtShy2q1lUREEQNWPnLteC9XW7MigQ15AVswzdTiUXmjRpZfR8O89HkBEE+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752839666; c=relaxed/simple;
-	bh=UN0O+pIQg6Glg8Oua8IzJCVXQa4h97piXys6CU6sOBE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KlAwy5gBDefdSli2wrxfxlx5q5KRsnx0evBkv0Axuwk0v0WO/uVqo4EdVLr5/TkeIEENYXgAPwWU04jOOhKPiP8MmKmsOzvVQcmHXeTJjDGZcoEa+dX2VKm8PYqaYzEDSeBhKvd3jkcdqdAuCNvqgu7TLTIlIlxu+R4h9d8wzSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VeiVE1Tq; arc=none smtp.client-ip=209.85.216.44
+	s=arc-20240116; t=1752839669; c=relaxed/simple;
+	bh=9st3IHn6u/y3zo43PHPLGChjIhOflPkiwCPLGMc4Bu8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=IOhlMLrgxAYYBbCeSaOFnKDSHdgZpN0+7JuwbG/kaGbyohioYsiD3H3wRvar+GRmefDmj/cxjP8Rfna/E7r6HPLP4gqEOCslXZdMQLOtDX8DPF2cssKPXWxqK20tnMu2M6zGYnhGkzMcBTihzixxaKqJh6lsr1DdyVEipAXQibs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CS4ka61F; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-311da0bef4aso2114806a91.3;
-        Fri, 18 Jul 2025 04:54:24 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-3138b2f0249so1661483a91.2;
+        Fri, 18 Jul 2025 04:54:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752839664; x=1753444464; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FUjZ1QjCwxsShFOjEqW/dcUlvmZBvKECdHobMCf4NrQ=;
-        b=VeiVE1TqJPlKHcVbS7p/dYtvUChHsS5taYjKtf5nR5LY7DdfRkD/OU6cbZA56ciU8k
-         602nL9gV/ASBrKGWmLbhSZgQChZwpZHJNIJmL16uIuM9aSzNymQ4B2FWK8zHQIfkayjO
-         x2HUKLHuLB3GUibToUTgv/ge22IuOda+79x9URzj4WXOAVZZfGjX3FFHLWSBLsKWI3h6
-         WvGvZlfJcwQLu/Lu+tt/0yhfMRuG+ipK0y5H50kBcPpOFLUnqPv0e96aMrw5Hk67KVQh
-         P/rOOEVas39SF2wf8ZkZ9CSRJbTvkRiZfWuKsgJgtnVJ9bm7Vc2Oge8afTvZ8SRcUl5e
-         A4KQ==
+        d=gmail.com; s=20230601; t=1752839667; x=1753444467; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X4YPdE2VFlYLmREWLlB8PpFNm1Wxjq1Lo89FitBiU4A=;
+        b=CS4ka61FwTAS1xDat0O2R8xFYZpxD1Nvv6dnFqI5SlgW0PsRM9UeftFDO6MgomvU5z
+         IHKGesLm+gF9Z+Tfdv8bZlhk78Yt9QnDfqulKylyTMg1P8UiKbez25gffFZe4ruqaC0u
+         O1Ilh9ml4vGLzW3VnMBSua4ZsVWXpdR0O+j5f44Vs1x9qR4KxAkYgW6c7IwDicUIH5CS
+         K5PrKYCGLhauoKj1Ylq/8HVgogxF2+Db3GBmAssBfYKb/ectoJWmkL/enq7+9qKC70GD
+         g+Rhu9CvdItTsYu9SF/UUChPW1MZ6LhuRZq/nHXhVebIC5V9NB746+E6s8s5MwphaQ2h
+         20xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752839664; x=1753444464;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FUjZ1QjCwxsShFOjEqW/dcUlvmZBvKECdHobMCf4NrQ=;
-        b=GilfWKDUPhZlWaMVm2De7w3X7KNJf/Tm5j0gdUUR1H4NfN+pWplScgllEcHKq6JyY7
-         Zfnv96d4+zLVLAMpiUrWa7mK/397QVY2woBzg+R32RrCT9TiY+MD9iPmmxuWUxgwNeHg
-         VzC4QKsTPKW0WZfzKtpar81aTU96FpC/JHJ5Au6CiPeex5642/rW+NENF5FKrl9qHtJq
-         nnXhbmpwTWJ7e2Ypihjg31rv96P3UZ+2XLB+5iN2TGw7kpX/3rANKpHDRrJGDK+LkB0L
-         bGwKxLBycb4V0cv0Hsk6cab5IFB1ZtnENQiJyoG9Gr5ItcZ2Erp1JhsmkFch58X1Mjpa
-         objw==
-X-Forwarded-Encrypted: i=1; AJvYcCXJig8Ckihvzk9ZII6BkVtWgl43TiCJRWhKLtIa4+geDyXm6dqThM+dsWfQAwaaSLe6UMJDD/bMbn5CAH0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YydJcztRV6nRpF5R1g5oOl0eq3dTDzfZLy2InnRxk6Y6wRx/rwp
-	goY2af5ecHXRrtHsGYM6QF/ZG0A5qe+7yXMHsD6vkuFYDGXeexR+haab
-X-Gm-Gg: ASbGnctWih154lOsLYnQTI8u0bQosj9jUEVyci2/caZQ4lxfBdVrHxbPrOQfzgQVVrL
-	0oEphYTRBSKAPOSDN8dIfW00RIcNdMBOCIL/N790Nt/bKqxg6hUVY2k/G9Yt98lY676rXsC+ZpM
-	LWGDLxHkvrvZOStq+NGt7FF6KKEytC8XiJOCdDJpj/6L52uVFi1OzvBeUb5r6O2EV3QokUELjJK
-	BRdhhwGbKCZer36nrfzq6wOCxLIoml3DsjBqd99emC/pp8iV3Mc9GuJ1HxCOCVixrHVZVph0LPK
-	ziJobVDMw7MRm8OcS2c9CMgF9aqhjgbpEql7sNJK9g9DSXnJPEijZppjDxL9yZ3U5HhO0yAoZEU
-	Csc0FlHZ3npO9zAdUjK+0BpPK+0YG7h1+UlCspALbNUFh/uRqxXXVr1Au+uA=
-X-Google-Smtp-Source: AGHT+IGOdF3rwJ/FyhT1NPmrh0q9I1qR7G4EWEQsBJZmzFqdyODx/5SLyLos+cfm+vOtOuDp7IVY6w==
-X-Received: by 2002:a17:90b:4fc4:b0:311:c939:c859 with SMTP id 98e67ed59e1d1-31c9f44dca6mr13660879a91.30.1752839664102;
-        Fri, 18 Jul 2025 04:54:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1752839667; x=1753444467;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X4YPdE2VFlYLmREWLlB8PpFNm1Wxjq1Lo89FitBiU4A=;
+        b=qGZmRdLs7WasgPqqFh9xTHY3SpLW+6hefBhckPIo/3VMXl6Ui8CIMp2mDWkIWXGNQC
+         4KltBmPvtmOH+kR6Q8rUjD++uCzBT9bS8baWyGrUenYkJEddAK+AvP6K3AK2R9YdlmfF
+         8NRHURx7HTLyqvWAELocoXh3gnWSKh8K0Bn0cl9oG6sgC+wyi4L6FasFT3zaA/Lu7q6Q
+         0Uz79kShzdFCEXNh/Sg7sNDSDEwEWQ/LUBu55O47aZLYLcjksmeABBsPxKq95gmyPBB5
+         OJxRBkx6QTOwG8bEXRh7xvBH3mKbeAG2DRIcGTrUq0McTtuhoIKubc+jW/8faofhwwzt
+         1qjg==
+X-Forwarded-Encrypted: i=1; AJvYcCXHwjbqssxSI0SrDM7yy6g9A7/OKagU8H4d2qtTbmvhTromEuIS90YPgpKkHbNGrC5Z4lc5UOBssm3/6Go=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx2jb1/v3Yxl389ZpTg6ggpR1sDZgVvnTlhE+LHBWdtnhgmTjdb
+	4UtNPkz3y6ky/FU+SIXMrLAsIzHXLNrKneHT789KvKkG0sjwL6gLkRlc
+X-Gm-Gg: ASbGncu8Z1t1jzCGJa4y0jAODWqIlW2hW9+nCQL7bnIHdWGO5xAlTVDa/4tG0XsxaNh
+	CW6zXc2BpyOqfzWJ3l3liDZfBratxkmEgFrya4VojNHffL4H+4jzh3Zi2obOedAv9NzQ+upxdHr
+	BNRak8s4Sv2D5gIk5Pesq1M3hib43gsgAcuGdlkuGSMiRKKf18owMmhZnSS7hfS+kMaoLR3N4Ny
+	SaYSRY4nXjdpJfdcks7SEQ0vMS1rjNR7rSUJiOZeBFSn3Runm3OSrPwtNyOtbMjOtkgwbmHXXuk
+	ivBaezxCpZGy8ge8bbaorfIJXo3Fbn4M1lZr3wS83TV2Smw7GA5ckWVvZZLh8gAdKuki2pqbF3b
+	csodIMDVueA3kuoyado7iu+ncDC230k+XdLGezCUOmhXAD1X/FG4YrPOXe7w=
+X-Google-Smtp-Source: AGHT+IH1c3VpxRTwSpcSTXbYU5F4DSyMdKf+U5LqT9NWyUPwZ0Wi8WYknRBEy52dXGNZASOCMjrnRg==
+X-Received: by 2002:a17:90b:3f8d:b0:316:d69d:49fb with SMTP id 98e67ed59e1d1-31c9e70915amr17571856a91.14.1752839667006;
+        Fri, 18 Jul 2025 04:54:27 -0700 (PDT)
 Received: from localhost.localdomain ([14.22.11.161])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31cb603aee1sm2729890a91.30.2025.07.18.04.54.20
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31cb603aee1sm2729890a91.30.2025.07.18.04.54.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jul 2025 04:54:23 -0700 (PDT)
+        Fri, 18 Jul 2025 04:54:26 -0700 (PDT)
 From: Zijiang Huang <huangzjsmile@gmail.com>
 X-Google-Original-From: Zijiang Huang <kerayhuang@tencent.com>
 To: tj@kernel.org,
@@ -80,10 +82,12 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Zijiang Huang <kerayhuang@tencent.com>,
 	Hao Peng <flyingpeng@tencent.com>
-Subject: [PATCH 1/2] cgroup-v1: Fix missing mutex_unlock in error paths
-Date: Fri, 18 Jul 2025 19:54:08 +0800
-Message-ID: <20250718115409.878122-1-kerayhuang@tencent.com>
+Subject: [PATCH 2/2] cgroup: Fix reference count leak when cft->open is NULL
+Date: Fri, 18 Jul 2025 19:54:09 +0800
+Message-ID: <20250718115409.878122-2-kerayhuang@tencent.com>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <20250718115409.878122-1-kerayhuang@tencent.com>
+References: <20250718115409.878122-1-kerayhuang@tencent.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -92,48 +96,30 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In the function, after acquiring the mutex with mutex_lock, multiple return
-paths (such as returning ERR_PTR, NULL, or normal pointers)fail to call
-mutex_unlock to release the lock, which could lead to deadlock risks.
+When cft->open is NULL, it will cause ctx namespace reference count leak.
 
 Signed-off-by: Zijiang Huang <kerayhuang@tencent.com>
 Reviewed-by: Hao Peng <flyingpeng@tencent.com>
 ---
- kernel/cgroup/cgroup-v1.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ kernel/cgroup/cgroup.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index fa24c032ed6f..73e0fd93111a 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -423,8 +423,10 @@ static void *cgroup_pidlist_start(struct seq_file *s, loff_t *pos)
- 	 */
- 	if (!ctx->procs1.pidlist) {
- 		ret = pidlist_array_load(cgrp, type, &ctx->procs1.pidlist);
--		if (ret)
-+		if (ret) {
-+			mutex_unlock(&cgrp->pidlist_mutex);
- 			return ERR_PTR(ret);
-+		}
- 	}
- 	l = ctx->procs1.pidlist;
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index a723b7dc6e4e..9bde0f4be687 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4134,8 +4134,10 @@ static int cgroup_file_open(struct kernfs_open_file *of)
+ 	get_cgroup_ns(ctx->ns);
+ 	of->priv = ctx;
  
-@@ -443,11 +445,14 @@ static void *cgroup_pidlist_start(struct seq_file *s, loff_t *pos)
- 		}
- 	}
- 	/* If we're off the end of the array, we're done */
--	if (index >= l->length)
-+	if (index >= l->length) {
-+		mutex_unlock(&cgrp->pidlist_mutex);
- 		return NULL;
+-	if (!cft->open)
++	if (!cft->open) {
++		get_cgroup_ns(ctx->ns);
+ 		return 0;
 +	}
- 	/* Update the abstract position to be the actual pid that we found */
- 	iter = l->list + index;
- 	*pos = *iter;
-+	mutex_unlock(&cgrp->pidlist_mutex);
- 	return iter;
- }
  
+ 	ret = cft->open(of);
+ 	if (ret) {
 -- 
 2.43.5
 
