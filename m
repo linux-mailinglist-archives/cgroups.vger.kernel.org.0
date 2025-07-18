@@ -1,161 +1,183 @@
-Return-Path: <cgroups+bounces-8772-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8773-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C772B0A5B8
-	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 15:59:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08554B0A609
+	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 16:18:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 430A8A46C42
-	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 13:58:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AEC17B2E91
+	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 14:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9092DAFD2;
-	Fri, 18 Jul 2025 13:59:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6972248A5;
+	Fri, 18 Jul 2025 14:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="RNa5fV1F"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UA+azf+L"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79E212417F0
-	for <cgroups@vger.kernel.org>; Fri, 18 Jul 2025 13:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F1162AF14
+	for <cgroups@vger.kernel.org>; Fri, 18 Jul 2025 14:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752847144; cv=none; b=H2dFOZlZ0aD3Dqu5KlUD/udS00wVT613KJ75KKTj7ggA98XMxO9WKelX++UV1CLINrhNAc89HVnsrC80dkRoaiT0abPE2IKoRK06vetTjtLJtM7YIwwrYN1zT2mishkfdEf7SDEebOvYptU2EjNvgw1RQyLtld4mOd25FzK3NuA=
+	t=1752848322; cv=none; b=cK8SmfIsHX4NPq6Qk8mjMJcW16m64V6flaTjpRcBLBCNh/gCDoW7s3cizqgTw/6aogJw7QbFosdVDsqtmPGQYuwgDBn3EhPZr4xTy+1zBNigMsfa6bGwv/9Tnm9dv2d+SiIqpntWRf3rFZaKn+ly5khUDZrzYEjuRQl7VBeEyeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752847144; c=relaxed/simple;
-	bh=dBAySTjZLDSr5IuXrPz25bJ1X/90AQ9ByyWDnzZ80rk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R7ugTxMRYYLs8RNzFdi5Y5id4jWrDiGwBd0USOuxbY9dKMn4fx2bXA3s6vX4GrkVs4LU5WWl53ZmC3ItYadTE99MNYhyD6/7zWSmQOntzPxFGpTeZex3lH2x+DevE+14kT73PWpRVn+/ldBwI/0Q1JWVABZ9jKiFHfIV+mgdwm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=RNa5fV1F; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-6077dea37easo3562650a12.3
-        for <cgroups@vger.kernel.org>; Fri, 18 Jul 2025 06:59:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1752847141; x=1753451941; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dBAySTjZLDSr5IuXrPz25bJ1X/90AQ9ByyWDnzZ80rk=;
-        b=RNa5fV1FleX/9xFN6NOgEtOQWtl7cCr+mwBNSV43QMl+O0YyvGLdDocyLoFM4so9Qx
-         FwXF8WwqBTIxI65aOSCjeyhU5acr+FO+YPSnoQt1v/Gi+FYvr6ZrWgaMYdI16IM36o9f
-         p4MGkdmIpwyIwIEioVT7ZjXMoueya46GTK+flnBCe/IgdMKTWOch4eg5houdD4QMAUlw
-         sM+1J96HEdA1seOA1HBqbsokkh0DURSgKlQ5lvHfPZBvCqqSOTiubaKkRNMvcu6/ITUT
-         KNxb7CR92H+fWqUE9VtoDapLcIKa0HeNrR4StVF06AQmpWgn69v0E+oNUMTQBh20LGSV
-         kbCA==
+	s=arc-20240116; t=1752848322; c=relaxed/simple;
+	bh=/HDiIMliCtLNl3z2Bo9OK9anjcaoueDP+L8Oe97p+wk=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=bxd7FyDaniT6mOCo7QTlN3e0DBBE7P1JgXxBrYry5AjENS07zcvVB+OKcdfkVZUtw4ekS//5/5tIF9bvSyCpBOnwYgL+WzwjNMnK9ki5fY/KGBAaSBBWhkYTbZHgJ7bYwX1mOCanfk3+vSOr8tRGw6POYvgtMaFfn6Gk1Y68VnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UA+azf+L; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1752848319;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TsytLQJcaKqStTtlNqZ83QBux0JcP282gxaqMBrT3E4=;
+	b=UA+azf+LgiyyVTEJS1MKlSR8mUuLihiPpLpYmTrFYPGuBgsGireFI1+KGNaFjB6TLmRbR9
+	hX39S6I833AEJlV8ymmNkOhBdE0PM+18iBIYXIOkhUibLkV7crUP98lERkTTQNhAKaZGmd
+	QkBjvLKGycxJ7yr/25VfoL0D4eaF/MU=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-686-H6PQV6IAPoKIS6hXubVdGg-1; Fri, 18 Jul 2025 10:18:38 -0400
+X-MC-Unique: H6PQV6IAPoKIS6hXubVdGg-1
+X-Mimecast-MFC-AGG-ID: H6PQV6IAPoKIS6hXubVdGg_1752848317
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-235089528a0so28404665ad.1
+        for <cgroups@vger.kernel.org>; Fri, 18 Jul 2025 07:18:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752847141; x=1753451941;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dBAySTjZLDSr5IuXrPz25bJ1X/90AQ9ByyWDnzZ80rk=;
-        b=vralU7PWemnDKq248QgHKncjVytagSuSrfhkLuhkcxSngO68cMb4MUphJ7XHReanzI
-         pef0ysiTO4TAn73lcxHtst+thC2ZavpYV7oUIQ97/VVoXyMFz6Ggi+KZueTyPULXAwDC
-         WhrveREHLaCsjftC0NvRR3X+6NI01DUWXozp8T4S6kzz3xjB3/pd4Ci/C4krMk0Qqt5W
-         Vexdy1lhf20HVirUmw+S9Rb4skPFFevGno4jneN+VV37IF6fzXBuIFIX3P5Xh4i3bVGW
-         yCSWE6WB+kiCQMc4XWCAQ5LB0FmJ/IyEE9mwIHeCa3W8oJTVNxIVhumRk+uVEbyZdX+S
-         MEmg==
-X-Forwarded-Encrypted: i=1; AJvYcCUuwU6tWVDS7Nnn+m/tm0WBLAAMv5wo02ipUKy6v6SeoxUUxXvSxtstQTYkzwPMgY7rP9taSFzS@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyw6chJ2rR5v+y0Dm7Q/U4Qv8ISZsQ0Tkdl/tZlBlpoYoNfsBjN
-	JmLIQOR0ikpv08K+zSFQcih0/sMdk2R3uovD+4OXlND3x3k3jcTl3ofWg69p4njn0tc=
-X-Gm-Gg: ASbGncv37irnPvzF1SzEjJGIUKRex1VlLCVwy43Dn3KUN8n5YjJxiz65yJ6sdVUI5lg
-	31By17JCcmUc404RaA0e6xTPzljHbxvcgas7VLKxd6QE8E2UNzkZIY8PRXQ0/FiJsATfLGK0Mje
-	NyhL2WCAN5wlMUt5MJTFN/0px53AdHMTDr/HOTh2IfxMtgP78IL6iodQGZ8GlDRk0N1KVYZnOVE
-	IevwxeUQntbvWnM1bQhwYnWXnNBwwImpJHKJXG33Rf8G2zRJFnf1CodhsT+avXEdqS47LqtwLZV
-	9xJgCuOYbxm+PTWxNR+iSBw6oeoQnXOKSD936k/TEElLDoQIW/nVt7Ftkq0OZebHDDo+K66zRfa
-	SSDTvtgDE44dggfacCgnE9DkDvfLb3WIA4eCUgoaXVX41IXQXg8zd
-X-Google-Smtp-Source: AGHT+IH+sgJFyUyQKgY2XKEhVrbznW4wwWr0AO9ynVBplbDQ+J/igjMzNMWoDYMl7tWlzO6whvyMQw==
-X-Received: by 2002:a17:907:f1ea:b0:add:fe17:e970 with SMTP id a640c23a62f3a-ae9cddfe2e8mr1062342266b.14.1752847140692;
-        Fri, 18 Jul 2025 06:59:00 -0700 (PDT)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6ca7e090sm128196066b.115.2025.07.18.06.58.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jul 2025 06:59:00 -0700 (PDT)
-Date: Fri, 18 Jul 2025 15:58:58 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: Tejun Heo <tj@kernel.org>, Tiffany Yang <ynaffit@google.com>, 
-	linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>, 
-	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Pavel Machek <pavel@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Chen Ridong <chenridong@huawei.com>, kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>, 
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: cpu.stat in core or cpu controller (was Re: [RFC PATCH v2] cgroup:
- Track time in cgroup v2 freezer)
-Message-ID: <jyvlpm6whamo5ge533xdsvqnsjsxdonpvdjbtt5gqvcw5fjp56@q4ej7gy5frj7>
-References: <20250714050008.2167786-2-ynaffit@google.com>
- <5rm53pnhpdeqljxqywh26gffh6vlyb5j5s6pzxhv52odhkl4fm@o6p7daoponsn>
- <aHktSgmh-9dyB7bz@slm.duckdns.org>
- <mknvbcalyaheobnfeeyyldytcoyturmeuq3twcrri5gaxtjojs@bbyqhshtjfab>
- <180b4c3f-9ea2-4124-b014-226ff8a97877@huaweicloud.com>
+        d=1e100.net; s=20230601; t=1752848317; x=1753453117;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TsytLQJcaKqStTtlNqZ83QBux0JcP282gxaqMBrT3E4=;
+        b=l2T5qDZBV4t9JJvsNjHZ9UlLo6ReHcJpoeONVl+85iEQOLU/65fXOUXiMjpRB4zlK0
+         QvD1KrquYHM9vEcMnO9uMbZwJCkThzuHG1IW0fKHYfcaiD4Wc5zwlqfmIkO0qtqP+j2V
+         HzE8ZcdBN/QeIbIgkw8y+E7ZtMvQJCczuUM+XrMqnJPSg//j7o1EbvAt5SBI0iHZDJFJ
+         W55Ib42V7yk/xS4KMZuENhqMJ8bcnRPdKxYuwmHts6BHYLa+guKFRpZ57G8TzSJ6DRxR
+         24L/OltXnfgQcxb0/mtObMIl+9K/cPZ+iCbgLRznnKnwaGJ1ImW5cCgmeUrzjwOuWGXo
+         e/KQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWgVXYCt+rkdFyMBYqd40NsXqCf9cjlyscEtpgHyexRrO7gB/7sIEO/uR3jh4i569ZSfLGSetMw@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzu2xjzibhJIM/MfQRlG4qsJoBhXKfLyYFpYU1UiIJIA1E5OWIv
+	0n/C4eEwOgrOWoWJdNPeIvUfLJZ1rCLw8KW8gti9PYo+PZGBkinLX1tudKwhdfKw1itXd1du3Un
+	QaAhtKaeZxiPVWQJecGlweD8JcObeJfgUeyC6am/8uUJSotQF5CCn/camPug=
+X-Gm-Gg: ASbGncsOWFDw8AiJWDvntyGcKtEmjRgAQStsP0Mdrc/2VE8misA9GFjVo+r2AWjKVT+
+	yvyQ81jGbZxjEVg+vMRPVLcDlRbBMEftEiLijsTCNptUzmteuAolEDMiEhO04ajN+wKIKJORRwm
+	TE8/oGgyMAHWVCKHkspwwdU3szbjCqONlaBZiLKJecAk66MkBRQvT4okhYJvKl2f3uETHbBJsrT
+	lcMHpQpoNxcBEVw9G0xApC6uhnFN5bi0evm0KmVKXc0O/JfBqBnY1BXUbJYhskbFIFnPsORr9vM
+	g6N5xyUYB/64VxXZF5XwfvcuwBu1h251gRRcyZ4sszTtvGKCw+wKRAppdODCZ5j3haWx72qgUzu
+	xzyVFP0k3rQ==
+X-Received: by 2002:a17:903:f90:b0:23e:24d2:6e46 with SMTP id d9443c01a7336-23e2f6c6aa0mr107267235ad.7.1752848316944;
+        Fri, 18 Jul 2025 07:18:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEgJXo3Ori6iK5y2C4lk98DEkbJptwCJ4VpQy0rRUYTnCJzR3LlRZOLTKRIOjjII/Kn2Ms2VA==
+X-Received: by 2002:a17:903:f90:b0:23e:24d2:6e46 with SMTP id d9443c01a7336-23e2f6c6aa0mr107266675ad.7.1752848316322;
+        Fri, 18 Jul 2025 07:18:36 -0700 (PDT)
+Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23e3b6b4afesm13978015ad.110.2025.07.18.07.18.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jul 2025 07:18:35 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <209dd5d0-81bd-49d2-9b96-9839d2e399a5@redhat.com>
+Date: Fri, 18 Jul 2025 10:18:32 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pcvygoatcygfglbi"
-Content-Disposition: inline
-In-Reply-To: <180b4c3f-9ea2-4124-b014-226ff8a97877@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sched/core: Mask out offline CPUs when user_cpus_ptr is
+ used
+To: Chen Ridong <chenridong@huaweicloud.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+References: <20250715155810.514141-1-longman@redhat.com>
+ <faab5c42-ec95-443c-b748-b3e7e359c934@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <faab5c42-ec95-443c-b748-b3e7e359c934@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 7/17/25 10:42 PM, Chen Ridong wrote:
+>
+> On 2025/7/15 23:58, Waiman Long wrote:
+>> Chen Ridong reported that cpuset could report a kernel warning for a task
+>> due to set_cpus_allowed_ptr() returning failure in the corner case that:
+>>
+>> 1) the task used sched_setaffinity(2) to set its CPU affinity mask to
+>>     be the same as the cpuset.cpus of its cpuset,
+>> 2) all the CPUs assigned to that cpuset were taken offline, and
+>> 3) cpuset v1 is in use and the task had to be migrated to the top cpuset.
+>>
+>> Due to the fact that CPU affinity of the tasks in the top cpuset are
+>> not updated when a CPU hotplug online/offline event happens, offline
+>> CPUs are included in CPU affinity of those tasks. It is possible
+>> that further masking with user_cpus_ptr set by sched_setaffinity(2)
+>> in __set_cpus_allowed_ptr() will leave only offline CPUs in the new
+>> mask causing the subsequent call to __set_cpus_allowed_ptr_locked()
+>> to return failure with an empty CPU affinity.
+>>
+>> Fix this failure by masking out offline CPUs when user_cpus_ptr masking
+>> has to be done and fall back to ignoring user_cpus_ptr if the resulting
+>> cpumask is empty.
+>>
+>> Reported-by: Chen Ridong <chenridong@huaweicloud.com>
+>> Closes: https://lore.kernel.org/lkml/20250714032311.3570157-1-chenridong@huaweicloud.com/
+>> Fixes: da019032819a ("sched: Enforce user requested affinity")
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   kernel/sched/core.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index 81c6df746df1..4cf25dd8827f 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -3172,10 +3172,15 @@ int __set_cpus_allowed_ptr(struct task_struct *p, struct affinity_context *ctx)
+>>   	/*
+>>   	 * Masking should be skipped if SCA_USER or any of the SCA_MIGRATE_*
+>>   	 * flags are set.
+>> +	 *
+>> +	 * Even though the given new_mask must have at least one online CPU,
+>> +	 * masking with user_cpus_ptr may strip out all online CPUs causing
+>> +	 * failure. So offline CPUs have to be masked out too.
+>>   	 */
+>>   	if (p->user_cpus_ptr &&
+>>   	    !(ctx->flags & (SCA_USER | SCA_MIGRATE_ENABLE | SCA_MIGRATE_DISABLE)) &&
+>> -	    cpumask_and(rq->scratch_mask, ctx->new_mask, p->user_cpus_ptr))
+>> +	    cpumask_and(rq->scratch_mask, ctx->new_mask, p->user_cpus_ptr) &&
+>> +	    cpumask_and(rq->scratch_mask, rq->scratch_mask, cpu_active_mask))
+>>   		ctx->new_mask = rq->scratch_mask;
+>>   
+>>   	return __set_cpus_allowed_ptr_locked(p, ctx, rq, &rf);
+> Hi, Waiman,
+> Would the following modification make more sense?
+>
+>    	if (p->user_cpus_ptr &&
+>    	    !(ctx->flags & (SCA_USER | SCA_MIGRATE_ENABLE | SCA_MIGRATE_DISABLE)) &&
+>   -	    cpumask_and(rq->scratch_mask, ctx->new_mask, p->user_cpus_ptr))
+>   +	    cpumask_and(rq->scratch_mask, ctx->new_mask, p->user_cpus_ptr) &&
+>   +	    cpumask_intersects(rq->scratch_mask, cpu_active_mask))
+>    		ctx->new_mask = rq->scratch_mask;
+>
+> This can preserve user intent as much as possible.
 
---pcvygoatcygfglbi
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Subject: cpu.stat in core or cpu controller (was Re: [RFC PATCH v2] cgroup:
- Track time in cgroup v2 freezer)
-MIME-Version: 1.0
+I realized that I should have used cpumask_intersects() instead after 
+sending out this patch. It looks like you have come to the same 
+conclusion. I will send out a v2 to update that.
 
-On Fri, Jul 18, 2025 at 05:26:54PM +0800, Chen Ridong <chenridong@huaweicloud.com> wrote:
-> With the recent merge of the series "cgroup: separate rstat trees," the rstat are not bound to CPU
-> system. This makes me wonder: should we consider moving the cpu.stat and cpu.stat.local interfaces
-> to the CPU subsystem?
+Thanks,
+Longman
 
-Note that fields printed in cpu.stat are combination of "core" and cpu
-controller values.
-
-> The CPU subsystem could then align more closely with other resource controllers like memory or I/O
-> subsystems. By decoupling these CPU-specific statistics from the cgroup core, it could help keep
-> both cgroup and rstat implementations more focused.
-
-In my eyes, cpu controller is stuff encapsulated by cpu_cgrp_subsys. I'm
-not sure I understand what you refer to as the CPU subsystem.
-
-One thing is how it is presented to users (filenames and content)
-another one is how it is implemented. The latter surely can be
-refactored but it's not obvious to me from the short description, sorry.
-
-> Is there any particular reason why the CPU subsystem must remain bound
-> to the cgroup core?
-
-The stuff that's bound to the core is essentially not "control" but only
-accounting, so with this association, the accounting can have fine
-granularity while control (which incurs higher overhead in principle)
-may remain coarse. I find it thus quite fitting that CPU stats build on
-top of rstat.
-(Naturally, my previous claim about overhead is only rough and it's the
-reason for existence of adjustments like in the commit 34f26a15611af
-("sched/psi: Per-cgroup PSI accounting disable/re-enable interface").)
-
-Thats how I see it, happy to discuss possible problems you see with
-this.
-
-Michal
-
---pcvygoatcygfglbi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaHpTHwAKCRB+PQLnlNv4
-COgNAQDrEy0E9hAGbZwxjNSPxRuYduBTsT6UA7HhF5QZiq6d+QEAxP7kauFGRgUt
-42uZq96E29hzx+xTrawPXSvIvUmjIAk=
-=cdEY
------END PGP SIGNATURE-----
-
---pcvygoatcygfglbi--
 
