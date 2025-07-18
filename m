@@ -1,91 +1,137 @@
-Return-Path: <cgroups+bounces-8775-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8776-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4402B0A881
-	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 18:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2CABB0A8A7
+	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 18:42:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 705FA3B917E
-	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 16:34:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EA78A83C49
+	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 16:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803452E6D04;
-	Fri, 18 Jul 2025 16:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E6462E6D1D;
+	Fri, 18 Jul 2025 16:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mfuh6kjA"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SByd7Bx5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348BC1DED53;
-	Fri, 18 Jul 2025 16:34:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4431EB5B
+	for <cgroups@vger.kernel.org>; Fri, 18 Jul 2025 16:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752856496; cv=none; b=TrcgGTJjeyOvLg4vRGDXg7jJvN3HoaA5EToMTWOLMV0tQVnaymzvylsadtEyjXvRlRaHom4eqUqymYlra6McFsau/Mb4RM8Hc4jy9T334CSp1eVacrADoiPQDkUlJHM4BTB3Ca9eXZQiiOWTfjKdFQ4CdH326GqtBsD8Jo8wfeI=
+	t=1752856921; cv=none; b=puITGK8XfXim1TSf6dKhXZkU4u+lOXCXcbm7dQd4wfYnp9cWPWddnQHKJxUD/MXFnb/pa58oPIovdVN1MDYjC3IVhcddjrME6cSvkQpAlinkZLyjXWNuQ46GmruKzG5RESjYTtXP2vbA4x7zpJnLzfk7Kg6qbHVz1GgmL/Vo8vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752856496; c=relaxed/simple;
-	bh=m6knOuSYcIlxKsVGffC248H2gtrpIHat6jv3oJ7Zdfw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dj51r2UfagrAMpPX5r1jM6J3IyFuBIIfVUPuvaCCoJyPSG65TV1LOdO6b/MyTbbC5cWThrkWiAvYt8fuDu7fLFyGTi+aXFxW4aXauWiD3rxj5e+5wEe7kZukMTVPAUbsGitXafOY5Cpq+Y4oum8/WrD84AU/xItN2jJWJG1Giow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mfuh6kjA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA546C4CEF1;
-	Fri, 18 Jul 2025 16:34:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752856495;
-	bh=m6knOuSYcIlxKsVGffC248H2gtrpIHat6jv3oJ7Zdfw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=mfuh6kjAvD7umLIPydE3Nky3WtUPHH+Xl8RnyHZitxVh9lQ7TzH/WvoQ1hn8dThry
-	 qQOreH+1/F1l0p0pKxW2AWpEqbox125oGTtWydyUSSLNn77NSafZSwOvfoRv1TdM6A
-	 rHhkoTSQ25epJ5wgQffXkJlqtQE99cnNRBSFOt4pN9YmkfqHqCNkRsgGzY54mNatZz
-	 tifFCzd2d7HbmP3Nu/wTxqbhqdhFxGmzFKJ0RG3qDHv8cgEUsFvcdL+5rZim/a1H9t
-	 YzonWhgyRK2Pp05MEmxD5TyRWEg3tRD4ppcXwtj2LFkY7Tu2jAIOMycnP2j5eQ1MJx
-	 c8nm53A9ZA16A==
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-41b357ba04fso1047002b6e.2;
-        Fri, 18 Jul 2025 09:34:55 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU0D5PX7MvLoF/bfbB9Z2mQOxLZ27CnlyeZSLC9DCvEwhU3szlOSzM7LR3zh/IFWW5q8b2you3wp/bvPxvf@vger.kernel.org, AJvYcCV6lTpg7tmMyMrXXgWw34iLygS+YqzT1uenFJzGRwhX3Sz9GZhPxsNJgG7TmRwrocwTOym932kv7EI=@vger.kernel.org, AJvYcCVzwMBV8wGhmZgV6Ln1r6AznG/fb75Ai7ssWcDpf8MPQQ4V1B6SD2yZZcwtwPqwIR4LjPzwe5KP@vger.kernel.org
-X-Gm-Message-State: AOJu0YzrNDqah2lXbtuxfgAFNkPCRniFG73J0QrBlK3XLYU8kFazI9fq
-	tFMXe9gDeSHJxUkJMWDPB4UJNFW2/okE9KBdVHdBsdhDtj/mTsAl/P1LahdW9W5JdvINbCvmkd6
-	O/9ttEsL+XAuWKedQkKaMMEgYBtUB8nw=
-X-Google-Smtp-Source: AGHT+IEojOoqgBFZ0afEFLOP+FWBmBL6fAX4RoJ2+7HhbfwIwUGU/AkfIopUbPVIMB4qPTqIJq4u8eyboD2bxFJjais=
-X-Received: by 2002:a05:6808:81c7:b0:41f:79f9:1b6b with SMTP id
- 5614622812f47-41f79f9201emr2508693b6e.34.1752856495138; Fri, 18 Jul 2025
- 09:34:55 -0700 (PDT)
+	s=arc-20240116; t=1752856921; c=relaxed/simple;
+	bh=4uoXBBfWbqYL3O4e8u7GIuSRK9OMIEk0Tri9CKXPXgo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QXaMYwlh4MXqENsppHItzeG7f7B+GLlKd8gU8CIu4tQD46Xl0VPWrqE+QfahSnQsFubsLhoMoXIioQxgor76v1+3QTsH4Ig4JsNsp6o/+x+fC8dg6ac5isovG/IXUNCvtmsH81BnKKobZAYsRbDMrdP07VToIQV/R+fqRtO1ACA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SByd7Bx5; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1752856918;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=aZcCp9t+rgA1nQ2OVuDyJEw0PACPvSc+gXRhn6+fay0=;
+	b=SByd7Bx55+njhM7QQgLpgKNw0u7jJjWIV2nS7j7aM7UiP1vs6CtBar3vjko3I5Kav5aJGA
+	Szl/LK1OUWxtXI8bm31MsCOJncrp84WM2NWPonYiWD8BkC5bw8pPzs4pQNekR19FQgi24v
+	Re9XOF5SHuTSIBp1idHnVqx/29ZVNqU=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-499-YmvIhxf8Niu_G_fXWBgeVQ-1; Fri,
+ 18 Jul 2025 12:41:55 -0400
+X-MC-Unique: YmvIhxf8Niu_G_fXWBgeVQ-1
+X-Mimecast-MFC-AGG-ID: YmvIhxf8Niu_G_fXWBgeVQ_1752856913
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9E62B1956095;
+	Fri, 18 Jul 2025 16:41:52 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.90.55])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 29D4D18003FC;
+	Fri, 18 Jul 2025 16:41:49 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	Chen Ridong <chenridong@huaweicloud.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH v2] sched/core: Mask out offline CPUs when user_cpus_ptr is used
+Date: Fri, 18 Jul 2025 12:41:43 -0400
+Message-ID: <20250718164143.31338-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250717085550.3828781-1-chenridong@huaweicloud.com>
- <20250717085550.3828781-2-chenridong@huaweicloud.com> <CAJZ5v0jnUQJSBbYWfmGb6wr_CY3j61TSq_cR9KBMqtvxWrmsaA@mail.gmail.com>
- <aHlKabRMHvnSmtwg@slm.duckdns.org>
-In-Reply-To: <aHlKabRMHvnSmtwg@slm.duckdns.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 18 Jul 2025 18:34:44 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0g-w19PgueOUmB+sowa-So2ozZS6teOikevt+w3z8mXFg@mail.gmail.com>
-X-Gm-Features: Ac12FXyz4ykfYkutx3sWpVr6YP2PQ7V3lwUpdEB13RZOJ0-VC0ytnVswGr8kMzY
-Message-ID: <CAJZ5v0g-w19PgueOUmB+sowa-So2ozZS6teOikevt+w3z8mXFg@mail.gmail.com>
-Subject: Re: [PATCH v2 -next 1/2] sched,freezer: Remove unnecessary warning in __thaw_task
-To: Tejun Heo <tj@kernel.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>, hannes@cmpxchg.org, 
-	mkoutny@suse.com, pavel@kernel.org, timvp@google.com, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, lujialin4@huawei.com, 
-	chenridong@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-On Thu, Jul 17, 2025 at 9:09=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> On Thu, Jul 17, 2025 at 08:26:26PM +0200, Rafael J. Wysocki wrote:
-> > I can apply this one, but I'll need an ACK for the [2/2].
->
-> Ooh, I just applied the two patches as the original patch referenced went
-> through the cgroup tree.
+Chen Ridong reported that cpuset could report a kernel warning for a task
+due to set_cpus_allowed_ptr() returning failure in the corner case that:
 
-No worries then, I'll just leave them to you.
+1) the task used sched_setaffinity(2) to set its CPU affinity mask to
+   be the same as the cpuset.cpus of its cpuset,
+2) all the CPUs assigned to that cpuset were taken offline, and
+3) cpuset v1 is in use and the task had to be migrated to the top cpuset.
 
-> If you'd like to route it, I'd be happy to revert them.
+Due to the fact that CPU affinity of the tasks in the top cpuset are
+not updated when a CPU hotplug online/offline event happens, offline
+CPUs are included in CPU affinity of those tasks. It is possible
+that further masking with user_cpus_ptr set by sched_setaffinity(2)
+in __set_cpus_allowed_ptr() will leave only offline CPUs in the new
+mask causing the subsequent call to __set_cpus_allowed_ptr_locked()
+to return failure with an empty CPU affinity.
 
-More work?  Nah.
+Fix this failure by skipping user_cpus_ptr masking if there is no online
+CPU left.
+
+Reported-by: Chen Ridong <chenridong@huaweicloud.com>
+Closes: https://lore.kernel.org/lkml/20250714032311.3570157-1-chenridong@huaweicloud.com/
+Fixes: da019032819a ("sched: Enforce user requested affinity")
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ kernel/sched/core.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 81c6df746df1..208f8af73134 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3170,12 +3170,13 @@ int __set_cpus_allowed_ptr(struct task_struct *p, struct affinity_context *ctx)
+ 
+ 	rq = task_rq_lock(p, &rf);
+ 	/*
+-	 * Masking should be skipped if SCA_USER or any of the SCA_MIGRATE_*
+-	 * flags are set.
++	 * Masking should be skipped if SCA_USER, any of the SCA_MIGRATE_*
++	 * flags are set or no online CPU left.
+ 	 */
+ 	if (p->user_cpus_ptr &&
+ 	    !(ctx->flags & (SCA_USER | SCA_MIGRATE_ENABLE | SCA_MIGRATE_DISABLE)) &&
+-	    cpumask_and(rq->scratch_mask, ctx->new_mask, p->user_cpus_ptr))
++	    cpumask_and(rq->scratch_mask, ctx->new_mask, p->user_cpus_ptr) &&
++	    cpumask_intersects(rq->scratch_mask, cpu_active_mask))
+ 		ctx->new_mask = rq->scratch_mask;
+ 
+ 	return __set_cpus_allowed_ptr_locked(p, ctx, rq, &rf);
+-- 
+2.50.0
+
 
