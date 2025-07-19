@@ -1,164 +1,113 @@
-Return-Path: <cgroups+bounces-8782-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8783-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31A58B0AD68
-	for <lists+cgroups@lfdr.de>; Sat, 19 Jul 2025 04:01:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C42B4B0B0E1
+	for <lists+cgroups@lfdr.de>; Sat, 19 Jul 2025 18:18:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 628525882C6
-	for <lists+cgroups@lfdr.de>; Sat, 19 Jul 2025 02:01:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56724AA3BD0
+	for <lists+cgroups@lfdr.de>; Sat, 19 Jul 2025 16:18:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520E7170A2B;
-	Sat, 19 Jul 2025 02:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8CA023814D;
+	Sat, 19 Jul 2025 16:18:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JWHfN6sZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80B373D69;
-	Sat, 19 Jul 2025 02:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738E91A8F97;
+	Sat, 19 Jul 2025 16:18:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752890475; cv=none; b=j9fVtU6V0kGusNZUnE3wsy7zaOMNFNliu3MNjI6KFsDwgdsP9ld9vLgwddWkCYsl1kVOJo2duUaL5kGSPLODJjJ0FJPIfcTVNJUInkrDUxpSfYifGJk/mNqEG3J2towiK+92l/7BsN/ZSBVZRLZeYIAGBelB01SMHAQxKwpV+GY=
+	t=1752941930; cv=none; b=FyKwZ8GViOt6IUJspwIZClROQRlPvJS6k5ta6siNoMrZ8kSp17fnY4hw84+WSE1rV6hMPmSIPvHGtW0wVhknfPEZ/7itc3BqRbFY8BNlDpO8Fz6f1OacmpV55kSvQ0sMfyc6nhjAClMimbJWrZECftf4HpTOSlIsD9mwQavv4jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752890475; c=relaxed/simple;
-	bh=WU3V6n9zjOV8QZlhkLTRsU7KI/Ut9psItFf+2W0jSEs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e0ZkZsMTxJHQp7C+P//HK0uUJbuT6S5reYHtYcD5YyTHsumAo+Olum5iXDC3FlcoZtHEYXWxUJwF4ENqM9wf8eMWlxv7F6cEKDtdpttpP9MjbK6nBMPMVcP4G22OvY1Yr4A6xqsVQV8Zjrb9dXGN3D2/3aDbrq4Unh1kjkYW4+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bkVJ65s6PzKHN2c;
-	Sat, 19 Jul 2025 10:01:10 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 739D11A0874;
-	Sat, 19 Jul 2025 10:01:09 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP4 (Coremail) with SMTP id gCh0CgCncBFj_Hpo34H2Ag--.17554S2;
-	Sat, 19 Jul 2025 10:01:09 +0800 (CST)
-Message-ID: <e065b8da-9e7c-4214-9122-83d83700a729@huaweicloud.com>
-Date: Sat, 19 Jul 2025 10:01:07 +0800
+	s=arc-20240116; t=1752941930; c=relaxed/simple;
+	bh=aADY7+3tkziPCEq2NHNLsmMeENfFcbzEoNIUNUuj/zw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GP8qeNnz34LTekWvToeq1jHR5HI2sI1eueGoKJBHktCQSx/YvpzGx/9z2YP52c5Byplwv2y0aiia9yK61VkoWgSk1MQv7V8zi0VcmCGwfV9bIwq6QUMow1393NkPSh9CqjPICOWq2A9WRJX12JOHzUD5Z0qwHCp+tLuWmKNHbDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JWHfN6sZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5128C4CEE3;
+	Sat, 19 Jul 2025 16:18:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752941930;
+	bh=aADY7+3tkziPCEq2NHNLsmMeENfFcbzEoNIUNUuj/zw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JWHfN6sZ4I/IFdbxgUMDIi1ZsXpD6lo5RKB9Asc7gBYUpffn7mj/hMe1QiMo1nZPi
+	 BTFmc5g2XPj+sJ4zBgbi8mo088EUEM0hd4z2oDGSGfT7yedN2NC60vsDRsfOJFHEX4
+	 h+sXrfhpL3OdA6P8R+QfCrmPZgw9uRBwcVdwfyiqlJW1b0oCBK8jHAADoCf4U/XKLV
+	 6yqIy1ABBfGrhNFlHR51sfhJGYVQp1bx+wvvEmseglnQT1LzcV4xFHckU0OJHvyIB8
+	 ZfSENUetO1gNmIBXtqatNymJ2zU3McgW/yzyBzXMoicmGfzfvati/ictoZqEimj2o5
+	 yVI87RgFYODsg==
+Date: Sat, 19 Jul 2025 06:18:48 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Ben Hutchings <ben@decadent.org.uk>, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Chen Ridong <chenridong@huawei.com>, 1108294@bugs.debian.org
+Subject: Re: [PATCH 4/4] cgroup: Do not report unavailable v1 controllers in
+ /proc/cgroups
+Message-ID: <aHvFaAtLUVAaPq6D@slm.duckdns.org>
+References: <20240909163223.3693529-1-mkoutny@suse.com>
+ <20240909163223.3693529-5-mkoutny@suse.com>
+ <b26b60b7d0d2a5ecfd2f3c45f95f32922ed24686.camel@decadent.org.uk>
+ <bio4h3soa5a64zqca66fbtmur3bzwhggobplzg535erpfr2qxe@xsgzgxihirpa>
+ <aHGM6_WOTWLiUdpU@slm.duckdns.org>
+ <7sbzasggfk3elhvxsd5mtuzd4yo3c64wuzkaulr7yqybpfxwuh@g6dcatriw7hx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: cpu.stat in core or cpu controller (was Re: [RFC PATCH v2]
- cgroup: Track time in cgroup v2 freezer)
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Tiffany Yang <ynaffit@google.com>,
- linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>,
- Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Frederic Weisbecker <frederic@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Chen Ridong <chenridong@huawei.com>, kernel-team@android.com,
- Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
- linux-doc@vger.kernel.org
-References: <20250714050008.2167786-2-ynaffit@google.com>
- <5rm53pnhpdeqljxqywh26gffh6vlyb5j5s6pzxhv52odhkl4fm@o6p7daoponsn>
- <aHktSgmh-9dyB7bz@slm.duckdns.org>
- <mknvbcalyaheobnfeeyyldytcoyturmeuq3twcrri5gaxtjojs@bbyqhshtjfab>
- <180b4c3f-9ea2-4124-b014-226ff8a97877@huaweicloud.com>
- <jyvlpm6whamo5ge533xdsvqnsjsxdonpvdjbtt5gqvcw5fjp56@q4ej7gy5frj7>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <jyvlpm6whamo5ge533xdsvqnsjsxdonpvdjbtt5gqvcw5fjp56@q4ej7gy5frj7>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCncBFj_Hpo34H2Ag--.17554S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFykKr1DGrykJrWUWF4kJFb_yoW5XF13pF
-	n8Gw4fK3WDGFyxAFn29a1IgryF9w10k34Utrs8uw10ya17Zr97ur4Sya45XFy7Ar97Wr12
-	vr429F9rua9FkrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+In-Reply-To: <7sbzasggfk3elhvxsd5mtuzd4yo3c64wuzkaulr7yqybpfxwuh@g6dcatriw7hx>
 
-
-
-On 2025/7/18 21:58, Michal KoutnÃ½ wrote:
-> On Fri, Jul 18, 2025 at 05:26:54PM +0800, Chen Ridong <chenridong@huaweicloud.com> wrote:
->> With the recent merge of the series "cgroup: separate rstat trees," the rstat are not bound to CPU
->> system. This makes me wonder: should we consider moving the cpu.stat and cpu.stat.local interfaces
->> to the CPU subsystem?
+On Fri, Jul 18, 2025 at 11:18:54AM +0200, Michal Koutný wrote:
+> From ace88e9e3a77ff3fe86aee4b7a5866b3bfd2df58 Mon Sep 17 00:00:00 2001
+> From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+> Date: Thu, 17 Jul 2025 17:38:47 +0200
+> Subject: [PATCH] cgroup: Add compatibility option for content of /proc/cgroups
+> MIME-Version: 1.0
+> Content-Type: text/plain; charset=UTF-8
+> Content-Transfer-Encoding: 8bit
 > 
-> Note that fields printed in cpu.stat are combination of "core" and cpu
-> controller values.
+> /proc/cgroups lists only v1 controllers by default, however, this is
+> only enforced since the commit af000ce85293b ("cgroup: Do not report
+> unavailable v1 controllers in /proc/cgroups") and there is software in
+> the wild that uses content of /proc/cgroups to decide on availability of
+> v2 (sic) controllers.
 > 
-
-Do you mean the "core" values are shown as below:
-- usage_usec
-- user_usec
-- system_usec
-- nice_usec
-
-In the legacy cgroup, these values are in the cpuacct subsystem.
-
->> The CPU subsystem could then align more closely with other resource controllers like memory or I/O
->> subsystems. By decoupling these CPU-specific statistics from the cgroup core, it could help keep
->> both cgroup and rstat implementations more focused.
+> Add a boottime param that can bring back the previous behavior for
+> setups where the check in the software cannot be changed and it causes
+> e.g. unintended OOMs.
 > 
-> In my eyes, cpu controller is stuff encapsulated by cpu_cgrp_subsys. I'm
-> not sure I understand what you refer to as the CPU subsystem.
+> Also, this patch takes out cgrp_v1_visible from cgroup1_subsys_absent()
+> guard since it's only important to check which hierarchy (v1 vs v2) the
+> subsys is attached to. This has no effect on the printed message but
+> the code is cleaner since cgrp_v1_visible is really about mounted
+> hierarchies, not the content of /proc/cgroups.
 > 
-> One thing is how it is presented to users (filenames and content)
-> another one is how it is implemented. The latter surely can be
-> refactored but it's not obvious to me from the short description, sorry.
-> 
+> Link: https://lore.kernel.org/r/b26b60b7d0d2a5ecfd2f3c45f95f32922ed24686.camel@decadent.org.uk
+> Fixes: af000ce85293b ("cgroup: Do not report unavailable v1 controllers in /proc/cgroups")
+> Fixes: a0ab1453226d8 ("cgroup: Print message when /proc/cgroups is read on v2-only system")
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
 
-What I'm considering is moving the implementation of cpu.stat from cgroup_base_files to
-cpu_cgrp_subsysâ€”without changing the user-facing interface (filenames and content remain the same).
-However, the interface would only appear if the CPU subsystem is enabled.
+Applied to cgroup/for-6.17.
 
-Currently, cpu.stat and cpu.stat.local are visible in every cgroup, even when the CPU subsystem is
-disabled. The only populated fields in such cases are:
+Thanks.
 
-- usage_usec
-- user_usec
-- system_usec
-- nice_usec
-
-Iâ€™m unsure whether this change would be acceptable?
-
->> Is there any particular reason why the CPU subsystem must remain bound
->> to the cgroup core?
-> 
-> The stuff that's bound to the core is essentially not "control" but only
-> accounting, so with this association, the accounting can have fine
-> granularity while control (which incurs higher overhead in principle)
-> may remain coarse. I find it thus quite fitting that CPU stats build on
-> top of rstat.
-
-The implementation would still rely on rstat, similar to memory.stat and io.stat. The goal is to
-decouple it from the cgroup core (cgroup.c and rstat.c) while preserving accounting granularity.
-
-Best regards,
-Ridong
-
-> (Naturally, my previous claim about overhead is only rough and it's the
-> reason for existence of adjustments like in the commit 34f26a15611af
-> ("sched/psi: Per-cgroup PSI accounting disable/re-enable interface").)
-> 
-> Thats how I see it, happy to discuss possible problems you see with
-> this.
-> 
-> Michal
-
+-- 
+tejun
 
