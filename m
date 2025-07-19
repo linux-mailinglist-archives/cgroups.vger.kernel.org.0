@@ -1,198 +1,164 @@
-Return-Path: <cgroups+bounces-8781-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8782-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7651B0AABC
-	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 21:33:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31A58B0AD68
+	for <lists+cgroups@lfdr.de>; Sat, 19 Jul 2025 04:01:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DF841C46D39
-	for <lists+cgroups@lfdr.de>; Fri, 18 Jul 2025 19:33:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 628525882C6
+	for <lists+cgroups@lfdr.de>; Sat, 19 Jul 2025 02:01:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E952E7F03;
-	Fri, 18 Jul 2025 19:32:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g971VcWM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520E7170A2B;
+	Sat, 19 Jul 2025 02:01:15 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993CC205E26
-	for <cgroups@vger.kernel.org>; Fri, 18 Jul 2025 19:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80B373D69;
+	Sat, 19 Jul 2025 02:01:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752867171; cv=none; b=msG40FH/SEQVkD3m6keIYtrRXsSM0/shI04VXg9jNY0uxBFaJgLC4qQMz1bR9wURTRKlZjtFpXuvF/qKqkA+uphazNDIQP2ldJ2rRMGKsw0gv87bGC657wcPceCQ+AaaslU3wdeU1e6EkdKtPCDJkGVwTnZKF2cEDUvKHvuOqyQ=
+	t=1752890475; cv=none; b=j9fVtU6V0kGusNZUnE3wsy7zaOMNFNliu3MNjI6KFsDwgdsP9ld9vLgwddWkCYsl1kVOJo2duUaL5kGSPLODJjJ0FJPIfcTVNJUInkrDUxpSfYifGJk/mNqEG3J2towiK+92l/7BsN/ZSBVZRLZeYIAGBelB01SMHAQxKwpV+GY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752867171; c=relaxed/simple;
-	bh=B+Nl2/bw1Tt4tONajd4AmtDokuaHso6KUsZg0gqNsgY=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=cwFPyUJtUPGEUYbJdxURRilj4ymeqip9+6+gSy/FzoWPRWCJO7upCtPn8tOapqLWUFPYmjnNPIH2XU66agMvxftwp1ZU/ajagFYgvwQ9SV2S+0Xz2AJ3urirlo+AEIw1j5cHbXQQf0C61xb2Cp3lAgb4o1vF5QKuveIpETFYfFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g971VcWM; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752867170; x=1784403170;
-  h=date:from:to:cc:subject:message-id;
-  bh=B+Nl2/bw1Tt4tONajd4AmtDokuaHso6KUsZg0gqNsgY=;
-  b=g971VcWMJHUSlCiwkQoz7KmmtTsaQuvQLWcS6mMuBMIjEQNno2uhAoer
-   UZdmcLGWwcANxEzENHOhSqWP+81haANDz/+Qf49nS8bf1SJDnNsxLp5BA
-   NYa9SREM177o6MBuA+8Z8+8cb1txS8JQ/ZWOqf2wgeTO5TH18IG7Y27dP
-   775RnjKws1ZZllJEQ245uHrwTrTXL+du8tur/I0RzP2PDFDKKhAbBOPrP
-   hERlTaqKri+OB7g7oalaEqrYCbMJkkd1jwXV2pizafzmzuKw/mWmXnh6p
-   oD2Uli/hyo2gNRKuYjnWx0RZdNVs/L9Nu3/l9qXArfBUYxznl6LIuPQtp
-   A==;
-X-CSE-ConnectionGUID: WHRAhdK4Rc6g+1bNiFiivA==
-X-CSE-MsgGUID: LOi+61TQQQGIXXx0vCcXZg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11496"; a="54881395"
-X-IronPort-AV: E=Sophos;i="6.16,322,1744095600"; 
-   d="scan'208";a="54881395"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2025 12:32:49 -0700
-X-CSE-ConnectionGUID: IbQT4nVpSbWmSYuw7jG2CQ==
-X-CSE-MsgGUID: Q6hwSLAyR5eRU1hAyamyFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,322,1744095600"; 
-   d="scan'208";a="158257739"
-Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 18 Jul 2025 12:32:48 -0700
-Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ucqp3-000Eyf-1B;
-	Fri, 18 Jul 2025 19:32:45 +0000
-Date: Sat, 19 Jul 2025 03:32:14 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.17] BUILD SUCCESS
- 954bacce36d976fe472090b55987df66da00c49b
-Message-ID: <202507190301.E74WmHtU-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1752890475; c=relaxed/simple;
+	bh=WU3V6n9zjOV8QZlhkLTRsU7KI/Ut9psItFf+2W0jSEs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=e0ZkZsMTxJHQp7C+P//HK0uUJbuT6S5reYHtYcD5YyTHsumAo+Olum5iXDC3FlcoZtHEYXWxUJwF4ENqM9wf8eMWlxv7F6cEKDtdpttpP9MjbK6nBMPMVcP4G22OvY1Yr4A6xqsVQV8Zjrb9dXGN3D2/3aDbrq4Unh1kjkYW4+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bkVJ65s6PzKHN2c;
+	Sat, 19 Jul 2025 10:01:10 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 739D11A0874;
+	Sat, 19 Jul 2025 10:01:09 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP4 (Coremail) with SMTP id gCh0CgCncBFj_Hpo34H2Ag--.17554S2;
+	Sat, 19 Jul 2025 10:01:09 +0800 (CST)
+Message-ID: <e065b8da-9e7c-4214-9122-83d83700a729@huaweicloud.com>
+Date: Sat, 19 Jul 2025 10:01:07 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: cpu.stat in core or cpu controller (was Re: [RFC PATCH v2]
+ cgroup: Track time in cgroup v2 freezer)
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Tiffany Yang <ynaffit@google.com>,
+ linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Chen Ridong <chenridong@huawei.com>, kernel-team@android.com,
+ Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+ linux-doc@vger.kernel.org
+References: <20250714050008.2167786-2-ynaffit@google.com>
+ <5rm53pnhpdeqljxqywh26gffh6vlyb5j5s6pzxhv52odhkl4fm@o6p7daoponsn>
+ <aHktSgmh-9dyB7bz@slm.duckdns.org>
+ <mknvbcalyaheobnfeeyyldytcoyturmeuq3twcrri5gaxtjojs@bbyqhshtjfab>
+ <180b4c3f-9ea2-4124-b014-226ff8a97877@huaweicloud.com>
+ <jyvlpm6whamo5ge533xdsvqnsjsxdonpvdjbtt5gqvcw5fjp56@q4ej7gy5frj7>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <jyvlpm6whamo5ge533xdsvqnsjsxdonpvdjbtt5gqvcw5fjp56@q4ej7gy5frj7>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCncBFj_Hpo34H2Ag--.17554S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFykKr1DGrykJrWUWF4kJFb_yoW5XF13pF
+	n8Gw4fK3WDGFyxAFn29a1IgryF9w10k34Utrs8uw10ya17Zr97ur4Sya45XFy7Ar97Wr12
+	vr429F9rua9FkrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.17
-branch HEAD: 954bacce36d976fe472090b55987df66da00c49b  selftests/cgroup: fix cpu.max tests
 
-elapsed time: 1452m
 
-configs tested: 105
-configs skipped: 4
+On 2025/7/18 21:58, Michal Koutný wrote:
+> On Fri, Jul 18, 2025 at 05:26:54PM +0800, Chen Ridong <chenridong@huaweicloud.com> wrote:
+>> With the recent merge of the series "cgroup: separate rstat trees," the rstat are not bound to CPU
+>> system. This makes me wonder: should we consider moving the cpu.stat and cpu.stat.local interfaces
+>> to the CPU subsystem?
+> 
+> Note that fields printed in cpu.stat are combination of "core" and cpu
+> controller values.
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Do you mean the "core" values are shown as below:
+- usage_usec
+- user_usec
+- system_usec
+- nice_usec
 
-tested configs:
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-arc                              alldefconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                   randconfig-001-20250718    gcc-10.5.0
-arc                   randconfig-002-20250718    gcc-8.5.0
-arm                              allmodconfig    gcc-15.1.0
-arm                               allnoconfig    clang-21
-arm                              allyesconfig    gcc-15.1.0
-arm                      jornada720_defconfig    clang-21
-arm                   randconfig-001-20250718    gcc-8.5.0
-arm                   randconfig-002-20250718    gcc-8.5.0
-arm                   randconfig-003-20250718    gcc-8.5.0
-arm                   randconfig-004-20250718    gcc-10.5.0
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-15.1.0
-arm64                 randconfig-001-20250718    gcc-13.4.0
-arm64                 randconfig-002-20250718    gcc-8.5.0
-arm64                 randconfig-003-20250718    clang-21
-arm64                 randconfig-004-20250718    gcc-8.5.0
-csky                              allnoconfig    gcc-15.1.0
-csky                  randconfig-001-20250718    gcc-15.1.0
-csky                  randconfig-002-20250718    gcc-15.1.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-21
-hexagon                          allyesconfig    clang-21
-hexagon               randconfig-001-20250718    clang-21
-hexagon               randconfig-002-20250718    clang-21
-i386        buildonly-randconfig-001-20250718    gcc-12
-i386        buildonly-randconfig-002-20250718    clang-20
-i386        buildonly-randconfig-003-20250718    gcc-12
-i386        buildonly-randconfig-004-20250718    gcc-11
-i386        buildonly-randconfig-005-20250718    gcc-12
-i386        buildonly-randconfig-006-20250718    clang-20
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-21
-loongarch             randconfig-001-20250718    gcc-15.1.0
-loongarch             randconfig-002-20250718    gcc-15.1.0
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-m68k                        m5407c3_defconfig    gcc-15.1.0
-microblaze                       allmodconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-nios2                             allnoconfig    gcc-11.5.0
-nios2                               defconfig    gcc-11.5.0
-nios2                 randconfig-001-20250718    gcc-8.5.0
-nios2                 randconfig-002-20250718    gcc-11.5.0
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-15.1.0
-parisc                            allnoconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20250718    gcc-14.3.0
-parisc                randconfig-002-20250718    gcc-13.4.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                 mpc832x_rdb_defconfig    gcc-15.1.0
-powerpc               randconfig-001-20250718    gcc-9.3.0
-powerpc               randconfig-002-20250718    gcc-11.5.0
-powerpc               randconfig-003-20250718    clang-17
-powerpc                      tqm8xx_defconfig    clang-19
-powerpc64             randconfig-001-20250718    clang-18
-powerpc64             randconfig-002-20250718    clang-21
-riscv                             allnoconfig    gcc-15.1.0
-riscv                 randconfig-001-20250718    clang-21
-riscv                 randconfig-002-20250718    clang-16
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-21
-s390                             allyesconfig    gcc-15.1.0
-s390                  randconfig-001-20250718    clang-21
-s390                  randconfig-002-20250718    clang-21
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                                  defconfig    gcc-15.1.0
-sh                    randconfig-001-20250718    gcc-15.1.0
-sh                    randconfig-002-20250718    gcc-15.1.0
-sparc                            allmodconfig    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20250718    gcc-10.3.0
-sparc                 randconfig-002-20250718    gcc-11.5.0
-sparc64               randconfig-001-20250718    gcc-10.5.0
-sparc64               randconfig-002-20250718    clang-20
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-21
-um                               allyesconfig    gcc-12
-um                    randconfig-001-20250718    gcc-12
-um                    randconfig-002-20250718    gcc-12
-x86_64                            allnoconfig    clang-20
-x86_64      buildonly-randconfig-001-20250718    clang-20
-x86_64      buildonly-randconfig-002-20250718    gcc-12
-x86_64      buildonly-randconfig-003-20250718    gcc-12
-x86_64      buildonly-randconfig-004-20250718    clang-20
-x86_64      buildonly-randconfig-005-20250718    clang-20
-x86_64      buildonly-randconfig-006-20250718    clang-20
-x86_64                              defconfig    gcc-11
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                randconfig-001-20250718    gcc-8.5.0
-xtensa                randconfig-002-20250718    gcc-12.4.0
+In the legacy cgroup, these values are in the cpuacct subsystem.
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>> The CPU subsystem could then align more closely with other resource controllers like memory or I/O
+>> subsystems. By decoupling these CPU-specific statistics from the cgroup core, it could help keep
+>> both cgroup and rstat implementations more focused.
+> 
+> In my eyes, cpu controller is stuff encapsulated by cpu_cgrp_subsys. I'm
+> not sure I understand what you refer to as the CPU subsystem.
+> 
+> One thing is how it is presented to users (filenames and content)
+> another one is how it is implemented. The latter surely can be
+> refactored but it's not obvious to me from the short description, sorry.
+> 
+
+What I'm considering is moving the implementation of cpu.stat from cgroup_base_files to
+cpu_cgrp_subsys—without changing the user-facing interface (filenames and content remain the same).
+However, the interface would only appear if the CPU subsystem is enabled.
+
+Currently, cpu.stat and cpu.stat.local are visible in every cgroup, even when the CPU subsystem is
+disabled. The only populated fields in such cases are:
+
+- usage_usec
+- user_usec
+- system_usec
+- nice_usec
+
+I’m unsure whether this change would be acceptable?
+
+>> Is there any particular reason why the CPU subsystem must remain bound
+>> to the cgroup core?
+> 
+> The stuff that's bound to the core is essentially not "control" but only
+> accounting, so with this association, the accounting can have fine
+> granularity while control (which incurs higher overhead in principle)
+> may remain coarse. I find it thus quite fitting that CPU stats build on
+> top of rstat.
+
+The implementation would still rely on rstat, similar to memory.stat and io.stat. The goal is to
+decouple it from the cgroup core (cgroup.c and rstat.c) while preserving accounting granularity.
+
+Best regards,
+Ridong
+
+> (Naturally, my previous claim about overhead is only rough and it's the
+> reason for existence of adjustments like in the commit 34f26a15611af
+> ("sched/psi: Per-cgroup PSI accounting disable/re-enable interface").)
+> 
+> Thats how I see it, happy to discuss possible problems you see with
+> this.
+> 
+> Michal
+
 
