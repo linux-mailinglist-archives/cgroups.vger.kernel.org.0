@@ -1,263 +1,113 @@
-Return-Path: <cgroups+bounces-8789-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8790-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2369CB0B42A
-	for <lists+cgroups@lfdr.de>; Sun, 20 Jul 2025 10:11:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F5F2B0B48C
+	for <lists+cgroups@lfdr.de>; Sun, 20 Jul 2025 11:16:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAC48189C7DD
-	for <lists+cgroups@lfdr.de>; Sun, 20 Jul 2025 08:12:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63A1317A55E
+	for <lists+cgroups@lfdr.de>; Sun, 20 Jul 2025 09:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91D841D79A5;
-	Sun, 20 Jul 2025 08:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E161E32DB;
+	Sun, 20 Jul 2025 09:16:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oE6lRk+Q"
+	dkim=pass (2048-bit key) header.d=khirnov.net header.i=@khirnov.net header.b="sNi+PwGs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from mail0.khirnov.net (red.khirnov.net [176.97.15.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E601EA65
-	for <cgroups@vger.kernel.org>; Sun, 20 Jul 2025 08:11:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B913D1C3C11
+	for <cgroups@vger.kernel.org>; Sun, 20 Jul 2025 09:15:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.97.15.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752999113; cv=none; b=RbLqbYLOa3MY4VKqoABsGbkXqotp/NNf9PefzChlCbU26nePy8EVMQKLFk0TRdfnBhAdfMlBJa2LLtI/qdvZYfi/rsAp8LNLH93YtejC0Z87Gb7Y0JCEdxEgnwrl8tKbQlemKDhOzWIt5q7GeUHJT7xiQp1tY+ke4pzvW8W0lzQ=
+	t=1753002964; cv=none; b=XwX7Pzuj+tQ37vFY/wUsUlmil64MSzngGU1bljS9SfgOXURX6sSDAUIfNP5cwUSPI6KBajNSfJ+6OyCWocj/2oYuSQts8jo0ovNwxV31eMw5v/4T+JUewHuOnJhCVTmPBWozMVXk2RuniEKdzAYq17lWVQUwUd+pjwn7dqxB8rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752999113; c=relaxed/simple;
-	bh=2xCuFUX9nPydUxiuPue8p1voYUQfncJ4Hg3SBX10Eek=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=j/x8om1tiHc/rEmH/fChIm8RF8G4LpX9db0fdBcc9Fu2LmBe/nZ+GF/9ZqEkyibH1KxpBsfyJjsoTtlOYivyksLMV50WcGk9MhaM/Lj52GEhMnL7BNM0VF10pzdQKuzQ3Z0VUt4ZxKk5Hp1xs6jFC4uReHHES4c0Ba/F3zJrcwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oE6lRk+Q; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752999111; x=1784535111;
-  h=date:from:to:cc:subject:message-id;
-  bh=2xCuFUX9nPydUxiuPue8p1voYUQfncJ4Hg3SBX10Eek=;
-  b=oE6lRk+QGZ3ufnqNDtC9AtMpkRKDhMRuNXDULG1FpKHuWz/YYJv7EuiO
-   Yd/mBJPqmrkDMT4mnfwyc3JGGuPcX9yMJI/TjfrLzigZHyctgmnQqtk2E
-   m4z86p7XZuDTiVrNH7BERQ59Mjj2k3A7tZgatBe1u96defWQ0SfoKXOYu
-   Wx/F7xKdGdGIkYUS7lDug0Z+eB2h2msrMaGFUiwmSEmfziLPRrJzOZUA/
-   6mTPR5/W6D0+kr+sWdrcjRFD/yxhN6V5RxdZLukebM+E7B6lQIFa21dmj
-   4xdcaAXtxhty2QfjGSuphQ37moDg6kWGfh9IIQrXmbFEyIB4ArFHredbM
-   Q==;
-X-CSE-ConnectionGUID: EUDSijY4QceCoLqjy3wUkw==
-X-CSE-MsgGUID: 1HE0EVGaR4WWqvkcmCk8vQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11497"; a="54950294"
-X-IronPort-AV: E=Sophos;i="6.16,326,1744095600"; 
-   d="scan'208";a="54950294"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2025 01:11:50 -0700
-X-CSE-ConnectionGUID: T58gHchRTTaAdaZJrRoKlw==
-X-CSE-MsgGUID: gDRQn5PEToeMEvYOXcb42Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,326,1744095600"; 
-   d="scan'208";a="159113511"
-Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 20 Jul 2025 01:11:49 -0700
-Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1udP99-000G08-0q;
-	Sun, 20 Jul 2025 08:11:47 +0000
-Date: Sun, 20 Jul 2025 16:11:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:test-merge] BUILD SUCCESS
- 82e762214318218c738b778a76e8d2a7c41d49e5
-Message-ID: <202507201625.rS6UEZhm-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1753002964; c=relaxed/simple;
+	bh=8flOhJZEDY+lIikEaMWIydk5O/GdiUsx99uY442viQc=;
+	h=Content-Type:From:To:Subject:Date:Message-ID:MIME-Version; b=Ycy1Vmi11DKH8Txvi9HBjtVVEZVIEaT5WV09CkbfGGOCjd4qpqbsEtTezJRD+TDH34N1n26RwSDzKq0ifo57liRE/m1r7UeEimTFH9ne9UIU7u8MEQ3XM9DOjrFAKSCs5lSkWZTFwPcNqG5W5zybum68+REEYI4uB2TnMEDcV1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=khirnov.net; spf=pass smtp.mailfrom=khirnov.net; dkim=pass (2048-bit key) header.d=khirnov.net header.i=@khirnov.net header.b=sNi+PwGs; arc=none smtp.client-ip=176.97.15.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=khirnov.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=khirnov.net
+Authentication-Results: mail0.khirnov.net;
+	dkim=pass (2048-bit key; unprotected) header.d=khirnov.net header.i=@khirnov.net header.a=rsa-sha256 header.s=mail header.b=sNi+PwGs;
+	dkim-atps=neutral
+Received: from localhost (localhost [IPv6:::1])
+	by mail0.khirnov.net (Postfix) with ESMTP id 950452446C1
+	for <cgroups@vger.kernel.org>; Sun, 20 Jul 2025 11:15:49 +0200 (CEST)
+Received: from mail0.khirnov.net ([IPv6:::1])
+ by localhost (mail0.khirnov.net [IPv6:::1]) (amavis, port 10024) with ESMTP
+ id r1YSATu79lJe for <cgroups@vger.kernel.org>;
+ Sun, 20 Jul 2025 11:15:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=khirnov.net; s=mail;
+	t=1753002947; bh=8flOhJZEDY+lIikEaMWIydk5O/GdiUsx99uY442viQc=;
+	h=From:To:Subject:Date:From;
+	b=sNi+PwGsqzvcLsMbzvT+gaFRGgg5kMzfV5rcC86pUWR+plWuC+AQzQ+n7XYBdADOO
+	 aLN1fEGlkhvVsmEknvodLZZA/JIh6mrcJSs3dAIc+J3f1B72q/43p0MTsBfGIyPe+j
+	 vCbiD4Kw1DjRNTqFi3Kqti7NgfTaP6Zm9aVxCtgfpqjaU6GZI7LK/cS8+NuVnackFF
+	 QWzn66Bne4SEkVuB2ynquWszQUdYNTsuQR9u94M6aVOPCJsEgUmqST/5FU+18dqXIo
+	 0ukDXan8Ml8wxsbgIv1vk0JyNUA5/DnopQDjz4OanONd00349GQujTmJOQ9Lj6i0hp
+	 +H82MqJfI14Vw==
+Received: from lain.khirnov.net (lain.khirnov.net [IPv6:2001:67c:1138:4306::3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
+	(Client CN "lain.khirnov.net", Issuer "smtp.khirnov.net SMTP CA" (verified OK))
+	by mail0.khirnov.net (Postfix) with ESMTPS id 5E5902446B9
+	for <cgroups@vger.kernel.org>; Sun, 20 Jul 2025 11:15:47 +0200 (CEST)
+Received: by lain.khirnov.net (Postfix, from userid 1000)
+	id 3ED571601BA; Sun, 20 Jul 2025 11:15:47 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+From:  Anton Khirnov <anton@khirnov.net>
+To:  cgroups@vger.kernel.org
+Subject:  unexpected memory.low events
+Date: Sun, 20 Jul 2025 11:15:47 +0200
+Message-ID: <175300294723.21445.5047177326801959331@lain.khirnov.net>
+User-Agent: alot/0.8.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git test-merge
-branch HEAD: 82e762214318218c738b778a76e8d2a7c41d49e5  Merge branch 'for-6.16-fixes' into test-merge
+Hi,
+I have a machine with a bunch of LXC containers and a pure v2 cgroup
+hierarchy mounted with memory_recursiveprot. The hierarchy looks
+roughly like this:
+/lxc/
+/lxc/pam
+/lxc/containers/
+/lxc/containers/init.scope
+/lxc/containers/lxc.{monitor,payload}.<container>
 
-elapsed time: 908m
+I want to protect processes in one of the containers from being swapped
+out, which I tried to achieve by setting memory.low as follows:
+/lxc/            - 512M (amount available for all the children)
+/lxc/containers/ - max  (just propagate parent value to children)
+/lxc/containers/lxc.payload.<protectedcontainer> - 512M
 
-configs tested: 170
-configs skipped: 5
+memory.low in every other cgroup is 0. I would expect that with this
+setup the anon memory in <protectedcontainer> would not be swapped out
+unless it exceeded 512M. However, what actually happens is:
+* the 'low' entry in memory.events under <protectedcontainer> goes up
+  during periods of high IO activity, even though according to
+  documentation this should not happen unless the low boundary is
+  overcommitted
+* the container's memory.current and memory.swap.current are 336M and
+  301M respectively, as of writing this email
+* there is a highly noticeable delay when accessing web services running
+  in this container, as their pages are loaded from swap (which is
+  precisely what I wanted to prevent)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Does this look like a problem with my understanding of the docs, or my
+configuration?
 
-tested configs:
-alpha                             allnoconfig    clang-21
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    clang-21
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                         haps_hs_defconfig    gcc-15.1.0
-arc                        nsimosci_defconfig    gcc-15.1.0
-arc                   randconfig-001-20250720    gcc-11.5.0
-arc                   randconfig-002-20250720    gcc-8.5.0
-arm                              allmodconfig    gcc-15.1.0
-arm                               allnoconfig    clang-21
-arm                              allyesconfig    gcc-15.1.0
-arm                   randconfig-001-20250720    gcc-15.1.0
-arm                   randconfig-002-20250720    gcc-15.1.0
-arm                   randconfig-003-20250720    gcc-10.5.0
-arm                   randconfig-004-20250720    gcc-8.5.0
-arm                           sama5_defconfig    gcc-15.1.0
-arm                         socfpga_defconfig    gcc-15.1.0
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    clang-21
-arm64                             allnoconfig    gcc-15.1.0
-arm64                 randconfig-001-20250720    gcc-15.1.0
-arm64                 randconfig-002-20250720    gcc-12.5.0
-arm64                 randconfig-003-20250720    clang-21
-arm64                 randconfig-004-20250720    clang-21
-csky                             alldefconfig    gcc-15.1.0
-csky                              allnoconfig    clang-21
-csky                              allnoconfig    gcc-15.1.0
-csky                  randconfig-001-20250720    gcc-15.1.0
-csky                  randconfig-002-20250720    gcc-13.4.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-21
-hexagon                          allyesconfig    clang-21
-hexagon               randconfig-001-20250720    clang-21
-hexagon               randconfig-002-20250720    clang-21
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250720    clang-20
-i386        buildonly-randconfig-002-20250720    gcc-12
-i386        buildonly-randconfig-003-20250720    gcc-12
-i386        buildonly-randconfig-004-20250720    clang-20
-i386        buildonly-randconfig-005-20250720    gcc-12
-i386        buildonly-randconfig-006-20250720    clang-20
-i386                                defconfig    clang-20
-i386                  randconfig-011-20250720    gcc-11
-i386                  randconfig-012-20250720    gcc-11
-i386                  randconfig-013-20250720    gcc-11
-i386                  randconfig-014-20250720    gcc-11
-i386                  randconfig-015-20250720    gcc-11
-i386                  randconfig-016-20250720    gcc-11
-i386                  randconfig-017-20250720    gcc-11
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-21
-loongarch             randconfig-001-20250720    clang-18
-loongarch             randconfig-002-20250720    clang-18
-m68k                             allmodconfig    clang-19
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    clang-19
-m68k                             allyesconfig    gcc-15.1.0
-microblaze                       allmodconfig    clang-19
-microblaze                       allmodconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    clang-19
-microblaze                       allyesconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-nios2                             allnoconfig    gcc-11.5.0
-nios2                             allnoconfig    gcc-15.1.0
-nios2                               defconfig    gcc-11.5.0
-nios2                               defconfig    gcc-15.1.0
-nios2                 randconfig-001-20250720    gcc-9.5.0
-nios2                 randconfig-002-20250720    gcc-8.5.0
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                         allyesconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-12
-parisc                           allmodconfig    gcc-15.1.0
-parisc                            allnoconfig    gcc-15.1.0
-parisc                           allyesconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20250720    gcc-8.5.0
-parisc                randconfig-002-20250720    gcc-8.5.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                          allmodconfig    gcc-15.1.0
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                          allyesconfig    clang-21
-powerpc                      arches_defconfig    gcc-15.1.0
-powerpc                      katmai_defconfig    gcc-15.1.0
-powerpc               randconfig-001-20250720    gcc-10.5.0
-powerpc               randconfig-002-20250720    gcc-8.5.0
-powerpc               randconfig-003-20250720    gcc-11.5.0
-powerpc64             randconfig-001-20250720    gcc-10.5.0
-powerpc64             randconfig-002-20250720    gcc-8.5.0
-powerpc64             randconfig-003-20250720    clang-21
-riscv                            allmodconfig    clang-21
-riscv                             allnoconfig    gcc-15.1.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    gcc-12
-riscv                 randconfig-001-20250720    clang-21
-riscv                 randconfig-002-20250720    gcc-13.4.0
-s390                             allmodconfig    clang-18
-s390                             allmodconfig    gcc-15.1.0
-s390                              allnoconfig    clang-21
-s390                             allyesconfig    gcc-15.1.0
-s390                                defconfig    gcc-12
-s390                  randconfig-001-20250720    clang-21
-s390                  randconfig-002-20250720    gcc-8.5.0
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                                  defconfig    gcc-12
-sh                    randconfig-001-20250720    gcc-15.1.0
-sh                    randconfig-002-20250720    gcc-13.4.0
-sh                          rsk7201_defconfig    gcc-15.1.0
-sh                          rsk7264_defconfig    gcc-15.1.0
-sh                           se7705_defconfig    gcc-15.1.0
-sh                           se7724_defconfig    gcc-15.1.0
-sh                           se7750_defconfig    gcc-15.1.0
-sh                             sh03_defconfig    gcc-15.1.0
-sh                            titan_defconfig    gcc-15.1.0
-sparc                            allmodconfig    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20250720    gcc-8.5.0
-sparc                 randconfig-002-20250720    gcc-8.5.0
-sparc64                             defconfig    gcc-12
-sparc64               randconfig-001-20250720    gcc-8.5.0
-sparc64               randconfig-002-20250720    clang-20
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-21
-um                               allyesconfig    gcc-12
-um                                  defconfig    gcc-12
-um                             i386_defconfig    gcc-12
-um                    randconfig-001-20250720    gcc-11
-um                    randconfig-002-20250720    gcc-12
-um                           x86_64_defconfig    gcc-12
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20250720    gcc-12
-x86_64      buildonly-randconfig-002-20250720    gcc-12
-x86_64      buildonly-randconfig-003-20250720    gcc-12
-x86_64      buildonly-randconfig-004-20250720    clang-20
-x86_64      buildonly-randconfig-005-20250720    gcc-11
-x86_64      buildonly-randconfig-006-20250720    gcc-12
-x86_64                              defconfig    gcc-11
-x86_64                                  kexec    clang-20
-x86_64                randconfig-001-20250720    clang-20
-x86_64                randconfig-002-20250720    clang-20
-x86_64                randconfig-003-20250720    clang-20
-x86_64                randconfig-004-20250720    clang-20
-x86_64                randconfig-005-20250720    clang-20
-x86_64                randconfig-006-20250720    clang-20
-x86_64                randconfig-007-20250720    clang-20
-x86_64                randconfig-008-20250720    clang-20
-x86_64                randconfig-071-20250720    gcc-11
-x86_64                randconfig-072-20250720    gcc-11
-x86_64                randconfig-073-20250720    gcc-11
-x86_64                randconfig-074-20250720    gcc-11
-x86_64                randconfig-075-20250720    gcc-11
-x86_64                randconfig-076-20250720    gcc-11
-x86_64                randconfig-077-20250720    gcc-11
-x86_64                randconfig-078-20250720    gcc-11
-x86_64                               rhel-9.4    clang-20
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                randconfig-001-20250720    gcc-8.5.0
-xtensa                randconfig-002-20250720    gcc-8.5.0
+I'm running the 6.12.27-1~bpo12+1 Debian kernel, in case it's relevant.
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+-- 
+Anton Khirnov
 
