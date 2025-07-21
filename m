@@ -1,137 +1,155 @@
-Return-Path: <cgroups+bounces-8795-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8796-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B0E1B0C791
-	for <lists+cgroups@lfdr.de>; Mon, 21 Jul 2025 17:28:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D45E7B0CBE9
+	for <lists+cgroups@lfdr.de>; Mon, 21 Jul 2025 22:36:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92BB0174578
-	for <lists+cgroups@lfdr.de>; Mon, 21 Jul 2025 15:28:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E57CB3AC925
+	for <lists+cgroups@lfdr.de>; Mon, 21 Jul 2025 20:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F26C2DECA1;
-	Mon, 21 Jul 2025 15:28:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 423A123C513;
+	Mon, 21 Jul 2025 20:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K4Sj4JeC"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YKHd6Q4n"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B960B2D3745
-	for <cgroups@vger.kernel.org>; Mon, 21 Jul 2025 15:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD8F23B637
+	for <cgroups@vger.kernel.org>; Mon, 21 Jul 2025 20:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753111704; cv=none; b=jXR8vZ5tX6+dyGW/Ui1A8q4+dWi7m5hADtjGVAtrgb7+d6tZwsEdJGD1A7ZdnVe5FdTsgWhxjhBTG2VANUETYGWeLLD1BIVJ6dGwVwGFOl3zyNUdB0x11MzlSlOcmjpotaK9BmK0BPDLNlFeaLEsYGtpr4Q6KW+3aU27qpgLw5Q=
+	t=1753130189; cv=none; b=ey8MvBexCEsWRduO8zv+QY9kwh0jocjTYF/jlAJsiqU03Ic7LwaNmebInnP1TsO8ALWU0bboMRnwfQB+RyV1ueHZXPYtm+vwWq8XkY4Hz12mSkf2pnYCK21LfVFx6QUK7kJNczdeEpQQZ3ZiMerGOgrvuPK+ZKBg8/hgSegsw/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753111704; c=relaxed/simple;
-	bh=KAjqmmSNUJsaFZnkWyXBZPCS3oCAxo7Zdsxi3lRn0ug=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=OatMbPvm+7OitZSpOHOCdZCK/bepnUgHEaONgIZTkGBqmI+C/ZneDDci239OKzWt3Vwz6D08i0/FxM++ZcTgp1DDG2IlCnFC4NizIVd+TSBegJxXvOE/5KTt20ITc+F/99LoLXMTxttmjjX3mPAcFlMUzfbCqxMCRKbVRJmKibA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K4Sj4JeC; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1753111701;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1FAGnQIaMxJlnDMfsOE3b9V6crtiwzXirYY+AEfUHfA=;
-	b=K4Sj4JeC+mJBm/B/0Q4VFDHrXi2CoaXEBYOJ/DcH3kgcHVkRB+dWT4BmlEG038nE7FxP3G
-	nmA79B4nU/u8FqYqmQsY4mcaUwTcCNXfyttnW/vbj8cowYfiCbl5RePV9atigOZC7onJIM
-	d2xfLFuPBFbPfYDYavE92QGnOj46Qvw=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-153-k2DJytUFMA-hSQqqdPHEjg-1; Mon, 21 Jul 2025 11:28:20 -0400
-X-MC-Unique: k2DJytUFMA-hSQqqdPHEjg-1
-X-Mimecast-MFC-AGG-ID: k2DJytUFMA-hSQqqdPHEjg_1753111699
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-74d12fa4619so3823101b3a.0
-        for <cgroups@vger.kernel.org>; Mon, 21 Jul 2025 08:28:20 -0700 (PDT)
+	s=arc-20240116; t=1753130189; c=relaxed/simple;
+	bh=Mf+wXwtqiNBJ220Spx55PfcTo/VnsTRGv6hporKbrjQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=nfCqA7e4BOlt8DzEbZklT9L8DdU9TNqmPo2xO4f4VnvYcHYncXmakpfEXJmszAkt4kdKnvR/rHnRqN6Vs9mcOduJWB6/VA7XHd4ezWdl+0H07uBVPTkEW5bXRG+WrUdFxpUL7WMBNMW+1GWmA6JHdASqhtpNoAnbFmvLwYVcpVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YKHd6Q4n; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-b2fa1a84566so3584285a12.1
+        for <cgroups@vger.kernel.org>; Mon, 21 Jul 2025 13:36:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1753130187; x=1753734987; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=51pOOLX0fQOfAGdnQSkiq2EVyVpnq9ZJH4RYM8SkY+0=;
+        b=YKHd6Q4nyuzsNUA4dfgIA3h4EIxim9flLOpV9RYJw0MCdOjYjISWbAlQ1kem/T/MmF
+         IaCFwwHDTMjpj44IMIO7jgZpVuBS7vqHGE1r3rCVBvi4OLlzYw9heZHjtOvuw4VvBJ8E
+         7OqyW9J/r5IXWqIQxXcoJ2r8DM5blLCHTgQaM52idxKfm/QpW1lIUfOrSJtFYnnXlcpH
+         pTXhCaIgIRkaGqAyd2L9JoeSlL1nSLP9+pMONRhRVYmjy/KidIHzhMOvHkRuRjU9nilz
+         oNATkBdduJrdoImEb7Q7EIjr41T/hMGTBw3NGFjU7E3ewg8QES+Z9+jF7CRSeKOaRcW2
+         BrOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753111699; x=1753716499;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1FAGnQIaMxJlnDMfsOE3b9V6crtiwzXirYY+AEfUHfA=;
-        b=sJg3s4IIfPWDNojvTXSNUDrcehen+q3i3px/ck1c7tzNRp9LSX/O9r+GEw/nCp8oCS
-         2CX/Plj59xVKSiqog3mu2bLVL/eW1AK1DiPhXZFUjUItwHI5EYOFcrC73VBmDmu0QDhl
-         P8XpkTd+nXIer6OdMH1rMr9R/JGCYpz6WG++JG+OAKR039Tg/HihE8r7RNqPd87Z+s/t
-         INUUBx7XtVO+VB2hp7fvoNYCtTt+rhSh1z5RAKo/HPF/y6LfjimTt7zwBRiwHCQdE3by
-         CV3diHMCqAlxoGHQESEvskM0frL7dCLIFOhLfM9ZGGJR9Sl29egXdGXzVlbG99tgH7Kh
-         mUIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWL5GRriHkDb4+avMKTrrC41gdc8QsdhwTyg73PeEUlUIX9cLWKWTH6dTCA3WMGL1gGIZcIFWlV@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWeEj+xWOli9Ts2q6q6Glx1AU8rBBwZtkWv+YHXBZBytsC8LRi
-	3SC8temoggJJJsnADiOkPG5FFpp25ufq2drUjQmWva45RqQdJAoU/48iOwHbDuxYN6B9ilRFQTS
-	/PR+Sb7gCeIn2wSbVMVK1g0oWh51sKwA80mkXV/YIOKK9WS/BLMSZdmmOX5s=
-X-Gm-Gg: ASbGncvB2AJ9KgFa87XegxdFTRo/S8AnyjGIQRTP4turhNyeNeKUWQ2suz6mfZXrR5N
-	nhp0xFWq5c7K4Y2dW/KCyJK0+KcHdBcGEjv4TNSEHGIs2jBFcZ/D48ASE3cul1F+EPuRPEor6og
-	lZmyLVwT3gqRvOvmKSVPwSlT5Hz0qQDKYgWJV4IRJktsOjGNy6sAFy4j8pLejJmW/aMwICdh9Qe
-	7pe6kD+IIGCw9ZszKvGJ7xx6nXdfrepuxofI0Uc2DZYrxWLeYILtrcGwXHIpSNLGPNGCceCM2qF
-	6djTJAAaPdzAqZYUQ1rCOlVMs+950ygvDBdOS8GyrMh/FMJPcVEkF2MhLAJr/PFSfGrOKHKlciF
-	9L/BKJarx8w==
-X-Received: by 2002:a05:6a00:3981:b0:748:fb2c:6b95 with SMTP id d2e1a72fcca58-759adcd49c4mr17806668b3a.18.1753111699391;
-        Mon, 21 Jul 2025 08:28:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEPM0nuxfEYmVcmD9DluTfp24c3r9Je30bankMzwjCMPBJmunsQVaJMVzxVXE4/wnie8bPkcA==
-X-Received: by 2002:a05:6a00:3981:b0:748:fb2c:6b95 with SMTP id d2e1a72fcca58-759adcd49c4mr17806622b3a.18.1753111698925;
-        Mon, 21 Jul 2025 08:28:18 -0700 (PDT)
-Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-759cb15761dsm6021416b3a.67.2025.07.21.08.28.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jul 2025 08:28:18 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <9bd275be-45df-47f3-9be3-f7e1458815a4@redhat.com>
-Date: Mon, 21 Jul 2025 11:28:15 -0400
+        d=1e100.net; s=20230601; t=1753130187; x=1753734987;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=51pOOLX0fQOfAGdnQSkiq2EVyVpnq9ZJH4RYM8SkY+0=;
+        b=RnNEDgYUCenxmBLOnWd49eCuTjNLcRSGQHowfEq8EWRUCPO8L/6oRY0LrxQ5V6UMso
+         CK9GYqhCY70EDdNOK15YXevMJxsSNQArnoWdD7pYfOCFJV5GdqBFndQlj0Z12FYUSOda
+         DbNqIxSU+uHvrxo9OhmW0dR55VksYzoil0R7DWfoCx8kAk5Ge+lnqzz1PvkFQZVgg9HD
+         uazQRFIH6Wg9jsJzL8TQDY1Zx85PVSbTVev5tjuqQBij1J9VL9FItQ9IYykHkeDCWf89
+         55Yd9OYuB+XzvAhWZf85H3nfcALDMNY/6tMVKewdyWqQP1BUhhTGZK9AfyNJmwRw4qy/
+         N+cw==
+X-Forwarded-Encrypted: i=1; AJvYcCXCriQuAHuOCaGvXZhTkhxO87TB7K0dtptTgmRQ+kyoIV8ht6r+l6Ok+KUP/QZWBskFkxP1z2no@vger.kernel.org
+X-Gm-Message-State: AOJu0YwshkHMq8XZqswCMEWSRJj/u7dBHEAKe4Q/xZDWlkfEUKpNf8df
+	tIHgN3mdj/O6H5wv5iEkqkI2KAbH9Mj9TzpWTk5MW8Pzi+Mlqu9KZrvTRj8+sAd7jQWn5VfNerC
+	jz9KUCA==
+X-Google-Smtp-Source: AGHT+IGVZNNr93fPRWqdHxWab0gu7wbq9VcEZmziUgmJKmb9TSvPtgxLvPeY0lMsvl6TgzUysEMGklwL2vA=
+X-Received: from pfbjc22.prod.google.com ([2002:a05:6a00:6c96:b0:747:b6ba:35b6])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a21:ae0a:b0:238:f875:6261
+ with SMTP id adf61e73a8af0-238f875633dmr23007475637.23.1753130187000; Mon, 21
+ Jul 2025 13:36:27 -0700 (PDT)
+Date: Mon, 21 Jul 2025 20:35:19 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] sched/core: Skip user_cpus_ptr masking if no online
- CPU left
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- Chen Ridong <chenridong@huaweicloud.com>,
- Johannes Weiner <hannes@cmpxchg.org>
-References: <20250718164143.31338-1-longman@redhat.com>
- <20250718164857.31963-1-longman@redhat.com>
- <2vpxlzo6kruo23ljelerqkofybovtrxalinbz56wgpek6j47et@om6jyuyqecog>
-Content-Language: en-US
-In-Reply-To: <2vpxlzo6kruo23ljelerqkofybovtrxalinbz56wgpek6j47et@om6jyuyqecog>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.50.0.727.gbf7dc18ff4-goog
+Message-ID: <20250721203624.3807041-1-kuniyu@google.com>
+Subject: [PATCH v1 net-next 00/13] net-memcg: Allow decoupling memcg from sk->sk_prot->memory_allocated.
+From: Kuniyuki Iwashima <kuniyu@google.com>
+To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Willem de Bruijn <willemb@google.com>, Matthieu Baerts <matttbe@kernel.org>, 
+	Mat Martineau <martineau@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Simon Horman <horms@kernel.org>, Geliang Tang <geliang@kernel.org>, 
+	Muchun Song <muchun.song@linux.dev>, Kuniyuki Iwashima <kuniyu@google.com>, 
+	Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, mptcp@lists.linux.dev, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 7/21/25 11:13 AM, Michal Koutný wrote:
-> On Fri, Jul 18, 2025 at 12:48:56PM -0400, Waiman Long <longman@redhat.com> wrote:
->> Chen Ridong reported that cpuset could report a kernel warning for a task
->> due to set_cpus_allowed_ptr() returning failure in the corner case that:
->>
->> 1) the task used sched_setaffinity(2) to set its CPU affinity mask to
->>     be the same as the cpuset.cpus of its cpuset,
->> 2) all the CPUs assigned to that cpuset were taken offline, and
->> 3) cpuset v1 is in use and the task had to be migrated to the top cpuset.
-> Does this make sense for cpuset v2 (or no cpuset at all for that matter)?
-> I'm asking whether this mask modification could only be extracted into
-> cpuset-v1.c (like cgroup_tranfer_tasks() or a new function)
+Some protocols (e.g., TCP, UDP) has their own memory accounting for
+socket buffers and charge memory to global per-protocol counters such
+as /proc/net/ipv4/tcp_mem.
 
-This corner case as specified in Chen Ridong's patch only happens with a 
-cpuset v1 environment, but it is still the case that the default cpu 
-affinity of the root cgroup (with or without CONFIG_CGROUPS) will 
-include offline CPUs, if present. So it still make senses to skip the 
-sched_setaffinity() setting if there is no online CPU left, though it 
-will be much harder to have such a condition without using cpuset v1.
+When running under a non-root cgroup, this memory is also charged to
+the memcg as sock in memory.stat.
 
-Cheers,
-Longman
+Sockets using such protocols are still subject to the global limits,
+thus affected by a noisy neighbour outside cgroup.
+
+This makes it difficult to accurately estimate and configure appropriate
+global limits.
+
+If all workloads were guaranteed to be controlled under memcg, the issue
+can be worked around by setting tcp_mem[0~2] to UINT_MAX.
+
+However, this assumption does not always hold, and a single workload that
+opts out of memcg can consume memory up to the global limit, which is
+problematic.
+
+This series introduces a new per-memcg know to allow decoupling memcg
+from the global memory accounting, which simplifies the memcg
+configuration while keeping the global limits within a reasonable range.
+
+Overview of the series:
+
+  patch 1 is a bug fix for MPTCP
+  patch 2 ~ 9 move sk->sk_memcg accesses to a single place
+  patch 10 moves sk_memcg under CONFIG_MEMCG
+  patch 11 & 12 introduces a flag and stores it to the lowest bit of sk->sk_memcg
+  patch 13 decouples memcg from sk_prot->memory_allocated based on the flag
+
+
+Kuniyuki Iwashima (13):
+  mptcp: Fix up subflow's memcg when CONFIG_SOCK_CGROUP_DATA=n.
+  mptcp: Use tcp_under_memory_pressure() in mptcp_epollin_ready().
+  tcp: Simplify error path in inet_csk_accept().
+  net: Call trace_sock_exceed_buf_limit() for memcg failure with
+    SK_MEM_RECV.
+  net: Clean up __sk_mem_raise_allocated().
+  net-memcg: Introduce mem_cgroup_from_sk().
+  net-memcg: Introduce mem_cgroup_sk_enabled().
+  net-memcg: Pass struct sock to mem_cgroup_sk_(un)?charge().
+  net-memcg: Pass struct sock to mem_cgroup_sk_under_memory_pressure().
+  net: Define sk_memcg under CONFIG_MEMCG.
+  net-memcg: Add memory.socket_isolated knob.
+  net-memcg: Store memcg->socket_isolated in sk->sk_memcg.
+  net-memcg: Allow decoupling memcg from global protocol memory
+    accounting.
+
+ Documentation/admin-guide/cgroup-v2.rst | 16 +++++
+ include/linux/memcontrol.h              | 50 ++++++++-----
+ include/net/proto_memory.h              | 10 ++-
+ include/net/sock.h                      | 66 +++++++++++++++++
+ include/net/tcp.h                       | 10 ++-
+ mm/memcontrol.c                         | 84 +++++++++++++++++++---
+ net/core/sock.c                         | 95 ++++++++++++++++---------
+ net/ipv4/inet_connection_sock.c         | 35 +++++----
+ net/ipv4/tcp_output.c                   | 13 ++--
+ net/mptcp/protocol.h                    |  4 +-
+ net/mptcp/subflow.c                     | 11 +--
+ 11 files changed, 299 insertions(+), 95 deletions(-)
+
+-- 
+2.50.0.727.gbf7dc18ff4-goog
 
 
