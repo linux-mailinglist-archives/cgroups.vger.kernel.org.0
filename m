@@ -1,188 +1,194 @@
-Return-Path: <cgroups+bounces-8818-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8820-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FE05B0D26C
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 09:17:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBAB6B0D31E
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 09:32:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B905F5471C3
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 07:17:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D1777B18FE
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 07:31:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34392989B4;
-	Tue, 22 Jul 2025 07:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YggC7/cU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B333291864;
+	Tue, 22 Jul 2025 07:31:00 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC8B228CA9
-	for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 07:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F441EFF8E;
+	Tue, 22 Jul 2025 07:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753168644; cv=none; b=g6zl4liC3fNO3/uxf+EG2nNAXx+D8jJPfDqhzLByKGpmsdWgPD+tiM31L/Qzq6jEMBfTSqvu1takwSo6hdcSaVstEW8gaRIr3cXkoyHqkT8+CV3s3tS4Wt+i0mHJsZj7I400tt6VC6SuHMgx+7dTgXuysxv/vQdZfCfHCoklcWw=
+	t=1753169459; cv=none; b=RR4eR0MA45hc0/2u7BdGo1NTocYZHd79R+wOuk3LYDD7PxJBJg+hHv3tRJ92ZStUYcmpcSXANLfCki44WIdJ67fUI502WxNkTeSLtP6z6QaOK8NiZhg6mSipQSj3KaCyQrEyU4HLMkKhnq/XoN4GNzzgOsdwezHoJtx3ibbUMIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753168644; c=relaxed/simple;
-	bh=/reFbip4z6HGdC1YN+8o0sVMfsy7eUF1tUMhdnKuuoo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NBn4cLiaHo2pGsoTzZzNHAgSEzvvS1Y2B9xwA3PGW4kH7XgTlqyAW91lmiGClsxgE4pTwDpoepdHuH0QzkDKJyc8sdNuBPip9UOku4WHE3i5RiDwHsNisjuYO9vJzkdlWY8U3qR1MLWpUeqMmpzz56CWSANblFqhzxZuphsIENI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YggC7/cU; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-4ab644b8dc1so57033611cf.1
-        for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 00:17:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1753168642; x=1753773442; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k18tpt6MzY4+EfMPJ8+KaJPrYaWfsW1gfyLbK9RchSQ=;
-        b=YggC7/cU+JrycRjFVSlYO5fDWr/HMPrr4JSB2JCeVq7otMFXx/jJoKYEDOxg6TvK60
-         o4Ur4AeIcW8yRdcEvja8QraNP6C+AvKouKFCX9UQJ/aH8xKWzGU30+B1fYYfbEmhN/dS
-         dIhZnNGBPQnUQJ7x3z23kDoYqlVe+P16xLATwfZQiNqAbtrVlS+f4ZU0dGsE6PhPMaoz
-         Kd83QmkyMlCSZEFw7dTiS+ynzALo3tNsEntChdfVkoixXgIpELIm722OpOc17AZNUtXM
-         Tx0o7A+qVmw+L5xb0W/0iU5HeMCHmeybHyXUmXLbKxwE6qEf7+X4G4kxlCRrLNd2pYiH
-         5/yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753168642; x=1753773442;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k18tpt6MzY4+EfMPJ8+KaJPrYaWfsW1gfyLbK9RchSQ=;
-        b=XvRfz0/67z0K6qArWAC20lh0GK78iVDppHWdb2JOLXbkREK4b6akSqNu9pVcCOxG5I
-         8+xm3Ny8E0HhiHrxzxrMwEvQMJNqEstKq1t2Q73jRu6Kbw+5nbiJ0IDVsM0AZXAVgWKi
-         Jvoq998k7kV9/FKF35WQsouF1LDpITOAmFfka2WHWfpr8NMEZ0GVUUxrPepLxQnvEyRn
-         no/CauK6RuX/mGpeg1a8cZvLtKMznO+QQtBhjzCqNfzF73k9QhteLhAeRmeoLe5Y03lS
-         FuYR31QJK+EnZUZqBASZrqZBZuCplpiCkIhh2DOXpawyn+egh5cFQAvfLoSfMPzcLyRN
-         WW3g==
-X-Forwarded-Encrypted: i=1; AJvYcCUtt8kBd54Nlxzd3FjYE0lvKwu0QjbpKdep4tpjozN13l5pszjY+yTq0W0IdBeTEnvDIqtIVFPo@vger.kernel.org
-X-Gm-Message-State: AOJu0YyAW0OPFjj6r0MOp6QJU966rJBPFoCQqZJsJt59D6afVmux9bHX
-	OOuQIlkZJslUegz342IB5C9LMrgze/Ys7/pAhNU6vxdhzCHXHBVB+eK/DjmX0T9VpFbPMx8i2Og
-	1PXwprrCFiiUpZW8AZDsELMebQTE1Kc7fzs1pm+XZ
-X-Gm-Gg: ASbGncveDw31YO+IpfJ6udWdHo6ic92ajwfbeABLgR5AdqesB1QMWxYAngKOakGiIqk
-	nd0oZhdmicXsCnqRjsfUTGIDElItqJLocURfNtnl0nRIbKiJnzB/M71EZ7TUOjOE8oMNc99Hatz
-	RGa9LERm67bLJjtv3TfZEWrElXQRrQoAP54pY2fPPZhudiPTGqvWj2ZSq5FZKk+jORyHaAV8Zip
-	bdpZA==
-X-Google-Smtp-Source: AGHT+IEJqjlyXu7R2eB3u1viFPNlH5wWs/bl/JODZ7kqSRD8a+WDvay6gqWxv9EQQNnkoM6Gc34A9c4Zmm1eApzt1xc=
-X-Received: by 2002:a05:622a:1999:b0:4a9:a2e6:da94 with SMTP id
- d75a77b69052e-4ab93ded0c2mr349747361cf.47.1753168641626; Tue, 22 Jul 2025
- 00:17:21 -0700 (PDT)
+	s=arc-20240116; t=1753169459; c=relaxed/simple;
+	bh=YYrzu0UgQGrSG+tVmoBikBDkz5Rif7zRQbOxhwE28NY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GPAlnTtNm/3IF9J5wsfIhj67kO0U8WhuXNsfslHb7BLCTkt/faHhSNp80MqjIpayCH0b5bFhiz6cvsnEApIC2vgdkgyYO+bB9Vw2cO2/IT6jrdnjgLqIQx6OU3O0DtE9UZsKkQjT8dvL4yBDd/10VkIM++E4T5l2uY7FaF+aFLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bmTTB6kQZzYQvJS;
+	Tue, 22 Jul 2025 15:30:54 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id A52501A1939;
+	Tue, 22 Jul 2025 15:30:53 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgDnYhMrPn9ovjJdBA--.52549S4;
+	Tue, 22 Jul 2025 15:30:53 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: dlemoal@kernel.org,
+	hare@suse.de,
+	tj@kernel.org,
+	josef@toxicpanda.com,
+	axboe@kernel.dk,
+	yukuai3@huawei.com
+Cc: cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	johnny.chenyi@huawei.com
+Subject: [PATCH 0/6] blk-mq-sched: support request batch dispatching for sq elevator
+Date: Tue, 22 Jul 2025 15:24:25 +0800
+Message-Id: <20250722072431.610354-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250722071146.48616-1-daniel.sedlak@cdn77.com>
-In-Reply-To: <20250722071146.48616-1-daniel.sedlak@cdn77.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 22 Jul 2025 00:17:10 -0700
-X-Gm-Features: Ac12FXxLrRoFnAV1nQaQbqwzGzX2Lv_Mk1B6brAV1S6ScCbjXeF5WMlq0NtjP-U
-Message-ID: <CANn89i+sAgVOOoowNfqxv7+NrAa+8EzkWTVMP8LeGDJ23sFQpg@mail.gmail.com>
-Subject: Re: [PATCH v3] memcg: expose socket memory pressure in a cgroup
-To: Daniel Sedlak <daniel.sedlak@cdn77.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Neal Cardwell <ncardwell@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, 
-	David Ahern <dsahern@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org, 
-	netdev@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
-	Matyas Hurtik <matyas.hurtik@cdn77.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDnYhMrPn9ovjJdBA--.52549S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXw1UJw47Gr1fGr1xAryxKrg_yoW5AFyDpF
+	WfGanIyF4DW3WaqFna9w1UJw1rGw4xZry3Grnxtr4SqwnrAr47AFn5Ja48ZFW7AryfWFsr
+	Wr1kXrykWa4UWaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Tue, Jul 22, 2025 at 12:12=E2=80=AFAM Daniel Sedlak <daniel.sedlak@cdn77=
-.com> wrote:
->
-> This patch is a result of our long-standing debug sessions, where it all
-> started as "networking is slow", and TCP network throughput suddenly
-> dropped from tens of Gbps to few Mbps, and we could not see anything in
-> the kernel log or netstat counters.
->
-> Currently, we have two memory pressure counters for TCP sockets [1],
-> which we manipulate only when the memory pressure is signalled through
-> the proto struct [2]. However, the memory pressure can also be signaled
-> through the cgroup memory subsystem, which we do not reflect in the
-> netstat counters. In the end, when the cgroup memory subsystem signals
-> that it is under pressure, we silently reduce the advertised TCP window
-> with tcp_adjust_rcv_ssthresh() to 4*advmss, which causes a significant
-> throughput reduction.
->
-> Keep in mind that when the cgroup memory subsystem signals the socket
-> memory pressure, it affects all sockets used in that cgroup.
->
-> This patch exposes a new file for each cgroup in sysfs which signals
-> the cgroup socket memory pressure. The file is accessible in
-> the following path.
->
->   /sys/fs/cgroup/**/<cgroup name>/memory.net.socket_pressure
->
-> The output value is an integer matching the internal semantics of the
-> struct mem_cgroup for socket_pressure. It is a periodic re-arm clock,
-> representing the end of the said socket memory pressure, and once the
-> clock is re-armed it is set to jiffies + HZ.
->
-> Link: https://elixir.bootlin.com/linux/v6.15.4/source/include/uapi/linux/=
-snmp.h#L231-L232 [1]
-> Link: https://elixir.bootlin.com/linux/v6.15.4/source/include/net/sock.h#=
-L1300-L1301 [2]
-> Co-developed-by: Matyas Hurtik <matyas.hurtik@cdn77.com>
-> Signed-off-by: Matyas Hurtik <matyas.hurtik@cdn77.com>
-> Signed-off-by: Daniel Sedlak <daniel.sedlak@cdn77.com>
-> ---
-> Changes:
-> v2 -> v3:
-> - Expose the socket memory pressure on the cgroups instead of netstat
-> - Split patch
-> - Link: https://lore.kernel.org/netdev/20250714143613.42184-1-daniel.sedl=
-ak@cdn77.com/
->
-> v1 -> v2:
-> - Add tracepoint
-> - Link: https://lore.kernel.org/netdev/20250707105205.222558-1-daniel.sed=
-lak@cdn77.com/
->
->
->  mm/memcontrol.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 902da8a9c643..8e8808fb2d7a 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -4647,6 +4647,15 @@ static ssize_t memory_reclaim(struct kernfs_open_f=
-ile *of, char *buf,
->         return nbytes;
->  }
->
-> +static int memory_socket_pressure_show(struct seq_file *m, void *v)
-> +{
-> +       struct mem_cgroup *memcg =3D mem_cgroup_from_seq(m);
-> +
-> +       seq_printf(m, "%lu\n", READ_ONCE(memcg->socket_pressure));
-> +
-> +       return 0;
-> +}
-> +
->  static struct cftype memory_files[] =3D {
->         {
->                 .name =3D "current",
-> @@ -4718,6 +4727,11 @@ static struct cftype memory_files[] =3D {
->                 .flags =3D CFTYPE_NS_DELEGATABLE,
->                 .write =3D memory_reclaim,
->         },
-> +       {
-> +               .name =3D "net.socket_pressure",
-> +               .flags =3D CFTYPE_NOT_ON_ROOT,
-> +               .seq_show =3D memory_socket_pressure_show,
-> +       },
->         { }     /* terminate */
->  };
->
+From: Yu Kuai <yukuai3@huawei.com>
 
-It seems you forgot to update Documentation/admin-guide/cgroup-v2.rst
+Currently, both mq-deadline and bfq have global spin lock that will be
+grabbed inside elevator methods like dispatch_request, insert_requests,
+and bio_merge. And the global lock is the main reason mq-deadline and
+bfq can't scale very well.
+
+For dispatch_request method, current behavior is dispatching one request at
+a time. In the case of multiple dispatching contexts, This behavior, on the
+one hand, introduce intense lock contention:
+
+t1:                     t2:                     t3:
+lock                    lock                    lock
+// grab lock
+ops.dispatch_request
+unlock
+                        // grab lock
+                        ops.dispatch_request
+                        unlock
+                                                // grab lock
+                                                ops.dispatch_request
+                                                unlock
+
+on the other hand, messing up the requests dispatching order:
+t1:
+
+lock
+rq1 = ops.dispatch_request
+unlock
+                        t2:
+                        lock
+                        rq2 = ops.dispatch_request
+                        unlock
+
+lock
+rq3 = ops.dispatch_request
+unlock
+
+                        lock
+                        rq4 = ops.dispatch_request
+                        unlock
+
+//rq1,rq3 issue to disk
+                        // rq2, rq4 issue to disk
+
+In this case, the elevator dispatch order is rq 1-2-3-4, however,
+such order in disk is rq 1-3-2-4, the order for rq2 and rq3 is inversed.
+
+While dispatching request, blk_mq_get_disatpch_budget() and
+blk_mq_get_driver_tag() must be called, and they are not ready to be
+called inside elevator methods, hence introduce a new method like
+dispatch_requests is not possible.
+
+In conclusion, this set factor the global lock out of dispatch_request
+method, and support request batch dispatch by calling the methods
+multiple time while holding the lock.
+
+nullblk setup:
+modprobe null_blk nr_devices=0 &&
+    udevadm settle &&
+    cd /sys/kernel/config/nullb &&
+    mkdir nullb0 &&
+    cd nullb0 &&
+    echo 0 > completion_nsec &&
+    echo 512 > blocksize &&
+    echo 0 > home_node &&
+    echo 0 > irqmode &&
+    echo 128 > submit_queues &&
+    echo 1024 > hw_queue_depth &&
+    echo 1024 > size &&
+    echo 0 > memory_backed &&
+    echo 2 > queue_mode &&
+    echo 1 > power ||
+    exit $?
+
+Test script:
+fio -filename=/dev/$disk -name=test -rw=randwrite -bs=4k -iodepth=32 \
+  -numjobs=16 --iodepth_batch_submit=8 --iodepth_batch_complete=8 \
+  -direct=1 -ioengine=io_uring -group_reporting -time_based -runtime=30
+
+Test result: iops
+
+|                 | deadline | bfq      |
+| --------------- | -------- | -------- |
+| before this set | 263k     | 124k     |
+| after this set  | 475k     | 292k     |
+
+Yu Kuai (6):
+  mq-deadline: switch to use high layer elevator lock
+  block, bfq: don't grab queue_lock from io path
+  block, bfq: switch to use elevator lock
+  elevator: factor elevator lock out of dispatch_request method
+  blk-mq-sched: refactor __blk_mq_do_dispatch_sched()
+  blk-mq-sched: support request batch dispatching for sq elevator
+
+ block/bfq-cgroup.c   |   4 +-
+ block/bfq-iosched.c  |  73 ++++++-------
+ block/bfq-iosched.h  |   2 +-
+ block/blk-ioc.c      |  43 +++++++-
+ block/blk-mq-sched.c | 240 ++++++++++++++++++++++++++++++-------------
+ block/blk-mq.h       |  21 ++++
+ block/blk.h          |   2 +-
+ block/elevator.c     |   1 +
+ block/elevator.h     |   4 +-
+ block/mq-deadline.c  |  58 +++++------
+ 10 files changed, 293 insertions(+), 155 deletions(-)
+
+-- 
+2.39.2
+
 
