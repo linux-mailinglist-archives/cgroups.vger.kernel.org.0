@@ -1,87 +1,87 @@
-Return-Path: <cgroups+bounces-8845-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8846-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4741FB0DF21
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 16:42:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D51E2B0DF37
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 16:45:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CAF51C255E6
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 14:38:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BB1E172BF8
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 14:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7800F38FA3;
-	Tue, 22 Jul 2025 14:38:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F872E9EAF;
+	Tue, 22 Jul 2025 14:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jghAnaIg"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mB3eQuE7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926D628BAAB
-	for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 14:38:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 614A828C5D8
+	for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 14:39:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753195097; cv=none; b=QWBVSbj0iy+9x8Uu8W3F4tHfQ3uyOOVEhKB/i7HwlKsvrW5Ab2RtoE39xWWUrn7wv3tH8a+iGiFDIuDVIulWiLFxCi+DhwNEisRJva8kBYVdsxmUIu8UOtfalklSQnAxTvIx0Bm/ZLxIF+KLTTxWEW+PjzNuIKDsm856irymsgI=
+	t=1753195164; cv=none; b=B0Byc8cjo8tiirsbJ1HIgJJo2ckmXGSYPkNXrvbGHtUNbOhpf9gepGMluJ//5itqWJyDJmOTO+i5HPbv4o776SzY+VjVt5cj7pJ8jvHc0QMZ1xliVK40EPk6f0CSGbz6qwuRn9eX7LrXKsoNSNm1MBkiXzJYVOQ8zzcWXefsDZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753195097; c=relaxed/simple;
-	bh=os2DYnIMBSE/kMJQ/4ssNfzgbbajAEFKtkzZf35uM/U=;
+	s=arc-20240116; t=1753195164; c=relaxed/simple;
+	bh=TfOWjAAjxzaPD6O6dTqgvPQKFnlN87Rl+iS0j68i0zQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PgDoyYyixPosxkNwqr4fPdcufc/ijRtVZKH0BjRNGDFdLurRqX6G2B/11Ii65hckx+pc/jxyYH3QjR1wLhjQf6HyHqBuACX1ulTvg3KxDHVVVqJkTMz3DmK0umrMFhDzcd8E0qycdhj/eroJJAQwbauVSEHvCKC/PKX5kBNuQkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jghAnaIg; arc=none smtp.client-ip=209.85.219.51
+	 To:Cc:Content-Type; b=AlbmHwQj2iNe2lBPxNLkheblad92iHw+Y5Dc/wfd0PjuVhImH/jfc3K4iuFMRPsTp6aSB25yAVfGQoaPGjnfrY3J5ZVU5r/T8DTYjZ5jVGG76YdyM8JB7co8qyj7SC7v+g44HhREH3O4a+iszmKyS2G19LU/Qa6HKFS3NEMjg3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mB3eQuE7; arc=none smtp.client-ip=209.85.160.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6fd1b2a57a0so52585976d6.1
-        for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 07:38:15 -0700 (PDT)
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-4ab39fb71dbso66454391cf.3
+        for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 07:39:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1753195094; x=1753799894; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1753195159; x=1753799959; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vn4gJyDMnXhPbLwCQpWenpbaZRFD72gmw0empnN1AaA=;
-        b=jghAnaIgRXv26KB6kY87bQyminisZTw+CJDHgZPgoPlaNbTipJZdw2vgEBewm2vrGn
-         edlcehx/DnVfKLfg9yrUPfxgWGjjljz+85YhD0/ACY6VtqAHmMWrXAFxyVJ5GlwHODEr
-         hsiwcSjj7HlW/NYeXZZbi3O3cyDEPuYc74riLXFtxUwdtrk5JxdTh2SZ0xCoUWiohxL2
-         tPXhMOtA+fxmoY86Bd/ItH4OByGbD9PVzvieVfPv9cenQRchTqUNC9XruBsmg8Fzvteu
-         o/c0o99PCybIlgNwl/6CzGwEYlJm85VI2uHtmdMzhPUzOUk6mFDfPH+ZaxVW2dVn8MYs
-         jdSg==
+        bh=TfOWjAAjxzaPD6O6dTqgvPQKFnlN87Rl+iS0j68i0zQ=;
+        b=mB3eQuE7lXCB+C7RLxifwxwxsK0e+6hdHNESvYza9jzHlFqE9d1rBD68Ln98rXCZFU
+         1krkC0Vr8d8IdkLWK8EZaWG85CuieL/5cGOcerOmrPX0Kh69oHI5CLEGAmwu38SCxHF5
+         fJRAms0KdSZErVwAoRGEkNc5P2JHi7XIqgx1HypuuWMYYgnhUyAkH/IewGWgtm4AXCU9
+         6SJ0PznkhZd6AvE3Rp8nw3xRlQVRe/zEklSF+zswZSMsIYzNnG5xKOzBnTbWh2czQQKR
+         +IJ+c80g5nxvlb3dh6oTVx0wIsK+AJmi79H/ENVIK969pOToTwrNM6CmiwEfg+gRCnAe
+         hQ2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753195094; x=1753799894;
+        d=1e100.net; s=20230601; t=1753195159; x=1753799959;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vn4gJyDMnXhPbLwCQpWenpbaZRFD72gmw0empnN1AaA=;
-        b=AdFoNG0siPH2IhNDlZGJqY6Y1OUYtOfJAaOM8L5jhHnwEWlDfQXZK0BDH5GtSWYd6T
-         UkyVGEtTaXiJZawNMOfg4ZItT28sH8ZFm7HzdWtO2xkRkBc9588dF20ydtZd98tWi67S
-         b8f2BN2IOJeemr6TfyPSJNYrtE+UrXKYu1BXHy35v/mXugj1e75LkMf6MgGjPxrsuOZw
-         YP4ORTq2djl02aeuBOoqwK+0LbuPTzouFgB/36dpExh+23jS4y9YFhHdT4/EP8ujKcXB
-         ilbyfrOiDpre+Vcnf4VLIHjxiBjawzEkscM+T0Ulhl1K2TD6OkiMObY095CHd0j96J1c
-         3Jeg==
-X-Forwarded-Encrypted: i=1; AJvYcCWpJVy5k23ZHY5hPvNB3AERS3m3EPPmn6orjibswE3jgNmgtJuOzPh5hlyGwLfiRBWbGR6QCmsD@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYEm1MisWHHkQfb/A7Ovq56AG1cC+KpxrhA4IdZOySn2NyEtxu
-	tYpomMQVMs7ds2z7tJLA+vBTpAYwn4X3dbUqtArxlCDCx9b1qknUyLXazwlSEKPu4eyA+wKM+TS
-	B8Sd7rtIQFAwFSPcYTjZDCghlTjkRiX8KiAww69ne
-X-Gm-Gg: ASbGncvFvimyoxquPTatUzpttrxA60OehNy936CxCDGOVGpgIvGmFWb7Q/ueM08qnZ/
-	xCmB6xYNcSx+2i9e1jOYIs88qIz8Wml8TaV5KlXpkrnYv5ZwF9vq3KxKUQxhN1XI1YkD8Gg42ww
-	JTe01wxLFijWtpPkqyGoDOYB+vIcwQmxzy3F7zuYXHGW2snm0IDSZnELOW1w6MH2iATgI17Sugq
-	UJzEw==
-X-Google-Smtp-Source: AGHT+IH7wiXrlu0TBmC9UV2qMcDz1px3wXYN9maWZ0wBhcAItzqiY44+P1BWoDs4fyTq/fL+do1VMmfi2vruAWutpv4=
-X-Received: by 2002:a05:6214:6207:b0:704:f736:7353 with SMTP id
- 6a1803df08f44-704f736739emr250100436d6.25.1753195093977; Tue, 22 Jul 2025
- 07:38:13 -0700 (PDT)
+        bh=TfOWjAAjxzaPD6O6dTqgvPQKFnlN87Rl+iS0j68i0zQ=;
+        b=QA8M4mgNvbSH03XcNJQKY1Cu4jmrG7CcSttXqUL6cPbGvsdmhmnwe3eUaBEyIApTAd
+         5fCGTQmNNVz9ONSZ9ZGU8b3nVSHtNj5uT0NmyAn2VnUAB5qLv3bLhUui6cOm2OpxrlJe
+         DhQZf7qVuwjQuKNc9oJLaQ4Pr6FlUyRtntjW7Rnhy4JYJZJVfMgv6UMLxnMgJ4NpRod2
+         6ktTuTfwLlyoERF3btTOu5dF1kZEwvbWyt+IAKnkM68Mjc6OuCO3Dak3JB1QsrbT/qrf
+         Bx5lkm9YGvnwi2mauR2RSdA2jrWfoTs3zUp1SgbIqxRci4TSVxBlumPkni3XKh93AFfb
+         4RyA==
+X-Forwarded-Encrypted: i=1; AJvYcCXEQ4yS3uEjRGT68EYvdN8TiwC8wVkgYcA9ErBkdWAsaR6Tx3PQxCOVmA/h4PXSt6oDee1PqWoz@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywlk09RGASvjnUJqG7fR1ZyaFYkarsxVW4HLC2F2L6NgBG3hT8g
+	65F8KTpyJ3Ajvo8oXhyH8ftknqUc8izO36DTvXmi2Te4I6NAKfLhGUxms7cgFhFygV6OO7WekRQ
+	gGox2U6By3Za8dvMyWE52oIrAwu7mPGxFy2YfIP/n
+X-Gm-Gg: ASbGncuZXhI/Ao2o2u75w1hOugsKIzqdEKvHxe5hA0dzIwBaKleSPUZnpblIZpf89K0
+	/9Zu1dzx1nEvIgp0pWYf/gM0J9GDTkdH2QmQEi5dr5wBmmMbSinhQVpkX9r1IeN3m8UsV+8JhK+
+	EC0i06VzcTpLMVSNT04KEk5A1/5lo0xV9MvPmPl/8GduL3UMIk/7YDxnOAPUMp8HEH5ocLmBoGu
+	rhmW5w5yJSlVD58
+X-Google-Smtp-Source: AGHT+IF/6P41Pb82F2ptVRkEzRWcH/wqc08aOFULaIn2GgGXH6mVUvBywwrKZk8BZMD9A0/6nMaxFzoslrPlJkLFRIo=
+X-Received: by 2002:a05:622a:2303:b0:494:b1f9:d683 with SMTP id
+ d75a77b69052e-4ab90cb6a40mr389467931cf.49.1753195158828; Tue, 22 Jul 2025
+ 07:39:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250721203624.3807041-1-kuniyu@google.com> <20250721203624.3807041-6-kuniyu@google.com>
-In-Reply-To: <20250721203624.3807041-6-kuniyu@google.com>
+References: <20250721203624.3807041-1-kuniyu@google.com> <20250721203624.3807041-7-kuniyu@google.com>
+In-Reply-To: <20250721203624.3807041-7-kuniyu@google.com>
 From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 22 Jul 2025 07:38:03 -0700
-X-Gm-Features: Ac12FXxlsXsI3zGI0AVZPAQnuIlcT_-ASbHpDgM34ehNdBuFJw1M1IUr8BHKjK0
-Message-ID: <CANn89iLBoSc+x2n0w44HQp8CKumWBkqgYQEOi-enLahFTY02wQ@mail.gmail.com>
-Subject: Re: [PATCH v1 net-next 05/13] net: Clean up __sk_mem_raise_allocated().
+Date: Tue, 22 Jul 2025 07:39:07 -0700
+X-Gm-Features: Ac12FXzzmBrUziOnhdn3RLzTJezLALGw-_Gmb0DoUXsN9KTiXNdnxPTcE5y2_MU
+Message-ID: <CANn89i+qss82KMGJHKf-uMgrwFHXap9fs67+2azrNeBVpsVodA@mail.gmail.com>
+Subject: Re: [PATCH v1 net-next 06/13] net-memcg: Introduce mem_cgroup_from_sk().
 To: Kuniyuki Iwashima <kuniyu@google.com>
 Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
 	Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
@@ -98,17 +98,18 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Jul 21, 2025 at 1:36=E2=80=AFPM Kuniyuki Iwashima <kuniyu@google.co=
 m> wrote:
 >
-> In __sk_mem_raise_allocated(), charged is initialised as true due
-> to the weird condition removed in the previous patch.
+> We will store a flag in the lowest bit of sk->sk_memcg.
 >
-> It makes the variable unreliable by itself, so we have to check
-> another variable, memcg, in advance.
+> Then, directly dereferencing sk->sk_memcg will be illegal, and we
+> do not want to allow touching the raw sk->sk_memcg in many places.
 >
-> Also, we will factorise the common check below for memcg later.
+> Let's introduce mem_cgroup_from_sk().
 >
->     if (mem_cgroup_sockets_enabled && sk->sk_memcg)
+> Other places accessing the raw sk->sk_memcg will be converted later.
 >
-> As a prep, let's initialise charged as false and memcg as NULL.
+> Note that we cannot define the helper as an inline function in
+> memcontrol.h as we cannot access any fields of struct sock there
+> due to circular dependency, so it is placed in sock.h.
 >
 > Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
 
