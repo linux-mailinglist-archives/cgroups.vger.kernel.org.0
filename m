@@ -1,153 +1,261 @@
-Return-Path: <cgroups+bounces-8835-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8836-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CBC8B0D898
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 13:54:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 709C0B0DA2B
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 14:54:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0D9A540FCE
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 11:54:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 840B06C2A02
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 12:53:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03BE2E424D;
-	Tue, 22 Jul 2025 11:54:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECDA2E9756;
+	Tue, 22 Jul 2025 12:54:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DjtDc0LH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DUPEnHeU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1AAD2D9497
-	for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 11:54:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FE682E9740;
+	Tue, 22 Jul 2025 12:54:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753185253; cv=none; b=lLBh6/00plmBOW46cCTdASPWLW16OsHGh4g4+6r2S2cEFB3uJnxZsmk8/ikB3ivd/qhWd4jp53sA5lagsRaqp3OsKCuiihqlm4+oK6Q1SdI09AmFwtJsim7OaNNaSWbkR9PYZXsA0f3YfyGETJhF+2j/C2WT00SaYqbOThwxtX4=
+	t=1753188862; cv=none; b=ZdPPWPvOhFo/G49zpCMfcG2L7o1kMy1NzQ8xdA+n3NVycQ6Awp5t8YAGZn5BdppmWd3K3f+BEw9rV41P00G9os29SdFiaM9lOdBXP7v9J3KD3PMTwMqqWDJYsaWa7p1lLeMBrh0nBqn3lZmWgardXOoQZrK7g4HsPlVto4VQlyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753185253; c=relaxed/simple;
-	bh=Fla3OlF+/YSMx3UOhbmIQazfbvpT43e/E5z5T5vEJVM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cg+xW/GyvtNIXhfHBAWZtO2RPGPxqXkmoR2K8yzV8z6ta+1j7IJ1DiMoHdteHc9Ogq4vEY7KOlvbTXxOQKDo/NJNVjwUOhSOFPsaaCFZMrZFlPqEktDS6xmsknxkm+zmhD2fbi+UtCwjIC57Bzag5XS1vzolJaBmO8es+XltO64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DjtDc0LH; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ae9c2754a00so916262166b.2
-        for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 04:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1753185250; x=1753790050; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9kKt2BVvYAWPd9RG6IbzHHUIGJ1xcLJOliFtWnoC7pE=;
-        b=DjtDc0LHqZeKUILy3s2oQKZYOl67ZHw3E6MR8ZsoFMudW1LCstl+1eVWktnLYedAyc
-         QHAZDacJek7qNDVWuqyXRaQr0SahdEmxNND230oHu5FmwnW0nLv4tUMhBUQBLw6eGB79
-         RX/2eypfTwu4wocmsOlkZfQrIPfk98OvbmqZJdAh+YOn4PDQTyQ3kvMocezzh3W7IBWs
-         yfTyz630RbtfHiirLXjmBYuUMoTKwY74jQ55U76ttqlOKqb8HsCqMXo2/r0gsOVbeMZ0
-         CK964OQlGW2Dn4GhoJftIcb33+ypxiWkR2Sy+n4aOO/oaHjtr0giypvSCv9snrk+VJb2
-         nR3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753185250; x=1753790050;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9kKt2BVvYAWPd9RG6IbzHHUIGJ1xcLJOliFtWnoC7pE=;
-        b=doLyNr5OdHVV8zoXJuQ8dfVigp2hjMXbZcAvG5GsO7xBeFFIGRXTwmf3oOSHo2uNlZ
-         i69CjGEVher3jXds/calnmv5xBeKLvT7GPiTGNSU+i8N0yfFFKQhngcV5IvOT3cUSL5V
-         wVhj7wMXfvoyusvcGUg/PbGvqkokxRBqSUqAnJcCmIWKToOCLZB1US8XOk+8U4AU0R3V
-         Dg35NgBxCZK7c0ufeWO0I2mI+qJWQ+NPDLCzt1kZhgG+T1wQTaWIRULATBRqEZq3IGQM
-         siUpIJA93G3mpwc1uIbW+uGbcISJBQa569mwelluE9WATOiGAD4r7eW9BEJhxKTQxlDD
-         /HMA==
-X-Forwarded-Encrypted: i=1; AJvYcCVgqrqF81G2J/zSx0gQkl1O8DDnOOZRLKutcuASQN5qDW0BSDGM7lib8c1loCbs0jxYjPV3EOjU@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyf4KtL9DwMOCW9ObwevLUIE4iltlnLZJeU6DQbXFRi9Id0deqX
-	TxUkrZThP4kwApt1oqAS++I9T+WUNm5dRIYHSQMXxkoKuzKOgEhnirKqSCnflkuaiqc=
-X-Gm-Gg: ASbGncvRDcAC5wGYLhXla8CSvLLzfZa+eJ8AbdDA5+iXxMyLA1V24NnEcVoEbEdgDTE
-	YfEI4zxSevHeb42Fivg5qsNKEdCrBiKZNd5rTUBYCUhkptl3kM0u3+oWllOTc2KA9UmAlErMikq
-	HWMbGJYGDHv5KnLgWFhcTz7Ia1DoM4xqVBKeIg9Sq6y9jVWd4QOcde5s1Jvup04I4p2rD4K8jEK
-	RCxZucx3jL4queY0ty3YzOHGas6w3Ume+uZd+/9Spn2D2XQ34TBiTgfxj4fpC4Xq7TNCUQKooxF
-	kZhsAkIzUweqeJSG0bXnL+gFsaJTSpHe06SmJacKww9g7oALjA7TPZqJV4aAeblC5gst7lnOJ6v
-	7Zc7ENnrsnESNc3pDqyzdG7Gtyg0mb5HzLWCya9d8ha5ThOkvQy18
-X-Google-Smtp-Source: AGHT+IEfIxYTONnhe+xRu0jikk0G+zzebdF83eXd074o2mrK0k86lhWSA/IBxcIozC2KvB4QKVdAMQ==
-X-Received: by 2002:a17:906:165a:b0:ae7:ec3:ef41 with SMTP id a640c23a62f3a-aec4fc42368mr1727192666b.45.1753185249984;
-        Tue, 22 Jul 2025 04:54:09 -0700 (PDT)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aec6ca2f19csm849926466b.70.2025.07.22.04.54.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jul 2025 04:54:09 -0700 (PDT)
-Date: Tue, 22 Jul 2025 13:54:07 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: Tejun Heo <tj@kernel.org>, Tiffany Yang <ynaffit@google.com>, 
-	linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>, 
-	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Pavel Machek <pavel@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Chen Ridong <chenridong@huawei.com>, kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>, 
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: cpu.stat in core or cpu controller (was Re: [RFC PATCH v2]
- cgroup: Track time in cgroup v2 freezer)
-Message-ID: <adrjkqsqqwxcsdr5z4wmxcrvgvutkulzgka6pjjv23v6242txr@vv2ysb46nhpk>
-References: <20250714050008.2167786-2-ynaffit@google.com>
- <5rm53pnhpdeqljxqywh26gffh6vlyb5j5s6pzxhv52odhkl4fm@o6p7daoponsn>
- <aHktSgmh-9dyB7bz@slm.duckdns.org>
- <mknvbcalyaheobnfeeyyldytcoyturmeuq3twcrri5gaxtjojs@bbyqhshtjfab>
- <180b4c3f-9ea2-4124-b014-226ff8a97877@huaweicloud.com>
- <jyvlpm6whamo5ge533xdsvqnsjsxdonpvdjbtt5gqvcw5fjp56@q4ej7gy5frj7>
- <e065b8da-9e7c-4214-9122-83d83700a729@huaweicloud.com>
- <aHvHb0i6c8A_aCIo@slm.duckdns.org>
- <2c723007-710f-4592-9fe2-7534eb47e74f@huaweicloud.com>
+	s=arc-20240116; t=1753188862; c=relaxed/simple;
+	bh=0ZfWD3fGMg7venJRU+xdGNcfzv1XmoENYubvOaZ6XD0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l6v1mRgLwp6UVfY9Fdnm7FoNd7jIW3c0qH7/JdWOevzRn05vUucrF/neYjboQhk+gkhOB2QKeb1uQAd6w9rYWkbhJoX/y5hGYfwINtDJgb2swBDe3pl/DpX3bzL941PBnUfCgbIr9BUusV2cwg58X3VVNj3MDWFTYYOpT/ODHWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DUPEnHeU; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1753188861; x=1784724861;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0ZfWD3fGMg7venJRU+xdGNcfzv1XmoENYubvOaZ6XD0=;
+  b=DUPEnHeUDYgi/9xjjGuE/kxVxmwImNCQ7eAEElXjNfj6/nSoWA+rJtGO
+   Iwrc/0IxtYzRXbEQW8TDtDaXwqXgWi+s6jNde93HRvL+wrEAgO1o80oMl
+   +7L/IgQKGN3Qz+JAOK7iFVjCJq8tuvE2XaY4AKdMoRxoXTBEqSRJLD2eK
+   JFzZqBNuhh8L9+mYLbV9BxyRUPvuYracwOJ9LTJkdnVspyxVdxWKo0TQk
+   TlCSRVB+ZPqMvPkFyyp8Hi/3ADPDTil8GMPAByAdO2mYVd7c0ceEJpzFx
+   rEVUs5QKHCruAT6ucfHUwNSQvMOdezJkG4Mb+QPj5mRIw9agIbybH1SAY
+   A==;
+X-CSE-ConnectionGUID: AgRA7D+uRJmSxbN0ALKhlQ==
+X-CSE-MsgGUID: /fCBP6rmR66kVGtZN5k9aA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11500"; a="65698847"
+X-IronPort-AV: E=Sophos;i="6.16,331,1744095600"; 
+   d="scan'208";a="65698847"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2025 05:54:15 -0700
+X-CSE-ConnectionGUID: Z6o+nlcaRlmnQMXVc94yAA==
+X-CSE-MsgGUID: ujjhqxBrSh6hdYofHteW3w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,331,1744095600"; 
+   d="scan'208";a="159453856"
+Received: from irvmail002.ir.intel.com ([10.43.11.120])
+  by fmviesa009.fm.intel.com with ESMTP; 22 Jul 2025 05:54:10 -0700
+Received: from GK6031-HR8-NF5280M7-41522.igk.intel.com (GK6031-HR8-NF5280M7-41522.igk.intel.com [10.91.175.72])
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id D38422FC5B;
+	Tue, 22 Jul 2025 13:54:08 +0100 (IST)
+From: Bertrand Wlodarczyk <bertrand.wlodarczyk@intel.com>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: shakeel.butt@linux.dev,
+	inwardvessel@gmail.com,
+	Bertrand Wlodarczyk <bertrand.wlodarczyk@intel.com>
+Subject: [PATCH] cgroup/rstat: move css_rstat_lock outside cpu loop
+Date: Tue, 22 Jul 2025 14:43:19 +0200
+Message-ID: <20250722124317.2698497-3-bertrand.wlodarczyk@intel.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="euhvc2odhqtm7xfg"
-Content-Disposition: inline
-In-Reply-To: <2c723007-710f-4592-9fe2-7534eb47e74f@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
 
+By moving the lock outside the CPU loop, we reduce the frequency
+of costly lock acquisition.
+This adjustment slightly improves performance in scenarios where
+multiple CPUs concurrently attempt to acquire the lock for
+the same css.
 
---euhvc2odhqtm7xfg
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: cpu.stat in core or cpu controller (was Re: [RFC PATCH v2]
- cgroup: Track time in cgroup v2 freezer)
-MIME-Version: 1.0
+The cpu argument passed to __css_rstat_lock, which was utilized
+by the event system, has been removed because it is no longer in use.
+---
+Results:
+ 
+QEMU vm
++-------+---------+
+| main  | patched |
++-------+---------+
+| 9.17s | 2.36s   |
++-------+---------+
+ext4 raw image with debian:
+qemu-system-x86_64 -enable-kvm -cpu host -smp 102 -m 16G -kernel linux-cgroup/arch/x86/boot/bzImage -drive file=rootfs.ext4,if=virtio,format=raw -append "rootwait root=/dev/vda console=tty1 console=ttyS0 nokaslr cgroup_enable=memory cgroup_memory=1" -net nic,model=virtio -net user -nographic
 
-On Tue, Jul 22, 2025 at 05:01:50PM +0800, Chen Ridong <chenridong@huaweiclo=
-ud.com> wrote:
-> Specifically, this change would allow us to:
->=20
-> 1.Remove these CPU-specific callbacks from the core:
->   css_extra_stat_show()
->   css_local_stat_show()
-> 2. Clean up the 'is_self' logic in rstat.c.
+Benchmark code: https://gist.github.com/bwlodarcz/c955b36b5667f0167dffcff23953d1da
+musl-gcc -o benchmark -static -g3 -DNUM_THREADS=10 -DNUM_ITER=10000 -O2 -Wall benchmark.c -pthread
+---
+ include/trace/events/cgroup.h | 22 ++++++++++------------
+ kernel/cgroup/rstat.c         | 20 +++++++++-----------
+ 2 files changed, 19 insertions(+), 23 deletions(-)
 
-If you see an option to organize the code better, why not. (At the same
-time, I currently also don't see the "why.)
+diff --git a/include/trace/events/cgroup.h b/include/trace/events/cgroup.h
+index ba9229af9a34..eb674eef8b99 100644
+--- a/include/trace/events/cgroup.h
++++ b/include/trace/events/cgroup.h
+@@ -206,15 +206,14 @@ DEFINE_EVENT(cgroup_event, cgroup_notify_frozen,
+ 
+ DECLARE_EVENT_CLASS(cgroup_rstat,
+ 
+-	TP_PROTO(struct cgroup *cgrp, int cpu, bool contended),
++	TP_PROTO(struct cgroup *cgrp, bool contended),
+ 
+-	TP_ARGS(cgrp, cpu, contended),
++	TP_ARGS(cgrp, contended),
+ 
+ 	TP_STRUCT__entry(
+ 		__field(	int,		root			)
+ 		__field(	int,		level			)
+ 		__field(	u64,		id			)
+-		__field(	int,		cpu			)
+ 		__field(	bool,		contended		)
+ 	),
+ 
+@@ -222,13 +221,12 @@ DECLARE_EVENT_CLASS(cgroup_rstat,
+ 		__entry->root = cgrp->root->hierarchy_id;
+ 		__entry->id = cgroup_id(cgrp);
+ 		__entry->level = cgrp->level;
+-		__entry->cpu = cpu;
+ 		__entry->contended = contended;
+ 	),
+ 
+-	TP_printk("root=%d id=%llu level=%d cpu=%d lock contended:%d",
++	TP_printk("root=%d id=%llu level=%d lock contended:%d",
+ 		  __entry->root, __entry->id, __entry->level,
+-		  __entry->cpu, __entry->contended)
++		  __entry->contended)
+ );
+ 
+ /*
+@@ -238,23 +236,23 @@ DECLARE_EVENT_CLASS(cgroup_rstat,
+  */
+ DEFINE_EVENT(cgroup_rstat, cgroup_rstat_lock_contended,
+ 
+-	TP_PROTO(struct cgroup *cgrp, int cpu, bool contended),
++	TP_PROTO(struct cgroup *cgrp, bool contended),
+ 
+-	TP_ARGS(cgrp, cpu, contended)
++	TP_ARGS(cgrp, contended)
+ );
+ 
+ DEFINE_EVENT(cgroup_rstat, cgroup_rstat_locked,
+ 
+-	TP_PROTO(struct cgroup *cgrp, int cpu, bool contended),
++	TP_PROTO(struct cgroup *cgrp, bool contended),
+ 
+-	TP_ARGS(cgrp, cpu, contended)
++	TP_ARGS(cgrp, contended)
+ );
+ 
+ DEFINE_EVENT(cgroup_rstat, cgroup_rstat_unlock,
+ 
+-	TP_PROTO(struct cgroup *cgrp, int cpu, bool contended),
++	TP_PROTO(struct cgroup *cgrp, bool contended),
+ 
+-	TP_ARGS(cgrp, cpu, contended)
++	TP_ARGS(cgrp, contended)
+ );
+ 
+ #endif /* _TRACE_CGROUP_H */
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index c8a48cf83878..dd312fe1896d 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -326,8 +326,7 @@ __bpf_hook_end();
+  * value -1 is used when obtaining the main lock else this is the CPU
+  * number processed last.
+  */
+-static inline void __css_rstat_lock(struct cgroup_subsys_state *css,
+-		int cpu_in_loop)
++static inline void __css_rstat_lock(struct cgroup_subsys_state *css)
+ 	__acquires(ss_rstat_lock(css->ss))
+ {
+ 	struct cgroup *cgrp = css->cgroup;
+@@ -337,21 +336,20 @@ static inline void __css_rstat_lock(struct cgroup_subsys_state *css,
+ 	lock = ss_rstat_lock(css->ss);
+ 	contended = !spin_trylock_irq(lock);
+ 	if (contended) {
+-		trace_cgroup_rstat_lock_contended(cgrp, cpu_in_loop, contended);
++		trace_cgroup_rstat_lock_contended(cgrp, contended);
+ 		spin_lock_irq(lock);
+ 	}
+-	trace_cgroup_rstat_locked(cgrp, cpu_in_loop, contended);
++	trace_cgroup_rstat_locked(cgrp, contended);
+ }
+ 
+-static inline void __css_rstat_unlock(struct cgroup_subsys_state *css,
+-				      int cpu_in_loop)
++static inline void __css_rstat_unlock(struct cgroup_subsys_state *css)
+ 	__releases(ss_rstat_lock(css->ss))
+ {
+ 	struct cgroup *cgrp = css->cgroup;
+ 	spinlock_t *lock;
+ 
+ 	lock = ss_rstat_lock(css->ss);
+-	trace_cgroup_rstat_unlock(cgrp, cpu_in_loop, false);
++	trace_cgroup_rstat_unlock(cgrp, false);
+ 	spin_unlock_irq(lock);
+ }
+ 
+@@ -381,11 +379,11 @@ __bpf_kfunc void css_rstat_flush(struct cgroup_subsys_state *css)
+ 		return;
+ 
+ 	might_sleep();
++	__css_rstat_lock(css);
+ 	for_each_possible_cpu(cpu) {
+ 		struct cgroup_subsys_state *pos;
+ 
+ 		/* Reacquire for each CPU to avoid disabling IRQs too long */
+-		__css_rstat_lock(css, cpu);
+ 		pos = css_rstat_updated_list(css, cpu);
+ 		for (; pos; pos = pos->rstat_flush_next) {
+ 			if (is_self) {
+@@ -395,10 +393,10 @@ __bpf_kfunc void css_rstat_flush(struct cgroup_subsys_state *css)
+ 			} else
+ 				pos->ss->css_rstat_flush(pos, cpu);
+ 		}
+-		__css_rstat_unlock(css, cpu);
+ 		if (!cond_resched())
+ 			cpu_relax();
+ 	}
++	__css_rstat_unlock(css);
+ }
+ 
+ int css_rstat_init(struct cgroup_subsys_state *css)
+@@ -685,11 +683,11 @@ void cgroup_base_stat_cputime_show(struct seq_file *seq)
+ 
+ 	if (cgroup_parent(cgrp)) {
+ 		css_rstat_flush(&cgrp->self);
+-		__css_rstat_lock(&cgrp->self, -1);
++		__css_rstat_lock(&cgrp->self);
+ 		bstat = cgrp->bstat;
+ 		cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime,
+ 			       &bstat.cputime.utime, &bstat.cputime.stime);
+-		__css_rstat_unlock(&cgrp->self, -1);
++		__css_rstat_unlock(&cgrp->self);
+ 	} else {
+ 		root_cgroup_cputime(&bstat);
+ 	}
+-- 
+2.49.0
 
-
-> 3. Make the stat handling consistent across subsystems (currently cpu.sta=
-t is the only
-> subsystem-specific stat implemented in the core).
-
-But beware that the possibility of having cpu.stat without enabling the
-cpu controller on v2 is a user visible behavior and I'm quite sure some
-userspace relies on it, so you'd need to preserve that.
-
-Michal
-
---euhvc2odhqtm7xfg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaH973QAKCRB+PQLnlNv4
-CFq/AQClJUmKOphL5NvNc5AVqGOpLStkEZI+TheupLy0GZFR7gEAnedr53Iw59zU
-//68DI0J9sYoXIgmUXii8bcidi8uwwY=
-=Mri+
------END PGP SIGNATURE-----
-
---euhvc2odhqtm7xfg--
 
