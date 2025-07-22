@@ -1,114 +1,127 @@
-Return-Path: <cgroups+bounces-8839-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8841-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E08CB0DE6B
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 16:26:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C161B0DEDC
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 16:36:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87DB8568067
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 14:18:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA4F9AC2DE1
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 14:30:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8B32EB5D3;
-	Tue, 22 Jul 2025 14:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D3E2EA75B;
+	Tue, 22 Jul 2025 14:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="O5YI68Pw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B7CE2EB5D5
-	for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 14:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8CD2EA743
+	for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 14:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753193660; cv=none; b=V+DfDAjYVb/LFLnKHSyXovJnC+OeT1S5DfmJhz8ZnIxe4nSy2xYxpSO8EGSFyjNLbp9GLW3ZoD23zwSMO6klvTuwmIYGxCvw7VrK2A6kDcX3zurq+s/MsNUfgLae+hbcV8BRQQzPgSYozah/A/4JcRqJOKm9QfPIGVWLsvCE/rM=
+	t=1753194624; cv=none; b=uTeHABSPQ18B/rgrv7+Xy8UTOeWqBszmA7iuI5e8kt0ytWCs+pVN9jc6xCMei9xrNUGXwmD1qy+HnxTcRCFOaFDgwxzSSEOMZ5M2/VqWhBsqc+SRS8lUygwTWhBBCeG0OeyzlBVUGNGehcRgtQCe4HA0alQR6GkENPce22bM8Dg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753193660; c=relaxed/simple;
-	bh=YbZj6IAnk6i1IGZYhFj9C06BbWO/yAXaTN7raclAZtM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lx1ovFLl5G7NVNiiVCA0Gp9s8r3txSfcMRyFNZ+i7TFDraIuK8XGc4i/EVqYmm4BMRScxic8LVmO7XE99k34MzxJbSCls7he9KXVuiezKkIKmfdQViJ6TU+F4ytgpx4l7uf1ToOY4ML5RpoDfAVUp787mZdKiSLa1UkKi394xuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.102 with ESMTP; 22 Jul 2025 23:14:16 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Tue, 22 Jul 2025 23:14:09 +0900
-From: YoungJun Park <youngjun.park@lge.com>
-To: kernel test robot <lkp@intel.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org,
-	oe-kbuild-all@lists.linux.dev, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, shikemeng@huaweicloud.com,
-	kasong@tencent.com, nphamcs@gmail.com, bhe@redhat.com,
-	baohua@kernel.org, chrisl@kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, gunho.lee@lge.com,
-	iamjoonsoo.kim@lge.com, taejoon.song@lge.com,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH 1/4] mm/swap, memcg: Introduce infrastructure for
- cgroup-based swap priority
-Message-ID: <aH+csQxNcCmQMgZa@yjaykim-PowerEdge-T330>
-References: <20250716202006.3640584-2-youngjun.park@lge.com>
- <202507212243.Lf8fSo0T-lkp@intel.com>
+	s=arc-20240116; t=1753194624; c=relaxed/simple;
+	bh=g8o6ReDW6MUKFXt64vm9RKofRiF0JKVVbYD+Mf8uO7s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LHud9J/p/ZUPffStpG/fCG8yRwNFo3hIHgoyDLJg4ohLx3iaxkeoqID5dLoM+MKqWev2yAMMBbrONL9IBwYMKl+4RdSxw+UM7NltXWIrseuFhmIO9/LJXN/2xBb3vO+EPshIo91LMBy7jIEDK/VJ9oyrztncIKLomnFFXZe2QRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=O5YI68Pw; arc=none smtp.client-ip=209.85.160.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4ab81d016c8so77044141cf.1
+        for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 07:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1753194621; x=1753799421; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zs6B7ByVFqNhd4M7cO2OVqmSjId/nOtkp1oMTcQiG7s=;
+        b=O5YI68Pw7Ft09SDA89dg0lM0wSWaorYLt7ZMFgrc3cgIE0DFheqOb5L58AHRfgQoPi
+         hYOfnF4yEW71NhnBK1S4b7YhBiXH2epJTuaK+OfeR2gVLO3RuM9kQuYWQk/QhukxXvGm
+         KoSvhsvvomFaqZL8PVl47+6WZ3A23kuQDaazbQB+KHE8x6OfJFQDJLZT0sF5h4bGErfN
+         IDRabn3721t+9uZZQS3W3Pq62d7ZGu4DEdeVLoT0ioi1DzeXkuZM93VO62hqAzcGkpAS
+         W9KmIdqL6o7oHCRqcwcvQKkxk4G0mj94h/QEwUUIf3DFZ63hRP1W8iw0G5GfkaEMjbfB
+         5cfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753194621; x=1753799421;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zs6B7ByVFqNhd4M7cO2OVqmSjId/nOtkp1oMTcQiG7s=;
+        b=t+RKpLv917xutM2rR9tXmwptDsZhQRvzBmzjOjcDfwNbcd98BuCBojxw5ZPibK3pLa
+         vdJwG1+CZ1u3h9mOMblnKkrlze0g5lfOmLQ3aIKp3yZ5x7GpS4mMu7lD0YHEkQzyGGTw
+         GcX8zwu/k6KFUwL76pT7zRaLgzbsjbS6jm50h24azuIb+hq9yHsAMSwadvnzSAYIY5O4
+         EjHopuZ5fcDnPaydFMXsFCCkE06tyw6/JpETbqOnBMl/mOx8tEJZuohUIJod/rf2zv/x
+         VVGotArjPP3DWYlc+kJdp1wvWbpdQFjDl25jjECBmPf+1WBI+2rftyYYTKHiRVjVhAh/
+         Cn3g==
+X-Forwarded-Encrypted: i=1; AJvYcCWkmM7y+1a647cYt4UBb50swdihXWAd4xO/nJ557cO8yFsjgNoU/fqMX6pZGSMgLtFDBfiuKQ8s@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw36tbcNcAW4XYTCbucPz9gbRAhZLGclqJUbOjrSFG2ma2ig7fV
+	nIS5jJEx+PonDVGKgjhLRv87JInJLsEqArpozxTyd1fkyFtGbv4pWe6LZPK3JtI5QpCcCilfW2Y
+	/pYrGrVNvSKCA+rwp/P+V6pV6OarYCIwmpmBC88cw
+X-Gm-Gg: ASbGncvO2Vxx+2RbmHNVDUALE9azfnWP6+b2PEuRUAa3LwoCnqH5pYJOapPKClw5cYg
+	2iUDHDGMuwxX94jHbBmwNFsu/3yLIbsPlhHvStRsjaZKSHupUKSPe10M8wKXKvPdVZ/oFQat91H
+	Z0zDG6HhyIIz5AUJT3mHF0T12d0HCxAg9PyC/A8uz17XRZF4CylqQrLO6Z4/jMZsgwbQ0DytNmD
+	o0fO5I24j4/EIX5
+X-Google-Smtp-Source: AGHT+IHQ1F/XNS6EEtYUtpk/olOEZA/Va6cGJiS4hiBQzXMnDQFWPRfhrIeUbeCE+v3wAGiJbMRJO1Xiv4/aKrsvrGs=
+X-Received: by 2002:ac8:5d4c:0:b0:49b:eb1d:18ad with SMTP id
+ d75a77b69052e-4ab93dbed7cmr383658691cf.41.1753194620995; Tue, 22 Jul 2025
+ 07:30:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202507212243.Lf8fSo0T-lkp@intel.com>
+References: <20250721203624.3807041-1-kuniyu@google.com> <20250721203624.3807041-2-kuniyu@google.com>
+In-Reply-To: <20250721203624.3807041-2-kuniyu@google.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 22 Jul 2025 07:30:09 -0700
+X-Gm-Features: Ac12FXzou9QrF6H0tl3cLlJlr49JVeNU-g_6k8oOer2kAmc56xaiC2vvAezaFAw
+Message-ID: <CANn89iJQ_CDgAsDQ_cZC=fJJ9Vk5+Yk=RmmS=r3ds9abOqr-nw@mail.gmail.com>
+Subject: Re: [PATCH v1 net-next 01/13] mptcp: Fix up subflow's memcg when CONFIG_SOCK_CGROUP_DATA=n.
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Willem de Bruijn <willemb@google.com>, Matthieu Baerts <matttbe@kernel.org>, 
+	Mat Martineau <martineau@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Simon Horman <horms@kernel.org>, Geliang Tang <geliang@kernel.org>, 
+	Muchun Song <muchun.song@linux.dev>, Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, 
+	mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 21, 2025 at 11:13:24PM +0800, kernel test robot wrote:
-> Hi Youngjun,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on 347e9f5043c89695b01e66b3ed111755afcf1911]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Youngjun-Park/mm-swap-memcg-Introduce-infrastructure-for-cgroup-based-swap-priority/20250717-042648
-> base:   347e9f5043c89695b01e66b3ed111755afcf1911
-> patch link:    https://lore.kernel.org/r/20250716202006.3640584-2-youngjun.park%40lge.com
-> patch subject: [PATCH 1/4] mm/swap, memcg: Introduce infrastructure for cgroup-based swap priority
-> config: loongarch-randconfig-r123-20250721 (https://download.01.org/0day-ci/archive/20250721/202507212243.Lf8fSo0T-lkp@intel.com/config)
-> compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd708029e0b2869e80abe31ddb175f7c35361f90)
-> reproduce: (https://download.01.org/0day-ci/archive/20250721/202507212243.Lf8fSo0T-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202507212243.Lf8fSo0T-lkp@intel.com/
-> 
-> sparse warnings: (new ones prefixed by >>)
-> >> mm/swap_cgroup_priority.c:115:16: sparse: sparse: incompatible types in comparison expression (different address spaces):
->    mm/swap_cgroup_priority.c:115:16: sparse:    struct swap_cgroup_priority [noderef] __rcu *
->    mm/swap_cgroup_priority.c:115:16: sparse:    struct swap_cgroup_priority *
->    mm/swap_cgroup_priority.c:729:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
->    mm/swap_cgroup_priority.c:729:9: sparse:    struct swap_cgroup_priority [noderef] __rcu *
->    mm/swap_cgroup_priority.c:729:9: sparse:    struct swap_cgroup_priority *
->    mm/swap_cgroup_priority.c:638:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
->    mm/swap_cgroup_priority.c:638:25: sparse:    struct swap_cgroup_priority [noderef] __rcu *
->    mm/swap_cgroup_priority.c:638:25: sparse:    struct swap_cgroup_priority *
-> 
-> vim +115 mm/swap_cgroup_priority.c
-> 
->    108	
->    109	static struct swap_cgroup_priority *get_swap_cgroup_priority(
->    110		struct mem_cgroup *memcg)
->    111	{
->    112		if (!memcg)
->    113			return NULL;
->    114	
->  > 115		return rcu_dereference(memcg->swap_priority);
->    116	}
->    117	
-> 
+On Mon, Jul 21, 2025 at 1:36=E2=80=AFPM Kuniyuki Iwashima <kuniyu@google.co=
+m> wrote:
+>
+> When sk_alloc() allocates a socket, mem_cgroup_sk_alloc() sets
+> sk->sk_memcg based on the current task.
+>
+> MPTCP subflow socket creation is triggered from userspace or
+> an in-kernel worker.
+>
+> In the latter case, sk->sk_memcg is not what we want.  So, we fix
+> it up from the parent socket's sk->sk_memcg in mptcp_attach_cgroup().
+>
+> Although the code is placed under #ifdef CONFIG_MEMCG, it is buried
+> under #ifdef CONFIG_SOCK_CGROUP_DATA.
+>
+> The two configs are orthogonal.  If CONFIG_MEMCG is enabled without
+> CONFIG_SOCK_CGROUP_DATA, the subflow's memory usage is not charged
+> correctly.
+>
+> Let's move the code out of the wrong ifdef guard.
+>
+> Note that sk->sk_memcg is freed in sk_prot_free() and the parent
+> sk holds the refcnt of memcg->css here, so we don't need to use
+> css_tryget().
+>
+> Fixes: 3764b0c5651e3 ("mptcp: attach subflow socket to parent cgroup")
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
 
-This part of the code, which retrieves the object, 
-is expected to be properly updated in a subsequent patch series. 
-Therefore, I believe it's reasonable to leave it as-is for now.
-
-Best Regard,
-Youngjun Park
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
