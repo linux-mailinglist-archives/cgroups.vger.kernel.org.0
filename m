@@ -1,94 +1,66 @@
-Return-Path: <cgroups+bounces-8816-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8817-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81B38B0CF38
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 03:41:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D067B0D25E
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 09:12:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11B9F1C2167B
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 01:42:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DE107B1D89
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 07:11:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4931B043F;
-	Tue, 22 Jul 2025 01:40:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B7028B3F1;
+	Tue, 22 Jul 2025 07:12:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fypZouky"
+	dkim=pass (1024-bit key) header.d=cdn77.com header.i=@cdn77.com header.b="VqGXw/tv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-internal.sh.cz (mail-internal.sh.cz [95.168.196.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DAB1D6DB5;
-	Tue, 22 Jul 2025 01:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4865EE56A;
+	Tue, 22 Jul 2025 07:12:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.168.196.40
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753148457; cv=none; b=E6M/vyZB/hnKbyn+RHvj5mPEWqApXUPQ9kOb4YjtSehzIAdpV6jC/LmYgMN+/JZknnvmJxfHBmirILIYG9I+m8/4Q29Q319viaDIqBtnqiarim+Z1Ed+jie73K5sZfUa4jTd/Xos+gbsvy/4p6BKEokyFIqLsGUSDxBGnfjRq2k=
+	t=1753168371; cv=none; b=ugJqP8jn0llzE3Kyu5pmJf728V/3xNovw2Sw/zo5VTqfNq9ZCRDHbtfa7KTliH2ObisuFyduFI+5OkQIgehmljkg6VxPhLtP45ArObF9zuBDzI8E7wec4S81cjaHjAOWss2nKSEd00HNb/GoTrlK1RoGQb5qfGGF27yOHn5jaY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753148457; c=relaxed/simple;
-	bh=WfWKoVZm8XPwL8Mbv5vvFzivXuPSwIHqBgnu7JeC+gs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H4Repcmds3lz4evDpkxYUH5ICchHKZ4fpH67ltTphVww/V9O+qf//IJNVB1G9ows40ppLPrs1mzo7+Z6BWOpE1LxOoOoN7b5jtDBaZnLMJ/BaQDc7hy9VQU1Cl8aUGLEomdy70iAARJJJM7WEFUnxkg6jVJdwfF0KFOpyt7nC4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fypZouky; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-7490702fc7cso3095137b3a.1;
-        Mon, 21 Jul 2025 18:40:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753148455; x=1753753255; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=guAQVHgNFsnXVgjuX+YcMM52ay1Yzole51FqU6vTCMo=;
-        b=fypZoukyGsGjrMmlpOiKpIyDekcP+99M2/jj7M7waiz9/X7EEcBHRIzOs+2S9f+iFg
-         17MBJIiArHF7AkOrqWmc4vDIEkb+VoLFToGYeYEhcgaWexbSPsKoKS4M+MIGqE0Y1gnt
-         yuEGz5UZHoINteutk7+Bu9iSdPFiYsYwc1lUBLDIMDf2Srd8yaGGwBb/QPk3x4WBtAme
-         +eSiIxk7UR0a3chacWmM15KH3zjWDKc7/M+pW0BXmagsx5iKj+oSfOjzNMM/yzPM5o6v
-         W4fvKyDB+ykcxWeFKh5K3dI0N02ouSMScCkt/u4EiuHUgHkSIBVdrT2GSP+vLm3r/p8v
-         Vx8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753148455; x=1753753255;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=guAQVHgNFsnXVgjuX+YcMM52ay1Yzole51FqU6vTCMo=;
-        b=Zmq9jbWoNh7+W1b5QK6tUN9VOEgPcv0whLHVWikTJD7JPlY+hpSpHOIvHbJ2QL7/Pf
-         DXL228Eqm212pghF3rvpFjql81mCNOVj4JiF5M51IMvJC2AgZKBu/LIjh+krfoS+JqVZ
-         XbrXk3Sn2iIVGZTj3IcpjaTlcvLdCYjjJw2hXUTLCBY/JYp+RUqkdnHXaTEmdh/rc5sx
-         bS/MfC05JdcphDJmeupmgsM2sZ96cub4rtDEjLtXzFqa4Aj6VEZkomhj9nYz0RQBk0L4
-         deHUg0T7Q/bNfq5YsZH4wRI0RL88X4cBur+jZxDXxJ4mw+moXB6cJdmIYC7x59zeVAz9
-         zq2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVaNGtQ3TCbQ7jh6qIIY/sLvKy92kgZiv1oot7wLk1jiT7O9P+DkzUBH7vpsmQpIhbdyKVFkadH@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBGEP3p0sijQdxc0Cz0LVgBurMpvzd+kX0n/YCMT+Rtfr8LXUe
-	fbf9lRtm8p7izbcUBCYEeZi9M4P/XY7t2IiS/fNeuobBrXMJFyZkBLeh
-X-Gm-Gg: ASbGncvaW8j7VN3NMGVAlF9dKe8i2VscdeW3XhN8nIwnlBrz+r8SaT/yBemCQLSJ3JD
-	geXzql6gCJ8seKo99d+EqD8J1cdsqPYCJW5yQmepsamoR9DcL2v5oGseD5RDJNhfG3PQr1D6VVw
-	81+Gp3ECVtWqshIb65Q79qoxr+Nl7/m1MJ99QqIijeucqTEAuKvp72e+XcDPjAeH8fyrm2SFrS4
-	BxbR1sGw3n/VaVML1PPhYGKOtJW45XB46+uAmqyc+kD0NW6WIlAF32YcWFkZYFGTEb0eF0VgZif
-	C20Bzytz3D/XNAxMsc+nqkv9Hulfcvxp7RcsKLkyZZ1+Zz5mBaKI0M5mNNfwOEv2Kw7YDR31ym7
-	vpMKwpyopG9w06NL2vijtVAkdYPlEhPxqQPtpejHitlTkGQyMmOHQqj5fxgg=
-X-Google-Smtp-Source: AGHT+IE2VBTMdvtyEwgX+a0IEZtG4zffgz92TQCPj5wSen6lHXTE+sEYHZdNpPxoF9bMCZyg3CDdww==
-X-Received: by 2002:a05:6a00:1410:b0:748:f41d:69d2 with SMTP id d2e1a72fcca58-756e7acfa48mr33653521b3a.4.1753148455463;
-        Mon, 21 Jul 2025 18:40:55 -0700 (PDT)
-Received: from jpkobryn-fedora-PF5CFKNC.lan ([73.222.117.172])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-759cb15699esm6584089b3a.82.2025.07.21.18.40.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jul 2025 18:40:54 -0700 (PDT)
-From: JP Kobryn <inwardvessel@gmail.com>
-To: tj@kernel.org,
-	shakeel.butt@linux.dev,
-	mkoutny@suse.com,
-	yosryahmed@google.com,
-	hannes@cmpxchg.org,
-	akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH 5/5 cgroup/for-6.16-fixes] cgroup: break up the internal rstat init/exit logic by subsys and base
-Date: Mon, 21 Jul 2025 18:40:30 -0700
-Message-ID: <20250722014030.297537-6-inwardvessel@gmail.com>
+	s=arc-20240116; t=1753168371; c=relaxed/simple;
+	bh=utRuUgk1dUsACGv3NH/GunBOaa5y/TynhaYYqHE4lYA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=StQl7PXy1xcbvQ4izpyBAQlIfh9z6aZ3Gcv5pv/btGtq+xeR8c2/3TSf9S4WFd8kxzNgU6ozI0QyKeDKt6wgSOA0oYwo6pfwnT0+XVxo73Nsz5i9XjUO7oWTCncUtWKhDKji9Z4Cxwxq0rDFnoNfJfPJ9AQ0sllQVxCEwWBmgS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cdn77.com; spf=pass smtp.mailfrom=cdn77.com; dkim=pass (1024-bit key) header.d=cdn77.com header.i=@cdn77.com header.b=VqGXw/tv; arc=none smtp.client-ip=95.168.196.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cdn77.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cdn77.com
+DKIM-Signature: a=rsa-sha256; t=1753168360; x=1753773160; s=dkim2019; d=cdn77.com; c=relaxed/relaxed; v=1; bh=G9jb3st1obP8Gd9xyUJPV6c8IdsyENVMCWvoYCoWByc=; h=From:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Transfer-Encoding;
+   b=VqGXw/tvesgG2gtVuhtJPArWgMROI/mJTgqt4ysZzUMxE4eZ+kpBLHKXDksPjpIGJU681T4/wa9AiBHeyCX8D9opXNgKO/xIdL9B1hKZ0LifSKviL7bloYmI32xmTnXnrhhGi+ngUmgp6+8JQbLPG2kkczyvAUdI0u9CNZ6W6j4=
+Received: from osgiliath.superhosting.cz ([80.250.18.198])
+        by mail.sh.cz (14.1.0 build 16 ) with ASMTP (SSL) id 202507220912390266;
+        Tue, 22 Jul 2025 09:12:39 +0200
+From: Daniel Sedlak <daniel.sedlak@cdn77.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Neal Cardwell <ncardwell@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	David Ahern <dsahern@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>,
+	linux-mm@kvack.org,
+	netdev@vger.kernel.org,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	cgroups@vger.kernel.org
+Cc: Daniel Sedlak <daniel.sedlak@cdn77.com>,
+	Matyas Hurtik <matyas.hurtik@cdn77.com>
+Subject: [PATCH v3] memcg: expose socket memory pressure in a cgroup
+Date: Tue, 22 Jul 2025 09:11:46 +0200
+Message-ID: <20250722071146.48616-1-daniel.sedlak@cdn77.com>
 X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20250722014030.297537-1-inwardvessel@gmail.com>
-References: <20250722014030.297537-1-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -96,138 +68,91 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CTCH: RefID="str=0001.0A002102.687F39E7.007F,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0"; Spam="Unknown"; VOD="Unknown"
 
-The __css_rstat_{base_,}init/exit() functions have complexity in how they
-distinguish between base stats and formal subsystem stats. Eliminate this
-complexity by breaking up these functions and moving the logic for base and
-subsystem directly into their respective public API functions.
+This patch is a result of our long-standing debug sessions, where it all
+started as "networking is slow", and TCP network throughput suddenly
+dropped from tens of Gbps to few Mbps, and we could not see anything in
+the kernel log or netstat counters.
 
-Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+Currently, we have two memory pressure counters for TCP sockets [1],
+which we manipulate only when the memory pressure is signalled through
+the proto struct [2]. However, the memory pressure can also be signaled
+through the cgroup memory subsystem, which we do not reflect in the
+netstat counters. In the end, when the cgroup memory subsystem signals
+that it is under pressure, we silently reduce the advertised TCP window
+with tcp_adjust_rcv_ssthresh() to 4*advmss, which causes a significant
+throughput reduction.
+
+Keep in mind that when the cgroup memory subsystem signals the socket
+memory pressure, it affects all sockets used in that cgroup.
+
+This patch exposes a new file for each cgroup in sysfs which signals
+the cgroup socket memory pressure. The file is accessible in
+the following path.
+
+  /sys/fs/cgroup/**/<cgroup name>/memory.net.socket_pressure
+
+The output value is an integer matching the internal semantics of the
+struct mem_cgroup for socket_pressure. It is a periodic re-arm clock,
+representing the end of the said socket memory pressure, and once the
+clock is re-armed it is set to jiffies + HZ.
+
+Link: https://elixir.bootlin.com/linux/v6.15.4/source/include/uapi/linux/snmp.h#L231-L232 [1]
+Link: https://elixir.bootlin.com/linux/v6.15.4/source/include/net/sock.h#L1300-L1301 [2]
+Co-developed-by: Matyas Hurtik <matyas.hurtik@cdn77.com>
+Signed-off-by: Matyas Hurtik <matyas.hurtik@cdn77.com>
+Signed-off-by: Daniel Sedlak <daniel.sedlak@cdn77.com>
 ---
- kernel/cgroup/rstat.c | 72 ++++++++++++++++++-------------------------
- 1 file changed, 30 insertions(+), 42 deletions(-)
+Changes:
+v2 -> v3:
+- Expose the socket memory pressure on the cgroups instead of netstat
+- Split patch
+- Link: https://lore.kernel.org/netdev/20250714143613.42184-1-daniel.sedlak@cdn77.com/
 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index ba656a53136a..30fdf92a21a4 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -437,29 +437,15 @@ __bpf_kfunc void css_rstat_flush(struct cgroup_subsys_state *css)
- 	}
+v1 -> v2:
+- Add tracepoint
+- Link: https://lore.kernel.org/netdev/20250707105205.222558-1-daniel.sedlak@cdn77.com/
+
+
+ mm/memcontrol.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 902da8a9c643..8e8808fb2d7a 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4647,6 +4647,15 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+ 	return nbytes;
  }
  
--static int __css_rstat_init(struct cgroup_subsys_state *css, bool is_self)
-+int css_rstat_init(struct cgroup_subsys_state *css)
- {
--	struct cgroup *cgrp = css->cgroup;
- 	int cpu;
- 
--	if (is_self) {
--		/* the root cgrp has rstat_base_cpu preallocated */
--		if (!cgrp->rstat_base_cpu) {
--			cgrp->rstat_base_cpu = alloc_percpu(struct cgroup_rstat_base_cpu);
--			if (!cgrp->rstat_base_cpu)
--				return -ENOMEM;
--		}
--	}
--
- 	/* the root cgrp's self css has rstat_cpu preallocated */
- 	if (!css->rstat_cpu) {
- 		css->rstat_cpu = alloc_percpu(struct css_rstat_cpu);
--		if (!css->rstat_cpu) {
--			if (is_self)
--				free_percpu(cgrp->rstat_base_cpu);
--
-+		if (!css->rstat_cpu)
- 			return -ENOMEM;
--		}
- 	}
- 
- 	/* ->updated_children list is self terminated */
-@@ -467,19 +453,12 @@ static int __css_rstat_init(struct cgroup_subsys_state *css, bool is_self)
- 		struct css_rstat_cpu *rstatc = css_rstat_cpu(css, cpu);
- 
- 		rstatc->updated_children = css;
--
--		if (is_self) {
--			struct cgroup_rstat_base_cpu *rstatbc;
--
--			rstatbc = cgroup_rstat_base_cpu(cgrp, cpu);
--			u64_stats_init(&rstatbc->bsync);
--		}
- 	}
- 
- 	return 0;
- }
- 
--static void __css_rstat_exit(struct cgroup_subsys_state *css, bool is_self)
-+void css_rstat_exit(struct cgroup_subsys_state *css)
- {
- 	int cpu;
- 
-@@ -494,35 +473,44 @@ static void __css_rstat_exit(struct cgroup_subsys_state *css, bool is_self)
- 			return;
- 	}
- 
--	if (is_self) {
--		struct cgroup *cgrp = css->cgroup;
--
--		free_percpu(cgrp->rstat_base_cpu);
--		cgrp->rstat_base_cpu = NULL;
--	}
--
- 	free_percpu(css->rstat_cpu);
- 	css->rstat_cpu = NULL;
- }
- 
--int css_rstat_init(struct cgroup_subsys_state *css)
-+int cgroup_rstat_base_init(struct cgroup *cgrp)
- {
--	return __css_rstat_init(css, false);
--}
-+	int ret, cpu;
- 
--void css_rstat_exit(struct cgroup_subsys_state *css)
--{
--	return __css_rstat_exit(css, false);
--}
-+	/* the root cgrp has rstat_base_cpu preallocated */
-+	if (!cgrp->rstat_base_cpu) {
-+		cgrp->rstat_base_cpu = alloc_percpu(struct cgroup_rstat_base_cpu);
-+		if (!cgrp->rstat_base_cpu)
-+			return -ENOMEM;
-+	}
- 
--int cgroup_rstat_base_init(struct cgroup *cgrp)
--{
--	return __css_rstat_init(&cgrp->self, true);
-+	ret = css_rstat_init(&cgrp->self);
-+	if (ret) {
-+		free_percpu(cgrp->rstat_base_cpu);
-+		return ret;
-+	}
++static int memory_socket_pressure_show(struct seq_file *m, void *v)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
 +
-+	/* ->updated_children list is self terminated */
-+	for_each_possible_cpu(cpu) {
-+		struct cgroup_rstat_base_cpu *rstatbc;
++	seq_printf(m, "%lu\n", READ_ONCE(memcg->socket_pressure));
 +
-+		rstatbc = cgroup_rstat_base_cpu(cgrp, cpu);
-+		u64_stats_init(&rstatbc->bsync);
-+	}
++	return 0;
++}
 +
-+	return ret;
- }
+ static struct cftype memory_files[] = {
+ 	{
+ 		.name = "current",
+@@ -4718,6 +4727,11 @@ static struct cftype memory_files[] = {
+ 		.flags = CFTYPE_NS_DELEGATABLE,
+ 		.write = memory_reclaim,
+ 	},
++	{
++		.name = "net.socket_pressure",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.seq_show = memory_socket_pressure_show,
++	},
+ 	{ }	/* terminate */
+ };
  
- void cgroup_rstat_base_exit(struct cgroup *cgrp)
- {
--	__css_rstat_exit(&cgrp->self, true);
-+	css_rstat_exit(&cgrp->self);
-+
-+	free_percpu(cgrp->rstat_base_cpu);
-+	cgrp->rstat_base_cpu = NULL;
- }
- 
- /**
+
+base-commit: e96ee511c906c59b7c4e6efd9d9b33917730e000
 -- 
-2.47.1
+2.39.5
 
 
