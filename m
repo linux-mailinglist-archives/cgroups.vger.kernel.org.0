@@ -1,76 +1,78 @@
-Return-Path: <cgroups+bounces-8811-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8812-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBB8FB0CF2E
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 03:40:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D58CFB0CF30
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 03:41:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35C1D3B46ED
-	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 01:40:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 825471C211BD
+	for <lists+cgroups@lfdr.de>; Tue, 22 Jul 2025 01:41:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 113C91A83E4;
-	Tue, 22 Jul 2025 01:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC6831C1AB4;
+	Tue, 22 Jul 2025 01:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I9XvHgFH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gfY07OaC"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302172E370E;
-	Tue, 22 Jul 2025 01:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6801A76D4;
+	Tue, 22 Jul 2025 01:40:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753148448; cv=none; b=iJcM+GN4+ZSa7o0aI06JaKr8HCpxOOtClMvuZWDCENeqaYYhYVgcQomhn90uDSeObNcVKx7KYWeZ+mx8QtNSMfxkfIu9FE5B/B/G16IhRbF/B2UvlzyKcx6ue4WxGPrMK3/dsTNK8Ll27x5WmtSHhz1EYTUCVB9q91ESFtjw3xA=
+	t=1753148450; cv=none; b=TrKZkLDVX9xmvIYGiiex/Ze9MfoVWTZQlaamTMRKpyxd2y+1JLQKUSg96TzLilj81dL0wC2Y5Hysr4T/Mvm1c62WlWgprJPX3DrCwyuIunLwWM6m1Y0cWON5mouFRpVlKFUxLRzHzzxHQ+4qs4vl+DQvVu69agX2QsQX2iSnrw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753148448; c=relaxed/simple;
-	bh=13RPCAsLtI9nm4MyBJcFasXryCJqgVO4pE7KY5hUjOc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TtHvjKI8Z0xvalDRwTjlZBPpstvl3SOy3fUpfo/KimchkrVuTpIMu/ykYY0HJwTgHb3zwMr+VL/yu+0JVSD3s1FR0oYh/cI7blwhqaCek+YaHSsJYinjXo72TL//F8r1BhMZfwFFP9wP12jnHx/2OS04jpgdnMptoSZTSUHvOi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I9XvHgFH; arc=none smtp.client-ip=209.85.210.172
+	s=arc-20240116; t=1753148450; c=relaxed/simple;
+	bh=3hu7wHkhpX+aYHmMAybjtrvkJSA+unVqx8yFgpVZLSc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cozuaLxNbq9OU+tyJr938VeQ/aVuOJghT1DccPggRGFbG67v+UbdkJeidoNe4rGG4/HD46WeIvGBpcR0qEJRB286mNPSyHcAxFfMk8AeesbYCSXZ709lTHo5CaBdbJAe7cZPrfDySF64kYX5kxPZB6pKVwYb1YigdhARFph4fKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gfY07OaC; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-74b54cead6cso3161365b3a.1;
-        Mon, 21 Jul 2025 18:40:46 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-74b52bf417cso3257057b3a.0;
+        Mon, 21 Jul 2025 18:40:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753148446; x=1753753246; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V0pf3DydH/ONPr9aS0eItlaO+S5/eq/f/rOH4YkGbpI=;
-        b=I9XvHgFHLrb+brThEEuDSbQHSuyfa7I26mB62xLEoaHryckX2m0AgnLgUaCxfv4424
-         +mh7YWKcSXaKi6k1pB7w1LH3LeSHONLCg6FM3Q8qaT9MYUJUZ0edVPo4mjikP/0u3mQ0
-         4RCX1mrQhBwjKDzrEbwb4oyzEoZXPD2YUBw4g6dF5qBDbjTll6fdG01ZCPWoTxWipJB3
-         iP2CNm8n77wlFfIPj+MHpGZDZU0q0uDdsp2XcGS78OKjC0Jbd3XhUuk44SDx7omwBab0
-         9J8e1YBnp+pRUReQcEgmQimaHs5RIvAFWjCsIEnQyHnx+0G13Ij5NIHixhzxO6NyqfB8
-         hcGA==
+        d=gmail.com; s=20230601; t=1753148448; x=1753753248; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cpioRhlrYEnhflNoi/6xqIajRAkPUX1YjkOJ/I3fK4E=;
+        b=gfY07OaCl4Jfq+sJVAaoKdzNmBSUqB25rHwvb6ShFuz/HURClOGrW702OhhoiN2zGn
+         NUCNBgwps1mTCnpUidx3Ws6fTpXwaxEkFrm6mWQMVyO8/CZelknoLU5KstgnjYuUpPFf
+         uwuTuSNZH9OCkn9+/OtdB3SzNbKR54WZWoMzyyM1n3Pp/xekHjde/w0PPsdz6QHBf4um
+         kvmJLL3jSMjDpvDtemjzV49FOd3Jil5blNGsRPoArxjYE8Id2esBBkftAWXXZt/3SX3/
+         eJ+qlDE4HLD7FLCiNQyWHs2T2zk1ZA3Mj5bhXcN5UXbL5cvTc96orytxir0mNP4d5n6T
+         3qBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753148446; x=1753753246;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V0pf3DydH/ONPr9aS0eItlaO+S5/eq/f/rOH4YkGbpI=;
-        b=V80Eteby/HpcMSOZLPd4gqeim5KEi9c+wTv1AlkKEDauMVN1K19MtESVS5a8j7GMaB
-         H3666tWioNh1GejuabsA5R0zO/HOjAr7YUL6iP1lNulKynApHAy1Vg39MSL0g994Cgb4
-         SRG4UHgYtA169oYU426TIFF/DE6vZK9+JZu5fOP154Fe63BtsYPGfQu8qscuQPI7t/sC
-         HFE7IeISFiuZRDab1G4ePAIcO1qfVEAtHO81nkgznnSUwoNCp+ZxQ0avJXxuPNChGX4y
-         DbxF9bNd1dM0jUVKiIll1g9tu0dIGRydXrJgkyKBW0YEMe72Gm8UbEMlIBgPpjEqjcwP
-         DNug==
-X-Forwarded-Encrypted: i=1; AJvYcCVPubCEBTf9EOs1BholT85rj+bScnlMvqnvKZHoCw0lBngvloGliFUZa+5W/t4nzjX1YAbiROIS@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZ6G2WfagIj0jlYVtekKxJXYNHd9QfR/00S3l6+R+UPMyCrncz
-	viFYHP1e2ksvnoRIMhZxEAnhU2zKhfl6gAZG/JAahkDWK/9+KoFH0Za8
-X-Gm-Gg: ASbGncvZJmxxetwuCxVZ2fkL/UqTL1F0qaI9kLgTfhv1IW2xrO99JxzjBQREjZwZd2j
-	XeztxBWgwvOx3g0lKzsY0UqYnqYlBTFT6g88/6FEml2hykTH+rd3uOwwkk6mm9usPo9yoJ57pj6
-	OBQzZw1mieGYdW1Axfe/Upvueom+FDWsL4GjYSYPnC+U3V6L5H6qzep2sliXeQOtP0CU8mGolI8
-	R+d4MKA+yQxxkb+YmQDcDCHCHrI+nhdCQw6XS9HApz8JEX+kZAuQfuzu9tsyNvq8gVVjnx/Hpgi
-	Q9f8WzXun8YZU/XE9URoXCKxdgvUudpDYlQEkyOj+F5lbt7DxPy3t6YCqr+6jSvhgXwVC9bKgfo
-	chdL9fmraraGlhO6+l0hE9TeZye5T1Va3ooSndoL1fzCfXUszpkr78covBNI=
-X-Google-Smtp-Source: AGHT+IE2GBejtqme21eN4aC3GHAnCJumMUySWozFtjpYk9U01dhgASg60k/B+QCFDlzVBQs0353iIg==
-X-Received: by 2002:a05:6a00:aa89:b0:75a:c415:7804 with SMTP id d2e1a72fcca58-75ac41578c3mr19692983b3a.8.1753148446253;
-        Mon, 21 Jul 2025 18:40:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1753148448; x=1753753248;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cpioRhlrYEnhflNoi/6xqIajRAkPUX1YjkOJ/I3fK4E=;
+        b=ZUaxnnRohfX0DBW9r3I79I91VTGuGpZa9wGBVB9qvUOp9JzSOWE+/M0Sl8FSTAv2fn
+         W4ApHxPSajeihT0LJ95eHH9IU5X3kSHSI5f6CYlGvTKdBVWVqCsiZXEjd2mRKndmOmBe
+         bvbamo7dyUZDWpzAATefBCj8UG+ow9XtcUxGTNstPE7S8D75+XFUxXT4ihZGyYqBMtUb
+         H3CGZsCJLrmpNlTVpyZ7s9mFFeMUzbqZGVBBiE1RYsdQeu5KJuRmjGoBOMkh/r/2ocmS
+         cMtsT+XIoui6BYah/3biWFt2Srt9M9m5Fs6BfchZ4iGBWEK9CjsDAA+TfJM3On2VyVYV
+         v5Bw==
+X-Forwarded-Encrypted: i=1; AJvYcCWcN0AmzgKC0wpleDdb371fKBnkPXm+YWIg9fpZ+IqOU5ZgJu5Cm6n4nyQlJAVVvHWbN+9+M3DJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YzP/l6iDyWQAQ3A4yLwACjTrOSc6MBbnoVOaMUMbmlE5Cq8nG9G
+	xGvICveOD/ctds2IOEl09cq7PFRD+HP9yC5kebbdoW5/uX2npQU60aEq
+X-Gm-Gg: ASbGncv91jg8vwcjH8z/LwcgXFNvwnpfUXS0PW9gWqVOg1L2cNTGaXyUPIfCa9yLBoO
+	uBHkoq49rQBqP/2s1he7aNR33/3RDHIqQSZ1ekaJwbpCih7XAqfGjcuwKTbOQ2uVZVW4zUZiusm
+	xMWWH12lmXRsR+KpWUrw3Ygb3l5jhaqJKaJmR6gKlyumZJN3sVbcbOXkA7cQwVUsmp0e8hya3He
+	5kMzW+MpCqlfOkfGDAkesWKP2CglV6XqBXP0fDq9ZxCjMTj2+xfWmdmT/u2EI30ZBTBFvAbpW4i
+	o0uj32FTDmJ2WRgKjwnJhkN3ObxFjCsM099Wgv2nAW9/0KzcUtvkGhfzSZl504UZNsNA9amNqr4
+	hd0Q66GZFOaw7p251CBNNzV3IbN/ANBhO7ZpSblQvi7TPKaZQ
+X-Google-Smtp-Source: AGHT+IH5hk/c/I6OKPgLS9u4RoARnHXIWja8vD1Mb7zDk6Fp0Qi0jcGgkmA52GvBYzfRi6ilZZv9wg==
+X-Received: by 2002:a05:6a00:2387:b0:746:3025:6576 with SMTP id d2e1a72fcca58-75723d7d236mr28114641b3a.14.1753148448131;
+        Mon, 21 Jul 2025 18:40:48 -0700 (PDT)
 Received: from jpkobryn-fedora-PF5CFKNC.lan ([73.222.117.172])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-759cb15699esm6584089b3a.82.2025.07.21.18.40.44
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-759cb15699esm6584089b3a.82.2025.07.21.18.40.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jul 2025 18:40:45 -0700 (PDT)
+        Mon, 21 Jul 2025 18:40:47 -0700 (PDT)
 From: JP Kobryn <inwardvessel@gmail.com>
 To: tj@kernel.org,
 	shakeel.butt@linux.dev,
@@ -81,10 +83,12 @@ To: tj@kernel.org,
 Cc: linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH 0/5 cgroup/for-6.16-fixes] harden css_create() for safe placement of call to css_rstat_init()
-Date: Mon, 21 Jul 2025 18:40:25 -0700
-Message-ID: <20250722014030.297537-1-inwardvessel@gmail.com>
+Subject: [PATCH 1/5 cgroup/for-6.16-fixes] cgroup: add exclusive css rstat init/exit api for base stats
+Date: Mon, 21 Jul 2025 18:40:26 -0700
+Message-ID: <20250722014030.297537-2-inwardvessel@gmail.com>
 X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20250722014030.297537-1-inwardvessel@gmail.com>
+References: <20250722014030.297537-1-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -93,101 +97,159 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Within css_create() there are several error paths that lead to async
-cleanup of a given css. An warning was found [0] which appears to be the
-result of calling css_rstat_exit() on this cleanup path with a css having
-uninitialized rstat objects. This series makes adjustments to provide up a
-place in css_create() where css_rstat_init() can both 1) fail gracefully
-and 2) guarantee completion before async cleanup leading to
-css_rstat_exit() occurs.
+It is known at call sites of css_rstat_init/exit() whether the given css is
+associated with the base stats or a formal subsystem. Instead of passing
+&cgrp->self or css to a shared API, offer an additional init/exit API pair
+for exclusive use with the base stats.
 
-The core change is splitting init_and_link_css() into two separate
-functions and calling css_rstat_init() between them. The reason for this is
-that because of the refcount incrementing that occurs within, this function
-puts a constraint on the error handling that follows. See excerpt below:
+Make use of this new API to make existing code more readable and also to
+prepare for refactoring the complex css rstat init/exit logic.
 
-css_create(...)
-{
-	...
-	init_and_link_css(css, ...);
-	/* any subsequent error needs async css cleanup */
+Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+---
+ kernel/cgroup/cgroup-internal.h |  2 ++
+ kernel/cgroup/cgroup.c          | 11 ++++++-----
+ kernel/cgroup/rstat.c           | 27 +++++++++++++++++++++++----
+ 3 files changed, 31 insertions(+), 9 deletions(-)
 
-	err = percpu_ref_init(...);
-	if (err)
-		goto err_free_css;
-	err = cgroup_idr_alloc(...);
-	if (err)
-		goto err_free_css;
-	err = css_rstat_init(css, ...);
-	if (err)
-		goto err_free_css;
-	...
-err_free_css:
-	INIT_RCU_WORK(&css->destroy_rwork, css_free_rwork_fn);
-	queue_rcu_work(cgroup_destroy_wq, &css->destroy_rwork);
-	return ERR_PTR(err);
-}
-
-If any of the three goto jumps are taken, async cleanup will begin and
-css_rstat_exit() will be invoked. But since css_rstat_init() would not have
-succeeded, the warning will eventually be reached.
-
-In this series, the code above changes to resemble something like this:
-
-css_create(...)
-{
-	...
-	init_css(css);
-	if (css->css_rstat_flush) {
-		err = css_rstat_init(css)
-		if (err) {
-			ss->css_free(css);
-			return ERR_PTR(err);
-		}
-	}
-	link_css(css, ...);
-	...
-}
-
-There was some refactoring done to eliminate self-imposed constraints on
-where css_rstat_init() may be called. For example, one previous constraint
-was that css_rstat_init() could only be called after init_and_link_css()
-since that is where it gets its subsystem and cgroup fields set, and
-css->ss was used to determine how to allocate rstat (base or subsystem).
-The changes in this series remove this constraint by eliminating the
-dependency of subsystem/cgroup information in rstat init/exit. The
-resulting init/exit routines can work exclusively on rstat entities and not
-be concerned with other types of entities.
-
-The refactoring may also improve maintainability. Existing code like this:
-
-css_rstat_init(&cgrp->self); /* for base state */
-css_rstat_init(css); /* for subsystems */
-
-... will now look like this:
-
-cgroup_rstat_base_init(cgrp); /* for base stats */
-css_rstat_init(css); /* for subsystems */
-
-Finally, the number of nested conditionals in two functions above has been
-reduced compared to the amount previously in css_rstat_init/exit(). This
-could help improve code readability.
-
-[0] https://lore.kernel.org/all/684c5802.a00a0220.279073.0016.GAE@google.com/
-
-JP Kobryn (5):
-  cgroup: add exclusive css rstat init/exit api for base stats
-  cgroup: check for rstat flush callback at css rstat init/exit call
-    sites
-  cgroup: split init_and_link_css()
-  cgroup: initialize css rstat before linking to cgroups in css_create()
-  cgroup: break up the internal rstat init/exit logic by subsys and base
-
- kernel/cgroup/cgroup-internal.h |  2 +
- kernel/cgroup/cgroup.c          | 57 ++++++++++++++++++----------
- kernel/cgroup/rstat.c           | 67 +++++++++++++++++----------------
- 3 files changed, 74 insertions(+), 52 deletions(-)
-
+diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+index b14e61c64a34..24fca840bf1c 100644
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -270,6 +270,8 @@ int cgroup_task_count(const struct cgroup *cgrp);
+ /*
+  * rstat.c
+  */
++int cgroup_rstat_base_init(struct cgroup *cgrp);
++void cgroup_rstat_base_exit(struct cgroup *cgrp);
+ int css_rstat_init(struct cgroup_subsys_state *css);
+ void css_rstat_exit(struct cgroup_subsys_state *css);
+ int ss_rstat_init(struct cgroup_subsys *ss);
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index a723b7dc6e4e..d684d33236b8 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2149,7 +2149,7 @@ int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask)
+ 	if (ret)
+ 		goto destroy_root;
+ 
+-	ret = css_rstat_init(&root_cgrp->self);
++	ret = cgroup_rstat_base_init(root_cgrp);
+ 	if (ret)
+ 		goto destroy_root;
+ 
+@@ -2190,7 +2190,7 @@ int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask)
+ 	goto out;
+ 
+ exit_stats:
+-	css_rstat_exit(&root_cgrp->self);
++	cgroup_rstat_base_exit(root_cgrp);
+ destroy_root:
+ 	kernfs_destroy_root(root->kf_root);
+ 	root->kf_root = NULL;
+@@ -5446,13 +5446,13 @@ static void css_free_rwork_fn(struct work_struct *work)
+ 	struct cgroup *cgrp = css->cgroup;
+ 
+ 	percpu_ref_exit(&css->refcnt);
+-	css_rstat_exit(css);
+ 
+ 	if (!css_is_self(css)) {
+ 		/* css free path */
+ 		struct cgroup_subsys_state *parent = css->parent;
+ 		int id = css->id;
+ 
++		css_rstat_exit(css);
+ 		ss->css_free(css);
+ 		cgroup_idr_remove(&ss->css_idr, id);
+ 		cgroup_put(cgrp);
+@@ -5477,6 +5477,7 @@ static void css_free_rwork_fn(struct work_struct *work)
+ 			cgroup_put(cgroup_parent(cgrp));
+ 			kernfs_put(cgrp->kn);
+ 			psi_cgroup_free(cgrp);
++			cgroup_rstat_base_exit(cgrp);
+ 			kfree(cgrp);
+ 		} else {
+ 			/*
+@@ -5742,7 +5743,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+ 	 * Now that init_cgroup_housekeeping() has been called and cgrp->self
+ 	 * is setup, it is safe to perform rstat initialization on it.
+ 	 */
+-	ret = css_rstat_init(&cgrp->self);
++	ret = cgroup_rstat_base_init(cgrp);
+ 	if (ret)
+ 		goto out_kernfs_remove;
+ 
+@@ -5818,7 +5819,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+ out_psi_free:
+ 	psi_cgroup_free(cgrp);
+ out_stat_exit:
+-	css_rstat_exit(&cgrp->self);
++	cgroup_rstat_base_exit(cgrp);
+ out_kernfs_remove:
+ 	kernfs_remove(cgrp->kn);
+ out_cancel_ref:
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index cbeaa499a96a..8c3cb4a989ad 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -437,11 +437,10 @@ __bpf_kfunc void css_rstat_flush(struct cgroup_subsys_state *css)
+ 	}
+ }
+ 
+-int css_rstat_init(struct cgroup_subsys_state *css)
++static int __css_rstat_init(struct cgroup_subsys_state *css, bool is_self)
+ {
+ 	struct cgroup *cgrp = css->cgroup;
+ 	int cpu;
+-	bool is_self = css_is_self(css);
+ 
+ 	if (is_self) {
+ 		/* the root cgrp has rstat_base_cpu preallocated */
+@@ -481,7 +480,7 @@ int css_rstat_init(struct cgroup_subsys_state *css)
+ 	return 0;
+ }
+ 
+-void css_rstat_exit(struct cgroup_subsys_state *css)
++static void __css_rstat_exit(struct cgroup_subsys_state *css, bool is_self)
+ {
+ 	int cpu;
+ 
+@@ -499,7 +498,7 @@ void css_rstat_exit(struct cgroup_subsys_state *css)
+ 			return;
+ 	}
+ 
+-	if (css_is_self(css)) {
++	if (is_self) {
+ 		struct cgroup *cgrp = css->cgroup;
+ 
+ 		free_percpu(cgrp->rstat_base_cpu);
+@@ -510,6 +509,26 @@ void css_rstat_exit(struct cgroup_subsys_state *css)
+ 	css->rstat_cpu = NULL;
+ }
+ 
++int css_rstat_init(struct cgroup_subsys_state *css)
++{
++	return __css_rstat_init(css, false);
++}
++
++void css_rstat_exit(struct cgroup_subsys_state *css)
++{
++	return __css_rstat_exit(css, false);
++}
++
++int cgroup_rstat_base_init(struct cgroup *cgrp)
++{
++	return __css_rstat_init(&cgrp->self, true);
++}
++
++void cgroup_rstat_base_exit(struct cgroup *cgrp)
++{
++	__css_rstat_exit(&cgrp->self, true);
++}
++
+ /**
+  * ss_rstat_init - subsystem-specific rstat initialization
+  * @ss: target subsystem
 -- 
 2.47.1
 
