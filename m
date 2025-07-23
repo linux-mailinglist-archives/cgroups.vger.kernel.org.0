@@ -1,220 +1,323 @@
-Return-Path: <cgroups+bounces-8887-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8888-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C1FBB0E887
-	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 04:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A22B0E8B5
+	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 04:36:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5BFA3B48F7
-	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 02:17:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C19CFAA0FE3
+	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 02:35:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2937419AD48;
-	Wed, 23 Jul 2025 02:17:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BE91DF26E;
+	Wed, 23 Jul 2025 02:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TmHKFcRy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75CCB1C28E;
-	Wed, 23 Jul 2025 02:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7094A14F125
+	for <cgroups@vger.kernel.org>; Wed, 23 Jul 2025 02:36:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753237045; cv=none; b=Ok+01oHjZpzosXYK0sWwM/DvsDpYrQOQukWmqNGCDaL8798B778t61HnLJb7zrjKjKWx8MMgPI3hSDJvb6yFFkF0Tq88syzge9FVoPs7Cw6Hjsqsf8d1hj09sPEFc/8vGUY1VYCKoPZqyVUISWWLNBPro9m9Jwo55NWLUeOct/M=
+	t=1753238169; cv=none; b=pDLKeLOvZQ0g4Lsmi3Dke2NbWdK594BuZGmssLitcP1HXPuQPksJypshC+lEaTwBiwgnWuhdiSWxcp1xNQivRJPjBei9HCGREVU/VFMYEzKo4R7yxTxc/Sj+gmO8PQbvRjJycezcRmMcg0fhjvCesWD7OlCn1tCgdn08aUm/uVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753237045; c=relaxed/simple;
-	bh=L4JOIKNIJQWbAoqbdXDgLEpJKp0DTL4rUMWYGkezsv4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=cous75mXR46RuTvS+9ytPNqp4Ys+xildMjKKAEvAcZeFfv3dLCXsIh2hBZaal70cE13xVZP0/1o09yZZMjz0929T9gPPUTIb7JBKlY2xGux2F2BoZyttSmX2A2UrPHx6vV0lZsFDoVWwst0g7aqPCGYeeI0Gxh7k9VE16sb0F1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bmySw005NzYQtpy;
-	Wed, 23 Jul 2025 10:17:19 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id B0F961A172C;
-	Wed, 23 Jul 2025 10:17:18 +0800 (CST)
-Received: from [10.174.179.143] (unknown [10.174.179.143])
-	by APP4 (Coremail) with SMTP id gCh0CgD3chMsRoBoZF+1BA--.15135S3;
-	Wed, 23 Jul 2025 10:17:18 +0800 (CST)
-Subject: Re: [PATCH 4/6] elevator: factor elevator lock out of
- dispatch_request method
-To: Damien Le Moal <dlemoal@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>,
- hare@suse.de, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk
-Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- johnny.chenyi@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20250722072431.610354-1-yukuai1@huaweicloud.com>
- <20250722072431.610354-5-yukuai1@huaweicloud.com>
- <08c989bd-20d8-476c-af99-c9eb8065349d@kernel.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <cc6f72cb-3782-4426-57c2-4d54fc4f38f2@huaweicloud.com>
-Date: Wed, 23 Jul 2025 10:17:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+	s=arc-20240116; t=1753238169; c=relaxed/simple;
+	bh=M/4kD6413DMz6XJoOp3REQlYY8Xl9JVVZp6ylcL0uJY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uP9/pG0x6YKJ8Av2W4baYMj6cfdqvXeq/PML06aGX5beLzcWwqzDm6BbDnnIvHiyuGaxI3tqm55hQ1wqeoe8oYbLhxYdNUHQojnbWcrn+Otin1rjGw5v6Msu8F466g4OVaZEVai00jc3vZWImlcwEfH2KpATDQ5nyOFh3bjCwww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TmHKFcRy; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-3138b2f0249so4815955a91.2
+        for <cgroups@vger.kernel.org>; Tue, 22 Jul 2025 19:36:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1753238163; x=1753842963; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I6IlyFOsklORK9gDxVwJBZ59bc5C+izWBIvmcxqDgPc=;
+        b=TmHKFcRy5PEZxj9vqKQOsVOKIxbEl6kxtOFaJ7X047eYilQqTdT+sAse3YqTuJWQfX
+         Ca0p90HXgj+g+AX5nlAppqZHK19QyUpmRlbvypZz+z668hh6GSN4MIgTr3Ypm7j/J6N3
+         2P72gSmW6uEOnWHHhssUIzDy+Mlbx96NyxunZiYkWWCllqMhesrs6iF9vOnfSXj5fPLu
+         fJI+oxLnm7UUJcreErvxL9vxZvetx1Wo4JPdQB+VPoCykXLR4pzOjOw09zgwcXZWqR2+
+         lUOWL6mv9xUiSPIF4eRGFyZyZdfIN0xT6ce4LMOqoii5LJog4QQ30G9vOnC86qf0HlC5
+         MVww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753238163; x=1753842963;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I6IlyFOsklORK9gDxVwJBZ59bc5C+izWBIvmcxqDgPc=;
+        b=ZCz48kv0JM6eK2kTAUUAw8AHwj5Llyrhin8lRUeOY08zbdgL66YKVN9mQD5+2/+OlH
+         yl2N0pMbQ/zaST+TOUdek1Vc8Ma9Dj+bYD8/1Mjnq12pXpCf5w6P0MZQr4rN4iyVgNGB
+         ezGxJN9b3ruH5a4IQCgi5kSLEzm/ASxP21itT2lNK6+zVoVgKjK5C6L9ZS6Pqt5+6d+R
+         Kfhz2osJT0ScT31RPk1GLgyeD5HkAlRSh6/X2FrHokyDsxTOzM1GL2TNpN6lRNrQdWup
+         hTpbuDTg3xFEiEGEneSolzDvwOcavDyslbfdsegHnbPgexh54oDihhFYCRCsVCtS6WgW
+         5pvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXj0Rm4pjCNBrAnL/EQLdHrqVKYR9XH2Ut264kH8NUxNZjq58pSSmT2j6y6cw/lY+o7u+mfkvQY@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnJqg9sBRiYNdSCkZ6VbL75DG+m5nEsG3CC3AxWKcZCvYaqmBH
+	G6KsocfCg3hzF6ho7yP2GpmXI8AEv4mHOFYaPAfZtUyyHXkcz8aQ4WPluF0qOk8MM4b4344qY1x
+	UfZiE0sN2HhXn3CuKv2YnqmMjHrvYi3eqL5YCTMyJ
+X-Gm-Gg: ASbGnct51PMiLRSi7ki8KkbCTngNstJKy5EWq5W5VKou9yoBlHPiYfO2vNPXCrY98lO
+	Kwln2AAa31+uCBVhXmgjl4uUCFmQq7HB7+hfEizOQnQ7IeKNm09XTBJzes4OXE6lJRZAX7fBLvJ
+	SzG/zSs73kJ980nGefu5BcfStAYu4YQrjy7W3VdVGhjVC+CwXlv7SKy0laNDxQcmnvE1Au1yQSu
+	96wJssCt/ngJt2RdEkSkUm/plzS73f3MzRB6N1d
+X-Google-Smtp-Source: AGHT+IE/TvRzCIs9asOKjtXzPvSStPkY4vcjrq1vIuSRcDBkm4TXvsIuOsDApjUEP3e2xctvHjG7Ts5ac40QWu8hWJ0=
+X-Received: by 2002:a17:90a:e183:b0:316:d69d:49fb with SMTP id
+ 98e67ed59e1d1-31e5076a6f7mr2538202a91.14.1753238163400; Tue, 22 Jul 2025
+ 19:36:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <08c989bd-20d8-476c-af99-c9eb8065349d@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3chMsRoBoZF+1BA--.15135S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw1UJw47Gr1fJF45Jw4rAFb_yoWrur1DpF
-	48GF4aya10qF1jgF97uanxXr1ftw47Ar97GrnrKF4ftF9rXFn3GFn5tFyUZFWxZrn3CFsF
-	gr1jq3s3Zw12qaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBF14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUpwZcUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+References: <20250721203624.3807041-1-kuniyu@google.com> <20250721203624.3807041-14-kuniyu@google.com>
+ <z7kkbenhkndwyghwenwk6c4egq3ky4zl36qh3gfiflfynzzojv@qpcazlpe3l7b>
+ <CANn89iLg-VVWqbWvLg__Zz=HqHpQzk++61dbOyuazSah7kWcDg@mail.gmail.com>
+ <jc6z5d7d26zunaf6b4qtwegdoljz665jjcigb4glkb6hdy6ap2@2gn6s52s6vfw>
+ <CAAVpQUAJCLaOr7DnOH9op8ySFN_9Ky__easoV-6E=scpRaUiJQ@mail.gmail.com>
+ <p4fcser5zrjm4ut6lw4ejdr7gn2gejrlhy2u2btmhajiiheoax@ptacajypnvlw>
+ <CAAVpQUAk4F__D7xdWpt0SEE4WEM_-6V1P7DUw9TGaV=pxZ+tgw@mail.gmail.com>
+ <xjtbk6g2a3x26sqqrdxbm2vxgxmm3nfaryxlxwipwohsscg7qg@64ueif57zont>
+ <CAAVpQUAL09OGKZmf3HkjqqkknaytQ59EXozAVqJuwOZZucLR0Q@mail.gmail.com> <jmbszz4m7xkw7fzolpusjesbreaczmr4i64kynbs3zcoehrkpj@lwso5soc4dh3>
+In-Reply-To: <jmbszz4m7xkw7fzolpusjesbreaczmr4i64kynbs3zcoehrkpj@lwso5soc4dh3>
+From: Kuniyuki Iwashima <kuniyu@google.com>
+Date: Tue, 22 Jul 2025 19:35:52 -0700
+X-Gm-Features: Ac12FXwhtXeBUII0bX8ILz_qr1B1fIfpOOkBNseRwEy-StMeZ8GsbYQQA6nLq7M
+Message-ID: <CAAVpQUCv+CpKkX9Ryxa5ATG3CC0TGGE4EFeGt4Xnu+0kV7TMZg@mail.gmail.com>
+Subject: Re: [PATCH v1 net-next 13/13] net-memcg: Allow decoupling memcg from
+ global protocol memory accounting.
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Eric Dumazet <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Willem de Bruijn <willemb@google.com>, Matthieu Baerts <matttbe@kernel.org>, 
+	Mat Martineau <martineau@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Simon Horman <horms@kernel.org>, 
+	Geliang Tang <geliang@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
+	Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, mptcp@lists.linux.dev, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Tue, Jul 22, 2025 at 5:29=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
+>
+> On Tue, Jul 22, 2025 at 02:59:33PM -0700, Kuniyuki Iwashima wrote:
+> > On Tue, Jul 22, 2025 at 12:56=E2=80=AFPM Shakeel Butt <shakeel.butt@lin=
+ux.dev> wrote:
+> > >
+> > > On Tue, Jul 22, 2025 at 12:03:48PM -0700, Kuniyuki Iwashima wrote:
+> > > > On Tue, Jul 22, 2025 at 11:48=E2=80=AFAM Shakeel Butt <shakeel.butt=
+@linux.dev> wrote:
+> > > > >
+> > > > > On Tue, Jul 22, 2025 at 11:18:40AM -0700, Kuniyuki Iwashima wrote=
+:
+> > > > > > >
+> > > > > > > I expect this state of jobs with different network accounting=
+ config
+> > > > > > > running concurrently is temporary while the migrationg from o=
+ne to other
+> > > > > > > is happening. Please correct me if I am wrong.
+> > > > > >
+> > > > > > We need to migrate workload gradually and the system-wide confi=
+g
+> > > > > > does not work at all.  AFAIU, there are already years of effort=
+ spent
+> > > > > > on the migration but it's not yet completed at Google.  So, I d=
+on't think
+> > > > > > the need is temporary.
+> > > > > >
+> > > > >
+> > > > > From what I remembered shared borg had completely moved to memcg
+> > > > > accounting of network memory (with sys container as an exception)=
+ years
+> > > > > ago. Did something change there?
+> > > >
+> > > > AFAICS, there are some workloads that opted out from memcg and
+> > > > consumed too much tcp memory due to tcp_mem=3DUINT_MAX, triggering
+> > > > OOM and disrupting other workloads.
+> > > >
+> > >
+> > > What were the reasons behind opting out? We should fix those
+> > > instead of a permanent opt-out option.
+> > >
+>
+> Any response to the above?
 
-在 2025/07/23 9:59, Damien Le Moal 写道:
-> On 7/22/25 4:24 PM, Yu Kuai wrote:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Currently, both mq-deadline and bfq have global spin lock that will be
->> grabbed inside elevator methods like dispatch_request, insert_requests,
->> and bio_merge. And the global lock is the main reason mq-deadline and
->> bfq can't scale very well.
->>
->> For dispatch_request method, current behavior is dispatching one request at
-> 
-> s/current/the current
-> 
->> a time. In the case of multiple dispatching contexts, this behavior will
->> cause huge lock contention and messing up the requests dispatching
-> 
-> s/messing up/change
-> 
->> order. And folloiwng patches will support requests batch dispatching to
-> 
-> s/folloiwng/following
-> 
->> fix thoses problems.
->>
->> While dispatching request, blk_mq_get_disatpch_budget() and
->> blk_mq_get_driver_tag() must be called, and they are not ready to be
->> called inside elevator methods, hence introduce a new method like
->> dispatch_requests is not possible.
->>
->> In conclusion, this patch factor the global lock out of dispatch_request
->> method, and following patches will support request batch dispatch by
->> calling the methods multiple time while holding the lock.
-> 
-> You are creating a bisect problem here. This patch breaks the schedulers
-> dispatch atomicity without the changes to the calls to the elevator methods in
-> the block layer.
+I'm just checking with internal folks, not sure if I will follow up on
+this though, see below.
 
-I'm not sure why there will be bisect problem, I think git checkout to
-any patch in this set should work just fine. Can you please explain a
-bit more?
-> 
-> So maybe reorganize these patches to have the block layer changes first, and
-> move patch 1 and 3 after these to switch mq-deadline and bfq to using the
-> higher level lock correctly, removing the locking from bfq_dispatch_request()
-> and dd_dispatch_request().
+>
+> > > > >
+> > > > > > >
+> > > > > > > My main concern with the memcg knob is that it is permanent a=
+nd it
+> > > > > > > requires a hierarchical semantics. No need to add a permanent=
+ interface
+> > > > > > > for a temporary need and I don't see a clear hierarchical sem=
+antic for
+> > > > > > > this interface.
+> > > > > >
+> > > > > > I don't see merits of having hierarchical semantics for this kn=
+ob.
+> > > > > > Regardless of this knob, hierarchical semantics is guaranteed
+> > > > > > by other knobs.  I think such semantics for this knob just comp=
+licates
+> > > > > > the code with no gain.
+> > > > > >
+> > > > >
+> > > > > Cgroup interfaces are hierarchical and we want to keep it that wa=
+y.
+> > > > > Putting non-hierarchical interfaces just makes configuration and =
+setup
+> > > > > hard to reason about.
+> > > >
+> > > > Actually, I tried that way in the initial draft version, but even i=
+f the
+> > > > parent's knob is 1 and child one is 0, a harmful scenario didn't co=
+me
+> > > > to my mind.
+> > > >
+> > >
+> > > It is not just about harmful scenario but more about clear semantics.
+> > > Check memory.zswap.writeback semantics.
+> >
+> > zswap checks all parent cgroups when evaluating the knob, but
+> > this is not an option for the networking fast path as we cannot
+> > check them for every skb, which will degrade the performance.
+>
+> That's an implementation detail and you can definitely optimize it. One
+> possible way might be caching the state in socket at creation time which
+> puts some restrictions like to change the config, workload needs to be
+> restarted.
+>
+> >
+> > Also, we don't track which sockets were created with the knob
+> > enabled and how many such sockets are still left under the cgroup,
+> > there is no way to keep options consistent throughout the hierarchy
+> > and no need to try hard to make the option pretend to be consistent
+> > if there's no real issue.
+> >
+> >
+> > >
+> > > >
+> > > > >
+> > > > > >
+> > > > > > >
+> > > > > > > I am wondering if alternative approches for per-workload sett=
+ings are
+> > > > > > > explore starting with BPF.
+> > > > > > >
+> > > > >
+> > > > > Any response on the above? Any alternative approaches explored?
+> > > >
+> > > > Do you mean flagging each socket by BPF at cgroup hook ?
+> > >
+> > > Not sure. Will it not be very similar to your current approach? Each
+> > > socket is associated with a memcg and the at the place where you need=
+ to
+> > > check which accounting method to use, just check that memcg setting i=
+n
+> > > bpf and you can cache the result in socket as well.
+> >
+> > The socket pointer is not writable by default, thus we need to add
+> > a bpf helper or kfunc just for flipping a single bit.  As said, this is
+> > overkill, and per-memcg knob is much simpler.
+> >
+>
+> Your simple solution is exposing a stable permanent user facing API
+> which I suspect is temporary situation. Let's discuss it at the end.
+>
+> >
+> > >
+> > > >
+> > > > I think it's overkill and we don't need such finer granularity.
+> > > >
+> > > > Also it sounds way too hacky to use BPF to correct the weird
+> > > > behaviour from day0.
+> > >
+> > > What weird behavior? Two accounting mechanisms. Yes I agree but memcg=
+s
+> > > with different accounting mechanisms concurrently is also weird.
+> >
+> > Not that weird given the root cgroup does not allocate sk->sk_memcg
+> > and are subject to the global tcp memory accounting.  We already have
+> > a mixed set of memcgs.
+>
+> Running workloads in root cgroup is not normal and comes with a warning
+> of no isolation provided.
+>
+> I looked at the patch again to understand the modes you are introducing.
+> Initially, I thought the series introduced multiple modes, including an
+> option to exclude network memory from memcg accounting. However, if I
+> understand correctly, that is not the case=E2=80=94the opt-out applies on=
+ly to
+> the global TCP/UDP accounting. That=E2=80=99s a relief, and I apologize f=
+or the
+> misunderstanding.
+>
+> If I=E2=80=99m correct, you need a way to exclude a workload from the glo=
+bal
+> TCP/UDP accounting, and currently, memcg serves as a convenient
+> abstraction for the workload. Please let me know if I misunderstood.
 
-Sure, I can to the reorganize.
+Correct.
 
-Thanks,
-Kuai
+Currently, memcg by itself cannot guarantee that memory allocation for
+socket buffer does not fail even when memory.current < memory.max
+due to the global protocol limits.
 
-> 
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   block/bfq-iosched.c  | 3 ---
->>   block/blk-mq-sched.c | 6 ++++++
->>   block/mq-deadline.c  | 5 +----
->>   3 files changed, 7 insertions(+), 7 deletions(-)
->>
->> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
->> index 11b81b11242c..9f8a256e43f2 100644
->> --- a/block/bfq-iosched.c
->> +++ b/block/bfq-iosched.c
->> @@ -5307,8 +5307,6 @@ static struct request *bfq_dispatch_request(struct blk_mq_hw_ctx *hctx)
->>   	struct bfq_queue *in_serv_queue;
->>   	bool waiting_rq, idle_timer_disabled = false;
->>   
->> -	spin_lock_irq(bfqd->lock);
->> -
->>   	in_serv_queue = bfqd->in_service_queue;
->>   	waiting_rq = in_serv_queue && bfq_bfqq_wait_request(in_serv_queue);
->>   
->> @@ -5318,7 +5316,6 @@ static struct request *bfq_dispatch_request(struct blk_mq_hw_ctx *hctx)
->>   			waiting_rq && !bfq_bfqq_wait_request(in_serv_queue);
->>   	}
->>   
->> -	spin_unlock_irq(bfqd->lock);
->>   	bfq_update_dispatch_stats(hctx->queue, rq,
->>   			idle_timer_disabled ? in_serv_queue : NULL,
->>   				idle_timer_disabled);
->> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
->> index 55a0fd105147..82c4f4eef9ed 100644
->> --- a/block/blk-mq-sched.c
->> +++ b/block/blk-mq-sched.c
->> @@ -98,6 +98,7 @@ static int __blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
->>   		max_dispatch = hctx->queue->nr_requests;
->>   
->>   	do {
->> +		bool sq_sched = blk_queue_sq_sched(q);
->>   		struct request *rq;
->>   		int budget_token;
->>   
->> @@ -113,7 +114,12 @@ static int __blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
->>   		if (budget_token < 0)
->>   			break;
->>   
->> +		if (sq_sched)
->> +			spin_lock_irq(&e->lock);
->>   		rq = e->type->ops.dispatch_request(hctx);
->> +		if (sq_sched)
->> +			spin_unlock_irq(&e->lock);
->> +
->>   		if (!rq) {
->>   			blk_mq_put_dispatch_budget(q, budget_token);
->>   			/*
->> diff --git a/block/mq-deadline.c b/block/mq-deadline.c
->> index e31da6de7764..a008e41bc861 100644
->> --- a/block/mq-deadline.c
->> +++ b/block/mq-deadline.c
->> @@ -466,10 +466,9 @@ static struct request *dd_dispatch_request(struct blk_mq_hw_ctx *hctx)
->>   	struct request *rq;
->>   	enum dd_prio prio;
->>   
->> -	spin_lock(dd->lock);
->>   	rq = dd_dispatch_prio_aged_requests(dd, now);
->>   	if (rq)
->> -		goto unlock;
->> +		return rq;
->>   
->>   	/*
->>   	 * Next, dispatch requests in priority order. Ignore lower priority
->> @@ -481,8 +480,6 @@ static struct request *dd_dispatch_request(struct blk_mq_hw_ctx *hctx)
->>   			break;
->>   	}
->>   
->> -unlock:
->> -	spin_unlock(dd->lock);
->>   	return rq;
->>   }
->>   
-> 
-> 
+It means we need to increase the global limits to
 
+(bytes of TCP socket buffer in each cgroup) * (number of cgroup)
+
+, which is hard to predict, and I guess that's the reason why you
+or Wei set tcp_mem[] to UINT_MAX so that we can ignore the global
+limit.
+
+But we should keep tcp_mem[] within a sane range in the first place.
+
+This series allows us to configure memcg limits only and let memcg
+guarantee no failure until it fully consumes memory.max.
+
+The point is that memcg should not be affected by the global limits,
+and this is orthogonal with the assumption that every workload should
+be running under memcg.
+
+
+>
+> Now memcg is one way to represent the workload. Another more natural, at
+> least to me, is the core cgroup. Basically cgroup.something interface.
+> BPF is yet another option.
+>
+> To me cgroup seems preferrable but let's see what other memcg & cgroup
+> folks think. Also note that for cgroup and memcg the interface will need
+> to be hierarchical.
+
+As the root cgroup doesn't have the knob, these combinations are
+considered hierarchical:
+
+(parent, child) =3D (0, 0), (0, 1), (1, 1)
+
+and only the pattern below is not considered hierarchical
+
+(parent, child) =3D (1, 0)
+
+Let's say we lock the knob at the first socket creation like your
+idea above.
+
+If a parent and its child' knobs are (0, 0) and the child creates a
+socket, the child memcg is locked as 0.  When the parent enables
+the knob, we must check all child cgroups as well.  Or, we lock
+the all parents' knobs when a socket is created in a child cgroup
+with knob=3D0 ?  In any cases we need a global lock.
+
+Well, I understand that the hierarchical semantics is preferable
+for cgroup but I think it does not resolve any real issue and rather
+churns the code unnecessarily.
 
