@@ -1,45 +1,48 @@
-Return-Path: <cgroups+bounces-8883-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8884-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6BE0B0E865
-	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 03:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08566B0E86E
+	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 04:02:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C01DB6C71ED
-	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 01:58:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B53DE3A5F1F
+	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 02:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5441A317D;
-	Wed, 23 Jul 2025 01:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC7D31A073F;
+	Wed, 23 Jul 2025 02:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d17N8Xf4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88A23A59;
-	Wed, 23 Jul 2025 01:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836514A1A;
+	Wed, 23 Jul 2025 02:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753235931; cv=none; b=I+glF0z+h0N5AbQy3HVDx769nbMUvR1Zelxj4gETq1COK0KtLjm0gLh88Ph8QKT+GBDpPF3pg5O1ZrN59BboOVBJaRG2UzEsOI3bFSMIKE4dHOxf6h3v5OP27qQJQNg9Skdvm30IY0db7eSrQp8FQv26SN4iN/Nn2c2RKwL4ZdM=
+	t=1753236107; cv=none; b=GvF4kbSoR0NH8D9CYecmd77eUNicOmNHlkVnBQLMhP6SCg7LONfjpOyuTcxApU/zG5WeAR13+5zZVCK8NDrtpN8NJjL02D6f0z7hrWKPsGgMXYPcpJ8fLWUGFb6jIf+vWYMv6DIMf19qYo+0cbWN+7WtlAzxJ5AJZSXzAkWfH7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753235931; c=relaxed/simple;
-	bh=XDeO+N+nQdPh6+4KKaUNuB/Nj52VBkmGjrIrzVUrsyQ=;
+	s=arc-20240116; t=1753236107; c=relaxed/simple;
+	bh=cl7O/Fq1ek/lII7RKb/Uiy7uR0fkut9P0S5+vuj0twM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Af2GSCzLjJDuLtcCLGxUfwYkoXTykxX7Q4uZOYPiyHwa3uirYgVL2AhRuScd0/PPc4bFeJo80bWPfjrxNvDWgUM526MdpOUOXW0EuU2W4LzmGI3rk560N5gqBwnNko6LeZzCxdfIoMJBttFdzR0Ngx3avHXmZs3elj3aEbjCXT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bmy3M4DNQzKHN0X;
-	Wed, 23 Jul 2025 09:58:39 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 531D31A1646;
-	Wed, 23 Jul 2025 09:58:38 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP2 (Coremail) with SMTP id Syh0CgC3xLbLQYBozdqjBA--.55374S2;
-	Wed, 23 Jul 2025 09:58:36 +0800 (CST)
-Message-ID: <0532c73c-fda0-4f12-b4ce-f84a74bc2f21@huaweicloud.com>
-Date: Wed, 23 Jul 2025 09:58:34 +0800
+	 In-Reply-To:Content-Type; b=ptMhJr3y67fA25kibpNcM4JDIuo1Qv4x5XUs77Es/Rq/8IioMQP4x8fZuvVFV4xC00QCMK6a0SldFyzkY5ZNofqT6FOJOutGJfoJvMX5NyQU3TDtn/VKRh7zQLe6eoo/8SBugcXsJPIRA3FJeLOxUz9v57Ql4jtoUxOugOSgCjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d17N8Xf4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42480C4CEEB;
+	Wed, 23 Jul 2025 02:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753236107;
+	bh=cl7O/Fq1ek/lII7RKb/Uiy7uR0fkut9P0S5+vuj0twM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=d17N8Xf4W6l9wdLQGM6dg7f1cgrhZMZHa2EJW2YjEDZInX85LbDqkpfNvDSEPXrgh
+	 vNfePnZFBgp5aTq+g/AQoZe7+c9broKoG0voaTJLKOFsjG3yJg54m9Dj8ofNX/JK0o
+	 DnCpL3n7upGQeaxnWYtk8Jehujw+tYp8UT/cfs1VdUAX4CBJAa3ME0JBQqP92TdwtS
+	 +AnkMkFPqiHmAu7R1mLzbK/hjWQX3R1ZZa3yoMrfyvBUcU+W//UXFKYodG98RlfinF
+	 k+oR/ie1+mCtUSfhMmmajcrAEQ6i9OywVEAl9vHiMfJGesrgTbBYFtp9PRML9I8fv2
+	 dYQqB1rzKczTQ==
+Message-ID: <08c989bd-20d8-476c-af99-c9eb8065349d@kernel.org>
+Date: Wed, 23 Jul 2025 10:59:18 +0900
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,95 +50,145 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] sched/core: Skip user_cpus_ptr masking if no online
- CPU left
-To: Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-References: <20250718164143.31338-1-longman@redhat.com>
- <20250718164857.31963-1-longman@redhat.com>
+Subject: Re: [PATCH 4/6] elevator: factor elevator lock out of
+ dispatch_request method
+To: Yu Kuai <yukuai1@huaweicloud.com>, hare@suse.de, tj@kernel.org,
+ josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ johnny.chenyi@huawei.com
+References: <20250722072431.610354-1-yukuai1@huaweicloud.com>
+ <20250722072431.610354-5-yukuai1@huaweicloud.com>
+From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20250718164857.31963-1-longman@redhat.com>
+Organization: Western Digital Research
+In-Reply-To: <20250722072431.610354-5-yukuai1@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgC3xLbLQYBozdqjBA--.55374S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tryfGrWrtw1fCF4DGrW8Xrb_yoW8KFWrpF
-	WkKFWUCrZrtF1UCayfu3y2yr1FqanxJ3W3XF1Syr1FyFWYqF4UCry0gFnxXr1jgrsakFW5
-	tF4a9rWI9r1qqrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+On 7/22/25 4:24 PM, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Currently, both mq-deadline and bfq have global spin lock that will be
+> grabbed inside elevator methods like dispatch_request, insert_requests,
+> and bio_merge. And the global lock is the main reason mq-deadline and
+> bfq can't scale very well.
+> 
+> For dispatch_request method, current behavior is dispatching one request at
 
+s/current/the current
 
-On 2025/7/19 0:48, Waiman Long wrote:
-> Chen Ridong reported that cpuset could report a kernel warning for a task
-> due to set_cpus_allowed_ptr() returning failure in the corner case that:
+> a time. In the case of multiple dispatching contexts, this behavior will
+> cause huge lock contention and messing up the requests dispatching
+
+s/messing up/change
+
+> order. And folloiwng patches will support requests batch dispatching to
+
+s/folloiwng/following
+
+> fix thoses problems.
 > 
-> 1) the task used sched_setaffinity(2) to set its CPU affinity mask to
->    be the same as the cpuset.cpus of its cpuset,
-> 2) all the CPUs assigned to that cpuset were taken offline, and
-> 3) cpuset v1 is in use and the task had to be migrated to the top cpuset.
+> While dispatching request, blk_mq_get_disatpch_budget() and
+> blk_mq_get_driver_tag() must be called, and they are not ready to be
+> called inside elevator methods, hence introduce a new method like
+> dispatch_requests is not possible.
 > 
-> Due to the fact that CPU affinity of the tasks in the top cpuset are
-> not updated when a CPU hotplug online/offline event happens, offline
-> CPUs are included in CPU affinity of those tasks. It is possible
-> that further masking with user_cpus_ptr set by sched_setaffinity(2)
-> in __set_cpus_allowed_ptr() will leave only offline CPUs in the new
-> mask causing the subsequent call to __set_cpus_allowed_ptr_locked()
-> to return failure with an empty CPU affinity.
+> In conclusion, this patch factor the global lock out of dispatch_request
+> method, and following patches will support request batch dispatch by
+> calling the methods multiple time while holding the lock.
+
+You are creating a bisect problem here. This patch breaks the schedulers
+dispatch atomicity without the changes to the calls to the elevator methods in
+the block layer.
+
+So maybe reorganize these patches to have the block layer changes first, and
+move patch 1 and 3 after these to switch mq-deadline and bfq to using the
+higher level lock correctly, removing the locking from bfq_dispatch_request()
+and dd_dispatch_request().
+
 > 
-> Fix this failure by skipping user_cpus_ptr masking if there is no online
-> CPU left.
-> 
-> Reported-by: Chen Ridong <chenridong@huaweicloud.com>
-> Closes: https://lore.kernel.org/lkml/20250714032311.3570157-1-chenridong@huaweicloud.com/
-> Fixes: da019032819a ("sched: Enforce user requested affinity")
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
->  kernel/sched/core.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  block/bfq-iosched.c  | 3 ---
+>  block/blk-mq-sched.c | 6 ++++++
+>  block/mq-deadline.c  | 5 +----
+>  3 files changed, 7 insertions(+), 7 deletions(-)
 > 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 81c6df746df1..208f8af73134 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -3170,12 +3170,13 @@ int __set_cpus_allowed_ptr(struct task_struct *p, struct affinity_context *ctx)
+> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+> index 11b81b11242c..9f8a256e43f2 100644
+> --- a/block/bfq-iosched.c
+> +++ b/block/bfq-iosched.c
+> @@ -5307,8 +5307,6 @@ static struct request *bfq_dispatch_request(struct blk_mq_hw_ctx *hctx)
+>  	struct bfq_queue *in_serv_queue;
+>  	bool waiting_rq, idle_timer_disabled = false;
 >  
->  	rq = task_rq_lock(p, &rf);
+> -	spin_lock_irq(bfqd->lock);
+> -
+>  	in_serv_queue = bfqd->in_service_queue;
+>  	waiting_rq = in_serv_queue && bfq_bfqq_wait_request(in_serv_queue);
+>  
+> @@ -5318,7 +5316,6 @@ static struct request *bfq_dispatch_request(struct blk_mq_hw_ctx *hctx)
+>  			waiting_rq && !bfq_bfqq_wait_request(in_serv_queue);
+>  	}
+>  
+> -	spin_unlock_irq(bfqd->lock);
+>  	bfq_update_dispatch_stats(hctx->queue, rq,
+>  			idle_timer_disabled ? in_serv_queue : NULL,
+>  				idle_timer_disabled);
+> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+> index 55a0fd105147..82c4f4eef9ed 100644
+> --- a/block/blk-mq-sched.c
+> +++ b/block/blk-mq-sched.c
+> @@ -98,6 +98,7 @@ static int __blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
+>  		max_dispatch = hctx->queue->nr_requests;
+>  
+>  	do {
+> +		bool sq_sched = blk_queue_sq_sched(q);
+>  		struct request *rq;
+>  		int budget_token;
+>  
+> @@ -113,7 +114,12 @@ static int __blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
+>  		if (budget_token < 0)
+>  			break;
+>  
+> +		if (sq_sched)
+> +			spin_lock_irq(&e->lock);
+>  		rq = e->type->ops.dispatch_request(hctx);
+> +		if (sq_sched)
+> +			spin_unlock_irq(&e->lock);
+> +
+>  		if (!rq) {
+>  			blk_mq_put_dispatch_budget(q, budget_token);
+>  			/*
+> diff --git a/block/mq-deadline.c b/block/mq-deadline.c
+> index e31da6de7764..a008e41bc861 100644
+> --- a/block/mq-deadline.c
+> +++ b/block/mq-deadline.c
+> @@ -466,10 +466,9 @@ static struct request *dd_dispatch_request(struct blk_mq_hw_ctx *hctx)
+>  	struct request *rq;
+>  	enum dd_prio prio;
+>  
+> -	spin_lock(dd->lock);
+>  	rq = dd_dispatch_prio_aged_requests(dd, now);
+>  	if (rq)
+> -		goto unlock;
+> +		return rq;
+>  
 >  	/*
-> -	 * Masking should be skipped if SCA_USER or any of the SCA_MIGRATE_*
-> -	 * flags are set.
-> +	 * Masking should be skipped if SCA_USER, any of the SCA_MIGRATE_*
-> +	 * flags are set or no online CPU left.
->  	 */
->  	if (p->user_cpus_ptr &&
->  	    !(ctx->flags & (SCA_USER | SCA_MIGRATE_ENABLE | SCA_MIGRATE_DISABLE)) &&
-> -	    cpumask_and(rq->scratch_mask, ctx->new_mask, p->user_cpus_ptr))
-> +	    cpumask_and(rq->scratch_mask, ctx->new_mask, p->user_cpus_ptr) &&
-> +	    cpumask_intersects(rq->scratch_mask, cpu_active_mask))
->  		ctx->new_mask = rq->scratch_mask;
+>  	 * Next, dispatch requests in priority order. Ignore lower priority
+> @@ -481,8 +480,6 @@ static struct request *dd_dispatch_request(struct blk_mq_hw_ctx *hctx)
+>  			break;
+>  	}
 >  
->  	return __set_cpus_allowed_ptr_locked(p, ctx, rq, &rf);
+> -unlock:
+> -	spin_unlock(dd->lock);
+>  	return rq;
+>  }
+>  
 
-Tested-by:  Chen Ridong <chenridong@huawei.com>
 
+-- 
+Damien Le Moal
+Western Digital Research
 
