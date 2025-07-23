@@ -1,220 +1,126 @@
-Return-Path: <cgroups+bounces-8878-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8879-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85203B0E799
-	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 02:29:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CE5B0E809
+	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 03:28:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82948564FF2
-	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 00:29:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E12E04E6454
+	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 01:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B5235280;
-	Wed, 23 Jul 2025 00:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B4vsgDXv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F85A15539A;
+	Wed, 23 Jul 2025 01:28:12 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F23A3E555;
-	Wed, 23 Jul 2025 00:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B172EAD7;
+	Wed, 23 Jul 2025 01:28:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753230569; cv=none; b=vBnnWYppNBrk8ukmrQt6KoDV0HXcfEsEFiewjVb7Ya7D0+jDPlyGqAKYDAgXvC/NcyHVoK/3/ha8PqgS1aLuoGPmhME837C1Wiab6ud9+FQNINjbQTltah7wWO5D8eLBV0PIDkLzMs4Cz7FD28Jlzq+O/cf2GKs18fkQtZXV4yE=
+	t=1753234091; cv=none; b=VVFAhRiXYI2UuWE0ZT7KyvGcgQUhpBp8gEbnGna9iM9anMDuTax7hQg2HD9e6GJm76Xep0Y9JOyFfHnW8AfSPlXofDP6+A2RkWYjCNgJKuk6lnIi0xp4Oy20g6oODvbRWHX8kIkc1IHlG46J0HYKfNEhZNLqUVP35Q3KKgcrZ44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753230569; c=relaxed/simple;
-	bh=8t4qc+1oVPIes96V6mDCFXqe004QTXFHw8Dcn/BmaOk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YmWZ1RVEJovzOvOCz+lsxFdEulKMIdK60khNSNeEDRbfqIYJzSl5hJf51v8W5mRTJQGlWx+JP+25eV86X8LfgLWaIPzgyAzYoUY32JSMAtn0X/uhGkEuAnLTcyyUbxy6/ORrx0yGPj008fGXlpYi2DR0+8psn8GZJsqEI+n51Zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=B4vsgDXv; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 22 Jul 2025 17:29:06 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1753230552;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ya/iMqP+L9J9OUdonPqQ6BajrGRFzQbsY8dxwMUGMDQ=;
-	b=B4vsgDXvvTZuPekKEvlBPO/rcadIYkXZRtK1VWBTBeIq8ySKpTBHPE5nbhUJ8NveiKFnoB
-	AT/Lq/U7xhSK5nAGAUh2GnfvB0/T+yUWCoT3N5eROHXYeL7yJd7UpQh2K5LOZIdKEiz7tH
-	TA5ZtxEMHLFsdhPw43GKQSyLFlJfFfM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Kuniyuki Iwashima <kuniyu@google.com>
-Cc: Eric Dumazet <edumazet@google.com>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Willem de Bruijn <willemb@google.com>, Matthieu Baerts <matttbe@kernel.org>, 
-	Mat Martineau <martineau@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Simon Horman <horms@kernel.org>, 
-	Geliang Tang <geliang@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
-	Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, mptcp@lists.linux.dev, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 net-next 13/13] net-memcg: Allow decoupling memcg from
- global protocol memory accounting.
-Message-ID: <jmbszz4m7xkw7fzolpusjesbreaczmr4i64kynbs3zcoehrkpj@lwso5soc4dh3>
-References: <20250721203624.3807041-1-kuniyu@google.com>
- <20250721203624.3807041-14-kuniyu@google.com>
- <z7kkbenhkndwyghwenwk6c4egq3ky4zl36qh3gfiflfynzzojv@qpcazlpe3l7b>
- <CANn89iLg-VVWqbWvLg__Zz=HqHpQzk++61dbOyuazSah7kWcDg@mail.gmail.com>
- <jc6z5d7d26zunaf6b4qtwegdoljz665jjcigb4glkb6hdy6ap2@2gn6s52s6vfw>
- <CAAVpQUAJCLaOr7DnOH9op8ySFN_9Ky__easoV-6E=scpRaUiJQ@mail.gmail.com>
- <p4fcser5zrjm4ut6lw4ejdr7gn2gejrlhy2u2btmhajiiheoax@ptacajypnvlw>
- <CAAVpQUAk4F__D7xdWpt0SEE4WEM_-6V1P7DUw9TGaV=pxZ+tgw@mail.gmail.com>
- <xjtbk6g2a3x26sqqrdxbm2vxgxmm3nfaryxlxwipwohsscg7qg@64ueif57zont>
- <CAAVpQUAL09OGKZmf3HkjqqkknaytQ59EXozAVqJuwOZZucLR0Q@mail.gmail.com>
+	s=arc-20240116; t=1753234091; c=relaxed/simple;
+	bh=ZY89KN8ZlaV2FIJ/jBwusYJKFJj0xiuvVJlC8BeM5Qg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UIrE/XuokH2ZBVMz3MH3Arp8OljUFYpBSeRa690VBhU6l0K4lZmnFovGXJgUqXM/kNQZay8wcwzngr0LjXbo+8S4pM9T8RscKtMGlHfC7Kf3b785vMFCnbku9wyh/xyJ4B+VDAl2ulSUkIzRjKuTB1twIiUBAtjioQqGSY1ehU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bmxN62DbyzKHNVq;
+	Wed, 23 Jul 2025 09:28:06 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 0ABA21A0D2C;
+	Wed, 23 Jul 2025 09:28:05 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP3 (Coremail) with SMTP id _Ch0CgA3r9mjOoBoh_WaBA--.63440S2;
+	Wed, 23 Jul 2025 09:28:04 +0800 (CST)
+Message-ID: <0064b782-2bed-4375-aba8-3745aa306a6d@huaweicloud.com>
+Date: Wed, 23 Jul 2025 09:28:02 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: cpu.stat in core or cpu controller (was Re: [RFC PATCH v2]
+ cgroup: Track time in cgroup v2 freezer)
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Tiffany Yang <ynaffit@google.com>,
+ linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Chen Ridong <chenridong@huawei.com>, kernel-team@android.com,
+ Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+ linux-doc@vger.kernel.org
+References: <20250714050008.2167786-2-ynaffit@google.com>
+ <5rm53pnhpdeqljxqywh26gffh6vlyb5j5s6pzxhv52odhkl4fm@o6p7daoponsn>
+ <aHktSgmh-9dyB7bz@slm.duckdns.org>
+ <mknvbcalyaheobnfeeyyldytcoyturmeuq3twcrri5gaxtjojs@bbyqhshtjfab>
+ <180b4c3f-9ea2-4124-b014-226ff8a97877@huaweicloud.com>
+ <jyvlpm6whamo5ge533xdsvqnsjsxdonpvdjbtt5gqvcw5fjp56@q4ej7gy5frj7>
+ <e065b8da-9e7c-4214-9122-83d83700a729@huaweicloud.com>
+ <aHvHb0i6c8A_aCIo@slm.duckdns.org>
+ <2c723007-710f-4592-9fe2-7534eb47e74f@huaweicloud.com>
+ <adrjkqsqqwxcsdr5z4wmxcrvgvutkulzgka6pjjv23v6242txr@vv2ysb46nhpk>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <adrjkqsqqwxcsdr5z4wmxcrvgvutkulzgka6pjjv23v6242txr@vv2ysb46nhpk>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAVpQUAL09OGKZmf3HkjqqkknaytQ59EXozAVqJuwOZZucLR0Q@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:_Ch0CgA3r9mjOoBoh_WaBA--.63440S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7JrWUJF4ktFW7WF48GrW5GFg_yoWfAFX_Gr
+	n3ZF1xAr1xZF43CF4YkFWDZFy5JayqvFn8t3W7tFW7Ar18XFnrAF97ur95Ar18Ja95tF98
+	CrnIva9FvwnrujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
+	0PDUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Tue, Jul 22, 2025 at 02:59:33PM -0700, Kuniyuki Iwashima wrote:
-> On Tue, Jul 22, 2025 at 12:56 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> >
-> > On Tue, Jul 22, 2025 at 12:03:48PM -0700, Kuniyuki Iwashima wrote:
-> > > On Tue, Jul 22, 2025 at 11:48 AM Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > > >
-> > > > On Tue, Jul 22, 2025 at 11:18:40AM -0700, Kuniyuki Iwashima wrote:
-> > > > > >
-> > > > > > I expect this state of jobs with different network accounting config
-> > > > > > running concurrently is temporary while the migrationg from one to other
-> > > > > > is happening. Please correct me if I am wrong.
-> > > > >
-> > > > > We need to migrate workload gradually and the system-wide config
-> > > > > does not work at all.  AFAIU, there are already years of effort spent
-> > > > > on the migration but it's not yet completed at Google.  So, I don't think
-> > > > > the need is temporary.
-> > > > >
-> > > >
-> > > > From what I remembered shared borg had completely moved to memcg
-> > > > accounting of network memory (with sys container as an exception) years
-> > > > ago. Did something change there?
-> > >
-> > > AFAICS, there are some workloads that opted out from memcg and
-> > > consumed too much tcp memory due to tcp_mem=UINT_MAX, triggering
-> > > OOM and disrupting other workloads.
-> > >
-> >
-> > What were the reasons behind opting out? We should fix those
-> > instead of a permanent opt-out option.
-> >
 
-Any response to the above?
 
-> > > >
-> > > > > >
-> > > > > > My main concern with the memcg knob is that it is permanent and it
-> > > > > > requires a hierarchical semantics. No need to add a permanent interface
-> > > > > > for a temporary need and I don't see a clear hierarchical semantic for
-> > > > > > this interface.
-> > > > >
-> > > > > I don't see merits of having hierarchical semantics for this knob.
-> > > > > Regardless of this knob, hierarchical semantics is guaranteed
-> > > > > by other knobs.  I think such semantics for this knob just complicates
-> > > > > the code with no gain.
-> > > > >
-> > > >
-> > > > Cgroup interfaces are hierarchical and we want to keep it that way.
-> > > > Putting non-hierarchical interfaces just makes configuration and setup
-> > > > hard to reason about.
-> > >
-> > > Actually, I tried that way in the initial draft version, but even if the
-> > > parent's knob is 1 and child one is 0, a harmful scenario didn't come
-> > > to my mind.
-> > >
-> >
-> > It is not just about harmful scenario but more about clear semantics.
-> > Check memory.zswap.writeback semantics.
+On 2025/7/22 19:54, Michal Koutný wrote:
+> On Tue, Jul 22, 2025 at 05:01:50PM +0800, Chen Ridong <chenridong@huaweicloud.com> wrote:
+>> Specifically, this change would allow us to:
+>>
+>> 1.Remove these CPU-specific callbacks from the core:
+>>   css_extra_stat_show()
+>>   css_local_stat_show()
+>> 2. Clean up the 'is_self' logic in rstat.c.
 > 
-> zswap checks all parent cgroups when evaluating the knob, but
-> this is not an option for the networking fast path as we cannot
-> check them for every skb, which will degrade the performance.
-
-That's an implementation detail and you can definitely optimize it. One
-possible way might be caching the state in socket at creation time which
-puts some restrictions like to change the config, workload needs to be
-restarted.
-
-> 
-> Also, we don't track which sockets were created with the knob
-> enabled and how many such sockets are still left under the cgroup,
-> there is no way to keep options consistent throughout the hierarchy
-> and no need to try hard to make the option pretend to be consistent
-> if there's no real issue.
+> If you see an option to organize the code better, why not. (At the same
+> time, I currently also don't see the "why.)
 > 
 > 
-> >
-> > >
-> > > >
-> > > > >
-> > > > > >
-> > > > > > I am wondering if alternative approches for per-workload settings are
-> > > > > > explore starting with BPF.
-> > > > > >
-> > > >
-> > > > Any response on the above? Any alternative approaches explored?
-> > >
-> > > Do you mean flagging each socket by BPF at cgroup hook ?
-> >
-> > Not sure. Will it not be very similar to your current approach? Each
-> > socket is associated with a memcg and the at the place where you need to
-> > check which accounting method to use, just check that memcg setting in
-> > bpf and you can cache the result in socket as well.
+>> 3. Make the stat handling consistent across subsystems (currently cpu.stat is the only
+>> subsystem-specific stat implemented in the core).
 > 
-> The socket pointer is not writable by default, thus we need to add
-> a bpf helper or kfunc just for flipping a single bit.  As said, this is
-> overkill, and per-memcg knob is much simpler.
+> But beware that the possibility of having cpu.stat without enabling the
+> cpu controller on v2 is a user visible behavior and I'm quite sure some
+> userspace relies on it, so you'd need to preserve that.
 > 
 
-Your simple solution is exposing a stable permanent user facing API
-which I suspect is temporary situation. Let's discuss it at the end.
+This is what I worry about. Thank you for your confirmation.
 
-> 
-> >
-> > >
-> > > I think it's overkill and we don't need such finer granularity.
-> > >
-> > > Also it sounds way too hacky to use BPF to correct the weird
-> > > behaviour from day0.
-> >
-> > What weird behavior? Two accounting mechanisms. Yes I agree but memcgs
-> > with different accounting mechanisms concurrently is also weird.
-> 
-> Not that weird given the root cgroup does not allocate sk->sk_memcg
-> and are subject to the global tcp memory accounting.  We already have
-> a mixed set of memcgs.
+Best regards,
+Ridong
 
-Running workloads in root cgroup is not normal and comes with a warning
-of no isolation provided.
-
-I looked at the patch again to understand the modes you are introducing.
-Initially, I thought the series introduced multiple modes, including an
-option to exclude network memory from memcg accounting. However, if I
-understand correctly, that is not the case—the opt-out applies only to
-the global TCP/UDP accounting. That’s a relief, and I apologize for the
-misunderstanding.
-
-If I’m correct, you need a way to exclude a workload from the global
-TCP/UDP accounting, and currently, memcg serves as a convenient
-abstraction for the workload. Please let me know if I misunderstood.
-
-Now memcg is one way to represent the workload. Another more natural, at
-least to me, is the core cgroup. Basically cgroup.something interface.
-BPF is yet another option.
-
-To me cgroup seems preferrable but let's see what other memcg & cgroup
-folks think. Also note that for cgroup and memcg the interface will need
-to be hierarchical.
 
