@@ -1,48 +1,48 @@
-Return-Path: <cgroups+bounces-8880-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8881-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71164B0E849
-	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 03:48:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B312B0E856
+	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 03:54:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DE197A2339
-	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 01:47:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13B9B7A3D55
+	for <lists+cgroups@lfdr.de>; Wed, 23 Jul 2025 01:53:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78EFE15539A;
-	Wed, 23 Jul 2025 01:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F65C19AD90;
+	Wed, 23 Jul 2025 01:54:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GlxRxMyh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gJbYLPSv"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E6FC2628D;
-	Wed, 23 Jul 2025 01:48:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25DF9A59;
+	Wed, 23 Jul 2025 01:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753235326; cv=none; b=SNPzLrQavsjOD8/6qGOXwxqN3BT2qta1bA4NjmE5BWXXX6ekhXuTavBWL6gKBtuKIC0m800RA0iX+2i8tqxPJ4OEcg57EEsIXQoQgSBUQY5pMjC6BvR8vaB/Czvv44kuZEvw0hfg9PuY4OpCd4M0HWbIKOv3EdVPXohFlUzqD8w=
+	t=1753235687; cv=none; b=SClMN0fC4FsjNPHiuwHNLhpjRvk4l+lyjinADx7mPERyos6OOJSuAwovb3gsNWUXLctsejB1+ACTo9XZTHT9PFoyRC8zJfUce8v2f9LFF1KBeFRIpmIxrGh/whg91YkzqEr1MA3U7Rdkmmnx23NQttGb5vU3mFW3h2WBXopDwh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753235326; c=relaxed/simple;
-	bh=AzN+Gktwg/8ta6jjY11+v3nUFF45eX/NpwcaMbv/alU=;
+	s=arc-20240116; t=1753235687; c=relaxed/simple;
+	bh=jSyZIb0xPqskwGqxDdGm2zRmpdZ0xgBmOakqH8fDSoo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JPDKMdusTJxfecsRRic+0z6hcMsGFNoFBnaKoqZHAg/Noo9baADHS5qq/kRN/kZ6DPJRCqt/6SrlrW27VOh0fC9bzpXq2LcSrQNLpb0mtMFJwWks6i6NFTL+BEoYvLyJaDp2eQHHfmBy4OK+30cKzMyAfTCXsO1e1wl4Fe1QmyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GlxRxMyh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 656F9C4CEEB;
-	Wed, 23 Jul 2025 01:48:44 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=QD/sTIBOpRZnC6+F6HyyOxQeTG68DPb0eTDspr5D7QNv5PJj7suHBNQvuHATXfxQhLFrr6BNDtK9HUT5p95Cz3M+omVjmrBtYmDFjiOrggYe2b62g6iQICY6TGFakkEp15i8jz/5w4yjuZlAxlMk6TUxPow671e9B1uLejBReIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gJbYLPSv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CF93C4CEEB;
+	Wed, 23 Jul 2025 01:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753235325;
-	bh=AzN+Gktwg/8ta6jjY11+v3nUFF45eX/NpwcaMbv/alU=;
+	s=k20201202; t=1753235686;
+	bh=jSyZIb0xPqskwGqxDdGm2zRmpdZ0xgBmOakqH8fDSoo=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=GlxRxMyhCkPowqrYEf7JDYmefDKK1I1DVCVr95HJojG/YsfQjZlOHlx1xbv2UQHeR
-	 3bvOF8h/HP5nUxEqEl1wZj5f85Mfrq3gLQbrdEK3XHCz8vom3g5g/cLuX+9Iuh06r1
-	 XO9G+wx6U1SG/TBcatOqww7jSKRaZ0ugHmQG5B4TvDkw2VApuncWkDzM3hhkzbFqkf
-	 VGaplMJpbpgQmHrbAOXYWIrXCnZnVyWV1ONoKBIoYe3/YBmmK3trQ2aoUupIrxrxFn
-	 wOF1sHvLdwsgGuf9Q52+SZ0yjrNAuIepKq3bhcvnvS7DVjfaKY7sTUSnvxo+xy3UzG
-	 K31jLr+8nzXag==
-Message-ID: <625335c6-5ece-4407-bcb8-c2d8d3766208@kernel.org>
-Date: Wed, 23 Jul 2025 10:46:17 +0900
+	b=gJbYLPSv6F7/ECZcr7Z165paXgaoTwPpA2REoXYzmyS3XmwJF5c2GG70zbpQvdSs+
+	 SfzH9y4Ub+CZX9cjjmokUJO6uTlJf/lklLLLVsOVHJg27tec5kXx6wMm+cG+N9ux3d
+	 Ja7UyNxUJleudxnbUAcL2zliCr/NZZsR86j0jEWyVLTtXL62sTh7NiiP4IrpnL/WtV
+	 7NDvt4y0XP495AH6T04sD3hq7PzBXKFH277DKw+xhDjkjYWXHKePccDeqFQ4oN7qJI
+	 DQF+c/7Ypf0HBiKqqX2MaighoFRQ6W06+JlzaI7P4CZlz9JFGX8R+F2udIFthLQBQ6
+	 N+1rHunmpjg4A==
+Message-ID: <8e74ee4a-bb57-45e8-b452-474bfec88ffc@kernel.org>
+Date: Wed, 23 Jul 2025 10:52:18 +0900
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -50,298 +50,184 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] mq-deadline: switch to use high layer elevator lock
+Subject: Re: [PATCH 2/6] block, bfq: don't grab queue_lock from io path
 To: Yu Kuai <yukuai1@huaweicloud.com>, hare@suse.de, tj@kernel.org,
  josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com
 Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
  johnny.chenyi@huawei.com
 References: <20250722072431.610354-1-yukuai1@huaweicloud.com>
- <20250722072431.610354-2-yukuai1@huaweicloud.com>
+ <20250722072431.610354-3-yukuai1@huaweicloud.com>
 From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
 Organization: Western Digital Research
-In-Reply-To: <20250722072431.610354-2-yukuai1@huaweicloud.com>
+In-Reply-To: <20250722072431.610354-3-yukuai1@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 7/22/25 4:24 PM, Yu Kuai wrote:
 > From: Yu Kuai <yukuai3@huawei.com>
 > 
-> Introduce a new spinlock in elevator_queue, and switch dd->lock to
-> use the new lock. There are no functional changes.
+> Currently issue io can grab queue_lock three times from bfq_bio_merge(),
+> bfq_limit_depth() and bfq_prepare_request(), the queue_lock is not
+> necessary if icq is already created:
+> 
+> - queue_usage_counter is already grabbed and queue won't exist;
+> - current thread won't exist;
+> - if other thread is allocating and inserting new icq to ioc->icq_tree,
+>   rcu can be used to protect lookup icq from the raidx tree, it's safe
+>   to use extracted icq until queue or current thread exit;
+> 
+> If ioc or icq is not created, then bfq_prepare_request() will create it,
+> which means the task is issuing io to queue the first time, this can
+> consider a slow path and queue_lock will still be held to protect
+> inserting allocated icq to ioc->icq_tree.
 > 
 > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
->  block/elevator.c    |  1 +
->  block/elevator.h    |  4 ++--
->  block/mq-deadline.c | 57 ++++++++++++++++++++++-----------------------
->  3 files changed, 31 insertions(+), 31 deletions(-)
+>  block/bfq-iosched.c | 24 +++++++-----------------
+>  block/blk-ioc.c     | 43 ++++++++++++++++++++++++++++++++++++++-----
+>  block/blk.h         |  2 +-
+>  3 files changed, 46 insertions(+), 23 deletions(-)
 > 
-> diff --git a/block/elevator.c b/block/elevator.c
-> index ab22542e6cf0..91df270d9d91 100644
-> --- a/block/elevator.c
-> +++ b/block/elevator.c
-> @@ -144,6 +144,7 @@ struct elevator_queue *elevator_alloc(struct request_queue *q,
->  	eq->type = e;
->  	kobject_init(&eq->kobj, &elv_ktype);
->  	mutex_init(&eq->sysfs_lock);
-> +	spin_lock_init(&eq->lock);
->  	hash_init(eq->hash);
->  
->  	return eq;
-> diff --git a/block/elevator.h b/block/elevator.h
-> index a07ce773a38f..cbbac4f7825c 100644
-> --- a/block/elevator.h
-> +++ b/block/elevator.h
-> @@ -110,12 +110,12 @@ struct request *elv_rqhash_find(struct request_queue *q, sector_t offset);
->  /*
->   * each queue has an elevator_queue associated with it
+> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+> index 0cb1e9873aab..58d57c482acd 100644
+> --- a/block/bfq-iosched.c
+> +++ b/block/bfq-iosched.c
+> @@ -454,17 +454,13 @@ static struct bfq_io_cq *icq_to_bic(struct io_cq *icq)
 >   */
-> -struct elevator_queue
-> -{
-> +struct elevator_queue {
->  	struct elevator_type *type;
->  	void *elevator_data;
->  	struct kobject kobj;
->  	struct mutex sysfs_lock;
-> +	spinlock_t lock;
->  	unsigned long flags;
->  	DECLARE_HASHTABLE(hash, ELV_HASH_BITS);
->  };
-
-I wonder if the above should not be its own patch, and the remaining below
-staying in this patch as that match exactly the commit title.
-
-Other than that, this looks good to me.
-
-> diff --git a/block/mq-deadline.c b/block/mq-deadline.c
-> index 2edf1cac06d5..e31da6de7764 100644
-> --- a/block/mq-deadline.c
-> +++ b/block/mq-deadline.c
-> @@ -101,7 +101,7 @@ struct deadline_data {
->  	u32 async_depth;
->  	int prio_aging_expire;
->  
-> -	spinlock_t lock;
-> +	spinlock_t *lock;
->  };
->  
->  /* Maps an I/O priority class to a deadline scheduler priority. */
-> @@ -213,7 +213,7 @@ static void dd_merged_requests(struct request_queue *q, struct request *req,
->  	const u8 ioprio_class = dd_rq_ioclass(next);
->  	const enum dd_prio prio = ioprio_class_to_prio[ioprio_class];
->  
-> -	lockdep_assert_held(&dd->lock);
-> +	lockdep_assert_held(dd->lock);
->  
->  	dd->per_prio[prio].stats.merged++;
->  
-> @@ -253,7 +253,7 @@ static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
+>  static struct bfq_io_cq *bfq_bic_lookup(struct request_queue *q)
 >  {
->  	const struct io_stats_per_prio *stats = &dd->per_prio[prio].stats;
->  
-> -	lockdep_assert_held(&dd->lock);
-> +	lockdep_assert_held(dd->lock);
->  
->  	return stats->inserted - atomic_read(&stats->completed);
->  }
-> @@ -323,7 +323,7 @@ static struct request *__dd_dispatch_request(struct deadline_data *dd,
->  	enum dd_prio prio;
->  	u8 ioprio_class;
->  
-> -	lockdep_assert_held(&dd->lock);
-> +	lockdep_assert_held(dd->lock);
->  
->  	if (!list_empty(&per_prio->dispatch)) {
->  		rq = list_first_entry(&per_prio->dispatch, struct request,
-> @@ -434,7 +434,7 @@ static struct request *dd_dispatch_prio_aged_requests(struct deadline_data *dd,
->  	enum dd_prio prio;
->  	int prio_cnt;
->  
-> -	lockdep_assert_held(&dd->lock);
-> +	lockdep_assert_held(dd->lock);
->  
->  	prio_cnt = !!dd_queued(dd, DD_RT_PRIO) + !!dd_queued(dd, DD_BE_PRIO) +
->  		   !!dd_queued(dd, DD_IDLE_PRIO);
-> @@ -466,7 +466,7 @@ static struct request *dd_dispatch_request(struct blk_mq_hw_ctx *hctx)
->  	struct request *rq;
->  	enum dd_prio prio;
->  
-> -	spin_lock(&dd->lock);
-> +	spin_lock(dd->lock);
->  	rq = dd_dispatch_prio_aged_requests(dd, now);
->  	if (rq)
->  		goto unlock;
-> @@ -482,8 +482,7 @@ static struct request *dd_dispatch_request(struct blk_mq_hw_ctx *hctx)
->  	}
->  
->  unlock:
-> -	spin_unlock(&dd->lock);
+> -	struct bfq_io_cq *icq;
+> -	unsigned long flags;
 > -
-> +	spin_unlock(dd->lock);
->  	return rq;
+> -	if (!current->io_context)
+> -		return NULL;
+> +	struct io_cq *icq;
+>  
+> -	spin_lock_irqsave(&q->queue_lock, flags);
+> -	icq = icq_to_bic(ioc_lookup_icq(q));
+> -	spin_unlock_irqrestore(&q->queue_lock, flags);
+> +	rcu_read_lock();
+> +	icq = ioc_lookup_icq_rcu(q);
+> +	rcu_read_unlock();
+>  
+> -	return icq;
+> +	return icq_to_bic(icq);
+
+icq cannot be NULL here ? If it can, that needs checking, otherwise,
+icq_to_bic() will return a bad address.
+
 >  }
 >  
-> @@ -552,9 +551,9 @@ static void dd_exit_sched(struct elevator_queue *e)
->  		WARN_ON_ONCE(!list_empty(&per_prio->fifo_list[DD_READ]));
->  		WARN_ON_ONCE(!list_empty(&per_prio->fifo_list[DD_WRITE]));
->  
-> -		spin_lock(&dd->lock);
-> +		spin_lock(dd->lock);
->  		queued = dd_queued(dd, prio);
-> -		spin_unlock(&dd->lock);
-> +		spin_unlock(dd->lock);
->  
->  		WARN_ONCE(queued != 0,
->  			  "statistics for priority %d: i %u m %u d %u c %u\n",
-> @@ -601,7 +600,7 @@ static int dd_init_sched(struct request_queue *q, struct elevator_type *e)
->  	dd->last_dir = DD_WRITE;
->  	dd->fifo_batch = fifo_batch;
->  	dd->prio_aging_expire = prio_aging_expire;
-> -	spin_lock_init(&dd->lock);
-> +	dd->lock = &eq->lock;
->  
->  	/* We dispatch from request queue wide instead of hw queue */
->  	blk_queue_flag_set(QUEUE_FLAG_SQ_SCHED, q);
-> @@ -657,9 +656,9 @@ static bool dd_bio_merge(struct request_queue *q, struct bio *bio,
+>  /*
+> @@ -2456,16 +2452,10 @@ static void bfq_remove_request(struct request_queue *q,
+>  static bool bfq_bio_merge(struct request_queue *q, struct bio *bio,
+>  		unsigned int nr_segs)
+>  {
+> +	/* bic will not be freed until current or elevator exit */
+
+I would drop this comment, or move it somewhere else as having a comment in the
+declarations seems odd.
+
+> +	struct bfq_io_cq *bic = bfq_bic_lookup(q);
+>  	struct bfq_data *bfqd = q->elevator->elevator_data;
 >  	struct request *free = NULL;
+> -	/*
+> -	 * bfq_bic_lookup grabs the queue_lock: invoke it now and
+> -	 * store its return value for later use, to avoid nesting
+> -	 * queue_lock inside the bfqd->lock. We assume that the bic
+> -	 * returned by bfq_bic_lookup does not go away before
+> -	 * bfqd->lock is taken.
+> -	 */
+> -	struct bfq_io_cq *bic = bfq_bic_lookup(q);
 >  	bool ret;
 >  
-> -	spin_lock(&dd->lock);
-> +	spin_lock(dd->lock);
->  	ret = blk_mq_sched_try_merge(q, bio, nr_segs, &free);
-> -	spin_unlock(&dd->lock);
-> +	spin_unlock(dd->lock);
->  
->  	if (free)
->  		blk_mq_free_request(free);
-> @@ -681,7 +680,7 @@ static void dd_insert_request(struct blk_mq_hw_ctx *hctx, struct request *rq,
->  	struct dd_per_prio *per_prio;
->  	enum dd_prio prio;
->  
-> -	lockdep_assert_held(&dd->lock);
-> +	lockdep_assert_held(dd->lock);
->  
->  	prio = ioprio_class_to_prio[ioprio_class];
->  	per_prio = &dd->per_prio[prio];
-> @@ -725,7 +724,7 @@ static void dd_insert_requests(struct blk_mq_hw_ctx *hctx,
->  	struct deadline_data *dd = q->elevator->elevator_data;
->  	LIST_HEAD(free);
->  
-> -	spin_lock(&dd->lock);
-> +	spin_lock(dd->lock);
->  	while (!list_empty(list)) {
->  		struct request *rq;
->  
-> @@ -733,7 +732,7 @@ static void dd_insert_requests(struct blk_mq_hw_ctx *hctx,
->  		list_del_init(&rq->queuelist);
->  		dd_insert_request(hctx, rq, flags, &free);
->  	}
-> -	spin_unlock(&dd->lock);
-> +	spin_unlock(dd->lock);
->  
->  	blk_mq_free_requests(&free);
->  }
-> @@ -849,13 +848,13 @@ static const struct elv_fs_entry deadline_attrs[] = {
->  #define DEADLINE_DEBUGFS_DDIR_ATTRS(prio, data_dir, name)		\
->  static void *deadline_##name##_fifo_start(struct seq_file *m,		\
->  					  loff_t *pos)			\
-> -	__acquires(&dd->lock)						\
-> +	__acquires(dd->lock)						\
->  {									\
->  	struct request_queue *q = m->private;				\
->  	struct deadline_data *dd = q->elevator->elevator_data;		\
->  	struct dd_per_prio *per_prio = &dd->per_prio[prio];		\
->  									\
-> -	spin_lock(&dd->lock);						\
-> +	spin_lock(dd->lock);						\
->  	return seq_list_start(&per_prio->fifo_list[data_dir], *pos);	\
->  }									\
->  									\
-> @@ -870,12 +869,12 @@ static void *deadline_##name##_fifo_next(struct seq_file *m, void *v,	\
->  }									\
->  									\
->  static void deadline_##name##_fifo_stop(struct seq_file *m, void *v)	\
-> -	__releases(&dd->lock)						\
-> +	__releases(dd->lock)						\
->  {									\
->  	struct request_queue *q = m->private;				\
->  	struct deadline_data *dd = q->elevator->elevator_data;		\
->  									\
-> -	spin_unlock(&dd->lock);						\
-> +	spin_unlock(dd->lock);						\
->  }									\
->  									\
->  static const struct seq_operations deadline_##name##_fifo_seq_ops = {	\
-> @@ -941,11 +940,11 @@ static int dd_queued_show(void *data, struct seq_file *m)
->  	struct deadline_data *dd = q->elevator->elevator_data;
->  	u32 rt, be, idle;
->  
-> -	spin_lock(&dd->lock);
-> +	spin_lock(dd->lock);
->  	rt = dd_queued(dd, DD_RT_PRIO);
->  	be = dd_queued(dd, DD_BE_PRIO);
->  	idle = dd_queued(dd, DD_IDLE_PRIO);
-> -	spin_unlock(&dd->lock);
-> +	spin_unlock(dd->lock);
->  
->  	seq_printf(m, "%u %u %u\n", rt, be, idle);
->  
-> @@ -957,7 +956,7 @@ static u32 dd_owned_by_driver(struct deadline_data *dd, enum dd_prio prio)
+>  	spin_lock_irq(&bfqd->lock);
+> diff --git a/block/blk-ioc.c b/block/blk-ioc.c
+> index ce82770c72ab..0be097a37e22 100644
+> --- a/block/blk-ioc.c
+> +++ b/block/blk-ioc.c
+> @@ -314,7 +314,7 @@ int __copy_io(unsigned long clone_flags, struct task_struct *tsk)
+>   * Look up io_cq associated with @ioc - @q pair from @ioc.  Must be called
+>   * with @q->queue_lock held.
+>   */
+> -struct io_cq *ioc_lookup_icq(struct request_queue *q)
+> +static struct io_cq *ioc_lookup_icq(struct request_queue *q)
 >  {
->  	const struct io_stats_per_prio *stats = &dd->per_prio[prio].stats;
+>  	struct io_context *ioc = current->io_context;
+>  	struct io_cq *icq;
+> @@ -341,7 +341,40 @@ struct io_cq *ioc_lookup_icq(struct request_queue *q)
+>  	rcu_read_unlock();
+>  	return icq;
+>  }
+> -EXPORT_SYMBOL(ioc_lookup_icq);
+> +
+> +/**
+> + * ioc_lookup_icq_rcu - lookup io_cq from ioc in io path
+> + * @q: the associated request_queue
+> + *
+> + * Look up io_cq associated with @ioc - @q pair from @ioc.  Must be called
+> + * from io path, either return NULL if current issue io to @q for the first
+> + * time, or return a valid icq.
+> + */
+> +struct io_cq *ioc_lookup_icq_rcu(struct request_queue *q)
+> +{
+> +	struct io_context *ioc = current->io_context;
+> +	struct io_cq *icq;
+> +
+> +	WARN_ON_ONCE(percpu_ref_is_zero(&q->q_usage_counter));
+> +
+> +	if (!ioc)
+> +		return NULL;
+> +
+> +	icq = rcu_dereference(ioc->icq_hint);
+> +	if (icq && icq->q == q)
+> +		return icq;
+> +
+> +	icq = radix_tree_lookup(&ioc->icq_tree, q->id);
+> +	if (!icq)
+> +		return NULL;
+> +
+> +	if (WARN_ON_ONCE(icq->q != q))
+> +		return NULL;
+> +
+> +	rcu_assign_pointer(ioc->icq_hint, icq);
+> +	return icq;
+> +}
+> +EXPORT_SYMBOL(ioc_lookup_icq_rcu);
 >  
-> -	lockdep_assert_held(&dd->lock);
-> +	lockdep_assert_held(dd->lock);
+>  /**
+>   * ioc_create_icq - create and link io_cq
+> @@ -420,9 +453,9 @@ struct io_cq *ioc_find_get_icq(struct request_queue *q)
+>  	} else {
+>  		get_io_context(ioc);
 >  
->  	return stats->dispatched + stats->merged -
->  		atomic_read(&stats->completed);
-> @@ -969,11 +968,11 @@ static int dd_owned_by_driver_show(void *data, struct seq_file *m)
->  	struct deadline_data *dd = q->elevator->elevator_data;
->  	u32 rt, be, idle;
+> -		spin_lock_irq(&q->queue_lock);
+> -		icq = ioc_lookup_icq(q);
+> -		spin_unlock_irq(&q->queue_lock);
+> +		rcu_read_lock();
+> +		icq = ioc_lookup_icq_rcu(q);
+> +		rcu_read_unlock();
+>  	}
 >  
-> -	spin_lock(&dd->lock);
-> +	spin_lock(dd->lock);
->  	rt = dd_owned_by_driver(dd, DD_RT_PRIO);
->  	be = dd_owned_by_driver(dd, DD_BE_PRIO);
->  	idle = dd_owned_by_driver(dd, DD_IDLE_PRIO);
-> -	spin_unlock(&dd->lock);
-> +	spin_unlock(dd->lock);
->  
->  	seq_printf(m, "%u %u %u\n", rt, be, idle);
->  
-> @@ -983,13 +982,13 @@ static int dd_owned_by_driver_show(void *data, struct seq_file *m)
->  #define DEADLINE_DISPATCH_ATTR(prio)					\
->  static void *deadline_dispatch##prio##_start(struct seq_file *m,	\
->  					     loff_t *pos)		\
-> -	__acquires(&dd->lock)						\
-> +	__acquires(dd->lock)						\
->  {									\
->  	struct request_queue *q = m->private;				\
->  	struct deadline_data *dd = q->elevator->elevator_data;		\
->  	struct dd_per_prio *per_prio = &dd->per_prio[prio];		\
->  									\
-> -	spin_lock(&dd->lock);						\
-> +	spin_lock(dd->lock);						\
->  	return seq_list_start(&per_prio->dispatch, *pos);		\
->  }									\
->  									\
-> @@ -1004,12 +1003,12 @@ static void *deadline_dispatch##prio##_next(struct seq_file *m,		\
->  }									\
->  									\
->  static void deadline_dispatch##prio##_stop(struct seq_file *m, void *v)	\
-> -	__releases(&dd->lock)						\
-> +	__releases(dd->lock)						\
->  {									\
->  	struct request_queue *q = m->private;				\
->  	struct deadline_data *dd = q->elevator->elevator_data;		\
->  									\
-> -	spin_unlock(&dd->lock);						\
-> +	spin_unlock(dd->lock);						\
->  }									\
->  									\
->  static const struct seq_operations deadline_dispatch##prio##_seq_ops = { \
+>  	if (!icq) {
+> diff --git a/block/blk.h b/block/blk.h
+> index 468aa83c5a22..3c078e517d59 100644
+> --- a/block/blk.h
+> +++ b/block/blk.h
+> @@ -460,7 +460,7 @@ static inline void req_set_nomerge(struct request_queue *q, struct request *req)
+>   * Internal io_context interface
+>   */
+>  struct io_cq *ioc_find_get_icq(struct request_queue *q);
+> -struct io_cq *ioc_lookup_icq(struct request_queue *q);
+> +struct io_cq *ioc_lookup_icq_rcu(struct request_queue *q);
+>  #ifdef CONFIG_BLK_ICQ
+>  void ioc_clear_queue(struct request_queue *q);
+>  #else
+
+The blk-ioc changes should go into there own patch, to separate block layer
+changes and bfq scheduler changes. No ?
 
 
 -- 
