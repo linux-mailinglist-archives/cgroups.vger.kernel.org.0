@@ -1,123 +1,262 @@
-Return-Path: <cgroups+bounces-8907-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8908-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1CC3B11617
-	for <lists+cgroups@lfdr.de>; Fri, 25 Jul 2025 03:54:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D388B122DD
+	for <lists+cgroups@lfdr.de>; Fri, 25 Jul 2025 19:17:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B5893B4A7E
-	for <lists+cgroups@lfdr.de>; Fri, 25 Jul 2025 01:54:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 648851CE5A57
+	for <lists+cgroups@lfdr.de>; Fri, 25 Jul 2025 17:18:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DDF81F0E3E;
-	Fri, 25 Jul 2025 01:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02741D63C7;
+	Fri, 25 Jul 2025 17:17:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SCVXZTuP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852D8DDA9;
-	Fri, 25 Jul 2025 01:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED4B226863
+	for <cgroups@vger.kernel.org>; Fri, 25 Jul 2025 17:17:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753408480; cv=none; b=uXAKC2A6EUPSwiVotkM7W58b/wRdB6APRBiVHwDHw+PSdyl8frn3/xa9SOGXzkq1EA7FOmRQC6ySTpkOeXVtWwz+bceOkDtCue83Ox2VDbpZqQUbf1AEc+PR7n2d0Gp+RpDzeCRNTexRbRT98BUuO1J0LFrLFNUD+6AZl9gfxcU=
+	t=1753463869; cv=none; b=E1c0/7JvtKusTnjwhMz1yWzP/lK9PemgQ3j+JmbacQBqUTj4IfN/MPca1YlqxbHr/Gbs4vFJ+9o7mJ3myTTi2BHC9HzRUMQ1wOtpGsqSIXs5Q7TS1Xy6gRPJP75Yrj9J565pKMcLvNxHdAB7mMxnAhphmekRxYVTex0+x/5HAdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753408480; c=relaxed/simple;
-	bh=7QA2XhirCdErGq0E2Mu2eOtTEn5CbyuoLwtcxlC4eQs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QW9klAWJZqBDI3ZU3E+XUAoShOX+JNqmTqwBlLyfbVwjoG40EuAq8N71FqkjAIyu4Y1GQ6uoFa2EZv2jNleplTU2H14/yqvkVv4KWWkVLWHEaUyJbjqL4UUEmsFPipApu06FcDi8uZG9fdRPEhK3SAbOzAaoKtd9ao/wd6ey8XY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bp9sm6GMNzYQvJG;
-	Fri, 25 Jul 2025 09:54:36 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 922491A0B69;
-	Fri, 25 Jul 2025 09:54:35 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP2 (Coremail) with SMTP id Syh0CgDH07Xa44JoabeCBQ--.41840S2;
-	Fri, 25 Jul 2025 09:54:35 +0800 (CST)
-Message-ID: <7746e963-1c2d-402b-9a28-1554a34e096a@huaweicloud.com>
-Date: Fri, 25 Jul 2025 09:54:33 +0800
+	s=arc-20240116; t=1753463869; c=relaxed/simple;
+	bh=+hVGzKpufI9lmE0JC2FW8/1sTwpGoFkdU4EZYxZNZ58=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rGPECZ/a0YzL6o2lMj4zX6XrZzeib3I2/1BPlkcFQloH4LcsfaET5B2MvbSsKAaY0iHdPvOiE8t+pDk2ABRcRudRim0XU2RK11Cbs1/fNFqYxBYD30QG2aPJHzKSoO375qxQp/jkXbQ1nF8P1IHCRAIc6ja/UcaqyHgFtJQNdQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SCVXZTuP; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3a588da60dfso1433713f8f.1
+        for <cgroups@vger.kernel.org>; Fri, 25 Jul 2025 10:17:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1753463865; x=1754068665; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uhUA94nOMYSBuKbo1SHT8sK1olilpHe1T/Kl9K2EGxU=;
+        b=SCVXZTuPiW6FX7zUPu3zzoCwQSNcyrRWk/9H8cDpU0eLMmwK0DIBDn4ePf7zthZPwB
+         JSHcmKDLYRXFeSo0WH6p7qUjixa+T3zZigQk8NMeg/03qjh9EfzEFnfUCCM3zpK8ePAm
+         iNljosTtZEP89Z2WiBar8lBUW3GwNOWdgFqxrgRHZeZUeR26HM88GnkxsKsoRXtwBI9m
+         u4HVINVABROMBPigRs6ODB15oQcviWK+uPsekJt+OQEMmvdSbxgB5KJ1g/XIXyvoKf15
+         pl4dvPntvWozRzfUgzU8cLByJn1YQp47N/CfnICzdTmo8IlOqXf/n3I6GNMvPcjHP/NA
+         CpEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753463865; x=1754068665;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uhUA94nOMYSBuKbo1SHT8sK1olilpHe1T/Kl9K2EGxU=;
+        b=k9595wAuO1jwN982MfGrSkgSF2QpIEVn3QbKvidMI7TMABsLHXvWx7aKWb8pHmDdzn
+         vhUV5eAK8CAj3MvmtYVgG1SQyjr9PnCRxqLcSukZcOal/0YEr6wxeeFKK55trYIFoAtw
+         9UBNSW4zPAij0psuYvexjRAl9aIIJKi35VjHZu5/fztfZjtG0cRxU1M5s/gi6d+vZB5I
+         r5Jvi2mszE74zA+z1u15ggwwK8sLMeoVfLKMNV0SdwMi5rzbahz9l6Fi98mx0Jwru9a3
+         c0NsZnc3Re6XSAHUrhx2e1pQeM0IK56BhTeIs9wY4rjKA/P54++GiuFzBe+lnEQ2ZHYW
+         PqnA==
+X-Forwarded-Encrypted: i=1; AJvYcCXQ7KaSowf+YVwrRbVEBovQ4FACEzG/D9fvDFRNNJmhKE25DDKlPhnr5oQS+mA9jJE/xmbZPnpC@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUXPWfebbbdfAw64xT+TF7HSHf0esy906BkGKNEcmhzVZhD4Le
+	T4xFZhGT2fMp3KvFE8niqe6TdCvGAvFCpQFnwQD6RKlMKt5FB7iq84hU6qxkbnB0T3k=
+X-Gm-Gg: ASbGncsRUZPEHrfHeMTFZ1MsC5kl7gTEXrxT9nvxw3EUkGfDPPp2otrNIeWxzLAsEP/
+	KhPRCmFntdkatFZxfR4a0yC/JKeQipqvKhy3Kth/+qTVb2rPtiRaNeMaCUGOxinHv63LkinfVJ9
+	nSFM9iJZJBB2Mjq51fLits9BktpGLE0iVfNIZ1YiePDVFpP4KI6q6GJ3SHcHg5wPgArkuSz1jzP
+	ItnxKN910UmYPIljrrpPyKYWeWNMG/u/5F3hrEtgUir6EA4jEqhlzqDYXsI1mqVnBpjVykSZ8Iz
+	WKy7dX/PlCfqxkOzW/SGVe9NF/UjRuOjAPjEeHpttuMZsqGdEr6yI1IjKlm1DNB0Kp5D3kSSD//
+	91TEjsLaDoHRbbkWLKFT3EIV50k4rZPM+JTTJA8JgxA==
+X-Google-Smtp-Source: AGHT+IGED6hE/H3FiLAQaw3Q6tpwuny6EUSbmo6qDEjVUj5GTtFe+2hNzxZsjW6l4tjrfQfhWnPSIQ==
+X-Received: by 2002:a5d:5850:0:b0:3a4:ee3f:8e1e with SMTP id ffacd0b85a97d-3b776663858mr2940721f8f.39.1753463865251;
+        Fri, 25 Jul 2025 10:17:45 -0700 (PDT)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4587ac66ed6sm3289315e9.28.2025.07.25.10.17.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jul 2025 10:17:44 -0700 (PDT)
+Date: Fri, 25 Jul 2025 19:17:43 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, lizefan@huawei.com, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com, 
+	chenridong@huawei.com, gaoyingjie@uniontech.com
+Subject: Re: [PATCH v2 -next] cgroup: remove offline draining in root
+ destruction to avoid hung_tasks
+Message-ID: <htzudoa4cgius7ncus67axelhv3qh6fgjgnvju27fuyw7gimla@uzrta5sfbh2w>
+References: <20250722112733.4113237-1-chenridong@huaweicloud.com>
+ <kfqhgb2qq2zc6aipz5adyrqh7mghd6bjumuwok3ie7bq4vfuat@lwejtfevzyzs>
+ <7f36d0c7-3476-4bc6-b66e-48496a8be514@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: cpu.stat in core or cpu controller (was Re: [RFC PATCH v2]
- cgroup: Track time in cgroup v2 freezer)
-To: Tejun Heo <tj@kernel.org>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Tiffany Yang <ynaffit@google.com>, linux-kernel@vger.kernel.org,
- John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
- Stephen Boyd <sboyd@kernel.org>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Frederic Weisbecker <frederic@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Chen Ridong <chenridong@huawei.com>, kernel-team@android.com,
- Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
- linux-doc@vger.kernel.org
-References: <5rm53pnhpdeqljxqywh26gffh6vlyb5j5s6pzxhv52odhkl4fm@o6p7daoponsn>
- <aHktSgmh-9dyB7bz@slm.duckdns.org>
- <mknvbcalyaheobnfeeyyldytcoyturmeuq3twcrri5gaxtjojs@bbyqhshtjfab>
- <180b4c3f-9ea2-4124-b014-226ff8a97877@huaweicloud.com>
- <jyvlpm6whamo5ge533xdsvqnsjsxdonpvdjbtt5gqvcw5fjp56@q4ej7gy5frj7>
- <e065b8da-9e7c-4214-9122-83d83700a729@huaweicloud.com>
- <aHvHb0i6c8A_aCIo@slm.duckdns.org>
- <2c723007-710f-4592-9fe2-7534eb47e74f@huaweicloud.com>
- <adrjkqsqqwxcsdr5z4wmxcrvgvutkulzgka6pjjv23v6242txr@vv2ysb46nhpk>
- <0064b782-2bed-4375-aba8-3745aa306a6d@huaweicloud.com>
- <aILZDyD4mPkiMrfd@slm.duckdns.org>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <aILZDyD4mPkiMrfd@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgDH07Xa44JoabeCBQ--.41840S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtw18GFy3KF15uF45JrWxtFb_yoWxtrc_ur
-	9F9F17WF18WF48Ar4avFyDCF95Gay0vF90q3yjqw47X3WxAFn2qrnrWrZIvw45KF92krnr
-	GF1vvanIyw17ZjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIb
-	yZUUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zkxkzcqexzi4w2bp"
+Content-Disposition: inline
+In-Reply-To: <7f36d0c7-3476-4bc6-b66e-48496a8be514@huaweicloud.com>
 
 
+--zkxkzcqexzi4w2bp
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 -next] cgroup: remove offline draining in root
+ destruction to avoid hung_tasks
+MIME-Version: 1.0
 
-On 2025/7/25 9:08, Tejun Heo wrote:
-> On Wed, Jul 23, 2025 at 09:28:02AM +0800, Chen Ridong wrote:
->>> But beware that the possibility of having cpu.stat without enabling the
->>> cpu controller on v2 is a user visible behavior and I'm quite sure some
->>> userspace relies on it, so you'd need to preserve that.
->>
->> This is what I worry about. Thank you for your confirmation.
-> 
-> Yeah, this was an intentional decision - sacrificing a bit of code org
-> cleanliness for everyday usefulness. Enabling CPU controller can have
-> substantial overhead and having cpu stats available by default doesn't cost
-> much while improving usefulness.
-> 
-> Thanks.
-> 
+On Fri, Jul 25, 2025 at 09:42:05AM +0800, Chen Ridong <chenridong@huaweiclo=
+ud.com> wrote:
+> > On Tue, Jul 22, 2025 at 11:27:33AM +0000, Chen Ridong <chenridong@huawe=
+icloud.com> wrote:
+> >> CPU0                            CPU1
+> >> mount perf_event                umount net_prio
+> >> cgroup1_get_tree                cgroup_kill_sb
+> >> rebind_subsystems               // root destruction enqueues
+> >> 				// cgroup_destroy_wq
+> >> // kill all perf_event css
+> >>                                 // one perf_event css A is dying
+> >>                                 // css A offline enqueues cgroup_destr=
+oy_wq
+> >>                                 // root destruction will be executed f=
+irst
+> >>                                 css_free_rwork_fn
+> >>                                 cgroup_destroy_root
+> >>                                 cgroup_lock_and_drain_offline
+> >>                                 // some perf descendants are dying
+> >>                                 // cgroup_destroy_wq max_active =3D 1
+> >>                                 // waiting for css A to die
+> >>
+> >> Problem scenario:
+> >> 1. CPU0 mounts perf_event (rebind_subsystems)
+> >> 2. CPU1 unmounts net_prio (cgroup_kill_sb), queuing root destruction w=
+ork
+> >> 3. A dying perf_event CSS gets queued for offline after root destructi=
+on
+> >> 4. Root destruction waits for offline completion, but offline work is
+> >>    blocked behind root destruction in cgroup_destroy_wq (max_active=3D=
+1)
+> >=20
+> > What's concerning me is why umount of net_prio hierarhy waits for
+> > draining of the default hierachy? (Where you then run into conflict with
+> > perf_event that's implicit_on_dfl.)
+> >=20
+>=20
+> This was also first respond.
+>=20
+> > IOW why not this:
+> > --- a/kernel/cgroup/cgroup.c
+> > +++ b/kernel/cgroup/cgroup.c
+> > @@ -1346,7 +1346,7 @@ static void cgroup_destroy_root(struct cgroup_roo=
+t *root)
+> >=20
+> >         trace_cgroup_destroy_root(root);
+> >=20
+> > -       cgroup_lock_and_drain_offline(&cgrp_dfl_root.cgrp);
+> > +       cgroup_lock_and_drain_offline(cgrp);
+> >=20
+> >         BUG_ON(atomic_read(&root->nr_cgrps));
+> >         BUG_ON(!list_empty(&cgrp->self.children));
+> >=20
+> > Does this correct the LTP scenario?
+> >=20
+> > Thanks,
+> > Michal
+>=20
+> I've tested this approach and discovered it can lead to another issue tha=
+t required significant
+> investigation. This helped me understand why unmounting the net_prio hier=
+archy needs to wait for
+> draining of the default hierarchy.
+>=20
+> Consider this sequence:
+>=20
+> mount net_prio			umount perf_event
+> cgroup1_get_tree
+> // &cgrp_dfl_root.cgrp
+> cgroup_lock_and_drain_offline
+> // wait for all perf_event csses dead
+> prepare_to_wait(&dsct->offline_waitq)
+> schedule();
+> 				cgroup_destroy_root
+> 				// &root->cgrp, not cgrp_dfl_root
+> 				cgroup_lock_and_drain_offline
+								perf_event's css (offline but dying)
 
-Thank you Tj, This is clear now.
+> 				rebind_subsystems
+> 				rcu_assign_pointer(dcgrp->subsys[ssid], css);
+> 				dst_root->subsys_mask |=3D 1 << ssid;
+> 				cgroup_propagate_control
+> 				// enable cgrp_dfl_root perf_event css
+> 				cgroup_apply_control_enable
+> 				css =3D cgroup_css(dsct, ss);
+> 				// since we drain root->cgrp not cgrp_dfl_root
+> 				// css(dying) is not null on the cgrp_dfl_root
+> 				// we won't create css, but the css is dying
 
-Best regards,
-Ridong
+				What would prevent seeing a dying css when
+				cgrp_dfl_root is drained?
+				(Or nothing drained as in the patch?)
 
+				I assume you've seen this warning from
+				cgroup_apply_control_enable
+				WARN_ON_ONCE(percpu_ref_is_dying(&css->refcnt)); ?
+
+
+> 							=09
+> // got the offline_waitq wake up
+> goto restart;
+> // some perf_event dying csses are online now
+> prepare_to_wait(&dsct->offline_waitq)
+> schedule();
+> // never get the offline_waitq wake up
+>=20
+> I encountered two main issues:
+> 1.Dying csses on cgrp_dfl_root may be brought back online when rebinding =
+the subsystem to cgrp_dfl_root
+
+Is this really resolved by the patch? (The questions above.)
+
+> 2.Potential hangs during cgrp_dfl_root draining in the mounting process
+
+Fortunately, the typical use case (mounting at boot) wouldn't suffer
+=66rom this.
+
+> I believe waiting for a wake-up in cgroup_destroy_wq is inherently risky,=
+ as it requires that
+> offline css work(the cgroup_destroy_root need to drain) cannot be enqueue=
+d after cgroup_destroy_root
+> begins.
+
+This is a valid point.
+
+> How can we guarantee this ordering? Therefore, I propose moving the drain=
+ing operation
+> outside of cgroup_destroy_wq as a more robust solution that would complet=
+ely eliminate this
+> potential race condition. This patch implements that approach.
+
+I acknowledge the issue (although rare in real world). Some entity will
+always have to wait of the offlining. It may be OK in cgroup_kill_sb
+(ideally, if this was bound to process context of umount caller, not
+sure if that's how kill_sb works).
+I slightly dislike the form of an empty lock/unlock -- which makes me
+wonder if this is the best solution.
+
+Let me think more about this...
+
+Thanks,
+Michal
+
+--zkxkzcqexzi4w2bp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaIO8NQAKCRB+PQLnlNv4
+CNCMAP0ehZX2MZ8AKiMVw3iEA1oIOfTMsc4M0MaNNlo7/ueYSAD+N/USGvkFFMln
+MeNm/JjckXjWf1OQ2OPsn9fxLVb7sgg=
+=qnrQ
+-----END PGP SIGNATURE-----
+
+--zkxkzcqexzi4w2bp--
 
