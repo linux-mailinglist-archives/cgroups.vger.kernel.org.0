@@ -1,77 +1,76 @@
-Return-Path: <cgroups+bounces-8902-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8903-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90526B1155F
-	for <lists+cgroups@lfdr.de>; Fri, 25 Jul 2025 02:45:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 932A8B1158D
+	for <lists+cgroups@lfdr.de>; Fri, 25 Jul 2025 03:08:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 201673B18B9
-	for <lists+cgroups@lfdr.de>; Fri, 25 Jul 2025 00:44:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AA891CE46A6
+	for <lists+cgroups@lfdr.de>; Fri, 25 Jul 2025 01:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723F6165F1A;
-	Fri, 25 Jul 2025 00:45:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07178194124;
+	Fri, 25 Jul 2025 01:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mx4P75kK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AH7sQmUG"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6532BAF4;
-	Fri, 25 Jul 2025 00:45:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E0E43ABC;
+	Fri, 25 Jul 2025 01:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753404301; cv=none; b=tW+Sh3SubH/AF0SPZdtHK1r4TK2bB0vvAVF/MN6xmi0aTaHti64twiDmvelqvNMsVHakTcoyyWLL8KcUkCZJhPZLxPsBMGyJL99+LZGbAGaL067VOpOGtmb1cYk/6I47BRJlu9xs6FAbSK/IOny1BcHKYT7OpeXAvwOpisQ1HjU=
+	t=1753405713; cv=none; b=hBz9IK7Bsg7xpb2qfyishrUet3a6aRP/45K9NTjp75n2B53pf19cjJabXoKZftG/8DoDxKujdvcWrFdqbkVmcmguEM+3sCpe9n1S6gBmL+xqqZhZdDoaFIcanUMXFvUnuEF05j95s+dk4ZAXLAuI2M2zJdEm9igoDHjkAJFVaLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753404301; c=relaxed/simple;
-	bh=dvzxxFO1gaX+9xGTWwgKBCgV2b2CxVSK7tOnwNJFUio=;
+	s=arc-20240116; t=1753405713; c=relaxed/simple;
+	bh=H/BgPUQANvlTWqgIAXAGOhv0SbRMbQQECIU5nmflkSA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pwx342poV/ynte34h7Pc3yMl0O93Z1aCZqvAAP9DAg7fJmC0VhjFpuvA1i+R8iUmiWDVSF6eWWVCfRSliu9jui2HuZT37D00zQi8j/2jgOGwtX2z3kjOqN3/SGac0sIX1Fw7pvErjmeQWpUB8/sSZCquQt31uYRYmtG83KNze20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mx4P75kK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBA47C4CEED;
-	Fri, 25 Jul 2025 00:45:00 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=rn3jVJBHIDLtAhEATOsCT3/Nn6ivceV0HLxXEZHytIazU16ny+YIyXWsd9JPIgTOk74bNnv1zNQ21vkZmx3zailNoGWc5oiFwakF4gmDj9wkuHDFWHkotCiznbhwQOFT81uIp9rdFVsD0a354ty0UM7qZzcHHphEmpaCkpDReCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AH7sQmUG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1781DC4CEED;
+	Fri, 25 Jul 2025 01:08:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753404301;
-	bh=dvzxxFO1gaX+9xGTWwgKBCgV2b2CxVSK7tOnwNJFUio=;
+	s=k20201202; t=1753405713;
+	bh=H/BgPUQANvlTWqgIAXAGOhv0SbRMbQQECIU5nmflkSA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Mx4P75kKdF2V/aTgUjzyLBGy6f2MxQkesu7J3yxq3vEfAcB7ES6M60ybBRTtdBoS/
-	 jolS/1xxvErQtFnIo0OQZVGIMAEjrOal3WiqWUDZP6BbIWS/Ila/lyf2dC2nSf/Gbj
-	 rq8WPXzQ3J5oTC62KScmoUJoOOZOcXtNfQOCRDNghJKTyrwUPsfByokTTShdldhSI6
-	 ECrRz2veukkxssSq5AZPpWLseG8RxnO6UYjaU1lOpUkmRmGCHJFftVhjulI39Eh4fj
-	 9neuKi7uot7S9R4FfwgtPHW9x2iGksCBRuTYjcBfB3adZMD8a1hBTI2Ym4HkHU7y9e
-	 l6dOJgW1jksGA==
-Date: Thu, 24 Jul 2025 14:44:59 -1000
+	b=AH7sQmUG2sSuxb1SOBDDq2VjnWKmpmZCRlQaE1DVpLIGOA5VLkq9OCOR/9B5UnNij
+	 ox2+1eAwnsh4dloVlpDJqgcwh95zX/N7R4hWQQR3YZ6KI8G+h+Q9INm7+hlOFdRMLs
+	 E8sHys+2KyGPznmixAhtyWLHh3o/45sxZndm1SGZqmaTqOg4lior8XKHmzO6KV2Gwk
+	 8zoepBvNaiKt3QNQLiWMP8scg1Jz0LtqTWliz213wIIKhft4954CSlcZ5UsOD74REf
+	 0367UyVK/CCxvDtez1pE+Edp45xgNnfWh9OUtTyMMKKi7Jv31zDq7mYDdm76V6U4RV
+	 AANi/ENVe+uPA==
+Date: Thu, 24 Jul 2025 15:08:31 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Daniel Sedlak <daniel.sedlak@cdn77.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Neal Cardwell <ncardwell@google.com>,
-	David Ahern <dsahern@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org,
-	netdev@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Tiffany Yang <ynaffit@google.com>, linux-kernel@vger.kernel.org,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@kernel.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	Matyas Hurtik <matyas.hurtik@cdn77.com>
-Subject: Re: [PATCH v3] memcg: expose socket memory pressure in a cgroup
-Message-ID: <aILTi2-iZ1ge3D8n@slm.duckdns.org>
-References: <ni4axiks6hvap3ixl6i23q7grjbki3akeea2xxzhdlkmrj5hpb@qt3vtmiayvpz>
- <telhuoj5bj5eskhicysxkblc4vr6qlcq3vx7pgi6p34g4zfwxw@6vm2r2hg3my4>
- <CAAVpQUBwS3DFs9BENNNgkKFcMtc7tjZBA0PZ-EZ0WY+dCw8hrA@mail.gmail.com>
- <4g63mbix4aut7ye7b7s4m5q7aewfxq542i2vygniow7l5a3zmd@bvis5wmifscy>
- <CAAVpQUCOwFksmo72p_nkr1uJMLRcRo1VAneADon9OxDLoRH0KA@mail.gmail.com>
- <jj5w7cpjjyzxasuweiz64jqqxcz23tm75ca22h3wvfj3u4aums@gnjarnf5gpgq>
- <yruvlyxyy6gsrf2hhtyja5hqnxi2fmdqr63twzxpjrxgffov32@l7gqvdxijs5c>
- <878ca484-a045-4abb-a5bd-7d5ae82607de@cdn77.com>
- <irvyenjca4czrxfew4c7nc23luo5ybgdw3lquq7aoadmhmfu6h@h4mx532ls26h>
- <486bfabc-386c-4fdc-8903-d56ce207951f@cdn77.com>
+	Chen Ridong <chenridong@huawei.com>, kernel-team@android.com,
+	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: Re: cpu.stat in core or cpu controller (was Re: [RFC PATCH v2]
+ cgroup: Track time in cgroup v2 freezer)
+Message-ID: <aILZDyD4mPkiMrfd@slm.duckdns.org>
+References: <5rm53pnhpdeqljxqywh26gffh6vlyb5j5s6pzxhv52odhkl4fm@o6p7daoponsn>
+ <aHktSgmh-9dyB7bz@slm.duckdns.org>
+ <mknvbcalyaheobnfeeyyldytcoyturmeuq3twcrri5gaxtjojs@bbyqhshtjfab>
+ <180b4c3f-9ea2-4124-b014-226ff8a97877@huaweicloud.com>
+ <jyvlpm6whamo5ge533xdsvqnsjsxdonpvdjbtt5gqvcw5fjp56@q4ej7gy5frj7>
+ <e065b8da-9e7c-4214-9122-83d83700a729@huaweicloud.com>
+ <aHvHb0i6c8A_aCIo@slm.duckdns.org>
+ <2c723007-710f-4592-9fe2-7534eb47e74f@huaweicloud.com>
+ <adrjkqsqqwxcsdr5z4wmxcrvgvutkulzgka6pjjv23v6242txr@vv2ysb46nhpk>
+ <0064b782-2bed-4375-aba8-3745aa306a6d@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -80,22 +79,19 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <486bfabc-386c-4fdc-8903-d56ce207951f@cdn77.com>
+In-Reply-To: <0064b782-2bed-4375-aba8-3745aa306a6d@huaweicloud.com>
 
-On Thu, Jul 24, 2025 at 10:43:27AM +0200, Daniel Sedlak wrote:
-...
-> Currently, we know the following information:
+On Wed, Jul 23, 2025 at 09:28:02AM +0800, Chen Ridong wrote:
+> > But beware that the possibility of having cpu.stat without enabling the
+> > cpu controller on v2 is a user visible behavior and I'm quite sure some
+> > userspace relies on it, so you'd need to preserve that.
 > 
-> - we know when the pressure starts
-> - and we know when the pressure ends if not rearmed (start time + HZ)
-> 
-> From that, we should be able to calculate a similar triplet to the pressure
-> endpoints in the cgroups (cpu|io|memory|irq).pressure. That is, how much %
-> of time on average was spent under pressure for avg10, avg60, avg300 i.e.
-> average pressure over the past 10 seconds, 60 seconds, and 300 seconds,
-> respectively. (+ total time spent under pressure)
+> This is what I worry about. Thank you for your confirmation.
 
-Let's just add the cumulative duration that socket pressure was present.
+Yeah, this was an intentional decision - sacrificing a bit of code org
+cleanliness for everyday usefulness. Enabling CPU controller can have
+substantial overhead and having cpu stats available by default doesn't cost
+much while improving usefulness.
 
 Thanks.
 
