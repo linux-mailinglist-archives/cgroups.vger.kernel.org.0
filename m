@@ -1,145 +1,137 @@
-Return-Path: <cgroups+bounces-8916-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8917-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7DB4B13F95
-	for <lists+cgroups@lfdr.de>; Mon, 28 Jul 2025 18:09:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E904AB141B5
+	for <lists+cgroups@lfdr.de>; Mon, 28 Jul 2025 20:05:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6933716EC33
-	for <lists+cgroups@lfdr.de>; Mon, 28 Jul 2025 16:09:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CC323B2102
+	for <lists+cgroups@lfdr.de>; Mon, 28 Jul 2025 18:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF50C2750EC;
-	Mon, 28 Jul 2025 16:07:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BED821D3D2;
+	Mon, 28 Jul 2025 18:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="P1gAkzQi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g3fxexxl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 747E5274B21
-	for <cgroups@vger.kernel.org>; Mon, 28 Jul 2025 16:07:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC77C21C9E4;
+	Mon, 28 Jul 2025 18:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753718865; cv=none; b=k/qrnMZSx3ckYNx57Lj6lI1zFZBnQ2qtpSu9hJLc8zo1T4D1tnf6fSQGSDMOPBLHF3rOfLFt8EZk2LILhe6AT8QJIDkoAD32O4ClXt44P/1s3Kqr1jW7Kb0IAIFaiyibDMeCU33OdiEOpAytaChZmJilC3GY6PN8dirOlIcrVJA=
+	t=1753725901; cv=none; b=IHj3uUl+jyp4Y2bo79CDXDIYyQWWO1BSL7SdDEQqWSz4QyTg6K43bt2vMI+cWXw7zNSuWB+bWTn/XDc9HLPV4Z52ErKcDo4meMDue2Q/XxsjGc7hncSKJRafU42u5wyjsTbjiVqGxpd5cgNwZ1+heTNVrB9THqLFsSyeSnjYHVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753718865; c=relaxed/simple;
-	bh=RHNgwp/NdNGH7gkst2l4JDCtJhh6aUvSRSKnYwmtNtY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oZFD0f+83EkSNnfarsbDl5mWAYdqCUqtnf/oVDtsWo+2p4ofpPBUPUjC9yTyWi1Q+IWUZukCid2LGj+IVqoNVsSbfXJshbm/B/n2fuSTd3K2duzhekvOqMcrDxtPaIYKnSAvXtktFUWJC15ygP9VsBgIwHxCFM5L6QLzyNIPpPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=P1gAkzQi; arc=none smtp.client-ip=209.85.219.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-7074bad053bso12603566d6.0
-        for <cgroups@vger.kernel.org>; Mon, 28 Jul 2025 09:07:43 -0700 (PDT)
+	s=arc-20240116; t=1753725901; c=relaxed/simple;
+	bh=w1OQrTJmA8C4NEg2qWQxvEgjjxDw8811byNBODffSqw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hx3DAPY4ytqU2KLhqc8wHyQ6K6/wXv1KzowuBwMezaaK1k/09h3dIvUyOlW6fVSt1tkkebJIZk2jHeZv8glATB87b1K0hNQbKtUixTKrIZG9HcsrQOkvnNiIBqP9cPnEVQL1jg3ZWpKYIun/SRo0Dv2zKuQ2RYHnqJphZMyk7R4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g3fxexxl; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-235e1d710d8so62602105ad.1;
+        Mon, 28 Jul 2025 11:04:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1753718862; x=1754323662; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aAw+2X708It0VR8pZYVOK00HQXozxtPn6s8nfVW4nlE=;
-        b=P1gAkzQilIAHEGwKAMQXnIgfhmxiUSjDGx6rW2jiIY3p+ib8UnMG6By7A1MHr4GFjd
-         8YJ1xkjtKJydTnMEvM8SmyD/JJYtIcM8/WMkpfqjsp//BSGWOBPrQPKp2N3WdvM3KS3Q
-         R4VTxCZdDXB6lPfKjaS3CR414jq2CIg8pr89G3aHePXDvRS64yKfBDRWYHrzdw+iu1JB
-         bYq3ZoRRc3Z/2lK3ZNbLqvm9SWKaCM7+HYkrut6q+7e2xaAUUjDztv46ZYGAlqxim+1t
-         Gd9urpx7M1WTi74eF9y1e05NaWcvFJ+VL6TY96x41ziVFyvyHEuKQ3c2PjuSTK9qAoVn
-         j9rA==
+        d=gmail.com; s=20230601; t=1753725899; x=1754330699; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bUYQ1ZFDYBuoDjqv+dOB0rUJcu4m65RTBlE/1yKAKBU=;
+        b=g3fxexxls1FZ+azOWGatofj8yERYF2S38sVjYO+LrBqKIVTX0G3iju2x4JeV16VsQ/
+         rmNqTf+bVZzokFFy6pTE1C0itJzQHAt9DBFTw9eqAefew0kjKNEvr5QtLQIpMflunY+y
+         J9dLLwB/LmLcBmJH1KRWGgPq6XmrGGkrmyvwSjZTZRr3rt7EnaQbFLXlHtDW09rAiMiL
+         ThyfXxt3uqA+Mb6IxfO3f3bDx4Zaj5jYaIQd1I8L/HVh24MHMzhXwmh/AtdEi/S570hS
+         XJ3Ms6cAi4PdrkvHnMCTfN9564wkCr4M5pdr4J3buVWhCBEQ+tx49vHBF9+C3gWAKFYI
+         U3CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753718862; x=1754323662;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aAw+2X708It0VR8pZYVOK00HQXozxtPn6s8nfVW4nlE=;
-        b=BMZwSzd/hTXoq2PRgK35ZB3gaCKWrhgyOgGt6PEho5q8UKCBhODYbPXoabSmx4grcX
-         YwMv4f8watJFfaJf03Z3MEbM0CsdK8evStdka8i/Id2KxIrFT8mp3828yajZq7CFjN5O
-         /fnFPMRoOICf4Lqbr2TJ8d9migumgk5igcNW5x8i82fi9CursQS7Xne24bCLfBmcmsLj
-         KzsatSWfLljVRht/BBtEfcLbyeHHDNiE8cs0eNWVcO0V5fCuQdvuIwt9Y0kOcbj9MKSo
-         aBjpHNdkebsjivlYWGqTHibvP/pR6hobVlAshFVl1mI+oZjFb9dvY/aHpVgq0/LNSIf6
-         o43g==
-X-Forwarded-Encrypted: i=1; AJvYcCU9rjhOrK+IZVrOi8OQq/qcksNX/3VAy36hFbAZNrjEUR0CweHTbN9upXwtNk/buHUwdxU4H0oy@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyfr9jndPFf1f7REwDpDGf6d/8OyrXYvKPZZovG61rzaQLEDCjK
-	R9DV0uaDkQUszGRovSUsev7V9cbu1nonLY8ehaaKf/wkx7gVV9BbuGt5ZOc5ryb1bQ8=
-X-Gm-Gg: ASbGncvOzFwA9ZTMlv8H6aGCglCe2SQrrVOChdqxV+to83/HwWTtD4D7khH4WubJpUY
-	fITz1KIATeFN+X7GykIGhQAgDRbGJgPs0oeuXA6BlUGhGUPMS/EgDykZYImDTIl0wwPq+NSLwTR
-	FwV68Ey/QMBC1JtJVRbmRNa5T53Pabnt9aqqg7tR29Gp2ozFL2YGAIDaAWo9n/7G5hq+qHxcdtv
-	TGJnNSvsbD4amNpXsrIXHM9kreCWEaOMGL8rwzAb81yYc6K7oJbAYwBPj5uLfFVIKXTykhGVl//
-	UgJcAvgkpleKoHChxwWLkM89832WztxomP41y68MPvaYE/GiqxpsDa/AfVxRN9/PoCZjr4IuzOw
-	Kn7qM2Nlo4F6M51g7PDcYSQ==
-X-Google-Smtp-Source: AGHT+IEaDZooEETiaWkCw4px/kQlCCmeui047F+bWZwnIBB50xOtbajOnYToq+ch+2hvV2HYIRrO0A==
-X-Received: by 2002:a05:6214:76d:b0:700:fe38:6bd8 with SMTP id 6a1803df08f44-70720534e2fmr187905276d6.19.1753718861920;
-        Mon, 28 Jul 2025 09:07:41 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-70729a9657csm33250636d6.31.2025.07.28.09.07.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jul 2025 09:07:41 -0700 (PDT)
-Date: Mon, 28 Jul 2025 12:07:37 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Kuniyuki Iwashima <kuniyu@google.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Neal Cardwell <ncardwell@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Simon Horman <horms@kernel.org>, Geliang Tang <geliang@kernel.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org,
-	mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 net-next 13/13] net-memcg: Allow decoupling memcg from
- global protocol memory accounting.
-Message-ID: <20250728160737.GE54289@cmpxchg.org>
-References: <20250721203624.3807041-1-kuniyu@google.com>
- <20250721203624.3807041-14-kuniyu@google.com>
+        d=1e100.net; s=20230601; t=1753725899; x=1754330699;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bUYQ1ZFDYBuoDjqv+dOB0rUJcu4m65RTBlE/1yKAKBU=;
+        b=NzAjhh2vG2lABZDiEr9dar5rXQy5IJvexDg3u/Gzv4819YpLifrSwyjF5AgMTSQw4m
+         zT2yyVVED2Yv2tfD2qUZ5/SOo+WfPh9ww7jNH36kpPwBXGvylFyF6qhf8Scf+9ITpAE1
+         XLSPSJBSqYqgrNHxkuk3wGmK7mAP5j8OEwbsmFEGFwE3TmFH+KiiKKZq59n1pQ/ezl8E
+         lGNXJ2r29qHWUPxvQx/dM3vRPklJQVbDlA79BKXzym0xjUhi2SB2aH4tpG2zVDtg5zLw
+         OgBVX2EHwH5rD75Fe1zXeOohxhLLlkP93TgYqqqBMEZOWSAmI35YAnrbQBKyZmAelFQq
+         GchQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUUQiUmT5Lbra6lW9R33fSMRbWv7Qu/IzUY1d83DEbxoj1ObJCjN6rwfVoQ1L+tH48IVsafh+31@vger.kernel.org, AJvYcCUs0vyCbxXOlvL699O+VqO6PLanN6kod3gM4sjTGdO9qCdoC2tlj52vkIkW8KmXftFK+xGFYTyNdDfXheKj@vger.kernel.org
+X-Gm-Message-State: AOJu0YwIVCFtF863RKqYXd0rh7NmNChTpGzHw2pOpYZXrfA6YM0Abfbr
+	7LaQ1Fuu1BA0dV2WoIhFyg7JC3hEt/r0JPHaChXjob6clsCl76YDYD+6
+X-Gm-Gg: ASbGnctaHOXOCzMWz9AU/CxjxiIKka4y6KdKm9+Z0FbXe9zUWF/HariLJ1mc77fnMom
+	dChqs7j6wcOzn5z6p1Py230n/d02/s3pn52cz/47gZ8yepMN9Y6rT0DHsjgCiVMoaPfR4rRo9df
+	uIAn4JBtp70P5TAi54iyMUp6dYZngFFuGlgFG+Q8bRfT5vAi1QeyWaR0hGLcML0nAVODveewSl2
+	tKmf/7WxLzrM159QI08PpIXaA8QcSwVsDbPHKp+8xG9CnIaTGWKTp987JnV7/oysEWhojAouO9N
+	hjXqSKGndVzlSqhwjB0/gGY/lvpsDhV1EZEjFe4kPGE1YDepywKJ/xdo36s1s0XOG9YHOCkn0wj
+	VB7y6W2qYvNNC3sO/7gtJzlKGCZ+/zuk=
+X-Google-Smtp-Source: AGHT+IFhHKqqYoKk/2yXsIUVz0lyQgFAn1bzu8xKSf0pTJYN7fDyKkP70fpbe1MD/lO/8YhkX/NTrg==
+X-Received: by 2002:a17:902:f792:b0:240:636c:df91 with SMTP id d9443c01a7336-240636ce294mr9126985ad.34.1753725898673;
+        Mon, 28 Jul 2025 11:04:58 -0700 (PDT)
+Received: from [192.168.1.190] ([73.222.117.172])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2400e95ca6fsm33554265ad.213.2025.07.28.11.04.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jul 2025 11:04:58 -0700 (PDT)
+Message-ID: <e8156c36-48f3-4983-8a2e-5a5a4444a473@gmail.com>
+Date: Mon, 28 Jul 2025 11:04:56 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250721203624.3807041-14-kuniyu@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5 cgroup/for-6.16-fixes] harden css_create() for safe
+ placement of call to css_rstat_init()
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, shakeel.butt@linux.dev, yosryahmed@google.com,
+ hannes@cmpxchg.org, akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, kernel-team@meta.com
+References: <20250722014030.297537-1-inwardvessel@gmail.com>
+ <cughucmlrkwe3unwwmtx3yrqyrqwsedrbh2ck5feqs6cr36j3z@fhrnw6nfnyte>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <cughucmlrkwe3unwwmtx3yrqyrqwsedrbh2ck5feqs6cr36j3z@fhrnw6nfnyte>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jul 21, 2025 at 08:35:32PM +0000, Kuniyuki Iwashima wrote:
-> Some protocols (e.g., TCP, UDP) implement memory accounting for socket
-> buffers and charge memory to per-protocol global counters pointed to by
-> sk->sk_proto->memory_allocated.
-> 
-> When running under a non-root cgroup, this memory is also charged to the
-> memcg as sock in memory.stat.
-> 
-> Even when memory usage is controlled by memcg, sockets using such protocols
-> are still subject to global limits (e.g., /proc/sys/net/ipv4/tcp_mem).
-> 
-> This makes it difficult to accurately estimate and configure appropriate
-> global limits, especially in multi-tenant environments.
-> 
-> If all workloads were guaranteed to be controlled under memcg, the issue
-> could be worked around by setting tcp_mem[0~2] to UINT_MAX.
-> 
-> In reality, this assumption does not always hold, and a single workload
-> that opts out of memcg can consume memory up to the global limit,
-> becoming a noisy neighbour.
+Thanks for taking a look Michal.
 
-Yes, an uncontrolled cgroup can consume all of a shared resource and
-thereby become a noisy neighbor. Why is network memory special?
-
-I assume you have some other mechanisms for curbing things like
-filesystem caches, anon memory, swap etc. of such otherwise
-uncontrolled groups, and this just happens to be your missing piece.
-
-But at this point, you're operating so far out of the cgroup resource
-management model that I don't think it can be reasonably supported.
-
-I hate to say this, but can't you carry this out of tree until the
-transition is complete?
-
-I just don't think it makes any sense to have this as a permanent
-fixture in a general-purpose container management interface.
+On 7/25/25 10:23 AM, Michal Koutný wrote:
+> Hi.
+>
+> On Mon, Jul 21, 2025 at 06:40:25PM -0700, JP Kobryn <inwardvessel@gmail.com> wrote:
+> ...
+>
+> Thanks for the instructive summary!
+>
+>> If any of the three goto jumps are taken, async cleanup will begin and
+>> css_rstat_exit() will be invoked. But since css_rstat_init() would not have
+>> succeeded, the warning will eventually be reached.
+> First thought is why not simply add a flag that'd guide whether
+> css_rstat_exit() has work to do.
+I did consider adding an "initialized" flag to the css but since there 
+can be multiple css's per
+cgroup it felt like it would be adding overhead. So I went the path of 
+getting the call
+sequence right. I'm open to feedback on this, though.
+>
+> This is meant as a fix, so it should have some metadata, I'd consider this one:
+> Fixes: 5da3bfa029d68 ("cgroup: use separate rstat trees for each subsystem")
+>
+> (that's when css_rstat_init was moved to css_create)
+>
+> and likely this
+> Reported-by: syzbot+8d052e8b99e40bc625ed@syzkaller.appspotmail.com
+>
+> (Sorry for being such a bureaucrat.)
+No problem, I overlooked that.
+> It's most appropriate in your 4/5 but do you think it'd be possible to
+> reshuffle the series to put the fix in front (to ease it for stable
+> kernels) and refactorings after?
+Let me give that a try. As it is right now, patches 1-3 are pre-reqs for 
+4. I can try to get the
+actual fix to the front and then add patches to additionally make 
+nicer/refactor.
 
