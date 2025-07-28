@@ -1,246 +1,105 @@
-Return-Path: <cgroups+bounces-8914-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8915-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B8E1B138DB
-	for <lists+cgroups@lfdr.de>; Mon, 28 Jul 2025 12:21:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECE46B139DC
+	for <lists+cgroups@lfdr.de>; Mon, 28 Jul 2025 13:29:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 073D618924F8
-	for <lists+cgroups@lfdr.de>; Mon, 28 Jul 2025 10:21:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 453403A9E83
+	for <lists+cgroups@lfdr.de>; Mon, 28 Jul 2025 11:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60BDA255F25;
-	Mon, 28 Jul 2025 10:21:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C496725C6F1;
+	Mon, 28 Jul 2025 11:29:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0Pk4jipK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y2EgD9b9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Xq8iTNCs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5YSIxWB9"
+	dkim=pass (1024-bit key) header.d=cdn77.com header.i=@cdn77.com header.b="uCncNpE5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-internal.sh.cz (mail-internal.sh.cz [95.168.196.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC1121CA16
-	for <cgroups@vger.kernel.org>; Mon, 28 Jul 2025 10:21:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01319202998;
+	Mon, 28 Jul 2025 11:29:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.168.196.40
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753698086; cv=none; b=GKAvF4MfJ9TteAOHyKk/jw9JylXXHI2wVCoe/XL1LXfPS1f8v/3+jJEWEwmeKtCSNFvsD9joUYMg8qDDJ11l+UCr+QqVG0uXMRl7Dvn6iABfAdhTkvekxzRUzvr+s5Ix55ItjYY0FDuSyZ8NrURpafbkQepnS868mRGheYkT21A=
+	t=1753702182; cv=none; b=P6uO9Vbs5tuNBms6NjTEHCGl7jMNr1fhv8+lvLNf7vVFuPwqhUTvNNnjYXbB123t9znUe27ht8XO11c4vE9Fb4wayWa/o/Sdj4Jh7mH8CzQv1FG4EposCB1QiCv0VipQkRjaEp9zhYkHujhgw33tYE8f6FB1QSIDENZJF4AyOqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753698086; c=relaxed/simple;
-	bh=2iXxc2X4H+XnyE8Li+VMuh38AZe2PWpUJ34y2E51YQQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E8Wpne7c/JQvO5/gsk0/GQdMH+TKhLZEcBSrOd43V6WnN24W8vl3Sn3LvumelPdZ3HEdC0HBvLvtpvko4PcSs5/zMcNH29bf2f2ZK63SVZfQiq9omn+jlbzdyjhJPmkw0FK2tU3dwVzWjOoTVy7k+kUT0t8vKXilZeFeblLglm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0Pk4jipK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=y2EgD9b9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Xq8iTNCs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5YSIxWB9; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E2E681F444;
-	Mon, 28 Jul 2025 10:21:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1753698081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bhsArjASlgaDmS6hfZQyB3yR9SRWmH4b6qgJSEDURv4=;
-	b=0Pk4jipKkXKgnsuJKi2owCO1LPalrzZ/BdXP7B9udLaHuQEFF3zqos0j/MvNS+lLSz1xr8
-	b2OvSP4am9K1tD+WGoMyp+2M82lWtLQmqdcRxyQnojlZiw+7Q9sqCLKmDryLquDxfj7wNF
-	AEIE+IrRApCKZpcSH5Vd1RPu5RThIYY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1753698081;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bhsArjASlgaDmS6hfZQyB3yR9SRWmH4b6qgJSEDURv4=;
-	b=y2EgD9b92LovJM+d93z4tIzHPXe/nVMQG+PdsgkdEOFxppN0oJ1KPEnAmgUUAK3kCQuWVQ
-	LwNUv/EE/0s11vCQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Xq8iTNCs;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5YSIxWB9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1753698080; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bhsArjASlgaDmS6hfZQyB3yR9SRWmH4b6qgJSEDURv4=;
-	b=Xq8iTNCs45tlp0C3Y6/kbzBLIbBczh6QVU+Ke9dky1mymCSaye9MaYtb264Rhdl4rsZ4Fu
-	ADsiSgLFlUu/BRGAWuwvuI5DAg9+gGFNLCK7APDAfK3IYk8ES3lEuv41/UUP1TCJjUMAX9
-	xxvAyBcqG9zIXdccMHaFwJJ9CZ0iFok=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1753698080;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bhsArjASlgaDmS6hfZQyB3yR9SRWmH4b6qgJSEDURv4=;
-	b=5YSIxWB9+ixzFg4bsWkEXImqiQ8h0RXQ7mmSVHQdepGGCOyPmeul8wGTgJTI2LUlvfCdqw
-	qlrzzUsPCj4hrHCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D7645138A5;
-	Mon, 28 Jul 2025 10:21:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id RvSPNCBPh2igPwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 28 Jul 2025 10:21:20 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 9286AA09BE; Mon, 28 Jul 2025 12:21:16 +0200 (CEST)
-Date: Mon, 28 Jul 2025 12:21:16 +0200
-From: Jan Kara <jack@suse.cz>
-To: Jiufei Xue <jiufei.xue@samsung.com>
-Cc: tj@kernel.org, jack@suse.cz, cgroups@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: writeback: fix use-after-free in __mark_inode_dirty()
-Message-ID: <d6v3y66k2vqy7sqfgn3fzyrbwnfbfrlhxb2udll4du35drimhs@rsjk27kixujb>
-References: <CGME20250728100434epcas5p3995d3444fcec14715c60f73e7a60b1c0@epcas5p3.samsung.com>
- <20250728100715.3863241-1-jiufei.xue@samsung.com>
+	s=arc-20240116; t=1753702182; c=relaxed/simple;
+	bh=1G1bnuP3apPi1qJ1RU6vHZqlaWWEFA7LpVNSzrZV5r4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IZS9hYqbk49C2pdVgjAsLHPQEbOUxEAzh6ITOVqlHmugiAVM7GtZ32rtZpshu6bUedAMQ4kdnt4bmuvJkhgkgx9VtyWOn/8qmj6fKAb3OgnVFq4hsjC8d2TZILpj0kZPiT9w41FHlTWBBU9sBVQQQvgmh/Ykk+/jzn9QWn1vd70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cdn77.com; spf=pass smtp.mailfrom=cdn77.com; dkim=pass (1024-bit key) header.d=cdn77.com header.i=@cdn77.com header.b=uCncNpE5; arc=none smtp.client-ip=95.168.196.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cdn77.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cdn77.com
+DKIM-Signature: a=rsa-sha256; t=1753702172; x=1754306972; s=dkim2019; d=cdn77.com; c=relaxed/relaxed; v=1; bh=KJKiJr+tG3FAfmMlaEVSvdKXkB/PgPhRU4B/I5SDZaA=; h=From:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To:References;
+   b=uCncNpE5DBkvi37xKEm0B4brCr3ocRD9YpR8NsqYGHOp/DWBSdq7t2hBLNOH7W045BZKntLrkz22QSN9BYkBQGTe6d0h8wRA/4MiZwz6nEJthP3FmCtMKvdu9+3Y0XxOadrVV7RoK+3GILChS2HiEuOo0FKmYAH2+Xzr8QnI6R0=
+Received: from [10.0.5.28] ([95.168.203.222])
+        by mail.sh.cz (14.1.0 build 16 ) with ASMTP (SSL) id 202507281329311901;
+        Mon, 28 Jul 2025 13:29:31 +0200
+Message-ID: <924a8a12-ed89-45e5-900d-6d937108ec3e@cdn77.com>
+Date: Mon, 28 Jul 2025 13:29:29 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250728100715.3863241-1-jiufei.xue@samsung.com>
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: E2E681F444
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:dkim,suse.cz:email,samsung.com:email];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[samsung.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Score: -4.01
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] memcg: expose socket memory pressure in a cgroup
+To: Tejun Heo <tj@kernel.org>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Kuniyuki Iwashima <kuniyu@google.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Neal Cardwell <ncardwell@google.com>, David Ahern <dsahern@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org,
+ netdev@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+ Matyas Hurtik <matyas.hurtik@cdn77.com>
+References: <ni4axiks6hvap3ixl6i23q7grjbki3akeea2xxzhdlkmrj5hpb@qt3vtmiayvpz>
+ <telhuoj5bj5eskhicysxkblc4vr6qlcq3vx7pgi6p34g4zfwxw@6vm2r2hg3my4>
+ <CAAVpQUBwS3DFs9BENNNgkKFcMtc7tjZBA0PZ-EZ0WY+dCw8hrA@mail.gmail.com>
+ <4g63mbix4aut7ye7b7s4m5q7aewfxq542i2vygniow7l5a3zmd@bvis5wmifscy>
+ <CAAVpQUCOwFksmo72p_nkr1uJMLRcRo1VAneADon9OxDLoRH0KA@mail.gmail.com>
+ <jj5w7cpjjyzxasuweiz64jqqxcz23tm75ca22h3wvfj3u4aums@gnjarnf5gpgq>
+ <yruvlyxyy6gsrf2hhtyja5hqnxi2fmdqr63twzxpjrxgffov32@l7gqvdxijs5c>
+ <878ca484-a045-4abb-a5bd-7d5ae82607de@cdn77.com>
+ <irvyenjca4czrxfew4c7nc23luo5ybgdw3lquq7aoadmhmfu6h@h4mx532ls26h>
+ <486bfabc-386c-4fdc-8903-d56ce207951f@cdn77.com>
+ <aILTi2-iZ1ge3D8n@slm.duckdns.org>
+Content-Language: en-US
+From: Daniel Sedlak <daniel.sedlak@cdn77.com>
+In-Reply-To: <aILTi2-iZ1ge3D8n@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CTCH: RefID="str=0001.0A002110.68875ED5.0034,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0"; Spam="Unknown"; VOD="Unknown"
 
-On Mon 28-07-25 18:07:15, Jiufei Xue wrote:
-> An use-after-free issue occurred when __mark_inode_dirty() get the
-> bdi_writeback that was in the progress of switching.
+On 7/25/25 2:44 AM, Tejun Heo wrote:
+> On Thu, Jul 24, 2025 at 10:43:27AM +0200, Daniel Sedlak wrote:
+> ...
+>> Currently, we know the following information:
+>>
+>> - we know when the pressure starts
+>> - and we know when the pressure ends if not rearmed (start time + HZ)
+>>
+>>  From that, we should be able to calculate a similar triplet to the pressure
+>> endpoints in the cgroups (cpu|io|memory|irq).pressure. That is, how much %
+>> of time on average was spent under pressure for avg10, avg60, avg300 i.e.
+>> average pressure over the past 10 seconds, 60 seconds, and 300 seconds,
+>> respectively. (+ total time spent under pressure)
 > 
-> CPU: 1 PID: 562 Comm: systemd-random- Not tainted 6.6.56-gb4403bd46a8e #1
-> ......
-> pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : __mark_inode_dirty+0x124/0x418
-> lr : __mark_inode_dirty+0x118/0x418
-> sp : ffffffc08c9dbbc0
-> ........
-> Call trace:
->  __mark_inode_dirty+0x124/0x418
->  generic_update_time+0x4c/0x60
->  file_modified+0xcc/0xd0
->  ext4_buffered_write_iter+0x58/0x124
->  ext4_file_write_iter+0x54/0x704
->  vfs_write+0x1c0/0x308
->  ksys_write+0x74/0x10c
->  __arm64_sys_write+0x1c/0x28
->  invoke_syscall+0x48/0x114
->  el0_svc_common.constprop.0+0xc0/0xe0
->  do_el0_svc+0x1c/0x28
->  el0_svc+0x40/0xe4
->  el0t_64_sync_handler+0x120/0x12c
->  el0t_64_sync+0x194/0x198
+> Let's just add the cumulative duration that socket pressure was present.
 > 
-> Root cause is:
+> Thanks.
 > 
-> systemd-random-seed                         kworker
-> ----------------------------------------------------------------------
-> ___mark_inode_dirty                     inode_switch_wbs_work_fn
-> 
->   spin_lock(&inode->i_lock);
->   inode_attach_wb
->   locked_inode_to_wb_and_lock_list
->      get inode->i_wb
->      spin_unlock(&inode->i_lock);
->      spin_lock(&wb->list_lock)
->   spin_lock(&inode->i_lock)
->   inode_io_list_move_locked
->   spin_unlock(&wb->list_lock)
->   spin_unlock(&inode->i_lock)
->                                     spin_lock(&old_wb->list_lock)
->                                       inode_do_switch_wbs
->                                         spin_lock(&inode->i_lock)
->                                         inode->i_wb = new_wb
->                                         spin_unlock(&inode->i_lock)
->                                     spin_unlock(&old_wb->list_lock)
->                                     wb_put_many(old_wb, nr_switched)
->                                       cgwb_release
->                                       old wb released
->   wb_wakeup_delayed() accesses wb,
->   then trigger the use-after-free
->   issue
-> 
-> Fix this race condition by holding inode spinlock until
-> wb_wakeup_delayed() finished.
-> 
-> Signed-off-by: Jiufei Xue <jiufei.xue@samsung.com>
 
-Looks good! Thanks for the fix. Feel free to add:
+Ok, I will send it as v4, if no other objections are made. In which 
+units the duration should be? Milliseconds? It can also be microseconds, 
+which are now used in (cpu|io|memory|irq).pressure files.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/fs-writeback.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index cc57367fb..a07b8cf73 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -2608,10 +2608,6 @@ void __mark_inode_dirty(struct inode *inode, int flags)
->  			wakeup_bdi = inode_io_list_move_locked(inode, wb,
->  							       dirty_list);
->  
-> -			spin_unlock(&wb->list_lock);
-> -			spin_unlock(&inode->i_lock);
-> -			trace_writeback_dirty_inode_enqueue(inode);
-> -
->  			/*
->  			 * If this is the first dirty inode for this bdi,
->  			 * we have to wake-up the corresponding bdi thread
-> @@ -2621,6 +2617,11 @@ void __mark_inode_dirty(struct inode *inode, int flags)
->  			if (wakeup_bdi &&
->  			    (wb->bdi->capabilities & BDI_CAP_WRITEBACK))
->  				wb_wakeup_delayed(wb);
-> +
-> +			spin_unlock(&wb->list_lock);
-> +			spin_unlock(&inode->i_lock);
-> +			trace_writeback_dirty_inode_enqueue(inode);
-> +
->  			return;
->  		}
->  	}
-> -- 
-> 2.43.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks!
+Daniel
 
