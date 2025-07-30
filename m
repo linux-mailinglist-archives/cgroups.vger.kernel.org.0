@@ -1,63 +1,48 @@
-Return-Path: <cgroups+bounces-8938-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8939-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 450C0B16571
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 19:25:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77845B165EA
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 20:01:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CC201AA32D4
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 17:25:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E049D622251
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 17:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDC02D839C;
-	Wed, 30 Jul 2025 17:25:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10A642DCF64;
+	Wed, 30 Jul 2025 18:00:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="b1iCMmgE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gkgdewgu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from 003.mia.mailroute.net (003.mia.mailroute.net [199.89.3.6])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C520CBA2D;
-	Wed, 30 Jul 2025 17:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.3.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051392E2EEA;
+	Wed, 30 Jul 2025 18:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753896302; cv=none; b=Tp0blFegAiDA5mBRgthsWZVSsORdLbuCxysg2/+Um76Owt4KXw7AaQSeyZlOdy1Ri7XSKthHYykn9g2olpRcd/BsSLHFyOy5LUkUSPvLhf+1CtR3Q1BmGEv3uLRReJUwKw2oPQi8DIfA5b69Ufr5wJoPqyJ19NuKkmh8PCaOiBQ=
+	t=1753898402; cv=none; b=vBxos8DJpMv920FniMQleYafsnAuJq3LXRxib/VdSM5BDMR8y3s8jJSeZi7fd/7xkoLk3J5ISKNze7HY3oxzSJgxcr5hVL6ObJ5lU69xi9j7Y9idVr8hMzWQOefeAVPN8gUsL1FPCeHTfWIzTjYQYEoNvcjMQJboF8Ofv4CZjCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753896302; c=relaxed/simple;
-	bh=/lWyWVDZocagrXCpoIFP/0Hv9MDxEPjKMpTAhKNf3qY=;
+	s=arc-20240116; t=1753898402; c=relaxed/simple;
+	bh=79boMvE4EVEuoqpAs/iFjHAo1FmCavA4+Qfb1+BR5cw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BKffXpuJp0BDA6OTDTmObfA0VD/ujEkeXsM8PUNLajVDuFIKkTsFZmtUxweSdYqVnihZDo+v0U0epfZBe9P54s6Ii5IOKbKcDd88su4nqLrTSJ+sv9ngrJ+EZsJrKDI8jMmLDbDHIUNSeqmgNxFpPPhgPlBwpHGpmQKfhaTMpMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=b1iCMmgE; arc=none smtp.client-ip=199.89.3.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 003.mia.mailroute.net (Postfix) with ESMTP id 4bsfGz4x3JzlgqVc;
-	Wed, 30 Jul 2025 17:24:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1753896297; x=1756488298; bh=+QJVC+VXQCucnSBxEFhz/liH
-	/yAIajbaQoLwwIpoJIM=; b=b1iCMmgEwZF3kY4iab9tj76uXQvYm3ivPdnLLM4g
-	t8GC1YCeeU20A96y0iXbEhFPtseFEMNfOdw/qngTnwSQG+gNb3II5VNIZOjahZJy
-	whSeFB/K6YvIWREMLJ/f78NwUW911ne7/JL/2UA6DxkG14mYcK0Vzs0Y1q0Sol3k
-	ucVbaGHoyOvi+6oFmg+TNWjv28HG982VTIOmIlytUg1tFfcUV0UngBAgvLupzcWw
-	H8m/Ei4dASE0o8lUn+tVUb8pjSiJ7WMlDJ/dsHzKJuU9By676Ltvg5j4l9x2673h
-	cCVijafvQU5p6j/yYn0ZZ6zgJcyvVVJuPlEauhyx9Wc7cQ==
-X-Virus-Scanned: by MailRoute
-Received: from 003.mia.mailroute.net ([127.0.0.1])
- by localhost (003.mia [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id IAC4pJZYGg11; Wed, 30 Jul 2025 17:24:57 +0000 (UTC)
-Received: from [100.66.154.22] (unknown [104.135.204.82])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 003.mia.mailroute.net (Postfix) with ESMTPSA id 4bsfGk312hzlgqVY;
-	Wed, 30 Jul 2025 17:24:45 +0000 (UTC)
-Message-ID: <fd1b4b38-4b0a-4897-8130-bb39ecf11c66@acm.org>
-Date: Wed, 30 Jul 2025 10:24:44 -0700
+	 In-Reply-To:Content-Type; b=Qe2RaOgZAPae6BYOKLpxGdarN5pfuYQx2GIY+oT17XmDdk3eYi2kZwafifF4RSpn55ZwvMjTTHGnfwDDa9vmPcjme0RG77aFusENwsuHBKFrPw1HIwmitArwHwhc2dgBmBV/DTrSXPzIPlShlK/vFxk41guXLEGVTi5uHscYsoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gkgdewgu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90C3BC4CEE7;
+	Wed, 30 Jul 2025 17:59:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753898401;
+	bh=79boMvE4EVEuoqpAs/iFjHAo1FmCavA4+Qfb1+BR5cw=;
+	h=Date:Reply-To:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gkgdewgublHHMl/bE97Df+OIBt49oMaLUW5AoVor0m7cKIiuLb1tZaunSGGxhBCXR
+	 RdDxkwW/D7NL2K4PF6Krh3yxBANxT2nCc0/hFhlaja4UBl02VRo9ByoOkyP4AiRHDW
+	 caVVuUKWVWzMrm8SaPLZQ5+Jo8QojWN68H4BTsHaqCJbzpvbONj0GCcgSuN3CGinxQ
+	 zeOxFR+AjDc4S7jYB7Gg1wbyzDt/Ti3CmjmB+lATRLoM5kx1t9SC/5G0k3ec7dGFL4
+	 jKgfzi1x4NKDzk+pZ2tGLq0kwHiiaA/biBOowN19wTr2o3DZdtG4QWAgF/5RiJbKWh
+	 smKYiZsN1rdTg==
+Message-ID: <7ea0b6ad-c64b-4816-9d91-9d97abb02f89@kernel.org>
+Date: Thu, 31 Jul 2025 01:59:54 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,36 +50,52 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/5] block, bfq: switch to use elevator lock
-To: Yu Kuai <yukuai1@huaweicloud.com>, dlemoal@kernel.org, hare@suse.de,
- jack@suse.cz, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
- yukuai3@huawei.com
+Reply-To: yukuai@kernel.org
+Subject: Re: [PATCH v2 1/5] blk-mq-sched: introduce high level elevator lock
+To: Bart Van Assche <bvanassche@acm.org>, Yu Kuai <yukuai1@huaweicloud.com>,
+ dlemoal@kernel.org, hare@suse.de, jack@suse.cz, tj@kernel.org,
+ josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com
 Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
  johnny.chenyi@huawei.com
 References: <20250730082207.4031744-1-yukuai1@huaweicloud.com>
- <20250730082207.4031744-4-yukuai1@huaweicloud.com>
+ <20250730082207.4031744-2-yukuai1@huaweicloud.com>
+ <e07ce691-c298-4cb4-8ac3-35c8a8beaea4@acm.org>
 Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20250730082207.4031744-4-yukuai1@huaweicloud.com>
+From: Yu Kuai <yukuai@kernel.org>
+In-Reply-To: <e07ce691-c298-4cb4-8ac3-35c8a8beaea4@acm.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 7/30/25 1:22 AM, Yu Kuai wrote:
->   static sector_t bfq_io_struct_pos(void *io_struct, bool request)
-> @@ -5301,8 +5301,6 @@ static struct request *bfq_dispatch_request(struct blk_mq_hw_ctx *hctx)
->   	struct bfq_queue *in_serv_queue;
->   	bool waiting_rq, idle_timer_disabled = false;
->   
-> -	spin_lock_irq(&bfqd->lock);
-> -
->   	in_serv_queue = bfqd->in_service_queue;
->   	waiting_rq = in_serv_queue && bfq_bfqq_wait_request(in_serv_queue);
->   
+Hi
 
-Please restrict this patch to changing &bfqd->lock into bfqd->lock only.
+在 2025/7/31 1:19, Bart Van Assche 写道:
+> On 7/30/25 1:22 AM, Yu Kuai wrote:
+>> +        if (sq_sched)
+>> +            spin_lock(&e->lock);
+>>           rq = e->type->ops.dispatch_request(hctx);
+>> +        if (sq_sched)
+>> +            spin_unlock(&e->lock);
+>
+> The above will confuse static analyzers. Please change it into something
+> like the following:
+>
+> if (blk_queue_sq_sched(q)) {
+>     spin_lock(&e->lock);
+>     rq = e->type->ops.dispatch_request(hctx);
+>     spin_unlock(&e->lock);
+> } else {
+>     rq = e->type->ops.dispatch_request(hctx);
+> }
+>
+> Otherwise this patch looks good to me.
+Ok, thanks for the review, will change in the next version.
+Kuai
 
-Thanks,
+>
+> Thanks,
+>
+> Bart.
+>
 
-Bart.
 
