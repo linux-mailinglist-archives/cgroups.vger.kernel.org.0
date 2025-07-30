@@ -1,78 +1,78 @@
-Return-Path: <cgroups+bounces-8934-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8935-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21DB9B16503
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 18:49:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADA34B16505
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 18:49:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D3A75649FA
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 16:48:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2DAD18C35B9
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 16:49:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD642DFA38;
-	Wed, 30 Jul 2025 16:48:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4143E2E06C3;
+	Wed, 30 Jul 2025 16:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OO9Qgwz3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DYKOYFnm"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F14592E3711;
-	Wed, 30 Jul 2025 16:48:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BCEC2E03F2;
+	Wed, 30 Jul 2025 16:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753894120; cv=none; b=eLH2bECcSZxwLfKyDHDqBUXwOL1JNbLZhnmbUnPZoD5mmxqOlo7BRNW5d9YsC2F0vYLwXOrKrQqFFM8j0v3yNxJNafNHe7zNq4wwhWe+zkVg4cfgpf6GTf6wFeVe5PsNdu/SzH25gi/DeDE/D84H9QmMEyiXIYWl7b+UOeqwXJw=
+	t=1753894123; cv=none; b=ToU6jkg66zGvDeni6AWbhqxC+zbY83PXp/R1SaYwnl3xk72aMcikNWdOqJrKHpXA/LizlyZ0PrckjDZo2cKVzKmjOu5DT/+avkN4zX3Ze+WsbJ3hHt3HVmOGPi4J8+RSh2xmhUiP3R4Ecr7KqU9j3dEYgUm54cRy8nGfpth+d/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753894120; c=relaxed/simple;
-	bh=kgb8cK83STwGirlzdc9wh2BbiZuGIEutknP669/lYQg=;
+	s=arc-20240116; t=1753894123; c=relaxed/simple;
+	bh=S3ZLhAQ0/4bbvyp1kVylg7m+jh0nJI3cnvrFEpF3/+U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=juStAkiMamqR+2If/6lKI33pvExBARtjca4JaQZR9EFRCuvvuSnRxMvEFfi/SljOuBH9oEjH7fV4nhqgvbXwdRor1mhhIEwFjPHkJxDQfbY10IB7Uso4vyosceeVjnODOhZb+mRrtfvXvGbL8cMq90fEsmXED+3EzZYTG2pey/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OO9Qgwz3; arc=none smtp.client-ip=209.85.216.48
+	 MIME-Version; b=fAlWuDw0vpawQtP8kRM7moeIPzE+H21ZC1EtCmTEjDfxiicrdyqtNm5aWCpVvcxyIopOtv+60DtaLa5in5lnWphKDJRZ1RtFfeBUJ+Dd2pvJFyIH20qY0nABPUR4HfAeA67i5dmBeSae9yUjsA9r6Qj8PwN1GBMzyFezR+SixuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DYKOYFnm; arc=none smtp.client-ip=209.85.216.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-313bb9b2f5bso11792a91.3;
-        Wed, 30 Jul 2025 09:48:38 -0700 (PDT)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-31ecd40352fso83545a91.2;
+        Wed, 30 Jul 2025 09:48:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753894118; x=1754498918; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1753894121; x=1754498921; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=COtva7AgAsmvuDyZKfou3WP5bEWSxJoD7wNkuQvVslA=;
-        b=OO9Qgwz3pu8CxE9AVft4mpaq3fsuYnyH1jHNc4zlZ1H7MjUHcvrcn50q6/BfeDx0Ae
-         Xo73m/c8gXZLX0vaYztbLGNVFlnZcPVOvkkGcFjTm/2I8Kv5YW8yTHdjaYExWDonk9cO
-         zgqSmVUKexegG0arvXJje2PBGFn17UgyUfx94fWcb27fG3uNmmUbfG6fBhl7UGIq0ZZz
-         g2+7nFv4oHLf0tt6tEdidtpQFwwGDztDVGhBrF23fKtR+metHMlPj76DgYQdcDi/fkPx
-         G963BBPDpWauM5QxszA8aXUgsm7OAeppNzavq2oUFxo2F1c9rrMvHO8KkUC6KpsRTxJQ
-         CTwg==
+        bh=4C0s2+ecPdhcpXy61gFU/B2Yg7s+esVSvQ4kT7kltr0=;
+        b=DYKOYFnmISvYmGhdmlWA3emF5Bp685u1l7EP8FZ4d4JCFpLcsK+CuhpkTXStfcYrhF
+         worzEujNzmmQInc64cwSTaXNKV38qh3kFyIbwX1Ot599Uid1CBCA9uLTMexPzwOImIaj
+         AmFEQqm0rg9SUd4uaLyYzo1P1JaYbWX23o5uP0TPe4pKue4hFG8hiIEOxC2KHqntZpeL
+         Tj5YbbfdhTZKQm3nBMf5oR48CUGNF7zffkMc/VUCLBYogdM8oMDdoof1S3yHmYKBXM4K
+         +keoxYb5+bZrncCrc6QhkjjNwmtCXZF9LQg01P3GbAM/2voBfP83ceUvkIgkYzj7kJ0+
+         FHnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753894118; x=1754498918;
+        d=1e100.net; s=20230601; t=1753894121; x=1754498921;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=COtva7AgAsmvuDyZKfou3WP5bEWSxJoD7wNkuQvVslA=;
-        b=e+JYGvBLrI8MJFK0VEBqdjF8Axa9sevmM66F35wEV/pp4YFcgHx7zTFsaYJhXx+7w/
-         RKvplwHnGWw4Krmmf5sCZmm6/1K9jm38++GbWmI2xqU7Eyv93H/AtiRFQH0wsxZOuiFD
-         03kbtEZmmewZN8iQ2omRzFv3ED9T+hEBFO5hzUASYeSuJm1sE4p7Cej3NbIfuvGVMp37
-         c4ror6UBb1Y/X8SM4Hlbq41km4zwJ84Sxh9rofNtL7M2O4SSwyBgolirDp8vEqdtB9o1
-         r79vIRdUbcWjI/O+/XboFEaAMi05Gqr9xeGl+eAK1H5GYwJKMZ2RDTsyDUNYB7yYUz/w
-         BAVg==
-X-Forwarded-Encrypted: i=1; AJvYcCUsAvmLEIg2XgxSHQdi3XLwUiNcYhKyoEHrpOYzZ05yROxlgGeYeD5Q32WLbxNx+vpT4cnbJdE5@vger.kernel.org, AJvYcCV/b+j/NBquFrK2wZHhtTHwLayXNrieILTqVyijN0vKXAXWKUZ9+lglSWFEgxFtl6aw0vCzXvFrgKI6tf5d@vger.kernel.org, AJvYcCVtbrdCnRvknfP7LdaxyGPXWSlpHT/eSt/mEvKnyqW0rZdoVIl8mxkxQjBPoLfje/fCh2fo/IH5iJmLt8o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyEGNyT449/G57UnuxmAEqegcu5x26ErjJOzTM3zGRYPCVtbiqX
-	2yuGZaRNs1i5Ksuh+oxFNx7AWw/EO5xYAFlrv7bu4zgsqRc+0Fbg6yvH8VSc0w==
-X-Gm-Gg: ASbGncu3vO2yPEU5ki4wpWddFP+8LLPfocVsVQ/LOIqIbSD9DtizGbIs0QG1PWjOJh9
-	5DbZXpSM7A7mwzC++NQZtSVVrvZvuTg8BP1odBSMlscD+NsPn1INnEHltMLiuFWPGzOI676vtV4
-	oO4SMklNAWesp+MbhplYRli0wt4DiqjkdCy5JlWnNKZy0xrqIxyrwTUWvgMH1PxP4FrrLSW3rFt
-	ngHqXoj6hh74DQdbl0yF8NABgJ4xMbA/MPnAZplXaA0XfmvMHLZbtM5Z1HnYxZN0Ezzvfmej/ID
-	e/Jj44XxfIitKkLHxLBroKJWcGUZsKiEl3PReKi0ICdSo5MHw0wtlaCjwpt5LSX2MLNYRr6HSeD
-	6JOuChvlS9peBy1n+Ojn0FoSK7eYKHGknMmA=
-X-Google-Smtp-Source: AGHT+IFXmiA9PJ38oSVKdH01dSTBbo9cUE4Q++w5DkrsBBEnrP9RXVx2WxM9VsafN7Kode9BjK4RLA==
-X-Received: by 2002:a17:90a:e7c1:b0:31f:20a:b549 with SMTP id 98e67ed59e1d1-31f5dd8ce0fmr5659301a91.7.1753894118040;
-        Wed, 30 Jul 2025 09:48:38 -0700 (PDT)
+        bh=4C0s2+ecPdhcpXy61gFU/B2Yg7s+esVSvQ4kT7kltr0=;
+        b=DNR3mybLxRvEKIkiNPKQpcPGuYKGxHJILfMfGKwB10moJTgx7tIPh9AQb+aqtAwErV
+         TooDJvuTcVHrZm1aWKcIZizLDfhf83KNAnT+nK5tM9XUpnkTx2WG8J5c4kWvey9ZXw9u
+         GBBfm0Bl+pFR+4JwWjTPLNExXltpss9Cl5/wDkFXgP0wgM9ZNVERMsl1jQIhbu7o4LQT
+         Qlbh1Pck/IOUobbymTHWrI/PBfJcMzFrGOWMK+LISRd5llWImMaIoBgmmXqXkdwniUbo
+         zItJS7SMvbAr8NPYKf7fT9oKdMzrCo0s1o82kNLWbZCLtbCoHVuOqGw63d4TH06w/Cq+
+         JvGw==
+X-Forwarded-Encrypted: i=1; AJvYcCUujtZRqVjuGAO62QtjzQdJ+8Dl+Xa45jZWU2VBZklVWnU7zq363CYoC8Ov/8EgtowUFjfhoj1Z3zfq9blc@vger.kernel.org, AJvYcCWaTmKnEVCjqYkJz6ZLHz1sb9bkcnxM7pyVRP2T9O38cE4fUpU76ddlTNPhy0ZDTfXTqY6Ygvlq@vger.kernel.org, AJvYcCXHyTp543fnpzyvmouS50d2FmsbWLqmX3SPgifsYHkCqdPbjC0qE50Uow1Nts6uRdY8esoPIHElsaC2Nk0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwRo94SNNRLvCEKfaywndvgwCdTN3wVueHPQirMkxO4IRZDi8ma
+	fBKybcBFvfApjm/0mDan6zDdYfYW+2KM+8dJZF1lPOr1F82In3eE0MOL
+X-Gm-Gg: ASbGncu+cEM95Eqx/Je+rnGck+6lllOFQKkTu78/nX6DRdoXXV1wbrKXbttFj2VyFsw
+	jIa9jBkumOAxykelKv2xCsCXIY+JKOH1y4IybhFt4kC6M4Z276gXXpygOj88uoa9eviuDON5eSI
+	80acBEe5F+Zm1prbYcjJ7GFUnf2bRZcJ3KIrj8sO4GMoJM8yFZXbv1XVTnZDIaJC/fY/Gwd+aRY
+	Yxu7pFwUJTXtt0529+7ZMwZVSs8iHyopz7tx/LUvJwx5yicf9U+mNE6BjJBauv5X42sN+Q2uQIe
+	ULxwXzLBqLh1iEPBRiK+jgDaMcXhzcKBEDpzYi1x+NCZDMSi9RvH9S6UGf8/cbSUDi1wvvVYdm/
+	JnJlMEFYE9XIy/k99VupCLOKqmb9He/jEiYpoo/Y/LyXiyw==
+X-Google-Smtp-Source: AGHT+IEaHdpL0FC+hX73dpxEAZe9z0rxJqJ0TfDgR1D3+BPqgAC9gTp9YgDHLMoqXwSKqEaUEkDnig==
+X-Received: by 2002:a17:90b:1d0d:b0:311:b413:f5e1 with SMTP id 98e67ed59e1d1-31f5ea6a623mr5073033a91.32.1753894120651;
+        Wed, 30 Jul 2025 09:48:40 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31f310261d6sm2362558a91.4.2025.07.30.09.48.37
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31f63e3bf4dsm2456886a91.36.2025.07.30.09.48.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jul 2025 09:48:37 -0700 (PDT)
+        Wed, 30 Jul 2025 09:48:39 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
 From: Guenter Roeck <linux@roeck-us.net>
 To: Tejun Heo <tj@kernel.org>
@@ -83,9 +83,9 @@ Cc: Josef Bacik <josef@toxicpanda.com>,
 	linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 1/2] block/blk-throttle: Fix throttle slice time for SSDs
-Date: Wed, 30 Jul 2025 09:48:31 -0700
-Message-ID: <20250730164832.1468375-2-linux@roeck-us.net>
+Subject: [PATCH 2/2] block/blk-throttle: Remove throtl_slice from struct throtl_data
+Date: Wed, 30 Jul 2025 09:48:32 -0700
+Message-ID: <20250730164832.1468375-3-linux@roeck-us.net>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20250730164832.1468375-1-linux@roeck-us.net>
 References: <20250730164832.1468375-1-linux@roeck-us.net>
@@ -97,89 +97,142 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Commit d61fcfa4bb18 ("blk-throttle: choose a small throtl_slice for SSD")
-introduced device type specific throttle slices if BLK_DEV_THROTTLING_LOW
-was enabled. Commit bf20ab538c81 ("blk-throttle: remove
-CONFIG_BLK_DEV_THROTTLING_LOW") removed support for BLK_DEV_THROTTLING_LOW,
-but left the device type specific throttle slices in place. This
-effectively changed throttling behavior on systems with SSD which now use
-a different and non-configurable slice time compared to non-SSD devices.
-Practical impact is that throughput tests with low configured throttle
-values (65536 bps) experience less than expected throughput on SSDs,
-presumably due to rounding errors associated with the small throttle slice
-time used for those devices. The same tests pass when setting the throttle
-values to 65536 * 4 = 262144 bps.
+throtl_slice is now a constant. Remove the variable and use the constant
+directly where needed.
 
-The original code sets the throttle slice time to DFL_THROTL_SLICE_HD if
-CONFIG_BLK_DEV_THROTTLING_LOW is disabled. Restore that code to fix the
-problem. With that, DFL_THROTL_SLICE_SSD is no longer necessary. Revert to
-the original code and re-introduce DFL_THROTL_SLICE to replace both
-DFL_THROTL_SLICE_HD and DFL_THROTL_SLICE_SSD. This effectively reverts
-commit d61fcfa4bb18 ("blk-throttle: choose a small throtl_slice for SSD").
-
-After the removal of CONFIG_BLK_DEV_THROTTLING_LOW, it is no longer
-necessary to enable block accounting, so remove the call to
-blk_stat_enable_accounting(). With that, the track_bio_latency variable
-is no longer used and can be deleted from struct throtl_data. Also,
-including blk-stat.h is no longer necessary.
-
-While at it, also remove MAX_THROTL_SLICE since it is not used anymore.
-
-Fixes: bf20ab538c81 ("blk-throttle: remove CONFIG_BLK_DEV_THROTTLING_LOW")
 Cc: Yu Kuai <yukuai3@huawei.com>
 Cc: Tejun Heo <tj@kernel.org>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- block/blk-throttle.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
+ block/blk-throttle.c | 32 +++++++++++++-------------------
+ 1 file changed, 13 insertions(+), 19 deletions(-)
 
 diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 397b6a410f9e..924d09b51b69 100644
+index 924d09b51b69..7756e6c8338d 100644
 --- a/block/blk-throttle.c
 +++ b/block/blk-throttle.c
-@@ -12,7 +12,6 @@
- #include <linux/blktrace_api.h>
- #include "blk.h"
- #include "blk-cgroup-rwstat.h"
--#include "blk-stat.h"
- #include "blk-throttle.h"
+@@ -38,8 +38,6 @@ struct throtl_data
+ 	/* Total Number of queued bios on READ and WRITE lists */
+ 	unsigned int nr_queued[2];
  
- /* Max dispatch from a group in 1 round */
-@@ -22,9 +21,7 @@
- #define THROTL_QUANTUM 32
- 
- /* Throttling is performed over a slice and after that slice is renewed */
--#define DFL_THROTL_SLICE_HD (HZ / 10)
--#define DFL_THROTL_SLICE_SSD (HZ / 50)
--#define MAX_THROTL_SLICE (HZ)
-+#define DFL_THROTL_SLICE (HZ / 10)
- 
- /* A workqueue to queue throttle related work */
- static struct workqueue_struct *kthrotld_workqueue;
-@@ -45,8 +42,6 @@ struct throtl_data
- 
+-	unsigned int throtl_slice;
+-
  	/* Work for dispatching throttled bios */
  	struct work_struct dispatch_work;
--
--	bool track_bio_latency;
  };
+@@ -446,7 +444,7 @@ static void throtl_dequeue_tg(struct throtl_grp *tg)
+ static void throtl_schedule_pending_timer(struct throtl_service_queue *sq,
+ 					  unsigned long expires)
+ {
+-	unsigned long max_expire = jiffies + 8 * sq_to_td(sq)->throtl_slice;
++	unsigned long max_expire = jiffies + 8 * DFL_THROTL_SLICE;
  
- static void throtl_pending_timer_fn(struct timer_list *t);
-@@ -1345,13 +1340,7 @@ static int blk_throtl_init(struct gendisk *disk)
- 		goto out;
+ 	/*
+ 	 * Since we are adjusting the throttle limit dynamically, the sleep
+@@ -514,7 +512,7 @@ static inline void throtl_start_new_slice_with_credit(struct throtl_grp *tg,
+ 	if (time_after(start, tg->slice_start[rw]))
+ 		tg->slice_start[rw] = start;
+ 
+-	tg->slice_end[rw] = jiffies + tg->td->throtl_slice;
++	tg->slice_end[rw] = jiffies + DFL_THROTL_SLICE;
+ 	throtl_log(&tg->service_queue,
+ 		   "[%c] new slice with credit start=%lu end=%lu jiffies=%lu",
+ 		   rw == READ ? 'R' : 'W', tg->slice_start[rw],
+@@ -529,7 +527,7 @@ static inline void throtl_start_new_slice(struct throtl_grp *tg, bool rw,
+ 		tg->io_disp[rw] = 0;
+ 	}
+ 	tg->slice_start[rw] = jiffies;
+-	tg->slice_end[rw] = jiffies + tg->td->throtl_slice;
++	tg->slice_end[rw] = jiffies + DFL_THROTL_SLICE;
+ 
+ 	throtl_log(&tg->service_queue,
+ 		   "[%c] new slice start=%lu end=%lu jiffies=%lu",
+@@ -540,7 +538,7 @@ static inline void throtl_start_new_slice(struct throtl_grp *tg, bool rw,
+ static inline void throtl_set_slice_end(struct throtl_grp *tg, bool rw,
+ 					unsigned long jiffy_end)
+ {
+-	tg->slice_end[rw] = roundup(jiffy_end, tg->td->throtl_slice);
++	tg->slice_end[rw] = roundup(jiffy_end, DFL_THROTL_SLICE);
+ }
+ 
+ static inline void throtl_extend_slice(struct throtl_grp *tg, bool rw,
+@@ -671,12 +669,12 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
+ 	 * sooner, then we need to reduce slice_end. A high bogus slice_end
+ 	 * is bad because it does not allow new slice to start.
+ 	 */
+-	throtl_set_slice_end(tg, rw, jiffies + tg->td->throtl_slice);
++	throtl_set_slice_end(tg, rw, jiffies + DFL_THROTL_SLICE);
+ 
+ 	time_elapsed = rounddown(jiffies - tg->slice_start[rw],
+-				 tg->td->throtl_slice);
++				 DFL_THROTL_SLICE);
+ 	/* Don't trim slice until at least 2 slices are used */
+-	if (time_elapsed < tg->td->throtl_slice * 2)
++	if (time_elapsed < DFL_THROTL_SLICE * 2)
+ 		return;
+ 
+ 	/*
+@@ -687,7 +685,7 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
+ 	 * lower rate than expected. Therefore, other than the above rounddown,
+ 	 * one extra slice is preserved for deviation.
+ 	 */
+-	time_elapsed -= tg->td->throtl_slice;
++	time_elapsed -= DFL_THROTL_SLICE;
+ 	bytes_trim = throtl_trim_bps(tg, rw, time_elapsed);
+ 	io_trim = throtl_trim_iops(tg, rw, time_elapsed);
+ 	if (!bytes_trim && !io_trim)
+@@ -697,7 +695,7 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
+ 
+ 	throtl_log(&tg->service_queue,
+ 		   "[%c] trim slice nr=%lu bytes=%lld io=%d start=%lu end=%lu jiffies=%lu",
+-		   rw == READ ? 'R' : 'W', time_elapsed / tg->td->throtl_slice,
++		   rw == READ ? 'R' : 'W', time_elapsed / DFL_THROTL_SLICE,
+ 		   bytes_trim, io_trim, tg->slice_start[rw], tg->slice_end[rw],
+ 		   jiffies);
+ }
+@@ -768,7 +766,7 @@ static unsigned long tg_within_iops_limit(struct throtl_grp *tg, struct bio *bio
+ 	jiffy_elapsed = jiffies - tg->slice_start[rw];
+ 
+ 	/* Round up to the next throttle slice, wait time must be nonzero */
+-	jiffy_elapsed_rnd = roundup(jiffy_elapsed + 1, tg->td->throtl_slice);
++	jiffy_elapsed_rnd = roundup(jiffy_elapsed + 1, DFL_THROTL_SLICE);
+ 	io_allowed = calculate_io_allowed(iops_limit, jiffy_elapsed_rnd);
+ 	if (io_allowed > 0 && tg->io_disp[rw] + 1 <= io_allowed)
+ 		return 0;
+@@ -794,9 +792,9 @@ static unsigned long tg_within_bps_limit(struct throtl_grp *tg, struct bio *bio,
+ 
+ 	/* Slice has just started. Consider one slice interval */
+ 	if (!jiffy_elapsed)
+-		jiffy_elapsed_rnd = tg->td->throtl_slice;
++		jiffy_elapsed_rnd = DFL_THROTL_SLICE;
+ 
+-	jiffy_elapsed_rnd = roundup(jiffy_elapsed_rnd, tg->td->throtl_slice);
++	jiffy_elapsed_rnd = roundup(jiffy_elapsed_rnd, DFL_THROTL_SLICE);
+ 	bytes_allowed = calculate_bytes_allowed(bps_limit, jiffy_elapsed_rnd);
+ 	/* Need to consider the case of bytes_allowed overflow. */
+ 	if ((bytes_allowed > 0 && tg->bytes_disp[rw] + bio_size <= bytes_allowed)
+@@ -848,7 +846,7 @@ static void tg_update_slice(struct throtl_grp *tg, bool rw)
+ 	    sq_queued(&tg->service_queue, rw) == 0)
+ 		throtl_start_new_slice(tg, rw, true);
+ 	else
+-		throtl_extend_slice(tg, rw, jiffies + tg->td->throtl_slice);
++		throtl_extend_slice(tg, rw, jiffies + DFL_THROTL_SLICE);
+ }
+ 
+ static unsigned long tg_dispatch_bps_time(struct throtl_grp *tg, struct bio *bio)
+@@ -1337,12 +1335,8 @@ static int blk_throtl_init(struct gendisk *disk)
+ 	if (ret) {
+ 		q->td = NULL;
+ 		kfree(td);
+-		goto out;
  	}
  
--	if (blk_queue_nonrot(q))
--		td->throtl_slice = DFL_THROTL_SLICE_SSD;
--	else
--		td->throtl_slice = DFL_THROTL_SLICE_HD;
--	td->track_bio_latency = !queue_is_mq(q);
--	if (!td->track_bio_latency)
--		blk_stat_enable_accounting(q);
-+	td->throtl_slice = DFL_THROTL_SLICE;
- 
- out:
+-	td->throtl_slice = DFL_THROTL_SLICE;
+-
+-out:
  	blk_mq_unquiesce_queue(disk->queue);
+ 	blk_mq_unfreeze_queue(disk->queue, memflags);
+ 
 -- 
 2.45.2
 
