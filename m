@@ -1,63 +1,48 @@
-Return-Path: <cgroups+bounces-8941-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8942-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D77B0B16611
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 20:11:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 974D9B16642
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 20:30:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30411175981
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 18:10:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1148D1AA789D
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 18:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C80A2D9ECD;
-	Wed, 30 Jul 2025 18:10:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165CE27A93D;
+	Wed, 30 Jul 2025 18:30:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="QUz2Qwop"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lyq4mJKF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from 004.mia.mailroute.net (004.mia.mailroute.net [199.89.3.7])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 544C21DF98F;
-	Wed, 30 Jul 2025 18:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.3.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5B6198E9B;
+	Wed, 30 Jul 2025 18:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753899043; cv=none; b=J9iqRBq/eKvI68QhuV1CCiIq1cMC3nNzMvlb91dXF1ZPwQjz5A54qPWswqpeBy36gohrWb/9WCzNA1dL7JxWxd6DASKxQfNWkXHsbv9naPpFhHaqyEERTODpKLQEZ72U31kMj1dBaTYwzuyXpjZHc/YOYqktA0zQTmr3lvSlznM=
+	t=1753900211; cv=none; b=KNbrnWNKFhzmNe4cPP2+0ki2CiEoWAbkOy1oEabrY2omlgJs0T7Q60EmtN8tOBXI3Z/bLP+b48P6MKXAG/fD75vK8n8j5xBHDpxSg4YhjbpvFtgmrdAPaHM6LYAZLtGAcHE81pNMXOYE0K6j2j0qX4KTHbTFeUdn9s+YkUtBdW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753899043; c=relaxed/simple;
-	bh=lCk0vwDNFmJ0RsVYQ+rLHlwtUTBY3kSZuRjSXYAlmkY=;
+	s=arc-20240116; t=1753900211; c=relaxed/simple;
+	bh=mBBE1GbJZP5xEjvANSJFvb0+ELOI64V2uh/Mm6Ose5s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nzgheY+78nlLja7HsLMNRu7o/umO4+ooXblaSV/YbdI8FfqSm0JuVpoAq6wGDDn8avmHXOWd9Pbg5BxWzTqMy509Wcob/Xp1GWrWWRxsVjWNm2SpB5eyRMRWGBsxZJpLaJAsO3jFV0HCD6LvEYc3gzoteDuspYrwIrzYk1FfsYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=QUz2Qwop; arc=none smtp.client-ip=199.89.3.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 004.mia.mailroute.net (Postfix) with ESMTP id 4bsgHh1szmzm0yQd;
-	Wed, 30 Jul 2025 18:10:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1753899037; x=1756491038; bh=Zpjz4pPSStNS5tw5fFT7ZAbJ
-	XfEgP/hudW65uYZt/AU=; b=QUz2QwopZssNgFrgBexce/nuNQwoyFZzlLGiAoHZ
-	HLRnONO22jheUC+MqXNVj+6taMxV9dhZ/pGwk4veKM9oC4bTxII8b6+bFqT/RWm8
-	qWXg6G9sLZc1mDccCW5tIpmibu2hvd4hb8bYp5U4cGdZaZaLmg/DxJtn0YAt1PnR
-	ozBiHl6r7tzeRWuT5+dmKqhot1QGL1IllSu+M/AgV1zVRFhjo9HMT+yQ56hkzOqt
-	Y+mJi1kkYEvjIWoBW5/TuvM58iulvhOxlm27qV1ggfAfCTN7xsLtwShUHiHpcAKA
-	O6YqxeUUoj8AYzNwXaziSQn8fdxrSiLubxlqv1MIXAI2xg==
-X-Virus-Scanned: by MailRoute
-Received: from 004.mia.mailroute.net ([127.0.0.1])
- by localhost (004.mia [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id QJ_N9-q0RLPk; Wed, 30 Jul 2025 18:10:37 +0000 (UTC)
-Received: from [100.66.154.22] (unknown [104.135.204.82])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 004.mia.mailroute.net (Postfix) with ESMTPSA id 4bsgHP2lDmzm0c2T;
-	Wed, 30 Jul 2025 18:10:24 +0000 (UTC)
-Message-ID: <06f98711-7c09-4544-b832-b2a931907de8@acm.org>
-Date: Wed, 30 Jul 2025 11:10:23 -0700
+	 In-Reply-To:Content-Type; b=fHxkA1+6JkdahruYwKwa5cvnfpB9bHhR/QFcNzCTeRdBE0c039Xa1l5x6ir3Am8QngzqLZrZwR64H1Tu62+7x0Ojg2wtrXOqCdq8SJ65O0I5h5vW5uVfi+sM2UPGP9D044zh/e93BbJ/UAM9IeoN131RMoGJDlWm0lkhmt0ujUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lyq4mJKF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C00DDC4CEE3;
+	Wed, 30 Jul 2025 18:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753900211;
+	bh=mBBE1GbJZP5xEjvANSJFvb0+ELOI64V2uh/Mm6Ose5s=;
+	h=Date:Reply-To:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Lyq4mJKFhlvgMGrX0pzGrOkKsrdfH31ADKVpDosbvsODa5ciQV7k/0oyxkuSxcyWk
+	 dSO8Q9BvnrznwMpCmI6/aESJ6Y4O29DAIPj2mykiscqzeDab3IK3LohY/GMidDznZg
+	 1QQSyDinx56n5e8VZ8Du//yeTA0gtjkYRp7F25R8CuE6Tu50LnevxpRB3fGwgF+u6X
+	 PGTLXipzGETt245JTeGiky63c8Oa5AANqXqkJ3fGO5KvTQxHgGR4zx5Rj/8GwqoXcu
+	 9rXLDZYB3TxajUtSL2VPEPrxZsj9z6P1GKyI0x65TuEDkdcV8RJlXG0C3gPQ0OoAlp
+	 2uHWmxPl29Jiw==
+Message-ID: <1a1fe348-9ae5-4f3e-be9e-19fa88af513c@kernel.org>
+Date: Thu, 31 Jul 2025 02:30:05 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,31 +50,110 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] mq-deadline: switch to use elevator lock
-To: yukuai@kernel.org, Yu Kuai <yukuai1@huaweicloud.com>, dlemoal@kernel.org,
- hare@suse.de, jack@suse.cz, tj@kernel.org, josef@toxicpanda.com,
- axboe@kernel.dk, yukuai3@huawei.com
-Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- johnny.chenyi@huawei.com
-References: <20250730082207.4031744-1-yukuai1@huaweicloud.com>
- <20250730082207.4031744-3-yukuai1@huaweicloud.com>
- <ca605746-da46-46a4-a0f3-460ed2d35b0b@acm.org>
- <d80b9fc4-515e-4ce8-9f3c-28bdf2676336@kernel.org>
+Reply-To: yukuai@kernel.org
+Subject: Re: [PATCH 1/2] block/blk-throttle: Fix throttle slice time for SSDs
+To: Guenter Roeck <linux@roeck-us.net>, Tejun Heo <tj@kernel.org>
+Cc: Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+ Yu Kuai <yukuai3@huawei.com>, cgroups@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250730164832.1468375-1-linux@roeck-us.net>
+ <20250730164832.1468375-2-linux@roeck-us.net>
 Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <d80b9fc4-515e-4ce8-9f3c-28bdf2676336@kernel.org>
+From: Yu Kuai <yukuai@kernel.org>
+In-Reply-To: <20250730164832.1468375-2-linux@roeck-us.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 7/30/25 11:01 AM, Yu Kuai wrote:
-> Ok, you mean that the lock is moved to the caller is functional change, 
-> right?
+Hi,
 
-That's something one could argue about. But I think there is agreement
-that each patch should only include one logical change.
+在 2025/7/31 0:48, Guenter Roeck 写道:
+> Commit d61fcfa4bb18 ("blk-throttle: choose a small throtl_slice for SSD")
+> introduced device type specific throttle slices if BLK_DEV_THROTTLING_LOW
+> was enabled. Commit bf20ab538c81 ("blk-throttle: remove
+> CONFIG_BLK_DEV_THROTTLING_LOW") removed support for BLK_DEV_THROTTLING_LOW,
+> but left the device type specific throttle slices in place. This
+> effectively changed throttling behavior on systems with SSD which now use
+> a different and non-configurable slice time compared to non-SSD devices.
+> Practical impact is that throughput tests with low configured throttle
+> values (65536 bps) experience less than expected throughput on SSDs,
+> presumably due to rounding errors associated with the small throttle slice
+> time used for those devices. The same tests pass when setting the throttle
+> values to 65536 * 4 = 262144 bps.
+>
+> The original code sets the throttle slice time to DFL_THROTL_SLICE_HD if
+> CONFIG_BLK_DEV_THROTTLING_LOW is disabled. Restore that code to fix the
+> problem. With that, DFL_THROTL_SLICE_SSD is no longer necessary. Revert to
+> the original code and re-introduce DFL_THROTL_SLICE to replace both
+> DFL_THROTL_SLICE_HD and DFL_THROTL_SLICE_SSD. This effectively reverts
+> commit d61fcfa4bb18 ("blk-throttle: choose a small throtl_slice for SSD").
+>
+> After the removal of CONFIG_BLK_DEV_THROTTLING_LOW, it is no longer
+> necessary to enable block accounting, so remove the call to
+> blk_stat_enable_accounting(). With that, the track_bio_latency variable
+> is no longer used and can be deleted from struct throtl_data. Also,
+> including blk-stat.h is no longer necessary.
+>
+> While at it, also remove MAX_THROTL_SLICE since it is not used anymore.
+>
+> Fixes: bf20ab538c81 ("blk-throttle: remove CONFIG_BLK_DEV_THROTTLING_LOW")
+> Cc: Yu Kuai <yukuai3@huawei.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>   block/blk-throttle.c | 15 ++-------------
+>   1 file changed, 2 insertions(+), 13 deletions(-)
+>
+> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+> index 397b6a410f9e..924d09b51b69 100644
+> --- a/block/blk-throttle.c
+> +++ b/block/blk-throttle.c
+> @@ -12,7 +12,6 @@
+>   #include <linux/blktrace_api.h>
+>   #include "blk.h"
+>   #include "blk-cgroup-rwstat.h"
+> -#include "blk-stat.h"
+>   #include "blk-throttle.h"
+>   
+>   /* Max dispatch from a group in 1 round */
+> @@ -22,9 +21,7 @@
+>   #define THROTL_QUANTUM 32
+>   
+>   /* Throttling is performed over a slice and after that slice is renewed */
+> -#define DFL_THROTL_SLICE_HD (HZ / 10)
+> -#define DFL_THROTL_SLICE_SSD (HZ / 50)
+> -#define MAX_THROTL_SLICE (HZ)
+> +#define DFL_THROTL_SLICE (HZ / 10)
+>   
+>   /* A workqueue to queue throttle related work */
+>   static struct workqueue_struct *kthrotld_workqueue;
+> @@ -45,8 +42,6 @@ struct throtl_data
+>   
+>   	/* Work for dispatching throttled bios */
+>   	struct work_struct dispatch_work;
+> -
+> -	bool track_bio_latency;
+>   };
+>   
+>   static void throtl_pending_timer_fn(struct timer_list *t);
+> @@ -1345,13 +1340,7 @@ static int blk_throtl_init(struct gendisk *disk)
+>   		goto out;
+>   	}
+>   
+> -	if (blk_queue_nonrot(q))
+> -		td->throtl_slice = DFL_THROTL_SLICE_SSD;
+> -	else
+> -		td->throtl_slice = DFL_THROTL_SLICE_HD;
+> -	td->track_bio_latency = !queue_is_mq(q);
+> -	if (!td->track_bio_latency)
+> -		blk_stat_enable_accounting(q);
+> +	td->throtl_slice = DFL_THROTL_SLICE;
+>   
+>   out:
+>   	blk_mq_unquiesce_queue(disk->queue);
+This looks correct, I do missed the throtl_slice for ssd is only used with
+BLK_DEV_THROTTLING_LOW. However, I think it's better to factor the
+track_bio_latency changes into a separate patch.
 
 Thanks,
-
-Bart.
+Kuai
 
