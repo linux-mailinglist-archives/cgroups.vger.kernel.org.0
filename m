@@ -1,46 +1,61 @@
-Return-Path: <cgroups+bounces-8925-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8926-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3778FB15A5B
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 10:15:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 882C8B15AAF
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 10:33:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9315118890C4
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 08:16:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 284083AE4C1
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 08:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495732512C3;
-	Wed, 30 Jul 2025 08:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 127E829B778;
+	Wed, 30 Jul 2025 08:29:05 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-m49228.qiye.163.com (mail-m49228.qiye.163.com [45.254.49.228])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 503B536124
-	for <cgroups@vger.kernel.org>; Wed, 30 Jul 2025 08:15:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.228
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15EF9292B43;
+	Wed, 30 Jul 2025 08:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753863349; cv=none; b=p4uQlskfAaPJDYcQhgZ514sYI4bZcKksUojukDiIoydOdAtV7FQo0V+57WBjAEDg7MES2uQswyykQTbqwEKoPciCEXNnMzYZjmC10AlbPg6a0St/gEQOpsuPT5/ZGMGUau9R5OUoz9gVg/i8+ZylG+2FCQO8v0dTShbWSVGwbD8=
+	t=1753864144; cv=none; b=UfIhxd2of0gn+3RHll+vfz8nlhmTdqOkDjyYQwEyvnAsbxOusljnTPu4ohGIbt/o5glP9/sX25BUTdC+1ztnjCV7sN3fybHyIQYAXVfY0LLW3Y5E6hMNaiQ/mE0ywAUaBID2Wd3KRgDPVQ1HhsTsfAX4jHq4z4HflbEsn6RRJRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753863349; c=relaxed/simple;
-	bh=rNcO+57kdyWtfV8XdobJD6WwOkPbXiOTQ2J3CakTAoQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OuzPeGE2jBzY84n/iqZ/gLeAtVYXy+UKk/hYQpuR04PYTjqvsdbQHMts79lgcIb2PixyfaPWpn1fyt97qdewUVFBFh4oeYL9HWSZ+juLeJY5ftYGmy6NE/l+26S+SHqfEfP4ax/cVtwApG/NY2Q83jJ9aWnQPyvbQSVW1R6pdy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn; spf=pass smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=45.254.49.228
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
-Received: from localhost.localdomain (unknown [218.94.118.90])
-	by smtp.qiye.163.com (Hmail) with ESMTP id ddd57a2b;
-	Wed, 30 Jul 2025 16:10:24 +0800 (GMT+08:00)
-From: Zhen Ni <zhen.ni@easystack.cn>
-To: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com
+	s=arc-20240116; t=1753864144; c=relaxed/simple;
+	bh=tFNZP/sFwuWDQj8EkBPFt3c6SYzQt4ofWGQ0udUkyVs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rn2BMnfe1qmG7Pyg2+lqVYNnj35uGim9phL5qbEjMWmLu7BMcKeSpEKSfTO7fnvLV+99MehPisq7DqFq9Md7tgSpeHjrYa3f8P051U0KJ3p3g1sQCnPncKPQnKBJv+jY6/A+MuXmCtciEi8/ovYSbcQglln6u3nXp30uUxkYm7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4bsQNX1rVdzKHMxX;
+	Wed, 30 Jul 2025 16:29:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 226B11A0AA0;
+	Wed, 30 Jul 2025 16:28:59 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgAXkxPI14lokcLlBw--.17899S4;
+	Wed, 30 Jul 2025 16:28:58 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: dlemoal@kernel.org,
+	hare@suse.de,
+	jack@suse.cz,
+	tj@kernel.org,
+	josef@toxicpanda.com,
+	axboe@kernel.dk,
+	yukuai3@huawei.com
 Cc: cgroups@vger.kernel.org,
-	Zhen Ni <zhen.ni@easystack.cn>
-Subject: [PATCH] cgroup: Simplify cgroup_disable loop given limited count
-Date: Wed, 30 Jul 2025 16:10:15 +0800
-Message-Id: <20250730081015.910435-1-zhen.ni@easystack.cn>
-X-Mailer: git-send-email 2.20.1
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	johnny.chenyi@huawei.com
+Subject: [PATCH v2 0/5] blk-mq-sched: support request batch dispatching for sq elevator
+Date: Wed, 30 Jul 2025 16:22:02 +0800
+Message-Id: <20250730082207.4031744-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -48,55 +63,134 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HM-Tid: 0a985a61ed5b0229kunm458d2d3e41a822
-X-HM-MType: 1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkZTx4aVkkaSkpPGktMSU5MGFYVFAkWGhdVGRETFh
-	oSFyQUDg9ZV1kYEgtZQVlJSkNVQk9VSkpDVUJLWVdZFhoPEhUdFFlBWU9LSFVKS0lIQktDVUpLS1
-	VKQlkG
+X-CM-TRANSID:gCh0CgAXkxPI14lokcLlBw--.17899S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXryfKr45ArW3uF4rJr43Wrg_yoW5AF45pF
+	WfGanIyF4DX3ZIqF93uw17Jw1rGw4xZry3Grnxtr4SqwnrAr17AFn5Ja48ZFW7AryfWFsr
+	Wr1qqrykWa4UWaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-This patch refactors the cgroup_disable loop in cgroup_disable() to
-leverage the fact that OPT_FEATURE_COUNT can only be 0 or 1, making
-the loop structure unnecessary complex.
+From: Yu Kuai <yukuai3@huawei.com>
 
-Key insights:
-- OPT_FEATURE_COUNT is defined as an enum value that is either:
-  * 0 when CONFIG_PSI is disabled (no optional features)
-  * 1 when CONFIG_PSI is enabled (only "pressure" feature)
-- Therefore, the loop will either:
-  * Run 0 times (when no features exist)
-  * Run exactly 1 time (when only one feature exists)
+Changes from v1:
+ - the ioc changes are send separately;
+ - change the patch 1-3 order as suggested by Damien;
 
-Performance considerations:
-- The change has no performance impact since the loop runs at most once
+Currently, both mq-deadline and bfq have global spin lock that will be
+grabbed inside elevator methods like dispatch_request, insert_requests,
+and bio_merge. And the global lock is the main reason mq-deadline and
+bfq can't scale very well.
 
-Signed-off-by: Zhen Ni <zhen.ni@easystack.cn>
----
- kernel/cgroup/cgroup.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+For dispatch_request method, current behavior is dispatching one request at
+a time. In the case of multiple dispatching contexts, This behavior, on the
+one hand, introduce intense lock contention:
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index a723b7dc6e4e..71059b61b341 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -6895,11 +6895,11 @@ static int __init cgroup_disable(char *str)
- 		}
- 
- 		for (i = 0; i < OPT_FEATURE_COUNT; i++) {
--			if (strcmp(token, cgroup_opt_feature_names[i]))
--				continue;
--			cgroup_feature_disable_mask |= 1 << i;
--			pr_info("Disabling %s control group feature\n",
--				cgroup_opt_feature_names[i]);
-+			if (!strcmp(token, cgroup_opt_feature_names[i])) {
-+				cgroup_feature_disable_mask |= 1 << i;
-+				pr_info("Disabling %s control group feature\n",
-+					cgroup_opt_feature_names[i]);
-+			}
- 			break;
- 		}
- 	}
+t1:                     t2:                     t3:
+lock                    lock                    lock
+// grab lock
+ops.dispatch_request
+unlock
+                        // grab lock
+                        ops.dispatch_request
+                        unlock
+                                                // grab lock
+                                                ops.dispatch_request
+                                                unlock
+
+on the other hand, messing up the requests dispatching order:
+t1:
+
+lock
+rq1 = ops.dispatch_request
+unlock
+                        t2:
+                        lock
+                        rq2 = ops.dispatch_request
+                        unlock
+
+lock
+rq3 = ops.dispatch_request
+unlock
+
+                        lock
+                        rq4 = ops.dispatch_request
+                        unlock
+
+//rq1,rq3 issue to disk
+                        // rq2, rq4 issue to disk
+
+In this case, the elevator dispatch order is rq 1-2-3-4, however,
+such order in disk is rq 1-3-2-4, the order for rq2 and rq3 is inversed.
+
+While dispatching request, blk_mq_get_disatpch_budget() and
+blk_mq_get_driver_tag() must be called, and they are not ready to be
+called inside elevator methods, hence introduce a new method like
+dispatch_requests is not possible.
+
+In conclusion, this set factor the global lock out of dispatch_request
+method, and support request batch dispatch by calling the methods
+multiple time while holding the lock.
+
+nullblk setup:
+modprobe null_blk nr_devices=0 &&
+    udevadm settle &&
+    cd /sys/kernel/config/nullb &&
+    mkdir nullb0 &&
+    cd nullb0 &&
+    echo 0 > completion_nsec &&
+    echo 512 > blocksize &&
+    echo 0 > home_node &&
+    echo 0 > irqmode &&
+    echo 128 > submit_queues &&
+    echo 1024 > hw_queue_depth &&
+    echo 1024 > size &&
+    echo 0 > memory_backed &&
+    echo 2 > queue_mode &&
+    echo 1 > power ||
+    exit $?
+
+Test script:
+fio -filename=/dev/$disk -name=test -rw=randwrite -bs=4k -iodepth=32 \
+  -numjobs=16 --iodepth_batch_submit=8 --iodepth_batch_complete=8 \
+  -direct=1 -ioengine=io_uring -group_reporting -time_based -runtime=30
+
+Test result: iops
+
+|                 | deadline | bfq      |
+| --------------- | -------- | -------- |
+| before this set | 263k     | 124k     |
+| after this set  | 475k     | 292k     |
+
+Yu Kuai (5):
+  blk-mq-sched: introduce high level elevator lock
+  mq-deadline: switch to use elevator lock
+  block, bfq: switch to use elevator lock
+  blk-mq-sched: refactor __blk_mq_do_dispatch_sched()
+  blk-mq-sched: support request batch dispatching for sq elevator
+
+ block/bfq-cgroup.c   |   4 +-
+ block/bfq-iosched.c  |  49 +++++----
+ block/bfq-iosched.h  |   2 +-
+ block/blk-mq-sched.c | 241 ++++++++++++++++++++++++++++++-------------
+ block/blk-mq.h       |  21 ++++
+ block/elevator.c     |   1 +
+ block/elevator.h     |   4 +-
+ block/mq-deadline.c  |  58 +++++------
+ 8 files changed, 248 insertions(+), 132 deletions(-)
+
 -- 
-2.20.1
+2.39.2
 
 
