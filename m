@@ -1,97 +1,102 @@
-Return-Path: <cgroups+bounces-8924-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8925-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21F5FB1563F
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 02:15:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3778FB15A5B
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 10:15:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73F3A18A06ED
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 00:16:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9315118890C4
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jul 2025 08:16:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89C22A1CA;
-	Wed, 30 Jul 2025 00:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FxtYG9E2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495732512C3;
+	Wed, 30 Jul 2025 08:15:49 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-m49228.qiye.163.com (mail-m49228.qiye.163.com [45.254.49.228])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 737C11EB3D;
-	Wed, 30 Jul 2025 00:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 503B536124
+	for <cgroups@vger.kernel.org>; Wed, 30 Jul 2025 08:15:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.228
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753834546; cv=none; b=cAj6x4xOZChrEDGKkdZfeer8MPhR1gERVKBTNLCWQ/w0RcTzV6f3eseLs/gL34gNhd2zbLNZIq4BhZcM4jX8QpxEVYtUfdT5O7zaa043+jx5Wt4XZ55fPhf3/aa782PXFvXNSKrJWl0pRIdBCT+MwgLEJNHoowTWqAfHnYdn6Mo=
+	t=1753863349; cv=none; b=p4uQlskfAaPJDYcQhgZ514sYI4bZcKksUojukDiIoydOdAtV7FQo0V+57WBjAEDg7MES2uQswyykQTbqwEKoPciCEXNnMzYZjmC10AlbPg6a0St/gEQOpsuPT5/ZGMGUau9R5OUoz9gVg/i8+ZylG+2FCQO8v0dTShbWSVGwbD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753834546; c=relaxed/simple;
-	bh=/IL8wmq+lOfAOx4ojeLTp4+XN3Okds+fOFj21+eklGM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AfaArnMYVFt26sAjAj2pOxXn2nlQAB2eQC/+dELsTVeku6qKDIRiBd8yqesJFaZcEGNkx/mVQUV5u1A535e2wbHeLGtZm0DBkSLcj3I1YgkfrbCCRspWNbk52UvzJAtMPSt75n2Bc60QhN05/R/P6gAf8O8ymUG5OD12VTXiVEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FxtYG9E2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1E35C4CEEF;
-	Wed, 30 Jul 2025 00:15:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753834545;
-	bh=/IL8wmq+lOfAOx4ojeLTp4+XN3Okds+fOFj21+eklGM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FxtYG9E23WOEWELbkklCmxuL7KIqwx5IVWa0qXcWHnsLD3l40Y8GiejBlbRH+pmfx
-	 ajucUIRd+AQxoF6UrKLR4jozCnIS2AcobpcoOxG5ev1G1fj8CpgFQD7BF779tBSNDH
-	 RkloEKhmTdoI32GKc3sUaSf60Iz5LSzpg5/pawFHn0go0rgZ4oiEU4/U70TIQXajlM
-	 LPVojjAkJz3EQFiAdYmRbv6BCyCXl0Lv3Y46tI6uDDwTDISfbK1NTqEN62+TYCSOhg
-	 7x1B++x/mku8g5a5/CIafTpkyeh3UDn6xYIHpOR2VKozK1SghUKPDLhMg8Z10RxemJ
-	 Dze+B39NhWoNA==
-Date: Tue, 29 Jul 2025 14:15:43 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Daniel Sedlak <daniel.sedlak@cdn77.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Neal Cardwell <ncardwell@google.com>,
-	David Ahern <dsahern@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org,
-	netdev@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	Matyas Hurtik <matyas.hurtik@cdn77.com>
-Subject: Re: [PATCH v3] memcg: expose socket memory pressure in a cgroup
-Message-ID: <aIlkLxDMT6keDJAC@slm.duckdns.org>
-References: <CAAVpQUBwS3DFs9BENNNgkKFcMtc7tjZBA0PZ-EZ0WY+dCw8hrA@mail.gmail.com>
- <4g63mbix4aut7ye7b7s4m5q7aewfxq542i2vygniow7l5a3zmd@bvis5wmifscy>
- <CAAVpQUCOwFksmo72p_nkr1uJMLRcRo1VAneADon9OxDLoRH0KA@mail.gmail.com>
- <jj5w7cpjjyzxasuweiz64jqqxcz23tm75ca22h3wvfj3u4aums@gnjarnf5gpgq>
- <yruvlyxyy6gsrf2hhtyja5hqnxi2fmdqr63twzxpjrxgffov32@l7gqvdxijs5c>
- <878ca484-a045-4abb-a5bd-7d5ae82607de@cdn77.com>
- <irvyenjca4czrxfew4c7nc23luo5ybgdw3lquq7aoadmhmfu6h@h4mx532ls26h>
- <486bfabc-386c-4fdc-8903-d56ce207951f@cdn77.com>
- <aILTi2-iZ1ge3D8n@slm.duckdns.org>
- <924a8a12-ed89-45e5-900d-6d937108ec3e@cdn77.com>
+	s=arc-20240116; t=1753863349; c=relaxed/simple;
+	bh=rNcO+57kdyWtfV8XdobJD6WwOkPbXiOTQ2J3CakTAoQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OuzPeGE2jBzY84n/iqZ/gLeAtVYXy+UKk/hYQpuR04PYTjqvsdbQHMts79lgcIb2PixyfaPWpn1fyt97qdewUVFBFh4oeYL9HWSZ+juLeJY5ftYGmy6NE/l+26S+SHqfEfP4ax/cVtwApG/NY2Q83jJ9aWnQPyvbQSVW1R6pdy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn; spf=pass smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=45.254.49.228
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
+Received: from localhost.localdomain (unknown [218.94.118.90])
+	by smtp.qiye.163.com (Hmail) with ESMTP id ddd57a2b;
+	Wed, 30 Jul 2025 16:10:24 +0800 (GMT+08:00)
+From: Zhen Ni <zhen.ni@easystack.cn>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	Zhen Ni <zhen.ni@easystack.cn>
+Subject: [PATCH] cgroup: Simplify cgroup_disable loop given limited count
+Date: Wed, 30 Jul 2025 16:10:15 +0800
+Message-Id: <20250730081015.910435-1-zhen.ni@easystack.cn>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <924a8a12-ed89-45e5-900d-6d937108ec3e@cdn77.com>
+Content-Transfer-Encoding: 8bit
+X-HM-Tid: 0a985a61ed5b0229kunm458d2d3e41a822
+X-HM-MType: 1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkZTx4aVkkaSkpPGktMSU5MGFYVFAkWGhdVGRETFh
+	oSFyQUDg9ZV1kYEgtZQVlJSkNVQk9VSkpDVUJLWVdZFhoPEhUdFFlBWU9LSFVKS0lIQktDVUpLS1
+	VKQlkG
 
-On Mon, Jul 28, 2025 at 01:29:29PM +0200, Daniel Sedlak wrote:
-...
-> Ok, I will send it as v4, if no other objections are made. In which units
-> the duration should be? Milliseconds? It can also be microseconds, which are
-> now used in (cpu|io|memory|irq).pressure files.
+This patch refactors the cgroup_disable loop in cgroup_disable() to
+leverage the fact that OPT_FEATURE_COUNT can only be 0 or 1, making
+the loop structure unnecessary complex.
 
-Yes, microseconds.
+Key insights:
+- OPT_FEATURE_COUNT is defined as an enum value that is either:
+  * 0 when CONFIG_PSI is disabled (no optional features)
+  * 1 when CONFIG_PSI is enabled (only "pressure" feature)
+- Therefore, the loop will either:
+  * Run 0 times (when no features exist)
+  * Run exactly 1 time (when only one feature exists)
 
-Thanks.
+Performance considerations:
+- The change has no performance impact since the loop runs at most once
 
+Signed-off-by: Zhen Ni <zhen.ni@easystack.cn>
+---
+ kernel/cgroup/cgroup.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index a723b7dc6e4e..71059b61b341 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -6895,11 +6895,11 @@ static int __init cgroup_disable(char *str)
+ 		}
+ 
+ 		for (i = 0; i < OPT_FEATURE_COUNT; i++) {
+-			if (strcmp(token, cgroup_opt_feature_names[i]))
+-				continue;
+-			cgroup_feature_disable_mask |= 1 << i;
+-			pr_info("Disabling %s control group feature\n",
+-				cgroup_opt_feature_names[i]);
++			if (!strcmp(token, cgroup_opt_feature_names[i])) {
++				cgroup_feature_disable_mask |= 1 << i;
++				pr_info("Disabling %s control group feature\n",
++					cgroup_opt_feature_names[i]);
++			}
+ 			break;
+ 		}
+ 	}
 -- 
-tejun
+2.20.1
+
 
