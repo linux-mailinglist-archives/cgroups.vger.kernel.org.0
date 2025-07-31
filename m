@@ -1,96 +1,48 @@
-Return-Path: <cgroups+bounces-8950-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8951-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 340ABB16C01
-	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 08:22:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 632EDB16C08
+	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 08:25:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 994103B5B7B
-	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 06:21:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4CBE1AA4E37
+	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 06:25:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2111525486D;
-	Thu, 31 Jul 2025 06:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2323250C07;
+	Thu, 31 Jul 2025 06:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DmEmoC5K";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="kuQ7jORt";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DmEmoC5K";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="kuQ7jORt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rfr2F0cB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D83421B9E5
-	for <cgroups@vger.kernel.org>; Thu, 31 Jul 2025 06:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90A9213D52F;
+	Thu, 31 Jul 2025 06:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753942935; cv=none; b=JhJXvN+4AMNe1OC9mTKFbRq2SBqhhqfLRaqXWrUaIZ6BJ2KT3hAjGuhm96WMGT+mpBzAjB/pQwgfFJ4/Af3ebm6zMftuZCOHGJgb1i1Uq3EDmyq59U/9WU2QVj+JgrMQ3fpb+zOoTzdzQpnoOE8v1PQ1cDoh5IB7SDwu59AmOPk=
+	t=1753943120; cv=none; b=VjUU8tPIW3AUMMesKwxrwVVvXf0M6IKwLYU5q5NfAETUMHH/iaMHjuFpUJ1K5bIgDRvqte9Yi/8eWA/DBdBJv20bVvuUCpo6C9gsUMOzTMaNdGyKGqSUZBpSVyvBOhWH5kZSbpZrhW6AaQWckxs8/yl/gqnsr3MUZ73TS6G2Mkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753942935; c=relaxed/simple;
-	bh=QaOgQXRhF2rval44ekY0vt27jFmbumIy3RrKR860maA=;
+	s=arc-20240116; t=1753943120; c=relaxed/simple;
+	bh=TGXdtwhmMwtdMwod/G5JzG+S/xDyw/ykF4L+1KvP6Ng=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EAIHFcfV5WonAmMXT1gK6769OHbogBur5QVvVRFX1GU3LJ0M2qk7RMiX26vEGoI0luFHM5oRqrDpNZoOebl+jbQ3IPmN4w4NDcDrjTRSgqCmmWvag1habGKzr0Jol37k//ToonuHbBqvg8jHwm9XyswJvuezj8e0RKGl044/enE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DmEmoC5K; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=kuQ7jORt; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DmEmoC5K; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=kuQ7jORt; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AC6A621A4C;
-	Thu, 31 Jul 2025 06:22:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1753942931; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qpfKB441beCH/6Ta1OHdCqOz+HVLM7+9ygZo3asTKhc=;
-	b=DmEmoC5KJ5KErPrFM+8m87PeBc7AMFQ23uCAyd2PLd5EG7zgdnROkUJlmXY/LgEZ1Yi+1e
-	nqHEMswVXWlrbL1Qsi3S/6AcVUfWHk4gfzOWzw/lbxAhMJQ32VRLMRYOlUY4+6/RnQhxcq
-	gPj6hL5IasBIoK22NjTOdWtI0LYFE2E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1753942931;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qpfKB441beCH/6Ta1OHdCqOz+HVLM7+9ygZo3asTKhc=;
-	b=kuQ7jORtWIQiZBrhszPdiHMfv5DVk1SLtZEYw3h9aX2Xse0Xmxky5lICctQACCC8+GYk8v
-	DFqaugryTIEHfRDg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=DmEmoC5K;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=kuQ7jORt
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1753942931; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qpfKB441beCH/6Ta1OHdCqOz+HVLM7+9ygZo3asTKhc=;
-	b=DmEmoC5KJ5KErPrFM+8m87PeBc7AMFQ23uCAyd2PLd5EG7zgdnROkUJlmXY/LgEZ1Yi+1e
-	nqHEMswVXWlrbL1Qsi3S/6AcVUfWHk4gfzOWzw/lbxAhMJQ32VRLMRYOlUY4+6/RnQhxcq
-	gPj6hL5IasBIoK22NjTOdWtI0LYFE2E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1753942931;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qpfKB441beCH/6Ta1OHdCqOz+HVLM7+9ygZo3asTKhc=;
-	b=kuQ7jORtWIQiZBrhszPdiHMfv5DVk1SLtZEYw3h9aX2Xse0Xmxky5lICctQACCC8+GYk8v
-	DFqaugryTIEHfRDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 586DF13AA9;
-	Thu, 31 Jul 2025 06:22:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id o897FJMLi2j9WwAAD6G6ig
-	(envelope-from <hare@suse.de>); Thu, 31 Jul 2025 06:22:11 +0000
-Message-ID: <74d697f7-f013-4067-acd2-e0f080dc51fa@suse.de>
-Date: Thu, 31 Jul 2025 08:22:11 +0200
+	 In-Reply-To:Content-Type; b=RX6rZKkHBPMuDwDKqXHjleqO9iwvXgXEArRYcerELSzUBHWBt+0pbUdFJ+IXUQrOoo3clbpuGvVxi02qXE1t/yj6YGUSJzaNRia7tx7y3B/bxx2QJp4UQpQd5954stKjL/lDQAN7FpPfgzJ95CxwkwN5EpF2Epn6bSoZ3b+L47A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rfr2F0cB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DE6EC4CEEF;
+	Thu, 31 Jul 2025 06:25:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753943119;
+	bh=TGXdtwhmMwtdMwod/G5JzG+S/xDyw/ykF4L+1KvP6Ng=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rfr2F0cBLpmc418dGcj8xRdem1fEJ84FufK0tWjbjjtiDAnhudN/XwR+5LfnBMVG2
+	 Z8gl/2ShcK1AJF+h3CRBaSor+XiPmbbzQSM/cmL5/m04emHcx8D07rS1xLV8s2q76L
+	 xHYLxeWIN7sQ7VWbUncnYNkdQdYYwWb43b6s3KgFZn7ZXy1MCGn8VfdMvWxFk7EvpS
+	 DpY8BCxG5lNGxTzJ3f2YS+4E+Wuu9LLy6GS2B8zd0AH5bnQDsudyIqDahnlHz/hBDp
+	 aeYe8K8WiZNQnUx/omkmV6MY/Y5K7w0VWuXho+w4hGntcRwded2ur7xOyJRW0uHZKV
+	 f1i45QulP5R/g==
+Message-ID: <226d1cd7-bd35-4773-8f1c-d03f9c870133@kernel.org>
+Date: Thu, 31 Jul 2025 15:22:44 +0900
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -98,71 +50,115 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/5] block, bfq: switch to use elevator lock
-To: Yu Kuai <yukuai1@huaweicloud.com>, dlemoal@kernel.org, jack@suse.cz,
- tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com
+Subject: Re: [PATCH v2 2/5] mq-deadline: switch to use elevator lock
+To: Hannes Reinecke <hare@suse.de>, Yu Kuai <yukuai1@huaweicloud.com>,
+ jack@suse.cz, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
+ yukuai3@huawei.com
 Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
  johnny.chenyi@huawei.com
 References: <20250730082207.4031744-1-yukuai1@huaweicloud.com>
- <20250730082207.4031744-4-yukuai1@huaweicloud.com>
+ <20250730082207.4031744-3-yukuai1@huaweicloud.com>
+ <750643e5-9f24-4e4c-8270-e421a03cf463@suse.de>
+From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20250730082207.4031744-4-yukuai1@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Organization: Western Digital Research
+In-Reply-To: <750643e5-9f24-4e4c-8270-e421a03cf463@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:mid,suse.de:dkim,suse.de:email];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Rspamd-Queue-Id: AC6A621A4C
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.51
 
-On 7/30/25 10:22, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
+On 7/31/25 3:20 PM, Hannes Reinecke wrote:
+> On 7/30/25 10:22, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Replace the internal spinlock 'dd->lock' with the new spinlock in
+>> elevator_queue, there are no functional changes.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   block/mq-deadline.c | 58 +++++++++++++++++++++------------------------
+>>   1 file changed, 27 insertions(+), 31 deletions(-)
+>>
+>> diff --git a/block/mq-deadline.c b/block/mq-deadline.c
+>> index 9ab6c6256695..2054c023e855 100644
+>> --- a/block/mq-deadline.c
+>> +++ b/block/mq-deadline.c
+>> @@ -101,7 +101,7 @@ struct deadline_data {
+>>       u32 async_depth;
+>>       int prio_aging_expire;
+>>   -    spinlock_t lock;
+>> +    spinlock_t *lock;
+>>   };
+>>     /* Maps an I/O priority class to a deadline scheduler priority. */
+>> @@ -213,7 +213,7 @@ static void dd_merged_requests(struct request_queue *q,
+>> struct request *req,
+>>       const u8 ioprio_class = dd_rq_ioclass(next);
+>>       const enum dd_prio prio = ioprio_class_to_prio[ioprio_class];
+>>   -    lockdep_assert_held(&dd->lock);
+>> +    lockdep_assert_held(dd->lock);
+>>         dd->per_prio[prio].stats.merged++;
+>>   @@ -253,7 +253,7 @@ static u32 dd_queued(struct deadline_data *dd, enum
+>> dd_prio prio)
+>>   {
+>>       const struct io_stats_per_prio *stats = &dd->per_prio[prio].stats;
+>>   -    lockdep_assert_held(&dd->lock);
+>> +    lockdep_assert_held(dd->lock);
+>>         return stats->inserted - atomic_read(&stats->completed);
+>>   }
+>> @@ -323,7 +323,7 @@ static struct request *__dd_dispatch_request(struct
+>> deadline_data *dd,
+>>       enum dd_prio prio;
+>>       u8 ioprio_class;
+>>   -    lockdep_assert_held(&dd->lock);
+>> +    lockdep_assert_held(dd->lock);
+>>         if (!list_empty(&per_prio->dispatch)) {
+>>           rq = list_first_entry(&per_prio->dispatch, struct request,
+>> @@ -434,7 +434,7 @@ static struct request
+>> *dd_dispatch_prio_aged_requests(struct deadline_data *dd,
+>>       enum dd_prio prio;
+>>       int prio_cnt;
+>>   -    lockdep_assert_held(&dd->lock);
+>> +    lockdep_assert_held(dd->lock);
+>>         prio_cnt = !!dd_queued(dd, DD_RT_PRIO) + !!dd_queued(dd, DD_BE_PRIO) +
+>>              !!dd_queued(dd, DD_IDLE_PRIO);
+>> @@ -466,10 +466,9 @@ static struct request *dd_dispatch_request(struct
+>> blk_mq_hw_ctx *hctx)
+>>       struct request *rq;
+>>       enum dd_prio prio;
+>>   -    spin_lock(&dd->lock);
+>>       rq = dd_dispatch_prio_aged_requests(dd, now);
+>>       if (rq)
+>> -        goto unlock;
+>> +        return rq;
+>>         /*
+>>        * Next, dispatch requests in priority order. Ignore lower priority
+>> @@ -481,9 +480,6 @@ static struct request *dd_dispatch_request(struct
+>> blk_mq_hw_ctx *hctx)
+>>               break;
+>>       }
+>>   -unlock:
+>> -    spin_unlock(&dd->lock);
+>> -
+>>       return rq;
+>>   }
+>>   @@ -538,9 +534,9 @@ static void dd_exit_sched(struct elevator_queue *e)
+>>           WARN_ON_ONCE(!list_empty(&per_prio->fifo_list[DD_READ]));
+>>           WARN_ON_ONCE(!list_empty(&per_prio->fifo_list[DD_WRITE]));
+>>   -        spin_lock(&dd->lock);
+>> +        spin_lock(dd->lock);
+>>           queued = dd_queued(dd, prio);
+>> -        spin_unlock(&dd->lock);
+>> +        spin_unlock(dd->lock);
+>>             WARN_ONCE(queued != 0,
+>>                 "statistics for priority %d: i %u m %u d %u c %u\n",
 > 
-> Replace the internal spinlock bfqd->lock with the new spinlock in
-> elevator_queue. There are no functional changes.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->   block/bfq-cgroup.c   |  4 ++--
->   block/bfq-iosched.c  | 49 +++++++++++++++++++++-----------------------
->   block/bfq-iosched.h  |  2 +-
->   block/blk-mq-sched.c |  4 ++--
->   4 files changed, 28 insertions(+), 31 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de.
+> Do you still need 'dd->lock'? Can't you just refer to the lock from the
+> elevator_queue structure directly?
 
-Cheers,
+Indeed. Little inline helpers for locking/unlocking q->elevator->lock would be
+nice.
 
-Hannes
 -- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+Damien Le Moal
+Western Digital Research
 
