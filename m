@@ -1,113 +1,171 @@
-Return-Path: <cgroups+bounces-8947-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8948-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 841C5B16A9E
-	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 04:58:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 368ACB16BF7
+	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 08:17:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 894673A652A
-	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 02:58:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35B8A3B0442
+	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 06:16:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16E020E702;
-	Thu, 31 Jul 2025 02:58:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB03242927;
+	Thu, 31 Jul 2025 06:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qODRXZlu"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="U5liEMpJ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="9E6R/+VS";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="U5liEMpJ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="9E6R/+VS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526CC15383A
-	for <cgroups@vger.kernel.org>; Thu, 31 Jul 2025 02:58:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5CA190692
+	for <cgroups@vger.kernel.org>; Thu, 31 Jul 2025 06:17:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753930725; cv=none; b=tPnshaklfDiLAdIe40w1TCYLa+H05SIYeUApQkI0bQjJcyDh34601AzTVDQmS00W3mxJq37llsu6XdvsGYI2cTW9FVD5BecvSGhxQGXXL3LqkN5tBLzaeOajGeuSEuqDCo5pOUkQ+WUowdwZZXyA6F9xaXQxQpc1jGg4Od4oMO4=
+	t=1753942629; cv=none; b=iBDI8kanhFmDQdvWkrVIAAZrWkBO8IQC4O2dmM4shJWrNO26/eH1Q4/svLdH73GE0c737X39w5MVxLh1fuzAivD+l8mZlcY5QqE1qYUAKo/1AiefVywXXcDYV2VpAe2nqZgy1IvQKKvFvn/ssTWT3C2mnqXZB6wxwBXINZCZHZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753930725; c=relaxed/simple;
-	bh=hO4jQq8PLpE3srsD0rPnbC1MtEeo3jkBhYPUfq1jFi8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=emzGC4bHv7cKUNCcFQ+3/QXjqL03OPh94qWJtpNHdG85cOiBgOZDadve9g/QCjDaLhEUoEkdVwmS2SuG//MIj7zNj49/EXwWaSlle9eL4F+3H2Mo6qAwVRScYeJqP8vqult3bu2RWk79esohf4PBoLTQWVSjDbw8sj1oMvsdu1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qODRXZlu; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1753930720;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1753942629; c=relaxed/simple;
+	bh=x/7ISYe+ra92U7mEGKum1EGwAI6PhKEhNlWjSeeslwE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Tx+1LsfRAnh2iugSknCuGsAbWHxQdTpvkvsCzRbnJ/my0cubVA5aqi8S+r5MLhfO7N30nG7tYoYF4nbGdQorNtADvEJJAxiCAArVOP4eTmtzdJlyyXE4lkAw7Ax9CXzHZ8E8Z2zG4K6Mlta7fpy+nNOBl0/oBVHkiCSGoAZ1Zvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=U5liEMpJ; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=9E6R/+VS; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=U5liEMpJ; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=9E6R/+VS; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4509621AD0;
+	Thu, 31 Jul 2025 06:17:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1753942626; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hO4jQq8PLpE3srsD0rPnbC1MtEeo3jkBhYPUfq1jFi8=;
-	b=qODRXZluoTdZwsqIuRfPB+EmJlGTteKL3nnL/Ucebe10AjPqn+1D455FmrTHJPFgnZI0Jh
-	JMNnJ6aM2zKV+49b9RReayHJAoHS8GgGkLFGaAFI3DdlOr+/X3+3i7whoAoR7V9v4nUV5l
-	Lb4LEniPT+7zzehE3Z3mfWCDC1JYkBE=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Kuniyuki Iwashima <kuniyu@google.com>
-Cc: "David S. Miller" <davem@davemloft.net>,  Eric Dumazet
- <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Neal Cardwell
- <ncardwell@google.com>,  Paolo Abeni <pabeni@redhat.com>,  Willem de
- Bruijn <willemb@google.com>,  Matthieu Baerts <matttbe@kernel.org>,  Mat
- Martineau <martineau@kernel.org>,  Johannes Weiner <hannes@cmpxchg.org>,
-  Michal Hocko <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,
-  Andrew Morton <akpm@linux-foundation.org>,  Simon Horman
- <horms@kernel.org>,  Geliang Tang <geliang@kernel.org>,  Muchun Song
- <muchun.song@linux.dev>,  Kuniyuki Iwashima <kuni1840@gmail.com>,
-  netdev@vger.kernel.org,  mptcp@lists.linux.dev,  cgroups@vger.kernel.org,
-  linux-mm@kvack.org
-Subject: Re: [PATCH v1 net-next 13/13] net-memcg: Allow decoupling memcg
- from global protocol memory accounting.
-In-Reply-To: <20250721203624.3807041-14-kuniyu@google.com> (Kuniyuki
-	Iwashima's message of "Mon, 21 Jul 2025 20:35:32 +0000")
-References: <20250721203624.3807041-1-kuniyu@google.com>
-	<20250721203624.3807041-14-kuniyu@google.com>
-Date: Wed, 30 Jul 2025 19:58:32 -0700
-Message-ID: <87pldhf4mf.fsf@linux.dev>
+	bh=hzKTYAqAl9fpWihL/+OJ3DluaJ+8rt7w9fbrtBjG12E=;
+	b=U5liEMpJQ33BzBuEnWnIZ3KFPUPDhDMRoq4mZheQcLOXBzzPfnqUKH6xVPlIrtci8ZEQPQ
+	SZu9mE03GA07VxlOwJRRdll/PAMzbR+1lyyRvvwTa21QaOJqO/1mqwTb6DD4TI1f6p4O76
+	Mbr7L4u8ZJhO0FvO8I8juLsizBVW2j0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1753942626;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hzKTYAqAl9fpWihL/+OJ3DluaJ+8rt7w9fbrtBjG12E=;
+	b=9E6R/+VSaoahAxF8mRUTl6WdUwV1xMLmIBOzv8qusnCHPNTrI8VElQzMAtrNCwzSP8aV94
+	It1hNqlIXTNXeDAw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1753942626; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hzKTYAqAl9fpWihL/+OJ3DluaJ+8rt7w9fbrtBjG12E=;
+	b=U5liEMpJQ33BzBuEnWnIZ3KFPUPDhDMRoq4mZheQcLOXBzzPfnqUKH6xVPlIrtci8ZEQPQ
+	SZu9mE03GA07VxlOwJRRdll/PAMzbR+1lyyRvvwTa21QaOJqO/1mqwTb6DD4TI1f6p4O76
+	Mbr7L4u8ZJhO0FvO8I8juLsizBVW2j0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1753942626;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hzKTYAqAl9fpWihL/+OJ3DluaJ+8rt7w9fbrtBjG12E=;
+	b=9E6R/+VSaoahAxF8mRUTl6WdUwV1xMLmIBOzv8qusnCHPNTrI8VElQzMAtrNCwzSP8aV94
+	It1hNqlIXTNXeDAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CF52F13876;
+	Thu, 31 Jul 2025 06:17:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jfQvMWEKi2h+WgAAD6G6ig
+	(envelope-from <hare@suse.de>); Thu, 31 Jul 2025 06:17:05 +0000
+Message-ID: <05c6e25d-4c61-417d-b916-7e91f5195b39@suse.de>
+Date: Thu, 31 Jul 2025 08:17:05 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/5] blk-mq-sched: introduce high level elevator lock
+To: Yu Kuai <yukuai1@huaweicloud.com>, dlemoal@kernel.org, jack@suse.cz,
+ tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ johnny.chenyi@huawei.com
+References: <20250730082207.4031744-1-yukuai1@huaweicloud.com>
+ <20250730082207.4031744-2-yukuai1@huaweicloud.com>
+Content-Language: en-US
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20250730082207.4031744-2-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	MIME_GOOD(-0.10)[text/plain];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.de:mid,imap1.dmz-prg2.suse.org:helo,huawei.com:email]
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
 
-Kuniyuki Iwashima <kuniyu@google.com> writes:
+On 7/30/25 10:22, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Currently, both mq-deadline and bfq have global spin lock that will be
+> grabbed inside elevator methods like dispatch_request, insert_requests,
+> and bio_merge. And the global lock is the main reason mq-deadline and
+> bfq can't scale very well.
+> 
+> While dispatching request, blk_mq_get_disatpch_budget() and
+> blk_mq_get_driver_tag() must be called, and they are not ready to be called
+> inside elevator methods, hence introduce a new method like
+> dispatch_requests is not possible.
+> 
+> Hence introduce a new high level elevator lock, currently it is protecting
+> dispatch_request only. Following patches will convert mq-deadline and bfq
+> to use this lock and finally support request batch dispatching by calling
+> the method multiple time while holding the lock.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>   block/blk-mq-sched.c | 6 ++++++
+>   block/elevator.c     | 1 +
+>   block/elevator.h     | 4 ++--
+>   3 files changed, 9 insertions(+), 2 deletions(-)
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-> Some protocols (e.g., TCP, UDP) implement memory accounting for socket
-> buffers and charge memory to per-protocol global counters pointed to by
-> sk->sk_proto->memory_allocated.
->
-> When running under a non-root cgroup, this memory is also charged to the
-> memcg as sock in memory.stat.
->
-> Even when memory usage is controlled by memcg, sockets using such protocols
-> are still subject to global limits (e.g., /proc/sys/net/ipv4/tcp_mem).
->
-> This makes it difficult to accurately estimate and configure appropriate
-> global limits, especially in multi-tenant environments.
->
-> If all workloads were guaranteed to be controlled under memcg, the issue
-> could be worked around by setting tcp_mem[0~2] to UINT_MAX.
->
-> In reality, this assumption does not always hold, and a single workload
-> that opts out of memcg can consume memory up to the global limit,
-> becoming a noisy neighbour.
->
-> Let's decouple memcg from the global per-protocol memory accounting.
->
-> This simplifies memcg configuration while keeping the global limits
-> within a reasonable range.
+Cheers,
 
-I don't think it should be a memcg feature. In fact, it doesn't have
-much to do with cgroups at all (it's not hierarchical, it doesn't
-control the resource allocation, and in the end it controls an
-alternative to memory cgroups memory accounting system).
-
-Instead, it can be a per-process prctl option.
-
-(Assuming the feature is really needed - I'm also curious why some
-processes have to be excluded from the memcg accounting - it sounds like
-generally a bad idea).
-
-Thanks
+Hannes
+-- 
+Dr. Hannes Reinecke                  Kernel Storage Architect
+hare@suse.de                                +49 911 74053 688
+SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
+HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
 
