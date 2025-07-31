@@ -1,197 +1,113 @@
-Return-Path: <cgroups+bounces-8946-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8947-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA537B169C4
-	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 02:49:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 841C5B16A9E
+	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 04:58:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EB42170497
-	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 00:49:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 894673A652A
+	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 02:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3808182BC;
-	Thu, 31 Jul 2025 00:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16E020E702;
+	Thu, 31 Jul 2025 02:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qODRXZlu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B58182B4;
-	Thu, 31 Jul 2025 00:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526CC15383A
+	for <cgroups@vger.kernel.org>; Thu, 31 Jul 2025 02:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753922948; cv=none; b=B6slSeSydOXKmtRata+ugF4P6XR2BaljpQQYqsXMBrCTzgblWUNB6UogrgqyhvXHGQOHB4T51EKOGDDcWL/EwE28O1fI1F+7vWGVy8IZBi3bs+WHpFmEHcVz2frLZFJwqau3veYotHad6LOF5ZuzqsbBpC93eQ7ZGbr0xzN0+uc=
+	t=1753930725; cv=none; b=tPnshaklfDiLAdIe40w1TCYLa+H05SIYeUApQkI0bQjJcyDh34601AzTVDQmS00W3mxJq37llsu6XdvsGYI2cTW9FVD5BecvSGhxQGXXL3LqkN5tBLzaeOajGeuSEuqDCo5pOUkQ+WUowdwZZXyA6F9xaXQxQpc1jGg4Od4oMO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753922948; c=relaxed/simple;
-	bh=9g0VCYrUAF0fWXozlId8UzcBcu4y3H1iYuMW1FXK+Io=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=FpxH3Ar6JjknyugDWcFaKLsakgMWRgMokuSGRQJCj25ea/XcHQMFDJVPDqWmG0Qr8Zv8xkTw6GeTvg8jOjVRQp/1/RB4lZTJ01gC9bkFVBR0QWSQj/E1O71xn+Jsc1YsJZNQ9q/OKDyjnIcf2LTsT6RdrjFpbkhawRBHAw85XcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4bsr7N6PrHzYQvFS;
-	Thu, 31 Jul 2025 08:49:04 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 8C8301A0B61;
-	Thu, 31 Jul 2025 08:49:03 +0800 (CST)
-Received: from [10.174.179.143] (unknown [10.174.179.143])
-	by APP4 (Coremail) with SMTP id gCh0CgBHERJ9vYpoOI0xCA--.22083S3;
-	Thu, 31 Jul 2025 08:49:03 +0800 (CST)
-Subject: Re: [PATCH v2 4/5] blk-mq-sched: refactor
- __blk_mq_do_dispatch_sched()
-To: Bart Van Assche <bvanassche@acm.org>, Yu Kuai <yukuai1@huaweicloud.com>,
- dlemoal@kernel.org, hare@suse.de, jack@suse.cz, tj@kernel.org,
- josef@toxicpanda.com, axboe@kernel.dk
-Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- johnny.chenyi@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20250730082207.4031744-1-yukuai1@huaweicloud.com>
- <20250730082207.4031744-5-yukuai1@huaweicloud.com>
- <d5507645-6ad6-48a1-b429-c5bf7fda9523@acm.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <db66d308-5c3f-ee54-becf-682397b71b38@huaweicloud.com>
-Date: Thu, 31 Jul 2025 08:49:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+	s=arc-20240116; t=1753930725; c=relaxed/simple;
+	bh=hO4jQq8PLpE3srsD0rPnbC1MtEeo3jkBhYPUfq1jFi8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=emzGC4bHv7cKUNCcFQ+3/QXjqL03OPh94qWJtpNHdG85cOiBgOZDadve9g/QCjDaLhEUoEkdVwmS2SuG//MIj7zNj49/EXwWaSlle9eL4F+3H2Mo6qAwVRScYeJqP8vqult3bu2RWk79esohf4PBoLTQWVSjDbw8sj1oMvsdu1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qODRXZlu; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753930720;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hO4jQq8PLpE3srsD0rPnbC1MtEeo3jkBhYPUfq1jFi8=;
+	b=qODRXZluoTdZwsqIuRfPB+EmJlGTteKL3nnL/Ucebe10AjPqn+1D455FmrTHJPFgnZI0Jh
+	JMNnJ6aM2zKV+49b9RReayHJAoHS8GgGkLFGaAFI3DdlOr+/X3+3i7whoAoR7V9v4nUV5l
+	Lb4LEniPT+7zzehE3Z3mfWCDC1JYkBE=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>,  Eric Dumazet
+ <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Neal Cardwell
+ <ncardwell@google.com>,  Paolo Abeni <pabeni@redhat.com>,  Willem de
+ Bruijn <willemb@google.com>,  Matthieu Baerts <matttbe@kernel.org>,  Mat
+ Martineau <martineau@kernel.org>,  Johannes Weiner <hannes@cmpxchg.org>,
+  Michal Hocko <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,
+  Andrew Morton <akpm@linux-foundation.org>,  Simon Horman
+ <horms@kernel.org>,  Geliang Tang <geliang@kernel.org>,  Muchun Song
+ <muchun.song@linux.dev>,  Kuniyuki Iwashima <kuni1840@gmail.com>,
+  netdev@vger.kernel.org,  mptcp@lists.linux.dev,  cgroups@vger.kernel.org,
+  linux-mm@kvack.org
+Subject: Re: [PATCH v1 net-next 13/13] net-memcg: Allow decoupling memcg
+ from global protocol memory accounting.
+In-Reply-To: <20250721203624.3807041-14-kuniyu@google.com> (Kuniyuki
+	Iwashima's message of "Mon, 21 Jul 2025 20:35:32 +0000")
+References: <20250721203624.3807041-1-kuniyu@google.com>
+	<20250721203624.3807041-14-kuniyu@google.com>
+Date: Wed, 30 Jul 2025 19:58:32 -0700
+Message-ID: <87pldhf4mf.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <d5507645-6ad6-48a1-b429-c5bf7fda9523@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBHERJ9vYpoOI0xCA--.22083S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw4UWF4xuw4kXryktFyfCrg_yoWrGr45pr
-	s5JFWUJrWDJFn5tF1UAr1UJFy3Ary7X3WDXr18WF1UJrsrZr10gr1UWFyq9F4UJr4kGFsr
-	Xr4UXr9xZF13JrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7V
-	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
+Kuniyuki Iwashima <kuniyu@google.com> writes:
 
-在 2025/07/31 2:32, Bart Van Assche 写道:
-> On 7/30/25 1:22 AM, Yu Kuai wrote:
->> Introduce struct sched_dispatch_ctx, and split the helper into
->> elevator_dispatch_one_request() and elevator_finish_dispatch(). Also
->> and comments about the non-error return value.
-> 
-> and -> add
-> 
->> +struct sched_dispatch_ctx {
->> +    struct blk_mq_hw_ctx *hctx;
->> +    struct elevator_queue *e;
->> +    struct request_queue *q;
-> 
-> 'e' is always equal to q->elevator so I'm not sure whether it's worth to
-> have the member 'e'?
-> 
->> +static bool elevator_can_dispatch(struct sched_dispatch_ctx *ctx)
->> +{
->> +    if (ctx->e->type->ops.has_work &&
->> +        !ctx->e->type->ops.has_work(ctx->hctx))
->> +        return false;
->> -        if (!list_empty_careful(&hctx->dispatch)) {
->> -            busy = true;
->> -            break;
->> -        }
->> +    if (!list_empty_careful(&ctx->hctx->dispatch)) {
->> +        ctx->busy = true;
->> +        return false;
->> +    }
->> -        budget_token = blk_mq_get_dispatch_budget(q);
->> -        if (budget_token < 0)
->> -            break;
->> +    return true;
->> +}
-> 
-> Shouldn't all function names in this file start with the blk_mq_ prefix?
-Ok
+> Some protocols (e.g., TCP, UDP) implement memory accounting for socket
+> buffers and charge memory to per-protocol global counters pointed to by
+> sk->sk_proto->memory_allocated.
+>
+> When running under a non-root cgroup, this memory is also charged to the
+> memcg as sock in memory.stat.
+>
+> Even when memory usage is controlled by memcg, sockets using such protocols
+> are still subject to global limits (e.g., /proc/sys/net/ipv4/tcp_mem).
+>
+> This makes it difficult to accurately estimate and configure appropriate
+> global limits, especially in multi-tenant environments.
+>
+> If all workloads were guaranteed to be controlled under memcg, the issue
+> could be worked around by setting tcp_mem[0~2] to UINT_MAX.
+>
+> In reality, this assumption does not always hold, and a single workload
+> that opts out of memcg can consume memory up to the global limit,
+> becoming a noisy neighbour.
+>
+> Let's decouple memcg from the global per-protocol memory accounting.
+>
+> This simplifies memcg configuration while keeping the global limits
+> within a reasonable range.
 
-> 
-> Additionally, please rename elevator_can_dispatch() into
-> elevator_should_dispatch(). I think the latter name better reflects the
-> purpose of this function.
-Sounds good.
+I don't think it should be a memcg feature. In fact, it doesn't have
+much to do with cgroups at all (it's not hierarchical, it doesn't
+control the resource allocation, and in the end it controls an
+alternative to memory cgroups memory accounting system).
 
-> 
->> +    if (sq_sched)
->> +        spin_lock_irq(&ctx->e->lock);
->> +    rq = ctx->e->type->ops.dispatch_request(ctx->hctx);
->> +    if (sq_sched)
->> +        spin_unlock_irq(&ctx->e->lock);
-> 
-> Same comment here as on patch 1/5: code like the above makes it
-> harder than necessary for static analyzers to verify this code.
-Ok
+Instead, it can be a per-process prctl option.
 
-> 
->> +    if (!rq) {
->> +        blk_mq_put_dispatch_budget(ctx->q, budget_token);
->>           /*
->> -         * If we cannot get tag for the request, stop dequeueing
->> -         * requests from the IO scheduler. We are unlikely to be able
->> -         * to submit them anyway and it creates false impression for
->> -         * scheduling heuristics that the device can take more IO.
->> +         * We're releasing without dispatching. Holding the
->> +         * budget could have blocked any "hctx"s with the
->> +         * same queue and if we didn't dispatch then there's
->> +         * no guarantee anyone will kick the queue.  Kick it
->> +         * ourselves.
->>            */
-> 
-> Please keep the original comment. To me the new comment seems less clear
-> than the existing comment.
-Please note that I didn't change the comment here, above comment is for
-setting the run_queue. The original comment for blk_mq_get_driver_tag()
-is still there.
+(Assuming the feature is really needed - I'm also curious why some
+processes have to be excluded from the memcg accounting - it sounds like
+generally a bad idea).
 
-> 
->> +static int __blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
->> +{
->> +    unsigned int max_dispatch;
->> +    struct sched_dispatch_ctx ctx = {
->> +        .hctx    = hctx,
->> +        .q    = hctx->queue,
->> +        .e    = hctx->queue->elevator,
->> +    };
->> +
->> +    INIT_LIST_HEAD(&ctx.rq_list);
-> 
-> Please remove the INIT_LIST_HEAD() invocation and add the following in
-> the ctx declaration:
-> 
->      .rq_list = LIST_HEAD_INIT(ctx.rq_list),
-> 
-> This is a common pattern in kernel code. The following grep command
-> yields about 200 results:
-> 
-> $ git grep -nH '= LIST_HEAD_INIT.*\.'
-Ok
-> 
-> Otherwise this patch looks good to me.
-> 
-Thanks for the review!
-Kuai
-
-> Thanks,
-> 
-> Bart.
-> .
-> 
-
+Thanks
 
