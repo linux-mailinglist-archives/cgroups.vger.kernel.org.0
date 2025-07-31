@@ -1,130 +1,115 @@
-Return-Path: <cgroups+bounces-8960-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8961-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99CD7B16F65
-	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 12:23:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E616B16F77
+	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 12:27:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C994C5839E7
-	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 10:23:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAFDB1AA6321
+	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 10:27:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885232BE045;
-	Thu, 31 Jul 2025 10:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B019C2BE044;
+	Thu, 31 Jul 2025 10:27:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HR4sMeYK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZxFU2i/h"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C59022BE041
-	for <cgroups@vger.kernel.org>; Thu, 31 Jul 2025 10:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3BC238C25;
+	Thu, 31 Jul 2025 10:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753957377; cv=none; b=Y6YrAbQJf59qpN5+VzPduJuflRorXZNoZ5vls0e59MWB3gSkSh744lwu/sLHM/KT+hlfTXqkaez99cAXGLtN1fyLKk1cyLMyE+lxnKiugKoYH7Sbyj6tUPxAE+dUfYlpuUKWCwvhK7pRiYxkHNZQ3LyJ5OcyQEyv2MLyR0Le5qk=
+	t=1753957626; cv=none; b=OiYlnp8h0NNTDxrBNg83GIgC/itZtMEbWOVSMweT598RA5ZYVlioKZhcWrCzaWB34b58EYAqFSZAZDHGw6UH2xrMsvEvysn3U6zUjn/tP/GD2LjepTBoRec1VcuIGAgknLUy4DUs5cdmgxrS7hRINHPrO+Z+quqloMLdQcGizWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753957377; c=relaxed/simple;
-	bh=lkkuqC2vambzk9CuZzq6i1jaxoC4n9Munmr9+qei71s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XvBN9MAl0iyN4sgwVHgClEIWFMz/nGyZT6NE2eyal063/cpbVxGcCXffT+f8jfI/XQO06I573pd7GhWixcN/DEHS4TxhfU5aa+StJ9VPJt93I43MD20HsGxCAUyNpx6zUP7qQI2TFIWpiJRzN8BDNge59S3CefNKxVEVZh4xn2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HR4sMeYK; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1753957374;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fgIENI2JJx96NikmUSVWyLKcBHri0nd2ZYhEFTwOWPM=;
-	b=HR4sMeYK63v+SqoBQTjRAcNulT3H8I8EWDA4nYtIBdVKi4979r7IAL1TXMwG9IpLS8E2Zq
-	JxkyaRCgK1/lIVNW6Ji112qLsoZi7Czd/9hMD8ej6CbvuYCiZBaiI3GA3M4fsYoA8bTSXa
-	6Ja3NB1eyC/aXxdqxpRb6n9/5gaJLJQ=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-627-lyAZYsORNXKTQrsAMXaCLQ-1; Thu,
- 31 Jul 2025 06:22:51 -0400
-X-MC-Unique: lyAZYsORNXKTQrsAMXaCLQ-1
-X-Mimecast-MFC-AGG-ID: lyAZYsORNXKTQrsAMXaCLQ_1753957369
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2C3A9196E073;
-	Thu, 31 Jul 2025 10:22:48 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.62])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1AFB91800B6A;
-	Thu, 31 Jul 2025 10:22:39 +0000 (UTC)
-Date: Thu, 31 Jul 2025 18:22:34 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: dlemoal@kernel.org, hare@suse.de, jack@suse.cz, tj@kernel.org,
-	josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com, johnny.chenyi@huawei.com,
-	"yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH v2 0/5] blk-mq-sched: support request batch dispatching
- for sq elevator
-Message-ID: <aItD6juaFaPncYka@fedora>
-References: <20250730082207.4031744-1-yukuai1@huaweicloud.com>
- <aIsmvj_lxLA6ZaWe@fedora>
- <99e9aa7e-b33c-ce2e-bf0f-0021434690e8@huaweicloud.com>
- <aIs2e3wJpMmCHeZk@fedora>
- <da726ac2-28be-6fc6-d723-3277b2dd7011@huaweicloud.com>
+	s=arc-20240116; t=1753957626; c=relaxed/simple;
+	bh=mZpnZcvWp8SSKYuAUSLT1e/jJIWMm3Zlnit/hTH4MhM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ww7d8koaIHuKDtTt3icFfLgMUGpgatTyfypSD+WQ4rv8J2F7FTqX3UuNGYEjbKzwTr9AbK/zNQFIOpeUmjm+dt699rINaz6ysMoZ9/hq1A9EMyymaad9MCKO8PBEAJ+y4yErcvPpTGDPd4LOBbHz58UEuq+wBgC1mg7cE+IF6AY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZxFU2i/h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16273C4CEEF;
+	Thu, 31 Jul 2025 10:27:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753957625;
+	bh=mZpnZcvWp8SSKYuAUSLT1e/jJIWMm3Zlnit/hTH4MhM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ZxFU2i/hESB/rnLltqh5qnswEaKDj9s43s8dhKgTQsqlatGy6dMTJaGIehAuYk+tr
+	 z1/Wd0XYlFmDEnm2ToXyliF6rwWQ+QXwo9NwHDRCuhbflWdNyiBrrBaE4wtPaJBzbk
+	 OyHLYu1JN0QQNyTJ1SL0opbd01PnINgZTO4TTvx9CnqNSz1rsaGmWQTJZQ78Vv7rRi
+	 diNOh4/LbUE5i/hXALXY5rrd5UR2GXQVCwV20fU1m2h9AVO8bbEhtJTaGF/Uhji8ah
+	 Evk8tcTy0mjR9m2huLfkQiTyrKtwXs81NkYuKEYUrNDMLC+qUaCaxKX/KdAuhWKKDA
+	 5WjUhKgE7Xn8w==
+From: Christian Brauner <brauner@kernel.org>
+To: tj@kernel.org,
+	jack@suse.cz,
+	Jiufei Xue <jiufei.xue@samsung.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	cgroups@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: writeback: fix use-after-free in __mark_inode_dirty()
+Date: Thu, 31 Jul 2025 12:26:55 +0200
+Message-ID: <20250731-manisch-zuerst-0aee81784858@brauner>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250728100715.3863241-1-jiufei.xue@samsung.com>
+References: <20250728100715.3863241-1-jiufei.xue@samsung.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1695; i=brauner@kernel.org; h=from:subject:message-id; bh=mZpnZcvWp8SSKYuAUSLT1e/jJIWMm3Zlnit/hTH4MhM=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWR0u3wRmHBHTPAPuw+LBYuOYPu+BQwqp/ff3eM6e5/Wp oX94UFyHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABNxfsrI8PKOlG5If1/F0dly hf9PPvHRXSv34vaytVkhbZUlgUXixxgZtgoJlfHuN/WVPrpPKeHO161hV6beUXWojl5op7ayY+p pRgA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <da726ac2-28be-6fc6-d723-3277b2dd7011@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-On Thu, Jul 31, 2025 at 05:33:24PM +0800, Yu Kuai wrote:
-> Hi,
+On Mon, 28 Jul 2025 18:07:15 +0800, Jiufei Xue wrote:
+> An use-after-free issue occurred when __mark_inode_dirty() get the
+> bdi_writeback that was in the progress of switching.
 > 
-> 在 2025/07/31 17:25, Ming Lei 写道:
-> > On Thu, Jul 31, 2025 at 04:42:10PM +0800, Yu Kuai wrote:
-> > > Hi,
-> > > 
-> > > 在 2025/07/31 16:18, Ming Lei 写道:
-> > > > batch dispatch may hurt io merge performance which is important for
-> > > > elevator, so please provide test data on real HDD. & SSD., instead of
-> > > > null_blk only, and it can be perfect if merge sensitive workload
-> > > > is evaluated.
-> > > 
-> > > Ok, I'll provide test data on HDD and SSD that I have for now.
-> > > 
-> > > For the elevator IO merge case, what I have in mind is that we issue
-> > > small sequential IO one by one with multiple contexts, so that bios
-> > > won't be merged in plug, and this will require IO issue > IO done, is
-> > > this case enough?
-> > 
-> > Long time ago, I investigated one such issue which is triggered in qemu
-> > workload, but not sure if I can find it now.
-> > 
-> > Also many scsi devices may easily run into queue busy, then scheduler merge
-> > starts to work, and it may perform worse if you dispatch more in this
-> > situation.
+> CPU: 1 PID: 562 Comm: systemd-random- Not tainted 6.6.56-gb4403bd46a8e #1
+> ......
+> pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> pc : __mark_inode_dirty+0x124/0x418
+> lr : __mark_inode_dirty+0x118/0x418
+> sp : ffffffc08c9dbbc0
+> ........
+> Call trace:
+>  __mark_inode_dirty+0x124/0x418
+>  generic_update_time+0x4c/0x60
+>  file_modified+0xcc/0xd0
+>  ext4_buffered_write_iter+0x58/0x124
+>  ext4_file_write_iter+0x54/0x704
+>  vfs_write+0x1c0/0x308
+>  ksys_write+0x74/0x10c
+>  __arm64_sys_write+0x1c/0x28
+>  invoke_syscall+0x48/0x114
+>  el0_svc_common.constprop.0+0xc0/0xe0
+>  do_el0_svc+0x1c/0x28
+>  el0_svc+0x40/0xe4
+>  el0t_64_sync_handler+0x120/0x12c
+>  el0t_64_sync+0x194/0x198
 > 
-> I think we won't dispatch more in this case, on the one hand we will get
-> budgets first, to make sure never dispatch more than queue_depth; on the
+> [...]
 
-OK.
+Applied to the vfs.fixes branch of the vfs/vfs.git tree.
+Patches in the vfs.fixes branch should appear in linux-next soon.
 
-> onther hand, in the case hctx->dispatch_busy is set, we still fallback
-> to the old case to dispatch one at a time;
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-hctx->dispatch_busy is lockless, all request may get dispatched before
-hctx->dispatch_busy is set.
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-Thanks,
-Ming
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.fixes
 
+[1/1] fs: writeback: fix use-after-free in __mark_inode_dirty()
+      https://git.kernel.org/vfs/vfs/c/f8371b50ceaa
 
