@@ -1,92 +1,83 @@
-Return-Path: <cgroups+bounces-8970-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8971-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1BC7B17A4B
-	for <lists+cgroups@lfdr.de>; Fri,  1 Aug 2025 01:52:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F5E8B17D11
+	for <lists+cgroups@lfdr.de>; Fri,  1 Aug 2025 09:00:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC7EB174912
-	for <lists+cgroups@lfdr.de>; Thu, 31 Jul 2025 23:52:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D57B1C26B2E
+	for <lists+cgroups@lfdr.de>; Fri,  1 Aug 2025 07:00:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58585289E1F;
-	Thu, 31 Jul 2025 23:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E2B1F4613;
+	Fri,  1 Aug 2025 07:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XcEJ7yDa"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Kms3koXp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0AC42A9D
-	for <cgroups@vger.kernel.org>; Thu, 31 Jul 2025 23:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7454A18C031
+	for <cgroups@vger.kernel.org>; Fri,  1 Aug 2025 07:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754005917; cv=none; b=FWx/ikKHSFE5F0fyTrxtxwzi3/pWwnARtPuip5QzDF/69tICCB3YrBMP1D1vk8OMA0PlDSM7/xh2rkEXDKLnPwFloCh6szgRHPm/I1UIzBLxUvFg5YiRC2Z6zWOpDVvKWeSvX6vlGwxTns0A1jV9eCJ0rVl4eGN50c4nFnMVUJI=
+	t=1754031634; cv=none; b=STP9CQJKH6fGGRbij5F1/ixl5+65+3khHoFqbdN3ysh0zz+2gYv2jS0urL0aPFPDWq9pZKY4nh6ej9qeCx6LKnMFKNR1RWbLsxWg8tl9WbkF+OSe1y6PHc6zmynwX6CJ9ce9ZhqqTmtXfjzt509oIhSXRg+R3LbY8xlzFVoJM90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754005917; c=relaxed/simple;
-	bh=TsBYoTolo2tufsEqEbhWRrPEmFDJFyPBTlMs+f63jG4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PmIryd0xbOOPcx301ie32q7OJQAH0Q4KlV1mbgT86XV251fVFoHe+JvOJSn38+BNMUm2R3/2j9zcYN175Esp738vegOOu6x+P83wZ9BKm8nqoe+Tch79skAA6B66frVGG2nmpXXWHkvK5gp9O6DrL2rdFnvUs6pIGj9LwxFF+Gs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XcEJ7yDa; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b34c068faf8so1658263a12.2
-        for <cgroups@vger.kernel.org>; Thu, 31 Jul 2025 16:51:55 -0700 (PDT)
+	s=arc-20240116; t=1754031634; c=relaxed/simple;
+	bh=lOdACm39398ZkN2lU2UZXEP/gEQUsiO20iyEfrmnlog=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zl8BOPOIL7t6cvgx4FHs4Rv6kqi9Btc2IYWsMlI3VbT4AtN38nux2CDLMOl6kTm53SGk6E1WzT+G2kXjgx75oMdCy0YU0P83JfVFlRECCVF/1vqFQW4/WhC/YfIf+6pS+fiK/6FfvAUBobkAlvOHHmB2fE/MluXQbUmazKHHlm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Kms3koXp; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3b788feab29so728061f8f.2
+        for <cgroups@vger.kernel.org>; Fri, 01 Aug 2025 00:00:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1754005915; x=1754610715; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x1pY4t9vVS5jlHwuXly55Cv9xSzwUaUm6zW230XbJ2A=;
-        b=XcEJ7yDaZuHQjfkq0QrQf1aDe/RHu/DEdpHje7s/wCLKHw2IUPWqOG4Bj5C5ABpmsr
-         ZqhFWQxgLkomwIXTOgorIrehdjw1vmdo/9VEKcfg1D6iSx6e2bAytScsvlq2ZMMMjd7f
-         PvBfFyDfw+Qs1g7G6wjWNloRYvpBku8sE7ddLjA++gnCI+OzhAhBO6rKScl0qPg4lvby
-         rcUPeUzv/57PO99ZOuLiIa2xQRLJkgM+9Z5+mABlkNNIkpZczSMsCCVXTEBUC7aA+mVc
-         lBC5m7vGTwf2eAoFGGg9Yqao8MfeK0xIsqJ8w07vbSxGcWX8CwmP4OWTlqIQg8/6Lbia
-         b7Ig==
+        d=suse.com; s=google; t=1754031631; x=1754636431; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lOdACm39398ZkN2lU2UZXEP/gEQUsiO20iyEfrmnlog=;
+        b=Kms3koXpvqhwr78UjSZurzI/4Qba/l7wa/LoZatXgG58B381rD7frdRu3rXKpkyO3S
+         701QdGwW1hwfMVu9fQJigm8BUgDlxV+ITq6QmWifAcvAJlFgU2tRfVV9vyr+42D6Zilt
+         xxpPmLrhGiU0617mdfn+VRoLnRUVJtjGPY7Xf8iIzD8KKGOlFTr0Uj5ywSG9hiWRyytR
+         DZE3C3a2DChwmFPqFJRQYlak9u8h8lr7Oz0CYIT6NrDPne8Va6uf1c8978H+OxThiVBc
+         ACdAtBfillTFJJfiXyBuv3FPDdlHQSNgngSs43dADLbVpwUf0aejWs6Ugr9gBXaDUKRX
+         rYWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754005915; x=1754610715;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x1pY4t9vVS5jlHwuXly55Cv9xSzwUaUm6zW230XbJ2A=;
-        b=WMD7GkfGrjLnyj4EX7P3su5KmpY1akzweZBU4opcgQcBiF49ZMir0dvXGisGoK810E
-         ADhIjV8ApNCKeuL2SbLjBsSla/qb8uzc2WyXWmTxIClDggaqmgMU0tM0fO7buBTV0Rpt
-         vcUm42I6ik1ZPIMga44NGoJ76CG8LvbppIsHcNB1HbwMqyfazoTFdl4OTNAvR8psAIUn
-         P+8Pyh3XPvIjDjiver9NvS9fQdscLz4oD/aaVySedribrER0iwe/MPaMpr+spwjCG2Yg
-         wadc15OKizTILbMbTXIeuzANmKbL1kAoMn4yPRANsY4eWEa2Vrxa0U5i9lfokprxrE7E
-         IN+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXw9uLzts3+Qg1kGddez/C7Xo0zHSG6KJ0zkQdTZQTInxsMjGh5S1aACejxqnvEx1YPFlBeZWSH@vger.kernel.org
-X-Gm-Message-State: AOJu0YwCo0yVk/0pPL6Od3tY/S3Bm/3PkSPr5IHaDF1dk3MEyw/lTHyb
-	UnXgehhf6x8lH4564FComPD7/7cM9wBsg4EITvIksvyRy8idKcI2hvu2cIC/U3zpQjhU6UyvOd8
-	KQmlWPGTJXsbmYIVoVGj3Jpx/eItRiIyOn+H876zQ
-X-Gm-Gg: ASbGncuSam9Ua1D8THn+NpH9W4B6IV8iN0MvRGKeFZ7FRdbZxFfkMe1Z/7LaOwrW6up
-	CCIws225fPPuP8EoVh3+ybwqFND7da/3d2ibQ5GTo4pMIJ6mp0QZ9GA7guPlJmQBhKwXrCg/jBR
-	rX780KF0Y+UAAcW/wTQLnKrSRlwTZNPB009985olxJ+xhvybHg8SXxhssLEQEiAS0pa2CN4V5tJ
-	CPM5PwfosDkHVI43ecm2UH5xXs3KGDbSICUIpwo09iRlJRw
-X-Google-Smtp-Source: AGHT+IGMdr5+ZltYc/B0msRqSn8S05vopIUSrPrZpbCyE1ibrXKKkFxzUCv9+aOryf0B15tqU6r7DGOpYwl+1TOpJ8U=
-X-Received: by 2002:a17:90b:3952:b0:31e:ec58:62e2 with SMTP id
- 98e67ed59e1d1-31f5de4197dmr12628654a91.19.1754005914820; Thu, 31 Jul 2025
- 16:51:54 -0700 (PDT)
-Precedence: bulk
-X-Mailing-List: cgroups@vger.kernel.org
-List-Id: <cgroups.vger.kernel.org>
-List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250721203624.3807041-1-kuniyu@google.com> <20250721203624.3807041-14-kuniyu@google.com>
- <fq3wlkkedbv6ijj7pgc7haopgafoovd7qem7myccqg2ot43kzk@dui4war55ufk>
-In-Reply-To: <fq3wlkkedbv6ijj7pgc7haopgafoovd7qem7myccqg2ot43kzk@dui4war55ufk>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Thu, 31 Jul 2025 16:51:43 -0700
-X-Gm-Features: Ac12FXyRo64aj2tAOXgVRHN2Olp9-pPfFQKxGBKy5bgLlQjCQOCZQOdKisc5o28
-Message-ID: <CAAVpQUAFAsmPPF0gRMqDNWJmktegk6w=s1TPS9hGJpHQzXT-sg@mail.gmail.com>
-Subject: Re: [PATCH v1 net-next 13/13] net-memcg: Allow decoupling memcg from
- global protocol memory accounting.
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+        d=1e100.net; s=20230601; t=1754031631; x=1754636431;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lOdACm39398ZkN2lU2UZXEP/gEQUsiO20iyEfrmnlog=;
+        b=kH8kgEMiUWDe3U70UmBxjEYcJhedvMByv47APsNZfx0AbXqcrcJ0YMiBL6QmSGI/ak
+         SRFfbbCxbrVNBs6+dD04NnAT8WXqIqrYnWv2PXrrkWa5AZpah+oh19s29Q07ZVseFp6P
+         se4k4w0Ruh3k9qAzUI+2o3zt68oWzegt6DLTC8UMUzdbuvgUwLajh+PF/75Y7vyySuCr
+         rj2N8tGQM5CBgfCRUcT3wj1JG4UADuPFzQ+eRyzqop852+2HW7v69xM55eB7J353bjO0
+         lFr4LOzEUk+dwu6aaJsKaszB3tlhRw9civfsigm1ezqy4xUhw2r2dw2nV6cKvyo1KJdR
+         msjA==
+X-Forwarded-Encrypted: i=1; AJvYcCWlqUJ5F+xM7kbCSagEhHss3YMWsmjlTL6uvhZuOFBLaMjOj94CcOoF3fCG4WafG06U5Yx7zPIn@vger.kernel.org
+X-Gm-Message-State: AOJu0YzyWoasj6x6G1m5+++Xe7I0zjWnIgYMNmLOCiTzz0gk0daIU/kV
+	D3Pvq5SUlOZY7Bs95aN3yY0SVQPg5YSztQ6NtB5ETivb5NmxjIXuSjYQtlbLN9tH2a8=
+X-Gm-Gg: ASbGncs7LCRkP5yJBzSAHJcoA5+t7hW6UpW1v8sdbAPAQ7DM6XacfELL/f6IS4CCYnd
+	57i57WDu2TEeruThfActtnBgXiipbhzUeRSb5EX66FBzQaxTq3F1osjbUig89hFQsyaLmIO9ysZ
+	JVzGrsJ7P/GCk1YUrsLbYC2g1X1fOWIL0fIT8srNRBmtmwOpKDHNYx9/OMZPNE0V5tvbl7UdYFw
+	hcFZOM/N17ALHyG7xGXlYEkryNLAuIoD5azAEodvQbWD3aIyGNLh7bKTmbeiyaOAA9A2hC2yn8I
+	nZJjYXt44KfUMoR8R81rgdPf2WQxTvda4U6ISnq7WBI9d6wbGASLVyPhPNMC6+eRvS/jq4AzNN9
+	BybCa798Ad7p7fYQ1jR2JyUmCabRmOaxrk/uQ0IrAxQ==
+X-Google-Smtp-Source: AGHT+IGpo7vCBRl1+3LNZgziFjvZCIsV7Fz+AW0zycTpGAfpOewwiyDA2ffkkvBUhcmMNKx/L1CjEA==
+X-Received: by 2002:a05:6000:4212:b0:3b5:dc07:50a4 with SMTP id ffacd0b85a97d-3b794fbeb87mr9254839f8f.2.1754031630614;
+        Fri, 01 Aug 2025 00:00:30 -0700 (PDT)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b79c47ae8esm4762632f8f.61.2025.08.01.00.00.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Aug 2025 00:00:29 -0700 (PDT)
+Date: Fri, 1 Aug 2025 09:00:27 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
 	Willem de Bruijn <willemb@google.com>, Matthieu Baerts <matttbe@kernel.org>, 
 	Mat Martineau <martineau@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
@@ -94,59 +85,59 @@ Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
 	Simon Horman <horms@kernel.org>, Geliang Tang <geliang@kernel.org>, 
 	Muchun Song <muchun.song@linux.dev>, Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, 
 	mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v1 net-next 13/13] net-memcg: Allow decoupling memcg from
+ global protocol memory accounting.
+Message-ID: <ekte46qtwawpvdijdmoqhl2pcwtfhxgl6ubxjkgkiitrtfnvpu@5n7kwkj4fs2t>
+References: <20250721203624.3807041-1-kuniyu@google.com>
+ <20250721203624.3807041-14-kuniyu@google.com>
+ <fq3wlkkedbv6ijj7pgc7haopgafoovd7qem7myccqg2ot43kzk@dui4war55ufk>
+ <CAAVpQUAFAsmPPF0gRMqDNWJmktegk6w=s1TPS9hGJpHQzXT-sg@mail.gmail.com>
+Precedence: bulk
+X-Mailing-List: cgroups@vger.kernel.org
+List-Id: <cgroups.vger.kernel.org>
+List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="x3o5euvcxbwgpnyi"
+Content-Disposition: inline
+In-Reply-To: <CAAVpQUAFAsmPPF0gRMqDNWJmktegk6w=s1TPS9hGJpHQzXT-sg@mail.gmail.com>
 
-On Thu, Jul 31, 2025 at 6:39=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
->
-> On Mon, Jul 21, 2025 at 08:35:32PM +0000, Kuniyuki Iwashima <kuniyu@googl=
-e.com> wrote:
-> > Some protocols (e.g., TCP, UDP) implement memory accounting for socket
-> > buffers and charge memory to per-protocol global counters pointed to by
-> > sk->sk_proto->memory_allocated.
-> >
-> > When running under a non-root cgroup, this memory is also charged to th=
-e
-> > memcg as sock in memory.stat.
-> >
-> > Even when memory usage is controlled by memcg, sockets using such proto=
-cols
-> > are still subject to global limits (e.g., /proc/sys/net/ipv4/tcp_mem).
->
-> IIUC the envisioned use case is that some cgroups feed from global
-> resource and some from their own limit.
-> It means the admin knows both:
->   a) how to configure individual cgroup,
->   b) how to configure global limit (for the rest).
-> So why cannot they stick to a single model only?
->
-> > This makes it difficult to accurately estimate and configure appropriat=
-e
-> > global limits, especially in multi-tenant environments.
-> >
-> > If all workloads were guaranteed to be controlled under memcg, the issu=
-e
-> > could be worked around by setting tcp_mem[0~2] to UINT_MAX.
-> >
-> > In reality, this assumption does not always hold, and a single workload
-> > that opts out of memcg can consume memory up to the global limit,
-> > becoming a noisy neighbour.
->
-> That doesn't like a good idea to remove limits from possibly noisy
-> units.
->
-> > Let's decouple memcg from the global per-protocol memory accounting.
-> >
-> > This simplifies memcg configuration while keeping the global limits
-> > within a reasonable range.
->
-> I think this is a configuration issue only, i.e. instead of preserving
-> the global limit because of _some_ memcgs, the configuration management
-> could have a default memcg limit that is substituted to those memcgs so
-> that there's no risk of runaways even in absence of global limit.
 
-Doesn't that end up implementing another tcp_mem[] which now
-enforce limits on uncontrolled cgroups (memory.max =3D=3D max) ?
-Or it will simply end up with the system-wide OOM killer ?
+--x3o5euvcxbwgpnyi
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH v1 net-next 13/13] net-memcg: Allow decoupling memcg from
+ global protocol memory accounting.
+MIME-Version: 1.0
+
+On Thu, Jul 31, 2025 at 04:51:43PM -0700, Kuniyuki Iwashima <kuniyu@google.com> wrote:
+> Doesn't that end up implementing another tcp_mem[] which now
+> enforce limits on uncontrolled cgroups (memory.max == max) ?
+> Or it will simply end up with the system-wide OOM killer ?
+
+I meant to rely on use the exisiting mem_cgroup_charge_skmem(), i.e.
+there'd be always memory.max < max (ensured by the configuring agent).
+But you're right the OOM _may_ be global if the limit is too loose.
+
+Actually, as I think about it, another configuration option would be to
+reorganize the memcg tree and put all non-isolated memcgs under one
+ancestor and set its memory.max limit (so that it's shared among them
+like the global limit).
+
+HTH,
+Michal
+
+--x3o5euvcxbwgpnyi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaIxl9AAKCRB+PQLnlNv4
+CJZtAQDyxJKYOwR+G5PupdcFpWcem+e2vcVjekmcUSnAefb9SwEAmlcDbWaK+JWZ
+zsvVOKp5n3NQmuq9ouqRPxwf+gbdlAs=
+=J+oe
+-----END PGP SIGNATURE-----
+
+--x3o5euvcxbwgpnyi--
 
