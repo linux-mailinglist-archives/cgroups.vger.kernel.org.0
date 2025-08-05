@@ -1,331 +1,198 @@
-Return-Path: <cgroups+bounces-8981-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8982-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A9BB1B0D2
-	for <lists+cgroups@lfdr.de>; Tue,  5 Aug 2025 11:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C748B1B6C7
+	for <lists+cgroups@lfdr.de>; Tue,  5 Aug 2025 16:42:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF22B3AF6F2
-	for <lists+cgroups@lfdr.de>; Tue,  5 Aug 2025 09:17:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1D2D3AA27F
+	for <lists+cgroups@lfdr.de>; Tue,  5 Aug 2025 14:42:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB798253F05;
-	Tue,  5 Aug 2025 09:17:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52778278779;
+	Tue,  5 Aug 2025 14:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nAe7aA/X"
+	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="wTTmM1h5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from TYDPR03CU002.outbound.protection.outlook.com (mail-japaneastazon11013034.outbound.protection.outlook.com [52.101.127.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5820A2E3718
-	for <cgroups@vger.kernel.org>; Tue,  5 Aug 2025 09:17:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754385464; cv=none; b=n95O3PL4DjC1LxRs5DNqZ5wT+xb/yZidsc8nH0SovtpezGviP9ySlujSKqaJ8TC2zQSb9kav0F8KGxhlighlaDrAGT1+bJ1xl2omLuGtoyoJfhfMZQCsa+eTZD3TJImuBjWE7CSdV21p00cUZ52kiOtol+nLYlr68uy/ZkMxU7s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754385464; c=relaxed/simple;
-	bh=UYCWmIghk7XLTV9hOFoeu8oU/E+r50TUj1Z3quT4/Aw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VaG25aGXkmahMNFH9qPcDUeIxDH9XtcP/Cfjxem51nY1TBayWdhYzsZFLr7likJUAQTPDHzRBNcpiygHuHu2TuLl84j9uj+svMdkvvPLQpiX9yoTuOB7LVCXvt+Mf2l3Bmann+n29dVTr7ZgC5Do53/zc87Upcedib3jtPktH38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nAe7aA/X; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-ae6f8d3bcd4so1084114466b.1
-        for <cgroups@vger.kernel.org>; Tue, 05 Aug 2025 02:17:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1754385461; x=1754990261; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KFhTWHBXCWBFnoD6BdM+WmXK3hWwJH6qZ9YaEhbj8VY=;
-        b=nAe7aA/XINLdnQborWVcToc/Ny4Y9cfWLXCgNh88SYcAux7pIGD/c4qhEuoryWikUC
-         iKvXJRL6I/prrcAs2+eYWZySRRRsWnUAQkoI0sf89kyM5PdmH9UOuZYKCT5rO+mLRnKM
-         CsO+9/PiKtMtF4kmlUa4vNnRLzFxz1qaUUqSkL9YSZIYjVGOpDzhEJjMk7JH84UQ2Suc
-         suEJl4jvWmU/EKqVP0eH9uXKmfzNCdkgkJexaCcVZVH2ebVBX7RD/EL4R4CUXQCiYt2Y
-         OaPvk4P3iZLoL13tl39fbSsr7/U3Pr9aXqbp1qJhtHwAJE3nz6Ls33EYTiTtbAns7s3Q
-         tVyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754385461; x=1754990261;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KFhTWHBXCWBFnoD6BdM+WmXK3hWwJH6qZ9YaEhbj8VY=;
-        b=LuSeXozSoOhuTVOgWs4PSU3ilNZ+MuWal3XwmZ69oqjTUaOtDhd+kkWCCEqzQtEjv5
-         Jja4yEXA+ptgYT39tts7zENFXsGV9kYagF8DrSsVG9bGwetAgZjB3eZ0kVLTEkudPwJM
-         w1x/Wxm2NTgj+EbpB6OgCc3Yrufof8UtKc47EkxwIt3pHZH8l68ad3m+GYtGTKt2Rv2Z
-         Q7uYJSZSnqHPX7h+3GEPHLm0I1DytMY0syUmJ/SYtjWZHYP8X1UCq79L+9z+knM0kxuK
-         oBpOWiJHE1C7BzvvbGVcFI2sZhb8ErUAlsY9U2IzPkIfsP1UdP3hw0qoh200dGlArtd6
-         utgw==
-X-Forwarded-Encrypted: i=1; AJvYcCULTD3VWcgKJGqCYW6gJWCzdONQn+mPZUf2ShNUTnCrLyI9PHe5p9+6v6AFhZl2ljKIyN6OZGwd@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx0y845i97/fnzp2yeZpRqoVaQ+H7UvLQI62uYEPTHKJUP+lV0e
-	L3CN7J9wq395i6gAQUfU/UqzwG0myFmRs0XVXai1EQEmpP7kgAe5xIdj/mUdqavpMB9HWHe/nJH
-	T4nO9nh2jmktVYEZEHNZUSA+wOvX8tjoq1RghBRHzdfpZGMRsAabLf+M=
-X-Gm-Gg: ASbGncvI7qGjthASVg1CPRYdjcdtcC6PSge+i/yulOOK8IL3IECbyL+bZSoDbCL5Z0Z
-	tBkBtIljAsGZgxqmoPbrAHHcjliWNqNHFtgYUaDI9KW0HYOfp2QrD8B6wxTxk+p+zLWgCNnVnXB
-	Dh0TpXq41EuhwrISWemRpy/ioWSy7/vI+i5Lf1wgjBRf4/0lMaYIu+Wbw+qPl08ozUpwwbLdMGF
-	HUymGJrjtpYp5rcaUGZV6X/H1EsJFX3M2QwKViJyQrD6YA=
-X-Google-Smtp-Source: AGHT+IGZtqBo3cjZ4Qn6Ax912agmq6WXrhLbffKrfagZR07vgNXNSmjcHWHg+6F+e9RvSGUR/MUv5LSEv/16tagpIn4=
-X-Received: by 2002:a17:906:168c:b0:af9:71c2:9c3 with SMTP id
- a640c23a62f3a-af971c20d56mr454940566b.35.1754385460460; Tue, 05 Aug 2025
- 02:17:40 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C4025394C;
+	Tue,  5 Aug 2025 14:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.127.34
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754404925; cv=fail; b=gJ3eM5uKadKhTSkwNVI+tJhWzYO8jy/Q5+auD5iznbdABgWZzEGuXNHgnLino5dQmcH6kXz1wmdOcg4vx0UED1+2a/VGpg5rvR7pNFNtTzbEhs3RvCsHEUVOj5IVSeeA2bxmc7CeO0V/KzOWeADOAvyVewxrEaN4aGbeir8k6hs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754404925; c=relaxed/simple;
+	bh=MIXQYDiERtBaWNgS+MaUW555qIPrFcp6bDYE1X12xeg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eg+3P8/jyWrJB5w9Fy5RXiXA//GUZ9vRt25k6HpzCFDdOLXD4ylNuyp5QPDrCf8aTka0rIL43j/DgKvn/s+hNMvU7fGKsV9A6ghXk932fwF2p/W1WPFKGWqAFL9Gv3ozKsKNH6Ut3bI7K5lL7p1f5ZK0jzpSFvkp2R0u6AmMMB4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=wTTmM1h5; arc=fail smtp.client-ip=52.101.127.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=JaPUbDb7wYScS914hYeG76wsJS4YFzBzMP3DdXlWGgYufficVVK/v/lTQ+IiCQSGPku6auOYP18cClPszO4Ac1hpV/9kY41TWzkktwv0COcCNj+1LrJ+JHigVuMCrjHVXhGOjgLFTZ36MJltb4tkhwoXn5KYB2WY8RikkljG0Btpxlgv7m+JHNqvJAtTigyov+I+53zBS2l7PCCuGJep+FWf2owSlc2RED0z4J3qkFxaGsx11T2c/uAPn5jRx3wevAdzxCfvQS7Xm2L7XLLR0D6X/xxfLG97bURmKjEsUa5ctJmn/lYO9jrb/mz5NSWLABJMxZeNAOhLlXArlmuxdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QFrjs5qH8um/UomFBbimeJImLbhH9k1w27j96hNsHUU=;
+ b=OcRFP89l3oETmbH6OJldiH21MvUqaMWTtrfA25X2/QbYn+ytnNouiKKic3htMH3VL6hFd4udEGvS15tKRo3PlPKwHo6FW1+EtXCqPooKHQizKhrFZMIHZK61WwPkleXrLzQ+gfm6uoU+8u62zNAEuM75IihOHK6oiTOhMjpriDvpYFPenT6Mp+wJOckQs4pa2o9Wx/W/AtaswAPwgCO6NsPHtYcTMgqJZRSclCrvZ7KwgRoYzrgj1szQgtuYM0b0yfSOe7fjZ5VCnnTeYgQQuQIAuIcxhX+ezXvVLgFE0AQOCGNMyfS+Mu6qebBDAwLbJnG0muKOvkArOG6kCiqccQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 58.252.5.68) smtp.rcpttodomain=bytedance.com smtp.mailfrom=oppo.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=oppo.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QFrjs5qH8um/UomFBbimeJImLbhH9k1w27j96hNsHUU=;
+ b=wTTmM1h5S3T7H5MKMppSGEJYeVYve8UPUij76wQ90WwjMJV5N9QeF3W47NcYFv3X9VWHoVR4M9MEDAgT1dGCl8MzUEgxpNt7z8jHQSckiQA0kr7eonp1eftjei72egyJ67pbBHDZwEjLahr0L7UrSWW/U57l+L3wr1HBaGVxo7Q=
+Received: from TYCP286CA0349.JPNP286.PROD.OUTLOOK.COM (2603:1096:405:7c::18)
+ by SEYPR02MB5510.apcprd02.prod.outlook.com (2603:1096:101:3f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.14; Tue, 5 Aug
+ 2025 14:41:53 +0000
+Received: from TY2PEPF0000AB86.apcprd03.prod.outlook.com
+ (2603:1096:405:7c:cafe::df) by TYCP286CA0349.outlook.office365.com
+ (2603:1096:405:7c::18) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8989.21 via Frontend Transport; Tue,
+ 5 Aug 2025 14:41:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 58.252.5.68)
+ smtp.mailfrom=oppo.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=oppo.com;
+Received-SPF: Pass (protection.outlook.com: domain of oppo.com designates
+ 58.252.5.68 as permitted sender) receiver=protection.outlook.com;
+ client-ip=58.252.5.68; helo=mail.oppo.com; pr=C
+Received: from mail.oppo.com (58.252.5.68) by
+ TY2PEPF0000AB86.mail.protection.outlook.com (10.167.253.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.9009.8 via Frontend Transport; Tue, 5 Aug 2025 14:41:52 +0000
+Received: from localhost.localdomain (172.16.40.118) by mailappw30.adc.com
+ (172.16.56.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Tue, 5 Aug
+ 2025 22:41:52 +0800
+From: xupengbo <xupengbo@oppo.com>
+To: <ziqianlu@bytedance.com>, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra
+	<peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
+	<vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, "Mel
+ Gorman" <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, Aaron Lu
+	<aaron.lu@intel.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	<linux-kernel@vger.kernel.org>
+CC: <xupengbo@oppo.com>, <cgroups@vger.kernel.org>
+Subject: [PATCH v2] sched/fair: Fix unfairness caused by stalled tg_load_avg_contrib when the last task migrates out.
+Date: Tue, 5 Aug 2025 22:41:20 +0800
+Message-ID: <20250805144121.14871-1-xupengbo@oppo.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250804130326.57523-1-xupengbo@oppo.com> <20250805090517.GA687566@bytedance>
-In-Reply-To: <20250805090517.GA687566@bytedance>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Tue, 5 Aug 2025 11:17:29 +0200
-X-Gm-Features: Ac12FXwwDGP6jUtv9TKzkrY2qe9H_E-7mgbFHFM2LDljOhY6Iqna4V3HEt0LR_8
-Message-ID: <CAKfTPtDexWX5N0jaMRqVQEnURSaPhVa6XQr_TexpU2SGU-e=9A@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Fix unfairness caused by stalled
- tg_load_avg_contrib when the last task migrates out.
-To: Aaron Lu <ziqianlu@bytedance.com>
-Cc: xupengbo <xupengbo@oppo.com>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: mailappw30.adc.com (172.16.56.197) To mailappw30.adc.com
+ (172.16.56.197)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TY2PEPF0000AB86:EE_|SEYPR02MB5510:EE_
+X-MS-Office365-Filtering-Correlation-Id: d20b3b6b-d782-4e83-eb3e-08ddd42e37f8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|7416014|376014|36860700013|1800799024|921020|13003099007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?R0CLX8vbTvpulRQPqcl5cS9ROagi90fbOHdntQ6c04x3DvsLTSGFloevoOK+?=
+ =?us-ascii?Q?rSbra7MHyKMZfkWw+JaKtYDIwEzJyNmQYIzTKMRa+bSModu654Jn4TTXaZFk?=
+ =?us-ascii?Q?7+snRmiLPX15pdTIsSG24jaDrac6mf62+9I1aDdnQYmid8umd1Kc59cttFgl?=
+ =?us-ascii?Q?YDUdL/voUfuyd8tBZDX3tPH7Eyd/cShhGeWLLsZvbIwUMGGQw3JZninPGsUn?=
+ =?us-ascii?Q?ipVrGexqq4AcZWHErE6x36etSXXKwHtwqaZc3ElJDOCSKw37Nm4p9Ty/ZR6P?=
+ =?us-ascii?Q?Dd8WOHCo/jJwc6fqOjSIV5GlYcFzmE303bfq1+9mZA3B5v3AhbQHtLUqrris?=
+ =?us-ascii?Q?WnpsthQQm4lseiXT2DTsY8ANeU4sLCV6OhcErMChz3gyOlnBkBcHWNUDJnAh?=
+ =?us-ascii?Q?shH9S61VX4aWKpNsD0/AjkQTaQJCB5wOoU69kMA31+1kUfdvV1Uiq6JlKcjy?=
+ =?us-ascii?Q?ZGA8WQRVWcz8iVILeB7EzUPphw5zkIHabUxkRB5pa9FuU6M4DnYCh/fD+XM9?=
+ =?us-ascii?Q?qLvBaNR6/Qzxa0wYT7970lgIrp3JJ8lFKsI9GkgoIGfPSFDz10Fa62tFNtqB?=
+ =?us-ascii?Q?wqtni5UoKNcrISNRbuI9wDbwexovdFbyp7zMoqX5Pvwe9StICb95WfbD0TUc?=
+ =?us-ascii?Q?dzD+kxK3JHj3mqmUR5OwRfiqcEE5Qi3+LSKtEw2+vx+exs5mj46TboiPvm9B?=
+ =?us-ascii?Q?HXFx526G1Tkh8bcSvB2RDjn3K1d/kyy67NYTAGJn25YKs7UncH0Mcpf4wuIf?=
+ =?us-ascii?Q?8RcOth1aJUOu5KKN+aEcXFNF7WZFbcu8RC2YdcjFm+CbCObrIXYVu+F1muOL?=
+ =?us-ascii?Q?B6pvmAmnzzJ1DmsOo8Fbd884oFJ2GdT8K5XUfDtLwfdh55qouULnRX821UWy?=
+ =?us-ascii?Q?qe7VWaLU+wyfeFqjS8KwdfUmn4rTDnkxTS2EFL4BC1cIQIWzGgkZe5gCI+YJ?=
+ =?us-ascii?Q?goplPs/VL168gQgZKckwSrN+kJfrNT32NPV3Ndg1ASU512lQZvbr+JNq3jkd?=
+ =?us-ascii?Q?aC64BxjG5XjK8G3VaIeRofubedlU+p6M1M7OWks2oSLDEEMnf/KvTMJifC+l?=
+ =?us-ascii?Q?G9JX+t7qb6gddJaST3i9p5POSpfyZEQ4e+djbA9Z8LYr+deiwzDOA83CS3xC?=
+ =?us-ascii?Q?IKRov9EBIB02WSlHb4/HkSkE0jp81ZPKo+XsQZVYP64gHs2E3qF/LFkE9MJg?=
+ =?us-ascii?Q?CeRKH9BXT6mqf2ynthAyvITq/BQFgjCRrH4/3ZhY8AuHXNOwSaj9zmUBRIR4?=
+ =?us-ascii?Q?/GLpiF+DVacxoTgS7RbmWWaHNojpMct8d5VpQ+DF/yaT8JVs72c6x3H0DUu/?=
+ =?us-ascii?Q?Vc6yr5QfGvtXkZVtDSWZ7k4OJboKpUYpxuSKFlQvFqu69yPyhDlXCau9kpBO?=
+ =?us-ascii?Q?cAu86WpNYvr9Jr/VjQcQx9i17aUkkasHHY7FlkfcJ9gErE3yYVHOT25UUqVw?=
+ =?us-ascii?Q?a+oIGcjy50NjW9CiUDQlu+moyhHkZBx0xuY2bA2u4cye9O9IRDP+GcTRuRZV?=
+ =?us-ascii?Q?QicUg8MAWMN9YIg=3D?=
+X-Forefront-Antispam-Report:
+	CIP:58.252.5.68;CTRY:CN;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.oppo.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(7416014)(376014)(36860700013)(1800799024)(921020)(13003099007);DIR:OUT;SFP:1101;
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2025 14:41:52.7107
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d20b3b6b-d782-4e83-eb3e-08ddd42e37f8
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f1905eb1-c353-41c5-9516-62b4a54b5ee6;Ip=[58.252.5.68];Helo=[mail.oppo.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	TY2PEPF0000AB86.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR02MB5510
 
-On Tue, 5 Aug 2025 at 11:08, Aaron Lu <ziqianlu@bytedance.com> wrote:
->
-> On Mon, Aug 04, 2025 at 09:03:26PM +0800, xupengbo wrote:
-> > We added a function named update_tg_load_avg_immediately() that mimics
-> > update_tg_load_avg(). In this function we remove the update interval
-> > restriction from update_tg_load_avg() in order to update tg->load
-> > immediately when the function is called. This function is only called in
-> > update_load_avg(). In update_load_avg(), we should call
-> > update_tg_load_avg_immediately() if flag & DO_DETACH == true and the task
-> > is the last task in cfs_rq, otherwise we call update_tg_load_avg(). The
-> > reason is as follows.
-> >
-> > 1. Due to the 1ms update period limitation in update_tg_load_avg(), there
-> > is a possibility that the reduced load_avg is not updated to tg->load_avg
-> > when a task migrates out.
-> > 2. Even though __update_blocked_fair() traverses the leaf_cfs_rq_list and
-> > calls update_tg_load_avg() for cfs_rqs that are not fully decayed, the key
-> > function cfs_rq_is_decayed() does not check whether
-> > cfs->tg_load_avg_contrib is null. Consequently, in some cases,
-> > __update_blocked_fair() removes cfs_rqs whose avg.load_avg has not been
-> > updated to tg->load_avg.
-> >
-> > When these two events occur within the 1ms window (defined by
-> > NSEC_PER_MSEC in update_tg_load_avg()) and no other tasks can migrate to
-> > the CPU due to the cpumask constraints, the corresponding portion of
-> > load_avg will never be subtracted from tg->load_avg. This results in an
-> > inflated tg->load_avg and reduced scheduling entity (se) weight for the
-> > task group. If the migrating task had a large weight, the task group's
-> > share may deviate significantly from its expected value. This issue is
-> > easily reproducible in task migration scenarios.
-> >
->
-> Agree this is a problem.
->
-> > Initially, I discovered this bug on Android 16 (running kernel v6.12), and
-> > was subsequently able to reproduce it on an 8-core Ubuntu 24.04 VM with
-> > kernel versions v6.14 and v6.16-rc7. I believe it exists in any kernel
-> > version that defines both CONFIG_FAIR_GROUP_SCHED and CONFIG_SMP.
-> > I wrote a short C program which just does 3 things:
-> >   1. call sched_setaffinity() to bound itself to cpu 1.
-> >   2. call sched_setaffinity() to bound itself to cpu 2.
-> >   3. endless loop.
-> >
-> > Here is the source code.
-> > ```
-> > \#define _GNU_SOURCE
-> > \#include <sched.h>
-> > \#include <unistd.h>
-> > int main() {
-> >   cpu_set_t cpuset;
-> >   CPU_ZERO(&cpuset);
-> >   CPU_SET(1, &cpuset);
-> >   pid_t pid = gettid();
-> >
-> >   if (sched_setaffinity(pid, sizeof(cpu_set_t), &cpuset) == -1) {
-> >     return 1;
-> >   }
-> >
-> >   CPU_ZERO(&cpuset);
-> >   CPU_SET(2, &cpuset);
-> >
-> >   if (sched_setaffinity(pid, sizeof(cpu_set_t), &cpuset) == -1) {
-> >     return 1;
-> >   }
-> >   while (1)
-> >     ;
-> >   return 0;
-> > }
-> > ```
-> >
-> > Then I made a test script to add tasks into groups.
-> > (Forgive me for just copying and pasting those lines but not using
-> > a for-loop)
-> >
-> > ```
-> > \#!/usr/bin/bash
-> >
-> > shares=100
-> > pkill 'bug_test'
-> > sleep 2
-> > rmdir /sys/fs/cgroup/cpu/bug_test_{1..4}
-> > mkdir /sys/fs/cgroup/cpu/bug_test_{1..4}
-> >
-> > echo $shares >/sys/fs/cgroup/cpu/bug_test_1/cpu.shares
-> > echo $shares >/sys/fs/cgroup/cpu/bug_test_2/cpu.shares
-> > echo $shares >/sys/fs/cgroup/cpu/bug_test_3/cpu.shares
-> > echo $shares >/sys/fs/cgroup/cpu/bug_test_4/cpu.shares
-> >
-> > nohup ./bug_test &
-> > proc1=$!
-> > echo "$proc1" >/sys/fs/cgroup/cpu/bug_test_1/cgroup.procs
-> > nohup ./bug_test &
-> > proc2=$!
-> > echo "$proc2" >/sys/fs/cgroup/cpu/bug_test_2/cgroup.procs
-> > nohup ./bug_test &
-> > proc3=$!
-> > echo "$proc3" >/sys/fs/cgroup/cpu/bug_test_3/cgroup.procs
-> > nohup ./bug_test &
-> > proc4=$!
-> > echo "$proc4" >/sys/fs/cgroup/cpu/bug_test_4/cgroup.procs
-> >
-> > ```
-> >
-> > After several repetitions of the script, we can find that some
-> > processes have a smaller share of the cpu, while others have twice
-> > that. This state is stable until the end of the process.
->
-> I can reproduce it using your test code.
->
-> > When a task is migrated from cfs_rq, dequeue_load_avg() will subtract its
-> > avg.load_sum and avg.load_avg. Sometimes its load_sum is reduced to null
-> > sometimes not. If load_sum is reduced to null, then this cfs_rq will be
-> > removed from the leaf_cfs_rq_list soon. So __update_blocked_fair() can not
-> > update it anymore.
-> >
-> > Link: https://lore.kernel.org/cgroups/20210518125202.78658-2-odin@uged.al/
-> > In this patch, Odin proposed adding a check in cfs_rq_is_decayed() to
-> > determine whether cfs_rq->tg_load_avg_contrib is null. However, it appears
-> > that this patch was not merged. In fact, if there were a check in
-> > cfs_rq_is_decayed() similar to the one in update_tg_load_avg() regarding
-> > the size of the _delta_ value (see update_tg_load_avg()), this issue
-> > could also be effectively resolved. This solution would block (2.),
-> > because if delta is too large, cfs_rq_is_decayed() returns false, and the
-> > cfs_rq remains in leaf_cfs_rq_list, ultimately causing
-> > __update_blocked_fair() to update it outside the 1ms limit. The only
-> > consideration is whether to add a check for cfs_rq->tg_load_avg_contrib in
-> > cfs_rq_is_decayed(), which may increase coupling.
-> >
->
-> Performance wise, doing an immediate update to tg->load_avg on detach
-> path should be OK because last time when I did those tests, the migration
-> path that leads to updates to tg->load_avg is mostly from task wakeup path.
-> I also did some quick tests using hackbench and netperf on an Intel EMR
-> and didn't notice anything problematic regarding performance with your
-> change here.
->
-> With this said, I think adding cfs_rq->tg_load_avg_contrib check in
-> cfs_rq_is_decayed() makes more sense to me, because if a cfs_rq still has
+When a task is migrated out, there is a probability that the tg->load_avg
+value will become abnormal. The reason is as follows.
 
-Adding a check of cfs_rq->tg_load_avg_contrib in cfs_rq_is_decayed()
-makes more sense for me too because it doesn't bypass the ratelimit
+1. Due to the 1ms update period limitation in update_tg_load_avg(), there
+is a possibility that the reduced load_avg is not updated to tg->load_avg
+when a task migrates out.
+2. Even though __update_blocked_fair() traverses the leaf_cfs_rq_list and
+calls update_tg_load_avg() for cfs_rqs that are not fully decayed, the key
+function cfs_rq_is_decayed() does not check whether
+cfs->tg_load_avg_contrib is null. Consequently, in some cases,
+__update_blocked_fair() removes cfs_rqs whose avg.load_avg has not been
+updated to tg->load_avg.
 
-> contrib to its tg but its load_avg is 0, it should stay in that list and
-> have its contrib synced with its load_avg to zero when that 1ms window
-> has passed by __update_blocked_fair() path.
->
-> > Signed-off-by: xupengbo <xupengbo@oppo.com>
->
-> Maybe add a fix tag for commit 1528c661c24b("sched/fair: Ratelimit
-> update to tg->load_avg")?
->
-> Thanks,
-> Aaron
->
-> > ---
-> >  kernel/sched/fair.c | 50 ++++++++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 49 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index b173a059315c..97feba367be9 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -4065,6 +4065,45 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
-> >       return true;
-> >  }
-> >
-> > +/* only called in update_load_avg() */
-> > +static inline void update_tg_load_avg_immediately(struct cfs_rq *cfs_rq)
-> > +{
-> > +     long delta;
-> > +     u64 now;
-> > +
-> > +     /*
-> > +      * No need to update load_avg for root_task_group as it is not used.
-> > +      */
-> > +     if (cfs_rq->tg == &root_task_group)
-> > +             return;
-> > +
-> > +     /* rq has been offline and doesn't contribute to the share anymore: */
-> > +     if (!cpu_active(cpu_of(rq_of(cfs_rq))))
-> > +             return;
-> > +
-> > +     /*
-> > +      * Under normal circumstances, for migration heavy workloads, access
-> > +      * to tg->load_avg can be unbound. Limit the update rate to at most
-> > +      * once per ms.
-> > +      * However when the last task is migrating from this cpu, we must
-> > +      * update tg->load_avg immediately. Otherwise, if this cfs_rq becomes
-> > +      * idle forever due to cpumask and is removed from leaf_cfs_rq_list,
-> > +      * the huge mismatch between cfs_rq->avg.load_avg(which may be zero)
-> > +      * and cfs_rq->tg_load_avg_contrib(stalled load_avg of last task)
-> > +      * can never be corrected, which will lead to a significant value
-> > +      * error in se.weight for this group.
-> > +      * We retain this value filter below because it is not the main cause
-> > +      * of this bug, so we are being conservative.
-> > +      */
-> > +     now = sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
-> > +     delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
-> > +     if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
-> > +             atomic_long_add(delta, &cfs_rq->tg->load_avg);
-> > +             cfs_rq->tg_load_avg_contrib = cfs_rq->avg.load_avg;
-> > +             cfs_rq->last_update_tg_load_avg = now;
-> > +     }
-> > +}
-> > +
-> >  /**
-> >   * update_tg_load_avg - update the tg's load avg
-> >   * @cfs_rq: the cfs_rq whose avg changed
-> > @@ -4449,6 +4488,8 @@ static inline bool skip_blocked_update(struct sched_entity *se)
-> >
-> >  static inline void update_tg_load_avg(struct cfs_rq *cfs_rq) {}
-> >
-> > +static inline void update_tg_load_avg_immediately(struct cfs_rq *cfs_rq) {}
-> > +
-> >  static inline void clear_tg_offline_cfs_rqs(struct rq *rq) {}
-> >
-> >  static inline int propagate_entity_load_avg(struct sched_entity *se)
-> > @@ -4747,9 +4788,16 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
-> >               /*
-> >                * DO_DETACH means we're here from dequeue_entity()
-> >                * and we are migrating task out of the CPU.
-> > +              *
-> > +              * At this point, we have not subtracted nr_queued.
-> > +              * If cfs_rq->nr_queued ==1, the last cfs task is being
-> > +              * migrated from this cfs_rq.
-> >                */
-> >               detach_entity_load_avg(cfs_rq, se);
-> > -             update_tg_load_avg(cfs_rq);
-> > +             if (cfs_rq->nr_queued == 1)
-> > +                     update_tg_load_avg_immediately(cfs_rq);
-> > +             else
-> > +                     update_tg_load_avg(cfs_rq);
-> >       } else if (decayed) {
-> >               cfs_rq_util_change(cfs_rq, 0);
-> >
-> > --
-> > 2.43.0
-> >
+I added a check of cfs_rq->tg_load_avg_contrib in cfs_rq_is_decayed(),
+which blocks the case (2.) mentioned above. I follow the condition in
+update_tg_load_avg() instead of directly checking if
+cfs_rq->tg_load_avg_contrib is null. I think it's necessary to keep the
+condition consistent in both places, otherwise unexpected problems may
+occur.
+
+Thanks for your comments,
+Xu Pengbo
+
+Fixes: 1528c661c24b ("sched/fair: Ratelimit update to tg->load_avg")
+Signed-off-by: xupengbo <xupengbo@oppo.com>
+---
+Changes:
+v1 -> v2: 
+- Another option to fix the bug. Check cfs_rq->tg_load_avg_contrib in 
+cfs_rq_is_decayed() to avoid early removal from the leaf_cfs_rq_list.
+- Link to v1 : https://lore.kernel.org/cgroups/20250804130326.57523-1-xupengbo@oppo.com/T/#u
+
+ kernel/sched/fair.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index b173a059315c..a35083a2d006 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4062,6 +4062,11 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ 	if (child_cfs_rq_on_list(cfs_rq))
+ 		return false;
+ 
++	long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
++
++	if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64)
++		return false;
++
+ 	return true;
+ }
+ 
+-- 
+2.43.0
+
 
