@@ -1,198 +1,276 @@
-Return-Path: <cgroups+bounces-8982-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8983-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C748B1B6C7
-	for <lists+cgroups@lfdr.de>; Tue,  5 Aug 2025 16:42:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01206B1B7CF
+	for <lists+cgroups@lfdr.de>; Tue,  5 Aug 2025 17:54:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1D2D3AA27F
-	for <lists+cgroups@lfdr.de>; Tue,  5 Aug 2025 14:42:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E0AC17AFDD
+	for <lists+cgroups@lfdr.de>; Tue,  5 Aug 2025 15:54:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52778278779;
-	Tue,  5 Aug 2025 14:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C5C289820;
+	Tue,  5 Aug 2025 15:54:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="wTTmM1h5"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aGO3xRll"
 X-Original-To: cgroups@vger.kernel.org
-Received: from TYDPR03CU002.outbound.protection.outlook.com (mail-japaneastazon11013034.outbound.protection.outlook.com [52.101.127.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C4025394C;
-	Tue,  5 Aug 2025 14:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.127.34
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754404925; cv=fail; b=gJ3eM5uKadKhTSkwNVI+tJhWzYO8jy/Q5+auD5iznbdABgWZzEGuXNHgnLino5dQmcH6kXz1wmdOcg4vx0UED1+2a/VGpg5rvR7pNFNtTzbEhs3RvCsHEUVOj5IVSeeA2bxmc7CeO0V/KzOWeADOAvyVewxrEaN4aGbeir8k6hs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754404925; c=relaxed/simple;
-	bh=MIXQYDiERtBaWNgS+MaUW555qIPrFcp6bDYE1X12xeg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eg+3P8/jyWrJB5w9Fy5RXiXA//GUZ9vRt25k6HpzCFDdOLXD4ylNuyp5QPDrCf8aTka0rIL43j/DgKvn/s+hNMvU7fGKsV9A6ghXk932fwF2p/W1WPFKGWqAFL9Gv3ozKsKNH6Ut3bI7K5lL7p1f5ZK0jzpSFvkp2R0u6AmMMB4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=wTTmM1h5; arc=fail smtp.client-ip=52.101.127.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=JaPUbDb7wYScS914hYeG76wsJS4YFzBzMP3DdXlWGgYufficVVK/v/lTQ+IiCQSGPku6auOYP18cClPszO4Ac1hpV/9kY41TWzkktwv0COcCNj+1LrJ+JHigVuMCrjHVXhGOjgLFTZ36MJltb4tkhwoXn5KYB2WY8RikkljG0Btpxlgv7m+JHNqvJAtTigyov+I+53zBS2l7PCCuGJep+FWf2owSlc2RED0z4J3qkFxaGsx11T2c/uAPn5jRx3wevAdzxCfvQS7Xm2L7XLLR0D6X/xxfLG97bURmKjEsUa5ctJmn/lYO9jrb/mz5NSWLABJMxZeNAOhLlXArlmuxdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QFrjs5qH8um/UomFBbimeJImLbhH9k1w27j96hNsHUU=;
- b=OcRFP89l3oETmbH6OJldiH21MvUqaMWTtrfA25X2/QbYn+ytnNouiKKic3htMH3VL6hFd4udEGvS15tKRo3PlPKwHo6FW1+EtXCqPooKHQizKhrFZMIHZK61WwPkleXrLzQ+gfm6uoU+8u62zNAEuM75IihOHK6oiTOhMjpriDvpYFPenT6Mp+wJOckQs4pa2o9Wx/W/AtaswAPwgCO6NsPHtYcTMgqJZRSclCrvZ7KwgRoYzrgj1szQgtuYM0b0yfSOe7fjZ5VCnnTeYgQQuQIAuIcxhX+ezXvVLgFE0AQOCGNMyfS+Mu6qebBDAwLbJnG0muKOvkArOG6kCiqccQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 58.252.5.68) smtp.rcpttodomain=bytedance.com smtp.mailfrom=oppo.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=oppo.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QFrjs5qH8um/UomFBbimeJImLbhH9k1w27j96hNsHUU=;
- b=wTTmM1h5S3T7H5MKMppSGEJYeVYve8UPUij76wQ90WwjMJV5N9QeF3W47NcYFv3X9VWHoVR4M9MEDAgT1dGCl8MzUEgxpNt7z8jHQSckiQA0kr7eonp1eftjei72egyJ67pbBHDZwEjLahr0L7UrSWW/U57l+L3wr1HBaGVxo7Q=
-Received: from TYCP286CA0349.JPNP286.PROD.OUTLOOK.COM (2603:1096:405:7c::18)
- by SEYPR02MB5510.apcprd02.prod.outlook.com (2603:1096:101:3f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.14; Tue, 5 Aug
- 2025 14:41:53 +0000
-Received: from TY2PEPF0000AB86.apcprd03.prod.outlook.com
- (2603:1096:405:7c:cafe::df) by TYCP286CA0349.outlook.office365.com
- (2603:1096:405:7c::18) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8989.21 via Frontend Transport; Tue,
- 5 Aug 2025 14:41:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 58.252.5.68)
- smtp.mailfrom=oppo.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=oppo.com;
-Received-SPF: Pass (protection.outlook.com: domain of oppo.com designates
- 58.252.5.68 as permitted sender) receiver=protection.outlook.com;
- client-ip=58.252.5.68; helo=mail.oppo.com; pr=C
-Received: from mail.oppo.com (58.252.5.68) by
- TY2PEPF0000AB86.mail.protection.outlook.com (10.167.253.10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.9009.8 via Frontend Transport; Tue, 5 Aug 2025 14:41:52 +0000
-Received: from localhost.localdomain (172.16.40.118) by mailappw30.adc.com
- (172.16.56.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Tue, 5 Aug
- 2025 22:41:52 +0800
-From: xupengbo <xupengbo@oppo.com>
-To: <ziqianlu@bytedance.com>, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra
-	<peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
-	<vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, "Mel
- Gorman" <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, Aaron Lu
-	<aaron.lu@intel.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	<linux-kernel@vger.kernel.org>
-CC: <xupengbo@oppo.com>, <cgroups@vger.kernel.org>
-Subject: [PATCH v2] sched/fair: Fix unfairness caused by stalled tg_load_avg_contrib when the last task migrates out.
-Date: Tue, 5 Aug 2025 22:41:20 +0800
-Message-ID: <20250805144121.14871-1-xupengbo@oppo.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA1822737F6
+	for <cgroups@vger.kernel.org>; Tue,  5 Aug 2025 15:54:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754409264; cv=none; b=H2kHcKbMFUulBUacnVEzHCUIEzos4lajqKHiRHmdnPqoZQO2ALXSh7g7NmEplaanY3ZKkVEnUOlnrH/smTuB8P216VB1gA7mSoUTZ4GTLe3JC63MAONx07ZkhwUgmf0ZJ0UTzGmGFGT+8wcNGnIyzazTmbSBbHhXtGo0rlmMahA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754409264; c=relaxed/simple;
+	bh=vNNJauOKZGwfoUOczIoeQj5UEZzfkBSWbLXemTczg+U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Tf1/ukWA5NdFoYC4ZI4wTQlpj3Zb0jW7vxGegWjPQ+F3Oq4LUom3mrlxD94HPcl7XU0askc1/Ouc+OuxPjLLEv7STtdzMBafS2ITCq9qr/BgTIcSZBFqDjuOC/yuTHXvwedNTRew8BGY2j0qgbW1CdeqUljfbHJ/mfz3Ga+6y5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aGO3xRll; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-320dfa8cfa3so4702973a91.3
+        for <cgroups@vger.kernel.org>; Tue, 05 Aug 2025 08:54:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1754409262; x=1755014062; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DXmcYBuTBSIC3cXLyf6AFT7dpi3YTNsScaWP3ZbN8Fs=;
+        b=aGO3xRllOsjDIJjcPhtpEjrxWg75XDEjsWHK9MYLi2HVONa/9hXAovAIWd5HzX+LJg
+         Ox2MRIP8G0zhfIUYuiMlQg4ELu8Ecp7RQOqiEqsRr2IJqqQKx8RetG186iqBFDlLPZIh
+         esDUh9OfZ/MQWW+70iGwOqbsgYUFeom+4UNYFUSEaAcJ4HMIN1X7xu8p25PuERsZYpxF
+         4J+0kC/fHUZNJ2hv8BnCUVvkn0B5cspYD0z4v8i3nztlzcU3a77v0ZAogyoET0owRofi
+         BQXo1u03R3LL5e973Hu/ELccKb6iXgnNhalYvzUrWBOg1ScOTCoXqdHBhOyA67y78P8L
+         L7Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754409262; x=1755014062;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DXmcYBuTBSIC3cXLyf6AFT7dpi3YTNsScaWP3ZbN8Fs=;
+        b=DwwDpJu5f6i4HRmk7C1uT0H0fvuSK+AGuI7PLvkp9gqfZrYyh77yx1sVm8gX6qKvW7
+         e20Ugg8j6v6CiDtgokNqay5BBxSbNWgu1S9z/R2NyyUuIhrBvHU4spaYnz7AZL2S4293
+         fL6/iFEFzwB6dcQ/1j7DysdmN2FtII7sEmX3Eqhkm/P5h/6aylhPxJWJbqmFUm4qkHol
+         zy5npRo7yoVdyzaAmZFnyQl16gQbx+IeqeuVgg4CanSz6xHP3xP6Z/7+/JNYysVY974Q
+         E0gTI/Ynjmvej3jZGNPzxHjieN0CQTJCoJ5wM2RRln1Qk/LZyY5HF0e3vo2uT1mUS0bg
+         hICA==
+X-Forwarded-Encrypted: i=1; AJvYcCWrAwWMlMBs31Uf6Xc0FbQSj3cfQ7JUb3uz4hNjvucPp+bJ7KgPGnXV8r+/IhYB7oR22TX+i8yF@vger.kernel.org
+X-Gm-Message-State: AOJu0YwkxwtaZ2ip+OsAAlvpeum5IcdC6e1D1xSD3w/84ONXaycM3eBE
+	fhsX5+OkO42A9ShqSbSyiTNkenxU5H0RlUYNubNOgT5KgYPm9XfwXhBrwXDJVf9FBZoX6nz6cOT
+	8Dp6KJuezonT/OlxkQY+fKAV2nAZzLUE2MT9h0+l3
+X-Gm-Gg: ASbGnct2z/HOlirMTr//JxTbutdDPozCAgyiZVaYuWUsgmEDzyujpfx85+ikvAFEqNG
+	RjPQlRiXzixaPaTTZlqpo3ajsiw+QMyYQKGMzwATY2oSHyLFIRIXGhxcaHNABynE88fPy7b/Z6l
+	7ddJjwjvI3l2c8Gg9c/vUVKrEwyngvVGI/XgruOZXKUmmUNLpcvNVNsP16DC54BS13XEf7k/nd4
+	Pffd0s=
+X-Google-Smtp-Source: AGHT+IGDJF1zGd354VGsk1JYD0WGO/qVAFK/iq6mSfdssGAQaDT7Q3MQvezrFrpqbdBymBKwtXs9Ld7000cDegyNrxQ=
+X-Received: by 2002:a17:90b:224e:b0:31f:1739:b541 with SMTP id
+ 98e67ed59e1d1-321162cbc80mr19242734a91.29.1754409261039; Tue, 05 Aug 2025
+ 08:54:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: mailappw30.adc.com (172.16.56.197) To mailappw30.adc.com
- (172.16.56.197)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TY2PEPF0000AB86:EE_|SEYPR02MB5510:EE_
-X-MS-Office365-Filtering-Correlation-Id: d20b3b6b-d782-4e83-eb3e-08ddd42e37f8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|7416014|376014|36860700013|1800799024|921020|13003099007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?R0CLX8vbTvpulRQPqcl5cS9ROagi90fbOHdntQ6c04x3DvsLTSGFloevoOK+?=
- =?us-ascii?Q?rSbra7MHyKMZfkWw+JaKtYDIwEzJyNmQYIzTKMRa+bSModu654Jn4TTXaZFk?=
- =?us-ascii?Q?7+snRmiLPX15pdTIsSG24jaDrac6mf62+9I1aDdnQYmid8umd1Kc59cttFgl?=
- =?us-ascii?Q?YDUdL/voUfuyd8tBZDX3tPH7Eyd/cShhGeWLLsZvbIwUMGGQw3JZninPGsUn?=
- =?us-ascii?Q?ipVrGexqq4AcZWHErE6x36etSXXKwHtwqaZc3ElJDOCSKw37Nm4p9Ty/ZR6P?=
- =?us-ascii?Q?Dd8WOHCo/jJwc6fqOjSIV5GlYcFzmE303bfq1+9mZA3B5v3AhbQHtLUqrris?=
- =?us-ascii?Q?WnpsthQQm4lseiXT2DTsY8ANeU4sLCV6OhcErMChz3gyOlnBkBcHWNUDJnAh?=
- =?us-ascii?Q?shH9S61VX4aWKpNsD0/AjkQTaQJCB5wOoU69kMA31+1kUfdvV1Uiq6JlKcjy?=
- =?us-ascii?Q?ZGA8WQRVWcz8iVILeB7EzUPphw5zkIHabUxkRB5pa9FuU6M4DnYCh/fD+XM9?=
- =?us-ascii?Q?qLvBaNR6/Qzxa0wYT7970lgIrp3JJ8lFKsI9GkgoIGfPSFDz10Fa62tFNtqB?=
- =?us-ascii?Q?wqtni5UoKNcrISNRbuI9wDbwexovdFbyp7zMoqX5Pvwe9StICb95WfbD0TUc?=
- =?us-ascii?Q?dzD+kxK3JHj3mqmUR5OwRfiqcEE5Qi3+LSKtEw2+vx+exs5mj46TboiPvm9B?=
- =?us-ascii?Q?HXFx526G1Tkh8bcSvB2RDjn3K1d/kyy67NYTAGJn25YKs7UncH0Mcpf4wuIf?=
- =?us-ascii?Q?8RcOth1aJUOu5KKN+aEcXFNF7WZFbcu8RC2YdcjFm+CbCObrIXYVu+F1muOL?=
- =?us-ascii?Q?B6pvmAmnzzJ1DmsOo8Fbd884oFJ2GdT8K5XUfDtLwfdh55qouULnRX821UWy?=
- =?us-ascii?Q?qe7VWaLU+wyfeFqjS8KwdfUmn4rTDnkxTS2EFL4BC1cIQIWzGgkZe5gCI+YJ?=
- =?us-ascii?Q?goplPs/VL168gQgZKckwSrN+kJfrNT32NPV3Ndg1ASU512lQZvbr+JNq3jkd?=
- =?us-ascii?Q?aC64BxjG5XjK8G3VaIeRofubedlU+p6M1M7OWks2oSLDEEMnf/KvTMJifC+l?=
- =?us-ascii?Q?G9JX+t7qb6gddJaST3i9p5POSpfyZEQ4e+djbA9Z8LYr+deiwzDOA83CS3xC?=
- =?us-ascii?Q?IKRov9EBIB02WSlHb4/HkSkE0jp81ZPKo+XsQZVYP64gHs2E3qF/LFkE9MJg?=
- =?us-ascii?Q?CeRKH9BXT6mqf2ynthAyvITq/BQFgjCRrH4/3ZhY8AuHXNOwSaj9zmUBRIR4?=
- =?us-ascii?Q?/GLpiF+DVacxoTgS7RbmWWaHNojpMct8d5VpQ+DF/yaT8JVs72c6x3H0DUu/?=
- =?us-ascii?Q?Vc6yr5QfGvtXkZVtDSWZ7k4OJboKpUYpxuSKFlQvFqu69yPyhDlXCau9kpBO?=
- =?us-ascii?Q?cAu86WpNYvr9Jr/VjQcQx9i17aUkkasHHY7FlkfcJ9gErE3yYVHOT25UUqVw?=
- =?us-ascii?Q?a+oIGcjy50NjW9CiUDQlu+moyhHkZBx0xuY2bA2u4cye9O9IRDP+GcTRuRZV?=
- =?us-ascii?Q?QicUg8MAWMN9YIg=3D?=
-X-Forefront-Antispam-Report:
-	CIP:58.252.5.68;CTRY:CN;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.oppo.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(7416014)(376014)(36860700013)(1800799024)(921020)(13003099007);DIR:OUT;SFP:1101;
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2025 14:41:52.7107
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d20b3b6b-d782-4e83-eb3e-08ddd42e37f8
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f1905eb1-c353-41c5-9516-62b4a54b5ee6;Ip=[58.252.5.68];Helo=[mail.oppo.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	TY2PEPF0000AB86.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR02MB5510
+References: <20250805064429.77876-1-daniel.sedlak@cdn77.com>
+In-Reply-To: <20250805064429.77876-1-daniel.sedlak@cdn77.com>
+From: Kuniyuki Iwashima <kuniyu@google.com>
+Date: Tue, 5 Aug 2025 08:54:08 -0700
+X-Gm-Features: Ac12FXwC7xFTjCLjGN458qKNnLIHpU-rBIAK63QMImo5RiuLdxc4hroNKGTATNY
+Message-ID: <CAAVpQUCyM2x5a=w5MG9c5GDsHWX=Vse9qDP0URu6q9mSP0PD3Q@mail.gmail.com>
+Subject: Re: [PATCH v4] memcg: expose socket memory pressure in a cgroup
+To: Daniel Sedlak <daniel.sedlak@cdn77.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Neal Cardwell <ncardwell@google.com>, David Ahern <dsahern@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org, netdev@vger.kernel.org, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Matyas Hurtik <matyas.hurtik@cdn77.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When a task is migrated out, there is a probability that the tg->load_avg
-value will become abnormal. The reason is as follows.
+On Mon, Aug 4, 2025 at 11:50=E2=80=AFPM Daniel Sedlak <daniel.sedlak@cdn77.=
+com> wrote:
+>
+> This patch is a result of our long-standing debug sessions, where it all
+> started as "networking is slow", and TCP network throughput suddenly
+> dropped from tens of Gbps to few Mbps, and we could not see anything in
+> the kernel log or netstat counters.
+>
+> Currently, we have two memory pressure counters for TCP sockets [1],
+> which we manipulate only when the memory pressure is signalled through
+> the proto struct [2]. However, the memory pressure can also be signaled
+> through the cgroup memory subsystem, which we do not reflect in the
+> netstat counters. In the end, when the cgroup memory subsystem signals
+> that it is under pressure, we silently reduce the advertised TCP window
+> with tcp_adjust_rcv_ssthresh() to 4*advmss, which causes a significant
+> throughput reduction.
+>
+> Keep in mind that when the cgroup memory subsystem signals the socket
+> memory pressure, it affects all sockets used in that cgroup.
+>
+> This patch exposes a new file for each cgroup in sysfs which signals
+> the cgroup socket memory pressure. The file is accessible in
+> the following path.
+>
+>   /sys/fs/cgroup/**/<cgroup name>/memory.net.socket_pressure
+>
+> The output value is a cumulative sum of microseconds spent
+> under pressure for that particular cgroup.
+>
+> Link: https://elixir.bootlin.com/linux/v6.15.4/source/include/uapi/linux/=
+snmp.h#L231-L232 [1]
+> Link: https://elixir.bootlin.com/linux/v6.15.4/source/include/net/sock.h#=
+L1300-L1301 [2]
+> Co-developed-by: Matyas Hurtik <matyas.hurtik@cdn77.com>
+> Signed-off-by: Matyas Hurtik <matyas.hurtik@cdn77.com>
+> Signed-off-by: Daniel Sedlak <daniel.sedlak@cdn77.com>
+> ---
+> Changes:
+> v3 -> v4:
+> - Add documentation
+> - Expose pressure as cummulative counter in microseconds
+> - Link to v3: https://lore.kernel.org/netdev/20250722071146.48616-1-danie=
+l.sedlak@cdn77.com/
+>
+> v2 -> v3:
+> - Expose the socket memory pressure on the cgroups instead of netstat
+> - Split patch
+> - Link to v2: https://lore.kernel.org/netdev/20250714143613.42184-1-danie=
+l.sedlak@cdn77.com/
+>
+> v1 -> v2:
+> - Add tracepoint
+> - Link to v1: https://lore.kernel.org/netdev/20250707105205.222558-1-dani=
+el.sedlak@cdn77.com/
+>
+>  Documentation/admin-guide/cgroup-v2.rst |  7 +++++++
+>  include/linux/memcontrol.h              |  2 ++
+>  mm/memcontrol.c                         | 15 +++++++++++++++
+>  mm/vmpressure.c                         |  9 ++++++++-
+>  4 files changed, 32 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
+n-guide/cgroup-v2.rst
+> index 0cc35a14afbe..c810b449fb3d 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1884,6 +1884,13 @@ The following nested keys are defined.
+>         Shows pressure stall information for memory. See
+>         :ref:`Documentation/accounting/psi.rst <psi>` for details.
+>
+> +  memory.net.socket_pressure
+> +       A read-only single value file showing how many microseconds
+> +       all sockets within that cgroup spent under pressure.
+> +
+> +       Note that when the sockets are under pressure, the networking
+> +       throughput can be significantly degraded.
+> +
+>
+>  Usage Guidelines
+>  ~~~~~~~~~~~~~~~~
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 87b6688f124a..6a1cb9a99b88 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -252,6 +252,8 @@ struct mem_cgroup {
+>          * where socket memory is accounted/charged separately.
+>          */
+>         unsigned long           socket_pressure;
+> +       /* exported statistic for memory.net.socket_pressure */
+> +       unsigned long           socket_pressure_duration;
+>
+>         int kmemcg_id;
+>         /*
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 902da8a9c643..8e299d94c073 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3758,6 +3758,7 @@ static struct mem_cgroup *mem_cgroup_alloc(struct m=
+em_cgroup *parent)
+>         INIT_LIST_HEAD(&memcg->swap_peaks);
+>         spin_lock_init(&memcg->peaks_lock);
+>         memcg->socket_pressure =3D jiffies;
+> +       memcg->socket_pressure_duration =3D 0;
+>         memcg1_memcg_init(memcg);
+>         memcg->kmemcg_id =3D -1;
+>         INIT_LIST_HEAD(&memcg->objcg_list);
+> @@ -4647,6 +4648,15 @@ static ssize_t memory_reclaim(struct kernfs_open_f=
+ile *of, char *buf,
+>         return nbytes;
+>  }
+>
+> +static int memory_socket_pressure_show(struct seq_file *m, void *v)
+> +{
+> +       struct mem_cgroup *memcg =3D mem_cgroup_from_seq(m);
+> +
+> +       seq_printf(m, "%lu\n", READ_ONCE(memcg->socket_pressure_duration)=
+);
+> +
+> +       return 0;
+> +}
+> +
+>  static struct cftype memory_files[] =3D {
+>         {
+>                 .name =3D "current",
+> @@ -4718,6 +4728,11 @@ static struct cftype memory_files[] =3D {
+>                 .flags =3D CFTYPE_NS_DELEGATABLE,
+>                 .write =3D memory_reclaim,
+>         },
+> +       {
+> +               .name =3D "net.socket_pressure",
+> +               .flags =3D CFTYPE_NOT_ON_ROOT,
+> +               .seq_show =3D memory_socket_pressure_show,
+> +       },
+>         { }     /* terminate */
+>  };
+>
+> diff --git a/mm/vmpressure.c b/mm/vmpressure.c
+> index bd5183dfd879..1e767cd8aa08 100644
+> --- a/mm/vmpressure.c
+> +++ b/mm/vmpressure.c
+> @@ -308,6 +308,8 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, =
+bool tree,
+>                 level =3D vmpressure_calc_level(scanned, reclaimed);
+>
+>                 if (level > VMPRESSURE_LOW) {
+> +                       unsigned long socket_pressure;
+> +                       unsigned long jiffies_diff;
+>                         /*
+>                          * Let the socket buffer allocator know that
+>                          * we are having trouble reclaiming LRU pages.
+> @@ -316,7 +318,12 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg,=
+ bool tree,
+>                          * asserted for a second in which subsequent
+>                          * pressure events can occur.
+>                          */
+> -                       WRITE_ONCE(memcg->socket_pressure, jiffies + HZ);
+> +                       socket_pressure =3D jiffies + HZ;
+> +
+> +                       jiffies_diff =3D min(socket_pressure - READ_ONCE(=
+memcg->socket_pressure), HZ);
+> +                       memcg->socket_pressure_duration +=3D jiffies_to_u=
+secs(jiffies_diff);
 
-1. Due to the 1ms update period limitation in update_tg_load_avg(), there
-is a possibility that the reduced load_avg is not updated to tg->load_avg
-when a task migrates out.
-2. Even though __update_blocked_fair() traverses the leaf_cfs_rq_list and
-calls update_tg_load_avg() for cfs_rqs that are not fully decayed, the key
-function cfs_rq_is_decayed() does not check whether
-cfs->tg_load_avg_contrib is null. Consequently, in some cases,
-__update_blocked_fair() removes cfs_rqs whose avg.load_avg has not been
-updated to tg->load_avg.
+WRITE_ONCE() is needed here.
 
-I added a check of cfs_rq->tg_load_avg_contrib in cfs_rq_is_decayed(),
-which blocks the case (2.) mentioned above. I follow the condition in
-update_tg_load_avg() instead of directly checking if
-cfs_rq->tg_load_avg_contrib is null. I think it's necessary to keep the
-condition consistent in both places, otherwise unexpected problems may
-occur.
 
-Thanks for your comments,
-Xu Pengbo
-
-Fixes: 1528c661c24b ("sched/fair: Ratelimit update to tg->load_avg")
-Signed-off-by: xupengbo <xupengbo@oppo.com>
----
-Changes:
-v1 -> v2: 
-- Another option to fix the bug. Check cfs_rq->tg_load_avg_contrib in 
-cfs_rq_is_decayed() to avoid early removal from the leaf_cfs_rq_list.
-- Link to v1 : https://lore.kernel.org/cgroups/20250804130326.57523-1-xupengbo@oppo.com/T/#u
-
- kernel/sched/fair.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index b173a059315c..a35083a2d006 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4062,6 +4062,11 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
- 	if (child_cfs_rq_on_list(cfs_rq))
- 		return false;
- 
-+	long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
-+
-+	if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64)
-+		return false;
-+
- 	return true;
- }
- 
--- 
-2.43.0
-
+> +
+> +                       WRITE_ONCE(memcg->socket_pressure, socket_pressur=
+e);
+>                 }
+>         }
+>  }
+>
+> base-commit: e96ee511c906c59b7c4e6efd9d9b33917730e000
+> --
+> 2.39.5
+>
 
