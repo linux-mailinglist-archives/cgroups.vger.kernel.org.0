@@ -1,239 +1,157 @@
-Return-Path: <cgroups+bounces-8997-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8998-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 028F3B1C331
-	for <lists+cgroups@lfdr.de>; Wed,  6 Aug 2025 11:23:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1B29B1C6E2
+	for <lists+cgroups@lfdr.de>; Wed,  6 Aug 2025 15:37:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A14F0189FFFF
-	for <lists+cgroups@lfdr.de>; Wed,  6 Aug 2025 09:23:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A81247AE7F1
+	for <lists+cgroups@lfdr.de>; Wed,  6 Aug 2025 13:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993F7288CA1;
-	Wed,  6 Aug 2025 09:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0CE528C005;
+	Wed,  6 Aug 2025 13:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yqH5iT5D"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PNrJr/jn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDCCB28982B
-	for <cgroups@vger.kernel.org>; Wed,  6 Aug 2025 09:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F5B628B7EB
+	for <cgroups@vger.kernel.org>; Wed,  6 Aug 2025 13:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754472170; cv=none; b=o5YueLcKjxHelwezW/Ein7vpRWPSS97BSCuxB2Xe2QingPX+CZeN2jQP80dOsftYPL5owMxjbUun7BpJ/4Nsa4HORKcVkSOJtaZkwcPGHjUOGO0JIUf5MQCSTtwUeSg9KpOCtFgYBGkLS/7IStSqUQaQf5JLO8S2ZrlEIMekZTY=
+	t=1754487424; cv=none; b=Y9TRKXh9w2YmT/HZTfKKiO7r2x3+WFldsCcPGU4OjpwxLIuTUfuEWfd9Y7uXVM+sIzdJmVMiBSzEH1PlUojn8wAcJnZHI5KpeN7XGXuloO6rKP/bdDrSdyPLSjMo9fBXDPB5z27ZSQ6vWNRdNIse8GrvKRBZwVY9xcmsVzlpL/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754472170; c=relaxed/simple;
-	bh=XjDPLc5/WGRQW8rxnHkXlCo9U7biztDlbJgoFDjgDyI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SFO1KGWOQalwXklSlC+0jtseeuuVBYySscksqU5B3z9pWS9L1Ww3Un356dwjuOCEPIELGKhBokIM4tgQoxGcQXY9wnkL8Fk+U2lM51ztiJqof0/T8cTIOtCEKOeyh7i86wTLZcuJMbRXrhw60n9IiXLpOUX4s71g4W1GK/Tn9xI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yqH5iT5D; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-615460d9897so7636442a12.0
-        for <cgroups@vger.kernel.org>; Wed, 06 Aug 2025 02:22:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1754472166; x=1755076966; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=eZ8Cxbl+PdyaltjEvWGRoEfuwACW3Jt5gpyDRZMeagQ=;
-        b=yqH5iT5DfqJ9H16GcHkFJoreKfdoLCFAKMrjT9CMcblyBaeH6My3LlR98hcjqoKCiu
-         O3HiQSsB8gc8ZkpPJxlRGv3LYmymbTwLAXt70znmaLOitUV+ASLLts0tjZhVfex7AOIq
-         XSAk6mLHnvsy1uWjWcyBLqb9op+jB7kVPLN4iYqHYuV8src59ONzyGNWpIY8M/TAMKDX
-         qavuZcSPd+uM2CVVMjPEIGCzAuMRP0wE4FdwzL3UvPkYD9IL/jWsH4V1vMoXEQ6xRlWv
-         LSfUGEv8tY06kwc8fevphblFutAhLMEC/DjgRNHUp+zxQqHAAfw5nzVnARB76OsqoT58
-         kUbQ==
+	s=arc-20240116; t=1754487424; c=relaxed/simple;
+	bh=Gc+IHMqrg3k+CPCG49IwYaeLndJ1W+ZmMsLAIRORBGM=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=OSKHg9c0pqG5w8To87RqptORnZpvkgmJoEzs00108EB3HjFpsR7Gsmx/RcC1Pxx3qfAPwMI25Ng33yECfuS/K6ElqWORrGwmvTDv6C1pl7O/AYyGyA2+z7m8iKFWMZZgqcLFB3OWblv4OhxuMyq8va6hoKRa2Hz1QlWx7tUXT3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PNrJr/jn; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1754487422;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=elGlcnQvj0g4w9uftbmc4mXIt8a4vHLbXoDJDQwevpE=;
+	b=PNrJr/jnX4HUs65+RzviEDpVPoEar9Mkm3cocOKIyHJL8QWwpCx7/KB+i1wakM7DJUg3Cf
+	DooO9ZOFpOiKjVBlma6e1BbNTQPDjK859nNQ/JiqZMkxzuUivUogDJ7o1dRRJAhDyOTSC0
+	9i6wantK9asWehhqTehRiTmc8Le16ks=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-84-pNBbeO1jN9m6ffkfydN09A-1; Wed, 06 Aug 2025 09:37:00 -0400
+X-MC-Unique: pNBbeO1jN9m6ffkfydN09A-1
+X-Mimecast-MFC-AGG-ID: pNBbeO1jN9m6ffkfydN09A_1754487420
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7e7ffcbce80so607092585a.3
+        for <cgroups@vger.kernel.org>; Wed, 06 Aug 2025 06:37:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754472166; x=1755076966;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eZ8Cxbl+PdyaltjEvWGRoEfuwACW3Jt5gpyDRZMeagQ=;
-        b=w+k7wk6XNOi91qTD+ohjA/twecsJsonKhLbtSMtpezVwyAkPSz6AcN9NN/mteH11P3
-         AJhhKrkWF3XzHrQCq4BsjiMWDTfCdhptCWeMucKOD8lLEqNeF7x31FuvN14Ngis/3xnK
-         rFNQtB0Mnprvg6+LpP/x4gn7IREsxkURRWk4iM7LKjd2iUpfdk0ZofU//XSrjE91I8RZ
-         uApxEGnKqqrvd2QjlsvOkAuimkF7Jsk4/yOf7JGVT+uZIdy+ownln9iMJ5denPqaUyYP
-         LVJYRf5wrI2KdKwVWgm1a4m29iTezfI1pU+vskE5Dv0I3MH+WtQJlkz7+hXfU+mes8XL
-         04Cg==
-X-Forwarded-Encrypted: i=1; AJvYcCXihVY9zjqeLB9NiWzunQMgD1ZeiEIO4PPvIx1WfD7jTkZdQoWuZaOduRNebr5HaLMXLxPYqMxI@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+HKIGOyEM79JQcA75kaSO81YL1bb++ZnI1lyjxcaoVyByjhAz
-	Ec8BDkafHREj4aYhzOIDyFh9lqGYyN4vktD7ECOHImIMAurDJVyHzt/m/T+7md6Ka5ZmBvRlofC
-	ivMlB1a7KtOmiWajLA2IByIigouPqSDdQatR7T509vA==
-X-Gm-Gg: ASbGncsKlooEdboyKAN7Wo0U9oZKlhvr1sBvgqdRwLyV93jNHOMPqSolE0xXoTlmOQ6
-	y0g2u8AwcR+AbNp6VWfcd3O3Ssr1i73ROtGaTBswVLhckKewimeLZ0A0Nv1pjXL6OgiicRg7s6r
-	mAYYD5N2My4iDgXiNZaW+bueRxbN4k/vy82jYkJbA+4y9JBrSlAtlHFJ9YK03AApFiHmHP0QDr+
-	Yn7F1M3PTLpXylrvd0lK/KQwKYTZIW9pMCh
-X-Google-Smtp-Source: AGHT+IH5W+hv/msC6rExWwiLgguba5dhm/ihYnpT1zWBg6HxYotiILQp73e1b2tJTMHl/VvkYzFwTVd7xmqaygIFwGo=
-X-Received: by 2002:a17:907:7f0d:b0:ae0:bee7:ad7c with SMTP id
- a640c23a62f3a-af9904565e6mr188068166b.46.1754472165805; Wed, 06 Aug 2025
- 02:22:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1754487420; x=1755092220;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=elGlcnQvj0g4w9uftbmc4mXIt8a4vHLbXoDJDQwevpE=;
+        b=svDAeh0rZ7MkkR4iaVR+U6p2tQbEu9xlWnatrYCXOw7+ro+b6caJ0s+IemFG40H6Lg
+         BEhxMWQtUWjoi8TZF+FVfOXBDRy9QzzA8xUAWPNuHf5UxdwNVVIAZ2ZwFHAjGTRbJjVB
+         Un5VQvWMUvXk3Rnmmrr3j04mVjjtCA6ivZhCeS1MertWoB/Q0HxXXU8zCMqRzwAxJzKk
+         FaufAoju8dENm/7gwlEDn0JCmo28Ew26hA3T5IeeiE5kCIkEXaE9v3v9Ihag6i+140X2
+         dr2juWjKUWyFkrf6bv4uvOgjVSl1HpqUfhuDFzOK9xR/IbuihPaFAx+luE6WuPZLEeti
+         lsDw==
+X-Forwarded-Encrypted: i=1; AJvYcCXX+gVquMYbCEQO+WQM4pBByZzHQnkiahPbiohkykrP4VQeei2QInRR9m4Z47ABOQNGcP96K1sW@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3mzYiw53vywxPnkb9JrmGaYuX9W0MxNy3PommMjXEdVd8QpkH
+	kSXw41CgDs+cFw9bJxhgpuAuS9GDVtd/YMqb6NObzl2+E/676Rh8NvCf+kc7rcuzsDRcAScGyi2
+	4+iRT3gsQ/qaFPt2eTji7ZM+BTS7/A2JQurcFeM4pte9Lh3xo8idqM6t32PI=
+X-Gm-Gg: ASbGncvdRopWLpyBlvJRDg+HkCxNZgKkP3OLHXNvQ9A8t0+gAn4yXrVBomADch12zrf
+	timxN4Qpgge9tAgcS8ltmTCPZU/yzGQ0t8PhcZDb4mjZZAhjV4GS4LkBHxHMivVJlNb2RfFVHSK
+	HxWOI1LU/KS88K5eY3L4suGk2LwYsLxjWVXsbowJQGiq2OlNrddecJd92h5QDh5K/V5sMmbvF/0
+	rirSIWa6VVX06s6oL1rEGBrWtdm2gkSUg5OB+KB5U8U9Vh68fpTgXeyApqjK6kdfgJOi5udBKPS
+	5+cDu5/nzKL2JCeztt7nMZLusOxFGpz31v6MFmLOwtg7mOWCDgJF0GiZnWPccH5u73nm6XfeM3J
+	sPxeHprTz5A==
+X-Received: by 2002:a05:620a:4316:b0:7e3:47a7:7718 with SMTP id af79cd13be357-7e816735c9cmr352192585a.45.1754487420246;
+        Wed, 06 Aug 2025 06:37:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEKziNy56SkxoHcLkoEhaK4DW7+o5pZx1xAKBwM2VojshAjuVYUDLpMn+yr9X7ggtNFjGv0LQ==
+X-Received: by 2002:a05:620a:4316:b0:7e3:47a7:7718 with SMTP id af79cd13be357-7e816735c9cmr352185285a.45.1754487419608;
+        Wed, 06 Aug 2025 06:36:59 -0700 (PDT)
+Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7e67f5cd509sm823143285a.40.2025.08.06.06.36.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Aug 2025 06:36:59 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <eff82d2e-4030-4780-abb5-cc5ad4e91acb@redhat.com>
+Date: Wed, 6 Aug 2025 09:36:58 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250806071848.GA629@bytedance> <20250806083810.27678-1-xupengbo@oppo.com>
-In-Reply-To: <20250806083810.27678-1-xupengbo@oppo.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Wed, 6 Aug 2025 11:22:33 +0200
-X-Gm-Features: Ac12FXxHPZZcVOPKjgJc_OpCyPVwI9FBvM5bTacN09V_nzgfs_Dlg-CR2f2W6NU
-Message-ID: <CAKfTPtCDCS_wzaOFzMLcfNafu8PpifXXpkpYYA-f1u1dPb7kng@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: Fix unfairness caused by stalled
- tg_load_avg_contrib when the last task migrates out.
-To: xupengbo <xupengbo@oppo.com>
-Cc: ziqianlu@bytedance.com, bsegall@google.com, cgroups@vger.kernel.org, 
-	dietmar.eggemann@arm.com, juri.lelli@redhat.com, linux-kernel@vger.kernel.org, 
-	mgorman@suse.de, mingo@redhat.com, peterz@infradead.org, rostedt@goodmis.org, 
-	vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup: Remove unused css_put_many().
+To: Julian Sun <sunjunchao2870@gmail.com>, cgroups@vger.kernel.org
+Cc: tj@kernel.org, hannes@cmpxchg.org, Julian Sun <sunjunchao@bytedance.com>
+References: <20250806080457.3308817-1-sunjunchao@bytedance.com>
+Content-Language: en-US
+In-Reply-To: <20250806080457.3308817-1-sunjunchao@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 6 Aug 2025 at 10:38, xupengbo <xupengbo@oppo.com> wrote:
->
-> On Wed, Aug 06, 2025 at 02:31:58PM +0800, xupengbo wrote:
-> > > >On Tue, 5 Aug 2025 at 16:42, xupengbo <xupengbo@oppo.com> wrote:
-> > > > >
-> > > > > When a task is migrated out, there is a probability that the tg->load_avg
-> > > > > value will become abnormal. The reason is as follows.
-> > > > >
-> > > > > 1. Due to the 1ms update period limitation in update_tg_load_avg(), there
-> > > > > is a possibility that the reduced load_avg is not updated to tg->load_avg
-> > > > > when a task migrates out.
-> > > > > 2. Even though __update_blocked_fair() traverses the leaf_cfs_rq_list and
-> > > > > calls update_tg_load_avg() for cfs_rqs that are not fully decayed, the key
-> > > > > function cfs_rq_is_decayed() does not check whether
-> > > > > cfs->tg_load_avg_contrib is null. Consequently, in some cases,
-> > > > > __update_blocked_fair() removes cfs_rqs whose avg.load_avg has not been
-> > > > > updated to tg->load_avg.
-> > > > >
-> > > > > I added a check of cfs_rq->tg_load_avg_contrib in cfs_rq_is_decayed(),
-> > > > > which blocks the case (2.) mentioned above. I follow the condition in
-> > > > > update_tg_load_avg() instead of directly checking if
-> > > > > cfs_rq->tg_load_avg_contrib is null. I think it's necessary to keep the
-> > > > > condition consistent in both places, otherwise unexpected problems may
-> > > > > occur.
-> > > > >
-> > > > > Thanks for your comments,
-> > > > > Xu Pengbo
-> > > > >
-> > > > > Fixes: 1528c661c24b ("sched/fair: Ratelimit update to tg->load_avg")
-> > > > > Signed-off-by: xupengbo <xupengbo@oppo.com>
-> > > > > ---
-> > > > > Changes:
-> > > > > v1 -> v2:
-> > > > > - Another option to fix the bug. Check cfs_rq->tg_load_avg_contrib in
-> > > > > cfs_rq_is_decayed() to avoid early removal from the leaf_cfs_rq_list.
-> > > > > - Link to v1 : https://lore.kernel.org/cgroups/20250804130326.57523-1-xupengbo@oppo.com/T/#u
-> > > > >
-> > > > >  kernel/sched/fair.c | 5 +++++
-> > > > >  1 file changed, 5 insertions(+)
-> > > > >
-> > > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > > index b173a059315c..a35083a2d006 100644
-> > > > > --- a/kernel/sched/fair.c
-> > > > > +++ b/kernel/sched/fair.c
-> > > > > @@ -4062,6 +4062,11 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
-> > > > >         if (child_cfs_rq_on_list(cfs_rq))
-> > > > >                 return false;
-> > > > >
-> > > > > +       long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
-> > > > > +
-> > > > > +       if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64)
-> > > >
-> > > >I don't understand why you use the above condition instead of if
-> > > >(!cfs_rq->tg_load_avg_contrib). Can you elaborate ?
->
-> Sorry I was misled here, I think it should be if (cfs_rq->tg_load_avg_contrib ! = 0)
+On 8/6/25 4:04 AM, Julian Sun wrote:
+> Remove css_put_many() as it's never called by any function.
 
-yes I made a mistake. It should be
-if (cfs_rq->tg_load_avg_contrib ! = 0)
-or
-if (cfs_rq->tg_load_avg_contrib)
+It isn't currently used doesn't mean that it will not be used in the 
+future. We have css_get_many() that is used in memcontrol.c. For 
+symmetry, we should have a corresponding css_put_many(). Also there is 
+little cost in keeping this little helper function around.
+
+Cheers,
+Longman
 
 >
-> > > >
-> > > >strictly speaking we want to keep the cfs_rq in the list if
-> > > >(cfs_rq->tg_load_avg_contrib != cfs_rq->avg.load_avg) and
-> > > >cfs_rq->avg.load_avg == 0 when we test this condition
-> > >
-> > >
-> > > I use this condition primarily based on the function update_tg_load_avg().
-> > > I want to absolutely avoid a situation where cfs_rq_is_decay() returns
-> > > false but update_tg_load_avg() cannot update its value due to the delta
-> > > check, which may cause the cfs_rq to remain on the list permanently.
-> > > Honestly, I am not sure if this will happen, so I took this conservative
-> > > approach.
-> >
-> > Hmm...it doesn't seem we need worry about this situation.
+> Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+> ---
+>   include/linux/cgroup.h        |  1 -
+>   include/linux/cgroup_refcnt.h | 15 ---------------
+>   2 files changed, 16 deletions(-)
 >
-> yeah, I am worried about this situation, but I can't find any evidence
-> that it exists.
->
-> > Because when cfs_rq->load_avg is 0, abs(delta) will be
-> > cfs_rq->tg_load_avg_contrib and the following condition:
-> >
-> >       if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64)
-> > becomes:
-> >       if (cfs_rq->tg_load_avg_contrib > cfs_rq->tg_load_avg_contrib / 64)
-> >
-> > which should always be true, right?
->
->
-> It actually becomes:
->     if (cfs_rq->tg_load_avg_contrib > 0)
-> if cfs_rq->tg_load_avg_contrib == 0 , it will be false. As it is an unsigned
-> long, this condition is equivalent to :
->     if (cfs_rq->tg_load_avg_contrib)
->
-> Sorry I just made a mistake.
-> Thanks,
-> Xupengbo
->
-> > Thanks,
-> > Aaron
-> >
-> > >
-> > > In fact, in the second if-condition of cfs_rq_is_decay(), the comment in
-> > > the load_avg_is_decayed() function states:"_avg must be null when _sum is
-> > > null because _avg = _sum / divider". Therefore, when we check this newly
-> > > added condition, cfs_rq->avg.load_avg should already be 0, right?
-> > >
-> > > After reading your comments, I carefully considered the differences
-> > > between these two approaches. Here, my condition is similar
-> > > to cfs_rq->tg_load_avg_contrib != cfs_rq->avg.load_avg but weaker. In
-> > > fact, when cfs_rq->avg.load_avg is already 0,
-> > > abs(delta) > cfs_rq->tg_load_avg_contrib / 64 is equivalent to
-> > > cfs_rq->tg_load_avg_contrib > cfs_rq->tg_load_avg_contrib / 64,
-> > > Further reasoning leads to the condition cfs_rq->tg_load_avg_contrib > 0.
-> > > However if cfs_rq->avg.load_avg is not necessarily 0 at this point, then
-> > > the condition you propose is obviously more accurate, simpler than the
-> > > delta check, and requires fewer calculations.
-> > >
-> > > I think our perspectives differ. From the perspective of
-> > > update_tg_load_avg(), the semantics of this condition are as follows: if
-> > > there is no 1ms update limit, and update_tg_load_avg() can continue
-> > > updating after checking the delta, then in cfs_rq_is_decayed() we should
-> > > return false to keep the cfs_rq in the list for subsequent updates. As
-> > > mentioned in the first paragraph, this avoids that tricky situation. From
-> > > the perspective of cfs_rq_is_decayed(), the semantics of the condition you
-> > > proposed are that if cfs_rq->avg.load_avg is already 0, then it cannot be
-> > > removed from the list before all load_avg are updated to tg. That makes
-> > > sense to me, but I still feel like there's a little bit of a risk. Am I
-> > > being paranoid?
-> > >
-> > > How do you view these two lines of thinking?
-> > >
-> > > It's a pleasure to discuss this with you,
-> > > xupengbo.
-> > >
-> > > > > +               return false;
-> > > > > +
-> > > > >         return true;
-> > > > >  }
-> > > > >
-> > > > > --
-> > > > > 2.43.0
-> > > > >
->
+> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+> index b18fb5fcb38e..2e232eb8c897 100644
+> --- a/include/linux/cgroup.h
+> +++ b/include/linux/cgroup.h
+> @@ -322,7 +322,6 @@ void css_get_many(struct cgroup_subsys_state *css, unsigned int n);
+>   bool css_tryget(struct cgroup_subsys_state *css);
+>   bool css_tryget_online(struct cgroup_subsys_state *css);
+>   void css_put(struct cgroup_subsys_state *css);
+> -void css_put_many(struct cgroup_subsys_state *css, unsigned int n);
+>   #else
+>   #define CGROUP_REF_FN_ATTRS	static inline
+>   #define CGROUP_REF_EXPORT(fn)
+> diff --git a/include/linux/cgroup_refcnt.h b/include/linux/cgroup_refcnt.h
+> index 2eea0a69ecfc..1cede70a928c 100644
+> --- a/include/linux/cgroup_refcnt.h
+> +++ b/include/linux/cgroup_refcnt.h
+> @@ -79,18 +79,3 @@ void css_put(struct cgroup_subsys_state *css)
+>   		percpu_ref_put(&css->refcnt);
+>   }
+>   CGROUP_REF_EXPORT(css_put)
+> -
+> -/**
+> - * css_put_many - put css references
+> - * @css: target css
+> - * @n: number of references to put
+> - *
+> - * Put references obtained via css_get() and css_tryget_online().
+> - */
+> -CGROUP_REF_FN_ATTRS
+> -void css_put_many(struct cgroup_subsys_state *css, unsigned int n)
+> -{
+> -	if (!(css->flags & CSS_NO_REF))
+> -		percpu_ref_put_many(&css->refcnt, n);
+> -}
+> -CGROUP_REF_EXPORT(css_put_many)
+
 
