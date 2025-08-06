@@ -1,160 +1,292 @@
-Return-Path: <cgroups+bounces-9004-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9005-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19363B1CACB
-	for <lists+cgroups@lfdr.de>; Wed,  6 Aug 2025 19:30:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D800EB1CC6F
+	for <lists+cgroups@lfdr.de>; Wed,  6 Aug 2025 21:20:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C696D3A334F
-	for <lists+cgroups@lfdr.de>; Wed,  6 Aug 2025 17:30:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9485218C46BB
+	for <lists+cgroups@lfdr.de>; Wed,  6 Aug 2025 19:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5685042AA5;
-	Wed,  6 Aug 2025 17:30:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A05F29DB9A;
+	Wed,  6 Aug 2025 19:20:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TJyquuY4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FUOSf0g+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4FEA41
-	for <cgroups@vger.kernel.org>; Wed,  6 Aug 2025 17:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F20817A305
+	for <cgroups@vger.kernel.org>; Wed,  6 Aug 2025 19:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754501443; cv=none; b=aG105YNGijbKTRVCv1GokhQrVT3FLy4Nu0eW1y9clgH+DX3GIMITdqKXR5vyQbp3cKlAWxhdpD9ojvGjfYNPE4FEMBUcDTl2rYt6O404kiiAYu4Wr6yWotQvWnBm8TmkH7GHgAQI2QfF2BUVXUdo+6RcNzw0Xs6HmzUlfD8S0TI=
+	t=1754508040; cv=none; b=m9YUoYnoXB4O5uE9DjoueADEwVEw4sZ5U7JilnaZ1QyuefCRLOcxHzBY6gu0my5F6sfm5F9LZFvvJyo6kYIkbWib4gYuDgIIprDf15Cvjr3QkqSlUKWXkiiZtl8YNk3JEX7A1QqSc5My5e6xUa7S55Mz3WlRz7DHs+1MegvrnLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754501443; c=relaxed/simple;
-	bh=rwu7EbHnd6wQb+iO4s/C8em34k2dJwqajxQ0+wzSRO8=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=lsQP0XKSlb1oUsaVqhchLzY3AnLN0oe4wuLetsTe10VZlv9UPC3GWpXxlT0iGhh1wXwbeYHqmYgPHhClGEmmWCybqX7acWgVSRZ611dAcQyZkPrMSZ8O5cvHDBxGjLa0N/GazZwLoqu3j7eVOLRXf001evK/oxLaSuSz0AyJxkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TJyquuY4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754501440;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S0FtVJ+cvvsMupVuJOSmNRM6v2yyfUsa12kAjP3d/wU=;
-	b=TJyquuY4xsHIa0/HVV8zVEc+uCOAzg1ArRTvwvBy6138Hj3UepyUFswMlYvsBk5CEKesI3
-	t2qbzewU1NdB2xz4KKlExeH1Sdsom9yh4siDmwd3Xn8xXL74wcIdeS9nNXNHLr8A8Hg7hz
-	OtYr2/Go4MtL/gY+osE1iEaCdTZFUFA=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-341-WNYCmkYCOKuknqwDtXahqA-1; Wed, 06 Aug 2025 13:30:39 -0400
-X-MC-Unique: WNYCmkYCOKuknqwDtXahqA-1
-X-Mimecast-MFC-AGG-ID: WNYCmkYCOKuknqwDtXahqA_1754501438
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7e8072f828cso12127185a.0
-        for <cgroups@vger.kernel.org>; Wed, 06 Aug 2025 10:30:39 -0700 (PDT)
+	s=arc-20240116; t=1754508040; c=relaxed/simple;
+	bh=Avm7iRpw7t/J0OMzU30V+QDHcFm/VvYrQda7gk+c1uY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a0/erEZjawXEICGOVuTju2eZ7YmZSUit8lKPuD9nuJOCFnU5BEckxHoaeT36nsg3A0gdB0GQ6UwnUWtfACI1raDC/h9B9P5Kh95S1JTbMm8ijxMv0JvJjHGXLrAc7oI/Qzk4HTZyU4CP5BFqiBP5RyxIEjXrCj51BFSJim8Q6W4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FUOSf0g+; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-b4233f86067so179801a12.0
+        for <cgroups@vger.kernel.org>; Wed, 06 Aug 2025 12:20:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1754508037; x=1755112837; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vlwSPPk3zh2CiPmdVqXCK+PGcDLcMMqnjeuzNG7VVSA=;
+        b=FUOSf0g+IUbJYQgU1tNE+rHpUnwqMEKdWX9n5h6CSgx9qCyuW2C8x+/+AmhKDv7a5x
+         T3OTztJYdkh6iigC3MpxJ/IGMTslfnqItIVqNbGpxMOtBNtG0+0iWH/67iVKRKm2fdlu
+         0Ndk1hCukARRt4OIc/zcyCMyCzDnUZ0zFZTxzLD3z9ZrljGrrmAG1ITwHyjZPv5CnkiG
+         E/P1AdcJ/lEuqgS/H69tktlj9M4D8WPjw8iDiDUxlLMmxXPbJJm+GO5m8hRCOShmFwKO
+         tXsbbEJhbZhK61n45XRR+ifALCtaiHae+/nsPihxsH26J2tJyhN10hWpWZu/YjwJJrxQ
+         ehxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754501438; x=1755106238;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S0FtVJ+cvvsMupVuJOSmNRM6v2yyfUsa12kAjP3d/wU=;
-        b=she+xwLc7U7D9Y9D3059j9CiNgYPoAYSdqxnT8UFuCcIH6VBrYjCTRGVHSft+AnJ85
-         BI8etVWYtSmOntpXiPs8RcRKsr4m6Me4oH0lDDMNqXNZz4txaz0VS6cCnUIuMx96Mh3a
-         AxQOZtS4iHQj0OUUuP6kAm3bqyl2BAHyxlXnW5VxMaMFYlXOMbex7QMxgZIaQKBWkiBp
-         xyT+trnKeP/SUatfhBznf4eRcbCrDLgtFLtUgm+aZOG8dj7sACwjZWUEIgO8ZteNleAw
-         wxO1/6ou3TlLzUJVXZ4cW3ucXnvDOPTtkDf2DkAdEbKCU1HW+1NZmXcZgGhNsxwuHejr
-         GJOw==
-X-Gm-Message-State: AOJu0YzGjj0vhUULtu0pquH4DJNLXZxrch2pDdj14u57M6odHbrNxTmz
-	FEwoiKXWzs1MDoANWGTkzwRzCjAa8Z6Mhz0B6ccdCU5uDOaxzVPtbNUpMb/yjtrf0BC+FYL82A0
-	BfQxX1UDTVeF7UogN5MIMKnnWDyi45G6KUS0hYtDiPWxjgthIHnnRg+5RCh4=
-X-Gm-Gg: ASbGncud8Zh2tg1KCc62S+qip0b01E5fYTsiGuCZeeZ0jmXsOcintbkTbXdzPRSb6CK
-	tErlyftQIf2ZS0maaCpqbP0DmqNiPZL3LGF2+Ycqs7ooNiB83eWSWGyFoa6XiwF1PlpCTENPWM1
-	ZxReT7X9RIP/DmwQ6y6s4hrL5LJH5WLWtM03Np8f0YpiYGmqkhPW/cr3kNVCE3d7mL0kxlU3KWM
-	3ZIa7I+skZA734sB8XhDuLJao0Ytum/ePvXS3e1RbA6MjAdSGA460TxopIKznZWj1hLEQLLAXzU
-	X2oCWLItPiqLEOxJ1ecbX+cmyA30AiCEVIhw79hwHQnAGmRk4Gylyzl91hJxanQSM7BiACID65X
-	a1PFPH6LI4Q==
-X-Received: by 2002:a05:620a:2546:b0:7e3:363f:2c19 with SMTP id af79cd13be357-7e816709015mr540442885a.50.1754501438340;
-        Wed, 06 Aug 2025 10:30:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGUY/YEaX2Klj4Ymjnw1Oc1ae8Dt5bDFRXWaXaUiPkMDaNaMn8PLlQGjoTN+3PRBhj6S9Strw==
-X-Received: by 2002:a05:620a:2546:b0:7e3:363f:2c19 with SMTP id af79cd13be357-7e816709015mr540430185a.50.1754501437403;
-        Wed, 06 Aug 2025 10:30:37 -0700 (PDT)
-Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7e67f5947dbsm829284385a.12.2025.08.06.10.30.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Aug 2025 10:30:36 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <4ebbbe0b-0f4c-4002-b13b-263b7efc9f69@redhat.com>
-Date: Wed, 6 Aug 2025 13:30:35 -0400
+        d=1e100.net; s=20230601; t=1754508037; x=1755112837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vlwSPPk3zh2CiPmdVqXCK+PGcDLcMMqnjeuzNG7VVSA=;
+        b=Mu+u7qRFmdD3YWYBtekGxtaEDE/jGlp6GD7SA6jdaIHDPW5mLHrfDEda+26Df5WsyS
+         LaK1y+4/M3LVgJlDzlCcMKZrxs4WHjJYL7a3z7mUZ+rfmIfzzTSPCheVl7FRLUftvLv/
+         M+ohlltCTBf8ExITNYp3sdHIDFFfRaplCBifwO6P7K4InALIRpbjX5NAZG+WYwIz38MC
+         oe/3Jrsdigy5tcY2+bJoeCyeOMJKqH1reUOmgsRqcomejzxnG2VTR6OiPpHGfIof5eSa
+         Po88nU/R2UKMvJ09EyPxSTjxBz999SawwwoaKD4XLJNmA8jPYBwXtak7+s8jm6JT8+jZ
+         wDew==
+X-Forwarded-Encrypted: i=1; AJvYcCVaOeUUH/W7gzQzhpTbFCsqBFYzII2xSZx07rBtxDze1biefdmuu7yxFepTA36il04QlSg63sqY@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHnkMq13Fk9mHq2uGa/4rN1Ft58k4XTzPoe1x99eYz7t3RtZqW
+	Oi53tFzyqVCfKFqfOat7pFtYBndldefHbfbxN61Yx3//Ty1xyT8NmXneuHRk8ffLeUcRDBmzqla
+	THViUMRz9k1yMgKZzmKp2uItE90vjCpJ0VnKtLCQj
+X-Gm-Gg: ASbGncsGb6VWdDyHdfRoGKIEE1dwVvsru++pUY0nh/MgBUcph4PBW+bIMb8Tmot2aiS
+	WTtnZxAXRSutxrZc6+O5n9DUB6canBaaJhqoJ/q00ftqypgR2EtKdKAhtAGs9wwCAf5LaKPdoX4
+	sXD3Xbda2EgB292X+VpVRNcKyG9/3i4tc0G3XdROeqtU01pnKVFiI1OksJ03mYNdjD8sVs8Ld5r
+	Nbbs2lUiPz1jftUr8n2WYbNf6u69BtOcVzfgQ==
+X-Google-Smtp-Source: AGHT+IFxu1qOt0d8Ya0ox+N19/1UV6+3t1Ff6v4R83F4G2adOyfF/EwYs87dnaZxJVxmA9LvZiQKWITP/CjagDvnBGQ=
+X-Received: by 2002:a17:902:e751:b0:240:417d:8166 with SMTP id
+ d9443c01a7336-242b06e7164mr9555095ad.19.1754508036289; Wed, 06 Aug 2025
+ 12:20:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] cgroup/cpuset.c: Fix a partition error with CPU
- hotplug
-To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20250806172430.1155133-1-longman@redhat.com>
- <20250806172430.1155133-3-longman@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20250806172430.1155133-3-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20250805064429.77876-1-daniel.sedlak@cdn77.com> <fcnlbvljynxu5qlzmnjeagll7nf5mje7rwkimbqok6doso37gl@lwepk3ztjga7>
+In-Reply-To: <fcnlbvljynxu5qlzmnjeagll7nf5mje7rwkimbqok6doso37gl@lwepk3ztjga7>
+From: Kuniyuki Iwashima <kuniyu@google.com>
+Date: Wed, 6 Aug 2025 12:20:25 -0700
+X-Gm-Features: Ac12FXzJnBZFvHp4SW91p6FAcWqq_WSkdxhE_YNRj03saLxF9wSquf_4XkIv_5U
+Message-ID: <CAAVpQUBrNTFw34Kkh=b2bpa8aKd4XSnZUa6a18zkMjVrBqNHWw@mail.gmail.com>
+Subject: Re: [PATCH v4] memcg: expose socket memory pressure in a cgroup
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Daniel Sedlak <daniel.sedlak@cdn77.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Neal Cardwell <ncardwell@google.com>, 
+	David Ahern <dsahern@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org, netdev@vger.kernel.org, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Matyas Hurtik <matyas.hurtik@cdn77.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/6/25 1:24 PM, Waiman Long wrote:
-> It was found during testing that an invalid leaf partition with an
-> empty effective exclusive CPU list can become a valid empty partition
-> with no CPU afer an offline/online operation of an unrelated CPU. An
-> empty partition root is allowed in the special case that it has no
-> task in its cgroup and has distributed out all its CPUs to its child
-> partitions. That is certainly not the case here.
+On Tue, Aug 5, 2025 at 4:02=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
+> wrote:
 >
-> The problem is in the cpumask_subsets() test in the hotplug case
-> (update with no new mask) of update_parent_effective_cpumask() as it
-> also returns true if the effective exclusive CPU list is empty. Fix that
-> by addding the cpumask_empty() test to root out this exception case.
-> Also add the cpumask_empty() test in cpuset_hotplug_update_tasks()
-> to avoid calling update_parent_effective_cpumask() for this special case.
+> On Tue, Aug 05, 2025 at 08:44:29AM +0200, Daniel Sedlak wrote:
+> > This patch is a result of our long-standing debug sessions, where it al=
+l
+> > started as "networking is slow", and TCP network throughput suddenly
+> > dropped from tens of Gbps to few Mbps, and we could not see anything in
+> > the kernel log or netstat counters.
+> >
+> > Currently, we have two memory pressure counters for TCP sockets [1],
+> > which we manipulate only when the memory pressure is signalled through
+> > the proto struct [2]. However, the memory pressure can also be signaled
+> > through the cgroup memory subsystem, which we do not reflect in the
+> > netstat counters. In the end, when the cgroup memory subsystem signals
+> > that it is under pressure, we silently reduce the advertised TCP window
+> > with tcp_adjust_rcv_ssthresh() to 4*advmss, which causes a significant
+> > throughput reduction.
+> >
+> > Keep in mind that when the cgroup memory subsystem signals the socket
+> > memory pressure, it affects all sockets used in that cgroup.
+> >
+> > This patch exposes a new file for each cgroup in sysfs which signals
+> > the cgroup socket memory pressure. The file is accessible in
+> > the following path.
+> >
+> >   /sys/fs/cgroup/**/<cgroup name>/memory.net.socket_pressure
 >
-> Fixes: 0c7f293efc87 ("cgroup/cpuset: Add cpuset.cpus.exclusive.effective for v2")
-> Signed-off-by: Waiman Long <longman@redhat.com>
-
-Oh, forget to remove the unneeded ".c" from the patch title.
-
--Longman
-
-> ---
->   kernel/cgroup/cpuset.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
+> let's keep the name concise. Maybe memory.net.pressure?
 >
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index bf149246e001..d993e058a663 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1843,7 +1843,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->   			if (is_partition_valid(cs))
->   				adding = cpumask_and(tmp->addmask,
->   						xcpus, parent->effective_xcpus);
-> -		} else if (is_partition_invalid(cs) &&
-> +		} else if (is_partition_invalid(cs) && !cpumask_empty(xcpus) &&
->   			   cpumask_subset(xcpus, parent->effective_xcpus)) {
->   			struct cgroup_subsys_state *css;
->   			struct cpuset *child;
-> @@ -3870,9 +3870,10 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
->   		partcmd = partcmd_invalidate;
->   	/*
->   	 * On the other hand, an invalid partition root may be transitioned
-> -	 * back to a regular one.
-> +	 * back to a regular one with a non-empty effective xcpus.
->   	 */
-> -	else if (is_partition_valid(parent) && is_partition_invalid(cs))
-> +	else if (is_partition_valid(parent) && is_partition_invalid(cs) &&
-> +		 !cpumask_empty(cs->effective_xcpus))
->   		partcmd = partcmd_update;
->   
->   	if (partcmd >= 0) {
+> >
+> > The output value is a cumulative sum of microseconds spent
+> > under pressure for that particular cgroup.
+> >
+> > Link: https://elixir.bootlin.com/linux/v6.15.4/source/include/uapi/linu=
+x/snmp.h#L231-L232 [1]
+> > Link: https://elixir.bootlin.com/linux/v6.15.4/source/include/net/sock.=
+h#L1300-L1301 [2]
+> > Co-developed-by: Matyas Hurtik <matyas.hurtik@cdn77.com>
+> > Signed-off-by: Matyas Hurtik <matyas.hurtik@cdn77.com>
+> > Signed-off-by: Daniel Sedlak <daniel.sedlak@cdn77.com>
+> > ---
+> > Changes:
+> > v3 -> v4:
+> > - Add documentation
+> > - Expose pressure as cummulative counter in microseconds
+> > - Link to v3: https://lore.kernel.org/netdev/20250722071146.48616-1-dan=
+iel.sedlak@cdn77.com/
+> >
+> > v2 -> v3:
+> > - Expose the socket memory pressure on the cgroups instead of netstat
+> > - Split patch
+> > - Link to v2: https://lore.kernel.org/netdev/20250714143613.42184-1-dan=
+iel.sedlak@cdn77.com/
+> >
+> > v1 -> v2:
+> > - Add tracepoint
+> > - Link to v1: https://lore.kernel.org/netdev/20250707105205.222558-1-da=
+niel.sedlak@cdn77.com/
+> >
+> >  Documentation/admin-guide/cgroup-v2.rst |  7 +++++++
+> >  include/linux/memcontrol.h              |  2 ++
+> >  mm/memcontrol.c                         | 15 +++++++++++++++
+> >  mm/vmpressure.c                         |  9 ++++++++-
+> >  4 files changed, 32 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/ad=
+min-guide/cgroup-v2.rst
+> > index 0cc35a14afbe..c810b449fb3d 100644
+> > --- a/Documentation/admin-guide/cgroup-v2.rst
+> > +++ b/Documentation/admin-guide/cgroup-v2.rst
+> > @@ -1884,6 +1884,13 @@ The following nested keys are defined.
+> >       Shows pressure stall information for memory. See
+> >       :ref:`Documentation/accounting/psi.rst <psi>` for details.
+> >
+> > +  memory.net.socket_pressure
+> > +     A read-only single value file showing how many microseconds
+> > +     all sockets within that cgroup spent under pressure.
+> > +
+> > +     Note that when the sockets are under pressure, the networking
+> > +     throughput can be significantly degraded.
+> > +
+> >
+> >  Usage Guidelines
+> >  ~~~~~~~~~~~~~~~~
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 87b6688f124a..6a1cb9a99b88 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -252,6 +252,8 @@ struct mem_cgroup {
+> >        * where socket memory is accounted/charged separately.
+> >        */
+> >       unsigned long           socket_pressure;
+> > +     /* exported statistic for memory.net.socket_pressure */
+> > +     unsigned long           socket_pressure_duration;
+>
+> I think atomic_long_t would be better.
+>
+> >
+> >       int kmemcg_id;
+> >       /*
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 902da8a9c643..8e299d94c073 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -3758,6 +3758,7 @@ static struct mem_cgroup *mem_cgroup_alloc(struct=
+ mem_cgroup *parent)
+> >       INIT_LIST_HEAD(&memcg->swap_peaks);
+> >       spin_lock_init(&memcg->peaks_lock);
+> >       memcg->socket_pressure =3D jiffies;
+> > +     memcg->socket_pressure_duration =3D 0;
+> >       memcg1_memcg_init(memcg);
+> >       memcg->kmemcg_id =3D -1;
+> >       INIT_LIST_HEAD(&memcg->objcg_list);
+> > @@ -4647,6 +4648,15 @@ static ssize_t memory_reclaim(struct kernfs_open=
+_file *of, char *buf,
+> >       return nbytes;
+> >  }
+> >
+> > +static int memory_socket_pressure_show(struct seq_file *m, void *v)
+> > +{
+> > +     struct mem_cgroup *memcg =3D mem_cgroup_from_seq(m);
+> > +
+> > +     seq_printf(m, "%lu\n", READ_ONCE(memcg->socket_pressure_duration)=
+);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static struct cftype memory_files[] =3D {
+> >       {
+> >               .name =3D "current",
+> > @@ -4718,6 +4728,11 @@ static struct cftype memory_files[] =3D {
+> >               .flags =3D CFTYPE_NS_DELEGATABLE,
+> >               .write =3D memory_reclaim,
+> >       },
+> > +     {
+> > +             .name =3D "net.socket_pressure",
+> > +             .flags =3D CFTYPE_NOT_ON_ROOT,
+> > +             .seq_show =3D memory_socket_pressure_show,
+> > +     },
+> >       { }     /* terminate */
+> >  };
+> >
+> > diff --git a/mm/vmpressure.c b/mm/vmpressure.c
+> > index bd5183dfd879..1e767cd8aa08 100644
+> > --- a/mm/vmpressure.c
+> > +++ b/mm/vmpressure.c
+> > @@ -308,6 +308,8 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg=
+, bool tree,
+> >               level =3D vmpressure_calc_level(scanned, reclaimed);
+> >
+> >               if (level > VMPRESSURE_LOW) {
+> > +                     unsigned long socket_pressure;
+> > +                     unsigned long jiffies_diff;
+> >                       /*
+> >                        * Let the socket buffer allocator know that
+> >                        * we are having trouble reclaiming LRU pages.
+> > @@ -316,7 +318,12 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memc=
+g, bool tree,
+> >                        * asserted for a second in which subsequent
+> >                        * pressure events can occur.
+> >                        */
+> > -                     WRITE_ONCE(memcg->socket_pressure, jiffies + HZ);
+> > +                     socket_pressure =3D jiffies + HZ;
+> > +
+> > +                     jiffies_diff =3D min(socket_pressure - READ_ONCE(=
+memcg->socket_pressure), HZ);
+> > +                     memcg->socket_pressure_duration +=3D jiffies_to_u=
+secs(jiffies_diff);
+>
+> KCSAN will complain about this. I think we can use atomic_long_add() and
+> don't need the one with strict ordering.
 
+Assuming from atomic_ that vmpressure() could be called concurrently
+for the same memcg, should we protect socket_pressure and duration
+within the same lock instead of mixing WRITE/READ_ONCE() and
+atomic?  Otherwise jiffies_diff could be incorrect (the error is smaller
+than HZ though).
+
+
+>
+> > +
+> > +                     WRITE_ONCE(memcg->socket_pressure, socket_pressur=
+e);
+> >               }
+> >       }
+> >  }
+> >
+> > base-commit: e96ee511c906c59b7c4e6efd9d9b33917730e000
+> > --
+> > 2.39.5
+> >
 
