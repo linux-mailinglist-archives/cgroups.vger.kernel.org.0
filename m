@@ -1,238 +1,249 @@
-Return-Path: <cgroups+bounces-8985-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-8986-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88577B1BCE6
-	for <lists+cgroups@lfdr.de>; Wed,  6 Aug 2025 01:02:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F177B1C072
+	for <lists+cgroups@lfdr.de>; Wed,  6 Aug 2025 08:32:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A77B718523D
-	for <lists+cgroups@lfdr.de>; Tue,  5 Aug 2025 23:02:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AA1D3B4EAB
+	for <lists+cgroups@lfdr.de>; Wed,  6 Aug 2025 06:32:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF91B29E0E3;
-	Tue,  5 Aug 2025 23:02:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3581F03FB;
+	Wed,  6 Aug 2025 06:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uNsnmiz7"
+	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="TH8XNkpu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from SEYPR02CU001.outbound.protection.outlook.com (mail-koreacentralazon11013065.outbound.protection.outlook.com [40.107.44.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A77285069
-	for <cgroups@vger.kernel.org>; Tue,  5 Aug 2025 23:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754434962; cv=none; b=RKHpiPcjHrDIMzsIfau9oju3TFw7LpUEOUq72NRws27cHeTs9fymX8hwwikWYgTxTKTYvIWYiLkr/UH2O7kzTeKybgXcCN9BkMQJUnoWFib12Du5NDwXFBCZIR8Q8FJW123LV+ebvUAH0Y5XKQhE847AabTAzG+kQ2/r8Jkd3uU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754434962; c=relaxed/simple;
-	bh=5A+aq2bNUS5hbR4FLbGbEKBrxPsIwoWoPZuxCe7/moI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bv0nnQFQE6PwMyUAwaNVRXwpr2UFuJMcK7smPHcnubO5CLOaDPomVsL5hykGYYv0xONlI04XoAr8XdXLSL4+R7TNG5Teyf4tIAU4mzAiJztgkyzsxT4qqUrtUjVqZjwwXYZTn5d/DAZa9vw0GoT5oqcaSVvHNHyBSznW+Oo/pIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uNsnmiz7; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 5 Aug 2025 16:02:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1754434948;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HGuBAxZMWvC+J3RFqR4e3qgqgb7nwGWm8ALGJz/pnD8=;
-	b=uNsnmiz7GsewtRxSv/3NhFtNEAOki9pk6rDsAcrEZ69Anw7iAm01t6a+vvZS4g7Op0zG5n
-	XvHXdUacB+TH1ws2JoRuleLrEiAhekAffBJFEZhDuFPiOzr5OoYBYwRJSDEg932OfIchrt
-	TwL6CJlbRe3cL3gITV4J1a5v7vQ1GJU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Daniel Sedlak <daniel.sedlak@cdn77.com>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Neal Cardwell <ncardwell@google.com>, 
-	Kuniyuki Iwashima <kuniyu@google.com>, David Ahern <dsahern@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org, 
-	netdev@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Matyas Hurtik <matyas.hurtik@cdn77.com>
-Subject: Re: [PATCH v4] memcg: expose socket memory pressure in a cgroup
-Message-ID: <fcnlbvljynxu5qlzmnjeagll7nf5mje7rwkimbqok6doso37gl@lwepk3ztjga7>
-References: <20250805064429.77876-1-daniel.sedlak@cdn77.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8CE7346F;
+	Wed,  6 Aug 2025 06:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.44.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754461930; cv=fail; b=ZYmzyUjQT1UXGxbXr8psl9gR2t5+9xfS0hfQlKppqCCnOuf7+V8geZAFKSCqLwpwgmhUcuS1Cn1QBnltP0qxsbHbcrNkf8U+x/QDo3g8S20BtVsVRbnpu4Uj7v6PVki6dagI0kRLl7FsUexWDPbUlwRzmNxskfVXySCtbEOIvoo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754461930; c=relaxed/simple;
+	bh=Ewzq3b2SqiOfKoT/ZuaN9IMa3CUWkRbE97AqzxSF9k4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aKqcwzkE+YrH3hT9PGrafINYBWtzk+LnLyJxY1GOXoM3q+FM6TE+9Cc6rTaK66z4C+uXeC8Jm26jtyCfNHUiLkMun8lDy9FFPN1lI4MlWOiZ9Vg7m4CDAtxi+QxzZRoq1jClZhSLCyM/EStgIR7XoVqQPLNgHmbP2FPz9KHslb0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=TH8XNkpu; arc=fail smtp.client-ip=40.107.44.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=CGWTuSKAw4lophcIjEYOFnU8vGU/5QEqUrcCj7YM/ZHalVFcn/aRm0EG2KBYqMXKj/lvjKwrCp2IBJrUXrvPdDDb0/FtuRkv1R2XyDVjTZsUplhK1kLV+hXgmv1ajLGxmWODVP8hnuj/gw5J5wOvuj0UlC06WLINWptKIcxiuJmsP95vJ0iGO4ZJeGbSGabT/1nOQlgrXGGWg/qgSJKtIQxiPmqA0IUEBWxG5UbaoCeByt9vW1seVWKKHSNl3jtnf9Xpl1LTZjQ2oCboJqTM2mNxMTwtHvOoh6J13MFyApWxAoq/xozCDnxb5yNqW7yEG218iB0vgvEcDxRoKlr/Cw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hNHjWskjiPr0A1Q5ql2puxmqii3H9/Xins+B5SdZ0XM=;
+ b=wTVUcgPq1C7LQYQ/4RToI1wSakggtbh3wev2S23omcpcts7GCSXN5wR+jm6AibIiG9YiDwSlaY7svLEqDRBgiwXJr3EhTLvc4ajbSLNShL/UG3IZsNMSG3oBqfsFt3Rp462ty47HaFTJ1fA0MQ+ffX4ifEF/U2aoF6MJBUN77radazWDcQqIt2+U7mCaLepXgxAbY/1GLhiBub3XdFT8/2OhhkAO+78xVFIhfN0wX+YAwLiYgLsPef/4WdakpF4oizfrMZ87JAfQRKF5r+zUNbeU6NJMWDEbcAXTOKBBN77CBooBh9kkY3OJV2xdYc0mqysucQ6VjbVjvWGA6DNaFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 58.252.5.68) smtp.rcpttodomain=linaro.org smtp.mailfrom=oppo.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=oppo.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hNHjWskjiPr0A1Q5ql2puxmqii3H9/Xins+B5SdZ0XM=;
+ b=TH8XNkpu47KTYb+IEUdxt7O1mamfrrQiR1GFk8uMEihEuWx+fCr7WfOc1On3mUKEFtB2kjbJNrC6LoiSpYRd9jh6g+1vRosC0WsFgASLEPe2oTOTgZVOWQMQPuZZM2mEp7Hqac7J7i238ULBBhfcdKpjiemdiNznZz/bnzuZCwc=
+Received: from TY2PR0101CA0025.apcprd01.prod.exchangelabs.com
+ (2603:1096:404:8000::11) by KUZPR02MB8823.apcprd02.prod.outlook.com
+ (2603:1096:d10:4b::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8989.20; Wed, 6 Aug
+ 2025 06:32:05 +0000
+Received: from OSA0EPF000000C7.apcprd02.prod.outlook.com
+ (2603:1096:404:8000:cafe::29) by TY2PR0101CA0025.outlook.office365.com
+ (2603:1096:404:8000::11) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8989.21 via Frontend Transport; Wed,
+ 6 Aug 2025 06:32:12 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 58.252.5.68)
+ smtp.mailfrom=oppo.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=oppo.com;
+Received-SPF: Pass (protection.outlook.com: domain of oppo.com designates
+ 58.252.5.68 as permitted sender) receiver=protection.outlook.com;
+ client-ip=58.252.5.68; helo=mail.oppo.com; pr=C
+Received: from mail.oppo.com (58.252.5.68) by
+ OSA0EPF000000C7.mail.protection.outlook.com (10.167.240.53) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.9009.8 via Frontend Transport; Wed, 6 Aug 2025 06:32:04 +0000
+Received: from localhost.localdomain (172.16.40.118) by mailappw30.adc.com
+ (172.16.56.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 6 Aug
+ 2025 14:32:03 +0800
+From: xupengbo <xupengbo@oppo.com>
+To: <vincent.guittot@linaro.org>
+CC: <bsegall@google.com>, <cgroups@vger.kernel.org>,
+	<dietmar.eggemann@arm.com>, <juri.lelli@redhat.com>,
+	<linux-kernel@vger.kernel.org>, <mgorman@suse.de>, <mingo@redhat.com>,
+	<peterz@infradead.org>, <rostedt@goodmis.org>, <vschneid@redhat.com>,
+	<xupengbo@oppo.com>, <ziqianlu@bytedance.com>
+Subject: Re: [PATCH v2] sched/fair: Fix unfairness caused by stalled tg_load_avg_contrib when the last task migrates out.
+Date: Wed, 6 Aug 2025 14:31:58 +0800
+Message-ID: <20250806063158.25050-1-xupengbo@oppo.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <CAKfTPtDexWX5N0jaMRqVQEnURSaPhVa6XQr_TexpU2SGU-e=9A@mail.gmail.com>
+References: <CAKfTPtDexWX5N0jaMRqVQEnURSaPhVa6XQr_TexpU2SGU-e=9A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250805064429.77876-1-daniel.sedlak@cdn77.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: mailappw30.adc.com (172.16.56.197) To mailappw30.adc.com
+ (172.16.56.197)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: OSA0EPF000000C7:EE_|KUZPR02MB8823:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3b70786b-0878-4e74-fad2-08ddd4b2f5a6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|36860700013|376014|7416014|82310400026;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?ry3SAZe3omE0xX3JA6xRVNM5k+Bu1QM6BMcKtzmWhOIvdsy2PXHzddIfx6zv?=
+ =?us-ascii?Q?YzJJE1LSwZbRkQ2x90+bWTgBArgeiOvcTm5TMxxQQ3RxuJunsjRaZJeQEFGt?=
+ =?us-ascii?Q?Im1K0sEFiAa5kmbnBAY3sch1zUegLd69pzygOdvLmqUhRvlqsST7TuOCXZFS?=
+ =?us-ascii?Q?11SH5i9Rw1bW47RCryWC1MkinzdSvysljTcVmy3ggy7pCxaYFIMnUggD0qUB?=
+ =?us-ascii?Q?OkN7ACYo6vTlV57XNWmSfC91+4M9+twuk1hFn30S9oNG21Iuhe+uWFdH+AoU?=
+ =?us-ascii?Q?oO3jBxX5MiRhcrXaklEP/D3hXFZkts0WUbuwKGgLOtHAlXgYrtH5TXQoM65v?=
+ =?us-ascii?Q?Je25xaiy94Q60kRyZ/ZULy9cp61euFb78HxpQGpSH+WbrVymkRZfFojVe68G?=
+ =?us-ascii?Q?lI+jZG6QH9YWdpk27REswc5eG77UoXx+wA/909CAtiJkjrUu0LZJWlJgumAF?=
+ =?us-ascii?Q?H7XYvlmlG/wNRKL3LZehBlq7Odnww1dnuWpK6WkTSlUBsoidj6iTS4wh6ctU?=
+ =?us-ascii?Q?FwwSseAlACjDQaGgZfyyBZ/IBqgElquMiVK41e9nz5oX4sH37z/S8NgCLu6S?=
+ =?us-ascii?Q?R2n3y2qbyFvE+nZ4XV2+ca77Dh4UZiZNTpUgEK1yO+jSXnYd3RQBn/ihgLnd?=
+ =?us-ascii?Q?cJNQi0YIPwFwqMW9T+bIjQK25fyX8+LzFfseObRCWXh7xFZiXMZVUK5SuSIw?=
+ =?us-ascii?Q?9lapURBE8opXI2f+FJqlDsoPnu2Tgl31s5Fsp7UIiyYvIJPTi9IGaDufGQbq?=
+ =?us-ascii?Q?lj6tXSy5/Eki4ZT96eXlwV5K6o4dAUSh5omzr8gwdkCQZ0G9dmOiGZavznnr?=
+ =?us-ascii?Q?biaeT31btdcMRLOvjBkDsGDdDzjjnqpYegYEtgqNBmAAyfEZZ+EFF88I370P?=
+ =?us-ascii?Q?CREqMUN9zxv07p/2jCDP5lPeuLjmlIh7tOlLelbVM2RndkEIqxU3g9C7Z/6M?=
+ =?us-ascii?Q?3v0aeOLdH1dKehuT/W/+4zZTk8n3MkPYPuqfKDbOyQpXWkT9yNhVc5RSXbFT?=
+ =?us-ascii?Q?inKScjx3ZoCCBHjOYI03AN70gVxHmkh/9Fw3gG3tP/Uw6zY+uIXpq5WAovzm?=
+ =?us-ascii?Q?I5warV4N8g5mzua9FnQUuA+OXGTH6p1y0v0uuTX2E6IsIfAf2KyGBYVqEkaF?=
+ =?us-ascii?Q?V6lG3mHjuXwpuevTBaA0YH2DqsIOfW37SVLeP9WLihNf+4bG5pjA50gYmjIE?=
+ =?us-ascii?Q?s4oTW51i50FMA7kNabuZ0eUrJsAe3r90uTk30N5ylqwF7dMKkmjcSCIu6UEf?=
+ =?us-ascii?Q?kYJN0HR4wdu5iXLlqSI9ltRqA7pjA42cJLxM0uz7DCNdDqGSfFOURSHkqc4s?=
+ =?us-ascii?Q?Z6Itq8k881aNMBbO1GD3Zm5tzCywq0g42i2DR9kg6aLqJ9ucT430HFgIeUvz?=
+ =?us-ascii?Q?dyMMuyOli8h6PDMMIZBqBHVZcqzXSCP4TEEIfuZ+P8cXszQLYP1UiDqdeuxn?=
+ =?us-ascii?Q?x2pUt+7MV2qGljbSlNVL/L89kT95ZUQ+bryClG/ta7yQ1M6CD3uuHw=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:58.252.5.68;CTRY:CN;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.oppo.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(376014)(7416014)(82310400026);DIR:OUT;SFP:1101;
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2025 06:32:04.5130
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b70786b-0878-4e74-fad2-08ddd4b2f5a6
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f1905eb1-c353-41c5-9516-62b4a54b5ee6;Ip=[58.252.5.68];Helo=[mail.oppo.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	OSA0EPF000000C7.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KUZPR02MB8823
 
-On Tue, Aug 05, 2025 at 08:44:29AM +0200, Daniel Sedlak wrote:
-> This patch is a result of our long-standing debug sessions, where it all
-> started as "networking is slow", and TCP network throughput suddenly
-> dropped from tens of Gbps to few Mbps, and we could not see anything in
-> the kernel log or netstat counters.
+> >On Tue, 5 Aug 2025 at 16:42, xupengbo <xupengbo@oppo.com> wrote:
+> >
+> > When a task is migrated out, there is a probability that the tg->load_avg
+> > value will become abnormal. The reason is as follows.
+> >
+> > 1. Due to the 1ms update period limitation in update_tg_load_avg(), there
+> > is a possibility that the reduced load_avg is not updated to tg->load_avg
+> > when a task migrates out.
+> > 2. Even though __update_blocked_fair() traverses the leaf_cfs_rq_list and
+> > calls update_tg_load_avg() for cfs_rqs that are not fully decayed, the key
+> > function cfs_rq_is_decayed() does not check whether
+> > cfs->tg_load_avg_contrib is null. Consequently, in some cases,
+> > __update_blocked_fair() removes cfs_rqs whose avg.load_avg has not been
+> > updated to tg->load_avg.
+> >
+> > I added a check of cfs_rq->tg_load_avg_contrib in cfs_rq_is_decayed(),
+> > which blocks the case (2.) mentioned above. I follow the condition in
+> > update_tg_load_avg() instead of directly checking if
+> > cfs_rq->tg_load_avg_contrib is null. I think it's necessary to keep the
+> > condition consistent in both places, otherwise unexpected problems may
+> > occur.
+> >
+> > Thanks for your comments,
+> > Xu Pengbo
+> >
+> > Fixes: 1528c661c24b ("sched/fair: Ratelimit update to tg->load_avg")
+> > Signed-off-by: xupengbo <xupengbo@oppo.com>
+> > ---
+> > Changes:
+> > v1 -> v2:
+> > - Another option to fix the bug. Check cfs_rq->tg_load_avg_contrib in
+> > cfs_rq_is_decayed() to avoid early removal from the leaf_cfs_rq_list.
+> > - Link to v1 : https://lore.kernel.org/cgroups/20250804130326.57523-1-xupengbo@oppo.com/T/#u
+> >
+> >  kernel/sched/fair.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index b173a059315c..a35083a2d006 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -4062,6 +4062,11 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+> >         if (child_cfs_rq_on_list(cfs_rq))
+> >                 return false;
+> >
+> > +       long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
+> > +
+> > +       if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64)
 > 
-> Currently, we have two memory pressure counters for TCP sockets [1],
-> which we manipulate only when the memory pressure is signalled through
-> the proto struct [2]. However, the memory pressure can also be signaled
-> through the cgroup memory subsystem, which we do not reflect in the
-> netstat counters. In the end, when the cgroup memory subsystem signals
-> that it is under pressure, we silently reduce the advertised TCP window
-> with tcp_adjust_rcv_ssthresh() to 4*advmss, which causes a significant
-> throughput reduction.
+>I don't understand why you use the above condition instead of if
+>(!cfs_rq->tg_load_avg_contrib). Can you elaborate ?
 > 
-> Keep in mind that when the cgroup memory subsystem signals the socket
-> memory pressure, it affects all sockets used in that cgroup.
-> 
-> This patch exposes a new file for each cgroup in sysfs which signals
-> the cgroup socket memory pressure. The file is accessible in
-> the following path.
-> 
->   /sys/fs/cgroup/**/<cgroup name>/memory.net.socket_pressure
+>strictly speaking we want to keep the cfs_rq in the list if
+>(cfs_rq->tg_load_avg_contrib != cfs_rq->avg.load_avg) and
+>cfs_rq->avg.load_avg == 0 when we test this condition
 
-let's keep the name concise. Maybe memory.net.pressure?
 
-> 
-> The output value is a cumulative sum of microseconds spent
-> under pressure for that particular cgroup.
-> 
-> Link: https://elixir.bootlin.com/linux/v6.15.4/source/include/uapi/linux/snmp.h#L231-L232 [1]
-> Link: https://elixir.bootlin.com/linux/v6.15.4/source/include/net/sock.h#L1300-L1301 [2]
-> Co-developed-by: Matyas Hurtik <matyas.hurtik@cdn77.com>
-> Signed-off-by: Matyas Hurtik <matyas.hurtik@cdn77.com>
-> Signed-off-by: Daniel Sedlak <daniel.sedlak@cdn77.com>
-> ---
-> Changes:
-> v3 -> v4:
-> - Add documentation
-> - Expose pressure as cummulative counter in microseconds
-> - Link to v3: https://lore.kernel.org/netdev/20250722071146.48616-1-daniel.sedlak@cdn77.com/
-> 
-> v2 -> v3:
-> - Expose the socket memory pressure on the cgroups instead of netstat
-> - Split patch
-> - Link to v2: https://lore.kernel.org/netdev/20250714143613.42184-1-daniel.sedlak@cdn77.com/
-> 
-> v1 -> v2:
-> - Add tracepoint
-> - Link to v1: https://lore.kernel.org/netdev/20250707105205.222558-1-daniel.sedlak@cdn77.com/
-> 
->  Documentation/admin-guide/cgroup-v2.rst |  7 +++++++
->  include/linux/memcontrol.h              |  2 ++
->  mm/memcontrol.c                         | 15 +++++++++++++++
->  mm/vmpressure.c                         |  9 ++++++++-
->  4 files changed, 32 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 0cc35a14afbe..c810b449fb3d 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1884,6 +1884,13 @@ The following nested keys are defined.
->  	Shows pressure stall information for memory. See
->  	:ref:`Documentation/accounting/psi.rst <psi>` for details.
->  
-> +  memory.net.socket_pressure
-> +	A read-only single value file showing how many microseconds
-> +	all sockets within that cgroup spent under pressure.
-> +
-> +	Note that when the sockets are under pressure, the networking
-> +	throughput can be significantly degraded.
-> +
->  
->  Usage Guidelines
->  ~~~~~~~~~~~~~~~~
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 87b6688f124a..6a1cb9a99b88 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -252,6 +252,8 @@ struct mem_cgroup {
->  	 * where socket memory is accounted/charged separately.
->  	 */
->  	unsigned long		socket_pressure;
-> +	/* exported statistic for memory.net.socket_pressure */
-> +	unsigned long		socket_pressure_duration;
+I use this condition primarily based on the function update_tg_load_avg().
+I want to absolutely avoid a situation where cfs_rq_is_decay() returns 
+false but update_tg_load_avg() cannot update its value due to the delta 
+check, which may cause the cfs_rq to remain on the list permanently. 
+Honestly, I am not sure if this will happen, so I took this conservative 
+approach. 
 
-I think atomic_long_t would be better.
+In fact, in the second if-condition of cfs_rq_is_decay(), the comment in 
+the load_avg_is_decayed() function states:"_avg must be null when _sum is 
+null because _avg = _sum / divider". Therefore, when we check this newly 
+added condition, cfs_rq->avg.load_avg should already be 0, right?
 
->  
->  	int kmemcg_id;
->  	/*
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 902da8a9c643..8e299d94c073 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3758,6 +3758,7 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
->  	INIT_LIST_HEAD(&memcg->swap_peaks);
->  	spin_lock_init(&memcg->peaks_lock);
->  	memcg->socket_pressure = jiffies;
-> +	memcg->socket_pressure_duration = 0;
->  	memcg1_memcg_init(memcg);
->  	memcg->kmemcg_id = -1;
->  	INIT_LIST_HEAD(&memcg->objcg_list);
-> @@ -4647,6 +4648,15 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
->  	return nbytes;
->  }
->  
-> +static int memory_socket_pressure_show(struct seq_file *m, void *v)
-> +{
-> +	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-> +
-> +	seq_printf(m, "%lu\n", READ_ONCE(memcg->socket_pressure_duration));
-> +
-> +	return 0;
-> +}
-> +
->  static struct cftype memory_files[] = {
->  	{
->  		.name = "current",
-> @@ -4718,6 +4728,11 @@ static struct cftype memory_files[] = {
->  		.flags = CFTYPE_NS_DELEGATABLE,
->  		.write = memory_reclaim,
->  	},
-> +	{
-> +		.name = "net.socket_pressure",
-> +		.flags = CFTYPE_NOT_ON_ROOT,
-> +		.seq_show = memory_socket_pressure_show,
-> +	},
->  	{ }	/* terminate */
->  };
->  
-> diff --git a/mm/vmpressure.c b/mm/vmpressure.c
-> index bd5183dfd879..1e767cd8aa08 100644
-> --- a/mm/vmpressure.c
-> +++ b/mm/vmpressure.c
-> @@ -308,6 +308,8 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
->  		level = vmpressure_calc_level(scanned, reclaimed);
->  
->  		if (level > VMPRESSURE_LOW) {
-> +			unsigned long socket_pressure;
-> +			unsigned long jiffies_diff;
->  			/*
->  			 * Let the socket buffer allocator know that
->  			 * we are having trouble reclaiming LRU pages.
-> @@ -316,7 +318,12 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
->  			 * asserted for a second in which subsequent
->  			 * pressure events can occur.
->  			 */
-> -			WRITE_ONCE(memcg->socket_pressure, jiffies + HZ);
-> +			socket_pressure = jiffies + HZ;
-> +
-> +			jiffies_diff = min(socket_pressure - READ_ONCE(memcg->socket_pressure), HZ);
-> +			memcg->socket_pressure_duration += jiffies_to_usecs(jiffies_diff);
+After reading your comments, I carefully considered the differences 
+between these two approaches. Here, my condition is similar
+to cfs_rq->tg_load_avg_contrib != cfs_rq->avg.load_avg but weaker. In 
+fact, when cfs_rq->avg.load_avg is already 0, 
+abs(delta) > cfs_rq->tg_load_avg_contrib / 64 is equivalent to 
+cfs_rq->tg_load_avg_contrib > cfs_rq->tg_load_avg_contrib / 64,
+Further reasoning leads to the condition cfs_rq->tg_load_avg_contrib > 0.
+However if cfs_rq->avg.load_avg is not necessarily 0 at this point, then
+the condition you propose is obviously more accurate, simpler than the
+delta check, and requires fewer calculations.
 
-KCSAN will complain about this. I think we can use atomic_long_add() and
-don't need the one with strict ordering.
+I think our perspectives differ. From the perspective of 
+update_tg_load_avg(), the semantics of this condition are as follows: if
+there is no 1ms update limit, and update_tg_load_avg() can continue 
+updating after checking the delta, then in cfs_rq_is_decayed() we should
+return false to keep the cfs_rq in the list for subsequent updates. As 
+mentioned in the first paragraph, this avoids that tricky situation. From
+the perspective of cfs_rq_is_decayed(), the semantics of the condition you
+proposed are that if cfs_rq->avg.load_avg is already 0, then it cannot be
+removed from the list before all load_avg are updated to tg. That makes 
+sense to me, but I still feel like there's a little bit of a risk. Am I 
+being paranoid?
 
-> +
-> +			WRITE_ONCE(memcg->socket_pressure, socket_pressure);
->  		}
->  	}
->  }
-> 
-> base-commit: e96ee511c906c59b7c4e6efd9d9b33917730e000
-> -- 
-> 2.39.5
-> 
+How do you view these two lines of thinking?
+
+It's a pleasure to discuss this with you, 
+xupengbo.
+
+> > +               return false;
+> > +
+> >         return true;
+> >  }
+> >
+> > --
+> > 2.43.0
+> >
 
