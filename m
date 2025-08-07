@@ -1,160 +1,160 @@
-Return-Path: <cgroups+bounces-9024-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9025-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77F79B1D973
-	for <lists+cgroups@lfdr.de>; Thu,  7 Aug 2025 15:55:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0461EB1DE7D
+	for <lists+cgroups@lfdr.de>; Thu,  7 Aug 2025 22:52:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48CF07AB519
-	for <lists+cgroups@lfdr.de>; Thu,  7 Aug 2025 13:53:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B99EE1AA5174
+	for <lists+cgroups@lfdr.de>; Thu,  7 Aug 2025 20:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0A9F25D21A;
-	Thu,  7 Aug 2025 13:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB62230BE1;
+	Thu,  7 Aug 2025 20:52:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QwSs7cDe"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Cv+2G9TS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1F30221269
-	for <cgroups@vger.kernel.org>; Thu,  7 Aug 2025 13:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E048227EAA
+	for <cgroups@vger.kernel.org>; Thu,  7 Aug 2025 20:52:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754574902; cv=none; b=CAmeKvEoXHn4PSJmNsxu3ufg3CCYdkuxkBAs/syf64DKXEgDBp2INghSvAXNl1wOw1vEOqgfNCRDwNukO/VQAwlw08gzxLtvSoE+OoWV2DaGn3s+jk3HargSsFdGCNXlcwVlVdSv92vDSnAGFnBYk/dH6d9Y3uI2VfZFX8uQRCo=
+	t=1754599973; cv=none; b=DjbDtKtSV1jtvikOl9J254bgkUtywUnv5sXcB+ilMlEhzNrWfifaJw1rj/wweI2ECrdO+zc9BSgDLWaMo9UIn4U3BDkIzBkr2wN2buGEmNfFZq5JVKPy0iBm/BIDdLLQj94EnZGyrJcRWNmr680usmfii1yRyYbiW4sba+JdbY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754574902; c=relaxed/simple;
-	bh=UU8/KLeMTZ3w3Iejl4Ec88LM3lsV+Um+Hl9MdDeZPjg=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=n42ZwViDm+FLe5vo1kgFNC6EipvGlqDY2BF/DuzU2dnYH6QQ006Za7gA7MbA0WX3yfXWwbnERGjAuDNb+ToNCToYJ4rMVp2dUqBdBhgSnE3yM6c9ZkKOQuFd6JDCrtLPBA0XprbDf8gU16hLJ+COZpGjsV8YVff8O8BBiQF0Oos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QwSs7cDe; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754574899;
+	s=arc-20240116; t=1754599973; c=relaxed/simple;
+	bh=PoqJp2XFDsH+Bn5FzVG6Kjp14YnL+M01555xKIT21l8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XpAgf3gZso2hjM+cjONmYgR8b8ZDfRBq3wkWNeHfCIsTV1KK5fB/3yFYRuatj1S7jVC15PUdU2K3j/q4BvtYbzilRrMWMTP0b47e+ie2rYrBgcyfL4mzOACRjwFJwLmEr8XodZtXyipMJ0HVFZiyoAFi00f8Jsh4dBBbWkpohNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Cv+2G9TS; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 7 Aug 2025 13:52:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1754599967;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5kXOrDwud7Md4kmVdYmDM5WejfgJDxWgdDUd88NMt5g=;
-	b=QwSs7cDerEKaxiDtK47SDSSyl3pJ1JysBKZKiruZ73l9Dkh6gErI0S6KECWFRoNTKpsBN9
-	QiniNaHk7kSEvym2vKpv326+19MUnvbTxpS2x+Z6h5EVqt+TfZtLmEG9LvlH/0RwwGo973
-	qR3mb1uCvHjXZxAzcReRntMvnYNM09c=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-186-Hao1oV1hMO-yXLZyFDqowg-1; Thu, 07 Aug 2025 09:54:58 -0400
-X-MC-Unique: Hao1oV1hMO-yXLZyFDqowg-1
-X-Mimecast-MFC-AGG-ID: Hao1oV1hMO-yXLZyFDqowg_1754574898
-Received: by mail-yb1-f200.google.com with SMTP id 3f1490d57ef6-e72b0980138so1630548276.1
-        for <cgroups@vger.kernel.org>; Thu, 07 Aug 2025 06:54:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754574898; x=1755179698;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5kXOrDwud7Md4kmVdYmDM5WejfgJDxWgdDUd88NMt5g=;
-        b=Mle5JafEADsOwHuqAEWmShuY8kSV2fr5gpNdMsLFnoiXskHKMzqEWfafq/PFCJDBEN
-         uhxI7Icv/Ny0zbmAEVyXYHZ2SpjGtLX8yDTwBgOEh5QiQm8wrgzfr3jKO+zeVcdGRRIf
-         YtFRTRfY8/KwAW/3BmQFbGif938Ao97oswt+JqBvKdo/ffvreNTdGrHMc0WOlsbPLR9i
-         1438B+XYjKFoOw4XZ/YUTpGI7j9BFuScDCqG8MvCLffzYNOngPiTZSNumMsjzmxTr8vw
-         khaTx3zxKSb+A1223SRWRqxK0BHlmH481PQWGrYGEUuK+nX0OvBFY/dy2onPEJof4h3U
-         XwTQ==
-X-Gm-Message-State: AOJu0YwqFZh82WmLqP3YG8U8rLt59pxmCUHd8r4eK0+Qk96f9CWOKAjr
-	Svh7+ruOvVK1VpmTYXTAT4yEAwnVSAHahn5tSMcZPo2lfftkZ0I/kI3xsikA96uHEaVW9r73S4A
-	a33Y+oYNAIxGGj44GVrD402aDuCZdzIE37s92iTCSpPl6T1zDBeJCvifn7XVQujblNloZiQ==
-X-Gm-Gg: ASbGncsHTrscw5ZRhMz9kFD+O8S6OXeRBnagB2kWYiZRIVv2Lxp5DOcNrkYsKR7BFgN
-	0DtFZaA9EVjYCkIKzb+PE+x+VHWUjrEDaxlL/DWMljs/KTvqr75scQT0b14gaFxosDhyQGnH8ys
-	9RRRHW9kDJgCgCQxvJg5WLOs5d4CS2N9UGlJ6iCUgY2sjkipvIL8vtpMMLrFRcZ2difmgdhCuPt
-	ngPnPtTkLk1x0Ir4rLLqKHbXx6WRzqFTfYiQAuRizNk5/PLg/aLTE1s5RDp2n4Ulvc5zAcd3YxX
-	5CDbwsNV68jSyvE+h/mreLXBZW1mfmYiq1jCKAANEwNB14xt5XcEFSJJx1sgk9j5E0T2BQniFFe
-	BkPPxr3/AUg==
-X-Received: by 2002:a05:6902:1883:b0:e90:493b:e26f with SMTP id 3f1490d57ef6-e90493be49amr1983276.11.1754574897548;
-        Thu, 07 Aug 2025 06:54:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEhRLkUfURwG4WxqUpYTdWhMDZBK3/LXfHl0BbaQSACa+y2FwwxgrzOaoIU2pQxVH9TQQVp6A==
-X-Received: by 2002:a05:6902:1883:b0:e90:493b:e26f with SMTP id 3f1490d57ef6-e90493be49amr1950276.11.1754574897036;
-        Thu, 07 Aug 2025 06:54:57 -0700 (PDT)
-Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e8fd3860a9csm6495969276.28.2025.08.07.06.54.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Aug 2025 06:54:55 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <2870d179-a2db-44ee-9183-11efe446ebd9@redhat.com>
-Date: Thu, 7 Aug 2025 09:54:54 -0400
+	bh=vOPUpSlPIiZZc2oV/h1m7LERhF2i5s7DpFEXBoy92xw=;
+	b=Cv+2G9TS/mizvM7tGRu57w71x5ym/SU6RYjfXnEqPUY6X3fa1F5zCW/NAMWE1gHtrmjqgq
+	v/jXuwxYX0Y6ACEqaL4ydjvAtqxb76JAAOUFrtO06qMgpWW9hjJ0WkDTz1I93VKLwXj8kL
+	+lcikozCwODHKJSSghRHUhxds3NKhAo=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Daniel Sedlak <daniel.sedlak@cdn77.com>
+Cc: Kuniyuki Iwashima <kuniyu@google.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Neal Cardwell <ncardwell@google.com>, 
+	David Ahern <dsahern@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org, netdev@vger.kernel.org, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
+	Tejun Heo <tj@kernel.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Matyas Hurtik <matyas.hurtik@cdn77.com>
+Subject: Re: [PATCH v4] memcg: expose socket memory pressure in a cgroup
+Message-ID: <qsncixzj7s7jd7f3l2erjjs7cx3fanmlbkh4auaapsvon45rx3@62o2nqwrb43e>
+References: <20250805064429.77876-1-daniel.sedlak@cdn77.com>
+ <fcnlbvljynxu5qlzmnjeagll7nf5mje7rwkimbqok6doso37gl@lwepk3ztjga7>
+ <CAAVpQUBrNTFw34Kkh=b2bpa8aKd4XSnZUa6a18zkMjVrBqNHWw@mail.gmail.com>
+ <nju55eqv56g6gkmxuavc2z2pcr26qhpmgrt76jt5dte5g4trxs@tjxld2iwdc5c>
+ <CAAVpQUCCg-7kvzMeSSsKp3+Fu8pvvE5U-H5wkt=xMryNmnF5CA@mail.gmail.com>
+ <chb7znbpkbsf7pftnzdzkum63gt7cajft2lqiqqfx7zol3ftre@7cdg4czr5k4j>
+ <0f6a8c37-95e0-4009-a13b-99ce0e25ea47@cdn77.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] cgroup/cpuset.c: Fix a partition error with CPU
- hotplug
-To: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20250806172430.1155133-1-longman@redhat.com>
- <20250806172430.1155133-3-longman@redhat.com>
- <38800495-464f-4bbf-b605-9a6b8d2b4c11@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <38800495-464f-4bbf-b605-9a6b8d2b4c11@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0f6a8c37-95e0-4009-a13b-99ce0e25ea47@cdn77.com>
+X-Migadu-Flow: FLOW_OUT
 
-On 8/6/25 10:44 PM, Chen Ridong wrote:
->
-> On 2025/8/7 1:24, Waiman Long wrote:
->> It was found during testing that an invalid leaf partition with an
->> empty effective exclusive CPU list can become a valid empty partition
->> with no CPU afer an offline/online operation of an unrelated CPU. An
->> empty partition root is allowed in the special case that it has no
->> task in its cgroup and has distributed out all its CPUs to its child
->> partitions. That is certainly not the case here.
->>
->> The problem is in the cpumask_subsets() test in the hotplug case
->> (update with no new mask) of update_parent_effective_cpumask() as it
->> also returns true if the effective exclusive CPU list is empty. Fix that
->> by addding the cpumask_empty() test to root out this exception case.
->> Also add the cpumask_empty() test in cpuset_hotplug_update_tasks()
->> to avoid calling update_parent_effective_cpumask() for this special case.
->>
->> Fixes: 0c7f293efc87 ("cgroup/cpuset: Add cpuset.cpus.exclusive.effective for v2")
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   kernel/cgroup/cpuset.c | 7 ++++---
->>   1 file changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index bf149246e001..d993e058a663 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -1843,7 +1843,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->>   			if (is_partition_valid(cs))
->>   				adding = cpumask_and(tmp->addmask,
->>   						xcpus, parent->effective_xcpus);
->> -		} else if (is_partition_invalid(cs) &&
->> +		} else if (is_partition_invalid(cs) && !cpumask_empty(xcpus) &&
->>   			   cpumask_subset(xcpus, parent->effective_xcpus)) {
->>   			struct cgroup_subsys_state *css;
->>   			struct cpuset *child;
-> This path looks good to me.
->
-> However, I found the update_parent_effective_cpumask function a bit difficult to follow due to its
-> complexity.
->
-> To improve readability, could we refactor the partcmd_enable, partcmd_disable, partcmd_update and
-> partcmd_invalidate logic into separate, well-defined function blocks?  I'd be happy to take
-> ownership of this refactoring work if you agree with the approach.
+On Thu, Aug 07, 2025 at 12:22:01PM +0200, Daniel Sedlak wrote:
+> On 8/7/25 1:34 AM, Shakeel Butt wrote:
+> > On Wed, Aug 06, 2025 at 03:01:44PM -0700, Kuniyuki Iwashima wrote:
+> > > On Wed, Aug 6, 2025 at 2:54 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> > > > 
+> > > > On Wed, Aug 06, 2025 at 12:20:25PM -0700, Kuniyuki Iwashima wrote:
+> > > > > > > -                     WRITE_ONCE(memcg->socket_pressure, jiffies + HZ);
+> > > > > > > +                     socket_pressure = jiffies + HZ;
+> > > > > > > +
+> > > > > > > +                     jiffies_diff = min(socket_pressure - READ_ONCE(memcg->socket_pressure), HZ);
+> > > > > > > +                     memcg->socket_pressure_duration += jiffies_to_usecs(jiffies_diff);
+> > > > > > 
+> > > > > > KCSAN will complain about this. I think we can use atomic_long_add() and
+> > > > > > don't need the one with strict ordering.
+> 
+> Thanks for the KCSAN recommendation, I didn't know about this sanitizer.
+> 
+> > > > > 
+> > > > > Assuming from atomic_ that vmpressure() could be called concurrently
+> > > > > for the same memcg, should we protect socket_pressure and duration
+> > > > > within the same lock instead of mixing WRITE/READ_ONCE() and
+> > > > > atomic?  Otherwise jiffies_diff could be incorrect (the error is smaller
+> > > > > than HZ though).
+> > > > > 
+> > > > 
+> > > > Yeah good point. Also this field needs to be hierarchical. So, with lock
+> > > > something like following is needed:
+> 
+> Thanks for the snippet, will incorporate it.
 
-I agree that the code can be a bit hard to read. You are more than 
-welcome to improve the readability of the code if you have time.
+Cool though that is just like a pseudo code, so be careful in using it.
 
-Cheers,
-Longman
+> 
+> > > > 
+> > > >          if (!spin_trylock(memcg->net_pressure_lock))
+> > > >                  return;
+> > > > 
+> > > >          socket_pressure = jiffies + HZ;
+> > > >          diff = min(socket_pressure - READ_ONCE(memcg->socket_pressure), HZ);
+> > > 
+> > > READ_ONCE() should be unnecessary here.
+> > > 
+> > > > 
+> > > >          if (diff) {
+> > > >                  WRITE_ONCE(memcg->socket_pressure, socket_pressure);
+> > > >                  // mod_memcg_state(memcg, MEMCG_NET_PRESSURE, diff);
+> > > >                  // OR
+> > > >                  // while (memcg) {
+> > > >                  //      memcg->sk_pressure_duration += diff;
+> > > >                  //      memcg = parent_mem_cgroup(memcg);
+> > > 
+> > > The parents' sk_pressure_duration is not protected by the lock
+> > > taken by trylock.  Maybe we need another global mutex if we want
+> > > the hierarchy ?
+> > 
+> > We don't really need lock protection for sk_pressure_duration. The lock
+> 
+> By this you mean that we don't need the possible new global lock or the
+> local memcg->net_pressure_lock?
 
+We definitely don't need a global lock. For memcg->net_pressure_lock, we
+need to be very clear why we need this lock. Basically we are doing RMW
+on memcg->socket_pressure and we want known 'consistently' how much
+further we are pushing memcg->socket_pressure. In other words the
+consistent value of diff. The lock is one way to get that consistent
+diff. We can also play some atomic ops trick to get the consistent value
+without lock but I don't think that complexity is worth it. Third option
+might be to remove our consistency requirement for diff as the error is
+bound to HZ (as mentioned by Kuniyuki) but I think this code path is not
+performance critical to make this option worth it. So, option 1 of
+simple memcg->net_pressure_lock is good enough.
+
+We don't need memcg->net_pressure_lock's protection for
+sk_pressure_duration of the memcg and its ancestors if additions to
+sk_pressure_duration are atomic.
+
+Someone might notice that we are doing upward traversal for
+memcg->sk_pressure_duration but not for memcg->socket_pressure. We can
+do that if we decide to optimize mem_cgroup_under_socket_pressure().
+However that is orthogonal work. Also the consistency requirement will
+change.
 
