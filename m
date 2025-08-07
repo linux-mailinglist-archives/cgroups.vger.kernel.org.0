@@ -1,236 +1,243 @@
-Return-Path: <cgroups+bounces-9015-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9016-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54C1EB1D444
-	for <lists+cgroups@lfdr.de>; Thu,  7 Aug 2025 10:27:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BA4BB1D4A5
+	for <lists+cgroups@lfdr.de>; Thu,  7 Aug 2025 11:21:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A933189E93E
-	for <lists+cgroups@lfdr.de>; Thu,  7 Aug 2025 08:28:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98CA3179F91
+	for <lists+cgroups@lfdr.de>; Thu,  7 Aug 2025 09:21:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7852517AA;
-	Thu,  7 Aug 2025 08:27:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE00A221FB8;
+	Thu,  7 Aug 2025 09:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TU5nEZ8P"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="erpoaS/k"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC362222D6
-	for <cgroups@vger.kernel.org>; Thu,  7 Aug 2025 08:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC761F0E34
+	for <cgroups@vger.kernel.org>; Thu,  7 Aug 2025 09:21:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754555267; cv=none; b=ex/wPHmBtTrn4+XCF1NNWZVQdvQROIPVlRuK/2fftu9ZBQWFrU/IduZXqktvizvSrCn0rd79zPCuOXAjjFntqHD9gjfEwfEhvnDao8r467ADPI2P0cwv/SIj0TgnTZCgcnxZnl2LDW1+syexf8V+LgNWo067dsEX5zx55xPJyEE=
+	t=1754558505; cv=none; b=AiIGDfgMS+6DuHMKHr/iRO7I525DLkcWplbSBUEWH++KUtmhHw8ZFZrXxoOoq0toqMUlOGcGS5y+4FdKvZkt+SAyIQvgVIZx+0AcKbO2lHNTk86i7pwZi+q1/AZRWB+8pUEUrpm+Qy+PAJx50Msn1xwhVti5g0UbtPLr8NHFFuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754555267; c=relaxed/simple;
-	bh=wQefuaorp9x2+iC+U7LVaZGnAnYxvKAf6jocxcyUsKQ=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=YHdPLFKvigq7GWSydFn7yCxCAeY4M1BrZp4tf+6jOD6QVGaTcTJyTSUNYjHLfeClA5dIdr0w1VWPqSK1Ck8LPY4wAOSEGUsV0hqytSKN+XMAXgUMo0GH8f5RZiDjgSOTtXL9eBKmFhJlw+ujmJ4zE1W3eKdz0eOznuROAb6f+d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TU5nEZ8P; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1754558505; c=relaxed/simple;
+	bh=2kF9Xp/i+CMWgPLaCGqbMiGiYTpga7r7YABuRUKkC+U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G/aLw1p65b0+nNh5Lj90xQlWCYZx0L5IYaVWQVKTr43NZWmcHVt1UXSS7mM/xJXyCO+wYONLqHcCz0lv6fMjWal895uRCJPlR+WQaDIZa/QeH2d6pHL/8AZvshDKlbjN8YKPvZ4pGaZKNxmL7dOot5X0YMEgYuYdvRUZYVSAIqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=erpoaS/k; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2407235722bso7065855ad.1
-        for <cgroups@vger.kernel.org>; Thu, 07 Aug 2025 01:27:45 -0700 (PDT)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-76bfabdbef5so818743b3a.1
+        for <cgroups@vger.kernel.org>; Thu, 07 Aug 2025 02:21:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1754555265; x=1755160065; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vtZ6qEjcenL9MHWaCdG5/xReaOz82Rc4Yl0gbz6jebg=;
-        b=TU5nEZ8PiQgnNvG8h+T4sR/pESNfrsHoWOzCVnjHs7eX59QkruvYjwjdCeAzn2vtYz
-         /Sz1M2U0yAlw9QQ4/yxznSh8zbFd8rAQq4vWCS9HJ7MNdKeRBWugSlljQf78PKAv8wi1
-         TIFFdESbWJv9wjoMKuHizSH+slxmBexY9muu2BHmC3d8aWKnddIYBqcgZyvHrvPzjVqQ
-         Pi/DcekwRsyLxWePkek6+vBESm2xPHXOzPSu7W8f6ksuSleAGm+Hmv/f/JYMZruXeSm6
-         jXL9NdHUsX8eFe6v+jX1n54bbPSLhypfbJWrnrRmplaOO2N+MJQbH90FPvtvfeZRGJGB
-         E6Ng==
+        d=linaro.org; s=google; t=1754558502; x=1755163302; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nazhVQn6Jruflxd4sQmZQocx4oQcxFqDx6cnHObT89c=;
+        b=erpoaS/ktQ3Qc6Q34OoQEztjQK1yqvAEpPkrcwBhE3P3FByAghn28uN3NjWZDM+MIy
+         KrOR1maQNj9fZIZ1+E4p4b3Ru8zBXtFue7Qi2xaayL3GU6tjeXPy3xn/HDwtwfWapZr0
+         XoSogb2O7zjF5vXo++1pghafqFfr0c8aHNW0u1MMzxT6ACCeAJa5aBQIjFGrF5gxcz0u
+         3owk7mld5hI8RLHbsiCXH+T0rfDKqqKgoYBYhdbFSBKTxjtGYVf17m5teekfKxcEVd6D
+         UUKgUweR6D/UPm5CW12Fu5dVIJ5b9NZaIImhoMorYY6CwbrmIb3/WA3lN5DMV90mNbzM
+         RD0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754555265; x=1755160065;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vtZ6qEjcenL9MHWaCdG5/xReaOz82Rc4Yl0gbz6jebg=;
-        b=FsTVG24X0qd/sn6SdWwipFIkLBMQYlYIzUxubfNk+46E7hrMsDAofvmKxYBgwmjk3/
-         lLtNlaP97jprKN224xyTLtaaR+drnOtexNFqTX9jw5N3OX4dWp1/5Yx1fJjt8GLinPIg
-         2fjOeA2oV/QevRJf8KB35h3LBtmyp8r2VLPxTtrJvdWK7jGHCXk53zAAzGhzYim4+qu8
-         0lhoCrAO658UbhwUvE4JZgGp+37/1dQdLhfhwFVU84AplWhi8tT6zJ46vVCWpKc5dLF9
-         u/KN5GrIgxTG9GKoGo7vRuEfiAwMoS+7eGH+x/ruC/o7vGmuUALw2dJ2E7yx5HhtOTId
-         r1YA==
-X-Gm-Message-State: AOJu0Yw8UtIzBt/4O7KCf3lsrZHSU0Q5yC6pz9e0+dWQQtBECRIVuQz8
-	Os8ZP32jfg0bXfMf4UlL9UnRtycQoE+dRjfITInnN6RC0+CYSU+hrH4PqFuojKKAh4YgY127zJs
-	r4a/OdcD2ZHM3lbI4adm1aRRgWQNtcYUTf/zm3iWpF8eZmopzzfBlbwQ=
-X-Gm-Gg: ASbGncuEKXncozRQCME7ybvG4PLDHkxYTUGHbSJATTm2A2zYWO9q1V2RincX5ydF9IY
-	torLXFlU26gNxCfxnVTYktpBE7Z6EMEIEO2dbQbH5t0g9UQlTIybNWgZM3jYe4eU0GaVdAJQ3Li
-	cseRDHRsNADFaa1sAV42w+X2bfPQy/Iq3DJJiztIRn7F8ywVYWIVaSB5qm/CmLjE/mdLFqQwULy
-	LGO8imxvckKSRQTk/0M3Yql0VBfPjC1KHuXpehS
-X-Google-Smtp-Source: AGHT+IG090lvuakWHoCesKEHG/8FV69SOxDuNH9rLcZUnqgjT9x3D1J+oMPFACpctkhGwiVLlbZqH5w8lUruqCh92Y0=
-X-Received: by 2002:a17:903:3bce:b0:242:8a7:6a6c with SMTP id
- d9443c01a7336-2429f32c024mr91984475ad.17.1754555265025; Thu, 07 Aug 2025
- 01:27:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1754558502; x=1755163302;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nazhVQn6Jruflxd4sQmZQocx4oQcxFqDx6cnHObT89c=;
+        b=aNu/X/UQfq1/7SwldftaSNI7mD1ltdZftChQmNoNoV11nuYmnUacZNlzsn7B/1Auf6
+         lgxNTPGVvOG9194XJzj8iZvGE9+OTr+8/TrOnye6nTMCCUCmekQD26OCc0oEWDW86qLz
+         fjhaG+xtOcBeYAn6KC26UeebxD6SX94lqT8sqLkk/HLq+G+6MlOY3xSp7d2ScYLp43nZ
+         eax/6rscsGd+At2BCxas1gZr/D992xBtzaoz3mODsstYIJ74IKrwMP4fAxLTuyApAUOR
+         pEsQbqIr9BuRXzv1lOtiCcETngv8znGG/rCHMQ1/jJybM74Cdq3mzhhOBFkjxyW9iLIR
+         EZfw==
+X-Forwarded-Encrypted: i=1; AJvYcCUlJ/RU6Pf6AmR66GIaEWEstNiWQdF5OWa7KuXCxhKuB5Ch0mtj8eX4ZUDasWTOF9pQHG+LrBw5@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2DITgUGFCj4RCSuQmH9ImYtSLnHPrfpVcX0b5sqb7B20yYGv8
+	jDREmnVhNXDNmggx5ReXXTJGu/aIXA+Teem0g9ac6r148zuMEw5z5c+dD/8O65lf4YahoEZZYCq
+	4fxc6SvQ5bBxHCeJ/z6uOBS0ruNg8aM6p2jEgGQKp9w==
+X-Gm-Gg: ASbGncuv5lHaq4ALLHTjg1FsCSUBkQ4ZwZAH9o1L5TKmcXnWsAaASXv1If/CSJmCl7l
+	0Bc+c+qkEtVPTXpHFf50l7NYEdrgnNig+PKAd0/dLUxYbxCu5JxxpO5TxVCjSdYiK/8kGxdHSnx
+	o+okwpQxf1s8Hd8oksYsBfWx6zhXmqJXz2ADvXOF5kZHhNL4A0KR5Jty3VR5kZa92mGl+KMSUIY
+	jXLIFrSQegiI+YGRAlR9unkTd3P1/ND261uFZ0F84va/ll6dFWu
+X-Google-Smtp-Source: AGHT+IENUNZHbWNhDkjrlDBP/IMI+ox17dvQGf1pPh/T6DNibPj5t5Kqy2cH1NAjJtx9Hg5ja440tS5wnPkyrNZunu0=
+X-Received: by 2002:a17:903:2f89:b0:240:967a:fec3 with SMTP id
+ d9443c01a7336-2429f30b074mr82279045ad.29.1754558502039; Thu, 07 Aug 2025
+ 02:21:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <CA+G9fYvZtbQLoS=GpaZ_uzm3YiZEQmz0oghnwVamNQ49CosT2w@mail.gmail.com>
+ <aJNsreA4FuxalDc8@stanley.mountain>
+In-Reply-To: <aJNsreA4FuxalDc8@stanley.mountain>
 From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 7 Aug 2025 13:57:34 +0530
-X-Gm-Features: Ac12FXzlLNIJAbNMG5_Ik7bZZCMv8iz6h3sAFL5MIIrcVzRLBwRvVd6YtBeMaBs
-Message-ID: <CA+G9fYtktEOzRWohqWpsGegS2PAcYh7qrzAr=jWCxfUMEvVKfQ@mail.gmail.com>
-Subject: next-20250805: ampere: WARNING: kernel/cgroup/cpuset.c:1352 at remote_partition_disable
-To: Cgroups <cgroups@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	lkft-triage@lists.linaro.org, Linux Regressions <regressions@lists.linux.dev>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Dan Carpenter <dan.carpenter@linaro.org>, Anders Roxell <anders.roxell@linaro.org>, 
-	Arnd Bergmann <arnd@arndb.de>, kamalesh.babulal@oracle.com
+Date: Thu, 7 Aug 2025 14:51:29 +0530
+X-Gm-Features: Ac12FXzDGhnu1-S9XsmcuSQdpNl-4x-pjyL4dJsRMo-Zz2V8DR8MxaCT9WEoD8A
+Message-ID: <CA+G9fYvEGBAAEetvvtXWsGb3EQ2sTOM=szkxZ4m-Gt2bTszBdQ@mail.gmail.com>
+Subject: Re: next-20250804 Unable to handle kernel execute from non-executable
+ memory at virtual address idem_hash
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Renjiang Han <quic_renjiang@quicinc.com>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Cgroups <cgroups@vger.kernel.org>, 
+	open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org, 
+	Linux Regressions <regressions@lists.linux.dev>, linux-fsdevel@vger.kernel.org, 
+	Song Liu <song@kernel.org>, yukuai3@huawei.com, Arnd Bergmann <arnd@arndb.de>, 
+	Anders Roxell <anders.roxell@linaro.org>, Ben Copeland <benjamin.copeland@linaro.org>
+Content-Type: multipart/mixed; boundary="00000000000040a1ab063bc2fcd6"
+
+--00000000000040a1ab063bc2fcd6
 Content-Type: text/plain; charset="UTF-8"
 
-Regressions noticed intermittently on AmpereOne while running selftest
-cgroup testing
-with Linux next-20250805 and earlier seen on next-20250722 tag also.
+Hi Dan,
 
-Regression Analysis:
-- New regression? Yes
-- Reproducibility? Intermittent
+On Wed, 6 Aug 2025 at 20:24, Dan Carpenter <dan.carpenter@linaro.org> wrote:
+>
+> On Tue, Aug 05, 2025 at 12:50:28AM +0530, Naresh Kamboju wrote:
+> > While booting and testing selftest cgroups and filesystem testing on arm64
+> > dragonboard-410c the following kernel warnings / errors noticed and system
+> > halted and did not recover with selftests Kconfig enabled running the kernel
+> > Linux next tag next-20250804.
+> >
+> > Regression Analysis:
+> > - New regression? Yes
+> > - Reproducibility? Re-validation is in progress
+> >
+> > First seen on the next-20250804
+> > Good: next-20250801
+> > Bad: next-20250804
+> >
+> > Test regression: next-20250804 Unable to handle kernel execute from
+> > non-executable memory at virtual address idem_hash
+> > Test regression: next-20250804 refcount_t: addition on 0;
+> > use-after-free refcount_warn_saturate
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >
+> > ## Test crash log
+> > [    9.811341] Unable to handle kernel NULL pointer dereference at
+> > virtual address 000000000000002e
+> > [    9.811444] Mem abort info:
+> > [    9.821150]   ESR = 0x0000000096000004
+> > [    9.833499]   SET = 0, FnV = 0
+> > [    9.833566]   EA = 0, S1PTW = 0
+> > [    9.835511]   FSC = 0x04: level 0 translation fault
+> > [    9.838901] Data abort info:
+> > [    9.843788]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+> > [    9.846565]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+> > [    9.851938]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> > [    9.853510] rtc-pm8xxx 200f000.spmi:pmic@0:rtc@6000: registered as rtc0
+> > [    9.856992] user pgtable: 4k pages, 48-bit VAs, pgdp=00000000856f8000
+> > [    9.862446] rtc-pm8xxx 200f000.spmi:pmic@0:rtc@6000: setting system
+> > clock to 1970-01-01T00:00:31 UTC (31)
+> > [    9.868789] [000000000000002e] pgd=0000000000000000, p4d=0000000000000000
+> > [    9.875459] Internal error: Oops: 0000000096000004 [#1]  SMP
+> > [    9.889547] input: pm8941_pwrkey as
+> > /devices/platform/soc@0/200f000.spmi/spmi-0/0-00/200f000.spmi:pmic@0:pon@800/200f000.spmi:pmic@0:pon@800:pwrkey/input/input1
+> > [    9.891545] Modules linked in: qcom_spmi_temp_alarm rtc_pm8xxx
+> > qcom_pon(+) qcom_pil_info videobuf2_dma_sg ubwc_config qcom_q6v5
+> > venus_core(+) qcom_sysmon qcom_spmi_vadc v4l2_fwnode llcc_qcom
+> > v4l2_async qcom_vadc_common qcom_common ocmem v4l2_mem2mem drm_gpuvm
+> > videobuf2_memops qcom_glink_smem videobuf2_v4l2 drm_exec mdt_loader
+> > qmi_helpers gpu_sched drm_dp_aux_bus qnoc_msm8916 videodev
+> > drm_display_helper qcom_stats videobuf2_common cec qcom_rng
+> > drm_client_lib mc phy_qcom_usb_hs socinfo rpmsg_ctrl display_connector
+> > rpmsg_char ramoops rmtfs_mem reed_solomon drm_kms_helper fuse drm
+> > backlight
+> > [    9.912286] input: pm8941_resin as
+> > /devices/platform/soc@0/200f000.spmi/spmi-0/0-00/200f000.spmi:pmic@0:pon@800/200f000.spmi:pmic@0:pon@800:resin/input/input2
+> > [    9.941186] CPU: 2 UID: 0 PID: 221 Comm: (udev-worker) Not tainted
+> > 6.16.0-next-20250804 #1 PREEMPT
+> > [    9.941200] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+> > [    9.941206] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > [    9.941215] pc : dev_pm_opp_put (/builds/linux/drivers/opp/core.c:1685)
+> > [    9.941233] lr : core_clks_enable+0x54/0x148 venus_core
+> > [   10.004266] sp : ffff8000842b35f0
+> > [   10.004273] x29: ffff8000842b35f0 x28: ffff8000842b3ba0 x27: ffff0000047be938
+> > [   10.004289] x26: 0000000000000000 x25: 0000000000000000 x24: ffff80007b350ba0
+> > [   10.004303] x23: ffff00000ba380c8 x22: ffff00000ba38080 x21: 0000000000000000
+> > [   10.004316] x20: 0000000000000000 x19: ffffffffffffffee x18: 00000000ffffffff
+> > [   10.004330] x17: 0000000000000000 x16: 1fffe000017541a1 x15: ffff8000842b3560
+> > [   10.004344] x14: 0000000000000000 x13: 007473696c5f7974 x12: 696e696666615f65
+> > [   10.004358] x11: 00000000000000c0 x10: 0000000000000020 x9 : ffff80007b33f2bc
+> > [   10.004371] x8 : ffffffffffffffde x7 : ffff0000044a4800 x6 : 0000000000000000
+> > [   10.004384] x5 : 0000000000000002 x4 : 00000000c0000000 x3 : 0000000000000001
+> > [   10.004397] x2 : 0000000000000002 x1 : ffffffffffffffde x0 : ffffffffffffffee
+> > [   10.004412] Call trace:
+> > [   10.004417] dev_pm_opp_put (/builds/linux/drivers/opp/core.c:1685) (P)
+> > [   10.004435] core_clks_enable+0x54/0x148 venus_core
+> > [   10.004504] core_power_v1+0x78/0x90 venus_core
+> > [   10.004560] venus_runtime_resume+0x6c/0x98 venus_core
+> > [   10.004616] pm_generic_runtime_resume
+>
+> Could you try adding some error checking to core_clks_enable()?
+> Does the patch below help?
 
-First seen on the next-20250722 and after next-20250805.
+Your patch works.
+The attached patch from Sasha fixes this reported problem on today's
+Linux next tag.
 
-Test regression: next-20250805 ampere WARNING kernel cgroup cpuset.c
-at remote_partition_disable
+$ git log --oneline next-20250805..next-20250807 --
+drivers/media/platform/qcom/venus/pm_helpers.c
+7881cd6886a89 media: venus: Fix OPP table error handling
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+- Naresh
 
-## Test log
-selftests: cgroup: test_cpuset_prs.sh
-Running state tRunning state transition test ...
-ransition test ...
-Running test 0 ...
-Running test 1 ...
-Running test 2 ...
-Running test 3 ...
-Running test 4 ...
-Running test 5 ...
-Running test 6 ...
-Running test 7 ...
-Running test 8 ...
-Running test 9 ...
-Running test 10 ...
-Running test 11 ...
-Running test 12 ...
-Running test 13 ...
-Running test 14 ...
-Running test 15 ...
-Running test 16 ...
-Running test 17 ...
-Running test 18 ...
-Running test 19 ...
-[  137.504549] psci: CPU2 killed (polled 0 ms)
-[  137.747094] Detected PIPT I-cache on CPU2
-[  137.747214] GICv3: CPU2: found redistributor 3500 region 0:0x0000400201cc0000
-[  137.747312] CPU2: Booted secondary processor 0x0000003500 [0xc00fac40]
+--00000000000040a1ab063bc2fcd6
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="media-venus-fix-opp-table-error-handling.patch"
+Content-Disposition: attachment; 
+	filename="media-venus-fix-opp-table-error-handling.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_me16oaig0>
+X-Attachment-Id: f_me16oaig0
 
-<>
-
-Running test 63 ...
-Running test 64 ...
-Running test 66 ...
-[  174.929535] psci: CPU3 killed (polled 0 ms)
-[  175.263087] Detected PIPT I-cache on CPU3
-[  175.263203] GICv3: CPU3: found redistributor 3501 region 0:0x0000400201d00000
-[  175.263300] CPU3: Booted secondary processor 0x0000003501 [0xc00fac40]
-[  175.434129] workqueue: Interrupted when creating a worker thread
-"kworker/u1028:0"
-** replaying previous printk message **
-[  175.434129] workqueue: Interrupted when creating a worker thread
-"kworker/u1028:0"
-[  175.440230] ------------[ cut here ]------------
-[  175.440234] WARNING: kernel/cgroup/cpuset.c:1352 at
-remote_partition_disable+0x120/0x160, CPU#170: rmdir/33763
-[  175.467456] Modules linked in: cdc_ether usbnet sm3_ce sha3_ce nvme
-nvme_core xhci_pci_renesas arm_cspmu_module ipmi_devintf arm_spe_pmu
-ipmi_msghandler arm_cmn cppc_cpufreq fuse drm backlight
-[  175.484676] CPU: 170 UID: 0 PID: 33763 Comm: rmdir Not tainted
-6.16.0-next-20250805 #1 PREEMPT
-[  175.493365] Hardware name: Inspur NF5280R7/Mitchell MB, BIOS
-04.04.00004001 2025-02-04 22:23:30 02/04/2025
-[  175.503178] pstate: 63400009 (nZCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-not ok 12 selftests: cgroup: test_cpuset_prs.sh TIMEOUT 45 seconds
-[  175.510130] pc : remote_partition_disable
-(kernel/cgroup/cpuset.c:1352 (discriminator 1)
-kernel/cgroup/cpuset.c:1342 (discriminator 1)
-kernel/cgroup/cpuset.c:1514 (discriminator 1))
-[  175.518032] lr : remote_partition_disable
-(kernel/cgroup/cpuset.c:1352 (discriminator 1)
-kernel/cgroup/cpuset.c:1514 (discriminator 1))
-[  175.525849] sp : ffff8000c853bb90
-[  175.529585] x29: ffff8000c853bb90 x28: ffff00017badc800 x27: 0000000000000000
-timeout set to 45
-[  175.536713] x26: 0000000000000000 x25: ffff00014c422540 x24: ffffb1c71020b000
-[  175.545489] x23: ffff000113769c00 x22: 0000000000000001 x21: ffffb1c71020b5c0
-[  175.552615] x20: ffff8000c853bbd0 x19: ffff000113769a00 x18: 00000000ffffffff
-selftests: cgroup: test_cpuset_v1_hp.sh
-[  175.559910] x17: 31752f72656b726f x16: 776b222064616572 x15: 68742072656b726f
-[  175.569900] x14: 0000000000000004 x13: ffffb1c70fb4f160 x12: 0000000000000000
-cpuset v1 mount point not found!
-[  175.577888] x11: 000002f6b9bf58c3 x10: 0000000000000023 x9 : ffffb1c70d6bdff8
-Test SKIPPED
-ok 13 selftests: cgroup: test_cpuset_v1_hp.sh #SKIP
-[  175.587877] x8 : ffff8000c853bad0 x7 : 0000000000000000 x6 : 0000000000000001
-[  175.597864] x5 : ffffb1c70e87a488 x4 : fffffdffc40a88e0 x3 : 000000000080007d
-[  175.607849] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 00000000fffffff4
-[  175.615578] Call trace:
-[  175.618013] remote_partition_disable (kernel/cgroup/cpuset.c:1352
-(discriminator 1) kernel/cgroup/cpuset.c:1342 (discriminator 1)
-kernel/cgroup/cpuset.c:1514 (discriminator 1)) (P)
-[  175.623057] update_prstate (include/linux/spinlock.h:376
-kernel/cgroup/cpuset.c:2963)
-[  175.626799] cpuset_css_killed (kernel/cgroup/cpuset.c:3598)
-[  175.630713] kill_css.part.0 (kernel/cgroup/cgroup.c:5968)
-[  175.634464] cgroup_destroy_locked (kernel/cgroup/cgroup.c:6058
-(discriminator 4))
-[  175.638810] cgroup_rmdir (kernel/cgroup/cgroup.c:6102)
-[  175.642376] kernfs_iop_rmdir (fs/kernfs/dir.c:1286)
-[  175.646203] vfs_rmdir (fs/namei.c:4461 fs/namei.c:4438)
-[  175.649515] do_rmdir (fs/namei.c:4516 (discriminator 1))
-[  175.652823] __arm64_sys_unlinkat (fs/namei.c:4690 (discriminator 2)
-fs/namei.c:4684 (discriminator 2) fs/namei.c:4684 (discriminator 2))
-[  175.656998] invoke_syscall (arch/arm64/include/asm/current.h:19
-arch/arm64/kernel/syscall.c:54)
-[  175.660738] el0_svc_common.constprop.0
-(include/linux/thread_info.h:135 (discriminator 2)
-arch/arm64/kernel/syscall.c:140 (discriminator 2))
-[  175.665431] do_el0_svc (arch/arm64/kernel/syscall.c:152)
-[  175.668735] el0_svc (arch/arm64/include/asm/irqflags.h:82
-(discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
-1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
-arch/arm64/kernel/entry-common.c:169 (discriminator 1)
-arch/arm64/kernel/entry-common.c:182 (discriminator 1)
-arch/arm64/kernel/entry-common.c:880 (discriminator 1))
-[  175.671877] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:899)
-[  175.676052] el0t_64_sync (arch/arm64/kernel/entry.S:596)
-[  175.679705] ---[ end trace 0000000000000000 ]---
-
-
-## Source
-* Git tree: https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next.git
-* Git sha: afec768a6a8fe7fb02a08ffce5f2f556f51d4b52
-* Git describe: next-20250805
-* Architectures: arm64
-* Toolchains: gcc-13
-* Kconfigs: defconfig+selftests/*/configs
-
-## Build
-* Test log 1: https://qa-reports.linaro.org/api/testruns/29220998/log_file/
-* Test log 2: https://qa-reports.linaro.org/api/testruns/29395866/log_file/
-* LAVA log: https://lkft-staging.validation.linaro.org/scheduler/job/187100#L6621
-* Test history:
-https://regressions.linaro.org/lkft/linux-next-master-ampere/next-20250805/log-parser-test/exception-warning-kernelcgroupcpuset-at-remote_partition_disable/history/
-* Test plan: https://tuxapi.tuxsuite.com/v1/groups/ampere/projects/ci/tests/30rj0dIdTXUiGfYMA7suavpa77r
-* Build link: https://storage.tuxsuite.com/public/ampere/ci/builds/30rj0OYSDUMeT0cyTDioTe5XVOI/
-* Kernel config:
-https://storage.tuxsuite.com/public/ampere/ci/builds/30rj0OYSDUMeT0cyTDioTe5XVOI/config
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Y29tbWl0IDc4ODFjZDY4ODZhODllZGE4NDgxOTJkM2Y1NzU5Y2UwODY3MmUwODQKQXV0aG9yOiBT
+YXNoYSBMZXZpbiA8c2FzaGFsQGtlcm5lbC5vcmc+CkRhdGU6ICAgVHVlIEF1ZyA1IDA4OjU4OjIw
+IDIwMjUgLTA0MDAKCiAgICBtZWRpYTogdmVudXM6IEZpeCBPUFAgdGFibGUgZXJyb3IgaGFuZGxp
+bmcKICAgIAogICAgVGhlIHZlbnVzIGRyaXZlciBmYWlscyB0byBjaGVjayBpZiBkZXZfcG1fb3Bw
+X2ZpbmRfZnJlcV97Y2VpbCxmbG9vcn0oKQogICAgcmV0dXJucyBhbiBlcnJvciBwb2ludGVyIGJl
+Zm9yZSBjYWxsaW5nIGRldl9wbV9vcHBfcHV0KCkuIFRoaXMgY2F1c2VzCiAgICBhIGNyYXNoIHdo
+ZW4gT1BQIHRhYmxlcyBhcmUgbm90IHByZXNlbnQgaW4gZGV2aWNlIHRyZWUuCiAgICAKICAgIFVu
+YWJsZSB0byBoYW5kbGUga2VybmVsIGFjY2VzcyB0byB1c2VyIG1lbW9yeSBvdXRzaWRlIHVhY2Nl
+c3Mgcm91dGluZXMKICAgIGF0IHZpcnR1YWwgYWRkcmVzcyAwMDAwMDAwMDAwMDAwMDJlCiAgICAu
+Li4KICAgIHBjIDogZGV2X3BtX29wcF9wdXQrMHgxYy8weDRjCiAgICBsciA6IGNvcmVfY2xrc19l
+bmFibGUrMHg0Yy8weDE2YyBbdmVudXNfY29yZV0KICAgIAogICAgQWRkIElTX0VSUigpIGNoZWNr
+cyBiZWZvcmUgY2FsbGluZyBkZXZfcG1fb3BwX3B1dCgpIHRvIGF2b2lkCiAgICBkZXJlZmVyZW5j
+aW5nIGVycm9yIHBvaW50ZXJzLgogICAgCiAgICBGaXhlczogYjE3OTIzNGI1ZTU5ICgibWVkaWE6
+IHZlbnVzOiBwbV9oZWxwZXJzOiB1c2Ugb3BwLXRhYmxlIGZvciB0aGUgZnJlcXVlbmN5IikKICAg
+IFNpZ25lZC1vZmYtYnk6IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9yZz4KICAgIFNpZ25l
+ZC1vZmYtYnk6IExpbnVzIFRvcnZhbGRzIDx0b3J2YWxkc0BsaW51eC1mb3VuZGF0aW9uLm9yZz4K
+CmRpZmYgLS1naXQgYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL3Fjb20vdmVudXMvcG1faGVscGVy
+cy5jIGIvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9xY29tL3ZlbnVzL3BtX2hlbHBlcnMuYwppbmRl
+eCA4ZGQ1YTliMGQwNjBjLi5lMzJmODg2MmE5ZjkwIDEwMDY0NAotLS0gYS9kcml2ZXJzL21lZGlh
+L3BsYXRmb3JtL3Fjb20vdmVudXMvcG1faGVscGVycy5jCisrKyBiL2RyaXZlcnMvbWVkaWEvcGxh
+dGZvcm0vcWNvbS92ZW51cy9wbV9oZWxwZXJzLmMKQEAgLTQ4LDcgKzQ4LDggQEAgc3RhdGljIGlu
+dCBjb3JlX2Nsa3NfZW5hYmxlKHN0cnVjdCB2ZW51c19jb3JlICpjb3JlKQogCWludCByZXQ7CiAK
+IAlvcHAgPSBkZXZfcG1fb3BwX2ZpbmRfZnJlcV9jZWlsKGRldiwgJmZyZXEpOwotCWRldl9wbV9v
+cHBfcHV0KG9wcCk7CisJaWYgKCFJU19FUlIob3BwKSkKKwkJZGV2X3BtX29wcF9wdXQob3BwKTsK
+IAogCWZvciAoaSA9IDA7IGkgPCByZXMtPmNsa3NfbnVtOyBpKyspIHsKIAkJaWYgKElTX1Y2KGNv
+cmUpKSB7CkBAIC02NjAsNyArNjYxLDggQEAgc3RhdGljIGludCBkZWNpZGVfY29yZShzdHJ1Y3Qg
+dmVudXNfaW5zdCAqaW5zdCkKIAkvKlRPRE8gOiBkaXZpZGUgdGhpcyBpbnN0LT5sb2FkIGJ5IHdv
+cmtfcm91dGUgKi8KIAogCW9wcCA9IGRldl9wbV9vcHBfZmluZF9mcmVxX2Zsb29yKGRldiwgJm1h
+eF9mcmVxKTsKLQlkZXZfcG1fb3BwX3B1dChvcHApOworCWlmICghSVNfRVJSKG9wcCkpCisJCWRl
+dl9wbV9vcHBfcHV0KG9wcCk7CiAKIAltaW5fbG9hZGVkX2NvcmUoaW5zdCwgJm1pbl9jb3JlaWQs
+ICZtaW5fbG9hZCwgZmFsc2UpOwogCW1pbl9sb2FkZWRfY29yZShpbnN0LCAmbWluX2xwX2NvcmVp
+ZCwgJm1pbl9scF9sb2FkLCB0cnVlKTsKQEAgLTExMjEsNyArMTEyMyw4IEBAIHN0YXRpYyBpbnQg
+bG9hZF9zY2FsZV92NChzdHJ1Y3QgdmVudXNfaW5zdCAqaW5zdCkKIAlmcmVxID0gbWF4KGZyZXFf
+Y29yZTEsIGZyZXFfY29yZTIpOwogCiAJb3BwID0gZGV2X3BtX29wcF9maW5kX2ZyZXFfZmxvb3Io
+ZGV2LCAmbWF4X2ZyZXEpOwotCWRldl9wbV9vcHBfcHV0KG9wcCk7CisJaWYgKCFJU19FUlIob3Bw
+KSkKKwkJZGV2X3BtX29wcF9wdXQob3BwKTsKIAogCWlmIChmcmVxID4gbWF4X2ZyZXEpIHsKIAkJ
+ZGV2X2RiZyhkZXYsIFZEQkdMICJyZXF1ZXN0ZWQgY2xvY2sgcmF0ZTogJWx1IHNjYWxpbmcgY2xv
+Y2sgcmF0ZSA6ICVsdVxuIiwKQEAgLTExMzEsNyArMTEzNCw4IEBAIHN0YXRpYyBpbnQgbG9hZF9z
+Y2FsZV92NChzdHJ1Y3QgdmVudXNfaW5zdCAqaW5zdCkKIAl9CiAKIAlvcHAgPSBkZXZfcG1fb3Bw
+X2ZpbmRfZnJlcV9jZWlsKGRldiwgJmZyZXEpOwotCWRldl9wbV9vcHBfcHV0KG9wcCk7CisJaWYg
+KCFJU19FUlIob3BwKSkKKwkJZGV2X3BtX29wcF9wdXQob3BwKTsKIAogc2V0X2ZyZXE6CiAK
+--00000000000040a1ab063bc2fcd6--
 
