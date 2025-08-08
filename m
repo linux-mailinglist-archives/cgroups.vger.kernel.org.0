@@ -1,62 +1,62 @@
-Return-Path: <cgroups+bounces-9035-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9036-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA6F2B1EB3F
-	for <lists+cgroups@lfdr.de>; Fri,  8 Aug 2025 17:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC10BB1EB42
+	for <lists+cgroups@lfdr.de>; Fri,  8 Aug 2025 17:13:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF01E18C51B7
-	for <lists+cgroups@lfdr.de>; Fri,  8 Aug 2025 15:13:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7A0D18C4A55
+	for <lists+cgroups@lfdr.de>; Fri,  8 Aug 2025 15:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF98283CA2;
-	Fri,  8 Aug 2025 15:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84AF52820B9;
+	Fri,  8 Aug 2025 15:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IC4swh7/"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RRq3nNX8"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF08828153A
-	for <cgroups@vger.kernel.org>; Fri,  8 Aug 2025 15:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DC128153A
+	for <cgroups@vger.kernel.org>; Fri,  8 Aug 2025 15:12:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754665939; cv=none; b=en155Yyy4ldGYgwwUKNeVODxN8Snbfs3HA35dDv/S+UxpH1x+5sFK4L9MOoR70DcW9JDRPvg2cgyHDrSHa1qINl1GqhYs7oNf5eH7dSvdJrCab5SgyAYIFKrjdl7KLSDZc5p/6wkvLsa++jo2xV++f78h4rXjOVQ1oMy8TIo/AI=
+	t=1754665946; cv=none; b=OP/QFAxL7TnZsbvEDwZctVgeSAxCcT3JWYSirgPEeywG0IRQj2h4Zi05aTfqlbejEDg7BNOTBpinKVZFge5Tq9AFnkRldNUt70UDJpT0sg+uei1okg64s0ge04cARhb8nVguk2wnXoqbk70FjnBqiuW/FZSxYyCf203eegdlA20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754665939; c=relaxed/simple;
-	bh=QRY16VAW4X4F0xXHp04SZrPFAFE5kMQLXklX4MXdJ+A=;
+	s=arc-20240116; t=1754665946; c=relaxed/simple;
+	bh=E5C5hX5eN0f29firekyx2hBKs492l3eG/OpZn3r3C/k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oNW1EhQFQhoCqEH3x3rAs1UqRYJbqZJ0nSTMBOZ9CRV0FequFMtR4gQgtHzdepBG95tlTNxrHmpPmnnoBivfQycMxhHmzW/Oug9+VceP4q1lTE/ji95v5yePVDJZRIGlsPGoGVmhnLsWJir5IOtqdpk8Dd97sLCG96kqw8zvxdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IC4swh7/; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=RSWT9KZdj1BQ5JlnjXzK0uY4Q5bQiU38YCX7HWwDTB39weW7s+WlbOyvnl6eXiiuCkM/EGAAZwoSHD2U6vw4+gsWiSoKhR0fXsF8/XokzsF9eIyooqWF/bAs6UCV4AXwcJzyYOOfo59tl+t4+lYgayG2xgC+/W9tXgZ2DZhBXZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RRq3nNX8; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754665936;
+	s=mimecast20190719; t=1754665943;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=u94p6gUaRQMoeY109WbKTEOrDCchNSj9vS9OMLPC8GY=;
-	b=IC4swh7/p4qb0AxnliyMjpAUJR1/gKYWr/aKYbDzgQhmIRHQcb0aoBohS3iuL+xZi6j7+w
-	dNDl3wvUtiE7jjPO+fuVLuhQ3CAHyUsm13DR2f08XKNms18bwxGbhLKp+HBv3R/zzpu6JW
-	EoHiIGNOq48nqAgRABOOsMpYZRxnvPk=
+	bh=roaCs6aaTpSLNP30noSwdjwLN929rnnIEU4sqPWHpnk=;
+	b=RRq3nNX8YRZb+nzFEzbyQ7+ymaSVV+k5qMhas1Rpk4WNhG1dBDrZCuZuUtJGQWMMDsEpze
+	ztlaOE/d2b1hXXTMBFYB5tH7Xwox8lpOfh4QgiVLefrteG9nb0h2PKMUe7F1pkG74MyUJJ
+	/x+hglNHoXcdE7ZCMFemYo6bzpRERe4=
 Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-42-g97BaJH6Pcm_bPkS05BaYw-1; Fri,
- 08 Aug 2025 11:12:12 -0400
-X-MC-Unique: g97BaJH6Pcm_bPkS05BaYw-1
-X-Mimecast-MFC-AGG-ID: g97BaJH6Pcm_bPkS05BaYw_1754665928
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-246-02rJ4c0cMIWbuNa0oT-s6w-1; Fri,
+ 08 Aug 2025 11:12:18 -0400
+X-MC-Unique: 02rJ4c0cMIWbuNa0oT-s6w-1
+X-Mimecast-MFC-AGG-ID: 02rJ4c0cMIWbuNa0oT-s6w_1754665935
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0C8EC1800289;
-	Fri,  8 Aug 2025 15:12:08 +0000 (UTC)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 92B1A180028D;
+	Fri,  8 Aug 2025 15:12:14 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.65.37])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id BDCEB1954199;
-	Fri,  8 Aug 2025 15:12:00 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 505F71954196;
+	Fri,  8 Aug 2025 15:12:08 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -94,9 +94,9 @@ Cc: cgroups@vger.kernel.org,
 	Gabriele Monaco <gmonaco@redhat.com>,
 	Cestmir Kalina <ckalina@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [RFC PATCH 03/18] sched/isolation: Use RCU to delay successive housekeeping cpumask updates
-Date: Fri,  8 Aug 2025 11:10:47 -0400
-Message-ID: <20250808151053.19777-4-longman@redhat.com>
+Subject: [RFC PATCH 04/18] sched/isolation: Add a debugfs file to dump housekeeping cpumasks
+Date: Fri,  8 Aug 2025 11:10:48 -0400
+Message-ID: <20250808151053.19777-5-longman@redhat.com>
 In-Reply-To: <20250808151053.19777-1-longman@redhat.com>
 References: <20250808151053.19777-1-longman@redhat.com>
 Precedence: bulk
@@ -108,98 +108,66 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-Even though there are 2 separate sets of housekeeping cpumasks for access
-and update, it is possible that the set of cpumasks to be updated are
-still being used by the callers of housekeeping functions resulting in
-the use of an intermediate cpumask between the new and old ones.
-
-To reduce the chance of this, we need to introduce delay between
-successive housekeeping cpumask updates. One simple way is to make
-use of the RCU grace period delay. The callers of the housekeeping APIs
-can optionally hold rcu_read_lock to eliminate the chance of using
-intermediate housekeeping cpumasks.
+As housekeeping cpumasks can now be modified at run time, we need a way
+to examine the their current values to see if they meet our expectation.
+Add a new sched debugfs file "housekeeping_cpumasks" to dump out the
+current values.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- kernel/sched/isolation.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ kernel/sched/debug.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index ee396ae13719..f26708667754 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -23,6 +23,9 @@ EXPORT_SYMBOL_GPL(housekeeping_overridden);
-  * The housekeeping cpumasks can now be dynamically updated at run time.
-  * Two set of cpumasks are kept. One set can be used while the other set are
-  * being updated concurrently.
-+ *
-+ * rcu_read_lock() can optionally be held by housekeeping API callers to
-+ * ensure stability of the cpumasks.
-  */
- static DEFINE_RAW_SPINLOCK(cpumask_lock);
- struct housekeeping {
-@@ -34,6 +37,8 @@ struct housekeeping {
- 
- static struct housekeeping housekeeping;
- static bool sched_tick_offload_inited;
-+static struct rcu_head rcu_gp[HK_TYPE_MAX];
-+static unsigned long update_flags;
- 
- bool housekeeping_enabled(enum hk_type type)
- {
-@@ -267,6 +272,18 @@ static int __init housekeeping_isolcpus_setup(char *str)
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 3f06ab84d53f..ba8f0334c15e 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -490,6 +490,35 @@ static void debugfs_fair_server_init(void)
+ 	}
  }
- __setup("isolcpus=", housekeeping_isolcpus_setup);
  
-+/*
-+ * Bits in update_flags can only turned on with cpumask_lock held and
-+ * cleared by this RCU callback function.
-+ */
-+static void rcu_gp_end(struct rcu_head *rcu)
++#ifdef CONFIG_CPU_ISOLATION
++static int hk_cpumasks_show(struct seq_file *m, void *v)
 +{
-+	int type = rcu - rcu_gp;
++	static const char * const hk_type_name[HK_TYPE_MAX] = {
++		[HK_TYPE_DOMAIN]	= "domain",
++		[HK_TYPE_MANAGED_IRQ]	= "managed_irq",
++		[HK_TYPE_KERNEL_NOISE]	= "nohz_full"
++	};
++	int type;
 +
-+	/* Atomically clear the corresponding flag bit */
-+	clear_bit(type, &update_flags);
++	for (type = 0; type < HK_TYPE_MAX; type++)
++		seq_printf(m, "%s: %*pbl\n", hk_type_name[type],
++			   cpumask_pr_args(housekeeping_cpumask(type)));
++	return 0;
 +}
 +
- /**
-  * housekeeping_exclude_cpumask - Update housekeeping cpumasks to exclude only the given cpumask
-  * @cpumask:  new cpumask to be excluded from housekeeping cpumasks
-@@ -306,8 +323,21 @@ int housekeeping_exclude_cpumask(struct cpumask *cpumask, unsigned long hk_flags
- 	}
- #endif
- 
-+retry:
-+	/*
-+	 * If the RCU grace period for the previous update with conflicting
-+	 * flag bits hasn't been completed yet, we have to wait for it.
-+	 */
-+	while (READ_ONCE(update_flags) & hk_flags)
-+		synchronize_rcu();
++static int hk_cpumasks_open(struct inode *inode, struct file *filp)
++{
++	return single_open(filp, hk_cpumasks_show, NULL);
++}
 +
- 	raw_spin_lock(&cpumask_lock);
- 
-+	if (READ_ONCE(update_flags) & hk_flags) {
-+		raw_spin_unlock(&cpumask_lock);
-+		goto retry;
-+	}
++static const struct file_operations hk_cpumasks_fops = {
++	.open		= hk_cpumasks_open,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= seq_release,
++};
++#endif
 +
- 	for_each_set_bit(type, &hk_flags, HK_TYPE_MAX) {
- 		int idx = ++housekeeping.seq_nrs[type] & 1;
- 		struct cpumask *dst_cpumask = housekeeping.cpumasks[type][idx];
-@@ -320,8 +350,11 @@ int housekeeping_exclude_cpumask(struct cpumask *cpumask, unsigned long hk_flags
- 			housekeeping.flags |= BIT(type);
- 		}
- 		WRITE_ONCE(housekeeping.cpumask_ptrs[type], dst_cpumask);
-+		set_bit(type, &update_flags);
- 	}
- 	raw_spin_unlock(&cpumask_lock);
-+	for_each_set_bit(type, &hk_flags, HK_TYPE_MAX)
-+		call_rcu(&rcu_gp[type], rcu_gp_end);
+ static __init int sched_init_debug(void)
+ {
+ 	struct dentry __maybe_unused *numa;
+@@ -525,6 +554,9 @@ static __init int sched_init_debug(void)
+ 	debugfs_create_u32("hot_threshold_ms", 0644, numa, &sysctl_numa_balancing_hot_threshold);
+ #endif /* CONFIG_NUMA_BALANCING */
  
- 	if (!housekeeping.flags && static_key_enabled(&housekeeping_overridden))
- 		static_key_disable(&housekeeping_overridden.key);
++#ifdef CONFIG_CPU_ISOLATION
++	debugfs_create_file("housekeeing_cpumasks", 0444, debugfs_sched, NULL, &hk_cpumasks_fops);
++#endif
+ 	debugfs_create_file("debug", 0444, debugfs_sched, NULL, &sched_debug_fops);
+ 
+ 	debugfs_fair_server_init();
 -- 
 2.50.0
 
