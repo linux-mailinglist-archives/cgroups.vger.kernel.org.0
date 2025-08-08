@@ -1,62 +1,62 @@
-Return-Path: <cgroups+bounces-9039-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9040-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8D15B1EB4C
-	for <lists+cgroups@lfdr.de>; Fri,  8 Aug 2025 17:13:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 554E7B1EB52
+	for <lists+cgroups@lfdr.de>; Fri,  8 Aug 2025 17:14:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECCFB5879C9
-	for <lists+cgroups@lfdr.de>; Fri,  8 Aug 2025 15:13:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 109FA3B0ECD
+	for <lists+cgroups@lfdr.de>; Fri,  8 Aug 2025 15:14:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920A328467C;
-	Fri,  8 Aug 2025 15:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953C2284B37;
+	Fri,  8 Aug 2025 15:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iu5/+vun"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ix7XwAtq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A573128151E
-	for <cgroups@vger.kernel.org>; Fri,  8 Aug 2025 15:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC80284B3A
+	for <cgroups@vger.kernel.org>; Fri,  8 Aug 2025 15:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754665965; cv=none; b=cVIJ3D2DrO8kwIzDds2weTVqrFApR9ZpB0LDGpRVGPZlUAPSn2U8qotFYM1Vc3zHDmSOlCWPOtrICXvvWEXt+f+jOlA6q8st7MjwZRLhMQOBB8BgQh1NmiWqe1aLkkVQyyX3iRJioFv7zj+xWoh2y13wrm5Tg/NmcnUV1VTABeY=
+	t=1754665982; cv=none; b=JiMfD7j4GfASHDm35KFyYWJvhk6CULzfuSes6AJ3+wKX+GTxdEdLlOj4T4Tvh8if46HaoJLnvC2Sw6QnNbLcXWfqTdu1nztWEiSerHa/ZOOGJYUlKegtFiIsIiYr7jjBkb1UTxnG8XeL8ONpgRIagY1gVFqISJfhbVA1eGacfe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754665965; c=relaxed/simple;
-	bh=WxcyJCO0fWF/itVzNgLAUOJpV3YrZhfDRj22jYzwLrY=;
+	s=arc-20240116; t=1754665982; c=relaxed/simple;
+	bh=cIpLk/5NGgJNNjuGY9UZLAULUVicJJ7g5IXjevBvTvM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Y0Q/hp0itrr8MDvY3M7CGTkNBzvJGY+bXeq40s3LYuuCO32BrS04FK+5oe8gy6VReuzDDFoNPht/S0XhZNQE6ywRoJ3GOdXLISnMHcraGt0r11qGqzAhA3+vCNO/7zbrfZZ2hDb49gqZBrcLe7HlEiPuDcl6rFw3W9lw1sy/Nyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iu5/+vun; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=DEmAmzDBdW/G6H/nq03sY3QSyo4VrgbCx0htO77rXvq1+j7iImf3u7nfE175YKk2hMVhkZuPe0JNAtr2CmmAHHMIJtv0bDipkU/nJKtLxX4GrSy0FZwCV+9m7QUV7T127PtQzGT6M2wHdU8KzsnsH06sjdZcmnpG1Fna+QKjcNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ix7XwAtq; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754665962;
+	s=mimecast20190719; t=1754665979;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TXhSdoNCpYJCnFLmB+Mv+/bGCPmxw1lkTCoajFKNs5U=;
-	b=iu5/+vunDfT2UqEvpJOFgP/riOtnHjhV0t5jBfLGl8Y6gFgB/dxvrzTcB6pJEdKPwVzN87
-	lR5TW7g+d5rfr20KC17/wJ743Q3kuN0wbTOjC3qDOHy3SPttLbvUTkWYNRuXGyF4BADyOR
-	r0DoNIXV0UPFMBjttaCzb3jnfxTx8gY=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+	bh=xcgR+/Mgcw3wYRw08/uxfDNmVczMzzLTybzSdrby6Ro=;
+	b=Ix7XwAtqDPyLQWG3RjcDbF+5J9JPtrjRFE5UKlJBRuChXb8mrbqKUDlyrv00CCfz9K/G+r
+	TDh7M8dWrIno9XJi32DEz6WSiiNCTDdp8Uif8+X66+KtPrQok/vHW26N2gkgnteCkp1kSx
+	HnbAHwm5B8LuXXGV918MBbbntIZMds8=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-257-soRIi8mEPtCYPkmgpol81A-1; Fri,
- 08 Aug 2025 11:12:39 -0400
-X-MC-Unique: soRIi8mEPtCYPkmgpol81A-1
-X-Mimecast-MFC-AGG-ID: soRIi8mEPtCYPkmgpol81A_1754665955
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-114-nwSTaxClN8ahNFuZwPS4cg-1; Fri,
+ 08 Aug 2025 11:12:49 -0400
+X-MC-Unique: nwSTaxClN8ahNFuZwPS4cg-1
+X-Mimecast-MFC-AGG-ID: nwSTaxClN8ahNFuZwPS4cg_1754665962
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 60AE018004A7;
-	Fri,  8 Aug 2025 15:12:35 +0000 (UTC)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E3F8F180029A;
+	Fri,  8 Aug 2025 15:12:41 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.65.37])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3182A1954196;
-	Fri,  8 Aug 2025 15:12:29 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A6212195419C;
+	Fri,  8 Aug 2025 15:12:35 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -94,9 +94,9 @@ Cc: cgroups@vger.kernel.org,
 	Gabriele Monaco <gmonaco@redhat.com>,
 	Cestmir Kalina <ckalina@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [RFC PATCH 07/18] cgroup/cpuset: Allow overwriting HK_TYPE_DOMAIN housekeeping cpumask
-Date: Fri,  8 Aug 2025 11:10:51 -0400
-Message-ID: <20250808151053.19777-8-longman@redhat.com>
+Subject: [RFC PATCH 08/18] cgroup/cpuset: Use CPU hotplug to enable runtime nohz_full modification
+Date: Fri,  8 Aug 2025 11:10:52 -0400
+Message-ID: <20250808151053.19777-9-longman@redhat.com>
 In-Reply-To: <20250808151053.19777-1-longman@redhat.com>
 References: <20250808151053.19777-1-longman@redhat.com>
 Precedence: bulk
@@ -108,127 +108,172 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-As we did not modify housekeeping cpumasks in the creation of cpuset
-partition before, we had to disallow the creation of non-isolated
-partitions from using any of the HK_TYPE_DOMAIN isolated CPUs. Now we
-are going to modify housekeeping cpumasks at run time, we will now allow
-overwriting of HK_TYPE_DOMAIN cpumask when an isolated partition is first
-created or when the creation of a non-isolated partition conflicts with
-the boot time HK_TYPE_DOMAIN isolated CPUs. The unnecessary checking code
-are now being removed. The doc file will be updated in a later patch.
+One relatively simple way to allow runtime modification of nohz_full,
+and rcu_nocbs CPUs is to use the CPU hotplug to bring the affected CPUs
+offline first, making changes to the housekeeping cpumasks and then
+bring them back online. However, doing this will be rather costly in
+term of the number of CPU cycles needed. Still it is the easiet way to
+achieve the desired result and hopefully we can gradually reduce the
+overhead over time.
 
-On the other hand, there is still a latency spike problem when CPU
-hotplug code is used to facilitate the proper functioning of the
-dynamically modified nohz_full HK_TYPE_KERNEL_NOISE cpumask. So the
-cpuset code will be modified to maintain the boot-time enabled nohz_full
-cpumask to avoid using cpu hotplug if all the newly isolated/non-isolated
-CPUs are already in that cpumask. This code will be removed in the
-future when the latency spike problem is solved.
+Use the newly introduced cpuhp_offline_cb() API to bring the affected
+CPUs offline, make the necessary housekeeping cpumask changes and then
+bring those CPUs back online again.
+
+As HK_TYPE_DOMAIN cpumask is going to be updated at run time, we are
+going to reset any boot time isolcpus domain setting if an isolated
+partition or a conflicting non-isolated partition is going to be
+created.
+
+Since rebuild_sched_domains() will be called at the end of
+update_isolation_cpumasks(), earlier rebuild_sched_domains_locked()
+calls will be suppressed to avoid unneeded work.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- kernel/cgroup/cpuset.c | 45 ++++++++----------------------------------
- 1 file changed, 8 insertions(+), 37 deletions(-)
+ kernel/cgroup/cpuset.c | 95 ++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 92 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 2190efd33efb..87e9ee7922cd 100644
+index 87e9ee7922cd..60f336e50b05 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -59,7 +59,6 @@ static const char * const perr_strings[] = {
- 	[PERR_NOCPUS]    = "Parent unable to distribute cpu downstream",
- 	[PERR_HOTPLUG]   = "No cpu available due to hotplug",
- 	[PERR_CPUSEMPTY] = "cpuset.cpus and cpuset.cpus.exclusive are empty",
--	[PERR_HKEEPING]  = "partition config conflicts with housekeeping setup",
- 	[PERR_ACCESS]    = "Enable partition not permitted",
- 	[PERR_REMOTE]    = "Have remote partition underneath",
- };
-@@ -81,9 +80,10 @@ static cpumask_var_t	subpartitions_cpus;
- static cpumask_var_t	isolated_cpus;
- 
- /*
-- * Housekeeping (HK_TYPE_DOMAIN) CPUs at boot
-+ * Housekeeping (nohz_full) CPUs at boot
-  */
--static cpumask_var_t	boot_hk_cpus;
-+static cpumask_var_t	boot_nohz_full_hk_cpus;
-+static bool		have_boot_nohz_full;
- static bool		have_boot_isolcpus;
- 
- /* List of remote partition root children */
-@@ -1609,26 +1609,6 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
- 	remote_partition_disable(cs, tmp);
+@@ -1355,11 +1355,57 @@ static void partition_xcpus_del(int old_prs, struct cpuset *parent,
+ 	return;
  }
  
--/*
-- * prstate_housekeeping_conflict - check for partition & housekeeping conflicts
-- * @prstate: partition root state to be checked
-- * @new_cpus: cpu mask
-- * Return: true if there is conflict, false otherwise
-- *
-- * CPUs outside of boot_hk_cpus, if defined, can only be used in an
-- * isolated partition.
-- */
--static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
--{
--	if (!have_boot_isolcpus)
--		return false;
--
--	if ((prstate != PRS_ISOLATED) && !cpumask_subset(new_cpus, boot_hk_cpus))
--		return true;
--
--	return false;
--}
--
- /**
-  * update_parent_effective_cpumask - update effective_cpus mask of parent cpuset
-  * @cs:      The cpuset that requests change in partition root state
-@@ -1737,9 +1717,6 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 		if (cpumask_empty(xcpus))
- 			return PERR_INVCPUS;
- 
--		if (prstate_housekeeping_conflict(new_prs, xcpus))
--			return PERR_HKEEPING;
--
- 		/*
- 		 * A parent can be left with no CPU as long as there is no
- 		 * task directly associated with the parent partition.
-@@ -2356,9 +2333,6 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
- 		    cpumask_empty(trialcs->effective_xcpus)) {
- 			invalidate = true;
- 			cs->prs_err = PERR_INVCPUS;
--		} else if (prstate_housekeeping_conflict(old_prs, trialcs->effective_xcpus)) {
--			invalidate = true;
--			cs->prs_err = PERR_HKEEPING;
- 		} else if (tasks_nocpu_error(parent, cs, trialcs->effective_xcpus)) {
- 			invalidate = true;
- 			cs->prs_err = PERR_NOCPUS;
-@@ -2499,9 +2473,6 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
- 		if (cpumask_empty(trialcs->effective_xcpus)) {
- 			invalidate = true;
- 			cs->prs_err = PERR_INVCPUS;
--		} else if (prstate_housekeeping_conflict(old_prs, trialcs->effective_xcpus)) {
--			invalidate = true;
--			cs->prs_err = PERR_HKEEPING;
- 		} else if (tasks_nocpu_error(parent, cs, trialcs->effective_xcpus)) {
- 			invalidate = true;
- 			cs->prs_err = PERR_NOCPUS;
-@@ -3787,11 +3758,11 @@ int __init cpuset_init(void)
- 
- 	BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
- 
--	have_boot_isolcpus = housekeeping_enabled(HK_TYPE_DOMAIN);
--	if (have_boot_isolcpus) {
--		BUG_ON(!alloc_cpumask_var(&boot_hk_cpus, GFP_KERNEL));
--		cpumask_copy(boot_hk_cpus, housekeeping_cpumask(HK_TYPE_DOMAIN));
--		cpumask_andnot(isolated_cpus, cpu_possible_mask, boot_hk_cpus);
-+	have_boot_nohz_full = housekeeping_enabled(HK_TYPE_KERNEL_NOISE);
-+	have_boot_isolcpus  = housekeeping_enabled(HK_TYPE_DOMAIN);
++/*
++ * We are only updating HK_TYPE_DOMAIN and HK_TYPE_KERNEL_NOISE housekeeping
++ * cpumask for now. HK_TYPE_MANAGED_IRQ will be handled later.
++ */
++static int do_housekeeping_exclude_cpumask(void *arg __maybe_unused)
++{
++	int ret;
++	struct cpumask *icpus = isolated_cpus;
++	unsigned long flags = BIT(HK_TYPE_DOMAIN) | BIT(HK_TYPE_KERNEL_NOISE);
++
++	/*
++	 * The boot time isolcpus setting will be overwritten if set.
++	 */
++	have_boot_isolcpus = false;
++
 +	if (have_boot_nohz_full) {
-+		BUG_ON(!alloc_cpumask_var(&boot_nohz_full_hk_cpus, GFP_KERNEL));
-+		cpumask_copy(boot_nohz_full_hk_cpus, housekeeping_cpumask(HK_TYPE_KERNEL_NOISE));
++		/*
++		 * Need to separate the handling of HK_TYPE_KERNEL_NOISE and
++		 * HK_TYPE_DOMAIN as different cpumasks will be used for each.
++		 */
++		ret = housekeeping_exclude_cpumask(icpus, BIT(HK_TYPE_DOMAIN));
++		WARN_ON_ONCE((ret < 0) && (ret != -EOPNOTSUPP));
++
++		if (cpumask_empty(isolcpus_update_state.cpus))
++			return ret;
++		flags = BIT(HK_TYPE_KERNEL_NOISE);
++		icpus = kmalloc(cpumask_size(), GFP_KERNEL);
++		if (WARN_ON_ONCE(!icpus))
++			return -ENOMEM;
++
++		/*
++		 * Add boot time nohz_full CPUs into the isolated CPUs list
++		 * for exclusion from HK_TYPE_KERNEL_NOISE CPUs.
++		 */
++		cpumask_andnot(icpus, cpu_possible_mask, boot_nohz_full_hk_cpus);
++		cpumask_or(icpus, icpus, isolated_cpus);
++	}
++	ret = housekeeping_exclude_cpumask(icpus, flags);
++	WARN_ON_ONCE((ret < 0) && (ret != -EOPNOTSUPP));
++
++	if (icpus != isolated_cpus)
++		kfree(icpus);
++	return ret;
++}
++
+ /**
+  * update_isolation_cpumasks - Update external isolation CPU masks
+  *
+  * The following external CPU masks will be updated if necessary:
+  * - workqueue unbound cpumask
++ * - housekeeping cpumasks
+  */
+ static void update_isolation_cpumasks(void)
+ {
+@@ -1371,7 +1417,41 @@ static void update_isolation_cpumasks(void)
+ 	ret = workqueue_unbound_exclude_cpumask(isolated_cpus);
+ 	WARN_ON_ONCE(ret < 0);
+ 
++	 /*
++	  * Mask out offline and boot-time nohz_full non-housekeeping
++	  * CPUs from isolcpus_update_state.cpus to compute the set
++	  * of CPUs that need to be brought offline before calling
++	  * do_housekeeping_exclude_cpumask().
++	  */
++	cpumask_and(isolcpus_update_state.cpus,
++		    isolcpus_update_state.cpus, cpu_active_mask);
++	if (have_boot_nohz_full)
++		cpumask_and(isolcpus_update_state.cpus,
++			    isolcpus_update_state.cpus, boot_nohz_full_hk_cpus);
++
++	/*
++	 * Without any change in the set of nohz_full CPUs, we don't really
++	 * need to use CPU hotplug for making change in HK cpumasks.
++	 */
++	if (cpumask_empty(isolcpus_update_state.cpus))
++		ret = do_housekeeping_exclude_cpumask(NULL);
++	else
++		ret = cpuhp_offline_cb(isolcpus_update_state.cpus,
++				       do_housekeeping_exclude_cpumask, NULL);
++	/*
++	 * A errno value of -EPERM may be returned from cpuhp_offline_cb() if
++	 * any one of the CPUs in isolcpus_update_state.cpus can't be brought
++	 * offline. This can happen for the boot CPU (normally CPU 0) which
++	 * cannot be shut down. This CPU should not be used for creating
++	 * isolated partition.
++	 */
++	if (ret == -EPERM)
++		pr_warn_once("cpuset: The boot CPU shouldn't be used for isolated partition\n");
++	else
++		WARN_ON_ONCE(ret < 0);
++
+ 	cpumask_clear(isolcpus_update_state.cpus);
++	rebuild_sched_domains();
+ 	isolcpus_update_state.updating = false;
+ }
+ 
+@@ -2961,7 +3041,16 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+ 	update_partition_sd_lb(cs, old_prs);
+ 
+ 	notify_partition_change(cs, old_prs);
+-	if (force_sd_rebuild)
++
++	/*
++	 * If boot time domain isolcpus exists and it conflicts with the CPUs
++	 * in the new partition, we will have to reset HK_TYPE_DOMAIN cpumask.
++	 */
++	if (have_boot_isolcpus && (new_prs > PRS_MEMBER) &&
++	    !cpumask_subset(cs->effective_xcpus, housekeeping_cpumask(HK_TYPE_DOMAIN)))
++		isolcpus_update_state.updating = true;
++
++	if (force_sd_rebuild && !isolcpus_update_state.updating)
+ 		rebuild_sched_domains_locked();
+ 	free_cpumasks(NULL, &tmpmask);
+ 	return 0;
+@@ -3232,7 +3321,7 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
  	}
  
- 	return 0;
+ 	free_cpuset(trialcs);
+-	if (force_sd_rebuild)
++	if (force_sd_rebuild && !isolcpus_update_state.updating)
+ 		rebuild_sched_domains_locked();
+ out_unlock:
+ 	mutex_unlock(&cpuset_mutex);
+@@ -3999,7 +4088,7 @@ static void cpuset_handle_hotplug(void)
+ 	}
+ 
+ 	/* rebuild sched domains if necessary */
+-	if (force_sd_rebuild)
++	if (force_sd_rebuild && !isolcpus_update_state.updating)
+ 		rebuild_sched_domains_cpuslocked();
+ 
+ 	free_cpumasks(NULL, ptmp);
 -- 
 2.50.0
 
