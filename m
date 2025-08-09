@@ -1,368 +1,203 @@
-Return-Path: <cgroups+bounces-9053-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9054-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D58DB1F095
-	for <lists+cgroups@lfdr.de>; Sat,  9 Aug 2025 00:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A4C3B1F4E1
+	for <lists+cgroups@lfdr.de>; Sat,  9 Aug 2025 16:14:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE5FE727AC7
-	for <lists+cgroups@lfdr.de>; Fri,  8 Aug 2025 22:03:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 106D93A7B1E
+	for <lists+cgroups@lfdr.de>; Sat,  9 Aug 2025 14:14:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A9B217709;
-	Fri,  8 Aug 2025 22:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0BF2BD598;
+	Sat,  9 Aug 2025 14:14:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N63Z1PWh"
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="ewrkiywE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from OS8PR02CU002.outbound.protection.outlook.com (mail-japanwestazon11012044.outbound.protection.outlook.com [40.107.75.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616292E370A;
-	Fri,  8 Aug 2025 22:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754690584; cv=none; b=MmKmVly8Or+7NshLE/4rqoDX4QGUUWv2ElsOwq5Ed2EcIE/KfCdEUeHTtBkgb1Hw1oYt4MJEaDN37Dabdhg+m5NEcGMNDIvx7dJ0XvuldeKlemAaRNpBs+Nn5wnSV4an9x1BZ29zaCuFTVsx+1dGWFa/+o/sgTPGoI24JhqdmPI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754690584; c=relaxed/simple;
-	bh=cKvcSciDejdjd38nQ7qkzCxAQUA6XNIT6v6y55TKL2s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lFdzo51lc7XPTfEKEjfH8h25G81lyclbZd+z+CqCw/Fib24xkJsNAov+Fbj8o8MM/zcp3UB02jgSRfQED1kNJA3Vw0dChxhckgRoTvDuQubVlA6zwbkErMIv/PRXbVXBJfo4VYjj5pIp0/pI+X0sG8vcXZvoFLk6m8Shktq+piI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N63Z1PWh; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1754690582; x=1786226582;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cKvcSciDejdjd38nQ7qkzCxAQUA6XNIT6v6y55TKL2s=;
-  b=N63Z1PWhOVV54Ak92imXppT3Cadp8PGmJ1MNOwiZOsqFdWuGMT4MnApf
-   If/3YEvejXl2atocjxc8/N0KviZS5UZ6KCCQaKTWP9ugXjcaS4xTnwNEk
-   qSDE5CDlmuOwsF8VA4/Bw/NnjtwFFWDU2hR0jtlCjbliHlh6pnpqaMh2y
-   lz0jfWsfdDNJrYqEkBIEGLf5FORURuYcgFxCrXVCpq/Fi+Ty9pw9JV0R8
-   OYHY+kP1jYWZ+PE0nTB4GcBbPY/fTjI8z3KLy+w47Qwb2ZaqWqhUQHbD0
-   i93rP1UjbfYRHIjUicd7ic7hoeuebn4icp5GbJWyWx/ZMDBo7ASGC7BN4
-   A==;
-X-CSE-ConnectionGUID: uJIUunPqTYmsv6KRu9RRAw==
-X-CSE-MsgGUID: vqBVTMtrRwafgch7CalxuQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11515"; a="74625833"
-X-IronPort-AV: E=Sophos;i="6.17,274,1747724400"; 
-   d="scan'208";a="74625833"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2025 15:03:01 -0700
-X-CSE-ConnectionGUID: zWnt4Y9vT1qqmVEpWB2t1Q==
-X-CSE-MsgGUID: 4LiKqUqCSBObBtAVWBzlPA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,274,1747724400"; 
-   d="scan'208";a="196246375"
-Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 08 Aug 2025 15:02:57 -0700
-Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ukVAt-0004MK-0h;
-	Fri, 08 Aug 2025 22:02:55 +0000
-Date: Sat, 9 Aug 2025 06:02:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, longman@redhat.com,
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com
-Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, lujialin4@huawei.com,
-	chenridong@huawei.com
-Subject: Re: [PATCH -next 4/4] cpuset: replace cpuset_lock() with
- guard_cpuset()
-Message-ID: <202508090557.XjdGVjX4-lkp@intel.com>
-References: <20250808092515.764820-5-chenridong@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6E36237163;
+	Sat,  9 Aug 2025 14:14:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.75.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754748856; cv=fail; b=AWTbvrJoP5cKD3yunxsV+ROTdOixK5/cJujOj0pH5zB+9NmjiAtdiIKOAYYKvJYIfYslm6IJ9tu+Ijji+jMy+Z0CyF52eJFPZtrl4R5ll50Db+V0smceD4rtOSG5HL/Ictc9zdU1jqUJYL7tZ1qboGojJbjVuyFOm2kT5pA+kyU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754748856; c=relaxed/simple;
+	bh=+fxGJ7pANNC6OQpHqZWszzn1V+QKvU++LeIWJZIQuSE=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=nTeCqLtSEuMzCCaGlFI0zfgHR0s64Whhv8+rRmkt+uDV4QXbALEcTJSHKJ73/3SbfKCYpy4SVHeXLiJw6vQKk6wds05DjP0sLd7EThzYv6yp7qsUeRpcFo7Qc6YobGB8/zzaCMgoHHm/qq8dlGq1oGc4IvdM2yrECZndCWRVFsc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=ewrkiywE; arc=fail smtp.client-ip=40.107.75.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=s/KuZc1LpahPsbrmwq3TD3CAg0qiLWycXgO6v44jnWcr6dfBKJTigWtaI+JL9mzjWGiwIh5uuLROEPB5FCQJVgN5FgOwM4VuHYRFCotBVtnYbFnHCi8CxdBAgEuw5uLOKOgdHSc9VZeJ97+8/lgf3hmW3Jyo54shhI+IdJyXsHvN1obvtBIfCQOSbLXLpxPJ/Ah6FDOeeSQt0XG+0Xxp+GNktFGRd3nbN0vQ4GOuFBjp7H53wiEmnEjmo3Qq9Zn5ACj06VQfNMkVQ8Zy6EOS2JBi6pr3gdIicp282V/TvMZdfvR5PrRexTSvBRyeTxI+YTG60ipj7ZCNHyy2iGxhiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SDPaQ5OXRYWeVnZCuZcINXul0l0GFcriC03mVkaD37g=;
+ b=W+b/on3qmXjhBmkFmddMP6kGnb5z7HCgO6EVJYakJ7xYZvhxZtyo0rvKoUbNDre7wvBs7GTlJv7Aicz/vsWSpz252PIZTmswP9OuIAL3H8kx254EpxRR4QeG2DlFcAmziozQZf7APPZt7uYTFNlDQwPjLJ/zYa7/fzzoige8RhitKgy607JPlPpn+yX2uskDulps5lhtx1xm/a4DX5sR5FXjZ5caqlMLp0f3asJlyArytoiMoNFz5yRFdecxnUOtD2Ld7b1+9I2PAqflaWgIVrhvOtKMqMMt+IlR0GGx0TZX1aqMNd/ghtJH805iSdaJtrNH9e1u9ad3Gr0F5EbBLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SDPaQ5OXRYWeVnZCuZcINXul0l0GFcriC03mVkaD37g=;
+ b=ewrkiywEXG1RtBcxTqi9Jh3//ZLNV3R5bZu+zr5l9rX4rJDRRS76HrAIG9sl0Ez4BqCjzI3PXkshQs0RH4nj0YnWq/tCYTiRyvOxdqX+eh0XsBTAjMpIlswTVVXhL/T+2dvWGKAuhcCu592XLSwfP8CGNVeUKNN/FdOcoKyBgyitsGGHRLx0vWeTz0O+56lzmfMjPRd9c5Sx+njbSWOfMYfYtBW+fmqVxLuLGMonGssI8cxZZMl1kSvu+NtFQiMfZbfJAoCbB5Gs9k4QzLZWXJjqN36HX467YYTgJP+K/wtOG6FBapVRW/8GUIx8qnPMCZCwzvjJ3kR1zfZ99nnYlA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SI2PR06MB5140.apcprd06.prod.outlook.com (2603:1096:4:1af::9) by
+ TYZPR06MB5760.apcprd06.prod.outlook.com (2603:1096:400:268::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.18; Sat, 9 Aug
+ 2025 14:14:10 +0000
+Received: from SI2PR06MB5140.apcprd06.prod.outlook.com
+ ([fe80::468a:88be:bec:666]) by SI2PR06MB5140.apcprd06.prod.outlook.com
+ ([fe80::468a:88be:bec:666%4]) with mapi id 15.20.9009.017; Sat, 9 Aug 2025
+ 14:14:09 +0000
+From: Qianfeng Rong <rongqianfeng@vivo.com>
+To: Tejun Heo <tj@kernel.org>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Qianfeng Rong <rongqianfeng@vivo.com>
+Subject: [PATCH] blk-cgroup: remove redundant __GFP_NOWARN
+Date: Sat,  9 Aug 2025 22:13:58 +0800
+Message-Id: <20250809141358.168781-1-rongqianfeng@vivo.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYWPR01CA0051.jpnprd01.prod.outlook.com
+ (2603:1096:400:17f::7) To SI2PR06MB5140.apcprd06.prod.outlook.com
+ (2603:1096:4:1af::9)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250808092515.764820-5-chenridong@huaweicloud.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SI2PR06MB5140:EE_|TYZPR06MB5760:EE_
+X-MS-Office365-Filtering-Correlation-Id: aacda000-0acf-48a3-c036-08ddd74f0245
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|52116014|1800799024|366016|376014|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?lCepRXuZcQeaUsqvEaM81WtDxc9TKJciLEbqqAWTEOXWmzQeor0QzxRw6G5f?=
+ =?us-ascii?Q?2nhE2DSeLTPsYgny2lM/fDbkGjGTJOfUx9ddXAwVMq5rGYL2I6GPMlhxasFo?=
+ =?us-ascii?Q?fuHjKspoySJHkG0i+ev6IlZyn/zl4CT1WJcKU23bpnsuiPrlNwXdGCP8WIr0?=
+ =?us-ascii?Q?vWLFjehD/+lRTZwXXX/Ny4zV1jn3+wSSkMEX0pxZjPjt2ncmjdszNOhzSHMi?=
+ =?us-ascii?Q?OzrITTa+nvzRE78tapRtIYBgg9w5b6XahuZqC2Km6mHD48vdzi2EQGaS7uI9?=
+ =?us-ascii?Q?syfhm5hSluAadB2WARIHeZTiX3xfJxHA+iWnQiVq90rZnOcyxoB2pxMjNFyq?=
+ =?us-ascii?Q?rPRfbzTqTmaAIXoM+gWfNMoOQlQ+3dUOjdbJTxpvr9pCp7EaY6kqrsH3thdM?=
+ =?us-ascii?Q?SWfA9RkoziPpW770KPbiWNHNT92UV0dJ/L1Bqyojf4IXXgImJtpr5iPcpZgr?=
+ =?us-ascii?Q?qMMaUlZxYwJ1pw+t09GaG40O7fcp1mfwcs4NcJjHDIiIPkzGttE4RxdDBd6o?=
+ =?us-ascii?Q?yrzuZltyp8wwo68PkHiiSpCp5gskbrtQHkxqKHuB5SzDWqpOnXZ+l+hhW5cF?=
+ =?us-ascii?Q?V+yI8L2k1J/SKhbKQ7g7Hcq/m83+/pgbceM6foQ6HnXjV6GUbAhyi8NT8zOX?=
+ =?us-ascii?Q?tDwRQ2550ZcXrgK06elIJ3WlW/JUM8XAfUuFo4R5ndTVwxZuBC6saPL34ALx?=
+ =?us-ascii?Q?/1/x4pXru0+8LJwO9y2aXN6x2mZw9/ABFsmlCg0vOBcHGdB86/BXSXeoYZk0?=
+ =?us-ascii?Q?8f3Oq/inRjtqYaXQXYw0qAQZIAyTN6hgpIHQJKBsGZKYVgyTXCTtHAlKmCIa?=
+ =?us-ascii?Q?ekGTnOb1WMlrK182CZZpLmPyJU0DJ+y2g7udWyQ0hYRmo5DIhSmC2NU7Uxx0?=
+ =?us-ascii?Q?3IFV5Omye5twTXr39pFMcx0ESJa/gKmcq7AbEM4efSQD6TiDRxmGPQH8OH2n?=
+ =?us-ascii?Q?xIjEqDVnjSjKthi0JGlsA36yOmGeSxqI8w/wHlqOIF++GV2Jc3uaWvvX49vf?=
+ =?us-ascii?Q?b3iyLRfzJzioDT7YWA/pPo+0a+a3SehfIlX17jgKrcjds7bsmAc+XtcdjZd3?=
+ =?us-ascii?Q?a35Wc9Bcj4tyKlocA5mBrFTB4ZkEP2E+QUmMQMN+TaU/TVJqSrnXouVHdr2+?=
+ =?us-ascii?Q?qumv+R0xSCQxdnETZc9i1CI697vso6DFPmg3pu3PoxdVEiN4INngd+Pkk/Fi?=
+ =?us-ascii?Q?2xkXIYKyCk3hvKpgjfXsIbqQ1YKlu4UFhQUJHyPlAXPQsQbXKrYipPp0BMYB?=
+ =?us-ascii?Q?1P7m8w7VlfsgAfLxTKqGNlFpp5ObfON5wQ19elgcDiKG1/jqYq29UBl5cpvQ?=
+ =?us-ascii?Q?v9+l1Gy3St2drkh7nLrOm4VIizLpqp63+FlzIHDr3w5TFLVMnNdUJK41PP3k?=
+ =?us-ascii?Q?WuhjAB+V9cCvTjjMg/rBoBRljvag3gjggcaVFMbGb1OmN8QvBjAsrAoTh4ZI?=
+ =?us-ascii?Q?cjLGLAw0CNAjgYpjHrtUvEsa23Iz4KsrOod/ARR3pRpqYLwieWaHjA=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR06MB5140.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(52116014)(1800799024)(366016)(376014)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?WwMlYDVJAMSRD7MW+VCf4tjKbZztV0nIJ8wWAWLnQRo/57dk7NpDDVzyvESc?=
+ =?us-ascii?Q?fxwP5zdAu1PmLIhtY3QqgBXsAQYc5nTW2BpZg5CzWki9TltBAVIdOQ0owWus?=
+ =?us-ascii?Q?BnCVEGSH586W7R+thBTkN5+ypddSTfM8Y69f/WZdaYHPJ56QxedZ+paYjj0h?=
+ =?us-ascii?Q?0gm842Tg/soQYvUGsxRg22F+HzYMQRcjI2Fx9Xr0F6dRBco+/6aAOhKhvcG7?=
+ =?us-ascii?Q?KOWns44J1+Du9uqnoAi+GjD7wIUOfa25iRvfj19B+6cYAYmmXGd2dBCOHAAQ?=
+ =?us-ascii?Q?4Me6h3A29WC83JB/GQZ+dFncuY636+581iRLBL5n8p4PMAfjxJDpV9FndY9t?=
+ =?us-ascii?Q?H/ZECp4YAhYEvCw7Phip0Ae15lr7PFRwqC6pUZpDpeFKWF5Pd6h3PTsnd7Hz?=
+ =?us-ascii?Q?xZp0ouh3iqSQ5iAss2rXyby3G8tZSJkJ4vz9f+7RO2kwijkntd1OVb98UnCy?=
+ =?us-ascii?Q?OXwxMwzjvYNV6SPQKWSpoNzoJw61exjWqTfCzb6FXZUnymE0P80j4t+vDsOn?=
+ =?us-ascii?Q?wIaTzzjGb0jg5r4qlsjVo+d5Jdo0YU4bfjO9D8L9PfHOMBYtVvN3D72wsZtg?=
+ =?us-ascii?Q?0E1OMj7LnNYOJYDofi1ovJauTk0dafRhVzn1QEkjUrMNjhCdy/T5mwsMXu/t?=
+ =?us-ascii?Q?yCod2pxNFDq+wfpxXPq3qMlcjzNT+vvHikrjxGygrlBTlcXMvm8xI4UjbvvH?=
+ =?us-ascii?Q?xcukOOtYMKO47ilD2ANzy8p4tfGuFlhkeyVnj2tH66L9pq7BtDbvrWz6XzWy?=
+ =?us-ascii?Q?3FZNpM1VYhPtbq+/0llb9fn2OACGWrWcGlMX+y/NMMGshd0ZPGez5V0WVM94?=
+ =?us-ascii?Q?znQr49ItNRTj9bz+cBeY6W5K2rDRXCfGx4pTb4RCE16bflKBP97maik+EhI/?=
+ =?us-ascii?Q?dE3qAn0urj3HhY4d2mNL1uCOl3mHMTG6+vGwpWa7Xq5jn5OC/Ajxj2BOioG1?=
+ =?us-ascii?Q?GVYs2yZRqQkcv44FDM24igKqNl88d25uaKCuqV+tfhjV8WmCtWJlIKuWhGh1?=
+ =?us-ascii?Q?RLFwsobxfzV9WwK5RiWXWVhYQmUBydTQ9N3NrKYQYOyvAQJ7G2WYLuIF+4H/?=
+ =?us-ascii?Q?1GkQRy0/KfJ0d7mzrj840PsZMe5omiAoXg750Cn7tIHWt71XMwH0p2j5E9rK?=
+ =?us-ascii?Q?nKSj94x19lsFO9Qoksks4byk+3QTHGCC/OzXOpDAWSiuYqhNsznVYqx2Cz9C?=
+ =?us-ascii?Q?Dn1x+GTEsY/rmZlU5ryJhyB/4Fs0DinhdDQ83t8GSjXZFW8BtSKI3lt5d4vO?=
+ =?us-ascii?Q?9D6C60Sub/LkPqiLr136XU14Aq4ECh0QzZnJw5EPDGtz3qzQtR4bKjtIAU/O?=
+ =?us-ascii?Q?5maA6hR7H+Fg+i33RWZ4g32J3YkY5HGp6a03O5JxqcJNqnukY+wUbueU0Ip1?=
+ =?us-ascii?Q?v/wXzqi/gAyDsvsuG1NDRunOAFpu6n7YTX63DNLoesYQfy560aj9JzhnD57D?=
+ =?us-ascii?Q?dFks+oCXP/8g6IHePahsCmE42RzsSB1tGIzUY4RPBQ68iO3fIt6dKcftj2Ae?=
+ =?us-ascii?Q?DtoXJhCctSxUghqgnNGhCvZPtNKZ+N9mu0ZyXP1pBOi/n4oGSzcDPdet9mmP?=
+ =?us-ascii?Q?wd6RVG7LIA+ICQ3lGZcYekyuLaY8L0hJ9SQiyivW?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aacda000-0acf-48a3-c036-08ddd74f0245
+X-MS-Exchange-CrossTenant-AuthSource: SI2PR06MB5140.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2025 14:14:09.9114
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zn870aMPRm5IMvPDMUOKLFmvyUOLr93UQJdowP7nC8lBxB2FZY+Ycuk6Vfo7X2gu+2srEPX3xuOBBtQFFB+tag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5760
 
-Hi Chen,
+Commit 16f5dfbc851b ("gfp: include __GFP_NOWARN in GFP_NOWAIT") made
+GFP_NOWAIT implicitly include __GFP_NOWARN.
 
-kernel test robot noticed the following build errors:
+Therefore, explicit __GFP_NOWARN combined with GFP_NOWAIT (e.g.,
+`GFP_NOWAIT | __GFP_NOWARN`) is now redundant.  Let's clean up these
+redundant flags across subsystems.
 
-[auto build test ERROR on next-20250808]
+Signed-off-by: Qianfeng Rong <rongqianfeng@vivo.com>
+---
+ block/blk-cgroup.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Chen-Ridong/cpuset-remove-redundant-CS_ONLINE-flag/20250808-174245
-base:   next-20250808
-patch link:    https://lore.kernel.org/r/20250808092515.764820-5-chenridong%40huaweicloud.com
-patch subject: [PATCH -next 4/4] cpuset: replace cpuset_lock() with guard_cpuset()
-config: x86_64-buildonly-randconfig-001-20250809 (https://download.01.org/0day-ci/archive/20250809/202508090557.XjdGVjX4-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250809/202508090557.XjdGVjX4-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202508090557.XjdGVjX4-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from kernel/sched/build_policy.c:65:
-   kernel/sched/syscalls.c: In function '__sched_setscheduler':
->> kernel/sched/syscalls.c:581:25: error: implicit declaration of function 'guard_cpuset' [-Werror=implicit-function-declaration]
-     581 |                         guard_cpuset();
-         |                         ^~~~~~~~~~~~
-   In file included from kernel/sched/build_policy.c:52:
-   kernel/sched/rt.c: At top level:
-   kernel/sched/rt.c:12:18: warning: 'max_rt_runtime' defined but not used [-Wunused-const-variable=]
-      12 | static const u64 max_rt_runtime = MAX_BW;
-         |                  ^~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/guard_cpuset +581 kernel/sched/syscalls.c
-
-   512	
-   513	int __sched_setscheduler(struct task_struct *p,
-   514				 const struct sched_attr *attr,
-   515				 bool user, bool pi)
-   516	{
-   517		int oldpolicy = -1, policy = attr->sched_policy;
-   518		int retval, oldprio, newprio, queued, running;
-   519		const struct sched_class *prev_class, *next_class;
-   520		struct balance_callback *head;
-   521		struct rq_flags rf;
-   522		int reset_on_fork;
-   523		int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
-   524		struct rq *rq;
-   525		bool cpuset_locked = false;
-   526	
-   527		/* The pi code expects interrupts enabled */
-   528		BUG_ON(pi && in_interrupt());
-   529	recheck:
-   530		/* Double check policy once rq lock held: */
-   531		if (policy < 0) {
-   532			reset_on_fork = p->sched_reset_on_fork;
-   533			policy = oldpolicy = p->policy;
-   534		} else {
-   535			reset_on_fork = !!(attr->sched_flags & SCHED_FLAG_RESET_ON_FORK);
-   536	
-   537			if (!valid_policy(policy))
-   538				return -EINVAL;
-   539		}
-   540	
-   541		if (attr->sched_flags & ~(SCHED_FLAG_ALL | SCHED_FLAG_SUGOV))
-   542			return -EINVAL;
-   543	
-   544		/*
-   545		 * Valid priorities for SCHED_FIFO and SCHED_RR are
-   546		 * 1..MAX_RT_PRIO-1, valid priority for SCHED_NORMAL,
-   547		 * SCHED_BATCH and SCHED_IDLE is 0.
-   548		 */
-   549		if (attr->sched_priority > MAX_RT_PRIO-1)
-   550			return -EINVAL;
-   551		if ((dl_policy(policy) && !__checkparam_dl(attr)) ||
-   552		    (rt_policy(policy) != (attr->sched_priority != 0)))
-   553			return -EINVAL;
-   554	
-   555		if (user) {
-   556			retval = user_check_sched_setscheduler(p, attr, policy, reset_on_fork);
-   557			if (retval)
-   558				return retval;
-   559	
-   560			if (attr->sched_flags & SCHED_FLAG_SUGOV)
-   561				return -EINVAL;
-   562	
-   563			retval = security_task_setscheduler(p);
-   564			if (retval)
-   565				return retval;
-   566		}
-   567	
-   568		/* Update task specific "requested" clamps */
-   569		if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP) {
-   570			retval = uclamp_validate(p, attr);
-   571			if (retval)
-   572				return retval;
-   573		}
-   574	
-   575		/*
-   576		 * SCHED_DEADLINE bandwidth accounting relies on stable cpusets
-   577		 * information.
-   578		 */
-   579		if (dl_policy(policy) || dl_policy(p->policy)) {
-   580			if (!cpuset_locked) {
- > 581				guard_cpuset();
-   582				cpuset_locked = true;
-   583			}
-   584		}
-   585	
-   586		/*
-   587		 * Make sure no PI-waiters arrive (or leave) while we are
-   588		 * changing the priority of the task:
-   589		 *
-   590		 * To be able to change p->policy safely, the appropriate
-   591		 * runqueue lock must be held.
-   592		 */
-   593		rq = task_rq_lock(p, &rf);
-   594		update_rq_clock(rq);
-   595	
-   596		/*
-   597		 * Changing the policy of the stop threads its a very bad idea:
-   598		 */
-   599		if (p == rq->stop) {
-   600			retval = -EINVAL;
-   601			goto unlock;
-   602		}
-   603	
-   604		retval = scx_check_setscheduler(p, policy);
-   605		if (retval)
-   606			goto unlock;
-   607	
-   608		/*
-   609		 * If not changing anything there's no need to proceed further,
-   610		 * but store a possible modification of reset_on_fork.
-   611		 */
-   612		if (unlikely(policy == p->policy)) {
-   613			if (fair_policy(policy) &&
-   614			    (attr->sched_nice != task_nice(p) ||
-   615			     (attr->sched_runtime != p->se.slice)))
-   616				goto change;
-   617			if (rt_policy(policy) && attr->sched_priority != p->rt_priority)
-   618				goto change;
-   619			if (dl_policy(policy) && dl_param_changed(p, attr))
-   620				goto change;
-   621			if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)
-   622				goto change;
-   623	
-   624			p->sched_reset_on_fork = reset_on_fork;
-   625			retval = 0;
-   626			goto unlock;
-   627		}
-   628	change:
-   629	
-   630		if (user) {
-   631	#ifdef CONFIG_RT_GROUP_SCHED
-   632			/*
-   633			 * Do not allow real-time tasks into groups that have no runtime
-   634			 * assigned.
-   635			 */
-   636			if (rt_group_sched_enabled() &&
-   637					rt_bandwidth_enabled() && rt_policy(policy) &&
-   638					task_group(p)->rt_bandwidth.rt_runtime == 0 &&
-   639					!task_group_is_autogroup(task_group(p))) {
-   640				retval = -EPERM;
-   641				goto unlock;
-   642			}
-   643	#endif /* CONFIG_RT_GROUP_SCHED */
-   644			if (dl_bandwidth_enabled() && dl_policy(policy) &&
-   645					!(attr->sched_flags & SCHED_FLAG_SUGOV)) {
-   646				cpumask_t *span = rq->rd->span;
-   647	
-   648				/*
-   649				 * Don't allow tasks with an affinity mask smaller than
-   650				 * the entire root_domain to become SCHED_DEADLINE. We
-   651				 * will also fail if there's no bandwidth available.
-   652				 */
-   653				if (!cpumask_subset(span, p->cpus_ptr) ||
-   654				    rq->rd->dl_bw.bw == 0) {
-   655					retval = -EPERM;
-   656					goto unlock;
-   657				}
-   658			}
-   659		}
-   660	
-   661		/* Re-check policy now with rq lock held: */
-   662		if (unlikely(oldpolicy != -1 && oldpolicy != p->policy)) {
-   663			policy = oldpolicy = -1;
-   664			task_rq_unlock(rq, p, &rf);
-   665			goto recheck;
-   666		}
-   667	
-   668		/*
-   669		 * If setscheduling to SCHED_DEADLINE (or changing the parameters
-   670		 * of a SCHED_DEADLINE task) we need to check if enough bandwidth
-   671		 * is available.
-   672		 */
-   673		if ((dl_policy(policy) || dl_task(p)) && sched_dl_overflow(p, policy, attr)) {
-   674			retval = -EBUSY;
-   675			goto unlock;
-   676		}
-   677	
-   678		p->sched_reset_on_fork = reset_on_fork;
-   679		oldprio = p->prio;
-   680	
-   681		newprio = __normal_prio(policy, attr->sched_priority, attr->sched_nice);
-   682		if (pi) {
-   683			/*
-   684			 * Take priority boosted tasks into account. If the new
-   685			 * effective priority is unchanged, we just store the new
-   686			 * normal parameters and do not touch the scheduler class and
-   687			 * the runqueue. This will be done when the task deboost
-   688			 * itself.
-   689			 */
-   690			newprio = rt_effective_prio(p, newprio);
-   691			if (newprio == oldprio)
-   692				queue_flags &= ~DEQUEUE_MOVE;
-   693		}
-   694	
-   695		prev_class = p->sched_class;
-   696		next_class = __setscheduler_class(policy, newprio);
-   697	
-   698		if (prev_class != next_class && p->se.sched_delayed)
-   699			dequeue_task(rq, p, DEQUEUE_SLEEP | DEQUEUE_DELAYED | DEQUEUE_NOCLOCK);
-   700	
-   701		queued = task_on_rq_queued(p);
-   702		running = task_current_donor(rq, p);
-   703		if (queued)
-   704			dequeue_task(rq, p, queue_flags);
-   705		if (running)
-   706			put_prev_task(rq, p);
-   707	
-   708		if (!(attr->sched_flags & SCHED_FLAG_KEEP_PARAMS)) {
-   709			__setscheduler_params(p, attr);
-   710			p->sched_class = next_class;
-   711			p->prio = newprio;
-   712		}
-   713		__setscheduler_uclamp(p, attr);
-   714		check_class_changing(rq, p, prev_class);
-   715	
-   716		if (queued) {
-   717			/*
-   718			 * We enqueue to tail when the priority of a task is
-   719			 * increased (user space view).
-   720			 */
-   721			if (oldprio < p->prio)
-   722				queue_flags |= ENQUEUE_HEAD;
-   723	
-   724			enqueue_task(rq, p, queue_flags);
-   725		}
-   726		if (running)
-   727			set_next_task(rq, p);
-   728	
-   729		check_class_changed(rq, p, prev_class, oldprio);
-   730	
-   731		/* Avoid rq from going away on us: */
-   732		preempt_disable();
-   733		head = splice_balance_callbacks(rq);
-   734		task_rq_unlock(rq, p, &rf);
-   735	
-   736		if (pi)
-   737			rt_mutex_adjust_pi(p);
-   738	
-   739		/* Run balance callbacks after we've adjusted the PI chain: */
-   740		balance_callbacks(rq, head);
-   741		preempt_enable();
-   742	
-   743		return 0;
-   744	
-   745	unlock:
-   746		task_rq_unlock(rq, p, &rf);
-   747		return retval;
-   748	}
-   749	
-
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 5936db7f8475..fe9ebd6a2e14 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -394,7 +394,7 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk,
+ 
+ 	/* allocate */
+ 	if (!new_blkg) {
+-		new_blkg = blkg_alloc(blkcg, disk, GFP_NOWAIT | __GFP_NOWARN);
++		new_blkg = blkg_alloc(blkcg, disk, GFP_NOWAIT);
+ 		if (unlikely(!new_blkg)) {
+ 			ret = -ENOMEM;
+ 			goto err_put_css;
+@@ -1467,7 +1467,7 @@ blkcg_css_alloc(struct cgroup_subsys_state *parent_css)
+ 
+ 	spin_lock_init(&blkcg->lock);
+ 	refcount_set(&blkcg->online_pin, 1);
+-	INIT_RADIX_TREE(&blkcg->blkg_tree, GFP_NOWAIT | __GFP_NOWARN);
++	INIT_RADIX_TREE(&blkcg->blkg_tree, GFP_NOWAIT);
+ 	INIT_HLIST_HEAD(&blkcg->blkg_list);
+ #ifdef CONFIG_CGROUP_WRITEBACK
+ 	INIT_LIST_HEAD(&blkcg->cgwb_list);
+@@ -1630,7 +1630,7 @@ int blkcg_activate_policy(struct gendisk *disk, const struct blkcg_policy *pol)
+ 			pd_prealloc = NULL;
+ 		} else {
+ 			pd = pol->pd_alloc_fn(disk, blkg->blkcg,
+-					      GFP_NOWAIT | __GFP_NOWARN);
++					      GFP_NOWAIT);
+ 		}
+ 
+ 		if (!pd) {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
