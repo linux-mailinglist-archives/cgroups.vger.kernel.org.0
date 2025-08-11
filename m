@@ -1,117 +1,141 @@
-Return-Path: <cgroups+bounces-9070-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9071-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98129B20B27
-	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 16:04:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8371EB20BAC
+	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 16:22:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 182F018C52E3
-	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 14:04:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F3F02A7890
+	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 14:19:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A0B237194;
-	Mon, 11 Aug 2025 14:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 973DF22652D;
+	Mon, 11 Aug 2025 14:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Mqu5uMvs"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O46E3yqr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B744C227574
-	for <cgroups@vger.kernel.org>; Mon, 11 Aug 2025 14:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2562224B0C
+	for <cgroups@vger.kernel.org>; Mon, 11 Aug 2025 14:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754920914; cv=none; b=lcGvo/SFu+ARY1CTFHDUvO+4An+F4GQesudSXzYngE5xUnR+PFTm3qJOWE8i8S+Y0btWxzoVysxFIVSEzP6uh+nMqCWM/opdz2HvO8w6p0PA1nQu8VFPFhLL1nc56Cg1kBER6ahUVX8R1ci8wJZuGhAo1lWnBfO3sHp5Qa97BJ8=
+	t=1754921919; cv=none; b=Uc95Xfq/wGNSyjNUSbJEzbGtcAAlQUAbS594vnTyJJsW0slImSKhqD6klBYFqbyeXOjtT1JzD5PCwQBN52HDSutKcLbC+Od/4u5dknrpmkcGNrbw/TxTiuSdtt3OSaPoHxM3vVTfgxAETc2ivUrna/hW8rdLQABwgBul6dQzU0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754920914; c=relaxed/simple;
-	bh=y0zIX+KBoOVyLl1lGcBqZ+e5rFzymnFo9tPUEW6YMeQ=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=OJtvwqK4kqXcJXrptvS40Xh7XotLY44N7pH9qos+rBKmghXzE427cdm77vk4C7GMz2dV7YE1TmrrUckvkfRjAsrwhwdXxZpM3Nx4IY1c63DkLQjszi/CmiDwzrHrB7juW4ZiN6jbtQHDsvAOPHKAZ5dDOmpVKZsPhtja2XMpej8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Mqu5uMvs; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-31ee880f7d2so4995137a91.0
-        for <cgroups@vger.kernel.org>; Mon, 11 Aug 2025 07:01:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1754920912; x=1755525712; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Co7Mq6oJyrCqVWs37l+pII7jWFOL/0/u/Dfz+X4plSU=;
-        b=Mqu5uMvs5KMYfmKZabhXK4vmRUYlSAs3jTtJI9XL6Bc2pxUqszTpWoYWSWpAGFEEPQ
-         qLMmBdMsYn1urEUzwVC5YgSiDEJwSED/jAjpXEPaNn6fi5RZtE/YXfmZaicJWcvKOVcj
-         IfRjikBzCkEvx+NKwKkchs8lDlt4M49KCjEqihEfNRhZhYxTU/XWF9WAXqU6Ga2jxw4j
-         Pz4i6oYto/uBo4dJza3h4S8lssVRTRjYofC6bnk/9pppfp4YpXCmVGgiMqPbx+tZx6Ps
-         HkrGzKgxpcTjXJevM9JY2Aib1MYJSfYyP2kDgbWrWP8OC1sooWHDGlIL1OBrwKCJsviV
-         KIOg==
+	s=arc-20240116; t=1754921919; c=relaxed/simple;
+	bh=fLFqwIZV2uYlQb+YviFhY9gzykROzOF8Yh8va2JTzPo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QwZZt0s7Lp7Dse9GZiTdXIzffhr0YJQ/KR+ZqYMj91vKkTluVyKpSkEJhXVHEDg9pstFcGbYcumGxypoXSD1tybuMiYaOZ+xZqyhNtXs4RiBH5U3rBykWGAXNzJTXbeq3mvOg9anc2tvEFhkFMoC7PndLy986Pbwpd1EClq0fPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O46E3yqr; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1754921916;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fLFqwIZV2uYlQb+YviFhY9gzykROzOF8Yh8va2JTzPo=;
+	b=O46E3yqrxN2FoH/MUyxuiTuCR6qEjKgbpjgwzeXXEwjY/vQ/lkYUjpaI3akScuzMsd6I6j
+	z4ccNlrKU+G3/eGSosmfZF4MpA84ozs/jXyso92ahBKSDz6Jg+vFGjhnDYlL6WHR/dC/kD
+	h5B4qQBHaWWXuanOF5EVDI7pBAn/CnY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-615-9UyVA6gdOHuQkBJhLHZYug-1; Mon, 11 Aug 2025 10:18:35 -0400
+X-MC-Unique: 9UyVA6gdOHuQkBJhLHZYug-1
+X-Mimecast-MFC-AGG-ID: 9UyVA6gdOHuQkBJhLHZYug_1754921914
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-459dfbece11so22842745e9.2
+        for <cgroups@vger.kernel.org>; Mon, 11 Aug 2025 07:18:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754920912; x=1755525712;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Co7Mq6oJyrCqVWs37l+pII7jWFOL/0/u/Dfz+X4plSU=;
-        b=ZAzfkc7ZAfoCxAc4yogppuiIqe2KHi4Nlf4BCVxSR8/PzhltIuuDdqPABZELT8JbQJ
-         l8EwvKaUVFIxiZLU2g2bhdC70e7ek2GPGzb2z0zcyNNHQU1aVnkS4Nmoaji5WFkGUgQj
-         MvTh0HfJ1EYbkBpdiy6IDpXr7YIOnxrGYpjoXvM3Bv9Rjiu2eedEv8vH233ttH/lRkZI
-         2WZCD87IbWel+cjjVIdQAV+yezj5rz9x/f3lY/ssBikP/VI1D1D/ehJFy28fcnXWAgzS
-         fxmfYxgiJePryF23Wx8RoQt46bIfC74WP4zCvN+AHjB09hWdRPyWHT5glBNUMOkZZcmw
-         8Ayg==
-X-Forwarded-Encrypted: i=1; AJvYcCUa9w9G0Rhw+ioYG6wISA5H7jkzwH8GJdNHmitFQfYbYJxuVi8/kn88we3TkVs7CCxQB5UI7CzX@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywz//VrHIbMLjrJaNweUhHLQTLWm/dAmxAK+FG0/Ba/uYq+Oxc+
-	NTcuzjlY9fAcjmB5GsORohjhnbcegcYaqh4rc5jH+Zs1J1rW6b0zg05ZNOMt5pI3sCQ=
-X-Gm-Gg: ASbGnctmxY+nwQVyHO6uA8+nu/auZJwb4vQFSHb1Rry91znB1WNPCKdnC62M6yRepfL
-	XnPcGXflIvMKA1JQxFmhcVpv8vPmdfIZH1IOwgUErf/YDA7/1loruHB3K8s1gU2Qj+UYPREAXSv
-	8/Qd2SfHV5OGeeeVZxwnFSWn5sb2yKi4qLNn3d+mmYfP2SloLWUA/VF3bm7TuF/9XqENaytfUYh
-	WDhLSSqDczybh/WvWoTx/V6KmazW6c6awCZ3ip0ZmfEq8/DTkM9WFG6BgPO3OyQ7rvt/Lis8Z0z
-	ifYZEAzzQqAAJNcrh7ePsBlaWew87577P4kIrpj9tTOWmxsnnYLf0kQ7xORMAVSIULIX49TEXRo
-	cMSosP35C/1ecLbvR09Sc3HzUQQ==
-X-Google-Smtp-Source: AGHT+IHdapQQqIEBFEuAI4fgLuc7zanwo1g6eAIPxfo3wR6CEjTbZw+JPfriC+9e8kRAaZJLbRghjA==
-X-Received: by 2002:a17:90b:48d1:b0:311:9c1f:8516 with SMTP id 98e67ed59e1d1-321839fde25mr20913876a91.15.1754920910599;
-        Mon, 11 Aug 2025 07:01:50 -0700 (PDT)
-Received: from [127.0.0.1] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32161259a48sm14821216a91.18.2025.08.11.07.01.49
+        d=1e100.net; s=20230601; t=1754921914; x=1755526714;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fLFqwIZV2uYlQb+YviFhY9gzykROzOF8Yh8va2JTzPo=;
+        b=O9NubCrtG0fpPBh2dM7MnypACRjbQDbTcWOH/h9GOMWybVbx5iu3tP8+95XV23iag3
+         9JrEWot0Aw6M/OqDPNBOnyH2gEY4dTovx5T/GKzHuzjOYU2ViDvD7tUsonENGdSnJ3S4
+         FQCAKOJKYvjOMjZ/BFh+EzayuewHbyL+BjDQ2u5B7wdLXK74HTjDiQpBLb6BrFpLjVJJ
+         mx/J//wiZvwR6AEP2sIr2LGOXPqgomyZhb656Gb/ntu0wA56b/3hFSp3nnzCiyzkuGy3
+         C+/qu/yWpf7k9zhDDVGD74THrPtf4/nOsEVDta3SKsuuJPHahQkEVkDi/IoOqnwBthKR
+         bojw==
+X-Forwarded-Encrypted: i=1; AJvYcCWrYGuQQLc0IkIWIJHbcwCuoDOJqePIz+W7ZyHwZuZdwfXaUbJqiEDHxwWYV41DdV4ctl1tvUhn@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz1PgffNGYiDpeBnjXoJXPOnQdSefKxCZhNf94+JwZ4x04Ax0gF
+	tbBaFbnn14syE/DcqKhDhLewWiZs9xXUJM+oyEMUKajj3RASQOUZiWLkE64v3yd0amSd5iAMx7m
+	2oT6UnSlJ0kbUYxS8hSGmhl59ZSmahuB23OSKdOce8RzsatDFvgptxkWdALD9wRq4ovM=
+X-Gm-Gg: ASbGncvTpu+d88ehSAyvMNmWdIp78efOAjYbDwgF36ykLgRBOIO/8RAknbI/+5UXStQ
+	3Yo3IEH0RbcvrCl0PnBCJKIsvxIuNFa7TTXm7CNKO+hWxjADuiOxaUfbBO1J3vd79jitfqVKx0L
+	wnbVvIHxKIaFNfhx45tTxiVHyEEBfMnMiQG561X8+5Vrjjz2eGtmNs+6IXk55LCnlhJg/d9P4cC
+	bOWuFNLqer0WznH3Ba/gMc1nmpLBmR8vCLhPPoEY2v8A82nCnu4eBgHu99G87Gfr9GWamRAvGnu
+	2H6/wahKVlB58NNmbaeCNsgjlP5aMwcNF+gVz8jI2MXtuBoj+Ei26gdJSSHLYUlInyk5lx/PTqK
+	PNU2L+OuNEo8bHtXG+i5JT37r
+X-Received: by 2002:a05:600c:15d1:b0:459:e025:8c5b with SMTP id 5b1f17b1804b1-459f60d2211mr84932605e9.30.1754921913864;
+        Mon, 11 Aug 2025 07:18:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEK7xe2jj9RDZcj2jypfYQ8QNxrGhvt+A2f3vSrNMfxeIGmWZ42MdaPGKXHKFv5KHpImfzFjg==
+X-Received: by 2002:a05:600c:15d1:b0:459:e025:8c5b with SMTP id 5b1f17b1804b1-459f60d2211mr84932405e9.30.1754921913488;
+        Mon, 11 Aug 2025 07:18:33 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-135-146.abo.bbox.fr. [213.44.135.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-459ebede65asm208975165e9.8.2025.08.11.07.18.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Aug 2025 07:01:49 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
- cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Qianfeng Rong <rongqianfeng@vivo.com>
-In-Reply-To: <20250809141358.168781-1-rongqianfeng@vivo.com>
-References: <20250809141358.168781-1-rongqianfeng@vivo.com>
-Subject: Re: [PATCH] blk-cgroup: remove redundant __GFP_NOWARN
-Message-Id: <175492090902.697940.7586040071360422708.b4-ty@kernel.dk>
-Date: Mon, 11 Aug 2025 08:01:49 -0600
+        Mon, 11 Aug 2025 07:18:32 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Xin Zhao
+ <jackzxcui1989@163.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, will@kernel.org, boqun.feng@gmail.com,
+ longman@redhat.com, clrkwllms@kernel.org, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev
+Subject: Re: [PATCH] sched/cgroup: Lock optimize for cgroup cpu throttle
+In-Reply-To: <20250811083622.C29-WNtR@linutronix.de>
+References: <20250811070838.416176-1-jackzxcui1989@163.com>
+ <20250811083622.C29-WNtR@linutronix.de>
+Date: Mon, 11 Aug 2025 16:18:31 +0200
+Message-ID: <xhsmho6smhrgo.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.3-dev-2ce6c
+Content-Type: text/plain
 
+On 11/08/25 10:36, Sebastian Andrzej Siewior wrote:
+> On 2025-08-11 15:08:38 [+0800], Xin Zhao wrote:
+>> After enabling PREEMPT_RT, ordinary spinlocks can also be subject to cgroup
+>> limits during the lock-holding period. This can lead to seemingly unrelated
+>> threads experiencing timing dependencies due to underlying logic, such as
+>> memory allocation, resulting in delayed wake-up behaviors that are difficult
+>> to understand when analyzing traces captured by tools like Perfetto.
+>> Due to the prevalence of this performance issue when using cgroup CPU
+>> throttling with PREEMPT_RT, the CGROUP_LOCK_OPTIMIZE configuration will be
+>> enabled by default when both PREEMPT_RT and CFS_BANDWIDTH are activated.
+>> This configuration option temporarily increases the priority of tasks to
+>> SCHED_RR 1 if they hold a lock (excluding raw spinlocks, RCU, and seqlock)
+>> and are limited by cgroup, provided they are SCHED_NORMAL. Once the lock is
+>> released, the priority will be restored.
+>> This patch is a derivative of the priority inheritance patch. While priority
+>> inheritance can cover scenarios involving spinlocks and mutexes, it cannot
+>> address the timing dependency issues between two SCHED_NORMAL tasks caused
+>> by underlying locks. Additionally, the lazy_preempt feature does not cover
+>> scenarios where a real-time task, such as a ktimer, interrupts a lock-holding
+>> SCHED_NORMAL task, which is then throttled by cgroup cpu.
+>> This patch not only addresses the issue of cgroup limits affecting spinlocks
+>> under PREEMPT_RT but also resolves issues related to holding mutex or
+>> semaphore locks, as well as other core rt_mutex locks under PREEMPT_RT.
+>> The following stack trace illustrates the delayed wake-up behavior caused by
+>> two seemingly unrelated threads due to underlying logic:
+>
+> urgh.
+>
+> What about using task_work_add() and throttling the task on its way to
+> userland? The callback will be invoked without any locks held.
+>
 
-On Sat, 09 Aug 2025 22:13:58 +0800, Qianfeng Rong wrote:
-> Commit 16f5dfbc851b ("gfp: include __GFP_NOWARN in GFP_NOWAIT") made
-> GFP_NOWAIT implicitly include __GFP_NOWARN.
-> 
-> Therefore, explicit __GFP_NOWARN combined with GFP_NOWAIT (e.g.,
-> `GFP_NOWAIT | __GFP_NOWARN`) is now redundant.  Let's clean up these
-> redundant flags across subsystems.
-> 
-> [...]
+Yeah, please have a look at:
+https://lore.kernel.org/lkml/20250715071658.267-1-ziqianlu@bytedance.com/
 
-Applied, thanks!
-
-[1/1] blk-cgroup: remove redundant __GFP_NOWARN
-      commit: 196447c712dd486f4315356c572a1d13dd743f08
-
-Best regards,
--- 
-Jens Axboe
-
-
+> Sebastian
 
 
