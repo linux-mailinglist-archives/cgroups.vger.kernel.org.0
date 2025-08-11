@@ -1,141 +1,111 @@
-Return-Path: <cgroups+bounces-9071-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9072-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8371EB20BAC
-	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 16:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CF3EB20D46
+	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 17:14:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F3F02A7890
-	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 14:19:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 906CD1620C1
+	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 15:14:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 973DF22652D;
-	Mon, 11 Aug 2025 14:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A1E2DEA65;
+	Mon, 11 Aug 2025 15:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O46E3yqr"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="WeuM+lO7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2562224B0C
-	for <cgroups@vger.kernel.org>; Mon, 11 Aug 2025 14:18:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8831C4EB38;
+	Mon, 11 Aug 2025 15:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754921919; cv=none; b=Uc95Xfq/wGNSyjNUSbJEzbGtcAAlQUAbS594vnTyJJsW0slImSKhqD6klBYFqbyeXOjtT1JzD5PCwQBN52HDSutKcLbC+Od/4u5dknrpmkcGNrbw/TxTiuSdtt3OSaPoHxM3vVTfgxAETc2ivUrna/hW8rdLQABwgBul6dQzU0M=
+	t=1754925277; cv=none; b=lEHlIsZGapRYVlOsAMqAxEQFLuthHkHo77at7GyYUQf2iERnE7AsIBZBqGFSsdylyn3xYuqvD/pRrmm2V3+GLEFwlN4ZjLQmvPb7b7yKh38MmSXU6ebVge8dVERYLgK5aubkMYAldDltQ1wX7x/A4k9HSjOBRFeRtW0hZAtFz+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754921919; c=relaxed/simple;
-	bh=fLFqwIZV2uYlQb+YviFhY9gzykROzOF8Yh8va2JTzPo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=QwZZt0s7Lp7Dse9GZiTdXIzffhr0YJQ/KR+ZqYMj91vKkTluVyKpSkEJhXVHEDg9pstFcGbYcumGxypoXSD1tybuMiYaOZ+xZqyhNtXs4RiBH5U3rBykWGAXNzJTXbeq3mvOg9anc2tvEFhkFMoC7PndLy986Pbwpd1EClq0fPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O46E3yqr; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1754921916;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fLFqwIZV2uYlQb+YviFhY9gzykROzOF8Yh8va2JTzPo=;
-	b=O46E3yqrxN2FoH/MUyxuiTuCR6qEjKgbpjgwzeXXEwjY/vQ/lkYUjpaI3akScuzMsd6I6j
-	z4ccNlrKU+G3/eGSosmfZF4MpA84ozs/jXyso92ahBKSDz6Jg+vFGjhnDYlL6WHR/dC/kD
-	h5B4qQBHaWWXuanOF5EVDI7pBAn/CnY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-615-9UyVA6gdOHuQkBJhLHZYug-1; Mon, 11 Aug 2025 10:18:35 -0400
-X-MC-Unique: 9UyVA6gdOHuQkBJhLHZYug-1
-X-Mimecast-MFC-AGG-ID: 9UyVA6gdOHuQkBJhLHZYug_1754921914
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-459dfbece11so22842745e9.2
-        for <cgroups@vger.kernel.org>; Mon, 11 Aug 2025 07:18:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754921914; x=1755526714;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fLFqwIZV2uYlQb+YviFhY9gzykROzOF8Yh8va2JTzPo=;
-        b=O9NubCrtG0fpPBh2dM7MnypACRjbQDbTcWOH/h9GOMWybVbx5iu3tP8+95XV23iag3
-         9JrEWot0Aw6M/OqDPNBOnyH2gEY4dTovx5T/GKzHuzjOYU2ViDvD7tUsonENGdSnJ3S4
-         FQCAKOJKYvjOMjZ/BFh+EzayuewHbyL+BjDQ2u5B7wdLXK74HTjDiQpBLb6BrFpLjVJJ
-         mx/J//wiZvwR6AEP2sIr2LGOXPqgomyZhb656Gb/ntu0wA56b/3hFSp3nnzCiyzkuGy3
-         C+/qu/yWpf7k9zhDDVGD74THrPtf4/nOsEVDta3SKsuuJPHahQkEVkDi/IoOqnwBthKR
-         bojw==
-X-Forwarded-Encrypted: i=1; AJvYcCWrYGuQQLc0IkIWIJHbcwCuoDOJqePIz+W7ZyHwZuZdwfXaUbJqiEDHxwWYV41DdV4ctl1tvUhn@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz1PgffNGYiDpeBnjXoJXPOnQdSefKxCZhNf94+JwZ4x04Ax0gF
-	tbBaFbnn14syE/DcqKhDhLewWiZs9xXUJM+oyEMUKajj3RASQOUZiWLkE64v3yd0amSd5iAMx7m
-	2oT6UnSlJ0kbUYxS8hSGmhl59ZSmahuB23OSKdOce8RzsatDFvgptxkWdALD9wRq4ovM=
-X-Gm-Gg: ASbGncvTpu+d88ehSAyvMNmWdIp78efOAjYbDwgF36ykLgRBOIO/8RAknbI/+5UXStQ
-	3Yo3IEH0RbcvrCl0PnBCJKIsvxIuNFa7TTXm7CNKO+hWxjADuiOxaUfbBO1J3vd79jitfqVKx0L
-	wnbVvIHxKIaFNfhx45tTxiVHyEEBfMnMiQG561X8+5Vrjjz2eGtmNs+6IXk55LCnlhJg/d9P4cC
-	bOWuFNLqer0WznH3Ba/gMc1nmpLBmR8vCLhPPoEY2v8A82nCnu4eBgHu99G87Gfr9GWamRAvGnu
-	2H6/wahKVlB58NNmbaeCNsgjlP5aMwcNF+gVz8jI2MXtuBoj+Ei26gdJSSHLYUlInyk5lx/PTqK
-	PNU2L+OuNEo8bHtXG+i5JT37r
-X-Received: by 2002:a05:600c:15d1:b0:459:e025:8c5b with SMTP id 5b1f17b1804b1-459f60d2211mr84932605e9.30.1754921913864;
-        Mon, 11 Aug 2025 07:18:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEK7xe2jj9RDZcj2jypfYQ8QNxrGhvt+A2f3vSrNMfxeIGmWZ42MdaPGKXHKFv5KHpImfzFjg==
-X-Received: by 2002:a05:600c:15d1:b0:459:e025:8c5b with SMTP id 5b1f17b1804b1-459f60d2211mr84932405e9.30.1754921913488;
-        Mon, 11 Aug 2025 07:18:33 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-135-146.abo.bbox.fr. [213.44.135.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-459ebede65asm208975165e9.8.2025.08.11.07.18.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Aug 2025 07:18:32 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Xin Zhao
- <jackzxcui1989@163.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, mingo@redhat.com,
- peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- mgorman@suse.de, will@kernel.org, boqun.feng@gmail.com,
- longman@redhat.com, clrkwllms@kernel.org, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev
+	s=arc-20240116; t=1754925277; c=relaxed/simple;
+	bh=aTsbw2smJ5VIymi9ayK2LE0nzymwzY8VncqZhJ3BXqI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aqG551zUfqWNDTQQqDd1J/FxOE6DAgxcmsyVn6vnYTgxIeNdsPs2ohQeoo09WWPC9VB4hILsxCeoT9gXjwLmrZCsmjenGMgilWO0vjOT+Syqy1l4VsoxTawvzMl/iNqlMGVOZRT6qyvdIkMKTGXYLfsxYiVinERtlpwBA4s6GNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=WeuM+lO7; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=aT
+	sbw2smJ5VIymi9ayK2LE0nzymwzY8VncqZhJ3BXqI=; b=WeuM+lO7vqO8Cpljb+
+	8ozhdmhynoSpVq9NUOLBe0UyWUQYuQZztKLlFHwlQKwnvfNFGEeoGLhYLERdgrlG
+	g/5O1D3FFNrrOt+MjJ+8W4DGhVYP36mzV70pumCa3D9To5fooESLnsWSCb1nmANH
+	yAA9ux82qbiR3L2KvTPVNi/VY=
+Received: from zhaoxin-MS-7E12.. (unknown [])
+	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wDn5+2MCJposuAOAw--.27979S2;
+	Mon, 11 Aug 2025 23:13:17 +0800 (CST)
+From: Xin Zhao <jackzxcui1989@163.com>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
+	will@kernel.org,
+	boqun.feng@gmail.com,
+	longman@redhat.com,
+	bigeasy@linutronix.de,
+	clrkwllms@kernel.org
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rt-devel@lists.linux.dev
 Subject: Re: [PATCH] sched/cgroup: Lock optimize for cgroup cpu throttle
-In-Reply-To: <20250811083622.C29-WNtR@linutronix.de>
-References: <20250811070838.416176-1-jackzxcui1989@163.com>
- <20250811083622.C29-WNtR@linutronix.de>
-Date: Mon, 11 Aug 2025 16:18:31 +0200
-Message-ID: <xhsmho6smhrgo.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Date: Mon, 11 Aug 2025 23:13:16 +0800
+Message-Id: <20250811151316.838707-1-jackzxcui1989@163.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDn5+2MCJposuAOAw--.27979S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZrW8Kr4xGw4UKFWDJFyDAwb_yoW8XF1xp3
+	90vF43trs5ZF1IqF109w4ftay8Z395J3y5G3Z8GrW5Cr1Yq3WIyrsYgayY9an8Gws3ua1j
+	vr1jq3ZrGayYvaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j8xhLUUUUU=
+X-CM-SenderInfo: pmdfy650fxxiqzyzqiywtou0bp/1tbioxWmCmiaBhczAwAAsJ
 
-On 11/08/25 10:36, Sebastian Andrzej Siewior wrote:
-> On 2025-08-11 15:08:38 [+0800], Xin Zhao wrote:
->> After enabling PREEMPT_RT, ordinary spinlocks can also be subject to cgroup
->> limits during the lock-holding period. This can lead to seemingly unrelated
->> threads experiencing timing dependencies due to underlying logic, such as
->> memory allocation, resulting in delayed wake-up behaviors that are difficult
->> to understand when analyzing traces captured by tools like Perfetto.
->> Due to the prevalence of this performance issue when using cgroup CPU
->> throttling with PREEMPT_RT, the CGROUP_LOCK_OPTIMIZE configuration will be
->> enabled by default when both PREEMPT_RT and CFS_BANDWIDTH are activated.
->> This configuration option temporarily increases the priority of tasks to
->> SCHED_RR 1 if they hold a lock (excluding raw spinlocks, RCU, and seqlock)
->> and are limited by cgroup, provided they are SCHED_NORMAL. Once the lock is
->> released, the priority will be restored.
->> This patch is a derivative of the priority inheritance patch. While priority
->> inheritance can cover scenarios involving spinlocks and mutexes, it cannot
->> address the timing dependency issues between two SCHED_NORMAL tasks caused
->> by underlying locks. Additionally, the lazy_preempt feature does not cover
->> scenarios where a real-time task, such as a ktimer, interrupts a lock-holding
->> SCHED_NORMAL task, which is then throttled by cgroup cpu.
->> This patch not only addresses the issue of cgroup limits affecting spinlocks
->> under PREEMPT_RT but also resolves issues related to holding mutex or
->> semaphore locks, as well as other core rt_mutex locks under PREEMPT_RT.
->> The following stack trace illustrates the delayed wake-up behavior caused by
->> two seemingly unrelated threads due to underlying logic:
->
-> urgh.
->
+On Mon, 2025-08-11 at 16:36 +0800, Sebastian wrote:
+
 > What about using task_work_add() and throttling the task on its way to
 > userland? The callback will be invoked without any locks held.
->
 
-Yeah, please have a look at:
-https://lore.kernel.org/lkml/20250715071658.267-1-ziqianlu@bytedance.com/
 
-> Sebastian
+Dear Sebastian,
+
+I believe what you mentioned is related to the same issue that Valentin
+brought up later, which is the current solution of "delaying CPU throttling
+through the task_work mechanism until returning to user mode."
+My colleagues and I indeed noticed this from the beginning. However, on our
+6.1.134 RT-Linux system, we have tried new versions of this solution one by
+one, but they have all failed during basic script tests, so none have reached
+the stage of being used in our project. I see that this modification has been
+promoted in the community for more than two years, yet it remains in a state
+that doesn't work well (on our 6.1.134 RT-Linux system). I wonder if the
+changes require too many considerations or if this modification simply isn't
+suitable for running on RT-Linux. Our project cannot afford to wait, and
+there are many performance issues in RT-Linux.
+Therefore, I focused on making minimal changes to a complex and stable
+scheduling system (at least not altering the complex management logic of
+nr_running and related logic) and instead worked on the code of lock module
+and the logic of adjusting priorities, which are relatively easier to
+understand and modify.
+As a result, I implemented a patch that runs stably on 6.1.134 RT-Linux and
+meets the demands.
+
+
+Thanks
+Xin Zhao
 
 
