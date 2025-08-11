@@ -1,68 +1,63 @@
-Return-Path: <cgroups+bounces-9087-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9088-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BE1CB214E2
-	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 20:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AFD8B2176D
+	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 23:31:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA5FB68031C
-	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 18:51:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BFBE3B0C46
+	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 21:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 902C92E2856;
-	Mon, 11 Aug 2025 18:51:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78CA12E2DCC;
+	Mon, 11 Aug 2025 21:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T6KUrDNG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GCBeBJmt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42DFE238C16;
-	Mon, 11 Aug 2025 18:51:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 483611A9F87
+	for <cgroups@vger.kernel.org>; Mon, 11 Aug 2025 21:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754938299; cv=none; b=GV+feA6+bI4djlsnI7DgBSCg3Wpm2MwNqMrfPy2k0Lced4SGk6ZgQDyFFlDHeHoq1E+nelU7uU81rlYS7Llm0Yu5uzrtxPTF0umJK1LXAjAaTgm7SppDiJ7aVjnUIRsQEanqKx8LUxIPG5FPFliYSFtiYEkR24HIlHbuOcX5rwk=
+	t=1754947900; cv=none; b=I/XNNN0kkn9mKlt2RrjoXPysTAeSAq7gehoD4JYb9azmEBlejKFhVBJdcZztju5y26ZDy/BLJGIDILC0jPFd4pYRM7kwH6LP1ZIONiI6kaNb4yubSJAkTu71qATL7AsrtVylOii8GVcQ6zU/5K+Z8Dlbg5UEJIDHx+AQu2GdnPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754938299; c=relaxed/simple;
-	bh=TyL5WM4KmK4UEKtUWLjU9qmPO9uX7gp5FgMMIIGkhR0=;
+	s=arc-20240116; t=1754947900; c=relaxed/simple;
+	bh=RS5sFWaoZzHOwceC2btElDBf3P8I0UOMIzGHfWcVc8Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A0Kw9u8Ed38g87dWDXyHjS529U0JGiuU3AQx1PKofSN9ZpW3QRzm1ylUS0BAIWJqrnQwmprHpETyZCAd0HoGbqKhw29LViik+ivGnHM+80wJ6X/avoQe3oKnhmfMwr7gqd9iij1zIAorJU/Epqcn1dg1H7Y5mcDlm43SCtlXDI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T6KUrDNG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A28B0C4CEED;
-	Mon, 11 Aug 2025 18:51:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754938298;
-	bh=TyL5WM4KmK4UEKtUWLjU9qmPO9uX7gp5FgMMIIGkhR0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T6KUrDNGWelM7URVAXZGo04+ZxAi3SALiGcDdo0UxtvFW2rLJeiGYAy+K2tV9jaWp
-	 kp6Ev7FTupGWIEM+tTCcwxLnwwHS6eH677EawQBgpALNsiXKDiBh6+RTU8GNyeVogD
-	 7nXh2/3I5U232t3QATccielwpgjL/QIlLMBu4xR7wmrraJ1E73jQuCQJnDo4xhTr+V
-	 L70+SNO/W7ocYzKR2EVwHxA3lbJh5faP645ADGJS1RWnx2VuMG786Pi7J8d/1u+aR0
-	 wqMB2cJXVNSfupzUCTB+/l+tyySY/oEdR1km468NI4Z05si1HUZGmy2t58wBCEZpYJ
-	 dufb9Mrcityew==
-Date: Mon, 11 Aug 2025 08:51:37 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Tiffany Yang <ynaffit@google.com>
-Cc: linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Chen Ridong <chenridong@huawei.com>, kernel-team@android.com,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH v3 1/2] cgroup: cgroup.freeze.stat.local time
- accounting
-Message-ID: <aJo7udUoWJt_jLzK@slm.duckdns.org>
-References: <20250805032940.3587891-4-ynaffit@google.com>
- <20250805032940.3587891-5-ynaffit@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GGJUKGpBlXzPw9e/wUadKEYRmbvlCRNhR3U1EnSOlazeoxbhcFKhbhEslQvLChGHYUtxbDOUkDccjsbPnlo4IrBarHlXSFVptHqsjlrWY9JHGccEbLKManjL2s+grLkG4uDxJH7CN1RF08yxeFp8jdav8OzAHHvQX7a85gjXgKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GCBeBJmt; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 11 Aug 2025 14:31:26 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1754947893;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mmwYpasJW0d8pQJPWzSNzQnwsfBE31Dbtu9ygTvRtHI=;
+	b=GCBeBJmti4GhQF/v9x3g0yrh7KOUcwYuUIOw+XnLyYUQ0v7R6os5PdkLj2YRHuqj5LJVkJ
+	mrztlFNm9OpKrG8JLm/MWVHCqC8c3HST/Wk+ENEhGfl/g7n9+C+4iD9JYKPs30Pz3TnP9e
+	y2Tcf/noENLxElI6awRqGD6/JvuDwWA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+Cc: Daniel Sedlak <daniel.sedlak@cdn77.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Neal Cardwell <ncardwell@google.com>, 
+	Kuniyuki Iwashima <kuniyu@google.com>, David Ahern <dsahern@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org, 
+	netdev@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Matyas Hurtik <matyas.hurtik@cdn77.com>
+Subject: Re: [PATCH v4] memcg: expose socket memory pressure in a cgroup
+Message-ID: <kiqfxuepou5lwqffxhdshau5lw6bkkrvshv4ekhvrmugweipau@rreefm2uttjp>
+References: <20250805064429.77876-1-daniel.sedlak@cdn77.com>
+ <aJeUNqwzRuc8N08y@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -71,42 +66,33 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250805032940.3587891-5-ynaffit@google.com>
+In-Reply-To: <aJeUNqwzRuc8N08y@slm.duckdns.org>
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+On Sat, Aug 09, 2025 at 08:32:22AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Tue, Aug 05, 2025 at 08:44:29AM +0200, Daniel Sedlak wrote:
+> > This patch exposes a new file for each cgroup in sysfs which signals
+> > the cgroup socket memory pressure. The file is accessible in
+> > the following path.
+> > 
+> >   /sys/fs/cgroup/**/<cgroup name>/memory.net.socket_pressure
+> > 
+> > The output value is a cumulative sum of microseconds spent
+> > under pressure for that particular cgroup.
+> 
+> I'm not sure the pressure name fits the best when the content is the
+> duration. Note that in the memory.pressure file, the main content is
+> time-averaged percentages which are the "pressure" numbers. Can this be an
+> entry in memory.stat which signifies that it's a duration? net_throttle_us
+> or something like that?
 
-Generally looks good to me. Some comments on cosmetics / interface.
-
-On Mon, Aug 04, 2025 at 08:29:41PM -0700, Tiffany Yang wrote:
-...
-> +  cgroup.freeze.stat.local
-
-This was mentioned before and maybe I missed the following discussions but
-given that cgroup.freeze is a part of core cgroup, cgroup.stat.local is
-probably the right place. It's not great that cgroup.stat wouldn't be a
-superset of cgroup.stat.local but we can add the hierarchical counter later
-if necessary.
-
-> +	A read-only flat-keyed file which exists in non-root cgroups.
-> +	The following entry is defined:
-> +
-> +	  freeze_time_total
-
-How about just frozen_usec? "_usec" is what we used in cpu.stat for time
-stats.
-
-> +		Cumulative time that this cgroup has spent between freezing and
-> +		thawing, regardless of whether by self or ancestor groups.
-> +		NB: (not) reaching "frozen" state is not accounted here.
-> +
-> +		Using the following ASCII representation of a cgroup's freezer
-> +		state, ::
-
-It's a bit odd to include credit in a doc file. Maybe move it to the
-description or add Co-developed-by: tag?
-
-Thanks.
-
--- 
-tejun
+Good point and this can definitely be a metric exposed through
+memory.stat. At the moment the metrics in memory.stat are either amount
+of bytes or number of pages. Time duration would be the first one and
+will need some work to make it part of rstat or we can explore to keep
+this separate from rstat with manual upward sync on update side as it is
+not performance critical (the read side seems performance critical for
+this stat).
 
