@@ -1,45 +1,48 @@
-Return-Path: <cgroups+bounces-9063-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9064-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1ACFB1FDAA
-	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 04:18:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28C90B1FE41
+	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 05:53:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 658463B98E3
-	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 02:18:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36A7A7A9DFA
+	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 03:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736EF70823;
-	Mon, 11 Aug 2025 02:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781EF23F42D;
+	Mon, 11 Aug 2025 03:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PbAinhet"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18178BE49;
-	Mon, 11 Aug 2025 02:17:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F498F6F;
+	Mon, 11 Aug 2025 03:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754878677; cv=none; b=tVN1QNBpqUbesLxFZt0Bzxwkcc/x3DtqeMQmuCpi/75XlAtE0zgz9ZPoItPuWC2ovW2GvwiZWb8Qurn9pfmpW74vREPmZkKWyEpGDRUNJJK1N6KM5qw1vYxV81GTdywBVM0srEMGeRFRiee6hGKDDNT84SQSve+1dAYkbviPcpo=
+	t=1754884384; cv=none; b=iwlMKS6BieN9eFruoj6G91SUSLJ8OhAcAzzxEaG7xnYTzktTen00ge1gspENEXc6AyYF+/dX8rVUbCZBgwM2sIeLnai0OHMwtyx/xipHRG9rtzoALDyZX+BExSsvyjXOfk8H7SvKoq0eK2WUA49F/IlzRHYBIWmZxI4ECOjX3tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754878677; c=relaxed/simple;
-	bh=moEu+OXMYZ6tB+ZL+4Ft1Hex1l38CiVrcQWgI/qg1Ps=;
+	s=arc-20240116; t=1754884384; c=relaxed/simple;
+	bh=aNH529pCRu9+SA4gE8UXYXNS5yeFnObsQC4TW5cLFLI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j6yvEcbSO93Tbwc/j2Jw3aZ3kfhDuLrCoYE2No8K7uYKtEMJWzcylWCiQIojZOjRcyKe7CvJoO1FLJzQay+o1D4GGmqu8xedPBvcdPN3pPLMGFCJE4HlgmU4B/jOi2vjkOZ9t7vnohyHMc28HMpjxO/NJlFv5ZzlPMfBxn2n+Hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c0dZn26xQzYQv0L;
-	Mon, 11 Aug 2025 10:17:53 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id E08E41A07BD;
-	Mon, 11 Aug 2025 10:17:51 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP4 (Coremail) with SMTP id gCh0CgB3Pg_NUplos4AcDQ--.33067S2;
-	Mon, 11 Aug 2025 10:17:51 +0800 (CST)
-Message-ID: <d8e0960c-b6fe-49f8-ad85-91973d97a476@huaweicloud.com>
-Date: Mon, 11 Aug 2025 10:17:49 +0800
+	 In-Reply-To:Content-Type; b=QVN4RWM0wfCm0cP97grp21pZCaKfD8s4VGcXhR9oLlARHWN4+7jTEUrai+EtGcuwXYMjPClKnq3wZHkk8g/BJMNyFO65+nDKqLk/n2rliiI1D5A4jcXz/HWF/ILOr8zRZx/WLHwm4phikHmrmITxuWDp5PYwkpYW448hV0oTy1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PbAinhet; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AD9FC4CEED;
+	Mon, 11 Aug 2025 03:53:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754884383;
+	bh=aNH529pCRu9+SA4gE8UXYXNS5yeFnObsQC4TW5cLFLI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=PbAinhetPgabCy1W5zjocItp4AcldnUC2ghV7BzwzbAQtW95RSCs0rVgZimQzj16M
+	 xWiHV9MqWZCTApEetKpp4cm7KmqTF/yas4mncKP9Gm8LPEcaORX+AlaUYPyqoLpJ9C
+	 oLS7F80L8qo8pm0VN6R933rokOsqhFfYZPt+Lsm0uDJP+ort7mD1nccbP31BHl+Vq5
+	 1NdpJq8tmfYmZ9zml3ded7os3CKxXm3ZhnQXVc0d2pPOtsh9Oa3sVoLCr//xRbj+3p
+	 JOOrBGVgpOOcteD993jPqmbz5yAfCu/uSjuDLTg1SnxjIaDyp9T9miXsP6tX5J4v1h
+	 Y3O/yI0ORZMNQ==
+Message-ID: <6a0a203c-c25d-4d01-9295-8d78bb897a07@kernel.org>
+Date: Mon, 11 Aug 2025 12:53:01 +0900
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,123 +50,65 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 2/4] cpuset: add helpers for cpuset related locks
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: bsegall@google.com, cgroups@vger.kernel.org, chenridong@huawei.com,
- dietmar.eggemann@arm.com, hannes@cmpxchg.org, juri.lelli@redhat.com,
- linux-kernel@vger.kernel.org, longman@redhat.com, lujialin4@huawei.com,
- mgorman@suse.de, mingo@redhat.com, mkoutny@suse.com, peterz@infradead.org,
- rostedt@goodmis.org, tj@kernel.org, vincent.guittot@linaro.org,
- vschneid@redhat.com
-References: <20250808092515.764820-1-chenridong@huaweicloud.com>
- <20250808092515.764820-3-chenridong@huaweicloud.com>
- <30dd9cb7-8471-400e-b293-a1a52921a5f3@wanadoo.fr>
+Subject: Re: [PATCH v3 1/5] blk-mq-sched: introduce high level elevator lock
+To: Yu Kuai <yukuai1@huaweicloud.com>, hare@suse.de, jack@suse.cz,
+ bvanassche@acm.org, tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ johnny.chenyi@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20250806085720.4040507-1-yukuai1@huaweicloud.com>
+ <20250806085720.4040507-2-yukuai1@huaweicloud.com>
+ <61c62ef0-4dde-4c14-8039-213258d3c6ae@kernel.org>
+ <70789114-81ad-1226-c99c-b35e152b7769@huaweicloud.com>
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <30dd9cb7-8471-400e-b293-a1a52921a5f3@wanadoo.fr>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <70789114-81ad-1226-c99c-b35e152b7769@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgB3Pg_NUplos4AcDQ--.33067S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxur4rWF1UXrW8Gw4kGF4UJwb_yoW5ZF15pF
-	1kGFyfJFW5Ar1ku34UWw4Uury8tws5Ga1UGFn5Ja4rAw12yFnFvF1DWr90gr1Ykr4xGF4j
-	vFsF939a9a4DArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Transfer-Encoding: 7bit
 
-
-
-On 2025/8/9 23:56, Christophe JAILLET wrote:
-> Le 08/08/2025 à 11:25, Chen Ridong a écrit :
->> From: Chen Ridong <chenridong-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
+On 8/11/25 10:01, Yu Kuai wrote:
+>>> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+>>> index 55a0fd105147..1a2da5edbe13 100644
+>>> --- a/block/blk-mq-sched.c
+>>> +++ b/block/blk-mq-sched.c
+>>> @@ -113,7 +113,14 @@ static int __blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
+>>>   		if (budget_token < 0)
+>>>   			break;
+>>>   
+>>> -		rq = e->type->ops.dispatch_request(hctx);
+>>> +		if (blk_queue_sq_sched(q)) {
+>>> +			elevator_lock(e);
+>>> +			rq = e->type->ops.dispatch_request(hctx);
+>>> +			elevator_unlock(e);
 >>
->> Add guard_cpus_read_and_cpuset and guard_cpuset helpers for cpuset, which
->> will be user for subsequent patched to make code concise;
->>
->> Signed-off-by: Chen Ridong <chenridong-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
->> ---
->>   include/linux/cpuset.h          |  1 +
->>   kernel/cgroup/cpuset-internal.h |  2 ++
->>   kernel/cgroup/cpuset.c          | 11 +++++++++++
->>   3 files changed, 14 insertions(+)
->>
->> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
->> index 2ddb256187b5..6153de28acf0 100644
->> --- a/include/linux/cpuset.h
->> +++ b/include/linux/cpuset.h
->> @@ -74,6 +74,7 @@ extern void inc_dl_tasks_cs(struct task_struct *task);
->>   extern void dec_dl_tasks_cs(struct task_struct *task);
->>   extern void cpuset_lock(void);
->>   extern void cpuset_unlock(void);
->> +extern void guard_cpuset(void);
->>   extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
->>   extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
->>   extern bool cpuset_cpu_is_isolated(int cpu);
->> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
->> index 75b3aef39231..084e19fe33d5 100644
->> --- a/kernel/cgroup/cpuset-internal.h
->> +++ b/kernel/cgroup/cpuset-internal.h
->> @@ -277,6 +277,8 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
->>                       char *buf, size_t nbytes, loff_t off);
->>   int cpuset_common_seq_show(struct seq_file *sf, void *v);
->>   +void guard_cpus_read_and_cpuset(void);
->> +
->>   /*
->>    * cpuset-v1.c
->>    */
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index cf7cd2255265..f6cdb5cdffe8 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -260,6 +260,17 @@ void cpuset_unlock(void)
->>       mutex_unlock(&cpuset_mutex);
->>   }
->>   +void guard_cpuset(void)
->> +{
->> +    guard(mutex)(&cpuset_mutex);
->> +}
->> +
->> +void guard_cpus_read_and_cpuset(void)
->> +{
->> +    guard(cpus_read_lock)();
->> +    guard(mutex)(&cpuset_mutex);
->> +}
->> +
+>> I do not think this is safe for bfq since bfq uses the irqsave/irqrestore spin
+>> lock variant. If it is safe, this needs a big comment block explaining why
+>> and/or the rules regarding the scheduler use of this lock.
 > 
-> Not sure that it works like that.
+> It's correct, however, this patch doesn't change bfq yet, and it's like:
 > 
-> I think that these 2 functions are just no-op because whatever is "garded", it will be release when
-> the function exits.
+> elevator_lock
+> spin_lock_irq(&bfqd->lock)
+> spin_unlock_irq(&bfqd->lock)
+> elevator_unlock
 > 
-> So, if correct, all this serie does is removing some existing synchronisation mechanism.
+> Patch 3 remove bfqd->lock and convert this to:
 > 
-> Do I miss something obvious?
-> 
-> CJ
-> 
+> elevator_lock_irq
+> elevator_unlock_irq.
 
-Thank you for catching this issue. You're absolutely right - I made a critical mistake in the guard
-function implementation.
+I do not understand. Since q->elevator->lock is already taken here, without IRQ
+disabled, how can bfq_dispatch_request method again take this same lock with IRQ
+disabled ? That cannot possibly work.
 
-After further investigation, I realized that when I ran the self-tests with CONFIG_LOCKDEP disabled,
-I missed the lock protection warnings that would have revealed this problem earlier. Had Lockdep
-been enabled, it would have immediately flagged the incorrect locking behavior.
+The other side of this is that if you use elevator_lock(e) to call
+e->type->ops.dispatch_request(hctx), it means that the scheduler *can NOT* use
+that same lock in its completion path, since that can be called from IRQ
+context. This may not be needed/a problem right now, but I think this needs a
+comment in this patch to mention this.
 
-Please ignore this patch series, Thanks.
-
-Best regards,
-Ridong
-
-
+-- 
+Damien Le Moal
+Western Digital Research
 
