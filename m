@@ -1,177 +1,122 @@
-Return-Path: <cgroups+bounces-9089-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9090-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8971EB2177D
-	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 23:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CC1DB21FCC
+	for <lists+cgroups@lfdr.de>; Tue, 12 Aug 2025 09:46:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ACA73B451C
-	for <lists+cgroups@lfdr.de>; Mon, 11 Aug 2025 21:32:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDBC3682372
+	for <lists+cgroups@lfdr.de>; Tue, 12 Aug 2025 07:46:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7B182E2DDA;
-	Mon, 11 Aug 2025 21:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="H2I28ApE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D302E1531F9;
+	Tue, 12 Aug 2025 07:46:45 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C7E28505F
-	for <cgroups@vger.kernel.org>; Mon, 11 Aug 2025 21:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC881E834B
+	for <cgroups@vger.kernel.org>; Tue, 12 Aug 2025 07:46:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754947939; cv=none; b=nYOsqTrpr0G6CXu6o0Zm9Hpl4xTHP7hzrW5RlH3y17YEokmrovwIK6wChGx5qEubYtLr8E/XBcqPyi0eP+evapl5lRpN7UEH3FTllPOxjnW5igXQ+wZucGuvHBdpNZ1NPbd5sLl4F7cSMo/8AzGyENQFVcWjuhSz2TMv94gw4L4=
+	t=1754984805; cv=none; b=bLnMF4BFXIZ67kwNxZTu0tS/y0YAA9K6+GLzj4xEtjN2WeSfvhHT2IlaStm9IMDyF3VxpWW50PYag7BmLvfY9Tz9IUbHIBGo884+B/kjt3Q2sHPG5EB+0HtW3t4UYBKTJfusJSHc8f1Hqc8GvnNkJfpkyWPRgHvM8xDZqLJGdio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754947939; c=relaxed/simple;
-	bh=Wp2SaX8CG7tM/UQZ7ITcbfAUzMlUdJy5a17ix7IDRPk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gTs3x1fUJ0++kI2KszPOQtX/gGM/Vjh74I/12DzP0RrUCVeBWB/SE5Y6otzCpfONyE1RsGEWPxMcZXgy6pWSBQSQoMRn5a09Fl7tuPuHqcKmI5DfchlH9COFUlzTQ0bv52/qUzYf2gTIDnyZvBVWxk8BIjsQNQD1X5sKDdWodFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=H2I28ApE; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-af66d49daffso809501566b.1
-        for <cgroups@vger.kernel.org>; Mon, 11 Aug 2025 14:32:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1754947936; x=1755552736; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nq/BuyAKv3pgMr4iqsCzwNSRSbvLzOuBXkj4nE74O0A=;
-        b=H2I28ApEhCgfH5kAOBKRWZkuGDRBkQ9wH/XC2O9e3ldw8BmOEuBi3zFZ3kFbG+Z4yg
-         M1aR/oUlPfskb63CwsuAP4OxyqGyNEnYzp+tT8l8U5AAuWs7/arlifwSNxoN/YOkJh1b
-         /5bjhDinPe3fnKt5JMT/KXnNi/F1fFcFTUVFTIwQomlIMd/ngSe/sXigMjLsuSuS/k1R
-         D6SG1Ww5qH6k+ppMBRLTQKMbinXW9u2MOVhpLnuOpXxOdXhsULBR4L5XJen9vEP2cJ9z
-         rFgPgeDkTm+0mmuIqRfwmtvnTCgFnuDb/U7H5RLY32kPiksqh/MAOWOgb7CpcGI5yGnp
-         TaeA==
+	s=arc-20240116; t=1754984805; c=relaxed/simple;
+	bh=7veAhauFbzmeZ6VPaXhAIl+1EidQymqZFBkfOM5A+nY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=Yt0aXXK47/7Lkfge79z35ONkZmiKAllZ+DVJqDKUUDyACJU6u4045mAt4wiJMMv/TBm+GKYEE7jU9yC1IdK73SjZMhgsoJuNWdeaBtuCox+T4SR4zFcHBi4TPTCXRZTWvzdp54uot3MWRN3ko1P3/UOCC1FQMpy6R2+OXoEjYyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-8817ecc1b33so1197147839f.2
+        for <cgroups@vger.kernel.org>; Tue, 12 Aug 2025 00:46:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754947936; x=1755552736;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nq/BuyAKv3pgMr4iqsCzwNSRSbvLzOuBXkj4nE74O0A=;
-        b=XgFAzYcIShX+0r6J6XE+Fjt70TlYXXUXw+YifOvs//D7dmyep444JmNfUXZG6ALzX7
-         Nq4PKUf7/mToC2lF8rUG+6r144U6P5w2/qPS3PgaEkjJABJQ/s9PK8E4zU8XYD2snh4x
-         h0cnRaYHuU9+xv+7JjzJftWGK+rQ2fmOjxFOciXdUT1fwtQ262ACFLqX8kTHtV6ktqaZ
-         ZiVEs8tHbjidbM61NeSIzDeloPDPiXWQ1JN9NlFlfNSWQxZRNUPSfMdW9XzbEEx9jySS
-         IYBr4Si9yjAEa6e01wCYKNbguKeLaC86GiQywGwy1QgUnzXBUBxgbTaZ/TKpB8umkOt0
-         h2Hw==
-X-Forwarded-Encrypted: i=1; AJvYcCWgRbCjM/wRqtkbh0lMKUZXxdHBfZ2Uk6/BozygzjTa6IqFxzcNZ3dlKeX/2Z/WD4lTt253ssDO@vger.kernel.org
-X-Gm-Message-State: AOJu0YyzVaLLwgtYdXTOXKfaHG2R7yX+K2PsaT+iESq5ciyL3wlnJ4QS
-	+rC7ZmFIUZNOiuvdFWkFG1s8yDca0xAhBtvNhz/WA/RLvOg1+2vUvaoC3vN9VZH5UnA=
-X-Gm-Gg: ASbGncsIPDVCfTRoGpnV9uBiM1vqsvqc9chSYBAbaAoFZ5M2Q3EYjGBPWb1Z/ekXnJ4
-	nNaDKMn+V3DgDINkbPXF/sVo0HLdDALvGxxlN6NaZIV7PZRe5b64fFhN29cBpJil0fWyWpT+N/k
-	zI2ThAqwNOHi/0YBqydJx98keoAbHS5xlasYL8jpPqYo81Qpejbg8OhS79XNjsic3rqj5zd2F80
-	m2rUVTKInINet4UrXbNmNEPwq3D29BJCsmDEuq/Wap+GZMQfHY9Q+TpauG9D9SqKgi/38f9lB24
-	iMoKSwr2rZb1ol06qJpwlH3VQvPEb6k1CbmWOOvzpTwWlqGKguQuFgZPlRcqBHG7N+ANRK4pLO/
-	TYL8LzQDL46mp
-X-Google-Smtp-Source: AGHT+IEpI2h9lIY/AO/fTtYcOoO4khM0ZEAiZvU2fi3EuMjQtsrWd8CdH2Opy3n0PnI33xPN+ZeMCQ==
-X-Received: by 2002:a17:907:7247:b0:af9:6813:892e with SMTP id a640c23a62f3a-af9c653ab3dmr1329549066b.51.1754947935930;
-        Mon, 11 Aug 2025 14:32:15 -0700 (PDT)
-Received: from blackbook2 ([84.19.86.74])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af91a0a3981sm2069766266b.35.2025.08.11.14.32.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Aug 2025 14:32:15 -0700 (PDT)
-Date: Mon, 11 Aug 2025 23:32:13 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: Shashank Balaji <shashank.mahadasyam@sony.com>, oe-lkp@lists.linux.dev, 
-	lkp@intel.com, linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
-	cgroups@vger.kernel.org
-Subject: Re: [linus:master] [selftests/cgroup]  954bacce36:
- kernel-selftests.cgroup.test_cpu.test_cpucg_max.fail
-Message-ID: <lsnebzejrxrpulxxmyvkfdrsplbi2ft2n5zuux3dl3ewt5ihrs@j3umrzndddsb>
-References: <202508070722.46239e7c-lkp@intel.com>
+        d=1e100.net; s=20230601; t=1754984803; x=1755589603;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Umk1YoadKdpa6fyzaimwqq35auuAfEV1rwGDtpJveWA=;
+        b=Xi6tlDJCZK1PFcsYyVAylULYb3iIbpWpROTMmCUp13AyTT4I6FpwVq0ZuSqC6ZWPmU
+         J3xOEw7C4z750gplmDwjCFiP3BJTuVBWm/SU7/ykLquAV+B+CJTwOabqq2x6CWWemaSz
+         BqqUusc7F8M6Lp7nKnUFDNCvyK34loqdChkZvDmxFQELMPnNPW9NzkiSh/M+loXOHZQf
+         LHDBa/Saajg+ptlp+5NyDFA83lb44BYKZofNL0kRhPBKDijPdYu1RUXQwV0GTzRXFKQ/
+         jdzwMZVbQ8VCKCnN+F9lu8lT9/RGT4hJ89sVU1Xjmi0SUMaEHmkj0nsc9M2uC8Bvi6i7
+         BjCg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOzTIi0u94uXwBnwBI8cOQjH42hxSu1EiS+fHVFc7LWk1qpzoR9I8jOqfOYgxoE7+h5gxh5K+V@vger.kernel.org
+X-Gm-Message-State: AOJu0YyXZ3OWysE0E6/KR6v6JfLNIyGtZIHB7o3hAwziFrOyCETXcqmJ
+	XJ8BdrlIF2xKh3EgRYeyxvfBIJDVwMe6h8CCZyC8QURGdTokuuETlBkXqxdlfKQG063K+jWUQlY
+	rDGNbFNcDnJDNJEddnW60tMUx2MF4KNekw0Z1kEUoGnxDMp5Hz+G3yy1lVcw=
+X-Google-Smtp-Source: AGHT+IGMO5NHQ7t/8SdMDmkMxxHOO+f+f98qggqnhfBOuHrFo4tBxoy7lI5+nUzI68F7dY4bFrEZVQmeL1OqGTmyoq+dADo+nkMr
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="35rdoq4zxkxl7xa4"
-Content-Disposition: inline
-In-Reply-To: <202508070722.46239e7c-lkp@intel.com>
+X-Received: by 2002:a05:6602:7187:b0:881:9412:c917 with SMTP id
+ ca18e2360f4ac-8841bcc009bmr501638939f.0.1754984803514; Tue, 12 Aug 2025
+ 00:46:43 -0700 (PDT)
+Date: Tue, 12 Aug 2025 00:46:43 -0700
+In-Reply-To: <20250811173116.2829786-1-kuniyu@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <689af163.050a0220.7f033.0112.GAE@google.com>
+Subject: [syzbot ci] Re: net-memcg: Decouple controlled memcg from sk->sk_prot->memory_allocated.
+From: syzbot ci <syzbot+cic0c8bc3087cfc855@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, almasrymina@google.com, cgroups@vger.kernel.org, 
+	davem@davemloft.net, edumazet@google.com, geliang@kernel.org, 
+	hannes@cmpxchg.org, horms@kernel.org, kuba@kernel.org, kuni1840@gmail.com, 
+	kuniyu@google.com, linux-mm@kvack.org, martineau@kernel.org, 
+	matttbe@kernel.org, mhocko@kernel.org, mkoutny@suse.com, 
+	mptcp@lists.linux.dev, muchun.song@linux.dev, ncardwell@google.com, 
+	netdev@vger.kernel.org, pabeni@redhat.com, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, tj@kernel.org, willemb@google.com
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+syzbot ci has tested the following series
 
---35rdoq4zxkxl7xa4
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [linus:master] [selftests/cgroup]  954bacce36:
- kernel-selftests.cgroup.test_cpu.test_cpucg_max.fail
-MIME-Version: 1.0
+[v2] net-memcg: Decouple controlled memcg from sk->sk_prot->memory_allocated.
+https://lore.kernel.org/all/20250811173116.2829786-1-kuniyu@google.com
+* [PATCH v2 net-next 01/12] mptcp: Fix up subflow's memcg when CONFIG_SOCK_CGROUP_DATA=n.
+* [PATCH v2 net-next 02/12] mptcp: Use tcp_under_memory_pressure() in mptcp_epollin_ready().
+* [PATCH v2 net-next 03/12] tcp: Simplify error path in inet_csk_accept().
+* [PATCH v2 net-next 04/12] net: Call trace_sock_exceed_buf_limit() for memcg failure with SK_MEM_RECV.
+* [PATCH v2 net-next 05/12] net: Clean up __sk_mem_raise_allocated().
+* [PATCH v2 net-next 06/12] net-memcg: Introduce mem_cgroup_from_sk().
+* [PATCH v2 net-next 07/12] net-memcg: Introduce mem_cgroup_sk_enabled().
+* [PATCH v2 net-next 08/12] net-memcg: Pass struct sock to mem_cgroup_sk_(un)?charge().
+* [PATCH v2 net-next 09/12] net-memcg: Pass struct sock to mem_cgroup_sk_under_memory_pressure().
+* [PATCH v2 net-next 10/12] net: Define sk_memcg under CONFIG_MEMCG.
+* [PATCH v2 net-next 11/12] net-memcg: Store MEMCG_SOCK_ISOLATED in sk->sk_memcg.
+* [PATCH v2 net-next 12/12] net-memcg: Decouple controlled memcg from global protocol memory accounting.
 
-Hello.
+and found the following issue:
+kernel build error
 
-On Thu, Aug 07, 2025 at 01:52:31PM +0800, kernel test robot <oliver.sang@in=
-tel.com> wrote:
-> dfe25fbaedfc2a07 954bacce36d976fe472090b5598
-> ---------------- ---------------------------
->        fail:runs  %reproduction    fail:runs
->            |             |             |
->            :6           100%          6:6     kernel-selftests.cgroup.tes=
-t_cpu.test_cpucg_max.fail
->            :6           100%          6:6     kernel-selftests.cgroup.tes=
-t_cpu.test_cpucg_max_nested.fail
->=20
->=20
-> not sure if there are any necessary env setting? thanks
+Full report is available here:
+https://ci.syzbot.org/series/6fc666d9-cfec-413c-a98c-75c91ad6c07d
 
-The selftest commit essentially changed the tolerance margin from
-ridiculously large to something that looked statistically appropriate
-[1].
-However, when I run the test (30x) on the 954bacce36 I get:
+***
 
-quantile([D1 D2 D8])  # 1 2 and 8 vCPUs respectively
-ans =3D
+kernel build error
 
-   1.3086e+04   1.1559e+04   1.1177e+04 # min
-   1.5109e+04   1.2936e+04   1.2989e+04
-   1.5791e+04   1.3938e+04   1.3788e+04 # median
-   1.6159e+04   1.5385e+04   1.4980e+04
-   1.8757e+04   1.8699e+04   1.9494e+04 # max
+tree:      net-next
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/netdev/net-next.git
+base:      37816488247ddddbc3de113c78c83572274b1e2e
+arch:      amd64
+compiler:  Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+config:    https://ci.syzbot.org/builds/a5d5d856-2809-4eee-87ca-2cd1630214ae/config
 
-I obtain similar values also on v6.15 (the kernel + 954bacce36
-selftest). So it's not anything in throtlling implementation affecting
-this.
+net/tls/tls_device.c:374:8: error: call to undeclared function 'sk_should_enter_memory_pressure'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
 
-The tests above were with HZ=3D250, for HZ=3D1000, I get slightly smaller
-results with D2:
-   1.1753e+04 # min
-   1.2634e+04
-   1.3208e+04 # median
-   1.4010e+04
-   1.6937e+04 # max
+***
 
-But still nowhere the 20% margin (i.e. values_close(...10%)), these
-values would demand up to 100% (values_close(..., 50%)). Or add a bias
-derived from sched_cfs_bandwidth_slice_us or increase the tested quota
-=66rom 1% to 5%, that'd be an improvement:
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+Tested-by: syzbot@syzkaller.appspotmail.com
 
-   48882 # min
-   52450
-   52941 # median
-   54284 # 75th percentile
-   73186 # max (limit would be 60000)
-
-I'm not sure how big overrun we want to accept as a pass.
-
-Michal
-
-[1] lore.kernel.org/r/20250701-kselftest-cgroup-fix-cpu-max-v1-2-049507ad68=
-32@sony.com
-
---35rdoq4zxkxl7xa4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaJphRAAKCRB+PQLnlNv4
-CDorAP4j+gBfzJ9mjsTBBUy9uD3wIzoL2opwDNhFmTuGsKuCuQEA3ayfCV8VdA6/
-OKdE1A/l6w776aNK35BBRJ+Oz9FgxAE=
-=A67z
------END PGP SIGNATURE-----
-
---35rdoq4zxkxl7xa4--
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
