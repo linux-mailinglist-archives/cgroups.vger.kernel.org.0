@@ -1,164 +1,207 @@
-Return-Path: <cgroups+bounces-9141-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9142-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0CCFB25330
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 20:43:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08FBAB25413
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 21:50:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E421D7B53F7
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 18:42:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E80F727EBC
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 19:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB1542E9EDC;
-	Wed, 13 Aug 2025 18:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360AE84E07;
+	Wed, 13 Aug 2025 19:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X0O8sbup"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Nyepfs09"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CA82E11CB
-	for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 18:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F35A81DF979
+	for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 19:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755110609; cv=none; b=vB/hA5CEdC2oR0pTEUSL8mifnam7qHGnhoSROXu5k+OK9Ws5hwXBJN9sWvJd0EGvdRZYRpa1x7nwvawyf7Dy6JiaacRIsR4NFYl4IypiEj2exb0XT/9MRZb7cv+4inaRnWZjxYZABUBPicw2wm7L+DK+x7TRKuAH83ZvZgZV7RE=
+	t=1755114624; cv=none; b=P5z6fc9Vdx2zYYEt7Azk7sVftXuYCm8+J1PrbqPqglfpQJb7l+V3uPEq93ghh01UBFkOx6h9m9P4MvnvOkUGnzV+N2ia+F2366oqHWmdUDwwNzBlr7h1zlMq5Tup4nZQE+8YiYa4IHIrS/Znzx4aXoeyvh1W4bN7i1pdxYjkSs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755110609; c=relaxed/simple;
-	bh=peKhyYh5erOKsru1vnv61mgnhKM9DzH+xoHN6mevgvY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OSWRWxIiJlfO0Ax6LsUFDLYsLBd0P8ELu8KWdb0UEn+UZ1fiOHbmTcBF2GhqXyPiNUosOIaSyAZUHX2/LMphTSdTBp7VAz8Mlga0wBeCUe1KT2C7eHY5pSakjuPkiCK6dquTKRcWaL7uOB8YmhO/Rg3kyOCHM8KUXDRWCAWaSb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X0O8sbup; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-24458298aedso645265ad.3
-        for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 11:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1755110607; x=1755715407; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a9BzIik8ItZsQbt/3YanXJu26q0lEOJnE+a73ddJFdE=;
-        b=X0O8sbupOxY7pG6JHsl2uQa9oQUxyZnIwb8Xrofhd4g3Id/XEE4sjE3ucT0xDr3je7
-         d8Hh/CTfUELFF9jO2Qyfak/i4AuBuXMK9Sqq4LJVitYnoW0EbpGbnL9+fFPBcjUk4kCa
-         TgHegg5pjYQDjKcZwv6UE/CDyssHj9wfHAXezpT+ek2zY2Fnvca4I3XlN4AsBMlg4OQz
-         OtXwT2GmxRWw99Lho1qbMdbWejgPvsvu6SSDMNAjncSTYo1TPQ1rbwxVprNeMFD0y8E7
-         8fhwFgNROxFDHHbvYB+e5TDwODUzHv2IYRG2nACd13vi0PSOsBBqXJHCucTBBtcoIqdJ
-         TqLg==
+	s=arc-20240116; t=1755114624; c=relaxed/simple;
+	bh=ChZ1iINx635rX4LDGMfL5exJIYnJ0e0bNj1dXoD91Lk=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=IEmoGKHv2P7KcGVWj4p+hRf25MBFKo/y3LTZgR2HHeyUKrGSgNI3/SWHt6G3oUWh2bh0Ny/yhV/GQpo0RAA42oNPCINvPk7C69/6oXHmczek1nViNV1vY8e4nE5pUFx144ExnOZ6ux1A6duFZc9VlATYsS8yt2Nvc4MSTUtN47s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Nyepfs09; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1755114620;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R+9vJT083vVIOoUe/0ydCQv0NYkhLLgtEyVYnXFMiAI=;
+	b=Nyepfs09QTMT911tJThGzzUhGPBQtPTH/V2HEePp70kDDLNa6fb6cKir0nA4l/6y8oVMzW
+	OYVwnR82+jMhhWbTXLCE+HgSXjxemuwY5TfE9CIGbVMPCEfvNOIXM+326lXrKGnYepHy9A
+	fXO3pZxcErEo59KiVgURIB7D2YkzPDg=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-36-HFj2IH7sN-C5RUdu_eLdEw-1; Wed, 13 Aug 2025 15:50:19 -0400
+X-MC-Unique: HFj2IH7sN-C5RUdu_eLdEw-1
+X-Mimecast-MFC-AGG-ID: HFj2IH7sN-C5RUdu_eLdEw_1755114619
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-71d604e54baso3538517b3.2
+        for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 12:50:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755110607; x=1755715407;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a9BzIik8ItZsQbt/3YanXJu26q0lEOJnE+a73ddJFdE=;
-        b=XlheHYaYmygAhQLKzG7gyqeqn4uungG1L30CQp9iINhMTlgyVmsUBdwugODCpdek77
-         VQIEaGtVW9uW7da3kba7Y+icltqfbOfTjuAcO3tYKRfOmltFqpYbhfphzU4fzODbYY9M
-         Gr2xNbZ9o/dVPmDLZx8GpZveHn8GmWWxTug7CQyHrHNuzvSsb6vZlteP91cSYrl923UB
-         2zqECZWZIxtHkcvWDFMjQBF3yI7CYP3+me74nKTdEh++JUYHYLb/K/EijvsN6q65lJd+
-         e39bUmuQbhRJtFycz0aRf0mmiQdIGVazwH3QGGqZZPH9sf9aEGxYVUP1rn195hRoWZCR
-         0+mw==
-X-Forwarded-Encrypted: i=1; AJvYcCVoCGiZ6buQsV00rgAmCKAoTEeGZAorcIRdTJoBJRGnEoMEtxNwppE9ohUM8su8GMGwflg/Pi4f@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8v5KK3tRir2Y1Z4vH7/lrKn64BmTChDVDqhP+qfvSCqiWO+E1
-	8H6l7U72FKo8A0XZ2QQ/gWmx+2VMLFCbdSuiNBBQTZ8qBVD1UpaVue/KUTCEjuapu8HOPRSOiDS
-	0lg73JpZuB0HhJFR3dzs11HTkyjLWAq1s8Og0iuC/
-X-Gm-Gg: ASbGncsx7COKqkqOUK5XVtXtoMoV58oHlM8eBrECA31NIEd+usT/1Lq9ECOjy529tJN
-	D7GSRyDPSNmmYBXwjNOcvff9kxtzIaEXeo7M3u0QwQBCJlWzmAS7bad5H69zk+DHF9zIIC+T2fi
-	H/pa6ni0rd/8/RqL79uqje8U7Ao8si5h0q/gAKcAv1/ODZs/0B4p76sGQusQ2fEEfD1p3hMqZJ0
-	LEM0N7UdOx3Yw3imRLWPEkveLmT0ojmxF86UWpu
-X-Google-Smtp-Source: AGHT+IE+OAJLh0cA0JpKkD0/B+CsZDY5rBp0+LgetnTu3qP/aHmx8+dnnAhaX3xyY/0hlQtXLDaeU8b5ZnPRaXFlw7U=
-X-Received: by 2002:a17:903:22d2:b0:240:3915:99ba with SMTP id
- d9443c01a7336-244584af6a2mr1990405ad.5.1755110607235; Wed, 13 Aug 2025
- 11:43:27 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1755114619; x=1755719419;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R+9vJT083vVIOoUe/0ydCQv0NYkhLLgtEyVYnXFMiAI=;
+        b=DbXI2wbtMSja6AgmhXUJeMvkMDF/jfispikKo5EsZ9N76ssHMtarFT0/x1eLHMxHMm
+         05P6M4l9mYBAeiuIoxK+C4ntga0/YMCCMMV47ESBg8YVBJ04vKkLxyvUkcafRcvw6EdD
+         C819/lWJm8npHAz6fNbAXCY88Xzdrla+6aVjBkmX8eKWv9SWDFmLsCrVDLGQqK8sB/fj
+         UaexvyogQ2lTu692Nj/uNuZV4ULeaNrADQHbqax4jD2lfBv9Oh7S3e21VQiEjIjfZ5Lv
+         Xzoh595RXl3zCWcR9F9jNMPPRfs0YTSfbi0SnLjMwB9io5Q/d+gSSPTEVNGPXCisr+yc
+         Lo8Q==
+X-Gm-Message-State: AOJu0YxJFkbhSGMgln2H3xM0H5iXBSHRDXmIxVr/lDsGchzpDosJrsIa
+	IW06r1Dv2j240FI2Y/1Kgk+342k6JorNyW0FXAUqBcPGiYWVin3uj3c2uWGUfaP2YOqCxEQEuGP
+	Ghqen98l9dIEkfpsT3wHkdGa43BfUzEI/eKgo014LkrbGkaUncdnpB00p5c0=
+X-Gm-Gg: ASbGnctgA/dFGaYM3gF7bL9X7gLuHFBETtL57WbmQD1JCwNS/fWQd9ceGYMrty5Dsnj
+	qXy0NE+iugpL7PrRYppKUtuGSEgPYNQf/OiPad278M7gsJFCjIGY8LhX6MH7YmOFxt9AE+ApACP
+	6rtalZUeMyGDcqpDuO2J3ESr8WVBaPTBZNKCKzqQeUyY5iHyBDcG2970oefgvBh2tT1Z07hEAD9
+	4tGC0vxdVLFExwLMImU4WjFAdVv0DLMah1RbAzaRf1bXTTl9i9EwGaUzSm29R06I1nFZhgYwFe5
+	e69oLqxg5/I7XNl+nb60Ra55P7dIHg8mwlhT7KJTiVKmsRTb0z/4Prud0DknSwpb0/zkWw5Dm6O
+	pANt4TNi1Kg==
+X-Received: by 2002:a05:690c:74c9:b0:710:e7ad:9d49 with SMTP id 00721157ae682-71d6343c296mr2296567b3.13.1755114618886;
+        Wed, 13 Aug 2025 12:50:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF1uej4ImNVgiwyTxeKWBGtqsi1nzxETVvKE8OUTp1C76DEAwd48J4GnXV36VbOW5Ej+SklCg==
+X-Received: by 2002:a05:690c:74c9:b0:710:e7ad:9d49 with SMTP id 00721157ae682-71d6343c296mr2296397b3.13.1755114618541;
+        Wed, 13 Aug 2025 12:50:18 -0700 (PDT)
+Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-71d6103c2e3sm1148077b3.68.2025.08.13.12.50.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Aug 2025 12:50:18 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <d50ccb6d-a26c-4ab8-b213-161622e25c7c@redhat.com>
+Date: Wed, 13 Aug 2025 15:50:16 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250812175848.512446-1-kuniyu@google.com> <20250812175848.512446-13-kuniyu@google.com>
- <20250813130009.GA114408@cmpxchg.org>
-In-Reply-To: <20250813130009.GA114408@cmpxchg.org>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Wed, 13 Aug 2025 11:43:15 -0700
-X-Gm-Features: Ac12FXzkQNJfJzM_zFO5RI8--6tu5_zAqIX6wf49jOuR7WukQGz1HzzF1Da6JMs
-Message-ID: <CAAVpQUB-xnx_29Hw-_Z4EbtJKkJT1_BCfXcQM7OpCO09goF+ew@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next 12/12] net-memcg: Decouple controlled memcg
- from global protocol memory accounting.
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Willem de Bruijn <willemb@google.com>, Matthieu Baerts <matttbe@kernel.org>, 
-	Mat Martineau <martineau@kernel.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Tejun Heo <tj@kernel.org>, Simon Horman <horms@kernel.org>, Geliang Tang <geliang@kernel.org>, 
-	Muchun Song <muchun.song@linux.dev>, Mina Almasry <almasrymina@google.com>, 
-	Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, mptcp@lists.linux.dev, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [-next v2 2/4] cpuset: decouple tmpmaks and cpumaks of cs free
+To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com, chenridong@huawei.com, christophe.jaillet@wanadoo.fr
+References: <20250813082904.1091651-1-chenridong@huaweicloud.com>
+ <20250813082904.1091651-3-chenridong@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <20250813082904.1091651-3-chenridong@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Aug 13, 2025 at 6:00=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
+
+On 8/13/25 4:29 AM, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
 >
-> On Tue, Aug 12, 2025 at 05:58:30PM +0000, Kuniyuki Iwashima wrote:
-> > If all workloads were guaranteed to be controlled under memcg, the issu=
-e
-> > could be worked around by setting tcp_mem[0~2] to UINT_MAX.
-> >
-> > In reality, this assumption does not always hold, and processes that
-> > belong to the root cgroup or opt out of memcg can consume memory up to
-> > the global limit, becoming a noisy neighbour.
+> Currently, free_cpumasks can free tmpmasks of cpumask of cs. However, it
+> doesn't have couple these 2 options. To make the function more clearer,
+> move the freeing of cpumask in cs to the free_cpuset. And rename the
+> free_cpumasks to the free_tmpmasks. which is Single responsibility.
 >
-> As per the last thread, this is not a supported usecase. Opting out of
-> memcg coverage for individual cgroups is a self-inflicted problem and
-> misconfiguration. There is *no* memory isolation *at all* on such
-> containers.
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
 
-I think the commit message needs to be improved, but could
-you read throughout the patch again ?  I think you have the
-same misunderstanding that Shakeel had and corrected here.
-https://lore.kernel.org/netdev/jmbszz4m7xkw7fzolpusjesbreaczmr4i64kynbs3zco=
-ehrkpj@lwso5soc4dh3/
+Other than typos in the patch title, the code change looks good to me.
 
----8<---
-Initially, I thought the series introduced multiple modes, including an
-option to exclude network memory from memcg accounting. However, if I
-understand correctly, that is not the case=E2=80=94the opt-out applies only=
- to
-the global TCP/UDP accounting. That=E2=80=99s a relief, and I apologize for=
- the
-misunderstanding.
----8<---
+Cheers,
+Longman
 
-This patch does NOT change how memcg is applied to sockets
-but changes how _another_ memory accounting in the networking
-layer is applied to sockets.
-
-Currently, memcg AND the other mem accounting are applied
-to socket buffers.
-
-With/without this patch, memcg is _always_ applied to socket
-buffers.
-
-Also, there is _no_ behavioural change for _uncontrolled
-containers_ that have been subject to the two memory
-accounting.  This behaviour hasn't been changed since
-you added memcg support for the networking stack in
-e805605c72102, and we want to _preserve_ this behaviour.
-
-This change stop double-charging by opting out of _the
-networking layer one_ because it interferes with memcg
-and complicates configuration of memory.max and the
-global networking limit.
-
-
-> Maybe their socket buffers is the only thing that happens
-> to matter to *you*, but this is in no way a generic, universal,
-> upstreamable solution. Knob or auto-detection is not the issue.
+> ---
+>   kernel/cgroup/cpuset.c | 32 +++++++++++++-------------------
+>   1 file changed, 13 insertions(+), 19 deletions(-)
 >
-> Nacked-by: Johannes Weiner <hannes@cmpxchg.org>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 3466ebbf1016..aebda14cc67f 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -459,23 +459,14 @@ static inline int alloc_cpumasks(struct cpuset *cs, struct tmpmasks *tmp)
+>   }
+>   
+>   /**
+> - * free_cpumasks - free cpumasks in a tmpmasks structure
+> - * @cs:  the cpuset that have cpumasks to be free.
+> + * free_tmpmasks - free cpumasks in a tmpmasks structure
+>    * @tmp: the tmpmasks structure pointer
+>    */
+> -static inline void free_cpumasks(struct cpuset *cs, struct tmpmasks *tmp)
+> +static inline void free_tmpmasks(struct tmpmasks *tmp)
+>   {
+> -	if (cs) {
+> -		free_cpumask_var(cs->cpus_allowed);
+> -		free_cpumask_var(cs->effective_cpus);
+> -		free_cpumask_var(cs->effective_xcpus);
+> -		free_cpumask_var(cs->exclusive_cpus);
+> -	}
+> -	if (tmp) {
+> -		free_cpumask_var(tmp->new_cpus);
+> -		free_cpumask_var(tmp->addmask);
+> -		free_cpumask_var(tmp->delmask);
+> -	}
+> +	free_cpumask_var(tmp->new_cpus);
+> +	free_cpumask_var(tmp->addmask);
+> +	free_cpumask_var(tmp->delmask);
+>   }
+>   
+>   /**
+> @@ -508,7 +499,10 @@ static struct cpuset *alloc_trial_cpuset(struct cpuset *cs)
+>    */
+>   static inline void free_cpuset(struct cpuset *cs)
+>   {
+> -	free_cpumasks(cs, NULL);
+> +	free_cpumask_var(cs->cpus_allowed);
+> +	free_cpumask_var(cs->effective_cpus);
+> +	free_cpumask_var(cs->effective_xcpus);
+> +	free_cpumask_var(cs->exclusive_cpus);
+>   	kfree(cs);
+>   }
+>   
+> @@ -2427,7 +2421,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>   	if (cs->partition_root_state)
+>   		update_partition_sd_lb(cs, old_prs);
+>   out_free:
+> -	free_cpumasks(NULL, &tmp);
+> +	free_tmpmasks(&tmp);
+>   	return retval;
+>   }
+>   
+> @@ -2530,7 +2524,7 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>   	if (cs->partition_root_state)
+>   		update_partition_sd_lb(cs, old_prs);
+>   
+> -	free_cpumasks(NULL, &tmp);
+> +	free_tmpmasks(&tmp);
+>   	return 0;
+>   }
+>   
+> @@ -2983,7 +2977,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+>   	notify_partition_change(cs, old_prs);
+>   	if (force_sd_rebuild)
+>   		rebuild_sched_domains_locked();
+> -	free_cpumasks(NULL, &tmpmask);
+> +	free_tmpmasks(&tmpmask);
+>   	return 0;
+>   }
+>   
+> @@ -4006,7 +4000,7 @@ static void cpuset_handle_hotplug(void)
+>   	if (force_sd_rebuild)
+>   		rebuild_sched_domains_cpuslocked();
+>   
+> -	free_cpumasks(NULL, ptmp);
+> +	free_tmpmasks(ptmp);
+>   }
+>   
+>   void cpuset_update_active_cpus(void)
 
-Please let me know if this nack still applies with the
-explanation above.
 
