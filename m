@@ -1,48 +1,48 @@
-Return-Path: <cgroups+bounces-9127-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9128-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5B5EB244C2
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 10:55:13 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36CB6B244BD
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 10:54:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1C1F588589
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 08:54:33 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 27CDA4E391D
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 08:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1165D2ED15C;
-	Wed, 13 Aug 2025 08:54:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C902EE5FE;
+	Wed, 13 Aug 2025 08:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="herhqNMS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gkB0DENA"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B151614A0B5;
-	Wed, 13 Aug 2025 08:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EECFC2ECEAB;
+	Wed, 13 Aug 2025 08:54:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755075269; cv=none; b=gvpxJVqyAYewJZSX+vl5Ghc1mrq7maUyq9iUOzZRJFnJlcWPK+ge3Pux9e4m2BvXTvFmM16vo73xmVmpJylGOUyG3idBfYnjeWxqHueWHEFFeDA9PjCAcmVkgD5hW0lhoX+vC6ssm+jfLMn3iR15aZzaVEzlmhfkpS3DLKxAL2Y=
+	t=1755075281; cv=none; b=QL1RirvPqfetAbVKUeV+6FbK5tzwvdUYzD8/eF8zill8JdRIkvJN8fq6vi6SHzVf5wiArfaXc7MM//WC9ikc0ldesy3+15LKunXuCX4MC7DjEceWdEjfeyN7xuS3iRUPh3ZicR6T4GHU9wADSX2zHU+m7y8dwWW+2jCMkngxbmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755075269; c=relaxed/simple;
-	bh=SPEB5tXelaltjOYbgqCSrRrEOItBWpxIPqLytrMKnXI=;
+	s=arc-20240116; t=1755075281; c=relaxed/simple;
+	bh=SBXBWsF/p9NKoJCWyngak/HD9GTkihC0XAEtH+NHPaU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d0w7V2A3TZufv/T1BANVZNcfiRBKoO1zpD7heh3OSPPkCq/6/gFIVnQcL7xHZZG6tFlVbNEqF182xU5QiP4wAtUZSjqOvrAAONPobFp72sGInazHxvm+i62qLRBA6Q1V8B1HGsEUOybu2nKMKLWwk5tDv5bjHGI0OryxGHfynOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=herhqNMS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 244F6C4CEEB;
-	Wed, 13 Aug 2025 08:54:24 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=b/flKVz4OxtdFL+v4l1+EMB81EBp6f78pGNuO5/dEb5w4NtnMy+YoDZIjS6ttobyCFavhg7Zs0ODhQCoUpKINJN1kXwiGu3Zu732/+IQbE0YxpewxY74jBKH3dqPkXHDucsC70fcMsneK6ZVevRzYvDXfVOs1XLLRM+AO/d5nK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gkB0DENA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37C3DC4CEEB;
+	Wed, 13 Aug 2025 08:54:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755075269;
-	bh=SPEB5tXelaltjOYbgqCSrRrEOItBWpxIPqLytrMKnXI=;
+	s=k20201202; t=1755075280;
+	bh=SBXBWsF/p9NKoJCWyngak/HD9GTkihC0XAEtH+NHPaU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=herhqNMSZD2u105m3vJP0R5NGzYg8f4wgoRgW1wtPscJKKIJ8iB4LCJ7YZVRkLPll
-	 aCCq99Y1WcMsFRfF/bEfd1fSFHveJwvnInSPrmYXF2cRC2hyInkxWN8eQxpBsmUJ5V
-	 YYqJztfk0ZrC5Nj6PYyK0wR/z1CMA+zjyQ2L+rgakOM+7mxQpupCHI862M8uAUf95o
-	 1nJMo9GRs6ivwlUcrBQSLXyiTO5gay4Ee2JPzyWsMsJY8m4R/U9q84az1GLtzRIh0K
-	 dVVBFh4NXq5IGdfu4xeKewoyKhGtZBzp+MrA515ppiDaVha4AKPsNTEq2kPm4+UDir
-	 r3hGyQdMGXGhw==
-Message-ID: <603e3360-1f8f-41bd-94fd-a4a94e4a2c34@kernel.org>
-Date: Wed, 13 Aug 2025 10:54:19 +0200
+	b=gkB0DENAHiMv1bTV0uLkAOQtPelp8vcSXECcmJM1R8fLXEb+A/yNSIS0Lw5g/aNLq
+	 TScjivlOvmkh7LBv6vZuPf17tX/AEY+NwOf53y4mJZTF7N82ecPlFHRIFCkJoVpIqW
+	 Pd0PYJbXGIzPSwqVgib7ILcfUzFxfqcaEMmGH6qI1ymzYckc2KQbiebdU2wxUaOJIa
+	 r8EXvG/9cNxgcghFbKP5v8lD3OgY4KcRtXtg8dCIdQsUj/AJVQspscW02B6BvnvM1j
+	 GSsw2Gso6j90PUTrIAdD6q0ujq/FxP0XsJWpG/myCkLTddEzOzPRj8HST0bDnyoiNe
+	 KRZA8hDbrL9ZA==
+Message-ID: <3f267fa4-4266-40fa-a485-bd14012f4b61@kernel.org>
+Date: Wed, 13 Aug 2025 10:54:33 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -50,8 +50,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH v3 net-next 01/12] mptcp: Fix up subflow's memcg when
- CONFIG_SOCK_CGROUP_DATA=n.
+Subject: Re: [PATCH v3 net-next 02/12] mptcp: Use tcp_under_memory_pressure()
+ in mptcp_epollin_ready().
 Content-Language: en-GB, fr-BE
 To: Kuniyuki Iwashima <kuniyu@google.com>,
  "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
@@ -67,7 +67,7 @@ Cc: Simon Horman <horms@kernel.org>, Geliang Tang <geliang@kernel.org>,
  Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org,
  mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org
 References: <20250812175848.512446-1-kuniyu@google.com>
- <20250812175848.512446-2-kuniyu@google.com>
+ <20250812175848.512446-3-kuniyu@google.com>
 From: Matthieu Baerts <matttbe@kernel.org>
 Autocrypt: addr=matttbe@kernel.org; keydata=
  xsFNBFXj+ekBEADxVr99p2guPcqHFeI/JcFxls6KibzyZD5TQTyfuYlzEp7C7A9swoK5iCvf
@@ -113,38 +113,23 @@ Autocrypt: addr=matttbe@kernel.org; keydata=
  JY6dglzGKnCi/zsmp2+1w559frz4+IC7j/igvJGX4KDDKUs0mlld8J2u2sBXv7CGxdzQoHaz
  lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
 Organization: NGI0 Core
-In-Reply-To: <20250812175848.512446-2-kuniyu@google.com>
+In-Reply-To: <20250812175848.512446-3-kuniyu@google.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 Hi Kuniyuki,
 
 On 12/08/2025 19:58, Kuniyuki Iwashima wrote:
-> When sk_alloc() allocates a socket, mem_cgroup_sk_alloc() sets
-> sk->sk_memcg based on the current task.
+> Some conditions used in mptcp_epollin_ready() are the same as
+> tcp_under_memory_pressure().
 > 
-> MPTCP subflow socket creation is triggered from userspace or
-> an in-kernel worker.
+> We will modify tcp_under_memory_pressure() in the later patch.
 > 
-> In the latter case, sk->sk_memcg is not what we want.  So, we fix
-> it up from the parent socket's sk->sk_memcg in mptcp_attach_cgroup().
-> 
-> Although the code is placed under #ifdef CONFIG_MEMCG, it is buried
-> under #ifdef CONFIG_SOCK_CGROUP_DATA.
-> 
-> The two configs are orthogonal.  If CONFIG_MEMCG is enabled without
-> CONFIG_SOCK_CGROUP_DATA, the subflow's memory usage is not charged
-> correctly.
-> 
-> Let's move the code out of the wrong ifdef guard.
-> 
-> Note that sk->sk_memcg is freed in sk_prot_free() and the parent
-> sk holds the refcnt of memcg->css here, so we don't need to use
-> css_tryget().
+> Let's use tcp_under_memory_pressure() instead.
 
-Thank you for the patch!
+Good idea, thanks!
 
-Acked-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
 
 Cheers,
 Matt
