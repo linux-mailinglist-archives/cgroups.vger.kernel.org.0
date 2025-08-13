@@ -1,277 +1,154 @@
-Return-Path: <cgroups+bounces-9123-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9127-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F139AB24492
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 10:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E5B5EB244C2
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 10:55:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D5432A2256
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 08:43:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1C1F588589
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 08:54:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 683872F0C47;
-	Wed, 13 Aug 2025 08:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1165D2ED15C;
+	Wed, 13 Aug 2025 08:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="herhqNMS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DE52F0692;
-	Wed, 13 Aug 2025 08:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B151614A0B5;
+	Wed, 13 Aug 2025 08:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755074613; cv=none; b=PfW8H1GFva67t9wJNYEHHcYF+YdLbus7E+Mx81Z3VnXuQv582bzwMirLc8p08uqBF9wPZbe40D7tj2F5lRtJVXYGnl4YOCObj0Or71vyv2iZdAwstFmZCHHQ0ONIYdcXlQmtdEH57VvMYjIstU308by38MIshZw5RlE71fUENu4=
+	t=1755075269; cv=none; b=gvpxJVqyAYewJZSX+vl5Ghc1mrq7maUyq9iUOzZRJFnJlcWPK+ge3Pux9e4m2BvXTvFmM16vo73xmVmpJylGOUyG3idBfYnjeWxqHueWHEFFeDA9PjCAcmVkgD5hW0lhoX+vC6ssm+jfLMn3iR15aZzaVEzlmhfkpS3DLKxAL2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755074613; c=relaxed/simple;
-	bh=OdgxX4Rn7gFH8ZsT0xUJqucClnQOuiA6GibA7838GO4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AX2x7Biqpmb8RKu8O3Qa21vMw3P61c+3KOIvY+/uVJGLydMcg7luIhuEcTRNZoopFcnwFbZSQKHFVgCjXMhZ6DpV8Ggocc9htpQq6mcxfKVjOTQvmsYmzvhhx32r9cvP6POvQS5erVWdXD+2zPxPBhH7gW+BKct4CdCrevWTWec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4c222n2JtDzKHMx3;
-	Wed, 13 Aug 2025 16:43:29 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 933361A1BA6;
-	Wed, 13 Aug 2025 16:43:28 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP4 (Coremail) with SMTP id gCh0CgBHDg8qUJxoaYwdDg--.28644S6;
-	Wed, 13 Aug 2025 16:43:28 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	longman@redhat.com
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com,
-	chenridong@huawei.com,
-	christophe.jaillet@wanadoo.fr
-Subject: [-next v2 4/4] cpuset: add helpers for cpus read and cpuset_mutex locks
-Date: Wed, 13 Aug 2025 08:29:04 +0000
-Message-Id: <20250813082904.1091651-5-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250813082904.1091651-1-chenridong@huaweicloud.com>
-References: <20250813082904.1091651-1-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1755075269; c=relaxed/simple;
+	bh=SPEB5tXelaltjOYbgqCSrRrEOItBWpxIPqLytrMKnXI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=d0w7V2A3TZufv/T1BANVZNcfiRBKoO1zpD7heh3OSPPkCq/6/gFIVnQcL7xHZZG6tFlVbNEqF182xU5QiP4wAtUZSjqOvrAAONPobFp72sGInazHxvm+i62qLRBA6Q1V8B1HGsEUOybu2nKMKLWwk5tDv5bjHGI0OryxGHfynOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=herhqNMS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 244F6C4CEEB;
+	Wed, 13 Aug 2025 08:54:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755075269;
+	bh=SPEB5tXelaltjOYbgqCSrRrEOItBWpxIPqLytrMKnXI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=herhqNMSZD2u105m3vJP0R5NGzYg8f4wgoRgW1wtPscJKKIJ8iB4LCJ7YZVRkLPll
+	 aCCq99Y1WcMsFRfF/bEfd1fSFHveJwvnInSPrmYXF2cRC2hyInkxWN8eQxpBsmUJ5V
+	 YYqJztfk0ZrC5Nj6PYyK0wR/z1CMA+zjyQ2L+rgakOM+7mxQpupCHI862M8uAUf95o
+	 1nJMo9GRs6ivwlUcrBQSLXyiTO5gay4Ee2JPzyWsMsJY8m4R/U9q84az1GLtzRIh0K
+	 dVVBFh4NXq5IGdfu4xeKewoyKhGtZBzp+MrA515ppiDaVha4AKPsNTEq2kPm4+UDir
+	 r3hGyQdMGXGhw==
+Message-ID: <603e3360-1f8f-41bd-94fd-a4a94e4a2c34@kernel.org>
+Date: Wed, 13 Aug 2025 10:54:19 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBHDg8qUJxoaYwdDg--.28644S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxuFWfuryftF47Kr4rXF48tFb_yoW7CrWDpF
-	yq9rW7trWUtrs7uw13G34Dur18Kw1jgF4UGF1kJ3WrZFy7AFsI9FyDCasxWr1Ygry7Crn8
-	W3Zruws0vayDJr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUoo7KUUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH v3 net-next 01/12] mptcp: Fix up subflow's memcg when
+ CONFIG_SOCK_CGROUP_DATA=n.
+Content-Language: en-GB, fr-BE
+To: Kuniyuki Iwashima <kuniyu@google.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Neal Cardwell <ncardwell@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>,
+ Mat Martineau <martineau@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Tejun Heo <tj@kernel.org>
+Cc: Simon Horman <horms@kernel.org>, Geliang Tang <geliang@kernel.org>,
+ Muchun Song <muchun.song@linux.dev>, Mina Almasry <almasrymina@google.com>,
+ Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org,
+ mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org
+References: <20250812175848.512446-1-kuniyu@google.com>
+ <20250812175848.512446-2-kuniyu@google.com>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <20250812175848.512446-2-kuniyu@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Chen Ridong <chenridong@huawei.com>
+Hi Kuniyuki,
 
-cpuset: add helpers for cpus_read_lock and cpuset_mutex
+On 12/08/2025 19:58, Kuniyuki Iwashima wrote:
+> When sk_alloc() allocates a socket, mem_cgroup_sk_alloc() sets
+> sk->sk_memcg based on the current task.
+> 
+> MPTCP subflow socket creation is triggered from userspace or
+> an in-kernel worker.
+> 
+> In the latter case, sk->sk_memcg is not what we want.  So, we fix
+> it up from the parent socket's sk->sk_memcg in mptcp_attach_cgroup().
+> 
+> Although the code is placed under #ifdef CONFIG_MEMCG, it is buried
+> under #ifdef CONFIG_SOCK_CGROUP_DATA.
+> 
+> The two configs are orthogonal.  If CONFIG_MEMCG is enabled without
+> CONFIG_SOCK_CGROUP_DATA, the subflow's memory usage is not charged
+> correctly.
+> 
+> Let's move the code out of the wrong ifdef guard.
+> 
+> Note that sk->sk_memcg is freed in sk_prot_free() and the parent
+> sk holds the refcnt of memcg->css here, so we don't need to use
+> css_tryget().
 
-Replace repetitive locking patterns with new helpers:
-- cpus_read_cpuset_lock()
-- cpus_read_cpuset_unlock()
+Thank you for the patch!
 
-This makes the code cleaner and ensures consistent lock ordering.
+Acked-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
 
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/cpuset-internal.h |  2 ++
- kernel/cgroup/cpuset-v1.c       | 12 +++------
- kernel/cgroup/cpuset.c          | 48 +++++++++++++++------------------
- 3 files changed, 28 insertions(+), 34 deletions(-)
-
-diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-index 75b3aef39231..6fb00c96044d 100644
---- a/kernel/cgroup/cpuset-internal.h
-+++ b/kernel/cgroup/cpuset-internal.h
-@@ -276,6 +276,8 @@ int cpuset_update_flag(cpuset_flagbits_t bit, struct cpuset *cs, int turning_on)
- ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 				    char *buf, size_t nbytes, loff_t off);
- int cpuset_common_seq_show(struct seq_file *sf, void *v);
-+void cpus_read_cpuset_lock(void);
-+void cpus_read_cpuset_unlock(void);
- 
- /*
-  * cpuset-v1.c
-diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-index b69a7db67090..f3d2d116c842 100644
---- a/kernel/cgroup/cpuset-v1.c
-+++ b/kernel/cgroup/cpuset-v1.c
-@@ -169,8 +169,7 @@ static int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
- 	cpuset_filetype_t type = cft->private;
- 	int retval = -ENODEV;
- 
--	cpus_read_lock();
--	cpuset_lock();
-+	cpus_read_cpuset_lock();
- 	if (!is_cpuset_online(cs))
- 		goto out_unlock;
- 
-@@ -184,8 +183,7 @@ static int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
- 		break;
- 	}
- out_unlock:
--	cpuset_unlock();
--	cpus_read_unlock();
-+	cpus_read_cpuset_unlock();
- 	return retval;
- }
- 
-@@ -454,8 +452,7 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
- 	cpuset_filetype_t type = cft->private;
- 	int retval = 0;
- 
--	cpus_read_lock();
--	cpuset_lock();
-+	cpus_read_cpuset_lock();
- 	if (!is_cpuset_online(cs)) {
- 		retval = -ENODEV;
- 		goto out_unlock;
-@@ -498,8 +495,7 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
- 		break;
- 	}
- out_unlock:
--	cpuset_unlock();
--	cpus_read_unlock();
-+	cpus_read_cpuset_unlock();
- 	return retval;
- }
- 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 3c5e44f824d1..9c0e8f297aaf 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -260,6 +260,18 @@ void cpuset_unlock(void)
- 	mutex_unlock(&cpuset_mutex);
- }
- 
-+void cpus_read_cpuset_lock(void)
-+{
-+	cpus_read_lock();
-+	mutex_lock(&cpuset_mutex);
-+}
-+
-+void cpus_read_cpuset_unlock(void)
-+{
-+	mutex_unlock(&cpuset_mutex);
-+	cpus_read_unlock();
-+}
-+
- static DEFINE_SPINLOCK(callback_lock);
- 
- void cpuset_callback_lock_irq(void)
-@@ -3233,8 +3245,7 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 	int retval = -ENODEV;
- 
- 	buf = strstrip(buf);
--	cpus_read_lock();
--	mutex_lock(&cpuset_mutex);
-+	cpus_read_cpuset_lock();
- 	if (!is_cpuset_online(cs))
- 		goto out_unlock;
- 
-@@ -3263,8 +3274,7 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 	if (force_sd_rebuild)
- 		rebuild_sched_domains_locked();
- out_unlock:
--	mutex_unlock(&cpuset_mutex);
--	cpus_read_unlock();
-+	cpus_read_cpuset_unlock();
- 	flush_workqueue(cpuset_migrate_mm_wq);
- 	return retval ?: nbytes;
- }
-@@ -3367,12 +3377,10 @@ static ssize_t cpuset_partition_write(struct kernfs_open_file *of, char *buf,
- 	else
- 		return -EINVAL;
- 
--	cpus_read_lock();
--	mutex_lock(&cpuset_mutex);
-+	cpus_read_cpuset_lock();
- 	if (is_cpuset_online(cs))
- 		retval = update_prstate(cs, val);
--	mutex_unlock(&cpuset_mutex);
--	cpus_read_unlock();
-+	cpus_read_cpuset_unlock();
- 	return retval ?: nbytes;
- }
- 
-@@ -3497,9 +3505,7 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- 	if (!parent)
- 		return 0;
- 
--	cpus_read_lock();
--	mutex_lock(&cpuset_mutex);
--
-+	cpus_read_cpuset_lock();
- 	if (is_spread_page(parent))
- 		set_bit(CS_SPREAD_PAGE, &cs->flags);
- 	if (is_spread_slab(parent))
-@@ -3551,8 +3557,7 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- 	cpumask_copy(cs->effective_cpus, parent->cpus_allowed);
- 	spin_unlock_irq(&callback_lock);
- out_unlock:
--	mutex_unlock(&cpuset_mutex);
--	cpus_read_unlock();
-+	cpus_read_cpuset_unlock();
- 	return 0;
- }
- 
-@@ -3567,16 +3572,12 @@ static void cpuset_css_offline(struct cgroup_subsys_state *css)
- {
- 	struct cpuset *cs = css_cs(css);
- 
--	cpus_read_lock();
--	mutex_lock(&cpuset_mutex);
--
-+	cpus_read_cpuset_lock();
- 	if (!cpuset_v2() && is_sched_load_balance(cs))
- 		cpuset_update_flag(CS_SCHED_LOAD_BALANCE, cs, 0);
- 
- 	cpuset_dec();
--
--	mutex_unlock(&cpuset_mutex);
--	cpus_read_unlock();
-+	cpus_read_cpuset_unlock();
- }
- 
- /*
-@@ -3588,16 +3589,11 @@ static void cpuset_css_killed(struct cgroup_subsys_state *css)
- {
- 	struct cpuset *cs = css_cs(css);
- 
--	cpus_read_lock();
--	mutex_lock(&cpuset_mutex);
--
-+	cpus_read_cpuset_lock();
- 	/* Reset valid partition back to member */
- 	if (is_partition_valid(cs))
- 		update_prstate(cs, PRS_MEMBER);
--
--	mutex_unlock(&cpuset_mutex);
--	cpus_read_unlock();
--
-+	cpus_read_cpuset_unlock();
- }
- 
- static void cpuset_css_free(struct cgroup_subsys_state *css)
+Cheers,
+Matt
 -- 
-2.34.1
+Sponsored by the NGI0 Core fund.
 
 
