@@ -1,144 +1,155 @@
-Return-Path: <cgroups+bounces-9144-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9145-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF96FB2544B
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 22:09:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2CF3B25478
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 22:21:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B9DF7B455A
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 20:07:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BE9D9A3225
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 20:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D8312FD7C7;
-	Wed, 13 Aug 2025 20:09:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667D5271A71;
+	Wed, 13 Aug 2025 20:21:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ayX0ijin"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="cGcHfJ/P"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CE22FD7AC
-	for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 20:09:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CECB23BCE2
+	for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 20:21:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755115764; cv=none; b=uj8CThKMmLiiDyGchTRL1YGIGscZPQcFO8AnGuKCoxb3UO0wILWDl8/T7zOj6VXHnzE6uTR71hKzRxxpc0XnFDmY8g29EKoXKH4Z0DqcxC78VEUSY+ghlskRyEfoxel4QOnDjcefImeeZEJzaVlLf/MijIe4A9l8ERlK/wk7HMY=
+	t=1755116511; cv=none; b=XvnRJQLkENSp9klL+U7AT+B9Is4L1VALry/3M/6VXhasEWPpYCNy3mPomAoqVy4bRptGqaEkA4cyqwQyi1/8Wv7Od89elgaLzLGTheiGHXcJp2YaitaBR7AuwmEGi942uSuHD7BDtPJjLqzZkItGvuz+jDx46weQ6GWqKoW1GiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755115764; c=relaxed/simple;
-	bh=2n4wZwTwJAQn+2kkdeSV5czAJtaQGGR+E9aS+hCH9Lk=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=T/Gw6bE46Hwn//4jhb/bJjAZFrDYx2YPgcwFOGQStNrBAn3oPmgyNtA100Bdkwvg9b9J9NjSnuppyVBQd9N1TYHr5GNU8HuRiA9+r7LiplON7OfoaNUO3YatNOep9f/o9Xfhvf2RCwdGl1Sysu7QlR9SvsOCuibuunFZl/UlETA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ayX0ijin; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1755115761;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Id7hIB1jKShzLzzptFHUZAPK8H5+qbzZTzK312LljXM=;
-	b=ayX0ijino+gqACB+sg3RnZ2w6o91AXlTkVPqIdCi6jWTf2sFVSSeQY3B1lpZS+RMQ0/anF
-	m9pSoJeeF81V1P07DjArMwPZLR6M89K45mjxL8jBmidDdbLYyUETKppGgNLPekHp/KUHku
-	QR4DCWVi+pdP/7/5TVF1z20yU+zXtRw=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-627-J3PxQJSAM3CZfj-cuGIjNw-1; Wed, 13 Aug 2025 16:09:19 -0400
-X-MC-Unique: J3PxQJSAM3CZfj-cuGIjNw-1
-X-Mimecast-MFC-AGG-ID: J3PxQJSAM3CZfj-cuGIjNw_1755115759
-Received: by mail-yb1-f197.google.com with SMTP id 3f1490d57ef6-e931cca771eso392875276.3
-        for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 13:09:19 -0700 (PDT)
+	s=arc-20240116; t=1755116511; c=relaxed/simple;
+	bh=spEw6iTr/TlKdoJ9qRoclMR04HEh7O0DeIyHVYrMPS4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hgy9Wd8kHymPxGdfFnMbtoB+pCa7cjw4PdpjJoCERZSZwd0s2AX+CBfk+iN8lVpR4xgOVqRl8FAhxhfX6FIqEuR20mtLaoEdFHykRIdGhlHzWb/sFm9wc0WutDryUor8YChvSq4wtAjVuopLtyJwUpKe/pMXYmiEE6DiKdskVrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=cGcHfJ/P; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7e870316b79so24887785a.0
+        for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 13:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1755116508; x=1755721308; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=H30kUHUoAp0mgFKEUbjujIS0Xnkk94c0v9Jq8jaPeYc=;
+        b=cGcHfJ/PUOTvizvE2euT/CsdSMMwDgvI7BPZL6k0tNNR4edHZ/JxwXEXE9IyR/AGTo
+         4k4gR1M8LFn1RvVZQDbuwcpqwsubgC7d8hpF+qU9b6EKUhBq3Au7/9hBy+8P5jdX+yxF
+         G01EguLPdrNeSKIfy5CUhAIPKRo71gPD665H/ORJ/wV4tZPf171z5d7TGPljXHcutguE
+         3NDtpn3cimXkgIeQ/vxS6uqx6XoP7x4gNoeA8jwkmHrphJ+i/bwiKCyJQZe4zUNJHXoi
+         +SlN+Ha7YDd/d0E5cAuvMr9wcixsySfdV0Tj8RJO5VEQ/CaliJwkhGDSY/nxKq3zQgyH
+         c0eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755115759; x=1755720559;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
+        d=1e100.net; s=20230601; t=1755116508; x=1755721308;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Id7hIB1jKShzLzzptFHUZAPK8H5+qbzZTzK312LljXM=;
-        b=mSGIK8yiUXjWskUbj4u0HUXAmwGDmZEag7RtcOGY8Wnm7sCO+Jh4W/fckh/smCB2J8
-         GT/wmlRVLRPwdCFHDXEIz53KR6jFQlMQzxdpro9+QKxjMi0e6IqJ5og6o2eetBVJkTYn
-         2SSKKsWnOQp9ZcvUKtVigTfA1FooWXh+0q0d/EF9lKEcaV6a4dU5Y+V5vIjDfGqM+VY3
-         TxPEb0XloF8KITZbQbdJaZ0NMM6JDK0CEQl1Wc5S1RIxxuNKD/SFCCTGsb0Xoaob3X8t
-         O7CcQf8ZWTufNNPIiOy2Rq3+l2UK5+KsE9uoxL5Q1gEExnqrkgzXio3AUtfPjvmEBzJr
-         95gg==
-X-Gm-Message-State: AOJu0YxaSBd0duheZ5GWJIh9LFr7DQ2ZvNS6TFaGi9hez36Cbv1005Ib
-	Ff8sJVDZy7YrhCxJO+QTwI/geY8fd/f99FujQiJVD5EIi1McFit8Xrv+PjOjJC+xan3yN4aOJCd
-	CId3Z1Z4/8W+0OgNwjiH9KIKGQroluQXwQxN0RNXDJ49XFSitfdsl1aDT7fA=
-X-Gm-Gg: ASbGncvECqfOcMykPS2aZa7IYC/kAqdm6TQZu3hQZtjebv24WaLKStI0RfuyH/VlijL
-	jr6Bif1TVGA/nlZFl3yKqNpjuOd7eszAMiDSovkRDLywukANSml6JVYvrsU+NIp4GZH5SRpDwkg
-	LjUlYa8KMFbwhfkvMdp3G3yXyGxDwBsw9iPJULRciRvRC4hKgpf+dkpTMv8AQ+BwKkshZCAzuJK
-	xYtB1AxVDJQXtUNyDEpwn8N2BTiOqK8ieAwjFZSGFFYKvW+YEvcUxU0bqOQXHuKBjL96i6zV0TO
-	b3gb994vJZ73YDp8SAlsXUaY4+GNPunWyhq534zT1dAiGwEhJP+mn3eusc3pgBEWJGuBfUfBYAn
-	2+axRWsx/EA==
-X-Received: by 2002:a05:6902:6b05:b0:e90:7383:cc7d with SMTP id 3f1490d57ef6-e931e191b93mr570934276.21.1755115759197;
-        Wed, 13 Aug 2025 13:09:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGpwtZpmV8u1pxNPLlWMiYmxOFFQKXKvZEYc1RrYFUSBfDMMIM6iARj11h42NsnC/JdPE9Gkg==
-X-Received: by 2002:a05:6902:6b05:b0:e90:7383:cc7d with SMTP id 3f1490d57ef6-e931e191b93mr570888276.21.1755115758702;
-        Wed, 13 Aug 2025 13:09:18 -0700 (PDT)
-Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e931d56ed53sm128685276.21.2025.08.13.13.09.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Aug 2025 13:09:18 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <e0ac3594-deab-455c-9c2f-495b4e4422e2@redhat.com>
-Date: Wed, 13 Aug 2025 16:09:17 -0400
+        bh=H30kUHUoAp0mgFKEUbjujIS0Xnkk94c0v9Jq8jaPeYc=;
+        b=EMDzYqVaJHIojMSnSLL7PwbyCtk5JLLEMxG9fFtLJJaBRmr9XImp2uKeJVnEswFema
+         tBtNQbpFGtUEU78SvUhK+TpbKrSRFFwWnmgmcJRWDae8FoJTpaNA6YzNe1t7xcwtmwAS
+         2mj9brthfa1GsQGOIvDptCYpuT+NWbqQaUfjUSFEQ+HPFIuQzbjDCygVFfqzrGLRQTzy
+         eiFjP0q9EZWTFXdcNh2q+fDITvus4N6kuFJsDTI5CIxnY8ht7/QT2RNHRk+suKxpZncj
+         ESocpFCXfYiCYKVqKS3qedfT2n/oquc+rp5pEa+0EfRNSHClSF7am/KwDjEFH5Mq7YLe
+         B+qA==
+X-Forwarded-Encrypted: i=1; AJvYcCXQ1AXBytrHqIKNwB9IgixInqMOh3RG/bR2AgvpeRO63XpYfwXivhNsxCirGAA+ZeseoNhf3l89@vger.kernel.org
+X-Gm-Message-State: AOJu0YyR+x+rxfFlrguodLmwvthem2/09jcWTnid6uAJFrTMKpYxVFWI
+	D+Yh1BCS59i4LZoX/zQr2sxyaDYv3WJmoP8H8WLgozc2pTJk02vhcw8FbivMrIrcAW4=
+X-Gm-Gg: ASbGncvzaZdfrsUgJuGCOI+20VzZLorWzFjf1P0PMhfCQcNJNtFk6sUuLKKkCzIiZkJ
+	EbmT/AHbmrJgRmfXtqbcdbWw+2ascK8aiJfhvktC3aISw5XkJReb4iYCBKgIAHWZIevT1Ae5vNu
+	iX5Qo22O9DSX9C/8v9GbjhGToNYxqe8w1awJ11L3AZQoehCBMT7tvcfs37Ts6O50ptqGZCNvxrv
+	KZD1yY7UWdJsOyut556NLdwGVINAGueUOkrclVmo7A87reBTPUEmG9RUw4VqjcNxBfjF4LcnKXb
+	gkOZ+9qO0dGG7ZR6IckIdczroWB0J/NMcKWUuZIbVYjrSNO7zZKB9XTuCm7JlYQj7zJ0WIZOr5z
+	QH/vIw8A2SAp67hwyuhGlzA==
+X-Google-Smtp-Source: AGHT+IHL4RX8mGUQFHn3xTKxG6noHoTer9v5afSRdyTGpU+E2ho9o1DxodPcyvf3+YYPPRrSEMF5JQ==
+X-Received: by 2002:a05:620a:3bd2:b0:7e3:28f3:8a5 with SMTP id af79cd13be357-7e87045d632mr87942885a.28.1755116507799;
+        Wed, 13 Aug 2025 13:21:47 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:929a:4aff:fe16:c778])
+        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7e8079cfcc9sm1486333285a.29.2025.08.13.13.21.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Aug 2025 13:21:46 -0700 (PDT)
+Date: Wed, 13 Aug 2025 16:21:42 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Neal Cardwell <ncardwell@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Matthieu Baerts <matttbe@kernel.org>,
+	Mat Martineau <martineau@kernel.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Tejun Heo <tj@kernel.org>, Simon Horman <horms@kernel.org>,
+	Geliang Tang <geliang@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Mina Almasry <almasrymina@google.com>,
+	Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org,
+	mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 net-next 12/12] net-memcg: Decouple controlled memcg
+ from global protocol memory accounting.
+Message-ID: <20250813202142.GB115258@cmpxchg.org>
+References: <20250812175848.512446-1-kuniyu@google.com>
+ <20250812175848.512446-13-kuniyu@google.com>
+ <20250813130009.GA114408@cmpxchg.org>
+ <CAAVpQUB-xnx_29Hw-_Z4EbtJKkJT1_BCfXcQM7OpCO09goF+ew@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [-next v2 4/4] cpuset: add helpers for cpus read and cpuset_mutex
- locks
-To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
- hannes@cmpxchg.org, mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com, christophe.jaillet@wanadoo.fr
-References: <20250813082904.1091651-1-chenridong@huaweicloud.com>
- <20250813082904.1091651-5-chenridong@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <20250813082904.1091651-5-chenridong@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAVpQUB-xnx_29Hw-_Z4EbtJKkJT1_BCfXcQM7OpCO09goF+ew@mail.gmail.com>
 
-On 8/13/25 4:29 AM, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
->
-> cpuset: add helpers for cpus_read_lock and cpuset_mutex
->
-> Replace repetitive locking patterns with new helpers:
-> - cpus_read_cpuset_lock()
-> - cpus_read_cpuset_unlock()
->
-> This makes the code cleaner and ensures consistent lock ordering.
->
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
->   kernel/cgroup/cpuset-internal.h |  2 ++
->   kernel/cgroup/cpuset-v1.c       | 12 +++------
->   kernel/cgroup/cpuset.c          | 48 +++++++++++++++------------------
->   3 files changed, 28 insertions(+), 34 deletions(-)
->
-> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-> index 75b3aef39231..6fb00c96044d 100644
-> --- a/kernel/cgroup/cpuset-internal.h
-> +++ b/kernel/cgroup/cpuset-internal.h
-> @@ -276,6 +276,8 @@ int cpuset_update_flag(cpuset_flagbits_t bit, struct cpuset *cs, int turning_on)
->   ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
->   				    char *buf, size_t nbytes, loff_t off);
->   int cpuset_common_seq_show(struct seq_file *sf, void *v);
-> +void cpus_read_cpuset_lock(void);
-> +void cpus_read_cpuset_unlock(void);
+On Wed, Aug 13, 2025 at 11:43:15AM -0700, Kuniyuki Iwashima wrote:
+> On Wed, Aug 13, 2025 at 6:00 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> This change stop double-charging by opting out of _the
+> networking layer one_ because it interferes with memcg
+> and complicates configuration of memory.max and the
+> global networking limit.
 
-The names are not intuitive. I would prefer just extend the 
-cpuset_lock/unlock to include cpus_read_lock/unlock and we use 
-cpuset_lock/unlock consistently in the cpuset code. Also, there is now 
-no external user of cpuset_lock/unlock, we may as well remove them from 
-include/linux/cpuset.h.
+No, we do want the global limits as a backstop - even if every single
+cgroup in the system has its own memory limit.
 
-Cheers,
-Longman
+Sure, from a fairness POV, we want socket buffers accounted towards
+the containers' memory footprint and subject to their limits.
 
+But that doesn't imply that we can let the cgroup limit be the only
+thing curbing an explosion in socket buffers.
+
+This isn't about fairness, but about host stability.
+
+The MM can easily get rid of file cache and heap pages, but it has
+limited to no control over the socket buffer lifetime. If you split a
+1TB host into 8 containers limited to ~128G, that doesn't mean you
+want to allow up to 1TB of memory in socket buffers. That could make
+low memory situations unrecoverable.
+
+> > Maybe their socket buffers is the only thing that happens
+> > to matter to *you*, but this is in no way a generic, universal,
+> > upstreamable solution. Knob or auto-detection is not the issue.
+> >
+> > Nacked-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> Please let me know if this nack still applies with the
+> explanation above.
+
+Yes, for one I think it's an unacceptable behavioral change of the
+sysctl semantics.
+
+But my wider point is that I think you're trying to fix something that
+is a direct result of a flawed approach to containerization, and it
+would make much more sense to address that instead.
 
