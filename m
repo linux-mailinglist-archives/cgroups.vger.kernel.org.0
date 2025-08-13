@@ -1,42 +1,42 @@
-Return-Path: <cgroups+bounces-9126-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9122-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B3D9B24498
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 10:44:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CA34B24491
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 10:43:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EA4558054A
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 08:44:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A97E61B6444C
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 08:44:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26222F1FCF;
-	Wed, 13 Aug 2025 08:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431CA2EF678;
+	Wed, 13 Aug 2025 08:43:33 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D4E2F0691;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07A212EE5FE;
 	Wed, 13 Aug 2025 08:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755074614; cv=none; b=l5/r7MnU9qprG1wbRCDZ/keZtwCDcc3feMEExHeeO1fFsMlcymcHVhhYf//D4ptm52C1RGk6onxjcrQamme8/a+/oSLt3KPArkqMdnh8XV71FQMnB7abueOmRK86hRY2kZjQQ7gplBL9VwFSTEezevTHdVXhEQwJHQYUcserfj4=
+	t=1755074613; cv=none; b=uiuRsI99DnY2XbZW2O7/USGEh1dYM+Ewgfz/UjW9kr4vhGRr/NokCu4Mo0QpCKVzyvtXRnL8p1wG62Z/0DItt4hT26jzM2osCtCrmTdjieQXlWT8TYMjQUK2oq3rOhE6BfwaUpgwFhu1otjPGzyGG/btty/PoPXFB6Tx6e99i7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755074614; c=relaxed/simple;
-	bh=LDoKSLv6DaS71m95O+3GWjqRdNCs5dlPBklDENMne4I=;
+	s=arc-20240116; t=1755074613; c=relaxed/simple;
+	bh=IbL18Ly7endX98//AwfH2mqL/1RH4Eg1h8V4HpUJzh4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gGiJvmYqkFcEoRiLUUa2HisKMEqJT0WG61zL2qnfMRWwpfV/jMAdmYrDOCkmtwwVqK3rjTBnUX3rSOBTnpLk3amVtSn7hui1j8CjN92QpqguBKACV261yqpJOquZwrzrIafcYCT7U1WS7FMYMZueh7546abupwZ/jefoRcbSrL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version:Content-Type; b=T8gJZu3JUHVgPqwGbU+H8VaDHbbH/v3a9tdeht1h2RyOFXCmw0M8JTWngfAiq4a7Vl9MXgZIQY4srElfcL50SkUuy3aY/T85KDx0icBJva8Mmkz+7fyDM6pVHNOLTCcjl3C6jXqeQoVYg68EXBxXwNQfJtDDNSQxKmHZ7nuHvZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4c222n1Q1kzKHMx3;
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c222n6NVmzYQvLH;
 	Wed, 13 Aug 2025 16:43:29 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 727D01A1B99;
+	by mail.maildlp.com (Postfix) with ESMTP id 8238F1A1B9F;
 	Wed, 13 Aug 2025 16:43:28 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP4 (Coremail) with SMTP id gCh0CgBHDg8qUJxoaYwdDg--.28644S4;
+	by APP4 (Coremail) with SMTP id gCh0CgBHDg8qUJxoaYwdDg--.28644S5;
 	Wed, 13 Aug 2025 16:43:28 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: tj@kernel.org,
@@ -48,9 +48,9 @@ Cc: cgroups@vger.kernel.org,
 	lujialin4@huawei.com,
 	chenridong@huawei.com,
 	christophe.jaillet@wanadoo.fr
-Subject: [-next v2 2/4] cpuset: decouple tmpmaks and cpumaks of cs free
-Date: Wed, 13 Aug 2025 08:29:02 +0000
-Message-Id: <20250813082904.1091651-3-chenridong@huaweicloud.com>
+Subject: [-next v2 3/4] cpuset: separate tmpmasks and cpuset allocation logic
+Date: Wed, 13 Aug 2025 08:29:03 +0000
+Message-Id: <20250813082904.1091651-4-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250813082904.1091651-1-chenridong@huaweicloud.com>
 References: <20250813082904.1091651-1-chenridong@huaweicloud.com>
@@ -60,14 +60,15 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBHDg8qUJxoaYwdDg--.28644S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF1fXF13Wr4xZry8tFWUJwb_yoW5AFy7pF
-	WYkFW7G3yUJr18W34DJa97Xr1Sk3ykt34kK3sxJ3s5GFyav3y0vFy7Z3sYq3yYkFykWF43
-	JFWDtr4SgFyUtrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgBHDg8qUJxoaYwdDg--.28644S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxtFWfuFW3ZF43uw4UtrW5ZFb_yoWxtryrpF
+	4rCrWUKayUJr18Ww4UG3Z7Gr1fK3yvqa4qy3W5XryruFyaqF4I9FyDJ3sYvay7CasrCF15
+	XF98Aw4IgFyDKrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUU9Kb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
+	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
 	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
@@ -77,102 +78,242 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxJF1fXF13Wr4xZry8tFWUJwb_yoW5AFy7pF
 	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
 	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
 	wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
-	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7v38UUUUU
+	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOGQ6DUUUU
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-Currently, free_cpumasks can free tmpmasks of cpumask of cs. However, it
-doesn't have couple these 2 options. To make the function more clearer,
-move the freeing of cpumask in cs to the free_cpuset. And rename the
-free_cpumasks to the free_tmpmasks. which is Single responsibility.
+The original alloc_cpumasks() served dual purposes: allocating cpumasks
+for both temporary masks (tmpmasks) and cpuset structures. This patch:
+
+1. Decouples these allocation paths for better code clarity
+2. Introduces dedicated alloc_tmpmasks() and dup_or_alloc_cpuset()
+   functions
+3. Maintains symmetric pairing:
+   - alloc_tmpmasks() ↔ free_tmpmasks()
+   - dup_or_alloc_cpuset() ↔ free_cpuset()
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/cpuset.c | 32 +++++++++++++-------------------
- 1 file changed, 13 insertions(+), 19 deletions(-)
+ kernel/cgroup/cpuset.c | 128 ++++++++++++++++++++++-------------------
+ 1 file changed, 69 insertions(+), 59 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 3466ebbf1016..aebda14cc67f 100644
+index aebda14cc67f..3c5e44f824d1 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -459,23 +459,14 @@ static inline int alloc_cpumasks(struct cpuset *cs, struct tmpmasks *tmp)
+@@ -411,51 +411,46 @@ static void guarantee_online_mems(struct cpuset *cs, nodemask_t *pmask)
  }
  
  /**
-- * free_cpumasks - free cpumasks in a tmpmasks structure
-- * @cs:  the cpuset that have cpumasks to be free.
-+ * free_tmpmasks - free cpumasks in a tmpmasks structure
-  * @tmp: the tmpmasks structure pointer
+- * alloc_cpumasks - allocate three cpumasks for cpuset
+- * @cs:  the cpuset that have cpumasks to be allocated.
+- * @tmp: the tmpmasks structure pointer
+- * Return: 0 if successful, -ENOMEM otherwise.
++ * alloc_cpumasks - Allocate an array of cpumask variables
++ * @cpumasks: Pointer to array of cpumask_var_t pointers
++ * @size: Number of cpumasks to allocate
+  *
+- * Only one of the two input arguments should be non-NULL.
++ * Allocates @size cpumasks and initializes them to empty. Returns 0 on
++ * success, -ENOMEM on allocation failure. On failure, any previously
++ * allocated cpumasks are freed.
   */
--static inline void free_cpumasks(struct cpuset *cs, struct tmpmasks *tmp)
-+static inline void free_tmpmasks(struct tmpmasks *tmp)
+-static inline int alloc_cpumasks(struct cpuset *cs, struct tmpmasks *tmp)
++static inline int alloc_cpumasks(cpumask_var_t *pmasks[], u32 size)
  {
+-	cpumask_var_t *pmask1, *pmask2, *pmask3, *pmask4;
++	int i;
+ 
 -	if (cs) {
--		free_cpumask_var(cs->cpus_allowed);
--		free_cpumask_var(cs->effective_cpus);
--		free_cpumask_var(cs->effective_xcpus);
--		free_cpumask_var(cs->exclusive_cpus);
--	}
--	if (tmp) {
--		free_cpumask_var(tmp->new_cpus);
--		free_cpumask_var(tmp->addmask);
--		free_cpumask_var(tmp->delmask);
--	}
-+	free_cpumask_var(tmp->new_cpus);
-+	free_cpumask_var(tmp->addmask);
-+	free_cpumask_var(tmp->delmask);
+-		pmask1 = &cs->cpus_allowed;
+-		pmask2 = &cs->effective_cpus;
+-		pmask3 = &cs->effective_xcpus;
+-		pmask4 = &cs->exclusive_cpus;
+-	} else {
+-		pmask1 = &tmp->new_cpus;
+-		pmask2 = &tmp->addmask;
+-		pmask3 = &tmp->delmask;
+-		pmask4 = NULL;
++	for (i = 0; i < size; i++) {
++		if (!zalloc_cpumask_var(pmasks[i], GFP_KERNEL)) {
++			while (--i >= 0)
++				free_cpumask_var(*pmasks[i]);
++			return -ENOMEM;
++		}
+ 	}
+-
+-	if (!zalloc_cpumask_var(pmask1, GFP_KERNEL))
+-		return -ENOMEM;
+-
+-	if (!zalloc_cpumask_var(pmask2, GFP_KERNEL))
+-		goto free_one;
+-
+-	if (!zalloc_cpumask_var(pmask3, GFP_KERNEL))
+-		goto free_two;
+-
+-	if (pmask4 && !zalloc_cpumask_var(pmask4, GFP_KERNEL))
+-		goto free_three;
+-
+-
+ 	return 0;
++}
+ 
+-free_three:
+-	free_cpumask_var(*pmask3);
+-free_two:
+-	free_cpumask_var(*pmask2);
+-free_one:
+-	free_cpumask_var(*pmask1);
+-	return -ENOMEM;
++/**
++ * alloc_tmpmasks - Allocate temporary cpumasks for cpuset operations.
++ * @tmp: Pointer to tmpmasks structure to populate
++ * Return: 0 on success, -ENOMEM on allocation failure
++ */
++static inline int alloc_tmpmasks(struct tmpmasks *tmp)
++{
++	/*
++	 * Array of pointers to the three cpumask_var_t fields in tmpmasks.
++	 * Note: Array size must match actual number of masks (3)
++	 */
++	cpumask_var_t *pmask[3] = {
++		&tmp->new_cpus,
++		&tmp->addmask,
++		&tmp->delmask
++	};
++
++	return alloc_cpumasks(pmask, ARRAY_SIZE(pmask));
  }
  
  /**
-@@ -508,7 +499,10 @@ static struct cpuset *alloc_trial_cpuset(struct cpuset *cs)
+@@ -470,26 +465,46 @@ static inline void free_tmpmasks(struct tmpmasks *tmp)
+ }
+ 
+ /**
+- * alloc_trial_cpuset - allocate a trial cpuset
+- * @cs: the cpuset that the trial cpuset duplicates
++ * dup_or_alloc_cpuset - Duplicate or allocate a new cpuset
++ * @cs: Source cpuset to duplicate (NULL for a fresh allocation)
++ *
++ * Creates a new cpuset by either:
++ * 1. Duplicating an existing cpuset (if @cs is non-NULL), or
++ * 2. Allocating a fresh cpuset with zero-initialized masks (if @cs is NULL)
++ *
++ * Return: Pointer to newly allocated cpuset on success, NULL on failure
   */
- static inline void free_cpuset(struct cpuset *cs)
+-static struct cpuset *alloc_trial_cpuset(struct cpuset *cs)
++static struct cpuset *dup_or_alloc_cpuset(struct cpuset *cs)
  {
--	free_cpumasks(cs, NULL);
-+	free_cpumask_var(cs->cpus_allowed);
-+	free_cpumask_var(cs->effective_cpus);
-+	free_cpumask_var(cs->effective_xcpus);
-+	free_cpumask_var(cs->exclusive_cpus);
- 	kfree(cs);
+ 	struct cpuset *trial;
+ 
+-	trial = kmemdup(cs, sizeof(*cs), GFP_KERNEL);
++	/* Allocate base structure */
++	trial = cs ? kmemdup(cs, sizeof(*cs), GFP_KERNEL) :
++		     kzalloc(sizeof(*cs), GFP_KERNEL);
+ 	if (!trial)
+ 		return NULL;
+ 
+-	if (alloc_cpumasks(trial, NULL)) {
++	/* Setup cpumask pointer array */
++	cpumask_var_t *pmask[4] = {
++		&trial->cpus_allowed,
++		&trial->effective_cpus,
++		&trial->effective_xcpus,
++		&trial->exclusive_cpus
++	};
++
++	if (alloc_cpumasks(pmask, ARRAY_SIZE(pmask))) {
+ 		kfree(trial);
+ 		return NULL;
+ 	}
+ 
+-	cpumask_copy(trial->cpus_allowed, cs->cpus_allowed);
+-	cpumask_copy(trial->effective_cpus, cs->effective_cpus);
+-	cpumask_copy(trial->effective_xcpus, cs->effective_xcpus);
+-	cpumask_copy(trial->exclusive_cpus, cs->exclusive_cpus);
++	/* Copy masks if duplicating */
++	if (cs) {
++		cpumask_copy(trial->cpus_allowed, cs->cpus_allowed);
++		cpumask_copy(trial->effective_cpus, cs->effective_cpus);
++		cpumask_copy(trial->effective_xcpus, cs->effective_xcpus);
++		cpumask_copy(trial->exclusive_cpus, cs->exclusive_cpus);
++	}
++
+ 	return trial;
  }
  
-@@ -2427,7 +2421,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
- 	if (cs->partition_root_state)
- 		update_partition_sd_lb(cs, old_prs);
- out_free:
--	free_cpumasks(NULL, &tmp);
-+	free_tmpmasks(&tmp);
- 	return retval;
- }
+@@ -2332,7 +2347,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	if (cpumask_equal(cs->cpus_allowed, trialcs->cpus_allowed))
+ 		return 0;
  
-@@ -2530,7 +2524,7 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
- 	if (cs->partition_root_state)
- 		update_partition_sd_lb(cs, old_prs);
+-	if (alloc_cpumasks(NULL, &tmp))
++	if (alloc_tmpmasks(&tmp))
+ 		return -ENOMEM;
  
--	free_cpumasks(NULL, &tmp);
-+	free_tmpmasks(&tmp);
- 	return 0;
- }
+ 	if (old_prs) {
+@@ -2476,7 +2491,7 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	if (retval)
+ 		return retval;
  
-@@ -2983,7 +2977,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
- 	notify_partition_change(cs, old_prs);
- 	if (force_sd_rebuild)
- 		rebuild_sched_domains_locked();
--	free_cpumasks(NULL, &tmpmask);
-+	free_tmpmasks(&tmpmask);
- 	return 0;
- }
+-	if (alloc_cpumasks(NULL, &tmp))
++	if (alloc_tmpmasks(&tmp))
+ 		return -ENOMEM;
  
-@@ -4006,7 +4000,7 @@ static void cpuset_handle_hotplug(void)
- 	if (force_sd_rebuild)
- 		rebuild_sched_domains_cpuslocked();
+ 	if (old_prs) {
+@@ -2820,7 +2835,7 @@ int cpuset_update_flag(cpuset_flagbits_t bit, struct cpuset *cs,
+ 	int spread_flag_changed;
+ 	int err;
  
--	free_cpumasks(NULL, ptmp);
-+	free_tmpmasks(ptmp);
- }
+-	trialcs = alloc_trial_cpuset(cs);
++	trialcs = dup_or_alloc_cpuset(cs);
+ 	if (!trialcs)
+ 		return -ENOMEM;
  
- void cpuset_update_active_cpus(void)
+@@ -2881,7 +2896,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+ 	if (new_prs && is_prs_invalid(old_prs))
+ 		old_prs = PRS_MEMBER;
+ 
+-	if (alloc_cpumasks(NULL, &tmpmask))
++	if (alloc_tmpmasks(&tmpmask))
+ 		return -ENOMEM;
+ 
+ 	err = update_partition_exclusive_flag(cs, new_prs);
+@@ -3223,7 +3238,7 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+ 	if (!is_cpuset_online(cs))
+ 		goto out_unlock;
+ 
+-	trialcs = alloc_trial_cpuset(cs);
++	trialcs = dup_or_alloc_cpuset(cs);
+ 	if (!trialcs) {
+ 		retval = -ENOMEM;
+ 		goto out_unlock;
+@@ -3456,15 +3471,10 @@ cpuset_css_alloc(struct cgroup_subsys_state *parent_css)
+ 	if (!parent_css)
+ 		return &top_cpuset.css;
+ 
+-	cs = kzalloc(sizeof(*cs), GFP_KERNEL);
++	cs = dup_or_alloc_cpuset(NULL);
+ 	if (!cs)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	if (alloc_cpumasks(cs, NULL)) {
+-		kfree(cs);
+-		return ERR_PTR(-ENOMEM);
+-	}
+-
+ 	__set_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
+ 	fmeter_init(&cs->fmeter);
+ 	cs->relax_domain_level = -1;
+@@ -3920,7 +3930,7 @@ static void cpuset_handle_hotplug(void)
+ 	bool on_dfl = is_in_v2_mode();
+ 	struct tmpmasks tmp, *ptmp = NULL;
+ 
+-	if (on_dfl && !alloc_cpumasks(NULL, &tmp))
++	if (on_dfl && !alloc_tmpmasks(&tmp))
+ 		ptmp = &tmp;
+ 
+ 	lockdep_assert_cpus_held();
 -- 
 2.34.1
 
