@@ -1,90 +1,56 @@
-Return-Path: <cgroups+bounces-9135-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9136-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BCDAB24FD7
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 18:34:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B4FB25042
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 18:56:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFDFA5C6230
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 16:20:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D25773BCF11
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 16:54:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C5B285053;
-	Wed, 13 Aug 2025 16:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E6228A3EF;
+	Wed, 13 Aug 2025 16:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="ia8Rxzvr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f3r4VVIl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF1F7286424
-	for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 16:17:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FDCA2066CE;
+	Wed, 13 Aug 2025 16:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755101834; cv=none; b=HP2nsJV6LcUCPKI+Ic2HO3GYrKX6qzVpjRzezksVxXdxiYoPYGX7124o+lK6H8kOttvXhtx1kclOymsInUaYn8+yuHsghj/2gx9xhF7/IO5n3IFg5ingG3QoWBNp83jaKFY9ImrtSxlGmn9UZDyPPhkwq+PjGgrqJC/NNp7bdw8=
+	t=1755104041; cv=none; b=hiaYTBZ42g3pIOA0hm0v0bDDgVwxCMDjo6Tbw9I8Z08XWztxWyNK3ciO4OViv0XZLx3Er/tS/LrD86iaMTSXZdoonYKt2tZ+dfy02nfHUzPI95jrGc9VFdj43nq++HsyHRH/JaK1JzqXMEYRnwMKU+bJE7Qr8Xv32weIsw5KJMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755101834; c=relaxed/simple;
-	bh=aLnZpcSWdOkXn92ubxlWxf5O2UCHUI3ra/13J7g/mq8=;
+	s=arc-20240116; t=1755104041; c=relaxed/simple;
+	bh=02NLdfKncdfClMLv2zOa1DkVPQDraLI+iMf3m2mBtUI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hJxWxdMKq3qbEovZoNH5x8NIZGsVRptjJYggNpCiXAMbXq8P0D6xD9UiNBzURRPgxlglHTgV4Cbxgn1mJFYoOrvn66m0wAmcgsskgh2i3WSqDusB68ONFh/e3Ahv9/C2sxeDudliiKqv5gby4wdqp6JMWUx6g52HW++IzzFbMN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=ia8Rxzvr; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-7e62a1cbf82so478770085a.2
-        for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 09:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1755101830; x=1755706630; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=y0r8lX0/1M6KsfijF5/m66QhjeQjFJTvODKoUvnEDMw=;
-        b=ia8RxzvrROyJtWb4VyAqvpjk2HWUECUbQcj/XKu2JeVwgr++mnuR6dY+T2hXOQBPtz
-         2blZSwirOZPhacLwrC3taqui8/9UJssoM/duHvOZq2HyiooF7r4eM76mPcgRJWeBcjme
-         r1gbU1fp5nVp7Lm39JYmKc0huIYgbBDmjb78kp8zhOHhMHHFRmBYNoeqz2x9NMZWMYFe
-         GqJVyFJwAZP8iVId1xHYsh1Tf9KpKnGMT65wYXUVjoKI94sXsFMHWZ/nk99EhOhCL3K6
-         BV6njPefy1y+Gt+IZyfgcVyg2Ev5k/1j7ujxXhXrDeUtxmtSTXGkDm7/a0KnQi1eTEh9
-         fOpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755101830; x=1755706630;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y0r8lX0/1M6KsfijF5/m66QhjeQjFJTvODKoUvnEDMw=;
-        b=WyxAOx0erNoU7/3ZXGUAGoVa3Dcd2D9XGLfQtYvoK7p5E4gDUX9v+04i9/9ywbZrUX
-         Z6W7/icX6MO4tuqdCX4IrK+1b0BCuMlT/0cQKKpml5/b5lTJbDYtPH6ldHuQEWOFkVOC
-         nZUarX+vQwZD/xFBrGaAeQg5z3doTawHGGH3sSwahhoO7lTOrkvHQAAqhBxvpRoZgoX6
-         8PffAMwuSmNHF8wVZ8u3vtH2mWREriT2XEd55AAIX+dEZj77WPvljdHOT6MA3sojvX1l
-         i96wopsZLGppeTu05rOsIELgON0vJrkTIbpf1DDJ85zzJMl7lWCHhzGDL7d6kYnq1kR4
-         HiuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWTg+CTcQ7549BkNWrQtT0krdE4N1Bw6PVRhaG+UmhJISekp9cjkav4NXuPjWTKF2ZAPEKAWw/U@vger.kernel.org
-X-Gm-Message-State: AOJu0YyoyEIpdNcN2e0pHJyOl8ft/37YNhv0DwTCXEMcE3Zn+osPY6SF
-	3XcDSWHdoB8qFHUh4RZ4F2kkCObE9O7uL3P0BfN5g4JzXDQ4BtXhyRnPnEVXk1pqGHE=
-X-Gm-Gg: ASbGncuySnAXBNBvvSHJbEOVjIhfElu0x6KrVXJeRyqJ4VUTU5pZCBvJaSFbCknRN6v
-	mkl0ElpRJl/ArTXx7ogTEILaRD6TV8Ol1GIrSoMjAahLyjiffvlqV3QcwOnzgxBduUNxHUwN69t
-	j2yvhOEMxV3tyZM+AxxslsSVruhWWVoVCvF6aS0GKgzdgGK9SQGOM9iedhuJaS2QzKcikijrNXl
-	xlXFI9ZmC14cV14Q8spuaaW4F56snT0Pck8d2lgL75GXnMoxxnZLNvIktRFWBCat2JiOd1HiRPl
-	Uv1M197ZY5XoxtWYGHdwAruaYTRq5PY3kbRl/2V6kHE8iF4nulekwQkF6/sxVYpQnBhtEWL8yTZ
-	5xA53abM97ex1HGC0dOjODQ==
-X-Google-Smtp-Source: AGHT+IGHCZVUArn+hQTSYfm5ZLOiQRAX3EihSL5rOgIAp2pUobtvdJENs5NTWAKywrm2ri8umYv+Hw==
-X-Received: by 2002:a05:620a:560d:b0:7e0:e7b0:967e with SMTP id af79cd13be357-7e86522c104mr386843385a.7.1755101829593;
-        Wed, 13 Aug 2025 09:17:09 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:929a:4aff:fe16:c778])
-        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-4af230d8a21sm153187231cf.51.2025.08.13.09.17.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Aug 2025 09:17:09 -0700 (PDT)
-Date: Wed, 13 Aug 2025 12:17:08 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZH8zUuNYgKFeUxn705Fyvqg+gTooZAgpUuqTeVafMqLXQffxW0bQzbuZiXPPVTKOKGTCTBqJHyPs9/tiDVkVCWW2sLjbXx/sugo0p+vMhjqa0/PLBWUVCw88rRlCm7EOt1IERUY6YJKJOU7YpMH+eiSEM2yY3eVc9AJPBs4Piu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f3r4VVIl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 021C3C4CEF1;
+	Wed, 13 Aug 2025 16:54:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755104041;
+	bh=02NLdfKncdfClMLv2zOa1DkVPQDraLI+iMf3m2mBtUI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=f3r4VVIl6icleNEroFt5+iAt9CwkHstZxpWsn/UadT+gt0c1mZ62yfxdQZTZrAMmv
+	 VzWotJvJCtBCpWkmtRimU9pghSnAzYYXhFVDp5xZrmR0BJtvgkKqmlVu9vXvpwlxnD
+	 S6MwuO8z1/yzlyOnNVU+s4I3FEKX/eBH6Ie0j4QgCRBOo9qEH65viCt3lvcMR95H5G
+	 yn1x9UslrK1v9zuzwxEjWTZX3yq5xSOjKTKnHpyOoE3U0fKgb+AzH8mgBaWfFoaBMX
+	 DSfm8OOYtqYEMSl0uB0q2cEWMYZ5LTXNXdpXZfY8WwZWnlg69AVgFy435xt4UY3xGy
+	 vJ8TPtOFR5bJw==
+Date: Wed, 13 Aug 2025 06:53:59 -1000
+From: Tejun Heo <tj@kernel.org>
 To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] memcg: Optimize exit to user space
-Message-ID: <20250813161708.GA115258@cmpxchg.org>
-References: <87tt2b6zgs.ffs@tglx>
+Cc: linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, Jens Axboe <axboe@kernel.dk>,
+	Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH] blkcg: Optimize exit to user space
+Message-ID: <aJzDJ3DfzUK_ntZR@slm.duckdns.org>
+References: <87qzxf6zde.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -93,32 +59,38 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87tt2b6zgs.ffs@tglx>
+In-Reply-To: <87qzxf6zde.ffs@tglx>
 
-On Wed, Aug 13, 2025 at 04:57:55PM +0200, Thomas Gleixner wrote:
-> memcg uses TIF_NOTIFY_RESUME to handle reclaiming on exit to user
+On Wed, Aug 13, 2025 at 04:59:57PM +0200, Thomas Gleixner wrote:
+> blkcg uses TIF_NOTIFY_RESUME to handle throttling on exit to user
 > space. TIF_NOTIFY_RESUME is a multiplexing TIF bit, which is utilized by
 > other entities as well.
 > 
-> This results in a unconditional mem_cgroup_handle_over_high() call for
-> every invocation of resume_user_mode_work(), which is a pointless
-> exercise as most of the time there is no reclaim work to do.
+> This results in a unconditional blkcg_maybe_throttle_current() call for
+> every invocation of resume_user_mode_work(), which is a pointless exercise
+> as most of the time there is no throttling work to do.
 > 
-> Especially since RSEQ is used by glibc, TIF_NOTIFY_RESUME is raised
-> quite frequently and the empty calls show up in exit path profiling.
-> 
-> Optimize this by doing a quick check of the reclaim condition before
+> Optimize this by doing a quick check of the throttling condition before
 > invoking it.
 > 
 > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Roman Gushchin <roman.gushchin@linux.dev>
-> Cc: Shakeel Butt <shakeel.butt@linux.dev>
-> Cc: Muchun Song <muchun.song@linux.dev>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+...
+> -void blkcg_maybe_throttle_current(void)
+> +void __blkcg_maybe_throttle_current(void)
+>  {
+>  	struct gendisk *disk = current->throttle_disk;
+>  	struct blkcg *blkcg;
 
-Nice!
+A nit: __blkcg_maybe_throttle_current() ends up doing another NULL check.
+Maybe drop that? Other than that,
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Tejun Heo <tj@kernel.org>
+
+Thanks.
+
+-- 
+tejun
 
