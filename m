@@ -1,233 +1,125 @@
-Return-Path: <cgroups+bounces-9120-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9121-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34265B24189
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 08:31:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29B60B24259
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 09:15:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6573616BCD8
-	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 06:30:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59CE61BC3D84
+	for <lists+cgroups@lfdr.de>; Wed, 13 Aug 2025 07:12:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0462D372C;
-	Wed, 13 Aug 2025 06:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC45A2D3EE3;
+	Wed, 13 Aug 2025 07:11:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gG4+WM5I"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0058C256C84;
-	Wed, 13 Aug 2025 06:28:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9AE02BEFEB
+	for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 07:11:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755066532; cv=none; b=JLh7N5kxWSKs77QwoUb7FdXAWPBxnm9Vg4yUDl4REyLyjb/VjLPtNQLywyI2O94nRBLJtFVjJb9WZx90bCLPDQkIBsG9vowv0Ktd2rQQ+12Mb4JXkV93NZYl0IKffdXPR/qOERUD6jO9jPXqRMQyODMDuFM6EU2s1lPuHZ8HCVI=
+	t=1755069111; cv=none; b=lFDomDldcsIRdJcOOid9EUDHp1/1kdaVrxJ61NzCQqh+z+/7PXQnJx5gNFeFvq4454wWgR9ImbG9ziGYcSqhqYuiZAo98IUq441j5+GOfS5DBiXHJlgL1YNXleFolvXF9Ro7O+bfS/l0eUO0nyd4lpnViMkPxDkvul79qKvYtr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755066532; c=relaxed/simple;
-	bh=9vUEo+sj20951FghULXn+sLgKCS4GaIDQo3Vb9dzwsw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JZH4AY9CV8vM9Rgl8Bf88GK+IoYus2p6zR4KmLmj1wnPJvyV6pNf+HrI+SrlBcE0J0Y4kbZGXKODf5GcgbDrN0a1s3aglr19sUw8fcVNN0DRJ3M8dLWOzYseBOTTq0/5rX5z3TiRrrQ7qwuj+l8JqeVqTw2fk5LDQKj50IGXagk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c1z3H3zjfzYQv5T;
-	Wed, 13 Aug 2025 14:28:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 2C1E41A01A4;
-	Wed, 13 Aug 2025 14:28:42 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP3 (Coremail) with SMTP id _Ch0CgAX3deXMJxoMvTQDQ--.55909S2;
-	Wed, 13 Aug 2025 14:28:41 +0800 (CST)
-Message-ID: <cdef61eb-7a70-4106-b2a0-b92cac95972d@huaweicloud.com>
-Date: Wed, 13 Aug 2025 14:28:39 +0800
+	s=arc-20240116; t=1755069111; c=relaxed/simple;
+	bh=j5cndD/Yt7hg4UEX0fFeQVI5gpYpcjUZXvJ2XEBYzHQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jJr+SdGAVj7NXprCjsZ0iQzcC/JerBsIIXG6cCJc9HUwnm5yR8FfppWZ3NiNL0CrKg71//v0UscfGwjLiWIqGVEfUblofZK5+kQZgy5pX98YatlZviszGku17vhAOi24iAfZRoUayrIctQ6R+mowOFiY8BhWszatikv3w90/Euw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gG4+WM5I; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 13 Aug 2025 00:11:26 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755069097;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wZFsYJiyB1fvxRtIFfJFidT6INioyMRvmFKceuBeMbE=;
+	b=gG4+WM5IZTev5FDHmnVkWiRF1CQo6nK2IILnadjEoI9rVXYIWj5lqRHGRPWSTwTu/MyN1z
+	pTwxSpKzCwmyNqhJ3fP1/velQ2CJGQd8gNXMYsF7mK5SHPjDHm8PvczlF7tQireXlSgce/
+	ApBgrQ6UG9VPQre3jLqz44suXJwDq8M=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Willem de Bruijn <willemb@google.com>, Matthieu Baerts <matttbe@kernel.org>, 
+	Mat Martineau <martineau@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Tejun Heo <tj@kernel.org>, Simon Horman <horms@kernel.org>, 
+	Geliang Tang <geliang@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, 
+	mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 net-next 12/12] net-memcg: Decouple controlled memcg
+ from global protocol memory accounting.
+Message-ID: <w6klr435a4rygmnifuujg6x4k77ch7cwoq6dspmyknqt24cpjz@bbz4wzmxjsfk>
+References: <20250812175848.512446-1-kuniyu@google.com>
+ <20250812175848.512446-13-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 1/4] cpuset: remove redundant CS_ONLINE flag
-To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com, mingo@redhat.com, peterz@infradead.org,
- juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
- rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com
-References: <20250808092515.764820-1-chenridong@huaweicloud.com>
- <20250808092515.764820-2-chenridong@huaweicloud.com>
- <db5fdf29-43d9-4e38-a5a8-02cd711b892a@redhat.com>
- <775ef75a-b796-4171-b208-df110a73c558@huaweicloud.com>
- <a27c39d5-7470-475e-aefa-0841bd816675@redhat.com>
- <95c78188-bf8d-4453-b74f-b8a7dc6ae14d@huaweicloud.com>
- <8ed8cac1-4cf1-4880-9e7d-4e8c816797fa@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <8ed8cac1-4cf1-4880-9e7d-4e8c816797fa@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgAX3deXMJxoMvTQDQ--.55909S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuw1DJw45Kw17Kw1fWFW8Crg_yoWxWFW8pF
-	1kCFyUA3y5Gw1xGF1jqrWjq348tr17J3WUWr1UKFy8AFsFyFyj9r48Xrn09F1DJr48Cryj
-	yF1Yqry3ur1DJrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250812175848.512446-13-kuniyu@google.com>
+X-Migadu-Flow: FLOW_OUT
 
-
-
-On 2025/8/13 9:33, Waiman Long wrote:
+On Tue, Aug 12, 2025 at 05:58:30PM +0000, Kuniyuki Iwashima wrote:
+> Some protocols (e.g., TCP, UDP) implement memory accounting for socket
+> buffers and charge memory to per-protocol global counters pointed to by
+> sk->sk_proto->memory_allocated.
 > 
-> On 8/12/25 9:20 PM, Chen Ridong wrote:
->>
->> On 2025/8/13 9:00, Waiman Long wrote:
->>> On 8/12/25 8:54 PM, Chen Ridong wrote:
->>>> On 2025/8/12 22:44, Waiman Long wrote:
->>>>> On 8/8/25 5:25 AM, Chen Ridong wrote:
->>>>>> From: Chen Ridong <chenridong@huawei.com>
->>>>>>
->>>>>> The CS_ONLINE flag was introduced prior to the CSS_ONLINE flag in the
->>>>>> cpuset subsystem. Currently, the flag setting sequence is as follows:
->>>>>>
->>>>>> 1. cpuset_css_online() sets CS_ONLINE
->>>>>> 2. css->flags gets CSS_ONLINE set
->>>>>> ...
->>>>>> 3. cgroup->kill_css sets CSS_DYING
->>>>>> 4. cpuset_css_offline() clears CS_ONLINE
->>>>>> 5. css->flags clears CSS_ONLINE
->>>>>>
->>>>>> The is_cpuset_online() check currently occurs between steps 1 and 3.
->>>>>> However, it would be equally safe to perform this check between steps 2
->>>>>> and 3, as CSS_ONLINE provides the same synchronization guarantee as
->>>>>> CS_ONLINE.
->>>>>>
->>>>>> Since CS_ONLINE is redundant with CSS_ONLINE and provides no additional
->>>>>> synchronization benefits, we can safely remove it to simplify the code.
->>>>>>
->>>>>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->>>>>> ---
->>>>>>     include/linux/cgroup.h          | 5 +++++
->>>>>>     kernel/cgroup/cpuset-internal.h | 3 +--
->>>>>>     kernel/cgroup/cpuset.c          | 4 +---
->>>>>>     3 files changed, 7 insertions(+), 5 deletions(-)
->>>>>>
->>>>>> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
->>>>>> index b18fb5fcb38e..ae73dbb19165 100644
->>>>>> --- a/include/linux/cgroup.h
->>>>>> +++ b/include/linux/cgroup.h
->>>>>> @@ -354,6 +354,11 @@ static inline bool css_is_dying(struct cgroup_subsys_state *css)
->>>>>>         return css->flags & CSS_DYING;
->>>>>>     }
->>>>>>     +static inline bool css_is_online(struct cgroup_subsys_state *css)
->>>>>> +{
->>>>>> +    return css->flags & CSS_ONLINE;
->>>>>> +}
->>>>>> +
->>>>>>     static inline bool css_is_self(struct cgroup_subsys_state *css)
->>>>>>     {
->>>>>>         if (css == &css->cgroup->self) {
->>>>>> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
->>>>>> index 383963e28ac6..75b3aef39231 100644
->>>>>> --- a/kernel/cgroup/cpuset-internal.h
->>>>>> +++ b/kernel/cgroup/cpuset-internal.h
->>>>>> @@ -38,7 +38,6 @@ enum prs_errcode {
->>>>>>       /* bits in struct cpuset flags field */
->>>>>>     typedef enum {
->>>>>> -    CS_ONLINE,
->>>>>>         CS_CPU_EXCLUSIVE,
->>>>>>         CS_MEM_EXCLUSIVE,
->>>>>>         CS_MEM_HARDWALL,
->>>>>> @@ -202,7 +201,7 @@ static inline struct cpuset *parent_cs(struct cpuset *cs)
->>>>>>     /* convenient tests for these bits */
->>>>>>     static inline bool is_cpuset_online(struct cpuset *cs)
->>>>>>     {
->>>>>> -    return test_bit(CS_ONLINE, &cs->flags) && !css_is_dying(&cs->css);
->>>>>> +    return css_is_online(&cs->css) && !css_is_dying(&cs->css);
->>>>>>     }
->>>>>>       static inline int is_cpu_exclusive(const struct cpuset *cs)
->>>>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>>>>> index f74d04429a29..cf7cd2255265 100644
->>>>>> --- a/kernel/cgroup/cpuset.c
->>>>>> +++ b/kernel/cgroup/cpuset.c
->>>>>> @@ -207,7 +207,7 @@ static inline void notify_partition_change(struct cpuset *cs, int old_prs)
->>>>>>      * parallel, we may leave an offline CPU in cpu_allowed or some other masks.
->>>>>>      */
->>>>>>     static struct cpuset top_cpuset = {
->>>>>> -    .flags = BIT(CS_ONLINE) | BIT(CS_CPU_EXCLUSIVE) |
->>>>>> +    .flags = BIT(CS_CPU_EXCLUSIVE) |
->>>>>>              BIT(CS_MEM_EXCLUSIVE) | BIT(CS_SCHED_LOAD_BALANCE),
->>>>>>         .partition_root_state = PRS_ROOT,
->>>>>>         .relax_domain_level = -1,
->>>>> top_cpuset.css is not initialized like the one in the children. If you modify
->>>>> is_cpuset_online() to
->>>>> test the css.flags, you will probably need to set the CSS_ONLINE flag in top_cpuset.css.flags.
->>>>> I do
->>>>> doubt that we will apply the is_cpuset_online() test on top_cpuset. To be consistent, we should
->>>>> support that.
->>>>>
->>>>> BTW, other statically allocated css'es in the cgroup root may have similar problem. If you make
->>>>> the
->>>>> css_is_online() helper available to all other controllers, you will have to document that
->>>>> limitation.
->>>>>
->>>>> Cheers,
->>>>> Longman
->>>> Hi, Longman, thank you for your response.
->>>>
->>>> If I understand correctly, the CSS_ONLINE flag should be set in top_cpuset.css during the following
->>>> process:
->>>>
->>>> css_create
->>>>     css = ss->css_alloc(parent_css);  // cgroup root is static, unlike children
->>>>     online_css(css);
->>>>        ret = ss->css_online(css);     // css root may differ from children
->>>>        css->flags |= CSS_ONLINE;      // css.flags is set with CSS_ONLINE, including the root css
->>>>
->>>> I think css online must be successful, and it's CSS_ONLINE flag must be set. Do I missing anything?
->>> I am talking about just the top_cpuset which is statically allocated. It is not created by the
->>> css_create() call and so the CSS_ONLINE will not be set.
->>>
->>> Cheers,
->>> Longman
->> Hi Longman,
->>
->> Apologies for the call stack earlier. Thank you for your patience in clarifying this matter.
->>
->> The CSS root is brought online through the following initialization flow:
->>
->> cgroup_init_subsys
->>    css = ss->css_alloc(NULL);       // css root is static, unlike children
->>    online_css(css)
->>      ret = ss->css_online(css);     // css root may differ from children
->>      css->flags |= CSS_ONLINE;      // css.flags is set with CSS_ONLINE, including the root css
->>
->> My key point is that:
->> - The root CSS should be online by design.
->> - Root css CSS_ONLINE flag should be properly set during initialization.
+> When running under a non-root cgroup, this memory is also charged to the
+> memcg as "sock" in memory.stat.
 > 
-> Yes, you are right. I missed css_online() call for the root css for each controller. Thanks for the
-> clarification.
+> Even when a memcg controls memory usage, sockets of such protocols are
+> still subject to global limits (e.g., /proc/sys/net/ipv4/tcp_mem).
 > 
-> With that, I am OK with this patch. Though the other ones are not good.
+> This makes it difficult to accurately estimate and configure appropriate
+> global limits, especially in multi-tenant environments.
 > 
-> Acked-by: Waiman Long <longman@redhat.com>
+> If all workloads were guaranteed to be controlled under memcg, the issue
+> could be worked around by setting tcp_mem[0~2] to UINT_MAX.
+> 
+> In reality, this assumption does not always hold, and processes that
+> belong to the root cgroup or opt out of memcg can consume memory up to
+> the global limit, becoming a noisy neighbour.
 
-Thank you.
+Processes running in root memcg (I am not sure what does 'opt out of
+memcg means') means admin has intentionally allowed scenarios where
+noisy neighbour situation can happen, so I am not really following your
+argument here.
 
-I will send v2 to fix the others.
+> 
+> Let's decouple memcg from the global per-protocol memory accounting if
+> it has a finite memory.max (!= "max").
 
-Best regard,
-Ridong
+Why decouple only for some? (Also if you really want to check memcg
+limits, you need to check limits for all ancestors and not just the
+given memcg).
+
+Why not start with just two global options (maybe start with boot
+parameter)?
+
+Option 1: Existing behavior where memcg and global TCP accounting are
+coupled.
+
+Option 2: Completely decouple memcg and global TCP accounting i.e. use
+mem_cgroup_sockets_enabled to either do global TCP accounting or memcg
+accounting.
+
+Keep the option 1 default.
+
+I assume you want third option where a mix of these options can happen
+i.e. some sockets are only accounted to a memcg and some are accounted
+to both memcg and global TCP. I would recommend to make that a followup
+patch series. Keep this series simple and non-controversial.
 
 
