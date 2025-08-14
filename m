@@ -1,162 +1,144 @@
-Return-Path: <cgroups+bounces-9154-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9155-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1E4CB258D7
-	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 03:16:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C359B25921
+	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 03:32:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C53B1B67E69
-	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 01:15:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 487DF88090B
+	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 01:31:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 625A1156C6F;
-	Thu, 14 Aug 2025 01:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971511ADC7E;
+	Thu, 14 Aug 2025 01:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="r/G5BgbH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D5F2AD13;
-	Thu, 14 Aug 2025 01:14:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E515518DB37
+	for <cgroups@vger.kernel.org>; Thu, 14 Aug 2025 01:30:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755134090; cv=none; b=TWlASEN6qD4EMFxKASqZ6tL+htMW1T/1YBh7AFVmwJGhxooI2SvlX9msrEn6yv7CF/5UPX9frrWufMIJKg/a1cjecOFAiSRajNbZw/JOl/yllZcpSRVvMheq2lNyqdZnPsP/PupJ2MCG1c7T0GVgOa4wvRRM+q2e1hDuRds2ioo=
+	t=1755135037; cv=none; b=eWHHnrluXrYoCzpqmh6DP6Re4+dgHSJUDHT2oCKfdUJfmV9D+n9vqfCirpapo082VnOfKYZl4o0IyhtL9AZGnEgej8t9m2U6FNOy6w7jIkqmQEv+PGfEdy/dSPCIaEF4/YuhV+6ZTbhw6ywu3q6kJFT00f3YtBfMsQI3Ber3fkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755134090; c=relaxed/simple;
-	bh=wqq0F9DZu0/EK2souEeEqW9YAZQTBkOfKqL4AnnzukY=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=DWEtk+6Aktf68T8j56LRqY4Cv2fhmSA58H/IA9iII0gO0Sc6d5iUXfWEOZMsd+ir7U3aRhqRDddPeTWN4yMh5UKhXIx7lgLlgHSwEDLQmqVRsifxJFsktZBJr6dv/F7CJjjiywnShmKsam+1qAPD+OUmT60TVTzol8kLIHtZFN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c2S2Y5RmYzYQv67;
-	Thu, 14 Aug 2025 09:14:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 5B52A1A1655;
-	Thu, 14 Aug 2025 09:14:44 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP3 (Coremail) with SMTP id _Ch0CgDHjNeAOJ1oyHsoDg--.41388S2;
-	Thu, 14 Aug 2025 09:14:43 +0800 (CST)
-Message-ID: <3e2776ed-03a8-4d5c-8145-13c3a1093f87@huaweicloud.com>
-Date: Thu, 14 Aug 2025 09:14:40 +0800
+	s=arc-20240116; t=1755135037; c=relaxed/simple;
+	bh=WbgJ5isNsqVYV5zzaKVbpULuS/3hHjDmri82xKxBaDQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=sT5E7dLP8ykxLb/YMUqgPf7MDJyK2dlgMdFOj8BDFNfeU5UHGdSTTDXzU5qELUOTiLhCKeO7wDAADm6YcoJLkWT8CyrTCvy2j5TNuh2P3L+p+lis3li8o8RG+W2A/Wins4uutWlKFjfqSx2RFvY2l9TqtdFCfOfDf+4YOElhLnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=r/G5BgbH; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-2445820337cso3782055ad.3
+        for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 18:30:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1755135035; x=1755739835; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:user-agent:references:mime-version
+         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4oH/H8Uczj38sjgvka81xmx7klPZUzo+Pao4BcFdNEY=;
+        b=r/G5BgbH01l17L9hLaUr8LrJjHdwJS8TGK0S/8Y8GGcnlxtNzDshxVo7SmLGcBGpS/
+         W2dQoqCIi5WWR+SUID++57ytheg66TiYNnytJ3SyBC19QP3HtH+4wjMHdRJXb8BejCSz
+         FY1V0IBmZ7MUy3+4MMHtZwVDfqisttn0F/S1kpLpdeovqQZqRF7vrvszc2HJh6ArpZJC
+         N8JefQsQSr7lxKfq44kKsaXY4KIGOyofQdDaoCdv1iarj7ye1wzw1RepuQxgO18pDOIA
+         AXlBzLVsdY+9qAWCWhOtEpgKfmnpkiDSxt0KzCnh+EhknRHJzOMT8PSOXggtb8uy0h3q
+         ROlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755135035; x=1755739835;
+        h=cc:to:from:subject:message-id:user-agent:references:mime-version
+         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4oH/H8Uczj38sjgvka81xmx7klPZUzo+Pao4BcFdNEY=;
+        b=UVtIfwsRDPONksgZ7kMkyqdhjzoAWprs8Prj+mzz9ZFf51ominwwbFFvGIkbCJ1Tj1
+         KwhAAzODv3bDhkEtll00Qa6ssBdHDS67WgOvGEyVX78wUiLVCSrlS1YSOI34cY7/slBe
+         Yfv+xz90XWB/95svAOS+Y1SSetucjrRsJeviuqyIWlEFpfEbhNxlvUlq75ylkTsG1zJJ
+         AZl9LtNgM4CT/JECq5aLhdtM3f6D9psOePxN88pMnrNvrmU2cYXJmAt70mh1vidTnWJS
+         dD7cRPZG0Y4gTzIduYI841TNiVWK83M7zX4n4sUxoQnfleRtiHen3SlsSGwqdZGW0nWZ
+         hUYA==
+X-Forwarded-Encrypted: i=1; AJvYcCVHVHBgYQFJgm1Iz6SFyojq7qNFC+TaXOsLZ3R6OlOwROsf2EMRvH5cOHA2VnWa962PEHG3Rtpq@vger.kernel.org
+X-Gm-Message-State: AOJu0YwyuY8cKgUaacprEAO6ip2had8aCmB6HddxuLXQXlVklXt3p6In
+	zA5egGxFjCYg32pk208MAQ8I35kymM9qqDWBvLFO77d76JGxzF69EJf1pq2JLUP6ZEUHDKeq6IV
+	G2CKhUgUwdA==
+X-Google-Smtp-Source: AGHT+IEvtjIjDFf5oUu8XtuvZ66AuDR6piAkpqJV0aQYguAIByySyHcA1rR4otGY+tKdX93cPC7afkFJ2b9b
+X-Received: from pluo13.prod.google.com ([2002:a17:903:4b0d:b0:23f:f074:4148])
+ (user=ynaffit job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:138a:b0:240:4d19:8797
+ with SMTP id d9443c01a7336-24458a50a4amr18212045ad.22.1755135035267; Wed, 13
+ Aug 2025 18:30:35 -0700 (PDT)
+Date: Wed, 13 Aug 2025 18:30:33 -0700
+In-Reply-To: <aJo7udUoWJt_jLzK@slm.duckdns.org> (Tejun Heo's message of "Mon,
+ 11 Aug 2025 08:51:37 -1000")
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] sched/core: Skip user_cpus_ptr masking if no online
- CPU left
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-References: <20250718164143.31338-1-longman@redhat.com>
- <20250718164857.31963-1-longman@redhat.com>
- <0532c73c-fda0-4f12-b4ce-f84a74bc2f21@huaweicloud.com>
- <2c0b1511-b216-4f92-84c7-482f510cef7e@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <2c0b1511-b216-4f92-84c7-482f510cef7e@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgDHjNeAOJ1oyHsoDg--.41388S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZF4fWry8tFyruFyUAr1fJFb_yoW5XF1UpF
-	WkKF4UCFWqqF1jyayS93sI9ryFqa9xJ3W3XF1FyryF9FZ0qF1UCFy0gF13Wr1DKrsakFWU
-	tF4ag3ySvFyqqFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Mime-Version: 1.0
+References: <20250805032940.3587891-4-ynaffit@google.com> <20250805032940.3587891-5-ynaffit@google.com>
+ <aJo7udUoWJt_jLzK@slm.duckdns.org>
+User-Agent: mu4e 1.12.9; emacs 30.1
+Message-ID: <dbx8qzxe7kqu.fsf@ynaffit-andsys.c.googlers.com>
+Subject: Re: [RFC PATCH v3 1/2] cgroup: cgroup.freeze.stat.local time accounting
+From: Tiffany Yang <ynaffit@google.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>, 
+	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Chen Ridong <chenridong@huawei.com>, 
+	kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+
+Tejun Heo <tj@kernel.org> writes:
+
+> Hello,
+
+> Generally looks good to me. Some comments on cosmetics / interface.
+
+> On Mon, Aug 04, 2025 at 08:29:41PM -0700, Tiffany Yang wrote:
+> ...
+>> +  cgroup.freeze.stat.local
+
+> This was mentioned before and maybe I missed the following discussions but
+> given that cgroup.freeze is a part of core cgroup, cgroup.stat.local is
+> probably the right place. It's not great that cgroup.stat wouldn't be a
+> superset of cgroup.stat.local but we can add the hierarchical counter  
+> later
+> if necessary.
+
+Got it. I had ended up opting for the "freeze"-specific name because
+there was already a cgroup_local_stat_show that seemed to imply that
+cgroup.stat.local was reserved for controllers with a struct
+cgroup_subsys. I will update v4 with something similar for core!
 
 
+>> +	A read-only flat-keyed file which exists in non-root cgroups.
+>> +	The following entry is defined:
+>> +
+>> +	  freeze_time_total
 
-On 2025/7/31 20:03, Chen Ridong wrote:
-> 
-> 
-> On 2025/7/23 9:58, Chen Ridong wrote:
->>
->>
->> On 2025/7/19 0:48, Waiman Long wrote:
->>> Chen Ridong reported that cpuset could report a kernel warning for a task
->>> due to set_cpus_allowed_ptr() returning failure in the corner case that:
->>>
->>> 1) the task used sched_setaffinity(2) to set its CPU affinity mask to
->>>    be the same as the cpuset.cpus of its cpuset,
->>> 2) all the CPUs assigned to that cpuset were taken offline, and
->>> 3) cpuset v1 is in use and the task had to be migrated to the top cpuset.
->>>
->>> Due to the fact that CPU affinity of the tasks in the top cpuset are
->>> not updated when a CPU hotplug online/offline event happens, offline
->>> CPUs are included in CPU affinity of those tasks. It is possible
->>> that further masking with user_cpus_ptr set by sched_setaffinity(2)
->>> in __set_cpus_allowed_ptr() will leave only offline CPUs in the new
->>> mask causing the subsequent call to __set_cpus_allowed_ptr_locked()
->>> to return failure with an empty CPU affinity.
->>>
->>> Fix this failure by skipping user_cpus_ptr masking if there is no online
->>> CPU left.
->>>
->>> Reported-by: Chen Ridong <chenridong@huaweicloud.com>
->>> Closes: https://lore.kernel.org/lkml/20250714032311.3570157-1-chenridong@huaweicloud.com/
->>> Fixes: da019032819a ("sched: Enforce user requested affinity")
->>> Signed-off-by: Waiman Long <longman@redhat.com>
->>> ---
->>>  kernel/sched/core.c | 7 ++++---
->>>  1 file changed, 4 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->>> index 81c6df746df1..208f8af73134 100644
->>> --- a/kernel/sched/core.c
->>> +++ b/kernel/sched/core.c
->>> @@ -3170,12 +3170,13 @@ int __set_cpus_allowed_ptr(struct task_struct *p, struct affinity_context *ctx)
->>>  
->>>  	rq = task_rq_lock(p, &rf);
->>>  	/*
->>> -	 * Masking should be skipped if SCA_USER or any of the SCA_MIGRATE_*
->>> -	 * flags are set.
->>> +	 * Masking should be skipped if SCA_USER, any of the SCA_MIGRATE_*
->>> +	 * flags are set or no online CPU left.
->>>  	 */
->>>  	if (p->user_cpus_ptr &&
->>>  	    !(ctx->flags & (SCA_USER | SCA_MIGRATE_ENABLE | SCA_MIGRATE_DISABLE)) &&
->>> -	    cpumask_and(rq->scratch_mask, ctx->new_mask, p->user_cpus_ptr))
->>> +	    cpumask_and(rq->scratch_mask, ctx->new_mask, p->user_cpus_ptr) &&
->>> +	    cpumask_intersects(rq->scratch_mask, cpu_active_mask))
->>>  		ctx->new_mask = rq->scratch_mask;
->>>  
->>>  	return __set_cpus_allowed_ptr_locked(p, ctx, rq, &rf);
->>
->> Tested-by:  Chen Ridong <chenridong@huawei.com>
->>
-> 
-> Friendly ping.
-> 
-> Best regards,
-> Ridong
-> 
+> How about just frozen_usec? "_usec" is what we used in cpu.stat for time
+> stats.
 
-Could someone please review this patch?
+Ack.
+
+
+>> +		Cumulative time that this cgroup has spent between freezing and
+>> +		thawing, regardless of whether by self or ancestor groups.
+>> +		NB: (not) reaching "frozen" state is not accounted here.
+>> +
+>> +		Using the following ASCII representation of a cgroup's freezer
+>> +		state, ::
+
+> It's a bit odd to include credit in a doc file. Maybe move it to the
+> description or add Co-developed-by: tag?
+
+
+Will do! Thanks for looking over this :).
 
 -- 
-Best regards,
-Ridong
-
+Tiffany Y. Yang
 
