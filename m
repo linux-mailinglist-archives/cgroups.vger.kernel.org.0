@@ -1,138 +1,110 @@
-Return-Path: <cgroups+bounces-9165-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9166-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B602BB26C98
-	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 18:34:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11043B26D46
+	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 19:11:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87CAD3BD3C4
-	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 16:32:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D6B7A2881F
+	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 17:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A56FA2566E9;
-	Thu, 14 Aug 2025 16:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9C91FDA89;
+	Thu, 14 Aug 2025 17:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=cdn77.com header.i=@cdn77.com header.b="j8zGTjgi"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cXsWYLOX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-internal.sh.cz (mail-internal.sh.cz [95.168.196.40])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F26253B52;
-	Thu, 14 Aug 2025 16:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.168.196.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398231E4BE
+	for <cgroups@vger.kernel.org>; Thu, 14 Aug 2025 17:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755189162; cv=none; b=Z6hoV9lh6nQVAz5EiM+/e42xHwy1LbUqVG0LedQw9s0MpZlSzv0KxKZnGL7c//QZ1aoIFUsQLrY039oncarSbRwvXeGldyUxzaNL4/n+ZR1dbsZdjHnORuPnKy/0zuWlH5mFyl2iB5e7y8z0JO7C8FIdH8botho4mz5YqKQVAHY=
+	t=1755191460; cv=none; b=dtGi4EvxyFgY88V+kdHs5N0TNlcRBaz/qQPzwIF4GV3DlyZUoZCCgGAqfdqGTREDz6uuuCeI8Yowax0FZSAoxPYAwNRYEHMfnKs6rV4aem8fmd1xct1bzo0BpSo46+HJlIpFew6UBkILg0htJXnz68lWxvw5eAj1f7LYMw5NpSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755189162; c=relaxed/simple;
-	bh=rz6aEDvh43JPGkc3MUifcoYgIR44lhm+JeiVqlJtefY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZKxYl63ygltXyA1HyMZ3VZOWDjwNSnLAvaivpoE7p43IdDzN8ehovZ7iWb9s8HRsfK87nkmPXca3zC+o7P5twwn+rI77jcovGvWPx+tolDhzXaZNtHVva/luDieGhQdhdPTALUzVSBjFK27CTuqg/r45hDYEJEONWeVbn/uqzIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cdn77.com; spf=pass smtp.mailfrom=cdn77.com; dkim=pass (1024-bit key) header.d=cdn77.com header.i=@cdn77.com header.b=j8zGTjgi; arc=none smtp.client-ip=95.168.196.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cdn77.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cdn77.com
-DKIM-Signature: a=rsa-sha256; t=1755188844; x=1755793644; s=dkim2019; d=cdn77.com; c=relaxed/relaxed; v=1; bh=GKRpkbuM0/E1wsSLFsbRln4KtsFPqU6wbMr0a/aHKeA=; h=From:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To:References;
-   b=j8zGTjgiu1Lbnh6rbl49SMWTbww4nmtpvOx4j5K9rUFmeSWNGesTct+bV42djMrLiH/FD4mRmjhcOwc6h705IPcgywAdEGBDHgTXHReEDGwba3mM1Ce4YtaUuXxfz9/lPBiXKI4OV3qEpbU8fi7Gf531nRoGCltjXZbkwX5rNDM=
-Received: from [10.26.1.187] ([80.250.18.198])
-        by mail.sh.cz (14.1.0 build 16 ) with ASMTP (SSL) id 202508141827234129;
-        Thu, 14 Aug 2025 18:27:23 +0200
-Message-ID: <4937aca8-8ebb-47d5-986f-7bb27ddbdaba@cdn77.com>
-Date: Thu, 14 Aug 2025 18:27:22 +0200
+	s=arc-20240116; t=1755191460; c=relaxed/simple;
+	bh=dAo4ZBVGhdI3Zawy71eZfhBS7jYeb8Z7J6f/6ef9OR8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DosTb0nxjceGPj8oaAIUJVDjUWJSEEXI3PVXSbi+ArZW6r4jf9RUCsjWz45HArmJMsgxECTAmgolOD+cBTS3mmYIdyGfZOwYMlMOWxz4D6JS8rarhBQCPWstj9cExGhPUkxey9NOIc2ZLgb3sQRToLc/GPpjwr4Umiuc/IJQfO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cXsWYLOX; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 14 Aug 2025 10:10:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755191446;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b72U+nUww1KIINPCaJtfTVRc5RFVRFTZ9UiCYeqDFTM=;
+	b=cXsWYLOXEk20ToAZj4NZeb4vbiW+anqqntunu2SZjI0Z27Wukw1bISf3JD/U8jT2xAaxyO
+	fq5tGOPqHQ3QaByLt6HkqisNdCpm/3pEzcd6n1ya0V6+EN69wKb3UM4Hcki9s7sc+h3xpo
+	6iYHyz9wzFN3ymO2uVI8Jg8VLgSnfbk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Neal Cardwell <ncardwell@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, 
+	Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Tejun Heo <tj@kernel.org>, Simon Horman <horms@kernel.org>, 
+	Geliang Tang <geliang@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, 
+	mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 12/12] net-memcg: Decouple controlled memcg
+ from global protocol memory accounting.
+Message-ID: <23roz4za55rarfkzcz2ej6m5mqwouzjcpvnfvn37mo7jeqk2t2@somfzyl5kf5b>
+References: <20250812175848.512446-1-kuniyu@google.com>
+ <20250812175848.512446-13-kuniyu@google.com>
+ <w6klr435a4rygmnifuujg6x4k77ch7cwoq6dspmyknqt24cpjz@bbz4wzmxjsfk>
+ <CAAVpQUCU=VJxA6NKx+O1_zwzzZOxUEsG9mY+SNK+bzb=dj9s5w@mail.gmail.com>
+ <oafk5om7v5vtxjmo5rtwy6ullprfaf6mk2lh4km7alj3dtainn@jql2rih5es4n>
+ <e6c8fa06-c76c-49e7-a027-0a7b610f1e9c@linux.dev>
+ <CAAVpQUD6hCY2FDWKVnoiQ59RmovLizTPCC+ZNqB=oyP5B4-2Aw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] memcg: expose socket memory pressure in a cgroup
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Daniel Sedlak <daniel.sedlak@cdn77.com>
-Cc: Kuniyuki Iwashima <kuniyu@google.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Neal Cardwell <ncardwell@google.com>, David Ahern <dsahern@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org,
- netdev@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
- Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-References: <20250805064429.77876-1-daniel.sedlak@cdn77.com>
- <fcnlbvljynxu5qlzmnjeagll7nf5mje7rwkimbqok6doso37gl@lwepk3ztjga7>
- <CAAVpQUBrNTFw34Kkh=b2bpa8aKd4XSnZUa6a18zkMjVrBqNHWw@mail.gmail.com>
- <nju55eqv56g6gkmxuavc2z2pcr26qhpmgrt76jt5dte5g4trxs@tjxld2iwdc5c>
- <CAAVpQUCCg-7kvzMeSSsKp3+Fu8pvvE5U-H5wkt=xMryNmnF5CA@mail.gmail.com>
- <chb7znbpkbsf7pftnzdzkum63gt7cajft2lqiqqfx7zol3ftre@7cdg4czr5k4j>
- <0f6a8c37-95e0-4009-a13b-99ce0e25ea47@cdn77.com>
- <qsncixzj7s7jd7f3l2erjjs7cx3fanmlbkh4auaapsvon45rx3@62o2nqwrb43e>
-Content-Language: en-US
-From: Matyas Hurtik <matyas.hurtik@cdn77.com>
-In-Reply-To: <qsncixzj7s7jd7f3l2erjjs7cx3fanmlbkh4auaapsvon45rx3@62o2nqwrb43e>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CTCH: RefID="str=0001.0A00210F.689E0DCE.007A,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0"; Spam="Unknown"; VOD="Unknown"
+In-Reply-To: <CAAVpQUD6hCY2FDWKVnoiQ59RmovLizTPCC+ZNqB=oyP5B4-2Aw@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On 8/7/25 10:52 PM, Shakeel Butt wrote:
+On Wed, Aug 13, 2025 at 09:34:01PM -0700, Kuniyuki Iwashima wrote:
+> On Wed, Aug 13, 2025 at 5:55 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+> >
+> > On 8/13/25 1:53 PM, Shakeel Butt wrote:
+> > > What I think is the right approach is to have BPF struct ops based
+> > > approach with possible callback 'is this socket under pressure' or maybe
+> > > 'is this socket isolated' and then you can do whatever you want in those
+> > > callbacks. In this way your can follow the same approach of caching the
+> > > result in kernel (lower bits of sk->sk_memcg).
+> > >
+> > > I am CCing bpf list to get some suggestions or concerns on this
+> > > approach.
+> >
+> > I have quickly looked at the set. In patch 11, it sets a bit in sk->sk_memcg.
+> >
+> > On the bpf side, there are already cgroup bpf progs that can do bpf_setsockopt
+> > on a sk, so the same can be done here. The bpf_setsockopt does not have to set
+> > option/knob that is only available in the uapi in case we don't want to expose
+> > this to the user space.
+> >
+> > The cgroup bpf prog (BPF_CGROUP_INET_SOCK_CREATE) can already be run when a
+> > "inet" sock is created. This hook (i.e. attach_type) does not have access to
+> > bpf_setsockopt but should be easy to add.
+> 
+> Okay, I will try the bpf_setsockopt() approach.
+> Should I post patch 1-10 to net-next separately ?
+> They are pure net material to gather memcg code under CONFIG_MEMCG.
 
-> We definitely don't need a global lock. For memcg->net_pressure_lock, we
-> need to be very clear why we need this lock. Basically we are doing RMW
-> on memcg->socket_pressure and we want known 'consistently' how much
-> further we are pushing memcg->socket_pressure. In other words the
-> consistent value of diff. The lock is one way to get that consistent
-> diff. We can also play some atomic ops trick to get the consistent value
-> without lock but I don't think that complexity is worth it.
-
-Hello,
-
-
-I tried implementing the second option, making the diff consistent using 
-atomics.
-Would something like this work?
-
-if (level > VMPRESSURE_LOW) {
-   unsigned long new_socket_pressure;
-   unsigned long old_socket_pressure;
-   unsigned long duration_to_add;
-   /*
-     * Let the socket buffer allocator know that
-     * we are having trouble reclaiming LRU pages.
-     *
-     * For hysteresis keep the pressure state
-     * asserted for a second in which subsequent
-     * pressure events can occur.
-     */
-   new_socket_pressure = jiffies + HZ;
-   old_socket_pressure = atomic_long_xchg(
-     &memcg->socket_pressure, new_socket_pressure);
-
-   duration_to_add = jiffies_to_usecs(
-     min(new_socket_pressure - old_socket_pressure, HZ));
-
-   do {
-     atomic_long_add(duration_to_add, &memcg->socket_pressure_duration);
-   } while ((memcg = parent_mem_cgroup(memcg)));
-}
-
-memcg->socket_pressure would need to be changed into atomic_long_t,
-but we avoid adding the memcg->net_pressure_lock.
-
-> We don't need memcg->net_pressure_lock's protection for
-> sk_pressure_duration of the memcg and its ancestors if additions to
-> sk_pressure_duration are atomic.
-
-With regards to the hierarchical propagation I noticed during testing that
-vmpressure() was sometimes called with memcgs, created for systemd oneshot
-services, that were at that time no longer present in the /sys/fs/cgroup 
-tree.
-This then made their parent counters a lot larger than just sum of the 
-subtree
-plus value of self. Would this behavior be correct?
-
-
-Thanks,
-
-Matyas
-
+Yes please.
 
