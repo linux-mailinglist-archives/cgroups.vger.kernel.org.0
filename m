@@ -1,147 +1,155 @@
-Return-Path: <cgroups+bounces-9159-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9160-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 807B7B25A80
-	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 06:34:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3779EB2656A
+	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 14:32:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C0E72A1548
-	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 04:34:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A7301B60543
+	for <lists+cgroups@lfdr.de>; Thu, 14 Aug 2025 12:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DB11202990;
-	Thu, 14 Aug 2025 04:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68F02FE048;
+	Thu, 14 Aug 2025 12:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZulMerqp"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="E4H0oF1v"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77DC1DE2A5
-	for <cgroups@vger.kernel.org>; Thu, 14 Aug 2025 04:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7662D2DAFCE
+	for <cgroups@vger.kernel.org>; Thu, 14 Aug 2025 12:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755146055; cv=none; b=GClYYXR5VHgkWbErx0fHVrnj55ypIq6D1yEZ9eCSKrv7y6iuTlDXCfdG2G/vSIfgL+N6fWXe5oCOJ1fHHmeeYcaHNfahkSnoen19aE51NPWo6QwzRFTXdsM7dzXgD/0aNOmnuame3NT/jHKPYz4q663xde5BmQ7olw8M3qJqWso=
+	t=1755174628; cv=none; b=sKBPP+3LP6VaoFPqO1kPD0d8N2jWuMmxpiSjJssJf/qr8GEfnHtCKhcFWKGUa05ddSBGvqnRdSXx8HokXT5hYb1nnpPHLhktB5drtcCcVgSIBoYQg6xAHZ3uMfaNVrnxPa3ShmA1Gflaov/Inf5+KaHsDZVEJ+cea7KWYMRyMTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755146055; c=relaxed/simple;
-	bh=1jpYMe9Rs3tolynO9B73W/0DpudggFG/LEClC4JR1AM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uAp5A0s+tkwdnIc5a6/RI6afANkjKgIE3biTONANf8QHYU4MD3XRQPJ2w6qQLJUufNWeudmt4eAFSdcLZUd+jkY2t10mx201GhShWoJSr9/EuiA8fjr6m9vA4dBALMliHr5smTIMwGc387m/IfI1EmYcEHYrRj3rHC6bTrJfiWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZulMerqp; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2445806c2ddso4285275ad.1
-        for <cgroups@vger.kernel.org>; Wed, 13 Aug 2025 21:34:13 -0700 (PDT)
+	s=arc-20240116; t=1755174628; c=relaxed/simple;
+	bh=1PE9vqqyAAJHt2b4anvd33upg87s7/sb4TrxyKMVNKg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sK2e8xOfQZKWoIML5zCCPZ2XLyEMi2e5FztzSPQN5ZbhRC0x7RjeB7A1QQDmpR12ats1RBeVpLarAtr9VqeYTk3vyFJ2/HLGL6AlSsle61Ou82iGlKWayLhUWLDqqIKariDazZ3NNTxTti6TOTc18YQnpgHCXfnKT3HQQ2Hcp0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=E4H0oF1v; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3b9dc56ff66so435591f8f.1
+        for <cgroups@vger.kernel.org>; Thu, 14 Aug 2025 05:30:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1755146053; x=1755750853; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1jpYMe9Rs3tolynO9B73W/0DpudggFG/LEClC4JR1AM=;
-        b=ZulMerqpseRGKB3VfhN2cwrwFpK8vPuZeXrlnh4lMn7zJgD8M2JqFPoiVd2ORP/jy3
-         fTgJtf87Dmlx53M7GrdlfDBkapwrkhcXOuVbvz/NVvOYl2wjdtOQ/QZBgteymcahoS1a
-         iaWK9i7+FAqkWhj3HIwbP2WiNn2EFSlQjkyODiTMBMOoTUCpMOg2N37TdhU1d1uylm4+
-         AiblJE8T+zA7keEoXzZCskJ98aDKWVsL8Ikf5AgjkpqlYcSdiB0zXGJCocF9XFkGxpUz
-         GwBwGdBS8QOzAN3ifhfGtGU07cQHoqfTp+4P/XLnecRvofCriSxWbcwTICJILxzctV7u
-         TD5g==
+        d=suse.com; s=google; t=1755174625; x=1755779425; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fJ1w1vX016HZnhf51EVaJqwNMCPhdOvsodT4l6hbFIE=;
+        b=E4H0oF1v9HyUEv/PaapQmZXv2Qj8FbNSP2dSaO73BcECErZ+qjpyThCT5uyiNriH3H
+         VYwQ6gBxjru8L9YTVAOlfkD4AuJxv6UCCSYHWe1yyAZAwZIJ4dvSuVEjliiXp3rOGwuq
+         LHAkyT5gbIgYe5dxMM2m3hWjam7zAJVboHAMc+2mqKAkjSw7w+4n9CwS/M36ugrW5K+d
+         FJwKjSg7UAJZtvjohWd3QyiQt7fRaq2Ry7UOCNIaWEZOjN2VQBFBokWKZYgFAZGkgkm4
+         MY7uL9KR0ngEgs1OnYXlAG4cRY6EaQ6SsSMPp10yc/kpDGg69I7Anjadgg6YmIgdSCQX
+         yxdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755146053; x=1755750853;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1jpYMe9Rs3tolynO9B73W/0DpudggFG/LEClC4JR1AM=;
-        b=J0Wck2f4rSnf8tbJbMZl4WI0BAkCKn+P3rELwsxvR/F99t8NRi8OI59BVKFxiDQ8+O
-         tBRe0nKZ/3oVyIpsfdslWMS2FCL4DowWkpjfRgSSOhsu2Lm8adWfwBLSRkhl2cJK0b6f
-         49yr2MKP2aH4GtWGpQj1p8AkkJDCIadCEFwlx/SFzI4Q+Jx0YkQCN0QvbnKqgyuwt677
-         HCsW2ESjgLJcMMIpVnEvlyr/2SkbRzm8xnJ7h8gMY5fSSFKjjqv5u78yHVAi/RIEi9NA
-         vOeIDXax5CH9c7NtAbWYh7b4MDFoVlK0YZgXmK5/GcwcaMLKyITypM3yX6RKvjeGgIs3
-         WcMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVKqOTnjpD/xhGD/Sqd0m3RKC9STxZfdnzimrnuXehUWgYmTG5p7cOG8NDQ2Lr7MVL7Rd7h97nx@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZ/RfxksgsfgbNF6aJnCyji5LUJfqkdCtI0We6zL1FXlBGUb2w
-	19soSxfgVg+lFem7nZdZIaLCr5V+Xm85w85RY2awglr9rlWCWohNZk/klwO/xt6QWEzDiDNF380
-	G9ubUQ/jDrSb+m1eTTsfFB87ql57EYketn+8jbnT4
-X-Gm-Gg: ASbGncsmFzkiMsSHLdQ4SLa8dXrnUBYqNHYKupiaIebGULNl/fwPyyEfA/nhFe5aO17
-	SXPIFvyHa317TXhdFEG7M/Ghj/V1T1Xjh12Cii1cy2cZ5h+ouwNc5khTkDiOV4ecZOG1jUxqc0H
-	oJ6EotSTRgE9YyGoBRA25q228seN6PzQvzPxc0XP2gLwTUYQNcETdhUs6ic6tSa++Gy1kra66zL
-	0TjRUTkwk2TJmPZHPUrtuFDWik4NeOdH+S9+ADXzJczPEKShjZJqKOXDw==
-X-Google-Smtp-Source: AGHT+IGwKj8+FeXsQR4WunSW0QBU4S01IHDhpLwKH7+wQspVHInHE5tXI45S3ELL33wWwQ08lPI1qcfPuEc+19ZHTWs=
-X-Received: by 2002:a17:903:19cd:b0:240:5c38:7555 with SMTP id
- d9443c01a7336-244584ede2fmr22257795ad.5.1755146052777; Wed, 13 Aug 2025
- 21:34:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1755174625; x=1755779425;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fJ1w1vX016HZnhf51EVaJqwNMCPhdOvsodT4l6hbFIE=;
+        b=a7eX2NHrztb1p7221HDlNj3Ql/mJaYm7L8g3WFpKFQcBN/N14joOSJT7iJC1zBNmZV
+         02ZF1r64EgpbrQCDwJCGz/no3uABy+te/wm58dXGpn2Dnjhnh49GJMRvCi85Xt9OgY+0
+         PUqrTWcLhByZwpklcIaeLtXeLiTsvp2rI7Cr7KweHza9hslc50eGy/0EVyKFidIqwGw8
+         ZBKecVrmx1s3GWvN07+HRWeXVeY6uFGsw1BwNXJ1/FgfvMJFwkH+N5M6hswyDapjF8ic
+         Be/OAZ722VDamtpETQtn4ChIOqqQSdUJV4YG2wwvBrWI0JpfrNsnfOVrK6xjoVlQqChX
+         i6Pg==
+X-Forwarded-Encrypted: i=1; AJvYcCXMOOkc+ZKG1lFUfhbv+Yw5HnJCQ+dRNUe2b6vY2IxUYMHzgqe6Aa0Q91wrS2uG84a39iUU+P/r@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyez9xaKj7n8C9e0HclSV/6PvNmMubavsE3g/JM+Vdf5lMq0UFe
+	Fn/F6Tougz/rZfiLj/ptW376Ma5GDX+jFAyPrR0tqG7uJ48meI+Ic4ysRRGHU3GrDBg=
+X-Gm-Gg: ASbGncuBgVTBGOWiM+RPiTE0hakuaKFQNKC+XQFIXgGyJH2gsZcID8hzHhxubA7IbEr
+	FojCfWa/3pF+RcwVT6tIUYCwyxdr2e4cclYH45sJr1cyUGvXDABacjT1F6KrzaAsf0458AylKld
+	FUvBwQ64kSWcD3aQVRfLB1vOR9NUe25JEc4mkIiM9E/2yJj7y3+XqZs/5PQ+0/Q/ZSZtZPdQLZG
+	89eyukxH9ywD0V+oGSTKHMAqUNFHLsktgntYhjUcPeqeDXjhO1eEBp60ctSr7gGJgZjl/+RqXzX
+	ch5wRt0+MVL6EQPNcF3bocsGsXU6QSZqLAP0qiAUsOKlQejAYZ1ISbYeB/gY9mjIiS6bbs1qOUk
+	cY+G2BYCL8lgYowy0nDRQ0rg3WuEdL52G+7UrtExbSA==
+X-Google-Smtp-Source: AGHT+IEcamlanLgHj4e3UiHXnuoZFx6EM5i/6/BHJ22GOTsUGejY8ezIfKRRmd/gWCi23iogf+4+lg==
+X-Received: by 2002:a05:6000:3111:b0:3b7:974d:5359 with SMTP id ffacd0b85a97d-3b9fc359a99mr2276811f8f.32.1755174624685;
+        Thu, 14 Aug 2025 05:30:24 -0700 (PDT)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1f0fb4asm348329055ad.60.2025.08.14.05.30.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Aug 2025 05:30:23 -0700 (PDT)
+Date: Thu, 14 Aug 2025 14:30:05 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Willem de Bruijn <willemb@google.com>, Matthieu Baerts <matttbe@kernel.org>, 
+	Mat Martineau <martineau@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Tejun Heo <tj@kernel.org>, Simon Horman <horms@kernel.org>, 
+	Geliang Tang <geliang@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, 
+	mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 net-next 01/12] mptcp: Fix up subflow's memcg when
+ CONFIG_SOCK_CGROUP_DATA=n.
+Message-ID: <ukfrq6ybrbb2yds5duyj2ms6i7xgssjsywzgknxctfgkpzupor@tjxbuiil5ptt>
+References: <20250812175848.512446-1-kuniyu@google.com>
+ <20250812175848.512446-2-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250812175848.512446-1-kuniyu@google.com> <20250812175848.512446-13-kuniyu@google.com>
- <w6klr435a4rygmnifuujg6x4k77ch7cwoq6dspmyknqt24cpjz@bbz4wzmxjsfk>
- <CAAVpQUCU=VJxA6NKx+O1_zwzzZOxUEsG9mY+SNK+bzb=dj9s5w@mail.gmail.com>
- <oafk5om7v5vtxjmo5rtwy6ullprfaf6mk2lh4km7alj3dtainn@jql2rih5es4n> <e6c8fa06-c76c-49e7-a027-0a7b610f1e9c@linux.dev>
-In-Reply-To: <e6c8fa06-c76c-49e7-a027-0a7b610f1e9c@linux.dev>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Wed, 13 Aug 2025 21:34:01 -0700
-X-Gm-Features: Ac12FXwCislSz3BViv-OIQ8p6QupR93n7L2582VKpwYhsHhniE6ipCNyQvXHe4w
-Message-ID: <CAAVpQUD6hCY2FDWKVnoiQ59RmovLizTPCC+ZNqB=oyP5B4-2Aw@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next 12/12] net-memcg: Decouple controlled memcg
- from global protocol memory accounting.
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Willem de Bruijn <willemb@google.com>, Matthieu Baerts <matttbe@kernel.org>, 
-	Mat Martineau <martineau@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Tejun Heo <tj@kernel.org>, Simon Horman <horms@kernel.org>, Geliang Tang <geliang@kernel.org>, 
-	Muchun Song <muchun.song@linux.dev>, Mina Almasry <almasrymina@google.com>, 
-	Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, mptcp@lists.linux.dev, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="xhbunld2ijovocqb"
+Content-Disposition: inline
+In-Reply-To: <20250812175848.512446-2-kuniyu@google.com>
+
+
+--xhbunld2ijovocqb
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 net-next 01/12] mptcp: Fix up subflow's memcg when
+ CONFIG_SOCK_CGROUP_DATA=n.
+MIME-Version: 1.0
 
-On Wed, Aug 13, 2025 at 5:55=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
->
-> On 8/13/25 1:53 PM, Shakeel Butt wrote:
-> > What I think is the right approach is to have BPF struct ops based
-> > approach with possible callback 'is this socket under pressure' or mayb=
-e
-> > 'is this socket isolated' and then you can do whatever you want in thos=
-e
-> > callbacks. In this way your can follow the same approach of caching the
-> > result in kernel (lower bits of sk->sk_memcg).
-> >
-> > I am CCing bpf list to get some suggestions or concerns on this
-> > approach.
->
-> I have quickly looked at the set. In patch 11, it sets a bit in sk->sk_me=
-mcg.
->
-> On the bpf side, there are already cgroup bpf progs that can do bpf_setso=
-ckopt
-> on a sk, so the same can be done here. The bpf_setsockopt does not have t=
-o set
-> option/knob that is only available in the uapi in case we don't want to e=
-xpose
-> this to the user space.
->
-> The cgroup bpf prog (BPF_CGROUP_INET_SOCK_CREATE) can already be run when=
- a
-> "inet" sock is created. This hook (i.e. attach_type) does not have access=
- to
-> bpf_setsockopt but should be easy to add.
+Hello.
 
-Okay, I will try the bpf_setsockopt() approach.
-Should I post patch 1-10 to net-next separately ?
-They are pure net material to gather memcg code under CONFIG_MEMCG.
+On Tue, Aug 12, 2025 at 05:58:19PM +0000, Kuniyuki Iwashima <kuniyu@google.=
+com> wrote:
+> When sk_alloc() allocates a socket, mem_cgroup_sk_alloc() sets
+> sk->sk_memcg based on the current task.
+>=20
+> MPTCP subflow socket creation is triggered from userspace or
+> an in-kernel worker.
 
+I somewhat remembered
+d752a4986532c ("net: memcg: late association of sock to memcg")
 
->
-> For more comprehensive mem charge policy that needs new bpf hook, that pr=
-obably
-> will need struct_ops instead of another cgroup attach_type but that will =
-be
-> implementation details.
+but IIUC this MPTCP codepath, the socket would never be visible to
+userspace nor manipulated from a proper process context, so there is no
+option to defer the association in similar fashion, correct?
+
+Then, I wonder whether this isn't a scenario for
+	o =3D set_active_memcg(sk->sk_memcg);
+	newsk =3D  sk_alloc();
+	...
+	set_active_memcg(o);
+
+i.e. utilize the existing remote charging infra instead of introducing
+specific mem_cgroup_sk_inherit() helper.
+
+Regards,
+Michal
+
+--xhbunld2ijovocqb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaJ3WwQAKCRB+PQLnlNv4
+CAoVAQCrDITNqluusq0b12YFFhfY1gKK4Q8uAHs/KsISm9RelwD+JxaqxOrcmstY
+zyqaWiykc0r7xJAjUUU3so6cKm+/lQg=
+=6bNw
+-----END PGP SIGNATURE-----
+
+--xhbunld2ijovocqb--
 
