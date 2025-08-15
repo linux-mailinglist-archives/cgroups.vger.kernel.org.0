@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-9225-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9226-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35B82B2870D
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 22:18:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 397E7B2870E
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 22:18:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2685DB07990
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 20:18:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 710FE1CE8BE0
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 20:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB0E2C08A0;
-	Fri, 15 Aug 2025 20:17:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D724C242D69;
+	Fri, 15 Aug 2025 20:17:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4vzv8hfy"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PyDu3t15"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10082BE7BC
-	for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 20:17:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478632BEFF6
+	for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 20:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755289059; cv=none; b=QkYLzpdZH35z+B+MZjm5eU3Zc7qEoF9eh/zpLD+hVlooVZmaQ0kfK+fdjNywyoRCh+VMWvY8n/KILyRoaJVMwh+Z0HlWXQp5WhcQ4GUtnP6OsO/mn3VZBhyS826Ce6IJiYAoTrWzmfajOjd5fOODNvxJMGklhGX6mWz5uMELRUg=
+	t=1755289061; cv=none; b=TjB3oqoBcjjK/yc9aMJf26p/lhrgGYMhXoBVFixZ4YicAf5BcEba8DeX8pfzok8df+ovxO2ZoI9NBn+3h5t2+dRpJ6A5tOa53/1LHbWS0vipMd1WV7NYFVccKQ8IWJnVlKRLWj37564fISztnvAtLi3NICXv+ZxhGzc1aNHNk7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755289059; c=relaxed/simple;
-	bh=XyVZJFZzKfSSIkf/pvmLmwKjraQN8W4KgjzemH/XGU0=;
+	s=arc-20240116; t=1755289061; c=relaxed/simple;
+	bh=kNCka+5/ble2uhxoCvBkpMNTXujkGV/J5QaB+v82p+c=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=mAP7clID2TTFIvR+6gnJt1qO+Mg2Nba3ZPBcuEjrUBlX8Fny1mEh3d7zhuZ04cW+X/fmj6X/+//xeco3dzDYCC4utdjxHVshX8CA5xIP0mK1VixOBxxgy8ChYy+nwGUUymu80xrja1xXFJR+JcQno7LeboB9HmSxmvtXveerem8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4vzv8hfy; arc=none smtp.client-ip=209.85.210.202
+	 To:Cc:Content-Type; b=ZnfD8MSSTyh8E7NiN0f9C2P0F+90odD7UAlD0iuPlZ/eTy6Xa8MpeYli5MbbWthbarlx8evbk1uG6NPEDB6zA1LiET9e4ExWRocyJrfWFstMvevJoUzmH9z4vRUJqjxop1Yjfe6HcENihZ/d5ikywXDIce4C6tFf+kjMutypXIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PyDu3t15; arc=none smtp.client-ip=209.85.210.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-76e2e617422so1903902b3a.0
-        for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 13:17:37 -0700 (PDT)
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-76e2eac5c63so1912455b3a.2
+        for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 13:17:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1755289057; x=1755893857; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1755289059; x=1755893859; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RJ4QavREfrxYYp51rWZ/EL+zSiE81x3iM7eRADON/+o=;
-        b=4vzv8hfyj6U/S5Ut/cNt1mnZcSnJFucxdlyaNcPlsHbp2xZlKco3aOKky6auRSVlMt
-         Zn9DapLv5QhrnuqGroXyaxb14+6ejLNT2gTFZ/oT12XqHqSfY947SD/zJpm8WBhvULpH
-         MeX5rneRQ+bIT1cLQ/Bvl/Q8n9yEnBj9X+xAWeKQuPYGNozGEWWNW3OH2W5/j9dWbbGU
-         2bAJHJmrQJ6Ohi2ltp2hNP/28wmmB6EufMBJgIAmC+l+t7wcU+eaCOf7lqw+WOLKkuCH
-         LZfOqHZ5yzyMstUfFxmjSc5JLCAWs9ouNtUmc6AU+OJvlYRDk9kQEeLWITzj5vRnGka4
-         w4kA==
+        bh=1wKL4ZYGX/K8WXuwlgtNOGDh1yxD4Vkofr7n0sxP5Do=;
+        b=PyDu3t15uFAQIIqy9WpCRmyfQ68tRnFy1oGP3DDif28aTJfUD524mRMeJfY0z2rkri
+         pyqYt+1mHY68ieuW9u7rR+dPEV0qPaM+YVx0AxrWUUzK/VLXRcy+emaR+inehBB0cT0W
+         m2oidPtrMm06hrLKVv5J/GtW2+4bXGYgX72kUDc0gqrbt77cgc2yfV8/9MbPgzgfOWul
+         79qAyNHZGwFRIxreUt3GyOfNjAwy3aY2s1+qe4DqLFkM80bDNcMUIIIrfuVGWSvLTG4T
+         ylen60cMA+2Dxn1ylQg428NNuQjiWocaUprX8pTCACkBOrnUZsUpISJ1QxEP3I53qBRY
+         im+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755289057; x=1755893857;
+        d=1e100.net; s=20230601; t=1755289059; x=1755893859;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RJ4QavREfrxYYp51rWZ/EL+zSiE81x3iM7eRADON/+o=;
-        b=JG1vGMeNBT+6v7ROBRlpc23aKqfzI1kBumI55VdTahY5XsGtfRJ3QhNwRC2fqPRxTE
-         SQuujdgocmfuG4R2T1Ye+czPGJfyDGt11VXUjizJC5mcsmJHZM+QuYlFa947w1dSlAI4
-         L+uf0ZQRd8LhL6sNxKOWb7g5RuHpvF9NAS/4CSgLNkJzMurJBng9NdXynZeFNaIN93TQ
-         DxZDNKnszPda6GCOj2L47UBsWYta3UZne8l+3j6Qmp9ZgwNy1bKRWEcSzQQkOmnO+dKx
-         u6sXf0+1yK6mhZYR9y005OKh71ZYtOfmw7Uwg2mEWpdZtKMZD5n124EHTTenDXIlCtXo
-         ie9A==
-X-Forwarded-Encrypted: i=1; AJvYcCUJ3NIWLy+CGxK1urCtowP6c1PwlpNe7EyCRCXEyAuFt14FLgDMitpnCUVaDxdkZaSDmdXdvfsx@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywd/4L7S0WqPsQSzHgohZXS75AYp9r4CpRYZrfRGk/8hhcNgl3t
-	UbfxKGjdGaoehBNeCMt+loUyfFTKAtnHnFsiTS0pdSnJySfoTf1rZ/o2Hb4JF5v9bvi44GHKHwY
-	MpClQXw==
-X-Google-Smtp-Source: AGHT+IEr+/ZjFkXy8umwdjDxM5J/aKMeoAE5dmVL5UloiD+KmJwNlOPL6BEq/ZXuKgz5B8/N8YhDKs6emow=
-X-Received: from pfnv9.prod.google.com ([2002:aa7:8509:0:b0:76b:8c3c:6179])
- (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:1893:b0:76b:e805:30e4
- with SMTP id d2e1a72fcca58-76e44838e26mr5098018b3a.24.1755289056973; Fri, 15
- Aug 2025 13:17:36 -0700 (PDT)
-Date: Fri, 15 Aug 2025 20:16:10 +0000
+        bh=1wKL4ZYGX/K8WXuwlgtNOGDh1yxD4Vkofr7n0sxP5Do=;
+        b=ItQA8cClqRqFL25iWLr/1/VBEJeJ9IiNT2ZhLQ3y54ns2AYUVIgZ+2x2njdOszJflg
+         8hoPunum+BnxlurzHu0BtVExke5grg70GDt4n6z27wm/kZ9P8HTDGd498/a1vKze1bc6
+         S9Z7M+Tl5Z1wB+JxqDJUHEB0XJTwnHwUtr3/cN8HaYCwzxLq1xn2QJRBY3p8olkS4Weu
+         807j/P5l3tuOwi5DJKHNuBqLKKQg5REF3euJzXlygjSliV9XwUqTpV63JmfgIfN9hL9Z
+         K454WEJjG+T3rYkWmobq03Qkvi21bYl2LnS3bFN7R9yUy8jek51Bb+oCFaGHIElf/Y1M
+         PRQA==
+X-Forwarded-Encrypted: i=1; AJvYcCW/ntQAEmztiZBEKTsB5KMA4x7ZgNYEj5DbMB6g5sSyAlQP63vbzelF8RsMck8y9QUpFwyqQb9E@vger.kernel.org
+X-Gm-Message-State: AOJu0YzMIOtcvZSE11SYZrFIHj+rhZqrrNrvMzO2kkGIIZ31Lbcp54Tn
+	csfjmoPFtRheqxz0ND3TRA12aDmGEqfTLFiT8xQIBHtmyBO6+NA4T0KaJOK3oX43utduQ82rHd9
+	yhBTvXw==
+X-Google-Smtp-Source: AGHT+IGfFQhxVrC0MRMQ+CGQK5l5v2DySu8ZxAiDgHkcBvf9T0+txoiH03BQJJ5/iyzxBM/IkoVynChoTcY=
+X-Received: from pgbdk2.prod.google.com ([2002:a05:6a02:c82:b0:b43:6adc:24d0])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a21:32a1:b0:240:1327:ab3e
+ with SMTP id adf61e73a8af0-240e611783amr454188637.9.1755289058544; Fri, 15
+ Aug 2025 13:17:38 -0700 (PDT)
+Date: Fri, 15 Aug 2025 20:16:11 +0000
 In-Reply-To: <20250815201712.1745332-1-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250815201712.1745332-1-kuniyu@google.com>
 X-Mailer: git-send-email 2.51.0.rc1.163.g2494970778-goog
-Message-ID: <20250815201712.1745332-3-kuniyu@google.com>
-Subject: [PATCH v5 net-next 02/10] mptcp: Use tcp_under_memory_pressure() in mptcp_epollin_ready().
+Message-ID: <20250815201712.1745332-4-kuniyu@google.com>
+Subject: [PATCH v5 net-next 03/10] tcp: Simplify error path in inet_csk_accept().
 From: Kuniyuki Iwashima <kuniyu@google.com>
 To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
 	Jakub Kicinski <kuba@kernel.org>, Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
@@ -90,35 +90,61 @@ Cc: Simon Horman <horms@kernel.org>, Geliang Tang <geliang@kernel.org>,
 	mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 
-Some conditions used in mptcp_epollin_ready() are the same as
-tcp_under_memory_pressure().
+When an error occurs in inet_csk_accept(), what we should do is
+only call release_sock() and set the errno to arg->err.
 
-We will modify tcp_under_memory_pressure() in the later patch.
+But the path jumps to another label, which introduces unnecessary
+initialisation and tests for newsk.
 
-Let's use tcp_under_memory_pressure() instead.
+Let's simplify the error path and remove the redundant NULL
+checks for newsk.
 
 Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
 Reviewed-by: Eric Dumazet <edumazet@google.com>
-Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
 ---
- net/mptcp/protocol.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ net/ipv4/inet_connection_sock.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
-index b15d7fab5c4b..a1787a1344ac 100644
---- a/net/mptcp/protocol.h
-+++ b/net/mptcp/protocol.h
-@@ -788,9 +788,7 @@ static inline bool mptcp_epollin_ready(const struct sock *sk)
- 	 * as it can always coalesce them
- 	 */
- 	return (data_avail >= sk->sk_rcvlowat) ||
--	       (mem_cgroup_sockets_enabled && sk->sk_memcg &&
--		mem_cgroup_under_socket_pressure(sk->sk_memcg)) ||
--	       READ_ONCE(tcp_memory_pressure);
-+		tcp_under_memory_pressure(sk);
- }
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index 1e2df51427fe..724bd9ed6cd4 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -706,9 +706,9 @@ struct sock *inet_csk_accept(struct sock *sk, struct proto_accept_arg *arg)
+ 		spin_unlock_bh(&queue->fastopenq.lock);
+ 	}
  
- int mptcp_set_rcvlowat(struct sock *sk, int val);
+-out:
+ 	release_sock(sk);
+-	if (newsk && mem_cgroup_sockets_enabled) {
++
++	if (mem_cgroup_sockets_enabled) {
+ 		gfp_t gfp = GFP_KERNEL | __GFP_NOFAIL;
+ 		int amt = 0;
+ 
+@@ -732,18 +732,17 @@ struct sock *inet_csk_accept(struct sock *sk, struct proto_accept_arg *arg)
+ 
+ 		release_sock(newsk);
+ 	}
++
+ 	if (req)
+ 		reqsk_put(req);
+ 
+-	if (newsk)
+-		inet_init_csk_locks(newsk);
+-
++	inet_init_csk_locks(newsk);
+ 	return newsk;
++
+ out_err:
+-	newsk = NULL;
+-	req = NULL;
++	release_sock(sk);
+ 	arg->err = error;
+-	goto out;
++	return NULL;
+ }
+ EXPORT_SYMBOL(inet_csk_accept);
+ 
 -- 
 2.51.0.rc1.163.g2494970778-goog
 
