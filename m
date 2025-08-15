@@ -1,86 +1,88 @@
-Return-Path: <cgroups+bounces-9214-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9215-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E1E4B28007
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 14:34:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C11B28249
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 16:45:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 271285A854C
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 12:34:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB4261CC57AF
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 14:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8DAA288C23;
-	Fri, 15 Aug 2025 12:34:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C80B253F11;
+	Fri, 15 Aug 2025 14:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BktOj1Et"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Yl07bti9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7852D052
-	for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 12:34:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA163257AD1
+	for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 14:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755261257; cv=none; b=Fk5t3GrSf2PL/163rdAz2EB+2z6AMgsbeXdDibPY75Es+qsr6vNG7nisf3sl2o7Lz+n4GMLCjzCuGqDMela0gv1frIRGd8WjWow5EGAmK2P5dgjuqQKUXbcrxiQVwJsiJSSlbUFIAmmKVT167Mfvnar6OCuWaw960tuNdwY6xo4=
+	t=1755268942; cv=none; b=MAoVSmFzb+Kodr8hW3hd0VOIEiqXY63+m5w5tRbE2eG6eqhoCT8+c7yMMHhZrmTtLa9jXUt0VzbPDzu3SLnghOqA5+tr6eCwdpDFt0yZZuGfkCYSJgvwYHlrjEN2A1wFz0Xfvy3Ci77tRs2u/FTC0wGYNLkb/+wl8tnsfvqjBIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755261257; c=relaxed/simple;
-	bh=2NPBJgIbug0Bh+0ak17HZ4aogx7N/v5utSxx0PGuCKs=;
+	s=arc-20240116; t=1755268942; c=relaxed/simple;
+	bh=E08Z/Gjpe/x4ncuy1dWHOIFHunMG31GwZdhkHJ+i07k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PC1k6d63zmUdNlcAmJ68U2JqerdhBY9A/UtQwnFXXDG7iPxm3bvUBtHo0ITposcg1czgwFQyddxM2PjrT+0YMPoayPUdtb1hkHqtxuVlZfRIQNEtdi6Cw7Yzl1OE3UomC82AdEX5cxZW5qIvWxc/BlKlSO/CPEwPjnTnlehM+OQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BktOj1Et; arc=none smtp.client-ip=209.85.221.41
+	 Content-Type:Content-Disposition:In-Reply-To; b=kWGng36EQjzr01swpcmeoAfBx84WVjwCpDTwTPZKrjuFdmFVpYD81b5MYTZlvmcreZ6ePTw04ZLZrU+VnqgcceG5bzkRo6SvPWFTjFrrnJhyjk7Nmo4bWUk56eqCsn0PDpu63y5zsGf0cw3oDPqNBX3Zvln84AoV05yFJNHU7lI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Yl07bti9; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3b9e4147690so1127718f8f.2
-        for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 05:34:15 -0700 (PDT)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-45a1b0bd237so15382785e9.2
+        for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 07:42:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1755261254; x=1755866054; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1755268939; x=1755873739; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2NPBJgIbug0Bh+0ak17HZ4aogx7N/v5utSxx0PGuCKs=;
-        b=BktOj1Etftc/hzF6N+qUmNOfwsQvBMN0/m8i1mG1pq5xDUQQVMs02tCISPs/rCWs6S
-         7UJTC7SWBT/slTELayNHsnPQ/w0dMRvislbFQ3t00+sTzf/jYLJ3Ofn1ySsfGbu7dY8b
-         1GwF9GPmdW+yqZch7hoG7FaNuiN8qj0rXGqLknOCuHdVCspxzIwjZ/JAAPIf9HWxtOOI
-         ZjhthdD49OtsPSLhpV90AE31+E5TjvKGR21C35KgElXWUCVKbIlcuJQaJAdzHhyG1TgW
-         lAMCxYOyGs9Ei4N7lm+DdzDoJ2roBHhnOAa1hlkF33SVmaBS0rmNlqiJov+efQ64RFWX
-         nWFw==
+        bh=UrhhDUhBgNZopwv3/8XFWlqe8JuQPPvnbL7V1VwKS8A=;
+        b=Yl07bti9GmLGELAJ98oVI/87ptjER5vdh9ZFtLCrQMRtggMKYkLGEFJEpDZPY2XDLx
+         ZfThpATH9vsN4F27NDF8uRcPuEYGoYrRiQSlr1MtVea6LpxmfFSBPV42qDy5zZoC93N/
+         jsUb3m2MVcuBMwL68sHW6HZ9g2OEElu/Otmsdru1lh8KOZCduOSQmGKfnhCTm4U679tg
+         TV1r1bq8BB/6VlYzHrHY0Z6GVNuYSfKKc0jDlsZs9/4/CQ8RePqGK+9/hGRsfkMMG4B9
+         nwumMY1hDcNdqo3qW/urct5BhrW0YLVhSP7ddbgTq2Xzhcqu2WrkO3J0nTNPD0d4iE2l
+         RCgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755261254; x=1755866054;
+        d=1e100.net; s=20230601; t=1755268939; x=1755873739;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2NPBJgIbug0Bh+0ak17HZ4aogx7N/v5utSxx0PGuCKs=;
-        b=VoPJ8z4eUNF89kUM8OwpvOzSYJHSWQtDAesGtwdnN6aHaq0fobBArG2V0lUobyRNsU
-         W7fhC2C8eJblge2W6sCBvV1y4B0pe7Xl1fwjU4HHY+B6f+QGn0kXG4XdchaZfudEIS7b
-         KcyaIwOVzAR3ufRxAPc72y6LZmnzMSFMx9tpyOQm0JTl1b02t4QsGCZpkLMYIeEJuDku
-         UQxZKJY7aeT/CsVxXrdhXImbnNbVlQ1IcJuHmXmHut45VoB+SjIF6U/ss7UUcaez+o5f
-         ofFJB3qHk1gm4O08HR1IUup7QZuNyFOe9c69faigvpjkpyNJ2nbZNJ0595quTw/rQQZA
-         Tpjw==
-X-Forwarded-Encrypted: i=1; AJvYcCUDeeVFxZ+wcNlRHCnktwkbmjQrQxDGNbkwiS0RL+t5k0tOHsWeSwtEIRBLpXG2V9hPDsmd7FXQ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx59q6J5Q8cftHn7hQYRF50qISJXIuffjZgJ5OwP6Z6hW3NDJeK
-	mHex2fXUMnpoTsmdmssn5YWXSD17nWuKwQ264KzbfP94JGoo/RNFlTSc4OoxhBxJ05o=
-X-Gm-Gg: ASbGncvML36NCUc8wQueWJoVEeo+g2+7YjYJ8IMuAW6297H7HCzT4gHkMoxNlGU5Nt3
-	0paBlmkvCb6bVr1b/wCDaB8dBrlRE8wQKwW52rcwfJKZj8V7g5ZD4T6vaykaP7X6O7Z2KmMsEqB
-	TTAkvQL1/EVuTmpdwLzopbqOmDuuSNcz1mjlQuzS8M/ZgLeRrxPTmmL/IdzdK5t47QLvR6m0/mV
-	TNNBujOipXmOkeEoxcuAQChjF825Hgz2L/7tXATH4RsQr4X3Gejn/u/rt9eIY3V0veM8zPMff93
-	vzgxcLfcPCI3ZV+IK9GR9SOn4+XiB7gX8FBQCb6IaYBMJgHJ2OgB0ATK4P5UdtV3Vhd2B5pFl8v
-	HTskIyVUlp0qGO/6dN9bC5yf49K1R2ipASxrai6wfbJAN+1Yj1S88
-X-Google-Smtp-Source: AGHT+IHOvaE7tZeHngdDROJ3VBbwyIHwQY//OcWQOpF4xFO/7x0xp2UXIVTyys/GbEi0VR5R6Dqu6Q==
-X-Received: by 2002:a05:6000:1888:b0:3b7:99a8:bf6e with SMTP id ffacd0b85a97d-3bb694ae038mr1734547f8f.51.1755261253797;
-        Fri, 15 Aug 2025 05:34:13 -0700 (PDT)
+        bh=UrhhDUhBgNZopwv3/8XFWlqe8JuQPPvnbL7V1VwKS8A=;
+        b=IWrUcvtXDkkuYXsRU6jazs4g1slY57KUFFXy5U49HvM2uo+udiMH4etwYDdd7p1fqG
+         83KmvmFXhHV3ZUgl5lT7SmXEzW/M6Eq9C5Sh2lnPhzzR4jhZKj+udutQIVS0pB7hw3+l
+         ttNefgrlu28whfiD/+pQskrYa5vKlMigrGC1XUoCJQSMo7oYP5ex0Uj322poLNXYkUtZ
+         qCG2hduS7mNr7pHAlO2GcLngRHlPtvbaFu3lHd5skD8gzv3yWMNHE9Ro5in1qaVPZAYK
+         Il5iqJUPVkIo9+I4naPyr4OfQw+yc6EL3WlSlmCNG90++q66139Awu+5h2Eq7WmRmpw8
+         oDWg==
+X-Forwarded-Encrypted: i=1; AJvYcCVL3vXw+SKNUQp5asQgMGeiuOtrOAtJph/LHHaey2wP0PjFKmJmGaqMOfTC7lv8s9j8QIre/S38@vger.kernel.org
+X-Gm-Message-State: AOJu0YzExJnOdEZIjDb46b8O49xwGzhVB4MPzfAMKj3i888Ve8hlPyw9
+	3ZAsdx0znShM6awGXX6xJCogVc5aujn+teIY6g4LeVJBsUaY8b9W4m8ZscbAxY3cqaA=
+X-Gm-Gg: ASbGncv0pxOVqxUEFwSr8JPDASPG+xyTEkmTQWX9nxm1MNEAMYtoPCtTFD9QIxSmq4I
+	LkCr5b6P7gQh6s+APKrGyUdljUrw/KqGYBVMCsLhRnsc/c96rBJ6+6ovSDYqx5VfYb2ZLc1Of6U
+	5IyL/olxbkpg1+ZS5XOX2wRg88uJFLnvtwQiWUHun0A5mpJlLhw1JANqIuJAXVMkQT9bn0A34rb
+	eLH1gRfGe23omrShHBiBt8sOjtpIp9QKekzYvs6VWOfhITFTiXGmso/8qULfwJsULHUfmSpT9Qb
+	9Z/AKvh4mTarGKNUIjO68xWrC6kmGt422aWSvYdvPiqbGGuFDTge7m9l2wAlbsSUa4+4dgWBeas
+	0VaM4bG7ve0DvyGEDMAwiG6tV0ef0GoiVMDzZJcvNqA==
+X-Google-Smtp-Source: AGHT+IEboWaeHkNlU+m2U6Jyj7/6NzkEInnD8P8sG3Rh85pdmSXQEYsAqvzgLOG7UNxq/mqhuQwxUA==
+X-Received: by 2002:a05:6000:2508:b0:3bb:2fb3:9dc3 with SMTP id ffacd0b85a97d-3bb6646e1c7mr2044697f8f.5.1755268939165;
+        Fri, 15 Aug 2025 07:42:19 -0700 (PDT)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b472d5f4539sm1195356a12.14.2025.08.15.05.34.09
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76e45566fafsm1288877b3a.73.2025.08.15.07.42.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Aug 2025 05:34:12 -0700 (PDT)
-Date: Fri, 15 Aug 2025 14:34:03 +0200
+        Fri, 15 Aug 2025 07:42:18 -0700 (PDT)
+Date: Fri, 15 Aug 2025 16:42:06 +0200
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: lirongqing <lirongqing@baidu.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: Remove redundant rcu_read_lock() in
- spin_lock_irq() section
-Message-ID: <f64n5c6dkdjuaudk5p66mvpjyjulrjytmndqufmdu3uhft46sy@bem2gx34zhkz>
-References: <20250815091430.8694-1-lirongqing@baidu.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org, 
+	hannes@cmpxchg.org, peterz@infradead.org, zhouchengming@bytedance.com, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, lujialin4@huawei.com, 
+	chenridong@huawei.com
+Subject: Re: [PATCH] kernfs: Fix UAF in PSI polling when open file is released
+Message-ID: <ql5573r2nbex53fyygwczyjipmtalc22n3hxxzmqwi2sgadodt@a5pesn5gunf2>
+References: <20250815013429.1255241-1-chenridong@huaweicloud.com>
+ <2025081526-skeptic-cough-7fda@gregkh>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -88,59 +90,68 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lxgzoylpx6c2h6sk"
+	protocol="application/pgp-signature"; boundary="7waogckkrlgxbmqz"
 Content-Disposition: inline
-In-Reply-To: <20250815091430.8694-1-lirongqing@baidu.com>
+In-Reply-To: <2025081526-skeptic-cough-7fda@gregkh>
 
 
---lxgzoylpx6c2h6sk
+--7waogckkrlgxbmqz
 Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] cgroup: Remove redundant rcu_read_lock() in
- spin_lock_irq() section
+Subject: Re: [PATCH] kernfs: Fix UAF in PSI polling when open file is released
 MIME-Version: 1.0
 
-Hello RongQing.
-
-On Fri, Aug 15, 2025 at 05:14:30PM +0800, lirongqing <lirongqing@baidu.com>=
- wrote:
-> From: Li RongQing <lirongqing@baidu.com>
+On Fri, Aug 15, 2025 at 08:11:39AM +0200, Greg KH <gregkh@linuxfoundation.o=
+rg> wrote:
+> > diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+> > index a6c692cac616..d5d01f0b9392 100644
+> > --- a/fs/kernfs/file.c
+> > +++ b/fs/kernfs/file.c
+> > @@ -852,7 +852,7 @@ static __poll_t kernfs_fop_poll(struct file *filp, =
+poll_table *wait)
+> >  	struct kernfs_node *kn =3D kernfs_dentry_node(filp->f_path.dentry);
+> >  	__poll_t ret;
+> > =20
+> > -	if (!kernfs_get_active(kn))
+> > +	if (of->released || !kernfs_get_active(kn))
 >=20
-> Since spin_lock_irq() already disables preemption and task_css_set()
-> is protected by css_set_lock, the rcu_read_lock() calls are unnecessary
-> within the critical section. Remove them to simplify the code.
->=20
-> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+> I can see why the cgroup change is needed,
 
-So there is some inconsistency betwen cgroup_migrate() and
-cgroup_attach_task() (see also 674b745e22b3c ("cgroup: remove
-rcu_read_lock()/rcu_read_unlock() in critical section of
-spin_lock_irq()")) -- that'd warrant unification. Have you spotted other
-instances of this?
+I don't see it that much. of->priv isn't checked in cgroup code anywhere
+so it isn't helpful zeroing. As Ridong writes it may trade UaF for NULL
+pointer deref :-/ (Additionally, same zeroing would be needed in error
+path in cgroup_file_open().)
 
-The RCU lock is there not only because of task_css_set() but also for
-while_each_thread(). I'd slightly prefer honoring the advice from Paul
-[1] and keep a redundant rcu_read_lock() -- for more robustness to
-reworks, I'm not convinced this simplification has othe visible
-benefits.
+I _think_ the place to cleanup would be in
+@@ -3978,6 +3978,8 @@ static ssize_t cgroup_pressure_write(struct kernfs_op=
+en_file *of,
+                psi->enabled =3D enable;
+                if (enable)
+                        psi_cgroup_restart(psi);
++               else
++                       psi_trigger_destroy(???);
+        }
 
-Thanks,
+        cgroup_kn_unlock(of->kn);
+
+The issue is that cgroup_pressure_write doesn't know all possible
+triggers to be cancelled. (The fix with of->released would only
+sanitize effect but not the cause IMO.)
+
+HTH,
 Michal
 
-[1] https://lore.kernel.org/all/20220107213612.GQ4202@paulmck-ThinkPad-P17-=
-Gen-1/
-
---lxgzoylpx6c2h6sk
+--7waogckkrlgxbmqz
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaJ8pHgAKCRB+PQLnlNv4
-CLeEAQDhACSSxzfculiGEZg5K7CYSS8BDwlcU8+9yAxEJIfsLwEAmbKaApjfh0Ki
-8I+wSutS8pxwWUO8EeeZ9jbous+NrQw=
-=uUm4
+iHUEABYKAB0WIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaJ9HPAAKCRB+PQLnlNv4
+CBaBAP43oVsG9hvpd+fisul1x1+rwolSV58J9LSb7n7VoAz80QEAm+hxMRFwmmMB
+7V7Z15dEzI3wqk/GDvXimj5mD3Im8QY=
+=9lzv
 -----END PGP SIGNATURE-----
 
---lxgzoylpx6c2h6sk--
+--7waogckkrlgxbmqz--
 
