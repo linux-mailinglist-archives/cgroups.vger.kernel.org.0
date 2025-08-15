@@ -1,112 +1,162 @@
-Return-Path: <cgroups+bounces-9200-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9201-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BE20B27646
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 04:46:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3AB5B278E1
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 08:11:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EE5F720AA9
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 02:41:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 310B35E444D
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 06:11:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C119B25EFBF;
-	Fri, 15 Aug 2025 02:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1152026E140;
+	Fri, 15 Aug 2025 06:11:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=sina.com header.i=@sina.com header.b="l6LdfeQd"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="rbUCyNDp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from r3-22.sinamail.sina.com.cn (r3-22.sinamail.sina.com.cn [202.108.3.22])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55662222CC
-	for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 02:40:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.108.3.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE9225522B;
+	Fri, 15 Aug 2025 06:11:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755225643; cv=none; b=pTqAh5KummSx+OM+V1w98rTa0MIoTOU9aOed571W96li2FvP2xyXBPOvaWQ4vd2lCedILx+bHa7+tYVTchYG8/pshTTj0XJjbJjXRSwQVZksWZLgsqWUCobv8DKxdsy7xs/8z+JtTBdlc7whoWExcK2Ba+oN/kOjrPUu7n1D5Oo=
+	t=1755238308; cv=none; b=TtFTOmzPER8gZ6fare6C+l85XNEFdjUMioUQKSMHAtOtH+1lIGu5ebXs6nfWcEK2QdqcSllvym2HPMvyy0igX6PGHT2SWtbwi1h3KxEcxPX1KsW8PJIm97MHREp7KSy2RqhAL9e9jEfjlho+dwfoJZxTqoeLNH9wGSW7U75/Woc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755225643; c=relaxed/simple;
-	bh=z1IRg+WLhKJGBRy356mvKTAJlP+WrGpSPP4QB3G8mOE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bn8Wp6QBWaL1xRRwR4UXwI6xq9vgnvCPkICZpgqtC0p2OTqNNrZ4QNhbaVMPybsq5TK3pJGLcxJnpcqjZx27QrUhO/KUmkr8JK+Fa9MLRMK27rp/Gi19UCygTte1iDCei8I/Jsot218PcLfxacTkr5KECsBBr2zBK7LU4jtJ4rQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; dkim=pass (1024-bit key) header.d=sina.com header.i=@sina.com header.b=l6LdfeQd; arc=none smtp.client-ip=202.108.3.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sina.com; s=201208; t=1755225639;
-	bh=ezsNwu0E2vbhV3eEgDb3rzCyMJNyDOFsU0N5GXqGHoU=;
-	h=From:Subject:Date:Message-ID;
-	b=l6LdfeQdzrlh5gubJzzfgQOuMmrRfKNkmm0U8Vbgy3rXc9RUQX1mKrDbzb7SZtwLG
-	 p6ZDVGObtwes781SJvd1doFUbwIxUVCtMqW5v6bYw/V9WGud0f+GOq9C4BPKr/nyV/
-	 zsKmLIxAZ+dRxHbCKB9J4Shwseanf2/YyHFah2bo=
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([114.249.58.236])
-	by sina.com (10.54.253.33) with ESMTP
-	id 689E9E1C0000525C; Fri, 15 Aug 2025 10:40:30 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 5642376685181
-X-SMAIL-UIID: 76075C7646BB40678C19FE2770DE0E95-20250815-104030-1
-From: Hillf Danton <hdanton@sina.com>
-To: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Chen Ridong <chenridong@huaweicloud.com>
-Cc: tj@kernel.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com,
-	chenridong@huawei.com,
-	gaoyingjie@uniontech.com
-Subject: Re: [PATCH v2 -next] cgroup: remove offline draining in root destruction to avoid hung_tasks
-Date: Fri, 15 Aug 2025 10:40:18 +0800
-Message-ID: <20250815024020.4579-1-hdanton@sina.com>
-In-Reply-To: <htzudoa4cgius7ncus67axelhv3qh6fgjgnvju27fuyw7gimla@uzrta5sfbh2w>
-References: <20250722112733.4113237-1-chenridong@huaweicloud.com> <kfqhgb2qq2zc6aipz5adyrqh7mghd6bjumuwok3ie7bq4vfuat@lwejtfevzyzs> <7f36d0c7-3476-4bc6-b66e-48496a8be514@huaweicloud.com>
+	s=arc-20240116; t=1755238308; c=relaxed/simple;
+	bh=i8+3u/XfWuewCmAXGYicw7iVwQlPc2yBpJ4wclvrywU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g/5hS0GzIcfMLOd2oS5ZZhjZ+VbhqeezCqqwhx0cKUbfdzoBk2ZempUCvxfnccsSihk0Yk5tv4urt8lqAhry1AC4jDunD492KilVSeUUw3ufgsRodxXICC5vDOQuIE7g+VPW6hZhPpkdkdHt2uWM6jcXHJLsULYsWykYbcTEpWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=rbUCyNDp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D9A6C4CEEB;
+	Fri, 15 Aug 2025 06:11:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1755238308;
+	bh=i8+3u/XfWuewCmAXGYicw7iVwQlPc2yBpJ4wclvrywU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rbUCyNDpdtR8AQkrqGCsB4JXD2lmolYNg1YWXThj7C9cYbWMsP7UXfJT8+5NqzU0L
+	 Qws2jp9ANbdbiPbyGvJ/qTUJNpEh7Ze9qa/GvNdnfrAMjT3ujFJoi++fa+mvo3qTR3
+	 YyVb1mxuOg30JPOubXn6mr6zIPW8/DcDvYyD0JHc=
+Date: Fri, 15 Aug 2025 08:11:39 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com,
+	peterz@infradead.org, zhouchengming@bytedance.com,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	lujialin4@huawei.com, chenridong@huawei.com
+Subject: Re: [PATCH] kernfs: Fix UAF in PSI polling when open file is released
+Message-ID: <2025081526-skeptic-cough-7fda@gregkh>
+References: <20250815013429.1255241-1-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250815013429.1255241-1-chenridong@huaweicloud.com>
 
-On Fri, Jul 25, 2025 at 09:42:05AM +0800, Chen Ridong <chenridong@huaweicloud.com> wrote:
-> > On Tue, Jul 22, 2025 at 11:27:33AM +0000, Chen Ridong <chenridong@huaweicloud.com> wrote:
-> >> CPU0                            CPU1
-> >> mount perf_event                umount net_prio
-> >> cgroup1_get_tree                cgroup_kill_sb
-> >> rebind_subsystems               // root destruction enqueues
-> >> 				// cgroup_destroy_wq
-> >> // kill all perf_event css
-> >>                                 // one perf_event css A is dying
-> >>                                 // css A offline enqueues cgroup_destroy_wq
-> >>                                 // root destruction will be executed first
-> >>                                 css_free_rwork_fn
-> >>                                 cgroup_destroy_root
-> >>                                 cgroup_lock_and_drain_offline
-> >>                                 // some perf descendants are dying
-> >>                                 // cgroup_destroy_wq max_active = 1
-> >>                                 // waiting for css A to die
-> >>
-> >> Problem scenario:
-> >> 1. CPU0 mounts perf_event (rebind_subsystems)
-> >> 2. CPU1 unmounts net_prio (cgroup_kill_sb), queuing root destruction work
-> >> 3. A dying perf_event CSS gets queued for offline after root destruction
-> >> 4. Root destruction waits for offline completion, but offline work is
-> >>    blocked behind root destruction in cgroup_destroy_wq (max_active=1)
-> > 
-> > What's concerning me is why umount of net_prio hierarhy waits for
-> > draining of the default hierachy? (Where you then run into conflict with
-> > perf_event that's implicit_on_dfl.)
-> > 
-/*
- * cgroup destruction makes heavy use of work items and there can be a lot
- * of concurrent destructions.  Use a separate workqueue so that cgroup
- * destruction work items don't end up filling up max_active of system_wq
- * which may lead to deadlock.
- */
+On Fri, Aug 15, 2025 at 01:34:29AM +0000, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
+> 
+> A use-after-free (UAF) vulnerability was identified in the PSI (Pressure
+> Stall Information) monitoring mechanism:
+> 
+> BUG: KASAN: slab-use-after-free in psi_trigger_poll+0x3c/0x140
+> Read of size 8 at addr ffff3de3d50bd308 by task systemd/1
+> 
+> psi_trigger_poll+0x3c/0x140
+> cgroup_pressure_poll+0x70/0xa0
+> cgroup_file_poll+0x8c/0x100
+> kernfs_fop_poll+0x11c/0x1c0
+> ep_item_poll.isra.0+0x188/0x2c0
+> 
+> Allocated by task 1:
+> cgroup_file_open+0x88/0x388
+> kernfs_fop_open+0x73c/0xaf0
+> do_dentry_open+0x5fc/0x1200
+> vfs_open+0xa0/0x3f0
+> do_open+0x7e8/0xd08
+> path_openat+0x2fc/0x6b0
+> do_filp_open+0x174/0x368
+> 
+> Freed by task 8462:
+> cgroup_file_release+0x130/0x1f8
+> kernfs_drain_open_files+0x17c/0x440
+> kernfs_drain+0x2dc/0x360
+> kernfs_show+0x1b8/0x288
+> cgroup_file_show+0x150/0x268
+> cgroup_pressure_write+0x1dc/0x340
+> cgroup_file_write+0x274/0x548
+> 
+> Reproduction Steps:
+> 1. Open test/cpu.pressure and establish epoll monitoring
+> 2. Disable monitoring: echo 0 > test/cgroup.pressure
+> 3. Re-enable monitoring: echo 1 > test/cgroup.pressure
+> 
+> The race condition occurs because:
+> 1. When cgroup.pressure is disabled (echo 0 > cgroup.pressure), it:
+>    - Releases PSI triggers via cgroup_file_release()
+>    - Frees of->priv through kernfs_drain_open_files()
+> 2. While epoll still holds reference to the file and continues polling
+> 3. Re-enabling (echo 1 > cgroup.pressure) accesses freed of->priv
+> 
+> epolling			disable/enable cgroup.pressure
+> fd=open(cpu.pressure)
+> while(1)
+> ...
+> epoll_wait
+> kernfs_fop_poll
+> kernfs_get_active = true	echo 0 > cgroup.pressure
+> ...				cgroup_file_show
+> 				kernfs_show
+> 				// inactive kn
+> 				kernfs_drain_open_files
+> 				cft->release(of);
+> 				kfree(ctx);
+> 				...
+> kernfs_get_active = false
+> 				echo 1 > cgroup.pressure
+> 				kernfs_show
+> 				kernfs_activate_one(kn);
+> kernfs_fop_poll
+> kernfs_get_active = true
+> cgroup_file_poll
+> psi_trigger_poll
+> // UAF
+> ...
+> end: close(fd)
+> 
+> Fix this by adding released flag check in kernfs_fop_poll(), which is
+> treated as kn is inactive.
+> 
+> Fixes: 34f26a15611a ("sched/psi: Per-cgroup PSI accounting disable/re-enable interface")
+> Reported-by: Zhang Zhantian <zhangzhaotian@huawei.com>
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> ---
+>  fs/kernfs/file.c       | 2 +-
+>  kernel/cgroup/cgroup.c | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+> index a6c692cac616..d5d01f0b9392 100644
+> --- a/fs/kernfs/file.c
+> +++ b/fs/kernfs/file.c
+> @@ -852,7 +852,7 @@ static __poll_t kernfs_fop_poll(struct file *filp, poll_table *wait)
+>  	struct kernfs_node *kn = kernfs_dentry_node(filp->f_path.dentry);
+>  	__poll_t ret;
+>  
+> -	if (!kernfs_get_active(kn))
+> +	if (of->released || !kernfs_get_active(kn))
 
-If task hung could be reliably reproduced, it is right time to cut
-max_active off for cgroup_destroy_wq according to its comment.
+I can see why the cgroup change is needed, but why is this test for
+released() an issue here?  This feels like two different changes/fixes
+for different problems?  Why does testing for released matter at this
+point in time?
+
+thanks,
+
+greg k-h
 
