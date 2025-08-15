@@ -1,125 +1,194 @@
-Return-Path: <cgroups+bounces-9196-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9197-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D87B27433
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 02:44:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89C33B27489
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 03:06:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 553B0582FF8
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 00:44:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91CCF7AB5CA
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 01:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFA633770B;
-	Fri, 15 Aug 2025 00:44:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AAA47080D;
+	Fri, 15 Aug 2025 01:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SJ5YDnsB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734A51448E0;
-	Fri, 15 Aug 2025 00:44:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C086386359
+	for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 01:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755218669; cv=none; b=WPTYXAKF5l5eUdd5gzxfx6Tr3VPcC2JGYsn6PAde3RY6c/E3AFI+AXCkpzN+/sUut1zZPgxfZufte/bccT6iBSHiCRZJOvt916WNt7yx0pmiJC8ZePlHMAbMS9anJdIazNKrLlibdeDIUApEzDs09DlgWTRWhfcGr8CbxI7x++Q=
+	t=1755219977; cv=none; b=VyEAQrttyrbI49r8u9Y0xf6knhcT99XYXIwUSzxWZv5w72FXrcydFk+j1Tr9yMc3Qxi3fDEccsoZdcb5IupFB1AXZ1PQyY7yqB7iDuOJzveGsfg4hL4aTuSSOI5goDqigOWOpHCl5jIXKYTGXqDOULEVG+fhA0grrxsg3diq8Tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755218669; c=relaxed/simple;
-	bh=in5/e9K29POYK+w2j7fguaF7LGKrAYCxoSjAZejQTvw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rYJHDv12rVroE+E+ltka4K65NDogpOv86MIcf4mVMAyEyousk2eo3WFR8FHKUGFnzHvOMv9OH3uhJhXRbCDFqvkweVGptd1wl6eJie24vaj2Kxi5c4SIVn9f0C1sTdRdSPCu+T8UT32EdLoHqmYIN3IM4VQi3GcImeK5taziGpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c33K52gHhzYQv42;
-	Fri, 15 Aug 2025 08:44:25 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id EF1221A06DC;
-	Fri, 15 Aug 2025 08:44:23 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP3 (Coremail) with SMTP id _Ch0CgBn39nigp5oRAeWDg--.35570S2;
-	Fri, 15 Aug 2025 08:44:20 +0800 (CST)
-Message-ID: <bd043822-29b2-49f4-864d-6658741f572c@huaweicloud.com>
-Date: Fri, 15 Aug 2025 08:44:17 +0800
+	s=arc-20240116; t=1755219977; c=relaxed/simple;
+	bh=0cJ/F9fxFvlX61vS4+feIxuYiHm9CmGKsDy0sFn5cF8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hVEPNtPo2NcDCfDtDGyf7SHIzYEiqDulgFvItE8+gPHa5S7xsdXlsRPA6Ty8slImLz2qCkRA+GypgKM52uZLXE2ocvcGTDmq3a5fY/gGBwEPjAeZDNXTPyGBB2nvwMJdcsex1XMyCRmN8Ab22/ehKw9WQ5/zu0FxEvBkZbAAqFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SJ5YDnsB; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 14 Aug 2025 18:05:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755219961;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=meWYiTmUDScKABPl2O7R845IioH2Heb/mh0B6qa7TBU=;
+	b=SJ5YDnsBvMYFhc/KlqlDBClj6OTe+WrHP1a5N8p2RFqM0BsFX20eKDNNtYkQWBjzS7fYAu
+	pfaPMcEMMfHqV+ZKDFVXi95j7AbwNPbLt15wNcyp+ySMuOyQs62Qh9Hsu2UgfSBJ4cW7Na
+	G64fs0jbovc/jG/lVMi2rv1JjDyfsTU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Kuniyuki Iwashima <kuniyu@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Willem de Bruijn <willemb@google.com>, Matthieu Baerts <matttbe@kernel.org>, 
+	Mat Martineau <martineau@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Tejun Heo <tj@kernel.org>, Simon Horman <horms@kernel.org>, 
+	Geliang Tang <geliang@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
+	Mina Almasry <almasrymina@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, 
+	mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v4 net-next 01/10] mptcp: Fix up subflow's memcg when
+ CONFIG_SOCK_CGROUP_DATA=n.
+Message-ID: <kr6cv3njfdjzc2wcrixudszd2szzcso7ikpm6d5xsxe7rfppjs@5bvfwpelgj6f>
+References: <20250814200912.1040628-1-kuniyu@google.com>
+ <20250814200912.1040628-2-kuniyu@google.com>
+ <cs5uvm72eyzqljcxtmienkmmth54pqqjmlyya5vf3twncbp7u5@jfnktl43r5se>
+ <CAAVpQUDyy9f7=LNZc2ka2RiOhR3_eOhEb+Nih37HnF0_cdrJqA@mail.gmail.com>
+ <r3czpatkdegf7aoo3ezvrvzuqkixsb557okybueig4fcuknku3@jkgzexpt7dnq>
+ <CAAVpQUAx9SyA96b_UYofbhM2TPgAGSqq_=-g6ERqmbCZP04-PA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [-next v2 3/4] cpuset: separate tmpmasks and cpuset allocation
- logic
-To: kernel test robot <lkp@intel.com>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com, longman@redhat.com
-Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, lujialin4@huawei.com, chenridong@huawei.com,
- christophe.jaillet@wanadoo.fr
-References: <20250813082904.1091651-4-chenridong@huaweicloud.com>
- <202508140524.S2O4D57k-lkp@intel.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <202508140524.S2O4D57k-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgBn39nigp5oRAeWDg--.35570S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyftw4xXrWkJr4fXr4DCFg_yoW8CFW3pa
-	y8W390yrs5Xr1xGa1kWa1jvF1Sgan8Jry5Ww1DWr1UZa9FvF1UWr4I9r45JFnF9F1vgFyf
-	GFZI9Fn3tw18u3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUb
-	mii3UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAVpQUAx9SyA96b_UYofbhM2TPgAGSqq_=-g6ERqmbCZP04-PA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
+On Thu, Aug 14, 2025 at 05:05:56PM -0700, Kuniyuki Iwashima wrote:
+> On Thu, Aug 14, 2025 at 4:46 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> >
+> > On Thu, Aug 14, 2025 at 04:27:31PM -0700, Kuniyuki Iwashima wrote:
+> > > On Thu, Aug 14, 2025 at 2:44 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> > > >
+> > > > On Thu, Aug 14, 2025 at 08:08:33PM +0000, Kuniyuki Iwashima wrote:
+> > > > > When sk_alloc() allocates a socket, mem_cgroup_sk_alloc() sets
+> > > > > sk->sk_memcg based on the current task.
+> > > > >
+> > > > > MPTCP subflow socket creation is triggered from userspace or
+> > > > > an in-kernel worker.
+> > > > >
+> > > > > In the latter case, sk->sk_memcg is not what we want.  So, we fix
+> > > > > it up from the parent socket's sk->sk_memcg in mptcp_attach_cgroup().
+> > > > >
+> > > > > Although the code is placed under #ifdef CONFIG_MEMCG, it is buried
+> > > > > under #ifdef CONFIG_SOCK_CGROUP_DATA.
+> > > > >
+> > > > > The two configs are orthogonal.  If CONFIG_MEMCG is enabled without
+> > > > > CONFIG_SOCK_CGROUP_DATA, the subflow's memory usage is not charged
+> > > > > correctly.
+> > > > >
+> > > > > Let's wrap sock_create_kern() for subflow with set_active_memcg()
+> > > > > using the parent sk->sk_memcg.
+> > > > >
+> > > > > Fixes: 3764b0c5651e3 ("mptcp: attach subflow socket to parent cgroup")
+> > > > > Suggested-by: Michal Koutný <mkoutny@suse.com>
+> > > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
+> > > > > ---
+> > > > >  mm/memcontrol.c     |  5 ++++-
+> > > > >  net/mptcp/subflow.c | 11 +++--------
+> > > > >  2 files changed, 7 insertions(+), 9 deletions(-)
+> > > > >
+> > > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > > > index 8dd7fbed5a94..450862e7fd7a 100644
+> > > > > --- a/mm/memcontrol.c
+> > > > > +++ b/mm/memcontrol.c
+> > > > > @@ -5006,8 +5006,11 @@ void mem_cgroup_sk_alloc(struct sock *sk)
+> > > > >       if (!in_task())
+> > > > >               return;
+> > > > >
+> > > > > +     memcg = current->active_memcg;
+> > > > > +
+> > > >
+> > > > Use active_memcg() instead of current->active_memcg and do before the
+> > > > !in_task() check.
+> > >
+> > > Why not reuse the !in_task() check here ?
+> > > We never use int_active_memcg for socket and also
+> > > know int_active_memcg is always NULL here.
+> > >
+> >
+> > If we are making mem_cgroup_sk_alloc() work with set_active_memcg()
+> > infra then make it work for both in_task() and !in_task() contexts.
+> 
+> Considering e876ecc67db80, then I think we should add
+> set_active_memcg_in_task() and active_memcg_in_task().
+> 
+> or at least we need WARN_ON() if we want to place active_memcg()
+> before the in_task() check, but this looks ugly.
+> 
+>         memcg = active_memcg();
+>         if (!in_task() && !memcg)
+>                 return;
+>         DEBUG_NET_WARN_ON_ONCE(!in_task() && memcg))
 
+You don't have to use the code as is. It is just an example. Basically I
+am asking if in future someone does the following:
 
-On 2025/8/14 5:28, kernel test robot wrote:
-> Hi Chen,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on tj-cgroup/for-next]
-> [also build test WARNING on linus/master v6.17-rc1 next-20250813]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Chen-Ridong/cpuset-remove-redundant-CS_ONLINE-flag/20250813-164651
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-> patch link:    https://lore.kernel.org/r/20250813082904.1091651-4-chenridong%40huaweicloud.com
-> patch subject: [-next v2 3/4] cpuset: separate tmpmasks and cpuset allocation logic
-> config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20250814/202508140524.S2O4D57k-lkp@intel.com/config)
-> compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250814/202508140524.S2O4D57k-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202508140524.S2O4D57k-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> Warning: kernel/cgroup/cpuset.c:422 function parameter 'pmasks' not described in 'alloc_cpumasks'
-> 
+	// in !in_task() context
+	old_memcg = set_active_memcg(new_memcg);
+	sk = sk_alloc();
+	set_active_memcg(old_memcg);
 
-Hi all,
+mem_cgroup_sk_alloc() should work and associate the sk with the
+new_memcg.
 
-Thank you for the warning about the comment issue - I will fix it in the next version.
+You can manually inline active_memcg() function to avoid multiple
+in_task() checks like below:
 
-I will be appreciate if you can review this patch. If you have any feedback, I can update the entire
-series together.
+void mem_cgroup_sk_alloc(struct sock *sk)
+{
+	struct mem_cgroup *memcg;
 
--- 
-Best regards,
-Ridong
+	if (!mem_cgroup_sockets_enabled)
+		return;
+	
+	if (!in_task()) {
+		memcg = this_cpu_read(int_active_memcg);
+
+		/*
+		 * Do not associate the sock with unrelated interrupted
+		 * task's memcg.
+		 */
+		if (!memcg)
+			return;
+	} else {
+		memcg = current->active_memcg;
+	}
+
+	rcu_read_lock();
+	if (likely(!memcg))
+		memcg = mem_cgroup_from_task(current);
+	if (mem_cgroup_is_root(memcg))
+		goto out;
+	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && !memcg1_tcpmem_active(memcg))
+		goto out;
+	if (css_tryget(&memcg->css))
+		sk->sk_memcg = memcg;
+out:
+	rcu_read_unlock();
+}
 
 
