@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-9226-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9227-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 397E7B2870E
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 22:18:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93304B28710
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 22:18:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 710FE1CE8BE0
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 20:18:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7134B201A3
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 20:18:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D724C242D69;
-	Fri, 15 Aug 2025 20:17:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F44D2BF011;
+	Fri, 15 Aug 2025 20:17:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PyDu3t15"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hWqoSfKx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478632BEFF6
-	for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 20:17:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9652C0F71
+	for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 20:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755289061; cv=none; b=TjB3oqoBcjjK/yc9aMJf26p/lhrgGYMhXoBVFixZ4YicAf5BcEba8DeX8pfzok8df+ovxO2ZoI9NBn+3h5t2+dRpJ6A5tOa53/1LHbWS0vipMd1WV7NYFVccKQ8IWJnVlKRLWj37564fISztnvAtLi3NICXv+ZxhGzc1aNHNk7E=
+	t=1755289062; cv=none; b=E4qLFvCAkVNtVWJVFf2oVfUs1mib2NNoh06r8hBPCdHohyNd7cmhDdfo6TtE8Jc29DCGfjd7MkLLzSY94Np7ng0Elahrjuvdr0gip2IGJifU2wB9YyL1DIx5WkAJguwQAtWW+OUn3kWd/w1cKtCak042oYS9Q1V02rKMtiaKamU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755289061; c=relaxed/simple;
-	bh=kNCka+5/ble2uhxoCvBkpMNTXujkGV/J5QaB+v82p+c=;
+	s=arc-20240116; t=1755289062; c=relaxed/simple;
+	bh=Vk6bFDmVR0eydWLS78TqNF3dMof+YgbdfAs4lP1WhE0=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ZnfD8MSSTyh8E7NiN0f9C2P0F+90odD7UAlD0iuPlZ/eTy6Xa8MpeYli5MbbWthbarlx8evbk1uG6NPEDB6zA1LiET9e4ExWRocyJrfWFstMvevJoUzmH9z4vRUJqjxop1Yjfe6HcENihZ/d5ikywXDIce4C6tFf+kjMutypXIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PyDu3t15; arc=none smtp.client-ip=209.85.210.201
+	 To:Cc:Content-Type; b=QMP0duxveQ03oLQopUE3/pzGrc/CnwZCi1a9Lru/gmMR5MJnPF6JqnU+0ULzn19KqcffG0nk6HbxtmLdHbbKw9aUEk6WLwpkfCZ9C/BoLEHvux+i2kz9Dv9lpZnEdloHh5V3TqX8PS9ZwELpucDqql/jhr9iQ6DJpOsUF+K7lpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hWqoSfKx; arc=none smtp.client-ip=209.85.214.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-76e2eac5c63so1912455b3a.2
-        for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 13:17:39 -0700 (PDT)
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-244581c62faso22635805ad.2
+        for <cgroups@vger.kernel.org>; Fri, 15 Aug 2025 13:17:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1755289059; x=1755893859; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1755289060; x=1755893860; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1wKL4ZYGX/K8WXuwlgtNOGDh1yxD4Vkofr7n0sxP5Do=;
-        b=PyDu3t15uFAQIIqy9WpCRmyfQ68tRnFy1oGP3DDif28aTJfUD524mRMeJfY0z2rkri
-         pyqYt+1mHY68ieuW9u7rR+dPEV0qPaM+YVx0AxrWUUzK/VLXRcy+emaR+inehBB0cT0W
-         m2oidPtrMm06hrLKVv5J/GtW2+4bXGYgX72kUDc0gqrbt77cgc2yfV8/9MbPgzgfOWul
-         79qAyNHZGwFRIxreUt3GyOfNjAwy3aY2s1+qe4DqLFkM80bDNcMUIIIrfuVGWSvLTG4T
-         ylen60cMA+2Dxn1ylQg428NNuQjiWocaUprX8pTCACkBOrnUZsUpISJ1QxEP3I53qBRY
-         im+Q==
+        bh=UCan40y/zjv6ovcMCtQie3VVVYhwoaYNuUUlLHYJCrc=;
+        b=hWqoSfKxWI9cKS26GMuwbD4k4nLUzAPP/TurqnrxDJv2ylqTueJjJVhF3+gf8QheHT
+         HuGuHusaCW1ajNqvYfJXd7gcV4IQhCFucVOhDSS5i3ktcThSH0NszV7RGXvYFxV86I6U
+         8DcPJsYTJbJBGOzEH0miHuWkSpg8gbnM7X3pPX1qQyBCMHsfHRMx0pMESaK8goUN0eGW
+         meCd4Dj1kw+eHtJYB1lXVJPGzZU9PIO4PQowA8F8yb8Gf+1xNdVpyXzh+68JTEBiua/6
+         N1CNRY2k/z66PwW+SAwGCiC7r9/nyY9cZ1EKw28raWvri2edqvQdLjt1semZ0wZQtzgu
+         wkQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755289059; x=1755893859;
+        d=1e100.net; s=20230601; t=1755289060; x=1755893860;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1wKL4ZYGX/K8WXuwlgtNOGDh1yxD4Vkofr7n0sxP5Do=;
-        b=ItQA8cClqRqFL25iWLr/1/VBEJeJ9IiNT2ZhLQ3y54ns2AYUVIgZ+2x2njdOszJflg
-         8hoPunum+BnxlurzHu0BtVExke5grg70GDt4n6z27wm/kZ9P8HTDGd498/a1vKze1bc6
-         S9Z7M+Tl5Z1wB+JxqDJUHEB0XJTwnHwUtr3/cN8HaYCwzxLq1xn2QJRBY3p8olkS4Weu
-         807j/P5l3tuOwi5DJKHNuBqLKKQg5REF3euJzXlygjSliV9XwUqTpV63JmfgIfN9hL9Z
-         K454WEJjG+T3rYkWmobq03Qkvi21bYl2LnS3bFN7R9yUy8jek51Bb+oCFaGHIElf/Y1M
-         PRQA==
-X-Forwarded-Encrypted: i=1; AJvYcCW/ntQAEmztiZBEKTsB5KMA4x7ZgNYEj5DbMB6g5sSyAlQP63vbzelF8RsMck8y9QUpFwyqQb9E@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMIOtcvZSE11SYZrFIHj+rhZqrrNrvMzO2kkGIIZ31Lbcp54Tn
-	csfjmoPFtRheqxz0ND3TRA12aDmGEqfTLFiT8xQIBHtmyBO6+NA4T0KaJOK3oX43utduQ82rHd9
-	yhBTvXw==
-X-Google-Smtp-Source: AGHT+IGfFQhxVrC0MRMQ+CGQK5l5v2DySu8ZxAiDgHkcBvf9T0+txoiH03BQJJ5/iyzxBM/IkoVynChoTcY=
-X-Received: from pgbdk2.prod.google.com ([2002:a05:6a02:c82:b0:b43:6adc:24d0])
- (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a21:32a1:b0:240:1327:ab3e
- with SMTP id adf61e73a8af0-240e611783amr454188637.9.1755289058544; Fri, 15
- Aug 2025 13:17:38 -0700 (PDT)
-Date: Fri, 15 Aug 2025 20:16:11 +0000
+        bh=UCan40y/zjv6ovcMCtQie3VVVYhwoaYNuUUlLHYJCrc=;
+        b=FLQ4lCQzMR8i/i3854/fbbDSRC1P2AlVyN0I17v86ibTUVrE3wOHxkRFyMi6GVFtK5
+         oQvrjzxY7pb6/IhbM8ZjFCUqmtkyg9jOqTr15WT8ChIdNL5/G7U7BccJh3w+/pybK7nV
+         CzD7iHC9cwpb1ta3yOBU5WL/MrmoYal1qASgy9uVBnCbODbgBXzIdHyJpSeQ+TisfiBP
+         M64zfHh5ljK6cXORA+NHzwo19vG/iR4PQ3oUOqHq6xd4M9bl9oaGWjET5/9njfbHX2TB
+         iJSWIqi73X2XGUP1hFg6yxjjmWcaBml4XIVYIXQ+Ir8pl5aeUdjGDskgetK5/j7aPGsv
+         jS3w==
+X-Forwarded-Encrypted: i=1; AJvYcCXY0hYLDdif9Q53afhBYYUmCGSqiMehSSQm/2dF73NK+NrYNIR7qXD5PKhrst7/rwt0kN629DdY@vger.kernel.org
+X-Gm-Message-State: AOJu0YwV1iGlUnQguTKP2SomOkdULVQUuskpPluFrdEs6Tkl2ZqSB5z4
+	6+AZiJpTXMkmQabcJtOsVkxeA0KSqGRCfg1SDB6Q5grORRGejrVo7ey3FElutnP0gCir51mLoYW
+	yPmM26Q==
+X-Google-Smtp-Source: AGHT+IG+NKmG4fQxWApznT/iNlBlE89VZOBkEiuZXVixRsMQFotYGpJhNutY1IkiTXx8XPjH7buaFadPEzU=
+X-Received: from plgo12.prod.google.com ([2002:a17:902:d4cc:b0:23f:f3c5:dfc9])
+ (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:22c4:b0:23f:b112:2eaa
+ with SMTP id d9443c01a7336-2446d8fe30fmr49723005ad.41.1755289060168; Fri, 15
+ Aug 2025 13:17:40 -0700 (PDT)
+Date: Fri, 15 Aug 2025 20:16:12 +0000
 In-Reply-To: <20250815201712.1745332-1-kuniyu@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,8 +74,9 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250815201712.1745332-1-kuniyu@google.com>
 X-Mailer: git-send-email 2.51.0.rc1.163.g2494970778-goog
-Message-ID: <20250815201712.1745332-4-kuniyu@google.com>
-Subject: [PATCH v5 net-next 03/10] tcp: Simplify error path in inet_csk_accept().
+Message-ID: <20250815201712.1745332-5-kuniyu@google.com>
+Subject: [PATCH v5 net-next 04/10] net: Call trace_sock_exceed_buf_limit() for
+ memcg failure with SK_MEM_RECV.
 From: Kuniyuki Iwashima <kuniyu@google.com>
 To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
 	Jakub Kicinski <kuba@kernel.org>, Neal Cardwell <ncardwell@google.com>, Paolo Abeni <pabeni@redhat.com>, 
@@ -90,60 +91,36 @@ Cc: Simon Horman <horms@kernel.org>, Geliang Tang <geliang@kernel.org>,
 	mptcp@lists.linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 
-When an error occurs in inet_csk_accept(), what we should do is
-only call release_sock() and set the errno to arg->err.
+Initially, trace_sock_exceed_buf_limit() was invoked when
+__sk_mem_raise_allocated() failed due to the memcg limit or the
+global limit.
 
-But the path jumps to another label, which introduces unnecessary
-initialisation and tests for newsk.
+However, commit d6f19938eb031 ("net: expose sk wmem in
+sock_exceed_buf_limit tracepoint") somehow suppressed the event
+only when memcg failed to charge for SK_MEM_RECV, although the
+memcg failure for SK_MEM_SEND still triggers the event.
 
-Let's simplify the error path and remove the redundant NULL
-checks for newsk.
+Let's restore the event for SK_MEM_RECV.
 
 Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
 Reviewed-by: Eric Dumazet <edumazet@google.com>
 ---
- net/ipv4/inet_connection_sock.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ net/core/sock.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index 1e2df51427fe..724bd9ed6cd4 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -706,9 +706,9 @@ struct sock *inet_csk_accept(struct sock *sk, struct proto_accept_arg *arg)
- 		spin_unlock_bh(&queue->fastopenq.lock);
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 7c26ec8dce63..380bc1aa6982 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -3354,8 +3354,7 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
+ 		}
  	}
  
--out:
- 	release_sock(sk);
--	if (newsk && mem_cgroup_sockets_enabled) {
-+
-+	if (mem_cgroup_sockets_enabled) {
- 		gfp_t gfp = GFP_KERNEL | __GFP_NOFAIL;
- 		int amt = 0;
+-	if (kind == SK_MEM_SEND || (kind == SK_MEM_RECV && charged))
+-		trace_sock_exceed_buf_limit(sk, prot, allocated, kind);
++	trace_sock_exceed_buf_limit(sk, prot, allocated, kind);
  
-@@ -732,18 +732,17 @@ struct sock *inet_csk_accept(struct sock *sk, struct proto_accept_arg *arg)
- 
- 		release_sock(newsk);
- 	}
-+
- 	if (req)
- 		reqsk_put(req);
- 
--	if (newsk)
--		inet_init_csk_locks(newsk);
--
-+	inet_init_csk_locks(newsk);
- 	return newsk;
-+
- out_err:
--	newsk = NULL;
--	req = NULL;
-+	release_sock(sk);
- 	arg->err = error;
--	goto out;
-+	return NULL;
- }
- EXPORT_SYMBOL(inet_csk_accept);
+ 	sk_memory_allocated_sub(sk, amt);
  
 -- 
 2.51.0.rc1.163.g2494970778-goog
