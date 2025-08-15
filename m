@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-9204-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9206-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0358B279F3
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 09:18:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 076C1B27A09
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 09:24:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E9BB3AA433
-	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 07:16:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49A085E267B
+	for <lists+cgroups@lfdr.de>; Fri, 15 Aug 2025 07:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4B61D5CFB;
-	Fri, 15 Aug 2025 07:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6E6262FC7;
+	Fri, 15 Aug 2025 07:24:40 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD18E22FE0F;
-	Fri, 15 Aug 2025 07:16:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37BF81E51EB;
+	Fri, 15 Aug 2025 07:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755242190; cv=none; b=nBN3uI8vKNjgkie274lpkdK41cszU14LiVM0tByGeKQulh8u8NkLaZ9eFXzF7K/GVPz7V5C0nIFYhGYTwOtqleqH6truJTp8IGg8T/hrVtvJp1HGP6xpaKwMvjehH7qXYvHpE7mKNReF9DqJZDOARv8U6uP6+e704HuYj/2kq3A=
+	t=1755242680; cv=none; b=avkLoJTT0qhWOrmsWeljPrx2RMqW3cha6W8n6KYvybGMqDsoiB/YJTE4fAg8WScKApcajAE2/nMiS7bOLn6ZU4lz4gzkFYqsnRDQDYAe5hZzeZy9odFBVMbDwjfbr59Q2Lw3oqpsxauZd6+jrY1RQfuPgjpgJ65dYCOHj6GEhs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755242190; c=relaxed/simple;
-	bh=nzdDRhrCHavSikO+gD0ochTiOaVzNeGjo2FbtNcoh0w=;
+	s=arc-20240116; t=1755242680; c=relaxed/simple;
+	bh=otXVuC0tJu53aM7sYRCUy7bSwRw4uVt1LBjG2ornQ5o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nn1MabedUC1qRxEPzuocXyp5h/YNT3y6SskJj1wU03OWbq2P7XfC4o5Yor/7z2B+D+sr3B0sm8diW5/HTcL2kTHa2YcrJcvjUy26KRvfJa1FEJWOwFMCEjELBClUuiM8n+lwi/TtlIrAfYg4VrzeNQTEuH0/5q0JZPdzz7US47g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 In-Reply-To:Content-Type; b=T6sLUy6qBeNozAx0OqjpZdO8KRL/mZi6hSmqKEwQh6NlPr1XHcs1UrP1NH8t+JTON+BomcBudlpYT1XgYyu39weJseRIMqCsoyPltxyhBFQ94Bk3k/SPKk59NtSquMoCJzGZ3TnWMyQ6EbdtQLZTfwTH4A2Vbv5C+Ky3Pzqx9oM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c3D1H57dFzYQtHF;
-	Fri, 15 Aug 2025 15:16:19 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4c3DBp22YbzKHMj1;
+	Fri, 15 Aug 2025 15:24:34 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 56F931A156C;
-	Fri, 15 Aug 2025 15:16:18 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 9335B1A0B7C;
+	Fri, 15 Aug 2025 15:24:33 +0800 (CST)
 Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP3 (Coremail) with SMTP id _Ch0CgBXHNfA3p5o4JG0Dg--.55376S2;
-	Fri, 15 Aug 2025 15:16:18 +0800 (CST)
-Message-ID: <269e3b81-3ad6-48b8-9756-4bc272f52fc4@huaweicloud.com>
-Date: Fri, 15 Aug 2025 15:16:15 +0800
+	by APP3 (Coremail) with SMTP id _Ch0CgC3L9qt4J5oLDW1Dg--.2813S2;
+	Fri, 15 Aug 2025 15:24:30 +0800 (CST)
+Message-ID: <ecd5ffcb-76e2-40ac-ac20-be815ba1e1f4@huaweicloud.com>
+Date: Fri, 15 Aug 2025 15:24:29 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,191 +47,177 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] kernfs: Fix UAF in PSI polling when open file is released
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com,
- peterz@infradead.org, zhouchengming@bytedance.com,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, lujialin4@huawei.com,
- chenridong@huawei.com
-References: <20250815013429.1255241-1-chenridong@huaweicloud.com>
- <2025081526-skeptic-cough-7fda@gregkh>
- <5bdcd25c-3d4d-4541-99c7-5f6b0f3cb891@huaweicloud.com>
- <2025081558-patriot-goes-4559@gregkh>
+Subject: Re: [PATCH v2 -next] cgroup: remove offline draining in root
+ destruction to avoid hung_tasks
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, lizefan@huawei.com,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com,
+ chenridong@huawei.com, gaoyingjie@uniontech.com
+References: <20250722112733.4113237-1-chenridong@huaweicloud.com>
+ <kfqhgb2qq2zc6aipz5adyrqh7mghd6bjumuwok3ie7bq4vfuat@lwejtfevzyzs>
+ <7f36d0c7-3476-4bc6-b66e-48496a8be514@huaweicloud.com>
+ <htzudoa4cgius7ncus67axelhv3qh6fgjgnvju27fuyw7gimla@uzrta5sfbh2w>
 Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <2025081558-patriot-goes-4559@gregkh>
+In-Reply-To: <htzudoa4cgius7ncus67axelhv3qh6fgjgnvju27fuyw7gimla@uzrta5sfbh2w>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgBXHNfA3p5o4JG0Dg--.55376S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xw1rXF43Jr17Ww1xCw4fAFb_yoW7WFyrpr
-	W5CF45KaykJryDAr40qF1v9F10ya9rtFy8Wwn7tr97tasIqFnYkr12kr1YgFyDArs3Ar42
-	q3Z0ya42vw4YyF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:_Ch0CgC3L9qt4J5oLDW1Dg--.2813S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Wr4kWF1rKF43Kry3WF48WFg_yoW7Xr15pF
+	s8A3WayF4rtr4Ykrs2ya4jga4F9a1Iqr1UXw13Ww48trnxKas2qF4IyryYvFy5ArsrCa42
+	vr4Fvwn3u34Yy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
 	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
 	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbmii3UUUUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
 
-On 2025/8/15 14:43, Greg KH wrote:
-> On Fri, Aug 15, 2025 at 02:22:54PM +0800, Chen Ridong wrote:
->>
->>
->> On 2025/8/15 14:11, Greg KH wrote:
->>> On Fri, Aug 15, 2025 at 01:34:29AM +0000, Chen Ridong wrote:
->>>> From: Chen Ridong <chenridong@huawei.com>
+On 2025/7/26 1:17, Michal Koutný wrote:
+> On Fri, Jul 25, 2025 at 09:42:05AM +0800, Chen Ridong <chenridong@huaweicloud.com> wrote:
+>>> On Tue, Jul 22, 2025 at 11:27:33AM +0000, Chen Ridong <chenridong@huaweicloud.com> wrote:
+>>>> CPU0                            CPU1
+>>>> mount perf_event                umount net_prio
+>>>> cgroup1_get_tree                cgroup_kill_sb
+>>>> rebind_subsystems               // root destruction enqueues
+>>>> 				// cgroup_destroy_wq
+>>>> // kill all perf_event css
+>>>>                                 // one perf_event css A is dying
+>>>>                                 // css A offline enqueues cgroup_destroy_wq
+>>>>                                 // root destruction will be executed first
+>>>>                                 css_free_rwork_fn
+>>>>                                 cgroup_destroy_root
+>>>>                                 cgroup_lock_and_drain_offline
+>>>>                                 // some perf descendants are dying
+>>>>                                 // cgroup_destroy_wq max_active = 1
+>>>>                                 // waiting for css A to die
 >>>>
->>>> A use-after-free (UAF) vulnerability was identified in the PSI (Pressure
->>>> Stall Information) monitoring mechanism:
->>>>
->>>> BUG: KASAN: slab-use-after-free in psi_trigger_poll+0x3c/0x140
->>>> Read of size 8 at addr ffff3de3d50bd308 by task systemd/1
->>>>
->>>> psi_trigger_poll+0x3c/0x140
->>>> cgroup_pressure_poll+0x70/0xa0
->>>> cgroup_file_poll+0x8c/0x100
->>>> kernfs_fop_poll+0x11c/0x1c0
->>>> ep_item_poll.isra.0+0x188/0x2c0
->>>>
->>>> Allocated by task 1:
->>>> cgroup_file_open+0x88/0x388
->>>> kernfs_fop_open+0x73c/0xaf0
->>>> do_dentry_open+0x5fc/0x1200
->>>> vfs_open+0xa0/0x3f0
->>>> do_open+0x7e8/0xd08
->>>> path_openat+0x2fc/0x6b0
->>>> do_filp_open+0x174/0x368
->>>>
->>>> Freed by task 8462:
->>>> cgroup_file_release+0x130/0x1f8
->>>> kernfs_drain_open_files+0x17c/0x440
->>>> kernfs_drain+0x2dc/0x360
->>>> kernfs_show+0x1b8/0x288
->>>> cgroup_file_show+0x150/0x268
->>>> cgroup_pressure_write+0x1dc/0x340
->>>> cgroup_file_write+0x274/0x548
->>>>
->>>> Reproduction Steps:
->>>> 1. Open test/cpu.pressure and establish epoll monitoring
->>>> 2. Disable monitoring: echo 0 > test/cgroup.pressure
->>>> 3. Re-enable monitoring: echo 1 > test/cgroup.pressure
->>>>
->>>> The race condition occurs because:
->>>> 1. When cgroup.pressure is disabled (echo 0 > cgroup.pressure), it:
->>>>    - Releases PSI triggers via cgroup_file_release()
->>>>    - Frees of->priv through kernfs_drain_open_files()
->>>> 2. While epoll still holds reference to the file and continues polling
->>>> 3. Re-enabling (echo 1 > cgroup.pressure) accesses freed of->priv
->>>>
->>>> epolling			disable/enable cgroup.pressure
->>>> fd=open(cpu.pressure)
->>>> while(1)
->>>> ...
->>>> epoll_wait
->>>> kernfs_fop_poll
->>>> kernfs_get_active = true	echo 0 > cgroup.pressure
->>>> ...				cgroup_file_show
->>>> 				kernfs_show
->>>> 				// inactive kn
->>>> 				kernfs_drain_open_files
->>>> 				cft->release(of);
->>>> 				kfree(ctx);
->>>> 				...
->>>> kernfs_get_active = false
->>>> 				echo 1 > cgroup.pressure
->>>> 				kernfs_show
->>>> 				kernfs_activate_one(kn);
->>>> kernfs_fop_poll
->>>> kernfs_get_active = true
->>>> cgroup_file_poll
->>>> psi_trigger_poll
->>>> // UAF
->>>> ...
->>>> end: close(fd)
->>>>
->>>> Fix this by adding released flag check in kernfs_fop_poll(), which is
->>>> treated as kn is inactive.
->>>>
->>>> Fixes: 34f26a15611a ("sched/psi: Per-cgroup PSI accounting disable/re-enable interface")
->>>> Reported-by: Zhang Zhantian <zhangzhaotian@huawei.com>
->>>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->>>> ---
->>>>  fs/kernfs/file.c       | 2 +-
->>>>  kernel/cgroup/cgroup.c | 1 +
->>>>  2 files changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
->>>> index a6c692cac616..d5d01f0b9392 100644
->>>> --- a/fs/kernfs/file.c
->>>> +++ b/fs/kernfs/file.c
->>>> @@ -852,7 +852,7 @@ static __poll_t kernfs_fop_poll(struct file *filp, poll_table *wait)
->>>>  	struct kernfs_node *kn = kernfs_dentry_node(filp->f_path.dentry);
->>>>  	__poll_t ret;
->>>>  
->>>> -	if (!kernfs_get_active(kn))
->>>> +	if (of->released || !kernfs_get_active(kn))
+>>>> Problem scenario:
+>>>> 1. CPU0 mounts perf_event (rebind_subsystems)
+>>>> 2. CPU1 unmounts net_prio (cgroup_kill_sb), queuing root destruction work
+>>>> 3. A dying perf_event CSS gets queued for offline after root destruction
+>>>> 4. Root destruction waits for offline completion, but offline work is
+>>>>    blocked behind root destruction in cgroup_destroy_wq (max_active=1)
 >>>
->>> I can see why the cgroup change is needed, but why is this test for
->>> released() an issue here?  This feels like two different changes/fixes
->>> for different problems?  Why does testing for released matter at this
->>> point in time?
+>>> What's concerning me is why umount of net_prio hierarhy waits for
+>>> draining of the default hierachy? (Where you then run into conflict with
+>>> perf_event that's implicit_on_dfl.)
 >>>
->>> thanks,
+>>
+>> This was also first respond.
+>>
+>>> IOW why not this:
+>>> --- a/kernel/cgroup/cgroup.c
+>>> +++ b/kernel/cgroup/cgroup.c
+>>> @@ -1346,7 +1346,7 @@ static void cgroup_destroy_root(struct cgroup_root *root)
 >>>
->>> greg k-h
+>>>         trace_cgroup_destroy_root(root);
+>>>
+>>> -       cgroup_lock_and_drain_offline(&cgrp_dfl_root.cgrp);
+>>> +       cgroup_lock_and_drain_offline(cgrp);
+>>>
+>>>         BUG_ON(atomic_read(&root->nr_cgrps));
+>>>         BUG_ON(!list_empty(&cgrp->self.children));
+>>>
+>>> Does this correct the LTP scenario?
+>>>
+>>> Thanks,
+>>> Michal
 >>
->> Thank you for your feedback.
+>> I've tested this approach and discovered it can lead to another issue that required significant
+>> investigation. This helped me understand why unmounting the net_prio hierarchy needs to wait for
+>> draining of the default hierarchy.
 >>
->> The cgroup changes can prevent the UAF (Use-After-Free) issue, but they will introduce a NULL
->> pointer access problem.
-> 
-> Where will the null pointer access happen?  kernfs_fop_poll() isn't
-> caring about the released file, AND you need to properly lock things
-> when testing that value (hint, what if it changes right after you tested
-> it?)
-> 
-
-
-Issue occurs in psi_trigger_poll() during this sequence:
-
-fd = open("cpu.pressure")
-<...> // cgroup.pressure disabled then re-enabled
-of->released flag gets set to true
-kernfs_fop_poll()
-└─ kernfs_get_active() returns true (due to re-enable) <<<--  kernfs changes, check of->released
-    └─ kn->attr.ops->poll()
-        └─ cgroup_file_poll()
-	    └─ *ctx = of->priv; // Already released by .release()(cgroup_file_release)
-                 └─ psi_trigger_poll()
-                     └─ smp_load_acquire(trigger_ptr);
-// UAF: trigger_ptr == of->priv
-// NULL dereference after of->priv = NULL patch
-
-
->> If the open file is properly drained(released), it can not safely invoke the poll callback again.
->> Otherwise, it may still lead to either UAF or NULL pointer issues
+>> Consider this sequence:
 >>
->> Are you suggesting I should split this into two separate patches?
+>> mount net_prio			umount perf_event
+>> cgroup1_get_tree
+>> // &cgrp_dfl_root.cgrp
+>> cgroup_lock_and_drain_offline
+>> // wait for all perf_event csses dead
+>> prepare_to_wait(&dsct->offline_waitq)
+>> schedule();
+>> 				cgroup_destroy_root
+>> 				// &root->cgrp, not cgrp_dfl_root
+>> 				cgroup_lock_and_drain_offline
+> 								perf_event's css (offline but dying)
 > 
-> This feels like two separate issues for two different things.  The PSI
-> change didn't cause the kernfs change to be required right?
+>> 				rebind_subsystems
+>> 				rcu_assign_pointer(dcgrp->subsys[ssid], css);
+>> 				dst_root->subsys_mask |= 1 << ssid;
+>> 				cgroup_propagate_control
+>> 				// enable cgrp_dfl_root perf_event css
+>> 				cgroup_apply_control_enable
+>> 				css = cgroup_css(dsct, ss);
+>> 				// since we drain root->cgrp not cgrp_dfl_root
+>> 				// css(dying) is not null on the cgrp_dfl_root
+>> 				// we won't create css, but the css is dying
 > 
-> thanks,
+> 				What would prevent seeing a dying css when
+> 				cgrp_dfl_root is drained?
+> 				(Or nothing drained as in the patch?)
 > 
-> greg k-h
+> 				I assume you've seen this warning from
+> 				cgroup_apply_control_enable
+> 				WARN_ON_ONCE(percpu_ref_is_dying(&css->refcnt)); ?
+> 
+> 
+>> 								
+>> // got the offline_waitq wake up
+>> goto restart;
+>> // some perf_event dying csses are online now
+>> prepare_to_wait(&dsct->offline_waitq)
+>> schedule();
+>> // never get the offline_waitq wake up
+>>
+>> I encountered two main issues:
+>> 1.Dying csses on cgrp_dfl_root may be brought back online when rebinding the subsystem to cgrp_dfl_root
+> 
+> Is this really resolved by the patch? (The questions above.)
+> 
+>> 2.Potential hangs during cgrp_dfl_root draining in the mounting process
+> 
+> Fortunately, the typical use case (mounting at boot) wouldn't suffer
+> from this.
+> 
+>> I believe waiting for a wake-up in cgroup_destroy_wq is inherently risky, as it requires that
+>> offline css work(the cgroup_destroy_root need to drain) cannot be enqueued after cgroup_destroy_root
+>> begins.
+> 
+> This is a valid point.
+> 
+>> How can we guarantee this ordering? Therefore, I propose moving the draining operation
+>> outside of cgroup_destroy_wq as a more robust solution that would completely eliminate this
+>> potential race condition. This patch implements that approach.
+> 
+> I acknowledge the issue (although rare in real world). Some entity will
+> always have to wait of the offlining. It may be OK in cgroup_kill_sb
+> (ideally, if this was bound to process context of umount caller, not
+> sure if that's how kill_sb works).
+> I slightly dislike the form of an empty lock/unlock -- which makes me
+> wonder if this is the best solution.
+> 
+> Let me think more about this...
+> 
+> Thanks,
+> Michal
 
-Correct. The cgroup modifications make the issue more easily observable, while the kernfs changes
-provide the actual fix.
+I've just submitted v3, which I believe provides an improved solution to the issue we've been
+discussing.
+
+The v3 version is available here:
+https://lore.kernel.org/cgroups/20250815070518.1255842-1-chenridong@huaweicloud.com/T/#u
+
+I'd be truly grateful if you could spare some time to review it.
 
 -- 
 Best regards,
