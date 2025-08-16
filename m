@@ -1,139 +1,199 @@
-Return-Path: <cgroups+bounces-9245-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9246-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E5B0B28FA9
-	for <lists+cgroups@lfdr.de>; Sat, 16 Aug 2025 18:56:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB720B28FE7
+	for <lists+cgroups@lfdr.de>; Sat, 16 Aug 2025 19:36:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06C55A272D3
-	for <lists+cgroups@lfdr.de>; Sat, 16 Aug 2025 16:56:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26A9D1BC3070
+	for <lists+cgroups@lfdr.de>; Sat, 16 Aug 2025 17:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AAA2FDC34;
-	Sat, 16 Aug 2025 16:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 791222F99AC;
+	Sat, 16 Aug 2025 17:36:25 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
+Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BD323A562
-	for <cgroups@vger.kernel.org>; Sat, 16 Aug 2025 16:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB0818CC1D
+	for <cgroups@vger.kernel.org>; Sat, 16 Aug 2025 17:36:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755363398; cv=none; b=eo08JeFWsfzEbfDhR66DprBkOVfn0M+4QVpaDwIodhu8Jda/rrvQ9SNFtJliKzOmEU6+ouJ9iYbEQLs+CT3lszQYzlRx/uLEfvElnxJDe/9lZkfcK7lqTX4Y7MWINPBxLMGAWYEJKACi74Gx1Ue4ZIPwJ8gtXlRppgXJVIqaknI=
+	t=1755365785; cv=none; b=ezVb+WNTjbXbbjdBl/qYN7yhgvNOpiEVJIBlSHBGBul27CO05NBV3G+JtBsNgJzB96D1oxgQHrKS+3uKEl0zOeGaNnF6TAaZZ5HuiNA3n74Ub3Y7Ype476GMqXqazp19rTEjTa6oDMSCN/5SUlYGJdveZ/4IHr9FxNZkQdJHRe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755363398; c=relaxed/simple;
-	bh=gwq3PKEhGGK0MsT2WId9LhPxs55e1rq00kIIyB3bGdo=;
+	s=arc-20240116; t=1755365785; c=relaxed/simple;
+	bh=iCFmh05oyI15zk2J+U/nYs9Bse+88rMFNd3dBvigg1M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=doVmRPhAmA0gD+IUpxvogVWRW7o5de4p3jsMIcqGr9i/2h5M/hDxAUks6xY9Y5sZl9Y86ra9DXWDEVKxseu0Y49y1nNEV9MHumdRw5hV/lzB4CRZ0KubH+me0SXR2gPbjebguvXNb7et8RdGfeZzEVU2WfZhDgc6w+N88HjZcV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
+	 Content-Type:Content-Disposition:In-Reply-To; b=UhW2bja8t5xqVjOKcPcojWqGZb8MVsslgKM+ggOof94v89g9h3TG3CB5HqneVyVXMW0w7YnR03dlVttpnNZ5VsCPloMWunmRSKcEvDhOWuY5jvGMBsnra4hU2hF+EsxlFw2znn/Sim6FlEfMQZ0V7BbxKikXf8SI8WAXx/lM2uY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
 Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.103 with ESMTP; 17 Aug 2025 01:41:34 +0900
+	by 156.147.51.102 with ESMTP; 17 Aug 2025 02:21:21 +0900
 X-Original-SENDERIP: 10.177.112.156
 X-Original-MAILFROM: youngjun.park@lge.com
-Date: Sun, 17 Aug 2025 01:41:34 +0900
+Date: Sun, 17 Aug 2025 02:21:21 +0900
 From: YoungJun Park <youngjun.park@lge.com>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
+To: Chris Li <chrisl@kernel.org>
+Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
 	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
 	muchun.song@linux.dev, shikemeng@huaweicloud.com,
 	kasong@tencent.com, nphamcs@gmail.com, bhe@redhat.com,
-	baohua@kernel.org, chrisl@kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, gunho.lee@lge.com,
-	iamjoonsoo.kim@lge.com, taejoon.song@lge.com
+	baohua@kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, gunho.lee@lge.com,
+	iamjoonsoo.kim@lge.com, taejoon.song@lge.com,
+	Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Kairui Song <ryncsn@gmail.com>
 Subject: Re: [PATCH 1/4] mm/swap, memcg: Introduce infrastructure for
  cgroup-based swap priority
-Message-ID: <aKC0vrr0vIdRV/Ob@yjaykim-PowerEdge-T330>
+Message-ID: <aKC+EU3I/qm6TcjG@yjaykim-PowerEdge-T330>
 References: <20250716202006.3640584-1-youngjun.park@lge.com>
  <20250716202006.3640584-2-youngjun.park@lge.com>
  <jrkh2jy2pkoxgsxgsstpmijyhbzzyige6ubltvmvwl6fwkp3s7@kzc24pj2tcko>
  <aH+apAbBCmkMGPlO@yjaykim-PowerEdge-T330>
  <aH/baxIgrBI3Z1Hl@yjaykim-PowerEdge-T330>
  <uyxkdmnmvjipxuf7gagu2okw7afvzlclomfmc6wb6tygc3mhv6@736m7xs6gn5q>
+ <CAF8kJuMo3yNKOZL9n5UkHx_O5cTZts287HOnQOu=KqQcnbrMdg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <uyxkdmnmvjipxuf7gagu2okw7afvzlclomfmc6wb6tygc3mhv6@736m7xs6gn5q>
+In-Reply-To: <CAF8kJuMo3yNKOZL9n5UkHx_O5cTZts287HOnQOu=KqQcnbrMdg@mail.gmail.com>
 
-On Thu, Aug 14, 2025 at 04:03:36PM +0200, Michal Koutný wrote:
-> On Wed, Jul 23, 2025 at 03:41:47AM +0900, YoungJun Park <youngjun.park@lge.com> wrote:
+On Fri, Aug 15, 2025 at 08:10:09AM -0700, Chris Li wrote:
+> Hi Michal and YoungJun,
 
-> Let me share my mental model in order to help forming the design.
+First of all, thank you for sharing your thoughts. I really appreciate the
+detailed feedback. I have many points I would like to think through and
+discuss as well. For now, let me give some quick feedback, and I will follow
+up with more detailed responses after I have had more time to reflect.
 
-First of all, thank you very much for your detailed reply. As Friday was a
-public holiday in Korea and I had some personal commitments over the weekend,
-I only got to check your email late — I hope you can kindly excuse the delayed
-response.
+> I am sorry for the late reply. I have briefly read through the patches
+> series the overall impression:
+> 1)  Priority is not the best way to select which swap file to use per cgroup.
+> The priority is assigned to one device, it is a per swap file local
+> change. The effect you want to see is actually a global one, how this
+> swap device compares to other devices. You actually want  a list at
+> the end result. Adjusting per swap file priority is backwards. A lot
+> of unnecessary usage complexity and code complexity come from that.
+> 2)  This series is too complicated for what it does.
 
-For the points that require deeper consideration, I will provide detailed
-answers later. For now, let me share some quick feedback on the parts I can
-respond to right away.
+You mentioned that the series is overly complex and does more than what is
+really needed. I understand your concern. I have spent quite a lot of time
+thinking about this topic, and the reason I chose the priority approach is
+that it gives more flexibility and extensibility by reusing an existing
+concept.
 
-> I find these per-cgroup swap priorities similar to cpuset -- instead of
-> having a configured cpumask (bitmask) for each cgroup, you have
-> weight-mask for individual swap devices (or distribution over the
-> devices, I hope it's not too big deviation from priority ranking).
-> Then you have the hierarchy, so you need a method how to combine
-> child+parent masks (or global/root) to obtain effective weight-mask (and
-> effective ranking) for each cgroup.
+Where you see unnecessary functionality, I tend to view it as providing more
+degrees of freedom and flexibility. In my view, the swap tier concept can be
+expressed as a subset of the per-cgroup priority model.
+
+> I have a similar idea, "swap.tiers," first mentioned earlier here:
+> https://lore.kernel.org/linux-mm/CAF8kJuNFtejEtjQHg5UBGduvFNn3AaGn4ffyoOrEnXfHpx6Ubg@mail.gmail.com/
 > 
-> Furthermore, there's the NUMA autobinding which adds another weight-mask
-> to the game but this time it's not configured but it depends on "who is
-> asking". (Tasks running on node N would have autobind shifted towards
-> devices associated to node N. Is that how autobinding works?)
+> I will outline the line in more detail in the last part of my reply.
+> 
+> BTW, YoungJun and Michal, do you have the per cgroup swap file control
+> proposal for this year's LPC? If you want to, I am happy to work with
+> you on the swap tiers topic as a secondary. I probably don't have the
+> time to do it as a primary.
 
-Yes, your description indeed captures the core concept of how autobinding
-works.
+I have not submitted an LPC proposal. If it turns out to be necessary,
+I agree it could be a good idea, and I truly appreciate your offer to
+work together on it. From my understanding, though, the community has
+so far received this patchset positively, so I hope the discussion can
+continue within this context and eventually be accepted there.
  
-> From the hierarchy point of view, you have to compound weight-masks in
-> top-down preference (so that higher cgroups can override lower) and
-> autobind weight-mask that is only conceivable at the very bottom
-> (not a cgroup but depending on the task's NUMA placement).
+> OK. I want to abandon the weight-adjustment approach. Here I outline
+> the swap tiers idea as follows. I can probably start a new thread for
+> that later.
 > 
-> There I see conflict between the ends a tad. I think the attempted
-> reconciliation was to allow emptiness of a single slot in the
-> weight-mask but it may not be practical for the compounding (that's why
-> you came up with the four variants). So another option would be to allow
-> whole weight-mask being empty (or uniform) so that it'd be identity in
-> the compounding operation.
-> The conflict exists also in the current non-percg priorities -- there
-> are the global priorities and autobind priorities. IIUC, the global
-> level either defines a weight (user prio) or it is empty (defer to NUMA
-> autobinding).
+> 1) No per cgroup swap priority adjustment. The swap file priority is
+> global to the system.
+> Per cgroup swap file ordering adjustment is bad from the LRU point of
+> view. We should make the swap file ordering matching to the swap
+> device service performance. Fast swap tier zram, zswap store hotter
+> data, slower tier hard drive store colder data.  SSD in between. It is
+> important to maintain the fast slow tier match to the hot cold LRU
+> ordering.
+
+Regarding your first point about swap tiers: I would like to study this part
+a bit more carefully. If you could share some additional explanation, that
+would be very helpful for me.
+ 
+> 2) There is a simple mapping of global swap tier names into priority range
+> The name itself is customizable.
+> e.g. 100+ is the "compress_ram" tier. 50-99 is the "SSD" tier, 0-55 is
+> the "hdd" tier.
+> The detailed mechanization and API is TBD.
+> The end result is a simple tier name lookup will get the priority range.
+> By default all swap tiers are available for global usage without
+> cgroup. That matches the current global swap on behavior.
 > 
-> [I leveled rankings and weight-masks of devices but I left a loophole of
-> how the empty slots in the latter would be converted to (and from)
-> rankings. This e-mail is already too long.]
-
-Yes. A single slot emptiness is enemy..
-The problem arises from two aspects: (1) allowing per-device priorities
-inherently leads to the possibility of single-slot emptiness, and (2)
-depending on swapon configuration, empty slots may be inevitable. That’s
-why the compounding rules ended up allowing this complexity. I’ll review
-your suggestions carefully and share soon how we might simplify this
-direction.
-
+> 3) Each cgroup will have "swap.tiers" (name TBD) to opt in/out of the tier.
+> It is a list of tiers including the default tier who shall not be named.
 > 
-> An very different alternative that comes to my mind together with
-> autobinding and leveraging that to your use case:
-> - define virtual NUMA nodes [1],
-> - associate separate swap devices to those nodes,
-> - utilize task (or actual (mem)cpuset) affinity to those virtual NUMA
->   nodes based on each process's swap requirements,
-> - NUMA autobinding would then yield the device constraints you sought.
+> Here are a few examples:
+> e.g. consider the following cgroup hierarchy a/b/c/d, a as the first
+> level cgroup.
+> a/swap.tiers: "- +compress_ram"
+> it means who shall not be named is set to opt out,  optin in
+> compress_ram only, no ssd, no hard.
+> Who shall not be named, if specified, has to be the first one listed
+> in the "swap.tiers".
+> 
+> a/b/swap.tiers: "+ssd"
+> For b cgroup, who shall not be named is not specified, the tier is
+> appended to the parent "a/swap.tiers". The effective "a/b/swap.tiers"
+> become "- +compress_ram +ssd"
+> a/b can use both zswap and ssd.
+> 
+> Every time the who shall not be named is changed, it can drop the
+> parent swap.tiers chain, starting from scratch.
+> 
+> a/b/c/swap.tiers: "-"
+> 
+> For c, it turns off all swap. The effective "a/b/c/swap.tiers" become
+> "- +compress_ram +ssd -" which simplify as "-", because the second "-"
+> overwrites all previous optin/optout results.
+> In other words, if the current cgroup does not specify the who shall
+> not be named, it will walk the parent chain until it does. The global
+> "/" for non cgroup is on.
+> 
+> a/b/c/d/swap.tiers: "- +hdd"
+> For d, only hdd swap, nothing else.
+> 
+> More example:
+>  "- +ssd +hdd -ssd" will simplify to: "- +hdd", which means hdd only.
+>  "+ -hdd": No hdd for you! Use everything else.
+> 
+> Let me know what you think about the above "swap.tiers"(name TBD) proposal.
 
-Creative. I have understood the overall concept for now.
+Thank you very much for the detailed description of the "swap.tiers" idea.
+As I understand it, the main idea is to separate swap devices by speed,
+assign a suitable priority range for each, and then make it easy for users to
+include or exclude tiers. I believe I have understood the concept clearly.
+
+I agree that operating with tiers is important. At the same time, as I
+mentioned earlier, I believe that managing priorities in a way that reflects
+tiers can also achieve the intended effect.
+
+I have also been thinking about a possible compromise. If the interface is
+intended to make tiers visible to users in the way you describe, then mapping
+priority ranges to tiers (as you propose) makes sense. Users would still have
+the flexibility to define ordering, while internally we could maintain the
+priority list model I suggested. I wonder what you think about such a hybrid
+approach. 
 
 Thank you as always for your valuable insights.
 
-Best regards,  
-YoungJun
+Best regards,
+Youngjun Park
 
