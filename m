@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-9254-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9255-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EF6DB299F4
-	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 08:44:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F27EB29A35
+	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 08:54:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B575D4E335B
-	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 06:42:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00FA57A7ED4
+	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 06:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E3D277003;
-	Mon, 18 Aug 2025 06:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF0D3262FF3;
+	Mon, 18 Aug 2025 06:54:44 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55CC6209F43;
-	Mon, 18 Aug 2025 06:42:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 449F6278173;
+	Mon, 18 Aug 2025 06:54:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755499361; cv=none; b=CYKvHRlLjqDImZt9cjpOrEUqkv8IS46aBvWSzRnkaakVC523uT7SycPec9YFB6BE95UsTB7CN16WidDPn3qDLt3FxJXeEYszH1A6HBMVmIy/cvtp2m4iM8lGPd7OTlMXnYpUqj65C7ZS4HPGJfvUGpsbGgh0e0f2JmiYofQ6v8g=
+	t=1755500084; cv=none; b=kFhvvt3FgLofCoSRRP7L3yaofwC5G2S67vAVXI3lOkMnUEoWg/Z5I9TSQhjxRfmiygYO/+Bx5c8h7PppcU77T1g4cCDuPmaExO8/5FefAewAbcZrgDsiO6ZK2OsrIdquWH0UdpjdgzxJu5GGvpDncQeKiEA+1xyeMF4+KtTJWzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755499361; c=relaxed/simple;
-	bh=nwAs0aFFINWtk3kW/um6oQyqyTzq6VoxcQzO7Ik0Jf4=;
+	s=arc-20240116; t=1755500084; c=relaxed/simple;
+	bh=uKI8uIf/gDF2fVa0mNGUItUEgRf+Ku9l5lSnJnd83gk=;
 	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=aBPL8uMBAX/vjrUuqrrXrM4HTyBqqgaiLjp5oBAKpEixialpT1zPW7SBYXK6v7Hie2MUm0vI4JRIWUSmBXKvsdesaRm3k+oZONGYArm6peClghwwgtHt1tkzqtAzhKrqcohl1efvyzMiUcHKzsgpKLsCVdynukf7xGVitQcqvjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 In-Reply-To:Content-Type; b=WmumQYQUF0NAguP8YJoCRB9LNnDzW7d2zFDU5oWcoIy/XYNNmnLvXN9lbgyaGSAzjDgNu760Biwwvz7GQp+AxXFMANNX9Xof0PqThEc/ewzHLpDjkWtBH7Z8nSErVKqCI2r7xD/agy1hGqnpc03LIFK0ABY1VKAKV79z2+rswpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c536z3tJwzYQvWF;
-	Mon, 18 Aug 2025 14:42:35 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4c53Nv5Jj7zKHNCh;
+	Mon, 18 Aug 2025 14:54:39 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 205F21A018D;
-	Mon, 18 Aug 2025 14:42:34 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 24E801A0D81;
+	Mon, 18 Aug 2025 14:54:39 +0800 (CST)
 Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP2 (Coremail) with SMTP id Syh0CgAnM7VYy6JoRfoREA--.42486S2;
-	Mon, 18 Aug 2025 14:42:33 +0800 (CST)
-Message-ID: <7d180c47-07c8-4d33-ab64-f9bf31671b9f@huaweicloud.com>
-Date: Mon, 18 Aug 2025 14:42:32 +0800
+	by APP2 (Coremail) with SMTP id Syh0CgC3w7UtzqJoueoSEA--.57677S2;
+	Mon, 18 Aug 2025 14:54:39 +0800 (CST)
+Message-ID: <63846dd9-3b5d-4a27-be6e-754dadfa5444@huaweicloud.com>
+Date: Mon, 18 Aug 2025 14:54:37 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,65 +47,65 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] cgroup: split cgroup_destroy_wq into 3 workqueues
+Subject: Re: [PATCH -next v3 0/3] some optimization for cpuset
 From: Chen Ridong <chenridong@huaweicloud.com>
-To: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, lizefan@huawei.com
+To: longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com, hdanton@sina.com,
- gaoyingjie@uniontech.com
-References: <20250818034315.1303955-1-chenridong@huaweicloud.com>
- <20250818061435.1304516-1-chenridong@huaweicloud.com>
+ lujialin4@huawei.com, chenridong@huawei.com
+References: <20250818034430.1304069-1-chenridong@huaweicloud.com>
 Content-Language: en-US
-In-Reply-To: <20250818061435.1304516-1-chenridong@huaweicloud.com>
+In-Reply-To: <20250818034430.1304069-1-chenridong@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgAnM7VYy6JoRfoREA--.42486S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKw1kJr1UZr1rZF43Xw1kXwb_yoWkuFc_ua
-	9rWrn0krZxJw4vg3yqgrn8XFZYkF45GFy8tF45tw17CF98Jwn8CrsxJr13CrWDAayxXFnx
-	Gr9xGas2kwnxCjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+X-CM-TRANSID:Syh0CgC3w7UtzqJoueoSEA--.57677S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF48Ww45Kr43uFyfZry3XFb_yoWDWFX_AF
+	y8ZFy0kr15XF4xta1ayrn3JrWkKa1UCrykAFyDtr42yFn7Arn7ZF1Ut34rXr17XryfJr15
+	u3s7CFn5Jw17XjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbz8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
 	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
 	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
 	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
 	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
+	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUotCzDUUUU
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
 
-On 2025/8/18 14:14, Chen Ridong wrote:
-
+On 2025/8/18 11:44, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
 > 
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 312c6a8b55bb..679dc216e3ed 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -126,8 +126,22 @@ DEFINE_PERCPU_RWSEM(cgroup_threadgroup_rwsem);
->   * of concurrent destructions.  Use a separate workqueue so that cgroup
->   * destruction work items don't end up filling up max_active of system_wq
->   * which may lead to deadlock.
-> + *
-> + * A cgroup destruction should enqueue work sequentially to:
-> + * cgroup_offline_wq: use for css offline work
-> + * cgroup_release_wq: use for css release work
-> + * cgroup_free_wq: use for free work
-> + *
-> + * Rationale for using separate workqueues:
-> + * The cgroup root free work may depend on completion of other css offline
-> + * operations. If all tasks were enqueued to a single workqueue, this could
-> + * create a deadlock scenario where:
-> + * - Free work waits for other css offline work to complete.
-> + * - But other css offline work is queued after free work in the same queue.
->   */
+> This patch series contains several cpuset improvements:
+> 
+> 1. Decouple cpuset and tmpmasks allocation/freeing.
+> 2. Add cpuset_full_[un]lock helpers.
+> 
+> ---
+> v3:
+>  - fix typos and comment errors.
+>  - rename cpus_read_cpuset_[un]lock to cpuset_full_[un]lock
+> 
+> v2:
+>  - dropped guard helper approach, nusing new helper instead.
+>  - added patches for decoupling cpuset/tmpmasks allocation
+> 
+> Chen Ridong (3):
+>   cpuset: decouple tmpmasks and cpumasks freeing in cgroup
+>   cpuset: separate tmpmasks and cpuset allocation logic
+>   cpuset: add helpers for cpus read and cpuset_mutex locks
+> 
+>  kernel/cgroup/cpuset-internal.h |   2 +
+>  kernel/cgroup/cpuset-v1.c       |  12 +-
+>  kernel/cgroup/cpuset.c          | 220 +++++++++++++++++---------------
+>  3 files changed, 122 insertions(+), 112 deletions(-)
+> 
 
-More comments are added to clarify why we split the destroy work into 3 workqueues in v5.
+Sorry for forgetting to update the commit message for patch 3. Please ignore this series.
 
 -- 
 Best regards,
