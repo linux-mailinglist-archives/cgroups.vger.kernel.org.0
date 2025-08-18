@@ -1,57 +1,60 @@
-Return-Path: <cgroups+bounces-9267-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9268-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FC04B2AF08
-	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 19:11:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A77AEB2AF7B
+	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 19:34:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E8076801CA
-	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 17:08:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00F4520215B
+	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 17:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F31732C300;
-	Mon, 18 Aug 2025 17:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04FA3570D6;
+	Mon, 18 Aug 2025 17:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cB3fT4AE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GUFtlQs+"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDCD32C30F;
-	Mon, 18 Aug 2025 17:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 957323570CB;
+	Mon, 18 Aug 2025 17:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755536921; cv=none; b=PG6uHU0fe/Lhd/lLW7UZG0fgpo14QMyGolgZGiJXqST41jfrLGe5z4XmLZk5ZCXjXHm9QJ/oc878xUql7Z+rcymcpOdo5nDbTUpXjNWX3qU0Or8Vjf37IAw65AYL09MG79gwag4mpiBseaesplQZwlDmssJOVvGse2OQm+MxWHw=
+	t=1755538323; cv=none; b=r14MWeUi4yDMv8nOtAeAgStN/HEEr0b/k5AuKVYRxqeqnAXlZdUkAAPsFVD9QxKyoaB5EIi8WPgwJyy+Wodb3OWt+CvYV/j+JEgXBU3JMgAQlKfeTypVElCjlEkIB7HmgR2g/3RPm0iUXW/Dsjkh6VnR1/ZXUja2NV1CtQE2mlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755536921; c=relaxed/simple;
-	bh=64CcmkGtdUxeHQ1pBgSUaPFesNmD3+o91YK6wmGkYJE=;
+	s=arc-20240116; t=1755538323; c=relaxed/simple;
+	bh=F6rqd65twG2Ytl7e+Uj8rUDrqXJJk2HNV1hEuLPJ9T0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dsbP+A46tjUOQ+Mwa3vrO493QgnEOOLXC7JE/2e/HXu2qhlzR8rFO+uPauDaCFENgsEDL+Cr/Te2VWgnGfYkSrVkNXpmfxI+nq8sGiWRXN284Tz/VwcE/Ff8sFbtBKeCwUEgu1qMp2/QOPhBkzOGevSouAMwsVrKYxV2apC0trQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cB3fT4AE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F574C4CEEB;
-	Mon, 18 Aug 2025 17:08:40 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=K3tYjOqvc1QJ7Vp4GQGgY9Khde8PaN8i/q8CJexcrhOrY0vWgKVcVT9T4jJkPg8KGobEsEl9JHJJcqhGuEDDkRNZrJkotlTOW1zxMzPYrfNeFcXggafKmnU2r1S8S3dCDdm26b/ATIzvfQogA58WA6Bpc0CqF4SgQSECaZCEdOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GUFtlQs+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A108C116C6;
+	Mon, 18 Aug 2025 17:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755536920;
-	bh=64CcmkGtdUxeHQ1pBgSUaPFesNmD3+o91YK6wmGkYJE=;
+	s=k20201202; t=1755538323;
+	bh=F6rqd65twG2Ytl7e+Uj8rUDrqXJJk2HNV1hEuLPJ9T0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cB3fT4AEF3Up/BvqosBGRperiBFtvAvgJ1bC3UdhNTb65WHq0vzhH1S6kulu+uLcl
-	 w0n9UZWXiIxmL69PScnQZNRdyl5jhIum4rRpXKCqxhxYP/L1wfCyy+DUlGGYNzkOHR
-	 7mSVhgW7Z2Kp3TOPYWYMN0wL/gHPbjN/bT6WANkHx06KnCP9Sg+vY3ULXVcMWaxae5
-	 rUCRKCXmWKOSIRqrsIFQXAO3C6ge8712FlH2b41Utl/78x/NB4vBhuJb6DA/p/Lbob
-	 Yb7M4jEqFmIbEvZXr4xKvSJr1AdFw8Ju4tZXygiEUn3Tm8EhbWT4l1sRGc/eVmt42h
-	 r4YO2Hl7N9JiQ==
-Date: Mon, 18 Aug 2025 07:08:39 -1000
+	b=GUFtlQs+DJFRIbzOAdAhwmPJpJ6+NT1itKCRAL6jgauUXRa6jh81Jauu3CC7yEruR
+	 0A5ZXdixv3LB1hZVGQUhdzZ1QmrWNx1vd0Ki1Q2K0zI+w8Z2uEBn8iKn8pkY+AkFia
+	 fKM7qStwXnVWdBOsh4EWanPdB2Gv9a9qjWMEKpa2mQEkvuEJg0Q9XMZ2nNZeQIE9Ln
+	 oP4CyhqA6AlrVjPopomaMmDE2dOyrRnDC6paT4mUdsOuL48cbhmYNB78dVeKsKx68T
+	 hLUEwdSXs/svyY3al+uS4eyCKr+LeH8zXdRDCllwybQWlfC1cdj7JfR67Rd+jua7FI
+	 67/QetZd6IC7Q==
+Date: Mon, 18 Aug 2025 07:32:02 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: hannes@cmpxchg.org, mkoutny@suse.com, lizefan@huawei.com,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com, chenridong@huawei.com, hdanton@sina.com,
-	gaoyingjie@uniontech.com
-Subject: Re: [PATCH v5] cgroup: split cgroup_destroy_wq into 3 workqueues
-Message-ID: <aKNeF68tmjLKB6dK@slm.duckdns.org>
-References: <20250818034315.1303955-1-chenridong@huaweicloud.com>
- <20250818061435.1304516-1-chenridong@huaweicloud.com>
+To: Djalal Harouni <tixxdz@gmail.com>
+Cc: hannes@cmpxchg.org, mkoutny@suse.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+	haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+	shuah@kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, tixxdz@opendz.org
+Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
+ freezing cgroups from BPF
+Message-ID: <aKNjkp5vR2ES-2Xw@slm.duckdns.org>
+References: <20250818090424.90458-1-tixxdz@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -60,20 +63,27 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250818061435.1304516-1-chenridong@huaweicloud.com>
+In-Reply-To: <20250818090424.90458-1-tixxdz@gmail.com>
 
-Hello,
+On Mon, Aug 18, 2025 at 10:04:21AM +0100, Djalal Harouni wrote:
+> This patch series add support to write cgroup interfaces from BPF.
+> 
+> It is useful to freeze a cgroup hierarchy on suspicious activity for
+> a more thorough analysis before killing it. Planned users of this
+> feature are: systemd and BPF tools where the cgroup hierarchy could
+> be a system service, user session, k8s pod or a container.
+> 
+> The writing happens via kernfs nodes and the cgroup must be on the
+> default hierarchy. It implements the requests and feedback from v1 [1]
+> where now we use a unified path for cgroup user space and BPF writing.
+> 
+> So I want to validate that this is the right approach first.
 
-On Mon, Aug 18, 2025 at 06:14:35AM +0000, Chen Ridong wrote:
-...
-> + * Rationale for using separate workqueues:
-> + * The cgroup root free work may depend on completion of other css offline
-> + * operations. If all tasks were enqueued to a single workqueue, this could
-> + * create a deadlock scenario where:
-> + * - Free work waits for other css offline work to complete.
-> + * - But other css offline work is queued after free work in the same queue.
-
-Can you please refer to the concrete example too?
+I don't see any reason to object to the feature but the way it's constructed
+seems rather odd to me. If it's going to need per-feature code, might as
+well bypass the write part and implement a simpler interface - ie.
+bpf_cgroup_freeze(). Otherwise, can't it actually write to kernfs files so
+that we don't need to add code per enabled feature?
 
 Thanks.
 
