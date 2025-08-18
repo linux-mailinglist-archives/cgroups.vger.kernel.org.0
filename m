@@ -1,197 +1,154 @@
-Return-Path: <cgroups+bounces-9262-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9263-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9A81B29BE8
-	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 10:23:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36216B29D20
+	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 11:06:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8365196039F
-	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 08:22:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90B6420061D
+	for <lists+cgroups@lfdr.de>; Mon, 18 Aug 2025 09:05:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26772FF673;
-	Mon, 18 Aug 2025 08:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00AC030DD09;
+	Mon, 18 Aug 2025 09:05:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y2EpWRD/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9682D1D9346;
-	Mon, 18 Aug 2025 08:22:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C7A30C366;
+	Mon, 18 Aug 2025 09:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755505328; cv=none; b=S/Lp17uYuZ1IHjg4U+GAs3Oj/2Uunc9LalCKWbWKv15mSVjRBFuCC3ecloi1T9R7c1qkRClWYS3opaNBnXMgTLmO9vHQzK41N1jKTwIrqt1HbXI1umvZpeCeJfmhABAKNLrBhvZNhyqWrsKzmihIY48ELmj0mi59AFOIZxSQavc=
+	t=1755507926; cv=none; b=TiUMLwdpVZTNKZId1H5HOme6M/ZcwcNFG1dELae09kOxZ15vtI2G1U6UTtCcQfDEQekuNBwOEl8wj0X12p57uii6WSf3tZxVwXwDCyOwYQYbo6p8/etdhHG6VPl/Y8xnFYGTQB8rpQ5+C3Qtzrz2ZhXdwzO9bpBiF8oV4nPVvXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755505328; c=relaxed/simple;
-	bh=NWE7JKTTm/gkFy/hNNDMyNlnmXsG/mHuvfZUm1OvLoQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=QWA8DXoWpu5bNYgRCDSyqLq0RBq1G1ZpLOxmbKPcwn/0C5jTD0AqmY/g5QMAnpdikEmLFUp8D7phvJ03p1HdzQX97BZeqKDG3ohEWbyq8lq5iS8btvJDV5Cfeg1C8tn/eYCD5O+cyByztLdgkdPU34O0ud4GKCjacpimld8oOCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4c55Kl5VKQzKHNBq;
-	Mon, 18 Aug 2025 16:22:03 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 286BF1A07BB;
-	Mon, 18 Aug 2025 16:22:03 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP2 (Coremail) with SMTP id Syh0CgD3AbSp4qJoFbEZEA--.45966S2;
-	Mon, 18 Aug 2025 16:22:02 +0800 (CST)
-Message-ID: <bfd78e3b-936e-49e6-b17e-389ba016e8e7@huaweicloud.com>
-Date: Mon, 18 Aug 2025 16:22:00 +0800
+	s=arc-20240116; t=1755507926; c=relaxed/simple;
+	bh=vH+tIsOMEK98p0HykoMkipvmKZKEqumwpo/6drCnjHA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CA8oH5Dhpe5ZCeRb35yzd6JoLjru4j+/eaoM1EwtR2n5tSdLXkOHZvIuUQ/++8x/Ed60tQTktClI2sVHBxYq11Nfttqx0TTrfrmw9Qmo+dxfmCT4kTWD4QkMQOgxHHgn0d7pxUxSXjEz4xHhQ5SpPzl1Iw4AfQBTjgUXf1M3lfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y2EpWRD/; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-e9455cfb9d1so616496276.0;
+        Mon, 18 Aug 2025 02:05:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755507924; x=1756112724; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=E0ydw29EHrtHd4WQ+E6W52DjShQ8JL8U71+1tj1yMwE=;
+        b=Y2EpWRD/ibva/n4ri3JQXcnmfhip9tpVR/oY6ns0s11cBznx6qDnBZXVy9qzpAm9lK
+         fiGB4x8a8cN5G4IZFUbkHYjBJ7JBO5wW+cr+ph+ciP9YZMvGHeAiUzC7c6yvBqxGnYvc
+         qdc2xc/Xq82vRHLdhPx1hWZgdzxgr5fJaacFM4adQlNibuE+qhLNjGpqP+JcEZ0ukUiw
+         4XznQ3YLdlvmvqAMZtkMdiKXix8lRVh6ZwhDHu6fak2MVSeyJ/kRP6GmoB9yJW60oAKe
+         rlwMAZ9wc3QRdwN9Y+sWDhZIwVeabpyN5x5MLDRIjtk61yEv4ZckErsYvz35DTNAPvQo
+         L8EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755507924; x=1756112724;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E0ydw29EHrtHd4WQ+E6W52DjShQ8JL8U71+1tj1yMwE=;
+        b=JZJBuDj8Es5rp5DixmskJbSHdioT7J24iIBqGYO4BlPP0CBXtEXxk3C4bCQVDuxHSo
+         zbmWeLvNm8JSpUKofKAiMkvOzdKuFannhhenQVxiKHvY/iPJHGQGl+t9r96H6BoTqark
+         2UyII1UAGMUvU+n3YruOToGVEn1Vd5Euo9X20td1fGFllmh6LzqD0vCzdGMeijjDjtQZ
+         GhPgPmO0/AGyqDd/i2ob3o/9x14wd1vwonTi9lZVT3kiBBV6xsPuGO6exS3J2AzVYAz9
+         Yv7AF1In1shu0W1ei4c9jjVyF3CZ2FG5PswD5VyBCy3PLTRNMmPDhDvFAb2jEqGnD/MB
+         ZDmw==
+X-Forwarded-Encrypted: i=1; AJvYcCUCeVls6whjrG+CmAAxOy6JxiQgWtNPdxnDr9dvKzM4AjM+BGRDBQvjGKjMQiszq635xNF6GTe/GC9qDPzKlihF@vger.kernel.org, AJvYcCVFseWMA9cjdeGtwTHe8F7Q1l+OCseciIQDFKtIjaDdXIFTCX+fsARhajI3wja8aUi9eVQ=@vger.kernel.org, AJvYcCWQaLhuGrazYZ+CUUZRhemYKA4Fz1DzhBKotE3kiJF+lz8d2SNNiKh34yjUOrdwMidAsxt+k3cxXQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBkA4X00u3M58mxvwQUC2IXypal+esJoEIPq7J6CklFjIj0hwL
+	4Ya39KGOuAZmDZ9Z70SUjo6BVL9vgVvHXVGb6b1NRGe1FJtJsio1gdZt
+X-Gm-Gg: ASbGnct8kBKOIrMEScdll9jrlRy1Fg05qoKiol6QWWZdy/F8w/OyObhFT2ukt8a7oBz
+	zHff16RU8NeLrr8xvemYXQennyldOZ+fAIPnDq+0mBAZjLPnen7yQUW1Y5olR6nyP87KE0JjFhK
+	5GN+QxPOo5BCJtPF3RQeZf14seywISFAVtB7gkLmynoLKVmAmcXT1gVtbTd0L1RmLek3LbDukHI
+	hFvghYnQlXT1wtarJ1P7Pyhn/A3v03XAu+x2V5GVAJwYy+kSA5Zip+vPqM3NwHHI2PcdCDBVt5K
+	O6JPh0Uw4punJkBLBACbUgVbiNBys1H3JxEfKflJaZxHNUvJBXyYMLQiowjlo2rADrlRgq0Dp71
+	wyONI2rcJjdg2UQ==
+X-Google-Smtp-Source: AGHT+IE8XdCLUvM7SZtGOFNnnBKB7rvfuoci9wc5NNZ7BdKSqcsm7igLli0ha5lpi1X9fgU2/Doqew==
+X-Received: by 2002:a05:6902:18c7:b0:e93:3ef7:bf3 with SMTP id 3f1490d57ef6-e933ef7100bmr8822310276.15.1755507923995;
+        Mon, 18 Aug 2025 02:05:23 -0700 (PDT)
+Received: from roronoa.. ([146.70.98.176])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e933264aabcsm2985389276.9.2025.08.18.02.05.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Aug 2025 02:05:23 -0700 (PDT)
+From: Djalal Harouni <tixxdz@gmail.com>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	mykolal@fb.com,
+	shuah@kernel.org,
+	cgroups@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	tixxdz@opendz.org
+Cc: Djalal Harouni <tixxdz@gmail.com>
+Subject: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and freezing cgroups from BPF
+Date: Mon, 18 Aug 2025 10:04:21 +0100
+Message-ID: <20250818090424.90458-1-tixxdz@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] kernfs: Fix UAF in PSI polling when open file is released
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: cgroups@vger.kernel.org, chenridong@huawei.com,
- gregkh@linuxfoundation.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, lujialin4@huawei.com, mkoutny@suse.com,
- peterz@infradead.org, tj@kernel.org, zhouchengming@bytedance.com,
- Yang Erkun <yangerkun@huawei.com>
-References: <20250815013429.1255241-1-chenridong@huaweicloud.com>
- <0319ee9b-ce2c-4c02-a731-c538afcf008f@huawei.com>
- <e485b38a-183b-42c8-9aed-9c2d939add0b@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <e485b38a-183b-42c8-9aed-9c2d939add0b@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgD3AbSp4qJoFbEZEA--.45966S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF4DZF4DCrWrKF1kZr47Jwb_yoW5uw4Upa
-	90yF1UK3yUXr1qyrs2qF1vg3W8tayxJFyIgrn7Kr9aq3Z3trn5Ar1xCr15WFyDJrsxJr42
-	q3ZFk342yw4YyaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07
-	UAwIDUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+
+This patch series add support to write cgroup interfaces from BPF.
+
+It is useful to freeze a cgroup hierarchy on suspicious activity for
+a more thorough analysis before killing it. Planned users of this
+feature are: systemd and BPF tools where the cgroup hierarchy could
+be a system service, user session, k8s pod or a container.
+
+The writing happens via kernfs nodes and the cgroup must be on the
+default hierarchy. It implements the requests and feedback from v1 [1]
+where now we use a unified path for cgroup user space and BPF writing.
+
+So I want to validate that this is the right approach first.
+
+Todo:
+* Limit size of data to be written.
+* Further tests.
+* Add cgroup kill support.
 
 
+# RFC v1 -> v2
 
-On 2025/8/18 16:00, Chen Ridong wrote:
-> 
-> 
-> On 2025/8/16 17:53, Baokun Li wrote:
->>> From: Chen Ridong <chenridong@huawei.com>
->>>
->>> A use-after-free (UAF) vulnerability was identified in the PSI (Pressure
->>> Stall Information) monitoring mechanism:
->>>
->>> BUG: KASAN: slab-use-after-free in psi_trigger_poll+0x3c/0x140
->>> Read of size 8 at addr ffff3de3d50bd308 by task systemd/1
->>>
->>> psi_trigger_poll+0x3c/0x140
->>> cgroup_pressure_poll+0x70/0xa0
->>> cgroup_file_poll+0x8c/0x100
->>> kernfs_fop_poll+0x11c/0x1c0
->>> ep_item_poll.isra.0+0x188/0x2c0
->>>
->>> Allocated by task 1:
->>> cgroup_file_open+0x88/0x388
->>> kernfs_fop_open+0x73c/0xaf0
->>> do_dentry_open+0x5fc/0x1200
->>> vfs_open+0xa0/0x3f0
->>> do_open+0x7e8/0xd08
->>> path_openat+0x2fc/0x6b0
->>> do_filp_open+0x174/0x368
->>>
->>> Freed by task 8462:
->>> cgroup_file_release+0x130/0x1f8
->>> kernfs_drain_open_files+0x17c/0x440
->>> kernfs_drain+0x2dc/0x360
->>> kernfs_show+0x1b8/0x288
->>> cgroup_file_show+0x150/0x268
->>> cgroup_pressure_write+0x1dc/0x340
->>> cgroup_file_write+0x274/0x548
->>>
->>> Reproduction Steps:
->>> 1. Open test/cpu.pressure and establish epoll monitoring
->>> 2. Disable monitoring: echo 0 > test/cgroup.pressure
->>> 3. Re-enable monitoring: echo 1 > test/cgroup.pressure
->>>
->>> The race condition occurs because:
->>> 1. When cgroup.pressure is disabled (echo 0 > cgroup.pressure), it:
->>>    - Releases PSI triggers via cgroup_file_release()
->>>    - Frees of->priv through kernfs_drain_open_files()
->>> 2. While epoll still holds reference to the file and continues polling
->>> 3. Re-enabling (echo 1 > cgroup.pressure) accesses freed of->priv
->>>
->>> epolling			disable/enable cgroup.pressure
->>> fd=open(cpu.pressure)
->>> while(1)
->>> ...
->>> epoll_wait
->>> kernfs_fop_poll
->>> kernfs_get_active = true	echo 0 > cgroup.pressure
->>> ...				cgroup_file_show
->>> 				kernfs_show
->>> 				// inactive kn
->>> 				kernfs_drain_open_files
->>> 				cft->release(of);
->>> 				kfree(ctx);
->>> 				...
->>> kernfs_get_active = false
->>> 				echo 1 > cgroup.pressure
->>> 				kernfs_show
->>> 				kernfs_activate_one(kn);
->>> kernfs_fop_poll
->>> kernfs_get_active = true
->>> cgroup_file_poll
->>> psi_trigger_poll
->>> // UAF
->>> ...
->>> end: close(fd)
-> 
-> Thank you, Baokun.
-> 
->> I think the problem is that kernfs_show() handles enable and disable
->> inconsistently. When disable is called, it sets kn->active and then frees
->> cgroup_file_ctx and psi_trigger. But when enable is called, it only sets
->> kn->active. This mismatch means we can end up accessing the freed
->> cgroup_file_ctx and psi_trigger later on.
->>
-> 
-> I agree with that.
-> 
->> A potential solution is to make the lifecycles of cgroup_file_ctx and
->> psi_trigger match the struct kernfs_open_file they're associated with.
->> Maybe we could just get rid of the kernfs_release_file call in
->> kernfs_drain_open_files?
->>
-> 
-> Hi, Tj, what do you think about this solution?
-> 
+* Implemented Alexei and Tejun requests [1].
+* Unified path where user space or BPF writing end up taking directly
+  a kernfs_node with an example on the "cgroup.freeze" interface.
 
-Or we should add KERNFS_HIDDEN check?
+[1] https://lore.kernel.org/bpf/20240327225334.58474-1-tixxdz@gmail.com/
 
---- a/fs/kernfs/file.c
-+++ b/fs/kernfs/file.c
-@@ -812,7 +812,7 @@ void kernfs_drain_open_files(struct kernfs_node *kn)
-                        on->nr_mmapped--;
-                }
 
--               if (kn->flags & KERNFS_HAS_RELEASE)
-+               if (!kn->flags & KERNFS_HIDDEN && kn->flags & KERNFS_HAS_RELEASE)
-                        kernfs_release_file(kn, of);
-        }
+Djalal Harouni (3):
+      kernfs: cgroup: support writing cgroup interfaces from a kernfs node
+      bpf: cgroup: Add BPF Kfunc to write cgroup interfaces
+      selftests/bpf: add selftest for bpf_cgroup_write_interface
+
+ include/linux/cgroup.h                                      |   3 ++
+ kernel/bpf/helpers.c                                        |  45 +++++
+ kernel/cgroup/cgroup.c                                      | 102 +++++++
+ tools/testing/selftests/bpf/prog_tests/task_freeze_cgroup.c | 172 ++++++++++++
+ tools/testing/selftests/bpf/progs/test_task_freeze_cgroup.c | 155 ++++++++++
+ 5 files changed, 471 insertions(+), 6 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_freeze_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_task_freeze_cgroup.c
 
 -- 
-Best regards,
-Ridong
+2.34.1
 
 
