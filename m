@@ -1,139 +1,227 @@
-Return-Path: <cgroups+bounces-9280-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9281-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A026B2CF9B
-	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 01:05:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DABEEB2CFFA
+	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 01:31:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B0047B3E50
-	for <lists+cgroups@lfdr.de>; Tue, 19 Aug 2025 23:03:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90C52685C36
+	for <lists+cgroups@lfdr.de>; Tue, 19 Aug 2025 23:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91614246BA5;
-	Tue, 19 Aug 2025 23:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D2624C669;
+	Tue, 19 Aug 2025 23:31:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="an/4N+CC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aSWOULh1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7030248F51
-	for <cgroups@vger.kernel.org>; Tue, 19 Aug 2025 23:05:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DD121930B;
+	Tue, 19 Aug 2025 23:31:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755644713; cv=none; b=tJuAcJdPNM0DX5Gd17fhFYRdElaetApwgoqzhgVLzmLN1yRVmoy4+Z7idIfGnO1HqMV9i6tvpJXDNkbd7evaOXBux8uJLR6hH2BlYggL8rufClHkshZBajJF22hQf5oESl+T+qn3l9L/DbI8Xy7wBX2NZizII0Hacl+WcbKyryw=
+	t=1755646275; cv=none; b=isx/RAvuzL2iyNwBb34/ve3OLAJfsrqT9cM/jTIhEGZnLGQmGnI9fTUpVn4Hsm7jAclrNIcQaiiIliOuXVcDBUrGgqQ7HXO+Btg68R0eXL89/ECgCe//IXeZFjrsk2TQGKX4Es01FDRBbVnUKwXsblOtM6dIGwmkP7vLL8KUhts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755644713; c=relaxed/simple;
-	bh=s57YALn7gVQdX0MKPvHRRNAjkYPbaKEVpBGjPx0awnc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ba54mNesMK7VV4eEY0+4tY2V1XSNJCcyT2jMx7s6Lkvw/YR5XUBVSMaYHF8W/dH75JohhWGq8XQ4J1AOt6jUub36vCRai3QVpsQKwnOVDVE3S6vZTaEryiJSj2HM+EoTVVBcvSmssBvFq3GOzbhnylV/Fe9KUctH45fX5qgZVeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=an/4N+CC; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-32326e2f184so10636008a91.3
-        for <cgroups@vger.kernel.org>; Tue, 19 Aug 2025 16:05:11 -0700 (PDT)
+	s=arc-20240116; t=1755646275; c=relaxed/simple;
+	bh=olEIBar2AHZQAv930f/w6UuQzWq5pErYyOO5+6mGF3g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ezbzh1p5JFzNTAx5zqT7i8gb8nDM8bwSQxePT6NardWeDzqOzvT3hHYlRLmhP9COjm7rdvNLzdZ3V7u8bXNXIvJpJQFvj7ESI+Z90XDMqdpO7UqbFKx5w5FoC9GxG7rMklO2UkiN0WHVq8kd3vNkSYIJ7x1xsTtwLivmGqLh+jM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aSWOULh1; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e93cc7c64faso2862210276.0;
+        Tue, 19 Aug 2025 16:31:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1755644711; x=1756249511; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:user-agent
-         :references:mime-version:in-reply-to:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s57YALn7gVQdX0MKPvHRRNAjkYPbaKEVpBGjPx0awnc=;
-        b=an/4N+CCDc0jKsyqFzPoCPTD7TmK5g9pAFTlVwppUp64ZTDY6+dIamscGEaamI7lkX
-         Fr6m9YXMUm3YHZxbMIfJpYd8noKAkuVtOwO2CnCRxAdDO0lpPf8nNNcsxWjpolUuUjpC
-         J6TKiJxPxrQzoS+bVm+x1O0ZhlgGg6JPOebKxgy697iw/gbevcOYVx9nOM2Im4uxN3ey
-         E+hfou0sKLJduqw7Xhv8M85Nsvio3DapcKFdAcYC25aohtTLruURkGY62xT1ZRJ5R9hR
-         uBv+qwPnZlW6l3I9gILHX/9KXEiu5Rv1My8/BOfHA+jJIbwppV9/uDDQrDx/teEc8+vO
-         UpCQ==
+        d=gmail.com; s=20230601; t=1755646272; x=1756251072; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/XSS9ctI5ngSn1Mg7h2LEYJHOdO5w/OJYjQrRRXgmRQ=;
+        b=aSWOULh1FNCg6mHAQhKRYZU4TffyJk6MzlNMf3STkYqUt0nDy6Xm/CN5HpYlDxUXBL
+         dALwIUqMowqMcCLXzPrI6o4BxePVdKwoLicdl0A+ckAVP6xC8wvLQq+aCvc3xVzu61CI
+         +/C7FDX6XKv1W2bpV/n99OjNTFyUk5CPzMUAwA08AbhT5OD2dqaHNU74U2WMDCaR+VMv
+         +Y92wx9BmHWcbBoEOkoXc4nUIkJv9Qa3hpSHTT/8TUN3A2pttG7U+u0PdBqhll4j7s9a
+         N+vifrweHWZw4FBFRDtuM3AjKwG/JZD3m6IQNLIdg7cPBy05fgzywux89lSoyR9KiTlU
+         KxEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755644711; x=1756249511;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:user-agent
-         :references:mime-version:in-reply-to:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=s57YALn7gVQdX0MKPvHRRNAjkYPbaKEVpBGjPx0awnc=;
-        b=wmBYtXc9+/oDlrKjzEFnOjb4++EYoPn+OZlbDQOmcummFARrnXBmtIzc2QMF5Q4pTl
-         lzk2QraISs8oWeEVABdn7jThfnob9k88YNe68TSreygyqS1zbtciUVsAEXy0N9h5o2Eh
-         /FVQaU91cZ7sae+a7hvv2hLa9dgksjFbYcIMKckbZk7AIWzUsTx26gyZ3u1AjBo0Lg7e
-         TjEJdDTpXA0l/la8nMLyzgUde9im3BiB/WaA5jptg0PoTanyEfbRUuw5VOyzrotl5Goc
-         /P1gPdLlU1ksBoVKncEA7/MCKU6O18nB0zLMa1c6I1KtaILZH7cfTErhBcEf/ynLvhXm
-         VU7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU050VcBsbZZYJDhJzrh3jtQ5N/JJ0K6aVHRGu1nayl6KL8oMrJygqv8Mxl9SU3ACqtyFFF/LmU@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFXtmK3BTX5v100Tj+k9vZ+x4u5cTlcKm/LiPBAbVRUfMBZD1w
-	2nEiqOVoxSv8r6Kp3IHZ26/e5b6VCyBv+6A2IYgnN45a/oFNH9PSOnEBRTkroxYb3Bg8T5zi+re
-	zZxQ+Zwpz1g==
-X-Google-Smtp-Source: AGHT+IHqM06mS21QPq1I85PoYm4HgMV/ruKHvkhc5ta3MWpAbBvms4h38a9xCaOs0YWBBkFUxXap50j2LlK9
-X-Received: from pjyp12.prod.google.com ([2002:a17:90a:e70c:b0:31e:a094:a39])
- (user=ynaffit job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:5623:b0:31f:210d:2e56
- with SMTP id 98e67ed59e1d1-324e140bf9amr1034862a91.28.1755644711105; Tue, 19
- Aug 2025 16:05:11 -0700 (PDT)
-Date: Tue, 19 Aug 2025 16:05:09 -0700
-In-Reply-To: <ftydqeu3zxmgdvkz6f4jrf4qyrs72ar7jc4j3khlkyi4mditfe@g62znohovca7>
- ("Michal =?utf-8?Q?Koutn=C3=BD=22's?= message of "Thu, 14 Aug 2025 18:18:47 +0200")
+        d=1e100.net; s=20230601; t=1755646272; x=1756251072;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/XSS9ctI5ngSn1Mg7h2LEYJHOdO5w/OJYjQrRRXgmRQ=;
+        b=qtkMaXelSkL2p9oRpFx63gymLuJVtKdvXWiWqCHA/TsQ93oC++g2bAsBgtHBJ2kyAy
+         6qTCjMSjo46yvXKMCz6qmphawYHVAQPMD0nBhHKdHUdvhNgcpFmVpIcfWFMi022wisiA
+         2GQujnFvOWENYtznvC1YWuF8XB8Fs8AoEf4Ojsev6MGAlqZEXcCWvVn3KLakdlLIeTGg
+         +qEC2VGQqeXMiL/lCKSFbIDH+pmDcyr6GsBm+AsNiRGB+GkINoAkfKIieuoG6/7ygLZ5
+         KwaffP96hNN/y6U+FaKO45HZEkK0qGQz+HSLnNss/18GBLtzWGk2MNt5caQABVZFJZwB
+         E27w==
+X-Forwarded-Encrypted: i=1; AJvYcCWPDUWV2Gdw1QcmyRJ7CKDd5Lr2WjJNM4DowlMlgZz5N7tV3X4ylf20A++/k7IPrPUMixSPtkMhOg==@vger.kernel.org, AJvYcCWUyiW7vR3gF1ZgyO0V0rYaXbvR+aJUZ2BMJY/Mo24QXLhGn/pahYxTzs1fk0tixh+2NvbtAa4KLMFmvdj1ZyI5@vger.kernel.org, AJvYcCWa8feYIZdBDHLt+fU19eXhiMo48BRHW/BHBWaaTJAPd88qkwzaq6c+3QTsZK5IhGCZyR8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyquakHUMY8tk9yIwkofun57zVD0Twv5VgduLQAYf9EgGF08aZP
+	Beg41LKCazCF09WiQLg66FgapOKOhiKKOScp6djm6tR5bE7PVreYbNDX
+X-Gm-Gg: ASbGncv2cmhoCw/nnSEpzuHq0GbqxAHr0WNlVs9I917mGISg4VcfUVT8PoDzhqI9XgJ
+	gqMdcfCB4db0dYSlo9YXXt8sfhlOslgU1VFmei+Yu+JfIfQCSD1MovLa1+hOwbWquioeUyLCFQJ
+	DDNReUqEhXnCS/eMe3MX/+4vIOW9OTXwzxLwtf/iOKhdZMMC/ma7SFmQJGwGZLuCahND6IzBUov
+	LFQ6e5VKBh7mhR8ILOBIMYvdzMNi8cmpp99yNN1N7tumQwNMK4db9ZpjuYBNEPrVJa2dwnaKIh8
+	tlC6FH4MX3fnhXb5a6KyP2EPGYhQR+q8dpZ53+BOCav7rlrRR3H7qc/TqdMyy2PtbHQMRZ0jo/x
+	neXVsINvuPb7+v00=
+X-Google-Smtp-Source: AGHT+IFd7TaTdh+zc3Y0j89FQF10d5FiIG6hZEla4KX+IeKfY1Q5rY2l4nuOrrIaeptzS0wwjrxc7w==
+X-Received: by 2002:a05:6902:2e10:b0:e90:44a9:61bc with SMTP id 3f1490d57ef6-e94f65de2bcmr1210965276.4.1755646272430;
+        Tue, 19 Aug 2025 16:31:12 -0700 (PDT)
+Received: from [10.2.0.2] ([146.70.98.163])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e94da284767sm1820841276.5.2025.08.19.16.31.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Aug 2025 16:31:11 -0700 (PDT)
+Message-ID: <7d8af2a3-0649-44fa-abc5-17f2911b941b@gmail.com>
+Date: Wed, 20 Aug 2025 00:31:01 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250805032940.3587891-4-ynaffit@google.com> <20250805032940.3587891-6-ynaffit@google.com>
- <ftydqeu3zxmgdvkz6f4jrf4qyrs72ar7jc4j3khlkyi4mditfe@g62znohovca7>
-User-Agent: mu4e 1.12.9; emacs 30.1
-Message-ID: <dbx81pp6syje.fsf@ynaffit-andsys.c.googlers.com>
-Subject: Re: [RFC PATCH v3 2/2] cgroup: selftests: Add tests for freezer time
-From: Tiffany Yang <ynaffit@google.com>
-To: "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>
-Cc: linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>, 
-	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Chen Ridong <chenridong@huawei.com>, 
-	kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
+ freezing cgroups from BPF
+To: Tejun Heo <tj@kernel.org>
+Cc: hannes@cmpxchg.org, mkoutny@suse.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
+ cgroups@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, tixxdz@opendz.org
+References: <20250818090424.90458-1-tixxdz@gmail.com>
+ <aKNjkp5vR2ES-2Xw@slm.duckdns.org>
+Content-Language: en-US
+From: Djalal Harouni <tixxdz@gmail.com>
+In-Reply-To: <aKNjkp5vR2ES-2Xw@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-TWljaGFsIEtvdXRuw70gPG1rb3V0bnlAc3VzZS5jb20+IHdyaXRlczoNCi4uLg0KDQoNCj4gCWlm
-IChjdXJyIDwgMCkgew0KPiAJCXJldCA9IEtTRlRfU0tJUDsNCj4gCQlnb3RvIGNsZWFudXA7DQo+
-IAl9DQo+IAlpZiAoY3VyciA+IDApIHsNCj4gCQlkZWJ1ZygiRXhwZWN0IHRpbWUgKCVsZCkgdG8g
-YmUgMFxuIiwgY3Vycik7DQo+IAkJZ290byBjbGVhbnVwOw0KPiAJfQ0KDQo+IEkgbWlnaHQgbGlr
-ZSB0aGUgdmVyc2lvbiB3aXRoIGxlc3MgaW5kZW50YXRpb24gYW5kIGV4cGxpY2l0IGd1YXJkcy4g
-SXQncw0KPiBvbmx5IG1pbm9yIHN0eWxpc3RpYyBpc3N1ZS4NCg0KDQpOb3RlZCEgV2lsbCBiZSBm
-aXhlZCBpbiB2NC4NCg0KPj4gKw0KPj4gKwkvKg0KPj4gKwkgKiAyKSBGcmVlemUgdGhlIGNncm91
-cC4gQ2hlY2sgdGhhdCBpdHMgZnJlZXplIHRpbWUgaXMNCj4+ICsJICogICAgbGFyZ2VyIHRoYW4g
-MC4NCj4+ICsJICovDQo+PiArCWlmIChjZ19mcmVlemVfbm93YWl0KGNncm91cCwgdHJ1ZSkpDQo+
-PiArCQlnb3RvIGNsZWFudXA7DQo+PiArCXByZXYgPSBjdXJyOw0KPj4gKwljdXJyID0gY2dfY2hl
-Y2tfZnJlZXpldGltZShjZ3JvdXApOw0KPj4gKwlpZiAoY3VyciA8PSBwcmV2KSB7DQoNCj4gSGVy
-ZSBhbmQuLi4NCj4+ICsJCWRlYnVnKCJFeHBlY3QgdGltZSAoJWxkKSA+IDBcbiIsIGN1cnIpOw0K
-Pj4gKwkJZ290byBjbGVhbnVwOw0KPj4gKwl9DQo+PiArDQo+PiArCS8qDQo+PiArCSAqIDMpIFNs
-ZWVwIGZvciAxMDAgdXMuIENoZWNrIHRoYXQgdGhlIGZyZWV6ZSB0aW1lIGlzIGF0DQo+PiArCSAq
-ICAgIGxlYXN0IDEwMCB1cyBsYXJnZXIgdGhhbiBpdCB3YXMgYXQgMikuDQo+PiArCSAqLw0KPj4g
-Kwl1c2xlZXAoMTAwKTsNCj4+ICsJcHJldiA9IGN1cnI7DQo+PiArCWN1cnIgPSBjZ19jaGVja19m
-cmVlemV0aW1lKGNncm91cCk7DQo+PiArCWlmICgoY3VyciAtIHByZXYpIDwgMTAwKSB7DQoNCj4g
-Li4uaGVyZQ0KPiBJJ20gc2xpZ2h0bHkgd29ycmllZCBpdCBtYXkgY2F1c2UgdGVzdCBmbGFraW5l
-c3Mgb24gc3lzdGVtcyB3aXRoIHRvbw0KPiBjb2Fyc2UgY2xvY2sgZ3JhbnVsYXJpdHkuDQoNCj4g
-SXMgdGhlIGZpcnN0IGNoZWNrIGFueWhvdyBtZWFuaW5nZnVsPyAoSSB0aGluayBpdCdzIG9ubHkg
-YXMgc3Ryb25nIGFzDQo+IGNoZWNraW5nIHJldHVybiB2YWx1ZSBvZiB0aGUgcHJlY2VkaW5nIHdy
-aXRlKDIpIHRvIGNncm91cC5mcmVlemUuKQ0KDQoNCkhtbSBJIGhhZCBvcmlnaW5hbGx5IHB1dCB0
-aGUgY2hlY2sgYXQgMikgaW4gdG8gbWFrZSBzdXJlIHRoYXQgdGhlIHZhbHVlDQppbmNyZWFzZXMg
-YXMgZXhwZWN0ZWQgZm9yIGFuIGVtcHR5IGNncm91cCAodGhlIHNpbXBsZXN0IGNhc2UpLCBidXQg
-SQ0KdGhpbmsgdGhlIGNoZWNrIGF0IDMpIChhbmQgbW9zdCBvdGhlciBjaGVja3MgaW4gdGhlc2Ug
-dGVzdCBjYXNlcykNCmVzdGFibGlzaCB0aGUgc2FtZSB0aGluZy4NCg0KVGhlIG90aGVyIHB1cnBv
-c2UgaXQgc2VydmVzIGlzIHRvIGFjdCBhcyBraW5kIG9mIGEgYnVmZmVyIGZvciB0aGUgdGltZQ0K
-aXQgdGFrZXMgdG8gZnJlZXplIHRoZSBjZ3JvdXAgKHRfMSAtPiB0XzIpIHRvIGVuc3VyZSB0aGF0
-IHRoZSBjZ3JvdXANCndvdWxkIGJlIGZyb3plbiBmb3IgdGhlIGVudGlyZXR5IG9mIHRoZSBzbGVl
-cC4gSS5lLiwgcHJldmVudGluZyB0aGUgY2FzZQ0Kd2hlcmUgd2UgZmFpbCB0aGUgY2hlY2sgYmVj
-YXVzZSB0aGUgdGltZSBtZWFzdXJlZCBhdCB0XzMgZW5kcyB1cCBiZWluZw0KKDEwMCAtIHRoZSB0
-aW1lIGl0IHRvb2sgdG8gZnJlZXplKS4NCg0KVGhhdCBzYWlkLCB0aGUgdGltZSBiZXR3ZWVuIHdy
-aXRpbmcgdG8gYW4gZW1wdHkgY2dyb3VwJ3MgY2dyb3VwLmZyZWV6ZQ0KYW5kIGl0IGJlZ2lubmlu
-ZyB0byBmcmVlemUgaXMgYmFzaWNhbGx5IG5lZ2xpZ2libGUgcmVsYXRpdmUgdG8gdGhlIHRpbWUN
-CnNjYWxlcyBpbiB0aGlzIHRlc3QsIHNvIEknbSBoYXBweSB0byB0YWtlIGl0IG91dCENCg0KKElm
-IHdoYXQgSSd2ZSB3cml0dGVuIGFib3ZlIGlzIHdvcmRlZCB0b28gY29uZnVzaW5nbHksIGlnbm9y
-ZSBpdC4NClRMO0RSOiB3ZSBkb24ndCBuZWVkIHRoaXMgY2hlY2shIEknbSB0YWtpbmcgaXQgb3V0
-ISkNCg0KPiBXb3VsZCBpdCBjb21wcm9taXNlIHlvdXIgdXNlIGNhc2UgaWYgdGhlIGxhdHRlciBj
-aGVjayB3YXMgYXQgbGVhc3QNCj4gMTAwMMKgzrxzIChiYXNlZCBvbiBvdGhlciB1c2xlZXBzIGlu
-IGNncm91cCBzZWxmdGVzdHMpPyAoRGl0dG8gZm9yIG90aGVyDQo+IDEwMCDOvHMgY2hlY2tzLikN
-Cg0KTm90IGF0IGFsbCEgSSdsbCBtYWtlIHRoaXMgY2hhbmdlIGZvciB2NC4NCg0KVGhhbmtzLA0K
-LS0gDQpUaWZmYW55IFkuIFlhbmcNCg==
+On 8/18/25 18:32, Tejun Heo wrote:
+> On Mon, Aug 18, 2025 at 10:04:21AM +0100, Djalal Harouni wrote:
+>> This patch series add support to write cgroup interfaces from BPF.
+>>
+>> It is useful to freeze a cgroup hierarchy on suspicious activity for
+>> a more thorough analysis before killing it. Planned users of this
+>> feature are: systemd and BPF tools where the cgroup hierarchy could
+>> be a system service, user session, k8s pod or a container.
+>>
+>> The writing happens via kernfs nodes and the cgroup must be on the
+>> default hierarchy. It implements the requests and feedback from v1 [1]
+>> where now we use a unified path for cgroup user space and BPF writing.
+>>
+>> So I want to validate that this is the right approach first.
+> 
+> I don't see any reason to object to the feature but the way it's constructed
+> seems rather odd to me. If it's going to need per-feature code, might as
+> well bypass the write part and implement a simpler interface - ie.
+> bpf_cgroup_freeze().
+
+Approach 1:
+First RFC months ago was something like that "bpf_task_freeze_cgroup" 
+[1], can make it bpf_cgroup_freeze() as a proper kfunc, so resurrect 
+approach 1?
+
+Internally it used an ugly path to workaround kernfs active reference 
+since we don't hold a kernfs_open_file coming from userspace
+kernfs->write path.
+
+I can improve it, but let's discuss please approach (2) since you
+suggested it ;-)
+
+Approach 2:
+Per the old suggestions from you and Alexei [2] [3] you wanted something
+like:
+
+   s32 bpf_kernfs_knob_write(struct kernfs_node *dir,
+                             const char *knob, char *buf);
+
+I didn't make it generic for kernfs, since don't know yet about sysfs 
+use cases and named it "bpf_cgroup_write_interface" to focus on cgroup 
+base interfaces.
+Doing something that generic now including sysfs without a proper valid 
+use cases seems a bit too much. Also we have some cgroup kfunc to 
+acquire and release that integrate well, so I kept it focused.
+
+Alexei suggested to refactor the cgroup_base_file[] [4][5] to take 
+"kernfs_node" as argument instead of "kernfs_open_file", which will open 
+other possibilities for BPF.
+
+However, instead of going full change on cgroup_base_files[], I added a 
+minimalist: cgroup_kn_cftype kn_cfts[] that for now hold only 
+"cgroup.freeze".
+
+I see three possibilities here:
+
+A. Minimal change with approach presented here:
+    add dedicated array cgroup_kn_cftype kn_cfts[] with only
+    "cgroup.freeze" and later try to unify it inside cgroup_base_file[].
+B. Add "->bpf_write()" handler to cgroup_base_file[] and start only with
+    "cgroup.freeze".
+C. Refactor all cgroup_base_file[] to take a kernfs_node directly
+    instead of kernfs_open_file as suggested.
+
+I took (C) the simple one since I wanted to do cgroup freeze first. You
+also suggested maybe in future "cgroup.kill" well if we have it, we 
+definitely will start using it. Not sure if we are allowed to BPF sleep 
+that path, however we can also start doing "cgroup.freeze" from BPF and 
+kill from user space as a first step. But we definitly want more BPF 
+operations on cgroup interfaces, I can think of a companion cgroup where 
+we migrate tasks there on specific signals...
+
+So more or less current proposed approach (2) followed the suggestions, 
+but focused only on writing cgroup kernfs knobs.
+
+Thoughts, did I miss something?
+
+
+> Otherwise, can't it actually write to kernfs files so
+> that we don't need to add code per enabled feature?
+
+I'm not sure how we would write to kernfs files? As pointed by Alexei 
+[6] it is more involved if we want to open files...
+
+About "that we don't need to add code per enabled feature?" well if we
+go the path of "bpf_cgroup_write_interface" or "bpf_cgroup_write_knob" 
+adding a new write interface will involve theoretically:
+
+1. Check if program can sleep or/and the calling context.
+2. Add the new "cgroup.x" either in cgroup_base_file[] or in the new
+    array.
+3. New handlers or refactor old ones to take a "kernfs_node" instead of
+    "kernfs_open_file".
+
+Compared to having multiple bpf_cgroup_(freeze|kill|...) kfunc seems 
+fair too, and not that much code from BPF part.
+
+
+BTW current patches contain a bug, after testing. In normal writes from 
+user context we break kernfs active protection to avoid nesting cgroup 
+locking under.
+Forget this part. In next series since we don't grab the kernfs_node 
+active protection like userspace kernfs_write, then no need to break 
+it... will add a parameter to check like the revalidate one that checks 
+things is cgroup on dfl and not root, things that are automatically 
+handled from normal userspace ->write.
+
+
+Thank you!
+
+
+[1] https://lore.kernel.org/bpf/20240327225334.58474-3-tixxdz@gmail.com/
+[2] https://lore.kernel.org/bpf/ZgXMww9kJiKi4Vmd@slm.duckdns.org/
+[3] https://lore.kernel.org/bpf/Zgc1BZnYCS9OSSTw@slm.duckdns.org/
+[4] 
+https://lore.kernel.org/bpf/CAADnVQK970_Nx3918V41ue031RkGs+WsteOAm6EJOY7oSwzS1A@mail.gmail.com/
+[5] 
+https://lore.kernel.org/bpf/CAADnVQ+WmaPG1WOaSDbjxNPVzVape_JfG_CNSRy188ni076Mog@mail.gmail.com/
+[6] 
+https://lore.kernel.org/bpf/CAADnVQLhWDcX-7XCdo-W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com/
+
+
+> Thanks.
+> 
+
 
