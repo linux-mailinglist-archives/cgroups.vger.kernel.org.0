@@ -1,379 +1,139 @@
-Return-Path: <cgroups+bounces-9279-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9280-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3027B2C967
-	for <lists+cgroups@lfdr.de>; Tue, 19 Aug 2025 18:22:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A026B2CF9B
+	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 01:05:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 740C61BA6B84
-	for <lists+cgroups@lfdr.de>; Tue, 19 Aug 2025 16:22:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B0047B3E50
+	for <lists+cgroups@lfdr.de>; Tue, 19 Aug 2025 23:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3BFB245016;
-	Tue, 19 Aug 2025 16:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91614246BA5;
+	Tue, 19 Aug 2025 23:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GHib9DjB"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="an/4N+CC"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD189223337;
-	Tue, 19 Aug 2025 16:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7030248F51
+	for <cgroups@vger.kernel.org>; Tue, 19 Aug 2025 23:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755620543; cv=none; b=E1wuCvbuopEbUeNeaTDt2jpez8m2mk/szxZwAkr8rhIPdcHcpPtoC+bmK4gRBziD4B3dDLZLgePeNy9HdSEm8erHZRL/ZPdTA8m1psG/G7xV/Nn2YHmOTH3p2pak5OhSPQQBkTvEIV2qB0tvH5MDt+WfSx2UKNE/ZJufLJLj3fw=
+	t=1755644713; cv=none; b=tJuAcJdPNM0DX5Gd17fhFYRdElaetApwgoqzhgVLzmLN1yRVmoy4+Z7idIfGnO1HqMV9i6tvpJXDNkbd7evaOXBux8uJLR6hH2BlYggL8rufClHkshZBajJF22hQf5oESl+T+qn3l9L/DbI8Xy7wBX2NZizII0Hacl+WcbKyryw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755620543; c=relaxed/simple;
-	bh=W5BXlbdL6VMt9fy51GQ8P4Eh8jE43eeq4m0X4bsoFVk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=kUVg7tPNZsZpM9ellBprJUZdLNjOVi4sgW2rQh9HmoRKxnX4Pkrm5qSRXlDCHLfZmKkjwBri4QKpSf3NXbclF9ZBj5WEz6ntmb3csv1k8ONkVCNc4c8+2izgBHRjEn72pq6LwFHUiTrghF1EUQj+ilXVX8eYW0QE7KJA05aQ9b4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GHib9DjB; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1755620542; x=1787156542;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=W5BXlbdL6VMt9fy51GQ8P4Eh8jE43eeq4m0X4bsoFVk=;
-  b=GHib9DjBJp6vJDDrh8UTl313YE1glh1dQ+sVhVmFjvrydx5PpOYGcrlK
-   chhJROyMBjt9b7kAO2q1T3mftxWawLh/1ysd9mVvWMv87VbJMeJ3KH1FB
-   S4ReA/bZ12htap3I1Ku3axfYIl24CFhkBsFREcl2GNfaTVYd/Nns8LuRn
-   RP6Ha3Opy3SgfPxX25W5XkEOc3RSfpznSQmKz0VrD74Bg0mCCHuUfeOzP
-   KvgdoXeAcdBw2LERAclxM5jcT9RqgvvsOvruBM/6QzUsoHWdWpu+UoxFg
-   6h0LxtsHLU7lQ+9+0mObDqUJycg4GF18AkA50QBvQ135G4MTFYY1z5oIY
-   Q==;
-X-CSE-ConnectionGUID: J6WwT4H/Tg2NIJzz7ukIzA==
-X-CSE-MsgGUID: VFeUH2mQTFSUNQfB84Vn4w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11527"; a="57784057"
-X-IronPort-AV: E=Sophos;i="6.17,302,1747724400"; 
-   d="scan'208";a="57784057"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2025 09:22:21 -0700
-X-CSE-ConnectionGUID: KRj5XQo4TCqnKLwiAeRdFQ==
-X-CSE-MsgGUID: L0XRhVf3RUKqK362RJBLlw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,302,1747724400"; 
-   d="scan'208";a="172326288"
-Received: from ncintean-mobl1.ger.corp.intel.com (HELO [10.245.244.175]) ([10.245.244.175])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2025 09:22:14 -0700
-Message-ID: <a781f7781a9bf510c3707a5c9a235e1dab785617.camel@linux.intel.com>
-Subject: Re: [RFC 3/3] drm/xe: Add DRM_XE_GEM_CREATE_FLAG_PINNED flag and
- implementation
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: Maarten Lankhorst <dev@lankhorst.se>, Lucas De Marchi	
- <lucas.demarchi@intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, David
- Airlie	 <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Maxime Ripard
-	 <mripard@kernel.org>, Natalie Vock <natalie.vock@gmx.de>, Tejun Heo	
- <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 'Michal
- =?ISO-8859-1?Q?Koutn=FD=27?=	 <mkoutny@suse.com>, Michal Hocko
- <mhocko@kernel.org>, Roman Gushchin	 <roman.gushchin@linux.dev>, Shakeel
- Butt <shakeel.butt@linux.dev>, Muchun Song	 <muchun.song@linux.dev>, Andrew
- Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "'Liam R . Howlett'"	
- <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport	
- <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Thomas
- Zimmermann	 <tzimmermann@suse.de>
-Cc: Michal Hocko <mhocko@suse.com>, intel-xe@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org
-Date: Tue, 19 Aug 2025 18:22:12 +0200
-In-Reply-To: <20250819114932.597600-8-dev@lankhorst.se>
-References: <20250819114932.597600-5-dev@lankhorst.se>
-	 <20250819114932.597600-8-dev@lankhorst.se>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	s=arc-20240116; t=1755644713; c=relaxed/simple;
+	bh=s57YALn7gVQdX0MKPvHRRNAjkYPbaKEVpBGjPx0awnc=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ba54mNesMK7VV4eEY0+4tY2V1XSNJCcyT2jMx7s6Lkvw/YR5XUBVSMaYHF8W/dH75JohhWGq8XQ4J1AOt6jUub36vCRai3QVpsQKwnOVDVE3S6vZTaEryiJSj2HM+EoTVVBcvSmssBvFq3GOzbhnylV/Fe9KUctH45fX5qgZVeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=an/4N+CC; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-32326e2f184so10636008a91.3
+        for <cgroups@vger.kernel.org>; Tue, 19 Aug 2025 16:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1755644711; x=1756249511; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:user-agent
+         :references:mime-version:in-reply-to:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s57YALn7gVQdX0MKPvHRRNAjkYPbaKEVpBGjPx0awnc=;
+        b=an/4N+CCDc0jKsyqFzPoCPTD7TmK5g9pAFTlVwppUp64ZTDY6+dIamscGEaamI7lkX
+         Fr6m9YXMUm3YHZxbMIfJpYd8noKAkuVtOwO2CnCRxAdDO0lpPf8nNNcsxWjpolUuUjpC
+         J6TKiJxPxrQzoS+bVm+x1O0ZhlgGg6JPOebKxgy697iw/gbevcOYVx9nOM2Im4uxN3ey
+         E+hfou0sKLJduqw7Xhv8M85Nsvio3DapcKFdAcYC25aohtTLruURkGY62xT1ZRJ5R9hR
+         uBv+qwPnZlW6l3I9gILHX/9KXEiu5Rv1My8/BOfHA+jJIbwppV9/uDDQrDx/teEc8+vO
+         UpCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755644711; x=1756249511;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:user-agent
+         :references:mime-version:in-reply-to:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=s57YALn7gVQdX0MKPvHRRNAjkYPbaKEVpBGjPx0awnc=;
+        b=wmBYtXc9+/oDlrKjzEFnOjb4++EYoPn+OZlbDQOmcummFARrnXBmtIzc2QMF5Q4pTl
+         lzk2QraISs8oWeEVABdn7jThfnob9k88YNe68TSreygyqS1zbtciUVsAEXy0N9h5o2Eh
+         /FVQaU91cZ7sae+a7hvv2hLa9dgksjFbYcIMKckbZk7AIWzUsTx26gyZ3u1AjBo0Lg7e
+         TjEJdDTpXA0l/la8nMLyzgUde9im3BiB/WaA5jptg0PoTanyEfbRUuw5VOyzrotl5Goc
+         /P1gPdLlU1ksBoVKncEA7/MCKU6O18nB0zLMa1c6I1KtaILZH7cfTErhBcEf/ynLvhXm
+         VU7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU050VcBsbZZYJDhJzrh3jtQ5N/JJ0K6aVHRGu1nayl6KL8oMrJygqv8Mxl9SU3ACqtyFFF/LmU@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFXtmK3BTX5v100Tj+k9vZ+x4u5cTlcKm/LiPBAbVRUfMBZD1w
+	2nEiqOVoxSv8r6Kp3IHZ26/e5b6VCyBv+6A2IYgnN45a/oFNH9PSOnEBRTkroxYb3Bg8T5zi+re
+	zZxQ+Zwpz1g==
+X-Google-Smtp-Source: AGHT+IHqM06mS21QPq1I85PoYm4HgMV/ruKHvkhc5ta3MWpAbBvms4h38a9xCaOs0YWBBkFUxXap50j2LlK9
+X-Received: from pjyp12.prod.google.com ([2002:a17:90a:e70c:b0:31e:a094:a39])
+ (user=ynaffit job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:5623:b0:31f:210d:2e56
+ with SMTP id 98e67ed59e1d1-324e140bf9amr1034862a91.28.1755644711105; Tue, 19
+ Aug 2025 16:05:11 -0700 (PDT)
+Date: Tue, 19 Aug 2025 16:05:09 -0700
+In-Reply-To: <ftydqeu3zxmgdvkz6f4jrf4qyrs72ar7jc4j3khlkyi4mditfe@g62znohovca7>
+ ("Michal =?utf-8?Q?Koutn=C3=BD=22's?= message of "Thu, 14 Aug 2025 18:18:47 +0200")
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <20250805032940.3587891-4-ynaffit@google.com> <20250805032940.3587891-6-ynaffit@google.com>
+ <ftydqeu3zxmgdvkz6f4jrf4qyrs72ar7jc4j3khlkyi4mditfe@g62znohovca7>
+User-Agent: mu4e 1.12.9; emacs 30.1
+Message-ID: <dbx81pp6syje.fsf@ynaffit-andsys.c.googlers.com>
+Subject: Re: [RFC PATCH v3 2/2] cgroup: selftests: Add tests for freezer time
+From: Tiffany Yang <ynaffit@google.com>
+To: "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>
+Cc: linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>, 
+	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Chen Ridong <chenridong@huawei.com>, 
+	kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
 
-Hi, Maarten,
-
-On Tue, 2025-08-19 at 13:49 +0200, Maarten Lankhorst wrote:
-> Add an option to pin memory through the science of cgroup accounting.
-> A bo will be pinned for its entire lifetime, and this allows buffers
-> that are pinned for dma-buf export without requiring the pinning to
-> be
-> done at the dma-buf layer for all devices.
->=20
-> For now only implement VRAM pinning. Dave Airlie has a series to
-> implement
-> memcg accounting for the GPU but that is not ready yet.
-
-Previous discussions around this have favoured a UAPI where we pin a
-gpu-vm range, with a pin at mapping time, or dma-buf pin time where
-required, this allows for dynamic pinning and unpinning, and would
-avoid having separate pinning interfaces for bos and userptr.
-
-In particular if we don't know at bo creation time which buffer objects
-will be exported with a method requiring pinning, how would UMD deduce
-what buffer objects to pin?
-
-Thanks,
-Thomas
-
-
-
->=20
-> Signed-off-by: Maarten Lankhorst <dev@lankhorst.se>
-> ---
-> =C2=A0drivers/gpu/drm/xe/xe_bo.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 66
-> ++++++++++++++++++++++++++++++++-
-> =C2=A0drivers/gpu/drm/xe/xe_dma_buf.c | 10 ++++-
-> =C2=A0include/uapi/drm/xe_drm.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 10 =
-++++-
-> =C2=A03 files changed, 82 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/xe/xe_bo.c b/drivers/gpu/drm/xe/xe_bo.c
-> index 6fea39842e1e6..4095e6bd04ea9 100644
-> --- a/drivers/gpu/drm/xe/xe_bo.c
-> +++ b/drivers/gpu/drm/xe/xe_bo.c
-> @@ -5,6 +5,7 @@
-> =C2=A0
-> =C2=A0#include "xe_bo.h"
-> =C2=A0
-> +#include <linux/cgroup_dmem.h>
-> =C2=A0#include <linux/dma-buf.h>
-> =C2=A0#include <linux/nospec.h>
-> =C2=A0
-> @@ -208,7 +209,8 @@ static bool force_contiguous(u32 bo_flags)
-> =C2=A0	 * must be contiguous, also only contiguous BOs support
-> xe_bo_vmap.
-> =C2=A0	 */
-> =C2=A0	return bo_flags & XE_BO_FLAG_NEEDS_CPU_ACCESS &&
-> -	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bo_flags & XE_BO_FLAG_PINNED;
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bo_flags & XE_BO_FLAG_PINNED &&
-> +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !(bo_flags & XE_BO_FLAG_USER);
-> =C2=A0}
-> =C2=A0
-> =C2=A0static void add_vram(struct xe_device *xe, struct xe_bo *bo,
-> @@ -1697,6 +1699,16 @@ static void xe_gem_object_free(struct
-> drm_gem_object *obj)
-> =C2=A0	ttm_bo_put(container_of(obj, struct ttm_buffer_object,
-> base));
-> =C2=A0}
-> =C2=A0
-> +static void xe_bo_unpin_user(struct xe_bo *bo)
-> +{
-> +	xe_bo_unpin_external(bo);
-> +
-> +	if (bo->flags & XE_BO_FLAG_SYSTEM)
-> +		WARN_ON(1);
-> +	else
-> +		dmem_cgroup_unpin(bo->ttm.resource->css,
-> xe_bo_size(bo));
-> +}
-> +
-> =C2=A0static void xe_gem_object_close(struct drm_gem_object *obj,
-> =C2=A0				struct drm_file *file_priv)
-> =C2=A0{
-> @@ -1708,6 +1720,10 @@ static void xe_gem_object_close(struct
-> drm_gem_object *obj,
-> =C2=A0		xe_bo_lock(bo, false);
-> =C2=A0		ttm_bo_set_bulk_move(&bo->ttm, NULL);
-> =C2=A0		xe_bo_unlock(bo);
-> +	} else if (bo->flags & XE_BO_FLAG_PINNED) {
-> +		xe_bo_lock(bo, false);
-> +		xe_bo_unpin_user(bo);
-> +		xe_bo_unlock(bo);
-> =C2=A0	}
-> =C2=A0}
-> =C2=A0
-> @@ -2128,8 +2144,27 @@ struct xe_bo *xe_bo_create_user(struct
-> xe_device *xe, struct xe_tile *tile,
-> =C2=A0	struct xe_bo *bo =3D __xe_bo_create_locked(xe, tile, vm, size,
-> 0, ~0ULL,
-> =C2=A0						 cpu_caching,
-> ttm_bo_type_device,
-> =C2=A0						 flags |
-> XE_BO_FLAG_USER, 0);
-> -	if (!IS_ERR(bo))
-> +	if (!IS_ERR(bo)) {
-> +		int ret =3D 0;
-> +
-> +		if (bo->flags & XE_BO_FLAG_PINNED) {
-> +			if (bo->flags & XE_BO_FLAG_SYSTEM) {
-> +				ret =3D -ENOSYS; // TODO
-> +			} else {
-> +				ret =3D dmem_cgroup_try_pin(bo-
-> >ttm.resource->css, size);
-> +			}
-> +			if (!ret)
-> +				ret =3D xe_bo_pin_external(bo);
-> +			else if (ret =3D=3D -EAGAIN)
-> +				ret =3D -ENOSPC;
-> +		}
-> +
-> =C2=A0		xe_bo_unlock_vm_held(bo);
-> +		if (ret) {
-> +			xe_bo_put(bo);
-> +			return ERR_PTR(ret);
-> +		}
-> +	}
-> =C2=A0
-> =C2=A0	return bo;
-> =C2=A0}
-> @@ -2745,6 +2780,28 @@ int xe_gem_create_ioctl(struct drm_device
-> *dev, void *data,
-> =C2=A0			 args->cpu_caching =3D=3D
-> DRM_XE_GEM_CPU_CACHING_WB))
-> =C2=A0		return -EINVAL;
-> =C2=A0
-> +	if (XE_IOCTL_DBG(xe, args->flags &
-> DRM_XE_GEM_CREATE_FLAG_PINNED)) {
-> +		bool pinned_flag =3D true;
-> +		/* Only allow a single placement for pinning */
-> +		if (XE_IOCTL_DBG(xe, pinned_flag && hweight32(args-
-> >placement) !=3D 1))
-> +			return -EINVAL;
-> +
-> +		/* Meant for exporting, do not allow a VM-local BO
-> */
-> +		if (XE_IOCTL_DBG(xe, pinned_flag && args->vm_id))
-> +			return -EINVAL;
-> +
-> +		/* Similarly, force fail at creation time for now.
-> We may relax this requirement later */
-> +		if (XE_IOCTL_DBG(xe, pinned_flag && args->flags &
-> DRM_XE_GEM_CREATE_FLAG_DEFER_BACKING))
-> +			return -EINVAL;
-> +
-> +		/* Require the appropriate cgroups to be enabled. */
-> +		if (XE_IOCTL_DBG(xe, pinned_flag &&
-> !IS_ENABLED(CONFIG_CGROUP_DMEM) && bo_flags & XE_BO_FLAG_VRAM_MASK)
-> ||
-> +		=C2=A0=C2=A0=C2=A0 XE_IOCTL_DBG(xe, pinned_flag &&
-> !IS_ENABLED(CONFIG_MEMCG) && bo_flags & XE_BO_FLAG_SYSTEM))
-> +			return -EINVAL;
-> +
-> +		bo_flags |=3D XE_BO_FLAG_PINNED;
-> +	}
-> +
-> =C2=A0	if (args->vm_id) {
-> =C2=A0		vm =3D xe_vm_lookup(xef, args->vm_id);
-> =C2=A0		if (XE_IOCTL_DBG(xe, !vm))
-> @@ -2790,6 +2847,11 @@ int xe_gem_create_ioctl(struct drm_device
-> *dev, void *data,
-> =C2=A0		__xe_bo_unset_bulk_move(bo);
-> =C2=A0		xe_vm_unlock(vm);
-> =C2=A0	}
-> +	if (bo->flags & XE_BO_FLAG_PINNED) {
-> +		xe_bo_lock(bo, false);
-> +		xe_bo_unpin_user(bo);
-> +		xe_bo_unlock(bo);
-> +	}
-> =C2=A0out_put:
-> =C2=A0	xe_bo_put(bo);
-> =C2=A0out_vm:
-> diff --git a/drivers/gpu/drm/xe/xe_dma_buf.c
-> b/drivers/gpu/drm/xe/xe_dma_buf.c
-> index 346f857f38374..6719f4552ad37 100644
-> --- a/drivers/gpu/drm/xe/xe_dma_buf.c
-> +++ b/drivers/gpu/drm/xe/xe_dma_buf.c
-> @@ -53,6 +53,11 @@ static int xe_dma_buf_pin(struct
-> dma_buf_attachment *attach)
-> =C2=A0	struct xe_device *xe =3D xe_bo_device(bo);
-> =C2=A0	int ret;
-> =C2=A0
-> +	if (bo->flags & XE_BO_FLAG_PINNED) {
-> +		ttm_bo_pin(&bo->ttm);
-> +		return 0;
-> +	}
-> +
-> =C2=A0	/*
-> =C2=A0	 * For now only support pinning in TT memory, for two
-> reasons:
-> =C2=A0	 * 1) Avoid pinning in a placement not accessible to some
-> importers.
-> @@ -83,7 +88,10 @@ static void xe_dma_buf_unpin(struct
-> dma_buf_attachment *attach)
-> =C2=A0	struct drm_gem_object *obj =3D attach->dmabuf->priv;
-> =C2=A0	struct xe_bo *bo =3D gem_to_xe_bo(obj);
-> =C2=A0
-> -	xe_bo_unpin_external(bo);
-> +	if (bo->flags & XE_BO_FLAG_PINNED)
-> +		ttm_bo_unpin(&bo->ttm);
-> +	else
-> +		xe_bo_unpin_external(bo);
-> =C2=A0}
-> =C2=A0
-> =C2=A0static struct sg_table *xe_dma_buf_map(struct dma_buf_attachment
-> *attach,
-> diff --git a/include/uapi/drm/xe_drm.h b/include/uapi/drm/xe_drm.h
-> index c721e130c1d2d..3184fa38ce17e 100644
-> --- a/include/uapi/drm/xe_drm.h
-> +++ b/include/uapi/drm/xe_drm.h
-> @@ -765,12 +765,15 @@ struct drm_xe_device_query {
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 until the object is either bound to a virtual =
-memory region
-> via
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 VM_BIND or accessed by the CPU. As a result, n=
-o backing memory
-> is
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 reserved at the time of GEM object creation.
-> - *=C2=A0 - %DRM_XE_GEM_CREATE_FLAG_SCANOUT
-> + *=C2=A0 - %DRM_XE_GEM_CREATE_FLAG_SCANOUT - GEM object will be used
-> + *=C2=A0=C2=A0=C2=A0 display framebuffer.
-> =C2=A0 *=C2=A0 - %DRM_XE_GEM_CREATE_FLAG_NEEDS_VISIBLE_VRAM - When using =
-VRAM
-> as a
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 possible placement, ensure that the correspond=
-ing VRAM
-> allocation
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 will always use the CPU accessible part of VRA=
-M. This is
-> important
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 for small-bar systems (on full-bar systems thi=
-s gets turned
-> into a
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 noop).
-> + *=C2=A0 - %DRM_XE_GEM_CREATE_FLAG_PINNED - Pin the backing memory
-> permanently
-> + *=C2=A0=C2=A0=C2=A0 on allocation, if withing cgroups limits.
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 Note1: System memory can be used as an extra p=
-lacement if the
-> kernel
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 should spill the allocation to system memory, =
-if space can't
-> be made
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 available in the CPU accessible part of VRAM (=
-giving the same
-> @@ -781,6 +784,10 @@ struct drm_xe_device_query {
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 need to use VRAM for display surfaces, therefo=
-re the kernel
-> requires
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 setting this flag for such objects, otherwise =
-an error is
-> thrown on
-> =C2=A0 *=C2=A0=C2=A0=C2=A0 small-bar systems.
-> + *=C2=A0=C2=A0=C2=A0 Note3: %DRM_XE_GEM_CREATE_FLAG_PINNED requires the =
-BO to have
-> only
-> + *=C2=A0=C2=A0=C2=A0 a single placement, no vm_id, requires (device) mem=
-ory cgroups
-> enabled,
-> + *=C2=A0=C2=A0=C2=A0 and is incompatible with the %DEFER_BACKING and
-> %NEEDS_VISIBLE_VRAM
-> + *=C2=A0=C2=A0=C2=A0 flags.
-> =C2=A0 *
-> =C2=A0 * @cpu_caching supports the following values:
-> =C2=A0 *=C2=A0 - %DRM_XE_GEM_CPU_CACHING_WB - Allocate the pages with wri=
-te-
-> back
-> @@ -827,6 +834,7 @@ struct drm_xe_gem_create {
-> =C2=A0#define DRM_XE_GEM_CREATE_FLAG_DEFER_BACKING		(1 << 0)
-> =C2=A0#define DRM_XE_GEM_CREATE_FLAG_SCANOUT			(1 << 1)
-> =C2=A0#define DRM_XE_GEM_CREATE_FLAG_NEEDS_VISIBLE_VRAM	(1 << 2)
-> +#define DRM_XE_GEM_CREATE_FLAG_PINNED			(1 << 3)
-> =C2=A0	/**
-> =C2=A0	 * @flags: Flags, currently a mask of memory instances of
-> where BO can
-> =C2=A0	 * be placed
-
+TWljaGFsIEtvdXRuw70gPG1rb3V0bnlAc3VzZS5jb20+IHdyaXRlczoNCi4uLg0KDQoNCj4gCWlm
+IChjdXJyIDwgMCkgew0KPiAJCXJldCA9IEtTRlRfU0tJUDsNCj4gCQlnb3RvIGNsZWFudXA7DQo+
+IAl9DQo+IAlpZiAoY3VyciA+IDApIHsNCj4gCQlkZWJ1ZygiRXhwZWN0IHRpbWUgKCVsZCkgdG8g
+YmUgMFxuIiwgY3Vycik7DQo+IAkJZ290byBjbGVhbnVwOw0KPiAJfQ0KDQo+IEkgbWlnaHQgbGlr
+ZSB0aGUgdmVyc2lvbiB3aXRoIGxlc3MgaW5kZW50YXRpb24gYW5kIGV4cGxpY2l0IGd1YXJkcy4g
+SXQncw0KPiBvbmx5IG1pbm9yIHN0eWxpc3RpYyBpc3N1ZS4NCg0KDQpOb3RlZCEgV2lsbCBiZSBm
+aXhlZCBpbiB2NC4NCg0KPj4gKw0KPj4gKwkvKg0KPj4gKwkgKiAyKSBGcmVlemUgdGhlIGNncm91
+cC4gQ2hlY2sgdGhhdCBpdHMgZnJlZXplIHRpbWUgaXMNCj4+ICsJICogICAgbGFyZ2VyIHRoYW4g
+MC4NCj4+ICsJICovDQo+PiArCWlmIChjZ19mcmVlemVfbm93YWl0KGNncm91cCwgdHJ1ZSkpDQo+
+PiArCQlnb3RvIGNsZWFudXA7DQo+PiArCXByZXYgPSBjdXJyOw0KPj4gKwljdXJyID0gY2dfY2hl
+Y2tfZnJlZXpldGltZShjZ3JvdXApOw0KPj4gKwlpZiAoY3VyciA8PSBwcmV2KSB7DQoNCj4gSGVy
+ZSBhbmQuLi4NCj4+ICsJCWRlYnVnKCJFeHBlY3QgdGltZSAoJWxkKSA+IDBcbiIsIGN1cnIpOw0K
+Pj4gKwkJZ290byBjbGVhbnVwOw0KPj4gKwl9DQo+PiArDQo+PiArCS8qDQo+PiArCSAqIDMpIFNs
+ZWVwIGZvciAxMDAgdXMuIENoZWNrIHRoYXQgdGhlIGZyZWV6ZSB0aW1lIGlzIGF0DQo+PiArCSAq
+ICAgIGxlYXN0IDEwMCB1cyBsYXJnZXIgdGhhbiBpdCB3YXMgYXQgMikuDQo+PiArCSAqLw0KPj4g
+Kwl1c2xlZXAoMTAwKTsNCj4+ICsJcHJldiA9IGN1cnI7DQo+PiArCWN1cnIgPSBjZ19jaGVja19m
+cmVlemV0aW1lKGNncm91cCk7DQo+PiArCWlmICgoY3VyciAtIHByZXYpIDwgMTAwKSB7DQoNCj4g
+Li4uaGVyZQ0KPiBJJ20gc2xpZ2h0bHkgd29ycmllZCBpdCBtYXkgY2F1c2UgdGVzdCBmbGFraW5l
+c3Mgb24gc3lzdGVtcyB3aXRoIHRvbw0KPiBjb2Fyc2UgY2xvY2sgZ3JhbnVsYXJpdHkuDQoNCj4g
+SXMgdGhlIGZpcnN0IGNoZWNrIGFueWhvdyBtZWFuaW5nZnVsPyAoSSB0aGluayBpdCdzIG9ubHkg
+YXMgc3Ryb25nIGFzDQo+IGNoZWNraW5nIHJldHVybiB2YWx1ZSBvZiB0aGUgcHJlY2VkaW5nIHdy
+aXRlKDIpIHRvIGNncm91cC5mcmVlemUuKQ0KDQoNCkhtbSBJIGhhZCBvcmlnaW5hbGx5IHB1dCB0
+aGUgY2hlY2sgYXQgMikgaW4gdG8gbWFrZSBzdXJlIHRoYXQgdGhlIHZhbHVlDQppbmNyZWFzZXMg
+YXMgZXhwZWN0ZWQgZm9yIGFuIGVtcHR5IGNncm91cCAodGhlIHNpbXBsZXN0IGNhc2UpLCBidXQg
+SQ0KdGhpbmsgdGhlIGNoZWNrIGF0IDMpIChhbmQgbW9zdCBvdGhlciBjaGVja3MgaW4gdGhlc2Ug
+dGVzdCBjYXNlcykNCmVzdGFibGlzaCB0aGUgc2FtZSB0aGluZy4NCg0KVGhlIG90aGVyIHB1cnBv
+c2UgaXQgc2VydmVzIGlzIHRvIGFjdCBhcyBraW5kIG9mIGEgYnVmZmVyIGZvciB0aGUgdGltZQ0K
+aXQgdGFrZXMgdG8gZnJlZXplIHRoZSBjZ3JvdXAgKHRfMSAtPiB0XzIpIHRvIGVuc3VyZSB0aGF0
+IHRoZSBjZ3JvdXANCndvdWxkIGJlIGZyb3plbiBmb3IgdGhlIGVudGlyZXR5IG9mIHRoZSBzbGVl
+cC4gSS5lLiwgcHJldmVudGluZyB0aGUgY2FzZQ0Kd2hlcmUgd2UgZmFpbCB0aGUgY2hlY2sgYmVj
+YXVzZSB0aGUgdGltZSBtZWFzdXJlZCBhdCB0XzMgZW5kcyB1cCBiZWluZw0KKDEwMCAtIHRoZSB0
+aW1lIGl0IHRvb2sgdG8gZnJlZXplKS4NCg0KVGhhdCBzYWlkLCB0aGUgdGltZSBiZXR3ZWVuIHdy
+aXRpbmcgdG8gYW4gZW1wdHkgY2dyb3VwJ3MgY2dyb3VwLmZyZWV6ZQ0KYW5kIGl0IGJlZ2lubmlu
+ZyB0byBmcmVlemUgaXMgYmFzaWNhbGx5IG5lZ2xpZ2libGUgcmVsYXRpdmUgdG8gdGhlIHRpbWUN
+CnNjYWxlcyBpbiB0aGlzIHRlc3QsIHNvIEknbSBoYXBweSB0byB0YWtlIGl0IG91dCENCg0KKElm
+IHdoYXQgSSd2ZSB3cml0dGVuIGFib3ZlIGlzIHdvcmRlZCB0b28gY29uZnVzaW5nbHksIGlnbm9y
+ZSBpdC4NClRMO0RSOiB3ZSBkb24ndCBuZWVkIHRoaXMgY2hlY2shIEknbSB0YWtpbmcgaXQgb3V0
+ISkNCg0KPiBXb3VsZCBpdCBjb21wcm9taXNlIHlvdXIgdXNlIGNhc2UgaWYgdGhlIGxhdHRlciBj
+aGVjayB3YXMgYXQgbGVhc3QNCj4gMTAwMMKgzrxzIChiYXNlZCBvbiBvdGhlciB1c2xlZXBzIGlu
+IGNncm91cCBzZWxmdGVzdHMpPyAoRGl0dG8gZm9yIG90aGVyDQo+IDEwMCDOvHMgY2hlY2tzLikN
+Cg0KTm90IGF0IGFsbCEgSSdsbCBtYWtlIHRoaXMgY2hhbmdlIGZvciB2NC4NCg0KVGhhbmtzLA0K
+LS0gDQpUaWZmYW55IFkuIFlhbmcNCg==
 
