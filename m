@@ -1,237 +1,332 @@
-Return-Path: <cgroups+bounces-9282-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9283-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 896DCB2D01A
-	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 01:37:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1075EB2D0D3
+	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 02:53:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EEFB1C28ABC
-	for <lists+cgroups@lfdr.de>; Tue, 19 Aug 2025 23:37:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CB1E7B6CC9
+	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 00:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186E8274FD0;
-	Tue, 19 Aug 2025 23:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623C718C031;
+	Wed, 20 Aug 2025 00:52:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nRg6aPxm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XE7oQhcE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B677272E5D;
-	Tue, 19 Aug 2025 23:36:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200E41C27
+	for <cgroups@vger.kernel.org>; Wed, 20 Aug 2025 00:52:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755646614; cv=none; b=fzGBShDFPT3acaWhoToljb7CQkKeAa9GlhurICZPImvBKPDZjLp3KX7kfc8DuszOiFijhdP7Ec2lHYX6Gv6QaAp+5gX2yQVq2z+1gpyk4Rx2CB3WZVBQCluIO5G+UKcdy2PYZ0AjmsKuB2uGZCI11Z/x34jf5B0W6oNI/+Q3Khc=
+	t=1755651174; cv=none; b=OFyJh8uNG4LtBelqr3cPP9B73PloXi2Kp5bvBaVacCM4B1mkFCsKYgFjvbx3g43Sj2sBRo9CgiBWgfhcx+8j8o1ADjPmdhYg+3PI3xYY8mczbdC+C/ArqUwJNwUek/8jo/godKfA/ULMnyeRVo79RS5X7U5DXjaLUl4OZunS/r4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755646614; c=relaxed/simple;
-	bh=TOKfweEnWpkVJmFNJAeDovBTkeClQOyKd5jxh5SYCno=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=lKOm938YwrrskXjUCmdLIhhfexEbBfIwsxSGkzKW2eWUU3SaPBEVfMtP/948gmL23L9MaHO686o8xVCZ/hDNUi1IXM2SeiqYkVg/Dn0n4mq+KhEBDauwTGz+/xMO9+m6FUAejbxYw3s4bXObN+OW6aKW5eQQ7DcsOf1zKQMNtyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nRg6aPxm; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e93cc7c64faso2865737276.0;
-        Tue, 19 Aug 2025 16:36:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755646612; x=1756251412; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:mime-version:date:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WNV2bkDK4cOMyNuox6oERMn9oKu1yr4PecuPjiBUNcg=;
-        b=nRg6aPxmxtR1rRN+iQhb2j5CI6C+J4lXzGPzQ6AShWFbvPILXckVKjbA7satYatHus
-         17M+jPiugVRx3B2ru060G46bgvvELQv3SMJPJq/aw3vlGNg4ZwFQtQl3wIGz599hY1vW
-         A4jlh7NvRrVTtcnRpGRoBsmnYI6/h9KWMMjL+rqo+16ij1Z8TbfpsrOOavKarjFI1Dg2
-         jQ0eSKg5W2hJVpBpe1/H48db+Z/Gn2VX2lyNPDoxyGNNjp5HlKpubrvo85WNEkC5Qh67
-         JSAbHN2WNjpnf7JSe8r2SPBP+GlAi6V80ocygnZ7eexnocOgTG4ZCYSFkJZfKMzqXPUi
-         PuJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755646612; x=1756251412;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:mime-version:date:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WNV2bkDK4cOMyNuox6oERMn9oKu1yr4PecuPjiBUNcg=;
-        b=SmUkSrA0ur/ic8j87F6g64KGF5qBgWSXgx929tQKKfdz7YKChh8xeVb1dEv5k7VqQX
-         XZsGudecDPL49KoFDl6l6TMQXVSrITO5YmkR/T/I+rV3HTvQTeh4UCNpz8IqY+yGBEC7
-         9yjV/Mpb2ky8/6qog5Vg1BpvEDdw8tgWHw5Cc+tv9ovzxOXGIadDWG7cjJ7aZKPlB28R
-         paB+g+2qFCc1qAelXz/0dciOnd1C2ptwWiMoOtRr3XAK+rcZ+qp6rqfu+sFtI7ceK+SC
-         6f2LFd/agkbS3G1jJnuTxZoRIaoITzk0ryjswGCyAHGF9qDRFNfCLAlNx0QwF6tx7Dgi
-         xM0A==
-X-Forwarded-Encrypted: i=1; AJvYcCUTOESscebpWA/AKcvt0J5SpICZ5NW7qY2GbnYkftfQKIXG/NlZ0GPagnb+5FRfr5eOhU+LfEWbMBHdObSOU+cQ@vger.kernel.org, AJvYcCWYMp2CY1V/8Ma/P88BMYOXkg23NBdh0F/daIUx9ot3WaUpnLmInmZL8l/Lq4/RAkqM05Q=@vger.kernel.org, AJvYcCXReMAeAVFxK2sZn7vq3mT/HkJ3zDCQPBqvnwqMNPyPWNzdLB7ViYCY1ZYX9oAoqwtzMf14vScrDw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOKmz3x/in+T6zxE44QwhMBF8bviNXWHvdoF9taTMF9HxYT/K0
-	f1CvObmP0ttNaiH2+8v7AyfsOSr/a7VDajn5m8t5dOfHumGSDK8S6/Xo
-X-Gm-Gg: ASbGncvoGVexI9kuSH0bBN8OZGmlv4DUpD10zCITuaWGOWehGXiLk5t5ve8ZnCKghjm
-	KPR36EM6t+T2ZwhxzZIMwsoVaI1KgU4IKFpb7CLAZN+vtk/92mHmEUxJbStyYVt1+VmxaymUArt
-	DRt1xd3pM18MWo/Nx8fIKZAdsWQrT9eynp1x1xCZDjFGxlZ/Yj5CPhZmSxRJgPjRCZEhOC94pen
-	0x6Y6BYR//ik95wEZcChBJheoMyC8vHM8nkWo9UrG4NkrMTI+VI4F/quXC2tTMeX15yfXmpusaG
-	RWYCZCUezXgSh04LozaMHf6ojiy/C8VCe6Yenwq7sF71/GQfoaebi0IHoZFg9VnHRjHEiEzQ4rz
-	78IHAIlwOKIsh4FLsgR7+qK+Gug==
-X-Google-Smtp-Source: AGHT+IF6lZtlhl1QkoIDE6+xs9E9YD+D8JgA6z+WnbAxrlK0EB1x+1ummXmNeEQPJTdFKuO5R0MuBA==
-X-Received: by 2002:a05:690c:dcf:b0:71f:938f:b133 with SMTP id 00721157ae682-71fb320f136mr14383387b3.30.1755646612066;
-        Tue, 19 Aug 2025 16:36:52 -0700 (PDT)
-Received: from [10.2.0.2] ([146.70.98.163])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-71e6e0aa17csm32657467b3.57.2025.08.19.16.36.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Aug 2025 16:36:51 -0700 (PDT)
-Message-ID: <e6fe1ae5-668b-4ea1-835b-443af1d94482@gmail.com>
-Date: Wed, 20 Aug 2025 00:36:41 +0100
+	s=arc-20240116; t=1755651174; c=relaxed/simple;
+	bh=gyxDw6RJLZ4nHOW//7O/dOWyMikXlHhdl9FS8tozaIA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tzmfFM+bqxER/A4wP3/ndSMQtgObZh2arZ9zpYvP64MAt4hDR2+qK/RZRa/U4F2sUFIKcWdqv1gnsHydQHobCKqIJeYusQIdWFfRz9PbRHi9Lr/1wj7qkbpRatQz8l2y2tXSXZkxHFh1DCSe84MZhz/Gf3R15zP+SQ1qEScW+BA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XE7oQhcE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8DB0C2BCB4
+	for <cgroups@vger.kernel.org>; Wed, 20 Aug 2025 00:52:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755651173;
+	bh=gyxDw6RJLZ4nHOW//7O/dOWyMikXlHhdl9FS8tozaIA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=XE7oQhcEh14/9LRdxfeo8vG2f3N8WNF/IBLtdZST5PUMjsW50RkIefAPXy0MER1lS
+	 8aHmvBknBQaXz1xZ93bEhCk0zuFrji4S5DlZh6YjDet2ARQh4Gp6R5wGT71f0oBDYN
+	 D7KaTVRxOpm9aHKXbYD2JbM+YRCaCTCAOplwIfc7a0K1UBrDrfj/TcweN9T5qs3RGX
+	 +mIpbprlsbvB8Xx+y7Jt+FJgl6zcHzHKCAVMFMCCeMjrY6wBtArtDvoXIJbZFT2rbN
+	 thVyBSb+7lnhWTGMvo3XRyzMEM80OM9SQ8pj0Y7qfG6OQtECBOIMwbvJK9C7iq1M6f
+	 6fhu4w+O7bl0A==
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-459fc675d11so16625e9.1
+        for <cgroups@vger.kernel.org>; Tue, 19 Aug 2025 17:52:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVLAin4a8WviGaGDzTHwSpQB7DnGA7CJpdPQP8BF0aA59+0AFXwW2x11Vuc3TyCqjV9HQiavqMH@vger.kernel.org
+X-Gm-Message-State: AOJu0YykfLhCQhgKWE2esNMVy085dVxWUqZCitoUF0X7BOh6iIv48drj
+	643YqHI+kBfgClvIkiHRpGNQsgoiygxpSNi1BWg0vlyl+boyHvCv5lraDvFV6iYUsjcyMvFC5TI
+	V1uA7Ybc+Mo/9PAqRWlcmXPWijUGTqZVz7he9izX8
+X-Google-Smtp-Source: AGHT+IFQ0lLQ7LStOuv6ZrlcBR1b2jECtuFF2XmQzgGif7AkQw7+tIT3lA4q2BnzLBkSF3gaXH8SoEg9aL563Wg43Lc=
+X-Received: by 2002:a05:600c:35c2:b0:45a:207a:eb7c with SMTP id
+ 5b1f17b1804b1-45b476d7e09mr701005e9.0.1755651172251; Tue, 19 Aug 2025
+ 17:52:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
- freezing cgroups from BPF
-From: Djalal Harouni <tixxdz@gmail.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: hannes@cmpxchg.org, mkoutny@suse.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
- cgroups@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, tixxdz@opendz.org
-References: <20250818090424.90458-1-tixxdz@gmail.com>
- <aKNjkp5vR2ES-2Xw@slm.duckdns.org>
- <7d8af2a3-0649-44fa-abc5-17f2911b941b@gmail.com>
-Content-Language: en-US
-In-Reply-To: <7d8af2a3-0649-44fa-abc5-17f2911b941b@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20250716202006.3640584-1-youngjun.park@lge.com>
+ <20250716202006.3640584-2-youngjun.park@lge.com> <jrkh2jy2pkoxgsxgsstpmijyhbzzyige6ubltvmvwl6fwkp3s7@kzc24pj2tcko>
+ <aH+apAbBCmkMGPlO@yjaykim-PowerEdge-T330> <aH/baxIgrBI3Z1Hl@yjaykim-PowerEdge-T330>
+ <uyxkdmnmvjipxuf7gagu2okw7afvzlclomfmc6wb6tygc3mhv6@736m7xs6gn5q>
+ <CAF8kJuMo3yNKOZL9n5UkHx_O5cTZts287HOnQOu=KqQcnbrMdg@mail.gmail.com>
+ <aKC+EU3I/qm6TcjG@yjaykim-PowerEdge-T330> <CAF8kJuNuNuxxTbtkCb3Opsjfy-or7E+0AwPDi7L-EgqoraQ3Qg@mail.gmail.com>
+ <aKROKZ9+z2oGUJ7K@yjaykim-PowerEdge-T330>
+In-Reply-To: <aKROKZ9+z2oGUJ7K@yjaykim-PowerEdge-T330>
+From: Chris Li <chrisl@kernel.org>
+Date: Tue, 19 Aug 2025 17:52:39 -0700
+X-Gmail-Original-Message-ID: <CAF8kJuPUouN4c6V-CaG7_WQUAvRxBg02WRxsMtL56_YTdTh1Jg@mail.gmail.com>
+X-Gm-Features: Ac12FXx_nPLaGsHvIhpZPPFVTK0BSLVMR7dAaEP08V7iOUT0TsBblzZbq7PhYug
+Message-ID: <CAF8kJuPUouN4c6V-CaG7_WQUAvRxBg02WRxsMtL56_YTdTh1Jg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] mm/swap, memcg: Introduce infrastructure for
+ cgroup-based swap priority
+To: YoungJun Park <youngjun.park@lge.com>
+Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
+	shikemeng@huaweicloud.com, kasong@tencent.com, nphamcs@gmail.com, 
+	bhe@redhat.com, baohua@kernel.org, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, gunho.lee@lge.com, 
+	iamjoonsoo.kim@lge.com, taejoon.song@lge.com, 
+	Matthew Wilcox <willy@infradead.org>, David Hildenbrand <david@redhat.com>, Kairui Song <ryncsn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/20/25 00:31, Djalal Harouni wrote:
-> On 8/18/25 18:32, Tejun Heo wrote:
->> On Mon, Aug 18, 2025 at 10:04:21AM +0100, Djalal Harouni wrote:
->>> This patch series add support to write cgroup interfaces from BPF.
->>>
->>> It is useful to freeze a cgroup hierarchy on suspicious activity for
->>> a more thorough analysis before killing it. Planned users of this
->>> feature are: systemd and BPF tools where the cgroup hierarchy could
->>> be a system service, user session, k8s pod or a container.
->>>
->>> The writing happens via kernfs nodes and the cgroup must be on the
->>> default hierarchy. It implements the requests and feedback from v1 [1]
->>> where now we use a unified path for cgroup user space and BPF writing.
->>>
->>> So I want to validate that this is the right approach first.
->>
->> I don't see any reason to object to the feature but the way it's 
->> constructed
->> seems rather odd to me. If it's going to need per-feature code, might as
->> well bypass the write part and implement a simpler interface - ie.
->> bpf_cgroup_freeze().
-> 
-> Approach 1:
-> First RFC months ago was something like that 
-> "bpf_task_freeze_cgroup" [1], can make it bpf_cgroup_freeze() as a 
-> proper kfunc, so resurrect approach 1?
-> 
-> Internally it used an ugly path to workaround kernfs active reference 
-> since we don't hold a kernfs_open_file coming from userspace
-> kernfs->write path.
-> 
-> I can improve it, but let's discuss please approach (2) since you
-> suggested it ;-)
-> 
-> Approach 2:
-> Per the old suggestions from you and Alexei [2] [3] you wanted something
-> like:
-> 
->    s32 bpf_kernfs_knob_write(struct kernfs_node *dir,
->                              const char *knob, char *buf);
-> 
-> I didn't make it generic for kernfs, since don't know yet about sysfs 
-> use cases and named it "bpf_cgroup_write_interface" to focus on cgroup 
-> base interfaces.
-> Doing something that generic now including sysfs without a proper valid 
-> use cases seems a bit too much. Also we have some cgroup kfunc to 
-> acquire and release that integrate well, so I kept it focused.
-> 
-> Alexei suggested to refactor the cgroup_base_file[] [4][5] to take 
-> "kernfs_node" as argument instead of "kernfs_open_file", which will open 
-> other possibilities for BPF.
-> 
-> However, instead of going full change on cgroup_base_files[], I added a 
-> minimalist: cgroup_kn_cftype kn_cfts[] that for now hold only 
-> "cgroup.freeze".
-> 
-> I see three possibilities here:
-> 
-> A. Minimal change with approach presented here:
->     add dedicated array cgroup_kn_cftype kn_cfts[] with only
->     "cgroup.freeze" and later try to unify it inside cgroup_base_file[].
-> B. Add "->bpf_write()" handler to cgroup_base_file[] and start only with
->     "cgroup.freeze".
-> C. Refactor all cgroup_base_file[] to take a kernfs_node directly
->     instead of kernfs_open_file as suggested.
-> 
-> I took (C) the simple one since I wanted to do cgroup freeze first. You
+On Tue, Aug 19, 2025 at 3:13=E2=80=AFAM YoungJun Park <youngjun.park@lge.co=
+m> wrote:
+>
+> On Sat, Aug 16, 2025 at 12:15:43PM -0700, Chris Li wrote:
+>
+> At first, Thank you for detailed and fast feedback!
+>
+> > I have not questioned the approach you can achieve with your goal. The
+> > real question is, is this the best approach to consider to merge into
+>
+> Yes, I believe this could be the best approach.
+> I have compared several possible approaches before making this proposal. =
+These
+> are the alternatives I reviewed in the RFC:
+> (https://lore.kernel.org/linux-mm/20250612103743.3385842-1-youngjun.park@=
+lge.com/)
+> The part I mentions are as belows
+>
+> > Evaluated Alternatives
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > 1. **Per-cgroup dedicated swap devices**
+> >    - Previously proposed upstream [1]
+> >    - Challenges in managing global vs per-cgroup swap state
+> >    - Difficult to integrate with existing memory.limit / swap.max seman=
+tics
+> > 2. **Multi-backend swap device with cgroup-aware routing**
+> >    - Considered sort of layering violation (block device cgroup awarene=
+ss)
+> >    - Swap devices are commonly meant to be physical block devices.
+> >    - Similar idea mentioned in [2]
+> > 3. **Per-cgroup swap device enable/disable with swap usage contorl**
+> >    - Expand swap.max with zswap.writeback usage
+> >    - Discussed in context of zswap writeback [3]
+> >    - Cannot express arbitrary priority orderings
+> >      (e.g. swap priority A-B-C on cgroup C-A-B impossible)
+> >    - Less flexible than per-device priority approach
+> > 4. **Per-namespace swap priority configuration**
+> >    - In short, make swap namespace for swap device priority
+> >    - Overly complex for our use case
+> >    - Cgroups are the natural scope for this mechanism
+>
+> In my view, the `swap.tier` proposal aligns quite well with alternative (=
+3) that
+> I reviewed. That approach keeps the global priority assignment while addi=
+ng
 
-Sorry here I meant (A).
+Not the same as option 3. swap.tier has one level in direction for the
+tier class. It does not directly operate on swap files. That level of
+indirection allows swap files to rotate within the same tier. I expect
+it to have very few tires so all the swap tires can fit a simple
+bitmask, e.g. one 32 bit integer per cgroup is good enough. Assume we
+allow 31 tiers. We can have less than 32 swap files, 31 tiers should
+be more than enough.
 
-Thanks.
+> inclusion/exclusion semantics at the cgroup level. The reason I decided n=
+ot to
+> go with it is because it lacks flexibility =E2=80=94 it cannot express ar=
+bitrary
+> ordering. As noted above, it is impossible to represent arbitrary orderin=
+gs,
+> which is why I chose a per-device priority strategy instead.
 
+As said, arbitrary orders violate the swap entry LRU orders. You still
+haven't given me a detailed technical reason why you need arbitrary
+orders other than "I want a pony".
 
-> also suggested maybe in future "cgroup.kill" well if we have it, we 
-> definitely will start using it. Not sure if we are allowed to BPF sleep 
-> that path, however we can also start doing "cgroup.freeze" from BPF and 
-> kill from user space as a first step. But we definitly want more BPF 
-> operations on cgroup interfaces, I can think of a companion cgroup where 
-> we migrate tasks there on specific signals...
-> 
-> So more or less current proposed approach (2) followed the suggestions, 
-> but focused only on writing cgroup kernfs knobs.
-> 
-> Thoughts, did I miss something?
-> 
-> 
->> Otherwise, can't it actually write to kernfs files so
->> that we don't need to add code per enabled feature?
-> 
-> I'm not sure how we would write to kernfs files? As pointed by Alexei 
-> [6] it is more involved if we want to open files...
-> 
-> About "that we don't need to add code per enabled feature?" well if we
-> go the path of "bpf_cgroup_write_interface" or "bpf_cgroup_write_knob" 
-> adding a new write interface will involve theoretically:
-> 
-> 1. Check if program can sleep or/and the calling context.
-> 2. Add the new "cgroup.x" either in cgroup_base_file[] or in the new
->     array.
-> 3. New handlers or refactor old ones to take a "kernfs_node" instead of
->     "kernfs_open_file".
-> 
-> Compared to having multiple bpf_cgroup_(freeze|kill|...) kfunc seems 
-> fair too, and not that much code from BPF part.
-> 
-> 
-> BTW current patches contain a bug, after testing. In normal writes from 
-> user context we break kernfs active protection to avoid nesting cgroup 
-> locking under.
-> Forget this part. In next series since we don't grab the kernfs_node 
-> active protection like userspace kernfs_write, then no need to break 
-> it... will add a parameter to check like the revalidate one that checks 
-> things is cgroup on dfl and not root, things that are automatically 
-> handled from normal userspace ->write.
-> 
-> 
-> Thank you!
-> 
-> 
-> [1] https://lore.kernel.org/bpf/20240327225334.58474-3-tixxdz@gmail.com/
-> [2] https://lore.kernel.org/bpf/ZgXMww9kJiKi4Vmd@slm.duckdns.org/
-> [3] https://lore.kernel.org/bpf/Zgc1BZnYCS9OSSTw@slm.duckdns.org/
-> [4] https://lore.kernel.org/bpf/ 
-> CAADnVQK970_Nx3918V41ue031RkGs+WsteOAm6EJOY7oSwzS1A@mail.gmail.com/
-> [5] https://lore.kernel.org/bpf/ 
-> CAADnVQ+WmaPG1WOaSDbjxNPVzVape_JfG_CNSRy188ni076Mog@mail.gmail.com/
-> [6] https://lore.kernel.org/bpf/CAADnVQLhWDcX-7XCdo- 
-> W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com/
-> 
-> 
->> Thanks.
->>
-> 
+> > the main line Linux kernel. Merging into the main line kernel has a
+> > very high bar. How is it compared to other alternative approaches in
+> > terms of technical merit and complexity trade offs.
+>
+> Since you seem most concerned about complexity, I have been thinking more=
+ about
+> this point.
+>
+> 1. **Conceptual complexity**
+>    The idea is simply to add a swap priority list per cgroup. This is
+>    straightforward to understand. The more complicated part is NUMA prior=
+ity
+>    handling =E2=80=94 but if that turns out to be too complex, we can dro=
+p it entirely
+>    or adjust its semantics to reduce the complexity.
 
+The swap priority list is a list. The swap tiers is just a set less
+than32 total tiers. Can be expressed in one integer bitmask.
+
+> 2. **Implementation complexity**
+>    Could you clarify from which perspective you see implementation comple=
+xity as
+>    problematic? I would like to know more specifically what part worries =
+you.
+
+Your 4 patch series total lines of code? I expect the swap tiers can
+be much shorter, because it does not deal with arbitrate orders.
+
+> The `swap.tier` concept also requires mapping priorities to tiers, creati=
+ng
+> per-cgroup tier objects, and so forth. That means a number of supporting
+> structures are needed as well. While I agree it is conceptually well-defi=
+ned,
+> I don=E2=80=99t necessarily find it simpler than the per-device priority =
+model.
+
+You haven't embraced the swap.tiers ideas to the full extent. I do see
+it can be simpler if you follow my suggestion. You are imaging a
+version using swap file priority data struct to implement the swap
+tiers. That is not what I have in mind. The tiers can be just one
+integer to represent the set of tiers it enrolls and the default. If
+you follow my suggestion and the design you will have a simpler series
+in the end.
+
+> > Why would I trade a cleaner less complex approach for a more complex
+> > approach with technical deficiency not able to address (inverting swap
+> > entry LRU ordering)?
+>
+> Could you elaborate on what exactly you mean by =E2=80=9Cinverting swap e=
+ntry LRU order=E2=80=9D?
+> Do you mean that because of per-cgroup priority differences, entries on t=
+he
+> global swap LRU list could become inconsistent when viewed from different
+> cgroups?
+
+Exactly.
+
+>If that is the case, could you explain more concretely what problems
+> such inconsistencies would cause? That would help me understand the conce=
+rn
+
+The problem is that you pollute your fast tier with very cold swap
+entry data, that is to your disadvantage, because you will need to
+swap back more from the slower tier.
+
+e.g. you have two pages. Swap entry A will get 2 swap faults, the swap
+entry B will get 20 swap faults in the next 2 hours. B is hotter than
+A. Let's say you have to store them one in zswap and the other in hdd.
+Which one should you store in faster zswap? Obvious swap entry B.
+
+It will cause more problems when you flush the data to the lower tier.
+You want to flush the coldest data first. Please read about the
+history of zswap write back and what LRU problem it encountered. The
+most recent zswap storing the incompressible pages series in the mail
+list precisely driven by preserving the swap entry LRU order reason.
+
+You really should consider the effect on swap entry LRU ordering
+before you design the per cgroup swap priority.
+
+> > From the swap file point of view, when it needs to flush some data to
+> > the lower tiers, it is very hard if possible for swap file to maintain
+> > per cgroup LRU order within a swap file.
+>
+> Could you explain in more detail why the flush operation is difficult in =
+that
+> case? I would like to understand what the concrete difficulty is.
+>
+> > It is much easier if all the swap entries in a swap file are in the
+> > same LRU order tier.
+>
+> This is related to the same question above =E2=80=94 I would appreciate a=
+ more
+> detailed explanation because it is not yet clear to me. Why is it easy?
+
+Because I don't need to alter the list ording. When it enumerates the
+same list of swap files, it just needs to check if the current swap
+file is excluded by the swap.tiers integer bitmask. Each swap file can
+cache a bit which tier it is belonging to, for example.
+
+>
+> > The swap.tiers idea is not a compromise, it is a straight win. Can you
+> > describe what per cgroup per swap file can do while swap.tiers can
+> > not?
+>
+> I mentioned already on this mail: what swap tiers cannot do is arbitrary
+> ordering. If ordering is fixed globally by tiers, some workloads that wan=
+t to
+> consume slower swap devices first (and reserve faster devices as a safety
+> backend to minimize swap failures) cannot be expressed. This kind of poli=
+cy
+> requires arbitrary ordering flexibility, which is possible with per-devic=
+e
+> priorities but not with fixed tiers.
+
+Let's say you have fast tier A and slow tier B.
+
+Option 1) All swap entries go through the fast tier A first. As time
+goes on, the colder swap entry will move to the end of the tier A LRU,
+because there is no swap fault happening to those colder entries. If
+you run out of space of  A, then you flush the end of the A to B. If
+the swap fault does happen in the relative short period of time, it
+will serve by the faster tier of A.
+
+That is a win compared to your proposal you want directly to go to B,
+with more swap faults will be served by B compared to option 1).
+
+option 2) Just disable fast tier A in the beginning, only use B until
+B is full. At some point B is full, you want to enable fast tier A.
+Then it should move the head LRU from B into A. That way it still
+maintains the LRU order.
+
+option 1) seems better than 2) because it serves more swap faults from
+faster tier A.
+
+> And vswap possible usage: if we must consider vswap (assume we can select=
+ it
+> like an individual swap device), where should it be mapped in the tier mo=
+del?
+> (see https://lore.kernel.org/linux-mm/CAMgjq7BA_2-5iCvS-vp9ZEoG=3D1DwHWYu=
+VZOuH8DWH9wzdoC00g@mail.gmail.com/)
+
+The swap tires do not depend on vswap, you don't need to worry about that n=
+ow.
+
+> In my opinion, it cannot be mapped purely by service speed.
+> There are indeed situations where tiering by service speed is beneficial,
+> but I also believe priority-based ordering can capture the same intention
+> while also covering exceptional use cases.
+
+The above two options should be able to cover what you want.
+
+> So, I see the per-device priority approach as more general: it can repres=
+ent
+> tier-based usage, but also more flexible policies that tiers alone cannot=
+ cover.
+
+Not worth while to break the swap entry LRU order. We can do it in a
+way keeping the LRU order. You will be serving the more swap fault
+from the fast tier which is an overall win.
+
+> > It obviously will introduce new complexity. I want to understand the
+> > reason to justify the additional complexity before I consider such an
+> > approach.
+>
+> I think that any new concept adds complexity, whether it is =E2=80=9Cswap=
+.tier=E2=80=9D or
+> per-device priority. If you could clarify more precisely what kind of
+> complexity you are most concerned about, I would be happy to give my deta=
+iled
+> thoughts in that direction.
+
+I see no real justification to break the swap entry LRU order yet.
+Will my solution 1) or 2) work for you in your example?
+
+The per cgroup swap tiers integer bitmask is simpler than maintaining
+a per cgroup order list. It might be the same complexity in your mind,
+I do see swap tiers as the simpler one.
+
+Chris
 
