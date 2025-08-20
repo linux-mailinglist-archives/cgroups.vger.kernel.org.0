@@ -1,98 +1,89 @@
-Return-Path: <cgroups+bounces-9299-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9300-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0735AB2E6BE
-	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 22:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 339F3B2E70E
+	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 22:58:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7088E7AA0B0
-	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 20:37:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EAD17BF54A
+	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 20:57:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFEC2D2494;
-	Wed, 20 Aug 2025 20:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CED2D661D;
+	Wed, 20 Aug 2025 20:58:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=cdn77.com header.i=@cdn77.com header.b="3mmZCMJ4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nnk9QIhB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-internal.sh.cz (mail-internal.sh.cz [95.168.196.40])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF379295DBD;
-	Wed, 20 Aug 2025 20:37:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.168.196.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B06C5287266;
+	Wed, 20 Aug 2025 20:58:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755722278; cv=none; b=Lsty+Uuy4khL/0z5KQCUZ410u85xUehzjz1O8HNPOWSmseLH23rJV1Qp4J2YNG8Enh0QlzeB1z4/j8uKwwQiHNvJ/YYOLOa6t/yV7NnsQyaBZ0aGw23WVpPNzPdCik0yGL89/pkzh/Mg8a//Y9HYIOBFiJNZuxGpXRcR3yOMEdg=
+	t=1755723518; cv=none; b=Y+tTJm1a61KioddDveeUEGcLjpi9EN4qZ062QoYylhDC1bXKDjNY+edse/2Zyhd1815MZAUuSV/goA//hvwt3Iak+HAqosfD5vgbl4Q7QbPyXOdP6tmm18O5NJEyaNLqVxmMrYVYK0SvvbiEs0mGNbOag/8scdm3FtWCsDdCkhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755722278; c=relaxed/simple;
-	bh=OSOp8Yh92wxfDZNfy0wpSvutl0RdqprLliCEgmiXFLg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IveIVR5Wp6fHJbC84fgzNpyWtJEwErg0SHAhS2qcAKhY6e9I+kMjB2k8XOfwwqqBAooK3uMn+epMczAC94gMg0dhdmRk8oQuN3g32THDWtvaCnKW/G1k8UawqPkIpj4EVlZjgT4a2vEHPiL6G9AFi7+rOio4ArRCYK4n7RMvw3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cdn77.com; spf=pass smtp.mailfrom=cdn77.com; dkim=pass (1024-bit key) header.d=cdn77.com header.i=@cdn77.com header.b=3mmZCMJ4; arc=none smtp.client-ip=95.168.196.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cdn77.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cdn77.com
-DKIM-Signature: a=rsa-sha256; t=1755722273; x=1756327073; s=dkim2019; d=cdn77.com; c=relaxed/relaxed; v=1; bh=rVaPb/FC4PHKTD/XuKegsQ+CXxMYcycndmhjeELweqg=; h=From:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To:References;
-   b=3mmZCMJ4umanZdA6PxqH/ZZlzjZl6Hr2mtn5c6R7MuYhwg/XAG2QoM7qHXQFRDPtBdrOUvXSjXK7yaBA2gWzRNnJUdSzHEs1dvIDIqVNxS1oZ2pVwNRF6geOPaJRDQ/tiek2GIWsc2ccpfjIc1PclkXH/C0vqyedMpAjBmjUzSM=
-Received: from [192.168.0.206] ([78.44.198.142])
-        by mail.sh.cz (14.1.0 build 16 ) with ASMTP (SSL) id 202508202237494479;
-        Wed, 20 Aug 2025 22:37:49 +0200
-Message-ID: <fa039702-3d60-4dc0-803a-b094b41fd2b9@cdn77.com>
-Date: Wed, 20 Aug 2025 22:37:49 +0200
+	s=arc-20240116; t=1755723518; c=relaxed/simple;
+	bh=2LIlV6jZV84iq2Ygc/m4ROJTKmC2fI48srPWv9QJ338=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gm+qutY24T3vi7ZsD5Yc7VC3XxQWUAn2n2X2hWej6f6q5V7dL0Hqg833WG5TUYB+Z1SMnGs4WAkigpsVO7LMYkLVboxWVT/MV/jPYdonj1VtoR5d8ESVrAiAAYfzzibE35PzHPLjV4yW+ZiU8a2gjKGFo5Az+UUX9UORKiJ7BhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nnk9QIhB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C8E8C4CEE7;
+	Wed, 20 Aug 2025 20:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755723515;
+	bh=2LIlV6jZV84iq2Ygc/m4ROJTKmC2fI48srPWv9QJ338=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Nnk9QIhBnunV2dusAtIYAOEhwvRBZyAphZf+rtRSzXmJSWWPbKeBm3PLl4iA8Qn/S
+	 jLHsDOtIWncKkY+QQpPBCNotmtZNXKOrBoxYcLtmCmhGpcueAWX/kdiXitgzL+SRai
+	 lQ9EdWw4kelLR8kUHZFf0RZKwLdghw2g3H3TeGNo9AuMQ8Nai4cJXllnoSM1A7yZr9
+	 KSTvl+vujY46+GQ8TokMD+2+cFexCY675+8WYcW5lfEEYLnNPbAaJHnHKeFOezwquD
+	 b2ENPWE54KW6Go5aJl/h8F7X+VRlrRRXstz0GZEuOSJxVQrxyiVxrZJmchoBPGmDUn
+	 rT9qIQbg9SavQ==
+Date: Wed, 20 Aug 2025 10:58:34 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Julian Sun <sunjunchao@bytedance.com>
+Cc: linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	jack@suse.cz, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, axboe@kernel.dk
+Subject: Re: [PATCH] memcg: Don't wait writeback completion when release
+ memcg.
+Message-ID: <aKY2-sTc5qQmdea4@slm.duckdns.org>
+References: <20250820111940.4105766-1-sunjunchao@bytedance.com>
+ <20250820111940.4105766-4-sunjunchao@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] memcg: expose socket memory pressure in a cgroup
-To: Tejun Heo <tj@kernel.org>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Daniel Sedlak <daniel.sedlak@cdn77.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Neal Cardwell <ncardwell@google.com>, Kuniyuki Iwashima <kuniyu@google.com>,
- David Ahern <dsahern@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Shakeel Butt <shakeel.butt@linux.dev>, Yosry Ahmed <yosry.ahmed@linux.dev>,
- linux-mm@kvack.org, netdev@vger.kernel.org,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org
-References: <20250805064429.77876-1-daniel.sedlak@cdn77.com>
- <aJeUNqwzRuc8N08y@slm.duckdns.org>
- <gqeq3trayjsylgylrl5wdcrrp7r5yorvfxc6puzuplzfvrqwjg@j4rr5vl5dnak>
- <aJzTeyRTu_sfm-9R@slm.duckdns.org>
- <e65222c1-83f9-4d23-b9af-16db7e6e8a42@cdn77.com>
- <aKYb7_xshbtFbXjb@slm.duckdns.org>
-Content-Language: en-US, cs
-From: Matyas Hurtik <matyas.hurtik@cdn77.com>
-In-Reply-To: <aKYb7_xshbtFbXjb@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CTCH: RefID="str=0001.0A002118.68A631CC.007B,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0"; Spam="Unknown"; VOD="Unknown"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250820111940.4105766-4-sunjunchao@bytedance.com>
 
-Hello,
+On Wed, Aug 20, 2025 at 07:19:40PM +0800, Julian Sun wrote:
+> @@ -3912,8 +3921,12 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
+>  	int __maybe_unused i;
+>  
+>  #ifdef CONFIG_CGROUP_WRITEBACK
+> -	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
+> -		wb_wait_for_completion(&memcg->cgwb_frn[i].done);
+> +	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++) {
+> +		struct wb_completion *done = memcg->cgwb_frn[i].done;
+> +
+> +		if (atomic_dec_and_test(&done->cnt))
+> +			kfree(done);
+> +	}
+>  #endif
 
-On 8/20/25 9:03 PM, Tejun Heo wrote:
-> On Wed, Aug 20, 2025 at 06:51:07PM +0200, Matyas Hurtik wrote:
->> And the read side:   total_duration = 0;   for (; 
->> !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg))     
->> total_duration += atomic_long_read(&memcg->socket_pressure_duration); 
->> Would that work? 
-> This doesn't make sense to me. Why would a child report the numbers 
-> from its ancestors?
+Can't you just remove done? I don't think it's doing anything after your
+changes anyway.
 
-Result of mem_cgroup_under_socket_pressure() depends on
-whether self or any ancestors have had socket_pressure set.
+Thanks.
 
-So any duration of an ancestor being throttled would also
-mean the child was being throttled.
-
-By summing our and our ancestors socket_pressure_duration
-we should get our total time being throttled
-(possibly more because of overlaps).
-
-Thanks,
-Matyas
+-- 
+tejun
 
