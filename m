@@ -1,129 +1,221 @@
-Return-Path: <cgroups+bounces-9293-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9294-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3B34B2DC3A
-	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 14:17:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CF8CB2DFBF
+	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 16:43:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E64AB16EB58
-	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 12:17:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 758AE5E3623
+	for <lists+cgroups@lfdr.de>; Wed, 20 Aug 2025 14:39:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718AE2DEA9E;
-	Wed, 20 Aug 2025 12:17:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KXPzLRdH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D68288529;
+	Wed, 20 Aug 2025 14:39:51 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03497262A;
-	Wed, 20 Aug 2025 12:17:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98128288512
+	for <cgroups@vger.kernel.org>; Wed, 20 Aug 2025 14:39:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755692223; cv=none; b=CG/e6/VWU5iphEuNLbFLCeHSQXe018pMHBCdcJ0ALhA50CryJKHTrAZZEVi+RropzbbFXYNumJHKD+pN/aiS/Q2bADULLMqf1fw+9XtqMTI5hzrvl4PbEG4eSK5t1n+e9MXvNA+E2LmAw9coT8Ka3YXjPmTht+tERQPH+Px3M6A=
+	t=1755700791; cv=none; b=UVdDOrr1Wg90hGXJf49S4uRQce0YFV3T7Q1BDBxpZrjIU2ovLn+7sYyxrzHH22IjMzYccwsUGB3guDfiYaJk0ugs+Bc0V2hqkyAPsoJYgISuIvOiWC+kmczdEkrb6pgS5wYtUALN8Z8zta2moycWih93/HluwNL1GQGsd1zt9Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755692223; c=relaxed/simple;
-	bh=JLWRcDRoHtReAtj03ta+zZeRHOPlCQfZ79cMMGoUmJw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QK3jtRDYFRqLf5gChFVimSmmnHUuvg/b9r0HMi7Z0oLN+f5/+jIrj+D0HmcsekO2Jr/IhcmPsin/Q/bQ1FGIdhFYpEOBbDEUgCL4o44v3G/k0rWEzBJQ1jYEpTsuT1ALD6bV05k17cNdm/YKllmCOfe2DXcDULQcDPgOlrCQHpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KXPzLRdH; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-45a1b0b4d13so8072215e9.2;
-        Wed, 20 Aug 2025 05:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755692220; x=1756297020; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gAyuXmmTiExKl6ZtNupk//S3JQWiRitMbriQKBEbaFc=;
-        b=KXPzLRdHNN4Zg7nGZfo8drP6Nvr9bfNPv1nO4xafovZ6hEtLQtaASm4ayhSqnbMpHG
-         YNkdLbf/k5Rgv986BRMZTWzDc8iuzuO9opsgyF6QjVvex4Ej7flBMwztBI/nTSfrBXYV
-         T52s4ULxLd61pgcke8Wl26EFL7MO3sTCC5d4kzKbUUCTSnsB6/FGg9q+iscQS5EK2qcH
-         jhqugXs4FOBsHcenGW2Es/JOUf4pzskGWk735lwb4hXpBlaxSeyPLtQGhiBmhK1qRte4
-         vtNSfmE28US5A+E49cyxKC4MjN3667BMtz8WgtG2LIVreOwd9295lMLyvOaPec6vpXRz
-         trsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755692220; x=1756297020;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gAyuXmmTiExKl6ZtNupk//S3JQWiRitMbriQKBEbaFc=;
-        b=wvCKAEFc1bRUQ5fhVFuiQm49ZX8T9fb05n8mTMMaTM6VrM31AwjQtCJNtfCbslZOUE
-         dL6MjbQ3y6tCTGKChFE+W2+mNr45Xu54+z2xZk3Kue3LgXl/QYh+mJ2EM8hPVHQJ4y70
-         UhcKsLDyDuJa1xNYMmGc4SvPAO6Hr77o5stKxyA4VT9ewc9AlbjAZKsNm2e3qp9Ca0N/
-         epVOt3P3VgBR/liBOiWckfP3eZaeaz4pt77ak+mTd5w/GJ3Rh9RJsjG/vaHQU9WnzZDX
-         edyy0VFioxwXbgP2BvTH91nUijzIntFdYSTSTItz4ku/Wf7DJQiL4lHXvrQIIDwQUbCZ
-         xgVw==
-X-Forwarded-Encrypted: i=1; AJvYcCUg+rhHWYJ0AF6LYHXwZJ5FndT9oN0SFbCz5El+cZki9KVEhfygetVmat32Lg5x84YAv4VyLFMgavwXhR1Jzw==@vger.kernel.org, AJvYcCWfqSt3qBf78u69PNWpPT0ujf6JM6Djo0ETutfRdHJI6DUKxwngD9rtC7YsoJWe88ZbqjdMC8vL@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4XrCrQ6lw6Gp+fnJN0ffGlhJpX/e4lo1QxysDFVW6FLLYNfCr
-	JFHsW5wd1TDs+tFHm/D81P5f7wvOQuI3Sk+3igg1DXGYZE6X2K0haEG5
-X-Gm-Gg: ASbGnctHSYzZ/DGcxcZMZoYQOa0GaioNLSuxUhykHXz3WcN7qvJFIypCrV77IMlQUzz
-	B+YmqGDjx0D2rEB3DUXOrYbC787yOaPPn9ydhkDNM6E1TIGHaNbyZrc24v9y5Oz/C6GDPuL9QaO
-	v2fCVSYO3k1bKMHGACUtRSZURypQnXDXXIPVg4ZbCjc46B9RWUqC3izOFQDubZGI4Rlf3Zk8UWf
-	TwpUsKb5/GXGrzOZ436io7ACSVdWMbsLfKT8P5j5sHPMErpuOs+pTCf479RCeA/DvyeZlc3A9TC
-	wYF2Hfn6KjeUKFaruOqkaBUyfTXsgZpqlce2Ndxgy1SZ4S/QXrUSQqyzxyurgzUiUMzon56Q4Me
-	tCDqB0plvsLefgJnuL7YZzAlZ+gc4ANC8bRX92g7z6nRuGlsZfIjr
-X-Google-Smtp-Source: AGHT+IEmicsSzxkK7EC0Py2jIPsFAnlzPswIDNRsBjO5fusLnw8AUn6MeAd7fI3HWXtD3hpJxw4JkA==
-X-Received: by 2002:a05:6000:2282:b0:3b7:8f9a:2e2c with SMTP id ffacd0b85a97d-3c32df48f48mr941403f8f.6.1755692219725;
-        Wed, 20 Aug 2025 05:16:59 -0700 (PDT)
-Received: from [192.168.100.5] ([149.3.87.76])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3c077c57aa0sm7531506f8f.66.2025.08.20.05.16.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Aug 2025 05:16:59 -0700 (PDT)
-Message-ID: <24119aa3-f6ef-4467-80a0-475989e19625@gmail.com>
-Date: Wed, 20 Aug 2025 16:16:56 +0400
+	s=arc-20240116; t=1755700791; c=relaxed/simple;
+	bh=Jqa+oRFxpT5PHvadrbCfmGT0VQjho9bXsxWCXnvj4zs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ea+E4qNYl7ot0eTI2v8TxXNW7sSFiH9K8Dbky9ko5C+H+yvdnJJpw8fTsbOXU/9xLigQVbJvzhrc7cFXkASIlGXm4oK4w7yJ/xPCfTBhEBDphjmSws0uKW0R0nPpTYz6aLvvZuD2nMPhNoXZ2yuSQh1nxyiKK0OvPT5VdGDC79M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
+Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
+	by 156.147.51.102 with ESMTP; 20 Aug 2025 23:39:40 +0900
+X-Original-SENDERIP: 10.177.112.156
+X-Original-MAILFROM: youngjun.park@lge.com
+Date: Wed, 20 Aug 2025 23:39:40 +0900
+From: YoungJun Park <youngjun.park@lge.com>
+To: Chris Li <chrisl@kernel.org>
+Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, shikemeng@huaweicloud.com,
+	kasong@tencent.com, nphamcs@gmail.com, bhe@redhat.com,
+	baohua@kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, gunho.lee@lge.com,
+	iamjoonsoo.kim@lge.com, taejoon.song@lge.com,
+	Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Kairui Song <ryncsn@gmail.com>
+Subject: Re: [PATCH 1/4] mm/swap, memcg: Introduce infrastructure for
+ cgroup-based swap priority
+Message-ID: <aKXeLCr9DgQ2YfCq@yjaykim-PowerEdge-T330>
+References: <20250716202006.3640584-2-youngjun.park@lge.com>
+ <jrkh2jy2pkoxgsxgsstpmijyhbzzyige6ubltvmvwl6fwkp3s7@kzc24pj2tcko>
+ <aH+apAbBCmkMGPlO@yjaykim-PowerEdge-T330>
+ <aH/baxIgrBI3Z1Hl@yjaykim-PowerEdge-T330>
+ <uyxkdmnmvjipxuf7gagu2okw7afvzlclomfmc6wb6tygc3mhv6@736m7xs6gn5q>
+ <CAF8kJuMo3yNKOZL9n5UkHx_O5cTZts287HOnQOu=KqQcnbrMdg@mail.gmail.com>
+ <aKC+EU3I/qm6TcjG@yjaykim-PowerEdge-T330>
+ <CAF8kJuNuNuxxTbtkCb3Opsjfy-or7E+0AwPDi7L-EgqoraQ3Qg@mail.gmail.com>
+ <aKROKZ9+z2oGUJ7K@yjaykim-PowerEdge-T330>
+ <CAF8kJuPUouN4c6V-CaG7_WQUAvRxBg02WRxsMtL56_YTdTh1Jg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] memcg, writeback: Don't wait writeback completion
-To: Julian Sun <sunjunchao@bytedance.com>, linux-fsdevel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
- hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, muchun.song@linux.dev, axboe@kernel.dk, tj@kernel.org
-References: <20250820111940.4105766-1-sunjunchao@bytedance.com>
-Content-Language: en-US
-From: Giorgi Tchankvetadze <giorgitchankvetadze1997@gmail.com>
-In-Reply-To: <20250820111940.4105766-1-sunjunchao@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF8kJuPUouN4c6V-CaG7_WQUAvRxBg02WRxsMtL56_YTdTh1Jg@mail.gmail.com>
 
-Could we add wb_pending_pages to memory.events?
-Very cheap and useful.
-A single atomic counter is already kept internally; exposing it is one 
-line in memcontrol.c plus one line in the ABI doc.
+> > inclusion/exclusion semantics at the cgroup level. The reason I decided not to
+> > go with it is because it lacks flexibility — it cannot express arbitrary     
+> > ordering. As noted above, it is impossible to represent arbitrary orderings, 
+> > which is why I chose a per-device priority strategy instead.                 
+>                                                                                
+> As said, arbitrary orders violate the swap entry LRU orders. You still         
+> haven't given me a detailed technical reason why you need arbitrary            
+> orders other than "I want a pony".
 
+I believe the examples I provided for arbitrary ordering can be considered
+a detailed technical reason.
+(You responded with Option 1 and Option 2.)
 
-On 8/20/2025 3:19 PM, Julian Sun wrote:
-> This patch series aims to eliminate task hangs in mem_cgroup_css_free()
-> caused by calling wb_wait_for_completion().
-> This is because there may be a large number of writeback tasks in the
-> foreign memcg, involving millions of pages, and the situation is
-> exacerbated by WBT rate limiting—potentially leading to task hangs
-> lasting several hours.
-> 
-> Patch 1 is preparatory work and involves no functional changes.
-> Patch 2 implements the automatic release of wb_completion.
-> Patch 3 removes wb_wait_for_completion() from mem_cgroup_css_free().
-> 
-> 
-> Julian Sun (3):
->    writeback: Rename wb_writeback_work->auto_free to free_work.
->    writeback: Add wb_writeback_work->free_done
->    memcg: Don't wait writeback completion when release memcg.
-> 
->   fs/fs-writeback.c                | 22 ++++++++++++++--------
->   include/linux/backing-dev-defs.h |  6 ++++++
->   include/linux/memcontrol.h       |  2 +-
->   mm/memcontrol.c                  | 29 ++++++++++++++++++++---------
->   4 files changed, 41 insertions(+), 18 deletions(-)
-> 
+> > The `swap.tier` concept also requires mapping priorities to tiers, creating  
+> > per-cgroup tier objects, and so forth. That means a number of supporting     
+> > structures are needed as well. While I agree it is conceptually well-defined,
+> > I don’t necessarily find it simpler than the per-device priority model.      
+>                                                                                
+> You haven't embraced the swap.tiers ideas to the full extent. I do see         
+> it can be simpler if you follow my suggestion. You are imaging a               
+> version using swap file priority data struct to implement the swap             
+> tiers. 
 
+Thank you for the detailed explanation. I think I understood the core points of this concept
+What I wrote was simply my interpretation — that it can be
+viewed as a well-defined extension of maintaining equal priority dependency
+together with inclusion/exclusion semantics. Nothing more and nothing less.
+
+> That is not what I have in mind. The tiers can be just one             
+> integer to represent the set of tiers it enrolls and the default. If           
+> you follow my suggestion and the design you will have a simpler series         
+> in the end.                                                                    
+
+Through this discussion my intention is to arrive at the best solution,
+and I appreciate that you pointed out areas I should reconsider. If you,
+and other reviewers(If somebody gives opions of it, then it will be helpful)
+generally conclude that the tier concept is the right path,
+I have a clear willingness to re-propose an RFC and patches
+based on your idea. In that case, since arbitrary ordering would not be
+allowed, I fully agree that the main swap selection logic would become
+simpler than my current implementation.
+                                                                    
+> The problem is that you pollute your fast tier with very cold swap              
+> entry data, that is to your disadvantage, because you will need to             
+> swap back more from the slower tier.                                           
+>                                                                                
+> e.g. you have two pages. Swap entry A will get 2 swap faults, the swap         
+> entry B will get 20 swap faults in the next 2 hours. B is hotter than          
+> A. Let's say you have to store them one in zswap and the other in hdd.         
+> Which one should you store in faster zswap? Obvious swap entry B.              
+>                                                                                
+> It will cause more problems when you flush the data to the lower tier.         
+> You want to flush the coldest data first. Please read about the                
+> history of zswap write back and what LRU problem it encountered. The           
+> most recent zswap storing the incompressible pages series in the mail          
+> list precisely driven by preserving the swap entry LRU order reason.           
+>                                                                                
+> You really should consider the effect on swap entry LRU ordering               
+> before you design the per cgroup swap priority.                                
+
+Then I would like to ask a fundamental question about priority. Priority is
+a user interface, and the user has the choice. From the beginning, when the
+user sets priorities, there could be a scenario where the slower swap is
+given a higher priority and the faster swap is given a lower one. That is
+possible. For example, if the faster device has a short lifetime, a real
+use case might be to consume the slower swap first for endurance, and only
+use the faster swap when unavoidable.
+
+In this case, logically from the LRU perspective there is no inversion of
+priority order, but in practice the slower device is filled first. That
+looks like degradation from a performance perspective — but it is exactly
+what the user intended.
+
+The swap tier concept appears to map priority semantics directly to service
+speed, so that higher priority always means faster service. This looks like
+it enforces the choice on the user(but it is opend).
+
+Even with swap tiers, under the semantics you suggested, it is possible for
+a given cgroup to use only the slower tier. From that cgroup’s view there
+is no LRU inversion, but since the fast swap exists and is left unused, it
+could still be seen as an "inverse" in terms of usage.
+
+In summary, what I struggle to understand is that if the major assumption
+is that swap operation must always align with service speed, then even swap
+tiers can contradict it (since users may deliberately prefer the lower
+tier). In that case, wouldn’t the whole concept of letting users select swap
+devices by priority itself also become a problem?
+
+> > I mentioned already on this mail: what swap tiers cannot do is arbitrary     
+> > ordering. If ordering is fixed globally by tiers, some workloads that want to
+> > consume slower swap devices first (and reserve faster devices as a safety    
+> > backend to minimize swap failures) cannot be expressed. This kind of policy  
+> > requires arbitrary ordering flexibility, which is possible with per-device   
+> > priorities but not with fixed tiers.                                         
+>                                                                                
+> Let's say you have fast tier A and slow tier B.                                
+>                                                                                
+> Option 1) All swap entries go through the fast tier A first. As time           
+> goes on, the colder swap entry will move to the end of the tier A LRU,         
+> because there is no swap fault happening to those colder entries. If           
+> you run out of space of  A, then you flush the end of the A to B. If           
+> the swap fault does happen in the relative short period of time, it            
+> will serve by the faster tier of A.                                            
+>                                                                                
+> That is a win compared to your proposal you want directly to go to B,          
+> with more swap faults will be served by B compared to option 1).               
+>                                                                                
+> option 2) Just disable fast tier A in the beginning, only use B until          
+> B is full. At some point B is full, you want to enable fast tier A.            
+> Then it should move the head LRU from B into A. That way it still              
+> maintains the LRU order.                                                       
+>                                                                                
+> option 1) seems better than 2) because it serves more swap faults from         
+> faster tier A.                                                                 
+
+Option 1 does not really align with the usage scenario I had in mind,
+since it starts from the fast swap. Option 2 fits partially, but requires
+controlling when to enable the fast tier once full, and handling LRU
+movement — which adds complexity.
+
+Your final suggestion of Option 1 seems consistent with your original
+objection: that the system design should fundamentally aim at performance
+improvement by making use of the fast swap first.
+
+> > And vswap possible usage: if we must consider vswap (assume we can select it 
+> > like an individual swap device), where should it be mapped in the tier model?
+> > (see https://lore.kernel.org/linux-mm/CAMgjq7BA_2-5iCvS-vp9ZEoG=1DwHWYuVZOuH8DWH9wzdoC00g@mail.gmail.com/)
+>                                                                                
+> The swap tires do not depend on vswap, you don't need to worry about that now. 
+
+I initially understood vswap could also be treated as an
+identity selectable in the unified swap framework. If that were the case, I
+thought it would be hard to map vswap into the tier concept. Was that my
+misinterpretation?
+
+> The per cgroup swap tiers integer bitmask is simpler than maintaining          
+> a per cgroup order list. It might be the same complexity in your mind,         
+> I do see swap tiers as the simpler one.                                        
+
+I agree that from the perspective of implementing the main swap selection
+logic, tiers are simpler. Since arbitrary ordering is not allowed, a large
+part of the implementation complexity can indeed be reduced.
+
+Once again, thank you for your thoughtful comments and constructive feedback.
+
+Best Regards,
+Youngjun Park 
 
