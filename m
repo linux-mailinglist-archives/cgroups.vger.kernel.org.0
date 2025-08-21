@@ -1,108 +1,111 @@
-Return-Path: <cgroups+bounces-9304-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9305-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EBA1B2F6F1
-	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 13:42:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B457FB300A2
+	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 18:59:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E81971C841E1
-	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 11:42:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0204A179CB5
+	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 16:59:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B5230F531;
-	Thu, 21 Aug 2025 11:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC072E762E;
+	Thu, 21 Aug 2025 16:59:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="af+Hak+N"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lankhorst.se (lankhorst.se [141.105.120.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D112FDC42;
-	Thu, 21 Aug 2025 11:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C4832E7198;
+	Thu, 21 Aug 2025 16:59:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755776522; cv=none; b=ff7phaGI1PJEQxIn3UGnU9ZQI9zY3fT9BuzM1nIDMJ2/6W7gLeK5BBP9Nz6LioUpm6PHk1C80gUZdSVDG/224i1muyaAndywfqdFG4PSmTXX8uKhnWgh3L7ML9FQeOn5UzGTUY/IeNs25xMGm7NVNdtseLeSKfKQGmPM1ULIL6s=
+	t=1755795586; cv=none; b=CYEJHcR4t9tBwr6/cDmnLTuOHxk9cQE8J9dVvpXZceU7wMakuUVWpgA4DcZ/mFh3rw8DztotySjn3fAnUaV0hfqQE8x+mbL0avJNqnSuqu0xQl3H9STI+m6i2qD8t3TPMIFakK7JJ925Uu26xiheEOkhicfVAnpy//eYiZXLZkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755776522; c=relaxed/simple;
-	bh=H34/94ehslK+27BO22zg2h9Na/d+pekW0gfjYNpPCjA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r8V0/ZhdgaF0hE75FTr4Qi6+aMzUdxKkJWahv/aBKaZ6h5BQecjeybBehc8LGD3enHVMcK1JDmw6brkT1OEztRtNU91bKkOL98DO+eOJop+7gUJ1Y/dxIZhpKRotmE8OWkJhNWM6bpSFsBpl9Ejo36rPt8pnHznpk1rCr01asMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se; spf=pass smtp.mailfrom=lankhorst.se; arc=none smtp.client-ip=141.105.120.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lankhorst.se
-Message-ID: <533447a9-098a-4509-9014-631af83e0e5a@lankhorst.se>
-Date: Thu, 21 Aug 2025 13:41:49 +0200
+	s=arc-20240116; t=1755795586; c=relaxed/simple;
+	bh=pp/gk4pOi/0v1HmMWUiDkoQlsk+QIM6imhIi2GSSpK0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QjpV4h2ulMTe15ipobwA0VAF51SysyXza/5fpnFuw8t06PNUBh2hXyV9ikNeqGaNmPMCC16EEnoFzW4Jj2qp8vqMJaY7jOSFywL9255E7ebobYKn+wMxPBkkxfqv/0HQxxMIhvUe3R+tsWH5CO1sxevDiVXvPdCsNGE7KIVo0UI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=af+Hak+N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2A4DC4CEEB;
+	Thu, 21 Aug 2025 16:59:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755795586;
+	bh=pp/gk4pOi/0v1HmMWUiDkoQlsk+QIM6imhIi2GSSpK0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=af+Hak+Nfuz0y6X0Qr8P866fWXKOmFsFqBUtxHcrew5O8pLnWjiqhMEcRwul5lFqf
+	 uDCDxPRYZ1BuFhfghVTm+7r4DJWCvD+ES0luQVuh3/4x9Mio9Q9Yzn0bjAvy4EQp3I
+	 3tgigV4T3NrYBKO4FVr7LkF0SpONlzLKAPcdDMQ8F0ZwA3Hc3HO69utwGNyFYsu0LI
+	 Xnzid3gnttQZM4kZTUzOAs5IHLkuMBGVw+hZ6Krg4nXe/KsdTdSTPFMoxT+8RVAYg7
+	 H0GuZPtY4Z0BcnLVXy3ZUiltSZMtcwU+VLqIB+ll+7ePtZufzYkWmSsMRfPsEJB0L8
+	 63lviEWaVEnfg==
+Date: Thu, 21 Aug 2025 06:59:44 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Julian Sun <sunjunchao@bytedance.com>
+Cc: linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	jack@suse.cz, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, axboe@kernel.dk
+Subject: Re: [External] Re: [PATCH] memcg: Don't wait writeback completion
+ when release memcg.
+Message-ID: <aKdQgIvZcVCJWMXl@slm.duckdns.org>
+References: <20250820111940.4105766-1-sunjunchao@bytedance.com>
+ <20250820111940.4105766-4-sunjunchao@bytedance.com>
+ <aKY2-sTc5qQmdea4@slm.duckdns.org>
+ <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 3/3] drm/xe: Add DRM_XE_GEM_CREATE_FLAG_PINNED flag and
- implementation
-To: =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- Lucas De Marchi <lucas.demarchi@intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>, Maxime Ripard <mripard@kernel.org>,
- Natalie Vock <natalie.vock@gmx.de>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?=27Michal_Koutn=C3=BD=27?=
- <mkoutny@suse.com>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "'Liam R . Howlett'" <Liam.Howlett@oracle.com>,
- Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>,
- Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Michal Hocko <mhocko@suse.com>, intel-xe@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org
-References: <20250819114932.597600-5-dev@lankhorst.se>
- <20250819114932.597600-8-dev@lankhorst.se>
- <a781f7781a9bf510c3707a5c9a235e1dab785617.camel@linux.intel.com>
-Content-Language: en-US
-From: Maarten Lankhorst <dev@lankhorst.se>
-In-Reply-To: <a781f7781a9bf510c3707a5c9a235e1dab785617.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
 
-Hey,
+Hello,
 
-Den 2025-08-19 kl. 18:22, skrev Thomas Hellström:
-> Hi, Maarten,
+On Thu, Aug 21, 2025 at 10:30:30AM +0800, Julian Sun wrote:
+> On Thu, Aug 21, 2025 at 4:58 AM Tejun Heo <tj@kernel.org> wrote:
+> >
+> > On Wed, Aug 20, 2025 at 07:19:40PM +0800, Julian Sun wrote:
+> > > @@ -3912,8 +3921,12 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
+> > >       int __maybe_unused i;
+> > >
+> > >  #ifdef CONFIG_CGROUP_WRITEBACK
+> > > -     for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
+> > > -             wb_wait_for_completion(&memcg->cgwb_frn[i].done);
+> > > +     for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++) {
+> > > +             struct wb_completion *done = memcg->cgwb_frn[i].done;
+> > > +
+> > > +             if (atomic_dec_and_test(&done->cnt))
+> > > +                     kfree(done);
+> > > +     }
+> > >  #endif
+> >
+> > Can't you just remove done? I don't think it's doing anything after your
+> > changes anyway.
 > 
-> On Tue, 2025-08-19 at 13:49 +0200, Maarten Lankhorst wrote:
->> Add an option to pin memory through the science of cgroup accounting.
->> A bo will be pinned for its entire lifetime, and this allows buffers
->> that are pinned for dma-buf export without requiring the pinning to
->> be
->> done at the dma-buf layer for all devices.
->>
->> For now only implement VRAM pinning. Dave Airlie has a series to
->> implement
->> memcg accounting for the GPU but that is not ready yet.
+> Thanks for your review.
 > 
-> Previous discussions around this have favoured a UAPI where we pin a
-> gpu-vm range, with a pin at mapping time, or dma-buf pin time where
-> required, this allows for dynamic pinning and unpinning, and would
-> avoid having separate pinning interfaces for bos and userptr.
+> AFAICT done is also used to track free slots in
+> mem_cgroup_track_foreign_dirty_slowpath() and
+> mem_cgroup_flush_foreign(), otherwise we have no method to know which
+> one is free and might flush more than what MEMCG_CGWB_FRN_CNT allow.
 > 
-> In particular if we don't know at bo creation time which buffer objects
-> will be exported with a method requiring pinning, how would UMD deduce
-> what buffer objects to pin?
-> 
-> Thanks,
-> Thomas
-> For discussion purposes, it seems compute preferred pinning at allocation time,
-so I wanted to propose that solution since it's easiest to implement.
+> Am I missing something?
 
-I will change it for the next version, but I'm very interested in feedback
-on the adjustments I made in cgroups. Those are the ones that will have the
-most impact, and changes how effective min/low is calculated when memory
-pinned is involved.
+No, I missed that. I don't think we need to add extra mechanisms in wb for
+this tho. How about shifting wb_wait_for_completion() and kfree(memcg) into
+a separate function and punt those to a separate work item? That's going to
+be a small self-contained change in memcg.
 
-Kind regards,
-~Maarten
+Thanks.
+
+-- 
+tejun
 
