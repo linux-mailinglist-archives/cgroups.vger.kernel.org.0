@@ -1,79 +1,94 @@
-Return-Path: <cgroups+bounces-9314-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9315-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54C8EB307AE
-	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 23:01:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D8BEB3086C
+	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 23:35:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1070642005
-	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 20:57:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C7901D00104
+	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 21:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 788C3277CA4;
-	Thu, 21 Aug 2025 20:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB6A2C21DA;
+	Thu, 21 Aug 2025 21:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eVdp9sGW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cKVa/0E1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33101222564;
-	Thu, 21 Aug 2025 20:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 370932C0275
+	for <cgroups@vger.kernel.org>; Thu, 21 Aug 2025 21:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755809123; cv=none; b=E/xTrFWo3BwufLHD0bn+DAzcubiIGP2TGXnRPjg1R6VgYWZSBAwTCnIQjkYvXxGawiVcyLnufAAq6s4fll7OEQVyrDlggTRNzhqz6rjxU1uT5B7A6VYAUmyqBDLTkBWVXotZL1IQI9ProVYSgBzpj5VTa2+75UT5oDEqVIev4Jo=
+	t=1755812114; cv=none; b=DBwjBPK5jM2Bo80eD6zaj3zKZLDlJpHiqzb4wEu5kn/hq0bytEuVFxKoL8Mz6eO4suFD4GMNnGT6GczM/KKK6gFhXYJtgsSkXmVYOrNGgdtS3KhZ8kq0/FKQm/yoh9FqgUOfIUcMhhA/wxUJ0z84IJkccTOMG/vdLQb/puOSkdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755809123; c=relaxed/simple;
-	bh=/L/78zovmejgOYF50XlH+w5a0fU+/Yp2qKn9R8aQx/o=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=WPAnyeDDAzVseEyqnZw6F0chocWL222SNQcQjHeZCEfMQKXUuwbPgbLPzdtBQm6JQXT/YP32TPhOpiO5DHwdDZzhhTszADT9vd1ynTUJW/gVtaLrwK4qiyWwx1l6rq2tMhUj2CIchyqRTa/Gg2xFVMWtubAtF/vJI/jWi22obgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eVdp9sGW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D2E0C4CEEB;
-	Thu, 21 Aug 2025 20:45:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755809123;
-	bh=/L/78zovmejgOYF50XlH+w5a0fU+/Yp2qKn9R8aQx/o=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=eVdp9sGWMS8dFoIn0DfFo6IQ13yykrqREaJ169nSa/IxWZZjb4TSoSecK+49EqJNr
-	 u6QCy43YLN5xb1yCbw5ibu8qbRaa80N0+XfSp3kRfnKKUK30GXVDjCGeDMDYZVjW7h
-	 H2C9qB2GM0M596IwyH5YBzjJt8uCZLuRyKr/ZDsl/QHBlKF5PWNEf0SxXoGps3MEk8
-	 m/X5O+ielLp5a0CwqyVT7f4oaB74tYTcM/t0BJd8ZaelnfCUvNEDuAgax6YZRFjnXy
-	 bIDyxCaqfiCNbFSqs0QPo6fyGZczs9PkHqLekrNDpBq68OhbYgfykORhGJ8YaBKnkz
-	 KegGoDGEdDbug==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 714E8383BF5B;
-	Thu, 21 Aug 2025 20:45:33 +0000 (UTC)
-Subject: Re: [GIT PULL] cgroup: Fixes for v6.17-rc2
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <aKd-G9DuRlPJdQgv@slm.duckdns.org>
-References: <aKd-G9DuRlPJdQgv@slm.duckdns.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <aKd-G9DuRlPJdQgv@slm.duckdns.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.17-rc2-fixes
-X-PR-Tracked-Commit-Id: 6563623e604e3e235b2cee71190a4972be8f986b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3957a5720157264dcc41415fbec7c51c4000fc2d
-Message-Id: <175580913209.1197229.13837000216077258535.pr-tracker-bot@kernel.org>
-Date: Thu, 21 Aug 2025 20:45:32 +0000
-To: Tejun Heo <tj@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, cgroups@vger.kernel.org
+	s=arc-20240116; t=1755812114; c=relaxed/simple;
+	bh=bAmN/AfX5lwIEYmHilniwpETgpxib6iulemfl4KOa1k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jJz4UH1PgKw9AzAJEeiD16eEbzUNLSN5zuXoA5CmzshXWqyjvFtA4wcyt5Fh/JZyQ+UAxj1AgdP1QUcyPyTfhuCzgueco7A0hp4q2sheGjbr3kAwkIh65zzuTeamejd8wEyTO98tVUjOP5AQV5aaz54R4fJpIa9vDmSASntCg9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cKVa/0E1; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 21 Aug 2025 17:34:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755812099;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6l9aSgAb2E3cUwpa0ZqVYq3A36zEuUkKRZnMLOQjDf8=;
+	b=cKVa/0E117buhr5K37hgJtj77Pc13bOzosQtOW8ViKUo5puIjXVou9iw13GGpUM01YbA2g
+	9WYuRCTqBCClWY7v9v/iJHFJYU9SgNCws9F3lyh4TB3azy0TfEjV5kwHqRzpgmhHj/9b8B
+	BLVZRZ8axbAUdLovgVvsMfxZ3JRdkak=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Sahil Chandna <chandna.linuxkernel@gmail.com>, corbet@lwn.net, 
+	linux-doc@vger.kernel.org, tj@kernel.org, cem@kernel.org, linux-bcachefs@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	skhan@linuxfoundation.org
+Subject: Re: [PATCH] Documentation: Fix documentation typos
+Message-ID: <23de3jgp44vih5g6hjgc2ji6momi5t3w7rfkm5mgtajicbbg7a@7r5hgt5e7eir>
+References: <20250821185145.18944-1-chandna.linuxkernel@gmail.com>
+ <4cae933a-d171-48aa-a854-b4323d10b347@infradead.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4cae933a-d171-48aa-a854-b4323d10b347@infradead.org>
+X-Migadu-Flow: FLOW_OUT
 
-The pull request you sent on Thu, 21 Aug 2025 10:14:19 -1000:
+On Thu, Aug 21, 2025 at 12:09:57PM -0700, Randy Dunlap wrote:
+> 
+> 
+> On 8/21/25 11:51 AM, Sahil Chandna wrote:
+> > Fix several spelling mistakes in documentation:
+> > 
+> > - Availablity -> Availability
+> > - heirarchy  -> hierarchy
+> > - maping     -> mapping
+> > Findings are based on v6.17-rc2.
+> > 
+> > Signed-off-by: Sahil Chandna <chandna.linuxkernel@gmail.com>
+> > ---
+> >  Documentation/admin-guide/cgroup-v2.rst                  | 2 +-
+> >  Documentation/filesystems/bcachefs/future/idle_work.rst  | 6 +++---
+> >  Documentation/filesystems/xfs/xfs-online-fsck-design.rst | 2 +-
+> >  3 files changed, 5 insertions(+), 5 deletions(-)
+> > 
+> 
+> Looks good, although there was just another patch that also fixed the maping/mapping
+> spelling for XFS.
+> 
+> And various maintainers might request that you split the patch up by
+> subsystem/filesystem (i.e., 3 patches here) unless Jon merges it as is.
+> 
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.17-rc2-fixes
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3957a5720157264dcc41415fbec7c51c4000fc2d
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+I'll take the bcachefs patch if it's split up.
 
