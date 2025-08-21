@@ -1,167 +1,104 @@
-Return-Path: <cgroups+bounces-9309-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9310-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42C81B30256
-	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 20:54:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2DEAB3028A
+	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 21:01:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 957453B0175
-	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 18:52:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7450A1CC071A
+	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 19:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8741C3451A4;
-	Thu, 21 Aug 2025 18:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A58302E266E;
+	Thu, 21 Aug 2025 19:01:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="doOtMWm+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QES3rEDO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD6DC157A48;
-	Thu, 21 Aug 2025 18:52:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6F9194C86;
+	Thu, 21 Aug 2025 19:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755802325; cv=none; b=T8P0quY53OOxF68No5jfL4y1VSc1dfKXFWsuDKXx83wHbSA8FYX9wuO0TtmzI40wObVgnae1epJyFguBJ7BfN+imPiQahS6dospfkFLC1gmpR8Di4JjiHn9mYegZdBbJ8MgpIgprScc/2E7ChJrMxa4F7+fajBuPPAqjkTLU62E=
+	t=1755802871; cv=none; b=irQoO38YLqPwZerTOcdNPl55yTSHm+CPXr+IVt5bjlWUg+LEenKPd2KqAThQUi+FEQt8ysKVA+2MXj2ySkJTd2zm4j6HyGxEJ4n1E7SEOCrLCM3XI6PiSpSI9EvE6HDk6pfqo56YVEY+Q/my3qRdz/yLVKtfDNGrnAqv2vfD0GA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755802325; c=relaxed/simple;
-	bh=rg/kDEvhXZwRvKUvqdPIc+V9sNjRhfxnVbeEH9rTFFw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bGi86PTknBJALxF+4rw/327H7Fu7K/J25ycJPqgvcz6Bm+QxoprQmLIksUSz3f3rfaT72Bd41vlM+lfpQPYprncvVdLmMoUzBBN38KDGIhKMgFUQ8a75G3MNF7sRsRuj8BaZyeVpg0oJCuqJk191liBq8u93J1FGpoWLnRrNtA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=doOtMWm+; arc=none smtp.client-ip=209.85.214.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-24616482efeso4688205ad.1;
-        Thu, 21 Aug 2025 11:52:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755802323; x=1756407123; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SEsDiCBMxIThKgCKK1ovgopu+gxDTLw7Ffj6tqKTBc8=;
-        b=doOtMWm+aKyJl6+amTavRWHacqZNcLJt10koduKqhYxUnjb4XPlo8Kpa116+oCdWxG
-         yqpNwGM7eGZ69eiZo/7fx+BQrzFFf+Spf9/0wFDc0fBVtMV3negfMiGt6l5brgIOJ5sM
-         1tBPux7Trb3g8/qZ4hyroKPkKjdDQMgYqDeIzBJq8mBAIGNGFA36zh/PHms0nnjGKz7p
-         e2IADwMkZ1jrNT5IYZth2Ae1b5dAnlt1uAkpT1Pt3vyvQu84sNaTvAKIxiIZOAKj7LMD
-         sezuQiG5NP+MqW7GlY930Td8vfCQEwLQXl70PSLq4VBpy0O8Fa0117muHCYkkH0rPEEu
-         ya1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755802323; x=1756407123;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SEsDiCBMxIThKgCKK1ovgopu+gxDTLw7Ffj6tqKTBc8=;
-        b=UXmjSfPXpK6X2uWOdn1awJ79tsTh9HvvmfFGSU8C8D9q+p/Y+I+FC+dKWb68PkUTCP
-         KcF5+5NcJDb3g8QmJpQYnaIe8DRpV7DSSvSYGKRkW//wum3Iq/vilm/QYvLdQJ6CaUos
-         IFfYqOzqQJV81OulzzjRBgHWxciN3Xc627kjOXLG0LmKoT5EQaVW4N8nTJAuq2vv53kO
-         Y8+bpxy87J1cyA8AVA4GURTvBcZSHRkxwygyflOfthQe7qlh5rVChTq+rMeTwuwsgZyv
-         JWCf8wdNJ6/aMMGMSceWN10T/AJL8kqiFfptkR646RRgFychHZMgUBBUln1HfunYPCJF
-         KYew==
-X-Forwarded-Encrypted: i=1; AJvYcCUib9YoqVA04IHhS3eIneljsmlA6BZJrnagXlIrVVleE8f2vHzgcsNZjHEzEWsaT2bapRyq1MXuyDgEXDvA@vger.kernel.org, AJvYcCUra91rN6fcHFhtV0eWr9nm0xVm1KCEUBSwo64zRvH/P523mW9q8ol9rJImJQ/kouTrgxliE5cW@vger.kernel.org, AJvYcCV9WyYv7x1Qn70shocDpuNHC5PmNBGqYgrG9qeevGP8xTQOO5bXOMzPWoy8NNt7j0fxdNbBMk1OcxmO@vger.kernel.org, AJvYcCWVvkvAsmZsXG6b36f0x4dAoMouDMpgRKPvId24b5jqcAjaA/XcNTAlnuxApnVfZw0Lm/Xfgo5JrIsv@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRMXTjgKOF+ZMXvZk+ixj+3ajdUAa4RTIDtyNe4DoMh/aiZN0s
-	6QZJ+1h4qQQBP5nn+nj/6L7xoMCzymZBQWNHaTqZnhdKKTk+wck3VFOp8BM65BeKNEU=
-X-Gm-Gg: ASbGncuONBwC9BcL2iJSGDpZfrtIAof0bgnE0Fw6ZOCbiO89o58ebgyp7/ur04DdSEr
-	fkX8nLTe5F5RlxlJmlm/HTzmFzTxEwpdA+aHibVUoZTh4UhZBui8sUhL96ZCFzqh7BtLg+Xhojq
-	sXCP2JdWxDQKUDCB+DMrskGfB1x0W09NzPFFzXNHZHGydNKBpKi5/ZyCLwCjf23ElS4Pp2SwtgX
-	xw/cKRQCUD5Kfttl7xb6vP/rHN5yrcAE5VHwPiigv+6Jb9CNuveGjoOqloNlsg6mJRT7AjtwGyx
-	wumIY0IXCzOcfvd7+uwUMYIxvVgFz4eikL4qO2NMkp1wA58qgzWwt+kl0oSyHUETlL2/INIwvDV
-	laItiE04FH9rjHxYMhBbPh2igT9sPyPqhDaR/FVhj9MvBrUfVKwfn+0akLNvVTk+txQ==
-X-Google-Smtp-Source: AGHT+IH/aXJyxQ0KAGjciL/p9SJZ07FKZiRVvEFDDSCSKns92HHYUggbcR1QLy5gI55C4S85fXltXQ==
-X-Received: by 2002:a17:902:db0c:b0:240:10dc:b7c9 with SMTP id d9443c01a7336-2462ee2ba4dmr4120325ad.9.1755802322934;
-        Thu, 21 Aug 2025 11:52:02 -0700 (PDT)
-Received: from chandna-HP-Laptop-15s-fq2xxx.. ([2401:4900:1cb5:9824:c72c:ee5d:1c89:315f])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2462eaca84fsm2573365ad.151.2025.08.21.11.51.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Aug 2025 11:52:02 -0700 (PDT)
-From: Sahil Chandna <chandna.linuxkernel@gmail.com>
-To: corbet@lwn.net,
-	linux-doc@vger.kernel.org,
-	kent.overstreet@linux.dev,
-	tj@kernel.org,
-	cem@kernel.org
-Cc: linux-bcachefs@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	chandna.linuxkernel@gmail.com
-Subject: [PATCH] Documentation: Fix documentation typos
-Date: Fri, 22 Aug 2025 00:21:45 +0530
-Message-Id: <20250821185145.18944-1-chandna.linuxkernel@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1755802871; c=relaxed/simple;
+	bh=kiYzv+ykBbvja6WLcNzMdnPOi5+QDzOSzNFg2/Lw1p0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TaZgFYthL/7u3ZsPgluomFJT5h26G5NOLLVZxDZRDJup0Giq6cZJGgOj71FhJ5VQaCfEcjHackQq54PWm/yQnk3Z1sFoYokOUMal2dJtPEAT42f/dvOrcqfywPh7sM4Jod7hNVcho3W3aQZr8o5hoR+yW86mc7ZFhyPjzMBy6sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QES3rEDO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC5FEC4CEF4;
+	Thu, 21 Aug 2025 19:01:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755802870;
+	bh=kiYzv+ykBbvja6WLcNzMdnPOi5+QDzOSzNFg2/Lw1p0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QES3rEDO+3c6yUOGupyuUJfdk9b9h8kSq4WuOBkqfPA4BaiOsmfR8Di3TEGSaB3is
+	 5jZNJ9pdIJuvkIsdP1nVmGpEmLIaFF49HRMYA7/2zkSaClt2uQgjhRLXxG4x1n/41Z
+	 XmBmoIYH+75mRIDahJJqXCm2LXtC9EsNlANX/hdtFtOcaCt2b73FSXPqjuCHJ3KX/U
+	 +3ZDjyUAQ1Qw3Um63jwSYF01wvTuT8tT84bIkWhylMzZ332AsbB7lEG5ro6jn/8aTD
+	 /G9Dn92fZhTyait9Az/66sK1pBh8vJh6gJaK+irYmREzLUOzB8Rn5ba5sVWtMANotE
+	 bOSvoUkC4CJFg==
+Date: Thu, 21 Aug 2025 09:01:09 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Julian Sun <sunjunchao@bytedance.com>
+Cc: linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	jack@suse.cz, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, axboe@kernel.dk
+Subject: Re: [External] Re: [PATCH] memcg: Don't wait writeback completion
+ when release memcg.
+Message-ID: <aKds9ZMUTC8VztEt@slm.duckdns.org>
+References: <20250820111940.4105766-1-sunjunchao@bytedance.com>
+ <20250820111940.4105766-4-sunjunchao@bytedance.com>
+ <aKY2-sTc5qQmdea4@slm.duckdns.org>
+ <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
+ <aKdQgIvZcVCJWMXl@slm.duckdns.org>
+ <CAHSKhtdhj-AuApc8yw+wDNNHMRH-XNMVD=8G7Mk_=1o2FQASQg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHSKhtdhj-AuApc8yw+wDNNHMRH-XNMVD=8G7Mk_=1o2FQASQg@mail.gmail.com>
 
-Fix several spelling mistakes in documentation:
+Hello,
 
-- Availablity -> Availability
-- heirarchy  -> hierarchy
-- maping     -> mapping
-Findings are based on v6.17-rc2.
+On Fri, Aug 22, 2025 at 02:00:10AM +0800, Julian Sun wrote:
+...
+> Do you mean logic like this?
+> 
+>     for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
+>         wb_wait_for_completion(&memcg->cgwb_frn[i].done);
+>     kfree(memcg);
+> 
+> But there still exist task hang issues as long as
+> wb_wait_for_completion() exists.
 
-Signed-off-by: Sahil Chandna <chandna.linuxkernel@gmail.com>
----
- Documentation/admin-guide/cgroup-v2.rst                  | 2 +-
- Documentation/filesystems/bcachefs/future/idle_work.rst  | 6 +++---
- Documentation/filesystems/xfs/xfs-online-fsck-design.rst | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+Ah, right. I was just thinking about the workqueue being stalled. The
+problem is that the wait itself is too long.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index d9d3cc7df348..29172f03b863 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -435,7 +435,7 @@ both cgroups.
- Controlling Controllers
- -----------------------
- 
--Availablity
-+Availability
- ~~~~~~~~~~~
- 
- A controller is available in a cgroup when it is supported by the kernel (i.e.,
-diff --git a/Documentation/filesystems/bcachefs/future/idle_work.rst b/Documentation/filesystems/bcachefs/future/idle_work.rst
-index 59a332509dcd..f1202113dde0 100644
---- a/Documentation/filesystems/bcachefs/future/idle_work.rst
-+++ b/Documentation/filesystems/bcachefs/future/idle_work.rst
-@@ -11,10 +11,10 @@ idle" so the system can go to sleep. We don't want to be dribbling out
- background work while the system should be idle.
- 
- The complicating factor is that there are a number of background tasks, which
--form a heirarchy (or a digraph, depending on how you divide it up) - one
-+form a hierarchy (or a digraph, depending on how you divide it up) - one
- background task may generate work for another.
- 
--Thus proper idle detection needs to model this heirarchy.
-+Thus proper idle detection needs to model this hierarchy.
- 
- - Foreground writes
- - Page cache writeback
-@@ -51,7 +51,7 @@ IDLE REGIME
- When the system becomes idle, we should start flushing our pending work
- quicker so the system can go to sleep.
- 
--Note that the definition of "idle" depends on where in the heirarchy a task
-+Note that the definition of "idle" depends on where in the hierarchy a task
- is - a task should start flushing work more quickly when the task above it has
- stopped generating new work.
- 
-diff --git a/Documentation/filesystems/xfs/xfs-online-fsck-design.rst b/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
-index e231d127cd40..e872d480691b 100644
---- a/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
-+++ b/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
-@@ -4179,7 +4179,7 @@ When the exchange is initiated, the sequence of operations is as follows:
-    This will be discussed in more detail in subsequent sections.
- 
- If the filesystem goes down in the middle of an operation, log recovery will
--find the most recent unfinished maping exchange log intent item and restart
-+find the most recent unfinished mapping exchange log intent item and restart
- from there.
- This is how atomic file mapping exchanges guarantees that an outside observer
- will either see the old broken structure or the new one, and never a mismash of
+> I think the scope of impact of the current changes should be
+> manageable. I have checked all the other places where wb_queue_work()
+> is called, and their free_done values are all 0, and I also tested
+> this patch with the reproducer in [1] with kasan and kmemleak enabled.
+> The test result looks fine, so this should not have a significant
+> impact.
+> What do you think?
+
+My source of reluctance is that it's a peculiar situation where flushing of
+a cgroup takes that long due to hard throttling and the self-freeing
+mechanism isn't the prettiest thing. Do you think you can do the same thing
+through custom waitq wakeup function?
+
+Thanks.
+
 -- 
-2.34.1
-
+tejun
 
