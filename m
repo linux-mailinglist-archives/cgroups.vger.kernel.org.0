@@ -1,104 +1,100 @@
-Return-Path: <cgroups+bounces-9310-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9311-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2DEAB3028A
-	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 21:01:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C1BCB302A2
+	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 21:10:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7450A1CC071A
-	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 19:01:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BE43600F92
+	for <lists+cgroups@lfdr.de>; Thu, 21 Aug 2025 19:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A58302E266E;
-	Thu, 21 Aug 2025 19:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60D7345759;
+	Thu, 21 Aug 2025 19:10:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QES3rEDO"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FLRo7wbp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6F9194C86;
-	Thu, 21 Aug 2025 19:01:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C0C346A13;
+	Thu, 21 Aug 2025 19:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755802871; cv=none; b=irQoO38YLqPwZerTOcdNPl55yTSHm+CPXr+IVt5bjlWUg+LEenKPd2KqAThQUi+FEQt8ysKVA+2MXj2ySkJTd2zm4j6HyGxEJ4n1E7SEOCrLCM3XI6PiSpSI9EvE6HDk6pfqo56YVEY+Q/my3qRdz/yLVKtfDNGrnAqv2vfD0GA=
+	t=1755803402; cv=none; b=jXdoaQT1H1MCaQL4VnFuBOqc8b4DaEYKDxydwc6ida3z+fLsGiZBbF+327g68ebcD0OeVKdFNQyAPp+jWMvsauzmInZkbRqDVeFJ+Uf45dritbD+KNEb4Nvx02B7P8gU4ScS0MJXhw3itnQhL63Vk+hWzWRoq8Oug0maN3qcg3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755802871; c=relaxed/simple;
-	bh=kiYzv+ykBbvja6WLcNzMdnPOi5+QDzOSzNFg2/Lw1p0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TaZgFYthL/7u3ZsPgluomFJT5h26G5NOLLVZxDZRDJup0Giq6cZJGgOj71FhJ5VQaCfEcjHackQq54PWm/yQnk3Z1sFoYokOUMal2dJtPEAT42f/dvOrcqfywPh7sM4Jod7hNVcho3W3aQZr8o5hoR+yW86mc7ZFhyPjzMBy6sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QES3rEDO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC5FEC4CEF4;
-	Thu, 21 Aug 2025 19:01:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755802870;
-	bh=kiYzv+ykBbvja6WLcNzMdnPOi5+QDzOSzNFg2/Lw1p0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QES3rEDO+3c6yUOGupyuUJfdk9b9h8kSq4WuOBkqfPA4BaiOsmfR8Di3TEGSaB3is
-	 5jZNJ9pdIJuvkIsdP1nVmGpEmLIaFF49HRMYA7/2zkSaClt2uQgjhRLXxG4x1n/41Z
-	 XmBmoIYH+75mRIDahJJqXCm2LXtC9EsNlANX/hdtFtOcaCt2b73FSXPqjuCHJ3KX/U
-	 +3ZDjyUAQ1Qw3Um63jwSYF01wvTuT8tT84bIkWhylMzZ332AsbB7lEG5ro6jn/8aTD
-	 /G9Dn92fZhTyait9Az/66sK1pBh8vJh6gJaK+irYmREzLUOzB8Rn5ba5sVWtMANotE
-	 bOSvoUkC4CJFg==
-Date: Thu, 21 Aug 2025 09:01:09 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Julian Sun <sunjunchao@bytedance.com>
-Cc: linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	jack@suse.cz, hannes@cmpxchg.org, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, axboe@kernel.dk
-Subject: Re: [External] Re: [PATCH] memcg: Don't wait writeback completion
- when release memcg.
-Message-ID: <aKds9ZMUTC8VztEt@slm.duckdns.org>
-References: <20250820111940.4105766-1-sunjunchao@bytedance.com>
- <20250820111940.4105766-4-sunjunchao@bytedance.com>
- <aKY2-sTc5qQmdea4@slm.duckdns.org>
- <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
- <aKdQgIvZcVCJWMXl@slm.duckdns.org>
- <CAHSKhtdhj-AuApc8yw+wDNNHMRH-XNMVD=8G7Mk_=1o2FQASQg@mail.gmail.com>
+	s=arc-20240116; t=1755803402; c=relaxed/simple;
+	bh=RqaKHsUnY8ZpE16ezGuvNa6u2HglQRzPt+MIDv+XSik=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sKTQJaPpUdOrWGd1XSMExgG/2d9ziOQDuLHj1lS6O7TvjTgqoitqbHnBya8cD1GzYvXvapE8UY/6ue4N+p35W7UbLizOIkQfcAppS3U/4hlbw7Y60arhAo2NBzEipQhbGcJlhfL/Ap4uw4cGJGUx+bVyipczNwEFv8dN8oFOrw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FLRo7wbp; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=AZd0cgU/MbuYTGO6sr/f9a7i3dIJ9uqk3pbudrbqon4=; b=FLRo7wbpbNYwSsQW69+1lbiJKd
+	p1kfY3fzg5EbM15+8HYEYzoJryC1zsHxTYFajiqtqqXE35tEaObAUtWhU0yV36NoTicov8m37Br2Q
+	Mk4gMZWLA2togwH4iUyY+R1axjbWGR3D1A5PYHsRG2KridoJrnk5DUTa/FS8vcwhVRvU3lkDZ+rZZ
+	fDFMUX/zLYZAwyKySCy7Wn5OR9MiTg9jRZcFPC5TzAHJwIB2a9iPw7x3ycCnQ8aHfXXQgstE5XyY3
+	i8yiyMEKgdLb4pIzi3eJt88kmDm4haEfwFdY1/Sov7rAyjE7GPYROAkEeYBeAay2Tx79wvV6KZ731
+	dtXtcOLA==;
+Received: from [50.53.25.54] (helo=[192.168.254.17])
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1upAfe-00000000E2q-3f3j;
+	Thu, 21 Aug 2025 19:09:58 +0000
+Message-ID: <4cae933a-d171-48aa-a854-b4323d10b347@infradead.org>
+Date: Thu, 21 Aug 2025 12:09:57 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHSKhtdhj-AuApc8yw+wDNNHMRH-XNMVD=8G7Mk_=1o2FQASQg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Documentation: Fix documentation typos
+To: Sahil Chandna <chandna.linuxkernel@gmail.com>, corbet@lwn.net,
+ linux-doc@vger.kernel.org, kent.overstreet@linux.dev, tj@kernel.org,
+ cem@kernel.org
+Cc: linux-bcachefs@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ skhan@linuxfoundation.org
+References: <20250821185145.18944-1-chandna.linuxkernel@gmail.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20250821185145.18944-1-chandna.linuxkernel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
 
-On Fri, Aug 22, 2025 at 02:00:10AM +0800, Julian Sun wrote:
-...
-> Do you mean logic like this?
+
+On 8/21/25 11:51 AM, Sahil Chandna wrote:
+> Fix several spelling mistakes in documentation:
 > 
->     for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
->         wb_wait_for_completion(&memcg->cgwb_frn[i].done);
->     kfree(memcg);
+> - Availablity -> Availability
+> - heirarchy  -> hierarchy
+> - maping     -> mapping
+> Findings are based on v6.17-rc2.
 > 
-> But there still exist task hang issues as long as
-> wb_wait_for_completion() exists.
+> Signed-off-by: Sahil Chandna <chandna.linuxkernel@gmail.com>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst                  | 2 +-
+>  Documentation/filesystems/bcachefs/future/idle_work.rst  | 6 +++---
+>  Documentation/filesystems/xfs/xfs-online-fsck-design.rst | 2 +-
+>  3 files changed, 5 insertions(+), 5 deletions(-)
+> 
 
-Ah, right. I was just thinking about the workqueue being stalled. The
-problem is that the wait itself is too long.
+Looks good, although there was just another patch that also fixed the maping/mapping
+spelling for XFS.
 
-> I think the scope of impact of the current changes should be
-> manageable. I have checked all the other places where wb_queue_work()
-> is called, and their free_done values are all 0, and I also tested
-> this patch with the reproducer in [1] with kasan and kmemleak enabled.
-> The test result looks fine, so this should not have a significant
-> impact.
-> What do you think?
+And various maintainers might request that you split the patch up by
+subsystem/filesystem (i.e., 3 patches here) unless Jon merges it as is.
 
-My source of reluctance is that it's a peculiar situation where flushing of
-a cgroup takes that long due to hard throttling and the self-freeing
-mechanism isn't the prettiest thing. Do you think you can do the same thing
-through custom waitq wakeup function?
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-Thanks.
-
+thanks.
 -- 
-tejun
+~Randy
 
