@@ -1,798 +1,120 @@
-Return-Path: <cgroups+bounces-9319-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9320-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00611B30AE0
-	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 03:39:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACA5AB30B8F
+	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 04:08:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DB2FB4E32D8
-	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 01:39:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AD65566B55
+	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 02:04:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F2E1CAA6C;
-	Fri, 22 Aug 2025 01:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ahTJ3SmI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62BCB1E3762;
+	Fri, 22 Aug 2025 01:57:58 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8529E1B6CE9
-	for <cgroups@vger.kernel.org>; Fri, 22 Aug 2025 01:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68981DE8A0;
+	Fri, 22 Aug 2025 01:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755826739; cv=none; b=t8Y5Rp6JejDKu1VJfC7mj+DjQloeaXnn2P1TWThsqMxTZvVDpYgLy0S+kqmpwp2Z50/Ef6V9U/MaZIjzZKiF+Ip7s16sZRtPO59FIeawwNz80jRW7HVKhIEa+CDhrLkQU2xcI0zBW+XhDRLIz6f8b2GV3PQlLMaPG9hCKrjoG3Y=
+	t=1755827878; cv=none; b=GdceEzNCFIv4F7jKROpXJVSG+n1w5/YZkFY8nfdVPse4zXcAz2RGJAAXo9AtT5jkortocrnHHStwfdyppgL8i8oI/db9VG2KvnmwWiGoSgkMkR7EeosUYBKh0q1X9h81MSVbEGfmDVS97Lk3jVGaj3CQv/qEtn7llEimF3GA20k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755826739; c=relaxed/simple;
-	bh=cMyDPM6lVeJMVaG2qjywrXR4bPYrAG96UhN1uXVEBsI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=bSRTYnm1YTdG2s32nwOQQorrumLdzegdwVDkrP79OGYQcubaUcPThs7x8GtdfTeHLMN+alkelWiTHG6D8LQLgTdS5XIIioCYEtYvlY7ZPTWwspgEtyJJpbN+GqbTWUms462PkGSKxs7WvoLkTBFR7zp07UeTbwlOHtJTPPlYyZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ahTJ3SmI; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-24457f42254so36066005ad.0
-        for <cgroups@vger.kernel.org>; Thu, 21 Aug 2025 18:38:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1755826737; x=1756431537; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zMDg/uAc5+RsTMY4md2v1ID7410l0nb81E+3UmfaUqY=;
-        b=ahTJ3SmI8eELS6VwSVRdfBpoug9T8+EST9AvGn0m5IZvOiZTHorp30o6FgPyJm74UX
-         GDvMBS+/xTB6SQQNMCt0wpya1n5U7swGjr6UI9N0X863nepyM2TlurC6Gj+Gh3F4OdGN
-         1v8TaoRol/2dFSGA+IzIqr+EWPAYHYk+GOdPja5rN60P4VF5Zj//TZtvgc28Ivj7cZd6
-         Q6NytikVF+W/JTlsMLWEuLpIVvHMaGB95lhT4eiqhzoS1Po+xuQjexL2Akr/jRUG0+xu
-         uKpxPIunrTRljILNpxq+vFRq3s8W12/OBY1WLFzi6GW2tV3Sb9it/n3Hl4EZe9YamH6o
-         f+nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755826737; x=1756431537;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zMDg/uAc5+RsTMY4md2v1ID7410l0nb81E+3UmfaUqY=;
-        b=ob/t0awzay+msXjZEiZZM2CKMQPpZ9K7j/2qOjSlAc0lexgWHhEkIgjO2+Gqjn9tZW
-         DwDq6byH/ZgHnUP1IECKAqNslfZx0ZmFZ9wGXnkm5mKtn0UUh9tZndWRlpc8IL/Jmneg
-         Co6AZ3jDD4tzPt7FDX+4uROjltLWLTpXpjucAtPaDYb7x+qZhCLnqZ575QX+19ZyzS9b
-         25K7LviucC55KeUofdWhkJiuaZzXU+dSj8aC9OpePdCLgT9T+zPkG3iWASUHRJcJzYhN
-         FUBOLio0ox2+Pb4ck1III2YpjW0N7dQIs77mo8vKa1UDvnBLhkL63NjF9wz3j08S9sot
-         GD0w==
-X-Forwarded-Encrypted: i=1; AJvYcCUkn7w+zGBTo8CJp3to74b0Lx2/6M6d9924QjoK2btnQJWbt4On+0V0kN8DW8iGb3pAIO0veaQt@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZfCrMg7iXCtFxMAhXMg+bfCfs17k+b+lrPb3puzxdg3Yeo0Pj
-	m1B7xtQULKCeNDLZKmv4iD2E7xmhUwKCne3ilj7gLIQmFIlFGtges/AS7hIj80MAGRLRdqqnM2j
-	2ZLZIUkfCLw==
-X-Google-Smtp-Source: AGHT+IFb1w489F3f4jLCNYnaL1YiWRdZ4hvvhOBlLgEi34xYiBkeRh4NlmcN4ipV7dXI4J8WtLETF6fELCn/
-X-Received: from plev24.prod.google.com ([2002:a17:903:31d8:b0:246:222a:4ddf])
- (user=ynaffit job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:d507:b0:240:7308:aecb
- with SMTP id d9443c01a7336-2462ef1d587mr14551615ad.32.1755826736773; Thu, 21
- Aug 2025 18:38:56 -0700 (PDT)
-Date: Thu, 21 Aug 2025 18:37:53 -0700
-In-Reply-To: <20250822013749.3268080-6-ynaffit@google.com>
+	s=arc-20240116; t=1755827878; c=relaxed/simple;
+	bh=yRDbTmQNyPNYdmnA/vgKUgB0b/pHIH588KMyZCw5plA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tJd39S76MJro7QcFg2z5tbPmjLwDUv6yvTznBWKkxH/gX2P/Bxf4N+YjteT2RLtxCZwpqhPl4ftEyTCBkNhGQM/n5gShSJGlRQNRJJsBkJtPCoLRflBr2n15NOpRr4GIQqk259/NYtEL1iIKvKZnjQfpB++jXztUjlYRRMpiKWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c7Ncf3V0TzYQtqB;
+	Fri, 22 Aug 2025 09:57:54 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 0FB161A158A;
+	Fri, 22 Aug 2025 09:57:53 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP4 (Coremail) with SMTP id gCh0CgC3fg+fzqdoemr_EQ--.16884S2;
+	Fri, 22 Aug 2025 09:57:52 +0800 (CST)
+Message-ID: <38ef3ff9-b380-44f0-9315-8b3714b0948d@huaweicloud.com>
+Date: Fri, 22 Aug 2025 09:57:51 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250822013749.3268080-6-ynaffit@google.com>
-X-Mailer: git-send-email 2.51.0.rc2.233.g662b1ed5c5-goog
-Message-ID: <20250822013749.3268080-8-ynaffit@google.com>
-Subject: [PATCH v4 2/2] cgroup: selftests: Add tests for freezer time
-From: Tiffany Yang <ynaffit@google.com>
-To: linux-kernel@vger.kernel.org
-Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Stephen Boyd <sboyd@kernel.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
-	Frederic Weisbecker <frederic@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Chen Ridong <chenridong@huawei.com>, 
-	kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] kernfs: Fix UAF in PSI polling when open file is released
+To: Tejun Heo <tj@kernel.org>
+Cc: Baokun Li <libaokun1@huawei.com>, cgroups@vger.kernel.org,
+ chenridong@huawei.com, gregkh@linuxfoundation.org, hannes@cmpxchg.org,
+ linux-kernel@vger.kernel.org, lujialin4@huawei.com, mkoutny@suse.com,
+ peterz@infradead.org, zhouchengming@bytedance.com,
+ Yang Erkun <yangerkun@huawei.com>
+References: <20250815013429.1255241-1-chenridong@huaweicloud.com>
+ <0319ee9b-ce2c-4c02-a731-c538afcf008f@huawei.com>
+ <e485b38a-183b-42c8-9aed-9c2d939add0b@huaweicloud.com>
+ <aKUo7BuX-teh4IzF@slm.duckdns.org>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <aKUo7BuX-teh4IzF@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgC3fg+fzqdoemr_EQ--.16884S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFW8KrW7Jr13CryktF43Jrb_yoWDCwb_G3
+	y0yrZ8AwnrJa1xCa13JrsIvr92qay5ZFnxJw4rX3yxK3s5Aa4DJFyfXr93Wr15G3yUGr9x
+	KFnYqFyvy347ZjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-Test cgroup v2 freezer time stat. Freezer time accounting should
-be independent of other cgroups in the hierarchy and should increase
-iff a cgroup is CGRP_FREEZE (regardless of whether it reaches
-CGRP_FROZEN).
 
-Skip these tests on systems without freeze time accounting.
 
-Signed-off-by: Tiffany Yang <ynaffit@google.com>
-Cc: Michal Koutn=C3=BD <mkoutny@suse.com>
----
-v3 -> v4:
-* Clean up logic around skipping selftests and decrease granularity of
-  sleep times, as suggested by Michal.
----
- tools/testing/selftests/cgroup/test_freezer.c | 663 ++++++++++++++++++
- 1 file changed, 663 insertions(+)
+On 2025/8/20 9:46, Tejun Heo wrote:
+> Hello,
+> 
+> On Mon, Aug 18, 2025 at 04:00:08PM +0800, Chen Ridong wrote:
+>>> A potential solution is to make the lifecycles of cgroup_file_ctx and
+>>> psi_trigger match the struct kernfs_open_file they're associated with.
+>>> Maybe we could just get rid of the kernfs_release_file call in
+>>> kernfs_drain_open_files?
+>>>
+>>
+>> Hi, Tj, what do you think about this solution?
+> 
+> So, I think it's really fragile for a killed (drained) kernfs_open_file to
+> be reused after the corresponding @kn is resurrected. Once killed, that file
+> should stay dead. I think it'd be best if we can do this in a generic manner
+> rather than trying to fix it only for poll.
+> 
+> kernfs_get_active() is the thing which gates active operations on the file.
+> Maybe we can add a wrapper, say, kernfs_get_active_of(struct
+> kernfs_open_file *of) which returns NULL if @of has already been killed or
+> the underlying @kn can't be activated?
+> 
+> Thanks.
+> 
 
-diff --git a/tools/testing/selftests/cgroup/test_freezer.c b/tools/testing/=
-selftests/cgroup/test_freezer.c
-index 8730645d363a..dfb763819581 100644
---- a/tools/testing/selftests/cgroup/test_freezer.c
-+++ b/tools/testing/selftests/cgroup/test_freezer.c
-@@ -804,6 +804,662 @@ static int test_cgfreezer_vfork(const char *root)
- 	return ret;
- }
-=20
-+/*
-+ * Get the current frozen_usec for the cgroup.
-+ */
-+static long cg_check_freezetime(const char *cgroup)
-+{
-+	return cg_read_key_long(cgroup, "cgroup.stat.local",
-+				"frozen_usec ");
-+}
-+
-+/*
-+ * Test that the freeze time will behave as expected for an empty cgroup.
-+ */
-+static int test_cgfreezer_time_empty(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *cgroup =3D NULL;
-+	long prev, curr;
-+
-+	cgroup =3D cg_name(root, "cg_time_test_empty");
-+	if (!cgroup)
-+		goto cleanup;
-+
-+	/*
-+	 * 1) Create an empty cgroup and check that its freeze time
-+	 *    is 0.
-+	 */
-+	if (cg_create(cgroup))
-+		goto cleanup;
-+
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr < 0) {
-+		ret =3D KSFT_SKIP;
-+		goto cleanup;
-+	}
-+	if (curr > 0) {
-+		debug("Expect time (%ld) to be 0\n", curr);
-+		goto cleanup;
-+	}
-+
-+	if (cg_freeze_nowait(cgroup, true))
-+		goto cleanup;
-+
-+	/*
-+	 * 2) Sleep for 1000 us. Check that the freeze time is at
-+	 *    least 1000 us.
-+	 */
-+	usleep(1000);
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr < 1000) {
-+		debug("Expect time (%ld) to be at least 1000 us\n",
-+		      curr);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 3) Unfreeze the cgroup. Check that the freeze time is
-+	 *    larger than at 2).
-+	 */
-+	if (cg_freeze_nowait(cgroup, false))
-+		goto cleanup;
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr <=3D prev) {
-+		debug("Expect time (%ld) to be more than previous check (%ld)\n",
-+		      curr, prev);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 4) Check the freeze time again to ensure that it has not
-+	 *    changed.
-+	 */
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr !=3D prev) {
-+		debug("Expect time (%ld) to be unchanged from previous check (%ld)\n",
-+		      curr, prev);
-+		goto cleanup;
-+	}
-+
-+	ret =3D KSFT_PASS;
-+
-+cleanup:
-+	if (cgroup)
-+		cg_destroy(cgroup);
-+	free(cgroup);
-+	return ret;
-+}
-+
-+/*
-+ * A simple test for cgroup freezer time accounting. This test follows
-+ * the same flow as test_cgfreezer_time_empty, but with a single process
-+ * in the cgroup.
-+ */
-+static int test_cgfreezer_time_simple(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *cgroup =3D NULL;
-+	long prev, curr;
-+
-+	cgroup =3D cg_name(root, "cg_time_test_simple");
-+	if (!cgroup)
-+		goto cleanup;
-+
-+	/*
-+	 * 1) Create a cgroup and check that its freeze time is 0.
-+	 */
-+	if (cg_create(cgroup))
-+		goto cleanup;
-+
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr < 0) {
-+		ret =3D KSFT_SKIP;
-+		goto cleanup;
-+	}
-+	if (curr > 0) {
-+		debug("Expect time (%ld) to be 0\n", curr);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 2) Populate the cgroup with one child and check that the
-+	 *    freeze time is still 0.
-+	 */
-+	cg_run_nowait(cgroup, child_fn, NULL);
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr > prev) {
-+		debug("Expect time (%ld) to be 0\n", curr);
-+		goto cleanup;
-+	}
-+
-+	if (cg_freeze_nowait(cgroup, true))
-+		goto cleanup;
-+
-+	/*
-+	 * 3) Sleep for 1000 us. Check that the freeze time is at
-+	 *    least 1000 us.
-+	 */
-+	usleep(1000);
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr < 1000) {
-+		debug("Expect time (%ld) to be at least 1000 us\n",
-+		      curr);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 4) Unfreeze the cgroup. Check that the freeze time is
-+	 *    larger than at 3).
-+	 */
-+	if (cg_freeze_nowait(cgroup, false))
-+		goto cleanup;
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr <=3D prev) {
-+		debug("Expect time (%ld) to be more than previous check (%ld)\n",
-+		      curr, prev);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 5) Sleep for 1000 us. Check that the freeze time is the
-+	 *    same as at 4).
-+	 */
-+	usleep(1000);
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr !=3D prev) {
-+		debug("Expect time (%ld) to be unchanged from previous check (%ld)\n",
-+		      curr, prev);
-+		goto cleanup;
-+	}
-+
-+	ret =3D KSFT_PASS;
-+
-+cleanup:
-+	if (cgroup)
-+		cg_destroy(cgroup);
-+	free(cgroup);
-+	return ret;
-+}
-+
-+/*
-+ * Test that freezer time accounting works as expected, even while we're
-+ * populating a cgroup with processes.
-+ */
-+static int test_cgfreezer_time_populate(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *cgroup =3D NULL;
-+	long prev, curr;
-+	int i;
-+
-+	cgroup =3D cg_name(root, "cg_time_test_populate");
-+	if (!cgroup)
-+		goto cleanup;
-+
-+	if (cg_create(cgroup))
-+		goto cleanup;
-+
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr < 0) {
-+		ret =3D KSFT_SKIP;
-+		goto cleanup;
-+	}
-+	if (curr > 0) {
-+		debug("Expect time (%ld) to be 0\n", curr);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 1) Populate the cgroup with 100 processes. Check that
-+	 *    the freeze time is 0.
-+	 */
-+	for (i =3D 0; i < 100; i++)
-+		cg_run_nowait(cgroup, child_fn, NULL);
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr !=3D prev) {
-+		debug("Expect time (%ld) to be 0\n", curr);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 2) Wait for the group to become fully populated. Check
-+	 *    that the freeze time is 0.
-+	 */
-+	if (cg_wait_for_proc_count(cgroup, 100))
-+		goto cleanup;
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr !=3D prev) {
-+		debug("Expect time (%ld) to be 0\n", curr);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 3) Freeze the cgroup and then populate it with 100 more
-+	 *    processes. Check that the freeze time continues to grow.
-+	 */
-+	if (cg_freeze_nowait(cgroup, true))
-+		goto cleanup;
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr <=3D prev) {
-+		debug("Expect time (%ld) to be more than previous check (%ld)\n",
-+		      curr, prev);
-+		goto cleanup;
-+	}
-+
-+	for (i =3D 0; i < 100; i++)
-+		cg_run_nowait(cgroup, child_fn, NULL);
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr <=3D prev) {
-+		debug("Expect time (%ld) to be more than previous check (%ld)\n",
-+		      curr, prev);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 4) Wait for the group to become fully populated. Check
-+	 *    that the freeze time is larger than at 3).
-+	 */
-+	if (cg_wait_for_proc_count(cgroup, 200))
-+		goto cleanup;
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr <=3D prev) {
-+		debug("Expect time (%ld) to be more than previous check (%ld)\n",
-+		      curr, prev);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 5) Unfreeze the cgroup. Check that the freeze time is
-+	 *    larger than at 4).
-+	 */
-+	if (cg_freeze_nowait(cgroup, false))
-+		goto cleanup;
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr <=3D prev) {
-+		debug("Expect time (%ld) to be more than previous check (%ld)\n",
-+		      curr, prev);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 6) Kill the processes. Check that the freeze time is the
-+	 *    same as it was at 5).
-+	 */
-+	if (cg_killall(cgroup))
-+		goto cleanup;
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr !=3D prev) {
-+		debug("Expect time (%ld) to be unchanged from previous check (%ld)\n",
-+		      curr, prev);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * 7) Freeze and unfreeze the cgroup. Check that the freeze
-+	 *    time is larger than it was at 6).
-+	 */
-+	if (cg_freeze_nowait(cgroup, true))
-+		goto cleanup;
-+	if (cg_freeze_nowait(cgroup, false))
-+		goto cleanup;
-+	prev =3D curr;
-+	curr =3D cg_check_freezetime(cgroup);
-+	if (curr <=3D prev) {
-+		debug("Expect time (%ld) to be more than previous check (%ld)\n",
-+		      curr, prev);
-+		goto cleanup;
-+	}
-+
-+	ret =3D KSFT_PASS;
-+
-+cleanup:
-+	if (cgroup)
-+		cg_destroy(cgroup);
-+	free(cgroup);
-+	return ret;
-+}
-+
-+/*
-+ * Test that frozen time for a cgroup continues to work as expected,
-+ * even as processes are migrated. Frozen cgroup A's freeze time should
-+ * continue to increase and running cgroup B's should stay 0.
-+ */
-+static int test_cgfreezer_time_migrate(const char *root)
-+{
-+	long prev_A, curr_A, curr_B;
-+	char *cgroup[2] =3D {0};
-+	int ret =3D KSFT_FAIL;
-+	int pid;
-+
-+	cgroup[0] =3D cg_name(root, "cg_time_test_migrate_A");
-+	if (!cgroup[0])
-+		goto cleanup;
-+
-+	cgroup[1] =3D cg_name(root, "cg_time_test_migrate_B");
-+	if (!cgroup[1])
-+		goto cleanup;
-+
-+	if (cg_create(cgroup[0]))
-+		goto cleanup;
-+
-+	if (cg_check_freezetime(cgroup[0]) < 0) {
-+		ret =3D KSFT_SKIP;
-+		goto cleanup;
-+	}
-+
-+	if (cg_create(cgroup[1]))
-+		goto cleanup;
-+
-+	pid =3D cg_run_nowait(cgroup[0], child_fn, NULL);
-+	if (pid < 0)
-+		goto cleanup;
-+
-+	if (cg_wait_for_proc_count(cgroup[0], 1))
-+		goto cleanup;
-+
-+	curr_A =3D cg_check_freezetime(cgroup[0]);
-+	if (curr_A) {
-+		debug("Expect time (%ld) to be 0\n", curr_A);
-+		goto cleanup;
-+	}
-+	curr_B =3D cg_check_freezetime(cgroup[1]);
-+	if (curr_B) {
-+		debug("Expect time (%ld) to be 0\n", curr_B);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * Freeze cgroup A.
-+	 */
-+	if (cg_freeze_wait(cgroup[0], true))
-+		goto cleanup;
-+	prev_A =3D curr_A;
-+	curr_A =3D cg_check_freezetime(cgroup[0]);
-+	if (curr_A <=3D prev_A) {
-+		debug("Expect time (%ld) to be > 0\n", curr_A);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * Migrate from A (frozen) to B (running).
-+	 */
-+	if (cg_enter(cgroup[1], pid))
-+		goto cleanup;
-+
-+	usleep(1000);
-+	curr_B =3D cg_check_freezetime(cgroup[1]);
-+	if (curr_B) {
-+		debug("Expect time (%ld) to be 0\n", curr_B);
-+		goto cleanup;
-+	}
-+
-+	prev_A =3D curr_A;
-+	curr_A =3D cg_check_freezetime(cgroup[0]);
-+	if (curr_A <=3D prev_A) {
-+		debug("Expect time (%ld) to be more than previous check (%ld)\n",
-+		      curr_A, prev_A);
-+		goto cleanup;
-+	}
-+
-+	ret =3D KSFT_PASS;
-+
-+cleanup:
-+	if (cgroup[0])
-+		cg_destroy(cgroup[0]);
-+	free(cgroup[0]);
-+	if (cgroup[1])
-+		cg_destroy(cgroup[1]);
-+	free(cgroup[1]);
-+	return ret;
-+}
-+
-+/*
-+ * The test creates a cgroup and freezes it. Then it creates a child cgrou=
-p.
-+ * After that it checks that the child cgroup has a non-zero freeze time
-+ * that is less than the parent's. Next, it freezes the child, unfreezes
-+ * the parent, and sleeps. Finally, it checks that the child's freeze
-+ * time has grown larger than the parent's.
-+ */
-+static int test_cgfreezer_time_parent(const char *root)
-+{
-+	char *parent, *child =3D NULL;
-+	int ret =3D KSFT_FAIL;
-+	long ptime, ctime;
-+
-+	parent =3D cg_name(root, "cg_test_parent_A");
-+	if (!parent)
-+		goto cleanup;
-+
-+	child =3D cg_name(parent, "cg_test_parent_B");
-+	if (!child)
-+		goto cleanup;
-+
-+	if (cg_create(parent))
-+		goto cleanup;
-+
-+	if (cg_check_freezetime(parent) < 0) {
-+		ret =3D KSFT_SKIP;
-+		goto cleanup;
-+	}
-+
-+	if (cg_freeze_wait(parent, true))
-+		goto cleanup;
-+
-+	usleep(1000);
-+	if (cg_create(child))
-+		goto cleanup;
-+
-+	if (cg_check_frozen(child, true))
-+		goto cleanup;
-+
-+	/*
-+	 * Since the parent was frozen the entire time the child cgroup
-+	 * was being created, we expect the parent's freeze time to be
-+	 * larger than the child's.
-+	 *
-+	 * Ideally, we would be able to check both times simultaneously,
-+	 * but here we get the child's after we get the parent's.
-+	 */
-+	ptime =3D cg_check_freezetime(parent);
-+	ctime =3D cg_check_freezetime(child);
-+	if (ptime <=3D ctime) {
-+		debug("Expect ptime (%ld) > ctime (%ld)\n", ptime, ctime);
-+		goto cleanup;
-+	}
-+
-+	if (cg_freeze_nowait(child, true))
-+		goto cleanup;
-+
-+	if (cg_freeze_wait(parent, false))
-+		goto cleanup;
-+
-+	if (cg_check_frozen(child, true))
-+		goto cleanup;
-+
-+	usleep(100000);
-+
-+	ctime =3D cg_check_freezetime(child);
-+	ptime =3D cg_check_freezetime(parent);
-+
-+	if (ctime <=3D ptime) {
-+		debug("Expect ctime (%ld) > ptime (%ld)\n", ctime, ptime);
-+		goto cleanup;
-+	}
-+
-+	ret =3D KSFT_PASS;
-+
-+cleanup:
-+	if (child)
-+		cg_destroy(child);
-+	free(child);
-+	if (parent)
-+		cg_destroy(parent);
-+	free(parent);
-+	return ret;
-+}
-+
-+/*
-+ * The test creates a parent cgroup and a child cgroup. Then, it freezes
-+ * the child and checks that the child's freeze time is greater than the
-+ * parent's, which should be zero.
-+ */
-+static int test_cgfreezer_time_child(const char *root)
-+{
-+	char *parent, *child =3D NULL;
-+	int ret =3D KSFT_FAIL;
-+	long ptime, ctime;
-+
-+	parent =3D cg_name(root, "cg_test_child_A");
-+	if (!parent)
-+		goto cleanup;
-+
-+	child =3D cg_name(parent, "cg_test_child_B");
-+	if (!child)
-+		goto cleanup;
-+
-+	if (cg_create(parent))
-+		goto cleanup;
-+
-+	if (cg_check_freezetime(parent) < 0) {
-+		ret =3D KSFT_SKIP;
-+		goto cleanup;
-+	}
-+
-+	if (cg_create(child))
-+		goto cleanup;
-+
-+	if (cg_freeze_wait(child, true))
-+		goto cleanup;
-+
-+	ctime =3D cg_check_freezetime(child);
-+	ptime =3D cg_check_freezetime(parent);
-+	if (ptime !=3D 0) {
-+		debug("Expect ptime (%ld) to be 0\n", ptime);
-+		goto cleanup;
-+	}
-+
-+	if (ctime <=3D ptime) {
-+		debug("Expect ctime (%ld) <=3D ptime (%ld)\n", ctime, ptime);
-+		goto cleanup;
-+	}
-+
-+	ret =3D KSFT_PASS;
-+
-+cleanup:
-+	if (child)
-+		cg_destroy(child);
-+	free(child);
-+	if (parent)
-+		cg_destroy(parent);
-+	free(parent);
-+	return ret;
-+}
-+
-+/*
-+ * The test creates the following hierarchy:
-+ *    A
-+ *    |
-+ *    B
-+ *    |
-+ *    C
-+ *
-+ * Then it freezes the cgroups in the order C, B, A.
-+ * Then it unfreezes the cgroups in the order A, B, C.
-+ * Then it checks that C's freeze time is larger than B's and
-+ * that B's is larger than A's.
-+ */
-+static int test_cgfreezer_time_nested(const char *root)
-+{
-+	char *cgroup[3] =3D {0};
-+	int ret =3D KSFT_FAIL;
-+	long time[3] =3D {0};
-+	int i;
-+
-+	cgroup[0] =3D cg_name(root, "cg_test_time_A");
-+	if (!cgroup[0])
-+		goto cleanup;
-+
-+	cgroup[1] =3D cg_name(cgroup[0], "B");
-+	if (!cgroup[1])
-+		goto cleanup;
-+
-+	cgroup[2] =3D cg_name(cgroup[1], "C");
-+	if (!cgroup[2])
-+		goto cleanup;
-+
-+	if (cg_create(cgroup[0]))
-+		goto cleanup;
-+
-+	if (cg_check_freezetime(cgroup[0]) < 0) {
-+		ret =3D KSFT_SKIP;
-+		goto cleanup;
-+	}
-+
-+	if (cg_create(cgroup[1]))
-+		goto cleanup;
-+
-+	if (cg_create(cgroup[2]))
-+		goto cleanup;
-+
-+	if (cg_freeze_nowait(cgroup[2], true))
-+		goto cleanup;
-+
-+	if (cg_freeze_nowait(cgroup[1], true))
-+		goto cleanup;
-+
-+	if (cg_freeze_nowait(cgroup[0], true))
-+		goto cleanup;
-+
-+	usleep(1000);
-+
-+	if (cg_freeze_nowait(cgroup[0], false))
-+		goto cleanup;
-+
-+	if (cg_freeze_nowait(cgroup[1], false))
-+		goto cleanup;
-+
-+	if (cg_freeze_nowait(cgroup[2], false))
-+		goto cleanup;
-+
-+	time[2] =3D cg_check_freezetime(cgroup[2]);
-+	time[1] =3D cg_check_freezetime(cgroup[1]);
-+	time[0] =3D cg_check_freezetime(cgroup[0]);
-+
-+	if (time[2] <=3D time[1]) {
-+		debug("Expect C's time (%ld) > B's time (%ld)", time[2], time[1]);
-+		goto cleanup;
-+	}
-+
-+	if (time[1] <=3D time[0]) {
-+		debug("Expect B's time (%ld) > A's time (%ld)", time[1], time[0]);
-+		goto cleanup;
-+	}
-+
-+	ret =3D KSFT_PASS;
-+
-+cleanup:
-+	for (i =3D 2; i >=3D 0 && cgroup[i]; i--) {
-+		cg_destroy(cgroup[i]);
-+		free(cgroup[i]);
-+	}
-+
-+	return ret;
-+}
-+
- #define T(x) { x, #x }
- struct cgfreezer_test {
- 	int (*fn)(const char *root);
-@@ -819,6 +1475,13 @@ struct cgfreezer_test {
- 	T(test_cgfreezer_stopped),
- 	T(test_cgfreezer_ptraced),
- 	T(test_cgfreezer_vfork),
-+	T(test_cgfreezer_time_empty),
-+	T(test_cgfreezer_time_simple),
-+	T(test_cgfreezer_time_populate),
-+	T(test_cgfreezer_time_migrate),
-+	T(test_cgfreezer_time_parent),
-+	T(test_cgfreezer_time_child),
-+	T(test_cgfreezer_time_nested),
- };
- #undef T
-=20
---=20
-2.51.0.rc2.233.g662b1ed5c5-goog
+Thank you Tj,
+
+This is reasonable, I will try.
+
+-- 
+Best regards,
+Ridong
 
 
