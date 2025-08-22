@@ -1,240 +1,323 @@
-Return-Path: <cgroups+bounces-9321-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9322-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC238B30E44
-	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 07:45:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E47FB30E9A
+	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 08:14:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA2767B9791
-	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 05:44:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DE4C5E64EB
+	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 06:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E542E265B;
-	Fri, 22 Aug 2025 05:45:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8B62E3718;
+	Fri, 22 Aug 2025 06:14:35 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929FA20E033
-	for <cgroups@vger.kernel.org>; Fri, 22 Aug 2025 05:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481C42E2DDC;
+	Fri, 22 Aug 2025 06:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755841529; cv=none; b=fszjFSVEmVHABnafZFLkBR1be4M2EZkx13XHGiyfNEmyil2vojgrdvFPZp5KZ8ZoZIkoyTBMo+uFzvQwSAmeMw1a2T2WB2QZuqR8dwGhssLWKq0Qrmnx7jTGBhkhsgmf4O972lK/qyIpUPJ3dynT3FINlR8fe1vQsrIItzAMP+U=
+	t=1755843275; cv=none; b=W+3atl1qTE5IiTn12pu/6QRyIhfGZgNXeygmdnbB4T9qfj5QcGMoam7pJrGbeP8sZ8CmzDl9AaicKExO1TGIuW/Z6MndpyDHwWyjDA5wjdsSIHErM6GepY3DOx1Etjv4UWLou8Go+EVOfrIrdaEkij4/vUr26ph23uzcUPzLJhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755841529; c=relaxed/simple;
-	bh=C6zhtBJR1m/7kPOv2gYNp0w5HSgKglOjWakItYQ+OTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aUQmjBtPowM8s3m+2H6jPi28lVWC084wMN5vB4G5Dr84jPXVnTENomaOqbG5lENaGidbPcxM48iNX1R3Dw3DMw9+Vp5CwQ1ouq7nbFEkT33QUPTf28NGclN7jSEGlb3QYaj1avNh4Ky7LPiLOVDozRD62yIgPZvdS+1ouWea5pA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.103 with ESMTP; 22 Aug 2025 14:45:18 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Fri, 22 Aug 2025 14:45:18 +0900
-From: YoungJun Park <youngjun.park@lge.com>
-To: Chris Li <chrisl@kernel.org>
-Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, shikemeng@huaweicloud.com,
-	kasong@tencent.com, nphamcs@gmail.com, bhe@redhat.com,
-	baohua@kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, gunho.lee@lge.com,
-	iamjoonsoo.kim@lge.com, taejoon.song@lge.com,
-	Matthew Wilcox <willy@infradead.org>,
-	David Hildenbrand <david@redhat.com>,
-	Kairui Song <ryncsn@gmail.com>
-Subject: Re: [PATCH 1/4] mm/swap, memcg: Introduce infrastructure for
- cgroup-based swap priority
-Message-ID: <aKgD7nZy7U+rHt9X@yjaykim-PowerEdge-T330>
-References: <aH+apAbBCmkMGPlO@yjaykim-PowerEdge-T330>
- <aH/baxIgrBI3Z1Hl@yjaykim-PowerEdge-T330>
- <uyxkdmnmvjipxuf7gagu2okw7afvzlclomfmc6wb6tygc3mhv6@736m7xs6gn5q>
- <CAF8kJuMo3yNKOZL9n5UkHx_O5cTZts287HOnQOu=KqQcnbrMdg@mail.gmail.com>
- <aKC+EU3I/qm6TcjG@yjaykim-PowerEdge-T330>
- <CAF8kJuNuNuxxTbtkCb3Opsjfy-or7E+0AwPDi7L-EgqoraQ3Qg@mail.gmail.com>
- <aKROKZ9+z2oGUJ7K@yjaykim-PowerEdge-T330>
- <CAF8kJuPUouN4c6V-CaG7_WQUAvRxBg02WRxsMtL56_YTdTh1Jg@mail.gmail.com>
- <aKXeLCr9DgQ2YfCq@yjaykim-PowerEdge-T330>
- <CAF8kJuM4f2W6w29VcHY5mgXVMYmTF4yORKaFky6bCjS1xRek9Q@mail.gmail.com>
+	s=arc-20240116; t=1755843275; c=relaxed/simple;
+	bh=qyQp3sN+0AaapsjkGZrdF0UuXYklXfELoX5jeIZ9sx4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=vBZjcO3gql7gf15cO9Sd388E6vVA1dZ4RNWI0SnQbr8yvsY5q15SBbxXH3ExP2cSS4cRhQqK5MXCU4XH85zgdkiNjYbLCNUZMVccquqmn6ATFxr6EwnG8UIsUi+5Vz2XuA/khu1rQnvgj8LYHShmkK5pyUcUHBVTKpNAIX/Uq5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c7VJk5D52zYQvRZ;
+	Fri, 22 Aug 2025 14:14:30 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 48C5D1A19AE;
+	Fri, 22 Aug 2025 14:14:29 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP1 (Coremail) with SMTP id cCh0CgDno6_DCqho9M68EQ--.38688S2;
+	Fri, 22 Aug 2025 14:14:29 +0800 (CST)
+Message-ID: <552a7f82-2735-47a5-9abd-a9ae845f4961@huaweicloud.com>
+Date: Fri, 22 Aug 2025 14:14:27 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] cgroup: cgroup.stat.local time accounting
+To: Tiffany Yang <ynaffit@google.com>, linux-kernel@vger.kernel.org
+Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Stephen Boyd <sboyd@kernel.org>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Pavel Machek <pavel@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Chen Ridong <chenridong@huawei.com>, kernel-team@android.com,
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+ cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20250822013749.3268080-6-ynaffit@google.com>
+ <20250822013749.3268080-7-ynaffit@google.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20250822013749.3268080-7-ynaffit@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF8kJuM4f2W6w29VcHY5mgXVMYmTF4yORKaFky6bCjS1xRek9Q@mail.gmail.com>
+X-CM-TRANSID:cCh0CgDno6_DCqho9M68EQ--.38688S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jw47JrWDXF45Aw15XrW5Wrg_yoW3CrWrpa
+	1DAw13tw4FyF12grsay34qvF1Sgr48Jw4UGr9rJ348AFnxX3Wvqr1xCr15GF1UArZ7Ka4U
+	J3WY9rWfCrnFvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-I still believe that the priority based approach has more flexibility,
-and can cover more usage scenarios. That opinion has not changed.
 
-However, from this discussion I came to clearly understand and agree on
-three points:
 
-1. The swap.tier idea can be implemented in a much simpler way, and
-2. It can cover the most important use cases I initially needed, as well
-   as common performance scenarios, without causing LRU inversion.
-3. The really really needed usage scenario of arbitrary ordering does not exist.
-the usage scenario I suggest is imaginary.(just has possibility)
+On 2025/8/22 9:37, Tiffany Yang wrote:
+> There isn't yet a clear way to identify a set of "lost" time that
+> everyone (or at least a wider group of users) cares about. However,
+> users can perform some delay accounting by iterating over components of
+> interest. This patch allows cgroup v2 freezing time to be one of those
+> components.
+> 
+> Track the cumulative time that each v2 cgroup spends freezing and expose
+> it to userland via a new local stat file in cgroupfs. Thank you to
+> Michal, who provided the ASCII art in the updated documentation.
+> 
+> To access this value:
+>   $ mkdir /sys/fs/cgroup/test
+>   $ cat /sys/fs/cgroup/test/cgroup.stat.local
+>   freeze_time_total 0
+> 
+> Ensure consistent freeze time reads with freeze_seq, a per-cgroup
+> sequence counter. Writes are serialized using the css_set_lock.
+> 
+> Signed-off-by: Tiffany Yang <ynaffit@google.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Michal Koutný <mkoutny@suse.com>
+> ---
+> v3 -> v4:
+> * Replace "freeze_time_total" with "frozen" and expose stats via
+>   cgroup.stat.local, as recommended by Tejun.
+> * Use the same timestamp when freezing/unfreezing a cgroup as its
+>   descendants, as suggested by Michal.
+> 
+> v2 -> v3:
+> * Use seqcount along with css_set_lock to guard freeze time accesses, as
+>   suggested by Michal.
+> 
+> v1 -> v2:
+> * Track per-cgroup freezing time instead of per-task frozen time, as
+>   suggested by Tejun.
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 18 ++++++++++++++++
+>  include/linux/cgroup-defs.h             | 17 +++++++++++++++
+>  kernel/cgroup/cgroup.c                  | 28 +++++++++++++++++++++++++
+>  kernel/cgroup/freezer.c                 | 16 ++++++++++----
+>  4 files changed, 75 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 51c0bc4c2dc5..a1e3d431974c 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1001,6 +1001,24 @@ All cgroup core files are prefixed with "cgroup."
+>  		Total number of dying cgroup subsystems (e.g. memory
+>  		cgroup) at and beneath the current cgroup.
+>  
+> +  cgroup.stat.local
+> +	A read-only flat-keyed file which exists in non-root cgroups.
+> +	The following entry is defined:
+> +
+> +	  frozen_usec
+> +		Cumulative time that this cgroup has spent between freezing and
+> +		thawing, regardless of whether by self or ancestor groups.
+> +		NB: (not) reaching "frozen" state is not accounted here.
+> +
+> +		Using the following ASCII representation of a cgroup's freezer
+> +		state, ::
+> +
+> +			       1    _____
+> +			frozen 0 __/     \__
+> +			          ab    cd
+> +
+> +		the duration being measured is the span between a and c.
+> +
+>    cgroup.freeze
+>  	A read-write single value file which exists on non-root cgroups.
+>  	Allowed values are "0" and "1". The default is "0".
+> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+> index 6b93a64115fe..539c64eeef38 100644
+> --- a/include/linux/cgroup-defs.h
+> +++ b/include/linux/cgroup-defs.h
+> @@ -433,6 +433,23 @@ struct cgroup_freezer_state {
+>  	 * frozen, SIGSTOPped, and PTRACEd.
+>  	 */
+>  	int nr_frozen_tasks;
+> +
+> +	/* Freeze time data consistency protection */
+> +	seqcount_t freeze_seq;
+> +
+> +	/*
+> +	 * Most recent time the cgroup was requested to freeze.
+> +	 * Accesses guarded by freeze_seq counter. Writes serialized
+> +	 * by css_set_lock.
+> +	 */
+> +	u64 freeze_start_nsec;
+> +
+> +	/*
+> +	 * Total duration the cgroup has spent freezing.
+> +	 * Accesses guarded by freeze_seq counter. Writes serialized
+> +	 * by css_set_lock.
+> +	 */
+> +	u64 frozen_nsec;
+>  };
+>  
+>  struct cgroup {
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 312c6a8b55bb..ab096b884bbc 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -3763,6 +3763,27 @@ static int cgroup_stat_show(struct seq_file *seq, void *v)
+>  	return 0;
+>  }
+>  
+> +static int cgroup_core_local_stat_show(struct seq_file *seq, void *v)
+> +{
+> +	struct cgroup *cgrp = seq_css(seq)->cgroup;
+> +	unsigned int sequence;
+> +	u64 freeze_time;
+> +
+> +	do {
+> +		sequence = read_seqcount_begin(&cgrp->freezer.freeze_seq);
+> +		freeze_time = cgrp->freezer.frozen_nsec;
+> +		/* Add in current freezer interval if the cgroup is freezing. */
+> +		if (test_bit(CGRP_FREEZE, &cgrp->flags))
+> +			freeze_time += (ktime_get_ns() -
+> +					cgrp->freezer.freeze_start_nsec);
+> +	} while (read_seqcount_retry(&cgrp->freezer.freeze_seq, sequence));
+> +
+> +	seq_printf(seq, "frozen_usec %llu\n",
+> +		   (unsigned long long) freeze_time / NSEC_PER_USEC);
+> +
+> +	return 0;
+> +}
+> +
+>  #ifdef CONFIG_CGROUP_SCHED
+>  /**
+>   * cgroup_tryget_css - try to get a cgroup's css for the specified subsystem
+> @@ -5354,6 +5375,11 @@ static struct cftype cgroup_base_files[] = {
+>  		.name = "cgroup.stat",
+>  		.seq_show = cgroup_stat_show,
+>  	},
+> +	{
+> +		.name = "cgroup.stat.local",
+> +		.flags = CFTYPE_NOT_ON_ROOT,
+> +		.seq_show = cgroup_core_local_stat_show,
+> +	},
+>  	{
+>  		.name = "cgroup.freeze",
+>  		.flags = CFTYPE_NOT_ON_ROOT,
+> @@ -5763,6 +5789,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+>  	 * if the parent has to be frozen, the child has too.
+>  	 */
+>  	cgrp->freezer.e_freeze = parent->freezer.e_freeze;
+> +	seqcount_init(&cgrp->freezer.freeze_seq);
+>  	if (cgrp->freezer.e_freeze) {
+>  		/*
+>  		 * Set the CGRP_FREEZE flag, so when a process will be
+> @@ -5771,6 +5798,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+>  		 * consider it frozen immediately.
+>  		 */
+>  		set_bit(CGRP_FREEZE, &cgrp->flags);
+> +		cgrp->freezer.freeze_start_nsec = ktime_get_ns();
+>  		set_bit(CGRP_FROZEN, &cgrp->flags);
+>  	}
+>  
+> diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
+> index bf1690a167dd..6c18854bff34 100644
+> --- a/kernel/cgroup/freezer.c
+> +++ b/kernel/cgroup/freezer.c
+> @@ -171,7 +171,7 @@ static void cgroup_freeze_task(struct task_struct *task, bool freeze)
+>  /*
+>   * Freeze or unfreeze all tasks in the given cgroup.
+>   */
+> -static void cgroup_do_freeze(struct cgroup *cgrp, bool freeze)
+> +static void cgroup_do_freeze(struct cgroup *cgrp, bool freeze, u64 ts_nsec)
+>  {
+>  	struct css_task_iter it;
+>  	struct task_struct *task;
+> @@ -179,10 +179,16 @@ static void cgroup_do_freeze(struct cgroup *cgrp, bool freeze)
+>  	lockdep_assert_held(&cgroup_mutex);
+>  
+>  	spin_lock_irq(&css_set_lock);
+> -	if (freeze)
+> +	write_seqcount_begin(&cgrp->freezer.freeze_seq);
+> +	if (freeze) {
+>  		set_bit(CGRP_FREEZE, &cgrp->flags);
+> -	else
+> +		cgrp->freezer.freeze_start_nsec = ts_nsec;
+> +	} else {
+>  		clear_bit(CGRP_FREEZE, &cgrp->flags);
+> +		cgrp->freezer.frozen_nsec += (ts_nsec -
+> +			cgrp->freezer.freeze_start_nsec);
+> +	}
+> +	write_seqcount_end(&cgrp->freezer.freeze_seq);
+>  	spin_unlock_irq(&css_set_lock);
+> 
 
-I have also considered the situation where I might need to revisit my
-original idea in the future. I believe this would still be manageable
-within the swap.tier framework. For example:
+Hello Tiffany,
 
-* If after swap.tier is merged, an arbitrate ordering use case arises
-  (which you do not consider concrete), it could be solved by allowing
-  cgroups to remap the tier order individually.
+I wanted to check if there are any specific considerations regarding how we should input the ts_nsec
+value.
 
-* If reviewers later decide to go back to the priority based direction,
-  I think it will still be possible. By then, much of the work would
-  already be done in patch v2, so switching back would not be
-  impossible.
+Would it be possible to define this directly within the cgroup_do_freeze function rather than
+passing it as a parameter? This approach might simplify the implementation and potentially improve
+timing accuracy when it have lots of descendants.
 
-And also, since I highly respect you for long-time contributions and
-deep thinking in the swap layer, I decided to move the idea forward
-based on swap.tier.
+-- 
+Best regards,
+Ridong
 
-For now, I would like to share the first major direction change I am
-considering, and get feedback on how to proceed. If you think this path
-is promising, please advise whether I should continue as patch v2, or
-send a new RFC series or new patch series.
+>  	if (freeze)
+> @@ -260,6 +266,7 @@ void cgroup_freeze(struct cgroup *cgrp, bool freeze)
+>  	struct cgroup *parent;
+>  	struct cgroup *dsct;
+>  	bool applied = false;
+> +	u64 ts_nsec;
+>  	bool old_e;
+>  
+>  	lockdep_assert_held(&cgroup_mutex);
+> @@ -271,6 +278,7 @@ void cgroup_freeze(struct cgroup *cgrp, bool freeze)
+>  		return;
+>  
+>  	cgrp->freezer.freeze = freeze;
+> +	ts_nsec = ktime_get_ns();
+>  
+>  	/*
+>  	 * Propagate changes downwards the cgroup tree.
+> @@ -298,7 +306,7 @@ void cgroup_freeze(struct cgroup *cgrp, bool freeze)
+>  		/*
+>  		 * Do change actual state: freeze or unfreeze.
+>  		 */
+> -		cgroup_do_freeze(dsct, freeze);
+> +		cgroup_do_freeze(dsct, freeze, ts_nsec);
+>  		applied = true;
+>  	}
+>  
 
------------------------------------------------------------------------
-1. Interface
------------------------------------------------------------------------
-
-In the initial thread you replied with the following examples:
-
-> Here are a few examples:
-> e.g. consider the following cgroup hierarchy a/b/c/d, a as the first
-> level cgroup.
-> a/swap.tiers: "- +compress_ram"
-> it means who shall not be named is set to opt out, optin in
-> compress_ram only, no ssd, no hard.
-> Who shall not be named, if specified, has to be the first one listed
-> in the "swap.tiers".
->
-> a/b/swap.tiers: "+ssd"
-> For b cgroup, who shall not be named is not specified, the tier is
-> appended to the parent "a/swap.tiers". The effective "a/b/swap.tiers"
-> become "- +compress_ram +ssd"
-> a/b can use both zswap and ssd.
->
-> Every time the who shall not be named is changed, it can drop the
-> parent swap.tiers chain, starting from scratch.
->
-> a/b/c/swap.tiers: "-"
->
-> For c, it turns off all swap. The effective "a/b/c/swap.tiers" become
-> "- +compress_ram +ssd -" which simplify as "-", because the second "-"
-> overwrites all previous optin/optout results.
-> In other words, if the current cgroup does not specify the who shall
-> not be named, it will walk the parent chain until it does. The global
-> "/" for non cgroup is on.
->
-> a/b/c/d/swap.tiers: "- +hdd"
-> For d, only hdd swap, nothing else.
->
-> More example:
-> "- +ssd +hdd -ssd" will simplify to: "- +hdd", which means hdd only.
-> "+ -hdd": No hdd for you! Use everything else.
->
-> Let me know what you think about the above "swap.tiers"(name TBD)
-> proposal.
-
-My opinion is that instead of mapping priority into named concepts, it
-may be simpler to represent it as plain integers. 
-(The integers are assigned in sequential order, as explained in the following reply.)
-This would make the interface almost identical to the cpuset style suggested by Koutný.
-
-For example:
-
-  echo 1-8,9-10 > a/swap.tier   # parent allows tier range 1–8 and 9-10
-  echo 1-4,9    > a/b/swap.tier # child uses tier 1-4 and 9 within parent's range
-  echo 20   > a/b/swap.tier # invalid: parent only allowed 1-8 and 9-10
-
-named concepts can be dealt with by some userland based software solution.
-kernel just gives simple integer mapping concept. 
-userland software can abstract it as a "named" tier to user.
-
-Regarding the mapping of names to ranges, as you also mentioned:
-
-> There is a simple mapping of global swap tier names into priority
-> range
-> The name itself is customizable.
-> e.g. 100+ is the "compress_ram" tier. 50-99 is the "SSD" tier,
-> 0-55 is the "hdd" tier.
-> The detailed mechanization and API is TBD.
-> The end result is a simple tier name lookup will get the priority
-> range.
-> By default all swap tiers are available for global usage without
-> cgroup. That matches the current global swap on behavior.
-
-One idea would be to provide a /proc/swaptier interface:
-
-  echo "100 40" > /proc/swaptier
-
-This would mean:
-* >=100 : tier 1
-* 40–99 : tier 2
-* <40   : tier 3
-
-How do you feel about this approach?
-
------------------------------------------------------------------------
-2. NUMA autobind
------------------------------------------------------------------------
-
-If NUMA autobind is in use, perhaps it is best to simply disallow
-swaptier settings. I expect workloads depending on autobind would rely
-on it globally, rather than per-cgroup. Therefore, when a negative
-priority is present, tier grouping could reject the configuration.
-
------------------------------------------------------------------------
-3. Implementation
------------------------------------------------------------------------
-
-My initial thought is to implement a simple bitmask check. That is, in
-the slow swap path, check whether the cgroup has selected the given
-tier. This is simple, but I worry it might lose the optimization of the
-current priority list, where devices are dynamically tracked as they
-become available or unavailable.
-
-So perhaps a better design is to make swap tier an object, and have
-each cgroup traverse only the priority list of the tiers it selected. I
-would like feedback on whether this design makes sense.
-
------------------------------------------------------------------------
-
-Finally, I want to thank all reviewers for the constructive feedback.
-Even if we move to the swap.tier approach, the reviews from Kairui, Nhat
-Pham and Koutný are still valid and will remain relevant.
-
-Kairui, Nhat Pham
-* Regarding per-cgroup per-cluster feedback: this would likely need to
-  be adapted to tier-based design.
-* Regarding passing percpu info along the allocation path: since tier is
-  selected per-cgroup, this may still be needed, depending on
-  implementation.
-
-Koutný
-* Regarding NUMA autobind complexity: as explained above, I intend to
-  design the mechanism so that autobind does not affect it. Parent-child
-  semantics will remain essentially identical to cpuset. If the proposed
-  interface is accepted, its usage would be like cpuset, which should be
-  less controversial.
-
----
-
-Thank you again for the suggestions. I will continue to review while
-waiting for your feedback.
-
-Best Regards,
-Youngjun Park
 
