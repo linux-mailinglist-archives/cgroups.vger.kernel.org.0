@@ -1,80 +1,81 @@
-Return-Path: <cgroups+bounces-9329-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9330-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1150CB311B1
-	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 10:25:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9177B31383
+	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 11:41:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 982D31C8201E
-	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 08:22:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56CB6B02690
+	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 09:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E202EAD01;
-	Fri, 22 Aug 2025 08:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CD22FC02E;
+	Fri, 22 Aug 2025 09:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="BVgBJakd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="euDu6Rsj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A4521256B
-	for <cgroups@vger.kernel.org>; Fri, 22 Aug 2025 08:22:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDEF92FABF0;
+	Fri, 22 Aug 2025 09:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755850939; cv=none; b=qusRjSTEHmctrw34g+dR6Q+oLffPISdRBccfvLay43LhFykgqQ8U7eTOxRAs7/XCO2DlngVVhZTDqpBCFALhWEduzSO18aHUYJ1Hm/eBwCJ+4/LZzA4U6pynwFJGmIM/xdRaCDTbSHRIBpItmPmPCWOtA8x9XnER8lC06bdFXjY=
+	t=1755854967; cv=none; b=PDOxuP4GkG66S2wIt+wZT9u28+sDb9Go1SclF4W6GGNdohSkVZdwXo4/6JNmGSW8owzVFklE5xH2RtEcBXUa/qKSQotGP/WQBvP8HgTO0oEfl4I6JwNpGv0CQQaew4iRrTVA6bzT1lONAFsY6ztAxVS0Hx/sgsl7RMlukWV8ST4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755850939; c=relaxed/simple;
-	bh=9ockR9/UqGDJ7YDW+57JW/6GHiulGWCbF/dbUijcd30=;
+	s=arc-20240116; t=1755854967; c=relaxed/simple;
+	bh=CfKrq5QkiedU+xlmiVUmkVN2mw3x49TJsoVaLdQ6fFk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tPd9S59JVhD62yYFys9ibiBhR6HEaX3Q8uabK6M3H+q2Vnwrqlkbo1CyrF6BXWV4OI1dF2PDpHtDFfToMfFUNpIzUffFMRCWNqv5zAdx9nRdeW7AybVXVeavrHs3+E0amQ7yJfRZ+WKGJrHL04EAflbM7Uygq+2Dht34Ty4hsYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=BVgBJakd; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2445806d44fso15352985ad.1
-        for <cgroups@vger.kernel.org>; Fri, 22 Aug 2025 01:22:17 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=a6Fd2deRCTy+4E257YB//P3CPZn6iluSctWpZ9ZA7k3UEirj7vTG/laJica7T+hYuTD4aZY18Adusc25YhTc4Xv6eRvHs+THembmg9/Hn03hFJeesKvF4Inzj6LLoZxs4YZstwxvhbahbkXjSNmDthnWcMfwVkYdq94GUNk/p7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=euDu6Rsj; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-45a1b0ce15fso1925995e9.3;
+        Fri, 22 Aug 2025 02:29:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1755850936; x=1756455736; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7B+ym3G57Ia0gA7b5M2w0v/DPMFIwfx3MWwyn0oTnOk=;
-        b=BVgBJakdEnYu0R+r4KHj+p+2/NGUna6XWXiHpRfP9wK8c3dn0Dv0NqE7SePPEZ9omi
-         w+il8xtRs4reGoMC9ge2we84brfLGUjsHDnQdAxjd+yT4mvagVwFQ1dZj31/ykG/XavJ
-         OvcS0fNSjEdRoli+Q4SohIwCAgeIJxdhF5Hdh3V1ZBLny293n8YWijCWNW34uNBDqJjb
-         oKgxkkRagGVSigzeQNnxFNlqjfKtwtV9c0F9oOhBjvEw2j5n4Og8hIEiqQx8QygojFGd
-         m9CKlbnqCtRb6D6KjJSYnsfambv4c/fgurXejUAwzqukq1fNrCyRxYm6oT8Nm+r/X/s2
-         AkIw==
+        d=gmail.com; s=20230601; t=1755854963; x=1756459763; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+EnH/VSEGlluJ4BD0faCMmagpwL1mCpFcxo1StPT+Ao=;
+        b=euDu6Rsj+GhkRrQQ6UplhHqc8UwzSOdM19V/nZXnwoPtQ9O5ThSxJWR5sWgdY7hjgZ
+         JNa7+cpkva2IbqzvvojrmhOKGRSKldsdmzisnFRGD1/HlO0MXuJ4SdQ+mcn2Md4KMcI4
+         Fn6c5O40KUCu3yB7xVJ4zSLDg+1mirUCaQ9NroDaWJG+1wH/wPErm3zOITo87Lm13nnF
+         FdoUZz1+3EhjebbRr3DtEYQuDy92+7MfoENUeef1HJHfqQN1R61Nc8qqmc80KjVDLAph
+         //qtV8//Ft00mISB7Y2axdiAQ8wC6g8kgZo5+QUDNX9C0UHAKAQ9j6ftBBZKQZlZXkpU
+         Gkyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755850936; x=1756455736;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7B+ym3G57Ia0gA7b5M2w0v/DPMFIwfx3MWwyn0oTnOk=;
-        b=hjNkaadh2ga+rSfwuiZ1KouSySCHEx0Q8wawrVqIOy47LuAkGP99931Ej1v6QqSoLU
-         Dp+2wgZJhbJCGfqWgJumGtYUcIaCcPLHSlNqg8Wl86M0kZBbPzdqb3uRF+/JIiQxWo/6
-         ZeCesYOXy1STpXeqfPHL0e0i/O1kROSuP3135jQ53xidDkp8J8QikvueEZrupOml1c3R
-         fgfF2/ughVT5iwTf93SeAqRNMOj1DvDMw4N72hP5Jyh8Q30mJmwYynswwNG8QJLNkaEf
-         eCF7ZKwRzFxOW/pOx1UiCn4Ue5UVbqJbAbkGuCGKACS8a8GhcT3Y6rLKHS/4m7vueC9h
-         U/9w==
-X-Forwarded-Encrypted: i=1; AJvYcCWZSU9bQl/KhpUXZE4tOUMg7avVV2ckZkxRu09Vr5p4OCaGIdkmKmVvPh4lFWiTe+LVv+2Yl52Q@vger.kernel.org
-X-Gm-Message-State: AOJu0YwajMfSI7ZLDlGrsf+H2Dw83ZFe9ZzgGxLeLGKSc9fe2woN53+9
-	6sbU+rhx7DykUblM7PhBHNU4FAn2SXM/rePKxJJkHqgIdTvftKfuiyFmyR1nA3aI+50=
-X-Gm-Gg: ASbGncslA5YGg1ninbQhrQOsK+4rmcsOvZOkf+Vz7OWWjBCKpwtwDizmC6ePntmXXgJ
-	aMyN6LW7OgKCSnE4kFoGqiMIRz+WO4Qo+/HyMJWJN49YCJ4FR5T5j0n44Ng6qmKgt28lFoa2BKz
-	CiC2ZW7Tm6DuUKJgzsbNl6Nba472N9iPYmLmcaG17IQLtS9VM5GnOhXKv+GVA5gn1xVFZp58xQx
-	ZiJaRenHqQ8QvyBrQ5ivVahCL3+FxD52MAIIgKz2h+bzfXGhgGNOaxWdO5bKI5SGOu190rtTRPw
-	5nQqMgBiSXJ5qWCVroDXw9BhFIxw4XjwTFk6nNXrsaCDm5JuaIoAigssZQONjU4X9PpukL0zU/L
-	ltOqHgU8k8/V3mTF5Xv5Lk8VsaCJRGUMjBS/njP9FIYbCyQs3VjAAq4bpmzHRbbRH9FH/fZc=
-X-Google-Smtp-Source: AGHT+IHA3KlrKcHXxuSYhV08ESuEZcmN965/xf1VGEqc9csUX32ZI75YP7zuuOvOsZxoR4o3CXJJ4A==
-X-Received: by 2002:a17:902:db0c:b0:245:f2c2:650c with SMTP id d9443c01a7336-2462edeec4dmr30370225ad.18.1755850936362;
-        Fri, 22 Aug 2025 01:22:16 -0700 (PDT)
-Received: from [10.88.210.107] ([61.213.176.57])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-245ed4c7489sm76648585ad.70.2025.08.22.01.22.11
+        d=1e100.net; s=20230601; t=1755854963; x=1756459763;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+EnH/VSEGlluJ4BD0faCMmagpwL1mCpFcxo1StPT+Ao=;
+        b=pEW1AVGz/aCQwY/eXfajTIxokTI0pR++6dsFBSE3hnGJT52c566+5RlE2kUyMvE5Jt
+         xBFyXxBCOhexTYkReQX3FGepgjdzU+FoJD0qIKukERiJN8orMhSi1gY/bjBzg0rg4Q9x
+         oafApEQWe12tg7vqd9+kKbWnM17+rb5xqoeLjv5n9Or0PJXDF5KXN0Zxl99yCpliAZCQ
+         x8mzRppoy2FGY6kypS5Skr0bd3Pp2siO02A6csjj+k4NsHOtBWskgzf9PUX2cQ6a6c9S
+         EmnB1LaJ7kSdtvqNM/K3hFhkkv1CMgHuCeIYuqTl6o1nVL5bEDD1B+eLClJmwJJjCZE/
+         CBhg==
+X-Forwarded-Encrypted: i=1; AJvYcCWVC5tdTOlweYOX+eAEcRIaHPvhzWm+/PDfswKnIAsviT9022vVAz47lQ3xPmhmdrri9GEJk7OA@vger.kernel.org
+X-Gm-Message-State: AOJu0YzRSCM39RcvSDRC++6/EtIYOHwBf8cz3WAfJ/97IEhreOTMk/nH
+	Ci3Ff8IRf4IFWWgDadr/Wn8/2jLFCVsHDTj1M2YJbXMBV/2mIEjtlpfl
+X-Gm-Gg: ASbGncty9JbGEsGULB4DsG37U7yTVHrAu+NrrRHwmP51dq/hWt+A/SAM+b/UYR8VEJg
+	A1k1RlHIeR1HmgN8TypPqDJsqqpEy/cirVjxja4tyPIV3pyfZSU0kFOml+J60OGNVUgB6nJhqJN
+	P2pf53x6AeK14vjU90n6ja08Qm/ZjoFksntqnaHepJ3Yp9a1Du58cv4cPUOynNpzeqI1r1X+pCP
+	BttvKDhn+as1Csqo4Dw5xNkNPgwBuW9tsZ5a+GeA3adVSmifh4UqYWlt6U+A8gFxSVMLDEn4ehh
+	HWjJVMrNbw1XyvWmo6YrSij2MyPfWbygns1WP1wT9UKVsoGwqGZLMW3ScZdl4vIooHmpms6JPAU
+	sTw8DHeDPo6C6WJeBIChY+hmK06GjdkqGRUdIk4NWcqdxOda27PEJfADmaiTp9VEH46iZ4DQ8CJ
+	KbW8SiaL/o
+X-Google-Smtp-Source: AGHT+IEeFhCgKs//0TYPpq0tr4htOV8qx42B9wgXqgLJ+zxDdcN5KH4lqW/B9Qr2BTax1Xm0EqzTVg==
+X-Received: by 2002:a05:600c:3ba7:b0:456:7cf:5268 with SMTP id 5b1f17b1804b1-45b517ca4bfmr8096065e9.4.1755854962861;
+        Fri, 22 Aug 2025 02:29:22 -0700 (PDT)
+Received: from [192.168.100.6] ([149.3.87.76])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45b50dc40b7sm31644325e9.2.2025.08.22.02.29.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Aug 2025 01:22:15 -0700 (PDT)
-Message-ID: <f1ff9656-6633-4a32-ab32-9ee60400b9b0@bytedance.com>
-Date: Fri, 22 Aug 2025 16:22:09 +0800
+        Fri, 22 Aug 2025 02:29:22 -0700 (PDT)
+Message-ID: <e5ef25e7-e4bd-40d4-9f0a-f1d4c1c8acbe@gmail.com>
+Date: Fri, 22 Aug 2025 13:29:18 +0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -82,216 +83,76 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [External] Re: [PATCH] memcg: Don't wait writeback completion
- when release memcg.
-To: Tejun Heo <tj@kernel.org>
+Subject: Re: [External] Re: [PATCH 0/3] memcg, writeback: Don't wait writeback
+ completion
+To: Julian Sun <sunjunchao@bytedance.com>
 Cc: linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
  linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
  jack@suse.cz, hannes@cmpxchg.org, mhocko@kernel.org,
  roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
- axboe@kernel.dk
+ axboe@kernel.dk, tj@kernel.org
 References: <20250820111940.4105766-1-sunjunchao@bytedance.com>
- <20250820111940.4105766-4-sunjunchao@bytedance.com>
- <aKY2-sTc5qQmdea4@slm.duckdns.org>
- <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
- <aKdQgIvZcVCJWMXl@slm.duckdns.org>
- <CAHSKhtdhj-AuApc8yw+wDNNHMRH-XNMVD=8G7Mk_=1o2FQASQg@mail.gmail.com>
- <aKds9ZMUTC8VztEt@slm.duckdns.org>
-From: Julian Sun <sunjunchao@bytedance.com>
-In-Reply-To: <aKds9ZMUTC8VztEt@slm.duckdns.org>
+ <24119aa3-f6ef-4467-80a0-475989e19625@gmail.com>
+ <CAHSKhtch+eT2ehQ5weRGEJwTj1sw0vo0_4Tu=bfBuSsHXGm3ZQ@mail.gmail.com>
+Content-Language: en-US
+From: Giorgi Tchankvetadze <giorgitchankvetadze1997@gmail.com>
+In-Reply-To: <CAHSKhtch+eT2ehQ5weRGEJwTj1sw0vo0_4Tu=bfBuSsHXGm3ZQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 8/22/25 3:01 AM, Tejun Heo wrote:
-
-Hi,
-
-> Hello,
-> 
-> On Fri, Aug 22, 2025 at 02:00:10AM +0800, Julian Sun wrote:
-> ...
->> Do you mean logic like this?
->>
->>      for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
->>          wb_wait_for_completion(&memcg->cgwb_frn[i].done);
->>      kfree(memcg);
->>
->> But there still exist task hang issues as long as
->> wb_wait_for_completion() exists.
-> 
-> Ah, right. I was just thinking about the workqueue being stalled. The
-> problem is that the wait itself is too long.
-> 
->> I think the scope of impact of the current changes should be
->> manageable. I have checked all the other places where wb_queue_work()
->> is called, and their free_done values are all 0, and I also tested
->> this patch with the reproducer in [1] with kasan and kmemleak enabled.
->> The test result looks fine, so this should not have a significant
->> impact.
->> What do you think?
-> 
-> My source of reluctance is that it's a peculiar situation where flushing of
-> a cgroup takes that long due to hard throttling and the self-freeing
-> mechanism isn't the prettiest thing. Do you think you can do the same thing
-> through custom waitq wakeup function?
-
-Yeah, this method looks more general if I understand correctly.
-
-If the idea of the following code makes sense to you, I'd like to split
-and convert it into formal patches.
-
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index a07b8cf73ae2..10fede792178 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -172,13 +172,8 @@ static void finish_writeback_work(struct 
-wb_writeback_work *work)
-
-  	if (work->auto_free)
-  		kfree(work);
--	if (done) {
--		wait_queue_head_t *waitq = done->waitq;
--
--		/* @done can't be accessed after the following dec */
--		if (atomic_dec_and_test(&done->cnt))
--			wake_up_all(waitq);
--	}
-+	if (done)
-+		done->wb_waitq->wb_wakeup_func(done->wb_waitq, done);
-  }
-
-  static void wb_queue_work(struct bdi_writeback *wb,
-@@ -213,7 +208,7 @@ static void wb_queue_work(struct bdi_writeback *wb,
-  void wb_wait_for_completion(struct wb_completion *done)
-  {
-  	atomic_dec(&done->cnt);		/* put down the initial count */
--	wait_event(*done->waitq, !atomic_read(&done->cnt));
-+	wait_event(done->wb_waitq->waitq, !atomic_read(&done->cnt));
-  }
-
-  #ifdef CONFIG_CGROUP_WRITEBACK
-diff --git a/include/linux/backing-dev-defs.h 
-b/include/linux/backing-dev-defs.h
-index 2ad261082bba..04699458ac50 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -60,13 +60,56 @@ enum wb_reason {
-  	WB_REASON_MAX,
-  };
-
-+struct wb_completion;
-+typedef struct wb_wait_queue_head wb_wait_queue_head_t;
-+typedef void (*wb_wait_wakeup_func_t)(wb_wait_queue_head_t *wq_waitq,
-+									  struct wb_completion *done);
-+struct wb_wait_queue_head {
-+	wait_queue_head_t waitq;
-+	wb_wait_wakeup_func_t wb_wakeup_func;
-+};
-+
-  struct wb_completion {
-  	atomic_t		cnt;
--	wait_queue_head_t	*waitq;
-+	wb_wait_queue_head_t	*wb_waitq;
-  };
-
-+static inline void wb_default_wakeup_func(wb_wait_queue_head_t *wq_waitq,
-+										  struct wb_completion *done)
-+{
-+	/* @done can't be accessed after the following dec */
-+	if (atomic_dec_and_test(&done->cnt))
-+		wake_up_all(&wq_waitq->waitq);
-+}
-+
-+/* used for cgwb_frn, be careful here, @done can't be accessed */
-+static inline void wb_empty_wakeup_func(wb_wait_queue_head_t *wq_waitq,
-+										struct wb_completion *done)
-+{
-+}
-+
-+#define __init_wb_waitqueue_head(wb_waitq, func) 	\
-+	do {											\
-+		init_waitqueue_head(&wb_waitq.waitq);		\
-+		wb_waitq.wb_wakeup_func = func; 			\
-+	} while (0)
-+
-+#define init_wb_waitqueue_head(wb_waitq) 	\
-+	__init_wb_waitqueue_head(wb_waitq, wb_default_wakeup_func)
-+
-+#define __WB_WAIT_QUEUE_HEAD_INITIALIZER(name, func) {	\
-+	.waitq = __WAIT_QUEUE_HEAD_INITIALIZER(name.waitq),	\
-+	.wb_wakeup_func = func, 							\
-+}
-+
-+#define __DECLARE_WB_WAIT_QUEUE_HEAD(name, func) \
-+	struct wb_wait_queue_head name = 
-__WB_WAIT_QUEUE_HEAD_INITIALIZER(name, func)
-+
-+#define DECLARE_WB_WAIT_QUEUE_HEAD(name) \
-+	__DECLARE_WB_WAIT_QUEUE_HEAD(name, wb_default_wakeup_func)
-+
-  #define __WB_COMPLETION_INIT(_waitq)	\
--	(struct wb_completion){ .cnt = ATOMIC_INIT(1), .waitq = (_waitq) }
-+	(struct wb_completion){ .cnt = ATOMIC_INIT(1), .wb_waitq = (_waitq) }
-
-  /*
-   * If one wants to wait for one or more wb_writeback_works, each work's
-@@ -190,7 +233,7 @@ struct backing_dev_info {
-  	struct mutex cgwb_release_mutex;  /* protect shutdown of wb structs */
-  	struct rw_semaphore wb_switch_rwsem; /* no cgwb switch while syncing */
-  #endif
--	wait_queue_head_t wb_waitq;
-+	wb_wait_queue_head_t wb_waitq;
-
-  	struct device *dev;
-  	char dev_name[64];
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 783904d8c5ef..c4fec9e22978 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -1008,7 +1008,7 @@ int bdi_init(struct backing_dev_info *bdi)
-  	bdi->max_prop_frac = FPROP_FRAC_BASE;
-  	INIT_LIST_HEAD(&bdi->bdi_list);
-  	INIT_LIST_HEAD(&bdi->wb_list);
--	init_waitqueue_head(&bdi->wb_waitq);
-+	init_wb_waitqueue_head(bdi->wb_waitq);
-  	bdi->last_bdp_sleep = jiffies;
-
-  	return cgwb_bdi_init(bdi);
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8dd7fbed5a94..999624535470 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -99,7 +99,7 @@ static struct kmem_cache *memcg_cachep;
-  static struct kmem_cache *memcg_pn_cachep;
-
-  #ifdef CONFIG_CGROUP_WRITEBACK
--static DECLARE_WAIT_QUEUE_HEAD(memcg_cgwb_frn_waitq);
-+static __DECLARE_WB_WAIT_QUEUE_HEAD(memcg_cgwb_frn_waitq, 
-wb_empty_wakeup_func);
-  #endif
-
-  static inline bool task_is_dying(void)
-@@ -3909,12 +3909,7 @@ static void mem_cgroup_css_released(struct 
-cgroup_subsys_state *css)
-  static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
-  {
-  	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
--	int __maybe_unused i;
-
--#ifdef CONFIG_CGROUP_WRITEBACK
--	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
--		wb_wait_for_completion(&memcg->cgwb_frn[i].done);
--#endif
-  	if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_nosocket)
-  		static_branch_dec(&memcg_sockets_enabled_key);
+Content-Transfer-Encoding: 8bit
 
 
-
-> 
-> Thanks.
-> 
+`memory.stat:writeback` already gives you the exact real-time count of 
+pages still waiting to finish write-back for that cgroup, and it is 
+updated atomically in the hot path (`set_page_writeback()` / 
+`end_page_writeback()`). Reading it is just an `atomic_long_read()` (or 
+per-cpu equivalent), so the extra CPU cost of exposing it is essentially 
+zero. I was thinking that extra additional info would help us
 
 Thanks,
--- 
-Julian Sun <sunjunchao@bytedance.com>
+Giorgi
+
+On 8/21/2025 6:37 AM, Julian Sun wrote:
+> Hi, thanks for your review.
+> 
+> On Wed, Aug 20, 2025 at 8:17 PM Giorgi Tchankvetadze
+> <giorgitchankvetadze1997@gmail.com> wrote:
+>>
+>> Could we add wb_pending_pages to memory.events?
+>> Very cheap and useful.
+>> A single atomic counter is already kept internally; exposing it is one
+>> line in memcontrol.c plus one line in the ABI doc.
+> 
+> Not sure what do you mean by wb_pending_pages? Another counter besides
+> existing MEMCG_LOW MEMCG_HIGH MEMCG_MAX, etc.? And AFAIK there's no
+> pending pages in this patch set. Could you give more details?
+> 
+> Thanks,
+>>
+>>
+>> On 8/20/2025 3:19 PM, Julian Sun wrote:
+>>> This patch series aims to eliminate task hangs in mem_cgroup_css_free()
+>>> caused by calling wb_wait_for_completion().
+>>> This is because there may be a large number of writeback tasks in the
+>>> foreign memcg, involving millions of pages, and the situation is
+>>> exacerbated by WBT rate limiting—potentially leading to task hangs
+>>> lasting several hours.
+>>>
+>>> Patch 1 is preparatory work and involves no functional changes.
+>>> Patch 2 implements the automatic release of wb_completion.
+>>> Patch 3 removes wb_wait_for_completion() from mem_cgroup_css_free().
+>>>
+>>>
+>>> Julian Sun (3):
+>>>     writeback: Rename wb_writeback_work->auto_free to free_work.
+>>>     writeback: Add wb_writeback_work->free_done
+>>>     memcg: Don't wait writeback completion when release memcg.
+>>>
+>>>    fs/fs-writeback.c                | 22 ++++++++++++++--------
+>>>    include/linux/backing-dev-defs.h |  6 ++++++
+>>>    include/linux/memcontrol.h       |  2 +-
+>>>    mm/memcontrol.c                  | 29 ++++++++++++++++++++---------
+>>>    4 files changed, 41 insertions(+), 18 deletions(-)
+>>>
+>>
+
 
