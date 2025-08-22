@@ -1,120 +1,240 @@
-Return-Path: <cgroups+bounces-9320-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9321-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACA5AB30B8F
-	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 04:08:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC238B30E44
+	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 07:45:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AD65566B55
-	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 02:04:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA2767B9791
+	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 05:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62BCB1E3762;
-	Fri, 22 Aug 2025 01:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E542E265B;
+	Fri, 22 Aug 2025 05:45:29 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68981DE8A0;
-	Fri, 22 Aug 2025 01:57:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929FA20E033
+	for <cgroups@vger.kernel.org>; Fri, 22 Aug 2025 05:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755827878; cv=none; b=GdceEzNCFIv4F7jKROpXJVSG+n1w5/YZkFY8nfdVPse4zXcAz2RGJAAXo9AtT5jkortocrnHHStwfdyppgL8i8oI/db9VG2KvnmwWiGoSgkMkR7EeosUYBKh0q1X9h81MSVbEGfmDVS97Lk3jVGaj3CQv/qEtn7llEimF3GA20k=
+	t=1755841529; cv=none; b=fszjFSVEmVHABnafZFLkBR1be4M2EZkx13XHGiyfNEmyil2vojgrdvFPZp5KZ8ZoZIkoyTBMo+uFzvQwSAmeMw1a2T2WB2QZuqR8dwGhssLWKq0Qrmnx7jTGBhkhsgmf4O972lK/qyIpUPJ3dynT3FINlR8fe1vQsrIItzAMP+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755827878; c=relaxed/simple;
-	bh=yRDbTmQNyPNYdmnA/vgKUgB0b/pHIH588KMyZCw5plA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tJd39S76MJro7QcFg2z5tbPmjLwDUv6yvTznBWKkxH/gX2P/Bxf4N+YjteT2RLtxCZwpqhPl4ftEyTCBkNhGQM/n5gShSJGlRQNRJJsBkJtPCoLRflBr2n15NOpRr4GIQqk259/NYtEL1iIKvKZnjQfpB++jXztUjlYRRMpiKWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c7Ncf3V0TzYQtqB;
-	Fri, 22 Aug 2025 09:57:54 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 0FB161A158A;
-	Fri, 22 Aug 2025 09:57:53 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP4 (Coremail) with SMTP id gCh0CgC3fg+fzqdoemr_EQ--.16884S2;
-	Fri, 22 Aug 2025 09:57:52 +0800 (CST)
-Message-ID: <38ef3ff9-b380-44f0-9315-8b3714b0948d@huaweicloud.com>
-Date: Fri, 22 Aug 2025 09:57:51 +0800
+	s=arc-20240116; t=1755841529; c=relaxed/simple;
+	bh=C6zhtBJR1m/7kPOv2gYNp0w5HSgKglOjWakItYQ+OTg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aUQmjBtPowM8s3m+2H6jPi28lVWC084wMN5vB4G5Dr84jPXVnTENomaOqbG5lENaGidbPcxM48iNX1R3Dw3DMw9+Vp5CwQ1ouq7nbFEkT33QUPTf28NGclN7jSEGlb3QYaj1avNh4Ky7LPiLOVDozRD62yIgPZvdS+1ouWea5pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
+Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
+	by 156.147.51.103 with ESMTP; 22 Aug 2025 14:45:18 +0900
+X-Original-SENDERIP: 10.177.112.156
+X-Original-MAILFROM: youngjun.park@lge.com
+Date: Fri, 22 Aug 2025 14:45:18 +0900
+From: YoungJun Park <youngjun.park@lge.com>
+To: Chris Li <chrisl@kernel.org>
+Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, shikemeng@huaweicloud.com,
+	kasong@tencent.com, nphamcs@gmail.com, bhe@redhat.com,
+	baohua@kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, gunho.lee@lge.com,
+	iamjoonsoo.kim@lge.com, taejoon.song@lge.com,
+	Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Kairui Song <ryncsn@gmail.com>
+Subject: Re: [PATCH 1/4] mm/swap, memcg: Introduce infrastructure for
+ cgroup-based swap priority
+Message-ID: <aKgD7nZy7U+rHt9X@yjaykim-PowerEdge-T330>
+References: <aH+apAbBCmkMGPlO@yjaykim-PowerEdge-T330>
+ <aH/baxIgrBI3Z1Hl@yjaykim-PowerEdge-T330>
+ <uyxkdmnmvjipxuf7gagu2okw7afvzlclomfmc6wb6tygc3mhv6@736m7xs6gn5q>
+ <CAF8kJuMo3yNKOZL9n5UkHx_O5cTZts287HOnQOu=KqQcnbrMdg@mail.gmail.com>
+ <aKC+EU3I/qm6TcjG@yjaykim-PowerEdge-T330>
+ <CAF8kJuNuNuxxTbtkCb3Opsjfy-or7E+0AwPDi7L-EgqoraQ3Qg@mail.gmail.com>
+ <aKROKZ9+z2oGUJ7K@yjaykim-PowerEdge-T330>
+ <CAF8kJuPUouN4c6V-CaG7_WQUAvRxBg02WRxsMtL56_YTdTh1Jg@mail.gmail.com>
+ <aKXeLCr9DgQ2YfCq@yjaykim-PowerEdge-T330>
+ <CAF8kJuM4f2W6w29VcHY5mgXVMYmTF4yORKaFky6bCjS1xRek9Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] kernfs: Fix UAF in PSI polling when open file is released
-To: Tejun Heo <tj@kernel.org>
-Cc: Baokun Li <libaokun1@huawei.com>, cgroups@vger.kernel.org,
- chenridong@huawei.com, gregkh@linuxfoundation.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, lujialin4@huawei.com, mkoutny@suse.com,
- peterz@infradead.org, zhouchengming@bytedance.com,
- Yang Erkun <yangerkun@huawei.com>
-References: <20250815013429.1255241-1-chenridong@huaweicloud.com>
- <0319ee9b-ce2c-4c02-a731-c538afcf008f@huawei.com>
- <e485b38a-183b-42c8-9aed-9c2d939add0b@huaweicloud.com>
- <aKUo7BuX-teh4IzF@slm.duckdns.org>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <aKUo7BuX-teh4IzF@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgC3fg+fzqdoemr_EQ--.16884S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFW8KrW7Jr13CryktF43Jrb_yoWDCwb_G3
-	y0yrZ8AwnrJa1xCa13JrsIvr92qay5ZFnxJw4rX3yxK3s5Aa4DJFyfXr93Wr15G3yUGr9x
-	KFnYqFyvy347ZjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF8kJuM4f2W6w29VcHY5mgXVMYmTF4yORKaFky6bCjS1xRek9Q@mail.gmail.com>
 
+I still believe that the priority based approach has more flexibility,
+and can cover more usage scenarios. That opinion has not changed.
 
+However, from this discussion I came to clearly understand and agree on
+three points:
 
-On 2025/8/20 9:46, Tejun Heo wrote:
-> Hello,
-> 
-> On Mon, Aug 18, 2025 at 04:00:08PM +0800, Chen Ridong wrote:
->>> A potential solution is to make the lifecycles of cgroup_file_ctx and
->>> psi_trigger match the struct kernfs_open_file they're associated with.
->>> Maybe we could just get rid of the kernfs_release_file call in
->>> kernfs_drain_open_files?
->>>
->>
->> Hi, Tj, what do you think about this solution?
-> 
-> So, I think it's really fragile for a killed (drained) kernfs_open_file to
-> be reused after the corresponding @kn is resurrected. Once killed, that file
-> should stay dead. I think it'd be best if we can do this in a generic manner
-> rather than trying to fix it only for poll.
-> 
-> kernfs_get_active() is the thing which gates active operations on the file.
-> Maybe we can add a wrapper, say, kernfs_get_active_of(struct
-> kernfs_open_file *of) which returns NULL if @of has already been killed or
-> the underlying @kn can't be activated?
-> 
-> Thanks.
-> 
+1. The swap.tier idea can be implemented in a much simpler way, and
+2. It can cover the most important use cases I initially needed, as well
+   as common performance scenarios, without causing LRU inversion.
+3. The really really needed usage scenario of arbitrary ordering does not exist.
+the usage scenario I suggest is imaginary.(just has possibility)
 
-Thank you Tj,
+I have also considered the situation where I might need to revisit my
+original idea in the future. I believe this would still be manageable
+within the swap.tier framework. For example:
 
-This is reasonable, I will try.
+* If after swap.tier is merged, an arbitrate ordering use case arises
+  (which you do not consider concrete), it could be solved by allowing
+  cgroups to remap the tier order individually.
 
--- 
-Best regards,
-Ridong
+* If reviewers later decide to go back to the priority based direction,
+  I think it will still be possible. By then, much of the work would
+  already be done in patch v2, so switching back would not be
+  impossible.
 
+And also, since I highly respect you for long-time contributions and
+deep thinking in the swap layer, I decided to move the idea forward
+based on swap.tier.
+
+For now, I would like to share the first major direction change I am
+considering, and get feedback on how to proceed. If you think this path
+is promising, please advise whether I should continue as patch v2, or
+send a new RFC series or new patch series.
+
+-----------------------------------------------------------------------
+1. Interface
+-----------------------------------------------------------------------
+
+In the initial thread you replied with the following examples:
+
+> Here are a few examples:
+> e.g. consider the following cgroup hierarchy a/b/c/d, a as the first
+> level cgroup.
+> a/swap.tiers: "- +compress_ram"
+> it means who shall not be named is set to opt out, optin in
+> compress_ram only, no ssd, no hard.
+> Who shall not be named, if specified, has to be the first one listed
+> in the "swap.tiers".
+>
+> a/b/swap.tiers: "+ssd"
+> For b cgroup, who shall not be named is not specified, the tier is
+> appended to the parent "a/swap.tiers". The effective "a/b/swap.tiers"
+> become "- +compress_ram +ssd"
+> a/b can use both zswap and ssd.
+>
+> Every time the who shall not be named is changed, it can drop the
+> parent swap.tiers chain, starting from scratch.
+>
+> a/b/c/swap.tiers: "-"
+>
+> For c, it turns off all swap. The effective "a/b/c/swap.tiers" become
+> "- +compress_ram +ssd -" which simplify as "-", because the second "-"
+> overwrites all previous optin/optout results.
+> In other words, if the current cgroup does not specify the who shall
+> not be named, it will walk the parent chain until it does. The global
+> "/" for non cgroup is on.
+>
+> a/b/c/d/swap.tiers: "- +hdd"
+> For d, only hdd swap, nothing else.
+>
+> More example:
+> "- +ssd +hdd -ssd" will simplify to: "- +hdd", which means hdd only.
+> "+ -hdd": No hdd for you! Use everything else.
+>
+> Let me know what you think about the above "swap.tiers"(name TBD)
+> proposal.
+
+My opinion is that instead of mapping priority into named concepts, it
+may be simpler to represent it as plain integers. 
+(The integers are assigned in sequential order, as explained in the following reply.)
+This would make the interface almost identical to the cpuset style suggested by Koutný.
+
+For example:
+
+  echo 1-8,9-10 > a/swap.tier   # parent allows tier range 1–8 and 9-10
+  echo 1-4,9    > a/b/swap.tier # child uses tier 1-4 and 9 within parent's range
+  echo 20   > a/b/swap.tier # invalid: parent only allowed 1-8 and 9-10
+
+named concepts can be dealt with by some userland based software solution.
+kernel just gives simple integer mapping concept. 
+userland software can abstract it as a "named" tier to user.
+
+Regarding the mapping of names to ranges, as you also mentioned:
+
+> There is a simple mapping of global swap tier names into priority
+> range
+> The name itself is customizable.
+> e.g. 100+ is the "compress_ram" tier. 50-99 is the "SSD" tier,
+> 0-55 is the "hdd" tier.
+> The detailed mechanization and API is TBD.
+> The end result is a simple tier name lookup will get the priority
+> range.
+> By default all swap tiers are available for global usage without
+> cgroup. That matches the current global swap on behavior.
+
+One idea would be to provide a /proc/swaptier interface:
+
+  echo "100 40" > /proc/swaptier
+
+This would mean:
+* >=100 : tier 1
+* 40–99 : tier 2
+* <40   : tier 3
+
+How do you feel about this approach?
+
+-----------------------------------------------------------------------
+2. NUMA autobind
+-----------------------------------------------------------------------
+
+If NUMA autobind is in use, perhaps it is best to simply disallow
+swaptier settings. I expect workloads depending on autobind would rely
+on it globally, rather than per-cgroup. Therefore, when a negative
+priority is present, tier grouping could reject the configuration.
+
+-----------------------------------------------------------------------
+3. Implementation
+-----------------------------------------------------------------------
+
+My initial thought is to implement a simple bitmask check. That is, in
+the slow swap path, check whether the cgroup has selected the given
+tier. This is simple, but I worry it might lose the optimization of the
+current priority list, where devices are dynamically tracked as they
+become available or unavailable.
+
+So perhaps a better design is to make swap tier an object, and have
+each cgroup traverse only the priority list of the tiers it selected. I
+would like feedback on whether this design makes sense.
+
+-----------------------------------------------------------------------
+
+Finally, I want to thank all reviewers for the constructive feedback.
+Even if we move to the swap.tier approach, the reviews from Kairui, Nhat
+Pham and Koutný are still valid and will remain relevant.
+
+Kairui, Nhat Pham
+* Regarding per-cgroup per-cluster feedback: this would likely need to
+  be adapted to tier-based design.
+* Regarding passing percpu info along the allocation path: since tier is
+  selected per-cgroup, this may still be needed, depending on
+  implementation.
+
+Koutný
+* Regarding NUMA autobind complexity: as explained above, I intend to
+  design the mechanism so that autobind does not affect it. Parent-child
+  semantics will remain essentially identical to cpuset. If the proposed
+  interface is accepted, its usage would be like cpuset, which should be
+  less controversial.
+
+---
+
+Thank you again for the suggestions. I will continue to review while
+waiting for your feedback.
+
+Best Regards,
+Youngjun Park
 
