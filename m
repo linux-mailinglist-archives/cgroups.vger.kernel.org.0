@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-9322-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9323-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E47FB30E9A
-	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 08:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39147B30FAD
+	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 08:59:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DE4C5E64EB
-	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 06:14:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24FAD5A780F
+	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 06:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8B62E3718;
-	Fri, 22 Aug 2025 06:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C34902E5B15;
+	Fri, 22 Aug 2025 06:58:56 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481C42E2DDC;
-	Fri, 22 Aug 2025 06:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA3C296BD0;
+	Fri, 22 Aug 2025 06:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755843275; cv=none; b=W+3atl1qTE5IiTn12pu/6QRyIhfGZgNXeygmdnbB4T9qfj5QcGMoam7pJrGbeP8sZ8CmzDl9AaicKExO1TGIuW/Z6MndpyDHwWyjDA5wjdsSIHErM6GepY3DOx1Etjv4UWLou8Go+EVOfrIrdaEkij4/vUr26ph23uzcUPzLJhc=
+	t=1755845936; cv=none; b=nOH12nYrDG/Xm9VY5RsIYU4J2w0qJhtvkS2w7S+WEBFwGT3VxcKNisLqYBycX1/HbEIRPORVS1QFlpMXZ68LtteCi6s16NJdY757FggEcEhc8VDD9huJVY0dh0UGCcfqiNZgQVigbXRkMi+TJYrZGj2T9qpHi1a5PxiWzVsC1V4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755843275; c=relaxed/simple;
-	bh=qyQp3sN+0AaapsjkGZrdF0UuXYklXfELoX5jeIZ9sx4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vBZjcO3gql7gf15cO9Sd388E6vVA1dZ4RNWI0SnQbr8yvsY5q15SBbxXH3ExP2cSS4cRhQqK5MXCU4XH85zgdkiNjYbLCNUZMVccquqmn6ATFxr6EwnG8UIsUi+5Vz2XuA/khu1rQnvgj8LYHShmkK5pyUcUHBVTKpNAIX/Uq5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	s=arc-20240116; t=1755845936; c=relaxed/simple;
+	bh=DtBOtyja9oaFsqArnMz5V4Hl/4aCTCe6Aw+SSt12Z80=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=fmUx6MRkGMj+kH+temoBVfILM++Z5WgJpYSv2MKg3nwEZmJvG6csheDVwS6b2k1PIqvosd/mknIRGsPRrUnkb2u4fjOT7/WemEwtTgONUH8yPm+oLAipowSHInLAMk8IqESXDMihKH5+pTF9IDVYa6iEDRCaAHV9J+E6hPhyvTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c7VJk5D52zYQvRZ;
-	Fri, 22 Aug 2025 14:14:30 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 48C5D1A19AE;
-	Fri, 22 Aug 2025 14:14:29 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4c7WHv1LsbzKHNXd;
+	Fri, 22 Aug 2025 14:58:51 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id AD0A11A1446;
+	Fri, 22 Aug 2025 14:58:50 +0800 (CST)
 Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP1 (Coremail) with SMTP id cCh0CgDno6_DCqho9M68EQ--.38688S2;
-	Fri, 22 Aug 2025 14:14:29 +0800 (CST)
-Message-ID: <552a7f82-2735-47a5-9abd-a9ae845f4961@huaweicloud.com>
-Date: Fri, 22 Aug 2025 14:14:27 +0800
+	by APP3 (Coremail) with SMTP id _Ch0CgCXXNcpFaho8_HCEQ--.46529S2;
+	Fri, 22 Aug 2025 14:58:50 +0800 (CST)
+Message-ID: <a309c2b5-5425-428c-a034-d5ebc68cb304@huaweicloud.com>
+Date: Fri, 22 Aug 2025 14:58:48 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -48,6 +48,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v4 1/2] cgroup: cgroup.stat.local time accounting
+From: Chen Ridong <chenridong@huaweicloud.com>
 To: Tiffany Yang <ynaffit@google.com>, linux-kernel@vger.kernel.org
 Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
  Stephen Boyd <sboyd@kernel.org>,
@@ -62,15 +63,15 @@ Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
  linux-kselftest@vger.kernel.org
 References: <20250822013749.3268080-6-ynaffit@google.com>
  <20250822013749.3268080-7-ynaffit@google.com>
+ <552a7f82-2735-47a5-9abd-a9ae845f4961@huaweicloud.com>
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20250822013749.3268080-7-ynaffit@google.com>
+In-Reply-To: <552a7f82-2735-47a5-9abd-a9ae845f4961@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDno6_DCqho9M68EQ--.38688S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jw47JrWDXF45Aw15XrW5Wrg_yoW3CrWrpa
-	1DAw13tw4FyF12grsay34qvF1Sgr48Jw4UGr9rJ348AFnxX3Wvqr1xCr15GF1UArZ7Ka4U
-	J3WY9rWfCrnFvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:_Ch0CgCXXNcpFaho8_HCEQ--.46529S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jry7tF48WF1UZr1xWFWUtwb_yoW3Aw47pa
+	yDA3W3tw4FqF12vr4Sy34qvFySgr48tw4UKr9rJa4xAFnIq3Wktr1xAr15WF1UAFZ7K3W8
+	Ja4Y9ryfCrnFvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
@@ -88,236 +89,223 @@ X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
 
-On 2025/8/22 9:37, Tiffany Yang wrote:
-> There isn't yet a clear way to identify a set of "lost" time that
-> everyone (or at least a wider group of users) cares about. However,
-> users can perform some delay accounting by iterating over components of
-> interest. This patch allows cgroup v2 freezing time to be one of those
-> components.
+On 2025/8/22 14:14, Chen Ridong wrote:
 > 
-> Track the cumulative time that each v2 cgroup spends freezing and expose
-> it to userland via a new local stat file in cgroupfs. Thank you to
-> Michal, who provided the ASCII art in the updated documentation.
 > 
-> To access this value:
->   $ mkdir /sys/fs/cgroup/test
->   $ cat /sys/fs/cgroup/test/cgroup.stat.local
->   freeze_time_total 0
+> On 2025/8/22 9:37, Tiffany Yang wrote:
+>> There isn't yet a clear way to identify a set of "lost" time that
+>> everyone (or at least a wider group of users) cares about. However,
+>> users can perform some delay accounting by iterating over components of
+>> interest. This patch allows cgroup v2 freezing time to be one of those
+>> components.
+>>
+>> Track the cumulative time that each v2 cgroup spends freezing and expose
+>> it to userland via a new local stat file in cgroupfs. Thank you to
+>> Michal, who provided the ASCII art in the updated documentation.
+>>
+>> To access this value:
+>>   $ mkdir /sys/fs/cgroup/test
+>>   $ cat /sys/fs/cgroup/test/cgroup.stat.local
+>>   freeze_time_total 0
+>>
+>> Ensure consistent freeze time reads with freeze_seq, a per-cgroup
+>> sequence counter. Writes are serialized using the css_set_lock.
+>>
+>> Signed-off-by: Tiffany Yang <ynaffit@google.com>
+>> Cc: Tejun Heo <tj@kernel.org>
+>> Cc: Michal Koutný <mkoutny@suse.com>
+>> ---
+>> v3 -> v4:
+>> * Replace "freeze_time_total" with "frozen" and expose stats via
+>>   cgroup.stat.local, as recommended by Tejun.
+>> * Use the same timestamp when freezing/unfreezing a cgroup as its
+>>   descendants, as suggested by Michal.
+>>
+>> v2 -> v3:
+>> * Use seqcount along with css_set_lock to guard freeze time accesses, as
+>>   suggested by Michal.
+>>
+>> v1 -> v2:
+>> * Track per-cgroup freezing time instead of per-task frozen time, as
+>>   suggested by Tejun.
+>> ---
+>>  Documentation/admin-guide/cgroup-v2.rst | 18 ++++++++++++++++
+>>  include/linux/cgroup-defs.h             | 17 +++++++++++++++
+>>  kernel/cgroup/cgroup.c                  | 28 +++++++++++++++++++++++++
+>>  kernel/cgroup/freezer.c                 | 16 ++++++++++----
+>>  4 files changed, 75 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+>> index 51c0bc4c2dc5..a1e3d431974c 100644
+>> --- a/Documentation/admin-guide/cgroup-v2.rst
+>> +++ b/Documentation/admin-guide/cgroup-v2.rst
+>> @@ -1001,6 +1001,24 @@ All cgroup core files are prefixed with "cgroup."
+>>  		Total number of dying cgroup subsystems (e.g. memory
+>>  		cgroup) at and beneath the current cgroup.
+>>  
+>> +  cgroup.stat.local
+>> +	A read-only flat-keyed file which exists in non-root cgroups.
+>> +	The following entry is defined:
+>> +
+>> +	  frozen_usec
+>> +		Cumulative time that this cgroup has spent between freezing and
+>> +		thawing, regardless of whether by self or ancestor groups.
+>> +		NB: (not) reaching "frozen" state is not accounted here.
+>> +
+>> +		Using the following ASCII representation of a cgroup's freezer
+>> +		state, ::
+>> +
+>> +			       1    _____
+>> +			frozen 0 __/     \__
+>> +			          ab    cd
+>> +
+>> +		the duration being measured is the span between a and c.
+>> +
+>>    cgroup.freeze
+>>  	A read-write single value file which exists on non-root cgroups.
+>>  	Allowed values are "0" and "1". The default is "0".
+>> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+>> index 6b93a64115fe..539c64eeef38 100644
+>> --- a/include/linux/cgroup-defs.h
+>> +++ b/include/linux/cgroup-defs.h
+>> @@ -433,6 +433,23 @@ struct cgroup_freezer_state {
+>>  	 * frozen, SIGSTOPped, and PTRACEd.
+>>  	 */
+>>  	int nr_frozen_tasks;
+>> +
+>> +	/* Freeze time data consistency protection */
+>> +	seqcount_t freeze_seq;
+>> +
+>> +	/*
+>> +	 * Most recent time the cgroup was requested to freeze.
+>> +	 * Accesses guarded by freeze_seq counter. Writes serialized
+>> +	 * by css_set_lock.
+>> +	 */
+>> +	u64 freeze_start_nsec;
+>> +
+>> +	/*
+>> +	 * Total duration the cgroup has spent freezing.
+>> +	 * Accesses guarded by freeze_seq counter. Writes serialized
+>> +	 * by css_set_lock.
+>> +	 */
+>> +	u64 frozen_nsec;
+>>  };
+>>  
+>>  struct cgroup {
+>> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+>> index 312c6a8b55bb..ab096b884bbc 100644
+>> --- a/kernel/cgroup/cgroup.c
+>> +++ b/kernel/cgroup/cgroup.c
+>> @@ -3763,6 +3763,27 @@ static int cgroup_stat_show(struct seq_file *seq, void *v)
+>>  	return 0;
+>>  }
+>>  
+>> +static int cgroup_core_local_stat_show(struct seq_file *seq, void *v)
+>> +{
+>> +	struct cgroup *cgrp = seq_css(seq)->cgroup;
+>> +	unsigned int sequence;
+>> +	u64 freeze_time;
+>> +
+>> +	do {
+>> +		sequence = read_seqcount_begin(&cgrp->freezer.freeze_seq);
+>> +		freeze_time = cgrp->freezer.frozen_nsec;
+>> +		/* Add in current freezer interval if the cgroup is freezing. */
+>> +		if (test_bit(CGRP_FREEZE, &cgrp->flags))
+>> +			freeze_time += (ktime_get_ns() -
+>> +					cgrp->freezer.freeze_start_nsec);
+>> +	} while (read_seqcount_retry(&cgrp->freezer.freeze_seq, sequence));
+>> +
+>> +	seq_printf(seq, "frozen_usec %llu\n",
+>> +		   (unsigned long long) freeze_time / NSEC_PER_USEC);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  #ifdef CONFIG_CGROUP_SCHED
+>>  /**
+>>   * cgroup_tryget_css - try to get a cgroup's css for the specified subsystem
+>> @@ -5354,6 +5375,11 @@ static struct cftype cgroup_base_files[] = {
+>>  		.name = "cgroup.stat",
+>>  		.seq_show = cgroup_stat_show,
+>>  	},
+>> +	{
+>> +		.name = "cgroup.stat.local",
+>> +		.flags = CFTYPE_NOT_ON_ROOT,
+>> +		.seq_show = cgroup_core_local_stat_show,
+>> +	},
+>>  	{
+>>  		.name = "cgroup.freeze",
+>>  		.flags = CFTYPE_NOT_ON_ROOT,
+>> @@ -5763,6 +5789,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+>>  	 * if the parent has to be frozen, the child has too.
+>>  	 */
+>>  	cgrp->freezer.e_freeze = parent->freezer.e_freeze;
+>> +	seqcount_init(&cgrp->freezer.freeze_seq);
+>>  	if (cgrp->freezer.e_freeze) {
+>>  		/*
+>>  		 * Set the CGRP_FREEZE flag, so when a process will be
+>> @@ -5771,6 +5798,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+>>  		 * consider it frozen immediately.
+>>  		 */
+>>  		set_bit(CGRP_FREEZE, &cgrp->flags);
+>> +		cgrp->freezer.freeze_start_nsec = ktime_get_ns();
+>>  		set_bit(CGRP_FROZEN, &cgrp->flags);
+>>  	}
+>>  
+>> diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
+>> index bf1690a167dd..6c18854bff34 100644
+>> --- a/kernel/cgroup/freezer.c
+>> +++ b/kernel/cgroup/freezer.c
+>> @@ -171,7 +171,7 @@ static void cgroup_freeze_task(struct task_struct *task, bool freeze)
+>>  /*
+>>   * Freeze or unfreeze all tasks in the given cgroup.
+>>   */
+>> -static void cgroup_do_freeze(struct cgroup *cgrp, bool freeze)
+>> +static void cgroup_do_freeze(struct cgroup *cgrp, bool freeze, u64 ts_nsec)
+>>  {
+>>  	struct css_task_iter it;
+>>  	struct task_struct *task;
+>> @@ -179,10 +179,16 @@ static void cgroup_do_freeze(struct cgroup *cgrp, bool freeze)
+>>  	lockdep_assert_held(&cgroup_mutex);
+>>  
+>>  	spin_lock_irq(&css_set_lock);
+>> -	if (freeze)
+>> +	write_seqcount_begin(&cgrp->freezer.freeze_seq);
+>> +	if (freeze) {
+>>  		set_bit(CGRP_FREEZE, &cgrp->flags);
+>> -	else
+>> +		cgrp->freezer.freeze_start_nsec = ts_nsec;
+>> +	} else {
+>>  		clear_bit(CGRP_FREEZE, &cgrp->flags);
+>> +		cgrp->freezer.frozen_nsec += (ts_nsec -
+>> +			cgrp->freezer.freeze_start_nsec);
+>> +	}
+>> +	write_seqcount_end(&cgrp->freezer.freeze_seq);
+>>  	spin_unlock_irq(&css_set_lock);
+>>
 > 
-> Ensure consistent freeze time reads with freeze_seq, a per-cgroup
-> sequence counter. Writes are serialized using the css_set_lock.
+> Hello Tiffany,
 > 
-> Signed-off-by: Tiffany Yang <ynaffit@google.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Michal Koutný <mkoutny@suse.com>
-> ---
-> v3 -> v4:
-> * Replace "freeze_time_total" with "frozen" and expose stats via
->   cgroup.stat.local, as recommended by Tejun.
-> * Use the same timestamp when freezing/unfreezing a cgroup as its
->   descendants, as suggested by Michal.
+> I wanted to check if there are any specific considerations regarding how we should input the ts_nsec
+> value.
 > 
-> v2 -> v3:
-> * Use seqcount along with css_set_lock to guard freeze time accesses, as
->   suggested by Michal.
-> 
-> v1 -> v2:
-> * Track per-cgroup freezing time instead of per-task frozen time, as
->   suggested by Tejun.
-> ---
->  Documentation/admin-guide/cgroup-v2.rst | 18 ++++++++++++++++
->  include/linux/cgroup-defs.h             | 17 +++++++++++++++
->  kernel/cgroup/cgroup.c                  | 28 +++++++++++++++++++++++++
->  kernel/cgroup/freezer.c                 | 16 ++++++++++----
->  4 files changed, 75 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 51c0bc4c2dc5..a1e3d431974c 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1001,6 +1001,24 @@ All cgroup core files are prefixed with "cgroup."
->  		Total number of dying cgroup subsystems (e.g. memory
->  		cgroup) at and beneath the current cgroup.
->  
-> +  cgroup.stat.local
-> +	A read-only flat-keyed file which exists in non-root cgroups.
-> +	The following entry is defined:
-> +
-> +	  frozen_usec
-> +		Cumulative time that this cgroup has spent between freezing and
-> +		thawing, regardless of whether by self or ancestor groups.
-> +		NB: (not) reaching "frozen" state is not accounted here.
-> +
-> +		Using the following ASCII representation of a cgroup's freezer
-> +		state, ::
-> +
-> +			       1    _____
-> +			frozen 0 __/     \__
-> +			          ab    cd
-> +
-> +		the duration being measured is the span between a and c.
-> +
->    cgroup.freeze
->  	A read-write single value file which exists on non-root cgroups.
->  	Allowed values are "0" and "1". The default is "0".
-> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-> index 6b93a64115fe..539c64eeef38 100644
-> --- a/include/linux/cgroup-defs.h
-> +++ b/include/linux/cgroup-defs.h
-> @@ -433,6 +433,23 @@ struct cgroup_freezer_state {
->  	 * frozen, SIGSTOPped, and PTRACEd.
->  	 */
->  	int nr_frozen_tasks;
-> +
-> +	/* Freeze time data consistency protection */
-> +	seqcount_t freeze_seq;
-> +
-> +	/*
-> +	 * Most recent time the cgroup was requested to freeze.
-> +	 * Accesses guarded by freeze_seq counter. Writes serialized
-> +	 * by css_set_lock.
-> +	 */
-> +	u64 freeze_start_nsec;
-> +
-> +	/*
-> +	 * Total duration the cgroup has spent freezing.
-> +	 * Accesses guarded by freeze_seq counter. Writes serialized
-> +	 * by css_set_lock.
-> +	 */
-> +	u64 frozen_nsec;
->  };
->  
->  struct cgroup {
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 312c6a8b55bb..ab096b884bbc 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -3763,6 +3763,27 @@ static int cgroup_stat_show(struct seq_file *seq, void *v)
->  	return 0;
->  }
->  
-> +static int cgroup_core_local_stat_show(struct seq_file *seq, void *v)
-> +{
-> +	struct cgroup *cgrp = seq_css(seq)->cgroup;
-> +	unsigned int sequence;
-> +	u64 freeze_time;
-> +
-> +	do {
-> +		sequence = read_seqcount_begin(&cgrp->freezer.freeze_seq);
-> +		freeze_time = cgrp->freezer.frozen_nsec;
-> +		/* Add in current freezer interval if the cgroup is freezing. */
-> +		if (test_bit(CGRP_FREEZE, &cgrp->flags))
-> +			freeze_time += (ktime_get_ns() -
-> +					cgrp->freezer.freeze_start_nsec);
-> +	} while (read_seqcount_retry(&cgrp->freezer.freeze_seq, sequence));
-> +
-> +	seq_printf(seq, "frozen_usec %llu\n",
-> +		   (unsigned long long) freeze_time / NSEC_PER_USEC);
-> +
-> +	return 0;
-> +}
-> +
->  #ifdef CONFIG_CGROUP_SCHED
->  /**
->   * cgroup_tryget_css - try to get a cgroup's css for the specified subsystem
-> @@ -5354,6 +5375,11 @@ static struct cftype cgroup_base_files[] = {
->  		.name = "cgroup.stat",
->  		.seq_show = cgroup_stat_show,
->  	},
-> +	{
-> +		.name = "cgroup.stat.local",
-> +		.flags = CFTYPE_NOT_ON_ROOT,
-> +		.seq_show = cgroup_core_local_stat_show,
-> +	},
->  	{
->  		.name = "cgroup.freeze",
->  		.flags = CFTYPE_NOT_ON_ROOT,
-> @@ -5763,6 +5789,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
->  	 * if the parent has to be frozen, the child has too.
->  	 */
->  	cgrp->freezer.e_freeze = parent->freezer.e_freeze;
-> +	seqcount_init(&cgrp->freezer.freeze_seq);
->  	if (cgrp->freezer.e_freeze) {
->  		/*
->  		 * Set the CGRP_FREEZE flag, so when a process will be
-> @@ -5771,6 +5798,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
->  		 * consider it frozen immediately.
->  		 */
->  		set_bit(CGRP_FREEZE, &cgrp->flags);
-> +		cgrp->freezer.freeze_start_nsec = ktime_get_ns();
->  		set_bit(CGRP_FROZEN, &cgrp->flags);
->  	}
->  
-> diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
-> index bf1690a167dd..6c18854bff34 100644
-> --- a/kernel/cgroup/freezer.c
-> +++ b/kernel/cgroup/freezer.c
-> @@ -171,7 +171,7 @@ static void cgroup_freeze_task(struct task_struct *task, bool freeze)
->  /*
->   * Freeze or unfreeze all tasks in the given cgroup.
->   */
-> -static void cgroup_do_freeze(struct cgroup *cgrp, bool freeze)
-> +static void cgroup_do_freeze(struct cgroup *cgrp, bool freeze, u64 ts_nsec)
->  {
->  	struct css_task_iter it;
->  	struct task_struct *task;
-> @@ -179,10 +179,16 @@ static void cgroup_do_freeze(struct cgroup *cgrp, bool freeze)
->  	lockdep_assert_held(&cgroup_mutex);
->  
->  	spin_lock_irq(&css_set_lock);
-> -	if (freeze)
-> +	write_seqcount_begin(&cgrp->freezer.freeze_seq);
-> +	if (freeze) {
->  		set_bit(CGRP_FREEZE, &cgrp->flags);
-> -	else
-> +		cgrp->freezer.freeze_start_nsec = ts_nsec;
-> +	} else {
->  		clear_bit(CGRP_FREEZE, &cgrp->flags);
-> +		cgrp->freezer.frozen_nsec += (ts_nsec -
-> +			cgrp->freezer.freeze_start_nsec);
-> +	}
-> +	write_seqcount_end(&cgrp->freezer.freeze_seq);
->  	spin_unlock_irq(&css_set_lock);
+> Would it be possible to define this directly within the cgroup_do_freeze function rather than
+> passing it as a parameter? This approach might simplify the implementation and potentially improve
+> timing accuracy when it have lots of descendants.
 > 
 
-Hello Tiffany,
+I revisited v3, and this was Michal's point.
+	p
+     /  |  \
+    1  ...  n
+When we freeze the parent group p, is it expected that all descendant cgroups (1 to n) should share
+the same frozen timestamp?
 
-I wanted to check if there are any specific considerations regarding how we should input the ts_nsec
-value.
-
-Would it be possible to define this directly within the cgroup_do_freeze function rather than
-passing it as a parameter? This approach might simplify the implementation and potentially improve
-timing accuracy when it have lots of descendants.
+If the cgroup tree structure is stable, the exact frozen time may not be really matter. However, if
+the tree is not stable, obtaining the same frozen time is acceptable?
 
 -- 
 Best regards,
 Ridong
-
->  	if (freeze)
-> @@ -260,6 +266,7 @@ void cgroup_freeze(struct cgroup *cgrp, bool freeze)
->  	struct cgroup *parent;
->  	struct cgroup *dsct;
->  	bool applied = false;
-> +	u64 ts_nsec;
->  	bool old_e;
->  
->  	lockdep_assert_held(&cgroup_mutex);
-> @@ -271,6 +278,7 @@ void cgroup_freeze(struct cgroup *cgrp, bool freeze)
->  		return;
->  
->  	cgrp->freezer.freeze = freeze;
-> +	ts_nsec = ktime_get_ns();
->  
->  	/*
->  	 * Propagate changes downwards the cgroup tree.
-> @@ -298,7 +306,7 @@ void cgroup_freeze(struct cgroup *cgrp, bool freeze)
->  		/*
->  		 * Do change actual state: freeze or unfreeze.
->  		 */
-> -		cgroup_do_freeze(dsct, freeze);
-> +		cgroup_do_freeze(dsct, freeze, ts_nsec);
->  		applied = true;
->  	}
->  
 
 
