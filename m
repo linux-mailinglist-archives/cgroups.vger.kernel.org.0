@@ -1,129 +1,158 @@
-Return-Path: <cgroups+bounces-9341-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9342-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93ED0B32525
-	for <lists+cgroups@lfdr.de>; Sat, 23 Aug 2025 00:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A6C28B325C1
+	for <lists+cgroups@lfdr.de>; Sat, 23 Aug 2025 02:23:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37D90B63885
-	for <lists+cgroups@lfdr.de>; Fri, 22 Aug 2025 22:43:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30505B61CF0
+	for <lists+cgroups@lfdr.de>; Sat, 23 Aug 2025 00:21:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A79F2C029C;
-	Fri, 22 Aug 2025 22:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RqvoyGx4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20AB017C77;
+	Sat, 23 Aug 2025 00:23:16 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65F3D293B73
-	for <cgroups@vger.kernel.org>; Fri, 22 Aug 2025 22:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1732F37;
+	Sat, 23 Aug 2025 00:23:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755902719; cv=none; b=CfOU5gED5/GL0x1nnsCLtPFm1V7xPw6KWxh01loKuybiXQmDJ+sVE7ReCmNaKe/AAZX7NB1W6/BXnUGn1wZP3m3CNwlBwyvAFzYOyCheF/yVSUxRTvJyTVmeamxAupSqUSGcgpJfn0Rm3sYrTpQwFycoP2Ko0noo0BODSu8ypvU=
+	t=1755908596; cv=none; b=LL/ER5XkqLue5Rq8AYnKK1YL2ZX9lfwVEIsdtqFWDCubltqpluS+wkTXrzLHAIz4AKvTxSmQzRcVplOSGTxByx8y0/1qtM3N7V5EbQxALePJM613OLQNW+5279+HaN4+oCEikm/dVPYwDsNLfhNsvA6X/pB5nfB9sJL4nSdKTqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755902719; c=relaxed/simple;
-	bh=7XUqMfThaX0PghlRgyzp+9hdRZanOKtTrNSrMlwidTQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=lH/frNcLX16caY/HTtvYl+w+bT9cOfvENAPhm3HM6R45SqlowrZyPKWrY3G2VfHtVQzXH0RnxkY1o5RIAo0PWmElFPo5KnyjVQDRB88YLmfsixF4CW6cpMJ529mCjZ/xG/amEY2Hrbgo1fdqKb0qWcXXHZHmr/KwLJJpG1e9r14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RqvoyGx4; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1755902719; x=1787438719;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=7XUqMfThaX0PghlRgyzp+9hdRZanOKtTrNSrMlwidTQ=;
-  b=RqvoyGx4ZEODkAHH+FUeoCyZfPqoZ9KsAtgFQlcq22M0DZUx3Y9cgs4d
-   LshnyVsWLGpl1W93O3GcusNTSAtaVKjmtxsLVSLvucI3xEfWUCIjcVKT4
-   Kx4wjPYuh5oUB9cDaobfeikD6sEU5J0/UbLPeyxcJDqsUhWZk/K4Vu1aM
-   8btOmpXtYGvhSeLbLZI9Vu74lrJjP4908QLBPk0XdkWxPnTxRbITZDH7b
-   D4XXvIFd1HdjEQPEwosVnBDt4QuSfD+IE5+CLtXZTZ/z5PgmXmbM9JH7d
-   fplqZcpggRBshOUVkMKZ0+cOlmDTLLk/z8MUIZysagvVcWYGQENvZRudM
-   Q==;
-X-CSE-ConnectionGUID: OQQ0XIhZQ2mY3nMnFV/Zkw==
-X-CSE-MsgGUID: tHb30woeT/yBTEi5oCm3Vw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11529"; a="80813621"
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="80813621"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2025 15:45:18 -0700
-X-CSE-ConnectionGUID: TikXTbHQRcaNHvdMiQD58Q==
-X-CSE-MsgGUID: g87Ng2GTR/qQQxMTCmGc6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="173005516"
-Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
-  by orviesa003.jf.intel.com with ESMTP; 22 Aug 2025 15:45:17 -0700
-Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1upaVW-000Lth-2J;
-	Fri, 22 Aug 2025 22:45:14 +0000
-Date: Sat, 23 Aug 2025 06:45:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tiffany Yang <ynaffit@google.com>
-Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
-	Tejun Heo <tj@kernel.org>
-Subject: [tj-cgroup:for-6.18 7/8] kernel/cgroup/cgroup.c:3781:undefined
- reference to `__aeabi_uldivmod'
-Message-ID: <202508230604.KyvqOy81-lkp@intel.com>
+	s=arc-20240116; t=1755908596; c=relaxed/simple;
+	bh=JFPgLs60x7RQ6nCtYxBn9aCNjrsem1AKaxTNJxqpvAU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OSyLIE5KR51h1M1pH8w4l6O5kj52KH4junXKAPuOFR8QfzrOkzTDGiWSRLsIVLB0r47LYy8n5HffRXksevnCe78fcm20x3nlTR93FjBsi4Bo+e/dN2yjlEIlQebLrRJAbMnL+GwPws3e9MAOIK1/f7xevp0+k6CtAAfs11xvrkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c7ySp4fBxzYQvCQ;
+	Sat, 23 Aug 2025 08:23:06 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 346BC1A084E;
+	Sat, 23 Aug 2025 08:23:05 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP2 (Coremail) with SMTP id Syh0CgBXZLbnCalo_XMmEg--.20431S2;
+	Sat, 23 Aug 2025 08:23:05 +0800 (CST)
+Message-ID: <eec759ad-7567-449e-8a31-66464051d18f@huaweicloud.com>
+Date: Sat, 23 Aug 2025 08:23:03 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6] cgroup: split cgroup_destroy_wq into 3 workqueues
+To: Tejun Heo <tj@kernel.org>
+Cc: hannes@cmpxchg.org, mkoutny@suse.com, lizefan@huawei.com,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com,
+ chenridong@huawei.com, hdanton@sina.com, gaoyingjie@uniontech.com
+References: <aKNeF68tmjLKB6dK@slm.duckdns.org>
+ <20250819010724.1338654-1-chenridong@huaweicloud.com>
+ <aKisu29TdvbeEPdY@slm.duckdns.org>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <aKisu29TdvbeEPdY@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgBXZLbnCalo_XMmEg--.20431S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr4DXFy5Zw43CrWkAF1rXrb_yoW5Gw48pF
+	Z5C3Wjy3WrGr17ua1vva40q3W0qFs7Xw4UXr1Igw1UJF47Wr92qFsFyF1jqF1kArnrCry7
+	Z3WYvr1Sk34qyw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UAwI
+	DUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.18
-head:   7b281a4582c4408add22cc99f221886b50dd0548
-commit: afa3701c0e45ecb9e4d160048ca4e353c7489948 [7/8] cgroup: cgroup.stat.local time accounting
-config: arm-randconfig-002-20250823 (https://download.01.org/0day-ci/archive/20250823/202508230604.KyvqOy81-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 15.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250823/202508230604.KyvqOy81-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202508230604.KyvqOy81-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arm-linux-gnueabi-ld: kernel/cgroup/cgroup.o: in function `cgroup_core_local_stat_show':
->> kernel/cgroup/cgroup.c:3781:(.text+0x28f4): undefined reference to `__aeabi_uldivmod'
-   arm-linux-gnueabi-ld: (__aeabi_uldivmod): Unknown destination type (ARM/Thumb) in kernel/cgroup/cgroup.o
->> kernel/cgroup/cgroup.c:3781:(.text+0x28f4): dangerous relocation: unsupported relocation
 
 
-vim +3781 kernel/cgroup/cgroup.c
+On 2025/8/23 1:45, Tejun Heo wrote:
+> On Tue, Aug 19, 2025 at 01:07:24AM +0000, Chen Ridong wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
+>>
+>> A hung task can occur during [1] LTP cgroup testing when repeatedly
+>> mounting/unmounting perf_event and net_prio controllers with
+>> systemd.unified_cgroup_hierarchy=1. The hang manifests in
+>> cgroup_lock_and_drain_offline() during root destruction.
+>>
+>> Related case:
+>> cgroup_fj_function_perf_event cgroup_fj_function.sh perf_event
+>> cgroup_fj_function_net_prio cgroup_fj_function.sh net_prio
+>>
+>> Call Trace:
+>> 	cgroup_lock_and_drain_offline+0x14c/0x1e8
+>> 	cgroup_destroy_root+0x3c/0x2c0
+>> 	css_free_rwork_fn+0x248/0x338
+>> 	process_one_work+0x16c/0x3b8
+>> 	worker_thread+0x22c/0x3b0
+>> 	kthread+0xec/0x100
+>> 	ret_from_fork+0x10/0x20
+>>
+>> Root Cause:
+>>
+>> CPU0                            CPU1
+>> mount perf_event                umount net_prio
+>> cgroup1_get_tree                cgroup_kill_sb
+>> rebind_subsystems               // root destruction enqueues
+>> 				// cgroup_destroy_wq
+>> // kill all perf_event css
+>>                                 // one perf_event css A is dying
+>>                                 // css A offline enqueues cgroup_destroy_wq
+>>                                 // root destruction will be executed first
+>>                                 css_free_rwork_fn
+>>                                 cgroup_destroy_root
+>>                                 cgroup_lock_and_drain_offline
+>>                                 // some perf descendants are dying
+>>                                 // cgroup_destroy_wq max_active = 1
+>>                                 // waiting for css A to die
+>>
+>> Problem scenario:
+>> 1. CPU0 mounts perf_event (rebind_subsystems)
+>> 2. CPU1 unmounts net_prio (cgroup_kill_sb), queuing root destruction work
+>> 3. A dying perf_event CSS gets queued for offline after root destruction
+>> 4. Root destruction waits for offline completion, but offline work is
+>>    blocked behind root destruction in cgroup_destroy_wq (max_active=1)
+>>
+>> Solution:
+>> Split cgroup_destroy_wq into three dedicated workqueues:
+>> cgroup_offline_wq – Handles CSS offline operations
+>> cgroup_release_wq – Manages resource release
+>> cgroup_free_wq – Performs final memory deallocation
+>>
+>> This separation eliminates blocking in the CSS free path while waiting for
+>> offline operations to complete.
+>>
+>> [1] https://github.com/linux-test-project/ltp/blob/master/runtest/controllers
+>> Fixes: 334c3679ec4b ("cgroup: reimplement rebind_subsystems() using cgroup_apply_control() and friends")
+>> Reported-by: Gao Yingjie <gaoyingjie@uniontech.com>
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> Suggested-by: Teju Heo <tj@kernel.org>
+> 
+> Applied to cgroup/for-6.17-fixes. Sorry about the delay. I missed the
+> thread.
+> 
+> Thanks.
+> 
 
-  3765	
-  3766	static int cgroup_core_local_stat_show(struct seq_file *seq, void *v)
-  3767	{
-  3768		struct cgroup *cgrp = seq_css(seq)->cgroup;
-  3769		unsigned int sequence;
-  3770		u64 freeze_time;
-  3771	
-  3772		do {
-  3773			sequence = read_seqcount_begin(&cgrp->freezer.freeze_seq);
-  3774			freeze_time = cgrp->freezer.frozen_nsec;
-  3775			/* Add in current freezer interval if the cgroup is freezing. */
-  3776			if (test_bit(CGRP_FREEZE, &cgrp->flags))
-  3777				freeze_time += (ktime_get_ns() -
-  3778						cgrp->freezer.freeze_start_nsec);
-  3779		} while (read_seqcount_retry(&cgrp->freezer.freeze_seq, sequence));
-  3780	
-> 3781		seq_printf(seq, "frozen_usec %llu\n",
-  3782			   (unsigned long long) freeze_time / NSEC_PER_USEC);
-  3783	
-  3784		return 0;
-  3785	}
-  3786	
+Thanks
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best regards,
+Ridong
+
 
