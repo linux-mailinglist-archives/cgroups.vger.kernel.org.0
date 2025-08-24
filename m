@@ -1,39 +1,39 @@
-Return-Path: <cgroups+bounces-9358-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9359-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6638FB32FE4
-	for <lists+cgroups@lfdr.de>; Sun, 24 Aug 2025 14:05:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED689B3305B
+	for <lists+cgroups@lfdr.de>; Sun, 24 Aug 2025 16:19:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAFE8481E83
-	for <lists+cgroups@lfdr.de>; Sun, 24 Aug 2025 12:05:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE2B13A2B30
+	for <lists+cgroups@lfdr.de>; Sun, 24 Aug 2025 14:19:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C71D5274B54;
-	Sun, 24 Aug 2025 12:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB3D393DD1;
+	Sun, 24 Aug 2025 14:19:39 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
+Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3FE238178
-	for <cgroups@vger.kernel.org>; Sun, 24 Aug 2025 12:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4AB1E1DE3
+	for <cgroups@vger.kernel.org>; Sun, 24 Aug 2025 14:19:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756037148; cv=none; b=HIF8/DoU0tPMHioIoh32bVVKDA8WWaSZIIy/KMJ6Vl/i5kxZ/nwNzo5xCw2iIwiiQf0a+OrnQsOzutLdD+SxGyJpOuh0kCZAxijLDOc/lQvu9ZHh4LlVi7O3dpDRtr3fxXhzUxKGJOdAeeUoNDuHta2OpwhZoIOnMKtpSQEtqR0=
+	t=1756045179; cv=none; b=IvEdYfGBSlmiBTV3+ALxRuwqReTbcAIwpQmlck7rmxeAjC6wglxDhcfzzigBxMuR6XI/bcP40Wl6g2jjHDbt5nB70gslY11SCp4Kl5Eqo9PWkBIPnIxnFJ8elgcVTQzQZis9M3jBtya43qyGTDHdg0dadKp0anPh0CnCCNux2Ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756037148; c=relaxed/simple;
+	s=arc-20240116; t=1756045179; c=relaxed/simple;
 	bh=unzH2Zg3QLYapxP0d9yYYXyfQ/FWfgufZj/vUZ29xlo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UjCFtIG6nsQu1MndWvJdMRXd5WzHSEG36v4qSDVnBDSJ7xYcj7WUxNCUFeioBQXV7VS9s58PckQnIpTsdtFrct6FiA8mQ0zr4yeNOKOZG3xpmvmKuFCpo/wKDfSFAjaYJuHz+NxLATZemplHbZA3bWfPd66GFCvOgdIPVPDqrkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
+	 Content-Type:Content-Disposition:In-Reply-To; b=DaPjqsTDBe9MZomeM/lUNmWf1S/VPG8bfm79RLy5hcKymswuXKBuqqSUGONJPSx9n1pfpKP4LQzbMgahlVEWdA8q3sui0yX29+DsqTDeGc1+3S8z7RqSv+INMcplWHZwVxWh2aa6g0tUrWD5hZDQAYUnDl5rT66wU4Ub7iUypKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
 Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.102 with ESMTP; 24 Aug 2025 21:05:37 +0900
+	by 156.147.51.103 with ESMTP; 24 Aug 2025 23:19:28 +0900
 X-Original-SENDERIP: 10.177.112.156
 X-Original-MAILFROM: youngjun.park@lge.com
-Date: Sun, 24 Aug 2025 21:05:37 +0900
+Date: Sun, 24 Aug 2025 23:19:28 +0900
 From: YoungJun Park <youngjun.park@lge.com>
 To: Chris Li <chrisl@kernel.org>
 Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
@@ -49,7 +49,7 @@ Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
 	Kairui Song <ryncsn@gmail.com>
 Subject: Re: [PATCH 1/4] mm/swap, memcg: Introduce infrastructure for
  cgroup-based swap priority
-Message-ID: <aKsAES4cXWbDG1xn@yjaykim-PowerEdge-T330>
+Message-ID: <aKsfcGI+aK2eYISA@yjaykim-PowerEdge-T330>
 References: <uyxkdmnmvjipxuf7gagu2okw7afvzlclomfmc6wb6tygc3mhv6@736m7xs6gn5q>
  <CAF8kJuMo3yNKOZL9n5UkHx_O5cTZts287HOnQOu=KqQcnbrMdg@mail.gmail.com>
  <aKC+EU3I/qm6TcjG@yjaykim-PowerEdge-T330>
