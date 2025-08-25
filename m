@@ -1,129 +1,180 @@
-Return-Path: <cgroups+bounces-9376-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9383-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B76CB33BBA
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 11:53:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 108AEB33E1D
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 13:33:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B768164359
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 09:53:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF79E1A82D07
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 11:33:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45022D3209;
-	Mon, 25 Aug 2025 09:51:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD042E9738;
+	Mon, 25 Aug 2025 11:33:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="E1YSSVrl"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vM0JmMt8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OOGTAtHz";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vM0JmMt8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OOGTAtHz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CFCE2D0C9D
-	for <cgroups@vger.kernel.org>; Mon, 25 Aug 2025 09:51:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926011D63C5
+	for <cgroups@vger.kernel.org>; Mon, 25 Aug 2025 11:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756115474; cv=none; b=eWCxlV6rUerfnMmz07xmzV+Ws5SHH/KCdH27LoVVd+TrCJQTPfpVvEUBU1jphCNlM2dt6MuGHw1QoBGO3JOhL2zoHxV1EMr1AbRZCqzZ8qAWmTekIIxZbb1NVMh7O8e9e74/RhB3WwD30CVcqer35XayNcK+Qa/9NaWt3KxD2fA=
+	t=1756121586; cv=none; b=TcD65abxxIRHgpW0OYJBxTiK/2QurLsu1NwlNf7ViuLayG8Ixwh3WVcFds5a3BwU8GKJHJK/fx2pTPuqWLdvuK008ti1iPVwRxZvWKpSjnNo8YUb1F8TBznzyJekEAUU9BGEHvyxXC36Co19WPMwOqcX402yE1RLrU8KqOveDz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756115474; c=relaxed/simple;
-	bh=B8eCYEono40PCIy16xmaC4Aox2ZtXZbrtkZF8FCENiM=;
+	s=arc-20240116; t=1756121586; c=relaxed/simple;
+	bh=Mp5rkFfMI7w6XlcyJaY/n2AlP/oJ3ya3aaT/ITcmCfM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m0t93ZT6LkmXf0E9D7MJ6VhgN8R5kB0keuCunN24l1Q1ksyHY3dO+vOQmZ9ujvLOf37m9bmsjt5xv4SQmBO9chKQ1fh6UzdC/AtMG6q9omFLLuhtDyhC+Lg/7EM8n/CXkxylNVObcyXspT/+05NSckF319Yy12G4zmfZqZioHl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=E1YSSVrl; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-770530175b2so897786b3a.3
-        for <cgroups@vger.kernel.org>; Mon, 25 Aug 2025 02:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1756115472; x=1756720272; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=91s1cIGRQAxrumxrJ8ni6aEx18e/r1sz4gPLC81PIgY=;
-        b=E1YSSVrl8O1J/DGQWQkRBjERagRt0CuIMoYZFNRkgUW2Y9BQf3qFeYQRmUqFSaHT6O
-         bFkk/QetwGsQXg8DKAjBdYNpQycSlMQ2De0vvYOVRfRu7Gv9HyNMwtWlMXH66KFoyevZ
-         F9um6xbXyAkHdC9p3Mx1m10vpMTfmoz+3BohjFROf2HSDHY+3Daqr+kLdTE22bhx95V9
-         ExkFTB8d+eEmMphg+c5cjrbHv8aTtiC2dRztLHWxEnQcLWk/yX+zGK/MGq1BIlkkosYt
-         THlG0bmrm8+pEKSmXcfNTCapzIo3fsPZfN67EeBEs+qkUjj6aOV7wQmd8EOwyEFnVRpo
-         Edxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756115472; x=1756720272;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=91s1cIGRQAxrumxrJ8ni6aEx18e/r1sz4gPLC81PIgY=;
-        b=XKOenuvHWM0FAvmmQII+BNPSi2kH+IqqSljqNQZ8rE9LAEla/5bDdcfWP3tEMywa3x
-         dcSAWprQgrCS5wrQ/eKmDQ+lmRRXjFdkPJiAgSl1FMH69zMTcNda1Q8Vs4b7p7Au9vou
-         28lmMcQe/W4xKd2Uvf+RMnw1omW6qnK6cHuCZpTKWJ5QSguaKyhDgOcl0m2xVD/sIoeZ
-         pPRZfw/624DbC5I2EtQJex1m1J7P45ZkqfawqKDVjciNbaEcFns6PRaGL8ISlV4cTkC+
-         +qo1jQwff3vfjmvve6iddWLlo1BvpTjsOsMgVkhXjmbfthQvn47+trmi1lk6f0REFT5F
-         57iA==
-X-Forwarded-Encrypted: i=1; AJvYcCX20essYBFbiVwB3Ws1Zs8wPZNoy52LOe5rTRXEVxkah8W9enTKJa3weC06g/r5v87EsGXkmDxE@vger.kernel.org
-X-Gm-Message-State: AOJu0YyS53fLJXWEpFuOCbXtdqN+BB9fmFQpYjAm9OBOh/gF0gUOJ/go
-	ACU0bNbNlEwDchT3dlpgFcR/xvjK2j3Hq84eLSP3cOVGFhInPCCGYVVhFsJbNOrfVQ==
-X-Gm-Gg: ASbGnctB3XLN2Pt7RSYZFh5+3wlAb2No0uV8eipbAkfGVRKZZUj6K5slUnyeU+jTNVb
-	JGQh6Hpti4AQAF0xdbKcgf9+sOKKS5xobiNXjjDw7SokkPpp0N+iAo4HWkJYXybRsp6ki5bIDJp
-	wVocTawwI8ha2Ak0barqRA+dLCguItnOE1oScyfamVzamdnFc0fO2xdqTfeVLWAWlOyjZMKkW3k
-	VjKkuBPE24Iql23G3pob6gukyFIsh/169+9+uLCnt3rbtfa99u9F9Wpyvgewa+m0g5n6K8ejwUE
-	w02E//9VQ9MaOXAaelN/7RLoF6Bir+33+VpdWmHGkgpP4JKyf7u/ZyspBfv2yahqtlFueci4OlP
-	Ge8B9VPhgs/iAAfbdMzNGK9xtk8M2NJEVQhp5ncx5QEFuH2I=
-X-Google-Smtp-Source: AGHT+IFKmShdsyMlmj4cT5JRWT7LwYbqWBv7GzkGKLvpKSJg5ombkdXo91DBer2NpWN+oCdJY5Gk/A==
-X-Received: by 2002:a05:6a00:2288:b0:770:3064:78fa with SMTP id d2e1a72fcca58-77030647984mr14107031b3a.2.1756115472294;
-        Mon, 25 Aug 2025 02:51:12 -0700 (PDT)
-Received: from bytedance ([61.213.176.56])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-770b5bed408sm3213674b3a.18.2025.08.25.02.51.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 02:51:11 -0700 (PDT)
-Date: Mon, 25 Aug 2025 17:50:56 +0800
-From: Aaron Lu <ziqianlu@bytedance.com>
-To: xupengbo <xupengbo@oppo.com>
-Cc: bsegall@google.com, cgroups@vger.kernel.org, dietmar.eggemann@arm.com,
-	juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-	mgorman@suse.de, mingo@redhat.com, peterz@infradead.org,
-	rostedt@goodmis.org, vincent.guittot@linaro.org,
-	vschneid@redhat.com
-Subject: Re: [PATCH v2] sched/fair: Fix unfairness caused by stalled
- tg_load_avg_contrib when the last task migrates out.
-Message-ID: <20250825095056.GA87@bytedance>
-References: <20250806071848.GA629@bytedance>
- <20250806083810.27678-1-xupengbo@oppo.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dOlH2vpMdQLHDrDf3eVsNF/MIF5nwLt/ee1v/w/C1bp19EUmoj2z+A95hADsqb90zZ70cjntBmkBdS2h08il4b+o5xoHjsqdJy+a1M8KpbJ7Q3PI5kfMCrfqf6d6UzCG9jG6sHyfEqxB1ZzN6NeMH5aZPmM6gDagZHG7jJMfiXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vM0JmMt8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OOGTAtHz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vM0JmMt8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OOGTAtHz; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BF0DE1F79A;
+	Mon, 25 Aug 2025 11:33:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756121582; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tomkV9nuT3frr0dWuW+rpHLgqKT+MFjV5H/omKZ8HQI=;
+	b=vM0JmMt8wvd1jNqgCn9PlBu1BKoOyBmc8g4JRayRBduJGl7G5bMeIHuWHqcyhxC7VVpw+o
+	OWpGDTFEoSWIOkpRGdNq+3RVobpP1dl+yx2gtS3yT/FVxFh/CeG4IzVl10PIoqWscbsWe8
+	Pe56YnYXL8LzIs+wmQbuCYduWVXw04A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756121582;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tomkV9nuT3frr0dWuW+rpHLgqKT+MFjV5H/omKZ8HQI=;
+	b=OOGTAtHzhWpJM/oD0VYEhQMvX4oTKFcCtFklyDgTAiZ3LpIwMIynTgFLBCUYmk31Bj7H2S
+	lagUB7SRl1wN2JAw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1756121582; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tomkV9nuT3frr0dWuW+rpHLgqKT+MFjV5H/omKZ8HQI=;
+	b=vM0JmMt8wvd1jNqgCn9PlBu1BKoOyBmc8g4JRayRBduJGl7G5bMeIHuWHqcyhxC7VVpw+o
+	OWpGDTFEoSWIOkpRGdNq+3RVobpP1dl+yx2gtS3yT/FVxFh/CeG4IzVl10PIoqWscbsWe8
+	Pe56YnYXL8LzIs+wmQbuCYduWVXw04A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1756121582;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tomkV9nuT3frr0dWuW+rpHLgqKT+MFjV5H/omKZ8HQI=;
+	b=OOGTAtHzhWpJM/oD0VYEhQMvX4oTKFcCtFklyDgTAiZ3LpIwMIynTgFLBCUYmk31Bj7H2S
+	lagUB7SRl1wN2JAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AF20113867;
+	Mon, 25 Aug 2025 11:33:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PY65Ku5JrGjqAwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 25 Aug 2025 11:33:02 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 9FFCCA0A94; Mon, 25 Aug 2025 12:13:53 +0200 (CEST)
+Date: Mon, 25 Aug 2025 12:13:53 +0200
+From: Jan Kara <jack@suse.cz>
+To: Julian Sun <sunjunchao@bytedance.com>
+Cc: Tejun Heo <tj@kernel.org>, linux-fsdevel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org, 
+	jack@suse.cz, hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, axboe@kernel.dk
+Subject: Re: [External] Re: [PATCH] memcg: Don't wait writeback completion
+ when release memcg.
+Message-ID: <lvycz43vcro2cwjun4tswjv67tz5sg4tans3hragwils3gvnbh@hxbjk6x6v5zk>
+References: <20250820111940.4105766-1-sunjunchao@bytedance.com>
+ <20250820111940.4105766-4-sunjunchao@bytedance.com>
+ <aKY2-sTc5qQmdea4@slm.duckdns.org>
+ <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250806083810.27678-1-xupengbo@oppo.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -3.80
 
-Hi xupengbo,
-
-On Wed, Aug 06, 2025 at 04:38:10PM +0800, xupengbo wrote:
-... ... 
+On Thu 21-08-25 10:30:30, Julian Sun wrote:
+> On Thu, Aug 21, 2025 at 4:58 AM Tejun Heo <tj@kernel.org> wrote:
+> >
+> > On Wed, Aug 20, 2025 at 07:19:40PM +0800, Julian Sun wrote:
+> > > @@ -3912,8 +3921,12 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
+> > >       int __maybe_unused i;
+> > >
+> > >  #ifdef CONFIG_CGROUP_WRITEBACK
+> > > -     for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
+> > > -             wb_wait_for_completion(&memcg->cgwb_frn[i].done);
+> > > +     for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++) {
+> > > +             struct wb_completion *done = memcg->cgwb_frn[i].done;
+> > > +
+> > > +             if (atomic_dec_and_test(&done->cnt))
+> > > +                     kfree(done);
+> > > +     }
+> > >  #endif
+> >
+> > Can't you just remove done? I don't think it's doing anything after your
+> > changes anyway.
 > 
-> It actually becomes:
->     if (cfs_rq->tg_load_avg_contrib > 0)
-> if cfs_rq->tg_load_avg_contrib == 0 , it will be false. As it is an unsigned
-> long, this condition is equivalent to :
->     if (cfs_rq->tg_load_avg_contrib)
+> Thanks for your review.
+> 
+> AFAICT done is also used to track free slots in
+> mem_cgroup_track_foreign_dirty_slowpath() and
+> mem_cgroup_flush_foreign(), otherwise we have no method to know which
+> one is free and might flush more than what MEMCG_CGWB_FRN_CNT allow.
+> 
+> Am I missing something?
 
-I suppose we have reached a conclusion that the right fix is to add a
-check of cfs_rq->tg_load_avg_contrib in cfs_rq_is_decayed()? Something
-like below:
+True, but is that mechanism really needed? Given the approximate nature of
+foreign flushing, couldn't we just always replace the oldest foreign entry
+regardless of whether the writeback is running or not? I didn't give too
+deep thought to this but from a quick look this should work just fine...
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index af33d107d8034..3ebcb683063f0 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4056,6 +4056,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
- 	if (child_cfs_rq_on_list(cfs_rq))
- 		return false;
- 
-+	if (cfs_rq->tg_load_avg_contrib)
-+		return false;
-+
- 	return true;
- }
- 
-If you also agree, can you send an updated patch to fix this problem?
-Thanks.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
