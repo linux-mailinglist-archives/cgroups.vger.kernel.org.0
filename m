@@ -1,88 +1,45 @@
-Return-Path: <cgroups+bounces-9362-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9363-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 619B3B33195
-	for <lists+cgroups@lfdr.de>; Sun, 24 Aug 2025 19:07:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EE26B3336A
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 02:52:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A0CE202D32
-	for <lists+cgroups@lfdr.de>; Sun, 24 Aug 2025 17:07:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 370737ACF73
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 00:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9922D59FA;
-	Sun, 24 Aug 2025 17:07:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S5WYlxhn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C522D200112;
+	Mon, 25 Aug 2025 00:52:32 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2E91FDE09
-	for <cgroups@vger.kernel.org>; Sun, 24 Aug 2025 17:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80CB67081C;
+	Mon, 25 Aug 2025 00:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756055251; cv=none; b=tvmFsFs6SMEP9vKBPx85SLbz6DETv9cxI/hCyA8auPwQVEfM0Fzj/engbNbSMyoOLNOoL6qQvT5dLxdQDMFKhXmPih6zRuzjMvAx3rkkGLw9HgOL8O2ohSGfHxaVZKxlNXil0xZHgkgFlhoxLpmtnBHI74dCiAYOb4JIsqIfMi0=
+	t=1756083152; cv=none; b=COqnc4tdiP2pvae7aFLjPN66/rlHoMi0wgvPPwyr5cSkeoa1K1ol6KqGtQZqUfYz5WF+ExAfksjUmfW3EmjzVw0r0Cg2LEOHSxreDW9HDl7DLSHNYzewdsc5v+GAl5xrqVXshwCNGkkKc56rmlXLosneRC7BbWeE/wxKTbcNJfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756055251; c=relaxed/simple;
-	bh=Q1L1yzZ7ud94WvojabMeOWCugIEPeRROO5DXpiq1gpk=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=FOFBMStYwtV0OQOhOGgHoe6nEimuH05+fFhRE0K6iFlTCe2FqxsXSs6j/L0003neBFaZn33f0Tf7CdkXQ7cv8Jn/xzCQxLp9NUnqlk5H3Zprx6zfrRXVPf90gVzpZ+aaG+s2I8UEFoBVmz/nezatNheWLoLAaW7VT5d0RdGxGDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S5WYlxhn; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756055249;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1KblgusdaX44GtEkaStJj875tSXGSeuFJK6BC8mzxMA=;
-	b=S5WYlxhnrLtPrZEdxTUSLV/ltbA1sTkWWKXJNzA8cUK9C/YpXTzcbgOS9Pjj7yxxhI9rUQ
-	gDUyLvVeuJcuh6v5I7BwYI+rSN/+/h3qNpGc69ccdDlN9oJPA0CRH3qvl+9lLWIp8ULZdP
-	fRpoIhMec3H0NT7E5KzD0ld87cwogmc=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-524-sRfF9lK3PpO4t0Hq_Mfn1g-1; Sun, 24 Aug 2025 13:07:27 -0400
-X-MC-Unique: sRfF9lK3PpO4t0Hq_Mfn1g-1
-X-Mimecast-MFC-AGG-ID: sRfF9lK3PpO4t0Hq_Mfn1g_1756055247
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-7200af345a5so6358357b3.1
-        for <cgroups@vger.kernel.org>; Sun, 24 Aug 2025 10:07:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756055247; x=1756660047;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1KblgusdaX44GtEkaStJj875tSXGSeuFJK6BC8mzxMA=;
-        b=Ilgf8FD9vmAxjqyEEwvFoG7UUFxrIRE8AgPAfR9bfCPwIXvXYLDFZz2WrCo9bXUIat
-         42A89kQj+rw+fdFuHU6SbplqM0ahzCXQigXqDwTkf6DTdtQjBza59KGo4BBgnNGG5YNj
-         OPVQsQPWc+ZzP9h2yBwNjMELjQnjln65Y4TQSGhEANhwRDssfaB83Iu+ehNO2aA+NFpv
-         lX3oGJiXY6xr4CmTQpugmH5kK18UE3utD90GAi8SZFrqfuzLNrplf+OTiRRxw0JyMDyl
-         CE/V5dXYExrjd1Y6DuVqzeIKE+7IJrHZqZ+RwTBIb+m8hunajFpg4PcD3u8BP5zREk9Y
-         7Neg==
-X-Gm-Message-State: AOJu0Yy32Dhj6xzE5j6l3/f5LBKgIcnRz50PsW9Prkk5QgkzsA1NJyKt
-	X7LtTrZPDzeJS7QYgoCbhD1H6rsplE50OKs9wTlmRpX09xiVs2knxvUrulGCCXy+maY0+R2aVO2
-	19EjdeHiQ+swUQ1MJ7csy8mmpKMEejeSAP2HWwnKQ+oapS9JM+oSoWfBF7Zs=
-X-Gm-Gg: ASbGncvp9MogAfN7tOd8G/s/J2QB8OexO93j6wQoeSKMNoOQ8wphov4CIlIUccCDIWe
-	+mb357nbCJHjwY18T5aTK0xMHxtcUvOk2Ii3ptyK0d5PBMKrhbqyh28xOO7dhNDBuHVh9Gkzwed
-	6QIGOJaDujc2c8vQk0sXN9frqIy+mW8VedPL/qGqA9nYM0CCgQ18KQj8BlpHD+KUTIXuOP/7IKN
-	HgznXzr+QrKl3LCHoRznBalzXsHr1oOy4+0j9Z2iN7KPhB4r26G+GMdYK+RSZL6foWZP71BVfij
-	Ki6coAagv4GCf97PGAR/P+H8ul7eqloF5/lnTkq8R8XF8w8wSjgXsmKNLELwXWh76EJdiP2FkwE
-	xiTU+FUgfGw==
-X-Received: by 2002:a05:690c:6c83:b0:71c:1a46:48f9 with SMTP id 00721157ae682-71fdc3d0a53mr101822957b3.33.1756055246702;
-        Sun, 24 Aug 2025 10:07:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFIIbv6oJnhRcILnVA8ypDDZjI/HQujg/Yk0MBJjauaxWq7ni+ri5OU2DLYTcQ5PTa66rkPVQ==
-X-Received: by 2002:a05:690c:6c83:b0:71c:1a46:48f9 with SMTP id 00721157ae682-71fdc3d0a53mr101822457b3.33.1756055246185;
-        Sun, 24 Aug 2025 10:07:26 -0700 (PDT)
-Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-71ff1734ac3sm12269037b3.23.2025.08.24.10.07.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Aug 2025 10:07:25 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <36685999-17f1-479e-9895-a22ef28bce67@redhat.com>
-Date: Sun, 24 Aug 2025 13:07:24 -0400
+	s=arc-20240116; t=1756083152; c=relaxed/simple;
+	bh=eR+0UlJHgVRlInzosX/W0UU2V0Hl86UYTCNUVWzoaHI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TKM2sTEgsKRm839MD+mo6xj7ArauteV1AUDzFK32Dr+gljbhT6BIBQQ56ib8e2M9UuwF+03pLWU7ytroxYKhr/Ea/MT8njSPSvf98LkkXve+OQors3kMmxvxKkNkPSGlt/ncpcrq3t0Y2ImXiLEtPPXHye4tLq7NCS5Rrzx5Bfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4c9C1c6RkxzKHMSl;
+	Mon, 25 Aug 2025 08:52:20 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 7B7C01A1A0F;
+	Mon, 25 Aug 2025 08:52:20 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP1 (Coremail) with SMTP id cCh0CgDHhXvDs6to1mLDAA--.34254S2;
+	Mon, 25 Aug 2025 08:52:20 +0800 (CST)
+Message-ID: <abec1bda-82bf-430e-9747-5aa4fa6ccacd@huaweicloud.com>
+Date: Mon, 25 Aug 2025 08:52:18 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,230 +47,92 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next v4 3/3] cpuset: add helpers for cpus read and
- cpuset_mutex locks
-To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
- hannes@cmpxchg.org, mkoutny@suse.com
+Subject: Re: [PATCH -next v4 2/3] cpuset: separate tmpmasks and cpuset
+ allocation logic
+To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  lujialin4@huawei.com, chenridong@huawei.com
 References: <20250818064141.1334859-1-chenridong@huaweicloud.com>
- <20250818064141.1334859-4-chenridong@huaweicloud.com>
+ <20250818064141.1334859-3-chenridong@huaweicloud.com>
+ <0b918f11-d850-4cdb-b9af-ffa436b8fd1e@redhat.com>
 Content-Language: en-US
-In-Reply-To: <20250818064141.1334859-4-chenridong@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <0b918f11-d850-4cdb-b9af-ffa436b8fd1e@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDHhXvDs6to1mLDAA--.34254S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF4kCFyfuw1ktw4ktF1xGrg_yoW8uF4xpF
+	ZIgFy5t3y5Kr1xGa43X3Z7WF1S9a18tF1DK3WDtryFvFWak3W0gF1DZa4FqF1UAFykuF15
+	JF90vF429a4kAFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUymb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2NtUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On 8/18/25 2:41 AM, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
->
-> cpuset: add helpers for cpus_read_lock and cpuset_mutex locks.
->
-> Replace repetitive locking patterns with new helpers:
-> - cpuset_full_lock()
-> - cpuset_full_unlock()
->
-> This makes the code cleaner and ensures consistent lock ordering.
->
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
->   kernel/cgroup/cpuset-internal.h |  2 ++
->   kernel/cgroup/cpuset-v1.c       | 12 +++----
->   kernel/cgroup/cpuset.c          | 60 +++++++++++++++++++--------------
->   3 files changed, 40 insertions(+), 34 deletions(-)
->
-> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-> index 75b3aef39231..337608f408ce 100644
-> --- a/kernel/cgroup/cpuset-internal.h
-> +++ b/kernel/cgroup/cpuset-internal.h
-> @@ -276,6 +276,8 @@ int cpuset_update_flag(cpuset_flagbits_t bit, struct cpuset *cs, int turning_on)
->   ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
->   				    char *buf, size_t nbytes, loff_t off);
->   int cpuset_common_seq_show(struct seq_file *sf, void *v);
-> +void cpuset_full_lock(void);
-> +void cpuset_full_unlock(void);
->   
->   /*
->    * cpuset-v1.c
-> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-> index b69a7db67090..12e76774c75b 100644
-> --- a/kernel/cgroup/cpuset-v1.c
-> +++ b/kernel/cgroup/cpuset-v1.c
-> @@ -169,8 +169,7 @@ static int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
->   	cpuset_filetype_t type = cft->private;
->   	int retval = -ENODEV;
->   
-> -	cpus_read_lock();
-> -	cpuset_lock();
-> +	cpuset_full_lock();
->   	if (!is_cpuset_online(cs))
->   		goto out_unlock;
->   
-> @@ -184,8 +183,7 @@ static int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
->   		break;
->   	}
->   out_unlock:
-> -	cpuset_unlock();
-> -	cpus_read_unlock();
-> +	cpuset_full_unlock();
->   	return retval;
->   }
->   
-> @@ -454,8 +452,7 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
->   	cpuset_filetype_t type = cft->private;
->   	int retval = 0;
->   
-> -	cpus_read_lock();
-> -	cpuset_lock();
-> +	cpuset_full_lock();
->   	if (!is_cpuset_online(cs)) {
->   		retval = -ENODEV;
->   		goto out_unlock;
-> @@ -498,8 +495,7 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
->   		break;
->   	}
->   out_unlock:
-> -	cpuset_unlock();
-> -	cpus_read_unlock();
-> +	cpuset_full_unlock();
->   	return retval;
->   }
->   
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index d5588a1fef60..d29f90a28e1e 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -250,6 +250,12 @@ static struct cpuset top_cpuset = {
->   
->   static DEFINE_MUTEX(cpuset_mutex);
->   
-> +/**
-> + * cpuset_lock - Acquire the global cpuset mutex
-> + *
-> + * This locks the global cpuset mutex to prevent modifications to cpuset
-> + * hierarchy and configurations. This helper is not enough to make modification.
-> + */
->   void cpuset_lock(void)
->   {
->   	mutex_lock(&cpuset_mutex);
-> @@ -260,6 +266,24 @@ void cpuset_unlock(void)
->   	mutex_unlock(&cpuset_mutex);
->   }
->   
-> +/**
-> + * cpuset_full_lock - Acquire full protection for cpuset modification
-> + *
-> + * Takes both CPU hotplug read lock (cpus_read_lock()) and cpuset mutex
-> + * to safely modify cpuset data.
-> + */
-> +void cpuset_full_lock(void)
-> +{
-> +	cpus_read_lock();
-> +	mutex_lock(&cpuset_mutex);
-> +}
-> +
-> +void cpuset_full_unlock(void)
-> +{
-> +	mutex_unlock(&cpuset_mutex);
-> +	cpus_read_unlock();
-> +}
-> +
->   static DEFINE_SPINLOCK(callback_lock);
->   
->   void cpuset_callback_lock_irq(void)
-> @@ -3233,8 +3257,7 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
->   	int retval = -ENODEV;
->   
->   	buf = strstrip(buf);
-> -	cpus_read_lock();
-> -	mutex_lock(&cpuset_mutex);
-> +	cpuset_full_lock();
->   	if (!is_cpuset_online(cs))
->   		goto out_unlock;
->   
-> @@ -3263,8 +3286,7 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
->   	if (force_sd_rebuild)
->   		rebuild_sched_domains_locked();
->   out_unlock:
-> -	mutex_unlock(&cpuset_mutex);
-> -	cpus_read_unlock();
-> +	cpuset_full_unlock();
->   	flush_workqueue(cpuset_migrate_mm_wq);
->   	return retval ?: nbytes;
->   }
-> @@ -3367,12 +3389,10 @@ static ssize_t cpuset_partition_write(struct kernfs_open_file *of, char *buf,
->   	else
->   		return -EINVAL;
->   
-> -	cpus_read_lock();
-> -	mutex_lock(&cpuset_mutex);
-> +	cpuset_full_lock();
->   	if (is_cpuset_online(cs))
->   		retval = update_prstate(cs, val);
-> -	mutex_unlock(&cpuset_mutex);
-> -	cpus_read_unlock();
-> +	cpuset_full_unlock();
->   	return retval ?: nbytes;
->   }
->   
-> @@ -3497,9 +3517,7 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
->   	if (!parent)
->   		return 0;
->   
-> -	cpus_read_lock();
-> -	mutex_lock(&cpuset_mutex);
-> -
-> +	cpuset_full_lock();
->   	if (is_spread_page(parent))
->   		set_bit(CS_SPREAD_PAGE, &cs->flags);
->   	if (is_spread_slab(parent))
-> @@ -3551,8 +3569,7 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
->   	cpumask_copy(cs->effective_cpus, parent->cpus_allowed);
->   	spin_unlock_irq(&callback_lock);
->   out_unlock:
-> -	mutex_unlock(&cpuset_mutex);
-> -	cpus_read_unlock();
-> +	cpuset_full_unlock();
->   	return 0;
->   }
->   
-> @@ -3567,16 +3584,12 @@ static void cpuset_css_offline(struct cgroup_subsys_state *css)
->   {
->   	struct cpuset *cs = css_cs(css);
->   
-> -	cpus_read_lock();
-> -	mutex_lock(&cpuset_mutex);
-> -
-> +	cpuset_full_lock();
->   	if (!cpuset_v2() && is_sched_load_balance(cs))
->   		cpuset_update_flag(CS_SCHED_LOAD_BALANCE, cs, 0);
->   
->   	cpuset_dec();
-> -
-> -	mutex_unlock(&cpuset_mutex);
-> -	cpus_read_unlock();
-> +	cpuset_full_unlock();
->   }
->   
->   /*
-> @@ -3588,16 +3601,11 @@ static void cpuset_css_killed(struct cgroup_subsys_state *css)
->   {
->   	struct cpuset *cs = css_cs(css);
->   
-> -	cpus_read_lock();
-> -	mutex_lock(&cpuset_mutex);
-> -
-> +	cpuset_full_lock();
->   	/* Reset valid partition back to member */
->   	if (is_partition_valid(cs))
->   		update_prstate(cs, PRS_MEMBER);
-> -
-> -	mutex_unlock(&cpuset_mutex);
-> -	cpus_read_unlock();
-> -
-> +	cpuset_full_unlock();
->   }
->   
->   static void cpuset_css_free(struct cgroup_subsys_state *css)
-Reviewed-by: Waiman Long <longman@redhat.com>
+
+
+On 2025/8/25 1:05, Waiman Long wrote:
+> 
+> On 8/18/25 2:41 AM, Chen Ridong wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
+>>
+>> The original alloc_cpumasks() served dual purposes: allocating cpumasks
+>> for both temporary masks (tmpmasks) and cpuset structures. This patch:
+>>
+>> 1. Decouples these allocation paths for better code clarity
+>> 2. Introduces dedicated alloc_tmpmasks() and dup_or_alloc_cpuset()
+>>     functions
+>> 3. Maintains symmetric pairing:
+>>     - alloc_tmpmasks() ↔ free_tmpmasks()
+>>     - dup_or_alloc_cpuset() ↔ free_cpuset()
+>>
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 128 ++++++++++++++++++++++-------------------
+>>   1 file changed, 69 insertions(+), 59 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index aebda14cc67f..d5588a1fef60 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -411,51 +411,46 @@ static void guarantee_online_mems(struct cpuset *cs, nodemask_t *pmask)
+>>   }
+>>     /**
+>> - * alloc_cpumasks - allocate three cpumasks for cpuset
+>> - * @cs:  the cpuset that have cpumasks to be allocated.
+>> - * @tmp: the tmpmasks structure pointer
+>> - * Return: 0 if successful, -ENOMEM otherwise.
+>> + * alloc_cpumasks - Allocate an array of cpumask variables
+>> + * @pmasks: Pointer to array of cpumask_var_t pointers
+>> + * @size: Number of cpumasks to allocate
+>>    *
+>> - * Only one of the two input arguments should be non-NULL.
+>> + * Allocates @size cpumasks and initializes them to empty. Returns 0 on
+>> + * success, -ENOMEM on allocation failure. On failure, any previously
+>> + * allocated cpumasks are freed.
+> 
+> The convention for the kernel-doc is to have a "Return:" tag if the function has a returned value.
+> That "Return:" tag is deleted by this change. Your description does describe the returned value and
+> no test robot failure was reported. Other than that, the rest of the patch looks good to me.
+> 
+> Cheers,
+> Longman
+> 
+
+Thank you Longman, will update.
+
+-- 
+Best regards,
+Ridong
 
 
