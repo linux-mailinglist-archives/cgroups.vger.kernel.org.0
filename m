@@ -1,134 +1,82 @@
-Return-Path: <cgroups+bounces-9387-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9388-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E593B34947
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 19:48:31 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30042B34A0B
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 20:18:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52B027AFB15
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 17:46:22 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D87994E23B8
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 18:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA41221F32;
-	Mon, 25 Aug 2025 17:46:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8FE2798FB;
+	Mon, 25 Aug 2025 18:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="X93HcYfG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fH8nY2EE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC1003090FB
-	for <cgroups@vger.kernel.org>; Mon, 25 Aug 2025 17:45:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE0B1CEAB2;
+	Mon, 25 Aug 2025 18:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756143979; cv=none; b=HvtbxV+QQinyMoj6akxgGFIM6EqcMQqwvAQdp6D0sfN1564E1cAb2E0enPtEPjK9/ZdzcybgPCATxJRJmIzN/02oaMiVXdhcFdrcDB56jMJht+fRQl03Lqaso7O+vZ3GaQa7b/Nl6wYXZaWpXAqKtO5eEc46ENRx/a/htAUhQnU=
+	t=1756145883; cv=none; b=VF8wZ+lNAmuH27DhncEkqTAbg/Tu4ClsOX3KxZVw3f5iNZNa/BZKAMpN0CfHstQrUknpBsYxfqqcI1xv2Koh9h6ox54xgyA+qIsquWBdmWVQ/EzOiKsnFTLKyi6orOb+/8GsE/VXMly68JAxNiFe6oxS07Q/+MAZ0ZjiSI9UtgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756143979; c=relaxed/simple;
-	bh=8j6IUxq5806WXRPBFyKZVCp7nDA/VilwXVXm5ZjcDCY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gxl0iwwOJaIE4f32X4Q9R37wd22aPnYZ0pcJE8ognUbFIryADx3o5EUDfb1o3tQkF5Ox3YGmHcLjB5+Pd06bj7A8LKtFyn2B6IztRu8vggDcty/ZR1jV/3xMagTIjRJ67NuhGzSrD8++1Jgp8v3choECRzOMwJVmFG0bSCgn/fQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=X93HcYfG; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-71d603a269cso36659267b3.1
-        for <cgroups@vger.kernel.org>; Mon, 25 Aug 2025 10:45:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1756143955; x=1756748755; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1OT/3jnBTfte7HdviQkf1yIS7M/qS42669Lv6VXZMcY=;
-        b=X93HcYfG01tEohs8PmKxyE8SZuDn54yu69o43BdPRRbRKUosdudkfrfR5qzMFCzSkT
-         if60xzq/ZKeOXj3B3ystNETNfGMYx+/8Ax8PwJQtPRaGpfvOdboyt9myrJDCeIPDTAfs
-         OpfKeAzSzdTbnDBe7FIdxhhi8Fiji9/exnCw2WbhNJJcMv9xOlHAekEn0gj3vAOA4rnn
-         alIHzfQJIAU5tZTWztMh+SLKqtYJKqMYlCBQ2H64mwgHm9B1fc/yEcwK2OqqbQ6wlOCy
-         +3Wmt61c09uuW/FkZyLLIiwsX0ydDbVOKiqWmnte7GiL6S6Z64g5lEAFiq2hloPLeXOR
-         TJOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756143955; x=1756748755;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1OT/3jnBTfte7HdviQkf1yIS7M/qS42669Lv6VXZMcY=;
-        b=XEsICFOgmOYtWwYSMDFbh4zR6cZMTsyoEw7tBMlKlQb9Y09vlB6i8YDg0fRctQB+Tf
-         8/eEY7JYVt08oL9KqiqDueaS8o2AtJR+8e7q2Wv2KNxiZEI6+f28ELIHQm8POZsUoGD1
-         /2hBk0/Rt3ayxaf9IIGyQRGB/ucuD1I+EU3/d43Jb9vGa8+H/iNEsItoHsPOSTesL6GS
-         PxP09p4rnsjdLcGcb2Ux7r9H4Sos2oNdkpzRASA5Y5KN33dd96l9KmtINxF1N40qlh80
-         dLmL+8rzFP9ePf1a+lU1AGeuuViuDOSo5gXGUeFp3z4MXqcjHgp68Dznl426PiUGbAfs
-         fm3g==
-X-Forwarded-Encrypted: i=1; AJvYcCWwsCPBC0S403QtvEMginCClIq2I7QnvoQSbPvJTjDiJYjKyeWexZEArMYryvzgiFQeY9gZ20tF@vger.kernel.org
-X-Gm-Message-State: AOJu0YxR4DC8v5jAYcN/3WjnbtNm6X6K/igvetTgRVAthHoArcBIJkPj
-	21nP4Zlmwk92f94sf7cNL3hq1MPMqx4msAM5waHhuxgaNMhjCAguFnCjBhmwk2nQKRbFl4Hh4/0
-	O9b8UZCfZjY35ocZXBLVsLsXSLacS5Pa5FQUyNen+Lg==
-X-Gm-Gg: ASbGncsh3Z0fzXOiHsD3QjzY6lX2QAYCyBkksVdJYKU5hDaW+VkGFFrYD0rzeTPDQEy
-	T/NhWXvBrBEPLPfI9XD1FvUK68mF1/FFyry04hGRAUdU7vRl6hyJDazoXU7QoqdxNlxt0AnNJxu
-	DWXKsokATnd92u1Ob7q9LyHccMy5ufb4ExNpWnvwNNLTBwA6Z9sqmRI1dSjiEzstanl7d4pEOrM
-	wEGc1zg2iik
-X-Google-Smtp-Source: AGHT+IEewseEoi5RyIQ11sFXi1Dz+0DgF+bccMhvM5suWzRi9juSFrm3PhDgSwCeoDygtX1TkgND9JR8BfJWU3XKEdk=
-X-Received: by 2002:a05:690c:3802:b0:71f:b107:4dc2 with SMTP id
- 00721157ae682-71fdc2dd2e4mr147859917b3.13.1756143955410; Mon, 25 Aug 2025
- 10:45:55 -0700 (PDT)
+	s=arc-20240116; t=1756145883; c=relaxed/simple;
+	bh=o2zMb7DV0FaHdjnAmQJKIBUjG4tlL5qOjSszG3XrUBc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MVc60SZ2SZ+xgD7F+K9hiKXNFZKTnWe4salAcBnTVLCv8orZFZ3nMdMlzj3AJ/pi4oXcAc+YGP1UApmMQG2jVHBm1jnkZhcPYSQtP5Pd+5uCzzGyYaRlgAFZAThxfYsFKCkdAWlz7iyZCL1RPNJ/iBdcG2hTS4UaTk7La4WA+/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fH8nY2EE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00110C4CEED;
+	Mon, 25 Aug 2025 18:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756145882;
+	bh=o2zMb7DV0FaHdjnAmQJKIBUjG4tlL5qOjSszG3XrUBc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fH8nY2EEHew1s53xE0YJWbiOEoOmxA6BORJ+/zmkSxoWaRZ/qU2x2E2psZMZJeTn4
+	 nTHztSPzmxcojM8DrmAH286mKK6NzsD75CxZSQBDVNK3icLLU2iuMKpFvWp4BJ/UE8
+	 cBqnjx//xa5Ip85Mh7F6aq4/BOlu3xd9mc6gpDx6rdcvQODXQbL9FMXRC+vNuQLpE9
+	 q642c8cxEsQXWLAX3AB0GBWYhJryBubWRwyQnSeoXeHAI0/OHX2pbGbYnVADxDmAn/
+	 FvL+STgW2Feoo4NYDTnctYKsMwAoZXh51bIkE4cMoa73szriyk7sTNJdHREjNfDYLA
+	 0vep2ro4l/PEg==
+Date: Mon, 25 Aug 2025 08:18:01 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Tiffany Yang <ynaffit@google.com>
+Cc: linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+	kernel-team@android.com, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH] cgroup: Fix 64-bit division in cgroup.stat.local
+Message-ID: <aKyo2V8T3yFFpq69@slm.duckdns.org>
+References: <20250823022128.3183940-1-ynaffit@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250820111940.4105766-1-sunjunchao@bytedance.com>
- <20250820111940.4105766-4-sunjunchao@bytedance.com> <aKY2-sTc5qQmdea4@slm.duckdns.org>
- <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
- <aKdQgIvZcVCJWMXl@slm.duckdns.org> <CAHSKhtdhj-AuApc8yw+wDNNHMRH-XNMVD=8G7Mk_=1o2FQASQg@mail.gmail.com>
- <aKds9ZMUTC8VztEt@slm.duckdns.org> <f1ff9656-6633-4a32-ab32-9ee60400b9b0@bytedance.com>
- <aKivUT2fSetErPMJ@slm.duckdns.org>
-In-Reply-To: <aKivUT2fSetErPMJ@slm.duckdns.org>
-From: Julian Sun <sunjunchao@bytedance.com>
-Date: Tue, 26 Aug 2025 01:45:44 +0800
-X-Gm-Features: Ac12FXz-noqncD7Sg6rActzzOUu7I8FaVkMIzxJKc6Jc3poEaZnSiD5yWERwbak
-Message-ID: <CAHSKhtc3Y-c5aoycj06V-8WwOeofXt5EHGkr4GLrU9VJt_ckmw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] memcg: Don't wait writeback completion
- when release memcg.
-To: Tejun Heo <tj@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, hannes@cmpxchg.org, 
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
-	muchun.song@linux.dev, axboe@kernel.dk
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250823022128.3183940-1-ynaffit@google.com>
 
-Hi, Tejun
+On Fri, Aug 22, 2025 at 07:21:28PM -0700, Tiffany Yang wrote:
+> Fix the following build error for 32-bit systems:
+>    arm-linux-gnueabi-ld: kernel/cgroup/cgroup.o: in function `cgroup_core_local_stat_show':
+> >> kernel/cgroup/cgroup.c:3781:(.text+0x28f4): undefined reference to `__aeabi_uldivmod'
+>    arm-linux-gnueabi-ld: (__aeabi_uldivmod): Unknown destination type (ARM/Thumb) in kernel/cgroup/cgroup.o
+> >> kernel/cgroup/cgroup.c:3781:(.text+0x28f4): dangerous relocation: unsupported relocation
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202508230604.KyvqOy81-lkp@intel.com/
+> Signed-off-by: Tiffany Yang <ynaffit@google.com>
+> Cc: Tejun Heo <tj@kernel.org>
 
-On Sat, Aug 23, 2025 at 1:56=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Fri, Aug 22, 2025 at 04:22:09PM +0800, Julian Sun wrote:
-> > +struct wb_wait_queue_head {
-> > +     wait_queue_head_t waitq;
-> > +     wb_wait_wakeup_func_t wb_wakeup_func;
-> > +};
->
-> wait_queue_head_t itself already allows overriding the wakeup function.
-> Please look for init_wait_func() usages in the tree. Hopefully, that shou=
-ld
-> contain the changes within memcg.
+Applied to cgroup/for-6.18.
 
-Sorry for having misunderstood what you meant before. I=E2=80=99m afraid th=
-at
-init_wait_func() cannot work the same way. Because calling
-init_wait_func() presupposes that we are preparing to wait for an
-event(like wb_wait_completion()), but waiting for such an event might
-lead to a hung task.
+Thanks.
 
-Please correct me if I'm wrong.
->
-> Thanks.
->
-> --
-> tejun
-
-
-Thanks,
---=20
-Julian Sun <sunjunchao@bytedance.com>
+-- 
+tejun
 
