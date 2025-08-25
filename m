@@ -1,180 +1,111 @@
-Return-Path: <cgroups+bounces-9383-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9377-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 108AEB33E1D
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 13:33:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61049B33D3E
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 12:54:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF79E1A82D07
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 11:33:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2204D483FF9
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 10:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD042E9738;
-	Mon, 25 Aug 2025 11:33:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5CE2DC355;
+	Mon, 25 Aug 2025 10:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vM0JmMt8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OOGTAtHz";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vM0JmMt8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OOGTAtHz"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="0gqOi4ZW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926011D63C5
-	for <cgroups@vger.kernel.org>; Mon, 25 Aug 2025 11:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE4F2DAFDA;
+	Mon, 25 Aug 2025 10:53:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756121586; cv=none; b=TcD65abxxIRHgpW0OYJBxTiK/2QurLsu1NwlNf7ViuLayG8Ixwh3WVcFds5a3BwU8GKJHJK/fx2pTPuqWLdvuK008ti1iPVwRxZvWKpSjnNo8YUb1F8TBznzyJekEAUU9BGEHvyxXC36Co19WPMwOqcX402yE1RLrU8KqOveDz8=
+	t=1756119214; cv=none; b=Ool3I920kaRY8foN1oEL1zbVFlAz7B3MaBBe1/BYfWSFjN/cosGR2BXWa0rUtlcct4tPAciJ+jl1iH5w1rT/EWFhq1eoZlToyLX3iv3nX6GoHw4JdaZJB4A91F5HXsu3F/1LxySXBEaNooLA+OOGlODpgFc6vs+3YcxheHpyv7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756121586; c=relaxed/simple;
-	bh=Mp5rkFfMI7w6XlcyJaY/n2AlP/oJ3ya3aaT/ITcmCfM=;
+	s=arc-20240116; t=1756119214; c=relaxed/simple;
+	bh=9i23GRRPAeysHMcSzhzEMBkwiF4+rOhXgj7ZsUmqrnc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dOlH2vpMdQLHDrDf3eVsNF/MIF5nwLt/ee1v/w/C1bp19EUmoj2z+A95hADsqb90zZ70cjntBmkBdS2h08il4b+o5xoHjsqdJy+a1M8KpbJ7Q3PI5kfMCrfqf6d6UzCG9jG6sHyfEqxB1ZzN6NeMH5aZPmM6gDagZHG7jJMfiXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vM0JmMt8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OOGTAtHz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vM0JmMt8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OOGTAtHz; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BF0DE1F79A;
-	Mon, 25 Aug 2025 11:33:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756121582; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tomkV9nuT3frr0dWuW+rpHLgqKT+MFjV5H/omKZ8HQI=;
-	b=vM0JmMt8wvd1jNqgCn9PlBu1BKoOyBmc8g4JRayRBduJGl7G5bMeIHuWHqcyhxC7VVpw+o
-	OWpGDTFEoSWIOkpRGdNq+3RVobpP1dl+yx2gtS3yT/FVxFh/CeG4IzVl10PIoqWscbsWe8
-	Pe56YnYXL8LzIs+wmQbuCYduWVXw04A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756121582;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tomkV9nuT3frr0dWuW+rpHLgqKT+MFjV5H/omKZ8HQI=;
-	b=OOGTAtHzhWpJM/oD0VYEhQMvX4oTKFcCtFklyDgTAiZ3LpIwMIynTgFLBCUYmk31Bj7H2S
-	lagUB7SRl1wN2JAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1756121582; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tomkV9nuT3frr0dWuW+rpHLgqKT+MFjV5H/omKZ8HQI=;
-	b=vM0JmMt8wvd1jNqgCn9PlBu1BKoOyBmc8g4JRayRBduJGl7G5bMeIHuWHqcyhxC7VVpw+o
-	OWpGDTFEoSWIOkpRGdNq+3RVobpP1dl+yx2gtS3yT/FVxFh/CeG4IzVl10PIoqWscbsWe8
-	Pe56YnYXL8LzIs+wmQbuCYduWVXw04A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1756121582;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tomkV9nuT3frr0dWuW+rpHLgqKT+MFjV5H/omKZ8HQI=;
-	b=OOGTAtHzhWpJM/oD0VYEhQMvX4oTKFcCtFklyDgTAiZ3LpIwMIynTgFLBCUYmk31Bj7H2S
-	lagUB7SRl1wN2JAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AF20113867;
-	Mon, 25 Aug 2025 11:33:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id PY65Ku5JrGjqAwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 25 Aug 2025 11:33:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 9FFCCA0A94; Mon, 25 Aug 2025 12:13:53 +0200 (CEST)
-Date: Mon, 25 Aug 2025 12:13:53 +0200
-From: Jan Kara <jack@suse.cz>
-To: Julian Sun <sunjunchao@bytedance.com>
-Cc: Tejun Heo <tj@kernel.org>, linux-fsdevel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org, 
-	jack@suse.cz, hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	shakeel.butt@linux.dev, muchun.song@linux.dev, axboe@kernel.dk
-Subject: Re: [External] Re: [PATCH] memcg: Don't wait writeback completion
- when release memcg.
-Message-ID: <lvycz43vcro2cwjun4tswjv67tz5sg4tans3hragwils3gvnbh@hxbjk6x6v5zk>
-References: <20250820111940.4105766-1-sunjunchao@bytedance.com>
- <20250820111940.4105766-4-sunjunchao@bytedance.com>
- <aKY2-sTc5qQmdea4@slm.duckdns.org>
- <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GB8qKGJLa9mcr744yqYRLWv4VnXeahuXlBIBjqLvZbBr5koBFn5/T7+CwysC9NOKK1OCuu5SBA0rsZb+mRFmzaAsD1wF9rGDH6l7ScOryQ1NtQonDg0I+L2zioM/+pu1eeoBG6sQNqtbkOx3Cny95nFxrOgYFgJ2AX+yZJG4/lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=0gqOi4ZW; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=6XFPlhRGrLMbqZYr/NESjliKO8yOhmaJETTR2cZFYRc=; b=0gqOi4ZWPzv3qDc2urheKfPrP8
+	NgJHLMvH9YtxWytJQ7Yj2Qiujhk6E8e0TKVNUeQbe2zZFOIIEk4xRjMaiMCDDq1uWvcMlYxtmritE
+	pdh4sqylWH9juncEihbHIlDFxBrpezxPV4ZhcLYGqTqk4V0ARUPjgNWyvNACu3NQ3f6Y223zaALW3
+	vPo2MxIFtsyPkRBvl1l8viYFWyNVZ2DG6bAX0faPVEVsijxlfNl16S7ZRtrQuE5Pkat9fsIfmXuCe
+	OZdpSn0d9sYrh2qX/HNQfv+VBuT5N5Um0vjwR5eQhIwJ0hbaWytOYB3CImmZwBfWYd21c4k6lTpkx
+	suF8tXbg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uqUpK-00000007gNK-1g1J;
+	Mon, 25 Aug 2025 10:53:26 +0000
+Date: Mon, 25 Aug 2025 03:53:26 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: hch@infradead.org, colyli@kernel.org, hare@suse.de, tieren@fnnas.com,
+	axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com,
+	song@kernel.org, yukuai3@huawei.com, akpm@linux-foundation.org,
+	neil@brown.name, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-raid@vger.kernel.org, yi.zhang@huawei.com,
+	yangerkun@huawei.com, johnny.chenyi@huawei.com
+Subject: Re: [PATCH RFC 1/7] block: export helper bio_submit_split()
+Message-ID: <aKxApo1u8j-ZNOaI@infradead.org>
+References: <20250825093700.3731633-1-yukuai1@huaweicloud.com>
+ <20250825093700.3731633-2-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -3.80
+In-Reply-To: <20250825093700.3731633-2-yukuai1@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Thu 21-08-25 10:30:30, Julian Sun wrote:
-> On Thu, Aug 21, 2025 at 4:58 AM Tejun Heo <tj@kernel.org> wrote:
-> >
-> > On Wed, Aug 20, 2025 at 07:19:40PM +0800, Julian Sun wrote:
-> > > @@ -3912,8 +3921,12 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
-> > >       int __maybe_unused i;
-> > >
-> > >  #ifdef CONFIG_CGROUP_WRITEBACK
-> > > -     for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
-> > > -             wb_wait_for_completion(&memcg->cgwb_frn[i].done);
-> > > +     for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++) {
-> > > +             struct wb_completion *done = memcg->cgwb_frn[i].done;
-> > > +
-> > > +             if (atomic_dec_and_test(&done->cnt))
-> > > +                     kfree(done);
-> > > +     }
-> > >  #endif
-> >
-> > Can't you just remove done? I don't think it's doing anything after your
-> > changes anyway.
+On Mon, Aug 25, 2025 at 05:36:54PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> Thanks for your review.
-> 
-> AFAICT done is also used to track free slots in
-> mem_cgroup_track_foreign_dirty_slowpath() and
-> mem_cgroup_flush_foreign(), otherwise we have no method to know which
-> one is free and might flush more than what MEMCG_CGWB_FRN_CNT allow.
-> 
-> Am I missing something?
+> No functional changes are intended, some drivers like mdraid will split
+> bio by internal processing, prepare to unify bio split codes.
 
-True, but is that mechanism really needed? Given the approximate nature of
-foreign flushing, couldn't we just always replace the oldest foreign entry
-regardless of whether the writeback is running or not? I didn't give too
-deep thought to this but from a quick look this should work just fine...
+Maybe name the exported helper bio_submit_split_bioset and keep
+bio_submit_split() as a wrapper that passes the default split
+bioset to keep the code a bit tidyer in blk-merge.c?
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> +struct bio *bio_submit_split(struct bio *bio, int split_sectors,
+> +			     struct bio_set *bs)
+>  {
+> +	struct bio *split;
+> +
+>  	if (unlikely(split_sectors < 0))
+>  		goto error;
+>  
+> -	if (split_sectors) {
+> -		struct bio *split;
+> +	if (!split_sectors)
+> +		return bio;
+>  
+> -		split = bio_split(bio, split_sectors, GFP_NOIO,
+> -				&bio->bi_bdev->bd_disk->bio_split);
+> -		if (IS_ERR(split)) {
+> -			split_sectors = PTR_ERR(split);
+> -			goto error;
+> -		}
+> -		split->bi_opf |= REQ_NOMERGE;
+> -		blkcg_bio_issue_init(split);
+> -		bio_chain(split, bio);
+> -		trace_block_split(split, bio->bi_iter.bi_sector);
+> -		WARN_ON_ONCE(bio_zone_write_plugging(bio));
+> -		submit_bio_noacct(bio);
+
+Maybe skip the reformatting which makes this much harder to read?
+If you think it is useful it can be done in a separate patch.
+
 
