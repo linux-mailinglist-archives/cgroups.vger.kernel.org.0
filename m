@@ -1,56 +1,55 @@
-Return-Path: <cgroups+bounces-9388-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9389-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30042B34A0B
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 20:18:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BD56B34A41
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 20:23:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D87994E23B8
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 18:18:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 293AD3B58C5
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 18:22:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8FE2798FB;
-	Mon, 25 Aug 2025 18:18:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9674C30E85F;
+	Mon, 25 Aug 2025 18:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fH8nY2EE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d36sH2kj"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE0B1CEAB2;
-	Mon, 25 Aug 2025 18:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A6D30E83B;
+	Mon, 25 Aug 2025 18:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756145883; cv=none; b=VF8wZ+lNAmuH27DhncEkqTAbg/Tu4ClsOX3KxZVw3f5iNZNa/BZKAMpN0CfHstQrUknpBsYxfqqcI1xv2Koh9h6ox54xgyA+qIsquWBdmWVQ/EzOiKsnFTLKyi6orOb+/8GsE/VXMly68JAxNiFe6oxS07Q/+MAZ0ZjiSI9UtgY=
+	t=1756146050; cv=none; b=lx2kKlAtAsZKnSMH7k0WSd9nCv8NV24kQC7BlRXFkGQ9O26LFr/dDdwF8asz+fkcJ+5P2kDPQVjnzTIRJ8oshSLILnJ8K6WgBrfjzLsMGUnnTHvGu4RXwj7V8lw+P255Q+It+rREuMC6yGEetDEDrcg4Jls5SI/Hm0jOswblRYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756145883; c=relaxed/simple;
-	bh=o2zMb7DV0FaHdjnAmQJKIBUjG4tlL5qOjSszG3XrUBc=;
+	s=arc-20240116; t=1756146050; c=relaxed/simple;
+	bh=sH5Vbg6kAzfq+SO3i7zbp2fLhoWlh6akYnjv6DHaJ6k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MVc60SZ2SZ+xgD7F+K9hiKXNFZKTnWe4salAcBnTVLCv8orZFZ3nMdMlzj3AJ/pi4oXcAc+YGP1UApmMQG2jVHBm1jnkZhcPYSQtP5Pd+5uCzzGyYaRlgAFZAThxfYsFKCkdAWlz7iyZCL1RPNJ/iBdcG2hTS4UaTk7La4WA+/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fH8nY2EE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00110C4CEED;
-	Mon, 25 Aug 2025 18:18:01 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=UKe5ifymHfyAfygJehoItFiyObkJlK2NW1aGx7+k1mfoI+CRG6g2A/B8Jb1GDAIlCHwJfSOgJrhtKJdxurCUjd/gWc/j14LNRIqGjc/pPaNN4W3sIilwe7M+pRj2KFzwrixLuP0FPRy+ETz3Pav1pxnppXsjS2rxz7P4VJt6/EI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d36sH2kj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD133C4CEED;
+	Mon, 25 Aug 2025 18:20:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756145882;
-	bh=o2zMb7DV0FaHdjnAmQJKIBUjG4tlL5qOjSszG3XrUBc=;
+	s=k20201202; t=1756146049;
+	bh=sH5Vbg6kAzfq+SO3i7zbp2fLhoWlh6akYnjv6DHaJ6k=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fH8nY2EEHew1s53xE0YJWbiOEoOmxA6BORJ+/zmkSxoWaRZ/qU2x2E2psZMZJeTn4
-	 nTHztSPzmxcojM8DrmAH286mKK6NzsD75CxZSQBDVNK3icLLU2iuMKpFvWp4BJ/UE8
-	 cBqnjx//xa5Ip85Mh7F6aq4/BOlu3xd9mc6gpDx6rdcvQODXQbL9FMXRC+vNuQLpE9
-	 q642c8cxEsQXWLAX3AB0GBWYhJryBubWRwyQnSeoXeHAI0/OHX2pbGbYnVADxDmAn/
-	 FvL+STgW2Feoo4NYDTnctYKsMwAoZXh51bIkE4cMoa73szriyk7sTNJdHREjNfDYLA
-	 0vep2ro4l/PEg==
-Date: Mon, 25 Aug 2025 08:18:01 -1000
+	b=d36sH2kj/I+V2RsxhnE82hYZqSWTTEnj2Hs/QUNadECZrljcXWMGF5Edywm86DQ8q
+	 OmCifprpyMdAWU+SsptYEClH4J443X4wtfC2LgJ3tPEjYhg50xqhmv4wS0sbQPsHA3
+	 mPQOYpUqb44YzWgzhrlDMz1vV6Bkx2+c2RGVQAfC5LBkW/mTSvrq3w3oa+e3Ubdyi1
+	 fozU39/05j5m/qovYer7Kkknb6OdCXDYwct+gBQ/I3HsTcebbXZE+PZGv2Gi2aRBfn
+	 8Ik1delSdopJEQuYRDzOixkvusssCQnVnWoOSwXFtEzkarUHHxOpxexKoAmk6rYlUV
+	 9+FkQb0Yvn0wQ==
+Date: Mon, 25 Aug 2025 08:20:48 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Tiffany Yang <ynaffit@google.com>
-Cc: linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-	kernel-team@android.com, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH] cgroup: Fix 64-bit division in cgroup.stat.local
-Message-ID: <aKyo2V8T3yFFpq69@slm.duckdns.org>
-References: <20250823022128.3183940-1-ynaffit@google.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: longman@redhat.com, hannes@cmpxchg.org, mkoutny@suse.com,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	lujialin4@huawei.com, chenridong@huawei.com
+Subject: Re: [PATCH -next v5 0/3] some optimization for cpuset
+Message-ID: <aKypgAoAT1ip6hyR@slm.duckdns.org>
+References: <20250825032352.1703602-1-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -59,21 +58,17 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250823022128.3183940-1-ynaffit@google.com>
+In-Reply-To: <20250825032352.1703602-1-chenridong@huaweicloud.com>
 
-On Fri, Aug 22, 2025 at 07:21:28PM -0700, Tiffany Yang wrote:
-> Fix the following build error for 32-bit systems:
->    arm-linux-gnueabi-ld: kernel/cgroup/cgroup.o: in function `cgroup_core_local_stat_show':
-> >> kernel/cgroup/cgroup.c:3781:(.text+0x28f4): undefined reference to `__aeabi_uldivmod'
->    arm-linux-gnueabi-ld: (__aeabi_uldivmod): Unknown destination type (ARM/Thumb) in kernel/cgroup/cgroup.o
-> >> kernel/cgroup/cgroup.c:3781:(.text+0x28f4): dangerous relocation: unsupported relocation
+On Mon, Aug 25, 2025 at 03:23:49AM +0000, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202508230604.KyvqOy81-lkp@intel.com/
-> Signed-off-by: Tiffany Yang <ynaffit@google.com>
-> Cc: Tejun Heo <tj@kernel.org>
+> This patch series contains several cpuset improvements:
+> 
+> 1. Decouple cpuset and tmpmasks allocation/freeing.
+> 2. Add cpuset_full_[un]lock helpers.
 
-Applied to cgroup/for-6.18.
+Applied 1-3 to cgroup/for-6.18.
 
 Thanks.
 
