@@ -1,97 +1,96 @@
-Return-Path: <cgroups+bounces-9390-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9391-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B9DBB34A9D
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 20:48:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6885B34AA7
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 20:53:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1669C1A8842C
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 18:49:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A116C5E2FFA
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 18:53:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C8C245021;
-	Mon, 25 Aug 2025 18:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F4EB27B342;
+	Mon, 25 Aug 2025 18:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MMDFxZLF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lb2uYPi3"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C44D273F9;
-	Mon, 25 Aug 2025 18:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEBE31F3FF8;
+	Mon, 25 Aug 2025 18:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756147732; cv=none; b=htgK7ZYBTp7IqpagTNNgMUhsBdV6mztmv1LjAxJnTQSetjS0Ixv3sb9k/7lfgdY9E1r5pQkdBqAGj3ggox5FNaFazxpcFP6OTmyY7/rHapvINwiiYnURb9IMPRSNqbxZYTUsQ9L2FZGKWQXlRfbH7KXdZ3HNIqXr2eDfjoREo/I=
+	t=1756147988; cv=none; b=R/qwH7i86GayOc8sGTOVsi0SaOfLENglcvtXMEtWWnSTpXnCRGRY4crlhE4JzzM6y+69p6hDrFtQO/lVHBLMXlxeqzNFWXZ43G2xsxpDjB3HFbpkV/bkk1K9hW4+oAtTaVqIaoD6tBsDp1+C56pc5rpO0tQStRGKQoz2hk9/dlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756147732; c=relaxed/simple;
-	bh=v08zx3D26Sp+X33A1zp2Q53wg3vBvAQH+zN59dmrcAs=;
+	s=arc-20240116; t=1756147988; c=relaxed/simple;
+	bh=LEW9gsFvgQr17Q8Hvz8WKHs69INOEWZ5Ig+Zk2KyLtE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WNVmy2c40uuOcnYm6xv4FySosE/u3GgrASQSIRydTi6SF8Djt0nWe54gSKuUXiuBoO1R9+Ohn2PHW31nzlyp6Ql2hqvkY5b1gskaYL+bbTcD4Q/Jp6qaOOrYSN00CYcPCrmH3aPU8aaEXUwsen9YrmTtxw0Y4qPGkDau/NPscvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MMDFxZLF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8827C4CEED;
-	Mon, 25 Aug 2025 18:48:51 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ciSa1eUfAywdFdPV2Ri6TFiPP8C+vq4b+3QJcqXBWl+M/reLALenVcpxp4R116CoBOZYFHmDedZJOuabrnr6dmFD0pGmvDky27AQFa6so3OyUCDFhbfE4Kew3oCQ5mJokMsL6Nj6U3+YGCTPNjRZGHPIqsc6BItslSQnjhdG1Ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lb2uYPi3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D076C4CEED;
+	Mon, 25 Aug 2025 18:53:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756147732;
-	bh=v08zx3D26Sp+X33A1zp2Q53wg3vBvAQH+zN59dmrcAs=;
+	s=k20201202; t=1756147988;
+	bh=LEW9gsFvgQr17Q8Hvz8WKHs69INOEWZ5Ig+Zk2KyLtE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MMDFxZLF0Om8aJ6hZWmJAmqg71U1P1gaGpmbgwq4vy7rdEvsRPexNAUDC73Lo/ZOm
-	 AUqvsZp3Gpg8ldgBOMu/K0Z/djHMuT6JEWC4KmfGH3dK6INQKPdieEXl5KgKULafIx
-	 eoYgHiWNMVdiaMM88G0DMJJFI8I4QQP+bmE79vTECR02Tq0y27iHnEMKJe7fDoESfm
-	 lmEfsl3pQPwESqyQeflQ92jFa5rYK0s7X9ecw4hBAnE+G6WjiGlxG9XLN5IF06GmtH
-	 DOGFhSQHC8rGrkhfkQNWW1umknDcO7m2d5EYMk0ibUQUzCHY7WPIAzbE6da3R+AieM
-	 nywUhKG8a7QrA==
-Date: Mon, 25 Aug 2025 08:48:50 -1000
+	b=lb2uYPi3eOLm4CsBv3EOgir97hD2gec70fzgc/UUC8EgEShwvOdx+TqoWoH5I+vSU
+	 7J0r+U27tSe46fwR7OShP/BtBT5nwybHwJX2RupZSUSKL7xhLmcSuOA+A+mmzkeXtT
+	 J+Crq080KBH41tinXIe+SgBIsDfgokYByiFlW2K14TxcyDtVulXENi9UoRR717CSN0
+	 FlpLQ9TYYTcCPQLkLkzaRL2crTdOmVlP4mhzusombwS4zUE2sAWfin7EqyrsHqHV6w
+	 Nn7Qv0yfJezlb8xsRFvxlsR5QH9MNTob2gXIN61wUZzNxBeWCfl0f5ahcWY9fdFF53
+	 5VaWFk2ISjhvA==
+Date: Mon, 25 Aug 2025 08:53:07 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Djalal Harouni <tixxdz@gmail.com>
-Cc: hannes@cmpxchg.org, mkoutny@suse.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-	shuah@kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, tixxdz@opendz.org
-Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
- freezing cgroups from BPF
-Message-ID: <aKywEsqVAHdgasZw@slm.duckdns.org>
-References: <20250818090424.90458-1-tixxdz@gmail.com>
- <aKNjkp5vR2ES-2Xw@slm.duckdns.org>
- <7d8af2a3-0649-44fa-abc5-17f2911b941b@gmail.com>
- <aKUhkIdCEsIqmvvV@slm.duckdns.org>
- <efa7d1ed-9cfc-4e32-936c-a2f7827da1c9@gmail.com>
+To: Julian Sun <sunjunchao@bytedance.com>
+Cc: linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	jack@suse.cz, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, axboe@kernel.dk
+Subject: Re: [External] Re: [PATCH] memcg: Don't wait writeback completion
+ when release memcg.
+Message-ID: <aKyxE6QOR_PtQ0mT@slm.duckdns.org>
+References: <20250820111940.4105766-1-sunjunchao@bytedance.com>
+ <20250820111940.4105766-4-sunjunchao@bytedance.com>
+ <aKY2-sTc5qQmdea4@slm.duckdns.org>
+ <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
+ <aKdQgIvZcVCJWMXl@slm.duckdns.org>
+ <CAHSKhtdhj-AuApc8yw+wDNNHMRH-XNMVD=8G7Mk_=1o2FQASQg@mail.gmail.com>
+ <aKds9ZMUTC8VztEt@slm.duckdns.org>
+ <f1ff9656-6633-4a32-ab32-9ee60400b9b0@bytedance.com>
+ <aKivUT2fSetErPMJ@slm.duckdns.org>
+ <CAHSKhtc3Y-c5aoycj06V-8WwOeofXt5EHGkr4GLrU9VJt_ckmw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <efa7d1ed-9cfc-4e32-936c-a2f7827da1c9@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHSKhtc3Y-c5aoycj06V-8WwOeofXt5EHGkr4GLrU9VJt_ckmw@mail.gmail.com>
 
 Hello,
 
-On Fri, Aug 22, 2025 at 07:16:15PM +0100, Djalal Harouni wrote:
+On Tue, Aug 26, 2025 at 01:45:44AM +0800, Julian Sun wrote:
 ...
-> I do realize taking the same usual path with write is the obvious thing,
-> but we don't have the corresponding open context, and faking it seems
-> more trouble than calling directly cgroup backends...
+> Sorry for having misunderstood what you meant before. I’m afraid that
+> init_wait_func() cannot work the same way. Because calling
+> init_wait_func() presupposes that we are preparing to wait for an
+> event(like wb_wait_completion()), but waiting for such an event might
+> lead to a hung task.
 > 
-> Allow me please to do it again directly on cgroup_base_file[] assuming
-> it was Alexei suggestion and see how it looks.
+> Please correct me if I'm wrong.
 
-I'm probably missing something but what prevents you from getting a dentry
-from kernfs_node and then calling vfs_open() on it and then do vfs_write()
-on the returned file?
-
-If there are some fundamental reasons that we can't do something like that,
-let's go back to the simple approach where we just have bpf helpers for
-freezing and unfreezing cgroups outside of fs interface.
-
-> Also Tejun, could you please point me to extra cgroup or kernfs tests
-> you run? much appreciated!
-
-I'm afraid there isn't much outside what's in the selftest directory.
+Using init_wait_func() does not require someone waiting for it. AFAICS, you
+should be able to do the same thing that you did - allocating the done
+entries individually and freeing them when the done count reaches zero
+without anyone waiting for it. waitq doesn't really make many assumptions
+about how it's used - when you call wake_up() on it, it just walks the
+queued entries and invoke the callbacks there.
 
 Thanks.
 
