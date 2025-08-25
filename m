@@ -1,138 +1,156 @@
-Return-Path: <cgroups+bounces-9393-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9394-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ACAAB34AC2
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 21:06:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2277B34B0F
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 21:42:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 161D22A1303
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 19:06:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0163F3BFB6B
+	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 19:41:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3787027FB3C;
-	Mon, 25 Aug 2025 19:06:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F706284B25;
+	Mon, 25 Aug 2025 19:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="KEZ3InvS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Od9hXyeB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E26913D503
-	for <cgroups@vger.kernel.org>; Mon, 25 Aug 2025 19:06:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208E328467B
+	for <cgroups@vger.kernel.org>; Mon, 25 Aug 2025 19:41:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756148796; cv=none; b=SA748F1j5jdzj7VjS3idfo6dwG3wj5PXEhRxOjjKZShe9mC2akTnZVcS03N3YOqRuxt8WCmZ6PLQXKBZhza94WVp3l+7u6WH2x6CnCCmpjg3oJZ21FZnhN1WctHw3GfSzcBjPSdIfoMYHC9RwrN0Sf8RLR3fOTbbeReZBbBsqHQ=
+	t=1756150888; cv=none; b=bBTiWSkUoJE6n3lmZS+U/HC5uox9OjTHWVuiLQn9jP9heZb6lJZeaKdw7JmhpLYyOHe+JCqsN7GUePZvIZ1isP/sl98ZdPgr3HbHXhhYnNI9mlVEIYpCquh0gz99Fsak0yaoHBoCYUVsBMR5B7KD3rE/+DZWwKARhBcYt4EOxOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756148796; c=relaxed/simple;
-	bh=nXiXNC/n8XD4tIUmtofTDePq023F7QUJyqo+465Hjng=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lUUA4UoYhotpdIkceFvBuXt+yKjKlu5D4hVhOSgbXBvM66msoJ/EBRUAnzv2ckImQHivcO0k+d0tA17JGP1dcFImwqKuAt65j4nb0eZVqh9hqCn2ducJXifBqGxkLlW+yNSRPLWVTw0OH9+1+EDzHcuwVNchXRkCZdPzB9ylUg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=KEZ3InvS; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e9537c4a2cdso1728830276.2
-        for <cgroups@vger.kernel.org>; Mon, 25 Aug 2025 12:06:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1756148793; x=1756753593; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XJCy6pMSth5ID8mVL8dsxoueMmqHKyc8szHkL4OXcuI=;
-        b=KEZ3InvSCRa4aKJ7kuuRBns5B2ECBjq7e/rkawApTOedR18ol1aJacp/yhyNDP1OXb
-         kzA5S2qh87p41xTIgVxaHhKo8cUoKE4ZCTUfaP993rMetBUERSDrL9RHtme2uwsjX3HG
-         w8tlUNFleqSahOzKbniM3ubMe6EKvXKsrKxW69dojuu9dUQ85jol50pnIWOtvbva2XqU
-         xEPHS9bD8B5zjnd7bmrh3NEhi3frXeO1fzZVE48h+67kHSwbPZgIN9rEUVuk1Xzdoza0
-         z/wvH3YmFkS+I75S/yq4BvMk2jnKBR15Cn897P5iwMWLGKgD8DVhF2gUIRvkBdXxunEh
-         4/bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756148793; x=1756753593;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XJCy6pMSth5ID8mVL8dsxoueMmqHKyc8szHkL4OXcuI=;
-        b=GJ+z2sx2u4k1FBySIAOnvejkaU5NPUH0VtMxphWg1MwFM+3UzDgVrPa71gU79/qY+Q
-         mRzjGIOsdcIm0AKm7PWL1E1sYtmnCq/TnizF8WL2mzgAVqmnUWuGXl5pQUYbPOOfDpGF
-         CE2GdTNBbrllvwZlcBO9D2ZQ+ke2eM+kqC79tesgU2is+1pdHIUpieRoPoKoQ0fPh4cn
-         LaFGsMABREoeF/ASA/xWJB8E7dWnBxWjpzld7qH3zbxEJOanUH7Vjfoy5Ch7ht+r6LyB
-         ocvk1131qKjENA6bgZ/5sOqAWeDWIDSM2CV3rwvVPmzY4YPAPk/8NoAs/dbzrYa7zhfE
-         vDOg==
-X-Forwarded-Encrypted: i=1; AJvYcCXvnswAY/fHZRLi+biSkcNFLYb/wgKZ2iy4dil37nwjetpxRPHGgvokD7Z3FUxEUgaTc7Dz1HXy@vger.kernel.org
-X-Gm-Message-State: AOJu0YxACYGeAMcIWsS1isBp4x8YoiGb0OLKnQu/TZMTMzM8S/pfDquh
-	TPUl2PW1P+PLv7QUOIHrFBjXHWLQAXu+Wv2XDN4DfyNbVWoNbrEmSOTpLh0dyP42bFl9T6STom/
-	PvrnNsdm3bpuca0rPfhWDbLs2ZTyF/LJd3ltj45XdrA==
-X-Gm-Gg: ASbGnct0mVd8HNJpYNsAh6NbyYGcb3iSxNIDdFCVpjvvqMjqplJP4OHbZz1lvqfckep
-	LbD8HCXUWseEmqSfIjYq96vplIrvykE8vFWUw1SrFxjmy7rcuHbyPdCs8sVPf04EFdojinR3zIC
-	14U3GvGvjQlXVnC6wlEDLtd5md2C9Fh1E9TN0TMpI/UpnCXOf2yAsT5SnR3rRvPFxL7NSUHMB87
-	gjsFRkjfmLE
-X-Google-Smtp-Source: AGHT+IHAgyL1whKyieTbABDi2quj1+wuaVqtUcIrZ53ZFQBjV5RtdnhIK0bQ7dnHbDffx2GPfxlJyS52gocXhCBCiEk=
-X-Received: by 2002:a05:6902:3411:b0:e90:6c6c:dc3a with SMTP id
- 3f1490d57ef6-e951c33207dmr12818324276.34.1756148793135; Mon, 25 Aug 2025
- 12:06:33 -0700 (PDT)
+	s=arc-20240116; t=1756150888; c=relaxed/simple;
+	bh=CNa5SrO9Ozj2K5TKBavGu1RD1M87DzO8+0POFqXJ18o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gQ5R0UdB+AecIiv9E5fZydt64UMqXvAqiy8yfQmrP0pUu+C5IXGAw+nax4bfm4cqbAy8/UJXGNHQNkCas0moGv8PvNu1QZrVDmc9n0fFcqMNIx7VzU6LaIpbv3wqnYkERY+s5T50MNnnxAlbw2k4CP4r+WGq7AMWG8HnTSiUMdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Od9hXyeB; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 25 Aug 2025 12:41:07 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756150874;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DaBOeTNdTjLlU52HNYXZjxccsI5utUG+maXgRXm46HY=;
+	b=Od9hXyeBDyV69Pof8vMx+qvOo82ai07aCUAO1EJ1QkJzqhMLQ7bfgvI6AibxQBCAOpJxGb
+	WLboMc9Gu9foPdbGmBM5RmDRFzvBJ789zQQN1qv5isxftajqdtgxKQCH1ZnZubGJLQkbUL
+	KU2Dx4eXZN2eWKIX8jCubinBW/wd4gA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: zhongjinji <zhongjinji@honor.com>
+Cc: mhocko@suse.com, rientjes@google.com, akpm@linux-foundation.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, 
+	liam.howlett@oracle.com, lorenzo.stoakes@oracle.com, liulu.liu@honor.com, 
+	feng.han@honor.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] mm/oom_kill: Do not delay oom reaper when the
+ victim is frozen
+Message-ID: <jzzdeczuyraup2zrspl6b74muf3bly2a3acejfftcldfmz4ekk@s5mcbeim34my>
+References: <20250825133855.30229-1-zhongjinji@honor.com>
+ <20250825133855.30229-2-zhongjinji@honor.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250820111940.4105766-1-sunjunchao@bytedance.com>
- <20250820111940.4105766-4-sunjunchao@bytedance.com> <aKY2-sTc5qQmdea4@slm.duckdns.org>
- <CAHSKhtf--qn3TH3LFMrwqb-Nng2ABwV2gOX0PyAerd7h612X5Q@mail.gmail.com>
- <aKdQgIvZcVCJWMXl@slm.duckdns.org> <CAHSKhtdhj-AuApc8yw+wDNNHMRH-XNMVD=8G7Mk_=1o2FQASQg@mail.gmail.com>
- <aKds9ZMUTC8VztEt@slm.duckdns.org> <f1ff9656-6633-4a32-ab32-9ee60400b9b0@bytedance.com>
- <aKivUT2fSetErPMJ@slm.duckdns.org> <CAHSKhtc3Y-c5aoycj06V-8WwOeofXt5EHGkr4GLrU9VJt_ckmw@mail.gmail.com>
- <aKyxE6QOR_PtQ0mT@slm.duckdns.org>
-In-Reply-To: <aKyxE6QOR_PtQ0mT@slm.duckdns.org>
-From: Julian Sun <sunjunchao@bytedance.com>
-Date: Tue, 26 Aug 2025 03:06:22 +0800
-X-Gm-Features: Ac12FXxwKjce8jxJNNwjCY1pe1qCpWBlapoFKM06--smM3L7BAjrjrvgrdd62yE
-Message-ID: <CAHSKhtcdRysJGAUOOXMUdm=dymQ3scJFUQ2nc+ShmXku+SAb0A@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] memcg: Don't wait writeback completion
- when release memcg.
-To: Tejun Heo <tj@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, hannes@cmpxchg.org, 
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
-	muchun.song@linux.dev, axboe@kernel.dk
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250825133855.30229-2-zhongjinji@honor.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
++cgroups
 
-On Tue, Aug 26, 2025 at 2:53=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Tue, Aug 26, 2025 at 01:45:44AM +0800, Julian Sun wrote:
-> ...
-> > Sorry for having misunderstood what you meant before. I=E2=80=99m afrai=
-d that
-> > init_wait_func() cannot work the same way. Because calling
-> > init_wait_func() presupposes that we are preparing to wait for an
-> > event(like wb_wait_completion()), but waiting for such an event might
-> > lead to a hung task.
-> >
-> > Please correct me if I'm wrong.
->
-> Using init_wait_func() does not require someone waiting for it. AFAICS, y=
-ou
-> should be able to do the same thing that you did - allocating the done
-> entries individually and freeing them when the done count reaches zero
-> without anyone waiting for it. waitq doesn't really make many assumptions
-> about how it's used - when you call wake_up() on it, it just walks the
-> queued entries and invoke the callbacks there.
+On Mon, Aug 25, 2025 at 09:38:54PM +0800, zhongjinji wrote:
+> The OOM reaper can quickly reap a process's memory when the system
+> encounters OOM, helping the system recover. If the victim process is
+> frozen and cannot be unfrozen in time, the reaper delayed by two seconds
+> will cause the system to fail to recover quickly from the OOM state.
+> 
+> When an OOM occurs, if the victim is not unfrozen, delaying the OOM reaper
+> will keep the system in a bad state for two seconds. Before scheduling the
+> oom_reaper task, check whether the victim is in a frozen state. If the
+> victim is frozen, do not delay the OOM reaper.
+> 
+> Signed-off-by: zhongjinji <zhongjinji@honor.com>
+> ---
+>  mm/oom_kill.c | 40 +++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 39 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 25923cfec9c6..4b4d73b1e00d 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -683,6 +683,41 @@ static void wake_oom_reaper(struct timer_list *timer)
+>  	wake_up(&oom_reaper_wait);
+>  }
+>  
+> +/*
+> + * When the victim is frozen, the OOM reaper should not be delayed, because
+> + * if the victim cannot be unfrozen promptly, it may block the system from
+> + * quickly recovering from the OOM state.
+> + */
+> +static bool should_delay_oom_reap(struct task_struct *tsk)
+> +{
+> +	struct mm_struct *mm = tsk->mm;
+> +	struct task_struct *p;
+> +	bool ret;
+> +
 
-Ah, yeah, this sounds great, many thanks for your clarification.  I=E2=80=
-=99ll
-send v2 of the patch after testing.
->
-> Thanks.
->
-> --
-> tejun
+On v2, shouldn't READ_ONCE(tsk->frozen) be enough instead of mm check
+and checks insode for_each_process()?
 
-
-Thanks,
---=20
-Julian Sun <sunjunchao@bytedance.com>
+> +	if (!mm)
+> +		return true;
+> +
+> +	if (!frozen(tsk))
+> +		return true;
+> +
+> +	if (atomic_read(&mm->mm_users) <= 1)
+> +		return false;
+> +
+> +	rcu_read_lock();
+> +	for_each_process(p) {
+> +		if (!process_shares_mm(p, mm))
+> +			continue;
+> +		if (same_thread_group(tsk, p))
+> +			continue;
+> +		ret = !frozen(p);
+> +		if (ret)
+> +			break;
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	return ret;
+> +}
+> +
+>  /*
+>   * Give the OOM victim time to exit naturally before invoking the oom_reaping.
+>   * The timers timeout is arbitrary... the longer it is, the longer the worst
+> @@ -694,13 +729,16 @@ static void wake_oom_reaper(struct timer_list *timer)
+>  #define OOM_REAPER_DELAY (2*HZ)
+>  static void queue_oom_reaper(struct task_struct *tsk)
+>  {
+> +	bool delay;
+> +
+>  	/* mm is already queued? */
+>  	if (test_and_set_bit(MMF_OOM_REAP_QUEUED, &tsk->signal->oom_mm->flags))
+>  		return;
+>  
+>  	get_task_struct(tsk);
+> +	delay = should_delay_oom_reap(tsk);
+>  	timer_setup(&tsk->oom_reaper_timer, wake_oom_reaper, 0);
+> -	tsk->oom_reaper_timer.expires = jiffies + OOM_REAPER_DELAY;
+> +	tsk->oom_reaper_timer.expires = jiffies + (delay ? OOM_REAPER_DELAY : 0);
+>  	add_timer(&tsk->oom_reaper_timer);
+>  }
+>  
+> -- 
+> 2.17.1
+> 
 
