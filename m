@@ -1,139 +1,137 @@
-Return-Path: <cgroups+bounces-9395-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9396-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D3E9B34D37
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 23:00:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CB0AB3507D
+	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 02:51:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53327204641
-	for <lists+cgroups@lfdr.de>; Mon, 25 Aug 2025 21:00:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8AD53AB88D
+	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 00:51:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212F928751F;
-	Mon, 25 Aug 2025 21:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hQzUAXTy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA182367C9;
+	Tue, 26 Aug 2025 00:51:44 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA2228C5AA
-	for <cgroups@vger.kernel.org>; Mon, 25 Aug 2025 21:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5BDE946A;
+	Tue, 26 Aug 2025 00:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756155630; cv=none; b=sXEdLfy3HKHfoWPBWS0uLT5zF8GozSI93sEVrbiNNu41y8+LRKbl6xo0oWh3dm74wCjA8Jkfk8zgPfzZ3Go4mY1fx6X93VXidtjI7tDdHPhL++cBrlq4vo8NX51P8wBBMjdQ0k5OPp3Rrf+KvsVMFVqgYlale0qU31FduNGHs0k=
+	t=1756169504; cv=none; b=a5a9H25dAhMSJe8br3s0eRBekMtH6H2snQjha6e1S8xJAV3nkDihoNMkqvikbrJeNeDGi1xsYVI2/GC6GPY31UvaUij+edlEBi7NKcldnvVa9JsoIyrCDwle/5QkvWdr/uRsclfAaWWVH7+TMk1jxDU5ofzxJwIhA4VYRfoVhdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756155630; c=relaxed/simple;
-	bh=8/L1nD6fwcNCBonjJ/5ertVaeOR+ahaDa34IyMFnlZE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=QHf8U/+1NIrL4S+4QorV4c/4w7pX7huR5LwyPFmX29g9vigkO/vyhyilVz0qD7O69TntjARzvlo9mb0S0EhO/T+BRiT7QIkMQLsHALJnXPTL5nxIAzt9RGzSpT5qSFmMG1X+qORo67qko5UuFHj9jd57m/6I2uvdn7k823ki8Sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hQzUAXTy; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ynaffit.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-32515ec1faeso3422205a91.1
-        for <cgroups@vger.kernel.org>; Mon, 25 Aug 2025 14:00:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756155629; x=1756760429; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:user-agent:references:mime-version
-         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EajGDWl4bYdFnIYaGpVNH0fQHV+uFPvw1C8aIH8SGwE=;
-        b=hQzUAXTyiuZ3Jb9Vj5S4MFw0rxCwcdFbgjYYBjzXqaO487SZuT1WvtenXG0v4goZXf
-         Ny+Y216jjgC5wocoV5RCXti2KjSsy22orRGCuqgoIa5X2U+KO61FwGqILfkHaqo3+NgY
-         KbAZ9GJiB+2N6fe4DdxE6887+OhBupOTHmufghu5iuzMWQWtM7Fb8OA33FQe7bX5wJcj
-         zUdRabwZWKMXwZijyfxua+OciHYNspGrF1kVPSLmJWevCQJd4D8HX4yBJ7UJSOBmxjRe
-         f8jFnm1WpCXr0Y6z2sehyFwltX4k0mmf9KfF8NlFgD7gwEoS4Ung8q+7YPab9dhkQtBd
-         aj8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756155629; x=1756760429;
-        h=cc:to:from:subject:message-id:user-agent:references:mime-version
-         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EajGDWl4bYdFnIYaGpVNH0fQHV+uFPvw1C8aIH8SGwE=;
-        b=tdL80LXK4LFSHlh7GP2omrMUJr21UWTz8VoDiKQaJ1MRuVPY/IHAfJKrAKEF8jum44
-         9a2zPSezWwDeO9L0gc/VRYhFJaa9ed9ghVZtTpgu9NMJLffN+s3HX6qP0BGaMSFr7DGT
-         xoRRSO79FXaktS9K+qa7lxE7Ap71QCILtwygvq122c4Ywbtif4bE748rWeqTSYoeVCng
-         P8c6NhU8Jt7sFsetyNKu+RzaVlbtQqGFg4T6L74re3Y1bVIAdyXcu33IcnOYOXb48FJr
-         xfnfBaAuZfloTvGB5JTU64hj8PS5OdOhD+gvh2XdDtmZdFeae02f64c9owhL3qFyK5/N
-         zQbA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAY4HpoYth7MX6irDqrxoY5lY+0ITl/marCLhGwB08AAXU0GxneCumwbn6pZ5X1F/mq8cjt2az@vger.kernel.org
-X-Gm-Message-State: AOJu0YxeHJhp3JWHLn84eIulfq9yuk2gbK5m4YcmzMeiULzFVLZrVdTT
-	cXItTEo5JSX9Mzxn2HSsHqtVkWnmIbnNYD2VsSFAmDxi9AGDqPCSyzIQac+443bH5uGcvksWcDA
-	jvTldFblPlw==
-X-Google-Smtp-Source: AGHT+IHfcHvufdfIXSHW6kSBSPN+UPpDISXjx0iJ8nMd5Gl1QjNxnfRrBYGYRdeOvhlCxZIcU1Bknm3SxCBw
-X-Received: from pjl11.prod.google.com ([2002:a17:90b:2f8b:b0:325:1d7a:69ff])
- (user=ynaffit job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:53c8:b0:323:7e82:fcd
- with SMTP id 98e67ed59e1d1-32517b2bba5mr18185189a91.37.1756155628647; Mon, 25
- Aug 2025 14:00:28 -0700 (PDT)
-Date: Mon, 25 Aug 2025 14:00:27 -0700
-In-Reply-To: <1b6498f3-ca07-41d5-9637-f20a58184e60@huaweicloud.com> (Chen
- Ridong's message of "Sat, 23 Aug 2025 09:45:26 +0800")
+	s=arc-20240116; t=1756169504; c=relaxed/simple;
+	bh=nYe6WiPQ/iQ3LISjWrcn/D6lzmcAjjnNS8+WP+HYA60=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=DN22c/mSQkHNbYr5RptHFx3t+1EJn4tFzR+Sj/6E8eSwZv25J1EeMVbJtaGTjuEbOt13v3CHJpvE24HNkbkb1YwdrvuL6T1zjVzHMhpMLnBx3tkB3UOVzF1snOT4WjdLS7GSs35fdo91qBgfXUkLeWoB5Qn++8b6YlF9dWot+84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c9pyN26DPzYQvnm;
+	Tue, 26 Aug 2025 08:51:40 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id CD9931A1517;
+	Tue, 26 Aug 2025 08:51:38 +0800 (CST)
+Received: from [10.174.179.143] (unknown [10.174.179.143])
+	by APP4 (Coremail) with SMTP id gCh0CgD3QY4ZBa1o3OI5AQ--.16741S3;
+	Tue, 26 Aug 2025 08:51:38 +0800 (CST)
+Subject: Re: [PATCH RFC 1/7] block: export helper bio_submit_split()
+To: Christoph Hellwig <hch@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: colyli@kernel.org, hare@suse.de, tieren@fnnas.com, axboe@kernel.dk,
+ tj@kernel.org, josef@toxicpanda.com, song@kernel.org,
+ akpm@linux-foundation.org, neil@brown.name, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ johnny.chenyi@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20250825093700.3731633-1-yukuai1@huaweicloud.com>
+ <20250825093700.3731633-2-yukuai1@huaweicloud.com>
+ <aKxApo1u8j-ZNOaI@infradead.org>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <b128ed58-97d8-b3b2-f86f-6f50efd98db8@huaweicloud.com>
+Date: Tue, 26 Aug 2025 08:51:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250822013749.3268080-6-ynaffit@google.com> <20250822013749.3268080-7-ynaffit@google.com>
- <552a7f82-2735-47a5-9abd-a9ae845f4961@huaweicloud.com> <a309c2b5-5425-428c-a034-d5ebc68cb304@huaweicloud.com>
- <dbx8ms7r885f.fsf@ynaffit-andsys.c.googlers.com> <1b6498f3-ca07-41d5-9637-f20a58184e60@huaweicloud.com>
-User-Agent: mu4e 1.12.9; emacs 30.1
-Message-ID: <dbx8ldn7nml0.fsf@ynaffit-andsys.c.googlers.com>
-Subject: Re: [PATCH v4 1/2] cgroup: cgroup.stat.local time accounting
-From: Tiffany Yang <ynaffit@google.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>, 
-	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	"Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Chen Ridong <chenridong@huawei.com>, 
-	kernel-team@android.com, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+MIME-Version: 1.0
+In-Reply-To: <aKxApo1u8j-ZNOaI@infradead.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgD3QY4ZBa1o3OI5AQ--.16741S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw4rCrW7JFWfZrW5Kr1rZwb_yoW8GF4Dpr
+	4jgw1DJrZ5JFsI9w1qqa4Ut34kKrW5XrW2kryfX3WDJrnrtwnxKF1Igr1ruF1Fkr15C34x
+	Jw18ua1rC3s8CFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBF14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVW8ZVWrXwCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRJPE-UUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Chen Ridong <chenridong@huaweicloud.com> writes:
+Hi,
 
-...
+ÔÚ 2025/08/25 18:53, Christoph Hellwig Ð´µÀ:
+> On Mon, Aug 25, 2025 at 05:36:54PM +0800, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> No functional changes are intended, some drivers like mdraid will split
+>> bio by internal processing, prepare to unify bio split codes.
+> 
+> Maybe name the exported helper bio_submit_split_bioset and keep
+> bio_submit_split() as a wrapper that passes the default split
+> bioset to keep the code a bit tidyer in blk-merge.c?
+> 
+Sure.
 
+>> +struct bio *bio_submit_split(struct bio *bio, int split_sectors,
+>> +			     struct bio_set *bs)
+>>   {
+>> +	struct bio *split;
+>> +
+>>   	if (unlikely(split_sectors < 0))
+>>   		goto error;
+>>   
+>> -	if (split_sectors) {
+>> -		struct bio *split;
+>> +	if (!split_sectors)
+>> +		return bio;
+>>   
+>> -		split = bio_split(bio, split_sectors, GFP_NOIO,
+>> -				&bio->bi_bdev->bd_disk->bio_split);
+>> -		if (IS_ERR(split)) {
+>> -			split_sectors = PTR_ERR(split);
+>> -			goto error;
+>> -		}
+>> -		split->bi_opf |= REQ_NOMERGE;
+>> -		blkcg_bio_issue_init(split);
+>> -		bio_chain(split, bio);
+>> -		trace_block_split(split, bio->bi_iter.bi_sector);
+>> -		WARN_ON_ONCE(bio_zone_write_plugging(bio));
+>> -		submit_bio_noacct(bio);
+> 
+> Maybe skip the reformatting which makes this much harder to read?
+> If you think it is useful it can be done in a separate patch.
+> 
+Please ignore this, I'll skip this.
 
->> Thanks,
+Thanks for the review!
+Kuai
 
-> What I mean by "stable" is that while cgroup 1 through n might be deleted  
-> or have more descendants
-> created. For example:
+> .
+> 
 
->           n  n-1  n-2  ... 1
-> frozen   a  a+1  a+2     a+n
-> unfozen  b  b+1  b+2  ... b+n
-> nsec     b-a ...
-
-> In this case, all frozen_nsec values are b - a, which I believe is  
-> correct.
-> However, consider a scenario where some cgroups are deleted:
-
->           n  n-1  n-2  ... 1
-> frozen   a  a+1  a+2     a+n
-> // 2 ... n-1 are deleted.
-> unfozen  b               b+1
-
-> Here, the frozen_nsec for cgroup n would be b - a, but for cgroup 1 it  
-> would be (b + 1) - (a + n).
-> This could introduce some discrepancy / timing inaccuracies.
-
-Ah, I think I see what you're saying. I had a similar concern when I had
-been looking to track this value per-task rather than per-cgroup (i.e.,
-when there are many tasks, the frozen duration recorded for the cgroup
-drifts from the duration that the task is actually frozen). Ultimately,
-although those inaccuracies exist, for the time scales in our use case,
-they would not grow large enough to make an appreciable
-difference. To use your example, the ~(n - 1) difference between the
-"true" frozen duration and the reported one is still effectively the
-same (to us). For others, their systems may see a much larger "n" than
-we might realistically see on ours, or they may need finer-grained
-reporting, so this solution may not be adequate.
-
--- 
-Tiffany Y. Yang
 
