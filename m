@@ -1,118 +1,151 @@
-Return-Path: <cgroups+bounces-9416-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9417-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55729B3589E
-	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 11:20:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2708FB35A09
+	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 12:24:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 703033AEC4F
-	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 09:15:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6A032A800A
+	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 10:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 297C5305E1E;
-	Tue, 26 Aug 2025 09:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1862BE03B;
+	Tue, 26 Aug 2025 10:24:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SkDLulOv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3812F8BE7;
-	Tue, 26 Aug 2025 09:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32EB1514E4;
+	Tue, 26 Aug 2025 10:24:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756199652; cv=none; b=aNcxS/xuk1QhTZG/cIaibZoDzNoTfhaU4SEyommjMifPa1Qu2rNmhoBfV+FdFHGObuwTA3JhNfwWW+x7akGXTOrGjIH7NQJWeXWPlZhS5arYC7TEyEa6G3zyh2ON+3pCRL6BOqf8kzTIir7Kf7xCXkrYIzrMF/92NzCWUsSmv3k=
+	t=1756203844; cv=none; b=u4R1AA6d1VtrXJxQyrfdeb4dzOvIShpzbd2bckCjqJuVVz/V6YPzSPefBqXzSfpjd2EbzrRCzSUZtSwp5BsazklVQjYa/PFSCpQGYlrbn6WW2dge+K+76sItgLIrJn0j8EI6hkeAOyCcFCjDIS57zxyeZdRR5IQIAkDx38Mk8vM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756199652; c=relaxed/simple;
-	bh=/RgWeAmBiaSdiIAMnSe77oaifrRUTgjomq97aknow6Q=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=slFEDO+tTWo3Whqdf2bbdyuv4aXfPGJcYgFpjpKZPjVcRHcTZIGco2BhbA4V1LXcSwzWZOhPsJr1jU/LahIKWb6pHcWJXyn64XaPWEwZRBYWbrY9KWtt4UaFyncAEdAAGa1uuG0J30a0grfkbfFrHrnQO0UGK9q8nLeVKrZJqFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cB2674Q9KzKHNCV;
-	Tue, 26 Aug 2025 17:14:07 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 39EBE1A0ABF;
-	Tue, 26 Aug 2025 17:14:07 +0800 (CST)
-Received: from [10.174.179.143] (unknown [10.174.179.143])
-	by APP4 (Coremail) with SMTP id gCh0CgDnMY7deq1ocPNhAQ--.26341S3;
-	Tue, 26 Aug 2025 17:14:06 +0800 (CST)
-Subject: Re: [PATCH RFC 4/7] md/raid10: convert read/write to use
- bio_submit_split()
-To: Christoph Hellwig <hch@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: colyli@kernel.org, hare@suse.de, tieren@fnnas.com, axboe@kernel.dk,
- tj@kernel.org, josef@toxicpanda.com, song@kernel.org,
- akpm@linux-foundation.org, neil@brown.name, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- johnny.chenyi@huawei.com, John Garry <john.g.garry@oracle.com>,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20250825093700.3731633-1-yukuai1@huaweicloud.com>
- <20250825093700.3731633-5-yukuai1@huaweicloud.com>
- <aKxCJT6ul_WC94-x@infradead.org>
- <6c6b183a-bce7-b01c-8749-6e0b5a078384@huaweicloud.com>
- <aK1ocfvjLrIR_Xf2@infradead.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <fe595b6a-8653-d1aa-0ae3-af559107ac5d@huaweicloud.com>
-Date: Tue, 26 Aug 2025 17:14:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+	s=arc-20240116; t=1756203844; c=relaxed/simple;
+	bh=V5nVH9kggGN3ZNMTkOuHzNnVaaPn/QaM2ccMbZfahso=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YlxBO3klSjkIrcKpoCBeA2/bm7w39f5mnWuCc0V6457FklULyGJR21wNNPJxuUuHJ+mNdnQZzNqwCGJl0dGoy9F6dP46ot92PiBwHcvmR4IgEfwzuoHoSKWlvB1xcaaXELqRgQ8MbhDLXfc2XMkvfkE+yy26aq1HuDmw4lEeeYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SkDLulOv; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e931cddb0e2so4011124276.3;
+        Tue, 26 Aug 2025 03:24:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756203842; x=1756808642; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YpxekdYluNHvQnP3E65nORQc3gyYRQYdWHU33qmvF4U=;
+        b=SkDLulOvpMPYloRTw3ljWB5PfyhS1CX0XYRJZWwatrRO6OfSTcM+H69NTDjADAO7iA
+         L0mZfPw56l5dEfAX1C62DvAM9VRK23+R8gCvQYcAqEV6lRE7qnjIHgkQolFKf8fCYe6D
+         +C/9MgxTmY8P3pl2uC6x7s6aWnEsK7W8YZYbjuM1N8h5o4EVLP0Z2h7HEAzn3CQr665n
+         j5X61o6Ttu7536YWp6ISmLYllL8EKx5fIhxbpU2jQrZA+1EcURe2zbtUEQEPFd2LKUhC
+         b+WksT+OhmPs/2OaLOPRzK7LcTStW7FLOnjuD6L62O5WYgDAUrBW6kNVK1t3jJlxaLvj
+         HG6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756203842; x=1756808642;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YpxekdYluNHvQnP3E65nORQc3gyYRQYdWHU33qmvF4U=;
+        b=MC8rD9kC1OC22RP17EzqDlOSLlGJBoCFIZLc/snBug7CVyIOFobYm0nAXjzVzWqyfJ
+         KzebbWkowImEOodPF/Zp6yY0PkZ88LAI9moq/Vy0c49M4Biv4I4tbWKl2/w+6GvIwifl
+         gqEUHAqCAP4z2pIgfqBGO7po9Ls1KNHeYB4+spkpooHzIv32FBQo476AaXfmben0faKM
+         gZd1MjLkrSTgSBWpJ0H/A3BQHAXJ0axOWUQif8evhpJBD3rC0sohcBlk8O8WvshYxG3/
+         /ys0rWGj4SdIB92MYcdo/frxYdzOWB2Af6LXeP4uP+aFtbWSqSA+D7ug3n9fJB/ju11D
+         Hb1w==
+X-Forwarded-Encrypted: i=1; AJvYcCVocoTZ80iTiPfylaCJ6dPai6GHuPWuWOO/0y8j5RC9wrvz6sS6xqIls2NZXU2OR1z3yxHIZj/ykQdc07Y3r/Fa@vger.kernel.org, AJvYcCWAWDT1LdMw06PlazFYum+87D4uySjYtSy4VxkX4AJyydFZ+/CINl2wkQPcpoOjJjdpZwpnloYtTg==@vger.kernel.org, AJvYcCWolxGPgDIxy6s9HMPlo2kN4aOaCnnxLMWczTPMiq/JhQoZKTUIrMRXEgdj4FjIWVtab8c=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzI13yqUrjJ97qtIHGbggGLOSmXZGu1kXxI238Y59XW/riZJNVm
+	spp4hjtr05RSyOg1+32btgomXJnEuBNVl97vcVUlvSnlK4oSzaI7kWG+
+X-Gm-Gg: ASbGncsZ3GjhBJK/mINw8OPp1Cf1bOrDdmnWcyypq+QD8qNaGLjdsLnBH8YfRmcu/+r
+	JeY9e69bbACElJ3w4JloGszpxzltyXw29KBAYgZwqUGnfeYSNrG3ABeIz1Z2KCzS7pWCD2DUH6F
+	hQHPaoMBGpDi8R9Gcqsfkc5qtsuFtKKpgmzLSdb6NwbGAT/6u4CXWfVD8VD/dKd2+wAYwZ5su1r
+	7o2xUuOl1WZJK8fXk5QGjvtvVvM3BcYMxsu3MCnbzaeGBp7LTXmC5LMtm6oGpPaT/D+9L4rEa9b
+	d+Z43VpqCzknTgzFkywwFXQHoEOCVhz1tSDZODuwVY43/csXHMwc0RM+wsAG+w07syeLvmIbOXT
+	mwIe5yq9osHppg+E=
+X-Google-Smtp-Source: AGHT+IFomDZUfo1A86VwCZ5Jkb93juw3dch9/oyj9hrsql8HA46eoNWE4iuTr2OnGnF+w4r7cZ0+GQ==
+X-Received: by 2002:a05:6902:1542:b0:e95:2bde:4965 with SMTP id 3f1490d57ef6-e952bde4ba2mr13453799276.23.1756203841635;
+        Tue, 26 Aug 2025 03:24:01 -0700 (PDT)
+Received: from [10.2.0.2] ([146.70.98.165])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e952c2591ddsm3178245276.5.2025.08.26.03.23.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Aug 2025 03:24:01 -0700 (PDT)
+Message-ID: <38e3bdf1-2d01-4d92-80c9-09ab806e9dec@gmail.com>
+Date: Tue, 26 Aug 2025 11:23:50 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <aK1ocfvjLrIR_Xf2@infradead.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDnMY7deq1ocPNhAQ--.26341S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Wr47Xw13CrWrZryDKw17Wrg_yoW3ZrXEg3
-	yqyrnxGwn2qF13A3yrK3ZxGrZ7AF4a9F15u3WUXF4fZ34rur9rCw47C39av3s5JF4jywsI
-	9Fn8WrW5Ar929jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbSkFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7V
-	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE
-	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6x
-	kF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7sRi66wtUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
+ freezing cgroups from BPF
+To: Tejun Heo <tj@kernel.org>
+Cc: hannes@cmpxchg.org, mkoutny@suse.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
+ cgroups@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, tixxdz@opendz.org
+References: <20250818090424.90458-1-tixxdz@gmail.com>
+ <aKNjkp5vR2ES-2Xw@slm.duckdns.org>
+ <7d8af2a3-0649-44fa-abc5-17f2911b941b@gmail.com>
+ <aKUhkIdCEsIqmvvV@slm.duckdns.org>
+ <efa7d1ed-9cfc-4e32-936c-a2f7827da1c9@gmail.com>
+ <aKywEsqVAHdgasZw@slm.duckdns.org>
+Content-Language: en-US
+From: Djalal Harouni <tixxdz@gmail.com>
+In-Reply-To: <aKywEsqVAHdgasZw@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
+Hello,
 
-ÔÚ 2025/08/26 15:55, Christoph Hellwig Ð´µÀ:
-> On Tue, Aug 26, 2025 at 09:13:41AM +0800, Yu Kuai wrote:
->>> The NULL return should only happen for REQ_NOWAIT here, so maybe
->>> give R10BIO_Returned a more descriptive name?  Also please document
->>> the flag in the header.
+On 8/25/25 19:48, Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, Aug 22, 2025 at 07:16:15PM +0100, Djalal Harouni wrote:
+> ...
+>> I do realize taking the same usual path with write is the obvious thing,
+>> but we don't have the corresponding open context, and faking it seems
+>> more trouble than calling directly cgroup backends...
 >>
->> And also atomic write here, if bio has to split due to badblocks here.
->> The flag is refer to raid1. I can add cocument for both raid1 and raid10
->> in this case.
+>> Allow me please to do it again directly on cgroup_base_file[] assuming
+>> it was Alexei suggestion and see how it looks.
 > 
-> Umm, that's actually a red flag.  If a device guarantees atomic behavior
-> it can't just fail it.  So I think REQ_ATOMIC should be disallowed
-> for md raid with bad block tracking.
+> I'm probably missing something but what prevents you from getting a dentry
+> from kernfs_node and then calling vfs_open() on it and then do vfs_write()
+> on the returned file?
+
+If we include the open path then don't have the right context, first
+example in vfs_open() will use the wrong current cred context to perform
+permission checks, current could have dropped privileges while the
+cgroup hierarchy is still root owned...
+
+The thing here is that the bpf program will be called from arbitrary
+paths, not a single pre-defined path/function were we could control
+the context...
+
+> If there are some fundamental reasons that we can't do something like that,
+> let's go back to the simple approach where we just have bpf helpers for
+> freezing and unfreezing cgroups outside of fs interface.
+
+Alright, seems Alexei also agree on this. Thanks will prepare another
+version.
+
+>> Also Tejun, could you please point me to extra cgroup or kernfs tests
+>> you run? much appreciated!
 > 
+> I'm afraid there isn't much outside what's in the selftest directory.
 
-I agree that do not look good, however, John explained while adding this
-that user should retry and fallback without REQ_ATOMIC to make things
-work as usual.
+Ok, thank you!
 
-Thanks,
-Kuai
 
->>
-> 
-> .
+> Thanks.
 > 
 
 
