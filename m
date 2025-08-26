@@ -1,195 +1,138 @@
-Return-Path: <cgroups+bounces-9405-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9402-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0371B35265
-	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 05:55:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3858B35250
+	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 05:45:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2101C7AB891
-	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 03:53:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C22CE2410F2
+	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 03:45:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 273572D3ECC;
-	Tue, 26 Aug 2025 03:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD6F62D3EF1;
+	Tue, 26 Aug 2025 03:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UM4H15Lt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6BEBE571;
-	Tue, 26 Aug 2025 03:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1EDB2D3A74;
+	Tue, 26 Aug 2025 03:45:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756180521; cv=none; b=ZrKp9F8X7gOJWuNUze/992jp9NVo0MjWheeiWi1+ryyqK/kGGFDDrX+yhwsOdVcBm1WCdE/hs5hv65NsuL2Q6CJETNmpn/XQsgsTS0iqgGSEh1MRHvhaSriYAwAnohFuhCDcxfCGvfUdWbLxvntaxsaqea3A4+nKJ1wQHCrlxsg=
+	t=1756179919; cv=none; b=FOmMwjxph9KHEt5/cjJh+kes10iNF7R3Z6vFzf7uo1pHxkEMWMOSKZxDM2Utt2GjDkE6YVGSwkt4SvzBOojWEVmMuav+/QYBlAV7gywZJluWKHETF91fQ1udeFZQ81GdKmdr32wFK9dhltf1qoKtvS7NDX4getJ88qAYxyK/CV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756180521; c=relaxed/simple;
-	bh=ten0Lr96KhbpXoPXjw0B6qY68FXSiotUZ/FF9blsbzA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZKWdGcssu3Hozq84VhPmk0rvbo/gymWBS9HxNWMo5RUDg3OUuouA3wd6yEXb/Lybyu+1AH3VfdM5UVWrkwxCPbnWbYwl1stcz68mlKpgAu9ijM6ntUK/NnVoBM9d970WtorsmiZ2r/1nJWEEH/ZvlVZ8Phk/qU5vw9J4R0s2eVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4c9v2D4NzqzKHMq5;
-	Tue, 26 Aug 2025 11:55:16 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 3C7BC1A0E0B;
-	Tue, 26 Aug 2025 11:55:16 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP2 (Coremail) with SMTP id Syh0CgCHsJcQMK1o1ZJFAQ--.52077S5;
-	Tue, 26 Aug 2025 11:55:16 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com,
-	chenridong@huawei.com
-Subject: [PATCH cgroup/for-next 3/3] cgroup: rename css offline related functions
-Date: Tue, 26 Aug 2025 03:40:22 +0000
-Message-Id: <20250826034022.1736249-4-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250826034022.1736249-1-chenridong@huaweicloud.com>
-References: <20250826034022.1736249-1-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1756179919; c=relaxed/simple;
+	bh=utj6oSW5ZUEG4vl432KrCTGsP3IUgv0f8EZL2SJZn+4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CYq0JQprPPYWWm+/cp2JyFfTxDruGjooxiboUP08OpTXnNe5bDbJYVT64p8yi7hogQHMc3YjHZpvfaRGYMavYYzsNPnYS6+BPBDAFe5l1VhMEXmdgzUhhI0SZIiLtk+PfAZL/Lt93a/RRM49BG1pqlgkJRfoQBk8yB9xnj0agQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UM4H15Lt; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3c68ac7e2bdso2142192f8f.2;
+        Mon, 25 Aug 2025 20:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756179916; x=1756784716; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=utj6oSW5ZUEG4vl432KrCTGsP3IUgv0f8EZL2SJZn+4=;
+        b=UM4H15Lt83y6wfTihF2h8kOYdMiuY7+ttGdRMouqPVt00ttXSZPr7zQX//eHE23IJX
+         DB8HQYp6hk29auAAfnAJtTUhTmA0fkknti8t7fWpOeNl9iCm19/y8djqcfoQ+MLRVUvY
+         NMk7pv+rZMqEIgQKiFm5JMHRzfYsPcOqSJPZHE7xvC4w5aIudYaBd+Wzjr7cU6lMmvc4
+         UKD2UHyv8s+6VhZN8grTUj78wPc2SKFy2uXDo4CUJ8gM3y0LH6GoPSXk7FMbMX+91cKY
+         +oGWp1hKN/lInlCuAnocg9Ma+PTRsziX6ngjHLY/Z4Hrwsu9tU9vP2zf/+0K64/22xFg
+         +NDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756179916; x=1756784716;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=utj6oSW5ZUEG4vl432KrCTGsP3IUgv0f8EZL2SJZn+4=;
+        b=ToUz0/PlowRaFNRH6AhtvB+0m4Rs54qaH33GZEw+ib4Ei5N5hsTzWhsQ1MmgPVzHSV
+         Tl4L79PLS6HxSyZ6CmukfcO+e3icaDIsuOK3ZSFp8YNK/enHKMrzbguuIGYBN/vPhiJ3
+         mAMqE8n5zzdygJNHtC8V6BcAwf3gj8sYF+jqlLseRMY3Y1/gy4JJi1UOpp6/AP3Djbh2
+         ijca1ur4blBmXaqVtKuBBv74g8X/2qLNAFVxYZfCY3lIkmScr1F+6nPGtsHoG5166d5N
+         RHw/HHg7GUl54Ihd2DM2lIArLVOsCvgLIcrl1Cy0K2x+ZOgdFOlNRX8kNVv3BE1hOK1e
+         4xsw==
+X-Forwarded-Encrypted: i=1; AJvYcCUlabPY6DxQRF57tSw2R9ZU/aZthjMN3xqtH+m7jEbMcXI3UivN/rQl3ZmRrgbOtUVbCC2TC7cwJF71waF3PCn/@vger.kernel.org, AJvYcCWko5o+B5+E1UJEmoRN6dwcEhqZevQmIh+0a2033wKpZ98FCyXnE8AIYkkg9dyTGpQ/3GKNs8GRmA==@vger.kernel.org, AJvYcCXZR+jyMaD5lK4+ZLfqGgSbSKqbNeWVvQXhUG+Ns/fbpJowtpbfcN80soaRCVIQZDghxEg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3wIZsh44rLJ+4NJtj03tzUYOtg376DgAhT3E4KfaQ7kW3CFqQ
+	5IMcvhuRNVApPRBsTZ9dZD0sdyENfrNiy8UkZ13W9mCHFAyIiLrep5Gr5RfCUigPe/Q1EFpZSXW
+	WL6nvtoNFVBL9+m9GKbOV13QEmviR/bI=
+X-Gm-Gg: ASbGncu3k2OshdaeHsqoAhkunrBHkHNlif5xIf4UdPE8Kzvvk12ZyjclXY+8AHPlEUQ
+	MBnNBPleU063mkQokBN+wKTKHxIwhJAFHqdG31kcOBqttKJld0LsZsjN41Wjk+RSyPC5XriwyY3
+	77gVsEE82XOOvdhLphbmL2jEHrDmf8q8zuY6JlDb2Rs373KB2Ckra1Xkyfj6JtG6uVM3R+unZEw
+	VOn7cRfLDpSBpygeKR2NVPMmnrqqsO1hUo6
+X-Google-Smtp-Source: AGHT+IE8tAERy66ebNFyetXswIwytXMj5tlMnn6E3Bk3RgvAAqw155HhAxfdkCJZhRl67xjXw5S2DOxFATpXvb3zLro=
+X-Received: by 2002:a05:6000:1a86:b0:3c9:8600:9a65 with SMTP id
+ ffacd0b85a97d-3c98600a509mr4199606f8f.28.1756179915903; Mon, 25 Aug 2025
+ 20:45:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCHsJcQMK1o1ZJFAQ--.52077S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw4fuF4rAFWDCryUurWfXwb_yoWrtw4fpF
-	ZxA3sxtan5GaykW39aq3409FySgFs5J34UK3yxG34Syr43JFyUtF42vr1jyFW5GrZ7ur4f
-	ArsYvr1fCw1jyrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Kb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr4
-	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
-	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
-	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
-	wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
-	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUwhFxUUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+References: <20250818090424.90458-1-tixxdz@gmail.com> <aKNjkp5vR2ES-2Xw@slm.duckdns.org>
+ <7d8af2a3-0649-44fa-abc5-17f2911b941b@gmail.com> <aKUhkIdCEsIqmvvV@slm.duckdns.org>
+ <efa7d1ed-9cfc-4e32-936c-a2f7827da1c9@gmail.com> <aKywEsqVAHdgasZw@slm.duckdns.org>
+In-Reply-To: <aKywEsqVAHdgasZw@slm.duckdns.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 25 Aug 2025 20:45:03 -0700
+X-Gm-Features: Ac12FXz924wbgTHCTCL7hp8RP3qerz0FLZF7ncUo2N46yPEDEoRtgpi5W3ZnC6U
+Message-ID: <CAADnVQL7Ps9u41jYSVEd0+u4M01q90jJCW6Op1H6Ypsc0ht18A@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
+ freezing cgroups from BPF
+To: Tejun Heo <tj@kernel.org>
+Cc: Djalal Harouni <tixxdz@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, tixxdz@opendz.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Chen Ridong <chenridong@huawei.com>
+On Mon, Aug 25, 2025 at 11:48=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Fri, Aug 22, 2025 at 07:16:15PM +0100, Djalal Harouni wrote:
+> ...
+> > I do realize taking the same usual path with write is the obvious thing=
+,
+> > but we don't have the corresponding open context, and faking it seems
+> > more trouble than calling directly cgroup backends...
+> >
+> > Allow me please to do it again directly on cgroup_base_file[] assuming
+> > it was Alexei suggestion and see how it looks.
 
-The cgroup_destroy_wq has been split into three separate workqueues:
-cgroup_offline_wq, cgroup_release_wq, and cgroup_free_wq. The cgroup
-destroy work is now enqueued sequentially into these queues. To clarify
-the three distinct stages of the destruction process, it will introduce
-helper functions or rename existing ones accordingly. The resulting
-structure is as follows:
+It's been 1.5 year since v1. It's safe to assume that all opinions
+have changed, including mine.
 
-work            workqueue               work_fn
-css_offline     cgroup_offline_wq       css_offline_work_fn
-css_release     cgroup_release_wq       css_release_work_fn
-css_free        cgroup_free_wq          css_free_rwork_fn
+> I'm probably missing something but what prevents you from getting a dentr=
+y
+> from kernfs_node and then calling vfs_open() on it and then do vfs_write(=
+)
+> on the returned file?
 
-This patch renames css_killed_ref_fn to css_offline_work_fn and
-css_killed_work_fn to css_offline_work_fn to align with the new
-multi-phase destruction workflow.
+Generic vfs ops from kfunc feels like a can of worms.
+It will require a lot more thinking and coordination with vfs folks.
+I'd rather keep things simple especially, since this thread
+might continue in 2026.
 
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/cgroup.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+> If there are some fundamental reasons that we can't do something like tha=
+t,
+> let's go back to the simple approach where we just have bpf helpers for
+> freezing and unfreezing cgroups outside of fs interface.
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index ad1f6a59a27b..1c75ebad7a88 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5447,20 +5447,20 @@ static struct cftype cgroup_psi_files[] = {
- /*
-  * css destruction is four-stage process.
-  *
-- * 1. Destruction starts.  Killing of the percpu_ref is initiated.
-- *    Implemented in kill_css().
-+ * 1. kill_css: Destruction starts.  Killing of the percpu_ref is
-+ *    initiated. Implemented in kill_css().
-  *
-- * 2. When the percpu_ref is confirmed to be visible as killed on all CPUs
-- *    and thus css_tryget_online() is guaranteed to fail, the css can be
-- *    offlined by invoking offline_css().  After offlining, the base ref is
-- *    put.  Implemented in css_killed_work_fn().
-+ * 2. css_offline: When the percpu_ref is confirmed to be visible as
-+ *    killed on all CPUs and thus css_tryget_online() is guaranteed to
-+ *    fail, the css can be offlined by invoking __css_offline(). After
-+ *    offlining, the base ref is put. Implemented in css_offline_work_fn().
-  *
-- * 3. When the percpu_ref reaches zero, the only possible remaining
-- *    accessors are inside RCU read sections.  css_release() schedules the
-- *    RCU callback.
-+ * 3. css_release: When the percpu_ref reaches zero, the only possible
-+ *    remaining accessors are inside RCU read sections. css_release()
-+ *    schedules the RCU callback.
-  *
-- * 4. After the grace period, the css can be freed.  Implemented in
-- *    css_free_rwork_fn().
-+ * 4. css_free: After the grace period, the css can be freed. Implemented
-+ *    in css_free_rwork_fn().
-  *
-  * It is actually hairier because both step 2 and 4 require process context
-  * and thus involve punting to css->destroy_work adding two additional
-@@ -5642,7 +5642,7 @@ static int online_css(struct cgroup_subsys_state *css)
- }
- 
- /* if the CSS is online, invoke ->css_offline() on it and mark it offline */
--static void offline_css(struct cgroup_subsys_state *css)
-+static void __css_offline(struct cgroup_subsys_state *css)
- {
- 	struct cgroup_subsys *ss = css->ss;
- 
-@@ -5936,7 +5936,7 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
-  * css_tryget_online() is now guaranteed to fail.  Tell the subsystem to
-  * initiate destruction and put the css ref from kill_css().
-  */
--static void css_killed_work_fn(struct work_struct *work)
-+static void css_offline_work_fn(struct work_struct *work)
- {
- 	struct cgroup_subsys_state *css =
- 		container_of(work, struct cgroup_subsys_state, destroy_work);
-@@ -5944,7 +5944,7 @@ static void css_killed_work_fn(struct work_struct *work)
- 	cgroup_lock();
- 
- 	do {
--		offline_css(css);
-+		__css_offline(css);
- 		css_put(css);
- 		/* @css can't go away while we're holding cgroup_mutex */
- 		css = css->parent;
-@@ -5954,13 +5954,13 @@ static void css_killed_work_fn(struct work_struct *work)
- }
- 
- /* css kill confirmation processing requires process context, bounce */
--static void css_killed_ref_fn(struct percpu_ref *ref)
-+static void css_offline(struct percpu_ref *ref)
- {
- 	struct cgroup_subsys_state *css =
- 		container_of(ref, struct cgroup_subsys_state, refcnt);
- 
- 	if (!css->nr_descendants) {
--		INIT_WORK(&css->destroy_work, css_killed_work_fn);
-+		INIT_WORK(&css->destroy_work, css_offline_work_fn);
- 		queue_work(cgroup_offline_wq, &css->destroy_work);
- 	}
- }
-@@ -6011,7 +6011,7 @@ static void kill_css(struct cgroup_subsys_state *css)
- 	 * Use percpu_ref_kill_and_confirm() to get notifications as each
- 	 * css is confirmed to be seen as killed on all CPUs.
- 	 */
--	percpu_ref_kill_and_confirm(&css->refcnt, css_killed_ref_fn);
-+	percpu_ref_kill_and_confirm(&css->refcnt, css_offline);
- }
- 
- /**
--- 
-2.34.1
-
+I'd just do whatever version of cgroup_lock*() is necessary
+from kfunc followed by cgroup_freeze(),
+and limit kfunc to sleepable progs, of course.
 
