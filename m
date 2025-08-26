@@ -1,45 +1,44 @@
-Return-Path: <cgroups+bounces-9399-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9400-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B902B350DA
-	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 03:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CA139B350E2
+	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 03:15:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E16DA3A7A41
-	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 01:13:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7CA73B47F7
+	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 01:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB4B27EFEE;
-	Tue, 26 Aug 2025 01:13:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED19B19FA8D;
+	Tue, 26 Aug 2025 01:15:40 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F0F6EEB3;
-	Tue, 26 Aug 2025 01:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0EE4C133;
+	Tue, 26 Aug 2025 01:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756170829; cv=none; b=DGvIchkI0VJUqTK1tMsUOlWPZiX9hIvEAdAH4o06kyDz7vqJQF1N90rh7kWmVGztjk7X7OiDgALF9jqbtQasOdvjiuCivG5ratHjsU4erNKYK4iyfQuF4TI2z7msvVbj6VTjRKIrReZDm2INcQrU+sQzMIu6WMsRl4GtC/GDEGg=
+	t=1756170940; cv=none; b=W6pyX4zTqlhwT/fZ/WssSQlypG1FpiijJGxgYxND9QHDn8n9lokK5qw0w9G/uyxE8cXwfjtajUpZ7SezIuNCXeVn0J0F8a9T7G/hNZl00nAEV2y3HN3jvndfagkCwYu3gJvp2jEIWDSbeCb5HHmcgDnqT5EzreMoNrIjhmZteHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756170829; c=relaxed/simple;
-	bh=uYeSPzsHIsxz+8nyRlCJqM83j7Yjqnd/xdIaUxaSMcc=;
+	s=arc-20240116; t=1756170940; c=relaxed/simple;
+	bh=VggXqR9HiOhHU2xuUQNK5l07n6NgkuzQH/GVGoOZbqo=;
 	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=JeOXIYM9i+wsZ+90zho2h+jYwKBkAjvtry0hjxfKLewWDneeAaFFhLcO9MyKHbB4ct1CZ+y4hzDSVO6Or6GAI6iVfW/6arlKMt/eHJMFNGAB65hL56S3ekUxZamGiKP6oWAsrYR5GccTqqW3tCcD4SNYlScGvohSM+EJKJ99qu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 In-Reply-To:Content-Type; b=jMmVKQrH7TnvkuJzthR/Jpug5acSOkZF4DwzanYKtC7hAEEAGqgcNm/r4IjV0wn+EW+VwNulV8z2l0Z/0PjmZYqOJX8A+l6fUNG/ZmqtaDDxGQ3zAR+0EhcqMRCAoALcA+D+3ldPpYD4UImQ4XnPAQHfGM/0r6oZzT0im8wYOR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4c9qRr4V7gzYQvyJ;
-	Tue, 26 Aug 2025 09:13:44 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4c9qV05D6BzKHNTH;
+	Tue, 26 Aug 2025 09:15:36 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 2A5F01A0F83;
-	Tue, 26 Aug 2025 09:13:43 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 54A041A0C9F;
+	Tue, 26 Aug 2025 09:15:36 +0800 (CST)
 Received: from [10.174.179.143] (unknown [10.174.179.143])
-	by APP4 (Coremail) with SMTP id gCh0CgCX4o5FCq1oDbE7AQ--.16416S3;
-	Tue, 26 Aug 2025 09:13:42 +0800 (CST)
-Subject: Re: [PATCH RFC 4/7] md/raid10: convert read/write to use
- bio_submit_split()
+	by APP4 (Coremail) with SMTP id gCh0CgCn8Y23Cq1oQdg7AQ--.16842S3;
+	Tue, 26 Aug 2025 09:15:36 +0800 (CST)
+Subject: Re: [PATCH RFC 5/7] md/raid5: convert to use bio_submit_split()
 To: Christoph Hellwig <hch@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>
 Cc: colyli@kernel.org, hare@suse.de, tieren@fnnas.com, axboe@kernel.dk,
  tj@kernel.org, josef@toxicpanda.com, song@kernel.org,
@@ -48,11 +47,11 @@ Cc: colyli@kernel.org, hare@suse.de, tieren@fnnas.com, axboe@kernel.dk,
  linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
  johnny.chenyi@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
 References: <20250825093700.3731633-1-yukuai1@huaweicloud.com>
- <20250825093700.3731633-5-yukuai1@huaweicloud.com>
- <aKxCJT6ul_WC94-x@infradead.org>
+ <20250825093700.3731633-6-yukuai1@huaweicloud.com>
+ <aKxCStAJPOI3LdtG@infradead.org>
 From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <6c6b183a-bce7-b01c-8749-6e0b5a078384@huaweicloud.com>
-Date: Tue, 26 Aug 2025 09:13:41 +0800
+Message-ID: <5af54574-2c28-dc6f-7205-cb3c3575c93b@huaweicloud.com>
+Date: Tue, 26 Aug 2025 09:15:34 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.1
 Precedence: bulk
@@ -61,56 +60,52 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <aKxCJT6ul_WC94-x@infradead.org>
+In-Reply-To: <aKxCStAJPOI3LdtG@infradead.org>
 Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCX4o5FCq1oDbE7AQ--.16416S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gr4rGw1fKFyUuF15tw18Xwb_yoW3Jrg_G3
-	98tryDGryDZ3Z3tay3Krn3A393CFs8CF1j9F4jqw43Z3s0g397AF48WrZ5X343JF1IvF4S
-	g347WFWFyrn29jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbS8FF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7V
-	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF
-	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRJPE-UUUUU=
+X-CM-TRANSID:gCh0CgCn8Y23Cq1oQdg7AQ--.16842S3
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E
+	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8I
+	cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
+	Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+	6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72
+	CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4II
+	rI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr4
+	1l4c8EcI0Ec7CjxVAaw2AFwI0_GFv_Wryl4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
+	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
+	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
+	7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
+	0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x
+	0JUl-eOUUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 Hi,
 
-在 2025/08/25 18:59, Christoph Hellwig 写道:
->>   		allow_barrier(conf);
->> +		bio = bio_submit_split(bio, max_sectors, &conf->bio_split);
->>   		wait_barrier(conf, false);
+在 2025/08/25 19:00, Christoph Hellwig 写道:
+> On Mon, Aug 25, 2025 at 05:36:58PM +0800, Yu Kuai wrote:
+>> +		raid_bio = bio_submit_split(raid_bio, sectors,
+>> +					    &conf->bio_split);
+>> +		if (!raid_bio)
+>> +			return NULL;
 >> +
->> +		if (!bio) {
->> +			set_bit(R10BIO_Returned, &r10_bio->state);
->> +			goto err_handle;
->> +		}
+>> +		raid_bio->bi_opf &= ~REQ_NOMERGE;
 > 
-> The NULL return should only happen for REQ_NOWAIT here, so maybe
-> give R10BIO_Returned a more descriptive name?  Also please document
-> the flag in the header.
+> It almost feels as if md wants a little helper that wraps
+> bio_submit_split and also clears REQ_NOMERGE?
+> 
 
-And also atomic write here, if bio has to split due to badblocks here.
-The flag is refer to raid1. I can add cocument for both raid1 and raid10
-in this case.
-
-> 
-> Any maybe yhe code wants a splitting helper instead of open coding
-> setting this flag in multiple places?
-> .
-> 
 Yes.
+
+And with the respect bio_submit_split() set this flag and then we clear
+it, will it make more sense to set this flag after bio_submit_split()
+from block layer?
 
 Thanks,
 Kuai
+
+> .
+> 
 
 
