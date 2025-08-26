@@ -1,227 +1,178 @@
-Return-Path: <cgroups+bounces-9432-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9434-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECA8EB37294
-	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 20:49:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9665FB37583
+	for <lists+cgroups@lfdr.de>; Wed, 27 Aug 2025 01:27:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1496366DE1
-	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 18:49:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40BD4683BE8
+	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 23:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EE802F28EC;
-	Tue, 26 Aug 2025 18:49:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02A5306D23;
+	Tue, 26 Aug 2025 23:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IhbCxlws"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RiiwNQrG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087CE2F4A1F
-	for <cgroups@vger.kernel.org>; Tue, 26 Aug 2025 18:49:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2B01F2382;
+	Tue, 26 Aug 2025 23:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756234170; cv=none; b=UoY5VUoDqe7KdgyMYlbN7gsw9CAlrO+Kbhm5vY2VYQNqJzYWR3jwIkLjUT38oFSm2XNLZ5vtIfVlvY1F8qnOEJRBl9HQLwfcZXUsagASnIpxsGdSiMgpHP/my0RJSlgerJHKRoesBPQnpV0P+w0fUrWvbxTVAjPc9yncrRZtEk0=
+	t=1756250841; cv=none; b=s4nl8uX3ZJe62PD3BJtSaXfB8DCLlKLsvQtx2xHQstmznobb5UZgDGYqkSvpALcm46t8oj6Z1YzbMjvBn43Pc97iHe3GijBTgxMwnFL4DdNhpCK6UdlMCBKOKJQnGOEueP2btrHX/R/f2W4qAubF8m++NaUCqvKz9tKSkFddbt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756234170; c=relaxed/simple;
-	bh=tgmfGxNYOnQXqsWA4w1OrpzKvga9aqkj/exTAy3qGIs=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=hQoSQCofcfZx4ikm4AZVP4uYl0MRo1c5uHkYwhQFU6DGGxMVacTQwmK47y4Jmt2QphRWuaCCwhpU9O/bpAZH08THtZuSgkiBqZJHbYjAFurfaI9WMLLonH0jg2JQKVYlOCMEv1UCWDuQeRbGDF2N6rDjEeEF9fPjz6WEMjDuduc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IhbCxlws; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1756234168; x=1787770168;
-  h=date:from:to:cc:subject:message-id;
-  bh=tgmfGxNYOnQXqsWA4w1OrpzKvga9aqkj/exTAy3qGIs=;
-  b=IhbCxlws7kopnL4GunZ0Hl2w3I8+dEh8daKHpwA//NzQo9BMD0iAJi4F
-   uZe9DA5RQSCVcupSP9toaGW7i9dl70xcGAQbrd5D8alCxquJpOS1hXGzn
-   BvGFLRKeiZWb6694RhITk/M5VBSDIcuKExjMgSr6vlIzea/omnpa+Wwx5
-   EOak5JIyTNlL4/ziwkQvLnMeL6qVNRiRbVYTuYk5ngpVE/dqI8yElKmzQ
-   d6M5Lq4OmqULRsHlk/MaKBgeHlVZdxER8crJbVHXtcRW1sOr3IOiyHPZV
-   tdm6IkWa1pGvkfx7KVv4VGizvdSA2/ruIWmIKkXFD0jzEMrwkzhBw8B+i
-   Q==;
-X-CSE-ConnectionGUID: jlovIzXTS7eGhPXOZ59dvQ==
-X-CSE-MsgGUID: 9oarvD9eTqKjZChOHb9VIw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="62317076"
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="62317076"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2025 11:49:26 -0700
-X-CSE-ConnectionGUID: JgKqEleQQgWTaQjEJYx6Vw==
-X-CSE-MsgGUID: 0ihj6SrYSIaJRiobY2k8Qw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,214,1751266800"; 
-   d="scan'208";a="169560969"
-Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
-  by orviesa007.jf.intel.com with ESMTP; 26 Aug 2025 11:49:25 -0700
-Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uqyjT-000SJV-0J;
-	Tue, 26 Aug 2025 18:49:23 +0000
-Date: Wed, 27 Aug 2025 02:47:39 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.18] BUILD REGRESSION
- 2c98144fc832b35c4e9293a3bfc518608d6f5145
-Message-ID: <202508270231.vxwsiua4-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1756250841; c=relaxed/simple;
+	bh=YqpZF0H5BKgoOr4E+576H5jlNQDB9O+lyTKYsc74AhY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mTB6G3KC677dSNc/rwENRIjP7jX5AXC+yf4mzNnvnMrmDA7Q89zXzmB+LoN+wA+yI4lkwnHS7OS6AKVDn5yzZPgPlZllcBm+kFVJFkn8O+NczXdMhKxb0Xo68UZFrGLUP57Cf9C8IwSQbdzylnJTRmp3wWvhS5zeB941yzHesB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RiiwNQrG; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-71d603cebd9so67372477b3.1;
+        Tue, 26 Aug 2025 16:27:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756250839; x=1756855639; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QRxd/UONu/TxowmunJ9/kcrGECFWZAfk75E2ggirveM=;
+        b=RiiwNQrGA/QVTvKI1Wgd2ECZK5sxyxKBgXqyshOB2Tge2TItgwL6krT3nsPhubIslP
+         lgQ7qLnr4FHkQvS9q/WPF+zoCyqTFKZmhlHFL2yOX6ovGKP2Vq+BzaAOVfwz5gG1kCdx
+         LohUg4AQD3dasM2D6zkGKVWsABhk3kbJPF1N5q+LEwjEbSC+SI2piYLdOX22ys3+NV7Y
+         kdzdXgCEsMwlgFBPdbXFTA1Us0o/8BJfxydtdol4OKA5lJ1Ijvd99XRVivOknoI0OuWL
+         TFekJlrRhomQwRn0H5hE+2KjfKJpVm68jsd2B/gbLUPv+dNgYm8dY+n+gjd4p78k4JZF
+         aFCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756250839; x=1756855639;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QRxd/UONu/TxowmunJ9/kcrGECFWZAfk75E2ggirveM=;
+        b=VoEs/5E7UBXd4MsWukQsBiUHoJRyT518cGcQmEDz1RO1y4YeqSarJJ3hjOWsSDXCIx
+         KKXl1FYzwnsJ1n3GAeU/wS9d+4jQd3UJ+VWYv/q0rL6MoOLB/houK9nL9XAU3nk82Ul2
+         uMPjhZU9Zgwebq/sibrQ7aBpPsGjT0H/KMYDm098ozLoVp0apZGOBG7cfv9jStiEQCx+
+         xr1S2WUKJFWgiso3MtnenbC3thjodM8AKJrwnvitTBQDyZ8xAZDq2H7K9vBwIs6Qku4K
+         TV+tFvyJXZQNera3ST6ttfPBZTrwGJd1AnEgRCG+hkH4kDYAMSd64LpxNLDIOF5Y2iZb
+         wKgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUjp5w9yHtVDgN9uc7S/KzBNK8gzqCVS0lhlAErUiGapSGvkbwCQHeXM3QVlQymJVrQvZ0=@vger.kernel.org, AJvYcCWSKMg8Rqt2w726L3pF1ML12TO5bzcKwik1fvSaiun6rmXSJHPpdU6QmekO6yP97pbfMcaALvLr30ywU6/gW2kc@vger.kernel.org, AJvYcCXGFPjodoc6/aXrSwRPSKD93vmHhH+fCO1DTFiuAmTs3zfrj3Pr5SBRCVdBlgjkMMnSijzMeNS+ug==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYI5xvWWOXd7htGPOYWQDMo+bDfuVE7wlIFVtCwpTCJO7+x3xP
+	VlFKz4nz1QkTHCACJMEa/4aZiZFmL/OcKHgW0aH8WI3md5UvonM9hDMh
+X-Gm-Gg: ASbGncuvG/jgANc/c3J1F1iFugxZm2XCh/AHlINVUu4pvIBaBMjEMW74MV+WW83jZfe
+	KW+OkvS4DGpSMfh8jXgvWzz5kYkPrIU7d6TBGbxOJoB+IXjgJL5C9ol9szHRYLukNmmqyynWjGF
+	T7lHlEFgDxkeifBtAx0bRDq7wj0Bl5zWYsAPPOH5+gxXWSq6aZKztKSUv2GmbvuhH5wm1pM4Yno
+	BaxLuGwwv6/nYQfktU6sgJs88xOIu2KQgV7q94MCkIg2a/NFJwpZ2f7bcZAfI4mQZs6kcKQJJpr
+	D9nz3nOm7ljL8h5cf+7ygFFBH3DZKt0X13p2Y07/rbegnvtxeNGGDyitcRo+2xvtzTawztb52Fa
+	lLo6YLmpOQ6VV13e4skJ325vKYg==
+X-Google-Smtp-Source: AGHT+IFw3BlR2Hf8WSyUz5irV6lWRXvSHxBFpWDj313UXZZMH8r/Cja7Q5XA12Zq/MQgR04f9fhENg==
+X-Received: by 2002:a05:690c:368d:b0:71c:1754:26a5 with SMTP id 00721157ae682-71fdc52ffb2mr205251567b3.30.1756250839051;
+        Tue, 26 Aug 2025 16:27:19 -0700 (PDT)
+Received: from [10.2.0.2] ([146.70.98.190])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7212005f70dsm11426677b3.40.2025.08.26.16.27.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Aug 2025 16:27:18 -0700 (PDT)
+Message-ID: <0e78be6f-ef48-4fcc-b0c7-48bc14fdfc7f@gmail.com>
+Date: Wed, 27 Aug 2025 00:27:08 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
+ freezing cgroups from BPF
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, tixxdz@opendz.org
+References: <20250818090424.90458-1-tixxdz@gmail.com>
+ <356xekrj6vqsmtcvbd3rnh7vg6ey7l6sd6f4v3dv4jxidxfd6m@cepwozvwucda>
+Content-Language: en-US
+From: Djalal Harouni <tixxdz@gmail.com>
+In-Reply-To: <356xekrj6vqsmtcvbd3rnh7vg6ey7l6sd6f4v3dv4jxidxfd6m@cepwozvwucda>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.18
-branch HEAD: 2c98144fc832b35c4e9293a3bfc518608d6f5145  cpuset: add helpers for cpus read and cpuset_mutex locks
+Hi Michal,
 
-Error/Warning ids grouped by kconfigs:
+On 8/26/25 15:18, Michal Koutný wrote:
+> Hi Djalal.
+> 
+> On Mon, Aug 18, 2025 at 10:04:21AM +0100, Djalal Harouni <tixxdz@gmail.com> wrote:
+>> This patch series add support to write cgroup interfaces from BPF.
+>>
+>> It is useful to freeze a cgroup hierarchy on suspicious activity for
+>> a more thorough analysis before killing it. Planned users of this
+>> feature are: systemd and BPF tools where the cgroup hierarchy could
+>> be a system service, user session, k8s pod or a container.
+> 
+> Could you please give more specific example of the "suspicious
+> activity"? The last time (v1) it was referring to LSM hooks where such
+> asynchronous approach wasn't ideal.
 
-recent_errors
-`-- mips-allyesconfig
-    |-- (.head.text):relocation-truncated-to-fit:R_MIPS_26-against-kernel_entry
-    `-- (.ref.text):relocation-truncated-to-fit:R_MIPS_26-against-start_secondary
+It solves the case perfectly, you detect something you fail the
+security hook return -EPERM and optionally freeze the cgroup,
+snapshot the runtime state.
 
-elapsed time: 1449m
+Oh I thought the attached example is an obvious one, customers want to
+restrict bpf() usage per cgroup specific container/pod, so when
+we detect bpf() that's not per allowed cgroup we fail it and freeze
+it.
 
-configs tested: 130
-configs skipped: 7
+Take this and build on top, detect bash/shell exec or any other new
+dropped binaries, fail and freeze the exec early at linux_bprm object
+checks.
 
-tested configs:
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-alpha                               defconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                      axs103_smp_defconfig    gcc-15.1.0
-arc                                 defconfig    gcc-15.1.0
-arc                   randconfig-001-20250826    gcc-11.5.0
-arc                   randconfig-002-20250826    gcc-8.5.0
-arm                              alldefconfig    gcc-15.1.0
-arm                               allnoconfig    clang-22
-arm                                 defconfig    clang-22
-arm                   milbeaut_m10v_defconfig    clang-19
-arm                   randconfig-001-20250826    gcc-12.5.0
-arm                   randconfig-002-20250826    gcc-13.4.0
-arm                   randconfig-003-20250826    gcc-8.5.0
-arm                   randconfig-004-20250826    gcc-10.5.0
-arm                       versatile_defconfig    gcc-15.1.0
-arm                        vexpress_defconfig    gcc-15.1.0
-arm64                             allnoconfig    gcc-15.1.0
-arm64                               defconfig    gcc-15.1.0
-arm64                 randconfig-001-20250826    clang-22
-arm64                 randconfig-002-20250826    gcc-8.5.0
-arm64                 randconfig-003-20250826    clang-22
-arm64                 randconfig-004-20250826    gcc-8.5.0
-csky                              allnoconfig    gcc-15.1.0
-csky                                defconfig    gcc-15.1.0
-csky                  randconfig-001-20250826    gcc-15.1.0
-csky                  randconfig-002-20250826    gcc-11.5.0
-hexagon                           allnoconfig    clang-22
-hexagon                          allyesconfig    clang-22
-hexagon                             defconfig    clang-22
-hexagon               randconfig-001-20250826    clang-19
-hexagon               randconfig-002-20250826    clang-22
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250826    gcc-12
-i386        buildonly-randconfig-002-20250826    gcc-12
-i386        buildonly-randconfig-003-20250826    clang-20
-i386        buildonly-randconfig-004-20250826    gcc-12
-i386        buildonly-randconfig-005-20250826    clang-20
-i386        buildonly-randconfig-006-20250826    gcc-12
-i386                                defconfig    clang-20
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-22
-loongarch                           defconfig    clang-19
-loongarch             randconfig-001-20250826    gcc-14.3.0
-loongarch             randconfig-002-20250826    gcc-14.3.0
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-m68k                                defconfig    gcc-15.1.0
-microblaze                       allmodconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-mips                           ip30_defconfig    gcc-15.1.0
-nios2                             allnoconfig    gcc-11.5.0
-nios2                               defconfig    gcc-11.5.0
-nios2                 randconfig-001-20250826    gcc-8.5.0
-nios2                 randconfig-002-20250826    gcc-10.5.0
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                         allyesconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-15.1.0
-parisc                           allmodconfig    gcc-15.1.0
-parisc                            allnoconfig    gcc-15.1.0
-parisc                           allyesconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20250826    gcc-8.5.0
-parisc                randconfig-002-20250826    gcc-15.1.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                          allyesconfig    clang-22
-powerpc               randconfig-001-20250826    gcc-8.5.0
-powerpc               randconfig-002-20250826    clang-22
-powerpc               randconfig-003-20250826    gcc-13.4.0
-powerpc                      tqm8xx_defconfig    clang-19
-powerpc64             randconfig-001-20250826    gcc-10.5.0
-powerpc64             randconfig-002-20250826    gcc-11.5.0
-powerpc64             randconfig-003-20250826    gcc-14.3.0
-riscv                            allmodconfig    clang-22
-riscv                             allnoconfig    gcc-15.1.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    clang-22
-riscv                 randconfig-001-20250826    gcc-8.5.0
-riscv                 randconfig-002-20250826    gcc-11.5.0
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-22
-s390                             allyesconfig    gcc-15.1.0
-s390                                defconfig    clang-22
-s390                  randconfig-001-20250826    clang-22
-s390                  randconfig-002-20250826    clang-18
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                                  defconfig    gcc-15.1.0
-sh                    randconfig-001-20250826    gcc-11.5.0
-sh                    randconfig-002-20250826    gcc-9.5.0
-sparc                            allmodconfig    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20250826    gcc-13.4.0
-sparc                 randconfig-002-20250826    gcc-8.5.0
-sparc64                             defconfig    clang-20
-sparc64               randconfig-001-20250826    gcc-8.5.0
-sparc64               randconfig-002-20250826    clang-22
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-22
-um                               allyesconfig    gcc-12
-um                                  defconfig    clang-22
-um                             i386_defconfig    gcc-12
-um                    randconfig-001-20250826    gcc-12
-um                    randconfig-002-20250826    clang-17
-um                           x86_64_defconfig    clang-22
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20250826    clang-20
-x86_64      buildonly-randconfig-002-20250826    clang-20
-x86_64      buildonly-randconfig-003-20250826    gcc-12
-x86_64      buildonly-randconfig-004-20250826    clang-20
-x86_64      buildonly-randconfig-005-20250826    gcc-12
-x86_64      buildonly-randconfig-006-20250826    gcc-12
-x86_64                              defconfig    gcc-11
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                randconfig-001-20250826    gcc-11.5.0
-xtensa                randconfig-002-20250826    gcc-8.5.0
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Also why couldn't all these tools execute the cgroup actions themselves
+> through traditional userspace API?
+
+- Freezing at BPF is obviously better, less race since you don't need
+   access to the corresponding cgroup fs and namespace. Not all tools run
+   as supervisor/container manager.
+- The bpf_send_signal in some cases is not enough, what if you race with
+   a task clone as an example? however freezing the cgroup hierarchy or
+   the one above is a catch all...
+
+
+> One more point (for possible interference with lifecycles) -- what is
+> the relation between cgroup in which the BPF code "runs" and cgroup
+> that's target of the operation? (I hope this isn't supposed to run from
+> BPF without process context.)
+
+The feature is supposed to be used by sleepable BPF programs, I don't
+think we need extra checks here?
+
+It could be that this BPF code runs in a process that is under
+pod-x/container-y/cgroup-z/  and maybe you want to freeze "cgroup-z"
+or "container-y" and so on... or in case of delegated hierarchies,
+freezing the parent is a catch all.
+
+
+>   
+>> Todo:
+>> * Limit size of data to be written.
+>> * Further tests.
+>> * Add cgroup kill support.
+> 
+> I'm missing the retrieval of freeze result in this plan :) cgroup kill
+
+Indeed you are right a small kfunc to read back, yes ;) !
+
+> would be simpler for PoC (and maybe even sufficient for your use case?).
+> 
+
+I think both are useful cases.
+
+Thank you!
+
+
+> Regards,
+> Michal
+
 
