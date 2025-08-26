@@ -1,94 +1,89 @@
-Return-Path: <cgroups+bounces-9425-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9426-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2DE9B36980
-	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 16:27:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00FB0B36A5C
+	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 16:36:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C8C67A322E
-	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 14:26:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 070411C4081D
+	for <lists+cgroups@lfdr.de>; Tue, 26 Aug 2025 14:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D086350840;
-	Tue, 26 Aug 2025 14:25:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D773A35A29E;
+	Tue, 26 Aug 2025 14:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="annMvEk9"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WUIF0PYV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E787B350D4F
-	for <cgroups@vger.kernel.org>; Tue, 26 Aug 2025 14:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99163353359
+	for <cgroups@vger.kernel.org>; Tue, 26 Aug 2025 14:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756218320; cv=none; b=okdfUEDCCF1thjQw1Va1ik8HAE03t/8OCuYOREIKdN/x6AgBkZ+QWFsjS6HKQEFeoSOLaHLYO8U+PwtJ9gnk2o74K+/Ye5U9M5DX+M7QREj7s7sCpiTi5nR57TV4NW2XLyAHwYi7oc7lqj76eyWUEf1FrcQHKsW9v5fRgV1OFAs=
+	t=1756218372; cv=none; b=WQi1Mm9Ayim5ezTvkwerx2obeeDsx8mQXVTZAHy1qtBW6JLJaC3+5LEeHWXLZ6OXYgn4VEeuQfavWe0QJ35dqqsEadLcev2LXz6kDzxaSN506F0WUmqhBBc6lyjz2Oj3JYpUsVkPNKeUA7/KWVQN+JCC6GYRsqvPo6xTyezQpCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756218320; c=relaxed/simple;
-	bh=TCJ8NPvTP7ps3f62uSRNkK10ZrwR7fQVXrD9FQiGDP0=;
+	s=arc-20240116; t=1756218372; c=relaxed/simple;
+	bh=q9j2PZULGXZHOrc5kNbcezwPm4NZHYRo32d1BVrCjbg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nlKTXKJq8LYbsrhTV7mRSoLUwrNJGUzUw+tMezO9oyedu8KCVpre3vSCIvZQ8mUEVda3DWkRwVN4ieKaxlPsKottLwgGCZ84Oa1rqHBgpswKkVRvq25LpCmZMRt+5qpx5cqxhw/0vz/hquyO25BiX/FlL2yIf5+tH3tN9Asxb2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=annMvEk9; arc=none smtp.client-ip=209.85.221.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=WrKkY5A0rHAjm/iPA8rVmxMLNiJTZHU3h0O5jmDuNBGqEEbuRExoDiX0IYgfOgE8D0LYAt21ajHcrFqi7+2SoCA7QieqlXeteAsC0Wks5BacHU8DsQFmpNISz7+S44lJZ0I6eC2gYYUIiGyX1iS14U0KI4hoVXL6OKVG7ODLr7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WUIF0PYV; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3c7ba0f6983so1435359f8f.0
-        for <cgroups@vger.kernel.org>; Tue, 26 Aug 2025 07:25:18 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3c854b6459fso1746785f8f.3
+        for <cgroups@vger.kernel.org>; Tue, 26 Aug 2025 07:26:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1756218317; x=1756823117; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1756218369; x=1756823169; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=praZGcG+svmhEwcOoZkoGr6SneBmB8gN1Y505qdv3M4=;
-        b=annMvEk92BZUbClS8F7IBk9qNzanbvcwcJHJ2QM3bC5vit73hXaJ2pOpmaOsHb8WeJ
-         l2ob31j8RrNDuO2+YfB0pPs+74+mRyaf/AMAXZzdApQqgTbCyVn9uzDTql4ocmrxQ5HN
-         SSYDlqxp139oIk0DCw/NJuu4xoPCd/S+EyLm3RThuEhrCnvGyCnd1xPF0Ny25z1goZSg
-         BhVC6hnoF32Rm5+EptmtE9N9F2xsugsTtDjI32/xz2EfnX20z9ko6Ll5rfB09iuQuIHi
-         GjN/dRsh1WiRnHKLBQea39K7qWiXDtSGGNgU4cvRI6a+vk5iZi8Mby6Ss2iDPGg4/gvm
-         guOA==
+        bh=q9j2PZULGXZHOrc5kNbcezwPm4NZHYRo32d1BVrCjbg=;
+        b=WUIF0PYVPiP61ALt5gogMALHqiaWz/BjzD7eEHWaUi5ZNbc3CFbkrwCZngCUd5Xrfg
+         XtZM/elqZtL9XlkqFYAH+uC+uZqIvP6AG3XI1lXB1LeU9I6InRqAXPE1kJsNrY+L5c7A
+         K9kLx/hEmYvQEON37u/5ziS7tZsu4bh50LmRHdhGoUk3YJmf4t2ahz8yGTkbUKSQEIft
+         yGnqDCxda1n3nUz2n9noWr4Fqo64+MLCG1gr3yZgErNhQ/KwjD7LUFTzC3k8xiBlzITQ
+         gt0ueC0mzs8B3B9W0Fn9nuo1IGQ7c7ejQlfToC0ZKyrVLOeG0/0B6C4KRyuFUwIrAodq
+         criQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756218317; x=1756823117;
+        d=1e100.net; s=20230601; t=1756218369; x=1756823169;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=praZGcG+svmhEwcOoZkoGr6SneBmB8gN1Y505qdv3M4=;
-        b=CtzsxZg2vrlBz7k3/80zlFlyXDrnDmv24tEbLbF1cZNy03ZnqHC/Jc5HKSj+m8yYRQ
-         3b6AyRniRn6QP1YvPZgKtaHk0o3+a25jP7Iy6CyPyOX/XqV12PDo/Vt2ddS6f19OilaZ
-         SXiGGzZEldoPNfoD9gU010bTNwPNCoGazhu3kINxgwkuzBRUsoIceWwyXXnxQQN2SfJA
-         k8f4RHQbl4zQV449x8puUYXK40pzCcjvXD2y9kiefREFpIGN+l4pB5xBE9UhPC26lDfz
-         xFStwGpMR7EUTwbg/XiP1H34Q18jcSn2bluqB2DU0uUly8YMPtwdPxVGKhJsVNPqqAS0
-         TAOg==
-X-Forwarded-Encrypted: i=1; AJvYcCX+7zgixIx8FUA1TkqVT/ew0LF4MQw9S3xKRCLIfPsmGMUZkUHIu7Ix7KmQ5K1AFXkcS95h2W3N@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3dLYgEWnFdSmeSrkJrkUYskyxxQ6v+kWoDAhWPB0SSPjtMbjP
-	3JTVwoRMSoHPEVfyAnDxs9pMi9FQbLwBiOvc3DLMbDenjTFAQxX9Ae2PvqmBsK+ws/A=
-X-Gm-Gg: ASbGncvHCKyqd/fAZSkI51O+SpH+jX+l4ADC9KF+wCONq7qPlXtaFgjo3IMzGtZwN75
-	7ubufXjEnsGMInUi8c2/CFLt+Ot4yhRzpf2H9tZ7vcjee8LOg0n+t/Pz8eRhohqHbBVpWCWxl9v
-	RCv7UJGfKgsakq3pZTal4b18Lrv06QCl6VPtX3yXR4TCfz7ESjMpj43QpAT5Uglua/TZNfpvk2m
-	tX1hv0qLB5KDeV3Nt2FQjZ0NvpT5k0nEzD3tnE6xfwOxcaRFo6OPFWTQGhE8dbTPtGRxCFPNvb0
-	JLBw2W21JEotNjr34aoBzinvNzqKZpx47gJ+55QUexbqoI5CFQ9WaF4saRaV6cbjnoJSPlMzXfy
-	+kOdnqrNVqtnQn925kCJUWVZ1LzhCu6M/wN4N7WjHM6o=
-X-Google-Smtp-Source: AGHT+IGiyPC1ji27qPD6oBh6HqY5oEKAa8jDCI4Wp7Eb/P+7XPuJ/OsjkI/jDyAdj8E7LPD4BQscwQ==
-X-Received: by 2002:a05:6000:24c6:b0:3b9:14f2:7edf with SMTP id ffacd0b85a97d-3cbb15c9fd1mr1421867f8f.1.1756218317198;
-        Tue, 26 Aug 2025 07:25:17 -0700 (PDT)
+        bh=q9j2PZULGXZHOrc5kNbcezwPm4NZHYRo32d1BVrCjbg=;
+        b=SFdR8fGZ+4KGaY95xjjrxumkQDy2fc8lbXtx5XpH9ViXGe/SzW9E2e6c28wmUlD705
+         oLrkmGMCKsT3HMXvxiaIdU8OgOLJDPEQa367IXHiPykl4GlZA1qe9X1RX3g+C03zPzA5
+         iZat3Os94Q5t7UAQBR2WqYFWIRFHRo+VCD+yaqz1uKIo2+HUSnGFH+/U129NM+KkkT7M
+         bfa68KJvEsuEZx4AePupJ7/DzrP2X+daaj9ZeZXO1U2IkIbTdz+h4hTvR6sP9tVvPAya
+         pD+gf2Ae1trH3mL9WaDGUt2Pv57l9e+zgmjsXxK1dZkMzZhXfqanEyGcMm9Q6sjH90iL
+         N56Q==
+X-Gm-Message-State: AOJu0YwX/OKNT1n/wUZlmZgSGr2kISKSVaZ8IZLX3VZcnTZV8QCAq8h9
+	TlUNlA3ZnktQ9JMkk6XVdZphImLHhoeR/ki+/NeL3fzH3itEOpgyGarwdj1cmW4S9MI=
+X-Gm-Gg: ASbGncuRabqSnXTbhvrtPg3TL6+vUA3H5r3HSXF9IWk32+E96cOsYACXJQCTkw3cFN2
+	yBz031wJ8F/sPL6SxvCS/e1zb1qZaXXAxpjYHKkxHzv1SV9JQm/fqelMuvx448DCQGDnJ0ws2pk
+	OgJo9/NR7B8eEYFU78b8ye0TRJKac/IGs05ED/AF5KvF3FyPVWS+3GyfT2liLyN5+K0ruel6JZk
+	SZDVtztUDy2JxD/WookCfTVgoTlJdINqSymUA9g+BRau4efCq7v7jFq0gtpx+vDl5OlWyaSsxbo
+	krnW9qT8SNxmVJIOw1fKhjSAkEXX/mzXKG7sLEQEfU6d4XCRYRWq6QO1BXCXGJVybwHHIEHx9/g
+	+G8zRsCbKexeMNrM9Jg5a8iLATwy0/QZNp2tAkGx6RrI=
+X-Google-Smtp-Source: AGHT+IHNuSehu+kC/8JT6eOvIgtP+0NWIiWUAOSb8fB6NxBNImXOnuq9wHCo/AxRrqB9def2TYx5ig==
+X-Received: by 2002:a05:6000:40cd:b0:3b7:8da6:1bb4 with SMTP id ffacd0b85a97d-3c5dcefcf18mr14788726f8f.58.1756218368812;
+        Tue, 26 Aug 2025 07:26:08 -0700 (PDT)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2466877c0aasm98187355ad.15.2025.08.26.07.25.08
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24668880368sm97231965ad.109.2025.08.26.07.26.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Aug 2025 07:25:16 -0700 (PDT)
-Date: Tue, 26 Aug 2025 16:25:03 +0200
+        Tue, 26 Aug 2025 07:26:08 -0700 (PDT)
+Date: Tue, 26 Aug 2025 16:25:55 +0200
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <llong@redhat.com>, 
-	Chen Ridong <chenridong@huaweicloud.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH v3] sched/core: Skip user_cpus_ptr masking if no online
- CPU left
-Message-ID: <nqes55hiydw37qpt5mrqwzyhan5nxlzvuoccei4hmjloccr5xr@aqkuqerfwomc>
-References: <20250718164143.31338-1-longman@redhat.com>
- <20250718164857.31963-1-longman@redhat.com>
- <2vpxlzo6kruo23ljelerqkofybovtrxalinbz56wgpek6j47et@om6jyuyqecog>
- <9bd275be-45df-47f3-9be3-f7e1458815a4@redhat.com>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: Cgroups <cgroups@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	lkft-triage@lists.linaro.org, Linux Regressions <regressions@lists.linux.dev>, 
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Anders Roxell <anders.roxell@linaro.org>, 
+	Arnd Bergmann <arnd@arndb.de>, kamalesh.babulal@oracle.com
+Subject: Re: next-20250805: ampere: WARNING: kernel/cgroup/cpuset.c:1352 at
+ remote_partition_disable
+Message-ID: <hyqcffknmjwjuogoe4ynubs3adk47t2iw4urnpjscdgjjivqz7@b5ue6csrs2qt>
+References: <CA+G9fYtktEOzRWohqWpsGegS2PAcYh7qrzAr=jWCxfUMEvVKfQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -96,69 +91,51 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2qm6lhw4n6animmp"
+	protocol="application/pgp-signature"; boundary="23hhozo72xquqq7g"
 Content-Disposition: inline
-In-Reply-To: <9bd275be-45df-47f3-9be3-f7e1458815a4@redhat.com>
+In-Reply-To: <CA+G9fYtktEOzRWohqWpsGegS2PAcYh7qrzAr=jWCxfUMEvVKfQ@mail.gmail.com>
 
 
---2qm6lhw4n6animmp
+--23hhozo72xquqq7g
 Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v3] sched/core: Skip user_cpus_ptr masking if no online
- CPU left
+Subject: Re: next-20250805: ampere: WARNING: kernel/cgroup/cpuset.c:1352 at
+ remote_partition_disable
 MIME-Version: 1.0
 
 Hi.
 
-I had a look after a while (thanks for reminders Ridong).
+On Thu, Aug 07, 2025 at 01:57:34PM +0530, Naresh Kamboju <naresh.kamboju@li=
+naro.org> wrote:
+> Regressions noticed intermittently on AmpereOne while running selftest
+> cgroup testing
+> with Linux next-20250805 and earlier seen on next-20250722 tag also.
+>=20
+> Regression Analysis:
+> - New regression? Yes
+> - Reproducibility? Intermittent
+>=20
+> First seen on the next-20250722 and after next-20250805.
 
-On Mon, Jul 21, 2025 at 11:28:15AM -0400, Waiman Long <llong@redhat.com> wr=
-ote:
-> This corner case as specified in Chen Ridong's patch only happens with a
-> cpuset v1 environment, but it is still the case that the default cpu
-> affinity of the root cgroup (with or without CONFIG_CGROUPS) will include
-> offline CPUs, if present.
+Naresh, can you determine also the last good revision? That would be
+ideal to have some endpoints for bisection. (To look for any interacting
+changes that Waiman was getting at.)
 
-IIUC, the generic sched_setaffinity(2) is ready for that, simply
-returning an EINVAL.
-
-> So it still make senses to skip the sched_setaffinity() setting if
-> there is no online CPU left, though it will be much harder to have
-> such a condition without using cpuset v1.
-
-That sounds like there'd be no issue without cpuset v1 and the source of
-the warning has quite a telling comment:=20
-
-	 * fail.  TODO: have a better way to handle failure here
-	 */
-	WARN_ON_ONCE(set_cpus_allowed_ptr(task, cpus_attach));
-
-The trouble is that this is from cpuset_attach() (cgroup_subsys.attach)
-where no errors are expected. So I'd say the place for the check should
-be earlier in cpuset_can_attach() [1]. I'm not sure if that's universally
-immune against cpu offlining but it'd be sufficient for the reported
-sequential offlining.
-
-HTH,
+Thanks,
 Michal
 
-[1] Although the error propagates, it ends up without recovery in
-remove_tasks_in_empty_cpuset() "only" as an error message. But that's
-likely all what can be done in this workfn context -- it's better than
-silently skipping the migration as consequence of this patch.
-
---2qm6lhw4n6animmp
+--23hhozo72xquqq7g
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaK3DvRsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Ag9xAD/ZbEZKa9lcu5wS6kW+R91
-XbafykmOnnjnsp0X/EvwukgBAIV3luX5EnleVFAMs3vNtlFMg4az0uOkkxBk2DI3
-0CEE
-=W2tu
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaK3D8RsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjraQEA/sATM9lqrOJV8YGvjMwn
++GWni0VR34BMM7mWvDUzGxEBAJpsvXzuNyDJBDJGhCreK69pFRuLZ5En4BTai+Fu
+Oc0F
+=Z4+0
 -----END PGP SIGNATURE-----
 
---2qm6lhw4n6animmp--
+--23hhozo72xquqq7g--
 
