@@ -1,81 +1,66 @@
-Return-Path: <cgroups+bounces-9451-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9452-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 730D9B39211
-	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 05:03:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBDE4B3948B
+	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 09:06:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20C6B4623A0
-	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 03:03:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20F07168789
+	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 07:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436E325BEF8;
-	Thu, 28 Aug 2025 03:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037782D249A;
+	Thu, 28 Aug 2025 07:06:23 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865DF1A0BD0;
-	Thu, 28 Aug 2025 03:03:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB8C27B35F;
+	Thu, 28 Aug 2025 07:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756350210; cv=none; b=W8t2KgPpDNcL8Qrm6MFskUHqAyzXDn8ASxmNFTUVRjSOOOZiCjK0QnOkw4gpU+pTFkmcrGMvbk1IsyTMT4aFzCWzwDHsRiJtTxxkhue3Dga3drQqonsRitsSlLwbeJOzsb8shAoAd5OpfwwcRozB1kqZAR6GWV06fdmeN6onTm8=
+	t=1756364782; cv=none; b=HfkvwfmrcYimMYb4JqJyaO1KkvDRJSF7iWck0VUttPlKj1JJqg9VUrLqVPMrhWoZINUYsrKUw+ITac6pfgdndo1KAXV0RlX/vNMGH7zvmIzkvVORKZntsvqBuxKbHQ9AVwHfZLLyz2LWhgmxsfklSR7M+fThT0a2DwARmkWsjL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756350210; c=relaxed/simple;
-	bh=McBv2WKYiAtFM/Ev/r3aEudSnN2uFfmXW8xy5B85iMk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cvgvPVtERn310efwyticoDwflsbWte3S3toBcasmi72bJoLLzKPbo82gofQz9V3pPycPxtnLLN39PEw2ggYzwXuHwOO9RHDAdS/60Z58G+bYSg33QRzlM4DczTQGwna+WnSpNBjdQ3oxXcCoKdsnYUUGr8ZnV7D9vvQGM/gwvqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 88bef62c83bb11f0b29709d653e92f7d-20250828
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
-	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_UNTRUSTED, SA_UNFAMILIAR
-	SN_UNTRUSTED, SN_UNFAMILIAR, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-	CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
-	GTI_C_BU, AMN_T1, AMN_GOOD, AMN_C_TI, AMN_C_BU
-	ABX_MISS_RDNS
-X-CID-UNFAMILIAR: 1
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.45,REQID:c8ea5b92-ff40-4466-873f-7b2076a45a3f,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:8,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:18
-X-CID-INFO: VERSION:1.1.45,REQID:c8ea5b92-ff40-4466-873f-7b2076a45a3f,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:8,FILE:0,BULK:0,RULE:Release_HamU,ACTION:
-	release,TS:18
-X-CID-META: VersionHash:6493067,CLOUDID:1838626cc82ff7846ff27bbb79bb3582,BulkI
-	D:250828110315VR7ZFWK4,BulkQuantity:0,Recheck:0,SF:16|19|24|38|44|66|78|10
-	2|850,TC:nil,Content:0|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:n
-	il,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC
-	:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_USA,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 88bef62c83bb11f0b29709d653e92f7d-20250828
-X-User: lihongfu@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <lihongfu@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 582230096; Thu, 28 Aug 2025 11:03:12 +0800
-From: Hongfu Li <lihongfu@kylinos.cn>
-To: dev@lankhorst.se,
-	mripard@kernel.org,
-	natalie.vock@gmx.de,
+	s=arc-20240116; t=1756364782; c=relaxed/simple;
+	bh=3GtacDy0fynn68cetc6FdcOBuEARvE0UkBR+DvwmVqM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rVTj9y+y+vBvYtdt+eg6oH0JeBI8DEY0LiZoQeIoj/wDBmuKphe09RiTr/Y+4HtQ9IQWO8DdJK7NHKtUriTSSf/9W/VFqccYiCXDSQ7O4PqxTEOQH3yX+zrAZB4RECm6D/GgmT7AX/5uPXiHto3sWSUTdA2GKaP87s52ZW2hhgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cCC9b6MdrzKHLx4;
+	Thu, 28 Aug 2025 15:06:11 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 90F661A1CB1;
+	Thu, 28 Aug 2025 15:06:11 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgCn8Izh_69o_X89Ag--.14658S4;
+	Thu, 28 Aug 2025 15:06:11 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: axboe@kernel.dk,
 	tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
+	josef@toxicpanda.com,
+	song@kernel.org,
+	neil@brown.name,
+	akpm@linux-foundation.org,
+	hch@infradead.org,
+	colyli@kernel.org,
+	hare@suse.de,
+	tieren@fnnas.com
+Cc: linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Hongfu Li <lihongfu@kylinos.cn>
-Subject: [PATCH] cgroup/dmem: Fix spelling error in dmem.c
-Date: Thu, 28 Aug 2025 11:02:36 +0800
-Message-Id: <20250828030236.427593-1-lihongfu@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	cgroups@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	johnny.chenyi@huawei.com
+Subject: [PATCH RFC v2 00/10] block: fix disordered IO in the case recursive split
+Date: Thu, 28 Aug 2025 14:57:23 +0800
+Message-Id: <20250828065733.556341-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -83,37 +68,72 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCn8Izh_69o_X89Ag--.14658S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw4Duw43GFWrJF4rtw1DJrb_yoW8AF4Upa
+	yagFW3Zr1UCr4agFnxZ3WUt3Z5C3WvgryrGr93Xws5XF9rZrWIkw4UAr1rKry5GFWrG34U
+	Xr1kCrWUWF15GrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjTRNJ5oDUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Fix some spelling errors in the comments.
+From: Yu Kuai <yukuai3@huawei.com>
 
-Signed-off-by: Hongfu Li <lihongfu@kylinos.cn>
----
- kernel/cgroup/dmem.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes in v2:
+ - export a new helper bio_submit_split_bioset() instead of
+export bio_submit_split() directly;
+ - don't set no merge flag in the new helper;
+ - add patch 7 and patch 10;
+ - add patch 8 to skip bio checks for resubmitting split bio;
 
-diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-index 10b63433f057..0459cca9e795 100644
---- a/kernel/cgroup/dmem.c
-+++ b/kernel/cgroup/dmem.c
-@@ -19,7 +19,7 @@
- struct dmem_cgroup_region {
- 	/**
- 	 * @ref: References keeping the region alive.
--	 * Keeps the region reference alive after a succesful RCU lookup.
-+	 * Keeps the region reference alive after a successful RCU lookup.
- 	 */
- 	struct kref ref;
- 
-@@ -582,7 +582,7 @@ EXPORT_SYMBOL_GPL(dmem_cgroup_uncharge);
-  * dmem_cgroup_try_charge() - Try charging a new allocation to a region.
-  * @region: dmem region to charge
-  * @size: Size (in bytes) to charge.
-- * @ret_pool: On succesfull allocation, the pool that is charged.
-+ * @ret_pool: On successful allocation, the pool that is charged.
-  * @ret_limit_pool: On a failed allocation, the limiting pool.
-  *
-  * This function charges the @region region for a size of @size bytes.
+patch 1 export a bio split helper;
+patch 2-7 unify bio split code;
+path 8-9 convert the helper to insert split bio to the head of current
+bio list;
+patch 10 is a follow cleanup for raid0;
+
+This set is just test for raid5 for now, see details in patch 9;
+
+Yu Kuai (10):
+  block: factor out a helper bio_submit_split_bioset()
+  md/raid0: convert raid0_handle_discard() to use
+    bio_submit_split_bioset()
+  md/raid1: convert to use bio_submit_split_bioset()
+  md/raid10: convert read/write to use bio_submit_split_bioset()
+  md/raid5: convert to use bio_submit_split_bioset()
+  md/md-linear: convert to use bio_submit_split_bioset()
+  blk-crypto: convert to use bio_submit_split_bioset()
+  block: skip unnecessary checks for split bio
+  block: fix disordered IO in the case recursive split
+  md/raid0: convert raid0_make_request() to use
+    bio_submit_split_bioset()
+
+ block/blk-core.c            | 34 ++++++++++++++++----
+ block/blk-crypto-fallback.c | 15 +++------
+ block/blk-merge.c           | 63 ++++++++++++++++++++++++-------------
+ block/blk-throttle.c        |  2 +-
+ block/blk.h                 |  3 +-
+ drivers/md/md-linear.c      | 14 ++-------
+ drivers/md/raid0.c          | 31 ++++++------------
+ drivers/md/raid1.c          | 35 +++++++++------------
+ drivers/md/raid1.h          |  4 ++-
+ drivers/md/raid10.c         | 51 +++++++++++++-----------------
+ drivers/md/raid10.h         |  2 ++
+ drivers/md/raid5.c          | 10 +++---
+ include/linux/blkdev.h      |  2 ++
+ 13 files changed, 137 insertions(+), 129 deletions(-)
+
 -- 
-2.25.1
+2.39.2
 
 
