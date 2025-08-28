@@ -1,41 +1,42 @@
-Return-Path: <cgroups+bounces-9466-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9469-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0D6DB39E44
-	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 15:11:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73F26B39E4C
+	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 15:12:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CC2A16EBA6
-	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 13:11:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C46516ECDD
+	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 13:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A303115B5;
-	Thu, 28 Aug 2025 13:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5D9312801;
+	Thu, 28 Aug 2025 13:11:37 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C3503112BF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C3BC3112C1;
 	Thu, 28 Aug 2025 13:11:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756386695; cv=none; b=uhcm+Mt264XurcaFlNk1RAXM3oxjlkJHvsx7daa9ifrR/ZdhX16p2KUcsu9ee2IIf4+gLdlXqBq1XO1uJ+gHZzX4lyg3eLgeLB1meoRtc8dK4UhIda2+znAf3eZS3MAwKBfL84Jiu4HLkVwXhYvFIlLvKfN/TLp0tSDOs7rsgBs=
+	t=1756386696; cv=none; b=JmR3TsHszk9jPsQRyRrkvwyATDe8b03CNc1CSPajpvGbpJJUZzUIYfx/3Wb2KDG+3UniqkuNvmHcBMrvLBgfcB/K/roSTctZcluUn86I/vMXK9Ysy5kqQRN7uCQJ6l8FdebLlqij5+IiZQ3uPsVkbntH1EVv0s3LEOaIYr5bpOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756386695; c=relaxed/simple;
-	bh=M/NChHRMz1EubjxSqT312/k/skbF330zOVG9sCmDxEo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CiOUfoqKzYGv7Nae8pg2Zhq3EH50FW2E96SoCpxjDwlWetP00YB10jb9l2MvbjDztB2r7BUzLTp3+iECLy2JFm1CUylbo8Qg9dZgi7/BZIWbZ6gdCytpepoR7tmsqqhVcj3Yg04/uiIJ4WLrn5wXSJQm1UuoPw9IXN2eNhGMM1A=
+	s=arc-20240116; t=1756386696; c=relaxed/simple;
+	bh=VgIvhKpLS2BJZnX4MiaOHPT/BIPH3+CsTIegR2+zmj4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=X32XCi3iRuYnkxOg5As1HrTEQtezgsTxu/84TyAFdmBMyg7WUUKrt0p1IO8Aa0ZaHjq+kTc6SSyNhmH+tLL2rK1AAy0PSZ5wFWaCveOfZkjltCXHrrWQjzHpBacN1OgCOYROuwZTZUWwALIuQVs1/2WU1rGp/2R0YPDiJD4aHN0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cCMH85wSwzYQvdM;
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cCMH86GdvzYQvcy;
 	Thu, 28 Aug 2025 21:11:32 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 5A0C71A1356;
+	by mail.maildlp.com (Postfix) with ESMTP id 65EBE1A1358;
 	Thu, 28 Aug 2025 21:11:31 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP3 (Coremail) with SMTP id _Ch0CgBX8mlsVbBoQsxPAg--.40352S2;
+	by APP3 (Coremail) with SMTP id _Ch0CgBX8mlsVbBoQsxPAg--.40352S3;
 	Thu, 28 Aug 2025 21:11:31 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: longman@redhat.com,
@@ -46,10 +47,12 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lujialin4@huawei.com,
 	chenridong@huawei.com
-Subject: [PATCH -next RFC 00/11] Refactor cpus mask setting
-Date: Thu, 28 Aug 2025 12:56:20 +0000
-Message-Id: <20250828125631.1978176-1-chenridong@huaweicloud.com>
+Subject: [PATCH -next RFC 01/11] cpuset: move the root cpuset write check earlier
+Date: Thu, 28 Aug 2025 12:56:21 +0000
+Message-Id: <20250828125631.1978176-2-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250828125631.1978176-1-chenridong@huaweicloud.com>
+References: <20250828125631.1978176-1-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,60 +60,90 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgBX8mlsVbBoQsxPAg--.40352S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ar4kZF1UJw18uw1kCF45ZFb_yoW8Ww15pF
-	yakF13Ary8Gr1akanxJ397Wr4Yga1ktF47tFy3K34xKry7ZF1qyryvyasxuFy3GF9xCw1U
-	XanIqFs29FnrA37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
-	AIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
+X-CM-TRANSID:_Ch0CgBX8mlsVbBoQsxPAg--.40352S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFWUKr4xKw1xurW5Ar4rAFb_yoW8ZFykpF
+	WDC347KrW5XFyUCws7X39ruwnYgw18JFyDtw17Kw1rCFyayF4jkFy7XwnIyFy5CryxuF4U
+	JFZI9rWj9a4qyFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Kb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
+	A2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr4
+	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
+	wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
+	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7qjgUUUUU
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-This patch series refactors the CPU mask configuration logic for both
-cpuset.cpus and cpuset.cpus.exclusive settings. The primary goal is to
-improve code readability through comprehensive function restructuring.
+The 'cpus' or 'mems' lists of the top_cpuset cannot be modified.
+This check can be moved before acquiring any locks as a common code
+block to improve efficiency and maintainability.
 
-The CPU mask update process follows these steps:
-1. Parse user input
-2. Skip processing if no actual change to CPU mask
-3. Compute trial cpuset's effective exclusive CPUs
-4. Validate changes and return error if invalid
-5. Handle partition state changes resulting from CPU mask modifications
-6. Apply new CPU mask to the cpuset
-7. Propagate changes through the hierarchy
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/cpuset.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-The series is organized as follows:
-patches 1-3: Code cleanup and preparation for refactoring
-patches 4-9: Refactoring of cpuset.cpus configuration logic
-patches 10-11: Refactoring of cpuset.cpus.exclusive configuration logic
-
-Chen Ridong (11):
-  cpuset: move the root cpuset write check earlier
-  cpuset: remove unused assignment to trialcs->partition_root_state
-  cpuset: change return type of is_partition_[in]valid to bool
-  cpuset: Refactor exclusive CPU mask computation logic
-  cpuset: refactor CPU mask buffer parsing logic
-  cpuset: introduce cpus_excl_conflict and mems_excl_conflict helpers
-  cpuset: refactor out invalidate_cs_partition
-  cpuset: refactor acpus_validate_change
-  cpuset: refactor partition_cpus_change
-  cpuset: use parse_cpulist for setting cpus.exclusive
-  cpuset: use partition_cpus_change for setting exclusive cpus
-
- kernel/cgroup/cpuset.c | 443 ++++++++++++++++++++++-------------------
- 1 file changed, 239 insertions(+), 204 deletions(-)
-
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index a78ccd11ce9b..7e6a40e361ea 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -337,6 +337,11 @@ static inline bool cpuset_v2(void)
+ 		cgroup_subsys_on_dfl(cpuset_cgrp_subsys);
+ }
+ 
++static inline bool cpuset_is_root(struct cpuset *cs)
++{
++	return (cs == &top_cpuset);
++}
++
+ /*
+  * Cgroup v2 behavior is used on the "cpus" and "mems" control files when
+  * on default hierarchy or when the cpuset_v2_mode flag is set by mounting
+@@ -2334,10 +2339,6 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	bool force = false;
+ 	int old_prs = cs->partition_root_state;
+ 
+-	/* top_cpuset.cpus_allowed tracks cpu_active_mask; it's read-only */
+-	if (cs == &top_cpuset)
+-		return -EACCES;
+-
+ 	/*
+ 	 * An empty cpus_allowed is ok only if the cpuset has no tasks.
+ 	 * Since cpulist_parse() fails on an empty mask, we special case
+@@ -2783,15 +2784,6 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
+ {
+ 	int retval;
+ 
+-	/*
+-	 * top_cpuset.mems_allowed tracks node_stats[N_MEMORY];
+-	 * it's read-only
+-	 */
+-	if (cs == &top_cpuset) {
+-		retval = -EACCES;
+-		goto done;
+-	}
+-
+ 	/*
+ 	 * An empty mems_allowed is ok iff there are no tasks in the cpuset.
+ 	 * Since nodelist_parse() fails on an empty mask, we special case
+@@ -3257,6 +3249,10 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+ 	struct cpuset *trialcs;
+ 	int retval = -ENODEV;
+ 
++	/* root is read-only */
++	if (cpuset_is_root(cs))
++		return -EACCES;
++
+ 	buf = strstrip(buf);
+ 	cpuset_full_lock();
+ 	if (!is_cpuset_online(cs))
 -- 
 2.34.1
 
