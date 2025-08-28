@@ -1,144 +1,119 @@
-Return-Path: <cgroups+bounces-9450-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9451-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A5DBB38B53
-	for <lists+cgroups@lfdr.de>; Wed, 27 Aug 2025 23:25:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 730D9B39211
+	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 05:03:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25CD2685F85
-	for <lists+cgroups@lfdr.de>; Wed, 27 Aug 2025 21:25:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20C6B4623A0
+	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 03:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811AD30C62E;
-	Wed, 27 Aug 2025 21:25:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a0fgOo7+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436E325BEF8;
+	Thu, 28 Aug 2025 03:03:30 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F6923093A8
-	for <cgroups@vger.kernel.org>; Wed, 27 Aug 2025 21:25:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865DF1A0BD0;
+	Thu, 28 Aug 2025 03:03:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756329924; cv=none; b=suyPLBCdHUWCcYJCZWS8KD9csB50PlsDqtqgk1XP8GZFrGjO6qSVMN7t9VOlGZMlme+XdwHRDxGIPdMSsAWr/S31u4fmuDh5UpnV6DU2wrmPpwZwUuwChKvLLxVI6K1FGzRIGhcESXtK8He3pKMBxGLdDv/XecJ1aJauNNv78OY=
+	t=1756350210; cv=none; b=W8t2KgPpDNcL8Qrm6MFskUHqAyzXDn8ASxmNFTUVRjSOOOZiCjK0QnOkw4gpU+pTFkmcrGMvbk1IsyTMT4aFzCWzwDHsRiJtTxxkhue3Dga3drQqonsRitsSlLwbeJOzsb8shAoAd5OpfwwcRozB1kqZAR6GWV06fdmeN6onTm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756329924; c=relaxed/simple;
-	bh=5OMYFTfAZenqHJvI/KeLzgzyAGUa92DP82jO8Lk7lCE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OG/ShwZ366YhP+32qpqT0dYv5F5wIiHEnZZVsMXJFhGbiU2ycIILtjs8dcMAXSOkDD/AryumtvvNXDQknhAkrZ6/JakCAQwxjaFw6aZH10y+9kNq3Yo3g6SP4vUHjpmi99xaH0iW4KIDNpgZyVBXyjhSQV2sH7/JXS1BhFoWdl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a0fgOo7+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD487C4CEEB;
-	Wed, 27 Aug 2025 21:25:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756329923;
-	bh=5OMYFTfAZenqHJvI/KeLzgzyAGUa92DP82jO8Lk7lCE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=a0fgOo7+ta+dTLjSrZ6sX7jIbKdge8pTD8E5C6sujcDi9UNHrAMZXYlHTHMgcxDJt
-	 uk5LDr/L4xQgimz1UQvN36+mu0aA1jKLmDPY7HRlNAADZ95Hj1FBUgwpjXGamQPfDo
-	 KhhtXXBazYj7DR9iqTbL3y5Wo1KA+P6Wnz+vetjAsYFozXKdooipRpTngEh//hoCmX
-	 wt/unKt9FqgqWteDJ/2t2dnfUBGbrPhBN+/YLtYJegqTUS1tk5vLmnRuYznZ+4GWQg
-	 8jPyK9CFoiZ0dKQC4Hd+ay9+JLHzby8mw0bxPelLr4NQ59ybjtagIC/3LZfSkbaydl
-	 R2lx5+wx1RudQ==
-Date: Wed, 27 Aug 2025 11:25:22 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Julian Sun <sunjunchao@bytedance.com>
-Cc: cgroups@vger.kernel.org, linux-mm@kvack.org, jack@suse.cz,
-	muchun.song@linux.dev
-Subject: Re: [PATCH v4] memcg: Don't wait writeback completion when release
- memcg.
-Message-ID: <aK93wg5kdgVuL6rc@slm.duckdns.org>
-References: <20250827204557.90112-1-sunjunchao@bytedance.com>
+	s=arc-20240116; t=1756350210; c=relaxed/simple;
+	bh=McBv2WKYiAtFM/Ev/r3aEudSnN2uFfmXW8xy5B85iMk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cvgvPVtERn310efwyticoDwflsbWte3S3toBcasmi72bJoLLzKPbo82gofQz9V3pPycPxtnLLN39PEw2ggYzwXuHwOO9RHDAdS/60Z58G+bYSg33QRzlM4DczTQGwna+WnSpNBjdQ3oxXcCoKdsnYUUGr8ZnV7D9vvQGM/gwvqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 88bef62c83bb11f0b29709d653e92f7d-20250828
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
+	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_UNTRUSTED, SA_UNFAMILIAR
+	SN_UNTRUSTED, SN_UNFAMILIAR, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
+	CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
+	GTI_C_BU, AMN_T1, AMN_GOOD, AMN_C_TI, AMN_C_BU
+	ABX_MISS_RDNS
+X-CID-UNFAMILIAR: 1
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:c8ea5b92-ff40-4466-873f-7b2076a45a3f,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:8,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:18
+X-CID-INFO: VERSION:1.1.45,REQID:c8ea5b92-ff40-4466-873f-7b2076a45a3f,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:8,FILE:0,BULK:0,RULE:Release_HamU,ACTION:
+	release,TS:18
+X-CID-META: VersionHash:6493067,CLOUDID:1838626cc82ff7846ff27bbb79bb3582,BulkI
+	D:250828110315VR7ZFWK4,BulkQuantity:0,Recheck:0,SF:16|19|24|38|44|66|78|10
+	2|850,TC:nil,Content:0|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:n
+	il,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC
+	:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_USA,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 88bef62c83bb11f0b29709d653e92f7d-20250828
+X-User: lihongfu@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <lihongfu@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 582230096; Thu, 28 Aug 2025 11:03:12 +0800
+From: Hongfu Li <lihongfu@kylinos.cn>
+To: dev@lankhorst.se,
+	mripard@kernel.org,
+	natalie.vock@gmx.de,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Hongfu Li <lihongfu@kylinos.cn>
+Subject: [PATCH] cgroup/dmem: Fix spelling error in dmem.c
+Date: Thu, 28 Aug 2025 11:02:36 +0800
+Message-Id: <20250828030236.427593-1-lihongfu@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250827204557.90112-1-sunjunchao@bytedance.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Aug 28, 2025 at 04:45:57AM +0800, Julian Sun wrote:
-> Recently, we encountered the following hung task:
-> 
-> INFO: task kworker/4:1:1334558 blocked for more than 1720 seconds.
-> [Wed Jul 30 17:47:45 2025] Workqueue: cgroup_destroy css_free_rwork_fn
-> [Wed Jul 30 17:47:45 2025] Call Trace:
-> [Wed Jul 30 17:47:45 2025]  __schedule+0x934/0xe10
-> [Wed Jul 30 17:47:45 2025]  ? complete+0x3b/0x50
-> [Wed Jul 30 17:47:45 2025]  ? _cond_resched+0x15/0x30
-> [Wed Jul 30 17:47:45 2025]  schedule+0x40/0xb0
-> [Wed Jul 30 17:47:45 2025]  wb_wait_for_completion+0x52/0x80
-> [Wed Jul 30 17:47:45 2025]  ? finish_wait+0x80/0x80
-> [Wed Jul 30 17:47:45 2025]  mem_cgroup_css_free+0x22/0x1b0
-> [Wed Jul 30 17:47:45 2025]  css_free_rwork_fn+0x42/0x380
-> [Wed Jul 30 17:47:45 2025]  process_one_work+0x1a2/0x360
-> [Wed Jul 30 17:47:45 2025]  worker_thread+0x30/0x390
-> [Wed Jul 30 17:47:45 2025]  ? create_worker+0x1a0/0x1a0
-> [Wed Jul 30 17:47:45 2025]  kthread+0x110/0x130
-> [Wed Jul 30 17:47:45 2025]  ? __kthread_cancel_work+0x40/0x40
-> [Wed Jul 30 17:47:45 2025]  ret_from_fork+0x1f/0x30
-> 
-> The direct cause is that memcg spends a long time waiting for dirty page
-> writeback of foreign memcgs during release.
-> 
-> The root causes are:
->     a. The wb may have multiple writeback tasks, containing millions
->        of dirty pages, as shown below:
-> 
-> >>> for work in list_for_each_entry("struct wb_writeback_work", \
-> 				    wb.work_list.address_of_(), "list"):
-> ...     print(work.nr_pages, work.reason, hex(work))
-> ...
-> 900628  WB_REASON_FOREIGN_FLUSH 0xffff969e8d956b40
-> 1116521 WB_REASON_FOREIGN_FLUSH 0xffff9698332a9540
-> 1275228 WB_REASON_FOREIGN_FLUSH 0xffff969d9b444bc0
-> 1099673 WB_REASON_FOREIGN_FLUSH 0xffff969f0954d6c0
-> 1351522 WB_REASON_FOREIGN_FLUSH 0xffff969e76713340
-> 2567437 WB_REASON_FOREIGN_FLUSH 0xffff9694ae208400
-> 2954033 WB_REASON_FOREIGN_FLUSH 0xffff96a22d62cbc0
-> 3008860 WB_REASON_FOREIGN_FLUSH 0xffff969eee8ce3c0
-> 3337932 WB_REASON_FOREIGN_FLUSH 0xffff9695b45156c0
-> 3348916 WB_REASON_FOREIGN_FLUSH 0xffff96a22c7a4f40
-> 3345363 WB_REASON_FOREIGN_FLUSH 0xffff969e5d872800
-> 3333581 WB_REASON_FOREIGN_FLUSH 0xffff969efd0f4600
-> 3382225 WB_REASON_FOREIGN_FLUSH 0xffff969e770edcc0
-> 3418770 WB_REASON_FOREIGN_FLUSH 0xffff96a252ceea40
-> 3387648 WB_REASON_FOREIGN_FLUSH 0xffff96a3bda86340
-> 3385420 WB_REASON_FOREIGN_FLUSH 0xffff969efc6eb280
-> 3418730 WB_REASON_FOREIGN_FLUSH 0xffff96a348ab1040
-> 3426155 WB_REASON_FOREIGN_FLUSH 0xffff969d90beac00
-> 3397995 WB_REASON_FOREIGN_FLUSH 0xffff96a2d7288800
-> 3293095 WB_REASON_FOREIGN_FLUSH 0xffff969dab423240
-> 3293595 WB_REASON_FOREIGN_FLUSH 0xffff969c765ff400
-> 3199511 WB_REASON_FOREIGN_FLUSH 0xffff969a72d5e680
-> 3085016 WB_REASON_FOREIGN_FLUSH 0xffff969f0455e000
-> 3035712 WB_REASON_FOREIGN_FLUSH 0xffff969d9bbf4b00
-> 
->     b. The writeback might severely throttled by wbt, with a speed
->        possibly less than 100kb/s, leading to a very long writeback time.
-> 
-> >>> wb.write_bandwidth
-> (unsigned long)24
-> >>> wb.write_bandwidth
-> (unsigned long)13
-> 
-> The wb_wait_for_completion() here is probably only used to prevent
-> use-after-free. Therefore, we manage 'done' separately and automatically
-> free it.
-> 
-> This allows us to remove wb_wait_for_completion() while preventing
-> the use-after-free issue.
-> 
-> Fixes: 97b27821b485 ("writeback, memcg: Implement foreign dirty flushing")
-> Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+Fix some spelling errors in the comments.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Hongfu Li <lihongfu@kylinos.cn>
+---
+ kernel/cgroup/dmem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks.
-
+diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+index 10b63433f057..0459cca9e795 100644
+--- a/kernel/cgroup/dmem.c
++++ b/kernel/cgroup/dmem.c
+@@ -19,7 +19,7 @@
+ struct dmem_cgroup_region {
+ 	/**
+ 	 * @ref: References keeping the region alive.
+-	 * Keeps the region reference alive after a succesful RCU lookup.
++	 * Keeps the region reference alive after a successful RCU lookup.
+ 	 */
+ 	struct kref ref;
+ 
+@@ -582,7 +582,7 @@ EXPORT_SYMBOL_GPL(dmem_cgroup_uncharge);
+  * dmem_cgroup_try_charge() - Try charging a new allocation to a region.
+  * @region: dmem region to charge
+  * @size: Size (in bytes) to charge.
+- * @ret_pool: On succesfull allocation, the pool that is charged.
++ * @ret_pool: On successful allocation, the pool that is charged.
+  * @ret_limit_pool: On a failed allocation, the limiting pool.
+  *
+  * This function charges the @region region for a size of @size bytes.
 -- 
-tejun
+2.25.1
+
 
