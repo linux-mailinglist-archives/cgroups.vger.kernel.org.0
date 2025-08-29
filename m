@@ -1,131 +1,100 @@
-Return-Path: <cgroups+bounces-9478-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9479-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96068B3AC7E
-	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 23:08:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FCCCB3BBBC
+	for <lists+cgroups@lfdr.de>; Fri, 29 Aug 2025 14:52:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96DF61884059
-	for <lists+cgroups@lfdr.de>; Thu, 28 Aug 2025 21:08:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E3C3188EADC
+	for <lists+cgroups@lfdr.de>; Fri, 29 Aug 2025 12:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71EB2C08BD;
-	Thu, 28 Aug 2025 21:07:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB6D31AF01;
+	Fri, 29 Aug 2025 12:52:34 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from lankhorst.se (lankhorst.se [141.105.120.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DEFE285042;
-	Thu, 28 Aug 2025 21:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E581D61BB
+	for <cgroups@vger.kernel.org>; Fri, 29 Aug 2025 12:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756415252; cv=none; b=KFXNUQgTh61Skgt40jrQahCS/EnVCe9Rh44LhPg2y/CIfGmry9+tROGia9gai5BEQd1whcjYowb1rdSx0FHWjo+7j9lPOib+tlI/yq7yFGF3hWWqoej8y7ikmSrfrqjRzs2Mvivl9Q7GYe6JVRJys23fUbcu6X8Cvm6KWRDc/yI=
+	t=1756471954; cv=none; b=As6vSluK2s/u25Dg2+ECvVdW01th2tyepwYDpjWkXRAxQAicAbSOo6YVzbMkJGfswoPbTmJl0p5tNEcimn6ohFdpffBZHJbQRvPMU4Zn0goiBfkvwGG3WdRUEBPqtHG/KFbJL5O5ZK5vgsnVaKWrtVE8MLeQTLo3rqQasj9Crto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756415252; c=relaxed/simple;
-	bh=uO8jgO/nSSx1bAtQ93QecmELTMmAXdhO/BSn7C+isFg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kVGke8Sy/j1oaKabDgmbYkZy0ZDjqIoinJQIsyRXJgNZ2RVsJehFjAka88rjaryRMi+NkiSE9Gf+u2DQ5+QMIRp1CA0vDgGBzRP7+4vdQcsHnZqHUXLXp6p7SihMKqUI9WcvCy2uK/fIn3KdrVDuHv/ztLKDhkQeA8hVnk4H9KE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se; spf=pass smtp.mailfrom=lankhorst.se; arc=none smtp.client-ip=141.105.120.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lankhorst.se
-Message-ID: <a85dd557-9dd8-472d-806c-3606b053cfdb@lankhorst.se>
-Date: Thu, 28 Aug 2025 22:58:41 +0200
+	s=arc-20240116; t=1756471954; c=relaxed/simple;
+	bh=/qbUwsxB06qghuQc2GzfUZSKJ8iy0VOyR7N2gAreJsg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=dQhyo8875V3/lwIJa4Y54VMtVAO+msDLMcJWi3ommMp/+ELgN3sX1Rr2cKCMs/iRvyx3C+4r6VmTP0s/j1FHEyNDvsfmdjz2hbogoHNmE5VHP72Qk6K9Nj2oiLlPeo8AyI01kRYJK5YdfVakG1IbmzfLRpUhErS7KZbkUP3RDcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3f29a0a7643so6534745ab.2
+        for <cgroups@vger.kernel.org>; Fri, 29 Aug 2025 05:52:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756471952; x=1757076752;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FVC6Z1Bfy5rCSHJEZH+Bw7ClURkPxPlN8Xea8cEX2Xs=;
+        b=nV8HYxT3L5iCXzZEk2Mk0UM4S3TWiG75yOw8DO4YDFrGQOT1g9Vng2KKfABIjyo1M9
+         bnyCLop5y2xxtlUsvFrhVgYZZI7evJ1LxuvUxRheXapQ5V4/Ic1grNTddCOlDVOSnxpp
+         SWRo4Xx9Bsx8IkfjLrWo5H2ywLaQCWaEqCclucgusogKOJ4bygJKEvZI37iAYZUfJNQB
+         g9ek5UbyRZThnOR/fd6nXyLGq0c+YYIEpXaTQwMP6b8rYdrlfYqFIWdqKaIiTnNDbWtH
+         P/YCoOKwrvFakNEiS936vyDJYvf2svm7OI6K4PDYEoltNMwKmm0HeTTXX4QYBGbzBQv+
+         hrhw==
+X-Gm-Message-State: AOJu0YyvtFaxF/sQR5u9/MSc8N94cDb69bKIZOOfACXXKxFGK3T+IHy0
+	UvCzSEEHg9f8Fg+rMVCsdTf2NJeBa+cdUlx5jCBrLiozEtlMbpiWjnV35FBSCwBLiTNCkEWEeSC
+	pYnG0bqbzNsJkZ/VcLCAH4Hqu2mwcRX04f7o3/iMgbukCE+a7GL/Cw1xq+ow=
+X-Google-Smtp-Source: AGHT+IHL6wQJMgblqkG2wDmm7fhnDSGUTWlZfzfi/aPZm/fMeAS0zUFvZjFC7REdMchpPSf9nIIhSxP9HJ0254xS7Q8G9Dv6FnC0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/3] cgroups: Add support for pinned device memory
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Lucas De Marchi <lucas.demarchi@intel.com>,
- =?UTF-8?Q?=27Thomas_Hellstr=C3=B6m=27?= <thomas.hellstrom@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>, Maxime Ripard <mripard@kernel.org>,
- Natalie Vock <natalie.vock@gmx.de>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "'Liam R . Howlett'" <Liam.Howlett@oracle.com>,
- Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, Michal Hocko <mhocko@suse.com>,
- intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org
-References: <20250819114932.597600-5-dev@lankhorst.se>
- <qd3ioegpvmrrrwdy2qntxznyrnwq3bhe74lmuxio7sy4sjggtt@tm6nqds3pyvj>
-Content-Language: en-US
-From: Maarten Lankhorst <dev@lankhorst.se>
-In-Reply-To: <qd3ioegpvmrrrwdy2qntxznyrnwq3bhe74lmuxio7sy4sjggtt@tm6nqds3pyvj>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:3803:b0:3f1:72c6:2c50 with SMTP id
+ e9e14a558f8ab-3f172c62d17mr91163685ab.32.1756471951735; Fri, 29 Aug 2025
+ 05:52:31 -0700 (PDT)
+Date: Fri, 29 Aug 2025 05:52:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68b1a28f.a00a0220.1337b0.0018.GAE@google.com>
+Subject: [syzbot] Monthly cgroups report (Aug 2025)
+From: syzbot <syzbot+list26a7aeaa369adf7a9a57@syzkaller.appspotmail.com>
+To: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hey,
+Hello cgroups maintainers/developers,
 
-Den 2025-08-26 kl. 16:20, skrev Michal Koutný:
-> Hello Maarten.
-> 
-> On Tue, Aug 19, 2025 at 01:49:33PM +0200, Maarten Lankhorst <dev@lankhorst.se> wrote:
->> Implementation details:
->>
->> For each cgroup up until the root cgroup, the 'min' limit is checked
->> against currently effectively pinned value. If the value will go above
->> 'min', the pinning attempt is rejected.
-> 
-> How is pinning different from setting a 'min' limit (from a user
-> perspective)?
-It's related, in fact you have to set the 'min' limit first.
+This is a 31-day syzbot report for the cgroups subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/cgroups
 
-The 'pinned' allows you to pick /which/ memory falls under the 'min' limit.
+During the period, 2 new issues were detected and 1 were fixed.
+In total, 9 issues are still open and 39 have already been fixed.
 
->>
->> Pinned memory is handled slightly different and affects calculating
->> effective min/low values. Pinned memory is subtracted from both,
->> and needs to be added afterwards when calculating.
->>
->> This is because increasing the amount of pinned memory, the amount of
->> free min/low memory decreases for all cgroups that are part of the
->> hierarchy.
-> 
-> What is supposed to happen with pinned memory after cgroup removal?
-I think for accounting purposes pinned memory stays pinned,
-otherwise the idea of pinning is lost. However when you kill all
-processes in the cgroup, that should solve itself eventually.
+Some of the still happening issues:
 
-> I find the page_counter changes little bit complex without understanding
-> of the difference between min and pinned. Should this be conceptually
-> similar to memory.stat:unevictable? Or rather mlock(2)? So far neither
-> of those needed interaction with min/low values (in memcg).
-You could in theory implement mlockall using the 'min' values too.
+Ref Crashes Repro Title
+<1> 3949    Yes   possible deadlock in task_rq_lock
+                  https://syzkaller.appspot.com/bug?extid=ca14b36a46a8c541b509
+<2> 246     Yes   possible deadlock in console_flush_all (4)
+                  https://syzkaller.appspot.com/bug?extid=d10e9d53059eb8aed654
+<3> 105     No    WARNING in css_rstat_flush
+                  https://syzkaller.appspot.com/bug?extid=7a605e85e5b5a7e4a5e3
+<4> 69      No    BUG: unable to handle kernel paging request in percpu_ref_get_many (2)
+                  https://syzkaller.appspot.com/bug?extid=3109abc43c8fcf15212b
 
-The page counter changes implement the following:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Lets say you have this tree with 'min' values.
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-      / '5' A
-X'6' -- '5' B
-      \ '5' C
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-Effective min without pinned pages:
-      / '2' A
-X'6' -- '2' B
-      \ '2' C
-
-Now 'B' pins 3 pages:
-
-Effective min:
-         / '1' A
-X'3+3p' -- '1' B (1 + 3 pinned pages makes effective min 4)
-         \ '1' C
-
-Same for applies to effective 'low' calculations.
-
-Kind regards,
-~Maarten
-
+You may send multiple commands in a single email message.
 
