@@ -1,63 +1,67 @@
-Return-Path: <cgroups+bounces-9482-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9483-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7628B3BFEC
-	for <lists+cgroups@lfdr.de>; Fri, 29 Aug 2025 17:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D224FB3BFF0
+	for <lists+cgroups@lfdr.de>; Fri, 29 Aug 2025 17:54:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3A511889595
-	for <lists+cgroups@lfdr.de>; Fri, 29 Aug 2025 15:51:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C6CF188CBDD
+	for <lists+cgroups@lfdr.de>; Fri, 29 Aug 2025 15:51:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21CF338F37;
-	Fri, 29 Aug 2025 15:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 313CB33A00A;
+	Fri, 29 Aug 2025 15:49:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NGTUIbf4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C8AXhZl+"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7713277B4;
-	Fri, 29 Aug 2025 15:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB849338F38;
+	Fri, 29 Aug 2025 15:49:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756482540; cv=none; b=cxwzyhB0h5Omd7FVMcL6+07AzqX5shrD456UxZZ2/SJURmpmKb9eNoGDCGhcwgmqwThAt2W9LyDHOJgms4LRV9oVkRfTFAcjsL3hIemK8t8A2P6KAX7I0fZTw/AbXJxLWRfruEX7RFHFyFJbcUYFidFf9/fXaz0dySJSazqOrmY=
+	t=1756482543; cv=none; b=i+eavuLFilH0YwzLAMv5Vdg8QK/Q4Nr4kR5GfzWIL1yvST/ZpXc63py0WkUkH6zaNwUcCcl0npuPKFAD/T2w+miWFV8p0Qcw6KtIzufYp1Tivn4JhvrkQfYdpXcywyhtKXz9J56ydpSX+jXLltFEs/+g/I0qW7lAQJJPGR8C23s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756482540; c=relaxed/simple;
-	bh=g05kmaCWh9kz1yQbOgKAwo02zbhbBJem0FHbC3D9l4A=;
+	s=arc-20240116; t=1756482543; c=relaxed/simple;
+	bh=/fRsHmLrTF09mQZ2vEOSlW4cMULF+WniR3U+xY0TsLU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SQUvZqwSSnd9c1XDiyGRKFag9m8H3NXFAiYqQxZyXFuOTJgjSaE76aA6d3N7DCQmfoOTRdo39sJnkHrS6pPMgj4zVAFnY8+BIHChaXR7Wi+clqSsJcU6qSl4Tb3npO+phdhNxzkat5gC6j4hL1enl2EGWj5szzNIwVYqPFToKKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NGTUIbf4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C553C4CEF6;
-	Fri, 29 Aug 2025 15:48:57 +0000 (UTC)
+	 MIME-Version; b=OjtxjvBp40XnvGclDHu3a8/z6eN3Cu7M1adQJPpESOiulA8RKT276lFg7uQkXu//5GscYRRgHu7CPKdtdB3OPT0KKozV0HBT9YNXMMUmIlthPpqmQWZJ/JaN9kB1aFs0FIhzy55MxxUsuA1lg8JG5jFkgHFeIq6zic6ulR3NT9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C8AXhZl+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C5F7C4CEF0;
+	Fri, 29 Aug 2025 15:49:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756482539;
-	bh=g05kmaCWh9kz1yQbOgKAwo02zbhbBJem0FHbC3D9l4A=;
+	s=k20201202; t=1756482543;
+	bh=/fRsHmLrTF09mQZ2vEOSlW4cMULF+WniR3U+xY0TsLU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NGTUIbf4zz1cc1V5OW0z+uuFGmmh71QLrS0tzI72BsW6ksimZ6s8fGz4XRCyjZVHO
-	 Ud9N+Ls6gp6mfjeQ5d2NXR9Rv+DO2EbERvrRVJ/O44hHoUm2x8XZ9ECWeN39YhbH/p
-	 3gXeWAqmogFmZ52hpwv0j0AfOsXgIimnCQYKGDr5FP8YPHUcHWiTjFJEcOMY6iombU
-	 b+nsu7vYxOwRR2w3yzk4BNwfzFLxvIn2dbMZWQojn3JNfo3yhF6NMeNhOZFTMIt+8L
-	 rYGNTP/lC8zZ2tkJDnludtyxiDmn2VZHO8afTThalTdifySD47ISQ6usdbtUfPwji1
-	 Xdqnul7SAbJnA==
+	b=C8AXhZl+gXT7Wn4j0WTzrl75mnwgtlWombLUDLZsESBSf1B1sbjpjnwfsvn+zVGE4
+	 1k31OZAdZNpqkhpeMU6kbL3YO//pWMNEdGM8v6qGjRlUGQZPtmhefUAyVD4Lgo9eBo
+	 SUAto569iRvjZecY1rEQI8w4bgovBDYW2mx70TPBAXYobui3Ew/e+7B2uWGQfU7BaW
+	 8g2hpGYcq0tOuirdQu+z+nu0gLWlISIEIXTakrbzjAWze60tmue26KzabRJhD0F5eR
+	 7yHNlS+5eup2c/DeXHLgHzG510t+Bj7V1AqmDMon7edVCGP2bG18HSD5dICpyTBGCg
+	 XLCm26U0+Wz+A==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Ingo Molnar <mingo@redhat.com>,
 	Johannes Weiner <hannes@cmpxchg.org>,
 	Marco Crivellari <marco.crivellari@suse.com>,
 	Michal Hocko <mhocko@suse.com>,
+	Muchun Song <muchun.song@linux.dev>,
 	Peter Zijlstra <peterz@infradead.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
 	Tejun Heo <tj@kernel.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Vlastimil Babka <vbabka@suse.cz>,
 	Waiman Long <longman@redhat.com>,
-	cgroups@vger.kernel.org
-Subject: [PATCH 14/33] cpuset: Update HK_TYPE_DOMAIN cpumask from cpuset
-Date: Fri, 29 Aug 2025 17:47:55 +0200
-Message-ID: <20250829154814.47015-15-frederic@kernel.org>
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH 15/33] sched/isolation: Flush memcg workqueues on cpuset isolated partition change
+Date: Fri, 29 Aug 2025 17:47:56 +0200
+Message-ID: <20250829154814.47015-16-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250829154814.47015-1-frederic@kernel.org>
 References: <20250829154814.47015-1-frederic@kernel.org>
@@ -67,184 +71,120 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Until now, HK_TYPE_DOMAIN used to only include boot defined isolated
-CPUs passed through isolcpus= boot option. Users interested in also
-knowing the runtime defined isolated CPUs through cpuset must use
-different APIs: cpuset_cpu_is_isolated(), cpu_is_isolated(), etc...
+The HK_TYPE_DOMAIN housekeeping cpumask is now modifyable at runtime. In
+order to synchronize against memcg workqueue to make sure that no
+asynchronous draining is still pending or executing on a newly made
+isolated CPU, the housekeeping susbsystem must flush the memcg
+workqueues.
 
-There are many drawbacks to that approach:
+However the memcg workqueues can't be flushed easily since they are
+queued to the main per-CPU workqueue pool.
 
-1) Most interested subsystems want to know about all isolated CPUs, not
-  just those defined on boot time.
+Solve this with creating a memcg specific pool and provide and use the
+appropriate flushing API.
 
-2) cpuset_cpu_is_isolated() / cpu_is_isolated() are not synchronized with
-  concurrent cpuset changes.
-
-3) Further cpuset modifications are not propagated to subsystems
-
-Solve 1) and 2) and centralize all isolated CPUs within the
-HK_TYPE_DOMAIN housekeeping cpumask.
-
-Subsystems can rely on RCU to synchronize against concurrent changes.
-
-The propagation mentioned in 3) will be handled in further patches.
-
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- include/linux/sched/isolation.h |  4 +-
- kernel/cgroup/cpuset.c          |  2 +
- kernel/sched/isolation.c        | 65 ++++++++++++++++++++++++++++++---
- kernel/sched/sched.h            |  1 +
- 4 files changed, 65 insertions(+), 7 deletions(-)
+ include/linux/memcontrol.h |  4 ++++
+ kernel/sched/isolation.c   |  2 ++
+ kernel/sched/sched.h       |  1 +
+ mm/memcontrol.c            | 12 +++++++++++-
+ 4 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-index 9262378760b1..199d0fc4646f 100644
---- a/include/linux/sched/isolation.h
-+++ b/include/linux/sched/isolation.h
-@@ -36,12 +36,13 @@ extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
- 
- static inline bool housekeeping_cpu(int cpu, enum hk_type type)
- {
--	if (housekeeping_flags & BIT(type))
-+	if (READ_ONCE(housekeeping_flags) & BIT(type))
- 		return housekeeping_test_cpu(cpu, type);
- 	else
- 		return true;
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 785173aa0739..8b23ff000473 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1048,6 +1048,8 @@ static inline u64 cgroup_id_from_mm(struct mm_struct *mm)
+ 	return id;
  }
  
-+extern int housekeeping_update(struct cpumask *mask, enum hk_type type);
- extern void __init housekeeping_init(void);
++void mem_cgroup_flush_workqueue(void);
++
+ extern int mem_cgroup_init(void);
+ #else /* CONFIG_MEMCG */
  
- #else
-@@ -74,6 +75,7 @@ static inline bool housekeeping_cpu(int cpu, enum hk_type type)
- 	return true;
+@@ -1453,6 +1455,8 @@ static inline u64 cgroup_id_from_mm(struct mm_struct *mm)
+ 	return 0;
  }
  
-+static inline int housekeeping_update(struct cpumask *mask, enum hk_type type) { return 0; }
- static inline void housekeeping_init(void) { }
- #endif /* CONFIG_CPU_ISOLATION */
++static inline void mem_cgroup_flush_workqueue(void) { }
++
+ static inline int mem_cgroup_init(void) { return 0; }
+ #endif /* CONFIG_MEMCG */
  
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 2d2fc74bc00c..4f2bc68332a7 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1351,6 +1351,8 @@ static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
- 
- 	ret = workqueue_unbound_exclude_cpumask(isolated_cpus);
- 	WARN_ON_ONCE(ret < 0);
-+	ret = housekeeping_update(isolated_cpus, HK_TYPE_DOMAIN);
-+	WARN_ON_ONCE(ret < 0);
- }
- 
- /**
 diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 5ddb8dc5ca91..48f3b6b20604 100644
+index 48f3b6b20604..e85f402b103a 100644
 --- a/kernel/sched/isolation.c
 +++ b/kernel/sched/isolation.c
-@@ -23,16 +23,39 @@ EXPORT_SYMBOL_GPL(housekeeping_flags);
+@@ -124,6 +124,8 @@ int housekeeping_update(struct cpumask *mask, enum hk_type type)
  
- bool housekeeping_enabled(enum hk_type type)
- {
--	return !!(housekeeping_flags & BIT(type));
-+	return !!(READ_ONCE(housekeeping_flags) & BIT(type));
- }
- EXPORT_SYMBOL_GPL(housekeeping_enabled);
+ 	synchronize_rcu();
  
-+static bool housekeeping_dereference_check(enum hk_type type)
-+{
-+	if (type == HK_TYPE_DOMAIN) {
-+		if (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_write_held())
-+			return true;
-+		if (IS_ENABLED(CONFIG_CPUSETS) && lockdep_is_cpuset_held())
-+			return true;
++	mem_cgroup_flush_workqueue();
 +
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
-+static inline struct cpumask *__housekeeping_cpumask(enum hk_type type)
-+{
-+	return rcu_dereference_check(housekeeping_cpumasks[type],
-+				     housekeeping_dereference_check(type));
-+}
-+
- const struct cpumask *housekeeping_cpumask(enum hk_type type)
- {
--	if (housekeeping_flags & BIT(type)) {
--		return rcu_dereference_check(housekeeping_cpumasks[type], 1);
--	}
--	return cpu_possible_mask;
-+	const struct cpumask *mask = NULL;
-+
-+	if (READ_ONCE(housekeeping_flags) & BIT(type))
-+		mask = __housekeeping_cpumask(type);
-+	if (!mask)
-+		mask = cpu_possible_mask;
-+	return mask;
- }
- EXPORT_SYMBOL_GPL(housekeeping_cpumask);
+ 	kfree(old);
  
-@@ -70,12 +93,42 @@ EXPORT_SYMBOL_GPL(housekeeping_affine);
- 
- bool housekeeping_test_cpu(int cpu, enum hk_type type)
- {
--	if (housekeeping_flags & BIT(type))
-+	if (READ_ONCE(housekeeping_flags) & BIT(type))
- 		return cpumask_test_cpu(cpu, housekeeping_cpumask(type));
- 	return true;
- }
- EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
- 
-+int housekeeping_update(struct cpumask *mask, enum hk_type type)
-+{
-+	struct cpumask *trial, *old = NULL;
-+
-+	if (type != HK_TYPE_DOMAIN)
-+		return -ENOTSUPP;
-+
-+	trial = kmalloc(sizeof(*trial), GFP_KERNEL);
-+	if (!trial)
-+		return -ENOMEM;
-+
-+	cpumask_andnot(trial, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT), mask);
-+	if (!cpumask_intersects(trial, cpu_online_mask)) {
-+		kfree(trial);
-+		return -EINVAL;
-+	}
-+
-+	if (housekeeping_flags & BIT(type))
-+		old = __housekeeping_cpumask(type);
-+	else
-+		WRITE_ONCE(housekeeping_flags, housekeeping_flags | BIT(type));
-+	rcu_assign_pointer(housekeeping_cpumasks[type], trial);
-+
-+	synchronize_rcu();
-+
-+	kfree(old);
-+
-+	return 0;
-+}
-+
- void __init housekeeping_init(void)
- {
- 	enum hk_type type;
+ 	return 0;
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 0b1a233dcabf..d3512138027b 100644
+index d3512138027b..1dad1ac7fc61 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -30,6 +30,7 @@
- #include <linux/context_tracking.h>
- #include <linux/cpufreq.h>
- #include <linux/cpumask_api.h>
-+#include <linux/cpuset.h>
- #include <linux/ctype.h>
- #include <linux/file.h>
- #include <linux/fs_api.h>
+@@ -44,6 +44,7 @@
+ #include <linux/lockdep_api.h>
+ #include <linux/lockdep.h>
+ #include <linux/memblock.h>
++#include <linux/memcontrol.h>
+ #include <linux/minmax.h>
+ #include <linux/mm.h>
+ #include <linux/module.h>
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 2649d6c09160..1aa2dfa32ccd 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -95,6 +95,8 @@ static bool cgroup_memory_nokmem __ro_after_init;
+ /* BPF memory accounting disabled? */
+ static bool cgroup_memory_nobpf __ro_after_init;
+ 
++static struct workqueue_struct *memcg_wq __ro_after_init;
++
+ static struct kmem_cache *memcg_cachep;
+ static struct kmem_cache *memcg_pn_cachep;
+ 
+@@ -1974,7 +1976,7 @@ static void schedule_drain_work(int cpu, struct work_struct *work)
+ {
+ 	guard(rcu)();
+ 	if (!cpu_is_isolated(cpu))
+-		schedule_work_on(cpu, work);
++		queue_work_on(cpu, memcg_wq, work);
+ }
+ 
+ /*
+@@ -5071,6 +5073,11 @@ void mem_cgroup_uncharge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 	refill_stock(memcg, nr_pages);
+ }
+ 
++void mem_cgroup_flush_workqueue(void)
++{
++	flush_workqueue(memcg_wq);
++}
++
+ static int __init cgroup_memory(char *s)
+ {
+ 	char *token;
+@@ -5113,6 +5120,9 @@ int __init mem_cgroup_init(void)
+ 	cpuhp_setup_state_nocalls(CPUHP_MM_MEMCQ_DEAD, "mm/memctrl:dead", NULL,
+ 				  memcg_hotplug_cpu_dead);
+ 
++	memcg_wq = alloc_workqueue("memcg", 0, 0);
++	WARN_ON(!memcg_wq);
++
+ 	for_each_possible_cpu(cpu) {
+ 		INIT_WORK(&per_cpu_ptr(&memcg_stock, cpu)->work,
+ 			  drain_local_memcg_stock);
 -- 
 2.51.0
 
