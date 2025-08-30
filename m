@@ -1,287 +1,256 @@
-Return-Path: <cgroups+bounces-9514-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9515-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE1EEB3C89E
-	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 09:13:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9FC9B3CB44
+	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 15:31:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 906FBA22926
-	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 07:13:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75AC217BAB1
+	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 13:31:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D3CE241CA2;
-	Sat, 30 Aug 2025 07:13:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC0BE231A23;
+	Sat, 30 Aug 2025 13:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PCssmDBy"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="H5vtm2ee"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C9B01400E
-	for <cgroups@vger.kernel.org>; Sat, 30 Aug 2025 07:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA958228CB8
+	for <cgroups@vger.kernel.org>; Sat, 30 Aug 2025 13:30:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756538006; cv=none; b=ZIUMKJnaK69lPu/rkDx7fZrsnkbvrjjxdbBhCwU64yZ46cnUSEXB3P9KemOylEH0ZqqEpTuE/DdrI3S2LEE9FR/PQ8ETARsM9QFuuDG8t+1YO/ebMKIfk9zEIV3pOI4v57eRe3Nqmz4R9V3UhV7CecXesF0fubkW5Ns6e3vxBDA=
+	t=1756560641; cv=none; b=VpckcE4ecz+b6NCqlH5jvuouWuKbLiG5u3FsZSfum86G8GuRGnG5NM7ARYfkcfhP/Yn2/ujVs1H2M4s7Eo/hlSe1PAJkTH7a2v5FsHapbvv8a3XMjZ1eyUKqzFdx6ocq8PE24SHQ6g67HUQpMYqkv9sPYm1TK2IxHv4EJHIz51U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756538006; c=relaxed/simple;
-	bh=Rto1SfeQEwgVt2SXLt12f5WUHdKs23dkql68LsRgmQc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mc5eTusZ8s5mTCbxzgkYpuas2H6Cb/t/P3lb0M7Hi5AmAfiIVnQUskqjyQudg+rW6RPFkjr7qseMSXNSzidhG6kDtGSdlWbGbvGz0JwziLEm6o+vYq71QDqYEMXw03yV/dulFvK9/2KgZItNbHFE1Mt/PCiO94UVGm12iTXVtP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PCssmDBy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FB68C113D0
-	for <cgroups@vger.kernel.org>; Sat, 30 Aug 2025 07:13:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756538005;
-	bh=Rto1SfeQEwgVt2SXLt12f5WUHdKs23dkql68LsRgmQc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=PCssmDByNzziFHYhKRiiCjNGOyrBPXf9exjjb9nOpw7sEM1XxsPYqe2ELIoa/ycdC
-	 uzoQ+3Pqe2l3K8/U0kX99qRVlc8Wwc3jzTBfGjCbYvwP48fTFujep1mdWW4XqJVMoS
-	 L2+rYXCVEm/whDl8+YS2FHo0U+KI/5DYypEQnLgMNqNvTSwtjxzTu2tC0oxYIYuDTn
-	 hFqFKeO+w6dXjU+aqMW8xHTUO65MeoZXQokb1NzkQsyuHTzxMta8AvIA8ZiQZgF7q+
-	 +l9Hdi5tlo1XGj3/4kjKo2w2DfZ/1S/CaO57ffbhf/rBOhL2UFMOVkq4K9dXSbduLr
-	 zGgp7CP5biGPg==
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e970acf352fso2223845276.2
-        for <cgroups@vger.kernel.org>; Sat, 30 Aug 2025 00:13:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX/3tK/lHFy0DmGoIrWxuTlTUEQJdmLbR4yAbH6cugVZDNdbBilcXdZNInv8Jj0FJtGhqpZ/8kC@vger.kernel.org
-X-Gm-Message-State: AOJu0YwEzacSRvL2qQG8/DcGzB8WYEA++mHrT2vmPOC0D/kZjSXrIw3x
-	xKgkFS/LiQ6WozwPHSPzDMjEUaca3oLbA5SiH36u1oWfgpa8ULYg71GP9QJBMd4MBGgiECWPzAI
-	Xn+qeorSvtH8ySd5bVvlOnNI4VYRQXiYaQreoRTwk0A==
-X-Google-Smtp-Source: AGHT+IEG4klphVqOjGx2D2qSDQ8Jl+i3TnCO4eJoe/IuFDAp9yWinCMp/GZHxiz+Cs0fFle255dbNjX8FpV9wu091ss=
-X-Received: by 2002:a05:690c:6d8c:b0:722:6a6c:c010 with SMTP id
- 00721157ae682-7227633350bmr10948847b3.8.1756538004516; Sat, 30 Aug 2025
- 00:13:24 -0700 (PDT)
+	s=arc-20240116; t=1756560641; c=relaxed/simple;
+	bh=js4jRuGtIjXoxTl7Rm8nWKGpVH9t6HuHYTUgGIeBVw0=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=aUMuE9TH5URmMNN/3UeawQOMxJvnZn6Z2/FEae60uR1Tm8qkDXaCRj3W+jjiAEzBfLU/9S+bxpnDP2M/kKjSpEEOdk1RvL9a1KAfxN14nZnlM8j5rSDfkWWxg6Am/N0QBbT+IpwcCF0+NnMzmmZRY9LT3aNkwhnf2KCP1njBAew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=H5vtm2ee; arc=none smtp.client-ip=44.202.169.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5006b.ext.cloudfilter.net ([10.0.29.217])
+	by cmsmtp with ESMTPS
+	id sGVIuudi1v724sLf7uoZcT; Sat, 30 Aug 2025 13:30:33 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id sLf6ugAlUQb4IsLf7uI2RP; Sat, 30 Aug 2025 13:30:33 +0000
+X-Authority-Analysis: v=2.4 cv=GcEXnRXL c=1 sm=1 tr=0 ts=68b2fcf9
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=4BrsA8FZ1ibyw0l2C7AaSA==:17
+ a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=7T7KSl7uo7wA:10 a=VwQbUJbxAAAA:8
+ a=Tlvygc7yRPAoqQeoTmMA:9 a=QEXdDO2ut3YA:10 a=xYX6OU9JNrHFPr8prv8u:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:Subject
+	:From:Cc:To:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Kb6IMCa6AiTu5VW83JaOqtM5LfmQWxQuu2DNHKdLMIE=; b=H5vtm2eeYlCt6oHwFKgfwKirT9
+	ZIJcZ3IDJYwsot3sZM1r4VFNoAzftaC1s+gvRMGzVthICEOx563pPXNVXRlSOsxccrPrT0QdgRTRJ
+	U7cKkuqfDMgbgkqL4AVDTr7aNmEAfuBzUQ3kSqRLNE0tZd1Q3p12jnpzwo2/7KyVvJvMA8Z5fTxPs
+	w/gkbwkZzFB3VMgDo9i1k7X1qnZXqPy65BCg25GdJrAEAmuAXmsNZ1CWm5MHRlaTWmb3eV930PpQB
+	bG03klq9fPyXcP26xy+PN5iNUS5/OmvhtktkGTXlhzbFMZtAhDtqLgKdHEkz9MyQYEz0alKCeYY1t
+	lO8/deVQ==;
+Received: from [185.194.184.202] (port=4144 helo=[10.233.40.44])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.98.1)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1usLf5-00000003wxI-241K;
+	Sat, 30 Aug 2025 08:30:32 -0500
+Message-ID: <b3eb050d-9451-4b60-b06c-ace7dab57497@embeddedor.com>
+Date: Sat, 30 Aug 2025 15:30:11 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <aKROKZ9+z2oGUJ7K@yjaykim-PowerEdge-T330> <CAF8kJuPUouN4c6V-CaG7_WQUAvRxBg02WRxsMtL56_YTdTh1Jg@mail.gmail.com>
- <aKXeLCr9DgQ2YfCq@yjaykim-PowerEdge-T330> <CAF8kJuM4f2W6w29VcHY5mgXVMYmTF4yORKaFky6bCjS1xRek9Q@mail.gmail.com>
- <aKgD7nZy7U+rHt9X@yjaykim-PowerEdge-T330> <CAF8kJuMb5i6GuD_-XWtHPYnu-8dQ0W51_KqUk60DccqbKjNq6w@mail.gmail.com>
- <aKsAES4cXWbDG1xn@yjaykim-PowerEdge-T330> <CACePvbV=OuxGTqoZvgwkx9D-1CycbDv7iQdKhqH1i2e8rTq9OQ@mail.gmail.com>
- <aK2vIdU0szcu7smP@yjaykim-PowerEdge-T330> <CACePvbUJSk23sH01msPcNiiiYw7JqWq_7xP1C7iBUN81nxJ36Q@mail.gmail.com>
- <aLJ4fEWo7V9Xsz15@yjaykim-PowerEdge-T330>
-In-Reply-To: <aLJ4fEWo7V9Xsz15@yjaykim-PowerEdge-T330>
-From: Chris Li <chrisl@kernel.org>
-Date: Sat, 30 Aug 2025 00:13:13 -0700
-X-Gmail-Original-Message-ID: <CACePvbW_Q6O2ppMG35gwj7OHCdbjja3qUCF1T7GFsm9VDr2e_g@mail.gmail.com>
-X-Gm-Features: Ac12FXxYEdJMuFqqZYUQ2uhThBTcF8N9Rr1U8aKLwfnioxQ3gBLtkH906rYqcwI
-Message-ID: <CACePvbW_Q6O2ppMG35gwj7OHCdbjja3qUCF1T7GFsm9VDr2e_g@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm/swap, memcg: Introduce infrastructure for
- cgroup-based swap priority
-To: YoungJun Park <youngjun.park@lge.com>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org, 
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
-	shikemeng@huaweicloud.com, kasong@tencent.com, nphamcs@gmail.com, 
-	bhe@redhat.com, baohua@kernel.org, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, gunho.lee@lge.com, 
-	iamjoonsoo.kim@lge.com, taejoon.song@lge.com, 
-	Matthew Wilcox <willy@infradead.org>, David Hildenbrand <david@redhat.com>, Kairui Song <ryncsn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ linux-hardening@vger.kernel.org, "Gustavo A. R. Silva"
+ <gustavoars@kernel.org>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [RFC] cgroup: Avoid thousands of -Wflex-array-member-not-at-end
+ warnings
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 185.194.184.202
+X-Source-L: No
+X-Exim-ID: 1usLf5-00000003wxI-241K
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([10.233.40.44]) [185.194.184.202]:4144
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfKkFG/Ar4E3EW9tEVKIF+YcP/gwJuDWkA63gZUILFDS/YK/HS32kBGPMMZI6uhBYMfcbvrbPG2Id6P/4PZurTCAJ3LKSAIpDJuMw1Obc3VTBBKpEEnfD
+ P5JFrOx0wrnDSx75rF60zZU6QDhCHXPe8JgU5701YxBb3MW2H7coeOFMbHUZiJyi06nH4q+WZGoXz4snQ4I8KpAA690uq/xawYc=
 
-On Fri, Aug 29, 2025 at 9:05=E2=80=AFPM YoungJun Park <youngjun.park@lge.co=
-m> wrote:
->
-> Hi Chris,
->
-> Thanks for the detailed feedback, and sorry for the late reply.
+Hi all,
 
-Not a problem at all. I have been pretty busy this week and don't have
-much time for it either.
+I'm working on enabling -Wflex-array-member-not-at-end in mainline, and
+I ran into thousands (yes, 14722 to be precise) of these warnings caused
+by an instance of `struct cgroup` in the middle of `struct cgroup_root`.
+See below:
 
-> > I think you touch on a very important question that might trigger a
-> > big design change. Do we want to have a per tier swap.max? It will
-> > specify not only whether this cgroup will enroll into this tier or
-> > not. It also controls how much swap it allows to do in this cgroup.
-> > The swap.max will follow the straight contain relationship. I would
-> > need to think more about the relationship between swap.max and
-> > swap.tiers. Initial intuition is that, we might end up with both per
-> > tier swap.max, which control resource limit, it has subset contain
-> > relationship. At the same time the swap.tiers which control QoS, it
-> > does not follow the subset contained.
-> >
-> > Need more sleep on that.
->
-> When I first ideated on this, I also considered per-device max values,
-> with 0 meaning exclusion, to implement cases like a cgroup using only
-> network swap. At that time the idea was to give each device its own
-> counter, so setting it to 0 would imply exclusion. But this approach
-> would effectively require maintaining per-device page counters similar
-> to the existing swap.max implementation, and the relationship between
-> these per-device counters and the global swap.max would need to be
-> carefully defined. That made the design significantly heavier than the
-> functionality I was aiming for, so I decided to drop it. I read your
-> point more as a QoS extension, and I see it as complementary rather
-> than a counter argument.
+620 struct cgroup_root {
+	...
+633         /*
+634          * The root cgroup. The containing cgroup_root will be destroyed on its
+635          * release. cgrp->ancestors[0] will be used overflowing into the
+636          * following field. cgrp_ancestor_storage must immediately follow.
+637          */
+638         struct cgroup cgrp;
+639
+640         /* must follow cgrp for cgrp->ancestors[0], see above */
+641         struct cgroup *cgrp_ancestor_storage;
+	...
+};
 
-Yes, I slept on it for a few days. I reached a similar conclusion.
-I am happy to share my thoughts:
-1) FACT: We don't have any support to move data from swap device to
-another swap device nowadays. It will not happen overnight. Talking
-about those percentage allocation and maintaining those percentages is
-super complicated. I question myself getting ahead of myself on this
-feature.
-2) FACT: I don't know if any real customers want this kind of
-sub-cgroup swap per tier max adjustment. We should write imaginary
-code for imaginary customers and reserve the real coding for the real
-world customers. Most of the customers I know, including our company,
-care most about the top level CGroup swap assignment. There are cases
-that enable/disable per sub CGroup swap device, in the QoS sense not
-the swap max usage sense.
-I think this will be one good question to ask feedback in the LPC MC
-discussion. Does anyone care about per tier max adjustment in the
-cgroup? We should only consider that when we have real customers.
+Based on the comments above, it seems that the original code was expecting
+cgrp->ancestors[0] and cgrp_ancestor_storage to share the same addres in
+memory.
 
-So I would shelf this per tier max adjustment and not spend any more time o=
-n it.
+However when I take a look at the pahole output, I see that these two members
+are actually misaligned by 56 bytes. See below:
 
-> > First of all, sorry about the pedantic, it should be "swap.tiers" just
-> > to be consistent with the rest of the discussion.
-> > Secondly, I just view names as an alias of the number. 1-3 is hard to
-> > read what you want.
-> > If we allow name as the alias, we can also do:
-> > echo zram-hdd > memory.swap.tieres
-> >
-> > It is exactly the same thing but much more readable.
-> >
-> > >    cg1/cg2: 2-4,6  > memory.swap.tie (ssd,hdd,network device, somedev=
-ice 2, assuming non-subset is allowed)
-> >
-> > echo ssd-network_device,some_device2 > memory.swap.tiers
-> >
-> > See, same thing but much more readable what is your intention.
-> >
-> > BTW, we should disallow space in tier names.
->
-> Ack=E2=80=94those spaces were only in my example; the implementation will=
- reject
-> spaces in tier names.
->
-> I like the interface format you proposed, and I=E2=80=99ll move forward w=
-ith an
-> initial implementation using the name-based tier approach, dropping
-> the numeric format.
+struct cgroup_root {
+	...
 
-I am glad you like it.
+	/* --- cacheline 1 boundary (64 bytes) --- */
+	struct cgroup              cgrp __attribute__((__aligned__(64))); /*    64  2112 */
 
-> > We do want to think about swap.tiers vs per tier swap.max. One idea
-> > just brainstorming is that we can have an array of
-> > "swap.<tiername>.max".
-> > It is likely we need to have both kinds of interface. Because
-> > "swap.<tiername>.max" specifies the inclusive child limit.
-> > "swap.tiers" specifies this C group swap usage QoS. I might not use
-> > hdd in this cgroup A, but the child cgroup B does. So A's hdd max
-> > can't be zero.
-> >
-> > The other idea is to specify a percentage for each tier of the
-> > swap.max in "swap.tiers.max": zram:30  sdd:70
-> > That means zram max is "swap.max * 30%"   and ssd max is "swap.max *
-> > 70%". The number does not need to add up to 100, but can't be bigger
-> > than 100.
-> > The sum can be bigger than 100.
-> >
-> > Need more sleep on it.
->
-> I don=E2=80=99t have additional ideas beyond what you suggested at now. S=
-ince swap.max
-> is defined in terms of quantity, my intuition is that tier.max should
-> probably also be quantity-based, not percentage. As I mentioned earlier,
-> I had also considered per-device max in the early RFC stage. The design
-> was to introduce per-device counters, but that added substantial overhead
-> and complexity, especially in reconciling them with the global swap.max
-> semantics. For that reason I abandoned the idea, though I agree your
-> suggestion makes sense in the context of QoS extension.
+	/* XXX last struct has 56 bytes of padding */
 
-We are in agreement here. We should not touch it until we have a real
-customer ask for it.
+	/* --- cacheline 34 boundary (2176 bytes) --- */
+	struct cgroup *            cgrp_ancestor_storage; /*  2176     8 */
 
-> At this point I feel the main directions are aligned, so I=E2=80=99ll pro=
-ceed
-> with an initial patch version. My current summary is:
->
-> 1. Global interface to group swap priority ranges into tiers by name
->    (/sys/kernel/mm/swap/swaptier).
-I suggest "/sys/kernel/mm/swap/tiers" just to make the file name look
-different from the "swap.tiers" in the cgroup interface.
-This former defines all tiers, giving tiers a name and range. The
-latter enroll a subset of the tiers.
- I think the tier bit location does not have to follow the priority
-order. If we allow adding a new tier, the new tier will get the next
-higher bit. But the priority it split can insert into the middle thus
-splitting an existing tier range. We do need to expose the tier bits
-into the user space. Because for madvise()  to set tiers for VMA, it
-will use bitmasks. It needs to know the name of the bitmask mapping,
-I was thinking the mm/swap/tiers read back as one tier a line. show:
-name, bitmask bit, range low, range high
+	...
 
+	/* size: 6400, cachelines: 100, members: 11 */
+	/* sum members: 6336, holes: 1, sum holes: 16 */
+	/* padding: 48 */
+	/* paddings: 1, sum paddings: 56 */
+	/* forced alignments: 1, forced holes: 1, sum forced holes: 16 */
+} __attribute__((__aligned__(64)));
 
-> 2. Slow path allocation uses bitmask skipping; fast path uses per-cpu
->    tier cluster caches.
-If the fast path fails, it will go through the slow path. So the slow
-patch is actually a catch all.
-> 3. Cgroup interface format modeled after cpuset.
-I am not very familiar with the cpuset part of the interface. Maybe
-you should explain that to the reader without using cpuset cgroup as a
-reference.
-> 4. No inheritance between parent and child cgroup as a perspective of QoS
-In my original proposal of "swap.tiers", if the default is not set on
-this tier, it will look up the parent until the root memcg. There are
-two different tiers bitmask.
-One is the local tier bitmask. The other is the effective bitmask.
-If local tier bitmask sets the default, the effective tier bitmask =3D=3D
-local tier bitmask
-if local tier bitmask does not set default, The effective tier is
-concatenation from parent to this memcg.
+This is due to the fact that struct cgroup have some tailing padding after
+flexible-array member `ancestors` due to alignment to 64 bytes, see below:
 
-For example
-a/swap.tiers: - +ssd # ssd only
-a/b/swap.tiers: ""  # effective "- +ssh", also ssd only.
-a/b/c : + -hdd # effective "- +ssd + -hdd", simplify as "+ -hdd"  The
-'+' overwrite the default, anything before that can be ignored.
+struct cgroup {
+	...
 
-That way, if you are not setting anything in "swap.tiers" in the child
-cgroup, that is the default behavior when you create a new cgroup.
-Changing the parent can change all the child cgroup at the same time.
+	struct cgroup *            ancestors[];          /*  2056     0 */
 
-> 5. Runtime modification of tier settings allowed.
-Need to clarify which tier setting? "swap.tiers" or /sys/kernel/mm/swap/tie=
-rs?
+	/* size: 2112, cachelines: 33, members: 43 */
+	/* sum members: 2000, holes: 3, sum holes: 56 */
+	/* padding: 56 */
+	/* paddings: 2, sum paddings: 8 */
+	/* forced alignments: 1 */
+} __attribute__((__aligned__(64)));
 
-> 6. Keep extensibility and broader use cases in mind.
->
-> And some open points for further thought:
->
-> 1. NUMA autobind
->    - Forbid tier if NUMA priorities exist, and vice versa?
->    - Should we create a dedicated NUMA tier?
->    - Other options?
+The offset for `ancestors` is at 2056, but sizeof(struct group) == 2112 due
+to the 56 bytes of tailing padding. This looks buggy. (thinkingface)
 
-I want to verify and remove the NUMA autobind from swap later. That
-will make things simpler for swap. I think the reason the NUMA swap
-was introduced does not exist any more.
+So, one solution for this is to use the TRAILING_OVERLAP() helper and
+move these members at the end of `struct cgroup_root`. With this the
+misalignment disappears (together with the 14722 warnings :) ), and now
+both cgrp->ancestors[0] and cgrp_ancestor_storage share the same address
+in memory. See below:
 
-> 2. swap.tier.max
->    - percentage vs quantity, and clear use cases.
->   -  sketch concrete real-world scenarios to clarify usage
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 539c64eeef38..901a46f70a02 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -630,16 +630,6 @@ struct cgroup_root {
+         struct list_head root_list;
+         struct rcu_head rcu;    /* Must be near the top */
 
-Just don't do that. Ignore until there is a real usage case request.
+-       /*
+-        * The root cgroup. The containing cgroup_root will be destroyed on its
+-        * release. cgrp->ancestors[0] will be used overflowing into the
+-        * following field. cgrp_ancestor_storage must immediately follow.
+-        */
+-       struct cgroup cgrp;
+-
+-       /* must follow cgrp for cgrp->ancestors[0], see above */
+-       struct cgroup *cgrp_ancestor_storage;
+-
+         /* Number of cgroups in the hierarchy, used only for /proc/cgroups */
+         atomic_t nr_cgrps;
 
-> 3. Possible future extensions to VMA-based tier usage.
+@@ -651,6 +641,18 @@ struct cgroup_root {
 
-Madvise(). That can be introduced earlier. I know a usage case for
-that is the android. Android does not set every app as a cgroup. I
-haven't checked for a while if that is still true.
+         /* The name for this hierarchy - may be empty */
+         char name[MAX_CGROUP_ROOT_NAMELEN];
++
++       /*
++        * The root cgroup. The containing cgroup_root will be destroyed on its
++        * release. cgrp->ancestors[0] will be used overflowing into the
++        * following field. cgrp_ancestor_storage must immediately follow.
++        *
++        * Must be last --ends in a flexible-array members.
++        */
++       TRAILING_OVERLAP(struct cgroup, cgrp, ancestors,
++               /* must follow cgrp for cgrp->ancestors[0], see above */
++               struct cgroup *cgrp_ancestor_storage;
++       );
+  };
 
-> 4. Arbitrary ordering
->    - Do we really need it?
->    - If so, maybe provide a separate cgroup interface to reorder tiers.
+However, this causes the size of struct cgroup_root to increase from 6400
+bytes to 16384 bytes due to struct cgroup to be aligned to page size 4096
+bytes. See below:
 
-No for now. Need to answer how to deal with swap entry LRU order
-inversion issue.
+struct cgroup_root {
+	struct kernfs_root *       kf_root;              /*     0     8 */
+	unsigned int               subsys_mask;          /*     8     4 */
+	int                        hierarchy_id;         /*    12     4 */
+	struct list_head           root_list;            /*    16    16 */
+	struct callback_head       rcu __attribute__((__aligned__(8))); /*    32    16 */
+	atomic_t                   nr_cgrps;             /*    48     4 */
+	unsigned int               flags;                /*    52     4 */
+	char                       name[64];             /*    56    64 */
+	/* --- cacheline 1 boundary (64 bytes) was 56 bytes ago --- */
+	char                       release_agent_path[4096]; /*   120  4096 */
 
-Chris
+	/* XXX 3976 bytes hole, try to pack */
+
+	/* --- cacheline 128 boundary (8192 bytes) --- */
+	union {
+		struct cgroup      cgrp __attribute__((__aligned__(4096))); /*  8192  8192 */
+		struct {
+			unsigned char __offset_to_ancestors[5784]; /*  8192  5784 */
+			/* --- cacheline 218 boundary (13952 bytes) was 24 bytes ago --- */
+			struct cgroup * cgrp_ancestor_storage; /* 13976     8 */
+		};                                       /*  8192  5792 */
+	} __attribute__((__aligned__(4096)));            /*  8192  8192 */
+
+	/* size: 16384, cachelines: 256, members: 10 */
+	/* sum members: 12408, holes: 1, sum holes: 3976 */
+	/* forced alignments: 2, forced holes: 1, sum forced holes: 3976 */
+} __attribute__((__aligned__(4096)));
+
+I've tried with the struct_group_tagged()/container_of() technique:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?h=testing/wfamnae-next20250723&id=03da6b0772af1a62778400f26fe57796fe1ebf27
+
+but cgroup_root grows up to 20K in this case.
+
+So, I guess my question here is... what do you think?... (thinkingface)
+
+Thanks!
+-Gustavo
 
