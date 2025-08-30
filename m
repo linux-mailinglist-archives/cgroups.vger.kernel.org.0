@@ -1,182 +1,155 @@
-Return-Path: <cgroups+bounces-9508-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9509-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAE1BB3C7BE
-	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 06:05:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BCF9B3C7CE
+	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 06:11:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95C015E585D
-	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 04:05:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B73920228E
+	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 04:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D87A275847;
-	Sat, 30 Aug 2025 04:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C34F1277CA5;
+	Sat, 30 Aug 2025 04:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=yukuai.org.cn header.i=hailan@yukuai.org.cn header.b="BW+6GoB+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
+Received: from sender4-op-o12.zoho.com (sender4-op-o12.zoho.com [136.143.188.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B03274B29
-	for <cgroups@vger.kernel.org>; Sat, 30 Aug 2025 04:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756526727; cv=none; b=uIYW1LlH8ys9J8KMP1ENDgwKrCNNmO4RVhITYs6CnNq3Xsp8s1KKLkyfi90C3Oj/sNFEoXwrDjiguMH4SW89cpYFeZ4XB/kPa183s56R3erGDJE1sD9MNPcBJuXOEBOCp5PANh2qb5rHmLl8KWCYKkvnYZz8f3VIBh7FxCowRM8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756526727; c=relaxed/simple;
-	bh=aw3+fIVL9jzi4PiHU70Olj4DbGA8xCVqHe/xoTSEL8k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rqGJEDgXYEfiBkJDN8k9fxLzkPMK+phJxVkhberyWRMRxv6ngNEv/Th6c3oY/YzWs2BloXwN3vva7PxKvioIm/egE15xJmaBOIWpgdnVLH7BCmfdxTcl6U5EGTU+FimgSLLbR3LCP02kg1fk17ly55K3+Gc1rIhoyvK0IPZDlHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.103 with ESMTP; 30 Aug 2025 13:05:16 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Sat, 30 Aug 2025 13:05:16 +0900
-From: YoungJun Park <youngjun.park@lge.com>
-To: Chris Li <chrisl@kernel.org>
-Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, shikemeng@huaweicloud.com,
-	kasong@tencent.com, nphamcs@gmail.com, bhe@redhat.com,
-	baohua@kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, gunho.lee@lge.com,
-	iamjoonsoo.kim@lge.com, taejoon.song@lge.com,
-	Matthew Wilcox <willy@infradead.org>,
-	David Hildenbrand <david@redhat.com>,
-	Kairui Song <ryncsn@gmail.com>
-Subject: Re: [PATCH 1/4] mm/swap, memcg: Introduce infrastructure for
- cgroup-based swap priority
-Message-ID: <aLJ4fEWo7V9Xsz15@yjaykim-PowerEdge-T330>
-References: <aKROKZ9+z2oGUJ7K@yjaykim-PowerEdge-T330>
- <CAF8kJuPUouN4c6V-CaG7_WQUAvRxBg02WRxsMtL56_YTdTh1Jg@mail.gmail.com>
- <aKXeLCr9DgQ2YfCq@yjaykim-PowerEdge-T330>
- <CAF8kJuM4f2W6w29VcHY5mgXVMYmTF4yORKaFky6bCjS1xRek9Q@mail.gmail.com>
- <aKgD7nZy7U+rHt9X@yjaykim-PowerEdge-T330>
- <CAF8kJuMb5i6GuD_-XWtHPYnu-8dQ0W51_KqUk60DccqbKjNq6w@mail.gmail.com>
- <aKsAES4cXWbDG1xn@yjaykim-PowerEdge-T330>
- <CACePvbV=OuxGTqoZvgwkx9D-1CycbDv7iQdKhqH1i2e8rTq9OQ@mail.gmail.com>
- <aK2vIdU0szcu7smP@yjaykim-PowerEdge-T330>
- <CACePvbUJSk23sH01msPcNiiiYw7JqWq_7xP1C7iBUN81nxJ36Q@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72CA42773FF;
+	Sat, 30 Aug 2025 04:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756527085; cv=pass; b=fYF7qwHTTgewIqvhK+vn0qZKolwPZ15ALPxgUqtDOG2R14+YK69/BO2c5aqZbdW3fQdlPE00TblVntQoIW029UY8H7GoVnzraHuM4PTgewTotD8X2u+bgMYW0Eo7ks1nfyjlu5IqPt4xwGboTQT9bUXvzgM1d/8LGFpbvDn6onI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756527085; c=relaxed/simple;
+	bh=aMdVvHTKC5Q68BwZ1XJyYdMyozzseL304zpwN8fODaw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AXYVZS2UkHb8edn1w3wni11rb8prli/wzPMcYFWCoIEqvucBygnkc0J3VUUyPBTPM+olUL56q99mZoJ9enAttIhqQrMOQB1qpSBgt0rF7CIbUQWSfvv9At7qig/W0LY7SzunmSWZjhWEp8YOrUXMrpno5D8FfL2OLcHIKTtoYUg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yukuai.org.cn; spf=pass smtp.mailfrom=yukuai.org.cn; dkim=pass (1024-bit key) header.d=yukuai.org.cn header.i=hailan@yukuai.org.cn header.b=BW+6GoB+; arc=pass smtp.client-ip=136.143.188.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yukuai.org.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yukuai.org.cn
+ARC-Seal: i=1; a=rsa-sha256; t=1756527047; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=hXI6WbDiwQx3g+PFpykfE2RSDzbQvQ1kpok554K/GVdGbe7Wbl/BhnxWL2nUmlWr5Fy5rvMPCHLZHuWVdtYXbAwyQ6XTmbMMRsqHKY3GzsCP/ealdsp3uxNwk5BKzY/EOhMPSWUDuTjA8gdg6sS5sJMf+w1ckE2XygHJWNB6rEA=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1756527047; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=AIqdQ1o+KDcxRP37mYqQKPe1hyWo6vnaOhhysa3wo9Q=; 
+	b=U0lQ3juh+SwB9/IGQohoYnHAnQH1mO8AdLDqsUjOVO4Pe2spvGe5jZ7FdPS9NQX3NaZa02ML1sT6dFdje5y7CSA0wivmHRTyfKgXmo27LZ6njKPP+snimlyJN5bubrJhA0YO9aBK33S8dj4BUdD/7wfCU20shKt+k6AI7fyFhA0=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=yukuai.org.cn;
+	spf=pass  smtp.mailfrom=hailan@yukuai.org.cn;
+	dmarc=pass header.from=<hailan@yukuai.org.cn>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1756527047;
+	s=zmail; d=yukuai.org.cn; i=hailan@yukuai.org.cn;
+	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=AIqdQ1o+KDcxRP37mYqQKPe1hyWo6vnaOhhysa3wo9Q=;
+	b=BW+6GoB+aRU9F98NtYy49EdqBxt2BZmNnnA+S4AqUpDx2wpxsMlDp2dqlNKNlM8F
+	1FAe8AHl0Mqln2AqA/zsMEpPPfRaxp6my9Nv24tEc1zUXy3Imgp+1XGPThTtpCpoxan
+	NWSD9phUwS4+raKjWAKVNtghlMIac+XYKgyzBXSs=
+Received: by mx.zohomail.com with SMTPS id 1756527044122466.79767147184646;
+	Fri, 29 Aug 2025 21:10:44 -0700 (PDT)
+Message-ID: <e147e288-de38-4f2c-8068-53c5e37b2310@yukuai.org.cn>
+Date: Sat, 30 Aug 2025 12:10:29 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 02/10] md/raid0: convert raid0_handle_discard() to
+ use bio_submit_split_bioset()
+To: Damien Le Moal <dlemoal@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>,
+ axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com, song@kernel.org,
+ neil@brown.name, akpm@linux-foundation.org, hch@infradead.org,
+ colyli@kernel.org, hare@suse.de, tieren@fnnas.com
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-raid@vger.kernel.org, yukuai3@huawei.com,
+ yi.zhang@huawei.com, yangerkun@huawei.com, johnny.chenyi@huawei.com
+References: <20250828065733.556341-1-yukuai1@huaweicloud.com>
+ <20250828065733.556341-3-yukuai1@huaweicloud.com>
+ <858e0210-1bbb-466b-98c3-d1a3c834519d@kernel.org>
+From: Yu Kuai <hailan@yukuai.org.cn>
+In-Reply-To: <858e0210-1bbb-466b-98c3-d1a3c834519d@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACePvbUJSk23sH01msPcNiiiYw7JqWq_7xP1C7iBUN81nxJ36Q@mail.gmail.com>
+X-ZohoMailClient: External
 
-Hi Chris,
+Hi,
 
-Thanks for the detailed feedback, and sorry for the late reply.
+在 2025/8/30 8:41, Damien Le Moal 写道:
+> On 8/28/25 15:57, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> On the one hand unify bio split code, prepare to fix disordered split
+>> IO; On the other hand fix missing blkcg_bio_issue_init() and
+>> trace_block_split() for split IO.
+> Hmmm... Shouldn't that be a prep patch with a fixes tag for backport ?
+> Because that "fix" here is not done directly but is the result of calling
+> bio_submit_split_bioset().
 
-> I think you touch on a very important question that might trigger a
-> big design change. Do we want to have a per tier swap.max? It will
-> specify not only whether this cgroup will enroll into this tier or
-> not. It also controls how much swap it allows to do in this cgroup.
-> The swap.max will follow the straight contain relationship. I would
-> need to think more about the relationship between swap.max and
-> swap.tiers. Initial intuition is that, we might end up with both per
-> tier swap.max, which control resource limit, it has subset contain
-> relationship. At the same time the swap.tiers which control QoS, it
-> does not follow the subset contained.
+I can add a fix tag as blkcg_bio_issue_init() and trace_block_split() is missed,
+however, if we consider stable backport, should we fix this directly from caller
+first? As this is better for backport. Later this patch can be just considered
+cleanup.
+
+>> Noted commit 319ff40a5427 ("md/raid0: Fix performance regression for large
+>> sequential writes") already fix disordered split IO by converting bio to
+>> underlying disks before submit_bio_noacct(), with the respect
+>> md_submit_bio() already split by sectors, and raid0_make_request() will
+>> split at most once for unaligned IO. This is a bit hacky and we'll convert
+>> this to solution in general later.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   drivers/md/raid0.c | 19 +++++++------------
+>>   1 file changed, 7 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/md/raid0.c b/drivers/md/raid0.c
+>> index f1d8811a542a..4dcc5133d679 100644
+>> --- a/drivers/md/raid0.c
+>> +++ b/drivers/md/raid0.c
+>> @@ -463,21 +463,16 @@ static void raid0_handle_discard(struct mddev *mddev, struct bio *bio)
+>>   	zone = find_zone(conf, &start);
+>>   
+>>   	if (bio_end_sector(bio) > zone->zone_end) {
+>> -		struct bio *split = bio_split(bio,
+>> -			zone->zone_end - bio->bi_iter.bi_sector, GFP_NOIO,
+>> -			&mddev->bio_set);
+>> -
+>> -		if (IS_ERR(split)) {
+>> -			bio->bi_status = errno_to_blk_status(PTR_ERR(split));
+>> -			bio_endio(bio);
+>> +		bio = bio_submit_split_bioset(bio,
+>> +				zone->zone_end - bio->bi_iter.bi_sector,
+> Can this ever be negative (of course not I think)? But if
+> bio_submit_split_bioset() is changed to have an unsigned int sectors count,
+> maybe add a sanity check before calling bio_submit_split_bioset() ?
+
+Yes, this can never be negative.
+
+Thanks,
+Kuai
+
 >
-> Need more sleep on that.
-
-When I first ideated on this, I also considered per-device max values,
-with 0 meaning exclusion, to implement cases like a cgroup using only
-network swap. At that time the idea was to give each device its own
-counter, so setting it to 0 would imply exclusion. But this approach
-would effectively require maintaining per-device page counters similar
-to the existing swap.max implementation, and the relationship between
-these per-device counters and the global swap.max would need to be
-carefully defined. That made the design significantly heavier than the
-functionality I was aiming for, so I decided to drop it. I read your
-point more as a QoS extension, and I see it as complementary rather
-than a counter argument.
-
-> First of all, sorry about the pedantic, it should be "swap.tiers" just
-> to be consistent with the rest of the discussion.
-> Secondly, I just view names as an alias of the number. 1-3 is hard to
-> read what you want.
-> If we allow name as the alias, we can also do:
-> echo zram-hdd > memory.swap.tieres
+>> +				&mddev->bio_set);
+>> +		if (!bio)
+>>   			return;
+>> -		}
+>> -		bio_chain(split, bio);
+>> -		submit_bio_noacct(bio);
+>> -		bio = split;
+>> +
+>>   		end = zone->zone_end;
+>> -	} else
+>> +	} else {
+>>   		end = bio_end_sector(bio);
+>> +	}
+>>   
+>>   	orig_end = end;
+>>   	if (zone != conf->strip_zone)
 >
-> It is exactly the same thing but much more readable.
->
-> >    cg1/cg2: 2-4,6  > memory.swap.tie (ssd,hdd,network device, somedevice 2, assuming non-subset is allowed)
->
-> echo ssd-network_device,some_device2 > memory.swap.tiers
->
-> See, same thing but much more readable what is your intention.
->
-> BTW, we should disallow space in tier names.
-
-Ack—those spaces were only in my example; the implementation will reject
-spaces in tier names.
-
-I like the interface format you proposed, and I’ll move forward with an
-initial implementation using the name-based tier approach, dropping
-the numeric format.
-
-> We do want to think about swap.tiers vs per tier swap.max. One idea
-> just brainstorming is that we can have an array of
-> "swap.<tiername>.max".
-> It is likely we need to have both kinds of interface. Because
-> "swap.<tiername>.max" specifies the inclusive child limit.
-> "swap.tiers" specifies this C group swap usage QoS. I might not use
-> hdd in this cgroup A, but the child cgroup B does. So A's hdd max
-> can't be zero.
->
-> The other idea is to specify a percentage for each tier of the
-> swap.max in "swap.tiers.max": zram:30  sdd:70
-> That means zram max is "swap.max * 30%"   and ssd max is "swap.max *
-> 70%". The number does not need to add up to 100, but can't be bigger
-> than 100.
-> The sum can be bigger than 100.
->
-> Need more sleep on it.
-
-I don’t have additional ideas beyond what you suggested at now. Since swap.max
-is defined in terms of quantity, my intuition is that tier.max should
-probably also be quantity-based, not percentage. As I mentioned earlier,
-I had also considered per-device max in the early RFC stage. The design
-was to introduce per-device counters, but that added substantial overhead
-and complexity, especially in reconciling them with the global swap.max
-semantics. For that reason I abandoned the idea, though I agree your
-suggestion makes sense in the context of QoS extension.
-
-At this point I feel the main directions are aligned, so I’ll proceed
-with an initial patch version. My current summary is:
-
-1. Global interface to group swap priority ranges into tiers by name
-   (/sys/kernel/mm/swap/swaptier).
-2. Slow path allocation uses bitmask skipping; fast path uses per-cpu
-   tier cluster caches.
-3. Cgroup interface format modeled after cpuset.
-4. No inheritance between parent and child cgroup as a perspective of QoS
-5. Runtime modification of tier settings allowed.
-6. Keep extensibility and broader use cases in mind.
-
-And some open points for further thought:
-
-1. NUMA autobind
-   - Forbid tier if NUMA priorities exist, and vice versa?
-   - Should we create a dedicated NUMA tier?
-   - Other options?
-2. swap.tier.max
-   - percentage vs quantity, and clear use cases.
-  -  sketch concrete real-world scenarios to clarify usage 
-3. Possible future extensions to VMA-based tier usage.
-4. Arbitrary ordering
-   - Do we really need it?
-   - If so, maybe provide a separate cgroup interface to reorder tiers.
-
-Best Regards
-Youngjun Park
 
