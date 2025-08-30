@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-9504-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9505-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9623EB3C71B
-	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 03:33:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95846B3C723
+	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 03:42:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39831A2544A
-	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 01:33:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42B162023F6
+	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 01:42:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FDA542AA9;
-	Sat, 30 Aug 2025 01:33:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD26220687;
+	Sat, 30 Aug 2025 01:42:28 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9CF3D81;
-	Sat, 30 Aug 2025 01:33:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7366B2566;
+	Sat, 30 Aug 2025 01:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756517594; cv=none; b=en4hGWbGhuvfEmH60hB9cdvw5Qw4eatOh7FmuXPzzKBPoFF4+cZWaKbPhvXvNM2WkO4mpkNLKnSjSji5V5vV13ALFh1GAma7pOExTUnPvEr6WLkNcbIuIxCLC9b+a6cTWJSdqCPPjk4ogUGvYS1a4cZIKo2+njU0Uxbm2J6CwQ8=
+	t=1756518148; cv=none; b=U+CgmYyPw33W/dSl78RiN2xvBhubVR4A0kWzTYeKEhCPkgvltMNf9Vzi1FylWTHaQfwe3dt1hQOJx1WB6rU0V/VB1uf7Mm7ghljQlS7jrzb4yx6uO4aTQo5JyD56YAjEDDiv2Jma02lnAJi68qOSYL58vg9D0uoUrhxO63nTmG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756517594; c=relaxed/simple;
-	bh=WtouB6kLx+CK3flf2J2HhJ/oLoJEhX/07/hc1g9A2Z0=;
+	s=arc-20240116; t=1756518148; c=relaxed/simple;
+	bh=MjTt9+U7lCqfiZS5v2c1l/PnAOCQeabw3AkqhR/A5nw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KzlYoftXK7ZI76mFJazWb6fWu4vk7qLebplGzcw6Wvg/mZPpsi8JE9WCAlodnnbh4z/BpwYx5o73ytuCu8PMSjYzWSTpeRUyqwUyImr0S4NjQ1C3SsShkm3yR28tuKIiodLMR4Gs3gLhQgBg8CiBdwEcasWDJrPbpnkVtc+j3VU=
+	 In-Reply-To:Content-Type; b=Gt3PAL3eluAVBJ4VTN58PAkzOtxGinbr5EpgX79wxjB7R0nCjAhaCoaPXw4FNC0cl7dphk4q3Egh/tYQw2Jk6fGj/wK6ff2dWfCSb+lM02er8ycn60M2y+EpoE/Mdi/976kvJXT+zr8qhc39+BSCWzNQ0MmOExtDCLJGkrf7YtU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cDHhR50rtzYQv8j;
-	Sat, 30 Aug 2025 09:33:11 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cDHv41F08zYQv8y;
+	Sat, 30 Aug 2025 09:42:24 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 386181A0FAB;
-	Sat, 30 Aug 2025 09:33:10 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id A8BA31A0D83;
+	Sat, 30 Aug 2025 09:42:22 +0800 (CST)
 Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP2 (Coremail) with SMTP id Syh0CgBXgJfVVLJoRcP+Ag--.16804S2;
-	Sat, 30 Aug 2025 09:33:10 +0800 (CST)
-Message-ID: <5d0f67d9-07fc-4e09-903a-dfc26c9f4a87@huaweicloud.com>
-Date: Sat, 30 Aug 2025 09:33:09 +0800
+	by APP2 (Coremail) with SMTP id Syh0CgCn0Zj9VrJotn7_Ag--.13956S2;
+	Sat, 30 Aug 2025 09:42:22 +0800 (CST)
+Message-ID: <c665908a-6591-4c9d-93c0-0e69dc831495@huaweicloud.com>
+Date: Sat, 30 Aug 2025 09:42:20 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,27 +47,26 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next RFC 07/11] cpuset: refactor out
- invalidate_cs_partition
+Subject: Re: [PATCH -next RFC 08/11] cpuset: refactor acpus_validate_change
 To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
  mkoutny@suse.com
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  lujialin4@huawei.com, chenridong@huawei.com
 References: <20250828125631.1978176-1-chenridong@huaweicloud.com>
- <20250828125631.1978176-8-chenridong@huaweicloud.com>
- <98eb72df-2897-413e-8c01-7d688ad58810@redhat.com>
+ <20250828125631.1978176-9-chenridong@huaweicloud.com>
+ <ca3bcede-2289-4e51-a2db-0da75d85fcbc@redhat.com>
 Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <98eb72df-2897-413e-8c01-7d688ad58810@redhat.com>
+In-Reply-To: <ca3bcede-2289-4e51-a2db-0da75d85fcbc@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBXgJfVVLJoRcP+Ag--.16804S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF4kCFyfKw48KF4UJr1UZFb_yoW8Wr4xpF
-	W5KayYy3y5KF47uas3XayxWF15Kws7J3WUJrsxJw1xJrnFv3WqkF1qywnxXryxJF93Gr17
-	J3W5uFsI9a45Z3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:Syh0CgCn0Zj9VrJotn7_Ag--.13956S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF4kCFW8Gr1fGry8Cr45KFg_yoW8uw48pF
+	WrGFW5J3y5Xr1xC3ZxJ34kWryagws7t3WUKwnIqa4rJF9FkF1q9r1DXa9Ygry3JrW8GF4U
+	J3ZFvwsa9Fyvy37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
 	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
 	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
 	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
@@ -81,47 +80,60 @@ X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
 
-On 2025/8/30 3:56, Waiman Long wrote:
-> 
+On 2025/8/30 4:12, Waiman Long wrote:
 > On 8/28/25 8:56 AM, Chen Ridong wrote:
 >> From: Chen Ridong <chenridong@huawei.com>
 >>
->> Refactor the invalidate_cs_partition function to handle cpuset partition
->> invalidation when modifying cpuset.cpus. This refactoring also makes the
->> function reusable for handling cpuset.cpus.exclusive updates in subsequent
->> patches.
+>> Refactor acpus_validate_change to handle the special case where
+>> cpuset.cpus can be set even when violating partition sibling CPU
+>> exclusivity rules. This differs from the general validation logic in
+>> validate_change. Add a wrapper function to properly handle this
+>> exceptional case.
+>>
+>> Since partition invalidation status can be determined by trialcs->prs_err,
+>> the local variable 'bool invalidate' can be removed.
 >>
 >> Signed-off-by: Chen Ridong <chenridong@huawei.com>
 >> ---
->>   kernel/cgroup/cpuset.c | 49 +++++++++++++++++++++++++++++++-----------
->>   1 file changed, 36 insertions(+), 13 deletions(-)
+>>   kernel/cgroup/cpuset.c | 83 +++++++++++++++++++++++-------------------
+>>   1 file changed, 45 insertions(+), 38 deletions(-)
 >>
 >> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 5cfc53fe717c..71190f142700 100644
+>> index 71190f142700..75ad18ab40ae 100644
 >> --- a/kernel/cgroup/cpuset.c
 >> +++ b/kernel/cgroup/cpuset.c
->> @@ -2376,6 +2376,40 @@ static int parse_cpulist(const char *buf, struct cpumask *out_mask)
->>       return 0;
+>> @@ -2410,43 +2410,11 @@ static bool invalidate_cs_partition(struct cpuset *cs)
+>>       return false;
 >>   }
->>   +/**
->> + * invalidate_cs_partition - Validate and mark the validity of a cpuset partition configuration
+>>   -/**
+>> - * update_cpumask - update the cpus_allowed mask of a cpuset and all tasks in it
+>> - * @cs: the cpuset to consider
+>> - * @trialcs: trial cpuset
+>> - * @buf: buffer of cpu numbers written to this cpuset
+>> - */
+>> -static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>> -              const char *buf)
+>> +static int acpus_validate_change(struct cpuset *cs, struct cpuset *trialcs,
+>> +                    struct tmpmasks *tmp)
 > 
-> The function name has "invalidate", but the description uses validate. It is confusing.
-> 
-> My suggestion
-> 
->   validate_partition - Check the validity of a cpuset partition configuration
-> 
->   Return 0 if valid, a non-zero prs_errcode otherwise
+> What does "acpu" stand for? I suppose it means cpus_allowed. I will suggest to use a more
+> descriptive name even if it is longer. I did use xcpus for exclusive_cpus, but 'x' is a seldomly
+> used English alphabet that can associate with exclusive_cpus rather easily, but 'a' is not.
 > 
 > Cheers,
 > Longman
+> 
 
-Thank you Longman,
+Thanks Longman,
 
-I originally used that name for a local value 'invalidated' within update_cpumask. However, since
-subsequent patches have removed the invalidated, validate_partition would be a much more appropriate
-name. I will update it accordingly.
+The term acpus refers to cpus_allowed.
+
+My original naming convention was intended as follows:
+
+acpus  --> cpus_allowed (allowed cpus)
+ecpus  --> effective_cpus
+xcpus  --> exclusive_cpus
+excpus --> effective_xcpus
 
 -- 
 Best regards,
