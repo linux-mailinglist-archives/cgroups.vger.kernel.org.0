@@ -1,45 +1,36 @@
-Return-Path: <cgroups+bounces-9506-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9507-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92DCDB3C743
-	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 04:01:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7A5DB3C7BB
+	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 06:03:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C76F204573
-	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 02:01:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E80B5674D0
+	for <lists+cgroups@lfdr.de>; Sat, 30 Aug 2025 04:03:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985DE23ED5E;
-	Sat, 30 Aug 2025 02:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513FC274668;
+	Sat, 30 Aug 2025 04:03:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2222822652D;
-	Sat, 30 Aug 2025 02:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1137122AE7A;
+	Sat, 30 Aug 2025 04:03:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756519302; cv=none; b=ukH8qqEE4o2Dtrm4DeYXzQrhIQK31eoHbJ0mNjnh4o8uEp76Y/tIgE5Svcfo7uq6ze1IaULTX4SrlJofOF3euVFbyNCS1g9mrYxeMu+8Qn7HtQ/3exJ6l18un5f30vNwKYCTTWDd7DOOTsqkVdBrHEzGNXHDrboh6NMaZAsEOY4=
+	t=1756526599; cv=none; b=ohdOdx9DSEDARgH66t0rTzdItBdhCvwQ7SzwfFkIAbatg2DVRnF4Q7kj6ga9SvJG+cUkEYPcMBP6Pz+HoqLb5VRMOREZI5XW0Jv2XuRRYvzCXw/vdKUX86zEnmibkOzD/r/ZpIdFxqmcUaeoSEb5ZtwOHXgEMr9cMKBgJfnM/Fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756519302; c=relaxed/simple;
-	bh=6DrCquFmOPWC/rxxQamV6jVH9tC9CmR3EaJB4O/JTjQ=;
+	s=arc-20240116; t=1756526599; c=relaxed/simple;
+	bh=y9ztFgFesi1zJltW/2xGkFwFFjI3fyy3JBxjX8IkTEM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QS8mFyOwiapWh37skTVAdAoArZ5tu9cg6tt26faY2kG12V/hfCk45MYofICGTqFHyfYamRI3/5BkOyGYLU7PE8PWrLjzPVpYbtMCUnjAxg1TB6tjcBswq8RuSpd/rz9IOhZAB463E2A4FUNJKQlbiAX67xksMXBZqKyQguQuddY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cDJKG1p3hzYQv2v;
-	Sat, 30 Aug 2025 10:01:38 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id BE2C91A092D;
-	Sat, 30 Aug 2025 10:01:36 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP2 (Coremail) with SMTP id Syh0CgCn0Zh_W7Jo0wEBAw--.18073S2;
-	Sat, 30 Aug 2025 10:01:36 +0800 (CST)
-Message-ID: <031d83b6-bc67-4941-8c49-e1d12df74062@huaweicloud.com>
-Date: Sat, 30 Aug 2025 10:01:34 +0800
+	 In-Reply-To:Content-Type; b=gOCBZIMqnZa2oaJymlC0meKR+Z6c23+/E+efTNG5u1KxB/mrwEVNFGjUePDyeAb/itLY5SWKEklwdyXPIurxEYs84Ney1izmxuBrdYbNg5j28AywzS4zKo5ZmmEFDNCypEOs4REuE9rQYhpOfhErd3pRtdlJJRW5BhAXu5dHldM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BB2AC4CEEB;
+	Sat, 30 Aug 2025 04:03:14 +0000 (UTC)
+Message-ID: <f046fb8c-b28c-4017-bbf3-44867965daa5@yukuai.org.cn>
+Date: Sat, 30 Aug 2025 12:03:12 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,141 +38,153 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next RFC 09/11] cpuset: refactor partition_cpus_change
-To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com
-References: <20250828125631.1978176-1-chenridong@huaweicloud.com>
- <20250828125631.1978176-10-chenridong@huaweicloud.com>
- <632cd2ab-9803-4b84-8dd9-cd07fbe73c95@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <632cd2ab-9803-4b84-8dd9-cd07fbe73c95@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH RFC v2 01/10] block: factor out a helper
+ bio_submit_split_bioset()
+To: Damien Le Moal <dlemoal@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>,
+ axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com, song@kernel.org,
+ neil@brown.name, akpm@linux-foundation.org, hch@infradead.org,
+ colyli@kernel.org, hare@suse.de, tieren@fnnas.com
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-raid@vger.kernel.org, yukuai3@huawei.com,
+ yi.zhang@huawei.com, yangerkun@huawei.com, johnny.chenyi@huawei.com
+References: <20250828065733.556341-1-yukuai1@huaweicloud.com>
+ <20250828065733.556341-2-yukuai1@huaweicloud.com>
+ <7f3c9c65-2386-4198-ae38-5b9444319ec2@kernel.org>
+From: Yu Kuai <hailan@yukuai.org.cn>
+In-Reply-To: <7f3c9c65-2386-4198-ae38-5b9444319ec2@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCn0Zh_W7Jo0wEBAw--.18073S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF4rXr4xKw13AF1kCF13XFb_yoWruw4kpF
-	1kJrWUXrWUJr1Fk3yUJr17Wry5Kw1DJ3WDtrn7X3WrJFy2yr1qqF1jqws09r17Jw4xJr18
-	J3WjqrsruFnrArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+Hi,
 
-
-On 2025/8/30 4:32, Waiman Long wrote:
-> On 8/28/25 8:56 AM, Chen Ridong wrote:
->> From: Chen Ridong <chenridong@huawei.com>
+在 2025/8/30 8:37, Damien Le Moal 写道:
+> On 8/28/25 15:57, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
 >>
->> Refactor the partition_cpus_change function to handle both regular CPU
->> set updates and exclusive CPU modifications, either of which may trigger
->> partition state changes. This generalized function will also be utilized
->> for exclusive CPU updates in subsequent patches.
+>> No functional changes are intended, some drivers like mdraid will split
+>> bio by internal processing, prepare to unify bio split codes.
 >>
->> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> Looks good to me. A few nits below.
+>
 >> ---
->>   kernel/cgroup/cpuset.c | 59 ++++++++++++++++++++++++++----------------
->>   1 file changed, 36 insertions(+), 23 deletions(-)
+>>   block/blk-merge.c      | 63 ++++++++++++++++++++++++++++--------------
+>>   include/linux/blkdev.h |  2 ++
+>>   2 files changed, 44 insertions(+), 21 deletions(-)
 >>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 75ad18ab40ae..e3eb87a33b12 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -2447,6 +2447,41 @@ static int acpus_validate_change(struct cpuset *cs, struct cpuset *trialcs,
->>       return retval;
->>   }
->>   +/**
->> + * partition_cpus_change - Handle partition state changes due to CPU mask updates
->> + * @cs: The target cpuset being modified
->> + * @trialcs: The trial cpuset containing proposed configuration changes
->> + * @tmp: Temporary masks for intermediate calculations
+>> diff --git a/block/blk-merge.c b/block/blk-merge.c
+>> index 70d704615be5..3d6dc9cc4f61 100644
+>> --- a/block/blk-merge.c
+>> +++ b/block/blk-merge.c
+>> @@ -104,34 +104,55 @@ static unsigned int bio_allowed_max_sectors(const struct queue_limits *lim)
+>>   	return round_down(UINT_MAX, lim->logical_block_size) >> SECTOR_SHIFT;
+>>   }
+>>   
+>> +/**
+>> + * bio_submit_split_bioset - Submit a bio, splitting it at a designated sector
+>> + * @bio:		the original bio to be submitted and split
+>> + * @split_sectors:	the sector count at which to split
+>> + * @bs:			the bio set used for allocating the new split bio
 >> + *
->> + * This function handles partition state transitions triggered by CPU mask changes.
->> + * CPU modifications may cause a partition to be disabled or require state updates.
+>> + * The original bio is modified to contain the remaining sectors and submitted.
+>> + * The caller is responsible for submitting the returned bio.
+>> + *
+>> + * If succeed, the newly allocated bio representing the initial part will be
+>> + * returned, on failure NULL will be returned and original bio will fail.
 >> + */
->> +static void partition_cpus_change(struct cpuset *cs, struct cpuset *trialcs,
->> +                    struct tmpmasks *tmp)
+>> +struct bio *bio_submit_split_bioset(struct bio *bio, int split_sectors,
+>> +				    struct bio_set *bs)
+> While at it, it would be nice to have split_sectors be unsigned. That would
+> avoid the check in bio_submit_split().
+
+Sure, I can change this to unsigned. However, there are caller return error
+code and bio_submit_split() will handler the error code, if we want to avoid
+the check here, we'll have to hande error before bio_submit_split() as well,
+is this what you mean?
+
+>
 >> +{
->> +    if (cs_is_member(cs))
->> +        return;
+>> +	struct bio *split = bio_split(bio, split_sectors, GFP_NOIO, bs);
 >> +
->> +    invalidate_cs_partition(trialcs);
->> +    if (trialcs->prs_err)
->> +        cs->prs_err = trialcs->prs_err;
+>> +	if (IS_ERR(split)) {
+>> +		bio->bi_status = errno_to_blk_status(PTR_ERR(split));
+>> +		bio_endio(bio);
+>> +		return NULL;
+>> +	}
 >> +
->> +    if (is_remote_partition(cs)) {
->> +        if (trialcs->prs_err)
->> +            remote_partition_disable(cs, tmp);
->> +        else
->> +            remote_cpus_update(cs, trialcs->exclusive_cpus,
->> +                       trialcs->effective_xcpus, tmp);
->> +    } else {
->> +        if (trialcs->prs_err)
->> +            update_parent_effective_cpumask(cs, partcmd_invalidate,
->> +                            NULL, tmp);
->> +        else
->> +            update_parent_effective_cpumask(cs, partcmd_update,
->> +                            trialcs->effective_xcpus, tmp);
->> +    }
+>> +	blkcg_bio_issue_init(split);
+>> +	bio_chain(split, bio);
+>> +	trace_block_split(split, bio->bi_iter.bi_sector);
+>> +	WARN_ON_ONCE(bio_zone_write_plugging(bio));
+>> +	submit_bio_noacct(bio);
+>> +
+>> +	return split;
 >> +}
+>> +EXPORT_SYMBOL_GPL(bio_submit_split_bioset);
 >> +
->>   /**
->>    * update_cpumask - update the cpus_allowed mask of a cpuset and all tasks in it
->>    * @cs: the cpuset to consider
->> @@ -2483,29 +2518,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
->>        */
->>       force = !cpumask_equal(cs->effective_xcpus, trialcs->effective_xcpus);
->>   -    invalidate_cs_partition(trialcs);
->> -    if (trialcs->prs_err)
->> -        cs->prs_err = trialcs->prs_err;
+>>   static struct bio *bio_submit_split(struct bio *bio, int split_sectors)
+>>   {
+>> -	if (unlikely(split_sectors < 0))
+>> -		goto error;
+>> +	if (unlikely(split_sectors < 0)) {
+>> +		bio->bi_status = errno_to_blk_status(split_sectors);
+>> +		bio_endio(bio);
+>> +		return NULL;
+>> +	}
+> See above.
+>
+>>   
+>>   	if (split_sectors) {
+>> -		struct bio *split;
 >> -
->> -    if (is_partition_valid(cs) ||
->> -       (is_partition_invalid(cs) && !trialcs->prs_err)) {
->> -        struct cpumask *xcpus = trialcs->effective_xcpus;
->> -
->> -        if (cpumask_empty(xcpus) && is_partition_invalid(cs))
->> -            xcpus = trialcs->cpus_allowed;
-> 
-> This if statement was added in commit 46c521bac592 ("cgroup/cpuset: Enable invalid to valid local
-> partition transition") that is missing in your new partition_cpus_change() function. Have you run
-> the test_cpuset_prs.sh selftest with a patched kernel to make sure that there is no test failure?
-> 
-> Cheers,
-> Longman
+>> -		split = bio_split(bio, split_sectors, GFP_NOIO,
+>> -				&bio->bi_bdev->bd_disk->bio_split);
+>> -		if (IS_ERR(split)) {
+>> -			split_sectors = PTR_ERR(split);
+>> -			goto error;
+>> -		}
+>> -		split->bi_opf |= REQ_NOMERGE;
+>> -		blkcg_bio_issue_init(split);
+>> -		bio_chain(split, bio);
+>> -		trace_block_split(split, bio->bi_iter.bi_sector);
+>> -		WARN_ON_ONCE(bio_zone_write_plugging(bio));
+>> -		submit_bio_noacct(bio);
+>> -		return split;
+>> +		bio = bio_submit_split_bioset(bio, split_sectors,
+>> +					 &bio->bi_bdev->bd_disk->bio_split);
+>> +		if (bio)
+>> +			bio->bi_opf |= REQ_NOMERGE;
+> I think that setting REQ_NOMERGE should be done in bio_submit_split_bioset().
 
-Thank you Longman,
+In mdraid, we'll expect bio still can be merged in underlying disks after split
+by chunksize, and setting it and then clear it in mdraid is not necessary, I think
+this is better.
 
-I did run the self-test for every patch, and I appreciate the test script test_cpuset_prs.sh you
-provided.
+Thanks,
+Kuai
 
-The trialcs->effective_xcpus will be updated using compute_trialcs_excpus, which was introduced in
-Patch 4. The corresponding logic was then added in Patch 5:
-
--	cpumask_and(excpus, user_xcpus(trialcs), parent->effective_xcpus);
-+	/* trialcs is member, cpuset.cpus has no impact to excpus */
-+	if (cs_is_member(cs))
-+		cpumask_and(excpus, trialcs->exclusive_cpus,
-+				parent->effective_xcpus);
-+	else
-+		cpumask_and(excpus, user_xcpus(trialcs), parent->effective_xcpus);
-+
-
-Therefore, as long as excpus is computed correctly, I believe this implementation can handle the
-scenario appropriately.
-
--- 
-Best regards,
-Ridong
-
+>>   	}
+>>   
+>>   	return bio;
+>> -error:
+>> -	bio->bi_status = errno_to_blk_status(split_sectors);
+>> -	bio_endio(bio);
+>> -	return NULL;
+>>   }
+>>   
+>>   struct bio *bio_split_discard(struct bio *bio, const struct queue_limits *lim,
+>> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+>> index fe1797bbec42..be4b3adf3989 100644
+>> --- a/include/linux/blkdev.h
+>> +++ b/include/linux/blkdev.h
+>> @@ -999,6 +999,8 @@ extern int blk_register_queue(struct gendisk *disk);
+>>   extern void blk_unregister_queue(struct gendisk *disk);
+>>   void submit_bio_noacct(struct bio *bio);
+>>   struct bio *bio_split_to_limits(struct bio *bio);
+>> +struct bio *bio_submit_split_bioset(struct bio *bio, int split_sectors,
+>> +				    struct bio_set *bs);
+>>   
+>>   extern int blk_lld_busy(struct request_queue *q);
+>>   extern int blk_queue_enter(struct request_queue *q, blk_mq_req_flags_t flags);
+>
 
