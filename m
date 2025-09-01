@@ -1,275 +1,205 @@
-Return-Path: <cgroups+bounces-9583-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9584-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 051A2B3EDF4
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 20:38:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18B62B3EEFC
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 21:53:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91D854831FB
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 18:38:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D426B163847
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 19:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B31324B07;
-	Mon,  1 Sep 2025 18:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC7E525B2F4;
+	Mon,  1 Sep 2025 19:53:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Vy/q9uss"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zc9GWhx4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C78A721B195
-	for <cgroups@vger.kernel.org>; Mon,  1 Sep 2025 18:38:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBDE120296C;
+	Mon,  1 Sep 2025 19:53:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756751925; cv=none; b=SUSdHeWFYVI7jngmsf2RwU4vBSHSDtkKWx6+bslmXNaXEIh+U4NjwTAGJfLK1w1fKrmbYVB8sCjf76+/C8UJZsoE9P4U23fx7smuOl6ZziJXqbSdNROj2h4ywAOVxecagawzBS9LhilX7ZpsmuQuhO2l3OI/+lqK6DcDt8pFqH4=
+	t=1756756423; cv=none; b=ld8dILSqD+ZaXoIX5xvqq/j/MgSi9SGAq/VxbfxRQRO8qBklXSPS+DPKgnv5/OwYuvl+b42lxt0bQHfwjLGQoM0hbHsd0TCGOvCqthBRgzObsxo1PgL3SW9L/C52Hn7XDQ46MGMmSbVqWomS6iTUZVjblM8fDI5VTimSKfAAuzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756751925; c=relaxed/simple;
-	bh=7RhJ2meIhP0qT1GxYoEcTF3zoKfZVQvXZVw2m64rt94=;
+	s=arc-20240116; t=1756756423; c=relaxed/simple;
+	bh=BqfrjMPuGiaKQBMWPv9o8TEs9m15Yj2+7KdBDuWr2nc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WCWCWiYcbGegqTxF6mWYOSzBPIV9pf3dB9TU49MaIMXa1MD3dyX9/r6BQieeuBjz/jx/tQ5SLcNvuY7pN+unEkyGKY0WNQJVB1cmVXRL6gN5jJCvG0OLxCuhZGlPoJNZLVJFtRs0uIOCtut4/mFPyd6HAPfv82TaiQq0SfZZKbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Vy/q9uss; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756751922;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aOMYfYkIB0MeR6VSaf6nAC5fx6q+m9vBzWbf+mnbIXw=;
-	b=Vy/q9uss3sO+PRAmfYuQfZVBDUxGGycAal7O1SPXRl10Vl9lVNxl44eBE7ODeqnNjQIvVW
-	cHSrefQlcDLOrUbh4vLEugz0Wutr4uDCoufkE173HyyR8GJGp1c1ZVuVOdzmwYCC1mu9NY
-	M6BjQiyRY5hjnzjRMNhOeVvgeTyxMtw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-37-AgGiJPYyMU68fo-l2I20XA-1; Mon, 01 Sep 2025 14:38:41 -0400
-X-MC-Unique: AgGiJPYyMU68fo-l2I20XA-1
-X-Mimecast-MFC-AGG-ID: AgGiJPYyMU68fo-l2I20XA_1756751920
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-45b8a307c12so7629325e9.2
-        for <cgroups@vger.kernel.org>; Mon, 01 Sep 2025 11:38:41 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=gUPqQPAArboK1289Mh/j8BumQ2Ceqbtys65dM++0PTW5iTOagc6vuyb3YeCNPER3pOD0ncoB6BmCbZ4lwSUSeyORI/R5e42y1phRaus9urRgWVI9eoPKutHojlvhGn1TvYnCvfBWqsmGRX60nXglHSQYnjwzlK2q3JYVm7F39ZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zc9GWhx4; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-45b89147cfbso15471975e9.3;
+        Mon, 01 Sep 2025 12:53:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756756420; x=1757361220; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U6dC2QIlPVYDynwThj1XsMObK2EBHiK+oeTA9R38dbg=;
+        b=Zc9GWhx4gfrsrrDepQ6gSrVgvSCoc9oMlcnWqx7Go5tfHCKBLiplt7aLmHxf+aHJNE
+         tV+6iRo9FpvhzdO2XZ9b9N4gqxc5leNxSi2efLcomcJJBIU6YienVbAkYD0UxiFJxeaf
+         rhyd859RTkWIprgpYo2bCoVOsPyyGrkfA/FW8X75PqK9Mpej2n64fI7+cnvnisfLTsN3
+         tCMexANo2ya38VlZ1sR2WiGrzNOL/TmOqR+5euCpL6SnuO0Xm2F9JxiA7h64NwRkwwxc
+         t1eIpPw4DlrbjyDsBHU7jqs2abHClgMsKuYzUEUywqhwxeIh+bmGl6fpVHOHHkPlwSBT
+         CVOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756751920; x=1757356720;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aOMYfYkIB0MeR6VSaf6nAC5fx6q+m9vBzWbf+mnbIXw=;
-        b=MsfW4pdmk5olUVb2mdl0b7LG4nFreS0g1T5fmLuRfFuIz2SgcsXWsrOuQthljWjITT
-         gi54tj+CPiEIb6Q8HycKDh9v7gtbRwIPWYre5egqWZIVV0z+FS1k+mRsx/R3Ds6XGh29
-         TVLopUhcsH9jfcJLw1S5kfRoUACQyaM88Lit25JKZHs+/meV8amB+00Fq8eXE+ImlAQy
-         tn7Fe78Wx9iuGb/F1PqjxL3qCPPpa9xZJvMvlqJ4vw2nY04Wivds5BFT1mEz+yHGeAAs
-         0Z9BQpe5LMDaZrcXpDLlg57ZLtHLZhimclPESAOj4o4mOZb0Z9+iJGSmX3GlrXax4sAL
-         SnSA==
-X-Forwarded-Encrypted: i=1; AJvYcCVKO7nqgw38LCIkqfKbnj4UaUbUU2uZQ/k9WVQFEx3hBo213k+d29w3OdNN3GvNpRlsV8tO7fPY@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyvmc6RDZMjC1ru7WQdQj8H3dVbsl92S9qH6sHhU0Bx0tLQExUh
-	vxcM77ppWy0Ksuayq0G9cWNrbajt5BaFstW37lcjVPqZWVMF1CO0PIEYCrsO6bh7+EIbOby90I2
-	FCWkJzxEBtmaVsWvHcbh7wkGt7cvTjURyS8bWdril+KjUeJCgr3alix8CG7A=
-X-Gm-Gg: ASbGncs++q3rD3cH03PAhFo2zGE333p7HuXkUcvTR2F1A1deCK1hvFIl7ZPc5WPXpci
-	maMPFABvXQFCpdPktLTGo2L1MEo+OruO8xpjosl00EOEK3IJxWkN09G6bDjPBvu4VjX3yvqw6aV
-	XVVdZNkTD/hfKcGZkJ3v/VQnTXStxEEiti9iGaOWU2AfzskqqQDc8upO9IoIyf+cRdPblmx4SvI
-	Z3xuG0akOhO3AS6RmbmA0pfLHCglPowrU0Gwde3A/HwZNUszE17rKNzEznRRsO9iT16wuYVViVv
-	gLURtA4gHjRNuEFEUFHSiYm4OWmlEmB4m4iO3GOtXrZpFsfK1E+M7T8WLtkY5omGSQ6m7r3RK+G
-	Y3++UndrFmuTYDntWJtKJsnebb350KyTGZMC7KvQux+alkQq3oSBx34o7YNj2102wss0=
-X-Received: by 2002:a05:600c:c8f:b0:45b:7ce0:fb98 with SMTP id 5b1f17b1804b1-45b85528677mr78023245e9.5.1756751920253;
-        Mon, 01 Sep 2025 11:38:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHq87FLfD4bNpAb7pWs0AmNW8xxuWnKcg9odd5omeYSbwlpcrZLSZ/gW4a3C/k//IJfK2+Qbg==
-X-Received: by 2002:a05:600c:c8f:b0:45b:7ce0:fb98 with SMTP id 5b1f17b1804b1-45b85528677mr78022885e9.5.1756751919831;
-        Mon, 01 Sep 2025 11:38:39 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f37:2b00:948c:dd9f:29c8:73f4? (p200300d82f372b00948cdd9f29c873f4.dip0.t-ipconnect.de. [2003:d8:2f37:2b00:948c:dd9f:29c8:73f4])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45b814da51esm145663325e9.8.2025.09.01.11.38.37
+        d=1e100.net; s=20230601; t=1756756420; x=1757361220;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U6dC2QIlPVYDynwThj1XsMObK2EBHiK+oeTA9R38dbg=;
+        b=l2j43ZWalVLAfDrC59scx74PPj8pfEl84G0mHLNQfC0DBxMriioJtBVOUPpNzQUsr2
+         ovCC4OyxXtwhjafZrvFpsLAQqRTcA7QNr6yRYthjhTCLMeKodRP2zrP3llBBc1NiAAZM
+         H2fCsqvi3lpoeua9qDM2E8gP/EAOi6AjyhRXX84cdIp853GW8+1U6imiPf7bLezwdPfS
+         wKeXA3q9EmCavzyMW+0xlnFCejMgIskyyOll38SrLJByWw4mMEtQ/JNbXjEIsP66hfzT
+         hOw7HaMWoketFzTqZ9ssbyrDYMPhJzM8h0jVAcQfyIcwfRFNxwWKBHquafGIVJQnKPy6
+         JQfA==
+X-Forwarded-Encrypted: i=1; AJvYcCU6iaOPLR4I4pNIUgtd5wMpVcS0CHCkVcVGnxV/pjbSB8/pyVtOm5yiIF47V15sOqsppojBXDT3AA==@vger.kernel.org, AJvYcCVLOXRWlG9iG4pVwz3Tyb0KxX3m961BUqySGZ6x4mD6fLLaR4MBIHtAOVir1JXM/+fJItM=@vger.kernel.org, AJvYcCXl8Be3O0Xv4y2OyJ7GyQtcD80wPq/pyCSm8QIWP6coVRg71+FRgH+OhADhLluSYGC6q9Fpmi5XS1CWxyQRZpp7@vger.kernel.org
+X-Gm-Message-State: AOJu0YynpKQj+QHxR5jEXGHIKiQqbBJg9/KilIaetwESJ4hHJEyoTrnd
+	mE0cSY5uncGUoiXy5GCEHrVu5laf2iFslQc6dpydi917m8jjzLhTkKHp
+X-Gm-Gg: ASbGncuSIUOwPIpM7RlHJN72tkCimwtngkANAuwhyZbnQxaEg9OapntDcMyEQeByKcR
+	OfRj/YPyGTEg9QB5xyPG4p2tvaDUaOWSsBotiEMN65xR7AZ74w7R2f6kMQrVtJcAMhOefs4tThT
+	cOcKJx3Txiw9xyGFxbP6XseSUwc4+W4Th8tNIYYvfuEAxxCzaJZ6P86wIEq2EXTK+7q7wQ8tUc5
+	Ph6wsb5VFGclhNNqrKB4gerqi4SSN/khw/tVeRgOezZ4M2vzwBmcv1crx0JNWiKF2LPM1bDpEOi
+	bqBmAJP9Njo1nIuBgRYiyOlnstqmESDaCjVlBtBsh6BYQKUiwz4yyrsOu7GxAObfAlnJGpBSh+W
+	5GEeTa37qamQMI6q097r4Z4hb
+X-Google-Smtp-Source: AGHT+IFqmqy7JTqCE8kp/izmK35smwPEY9oWGFGG/gnBIrSVmpVJnbVt7jfeeObUA4ZRq4rWsdC6CA==
+X-Received: by 2002:a05:600c:1e87:b0:45b:47e1:ef68 with SMTP id 5b1f17b1804b1-45b855bec6emr71221655e9.35.1756756419930;
+        Mon, 01 Sep 2025 12:53:39 -0700 (PDT)
+Received: from [192.168.100.3] ([105.109.196.36])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3cf34493b8csm16184910f8f.59.2025.09.01.12.53.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Sep 2025 11:38:39 -0700 (PDT)
-Message-ID: <776629b2-5459-4fa0-803e-23d4824e7b24@redhat.com>
-Date: Mon, 1 Sep 2025 20:38:37 +0200
+        Mon, 01 Sep 2025 12:53:39 -0700 (PDT)
+Message-ID: <28cbe760-e218-4f2e-a18a-651e2477ebfe@gmail.com>
+Date: Mon, 1 Sep 2025 20:53:36 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/3] cgroups: Add support for pinned device memory
-To: =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- Maarten Lankhorst <dev@lankhorst.se>,
- Lucas De Marchi <lucas.demarchi@intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>, Maxime Ripard <mripard@kernel.org>,
- Natalie Vock <natalie.vock@gmx.de>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?=27Michal_Koutn=C3=BD=27?=
- <mkoutny@suse.com>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "'Liam R . Howlett'" <Liam.Howlett@oracle.com>,
- Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>,
- Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Michal Hocko <mhocko@suse.com>, intel-xe@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org
-References: <20250819114932.597600-5-dev@lankhorst.se>
- <dc21e54c-d7ae-4d7e-9acb-6a3fa573b20f@redhat.com>
- <9c296c72-768e-4893-a099-a2882027f2b9@lankhorst.se>
- <b6b13ad22345bcdf43325173052614c17e803d00.camel@linux.intel.com>
-From: David Hildenbrand <david@redhat.com>
+Subject: Re: [RFC PATCH v2 bpf-next 0/3] bpf: cgroup: support writing and
+ freezing cgroups from BPF
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, tixxdz@opendz.org
+References: <20250818090424.90458-1-tixxdz@gmail.com>
+ <356xekrj6vqsmtcvbd3rnh7vg6ey7l6sd6f4v3dv4jxidxfd6m@cepwozvwucda>
+ <0e78be6f-ef48-4fcc-b0c7-48bc14fdfc7f@gmail.com>
+ <m7laj6747wtu5r732iph47zn6no3mbu6iq3mne3zslzyqlq523@7tmw25ap77ek>
 Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- qIws/H2t
-In-Reply-To: <b6b13ad22345bcdf43325173052614c17e803d00.camel@linux.intel.com>
+From: Djalal Harouni <tixxdz@gmail.com>
+In-Reply-To: <m7laj6747wtu5r732iph47zn6no3mbu6iq3mne3zslzyqlq523@7tmw25ap77ek>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 01.09.25 20:21, Thomas Hellström wrote:
-> Hi,
+Hi Michal,
+
+On 8/28/25 15:38, Michal Koutný wrote:
+> On Wed, Aug 27, 2025 at 12:27:08AM +0100, Djalal Harouni <tixxdz@gmail.com> wrote:
+>> It solves the case perfectly, you detect something you fail the
+>> security hook return -EPERM and optionally freeze the cgroup,
+>> snapshot the runtime state.
 > 
-> On Mon, 2025-09-01 at 20:16 +0200, Maarten Lankhorst wrote:
->> Hello David,
->>
->> Den 2025-09-01 kl. 14:25, skrev David Hildenbrand:
->>> On 19.08.25 13:49, Maarten Lankhorst wrote:
->>>> When exporting dma-bufs to other devices, even when it is allowed
->>>> to use
->>>> move_notify in some drivers, performance will degrade severely
->>>> when
->>>> eviction happens.
->>>>
->>>> A perticular example where this can happen is in a multi-card
->>>> setup,
->>>> where PCI-E peer-to-peer is used to prevent using access to
->>>> system memory.
->>>>
->>>> If the buffer is evicted to system memory, not only the evicting
->>>> GPU wher
->>>> the buffer resided is affected, but it will also stall the GPU
->>>> that is
->>>> waiting on the buffer.
->>>>
->>>> It also makes sense for long running jobs not to be preempted by
->>>> having
->>>> its buffers evicted, so it will make sense to have the ability to
->>>> pin
->>>> from system memory too.
->>>>
->>>> This is dependant on patches by Dave Airlie, so it's not part of
->>>> this
->>>> series yet. But I'm planning on extending pinning to the memory
->>>> cgroup
->>>> controller in the future to handle this case.
->>>>
->>>> Implementation details:
->>>>
->>>> For each cgroup up until the root cgroup, the 'min' limit is
->>>> checked
->>>> against currently effectively pinned value. If the value will go
->>>> above
->>>> 'min', the pinning attempt is rejected.
->>>>
->>>> Pinned memory is handled slightly different and affects
->>>> calculating
->>>> effective min/low values. Pinned memory is subtracted from both,
->>>> and needs to be added afterwards when calculating.
->>>
->>> The term "pinning" is overloaded, and frequently we refer to
->>> pin_user_pages() and friends.
->>>
->>> So I'm wondering if there is an alternative term to describe what
->>> you want to achieve.
->>>
->>> Is it something like "unevictable" ?
->> It could be required to include a call pin_user_pages(), in case a
-
-We'll only care about long-term pinnings (i.e., FOLL_LONGTERM). Ordinary 
-short-term pinning is just fine.
-
-(see how even "pinning" is overloaded? :) )
-
->> process wants to pin
->> from a user's address space to the gpu.
->>
->> It's not done yet, but it wouldn't surprise me if we want to include
->> it in the future.
->> Functionally it's similar to mlock() and related functions.
-
-Traditionally, vfio, io_uring and rdma do exactly that: they use GUP to 
-longterm pin and then account that memory towards RLIMIT_MEMLOCK.
-
-If you grep for "rlimit(RLIMIT_MEMLOCK)", you'll see what I mean.
-
-There are known issues with that: imagine long-term pinning the same 
-folio through GUP with 2 interfaces (e.g., vfio, io_uring, rdma), or 
-within the same interface.
-
-You'd account the memory multiple times, which is horrible. And so far 
-there is no easy way out.
-
->>
->> Perhaps call it mlocked instead?
+> So -EPERM is the right way to cut off such tasks.
 > 
-> I was under the impression that mlocked() memory can be migrated to
-> other physical memory but not to swap? whereas pinned memory needs to
-> remain the exact same physical memory.
 
-Yes, exactly.
+Indeed. A process can retry x y z paths, at some point we just
+want to stop the process or container before snapshot.
+
+>> Oh I thought the attached example is an obvious one, customers want to
+>> restrict bpf() usage per cgroup specific container/pod, so when
+>> we detect bpf() that's not per allowed cgroup we fail it and freeze
+>> it.
+>>
+>> Take this and build on top, detect bash/shell exec or any other new
+>> dropped binaries, fail and freeze the exec early at linux_bprm object
+>> checks.
+> 
+> Or if you want to do some followup analysis, the process can be killed
+> and coredump'd (at least seccomp allows this, it'd be good to have such
+> a possibility with LSMs if there isn't (I'm not that familiar)).
+> Freezing the groups sounds like a way to DoS the system (not only
+> because of hanging the faulty process itself but possibly spreading via
+> IPC dependencies to unrelated processes).
+
+Well mis-using things is possible, but here nothing is new.
+
+Pausing a container, freezing the cgroup, or criu have been there for
+years, no new features here ;-)
 
 > 
-> IMO "pinned" is pretty established within GPU drivers (dma-buf, TTM)
-> and essentially means the same as "pin" in "pin_user_pages", so
-> inventing a new name would probably cause even more confusion?
+>>> Also why couldn't all these tools execute the cgroup actions themselves
+>>> through traditional userspace API?
+>>
+>> - Freezing at BPF is obviously better, less race since you don't need
+>>    access to the corresponding cgroup fs and namespace. Not all tools run
+>>    as supervisor/container manager.
+> 
+> Less race or more race -- I know the race window size may vary but
+> strictly speaking , there is a race or isn't (depends on having proper
+> synchronization or not). (And when intentionally misbehaving processes are
+> considered even tiny window is potential risk.)
+> 
+>> - The bpf_send_signal in some cases is not enough, what if you race with
+>>    a task clone as an example? however freezing the cgroup hierarchy or
+>>    the one above is a catch all...
+> 
+> Yeah, this might be part that I don't internalize well. If you're
+> running the hook in particular task's process context, it cannot do
+> clone at the same time. If they are independent tasks, there's no
+> ordering, so there's always possibility of the race (so why not embrace
+> it and do whatever is possible with userspace monitoring audit log or
+> similar and respond based on that).
 
-If it's the same thing, absolutely. But Marteen said "It's not done yet, 
-but it wouldn't surprise me if we want to include it in the future".
+The complexity to do that from userspace for an eBPF security tool
+that is not running as a supervisor in other namespaces is high.
+Basically the race window is reduced... we trigger in the task context 
+that we want to freeze and set the freeze jobctl bit of the other
+tasks.
 
-So how is the memory we are talking about in this series "pinned" ?
+The extra offending syscalls by that cgroup tasks are reduced.
+
+> 
+>> The feature is supposed to be used by sleepable BPF programs, I don't
+>> think we need extra checks here?
+> 
+> Good.
+> 
+>> It could be that this BPF code runs in a process that is under
+>> pod-x/container-y/cgroup-z/  and maybe you want to freeze "cgroup-z"
+>> or "container-y" and so on... or in case of delegated hierarchies,
+>> freezing the parent is a catch all.
+> 
+> OK, this would be good. Could it also be pod-x/container-y/cgroup-z2?
+> 
+
+Yes, basically the cgroup of the task, or any parent by fetching its
+cgroup.
+
+BPF is already the core interface of cgroup device controller.
 
 
--- 
-Cheers
+Thanks!
 
-David / dhildenb
+> ---
+> 
+> I acknowledge that sooner or later some kind of access to cgroup through
+> BPF will be added, I'd prefer if it was done in a generic way (so that
+> it doesn't become cgroup's problem but someone else's e.g. VFS's or
+> kernfs's ;-)).
+> I can even imagine some usefulness of helpers for selected specific
+> cgroup (core) operations (which is the direction brought up in the other
+> discussion), I just don't think it solves the problem as you present it.
+> 
+> HTH,
+> Michal
 
 
