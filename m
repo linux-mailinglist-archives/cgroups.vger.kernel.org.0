@@ -1,185 +1,136 @@
-Return-Path: <cgroups+bounces-9549-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9550-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA3A3B3DB59
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 09:44:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48E26B3DB87
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 09:53:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2FD7E4E06D0
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 07:44:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 050423A4DD1
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 07:53:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C74D42D7DF8;
-	Mon,  1 Sep 2025 07:44:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="jhFaYZ/B"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 276042D7DC0;
+	Mon,  1 Sep 2025 07:53:51 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB7672D7DC8
-	for <cgroups@vger.kernel.org>; Mon,  1 Sep 2025 07:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE2C2475C2;
+	Mon,  1 Sep 2025 07:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756712686; cv=none; b=F5zPu7YvdxkM3f9gAO7kX0fVATFp/xzIhwep9YqxtCNrrTlWi4h4qdffMdM4nTgLGOm+g18VT9Tq0xLUJ8pXy4lZnlbMq4boBwEJVPa4AMjezlybMMWlufgnD7nyK3BaKGYmsiM7/o2e1FPZYDYFb0xjFrLtGjCUopkyDsjCspA=
+	t=1756713231; cv=none; b=MZHm0YldvrPbqUQtVKeMiV72d9Y5BFn0sgE9E9xAoplVbsEyk5g0gr3XcC4cOFDYdE/xM3jTutEUrP/qCVD3BfP8/bz9ouufb5mt/9zJe+fPXXLSbXZyLtgsXBclhjEysMdbeK0WCMszpdQvKd5Kwozvsy9rz9KSFmRWRXui71s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756712686; c=relaxed/simple;
-	bh=h5ASbpq7GzquVrjE5v2oPRk1/yndZJRiGIfLCAbjbYA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z1eRDjKuy3LJFpQfY1CLqKjsR0iUr0SpqL3l7GcGfp3lOQb8wqQhOlAzgn1UA8Ez963vTs2hjGsmwoackqnrsxRQBC8wUaT5P+TAhzZIj7xItIdS/017heQ3cQQqo4J2R5KRPDRirr+JkpNnSqoz+vordpweLoww4qFKfghRFkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=jhFaYZ/B; arc=none smtp.client-ip=44.202.169.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5004b.ext.cloudfilter.net ([10.0.29.208])
-	by cmsmtp with ESMTPS
-	id syEourXBAKXDJszDSuhdp9; Mon, 01 Sep 2025 07:44:38 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id szDQuE65YGtD7szDRuviJs; Mon, 01 Sep 2025 07:44:37 +0000
-X-Authority-Analysis: v=2.4 cv=aKjwqa9m c=1 sm=1 tr=0 ts=68b54ee5
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=XW3vq5T86JFyMsJaYQInbg==:17
- a=IkcTkHD0fZMA:10 a=yJojWOMRYYMA:10 a=7T7KSl7uo7wA:10
- a=H2_X3B96ix6R1hjB0M0A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=xYX6OU9JNrHFPr8prv8u:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=VyVL0CUniS3Y2QcF3TIAZDEVTr4tMopQSoLyF8TxjVA=; b=jhFaYZ/B3nqWPBto84JnjMHrrD
-	RSxjYE09m9V3eG3ONgJKzM4xaeMcD43WOFMsiyOxwurcfjal+ewG/4ys/VQAy4u5jWCuTH3jJgGLv
-	7Yk0PSa2sVFGDpmP8vDc3E3I9MFETMkZILOBTsNtLWtiEYDhc2/RJzCU246gsbwxPf3R0Fn7J4jpw
-	5910CxHkM8ndH8TJGeIusrQJ+TuW3YjrmKXUalWybgkykEFnnMlsnbp5qzIXPUyJhRzZZql3TVNVK
-	EIeN7yMj1EdLL4GZ0Ng108GvnLfHainljVWIDjGpDOuv+7Tv9oVhfG40QLh7jD7I/GSup2V/hXcrO
-	NKJfen6w==;
-Received: from d4b26982.static.ziggozakelijk.nl ([212.178.105.130]:58286 helo=[10.233.40.44])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.1)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1uszDQ-000000043fh-0wKn;
-	Mon, 01 Sep 2025 02:44:36 -0500
-Message-ID: <65a443d1-be01-4e5b-9086-b4ce2746ab63@embeddedor.com>
-Date: Mon, 1 Sep 2025 09:44:27 +0200
+	s=arc-20240116; t=1756713231; c=relaxed/simple;
+	bh=iJHDLa0VqgYwP1aLAZ2cy4UC21bNmm3bSqcT/6etvmU=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=qy4swlwP87jgqQPaJSdEH7C7qxDeoSjzXCK1zXZ8tgaCPt6KEMN6vCmBBSlrGHTDBjBvHnVXONd2qK+xL3xW8SCNTPdS842wb3o4mQKeVYuyKLUMPLeXYOA3HMr4NfE93XCYCWsrGe5XVC5r/5TgqQVXvrBtnIeIAYEdWYqWo2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cFh2g3YHCzYQw16;
+	Mon,  1 Sep 2025 15:53:47 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 0091A1A1185;
+	Mon,  1 Sep 2025 15:53:45 +0800 (CST)
+Received: from [10.174.179.143] (unknown [10.174.179.143])
+	by APP4 (Coremail) with SMTP id gCh0CgCn8Y0HUbVoRo0JBA--.61512S3;
+	Mon, 01 Sep 2025 15:53:45 +0800 (CST)
+Subject: Re: [PATCH RFC v3 03/15] md: fix mssing blktrace bio split events
+To: Damien Le Moal <dlemoal@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>,
+ hch@infradead.org, colyli@kernel.org, hare@suse.de, tieren@fnnas.com,
+ axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com, song@kernel.org,
+ kmo@daterainc.com, satyat@google.com, ebiggers@google.com, neil@brown.name,
+ akpm@linux-foundation.org
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-raid@vger.kernel.org, yi.zhang@huawei.com,
+ yangerkun@huawei.com, johnny.chenyi@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20250901033220.42982-1-yukuai1@huaweicloud.com>
+ <20250901033220.42982-4-yukuai1@huaweicloud.com>
+ <c7182d12-4b57-4133-9412-7587a98b86bd@kernel.org>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <0431e4f2-5e9a-b172-bb65-3d355232e831@huaweicloud.com>
+Date: Mon, 1 Sep 2025 15:53:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] cgroup: Avoid thousands of -Wflex-array-member-not-at-end
- warnings
-To: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- linux-hardening@vger.kernel.org, "Gustavo A. R. Silva"
- <gustavoars@kernel.org>
-References: <b3eb050d-9451-4b60-b06c-ace7dab57497@embeddedor.com>
- <9da518ad-9b44-4dbb-98e5-66cf8a3fe7c2@huaweicloud.com>
-Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <9da518ad-9b44-4dbb-98e5-66cf8a3fe7c2@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <c7182d12-4b57-4133-9412-7587a98b86bd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 212.178.105.130
-X-Source-L: No
-X-Exim-ID: 1uszDQ-000000043fh-0wKn
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: d4b26982.static.ziggozakelijk.nl ([10.233.40.44]) [212.178.105.130]:58286
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfIBH3Hdc0nLu/2sESw2sC6N9C45A972qEUdL8fdRXwO1rHqzmAbv3ShxQURyNk3cXwJLb2lZzmeY8HrqNvKcRlpIEALw1qXnSMdwdfwMe13uBLUsOSz0
- CZAHKCwBT+IQrigYNJqCaq0i7kxm/U9590sf1CHp/+iufP3SyvxzMb0qnI9I/POPFLVPXR+Hie27zPTA31ff9GkZ0KcgLlEk/KE=
+X-CM-TRANSID:gCh0CgCn8Y0HUbVoRo0JBA--.61512S3
+X-Coremail-Antispam: 1UD129KBjvJXoWruw4xXw1DXFyruw4UGw1fCrg_yoW8Jr1kpr
+	4xXa15tw1kXw1Fkwn5uF10va4rG3s8XFWfJ34xJr15X3sIg3WfWrWIqwsY9a4jqr4agasr
+	WF1DWFZ5Cw1kXaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUB214x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVW8ZVWrXwCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjTRRBT5DUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
+Hi,
 
-
-On 9/1/25 03:29, Chen Ridong wrote:
+在 2025/09/01 14:30, Damien Le Moal 写道:
+> On 9/1/25 12:32 PM, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> If bio is split by internal chunksize of badblocks, the corresponding
 > 
-> 
-> On 2025/8/30 21:30, Gustavo A. R. Silva wrote:
->> Hi all,
->>
->> I'm working on enabling -Wflex-array-member-not-at-end in mainline, and
->> I ran into thousands (yes, 14722 to be precise) of these warnings caused
->> by an instance of `struct cgroup` in the middle of `struct cgroup_root`.
->> See below:
->>
->> 620 struct cgroup_root {
->>      ...
->> 633         /*
->> 634          * The root cgroup. The containing cgroup_root will be destroyed on its
->> 635          * release. cgrp->ancestors[0] will be used overflowing into the
->> 636          * following field. cgrp_ancestor_storage must immediately follow.
->> 637          */
->> 638         struct cgroup cgrp;
->> 639
->> 640         /* must follow cgrp for cgrp->ancestors[0], see above */
->> 641         struct cgroup *cgrp_ancestor_storage;
->>      ...
->> };
->>
->> Based on the comments above, it seems that the original code was expecting
->> cgrp->ancestors[0] and cgrp_ancestor_storage to share the same addres in
->> memory.
->>
->> However when I take a look at the pahole output, I see that these two members
->> are actually misaligned by 56 bytes. See below:
->>
->> struct cgroup_root {
->>      ...
->>
->>      /* --- cacheline 1 boundary (64 bytes) --- */
->>      struct cgroup              cgrp __attribute__((__aligned__(64))); /*    64  2112 */
->>
->>      /* XXX last struct has 56 bytes of padding */
->>
->>      /* --- cacheline 34 boundary (2176 bytes) --- */
->>      struct cgroup *            cgrp_ancestor_storage; /*  2176     8 */
->>
->>      ...
->>
->>      /* size: 6400, cachelines: 100, members: 11 */
->>      /* sum members: 6336, holes: 1, sum holes: 16 */
->>      /* padding: 48 */
->>      /* paddings: 1, sum paddings: 56 */
->>      /* forced alignments: 1, forced holes: 1, sum forced holes: 16 */
->> } __attribute__((__aligned__(64)));
->>
->> This is due to the fact that struct cgroup have some tailing padding after
->> flexible-array member `ancestors` due to alignment to 64 bytes, see below:
->>
->> struct cgroup {
->>      ...
->>
->>      struct cgroup *            ancestors[];          /*  2056     0 */
->>
-> 
-> Instead of using a flexible array member, could we convert this to a pointer and handle the memory
-> allocation explicitly?
-> 
+> badblocks ? Unclear.
 
-Yep, that's always an option. However, I also wanted to see what people
-think about the current misalignment between cgrp->ancestors[0] and
-cgrp_ancestor_storage I describe above.
+This is due to raid1/10/5 internal processing, if read/write range
+contain badblocks that are recorded in rdev, this bio will be split to
+bypass the badblocks range, an example from raid1 is choose_bb_rdev()
+will update max_sectors from read_balance(), and caller will split bio
+by max_sectors.
+> 
+>> trace_block_split() is missing, causing blktrace can't catch the split
+>> events and make it hader to analyze IO behavior.
+> 
+> maybe:
+> 
+> trace_block_split() is missing, resulting in blktrace inability to catch BIO
+> split events and making it harder to analyze the BIO sequence.
+> 
+> would be better.
+> 
+OK,
 
-And if the heap allocation is an acceptable solution in this case, I'm
-happy to go that route.
+>>
+>> Fixes: 4b1faf931650 ("block: Kill bio_pair_split()")
+> 
+> Missing Cc: stable@vger.kernel.org
+> 
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> 
+> With that,
+> 
+> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+> 
+> (maybe drop the RFC on this patch series ? Sending a review tag for RFC patches
+> is odd...)
 
-Thanks
--Gustavo
+Yes, I'll send the next version without RFC now. :)
+
+Thanks,
+Kuai
+
+> 
 
 
