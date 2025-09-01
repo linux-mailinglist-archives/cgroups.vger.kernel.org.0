@@ -1,232 +1,309 @@
-Return-Path: <cgroups+bounces-9554-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9555-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65C66B3E3A6
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 14:47:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27BE8B3E3FF
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 15:11:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 871CF203059
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 12:46:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 517711898118
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 13:11:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317EE2EE61F;
-	Mon,  1 Sep 2025 12:46:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4A71D61B7;
+	Mon,  1 Sep 2025 13:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="E4/UvYma"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KQpP1hz3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9543917CA1B;
-	Mon,  1 Sep 2025 12:46:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A7514AD20;
+	Mon,  1 Sep 2025 13:10:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756730766; cv=none; b=aPOBr6yNJ0KD7jszeNV4D/n10mdsQs9Rcf2e8OcZU0kpNHL5hY52Zrz4q5Df0bToZS4f7/IB34CTk6ECQQxKPyoPZJLj55SvC0SvXjlgNVfVKd4iNADdThYHbVSJh75CfvvP5rhdGfLQx46Y2SS1pITFCGtCnWHrwcS2ZZM/keY=
+	t=1756732249; cv=none; b=Yuy93KLU6m1bKKs+uUBXgQHjWGJzHWXsY76s2KIZ/Cixbl5fyZsYiHPX+X9ZaAxeMJBZKcVcIwd46EHhaIn/djH3b8S9vHZDyGWkXyXVIEZIy/E1O0FEWhsMBwrkXyJCVt0ElTkelC1M9EgfyGXaDrV+7CflwP5Ni5rOS446ZYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756730766; c=relaxed/simple;
-	bh=JKv0uVEnJesH0HkICcU4KY7pmHLi9Hup07tiqedKWdo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BJEOJF8JXbVdoGdwyENezXE3GNPqSq4M2uP1b6nB1QLTrA+RuevOhKmNXPiltneQH90mWG74NfLW/x1w6Ils21O2DxUKGgsavFoh7HCGCzdwHKbtpQ9hl5AYToMZwrsKZRyrctukfwhb58NjEpHq4YX/+LbQuGVFlSm8bDiw+K0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=E4/UvYma; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1756730733; x=1757335533; i=natalie.vock@gmx.de;
-	bh=vk19hrLmTMX1+o07BsugobTZFFY1uG8ZJ4maDm0wMWc=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=E4/UvYmaKAFUAPb7HRhMVnenDOtQJ4PkllkSG20ti17my6nC1CvBao9VJ9+RoIWt
-	 ay1+uT0Mow6bgbniCwXv0LTxoUHfDwLOrB9p6ivrOGmefcgDroJmCsJRKzt+Fyypo
-	 kfgNkJrHtSAkbnfBNhQkhX/3ae1AyQgWwUXJP+cOpj+v0KgMwZL+I0g1D038G5ijP
-	 vZjF76CNeyCSpJ4EfIDyLqDf7Tyl/2iAiU3uL3s6W0dKBwbVzqCbx+oTIY3YRTwhZ
-	 s+ASx8AJitMt1/4zKWs0sJXvRvXzabNHBc2Ex9IvHfRhD/FOY0cZK4ngrjpt8GXGG
-	 BlK6+++yY+2PX1+mUw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.0.3] ([109.91.201.165]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MA7Ka-1un3cl0fQw-00AguE; Mon, 01
- Sep 2025 14:45:33 +0200
-Message-ID: <25b42c8e-7233-4121-b253-e044e022b327@gmx.de>
-Date: Mon, 1 Sep 2025 14:45:29 +0200
+	s=arc-20240116; t=1756732249; c=relaxed/simple;
+	bh=l+zEh4GN06CwujvuIj3y3Fd32BGM/P2y+zLD4+u7l7M=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=gVhAQq/Iba4I5xoh+vMPvbkydDCxDX/hwivFMODG8j6Cpp8hqTpKTQA00Nb805uM2JVtkUvE8QaBO4xfnNP+AlfxzN1qkMq/Ib2iqCQwnS8ct+sx7yxtjcl+rJ6PzQzPE3/CjWWcZDPSzJcoSJdsBoebuMvORdiH/hJ1SiLqLg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KQpP1hz3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2C4A7C4CEF7;
+	Mon,  1 Sep 2025 13:10:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756732249;
+	bh=l+zEh4GN06CwujvuIj3y3Fd32BGM/P2y+zLD4+u7l7M=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=KQpP1hz3p7pySlQA+S80YSRFmx1/RZzMbVqgwb6DJ7FII9WAZ2aC0Vkb2bY2IPIgo
+	 5RCwWfOsqj6oH3/pX4lIDCuOOnNj9pXtQBn1tnrmIQEH+XVh9Y1PJP+hS509fIk0oM
+	 7NnEVi31nSQ/8MpxGe34E6NqS5meKjX8tV7J4kEDUQj4qbBrjxI9QxaHniIUyy3yEY
+	 gtjmo/KHVVgmCi45l9Q6BNFzV43IAWtjbRH902bx28dItj0RpqcveeXYME8ipfRIBt
+	 uCZQnUdWBrjyoriL6ICoig8e7WsKXoloqJHchCd36LnqZQtWt5aeK+UBbdVHOc8NTG
+	 YbdnooPnpDcUg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0481CCA1002;
+	Mon,  1 Sep 2025 13:10:49 +0000 (UTC)
+From: Simon Schuster via B4 Relay <devnull+schuster.simon.siemens-energy.com@kernel.org>
+Subject: [PATCH v2 0/4] nios2: Add architecture support for clone3
+Date: Mon, 01 Sep 2025 15:09:49 +0200
+Message-Id: <20250901-nios2-implement-clone3-v2-0-53fcf5577d57@siemens-energy.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/3] cgroups: Add support for pinned device memory
-To: Maarten Lankhorst <dev@lankhorst.se>,
- Lucas De Marchi <lucas.demarchi@intel.com>,
- =?UTF-8?Q?=27Thomas_Hellstr=C3=B6m=27?= <thomas.hellstrom@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>, Maxime Ripard <mripard@kernel.org>,
- Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?=27Michal_Koutn=C3=BD=27?= <mkoutny@suse.com>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "'Liam R . Howlett'" <Liam.Howlett@oracle.com>,
- Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>,
- Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Michal Hocko <mhocko@suse.com>, intel-xe@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org
-References: <20250819114932.597600-5-dev@lankhorst.se>
-Content-Language: en-US
-From: Natalie Vock <natalie.vock@gmx.de>
-In-Reply-To: <20250819114932.597600-5-dev@lankhorst.se>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RAl06NMOpU7f46c0WobJ33qXFn/0aYGSKvrRkX5ESDCqF/Tb6ix
- 2grj9iQdjAGWbMyKVnIkaR0gfzsQfgZVneVcK4nXTGbdrBuKLQfOAHH8FncM3JMKYO44hb/
- BXiFGIjGezs/HoO7Kp7Np8OM2FstFzNBcerte5dUe+wrHU+9jyk/AUFBMzvS6TMdxRzz6K4
- WnLynZfSsJAqg8Ktv1gyw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:U2xrOcMtXIc=;jh3Jz8lKaZo68OUS0Kk4/pKIoAz
- fXRy88wKRCqFMeXcqP10/JaoWYDNp9xppcVFr3DbWXxw87RVtU/4OMK6Ru4lCV9g2nLvHsLjt
- /ipRhJYQvbNg/S4FrEBHRf/Z+RO3nuqItfk2oO5ODO50NiIeXU+CjV8ySVr89Y5sU42g9dVj6
- Hw7kptP6z/4Lj2dsO1uWTEXeBgizSaDwTwGJyQaqP9svVedj0uSWCBxybfnj/kKrSg+Tz28Pe
- KFJhRJdP3s0Rri6lWmGek1Gq7Zb6HiNc1e8oIdaCobzGeDacVeLOjPKzhxCwuZf1xKEiE9HSL
- QGPHB7dw9cw23PZqchiocn7k3D05srw3C9hScHoa51oEJL08VetJnvuMxf2rS+RhlJCAX9cjf
- TOMu8wvwArBvZsXyblqXeGcOSGEkKqeZ1RC27g1qGmj6LHCLtXwtol+FNJZMRwA/ONMcg3gyE
- KJZz7z5HZNlsePDHXC3M+/FWEmqwi0GKxrLbUTuVnqXQ/SRYJhn7FQDwK/iVy1CUgTeFCehpd
- HMfpRtqoFhu2e8ps0JOWvTnQ47znJrrbEr7Yc3YHleMJ1rB1vZ5T47dQmXlXu8bwBpKb0NItB
- zeZ/3vPGAYztk8mTv56DRQRzZ+UKog2kX4MLOpVA5UW1cF9rBnDlA17q0h6WEi2ZLaYNtkJbR
- DyaFJKizWoK9qjWQD+iMglRi7JJq8coIWJLdzPIT8WLtG7a7YdEss6qqldbQT8epGBZznJW/q
- eXeVSr+xzsHEo+JI9nqqyIUPPlw+n31I9Lyq2Ul0IP8giOh6f0k1oxsamoQJRd0Pyj4zq2weg
- HKvE6SjrZ+7476WtrM+R5vreVoZtQ4mocVMkvv+C7gQZAoBM34Whf/r2jRSwOwSuoI+gDjZxI
- Lhvxh22R3ylHfEzM1JgcQ7qXAHEY2TkzOwMkjtxlXrY+jYf9YNu4F75Xloes+aOB0ywB2CyAk
- t8mcAIYE8qNcnHl1GxQR1E1XS5dpfLdLz1tRsTqEIQ2UWTBXRCModpnhzwMPBJedCAkHfHAnB
- U207qtoIvhazp6uLsBx6eO+uZQ1ACT9cNKF/Rns99KlLRgQR8N79vG5tGmgq814UCJUaItB8R
- nTAExUtezBTFupkT2CjS1kS8UGb5xFobhv4T+Our6X8sBuyglwJ4x2BQzGfl5D65TvTSYiR9Y
- yJMGgnxagced100kN5m2DAArScMnQjnMkVMl/gRKDfYjqLk47pAMHjcAmwJj+Bt4upa6Luiy1
- 1Wk5RP94AXmZ7tSBd4jn29CW2xCssTStgisVMHR2gwGbfnF32WYTR5qket6uXiOyx+Wba8E56
- bBDHst/gSxjhPTrrbrBhC9YWQzoC+v0papq/Mx9o1cTkGcsyPvKT2xaMpWhDR/Uj1tBrxWKHG
- TyxSeIL44wrsM3WNk82lW6gQrmO1/K9kRcJ+HvnUC1ULfogLXy+7WzR1V9rsmvwM26J8iQ64J
- xUQdvs3k2NG+RV45RwpnCblryN9y7Y347EXorl0LaJxmIxz61TzW2iv/74vl4g4Dqz1kcK1qY
- gQCZ9EdS0KJ7uqOayFiKPiZ6EKAKILwzkpe1sI/+5ry8GOHtCee3G8KC5guYQU94snDSqLAFa
- E1ex4RujXHYF/+Qbde9iVhZ89BMqb7oOwgDqEsJEUUm/dq7bAaxObzRphPEgWMkwkjgEFF0ku
- tD07NVLY5aZuYr0FuNh+HKOEMH+vXys1YW3V1XpL/ZpilNDwAqPqRGdWxrwAGJGTQlSKK2VAW
- vhzrOAmkg1T4FY8X+0gC/VVzi7QEVC3447x+XagPNPAlDZtdJm4x2BF2kU7RzJ+vXiRde0eWg
- itg53qrKzQN65xCdpOFQwWYQ+/+YBVtSCgHGFtXvbEdTnkShbT/xCQp72jc9JTX9OejxPPwOS
- NuUNxFje+hRwFY1I9wMS3IK07+McSGgoEKNDBD5q7DuNH/ecl9fP8qvEmnhUE1aeEjVDu+KVD
- sKy7wxZmJEsErUb6fs24pFD2XPTGXvAUuwsQ0xq5N5XAbkPCMmJqjmse0aCj3y5X2/H6/yjGt
- ROgyBREQig9wj0ofrvJwlyHtqPLkYF00D+qOQtmbmqFs/lBDT8Df8D3aEcYFUJqrLorFSaHAR
- nVnEKgydCamhWSikf1g+Qbv72wGBdE//jeqsiG9zpd2R7KJzN14o/9tIW7drt1stKDOF5/KpG
- NdIusxETInfcyzn14Y4OIMfK2A17I4noeO0SrXCh1aUmyx32UlZm4/Lpi/tXX6aP9VxHj9ePA
- i9PWyFT9f4fHyW5LCJ2CyVI8VFeZA2lDnNjtLrYO6zfrcGhp7twep65BbJotppR/h1CMvWZdZ
- hlgJJe7QPHXUQ/ci7//+sfYICKuusQbowj2kVs3hM15cEkA4v3AMn+swEPFJcwv9tWXs2GGoD
- QOSrr3Egf5d/ltR/7Nouj7aVNshJPrrbH3L6vYkGGxi7c6+HCJTt1+xSGObuDxtpm4Jdvx35I
- yXmEsrcGGoAFiEKo1axClRU3D9jnbmMm+dh4+fDe540xKMNN0MIkdxJu1vpcNgOhbkJBEno+d
- dji0pE6bJb5gUskCCBsPdlar/oQu/kA/+qJ7U2iF67g6Ty3aKzD9tg35wCHw+BtIY3izs6Zjr
- 7YfZSEHmaU0soux0OiweVP4X6GqRT7o3AQf5YloKrp9Hf04J+nlCCJUc/suaEsaEFPvilp6ia
- MdmoMTJkaLVuSFCOo0W16A3Kq7yOJWtlP/u9OA8j9qkbjY7lkBRhHjUFaYUFw1E2y3hOJ1JbD
- S9Bo2oXPB0VTFplhsTdnR8mTuT/ghk2X2iR2/vJqIWDffd2iqSunqe0QhQgkFHHi0z6BC48av
- UPtHcWi/FLu5iNwQa5lMUcHpJkSP+Oqf7oxSw2sxlcyxmUV1Ou7ZJOslnqncjxqXRpix3TFOw
- VB3bO/EyRLRGiyTW2OkTmYL92pcAVjkI5EKRg9Im1kht9ScVQ0b3nK412CGKXnRObeBHti57Q
- xc8gFLM8xmGmhx65mGxoL3joo7ZDm0YEl+9qqkL2RVZqlwtCe2anKEuOMY6eC7Wv5NUICXUhA
- xL4xDC8scKD/sdoO6QQ1/03LkdvaaSDlZ5COvkma9IpdVPWzX/P4dGNda6i8y1gta3GUq2e5T
- RgChRNGP2KiMXnh6I61hCcn61OywSUHl1vHj8B1iiYodmiTIGxAoC1siBZi9QDiSFYuvIAKiP
- 0jXp0fQyYDFyXwlNPRwVkeh26fBc3e+ipPF0XH27O2+rxuBYbiTbxiCOkkQZwRIWLi+1lNUOl
- ty5GC13TGnn1goUFAiEZ1vnundrQrG6uymo4gVb7MZzB1D5w0IBgYjj3gXLPgIueotYOMR/Sa
- OznazI9P6p0nUAbVYYIT1DfOAYJrVv8D+edwoJ6HOEKna+oEtkPdkWDsGKggR44PVHWxTvqGM
- RuD/P152bgodSUIjXHi6oF30Sl5O/j3YYczLZOBWmGu/sLETQerJ38JfvpiVzGUeMM7PQo2ly
- bp8qzIrGrMhbcwePcVP9LVK034Ju/Ddmb4yQb1c3sGLoty9VeMVwE5v0d/UWA51gyII06yc9U
- 4e6wVe2RrLlW4apre3l67GnlusNzdDjtqDckeJMrNV52eSFgjsvcRujz5AzhF9MkS/hZToPyn
- l+wdN/cbPFXWsUKGPYGj8Y1qqQ9M+XO5GgA90dogp/hPZV4o6v+QrXJBe7cwElQtNXIpZSd6Y
- iQFyLoJflzCkoxX/FzCRqkXVW8y/GFVFN2Ug80nFrmkOTaFGSYwZfjFM0/d1X/1VBXSgyxig7
- QSQ4NwSHBb9Ykc0G1JRPKjLUZEvR2L3g7fpD5wa7ulVih//pVuyRut05yS8Nnuz8uue/7RaGp
- crzjnpolxQ/ndG1WJUE1XgA5+CtQk5Wsj6k66Dn9Qt1u/XW/IeOqwvWUooREAfvoK/y1nHh1q
- c6nni3heqZabgJTxMtkwbMkX7FI1p/QEBu83x8TVI81yAtwe+gHWMRnd9DRNurd04VI2CF3/w
- piDxk0ewcTC61qM0vUozcsWEJ2woi4BznbLEpcDgAdQZzku+iYRqs4ZfESHFsRZaGP2IGOqOd
- jhlt8Wwq5XiMaGlmojG8hsI4jxBfzI/ov2ydDT6Of5veLIbNZw3zyKXODDpATAES/0Aap7Yiy
- 2QFbxLC0OynDS8YKSUtBuYZxVUqXszkZr+k6hQ+0hMOo80RQjOEnTrzjQBfp5svgNBLx2P2cP
- LAYZ2WFcLYvsUiEHcvniLbbTpqpj/EYvuRxzE9IlXGB8rtNqsm1f+DgHME3YSbzKHov4GT4J+
- G8AaB0EhNgbfUL5BhJ53vtvWw9ZDy4q5Ke04k6OQdaYskBW4yLW21s3UTItJX6c0J7NDaQhAW
- /yGm0UfwfT/iS9KyWAl9yOtgKx6Mw0b+sAWyANPCJiaC0TQceMJpCpP3zHZUEQoM1YWnWZgHl
- xJD8PYgx4W3JoIXxfyPTA/kWn6TMomc9zLymlsgzGQ9RQ9q/T1Ypd736314NQcV6kjaf+GapH
- LSegizFcrPwb/WuC7LS+4sSVRIwC+VhawKTKrC5rKjNo392aZ/MOlkNDpJnlL1xwyni6N1/KT
- CJdlUPPbF+L9G7DCbM5LKu9uZJXO8Bjxxv5W+bXfuTKojJm40aGA4g1vfPFNX/a3DF2h9W8OE
- X6ZapGmQVT89aICqXJVJn1L/vSt3AmGyzmIwqZeQpOZ6gcVivSifwf3XqfC6k1/QvZjvlBesX
- pHcYMd1pIrS5AFsUros8s8nFLSq1pY5i76c2zO+aLhaIaQB21Hl+N31195woi3fmDYtqRBwar
- 5PNxlExnwHAFIHeWLtjtJXVXTMzj+xKSEA5PSHGxA==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAB2btWgC/3WNzQqDMBCEX0Vy7pZkrT/05HsUD5quuqCJZEUq4
+ rs3Sq89fsPMN7sSCkyinsmuAq0s7F0EvCXKDo3rCfgdWaHGTJemBMdeEHiaR5rILWBH7yiFosM
+ MLeoy162K4zlQx59L/KojDyyLD9v1s5oz/SnR/FOuBjSYtsWHNkVa5E0lfBYEyFHot7v1k6qP4
+ /gCMZ8FFcUAAAA=
+X-Change-ID: 20250818-nios2-implement-clone3-7f252c20860b
+To: Dinh Nguyen <dinguyen@kernel.org>, 
+ Christian Brauner <brauner@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ David Hildenbrand <david@redhat.com>, 
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+ Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>, 
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+ Juri Lelli <juri.lelli@redhat.com>, 
+ Vincent Guittot <vincent.guittot@linaro.org>, 
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, 
+ Kees Cook <kees@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Alexandre Ghiti <alex@ghiti.fr>, Guo Ren <guoren@kernel.org>, 
+ Oleg Nesterov <oleg@redhat.com>, Jens Axboe <axboe@kernel.dk>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+ Paul Moore <paul@paul-moore.com>, Serge Hallyn <sergeh@kernel.org>, 
+ James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, 
+ Frederic Weisbecker <frederic@kernel.org>, 
+ Thomas Gleixner <tglx@linutronix.de>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Arnaldo Carvalho de Melo <acme@kernel.org>, 
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
+ Adrian Hunter <adrian.hunter@intel.com>, 
+ John Johansen <john.johansen@canonical.com>, 
+ Stephen Smalley <stephen.smalley.work@gmail.com>, 
+ Ondrej Mosnacek <omosnace@redhat.com>, 
+ Kentaro Takeda <takedakn@nttdata.co.jp>, 
+ Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, 
+ Richard Henderson <richard.henderson@linaro.org>, 
+ Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>, 
+ Russell King <linux@armlinux.org.uk>, 
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+ Brian Cain <bcain@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, 
+ WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Michal Simek <monstr@monstr.eu>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Jonas Bonn <jonas@southpole.se>, 
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
+ Stafford Horne <shorne@gmail.com>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, 
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+ Andreas Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, Borislav Petkov <bp@alien8.de>, 
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+ "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, 
+ Max Filippov <jcmvbkbc@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+ linux-riscv@lists.infradead.org, linux-csky@vger.kernel.org, 
+ linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ cgroups@vger.kernel.org, linux-security-module@vger.kernel.org, 
+ linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-perf-users@vger.kernel.org, apparmor@lists.ubuntu.com, 
+ selinux@vger.kernel.org, linux-alpha@vger.kernel.org, 
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+ linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+ linux-um@lists.infradead.org, 
+ Simon Schuster <schuster.simon@siemens-energy.com>, stable@vger.kernel.org
+X-Mailer: b4 0.14.3-dev-2ce6c
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1756732247; l=6552;
+ i=schuster.simon@siemens-energy.com; s=20250818;
+ h=from:subject:message-id;
+ bh=l+zEh4GN06CwujvuIj3y3Fd32BGM/P2y+zLD4+u7l7M=;
+ b=GDpCexNrElu2yO/MxuDkpG+xctyQVH7o61ewBoPT3J8lEgMWXNxMsXtjVUaPsmeHSieQm4/hP
+ 49FpVyBe5rsBihPxAhRaNZH/1KUoHHYEsSlrwUEFI8iutPmfJs+jkNi
+X-Developer-Key: i=schuster.simon@siemens-energy.com; a=ed25519;
+ pk=PUhOMiSp43aSeRE1H41KApxYOluamBFFiMfKlBjocvo=
+X-Endpoint-Received: by B4 Relay for
+ schuster.simon@siemens-energy.com/20250818 with auth_id=495
+X-Original-From: Simon Schuster <schuster.simon@siemens-energy.com>
+Reply-To: schuster.simon@siemens-energy.com
 
-Hi,
+This series adds support for the clone3 system call to the nios2
+architecture. This addresses the build-time warning "warning: clone3()
+entry point is missing, please fix" introduced in 505d66d1abfb9
+("clone3: drop __ARCH_WANT_SYS_CLONE3 macro"). The implementation passes
+the relevant clone3 tests of kselftest when applied on top of
+next-20250815:
 
-On 8/19/25 13:49, Maarten Lankhorst wrote:
-> When exporting dma-bufs to other devices, even when it is allowed to use
-> move_notify in some drivers, performance will degrade severely when
-> eviction happens.
->=20
-> A perticular example where this can happen is in a multi-card setup,
-> where PCI-E peer-to-peer is used to prevent using access to system memor=
-y.
->=20
-> If the buffer is evicted to system memory, not only the evicting GPU whe=
-r
-> the buffer resided is affected, but it will also stall the GPU that is
-> waiting on the buffer.
->=20
-> It also makes sense for long running jobs not to be preempted by having
-> its buffers evicted, so it will make sense to have the ability to pin
-> from system memory too.
->=20
-> This is dependant on patches by Dave Airlie, so it's not part of this
-> series yet. But I'm planning on extending pinning to the memory cgroup
-> controller in the future to handle this case.
->=20
-> Implementation details:
->=20
-> For each cgroup up until the root cgroup, the 'min' limit is checked
-> against currently effectively pinned value. If the value will go above
-> 'min', the pinning attempt is rejected.
+	./run_kselftest.sh
+	TAP version 13
+	1..4
+	# selftests: clone3: clone3
+	ok 1 selftests: clone3: clone3
+	# selftests: clone3: clone3_clear_sighand
+	ok 2 selftests: clone3: clone3_clear_sighand
+	# selftests: clone3: clone3_set_tid
+	ok 3 selftests: clone3: clone3_set_tid
+	# selftests: clone3: clone3_cap_checkpoint_restore
+	ok 4 selftests: clone3: clone3_cap_checkpoint_restore
 
-Why do you want to reject pins in this case? What happens in desktop=20
-usecases (e.g. PRIME buffer sharing)? AFAIU, you kind of need to be able=
-=20
-to pin buffers and export them to other devices for that whole thing to=20
-work, right? If the user doesn't explicitly set a min value, wouldn't=20
-the value being zero mean any pins will be rejected (and thus PRIME=20
-would break)?
+The series also includes a small patch to kernel/fork.c that ensures
+that clone_flags are passed correctly on architectures where unsigned
+long is insufficient to store the u64 clone_flags. It is marked as a fix
+for stable backporting.
 
-If your objective is to prevent pinned buffers from being evicted,=20
-perhaps you could instead make TTM try to avoid evicting pinned buffers=20
-and prefer unpinned buffers as long as there are unpinned buffers to=20
-evict? As long as the total amount of pinned memory stays below min, no=20
-pinned buffers should get evicted with that either.
+As requested, in v2, this series now further tries to correct this type
+error throughout the whole code base. Thus, it now touches a larger
+number of subsystems and all architectures.
 
-Best,
-Natalie
+Therefore, another test was performed for ARCH=x86_64 (as a
+representative for 64-bit architectures). Here, the series builds cleanly
+without warnings on defconfig with CONFIG_SECURITY_APPARMOR=y and
+CONFIG_SECURITY_TOMOYO=y (to compile-check the LSM-related changes).
+The build further successfully passes testing/selftests/clone3 (with the
+patch from 20241105062948.1037011-1-zhouyuhang1010@163.com to prepare
+clone3_cap_checkpoint_restore for compatibility with the newer libcap
+version on my system).
 
->=20
-> Pinned memory is handled slightly different and affects calculating
-> effective min/low values. Pinned memory is subtracted from both,
-> and needs to be added afterwards when calculating.
->=20
-> This is because increasing the amount of pinned memory, the amount of
-> free min/low memory decreases for all cgroups that are part of the
-> hierarchy.
->=20
-> Maarten Lankhorst (3):
->    page_counter: Allow for pinning some amount of memory
->    cgroup/dmem: Implement pinning device memory
->    drm/xe: Add DRM_XE_GEM_CREATE_FLAG_PINNED flag and implementation
->=20
->   drivers/gpu/drm/xe/xe_bo.c      | 66 +++++++++++++++++++++-
->   drivers/gpu/drm/xe/xe_dma_buf.c | 10 +++-
->   include/linux/cgroup_dmem.h     |  2 +
->   include/linux/page_counter.h    |  8 +++
->   include/uapi/drm/xe_drm.h       | 10 +++-
->   kernel/cgroup/dmem.c            | 57 ++++++++++++++++++-
->   mm/page_counter.c               | 98 ++++++++++++++++++++++++++++++---
->   7 files changed, 237 insertions(+), 14 deletions(-)
->=20
+Is there any option to further preflight check this patch series via
+lkp/KernelCI/etc. for a broader test across architectures, or is this
+degree of testing sufficient to eventually get the series merged?
+
+N.B.: The series is not checkpatch clean right now:
+ - include/linux/cred.h, include/linux/mnt_namespace.h:
+   function definition arguments without identifier name
+ - include/trace/events/task.h:
+   space prohibited after that open parenthesis
+
+I did not fix these warnings to keep my changes minimal and reviewable,
+as the issues persist throughout the files and they were not introduced
+by me; I only followed the existing code style and just replaced the
+types. If desired, I'd be happy to make the changes in a potential v3,
+though.
+
+Signed-off-by: Simon Schuster <schuster.simon@siemens-energy.com>
+---
+Changes in v2:
+- Introduce "Fixes:" and "Cc: stable@vger.kernel.org" where necessary
+- Factor out "Fixes:" when adapting the datatype of clone_flags for
+  easier backports
+- Fix additional instances where `unsigned long` clone_flags is used
+- Reword commit message to make it clearer that any 32-bit arch is
+  affected by this bug
+- Link to v1: https://lore.kernel.org/r/20250821-nios2-implement-clone3-v1-0-1bb24017376a@siemens-energy.com
+
+---
+Simon Schuster (4):
+      copy_sighand: Handle architectures where sizeof(unsigned long) < sizeof(u64)
+      copy_process: pass clone_flags as u64 across calltree
+      arch: copy_thread: pass clone_flags as u64
+      nios2: implement architecture-specific portion of sys_clone3
+
+ arch/alpha/kernel/process.c       |  2 +-
+ arch/arc/kernel/process.c         |  2 +-
+ arch/arm/kernel/process.c         |  2 +-
+ arch/arm64/kernel/process.c       |  2 +-
+ arch/csky/kernel/process.c        |  2 +-
+ arch/hexagon/kernel/process.c     |  2 +-
+ arch/loongarch/kernel/process.c   |  2 +-
+ arch/m68k/kernel/process.c        |  2 +-
+ arch/microblaze/kernel/process.c  |  2 +-
+ arch/mips/kernel/process.c        |  2 +-
+ arch/nios2/include/asm/syscalls.h |  1 +
+ arch/nios2/include/asm/unistd.h   |  2 --
+ arch/nios2/kernel/entry.S         |  6 ++++++
+ arch/nios2/kernel/process.c       |  2 +-
+ arch/nios2/kernel/syscall_table.c |  1 +
+ arch/openrisc/kernel/process.c    |  2 +-
+ arch/parisc/kernel/process.c      |  2 +-
+ arch/powerpc/kernel/process.c     |  2 +-
+ arch/riscv/kernel/process.c       |  2 +-
+ arch/s390/kernel/process.c        |  2 +-
+ arch/sh/kernel/process_32.c       |  2 +-
+ arch/sparc/kernel/process_32.c    |  2 +-
+ arch/sparc/kernel/process_64.c    |  2 +-
+ arch/um/kernel/process.c          |  2 +-
+ arch/x86/include/asm/fpu/sched.h  |  2 +-
+ arch/x86/include/asm/shstk.h      |  4 ++--
+ arch/x86/kernel/fpu/core.c        |  2 +-
+ arch/x86/kernel/process.c         |  2 +-
+ arch/x86/kernel/shstk.c           |  2 +-
+ arch/xtensa/kernel/process.c      |  2 +-
+ block/blk-ioc.c                   |  2 +-
+ fs/namespace.c                    |  2 +-
+ include/linux/cgroup.h            |  4 ++--
+ include/linux/cred.h              |  2 +-
+ include/linux/iocontext.h         |  6 +++---
+ include/linux/ipc_namespace.h     |  4 ++--
+ include/linux/lsm_hook_defs.h     |  2 +-
+ include/linux/mnt_namespace.h     |  2 +-
+ include/linux/nsproxy.h           |  2 +-
+ include/linux/pid_namespace.h     |  4 ++--
+ include/linux/rseq.h              |  4 ++--
+ include/linux/sched/task.h        |  2 +-
+ include/linux/security.h          |  4 ++--
+ include/linux/sem.h               |  4 ++--
+ include/linux/time_namespace.h    |  4 ++--
+ include/linux/uprobes.h           |  4 ++--
+ include/linux/user_events.h       |  4 ++--
+ include/linux/utsname.h           |  4 ++--
+ include/net/net_namespace.h       |  4 ++--
+ include/trace/events/task.h       |  6 +++---
+ ipc/namespace.c                   |  2 +-
+ ipc/sem.c                         |  2 +-
+ kernel/cgroup/namespace.c         |  2 +-
+ kernel/cred.c                     |  2 +-
+ kernel/events/uprobes.c           |  2 +-
+ kernel/fork.c                     | 10 +++++-----
+ kernel/nsproxy.c                  |  4 ++--
+ kernel/pid_namespace.c            |  2 +-
+ kernel/sched/core.c               |  4 ++--
+ kernel/sched/fair.c               |  2 +-
+ kernel/sched/sched.h              |  4 ++--
+ kernel/time/namespace.c           |  2 +-
+ kernel/utsname.c                  |  2 +-
+ net/core/net_namespace.c          |  2 +-
+ security/apparmor/lsm.c           |  2 +-
+ security/security.c               |  2 +-
+ security/selinux/hooks.c          |  2 +-
+ security/tomoyo/tomoyo.c          |  2 +-
+ 68 files changed, 95 insertions(+), 89 deletions(-)
+---
+base-commit: 1357b2649c026b51353c84ddd32bc963e8999603
+change-id: 20250818-nios2-implement-clone3-7f252c20860b
+
+Best regards,
+-- 
+Simon Schuster <schuster.simon@siemens-energy.com>
+
 
 
