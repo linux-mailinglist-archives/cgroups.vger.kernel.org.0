@@ -1,78 +1,79 @@
-Return-Path: <cgroups+bounces-9578-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9579-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35C7FB3ED93
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 19:58:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2F6B3ED9E
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 20:05:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99052172413
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 17:58:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19AC23BB1E0
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 18:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2337320A38;
-	Mon,  1 Sep 2025 17:58:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAB1530F800;
+	Mon,  1 Sep 2025 18:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZG1gY2ut"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NXQDpso0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A6531986D
-	for <cgroups@vger.kernel.org>; Mon,  1 Sep 2025 17:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD1032F74C
+	for <cgroups@vger.kernel.org>; Mon,  1 Sep 2025 18:04:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756749491; cv=none; b=CSXqd+1+2KJshrIED/DWFGDFOqkYATU1hPbaxZ3/UCwv3JM5ymYt7Ve7tbq8GcF9JOH9ZHVSCRiNqHV/zYyKWRAAfn6D8hOp39Gmym2HCipeQQdY1ZDJAYDRzsLTjxxn2nxQyRSNT/cnJhNcqbtuFFLOiN6Auhuv2a0OWHvx4fk=
+	t=1756749895; cv=none; b=S1stZsls/U+y+T0Z513IlKgJW1jOJ73XPt2qp0IRfNluilE3s2qZxWaPorwy835qmte9/9qLAG+BAmoPEiCRO141X6gHSvxPtaW0aF4mAyOFYw0Eoh3Spfb1P/4kZQiGsa9lE42QIr5wq3ezuv+yE4Uk1ACwQowmEklhgQ24A60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756749491; c=relaxed/simple;
-	bh=3byL/Fj0HJ/ZBpYR43St9uLQGKkKDjP2v7oMiVkvnmU=;
+	s=arc-20240116; t=1756749895; c=relaxed/simple;
+	bh=LXX4UlSMVwOTvqjWX5B5eOBh7vmGJ6aIXmJVkgBDMuU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q8/1DYAZYZrT9W8+a/SvgUlWajSp8mrgquX8FiiYyXoPZjpeMdwx/5fxoLr0PYDEh/s1LVS1yck2SmIii//ICF18fsquswa6KY18291gxF4seRdHUXbE+IQ60cuYZauiQAWXxOacPDOrSH8P16NkktTgIVeS3wlsn8UiSi37WmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZG1gY2ut; arc=none smtp.client-ip=209.85.221.48
+	 Content-Type:Content-Disposition:In-Reply-To; b=R/dLb4R0y5xOfryczLVVFgohTXu2qhuXs7X6Gic/3Psj+lFiGQr141kDP4XE0T6vTOkUvXoQLJa/Z6GdnazHAZ9kx1XC5lISvTHB5RkVB6Yae4BXvUYJtTvVH8aQLhLnst5w9WGAUhgus2gyKkwHphAaC5qbjS7+USt423k9N2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NXQDpso0; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3d118d8fa91so553623f8f.1
-        for <cgroups@vger.kernel.org>; Mon, 01 Sep 2025 10:58:09 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-45b8b2712d8so16705175e9.3
+        for <cgroups@vger.kernel.org>; Mon, 01 Sep 2025 11:04:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1756749488; x=1757354288; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1756749892; x=1757354692; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WBrUlowGaoMISX9iJ5RVVV/ygG/eI+RUk2vTf+rH8qI=;
-        b=ZG1gY2utY2Efkm9aWHKJRfTIui1Gpb1ubIUJp2PsMFnYGvHfo7FgdKlKFkMLwS12P6
-         Q6tPJ+pQpOwa2CP4AkK9HSBhskatqOmM1ymsUHD7Dw0amPtUUIjwgMQ9MoHVxEX+yIN5
-         X0oX1wTTonJmb5MYRiwHjaPuqmgRdmYXHvqhl2xG9iq8xc575YDtiKMqe3ID4VqlPQqA
-         qNU28X+CUp8gUzVX3kXtoGHyYszGnLUu72AY4SuQhDun9NIKXM2Pjk3vTKE3eYDbFEjl
-         xMP04CV710kMyP/EkIHiAzUJnsjg02lvE5fEkx/5CgAr5TGuwItnRkK30vUY7ILFnbHO
-         pW/Q==
+        bh=l12FS5A7Kj14urTYIhgntISCGkQ3Fjpq742xAOboATs=;
+        b=NXQDpso0Kup0uUhUx7IxpqCG5BPIQVm7uiIm+rsTE3KMzfDs/R/8WOjfHnHOkoKIOU
+         RLhbEyX/U94qwSvkCFy7Iq3akqYns1jRp8NAxIo/uqSLP7kFXPZvEKWL3rGQfO8dgBtQ
+         S3nxysi3BOzq5nIIJRtAzZJofeVMhEsGbkYCxMjYvttQCS04cmvz1+qI8P8LPCMyOQMs
+         ugnyM1BxLAVtjpzsBOikLHfGOkSJbKjQlsld7AwiYAnoZ1XRd1stgZhDXIye7tZja3WH
+         0/o6PmMUn+cQ17C/lRaYKKd+5U5dWdmiicamnb1Zw4Ye9cj5ucbm7Fkhm53AM0/o/Pka
+         21KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756749488; x=1757354288;
+        d=1e100.net; s=20230601; t=1756749892; x=1757354692;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WBrUlowGaoMISX9iJ5RVVV/ygG/eI+RUk2vTf+rH8qI=;
-        b=YS021ocRt9vQqogH3vsjqFORdhgzviRTAnPIErN7uKkq97ZzBq3RHvfGReeo3ownBR
-         UZHbnlB6ylsQIyo96gIcW3/rjvYzYOW8P5JzYQ+JdVMXQCyOSdg9knKaZC5ddlnV8p+s
-         4OuiFSKom+0KRfbKoKXsU0zWsKTOMcZGgHSYLFCEXbj1ZdBzGqA/+8FX9x4gy7+dX3D9
-         mEZA3P+fQyOsFse0SkWTWcVFiIELiEXwVBCSvckgm542cTU2N1cA3IqhMD7RVlLbFYm3
-         sP9oqLmxLOo49363U3U8TqoKTpIXuj1vU8aP0RE3X0vl1dtNc4GWgxZRs8B2Pz7e37F5
-         4SwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV38sCJzdR0i2vuE+UIy4GTWm21fkJpamtJhMm5nihtReWJGlp7dxhFxHFqXFqxGoI56szSEZym@vger.kernel.org
-X-Gm-Message-State: AOJu0YwosukUcxyOWKlqrALTm/UncAEaueSWFNMObF0o3bhToAG32hj6
-	xdhbBKBFmC+05kpNEGG+X0iwAlGjvvZTbM4N8mlUHkePBwfVQkETORbv024kduasDyM=
-X-Gm-Gg: ASbGncsFOOBr5+hNyDdVh4wS/uC+ED0oxMdLFptAwJVMs3kRqw+e592G3aIKGUiojV3
-	u1HmUvsCpF3K+LzHfAmouFJVJVbv4idDz0oow1iNSJyXFNTYDSorBdcJ7du4wF9IyOzWnrdJAXP
-	QtTPOsOtadXlLss7BXAMpSuuDXJZOKP4wZP9HDlhf1we5LRwZCYc4Sr4cxfZXDB4QdqIP6CMHdE
-	ty16y+rGYpO4vZdULIVGidV+OLq4YF3CJAlKKvg8qrWViqzpDXxJv4SasW3I5M+EnStQrBYL+8S
-	GiHHBeZL8zfL5YaZyeDnaJcQB4v26wK/8I6hN5jWrAzx+V0GOGh9DcjhL65QXU91O/y3CA9YdY+
-	o9IZNX5zERA1L7lV1SPWsB+jLBOHjQ4FotX9p87C9zSKdhdMowbhJ2Q==
-X-Google-Smtp-Source: AGHT+IEKDAoZsVvcs49zoW6IewZ0iCEshtHwmKL7QaW26/0FEP2utdDdAE4fZYnG+d5xmXCXfom+zA==
-X-Received: by 2002:a05:6000:1ac8:b0:3c7:244:a4be with SMTP id ffacd0b85a97d-3d1dd04e24bmr7849050f8f.10.1756749487957;
-        Mon, 01 Sep 2025 10:58:07 -0700 (PDT)
+        bh=l12FS5A7Kj14urTYIhgntISCGkQ3Fjpq742xAOboATs=;
+        b=GqmVCvfNmm/SIlndNesy/4BmPN2LaOApCpe0dCZS2ZwIWV5y4QIlMPC4YVFSn/q21y
+         NJZ/EYBPSvaXtH7O2OUJpnZYJ+nwE+1LE+2EnQbPg1DJb/Y31d3u5XQ8s/+qURQ7DqBQ
+         VGHQ/+MFv44WbSZNDOS+5YNo2E6mCs/kIWcYBChLf5enete29Oa2y6GV4eULtjCz7hlt
+         yfHLcUoqO+T6vpzPCqYwAEz6D3+s3RIG0KOe2NzVrxjtX6jJxHWvSn5K8I4NkHCjIKas
+         OGwWqG3CUlAZkXkNW3Whbp+nLXDd/9HNw3BPPHfWzuYtmWBPe+je+7zaA/PdK0qU+Ja3
+         8KDw==
+X-Forwarded-Encrypted: i=1; AJvYcCXPeogKY0ioMdEBwR44z3o6pSeGqJe2L0J/utewZoiBWsjIPPplKfhYMOiv706D3vjplXK2lrKw@vger.kernel.org
+X-Gm-Message-State: AOJu0YyK7yBRG2UAvCKTEJMqAKyvpmOypsiwbV0rzlbM2aCMxNvpzMLG
+	Bp3wWVk2wuE/UFkmA4CMqJYIBDqr0I/ETcpTSRTPam/Yu1n8hg+PFhdtzV5WRPuFJu/+gfG1lvQ
+	DfvU7
+X-Gm-Gg: ASbGncvBcXxOSbwKR6kOaZUQ2IIw5RaAn+cDBhcOO/y7uikrXbYLiAIm4u/t4mgTe4p
+	vXX9fMwZ6hNcviNTY8RgE0gEiBdpGwf+IQDdL/8zE0Y3KaeZMoABfKMVbLoeYkObzadKU4KpXRl
+	Lu1NDYiE9LibtHxqahSxMTOvjilVKseGbnvjDPq5JGag1A/65vx9XXkz1KQzGQ+gKzzEznOxHcA
+	+QL6AU21UsNTVtf/hzlRGwJmoGX1NaMKfH+zRnM32qxRFlAPK5ABvk3C1w6uELTlF2LtbNGtZ01
+	evC1F5k9mfmBDeakwoDWepcIewMGp78faRpg4Fir7p4uUGJfxyVcLIEbO775G0UZ9/0S8RbPgpG
+	eBPQYsGCpAfByUS7cWtZLIrUTJYC1t51pLdKRFH5lVsM=
+X-Google-Smtp-Source: AGHT+IEIPbML0WpZyjUyWFk0CKu2It519a87MynXyVGMeesQEMVKVhve3MonxOXqezGGGsk+FaFwYg==
+X-Received: by 2002:a05:6000:2908:b0:3ce:d43c:673c with SMTP id ffacd0b85a97d-3d1e03bffc3mr7460950f8f.46.1756749892082;
+        Mon, 01 Sep 2025 11:04:52 -0700 (PDT)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3cf34491a5asm15994104f8f.55.2025.09.01.10.58.07
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3d0c344f6casm15352996f8f.36.2025.09.01.11.04.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Sep 2025 10:58:07 -0700 (PDT)
-Date: Mon, 1 Sep 2025 19:58:05 +0200
+        Mon, 01 Sep 2025 11:04:51 -0700 (PDT)
+Date: Mon, 1 Sep 2025 20:04:50 +0200
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
@@ -81,10 +82,11 @@ Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
 	Chen Ridong <chenridong@huaweicloud.com>
 Subject: Re: [RFC] cgroup: Avoid thousands of -Wflex-array-member-not-at-end
  warnings
-Message-ID: <y7nqc4bwovxmef3r6kd62t45w3xwi2ikxfmjmi2zxhkweezjbi@ytenccffmgql>
+Message-ID: <6ailuetf6jt66q2suzlnqo6ersf4tdqfllgltw6ef3gulvvd64@v2rg6wkulzrc>
 References: <b3eb050d-9451-4b60-b06c-ace7dab57497@embeddedor.com>
  <wkkrw7rot7cunlojzyga5fgik7374xgj7aptr6afiljqesd6a7@rrmmuq3o4muy>
  <d0c49dc9-c810-47d2-a3ce-d74196a39235@embeddedor.com>
+ <4546ce0f-8f29-4708-8af6-82fd1003e4bb@embeddedor.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -92,12 +94,12 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lkdsthcjr73q7k4e"
+	protocol="application/pgp-signature"; boundary="z65f7sc4bps2vxql"
 Content-Disposition: inline
-In-Reply-To: <d0c49dc9-c810-47d2-a3ce-d74196a39235@embeddedor.com>
+In-Reply-To: <4546ce0f-8f29-4708-8af6-82fd1003e4bb@embeddedor.com>
 
 
---lkdsthcjr73q7k4e
+--z65f7sc4bps2vxql
 Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
@@ -105,58 +107,62 @@ Subject: Re: [RFC] cgroup: Avoid thousands of -Wflex-array-member-not-at-end
  warnings
 MIME-Version: 1.0
 
-On Mon, Sep 01, 2025 at 05:21:22PM +0200, "Gustavo A. R. Silva" <gustavo@em=
+On Mon, Sep 01, 2025 at 05:44:38PM +0200, "Gustavo A. R. Silva" <gustavo@em=
 beddedor.com> wrote:
-> Because struct cgroup ends in a flexible-array member `ancestors`.
-> This triggers the -Wflex-array-member-not-at-end warns about. So,
-> while `ancestors` is indeed a flexible array, any instance of
-> cgroup embedded in another struct should be placed at the end.
-
-Oh, so TRAILING_OVERLAP() won't work like that?
-(I thought that it'd hide the FAM from the end of the union and thus it
-could embedded when wrapped like this. On second thought, I realize
-that's exclusive with the static validations.)
-
-> However, if we change it to something like this (and of course
-> updating any related code, accordingly):
+> Oh, a correction about this. Actually, if we need to use __packed, we wou=
+ld
+> have to pass it as an argument to TRAILING_OVERLAP(), like this:
 >=20
-> -       struct cgroup *ancestors[];
-> +       struct cgroup **ancestors;
+> -#define TRAILING_OVERLAP(TYPE, NAME, FAM, MEMBERS)                      =
+       \
+> +#define TRAILING_OVERLAP(TYPE, NAME, FAM, MEMBERS, ATTRS)               =
+               \
+>         union {                                                          =
+       \
+>                 TYPE NAME;                                               =
+       \
+>                 struct {                                                 =
+       \
+>                         unsigned char __offset_to_##FAM[offsetof(TYPE, FA=
+M)];   \
+>                         MEMBERS                                          =
+       \
+> -               };                                                       =
+       \
+> +               } ATTRS;                                                 =
+               \
+>         }
 >=20
-> Then the flex in the middle issue goes away, and we can have
-> struct cgroup embedded in another struct anywhere.
->=20
-> The question is if this would be an acceptable solution?
->=20
-> I'd probably prefer this to remain a flexible-array member,
-> but I'd like to hear people's opinions and feedback. :)
+> However, in this case MEMBERS is only cgrp_ancestor_storage, and it's cor=
+rectly
+> aligned to __offset_to_##FAM[offsetof(TYPE, FAM)]; inside the helper. So,=
+ we
+> don't really need to pack that internal struct.
 
-I'd prefer if cgroup_create could still work with one allocation only
-both for struct cgroup and its ancestors array. (Cgroup allocation
-happens many times in a day.)
+My intention with the attribute was to prevent a gap (padding) occurring
+between=20
+	unsigned char __offset_to_##FAM
+and
+	MEMBERS                                                =20
+which would make the address of the first member to mismatch the address
+of FAM (the example in struct cgroup_root notwithstanding).
 
-The increase in struct cgroup_root size is IMO not that problematic.
-(There are typically at most CGROUP_SUBSYS_COUNT roots with gradual
-trend to only the single cgrp_dfl_root.)
+(But perhaps it's guaranteed that first member's offset in the struct is
+always equal to offsetof(TYPE, FAM).)
 
-Note that it'd be good to keep it enclosed within struct cgroup_root
-(cgroup1_root_to_use could use struct_size()), however, the
-cgrp_dfl_root would still need the storage somewhere.
-
-HTH,
 Michal
 
---lkdsthcjr73q7k4e
+--z65f7sc4bps2vxql
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaLXeqxsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AhNuAEAjKx0omIrhaMBlA3ec6KY
-kqg6f5iLg7LyrRkia3U31fMBALYGUaC9K1uFILkO5S/s3uVVR4mEqpN44csiQoP0
-Y/kP
-=jkIf
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaLXgQBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AhpTwD9E7RIx42k+0sEUTSNWW9f
+sEt2Fl/TcjJlOKrl2TinGTEBAJOtsKFN44H18yq872KTqoVnfYoVHW9fmSrz22X0
+O9UM
+=tbUQ
 -----END PGP SIGNATURE-----
 
---lkdsthcjr73q7k4e--
+--z65f7sc4bps2vxql--
 
