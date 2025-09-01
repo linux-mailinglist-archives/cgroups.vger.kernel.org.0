@@ -1,220 +1,164 @@
-Return-Path: <cgroups+bounces-9564-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9565-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A71C1B3E542
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 15:36:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 689E3B3E54F
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 15:38:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 573B77AA225
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 13:35:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC65E440E5C
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 13:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69BF9335BCE;
-	Mon,  1 Sep 2025 13:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3739833437E;
+	Mon,  1 Sep 2025 13:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="B6usTD+A";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LLINllLs"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="a0ciY1zx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from flow-b2-smtp.messagingengine.com (flow-b2-smtp.messagingengine.com [202.12.124.137])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5295733438D;
-	Mon,  1 Sep 2025 13:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03E87327794
+	for <cgroups@vger.kernel.org>; Mon,  1 Sep 2025 13:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756733771; cv=none; b=aWInoO2foNUH3UyKvnkpUqhmSgp4MsUwcuZD6wPEcbbezPmDCHSDxVD7iYMm/h/CxcD2gwJDYmHpEcMvBcAHzVfZ4Z7N88tgDb7TyHuPEw2oBD4o159NMVnq+z2yB3iB6JqxfrJ84a0xfksmVlMx3vLpDsRORcQ6GDen/wQlbVY=
+	t=1756733879; cv=none; b=fJCjfJNGGB7/yIS7iUfeshEOOEMougab9bIHW8HUNps7QUbEE7wlxlbZZaJleCheUPH73yc647Pk3wugGUuqFd9AbCeMmyw8rU4Bjd6wOMFZFgFNLqWEHjb0OYFNiCabacrm3/0Zb1rDd45zG3MLTrc+MFiNwh1zLpGI6qvXzao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756733771; c=relaxed/simple;
-	bh=EkyOW6EUUTV+C/dNjMz2+XFswtE2xmJVWwojlRsa6wQ=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=qeous8V8KZd7c9Ecy69DRQbPgKlHzjwmPuYOe/Nct/Tcy/q/RAU/L06xSh1J2XG/hSmkkvbRNptwvA3hotjfQr6eSrYEjMYspvfg71iXf2+97blBXqaDmRIFiAOoDDQJYW8ucjG+IfTC4qxNg9JBX1U1BMiw1FneiKVdSk8euho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=B6usTD+A; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LLINllLs; arc=none smtp.client-ip=202.12.124.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailflow.stl.internal (Postfix) with ESMTP id 1A8131300C91;
-	Mon,  1 Sep 2025 09:36:08 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-05.internal (MEProxy); Mon, 01 Sep 2025 09:36:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1756733767;
-	 x=1756740967; bh=EkyOW6EUUTV+C/dNjMz2+XFswtE2xmJVWwojlRsa6wQ=; b=
-	B6usTD+Aof7/SssSW1b2GHq2o9dADARJxsnxUR6o5CHM92cr+ePYBqTYGtx43RSb
-	ISUKD7k2M0HGsU4VXqymPZ5wNT3dQB6WVlA8qGe4wq3qYCRo5SwMhOpS7KEdLHz7
-	Fr4HpHW2h5VBFBvnmI5ihWxKAffC69Ta4kcea62p25gKc668PHEjBpACxmKNA0C3
-	6QFHP3MQ5REqqQJbp+5aJqSRLeN97RupKu0vEJ3YSEdyRcl95jDjfd+QH+qiHJ3E
-	Oxqe9M4z+zJ1ZNeYTH0yx4QVVvPxHAHmxC6JpAmAJXicIgcNauEtXRO/Cb8YRjJM
-	NW1LgPtEZVjB8BM+LdVovA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1756733767; x=
-	1756740967; bh=EkyOW6EUUTV+C/dNjMz2+XFswtE2xmJVWwojlRsa6wQ=; b=L
-	LINllLs1+WcxKPx5/3kO5yV0Bz44u3mlJ1y8UwajyWaQjTiP8qXcw/kjA+IHAMJf
-	T6v+7GlVWENw9FUavnIGkPSePx3BVBzcAvprYaK+ezGsygmzRdZHW/ZYEVCOsqa2
-	mvrqKjZ1es5SE0XVmBbo5I985eqA6FbV6nxMtJaVzd9ZYDLHbugZQ9z49tzj6TtM
-	/hg71onv8alV2KmWSZCuKtOwOCebVn2afDWiuTg+brp3qdrIwlwJTYw65TFQCeRs
-	UGMO6eMsidFfDQPB1o/SrlGDykkcINn556IThkBU/Nxa8cBVnFl/XZQV4aZGriJv
-	xuHMtd1xIjH19ov+VXzlg==
-X-ME-Sender: <xms:QqG1aHSf2k2FmBZra8LshlhvhA4_JAVI_VTJpiLYAYRjIeTTzdfv7A>
-    <xme:QqG1aIw4PnCMKzBR86z4It4BcjjCz2iAEZfI7vTmHMUZT--tu_e6jO6ehLY-AzbHT
-    pov9Xc8sxiM92Gi1WI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduledvvdelucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
-    necuvehluhhsthgvrhfuihiivgepfeenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
-    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepvdehpdhmohguvgepshhmthhpohhu
-    thdprhgtphhtthhopehvsggrsghkrgesshhushgvrdgtiidprhgtphhtthhopehmghhorh
-    hmrghnsehsuhhsvgdruggvpdhrtghpthhtohephihsrghtohesuhhsvghrshdrshhouhhr
-    tggvfhhorhhgvgdrjhhppdhrtghpthhtoheptghgrhhouhhpshesvhhgvghrrdhkvghrnh
-    gvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrlhhphhgrsehvghgvrhdrkhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqsghlohgtkhesvhhgvghrrdhkvghrnh
-    gvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgtshhkhiesvhhgvghrrdhkvghrnhgv
-    lhdrohhrghdprhgtphhtthhopehlihhnuhigqdhfshguvghvvghlsehvghgvrhdrkhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqhhgvgigrghhonhesvhhgvghrrdhk
-    vghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:QqG1aCClmDpBlFhb0cXPnaQAblLsf3em0BaAoZbpkFMZhTQXwiRnYw>
-    <xmx:QqG1aERRq-s1IFcUj80ORz7gXraCq6kRfZJf4JedPrNVFgqzOywS_g>
-    <xmx:QqG1aKkhuHw-mrOtL_K6lmTvOtTk_Z1AOkzrPPHFdf3mPagp0qbuNw>
-    <xmx:QqG1aIzlRCBE5eQ9_qrQdUwDuesoClZ0Sbo2tq1LmauCsJgFgOZgRw>
-    <xmx:R6G1aI-811mPDb3KEren73C908MJfSJM6YSR1WIO6Plnxrv0FXJCp9Ly>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 72651700065; Mon,  1 Sep 2025 09:36:02 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1756733879; c=relaxed/simple;
+	bh=hrOpoT0rQITjPUp/2qofb8QBO/j7OL9xreW+ARhc3Uk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ugw6LFHKrgb1L+veandoBZkYLpRRZk0iQgnTwg2+V0QgHNx02KSb8UILuIiA8mlPudSX9AzXGAyCRj4zS/NEh3ENaNZ+LEt2PyfhMGqOJJ81oxCSDeo/OjoaUi3LG9bd2Tu5V4MS7dhq2pFzxoLcSpFBkMVbMLsqVxGV7l3VLtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=a0ciY1zx; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-45b869d3560so17295285e9.1
+        for <cgroups@vger.kernel.org>; Mon, 01 Sep 2025 06:37:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1756733875; x=1757338675; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lJRnO5UD7YZuruV+flUIcQufYW0xYHWGkTcWe05GDI8=;
+        b=a0ciY1zxZvtt/WTRQrkpZ2xf5oXOMfOlTiwfvACLXSAGR/ypY3zqx2OYdr+Nkwuwoo
+         UYwd77JWurgCVqo7/h5Zcf8NPFVeEcYR5JSJdKp+VvDN8DpoyYcIvBWZlWsQLovDwv8a
+         BF55yth5Z5k/xCgRsQepkF9ETQq0dxOPrOspOqWAzPXMPST4F6Gu35FsBDMEUv1nT6Ta
+         /M6UN/k0I/ErkbtcOraMS9stzga5iFhvMDSP2vS0MC7tbqkkOoW5l4pzyJZUeLcIjxET
+         OmSxAcifWkmBtTHjG0Bsa5H/4MosmdOwe4GuTGxORDoesghEbcFY9xXzOOLfrpdxB0bO
+         EH5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756733875; x=1757338675;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lJRnO5UD7YZuruV+flUIcQufYW0xYHWGkTcWe05GDI8=;
+        b=kejlDLAE/rIt2NepfMHSWWnWB6KdJR5wUV2WiLwAxeLJMkTjTw7B+WeSXhz7JQ3Koj
+         OqrI5eJSPz/2UbcjgHxOGgj6QjfFxgvNdGpxi7vGRT3sD+MTN06c1TqwliCz78QIgwC/
+         eHLD8InOCSa5TAEr7+SRU6w5fsZbWH8Mn/PATEwhQPZGQ/NC4lW7Xh3nKUnUWtPF0gAv
+         dEwZBjP3eyRNRab0reFYQsPJ9ecVS/g4iCTyvi6U1d7KqHm89n5myRwO5FvLUAIwd0s0
+         3og8/ubpnS8BRIOMHYZLykX+blMwnTTD4XJu2IMpNrhid8pKEqcFxUl+SV9fljYLpelc
+         YmHA==
+X-Forwarded-Encrypted: i=1; AJvYcCW1SlC18mn5eZljJRMg4BlkKpehcRtU1SpD7WTq3QHu7RByxkG/hq0cUcFe9FxRbkkVsU321wQI@vger.kernel.org
+X-Gm-Message-State: AOJu0YxvcIk0wpwev4tD1bVYyJij+WT7tUib+OSY2dME4wYE+VD0vvXu
+	A7Nvf0jQKi553HYosX3Ri6Nt4bR/pszWgy3CzAI2bOkMf3yZqzZAWQnN+z52bqEjPpYrFe5LBjO
+	+01aq
+X-Gm-Gg: ASbGncv0z8pFpP8wY5/w68sp332ZAmWPcVf/WgmitCn/7fFFNcxZyGzFVa2NJlhrvjo
+	EoAUTegVL3P+BaQu/Pjux67PUTAmRwMcjrfZtevIkuEoPNnIgdwLfOuC1px9Ti1LKvV1bHaf4tP
+	+ZdHuQWUi1/A4gRt9da72SBzfWvmwel+ZiWzZsDLiRlS3avUSZROtVko1oEvmNxgrTRWuamcP5C
+	QX3QX95g9+KhkGoDrgvgOI+EDHIq9AiIb4D40drxc4zLF/g2iaBQBNM/l3ksZwiIFwnGE2oObJ4
+	dOgkStubunUu+o8udcwm0XrmbkIIrsH/O98HL22M1cSHMPbOestezYEokFFojA57JQMtsob0RBd
+	rENAlPRD0exXY92HQnIt8afILBFS/s90nBy7H4s31J7Xtr1ga7VKrwQ==
+X-Google-Smtp-Source: AGHT+IFv2pHF60bsj9gEg82i475aoJnNBxx1riwOpUVOZgBEMlNs+m1YOElvTU1CshvLDpIwNvyw7w==
+X-Received: by 2002:a05:600c:c1c8:10b0:456:1156:e5f5 with SMTP id 5b1f17b1804b1-45b85e42eebmr47046545e9.31.1756733875227;
+        Mon, 01 Sep 2025 06:37:55 -0700 (PDT)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3cf33add504sm15216852f8f.30.2025.09.01.06.37.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Sep 2025 06:37:54 -0700 (PDT)
+Date: Mon, 1 Sep 2025 15:37:53 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	cgroups@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+	linux-hardening@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+	Chen Ridong <chenridong@huaweicloud.com>
+Subject: Re: [RFC] cgroup: Avoid thousands of -Wflex-array-member-not-at-end
+ warnings
+Message-ID: <wkkrw7rot7cunlojzyga5fgik7374xgj7aptr6afiljqesd6a7@rrmmuq3o4muy>
+References: <b3eb050d-9451-4b60-b06c-ace7dab57497@embeddedor.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AHNSoFB7hZ_J
-Date: Mon, 01 Sep 2025 15:35:42 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "schuster.simon@siemens-energy.com" <schuster.simon@siemens-energy.com>,
- "Dinh Nguyen" <dinguyen@kernel.org>,
- "Christian Brauner" <brauner@kernel.org>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "David Hildenbrand" <david@redhat.com>,
- "Lorenzo Stoakes" <lorenzo.stoakes@oracle.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- "Vlastimil Babka" <vbabka@suse.cz>, "Mike Rapoport" <rppt@kernel.org>,
- "Suren Baghdasaryan" <surenb@google.com>,
- "Michal Hocko" <mhocko@suse.com>, "Ingo Molnar" <mingo@redhat.com>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Juri Lelli" <juri.lelli@redhat.com>,
- "Vincent Guittot" <vincent.guittot@linaro.org>,
- "Dietmar Eggemann" <dietmar.eggemann@arm.com>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Benjamin Segall" <bsegall@google.com>, "Mel Gorman" <mgorman@suse.de>,
- "Valentin Schneider" <vschneid@redhat.com>,
- "Kees Cook" <kees@kernel.org>,
- "Paul Walmsley" <paul.walmsley@sifive.com>,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Albert Ou" <aou@eecs.berkeley.edu>, "Alexandre Ghiti" <alex@ghiti.fr>,
- guoren <guoren@kernel.org>, "Oleg Nesterov" <oleg@redhat.com>,
- "Jens Axboe" <axboe@kernel.dk>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>, "Jan Kara" <jack@suse.cz>,
- "Tejun Heo" <tj@kernel.org>, "Johannes Weiner" <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- "Paul Moore" <paul@paul-moore.com>, "Serge Hallyn" <sergeh@kernel.org>,
- "James Morris" <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
- "Anna-Maria Gleixner" <anna-maria@linutronix.de>,
- "Frederic Weisbecker" <frederic@kernel.org>,
- "Thomas Gleixner" <tglx@linutronix.de>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, "Simon Horman" <horms@kernel.org>,
- "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
- "Arnaldo Carvalho de Melo" <acme@kernel.org>,
- "Namhyung Kim" <namhyung@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
- "Jiri Olsa" <jolsa@kernel.org>, "Ian Rogers" <irogers@google.com>,
- "Adrian Hunter" <adrian.hunter@intel.com>,
- "John Johansen" <john.johansen@canonical.com>,
- "Stephen Smalley" <stephen.smalley.work@gmail.com>,
- "Ondrej Mosnacek" <omosnace@redhat.com>,
- "Kentaro Takeda" <takedakn@nttdata.co.jp>,
- "Tetsuo Handa" <penguin-kernel@i-love.sakura.ne.jp>,
- "Richard Henderson" <richard.henderson@linaro.org>,
- "Matt Turner" <mattst88@gmail.com>, "Vineet Gupta" <vgupta@kernel.org>,
- "Russell King" <linux@armlinux.org.uk>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Will Deacon" <will@kernel.org>, "Brian Cain" <bcain@kernel.org>,
- "Huacai Chen" <chenhuacai@kernel.org>, "WANG Xuerui" <kernel@xen0n.name>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Michal Simek" <monstr@monstr.eu>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Jonas Bonn" <jonas@southpole.se>,
- "Stefan Kristiansson" <stefan.kristiansson@saunalahti.fi>,
- "Stafford Horne" <shorne@gmail.com>,
- "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
- "Helge Deller" <deller@gmx.de>,
- "Madhavan Srinivasan" <maddy@linux.ibm.com>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Heiko Carstens" <hca@linux.ibm.com>,
- "Vasily Gorbik" <gor@linux.ibm.com>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>,
- "Christian Borntraeger" <borntraeger@linux.ibm.com>,
- "Sven Schnelle" <svens@linux.ibm.com>,
- "Yoshinori Sato" <ysato@users.sourceforge.jp>,
- "Rich Felker" <dalias@libc.org>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "Andreas Larsson" <andreas@gaisler.com>,
- "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Borislav Petkov" <bp@alien8.de>,
- "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, "Chris Zankel" <chris@zankel.net>,
- "Max Filippov" <jcmvbkbc@gmail.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org,
- "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
- linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-security-module@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
- linux-perf-users@vger.kernel.org, apparmor@lists.ubuntu.com,
- selinux@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org
-Message-Id: <35893d46-6caf-49ea-bbae-6e1cab6b2914@app.fastmail.com>
-In-Reply-To: 
- <20250901-nios2-implement-clone3-v2-4-53fcf5577d57@siemens-energy.com>
-References: 
- <20250901-nios2-implement-clone3-v2-0-53fcf5577d57@siemens-energy.com>
- <20250901-nios2-implement-clone3-v2-4-53fcf5577d57@siemens-energy.com>
-Subject: Re: [PATCH v2 4/4] nios2: implement architecture-specific portion of
- sys_clone3
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ovh33ndv7ladsqzs"
+Content-Disposition: inline
+In-Reply-To: <b3eb050d-9451-4b60-b06c-ace7dab57497@embeddedor.com>
 
-On Mon, Sep 1, 2025, at 15:09, Simon Schuster via B4 Relay wrote:
-> From: Simon Schuster <schuster.simon@siemens-energy.com>
->
-> This commit adds the sys_clone3 entry point for nios2. An
-> architecture-specific wrapper (__sys_clone3) is required to save and
-> restore additional registers to the kernel stack via SAVE_SWITCH_STACK
-> and RESTORE_SWITCH_STACK.
->
-> Signed-off-by: Simon Schuster <schuster.simon@siemens-energy.com>
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+--ovh33ndv7ladsqzs
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [RFC] cgroup: Avoid thousands of -Wflex-array-member-not-at-end
+ warnings
+MIME-Version: 1.0
+
+On Sat, Aug 30, 2025 at 03:30:11PM +0200, "Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
+> Based on the comments above, it seems that the original code was expecting
+> cgrp->ancestors[0] and cgrp_ancestor_storage to share the same addres in
+> memory.
+
+Fortunately, it doesn't matter what the address of cgrp_ancestor_storage
+is. The important effect is that cgroup_root::cgrp is followed by
+sufficient space to store a pointer (accessed via cgroup::ancestors[0]).
+
+> However when I take a look at the pahole output, I see that these two members
+> are actually misaligned by 56 bytes. See below:
+
+So the root cgroup's ancestry may be saved inside the padding instead of
+the dedicated storage. I don't think it causes immediate issues but it'd
+be better not to write to these bytes. (Note that the layout depends on
+kernel config.) Thanks for the report Gustavo!
+
+
+> So, one solution for this is to use the TRAILING_OVERLAP() helper and
+> move these members at the end of `struct cgroup_root`. With this the
+> misalignment disappears (together with the 14722 warnings :) ), and now
+> both cgrp->ancestors[0] and cgrp_ancestor_storage share the same address
+> in memory. See below:
+
+I didn't know TRAILING_OVERLAP() but it sounds like the tool for such
+situations.
+Why do you move struct cgroup at the end of struct cgroup_root?
+
+(Actually, as I look at the macro's implementation, it should be
+--- a/include/linux/stddef.h
++++ b/include/linux/stddef.h
+@@ -110,7 +110,7 @@ enum {
+                struct {                                                        \
+                        unsigned char __offset_to_##FAM[offsetof(TYPE, FAM)];   \
+                        MEMBERS                                                 \
+-               };                                                              \
++               } __packed;                                                     \
+        }
+
+ #endif
+in order to avoid similar issues, no?)
+
+Thanks,
+Michal
+
+--ovh33ndv7ladsqzs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaLWhqxsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Aiw5AD/WjNnIRij7kR4aDTHZCH7
+vzJ6lYELo8G6AfXsjqYtUbcA/2ayENeSaMr743JSAr9CRnOqwlPR9lH/vzAo6qt1
+c+UC
+=BQTW
+-----END PGP SIGNATURE-----
+
+--ovh33ndv7ladsqzs--
 
