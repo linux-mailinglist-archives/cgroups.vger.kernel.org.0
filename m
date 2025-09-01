@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-9530-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9532-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C5ACB3D7A2
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 05:43:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1405B3D7A8
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 05:43:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA0233BC06C
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 03:43:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4F72179948
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 03:43:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87273253B58;
-	Mon,  1 Sep 2025 03:41:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC3E258ED8;
+	Mon,  1 Sep 2025 03:41:23 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E9922D7B9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2930523D7E6;
 	Mon,  1 Sep 2025 03:41:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756698082; cv=none; b=VkaNHPMiETXouOurf/GpA1d4fauY5w+k4oYvpp4tk6a1YwghsueBy9nBo/e6n6h0djL7G36MiHLESxq1bN2r1Jsz24RatJH3oLfKepEghGKEkHiq3d8pwz8RTzx5nUMpz0oyUyMxXGdoL9Cg799yZLxh+YRXiGpJH2Z8O8McCE8=
+	t=1756698083; cv=none; b=iAiRgA7doTD/ezza7m6GvdL9hPV884fs+irYbTcMDC3ZZwlgXx7AyC56vgNtG8mV4U7cz6wWAQ7QNbLizYgqBfxC8H/nResJNx9Sky8aXGmnBqrmEResBQF9YfumcJ8TjslGr989pR6B1fj0VF7ftf2Bv4rwY8kCScmldXgk70Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756698082; c=relaxed/simple;
-	bh=FXmWGb+H+rs5F5W54UcdydezHRpFhg7ownTZdKpauuE=;
+	s=arc-20240116; t=1756698083; c=relaxed/simple;
+	bh=M1kxzGWe+nxaYujl6+qi+TLF+NSf2Rn+4yfFQisHTlY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LiVvUQ3atVMqCkqL3/AmjyFjkJlPtlA9wMo68FhAo0jdXOT7aQ9hyYOljrlDaiImoqLi4s6u0KO/iiOragI7QjjNz7+V6c2IxhTfL2bBNZHFSvKXtlztqpZ2LJl9ekr4zh7VBXakbpJMYC7Zzm89RaU0iuAtCm7IhwBoBdAo/34=
+	 MIME-Version; b=Iz6lBQXJ55S1EsgmqzJPNWkRxp1Q8yleQ7NS3zDlGlvsn9LXgaUyRpETKLkP1a4AWVohSS1w5acmj3Yw9tOAr/LCsuSmBKU+Z4apxRVXMTQ3GQC+zrMke+beSykOr22jtryqtcx5lH2aWQa0IrLNUjn6jQjCA+7Tn0oH5lAx2oc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cFZRL2lWZzKHN5C;
-	Mon,  1 Sep 2025 11:41:18 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cFZRM1KL5zKHN5G;
+	Mon,  1 Sep 2025 11:41:19 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 304071A0F97;
-	Mon,  1 Sep 2025 11:41:18 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 01B001A058E;
+	Mon,  1 Sep 2025 11:41:19 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgAncIzWFbVotmf1Aw--.38057S10;
-	Mon, 01 Sep 2025 11:41:17 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgAncIzWFbVotmf1Aw--.38057S11;
+	Mon, 01 Sep 2025 11:41:18 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: hch@infradead.org,
 	colyli@kernel.org,
@@ -62,9 +62,9 @@ Cc: linux-block@vger.kernel.org,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com,
 	johnny.chenyi@huawei.com
-Subject: [PATCH RFC v3 06/15] md/raid0: convert raid0_handle_discard() to use bio_submit_split_bioset()
-Date: Mon,  1 Sep 2025 11:32:11 +0800
-Message-Id: <20250901033220.42982-7-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v3 07/15] md/raid1: convert to use bio_submit_split_bioset()
+Date: Mon,  1 Sep 2025 11:32:12 +0800
+Message-Id: <20250901033220.42982-8-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20250901033220.42982-1-yukuai1@huaweicloud.com>
 References: <20250901033220.42982-1-yukuai1@huaweicloud.com>
@@ -75,10 +75,10 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAncIzWFbVotmf1Aw--.38057S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFWxCF1rJr4xAF1xAFyrJFb_yoW8Wry3p3
-	9xua4aqrW8Grs0939rAa42gas5Ja4DWrWUGFZrX3yxGFy7Zr1qkw4UtryrXFy5CrySka4U
-	X3WkAasxG34DXrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgAncIzWFbVotmf1Aw--.38057S11
+X-Coremail-Antispam: 1UD129KBjvJXoWxJFykZFy5uryDXF4xtF1rtFb_yoWrJFWrpw
+	42gayIgrWUJFZY9w1DJayq9asYyas0grW7ArWxJwn7WFnFv39xKF4UXrWFqF98uFyF93sr
+	Jw1kCr4Uu3W2qFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUmS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -97,54 +97,127 @@ X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Unify bio split code, and prepare to fix disordered split IO
-
-Noted commit 319ff40a5427 ("md/raid0: Fix performance regression for large
-sequential writes") already fix disordered split IO by converting bio to
-underlying disks before submit_bio_noacct(), with the respect
-md_submit_bio() already split by sectors, and raid0_make_request() will
-split at most once for unaligned IO. This is a bit hacky and we'll convert
-this to solution in general later.
+Unify bio split code, and prepare to fix disordered split IO.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/raid0.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ drivers/md/raid1.c | 38 +++++++++++---------------------------
+ drivers/md/raid1.h |  4 +++-
+ 2 files changed, 14 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/md/raid0.c b/drivers/md/raid0.c
-index 1ba7d0c090f7..99f7839b4e96 100644
---- a/drivers/md/raid0.c
-+++ b/drivers/md/raid0.c
-@@ -463,23 +463,16 @@ static void raid0_handle_discard(struct mddev *mddev, struct bio *bio)
- 	zone = find_zone(conf, &start);
+diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+index 29edb7b548f3..f8434049f9b1 100644
+--- a/drivers/md/raid1.c
++++ b/drivers/md/raid1.c
+@@ -1317,7 +1317,7 @@ static void raid1_read_request(struct mddev *mddev, struct bio *bio,
+ 	struct raid1_info *mirror;
+ 	struct bio *read_bio;
+ 	int max_sectors;
+-	int rdisk, error;
++	int rdisk;
+ 	bool r1bio_existed = !!r1_bio;
  
- 	if (bio_end_sector(bio) > zone->zone_end) {
--		struct bio *split = bio_split(bio,
--			zone->zone_end - bio->bi_iter.bi_sector, GFP_NOIO,
--			&mddev->bio_set);
+ 	/*
+@@ -1376,18 +1376,13 @@ static void raid1_read_request(struct mddev *mddev, struct bio *bio,
+ 	}
+ 
+ 	if (max_sectors < bio_sectors(bio)) {
+-		struct bio *split = bio_split(bio, max_sectors,
+-					      gfp, &conf->bio_split);
 -
 -		if (IS_ERR(split)) {
--			bio->bi_status = errno_to_blk_status(PTR_ERR(split));
--			bio_endio(bio);
-+		bio = bio_submit_split_bioset(
-+				bio, zone->zone_end - bio->bi_iter.bi_sector,
-+				&mddev->bio_set);
-+		if (!bio)
- 			return;
--		}
+-			error = PTR_ERR(split);
++		bio = bio_submit_split_bioset(bio, max_sectors,
++					      &conf->bio_split);
++		if (!bio) {
++			set_bit(R1BIO_Returned, &r1_bio->state);
+ 			goto err_handle;
+ 		}
  
 -		bio_chain(split, bio);
 -		trace_block_split(split, bio->bi_iter.bi_sector);
 -		submit_bio_noacct(bio);
 -		bio = split;
- 		end = zone->zone_end;
--	} else
-+	} else {
- 		end = bio_end_sector(bio);
-+	}
+ 		r1_bio->master_bio = bio;
+ 		r1_bio->sectors = max_sectors;
+ 	}
+@@ -1415,8 +1410,6 @@ static void raid1_read_request(struct mddev *mddev, struct bio *bio,
  
- 	orig_end = end;
- 	if (zone != conf->strip_zone)
+ err_handle:
+ 	atomic_dec(&mirror->rdev->nr_pending);
+-	bio->bi_status = errno_to_blk_status(error);
+-	set_bit(R1BIO_Uptodate, &r1_bio->state);
+ 	raid_end_bio_io(r1_bio);
+ }
+ 
+@@ -1459,7 +1452,7 @@ static void raid1_write_request(struct mddev *mddev, struct bio *bio,
+ {
+ 	struct r1conf *conf = mddev->private;
+ 	struct r1bio *r1_bio;
+-	int i, disks, k, error;
++	int i, disks, k;
+ 	unsigned long flags;
+ 	int first_clone;
+ 	int max_sectors;
+@@ -1563,10 +1556,8 @@ static void raid1_write_request(struct mddev *mddev, struct bio *bio,
+ 				 * complexity of supporting that is not worth
+ 				 * the benefit.
+ 				 */
+-				if (bio->bi_opf & REQ_ATOMIC) {
+-					error = -EIO;
++				if (bio->bi_opf & REQ_ATOMIC)
+ 					goto err_handle;
+-				}
+ 
+ 				good_sectors = first_bad - r1_bio->sector;
+ 				if (good_sectors < max_sectors)
+@@ -1586,18 +1577,13 @@ static void raid1_write_request(struct mddev *mddev, struct bio *bio,
+ 		max_sectors = min_t(int, max_sectors,
+ 				    BIO_MAX_VECS * (PAGE_SIZE >> 9));
+ 	if (max_sectors < bio_sectors(bio)) {
+-		struct bio *split = bio_split(bio, max_sectors,
+-					      GFP_NOIO, &conf->bio_split);
+-
+-		if (IS_ERR(split)) {
+-			error = PTR_ERR(split);
++		bio = bio_submit_split_bioset(bio, max_sectors,
++					      &conf->bio_split);
++		if (!bio) {
++			set_bit(R1BIO_Returned, &r1_bio->state);
+ 			goto err_handle;
+ 		}
+ 
+-		bio_chain(split, bio);
+-		trace_block_split(split, bio->bi_iter.bi_sector);
+-		submit_bio_noacct(bio);
+-		bio = split;
+ 		r1_bio->master_bio = bio;
+ 		r1_bio->sectors = max_sectors;
+ 	}
+@@ -1687,8 +1673,6 @@ static void raid1_write_request(struct mddev *mddev, struct bio *bio,
+ 		}
+ 	}
+ 
+-	bio->bi_status = errno_to_blk_status(error);
+-	set_bit(R1BIO_Uptodate, &r1_bio->state);
+ 	raid_end_bio_io(r1_bio);
+ }
+ 
+diff --git a/drivers/md/raid1.h b/drivers/md/raid1.h
+index d236ef179cfb..2ebe35aaa534 100644
+--- a/drivers/md/raid1.h
++++ b/drivers/md/raid1.h
+@@ -178,7 +178,9 @@ enum r1bio_state {
+  * any write was successful.  Otherwise we call when
+  * any write-behind write succeeds, otherwise we call
+  * with failure when last write completes (and all failed).
+- * Record that bi_end_io was called with this flag...
++ *
++ * And for bio_split errors, record that bi_end_io was called
++ * with this flag...
+  */
+ 	R1BIO_Returned,
+ /* If a write for this request means we can clear some
 -- 
 2.39.2
 
