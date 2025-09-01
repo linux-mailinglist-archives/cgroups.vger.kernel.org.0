@@ -1,48 +1,48 @@
-Return-Path: <cgroups+bounces-9547-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9548-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044A9B3DA2C
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 08:46:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EC22B3DA52
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 08:54:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC1AE16F2A7
-	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 06:46:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB051189AD2A
+	for <lists+cgroups@lfdr.de>; Mon,  1 Sep 2025 06:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83D4D2472BC;
-	Mon,  1 Sep 2025 06:46:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B1925A2C8;
+	Mon,  1 Sep 2025 06:54:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tfa3FHBd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GjsqXfGQ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3470C212556;
-	Mon,  1 Sep 2025 06:46:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB232243954;
+	Mon,  1 Sep 2025 06:54:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756709166; cv=none; b=AvP0Tv5gkuoFoGRELLE+CWyj9HrjMacR0iC/HCOeG+gCfYIx8wJ/GlFVvRvoCL6rYBbchdsynqMBja5AfguUwva/QKqM8p4z2fK2xJ5BHPvF0IPbv+erkZqQ920w55Ldc9gV26MbpUFHrBY7iNMALKPf4Rw507qpcb2oBWYcjqM=
+	t=1756709662; cv=none; b=HrqO5f+etBwGin+VrUECY9na2s3JALmEUj8XUhCOoDxu0haW3WN2nGILwpmsmCOSUXyWZTES8UVm3vhNytAElFZCSatVyFB7bsa66b+liMuktk/mrS7y3JW9V+EzHQJobVfAg40ws3t2Zmi4MieILc18xJn567FbJLfoVwtA4KI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756709166; c=relaxed/simple;
-	bh=X2GCkYyQOfwSHl/aSR0IV35FfoaQULmEkq2Kt26dOSs=;
+	s=arc-20240116; t=1756709662; c=relaxed/simple;
+	bh=sCw2gAOLAJLjgjK+B0A5V+mqXAjIw0cxeSqE/aokZ5s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i3fRbJQ9Fuomx5KImc1jrOoJn2Cec+5Nj/w85MDTl6GgaHcXee7WtQwu6BCz9wpJ4M9jrPxSsnaF1XtIGo7tP7TfbRBKBB9UIxhR90BLegaCUsHsyD+jgLz3lXI6vfaGVFKKTrowH2wy0XzKHqKMfigQhfco25wJ8FTwLO5rTJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tfa3FHBd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40841C4CEF0;
-	Mon,  1 Sep 2025 06:46:03 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=YFntVjiixF8vqzLagK5F2t0SAXl1+1MU2RTaqvBjEhmai3TqYt0Y4GliPPI19ryXCcrKOQA3IwHSuEt0/HJrRJpuR1kQTBhk3/CDnxs2o0JH7TLMqXW7H/bMra7WEj/IVovVrscw7SCkMGiv79WvKnNb8VuEwuoBJnZR9duYCUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GjsqXfGQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC35BC4CEF0;
+	Mon,  1 Sep 2025 06:54:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756709165;
-	bh=X2GCkYyQOfwSHl/aSR0IV35FfoaQULmEkq2Kt26dOSs=;
+	s=k20201202; t=1756709660;
+	bh=sCw2gAOLAJLjgjK+B0A5V+mqXAjIw0cxeSqE/aokZ5s=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tfa3FHBdEk3nw/gaelP270KbUvclYJGWxo5WfWjJn8vITFt+6gdYzTnqRfAMQihdm
-	 juSzVw5zanTh8J6DeP2EwlSYa4BX6ucc16TBT49B13nrBsJPvosIZ+MnrRck+fTSP7
-	 0i4dp5oYPwk2qQXKUosesEztD2n4qXma0QkJUMbSUv29SQPvHnaS76WvCyqhgWO/5A
-	 q/o1Xor5bKmBKk8la0A0VOKn1xNTG8jLjkbKYGe9LJuTJFOJP9W7ttqI+BDJwYYL1H
-	 tMYXb2NVlWkX61Am7YjObnl21R2ct7pVNLxPGxO3PCNt/blSI5PkuGE56Naze4FP4n
-	 5hmLscojRiFCw==
-Message-ID: <9b9b78cd-06aa-407d-a224-a5903752599f@kernel.org>
-Date: Mon, 1 Sep 2025 15:43:09 +0900
+	b=GjsqXfGQDhaG/yA7JMq60k6ytVuesM49PBQ0QhNsutDyYq4A6Sio3ySORUSdnfh0d
+	 3ZLbZUeFR1f1tEX+VTUVX219xULwgf0tudaq8Y95gzPdEVNb413r4+hIfQ64r7dkLR
+	 FJV8LkkwROh2DI1jH1ApIfTIyQT4FOlw6Y0cD78Y5+4v2FjMmrAAr1FvJILEFLnwdT
+	 ZNRWE1M6iP299mJHeOxrKW/mvfU2+ayLlqaw2PUQtoKQ3chGU0Viy94n42dirtfaup
+	 h9LMY/RBV2NyAdfpD0r/x6+2MKfCtkGch68teO8En3/ZlqRtU0gr20vUCRF5D920ir
+	 qYYU4HNANTU8g==
+Message-ID: <73ce25dd-ce6e-4482-8537-b4f2166bbc47@kernel.org>
+Date: Mon, 1 Sep 2025 15:51:23 +0900
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -50,70 +50,74 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 07/15] md/raid1: convert to use
- bio_submit_split_bioset()
-To: Yu Kuai <yukuai1@huaweicloud.com>, hch@infradead.org, colyli@kernel.org,
- hare@suse.de, tieren@fnnas.com, axboe@kernel.dk, tj@kernel.org,
- josef@toxicpanda.com, song@kernel.org, kmo@daterainc.com, satyat@google.com,
- ebiggers@google.com, neil@brown.name, akpm@linux-foundation.org
+Subject: Re: [PATCH RFC v2 09/10] block: fix disordered IO in the case
+ recursive split
+To: Yu Kuai <yukuai1@huaweicloud.com>, Yu Kuai <hailan@yukuai.org.cn>,
+ axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com, song@kernel.org,
+ neil@brown.name, akpm@linux-foundation.org, hch@infradead.org,
+ colyli@kernel.org, hare@suse.de, tieren@fnnas.com
 Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-raid@vger.kernel.org, yukuai3@huawei.com,
- yi.zhang@huawei.com, yangerkun@huawei.com, johnny.chenyi@huawei.com
-References: <20250901033220.42982-1-yukuai1@huaweicloud.com>
- <20250901033220.42982-8-yukuai1@huaweicloud.com>
+ cgroups@vger.kernel.org, linux-raid@vger.kernel.org, yi.zhang@huawei.com,
+ yangerkun@huawei.com, johnny.chenyi@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20250828065733.556341-1-yukuai1@huaweicloud.com>
+ <20250828065733.556341-10-yukuai1@huaweicloud.com>
+ <23872034-2b36-4a71-91b9-e599976902b6@kernel.org>
+ <79aae55c-a2fe-465c-9204-44dce9a80256@yukuai.org.cn>
+ <5417dfdd-f558-2d5e-43b1-043c6bd30041@huaweicloud.com>
 From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
 Organization: Western Digital Research
-In-Reply-To: <20250901033220.42982-8-yukuai1@huaweicloud.com>
+In-Reply-To: <5417dfdd-f558-2d5e-43b1-043c6bd30041@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 9/1/25 12:32 PM, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
+On 9/1/25 11:40 AM, Yu Kuai wrote:
+> Hi,
 > 
-> Unify bio split code, and prepare to fix disordered split IO.
+> 在 2025/08/30 12:28, Yu Kuai 写道:
+>>>> @@ -745,12 +745,16 @@ void submit_bio_noacct_nocheck(struct bio *bio)
+>>>>        * to collect a list of requests submited by a ->submit_bio method while
+>>>>        * it is active, and then process them after it returned.
+>>>>        */
+>>>> -    if (current->bio_list)
+>>>> -        bio_list_add(&current->bio_list[0], bio);
+>>>> -    else if (!bdev_test_flag(bio->bi_bdev, BD_HAS_SUBMIT_BIO))
+>>>> +    if (current->bio_list) {
+>>>> +        if (split)
+>>>> +            bio_list_add_head(&current->bio_list[0], bio);
+>>>> +        else
+>>>> +            bio_list_add(&current->bio_list[0], bio);
+>>> This really needs a comment clarifying why we do an add at tail instead of
+>>> keeping the original order with a add at head. I am also scared that this may
+>>> break sequential write ordering for zoned devices.
+>>
+>> I think add at head is exactly what we do here to keep the orginal order for
+>> the case bio split. Other than split, if caller do generate multiple sequential
+>> bios, we should keep the order by add at tail.
+>>
+>> Not sure about zoned devices for now, I'll have a look in details.
 > 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> For zoned devices, can we somehow trigger this recursive split? I
+> suspect bio disordered will apear in this case but I don't know for
+> now and I can't find a way to reporduce it.
 
-[...]
+dm-linear can be stacked on e.g. dm-crypt, or the reverse. So recursive
+splitting may be possible. Though since for DM everything is zone aligned, it
+may be hard to find a reproducer. Though dm-crypt will always split BIOs to
+BIO_MAX_VECS << PAGE_SECTORS_SHIFT sectors, so it may be possible with very
+large BIOs. Would need to try, but really overloaded with other things right now.
 
-> @@ -1586,18 +1577,13 @@ static void raid1_write_request(struct mddev *mddev, struct bio *bio,
->  		max_sectors = min_t(int, max_sectors,
->  				    BIO_MAX_VECS * (PAGE_SIZE >> 9));
->  	if (max_sectors < bio_sectors(bio)) {
-> -		struct bio *split = bio_split(bio, max_sectors,
-> -					      GFP_NOIO, &conf->bio_split);
-> -
-> -		if (IS_ERR(split)) {
-> -			error = PTR_ERR(split);
-> +		bio = bio_submit_split_bioset(bio, max_sectors,
-> +					      &conf->bio_split);
-> +		if (!bio) {
-> +			set_bit(R1BIO_Returned, &r1_bio->state);
-
-Before it was "set_bit(R1BIO_Uptodate, &r1_bio->state);" that was done. Now it
-is R1BIO_Returned that is set. The commit message does not mention this change
-at all. Is this a bug fix ? If yes, that should be in a pre patch before the
-conversion to using bio_submit_split_bioset().
-
->  			goto err_handle;
->  		}
->  
-> -		bio_chain(split, bio);
-> -		trace_block_split(split, bio->bi_iter.bi_sector);
-> -		submit_bio_noacct(bio);
-> -		bio = split;
->  		r1_bio->master_bio = bio;
->  		r1_bio->sectors = max_sectors;
->  	}
-> @@ -1687,8 +1673,6 @@ static void raid1_write_request(struct mddev *mddev, struct bio *bio,
->  		}
->  	}
->  
-> -	bio->bi_status = errno_to_blk_status(error);
-> -	set_bit(R1BIO_Uptodate, &r1_bio->state);
->  	raid_end_bio_io(r1_bio);
->  }
+> 
+> Perhaps I can bypass zoned devices for now, and if we really met the
+> recursive split case and there is a problem, we can fix it later:
+> 
+> if (split && !bdev_is_zoned(bio->bi_bdev))
+>     bio_list_add_head()
+> 
+> Thanks,
+> Kuai
+> 
 
 
 -- 
