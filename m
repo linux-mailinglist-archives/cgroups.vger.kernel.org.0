@@ -1,213 +1,239 @@
-Return-Path: <cgroups+bounces-9618-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9619-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D820B403A7
-	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 15:35:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51BD9B40553
+	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 15:52:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 669F23B37A9
-	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 13:35:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F5271894406
+	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 13:47:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9A9324B02;
-	Tue,  2 Sep 2025 13:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719D0338F31;
+	Tue,  2 Sep 2025 13:42:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q4j9hcfj"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QUdYcK/Y"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D828E30F813
-	for <cgroups@vger.kernel.org>; Tue,  2 Sep 2025 13:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EB3E305070;
+	Tue,  2 Sep 2025 13:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756819825; cv=none; b=bsaGA0m2IuuAa96Nb4pVXORJ+QHYdoiw8hv264dSWWjVwmQ7JVg2I1muiMmsxwMgSUvsGFBcAvCDsZz9Uc81WGG3yk+oYiADQLr9d6YPrd4OXfl1wZf0Lpc4dFNWj8TCmxZbYx1OjYT2U6A+BbkFKjy8DXxJRnBIER9NejCDzkg=
+	t=1756820555; cv=none; b=sa4gkBx4UAqPlAXvvGicD/okKt/PUZEGeONlPX4llGdMwxwJBo7dj4kwDif1twib+7PqvyBUwqWfHhfkmQkZP8sYZQuAnzgpkBhK5+kb7sPyzXdIk50iXaXv/W/w3k/49sfY1e+EBKZJP0XvSXeNbw4R0i6sQdHiplipuYG1Q+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756819825; c=relaxed/simple;
-	bh=g3sifc9TW5tsJF8SxDzkpDMgfvwIfT1Q5I/5Dy+fJ6I=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=FcoCeQEGAh9/WO5ARKLEFCu839Nh6J/EgGg5zYwUbnvJfX3vDH9rGmVKClDWggxHwGIlst7HdNRNSYB6cHKLXJRdfQZxaWHKd1THItpaeoJ88RwMfT1nNBcyB/W9mwRLr9eyj/YCqVY0zii30AMcc4StIRdbUFGMl0Y//V/5rj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q4j9hcfj; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756819822;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b5rIBDXadKc0Riamv/Bxc9wrw9KFcdiEe2g6YluW24E=;
-	b=Q4j9hcfj0pxelvjHskWwLGEcP/UWeCJXFlvo1qLZg1QICLV2kIG+7dlRH/WETHBqBNISZs
-	KFMvj/E/FFXWfhRqfXeUoiWpEChVx6aLm7jltlhkQkqmIZLiIHTti/ypRwPUOQwiJk2mzn
-	mRqXJ0K7U9BX/dnoC1/ydTkOq9WwAmM=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-9-XrXUuzBuMLGSsjhEzIJs_A-1; Tue, 02 Sep 2025 09:30:21 -0400
-X-MC-Unique: XrXUuzBuMLGSsjhEzIJs_A-1
-X-Mimecast-MFC-AGG-ID: XrXUuzBuMLGSsjhEzIJs_A_1756819821
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4b311414656so120278431cf.3
-        for <cgroups@vger.kernel.org>; Tue, 02 Sep 2025 06:30:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756819820; x=1757424620;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b5rIBDXadKc0Riamv/Bxc9wrw9KFcdiEe2g6YluW24E=;
-        b=tGPzw1ZQuQRWHQpm3mNpULoI6hblnUwUgXeib/PJjy3PyknI8txule5lBz29rCmrfI
-         41drCJktBl7C6vMvi1UEVaTFy8eJflcJNLqzmVkPdjAuvRBzd0cyMX3OcxY/jSD5O5v1
-         v5P3eGb2EViinaAK2W/YzhVWWcMBdLGmgFIY9eRywyGNDdV8Kj5dtPwfN7KWFvERUZhe
-         SsPA3kBdtPfrfpDOfCmd1EEJbEjVsiMA4vjcgKptFpanW6+JX5EPGDqs7TFjhCFPt3V+
-         g/Nwd4MQOE9yOLHvaaZ2FzqhvIsTWiNuHSohDlOOVudWtDixV4kYQf9e1peB8JKDiPau
-         bBlQ==
-X-Gm-Message-State: AOJu0Yz+ny42aSWWxCCf1KRKseub0zmJi1GiUeYu1uxmm9JsY52K5s7p
-	TFfPtKeUe/0nc99jhRZRRmtozJSTbZXy0khXFR5n5V9EaPA6XRYuL7i1c1lteGzE7zzResoQFkB
-	p10ygz9afbqpWCNTvOmImoS53VPKtyu2iZCTNSSq3o9RBk4POlFMX/h5IvkTNpHp7JWQ=
-X-Gm-Gg: ASbGncvQUkCi3omWtAtEnFdXfeNUdO/vt1LIZFCmDSTp3ZS2373Lh2Oc/qsRR8M49rn
-	yFcjy+dl5EK2tQh8fI+mbwPuHQEE8YzieeRVjHzHoeOrkueM/X1llpw+K+vf2mBp+dXZ3ghFAFc
-	ZBSxFhBeMibEsb+MYjvOiyZQYbZJ5nxK/n4FVJdB/EoZ0jn5V/j8jKBBnkgYQG4g+qjKixwxJ20
-	99KrFQV/QGEt/ra9lA8aakdUy/Va/USonFPU1sQ9pEil6mGiJWpkV2k4hzsWNCbrzHrNBLL2Cxm
-	9sSxGf2ZmtWfctNjKoMsgEJRSfhxWYoGT1PGxZp507Y/wlntxzHGzDciemudNPzM+DlbnFbsH/T
-	6HR/IYRULug==
-X-Received: by 2002:a05:622a:5443:b0:4b3:4d20:2f6 with SMTP id d75a77b69052e-4b34d200c44mr11166171cf.19.1756819819612;
-        Tue, 02 Sep 2025 06:30:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGDYAIOyEc9Fw0i0zuOWxfALXYIKNMMLAs3fedzZX/lCIFNOzBsogoQf3qUBhtg2wrUl6dh1A==
-X-Received: by 2002:a05:622a:5443:b0:4b3:4d20:2f6 with SMTP id d75a77b69052e-4b34d200c44mr11165501cf.19.1756819818750;
-        Tue, 02 Sep 2025 06:30:18 -0700 (PDT)
-Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8069ccec9besm130589885a.53.2025.09.02.06.30.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Sep 2025 06:30:18 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <2a6759fa-841a-4185-ae94-b8215c93daf5@redhat.com>
-Date: Tue, 2 Sep 2025 09:30:17 -0400
+	s=arc-20240116; t=1756820555; c=relaxed/simple;
+	bh=dlnqyeR+5I6qruWbk7IABHALhsF2hRcTjNBGT4VTdMM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ZDAlryjYcGsAhtQSFW3xbEgjUfo2GM9/SYfhPvUbVGPTh9tPT019YnXWIhdIlmGN8qHeH+o2xwkyU0FnDzliN3mCHg3Lvx3YcCW2WzNbK0LoxTh5ieuEPtZxLQpRukU+TrwubMeT0biOCc9u+KruPj/EZJL2xgjPlwrFcRNB3t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QUdYcK/Y; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1756820554; x=1788356554;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=dlnqyeR+5I6qruWbk7IABHALhsF2hRcTjNBGT4VTdMM=;
+  b=QUdYcK/YrpNQOnVw39W2K7jmXNErLNpHswsELTQ72xy+/YV401ecO171
+   TKeZmee+qiR+AH7z+wsHIQWwmOEl/r9dMS+eCtCl141hn6utweURdL+G/
+   EWQYPN1wzsa0dg+aSBZLxiQ7xY2e9NhsQv9TJx28ghLgpoOquzAEChWHt
+   3viDrVMjipN8pBrU2p252/qwDvtK1n1PHJGI6iMbEE90OKHh0Cv2ci3UL
+   C6A/wcin+hMR8r9KZGga1i7PQMX3B6wi2U4H3yF8O4tCajD61qECUdbjr
+   qC+2HLaLR1g87io7ymv2U2SZYFY8c/8lPLgwMRfC6EzKhr6jiTL0GbXja
+   w==;
+X-CSE-ConnectionGUID: KgZLADkVT3iscMxOj8jO1Q==
+X-CSE-MsgGUID: oQtgpsvtRwmxiG/yU3B6rQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11541"; a="58951213"
+X-IronPort-AV: E=Sophos;i="6.18,230,1751266800"; 
+   d="scan'208";a="58951213"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2025 06:42:33 -0700
+X-CSE-ConnectionGUID: 87TOoN+JSuyyXu64BJLX8Q==
+X-CSE-MsgGUID: XyDjfStqRz6SEEHMNLLv9g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,230,1751266800"; 
+   d="scan'208";a="171175094"
+Received: from dalessan-mobl3.ger.corp.intel.com (HELO [10.245.245.33]) ([10.245.245.33])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2025 06:42:26 -0700
+Message-ID: <da5885a94d89a2c0dece04e09182e832e8e40410.camel@linux.intel.com>
+Subject: Re: [RFC 0/3] cgroups: Add support for pinned device memory
+From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
+To: David Hildenbrand <david@redhat.com>, Maarten Lankhorst
+ <dev@lankhorst.se>,  Lucas De Marchi <lucas.demarchi@intel.com>, Rodrigo
+ Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>,  Simona
+ Vetter <simona@ffwll.ch>, Maxime Ripard <mripard@kernel.org>, Natalie Vock
+ <natalie.vock@gmx.de>,  Tejun Heo <tj@kernel.org>, Johannes Weiner
+ <hannes@cmpxchg.org>, 'Michal =?ISO-8859-1?Q?Koutn=FD=27?=	
+ <mkoutny@suse.com>, Michal Hocko <mhocko@kernel.org>, Roman Gushchin	
+ <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Muchun
+ Song	 <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "'Liam R . Howlett'"
+ <Liam.Howlett@oracle.com>,  Vlastimil Babka	 <vbabka@suse.cz>, Mike
+ Rapoport <rppt@kernel.org>, Suren Baghdasaryan	 <surenb@google.com>, Thomas
+ Zimmermann <tzimmermann@suse.de>
+Cc: Michal Hocko <mhocko@suse.com>, intel-xe@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org
+Date: Tue, 02 Sep 2025 15:42:20 +0200
+In-Reply-To: <776629b2-5459-4fa0-803e-23d4824e7b24@redhat.com>
+References: <20250819114932.597600-5-dev@lankhorst.se>
+	 <dc21e54c-d7ae-4d7e-9acb-6a3fa573b20f@redhat.com>
+	 <9c296c72-768e-4893-a099-a2882027f2b9@lankhorst.se>
+	 <b6b13ad22345bcdf43325173052614c17e803d00.camel@linux.intel.com>
+	 <776629b2-5459-4fa0-803e-23d4824e7b24@redhat.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next RFC 09/11] cpuset: refactor partition_cpus_change
-To: Chen Ridong <chenridong@huaweicloud.com>, Waiman Long <llong@redhat.com>,
- tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com
-References: <20250828125631.1978176-1-chenridong@huaweicloud.com>
- <20250828125631.1978176-10-chenridong@huaweicloud.com>
- <632cd2ab-9803-4b84-8dd9-cd07fbe73c95@redhat.com>
- <031d83b6-bc67-4941-8c49-e1d12df74062@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <031d83b6-bc67-4941-8c49-e1d12df74062@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-On 8/29/25 10:01 PM, Chen Ridong wrote:
->
-> On 2025/8/30 4:32, Waiman Long wrote:
->> On 8/28/25 8:56 AM, Chen Ridong wrote:
->>> From: Chen Ridong <chenridong@huawei.com>
->>>
->>> Refactor the partition_cpus_change function to handle both regular CPU
->>> set updates and exclusive CPU modifications, either of which may trigger
->>> partition state changes. This generalized function will also be utilized
->>> for exclusive CPU updates in subsequent patches.
->>>
->>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->>> ---
->>>    kernel/cgroup/cpuset.c | 59 ++++++++++++++++++++++++++----------------
->>>    1 file changed, 36 insertions(+), 23 deletions(-)
->>>
->>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>> index 75ad18ab40ae..e3eb87a33b12 100644
->>> --- a/kernel/cgroup/cpuset.c
->>> +++ b/kernel/cgroup/cpuset.c
->>> @@ -2447,6 +2447,41 @@ static int acpus_validate_change(struct cpuset *cs, struct cpuset *trialcs,
->>>        return retval;
->>>    }
->>>    +/**
->>> + * partition_cpus_change - Handle partition state changes due to CPU mask updates
->>> + * @cs: The target cpuset being modified
->>> + * @trialcs: The trial cpuset containing proposed configuration changes
->>> + * @tmp: Temporary masks for intermediate calculations
->>> + *
->>> + * This function handles partition state transitions triggered by CPU mask changes.
->>> + * CPU modifications may cause a partition to be disabled or require state updates.
->>> + */
->>> +static void partition_cpus_change(struct cpuset *cs, struct cpuset *trialcs,
->>> +                    struct tmpmasks *tmp)
->>> +{
->>> +    if (cs_is_member(cs))
->>> +        return;
->>> +
->>> +    invalidate_cs_partition(trialcs);
->>> +    if (trialcs->prs_err)
->>> +        cs->prs_err = trialcs->prs_err;
->>> +
->>> +    if (is_remote_partition(cs)) {
->>> +        if (trialcs->prs_err)
->>> +            remote_partition_disable(cs, tmp);
->>> +        else
->>> +            remote_cpus_update(cs, trialcs->exclusive_cpus,
->>> +                       trialcs->effective_xcpus, tmp);
->>> +    } else {
->>> +        if (trialcs->prs_err)
->>> +            update_parent_effective_cpumask(cs, partcmd_invalidate,
->>> +                            NULL, tmp);
->>> +        else
->>> +            update_parent_effective_cpumask(cs, partcmd_update,
->>> +                            trialcs->effective_xcpus, tmp);
->>> +    }
->>> +}
->>> +
->>>    /**
->>>     * update_cpumask - update the cpus_allowed mask of a cpuset and all tasks in it
->>>     * @cs: the cpuset to consider
->>> @@ -2483,29 +2518,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
->>>         */
->>>        force = !cpumask_equal(cs->effective_xcpus, trialcs->effective_xcpus);
->>>    -    invalidate_cs_partition(trialcs);
->>> -    if (trialcs->prs_err)
->>> -        cs->prs_err = trialcs->prs_err;
->>> -
->>> -    if (is_partition_valid(cs) ||
->>> -       (is_partition_invalid(cs) && !trialcs->prs_err)) {
->>> -        struct cpumask *xcpus = trialcs->effective_xcpus;
->>> -
->>> -        if (cpumask_empty(xcpus) && is_partition_invalid(cs))
->>> -            xcpus = trialcs->cpus_allowed;
->> This if statement was added in commit 46c521bac592 ("cgroup/cpuset: Enable invalid to valid local
->> partition transition") that is missing in your new partition_cpus_change() function. Have you run
->> the test_cpuset_prs.sh selftest with a patched kernel to make sure that there is no test failure?
->>
->> Cheers,
->> Longman
-> Thank you Longman,
->
-> I did run the self-test for every patch, and I appreciate the test script test_cpuset_prs.sh you
-> provided.
->
-> The trialcs->effective_xcpus will be updated using compute_trialcs_excpus, which was introduced in
-> Patch 4. The corresponding logic was then added in Patch 5:
->
-> -	cpumask_and(excpus, user_xcpus(trialcs), parent->effective_xcpus);
-> +	/* trialcs is member, cpuset.cpus has no impact to excpus */
-> +	if (cs_is_member(cs))
-> +		cpumask_and(excpus, trialcs->exclusive_cpus,
-> +				parent->effective_xcpus);
-> +	else
-> +		cpumask_and(excpus, user_xcpus(trialcs), parent->effective_xcpus);
-> +
->
-> Therefore, as long as excpus is computed correctly, I believe this implementation can handle the
-> scenario appropriately.
+On Mon, 2025-09-01 at 20:38 +0200, David Hildenbrand wrote:
+> On 01.09.25 20:21, Thomas Hellstr=C3=B6m wrote:
+> > Hi,
+> >=20
+> > On Mon, 2025-09-01 at 20:16 +0200, Maarten Lankhorst wrote:
+> > > Hello David,
+> > >=20
+> > > Den 2025-09-01 kl. 14:25, skrev David Hildenbrand:
+> > > > On 19.08.25 13:49, Maarten Lankhorst wrote:
+> > > > > When exporting dma-bufs to other devices, even when it is
+> > > > > allowed
+> > > > > to use
+> > > > > move_notify in some drivers, performance will degrade
+> > > > > severely
+> > > > > when
+> > > > > eviction happens.
+> > > > >=20
+> > > > > A perticular example where this can happen is in a multi-card
+> > > > > setup,
+> > > > > where PCI-E peer-to-peer is used to prevent using access to
+> > > > > system memory.
+> > > > >=20
+> > > > > If the buffer is evicted to system memory, not only the
+> > > > > evicting
+> > > > > GPU wher
+> > > > > the buffer resided is affected, but it will also stall the
+> > > > > GPU
+> > > > > that is
+> > > > > waiting on the buffer.
+> > > > >=20
+> > > > > It also makes sense for long running jobs not to be preempted
+> > > > > by
+> > > > > having
+> > > > > its buffers evicted, so it will make sense to have the
+> > > > > ability to
+> > > > > pin
+> > > > > from system memory too.
+> > > > >=20
+> > > > > This is dependant on patches by Dave Airlie, so it's not part
+> > > > > of
+> > > > > this
+> > > > > series yet. But I'm planning on extending pinning to the
+> > > > > memory
+> > > > > cgroup
+> > > > > controller in the future to handle this case.
+> > > > >=20
+> > > > > Implementation details:
+> > > > >=20
+> > > > > For each cgroup up until the root cgroup, the 'min' limit is
+> > > > > checked
+> > > > > against currently effectively pinned value. If the value will
+> > > > > go
+> > > > > above
+> > > > > 'min', the pinning attempt is rejected.
+> > > > >=20
+> > > > > Pinned memory is handled slightly different and affects
+> > > > > calculating
+> > > > > effective min/low values. Pinned memory is subtracted from
+> > > > > both,
+> > > > > and needs to be added afterwards when calculating.
+> > > >=20
+> > > > The term "pinning" is overloaded, and frequently we refer to
+> > > > pin_user_pages() and friends.
+> > > >=20
+> > > > So I'm wondering if there is an alternative term to describe
+> > > > what
+> > > > you want to achieve.
+> > > >=20
+> > > > Is it something like "unevictable" ?
+> > > It could be required to include a call pin_user_pages(), in case
+> > > a
+>=20
+> We'll only care about long-term pinnings (i.e., FOLL_LONGTERM).
+> Ordinary=20
+> short-term pinning is just fine.
+>=20
+> (see how even "pinning" is overloaded? :) )
+>=20
+> > > process wants to pin
+> > > from a user's address space to the gpu.
+> > >=20
+> > > It's not done yet, but it wouldn't surprise me if we want to
+> > > include
+> > > it in the future.
+> > > Functionally it's similar to mlock() and related functions.
+>=20
+> Traditionally, vfio, io_uring and rdma do exactly that: they use GUP
+> to=20
+> longterm pin and then account that memory towards RLIMIT_MEMLOCK.
+>=20
+> If you grep for "rlimit(RLIMIT_MEMLOCK)", you'll see what I mean.
+>=20
+> There are known issues with that: imagine long-term pinning the same=20
+> folio through GUP with 2 interfaces (e.g., vfio, io_uring, rdma), or=20
+> within the same interface.
+>=20
+> You'd account the memory multiple times, which is horrible. And so
+> far=20
+> there is no easy way out.
+>=20
+> > >=20
+> > > Perhaps call it mlocked instead?
+> >=20
+> > I was under the impression that mlocked() memory can be migrated to
+> > other physical memory but not to swap? whereas pinned memory needs
+> > to
+> > remain the exact same physical memory.
+>=20
+> Yes, exactly.
+>=20
+> >=20
+> > IMO "pinned" is pretty established within GPU drivers (dma-buf,
+> > TTM)
+> > and essentially means the same as "pin" in "pin_user_pages", so
+> > inventing a new name would probably cause even more confusion?
+>=20
+> If it's the same thing, absolutely. But Marteen said "It's not done
+> yet,=20
+> but it wouldn't surprise me if we want to include it in the future".
+>=20
+> So how is the memory we are talking about in this series "pinned" ?
 
-It will be helpful to put down a note in the commit log that the missing 
-logic will be re-introduced in a subsequent patch.
+Reading the cover-letter from Maarten, he only talks about pinning
+affecting performance, which would be similar to user-space calling
+mlock(), although I doubt that moving content to other physical pages
+within the same memory type will be a near-term use-case.
 
-Thanks,
-Longman
+However what's more important are situation where a device (like RDMA)
+needs to pin, because it can't handle the case where access is
+interrupted and content transferred to another physical location.
+
+Perhaps Maarten could you elaborate whether this series is intended for
+both these use-cases?
+
+/Thomas
+
+
+
+>=20
+>=20
 
 
