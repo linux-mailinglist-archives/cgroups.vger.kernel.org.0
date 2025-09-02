@@ -1,239 +1,238 @@
-Return-Path: <cgroups+bounces-9619-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9620-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51BD9B40553
-	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 15:52:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E53A7B40632
+	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 16:09:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F5271894406
-	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 13:47:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8E613A534C
+	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 14:07:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719D0338F31;
-	Tue,  2 Sep 2025 13:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ACF21F2B88;
+	Tue,  2 Sep 2025 14:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QUdYcK/Y"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ltB2nbAN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2063.outbound.protection.outlook.com [40.107.96.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EB3E305070;
-	Tue,  2 Sep 2025 13:42:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756820555; cv=none; b=sa4gkBx4UAqPlAXvvGicD/okKt/PUZEGeONlPX4llGdMwxwJBo7dj4kwDif1twib+7PqvyBUwqWfHhfkmQkZP8sYZQuAnzgpkBhK5+kb7sPyzXdIk50iXaXv/W/w3k/49sfY1e+EBKZJP0XvSXeNbw4R0i6sQdHiplipuYG1Q+o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756820555; c=relaxed/simple;
-	bh=dlnqyeR+5I6qruWbk7IABHALhsF2hRcTjNBGT4VTdMM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZDAlryjYcGsAhtQSFW3xbEgjUfo2GM9/SYfhPvUbVGPTh9tPT019YnXWIhdIlmGN8qHeH+o2xwkyU0FnDzliN3mCHg3Lvx3YcCW2WzNbK0LoxTh5ieuEPtZxLQpRukU+TrwubMeT0biOCc9u+KruPj/EZJL2xgjPlwrFcRNB3t0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QUdYcK/Y; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1756820554; x=1788356554;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=dlnqyeR+5I6qruWbk7IABHALhsF2hRcTjNBGT4VTdMM=;
-  b=QUdYcK/YrpNQOnVw39W2K7jmXNErLNpHswsELTQ72xy+/YV401ecO171
-   TKeZmee+qiR+AH7z+wsHIQWwmOEl/r9dMS+eCtCl141hn6utweURdL+G/
-   EWQYPN1wzsa0dg+aSBZLxiQ7xY2e9NhsQv9TJx28ghLgpoOquzAEChWHt
-   3viDrVMjipN8pBrU2p252/qwDvtK1n1PHJGI6iMbEE90OKHh0Cv2ci3UL
-   C6A/wcin+hMR8r9KZGga1i7PQMX3B6wi2U4H3yF8O4tCajD61qECUdbjr
-   qC+2HLaLR1g87io7ymv2U2SZYFY8c/8lPLgwMRfC6EzKhr6jiTL0GbXja
-   w==;
-X-CSE-ConnectionGUID: KgZLADkVT3iscMxOj8jO1Q==
-X-CSE-MsgGUID: oQtgpsvtRwmxiG/yU3B6rQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11541"; a="58951213"
-X-IronPort-AV: E=Sophos;i="6.18,230,1751266800"; 
-   d="scan'208";a="58951213"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2025 06:42:33 -0700
-X-CSE-ConnectionGUID: 87TOoN+JSuyyXu64BJLX8Q==
-X-CSE-MsgGUID: XyDjfStqRz6SEEHMNLLv9g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,230,1751266800"; 
-   d="scan'208";a="171175094"
-Received: from dalessan-mobl3.ger.corp.intel.com (HELO [10.245.245.33]) ([10.245.245.33])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2025 06:42:26 -0700
-Message-ID: <da5885a94d89a2c0dece04e09182e832e8e40410.camel@linux.intel.com>
-Subject: Re: [RFC 0/3] cgroups: Add support for pinned device memory
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: David Hildenbrand <david@redhat.com>, Maarten Lankhorst
- <dev@lankhorst.se>,  Lucas De Marchi <lucas.demarchi@intel.com>, Rodrigo
- Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>,  Simona
- Vetter <simona@ffwll.ch>, Maxime Ripard <mripard@kernel.org>, Natalie Vock
- <natalie.vock@gmx.de>,  Tejun Heo <tj@kernel.org>, Johannes Weiner
- <hannes@cmpxchg.org>, 'Michal =?ISO-8859-1?Q?Koutn=FD=27?=	
- <mkoutny@suse.com>, Michal Hocko <mhocko@kernel.org>, Roman Gushchin	
- <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Muchun
- Song	 <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "'Liam R . Howlett'"
- <Liam.Howlett@oracle.com>,  Vlastimil Babka	 <vbabka@suse.cz>, Mike
- Rapoport <rppt@kernel.org>, Suren Baghdasaryan	 <surenb@google.com>, Thomas
- Zimmermann <tzimmermann@suse.de>
-Cc: Michal Hocko <mhocko@suse.com>, intel-xe@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org
-Date: Tue, 02 Sep 2025 15:42:20 +0200
-In-Reply-To: <776629b2-5459-4fa0-803e-23d4824e7b24@redhat.com>
-References: <20250819114932.597600-5-dev@lankhorst.se>
-	 <dc21e54c-d7ae-4d7e-9acb-6a3fa573b20f@redhat.com>
-	 <9c296c72-768e-4893-a099-a2882027f2b9@lankhorst.se>
-	 <b6b13ad22345bcdf43325173052614c17e803d00.camel@linux.intel.com>
-	 <776629b2-5459-4fa0-803e-23d4824e7b24@redhat.com>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE88016FF37
+	for <cgroups@vger.kernel.org>; Tue,  2 Sep 2025 14:07:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.63
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756822058; cv=fail; b=X4t875rfmyYS6eaNvs0wm8kwa1d0mPTt+RmwYvJLc0mV9bZU777OzaQDhONg6JmA2GRPy+DI2G4kF9bbN4sB8fvynuGl+32eRQeDgpguCK2By1ioRnUP7sDeTmSyPiLNx4DR8RZxxZ3PtDhIqv5ezuo3rJy1icxfLous5nUlBFk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756822058; c=relaxed/simple;
+	bh=UQkQGhj7mG+W9qcqpg8OLnHjv5lgxZE3uMc+AiMOYuQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ghhh6EPtuVrumXC7GEV3sMm7HjwR4/ioW9Cmz64XBaJ/5+COLdbesTBPpspSSUhNbXym0tAj0gL6SJE8ugkB0Z+lfh2bumpdZTKPbFSpx6hS0lhX6MPYuxpkvwfD+hyGBmLt9KHTgYTlwIClPgT1CoG/N2hjTSsHIx0zEWVQdW0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ltB2nbAN; arc=fail smtp.client-ip=40.107.96.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=TURrtL1vQH8MgvsWA3mDUN9A6Vn9uq6ows0Eh9cK4+FMdH+GlsG5ALZPrbcQ1f/hfVf0ssf5mtBahv1/6xx9+5Z/1K132ujSbqMQRtzZRv7RHNFkf4fQpvT+yY+5GYOZXf0OEOUUFYuedP8LmB679E231JluImonHrBcjCRVo+HN7YCvUNlp9hDaP1fsE1MnnpAnjlv+HAl0VSRGaN8y1G74v0j7dqIiITs456qxC5muTyZplH0aFBbyZ3DM5e84WIw2UYrnCV+nf+ncIMCs3i+U6CMFMy3uQnR1Lk5Yl/YNaJGLAImrHc+6MEfYmPtBb4HkbATbO+Z66jXxUXV4tw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9Jw0rKOTR/qJa29F7yyhPZ7sutZEY3iqAeCQpK/sNYY=;
+ b=sLCW6Ju+9+cN10bhLX6gh5ViKU/LIsTpWOYF01bCp/9Grvg7lWknMMvXYgnNxAjhq+8EJddDPjyMfEK0LGVs+A1abU1qWPGCE9RQGCK4OhRE4AQQtwUHQ/fk7JJ/5EGz8ByC4I7Zp2+1zIbqOGPRAmM3RjA/Z8m16Dz/SBZb2c8SvG8JWj8lNdorS4KtxxhfJ/5bYHEirwFHb2BUL+wkcKwMr2vJgLTVvWHz+ttSKOvJaCZiNlZgo0NnD4/5cNO7WvvAdfDGkyWE2zCFAQCHFnTwlas5FLnsIv7w1JAMS1ZVwy28CyN++AmHD5C0xDCZ1EFjEPenVHnCJlTfJhOMsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9Jw0rKOTR/qJa29F7yyhPZ7sutZEY3iqAeCQpK/sNYY=;
+ b=ltB2nbANMp/ix/spItAm3zx13ZpVSUNkCkGIBQMsJwQWC4e1VOEHgIDXV4wCHfMUe2DTvSTjwHcGtMSTEFd3Bo8R86G573hGKu7t2kTg1W4BET4UisgfNVnZVe0ZxibdjW87YpGh2cCpKcMgIIzcyni5dH8SvefU0PViL1EMGSs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by PH8PR12MB7445.namprd12.prod.outlook.com (2603:10b6:510:217::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.27; Tue, 2 Sep
+ 2025 14:07:30 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5%5]) with mapi id 15.20.9073.021; Tue, 2 Sep 2025
+ 14:07:30 +0000
+Message-ID: <e1507242-952c-4131-93e1-6af52760b283@amd.com>
+Date: Tue, 2 Sep 2025 16:07:24 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/15] ttm/pool: initialise the shrinker earlier
+To: Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
+ tj@kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>
+Cc: cgroups@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
+ Waiman Long <longman@redhat.com>, simona@ffwll.ch
+References: <20250902041024.2040450-1-airlied@gmail.com>
+ <20250902041024.2040450-10-airlied@gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20250902041024.2040450-10-airlied@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0090.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:cd::16) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-
-On Mon, 2025-09-01 at 20:38 +0200, David Hildenbrand wrote:
-> On 01.09.25 20:21, Thomas Hellstr=C3=B6m wrote:
-> > Hi,
-> >=20
-> > On Mon, 2025-09-01 at 20:16 +0200, Maarten Lankhorst wrote:
-> > > Hello David,
-> > >=20
-> > > Den 2025-09-01 kl. 14:25, skrev David Hildenbrand:
-> > > > On 19.08.25 13:49, Maarten Lankhorst wrote:
-> > > > > When exporting dma-bufs to other devices, even when it is
-> > > > > allowed
-> > > > > to use
-> > > > > move_notify in some drivers, performance will degrade
-> > > > > severely
-> > > > > when
-> > > > > eviction happens.
-> > > > >=20
-> > > > > A perticular example where this can happen is in a multi-card
-> > > > > setup,
-> > > > > where PCI-E peer-to-peer is used to prevent using access to
-> > > > > system memory.
-> > > > >=20
-> > > > > If the buffer is evicted to system memory, not only the
-> > > > > evicting
-> > > > > GPU wher
-> > > > > the buffer resided is affected, but it will also stall the
-> > > > > GPU
-> > > > > that is
-> > > > > waiting on the buffer.
-> > > > >=20
-> > > > > It also makes sense for long running jobs not to be preempted
-> > > > > by
-> > > > > having
-> > > > > its buffers evicted, so it will make sense to have the
-> > > > > ability to
-> > > > > pin
-> > > > > from system memory too.
-> > > > >=20
-> > > > > This is dependant on patches by Dave Airlie, so it's not part
-> > > > > of
-> > > > > this
-> > > > > series yet. But I'm planning on extending pinning to the
-> > > > > memory
-> > > > > cgroup
-> > > > > controller in the future to handle this case.
-> > > > >=20
-> > > > > Implementation details:
-> > > > >=20
-> > > > > For each cgroup up until the root cgroup, the 'min' limit is
-> > > > > checked
-> > > > > against currently effectively pinned value. If the value will
-> > > > > go
-> > > > > above
-> > > > > 'min', the pinning attempt is rejected.
-> > > > >=20
-> > > > > Pinned memory is handled slightly different and affects
-> > > > > calculating
-> > > > > effective min/low values. Pinned memory is subtracted from
-> > > > > both,
-> > > > > and needs to be added afterwards when calculating.
-> > > >=20
-> > > > The term "pinning" is overloaded, and frequently we refer to
-> > > > pin_user_pages() and friends.
-> > > >=20
-> > > > So I'm wondering if there is an alternative term to describe
-> > > > what
-> > > > you want to achieve.
-> > > >=20
-> > > > Is it something like "unevictable" ?
-> > > It could be required to include a call pin_user_pages(), in case
-> > > a
->=20
-> We'll only care about long-term pinnings (i.e., FOLL_LONGTERM).
-> Ordinary=20
-> short-term pinning is just fine.
->=20
-> (see how even "pinning" is overloaded? :) )
->=20
-> > > process wants to pin
-> > > from a user's address space to the gpu.
-> > >=20
-> > > It's not done yet, but it wouldn't surprise me if we want to
-> > > include
-> > > it in the future.
-> > > Functionally it's similar to mlock() and related functions.
->=20
-> Traditionally, vfio, io_uring and rdma do exactly that: they use GUP
-> to=20
-> longterm pin and then account that memory towards RLIMIT_MEMLOCK.
->=20
-> If you grep for "rlimit(RLIMIT_MEMLOCK)", you'll see what I mean.
->=20
-> There are known issues with that: imagine long-term pinning the same=20
-> folio through GUP with 2 interfaces (e.g., vfio, io_uring, rdma), or=20
-> within the same interface.
->=20
-> You'd account the memory multiple times, which is horrible. And so
-> far=20
-> there is no easy way out.
->=20
-> > >=20
-> > > Perhaps call it mlocked instead?
-> >=20
-> > I was under the impression that mlocked() memory can be migrated to
-> > other physical memory but not to swap? whereas pinned memory needs
-> > to
-> > remain the exact same physical memory.
->=20
-> Yes, exactly.
->=20
-> >=20
-> > IMO "pinned" is pretty established within GPU drivers (dma-buf,
-> > TTM)
-> > and essentially means the same as "pin" in "pin_user_pages", so
-> > inventing a new name would probably cause even more confusion?
->=20
-> If it's the same thing, absolutely. But Marteen said "It's not done
-> yet,=20
-> but it wouldn't surprise me if we want to include it in the future".
->=20
-> So how is the memory we are talking about in this series "pinned" ?
-
-Reading the cover-letter from Maarten, he only talks about pinning
-affecting performance, which would be similar to user-space calling
-mlock(), although I doubt that moving content to other physical pages
-within the same memory type will be a near-term use-case.
-
-However what's more important are situation where a device (like RDMA)
-needs to pin, because it can't handle the case where access is
-interrupted and content transferred to another physical location.
-
-Perhaps Maarten could you elaborate whether this series is intended for
-both these use-cases?
-
-/Thomas
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|PH8PR12MB7445:EE_
+X-MS-Office365-Filtering-Correlation-Id: bfb54635-9b5f-44c7-d9b4-08ddea2a0df9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?REhLWmRSRlNqNWxETUdSSGRweHJmVDhGdmJYN1ZpMmtlU1RlRXZlOEpxSmZZ?=
+ =?utf-8?B?TWd0QnZkbFJ5ZERqeDdRTTZaaFdBNnc3NW5GcnliV2ViektZMGMwaU1kTnZO?=
+ =?utf-8?B?R0pjTGIyODAzUEowSXJQSTZhOEdQV2lPcEs0OVBUM2o2Z2JXQW5SV1MxNDla?=
+ =?utf-8?B?KzNmSFJhR2N2MGtveTN2Y2w2SkswM24zLytSNk1VVGg5ajFjQlVEcTJpMmp6?=
+ =?utf-8?B?VFAzdDJ1cmVzd21HWTFQOW1XNlJETmJVK2xRbmwyL0tFaTVQWmRPejdWVzdZ?=
+ =?utf-8?B?SjMwdUN0U0hwbnhwQjBJKy9Wc2tsYjJuZW9sTmdZSTVuZ0FSMVdCVW1pYSsv?=
+ =?utf-8?B?VEdmMkRaWDZybTFRWDdaUlUwcFE3TmttSkVrUzN5OThWd2tmVnhnOU5UaERW?=
+ =?utf-8?B?K2I3MHE0NkFkc0d5d1ZxRFhHRUxIeCs3d0x3M1ZzQ3ZWTWtXeE5MZ2NzeXkr?=
+ =?utf-8?B?aEJEM25mUWd6T3huRVVJZkhQL1hLSzN0cVhmVjVneTlIOCt6NzZYSERlbGZZ?=
+ =?utf-8?B?KzJnbzhoL1czcVRGVEdOblphTjN1TGw0NW1ka1hOMWpITWJINjhrbXgvOVpS?=
+ =?utf-8?B?ZDNHK1lXNTVZWE9TOTk2b0h4bWV4RDRsTHdzbURGQTZjSDdjZitqUDZzTWRV?=
+ =?utf-8?B?Zkw0RTBrVzFZS3U0bEJpWEtRRDB5TldXSXFOL0psKzFmakh3Ukt5MzFzNU5t?=
+ =?utf-8?B?SHcwdm5QQWlTY0VkMnlkODlMS2c1UkgxREtUMENCRHdVOXR5ZUpVSlBZeGFH?=
+ =?utf-8?B?OXZFUTNsZWN3a2RFSHJwMUs5NFEvTkh4RlFsQzFqS3U3eCtsdUpqZVAwSWRs?=
+ =?utf-8?B?RkNXWGpMWlFhb1lIZmlXWldiZ0pvT2xqQ0I2akwzcXp4YS9Jcy9SeGdCZ2Nr?=
+ =?utf-8?B?OHFsZW1iOHdxL21BQ3A1K1pNd0hGWUEwdDNHTWpUZkNKcmFjeGU0NFM1Tm5a?=
+ =?utf-8?B?c2VhdGZCd2hoUDdZS09UQll0eitSNlJBVzRYRS9FVkdmRWl0MFhtNEUrTnVJ?=
+ =?utf-8?B?MzM4UTcvdDFra1JEeUwzeENyRW1Qd014U2kzRk0xdGFsVDVtUTRMNzd0djJM?=
+ =?utf-8?B?QU9ueVNYWkViMUlDNkNRdlg1MEQyaXVsc2YxR2ZEZm5WT2ZWdTdhbzFnWFI3?=
+ =?utf-8?B?SjlNak5RNHlER2JORXkvTWJoMU9ZWEJmNGlPaXhMTHpOYzRaYUZjWENlTito?=
+ =?utf-8?B?V2oxVVNFQXdJdXFiRjBJU3c2eEFMK09ZVzlaTjdwdGRGOEhDajJOelpSTXBR?=
+ =?utf-8?B?ak9EN2c4R3BpT0VCN1o5Qm9MamlueElxaHA4QUdoTEhKM0IvTHNPZCtubWNy?=
+ =?utf-8?B?MVBGZWdkMEhjRWE0T0V1enVjbVNpWWZFVzB5RVpIUVYrZ3NKYkJmTWNNbHNG?=
+ =?utf-8?B?SFg0TXpsOWJOaTNFMlNHRy9tS0tYK3RXSFNBYi9CT0trY0ZQMjBvanFxWm1M?=
+ =?utf-8?B?UlVFTU9Fc25wWW1la2FYdHVMdExtdnFUQ3J4OE1XWWg0amE1NkxkQjcwNTNw?=
+ =?utf-8?B?U0Y5Yk80K1pUV0dOdktYTGdZL0Z2WkpGMU90UzJ2OHV0QzNHMFlxZEJHOW96?=
+ =?utf-8?B?MVNBUnE4aGR3WU9KWDBEcEoxMkx4VHBQNk1PMVBoK0N4aFA4UUVFeGQvRnJs?=
+ =?utf-8?B?QnE2RnN3R3ZNK3o1djZhbzJKSTM2b050RHZiMWFlbGV5ODZKY1NmMXdhcDRM?=
+ =?utf-8?B?MFQ4ZDN2VG1IV0hBK1F4UmJmVEMyQ04vUE1SNVdaeEpseloyRStiMDZuWTVW?=
+ =?utf-8?B?bUo3V29ZSjh3eFlXSkVIMk14dUo2ZXBBWFFlRUVoaDVsSXJ4bnBqMFZ6Ykwy?=
+ =?utf-8?B?ZUNiY0NpUEdGZDVQV2VoeUY3MXREMzh6ZE42eWF0Vk5nL0Z0TERsWWNGQ0FV?=
+ =?utf-8?B?ZlVuaGxQK053WFZKWkF5V0pFOW9hVGYzYXV1b0lOaVVyeHc9PQ==?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?QkExb0t3c2F4a3llVWZnZWpONjBuWnF4bTIwVHF5SXVMZWJLWGprTVpSajhV?=
+ =?utf-8?B?VGJXSG01S0ZlNkdxUDIvaGhZb2xrR2diRjZuTlgxalI0b1RhZlpkQVl1Kzdh?=
+ =?utf-8?B?dkZvNTI5Rmxhbm9MT0VLYjNoU29HVmhwOUxIRHJwK0dmQ0ZXcThlS2thWkY2?=
+ =?utf-8?B?NXJoZ091dzg0VTVzL2NnWWJGNlgyNjgzck51Y1RWK2NxMUZkbUllQVNHVDJh?=
+ =?utf-8?B?N0h5OFMwMFBqclhwblQyYjFSVUdMVW1HUStCUHZZYlZWK1UvcnAzdi9YUVNJ?=
+ =?utf-8?B?SWhEMUJGd0k5MXpGaytVMkJlOVpPYWsvYm5PT2VyU3BaQzJycGRoZU5CbWxa?=
+ =?utf-8?B?SnpVWExyTXJFemZ0Y0l0MzYwUXpTY25qN2hNRFBoaEIrOEQ4RFpMWlFvSFlu?=
+ =?utf-8?B?am15Ri9nc2pNczhKeGVrb212SnpzU1dEK2xUYURiSDRJeThMK3pvS29yR1Ji?=
+ =?utf-8?B?KzdwNkNLTzBuYTZhTUxJZ0w4bVdIZlBPZ0hFeGtLdG1JbU1iallON2dHWE1p?=
+ =?utf-8?B?bnZFUEdXZWxkbWR5aUdBMXlIN04xVVJUck9RaHFicFRGU05sSlk5S0dXbndW?=
+ =?utf-8?B?NS9pcGRwQm8rMUVuZFhKUE1vYS9Vd1k3Q2pmaWpRN1g5SmowYmVDRWRQRVpn?=
+ =?utf-8?B?aXdIdHN4N2xncEo3TUN0YXhHaHBDNEcyUFRScWJPQnBPTGV4OERpNDMvTmg0?=
+ =?utf-8?B?WVVtWkV4anVCR29OUFI1SGgyZWZXVytKODBQcENENUg5VFlHQkhpc0R3OTdt?=
+ =?utf-8?B?YThLODVSWnFKc0dlZ2o2aHZDT0diY0VhVDBmWjFuQ204U3ZJVzZORUxKL1Jo?=
+ =?utf-8?B?eFA0TlNuWE9Lb1pmNTR4U2lHdjRheVNDOS85MmdXb2htdTZLV1ZSRUJ3OTBC?=
+ =?utf-8?B?WEhKc24rVGdueVJ6Y0FxRHlCMUlFWTZKMG85Vk1BZXI0ZVhKcU1pcEYxS01a?=
+ =?utf-8?B?OTFSNXdJamYvM0JUd3NSVHF6SHJ2SXloSFk2KzF5bFllVUlPNENwTGpPYWxs?=
+ =?utf-8?B?ZStPTStRYjA5OVVQWHBuNTcyak9WQnlnMVpNTExBaGwzMkFMWXM4NFBSWkJJ?=
+ =?utf-8?B?cmVNaUEzc3BmMytXdmhPUkowQzM2QTZyOVhDQzdSZ0VZN3BjbjRxaG9DZ1p1?=
+ =?utf-8?B?aGM1T0doZGJtc0tqOHowdnlvK09HUFBLTWg5YUI5TW4za1JwMEl1WkpXa3Nu?=
+ =?utf-8?B?SzRRZFQrVHBEV3ZrSVh6QXhjeFhuT0hMWWdQdFJkUmYzNzlEN1Y1RVI3NGsw?=
+ =?utf-8?B?czVNU2o0SjVIbndLbWgxb1hOaWNCcWV0RERyRHlPODYvQTJRT2lZU083VE1h?=
+ =?utf-8?B?aHJrRTF4ZTJ0WkFqSUdBTUM4OFI0VUN6REQxdUJrU2dITDVOMWFtWW43a3BD?=
+ =?utf-8?B?cThoOGpaNkhOK0lnaDdwOGZmUVh4VDFjak40dmRNY1ZJbGlBb3V0cFlJcDZH?=
+ =?utf-8?B?d2pMMkRrSFRWMHNTRGF3dWVWZlB5cmFHRlBEaU4yUTZtbC9zckkvc2tFUmtX?=
+ =?utf-8?B?TXJOV2lFYWlSZkJhQWIyTGpVWXJPR0MyYTlBZUxIWllRLy9VQjRKcmY0L0hC?=
+ =?utf-8?B?RXFNY1Y3UjJhQVZRaCtvWFY4dDVnU2daZlpkL3ZtRDhTY3JIbVF3eXBnUWNv?=
+ =?utf-8?B?bkdncXVmRllHTHNjWkI5Wmk1SmhhaXBrWkVxZmV0dlZhenFpRDEzYUpKbjZz?=
+ =?utf-8?B?UDV3a0thS3lzSjV6Z2RINmxvc3k3Nkh0ODBneXZWcE1xUGlnc0xndkhodGFt?=
+ =?utf-8?B?QVVraHBBUUhqZ2JmRzltUCtCRlBheDFMekhrWW1maFRuemRxUHpocy9kMU1m?=
+ =?utf-8?B?eVJUWHFnOVB0TmFtMGVHQ29qZjlqTGxoYytlbnRzUTZRUmQ2YjBwNHo0ckUr?=
+ =?utf-8?B?YjNnTkNaaFJCek0zeWFWZmt0aEgwQXIwWmtwVTZ0S3BEaDU2RmllZTFiUS9u?=
+ =?utf-8?B?UjhoeE5ZTXM4WkQ4R244QUhwNklKY3dsaTMrdlVMeXkxWXpucnh6Q3NLUkht?=
+ =?utf-8?B?U1dOb0MveURYb0ZRSmF0SHBCbCs0MXNuM1IreUhSK3dRdU1VMDFBNk12L3RZ?=
+ =?utf-8?B?TXNEcDlBVWFJZlBOR0FjMCtKWjZiWDdFWHpmYjlTRDFWdkVPQ1N0Nm4wQjBF?=
+ =?utf-8?Q?rrsfctdSTKpCfI7bmGDZPDfXe?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bfb54635-9b5f-44c7-d9b4-08ddea2a0df9
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2025 14:07:30.3109
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: COZuOv0+yXRztFsBv1gTsnHeLSPKC2+1k4VotbDO9xHr5Dbkx+5xEN9LrRVEBD7X
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7445
 
 
 
->=20
->=20
+On 02.09.25 06:06, Dave Airlie wrote:
+> From: Dave Airlie <airlied@redhat.com>
+> 
+> Later memcg enablement needs the shrinker initialised before the list lru,
+> Just move it for now.
+
+Hui? That should just be the other way around.
+
+The shrinker depends on the list lru and so needs to come after ttm_pool_type_init() and not before.
+
+Regards,
+Christian.
+
+> 
+> Signed-off-by: Dave Airlie <airlied@redhat.com>
+> ---
+>  drivers/gpu/drm/ttm/ttm_pool.c | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
+> index 9a8b4f824bc1..2c9969de7517 100644
+> --- a/drivers/gpu/drm/ttm/ttm_pool.c
+> +++ b/drivers/gpu/drm/ttm/ttm_pool.c
+> @@ -1381,6 +1381,17 @@ int ttm_pool_mgr_init(unsigned long num_pages)
+>  	spin_lock_init(&shrinker_lock);
+>  	INIT_LIST_HEAD(&shrinker_list);
+>  
+> +	mm_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE, "drm-ttm_pool");
+> +	if (!mm_shrinker)
+> +		return -ENOMEM;
+> +
+> +	mm_shrinker->count_objects = ttm_pool_shrinker_count;
+> +	mm_shrinker->scan_objects = ttm_pool_shrinker_scan;
+> +	mm_shrinker->batch = TTM_SHRINKER_BATCH;
+> +	mm_shrinker->seeks = 1;
+> +
+> +	shrinker_register(mm_shrinker);
+> +
+>  	for (i = 0; i < NR_PAGE_ORDERS; ++i) {
+>  		ttm_pool_type_init(&global_write_combined[i], NULL,
+>  				   ttm_write_combined, i);
+> @@ -1403,17 +1414,6 @@ int ttm_pool_mgr_init(unsigned long num_pages)
+>  #endif
+>  #endif
+>  
+> -	mm_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE, "drm-ttm_pool");
+> -	if (!mm_shrinker)
+> -		return -ENOMEM;
+> -
+> -	mm_shrinker->count_objects = ttm_pool_shrinker_count;
+> -	mm_shrinker->scan_objects = ttm_pool_shrinker_scan;
+> -	mm_shrinker->batch = TTM_SHRINKER_BATCH;
+> -	mm_shrinker->seeks = 1;
+> -
+> -	shrinker_register(mm_shrinker);
+> -
+>  	return 0;
+>  }
+>  
 
 
