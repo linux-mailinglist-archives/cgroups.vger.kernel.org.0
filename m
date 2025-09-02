@@ -1,187 +1,202 @@
-Return-Path: <cgroups+bounces-9608-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9609-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4121BB3F666
-	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 09:15:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B647B3F736
+	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 09:58:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 744543B0AD2
-	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 07:15:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD4201A87A3A
+	for <lists+cgroups@lfdr.de>; Tue,  2 Sep 2025 07:58:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C784F2E6CC7;
-	Tue,  2 Sep 2025 07:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776F22E8E04;
+	Tue,  2 Sep 2025 07:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="X921ENld"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="MUsO79ux"
 X-Original-To: cgroups@vger.kernel.org
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC27918DB0D;
-	Tue,  2 Sep 2025 07:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD0002E8B9C
+	for <cgroups@vger.kernel.org>; Tue,  2 Sep 2025 07:56:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756797327; cv=none; b=VvNEulg7vZYy63HUGUoXi046kUdpYQlVpX7tVffT01ujcNhBmwaDpq6IMdmU8ObLZ16y08rBA3QkIARm/Dvz7e23gxyk1JVIxphKDhBytz8KI+BaX+LqDag6LehQdkev+E/TOO23Ik3j/+U1Ixf+J+Yo889cj8wIJN7vCf7IXpY=
+	t=1756799809; cv=none; b=J1+hI305HgyqVHLeqeNcHlHxLtL7fosmqq7puvPFPMqIdSWnEDhQyjl0ZGdpFKB0ZK7ITQql6f3gmO0sr1XTVn4Z1GGR1lhfH3JFsOjpKLe77hoWRopnLZJilqJvQZbIWNFIReM653P36MiDcyxnOWin5X649JFIyRisNI/H71w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756797327; c=relaxed/simple;
-	bh=63Ypg42QVZ06s8ykliKTqwl+/W5CTIpV8b7Xr3N12cs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BFzdm5jLr0zocw9nsdSeklYN9QCW5WlBCGwGIRGLJbtE4459FkhidLnjrPoU62//Ik7IrBoPd2u14/qY4WRFDLvUJu1DDz6L9QEOt3BSMJWWC2QTcHbK1gNF7DGkzzNNZGMcEHYLn5T4roLrNbXzHhYXUb9I+65/43b/0IyDtqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=X921ENld; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+	s=arc-20240116; t=1756799809; c=relaxed/simple;
+	bh=Yk18SBQzoXAjnIAWv+ffWMWjIUs8ABHusclWRbr8Yi4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Jg2L5mzzVz09P/5vYZ87ueqdWHY9kfyFBI9Af+mVz9z+J633/wOpq5DwEOz60Zi7YemngZ/T4b1yxo1d6i52LnIoGNxHq80JpngteGzAN1wFzFr4gcElrlWKT0TPjIxPCFsnsBqZp3m6eXMhcOaJReAdABzL46/rQkrttkvQUyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=MUsO79ux; arc=none smtp.client-ip=35.89.44.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5007b.ext.cloudfilter.net ([10.0.29.167])
+	by cmsmtp with ESMTPS
+	id tIBfu5zvSaPqLtLskuXyeq; Tue, 02 Sep 2025 07:56:46 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id tLsiuUzwzOhG0tLsju7pSn; Tue, 02 Sep 2025 07:56:45 +0000
+X-Authority-Analysis: v=2.4 cv=PIgP+eqC c=1 sm=1 tr=0 ts=68b6a33d
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=XW3vq5T86JFyMsJaYQInbg==:17
+ a=IkcTkHD0fZMA:10 a=yJojWOMRYYMA:10 a=7T7KSl7uo7wA:10 a=_Wotqz80AAAA:8
+ a=lix9ENjbuMu12OTMD5EA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ a=buJP51TR1BpY-zbLSsyS:22 a=xYX6OU9JNrHFPr8prv8u:22
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
-	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=75QsosR73EP7Bhx5dXwnnBiSrQlTSAdKIHehZonw/2s=; t=1756797323;
-	x=1757402123; b=X921ENldUxkTG2iEalnRJczAydGr+60jnSCemShmum7owLYveZD+utCqGKrDy
-	JxsQx+SR98LaDjqI5miAet79XGeKpnPG7pU3BPd3n7/p7jj0zED8JzynlUkYCEXmxO1C+S2YqjUVS
-	V5R+cn5H4MJ8GQ5lESC0XBVCeQWyJDgTJO6mH8pHWkK2Ql2ysaeO0po59wRj2FP9QgbfCVp5rkRUo
-	QrFBccBSWRKwxSgXOohUG2j8ZgCj04hDsSPMblP/7B1bUN6leCRxM1sThlrpmLA6s9V+5QZfZYVck
-	/wq/gloVjZWpqTUN4PorQGEzcaw3hEsFw6JDm7DJLVzjE57ybw==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1utLEY-00000000Jm5-12co; Tue, 02 Sep 2025 09:15:14 +0200
-Received: from p5b13aa34.dip0.t-ipconnect.de ([91.19.170.52] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1utLEX-00000002jxi-2pMt; Tue, 02 Sep 2025 09:15:13 +0200
-Message-ID: <11a4d0a953e3a9405177d67f287c69379a2b2f8f.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v2 3/4] arch: copy_thread: pass clone_flags as u64
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Andreas Larsson <andreas@gaisler.com>,
- schuster.simon@siemens-energy.com,  Dinh Nguyen <dinguyen@kernel.org>,
- Christian Brauner <brauner@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
- Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand
- <david@redhat.com>, Lorenzo Stoakes	 <lorenzo.stoakes@oracle.com>, "Liam R.
- Howlett" <Liam.Howlett@oracle.com>,  Vlastimil Babka	 <vbabka@suse.cz>,
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan	 <surenb@google.com>,
- Michal Hocko <mhocko@suse.com>, Ingo Molnar	 <mingo@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Juri Lelli	 <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,  Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
- Segall <bsegall@google.com>,  Mel Gorman <mgorman@suse.de>, Valentin
- Schneider <vschneid@redhat.com>, Kees Cook <kees@kernel.org>,  Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>,  Alexandre Ghiti	 <alex@ghiti.fr>, Guo
- Ren <guoren@kernel.org>, Oleg Nesterov <oleg@redhat.com>,  Jens Axboe
- <axboe@kernel.dk>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara
- <jack@suse.cz>, Tejun Heo <tj@kernel.org>, Johannes Weiner
- <hannes@cmpxchg.org>, Michal =?ISO-8859-1?Q?Koutn=FD?=	 <mkoutny@suse.com>,
- Paul Moore <paul@paul-moore.com>, Serge Hallyn	 <sergeh@kernel.org>, James
- Morris <jmorris@namei.org>, "Serge E. Hallyn"	 <serge@hallyn.com>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker
- <frederic@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Masami
- Hiramatsu	 <mhiramat@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet	 <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni	 <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Mathieu
- Desnoyers	 <mathieu.desnoyers@efficios.com>, Arnaldo Carvalho de Melo
- <acme@kernel.org>,  Namhyung Kim <namhyung@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Alexander Shishkin	
- <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
- Rogers	 <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, John
- Johansen	 <john.johansen@canonical.com>, Stephen Smalley
- <stephen.smalley.work@gmail.com>,  Ondrej Mosnacek <omosnace@redhat.com>,
- Kentaro Takeda <takedakn@nttdata.co.jp>, Tetsuo Handa	
- <penguin-kernel@I-love.SAKURA.ne.jp>, Richard Henderson	
- <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, Vineet
- Gupta	 <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin
- Marinas	 <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Brian
- Cain	 <bcain@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui	
- <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal
- Simek	 <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Jonas Bonn	 <jonas@southpole.se>, Stefan Kristiansson
- <stefan.kristiansson@saunalahti.fi>,  Stafford Horne <shorne@gmail.com>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge
- Deller	 <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, Michael
- Ellerman	 <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy	 <christophe.leroy@csgroup.eu>, Heiko Carstens
- <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>, Christian Borntraeger	
- <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Yoshinori
- Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, Richard
- Weinberger	 <richard@nod.at>, Anton Ivanov
- <anton.ivanov@cambridgegreys.com>, Johannes Berg	
- <johannes@sipsolutions.net>, Borislav Petkov <bp@alien8.de>, Dave Hansen	
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>,  Chris Zankel <chris@zankel.net>, Max Filippov
- <jcmvbkbc@gmail.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, apparmor@lists.ubuntu.com, 
-	selinux@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org
-Date: Tue, 02 Sep 2025 09:15:08 +0200
-In-Reply-To: <f2371539-cd4e-4d70-9576-4bb1c677104c@gaisler.com>
-References: 
-	<20250901-nios2-implement-clone3-v2-0-53fcf5577d57@siemens-energy.com>
-	 <20250901-nios2-implement-clone3-v2-3-53fcf5577d57@siemens-energy.com>
-	 <f2371539-cd4e-4d70-9576-4bb1c677104c@gaisler.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=okXODQ+jKSpaf8IXKd7wjaUPjNu4b3AlYTLZMl40oYc=; b=MUsO79uxb/9Xu+nHgDBocU/0sa
+	xre8NgTKO9dYx+uUBydBAXXmmF+K+sEpVMJ+4qQ11nlH5yWauq7RmXl3+TCQgpTeusW6C4SoWTRyB
+	XUgQev4utosfhcpT8mw6G9qBg3Hndo3M0PhFRCzXGkoH7a1eOBLkVOIl2ZQYMJqgoWq7lFB9uSCEn
+	8M9YSl1W0yTXGLOYOxToZVm14CoySxUTaZwTU/s1OMMsS+hVwqP7BRg/QSZodl3ZmCDX3MSrXWXB1
+	vNG/VRF7+WtVmb5LOqIe2cVSN8hEvtw5EMKX5wnYka0h4/D6bio7JCELL3dborg5jVJrE7RvfuTL+
+	U1swrEWg==;
+Received: from d4b26982.static.ziggozakelijk.nl ([212.178.105.130]:47322 helo=[10.28.188.44])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.98.1)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1utLsh-00000002QXb-3nRk;
+	Tue, 02 Sep 2025 02:56:44 -0500
+Message-ID: <92912540-23d2-4b18-9002-bac962682caf@embeddedor.com>
+Date: Tue, 2 Sep 2025 09:56:34 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] cgroup: Avoid thousands of -Wflex-array-member-not-at-end
+ warnings
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ cgroups@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ linux-hardening@vger.kernel.org, "Gustavo A. R. Silva"
+ <gustavoars@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>
+References: <b3eb050d-9451-4b60-b06c-ace7dab57497@embeddedor.com>
+ <wkkrw7rot7cunlojzyga5fgik7374xgj7aptr6afiljqesd6a7@rrmmuq3o4muy>
+ <d0c49dc9-c810-47d2-a3ce-d74196a39235@embeddedor.com>
+ <y7nqc4bwovxmef3r6kd62t45w3xwi2ikxfmjmi2zxhkweezjbi@ytenccffmgql>
+Content-Language: en-US
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <y7nqc4bwovxmef3r6kd62t45w3xwi2ikxfmjmi2zxhkweezjbi@ytenccffmgql>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 212.178.105.130
+X-Source-L: No
+X-Exim-ID: 1utLsh-00000002QXb-3nRk
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: d4b26982.static.ziggozakelijk.nl ([10.28.188.44]) [212.178.105.130]:47322
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfPaYGG2ZzGWnav2ZMyceLIhqudOw2fBFxnKhiyAMX5XyzMh58QWeoA9lAyBIRLJ9g6P0cmiFWpg2exdQIiJTKVv6m/qxuRsWPvX0WY47priRitEYQO56
+ K76FkA6Z+9jPj7tOxEMzbE2lVYVA8tcjTRC8optWcSBSI67H5fBmfk7YiEhQpX0B91nG3PVf7SxYdpQPcQc68Kml7uwDNDKWuDc=
 
-Hi Andreas,
 
-On Tue, 2025-09-02 at 09:02 +0200, Andreas Larsson wrote:
-> On 2025-09-01 15:09, Simon Schuster via B4 Relay wrote:
-> > From: Simon Schuster <schuster.simon@siemens-energy.com>
-> >=20
-> > With the introduction of clone3 in commit 7f192e3cd316 ("fork: add
-> > clone3") the effective bit width of clone_flags on all architectures wa=
-s
-> > increased from 32-bit to 64-bit, with a new type of u64 for the flags.
-> > However, for most consumers of clone_flags the interface was not
-> > changed from the previous type of unsigned long.
-> >=20
-> > While this works fine as long as none of the new 64-bit flag bits
-> > (CLONE_CLEAR_SIGHAND and CLONE_INTO_CGROUP) are evaluated, this is stil=
-l
-> > undesirable in terms of the principle of least surprise.
-> >=20
-> > Thus, this commit fixes all relevant interfaces of the copy_thread
-> > function that is called from copy_process to consistently pass
-> > clone_flags as u64, so that no truncation to 32-bit integers occurs on
-> > 32-bit architectures.
-> >=20
-> > Signed-off-by: Simon Schuster <schuster.simon@siemens-energy.com>
-> > ---
->=20
-> Thanks for this and for the whole series! Needed foundation for a
-> sparc32 clone3 implementation as well.
 
-Can you implement clone3 for sparc64 as well?
+On 9/1/25 19:58, Michal Koutný wrote:
+> On Mon, Sep 01, 2025 at 05:21:22PM +0200, "Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
+>> Because struct cgroup ends in a flexible-array member `ancestors`.
+>> This triggers the -Wflex-array-member-not-at-end warns about. So,
+>> while `ancestors` is indeed a flexible array, any instance of
+>> cgroup embedded in another struct should be placed at the end.
+> 
+> Oh, so TRAILING_OVERLAP() won't work like that?
+> (I thought that it'd hide the FAM from the end of the union and thus it
+> could embedded when wrapped like this. On second thought, I realize
+> that's exclusive with the static validations.)
+> 
+>> However, if we change it to something like this (and of course
+>> updating any related code, accordingly):
+>>
+>> -       struct cgroup *ancestors[];
+>> +       struct cgroup **ancestors;
+>>
+>> Then the flex in the middle issue goes away, and we can have
+>> struct cgroup embedded in another struct anywhere.
+>>
+>> The question is if this would be an acceptable solution?
+>>
+>> I'd probably prefer this to remain a flexible-array member,
+>> but I'd like to hear people's opinions and feedback. :)
+> 
+> I'd prefer if cgroup_create could still work with one allocation only
+> both for struct cgroup and its ancestors array. (Cgroup allocation
+> happens many times in a day.)
+> 
+> The increase in struct cgroup_root size is IMO not that problematic.
+> (There are typically at most CGROUP_SUBSYS_COUNT roots with gradual
+> trend to only the single cgrp_dfl_root.)
+> 
+> Note that it'd be good to keep it enclosed within struct cgroup_root
+> (cgroup1_root_to_use could use struct_size()), however, the
+> cgrp_dfl_root would still need the storage somewhere.
 
-Adrian
+If the increase in size is not a problem, then something like this
+works fine (unless there is a problem with moving those two members
+at the end of cgroup_root?):
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 539c64eeef38..bd28d639a78a 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -630,16 +630,6 @@ struct cgroup_root {
+         struct list_head root_list;
+         struct rcu_head rcu;    /* Must be near the top */
+
+-       /*
+-        * The root cgroup. The containing cgroup_root will be destroyed on its
+-        * release. cgrp->ancestors[0] will be used overflowing into the
+-        * following field. cgrp_ancestor_storage must immediately follow.
+-        */
+-       struct cgroup cgrp;
+-
+-       /* must follow cgrp for cgrp->ancestors[0], see above */
+-       struct cgroup *cgrp_ancestor_storage;
+-
+         /* Number of cgroups in the hierarchy, used only for /proc/cgroups */
+         atomic_t nr_cgrps;
+
+@@ -651,7 +641,21 @@ struct cgroup_root {
+
+         /* The name for this hierarchy - may be empty */
+         char name[MAX_CGROUP_ROOT_NAMELEN];
++
++       /*
++        * The root cgroup. The containing cgroup_root will be destroyed on its
++        * release. cgrp->ancestors[0] will be used overflowing into the
++        * following field. cgrp_ancestor_storage must immediately follow.
++        *
++        * Must be last --ends in a flexible-array member.
++        */
++       TRAILING_OVERLAP(struct cgroup, cgrp, ancestors,
++               /* must follow cgrp for cgrp->ancestors[0], see above */
++               struct cgroup *cgrp_ancestor_storage;
++       );
+  };
++static_assert(offsetof(struct cgroup_root, cgrp.ancestors) ==
++             offsetof(struct cgroup_root, cgrp_ancestor_storage));
+
+
+The assert above checks that no misalignment is inadvertently
+introduced between FAM and cgrp_ancestor_storage.
+
+Thanks
+-Gustavo
+
+
 
