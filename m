@@ -1,217 +1,176 @@
-Return-Path: <cgroups+bounces-9707-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9708-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42D4BB43FE1
-	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 17:02:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E970B442C6
+	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 18:31:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 967CD5A4CBC
-	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 15:02:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ED9AA08593
+	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 16:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DB23043DC;
-	Thu,  4 Sep 2025 15:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96EE0230BFD;
+	Thu,  4 Sep 2025 16:31:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="md/ghe+b"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lankhorst.se (lankhorst.se [141.105.120.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958AF1EB9F2;
-	Thu,  4 Sep 2025 15:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A82202F71;
+	Thu,  4 Sep 2025 16:31:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756998144; cv=none; b=G9euYVaz5O7Q7ZVUc0103WYQ7mCLIAbUJHEFDiBgf8J24CXE9zXPT9Zy3Ho3sBfY4EoNj2OzOrVL/tBMRjcuF70Aiz4i7I9/MAG93eIjjDridTloeHVre+0+D1RLGGooHY1Cc93FGOo0KuCF1krSKFdRs0ReS7FSB78b4HRY9PM=
+	t=1757003482; cv=none; b=ZIDFqcTvbepi+lUVha+oQyaLEK/ebyMPSOn9nDBabFj1Bh37Y9f1urVUyTaffEzdjf3KCexh67fQps+oOvj2j68OaO3oOE0bFFieh0QeJrfskWltwA6I4C6wP5C1J7Syoatx7BUiDvVpufgyRt8SlEgysoKsVvuiqs9Fsp5RLOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756998144; c=relaxed/simple;
-	bh=qFfIkT+IHDZ8fnDNUiRdAyOuIIVzoZKpkNFhTj3neu4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=roSYENAmc5+dDR3fHPpr0+qu+P+ldDCYz84E5tioM8CrZ2h44dkRlqeobvoZxir0B+4wLpU8JpOLm2Xe01rB2GTBJYvNX7pqo37TnRQDNjPj83QybPJ4TigC9oIA+8F66calPnI9kY+C5HSA7TaHGcgMOSHhBDZFGwMELnrP2Wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se; spf=pass smtp.mailfrom=lankhorst.se; arc=none smtp.client-ip=141.105.120.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lankhorst.se
-Message-ID: <740924f6-e241-428d-beaa-630cad8c3e05@lankhorst.se>
-Date: Thu, 4 Sep 2025 17:02:11 +0200
+	s=arc-20240116; t=1757003482; c=relaxed/simple;
+	bh=kqQwbDXXQF4P2jHFoQGE1gTtX/4I+rWArvV7YFqReek=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NDUzAJIVk/NMZbKs/6WbDByLPsYh3JnC8l8qHqco5Y0wnIAEgp+6F024UPGI6rLam00SMRa8KkgNI9+2rLwmWlA7nTPnxW7WpJEGcO61lNwhwnwtqWqEc9ChAqIDd146haSafLKM0EUnm6ueY8sOzt2X2JK/UlNQHmuedGEByfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=md/ghe+b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9716C4CEF0;
+	Thu,  4 Sep 2025 16:31:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757003481;
+	bh=kqQwbDXXQF4P2jHFoQGE1gTtX/4I+rWArvV7YFqReek=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=md/ghe+bvpopfvq2D0PKcjjn9nYpr7MpdPvXfCQiRzMoJmhxi2xQBH6NoDeNafY6j
+	 PAP6BzCih7rdVdx02/3JDlRzjeItdy7JBFHt49fjd3CdOnPxKhe+HAmBOQy3WVXk4+
+	 v2XFf2mToLD2DRE7tLZpMSeD5HlbfCA6wapQBs8huy93AX7CGcvsdbJTynI8+/UuLo
+	 c5cQklKBuBWalFgPlx/6h5r01l2Aw7PDMMjLG29Hbz5iBWjKq8kLiADPD8lIe5xJgx
+	 i9OAYa8/fTdX4I0XLXC2d69Y7QQAi4FAh4BLQ6cZckFgcr7zfEfyGcBkRKA5vVQpzk
+	 u7jEioSFTuDNQ==
+Date: Thu, 4 Sep 2025 06:31:20 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Yi Tao <escape@linux.alibaba.com>
+Cc: hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] cgroup: replace global percpu_rwsem with
+ signal_struct->group_rwsem when writing cgroup.procs/threads
+Message-ID: <aLm-2Lcnu602AB85@slm.duckdns.org>
+References: <f460f494245710c5b6649d6cc7e68b3a28a0a000.1756896828.git.escape@linux.alibaba.com>
+ <cover.1756985260.git.escape@linux.alibaba.com>
+ <068d58f1f497bc4971c6ac0bae58bf53b98451fd.1756985260.git.escape@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/3] cgroups: Add support for pinned device memory
-To: =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- David Hildenbrand <david@redhat.com>,
- Lucas De Marchi <lucas.demarchi@intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>, Maxime Ripard <mripard@kernel.org>,
- Natalie Vock <natalie.vock@gmx.de>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?=27Michal_Koutn=C3=BD=27?=
- <mkoutny@suse.com>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "'Liam R . Howlett'" <Liam.Howlett@oracle.com>,
- Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>,
- Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Michal Hocko <mhocko@suse.com>, intel-xe@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org
-References: <20250819114932.597600-5-dev@lankhorst.se>
- <dc21e54c-d7ae-4d7e-9acb-6a3fa573b20f@redhat.com>
- <9c296c72-768e-4893-a099-a2882027f2b9@lankhorst.se>
- <b6b13ad22345bcdf43325173052614c17e803d00.camel@linux.intel.com>
- <776629b2-5459-4fa0-803e-23d4824e7b24@redhat.com>
- <da5885a94d89a2c0dece04e09182e832e8e40410.camel@linux.intel.com>
-Content-Language: en-US
-From: Maarten Lankhorst <dev@lankhorst.se>
-In-Reply-To: <da5885a94d89a2c0dece04e09182e832e8e40410.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <068d58f1f497bc4971c6ac0bae58bf53b98451fd.1756985260.git.escape@linux.alibaba.com>
 
-Hey,
+Hello,
 
-Den 2025-09-02 kl. 15:42, skrev Thomas Hellström:
-> On Mon, 2025-09-01 at 20:38 +0200, David Hildenbrand wrote:
->> On 01.09.25 20:21, Thomas Hellström wrote:
->>> Hi,
->>>
->>> On Mon, 2025-09-01 at 20:16 +0200, Maarten Lankhorst wrote:
->>>> Hello David,
->>>>
->>>> Den 2025-09-01 kl. 14:25, skrev David Hildenbrand:
->>>>> On 19.08.25 13:49, Maarten Lankhorst wrote:
->>>>>> When exporting dma-bufs to other devices, even when it is
->>>>>> allowed
->>>>>> to use
->>>>>> move_notify in some drivers, performance will degrade
->>>>>> severely
->>>>>> when
->>>>>> eviction happens.
->>>>>>
->>>>>> A perticular example where this can happen is in a multi-card
->>>>>> setup,
->>>>>> where PCI-E peer-to-peer is used to prevent using access to
->>>>>> system memory.
->>>>>>
->>>>>> If the buffer is evicted to system memory, not only the
->>>>>> evicting
->>>>>> GPU wher
->>>>>> the buffer resided is affected, but it will also stall the
->>>>>> GPU
->>>>>> that is
->>>>>> waiting on the buffer.
->>>>>>
->>>>>> It also makes sense for long running jobs not to be preempted
->>>>>> by
->>>>>> having
->>>>>> its buffers evicted, so it will make sense to have the
->>>>>> ability to
->>>>>> pin
->>>>>> from system memory too.
->>>>>>
->>>>>> This is dependant on patches by Dave Airlie, so it's not part
->>>>>> of
->>>>>> this
->>>>>> series yet. But I'm planning on extending pinning to the
->>>>>> memory
->>>>>> cgroup
->>>>>> controller in the future to handle this case.
->>>>>>
->>>>>> Implementation details:
->>>>>>
->>>>>> For each cgroup up until the root cgroup, the 'min' limit is
->>>>>> checked
->>>>>> against currently effectively pinned value. If the value will
->>>>>> go
->>>>>> above
->>>>>> 'min', the pinning attempt is rejected.
->>>>>>
->>>>>> Pinned memory is handled slightly different and affects
->>>>>> calculating
->>>>>> effective min/low values. Pinned memory is subtracted from
->>>>>> both,
->>>>>> and needs to be added afterwards when calculating.
->>>>>
->>>>> The term "pinning" is overloaded, and frequently we refer to
->>>>> pin_user_pages() and friends.
->>>>>
->>>>> So I'm wondering if there is an alternative term to describe
->>>>> what
->>>>> you want to achieve.
->>>>>
->>>>> Is it something like "unevictable" ?
->>>> It could be required to include a call pin_user_pages(), in case
->>>> a
->>
->> We'll only care about long-term pinnings (i.e., FOLL_LONGTERM).
->> Ordinary 
->> short-term pinning is just fine.
->>
->> (see how even "pinning" is overloaded? :) )
->>
->>>> process wants to pin
->>>> from a user's address space to the gpu.
->>>>
->>>> It's not done yet, but it wouldn't surprise me if we want to
->>>> include
->>>> it in the future.
->>>> Functionally it's similar to mlock() and related functions.
->>
->> Traditionally, vfio, io_uring and rdma do exactly that: they use GUP
->> to 
->> longterm pin and then account that memory towards RLIMIT_MEMLOCK.
->>
->> If you grep for "rlimit(RLIMIT_MEMLOCK)", you'll see what I mean.
->>
->> There are known issues with that: imagine long-term pinning the same 
->> folio through GUP with 2 interfaces (e.g., vfio, io_uring, rdma), or 
->> within the same interface.
->>
->> You'd account the memory multiple times, which is horrible. And so
->> far 
->> there is no easy way out.
->>
->>>>
->>>> Perhaps call it mlocked instead?
->>>
->>> I was under the impression that mlocked() memory can be migrated to
->>> other physical memory but not to swap? whereas pinned memory needs
->>> to
->>> remain the exact same physical memory.
->>
->> Yes, exactly.
->>
->>>
->>> IMO "pinned" is pretty established within GPU drivers (dma-buf,
->>> TTM)
->>> and essentially means the same as "pin" in "pin_user_pages", so
->>> inventing a new name would probably cause even more confusion?
->>
->> If it's the same thing, absolutely. But Marteen said "It's not done
->> yet, 
->> but it wouldn't surprise me if we want to include it in the future".
->>
->> So how is the memory we are talking about in this series "pinned" ?
-> 
-> Reading the cover-letter from Maarten, he only talks about pinning
-> affecting performance, which would be similar to user-space calling
-> mlock(), although I doubt that moving content to other physical pages
-> within the same memory type will be a near-term use-case.
-> 
-> However what's more important are situation where a device (like RDMA)
-> needs to pin, because it can't handle the case where access is
-> interrupted and content transferred to another physical location.
-> 
-> Perhaps Maarten could you elaborate whether this series is intended for
-> both these use-cases?
-Yeah, this is definitely for the latter case too.
+On Thu, Sep 04, 2025 at 07:39:32PM +0800, Yi Tao wrote:
+...
+> To avoid affecting other users, the per-thread-group rwsem is only used
+> when the `favordynmods` flag is enabled.
 
-It's a performance optimization for the generic case, and very nice
-to have for the second case, to prevent unlimited vram pinning.
-With cgroups, we would be able to limit the amounts of used memory there.
+Can you please:
 
-Kind regards,
-~Maarten
+- Note that this isn't necessary for cgroup2's recommended workflow and is
+  thus gated behind favordynmods.
+
+- Include performance numbers briefly.
+
+> +extern bool have_favordynmods;
+> +
+>  /**
+>   * cgroup_threadgroup_change_begin - threadgroup exclusion for cgroups
+>   * @tsk: target task
+> @@ -838,6 +840,8 @@ struct cgroup_of_peak {
+>  static inline void cgroup_threadgroup_change_begin(struct task_struct *tsk)
+>  {
+>  	percpu_down_read(&cgroup_threadgroup_rwsem);
+> +	if (have_favordynmods)
+> +		down_read(&tsk->signal->group_rwsem);
+>  }
+>  
+>  /**
+> @@ -848,6 +852,8 @@ static inline void cgroup_threadgroup_change_begin(struct task_struct *tsk)
+>   */
+>  static inline void cgroup_threadgroup_change_end(struct task_struct *tsk)
+>  {
+> +	if (have_favordynmods)
+> +		up_read(&tsk->signal->group_rwsem);
+>  	percpu_up_read(&cgroup_threadgroup_rwsem);
+
+Hmm... I wonder whether turning on/off the flag is racy. ie. what prevents
+have_favordynmods flipping while a task is between change_begin and end?
+
+> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+> index 1ef1edbaaf79..86fbc99a9174 100644
+> --- a/include/linux/sched/signal.h
+> +++ b/include/linux/sched/signal.h
+> @@ -226,6 +226,10 @@ struct signal_struct {
+>  	struct tty_audit_buf *tty_audit_buf;
+>  #endif
+>  
+> +#ifdef CONFIG_CGROUPS
+> +	struct rw_semaphore group_rwsem;
+> +#endif
+
+Maybe name it more specific - e.g. cgroup_threadgroup_rwsem?
+
+>  /**
+>   * cgroup_attach_lock - Lock for ->attach()
+> - * @lock_threadgroup: whether to down_write cgroup_threadgroup_rwsem
+> + * @tsk: thread group to lock
+> + * @lock_threadgroup: whether to down_write rwsem
+>   *
+>   * cgroup migration sometimes needs to stabilize threadgroups against forks and
+>   * exits by write-locking cgroup_threadgroup_rwsem. However, some ->attach()
+> @@ -2480,21 +2481,30 @@ EXPORT_SYMBOL_GPL(cgroup_path_ns);
+>   * write-locking cgroup_threadgroup_rwsem. This allows ->attach() to assume that
+>   * CPU hotplug is disabled on entry.
+>   */
+
+Please expand the function comment to explain what's going on and why and
+maybe point to it from a comment on top of favor_dynmods.
+
+> -void cgroup_attach_lock(bool lock_threadgroup)
+> +void cgroup_attach_lock(struct task_struct *tsk, bool lock_threadgroup)
+
+As @tsk is an optional argument, it'd probably make more sense to put it at
+the end.
+
+> @@ -3010,15 +3008,27 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+>  	 */
+>  	if (tsk->no_cgroup_migration || (tsk->flags & PF_NO_SETAFFINITY)) {
+>  		tsk = ERR_PTR(-EINVAL);
+> -		goto out_unlock_threadgroup;
+> +		goto out_unlock_rcu;
+>  	}
+> -
+>  	get_task_struct(tsk);
+> -	goto out_unlock_rcu;
+>  
+> -out_unlock_threadgroup:
+> -	cgroup_attach_unlock(*threadgroup_locked);
+> -	*threadgroup_locked = false;
+> +	rcu_read_unlock();
+> +
+> +	/*
+> +	 * If we migrate a single thread, we don't care about threadgroup
+> +	 * stability. If the thread is `current`, it won't exit(2) under our
+> +	 * hands or change PID through exec(2). We exclude
+> +	 * cgroup_update_dfl_csses and other cgroup_{proc,thread}s_write
+> +	 * callers by cgroup_mutex.
+> +	 * Therefore, we can skip the global lock.
+> +	 */
+> +	lockdep_assert_held(&cgroup_mutex);
+> +	*threadgroup_locked = pid || threadgroup;
+> +
+> +	cgroup_attach_lock(tsk, *threadgroup_locked);
+
+I'm not sure this relocation is safe. What prevents e.g. @tsk changing its
+group leader or signal struct before lock is grabbed?
+
+Thanks.
+
+-- 
+tejun
 
