@@ -1,159 +1,248 @@
-Return-Path: <cgroups+bounces-9702-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9703-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76EAFB4374F
-	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 11:37:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5CBFB43A24
+	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 13:31:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E0F6188CBC7
-	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 09:37:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39E945A08A8
+	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 11:30:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2A52F7455;
-	Thu,  4 Sep 2025 09:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ABD82F1FE1;
+	Thu,  4 Sep 2025 11:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aPK/l/nE"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="AAv4kMkT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2067.outbound.protection.outlook.com [40.107.223.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C22F2C08A8;
-	Thu,  4 Sep 2025 09:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756978643; cv=none; b=WAfzmx8Hcg+j3IMdKhRIn5GUony/5KoCR7iBH/uGrpDdoc+nS3rCqY7pqXTBsLTBSGbm4BKqwhHeMXsbei+5EgQNZeZgD4kpwQkBiglfMFolT3EuOjkgtzrXBVtNI7bhvPJuIoaW8RDnNwXVuBst0cPvBlK5VrSn+9xI7CKFbtA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756978643; c=relaxed/simple;
-	bh=Ru8LuNV8bt6ini4vsqcji1npJYCBupUTZdYydr2pSVs=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=boebUQT8Qxm7s4wVO/9mfOS684timi+DV1s/4iO909uyxP78Cy8p8vDJlcvmiOwi/vri18ywyEykIPQ+C6nzEMHqQFHhm+9JXCCqKWfxQgc/yN67Q2R9LPabEy4SxLQWn8173v8sEIIKMV35augFTZO76jdifpZg3+rWeVkI/zc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aPK/l/nE; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5849XbGE032532;
-	Thu, 4 Sep 2025 09:37:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	ut+Aq//GktFW68mBohguf53n8Nv4N9BK/1mX88xZtS0=; b=aPK/l/nEmuI9qdyo
-	sb6kfBbDR+diWqBAiKVD9tuCFBBOg6C1Mog2HBXSSv59tuJhm6lv6SSA8fRI/yfz
-	LLk5r6ZqPLQ7FUwhvmFQn3QxjvUWJ/Vzh4IHXcJ8CiWPSwdbiCtWHZGXxNfUayJw
-	JJcrNEyULEkGjz2uvZnBctk70AOhWgvw5XC0vetD/U5O7nv+ikzLY2+SKUIelEOW
-	RJTv4hLS6uQTtpOBBtAXEi0IC6Lx2XVMqD8rkoBfVxr8Sdw+HjNDnaKQjgDhUk3b
-	gxgOImLVwJZV+dCHEE0W1j2/6gjoEAsMcdeylTQ0/KDZwOUjdTgc2OcnSn5uyW8h
-	0lUK+w==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 48upnpf55y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Sep 2025 09:37:09 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 5849b85O025642
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 4 Sep 2025 09:37:08 GMT
-Received: from hu-ashayj-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.24; Thu, 4 Sep 2025 02:37:05 -0700
-Date: Thu, 4 Sep 2025 15:07:02 +0530
-From: Ashay Jaiswal <quic_ashayj@quicinc.com>
-To: Waiman Long <llong@redhat.com>
-CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?=
-	<mkoutny@suse.com>,
-        Tejun Heo <tj@kernel.org>,
-        "Peter Zijlstra (Intel)"
-	<peterz@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH] cpuset: prevent freeing unallocated cpumask in hotplug
- handling
-Message-ID: <aLldvhYAYwHIlvXi@hu-ashayj-hyd.qualcomm.com>
-References: <20250902-cpuset-free-on-condition-v1-1-f46ffab53eac@quicinc.com>
- <533633c5-90cc-4a35-9ec3-9df2720a6e9e@redhat.com>
- <927f1afc-4fd4-4d42-948b-5da355443a4a@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16BFE1DA60F
+	for <cgroups@vger.kernel.org>; Thu,  4 Sep 2025 11:30:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756985410; cv=fail; b=KPS9R4lZ9dxY51wIDUR2F87avZc8gUAD+ul3gFDJDuDF/I0TeWI83FD06s/nuUCPahVheR6W7Ezps+okgu4P5lC5g7DF4AzNmE7b8SHj+jUW1sRQKH1Smp/0cP19hJYO91bBhz48C2AjZp5rx1t37DVldgJiJIsGTCJ+b14arj4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756985410; c=relaxed/simple;
+	bh=cDJlcY4h7iY860ASIgo7raiTYmzS7JgA32pd9+viPXY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=CD5HZoHR00J5AEeYGc75V4fTiXOQMI4NRg8Y191pdT22itUrSuaxL7lQX4U+u2sFCcjK+Jk5cgFF86b+qiksb+GBpXhY5DwkvBvMaSypNo+4SloNCquSuRprhiJL/mGOfezyY0onvoGLRk54+QN0R7qQofPpFkKkLy/yS++TYg8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=AAv4kMkT; arc=fail smtp.client-ip=40.107.223.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=xk182xavrhBS+B8iUq3KXemku4bri1n8S9EM9lYl+0Q0FppbH6GmIdmLHGBIeDVOZH7lCJfvfoyxGhhiWsqhU8XkkT/mAtH1uUmMpXsWweDLLI5j84n/iquWIN+vRNgGZ83qOfuq15rJL4lHrfXvKlfdK3tDV63aR6/Z2T5pS/etMdJvEBYOplunexBnkS3Pl8AHQV0CxBURm8PEwK1aLLbM7pmBHUvw4uqrMjB/CdpSIbJJJnILcrwnD0FHTFbvx/isUOcLXuKHqOH/wWGqAjvhSQq8ivNmLFApojKt4rg3Nfx6SK5tCDJT2Zm+TW7PZgT1zEH9HCsTcbn/+rMhJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BtRC4pJ3JElyKNWPuwr9bpqL6fvobQi+YiI3Nr70TL4=;
+ b=HQAzxscMZezpRrwvvXgj/X5Rn2PY9EZoR2MY3sdyraeLN1KzRZB8woEHq6KPH+OZ8ajDd71J+q23aIRdNLcPYyWIS+IPHoExFEgiAylr/5at97HD6nD5pB72Hyc3oQc97JEE0LTLp4D1AsbKHszMtL+LC/JX1acy+4TfkfGuhvNX3OiiGcoDoAvyGnqB1UwaGG0yvfawT1kJibjrtGpZvCPf0w5v6psVHLfa4LIRhNfXMeGWFsR6PrQCX8v/6cfdWsknryiMj8fftUg/NUFtvzOsKujYkw8KPFVs8oS2cANqwN3Q7KeeqGfYbwaw5WGfuqKjteEGeEbPnDu278O6YQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BtRC4pJ3JElyKNWPuwr9bpqL6fvobQi+YiI3Nr70TL4=;
+ b=AAv4kMkTnuyVWFDN5BAZGilygttifb9lc67YgKdcIy1iZc/TesoK2SSSFbLc1nRMKFFkW9Ezx44hQBGqbzEPeEdgyJn1PTE0DuC59CUATkrNj2J6FChdXCps4lXm8CcWL/K4b6z/HXJKLFjtYSOxTJ0lchXX7migYiVv4qISZk0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by SJ5PPFC41ACEE7B.namprd12.prod.outlook.com (2603:10b6:a0f:fc02::9a0) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.27; Thu, 4 Sep
+ 2025 11:30:06 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5%5]) with mapi id 15.20.9094.017; Thu, 4 Sep 2025
+ 11:30:06 +0000
+Message-ID: <f4d04144-d8e7-4d4e-81a9-65e1fcef26fd@amd.com>
+Date: Thu, 4 Sep 2025 13:29:57 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 11/15] ttm/pool: enable memcg tracking and shrinker. (v2)
+To: Dave Airlie <airlied@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, tj@kernel.org,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ cgroups@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
+ Waiman Long <longman@redhat.com>, simona@ffwll.ch
+References: <20250902041024.2040450-1-airlied@gmail.com>
+ <20250902041024.2040450-12-airlied@gmail.com>
+ <4e462912-64de-461c-8c4b-204e6f58dde8@amd.com>
+ <CAPM=9txiApDK8riR3TH3gM2V0pVwGBD5WobbXv2_bfoH+wsgSw@mail.gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <CAPM=9txiApDK8riR3TH3gM2V0pVwGBD5WobbXv2_bfoH+wsgSw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR4P281CA0012.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:c8::20) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <927f1afc-4fd4-4d42-948b-5da355443a4a@redhat.com>
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: xClNHPCjTsBaVIK_VtBh9cwVmHqsRmcj
-X-Authority-Analysis: v=2.4 cv=Jt/xrN4C c=1 sm=1 tr=0 ts=68b95dc5 cx=c_pps
- a=ouPCqIW2jiPt+lZRy3xVPw==:117 a=ouPCqIW2jiPt+lZRy3xVPw==:17
- a=GEpy-HfZoHoA:10 a=8nJEP1OIZ-IA:10 a=yJojWOMRYYMA:10 a=VwQbUJbxAAAA:8
- a=COk6AnOGAAAA:8 a=Sa9plrczSu04kPGlYXoA:9 a=3ZKOabzyN94A:10 a=wPNLvfGTeEIA:10
- a=TjNXssC_j7lpFel5tvFf:22
-X-Proofpoint-ORIG-GUID: xClNHPCjTsBaVIK_VtBh9cwVmHqsRmcj
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODMwMDAwMSBTYWx0ZWRfX1ChNzD/vSgso
- le0JInI+0Cv1heh4ap4Aq8nV0KuVZRrlXH3IRlQQKm/wnurRbejhYkkRKd8cucgQdqsT4k/yUa1
- ogXu/vW/PxaAnMW2fwU5ZWxhaw9R4j48wY3c1g3NT/ijheXD3PExzRtHTC9Rw3Tqu1jYzWVBtJt
- b9UMcMWsgp2coi58VEyJKo8ttsngvBYm1Crdr3ttPiDH3sWrNbsWmALiGDmVlSP0Y5RanUtj+VS
- SltmV6bNFa9toPMrxNKWSjvnZIMkJu3T/oWs/IIVb8n0ORp5xCv3BUlG63JkEOI+qvNtVYtKNej
- 9/HAQuD4kKN087Szh+p9NnyK90auofGilIuziEmJxvI/RqBpCQYTA8QRIS34cQzY8qqlFIm71wV
- 2eEAJ5+8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-04_03,2025-08-28_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 priorityscore=1501 clxscore=1011 bulkscore=0 impostorscore=0
- spamscore=0 phishscore=0 suspectscore=0 malwarescore=0 classifier=typeunknown
- authscore=0 authtc= authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2507300000 definitions=main-2508300001
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SJ5PPFC41ACEE7B:EE_
+X-MS-Office365-Filtering-Correlation-Id: 88f21912-b7dd-4acc-914e-08ddeba66584
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?OUVsRm1BekhsNmI4d0YycnpyR0d5ZEEvak1IemJmcHhiNWdYZnRpakg1RmNy?=
+ =?utf-8?B?cGxWR1FmeVJwYkRaRXJpU1ZkODIxdEU3dkcwcE8vaHdzTWVROFI4Rm9STG9p?=
+ =?utf-8?B?djZSdWhEczRZY0dqbnFBeU1kN0xIOTFtQjFRNkZyVFBvcWVqcVp2MXF3MDIr?=
+ =?utf-8?B?amN6UENZUUY3RjBUVkFidDZoTWNjckI4OE56R3dUVGhmTzdkY0cxakgrL2dS?=
+ =?utf-8?B?MmdiNlMwY1dHNUVWZlVyUVN6Wnh3TjBsMG9aalFINERUblpnRzRudlozdFAw?=
+ =?utf-8?B?MEZrcHVpV2I5K3hvbzJzSG5wL0xhdXZLRzZHUUdCb0MyZm1Bc05UeTdSei9z?=
+ =?utf-8?B?Qnk5YzVMb0RoS0VpR2x0UWxkVUFWUmlwK0dRWC9nRzhaRDZwdkRJakpDcCtV?=
+ =?utf-8?B?WjdpM1lzRzBCZFVKL3pCM2diSWpaNWlrdnVBMVFUbXVHVXhnWm84emRRN3By?=
+ =?utf-8?B?Y0tqUGRuMFkyek14NUdGQWt5NVNaanpqMnRLb25jMjdyZ2dYSElBL1dtaDFz?=
+ =?utf-8?B?V1ZqcThXTlZMU1drOWJaRkdrd2VzQ3RITkpZaFBLT0YwTEt2VlYwbjc2d3Vq?=
+ =?utf-8?B?M21zaGtsVUhUT04zOUZRTm4xMlIyamF3R2hOaURyaWY1cHJhNWZXYjRPbXFV?=
+ =?utf-8?B?ZVNXVFFPbjRBeEtYWlp5cVFZYUZObWpxa0FWUVBnaWc2aXdER1NOcmxTaDJN?=
+ =?utf-8?B?Z25OVktlOXZ3TDN1dGMyUnNiTnB0Mjd4VjZwWFlmdkdLUW5vK2pRS2JEUDh3?=
+ =?utf-8?B?Y2ViTVAxMnZKaVZ6TWJJQTFOb05ZSGZ5VDBSdGZpSThiRTFhb2MveEtlZm5U?=
+ =?utf-8?B?cnpFc0xpaVhEditoVHBGbEk0eGdtSXNJUVVGL2RPTGN2SHhmU2dGWHljRDhn?=
+ =?utf-8?B?dE5oWmVldFdJVy9RL3NzQlpzc0VpaUxJTFpyRFBDZytiekE4UEJmY2IxbStG?=
+ =?utf-8?B?cFhrVTVyZzBpWkJMWXZYTFg2SlU0LzMwdGtMMHNzRE5rVk0xV3NiSCtCaWUz?=
+ =?utf-8?B?aWlzNE00b0hLT0RJTG5XRlpqZVNCa1FUMWFnbVFLK0plZjBCUDZ6NHpaeEJ1?=
+ =?utf-8?B?UlFjbmNpVzFzWE5OaWlXeFNZa2ZVemRrMTU5Z2JRRzl4bGNiZStJMzgvRFVQ?=
+ =?utf-8?B?ZlUwUVRZa3RhaWlaaTc3N2VKbUFZMmdydWZXQ09MSjJQV2IrUGtDdTVOcWpC?=
+ =?utf-8?B?d2YzL2Y2aFZTRzdyNk1MdUlzb0JZOEFtaUpFUnd0V295ZlJtc0RiRms3TEpT?=
+ =?utf-8?B?SjY1NC9TczdraHQxSXJnZXlHdmREUXhMeWFlZE9Zb0xTWHNCdGN1YkN2cEZj?=
+ =?utf-8?B?NDl4R09qMUN4alVzSzVTTzljQkVHQUF5ZlFYMjAwcFppR2dUKzRHR0lTSmh5?=
+ =?utf-8?B?cTRuaGJmUzB1c2JrQTB3cTdTQTMwQWRNc0dFVm5SSlhCMXNIcnVicjVPcVRU?=
+ =?utf-8?B?M0cyM3RsL25lc2NmaVpCK3FkVnlKbm1lUkJNbTlNT2dndlkyakVrdVg4ZlhI?=
+ =?utf-8?B?bDU2Yy9JL2lCaU1rWWRadkllNGczNFE4djk4RTFwZDcvaUtLNWdXOFFGdnFq?=
+ =?utf-8?B?YlIvdlRxSnpUUm96NnFuYVdWaTU2MDg3Tk5uSEFqYkJtdEVqZ2RXbCtFYTVB?=
+ =?utf-8?B?MklYdXhvZVVTZ21TQTVvV3plRnMxTFRuMU50YWVDdHF3Qkx1TElHR21ubHlq?=
+ =?utf-8?B?ZGVVQzMycVJPYjVsVGs0ZEVvZUljOVJlU0VGenFJVUwycklYN2I0SUZHblhR?=
+ =?utf-8?B?aVFRN0F2bitONGRRWlZTdUgydkNnK3pYN2NyQTk1d3hBbHp3Z1JldjQvOVNi?=
+ =?utf-8?B?dUhnMjdhR1BIVVUzMjVkc3Y3WE0yTmJJQ3lhNjI3NlYyY2JDNWNCY0ZxTzRY?=
+ =?utf-8?B?SXROWXZKRjBram1TYVBHWmlGTXYra2JocXhQOUxjUkZDRWlhQVVWb3liOTRZ?=
+ =?utf-8?Q?Lt8d0F4za64=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SnlNNC81OGlNZ1J4ck9Ldit6WkVjZVRKd2xjbGZibUxBTFRVYlFzM29wNjc5?=
+ =?utf-8?B?UTJyUHNTL0ozNWIxby9tRkJSdGVHRXNiZFV6eWZicVFDU0x3UkdleURrMUlu?=
+ =?utf-8?B?ZnZhdUViUmdETEpIcGZNUzAvNmU0VVhIZnNDWFZzOS8vRDFLa2JzVm5rbTl2?=
+ =?utf-8?B?aGFBOU40ZjVpLzVyUVZSazdvQXRDNHp0SlpHRHFtSjRTcE4xY1pXNCtZc1cr?=
+ =?utf-8?B?U3dUT2tXaDd3bStNekNvTEhvdHJ5cG5aSFBlV0RINEpJQytGK2xwU3RCNWJB?=
+ =?utf-8?B?eGFMc3I4NmJHUkVHUWowS3BUR0NVN3ZadzlxcU9idnlqck0rOXpLZ1M0MW9B?=
+ =?utf-8?B?bklDVHlOL21ISmllZlFmaDZ3SkhqbWZhL2NlbEJhbUY3UFFaRW5sZEtuZTRY?=
+ =?utf-8?B?SXExRlBrMEZlKzhJeFVQY0FETFRTSG16MUJ6UkpwV2RvOG4xczBkckZiRWNB?=
+ =?utf-8?B?OGdaNFRSWDcvOUpkRTEwZzkwMFpnVTUvMWtIbFN5dWt4ZVdzSXYzYkdjaFR3?=
+ =?utf-8?B?MUVUNnA1OGk3bEpNK0hFK2FMVHRpRmZSY01NTmpUelZLTlBuZzlaT0hOSGh5?=
+ =?utf-8?B?eHptMjk1L2JiNEd4cmhkZG5KTDdaa0NXVVRiMCtJeUhtVlVQUmFkT0oxT3Nj?=
+ =?utf-8?B?Z0EvdzEvK1BiU3RPdlJlby9LbTdtMWMrZHc5M1ZEV3dLRmZSVWI3cURIb2lR?=
+ =?utf-8?B?dVhpSzNldmVaNjFqL1A2VXZVUjRlQ2FtKzlvL2xUcVpqdVBXYjduVHlLNEFE?=
+ =?utf-8?B?Q0JCZkp0R2F6cmJsNWJWSGJ0SXY2STd6SU5CQ0t0ODR0a09WQjhEcnFXWUlV?=
+ =?utf-8?B?dkJoNjVYS3lraXZMejlIYWdxZ3NDbS9KRFFUbVo1d0VKQmdqT3BrcGdGQnpS?=
+ =?utf-8?B?UlpZbTd4aExwWkhOVnc5OFVwUEdlNFFUbHdFMXRnNGpEODJYRDRQZU5kc0N6?=
+ =?utf-8?B?ZTJLYXA4TDY4SjZVeG0rbmlwTEt6S21GKzI1Unc2RGJmQ0c5R1JRY21JM3ZV?=
+ =?utf-8?B?TklkQUx5L3BqSkN1TFRSQVdHRGFkY05ZYXVwcjRKSHM0QjEwZEhTR3YvRkQ3?=
+ =?utf-8?B?SkRRTS8zdVg3LzA4bklrVGFIS21TeWVETXh0cE45aWhGNkxGTFIzUU5oK3JP?=
+ =?utf-8?B?U2RnOERDN3Q3ZHN1bUpjckl1bytnTVFVM2xGN28vSEdpenVsYm9QWThySkhT?=
+ =?utf-8?B?Z3dsTkZSWXMvZGdUaWljL2xjck5uczQvWW5XYmN0R053bXFPc05DT3hhZEhX?=
+ =?utf-8?B?UFlRajJ3N2dUSWsxUVN0azNYYWV2eDVnZzJvZytFZC9EbmFwV1lXRldoY0RQ?=
+ =?utf-8?B?SkI2dE5HYzNCUWdPZCtnRnVNVFRPRm1JRXBINGJmYm81TGJKWWduRUFWTXc3?=
+ =?utf-8?B?ZHFWWUM2TGoxR0NuOUtxcnV6WU80djZ4S3NRaTBERC9EZWRseFlNZmlpbW14?=
+ =?utf-8?B?VzE3djlBb0VDTzNDMWtnZjd0VnZTNjkyZFhnSjk1Y1FSRmljQTZkUlIxSGZU?=
+ =?utf-8?B?Qm9pZUtIdEc0eGJZdER4aENXcDVuTmk2cGx2K1Fkd0NGTXdTTllNMk5nbndD?=
+ =?utf-8?B?UG5iREZYQ1hFdjRGb3JwVGkzKzMwQ21aNWZ4Yk5HSWVPbm5WMHdpN09mcnNK?=
+ =?utf-8?B?R0pTRTMyaEtsN3FlbVM4QlFPOUxYYnF0ckV3aHd0QTZQL09hdnJRakhna05F?=
+ =?utf-8?B?UXVTUitMZmtaWitNb1NjeWhCYmVRSzE3dDVOeTE0V3NHTFAzdy9wUXY0djN1?=
+ =?utf-8?B?bCsySHVJUHg2NmJ2MHFXcGZKcWVvQjdQNGxXSllLM3hUNmJ1VG12b3Z3anhB?=
+ =?utf-8?B?M3Q2WXhNTzhWMHc2OXJTM3FNZUduSTVWODdRWjJUUzNyL0FwL0JQNmJhY0hi?=
+ =?utf-8?B?bkxDUStYUEIveDkzWTY3Vm1pQmpmVUJrWmhrYWNMYUxmbVh0Y2FHNktMVGJt?=
+ =?utf-8?B?N0swTmlxWFFGTTV4d255K3BReUwrUytsNlNkTUlIejBld0k0WHJ4TlVBbHdP?=
+ =?utf-8?B?Rll1eC92c2Y3bnhvK3FpWmNkOWljdFNnSWdQdVFIbTFrN2xtZkZBcXI4Q3JD?=
+ =?utf-8?B?YUFBdFJxWXRzK25YQS9rVmZMUkZmaTVQK1lXWVY3WlFsSTdMSzNSUmRoUzhw?=
+ =?utf-8?Q?d+syDrUt7+8FmClrITp6FlGbk?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88f21912-b7dd-4acc-914e-08ddeba66584
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2025 11:30:05.9770
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CjODfYDLj8IyZZaPKCtA8th9T6ITATZqj2oL9eHRES6rQctyLslW8C6YDrsUM7yi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ5PPFC41ACEE7B
 
-On Tue, Sep 02, 2025 at 02:21:25PM -0400, Waiman Long wrote:
-> On 9/2/25 1:14 PM, Waiman Long wrote:
-> > 
-> > On 9/2/25 12:26 AM, Ashay Jaiswal wrote:
-> > > In cpuset hotplug handling, temporary cpumasks are allocated only when
-> > > running under cgroup v2. The current code unconditionally frees these
-> > > masks, which can lead to a crash on cgroup v1 case.
-> > > 
-> > > Free the temporary cpumasks only when they were actually allocated.
-> > > 
-> > > Fixes: 4b842da276a8 ("cpuset: Make CPU hotplug work with partition")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Ashay Jaiswal <quic_ashayj@quicinc.com>
-> > > ---
-> > >   kernel/cgroup/cpuset.c | 3 ++-
-> > >   1 file changed, 2 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> > > index a78ccd11ce9b43c2e8b0e2c454a8ee845ebdc808..a4f908024f3c0a22628a32f8a5b0ae96c7dccbb9
-> > > 100644
-> > > --- a/kernel/cgroup/cpuset.c
-> > > +++ b/kernel/cgroup/cpuset.c
-> > > @@ -4019,7 +4019,8 @@ static void cpuset_handle_hotplug(void)
-> > >       if (force_sd_rebuild)
-> > >           rebuild_sched_domains_cpuslocked();
-> > >   -    free_tmpmasks(ptmp);
-> > > +    if (on_dfl && ptmp)
-> > > +        free_tmpmasks(ptmp);
-> > >   }
-> > >     void cpuset_update_active_cpus(void)
-> > The patch that introduces the bug is actually commit 5806b3d05165
-> > ("cpuset: decouple tmpmasks and cpumasks freeing in cgroup") which
-> > removes the NULL check. The on_dfl check is not necessary and I would
-> > suggest adding the NULL check in free_tmpmasks().
+On 04.09.25 04:25, Dave Airlie wrote:
+> On Wed, 3 Sept 2025 at 00:23, Christian KÃ¶nig <christian.koenig@amd.com> wrote:
+>>
+>> On 02.09.25 06:06, Dave Airlie wrote:
+>>> From: Dave Airlie <airlied@redhat.com>
+>>>
+>>> This enables all the backend code to use the list lru in memcg mode,
+>>> and set the shrinker to be memcg aware.
+>>>
+>>> It adds the loop case for when pooled pages end up being reparented
+>>> to a higher memcg group, that newer memcg can search for them there
+>>> and take them back.
+>>
+>> I can only repeat that as far as I can see that makes no sense at all.
+>>
+>> This just enables stealing pages from the page pool per cgroup and won't give them back if another cgroup runs into a low memery situation.
+>>
+>> Maybe Thomas and the XE guys have an use case for that, but as far as I can see that behavior is not something we would ever want.
 > 
-> As this email was bounced back from your email account because it is full, I
-> decide to send out another patch on your behalf. Note that this affects only
-> the linux-next tree as the commit to be fixed isn't merged into the mainline
-> yet. There is no need for stable branch backport.
->
-
-Thank you for your help, and I apologize for the email bouncing back.
-
-> Cheers,
-> Longman
+> This is what I'd want for a desktop use case at least, if we have a
+> top level cgroup then logged in user cgroups, each user will own their
+> own uncached pages pool and not cause side effects to other users. If
+> they finish running their pool will get give to the parent.
 > 
+> Any new pool will get pages from the parent, and manage them itself.
+> 
+> This is also what cgroup developers have said makes the most sense for
+> containerisation here, one cgroup allocator should not be able to
+> cause shrink work for another cgroup unnecessarily.
+
+The key point is i915 is doing the exact same thing completely without a pool and with *MUCH* less overhead.
+
+Together with Thomas I've implemented that approach for TTM as WIP patch and on a Ryzen 7 page faulting becomes nearly ten times faster.
+
+The problem is that the PAT and other legacy handling is like two decades old now and it seems like nobody can remember how it is actually supposed to work.
+
+See this patch here for example as well:
+
+commit 9542ada803198e6eba29d3289abb39ea82047b92
+Author: Suresh Siddha <suresh.b.siddha@intel.com>
+Date:   Wed Sep 24 08:53:33 2008 -0700
+
+    x86: track memtype for RAM in page struct
+    
+    Track the memtype for RAM pages in page struct instead of using the
+    memtype list. This avoids the explosion in the number of entries in
+    memtype list (of the order of 20,000 with AGP) and makes the PAT
+    tracking simpler.
+    
+    We are using PG_arch_1 bit in page->flags.
+    
+    We still use the memtype list for non RAM pages.
+    
+    Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
+    Signed-off-by: Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>
+    Signed-off-by: Ingo Molnar <mingo@elte.hu>
+
+So we absolutely *do* have a page flag to indicate the cached vs uncached status, it's just that we can't allocate those pages in TTM for some reason. I'm still digging up what part is missing here.
+
+What I want to avoid is that we created UAPI or at least specific behavior people then start to rely upon. That would make it much more problematic to remove the pool in the long term.
+
+Regards,
+Christian.
+
+
+> 
+> Dave.
+
 
