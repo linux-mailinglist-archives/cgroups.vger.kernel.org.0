@@ -1,54 +1,36 @@
-Return-Path: <cgroups+bounces-9706-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9707-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8605B43B15
-	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 14:09:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42D4BB43FE1
+	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 17:02:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11A161C27F21
-	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 12:09:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 967CD5A4CBC
+	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 15:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037642C21C0;
-	Thu,  4 Sep 2025 12:09:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="Doy2IVcQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DB23043DC;
+	Thu,  4 Sep 2025 15:02:25 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+Received: from lankhorst.se (lankhorst.se [141.105.120.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5162C0280;
-	Thu,  4 Sep 2025 12:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958AF1EB9F2;
+	Thu,  4 Sep 2025 15:02:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756987746; cv=none; b=ea3JF7FcBkrW0IfDrT7h1Ecj4vGBWOE7pRWwnxOlq7zfMErA1rpCCiTbDPsJmTBrGaMyn47PpA1qsl2XpYxhYppW0hphOHgdV6l7lFUZIdqeP76YsOPJF/zk2hOgM6XExZlXxOYYJ5NXi/2UNeLC90iTqMksRHWJlQgpiC9RcoA=
+	t=1756998144; cv=none; b=G9euYVaz5O7Q7ZVUc0103WYQ7mCLIAbUJHEFDiBgf8J24CXE9zXPT9Zy3Ho3sBfY4EoNj2OzOrVL/tBMRjcuF70Aiz4i7I9/MAG93eIjjDridTloeHVre+0+D1RLGGooHY1Cc93FGOo0KuCF1krSKFdRs0ReS7FSB78b4HRY9PM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756987746; c=relaxed/simple;
-	bh=Pb0QyP3dyoTEwuCPxZnGieciZx0aotZ6+nPw4KQu5D4=;
+	s=arc-20240116; t=1756998144; c=relaxed/simple;
+	bh=qFfIkT+IHDZ8fnDNUiRdAyOuIIVzoZKpkNFhTj3neu4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qZ30zzAXQjAl3yeORgr5eVAiPoTFdSD62UwkTswWFBeiEYwESg0NMnbaTkixt84BaHOCrIqm5xW9ydVfCLwaPq6+39NGS4grYKSGHnzOfDWIkD3Z5xzXCK6mySgzxGQkoOGPrn6C/1EKt2O/T08EfVHIhDe8ujgB+t7A70ft29Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=Doy2IVcQ; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Zq0zttv8W9LftJSDoTWI4vEahxxZ/eDadaO2lGU9frI=; b=Doy2IVcQPHNkqDcO8iZuikICP4
-	jkpIXDdn4+zROswF5n31UFc9JSxN735+O/84PZPd/Z0rUnNx9ySQV4Gh0xJzoCXNYSg80Cz7E245H
-	fruFNdhBk150qROe486hg/IygRQTiNOAymr6xRT9Unr2fr1Ts9FZ3fiNKa34lwlyuJVJdTHyXuBCY
-	fFd3oqajvwbQyPXp71P8dHJ/ANLuhM3Encjvvxbdqk2U3g+rRr5GWaJv1ne/mv9xk1tcXW64JT4Cn
-	bva1scV3a68EdytM8cobyaelkuOXX6NjEPj6JlIDJNpyVUVjJcWIGMhCZq04bVJ7XAai0t/d+d1QD
-	CfxyRKxQ==;
-Received: from [84.66.36.92] (helo=[192.168.0.101])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1uu8lt-006lVT-Iu; Thu, 04 Sep 2025 14:08:57 +0200
-Message-ID: <58866bb5-9fee-4709-9350-70b978feaed4@igalia.com>
-Date: Thu, 4 Sep 2025 13:08:56 +0100
+	 In-Reply-To:Content-Type; b=roSYENAmc5+dDR3fHPpr0+qu+P+ldDCYz84E5tioM8CrZ2h44dkRlqeobvoZxir0B+4wLpU8JpOLm2Xe01rB2GTBJYvNX7pqo37TnRQDNjPj83QybPJ4TigC9oIA+8F66calPnI9kY+C5HSA7TaHGcgMOSHhBDZFGwMELnrP2Wk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se; spf=pass smtp.mailfrom=lankhorst.se; arc=none smtp.client-ip=141.105.120.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lankhorst.se
+Message-ID: <740924f6-e241-428d-beaa-630cad8c3e05@lankhorst.se>
+Date: Thu, 4 Sep 2025 17:02:11 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -56,303 +38,180 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 21/21] drm/xe: Register with the DRM scheduling cgroup
- controller
-To: dri-devel@lists.freedesktop.org
-Cc: amd-gfx@lists.freedesktop.org, kernel-dev@igalia.com,
- intel-xe@lists.freedesktop.org, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250903152327.66002-1-tvrtko.ursulin@igalia.com>
- <20250903152327.66002-22-tvrtko.ursulin@igalia.com>
-Content-Language: en-GB
-From: Tvrtko Ursulin <tvrtko.ursulin@igalia.com>
-In-Reply-To: <20250903152327.66002-22-tvrtko.ursulin@igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [RFC 0/3] cgroups: Add support for pinned device memory
+To: =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ David Hildenbrand <david@redhat.com>,
+ Lucas De Marchi <lucas.demarchi@intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Maxime Ripard <mripard@kernel.org>,
+ Natalie Vock <natalie.vock@gmx.de>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?=27Michal_Koutn=C3=BD=27?=
+ <mkoutny@suse.com>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ "'Liam R . Howlett'" <Liam.Howlett@oracle.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Michal Hocko <mhocko@suse.com>, intel-xe@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org
+References: <20250819114932.597600-5-dev@lankhorst.se>
+ <dc21e54c-d7ae-4d7e-9acb-6a3fa573b20f@redhat.com>
+ <9c296c72-768e-4893-a099-a2882027f2b9@lankhorst.se>
+ <b6b13ad22345bcdf43325173052614c17e803d00.camel@linux.intel.com>
+ <776629b2-5459-4fa0-803e-23d4824e7b24@redhat.com>
+ <da5885a94d89a2c0dece04e09182e832e8e40410.camel@linux.intel.com>
+Content-Language: en-US
+From: Maarten Lankhorst <dev@lankhorst.se>
+In-Reply-To: <da5885a94d89a2c0dece04e09182e832e8e40410.camel@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Hey,
 
-On 03/09/2025 16:23, Tvrtko Ursulin wrote:
-> Wire up the scheduling weight notification into the driver.
+Den 2025-09-02 kl. 15:42, skrev Thomas Hellström:
+> On Mon, 2025-09-01 at 20:38 +0200, David Hildenbrand wrote:
+>> On 01.09.25 20:21, Thomas Hellström wrote:
+>>> Hi,
+>>>
+>>> On Mon, 2025-09-01 at 20:16 +0200, Maarten Lankhorst wrote:
+>>>> Hello David,
+>>>>
+>>>> Den 2025-09-01 kl. 14:25, skrev David Hildenbrand:
+>>>>> On 19.08.25 13:49, Maarten Lankhorst wrote:
+>>>>>> When exporting dma-bufs to other devices, even when it is
+>>>>>> allowed
+>>>>>> to use
+>>>>>> move_notify in some drivers, performance will degrade
+>>>>>> severely
+>>>>>> when
+>>>>>> eviction happens.
+>>>>>>
+>>>>>> A perticular example where this can happen is in a multi-card
+>>>>>> setup,
+>>>>>> where PCI-E peer-to-peer is used to prevent using access to
+>>>>>> system memory.
+>>>>>>
+>>>>>> If the buffer is evicted to system memory, not only the
+>>>>>> evicting
+>>>>>> GPU wher
+>>>>>> the buffer resided is affected, but it will also stall the
+>>>>>> GPU
+>>>>>> that is
+>>>>>> waiting on the buffer.
+>>>>>>
+>>>>>> It also makes sense for long running jobs not to be preempted
+>>>>>> by
+>>>>>> having
+>>>>>> its buffers evicted, so it will make sense to have the
+>>>>>> ability to
+>>>>>> pin
+>>>>>> from system memory too.
+>>>>>>
+>>>>>> This is dependant on patches by Dave Airlie, so it's not part
+>>>>>> of
+>>>>>> this
+>>>>>> series yet. But I'm planning on extending pinning to the
+>>>>>> memory
+>>>>>> cgroup
+>>>>>> controller in the future to handle this case.
+>>>>>>
+>>>>>> Implementation details:
+>>>>>>
+>>>>>> For each cgroup up until the root cgroup, the 'min' limit is
+>>>>>> checked
+>>>>>> against currently effectively pinned value. If the value will
+>>>>>> go
+>>>>>> above
+>>>>>> 'min', the pinning attempt is rejected.
+>>>>>>
+>>>>>> Pinned memory is handled slightly different and affects
+>>>>>> calculating
+>>>>>> effective min/low values. Pinned memory is subtracted from
+>>>>>> both,
+>>>>>> and needs to be added afterwards when calculating.
+>>>>>
+>>>>> The term "pinning" is overloaded, and frequently we refer to
+>>>>> pin_user_pages() and friends.
+>>>>>
+>>>>> So I'm wondering if there is an alternative term to describe
+>>>>> what
+>>>>> you want to achieve.
+>>>>>
+>>>>> Is it something like "unevictable" ?
+>>>> It could be required to include a call pin_user_pages(), in case
+>>>> a
+>>
+>> We'll only care about long-term pinnings (i.e., FOLL_LONGTERM).
+>> Ordinary 
+>> short-term pinning is just fine.
+>>
+>> (see how even "pinning" is overloaded? :) )
+>>
+>>>> process wants to pin
+>>>> from a user's address space to the gpu.
+>>>>
+>>>> It's not done yet, but it wouldn't surprise me if we want to
+>>>> include
+>>>> it in the future.
+>>>> Functionally it's similar to mlock() and related functions.
+>>
+>> Traditionally, vfio, io_uring and rdma do exactly that: they use GUP
+>> to 
+>> longterm pin and then account that memory towards RLIMIT_MEMLOCK.
+>>
+>> If you grep for "rlimit(RLIMIT_MEMLOCK)", you'll see what I mean.
+>>
+>> There are known issues with that: imagine long-term pinning the same 
+>> folio through GUP with 2 interfaces (e.g., vfio, io_uring, rdma), or 
+>> within the same interface.
+>>
+>> You'd account the memory multiple times, which is horrible. And so
+>> far 
+>> there is no easy way out.
+>>
+>>>>
+>>>> Perhaps call it mlocked instead?
+>>>
+>>> I was under the impression that mlocked() memory can be migrated to
+>>> other physical memory but not to swap? whereas pinned memory needs
+>>> to
+>>> remain the exact same physical memory.
+>>
+>> Yes, exactly.
+>>
+>>>
+>>> IMO "pinned" is pretty established within GPU drivers (dma-buf,
+>>> TTM)
+>>> and essentially means the same as "pin" in "pin_user_pages", so
+>>> inventing a new name would probably cause even more confusion?
+>>
+>> If it's the same thing, absolutely. But Marteen said "It's not done
+>> yet, 
+>> but it wouldn't surprise me if we want to include it in the future".
+>>
+>> So how is the memory we are talking about in this series "pinned" ?
 > 
-> DRM cgroup controller will notify the driver of scheduling weights for
-> each DRM client, which the driver will map into the three GuC scheduling
-> priorities by giving the lowest weight client the low priority, and
-> respectively the highest one high. The other clients will not be changed
-> as will not be the ones which have individually specified a priority other
-> than normal.
+> Reading the cover-letter from Maarten, he only talks about pinning
+> affecting performance, which would be similar to user-space calling
+> mlock(), although I doubt that moving content to other physical pages
+> within the same memory type will be a near-term use-case.
 > 
-> The priority changes are done from a delayed worker to coalesce
-> potentially numerous updates and also to allow taking the mutexes from a
-> callback which runs with preemption disabled.
+> However what's more important are situation where a device (like RDMA)
+> needs to pin, because it can't handle the case where access is
+> interrupted and content transferred to another physical location.
 > 
-> Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@igalia.com>
-> ---
->   drivers/gpu/drm/xe/xe_device.c       | 18 +++++++
->   drivers/gpu/drm/xe/xe_device_types.h | 15 ++++++
->   drivers/gpu/drm/xe/xe_exec_queue.c   | 80 ++++++++++++++++++++++++++++
->   drivers/gpu/drm/xe/xe_exec_queue.h   |  5 ++
->   drivers/gpu/drm/xe/xe_guc_submit.c   |  8 ++-
->   drivers/gpu/drm/xe/xe_pm.c           |  4 ++
->   6 files changed, 129 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/xe/xe_device.c b/drivers/gpu/drm/xe/xe_device.c
-> index 9e2952c9c06a..9fef10c50868 100644
-> --- a/drivers/gpu/drm/xe/xe_device.c
-> +++ b/drivers/gpu/drm/xe/xe_device.c
-> @@ -112,6 +112,10 @@ static int xe_file_open(struct drm_device *dev, struct drm_file *file)
->   		put_task_struct(task);
->   	}
->   
-> +#ifdef CONFIG_CGROUP_DRM
-> +	xef->cg.prio = XE_EXEC_QUEUE_PRIORITY_NORMAL; // TODO: inherit current cgroup priority
-> +#endif
+> Perhaps Maarten could you elaborate whether this series is intended for
+> both these use-cases?
+Yeah, this is definitely for the latter case too.
 
-For the record from the updated branch this TODO is addressed like this:
+It's a performance optimization for the generic case, and very nice
+to have for the second case, to prevent unlimited vram pinning.
+With cgroups, we would be able to limit the amounts of used memory there.
 
-#ifdef CONFIG_CGROUP_DRM
-	/*
-	 * Set the initial values to valid ones but note that both will get set
-	 * and updated as the DRM core will soon notify the cgroup controller
-	 * that the new client has entered the group via
-	 * drmcgroup_client_open(). That in turn will trigger the weight
-	 * notifications and then xe_drm_cgroup_notify_weight() will update both
-	 * shortly.
-	 */
-	atomic_set(&xef->cg.weight, CGROUP_WEIGHT_DFL);
-	xef->cg.prio = XE_EXEC_QUEUE_PRIORITY_NORMAL;
-#endif
-
-Regards,
-
-Tvrtko
-
-> +
->   	return 0;
->   }
->   
-> @@ -368,6 +372,12 @@ static const struct file_operations xe_driver_fops = {
->   	.fop_flags = FOP_UNSIGNED_OFFSET,
->   };
->   
-> +#ifdef CONFIG_CGROUP_DRM
-> +static const struct drm_cgroup_ops xe_drm_cgroup_ops = {
-> +	.notify_weight = xe_drm_cgroup_notify_weight,
-> +};
-> +#endif
-> +
->   static struct drm_driver driver = {
->   	/* Don't use MTRRs here; the Xserver or userspace app should
->   	 * deal with them for Intel hardware.
-> @@ -386,6 +396,10 @@ static struct drm_driver driver = {
->   #ifdef CONFIG_PROC_FS
->   	.show_fdinfo = xe_drm_client_fdinfo,
->   #endif
-> +
-> +#ifdef CONFIG_CGROUP_DRM
-> +	.cg_ops = &xe_drm_cgroup_ops,
-> +#endif
->   	.ioctls = xe_ioctls,
->   	.num_ioctls = ARRAY_SIZE(xe_ioctls),
->   	.fops = &xe_driver_fops,
-> @@ -500,6 +514,10 @@ struct xe_device *xe_device_create(struct pci_dev *pdev,
->   	if (err)
->   		goto err;
->   
-> +#ifdef CONFIG_CGROUP_DRM
-> +	INIT_DELAYED_WORK(&xe->cg.work, xe_drm_cgroup_work);
-> +#endif
-> +
->   	return xe;
->   
->   err:
-> diff --git a/drivers/gpu/drm/xe/xe_device_types.h b/drivers/gpu/drm/xe/xe_device_types.h
-> index 092004d14db2..dbc65a4aa08d 100644
-> --- a/drivers/gpu/drm/xe/xe_device_types.h
-> +++ b/drivers/gpu/drm/xe/xe_device_types.h
-> @@ -19,6 +19,7 @@
->   #include "xe_oa_types.h"
->   #include "xe_platform_types.h"
->   #include "xe_pmu_types.h"
-> +#include "xe_exec_queue_types.h"
->   #include "xe_pt_types.h"
->   #include "xe_sriov_pf_types.h"
->   #include "xe_sriov_types.h"
-> @@ -34,6 +35,7 @@
->   struct dram_info;
->   struct intel_display;
->   struct intel_dg_nvm_dev;
-> +struct xe_file;
->   struct xe_ggtt;
->   struct xe_i2c;
->   struct xe_pat_ops;
-> @@ -624,6 +626,12 @@ struct xe_device {
->   		unsigned int czclk_freq;
->   	};
->   #endif
-> +
-> +#ifdef CONFIG_CGROUP_DRM
-> +	struct {
-> +		struct delayed_work	work;
-> +	} cg;
-> +#endif
->   };
->   
->   /**
-> @@ -685,6 +693,13 @@ struct xe_file {
->   
->   	/** @refcount: ref count of this xe file */
->   	struct kref refcount;
-> +
-> +#ifdef CONFIG_CGROUP_DRM
-> +	struct {
-> +		atomic_t weight;
-> +		enum xe_exec_queue_priority prio;
-> +	} cg;
-> +#endif
->   };
->   
->   #endif
-> diff --git a/drivers/gpu/drm/xe/xe_exec_queue.c b/drivers/gpu/drm/xe/xe_exec_queue.c
-> index 063c89d981e5..2f072d2a0117 100644
-> --- a/drivers/gpu/drm/xe/xe_exec_queue.c
-> +++ b/drivers/gpu/drm/xe/xe_exec_queue.c
-> @@ -1139,3 +1139,83 @@ void xe_exec_queue_jobs_ring_restore(struct xe_exec_queue *q)
->   	}
->   	spin_unlock(&sched->base.job_list_lock);
->   }
-> +
-> +#ifdef CONFIG_CGROUP_DRM
-> +void xe_drm_cgroup_work(struct work_struct *work)
-> +{
-> +	struct xe_device *xe = container_of(work, typeof(*xe), cg.work.work);
-> +	unsigned int weight, min = UINT_MAX, max = 0;
-> +	struct drm_device *dev = &xe->drm;
-> +	struct drm_file *file;
-> +	struct xe_file *xef;
-> +
-> +	mutex_lock(&dev->filelist_mutex);
-> +
-> +	list_for_each_entry(file, &dev->filelist, lhead) {
-> +		xef = to_xe_file(file);
-> +		weight = atomic_read(&xef->cg.weight);
-> +
-> +		if (!weight)
-> +			continue;
-> +
-> +		if (weight < min)
-> +			min = weight;
-> +
-> +		if (weight > max)
-> +			max = weight;
-> +	}
-> +
-> +	list_for_each_entry(file, &dev->filelist, lhead) {
-> +		enum xe_exec_queue_priority new_prio;
-> +		struct xe_exec_queue *q;
-> +		unsigned long i;
-> +
-> +		xef = to_xe_file(file);
-> +		weight = atomic_read(&xef->cg.weight);
-> +
-> +		if (max == min)
-> +			new_prio = XE_EXEC_QUEUE_PRIORITY_NORMAL;
-> +		else if (weight == max)
-> +			new_prio = XE_EXEC_QUEUE_PRIORITY_HIGH;
-> +		else if (weight == min)
-> +			new_prio = XE_EXEC_QUEUE_PRIORITY_LOW;
-> +		else
-> +			new_prio = XE_EXEC_QUEUE_PRIORITY_NORMAL;
-> +
-> +		if (new_prio == xef->cg.prio)
-> +			continue;
-> +
-> +		mutex_lock(&xef->exec_queue.lock);
-> +		xa_for_each(&xef->exec_queue.xa, i, q) {
-> +			if (q->sched_props.priority !=
-> +			    XE_EXEC_QUEUE_PRIORITY_NORMAL)
-> +				continue;
-> +
-> +			xe_exec_queue_get(q);
-> +			mutex_unlock(&xef->exec_queue.lock);
-> +
-> +			q->ops->set_priority(q, new_prio);
-> +
-> +			mutex_lock(&xef->exec_queue.lock);
-> +			xe_exec_queue_put(q);
-> +		}
-> +		mutex_unlock(&xef->exec_queue.lock);
-> +
-> +		xef->cg.prio = new_prio;
-> +	}
-> +
-> +	mutex_unlock(&dev->filelist_mutex);
-> +}
-> +
-> +void xe_drm_cgroup_notify_weight(struct drm_file *file_priv,
-> +				 unsigned int weight)
-> +{
-> +	struct xe_file *xef = to_xe_file(file_priv);
-> +	struct xe_device *xe = xef->xe;
-> +
-> +	atomic_set(&xef->cg.weight, weight);
-> +
-> +	queue_delayed_work(system_unbound_wq, &xe->cg.work,
-> +			   msecs_to_jiffies(100));
-> +}
-> +#endif
-> diff --git a/drivers/gpu/drm/xe/xe_exec_queue.h b/drivers/gpu/drm/xe/xe_exec_queue.h
-> index 15ec852e7f7e..5f6b42c74086 100644
-> --- a/drivers/gpu/drm/xe/xe_exec_queue.h
-> +++ b/drivers/gpu/drm/xe/xe_exec_queue.h
-> @@ -95,4 +95,9 @@ int xe_exec_queue_contexts_hwsp_rebase(struct xe_exec_queue *q, void *scratch);
->   void xe_exec_queue_jobs_ring_restore(struct xe_exec_queue *q);
->   
->   struct xe_lrc *xe_exec_queue_lrc(struct xe_exec_queue *q);
-> +
-> +void xe_drm_cgroup_notify_weight(struct drm_file *file_priv,
-> +				 unsigned int weight);
-> +void xe_drm_cgroup_work(struct work_struct *work);
-> +
->   #endif
-> diff --git a/drivers/gpu/drm/xe/xe_guc_submit.c b/drivers/gpu/drm/xe/xe_guc_submit.c
-> index 86daf6f4728f..df1252f4cd62 100644
-> --- a/drivers/gpu/drm/xe/xe_guc_submit.c
-> +++ b/drivers/gpu/drm/xe/xe_guc_submit.c
-> @@ -427,13 +427,19 @@ static const int xe_exec_queue_prio_to_guc[] = {
->   static void init_policies(struct xe_guc *guc, struct xe_exec_queue *q)
->   {
->   	struct exec_queue_policy policy;
-> -	enum xe_exec_queue_priority prio = q->sched_props.priority;
-> +	enum xe_exec_queue_priority prio;
->   	u32 timeslice_us = q->sched_props.timeslice_us;
->   	u32 slpc_exec_queue_freq_req = 0;
->   	u32 preempt_timeout_us = q->sched_props.preempt_timeout_us;
->   
->   	xe_gt_assert(guc_to_gt(guc), exec_queue_registered(q));
->   
-> +	prio = q->sched_props.priority;
-> +#ifdef CONFIG_CGROUP_DRM
-> +	if (prio == XE_EXEC_QUEUE_PRIORITY_NORMAL && q->xef)
-> +		prio = q->xef->cg.prio;
-> +#endif
-> +
->   	if (q->flags & EXEC_QUEUE_FLAG_LOW_LATENCY)
->   		slpc_exec_queue_freq_req |= SLPC_CTX_FREQ_REQ_IS_COMPUTE;
->   
-> diff --git a/drivers/gpu/drm/xe/xe_pm.c b/drivers/gpu/drm/xe/xe_pm.c
-> index a2e85030b7f4..67291f19213b 100644
-> --- a/drivers/gpu/drm/xe/xe_pm.c
-> +++ b/drivers/gpu/drm/xe/xe_pm.c
-> @@ -124,6 +124,10 @@ int xe_pm_suspend(struct xe_device *xe)
->   	drm_dbg(&xe->drm, "Suspending device\n");
->   	trace_xe_pm_suspend(xe, __builtin_return_address(0));
->   
-> +#ifdef CONFIG_CGROUP_DRM
-> +	cancel_delayed_work_sync(&xe->cg.work);
-> +#endif
-> +
->   	err = xe_pxp_pm_suspend(xe->pxp);
->   	if (err)
->   		goto err;
-
+Kind regards,
+~Maarten
 
