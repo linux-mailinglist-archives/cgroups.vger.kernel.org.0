@@ -1,123 +1,173 @@
-Return-Path: <cgroups+bounces-9689-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9690-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C58CFB42EED
-	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 03:40:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50960B42FB9
+	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 04:22:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86BB13B03ED
-	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 01:40:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07E1D3B0E4B
+	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 02:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374F61CD1E4;
-	Thu,  4 Sep 2025 01:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10E61FF1C4;
+	Thu,  4 Sep 2025 02:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RaqggoCI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D6C1940A1;
-	Thu,  4 Sep 2025 01:40:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF781F8691
+	for <cgroups@vger.kernel.org>; Thu,  4 Sep 2025 02:22:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756950020; cv=none; b=eOC0v1DS6doECFIYmRyFFTDfOUxNXrTVUHEE7QpVjR755jxu8pwLucfrnghr59M8XV195Q/wIw/kdWqYR+q2vrpSIhPx84RLaGBrqi5Q9xOXX+dhLXAdChJ2W4bIjpdIX/KhnFHjl6MoSOOSVYby5RXvQl02666ZoxR3cOpTeOc=
+	t=1756952528; cv=none; b=H0vNW0GGxIb9TkQD+bFgJVenE3ekDG1lkqj7wVH7Cw1N3Ux4PfmX7wrdZ2AmXISICB8XUUkk9PlgLQqIgS3VUsTPm3QwtdBhm0Ev83UXlatwvKpaL01vDF3GQD+3zrHBvn7wRyC4g1UxXe6QPevPI9hdQZAEl/7DO51z1TPPrmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756950020; c=relaxed/simple;
-	bh=MbPtQfbMRe9s59FcPN8+OJbEnT+coKqPntOEWN4MtVc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=saWVJy6B+Yj0yzaThaYs/F5QnT1T56WcKGfaPbg/8cKAFYfDsbLTvDEFfYqo3cA3RCL5AF7ZiXRf+KSp4on3ltyTorp4vFppEZ1eHhaskfc8/jYFL8dyllsKPXbq1qZAdB9fo/hSjvfYddqBDpDO1itm4uP+GKe7wccDuUuKUq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cHMcG5mPZzYQvMd;
-	Thu,  4 Sep 2025 09:40:14 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 4CBE71A13A6;
-	Thu,  4 Sep 2025 09:40:13 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP3 (Coremail) with SMTP id _Ch0CgA30mn87bhoQU8sBQ--.49393S2;
-	Thu, 04 Sep 2025 09:40:13 +0800 (CST)
-Message-ID: <7e05b179-90ec-449b-86a8-796f4a12180a@huaweicloud.com>
-Date: Thu, 4 Sep 2025 09:40:12 +0800
+	s=arc-20240116; t=1756952528; c=relaxed/simple;
+	bh=A2GlZNRYtfxOum4TwwmFXfFcVX0AQ1b9mpTZT4MuB2U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iJKK38VSw6BOXnHxoLjFR24dVx121aM3zM4/osm+pFe0FFKEOFNOzjJTKmqfXWi7PM9ld/EWOfhBFuZgFrAz47ydp0kQ/8WIqtFDNb5W4gOT9FAL2VomL/A3siIOmY5XtAydg/5B6Z72XXmVN1RcT8RXCRfK3Bo81Mvh7CzLa7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RaqggoCI; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-afec5651966so104128666b.2
+        for <cgroups@vger.kernel.org>; Wed, 03 Sep 2025 19:22:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756952525; x=1757557325; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DXVSLMWASFD03eCh7RAZNIgqIvAhKcab9R9R5MJY7EU=;
+        b=RaqggoCItdiyDYTOCx1F//rbYgc2qSDcKhm/vJN5Ti8beywMluGygE84JAzL4rD/0S
+         0+TBoAdesS78ozLu3n5GiyUVc6JwtnK+yyWb0vGE2P6g+7ejecKQXxrvHjBF3U8Id4OP
+         A/EOIkmeQOl5VuLjdAdsTCz9VJZiMAihSA+N1MaHt6sjqsEtwypgDEbWNZsG/FsV4ceo
+         +HfjUk7Ht5iuUqGcBVimEVdpzSll74TulvDsdarFlP+5RaaVScPjI38GkpWK2eCT+9gJ
+         i+av+D/JYxWlR8tIyI+cGuirRHbYgbbTqKAJUlVjZ4bulvUMkbhf8Yv55XUQvM2bb5yX
+         Ocmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756952525; x=1757557325;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DXVSLMWASFD03eCh7RAZNIgqIvAhKcab9R9R5MJY7EU=;
+        b=JFvoQs+Lrkfnt/AqbSevNVI/iSGs8JLK6bE0xryesxBhFmoBjp0flIL2WDuzSpqZy1
+         nNRmZ+HgtnbX1I5vAVR27Nre5QIm4X2BevmyC5N6ZwFgOuoZ5DCPom8MVJeKpU+/LwPM
+         VE93eGF71tC5W0nUqOL+0uVIUFs2xnEDhKYF8bR1J2MXcWT3D6w1ONFWfmymrd0pd+vQ
+         jvQdnJZMNLVIB0sdRCDlpWVX8dowodWUtmucrEwAgh+zWGhQ5yUlAhpEyAzA0Rh6tgQs
+         wwuOO2sa47KsedlFHCYW3d5MiNEFRv4QD1YD5cD5Y23JfAP8MGS7H4Pow+LMoIb/azko
+         sP6A==
+X-Forwarded-Encrypted: i=1; AJvYcCXi4+calsWJ1yBozmjLr4gwJTANx0RJEq5Jv8P1UggDxyzN7xt5fz31OmmTpklCghdojYfq1Hup@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJ9+zYq2Pxd3VJBOqMBTWGIsmso5D8yRtv8USGL1h+S6CQ/mOa
+	e1n8hMBolSlmnisXjFLgcRtAvYH1bTraqCSoR7a0hafIjm/OQzieiedl5Hk4cazHd3wTgyC/j1T
+	aulgomzNWnvNDmUQ281PbAXWxmqNj0jQ=
+X-Gm-Gg: ASbGnctlciI6pR6tqigfg3WMYAaY+VgE5Suk+SN9Eqe/etURTNrPhA5rXOmeIyAa0sH
+	wc7Kmw77Yz+AIKKmzHzvZub6yc7k6gG/M8vPecdrwgb6HCcKwP1KtZoS6usMB+EyXwCS9CILAX8
+	5X7/omgbg+zuK06pno/B20x6Qv9BpnOjpIvDUhdrxUJoBoqgN9jlA0r0jWaMZkfGvTsZKOjqiLh
+	kXVfg==
+X-Google-Smtp-Source: AGHT+IEcqmtj81HfK+9kHhNiA6AXxxKlsMDqPVXZRpbMNel0k6GBh80LEZ+J24B+dPaLV1bTxSagay7ZwP49Lkj+V20=
+X-Received: by 2002:a17:906:f596:b0:b04:65b4:707 with SMTP id
+ a640c23a62f3a-b0465b40b24mr528466666b.13.1756952525112; Wed, 03 Sep 2025
+ 19:22:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup: replace global percpu_rwsem with
- signal_struct->group_rwsem when writing cgroup.procs/threads
-To: Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: Yi Tao <escape@linux.alibaba.com>, hannes@cmpxchg.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <f460f494245710c5b6649d6cc7e68b3a28a0a000.1756896828.git.escape@linux.alibaba.com>
- <aLhykIPSGV1k_OG0@slm.duckdns.org>
- <rgjlqyeqcgi43crx4mqpwi7tqxqgy7bkmjbpv7t6eiqodreydm@6pag34zcnekp>
- <aLio7Z6YolSZ2lPo@slm.duckdns.org>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <aLio7Z6YolSZ2lPo@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgA30mn87bhoQU8sBQ--.49393S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw4fGw4kWFWxtFy3WF4xXrb_yoW8GFy8pF
-	9Yya4rJwsIk3W8ZF4vqay0v3WrW3y8ZF47JFW7A3W8AFsxGr1fZr4IvF45Zw1UZ3ZxXr12
-	qw43Zry8tFWvy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1yE_tUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+References: <20250902041024.2040450-1-airlied@gmail.com> <20250902041024.2040450-10-airlied@gmail.com>
+ <e1507242-952c-4131-93e1-6af52760b283@amd.com>
+In-Reply-To: <e1507242-952c-4131-93e1-6af52760b283@amd.com>
+From: Dave Airlie <airlied@gmail.com>
+Date: Thu, 4 Sep 2025 12:21:53 +1000
+X-Gm-Features: Ac12FXwW1MaD_A4-ok2fSvRkEovDekWEGy5dDSEU50r6EOTRHxe79q64hkc2Qto
+Message-ID: <CAPM=9txo88E9y96w1Ti5hXC322HVRDhD18CrmBj8zse8Xx=V4Q@mail.gmail.com>
+Subject: Re: [PATCH 09/15] ttm/pool: initialise the shrinker earlier
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: dri-devel@lists.freedesktop.org, tj@kernel.org, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
+	Dave Chinner <david@fromorbit.com>, Waiman Long <longman@redhat.com>, simona@ffwll.ch
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, 3 Sept 2025 at 00:07, Christian K=C3=B6nig <christian.koenig@amd.co=
+m> wrote:
+>
+>
+>
+> On 02.09.25 06:06, Dave Airlie wrote:
+> > From: Dave Airlie <airlied@redhat.com>
+> >
+> > Later memcg enablement needs the shrinker initialised before the list l=
+ru,
+> > Just move it for now.
+>
+> Hui? That should just be the other way around.
+>
+> The shrinker depends on the list lru and so needs to come after ttm_pool_=
+type_init() and not before.
 
+list_lru_init_memcg needs to take a registered shrinker as an
+argument, also the shrinker list is locked so this is fine, if we get
+called to shrinker before ttm_pool_type_init happens, shrinker_scan
+will have 0 pools.
 
-On 2025/9/4 4:45, Tejun Heo wrote:
-> Hello, Michal.
-> 
-> On Wed, Sep 03, 2025 at 10:03:39PM +0200, Michal Koutný wrote:
->> On Wed, Sep 03, 2025 at 06:53:36AM -1000, Tejun Heo <tj@kernel.org> wrote:
->>> If you use CLONE_INTO_CGROUP, cgroup migration doesn't just become cold. It
->>> disappears completely and CLONE_INTO_CGROUP doesn't need any global locks
->>> from cgroup side.
->>
->> CLONE_INTO_CGROUP uses cgroup_mutex and threadgroup rwsem like regular
->> migration, no? Its effect is atomicity wrt clone.
->> Or, Tejum, what do you mean that it disappears? (I think we cannot give
->> up cgroup_mutex as it ensures synchronization of possible parent's
->> migration.)
-> 
-> Sorry, I was confused. We no longer need to write lock threadgroup rwsem
-> when CLONE_INTO_CGROUP'ing into an empty cgroup. We do still need
-> cgroup_mutex.
-> 
->   671c11f0619e ("cgroup: Elide write-locking threadgroup_rwsem when updating csses on an empty subtree")
-> 
-> Thanks.
-> 
+Dave.
 
-I'm still a bit confused. Commit 671c11f0619e ("cgroup: Elide write-locking threadgroup_rwsem when
-updating csses on an empty subtree") only applies to CSS updates. However, cloning with
-CLONE_INTO_CGROUP still requires acquiring the threadgroup_rwsem.
-
-cgroup_can_fork
-  cgroup_css_set_fork
-    	if (kargs->flags & CLONE_INTO_CGROUP)
-		cgroup_lock();
-	cgroup_threadgroup_change_begin(current);
-
--- 
-Best regards,
-Ridong
-
+>
+> Regards,
+> Christian.
+>
+> >
+> > Signed-off-by: Dave Airlie <airlied@redhat.com>
+> > ---
+> >  drivers/gpu/drm/ttm/ttm_pool.c | 22 +++++++++++-----------
+> >  1 file changed, 11 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_p=
+ool.c
+> > index 9a8b4f824bc1..2c9969de7517 100644
+> > --- a/drivers/gpu/drm/ttm/ttm_pool.c
+> > +++ b/drivers/gpu/drm/ttm/ttm_pool.c
+> > @@ -1381,6 +1381,17 @@ int ttm_pool_mgr_init(unsigned long num_pages)
+> >       spin_lock_init(&shrinker_lock);
+> >       INIT_LIST_HEAD(&shrinker_list);
+> >
+> > +     mm_shrinker =3D shrinker_alloc(SHRINKER_NUMA_AWARE, "drm-ttm_pool=
+");
+> > +     if (!mm_shrinker)
+> > +             return -ENOMEM;
+> > +
+> > +     mm_shrinker->count_objects =3D ttm_pool_shrinker_count;
+> > +     mm_shrinker->scan_objects =3D ttm_pool_shrinker_scan;
+> > +     mm_shrinker->batch =3D TTM_SHRINKER_BATCH;
+> > +     mm_shrinker->seeks =3D 1;
+> > +
+> > +     shrinker_register(mm_shrinker);
+> > +
+> >       for (i =3D 0; i < NR_PAGE_ORDERS; ++i) {
+> >               ttm_pool_type_init(&global_write_combined[i], NULL,
+> >                                  ttm_write_combined, i);
+> > @@ -1403,17 +1414,6 @@ int ttm_pool_mgr_init(unsigned long num_pages)
+> >  #endif
+> >  #endif
+> >
+> > -     mm_shrinker =3D shrinker_alloc(SHRINKER_NUMA_AWARE, "drm-ttm_pool=
+");
+> > -     if (!mm_shrinker)
+> > -             return -ENOMEM;
+> > -
+> > -     mm_shrinker->count_objects =3D ttm_pool_shrinker_count;
+> > -     mm_shrinker->scan_objects =3D ttm_pool_shrinker_scan;
+> > -     mm_shrinker->batch =3D TTM_SHRINKER_BATCH;
+> > -     mm_shrinker->seeks =3D 1;
+> > -
+> > -     shrinker_register(mm_shrinker);
+> > -
+> >       return 0;
+> >  }
+> >
+>
 
