@@ -1,276 +1,92 @@
-Return-Path: <cgroups+bounces-9695-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9696-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 977B5B43174
-	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 07:02:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF83CB4317F
+	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 07:10:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59297207F2E
-	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 05:02:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 812DB1C2229A
+	for <lists+cgroups@lfdr.de>; Thu,  4 Sep 2025 05:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04E71EEA3C;
-	Thu,  4 Sep 2025 05:02:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3969229B2E;
+	Thu,  4 Sep 2025 05:10:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="bc8adDrb"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="v2nhIvAH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 132241CEAA3;
-	Thu,  4 Sep 2025 05:02:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C3D33E7;
+	Thu,  4 Sep 2025 05:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756962167; cv=none; b=XBjm17n8EMhcwoH1KKGN3Wzlr2SlOBuU4PclBXEKUqFOJcYTh6Rxoz9n5ZnYY8LVga1CjDtUAlPKXL20SRWZpXACedW7mq2+MazRxiCv154ulJucPM0PDf5FIf++pCJa9GqfBA56W4yzK914idpgRdR0N8MsA098Axum26IoZA0=
+	t=1756962605; cv=none; b=OJ5Qa8V/unoXrPUo+SVez5NOdApZth5O0wlIkez+7J9Dias06IL4aGQhAYpJsdgaq4qCjEjaoad+Y4WAu3p1lY3apHYdLKYCvpHPt35sHZ6yBTGRWkEfbRm2sOPRkX2KvLpSfX0WqhJn1dT+O4ecpLrus1RkuVSUxozYIsiA+ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756962167; c=relaxed/simple;
-	bh=/W0wuxXJEXvUY5HlXb5TDtMwMCHfWUL5zdTubZ7iYbs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qnghKEdSeMHNgp/eWe/Dk5de6B6KPcOwMDjE2beBVS3jOd5o9twwa/nmbmmmo4MF0wSElMTqgt0x5PmJO7uVPovGHGNcM68RBNDilgoQSDO2idUvIIJEQ/rPDVH3h6+pUv5eiglh+GjUV8jIO8GudTH89n87S5Osyy9Y5iU21yM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=bc8adDrb; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1756962162; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=NowwvMV5+HxONvmroq9DJ9nOWNQSAXlPzW45jcp2EOc=;
-	b=bc8adDrbsMlJ6iRVzRPGgTZ6h5qIErTROmULM6rQabxzw8kJxUq4O+FRNgbcEA7Gcx2I1MyYvfIOLXVIVqyqwt95CadMk+jV0m9PfVN3bwO3fXkG6yXS17yZon/nxluciULPRViG8BfrDnHog4vzYopEJe/+pxFGZaXv7z9LqR4=
-Received: from 30.221.148.63(mailfrom:escape@linux.alibaba.com fp:SMTPD_---0WnEMV30_1756962161 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 04 Sep 2025 13:02:42 +0800
-Message-ID: <330074a6-ed90-4cdd-8aba-01774f6d838a@linux.alibaba.com>
-Date: Thu, 4 Sep 2025 13:02:41 +0800
+	s=arc-20240116; t=1756962605; c=relaxed/simple;
+	bh=ydFs6i7keCMfBbD9quYtCVIwH9y+8boTcTxEbezuoqI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FAxvlDnh0ixw/8kBK6MMSp5rPI1PP8hUx2ZiPoyZrgzGl17RV4jzWqpXPnqm+EjINQBcN+DiwxSx3XKHSUxrfYCkJ+eZFy5EiqXpq7iGU2vyr8Cb33O1jXkiK0XfXuXKVTsKk/hgpX3EQMEyWUZeM1jGWkeeQDo/pMMaqTSyc8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=v2nhIvAH; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ydFs6i7keCMfBbD9quYtCVIwH9y+8boTcTxEbezuoqI=; b=v2nhIvAHa8n7akzk3SUERXmaHo
+	YvNeXa5K0jwkINpKuRz0S5VtIcpV710I+gAMavCPxiHGRUIRKK/UoZk7idl1zok3c0L86qWILmnyr
+	9eHA8+oT5R9Ho2y2JNUDI86b1HTqGj28rmQYVXMz6WcrzQeKG+ojLdutPKj85v62fh8oRYC/FfuGB
+	6iYOUIURK6e64WDJkkkSPooaRQfbglSijM/sO9oYgDiZQgl3zbfb6ioUXvfiifvrHipr/+QhcmuvU
+	xkDWaE//NvdBrotQ1jIeSGblxfklYqFb6Xh5x+W9vY1iod5cBOnxCIb1ckRapLbxFpwEmrM2YVeVM
+	JuTlcZ1w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uu2EH-00000009A1O-0i6e;
+	Thu, 04 Sep 2025 05:09:49 +0000
+Date: Wed, 3 Sep 2025 22:09:49 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Yu Kuai <hailan@yukuai.org.cn>, Christoph Hellwig <hch@infradead.org>,
+	colyli@kernel.org, hare@suse.de, dlemoal@kernel.org,
+	tieren@fnnas.com, axboe@kernel.dk, tj@kernel.org,
+	josef@toxicpanda.com, song@kernel.org, kmo@daterainc.com,
+	satyat@google.com, ebiggers@google.com, neil@brown.name,
+	akpm@linux-foundation.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-raid@vger.kernel.org, yi.zhang@huawei.com,
+	yangerkun@huawei.com, johnny.chenyi@huawei.com,
+	"yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH RFC v3 02/15] block: add QUEUE_FLAG_BIO_ISSUE
+Message-ID: <aLkfHW2KuNvrcYyN@infradead.org>
+References: <20250901033220.42982-1-yukuai1@huaweicloud.com>
+ <20250901033220.42982-3-yukuai1@huaweicloud.com>
+ <aLhBqTrbUWVK4OKy@infradead.org>
+ <5378349f-4d00-4d3e-9834-f3ddf2e514cc@yukuai.org.cn>
+ <dbbfce94-22d8-5c34-ba70-c6de2b902659@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup: replace global percpu_rwsem with
- signal_struct->group_rwsem when writing cgroup.procs/threads
-To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <f460f494245710c5b6649d6cc7e68b3a28a0a000.1756896828.git.escape@linux.alibaba.com>
- <9a085dcd-be41-4244-a35e-014e0a1d0fd6@redhat.com>
-From: escape <escape@linux.alibaba.com>
-In-Reply-To: <9a085dcd-be41-4244-a35e-014e0a1d0fd6@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbbfce94-22d8-5c34-ba70-c6de2b902659@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
+On Thu, Sep 04, 2025 at 10:44:32AM +0800, Yu Kuai wrote:
+> - it's only used by iolatency, which can only be enabled for rq-based
+> disks;
+> - For bio that is submitted the first time, blk_cgroup_bio_start() is
+> called from submit_bio_no_acct_nocheck(), where q_usage_counter is not
+> grabbed yet, hence it's not safe to enable that flag while enabling
+> iolatency.
 
+Yes, keeping more things in blk-mq is always good.
 
+> -void blk_mq_submit_bio(struct bio *bio)
+> +void b k_mq_submit_bio(struct bio *bio)
 
-在 2025/9/3 21:14, Waiman Long 写道:
->
-> On 9/3/25 7:11 AM, Yi Tao wrote:
->> As computer hardware advances, modern systems are typically equipped
->> with many CPU cores and large amounts of memory, enabling the deployment
->> of numerous applications. On such systems, container creation and
->> deletion become frequent operations, making cgroup process migration no
->> longer a cold path. This leads to noticeable contention with common
->> process operations such as fork, exec, and exit.
->>
->> To alleviate the contention between cgroup process migration and
->> operations like process fork, this patch modifies lock to take the write
->> lock on signal_struct->group_rwsem when writing pid to
->> cgroup.procs/threads instead of holding a global write lock.
->>
->> Cgroup process migration has historically relied on
->> signal_struct->group_rwsem to protect thread group integrity. In commit
->> <1ed1328792ff> ("sched, cgroup: replace signal_struct->group_rwsem with
->> a global percpu_rwsem"), this was changed to a global
->> cgroup_threadgroup_rwsem. The advantage of using a global lock was
->> simplified handling of process group migrations. This patch retains the
->> use of the global lock for protecting process group migration, while
->> reducing contention by using per thread group lock during
->> cgroup.procs/threads writes.
->>
->> The locking behavior is as follows:
->>
->> write cgroup.procs/threads  | process fork,exec,exit | process group 
->> migration
->> ------------------------------------------------------------------------------ 
->>
->> cgroup_lock()               | down_read(&g_rwsem)    | cgroup_lock()
->> down_write(&p_rwsem)        | down_read(&p_rwsem)    | 
->> down_write(&g_rwsem)
->> critical section            | critical section       | critical section
->> up_write(&p_rwsem)          | up_read(&p_rwsem)      | 
->> up_write(&g_rwsem)
->> cgroup_unlock()             | up_read(&g_rwsem)      | cgroup_unlock()
->>
->> g_rwsem denotes cgroup_threadgroup_rwsem, p_rwsem denotes
->> signal_struct->group_rwsem.
->>
->> This patch eliminates contention between cgroup migration and fork
->> operations for threads that belong to different thread groups, thereby
->> reducing the long-tail latency of cgroup migrations and lowering system
->> load.
-> Do you have any performance numbers to showcase how much performance 
-> benefit does this change provide?
->> Signed-off-by: Yi Tao <escape@linux.alibaba.com>
->> ---
->>   include/linux/cgroup-defs.h     |  2 ++
->>   include/linux/sched/signal.h    |  4 +++
->>   init/init_task.c                |  3 ++
->>   kernel/cgroup/cgroup-internal.h |  6 ++--
->>   kernel/cgroup/cgroup-v1.c       |  8 ++---
->>   kernel/cgroup/cgroup.c          | 56 ++++++++++++++++++++-------------
->>   kernel/fork.c                   |  4 +++
->>   7 files changed, 55 insertions(+), 28 deletions(-)
->>
->> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
->> index 6b93a64115fe..8e0fdad8a440 100644
->> --- a/include/linux/cgroup-defs.h
->> +++ b/include/linux/cgroup-defs.h
->> @@ -838,6 +838,7 @@ struct cgroup_of_peak {
->>   static inline void cgroup_threadgroup_change_begin(struct 
->> task_struct *tsk)
->>   {
->>       percpu_down_read(&cgroup_threadgroup_rwsem);
->> +    down_read(&tsk->signal->group_rwsem);
->>   }
->>     /**
->> @@ -848,6 +849,7 @@ static inline void 
->> cgroup_threadgroup_change_begin(struct task_struct *tsk)
->>    */
->>   static inline void cgroup_threadgroup_change_end(struct task_struct 
->> *tsk)
->>   {
->> +    up_read(&tsk->signal->group_rwsem);
->>       percpu_up_read(&cgroup_threadgroup_rwsem);
->>   }
->>   diff --git a/include/linux/sched/signal.h 
->> b/include/linux/sched/signal.h
->> index 1ef1edbaaf79..86fbc99a9174 100644
->> --- a/include/linux/sched/signal.h
->> +++ b/include/linux/sched/signal.h
->> @@ -226,6 +226,10 @@ struct signal_struct {
->>       struct tty_audit_buf *tty_audit_buf;
->>   #endif
->>   +#ifdef CONFIG_CGROUPS
->> +    struct rw_semaphore group_rwsem;
->> +#endif
->> +
->>       /*
->>        * Thread is the potential origin of an oom condition; kill 
->> first on
->>        * oom
->> diff --git a/init/init_task.c b/init/init_task.c
->> index e557f622bd90..0450093924a7 100644
->> --- a/init/init_task.c
->> +++ b/init/init_task.c
->> @@ -27,6 +27,9 @@ static struct signal_struct init_signals = {
->>       },
->>       .multiprocess    = HLIST_HEAD_INIT,
->>       .rlim        = INIT_RLIMITS,
->> +#ifdef CONFIG_CGROUPS
->> +    .group_rwsem    = __RWSEM_INITIALIZER(init_signals.group_rwsem),
->> +#endif
->>       .cred_guard_mutex = 
->> __MUTEX_INITIALIZER(init_signals.cred_guard_mutex),
->>       .exec_update_lock = 
->> __RWSEM_INITIALIZER(init_signals.exec_update_lock),
->>   #ifdef CONFIG_POSIX_TIMERS
->> diff --git a/kernel/cgroup/cgroup-internal.h 
->> b/kernel/cgroup/cgroup-internal.h
->> index b14e61c64a34..572c24b7e947 100644
->> --- a/kernel/cgroup/cgroup-internal.h
->> +++ b/kernel/cgroup/cgroup-internal.h
->> @@ -249,8 +249,10 @@ int cgroup_migrate(struct task_struct *leader, 
->> bool threadgroup,
->>     int cgroup_attach_task(struct cgroup *dst_cgrp, struct 
->> task_struct *leader,
->>                  bool threadgroup);
->> -void cgroup_attach_lock(bool lock_threadgroup);
->> -void cgroup_attach_unlock(bool lock_threadgroup);
->> +void cgroup_attach_lock(struct task_struct *tsk, bool lock_threadgroup,
->> +            bool global);
->> +void cgroup_attach_unlock(struct task_struct *tsk, bool 
->> lock_threadgroup,
->> +              bool global);
->>   struct task_struct *cgroup_procs_write_start(char *buf, bool 
->> threadgroup,
->>                            bool *locked)
->>       __acquires(&cgroup_threadgroup_rwsem);
->> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
->> index 2a4a387f867a..3e5ead8c5bc5 100644
->> --- a/kernel/cgroup/cgroup-v1.c
->> +++ b/kernel/cgroup/cgroup-v1.c
->> @@ -68,7 +68,7 @@ int cgroup_attach_task_all(struct task_struct 
->> *from, struct task_struct *tsk)
->>       int retval = 0;
->>         cgroup_lock();
->> -    cgroup_attach_lock(true);
->> +    cgroup_attach_lock(NULL, true, true);
->>       for_each_root(root) {
->>           struct cgroup *from_cgrp;
->>   @@ -80,7 +80,7 @@ int cgroup_attach_task_all(struct task_struct 
->> *from, struct task_struct *tsk)
->>           if (retval)
->>               break;
->>       }
->> -    cgroup_attach_unlock(true);
->> +    cgroup_attach_unlock(NULL, true, true);
->>       cgroup_unlock();
->>         return retval;
->> @@ -117,7 +117,7 @@ int cgroup_transfer_tasks(struct cgroup *to, 
->> struct cgroup *from)
->>         cgroup_lock();
->>   -    cgroup_attach_lock(true);
->> +    cgroup_attach_lock(NULL, true, true);
->>         /* all tasks in @from are being moved, all csets are source */
->>       spin_lock_irq(&css_set_lock);
->> @@ -153,7 +153,7 @@ int cgroup_transfer_tasks(struct cgroup *to, 
->> struct cgroup *from)
->>       } while (task && !ret);
->>   out_err:
->>       cgroup_migrate_finish(&mgctx);
->> -    cgroup_attach_unlock(true);
->> +    cgroup_attach_unlock(NULL, true, true);
->>       cgroup_unlock();
->>       return ret;
->>   }
->> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
->> index 312c6a8b55bb..4e1d80a2741f 100644
->> --- a/kernel/cgroup/cgroup.c
->> +++ b/kernel/cgroup/cgroup.c
->> @@ -2480,21 +2480,31 @@ EXPORT_SYMBOL_GPL(cgroup_path_ns);
->>    * write-locking cgroup_threadgroup_rwsem. This allows ->attach() 
->> to assume that
->>    * CPU hotplug is disabled on entry.
->>    */
->> -void cgroup_attach_lock(bool lock_threadgroup)
->> +void cgroup_attach_lock(struct task_struct *tsk,
->> +                   bool lock_threadgroup, bool global)
->>   {
->>       cpus_read_lock();
->> -    if (lock_threadgroup)
->> -        percpu_down_write(&cgroup_threadgroup_rwsem);
->> +    if (lock_threadgroup) {
->> +        if (global)
->> +            percpu_down_write(&cgroup_threadgroup_rwsem);
->> +        else
->> +            down_write(&tsk->signal->group_rwsem);
->> +    }
->>   }
->
-> tsk is only used when global is false. So you can eliminate the 
-> redundant global argument and use the presence of tsk to indicate 
-> which lock to take.
->
-> Cheers,
-> Longman
-Thank you for your suggestion. As you pointed out, we can determine 
-which lock to acquire
-
-based on whether the task is NULL. I'll incorporate this change in the 
-next version of the patch.
-
-
-Thanks.
-
+This got mangled somehow.
 
