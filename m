@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-9738-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9734-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED24AB44FF5
-	for <lists+cgroups@lfdr.de>; Fri,  5 Sep 2025 09:36:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A156DB44F1A
+	for <lists+cgroups@lfdr.de>; Fri,  5 Sep 2025 09:20:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBAF31C214B7
-	for <lists+cgroups@lfdr.de>; Fri,  5 Sep 2025 07:36:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C1385A4786
+	for <lists+cgroups@lfdr.de>; Fri,  5 Sep 2025 07:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A278257825;
-	Fri,  5 Sep 2025 07:36:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C552F99AA;
+	Fri,  5 Sep 2025 07:16:06 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D2B1DE4E5;
-	Fri,  5 Sep 2025 07:35:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB38025B1FF;
+	Fri,  5 Sep 2025 07:16:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757057760; cv=none; b=kwygCBTjV5o6V8BKPFwW067Q8DO3O3CM1pfxSKOWtlK7hQBI1WKGmAYBKazWTrxGaM6sD+vleRgpkx4CmDuW8C3QCdEvxwnzqJV+FmJW/SnKBXYPLfAvGqalrE3igZ9wjVPspsYEl+ZdhmnrNivPutaGOfFw2SldbhrQllHxrCc=
+	t=1757056566; cv=none; b=sGHUvKULN2vztwoHnmpCGW5Wk/aWxx/ydNj+xIaUK8Piu+wU2hkJiIbm2sXixHF/U0VdUbNyhhqQBTVqkmmKBGPN3dvJiQVHT5uukxcJ0gvVzW0jTgx3omItDpb7cMiQg+Ed2AKsp5l/sycEHE5yUR73E3QupMn2CM+8X1BHqfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757057760; c=relaxed/simple;
-	bh=nPPTfxRSkXNleuMU0NjjkuvGPoT2zGvquDtml6qPd4U=;
+	s=arc-20240116; t=1757056566; c=relaxed/simple;
+	bh=iSRuSofFjS1GPEfyY4dAz5/id5SpvFrgDpGVrvGHhqA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YqVkm/xw2nqYtZkLEgrFY5KK1R0oTAbH38doSMpEjV5agT1jAwNbFuUL2YEr7FC/X/9wq12ELz6MSN7EWt8r6Awha55E8siGdQnAwBdOpbbm93P+qaw5YKW20wg+8EF+Jl6TnQSYUkR9qW3j1ylhqsjtQERev3pavmf2/qepqow=
+	 MIME-Version; b=UWNr2R4kQOPVN35Kqi+hQt/Hp2KjsfYzEN6vIi2BMkNhBF4WawmND1kptcoMfMmn1OC1Corel2doVAmNvxDnGl3uJKY1qoABdw1ssN6u+xDox2ELh1P+sMEiTzVnGlnEtmqyuogIINEjP82r3GPfxda0NMegID7JAzPGVm9wfNk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cJ71F5T9xzKHMbR;
-	Fri,  5 Sep 2025 15:16:01 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cJ71G4QzbzKHMwl;
+	Fri,  5 Sep 2025 15:16:02 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id B19A61A1367;
-	Fri,  5 Sep 2025 15:16:01 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 8D8781A135A;
+	Fri,  5 Sep 2025 15:16:02 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgAncIwkjrpowYbQBQ--.23573S16;
-	Fri, 05 Sep 2025 15:16:01 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgAncIwkjrpowYbQBQ--.23573S17;
+	Fri, 05 Sep 2025 15:16:02 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: hch@infradead.org,
 	colyli@kernel.org,
@@ -62,9 +62,9 @@ Cc: linux-block@vger.kernel.org,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com,
 	johnny.chenyi@huawei.com
-Subject: [PATCH for-6.18/block 12/16] md/md-linear: convert to use bio_submit_split_bioset()
-Date: Fri,  5 Sep 2025 15:06:39 +0800
-Message-Id: <20250905070643.2533483-13-yukuai1@huaweicloud.com>
+Subject: [PATCH for-6.18/block 13/16] blk-crypto: convert to use bio_submit_split_bioset()
+Date: Fri,  5 Sep 2025 15:06:40 +0800
+Message-Id: <20250905070643.2533483-14-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20250905070643.2533483-1-yukuai1@huaweicloud.com>
 References: <20250905070643.2533483-1-yukuai1@huaweicloud.com>
@@ -75,24 +75,24 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAncIwkjrpowYbQBQ--.23573S16
-X-Coremail-Antispam: 1UD129KBjvdXoWrur1xWrWxtw1UZF4Dtr43Jrb_yoWkWrX_Wa
-	4ruFykWr1UK397tr1Yqws0v39Yvwn8Wry8uFyjqa13A3WfAwn7Arn5Xw43X34xXFWxXa45
-	tr47GryftF1UJjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbgxYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r126s
-	0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
-	Y2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14
-	v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2
-	WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkE
-	bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7
-	AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wr
-	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
-	0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x
-	07jIPfQUUUUU=
+X-CM-TRANSID:gCh0CgAncIwkjrpowYbQBQ--.23573S17
+X-Coremail-Antispam: 1UD129KBjvJXoW7WFW7Zw1ftw47GrW5Cr4DArb_yoW8Gry7pF
+	1a9rWjgrW5JrnFka12ga1fKF1kta90qFy5JrWxX3ZxAr1Iyr1kKFs7ZryFqFy8C3yFkrWD
+	Gwn7AF15Cws8Z37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
+	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
+	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
+	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
+	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
+	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
+	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
+	AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
+	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
+	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF
+	7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
+	v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuY
+	vjxUI-eODUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
@@ -101,36 +101,47 @@ Unify bio split code, prepare to fix reordered split IO.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md-linear.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ block/blk-crypto-fallback.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/md/md-linear.c b/drivers/md/md-linear.c
-index 59d7963c7843..76f85cc32942 100644
---- a/drivers/md/md-linear.c
-+++ b/drivers/md/md-linear.c
-@@ -256,19 +256,10 @@ static bool linear_make_request(struct mddev *mddev, struct bio *bio)
+diff --git a/block/blk-crypto-fallback.c b/block/blk-crypto-fallback.c
+index 1f9a4c33d2bd..88539e058bf0 100644
+--- a/block/blk-crypto-fallback.c
++++ b/block/blk-crypto-fallback.c
+@@ -18,7 +18,6 @@
+ #include <linux/module.h>
+ #include <linux/random.h>
+ #include <linux/scatterlist.h>
+-#include <trace/events/block.h>
  
- 	if (unlikely(bio_end_sector(bio) > end_sector)) {
- 		/* This bio crosses a device boundary, so we have to split it */
--		struct bio *split = bio_split(bio, end_sector - bio_sector,
--					      GFP_NOIO, &mddev->bio_set);
--
--		if (IS_ERR(split)) {
--			bio->bi_status = errno_to_blk_status(PTR_ERR(split));
--			bio_endio(bio);
-+		bio = bio_submit_split_bioset(bio, end_sector - bio_sector,
-+					      &mddev->bio_set);
+ #include "blk-cgroup.h"
+ #include "blk-crypto-internal.h"
+@@ -223,20 +222,14 @@ static bool blk_crypto_fallback_split_bio_if_needed(struct bio **bio_ptr)
+ 		if (++i == BIO_MAX_VECS)
+ 			break;
+ 	}
+-	if (num_sectors < bio_sectors(bio)) {
+-		struct bio *split_bio;
+ 
+-		split_bio = bio_split(bio, num_sectors, GFP_NOIO,
+-				      &crypto_bio_split);
+-		if (IS_ERR(split_bio)) {
+-			bio->bi_status = BLK_STS_RESOURCE;
++	if (num_sectors < bio_sectors(bio)) {
++		bio = bio_submit_split_bioset(bio, num_sectors,
++					      &crypto_bio_split);
 +		if (!bio)
- 			return true;
+ 			return false;
 -		}
--
--		bio_chain(split, bio);
--		trace_block_split(split, bio->bi_iter.bi_sector);
+ 
+-		bio_chain(split_bio, bio);
+-		trace_block_split(split_bio, bio->bi_iter.bi_sector);
 -		submit_bio_noacct(bio);
--		bio = split;
+-		*bio_ptr = split_bio;
++		*bio_ptr = bio;
  	}
  
- 	md_account_bio(mddev, &bio);
+ 	return true;
 -- 
 2.39.2
 
