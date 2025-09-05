@@ -1,155 +1,166 @@
-Return-Path: <cgroups+bounces-9742-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9743-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5243FB45383
-	for <lists+cgroups@lfdr.de>; Fri,  5 Sep 2025 11:39:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CA0CB45893
+	for <lists+cgroups@lfdr.de>; Fri,  5 Sep 2025 15:18:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5618C172C72
-	for <lists+cgroups@lfdr.de>; Fri,  5 Sep 2025 09:39:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F3731C883E0
+	for <lists+cgroups@lfdr.de>; Fri,  5 Sep 2025 13:18:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2883D286419;
-	Fri,  5 Sep 2025 09:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BBF11D5CC9;
+	Fri,  5 Sep 2025 13:18:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aisle.com header.i=@aisle.com header.b="aaN+h4wA"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n95GwHw7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8019D27602D
-	for <cgroups@vger.kernel.org>; Fri,  5 Sep 2025 09:38:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8461C5D4B;
+	Fri,  5 Sep 2025 13:18:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757065138; cv=none; b=F1gbTY+bP10jZHo7E4ba06EShcswIzO2OcFHuzmNjnyFg7wzWKSMOi8o3lWkkK1X5cZWSNZ4mMfbYby1Ox/NPiHjwBCuUNiX+sWCBDQkEIXch/WVF3nouFi6DogL7qksm1DuclW7CYuK1Q+ImAaE81N8uAyGKbbD+RUVM2Tgo4Y=
+	t=1757078301; cv=none; b=k8NLQd5qTlPj4B/i2GwQ36UGq8XBgN/8B88ByyD/g8Y91pmoJ2tcLjlkMNtWUfogQMjy6bovVXwUnjufO2wWuM17vCMroI307O3ioMGfIXsueYArYWW6GBe6XXyJWmmyLPQYXFIaGC2JAsGs736bXq17NYpkQ0aowK0U25cr83E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757065138; c=relaxed/simple;
-	bh=DQzqJSkZtdf2m9T83N17crffKyn7mU69jfmQVqs9XxU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tU4CfDd5MSRerGeMbjH9+9b69EYPNRNTYCOH7XbRJiPw9rZ9uIS9NdMTTzdWbaGJmjUHL1Q8FpI+b1gb1ACHYCSj0S5AUon3fQ5Pj1oyS3x8liwRHg1iAwVAHcwRs429VQ9XuCIflb62GtS68tLd1Llil6xmvYdXkJUiPQNP1sA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aisle.com; spf=pass smtp.mailfrom=aisle.com; dkim=pass (2048-bit key) header.d=aisle.com header.i=@aisle.com header.b=aaN+h4wA; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aisle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aisle.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-619487c8865so5529755a12.1
-        for <cgroups@vger.kernel.org>; Fri, 05 Sep 2025 02:38:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=aisle.com; s=google; t=1757065135; x=1757669935; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i8Lga1GkOl1oDiE+1dVHrqOvB9vstlkU/NOIqsz7Q7A=;
-        b=aaN+h4wA3465qC28QM+eRTSaoFHeaqr5J2+wDrPvQWbMFgiVrQ4j2Xl3NNrJir6jdo
-         uzn2pUdfqyTKKRAaC0vtJfR7ryLmwkNYJf+cHFLSvRG8+Dq9MCpdfN2wGAK5BoQAbjDI
-         hjAlZ6TaqFDbJRC+Xi/titBmvO1CFV3b1PS9HiuOawloLfQJcwlCOKRNrra7LqWwWokb
-         sIWPmfUkJCO8/Z9kW0zD/KtkZBv9d20Mx1SGfMEQFoQJqzbsTzXPwa7oL/W5WAOVHmL5
-         W3vXMZszXAgjKY7f7FCzvjZLGcR+6nGsWIJH/vekLIJBHnGInswjV+rmkryCdFzMMdx1
-         KIRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757065135; x=1757669935;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i8Lga1GkOl1oDiE+1dVHrqOvB9vstlkU/NOIqsz7Q7A=;
-        b=j8rmFS8s5sHFwOL8Fb2//mFRvcL8PTTde72gigVCVJwFU7IqIf+FXAjl43dvFFNJDL
-         TeRiGJee5mstu2Hb2d8s7wxZ92Ul/obEUPeZa7iaN96ULxr0GCemU+vy17+e7BDvp4E8
-         llfRkm+M4V7xaADPJfYysuN16/7PVHTrPoStoPQSuLwDaIvtRPvKwk+rgytrHX0dt8dp
-         1aDrMmFiJ6V9a98wFk7BCxgiiFHDS6vdCeaysl0sz/g28U9wpTJGUJ1w7M1y1Et0XNhd
-         +S7qhpP72mTkVI1edWoen6tkV9leUE2ndqRT/FU0s0/Jb7M8RfQrfoJBaC0tCdyaKzsg
-         TJ9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUQjY0XGs7c8fW/3W6kMl/haGKbZr7OAy1b5HSRXbcUSGBe6H/M9ZvqimIzsKXmLslSlDHNkM3/@vger.kernel.org
-X-Gm-Message-State: AOJu0YyyVa1YG77DRcSaHdCBUxwEZSDuC8OQXlCnUuuY0rJp/L/U8jLR
-	rk+BDETTnYC9CEkMquKCjuwdvJqN69yJoazZjNtde3nhM6n0tS28eT0S7RbfWRR27dc=
-X-Gm-Gg: ASbGnct6/9fqC/fUPFtk11bWaRRcQBj3BvXzk7MBJ0eYHsrRMi5vH1PR2SmO3pJ/DzM
-	yZ4hZrfaR47UOq/mDPxC8a09Qp2ZgMCJSieS1i5wghqEE5Fc7+v7bKT8FOjceqaIvQ9tl3u1QpX
-	xOXt7Gs1XQe609iypabFrupABDDMgKqOuj4mwhmmlSwti8KFdDEquzhFGfE5dk4yvUtjGfqsJkg
-	xFTTr6CizQWed1DwOz1jrrQV4y/ppWilZQC8rdj00+JbwkNUuj1upppN7Kg/ZMCBPQFp/vm3a4X
-	4A8VHDCuuS+fte2ZHapoRKqmWtyWhMog9f/92BU/3ZmtlI/SJQykY9zB/LzxQc70T2q9aC9ci45
-	KP8Mcbkb17BYmOGuv+RSYQtSs6RPWajbwfHamkyO2oq0Pwto=
-X-Google-Smtp-Source: AGHT+IGybuK6K/kujLTwnL+Fz49sav06Z8CCw7Z9351OYmVQ4LWXK44fzX23p7+KrdEaFzCMcOmACA==
-X-Received: by 2002:a17:906:b24e:b0:afd:eb4f:d5d2 with SMTP id a640c23a62f3a-b04931b6715mr240740366b.31.1757065134805;
-        Fri, 05 Sep 2025 02:38:54 -0700 (PDT)
-Received: from localhost ([149.102.246.23])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b046df9a44dsm561055366b.70.2025.09.05.02.38.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Sep 2025 02:38:54 -0700 (PDT)
-From: Stanislav Fort <stanislav.fort@aisle.com>
-X-Google-Original-From: Stanislav Fort <disclosure@aisle.com>
-To: linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
+	s=arc-20240116; t=1757078301; c=relaxed/simple;
+	bh=HHJV0tl8h7ZJtN1tdfZD7llAJ5LamlTFFDGb/7EvYOQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tFbVjPzouDKOD3A3TIFI7op9b0vDmsSLlc2Pvtmmmjcls8BHQLCxj8AIX5DnBXzVpm8et0cCwWs9YeIRtqCZGEedfS0XB+mHgddS6Uni6lzF2Zp3mbY+8V6oGJvwkwNik6Fg2NMwPAak/0yvUWdGfcadoJhhPS8/+cRRaoPa9oA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n95GwHw7; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1757078300; x=1788614300;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HHJV0tl8h7ZJtN1tdfZD7llAJ5LamlTFFDGb/7EvYOQ=;
+  b=n95GwHw7dhHsnCnLeLNJ8et0N8awdOu+HG/0NAsIVCRxnlD0tCNGkfJw
+   wY2/RqdMOfqc4iYu+ZJrMhMZFJfj+tXzmU4Wg3oM3JgX4qWivOrJiizGg
+   9fVS5nA6ub5tPWIAFKQuGQvws4XnO2AUzgIBYbJStF8l9BPx+9kAIJNJl
+   X4ROIp+tX4KQGdMcceJKm/CVC9NOHqylMAwfYwWcuw3J0beNB7XB36XLX
+   mvsyUmK6AGjtUCXlsm0RjHTJfHE979ifmsOBV/MF8F60YIo/DwCRz1+SB
+   yKxdTaSRKqyo2yabwkObDDxJA+ByyGYy9S2Kv72M1pim7kVKty/2Ud7Cg
+   g==;
+X-CSE-ConnectionGUID: ya0ZOYB2QhqTJhfkghJhyg==
+X-CSE-MsgGUID: yeA+VDk4T+iYvQ1J1bt+2A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="82021616"
+X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
+   d="scan'208";a="82021616"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2025 06:18:19 -0700
+X-CSE-ConnectionGUID: kYszwXuYS2yQlrsxhQccpw==
+X-CSE-MsgGUID: 8dZHDGHwRMCY2zPALp+dTQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,241,1751266800"; 
+   d="scan'208";a="176499606"
+Received: from lkp-server01.sh.intel.com (HELO 114d98da2b6c) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 05 Sep 2025 06:18:17 -0700
+Received: from kbuild by 114d98da2b6c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uuWKV-0000RX-1l;
+	Fri, 05 Sep 2025 13:18:15 +0000
+Date: Fri, 5 Sep 2025 21:17:52 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yi Tao <escape@linux.alibaba.com>, tj@kernel.org, hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	akpm@linux-foundation.org,
-	stable@vger.kernel.org,
-	Stanislav Fort <disclosure@aisle.com>
-Subject: [PATCH] mm/memcg: v1: account event registrations and drop world-writable cgroup.event_control
-Date: Fri,  5 Sep 2025 12:38:51 +0300
-Message-Id: <20250905093851.80596-1-disclosure@aisle.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20250904181248.5527-1-disclosure@aisle.com>
-References: <20250904181248.5527-1-disclosure@aisle.com>
+Subject: Re: [PATCH v2 1/1] cgroup: replace global percpu_rwsem with
+ signal_struct->group_rwsem when writing cgroup.procs/threads
+Message-ID: <202509052150.4GQ04PJn-lkp@intel.com>
+References: <068d58f1f497bc4971c6ac0bae58bf53b98451fd.1756985260.git.escape@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <068d58f1f497bc4971c6ac0bae58bf53b98451fd.1756985260.git.escape@linux.alibaba.com>
 
-Switch __GFP_ACCOUNT to GFP_KERNEL_ACCOUNT as suggested by Roman.
+Hi Yi,
 
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-Signed-off-by: Stanislav Fort <disclosure@aisle.com>
----
- mm/memcontrol-v1.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-index 4b94731305b9..6eed14bff742 100644
---- a/mm/memcontrol-v1.c
-+++ b/mm/memcontrol-v1.c
-@@ -761,7 +761,7 @@ static int __mem_cgroup_usage_register_event(struct mem_cgroup *memcg,
- 	size = thresholds->primary ? thresholds->primary->size + 1 : 1;
- 
- 	/* Allocate memory for new array of thresholds */
--	new = kmalloc(struct_size(new, entries, size), GFP_KERNEL);
-+	new = kmalloc(struct_size(new, entries, size), GFP_KERNEL_ACCOUNT);
- 	if (!new) {
- 		ret = -ENOMEM;
- 		goto unlock;
-@@ -924,7 +924,7 @@ static int mem_cgroup_oom_register_event(struct mem_cgroup *memcg,
- {
- 	struct mem_cgroup_eventfd_list *event;
- 
--	event = kmalloc(sizeof(*event),	GFP_KERNEL);
-+	event = kmalloc(sizeof(*event),	GFP_KERNEL_ACCOUNT);
- 	if (!event)
- 		return -ENOMEM;
- 
-@@ -1087,7 +1087,7 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
- 
- 	CLASS(fd, cfile)(cfd);
- 
--	event = kzalloc(sizeof(*event), GFP_KERNEL);
-+	event = kzalloc(sizeof(*event), GFP_KERNEL_ACCOUNT);
- 	if (!event)
- 		return -ENOMEM;
- 
-@@ -2053,7 +2053,7 @@ struct cftype mem_cgroup_legacy_files[] = {
- 	{
- 		.name = "cgroup.event_control",		/* XXX: for compat */
- 		.write = memcg_write_event_control,
--		.flags = CFTYPE_NO_PREFIX | CFTYPE_WORLD_WRITABLE,
-+		.flags = CFTYPE_NO_PREFIX,
- 	},
- 	{
- 		.name = "swappiness",
+[auto build test ERROR on tj-cgroup/for-next]
+[also build test ERROR on kees/for-next/execve akpm-mm/mm-everything tip/sched/core linus/master v6.17-rc4]
+[cannot apply to next-20250905]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Yi-Tao/cgroup-replace-global-percpu_rwsem-with-signal_struct-group_rwsem-when-writing-cgroup-procs-threads/20250904-194505
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+patch link:    https://lore.kernel.org/r/068d58f1f497bc4971c6ac0bae58bf53b98451fd.1756985260.git.escape%40linux.alibaba.com
+patch subject: [PATCH v2 1/1] cgroup: replace global percpu_rwsem with signal_struct->group_rwsem when writing cgroup.procs/threads
+config: i386-buildonly-randconfig-004-20250905 (https://download.01.org/0day-ci/archive/20250905/202509052150.4GQ04PJn-lkp@intel.com/config)
+compiler: gcc-13 (Debian 13.3.0-16) 13.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250905/202509052150.4GQ04PJn-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202509052150.4GQ04PJn-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   kernel/cgroup/cgroup.c: In function 'cgroup_attach_lock':
+>> kernel/cgroup/cgroup.c:2511:28: error: 'favor_dynmods' undeclared (first use in this function); did you mean 'Opt_favordynmods'?
+    2511 |                 if (tsk && favor_dynmods)
+         |                            ^~~~~~~~~~~~~
+         |                            Opt_favordynmods
+   kernel/cgroup/cgroup.c:2511:28: note: each undeclared identifier is reported only once for each function it appears in
+   kernel/cgroup/cgroup.c: In function 'cgroup_attach_unlock':
+   kernel/cgroup/cgroup.c:2526:28: error: 'favor_dynmods' undeclared (first use in this function); did you mean 'Opt_favordynmods'?
+    2526 |                 if (tsk && favor_dynmods)
+         |                            ^~~~~~~~~~~~~
+         |                            Opt_favordynmods
+
+
+vim +2511 kernel/cgroup/cgroup.c
+
+  2482	
+  2483	/**
+  2484	 * cgroup_attach_lock - Lock for ->attach()
+  2485	 * @tsk: thread group to lock
+  2486	 * @lock_threadgroup: whether to down_write rwsem
+  2487	 *
+  2488	 * cgroup migration sometimes needs to stabilize threadgroups against forks and
+  2489	 * exits by write-locking cgroup_threadgroup_rwsem. However, some ->attach()
+  2490	 * implementations (e.g. cpuset), also need to disable CPU hotplug.
+  2491	 * Unfortunately, letting ->attach() operations acquire cpus_read_lock() can
+  2492	 * lead to deadlocks.
+  2493	 *
+  2494	 * Bringing up a CPU may involve creating and destroying tasks which requires
+  2495	 * read-locking threadgroup_rwsem, so threadgroup_rwsem nests inside
+  2496	 * cpus_read_lock(). If we call an ->attach() which acquires the cpus lock while
+  2497	 * write-locking threadgroup_rwsem, the locking order is reversed and we end up
+  2498	 * waiting for an on-going CPU hotplug operation which in turn is waiting for
+  2499	 * the threadgroup_rwsem to be released to create new tasks. For more details:
+  2500	 *
+  2501	 *   http://lkml.kernel.org/r/20220711174629.uehfmqegcwn2lqzu@wubuntu
+  2502	 *
+  2503	 * Resolve the situation by always acquiring cpus_read_lock() before optionally
+  2504	 * write-locking cgroup_threadgroup_rwsem. This allows ->attach() to assume that
+  2505	 * CPU hotplug is disabled on entry.
+  2506	 */
+  2507	void cgroup_attach_lock(struct task_struct *tsk, bool lock_threadgroup)
+  2508	{
+  2509		cpus_read_lock();
+  2510		if (lock_threadgroup) {
+> 2511			if (tsk && favor_dynmods)
+  2512				down_write(&tsk->signal->group_rwsem);
+  2513			else
+  2514				percpu_down_write(&cgroup_threadgroup_rwsem);
+  2515		}
+  2516	}
+  2517	
+
 -- 
-2.39.3 (Apple Git-146)
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
