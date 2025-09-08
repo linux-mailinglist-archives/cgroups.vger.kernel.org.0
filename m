@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-9782-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9783-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6337EB48873
-	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 11:29:39 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0185DB48877
+	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 11:29:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 477BD1B23F8A
-	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 09:30:00 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B94784E15A8
+	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 09:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521E22F3617;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59F22F60A2;
 	Mon,  8 Sep 2025 09:29:31 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF71C2EB5BF;
-	Mon,  8 Sep 2025 09:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831E32F068E;
+	Mon,  8 Sep 2025 09:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757323771; cv=none; b=IfseIv4Je2DWNc0qfqGZpB9UYeLFpcranyhgdbYIvX9YgWFvROSSk4dLpYwMYc0gsVFOSk3jYMT8VgztVQAh+Hy98/ePxoAj+TNtOHZ3agakWcd4JoihWVcH9aha9lOft8sy0KVtG0p4wuLQLndiifCwoAiimoM3KXGW10SG/0Y=
+	t=1757323771; cv=none; b=aYaSa+saQM3tnol1J4cshzfzhaD6ProxDPLCVLb5W0JZQNUqtNz2Owxk+9lIGdz4cQ8SwkvaJ00HsSsCwgxangd58hPaApzXJL+3IhSt+9AmgR+Yd+nZMNcL6mxmk8rzN4VXuv4rNqvWPcZGZwCcQhhTD6iWZw1txo/v6gb2+0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1757323771; c=relaxed/simple;
-	bh=zcUoMdH7hBNz7MSsR7/dhT0RSHn4wSbUyGgnmqAeiNs=;
+	bh=Syo51umTQhqv1HC0LouVUaYiyrIvpOJaTmFlhLQhDNo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=f7ZbRV6nEpZ/8ZKI4X6r2cbt2bi2sbFjuNyul212MmR8qalVlnYrJCHEmDJAyHj62qgH6hVB4CzlNMdCsQ8/izjw5tfLfMj3XMFM0B5YFhQ4xdChwEnb1WR8TCpxU8W3efgaHlq5lhxrwMvlPTG0i7pe+le3igAu6lSEXuGcxhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=AxiQ8LCv+5OiWtAniDnZ+r3khqIfGQN7oxtYMbb5dzs5aYdF/PyZiG5gZXDGq3ijy7QkVf/DXbfqCN7tYS5EU5Z31Rfd3K9Q6wv6k8bEhRgyl1JfJaLyGKdxpihygMEKDYUAKAcY52QtTI+R+S2vvF0+XFjWuiltQeZXEjofDoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cL1qp4pNVzKHN7F;
-	Mon,  8 Sep 2025 17:29:26 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cL1qr5zwWzYQvYf;
+	Mon,  8 Sep 2025 17:29:28 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id BE88F1A0E98;
-	Mon,  8 Sep 2025 17:29:26 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 565061A174E;
+	Mon,  8 Sep 2025 17:29:27 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgAXYIzzob5oGjMyBw--.46699S5;
-	Mon, 08 Sep 2025 17:29:26 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgAXYIzzob5oGjMyBw--.46699S6;
+	Mon, 08 Sep 2025 17:29:27 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: dlemoal@kernel.org,
 	hare@suse.de,
@@ -54,9 +54,9 @@ Cc: cgroups@vger.kernel.org,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com,
 	johnny.chenyi@huawei.com
-Subject: [PATCH v4 for-6.18/block 1/5] blk-mq-sched: introduce high level elevator lock
-Date: Mon,  8 Sep 2025 17:20:03 +0800
-Message-Id: <20250908092007.3796967-2-yukuai1@huaweicloud.com>
+Subject: [PATCH v4 for-6.18/block 2/5] mq-deadline: switch to use elevator lock
+Date: Mon,  8 Sep 2025 17:20:04 +0800
+Message-Id: <20250908092007.3796967-3-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20250908092007.3796967-1-yukuai1@huaweicloud.com>
 References: <20250908092007.3796967-1-yukuai1@huaweicloud.com>
@@ -67,13 +67,13 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXYIzzob5oGjMyBw--.46699S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw1UJw47Gr1fGr1kCr1kGrg_yoWrGF45pF
-	4rGa98Kw1kXF42gF97A3W3Xw43K34v9r9xZrWxZ3y7tFn7Jr4fW3W8GF1UZF4UZr4fGFsF
-	qr18taykWay7G3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgAXYIzzob5oGjMyBw--.46699S6
+X-Coremail-Antispam: 1UD129KBjvJXoW3XryrGFyfKFWrZFW8ZF18Zrb_yoW3ur48pF
+	W5Ka90yr4rXFsrZF1DJa9rZr4agw4I9342qr93Kw4fKFn7Jr9rW3WjkF10vrs3Jr9rCFsI
+	gF4qga98JF17Jw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUmY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
 	Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
 	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
 	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
@@ -84,119 +84,256 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxXw1UJw47Gr1fGr1kCr1kGrg_yoWrGF45pF
 	kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY
 	6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
 	vEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIev
-	Ja73UjIFyTuYvjfU8XdbUUUUU
+	Ja73UjIFyTuYvjfUOdgAUUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Currently, both mq-deadline and bfq have global spin lock that will be
-grabbed inside elevator methods like dispatch_request, insert_requests,
-and bio_merge. And the global lock is the main reason mq-deadline and
-bfq can't scale very well.
-
-While dispatching request, blk_mq_get_disatpch_budget() and
-blk_mq_get_driver_tag() must be called, and they are not ready to be called
-inside elevator methods, hence introduce a new method like
-dispatch_requests is not possible.
-
-Hence introduce a new high level elevator lock, currently it is protecting
-dispatch_request only. Following patches will convert mq-deadline and bfq
-to use this lock and finally support request batch dispatching by calling
-the method multiple time while holding the lock.
+Replace the internal spinlock 'dd->lock' with the new spinlock in
+elevator_queue, things will keep working the same way as before.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/blk-mq-sched.c |  9 ++++++++-
- block/elevator.c     |  1 +
- block/elevator.h     | 31 +++++++++++++++++++++++++++++--
- 3 files changed, 38 insertions(+), 3 deletions(-)
+ block/mq-deadline.c | 60 ++++++++++++++++++++-------------------------
+ 1 file changed, 27 insertions(+), 33 deletions(-)
 
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index d06bb137a743..6f2b0573a8ff 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -113,7 +113,14 @@ static int __blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
- 		if (budget_token < 0)
- 			break;
+diff --git a/block/mq-deadline.c b/block/mq-deadline.c
+index 2e689b2c4021..2f394571a6ba 100644
+--- a/block/mq-deadline.c
++++ b/block/mq-deadline.c
+@@ -101,7 +101,7 @@ struct deadline_data {
+ 	u32 async_depth;
+ 	int prio_aging_expire;
  
--		rq = e->type->ops.dispatch_request(hctx);
-+		if (blk_queue_sq_sched(q)) {
-+			elevator_dispatch_lock(e);
-+			rq = e->type->ops.dispatch_request(hctx);
-+			elevator_dispatch_unlock(e);
-+		} else {
-+			rq = e->type->ops.dispatch_request(hctx);
-+		}
-+
- 		if (!rq) {
- 			blk_mq_put_dispatch_budget(q, budget_token);
- 			/*
-diff --git a/block/elevator.c b/block/elevator.c
-index e2ebfbf107b3..e132a24f9ce3 100644
---- a/block/elevator.c
-+++ b/block/elevator.c
-@@ -146,6 +146,7 @@ struct elevator_queue *elevator_alloc(struct request_queue *q,
- 	eq->type = e;
- 	kobject_init(&eq->kobj, &elv_ktype);
- 	mutex_init(&eq->sysfs_lock);
-+	spin_lock_init(&eq->lock);
- 	hash_init(eq->hash);
- 	eq->et = et;
- 
-diff --git a/block/elevator.h b/block/elevator.h
-index c4d20155065e..4864add27136 100644
---- a/block/elevator.h
-+++ b/block/elevator.h
-@@ -119,13 +119,13 @@ struct request *elv_rqhash_find(struct request_queue *q, sector_t offset);
- /*
-  * each queue has an elevator_queue associated with it
-  */
--struct elevator_queue
--{
-+struct elevator_queue {
- 	struct elevator_type *type;
- 	struct elevator_tags *et;
- 	void *elevator_data;
- 	struct kobject kobj;
- 	struct mutex sysfs_lock;
-+	spinlock_t lock;
- 	unsigned long flags;
- 	DECLARE_HASHTABLE(hash, ELV_HASH_BITS);
+-	spinlock_t lock;
++	struct elevator_queue *e;
  };
-@@ -133,6 +133,33 @@ struct elevator_queue
- #define ELEVATOR_FLAG_REGISTERED	0
- #define ELEVATOR_FLAG_DYING		1
- #define ELEVATOR_FLAG_ENABLE_WBT_ON_EXIT	2
-+#define ELEVATOR_FLAG_DISPATCH_IRQ	3
-+
-+#define elevator_lock(e)		spin_lock(&(e)->lock)
-+#define elevator_unlock(e)		spin_unlock(&(e)->lock)
-+#define elevator_lock_irq(e)		spin_lock_irq(&(e)->lock)
-+#define elevator_unlock_irq(e)		spin_unlock_irq(&(e)->lock)
-+#define elevator_lock_irqsave(e, flags) \
-+	spin_lock_irqsave(&(e)->lock, flags)
-+#define elevator_unlock_irqrestore(e, flags) \
-+	spin_unlock_irqrestore(&(e)->lock, flags)
-+#define elevator_lock_assert_held(e)	lockdep_assert_held(&(e)->lock)
-+
-+static inline void elevator_dispatch_lock(struct elevator_queue *eq)
-+{
-+	if (test_bit(ELEVATOR_FLAG_DISPATCH_IRQ, &eq->flags))
-+		elevator_lock_irq(eq);
-+	else
-+		elevator_lock(eq);
-+}
-+
-+static inline void elevator_dispatch_unlock(struct elevator_queue *eq)
-+{
-+	if (test_bit(ELEVATOR_FLAG_DISPATCH_IRQ, &eq->flags))
-+		elevator_unlock_irq(eq);
-+	else
-+		elevator_unlock(eq);
-+}
  
- /*
-  * block elevator interface
+ /* Maps an I/O priority class to a deadline scheduler priority. */
+@@ -213,7 +213,7 @@ static void dd_merged_requests(struct request_queue *q, struct request *req,
+ 	const u8 ioprio_class = dd_rq_ioclass(next);
+ 	const enum dd_prio prio = ioprio_class_to_prio[ioprio_class];
+ 
+-	lockdep_assert_held(&dd->lock);
++	elevator_lock_assert_held(dd->e);
+ 
+ 	dd->per_prio[prio].stats.merged++;
+ 
+@@ -253,7 +253,7 @@ static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
+ {
+ 	const struct io_stats_per_prio *stats = &dd->per_prio[prio].stats;
+ 
+-	lockdep_assert_held(&dd->lock);
++	elevator_lock_assert_held(dd->e);
+ 
+ 	return stats->inserted - atomic_read(&stats->completed);
+ }
+@@ -323,7 +323,7 @@ static struct request *__dd_dispatch_request(struct deadline_data *dd,
+ 	enum dd_prio prio;
+ 	u8 ioprio_class;
+ 
+-	lockdep_assert_held(&dd->lock);
++	elevator_lock_assert_held(dd->e);
+ 
+ 	if (!list_empty(&per_prio->dispatch)) {
+ 		rq = list_first_entry(&per_prio->dispatch, struct request,
+@@ -434,7 +434,7 @@ static struct request *dd_dispatch_prio_aged_requests(struct deadline_data *dd,
+ 	enum dd_prio prio;
+ 	int prio_cnt;
+ 
+-	lockdep_assert_held(&dd->lock);
++	elevator_lock_assert_held(dd->e);
+ 
+ 	prio_cnt = !!dd_queued(dd, DD_RT_PRIO) + !!dd_queued(dd, DD_BE_PRIO) +
+ 		   !!dd_queued(dd, DD_IDLE_PRIO);
+@@ -466,10 +466,9 @@ static struct request *dd_dispatch_request(struct blk_mq_hw_ctx *hctx)
+ 	struct request *rq;
+ 	enum dd_prio prio;
+ 
+-	spin_lock(&dd->lock);
+ 	rq = dd_dispatch_prio_aged_requests(dd, now);
+ 	if (rq)
+-		goto unlock;
++		return rq;
+ 
+ 	/*
+ 	 * Next, dispatch requests in priority order. Ignore lower priority
+@@ -481,9 +480,6 @@ static struct request *dd_dispatch_request(struct blk_mq_hw_ctx *hctx)
+ 			break;
+ 	}
+ 
+-unlock:
+-	spin_unlock(&dd->lock);
+-
+ 	return rq;
+ }
+ 
+@@ -528,9 +524,9 @@ static void dd_exit_sched(struct elevator_queue *e)
+ 		WARN_ON_ONCE(!list_empty(&per_prio->fifo_list[DD_READ]));
+ 		WARN_ON_ONCE(!list_empty(&per_prio->fifo_list[DD_WRITE]));
+ 
+-		spin_lock(&dd->lock);
++		elevator_lock(e);
+ 		queued = dd_queued(dd, prio);
+-		spin_unlock(&dd->lock);
++		elevator_unlock(e);
+ 
+ 		WARN_ONCE(queued != 0,
+ 			  "statistics for priority %d: i %u m %u d %u c %u\n",
+@@ -571,7 +567,7 @@ static int dd_init_sched(struct request_queue *q, struct elevator_queue *eq)
+ 	dd->last_dir = DD_WRITE;
+ 	dd->fifo_batch = fifo_batch;
+ 	dd->prio_aging_expire = prio_aging_expire;
+-	spin_lock_init(&dd->lock);
++	dd->e = eq;
+ 
+ 	/* We dispatch from request queue wide instead of hw queue */
+ 	blk_queue_flag_set(QUEUE_FLAG_SQ_SCHED, q);
+@@ -620,13 +616,12 @@ static int dd_request_merge(struct request_queue *q, struct request **rq,
+ static bool dd_bio_merge(struct request_queue *q, struct bio *bio,
+ 		unsigned int nr_segs)
+ {
+-	struct deadline_data *dd = q->elevator->elevator_data;
+ 	struct request *free = NULL;
+ 	bool ret;
+ 
+-	spin_lock(&dd->lock);
++	elevator_lock(q->elevator);
+ 	ret = blk_mq_sched_try_merge(q, bio, nr_segs, &free);
+-	spin_unlock(&dd->lock);
++	elevator_unlock(q->elevator);
+ 
+ 	if (free)
+ 		blk_mq_free_request(free);
+@@ -648,7 +643,7 @@ static void dd_insert_request(struct blk_mq_hw_ctx *hctx, struct request *rq,
+ 	struct dd_per_prio *per_prio;
+ 	enum dd_prio prio;
+ 
+-	lockdep_assert_held(&dd->lock);
++	elevator_lock_assert_held(dd->e);
+ 
+ 	prio = ioprio_class_to_prio[ioprio_class];
+ 	per_prio = &dd->per_prio[prio];
+@@ -689,10 +684,9 @@ static void dd_insert_requests(struct blk_mq_hw_ctx *hctx,
+ 			       blk_insert_t flags)
+ {
+ 	struct request_queue *q = hctx->queue;
+-	struct deadline_data *dd = q->elevator->elevator_data;
+ 	LIST_HEAD(free);
+ 
+-	spin_lock(&dd->lock);
++	elevator_lock(q->elevator);
+ 	while (!list_empty(list)) {
+ 		struct request *rq;
+ 
+@@ -700,7 +694,7 @@ static void dd_insert_requests(struct blk_mq_hw_ctx *hctx,
+ 		list_del_init(&rq->queuelist);
+ 		dd_insert_request(hctx, rq, flags, &free);
+ 	}
+-	spin_unlock(&dd->lock);
++	elevator_unlock(q->elevator);
+ 
+ 	blk_mq_free_requests(&free);
+ }
+@@ -816,13 +810,13 @@ static const struct elv_fs_entry deadline_attrs[] = {
+ #define DEADLINE_DEBUGFS_DDIR_ATTRS(prio, data_dir, name)		\
+ static void *deadline_##name##_fifo_start(struct seq_file *m,		\
+ 					  loff_t *pos)			\
+-	__acquires(&dd->lock)						\
++	__acquires(&dd->e->lock)					\
+ {									\
+ 	struct request_queue *q = m->private;				\
+ 	struct deadline_data *dd = q->elevator->elevator_data;		\
+ 	struct dd_per_prio *per_prio = &dd->per_prio[prio];		\
+ 									\
+-	spin_lock(&dd->lock);						\
++	elevator_lock(dd->e);						\
+ 	return seq_list_start(&per_prio->fifo_list[data_dir], *pos);	\
+ }									\
+ 									\
+@@ -837,12 +831,12 @@ static void *deadline_##name##_fifo_next(struct seq_file *m, void *v,	\
+ }									\
+ 									\
+ static void deadline_##name##_fifo_stop(struct seq_file *m, void *v)	\
+-	__releases(&dd->lock)						\
++	__releases(&d->e->lock)						\
+ {									\
+ 	struct request_queue *q = m->private;				\
+ 	struct deadline_data *dd = q->elevator->elevator_data;		\
+ 									\
+-	spin_unlock(&dd->lock);						\
++	elevator_unlock(dd->e);						\
+ }									\
+ 									\
+ static const struct seq_operations deadline_##name##_fifo_seq_ops = {	\
+@@ -908,11 +902,11 @@ static int dd_queued_show(void *data, struct seq_file *m)
+ 	struct deadline_data *dd = q->elevator->elevator_data;
+ 	u32 rt, be, idle;
+ 
+-	spin_lock(&dd->lock);
++	elevator_lock(dd->e);
+ 	rt = dd_queued(dd, DD_RT_PRIO);
+ 	be = dd_queued(dd, DD_BE_PRIO);
+ 	idle = dd_queued(dd, DD_IDLE_PRIO);
+-	spin_unlock(&dd->lock);
++	elevator_unlock(dd->e);
+ 
+ 	seq_printf(m, "%u %u %u\n", rt, be, idle);
+ 
+@@ -924,7 +918,7 @@ static u32 dd_owned_by_driver(struct deadline_data *dd, enum dd_prio prio)
+ {
+ 	const struct io_stats_per_prio *stats = &dd->per_prio[prio].stats;
+ 
+-	lockdep_assert_held(&dd->lock);
++	elevator_lock_assert_held(dd->e);
+ 
+ 	return stats->dispatched + stats->merged -
+ 		atomic_read(&stats->completed);
+@@ -936,11 +930,11 @@ static int dd_owned_by_driver_show(void *data, struct seq_file *m)
+ 	struct deadline_data *dd = q->elevator->elevator_data;
+ 	u32 rt, be, idle;
+ 
+-	spin_lock(&dd->lock);
++	elevator_lock(dd->e);
+ 	rt = dd_owned_by_driver(dd, DD_RT_PRIO);
+ 	be = dd_owned_by_driver(dd, DD_BE_PRIO);
+ 	idle = dd_owned_by_driver(dd, DD_IDLE_PRIO);
+-	spin_unlock(&dd->lock);
++	elevator_unlock(dd->e);
+ 
+ 	seq_printf(m, "%u %u %u\n", rt, be, idle);
+ 
+@@ -950,13 +944,13 @@ static int dd_owned_by_driver_show(void *data, struct seq_file *m)
+ #define DEADLINE_DISPATCH_ATTR(prio)					\
+ static void *deadline_dispatch##prio##_start(struct seq_file *m,	\
+ 					     loff_t *pos)		\
+-	__acquires(&dd->lock)						\
++	__acquires(&dd->e->lock)					\
+ {									\
+ 	struct request_queue *q = m->private;				\
+ 	struct deadline_data *dd = q->elevator->elevator_data;		\
+ 	struct dd_per_prio *per_prio = &dd->per_prio[prio];		\
+ 									\
+-	spin_lock(&dd->lock);						\
++	elevator_lock(dd->e);						\
+ 	return seq_list_start(&per_prio->dispatch, *pos);		\
+ }									\
+ 									\
+@@ -971,12 +965,12 @@ static void *deadline_dispatch##prio##_next(struct seq_file *m,		\
+ }									\
+ 									\
+ static void deadline_dispatch##prio##_stop(struct seq_file *m, void *v)	\
+-	__releases(&dd->lock)						\
++	__releases(&dd->e->lock)					\
+ {									\
+ 	struct request_queue *q = m->private;				\
+ 	struct deadline_data *dd = q->elevator->elevator_data;		\
+ 									\
+-	spin_unlock(&dd->lock);						\
++	elevator_unlock(dd->e);						\
+ }									\
+ 									\
+ static const struct seq_operations deadline_dispatch##prio##_seq_ops = { \
 -- 
 2.39.2
 
