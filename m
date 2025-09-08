@@ -1,265 +1,222 @@
-Return-Path: <cgroups+bounces-9785-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9780-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D97BB4887B
-	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 11:30:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5685B48869
+	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 11:28:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C01017FBAF
-	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 09:30:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE15A1750E7
+	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 09:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DAC02F7AD6;
-	Mon,  8 Sep 2025 09:29:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9D252F5485;
+	Mon,  8 Sep 2025 09:28:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Z3qiOu/N"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 004262F069C;
-	Mon,  8 Sep 2025 09:29:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6A72F60A7
+	for <cgroups@vger.kernel.org>; Mon,  8 Sep 2025 09:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757323773; cv=none; b=iVHIXENXwQZzjZlyIqrfsal/jeolw28BKlydwIpPlrNhbDJfXVpCFcJQWrNsfO3QSX/wnYVzaz4mg8sc+j0TTT6tzTq0CyqblIrlVnqIUNpJya55WwvtypP7XZEIxCIm+ZR75O6+/cekt38XSv0jWaT45W7u+/ZsuHmh9XiDko8=
+	t=1757323708; cv=none; b=EXIGW1htwSFxMrbn5FWfidpMl4+nlTrYa3bwrIBAfCoSQgXbFldawWa6lWt/+8gA55x0Z4SscqjY57kFfJmnvYtmQJ8lsTC5ts7EbzG/iOt9RKgjCQOJXZosvGqitmP1vVnw3WS/DOO6HKjo7trTqIykG/YhWDmtix1hD6z8/S0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757323773; c=relaxed/simple;
-	bh=WPz79VF6Fr9zr+SPrvDTdY9SUdYOoerXVi6P+YlD9ms=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PNXpYkyDabvD32ngjFdwsq/gw3hJ4pykPhgrAKpCzgXbHGAB9qi8yBLle4jN0dA05mK+LwUIf9MLIUn0MIlHdpVc3+EU6iW8PUcyvXr6+EwP0EwUGV7JfLr0EoaeVrTYQkXX5vkTIl0Jha2hzqO/NHMnqsfuEYYnUuqbXWnz+gE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cL1qt4JcGzYQvZ6;
-	Mon,  8 Sep 2025 17:29:30 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 1BFC31A174E;
-	Mon,  8 Sep 2025 17:29:29 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgAXYIzzob5oGjMyBw--.46699S9;
-	Mon, 08 Sep 2025 17:29:28 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: dlemoal@kernel.org,
-	hare@suse.de,
-	bvanassche@acm.org,
-	ming.lei@redhat.com,
-	tj@kernel.org,
-	josef@toxicpanda.com,
-	axboe@kernel.dk,
-	yukuai3@huawei.com
-Cc: cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
+	s=arc-20240116; t=1757323708; c=relaxed/simple;
+	bh=TBVEeAm7Jtahmfw3TwXLAhZmf3DGQa3stylZWm+XYAw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LlKTxXDcDLygZySuzfIpNbZwzDYiXrD7X3dU+Krmt1ztLe8PdmEw1qNZNnvKalK34br+d2U4790o/kCNLYv7iZ0PoKwKtYFKAhr8eHazlysr+pVR42LBN1pVseI1OeUoZBOePS0izyGSn6qyEikpu9UMcKsvMuD5/Kg85jgWiyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Z3qiOu/N; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-45cb5e1adf7so33854535e9.0
+        for <cgroups@vger.kernel.org>; Mon, 08 Sep 2025 02:28:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1757323702; x=1757928502; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oULmcJMXha8v5gh2i1FU5HOTdqs6IUKbO31Sh0Sihfo=;
+        b=Z3qiOu/N5JLeCGJ1KArDUResn2Ooekd2eNrUjiBarf5GOd5FCc0lNZfL9+2w0PXXbw
+         SD/FqDX+a16g8ikki+1Ditu/8uB5GK8shol2pJY+23k9q2VpUH0V5yacstCgGQQxcUYx
+         7FHIk2G//Ku9nBRKZw/1ZnOmPen/jJvOxaBMYRNhxWYPViZu2ehEd7SBzt0qZq/9tppH
+         uzcTa0DWYbVYvZ3NLmfOV99WpEg1m9fQN5iPwCfDpEaZOsz8w0E08hwl+mEcJ1rLQDPS
+         ObJFaqbwEGHa+BxmOfs9DLYbGEN9cT0pD9ifsXGiEg4pUyLAfIP3CL7S0b5B1H5iqwqj
+         mYvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757323702; x=1757928502;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oULmcJMXha8v5gh2i1FU5HOTdqs6IUKbO31Sh0Sihfo=;
+        b=s2gU8a0iRccJgvjaqdDAuczP/ubCVkce6PeaRRq9pEUoFP0Xraa33rSb1WVd2ru9Lx
+         ft2lk19T9iHsY6syLI3DwozW4fjdqnmz+OC7WByxbiHkhCEzfUTvUgY8Q1Gc5VQJj3OB
+         NeX2UoMUOM06fDlKV02/8w/QVOVj0caHkXrE6YqgXLyZ02O6h3irhZ132eMkxgYW+cd1
+         BVsjrS6tMD3DeAjnPF2vL8bZeUBFlY60ax9J2TcIoY988dOxeE5/ozWPhTHckMs+iV08
+         p+ZxK+Bp+yRvxHPA6Ug3va8+ZTfmcbHm/4gAiW9E6S4uQphLMSeLr/eAk+oWzJ5Ys+F1
+         LaXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUTnUdT8QdBggfHjtRk4Gbr4zs6DiJcb0/GoCDrFNTcFQftdWCLKD8rjIDxo6JFUWw/Q4ANy9Aq@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGBDouATtU4Sq8tFBXXrg4b52RQ3Ufh7ysfod7vi6grLM9l09X
+	uwkOwPefvCQDyDb36Bez+8IMyaOgblKTe9k2McYLUatA+gtBXp6oSblOqat/51MDYt4=
+X-Gm-Gg: ASbGnctsezQlrfKD/sKQVmcUjKlSZHq7wam0e2DV7q/eFArh6PhyHiOkL47KPMccgwf
+	DC9BS18FqhVgKllzLfA2eGaLWrSj1QA96esokqreWZUvnjC71z73KAcHhEWy+KUkvhj2i+JjHKX
+	z1s2O/COqIm6oC4SMk414ebYmPaNrdaOuYg9P9nXI/fEUcMiYO8qRThrO+PeLNbhE4l0WwEVt84
+	zrI2qQ9IrXTq4S5jIZwbvBkmKQx+tE3Nw4wHW/VJbziroZlO02oKOO/RtSCssVhZ4ruGPRZEKBD
+	sMZ602K6RrPnG4QLs0qHNwHilyiHdLTWDV0qOdVt4k2IfrHNV7vCcwG/hM43uJDZkc7l+c4rfMY
+	IPx7TB2BO+eXbvkAvr8C3wDMEQoszdA==
+X-Google-Smtp-Source: AGHT+IGGMokDFkj82R0pk4Z/rqNX/HhpeR5ehoF8XM4OAGAn6N/D/anNfAR0B0g0zuYN0L4mk8/Jeg==
+X-Received: by 2002:a05:6000:4404:b0:3e6:a8ba:7422 with SMTP id ffacd0b85a97d-3e6a8ba779cmr2767890f8f.10.1757323702096;
+        Mon, 08 Sep 2025 02:28:22 -0700 (PDT)
+Received: from localhost (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3cf33fba9fbsm40887135f8f.50.2025.09.08.02.28.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Sep 2025 02:28:21 -0700 (PDT)
+Date: Mon, 8 Sep 2025 11:28:20 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Peilin Ye <yepeilin@google.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+	linux-mm@kvack.org, cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com,
-	johnny.chenyi@huawei.com
-Subject: [PATCH v4 for-6.18/block 5/5] blk-mq-sched: support request batch dispatching for sq elevator
-Date: Mon,  8 Sep 2025 17:20:07 +0800
-Message-Id: <20250908092007.3796967-6-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20250908092007.3796967-1-yukuai1@huaweicloud.com>
-References: <20250908092007.3796967-1-yukuai1@huaweicloud.com>
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH] memcg: skip cgroup_file_notify if spinning is not allowed
+Message-ID: <aL6htMt-jHAaCGLv@tiehlicka>
+References: <20250905201606.66198-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXYIzzob5oGjMyBw--.46699S9
-X-Coremail-Antispam: 1UD129KBjvJXoWxWFWkXFyfCF1kuF15XFy7Wrg_yoWrAF4kpF
-	48Ja1YyrW0qasFqF93Cw47Jw15Aw4xuF9rGryfKr43tan7XrsxAr1rJFyUZF4xAr4fCFsr
-	ur4DWrykW3WIq37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUma14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
-	CI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsG
-	vfC2KfnxnUUI43ZEXa7VUbPC7UUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250905201606.66198-1-shakeel.butt@linux.dev>
 
-From: Yu Kuai <yukuai3@huawei.com>
+On Fri 05-09-25 13:16:06, Shakeel Butt wrote:
+> Generally memcg charging is allowed from all the contexts including NMI
+> where even spinning on spinlock can cause locking issues. However one
+> call chain was missed during the addition of memcg charging from any
+> context support. That is try_charge_memcg() -> memcg_memory_event() ->
+> cgroup_file_notify().
+> 
+> The possible function call tree under cgroup_file_notify() can acquire
+> many different spin locks in spinning mode. Some of them are
+> cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let's
+> just skip cgroup_file_notify() from memcg charging if the context does
+> not allow spinning.
+> 
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-For dispatch_request method, current behavior is dispatching one request at
-a time. In the case of multiple dispatching contexts, This behavior, on the
-one hand, introduce intense lock contention:
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-t1:                     t2:                     t3:
-lock                    lock                    lock
-// grab lock
-ops.dispatch_request
-unlock
-                        // grab lock
-                        ops.dispatch_request
-                        unlock
-                                                // grab lock
-                                                ops.dispatch_request
-                                                unlock
+> ---
+>  include/linux/memcontrol.h | 23 ++++++++++++++++-------
+>  mm/memcontrol.c            |  7 ++++---
+>  2 files changed, 20 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 9dc5b52672a6..054fa34c936a 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -993,22 +993,25 @@ static inline void count_memcg_event_mm(struct mm_struct *mm,
+>  	count_memcg_events_mm(mm, idx, 1);
+>  }
+>  
+> -static inline void memcg_memory_event(struct mem_cgroup *memcg,
+> -				      enum memcg_memory_event event)
+> +static inline void __memcg_memory_event(struct mem_cgroup *memcg,
+> +					enum memcg_memory_event event,
+> +					bool allow_spinning)
+>  {
+>  	bool swap_event = event == MEMCG_SWAP_HIGH || event == MEMCG_SWAP_MAX ||
+>  			  event == MEMCG_SWAP_FAIL;
+>  
+>  	atomic_long_inc(&memcg->memory_events_local[event]);
 
-on the other hand, messing up the requests dispatching order:
-t1:
+Doesn't this involve locking on 32b? I guess we do not care all that
+much but we might want to bail out early on those arches for
+!allow_spinning
 
-lock
-rq1 = ops.dispatch_request
-unlock
-                        t2:
-                        lock
-                        rq2 = ops.dispatch_request
-                        unlock
+> -	if (!swap_event)
+> +	if (!swap_event && allow_spinning)
+>  		cgroup_file_notify(&memcg->events_local_file);
+>  
+>  	do {
+>  		atomic_long_inc(&memcg->memory_events[event]);
+> -		if (swap_event)
+> -			cgroup_file_notify(&memcg->swap_events_file);
+> -		else
+> -			cgroup_file_notify(&memcg->events_file);
+> +		if (allow_spinning) {
+> +			if (swap_event)
+> +				cgroup_file_notify(&memcg->swap_events_file);
+> +			else
+> +				cgroup_file_notify(&memcg->events_file);
+> +		}
+>  
+>  		if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>  			break;
+> @@ -1018,6 +1021,12 @@ static inline void memcg_memory_event(struct mem_cgroup *memcg,
+>  		 !mem_cgroup_is_root(memcg));
+>  }
+>  
+> +static inline void memcg_memory_event(struct mem_cgroup *memcg,
+> +				      enum memcg_memory_event event)
+> +{
+> +	__memcg_memory_event(memcg, event, true);
+> +}
+> +
+>  static inline void memcg_memory_event_mm(struct mm_struct *mm,
+>  					 enum memcg_memory_event event)
+>  {
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 257d2c76b730..dd5cd9d352f3 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2306,12 +2306,13 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	bool drained = false;
+>  	bool raised_max_event = false;
+>  	unsigned long pflags;
+> +	bool allow_spinning = gfpflags_allow_spinning(gfp_mask);
+>  
+>  retry:
+>  	if (consume_stock(memcg, nr_pages))
+>  		return 0;
+>  
+> -	if (!gfpflags_allow_spinning(gfp_mask))
+> +	if (!allow_spinning)
+>  		/* Avoid the refill and flush of the older stock */
+>  		batch = nr_pages;
+>  
+> @@ -2347,7 +2348,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	if (!gfpflags_allow_blocking(gfp_mask))
+>  		goto nomem;
+>  
+> -	memcg_memory_event(mem_over_limit, MEMCG_MAX);
+> +	__memcg_memory_event(mem_over_limit, MEMCG_MAX, allow_spinning);
+>  	raised_max_event = true;
+>  
+>  	psi_memstall_enter(&pflags);
+> @@ -2414,7 +2415,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	 * a MEMCG_MAX event.
+>  	 */
+>  	if (!raised_max_event)
+> -		memcg_memory_event(mem_over_limit, MEMCG_MAX);
+> +		__memcg_memory_event(mem_over_limit, MEMCG_MAX, allow_spinning);
+>  
+>  	/*
+>  	 * The allocation either can't fail or will lead to more memory
+> -- 
+> 2.47.3
+> 
 
-lock
-rq3 = ops.dispatch_request
-unlock
-
-                        lock
-                        rq4 = ops.dispatch_request
-                        unlock
-
-//rq1,rq3 issue to disk
-                        // rq2, rq4 issue to disk
-
-In this case, the elevator dispatch order is rq 1-2-3-4, however,
-such order in disk is rq 1-3-2-4, the order for rq2 and rq3 is inversed.
-
-Fix those problems by introducing elevator_dispatch_requests(), this
-helper will grab the lock and dispatch a batch of requests while holding
-the lock.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-mq-sched.c | 65 +++++++++++++++++++++++++++++++++++++++++---
- block/blk-mq.h       | 18 ++++++++++++
- 2 files changed, 79 insertions(+), 4 deletions(-)
-
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index e6305b680db9..3809ad880d49 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -192,6 +192,59 @@ static int blk_mq_finish_dispatch(struct sched_dispatch_ctx *ctx)
- 	return !!dispatched;
- }
- 
-+static void blk_mq_dispatch_requests(struct sched_dispatch_ctx *ctx)
-+{
-+	struct request_queue *q = ctx->hctx->queue;
-+	struct elevator_queue *e = q->elevator;
-+	bool has_get_budget = q->mq_ops->get_budget != NULL;
-+	int budget_token[BUDGET_TOKEN_BATCH];
-+	int count = q->nr_requests;
-+	int i;
-+
-+	while (true) {
-+		if (!blk_mq_should_dispatch(ctx))
-+			return;
-+
-+		if (has_get_budget) {
-+			count = blk_mq_get_dispatch_budgets(q, budget_token);
-+			if (count <= 0)
-+				return;
-+		}
-+
-+		elevator_dispatch_lock(e);
-+		for (i = 0; i < count; ++i) {
-+			struct request *rq =
-+				e->type->ops.dispatch_request(ctx->hctx);
-+
-+			if (!rq) {
-+				ctx->run_queue = true;
-+				goto err_free_budgets;
-+			}
-+
-+			if (has_get_budget)
-+				blk_mq_set_rq_budget_token(rq, budget_token[i]);
-+
-+			list_add_tail(&rq->queuelist, &ctx->rq_list);
-+			ctx->count++;
-+
-+			if (rq->mq_hctx != ctx->hctx)
-+				ctx->multi_hctxs = true;
-+
-+			if (!blk_mq_get_driver_tag(rq)) {
-+				i++;
-+				goto err_free_budgets;
-+			}
-+		}
-+		elevator_dispatch_unlock(e);
-+	}
-+
-+err_free_budgets:
-+	elevator_dispatch_unlock(e);
-+	if (has_get_budget)
-+		for (; i < count; ++i)
-+			blk_mq_put_dispatch_budget(q, budget_token[i]);
-+}
-+
- /*
-  * Only SCSI implements .get_budget and .put_budget, and SCSI restarts
-  * its queue by itself in its completion handler, so we don't need to
-@@ -212,10 +265,14 @@ static int __blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
- 	else
- 		max_dispatch = hctx->queue->nr_requests;
- 
--	do {
--		if (!blk_mq_dispatch_one_request(&ctx))
--			break;
--	} while (ctx.count < max_dispatch);
-+	if (!hctx->dispatch_busy && blk_queue_sq_sched(hctx->queue)) {
-+		blk_mq_dispatch_requests(&ctx);
-+	} else {
-+		do {
-+			if (!blk_mq_dispatch_one_request(&ctx))
-+				break;
-+		} while (ctx.count < max_dispatch);
-+	}
- 
- 	return blk_mq_finish_dispatch(&ctx);
- }
-diff --git a/block/blk-mq.h b/block/blk-mq.h
-index af09eb617d11..1f35f9ec146d 100644
---- a/block/blk-mq.h
-+++ b/block/blk-mq.h
-@@ -38,6 +38,7 @@ enum {
- };
- 
- #define BLK_MQ_CPU_WORK_BATCH	(8)
-+#define BUDGET_TOKEN_BATCH	(8)
- 
- typedef unsigned int __bitwise blk_insert_t;
- #define BLK_MQ_INSERT_AT_HEAD		((__force blk_insert_t)0x01)
-@@ -274,6 +275,23 @@ static inline int blk_mq_get_dispatch_budget(struct request_queue *q)
- 	return 0;
- }
- 
-+static inline int blk_mq_get_dispatch_budgets(struct request_queue *q,
-+					      int *budget_token)
-+{
-+	int count = 0;
-+
-+	while (count < BUDGET_TOKEN_BATCH) {
-+		int token = q->mq_ops->get_budget(q);
-+
-+		if (token < 0)
-+			return count;
-+
-+		budget_token[count++] = token;
-+	}
-+
-+	return count;
-+}
-+
- static inline void blk_mq_set_rq_budget_token(struct request *rq, int token)
- {
- 	if (token < 0)
 -- 
-2.39.2
-
+Michal Hocko
+SUSE Labs
 
