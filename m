@@ -1,233 +1,145 @@
-Return-Path: <cgroups+bounces-9790-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9791-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42F96B494B8
-	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 18:06:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39FCAB4969E
+	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 19:11:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7A0D3B6D96
-	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 16:06:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C6AF1735BB
+	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 17:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C8630CD80;
-	Mon,  8 Sep 2025 16:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446263126C5;
+	Mon,  8 Sep 2025 17:11:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q9wrbha1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eg/yNx3D"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E967304984;
-	Mon,  8 Sep 2025 16:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657063112BA;
+	Mon,  8 Sep 2025 17:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757347556; cv=none; b=eTjaStHk+jTEhkb2EERNcIFo1wnrtynyRXuh8CWUregiDCjztpidjGudQZg3ovmSiABbnCYNgQLiEjkkF+jM5mYd9q3+SFFI0jGWiOG2I/JbbAXnITG0S06AMQ7/kapnrZU4vWFwf8TqR1ZwETq0jYAP9mOtBYGSSDtd1FArF/s=
+	t=1757351504; cv=none; b=dGgFEVWyJik3+YP5T69xFUJmVG6Z0Vttdhawn2lNRFqV/oHpJmPhZ4sVZppag8nSyGNriCr+V4sE5jN7gDkNmiulQ8MoMgqomFolnibncG6+kdRo/NPsxcbkIzQ4+XUXBQxbIJazRxRbk5nD1Ph5jcplPnKniPZF2+oPj4/O6nQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757347556; c=relaxed/simple;
-	bh=hpILFfysjeYEDcHilwuj7p/UZiawleN33Wn6w0LETXo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UO4+qP4DvsUwbJDEz3/Bxeilvb828wvgfE3G1S+V5WezhYlNa+wbVsONNz4F7xOBkBL5G42pBGUEtW6oY3ed3Pqo18Mtd5+zVlDG6DqF83Y6J1XwbzFdTE8reBCOCaL91g5kKmlvhh64/XzplCqXXzPlrVWJ1g4eNr5aOP3Ap1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q9wrbha1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EE85C4CEF5;
-	Mon,  8 Sep 2025 16:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757347554;
-	bh=hpILFfysjeYEDcHilwuj7p/UZiawleN33Wn6w0LETXo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q9wrbha1B8v9uUGXqB3iKAIAJ8hE596IOt90yijhIYEV+vlAPyBsk7NqwfWW40uBg
-	 +/IAI9mzkBvdKqpf81F0xqjOAi0JLbHTW6k29OC5WosuHQndkOMM3EJW9CLCutMN2Z
-	 rQXclchifmgPX5Lyq1hposeYer//phdqTLE5HU6m2fl206M9WUz85Id2NPpVHt1I0X
-	 UYksb4p04bWT9QCsPMFFi2jyxZx9GVVMYz4YDg3gI2DeFewI6g28zbkTb203I+UHeV
-	 1P2oUmH2kHJWLeUv0CVjv6k2o4xLNIKJwFNwIDMIFpfmud2reEeN4n0I0VfQkDVS+P
-	 3q9TI6wsgiB5g==
-Date: Mon, 8 Sep 2025 06:05:53 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yi Tao <escape@linux.alibaba.com>
-Cc: hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] cgroup: replace global percpu_rwsem with per
- threadgroup resem when writing to cgroup.procs
-Message-ID: <aL7-4XQxeFKtFWlq@slm.duckdns.org>
-References: <f460f494245710c5b6649d6cc7e68b3a28a0a000.1756896828.git.escape@linux.alibaba.com>
- <cover.1757326641.git.escape@linux.alibaba.com>
- <c202b463e176ef128c806e0040107ea16a101143.1757326641.git.escape@linux.alibaba.com>
+	s=arc-20240116; t=1757351504; c=relaxed/simple;
+	bh=nc/qUGfo82fdUqUDWPiQzP0//A1I8DqE1JSdgWBo+Bs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=at9nACvES3MhqqY77wXCR0nWuf6zE/hv9wfNK4srWVhmNN0RtPpjunYItu39cdNkZI0Dq+TwHUu/pnyK3BJVIK0yci5LcLRPV1YdknKVqUP9XhE/TFLMPl/xmqvNghHtk/zEr+lR99jdJDJlrqjRWGUEzD/D53brk5u/gd/l9m0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eg/yNx3D; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3e34dbc38easo1902652f8f.1;
+        Mon, 08 Sep 2025 10:11:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757351501; x=1757956301; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I1/Xo26IpLOmm9VGHwt34+har9g1uHoZGkWPqsB7phg=;
+        b=eg/yNx3DCHdSa+OPAbsEjN2oWBdyoLILBrsh/oZGbbrl5guGLUFsux/o2wC4eBAsc5
+         mAR1+Yr7qxmm6E2NMrmW/C9urwg7FN+wMNAP/H+5KmJACbmwNSKl3THwVM9xBOkid8yj
+         0EuFi37o6VMjNu+gxPVGUaW7XxaS0WEya0XYoMscs5XGGw3YbUddAD/GZfoV6H4ucEWR
+         RDO9f2jtayQEcuQn2aP0RKSWUg3JiB5agYsfRoWLOM30oh07OAImq60ipnlSdXJ4k2Z8
+         91qiEQLlSk5HZpwn+IWSENvfJFn8yC9bPVeSRCZ/oyFMWvgN1g/L3NXncFy7LGAvpIGt
+         V4IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757351501; x=1757956301;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I1/Xo26IpLOmm9VGHwt34+har9g1uHoZGkWPqsB7phg=;
+        b=w6BXq5DibsesDAL/zpaM3VVNJN/mgZxXs24lXT2nU7jVfatZNJ/kpaaTKWMaRATcbB
+         PHEpn149NsjslYJDLMgmPPy99vu6z9i4ecIrlrTNVy6W9afyvLzVLA6ydtITV1XL76a2
+         faRI0EjuZ6kPZGHm4B4tVz72dA9E0k8KrT8J7Q+FM+aMNSEfahUL6dhvi/vFFeDHCMHn
+         vrXkjFlFYzKwTwQGUqcdxO1BNaY8zMuy0kKs26Ma6eEd6jtLlmOgHQk5oQnSfnTXxNWf
+         grb92imbbIFpPrWe+e/HijPsRYShK7D8sd14yBW4BIhFgJHS753qHUQIjEC+HMOJHXsy
+         kXZg==
+X-Forwarded-Encrypted: i=1; AJvYcCURLVc3IMiTQuCa3bPtpo/kIANcqhbemQG0HzDlGZ7KT8v9mH3pzEe54PcgV7JxW02iRtQ=@vger.kernel.org, AJvYcCW6y44gKzcXY1fVNUUi9/0Cfnjaern1BtyGX9P7L3i3LouXyrz4TzOoEA7XLWLc+rxQh7C+Dvwnjw==@vger.kernel.org, AJvYcCWug+UHAXtKqIJx5LH9v8XrvlUeIJgAy4BaW5tU6xJHdTdHDVzKSQO52bL21Vm1vHtsPamirfhIcZpZ+hbT@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJx/8wQO/FunyiSSJNcEdBGKXmKKIUq+5J8lNCppkgnwKHNgJE
+	OwwmQ1+QJM8MQYehr+x8Uj+EORwTS5JYHcgs/E4rddyoPdWDDRCwySK65QBhTLUFol9k8BLAwmo
+	wUwYD3LFh0xCeimLqqryAMttUOfgVmRE=
+X-Gm-Gg: ASbGnct5q0yBcP1KrNscCCW2zXTtokgao8k7k8uJEc+DEsUHV+W6EB+MYSph2Qvs9Pr
+	jygQGGU8Y4Joy+A2s3mFF7vWNF/5Yx5xmM8Sg2/ElOIPvhwhUIdWbPsKESFlcHEtqCV1rxF5eKN
+	6Z7ewKREEgY5WcI3Dei8Ea2SdeMgponexPE99z9oRAdmuq4D1UfmZ53qwNLV9i3H+5gSJg3p6rN
+	U2/E3QQkmtwzb9XGqJfEVmBO2O6yLMnxv0d
+X-Google-Smtp-Source: AGHT+IHLSc9z9t6zrJNIia9iqmvjLGG9Y3cJVAfc2BnuuchdOalrLs4aZRfsDiiM6JS6UgJelkC0rFMQMh3PO0dNIHE=
+X-Received: by 2002:a05:6000:3113:b0:3dc:1a8c:e878 with SMTP id
+ ffacd0b85a97d-3e642cad4b3mr6110427f8f.18.1757351500438; Mon, 08 Sep 2025
+ 10:11:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c202b463e176ef128c806e0040107ea16a101143.1757326641.git.escape@linux.alibaba.com>
+References: <20250905201606.66198-1-shakeel.butt@linux.dev>
+ <aLtMrlSDP7M5GZ27@google.com> <aL6dBivokIeBApj8@tiehlicka>
+In-Reply-To: <aL6dBivokIeBApj8@tiehlicka>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 8 Sep 2025 10:11:29 -0700
+X-Gm-Features: AS18NWCPGMAuKGdXbwS4CiI7NiTNAFh-3hy8_bYRFu2qhn-yMLQ9ZTr5pJnwwvw
+Message-ID: <CAADnVQLtc+OOQ67AS_1+u-sRmO+bDLWJrrihASXMrDNnvrmNSw@mail.gmail.com>
+Subject: Re: [PATCH] memcg: skip cgroup_file_notify if spinning is not allowed
+To: Michal Hocko <mhocko@suse.com>
+Cc: Peilin Ye <yepeilin@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Meta kernel team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Mon, Sep 8, 2025 at 2:08=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Fri 05-09-25 20:48:46, Peilin Ye wrote:
+> > On Fri, Sep 05, 2025 at 01:16:06PM -0700, Shakeel Butt wrote:
+> > > Generally memcg charging is allowed from all the contexts including N=
+MI
+> > > where even spinning on spinlock can cause locking issues. However one
+> > > call chain was missed during the addition of memcg charging from any
+> > > context support. That is try_charge_memcg() -> memcg_memory_event() -=
+>
+> > > cgroup_file_notify().
+> > >
+> > > The possible function call tree under cgroup_file_notify() can acquir=
+e
+> > > many different spin locks in spinning mode. Some of them are
+> > > cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, le=
+t's
+> > > just skip cgroup_file_notify() from memcg charging if the context doe=
+s
+> > > not allow spinning.
+> > >
+> > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> >
+> > Tested-by: Peilin Ye <yepeilin@google.com>
+> >
+> > The repro described in [1] no longer triggers locking issues after
+> > applying this patch and making __bpf_async_init() use __GFP_HIGH
+> > instead of GFP_ATOMIC:
+> >
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -1275,7 +1275,7 @@ static int __bpf_async_init(struct bpf_async_kern=
+ *async, struct bpf_map *map, u
+> >         }
+> >
+> >         /* allocate hrtimer via map_kmalloc to use memcg accounting */
+> > -       cb =3D bpf_map_kmalloc_node(map, size, GFP_ATOMIC, map->numa_no=
+de);
+> > +       cb =3D bpf_map_kmalloc_node(map, size, __GFP_HIGH, map->numa_no=
+de);
+>
+> Why do you need to consume memory reserves? Shouldn't kmalloc_nolock be
+> used instead here?
 
-On Mon, Sep 08, 2025 at 06:20:27PM +0800, Yi Tao wrote:
-...
-> The static usage pattern of creating a cgroup, enabling controllers,
-> and then seeding it with CLONE_INTO_CGROUP doesn't require write
-> locking cgroup_threadgroup_rwsem and thus doesn't benefit from this
-> patch.
-
-Please bring this to the top, note that this is the default mode of
-operation and the mechanism being introduced is thus an optional one.
-
-> @@ -88,7 +88,8 @@ enum {
->  	/*
->  	 * Reduce latencies on dynamic cgroup modifications such as task
->  	 * migrations and controller on/offs by disabling percpu operation on
-> -	 * cgroup_threadgroup_rwsem. This makes hot path operations such as
-> +	 * cgroup_threadgroup_rwsem and taking per threadgroup rwsem when
-> +	 * writing to cgroup.procs. This makes hot path operations such as
->  	 * forks and exits into the slow path and more expensive.
-
-This comment is pointed to from all other places. Please expand on why
-per-threadgroup rwsem is beneficial for what use cases.
-
->  	 * The static usage pattern of creating a cgroup, enabling controllers,
-> @@ -828,16 +829,21 @@ struct cgroup_of_peak {
->  	struct list_head	list;
->  };
->  
-> +extern int take_per_threadgroup_rwsem;
-
-I think it needs cgroup in its name. Maybe something like
-cgroup_enable_per_threadgroup_rwsem?
-
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 312c6a8b55bb..8650ec394d0c 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -1298,18 +1298,29 @@ struct cgroup_root *cgroup_root_from_kf(struct kernfs_root *kf_root)
->  	return root_cgrp->root;
->  }
->  
-> +int take_per_threadgroup_rwsem;
-
-Please put it where other global variables are and also note what it does
-and that writes protected by cgroup_mutex and write-lock of
-cgroup_threadgroup_rwsem and thus reads are protected by either.
-
->  void cgroup_favor_dynmods(struct cgroup_root *root, bool favor)
->  {
->  	bool favoring = root->flags & CGRP_ROOT_FAVOR_DYNMODS;
->  
-> -	/* see the comment above CGRP_ROOT_FAVOR_DYNMODS definition */
-> +	/*
-> +	 * see the comment above CGRP_ROOT_FAVOR_DYNMODS definition.
-> +	 * favordynmods can flip while task is between
-> +	 * cgroup_threadgroup_change_begin and cgroup_threadgroup_change_end,
-> +	 * so down_write global cgroup_threadgroup_rwsem to synchronize them.
-
-Maybe: take_per_threadgroup_rwsem must not be flipped while threads are
-between cgroup_threadgroup_change_begin and cgroup_threadgroup_change_end.
-down_write global group_threadgroup_rwsem to exclude them.
-
-But does this actually work? It works for turning it on. I don't think it'd
-work for turning it off, right? Maybe make it enable only and trigger a
-warning message when people try to turn it off?
-
-> +	 */
-> +	percpu_down_write(&cgroup_threadgroup_rwsem);
->  	if (favor && !favoring) {
-> +		take_per_threadgroup_rwsem++;
-
-Given that favoring is gating the switch, this can be a bool, right?
-
->  		rcu_sync_enter(&cgroup_threadgroup_rwsem.rss);
->  		root->flags |= CGRP_ROOT_FAVOR_DYNMODS;
->  	} else if (!favor && favoring) {
-> +		take_per_threadgroup_rwsem--;
-
-And here, you can trigger a warning that per_threadgroup opreation can't be
-disabled once enabled instead of actually turning it off.
-
-Another alternative would be using a task flag to track whether %current is
-holding per_threadgroup_rwsem and then using that to decide whether to
-unlock. Maybe that's cleaner but I don't think it really matters here.
-
-..
-> + * When favordynmods is enabled, take per threadgroup rwsem to reduce latencies
-> + * on dynamic cgroup modifications. see the comment above
-> + * CGRP_ROOT_FAVOR_DYNMODS definition.
-
-This is more about scalability, right? Maybe just say overhead?
-
-> @@ -2976,24 +3003,13 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
->  	if (kstrtoint(strstrip(buf), 0, &pid) || pid < 0)
->  		return ERR_PTR(-EINVAL);
->  
-> -	/*
-> -	 * If we migrate a single thread, we don't care about threadgroup
-> -	 * stability. If the thread is `current`, it won't exit(2) under our
-> -	 * hands or change PID through exec(2). We exclude
-> -	 * cgroup_update_dfl_csses and other cgroup_{proc,thread}s_write
-> -	 * callers by cgroup_mutex.
-> -	 * Therefore, we can skip the global lock.
-> -	 */
-> -	lockdep_assert_held(&cgroup_mutex);
-> -	*threadgroup_locked = pid || threadgroup;
-> -	cgroup_attach_lock(*threadgroup_locked);
-> -
-> +retry_find_task:
->  	rcu_read_lock();
->  	if (pid) {
->  		tsk = find_task_by_vpid(pid);
->  		if (!tsk) {
->  			tsk = ERR_PTR(-ESRCH);
-> -			goto out_unlock_threadgroup;
-> +			goto out_unlock_rcu;
->  		}
->  	} else {
->  		tsk = current;
-> @@ -3010,15 +3026,42 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
->  	 */
->  	if (tsk->no_cgroup_migration || (tsk->flags & PF_NO_SETAFFINITY)) {
->  		tsk = ERR_PTR(-EINVAL);
-> -		goto out_unlock_threadgroup;
-> +		goto out_unlock_rcu;
->  	}
-> -
->  	get_task_struct(tsk);
-> -	goto out_unlock_rcu;
->  
-> -out_unlock_threadgroup:
-> -	cgroup_attach_unlock(*threadgroup_locked);
-> -	*threadgroup_locked = false;
-> +	rcu_read_unlock();
-> +
-> +	/*
-> +	 * If we migrate a single thread, we don't care about threadgroup
-> +	 * stability. If the thread is `current`, it won't exit(2) under our
-> +	 * hands or change PID through exec(2). We exclude
-> +	 * cgroup_update_dfl_csses and other cgroup_{proc,thread}s_write
-> +	 * callers by cgroup_mutex.
-> +	 * Therefore, we can skip the global lock.
-> +	 */
-> +	lockdep_assert_held(&cgroup_mutex);
-> +	*threadgroup_locked = pid || threadgroup;
-> +
-> +	cgroup_attach_lock(*threadgroup_locked, tsk);
-> +
-> +	if (threadgroup) {
-> +		if (!thread_group_leader(tsk)) {
-> +			/*
-> +			 * a race with de_thread from another thread's exec()
-> +			 * may strip us of our leadership, if this happens,
-> +			 * there is no choice but to throw this task away and
-> +			 * try again; this is
-> +			 * "double-double-toil-and-trouble-check locking".
-> +			 */
-> +			cgroup_attach_unlock(*threadgroup_locked, tsk);
-> +			put_task_struct(tsk);
-> +			goto retry_find_task;
-
-This is subtle. Can you please separate this out to a spearate patch?
-
-Thanks.
-
--- 
-tejun
+Yes. That's a plan. We'll convert most of bpf allocations to kmalloc_nolock=
+()
+when it lands.
 
