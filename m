@@ -1,117 +1,148 @@
-Return-Path: <cgroups+bounces-9778-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9779-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D839BB4821B
-	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 03:32:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15628B487D3
+	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 11:08:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B7303C06A2
-	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 01:32:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CE2D1B22574
+	for <lists+cgroups@lfdr.de>; Mon,  8 Sep 2025 09:09:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B711C54AF;
-	Mon,  8 Sep 2025 01:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0399F2EFD96;
+	Mon,  8 Sep 2025 09:08:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HgOXjDJw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8A12110;
-	Mon,  8 Sep 2025 01:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29FF02AE97
+	for <cgroups@vger.kernel.org>; Mon,  8 Sep 2025 09:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757295139; cv=none; b=eoompHCGv5T88MEfbQVsyt061iqt2AAgHYf+/cxqDKFtkJikAIAAoydc6aOoauSmgixfZSVjqye11r9IdhwS32DLpDOjfLCMRztQlywaXLmYSiAn4EyTUyiqccCiS9Kvm9mjQJRr2/ofOJlRKlc4W1W5oStGU31GHKJlm9puSnQ=
+	t=1757322508; cv=none; b=tNCAvUy81EdTIaekGz1W+DRSYJs2E2jyjOMSbL8Zj3i5YulBGbHEPELpoVENpRMqzGYN6elHAsOOonH9YV53qONpp3UysjM5cC9IXFetm5T0LXVYFg7zXDPspeEiktTrKTJQCN3nsYeiwvnktzwj+/gXizoBF4uUwNUeqpD3/tY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757295139; c=relaxed/simple;
-	bh=+eV1jTgxKlUFpHs6zB7ttmfep+nMsmqrdkfdLOJl5jM=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=bZg6Qv3YL8moIvrCBpa0P1pJYAqZ39dNycC0dI7UFNxhTajydVS7vwWY739qUTyjyXTSfvO6bYqWHEILgoOG/Xxo6SNF9rV0UWVI7sM0lZkO4CH7c2PXVxlSSQkIL7X0F27vqB97W3mdGgX6wIqmvhhGCoWAEMjQ/e767NU/Tkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cKqFD4KN2zYQtsW;
-	Mon,  8 Sep 2025 09:32:16 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 193D71A1AE9;
-	Mon,  8 Sep 2025 09:32:15 +0800 (CST)
-Received: from [10.174.179.143] (unknown [10.174.179.143])
-	by APP4 (Coremail) with SMTP id gCh0CgAncY0aMr5ome0LBw--.54766S3;
-	Mon, 08 Sep 2025 09:32:12 +0800 (CST)
-Subject: Re: [PATCH for-6.18/block 02/16] block: initialize bio issue time in
- blk_mq_submit_bio()
-To: Yu Kuai <hailan@yukuai.org.cn>, kernel test robot <lkp@intel.com>,
- Yu Kuai <yukuai1@huaweicloud.com>, hch@infradead.org, colyli@kernel.org,
- hare@suse.de, dlemoal@kernel.org, tieren@fnnas.com, bvanassche@acm.org,
- axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com, song@kernel.org,
- satyat@google.com, ebiggers@google.com, kmo@daterainc.com,
- akpm@linux-foundation.org, neil@brown.name
-Cc: oe-kbuild-all@lists.linux.dev, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- johnny.chenyi@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20250905070643.2533483-3-yukuai1@huaweicloud.com>
- <202509062332.tqE0Bc8k-lkp@intel.com>
- <9c763646-f320-4975-ae19-2a40607757b1@yukuai.org.cn>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <adb6b29c-ad24-0377-c5f3-17868f3e3116@huaweicloud.com>
-Date: Mon, 8 Sep 2025 09:32:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+	s=arc-20240116; t=1757322508; c=relaxed/simple;
+	bh=p3axqcSjIgpt/G/0E6xuXsP7YLEdi6L+lrwMOhDGpls=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RKDDi/UPOqmBRfnpWEzdTWPwOP5NYwCnktoWBaRrQi4PN+REIrXS42gprrO50/HQ7TvCNrGwhEd9ls5qu4IprV54TeTO1ZTIcS5WoopgN22HLdFpuUGueFi3FJDjWztuOK6FtxIED2Y4dKpvTbkCyyZ/hguI17hFWXXkZtypr7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HgOXjDJw; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-45de6415102so6664805e9.1
+        for <cgroups@vger.kernel.org>; Mon, 08 Sep 2025 02:08:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1757322504; x=1757927304; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CXAkEc+0hbVrwg0zBjiBl7uCpRmywegXjmBSprSMPqA=;
+        b=HgOXjDJwmTc0jGXmEcPxlfACKwwcKHGqBNKQcdISagRZLy/X/SjzHwNekqKKT5puOb
+         JEQ+bqGQgdECfbckkg5ZAmX623kd5u8dGbH9wcRa92e17O+OSXS6WjAgJxjxaY0TpmSc
+         4ateAliliTpTZdV2QjiB+Mh2AvXVpMOVgTx1AE7V0dCIeSwGUww4cwro/EXOLD00s9C0
+         D04EsAq97/z9L7C+KA3v9ZnhzAWg2K3D0CSCZOhLsJguABWVEBhyBSP+zoNAH3tVvmXn
+         3HUguXB1XL2IVqJ81BDuYLXdr4/Da7UkCyRFOI5UWHHDA+IzzFGxlA1YOobSHItVTjWl
+         XXHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757322504; x=1757927304;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CXAkEc+0hbVrwg0zBjiBl7uCpRmywegXjmBSprSMPqA=;
+        b=Fy+kYKZL1rFAyOgV49REUUqhjs+KVmp9cBS+UxO1UF3lSffJcepJ4txSElibjUsgVV
+         SvgkuD/C6bKwdDylBiHBAVAxeWIrEce8SAWwDDQ/cVOHCfNnXgE159NPG9bHKGVY7crm
+         w/NTGvnwnazXAElRDPYm9k2960G6+OUC56rSwv/jn2FkNeTDcsEnZjE0RDMLqriSdwFA
+         /FTfNDMV/V4WkVfoy+++LqAmzfCi1jvjBrA7+irBuqlMN4PiVoE372EsoSs/9aeOFCCE
+         p2UdjX1Mb+DdxoRypfrzSwqIfqJ5JSTDQiSnr0iFQh9qSv17EfKsy3zIHAW96kF7f8KA
+         G6lA==
+X-Forwarded-Encrypted: i=1; AJvYcCVbjWno9Tp/8DwuQne5I124A7ErLbAMQYPK0kSJLKBOhvjaentPsDN6p1gscphEYnXRig4m0GbO@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOrw/R/8IFNFZQVHWmZYz46WPkkdU0IR72BKRgMp3ycGg2hfCJ
+	pqvMw86dCk7hIJ97GfvUDS57mx/GcVI1ADSw3Aw8YSE3HXEuUE24nxGvPM2gmz9uFIY=
+X-Gm-Gg: ASbGncvFChHI+MikgO/JSc5Yo/76z24f84l8q/qn7MkvYNDLmi4DXnsdQXNG6z7avJ2
+	4/KARHKA5gOsl7G6GMS3OktIzVs4doEPU+o7udaDoSpXIitAlzUDaYXqqLiE+ffsZqS/zVv4Jtp
+	Bq/h2TJ5iXMIyskVjYqr9kqhwC1EhDGvCnn43fS5kXKpsHfkY/rKlevvPfaV1xc1H6iDJHPxYet
+	PTzZpSoDTCwIDhUM9yRkdxekGFGGysYFy+fz3/wq6XzFEFdyAQyVrAAO3D2TCEvpd4dMjPv+bZ8
+	erHjBAxLcZJUlKm4zPaDyMqC28tSAs9QDyL3Pi8lTDPDOa0SqsuOTiD92opy5kMmAyhC+PYRl5o
+	V+YoehZKSiQQiIw1umkiSu3upweKhmw==
+X-Google-Smtp-Source: AGHT+IGjCdAP8Med5Uz3zM88YDI+0dw+kFhTAhqv2XIHSPraXCW8PtiZpKcSe5HEkCIs8k4Yh+M7Rg==
+X-Received: by 2002:a05:600c:3586:b0:45d:d13f:6061 with SMTP id 5b1f17b1804b1-45dddec89e6mr70135545e9.30.1757322504380;
+        Mon, 08 Sep 2025 02:08:24 -0700 (PDT)
+Received: from localhost (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45b8f2d3c88sm300994075e9.19.2025.09.08.02.08.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Sep 2025 02:08:23 -0700 (PDT)
+Date: Mon, 8 Sep 2025 11:08:22 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Peilin Ye <yepeilin@google.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+	linux-mm@kvack.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH] memcg: skip cgroup_file_notify if spinning is not allowed
+Message-ID: <aL6dBivokIeBApj8@tiehlicka>
+References: <20250905201606.66198-1-shakeel.butt@linux.dev>
+ <aLtMrlSDP7M5GZ27@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <9c763646-f320-4975-ae19-2a40607757b1@yukuai.org.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAncY0aMr5ome0LBw--.54766S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jw1fGFy7XrWxJw45ur1UGFg_yoWfGrgEgr
-	WjvwnrWFy8Jw4kJF4Du3sIvrZ7Kw1ktFyF9345AF12g3Z5Xr98uFZ5Gr9aqw1kCw48Za1U
-	CF4DXFZxXF43AjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbfAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7V
-	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRRwID5UUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aLtMrlSDP7M5GZ27@google.com>
 
-Hi,
-
-在 2025/09/07 15:57, Yu Kuai 写道:
->> If you fix the issue in a separate patch/commit (i.e. not just a new 
->> version of
->> the same patch/commit), kindly add following tags
->> | Reported-by: kernel test robot <lkp@intel.com>
->> | Closes: 
->> https://lore.kernel.org/oe-kbuild-all/202509062332.tqE0Bc8k-lkp@intel.com/ 
->>
->>
->> All errors (new ones prefixed by >>):
->>
->>     block/blk-mq.c: In function 'blk_mq_submit_bio':
->>>> block/blk-mq.c:3171:12: error: 'struct bio' has no member named 
->>>> 'issue_time_ns'
->>      3171 |         bio->issue_time_ns = blk_time_get_ns();
+On Fri 05-09-25 20:48:46, Peilin Ye wrote:
+> On Fri, Sep 05, 2025 at 01:16:06PM -0700, Shakeel Butt wrote:
+> > Generally memcg charging is allowed from all the contexts including NMI
+> > where even spinning on spinlock can cause locking issues. However one
+> > call chain was missed during the addition of memcg charging from any
+> > context support. That is try_charge_memcg() -> memcg_memory_event() ->
+> > cgroup_file_notify().
+> > 
+> > The possible function call tree under cgroup_file_notify() can acquire
+> > many different spin locks in spinning mode. Some of them are
+> > cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let's
+> > just skip cgroup_file_notify() from memcg charging if the context does
+> > not allow spinning.
+> > 
+> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 > 
-> This should be included inside BLK_CGROUP config, sorry about this.
+> Tested-by: Peilin Ye <yepeilin@google.com>
 > 
+> The repro described in [1] no longer triggers locking issues after
+> applying this patch and making __bpf_async_init() use __GFP_HIGH
+> instead of GFP_ATOMIC:
+> 
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1275,7 +1275,7 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
+>         }
+> 
+>         /* allocate hrtimer via map_kmalloc to use memcg accounting */
+> -       cb = bpf_map_kmalloc_node(map, size, GFP_ATOMIC, map->numa_node);
+> +       cb = bpf_map_kmalloc_node(map, size, __GFP_HIGH, map->numa_node);
 
-I should keep the blkcg_bio_issue_init() and call it here. I'll wait for
-sometime and let people revice other patches before I send a new
-version.
+Why do you need to consume memory reserves? Shouldn't kmalloc_nolock be
+used instead here?
 
-Thanks,
-Kuai
+>         if (!cb) {
+>                 ret = -ENOMEM;
+>                 goto out;
+> 
+> [1] https://lore.kernel.org/bpf/20250905061919.439648-1-yepeilin@google.com/#t
+> 
+> Thanks,
+> Peilin Ye
 
+-- 
+Michal Hocko
+SUSE Labs
 
