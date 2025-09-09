@@ -1,108 +1,220 @@
-Return-Path: <cgroups+bounces-9833-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9834-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B528B50188
-	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 17:38:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A15DB50195
+	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 17:39:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D34C7BD77A
-	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 15:32:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFA533BA679
+	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 15:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1200436C090;
-	Tue,  9 Sep 2025 15:28:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7D2322DB4;
+	Tue,  9 Sep 2025 15:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="WnE546bA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZeNwSRUy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02EBA3680BF
-	for <cgroups@vger.kernel.org>; Tue,  9 Sep 2025 15:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E8A22DCF6B
+	for <cgroups@vger.kernel.org>; Tue,  9 Sep 2025 15:38:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757431697; cv=none; b=QH+HU+05DVNdwsdh+ykCg3xOEkIb2Ri+FRhzjiDqLoYsVi14EDKSy4k20VtIM/wWWJT5Zyam8Wcx9bCn4jGfmtz4VWcDEDu5UtUyWgdAG3oQoQYwN7gxRx+1ga4GbjPr4dBJ0oSxPj3XEjIqmlxQ3MXv/qyoBdIJt8TFxIksdaI=
+	t=1757432324; cv=none; b=Tq6r8a/y0KkmQdRE8ukqst4pORLWTkFz3kCCy/M5mt4BkOmSPiyXtiRktAM4ME+eeqBZ2EbTqp4d0Y4ece/3bMmKXXmKCXrcCMhwQLd/PoN5n0W7oJutODPVkmv4KvSmreTKpbClQPxNFAn9lhi3+zdgQwAU8ppILLqE7vP+yMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757431697; c=relaxed/simple;
-	bh=zdmMTS66pDXSVVeEoILIIh+RFkwTTy3dD9US6WLNHvI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iicBK8msw9yqIo6JzAk806sVyHbCjrsXl6A8tWx83XAnfTVArW8JpeuEIoYhZfBiSnVwfXoecKbLkIaBYGSLTFfH2j6y3MlgSJhVrwkMgqL7WGjM6/96A7xpBrwDa2GjP9cWNB11tcmbEG63EBvqimN5rx4o11PcedDfDDRL/DM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=WnE546bA; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3feb74a1f4eso16399545ab.0
-        for <cgroups@vger.kernel.org>; Tue, 09 Sep 2025 08:28:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1757431695; x=1758036495; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jN1Kj7K7CkcC2gypxZGow6Wd+LfV+1NytZv39KYFilg=;
-        b=WnE546bAGlo5G+8fg8jwTZo4lmsOMgNuGpIiLHtxNJ8GJ7O3Po14xHWH77y80XNtmG
-         TjyfjohcywWIVVHmy70qFv2w4685MgZSg4ec/xc39NOAtoAxWSPJW4CGL6F+V+G7Gvaf
-         Uf0d+Lv2fg2cqeIdD+0ln3wa0nCHnoZiImMzinbEyh7DIzvILb7/oHvq7mTtEnBPSVxK
-         xH7m4MlU06X1aUwaV1vcjgokNNf8wScfBjQzp50AwKwqMk/SSowjDIa9N+t4o/00JiJl
-         W/kIGX4EKBUjQktsif9voUWtpzY5ruvCxLcJM/H7Sfs12ReWECAitqF9zdhiixW5xgGp
-         xPCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757431695; x=1758036495;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jN1Kj7K7CkcC2gypxZGow6Wd+LfV+1NytZv39KYFilg=;
-        b=BkoasGTK5VW2th4aDss3FquD3E+r1kX/qDoG8M+NxBNKkIbouCV8UeQOjOOm2DaZ1l
-         SL0ByV1WHCquoqh0iYetOmwwcZ1vKHLROX974ms+I5AOz3K2pRBN4c34i26BYMqxs4/W
-         zunWdv1cZNO/UJOhxaVvxd+8G3t7RFXjdNQpQ8mWH7lTSt6/GR6jkm/ftn2AAEgBbo6n
-         GuJ3IqmfFnOQ5QL+6OrY2aseycw3fTt3u73j7B0ZfrZoaXlSZXktp11Q+l5zGWlJ3I5v
-         Du8D3BWqon1obulmMKjYsKEXp9ZJmdpqxU0ymuLMRz/XYZHAYZuOfnahyarF6aJl6FGf
-         n5yw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5qbuUKB37Jqjfz3bVtZ0wgmhgrTLFz6h6em/uwnbbvOPWFJdH1xYLBlfAsWvpfwku1e34/f9n@vger.kernel.org
-X-Gm-Message-State: AOJu0YzoUU1htBf2OmGvs2KFsTGlbTXR1xKxhnOCojFjn4HKDNtAhSvE
-	b79lhHHCwPkk1V+vRrmpBgomYwE7wYZXkc/6+vRY7lQV+uFpDsuQKu5bHKrGSn0dSmU=
-X-Gm-Gg: ASbGnctsIk83NuRYDXxZxVo9mX5zQyvZ3bNL8BkY8yLFuzoGmFp7E0Jf9LG5Qjx92tl
-	n/ehZgYKkxY3H7hXMIpXNX2Tz5hvh0dUKfA+35a1ombGX640J1KRaffQlL7p/cE3bWkIL2GWDPZ
-	0l938NBIM6qQUsrapEToMJ7q/r88e+aCvn0NQFOWnPTWOG47rlLNqjjBaHkOYYP8RzEEYI9SvCC
-	/m/t9hZyR7xXNsc7lVw/qz+6Cr+INpRNjMSupo+D1E7toIV7QjRqG7x7T9NiauULndIRnZ9y1sz
-	Z+USXTVjTIISKfmZE+l9unqG83iAYkbNC3hPn4osOrDNJjH0akHEZ6u0f2fC3b7DbLpQTN25orq
-	ZEdo68gE+xFfMoFOt34ODvxToQjENWRc7RbN6SEvS
-X-Google-Smtp-Source: AGHT+IHxQYn//P6OlMBv4Hjw7zsJ7Uk1Uew3KWJj5QRX2MyObcGnhrIGAx1/Aj6Ur5T/j8o5uW59sg==
-X-Received: by 2002:a05:6e02:1d99:b0:3f6:5e25:a5cc with SMTP id e9e14a558f8ab-3fd87781510mr141362695ab.23.1757431694832;
-        Tue, 09 Sep 2025 08:28:14 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-5103baa86e9sm5847043173.9.2025.09.09.08.28.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Sep 2025 08:28:14 -0700 (PDT)
-Message-ID: <165f4091-c6c9-40f7-9b41-e89bfdd948cf@kernel.dk>
-Date: Tue, 9 Sep 2025 09:28:12 -0600
+	s=arc-20240116; t=1757432324; c=relaxed/simple;
+	bh=H59vSg6yqfeTagI2KSz0Mh1AfpBoCyroWytvOOs3WK4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Xo8qoFxLtzY87AL8Mnf0s/TD5bUVTIQawzlwOvKXeU2r2GIyfvucAqn891lKfMdh4wViB0it0mxPyyxSU2EPsF0uILhjPeupi8Qdr/H+fksq8sg9vGsjbtI4JCHrlgZwnnWgLLvlYt3ajtT8T6xQkFRy8/IhTz5mtV+E7m4dhhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZeNwSRUy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0C46C4CEF4
+	for <cgroups@vger.kernel.org>; Tue,  9 Sep 2025 15:38:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757432323;
+	bh=H59vSg6yqfeTagI2KSz0Mh1AfpBoCyroWytvOOs3WK4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ZeNwSRUyi9tF9LsPemQ+0THBknwkv8YOxgR7tleEpBzdPsaACKTvX3/TSLmqwVPZc
+	 doSr+a62KpXTOE9kA7z+bvAKQhaKOLVunEewU68i/MsfvHrd8jiPBITcEMe3yzLiar
+	 Fyk6jdXPZN4F53RViFM96NMa0toe0bXjYRB3mFSxc9+eAYeYqrQCoXV7Xzrjf2XNC+
+	 Bk4bCla7U31Bo5+5/+7QM6Mx64S84FvK/MJmIp1BvkyGnPSBC8Xu48UOeC9fIpag+D
+	 xH9p8aP3hdMIdtQo5yr0AmEfdycPmwjE6sue7UgdQoU/Ary3CGUs3g+TbVL3upndGB
+	 /BZvGTDGSKU1Q==
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-408c236c500so508335ab.1
+        for <cgroups@vger.kernel.org>; Tue, 09 Sep 2025 08:38:43 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUFcLEV1EO/aOP76AdKqde/2bQdhSZ3DoBTNRhF6Ukyg7MVxe6k/MkZ4V6MYX9EKSIHXk5uamUi@vger.kernel.org
+X-Gm-Message-State: AOJu0YzMDgNNqZ8CW0R1+JRsRZqdk7bNXnYFd3yIsRE3BBJZnFvK0Qwu
+	x+M/omkBtf2HjXSHbZg1uzfrprZ5gi40EPLruTOQvRDyGbPloCEnZWz5B15gCilFZ4dX+jmjW4c
+	Lr1fm+VFPn/uMcS9U0lBJZmcIiRTKv4XjfJGOj94y
+X-Google-Smtp-Source: AGHT+IGBqVO3oKD8XjGxL3juBwWFjRrPmj4mgsVkHCfdV6oZc06DcMQABIJXslbc8xt54PHxByce6Tv2wQ2REfxHIBc=
+X-Received: by 2002:a05:6e02:219a:b0:40b:590b:7d98 with SMTP id
+ e9e14a558f8ab-40b590b7e67mr11544725ab.8.1757432322295; Tue, 09 Sep 2025
+ 08:38:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH for-6.18/block 00/16] block: fix reordered IO in the case
- recursive split
-To: Yu Kuai <yukuai1@huaweicloud.com>, hch@infradead.org, colyli@kernel.org,
- hare@suse.de, dlemoal@kernel.org, tieren@fnnas.com, bvanassche@acm.org,
- tj@kernel.org, josef@toxicpanda.com, song@kernel.org, yukuai3@huawei.com,
- satyat@google.com, ebiggers@google.com, kmo@daterainc.com,
- akpm@linux-foundation.org, neil@brown.name
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-raid@vger.kernel.org, yi.zhang@huawei.com,
- yangerkun@huawei.com, johnny.chenyi@huawei.com
-References: <20250905070643.2533483-1-yukuai1@huaweicloud.com>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20250905070643.2533483-1-yukuai1@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20250909065349.574894-1-liulei.rjpt@vivo.com> <CAMgjq7Ca6zOozixPot3j5FP_6A8h=DFc7yjHKp2Lg+qu7gNwMA@mail.gmail.com>
+In-Reply-To: <CAMgjq7Ca6zOozixPot3j5FP_6A8h=DFc7yjHKp2Lg+qu7gNwMA@mail.gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Tue, 9 Sep 2025 08:38:29 -0700
+X-Gmail-Original-Message-ID: <CAF8kJuN7cw2TBKvjPZQER8Yh586pwahMSSou5P0=TFL+vtd1=Q@mail.gmail.com>
+X-Gm-Features: Ac12FXyeFnTZyXJdqqEHEE7Eg5jvsdu3zTidMhrtm5s_2H33PC3oRecmiAsko9Q
+Message-ID: <CAF8kJuN7cw2TBKvjPZQER8Yh586pwahMSSou5P0=TFL+vtd1=Q@mail.gmail.com>
+Subject: Re: [PATCH v0 0/2] mm: swap: Gather swap entries and batch async release
+To: Kairui Song <ryncsn@gmail.com>
+Cc: Lei Liu <liulei.rjpt@vivo.com>, Michal Hocko <mhocko@suse.com>, 
+	David Rientjes <rientjes@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, David Hildenbrand <david@redhat.com>, 
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+	Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>, 
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Chen Yu <yu.c.chen@intel.com>, 
+	Hao Jia <jiahao1@lixiang.com>, "Kirill A. Shutemov" <kas@kernel.org>, 
+	Usama Arif <usamaarif642@gmail.com>, Oleg Nesterov <oleg@redhat.com>, 
+	Christian Brauner <brauner@kernel.org>, Mateusz Guzik <mjguzik@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Fushuai Wang <wangfushuai@baidu.com>, 
+	"open list:MEMORY MANAGEMENT - OOM KILLER" <linux-mm@kvack.org>, open list <linux-kernel@vger.kernel.org>, 
+	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Can you spin a new version with the commit messages sorted out and with
-the missing "if defined" for BLK_CGROUP fixed up too? Looks like this is
-good to go.
+On Tue, Sep 9, 2025 at 12:31=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wrot=
+e:
+>
+> On Tue, Sep 9, 2025 at 3:04=E2=80=AFPM Lei Liu <liulei.rjpt@vivo.com> wro=
+te:
+> >
+>
+> Hi Lei,
+>
+> > 1. Problem Scenario
+> > On systems with ZRAM and swap enabled, simultaneous process exits creat=
+e
+> > contention. The primary bottleneck occurs during swap entry release
+> > operations, causing exiting processes to monopolize CPU resources. This
+> > leads to scheduling delays for high-priority processes.
+> >
+> > 2. Android Use Case
+> > During camera launch, LMKD terminates background processes to free memo=
+ry.
+> > Exiting processes compete for CPU cycles, delaying the camera preview
+> > thread and causing visible stuttering - directly impacting user
+> > experience.
+> >
+> > 3. Root Cause Analysis
+> > When background applications heavily utilize swap space, process exit
+> > profiling reveals 55% of time spent in free_swap_and_cache_nr():
+> >
+> > Function              Duration (ms)   Percentage
+> > do_signal               791.813     **********100%
+> > do_group_exit           791.813     **********100%
+> > do_exit                 791.813     **********100%
+> > exit_mm                 577.859        *******73%
+> > exit_mmap               577.497        *******73%
+> > zap_pte_range           558.645        *******71%
+> > free_swap_and_cache_nr  433.381          *****55%
+> > free_swap_slot          403.568          *****51%
+>
+> Thanks for sharing this case.
+>
+> One problem is that now the free_swap_slot function no longer exists
+> after 0ff67f990bd4. Have you tested the latest kernel? Or what is the
+> actual overhead here?
+>
+> Some batch freeing optimizations are introduced. And we have reworked
+> the whole locking mechanism for swap, so even on a system with 96t the
+> contention seems barely observable with common workloads.
+>
+> And another series is further reducing the contention and the overall
+> overhead (24% faster freeing for phase 1):
+> https://lore.kernel.org/linux-mm/20250905191357.78298-1-ryncsn@gmail.com/
+>
+> Will these be helpful for you? I think optimizing the root problem is
+> better than just deferring the overhead with async workers, which may
+> increase the overall overhead and complexity.
 
--- 
-Jens Axboe
++100.
+
+Hi Lei,
+
+This CC list is very long :-)
+
+Is it similar to this one a while back?
+
+https://lore.kernel.org/linux-mm/20240213-async-free-v3-1-b89c3cc48384@kern=
+el.org/
+
+I ultimately abandoned this approach and considered it harmful. Yes, I
+can be as harsh as I like for my own previous bad ideas. The better
+solution is as Kairui did, just remove the swap slot caching
+completely. It is the harder path to take and get better results. I
+recall having a discussion with Kairui on this and we are aligned on
+removing the swap slot caching eventually . Thanks Kairui for the
+heavy lifting of actually removing the swap slot cache. I am just
+cheerleading on the side :-)
+
+So no, we are not getting the async free of swap slot caching again.
+We shouldn't need to.
+
+Chris
+
+
+
+
+>
+>
+> > swap_entry_free         393.863          *****50%
+> > swap_range_free         372.602           ****47%
+> >
+> > 4. Optimization Approach
+> > a) For processes exceeding swap entry threshold: aggregate and isolate
+> > swap entries to enable fast exit
+> > b) Asynchronously release batched entries when isolation reaches
+> > configured threshold
+> >
+> > 5. Performance Gains (User Scenario: Camera Cold Launch)
+> > a) 74% reduction in process exit latency (>500ms cases)
+> > b) ~4% lower peak CPU load during concurrent process exits
+> > c) ~70MB additional free memory during camera preview initialization
+> > d) 40% reduction in camera preview stuttering probability
+> >
+> > 6. Prior Art & Improvements
+> > Reference: Zhiguo Jiang's patch
+> > (https://lore.kernel.org/all/20240805153639.1057-1-justinjiang@vivo.com=
+/)
+> >
+> > Key enhancements:
+> > a) Reimplemented logic moved from mmu_gather.c to swapfile.c for clarit=
+y
+> > b) Async release delegated to workqueue kworkers with configurable
+> > max_active for NUMA-optimized concurrency
+> >
+> > Lei Liu (2):
+> >   mm: swap: Gather swap entries and batch async release core
+> >   mm: swap: Forced swap entries release under memory pressure
+> >
+> >  include/linux/oom.h           |  23 ++++++
+> >  include/linux/swapfile.h      |   2 +
+> >  include/linux/vm_event_item.h |   1 +
+> >  kernel/exit.c                 |   2 +
+> >  mm/memcontrol.c               |   6 --
+> >  mm/memory.c                   |   4 +-
+> >  mm/page_alloc.c               |   4 +
+> >  mm/swapfile.c                 | 134 ++++++++++++++++++++++++++++++++++
+> >  mm/vmstat.c                   |   1 +
+> >  9 files changed, 170 insertions(+), 7 deletions(-)
+> >
+> > --
+> > 2.34.1
+> >
+> >
+>
 
