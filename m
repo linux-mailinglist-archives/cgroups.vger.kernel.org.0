@@ -1,173 +1,115 @@
-Return-Path: <cgroups+bounces-9830-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9831-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A56B5B4A825
-	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 11:36:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2BE4B4AA9C
+	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 12:27:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04575188C64F
-	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 09:32:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C223E34337C
+	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 10:26:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FEB28AAEB;
-	Tue,  9 Sep 2025 09:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7A03191C4;
+	Tue,  9 Sep 2025 10:26:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NP6pMM9/"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dXVPMuQY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0D927B346;
-	Tue,  9 Sep 2025 09:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BE02C0F60
+	for <cgroups@vger.kernel.org>; Tue,  9 Sep 2025 10:26:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757409880; cv=none; b=tS2w4UUB2Gb56BVluNe6hHNETL0AcDeKtXlIXT72eSJTVwt2OUYqOi+rkRqRMfSRF8vHUJzQbd4hB+I33/vGigI97+bvJCdwXYs9CvsQE0GK4hKDRx9IEbxw2DeuAgis5UiDDc0NCs10J72Y4Zt3Y+RybXE0a7xNxw58/KGDkhk=
+	t=1757413600; cv=none; b=KL7ACA53bhhcj3Dwj8I2eWSC407cgLzlJgB3BeDQdvDY3r8b3qWlsFPplND78ZorE9/Lk0N8W2orD2HiUvYxM9LwOZ9yypIKSwmksG1RW8uuhgjEb5qk0uzKhxMVt8qb+y7GG29l9SgfcqlIrI8Ar1mQSa/WwHTb8YKM9La+gbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757409880; c=relaxed/simple;
-	bh=ZGce/gSXDfTR7/ob9XkpZ5uWpAbb63d+FA91bM3ARII=;
+	s=arc-20240116; t=1757413600; c=relaxed/simple;
+	bh=K6u0fUFF//SvAFGmtzWkez3KolPH7k/HuAtkFfvBTUA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aOGoTLUkwy/dOptdKlwstyQsXWfAg7TNTtlFOwcT/1leFYZ9hyXE/+CYFH+Ltxrb4PEFkrIEm9c9vnWmux6ecJVE6xtKzcYhIHLc4hkgzou6lS4xGlEvQpsZKJWZgEdntMIT4vEr94i3WcITQXbpdAEJeFO3PI5oawFVnLRDFCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NP6pMM9/; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-805a55c09aeso511667785a.0;
-        Tue, 09 Sep 2025 02:24:39 -0700 (PDT)
+	 To:Cc:Content-Type; b=QwFeW9o+QgI6jolZ2a0LjfOBwuY3dpkR0NrV2f366ppfigEYXMraWJrqG0GrUNipRffS7bTWIF2Osjz3xTyG25W0wBO4yQr1z6Z9/9mY5gddMzmoHNUiFUXSGD3o30MmBmU54ZyunSJfULYLGnogeO2bHMgYfeT0Zv7CE04iJQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dXVPMuQY; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-55f7039a9fdso5587565e87.1
+        for <cgroups@vger.kernel.org>; Tue, 09 Sep 2025 03:26:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757409878; x=1758014678; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1757413596; x=1758018396; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lW2Nzzo2BQ2Und6tq1pi4NPh0bbGS+k2agz2uQ6CIcU=;
-        b=NP6pMM9/lMg7ESAXhzPBKFPNORsKs6yuBu35IGq2FfHVAublxiFJwdc46ebycl6kwc
-         IoaY+fRpwjL+UASC+B7fJ6XV25YsrYNMd/q/lbgNWRtgNpCD+E9S2bkP05RKiy0XOrqh
-         cBlGKsPWuODEOpTPf5r6eEFy1guRfXKISTKZv69PR+rcJO0UbfYZncdPrpaG6ZP/282J
-         Utivq5pAK9KXq51ZB9xR9VNRM7xPBmSm+WoTSB4FQ6H7jBTnVbe8ulvVsIy0m6sHxa6N
-         ra87/5CmLeJLnRzvEaYBTLY4/L50+mEyf3dTJsMKWMv38VV8KH2Aqg6Cqh8zUEt0Ssto
-         xGsQ==
+        bh=uFqaqhtG5wCIiVa2BTrN+ftZjPVISTQRT/cZc7Siw0s=;
+        b=dXVPMuQYCzdvVf/1b/qdeViWziTuKKEepwJZawLc2ShG4lwLHR9xOO7+5ChlYMiTxZ
+         C2a5w4z/Ow1YnS+Z1DdyZu8adXMIfsU010Ai0aBQ9PUf9lSP9I3pme34WoFWBjKeZQZE
+         5A++NlCEjPXm1OQw8LwiJDtyvrjc14nVvWLs91Pmp/J9aFq3vkih6N6Pf6Esg6pL11V9
+         xbJJeAc5ErfEZDvxTnYkxtN6ezaUFzanMsIGiLLze//bkJNygBMzDqJ+W8saRqGCG7vV
+         g6nm3TqhGHqyuD7JcyAPODloE2/qkYf1X8eVdckXMLrcc8W6p1iUangNYqiRkIpjo2k3
+         GKRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757409878; x=1758014678;
+        d=1e100.net; s=20230601; t=1757413596; x=1758018396;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lW2Nzzo2BQ2Und6tq1pi4NPh0bbGS+k2agz2uQ6CIcU=;
-        b=Y0va9ZbQyxDuTr/J6muIq53hmwtQ++3TqXqVvH/ejLxtqE5TCpGCDZErs/uGUVArYg
-         YNu5GrhtGxR6+XE9s9uuEa6Tv1u4bFtc1KrPRTTwErGe1qCxlORIz1f42grc7IS0heW9
-         L7aCVb6hPxkeVOPbTrB9EQ2EKFJ2XsOGMuRHnwQu8frr9AfOAL7Fcm5fGe1/JYrt3CZL
-         sRKgTX/jIsHzmskaTAq+8CdbA8qLB4xOGMZZNXZbeD9tRuQg1pmWuKGLQ8/Wgwh0fr4J
-         YPz8wU9dVzgcRGZQ8zmNfcd4jHq1lBwS71IGpYq3BpQuFHtasLuSBPL/zJpfuSodc2b9
-         A8Dw==
-X-Forwarded-Encrypted: i=1; AJvYcCUEP8C1QhDFILBb5qi0EjKNj5l+a6zDlPvqZmGZKYEIx3cs33dg68aoCQOnhG5etS7S3UgG6chn@vger.kernel.org, AJvYcCUSdvQLxgrmNVn7NmC0JHS/FpS3tlHiQ7aqt7gYP0/0eXKJE7O+1K8GoM3b5BCFZfNds9LcCqBMg9ThkvRY@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRcJCFaoXpW9dQIMvyVVX0l1SKOSs+aguMGX5NE90Xg7aIYAQA
-	mTcnTzGCp8jXwVJaFFjHxuQqkxpMiLeRe1/miGIHBFQHVgwTeayIUuY643Xsdbuaagy3ZYJ+J6m
-	z3Rs6q2yMZFywuOMo+kV+lyETg8qzEs8=
-X-Gm-Gg: ASbGncvWHvgUuv6chI8docgIco88FJDYr4jlqf59WGquUACiDzSG8CMB6pyp43NYKrK
-	RqL6Yp6cy53ry/fq0Mr1p68H4dlcAVUjc2n9TKEHxTkEUVETX6m1UJyfOdtTyQxZPb3gt+TE+ac
-	X70SNE8u5+nibQgkdNkzH5Uu6cSqbThAy4MBcLMFz8e2cuK+79IVuY0OZ8dk9hUD0e6nhxzBsMa
-	I3tdJYiHEQPKFTesw==
-X-Google-Smtp-Source: AGHT+IHJOggxKeQl2En2vkS170HN9upj3XN1GrIbX/RBrm3+a8OJxKgKoilHkjOVfWI0HrL/ttqp+LzQfAyxcN8ccUo=
-X-Received: by 2002:a05:620a:172a:b0:7f9:ec3f:b047 with SMTP id
- af79cd13be357-813be24adf8mr1052891485a.2.1757409878127; Tue, 09 Sep 2025
- 02:24:38 -0700 (PDT)
+        bh=uFqaqhtG5wCIiVa2BTrN+ftZjPVISTQRT/cZc7Siw0s=;
+        b=C/OkNv3tL9WFZ45m09k1XfE6GHQ0J3Sh0xAGiuX0bhy7CbxDzbP1QPQBk1flQTX9b6
+         c0nHiBTS7m951TdDadrmgusiO6xpbemXTSzF6xAZD9XsnLw/OhnHrKtNjoVe6xMBjJhm
+         92S/jYtQvcTXNwl7x+JJIv5xkI4aL9lG1N5PJg9i/NnV2ROkqapaZYf2B0igJ+9Ryjpk
+         s6bsUcRL7fyEu7/xDsiTpiEoNYn3OUGIZzXeDzLk5RGUVyO+s9nhzg3/F4Cg1ssXcbiK
+         FJgk7ikGOB6MgSEi/X/gqhuyuvBSTzce4UeHQIhaI1yTraS5NDqJyfqct0EGuZeNnV2O
+         Yg/w==
+X-Forwarded-Encrypted: i=1; AJvYcCV25i9cKKJ5X/cK+YGVEJ2mlApAOUqf3JsXypb5BP3FzWWKoUyTFbDacQryda8rSvMVuaSEbIQr@vger.kernel.org
+X-Gm-Message-State: AOJu0YzjuEMadTkD7Yvr3PevU3AzngYA+ZWXfnCWBHhDqabgTZa9oqm6
+	YxVB0vPOO7E5G9htGtak+AwBqvrjv4vVYcuOUlmO/bk0DghKvLVbVY2W0oxOCQgYA8bVK4AHyap
+	8b7yM8E2mI9EhwOWuyfZZPZkY07qjPSSkiu1coR2jGw==
+X-Gm-Gg: ASbGncse92M6AEbhT18BsFKGTG6LntDZRagO03LJ4EtmFg9P3hFDyuCH0Sxa3Go6rRl
+	dAcGIzvsik72laoQaKQrmgUdhkQBIsGO2BFLfkfTdmCP4dR5STEw4BEY1isoEW54J0QtYm+X2Jt
+	BI1JgvRT/3LvOno9+c8GYYR+UKgIww2Dai2GioX6fg1P5penhKgRf+GhnJZ9UU1oXysW63DLOwu
+	VncxWtAUtGeg1pCkfzOgNqhKrbUD1AuTGUQ9d6022hTPsLfHF8YRYdiSEAQyQ==
+X-Google-Smtp-Source: AGHT+IEIlgP6WJ+l/2b+hOt1ThB2keF29D4lVkLENQbI3An4Y5kJhCuJdkyEWlD4semvJCVerqpc6HGzOCIXOONPLa4=
+X-Received: by 2002:a05:6512:3089:b0:55f:6cd0:296b with SMTP id
+ 2adb3069b0e04-562636d5bfamr3429517e87.49.1757413595663; Tue, 09 Sep 2025
+ 03:26:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250909065349.574894-1-liulei.rjpt@vivo.com> <CAMgjq7Ca6zOozixPot3j5FP_6A8h=DFc7yjHKp2Lg+qu7gNwMA@mail.gmail.com>
-In-Reply-To: <CAMgjq7Ca6zOozixPot3j5FP_6A8h=DFc7yjHKp2Lg+qu7gNwMA@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 9 Sep 2025 17:24:26 +0800
-X-Gm-Features: Ac12FXzBjrEDwqilLgwY9xCBO5DS-3GJmCy35oFzG2rRHCjrrELhZ_Lm3diPEjA
-Message-ID: <CAGsJ_4xiTteQECtUNBo+eC9uu8R3CgVT2rpvGCGdFqc3psSnWQ@mail.gmail.com>
-Subject: Re: [PATCH v0 0/2] mm: swap: Gather swap entries and batch async release
-To: Kairui Song <ryncsn@gmail.com>
-Cc: Lei Liu <liulei.rjpt@vivo.com>, Michal Hocko <mhocko@suse.com>, 
-	David Rientjes <rientjes@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Chris Li <chrisl@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, David Hildenbrand <david@redhat.com>, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>, 
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Chen Yu <yu.c.chen@intel.com>, 
-	Hao Jia <jiahao1@lixiang.com>, "Kirill A. Shutemov" <kas@kernel.org>, 
-	Usama Arif <usamaarif642@gmail.com>, Oleg Nesterov <oleg@redhat.com>, 
-	Christian Brauner <brauner@kernel.org>, Mateusz Guzik <mjguzik@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Fushuai Wang <wangfushuai@baidu.com>, 
-	"open list:MEMORY MANAGEMENT - OOM KILLER" <linux-mm@kvack.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>
+References: <20250905085436.95863-1-marco.crivellari@suse.com> <aLsSnKz1WcYSwReG@slm.duckdns.org>
+In-Reply-To: <aLsSnKz1WcYSwReG@slm.duckdns.org>
+From: Marco Crivellari <marco.crivellari@suse.com>
+Date: Tue, 9 Sep 2025 12:26:24 +0200
+X-Gm-Features: Ac12FXwauGyHosDpZYps4rTVqW4xzZiNW4zO0M9zKSVMbGv_zoWndkzkbB081o8
+Message-ID: <CAAofZF4-1KypKg_ix642beh-GweMkEiRndrS3mifnUHZG7T0UQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] cgroup: replace wq users and add WQ_PERCPU to
+ alloc_workqueue() users
+To: Tejun Heo <tj@kernel.org>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Frederic Weisbecker <frederic@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Michal Hocko <mhocko@suse.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Koutny <mkoutny@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 9, 2025 at 3:30=E2=80=AFPM Kairui Song <ryncsn@gmail.com> wrote=
-:
+On Fri, Sep 5, 2025 at 6:41=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
 >
-> On Tue, Sep 9, 2025 at 3:04=E2=80=AFPM Lei Liu <liulei.rjpt@vivo.com> wro=
-te:
-> >
+> On Fri, Sep 05, 2025 at 10:54:34AM +0200, Marco Crivellari wrote:
+> ...
+> > Marco Crivellari (2):
+> >   cgroup: replace use of system_wq with system_percpu_wq
+> >   cgroup: WQ_PERCPU added to alloc_workqueue users
 >
-> Hi Lei,
->
-> > 1. Problem Scenario
-> > On systems with ZRAM and swap enabled, simultaneous process exits creat=
-e
-> > contention. The primary bottleneck occurs during swap entry release
-> > operations, causing exiting processes to monopolize CPU resources. This
-> > leads to scheduling delays for high-priority processes.
-> >
-> > 2. Android Use Case
-> > During camera launch, LMKD terminates background processes to free memo=
-ry.
-> > Exiting processes compete for CPU cycles, delaying the camera preview
-> > thread and causing visible stuttering - directly impacting user
-> > experience.
-> >
-> > 3. Root Cause Analysis
-> > When background applications heavily utilize swap space, process exit
-> > profiling reveals 55% of time spent in free_swap_and_cache_nr():
-> >
-> > Function              Duration (ms)   Percentage
-> > do_signal               791.813     **********100%
-> > do_group_exit           791.813     **********100%
-> > do_exit                 791.813     **********100%
-> > exit_mm                 577.859        *******73%
-> > exit_mmap               577.497        *******73%
-> > zap_pte_range           558.645        *******71%
-> > free_swap_and_cache_nr  433.381          *****55%
-> > free_swap_slot          403.568          *****51%
->
-> Thanks for sharing this case.
->
-> One problem is that now the free_swap_slot function no longer exists
-> after 0ff67f990bd4. Have you tested the latest kernel? Or what is the
-> actual overhead here?
->
-> Some batch freeing optimizations are introduced. And we have reworked
-> the whole locking mechanism for swap, so even on a system with 96t the
-> contention seems barely observable with common workloads.
->
-> And another series is further reducing the contention and the overall
-> overhead (24% faster freeing for phase 1):
-> https://lore.kernel.org/linux-mm/20250905191357.78298-1-ryncsn@gmail.com/
->
-> Will these be helpful for you? I think optimizing the root problem is
-> better than just deferring the overhead with async workers, which may
-> increase the overall overhead and complexity.
->
+> Applied to cgroup/for-6.18 with dup para removed from the description of =
+the
+> second patch.
 
-I feel the cover letter does not clearly describe where the bottleneck
-occurs or where the performance gains originate. To be honest, even
-the versions submitted last year did not present the bottleneck clearly.
+Thank you!
 
-For example, is this due to lock contention (in which case we would
-need performance data to see how much CPU time is spent waiting for
-locks), or simply because we can simultaneously zap present and
-non-present PTEs?
+--=20
 
-Thanks
-Barry
+Marco Crivellari
+
+L3 Support Engineer, Technology & Product
+
+marco.crivellari@suse.com
 
