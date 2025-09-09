@@ -1,183 +1,128 @@
-Return-Path: <cgroups+bounces-9795-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9799-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F14B1B49F16
-	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 04:19:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB0E6B4A043
+	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 05:48:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 727707A7F71
-	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 02:17:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03F9E7AF813
+	for <lists+cgroups@lfdr.de>; Tue,  9 Sep 2025 03:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77CBA23BD1B;
-	Tue,  9 Sep 2025 02:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QBjA/9Fe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AEB42DCF4D;
+	Tue,  9 Sep 2025 03:48:01 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A909219A86
-	for <cgroups@vger.kernel.org>; Tue,  9 Sep 2025 02:19:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21EB82571DC;
+	Tue,  9 Sep 2025 03:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757384353; cv=none; b=Eq/GYTmnmfmgE605PU3Orkb+Mlo7YYyYhaAWp1pd034FdtDcIPQNijVaqnneFNknT0+1jNH0GYI90ldyAQcO0gpfBA+OlWyT1l6y0QjE9qhg9RKyQd5jroZHL/p31NGg1fMtYFYlUQz3IEpd7BnGxX08Fq6DZLVNCf6CuA2rCq8=
+	t=1757389681; cv=none; b=gyIceIHZ7bPxOTt/22DYrSmjWTwrhk2PKn3R4u0ZUHHDA/Q8MpF/c2zNff8Ycmz4FvKRz7ua5IgW8G52wtTfut91stzrt0PUXS81ZxdNRLskYgo8q9c6JP2QBbhb3Y5R5jttvHXhw7MJT1HbwlX+NN32UThbixQW+HCjuRElTlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757384353; c=relaxed/simple;
-	bh=MsrE6nlcLsu6rE7UEvRi+H5Bk3kjBIHF5hr3fsf6aB0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J2WtWq60lbjif+zAqVwzD0YClBZJMbO0lo2uayE1ru35i7UFwNwtMSaEcyJOrnpo0QVsqKwZ7APzR3COHqwJfocqFU/552D5CUK2mmKNPs6V+FLkIF7v/WJVu0hBCxSjM3RAxDhlaEAIPn3hhBYWB3/Csr8rG0wgyOS4KAvrHYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QBjA/9Fe; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b0418f6fc27so840851766b.3
-        for <cgroups@vger.kernel.org>; Mon, 08 Sep 2025 19:19:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757384350; x=1757989150; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UvRPKCJK+kNCgeqO86d67tqhHi9R/WWb/GxxGuL8x0w=;
-        b=QBjA/9FenS9acC6YTxJwyr1iBk95Ts+GbVVuYUxHCu1w5FY63PbjeyB7OY4mWpOYQS
-         SgaY4l8s9c1yJ92T57/osym8vx2LV8BQsBF1YeTa3rQIUUKR+ixgxfRV7MUjeYK5COIG
-         ibfOOiOEpLySRTnz/rhZ4AC/RNwuSmvRNeGgFnbDTpTG7kfmU03jrYhQjR4J/reNeOTn
-         yANRve+6K0UlyciVFWIYCZ67UluM7qg/4Bq9/kd2R2/v+jTocOds2LGON+cZTNz18u69
-         r1HABgCAzxYjwhUUET7czVaGkYcFiH4C7J5/ZHNvFItTotBbJPu9V/lFEG8Gt3SgpMwm
-         PE6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757384350; x=1757989150;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UvRPKCJK+kNCgeqO86d67tqhHi9R/WWb/GxxGuL8x0w=;
-        b=BxrSFnlebdRrLWgD8yFagfNZet+p5VwPYe9rn2tO51ETFSb8aTdni+IZ/XTGhs/Hta
-         ozgNa7wKFgKvDBXQJfuGgmG6iCnuRfhu63ETn9ySUc/s2nmAzFiUBec3uGFfMvPMSMta
-         xHIF9GZ87RfeMLZcYE+iaXceQ20AgbGaJ2YKxLgoZ1F5PZjrS2KpUCFMWj2LuNDG3fx2
-         l5HO6vXJ/uOBLSF7WcpOV0O3rGjjvxq77wb6OAigd+qAu2KoOeZvfeO7aBvVnTyzAVE1
-         QuRvCLwct3XVFRxKCC8PXmIdTIGbgNZMSeggoog40PGriHA/0uUtmHNrqOjUqvqJRWM7
-         KJSg==
-X-Forwarded-Encrypted: i=1; AJvYcCX0mML39trkDz3TvBqTS/h6vk52+Ak+JtH76HuN4Zc6H4qpUMmXqjpk7zQqrLzEOV/hmiPLHdZw@vger.kernel.org
-X-Gm-Message-State: AOJu0YwItMSaZQ6ie4IkIJsieqPQ+5yy2SkbHqlWKo3pqVquBbR8UtHx
-	R46Ocl6cbPYj6xWDdSOLN2FFsBqwHGIXHKLGb6HQvrTL61klM/XvB21SO+j58D31YFFSXtNZ+uH
-	bp5XUQua8xIAaK+XwSDt4+DHuCinuhYs=
-X-Gm-Gg: ASbGnct4y8V8vMiCKU1yv3WABpvA9YzKXiq5PVZ2u6DVarlZRZHlbPLgJ8IL3DOqp3D
-	wxqNAUNncK8Bhwe7lmhcewyRMMsJnEMJKNvTHX/tmad7sA0GcHhrAKeWndKI5q1l4/Mxq2ab1vZ
-	FaHV3eVxt5q62tXaFCr7xGA9FNXXN0sdCZeCeyITC/rNA9z+xgP+Ub9rZm+wP4HyIr0/5i/0lNS
-	JHyYQ==
-X-Google-Smtp-Source: AGHT+IF0ojGfLsVbNe2EXxxIANSe+zd3BuP0PWTFJD+VmQrDZcvpCqFTs1wan4o9XVQtoEf8UmOwBUP1Pb9fXf0w0AU=
-X-Received: by 2002:a17:906:6d4:b0:b07:6538:4dc5 with SMTP id
- a640c23a62f3a-b076538667dmr149881366b.64.1757384349488; Mon, 08 Sep 2025
- 19:19:09 -0700 (PDT)
+	s=arc-20240116; t=1757389681; c=relaxed/simple;
+	bh=fmitcViLjI9lShqiC0YptWK20Iw11nsSEgUdpLizCGo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lU93WmiPZ5AclMQmXpYl1Xx0ifqnZOUNBuESk+e8tRs+Zqw6WGrO8oB77NMBOMiSDgWFkSQ4e68soXXpxepyEMiMX8rht05SuHlPpeorCwZ01Vxx5STp6N76oMu9qzQlgZ+HrBuqWSH/MYbJprijw7pnqUtyUPAr1UE2yxPB+Vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cLVCH3c37zKHMlJ;
+	Tue,  9 Sep 2025 11:47:55 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id A3C4A1A0BC9;
+	Tue,  9 Sep 2025 11:47:55 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP1 (Coremail) with SMTP id cCh0CgAnM3lOo79oBVdmBw--.63383S2;
+	Tue, 09 Sep 2025 11:47:55 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: longman@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lujialin4@huawei.com,
+	chenridong@huawei.com
+Subject: [PATCH -next RFC -v2 00/11] Refactor cpus mask setting
+Date: Tue,  9 Sep 2025 03:32:22 +0000
+Message-Id: <20250909033233.2731579-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250902041024.2040450-1-airlied@gmail.com> <20250902041024.2040450-12-airlied@gmail.com>
- <4e462912-64de-461c-8c4b-204e6f58dde8@amd.com> <CAPM=9txiApDK8riR3TH3gM2V0pVwGBD5WobbXv2_bfoH+wsgSw@mail.gmail.com>
- <f4d04144-d8e7-4d4e-81a9-65e1fcef26fd@amd.com>
-In-Reply-To: <f4d04144-d8e7-4d4e-81a9-65e1fcef26fd@amd.com>
-From: Dave Airlie <airlied@gmail.com>
-Date: Tue, 9 Sep 2025 12:18:57 +1000
-X-Gm-Features: Ac12FXxS3xUS5G2sDvkGWbEQ-36qve91eBxiVAMCJmoW1HsflS2lot9U-Pu8uuI
-Message-ID: <CAPM=9txzf8OfyQ79X29iC0s_QqaNVPfPsAFbRw056Zsjvb2iTg@mail.gmail.com>
-Subject: Re: [PATCH 11/15] ttm/pool: enable memcg tracking and shrinker. (v2)
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc: dri-devel@lists.freedesktop.org, tj@kernel.org, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
-	Dave Chinner <david@fromorbit.com>, Waiman Long <longman@redhat.com>, simona@ffwll.ch
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAnM3lOo79oBVdmBw--.63383S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar4kZF1UJw18uw1kCF45ZFb_yoW8uF1UpF
+	yakw13A348Gr13CanrJwn7Wr4Yga1kJ3W7tFnxtw1xKry293WqyryvyasxCFy3Gr9xCw1U
+	ZanIqFs7uF9rA37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2NtUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Thu, 4 Sept 2025 at 21:30, Christian K=C3=B6nig <christian.koenig@amd.co=
-m> wrote:
->
-> On 04.09.25 04:25, Dave Airlie wrote:
-> > On Wed, 3 Sept 2025 at 00:23, Christian K=C3=B6nig <christian.koenig@am=
-d.com> wrote:
-> >>
-> >> On 02.09.25 06:06, Dave Airlie wrote:
-> >>> From: Dave Airlie <airlied@redhat.com>
-> >>>
-> >>> This enables all the backend code to use the list lru in memcg mode,
-> >>> and set the shrinker to be memcg aware.
-> >>>
-> >>> It adds the loop case for when pooled pages end up being reparented
-> >>> to a higher memcg group, that newer memcg can search for them there
-> >>> and take them back.
-> >>
-> >> I can only repeat that as far as I can see that makes no sense at all.
-> >>
-> >> This just enables stealing pages from the page pool per cgroup and won=
-'t give them back if another cgroup runs into a low memery situation.
-> >>
-> >> Maybe Thomas and the XE guys have an use case for that, but as far as =
-I can see that behavior is not something we would ever want.
-> >
-> > This is what I'd want for a desktop use case at least, if we have a
-> > top level cgroup then logged in user cgroups, each user will own their
-> > own uncached pages pool and not cause side effects to other users. If
-> > they finish running their pool will get give to the parent.
-> >
-> > Any new pool will get pages from the parent, and manage them itself.
-> >
-> > This is also what cgroup developers have said makes the most sense for
-> > containerisation here, one cgroup allocator should not be able to
-> > cause shrink work for another cgroup unnecessarily.
->
-> The key point is i915 is doing the exact same thing completely without a =
-pool and with *MUCH* less overhead.
->
-> Together with Thomas I've implemented that approach for TTM as WIP patch =
-and on a Ryzen 7 page faulting becomes nearly ten times faster.
->
-> The problem is that the PAT and other legacy handling is like two decades=
- old now and it seems like nobody can remember how it is actually supposed =
-to work.
->
-> See this patch here for example as well:
->
-> commit 9542ada803198e6eba29d3289abb39ea82047b92
-> Author: Suresh Siddha <suresh.b.siddha@intel.com>
-> Date:   Wed Sep 24 08:53:33 2008 -0700
->
->     x86: track memtype for RAM in page struct
->
->     Track the memtype for RAM pages in page struct instead of using the
->     memtype list. This avoids the explosion in the number of entries in
->     memtype list (of the order of 20,000 with AGP) and makes the PAT
->     tracking simpler.
->
->     We are using PG_arch_1 bit in page->flags.
->
->     We still use the memtype list for non RAM pages.
->
->     Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
->     Signed-off-by: Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>
->     Signed-off-by: Ingo Molnar <mingo@elte.hu>
->
-> So we absolutely *do* have a page flag to indicate the cached vs uncached=
- status, it's just that we can't allocate those pages in TTM for some reaso=
-n. I'm still digging up what part is missing here.
->
-> What I want to avoid is that we created UAPI or at least specific behavio=
-r people then start to rely upon. That would make it much more problematic =
-to remove the pool in the long term.
+From: Chen Ridong <chenridong@huawei.com>
 
-Okay, how about we land the first set of patches to move over to
-list_lru at least,
+This patch series refactors the CPU mask configuration logic for both
+cpuset.cpus and cpuset.cpus.exclusive settings. The primary goal is to
+improve code readability through comprehensive function restructuring.
 
-The patches up ttm/pool: track allocated_pages per numa node. If I can
-get r-b on those I think we should land those.
+The CPU mask update process follows these steps:
+1. Parse user input
+2. Skip processing if no actual change to CPU mask
+3. Compute trial cpuset's effective exclusive CPUs
+4. Validate changes and return error if invalid
+5. Handle partition state changes resulting from CPU mask modifications
+6. Apply new CPU mask to the cpuset
+7. Propagate changes through the hierarchy
 
-Then we try and figure out how to do this without pools, and just land
-memcg with no uncached pools support. However we still have to handle
-dma pages for certain scenarios and I think they may suffer from the
-same problem, but just less one we care about.
+The series is organized as follows:
+patches 1-3: Code cleanup and preparation for refactoring
+patches 4-9: Refactoring of cpuset.cpus configuration logic
+patches 10-11: Refactoring of cpuset.cpus.exclusive configuration logic
 
-Dave.
+---
+
+Changes from v1:
+- Patch 1: Use direct comparison (cs == &top_cpuset) instead of the
+           cpuset_is_root() helper function
+- Patch 6: Updated comments for better clarity
+- Patch 7: Refactored validate_partition to replace the previous
+           invalidate_cs_partition implementation
+- Patch 8: Renamed acpus_validate_change to cpus_allowed_validate_change
+- Patch 9: Updated commit message with more detailed information
+
+Chen Ridong (11):
+  cpuset: move the root cpuset write check earlier
+  cpuset: remove unused assignment to trialcs->partition_root_state
+  cpuset: change return type of is_partition_[in]valid to bool
+  cpuset: Refactor exclusive CPU mask computation logic
+  cpuset: refactor CPU mask buffer parsing logic
+  cpuset: introduce cpus_excl_conflict and mems_excl_conflict helpers
+  cpuset: refactor out validate_partition
+  cpuset: refactor cpus_allowed_validate_change
+  cpuset: refactor partition_cpus_change
+  cpuset: use parse_cpulist for setting cpus.exclusive
+  cpuset: use partition_cpus_change for setting exclusive cpus
+
+ kernel/cgroup/cpuset.c | 451 ++++++++++++++++++++++-------------------
+ 1 file changed, 247 insertions(+), 204 deletions(-)
+
+-- 
+2.34.1
+
 
