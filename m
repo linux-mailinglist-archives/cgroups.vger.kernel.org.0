@@ -1,87 +1,87 @@
-Return-Path: <cgroups+bounces-9954-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9955-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45428B51E98
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 19:07:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56921B51EC8
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 19:21:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DE031C87A17
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 17:08:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 057625815A8
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 17:21:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003C430FC2D;
-	Wed, 10 Sep 2025 17:07:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD3C317703;
+	Wed, 10 Sep 2025 17:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lR3Hcz44"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b6x5avp9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027622C11C0;
-	Wed, 10 Sep 2025 17:07:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 567B726D4F9;
+	Wed, 10 Sep 2025 17:21:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757524057; cv=none; b=AplV0hNH5v0bUfQWnNuVbNfzOOjzjBXJsUth1yhBejw831Y2Yk72fmtb+4gZ0Nbb27+DOarjyaiA49w46irne+I00GXlUfQ1TzdTATxIJAF6XWMcOWRlNu51gKeXD+kj9CMb1Fp75W3E4AnZAVM4vI+Pg9M1MIRNHvCHzmMyHgc=
+	t=1757524898; cv=none; b=Jnzi2axwgKU8Q3YbX2FNUqztm7Kidly18c9WtNTedRPk3yUZMF/gqqkzvkW4tr+3usZXk4EDfbMoAvkoieYI82J6mVI6rjkW/dp+BEVl6QIyafUcC7bRgrhJzCaJrERrEhG/h1dqyb2cLERTTgvQlIYy0yIr1mwq3Jc/XBlixhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757524057; c=relaxed/simple;
-	bh=YWoom1+054/5jRVYGHQmXa1uDmT0Iy5UzJhbzNTORGs=;
+	s=arc-20240116; t=1757524898; c=relaxed/simple;
+	bh=RhMZzzYltdKFB5qM+3pAwKbhueJllywcPAsvUkS/hCI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kOMIecLfBnSHL8R8p6U05uWe0f7QkyTtqtj2uDSo7rCCsYh4z1JMlhuCChhZc/edZ33MxNK+TjSFxGc73ZQjc8kJFegi0umJiWy5dWXgIspoJInGPt33J6cU6uXFC5bU+9yv+ESwkL9VCWjgIf/x4rjrhKi219SGR74nV09eu0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lR3Hcz44; arc=none smtp.client-ip=209.85.208.45
+	 To:Cc:Content-Type; b=akGIxro7HwaWy4yjEuvxobpRZGn1S7juBGSXtT2pyr8gbFAHqJlf5oenjC3TzM2BeAuZMgBJ8XZq9NRp5NwLAaBkyA6/REzRvESZfMN0wQmNuzeRLTuQpN1D57M/O5HoQWDNUkHdgaZefjIiTkzBUQIaUMNPU6AqhGdExzipxh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b6x5avp9; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-61d143aa4acso10884000a12.2;
-        Wed, 10 Sep 2025 10:07:35 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-6237202020bso7979723a12.3;
+        Wed, 10 Sep 2025 10:21:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757524054; x=1758128854; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757524894; x=1758129694; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=y9gl8boVwEXv9hUGRSaYumN8gHsUo/khQdpwWdU60yA=;
-        b=lR3Hcz447JfhXZt0JNjxxrJ/wMmL3Y32G662iXWHTyanLuo5HaGAqhSk/7ys0FGZfg
-         usMpBt+3jTbv4/GAq0mVUfm6SrO6Et4dSRc355e4J6cDEq5TU3MeQqfNZMWDxDnSogYM
-         fcAWNegdC11bJc2baYCpu6iDuzA3TNZhHY+25R+COj1InANm02vlLjLhHWYEdRoEAGqQ
-         CNCL+kY71F5+4Vj3z0wpqbF9hQBGAotwq5WplKoSLYoVN3jUZu4AcipLgOJyS/++oC56
-         FfmymWPYd6G4cNMx6S+tSvmFOUSTg/q4gTzKQ+nRTC+nCv5PG5mo8khnMkmfK1kKffoi
-         gWJA==
+        bh=fawpfDcReCPiexHLQmJUihCOqOpAI9vERWwTnUBX3Jg=;
+        b=b6x5avp9Psa1GISFy/Yic0ReQ1j+h1XuFtuwU5HBnVN2wEAtes0BTjOwXN1/GS5aQB
+         GOFGL65syg8O5oEoLkZuuv5mBsesF5zk1pChzCy01jGVccx8Ay7wsjrlfqSCfPE79ONM
+         w4pAsdmuPz37Q2Zec9sDTx2DVGiuDMvtk9kYHMZxQXSeyZtG+I81xZ3Ah5wB+nmbwM7H
+         8esfGHEjZLKIrOiBHx8DmgkGJjnZvqWzsDWPoonFQ1d5esLXeFXZ3sEdnCwvttwJKh4d
+         vkp1a1uqf+dR7nS/OOMApHO+4KynDKgt50TUv1gnowLDOs7PK0ZCcM2bzz1D5WATj/mm
+         eFJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757524054; x=1758128854;
+        d=1e100.net; s=20230601; t=1757524894; x=1758129694;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=y9gl8boVwEXv9hUGRSaYumN8gHsUo/khQdpwWdU60yA=;
-        b=eqRC7Wqt1CQaajHDoafcbq97JuTQoQO97HPcB8lRoC+nMPhGb6xVbXb0VoEtH/1te/
-         O+rCruln96rJPx0vAWrOalL0/bUk8bu7hKnG4RQoSU6jaSCiwgTtGfOdjhOAaeqfKFHY
-         sxfBmRxMw/ymOk4Jo7CVOvkyGW+3J2BEHr4zNk+yQT+0DrlZRosn1Py+98++/q6SvHdL
-         upcr0iBuDV036vFH8KyDlHWpm8AGa+IxYP08IV7v3m3jeJ4bSwEM2QI7WtS+JseQcJ+c
-         ZqlDk1tnZ0DoCOLhajQFBK5Dw/khyZE4h6aJCVcky/VHyOZUQLRd4I0pInUtxeiomunc
-         Go1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU5ek3kac5JTGWzKxDthpRP1E/7Nz13xUxeYKJ2SE0jYchtks1noXNt3AJqyr53XeIJ6qvYUgnd@vger.kernel.org, AJvYcCURZpeBs6qIbnk8rkOkC4b3BpqDoudBoflQwlJRoIZyh6IVprF0gBdRCubkEfrh/hZjnjPK5mLKpt3+@vger.kernel.org, AJvYcCVWbjlD5SRwaCfNySsRvdj21Skrudhpxop8cuINJZ+RnPTRyzU9ds+xIoWCJti8/RTjkSDYtkUs@vger.kernel.org, AJvYcCVwBX4i/LxUwtp5rHOadlK1rDLAUdjVLsj1gMLV6H57DoGYJVL89B7uUOnzMDQG6JISh5R6Xmj9MXgjdPwBrQm3@vger.kernel.org, AJvYcCWFCNLIyn8jsLNrpoloVSawZSgluF9q5p+aEHmWBn6mVYEXJXYpsnaO+aWeqZEweRhZvBSrgVh5X6+E07n3@vger.kernel.org, AJvYcCX++mhZUzYecYB0ftX6drn7IxiL5hJblf9feqSppkCKIQvy7+c7Gda2p3IAKzGZKso0D+shX/8/UMXb9Gcc7Q==@vger.kernel.org, AJvYcCXSGmZ1WLRBuUPMgrcT83G1pFodlTsIU6vwDPE8g74tTlCbJ8S42JOY5WeTTMxm/FV1kwWgqFHKmydZfSs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzVVs9vRiMieIiN5VuLc8G82aEbsPhq0ynGSMWRE33BI+6+wvmk
-	2B8ClwCyCCOBFBY/hR49IukpxABv+mUB0Jo7RjvWOxHklqYvBrrHHBO7M4eES8+kfP5Dph46Z1O
-	kdOIs8sYMRWzh5kz8FrOz9zfl0sB4cGM=
-X-Gm-Gg: ASbGncvFPAJzcaCdsKT/2Fk3O9ATD3z5tHA/8pbUIekcC3OSuGd7K1BIMQnY6ajzGTh
-	xQ4nHsurC7xCMrt22uVPx+Z2PZKmvyq1DfhDIVQF8xiE3vc7muuNYM4vikHJc8zYofloi2xZ2+s
-	Cm9BoAhNP4Q3bYOYkY0vL1ciM/9V1PnLXDRcNOBwfo/BcvUa3bKFfp20R0Xk7T0fx67651aBtbM
-	lE0wQl7t007XgHVaQ==
-X-Google-Smtp-Source: AGHT+IE+nh79NH7zsv87bURibrjZT5O0XqDSpQb84PYB+QCmTYKzJRYwXTG9gMJk9B2cZF1lqAXBrfmoiCdYZWxLuaU=
-X-Received: by 2002:a05:6402:d0d:b0:628:79f4:b050 with SMTP id
- 4fb4d7f45d1cf-62879f4b986mr9593215a12.30.1757524053896; Wed, 10 Sep 2025
- 10:07:33 -0700 (PDT)
+        bh=fawpfDcReCPiexHLQmJUihCOqOpAI9vERWwTnUBX3Jg=;
+        b=v7VOmT3fq0o2zi1eR+CkbX+YuSnmR2JhXhhLD/lkYHaojSx7p7M21DXGqq+vhk1bEY
+         yz7K+G+OXIDC4C6COzsenXbZg+vUnp4qYSsc57s9P0cfvPgY8wlOQI4ftfB+3oNfO7oO
+         4jF8Y8j50gSLjcsBUCIR12dLe1udNdbEshEX/uQhDvo8agsmf+di3mlS2v4PLZMAiBxj
+         bfhS1jg73NHpGc5oxaqluemuV17QQnWmK/IvCLornlQugxQ+gnS6wLaK7L1sBHCj8V8z
+         W8C2xXlqVTOJSfUJmm12cejjjKnjHXSO9k3YB9U49Wc7cZSZCacMIrp/3KVEUFg4u8OH
+         RuFw==
+X-Forwarded-Encrypted: i=1; AJvYcCVFWXuVbccaeOlf4+mxSRXMfBjSnbgmfv4nEDjw6ptP2h+FP5A0VoC29eCtjskoqq9ZXhuDuZkX@vger.kernel.org, AJvYcCVdJHHwEulZsOk0kyoPWGF55+RIwsbBA9l7x1lMd/BhfNZj47otHv23FvxpHkbgsm9TLySjmVjqlz5nGhbxoQ==@vger.kernel.org, AJvYcCVh22BPo8cd59RgomHdKhV/0CUsQvZ/cTkHRXs6RJ3fhoMr1boQoyo5ZY2kM2NZaRHqa0Klr8bFY04MXgU=@vger.kernel.org, AJvYcCWPVKtnqjfoZFmqxsdxHbQu9UfCj1Oo+hdk6Npmm7D9+tZqBLP5knmrUK0pNDEsbI2UmcO5D+F86LMz@vger.kernel.org, AJvYcCWnE9use5+QoCtAmLcddJ+UqH/FSQa/MtIfzGTuezdqMvFm/9Xa+5Fc1u5QCnhLq3C87UJr7DPEG8WnEz7f@vger.kernel.org, AJvYcCWs1QPegX1U68dgqCOYQ6zxTaq+QAlIQZDnvGFAGnwd504mG66YbEuI5FWeKovX4vI0afV30Q8p@vger.kernel.org, AJvYcCXa4VI2CrsPkxMyRz05prIClTqxdZ8bOC7vd94kEQIWrXNDIlhpySoOsHG4tkRm6N7w7PnZlyFa83sa4gEsu82J@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxt4rPXv7QZqlGoQizoDGKf4bmrojBig6063g6wjQ0HKErV1P+b
+	j2zGZGY276GFTCAf+UOsnlUFiuyyje+yU4hvKc7rdNJNQUgYDLmHiDFjM5SQZrf7nZ8XObIaZD0
+	G5v+BzSjaCaOdQWuAri8ueHpaS4cf6hQ=
+X-Gm-Gg: ASbGncv0pjY4m4Z3wPCkPMFByCIMKjKXwM4gyj6OrSMa9+UYknGB2RYnPekqRhOvoAt
+	bzIQ6D5RhLKy+UfcjAxq4rjEL5J9gluQy02qSK7jnXSgtEGKtCtRZKW7SmvU/UDhKhulurbXbLe
+	JRgovQZKjseuNVPwUq/M2wo4APNWD979GTdWDjmXTiYpLBcfvVYjEzRFclUs45gwi9SNKHMv8ch
+	sjuaEs81P66xfLf0g==
+X-Google-Smtp-Source: AGHT+IGzSM48OmUPGzUeRKEcJYruA5utreW1EjHGV7gmdERENFp7O15TXDw7VLk6zyBAsqAOGPzeKl/ZVy5+N52X/B4=
+X-Received: by 2002:a05:6402:24c9:b0:61d:3bca:f2fc with SMTP id
+ 4fb4d7f45d1cf-62378366920mr12218960a12.31.1757524894224; Wed, 10 Sep 2025
+ 10:21:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org> <20250910-work-namespace-v1-28-4dd56e7359d8@kernel.org>
-In-Reply-To: <20250910-work-namespace-v1-28-4dd56e7359d8@kernel.org>
+References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org> <20250910-work-namespace-v1-27-4dd56e7359d8@kernel.org>
+In-Reply-To: <20250910-work-namespace-v1-27-4dd56e7359d8@kernel.org>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 10 Sep 2025 19:07:22 +0200
-X-Gm-Features: AS18NWDTXEcgCcD0eE9xaVZPBsGH-OZUi00zWx07R9YiNMR1y39U0KxcJZGX6E4
-Message-ID: <CAOQ4uxhW-pfC8+FSZfvA63mM+Kv1oYOvtzV+KxLycrie1sqdXA@mail.gmail.com>
-Subject: Re: [PATCH 28/32] nsfs: support exhaustive file handles
+Date: Wed, 10 Sep 2025 19:21:22 +0200
+X-Gm-Features: AS18NWAeQzw8A2L3MeKKv5VLNvqBS6WiA4GMVCa0r-bsvToYY4x-puEFtCSLPAg
+Message-ID: <CAOQ4uxgtQQa-jzsnTBxgUTPzgtCiAaH8X6ffMqd+1Y5Jjy0dmQ@mail.gmail.com>
+Subject: Re: [PATCH 27/32] nsfs: support file handles
 To: Christian Brauner <brauner@kernel.org>
 Cc: Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
 	Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
@@ -100,100 +100,272 @@ Content-Transfer-Encoding: quoted-printable
 On Wed, Sep 10, 2025 at 4:39=E2=80=AFPM Christian Brauner <brauner@kernel.o=
 rg> wrote:
 >
-> Pidfd file handles are exhaustive meaning they don't require a handle on
-> another pidfd to pass to open_by_handle_at() so it can derive the
-> filesystem to decode in. Instead it can be derived from the file
-> handle itself. The same is possible for namespace file handles.
+> A while ago we added support for file handles to pidfs so pidfds can be
+> encoded and decoded as file handles. Userspace has adopted this quickly
+> and it's proven very useful.
+
+> Pidfd file handles are exhaustive meaning
+> they don't require a handle on another pidfd to pass to
+> open_by_handle_at() so it can derive the filesystem to decode in.
+>
+> Implement the exhaustive file handles for namespaces as well.
+
+I think you decide to split the "exhaustive" part to another patch,
+so better drop this paragraph?
+
+I am missing an explanation about the permissions for
+opening these file handles.
+
+My understanding of the code is that the opener needs to meet one of
+the conditions:
+1. user has CAP_SYS_ADMIN in the userns owning the opened namespace
+2. current task is in the opened namespace
+
+But I do not fully understand the rationale behind the 2nd condition,
+that is, when is it useful?
+And as far as I can tell, your selftest does not cover this condition
+(only both true or both false)?
+
+I suggest to start with allowing only the useful and important
+cases, so if cond #1 is useful enough, drop cond #2 and we can add
+it later if needed and then your selftests already cover cond #1 true and f=
+alse.
+
 >
 > Signed-off-by: Christian Brauner <brauner@kernel.org>
 
+After documenting the permissions, with ot without dropping cond #2
+feel free to add:
+
 Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-
 > ---
->  fs/fhandle.c               |  6 ++++++
->  fs/internal.h              |  1 +
->  fs/nsfs.c                  | 10 ++++++++++
->  include/uapi/linux/fcntl.h |  1 +
->  4 files changed, 18 insertions(+)
+>  fs/nsfs.c                | 176 +++++++++++++++++++++++++++++++++++++++++=
+++++++
+>  include/linux/exportfs.h |   6 ++
+>  2 files changed, 182 insertions(+)
 >
-> diff --git a/fs/fhandle.c b/fs/fhandle.c
-> index 7c236f64cdea..f18c855bb0c2 100644
-> --- a/fs/fhandle.c
-> +++ b/fs/fhandle.c
-> @@ -11,6 +11,7 @@
->  #include <linux/personality.h>
->  #include <linux/uaccess.h>
->  #include <linux/compat.h>
-> +#include <linux/nsfs.h>
->  #include "internal.h"
->  #include "mount.h"
->
-> @@ -189,6 +190,11 @@ static int get_path_anchor(int fd, struct path *root=
-)
->                 return 0;
->         }
->
-> +       if (fd =3D=3D FD_NSFS_ROOT) {
-> +               nsfs_get_root(root);
-> +               return 0;
-> +       }
-> +
->         return -EBADF;
->  }
->
-> diff --git a/fs/internal.h b/fs/internal.h
-> index 38e8aab27bbd..a33d18ee5b74 100644
-> --- a/fs/internal.h
-> +++ b/fs/internal.h
-> @@ -355,3 +355,4 @@ int anon_inode_getattr(struct mnt_idmap *idmap, const=
- struct path *path,
->  int anon_inode_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
->                        struct iattr *attr);
->  void pidfs_get_root(struct path *path);
-> +void nsfs_get_root(struct path *path);
 > diff --git a/fs/nsfs.c b/fs/nsfs.c
-> index a1585a2f4f03..3c6fcf652633 100644
+> index 6f8008177133..a1585a2f4f03 100644
 > --- a/fs/nsfs.c
 > +++ b/fs/nsfs.c
-> @@ -25,6 +25,14 @@
+> @@ -13,6 +13,12 @@
+>  #include <linux/nsfs.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/mnt_namespace.h>
+> +#include <linux/ipc_namespace.h>
+> +#include <linux/time_namespace.h>
+> +#include <linux/utsname.h>
+> +#include <linux/exportfs.h>
+> +#include <linux/nstree.h>
+> +#include <net/net_namespace.h>
 >
->  static struct vfsmount *nsfs_mnt;
+>  #include "mount.h"
+>  #include "internal.h"
+> @@ -417,12 +423,182 @@ static const struct stashed_operations nsfs_stashe=
+d_ops =3D {
+>         .put_data =3D nsfs_put_data,
+>  };
 >
-> +static struct path nsfs_root_path =3D {};
+> +struct nsfs_fid {
+> +       u64 ns_id;
+> +       u32 ns_type;
+> +       u32 ns_inum;
+> +} __attribute__ ((packed));
 > +
-> +void nsfs_get_root(struct path *path)
+> +#define NSFS_FID_SIZE (sizeof(struct nsfs_fid) / sizeof(u32))
+> +
+> +static int nsfs_encode_fh(struct inode *inode, u32 *fh, int *max_len,
+> +                         struct inode *parent)
 > +{
-> +       *path =3D nsfs_root_path;
-> +       path_get(path);
+> +       struct nsfs_fid *fid =3D (struct nsfs_fid *)fh;
+> +       struct ns_common *ns =3D inode->i_private;
+> +       int len =3D *max_len;
+> +
+> +       /*
+> +        * TODO:
+> +        * For hierarchical namespaces we should start to encode the
+> +        * parent namespace. Then userspace can walk a namespace
+> +        * hierarchy purely based on file handles.
+> +        */
+> +       if (parent)
+> +               return FILEID_INVALID;
+> +
+> +       if (len < NSFS_FID_SIZE) {
+> +               *max_len =3D NSFS_FID_SIZE;
+> +               return FILEID_INVALID;
+> +       }
+> +
+> +       len  =3D NSFS_FID_SIZE;
+> +
+> +       fid->ns_id =3D ns->ns_id;
+> +       fid->ns_type =3D ns->ops->type;
+> +       fid->ns_inum =3D inode->i_ino;
+> +       *max_len =3D len;
+> +       return FILEID_NSFS;
 > +}
 > +
->  static long ns_ioctl(struct file *filp, unsigned int ioctl,
->                         unsigned long arg);
->  static const struct file_operations ns_file_operations =3D {
-> @@ -616,4 +624,6 @@ void __init nsfs_init(void)
->         if (IS_ERR(nsfs_mnt))
->                 panic("can't set nsfs up\n");
->         nsfs_mnt->mnt_sb->s_flags &=3D ~SB_NOUSER;
-> +       nsfs_root_path.mnt =3D nsfs_mnt;
-> +       nsfs_root_path.dentry =3D nsfs_mnt->mnt_root;
->  }
-> diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
-> index f291ab4f94eb..3741ea1b73d8 100644
-> --- a/include/uapi/linux/fcntl.h
-> +++ b/include/uapi/linux/fcntl.h
-> @@ -111,6 +111,7 @@
->  #define PIDFD_SELF_THREAD_GROUP                -10001 /* Current thread =
-group leader. */
+> +static struct dentry *nsfs_fh_to_dentry(struct super_block *sb, struct f=
+id *fh,
+> +                                       int fh_len, int fh_type)
+> +{
+> +       struct path path __free(path_put) =3D {};
+> +       struct nsfs_fid *fid =3D (struct nsfs_fid *)fh;
+> +       struct user_namespace *owning_ns =3D NULL;
+> +       struct ns_common *ns;
+> +       int ret;
+> +
+> +       if (fh_len < NSFS_FID_SIZE)
+> +               return NULL;
+> +
+> +       switch (fh_type) {
+> +       case FILEID_NSFS:
+> +               break;
+> +       default:
+> +               return NULL;
+> +       }
+> +
+> +       scoped_guard(rcu) {
+> +               ns =3D ns_tree_lookup_rcu(fid->ns_id, fid->ns_type);
+> +               if (!ns)
+> +                       return NULL;
+> +
+> +               VFS_WARN_ON_ONCE(ns->ns_id !=3D fid->ns_id);
+> +               VFS_WARN_ON_ONCE(ns->ops->type !=3D fid->ns_type);
+> +               VFS_WARN_ON_ONCE(ns->inum !=3D fid->ns_inum);
+> +
+> +               if (!refcount_inc_not_zero(&ns->count))
+> +                       return NULL;
+> +       }
+> +
+> +       switch (ns->ops->type) {
+> +#ifdef CONFIG_CGROUPS
+> +       case CLONE_NEWCGROUP:
+> +               if (!current_in_namespace(to_cg_ns(ns)))
+> +                       owning_ns =3D to_cg_ns(ns)->user_ns;
+> +               break;
+> +#endif
+> +#ifdef CONFIG_IPC_NS
+> +       case CLONE_NEWIPC:
+> +               if (!current_in_namespace(to_ipc_ns(ns)))
+> +                       owning_ns =3D to_ipc_ns(ns)->user_ns;
+> +               break;
+> +#endif
+> +       case CLONE_NEWNS:
+> +               if (!current_in_namespace(to_mnt_ns(ns)))
+> +                       owning_ns =3D to_mnt_ns(ns)->user_ns;
+> +               break;
+> +#ifdef CONFIG_NET_NS
+> +       case CLONE_NEWNET:
+> +               if (!current_in_namespace(to_net_ns(ns)))
+> +                       owning_ns =3D to_net_ns(ns)->user_ns;
+> +               break;
+> +#endif
+> +#ifdef CONFIG_PID_NS
+> +       case CLONE_NEWPID:
+> +               if (!current_in_namespace(to_pid_ns(ns))) {
+> +                       owning_ns =3D to_pid_ns(ns)->user_ns;
+> +               } else if (!READ_ONCE(to_pid_ns(ns)->child_reaper)) {
+> +                       ns->ops->put(ns);
+> +                       return ERR_PTR(-EPERM);
+> +               }
+> +               break;
+> +#endif
+> +#ifdef CONFIG_TIME_NS
+> +       case CLONE_NEWTIME:
+> +               if (!current_in_namespace(to_time_ns(ns)))
+> +                       owning_ns =3D to_time_ns(ns)->user_ns;
+> +               break;
+> +#endif
+> +#ifdef CONFIG_USER_NS
+> +       case CLONE_NEWUSER:
+> +               if (!current_in_namespace(to_user_ns(ns)))
+> +                       owning_ns =3D to_user_ns(ns);
+> +               break;
+> +#endif
+> +#ifdef CONFIG_UTS_NS
+> +       case CLONE_NEWUTS:
+> +               if (!current_in_namespace(to_uts_ns(ns)))
+> +                       owning_ns =3D to_uts_ns(ns)->user_ns;
+> +               break;
+> +#endif
+> +       default:
+> +               return ERR_PTR(-EOPNOTSUPP);
+> +       }
+> +
+> +       if (owning_ns && !ns_capable(owning_ns, CAP_SYS_ADMIN)) {
+> +               ns->ops->put(ns);
+> +               return ERR_PTR(-EPERM);
+> +       }
+> +
+> +       /* path_from_stashed() unconditionally consumes the reference. */
+> +       ret =3D path_from_stashed(&ns->stashed, nsfs_mnt, ns, &path);
+> +       if (ret)
+> +               return ERR_PTR(ret);
+> +
+> +       return no_free_ptr(path.dentry);
+> +}
+> +
+> +/*
+> + * Make sure that we reject any nonsensical flags that users pass via
+> + * open_by_handle_at().
+> + */
+> +#define VALID_FILE_HANDLE_OPEN_FLAGS \
+> +       (O_RDONLY | O_WRONLY | O_RDWR | O_NONBLOCK | O_CLOEXEC | O_EXCL)
+> +
+> +static int nsfs_export_permission(struct handle_to_path_ctx *ctx,
+> +                                  unsigned int oflags)
+> +{
+> +       if (oflags & ~(VALID_FILE_HANDLE_OPEN_FLAGS | O_LARGEFILE))
+> +               return -EINVAL;
+> +
+> +       /* nsfs_fh_to_dentry() is performs further permission checks. */
+> +       return 0;
+> +}
+> +
+> +static struct file *nsfs_export_open(struct path *path, unsigned int ofl=
+ags)
+> +{
+> +       /* Clear O_LARGEFILE as open_by_handle_at() forces it. */
+> +       oflags &=3D ~O_LARGEFILE;
+> +       return file_open_root(path, "", oflags, 0);
+> +}
+> +
+> +static const struct export_operations nsfs_export_operations =3D {
+> +       .encode_fh      =3D nsfs_encode_fh,
+> +       .fh_to_dentry   =3D nsfs_fh_to_dentry,
+> +       .open           =3D nsfs_export_open,
+> +       .permission     =3D nsfs_export_permission,
+> +};
+> +
+>  static int nsfs_init_fs_context(struct fs_context *fc)
+>  {
+>         struct pseudo_fs_context *ctx =3D init_pseudo(fc, NSFS_MAGIC);
+>         if (!ctx)
+>                 return -ENOMEM;
+>         ctx->ops =3D &nsfs_ops;
+> +       ctx->eops =3D &nsfs_export_operations;
+>         ctx->dops =3D &ns_dentry_operations;
+>         fc->s_fs_info =3D (void *)&nsfs_stashed_ops;
+>         return 0;
+> diff --git a/include/linux/exportfs.h b/include/linux/exportfs.h
+> index cfb0dd1ea49c..3aac58a520c7 100644
+> --- a/include/linux/exportfs.h
+> +++ b/include/linux/exportfs.h
+> @@ -122,6 +122,12 @@ enum fid_type {
+>         FILEID_BCACHEFS_WITHOUT_PARENT =3D 0xb1,
+>         FILEID_BCACHEFS_WITH_PARENT =3D 0xb2,
 >
->  #define FD_PIDFS_ROOT                  -10002 /* Root of the pidfs files=
-ystem */
-> +#define FD_NSFS_ROOT                   -10003 /* Root of the nsfs filesy=
-stem */
->  #define FD_INVALID                     -10009 /* Invalid file descriptor=
-: -10000 - EBADF =3D -10009 */
->
->  /* Generic flags for the *at(2) family of syscalls. */
+> +       /*
+> +        *
+> +        * 64 bit namespace identifier, 32 bit namespace type, 32 bit ino=
+de number.
+> +        */
+> +       FILEID_NSFS =3D 0xf1,
+> +
+>         /*
+>          * 64 bit unique kernfs id
+>          */
 >
 > --
 > 2.47.3
