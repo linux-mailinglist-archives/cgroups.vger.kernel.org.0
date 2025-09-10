@@ -1,55 +1,55 @@
-Return-Path: <cgroups+bounces-9938-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9936-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC410B51CD0
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 18:02:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAFE7B51CCD
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 18:01:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 459B417929D
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 16:01:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38F1A7A0356
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 15:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD8F3375DD;
-	Wed, 10 Sep 2025 16:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC42335BBC;
+	Wed, 10 Sep 2025 16:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="paNyjDhm"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bcWTM8YD"
 X-Original-To: cgroups@vger.kernel.org
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A863314BC;
-	Wed, 10 Sep 2025 16:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3A5A32F774;
+	Wed, 10 Sep 2025 16:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757520044; cv=none; b=Q7TRm4S9y03wZChX59LHzY+wL8JLD/018GsX2OB6zIug4OpD5L2hy0g512ZDetfokVZuR9XKUGG/nkIw/4lJWMoJIyOeNn24uXtOFBJl1q0Zm4Z5FGJmns/abr32kSCf4Gf6oe1PvEGP7lSGhl6p5Tq36K+NBaAmCuw+GxdT8NU=
+	t=1757520043; cv=none; b=einX+nebhJCyVua0niIwcc2pnNos2rKcssjQ86znKEWpCF4sFis10KC8pdcZ+2k+kAlH1/WXsZj29JnPOOSL3fEM61GD6KJh7gpsxQK7ZFa5dm4fDrj8lAQm+P+ABlYT+JQGMb9K8jAPSisn5AWyMzXvDOaJBQulkW5Ap8f6kJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757520044; c=relaxed/simple;
-	bh=rIt1lwzsp9XzrZJT1bWsfyVgjSQqSvGb+smlHq7qH/A=;
+	s=arc-20240116; t=1757520043; c=relaxed/simple;
+	bh=+SBu/NKPdyC5nAz1A9E/LJLm0LC/xkfFy8dViSf1hSs=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=GVodH72pNSHqJZmxh5DE3s6RXfsgf4CPZpakCNJlwhyly+UIRdhgtxhttCJGSkttloBzPFJH6HOgI69sEtjB3uBdYdw8NVCahazgS/qjBsQocFY8ug8fXKo9lhGfmVdpDy7veH32gtvuIYbAMYBoDRJmB1Iwa2+EIM43CcL1tL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=paNyjDhm; arc=none smtp.client-ip=90.155.92.199
+	 Content-Type; b=HgoXVKsxkWMTwKKp4cJFJgp59rjAMrI6kaSDwqBHOiDavfTMp9x7XVNucV2vCkpjqWDxOEOA589MyvzgLvKSew7R1IFm7l02EmaSg8Mhr1RKxPajk/EUPPWMbBSFr+7FNZIyrbJgMc7tPAf51yfXhR+dWmkAoCZjipSw82UVE4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bcWTM8YD; arc=none smtp.client-ip=90.155.92.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
 	Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:In-Reply-To;
-	bh=c76h7a/CjjaErQ2AyCehuglLa0jKRK4q3XvZjeWGlBI=; b=paNyjDhmVYhSaEVsZLHANoq5Yw
-	dggdv+W6D0xAVmmCAo2UOX18Ijl4dpo4Zn6ioMhxta27uG5NejEfZF2Im+MnZM1G7run23ftLXa9C
-	HbpLDFbjEHBI+l45pESmMByCfGudvmJm+WYWMEMT7QhbsHPP8RwPYvlwnTpHCllneFnXrPDejU/qk
-	eDk+B63cZc7QfgcYnQkPEKu8vd/pVb+JP0AmlNine8s85nCxVw7dxTLdakg02lD5DwynQg52CfqBI
-	cdIrOxjoavrV+cEE686OSJrnFsh7iNxW/rvToxaytR6d5zpEQosdiaWMgcdcvQ5dT3Tl3I2adBwRX
-	pQX6Z84A==;
+	bh=U/+Fx4A53xEfXCRTuNuO6C8QlTHTslSx7NN0UvlNNqQ=; b=bcWTM8YDZG0VJ4zuUGgxfAvGyJ
+	I8sSG4DFfOgGhfmhOWVUqycFGoFKbnVu+d/BjfOUar6wYxz8ASouzcxUnSXsKDqGySTpXwwtlrezm
+	ftu10Vv1TO7RECuV8VEz2wQ7YSyYslETQNLtANtNbC8EPPK1x9CULrLSUSA9bKJHFEWBoBr9dwfgz
+	VLZpAIZXd+rXJD21llGUECfgoICgVgINRh/l2up3dUleKYb9ysyqnCPBHHJ+vkAngAGA5URvwKtjd
+	lI+OnwBg0kdgYA6XBoMqIM9HEBs/RFJJ1O1AX2+HxkuxknyasjGPRLXxhff7PPQeX8nxXMwyy7U0R
+	/nIqK6Kg==;
 Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
 	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwNFG-00000005ufH-37qg;
+	id 1uwNFG-00000005ufI-3FL8;
 	Wed, 10 Sep 2025 16:00:30 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-	id 97E19302F33; Wed, 10 Sep 2025 18:00:28 +0200 (CEST)
-Message-ID: <20250910155809.219537898@infradead.org>
+	id 9C053302F52; Wed, 10 Sep 2025 18:00:28 +0200 (CEST)
+Message-ID: <20250910155809.336621043@infradead.org>
 User-Agent: quilt/0.68
-Date: Wed, 10 Sep 2025 17:44:17 +0200
+Date: Wed, 10 Sep 2025 17:44:18 +0200
 From: Peter Zijlstra <peterz@infradead.org>
 To: tj@kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -72,7 +72,7 @@ Cc: linux-kernel@vger.kernel.org,
  sched-ext@lists.linux.dev,
  liuwenfang@honor.com,
  tglx@linutronix.de
-Subject: [PATCH 08/14] sched: Rename do_set_cpus_allowed()
+Subject: [PATCH 09/14] sched: Make __do_set_cpus_allowed() use the sched_change pattern
 References: <20250910154409.446470175@infradead.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -82,146 +82,50 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-Hopefully saner naming.
+Now that do_set_cpus_allowed() holds all the regular locks, convert it
+to use the sched_change pattern helper.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/sched.h  |    4 ++--
- kernel/cgroup/cpuset.c |    2 +-
- kernel/kthread.c       |    4 ++--
- kernel/sched/core.c    |   16 ++++++++--------
- kernel/sched/sched.h   |    2 +-
- 5 files changed, 14 insertions(+), 14 deletions(-)
+ kernel/sched/core.c |   26 +++++---------------------
+ 1 file changed, 5 insertions(+), 21 deletions(-)
 
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1860,8 +1860,8 @@ extern int task_can_attach(struct task_s
- extern int dl_bw_alloc(int cpu, u64 dl_bw);
- extern void dl_bw_free(int cpu, u64 dl_bw);
- 
--/* do_set_cpus_allowed() - consider using set_cpus_allowed_ptr() instead */
--extern void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask);
-+/* set_cpus_allowed_force() - consider using set_cpus_allowed_ptr() instead */
-+extern void set_cpus_allowed_force(struct task_struct *p, const struct cpumask *new_mask);
- 
- /**
-  * set_cpus_allowed_ptr - set CPU affinity mask of a task
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -4122,7 +4122,7 @@ bool cpuset_cpus_allowed_fallback(struct
- 	rcu_read_lock();
- 	cs_mask = task_cs(tsk)->cpus_allowed;
- 	if (is_in_v2_mode() && cpumask_subset(cs_mask, possible_mask)) {
--		do_set_cpus_allowed(tsk, cs_mask);
-+		set_cpus_allowed_force(tsk, cs_mask);
- 		changed = true;
- 	}
- 	rcu_read_unlock();
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -599,7 +599,7 @@ static void __kthread_bind_mask(struct t
- 	}
- 
- 	scoped_guard (raw_spinlock_irqsave, &p->pi_lock)
--		do_set_cpus_allowed(p, mask);
-+		set_cpus_allowed_force(p, mask);
- 
- 	/* It's safe because the task is inactive. */
- 	p->flags |= PF_NO_SETAFFINITY;
-@@ -880,7 +880,7 @@ int kthread_affine_preferred(struct task
- 	kthread_fetch_affinity(kthread, affinity);
- 
- 	scoped_guard (raw_spinlock_irqsave, &p->pi_lock)
--		do_set_cpus_allowed(p, affinity);
-+		set_cpus_allowed_force(p, affinity);
- 
- 	mutex_unlock(&kthreads_hotplug_lock);
- out:
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -2329,7 +2329,7 @@ unsigned long wait_task_inactive(struct
- }
- 
+@@ -2697,28 +2697,12 @@ void set_cpus_allowed_common(struct task
  static void
--__do_set_cpus_allowed(struct task_struct *p, struct affinity_context *ctx);
-+do_set_cpus_allowed(struct task_struct *p, struct affinity_context *ctx);
- 
- static void migrate_disable_switch(struct rq *rq, struct task_struct *p)
+ do_set_cpus_allowed(struct task_struct *p, struct affinity_context *ctx)
  {
-@@ -2346,7 +2346,7 @@ static void migrate_disable_switch(struc
+-	struct rq *rq = task_rq(p);
+-	bool queued, running;
++	u32 flags = DEQUEUE_SAVE | DEQUEUE_NOCLOCK;
  
- 	scoped_guard (task_rq_lock, p) {
- 		update_rq_clock(scope.rq);
--		__do_set_cpus_allowed(p, &ac);
-+		do_set_cpus_allowed(p, &ac);
- 	}
+-	lockdep_assert_held(&p->pi_lock);
+-	lockdep_assert_rq_held(rq);
+-
+-	queued = task_on_rq_queued(p);
+-	running = task_current_donor(rq, p);
+-
+-	if (queued)
+-		dequeue_task(rq, p, DEQUEUE_SAVE | DEQUEUE_NOCLOCK);
+-
+-	if (running)
+-		put_prev_task(rq, p);
+-
+-	p->sched_class->set_cpus_allowed(p, ctx);
+-	mm_set_cpus_allowed(p->mm, ctx->new_mask);
+-
+-	if (queued)
+-		enqueue_task(rq, p, ENQUEUE_RESTORE | ENQUEUE_NOCLOCK);
+-	if (running)
+-		set_next_task(rq, p);
++	scoped_guard (sched_change, p, flags) {
++		p->sched_class->set_cpus_allowed(p, ctx);
++		mm_set_cpus_allowed(p->mm, ctx->new_mask);
++	}
  }
  
-@@ -2697,7 +2697,7 @@ void set_cpus_allowed_common(struct task
- }
- 
- static void
--__do_set_cpus_allowed(struct task_struct *p, struct affinity_context *ctx)
-+do_set_cpus_allowed(struct task_struct *p, struct affinity_context *ctx)
- {
- 	struct rq *rq = task_rq(p);
- 	bool queued, running;
-@@ -2727,7 +2727,7 @@ __do_set_cpus_allowed(struct task_struct
-  * Used for kthread_bind() and select_fallback_rq(), in both cases the user
-  * affinity (if any) should be destroyed too.
-  */
--void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
-+void set_cpus_allowed_force(struct task_struct *p, const struct cpumask *new_mask)
- {
- 	struct affinity_context ac = {
- 		.new_mask  = new_mask,
-@@ -2741,7 +2741,7 @@ void do_set_cpus_allowed(struct task_str
- 
- 	scoped_guard (__task_rq_lock, p) {
- 		update_rq_clock(scope.rq);
--		__do_set_cpus_allowed(p, &ac);
-+		do_set_cpus_allowed(p, &ac);
- 	}
- 
- 	/*
-@@ -2780,7 +2780,7 @@ int dup_user_cpus_ptr(struct task_struct
- 	 * Use pi_lock to protect content of user_cpus_ptr
- 	 *
- 	 * Though unlikely, user_cpus_ptr can be reset to NULL by a concurrent
--	 * do_set_cpus_allowed().
-+	 * set_cpus_allowed_force().
- 	 */
- 	raw_spin_lock_irqsave(&src->pi_lock, flags);
- 	if (src->user_cpus_ptr) {
-@@ -3108,7 +3108,7 @@ static int __set_cpus_allowed_ptr_locked
- 		goto out;
- 	}
- 
--	__do_set_cpus_allowed(p, ctx);
-+	do_set_cpus_allowed(p, ctx);
- 
- 	return affine_move_task(rq, p, rf, dest_cpu, ctx->flags);
- 
-@@ -3517,7 +3517,7 @@ static int select_fallback_rq(int cpu, s
- 			}
- 			fallthrough;
- 		case possible:
--			do_set_cpus_allowed(p, task_cpu_fallback_mask(p));
-+			set_cpus_allowed_force(p, task_cpu_fallback_mask(p));
- 			state = fail;
- 			break;
- 		case fail:
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2592,7 +2592,7 @@ static inline bool task_allowed_on_cpu(s
- static inline cpumask_t *alloc_user_cpus_ptr(int node)
- {
- 	/*
--	 * See do_set_cpus_allowed() above for the rcu_head usage.
-+	 * See set_cpus_allowed_force() above for the rcu_head usage.
- 	 */
- 	int size = max_t(int, cpumask_size(), sizeof(struct rcu_head));
- 
+ /*
 
 
 
