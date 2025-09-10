@@ -1,174 +1,169 @@
-Return-Path: <cgroups+bounces-9843-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9844-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F1E3B509E2
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 02:27:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0C31B50E1C
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 08:40:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 314CE4451F3
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 00:27:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FDC27B3C87
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 06:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E3C86340;
-	Wed, 10 Sep 2025 00:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nE0Fe/1v"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A62D30597D;
+	Wed, 10 Sep 2025 06:40:28 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C8C631D384
-	for <cgroups@vger.kernel.org>; Wed, 10 Sep 2025 00:27:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 700ED2DF701;
+	Wed, 10 Sep 2025 06:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757464030; cv=none; b=MtM5SXM3An3ABFs7Byvk84gB35iTDqxdZ/h/UPXIsl8psbTtTRNOzVptGzqkkyYUcOlzy9rvVjx2btm9Bqjh8S6whtk2XrCi3ZEczHkPFjwkGoOPfB+yC0A0T11uBkeX2yU4W0tZCP5N0HfzU1VDss2YDOqglEcUlbbw0pLDOWs=
+	t=1757486428; cv=none; b=XEYqZNtA75wJXeibybWDUmnqTkpbuuBm9UkjCaf2WqCe05Whp0FJ8zMvrgga1BhrhH7peU6FZyYmRc6d7HyFoO72I5BI/hWz3atNNn/SGnGTxX7IXs+g1BShFhnbSolycpvLxnj7hdt2NSeVFDLVj5rkQj9cNpAxFwyN/pFdFXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757464030; c=relaxed/simple;
-	bh=GXXS6Yp6FuJ7Gx5+BIIsDkHLY0iBFugbjimeY8S4Bn8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=plqJi/cFM68g5zdY3szBupgRowYlGsb089qjMS0Ftwyk62yQfe17h28jd16HpgmBCRauo61IVj8dT3cGtgxeuDu5Q6gsU+WygY4Qmj4jzc1MySKuqrm9e/3OkJmrXLt+4mSTlzkKeEU+byeCWF4L0urjLYUrYF6iNYgdTgXW+PA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nE0Fe/1v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A40AAC4CEFA
-	for <cgroups@vger.kernel.org>; Wed, 10 Sep 2025 00:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757464029;
-	bh=GXXS6Yp6FuJ7Gx5+BIIsDkHLY0iBFugbjimeY8S4Bn8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=nE0Fe/1vh6ownMVPPwkt+ywOvxdriVg3oAq2Uckyofgj4I2jk1xWBxlkWEaS80V0D
-	 VZX0ZKAmC8Ei8eIclXUcwhZIAA71IvWUrM0QLVwriCBt5A7ApE7SFLPGyN2jegkACN
-	 I7gBMNoeLxGHL+PEjNjeOhrF6AA+Ik2hhfIomWmNi2nu0iwGegcZ7op0fBawUpr2wv
-	 Oo7InFIiOW2oHfXxeJpxzVI0UqeUoCSYdVz1NYtvPUfPqWE8hJp/8c0bO3Hu6FQ4Et
-	 JsJ4qaS6N3iiU5/LfNmB+k2mG8/XbYg2sVCA0pp+fK3kQVnfYGq2n+V9d4B5A2r3wx
-	 dLq0fifbG4OVQ==
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-45ddca76f22so16365e9.1
-        for <cgroups@vger.kernel.org>; Tue, 09 Sep 2025 17:27:09 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUfhMlyz92ih2lcu+Hd/LxEb84+351mU7vtpUbBIMhiS5/nu+w8rK1ozszFXcWBoV1P/NLyDEoq@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPV5cJqoVyKWT9IxKwEUJ7uaN/hb8eQzmShJJuJflhQwabPM27
-	LucJo/qCIK8L13m8SDav4LWoCMuhTTGyAICuuEv07BXPjTAjkIbH2RHfdMXe1kg5xlh9pFgBKmN
-	rUYZQHnLl/b+UyxICv2ygvuitmpgV/CKR/APpYlyq
-X-Google-Smtp-Source: AGHT+IEjO5KjVXeuirkJYchCdqjel2eUtWLp8SGydR4OerzOF+GrTMIJyccx5AMwbYmmZQutwhButD5dIBxqgYdkJ80=
-X-Received: by 2002:a05:600c:a31a:b0:45c:b678:296 with SMTP id
- 5b1f17b1804b1-45df82112e9mr295135e9.5.1757464028354; Tue, 09 Sep 2025
- 17:27:08 -0700 (PDT)
+	s=arc-20240116; t=1757486428; c=relaxed/simple;
+	bh=FV4tI2FXo4ZdTdbx88gRsnRQzYUfndAr7YEwxG/lFBI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MMH0z5Sf6F0HRY970/R15/v5FsA1eEG4u8bytHqwWmaM8s/UzUJzZ8VrgtIjb9JJioCByfdhy4Mf4+HAf74xV3OQD4bHxaddinz3clVOxUciuDJprkUtBVUtNqGAIBtnXyDFdqpKtyN7f93FLahzBET1miyGx1DFYqy2PQInAys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cM9zp57BzzKHN5W;
+	Wed, 10 Sep 2025 14:40:22 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id E58811A083B;
+	Wed, 10 Sep 2025 14:40:22 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgB3wY1UHcFo3ZIJCA--.51912S4;
+	Wed, 10 Sep 2025 14:40:22 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: axboe@kernel.dk,
+	hch@infradead.org,
+	colyli@kernel.org,
+	hare@suse.de,
+	dlemoal@kernel.org,
+	tieren@fnnas.com,
+	bvanassche@acm.org,
+	tj@kernel.org,
+	josef@toxicpanda.com,
+	song@kernel.org,
+	satyat@google.com,
+	ebiggers@google.com,
+	kmo@daterainc.com,
+	neil@brown.name,
+	akpm@linux-foundation.org
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	yukuai3@huawei.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	johnny.chenyi@huawei.com
+Subject: [PATCH v2 for-6.18/block 00/16] block: fix ordering of recursive split IO
+Date: Wed, 10 Sep 2025 14:30:40 +0800
+Message-Id: <20250910063056.4159857-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CACePvbUJSk23sH01msPcNiiiYw7JqWq_7xP1C7iBUN81nxJ36Q@mail.gmail.com>
- <aLJ4fEWo7V9Xsz15@yjaykim-PowerEdge-T330> <CACePvbW_Q6O2ppMG35gwj7OHCdbjja3qUCF1T7GFsm9VDr2e_g@mail.gmail.com>
- <aLRTyWJN60WEu/3q@yjaykim-PowerEdge-T330> <CACePvbVu7-s1BbXDD4Xk+vBk7my0hef5MBkecg1Vs6CBHMAm3g@mail.gmail.com>
- <aLXEkRAGmTlTGeQO@yjaykim-PowerEdge-T330> <CACePvbXAXbxqRi3_OoiSJKVs0dzuC-021AVaTkE3XOSx7FWvXQ@mail.gmail.com>
- <aLqDkpGr4psGFOcF@yjaykim-PowerEdge-T330> <CAF8kJuPuOWUEMg6C9AnAA-mddgHRjuMVqURrbk6bUHxAmEvgFQ@mail.gmail.com>
- <CAF8kJuNW2kmxKYRE9t8WvSOad9JkLYt0WSAcFOQ9r9=2=XGc9Q@mail.gmail.com> <aL3GHJJ6+elPD7OP@yjaykim-PowerEdge-T330>
-In-Reply-To: <aL3GHJJ6+elPD7OP@yjaykim-PowerEdge-T330>
-From: Chris Li <chrisl@kernel.org>
-Date: Tue, 9 Sep 2025 17:26:57 -0700
-X-Gmail-Original-Message-ID: <CAF8kJuPj6-gZ4H+VQtJpJj_MutTgTcR-9BfDQnweayOrXk-NCQ@mail.gmail.com>
-X-Gm-Features: AS18NWAzRhK6Sza7aFhZ16A-JN0ICbt6KESSJLX5RLfWjX7iQZOSQJtZI6HXM48
-Message-ID: <CAF8kJuPj6-gZ4H+VQtJpJj_MutTgTcR-9BfDQnweayOrXk-NCQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm/swap, memcg: Introduce infrastructure for
- cgroup-based swap priority
-To: YoungJun Park <youngjun.park@lge.com>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org, 
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
-	shikemeng@huaweicloud.com, kasong@tencent.com, nphamcs@gmail.com, 
-	bhe@redhat.com, baohua@kernel.org, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, gunho.lee@lge.com, 
-	iamjoonsoo.kim@lge.com, taejoon.song@lge.com, 
-	Matthew Wilcox <willy@infradead.org>, David Hildenbrand <david@redhat.com>, Kairui Song <ryncsn@gmail.com>, 
-	Wei Xu <weixugc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgB3wY1UHcFo3ZIJCA--.51912S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw15KFyfCr1fCFykXr4Utwb_yoW5Ar43pw
+	4agr4fXr48GFsagFsIv3W7tFn5Ga1F9FW5Gr93Xws5ZF1DZry8tw48XrW8tryUGrWfC3yU
+	XF1UCryUKr15GrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
+	n4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8
+	ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU0s2-5UUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Sun, Sep 7, 2025 at 10:51=E2=80=AFAM YoungJun Park <youngjun.park@lge.co=
-m> wrote:
->
-> > On Fri, Sep 5, 2025 at 4:45=E2=80=AFPM Chris Li <chrisl@kernel.org> wro=
-te:
-> > > >   - Mask computation: precompute at interface write-time vs runtime
-> > > >     recomputation. (TBD; preference?)
-> > >
-> > > Let's start with runtime. We can have a runtime and cached with
-> > > generation numbers on the toplevel. Any change will reset the top
-> > > level general number then the next lookup will drop the cache value
-> > > and re-evaluate.
-> >
-> > Scratch that cache value idea. I found the run time evaluation can be
-> > very simple and elegant.
-> > Each memcg just needs to store the tier onoff value for the local
-> > swap.tiers operation. Also a mask to indicate which of those tiers
-> > present.
-> > e.g. bits 0-1: default, on bit 0 and off bit 1
-> >        bits 2-3: zswap, on bit 2 and off bit3
-> >        bits 4-6: first custom tier
-> >        ...
-> >
-> > The evaluation of the current tier "memcg" to the parent with the
-> > default tier shortcut can be:
-> >
-> >         onoff =3D memcg->tiers_onoff;
-> >         mask =3D memcg->tiers_mask;
-> >
-> >         for (p =3D memcg->parent; p && !has_default(onoff); p =3D p->pa=
-rent) {
-> >                 merge =3D mask | p->tiers_mask;
-> >                 new =3D merge ^ mask;
-> >                 onoff |=3D p->tiers_onoff & new;
-> >                 mask =3D merge;
-> >         }
-> >         if (onoff & DEFAULT_OFF) {
-> >                 // default off, look for the on tiers to turn on
-> >         } else {
-> >                 // default on, look for the off tiers to turn off
-> >         }
-> >
-> > It is an all bit operation that does not need caching at all. This can
-> > take advantage of the short cut of the default tier. If the default
-> > tier overwrite exists, no need to search the parent further.
-> >
-> > Chris
-> >
->
-> Hi Chris,
->
-> Thanks a lot for the clear code and explanation.
->
-> I=E2=80=99ll proceed with the runtime evaluation approach you suggested.
-> I was initially leaning toward precomputing at write-time since (1)
-> cgroup depth is might be deep, and (2) swap I/O paths are far more freque=
-nt than config
+From: Yu Kuai <yukuai3@huawei.com>
 
-Cgroup depth is typically not deep. Might have a lot of top level
-cgroups. That is the more common setup I am family with. If you know
-other usage cases contradicting that please let me know.
+Changes from v1:
+ - fix compile failure if CONFIG_BLOCK_CGROUP is disabled in patch 2;
+ - change the words:
+   fix disordered split IO -> fix ordering of split IO
+ - add review tag from Bart and Christoph
+Changes from RFC v3:
+ - initialize bio->issue_time_ns in blk_mq_submit_bio, patch 2;
+ - set/clear new queue_flag when iolatency is enabled/disabled, patch 3;
+ - fix compile problem for md-linear, patch 12;
+ - make should_fail_bio() non-static, and open code new helper, patch 14;
+ - remove the checking for zoned disk, patch 15;
+Changes from RFC v2:
+ - add patch 1,2 to cleanup bio_issue;
+ - add patch 3,4 to fix missing processing for split bio first;
+ - bypass zoned device in patch 14;
+Changes from RFC:
+ - export a new helper bio_submit_split_bioset() instead of
+export bio_submit_split() directly;
+ - don't set no merge flag in the new helper;
+ - add patch 7 and patch 10;
+ - add patch 8 to skip bio checks for resubmitting split bio;
 
-We can turn this into a LPC discussion question to ask the audience as well=
-.
+patch 1-5 cleanup bio_issue, and fix missing processing for split bio;
+patch 6 export a bio split helper;
+patch 7-13 unify bio split code;
+path 14,15 convert the helper to insert split bio to the head of current
+bio list;
+patch 16 is a follow cleanup for raid0;
 
-> writes. Is your preference for runtime for implementation simpleness?
-> (Any other reasons I don't know?)
+Yu Kuai (16):
+  block: cleanup bio_issue
+  block: initialize bio issue time in blk_mq_submit_bio()
+  blk-mq: add QUEUE_FLAG_BIO_ISSUE_TIME
+  md: fix mssing blktrace bio split events
+  blk-crypto: fix missing blktrace bio split events
+  block: factor out a helper bio_submit_split_bioset()
+  md/raid0: convert raid0_handle_discard() to use
+    bio_submit_split_bioset()
+  md/raid1: convert to use bio_submit_split_bioset()
+  md/raid10: add a new r10bio flag R10BIO_Returned
+  md/raid10: convert read/write to use bio_submit_split_bioset()
+  md/raid5: convert to use bio_submit_split_bioset()
+  md/md-linear: convert to use bio_submit_split_bioset()
+  blk-crypto: convert to use bio_submit_split_bioset()
+  block: skip unnecessary checks for split bio
+  block: fix ordering of recursive split IO
+  md/raid0: convert raid0_make_request() to use
+    bio_submit_split_bioset()
 
-Oh, I think it provides the most flexibility with minimal code
-complexity. It is kind of the best world. If the child overrides the
-default value with leading "-/+" without tiername. It will trigger the
-shortcut path and no need to look up the parent.
+ block/bio.c                 |  2 +-
+ block/blk-cgroup.h          |  6 ----
+ block/blk-core.c            | 19 ++++++-----
+ block/blk-crypto-fallback.c | 16 ++++------
+ block/blk-iolatency.c       | 19 +++++------
+ block/blk-merge.c           | 64 +++++++++++++++++++++++++------------
+ block/blk-mq-debugfs.c      |  1 +
+ block/blk-mq.c              | 10 ++++++
+ block/blk-throttle.c        |  2 +-
+ block/blk.h                 | 45 ++------------------------
+ drivers/md/md-linear.c      | 14 ++------
+ drivers/md/raid0.c          | 30 ++++++-----------
+ drivers/md/raid1.c          | 38 ++++++++--------------
+ drivers/md/raid1.h          |  4 ++-
+ drivers/md/raid10.c         | 54 ++++++++++++++-----------------
+ drivers/md/raid10.h         |  2 ++
+ drivers/md/raid5.c          | 10 +++---
+ include/linux/blk_types.h   |  7 ++--
+ include/linux/blkdev.h      |  3 ++
+ 19 files changed, 148 insertions(+), 198 deletions(-)
 
-However, if the child has a default empty "swap.tiers" file, change to
-the parent will impact every child cgroup. We can have it both ways
-with what I consider pretty minimal code. That is actually the most
-common usage case. K8s pods would change from the top level.
+-- 
+2.39.2
 
-It is a good trade off in terms of ROI from complexity vs feature
-flexibility point of view.
-
-BTW, the "swap.tiers" file should require root or some kind of CAPS so
-non root users can't write to it by themselves. Otherwise they can
-abuse their own setting thus rendering the QoS aspect not effective to
-other cgroups.
-
-Chris
 
