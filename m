@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-9848-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9853-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD3A8B50E38
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 08:42:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B094B50E3A
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 08:42:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2084F4E3206
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 06:41:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FF6C1C28185
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 06:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5ED630AACF;
-	Wed, 10 Sep 2025 06:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0684D3064AD;
+	Wed, 10 Sep 2025 06:40:38 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47B43308F0A;
-	Wed, 10 Sep 2025 06:40:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA67D30C351;
+	Wed, 10 Sep 2025 06:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757486432; cv=none; b=P3nZQ5EhecbP9itTypHkeCwDeiSqNEnkXupOB5/L120u/RV1GuoaWY093oAesV4TFzOqh/809ALM7Ax8kiW82wqgDqyvs7hNmpVB+X0tRj1vrk/h38cotaKx2YXhhjOSdLudr8K0mePOsJQFQPqkp6hhiQygK/LRbI7tRGEV4eo=
+	t=1757486437; cv=none; b=Rvh4soq4iOQRfxfGI+W+RrO0AVyolzVxM9fOAfLhaOvJ8bDCmRlxgk8x/zHbxZeZbYgB3o60CB863wNNXRuTQPiA057NRVrKFSfddS3j+13kF6Yd9eojwRc6XBHIL4wIQNd6wvUCN+dq8SKY+MD+oaKbemAbcP5sgNIVcnoOtlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757486432; c=relaxed/simple;
-	bh=dVVOCUCHiJ1HkZBAEsIACEKMbxTEsrrZZkvvUsW4KgM=;
+	s=arc-20240116; t=1757486437; c=relaxed/simple;
+	bh=ExD4GIcsKa9pjnrAz2EHiIexUOEpjAQ6JkKhgLczW54=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ovV39pMfhb3W9LawuwS0GSjVPNxEw1jX22dbky1Fm7LW71nYeLmmHXDhgW9A/8beaSDyOcDsqXVUAcHASzdZGghF08Mo3RUTsu3lRXequh+QUVTFZB/ye+SRZTPZHvJO91EU0mRaUd0g7rhazDtzIA6OlOn/HHD8WlieWgoiVj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=H0MXy7PrbMH8KP/GybxxktYXhfP72DXbT76uJlLuNqHrgfpIzp9cH4tsIaizpDurnxg7J9N+YEappSYBrsi/cEthn66W6qWZjZRkNzv09Gk4Wblk0Q0Mvfla5gZhoZZNJgS+BRyxyoNGSVeqdL+NWABspVKHwlJXez+TmHBi6W4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cM9zt6gFxzKHN4P;
-	Wed, 10 Sep 2025 14:40:26 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cM9zx2wbYzYQvQk;
+	Wed, 10 Sep 2025 14:40:29 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 232431A1143;
+	by mail.maildlp.com (Postfix) with ESMTP id E1E3E1A0E99;
 	Wed, 10 Sep 2025 14:40:27 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgB3wY1UHcFo3ZIJCA--.51912S9;
-	Wed, 10 Sep 2025 14:40:26 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgB3wY1UHcFo3ZIJCA--.51912S10;
+	Wed, 10 Sep 2025 14:40:27 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	hch@infradead.org,
@@ -62,9 +62,9 @@ Cc: linux-block@vger.kernel.org,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com,
 	johnny.chenyi@huawei.com
-Subject: [PATCH v2 for-6.18/block 05/16] blk-crypto: fix missing blktrace bio split events
-Date: Wed, 10 Sep 2025 14:30:45 +0800
-Message-Id: <20250910063056.4159857-6-yukuai1@huaweicloud.com>
+Subject: [PATCH v2 for-6.18/block 06/16] block: factor out a helper bio_submit_split_bioset()
+Date: Wed, 10 Sep 2025 14:30:46 +0800
+Message-Id: <20250910063056.4159857-7-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20250910063056.4159857-1-yukuai1@huaweicloud.com>
 References: <20250910063056.4159857-1-yukuai1@huaweicloud.com>
@@ -75,10 +75,10 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgB3wY1UHcFo3ZIJCA--.51912S9
-X-Coremail-Antispam: 1UD129KBjvJXoW7GryxJFy5uF4kZw4ftw18Zrb_yoW8JrW8pF
-	nxur4UGrZ5Gr17CFW293WSkF1DGan8XFy5JrWxGFnxAr12yr1Sgan2vryFqF10ya1akrZx
-	ZrsrArWfKr4Du37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgB3wY1UHcFo3ZIJCA--.51912S10
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF47AFWxJr45tFWUCFyrtFb_yoW5Kw1rpr
+	429w17JrWkJFs29wnxJa17tas3KFZ0qrWUCay3J395JrnrtrnrKF1xtrWFvFyFkrW5C3y3
+	Jw1vkay5Cw4UArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -97,40 +97,108 @@ X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-trace_block_split() is missing, resulting in blktrace inability to catch
-BIO split events and making it harder to analyze the BIO sequence.
+No functional changes are intended, some drivers like mdraid will split
+bio by internal processing, prepare to unify bio split codes.
 
-Cc: stable@vger.kernel.org
-Fixes: 488f6682c832 ("block: blk-crypto-fallback for Inline Encryption")
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-crypto-fallback.c | 3 +++
- 1 file changed, 3 insertions(+)
+ block/blk-merge.c      | 59 ++++++++++++++++++++++++++++--------------
+ include/linux/blkdev.h |  2 ++
+ 2 files changed, 42 insertions(+), 19 deletions(-)
 
-diff --git a/block/blk-crypto-fallback.c b/block/blk-crypto-fallback.c
-index dbc2d8784dab..27fa1ec4b264 100644
---- a/block/blk-crypto-fallback.c
-+++ b/block/blk-crypto-fallback.c
-@@ -18,6 +18,7 @@
- #include <linux/module.h>
- #include <linux/random.h>
- #include <linux/scatterlist.h>
-+#include <trace/events/block.h>
+diff --git a/block/blk-merge.c b/block/blk-merge.c
+index 354a3070e6a1..f680ccf81864 100644
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -104,33 +104,54 @@ static unsigned int bio_allowed_max_sectors(const struct queue_limits *lim)
+ 	return round_down(UINT_MAX, lim->logical_block_size) >> SECTOR_SHIFT;
+ }
  
- #include "blk-cgroup.h"
- #include "blk-crypto-internal.h"
-@@ -230,7 +231,9 @@ static bool blk_crypto_fallback_split_bio_if_needed(struct bio **bio_ptr)
- 			bio->bi_status = BLK_STS_RESOURCE;
- 			return false;
- 		}
++/*
++ * bio_submit_split_bioset - Submit a bio, splitting it at a designated sector
++ * @bio:		the original bio to be submitted and split
++ * @split_sectors:	the sector count at which to split
++ * @bs:			the bio set used for allocating the new split bio
++ *
++ * The original bio is modified to contain the remaining sectors and submitted.
++ * The caller is responsible for submitting the returned bio.
++ *
++ * If succeed, the newly allocated bio representing the initial part will be
++ * returned, on failure NULL will be returned and original bio will fail.
++ */
++struct bio *bio_submit_split_bioset(struct bio *bio, unsigned int split_sectors,
++				    struct bio_set *bs)
++{
++	struct bio *split = bio_split(bio, split_sectors, GFP_NOIO, bs);
 +
- 		bio_chain(split_bio, bio);
-+		trace_block_split(split_bio, bio->bi_iter.bi_sector);
- 		submit_bio_noacct(bio);
- 		*bio_ptr = split_bio;
++	if (IS_ERR(split)) {
++		bio->bi_status = errno_to_blk_status(PTR_ERR(split));
++		bio_endio(bio);
++		return NULL;
++	}
++
++	bio_chain(split, bio);
++	trace_block_split(split, bio->bi_iter.bi_sector);
++	WARN_ON_ONCE(bio_zone_write_plugging(bio));
++	submit_bio_noacct(bio);
++
++	return split;
++}
++EXPORT_SYMBOL_GPL(bio_submit_split_bioset);
++
+ static struct bio *bio_submit_split(struct bio *bio, int split_sectors)
+ {
+-	if (unlikely(split_sectors < 0))
+-		goto error;
++	if (unlikely(split_sectors < 0)) {
++		bio->bi_status = errno_to_blk_status(split_sectors);
++		bio_endio(bio);
++		return NULL;
++	}
+ 
+ 	if (split_sectors) {
+-		struct bio *split;
+-
+-		split = bio_split(bio, split_sectors, GFP_NOIO,
++		bio = bio_submit_split_bioset(bio, split_sectors,
+ 				&bio->bi_bdev->bd_disk->bio_split);
+-		if (IS_ERR(split)) {
+-			split_sectors = PTR_ERR(split);
+-			goto error;
+-		}
+-		split->bi_opf |= REQ_NOMERGE;
+-		bio_chain(split, bio);
+-		trace_block_split(split, bio->bi_iter.bi_sector);
+-		WARN_ON_ONCE(bio_zone_write_plugging(bio));
+-		submit_bio_noacct(bio);
+-		return split;
++		if (bio)
++			bio->bi_opf |= REQ_NOMERGE;
  	}
+ 
+ 	return bio;
+-error:
+-	bio->bi_status = errno_to_blk_status(split_sectors);
+-	bio_endio(bio);
+-	return NULL;
+ }
+ 
+ struct bio *bio_split_discard(struct bio *bio, const struct queue_limits *lim,
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 7c542b1851fa..066e5309bd45 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1000,6 +1000,8 @@ extern int blk_register_queue(struct gendisk *disk);
+ extern void blk_unregister_queue(struct gendisk *disk);
+ void submit_bio_noacct(struct bio *bio);
+ struct bio *bio_split_to_limits(struct bio *bio);
++struct bio *bio_submit_split_bioset(struct bio *bio, unsigned int split_sectors,
++				    struct bio_set *bs);
+ 
+ extern int blk_lld_busy(struct request_queue *q);
+ extern int blk_queue_enter(struct request_queue *q, blk_mq_req_flags_t flags);
 -- 
 2.39.2
 
