@@ -1,80 +1,80 @@
-Return-Path: <cgroups+bounces-9874-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9875-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32E4FB518FE
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 16:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B2BDB5190C
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 16:14:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DFB81C25E64
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 14:09:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 702611B202AD
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 14:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D2E321F28;
-	Wed, 10 Sep 2025 14:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F112322764;
+	Wed, 10 Sep 2025 14:14:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="mMK2XaBZ"
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="kDr9xgjY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from OS8PR02CU002.outbound.protection.outlook.com (mail-japanwestazon11012053.outbound.protection.outlook.com [40.107.75.53])
+Received: from OS8PR02CU002.outbound.protection.outlook.com (mail-japanwestazon11012008.outbound.protection.outlook.com [40.107.75.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2687B31B13F;
-	Wed, 10 Sep 2025 14:07:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.75.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1092D0C9D;
+	Wed, 10 Sep 2025 14:14:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.75.8
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757513277; cv=fail; b=WaFn6aeErnYvKLU8GC7aAkl+0PjNcTwwjswJ9ExlUZArBGLGYeowOY6FU8our3UYQ9a+X0nUMCiQwqdtgvSJbFjmoH8cE9AaKBd0jcF5a0JQu3PQWt9NNBhuPsOeJQH+XIeqHB6qMpx/m8uzB2ObweaBF6NqWZ1L9uJ3jqLJkMk=
+	t=1757513657; cv=fail; b=HI4GjtQaNBbT9H7SuUsHMb1mLrpuQKEeb07irmG+rHiuEsAUf7RvPTd5Lamks+bLEzqwKNlQi4YuZYu+tu9aZXg5DnCfXNVlt4iuZw2QVZ6tGy7Qw+M1YdEY2vAAk8obQ2znkQhcQ7nYXFcBOJnPl5Gq7nIuQRLG8vD6xRIyxjk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757513277; c=relaxed/simple;
-	bh=zvJi14wSVwdMUwqA1ZeyxGXkLBcuS83MjL6ZjkIlQeE=;
+	s=arc-20240116; t=1757513657; c=relaxed/simple;
+	bh=/4gZm8tpUJQYlc6O7t3TJIhMyeGRr/36UL226tRvDdo=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SVXnvK5/RycZ8URbl3HppnmkMSkGMNswxsfp7PH4TfqN19CXF3mR8ef0LRVDIsOTw5eR0qkNDOs+4Qot6Sm68O5CLUHu/l2QaJ604sygAzSHg41gNNcPbDZqBxyyuZ+Q0O7Q6cL7W32ho0ELqQe2LtZvCE0tbZ+jeepa9q7BEO4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=mMK2XaBZ; arc=fail smtp.client-ip=40.107.75.53
+	 Content-Type:MIME-Version; b=fs49hd8/T/fbXjhkn+DTC7udbJbtnDzFOgYFxoGW0HofEdNI2AChxKnsBmf5mLG2eytM6bPANiy4jjlEoHubo5IwsXbf0cUK67+XAjncaRkyDIJOrhtPg94CBUC9gROdwHMF03UszeK87WwlEjyqjg2wo6Q0MEqSFvYRw01kdog=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=kDr9xgjY; arc=fail smtp.client-ip=40.107.75.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=AsSK0GAEZ9aEhqzy5g7QIANxd/Pd6Mo2CLvmcO9ZniZgmAn1ca3qIA8gnZdNBL5NtARqFSy24yM62MeyhVLeUAj9pB6ngsNaPU2hdG7+cXh9oFqy5qAFkqjez3SiDQVsVXWn38jwe+ypFr7YmOoV2pidMYXGMoX7qaVKvLW5zSHxAnwYMii0x1Y2grHZvKg+Tp0a8gQ5qdtLz5fCv+uraAhKw7vdzp4Qnwc3nOpwvGUVjGAu+v38uGwBnFQ2mNQ6mJ94KNp/IPtCDzjlavyFtvjf+ZGoCr8dFm8mVo2fzWbKLW6tTVLDk5m6KZuMjDNLSw3D1ZeWdgEf1bFSkWR96A==
+ b=hZgMg4mbpjeH/dpM6AEr4Oe9bYnW2U17ER4Z+l+TWoLYZDc5sY1JO2HVv26Y6PC8/LdvOgcv47sPhsYmHwOWVotUJhELwDSMnqhLgU6y2aNrymfiL/f82ptxDL7k8sDM1WkG5pLXuFHKc6nH4Rrmzww1fawY6CFt0DHAadoTv+IW/gzViCrw0EXzfD8BgRj0UbkdJKgB3XunFzL/kAmL+t4yE/DaFDu2mJgR/PH+UDKGYfPNGggGD/AQQ1o18vOJQ3dk4Cd7A7SeGZPQLD/2xAVzf0S9HkGvJhBZYEWkO2OfSqUfeFXc/dc/L8t5XQ23w4j3YxUUvxmcakSbBFKvtQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oJbg4ZI3pPHs6Nk/nl26gYGNF3T+i8Fsyu/ZTJ56dq8=;
- b=a7c+cIHlr7LWLTRdqJqF+rNNB+3vXW3xoHLtf1kVtBChqlJi3NmBSozTN0RrpFRQmtYic8E+WowqZZnD5Ayhz1v8xNpuKTxeqsBV5v8xzOSnoXUEzT0vtVEdHR5U9xLejJR/q/+U2u/aKN2UoMxtOCW0xW+j4JHHdN5nJm72q0OMkPtYAx1I+7WNrbNGihDL5fnrjcWQRoprlksKo4bcYNOfYkESW4hNtMzJta+0+x3lJS6s2qzfm6MYM0qtUgovlF0OGeT0JLoDTVxfrqIjsaR+IdPQCW1/D/yfHb+MI2qrdxhKcAUjNi79/6bd3VymOF6KUhB4TwCTExZSNjA5yA==
+ bh=HgRmjlD2LmJXCGGgx2nP5xOgwtcBo9Ai44iU2m3/c+w=;
+ b=Z9AlseVb3grDSkQFp3D2o8vNQsWEs7ONQoXcanacpB5a0JBUyjXT8v7KIG0DanNZg4Tyw8BzmkB3vndkVHw5WTOz2Xj6vemxqctjFt7mSpevA777ufC4KUg6rPxNxk91FvkoDBrZ1fmytg3CokfsoB8ltGUWhyhzdfPef33VZ+ZLAsPa9MhOKqqxlSYrS7Hdsj/ffnC3OIRvXcluZXZJSeySC6bXJ7qzUmeM/P3reKV39ciT5R0zySPCbEibmejEmJ61dAGZsMIxw5q970s+iHb2WlOcA6qjSzbJgm5Lw0fEg88k1SopaP5BbR60akLar4CKQJ4FBnYkMxIBcdUMWw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oJbg4ZI3pPHs6Nk/nl26gYGNF3T+i8Fsyu/ZTJ56dq8=;
- b=mMK2XaBZTfKvDqNIRQv3+nJUgs3IOz2uwsQAWRB6m6OOSPKEHzNxNMVumnfBH5D9hwgKy8jJEWjPhOp/px2hjpFSiMiUXQsrVQXhFI38dRl0SK1Yv5a0OFu9y1UZ/xyHLt+j4zfwN6YJOtEfnb2Jz2yn+tp2dWOs81KMXriDyuejAFOqMvHbm1sA6kYCFumYY7jXVayDa54Mw+rQf/kqnAt7PyNo4gNPhKDW7x7UbkS2hbHuBPbHboyhUk4QbmyJ9S3YN59hsEHs9VeymfKGjaPxvni1Ulva1RnciGQqj4/TNR4+Pm6Up2evzAXiTwbecVGZVlVEiXH407H/ELTIjQ==
+ bh=HgRmjlD2LmJXCGGgx2nP5xOgwtcBo9Ai44iU2m3/c+w=;
+ b=kDr9xgjYE4AvgqJwtb3oquqeUVwHdD9NN8GhATFMs+kkL/u3T5HsTIX5gj4+R2nrkTHDufQwkzZE75E1EkGmHitzxYuCFQaZJW2CR+ft2vOC9yFCq/xlsj7gcTxRrYzDtIjkIQliW/bWD2knFzqwVftchDkHM9++4xDxOb/5OcujGLD7XQuC9Sv2y/K7qxDF9pmRWH3QUOgpTo4vqe7HpYMFCyoTu3DYc3vwmFhZnECttjf8rGxaK+9DmGEZdgZyXQgsFAg+BsVc2/BN0pS/O6XJ8H5PieV1iWEi6XWB2P+RBiAxzpg8pAa7Oxny6eF9rhHIWL663Ng3cXnNbXYRaQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=vivo.com;
 Received: from SEZPR06MB5624.apcprd06.prod.outlook.com (2603:1096:101:c8::14)
- by TYZPR06MB5931.apcprd06.prod.outlook.com (2603:1096:400:340::13) with
+ by TYZPR06MB6356.apcprd06.prod.outlook.com (2603:1096:400:41b::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Wed, 10 Sep
- 2025 14:07:52 +0000
+ 2025 14:14:13 +0000
 Received: from SEZPR06MB5624.apcprd06.prod.outlook.com
  ([fe80::e837:10e3:818e:bdfd]) by SEZPR06MB5624.apcprd06.prod.outlook.com
  ([fe80::e837:10e3:818e:bdfd%4]) with mapi id 15.20.9094.021; Wed, 10 Sep 2025
- 14:07:52 +0000
-Message-ID: <fe38e328-5e64-44b2-9e62-f764c4b307bd@vivo.com>
-Date: Wed, 10 Sep 2025 22:07:42 +0800
+ 14:14:12 +0000
+Message-ID: <b74b1e28-8479-4b14-9210-5b4334d3ce22@vivo.com>
+Date: Wed, 10 Sep 2025 22:14:04 +0800
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v0 0/2] mm: swap: Gather swap entries and batch async
  release
-To: Barry Song <21cnbao@gmail.com>, Kairui Song <ryncsn@gmail.com>
+To: Suren Baghdasaryan <surenb@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>
 Cc: Michal Hocko <mhocko@suse.com>, David Rientjes <rientjes@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>,
  Andrew Morton <akpm@linux-foundation.org>,
- Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>,
- Baoquan He <bhe@redhat.com>, Chris Li <chrisl@kernel.org>,
+ Kemeng Shi <shikemeng@huaweicloud.com>, Kairui Song <kasong@tencent.com>,
+ Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
+ Barry Song <baohua@kernel.org>, Chris Li <chrisl@kernel.org>,
  Johannes Weiner <hannes@cmpxchg.org>,
  Roman Gushchin <roman.gushchin@linux.dev>,
  Muchun Song <muchun.song@linux.dev>, David Hildenbrand <david@redhat.com>,
  Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
  "Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka
  <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, Brendan Jackman
- <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>,
+ Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>,
  "Peter Zijlstra (Intel)" <peterz@infradead.org>,
  Chen Yu <yu.c.chen@intel.com>, Hao Jia <jiahao1@lixiang.com>,
  "Kirill A. Shutemov" <kas@kernel.org>, Usama Arif <usamaarif642@gmail.com>,
@@ -87,15 +87,14 @@ Cc: Michal Hocko <mhocko@suse.com>, David Rientjes <rientjes@google.com>,
  "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)"
  <cgroups@vger.kernel.org>
 References: <20250909065349.574894-1-liulei.rjpt@vivo.com>
- <CAMgjq7Ca6zOozixPot3j5FP_6A8h=DFc7yjHKp2Lg+qu7gNwMA@mail.gmail.com>
- <CAGsJ_4xiTteQECtUNBo+eC9uu8R3CgVT2rpvGCGdFqc3psSnWQ@mail.gmail.com>
+ <fszpgct7ywqy6qq3qnjflol3theovmgnau2wgdqqdxin4q7ezm@zumgw533hxon>
+ <CAJuCfpFaTj8PsXkoYRQKQ0sOu+mKikUAE8Wbcx+YpZXZ4M7cMA@mail.gmail.com>
 From: Lei Liu <liulei.rjpt@vivo.com>
-In-Reply-To: <CAGsJ_4xiTteQECtUNBo+eC9uu8R3CgVT2rpvGCGdFqc3psSnWQ@mail.gmail.com>
+In-Reply-To: <CAJuCfpFaTj8PsXkoYRQKQ0sOu+mKikUAE8Wbcx+YpZXZ4M7cMA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI1PR02CA0017.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::10) To SEZPR06MB5624.apcprd06.prod.outlook.com
- (2603:1096:101:c8::14)
+X-ClientProxiedBy: SGAP274CA0024.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::36)
+ To SEZPR06MB5624.apcprd06.prod.outlook.com (2603:1096:101:c8::14)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -103,106 +102,102 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB5624:EE_|TYZPR06MB5931:EE_
-X-MS-Office365-Filtering-Correlation-Id: af2a9725-8167-420e-aa1b-08ddf0736e3f
+X-MS-TrafficTypeDiagnostic: SEZPR06MB5624:EE_|TYZPR06MB6356:EE_
+X-MS-Office365-Filtering-Correlation-Id: df4999e5-680d-4a14-9481-08ddf0745134
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|376014|7416014|42112799006|7053199007;
+	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|42112799006;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?R0ZjeEdtdlBjSFJ0aW5qU0dVYWlydVFvanJ6MDRzSml3elR5RDRJNmpZa1RX?=
- =?utf-8?B?akVEVmlQNmNsdHZjamlFNWh0MzFiTEN4Ni9sWXJENlc2a2RQSkhjaEdQaG1s?=
- =?utf-8?B?b0dxeitab3RrREdWdk9PSWFIaDFUTUJNNjJxRkFwZGQ1UWhieVlOUjZXTk51?=
- =?utf-8?B?R1N0aCswVG51TFhwUlYvZUFPTlhpcWhuckFZa1lPOUcyM09KVEFiUDh2bU5n?=
- =?utf-8?B?VUZQTTkyRUxwa3FoVll2a2NxaGo2WFB2RjV5TW1JQkJPR2xzZ2dOU040NUp6?=
- =?utf-8?B?aW9JTnQxSWhFV2hiOG9lcjMxU2lmM3IycnB1WFpUWWdVZis0dDM3V21HUkdL?=
- =?utf-8?B?MGtPK2NJYkxEbFkxdW1uM3gwZitadTdPZDQxeVBZSmJpem9MR1RqQXFpTXdh?=
- =?utf-8?B?VytNcXJlMEE0c0RpOW5ZTGIySDhBV0xTWW4wcWZVdW1WQjZuWmtPY0FQZ0pZ?=
- =?utf-8?B?NnhsWUppSWNSdC9yZDMxZks5ZEFvNlhSL2Z4KzhBVTdxM2JXQi9uZGtJT2ZL?=
- =?utf-8?B?NC9RSGdaYzhnek9HREExR2diclN3WkIybFRvVVJ1eUUvVVJ1MVFNNFRGYXll?=
- =?utf-8?B?a3BMQ3R0M0JUdkxjZHVOWVZUZlVDMFlrVGlZZ0l3bjA3U08yUWhReXMrSUJw?=
- =?utf-8?B?VkFoUnhQaU82cFkveitWa0N2Z2svRjFUQm1OV0lYSkIwdkVCR2RvWWpLN1Jm?=
- =?utf-8?B?Q3M0V3NIZ05ybjJZOHZkblBUZzB1aWRhS2JDUytnWWdwWGZEdnZyU3N3amNT?=
- =?utf-8?B?bldmNGlPVzFreEpQcVQ5bnhNaGwrVm1OZ1RvWFN0VGwyUFE2Y0l3SVBMSHpV?=
- =?utf-8?B?alUrZGtIOFBBNUtkK0dJT1FvT2xiL0c0NVVaT00vZHJpVXBXMmJDOTNYUnB5?=
- =?utf-8?B?NUxnSHRYRFJ4RnVIb0d6Z0swdi9ML1ZOVW1uaFV2Qjh4MjU2ZTBCbXZIckM0?=
- =?utf-8?B?QzhDWng1RnM2R04yY2lxbFpMU09OZm0wNzc5OGpZa3VrcTNEcUExdlA4Z1VD?=
- =?utf-8?B?Wlh2a1lmOHV5d2VXOC9KUTFoN05NRmd1b3FJdmdxdWg2TWRicmZkZTcyZGM0?=
- =?utf-8?B?eVJhcE1iNmpiNVgzL3BPM052YmNBNVFNVzdHREdrVmNGQnVZQ3kyd1VRZFhq?=
- =?utf-8?B?ZEJocTF6ZnVwUk93Sm1qbWZqOTMyKzRnaUkwbzIxclNPbzhTZjZEeUlZajVn?=
- =?utf-8?B?NVFKOTlMTXM4SWYvSmx5TWF6QjRSa1psWFRuOGVBd053b3NuS05QcHBsT0t4?=
- =?utf-8?B?Sis1b00zYjRjWDJoOHl2S09QelJzWERkYS9NNU0xc0E3aVEzZGRHb3lqVTBK?=
- =?utf-8?B?TDd2bFVsY3lYdEZkQVhXRmVjN1Z2MlRsMDlIWU5Kb3RMbjZJTmpBREhHdlU1?=
- =?utf-8?B?N1NIdlp3ajVGNUZaQWxDdi9vNlhWRTR0ZXVxSFVsSnB6c0ZGQjZsclRGNVpy?=
- =?utf-8?B?b2thaG9oOFFtVXFpWXE5N0xFbVc2Y0QzVU5zTzVZMlQrVDlCdzQvZWZNRXU2?=
- =?utf-8?B?WkxTZTRxYXl6SW5WNy9yOE9SM3hTODM4azVyWk5oQzFsRVk5RmpzeGQzcEdD?=
- =?utf-8?B?dDRON3grK0Q2anVobjlrNC95a0NicXAyZFJ4OVRHSG9qUWcwQkNLVzM0OGVH?=
- =?utf-8?B?RVdKd3FJVGFJUkZ0Nk8vWjVWWnlRZFhPRFlZYjVMQ2g4a1A1WHpWMDA0dUZt?=
- =?utf-8?B?NE52VmdTdjBsL0sxTEJsZ2d6OUpGeFZsblByU1lhMStpbTc4NlBCZFNRWGNF?=
- =?utf-8?B?YjRzbHliSk40S2VPNHRWWEJtMzJwV2JhZ0Yvb1JLRmRsZkFWYTNvWFhuNlMy?=
- =?utf-8?B?UGJ1YkQzTVRDZ21DL1pUOHJXZ3RTbWFsSWJ6VkVwcXNLOHpjMjZoMkQzQVFj?=
- =?utf-8?B?SWo0ZHB5QmNPaFdMZHV6S1VwMW5iZGVSazR0MnhPeGtOQkV3cVFPT29BSk93?=
- =?utf-8?Q?QJh0JKkGF4g=3D?=
+	=?utf-8?B?NFM0REMwTjhiaEFSVEt6WEVlWkdBdlhSZEI0dUc3TVluRjlrc1NDYnZBbGpW?=
+ =?utf-8?B?Q2pzaFd5ZXRMTjlLZjNsWFo5WnZ1MWdvcVlVcG4xVllSZmxLMHJWUStucG1Z?=
+ =?utf-8?B?T0tFVWdYVVFVcHV2MFdZQ0tnNXZMYU1YZXJqQU1MaTFrQTkreUpZYlVUSFAr?=
+ =?utf-8?B?WjYvSkpaSlRhMUFzNk9VbDN3akd5OEVIUVd3WnE4OVdmWTExNXN5dDgwL1pB?=
+ =?utf-8?B?UHhYb3FpVXZFbkdQZ2MzK3BMWEtKVi95cVprZitJUkdld2VXRkFVclo0LzdJ?=
+ =?utf-8?B?bXJubTk2N3JuaTlsT2dhR1dBdDJLdGRNaVBveWNZTTJRVCtJaVNjSnpoWVlY?=
+ =?utf-8?B?eXBLMFNSeGlxSlpHYm9INjJCbmZIZWhXTis4aGRXMnNmOEVPT0JKMTgwUE9m?=
+ =?utf-8?B?QUhJWFdFT0xUZDJCaUFERDN3UlJpUnFnZE9qbXZUNS8rMi9PWEV2Nk5EWjIr?=
+ =?utf-8?B?ZzNONlovWWcwWEJDb3hsL25OWkg2aVg3OXYyNWt3MFBUQW1MNnV5bWkwQVVw?=
+ =?utf-8?B?Wm00ckxLK20xZ2hMYzgrWHpudnI5aDA4SG1Tbk10V2dOeHZUNEZNZ2YvVzJs?=
+ =?utf-8?B?OUF6aXZ3dEUzeWQreVI4cjFhM3dqaEM0eExENmkyVytmQXFIZXdMT0I0MzBW?=
+ =?utf-8?B?V2o0SFViRWhhOUdqRmJ6aXNmRGd1N2pqZ2Vrd3czNDhyRGdFU0FtNm9rVEhk?=
+ =?utf-8?B?ZHEyOFkxSDhNZ1FJRHUyNnowZXdrSTB6WENtN1FlUUIySTFtYWF2dExrT3p0?=
+ =?utf-8?B?Mk0ybFhqOVVPcEZ5VkRkZEdKV2hOL0JOWTY1TmJQcG9yN2JKVVp2Mkt2NStE?=
+ =?utf-8?B?TmlNY01xZG0wWWl0QkZBa3M3SGNBcU5nb0NhUE1LOXY0WjVmYXlNUVdyTlBV?=
+ =?utf-8?B?TFZqSzAxYjFSNnlXL2N4ZVA0N014Skp3d09aUFVnOGtKKzBqQnZ3c2k1Y1hj?=
+ =?utf-8?B?TndSb2M4Y2ZWUWNtNU54QVpBb0JFMFZESUFCOTQ3TElIQmQ1TENSeEJLenBK?=
+ =?utf-8?B?VnFNZGxtMWZQYjRtMGkwODNYdTNlSU56WC9SUXpXSjM0a1VvQ2sxZDZMZnhD?=
+ =?utf-8?B?eFFGV3JOcmZlOVVaMTZrOEJNL1FmZjRiempGQTRFcWVtWWI4TTBIVGl4MUQx?=
+ =?utf-8?B?V3I3M0NjTmdzZVRZVVdPYWczZUl5MW1DOUo0M1ZrRXE2M1hMek5mTzRDYWRD?=
+ =?utf-8?B?K282QURTa2hIaXU1aytwZ0l5dFNXVnEyUHdUaW56dXB5YjVIRlR6U2lWTVl4?=
+ =?utf-8?B?YzhFUVd2VDZtdTd4eHgvVGFtaE1DUzdwMGRiYS9xeE9EK2lhVVluVDBGL1hL?=
+ =?utf-8?B?VGlOSGQydTZmdTNjb0JTMnhPdFRoejdBWGQ2S2NrcndVWmdOODNSRG91czhS?=
+ =?utf-8?B?RTRKcUdCV0pKOFFpMDg4K2phaHAwMUpHWlBsNUxWR3V5S2tYczc5NHlmTkxs?=
+ =?utf-8?B?d3ZXZ3NxL0MxVUwvMzBYOTJZRXJMUWxzQXJSbUJzM1I3OEoyWkd0T2VWU1JW?=
+ =?utf-8?B?dmZuZWJwV1dVMzF1dUw3c056UlMzVFJuRUNEM3dZaGFEdnZyQjRmUmRwcllO?=
+ =?utf-8?B?NEV4MlpHNWxGaW55b0s3eFBRSWtzSnRtTVJ6eUQrVVRTb3VIanRLT2I4V0lV?=
+ =?utf-8?B?NU5xUXJkU1NlNmNXMTJRVlNFd3VPU1hPKzE5UjRHbFZoM0QvUFA3d2paSGUr?=
+ =?utf-8?B?bE84Z3VKMEtJVTZtMmVTUy92aUZLK1Jkbk4zWkxjdENsanFGcDJSWXZsc25l?=
+ =?utf-8?B?emhlMGcrbEpTUVdzSlBQc0FXZlI5cWRva0VhUVBxSVRrWjYvMXQ1L282ZG1p?=
+ =?utf-8?B?NXU4Z2dQMlU3ajN0ODhzQXQ5Q1pFbkhKL1dDNlFXQXloL0oyTFo4ZTZMZVll?=
+ =?utf-8?B?R1R5UmlMa0o2cG5zbnFKVXFlYXlIZDV3eDhYdmtLRW1nYmQwNjlBNi9HaXNX?=
+ =?utf-8?Q?h57xIF1Knh8=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5624.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(42112799006)(7053199007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5624.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(42112799006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?YmcxVDFWZlVzZDY2QklCQ2lRRFRRd0ZDSXplUk13R1E0TmE1MTNEZWhaTXRD?=
- =?utf-8?B?M09qZDUvM0tqU0MyL0l6Nyt3d3FGUzFmSURpTDhDcmlCdktKdkx5R1lDYzhp?=
- =?utf-8?B?UkxxaCt5bzJreFhUSkVmbzdQWEVWbHhaWGIvZCt1WkxxRjVMQU01d3diUFQ0?=
- =?utf-8?B?ZFFGSkxnOSs3VlJmUGJLd0N1ZEl0enRSQXdYbnRPUW9td08vcHJacXZYVXUv?=
- =?utf-8?B?aGQ1SGhNd2xOYlFldytYb3lGN2xreEVFaWNMRzNpcDJtMWRNTzhNdThRckl5?=
- =?utf-8?B?eDNJL1FVdGt1YlBqdm12NlpaNWliaUdkSHFRcDRyYlU1b3d1WG4vVnJFNGt0?=
- =?utf-8?B?NnpEbGlIQWc2YVJWTEplNk8wM0ZpaFNWSG1SWmFQQ3hhSWJnNnJQNG16R3VF?=
- =?utf-8?B?ODNBU05vTU50blRSQUF1ZCtjUWlENWxxRmJsSzEzT0FmNU1aVi8rM0RjaHE2?=
- =?utf-8?B?OGlQbitPRlAzVVVEcjdGYVM4M1FkRjY0NDZtbVovQUl6TE9oOHloSUY3Mm5v?=
- =?utf-8?B?Tk1lczg4bnNGQlRnc0k3dFlyTUhWZ1pIN3hBYSt2SEpibW9qRG1wbmFIZ1RF?=
- =?utf-8?B?QlBYOHJ0Z2hXa29icWNCcVRBeFhkZDIxRG42dkdvOXFvRDVnS3ZjVjAyNWtM?=
- =?utf-8?B?M3p5WFRNempzeUxNNGk3QTlEa1pCSkQwMjhwcWRUTTVoT2lML3dQSkg1SlV2?=
- =?utf-8?B?YlJZRnphQnRuZ3J3RG5IalhDeEtlRmJMbXRIZ1Q0WWxVRFAxN21hSTVhZlRK?=
- =?utf-8?B?Mlp1bnEzS3VIMlpVbW16L3o2aTN1clNhWFlpR3Z2V2gzbGdYUWhNS05RTUNj?=
- =?utf-8?B?S1VOaHZnQ1hsZE80RTFkWE9xRnZEemZFVlNMYTBOTjUybGhoMng4UkdJMitH?=
- =?utf-8?B?MG9KTjhoUUk4ZDBPY1JZNDdySUt6TUo4TExibkdFcVN2Q0wxbDVGQ3pxV0la?=
- =?utf-8?B?VkdHZkt1SkJUR3pHZjVkS0FYeiszOXVxRTZaaVhQazB0VzBpeVA0a1ZHUjNY?=
- =?utf-8?B?V1BLVi9IUitBNXI3RUljV3IwVWJMd1NqK25WdTBKQWplSHI5bVhNcDBFTlhv?=
- =?utf-8?B?OUhIK2ZiWmx2TENPMHkvM2Fzc1B3VWpYL2tUWlNSb0RycEFrYWNrQlNQd0Q1?=
- =?utf-8?B?Nk9Kd08xeU1jcVBqVFhUYmhLeVdMSnd2NE50b1l6K1lYNk92MG1HR1hoZWUr?=
- =?utf-8?B?YmtMSGFyeGtyc1pkUytUY25XdzJoMEhPUmZJSlBydXliNythSGdVVEpBNXBY?=
- =?utf-8?B?ODREc3ozV3FUV2JWcVdTMEVnWlhCM2paalNYUDR3VlJ0aVVVQ3dVckdxbXNX?=
- =?utf-8?B?blVyeDdCamwvY1dqVzVKc3BrVnBhTzRIYXFpWkhYK1FCMS9PT28zVi8xdUdQ?=
- =?utf-8?B?TjhqaXNHZk14SnlhL1lhRldsTW9sejRZdHd1NXhNYTNCOC9IN2M0cUduUFhD?=
- =?utf-8?B?dFFqN3ROQmR3eC90TzZjR2R1ZlZRMERWZW5wVUJMTEdER3lLRjdEcVhaWjU4?=
- =?utf-8?B?Z0g0eEpiUk1tOS9HcGN1dG9jbFdjVGpKUzdOWkIwdHdZY2lzN2JpR0VZOXdP?=
- =?utf-8?B?d3VuZlgvZko0UEsyNTJmNHh2N0hYcWo4U0V5UzdRZWtvTGhRQUFJY21iMU82?=
- =?utf-8?B?OGRDVFBLV01LN3hkOHpVTEZEY21sNzFzSWVrQ21OT3ZCeThXYlVjektEckpO?=
- =?utf-8?B?a091N3hKOEhHYVBxd1hoeHNsbTllM3pOdE5QQzRwS3Nybm9LV1hrN0hjREpL?=
- =?utf-8?B?WG9URExqNzloMlZlUmRMcDFlaXpyam5yV1pKMUd5anhDZXd5eHNkYm9lRUt3?=
- =?utf-8?B?amtNT05NZlBqVE5RaU1hTVAxQVYvSDAyZVRTY0o5THpadXYyamF3VVZnY1RY?=
- =?utf-8?B?RlZwb09hNE5HbTBjckduV0tGRURFOWVFNFRobzFpZUc1bTlKSWx3cHZFZFpZ?=
- =?utf-8?B?azloL0pJR0QvUlNqTElTSHYzNERzSkNLTk5EQ1E4SkdIeEZaaE94bFI1N3Fy?=
- =?utf-8?B?Yjdoemw1Szl2MXpLd1E0YlhPeE9DeWFzM2JlTko1VDdjaTBaR2lhZDFWTllT?=
- =?utf-8?B?ZnhjSEJVYXZmc2g0Ui9lVEk0WmdHODlJN3p2TytvNGNyZ3pmNmJIek5OK2dU?=
- =?utf-8?Q?3DuDZDdo2ejIBgZNN0XdXHacv?=
+	=?utf-8?B?eEhWTjRuWjYxQkNXcVcydURBMzZSSE9yTkFvUW9ZQmN2bFZBZkRKM0poM3BC?=
+ =?utf-8?B?blhDaXhiMm9VbTV3cE9vN2RaS09IS0lDR1NiQ1FEbXc5ZE5OU2hDaFMxcFJP?=
+ =?utf-8?B?b1ZKUG1FOS9RWWF1bjU5bnlrWmVlUU4wVGEwc2xhUkxINlRTd1ZMakZOblc3?=
+ =?utf-8?B?YlBmbmUvK1NaRVNTYzIrSU1UK2tMZnpCS1FuSjY0ZDNocnZvMjhPNkEyQXNK?=
+ =?utf-8?B?aXl6UGc0Z0pZRjlSLzNSeE5CZU0xbEJoUHVTb09kd1lHNVdRVXNiZkI5UWhY?=
+ =?utf-8?B?VnBSNHBEbER6S0xucnU4bm9oN3JQZWdsbWtTSlNURzVFdUttQkRsTC9xSG96?=
+ =?utf-8?B?MVJOR2o4VVdheXVWb2wyaGdnMnlpdmlpcTRQTTNZWVhLR3BvdEc1MmFmMWxi?=
+ =?utf-8?B?OTk4dnQwclRSMytrM1lEQnMvY05ETVRlS3ZPK0ZaN0hudjN0MEdnVkRiN0U0?=
+ =?utf-8?B?R1Z2dlFoNlhWcU9uQ2oyRDFITmJTcWVaVndZSGFoUnExT2VYRFBrSnF5ZU94?=
+ =?utf-8?B?cGFpN3dhalhEeDJab3VmZTRiWlgxblB5bm1DNGJqL1pLVHRLWk5kV1ZRa1ZC?=
+ =?utf-8?B?VmtKSy9qT3dsN1RsKzJNM2doODJtOG1YTkpKVmJEUlA5MzEwQ2xST0grTTU5?=
+ =?utf-8?B?NkhXMTJKc05GTlkyblEzMURLekU0N2NrTDBXQStwSjcrNTVZRlZHRW1oVW5j?=
+ =?utf-8?B?ejdpb2k4bzFjbFFmenZIaExxZ1dXNGxucmdYUEtJdWR3ZWVHbjZrMDlvUWp6?=
+ =?utf-8?B?YWJ2Uzl3bUVxS0duYkpzTUhXdHpBbTJMbmpvVThKVzNzK2tOdmhhTkZvUXVF?=
+ =?utf-8?B?YmZML3ZCWEwwbU1IQTlJbWVYT245RVg0ZlE2bGZhdEh1OFVzK0hrdW5xbWVl?=
+ =?utf-8?B?dURyNXc2aGR0ZnA4R0NVTDAwTlJZVFphUXI2L3J2U0Y2ZFEyUTdaelp1TmVI?=
+ =?utf-8?B?VjJSS1ZDa2RZbXUwRW9EQ0FsbFpLMklucStMNlRseis1U3pxNlA5dTgyOWlG?=
+ =?utf-8?B?dVBZaGdxK2UxSEtja3ZSNHJvdXBrQ08xYUhrczF0R0tlTGg1WDFYNTZZcFdv?=
+ =?utf-8?B?bzZmTkdJOGZHMExwU0lrUnEvWEcvVllXdXBKekRYTDdPMTZlUHYzOXRuTEI1?=
+ =?utf-8?B?OFh5T0JXVmE5cTBBS01aRkFoTjA5eDhZTDgzR0RISVNjbzJ1YVUwNUFzbGQw?=
+ =?utf-8?B?UU83VFVKS3d3cFIrb1dqbFV6WXRRYnZEMDF4TDNvYUZjV2tsSU85dyttdTEw?=
+ =?utf-8?B?MWgrNm1WKys5RUhTS2xJQlREVjVjeE9CY2M1SFIvdnBWeVNBSWYwaFduRTUv?=
+ =?utf-8?B?NW85M1lhazcrd25nQjhrL295aWtGd0tJeEhZQXk2YlNuVUpKUEhmeHFrTWov?=
+ =?utf-8?B?WCszZ20vZjQ3MzhyR0oyTGZPc1JHdXArNkYxOG1VeGhhdHR5QUxXM2tkNG9N?=
+ =?utf-8?B?R3hhelE0V1ZvZlJKQzVGdmxTNGdyaXhieGtzV3pZUmxmS2x2VjJyd2tTaDJu?=
+ =?utf-8?B?YTYrdW51cUI3bDhWT0JnWUtWR3EwRklQUnN3R29kRzBDbjZ2ZUU3dXJCMVgy?=
+ =?utf-8?B?V3JQUWZ5TS90Q3cyYWhjakRpUkpBVjlZYS9pdkZEYlBmeWtSNGZCZTFHdE8z?=
+ =?utf-8?B?Rys2UkdQQmltclh3S0hhSjhITlFEK1VJcGtJU01iV3NxZ1dGd2ZWZUxxcm5O?=
+ =?utf-8?B?cnBPcXVOTXhjKzJxcWdTTzNEMGlhQSt2Mi9EM1hSTWxmTmlpSVcyOW9uRkRq?=
+ =?utf-8?B?U0lhRFdHWXFxMnFVVWZ6R2NubXBYMmtMUW04RnQ4aFdySXQ3OWk1VndkQnJJ?=
+ =?utf-8?B?WjZBNERxMmZNeElIdGh4NENZaW1hRHlZZ1JYVWUvWlFIK0luNUhJSDRWMC90?=
+ =?utf-8?B?bE5acU5DZGE1bWhPc3FnbnNVbXVKQ0Z5bjVpQ1dET2hTc29ZVUlTaEt5NWNp?=
+ =?utf-8?B?a3d1VVNlWjlEYy9XTUQ1cC9pS3V3M09lVVQwRC9zNnh3YVBCM1h6cHdlRTZB?=
+ =?utf-8?B?N1ZGaHQrVERMcjBCeEtMSXQ4RUZ0T2FQQlFJa0srcUNDcFlZMWkvUlE5Rm54?=
+ =?utf-8?B?ZS9ENU1JMXY4ZzhSMDE1RnplUnNQdlhlVE5Da1B5NHlaRTYzY1JvT3kzeW5G?=
+ =?utf-8?Q?ttQsFjT8y1de0jMSnSo7g64pY?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: af2a9725-8167-420e-aa1b-08ddf0736e3f
+X-MS-Exchange-CrossTenant-Network-Message-Id: df4999e5-680d-4a14-9481-08ddf0745134
 X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5624.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2025 14:07:51.9755
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2025 14:14:12.7599
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: I0oM7n09VMzvUjFkBlvWxMwW/wxQTyQnP2VTxJ3sZIrR0K+XMyD5Bll8lIROAXW+Dxg75DWf9TKe6Ko+Buu1BQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5931
+X-MS-Exchange-CrossTenant-UserPrincipalName: XGGk8VVJsfXjcZrr+t1VFJzUpQeGh4uPACZt1U1Zx9c2s6RXhMISEJbK//mtkmputQeWO6o9yH11oFP4NKsFDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6356
 
 
-On 2025/9/9 17:24, Barry Song wrote:
-> [You don't often get email from 21cnbao@gmail.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->
-> On Tue, Sep 9, 2025 at 3:30 PM Kairui Song <ryncsn@gmail.com> wrote:
->> On Tue, Sep 9, 2025 at 3:04 PM Lei Liu <liulei.rjpt@vivo.com> wrote:
->> Hi Lei,
->>
+On 2025/9/10 3:48, Suren Baghdasaryan wrote:
+> On Tue, Sep 9, 2025 at 12:21 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+>> On Tue, Sep 09, 2025 at 02:53:39PM +0800, Lei Liu wrote:
 >>> 1. Problem Scenario
 >>> On systems with ZRAM and swap enabled, simultaneous process exits create
 >>> contention. The primary bottleneck occurs during swap entry release
@@ -211,96 +206,44 @@ On 2025/9/9 17:24, Barry Song wrote:
 >>>
 >>> 2. Android Use Case
 >>> During camera launch, LMKD terminates background processes to free memory.
+>> How does LMKD trigger the kills? SIGKILL or cgroup.kill?
+> SIGKILL
+>
 >>> Exiting processes compete for CPU cycles, delaying the camera preview
 >>> thread and causing visible stuttering - directly impacting user
 >>> experience.
->>>
->>> 3. Root Cause Analysis
->>> When background applications heavily utilize swap space, process exit
->>> profiling reveals 55% of time spent in free_swap_and_cache_nr():
->>>
->>> Function              Duration (ms)   Percentage
->>> do_signal               791.813     **********100%
->>> do_group_exit           791.813     **********100%
->>> do_exit                 791.813     **********100%
->>> exit_mm                 577.859        *******73%
->>> exit_mmap               577.497        *******73%
->>> zap_pte_range           558.645        *******71%
->>> free_swap_and_cache_nr  433.381          *****55%
->>> free_swap_slot          403.568          *****51%
->> Thanks for sharing this case.
+>> Since the exit/kill is due to low memory situation, punting the memory
+>> freeing to a low priority async mechanism will help in improving user
+>> experience. Most probably the application (camera preview here) will get
+>> into global reclaim and will compete for CPU with the async memory
+>> freeing.
 >>
->> One problem is that now the free_swap_slot function no longer exists
->> after 0ff67f990bd4. Have you tested the latest kernel? Or what is the
->> actual overhead here?
+>> What we really need is faster memory freeing and we should explore all
+>> possible ways. As others suggested fix/improve the bottleneck in the
+>> memory freeing path. In addition I think we should explore parallelizing
+>> this as well.
 >>
->> Some batch freeing optimizations are introduced. And we have reworked
->> the whole locking mechanism for swap, so even on a system with 96t the
->> contention seems barely observable with common workloads.
->>
->> And another series is further reducing the contention and the overall
->> overhead (24% faster freeing for phase 1):
->> https://lore.kernel.org/linux-mm/20250905191357.78298-1-ryncsn@gmail.com/
->>
->> Will these be helpful for you? I think optimizing the root problem is
->> better than just deferring the overhead with async workers, which may
->> increase the overall overhead and complexity.
->>
-> I feel the cover letter does not clearly describe where the bottleneck
-> occurs or where the performance gains originate. To be honest, even
-> the versions submitted last year did not present the bottleneck clearly.
+>> On Android, I suppose most of the memory is associated with single or
+>> small set of processes and parallelizing memory freeing would be
+>> challenging. BTW is LMKD using process_mrelease() to release the killed
+>> process memory?
+> Yes, LMKD has a reaper thread which wakes up and calls
+> process_mrelease() after the main LMKD thread issued SIGKILL.
+
+Hi Suren
+
+our current issue is that after lmkd kills a process,|exit_mm|takes 
+considerable time. The interface you provided might help quickly free 
+memory, potentially allowing us to release some memory from processes 
+before lmkd kills them. This could be a good idea.
+
+We will take your suggestion into consideration.
+
+
+Thank you
+
+
+
+
 >
-> For example, is this due to lock contention (in which case we would
-> need performance data to see how much CPU time is spent waiting for
-> locks), or simply because we can simultaneously zap present and
-> non-present PTEs?
->
-> Thanks
-> Barry
-
-Hi Barry
-
-Thank you for your question. Here is the issue we are encountering:
-
-Flame graph of time distribution for douyin process exit (~400MB swapped):
-do_notify_resume         3.89%
-get_signal               3.89%
-do_signal_exit           3.88%
-do_exit                  3.88%
-mmput                    3.22%
-exit_mmap                3.22%
-unmap_vmas               3.08%
-unmap_page_range         3.07%
-free_swap_and_cache_nr   1.31%****
-swap_entry_range_free    1.17%****
-zram_slot_free_notify    1.11%****
-zram_free_hw_entry_dc    0.43%
-free_zspage[zsmalloc]    0.09%
-
-CPU: 8-core ARM64 (14.21GHz+33.5GHz+4*2.7GHz), 12GB RAM
-
-Process with ~400MB swap exit situation:
-Exit takes 200-300ms, ~4% CPU load
-With more zram compression/swap, exit time increases to 400-500ms
-free_swap_and_cache_nr avg: 0.5ms, max: ~1.5ms (running time)
-free_swap_and_cache_nr dominates exit time (33%, up to 50% in worst cases
-). Main time is zram resource freeing (0.25ms per operation). With dozens
-of simultaneous exits, cumulative time becomes significant.
-
-Optimization approach:
-Focus isn't on optimizing hot functions (limited improvement potential).
-High load comes from too many simultaneous exits. We'll make time-consumin
-g interfaces in do_exit asynchronous to accelerate exit completion while
-allowing non-swap page (file/anonymous) freeing by other processes.
-
-Camera startup scenario:
-20-30 background apps, anonymous pages compressed to zram (200-500MB).
-Camera launch triggers lmkd to kill 10+ apps - their exits consume 25%+
-CPU. System services/third-party processes use 60%+ CPU, leaving camera
-startup process CPU-starved and delayed.
-
-Sincere wishes,
-Lei
-
-
 
