@@ -1,141 +1,111 @@
-Return-Path: <cgroups+bounces-9860-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9861-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 956CFB50E5E
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 08:46:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3980FB50E9B
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 09:00:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98AC07B781B
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 06:44:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E45B116E622
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 07:00:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47673101D2;
-	Wed, 10 Sep 2025 06:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94863064AA;
+	Wed, 10 Sep 2025 06:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="RLrV5EXO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FAF430F801;
-	Wed, 10 Sep 2025 06:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50912306488;
+	Wed, 10 Sep 2025 06:59:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757486442; cv=none; b=eXVIkV0Uk/cjs0+NPKdy0pAhqN0QOPIcVN1pKoSIH+nVdWPsa+/zWUrSugqX9ntepzYYNnPJrPQv/XuNEWsX0saQdDHpSAcYGmeCdw9OCr+IGqlSzjghdgHPQqa3ey7FguMNdO472Czj/cN2OpULrmSFt6UfwnUnL/pt/GkSfbw=
+	t=1757487597; cv=none; b=cTiFuPCRKeK1q2olQMbKA0MOEHemvhqgSm2UGeyr1voeA8togPUCxI+Kg1otlacPPlySkOmswbmdLG1bJ8Cedpkb/UPrqTfTskbLxc7xECm+e0Yx1noqf6CaI/B66HzhEnA16xgn+QTI5SF/yB9XYfr3t6XUdYD78GHrORvvvb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757486442; c=relaxed/simple;
-	bh=BsXCXZf7enNPtqCA7gtd+PKb7Bxh9kLGxcQm1O+GHeU=;
+	s=arc-20240116; t=1757487597; c=relaxed/simple;
+	bh=UV9aNJxf0IwQww5C7kEiuRay+kqbh0JrXnwpbCW7B0I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Da7PmuyHLlsYa4RnlmWVCQMq6F39PF4jggh4T/zKi/QrbTWSEerq6hzidC/hqM7HHkSNX4rLuaPr7WU/D8HC2hLYvGbGfl4F2ZSgUKswt1Adwcd+nSt4C2+NXbYssvMsKhtSxDqPk4OKqJGfw8e01oOcz2OGgYVNcgG9k2FhEdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cMB075tWhzYQvQT;
-	Wed, 10 Sep 2025 14:40:39 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 4EA3A1A06E0;
-	Wed, 10 Sep 2025 14:40:38 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgB3wY1UHcFo3ZIJCA--.51912S20;
-	Wed, 10 Sep 2025 14:40:37 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: axboe@kernel.dk,
-	hch@infradead.org,
-	colyli@kernel.org,
-	hare@suse.de,
-	dlemoal@kernel.org,
-	tieren@fnnas.com,
-	bvanassche@acm.org,
-	tj@kernel.org,
-	josef@toxicpanda.com,
-	song@kernel.org,
-	satyat@google.com,
-	ebiggers@google.com,
-	kmo@daterainc.com,
-	neil@brown.name,
-	akpm@linux-foundation.org
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-raid@vger.kernel.org,
-	yukuai3@huawei.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com,
-	johnny.chenyi@huawei.com
-Subject: [PATCH v2 for-6.18/block 16/16] md/raid0: convert raid0_make_request() to use bio_submit_split_bioset()
-Date: Wed, 10 Sep 2025 14:30:56 +0800
-Message-Id: <20250910063056.4159857-17-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20250910063056.4159857-1-yukuai1@huaweicloud.com>
-References: <20250910063056.4159857-1-yukuai1@huaweicloud.com>
+	 MIME-Version:Content-Type; b=hhzMBrHv2bH+bsEiE6xEb0upXMDq7SunQdjTWo0zkHRsWgNh+s9aL60/xpU7JxIwho9DICxCvxAhUO6oSA7SmkPVVCXo/I+QzXbBdDnPWBC8JSsi1TU67EnyhtpnYyVdMh8g8iGBsv6hSnLIW5fGynJCS5jWdCeyKSiQ8g7hGsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=RLrV5EXO; arc=none smtp.client-ip=115.124.30.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1757487586; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=FKG5cpivebjq2rxTAESMDDA6C1QPfjMqGUnxWLOgkT8=;
+	b=RLrV5EXO73VEoTk3/MZZOHbVHksbyluIvxp/7HMnH7iTxdabX/RBbGpP4P+InUTUFf+9kC9mQuY1YOymg0Hmo78XYgzbEqqhZ5ISWfKIYs4SAjRhLO4KCKqGoPWTNeq/aYfapV7YTPPqAi6AVeuOsUZQ+KxRu9MO8yJFMKW/SqQ=
+Received: from localhost(mailfrom:escape@linux.alibaba.com fp:SMTPD_---0Wnh86zd_1757487585 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 10 Sep 2025 14:59:45 +0800
+From: Yi Tao <escape@linux.alibaba.com>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/3] cgroup: replace global percpu_rwsem with per threadgroup resem when writing to cgroup.procs
+Date: Wed, 10 Sep 2025 14:59:32 +0800
+Message-Id: <cover.1757486368.git.escape@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+In-Reply-To: <f460f494245710c5b6649d6cc7e68b3a28a0a000.1756896828.git.escape@linux.alibaba.com>
+References: <f460f494245710c5b6649d6cc7e68b3a28a0a000.1756896828.git.escape@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgB3wY1UHcFo3ZIJCA--.51912S20
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw1rCFW8Wr4kKFy5uFWfZrb_yoW8Jw1Dpw
-	sxWay3Z3yUJFsY9wsrJas2va4FkFy2grWUCFZ7Xw4kWrnavrnFkw4Yq34FqFy5ArWrC3s8
-	Jw1qkrsxC3WUtrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPqb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2
-	WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkE
-	bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7
-	AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wr
-	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
-	0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x
-	07jIPfQUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-From: Yu Kuai <yukuai3@huawei.com>
+Changes in v5:
+- Adjust the order of patches.
+- Add the type name for enum used by cgroup_attach_lock.
 
-Currently, raid0_make_request() will remap the original bio to underlying
-disks to prevent reordered IO. Now that bio_submit_split_bioset() will put
-original bio to the head of current->bio_list, it's safe converting to use
-this helper and bio will still be ordered.
+Changes in v4:
+- Adjust commit log and comments.
+- Rename take_per_threadgroup_rwsem to cgroup_enable_per_threadgroup_rwsem
+and add attr __read_mostly.
+- Trigger a warning that per_threadgroup opreation can't be
+disabled once enabled instead of actually turning it off.
+- Split the code for retrying when the threadgroup leader changes into a
+separate patch.
+- Refactor the cgroup_attach_lock code to make it clearer.
 
-CC: Jan Kara <jack@suse.cz>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
----
- drivers/md/raid0.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+Changes in v3:
+- Expend commit log and comments.
+- Put argument @tsk at end in cgroup_attach_lock/unlock.
+- down_write global cgroup_thread_rwsem when flipping favordynmods to
+synchronize with task between cgroup_threadgroup_change_begin and end.
+- Rename group_rwsem to cgroup_threadgroup_rwsem.
+- Fix bug causing abnormal cgroup migration due to threadgroup leader
+changes。
 
-diff --git a/drivers/md/raid0.c b/drivers/md/raid0.c
-index ca08ec2e1f27..adc9e68d064d 100644
---- a/drivers/md/raid0.c
-+++ b/drivers/md/raid0.c
-@@ -607,19 +607,10 @@ static bool raid0_make_request(struct mddev *mddev, struct bio *bio)
- 		 : sector_div(sector, chunk_sects));
- 
- 	if (sectors < bio_sectors(bio)) {
--		struct bio *split = bio_split(bio, sectors, GFP_NOIO,
-+		bio = bio_submit_split_bioset(bio, sectors,
- 					      &mddev->bio_set);
--
--		if (IS_ERR(split)) {
--			bio->bi_status = errno_to_blk_status(PTR_ERR(split));
--			bio_endio(bio);
-+		if (!bio)
- 			return true;
--		}
--
--		bio_chain(split, bio);
--		trace_block_split(split, bio->bi_iter.bi_sector);
--		raid0_map_submit_bio(mddev, bio);
--		bio = split;
- 	}
- 
- 	raid0_map_submit_bio(mddev, bio);
+Changes in v2:
+- Use favordynmods as the enabling switch.
+- Determine whether to use the per-thread-group rwsem based on whether
+the task is NULL.
+- Fix system hang caused by acquiring cgroup_threadgroup_rwsem inside
+rcu_read_lock.
+
+Yi Tao (3):
+  cgroup: refactor the cgroup_attach_lock code to make it clearer
+  cgroup: relocate cgroup_attach_lock within cgroup_procs_write_start
+  cgroup: replace global percpu_rwsem with per threadgroup resem when
+    writing to cgroup.procs
+
+ include/linux/cgroup-defs.h     |  25 +++++-
+ include/linux/sched/signal.h    |   4 +
+ init/init_task.c                |   3 +
+ kernel/cgroup/cgroup-internal.h |  11 ++-
+ kernel/cgroup/cgroup-v1.c       |  14 +--
+ kernel/cgroup/cgroup.c          | 153 ++++++++++++++++++++++++--------
+ kernel/fork.c                   |   4 +
+ 7 files changed, 167 insertions(+), 47 deletions(-)
+
 -- 
-2.39.2
+2.32.0.3.g01195cf9f
 
 
