@@ -1,335 +1,218 @@
-Return-Path: <cgroups+bounces-9932-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9926-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18486B51CC0
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 18:01:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FCBFB51C57
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 17:49:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12854A0184C
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 16:00:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C91DF1767E3
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 15:47:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8680533436A;
-	Wed, 10 Sep 2025 16:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D8232A81B;
+	Wed, 10 Sep 2025 15:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bXB8xur8"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UFc3ws0G";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o6w8Yyur";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UFc3ws0G";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o6w8Yyur"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8955B311944;
-	Wed, 10 Sep 2025 16:00:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 221AD327A25
+	for <cgroups@vger.kernel.org>; Wed, 10 Sep 2025 15:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757520042; cv=none; b=htHLjC/NC5poxxTvq3AxNjbexkg8rArmLRoARIHAi2j+9BEq/hlSeexBmM8ttD7QnGrZKhplG5kBdi9cdScPxpsUJ/9syzOTS7M3QIFBtTnS/JCWBO2k/aqiNOqS/OCsFjNImBJTNp61AU+YIPkExEdMlCTMw/Viz0deiGwZBbI=
+	t=1757519213; cv=none; b=LBPVNyFi9PGKGaG9KiZd2fKS+2/vWdCU2wSHS6vudUdSR39yKmIRRNvn87V9aLgIpGeyv2glMcHuVMr3SnoJjtf06afhUAbPAA+RlomIwzm0nyk8+sQjRlSIRIlhoWIfcEMLmpW/GzZHHxayJb6fMFJXw8axVLLPYuGNCBQ3PGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757520042; c=relaxed/simple;
-	bh=B8aSuqbTgLfmYBfvMd3xIXOwLf3sM4eWPpCxmqmLkIQ=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=k8zzmAVDmECy4CilUs083QFtOllZziJdLRozwppCoeZl1YY1NWBQwMuxcWu4RA6FTgAXan6boNDdQ7C/PScLeV5k9tN5qfCfij8ihLBRx9QV66DciUKLBOOCy71Pe69bCtmJAtmOQ0/vjL/BdFz4WGTI/R9Eluezekb09qgFfu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bXB8xur8; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-	Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:In-Reply-To;
-	bh=3J8eOg/7mOqS6yso4behIDB9wj7wsh81tlPZ1LgWgX0=; b=bXB8xur8nanb7DTbYIt3SOumzk
-	xSBhQsb3nTy4o72SqqQg/MM/7IQv00zUznLJzLPpwOaZgLtDh5zGAmsIT6uK58pCm/D4uMTjU9rZq
-	Seu2jiqOgyGqFea/67h4Z6rjJua5pgxwf8/CbLW0LzFA3BPffS9BLAc5npaEjN6lUaZO1HHxXwMGv
-	oYs2Aokjf/jZHtglqKhA30xekNR0uB8x8zT67qmjjAIcZdUjdkR4SMHy2p6rK/xv9FP+P9uoOrAut
-	rfpm89RPoYf+XfmjprUZIguLKMNPdRRRlea6iMfAlfdL+WRAp3vx/FrKvm5n++YY0a92JKCIdw2Tc
-	EUpRf3XA==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwNFH-0000000BXpK-0cXS;
-	Wed, 10 Sep 2025 16:00:31 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-	id B0097302FFC; Wed, 10 Sep 2025 18:00:28 +0200 (CEST)
-Message-ID: <20250910155809.916720757@infradead.org>
-User-Agent: quilt/0.68
-Date: Wed, 10 Sep 2025 17:44:23 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: tj@kernel.org
-Cc: linux-kernel@vger.kernel.org,
- peterz@infradead.org,
- mingo@redhat.com,
- juri.lelli@redhat.com,
- vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com,
- rostedt@goodmis.org,
- bsegall@google.com,
- mgorman@suse.de,
- vschneid@redhat.com,
- longman@redhat.com,
- hannes@cmpxchg.org,
- mkoutny@suse.com,
- void@manifault.com,
- arighi@nvidia.com,
- changwoo@igalia.com,
- cgroups@vger.kernel.org,
- sched-ext@lists.linux.dev,
- liuwenfang@honor.com,
- tglx@linutronix.de
-Subject: [PATCH 14/14] sched/ext: Implement p->srq_lock support
-References: <20250910154409.446470175@infradead.org>
+	s=arc-20240116; t=1757519213; c=relaxed/simple;
+	bh=p3zB8vManmasHn4+Hq/M/BFg0OxKQuK9ur3N8meFVZI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RGmh9IfFJpoJ5URXWBFl/Us+XS+k47wYtJI1iG/5HAkK/i4DqeWRW0ZjjFw5lBaYGxWD9X8YyIOm5MDQn3LDwu+Eirt5cLXi3BBraZ1i5jdoCMvfOAU8mPgg4bB6YY4clQYkGfmmcSTFEqjcr0tQmmtcsvl9XsRYqGu5sPRMJ5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UFc3ws0G; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o6w8Yyur; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UFc3ws0G; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o6w8Yyur; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4BBDB5D920;
+	Wed, 10 Sep 2025 15:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757519208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JIEIRFBW2JTO76c/Z8WF8UYdn04ImhqRHpoPD+gl+1k=;
+	b=UFc3ws0GrWbj/nyEGSPTc7INNlyNkG9ZzYHfAEG1xKPSJaPqYl0kRMzsv22Ogn9CM+8WcJ
+	eAOoO5bySNa82BmWxq4/tsYGD0pK1wTYPpGjtMl6VcYCkcSJHB8OX/LsDW2cLgnjSJ5wWX
+	iwMy6FqmlhyZ632L5aFVpKG+9QX/lQw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757519208;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JIEIRFBW2JTO76c/Z8WF8UYdn04ImhqRHpoPD+gl+1k=;
+	b=o6w8YyurIubGtR4xQGzv40qGq1mxwME7WN0xh2AYmKoNX0BWC2x6NwXdTzQd85o4XZJ1Ox
+	1I25Ru1KGXwlPGCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UFc3ws0G;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=o6w8Yyur
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757519208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JIEIRFBW2JTO76c/Z8WF8UYdn04ImhqRHpoPD+gl+1k=;
+	b=UFc3ws0GrWbj/nyEGSPTc7INNlyNkG9ZzYHfAEG1xKPSJaPqYl0kRMzsv22Ogn9CM+8WcJ
+	eAOoO5bySNa82BmWxq4/tsYGD0pK1wTYPpGjtMl6VcYCkcSJHB8OX/LsDW2cLgnjSJ5wWX
+	iwMy6FqmlhyZ632L5aFVpKG+9QX/lQw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757519208;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JIEIRFBW2JTO76c/Z8WF8UYdn04ImhqRHpoPD+gl+1k=;
+	b=o6w8YyurIubGtR4xQGzv40qGq1mxwME7WN0xh2AYmKoNX0BWC2x6NwXdTzQd85o4XZJ1Ox
+	1I25Ru1KGXwlPGCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 554DE13310;
+	Wed, 10 Sep 2025 15:46:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id S43RFGGdwWgbPQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 10 Sep 2025 15:46:41 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 29163A0A2D; Wed, 10 Sep 2025 17:46:27 +0200 (CEST)
+Date: Wed, 10 Sep 2025 17:46:27 +0200
+From: Jan Kara <jack@suse.cz>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>, 
+	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	netdev@vger.kernel.org
+Subject: Re: [PATCH 12/32] uts: use ns_common_init()
+Message-ID: <infsybiodcbptlbolgls6jpur674rszsvdjee6iylcqhq3m5jq@jdmi6vhn2ctf>
+References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
+ <20250910-work-namespace-v1-12-4dd56e7359d8@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250910-work-namespace-v1-12-4dd56e7359d8@kernel.org>
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TAGGED_RCPT(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RL9r1cnt7e4118fjryeg1c95sa)];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,gmail.com,vger.kernel.org,toxicpanda.com,kernel.org,yhndnzj.com,in.waw.pl,0pointer.de,cyphar.com,zeniv.linux.org.uk,kernel.dk,cmpxchg.org,suse.com,google.com,redhat.com,oracle.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 4BBDB5D920
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -2.51
 
-Have enqueue set p->srq_lock to &dsq->lock and have dequeue clear it,
-when dst is non-local.
+On Wed 10-09-25 16:36:57, Christian Brauner wrote:
+> Don't cargo-cult the same thing over and over.
+> 
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
 
-When enqueue sees ENQUEUE_LOCKED, it must lock dsq->lock (since
-p->srq_lock will be NULL on entry) but must not unlock on exit when it
-sets p->srq_lock.
+Looks good. Feel free to add:
 
-When dequeue sees DEQUEUE_LOCKED, it must not lock dsq->lock when
-p->srq_lock is set (instead it must verify they are the same), but it
-must unlock on exit, since it will have cleared p->srq_lock.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-For DEQUEUE_SAVE/ENQUEUE_RESTORE it can retain p->srq_lock, since
-the extra unlock+lock cycle is pointless.
+								Honza
 
-Note: set_next_task_scx() relies on LOCKED to avoid self-recursion on
-dsq->lock in the enqueue_task/set_next_task case.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/sched/ext.c |   68 ++++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 47 insertions(+), 21 deletions(-)
-
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -1952,13 +1952,16 @@ static void dispatch_enqueue(struct scx_
- 			     struct task_struct *p, u64 enq_flags)
- {
- 	bool is_local = dsq->id == SCX_DSQ_LOCAL;
-+	bool locked = enq_flags & ENQUEUE_LOCKED;
-+	bool restore = enq_flags & ENQUEUE_RESTORE;
- 
- 	WARN_ON_ONCE(p->scx.dsq || !list_empty(&p->scx.dsq_list.node));
- 	WARN_ON_ONCE((p->scx.dsq_flags & SCX_TASK_DSQ_ON_PRIQ) ||
- 		     !RB_EMPTY_NODE(&p->scx.dsq_priq));
- 
- 	if (!is_local) {
--		raw_spin_lock(&dsq->lock);
-+		if (!locked || !p->srq_lock)
-+			raw_spin_lock(&dsq->lock);
- 		if (unlikely(dsq->id == SCX_DSQ_INVALID)) {
- 			scx_error(sch, "attempting to dispatch to a destroyed dsq");
- 			/* fall back to the global dsq */
-@@ -2028,6 +2031,10 @@ static void dispatch_enqueue(struct scx_
- 
- 	dsq_mod_nr(dsq, 1);
- 	p->scx.dsq = dsq;
-+	if (!is_local) {
-+		WARN_ON_ONCE(locked && restore && p->srq_lock && p->srq_lock != &dsq->lock);
-+		p->srq_lock = &dsq->lock;
-+	}
- 
- 	/*
- 	 * scx.ddsp_dsq_id and scx.ddsp_enq_flags are only relevant on the
-@@ -2059,13 +2066,17 @@ static void dispatch_enqueue(struct scx_
- 						 rq->curr->sched_class))
- 			resched_curr(rq);
- 	} else {
--		raw_spin_unlock(&dsq->lock);
-+		if (!locked)
-+			raw_spin_unlock(&dsq->lock);
- 	}
- }
- 
- static void task_unlink_from_dsq(struct task_struct *p,
--				 struct scx_dispatch_q *dsq)
-+				 struct scx_dispatch_q *dsq,
-+				 int deq_flags)
- {
-+	bool save = deq_flags & DEQUEUE_SAVE;
-+
- 	WARN_ON_ONCE(list_empty(&p->scx.dsq_list.node));
- 
- 	if (p->scx.dsq_flags & SCX_TASK_DSQ_ON_PRIQ) {
-@@ -2076,12 +2087,15 @@ static void task_unlink_from_dsq(struct
- 
- 	list_del_init(&p->scx.dsq_list.node);
- 	dsq_mod_nr(dsq, -1);
-+	if (!save)
-+		p->srq_lock = NULL;
- }
- 
--static void dispatch_dequeue(struct rq *rq, struct task_struct *p)
-+static void dispatch_dequeue(struct rq *rq, struct task_struct *p, int deq_flags)
- {
- 	struct scx_dispatch_q *dsq = p->scx.dsq;
- 	bool is_local = dsq == &rq->scx.local_dsq;
-+	bool locked = deq_flags & DEQUEUE_LOCKED;
- 
- 	if (!dsq) {
- 		/*
-@@ -2103,8 +2117,10 @@ static void dispatch_dequeue(struct rq *
- 		return;
- 	}
- 
--	if (!is_local)
--		raw_spin_lock(&dsq->lock);
-+	if (!is_local) {
-+		if (!locked)
-+			raw_spin_lock(&dsq->lock);
-+	}
- 
- 	/*
- 	 * Now that we hold @dsq->lock, @p->holding_cpu and @p->scx.dsq_* can't
-@@ -2112,7 +2128,8 @@ static void dispatch_dequeue(struct rq *
- 	*/
- 	if (p->scx.holding_cpu < 0) {
- 		/* @p must still be on @dsq, dequeue */
--		task_unlink_from_dsq(p, dsq);
-+		WARN_ON_ONCE(!is_local && !p->srq_lock);
-+		task_unlink_from_dsq(p, dsq, deq_flags);
- 	} else {
- 		/*
- 		 * We're racing against dispatch_to_local_dsq() which already
-@@ -2125,8 +2142,10 @@ static void dispatch_dequeue(struct rq *
- 	}
- 	p->scx.dsq = NULL;
- 
--	if (!is_local)
--		raw_spin_unlock(&dsq->lock);
-+	if (!is_local) {
-+		if (!locked || !p->srq_lock)
-+			raw_spin_unlock(&dsq->lock);
-+	}
- }
- 
- static struct scx_dispatch_q *find_dsq_for_dispatch(struct scx_sched *sch,
-@@ -2372,7 +2391,7 @@ static void clr_task_runnable(struct tas
- 		p->scx.flags |= SCX_TASK_RESET_RUNNABLE_AT;
- }
- 
--static void set_next_task_scx(struct rq *rq, struct task_struct *p, bool first);
-+static void __set_next_task_scx(struct rq *rq, struct task_struct *p, u32 qf);
- 
- static void enqueue_task_scx(struct rq *rq, struct task_struct *p, u32 enq_flags)
- {
-@@ -2421,7 +2440,7 @@ static void enqueue_task_scx(struct rq *
- 		__scx_add_event(sch, SCX_EV_SELECT_CPU_FALLBACK, 1);
- 
- 	if (enq_flags & ENQUEUE_CURR)
--		set_next_task_scx(rq, p, false);
-+		__set_next_task_scx(rq, p, enq_flags);
- }
- 
- static void ops_dequeue(struct rq *rq, struct task_struct *p, u64 deq_flags)
-@@ -2516,7 +2535,7 @@ static bool dequeue_task_scx(struct rq *
- 	rq->scx.nr_running--;
- 	sub_nr_running(rq, 1);
- 
--	dispatch_dequeue(rq, p);
-+	dispatch_dequeue(rq, p, deq_flags);
- 
- out:
- 	if (deq_flags & DEQUEUE_CURR)
-@@ -2710,7 +2729,7 @@ static bool unlink_dsq_and_lock_src_rq(s
- 	lockdep_assert_held(&dsq->lock);
- 
- 	WARN_ON_ONCE(p->scx.holding_cpu >= 0);
--	task_unlink_from_dsq(p, dsq);
-+	task_unlink_from_dsq(p, dsq, 0);
- 	p->scx.holding_cpu = cpu;
- 
- 	raw_spin_unlock(&dsq->lock);
-@@ -2782,7 +2801,7 @@ static struct rq *move_task_between_dsqs
- 	if (dst_dsq->id == SCX_DSQ_LOCAL) {
- 		/* @p is going from a non-local DSQ to a local DSQ */
- 		if (src_rq == dst_rq) {
--			task_unlink_from_dsq(p, src_dsq);
-+			task_unlink_from_dsq(p, src_dsq, 0);
- 			move_local_task_to_local_dsq(p, enq_flags,
- 						     src_dsq, dst_rq);
- 			raw_spin_unlock(&src_dsq->lock);
-@@ -2796,7 +2815,7 @@ static struct rq *move_task_between_dsqs
- 		 * @p is going from a non-local DSQ to a non-local DSQ. As
- 		 * $src_dsq is already locked, do an abbreviated dequeue.
- 		 */
--		task_unlink_from_dsq(p, src_dsq);
-+		task_unlink_from_dsq(p, src_dsq, 0);
- 		p->scx.dsq = NULL;
- 		raw_spin_unlock(&src_dsq->lock);
- 
-@@ -2862,7 +2881,7 @@ static bool consume_dispatch_q(struct sc
- 		struct rq *task_rq = task_rq(p);
- 
- 		if (rq == task_rq) {
--			task_unlink_from_dsq(p, dsq);
-+			task_unlink_from_dsq(p, dsq, 0);
- 			move_local_task_to_local_dsq(p, 0, dsq, rq);
- 			raw_spin_unlock(&dsq->lock);
- 			return true;
-@@ -3256,7 +3275,7 @@ static void process_ddsp_deferred_locals
- 	}
- }
- 
--static void set_next_task_scx(struct rq *rq, struct task_struct *p, bool first)
-+static void __set_next_task_scx(struct rq *rq, struct task_struct *p, u32 qf)
- {
- 	struct scx_sched *sch = scx_root;
- 
-@@ -3266,7 +3285,7 @@ static void set_next_task_scx(struct rq
- 		 * dispatched. Call ops_dequeue() to notify the BPF scheduler.
- 		 */
- 		ops_dequeue(rq, p, SCX_DEQ_CORE_SCHED_EXEC);
--		dispatch_dequeue(rq, p);
-+		dispatch_dequeue(rq, p, qf);
- 	}
- 
- 	p->se.exec_start = rq_clock_task(rq);
-@@ -3300,6 +3319,11 @@ static void set_next_task_scx(struct rq
- 	}
- }
- 
-+static void set_next_task_scx(struct rq *rq, struct task_struct *p, bool first)
-+{
-+	__set_next_task_scx(rq, p, 0);
-+}
-+
- static enum scx_cpu_preempt_reason
- preempt_reason_from_class(const struct sched_class *class)
- {
-@@ -5012,7 +5036,8 @@ static void scx_disable_workfn(struct kt
- 
- 	scx_task_iter_start(&sti);
- 	while ((p = scx_task_iter_next_locked(&sti))) {
--		unsigned int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
-+		unsigned int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE |
-+					   DEQUEUE_NOCLOCK | DEQUEUE_LOCKED;
- 		const struct sched_class *old_class = p->sched_class;
- 		const struct sched_class *new_class =
- 			__setscheduler_class(p->policy, p->prio);
-@@ -5756,7 +5781,8 @@ static int scx_enable(struct sched_ext_o
- 	percpu_down_write(&scx_fork_rwsem);
- 	scx_task_iter_start(&sti);
- 	while ((p = scx_task_iter_next_locked(&sti))) {
--		unsigned int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
-+		unsigned int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE |
-+					   DEQUEUE_NOCLOCK | DEQUEUE_LOCKED;
- 		const struct sched_class *old_class = p->sched_class;
- 		const struct sched_class *new_class =
- 			__setscheduler_class(p->policy, p->prio);
-@@ -6808,7 +6834,7 @@ __bpf_kfunc u32 scx_bpf_reenqueue_local(
- 		if (p->migration_pending || is_migration_disabled(p) || p->nr_cpus_allowed == 1)
- 			continue;
- 
--		dispatch_dequeue(rq, p);
-+		dispatch_dequeue(rq, p, 0);
- 		list_add_tail(&p->scx.dsq_list.node, &tasks);
- 	}
- 
-
-
+> ---
+>  kernel/utsname.c | 16 ++--------------
+>  1 file changed, 2 insertions(+), 14 deletions(-)
+> 
+> diff --git a/kernel/utsname.c b/kernel/utsname.c
+> index b1ac3ca870f2..02037010b378 100644
+> --- a/kernel/utsname.c
+> +++ b/kernel/utsname.c
+> @@ -27,16 +27,6 @@ static void dec_uts_namespaces(struct ucounts *ucounts)
+>  	dec_ucount(ucounts, UCOUNT_UTS_NAMESPACES);
+>  }
+>  
+> -static struct uts_namespace *create_uts_ns(void)
+> -{
+> -	struct uts_namespace *uts_ns;
+> -
+> -	uts_ns = kmem_cache_alloc(uts_ns_cache, GFP_KERNEL);
+> -	if (uts_ns)
+> -		refcount_set(&uts_ns->ns.count, 1);
+> -	return uts_ns;
+> -}
+> -
+>  /*
+>   * Clone a new ns copying an original utsname, setting refcount to 1
+>   * @old_ns: namespace to clone
+> @@ -55,17 +45,15 @@ static struct uts_namespace *clone_uts_ns(struct user_namespace *user_ns,
+>  		goto fail;
+>  
+>  	err = -ENOMEM;
+> -	ns = create_uts_ns();
+> +	ns = kmem_cache_zalloc(uts_ns_cache, GFP_KERNEL);
+>  	if (!ns)
+>  		goto fail_dec;
+>  
+> -	err = ns_alloc_inum(&ns->ns);
+> +	err = ns_common_init(&ns->ns, &utsns_operations, true);
+>  	if (err)
+>  		goto fail_free;
+>  
+>  	ns->ucounts = ucounts;
+> -	ns->ns.ops = &utsns_operations;
+> -
+>  	down_read(&uts_sem);
+>  	memcpy(&ns->name, &old_ns->name, sizeof(ns->name));
+>  	ns->user_ns = get_user_ns(user_ns);
+> 
+> -- 
+> 2.47.3
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
