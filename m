@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-9845-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9850-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01935B50E20
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 08:40:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32263B50E2D
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 08:42:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B01864E5F24
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 06:40:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B5E01C27C0D
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 06:42:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0695F3081A1;
-	Wed, 10 Sep 2025 06:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A88130BBB7;
+	Wed, 10 Sep 2025 06:40:35 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 935A4246788;
-	Wed, 10 Sep 2025 06:40:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7407C309EF8;
+	Wed, 10 Sep 2025 06:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757486429; cv=none; b=U0DkpB4ubf2AugIODgNGXzyP6gTzBIxy1VdudGbUPfIXDk4J1EpZ8Q46UUnfMTcD7K4bmLIP3cflVVppQ4CKJURyrO0hZH/18ENEWV20tzJxxERL5eTaLLnV3tj9meBskaE7MNtih7Rz1DQbDA4bU7/KCPVSToice9IJOACKdZQ=
+	t=1757486435; cv=none; b=A9Eew0f10LHLynnQwAtWoDgzSnXBZ6OEiLuxCdtG6Fxy1OmN8uUajRshS4tjZlXHOeAgZtEqP8/fhYhCmlUuHP4PfFeD8ft6BfkFDGM3DwuVXvug0eJFmWP28E7j7zYcRygmTNBS2q7s4Z5uz9x8dqV6XU/OFOrR9tA7qCN+SCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757486429; c=relaxed/simple;
-	bh=tViiB9LOd15G5GLgvU+OTwDT58/FCDWlR2m6yru3b0M=;
+	s=arc-20240116; t=1757486435; c=relaxed/simple;
+	bh=/zk+bxCb6Zb9hvBYssvYSJTRAViS8Qf5GjYQrRnB7hs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oDM+QJTNV5dL4oqJWSNgp+NtU7L3GhTy9OK/o7zHgybR6514nB+l3+GvCRzv/me7HSj2ePaKtaLhsN6C+F6C2uaE6xnRXehXfFSfljEFGswyPzPgeEgztjaspyCRyKfqmT4bS8vaNLndhIurlKusRc/DAguxIHjzTHjshTjdWQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=HPmZB5TCH9btgnO074SI7CccJ7MMy64KXF7nvfbWwGYM6LEDUtIIEdJ5BAAxffRH1SmOZvEh+VQkErwwKtTU0+MX9f9BU8CsbMs6vOzOmvizZAUoH2H1fSuXa6/XiazkRKilxlkacIyYcYgxxIpKdO3Yccr4rmaXLkS2bJrOyGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cM9zr2SRRzKHN5g;
-	Wed, 10 Sep 2025 14:40:24 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cM9zt6JPKzYQvRH;
+	Wed, 10 Sep 2025 14:40:26 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 881B31A1131;
-	Wed, 10 Sep 2025 14:40:24 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 5FE021A0E99;
+	Wed, 10 Sep 2025 14:40:25 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgB3wY1UHcFo3ZIJCA--.51912S6;
-	Wed, 10 Sep 2025 14:40:24 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgB3wY1UHcFo3ZIJCA--.51912S7;
+	Wed, 10 Sep 2025 14:40:25 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	hch@infradead.org,
@@ -62,9 +62,9 @@ Cc: linux-block@vger.kernel.org,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com,
 	johnny.chenyi@huawei.com
-Subject: [PATCH v2 for-6.18/block 02/16] block: initialize bio issue time in blk_mq_submit_bio()
-Date: Wed, 10 Sep 2025 14:30:42 +0800
-Message-Id: <20250910063056.4159857-3-yukuai1@huaweicloud.com>
+Subject: [PATCH v2 for-6.18/block 03/16] blk-mq: add QUEUE_FLAG_BIO_ISSUE_TIME
+Date: Wed, 10 Sep 2025 14:30:43 +0800
+Message-Id: <20250910063056.4159857-4-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20250910063056.4159857-1-yukuai1@huaweicloud.com>
 References: <20250910063056.4159857-1-yukuai1@huaweicloud.com>
@@ -75,12 +75,12 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgB3wY1UHcFo3ZIJCA--.51912S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr1xuF1UGr1rJF47AF48Xrb_yoW5Kr4fpr
-	Waqa15KryagFsrWF47ta17X3WfKa1kKry5G3yrC3ySkr47Krn7XF1kZr4vyryF9FZ3CrW5
-	Zr18KryYkr42937anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgB3wY1UHcFo3ZIJCA--.51912S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr1kCry5AF1fCrWkJryDAwb_yoW5CrWfpa
+	95KF1Ik342gF4xWF48ta13A3WUGr4vgry7CF90k3yruw1Igr17XF1kAF1UtFWkurs7Ar45
+	Xr1xtF9Ygry5W3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
 	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
@@ -91,105 +91,96 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxXr1xuF1UGr1rJF47AF48Xrb_yoW5Kr4fpr
 	67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MI
 	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
 	14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
-	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0I3
-	85UUUUU==
+	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU04x
+	RDUUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-bio->issue_time_ns is only used by blk-iolatency, which can only be
-enabled for rq-based disk, hence it's not necessary to initialize
-the time for bio-based disk.
+bio->issue_time_ns is initialized for every bio, however, it's only used
+by blk-iolatency. Add a new queue_flag and only set this flag when
+blk-iolatency is enabled, so that extra blk_time_get_ns() can be saved
+for disks that blk-iolatency is not enabled.
 
-Meanwhile, if bio is split by blk_crypto_fallback_split_bio_if_needed(),
-the issue time is not initialized for new split bio, this can be fixed
-as well.
-
-Noted the next patch will optimize better that bio issue time will
-only be used when blk-iolatency is really enabled by the disk.
-
-Fixes: 488f6682c832 ("block: blk-crypto-fallback for Inline Encryption")
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/blk-cgroup.h | 6 ------
- block/blk-core.c   | 1 -
- block/blk-merge.c  | 1 -
- block/blk-mq.c     | 8 ++++++++
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ block/blk-iolatency.c  | 5 +++++
+ block/blk-mq-debugfs.c | 1 +
+ block/blk-mq.c         | 8 +++++---
+ include/linux/blkdev.h | 1 +
+ 4 files changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/block/blk-cgroup.h b/block/blk-cgroup.h
-index 8328427e3165..1cce3294634d 100644
---- a/block/blk-cgroup.h
-+++ b/block/blk-cgroup.h
-@@ -370,11 +370,6 @@ static inline void blkg_put(struct blkcg_gq *blkg)
- 		if (((d_blkg) = blkg_lookup(css_to_blkcg(pos_css),	\
- 					    (p_blkg)->q)))
+diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
+index 554b191a6892..45bd18f68541 100644
+--- a/block/blk-iolatency.c
++++ b/block/blk-iolatency.c
+@@ -742,10 +742,15 @@ static void blkiolatency_enable_work_fn(struct work_struct *work)
+ 	 */
+ 	enabled = atomic_read(&blkiolat->enable_cnt);
+ 	if (enabled != blkiolat->enabled) {
++		struct request_queue *q = blkiolat->rqos.disk->queue;
+ 		unsigned int memflags;
  
--static inline void blkcg_bio_issue_init(struct bio *bio)
--{
--	bio->issue_time_ns = blk_time_get_ns();
--}
--
- static inline void blkcg_use_delay(struct blkcg_gq *blkg)
- {
- 	if (WARN_ON_ONCE(atomic_read(&blkg->use_delay) < 0))
-@@ -497,7 +492,6 @@ static inline struct blkg_policy_data *blkg_to_pd(struct blkcg_gq *blkg,
- static inline struct blkcg_gq *pd_to_blkg(struct blkg_policy_data *pd) { return NULL; }
- static inline void blkg_get(struct blkcg_gq *blkg) { }
- static inline void blkg_put(struct blkcg_gq *blkg) { }
--static inline void blkcg_bio_issue_init(struct bio *bio) { }
- static inline void blk_cgroup_bio_start(struct bio *bio) { }
- static inline bool blk_cgroup_mergeable(struct request *rq, struct bio *bio) { return true; }
+ 		memflags = blk_mq_freeze_queue(blkiolat->rqos.disk->queue);
+ 		blkiolat->enabled = enabled;
++		if (enabled)
++			blk_queue_flag_set(QUEUE_FLAG_BIO_ISSUE_TIME, q);
++		else
++			blk_queue_flag_clear(QUEUE_FLAG_BIO_ISSUE_TIME, q);
+ 		blk_mq_unfreeze_queue(blkiolat->rqos.disk->queue, memflags);
+ 	}
+ }
+diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
+index 32c65efdda46..4896525b1c05 100644
+--- a/block/blk-mq-debugfs.c
++++ b/block/blk-mq-debugfs.c
+@@ -96,6 +96,7 @@ static const char *const blk_queue_flag_name[] = {
+ 	QUEUE_FLAG_NAME(DISABLE_WBT_DEF),
+ 	QUEUE_FLAG_NAME(NO_ELV_SWITCH),
+ 	QUEUE_FLAG_NAME(QOS_ENABLED),
++	QUEUE_FLAG_NAME(BIO_ISSUE_TIME),
+ };
+ #undef QUEUE_FLAG_NAME
  
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 4201504158a1..83c262a3dfd9 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -728,7 +728,6 @@ static void __submit_bio_noacct_mq(struct bio *bio)
- void submit_bio_noacct_nocheck(struct bio *bio)
- {
- 	blk_cgroup_bio_start(bio);
--	blkcg_bio_issue_init(bio);
- 
- 	if (!bio_flagged(bio, BIO_TRACE_COMPLETION)) {
- 		trace_block_bio_queue(bio);
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index cffc0fe48d8a..354a3070e6a1 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -119,7 +119,6 @@ static struct bio *bio_submit_split(struct bio *bio, int split_sectors)
- 			goto error;
- 		}
- 		split->bi_opf |= REQ_NOMERGE;
--		blkcg_bio_issue_init(split);
- 		bio_chain(split, bio);
- 		trace_block_split(split, bio->bi_iter.bi_sector);
- 		WARN_ON_ONCE(bio_zone_write_plugging(bio));
 diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 9abcd4c5d6a2..2c0c8ead7080 100644
+index 2c0c8ead7080..31cc743ffad7 100644
 --- a/block/blk-mq.c
 +++ b/block/blk-mq.c
-@@ -396,6 +396,13 @@ static inline void blk_mq_rq_time_init(struct request *rq, u64 alloc_time_ns)
+@@ -396,10 +396,12 @@ static inline void blk_mq_rq_time_init(struct request *rq, u64 alloc_time_ns)
  #endif
  }
  
-+static inline void blk_mq_bio_issue_init(struct bio *bio)
-+{
-+#ifdef CONFIG_BLK_CGROUP
-+	bio->issue_time_ns = blk_time_get_ns();
-+#endif
-+}
-+
- static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
- 		struct blk_mq_tags *tags, unsigned int tag)
+-static inline void blk_mq_bio_issue_init(struct bio *bio)
++static inline void blk_mq_bio_issue_init(struct request_queue *q,
++					 struct bio *bio)
  {
-@@ -3168,6 +3175,7 @@ void blk_mq_submit_bio(struct bio *bio)
+ #ifdef CONFIG_BLK_CGROUP
+-	bio->issue_time_ns = blk_time_get_ns();
++	if (test_bit(QUEUE_FLAG_BIO_ISSUE_TIME, &q->queue_flags))
++		bio->issue_time_ns = blk_time_get_ns();
+ #endif
+ }
+ 
+@@ -3175,7 +3177,7 @@ void blk_mq_submit_bio(struct bio *bio)
  	if (!bio_integrity_prep(bio))
  		goto queue_exit;
  
-+	blk_mq_bio_issue_init(bio);
+-	blk_mq_bio_issue_init(bio);
++	blk_mq_bio_issue_init(q, bio);
  	if (blk_mq_attempt_bio_merge(q, bio, nr_segs))
  		goto queue_exit;
+ 
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index c8cb08b2ed29..7c542b1851fa 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -657,6 +657,7 @@ enum {
+ 	QUEUE_FLAG_DISABLE_WBT_DEF,	/* for sched to disable/enable wbt */
+ 	QUEUE_FLAG_NO_ELV_SWITCH,	/* can't switch elevator any more */
+ 	QUEUE_FLAG_QOS_ENABLED,		/* qos is enabled */
++	QUEUE_FLAG_BIO_ISSUE_TIME,	/* record bio->issue_time_ns */
+ 	QUEUE_FLAG_MAX
+ };
  
 -- 
 2.39.2
