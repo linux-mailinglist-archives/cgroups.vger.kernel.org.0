@@ -1,126 +1,186 @@
-Return-Path: <cgroups+bounces-9920-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9922-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E31A2B51C04
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 17:41:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79408B51C1C
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 17:43:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2D407A5A6E
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 15:39:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 147D4188E09C
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 15:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81C0A261B93;
-	Wed, 10 Sep 2025 15:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F1A327A30;
+	Wed, 10 Sep 2025 15:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lJB9N6CB"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fyOwzFIn";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DfTaYin0";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Qrbz3AMb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Zg8UREbq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E5A232A803
-	for <cgroups@vger.kernel.org>; Wed, 10 Sep 2025 15:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ADD330FC2D
+	for <cgroups@vger.kernel.org>; Wed, 10 Sep 2025 15:41:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757518850; cv=none; b=GstVIxuMfqAB4mCYsnuTcXCmZV8fKshIQNaveTG8X2zZaaWullKbUEUYWDDCjTYSyB7oORaSCFHhOng7iq7EoC9gS6S+tUiDlU0kq6y7bU22jUt+/8pvV4wssy+J6BkmqZ3iirk2R7DDjRxOEgTqlzF0UaxQn4DSEEoZZjpoZtA=
+	t=1757518872; cv=none; b=f3MVQblUJHzG+dNL9ldinVrIy2ziW27Yzx+GYpkKDUW/8eaaUvGUXVs+ZHJEb8iEvUXuJrxLaOCmddaCTx8e82qpRpfMFvZhITdhfshEpPF4zu6NWA2K66I5NuWjslC0kCIk10YeigU19Q64ziu0svOMV+knt5AskxzTOpqiMvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757518850; c=relaxed/simple;
-	bh=bRgAHBWf24BTGFBuYhLJzHxAVS+bdjD+/zjBvEVUqW4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JE1b1vog36nY5f1m6a/GCbDAL+ddBvK+6O9PTs3R8HznWTnxwIswFFejeF+emDr4SpLEOxYmlWyEd676/bYA2a655KxUphz3zRGXiL7JOdDDUXcxvVARCr8guGlOYhhstBfrCn3J13hXSGZPbKqdgTl5zNpSe9mCyS1Mc3O7HdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lJB9N6CB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8632C116B1
-	for <cgroups@vger.kernel.org>; Wed, 10 Sep 2025 15:40:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757518849;
-	bh=bRgAHBWf24BTGFBuYhLJzHxAVS+bdjD+/zjBvEVUqW4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lJB9N6CBRUrn0/7+dsnofUa3sQYlW4usI9eBVBYDZ14O7KLmPj55mT/dhx857vhKU
-	 cd/LAHfomT2aoYZfphTzXIk4YlgjAd/wWzvHoaT75GJON/439x6OR1NFcgqRUBdk1a
-	 FpmHRzJEn5THeOJhj5+wMX9OqO8WQejFi7g0elWE3FJ/UD4M78HUizONAo3D+Qn2GQ
-	 jwq/IyZXQJXy7bFHFSJRHkL/XZUPh/2OFeMdJFjlf1tF39f4A6ZoFoFx/xQTA3k3B8
-	 kWkW+0+HUsraSGv2x6HS4o37Ji72XlYRIc26KVEj/dcOl0xsFuXuR/wIAMRe2DMoWe
-	 ZYUnxCAq9bTOg==
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-45de2856648so75135e9.1
-        for <cgroups@vger.kernel.org>; Wed, 10 Sep 2025 08:40:49 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUJthEjVAmn5eKswRHt58PrlWlnrLv6W0I6KLCMoz8BSzR2uMm4pTk0jSGlXfAc7JjMmmQ+0Zk0@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8eXdylD1R61OF4jgEULNWM5dDO64/VqjjM1d/nkahU2qeQQ6H
-	g7It8wElmTXOTw2TVxsJKSBAA6RXlAtuH/59vnA6W20TnHtqGAlKxVVp0yc6bmoyYZ9850iQP8F
-	sDDU3tZG3d93kab0pPgT4QAZl6tkDbqZIKvtSds8d
-X-Google-Smtp-Source: AGHT+IFzQFxctqHRUP+7gGGNT/cgajA5FhoYSBtLF9Qnh83FEO2IIPJiyqIgLr5qEirjnieHoVaR1O9ffHFb7IrurfM=
-X-Received: by 2002:a05:600c:a59a:b0:45b:92a6:4972 with SMTP id
- 5b1f17b1804b1-45df74f7e52mr1533855e9.6.1757518848231; Wed, 10 Sep 2025
- 08:40:48 -0700 (PDT)
+	s=arc-20240116; t=1757518872; c=relaxed/simple;
+	bh=+bfD+JXYzRWJntuOC+egI4Wcf4ofl0H3jRCUqJ8PRYk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ky+dMjte3ppZnsfviNJLltcJlEZ98GHSbm1HTqa69sFH0K1d8t2yQHskMBZ0Sxsyhcrfyl4v8ijIM5Ckq/4k7tKgO8bElsXmF11HgMsKJSC5NBzbi3G5tCXA7sTfFukt1BTjK44VCBcKjF0cGODwCempdxRDzfNq3QsnFq1Bl+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fyOwzFIn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DfTaYin0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Qrbz3AMb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Zg8UREbq; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E9283613F3;
+	Wed, 10 Sep 2025 15:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757518868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y1rZ9VWfuOSyaktyZzCO5tdK7LQ0sGN/uHyRso6Xglk=;
+	b=fyOwzFIn9BDhaD1d86N4yDZFdsr9KuTuCs7u3KjKqP7kq3WbggOQDyuUr4rnkW3UZ/P0hQ
+	N+uMm57zYKX5J87FMm8Nnxw6kIMC20FP2gKs0MMA45GJhvAjb8r6GhzM+zIGSLfVP3GjY+
+	OP+GaJ7EbAq14aDI5CI8OUvHJVWxshg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757518868;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y1rZ9VWfuOSyaktyZzCO5tdK7LQ0sGN/uHyRso6Xglk=;
+	b=DfTaYin05eIyUQ70C8RLNxXu3mqTBv2AKlq1qsGBvX1ZEU67doEX3YkUplzjh3EISLMoBH
+	TSFQhuPn6+pn4uCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757518866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y1rZ9VWfuOSyaktyZzCO5tdK7LQ0sGN/uHyRso6Xglk=;
+	b=Qrbz3AMb8F1zDMzkGwv6BkIgVVL6E3QZDudyFs1kNqEqOok1/EYXw2PI2DDZNBcyGq2M3n
+	oPMEPb2KHw/KhCFuKLhJVSRvmDmWNgdqVEHTXLM9ZZuNLIfTyLPhUulsoZE0mpI8QXV1Id
+	NTMvTVcn9p6kbujzRWytc/LgwS1mtmo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757518866;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y1rZ9VWfuOSyaktyZzCO5tdK7LQ0sGN/uHyRso6Xglk=;
+	b=Zg8UREbqtFEhQ1ut1FfFQRMBiMb5/A7ehdPyEZRtfZhlFRfS7IKtxhTUhA9jUBzU0YH4LF
+	TWX/wbMVf2hYxJDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D728413310;
+	Wed, 10 Sep 2025 15:41:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ibyFNBKcwWhYOwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 10 Sep 2025 15:41:06 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 5B451A0A2D; Wed, 10 Sep 2025 17:40:58 +0200 (CEST)
+Date: Wed, 10 Sep 2025 17:40:58 +0200
+From: Jan Kara <jack@suse.cz>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>, 
+	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	netdev@vger.kernel.org
+Subject: Re: [PATCH 08/32] ipc: use ns_common_init()
+Message-ID: <x7qn3pxniqhkfeccsa77e7w7iw6bk7p77fu6hoqycvkdbluygu@bl35gogbwyus>
+References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
+ <20250910-work-namespace-v1-8-4dd56e7359d8@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250909065349.574894-1-liulei.rjpt@vivo.com> <fszpgct7ywqy6qq3qnjflol3theovmgnau2wgdqqdxin4q7ezm@zumgw533hxon>
- <CAJuCfpFaTj8PsXkoYRQKQ0sOu+mKikUAE8Wbcx+YpZXZ4M7cMA@mail.gmail.com>
-In-Reply-To: <CAJuCfpFaTj8PsXkoYRQKQ0sOu+mKikUAE8Wbcx+YpZXZ4M7cMA@mail.gmail.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Wed, 10 Sep 2025 08:40:36 -0700
-X-Gmail-Original-Message-ID: <CAF8kJuPmp9_uS_AE2FkAy+--PhCadspSRO6osEvK9gTqWEn_ng@mail.gmail.com>
-X-Gm-Features: AS18NWAa_U7BDSFPnyN8FeQb4fRXFRsmriu4wTPjiduKLAM37lIhjuNUw2KPbFA
-Message-ID: <CAF8kJuPmp9_uS_AE2FkAy+--PhCadspSRO6osEvK9gTqWEn_ng@mail.gmail.com>
-Subject: Re: [PATCH v0 0/2] mm: swap: Gather swap entries and batch async release
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, Lei Liu <liulei.rjpt@vivo.com>, 
-	Michal Hocko <mhocko@suse.com>, David Rientjes <rientjes@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Kairui Song <kasong@tencent.com>, Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, 
-	Barry Song <baohua@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	David Hildenbrand <david@redhat.com>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Mike Rapoport <rppt@kernel.org>, Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>, 
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Chen Yu <yu.c.chen@intel.com>, 
-	Hao Jia <jiahao1@lixiang.com>, "Kirill A. Shutemov" <kas@kernel.org>, 
-	Usama Arif <usamaarif642@gmail.com>, Oleg Nesterov <oleg@redhat.com>, 
-	Christian Brauner <brauner@kernel.org>, Mateusz Guzik <mjguzik@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Fushuai Wang <wangfushuai@baidu.com>, 
-	"open list:MEMORY MANAGEMENT - OOM KILLER" <linux-mm@kvack.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250910-work-namespace-v1-8-4dd56e7359d8@kernel.org>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	TAGGED_RCPT(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	R_RATELIMIT(0.00)[to_ip_from(RLbyy5b47ky7xssyr143sji8pp)];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,gmail.com,vger.kernel.org,toxicpanda.com,kernel.org,yhndnzj.com,in.waw.pl,0pointer.de,cyphar.com,zeniv.linux.org.uk,kernel.dk,cmpxchg.org,suse.com,google.com,redhat.com,oracle.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -2.30
 
-On Tue, Sep 9, 2025 at 12:48=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
-> > > Exiting processes compete for CPU cycles, delaying the camera preview
-> > > thread and causing visible stuttering - directly impacting user
-> > > experience.
-> >
-> > Since the exit/kill is due to low memory situation, punting the memory
-> > freeing to a low priority async mechanism will help in improving user
-> > experience. Most probably the application (camera preview here) will ge=
-t
-> > into global reclaim and will compete for CPU with the async memory
-> > freeing.
-> >
-> > What we really need is faster memory freeing and we should explore all
-> > possible ways. As others suggested fix/improve the bottleneck in the
-> > memory freeing path. In addition I think we should explore parallelizin=
-g
-> > this as well.
-> >
-> > On Android, I suppose most of the memory is associated with single or
-> > small set of processes and parallelizing memory freeing would be
-> > challenging. BTW is LMKD using process_mrelease() to release the killed
-> > process memory?
->
-> Yes, LMKD has a reaper thread which wakes up and calls
-> process_mrelease() after the main LMKD thread issued SIGKILL.
+On Wed 10-09-25 16:36:53, Christian Brauner wrote:
+> Don't cargo-cult the same thing over and over.
+> 
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
 
-I feel this is a better solution to address the exit process that is too sl=
-ow.
+Looks good. Feel free to add:
 
-We are basically optimizing the exit() system call, I feel there
-should be something we can do in the userspace before exit() to help
-us without the kernel putting too much complexity into exit().
-process_mrelease() souds fit the bill pretty well.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Chris
+								Honza
+
+> ---
+>  ipc/namespace.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/ipc/namespace.c b/ipc/namespace.c
+> index 4df91ceeeafe..d4188a88ee57 100644
+> --- a/ipc/namespace.c
+> +++ b/ipc/namespace.c
+> @@ -61,12 +61,10 @@ static struct ipc_namespace *create_ipc_ns(struct user_namespace *user_ns,
+>  	if (ns == NULL)
+>  		goto fail_dec;
+>  
+> -	err = ns_alloc_inum(&ns->ns);
+> +	err = ns_common_init(&ns->ns, &ipcns_operations, true);
+>  	if (err)
+>  		goto fail_free;
+> -	ns->ns.ops = &ipcns_operations;
+>  
+> -	refcount_set(&ns->ns.count, 1);
+>  	ns->user_ns = get_user_ns(user_ns);
+>  	ns->ucounts = ucounts;
+>  
+> 
+> -- 
+> 2.47.3
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
