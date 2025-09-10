@@ -1,178 +1,182 @@
-Return-Path: <cgroups+bounces-9966-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9967-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61B72B52278
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 22:42:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 294FBB52302
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 22:53:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B35DB583A97
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 20:42:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C231F1CC1C90
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 20:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB9512FF67B;
-	Wed, 10 Sep 2025 20:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SWgTzqdF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB5782EB5DE;
+	Wed, 10 Sep 2025 20:53:28 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83332FAC14
-	for <cgroups@vger.kernel.org>; Wed, 10 Sep 2025 20:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D66A258EFF
+	for <cgroups@vger.kernel.org>; Wed, 10 Sep 2025 20:53:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757536904; cv=none; b=ivgPPUOThTio74iikFqZTUbPiAV3jFVSuoy0l/LdSfGXaWHTQX8lRyt29vysONfNuw/hAvLbYn/klhTGZ9+V0N5PUC7ryERoYh3D2rAaZCebhQAMoNgZvK2U/+HMtmnokKmIjtgrRKycbF5hz02mdzdPuvnoufcr8xpuo3nJEko=
+	t=1757537608; cv=none; b=TP8Tk6WgE3tWjMM+YWF8166GSIG4fiznI4SKDztgpm4XLvg+//RjMpVxz+65qBURXR2egxvB/cUKGF5Yf30G5klnfXIoymC6ayFN0egChEDaVT5TId8oEyEyemYivwA6sm3qUSsTkZkLsZ/q15Anzja+kPOloo8XEtxGnj/5Fro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757536904; c=relaxed/simple;
-	bh=RpQu8B19MEio3rAI2hB/X5DPqqs/M0gi/GwdHg8XiK4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SNfrbo4FVIzpPEPQWCy5ydi8+NMb70NOeHUV22HkmKJy6dNX3p4LmNogFTy3c23mxSBig4U6wbVMP0AEMXA3Ur2fSVOzTKBFiKO0e70olzD82567rmZSq3vxaf1YvWVFMs82Za+/wCF/0iEAyEMvjgE6H4fCmkkQZvI839449k0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SWgTzqdF; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4b4bcb9638aso164331cf.0
-        for <cgroups@vger.kernel.org>; Wed, 10 Sep 2025 13:41:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1757536902; x=1758141702; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RpQu8B19MEio3rAI2hB/X5DPqqs/M0gi/GwdHg8XiK4=;
-        b=SWgTzqdFfCKjsj8Bv+0UQ1Mp9dUWEiX7jf3JVYNfIvO5Tomwe67XJxRTpJ6GwGM3h/
-         t8+R9Y/MmKi36/4BzNAtBdl9I2/FfO7W7q2fSpPBIlJJ769CttmSqbKmsAoycft+xz7R
-         bwVQq3s3ckVjfUCOBABJn8FP+tYB7HVK9DmP8XUmVjR/hJlb7As3ynd2d2b2dLtXu4PJ
-         Zvwa0t38qYxcGigtBbu1rcLo0fH+9tAzmkKfddca/UQ4sphHo27ul0syL26gD2+WfLOu
-         UXeXUvf5oXFG3voIAbFqKD1njuP+aqMHyvsgbVPypkFgGTAQMvc0oNgCEa5pyA6NykQl
-         Wx1g==
+	s=arc-20240116; t=1757537608; c=relaxed/simple;
+	bh=z+SSr5e4raDynlSrCzw4DbMZwm/elGSHp/acpNaX/IA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=EerWZ9nKVMUN2WHPGCajBtOy9k/gFS+L94N+ujP6KdwemOkySFe51I9OUMjPjtvUjvSS+zknr4AWtudh7mFbOq+JtnqbZhTd63ATib5GhQO+6Y+t/SUh1xX3aVOX/IrCk9oYOIqWD2BxC0SpeNKilyd8WP8LOq7P5K9pot8IOrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-8877b84553dso618839f.2
+        for <cgroups@vger.kernel.org>; Wed, 10 Sep 2025 13:53:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757536902; x=1758141702;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RpQu8B19MEio3rAI2hB/X5DPqqs/M0gi/GwdHg8XiK4=;
-        b=KSO+CMKcG49mMzM4CDUYSINWvduXse801eW1YfBkqLLnNiXzZrub2XywlYIVn5DDw9
-         RurJuicGt+ubPL46OskQ8zhFF13Gw6cLBxPRfgrIl5uYKIOgWPrd06htajJ1pVbr8B/K
-         Ga2aHv0yw+Bz3yYwb1vlOzi5V78+XYI6bL0q5OynALXxmwNj+gEqJLGrfHCRrBhrFj+m
-         VnJtKfFiqt/qK/MEXQPkK1T5TMowRRsi1Cr5xgVpXOI8+xtCs9g4eIlJIsLyEeLLuCNv
-         K7f+Dy/Y9szlR4cqt0JrQuaso4FHK9PwAiRhG6gHIJF9LbeugfZLPCwW/dLtbwQ6x0QU
-         Mq8A==
-X-Forwarded-Encrypted: i=1; AJvYcCXHOGGnsUr2FzEJCg17rwco3TqJ8LJP90dLBmKKizBWaPigRKVORjQ853Z0rJDyU8uTAsZRFRhq@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzs1SJgTY3FantoXu6OAvJaGcBZCuJrsdYlb2OyROA6zhQXNifd
-	fdRLK7KmSmaFINLKGFFuoyaIWitpDf0wiFXqS2K7BCB3AQBwyWXX12oZwTvg5FhRxETGLz20GK/
-	aoZA1pMTT/Ep2VvaCqXbSyKaUKi1u3VS7d6Vp+cyx
-X-Gm-Gg: ASbGncsFzeCP+Tf2rpsaouS1St1iU7v2h7oPrMuhlo/xcMew0x1l1XIsr/Js+buaNSp
-	mJStv7Cmnu6g4vR1pLaHFBRDGVqExsnBcz1XXs+jlOfqpUf6buwRblMEIH8HHSnTeR9PdV2II9/
-	0U1xAd1vJ56AVsztBRLBKov4tzDPCO7yuAL65gin0xOGmjn7UfJQ0DPJclvomOKHl9i4afcTKx0
-	hTuL0DaJ0yxrgZUoY8n25VbVO96glEEvxSsY/KHyjEn5ogzWYDPow==
-X-Google-Smtp-Source: AGHT+IHbQlhskzm2umaiSCVK7F4asqf8KLiAUVgJOpxaNfiXFJRF7QoxeR9wlR3GvPVF+MNtKa/jSV5VrLPSsQR7N2s=
-X-Received: by 2002:a05:622a:311:b0:4b0:85b7:ea77 with SMTP id
- d75a77b69052e-4b626dac8a6mr7249681cf.3.1757536900773; Wed, 10 Sep 2025
- 13:41:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757537605; x=1758142405;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ORHDDrKhvA3/qUkPzDVcq1X/g8kCw2zy04ZymDlu2HE=;
+        b=kyAE1Bbl6GdDDhNZFck3aR4UdcTcKwOMdCYJtX6NZF14YG5ksyY4BkffQqQBu1hU3q
+         lgfLHnzW8486aDCR52isYTFhjSeIyWEjTtGIM6uVwtdQLXgQ8Qfd1q3jklDBg/anoPxg
+         K0g0EYmHS/M79f3jk13B3Zaa3UQaPBffcQgonBYYwt6T0XLPGIeXiQkfvHgPBoNAKl3m
+         2832vPZGwKzKJ0eI6/fuzQCalgrj1tEpInjcBzCnDW2WFcH7dR4r4Dic3mQKmlY8SHvD
+         6PdBHxCifuD/dafoIFvjy1S/G3r9gPjurWy+K/PbuyI4J1I9GnVnhNvR7ux5PcNzigzb
+         LpCA==
+X-Forwarded-Encrypted: i=1; AJvYcCXfMbqQNa+n2ugwXGXowpoh7XPS+uo4j4kXNAdrZWS9ves36lKdUEEGDoYwptpjRTkjcNNTabdv@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyus6LuB+cEPYAPedLRHiH0jXHil9WLxDVstbH1gUqkbum3PlF4
+	M990JPLq9k90ErRIhX+bVXxarDhRjRIikHH4c/gfb5MlEDxmiK8WYDZ1/puisx8g0cD3COUiDbM
+	2CJdCOEqFLzbS2qE7rO4PpZtC2ZowWdaQ9U6YzGreGuxL9dpoIx28LZdBwu8=
+X-Google-Smtp-Source: AGHT+IELNcieJyO3PScSY3ls43ocO856dpwKju7gM2D1Vty+fwi/cTBoqQMfNRZ1V0PBBKdy5zAPf22QzDDN/RUdRFlpuS0plJbP
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250909065349.574894-1-liulei.rjpt@vivo.com> <fszpgct7ywqy6qq3qnjflol3theovmgnau2wgdqqdxin4q7ezm@zumgw533hxon>
- <CAJuCfpFaTj8PsXkoYRQKQ0sOu+mKikUAE8Wbcx+YpZXZ4M7cMA@mail.gmail.com> <qisfqncqgkgxh2nj5axafunlfjen6oiciobcrmpus6l3xwrbyj@blxv73pbhzez>
-In-Reply-To: <qisfqncqgkgxh2nj5axafunlfjen6oiciobcrmpus6l3xwrbyj@blxv73pbhzez>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 10 Sep 2025 13:41:29 -0700
-X-Gm-Features: AS18NWANf9zf8-wwlTuHfifwdfaJCLJSeFkghtgQl5BDc45w4ZtnmTyIc9pxfNM
-Message-ID: <CAJuCfpF1deAfZfWQZkAdws9FDNsmZp3KMQap-LqcX1NzOoknhA@mail.gmail.com>
-Subject: Re: [PATCH v0 0/2] mm: swap: Gather swap entries and batch async release
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Lei Liu <liulei.rjpt@vivo.com>, Michal Hocko <mhocko@suse.com>, 
-	David Rientjes <rientjes@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Kemeng Shi <shikemeng@huaweicloud.com>, Kairui Song <kasong@tencent.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>, 
-	Chris Li <chrisl@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	David Hildenbrand <david@redhat.com>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Mike Rapoport <rppt@kernel.org>, Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>, 
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Chen Yu <yu.c.chen@intel.com>, 
-	Hao Jia <jiahao1@lixiang.com>, "Kirill A. Shutemov" <kas@kernel.org>, 
-	Usama Arif <usamaarif642@gmail.com>, Oleg Nesterov <oleg@redhat.com>, 
-	Christian Brauner <brauner@kernel.org>, Mateusz Guzik <mjguzik@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Fushuai Wang <wangfushuai@baidu.com>, 
-	"open list:MEMORY MANAGEMENT - OOM KILLER" <linux-mm@kvack.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>, "T.J. Mercier" <tjmercier@google.com>
+X-Received: by 2002:a92:ca46:0:b0:410:cae9:a07c with SMTP id
+ e9e14a558f8ab-410cae9a261mr93638345ab.5.1757537605114; Wed, 10 Sep 2025
+ 13:53:25 -0700 (PDT)
+Date: Wed, 10 Sep 2025 13:53:25 -0700
+In-Reply-To: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68c1e545.050a0220.3c6139.002b.GAE@google.com>
+Subject: [syzbot ci] Re: ns: support file handles
+From: syzbot ci <syzbot+cic2a3475eff9e1ea7@syzkaller.appspotmail.com>
+To: amir73il@gmail.com, axboe@kernel.dk, brauner@kernel.org, 
+	cgroups@vger.kernel.org, chuck.lever@oracle.com, cyphar@cyphar.com, 
+	daan.j.demeyer@gmail.com, edumazet@google.com, hannes@cmpxchg.org, 
+	horms@kernel.org, jack@suse.cz, jlayton@kernel.org, josef@toxicpanda.com, 
+	kuba@kernel.org, linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, me@yhndnzj.com, mkoutny@suse.com, 
+	mzxreary@0pointer.de, netdev@vger.kernel.org, pabeni@redhat.com, 
+	tj@kernel.org, viro@zeniv.linux.org.uk, zbyszek@in.waw.pl
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 10, 2025 at 1:10=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> On Tue, Sep 09, 2025 at 12:48:02PM -0700, Suren Baghdasaryan wrote:
-> > On Tue, Sep 9, 2025 at 12:21=E2=80=AFPM Shakeel Butt <shakeel.butt@linu=
-x.dev> wrote:
-> > >
-> > > On Tue, Sep 09, 2025 at 02:53:39PM +0800, Lei Liu wrote:
-> > > > 1. Problem Scenario
-> > > > On systems with ZRAM and swap enabled, simultaneous process exits c=
-reate
-> > > > contention. The primary bottleneck occurs during swap entry release
-> > > > operations, causing exiting processes to monopolize CPU resources. =
-This
-> > > > leads to scheduling delays for high-priority processes.
-> > > >
-> > > > 2. Android Use Case
-> > > > During camera launch, LMKD terminates background processes to free =
-memory.
-> > >
-> > > How does LMKD trigger the kills? SIGKILL or cgroup.kill?
-> >
-> > SIGKILL
-> >
-> > >
-> > > > Exiting processes compete for CPU cycles, delaying the camera previ=
-ew
-> > > > thread and causing visible stuttering - directly impacting user
-> > > > experience.
-> > >
-> > > Since the exit/kill is due to low memory situation, punting the memor=
-y
-> > > freeing to a low priority async mechanism will help in improving user
-> > > experience. Most probably the application (camera preview here) will =
-get
-> > > into global reclaim and will compete for CPU with the async memory
-> > > freeing.
-> > >
-> > > What we really need is faster memory freeing and we should explore al=
-l
-> > > possible ways. As others suggested fix/improve the bottleneck in the
-> > > memory freeing path. In addition I think we should explore paralleliz=
-ing
-> > > this as well.
-> > >
-> > > On Android, I suppose most of the memory is associated with single or
-> > > small set of processes and parallelizing memory freeing would be
-> > > challenging. BTW is LMKD using process_mrelease() to release the kill=
-ed
-> > > process memory?
-> >
-> > Yes, LMKD has a reaper thread which wakes up and calls
-> > process_mrelease() after the main LMKD thread issued SIGKILL.
-> >
->
-> Thanks Suren. I remember Android is planning to use Apps in cgroup. Is
-> that still the plan? I am actually looking into cgroup.kill, beside
-> sending SIGKILL, putting the processes of the target cgroup in the oom
-> reaper list. In addition, making oom reaper able to reap processes in
-> parallel. I am hoping that functionality to be useful to Android as
-> well.
+syzbot ci has tested the following series
 
-Yes, cgroups v2 with per-app hierarchy is already enabled on Android
-as of about a year or so ago. The first usecase was the freezer. TJ
-(CC'ing him here) also changed how ActivityManager Service (AMS) kills
-process groups to use cgroup.kill (think when you force-stop an app
-that's what will happen). LMKD has not been changed to use cgroup.kill
-but that might be worth doing now. TJ, WDYT?
+[v1] ns: support file handles
+https://lore.kernel.org/all/20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org
+* [PATCH 01/32] pidfs: validate extensible ioctls
+* [PATCH 02/32] nsfs: validate extensible ioctls
+* [PATCH 03/32] block: use extensible_ioctl_valid()
+* [PATCH 04/32] ns: move to_ns_common() to ns_common.h
+* [PATCH 05/32] nsfs: add nsfs.h header
+* [PATCH 06/32] ns: uniformly initialize ns_common
+* [PATCH 07/32] mnt: use ns_common_init()
+* [PATCH 08/32] ipc: use ns_common_init()
+* [PATCH 09/32] cgroup: use ns_common_init()
+* [PATCH 10/32] pid: use ns_common_init()
+* [PATCH 11/32] time: use ns_common_init()
+* [PATCH 12/32] uts: use ns_common_init()
+* [PATCH 13/32] user: use ns_common_init()
+* [PATCH 14/32] net: use ns_common_init()
+* [PATCH 15/32] ns: remove ns_alloc_inum()
+* [PATCH 16/32] nstree: make iterator generic
+* [PATCH 17/32] mnt: support iterator
+* [PATCH 18/32] cgroup: support iterator
+* [PATCH 19/32] ipc: support iterator
+* [PATCH 20/32] net: support iterator
+* [PATCH 21/32] pid: support iterator
+* [PATCH 22/32] time: support iterator
+* [PATCH 23/32] userns: support iterator
+* [PATCH 24/32] uts: support iterator
+* [PATCH 25/32] ns: add to_<type>_ns() to respective headers
+* [PATCH 26/32] nsfs: add current_in_namespace()
+* [PATCH 27/32] nsfs: support file handles
+* [PATCH 28/32] nsfs: support exhaustive file handles
+* [PATCH 29/32] nsfs: add missing id retrieval support
+* [PATCH 30/32] tools: update nsfs.h uapi header
+* [PATCH 31/32] selftests/namespaces: add identifier selftests
+* [PATCH 32/32] selftests/namespaces: add file handle selftests
+
+and found the following issue:
+WARNING in copy_net_ns
+
+Full report is available here:
+https://ci.syzbot.org/series/bc3dfd83-98cc-488c-b046-f849c79a6a41
+
+***
+
+WARNING in copy_net_ns
+
+tree:      net-next
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/netdev/net-next.git
+base:      deb105f49879dd50d595f7f55207d6e74dec34e6
+arch:      amd64
+compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+config:    https://ci.syzbot.org/builds/a560fd28-b788-4442-a7c8-10c6240b4dbf/config
+syz repro: https://ci.syzbot.org/findings/18e91b10-567e-4cae-a279-8a5f2f2cde80/syz_repro
+
+------------[ cut here ]------------
+ida_free called for id=1326 which is not allocated.
+WARNING: CPU: 0 PID: 6146 at lib/idr.c:592 ida_free+0x280/0x310 lib/idr.c:592
+Modules linked in:
+CPU: 0 UID: 0 PID: 6146 Comm: syz.1.60 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:ida_free+0x280/0x310 lib/idr.c:592
+Code: 00 00 00 00 fc ff df 48 8b 5c 24 10 48 8b 7c 24 40 48 89 de e8 d1 8a 0c 00 90 48 c7 c7 80 ee ba 8c 44 89 fe e8 11 87 12 f6 90 <0f> 0b 90 90 eb 34 e8 95 02 4f f6 49 bd 00 00 00 00 00 fc ff df eb
+RSP: 0018:ffffc9000302fba0 EFLAGS: 00010246
+RAX: c838d58ce4bb0000 RBX: 0000000000000a06 RCX: ffff88801eac0000
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000002
+RBP: ffffc9000302fca0 R08: ffff88804b024293 R09: 1ffff11009604852
+R10: dffffc0000000000 R11: ffffed1009604853 R12: 1ffff92000605f78
+R13: dffffc0000000000 R14: ffff888026c1fd00 R15: 000000000000052e
+FS:  00007f6d7aab16c0(0000) GS:ffff8880b8613000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000200000004000 CR3: 000000002726e000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ copy_net_ns+0x37a/0x510 net/core/net_namespace.c:593
+ create_new_namespaces+0x3f3/0x720 kernel/nsproxy.c:110
+ unshare_nsproxy_namespaces+0x11c/0x170 kernel/nsproxy.c:218
+ ksys_unshare+0x4c8/0x8c0 kernel/fork.c:3127
+ __do_sys_unshare kernel/fork.c:3198 [inline]
+ __se_sys_unshare kernel/fork.c:3196 [inline]
+ __x64_sys_unshare+0x38/0x50 kernel/fork.c:3196
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0x3b0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f6d79b8eba9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6d7aab1038 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
+RAX: ffffffffffffffda RBX: 00007f6d79dd5fa0 RCX: 00007f6d79b8eba9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000062040200
+RBP: 00007f6d79c11e19 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f6d79dd6038 R14: 00007f6d79dd5fa0 R15: 00007ffd5ab830f8
+ </TASK>
 
 
-> > >
+***
+
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
+
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
