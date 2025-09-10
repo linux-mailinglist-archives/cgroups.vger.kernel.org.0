@@ -1,244 +1,489 @@
-Return-Path: <cgroups+bounces-9959-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9960-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6427B51F05
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 19:33:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90138B51F5A
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 19:47:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B565462EE2
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 17:32:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EC78165254
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 17:47:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7FFB32F741;
-	Wed, 10 Sep 2025 17:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDA926E158;
+	Wed, 10 Sep 2025 17:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="DMQGIhCG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JjkHKO99"
 X-Original-To: cgroups@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2069.outbound.protection.outlook.com [40.107.102.69])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D578232ED44;
-	Wed, 10 Sep 2025 17:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.69
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757525551; cv=fail; b=CemuiOwVHGNQxeyi9+loAVPw1OGbZ0FdhQdFslepb6aQCeCTSZ0JtgAyPAPJfHn9zSSAXx1R5AWFVZqAkbMnjRMTlZhWzPb5/xBBB+s2yV3EdLhfEQsNaud4QduHAlNFORh71t6IY6SWX//H804WJ69C9C0F/up9a0AtWLaACcg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757525551; c=relaxed/simple;
-	bh=9SqaUiQsiWeVAg3S4tCP2eUuet+i4W4dVU9/GqymHqI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=L8JBzC8nPEoKeUTni5LHLY67cyLwZhG+7vncSpfHuVQ4ImWq/9WUMtMYbXj1fXi6YxgPKFAvYMKp5jRYT3jm6EALK5KQYEZ6V16wmDYmmMvKg8MQL5qLCQVh5KNe0MrLCUtRsQ3wByUwA9EfR3/Qd2JmAOAlfIQx70cS5Yb7cz0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=DMQGIhCG; arc=fail smtp.client-ip=40.107.102.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=yC8A+yPruI+ZeLXyzg4cq/qXhIgb822oKlQ5JS8ylAfsJbCDK8t/zRzEQdOqMLYg2rwWMkw+4QJODvp6qbwXzdloRniW1z2+TuC+lXpHjTOCDzZDDgVEKBK0F17slx3I8+0x0JHdZL7CbTa+VjlhK+VdGKCz4UtFwjAsG4vpqTrasRG9gZOFXF2kgwkQ7T0dHT2bjdTBTVhyFEnHPs0dLf0iXvyjwMMxvDC/TutpzxZk6G4Cpxo1koD3U9jBiTwYFdV2yYAFcprVHy2s/mx+vBpCddLZFc8L61mm575yI7cKiZ+nFu5ZA+flRsovc87DgiZxeMHZnU1Olw9seMQfiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8RjPaec7o2Nv16e9Dj6U5w6RvbYd/Jlcsl2JUO9LM4c=;
- b=qp+9EYqc1SKIX4gnyxkCYVcNSJun/uLZIswr6jGtLemvOF/Gj1flubRe4BKCMTbjl4A23Jt1jHSwSwRCkg5ftvczOKYHG3567bBWuTSOGumiMZDWgkMHIPF7mlDJgeoNpRqDibhTRZJwTdsTCQGLDiWx41c3H5HQPBkhHOPDDyO2ZEK4S9Zkg9XrboNbUGUbH1qAYP0YEgsSHpyV7s2UyeDuzVKEvTEQYnBiAhm+uow2V3/b6RIvjWO5OxYsDWv0PNeaxvHoEokx3mvx7j/HJC7r5kfFBZ2YAXumpZBCDfyFRFIIR3gcIkdoVtr86mrTJ/sdrmZi67neFUjQex0oHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8RjPaec7o2Nv16e9Dj6U5w6RvbYd/Jlcsl2JUO9LM4c=;
- b=DMQGIhCGetsBJZT999VrF1KgEjx+0iHmalSuJxnEDQGOr/kKsB/e/nffwS9KrfM8qfs9UAjNhHF3WVSeP1plZ7ikJxLuOtz4840RINDZQh3qVwT0be2ymnHOyIHyY1+S/gvHE0T8ojrng99sqrNOPqyuQwBQO8wU1YpkUc3ncOD+uEKNmtgBf2ChrizfAHueXbl3oNTFPZ4JGJa4zZK81M9QSdqypBgBfcbD3Jk1RRxb6R5q36z/yFpUWbQyH8G7zewNdp61fP79w0UEExQu7+h82KU8OsKvATmyGNEZ9NOnhN97KI0r4yEdiK159dams8sYFPNxrxf56CgDO0VmbA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
- by CY5PR12MB6574.namprd12.prod.outlook.com (2603:10b6:930:42::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Wed, 10 Sep
- 2025 17:32:25 +0000
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::1b59:c8a2:4c00:8a2c]) by LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::1b59:c8a2:4c00:8a2c%5]) with mapi id 15.20.9094.021; Wed, 10 Sep 2025
- 17:32:25 +0000
-Date: Wed, 10 Sep 2025 19:32:12 +0200
-From: Andrea Righi <arighi@nvidia.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: tj@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, longman@redhat.com,
-	hannes@cmpxchg.org, mkoutny@suse.com, void@manifault.com,
-	changwoo@igalia.com, cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
-Subject: Re: [PATCH 00/14] sched: Support shared runqueue locking
-Message-ID: <aMG2HAWhgAYBdh6Q@gpd4>
-References: <20250910154409.446470175@infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250910154409.446470175@infradead.org>
-X-ClientProxiedBy: MI1P293CA0025.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:3::11) To LV8PR12MB9620.namprd12.prod.outlook.com
- (2603:10b6:408:2a1::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C8C22FDEC;
+	Wed, 10 Sep 2025 17:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757526459; cv=none; b=iHxt3rgq30Eai3rLo4IYkTr+ur3iUTi0x9t684mpLAvP30XiLqCSuTTmMmdaQOZ7fizcMgkOD6JMvkbGMBga35KuifZYY0kDv7qQUza8Q5kFCJjMZj2kaAQqrMS7nzX5QTYLpa+HEMo1aTAm8BiRsqRP6FlD0rDl8RDpstc7zRU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757526459; c=relaxed/simple;
+	bh=eD2GJiQnhOSkLcei/zAvfev2NgI3FG/r3t1bYFETfXk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YiLAyLRxEdRk8lVPjY94eNKGULLXYc8ijlm8rx/8BtjrdEE5ZSO3INI9SocJMj8B1qDPPuYPAUzcHjLzQMVzMAHpwadUMeJR90X1vkcEI/oL9ClHQ2NDZm7K06AWds44ILXZGXwV4tLAyAB+7JmhdNRw527xEr9vHR836HAyw7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JjkHKO99; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2B10C4CEEB;
+	Wed, 10 Sep 2025 17:47:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757526459;
+	bh=eD2GJiQnhOSkLcei/zAvfev2NgI3FG/r3t1bYFETfXk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JjkHKO99fsZ9SBh1vo+eD8ifISpj9+19oG9jN1SDiOso0eEoqM/jV2b3iKFnSZRp8
+	 btfrbxHbQvjriG6IzZXhO7IFxtSiGaZtm7QDjYDatDvCIUxfCdpIEruM+rdcN0HLuh
+	 yPXEdXPuiFIollrSsdwTeyj8Qiast52QdQsQJK8v6C1xoasXMJPtkNNf4BqLMALSt/
+	 GaSbcgSI0ZXL0g8humFic7MIN1YG8zGs4p+gN8kZ9MqTNVFX/GS131f5ZBcWjNkmac
+	 tVlHJpcRi0is4cOeWcEpG9TizXQDaJGPVbeVJGsjSlpm2le8YzIfDwb4KzEXsvYYDb
+	 6X5zNYER7Vd3w==
+Date: Wed, 10 Sep 2025 07:47:37 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Yi Tao <escape@linux.alibaba.com>
+Cc: hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] cgroup: replace global percpu_rwsem with per
+ threadgroup resem when writing to cgroup.procs
+Message-ID: <aMG5ucVGwlVLl4a_@slm.duckdns.org>
+References: <f460f494245710c5b6649d6cc7e68b3a28a0a000.1756896828.git.escape@linux.alibaba.com>
+ <cover.1757486368.git.escape@linux.alibaba.com>
+ <9d46438e61bcf7b5ffc9eb582081f4fcc99c2cbf.1757486368.git.escape@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|CY5PR12MB6574:EE_
-X-MS-Office365-Filtering-Correlation-Id: 91603434-8e84-4b4a-6c91-08ddf0900138
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|366016|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?zrGAcNlgU/AqLn34D6Lax1gD5JZi1yu3rborSBvUnyVfdIXeOxaunsIIeJkU?=
- =?us-ascii?Q?xY5bVhNpBGYNJh/K4r/LYcSPJv0lWXLdEtMvguFnXaoJFjJpmbKK3t5uvQ43?=
- =?us-ascii?Q?nHGhoJFv6Chu5hmsWmfBPn2MB+KnTHQBHwiMPDOUEMYYOBKJrkR5DUFcrkpJ?=
- =?us-ascii?Q?tVphwPNdlyXOdt8xaBIfvGipdtP4PeGvDhok7QDf3+254AkQu/Mbw4HNuLXN?=
- =?us-ascii?Q?83slMsZmWOTY+HJpqaUaFSZbJufqNE35oonN5KHrx1vf609ynrSzSMV9F/ll?=
- =?us-ascii?Q?syTtLT+PsuqBA83wm8AkpHwHP4Ha1y67cjhqKVqYL4ErV7JQhlTevFwdMIpD?=
- =?us-ascii?Q?6ga7Bh836FsXaAir6z+YO5D2sGGUXRfBqUZSGAj6WB2Q/a7QVe4NqAe3NvuD?=
- =?us-ascii?Q?OUbF/xarg2FWxEKkFd2zdvuzzCI9xpEzp2K6VeGd2FxHN1Vp2gKN79sZsogI?=
- =?us-ascii?Q?4+GAZU2lvOOV/nhpygfopQRFI+YvWQZHAQ9NS3U4Vdkj97FyObbp8FrUnlRk?=
- =?us-ascii?Q?U/3tPxhZ5JP7yMyTJlVWpB84lNuN1llMd3Z+K1QSdGhAS1+d6JtMrVdFEsZS?=
- =?us-ascii?Q?aEYBgqOhVc4/N4Mrvl7IN6tnXAoUOIo29XzKB0TuQmdUrLYxhKgynN27UiWy?=
- =?us-ascii?Q?oKnBcRMlThqz1SgaDVHg8SQxix7NCjtqiyX73Km3b4n0kXIrZpfTzjxsQMIu?=
- =?us-ascii?Q?2HeEMmm6EaqnzrhiH3E7IUtOdjs3lHdBTkgOc46XUMSHkFd2t0Zyfu5AGgL/?=
- =?us-ascii?Q?QyVKouEQQb28pD63I7hlAjv6XMtCYcYxlZeriocUZn+yHoDtPB5oSkZCb5/2?=
- =?us-ascii?Q?UwritPqCDyjBaq4+Al6rqfhNz4r358Tv4sVR7YrpFBmCliAotOkVq9mY9YUg?=
- =?us-ascii?Q?Sg7oT7KnMkCMq9xGfQTioa2beKVY51gsx4Jj8mBQQhLZfmsJHFiZuUXV/uJa?=
- =?us-ascii?Q?gUZ61ZwcwDQjGHDQRAYUAYA0HTPwEgjiMQAck/348ok0BjIf729XYyhQvvnG?=
- =?us-ascii?Q?+FA2sUy/EJsB6xFmRCYSFEgbsDQxi+jOu0IIj/bLITkx+h03gmuw+r9SjTno?=
- =?us-ascii?Q?m1co+ihLbmqE6zHpaghVu6CYCntu4Hkqm5WatgLF12X9/omN3enkKWbqWyqP?=
- =?us-ascii?Q?f6h/kUf8pBFDzAGdH6NeKHkAskE43ACaoZ3OStGlHCYzCRvitwMt1MKvwTDj?=
- =?us-ascii?Q?bq64gJ4+NzGOuT74oYfklIDOYLyy8a7UBA07Hzijq/eyEoxJAeDRCXtyfDQ3?=
- =?us-ascii?Q?tYEDnZ5E1XzqmOb8H6YNyPSX+jsQW+lbTiAMkWys0dlLERsf93e6JfxhXMrh?=
- =?us-ascii?Q?q3K7qPOn/T3nhBqG9mW1q3LEthma1eywteQ+ZSE9oVhoEi7SGReefKtIO/6W?=
- =?us-ascii?Q?9FQxaRMA1CmiV624kXI42wFmCduI56clzFySZ01qg36AFjOSWVa4xbIUkkb2?=
- =?us-ascii?Q?rPgwdDUKJeg=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(366016)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Web3D72i/IY2vSMUSuRFnO6f16MVCNvAo007AF9ketIsG95W/KTWNgHT+qP8?=
- =?us-ascii?Q?DRG88W5zatw3542NRnXNJL8V2HuRgc0Kz8OC6CvjH1rlvH5UEvhA7gfOYbD5?=
- =?us-ascii?Q?VEmAePwGJodniUuSsuoTdBUw1CM14DepVFCuNV0JOkNGUKk76vQ37G0QnHXT?=
- =?us-ascii?Q?yHKJUVXx5kYPAob2dZK/mh3SpMyfl1jUoxN0ctSU+VTF2k7arjGKq4ObwwGo?=
- =?us-ascii?Q?s6gkRrWmckJXveC9v2cz9XH/0su397B5plAoy+a9L3ekN7QHf+WmR2WRY/1C?=
- =?us-ascii?Q?n5tNHmxOW6JV3dBX24gGdJNN7cg8eYahciEMk2IpbYMD6W8wXZGJz9tcYYNB?=
- =?us-ascii?Q?tgD4JTv8FJFn/rbMgmtPVfEaxM6Td+83dwbmpHWc0GWTO20dpz+GIgygkI1b?=
- =?us-ascii?Q?vVlofXVOqd+iKcbsEblDs74THZ2WHtA5JT/y4YokWBNs1wKUsugByFTjpViu?=
- =?us-ascii?Q?KU9ts5wt4hI600AphYiu98pcCizG08+ZAKEbDg0T5nXiz42zi+t1P/vqRRos?=
- =?us-ascii?Q?n+P8HieiAaDOTMbBQ74dRq2uWuW0kUmA6OZMAxw3YkC9xQwkAAsu8rdc2y4t?=
- =?us-ascii?Q?r8497vQJW/NrPUPV7PMrtQo9cawXx40ig/DLHhHb12r2CAx47UhyNU0fHfZR?=
- =?us-ascii?Q?aSlslhf2dIHCQDZOQWCCTTaynqFi9CdgUQCo41fyPD/lh4cw/DTNpD64OIG6?=
- =?us-ascii?Q?GccVrlVbxU2Y5P4OkENMotntAVbbaF3Y7DwgXeTx07HEiVLqWo4IUNPdl4I/?=
- =?us-ascii?Q?MBm4KOJueFp/oTe39t3qMYMXefByt0/bTjrpbCjlprT6E/OujCU03ULPTjC9?=
- =?us-ascii?Q?872kZEtnIHgJYYWK7ktYGRG4p4Y0PkFwHkbWn9PSLd9f7PDkjB3YEENNwMB/?=
- =?us-ascii?Q?oSqt9hFp4jc1RGlolKeRZDk5Y7hyCLyAeUqRkbjSptZDuVxgjwAPH63Y0DcJ?=
- =?us-ascii?Q?kCVZmgNK5WoYYTshnAmrKyb0NYkzj/zJlBBNFj6m4XV3t03pgzpbQ8ceB17i?=
- =?us-ascii?Q?k5RCx0Lq8fqJzVIVwtkfoTsZlkE0nlWEH4fzAWrEvrHgR7oBQwHtGraVTu5e?=
- =?us-ascii?Q?/vYI4TUt5SHAYHUONFGSK0xaPi4kYZTplGInPa4d6oHmLd0njsLAQZDfXVtt?=
- =?us-ascii?Q?IGfjgZ4Fi1GIFG0W7/jNMm9Hy/rKKpaWLMv5AgSrkHOyx8CqW75U/oV0wO3N?=
- =?us-ascii?Q?0o67osgWNw65BzNuj6t/6UcYD0Up3k+eNLQoXDuMINgBkzGeP5VE2QajQlhn?=
- =?us-ascii?Q?pukzXb6NTxrAcyF9DNHqEowigAt8i4Pu1bhNF+SZtc4A9LucVU9nVENk43hQ?=
- =?us-ascii?Q?+uI0/AToPS7BSNpIZd4sUq2wAZ8yORZktT8EmYOAS7J9s59DzLHEkIKpXt0H?=
- =?us-ascii?Q?pwjHKHzob2auqnjetH9nEXNjTsc7gvldL30XcM2oGlSyXSScCB3E0dQLKHMP?=
- =?us-ascii?Q?HKES1h9aZFUCuBlR8HBJMETbv4VNJbiQNOk77Z4orIdeRh35kyXlaushfQS1?=
- =?us-ascii?Q?N9Ka6w995QYBvO17tTkWjLUT+p5atuVAL11rM9d62t7+2JIBQY4+qCS7pvdS?=
- =?us-ascii?Q?tDeHt27X6uSvnOFKngSIcbxLlCrXYqMl6PKy6LLk?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91603434-8e84-4b4a-6c91-08ddf0900138
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2025 17:32:24.8110
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: N0+5wwQqhh/zI+NPPONp47JnJGvOC8tX0jRrZRzHhtKgJKa91NgqaO+Tbn6G57sqWVUWXyi1Yjm+nUjBl28jtg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6574
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9d46438e61bcf7b5ffc9eb582081f4fcc99c2cbf.1757486368.git.escape@linux.alibaba.com>
 
-Hi Peter,
+Applied to cgroup/for-6.18 with a comment update and
+s/WARN_ONCE()/pr_warn_once()/ as the backtrace isn't likely helpful here.
+The applied version follows:
 
-thanks for jumping on this. Comment below.
+------ 8< ------
+From 0568f89d4fb82d98001baeb870e92f43cd1f7317 Mon Sep 17 00:00:00 2001
+From: Yi Tao <escape@linux.alibaba.com>
+Date: Wed, 10 Sep 2025 14:59:35 +0800
+Subject: [PATCH] cgroup: replace global percpu_rwsem with per threadgroup
+ resem when writing to cgroup.procs
 
-On Wed, Sep 10, 2025 at 05:44:09PM +0200, Peter Zijlstra wrote:
-> Hi,
-> 
-> As mentioned [1], a fair amount of sched ext weirdness (current and proposed)
-> is down to the core code not quite working right for shared runqueue stuff.
-> 
-> Instead of endlessly hacking around that, bite the bullet and fix it all up.
-> 
-> With these patches, it should be possible to clean up pick_task_scx() to not
-> rely on balance_scx(). Additionally it should be possible to fix that RT issue,
-> and the dl_server issue without further propagating lock breaks.
-> 
-> As is, these patches boot and run/pass selftests/sched_ext with lockdep on.
-> 
-> I meant to do more sched_ext cleanups, but since this has all already taken
-> longer than I would've liked (real life interrupted :/), I figured I should
-> post this as is and let TJ/Andrea poke at it.
-> 
-> Patches are also available at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/cleanup
-> 
-> 
-> [1] https://lkml.kernel.org/r/20250904202858.GN4068168@noisy.programming.kicks-ass.net
+The static usage pattern of creating a cgroup, enabling controllers,
+and then seeding it with CLONE_INTO_CGROUP doesn't require write
+locking cgroup_threadgroup_rwsem and thus doesn't benefit from this
+patch.
 
-I've done a quick test with this patch set applied and I was able to
-trigger this:
+To avoid affecting other users, the per threadgroup rwsem is only used
+when the favordynmods is enabled.
 
-[   49.746281] ============================================
-[   49.746457] WARNING: possible recursive locking detected
-[   49.746559] 6.17.0-rc4-virtme #85 Not tainted
-[   49.746666] --------------------------------------------
-[   49.746763] stress-ng-race-/5818 is trying to acquire lock:
-[   49.746856] ffff890e0adacc18 (&dsq->lock){-.-.}-{2:2}, at: dispatch_dequeue+0x125/0x1f0
-[   49.747052]
-[   49.747052] but task is already holding lock:
-[   49.747234] ffff890e0adacc18 (&dsq->lock){-.-.}-{2:2}, at: task_rq_lock+0x6c/0x170
-[   49.747416]
-[   49.747416] other info that might help us debug this:
-[   49.747557]  Possible unsafe locking scenario:
-[   49.747557]
-[   49.747689]        CPU0
-[   49.747740]        ----
-[   49.747793]   lock(&dsq->lock);
-[   49.747867]   lock(&dsq->lock);
-[   49.747950]
-[   49.747950]  *** DEADLOCK ***
-[   49.747950]
-[   49.748086]  May be due to missing lock nesting notation
-[   49.748086]
-[   49.748197] 3 locks held by stress-ng-race-/5818:
-[   49.748335]  #0: ffff890e0f0fce70 (&p->pi_lock){-.-.}-{2:2}, at: task_rq_lock+0x38/0x170
-[   49.748474]  #1: ffff890e3b6bcc98 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x20/0xa0
-[   49.748652]  #2: ffff890e0adacc18 (&dsq->lock){-.-.}-{2:2}, at: task_rq_lock+0x6c/0x170
+As computer hardware advances, modern systems are typically equipped
+with many CPU cores and large amounts of memory, enabling the deployment
+of numerous applications. On such systems, container creation and
+deletion become frequent operations, making cgroup process migration no
+longer a cold path. This leads to noticeable contention with common
+process operations such as fork, exec, and exit.
 
-Reproducer:
+To alleviate the contention between cgroup process migration and
+operations like process fork, this patch modifies lock to take the write
+lock on signal_struct->group_rwsem when writing pid to
+cgroup.procs/threads instead of holding a global write lock.
 
- $ cd tools/sched_ext
- $ make scx_simple
- $ sudo ./build/bin/scx_simple
- ... and in another shell
- $ stress-ng --race-sched 0
+Cgroup process migration has historically relied on
+signal_struct->group_rwsem to protect thread group integrity. In commit
+<1ed1328792ff> ("sched, cgroup: replace signal_struct->group_rwsem with
+a global percpu_rwsem"), this was changed to a global
+cgroup_threadgroup_rwsem. The advantage of using a global lock was
+simplified handling of process group migrations. This patch retains the
+use of the global lock for protecting process group migration, while
+reducing contention by using per thread group lock during
+cgroup.procs/threads writes.
 
-I added an explicit BUG_ON() to see where the double locking is happening:
+The locking behavior is as follows:
 
-[   15.160400] Call Trace:
-[   15.160706]  dequeue_task_scx+0x14a/0x270
-[   15.160857]  move_queued_task+0x7d/0x2d0
-[   15.160952]  affine_move_task+0x6ca/0x700
-[   15.161210]  __set_cpus_allowed_ptr+0x64/0xa0
-[   15.161348]  __sched_setaffinity+0x72/0x100
-[   15.161459]  sched_setaffinity+0x261/0x2f0
-[   15.161569]  __x64_sys_sched_setaffinity+0x50/0x80
-[   15.161705]  do_syscall_64+0xbb/0x370
-[   15.161816]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+write cgroup.procs/threads  | process fork,exec,exit | process group migration
+------------------------------------------------------------------------------
+cgroup_lock()               | down_read(&g_rwsem)    | cgroup_lock()
+down_write(&p_rwsem)        | down_read(&p_rwsem)    | down_write(&g_rwsem)
+critical section            | critical section       | critical section
+up_write(&p_rwsem)          | up_read(&p_rwsem)      | up_write(&g_rwsem)
+cgroup_unlock()             | up_read(&g_rwsem)      | cgroup_unlock()
 
-Are we missing a DEQUEUE_LOCKED in the sched_setaffinity() path?
+g_rwsem denotes cgroup_threadgroup_rwsem, p_rwsem denotes
+signal_struct->group_rwsem.
 
-Thanks,
--Andrea
+This patch eliminates contention between cgroup migration and fork
+operations for threads that belong to different thread groups, thereby
+reducing the long-tail latency of cgroup migrations and lowering system
+load.
+
+With this patch, under heavy fork and exec interference, the long-tail
+latency of cgroup migration has been reduced from milliseconds to
+microseconds. Under heavy cgroup migration interference, the multi-CPU
+score of the spawn test case in UnixBench increased by 9%.
+
+tj: Update comment in cgroup_favor_dynmods() and switch WARN_ONCE() to
+    pr_warn_once().
+
+Signed-off-by: Yi Tao <escape@linux.alibaba.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+ include/linux/cgroup-defs.h     | 17 +++++++-
+ include/linux/sched/signal.h    |  4 ++
+ init/init_task.c                |  3 ++
+ kernel/cgroup/cgroup-internal.h |  6 ++-
+ kernel/cgroup/cgroup-v1.c       |  8 ++--
+ kernel/cgroup/cgroup.c          | 73 ++++++++++++++++++++++++++-------
+ kernel/fork.c                   |  4 ++
+ 7 files changed, 93 insertions(+), 22 deletions(-)
+
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index ff3c7d0e3e01..93318fce31f3 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -91,6 +91,12 @@ enum {
+ 	 * cgroup_threadgroup_rwsem. This makes hot path operations such as
+ 	 * forks and exits into the slow path and more expensive.
+ 	 *
++	 * Alleviate the contention between fork, exec, exit operations and
++	 * writing to cgroup.procs by taking a per threadgroup rwsem instead of
++	 * the global cgroup_threadgroup_rwsem. Fork and other operations
++	 * from threads in different thread groups no longer contend with
++	 * writing to cgroup.procs.
++	 *
+ 	 * The static usage pattern of creating a cgroup, enabling controllers,
+ 	 * and then seeding it with CLONE_INTO_CGROUP doesn't require write
+ 	 * locking cgroup_threadgroup_rwsem and thus doesn't benefit from
+@@ -146,6 +152,9 @@ enum cgroup_attach_lock_mode {
+ 
+ 	/* When pid=0 && threadgroup=false, see comments in cgroup_procs_write_start */
+ 	CGRP_ATTACH_LOCK_NONE,
++
++	/* When favordynmods is on, see comments above CGRP_ROOT_FAVOR_DYNMODS */
++	CGRP_ATTACH_LOCK_PER_THREADGROUP,
+ };
+ 
+ /*
+@@ -846,6 +855,7 @@ struct cgroup_subsys {
+ };
+ 
+ extern struct percpu_rw_semaphore cgroup_threadgroup_rwsem;
++extern bool cgroup_enable_per_threadgroup_rwsem;
+ 
+ struct cgroup_of_peak {
+ 	unsigned long		value;
+@@ -857,11 +867,14 @@ struct cgroup_of_peak {
+  * @tsk: target task
+  *
+  * Allows cgroup operations to synchronize against threadgroup changes
+- * using a percpu_rw_semaphore.
++ * using a global percpu_rw_semaphore and a per threadgroup rw_semaphore when
++ * favordynmods is on. See the comment above CGRP_ROOT_FAVOR_DYNMODS definition.
+  */
+ static inline void cgroup_threadgroup_change_begin(struct task_struct *tsk)
+ {
+ 	percpu_down_read(&cgroup_threadgroup_rwsem);
++	if (cgroup_enable_per_threadgroup_rwsem)
++		down_read(&tsk->signal->cgroup_threadgroup_rwsem);
+ }
+ 
+ /**
+@@ -872,6 +885,8 @@ static inline void cgroup_threadgroup_change_begin(struct task_struct *tsk)
+  */
+ static inline void cgroup_threadgroup_change_end(struct task_struct *tsk)
+ {
++	if (cgroup_enable_per_threadgroup_rwsem)
++		up_read(&tsk->signal->cgroup_threadgroup_rwsem);
+ 	percpu_up_read(&cgroup_threadgroup_rwsem);
+ }
+ 
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 1ef1edbaaf79..7d6449982822 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -226,6 +226,10 @@ struct signal_struct {
+ 	struct tty_audit_buf *tty_audit_buf;
+ #endif
+ 
++#ifdef CONFIG_CGROUPS
++	struct rw_semaphore cgroup_threadgroup_rwsem;
++#endif
++
+ 	/*
+ 	 * Thread is the potential origin of an oom condition; kill first on
+ 	 * oom
+diff --git a/init/init_task.c b/init/init_task.c
+index e557f622bd90..a55e2189206f 100644
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -27,6 +27,9 @@ static struct signal_struct init_signals = {
+ 	},
+ 	.multiprocess	= HLIST_HEAD_INIT,
+ 	.rlim		= INIT_RLIMITS,
++#ifdef CONFIG_CGROUPS
++	.cgroup_threadgroup_rwsem	= __RWSEM_INITIALIZER(init_signals.cgroup_threadgroup_rwsem),
++#endif
+ 	.cred_guard_mutex = __MUTEX_INITIALIZER(init_signals.cred_guard_mutex),
+ 	.exec_update_lock = __RWSEM_INITIALIZER(init_signals.exec_update_lock),
+ #ifdef CONFIG_POSIX_TIMERS
+diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+index a6d6f30b6f65..22051b4f1ccb 100644
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -249,8 +249,10 @@ int cgroup_migrate(struct task_struct *leader, bool threadgroup,
+ 
+ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ 		       bool threadgroup);
+-void cgroup_attach_lock(enum cgroup_attach_lock_mode lock_mode);
+-void cgroup_attach_unlock(enum cgroup_attach_lock_mode lock_mode);
++void cgroup_attach_lock(enum cgroup_attach_lock_mode lock_mode,
++			struct task_struct *tsk);
++void cgroup_attach_unlock(enum cgroup_attach_lock_mode lock_mode,
++			  struct task_struct *tsk);
+ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+ 					     enum cgroup_attach_lock_mode *lock_mode)
+ 	__acquires(&cgroup_threadgroup_rwsem);
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 852ebe7ca3a1..a9e029b570c8 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -69,7 +69,7 @@ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
+ 	int retval = 0;
+ 
+ 	cgroup_lock();
+-	cgroup_attach_lock(CGRP_ATTACH_LOCK_GLOBAL);
++	cgroup_attach_lock(CGRP_ATTACH_LOCK_GLOBAL, NULL);
+ 	for_each_root(root) {
+ 		struct cgroup *from_cgrp;
+ 
+@@ -81,7 +81,7 @@ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
+ 		if (retval)
+ 			break;
+ 	}
+-	cgroup_attach_unlock(CGRP_ATTACH_LOCK_GLOBAL);
++	cgroup_attach_unlock(CGRP_ATTACH_LOCK_GLOBAL, NULL);
+ 	cgroup_unlock();
+ 
+ 	return retval;
+@@ -118,7 +118,7 @@ int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
+ 
+ 	cgroup_lock();
+ 
+-	cgroup_attach_lock(CGRP_ATTACH_LOCK_GLOBAL);
++	cgroup_attach_lock(CGRP_ATTACH_LOCK_GLOBAL, NULL);
+ 
+ 	/* all tasks in @from are being moved, all csets are source */
+ 	spin_lock_irq(&css_set_lock);
+@@ -154,7 +154,7 @@ int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
+ 	} while (task && !ret);
+ out_err:
+ 	cgroup_migrate_finish(&mgctx);
+-	cgroup_attach_unlock(CGRP_ATTACH_LOCK_GLOBAL);
++	cgroup_attach_unlock(CGRP_ATTACH_LOCK_GLOBAL, NULL);
+ 	cgroup_unlock();
+ 	return ret;
+ }
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index a6b81b48bb70..fed701df1167 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -239,6 +239,14 @@ static u16 have_canfork_callback __read_mostly;
+ 
+ static bool have_favordynmods __ro_after_init = IS_ENABLED(CONFIG_CGROUP_FAVOR_DYNMODS);
+ 
++/*
++ * Write protected by cgroup_mutex and write-lock of cgroup_threadgroup_rwsem,
++ * read protected by either.
++ *
++ * Can only be turned on, but not turned off.
++ */
++bool cgroup_enable_per_threadgroup_rwsem __read_mostly;
++
+ /* cgroup namespace for init task */
+ struct cgroup_namespace init_cgroup_ns = {
+ 	.ns.count	= REFCOUNT_INIT(2),
+@@ -1325,14 +1333,30 @@ void cgroup_favor_dynmods(struct cgroup_root *root, bool favor)
+ {
+ 	bool favoring = root->flags & CGRP_ROOT_FAVOR_DYNMODS;
+ 
+-	/* see the comment above CGRP_ROOT_FAVOR_DYNMODS definition */
++	/*
++	 * see the comment above CGRP_ROOT_FAVOR_DYNMODS definition.
++	 * favordynmods can flip while task is between
++	 * cgroup_threadgroup_change_begin() and end(), so down_write global
++	 * cgroup_threadgroup_rwsem to synchronize them.
++	 *
++	 * Once cgroup_enable_per_threadgroup_rwsem is enabled, holding
++	 * cgroup_threadgroup_rwsem doesn't exlude tasks between
++	 * cgroup_thread_group_change_begin() and end() and thus it's unsafe to
++	 * turn off. As the scenario is unlikely, simply disallow disabling once
++	 * enabled and print out a warning.
++	 */
++	percpu_down_write(&cgroup_threadgroup_rwsem);
+ 	if (favor && !favoring) {
++		cgroup_enable_per_threadgroup_rwsem = true;
+ 		rcu_sync_enter(&cgroup_threadgroup_rwsem.rss);
+ 		root->flags |= CGRP_ROOT_FAVOR_DYNMODS;
+ 	} else if (!favor && favoring) {
++		if (cgroup_enable_per_threadgroup_rwsem)
++			pr_warn_once("cgroup favordynmods: per threadgroup rwsem mechanism can't be disabled\n");
+ 		rcu_sync_exit(&cgroup_threadgroup_rwsem.rss);
+ 		root->flags &= ~CGRP_ROOT_FAVOR_DYNMODS;
+ 	}
++	percpu_up_write(&cgroup_threadgroup_rwsem);
+ }
+ 
+ static int cgroup_init_root_id(struct cgroup_root *root)
+@@ -2482,7 +2506,8 @@ EXPORT_SYMBOL_GPL(cgroup_path_ns);
+ 
+ /**
+  * cgroup_attach_lock - Lock for ->attach()
+- * @lock_mode: whether to down_write cgroup_threadgroup_rwsem
++ * @lock_mode: whether acquire and acquire which rwsem
++ * @tsk: thread group to lock
+  *
+  * cgroup migration sometimes needs to stabilize threadgroups against forks and
+  * exits by write-locking cgroup_threadgroup_rwsem. However, some ->attach()
+@@ -2502,8 +2527,15 @@ EXPORT_SYMBOL_GPL(cgroup_path_ns);
+  * Resolve the situation by always acquiring cpus_read_lock() before optionally
+  * write-locking cgroup_threadgroup_rwsem. This allows ->attach() to assume that
+  * CPU hotplug is disabled on entry.
++ *
++ * When favordynmods is enabled, take per threadgroup rwsem to reduce overhead
++ * on dynamic cgroup modifications. see the comment above
++ * CGRP_ROOT_FAVOR_DYNMODS definition.
++ *
++ * tsk is not NULL only when writing to cgroup.procs.
+  */
+-void cgroup_attach_lock(enum cgroup_attach_lock_mode lock_mode)
++void cgroup_attach_lock(enum cgroup_attach_lock_mode lock_mode,
++			struct task_struct *tsk)
+ {
+ 	cpus_read_lock();
+ 
+@@ -2513,6 +2545,9 @@ void cgroup_attach_lock(enum cgroup_attach_lock_mode lock_mode)
+ 	case CGRP_ATTACH_LOCK_GLOBAL:
+ 		percpu_down_write(&cgroup_threadgroup_rwsem);
+ 		break;
++	case CGRP_ATTACH_LOCK_PER_THREADGROUP:
++		down_write(&tsk->signal->cgroup_threadgroup_rwsem);
++		break;
+ 	default:
+ 		pr_warn("cgroup: Unexpected attach lock mode.");
+ 		break;
+@@ -2521,9 +2556,11 @@ void cgroup_attach_lock(enum cgroup_attach_lock_mode lock_mode)
+ 
+ /**
+  * cgroup_attach_unlock - Undo cgroup_attach_lock()
+- * @lock_mode: whether to up_write cgroup_threadgroup_rwsem
++ * @lock_mode: whether release and release which rwsem
++ * @tsk: thread group to lock
+  */
+-void cgroup_attach_unlock(enum cgroup_attach_lock_mode lock_mode)
++void cgroup_attach_unlock(enum cgroup_attach_lock_mode lock_mode,
++			  struct task_struct *tsk)
+ {
+ 	switch (lock_mode) {
+ 	case CGRP_ATTACH_LOCK_NONE:
+@@ -2531,6 +2568,9 @@ void cgroup_attach_unlock(enum cgroup_attach_lock_mode lock_mode)
+ 	case CGRP_ATTACH_LOCK_GLOBAL:
+ 		percpu_up_write(&cgroup_threadgroup_rwsem);
+ 		break;
++	case CGRP_ATTACH_LOCK_PER_THREADGROUP:
++		up_write(&tsk->signal->cgroup_threadgroup_rwsem);
++		break;
+ 	default:
+ 		pr_warn("cgroup: Unexpected attach lock mode.");
+ 		break;
+@@ -3042,7 +3082,6 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+ 		tsk = ERR_PTR(-EINVAL);
+ 		goto out_unlock_rcu;
+ 	}
+-
+ 	get_task_struct(tsk);
+ 	rcu_read_unlock();
+ 
+@@ -3055,12 +3094,16 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+ 	 */
+ 	lockdep_assert_held(&cgroup_mutex);
+ 
+-	if (pid || threadgroup)
+-		*lock_mode = CGRP_ATTACH_LOCK_GLOBAL;
+-	else
++	if (pid || threadgroup) {
++		if (cgroup_enable_per_threadgroup_rwsem)
++			*lock_mode = CGRP_ATTACH_LOCK_PER_THREADGROUP;
++		else
++			*lock_mode = CGRP_ATTACH_LOCK_GLOBAL;
++	} else {
+ 		*lock_mode = CGRP_ATTACH_LOCK_NONE;
++	}
+ 
+-	cgroup_attach_lock(*lock_mode);
++	cgroup_attach_lock(*lock_mode, tsk);
+ 
+ 	if (threadgroup) {
+ 		if (!thread_group_leader(tsk)) {
+@@ -3069,7 +3112,7 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+ 			 * may strip us of our leadership. If this happens,
+ 			 * throw this task away and try again.
+ 			 */
+-			cgroup_attach_unlock(*lock_mode);
++			cgroup_attach_unlock(*lock_mode, tsk);
+ 			put_task_struct(tsk);
+ 			goto retry_find_task;
+ 		}
+@@ -3085,10 +3128,10 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
+ void cgroup_procs_write_finish(struct task_struct *task,
+ 			       enum cgroup_attach_lock_mode lock_mode)
+ {
++	cgroup_attach_unlock(lock_mode, task);
++
+ 	/* release reference from cgroup_procs_write_start() */
+ 	put_task_struct(task);
+-
+-	cgroup_attach_unlock(lock_mode);
+ }
+ 
+ static void cgroup_print_ss_mask(struct seq_file *seq, u16 ss_mask)
+@@ -3178,7 +3221,7 @@ static int cgroup_update_dfl_csses(struct cgroup *cgrp)
+ 	else
+ 		lock_mode = CGRP_ATTACH_LOCK_NONE;
+ 
+-	cgroup_attach_lock(lock_mode);
++	cgroup_attach_lock(lock_mode, NULL);
+ 
+ 	/* NULL dst indicates self on default hierarchy */
+ 	ret = cgroup_migrate_prepare_dst(&mgctx);
+@@ -3199,7 +3242,7 @@ static int cgroup_update_dfl_csses(struct cgroup *cgrp)
+ 	ret = cgroup_migrate_execute(&mgctx);
+ out_finish:
+ 	cgroup_migrate_finish(&mgctx);
+-	cgroup_attach_unlock(lock_mode);
++	cgroup_attach_unlock(lock_mode, NULL);
+ 	return ret;
+ }
+ 
+diff --git a/kernel/fork.c b/kernel/fork.c
+index c4ada32598bd..9a039867ecfd 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1688,6 +1688,10 @@ static int copy_signal(unsigned long clone_flags, struct task_struct *tsk)
+ 	tty_audit_fork(sig);
+ 	sched_autogroup_fork(sig);
+ 
++#ifdef CONFIG_CGROUPS
++	init_rwsem(&sig->cgroup_threadgroup_rwsem);
++#endif
++
+ 	sig->oom_score_adj = current->signal->oom_score_adj;
+ 	sig->oom_score_adj_min = current->signal->oom_score_adj_min;
+ 
+-- 
+2.51.0
+
 
