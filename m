@@ -1,98 +1,104 @@
-Return-Path: <cgroups+bounces-9968-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9969-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A03AB52347
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 23:08:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 416E2B523BB
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 23:47:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E3281BC1E3E
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 21:08:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3889E5605E1
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 21:46:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E733081D0;
-	Wed, 10 Sep 2025 21:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A0E30FC1D;
+	Wed, 10 Sep 2025 21:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bEM+++Vb"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="jl66o85u"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from 003.mia.mailroute.net (003.mia.mailroute.net [199.89.3.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A119B307AD1;
-	Wed, 10 Sep 2025 21:07:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B43A25A350;
+	Wed, 10 Sep 2025 21:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.3.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757538447; cv=none; b=bsUvDzW20sd3CWQi6m+fms+4FYUVa5thLaCWfE+rrYsJH8Z9caUR2d8lVIaJNRi8rmUaEGuRXZJ+b60eZZlSdyF+e0TI2gu5KIYGq7l9xMFBDicY7aY+eGra1iT/53MqObScVbSQfAWSwcrlPFzSbXwTTHwKBPSLfub97ayG9hQ=
+	t=1757540811; cv=none; b=e0w4oBHunlWJ2paFItohDi3Jve8T7IAOVez+RETZYldaS5JZA/y7hxnCcT/8woECEtX4GqFO6HsSTEVM1HzSKfL6XfrAlm6dV1HvYPuZ3nkCNRFqCbolVxKEBZvy5PCEvifewsVjeHTkLT4Al8O4CtAmAwNB1GudfcUI4uSPpo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757538447; c=relaxed/simple;
-	bh=2YPPXjuAHf0vHmGEGykxAK2OhwuGpfXNUwM3XuYu9G4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tDk9O0YkJkmFKlQ2DOuZpxhdjO9+i5dXsASU5l2uLp34fyaqdv1AT0O3YpDTZFH54H2Gl+Iy8KW2DDeFkt1dOBfPJMRw4/GgfM3Hy92+MfV+giSooY0ehT9451zP7AXINV6oo6sU2BfCR6+r7o1dV3Yre/zgIgbi6oWX5+SAvdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bEM+++Vb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9DC9C4CEEB;
-	Wed, 10 Sep 2025 21:07:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757538447;
-	bh=2YPPXjuAHf0vHmGEGykxAK2OhwuGpfXNUwM3XuYu9G4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bEM+++VbIe7sTzERp//BoGoRM5iEcmtMN49JoP0Cgmc7zSUV4tcF8xuMPDwlYKMmj
-	 PZ79vJAcj8RO5Nl+OUHuZtmiZQpLLC91WNfI16tWdBKIoLpwx+NM4YMmm/syrR4HKx
-	 nJXCs9mAzNYYF7j3qUOqqUlI/527ifodyPnbCmQ/SepFZG8fw6qCHrFugpOsjNysTX
-	 O71YlIZyqgY7tvXn8BhGhBoQvObiSaablU1y/czIrkVvtLSIIO9sy3uDTmgHntqMsy
-	 rXWNsfAqQ2oQRzIZLJp47BGs3pt985N8nTBsxpgGPbtPPIuoMWTjKFtD3fqbh7+9CR
-	 efXvTYSsIIGBg==
-Date: Wed, 10 Sep 2025 17:07:25 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-	Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>,
-	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
-	Lennart Poettering <mzxreary@0pointer.de>,
-	Daan De Meyer <daan.j.demeyer@gmail.com>,
-	Aleksa Sarai <cyphar@cyphar.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH 14/32] net: use ns_common_init()
-Message-ID: <aMHoje4qJsao2wkU@laps>
-References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
- <20250910-work-namespace-v1-14-4dd56e7359d8@kernel.org>
+	s=arc-20240116; t=1757540811; c=relaxed/simple;
+	bh=xI5dr2WLtU48h2vDzwYeGhyj45s9yfxwH9ivM8zY9+w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iKv6fqOWvsl4IZuQ5c3Pqh8LYAYRpB92U5iOx2YSZ4aDaK0mh3rSskQFohg8OpIeArA12xP9sJkYOHxH0KXrSWWCsOIgVQ81EE8QS1UQoSrC5yPNsyKEmJs39KZWtE4eCyNxOgxdxkX7yiL+82cp4mBhn1mdzSi47VClmBSoRXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=jl66o85u; arc=none smtp.client-ip=199.89.3.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 003.mia.mailroute.net (Postfix) with ESMTP id 4cMZ5h6MjrzlgqTy;
+	Wed, 10 Sep 2025 21:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1757540804; x=1760132805; bh=SblCa7b4/NTLO3n25U9sMwdZ
+	RzviXHPZ/qYAZnJLH+o=; b=jl66o85uqkGn0HhU8xIV8VJzDOn50wzA/PhwxG7y
+	83Eu311QE0FTDgG8Vfs5pcUIEB3I/PMqK1NA+f+F/CmhRyiYsbAfvgKI9NGeDbfA
+	oJgkcHG+363CIcJIrRIxkmA6QMB7Hbcg6bbk8iwjTGfvIGZ5yMlIhV2oUxk7Y/Lp
+	m+PR8mVloka1g9R9ADPdLGv8qtSaPtKhfQ9Sdojz8M5vz49Y4aftvaV79mvlf4dv
+	8uG1wzNP3j7mcX8/TZz2eBsFI1Fg9L89Ti2/Skn0SQZVLxQjnbZer+thswakrtTQ
+	sNm2OmK3oEqu6RxA0pfn+4DCcecegAif4i28pRwh3TfPNg==
+X-Virus-Scanned: by MailRoute
+Received: from 003.mia.mailroute.net ([127.0.0.1])
+ by localhost (003.mia [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id ynXkrDbBFREF; Wed, 10 Sep 2025 21:46:44 +0000 (UTC)
+Received: from [100.66.154.22] (unknown [104.135.204.82])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 003.mia.mailroute.net (Postfix) with ESMTPSA id 4cMZ5F0NFBzlgn8k;
+	Wed, 10 Sep 2025 21:46:23 +0000 (UTC)
+Message-ID: <f65cf3ae-069d-4ade-9fc9-03f01c7e1649@acm.org>
+Date: Wed, 10 Sep 2025 14:46:21 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20250910-work-namespace-v1-14-4dd56e7359d8@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 32/32] selftests/namespaces: add file handle selftests
+To: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org
+Cc: Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>,
+ Mike Yuan <me@yhndnzj.com>, =?UTF-8?Q?Zbigniew_J=C4=99drzejewski-Szmek?=
+ <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>,
+ Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, netdev@vger.kernel.org
+References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
+ <20250910-work-namespace-v1-32-4dd56e7359d8@kernel.org>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20250910-work-namespace-v1-32-4dd56e7359d8@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Sep 10, 2025 at 04:36:59PM +0200, Christian Brauner wrote:
->@@ -573,6 +588,7 @@ struct net *copy_net_ns(unsigned long flags,
->
-> 	if (rv < 0) {
-> put_userns:
->+		ns_free_inum(&net->ns);
+On 9/10/25 7:37 AM, Christian Brauner wrote:
+> +	snprintf(ns_path, sizeof(ns_path), "/proc/self/ns/net");
+> +	ns_fd = open(ns_path, O_RDONLY);
 
-I've ended up looking at this patch because of Jan's earlier comment about a
-different issue in this patch.
+Here and also in TEST(nsfs_uts_handle), ns_path is not modified. Does
+this mean that "/proc/self/ns/net" can be stored in a static const char
+array and also that the snprintf() call can be left out? In case I would
+have missed the reason why the path is copied, how about using
+asprintf() or strdup() instead of snprintf()?
 
-Aren't we double-freeing net->ns here if setup_net() failed?
-
-setup_net() can call ops_undo_list() on failure, which will
-ns_free_inum(&net->ns) once, and then we do it again in the put_userns error
-handling label.
-
--- 
 Thanks,
-Sasha
+
+Bart.
 
