@@ -1,55 +1,55 @@
-Return-Path: <cgroups+bounces-9933-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9931-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEBE3B51CC5
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 18:01:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF389B51CBE
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 18:00:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D94E7B5689
-	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 15:59:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B23B11C81CB0
+	for <lists+cgroups@lfdr.de>; Wed, 10 Sep 2025 16:01:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95B9334376;
-	Wed, 10 Sep 2025 16:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F14032ED55;
+	Wed, 10 Sep 2025 16:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="huXY/J11"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SXt8fcWT"
 X-Original-To: cgroups@vger.kernel.org
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894DE27FD76;
-	Wed, 10 Sep 2025 16:00:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB40926B75C;
+	Wed, 10 Sep 2025 16:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757520042; cv=none; b=KysK0HYmI5lMu2bwVdyHqJk6VPk5q5A5gAu05Tjch5zUCSoyXsKx/baneNWu+ZL5zArARL5VQOoMDcm8fJGpEq+CzEMzM6QwAl/rIVFYCihnef/oGR4QB7kYymf4LAQteY+wtP6/P+NYtk3N1/YJxuSeNInzr1t7V5aXelZiJ3U=
+	t=1757520041; cv=none; b=WnyNrYTCGbITH3wjexACjJkXTVmIuJtvojVbnMGaV0tOH/YI57vCbz3NKcRmmAmtZSmLSSWIMfzFnXdbNWDmIytpghUVN3lO3x74BzKdJUJFuhzb2ZnPkcT4Fg2c+j4GOxoms3bgUqELC8hUHBJbKleFEDfu1IW2PtNZESk+tTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757520042; c=relaxed/simple;
-	bh=ez4YCv5vbah9NEmQRbnqaVJy8liiti6yFa2mJFPFaeQ=;
+	s=arc-20240116; t=1757520041; c=relaxed/simple;
+	bh=v/Iu70dxRzbGDCv8MSQ/4Ric2NCqoqB/0rR4wmEUtFU=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=GDg0rV94fRxzdhLpay3EXjL9xLKZH3jxzQnRYOvIQhGQpgyeb+6Ryq2WvEbcslr8gHdljK3bFwZBwyufX5qDd438HzD2U1CzGCeFvldThZYnE5wv+AStSkxHUUowz2/x4gW9jT2CK3qRk1nc1ieVoxuvUG/NNGf1Yo286F8Gquc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=huXY/J11; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type; b=l39jzq5GmhQ+73ObXnF8wAGUCk2y5FCdqf83xvAbS7BoEMJN7yYH69FLnzLO6aQgyZ3c4xXuKensR6vwRmiQsDtqSlRqR06LqLEb+RLuK82yrwPTyhR24qk+Fi0oHGNcj4T+jw8bssuWM+opdmXMZ9rzRU1jt3mOreuaFJ4zQPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=SXt8fcWT; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
 	Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:In-Reply-To;
-	bh=6HCkL6pDdwM+l3KCDVSNPOCM5Jj8sjUY/Qzwb+O256w=; b=huXY/J118POEIqYFDc1P50Gvwo
-	OzR2l37ochnVBUh/hM1gCtQeLM2c1jlYaKW83a8UIzHQcBswLLcnH6rlgnfzWvAAncAvygSBeOElY
-	G3B7u4QUWX4rBSTMM9iRd/5/5LCUgDXMgNcavFbdGBmouFibtIO0v6JPCShalqr2nQ+r3HDWwcLYR
-	5nxNA6ZbfQPpozrNLoMXU0QYnszOvRi6sZLxlrMtDqIoh5hVWzt6x8QXPGSxTTuxTMf6KzjM7HwMH
-	jkrcdCrvCAnKSqyLjKsKBHJHdx5uJASFWKv/wfOclWgKxwV08dNDmuw8gwd9vFjnbqvHG3yFdj3pE
-	itv05B1w==;
+	bh=5odGo3alJRTX8gNydTE0XZfL6eVbL5R2OiB+CAHbetE=; b=SXt8fcWTTp6l1Z/JZkZuUcRAZL
+	bjrlm97YT27B/8/d9gHCTxDXjFU6+/7ECshmtbp2PxsPidaGdmWMK1ipDbp8vr4ptbGCp6jF18tAl
+	+ZldycbT1OxQL6rdp1QGWkdcvleFsT2eR4urMobeRYY+6zdtqWF4nRZlnCm0dgIFUfqzCEZGdQjgv
+	ts/NnmMKBVb45T/dRaVseY1EHhmkfNopU5VfDR4R+c+O+/Kev+oJ5yoYhBUVSzELLStYjfWl90tVd
+	Utd2PvSBImiOCspMAL/vJrZ6X45YLk7RZ9T1FNbqsPrPtA5QxtWW8/VT0f1PSnuMtauYAKSwOg3Ci
+	Nhp4jaZw==;
 Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwNFH-0000000BXpG-0TbN;
+	id 1uwNFH-0000000BXpI-0Wsj;
 	Wed, 10 Sep 2025 16:00:31 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-	id A3FFF302F8A; Wed, 10 Sep 2025 18:00:28 +0200 (CEST)
-Message-ID: <20250910155809.571531402@infradead.org>
+	id A82F8302FD7; Wed, 10 Sep 2025 18:00:28 +0200 (CEST)
+Message-ID: <20250910155809.684653538@infradead.org>
 User-Agent: quilt/0.68
-Date: Wed, 10 Sep 2025 17:44:20 +0200
+Date: Wed, 10 Sep 2025 17:44:21 +0200
 From: Peter Zijlstra <peterz@infradead.org>
 To: tj@kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -72,7 +72,7 @@ Cc: linux-kernel@vger.kernel.org,
  sched-ext@lists.linux.dev,
  liuwenfang@honor.com,
  tglx@linutronix.de
-Subject: [PATCH 11/14] sched: Add flags to {put_prev,set_next}_task() methods
+Subject: [PATCH 12/14] sched: Add shared runqueue locking to __task_rq_lock()
 References: <20250910154409.446470175@infradead.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -82,236 +82,183 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
+In order to fix the whole SCHED_EXT balance/pick mess, and avoid
+further complicating all this, make the regular:
+
+  p->pi_lock
+    rq->lock
+      dsq->lock
+
+order work. Notably, while sched_class::pick_task() is called with
+rq->lock held, and pick_task_scx() takes dsq->lock, and while the
+normal sched_change pattern goes into dequeue/enqueue and thus takes
+dsq->lock, various other things like task_call_func() /
+sched_setaffinity() do not necessarily do so.
+
+Therefore, add a per task spinlock pointer that can be set to
+reference the shared runqueue lock where appropriate and teach
+__task_rq_lock() to take this long along with rq->lock.
+
+This ensures all 'normal' scheduling operations serialize against the
+shared lock.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c      |    4 ++--
- kernel/sched/deadline.c  |    6 ++++--
- kernel/sched/ext.c       |    4 ++--
- kernel/sched/fair.c      |    8 +++++---
- kernel/sched/idle.c      |    5 +++--
- kernel/sched/rt.c        |    6 ++++--
- kernel/sched/sched.h     |   18 ++++++++++--------
- kernel/sched/stop_task.c |    5 +++--
- 8 files changed, 33 insertions(+), 23 deletions(-)
+ include/linux/sched.h |    2 +-
+ kernel/sched/core.c   |   27 ++++++++++++++++++++++-----
+ kernel/sched/sched.h  |   10 ++++++----
+ kernel/sched/stats.h  |    2 +-
+ 4 files changed, 30 insertions(+), 11 deletions(-)
 
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1225,8 +1225,8 @@ struct task_struct {
+ 	/* Protection against (de-)allocation: mm, files, fs, tty, keyrings, mems_allowed, mempolicy: */
+ 	spinlock_t			alloc_lock;
+ 
+-	/* Protection of the PI data structures: */
+ 	raw_spinlock_t			pi_lock;
++	raw_spinlock_t			*srq_lock;
+ 
+ 	struct wake_q_node		wake_q;
+ 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -10857,7 +10857,7 @@ struct sched_change_ctx *sched_change_be
- 	if (ctx->queued)
- 		dequeue_task(rq, p, flags);
- 	if (ctx->running)
--		put_prev_task(rq, p);
-+		put_prev_task(rq, p, flags);
- 
- 	if ((flags & DEQUEUE_CLASS) && p->sched_class->switched_from)
- 		p->sched_class->switched_from(rq, p);
-@@ -10878,7 +10878,7 @@ void sched_change_end(struct sched_chang
- 	if (ctx->queued)
- 		enqueue_task(rq, p, ctx->flags | ENQUEUE_NOCLOCK);
- 	if (ctx->running)
--		set_next_task(rq, p);
-+		set_next_task(rq, p, ctx->flags);
- 
- 	if (ctx->flags & ENQUEUE_CLASS) {
- 		if (p->sched_class->switched_to)
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -2340,10 +2340,11 @@ static void start_hrtick_dl(struct rq *r
- }
- #endif /* !CONFIG_SCHED_HRTICK */
- 
--static void set_next_task_dl(struct rq *rq, struct task_struct *p, bool first)
-+static void set_next_task_dl(struct rq *rq, struct task_struct *p, int flags)
+@@ -703,17 +703,24 @@ void double_rq_lock(struct rq *rq1, stru
+ struct rq *__task_rq_lock(struct task_struct *p, struct rq_flags *rf)
+ 	__acquires(rq->lock)
  {
- 	struct sched_dl_entity *dl_se = &p->dl;
- 	struct dl_rq *dl_rq = &rq->dl;
-+	bool first = flags & ENQUEUE_FIRST;
++	raw_spinlock_t *slock;
+ 	struct rq *rq;
  
- 	p->se.exec_start = rq_clock_task(rq);
- 	if (on_dl_rq(&p->dl))
-@@ -2413,7 +2414,8 @@ static struct task_struct *pick_task_dl(
- 	return __pick_task_dl(rq);
+ 	lockdep_assert_held(&p->pi_lock);
+ 
+ 	for (;;) {
+ 		rq = task_rq(p);
++		slock = p->srq_lock;
+ 		raw_spin_rq_lock(rq);
+-		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p))) {
++		if (slock)
++			raw_spin_lock(slock);
++		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p) &&
++			   (!slock || p->srq_lock == slock))) {
+ 			rq_pin_lock(rq, rf);
+ 			return rq;
+ 		}
++		if (slock)
++			raw_spin_unlock(slock);
+ 		raw_spin_rq_unlock(rq);
+ 
+ 		while (unlikely(task_on_rq_migrating(p)))
+@@ -728,12 +735,16 @@ struct rq *task_rq_lock(struct task_stru
+ 	__acquires(p->pi_lock)
+ 	__acquires(rq->lock)
+ {
++	raw_spinlock_t *slock;
+ 	struct rq *rq;
+ 
+ 	for (;;) {
+ 		raw_spin_lock_irqsave(&p->pi_lock, rf->flags);
+ 		rq = task_rq(p);
++		slock = p->srq_lock;
+ 		raw_spin_rq_lock(rq);
++		if (slock)
++			raw_spin_lock(slock);
+ 		/*
+ 		 *	move_queued_task()		task_rq_lock()
+ 		 *
+@@ -751,10 +762,14 @@ struct rq *task_rq_lock(struct task_stru
+ 		 * dependency headed by '[L] rq = task_rq()' and the acquire
+ 		 * will pair with the WMB to ensure we then also see migrating.
+ 		 */
+-		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p))) {
++		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p) &&
++			   (!slock || p->srq_lock == slock))) {
+ 			rq_pin_lock(rq, rf);
+ 			return rq;
+ 		}
++
++		if (slock)
++			raw_spin_unlock(slock);
+ 		raw_spin_rq_unlock(rq);
+ 		raw_spin_unlock_irqrestore(&p->pi_lock, rf->flags);
+ 
+@@ -2617,7 +2632,8 @@ static int migration_cpu_stop(void *data
+ 		 */
+ 		WARN_ON_ONCE(!pending->stop_pending);
+ 		preempt_disable();
+-		task_rq_unlock(rq, p, &rf);
++		rq_unlock(rq, &rf);
++		raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
+ 		stop_one_cpu_nowait(task_cpu(p), migration_cpu_stop,
+ 				    &pending->arg, &pending->stop_work);
+ 		preempt_enable();
+@@ -2626,7 +2642,8 @@ static int migration_cpu_stop(void *data
+ out:
+ 	if (pending)
+ 		pending->stop_pending = false;
+-	task_rq_unlock(rq, p, &rf);
++	rq_unlock(rq, &rf);
++	raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
+ 
+ 	if (complete)
+ 		complete_all(&pending->done);
+@@ -3743,7 +3760,7 @@ static int ttwu_runnable(struct task_str
+ 		ttwu_do_wakeup(p);
+ 		ret = 1;
+ 	}
+-	__task_rq_unlock(rq, &rf);
++	__task_rq_unlock(rq, p, &rf);
+ 
+ 	return ret;
+ }
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1800,10 +1800,13 @@ struct rq *task_rq_lock(struct task_stru
+ 	__acquires(p->pi_lock)
+ 	__acquires(rq->lock);
+ 
+-static inline void __task_rq_unlock(struct rq *rq, struct rq_flags *rf)
++static inline void
++__task_rq_unlock(struct rq *rq, struct task_struct *p, struct rq_flags *rf)
+ 	__releases(rq->lock)
+ {
+ 	rq_unpin_lock(rq, rf);
++	if (p->srq_lock)
++		raw_spin_unlock(p->srq_lock);
+ 	raw_spin_rq_unlock(rq);
  }
  
--static void put_prev_task_dl(struct rq *rq, struct task_struct *p, struct task_struct *next)
-+static void put_prev_task_dl(struct rq *rq, struct task_struct *p,
-+			     struct task_struct *next, int flags)
+@@ -1812,8 +1815,7 @@ task_rq_unlock(struct rq *rq, struct tas
+ 	__releases(rq->lock)
+ 	__releases(p->pi_lock)
  {
- 	struct sched_dl_entity *dl_se = &p->dl;
- 	struct dl_rq *dl_rq = &rq->dl;
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -3243,7 +3243,7 @@ static void process_ddsp_deferred_locals
+-	rq_unpin_lock(rq, rf);
+-	raw_spin_rq_unlock(rq);
++	__task_rq_unlock(rq, p, rf);
+ 	raw_spin_unlock_irqrestore(&p->pi_lock, rf->flags);
+ }
+ 
+@@ -1824,7 +1826,7 @@ DEFINE_LOCK_GUARD_1(task_rq_lock, struct
+ 
+ DEFINE_LOCK_GUARD_1(__task_rq_lock, struct task_struct,
+ 		    _T->rq = __task_rq_lock(_T->lock, &_T->rf),
+-		    __task_rq_unlock(_T->rq, &_T->rf),
++		    __task_rq_unlock(_T->rq, _T->lock, &_T->rf),
+ 		    struct rq *rq; struct rq_flags rf)
+ 
+ static inline void rq_lock_irqsave(struct rq *rq, struct rq_flags *rf)
+--- a/kernel/sched/stats.h
++++ b/kernel/sched/stats.h
+@@ -206,7 +206,7 @@ static inline void psi_ttwu_dequeue(stru
+ 
+ 		rq = __task_rq_lock(p, &rf);
+ 		psi_task_change(p, p->psi_flags, 0);
+-		__task_rq_unlock(rq, &rf);
++		__task_rq_unlock(rq, p, &rf);
  	}
  }
  
--static void set_next_task_scx(struct rq *rq, struct task_struct *p, bool first)
-+static void set_next_task_scx(struct rq *rq, struct task_struct *p, int flags)
- {
- 	struct scx_sched *sch = scx_root;
- 
-@@ -3346,7 +3346,7 @@ static void switch_class(struct rq *rq,
- }
- 
- static void put_prev_task_scx(struct rq *rq, struct task_struct *p,
--			      struct task_struct *next)
-+			      struct task_struct *next, int flags)
- {
- 	struct scx_sched *sch = scx_root;
- 	update_curr_scx(rq);
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8839,7 +8839,7 @@ static struct task_struct *pick_task_fai
- }
- 
- static void __set_next_task_fair(struct rq *rq, struct task_struct *p, bool first);
--static void set_next_task_fair(struct rq *rq, struct task_struct *p, bool first);
-+static void set_next_task_fair(struct rq *rq, struct task_struct *p, int flags);
- 
- struct task_struct *
- pick_next_task_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
-@@ -8955,7 +8955,8 @@ void fair_server_init(struct rq *rq)
- /*
-  * Account for a descheduled task:
-  */
--static void put_prev_task_fair(struct rq *rq, struct task_struct *prev, struct task_struct *next)
-+static void put_prev_task_fair(struct rq *rq, struct task_struct *prev,
-+			       struct task_struct *next, int flags)
- {
- 	struct sched_entity *se = &prev->se;
- 	struct cfs_rq *cfs_rq;
-@@ -13286,9 +13287,10 @@ static void __set_next_task_fair(struct
-  * This routine is mostly called to set cfs_rq->curr field when a task
-  * migrates between groups/classes.
-  */
--static void set_next_task_fair(struct rq *rq, struct task_struct *p, bool first)
-+static void set_next_task_fair(struct rq *rq, struct task_struct *p, int flags)
- {
- 	struct sched_entity *se = &p->se;
-+	bool first = flags & ENQUEUE_FIRST;
- 
- 	for_each_sched_entity(se) {
- 		struct cfs_rq *cfs_rq = cfs_rq_of(se);
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -452,13 +452,14 @@ static void wakeup_preempt_idle(struct r
- 	resched_curr(rq);
- }
- 
--static void put_prev_task_idle(struct rq *rq, struct task_struct *prev, struct task_struct *next)
-+static void put_prev_task_idle(struct rq *rq, struct task_struct *prev,
-+			       struct task_struct *next, int flags)
- {
- 	dl_server_update_idle_time(rq, prev);
- 	scx_update_idle(rq, false, true);
- }
- 
--static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool first)
-+static void set_next_task_idle(struct rq *rq, struct task_struct *next, int flags)
- {
- 	update_idle_core(rq);
- 	scx_update_idle(rq, true, true);
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1636,10 +1636,11 @@ static void wakeup_preempt_rt(struct rq
- 		check_preempt_equal_prio(rq, p);
- }
- 
--static inline void set_next_task_rt(struct rq *rq, struct task_struct *p, bool first)
-+static inline void set_next_task_rt(struct rq *rq, struct task_struct *p, int flags)
- {
- 	struct sched_rt_entity *rt_se = &p->rt;
- 	struct rt_rq *rt_rq = &rq->rt;
-+	bool first = flags & ENQUEUE_FIRST;
- 
- 	p->se.exec_start = rq_clock_task(rq);
- 	if (on_rt_rq(&p->rt))
-@@ -1707,7 +1708,8 @@ static struct task_struct *pick_task_rt(
- 	return p;
- }
- 
--static void put_prev_task_rt(struct rq *rq, struct task_struct *p, struct task_struct *next)
-+static void put_prev_task_rt(struct rq *rq, struct task_struct *p,
-+			     struct task_struct *next, int flags)
- {
- 	struct sched_rt_entity *rt_se = &p->rt;
- 	struct rt_rq *rt_rq = &rq->rt;
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2370,7 +2370,9 @@ extern const u32		sched_prio_to_wmult[40
- #define ENQUEUE_REPLENISH	0x00020000
- #define ENQUEUE_MIGRATED	0x00040000
- #define ENQUEUE_INITIAL		0x00080000
-+
- #define ENQUEUE_RQ_SELECTED	0x00100000
-+#define ENQUEUE_FIRST		0x00200000
- 
- #define RETRY_TASK		((void *)-1UL)
- 
-@@ -2448,8 +2450,8 @@ struct sched_class {
- 	 * sched_change:
- 	 * __schedule: rq->lock
- 	 */
--	void (*put_prev_task)(struct rq *rq, struct task_struct *p, struct task_struct *next);
--	void (*set_next_task)(struct rq *rq, struct task_struct *p, bool first);
-+	void (*put_prev_task)(struct rq *rq, struct task_struct *p, struct task_struct *next, int flags);
-+	void (*set_next_task)(struct rq *rq, struct task_struct *p, int flags);
- 
- 	/*
- 	 * select_task_rq: p->pi_lock
-@@ -2544,15 +2546,15 @@ struct sched_class {
- #endif
- };
- 
--static inline void put_prev_task(struct rq *rq, struct task_struct *prev)
-+static inline void put_prev_task(struct rq *rq, struct task_struct *prev, int flags)
- {
- 	WARN_ON_ONCE(rq->donor != prev);
--	prev->sched_class->put_prev_task(rq, prev, NULL);
-+	prev->sched_class->put_prev_task(rq, prev, NULL, flags);
- }
- 
--static inline void set_next_task(struct rq *rq, struct task_struct *next)
-+static inline void set_next_task(struct rq *rq, struct task_struct *next, int flags)
- {
--	next->sched_class->set_next_task(rq, next, false);
-+	next->sched_class->set_next_task(rq, next, flags);
- }
- 
- static inline void
-@@ -2576,8 +2578,8 @@ static inline void put_prev_set_next_tas
- 	if (next == prev)
- 		return;
- 
--	prev->sched_class->put_prev_task(rq, prev, next);
--	next->sched_class->set_next_task(rq, next, true);
-+	prev->sched_class->put_prev_task(rq, prev, next, 0);
-+	next->sched_class->set_next_task(rq, next, ENQUEUE_FIRST);
- }
- 
- /*
---- a/kernel/sched/stop_task.c
-+++ b/kernel/sched/stop_task.c
-@@ -27,7 +27,7 @@ wakeup_preempt_stop(struct rq *rq, struc
- 	/* we're never preempted */
- }
- 
--static void set_next_task_stop(struct rq *rq, struct task_struct *stop, bool first)
-+static void set_next_task_stop(struct rq *rq, struct task_struct *stop, int flags)
- {
- 	stop->se.exec_start = rq_clock_task(rq);
- }
-@@ -58,7 +58,8 @@ static void yield_task_stop(struct rq *r
- 	BUG(); /* the stop task should never yield, its pointless. */
- }
- 
--static void put_prev_task_stop(struct rq *rq, struct task_struct *prev, struct task_struct *next)
-+static void put_prev_task_stop(struct rq *rq, struct task_struct *prev,
-+			       struct task_struct *next, int flags)
- {
- 	update_curr_common(rq);
- }
 
 
 
