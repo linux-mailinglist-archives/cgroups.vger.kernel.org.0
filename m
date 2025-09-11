@@ -1,185 +1,165 @@
-Return-Path: <cgroups+bounces-9990-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9991-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 712E8B52EB6
-	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 12:38:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54A87B530D9
+	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 13:38:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22C933B8F80
-	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 10:38:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91DF917CE47
+	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 11:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F242E7BAD;
-	Thu, 11 Sep 2025 10:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF3A31DD9E;
+	Thu, 11 Sep 2025 11:36:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="qVqPpvt2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QbgcjOFd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2082.outbound.protection.outlook.com [40.107.244.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3712206A9;
-	Thu, 11 Sep 2025 10:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757587079; cv=fail; b=NrDpUcAN1smnxWHHrjrBL6EvDb6Crmv5g6l9reUgpz6wUtZSxgfXGfnHbnU2XHylRSuUIqqjQuTtpvK+JlsDPBTOWcl5hfJaIyV02x3Yf8kVkYwyecvF/yZcHEEOoGZ/XNu8pX9crxdjAXyFV6hK1iHUidYlFXWZ/eiX7OS4/tc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757587079; c=relaxed/simple;
-	bh=BLO2hZrQsjITBD7Im2+Vv0sRraoHSBiStI5Y0gwenCQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XfmQDR/xlUdDkOLaxOQuXJLWWcZ5jRYyJOa7woFkMppPYQ9okb3X51pvIU5UihRjvo/+ap1QPLJOXMPdS3rKkKk72fDTcUOuSSoePWHQFAbTVVx+efYPMcxdJ79oMmQbRcV3hZVCaPLwzDUXPBDfGxLY17kyem+vzcYJcxSGhQg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=qVqPpvt2; arc=fail smtp.client-ip=40.107.244.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=yWwRHFOHAQUCKzXBPfy3pfyIHNcUIBmGZM8OF4PKiGN6QImE1EftRC1Zalv0BZD9oKl4i1pghar/wvur3wQjder1XR3a149jBCDr9RNc5Hdta1t7LA+hUIf1ptDP++RDNAljHk925ndciwoBv/zoeu7J9bAVD5pd5ASihB59ppVSq542Do+dFgQnnByI1pR6U5wbwPYFKBkyadJgagHHC5mXiSeAfbRQOWlb6BAsa+RutlLHsJ4y9MzBntMpCECRTFZuxWe/rkUbRCxP0g9SvOg0jaKdpnU8MblnO7n810UwWukZ68p/Va98D+S/jb4H40bGp1Tnbvx95OpeCcH9Vg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KBr2zny4dhn8r/trGVFxdoLSX2rKE4JZze3sqr3bUE0=;
- b=JoQuQYdcAE3MKIrudjPC7Ein76FGsmx3vbEFhpiLQh9u+NFfUhovf+MxATJV4ZqjrIdxSCZpRO1N0IbAJ2BE98/2qv5TyoGBpPR9tVNktNVxkAqaO2OzUZ4FLh3yGKhxrNaFRhEOg1OCzRtP3hL+osID2hXuHAiSdR2WCaLV4JiiNJSxkRb0eaTxsROCuxNzmBP5l/1y4K0OZA3YkzZtbY+N6eWOotm6h0t7FeHj/vaWowYIHgxvfznnjN9f7KkCGMeJVqXDg83hq/bQQvnVxOaXn8AelBrz243LCGy0+F3ue+4yhK39+8nZPIaQ8IBbxso3Z7LdW4BzADvNJKMVWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=infradead.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KBr2zny4dhn8r/trGVFxdoLSX2rKE4JZze3sqr3bUE0=;
- b=qVqPpvt216Gwm6VuioP5gOVvNBwxkSpFVixen1FyuPRVMF3B76OAYnVIulDj5IyCRYHsg3KMs5pKGVHlJTswMXh4oJ6GfyystbjBBlTyA/fZl7vg+rew0v/PLiUo7gYfzSH+qfnA6p0NT5QsyGvuS6kflAgb31IurdrQ5QgoEoo=
-Received: from MN2PR10CA0015.namprd10.prod.outlook.com (2603:10b6:208:120::28)
- by SJ2PR12MB9007.namprd12.prod.outlook.com (2603:10b6:a03:541::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Thu, 11 Sep
- 2025 10:37:55 +0000
-Received: from BN2PEPF000044A3.namprd02.prod.outlook.com
- (2603:10b6:208:120:cafe::e4) by MN2PR10CA0015.outlook.office365.com
- (2603:10b6:208:120::28) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9115.15 via Frontend Transport; Thu,
- 11 Sep 2025 10:37:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
-Received: from satlexmb08.amd.com (165.204.84.17) by
- BN2PEPF000044A3.mail.protection.outlook.com (10.167.243.154) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9115.13 via Frontend Transport; Thu, 11 Sep 2025 10:37:55 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.2562.17; Thu, 11 Sep
- 2025 03:37:55 -0700
-Received: from satlexmb07.amd.com (10.181.42.216) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Thu, 11 Sep
- 2025 05:37:54 -0500
-Received: from [172.31.178.191] (10.180.168.240) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
- Transport; Thu, 11 Sep 2025 03:37:47 -0700
-Message-ID: <cdca0902-f6a6-406f-a52a-1172c02f442a@amd.com>
-Date: Thu, 11 Sep 2025 16:07:46 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB0831C578
+	for <cgroups@vger.kernel.org>; Thu, 11 Sep 2025 11:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757590604; cv=none; b=NVfvW2ovbXE9XO9GiZY0r1pOVdbJZxDi6AhROo5jLQydIQxH1+9Z7QBXD+PzRhh557G879h+6Aykwx2Sf6TyXVOrHdjMWF+vwHJ0sffyIvs8aO/oBMlTLTdxZdUWaaXdKJlTTMgL0b7X38NN2FDVVffWg7FfrQumtLsJWOgTxGg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757590604; c=relaxed/simple;
+	bh=l3WS5mh3b7m+0CGnd7HwPGEX6fOXJSXSic0gzbaETOY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FPdh5yvZZB4VMPcnrXyyTIRorPPrttfbVZXXGsLegWmOKpvjCD0q0+fTWpB4LUNyDyE7nqmEhbH7Q+WqmfKYtq/WWrQMPjgwT1bHoy6hezHtmBMPYc3kPXU6XisfMS4LutwdtShjB9warvE1iommjvGeWeD000nUgnNaxSwCc04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QbgcjOFd; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-6228de280a4so1046583a12.2
+        for <cgroups@vger.kernel.org>; Thu, 11 Sep 2025 04:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1757590601; x=1758195401; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l3WS5mh3b7m+0CGnd7HwPGEX6fOXJSXSic0gzbaETOY=;
+        b=QbgcjOFdQCEX77z/FdlRwnzEmGsALvq3U9SOMI0CS5/Coz9cwTG3pr8H10coBpZ0ZT
+         ALfxzqhBFvmTlunvaBg5eojquIU2M0Jaj6+Hd0e8iXqgKuOZqpt4Pv6GARREjVuH73n6
+         hdS/4L12c0LlPui/1Ra+uKktXYpezhtgeFeBAindj/qegG++n014aPkSXSpYqw+JJt2x
+         5d9AacMrKkjsMmKaZ0myeESD6BMVT92frcJGeyabQR1LDI54v2GGB/cQhRWnOlA2P3pb
+         1nosawlRTBFeGlzHK360D6IZGmPAf3T+Q0SiPG4HX3udF0VqG3qAdTsBxdNsQnMuetky
+         AnCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757590601; x=1758195401;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l3WS5mh3b7m+0CGnd7HwPGEX6fOXJSXSic0gzbaETOY=;
+        b=wbPZcjt2C77LU3mYfwjwuEbosP2jHlywlnfVU3md5JmvZ0IEIbrrBwmJs3X+IEv/lU
+         H4gafCilHDKrDMkxgCZZE+ipArOM7B7LSol/Sdq8ZKd1C54nvH1omaAiPWkmlVSL1XNO
+         Zz4PAnTAs7q13YCw7/p0k6ziRvP2Y3ozHmBSqxrbo2nCvuWgm1+jECsfzrxxdOgqg/u0
+         0C4msk9q8wcIbNAjOZlyxfwC+c5jwgCzopmtIg2EfItVlFF1GFeYg0rWIcPqLAYBxjtB
+         yRIOLxt2Vmq76KItN+hUdxieWnnBsh9JVP4gVzQdSf0C7A2C0+Nqcm7qIi9CQtJyZGrr
+         2lXg==
+X-Forwarded-Encrypted: i=1; AJvYcCWg3jaZmGP7W0y1uNczguCd/HGY12kOL+Ectfuarx/OBSXSI+c4THable/vTlRIafZ55GDCvhvP@vger.kernel.org
+X-Gm-Message-State: AOJu0YzpnbZDolUWCKbg8tCgEs4Tf+ueW4O7+e4Dp95+7J6bUtah3HaB
+	rrLpqtWCKtHxusOx96rueemwaKGvxvZpx3ogB0WZxMNgHotmNlh+Ti6pJam5kotVtq1bQ2j0a7F
+	PXd4/JHnw372/L0SggOrx7JIKe87TnIo=
+X-Gm-Gg: ASbGnctkOTlh64qXtuyK+lu1NRB6vyzvC0qPFIyklgH/gy/A359FkQ1ebWYDzZit3EB
+	T5tYA8v60cvrNBLUQ83/XqHSKzS0f3g+jHSZ989Atk5O2kVfGnze9DFuHBhzGhlCWMUwk9qgILY
+	wD7wZhD7cV+H1Lg0eNPr3XAxbfPrmAgdVoPvhnzlAUouvqisAR+YGAmgme+8G6jnjkczdih02dF
+	NdpLK6OXLmBgNya2w==
+X-Google-Smtp-Source: AGHT+IFTNKY6jjRUaK+95vjWoIXWhr+sTjejTLV8OOCQsfjrobYVHw8JMmZi1nhLUH2mOW0HugLlXyiAfLiI1n/62Pg=
+X-Received: by 2002:a05:6402:2685:b0:61d:dd9:20db with SMTP id
+ 4fb4d7f45d1cf-6237c048793mr16217741a12.31.1757590600743; Thu, 11 Sep 2025
+ 04:36:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/14] sched: Employ sched_change guards
-To: Peter Zijlstra <peterz@infradead.org>
-CC: <tj@kernel.org>, <linux-kernel@vger.kernel.org>, <mingo@redhat.com>,
-	<juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-	<dietmar.eggemann@arm.com>, <rostedt@goodmis.org>, <bsegall@google.com>,
-	<mgorman@suse.de>, <vschneid@redhat.com>, <longman@redhat.com>,
-	<hannes@cmpxchg.org>, <mkoutny@suse.com>, <void@manifault.com>,
-	<arighi@nvidia.com>, <changwoo@igalia.com>, <cgroups@vger.kernel.org>,
-	<sched-ext@lists.linux.dev>, <liuwenfang@honor.com>, <tglx@linutronix.de>
-References: <20250910154409.446470175@infradead.org>
- <20250910155808.415580225@infradead.org>
- <c4955d95-8d23-49da-9214-da481f28f797@amd.com>
- <20250911095523.GX3289052@noisy.programming.kicks-ass.net>
- <20250911101008.GD1386988@noisy.programming.kicks-ass.net>
-Content-Language: en-US
-From: K Prateek Nayak <kprateek.nayak@amd.com>
-In-Reply-To: <20250911101008.GD1386988@noisy.programming.kicks-ass.net>
+References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
+ <20250910-work-namespace-v1-27-4dd56e7359d8@kernel.org> <CAOQ4uxgtQQa-jzsnTBxgUTPzgtCiAaH8X6ffMqd+1Y5Jjy0dmQ@mail.gmail.com>
+ <20250911-werken-raubzug-64735473739c@brauner>
+In-Reply-To: <20250911-werken-raubzug-64735473739c@brauner>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 11 Sep 2025 13:36:28 +0200
+X-Gm-Features: Ac12FXxRFt9Ctd5Cl_pR-FdI4tarLWVQlbT7aCbaq2ftodBoMLqTaIDo5wMZnik
+Message-ID: <CAOQ4uxgMgzOjz4E-4kJFJAz3Dpd=Q6vXoGrhz9F0=mb=4XKZqA@mail.gmail.com>
+Subject: Re: [PATCH 27/32] nsfs: support file handles
+To: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
+	Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
+	=?UTF-8?Q?Zbigniew_J=C4=99drzejewski=2DSzmek?= <zbyszek@in.waw.pl>, 
+	Lennart Poettering <mzxreary@0pointer.de>, Daan De Meyer <daan.j.demeyer@gmail.com>, 
+	Aleksa Sarai <cyphar@cyphar.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Simon Horman <horms@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF000044A3:EE_|SJ2PR12MB9007:EE_
-X-MS-Office365-Filtering-Correlation-Id: 37f95efb-c056-43ab-4da9-08ddf11f449a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|1800799024|82310400026|376014|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Wnk0VDN2N0RTQXJGNlBvNCtpNE1yZTZoMHd2eSs4bWNGcXlHWDgyTEdMTTBD?=
- =?utf-8?B?VUlPS1JHRjB6NDNFbDhDRUhhRXJSTVYvM3dWMU9KOUM5YlpsSXFKTTlRTVJx?=
- =?utf-8?B?WmlxZ25kTytWVDE4UEM2RGpBUzEyckpBZ1Fxa3NkNG0zaHJKRVRPVHZ0R01l?=
- =?utf-8?B?L1ZReFFac0dQYVVCbUxCWFNLMWl2WkdieDkxQ3ErNGF6bE5yV3VLcDN6TEdI?=
- =?utf-8?B?cnozL1MxYVZjMGM3WUlCRlp5VmFhZ0svR28xWEhRWXVOY09jSnNXTjltSlBa?=
- =?utf-8?B?NDFrdklQMHE0NWtsbUpDNUltWjBuM255UzA3emIvakhnWldQY3RIcDBHMmR5?=
- =?utf-8?B?bHVQbFZmS2FUY2VIeTJHMkdqT3hJSm1Va1c1WTdUM0dzRis4WW02NHFodGRl?=
- =?utf-8?B?dU1kZVAzbnc1emN4dGlSMnBmeWk4cTVWZ0k4ekVPTng4RU50TlA5SXNtMk9k?=
- =?utf-8?B?QmtKZTI5d0QvZ0VwUEwzRktac3NVeHBRN0hwSVdaWm1ENmZtK1Q4Q2Nrb3Ry?=
- =?utf-8?B?Y3FNSWgwckMycDNsazhyUUFkbzNCbVpQb0NFN1NUMU5NNHEwby9FZTlJNFJt?=
- =?utf-8?B?bmpXemtvVC9WUThha1MycERqZDlOVDdQTFQrdnQ1dXJlWGErcUgwN1BCbXJx?=
- =?utf-8?B?ZjNRMUZqYUJSSG9Ob0dtUE5od2FDUW1BMThSOGFmZEFqSVZ4RnM3M21FeHIr?=
- =?utf-8?B?NXh3NGNyT3huL2hQKys2cCtrYVhvS3A2N2Fya1Q5a01iSFU2bnBwSUlXSDhS?=
- =?utf-8?B?Z2xIbzl6cU9FdWlNSC8zd2xmRjA5SVBPRm9PK0tHU0xsRVl4R1ZHRDkwUjky?=
- =?utf-8?B?MzA4cU9OcTBGVEdTY1ZNYXVlL0NsWHJydld3NFBvbFdzRGhLYU5kQ3RCMEZo?=
- =?utf-8?B?MFUzb3ZPTVNxRHZkdDBWU0FOQ2F3cmV1OUhVeG53M0hLZUZncVpSa0xsWHhW?=
- =?utf-8?B?c09rd3RmNXRvNXRQVGRURFB1SXliRW9kbFhDWXNtZVJZcG8vTVdYKzREN29I?=
- =?utf-8?B?Z3NIdHlVQW9wUWNHMUJqZkxZRGZsR2xENTd6U3VBdUNYcE5lM0ZuMWZDY1g5?=
- =?utf-8?B?Rld6c25BNzM2T0pLaFArYjl4QUVSNk1TOWM2bXFOUWhXTFJnVHJGSFY2SnhP?=
- =?utf-8?B?SXJaMmtSTlQ5ekpWQkdNQnNURjU5d3U3SDBPdWV5eVdHRURLSm96N2ZLV05s?=
- =?utf-8?B?aHM4Nml3MG8rTTZHL0lya1FGMzhyNE5HT2RFUzg0bitHWVdKRkJNbCtaS3M4?=
- =?utf-8?B?bHRGeDRjQUVUNnlnYUZDcUtDU0NsMUZVeERJbGM2WmxYeGdiY0NpQ1dLNFF3?=
- =?utf-8?B?MGFCNy9NdW1UazY2S1lPdmphbjgxclRTY1JZSG1BTmVmQU1nMVZhcDM1V3da?=
- =?utf-8?B?bGdPMk1sb3MzdUtOcTczRlY2MXczZXZ4WHlReVZWUzFrSlNNdmRyYWl6cDNo?=
- =?utf-8?B?dzJWQzExZXN1ZGcvLzQrNmJIdnFXa3BWdHZ3c1NMMUVCZktUOEdZUkgraFFv?=
- =?utf-8?B?MmJ3WXR2eUFYcHVuTnVVSkRqdEFQd1QwbUdSMk1vcE1Ec3ljZGNOSzBqUHRL?=
- =?utf-8?B?SVF1ZGpMNHp0V2JBZnhKNE9TcjRTc3FqZEEwb1VVdkRHdVZxaHlHUDFnWm1J?=
- =?utf-8?B?d0lrVk1VYndyNk9ZMmxvY25TaU84WFJyYVo4NTI4ZVdPN0ZrRURPY0ZLS0tj?=
- =?utf-8?B?NmoxaWVXQnhad2ZweE5NL3lXRUdyRUZ0TER5VG9ZenZxUHZ5K052NnpiZTlz?=
- =?utf-8?B?SXQ1NWdCVDFHZzYvQVBEdk5kZnJLRHlDTG1PeE9kVlp6ajNqR2RCaHVaUWx4?=
- =?utf-8?B?blVwQm5jZ2dzNVJQYmZhWTU3Mnd2UUtpTFFpc1dUb291M3JxbVVKU1lGaVEr?=
- =?utf-8?B?TFNORXNXNWF4RjRDR2NtMmF4ekI3dDJwRTRrVkp1SGMzdzdwSUpuamxoT0pK?=
- =?utf-8?B?a1d3TjFRQUV5T0ptYWxsWm1FTHZxbGNQdG14RHlCd0tIa2NwUzBWVlBrbEZX?=
- =?utf-8?B?clRMeTdwekJENmR1cm9DTzhCNGFvMzhCWnNxOENQdm5OR09JdDVPemZnUUdr?=
- =?utf-8?Q?Mr/Zbj?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(82310400026)(376014)(7416014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2025 10:37:55.3294
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37f95efb-c056-43ab-4da9-08ddf11f449a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF000044A3.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9007
+Content-Transfer-Encoding: quoted-printable
 
-Hello Peter,
+On Thu, Sep 11, 2025 at 11:31=E2=80=AFAM Christian Brauner <brauner@kernel.=
+org> wrote:
+>
+> On Wed, Sep 10, 2025 at 07:21:22PM +0200, Amir Goldstein wrote:
+> > On Wed, Sep 10, 2025 at 4:39=E2=80=AFPM Christian Brauner <brauner@kern=
+el.org> wrote:
+> > >
+> > > A while ago we added support for file handles to pidfs so pidfds can =
+be
+> > > encoded and decoded as file handles. Userspace has adopted this quick=
+ly
+> > > and it's proven very useful.
+> >
+> > > Pidfd file handles are exhaustive meaning
+> > > they don't require a handle on another pidfd to pass to
+> > > open_by_handle_at() so it can derive the filesystem to decode in.
+> > >
+> > > Implement the exhaustive file handles for namespaces as well.
+> >
+> > I think you decide to split the "exhaustive" part to another patch,
+> > so better drop this paragraph?
+>
+> Yes, good point. I've dont that.
+>
+> > I am missing an explanation about the permissions for
+> > opening these file handles.
+> >
+> > My understanding of the code is that the opener needs to meet one of
+> > the conditions:
+> > 1. user has CAP_SYS_ADMIN in the userns owning the opened namespace
+> > 2. current task is in the opened namespace
+>
+> Yes.
+>
+> >
+> > But I do not fully understand the rationale behind the 2nd condition,
+> > that is, when is it useful?
+>
+> A caller is always able to open a file descriptor to it's own set of
+> namespaces. File handles will behave the same way.
+>
 
-On 9/11/2025 3:40 PM, Peter Zijlstra wrote:
->> Yeah, I suppose we could. But let me try and do that in a later patch,
->> on-top of all this.
+I understand why it's safe, and I do not object to it at all,
+I just feel that I do not fully understand the use case of how ns file hand=
+les
+are expected to be used.
+A process can always open /proc/self/ns/mnt
+What's the use case where a process may need to open its own ns by handle?
 
-Sure thing.
+I will explain. For CAP_SYS_ADMIN I can see why keeping handles that
+do not keep an elevated refcount of ns object could be useful in the same
+way that an NFS client keeps file handles without keeping the file object a=
+live.
 
-> 
-> Something like so?
+But if you do not have CAP_SYS_ADMIN and can only open your own ns
+by handle, what is the application that could make use of this?
+and what's the benefit of such application keeping a file handle instead of
+ns fd?
 
-Yup! That whole lot look better. Thank you.
+Sorry. I feel that I may be missing something in the big picture.
 
-> 
->  [..snip..]
--- 
-Thanks and Regards,
-Prateek
-
+Thanks,
+Amir.
 
