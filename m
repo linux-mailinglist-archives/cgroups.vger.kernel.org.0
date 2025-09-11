@@ -1,65 +1,65 @@
-Return-Path: <cgroups+bounces-9979-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9980-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B56DCB52A87
-	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 09:52:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC129B52C1D
+	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 10:46:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C42D583401
-	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 07:52:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94CF47ABF48
+	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 08:45:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC6029D295;
-	Thu, 11 Sep 2025 07:52:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B2C2E6125;
+	Thu, 11 Sep 2025 08:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l1AjlyyD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vNKQj+MK"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20AF521CC4B;
-	Thu, 11 Sep 2025 07:52:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05DA8293B73;
+	Thu, 11 Sep 2025 08:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757577129; cv=none; b=t0zCo3C5u2uNgHI/q1YaQCWQSoKfaTVhgowGqHMbhusihLsU4PZ/MTA2ujDtWYMbCOMkIm3vkRzXf4g51DGzzo77ex056IQBjy13i4VbGjJD5iG3CHFwAKbKJa3zSP3JGLrF8sRTqilXHGhGh+2X4EZvNk5gyvezBy9r2uVrj5M=
+	t=1757580380; cv=none; b=NdX6u4702E7s1yiSzAMAmA8Uu8O13NFkORfHJLQEeazm+ABIVTgCkZIjDOPfqT+W1JQxPXc2oFoAMJyeYqTO9AJNlktnWKo77+BHVM8frCndUhapnXGAQe7/nednAmUiLDEOh+xp1ZJuKqK22TY0/2CjRAFqZmboPziP/sl9ioI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757577129; c=relaxed/simple;
-	bh=zCa/Trshx6t//cjDi+8MplzJbi0R8aSBzBBF4hlrJaE=;
+	s=arc-20240116; t=1757580380; c=relaxed/simple;
+	bh=8Ym8Woe5hOM4hKQJ3h72aXmX/3Bn6+fBeFRICNNUriU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VqRGPEMMvYtcEST3KCvT1SFpVR4TKpEmBc6NRzIxMbjKdDjXRBny8uuJ0CXdxGB7arVo19AMnueuDTSYWZVEy9CDJNkiVT5BP8D5Au65dXTyozmotc0NAvDSccEuiGlTCeA3EnUzm6M7Vygj+bWJSmmkROUVSA3/NLEyEB3VwZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l1AjlyyD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F95DC4CEF1;
-	Thu, 11 Sep 2025 07:52:02 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ip7Uw9JDujS5PFMdJW5cKMJlYR7EKRw/UFftljF1ZTupw1f6ZS9Yg82Szabb6pqMwbTm4bfaXummcNGP2xP55OkCXF1uGzfbbrXs4jaVt1x5fOTkCJu7vAw5NtUHmgGezPAf7KH7iVr9Ok8DomCqsXKqf594KqNbZFWu64Ph/dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vNKQj+MK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 036C2C4CEF1;
+	Thu, 11 Sep 2025 08:46:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757577128;
-	bh=zCa/Trshx6t//cjDi+8MplzJbi0R8aSBzBBF4hlrJaE=;
+	s=k20201202; t=1757580379;
+	bh=8Ym8Woe5hOM4hKQJ3h72aXmX/3Bn6+fBeFRICNNUriU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=l1AjlyyDYEn9GxWz2+UfShAjuVTVlMdY7BvFsdN/00ftJKHXadGlP1U0K16/N0l/d
-	 z/g18n4+AHhrm9ThUIFJjTovOyc7zU8l1+ehGq8MFzQBSAXjHzFWfpydpU2loJCKC7
-	 OruzJApGWUEdY/eehGGpa/sxpoF9tbT69+v1M9R1VFi4B5nbdPBPS3Nqbr6zOggqOv
-	 eD/nN7cQ+tJe/qnSpKEhJNf8J8keyAc6blrhW/elyTI3MQx/QwexR1TzakugRMZVCf
-	 jNEm99gJksMTsfEbG6bjnGZAggwyRKGRYexdRVXUtJRAi+U7YrSw/F+1rJRjYdPn3I
-	 9Abpbkkxf9MDQ==
-Date: Thu, 11 Sep 2025 09:52:00 +0200
+	b=vNKQj+MK6MwyfQZyz8HLmtdJMtrihNwJB8IJcJER62Z0upJkVALyYVyg/EmzMo3Qv
+	 LKrgFDBrxI7WF7P7641MCl/BCVewQOfkTV2tu2Ta/B2/tErQnzE4oBuAYQNcG7AB1v
+	 iscmbPGOuQZdZAHOq8v9l17HWsDu+ra93FdsKYhfF3n4JDwKVCaHzCsdIu/6rq+r+A
+	 30XXUL2Fo69ziqWdfFEmB1Mbw6+/MRfSH1wNzuM7yu/89/UWy7sEci+rD7Es/fsOzJ
+	 LpSi2sN8UMvmYx9xLjc1HucW2G755MN7KNte4DAMNXbLtzxA7EBVGLMA+2UBZeXQ5S
+	 JP9arkaqAzbzQ==
+Date: Thu, 11 Sep 2025 10:46:11 +0200
 From: Christian Brauner <brauner@kernel.org>
-To: Aleksa Sarai <cyphar@cyphar.com>
-Cc: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>, 
-	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
-	Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
+To: Jan Kara <jack@suse.cz>
+Cc: Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org, 
+	Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
 	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
-	Daan De Meyer <daan.j.demeyer@gmail.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
 	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, linux-kselftest@vger.kernel.org, 
 	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
 	netdev@vger.kernel.org
-Subject: Re: [PATCH 29/32] nsfs: add missing id retrieval support
-Message-ID: <20250911-korallen-aufgibt-faafc9df8f9a@brauner>
+Subject: Re: [PATCH 14/32] net: use ns_common_init()
+Message-ID: <20250911-unqualifiziert-widmen-03b0c271aa69@brauner>
 References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
- <20250910-work-namespace-v1-29-4dd56e7359d8@kernel.org>
- <2025-09-10-yawning-gross-samba-lox-6iVSwq@cyphar.com>
+ <20250910-work-namespace-v1-14-4dd56e7359d8@kernel.org>
+ <vgfnpdvwiji7bbg7yb5fbymp6f6q5f66rywkjyrxtdejdgoi37@ghpon5czjtkm>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -68,178 +68,43 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2025-09-10-yawning-gross-samba-lox-6iVSwq@cyphar.com>
+In-Reply-To: <vgfnpdvwiji7bbg7yb5fbymp6f6q5f66rywkjyrxtdejdgoi37@ghpon5czjtkm>
 
-On Thu, Sep 11, 2025 at 02:49:49AM +1000, Aleksa Sarai wrote:
-> On 2025-09-10, Christian Brauner <brauner@kernel.org> wrote:
-> > The mount namespace has supported id retrieval for a while already.
-> > Add support for the other types as well.
+On Wed, Sep 10, 2025 at 05:57:52PM +0200, Jan Kara wrote:
+> On Wed 10-09-25 16:36:59, Christian Brauner wrote:
+> > Don't cargo-cult the same thing over and over.
 > > 
 > > Signed-off-by: Christian Brauner <brauner@kernel.org>
-> > ---
-> >  fs/nsfs.c                 | 74 +++++++++++++++++++++++++++++++++++++++--------
-> >  include/uapi/linux/nsfs.h | 12 ++++++--
-> >  2 files changed, 72 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/fs/nsfs.c b/fs/nsfs.c
-> > index 3c6fcf652633..527480e67fd1 100644
-> > --- a/fs/nsfs.c
-> > +++ b/fs/nsfs.c
-> > @@ -173,6 +173,13 @@ static bool nsfs_ioctl_valid(unsigned int cmd)
-> >  	case NS_GET_NSTYPE:
-> >  	case NS_GET_OWNER_UID:
-> >  	case NS_GET_MNTNS_ID:
-> > +	case NS_GET_NETNS_ID:
-> > +	case NS_GET_CGROUPNS_ID:
-> > +	case NS_GET_IPCNS_ID:
-> > +	case NS_GET_UTSNS_ID:
-> > +	case NS_GET_PIDNS_ID:
-> > +	case NS_GET_TIMENS_ID:
-> > +	case NS_GET_USERNS_ID:
-> >  	case NS_GET_PID_FROM_PIDNS:
-> >  	case NS_GET_TGID_FROM_PIDNS:
-> >  	case NS_GET_PID_IN_PIDNS:
-> > @@ -226,18 +233,6 @@ static long ns_ioctl(struct file *filp, unsigned int ioctl,
-> >  		argp = (uid_t __user *) arg;
-> >  		uid = from_kuid_munged(current_user_ns(), user_ns->owner);
-> >  		return put_user(uid, argp);
-> > -	case NS_GET_MNTNS_ID: {
-> > -		__u64 __user *idp;
-> > -		__u64 id;
-> > -
-> > -		if (ns->ops->type != CLONE_NEWNS)
-> > -			return -EINVAL;
-> > -
-> > -		mnt_ns = container_of(ns, struct mnt_namespace, ns);
-> > -		idp = (__u64 __user *)arg;
-> > -		id = mnt_ns->ns.ns_id;
-> > -		return put_user(id, idp);
+> 
+> One comment below.
+> 
+> > @@ -812,17 +828,14 @@ static void net_ns_net_debugfs(struct net *net)
+> >  
+> >  static __net_init int net_ns_net_init(struct net *net)
+> >  {
+> > -#ifdef CONFIG_NET_NS
+> > -	net->ns.ops = &netns_operations;
+> > -#endif
+> > -	net->ns.inum = PROC_NET_INIT_INO;
+> > -	if (net != &init_net) {
+> > -		int ret = ns_alloc_inum(&net->ns);
+> > -		if (ret)
+> > -			return ret;
 > > -	}
-> >  	case NS_GET_PID_FROM_PIDNS:
-> >  		fallthrough;
-> >  	case NS_GET_TGID_FROM_PIDNS:
-> > @@ -283,6 +278,61 @@ static long ns_ioctl(struct file *filp, unsigned int ioctl,
-> >  			ret = -ESRCH;
-> >  		return ret;
-> >  	}
-> > +	case NS_GET_MNTNS_ID:
-> > +		fallthrough;
-> > +	case NS_GET_NETNS_ID:
-> > +		fallthrough;
-> > +	case NS_GET_CGROUPNS_ID:
-> > +		fallthrough;
-> > +	case NS_GET_IPCNS_ID:
-> > +		fallthrough;
-> > +	case NS_GET_UTSNS_ID:
-> > +		fallthrough;
-> > +	case NS_GET_PIDNS_ID:
-> > +		fallthrough;
-> > +	case NS_GET_TIMENS_ID:
-> > +		fallthrough;
-> > +	case NS_GET_USERNS_ID: {
-> > +		__u64 __user *idp;
-> > +		__u64 id;
-> > +		int expected_type;
+> > +	int ret = 0;
 > > +
-> > +		switch (ioctl) {
-> > +		case NS_GET_MNTNS_ID:
-> > +			expected_type = CLONE_NEWNS;
-> > +			break;
-> > +		case NS_GET_NETNS_ID:
-> > +			expected_type = CLONE_NEWNET;
-> > +			break;
-> > +		case NS_GET_CGROUPNS_ID:
-> > +			expected_type = CLONE_NEWCGROUP;
-> > +			break;
-> > +		case NS_GET_IPCNS_ID:
-> > +			expected_type = CLONE_NEWIPC;
-> > +			break;
-> > +		case NS_GET_UTSNS_ID:
-> > +			expected_type = CLONE_NEWUTS;
-> > +			break;
-> > +		case NS_GET_PIDNS_ID:
-> > +			expected_type = CLONE_NEWPID;
-> > +			break;
-> > +		case NS_GET_TIMENS_ID:
-> > +			expected_type = CLONE_NEWTIME;
-> > +			break;
-> > +		case NS_GET_USERNS_ID:
-> > +			expected_type = CLONE_NEWUSER;
-> > +			break;
-> > +		default:
-> > +			return -EINVAL;
-> > +		}
-> > +
-> > +		if (ns->ops->type != expected_type)
-> > +			return -EINVAL;
+> > +	if (net == &init_net)
+> > +		net->ns.inum = PROC_NET_INIT_INO;
+> > +	else
+> > +		ret = proc_alloc_inum(&to_ns_common(net)->inum);
+> >  	net_ns_net_debugfs(net);
 > 
-> While I get that having this be per-ns-type lets programs avoid being
-> tricked into thinking that one namespace ID is actually another
-> namespace, it feels a bit ugly to have to add a new ioctl for every new
-> namespace.
-> 
-> If we added a way to get the CLONE_* flag for a namespace (NS_GET_TYPE)
+> Here you're calling net_ns_net_debugfs() even if proc_alloc_inum() failed
+> which looks like a bug to me...
 
-That exists afaict: NS_GET_NSTYPE.
+Yes, good catch!
 
-> we could have just NS_GET_ID. Of course, we would have to trust
-> userspace to do the right thing...
-
-So NS_GET_ID can just return the id and be done with it. If userspace
-wants to know what type it is they can issue a separate ioctl. But since
-the id space is shared all ids of all namespaces can be compared with
-each other reliably. So really for comparision you wouldn't need to
-care. IOW, yes.
-
-> 
-> > +
-> > +		idp = (__u64 __user *)arg;
-> > +		id = ns->ns_id;
-> > +		return put_user(id, idp);
-> > +	}
-> >  	}
-> >  
-> >  	/* extensible ioctls */
-> > diff --git a/include/uapi/linux/nsfs.h b/include/uapi/linux/nsfs.h
-> > index 97d8d80d139f..f7c21840cc09 100644
-> > --- a/include/uapi/linux/nsfs.h
-> > +++ b/include/uapi/linux/nsfs.h
-> > @@ -16,8 +16,6 @@
-> >  #define NS_GET_NSTYPE		_IO(NSIO, 0x3)
-> >  /* Get owner UID (in the caller's user namespace) for a user namespace */
-> >  #define NS_GET_OWNER_UID	_IO(NSIO, 0x4)
-> > -/* Get the id for a mount namespace */
-> > -#define NS_GET_MNTNS_ID		_IOR(NSIO, 0x5, __u64)
-> >  /* Translate pid from target pid namespace into the caller's pid namespace. */
-> >  #define NS_GET_PID_FROM_PIDNS	_IOR(NSIO, 0x6, int)
-> >  /* Return thread-group leader id of pid in the callers pid namespace. */
-> > @@ -42,6 +40,16 @@ struct mnt_ns_info {
-> >  /* Get previous namespace. */
-> >  #define NS_MNT_GET_PREV		_IOR(NSIO, 12, struct mnt_ns_info)
-> >  
-> > +/* Retrieve namespace identifiers. */
-> > +#define NS_GET_MNTNS_ID		_IOR(NSIO, 5,  __u64)
-> > +#define NS_GET_NETNS_ID		_IOR(NSIO, 13, __u64)
-> > +#define NS_GET_CGROUPNS_ID	_IOR(NSIO, 14, __u64)
-> > +#define NS_GET_IPCNS_ID		_IOR(NSIO, 15, __u64)
-> > +#define NS_GET_UTSNS_ID		_IOR(NSIO, 16, __u64)
-> > +#define NS_GET_PIDNS_ID		_IOR(NSIO, 17, __u64)
-> > +#define NS_GET_TIMENS_ID	_IOR(NSIO, 18, __u64)
-> > +#define NS_GET_USERNS_ID	_IOR(NSIO, 19, __u64)
-> > +
-> >  enum init_ns_ino {
-> >  	IPC_NS_INIT_INO		= 0xEFFFFFFFU,
-> >  	UTS_NS_INIT_INO		= 0xEFFFFFFEU,
-> > 
-> > -- 
-> > 2.47.3
-> > 
-> 
-> -- 
-> Aleksa Sarai
-> Senior Software Engineer (Containers)
-> SUSE Linux GmbH
-> https://www.cyphar.com/
-
-
+Fyi, I have been out properly sick this week and that's why I haven't
+been very active on-list. I hope to be back in a more functional state
+tomorrow and will process the backlog.
 
