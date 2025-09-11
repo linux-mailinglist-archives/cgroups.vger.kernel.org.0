@@ -1,207 +1,132 @@
-Return-Path: <cgroups+bounces-9999-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10000-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89124B53BA3
-	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 20:37:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E8F8B53D33
+	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 22:40:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C533189B4A6
-	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 18:37:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDAF2586401
+	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 20:40:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81FF369353;
-	Thu, 11 Sep 2025 18:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A73E2C2361;
+	Thu, 11 Sep 2025 20:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lq3ItuTR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AftvDV8J"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5BC2DC796
-	for <cgroups@vger.kernel.org>; Thu, 11 Sep 2025 18:34:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5074622759C;
+	Thu, 11 Sep 2025 20:40:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757615670; cv=none; b=ZIak50CevxeknjJfow9ASGi8KpMeLWa1QBuPTteOX8x1oiXaJp0xiPzWerD36ZaCQZu7QXjG8HNd3n28TfzJE2/+v7ZMLdo6L/SChg/o8FvVog1K90My+hlZggo1A/OOEP2d42U2H6AWkopNV1sVIGpEjGSDMnCLNR9+jp0cJgQ=
+	t=1757623208; cv=none; b=cPkyFt7oRuB0NkoPWQ8aV8fMqobe0DxdV/qWsjHBkEYBsGpoYau4+aHEHFrWdLnsCQ1zcB3Fq59IoyYXAVJPhgmd2T3vfqniGtlSwIoPnXEKJYQtAquoeReZaQmIEKjzsRqXHv0BiqAYs/pPkfySKc2kfIfCi3L2GjNfgKdJKIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757615670; c=relaxed/simple;
-	bh=bt2KHG5b3RVRtsBO2aQ9tds18BpFnGFV6z9gjl/M1v8=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=igyEMmj7crtVg38ASc4zHxn7raRPpl/BZr5AGRaL9YpMh4VXo44k0p6+PTUffv5WBV0ktAwPPvUeVLHq7iG3SdLqp1kQ+/6IM1xMCCUrTdJ9VYXuMR+o3a0bi740fEGs99R9aMbownWXTT7UX4L6kU8Ofa4/o15+Vsv5V+bGHD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lq3ItuTR; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1757615669; x=1789151669;
-  h=date:from:to:cc:subject:message-id;
-  bh=bt2KHG5b3RVRtsBO2aQ9tds18BpFnGFV6z9gjl/M1v8=;
-  b=lq3ItuTRGPIXolb+RcT1/vx+oTnc2X7Tt0KNfOSS/yM77eQ0ZEDXDzHO
-   Vtz+xBKA+d2P4miekJSifbN4/xnzqitwk9scufJZfNSZfgG3xNJBnv9+I
-   kSJ+Jljl9IFPN9WzSfyFhgduegSBJpQyAid0HOtAgNQGOJIewzyZ6BTQl
-   TygkxLrgQe9YXFxrSSVA2yzu8hnHUYEYkVrEh5GRqqi+ERKUywo4WtknG
-   8RUKt3wHBi8z5V5y4kmq0pzjk/8uZwcxSx9mnbH+rT4Ssc5FxKzkIbTZS
-   vyXwR1rqAWFv97pZlybj5IcsnRLnaFQe/F044hAp0pyic8FX5KiJEocAi
-   g==;
-X-CSE-ConnectionGUID: isuqxWKzRL+m4ptsjIG6tg==
-X-CSE-MsgGUID: CtSB+85LTXu5TQ0W0bjoMw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11550"; a="62590189"
-X-IronPort-AV: E=Sophos;i="6.18,257,1751266800"; 
-   d="scan'208";a="62590189"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2025 11:34:28 -0700
-X-CSE-ConnectionGUID: 8yoilUyKQ6WjaOnrTbJjeg==
-X-CSE-MsgGUID: DUK55qswSYqOryrwzHjMEg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,257,1751266800"; 
-   d="scan'208";a="174200407"
-Received: from lkp-server02.sh.intel.com (HELO eb5fdfb2a9b7) ([10.239.97.151])
-  by fmviesa009.fm.intel.com with ESMTP; 11 Sep 2025 11:34:27 -0700
-Received: from kbuild by eb5fdfb2a9b7 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uwm7k-0000Z8-2p;
-	Thu, 11 Sep 2025 18:34:24 +0000
-Date: Fri, 12 Sep 2025 02:33:48 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- cf9c2bbba2735831f1200227c7f13404b7d7908e
-Message-ID: <202509120237.Y9xqvpVL-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1757623208; c=relaxed/simple;
+	bh=8hnQ06uJnhREH5akTgfN6vsYLtIKYGhKoV9nBO8LIzM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rh1KVfxYs7WKvfgWUNIwWHBQ87g9oStGwNmi2yROVDU8NzdRFosB0F6vqoyN3qCTuAgXA63qS4dpZPZzi9f1ktogb9gUNjEHmH4790A1UynxIQhW40QB9b3HiJtkUUJ/9dyg5KEGKO7IcG2+dm7cgL1vylxA+/T/ibpz1UWFgOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AftvDV8J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A68BDC4CEF0;
+	Thu, 11 Sep 2025 20:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757623207;
+	bh=8hnQ06uJnhREH5akTgfN6vsYLtIKYGhKoV9nBO8LIzM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AftvDV8JrnN/pCxzs4ZYnz8PrF01oECxqlncRV1as21fsghKqbpIzgvRawFRTkC+a
+	 bYxye24rnIMCudF2SywiTfNYDAAceCCelN45DU6mwtKpvkFphI6oqEjwvFT8eBwUQb
+	 b8WDoaSOdeAkDE2ZztzDu0PBn3hIJ4lg9uVMYyedKiisAUDtlZI5bPNxa9PQdshRrT
+	 UDI0AwHsdhaGTvfSNGxCHE2e2ViWvmTVseXwmKQTambLGDEmBegnj7W9Zw5cDPdOL2
+	 nvxQr3ZUPGEoiTQC0mFPdayF3rSomp98t5dyGuOTP1jA319zMDqWX0BgXhgq6u5VJO
+	 pb9ZQFRontAXg==
+Date: Thu, 11 Sep 2025 10:40:06 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
+	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
+	changwoo@igalia.com, cgroups@vger.kernel.org,
+	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
+Subject: Re: [PATCH 13/14] sched: Add {DE,EN}QUEUE_LOCKED
+Message-ID: <aMMzpnyx__ZgZGRc@slm.duckdns.org>
+References: <20250910154409.446470175@infradead.org>
+ <20250910155809.800554594@infradead.org>
+ <aMItk3c5H6Z2CD4X@slm.duckdns.org>
+ <20250911094240.GW3289052@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250911094240.GW3289052@noisy.programming.kicks-ass.net>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: cf9c2bbba2735831f1200227c7f13404b7d7908e  Merge branch 'for-6.18' into for-next
+Hello,
 
-elapsed time: 1475m
+On Thu, Sep 11, 2025 at 11:42:40AM +0200, Peter Zijlstra wrote:
+...
+> I didn't immediately see how to do that. Doesn't that
+> list_for_each_entry_safe_reverse() rely on rq->lock to retain integrity?
 
-configs tested: 114
-configs skipped: 3
+Ah, sorry, I was thinking it was iterating scx_tasks list. Yes, as
+implemented, it needs to hold rq lock throughout.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> Moreover, since the goal is to allow:
+> 
+>  __schedule()
+>    lock(rq->lock);
+>    next = pick_task() := pick_task_scx()
+>      lock(dsq->lock);
+>      p = some_dsq_task(dsq);
+>      task_unlink_from_dsq(p, dsq);
+>      set_task_cpu(p, cpu_of(rq));
+>      move_task_to_local_dsq(p, ...);
+>      return p;
+> 
+> without dropping rq->lock, by relying on dsq->lock to serialize things,
+> I don't see how we can retain the runnable list at all.
+>
+> And at this point, I'm not sure I understand ext well enough to know
+> what this bypass stuff does at all, let alone suggest means to
+> re architect this.
 
-tested configs:
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                   randconfig-001-20250911    gcc-8.5.0
-arc                   randconfig-002-20250911    gcc-12.5.0
-arm                              allmodconfig    gcc-15.1.0
-arm                               allnoconfig    clang-22
-arm                              allyesconfig    gcc-15.1.0
-arm                   randconfig-001-20250911    clang-22
-arm                   randconfig-002-20250911    gcc-14.3.0
-arm                   randconfig-003-20250911    clang-22
-arm                   randconfig-004-20250911    clang-16
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-15.1.0
-arm64                 randconfig-001-20250911    gcc-13.4.0
-arm64                 randconfig-002-20250911    gcc-8.5.0
-arm64                 randconfig-003-20250911    gcc-8.5.0
-arm64                 randconfig-004-20250911    clang-22
-csky                              allnoconfig    gcc-15.1.0
-csky                  randconfig-001-20250911    gcc-15.1.0
-csky                  randconfig-002-20250911    gcc-13.4.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-22
-hexagon                          allyesconfig    clang-22
-hexagon               randconfig-001-20250911    clang-20
-hexagon               randconfig-002-20250911    clang-22
-i386                              allnoconfig    gcc-14
-i386        buildonly-randconfig-001-20250911    clang-20
-i386        buildonly-randconfig-002-20250911    clang-20
-i386        buildonly-randconfig-003-20250911    clang-20
-i386        buildonly-randconfig-004-20250911    clang-20
-i386        buildonly-randconfig-005-20250911    clang-20
-i386        buildonly-randconfig-006-20250911    clang-20
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-22
-loongarch             randconfig-001-20250911    gcc-15.1.0
-loongarch             randconfig-002-20250911    gcc-15.1.0
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-m68k                          amiga_defconfig    gcc-15.1.0
-m68k                        mvme16x_defconfig    gcc-15.1.0
-microblaze                       allmodconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-nios2                             allnoconfig    gcc-11.5.0
-nios2                               defconfig    gcc-11.5.0
-nios2                 randconfig-001-20250911    gcc-11.5.0
-nios2                 randconfig-002-20250911    gcc-8.5.0
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                         allyesconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-15.1.0
-parisc                           allmodconfig    gcc-15.1.0
-parisc                            allnoconfig    gcc-15.1.0
-parisc                           allyesconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20250911    gcc-8.5.0
-parisc                randconfig-002-20250911    gcc-8.5.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                          allmodconfig    gcc-15.1.0
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                     ep8248e_defconfig    gcc-15.1.0
-powerpc                    mvme5100_defconfig    gcc-15.1.0
-powerpc               randconfig-001-20250911    gcc-8.5.0
-powerpc               randconfig-002-20250911    gcc-15.1.0
-powerpc               randconfig-003-20250911    gcc-8.5.0
-powerpc                     stx_gp3_defconfig    gcc-15.1.0
-powerpc64             randconfig-001-20250911    clang-22
-powerpc64             randconfig-002-20250911    gcc-11.5.0
-powerpc64             randconfig-003-20250911    gcc-8.5.0
-riscv                             allnoconfig    gcc-15.1.0
-riscv                 randconfig-001-20250911    clang-20
-riscv                 randconfig-002-20250911    clang-22
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-22
-s390                             allyesconfig    gcc-15.1.0
-s390                  randconfig-001-20250911    gcc-11.5.0
-s390                  randconfig-002-20250911    clang-16
-s390                       zfcpdump_defconfig    clang-22
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                         ap325rxa_defconfig    gcc-15.1.0
-sh                                  defconfig    gcc-15.1.0
-sh                    randconfig-001-20250911    gcc-9.5.0
-sh                    randconfig-002-20250911    gcc-15.1.0
-sparc                            allmodconfig    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20250911    gcc-15.1.0
-sparc                 randconfig-002-20250911    gcc-15.1.0
-sparc64               randconfig-001-20250911    gcc-8.5.0
-sparc64               randconfig-002-20250911    clang-20
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-22
-um                               allyesconfig    gcc-14
-um                    randconfig-001-20250911    clang-22
-um                    randconfig-002-20250911    gcc-14
-x86_64                            allnoconfig    clang-20
-x86_64      buildonly-randconfig-001-20250911    gcc-14
-x86_64      buildonly-randconfig-002-20250911    gcc-14
-x86_64      buildonly-randconfig-003-20250911    clang-20
-x86_64      buildonly-randconfig-004-20250911    clang-20
-x86_64      buildonly-randconfig-005-20250911    clang-20
-x86_64      buildonly-randconfig-006-20250911    gcc-14
-x86_64                              defconfig    gcc-14
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                randconfig-001-20250911    gcc-12.5.0
-xtensa                randconfig-002-20250911    gcc-8.5.0
+Bypass mode is enabled when the kernel side can't trust the BPF scheduling
+anymore and wants to fall back to dumb FIFO scheduling to guarantee forward
+progress (e.g. so that we can switch back to fair).
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+It comes down to flipping scx_rq_bypassing() on, which makes scheduling
+paths bypass most BPF parts and fall back to FIFO behavior, and then making
+sure every thread is on FIFO behavior. The latter part is what the loop is
+doing. It scans all currently runnable tasks and dequeues and re-enqueues
+them. As scx_rq_bypass() is true at this point, if a task were queued on the
+BPF side, the cycling takes it out of the BPF side and puts it on the
+fallback FIFO queue.
+
+If we want to get rid of the locking requirement:
+
+- Walk scx_tasks list which is iterated with a cursor and allows dropping
+  locks while iterating. However, on some hardware, there are cases where
+  CPUs are extremely slowed down from BPF scheduler making bad decisions and
+  causing a lot of sync cacheline pingponging across e.g. NUMA nodes. As
+  scx_bypass() is what's supposed to extricate the system from this state,
+  walking all tasks while going through each's locking probably isn't going
+  to be great.
+
+- We can update ->runnable_list iteration to allow dropping rq lock e.g.
+  with a cursor based iteration. Maybe some code can be shared with
+  scx_tasks iteration. Cycling through locks still isn't going to be great
+  but here it's likely a lot fewer of them at least.
+
+Neither option is great. Leave it as-is for now?
+
+Thanks.
+
+-- 
+tejun
 
