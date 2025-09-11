@@ -1,66 +1,85 @@
-Return-Path: <cgroups+bounces-9975-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-9976-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BB6DB5261C
-	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 03:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 505E8B52642
+	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 04:02:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26EA07B86CD
-	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 01:50:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6377F7BA260
+	for <lists+cgroups@lfdr.de>; Thu, 11 Sep 2025 02:00:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392C5212B0A;
-	Thu, 11 Sep 2025 01:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE28C2264B7;
+	Thu, 11 Sep 2025 02:01:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="xaqi1Qkr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JVFT2FaN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F034D16DC28;
-	Thu, 11 Sep 2025 01:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A10B320ADD6;
+	Thu, 11 Sep 2025 02:01:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757555539; cv=none; b=Vw7emOpxVa9hevAn0T0+r6zvZItLHV5BJ2rG6qbSNU2pzmZKklFhr3srwbFyb1PmF4aD4Va8PCW4/O5711OeFhiI0djR+6RpW72AT+t9nEUtcH6ptSqzRP4tmu1wvzrYaMdWvhsYmqxhisG4e2tqF9CXXtTJ9gci0+RaMR1cY/Y=
+	t=1757556116; cv=none; b=WXZHP02TU6yHcLc6+TT4lB+j8/DQHKT0KUn7qYA2C26MNBf4hyVEzlwnsunwfMJKCzWZWOeJS5x98A/76h+6apyJwrZUIPbF6HqqBRbjy7GCPGmQg5S6I+61YRZcS0Jx5FdXmEvyvs+DIs16Bx8oKgSCdbrUgpVeMnDy/3tQdXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757555539; c=relaxed/simple;
-	bh=g+t7bFwL84+gT/aKYeuG5sdduFMechHlTeuCmtGkJUY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fwGd6h8vvwjEy8JErdfiZQmQYYTZ6nlVBDlC8wGoZ229Cl7Xiof4wSgMiTSxDTwJTsegRvFL7wQ/cedwLAylMXFovggWuaq/FfuvRSGzwj/5VWh2oioW7QVtqCSQJl/lUtW+Jz9L4RDog0cWGMDri9KSH1T52tjorp4P8wj8WR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=xaqi1Qkr; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1757555533; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=g+t7bFwL84+gT/aKYeuG5sdduFMechHlTeuCmtGkJUY=;
-	b=xaqi1Qkr2w/D4ZyqUI+YXxoh30LxujisvztjypYCl6HUATrPrB0IBPUjOa/yKNqQLTp4MY1KUQ141VpUGIejsApx8B2klXqoV2A2F/cnacptNOQyeQvSUinfy9Rrwn8NjjlcMY1klJ1sqo+8O5+DpSQLDeB5HILnHghb4lTF6F0=
-Received: from 30.221.147.222(mailfrom:escape@linux.alibaba.com fp:SMTPD_---0Wnk0Zbj_1757555532 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 11 Sep 2025 09:52:13 +0800
-Message-ID: <8844ae9d-8af8-482f-a76d-8222d6ce9347@linux.alibaba.com>
-Date: Thu, 11 Sep 2025 09:52:12 +0800
+	s=arc-20240116; t=1757556116; c=relaxed/simple;
+	bh=M4vZtHDVg/z2yDq3EPvR1/N1D3KTDv8X9LniEfN5BcM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DCZtINpE8g9FJ0+b/FPqXvBVGjOFd7BlvvLRwdoFbPnbUXanZmQjAc4MToH5MTzJhmQONlnKuI/GLR+UITS9UEdYpxm2ApBKnAzgnGQJjYTTXk5SRuzAAoWQSs5Oebxv6YRFlfyccMJZHXUiIomvrChRoKm7sSgEziu8LbnhCyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JVFT2FaN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14FFFC4CEF0;
+	Thu, 11 Sep 2025 02:01:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757556116;
+	bh=M4vZtHDVg/z2yDq3EPvR1/N1D3KTDv8X9LniEfN5BcM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JVFT2FaNxdoz7WjlYRaU2KocZJNQ1rzTZwSfSShX8nGumRK0RD09dbVq2/pvDK3pu
+	 Mgv+/fc1k1DBfVVYyzL0FWrVQmoD3vl0BpYugAztRnPiRVwy5heD3BVJFQ5exWAlvq
+	 Abw2RvH2xJeRjIGQnx9uTX2/ESMYpifUyfB0btcfOKfANpfolPvveS0b9lkAeTgMUQ
+	 BFPIJBGxIWCsm7khkXzqLFTHbxT/fnd7pde2dZSHn4Zo7XLFlNJUU9hh2KbqAKoAIR
+	 9J+Lgi//ezj1vqUG3IYQAHRpDEViRx2NtlPa7adVY/DadaF7MVH6AJgHclliK2u57g
+	 3uXTlI9cEWgQA==
+Date: Wed, 10 Sep 2025 16:01:55 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
+	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
+	changwoo@igalia.com, cgroups@vger.kernel.org,
+	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
+Subject: Re: [PATCH 13/14] sched: Add {DE,EN}QUEUE_LOCKED
+Message-ID: <aMItk3c5H6Z2CD4X@slm.duckdns.org>
+References: <20250910154409.446470175@infradead.org>
+ <20250910155809.800554594@infradead.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/3] cgroup: replace global percpu_rwsem with per
- threadgroup resem when writing to cgroup.procs
-To: Tejun Heo <tj@kernel.org>
-Cc: hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <f460f494245710c5b6649d6cc7e68b3a28a0a000.1756896828.git.escape@linux.alibaba.com>
- <cover.1757486368.git.escape@linux.alibaba.com>
- <9d46438e61bcf7b5ffc9eb582081f4fcc99c2cbf.1757486368.git.escape@linux.alibaba.com>
- <aMG5ucVGwlVLl4a_@slm.duckdns.org>
-From: Yi Tao <escape@linux.alibaba.com>
-In-Reply-To: <aMG5ucVGwlVLl4a_@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250910155809.800554594@infradead.org>
 
-Thank you for the review and guidance.
+Hello, Peter.
+
+On Wed, Sep 10, 2025 at 05:44:22PM +0200, Peter Zijlstra wrote:
+> Provide a LOCKED queue flag, indicating that the {en,de}queue()
+> operation is in task_rq_lock() context.
+> 
+> Note: the sched_change in scx_bypass() is the only one that does not
+> use task_rq_lock(). If that were fixed, we could have sched_change
+> imply LOCKED.
+
+I don't see any harm in doing task_rq_lock() in the scx_bypass() loop.
+Please feel free to switch that for simplicity.
+
+Thanks.
+
+-- 
+tejun
 
