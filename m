@@ -1,316 +1,111 @@
-Return-Path: <cgroups+bounces-10044-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10045-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C48BB54F16
-	for <lists+cgroups@lfdr.de>; Fri, 12 Sep 2025 15:17:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5285B5508F
+	for <lists+cgroups@lfdr.de>; Fri, 12 Sep 2025 16:13:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8A82E4E32E6
-	for <lists+cgroups@lfdr.de>; Fri, 12 Sep 2025 13:17:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 044917C3FF1
+	for <lists+cgroups@lfdr.de>; Fri, 12 Sep 2025 14:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC89130E82A;
-	Fri, 12 Sep 2025 13:16:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5955D313525;
+	Fri, 12 Sep 2025 14:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="NuffpF8a"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NVBzqUt4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DF327472
-	for <cgroups@vger.kernel.org>; Fri, 12 Sep 2025 13:16:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDE530F800;
+	Fri, 12 Sep 2025 14:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757682983; cv=none; b=jniCaD3eVzTwJMC5PAAQJ/Uj74V/TeH517sQ0J8lDEi6/wpy1iG6I8rBvztUHsSPO3LsAJq63P489HE3gEqKLpBCOQ5oEHU0mTKNgd5WNm4MpDsqIYNoCJagQkDKABdMekCIIOC7h66S0CB3KL7BCkp0AKdBdNlfS29q7haaxvY=
+	t=1757686332; cv=none; b=sg58sjid7xCOcAot+yr6G7AtG1QKwkEteJqUJj4pKV4Ve3wDyTVLZnulc1PtVeD3Wy6tXOyVAqDe2smnevq74i3E31bTVvaH0i7SDbV21SEzPUc4D6FjKO+JVNGkfJmgLD6PGnw7bLFEcMOnPJdHTYReZDB3F3GCLk0gRFxIQ78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757682983; c=relaxed/simple;
-	bh=9zL1d/Eo8LPWIuZSVErzfe9xt5SmhQ7+18/W9NoHyvM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PjD8TlNWF+Z8UnQFebJP1AD0d2Toev3+Hi4QVJ3d8UdNOIqTwG5tRBQ6hbojC//J91BTcWbi7NMcVO/z+c+s5ko5L3vpaVEcWJ7qzO1FTZ9w+EQ5Jf7m+pPYpg9+9cD9bIw/gwQuZCQ9Xzk32x/SGLfwsr0v+PlY0twvuO+J4qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=NuffpF8a; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-ea3c51e4cffso1350878276.3
-        for <cgroups@vger.kernel.org>; Fri, 12 Sep 2025 06:16:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1757682979; x=1758287779; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WacX0Y225mfF5Mr+dq8TTghuE82OqAke+XlwrZchO4o=;
-        b=NuffpF8avu1rUQlK93HcgBEIW8Bn5cqsdpwGXuWpKfIEcnr7PbtiAXcrICiLp94p3s
-         tPM0ehosF0pW8pqtUN+bp5bJUpkKUGfoaH6x4ofI2TvToqnyUT4LOCDIkZz5Z3S21xHn
-         xgnRsKCzdW6u9ro6T6VuPu0eqeGpZBCZKYjChZvJ2GrntnxRT4wCw/kctshKyvUfeXKd
-         zT7ZMVjmnGSA4KoosnYLunPmLVIMMloqJt2G8JMcMd/z4qFPeURy0rIpdg3b9MCChSKR
-         mm2VfmuTT3Z+RKNK+dRr4j1og9U+trkHW3n89EmgewPsnyzD4lsAaF8GGZKRQsE+dbey
-         eVhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757682979; x=1758287779;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WacX0Y225mfF5Mr+dq8TTghuE82OqAke+XlwrZchO4o=;
-        b=mgTFEMJ/aTj8XqkwR3WO6RzIdVyRTZGTYX4LNGzplspPGhVVKLVwdbCidRVtGjHKTj
-         aF8WWjt4z7VoVWiUtvkMVDhI/jwBz0n/YpiUfMYyPR6WlBYpxIUPO/8B9TJx/KLDOkHg
-         vN4SZ/dygWzv9PZ7s7h0IJrbzfqcBXfH4OEdnQCL6Ietxo8ydDhJY6tLRa3Jnkxj4W4U
-         Iz5SaSZveXdmkxHVS6xqjVI4DuE3WzK+Q9CGC+Wxvnaiu4ro3sxBxF883fj8hLj8JhqJ
-         rlouHXATd7kwXoTiVkK8xWdZbHTRjk2scIYNI5fnsRkLjGMYkrAFGdjbNRH8s3Y1GTrA
-         5g4g==
-X-Forwarded-Encrypted: i=1; AJvYcCXurRXth2/ebFiXxBx1eG8KOVRPsjOM5dhYXQK7NMbtgp2zc45fLsItbBlOzdbl7H8lJdmEOxSq@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7rBMjeZlicP89IiwEMLJ6GPPAn+FZ3jy0U1M/Fm1iKNnTXlqD
-	r7whmnc3L+5DvB10cwcHPVyHM1cK76zB7rHzfiJkNg5D2BVlpheQjxcPFiaZJpRXYbLrAsOmT2Z
-	yQ6tTLZlaTebjr8AQClzF3KMN7j3JqAR6j42YpjdZ6Q==
-X-Gm-Gg: ASbGncsnYNf+w2v0Cw63zYqlrn0yGiCok4YAP4q7PY5zkI53kUPit/W3CrypWooX1Ru
-	BMGbJqj5e+lqgdKe4T4xA5CJRM5XU9u25S0X2PtcXt9uyR5dvR0RCR7QPG5PGCdphQUSGwjqSZY
-	PMOfDMxyEieDZCADRfpShEVep1nqV7uE++8ylHDuSsDMfj8+jhR29mWYnB/9YCJ+AYViZ9baX2v
-	769Lcu4UUWGawg=
-X-Google-Smtp-Source: AGHT+IGYP/z3abyUgCJL16DnEpbMeZjMz4kBCICiy0J25UHYR5eBa2TN11vPJBGTBUTyY1a8ErBJ1zUjhD2KUm8MoWo=
-X-Received: by 2002:a05:690c:c90:b0:723:b3d4:1cfd with SMTP id
- 00721157ae682-73065dac45bmr29462097b3.54.1757682978514; Fri, 12 Sep 2025
- 06:16:18 -0700 (PDT)
+	s=arc-20240116; t=1757686332; c=relaxed/simple;
+	bh=S2W16AqL/yJVfSvd6onR+MyfPBJxRwx2+yqvvAEySnk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WgqiRh5PTlyXvMM/l/KK44N3LURDYIOv+jPLJqhQRM4ZK7JZJjGjC+HTWz1ulShiKZ7ZRXdntcDSM5UgWtKDNA3sTzZqmdi7eHvycWTA9eD137Kc29TETayclu1AnMFo7DVh51gworc4ROxA4IVo2HW5qkYeeNmX7p6bi8+jbVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NVBzqUt4; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=8oQI0JKp33i40J2KNP9dwR222zQEHIkhUDjyNzOj4GU=; b=NVBzqUt4DD2XB6D9rUubsPPfsk
+	MwFDlvLG3jDu7t0jC3+BL6Y9/khMnd0KBTmlRUGlSNOgQDz7ayLtgzERg/e8r9I+y9D2RQdhtIjlv
+	ofBNsE1LRc5Hr4sVaIUwL0MJmm12XqYowbvxl2i6A0bRYAIvRhe9oUlfkn8i7ePu0XIhwSRasa/rW
+	TAUyNVbKcH+IemikdjlEBY/XhRb5ZGJiMN+4Lb1tCu3kmUka1OjE8DnaX9NPIqyKPv9yUzsUzSMg2
+	T7rWk4hIrtb4j8hN1fwob677X6IxJddxIiWeI47jh6emtKVtoVG+/fX/eLClxVBrYC8yDyB8f+mhK
+	92uPs3zQ==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ux4VK-00000006NKm-20cB;
+	Fri, 12 Sep 2025 14:11:58 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id EB2823002EB; Fri, 12 Sep 2025 16:11:56 +0200 (CEST)
+Date: Fri, 12 Sep 2025 16:11:56 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
+	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
+	changwoo@igalia.com, cgroups@vger.kernel.org,
+	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
+Subject: Re: [PATCH 12/14] sched: Add shared runqueue locking to
+ __task_rq_lock()
+Message-ID: <20250912141156.GE1386988@noisy.programming.kicks-ass.net>
+References: <20250910154409.446470175@infradead.org>
+ <20250910155809.684653538@infradead.org>
+ <aMNnLenCytO_KEKg@slm.duckdns.org>
+ <20250912115459.GZ3289052@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8957c526-d05c-4c0d-bfed-0eb6e6d2476c@linux.ibm.com> <BAEAC2F7-7D7F-49E4-AB21-10FC0E4BF5F3@linux.ibm.com>
-In-Reply-To: <BAEAC2F7-7D7F-49E4-AB21-10FC0E4BF5F3@linux.ibm.com>
-From: Julian Sun <sunjunchao@bytedance.com>
-Date: Fri, 12 Sep 2025 21:16:07 +0800
-X-Gm-Features: Ac12FXxgWzP6HGChGViD5jg5oUeivsG-aZaYxectxJJdHUjuwBlW_e-BOMpk6RE
-Message-ID: <CAHSKhteONXP5n9m0=Xia0jTFvLWnfpSKHYWyzRVigT0VwmGcgQ@mail.gmail.com>
-Subject: Re: [External] Re: [linux-next20250911]Kernel OOPs while running
- generic/256 on Pmem device
-To: Venkat <venkat88@linux.ibm.com>
-Cc: tj@kernel.org, akpm@linux-foundation.org, stable@vger.kernel.org, 
-	songmuchun@bytedance.com, shakeelb@google.com, hannes@cmpxchg.org, 
-	roman.gushchin@linux.dev, mhocko@suse.com, 
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, riteshh@linux.ibm.com, 
-	ojaswin@linux.ibm.com, linux-fsdevel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Linux Next Mailing List <linux-next@vger.kernel.org>, 
-	cgroups@vger.kernel.org, linux-mm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250912115459.GZ3289052@noisy.programming.kicks-ass.net>
 
-Thanks for the report. I will take a look at this issue.
+On Fri, Sep 12, 2025 at 01:54:59PM +0200, Peter Zijlstra wrote:
+> On Thu, Sep 11, 2025 at 02:19:57PM -1000, Tejun Heo wrote:
+> > Hello,
+> > 
+> > On Wed, Sep 10, 2025 at 05:44:21PM +0200, Peter Zijlstra wrote:
+> > > @@ -703,17 +703,24 @@ void double_rq_lock(struct rq *rq1, stru
+> > >  struct rq *__task_rq_lock(struct task_struct *p, struct rq_flags *rf)
+> > >  	__acquires(rq->lock)
+> > >  {
+> > > +	raw_spinlock_t *slock;
+> > >  	struct rq *rq;
+> > >  
+> > >  	lockdep_assert_held(&p->pi_lock);
+> > >  
+> > >  	for (;;) {
+> > >  		rq = task_rq(p);
+> > > +		slock = p->srq_lock;
+> > >  		raw_spin_rq_lock(rq);
+> > > -		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p))) {
+> > > +		if (slock)
+> > > +			raw_spin_lock(slock);
+> > > +		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p) &&
+> > > +			   (!slock || p->srq_lock == slock))) {
+> > >  			rq_pin_lock(rq, rf);
+> > >  			return rq;
+> > >  		}
+> 
+> Yeah, I think that needs to change a little. Perhaps something like:
+> 
+> 	slock2 = p->srq_lock;
+> 	if (... && (!slock2 || slock2 == slock))
 
-On Fri, Sep 12, 2025 at 8:33=E2=80=AFPM Venkat <venkat88@linux.ibm.com> wro=
-te:
->
->
->
-> > On 12 Sep 2025, at 10:51=E2=80=AFAM, Venkat Rao Bagalkote <venkat88@lin=
-ux.ibm.com> wrote:
-> >
-> > Greetings!!!
-> >
-> >
-> > IBM CI has reported a kernel crash, while running generic/256 test case=
- on pmem device from xfstests suite on linux-next20250911 kernel.
-> >
-> >
-> > xfstests: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
-> >
-> > local.config:
-> >
-> > [xfs_dax]
-> > export RECREATE_TEST_DEV=3Dtrue
-> > export TEST_DEV=3D/dev/pmem0
-> > export TEST_DIR=3D/mnt/test_pmem
-> > export SCRATCH_DEV=3D/dev/pmem0.1
-> > export SCRATCH_MNT=3D/mnt/scratch_pmem
-> > export MKFS_OPTIONS=3D"-m reflink=3D0 -b size=3D65536 -s size=3D512"
-> > export FSTYP=3Dxfs
-> > export MOUNT_OPTIONS=3D"-o dax"
-> >
-> >
-> > Test case: generic/256
-> >
-> >
-> > Traces:
-> >
-> >
-> > [  163.371929] ------------[ cut here ]------------
-> > [  163.371936] kernel BUG at lib/list_debug.c:29!
-> > [  163.371946] Oops: Exception in kernel mode, sig: 5 [#1]
-> > [  163.371954] LE PAGE_SIZE=3D64K MMU=3DRadix  SMP NR_CPUS=3D8192 NUMA =
-pSeries
-> > [  163.371965] Modules linked in: xfs nft_fib_inet nft_fib_ipv4 nft_fib=
-_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_=
-ct nft_chain_nat nf_nat nf_conntrack bonding tls nf_defrag_ipv6 nf_defrag_i=
-pv4 rfkill ip_set nf_tables nfnetlink sunrpc pseries_rng vmx_crypto dax_pme=
-m fuse ext4 crc16 mbcache jbd2 nd_pmem papr_scm sd_mod libnvdimm sg ibmvscs=
-i ibmveth scsi_transport_srp pseries_wdt
-> > [  163.372127] CPU: 22 UID: 0 PID: 130 Comm: kworker/22:0 Kdump: loaded=
- Not tainted 6.17.0-rc5-next-20250911 #1 VOLUNTARY
-> > [  163.372142] Hardware name: IBM,9080-HEX Power11 (architected) 0x8202=
-00 0xf000007 of:IBM,FW1110.01 (NH1110_069) hv:phyp pSeries
-> > [  163.372155] Workqueue: cgroup_free css_free_rwork_fn
-> > [  163.372169] NIP:  c000000000d051d4 LR: c000000000d051d0 CTR: 0000000=
-000000000
-> > [  163.372176] REGS: c00000000ba079b0 TRAP: 0700   Not tainted (6.17.0-=
-rc5-next-20250911)
-> > [  163.372183] MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>=
-  CR: 28000000  XER: 00000006
-> > [  163.372214] CFAR: c0000000002bae9c IRQMASK: 0
-> > [  163.372214] GPR00: c000000000d051d0 c00000000ba07c50 c00000000230a60=
-0 0000000000000075
-> > [  163.372214] GPR04: 0000000000000004 0000000000000001 c000000000507e2=
-c 0000000000000001
-> > [  163.372214] GPR08: c000000d0cb87d13 0000000000000000 000000000000000=
-0 a80e000000000000
-> > [  163.372214] GPR12: c00e0001a1970fa2 c000000d0ddec700 c000000000208e5=
-8 c000000107b5e190
-> > [  163.372214] GPR16: c00000000d3e5d08 c00000000b71cf78 c00000000d3e5d0=
-5 c00000000b71cf30
-> > [  163.372214] GPR20: c00000000b71cf08 c00000000b71cf10 c000000019f5858=
-8 c000000004704bc8
-> > [  163.372214] GPR24: c000000107b5e100 c000000004704bd0 000000000000000=
-3 c000000004704bd0
-> > [  163.372214] GPR28: c000000004704bc8 c000000019f585a8 c000000019f53da=
-8 c000000004704bc8
-> > [  163.372315] NIP [c000000000d051d4] __list_add_valid_or_report+0x124/=
-0x188
-> > [  163.372326] LR [c000000000d051d0] __list_add_valid_or_report+0x120/0=
-x188
-> > [  163.372335] Call Trace:
-> > [  163.372339] [c00000000ba07c50] [c000000000d051d0] __list_add_valid_o=
-r_report+0x120/0x188 (unreliable)
-> > [  163.372352] [c00000000ba07ce0] [c000000000834280] mem_cgroup_css_fre=
-e+0xa0/0x27c
-> > [  163.372363] [c00000000ba07d50] [c0000000003ba198] css_free_rwork_fn+=
-0xd0/0x59c
-> > [  163.372374] [c00000000ba07da0] [c0000000001f5d60] process_one_work+0=
-x41c/0x89c
-> > [  163.372385] [c00000000ba07eb0] [c0000000001f76c0] worker_thread+0x55=
-8/0x848
-> > [  163.372394] [c00000000ba07f80] [c000000000209038] kthread+0x1e8/0x23=
-0
-> > [  163.372406] [c00000000ba07fe0] [c00000000000ded8] start_kernel_threa=
-d+0x14/0x18
-> > [  163.372416] Code: 4b9b1099 60000000 7f63db78 4bae8245 60000000 e8bf0=
-008 3c62ff88 7fe6fb78 7fc4f378 38637d40 4b5b5c89 60000000 <0fe00000> 600000=
-00 60000000 7f83e378
-> > [  163.372453] ---[ end trace 0000000000000000 ]---
-> > [  163.380581] pstore: backend (nvram) writing error (-1)
-> > [  163.380593]
-> >
-> >
-> > If you happen to fix this issue, please add below tag.
-> >
-> >
-> > Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-> >
-> >
-> >
-> > Regards,
-> >
-> > Venkat.
-> >
-> >
->
-> After reverting the below commit, issue is not seen.
->
-> commit 61bbf51e75df1a94cf6736e311cb96aeb79826a8
-> Author: Julian Sun <sunjunchao@bytedance.com>
-> Date:   Thu Aug 28 04:45:57 2025 +0800
->
->     memcg: don't wait writeback completion when release memcg
->          Recently, we encountered the following hung task:
->          INFO: task kworker/4:1:1334558 blocked for more than 1720 second=
-s.
->     [Wed Jul 30 17:47:45 2025] Workqueue: cgroup_destroy css_free_rwork_f=
-n
->     [Wed Jul 30 17:47:45 2025] Call Trace:
->     [Wed Jul 30 17:47:45 2025]  __schedule+0x934/0xe10
->     [Wed Jul 30 17:47:45 2025]  ? complete+0x3b/0x50
->     [Wed Jul 30 17:47:45 2025]  ? _cond_resched+0x15/0x30
->     [Wed Jul 30 17:47:45 2025]  schedule+0x40/0xb0
->     [Wed Jul 30 17:47:45 2025]  wb_wait_for_completion+0x52/0x80
->     [Wed Jul 30 17:47:45 2025]  ? finish_wait+0x80/0x80
->     [Wed Jul 30 17:47:45 2025]  mem_cgroup_css_free+0x22/0x1b0
->     [Wed Jul 30 17:47:45 2025]  css_free_rwork_fn+0x42/0x380
->     [Wed Jul 30 17:47:45 2025]  process_one_work+0x1a2/0x360
->     [Wed Jul 30 17:47:45 2025]  worker_thread+0x30/0x390
->     [Wed Jul 30 17:47:45 2025]  ? create_worker+0x1a0/0x1a0
->     [Wed Jul 30 17:47:45 2025]  kthread+0x110/0x130
->     [Wed Jul 30 17:47:45 2025]  ? __kthread_cancel_work+0x40/0x40
->     [Wed Jul 30 17:47:45 2025]  ret_from_fork+0x1f/0x30
->          The direct cause is that memcg spends a long time waiting for di=
-rty page
->     writeback of foreign memcgs during release.
->          The root causes are:
->         a. The wb may have multiple writeback tasks, containing millions
->            of dirty pages, as shown below:
->          >>> for work in list_for_each_entry("struct wb_writeback_work", =
-\
->                                         wb.work_list.address_of_(), "list=
-"):
->     ...     print(work.nr_pages, work.reason, hex(work))
->     ...
->     900628  WB_REASON_FOREIGN_FLUSH 0xffff969e8d956b40
->     1116521 WB_REASON_FOREIGN_FLUSH 0xffff9698332a9540
->     1275228 WB_REASON_FOREIGN_FLUSH 0xffff969d9b444bc0
->     1099673 WB_REASON_FOREIGN_FLUSH 0xffff969f0954d6c0
->     1351522 WB_REASON_FOREIGN_FLUSH 0xffff969e76713340
->     2567437 WB_REASON_FOREIGN_FLUSH 0xffff9694ae208400
->     2954033 WB_REASON_FOREIGN_FLUSH 0xffff96a22d62cbc0
->     3008860 WB_REASON_FOREIGN_FLUSH 0xffff969eee8ce3c0
->     3337932 WB_REASON_FOREIGN_FLUSH 0xffff9695b45156c0
->     3348916 WB_REASON_FOREIGN_FLUSH 0xffff96a22c7a4f40
->     3345363 WB_REASON_FOREIGN_FLUSH 0xffff969e5d872800
->     3333581 WB_REASON_FOREIGN_FLUSH 0xffff969efd0f4600
->     3382225 WB_REASON_FOREIGN_FLUSH 0xffff969e770edcc0
->     3418770 WB_REASON_FOREIGN_FLUSH 0xffff96a252ceea40
->     3387648 WB_REASON_FOREIGN_FLUSH 0xffff96a3bda86340
->     3385420 WB_REASON_FOREIGN_FLUSH 0xffff969efc6eb280
->     3418730 WB_REASON_FOREIGN_FLUSH 0xffff96a348ab1040
->     3426155 WB_REASON_FOREIGN_FLUSH 0xffff969d90beac00
->     3397995 WB_REASON_FOREIGN_FLUSH 0xffff96a2d7288800
->     3293095 WB_REASON_FOREIGN_FLUSH 0xffff969dab423240
->     3293595 WB_REASON_FOREIGN_FLUSH 0xffff969c765ff400
->     3199511 WB_REASON_FOREIGN_FLUSH 0xffff969a72d5e680
->     3085016 WB_REASON_FOREIGN_FLUSH 0xffff969f0455e000
->     3035712 WB_REASON_FOREIGN_FLUSH 0xffff969d9bbf4b00
->              b. The writeback might severely throttled by wbt, with a spe=
-ed
->            possibly less than 100kb/s, leading to a very long writeback t=
-ime.
->          >>> wb.write_bandwidth
->     (unsigned long)24
->     >>> wb.write_bandwidth
->     (unsigned long)13
->          The wb_wait_for_completion() here is probably only used to preve=
-nt
->     use-after-free.  Therefore, we manage 'done' separately and automatic=
-ally
->     free it.
->          This allows us to remove wb_wait_for_completion() while preventi=
-ng the
->     use-after-free issue.
->      com
->     Fixes: 97b27821b485 ("writeback, memcg: Implement foreign dirty flush=
-ing")
->     Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
->     Acked-by: Tejun Heo <tj@kernel.org>
->     Cc: Michal Hocko <mhocko@suse.com>
->     Cc: Roman Gushchin <roman.gushchin@linux.dev>
->     Cc: Johannes Weiner <hannes@cmpxchg.org>
->     Cc: Shakeel Butt <shakeelb@google.com>
->     Cc: Muchun Song <songmuchun@bytedance.com>
->     Cc: <stable@vger.kernel.org>
->     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
->
-> Regards,
-> Venkat.
->
-> >
->
-
-Thanks,
---=20
-Julian Sun <sunjunchao@bytedance.com>
+I'm being stupid, all that wants is: && (p->srq_lock == slock). If there
+is a mis-match, unlock and re-try.
 
