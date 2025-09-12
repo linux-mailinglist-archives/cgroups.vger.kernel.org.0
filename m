@@ -1,202 +1,209 @@
-Return-Path: <cgroups+bounces-10006-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10007-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57878B5468C
-	for <lists+cgroups@lfdr.de>; Fri, 12 Sep 2025 11:12:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECFC5B54B98
+	for <lists+cgroups@lfdr.de>; Fri, 12 Sep 2025 13:53:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E1F51BC17FC
-	for <lists+cgroups@lfdr.de>; Fri, 12 Sep 2025 09:12:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4C3B3A54FB
+	for <lists+cgroups@lfdr.de>; Fri, 12 Sep 2025 11:53:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 365732749F1;
-	Fri, 12 Sep 2025 09:12:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D43301018;
+	Fri, 12 Sep 2025 11:53:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aploMs7w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hyhOAe9Y"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F185D276028
-	for <cgroups@vger.kernel.org>; Fri, 12 Sep 2025 09:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B55F2957C2;
+	Fri, 12 Sep 2025 11:53:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757668345; cv=none; b=mGs3VWRKaQqSwjPvFayhE9h+nn3RzMbXygvIWAeGdyKho3nnXj2Y0XKNHRpGfKCl7j993HwhE8jCZDbi7cdHdiRJj/RUSPuWd7zyznN9rt8uvU/FAJ/UkCV5LPwwS8UM6gXCMEoYYfx31Rafyd/nL0FZ2T6G6qarhEDWPPSK3vg=
+	t=1757677980; cv=none; b=MKTw6A/X7iHjMGXfqTKRCNhKQgHMmWpx0OtYXMx9uClu+XYSreCY+cWTn5VMx0RUbQuqJ9zOCV3Bd0aD8cwTo1A36O1k98f3BtwIIJLO6r8niqfbnV4FunmfayphlwRuud4f2DZ4GJbxbVjqj/DMslZI49pqM0FKoAetdjil0XE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757668345; c=relaxed/simple;
-	bh=ioIOH2p5Blrv6vNOqNmSCymoSvN1zmkkAsnVeBc1SMY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ev1nedUy0O4As1hXySVRwzqMwFN4oaw6M1vARY2JDaoVtqQL0yDOU5QN7w58gb2cItgh7U1mEv2hKP4fq9CBRkbUsZpSE+plz59ECL2KexSXhayaTu/FEwvS29IrF5y6Ybb1um2f5KRbhZpBBa3ejsaXaUqYXIHcSdTRdUctfPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aploMs7w; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b046f6fb230so320452266b.1
-        for <cgroups@vger.kernel.org>; Fri, 12 Sep 2025 02:12:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757668341; x=1758273141; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ioIOH2p5Blrv6vNOqNmSCymoSvN1zmkkAsnVeBc1SMY=;
-        b=aploMs7whY/LgaXCAuOUQbkHlH9PozV3z9HFoHHh4tp/dJFhM6pt21fAvHgYgjlN8M
-         rmpVcHSueNagemUBdQowpA6BdoN7gqqaLplS1v3ScHX+yKhTwev5VBs4Bed/9bkH4dLN
-         4rfLLpcIvHJONxgYVXSLM7qEor3rn+MmXCTKDCzXypEm5HHBP38sGD0OFUOjAm326bQ+
-         1r2w7gh4g7621FkXF6rJzjHEIMZg4g13DDPyWgPK4mWuR3T6PMXO71Jvdha7GKG/r6lh
-         avbJhFNvPx4G+gPZm0XJKYAQwKp/BQENGe5DK6uHxVZst/QOlcM6CwamdS6qIfXycNC8
-         TKgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757668341; x=1758273141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ioIOH2p5Blrv6vNOqNmSCymoSvN1zmkkAsnVeBc1SMY=;
-        b=ubdHWqUY4F/A02gx5TDDm4qstW6VaCbZcrPGv9KTdH5KW9tNdqoMPgpvYejwKq5vVM
-         rdDHizOumBPwcshQEG0BFEUHeYUggnpRFiZ66bqMc/zddVtY2AdN58BzkEKa9Om6+Kky
-         +rk0e6QK03N4Uk3iRi6OVxOHG/5s33Fl7Rh89VAU0EXF1dodHxrZiEekDgSjTeYPGsz4
-         UpoCFDlsQYrW7oYJ3qAoWtuPpmOwVuoalCxdPYilQr7og62PtqZeGvujcJjUIEo5jZ0w
-         97ccVBXGJlJVjq5d2PMq0BaIPj8F8Hb49nxP/pExxjOBRvYeVD71niTyS5sEKzYlmlvQ
-         eAtw==
-X-Forwarded-Encrypted: i=1; AJvYcCXsvtKByB5ca89tXZqNiGVsXCdFb0AodUyMWcxRI+CGFDjeP9uiMkD2faRt+D19jPVQY9pt5O6d@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz1pfonZ1qdqQIddFsjl5H9x2ZUJ3RZD3av4wDS/qppbBSxC/LT
-	RC4617PdefVy/Z7UY924O/MfYY/TDUALtV1vwfgJpbLi0BqToIIMoo2xneXR0ouTIWwTe2AmxGu
-	AxVdkM6z5aj0fS8jrvojhmigyMRAjd3w=
-X-Gm-Gg: ASbGncv155uXI9dYGEuNcEWrtBsanmpA0knh+R/fl2SU61bnvKhtpJzxPW7Q9bDz+qi
-	lzteXxsP7mx4XSgYfzq/6K75LMG9+r8tUP7b5/lbLg2lgueCj57NmQgM3E5NVfs+he7Nk7SMnve
-	q0/QydEF3AJ6/lGiy5WG7tw4wvVeUsXDZrnDQ2g5bWcxDT3wRJPQI1X2bzAyhv+ujByPtyPs8jG
-	kAhttk=
-X-Google-Smtp-Source: AGHT+IECQ2FSxCpELdyt8w8+Ta17OX81olY1L21qGnLXRiiNiAsbzwmD/JJZPTQJsBBXBb5BWfCf5Q2bF6gDjvOJbJk=
-X-Received: by 2002:a17:907:3e9f:b0:b04:3402:391c with SMTP id
- a640c23a62f3a-b07a68bddd8mr590036766b.24.1757668340932; Fri, 12 Sep 2025
- 02:12:20 -0700 (PDT)
+	s=arc-20240116; t=1757677980; c=relaxed/simple;
+	bh=NmIyJJYs4LCcRYXbb9KAw9QgbmU7rJnHEjrNjnl2vwc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=YmU785W0kb/qXUziohO0fgdUaJESy8D6k6+Xp6VA5VTsbV82g3kBki3R3QguBYzObf3lMXPL3Z+x0GVbY47iNwSq/vKv6+68IPssCCEGR5ocV3jWGQ3ILL2ZV3Z4kX/bc5JJb7fPrsN++OsI2GVMRubP5CuPuCPxEsC2KNFZrY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hyhOAe9Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 662D0C4CEF1;
+	Fri, 12 Sep 2025 11:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757677979;
+	bh=NmIyJJYs4LCcRYXbb9KAw9QgbmU7rJnHEjrNjnl2vwc=;
+	h=From:Subject:Date:To:Cc:From;
+	b=hyhOAe9YjTHpuvO3AierKWjw5OD6myMMT9p9EcAITM9Pb1+NMH1wNQliBW4upbO8R
+	 QKLEJTkZOFgy6Z7Rcv0TWlRM6KFx3wbCWIslNfJQePl2ar/NACLfIVPK0JL1g/FEk2
+	 UVzJTaTZwpeS5oDpzxAq2Q0XeiyJAmJkrbdCsrmzy/2O5EdknZbZXqkgKD34w5Kt60
+	 cXZutEgXWMkzZ5SfXX25tYjEbHnq08JT7p33wBaq9iN79MiJHJtDg+uiC57+8BNmVQ
+	 sWORuSN82YYjCx/iPj7SywZx6RHpiSzNU9r/RWlkjqF0ywWC/uz9ptnOTs498c9DxA
+	 YX25RtJ36IZdQ==
+From: Christian Brauner <brauner@kernel.org>
+Subject: [PATCH v2 00/33] ns: support file handles
+Date: Fri, 12 Sep 2025 13:52:23 +0200
+Message-Id: <20250912-work-namespace-v2-0-1a247645cef5@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
- <20250910-work-namespace-v1-27-4dd56e7359d8@kernel.org> <CAOQ4uxgtQQa-jzsnTBxgUTPzgtCiAaH8X6ffMqd+1Y5Jjy0dmQ@mail.gmail.com>
- <20250911-werken-raubzug-64735473739c@brauner> <CAOQ4uxgMgzOjz4E-4kJFJAz3Dpd=Q6vXoGrhz9F0=mb=4XKZqA@mail.gmail.com>
- <20250912-wirsing-karibus-7f6a98621dd1@brauner>
-In-Reply-To: <20250912-wirsing-karibus-7f6a98621dd1@brauner>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 12 Sep 2025 11:12:09 +0200
-X-Gm-Features: Ac12FXzXlVrWyNxThzcVLm8bWdnJouio3PTW50wsmgaWY6Ne9FaEF2yc3iNy4og
-Message-ID: <CAOQ4uxgGpdQ42d-QRuHbvdrvZWrS9qz9=A2GRa2Bq-sMcK6w4w@mail.gmail.com>
-Subject: Re: [PATCH 27/32] nsfs: support file handles
-To: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
-	Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
-	=?UTF-8?Q?Zbigniew_J=C4=99drzejewski=2DSzmek?= <zbyszek@in.waw.pl>, 
-	Lennart Poettering <mzxreary@0pointer.de>, Daan De Meyer <daan.j.demeyer@gmail.com>, 
-	Aleksa Sarai <cyphar@cyphar.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Simon Horman <horms@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHcJxGgC/12OQQ6DIBQFr9KwLgaooHbVezQuEH6VWMF8DG1jv
+ HvRdNXlLObNW0kEdBDJ9bQShOSiCz6DOJ+IGbTvgTqbmQgmJGuYpK+AI/V6gjhrA9SouhbKWs1
+ sSbI0Izzc+xi8t5k7HYF2qL0Z9plJxwWwSKrgFUXDd2VwcQn4OS4kvou/Gmf/tcQpo6W1UkF1k
+ Y2tbyOgh2cRsCfttm1fpsF3PNAAAAA=
+X-Change-ID: 20250905-work-namespace-c68826dda0d4
+To: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>, 
+ linux-fsdevel@vger.kernel.org
+Cc: Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>, 
+ Mike Yuan <me@yhndnzj.com>, 
+ =?utf-8?q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, 
+ Lennart Poettering <mzxreary@0pointer.de>, 
+ Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>, 
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+ Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-block@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+ netdev@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
+ Thomas Gleixner <tglx@linutronix.de>
+X-Mailer: b4 0.14.3-dev-385fa
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5785; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=NmIyJJYs4LCcRYXbb9KAw9QgbmU7rJnHEjrNjnl2vwc=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQc4ZwyI2lNaoVFPNf3BDnj5GaDXQxxN1I1fs9oWW367
+ 9frOfqeHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABMxu83IMH/VM39dsQ/zo04o
+ iZVfafW8PHXXwzC+1TEyHJazH7zzns3I8DP76XfDrJULMx9GbpZJjbKKmZBxfmPTEbX26vULXRk
+ dmAA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-On Fri, Sep 12, 2025 at 10:20=E2=80=AFAM Christian Brauner <brauner@kernel.=
-org> wrote:
->
-> On Thu, Sep 11, 2025 at 01:36:28PM +0200, Amir Goldstein wrote:
-> > On Thu, Sep 11, 2025 at 11:31=E2=80=AFAM Christian Brauner <brauner@ker=
-nel.org> wrote:
-> > >
-> > > On Wed, Sep 10, 2025 at 07:21:22PM +0200, Amir Goldstein wrote:
-> > > > On Wed, Sep 10, 2025 at 4:39=E2=80=AFPM Christian Brauner <brauner@=
-kernel.org> wrote:
-> > > > >
-> > > > > A while ago we added support for file handles to pidfs so pidfds =
-can be
-> > > > > encoded and decoded as file handles. Userspace has adopted this q=
-uickly
-> > > > > and it's proven very useful.
-> > > >
-> > > > > Pidfd file handles are exhaustive meaning
-> > > > > they don't require a handle on another pidfd to pass to
-> > > > > open_by_handle_at() so it can derive the filesystem to decode in.
-> > > > >
-> > > > > Implement the exhaustive file handles for namespaces as well.
-> > > >
-> > > > I think you decide to split the "exhaustive" part to another patch,
-> > > > so better drop this paragraph?
-> > >
-> > > Yes, good point. I've dont that.
-> > >
-> > > > I am missing an explanation about the permissions for
-> > > > opening these file handles.
-> > > >
-> > > > My understanding of the code is that the opener needs to meet one o=
-f
-> > > > the conditions:
-> > > > 1. user has CAP_SYS_ADMIN in the userns owning the opened namespace
-> > > > 2. current task is in the opened namespace
-> > >
-> > > Yes.
-> > >
-> > > >
-> > > > But I do not fully understand the rationale behind the 2nd conditio=
-n,
-> > > > that is, when is it useful?
-> > >
-> > > A caller is always able to open a file descriptor to it's own set of
-> > > namespaces. File handles will behave the same way.
-> > >
-> >
-> > I understand why it's safe, and I do not object to it at all,
-> > I just feel that I do not fully understand the use case of how ns file =
-handles
-> > are expected to be used.
-> > A process can always open /proc/self/ns/mnt
-> > What's the use case where a process may need to open its own ns by hand=
-le?
-> >
-> > I will explain. For CAP_SYS_ADMIN I can see why keeping handles that
-> > do not keep an elevated refcount of ns object could be useful in the sa=
-me
-> > way that an NFS client keeps file handles without keeping the file obje=
-ct alive.
-> >
-> > But if you do not have CAP_SYS_ADMIN and can only open your own ns
-> > by handle, what is the application that could make use of this?
-> > and what's the benefit of such application keeping a file handle instea=
-d of
-> > ns fd?
->
-> A process is not always able to open /proc/self/ns/. That requires
-> procfs to be mounted and for /proc/self/ or /proc/self/ns/ to not be
-> overmounted. However, they can derive a namespace fd from their own
-> pidfd. And that also always works if it's their own namespace.
->
-> There's no need to introduce unnecessary behavioral differences between
-> /proc/self/ns/, pidfd-derived namespace fs, and file-handle-derived
-> namespace fds. That's just going to be confusing.
->
-> The other thing is that there are legitimate use-case for encoding your
-> own namespace. For example, you might store file handles to your set of
-> namespaces in a file on-disk so you can verify when you get rexeced that
-> they're still valid and so on. This is akin to the pidfd use-case.
->
-> Or just plainly for namespace comparison reasons where you keep a file
-> handle to your own namespaces and can then easily check against others.
+For a while now we have supported file handles for pidfds. This has
+proven to be very useful.
 
-OK. As I said no objections I was just curious about this use case.
+Extend the concept to cover namespaces as well. After this patchset it
+is possible to encode and decode namespace file handles using the
+commong name_to_handle_at() and open_by_handle_at() apis.
 
-FWIW, comparing current ns to a stored file handle does not really require
-permission to open_by_handle_at(). name_to_handle_at() the current ns
-and binary compare to the stored file handle should be a viable option.
+Namespaces file descriptors can already be derived from pidfds which
+means they aren't subject to overmount protection bugs. IOW, it's
+irrelevant if the caller would not have access to an appropriate
+/proc/<pid>/ns/ directory as they could always just derive the namespace
+based on a pidfd already.
 
-This was exactly the reason for introducing AT_HANDLE_FID, so that fanotify
-unprivileged watcher with no permission to open_by_handle_at() could compar=
-e
-an fid reported in an event with another fid they obtained earlier with
-name_to_handle_at() and kept in a map.
+It has the same advantage as pidfds. It's possible to reliably and for
+the lifetime of the system refer to a namespace without pinning any
+resources and to compare them.
 
-Thanks for the explanation!
-Amir.
+Permission checking is kept simple. If the caller is located in the
+namespace the file handle refers to they are able to open it otherwise
+they must hold privilege over the owning namespace of the relevant
+namespace.
+
+Both the network namespace and the mount namespace already have an
+associated cookie that isn't recycled and is fully exposed to userspace.
+Move this into ns_common and use the same id space for all namespaces so
+they can trivially and reliably be compared.
+
+There's more coming based on the iterator infrastructure but the series
+is large enough and focuses on file handles.
+
+Extensive selftests included.
+
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+Changes in v2:
+- Address various review comments.
+- Use a common NS_GET_ID ioctl() instead of individual ioctls.
+- Link to v1: https://lore.kernel.org/20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org
+
+---
+Christian Brauner (33):
+      pidfs: validate extensible ioctls
+      nsfs: drop tautological ioctl() check
+      nsfs: validate extensible ioctls
+      block: use extensible_ioctl_valid()
+      ns: move to_ns_common() to ns_common.h
+      nsfs: add nsfs.h header
+      ns: uniformly initialize ns_common
+      cgroup: use ns_common_init()
+      ipc: use ns_common_init()
+      mnt: use ns_common_init()
+      net: use ns_common_init()
+      pid: use ns_common_init()
+      time: use ns_common_init()
+      user: use ns_common_init()
+      uts: use ns_common_init()
+      ns: remove ns_alloc_inum()
+      nstree: make iterator generic
+      mnt: support ns lookup
+      cgroup: support ns lookup
+      ipc: support ns lookup
+      net: support ns lookup
+      pid: support ns lookup
+      time: support ns lookup
+      user: support ns lookup
+      uts: support ns lookup
+      ns: add to_<type>_ns() to respective headers
+      nsfs: add current_in_namespace()
+      nsfs: support file handles
+      nsfs: support exhaustive file handles
+      nsfs: add missing id retrieval support
+      tools: update nsfs.h uapi header
+      selftests/namespaces: add identifier selftests
+      selftests/namespaces: add file handle selftests
+
+ block/blk-integrity.c                              |    8 +-
+ fs/fhandle.c                                       |    6 +
+ fs/internal.h                                      |    1 +
+ fs/mount.h                                         |   10 +-
+ fs/namespace.c                                     |  156 +--
+ fs/nsfs.c                                          |  201 ++-
+ fs/pidfs.c                                         |    2 +-
+ include/linux/cgroup.h                             |    5 +
+ include/linux/exportfs.h                           |    6 +
+ include/linux/fs.h                                 |   14 +
+ include/linux/ipc_namespace.h                      |    5 +
+ include/linux/ns_common.h                          |   29 +
+ include/linux/nsfs.h                               |   40 +
+ include/linux/nsproxy.h                            |   11 -
+ include/linux/nstree.h                             |   89 ++
+ include/linux/pid_namespace.h                      |    5 +
+ include/linux/proc_ns.h                            |   32 +-
+ include/linux/time_namespace.h                     |    9 +
+ include/linux/user_namespace.h                     |    5 +
+ include/linux/utsname.h                            |    5 +
+ include/net/net_namespace.h                        |    6 +
+ include/uapi/linux/fcntl.h                         |    1 +
+ include/uapi/linux/nsfs.h                          |   15 +-
+ init/main.c                                        |    2 +
+ ipc/msgutil.c                                      |    1 +
+ ipc/namespace.c                                    |   12 +-
+ ipc/shm.c                                          |    2 +
+ kernel/Makefile                                    |    2 +-
+ kernel/cgroup/cgroup.c                             |    2 +
+ kernel/cgroup/namespace.c                          |   24 +-
+ kernel/nstree.c                                    |  233 ++++
+ kernel/pid_namespace.c                             |   13 +-
+ kernel/time/namespace.c                            |   23 +-
+ kernel/user_namespace.c                            |   17 +-
+ kernel/utsname.c                                   |   28 +-
+ net/core/net_namespace.c                           |   59 +-
+ tools/include/uapi/linux/nsfs.h                    |   17 +-
+ tools/testing/selftests/namespaces/.gitignore      |    2 +
+ tools/testing/selftests/namespaces/Makefile        |    7 +
+ tools/testing/selftests/namespaces/config          |    7 +
+ .../selftests/namespaces/file_handle_test.c        | 1429 ++++++++++++++++++++
+ tools/testing/selftests/namespaces/nsid_test.c     |  986 ++++++++++++++
+ 42 files changed, 3257 insertions(+), 270 deletions(-)
+---
+base-commit: 8f5ae30d69d7543eee0d70083daf4de8fe15d585
+change-id: 20250905-work-namespace-c68826dda0d4
+
 
