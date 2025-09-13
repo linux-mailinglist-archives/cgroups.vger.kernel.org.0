@@ -1,146 +1,342 @@
-Return-Path: <cgroups+bounces-10053-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10054-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE3DDB55ABF
-	for <lists+cgroups@lfdr.de>; Sat, 13 Sep 2025 02:34:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C766BB55DDE
+	for <lists+cgroups@lfdr.de>; Sat, 13 Sep 2025 04:48:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 196461C82240
-	for <lists+cgroups@lfdr.de>; Sat, 13 Sep 2025 00:34:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 898EBAC49F7
+	for <lists+cgroups@lfdr.de>; Sat, 13 Sep 2025 02:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 528107E105;
-	Sat, 13 Sep 2025 00:33:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E141D7984;
+	Sat, 13 Sep 2025 02:48:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y8ABFCOY"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="K+QLVMqx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8A22BAF7
-	for <cgroups@vger.kernel.org>; Sat, 13 Sep 2025 00:33:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763101D5CF2
+	for <cgroups@vger.kernel.org>; Sat, 13 Sep 2025 02:48:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757723621; cv=none; b=gxgdywdzmSOjcY9/zSRQ2FgMERbQTZPMrePBKInj8N1eAHLLD4nDQTmHsNxgVUde3KIKfbZ1I+P+SeQ1C2BzWUuzacQOpfJauifMYRizvfJ4X+oeasCq1/UvuXvC0Y0r/kbxh2BVneB5TB/MBXy8DX7mCE0HArfWWKoP3tFYrT8=
+	t=1757731706; cv=none; b=CWKEk1kFziwfqkolKczYG3HAko0/hkZyoPmu1nNUAhp+AypLvweQmU2otmBX+YkFJSSd2CwWHKyeDQvq/9liuswX9G9cllg0G6KDGn3O8AIHIun6x/2577TAXExc8iRDEp013DvWbnt04uLUnq1LhArb+6+Kb9eG20/RrpVPnF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757723621; c=relaxed/simple;
-	bh=6ixjMQGo+mF9rxxhZunX9VzR5bs0JXrtOuI72NkTM98=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=kxXILtg0SS/xOjKv9BUeJ2OJR/jchAtkway9ZDB8FettvS2EjiURwJfER6MIDCfHLOkppiZ3xeWrsmmhTrbFRlU+Sp1x6x8/Yr24M4ZXYqbuDC5P9WoQykjjXT/J2F/OZzsLwauqEstlfHLlfE5NYL1j/c2uSj847m9zWOyTj7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y8ABFCOY; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1757723617;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ncBfGy8EE17qYCVshxa8cc5ygoQQollWUOgPghVnN+8=;
-	b=Y8ABFCOYGvmtliMGHQf+AXFx8kh07GGSmtGIbQ78d+T2Lcis3vOb2XAhVxtev7SyJURlCS
-	JfZw1CRRwO8rpbKf/bLP1H/8GNRtYJrpfmGJ4oNvQVtlo3sjz4JAEvUki/mKIGVDR9jLDO
-	rJeVuhvLxEyxyR/fniR/S8i1vfy6Lys=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-33-PdqhIPvlP7W8HLVNKlZACQ-1; Fri, 12 Sep 2025 20:33:35 -0400
-X-MC-Unique: PdqhIPvlP7W8HLVNKlZACQ-1
-X-Mimecast-MFC-AGG-ID: PdqhIPvlP7W8HLVNKlZACQ_1757723614
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4b5f75c17a3so62885061cf.3
-        for <cgroups@vger.kernel.org>; Fri, 12 Sep 2025 17:33:34 -0700 (PDT)
+	s=arc-20240116; t=1757731706; c=relaxed/simple;
+	bh=ZgDzLUPuZXuQEWnXyNiXs6bEELAKGlfOKneMLqyun5Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c46+XJTUT5OouT9NmgFIFVee0XeAK769QNaCTUoyBZ/9QQ8Doy08wkOU7hWx1rQxjpdAQHy7P9dfCz6IQ4d40a1itF9DBfdoO0/ugiZ1cheg4I1ndAvrVHe7i9RbY8W3xYOpzjNkXaHck/8SJ6gDZLSwe+yWwCvxyNBTn24Zcr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=K+QLVMqx; arc=none smtp.client-ip=74.125.224.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-62a35c99b9fso335972d50.0
+        for <cgroups@vger.kernel.org>; Fri, 12 Sep 2025 19:48:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1757731703; x=1758336503; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dkY2yS7RSwh45nVEv3otHU3VH9SAKoF62TZrQgSQhHE=;
+        b=K+QLVMqxoe/VPwG14fizIyXZJhHeo7E909SiTRkxy9MdedQ555Co7frMx1W0bGNdHu
+         J9Z6k586KkpF1nTkU24dj438IUr7kXq8Fg1+SS2FPURLAsj2BD6dEtW0cGwrFlXvQFu8
+         x9kTdCxCxgjWni+ioxLM8cJChC0i7YV98xZqOGJpj8A/Ojo1eKB7H5X5VKKT+FWlMhSh
+         KmsQMaBcaOA3fHj7nwSFh0svbYDgVVAPMLUeZYI9+MAOZu6PtR55qG9KFZggk0v0G08F
+         fA1QIp0gIyjhpFQ7Uu/pjl55pqhyGWguUNDMYbFwYnpj5B7kf9/JmkGMMikznMBPKgB5
+         lgzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757723614; x=1758328414;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ncBfGy8EE17qYCVshxa8cc5ygoQQollWUOgPghVnN+8=;
-        b=DYvmKehKiybVGWUGyTHRLnzh6e1HgYKv2il8lzYbW8+Ca/3GNppbSPgoDXRFAiOCAn
-         SJkebZPr09TnNsLlpgRGLdG5hM+6EvvpqS1129N4cbrHZ9YN9DuCV6FKb3/wNVvJgHs5
-         t1twPtDGhbJQ7PSV5hKG8F7Bg+ARokutZQDxbGbJpvGwkK/WsfM7P+4nVlqYEwKJpF7Q
-         uCdSK1o3pg1N28xqo7viU8D8P639DYR5eaTHoN/dOg5TFZ/3ovpMWup6Vx2pD0ZKMJEf
-         wgcujym8u4TTnJUg0gYZ28r6VrruzEfVGBFzkfBy7XZOu1JX/ER6sA6cBV/DuBehhW1N
-         5klQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUqkEZ5snA4+xYjiRJ7JUv7QKozfqeRZpICpiwF6mfPWmeDxbtfveoTjlFmUxBD5ZyBrObYxoEJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmG4t3MgQ8k5WASavDoHHeSfjwOjbqW/+yQVkYaPFVWwWcC4h/
-	D/jx86B6IToF7rbM7bl1omg3cVPv0dHFWsKNDSK2fYS56sc4rGuz/qz0BTng/2ufs6AthktpRUM
-	QfAzke/iR/YxqpkAcoSYQssdn4EE6IXN5ctGcycz1+Vm1SPzKB2bZCraYlO0=
-X-Gm-Gg: ASbGnctzMwmcbtKtlEQaaXOqFnxvqsE0R3SNicburbrn9afGhQdYKfJ3YM88/PiBKZN
-	WzH/DxloPc/zBgRBKAQ5Oehzp9VRYKLgC/oSdBEbZZFVPrF04HLeodl8l0e/cji19WlTTh3ddVM
-	P69kRRD7d37nGtvOi4fgcB2O4l/a4JEK/Eofn1HPudO5XcByes89dpr8EcqxLGiD7OjtKbVjIkP
-	VRmBOoyyrxZEq6cG3Dgy/vn2JM+N2Qt3wO5AQE6H+O8kEWTBa4gLyInGCvBweK0yQlmyNmP2DmH
-	oR+EVakC4Yy5s7tO3gjNWPY9x0w3K4vISuI38whgEvETUSwf2V8ocjTcIOpBhEeacXZieKFH55G
-	L3WI3jOy5tw==
-X-Received: by 2002:a05:622a:1a05:b0:4b6:2f52:5342 with SMTP id d75a77b69052e-4b77d1ab3a1mr68076311cf.79.1757723614310;
-        Fri, 12 Sep 2025 17:33:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGRq8wbBNQnbSCZtG/tvewoa9dvMcBJkb7MXthP0yviRVZ6G/ctSPGgxUCMnelFEMNwo4BLAw==
-X-Received: by 2002:a05:622a:1a05:b0:4b6:2f52:5342 with SMTP id d75a77b69052e-4b77d1ab3a1mr68076091cf.79.1757723613947;
-        Fri, 12 Sep 2025 17:33:33 -0700 (PDT)
-Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4b639b99de1sm31462791cf.8.2025.09.12.17.33.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 17:33:33 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <9d06c0d5-e20c-4069-adca-68a2c4cf6f4f@redhat.com>
-Date: Fri, 12 Sep 2025 20:33:31 -0400
+        d=1e100.net; s=20230601; t=1757731703; x=1758336503;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dkY2yS7RSwh45nVEv3otHU3VH9SAKoF62TZrQgSQhHE=;
+        b=ATGAHJbfqB5qZ9vt8udaKJTF3uak4y8p519HYVMjq2urg89OksO7khJZVLcdoCFeto
+         FTqXY/kGT6NdC9TRTP5W1NPMPZ6VW3D/MSyZFGgB2SFEPW27UIqtLRbuLHVjsdPrDpPc
+         HynCfQDsvkRk/l768y/loAGUzPL5J7rhH8WZSKhjqDCf6XEC/AuK17eHrceK2fmoNm0S
+         Z2JdPlgG1dH2Xh+bEZRPcUIoGVKomcm4uNwvPuifL7maY2lx3SBB/fbw5WS67uicCOpD
+         pPoMqogOswcELl9+DaWLsmYsvlNhTPxnHJVrzyn/fw6HrSG+w+IhTOVxjdvxQxM8tCVS
+         3phQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVp+jwpd1zje1xFelVJrlyHdCk4HsZsr9hFVFpD16chxCqNLaXqPFcmvDhyiVusZ4Cnk3fzrA22@vger.kernel.org
+X-Gm-Message-State: AOJu0YzI90bIStqRnsBZCwty51rlW4Ufbzo+hML8QQpsEPYptJpqCzIm
+	B02smW6D+AG6K6OfSeqjaF3DOkbglk7JTrrd8RH9GfPj1zeJQheTEo0WCuuR7XDIlBFqzle86E1
+	KnBbyaWEQERQSXs4k2EcTyiBTdjCsEhWFmfCUYW1FyA==
+X-Gm-Gg: ASbGncsCNCnzDqJrHAAozZ4R+iKGl79ViWxkwY+3Ub0+jbAFV7VuqGOxCxmlxeSvl7M
+	GBSY9m5ddLJeYBPoDv7a78etHzptZRT0czCsn+5dJ6Ru7R6fBn6JZMxII6Ysh4oJPANFuMgLag8
+	Mcbh+CV98wCoOvLbgrpXDPBTGGSxVPzExL/k1ThW6C/apsbh34nwGD4sv4sQhBy1aTFhg9Phpic
+	lBroiSt3Qkc6Oo=
+X-Google-Smtp-Source: AGHT+IGiKD+4jzf4TGq8bTBu8gsWjwWmWFiXXnkLbYhS2Yr6yBghdtRZuNxqqC+KU1Yu03Hdf+Hg2fEWLC9p8tq8dhA=
+X-Received: by 2002:a53:e712:0:b0:5fe:91c3:f0fb with SMTP id
+ 956f58d0204a3-627234f4904mr3827458d50.32.1757731703206; Fri, 12 Sep 2025
+ 19:48:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rcu: Remove redundant rcu_read_lock/unlock() in spin_lock
- critical sections
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Waiman Long <llong@redhat.com>
-Cc: pengdonglin <dolinux.peng@gmail.com>, tj@kernel.org, tony.luck@intel.com,
- jani.nikula@linux.intel.com, ap420073@gmail.com, jv@jvosburgh.net,
- freude@linux.ibm.com, bcrl@kvack.org, trondmy@kernel.org, kees@kernel.org,
- linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
- linux-nfs@vger.kernel.org, linux-aio@kvack.org,
- linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org,
- netdev@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- linux-acpi@vger.kernel.org, linux-s390@vger.kernel.org,
- cgroups@vger.kernel.org, pengdonglin <pengdonglin@xiaomi.com>,
- "Paul E . McKenney" <paulmck@kernel.org>
-References: <20250912065050.460718-1-dolinux.peng@gmail.com>
- <6831b9fe-402f-40a6-84e6-b723dd006b90@redhat.com>
- <20250912213531.7-YeRBeD@linutronix.de>
-Content-Language: en-US
-In-Reply-To: <20250912213531.7-YeRBeD@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <8957c526-d05c-4c0d-bfed-0eb6e6d2476c@linux.ibm.com> <BAEAC2F7-7D7F-49E4-AB21-10FC0E4BF5F3@linux.ibm.com>
+In-Reply-To: <BAEAC2F7-7D7F-49E4-AB21-10FC0E4BF5F3@linux.ibm.com>
+From: Julian Sun <sunjunchao@bytedance.com>
+Date: Sat, 13 Sep 2025 10:48:12 +0800
+X-Gm-Features: Ac12FXxyQ3rupesgBRE_rBBovmGPVj00T36Qe6boIv2jYp-KBN6pOz85tL_EOvs
+Message-ID: <CAHSKhteHC26yXVFtjgdanfM7+vsOVZ+HHWnBYD01A4eiRHibVQ@mail.gmail.com>
+Subject: Re: [External] Re: [linux-next20250911]Kernel OOPs while running
+ generic/256 on Pmem device
+To: Venkat <venkat88@linux.ibm.com>
+Cc: tj@kernel.org, akpm@linux-foundation.org, stable@vger.kernel.org, 
+	songmuchun@bytedance.com, shakeelb@google.com, hannes@cmpxchg.org, 
+	roman.gushchin@linux.dev, mhocko@suse.com, 
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, riteshh@linux.ibm.com, 
+	ojaswin@linux.ibm.com, linux-fsdevel@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Linux Next Mailing List <linux-next@vger.kernel.org>, 
+	cgroups@vger.kernel.org, linux-mm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/12/25 5:35 PM, Sebastian Andrzej Siewior wrote:
-> On 2025-09-12 17:13:09 [-0400], Waiman Long wrote:
->> On 9/12/25 2:50 AM, pengdonglin wrote:
->>> From: pengdonglin <pengdonglin@xiaomi.com>
->>>
->>> When CONFIG_PREEMPT_RT is disabled, spin_lock*() operations implicitly
->>> disable preemption, which provides RCU read-side protection. When
->>> CONFIG_PREEMPT_RT is enabled, spin_lock*() implementations internally
->>> manage RCU read-side critical sections.
->> I have some doubt about your claim that disabling preemption provides RCU
->> read-side protection. It is true for some flavors but probably not all. I do
->> know that disabling interrupt will provide RCU read-side protection. So for
->> spin_lock_irq*() calls, that is valid. I am not sure about spin_lock_bh(),
->> maybe it applies there too. we need some RCU people to confirm.
-> The claim is valid since Paul merged the three flavours we had. Before
-> that preempt_disable() (and disabling irqs) would match
-> rcu_read_lock_sched(). rcu_read_lock() and rcu_read_lock_bh() were
-> different in terms of grace period and clean up.
-> So _now_ we could remove it if it makes things easier.
+Hi,
 
-Thanks for the clarification.
+Does this fix make sense to you?
 
-In this case, I think the patch description should mention the commit 
-that unify the 3 RCU flavors to make sure that this patch won't be 
-accidentally backport'ed to an older kernel without the necessary 
-prerequisite commit(s).
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d0dfaa0ccaba..ed24dcece56a 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3945,9 +3945,10 @@ static void mem_cgroup_css_free(struct
+cgroup_subsys_state *css)
+                 * Not necessary to wait for wb completion which might
+cause task hung,
+                 * only used to free resources. See
+memcg_cgwb_waitq_callback_fn().
+                 */
+-               __add_wait_queue_entry_tail(wait->done.waitq, &wait->wq_ent=
+ry);
+                if (atomic_dec_and_test(&wait->done.cnt))
+-                       wake_up_all(wait->done.waitq);
++                       kfree(wait);
++               else
++                       __add_wait_queue_entry_tail(wait->done.waitq,
+&wait->wq_entry);;
+        }
+ #endif
+        if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_noso=
+cket)
 
-Cheers,
-Longman
+On Fri, Sep 12, 2025 at 8:33=E2=80=AFPM Venkat <venkat88@linux.ibm.com> wro=
+te:
+>
+>
+>
+> > On 12 Sep 2025, at 10:51=E2=80=AFAM, Venkat Rao Bagalkote <venkat88@lin=
+ux.ibm.com> wrote:
+> >
+> > Greetings!!!
+> >
+> >
+> > IBM CI has reported a kernel crash, while running generic/256 test case=
+ on pmem device from xfstests suite on linux-next20250911 kernel.
+> >
+> >
+> > xfstests: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
+> >
+> > local.config:
+> >
+> > [xfs_dax]
+> > export RECREATE_TEST_DEV=3Dtrue
+> > export TEST_DEV=3D/dev/pmem0
+> > export TEST_DIR=3D/mnt/test_pmem
+> > export SCRATCH_DEV=3D/dev/pmem0.1
+> > export SCRATCH_MNT=3D/mnt/scratch_pmem
+> > export MKFS_OPTIONS=3D"-m reflink=3D0 -b size=3D65536 -s size=3D512"
+> > export FSTYP=3Dxfs
+> > export MOUNT_OPTIONS=3D"-o dax"
+> >
+> >
+> > Test case: generic/256
+> >
+> >
+> > Traces:
+> >
+> >
+> > [  163.371929] ------------[ cut here ]------------
+> > [  163.371936] kernel BUG at lib/list_debug.c:29!
+> > [  163.371946] Oops: Exception in kernel mode, sig: 5 [#1]
+> > [  163.371954] LE PAGE_SIZE=3D64K MMU=3DRadix  SMP NR_CPUS=3D8192 NUMA =
+pSeries
+> > [  163.371965] Modules linked in: xfs nft_fib_inet nft_fib_ipv4 nft_fib=
+_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_=
+ct nft_chain_nat nf_nat nf_conntrack bonding tls nf_defrag_ipv6 nf_defrag_i=
+pv4 rfkill ip_set nf_tables nfnetlink sunrpc pseries_rng vmx_crypto dax_pme=
+m fuse ext4 crc16 mbcache jbd2 nd_pmem papr_scm sd_mod libnvdimm sg ibmvscs=
+i ibmveth scsi_transport_srp pseries_wdt
+> > [  163.372127] CPU: 22 UID: 0 PID: 130 Comm: kworker/22:0 Kdump: loaded=
+ Not tainted 6.17.0-rc5-next-20250911 #1 VOLUNTARY
+> > [  163.372142] Hardware name: IBM,9080-HEX Power11 (architected) 0x8202=
+00 0xf000007 of:IBM,FW1110.01 (NH1110_069) hv:phyp pSeries
+> > [  163.372155] Workqueue: cgroup_free css_free_rwork_fn
+> > [  163.372169] NIP:  c000000000d051d4 LR: c000000000d051d0 CTR: 0000000=
+000000000
+> > [  163.372176] REGS: c00000000ba079b0 TRAP: 0700   Not tainted (6.17.0-=
+rc5-next-20250911)
+> > [  163.372183] MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>=
+  CR: 28000000  XER: 00000006
+> > [  163.372214] CFAR: c0000000002bae9c IRQMASK: 0
+> > [  163.372214] GPR00: c000000000d051d0 c00000000ba07c50 c00000000230a60=
+0 0000000000000075
+> > [  163.372214] GPR04: 0000000000000004 0000000000000001 c000000000507e2=
+c 0000000000000001
+> > [  163.372214] GPR08: c000000d0cb87d13 0000000000000000 000000000000000=
+0 a80e000000000000
+> > [  163.372214] GPR12: c00e0001a1970fa2 c000000d0ddec700 c000000000208e5=
+8 c000000107b5e190
+> > [  163.372214] GPR16: c00000000d3e5d08 c00000000b71cf78 c00000000d3e5d0=
+5 c00000000b71cf30
+> > [  163.372214] GPR20: c00000000b71cf08 c00000000b71cf10 c000000019f5858=
+8 c000000004704bc8
+> > [  163.372214] GPR24: c000000107b5e100 c000000004704bd0 000000000000000=
+3 c000000004704bd0
+> > [  163.372214] GPR28: c000000004704bc8 c000000019f585a8 c000000019f53da=
+8 c000000004704bc8
+> > [  163.372315] NIP [c000000000d051d4] __list_add_valid_or_report+0x124/=
+0x188
+> > [  163.372326] LR [c000000000d051d0] __list_add_valid_or_report+0x120/0=
+x188
+> > [  163.372335] Call Trace:
+> > [  163.372339] [c00000000ba07c50] [c000000000d051d0] __list_add_valid_o=
+r_report+0x120/0x188 (unreliable)
+> > [  163.372352] [c00000000ba07ce0] [c000000000834280] mem_cgroup_css_fre=
+e+0xa0/0x27c
+> > [  163.372363] [c00000000ba07d50] [c0000000003ba198] css_free_rwork_fn+=
+0xd0/0x59c
+> > [  163.372374] [c00000000ba07da0] [c0000000001f5d60] process_one_work+0=
+x41c/0x89c
+> > [  163.372385] [c00000000ba07eb0] [c0000000001f76c0] worker_thread+0x55=
+8/0x848
+> > [  163.372394] [c00000000ba07f80] [c000000000209038] kthread+0x1e8/0x23=
+0
+> > [  163.372406] [c00000000ba07fe0] [c00000000000ded8] start_kernel_threa=
+d+0x14/0x18
+> > [  163.372416] Code: 4b9b1099 60000000 7f63db78 4bae8245 60000000 e8bf0=
+008 3c62ff88 7fe6fb78 7fc4f378 38637d40 4b5b5c89 60000000 <0fe00000> 600000=
+00 60000000 7f83e378
+> > [  163.372453] ---[ end trace 0000000000000000 ]---
+> > [  163.380581] pstore: backend (nvram) writing error (-1)
+> > [  163.380593]
+> >
+> >
+> > If you happen to fix this issue, please add below tag.
+> >
+> >
+> > Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+> >
+> >
+> >
+> > Regards,
+> >
+> > Venkat.
+> >
+> >
+>
+> After reverting the below commit, issue is not seen.
+>
+> commit 61bbf51e75df1a94cf6736e311cb96aeb79826a8
+> Author: Julian Sun <sunjunchao@bytedance.com>
+> Date:   Thu Aug 28 04:45:57 2025 +0800
+>
+>     memcg: don't wait writeback completion when release memcg
+>          Recently, we encountered the following hung task:
+>          INFO: task kworker/4:1:1334558 blocked for more than 1720 second=
+s.
+>     [Wed Jul 30 17:47:45 2025] Workqueue: cgroup_destroy css_free_rwork_f=
+n
+>     [Wed Jul 30 17:47:45 2025] Call Trace:
+>     [Wed Jul 30 17:47:45 2025]  __schedule+0x934/0xe10
+>     [Wed Jul 30 17:47:45 2025]  ? complete+0x3b/0x50
+>     [Wed Jul 30 17:47:45 2025]  ? _cond_resched+0x15/0x30
+>     [Wed Jul 30 17:47:45 2025]  schedule+0x40/0xb0
+>     [Wed Jul 30 17:47:45 2025]  wb_wait_for_completion+0x52/0x80
+>     [Wed Jul 30 17:47:45 2025]  ? finish_wait+0x80/0x80
+>     [Wed Jul 30 17:47:45 2025]  mem_cgroup_css_free+0x22/0x1b0
+>     [Wed Jul 30 17:47:45 2025]  css_free_rwork_fn+0x42/0x380
+>     [Wed Jul 30 17:47:45 2025]  process_one_work+0x1a2/0x360
+>     [Wed Jul 30 17:47:45 2025]  worker_thread+0x30/0x390
+>     [Wed Jul 30 17:47:45 2025]  ? create_worker+0x1a0/0x1a0
+>     [Wed Jul 30 17:47:45 2025]  kthread+0x110/0x130
+>     [Wed Jul 30 17:47:45 2025]  ? __kthread_cancel_work+0x40/0x40
+>     [Wed Jul 30 17:47:45 2025]  ret_from_fork+0x1f/0x30
+>          The direct cause is that memcg spends a long time waiting for di=
+rty page
+>     writeback of foreign memcgs during release.
+>          The root causes are:
+>         a. The wb may have multiple writeback tasks, containing millions
+>            of dirty pages, as shown below:
+>          >>> for work in list_for_each_entry("struct wb_writeback_work", =
+\
+>                                         wb.work_list.address_of_(), "list=
+"):
+>     ...     print(work.nr_pages, work.reason, hex(work))
+>     ...
+>     900628  WB_REASON_FOREIGN_FLUSH 0xffff969e8d956b40
+>     1116521 WB_REASON_FOREIGN_FLUSH 0xffff9698332a9540
+>     1275228 WB_REASON_FOREIGN_FLUSH 0xffff969d9b444bc0
+>     1099673 WB_REASON_FOREIGN_FLUSH 0xffff969f0954d6c0
+>     1351522 WB_REASON_FOREIGN_FLUSH 0xffff969e76713340
+>     2567437 WB_REASON_FOREIGN_FLUSH 0xffff9694ae208400
+>     2954033 WB_REASON_FOREIGN_FLUSH 0xffff96a22d62cbc0
+>     3008860 WB_REASON_FOREIGN_FLUSH 0xffff969eee8ce3c0
+>     3337932 WB_REASON_FOREIGN_FLUSH 0xffff9695b45156c0
+>     3348916 WB_REASON_FOREIGN_FLUSH 0xffff96a22c7a4f40
+>     3345363 WB_REASON_FOREIGN_FLUSH 0xffff969e5d872800
+>     3333581 WB_REASON_FOREIGN_FLUSH 0xffff969efd0f4600
+>     3382225 WB_REASON_FOREIGN_FLUSH 0xffff969e770edcc0
+>     3418770 WB_REASON_FOREIGN_FLUSH 0xffff96a252ceea40
+>     3387648 WB_REASON_FOREIGN_FLUSH 0xffff96a3bda86340
+>     3385420 WB_REASON_FOREIGN_FLUSH 0xffff969efc6eb280
+>     3418730 WB_REASON_FOREIGN_FLUSH 0xffff96a348ab1040
+>     3426155 WB_REASON_FOREIGN_FLUSH 0xffff969d90beac00
+>     3397995 WB_REASON_FOREIGN_FLUSH 0xffff96a2d7288800
+>     3293095 WB_REASON_FOREIGN_FLUSH 0xffff969dab423240
+>     3293595 WB_REASON_FOREIGN_FLUSH 0xffff969c765ff400
+>     3199511 WB_REASON_FOREIGN_FLUSH 0xffff969a72d5e680
+>     3085016 WB_REASON_FOREIGN_FLUSH 0xffff969f0455e000
+>     3035712 WB_REASON_FOREIGN_FLUSH 0xffff969d9bbf4b00
+>              b. The writeback might severely throttled by wbt, with a spe=
+ed
+>            possibly less than 100kb/s, leading to a very long writeback t=
+ime.
+>          >>> wb.write_bandwidth
+>     (unsigned long)24
+>     >>> wb.write_bandwidth
+>     (unsigned long)13
+>          The wb_wait_for_completion() here is probably only used to preve=
+nt
+>     use-after-free.  Therefore, we manage 'done' separately and automatic=
+ally
+>     free it.
+>          This allows us to remove wb_wait_for_completion() while preventi=
+ng the
+>     use-after-free issue.
+>      com
+>     Fixes: 97b27821b485 ("writeback, memcg: Implement foreign dirty flush=
+ing")
+>     Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+>     Acked-by: Tejun Heo <tj@kernel.org>
+>     Cc: Michal Hocko <mhocko@suse.com>
+>     Cc: Roman Gushchin <roman.gushchin@linux.dev>
+>     Cc: Johannes Weiner <hannes@cmpxchg.org>
+>     Cc: Shakeel Butt <shakeelb@google.com>
+>     Cc: Muchun Song <songmuchun@bytedance.com>
+>     Cc: <stable@vger.kernel.org>
+>     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>
+> Regards,
+> Venkat.
+>
+> >
+>
 
+
+--=20
+Julian Sun <sunjunchao@bytedance.com>
 
