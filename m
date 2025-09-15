@@ -1,129 +1,128 @@
-Return-Path: <cgroups+bounces-10115-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10116-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 575D9B58474
-	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 20:21:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C838CB584D7
+	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 20:43:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E16A61AA766F
-	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 18:21:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B9FD4C3823
+	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 18:43:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F12AA2DBF5C;
-	Mon, 15 Sep 2025 18:21:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF0F6285C8B;
+	Mon, 15 Sep 2025 18:42:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="VyAopmCP"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="B6E+mqEd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBED12C159F
-	for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 18:21:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32DA27AC2F
+	for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 18:42:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757960471; cv=none; b=mO0Fbo67mEErwLA+04OhoZlQ1V2ppmm8qO/oii8IRBlowfIHKsxaEYqJnF4XUiqs+CNNpQu9Bz4d5Ak9phc61/B1IDqnVAdzHnfPyc6DZNRAsi3GfriYq1oZ5fac8YMfs/WtBb5NOlwME/BwDAobbUAq8A/rKPDCgr8wUCtjZzg=
+	t=1757961776; cv=none; b=QXDqHfxVpVOKBymzRvvspvQx5tPQr0+T33JaijTnH6XjoEPpp3fmCQ+B1a6ZhlTkgz44M9DgpEIsj9alBXWKpotxpLeO9PFRxogx+7vGwU6V0uL3VpnEY3bL8pGzIvD2Ac5R4//92+pBFsil+AGuQoeSVdrDSxL4+Yp4s1AdWJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757960471; c=relaxed/simple;
-	bh=0aDdECbcFnvzK6gvTk++iDWF1gYYmeS5TIpHZBB7Yb4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WtHXyFVNP76v91t3+Y6eiiI/yNGWFSaoaAacmGlzuoIpOWjkiO8WsVq2WDNGZDXeNdM3Uia71SUapePG8p2Wi3Ejz/SmNxz3FtjD6O1RXahVTZbtq7kUptUdyMbF7a5K9f2jTfhtHJui425GnWkVX2JdFVKAWiEtOAewbiQSdOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=VyAopmCP; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-72e565bf2feso31442997b3.3
-        for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 11:21:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1757960469; x=1758565269; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D+GliT1Pd8d53HWEdMQBU1YHyq1rnSI3P+2j/fil2q0=;
-        b=VyAopmCPFu7azUOHo0iM0H7C1iay8VW3m34YkV5/b7mkIrzNgdYj5gIB3MfbOgXNdw
-         An1WLWvxpwHETRBOl6tExv14asHr/pcrwj+azTUyrRbWDdskINTs5rsmOapntNqNXL95
-         t81vuvAhPUOVXnTPbrGYMDEg5e3GgK/d72EbDKkpXRHbEahmQtKj5f/MPk/JGqiHY7Pq
-         En+4QRjrwFfGtSEBIVtYCHLnbd1yI+elNGt3Lf9l0fJMxlbjMhQIfYtIIsyzRsBAdvNH
-         TG6/v5FypG6rdlO1ex/QEMEoZhYXH47Yn/9WI67xG2S1GDFt4p3nCwKGtO8N1hyud4OA
-         XhBg==
+	s=arc-20240116; t=1757961776; c=relaxed/simple;
+	bh=ssLXklQa2sv4me1/Pc3Ed3Wkuo9uZMnk7M50G7qvATw=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=DFT414t2mQOugGGRc3wPmnRWk6yvq7K1aa3oGMXBJZvQoNTuJBtk1nRew/awRGEHzviOBHpUgioUy9x5K9ou6IzTeFPrhr6IIrI43LnOmu1gfo89C0uzYee0fNpa5xfyRTxupUKigKBB9UnG8ZI1fIQA2epHAaiMqncVhiG4Xcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=B6E+mqEd; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1757961773;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UJQiuuXM1OJgX/OTMX2LaubLVboY/ge/7we+Q6Xewa8=;
+	b=B6E+mqEdegx2aiV5wDHKYWRODMA/dRlW3hHga5vEur8iUENgQVaERYPol0BazrxebDDTkO
+	pRGBJRTSyzXqSTNEOFCp+fyL/UMdoqJnL2ow0koylJairO+SGATcfLvZRGZAthHR1RIgja
+	hqLLL/KDGT4yhI32Wy9N08c0jPcUQ9w=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-628-ThucCRC9OaGCaeA2UlJWEg-1; Mon, 15 Sep 2025 14:42:52 -0400
+X-MC-Unique: ThucCRC9OaGCaeA2UlJWEg-1
+X-Mimecast-MFC-AGG-ID: ThucCRC9OaGCaeA2UlJWEg_1757961772
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-8217df6d44cso912927685a.2
+        for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 11:42:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757960469; x=1758565269;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D+GliT1Pd8d53HWEdMQBU1YHyq1rnSI3P+2j/fil2q0=;
-        b=U6So9MeJHOxm/QSMb8QLHi7r3eCwn7JDgguKrB5n3aEOCPJPr+5EGQcFeXarsYY7zi
-         UGsAyddNGt+cjJQGBWU97wWYyiwuxxd/oZLG1LjoYcAbi4lUqD/7VxQaywOjMt1cN73z
-         rI9m3hrTAg6m0E8nrSyJittPIb9E6oqcG49VQPSpZxKTIRRg93BOBAJLSZF7USbLhu/6
-         hza/HwnN7vlzwcLawQmeewP5TgZVik882fNcFAuDCJjYM6t3JaV9C7ka8B85V7JwRwTL
-         5+eT6vxDkGcvPW88aVdYFjysUpI1jra+gtEKeFuT/nOHBWAk6X3jdD7HieDZjZxI6ZHO
-         SvhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWsOZJJzmgDwGihJgIboYQv+rzpvmRLCMHMCi/n44zWRPwj2NrQsg523f3KZ6wqDxzehKJYmOMx@vger.kernel.org
-X-Gm-Message-State: AOJu0YxwyKwTrB8lI+rWmO8MDa0EY6Q1Z1DWJkCHL/EA9bauN7r4NBY5
-	CdD4/tx7OgzUTb8sBT+v9ThQLvXvEX6guJtypeBS2jwC5AjMhtBVxylm+NTHkPwAAsjYcpbMx8D
-	uIS6E5Utlkpq7XmpPUJx7tS4ZhB0U9nwb/Jx9r0AjkQ==
-X-Gm-Gg: ASbGncudTl9HgJzjY1FS2tyTjlgBd67Z6SP8Z62arvC5hpWBMS2M4mtGqyHkb5mvd80
-	CDtls1zxLHrPigC0UBrDkSPgST+pkRexpv7mmlSrKT3Y7TaTwZa/G9AMKViLAh0OpceCgpJEsKG
-	53JqIf3otbj/96E4ja5mNcAuP+85oB145PP3Xe2J/Ld7ukuJ24KT65Lr4HbsG/dzDU8e31J/TGO
-	Cr30JTdTIzp4C0=
-X-Google-Smtp-Source: AGHT+IEDp5ZYxkbjon4yCrRZanz3ywO+1Dqvmg43vzDGc4l+oL6FL33NrpAa1korZr0/WJwLYzGBFv1kfMtD4v4LVjo=
-X-Received: by 2002:a05:690c:9c0c:b0:71c:1a46:48d5 with SMTP id
- 00721157ae682-73063480b69mr133022797b3.21.1757960468639; Mon, 15 Sep 2025
- 11:21:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757961772; x=1758566572;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UJQiuuXM1OJgX/OTMX2LaubLVboY/ge/7we+Q6Xewa8=;
+        b=rpnMlKqC183et0Co+oMc81RPvzCgRPyldb/4OF6Yha+WaBMdK6wT2O3m8WycqItvcf
+         CgD8Bf6cmm1C+4EwkpGGcc57Hpj4sVg1tPdNegCqhhMhvSwMztaJ4RgSFR3/JIDsWeW/
+         KZRyNCMOpcETscoHtl/l6y33Yj5+dWfvZVGSLpKb8CsrwfzHeTc7Jq2d8eDStK/XbdrE
+         1Q5WBVRDwunAX9rycgUGsJ8FKkd+m9TEz7Qnp6CJFoN1gKM8Uxli8gwj08QOu+YSuWlZ
+         fVIyT/4R4tzRkIHzIcygSR9sNKDqRolFzOOYEweVKd1jzgau5yGGGZRfqJEOl+AjvrPB
+         Ym5A==
+X-Gm-Message-State: AOJu0YzslkOo1CBodLqXPJ8fu8NqrqlDp/j2RFdaMQ6JdCuhMXL4+Sbo
+	CocIA94HAhp09Bmr+4+PWN1Z2rVJuPE4X2JvcAbwW0CALfFx3/S5umLOAYbu2zts6lIU1RBId84
+	D8zCN10UKq5xB442faP1+XjpQzRWEnEsgCOTlKBGIik8Txhv0y99PRVjVkjU=
+X-Gm-Gg: ASbGnct8DE8/AxdrFICrsIClD8WVdjdRaFPu7ZVtBxOr+Er13tnIIztamOUzh2FIsqK
+	5hPwBXLzhvOMa5avfD5jrPbfO702+9CDhE+Q4LYKiGIi4+F1Jj80BbUY2OKwbBOqgPzQuqC4BBa
+	DQXPQlPxx6F1shYorsUbi17TrYutDbD3stbzMazS6uNckgJXZpR+bywAOPv4vHpDnDSuSCXPGbG
+	oGUklbIU/biVSOAcPFnbOuUbcKYZRf/L8ukc34O2wGxx+/EBfwSxKSH0lkhnq/5SugGaWQRpBY0
+	u1nUyyO+BOxhE47Ql4VDDeprmZaIs3qbmbSWPkih2Jg3TAvanxPDXuN7yl1S2hidjyAffV+SM0R
+	tEC09GYogkw==
+X-Received: by 2002:a05:620a:4626:b0:82a:fb2c:ae06 with SMTP id af79cd13be357-82afb2cb3abmr247630985a.1.1757961772137;
+        Mon, 15 Sep 2025 11:42:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IErSGDrCSZKUqkKtEwG0Zms+sT/vdQKZh07pc2eUIfZ6TUqInY9rvaVXqZeLtUlqPGmtBAGJA==
+X-Received: by 2002:a05:620a:4626:b0:82a:fb2c:ae06 with SMTP id af79cd13be357-82afb2cb3abmr247628285a.1.1757961771666;
+        Mon, 15 Sep 2025 11:42:51 -0700 (PDT)
+Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-820c974cf21sm849092285a.22.2025.09.15.11.42.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Sep 2025 11:42:51 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <7085a2a8-0f03-4222-9ba8-9281e25d8daf@redhat.com>
+Date: Mon, 15 Sep 2025 14:42:50 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8957c526-d05c-4c0d-bfed-0eb6e6d2476c@linux.ibm.com>
- <BAEAC2F7-7D7F-49E4-AB21-10FC0E4BF5F3@linux.ibm.com> <CAHSKhteHC26yXVFtjgdanfM7+vsOVZ+HHWnBYD01A4eiRHibVQ@mail.gmail.com>
- <240A7968-D530-4135-856A-CE90D269D5E6@linux.ibm.com> <20250915142612.1412769A80-agordeev@linux.ibm.com>
-In-Reply-To: <20250915142612.1412769A80-agordeev@linux.ibm.com>
-From: Julian Sun <sunjunchao@bytedance.com>
-Date: Tue, 16 Sep 2025 02:20:55 +0800
-X-Gm-Features: Ac12FXz4gtGN6Jqt9p3sI4NDKpM8RKfj3WgCz5dLwYdzbiuc_wRBtKzbSNJCafg
-Message-ID: <CAHSKhtc-514tQoyCSukK1sLbDbc+Ne_TnwEks-h+gQWv8ZKHOA@mail.gmail.com>
-Subject: Re: [External] Re: [linux-next20250911]Kernel OOPs while running
- generic/256 on Pmem device
-To: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Venkat <venkat88@linux.ibm.com>, tj@kernel.org, akpm@linux-foundation.org, 
-	stable@vger.kernel.org, songmuchun@bytedance.com, shakeelb@google.com, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mhocko@suse.com, 
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, riteshh@linux.ibm.com, 
-	ojaswin@linux.ibm.com, linux-fsdevel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Linux Next Mailing List <linux-next@vger.kernel.org>, 
-	cgroups@vger.kernel.org, linux-mm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next RFC -v2 06/11] cpuset: introduce cpus_excl_conflict
+ and mems_excl_conflict helpers
+To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com, chenridong@huawei.com
+References: <20250909033233.2731579-1-chenridong@huaweicloud.com>
+ <20250909033233.2731579-7-chenridong@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <20250909033233.2731579-7-chenridong@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
 
-On Mon, Sep 15, 2025 at 10:26=E2=80=AFPM Alexander Gordeev
-<agordeev@linux.ibm.com> wrote:
+On 9/8/25 11:32 PM, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
 >
-> On Mon, Sep 15, 2025 at 07:49:26PM +0530, Venkat wrote:
-> > Hello,
-> >
-> > Thanks for the fix. This is fixing the reported issue.
-> >
-> > While sending out the patch please add below tag as well.
-> >
-> > Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+> This patch adds cpus_excl_conflict() and mems_excl_conflict() helper
+> functions to improve code readability and maintainability. The exclusive
+> conflict checking follows these rules:
 >
-> And Reported-by as well, if I may add ;)
->
+> 1. If either cpuset has the 'exclusive' flag set, their user_xcpus must
+>     not have any overlap.
+> 2. If both cpusets are non-exclusive, their 'cpuset.cpus.exclusive' values
+>     must not intersect.
 
-I'd like to but I will resend the whole patch which is used to address
-another issue.  Thanks a lot for reporting anyway =E2=80=94 it=E2=80=99s ve=
-ry helpful!
-> > Regards,
-> > Venkat.
->
-> Thanks!
+The term "non-exclusive" is somewhat confusing. I suppose you mean that 
+the exclusive flag isn't set. However, exclusive flag is a cpuset v1 
+only feature and cpus.exclusive is a v2 only feature. They will not 
+coexist. You may need to update the wording.
 
+After you fix that, you can add
 
-Thanks,
---=20
-Julian Sun <sunjunchao@bytedance.com>
+Reveiwed-by: Waiman Long <longman@redhat.com>
+
 
