@@ -1,125 +1,158 @@
-Return-Path: <cgroups+bounces-10110-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10111-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B40AB57F4A
-	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 16:41:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D2DEB57FE3
+	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 17:06:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 364F3178F3A
-	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 14:41:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A8D3189E87A
+	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 15:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB92F32ED5E;
-	Mon, 15 Sep 2025 14:40:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7806F34320C;
+	Mon, 15 Sep 2025 15:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kJqEilup";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="u+YNkMxE"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fqGTuhHg"
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CC627461;
-	Mon, 15 Sep 2025 14:40:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 991DB327A2E
+	for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 15:00:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757947257; cv=none; b=o893vUd9mG6COsQA2Z7Fd2JfzT28j/C+IMllAxh72F+t0ozY+f3mQ7VgjDIMBNKiH+DSUGBM2sr7IRX9dkdZQAGNKPCCRa91e4Xxb4gcY0TNTjsgzEr2sy4yNlAg2DBO4rrXJZ93mumpMXoixPU3StwnRtP9WyDvBJ1tDdXZZKU=
+	t=1757948420; cv=none; b=RARN6nOX9D6PHAfJlvnBOlZ9YlK4mzt7B6ZsdqVqZAXFrVbwjOoXAI3cd/Pso/6hrqUKf0PbEoYAa99OQxypjmYAIKfLi8vNvzUKTnPDayCTHes9asRTN/sC1Ede+JuUniLvlR692kCc/5+RMkxkGwsb9rPbNjditEH2WXfBnEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757947257; c=relaxed/simple;
-	bh=x67mCxmqkj9+e9pzvDN8Tta0qPHWFpvcCgabamG1AWc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M1YuLDuFYnYMhKhOW8vvPXidTn8COjP8bDvsfMC+QEtemcSZ0Cpr0juo862/4ivYAUuliSMHrUp/eOXoV05rwK+8lWnM6CF5/DpSaNl+B3B/h2h5wjc5z8Edo02Ty9tOkUaRDpKyteObeYuWE8zUZmOT6ZvE0N0Qrbg07b/AxAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kJqEilup; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=u+YNkMxE; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 15 Sep 2025 16:40:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1757947254;
+	s=arc-20240116; t=1757948420; c=relaxed/simple;
+	bh=CVcxBN3yBi2+KF9nsuc5ygifXUn/J8ZoLLY8fUb/2IQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=r7/XrDwtQZyIZG7e6g4BcgrtGETYczAoeCjK94nOMKmw4325l3WAA/Es2EDOPGjtnxUo0V6um2kg3rQe+LA8PBtzwQsPJG+4ITY9uGF95DUMJXID7MUzJrOA8JyBajHPt0An76fh/6fe1IsLvq4mRmQWugcM9GKUfhnj3sqbRZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fqGTuhHg; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1757948417;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lni+I3buozORHBU99Fb6S2L5ArlJnPvanU1k2nG+bqs=;
-	b=kJqEilupnjshBEyflsSxaQ1cYXo1HmvwEGZxE5Hry+3tMhFnVh3frgVMySXIVU3YA7sr/P
-	ZmzsU0E7Km8Wp9l5bZDkkyDgnPFZnbLtBPRK/3LI31uDYiDIGpPjLv9wsR2eeUTNRRAX//
-	dmNhtGH6hrZaFy0o25aqc/JiLREHt/y5ZcTdXzlyLdSjRzpWF1ajC/tWXeGrJKOz1r4JdJ
-	O+HZHd0cB6caRbdRPYpFuFCDeIfE27yuCYcWeSk2ELWrhiOAF7HeL/2G+EZODCQqXklj6A
-	WbRdcD38CnfevP/TM/aX4fpES3ouPOth51eerceMkkYhcApyFTE2c/6EC96NyA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1757947254;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lni+I3buozORHBU99Fb6S2L5ArlJnPvanU1k2nG+bqs=;
-	b=u+YNkMxEXUeLN4I2gvc5y9anOucA/bETagP+D7VWVq55ed12wCZJ5YaxLNDq/vrnZRM5c4
-	1K1FhWVW76s3WjAg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: pengdonglin <dolinux.peng@gmail.com>
-Cc: tj@kernel.org, tony.luck@intel.com, jani.nikula@linux.intel.com,
-	ap420073@gmail.com, jv@jvosburgh.net, freude@linux.ibm.com,
-	bcrl@kvack.org, trondmy@kernel.org, longman@redhat.com,
-	kees@kernel.org, linux-kernel@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev, linux-nfs@vger.kernel.org,
-	linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-	intel-gfx@lists.freedesktop.org, linux-acpi@vger.kernel.org,
-	linux-s390@vger.kernel.org, cgroups@vger.kernel.org,
-	Hillf Danton <hdanton@sina.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	pengdonglin <pengdonglin@xiaomi.com>
-Subject: Re: [PATCH v2] rcu: Remove redundant rcu_read_lock/unlock() in
- spin_lock critical sections
-Message-ID: <20250915144052.VHYlgilw@linutronix.de>
-References: <20250915134729.1801557-1-dolinux.peng@gmail.com>
+	bh=8d/8dosrELDy6fCndqrJ6GJCaJmUKepAV3zv1L8i3og=;
+	b=fqGTuhHgaKyqYHO9VBOxqYmM/JVcqvGXLdeFrlhqEnsIlDLlqjfyj4PlTYpTcna2d48Zyz
+	vUviZ0Wh+aDt4Go4Dswss2AI/sRDGXQ6sNyXf1HhZWZH++TOgoFKeMaPCSACXlrV6Hk7vE
+	MTMQkjGEzBEbPcb6IesqadQWDxfUNK8=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-541-YYITePQIPJWz0erSeFmpWA-1; Mon,
+ 15 Sep 2025 11:00:13 -0400
+X-MC-Unique: YYITePQIPJWz0erSeFmpWA-1
+X-Mimecast-MFC-AGG-ID: YYITePQIPJWz0erSeFmpWA_1757948412
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A5BDD1800359;
+	Mon, 15 Sep 2025 15:00:11 +0000 (UTC)
+Received: from gmonaco-thinkpadt14gen3.rmtit.com (unknown [10.44.32.63])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 12A961800446;
+	Mon, 15 Sep 2025 15:00:07 +0000 (UTC)
+From: Gabriele Monaco <gmonaco@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	Waiman Long <longman@redhat.com>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org
+Cc: Gabriele Monaco <gmonaco@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH v12 5/9] cgroup/cpuset: Rename update_unbound_workqueue_cpumask() to update_exclusion_cpumasks()
+Date: Mon, 15 Sep 2025 16:59:26 +0200
+Message-ID: <20250915145920.140180-16-gmonaco@redhat.com>
+In-Reply-To: <20250915145920.140180-11-gmonaco@redhat.com>
+References: <20250915145920.140180-11-gmonaco@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250915134729.1801557-1-dolinux.peng@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-On 2025-09-15 21:47:29 [+0800], pengdonglin wrote:
-> From: pengdonglin <pengdonglin@xiaomi.com>
-> 
-> Per Documentation/RCU/rcu_dereference.rst [1], since Linux 4.20's RCU
-> consolidation [2][3], RCU read-side critical sections include:
->   - Explicit rcu_read_lock()
->   - BH/interrupt/preemption-disabling regions
->   - Spinlock critical sections (including CONFIG_PREEMPT_RT kernels [4])
-> 
-> Thus, explicit rcu_read_lock()/unlock() calls within spin_lock*() regions are redundant.
-> This patch removes them, simplifying locking semantics while preserving RCU protection.
-> 
-> [1] https://elixir.bootlin.com/linux/v6.17-rc5/source/Documentation/RCU/rcu_dereference.rst#L407
-> [2] https://lore.kernel.org/lkml/20180829222021.GA29944@linux.vnet.ibm.com/
-> [3] https://lwn.net/Articles/777036/
-> [4] https://lore.kernel.org/lkml/6435833a-bdcb-4114-b29d-28b7f436d47d@paulmck-laptop/
+update_unbound_workqueue_cpumask() updates unbound workqueues settings
+when there's a change in isolated CPUs, but it can be used for other
+subsystems requiring updated when isolated CPUs change.
 
-What about something like this:
+Generalise the name to update_exclusion_cpumasks() to prepare for other
+functions unrelated to workqueues to be called in that spot.
 
-  Since commit a8bb74acd8efe ("rcu: Consolidate RCU-sched update-side
-  function definitions") there is no difference between rcu_read_lock(),
-  rcu_read_lock_bh() and rcu_read_lock_sched() in terms of RCU read
-  section and the relevant grace period. That means that spin_lock(),
-  which implies rcu_read_lock_sched(), also implies rcu_read_lock().
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
+Acked-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Gabriele Monaco <gmonaco@redhat.com>
+---
+ kernel/cgroup/cpuset.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-  There is no need no explicitly start a RCU read section if one has
-  already been started implicitly by spin_lock().
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 27adb04df675..81a9239053a7 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1339,7 +1339,7 @@ static bool partition_xcpus_del(int old_prs, struct cpuset *parent,
+ 	return isolcpus_updated;
+ }
+ 
+-static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
++static void update_exclusion_cpumasks(bool isolcpus_updated)
+ {
+ 	int ret;
+ 
+@@ -1470,7 +1470,7 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
+ 	list_add(&cs->remote_sibling, &remote_children);
+ 	cpumask_copy(cs->effective_xcpus, tmp->new_cpus);
+ 	spin_unlock_irq(&callback_lock);
+-	update_unbound_workqueue_cpumask(isolcpus_updated);
++	update_exclusion_cpumasks(isolcpus_updated);
+ 	cpuset_force_rebuild();
+ 	cs->prs_err = 0;
+ 
+@@ -1511,7 +1511,7 @@ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
+ 	compute_effective_exclusive_cpumask(cs, NULL, NULL);
+ 	reset_partition_data(cs);
+ 	spin_unlock_irq(&callback_lock);
+-	update_unbound_workqueue_cpumask(isolcpus_updated);
++	update_exclusion_cpumasks(isolcpus_updated);
+ 	cpuset_force_rebuild();
+ 
+ 	/*
+@@ -1580,7 +1580,7 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
+ 	if (xcpus)
+ 		cpumask_copy(cs->exclusive_cpus, xcpus);
+ 	spin_unlock_irq(&callback_lock);
+-	update_unbound_workqueue_cpumask(isolcpus_updated);
++	update_exclusion_cpumasks(isolcpus_updated);
+ 	if (adding || deleting)
+ 		cpuset_force_rebuild();
+ 
+@@ -1943,7 +1943,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+ 		WARN_ON_ONCE(parent->nr_subparts < 0);
+ 	}
+ 	spin_unlock_irq(&callback_lock);
+-	update_unbound_workqueue_cpumask(isolcpus_updated);
++	update_exclusion_cpumasks(isolcpus_updated);
+ 
+ 	if ((old_prs != new_prs) && (cmd == partcmd_update))
+ 		update_partition_exclusive_flag(cs, new_prs);
+@@ -2968,7 +2968,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+ 	else if (isolcpus_updated)
+ 		isolated_cpus_update(old_prs, new_prs, cs->effective_xcpus);
+ 	spin_unlock_irq(&callback_lock);
+-	update_unbound_workqueue_cpumask(isolcpus_updated);
++	update_exclusion_cpumasks(isolcpus_updated);
+ 
+ 	/* Force update if switching back to member & update effective_xcpus */
+ 	update_cpumasks_hier(cs, &tmpmask, !new_prs);
+-- 
+2.51.0
 
-  Simplify the code and remove the inner rcu_read_lock() invocation.
-
-
-The description above should make it clear what:
-- the intention is
-- the proposed solution to it and why it is correct.
-
-You can't send a patch like this. You need to split it at the very least
-by subsystem. The networking bits need to follow to follow for instance
-   Documentation/process/maintainer-netdev.rst
-
-and so on.
-
-Sebastian
 
