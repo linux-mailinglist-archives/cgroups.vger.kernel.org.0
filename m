@@ -1,338 +1,412 @@
-Return-Path: <cgroups+bounces-10113-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10114-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADA5EB57FCB
-	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 17:01:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E1ADB5845E
+	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 20:17:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C337B7A3D8D
-	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 15:00:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D8F61A22FD1
+	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 18:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F63E340D99;
-	Mon, 15 Sep 2025 15:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551992BDC2B;
+	Mon, 15 Sep 2025 18:17:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eRn+mLbr"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="au1HK6qg"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92609340DB3
-	for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 15:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FED2285CA4
+	for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 18:17:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757948436; cv=none; b=butaDjDl57Mtf0tdPSkmbwMWM0cimgU1efbZ0YTNDPwbuqAFr35uO8iZbnK5xlxdku36EvJb5yONE9P0sBKCh3UrSHpMUxiuybiM04XOUCDIFqwF95wqC19eluxGc6zR7HDN1LN0oh7BZWHQi1UT4co5XUfj7SRPAt6CmFLwkeY=
+	t=1757960239; cv=none; b=Zw5sNy5aW+neWaGc1NYYQFyM6koZ4IDbARqDI2Arvy73TWtjqg05QJLa0dL6nmh73k9NvGK4M7AQXzWQwZScl3CMu/wRdJJ1n/lcLCAnprtNK31NojPy+khyengI1CBW3U7N5M+z6qFnJfOhlojehu9F0D0wP3BaLWZ+OfkqtHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757948436; c=relaxed/simple;
-	bh=Gje1a6MuxbQRqJJjVBWFqMGNjvc5qcBa8yIEEkD8wWQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=atmyb/yuPxA4ZBOsM/HpSPx+I0kVBnM/1oNXt6Fbr2WAUiaMMbsWCpk/3xHv0c/ThJWjZt7uaUmkaMeWfqwCIDNecttczDxkS1uQzCaXiLqVB/9hWevtYmo8xoy5DLQ//gKvVnrWtVhAVLBPQ2jnYhwK2TWWeNmI+vUCf5xtA6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eRn+mLbr; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1757948433;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SLP0rl8cKBQmenYpN/sNhONBZ/EaXWDugv9JYiXlVuM=;
-	b=eRn+mLbr/1ZHL37l9uCySCXAYhqh0PLcrA+pZ33q+4ItxExRnB6/Vno37pxAwFDMN7a94m
-	9899fHcK+3u0Aqy5Rl6cpb7rjZoz89+T8F+QQfTHq0P/qebBzbuwTP6URmhNoDg9flrZSB
-	tWwMOAg0Fh65iipHR1vG75plhKn2E9c=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-687-4BA_leHXP1ml6STXCRd0wQ-1; Mon,
- 15 Sep 2025 11:00:30 -0400
-X-MC-Unique: 4BA_leHXP1ml6STXCRd0wQ-1
-X-Mimecast-MFC-AGG-ID: 4BA_leHXP1ml6STXCRd0wQ_1757948428
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8C8A418002C4;
-	Mon, 15 Sep 2025 15:00:28 +0000 (UTC)
-Received: from gmonaco-thinkpadt14gen3.rmtit.com (unknown [10.44.32.63])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 264F21800446;
-	Mon, 15 Sep 2025 15:00:23 +0000 (UTC)
-From: Gabriele Monaco <gmonaco@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org
-Cc: Gabriele Monaco <gmonaco@redhat.com>,
-	"John B. Wyatt IV" <jwyatt@redhat.com>,
-	"John B. Wyatt IV" <sageofredondo@gmail.com>
-Subject: [PATCH v12 9/9] timers: Exclude isolated cpus from timer migration
-Date: Mon, 15 Sep 2025 16:59:30 +0200
-Message-ID: <20250915145920.140180-20-gmonaco@redhat.com>
-In-Reply-To: <20250915145920.140180-11-gmonaco@redhat.com>
-References: <20250915145920.140180-11-gmonaco@redhat.com>
+	s=arc-20240116; t=1757960239; c=relaxed/simple;
+	bh=HTDY3TQRkNt0tUNuWRwlqALG0ixSsbcm5hH1H6O7CRg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m2TeorIeJQQriEQWz1G8XKNecTEuY1O3a7Vx6K5hqw4QuT/rXXeRuExx5yDtZxduTF6Yc8wX4AGN5qcMlcQ35jjPPpMwAYOzj1/cU1IqtlkFWuaw18wcMcbwKegRhmInT71SCcmgWBMW/gzUVTPp692VRoVYH92OV294lBa3Uo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=au1HK6qg; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-71d5fb5e34cso48257987b3.0
+        for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 11:17:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1757960235; x=1758565035; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HKlJwLV4pOJ4puXUorbm745sN+ixIvqNcAK/DngGboE=;
+        b=au1HK6qgdthbkzr74nW+zdvxgbavcHzHAoXeEMG4sYUVEP4stLK1tQwctsT4IuH6fe
+         8s2JVXxVdaQ8MtpVpqh4MK6TFS4HPdzespdtaXidD0eR9VuIrQrsXqmOKbKCMMeNWnDO
+         LQVcldFHRJc43flkkhw0b7F/NxLij/AYBov0p89EfTsOwiD49L0XUp5WsfusVtpft3LO
+         8jJrm4mvWpuH3ISJKJk14ojlSqPAHrv2d44VjWbGNaBUAFnMo/edXIaTJmDdU1mRein6
+         6pbZHSFZCfwOIZmCvlkw85Rd3Re6XMkyDTcbJOOZF8+eYIxaT/RNfzLaiPwcnHb6UzmE
+         gvgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757960235; x=1758565035;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HKlJwLV4pOJ4puXUorbm745sN+ixIvqNcAK/DngGboE=;
+        b=H4297e8rtXbxamH9SqyHE02dWxRtPxW9dDnvy6zuDXSkyT+taphCtyGV0rjrtUtDtv
+         rbS+2zQb9Ov3Q3nOq56p+DatOajm0XiBUgxm5AFLJsRyaTe/qdYoa3FrOwKaB9dDTCXs
+         t2nGjiDonGGlYU+rAmzWYBCCngwGaB6k+Dy6VrKzlp8Z9Cs98EWfXcWBdaMRKwuNCeGD
+         EvY6DK4MQQwuTSDhKI8DNcccH6P0qfAXbFxyepFR/XEGn50bHsI5QMbMNw0xmXJtSCeB
+         7KyYymnlFQHGmVfjdUr/jRs4c64uA88meyfHz5s1qM2x+N8kpgWR0vvyvT2cyM+6u5vE
+         qXTg==
+X-Forwarded-Encrypted: i=1; AJvYcCV7kogiJlhuOFXDx8IIrwIs0AO33AaSDYIZ6FcHK2pODJ0byk0pryDX7WBThrvcsNCGEKMKqCYK@vger.kernel.org
+X-Gm-Message-State: AOJu0YwoO85X8nfCFrW7gv2es/vJPTRvYjbgN06HdhM8ueIVVzTD/9vC
+	txCUvS7rnj58IkXkSLEfV6le6tD/MuwLcDOhKHMJMzITgffsJWaHGYgbQzhkwTG2LfE39lTDHeI
+	8HIm+wq6lC3HQLByrdGGYqVU93bsMhV8kloMkE3fMMQ==
+X-Gm-Gg: ASbGnctXgq1823dUvPtfsREWOdmBZsYEAowSHWAzgdadyc6H2a1Y4jUypBFTy/473lc
+	oaT4z2zyO+rlz4Z6FGeMFmShHZnU3pN31zLSINBvq2fghp9RqGslfnX/t9J1weD6IoMXsLyAUyK
+	Bqd4vsCfqyHh+bgvnrWo4/1zE7i3UKOhAbWR7l/naHs2aE0xKDRE8nP8WZ5qB/xPoIgge29qXAv
+	0pFHXrkWuGbjdI=
+X-Google-Smtp-Source: AGHT+IH2QrZCMVWhvvri3m8MxFDEcR0HmA+y/PUfUv7fmACFArS88p8HCYr635Yfqj73ooPhrYiGLmLkR7TW9H/RB9o=
+X-Received: by 2002:a05:690c:11:b0:736:9b6b:b60 with SMTP id
+ 00721157ae682-7369b6b0be4mr4506137b3.1.1757960235244; Mon, 15 Sep 2025
+ 11:17:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+References: <8957c526-d05c-4c0d-bfed-0eb6e6d2476c@linux.ibm.com>
+ <BAEAC2F7-7D7F-49E4-AB21-10FC0E4BF5F3@linux.ibm.com> <CAHSKhteHC26yXVFtjgdanfM7+vsOVZ+HHWnBYD01A4eiRHibVQ@mail.gmail.com>
+ <240A7968-D530-4135-856A-CE90D269D5E6@linux.ibm.com>
+In-Reply-To: <240A7968-D530-4135-856A-CE90D269D5E6@linux.ibm.com>
+From: Julian Sun <sunjunchao@bytedance.com>
+Date: Tue, 16 Sep 2025 02:17:04 +0800
+X-Gm-Features: Ac12FXxKsCIM3iC7qE18J4UiGkC_uav_J5eUCDy79Yskt9qkAhILOdX4JZ7_6xI
+Message-ID: <CAHSKhteezz0pjUYibp6drOysBzxUV6LzSi6oyA8LgHCtL_CysA@mail.gmail.com>
+Subject: Re: [External] Re: [linux-next20250911]Kernel OOPs while running
+ generic/256 on Pmem device
+To: Venkat <venkat88@linux.ibm.com>
+Cc: tj@kernel.org, akpm@linux-foundation.org, stable@vger.kernel.org, 
+	songmuchun@bytedance.com, shakeelb@google.com, hannes@cmpxchg.org, 
+	roman.gushchin@linux.dev, mhocko@suse.com, 
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, riteshh@linux.ibm.com, 
+	ojaswin@linux.ibm.com, linux-fsdevel@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Linux Next Mailing List <linux-next@vger.kernel.org>, 
+	cgroups@vger.kernel.org, linux-mm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The timer migration mechanism allows active CPUs to pull timers from
-idle ones to improve the overall idle time. This is however undesired
-when CPU intensive workloads run on isolated cores, as the algorithm
-would move the timers from housekeeping to isolated cores, negatively
-affecting the isolation.
+Hi,
 
-Exclude isolated cores from the timer migration algorithm, extend the
-concept of unavailable cores, currently used for offline ones, to
-isolated ones:
-* A core is unavailable if isolated or offline;
-* A core is available if non isolated and online;
+On Mon, Sep 15, 2025 at 10:20=E2=80=AFPM Venkat <venkat88@linux.ibm.com> wr=
+ote:
+>
+>
+>
+> > On 13 Sep 2025, at 8:18=E2=80=AFAM, Julian Sun <sunjunchao@bytedance.co=
+m> wrote:
+> >
+> > Hi,
+> >
+> > Does this fix make sense to you?
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index d0dfaa0ccaba..ed24dcece56a 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -3945,9 +3945,10 @@ static void mem_cgroup_css_free(struct
+> > cgroup_subsys_state *css)
+> >                 * Not necessary to wait for wb completion which might
+> > cause task hung,
+> >                 * only used to free resources. See
+> > memcg_cgwb_waitq_callback_fn().
+> >                 */
+> > -               __add_wait_queue_entry_tail(wait->done.waitq, &wait->wq=
+_entry);
+> >                if (atomic_dec_and_test(&wait->done.cnt))
+> > -                       wake_up_all(wait->done.waitq);
+> > +                       kfree(wait);
+> > +               else
+> > +                       __add_wait_queue_entry_tail(wait->done.waitq,
+> > &wait->wq_entry);;
+> >        }
+> > #endif
+> >        if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_n=
+osocket)
+>
+> Hello,
+>
+> Thanks for the fix. This is fixing the reported issue.
 
-A core is considered unavailable as isolated if it belongs to:
-* the isolcpus (domain) list
-* an isolated cpuset
-Except if it is:
-* in the nohz_full list (already idle for the hierarchy)
-* the nohz timekeeper core (must be available to handle global timers)
+Thanks for your testing and feedback.
+>
+> While sending out the patch please add below tag as well.
+>
+> Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
 
-CPUs are added to the hierarchy during late boot, excluding isolated
-ones, the hierarchy is also adapted when the cpuset isolation changes.
+Sure. That's how it should be.
 
-Due to how the timer migration algorithm works, any CPU part of the
-hierarchy can have their global timers pulled by remote CPUs and have to
-pull remote timers, only skipping pulling remote timers would break the
-logic.
-For this reason, prevent isolated CPUs from pulling remote global
-timers, but also the other way around: any global timer started on an
-isolated CPU will run there. This does not break the concept of
-isolation (global timers don't come from outside the CPU) and, if
-considered inappropriate, can usually be mitigated with other isolation
-techniques (e.g. IRQ pinning).
+Could you please try again with the following patch? The previous one
+might have caused a memory leak and had race conditions. I can=E2=80=99t
+reproduce it locally...
 
-This effect was noticed on a 128 cores machine running oslat on the
-isolated cores (1-31,33-63,65-95,97-127). The tool monopolises CPUs,
-and the CPU with lowest count in a timer migration hierarchy (here 1
-and 65) appears as always active and continuously pulls global timers,
-from the housekeeping CPUs. This ends up moving driver work (e.g.
-delayed work) to isolated CPUs and causes latency spikes:
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 80257dba30f8..35da16928599 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3940,6 +3940,7 @@ static void mem_cgroup_css_free(struct
+cgroup_subsys_state *css)
+        int __maybe_unused i;
 
-before the change:
+ #ifdef CONFIG_CGROUP_WRITEBACK
++       spin_lock(&memcg_cgwb_frn_waitq.lock);
+        for (i =3D 0; i < MEMCG_CGWB_FRN_CNT; i++) {
+                struct cgwb_frn_wait *wait =3D memcg->cgwb_frn[i].wait;
 
- # oslat -c 1-31,33-63,65-95,97-127 -D 62s
- ...
-  Maximum:     1203 10 3 4 ... 5 (us)
-
-after the change:
-
- # oslat -c 1-31,33-63,65-95,97-127 -D 62s
- ...
-  Maximum:      10 4 3 4 3 ... 5 (us)
-
-Tested-by: John B. Wyatt IV <jwyatt@redhat.com>
-Tested-by: John B. Wyatt IV <sageofredondo@gmail.com>
-Signed-off-by: Gabriele Monaco <gmonaco@redhat.com>
----
- include/linux/timer.h         |   9 +++
- kernel/cgroup/cpuset.c        |   3 +
- kernel/time/timer_migration.c | 108 +++++++++++++++++++++++++++++++++-
- 3 files changed, 119 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/timer.h b/include/linux/timer.h
-index 0414d9e6b4fc..62e1cea71125 100644
---- a/include/linux/timer.h
-+++ b/include/linux/timer.h
-@@ -188,4 +188,13 @@ int timers_dead_cpu(unsigned int cpu);
- #define timers_dead_cpu		NULL
+@@ -3948,9 +3949,12 @@ static void mem_cgroup_css_free(struct
+cgroup_subsys_state *css)
+                 * only used to free resources. See
+memcg_cgwb_waitq_callback_fn().
+                 */
+                __add_wait_queue_entry_tail(wait->done.waitq, &wait->wq_ent=
+ry);
+-               if (atomic_dec_and_test(&wait->done.cnt))
+-                       wake_up_all(wait->done.waitq);
++               if (atomic_dec_and_test(&wait->done.cnt)) {
++                       list_del(&wait->wq_entry.entry);
++                       kfree(wait);
++               }
+        }
++       spin_unlock(&memcg_cgwb_frn_waitq.lock);
  #endif
- 
-+#if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
-+extern int tmigr_isolated_exclude_cpumask(struct cpumask *exclude_cpumask);
-+#else
-+static inline int tmigr_isolated_exclude_cpumask(struct cpumask *exclude_cpumask)
-+{
-+	return 0;
-+}
-+#endif
-+
- #endif
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 3cedc3580373..6e9d86fab27e 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1399,6 +1399,9 @@ static void update_exclusion_cpumasks(bool isolcpus_updated)
- 
- 	ret = workqueue_unbound_exclude_cpumask(isolated_cpus);
- 	WARN_ON_ONCE(ret < 0);
-+
-+	ret = tmigr_isolated_exclude_cpumask(isolated_cpus);
-+	WARN_ON_ONCE(ret < 0);
- }
- 
- /**
-diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
-index 0a3a26e766d0..08e29fc01479 100644
---- a/kernel/time/timer_migration.c
-+++ b/kernel/time/timer_migration.c
-@@ -10,6 +10,7 @@
- #include <linux/spinlock.h>
- #include <linux/timerqueue.h>
- #include <trace/events/ipi.h>
-+#include <linux/sched/isolation.h>
- 
- #include "timer_migration.h"
- #include "tick-internal.h"
-@@ -436,6 +437,29 @@ static inline bool tmigr_is_not_available(struct tmigr_cpu *tmc)
- 	return !(tmc->tmgroup && tmc->available);
- }
- 
-+/*
-+ * Returns true if @cpu should be excluded from the hierarchy as isolated.
-+ * Domain isolated CPUs don't participate in timer migration, nohz_full CPUs
-+ * are still part of the hierarchy but become idle (from a tick and timer
-+ * migration perspective) when they stop their tick. This lets the timekeeping
-+ * CPU handle their global timers. Marking also isolated CPUs as idle would be
-+ * too costly, hence they are completely excluded from the hierarchy.
-+ * This check is necessary, for instance, to prevent offline isolated CPUs from
-+ * being incorrectly marked as available once getting back online.
-+ *
-+ * Additionally, the tick CPU can be isolated at boot, however
-+ * we cannot mark it as unavailable to avoid having no global migrator
-+ * for the nohz_full CPUs. This check is only necessary at boot time.
-+ */
-+static inline bool tmigr_is_isolated(int cpu)
-+{
-+	if (!tick_nohz_cpu_hotpluggable(cpu))
-+		return false;
-+	return (!housekeeping_cpu(cpu, HK_TYPE_DOMAIN) ||
-+		cpuset_cpu_is_isolated(cpu)) &&
-+	       housekeeping_cpu(cpu, HK_TYPE_KERNEL_NOISE);
-+}
-+
- /*
-  * Returns true, when @childmask corresponds to the group migrator or when the
-  * group is not active - so no migrator is set.
-@@ -1451,6 +1475,8 @@ static int tmigr_clear_cpu_available(unsigned int cpu)
- 
- 	cpumask_clear_cpu(cpu, tmigr_available_cpumask);
- 	scoped_guard(raw_spinlock_irq, &tmc->lock) {
-+		if (!tmc->available)
-+			return 0;
- 		tmc->available = false;
- 		WRITE_ONCE(tmc->wakeup, KTIME_MAX);
- 
-@@ -1478,8 +1504,12 @@ static int tmigr_set_cpu_available(unsigned int cpu)
- 	if (WARN_ON_ONCE(!tmc->tmgroup))
- 		return -EINVAL;
- 
-+	if (tmigr_is_isolated(cpu))
-+		return 0;
- 	cpumask_set_cpu(cpu, tmigr_available_cpumask);
- 	scoped_guard(raw_spinlock_irq, &tmc->lock) {
-+		if (tmc->available)
-+			return 0;
- 		trace_tmigr_cpu_available(tmc);
- 		tmc->idle = timer_base_is_idle();
- 		if (!tmc->idle)
-@@ -1489,6 +1519,81 @@ static int tmigr_set_cpu_available(unsigned int cpu)
- 	return 0;
- }
- 
-+static void tmigr_cpu_isolate(struct work_struct *ignored)
-+{
-+	tmigr_clear_cpu_available(smp_processor_id());
-+}
-+
-+static void tmigr_cpu_unisolate(struct work_struct *ignored)
-+{
-+	tmigr_set_cpu_available(smp_processor_id());
-+}
-+
-+/**
-+ * tmigr_isolated_exclude_cpumask - Exclude given CPUs from hierarchy
-+ * @exclude_cpumask: the cpumask to be excluded from timer migration hierarchy
-+ *
-+ * This function can be called from cpuset code to provide the new set of
-+ * isolated CPUs that should be excluded from the hierarchy.
-+ * Online CPUs not present in exclude_cpumask but already excluded are brought
-+ * back to the hierarchy.
-+ * Functions to isolate/unisolate need to be called locally and can sleep.
-+ */
-+int tmigr_isolated_exclude_cpumask(struct cpumask *exclude_cpumask)
-+{
-+	struct work_struct __percpu *works __free(free_percpu) =
-+		alloc_percpu(struct work_struct);
-+	cpumask_var_t cpumask_unisol __free(free_cpumask_var) = CPUMASK_NULL;
-+	cpumask_var_t cpumask_isol __free(free_cpumask_var) = CPUMASK_NULL;
-+	int cpu;
-+
-+	lockdep_assert_cpus_held();
-+
-+	if (!alloc_cpumask_var(&cpumask_isol, GFP_KERNEL))
-+		return -ENOMEM;
-+	if (!alloc_cpumask_var(&cpumask_unisol, GFP_KERNEL))
-+		return -ENOMEM;
-+	if (!works)
-+		return -ENOMEM;
-+
-+	cpumask_andnot(cpumask_unisol, cpu_online_mask, exclude_cpumask);
-+	cpumask_andnot(cpumask_unisol, cpumask_unisol, tmigr_available_cpumask);
-+	/* Set up the mask earlier to avoid races with the migrator CPU */
-+	cpumask_or(tmigr_available_cpumask, tmigr_available_cpumask, cpumask_unisol);
-+	for_each_cpu(cpu, cpumask_unisol) {
-+		struct work_struct *work = per_cpu_ptr(works, cpu);
-+
-+		INIT_WORK(work, tmigr_cpu_unisolate);
-+		schedule_work_on(cpu, work);
-+	}
-+
-+	cpumask_and(cpumask_isol, exclude_cpumask, tmigr_available_cpumask);
-+	cpumask_and(cpumask_isol, cpumask_isol, housekeeping_cpumask(HK_TYPE_KERNEL_NOISE));
-+	/*
-+	 * Handle this here and not in the cpuset code because exclude_cpumask
-+	 * might include also the tick CPU if included in isolcpus.
-+	 */
-+	for_each_cpu(cpu, cpumask_isol) {
-+		if (!tick_nohz_cpu_hotpluggable(cpu)) {
-+			cpumask_clear_cpu(cpu, cpumask_isol);
-+			break;
-+		}
-+	}
-+	/* Set up the mask earlier to avoid races with the migrator CPU */
-+	cpumask_andnot(tmigr_available_cpumask, tmigr_available_cpumask, cpumask_isol);
-+	for_each_cpu(cpu, cpumask_isol) {
-+		struct work_struct *work = per_cpu_ptr(works, cpu);
-+
-+		INIT_WORK(work, tmigr_cpu_isolate);
-+		schedule_work_on(cpu, work);
-+	}
-+
-+	for_each_cpu_or(cpu, cpumask_isol, cpumask_unisol)
-+		flush_work(per_cpu_ptr(works, cpu));
-+
-+	return 0;
-+}
-+
- /*
-  * NOHZ can only be enabled after clocksource_done_booting(). Don't
-  * bother trashing the cache in the tree before.
-@@ -1496,7 +1601,8 @@ static int tmigr_set_cpu_available(unsigned int cpu)
- static int __init tmigr_late_init(void)
- {
- 	return cpuhp_setup_state(CPUHP_AP_TMIGR_ONLINE, "tmigr:online",
--				 tmigr_set_cpu_available, tmigr_clear_cpu_available);
-+				 tmigr_set_cpu_available,
-+				 tmigr_clear_cpu_available);
- }
- 
- static void tmigr_init_group(struct tmigr_group *group, unsigned int lvl,
--- 
-2.51.0
+        if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_noso=
+cket)
+                static_branch_dec(&memcg_sockets_enabled_key);
 
+>
+> Regards,
+> Venkat.
+> >
+> > On Fri, Sep 12, 2025 at 8:33=E2=80=AFPM Venkat <venkat88@linux.ibm.com>=
+ wrote:
+> >>
+> >>
+> >>
+> >>> On 12 Sep 2025, at 10:51=E2=80=AFAM, Venkat Rao Bagalkote <venkat88@l=
+inux.ibm.com> wrote:
+> >>>
+> >>> Greetings!!!
+> >>>
+> >>>
+> >>> IBM CI has reported a kernel crash, while running generic/256 test ca=
+se on pmem device from xfstests suite on linux-next20250911 kernel.
+> >>>
+> >>>
+> >>> xfstests: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
+> >>>
+> >>> local.config:
+> >>>
+> >>> [xfs_dax]
+> >>> export RECREATE_TEST_DEV=3Dtrue
+> >>> export TEST_DEV=3D/dev/pmem0
+> >>> export TEST_DIR=3D/mnt/test_pmem
+> >>> export SCRATCH_DEV=3D/dev/pmem0.1
+> >>> export SCRATCH_MNT=3D/mnt/scratch_pmem
+> >>> export MKFS_OPTIONS=3D"-m reflink=3D0 -b size=3D65536 -s size=3D512"
+> >>> export FSTYP=3Dxfs
+> >>> export MOUNT_OPTIONS=3D"-o dax"
+> >>>
+> >>>
+> >>> Test case: generic/256
+> >>>
+> >>>
+> >>> Traces:
+> >>>
+> >>>
+> >>> [  163.371929] ------------[ cut here ]------------
+> >>> [  163.371936] kernel BUG at lib/list_debug.c:29!
+> >>> [  163.371946] Oops: Exception in kernel mode, sig: 5 [#1]
+> >>> [  163.371954] LE PAGE_SIZE=3D64K MMU=3DRadix  SMP NR_CPUS=3D8192 NUM=
+A pSeries
+> >>> [  163.371965] Modules linked in: xfs nft_fib_inet nft_fib_ipv4 nft_f=
+ib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nf=
+t_ct nft_chain_nat nf_nat nf_conntrack bonding tls nf_defrag_ipv6 nf_defrag=
+_ipv4 rfkill ip_set nf_tables nfnetlink sunrpc pseries_rng vmx_crypto dax_p=
+mem fuse ext4 crc16 mbcache jbd2 nd_pmem papr_scm sd_mod libnvdimm sg ibmvs=
+csi ibmveth scsi_transport_srp pseries_wdt
+> >>> [  163.372127] CPU: 22 UID: 0 PID: 130 Comm: kworker/22:0 Kdump: load=
+ed Not tainted 6.17.0-rc5-next-20250911 #1 VOLUNTARY
+> >>> [  163.372142] Hardware name: IBM,9080-HEX Power11 (architected) 0x82=
+0200 0xf000007 of:IBM,FW1110.01 (NH1110_069) hv:phyp pSeries
+> >>> [  163.372155] Workqueue: cgroup_free css_free_rwork_fn
+> >>> [  163.372169] NIP:  c000000000d051d4 LR: c000000000d051d0 CTR: 00000=
+00000000000
+> >>> [  163.372176] REGS: c00000000ba079b0 TRAP: 0700   Not tainted (6.17.=
+0-rc5-next-20250911)
+> >>> [  163.372183] MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,L=
+E>  CR: 28000000  XER: 00000006
+> >>> [  163.372214] CFAR: c0000000002bae9c IRQMASK: 0
+> >>> [  163.372214] GPR00: c000000000d051d0 c00000000ba07c50 c00000000230a=
+600 0000000000000075
+> >>> [  163.372214] GPR04: 0000000000000004 0000000000000001 c000000000507=
+e2c 0000000000000001
+> >>> [  163.372214] GPR08: c000000d0cb87d13 0000000000000000 0000000000000=
+000 a80e000000000000
+> >>> [  163.372214] GPR12: c00e0001a1970fa2 c000000d0ddec700 c000000000208=
+e58 c000000107b5e190
+> >>> [  163.372214] GPR16: c00000000d3e5d08 c00000000b71cf78 c00000000d3e5=
+d05 c00000000b71cf30
+> >>> [  163.372214] GPR20: c00000000b71cf08 c00000000b71cf10 c000000019f58=
+588 c000000004704bc8
+> >>> [  163.372214] GPR24: c000000107b5e100 c000000004704bd0 0000000000000=
+003 c000000004704bd0
+> >>> [  163.372214] GPR28: c000000004704bc8 c000000019f585a8 c000000019f53=
+da8 c000000004704bc8
+> >>> [  163.372315] NIP [c000000000d051d4] __list_add_valid_or_report+0x12=
+4/0x188
+> >>> [  163.372326] LR [c000000000d051d0] __list_add_valid_or_report+0x120=
+/0x188
+> >>> [  163.372335] Call Trace:
+> >>> [  163.372339] [c00000000ba07c50] [c000000000d051d0] __list_add_valid=
+_or_report+0x120/0x188 (unreliable)
+> >>> [  163.372352] [c00000000ba07ce0] [c000000000834280] mem_cgroup_css_f=
+ree+0xa0/0x27c
+> >>> [  163.372363] [c00000000ba07d50] [c0000000003ba198] css_free_rwork_f=
+n+0xd0/0x59c
+> >>> [  163.372374] [c00000000ba07da0] [c0000000001f5d60] process_one_work=
++0x41c/0x89c
+> >>> [  163.372385] [c00000000ba07eb0] [c0000000001f76c0] worker_thread+0x=
+558/0x848
+> >>> [  163.372394] [c00000000ba07f80] [c000000000209038] kthread+0x1e8/0x=
+230
+> >>> [  163.372406] [c00000000ba07fe0] [c00000000000ded8] start_kernel_thr=
+ead+0x14/0x18
+> >>> [  163.372416] Code: 4b9b1099 60000000 7f63db78 4bae8245 60000000 e8b=
+f0008 3c62ff88 7fe6fb78 7fc4f378 38637d40 4b5b5c89 60000000 <0fe00000> 6000=
+0000 60000000 7f83e378
+> >>> [  163.372453] ---[ end trace 0000000000000000 ]---
+> >>> [  163.380581] pstore: backend (nvram) writing error (-1)
+> >>> [  163.380593]
+> >>>
+> >>>
+> >>> If you happen to fix this issue, please add below tag.
+> >>>
+> >>>
+> >>> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+> >>>
+> >>>
+> >>>
+> >>> Regards,
+> >>>
+> >>> Venkat.
+> >>>
+> >>>
+> >>
+> >> After reverting the below commit, issue is not seen.
+> >>
+> >> commit 61bbf51e75df1a94cf6736e311cb96aeb79826a8
+> >> Author: Julian Sun <sunjunchao@bytedance.com>
+> >> Date:   Thu Aug 28 04:45:57 2025 +0800
+> >>
+> >>    memcg: don't wait writeback completion when release memcg
+> >>         Recently, we encountered the following hung task:
+> >>         INFO: task kworker/4:1:1334558 blocked for more than 1720 seco=
+nds.
+> >>    [Wed Jul 30 17:47:45 2025] Workqueue: cgroup_destroy css_free_rwork=
+_fn
+> >>    [Wed Jul 30 17:47:45 2025] Call Trace:
+> >>    [Wed Jul 30 17:47:45 2025]  __schedule+0x934/0xe10
+> >>    [Wed Jul 30 17:47:45 2025]  ? complete+0x3b/0x50
+> >>    [Wed Jul 30 17:47:45 2025]  ? _cond_resched+0x15/0x30
+> >>    [Wed Jul 30 17:47:45 2025]  schedule+0x40/0xb0
+> >>    [Wed Jul 30 17:47:45 2025]  wb_wait_for_completion+0x52/0x80
+> >>    [Wed Jul 30 17:47:45 2025]  ? finish_wait+0x80/0x80
+> >>    [Wed Jul 30 17:47:45 2025]  mem_cgroup_css_free+0x22/0x1b0
+> >>    [Wed Jul 30 17:47:45 2025]  css_free_rwork_fn+0x42/0x380
+> >>    [Wed Jul 30 17:47:45 2025]  process_one_work+0x1a2/0x360
+> >>    [Wed Jul 30 17:47:45 2025]  worker_thread+0x30/0x390
+> >>    [Wed Jul 30 17:47:45 2025]  ? create_worker+0x1a0/0x1a0
+> >>    [Wed Jul 30 17:47:45 2025]  kthread+0x110/0x130
+> >>    [Wed Jul 30 17:47:45 2025]  ? __kthread_cancel_work+0x40/0x40
+> >>    [Wed Jul 30 17:47:45 2025]  ret_from_fork+0x1f/0x30
+> >>         The direct cause is that memcg spends a long time waiting for =
+dirty page
+> >>    writeback of foreign memcgs during release.
+> >>         The root causes are:
+> >>        a. The wb may have multiple writeback tasks, containing million=
+s
+> >>           of dirty pages, as shown below:
+> >>>>> for work in list_for_each_entry("struct wb_writeback_work", \
+> >>                                        wb.work_list.address_of_(), "li=
+st"):
+> >>    ...     print(work.nr_pages, work.reason, hex(work))
+> >>    ...
+> >>    900628  WB_REASON_FOREIGN_FLUSH 0xffff969e8d956b40
+> >>    1116521 WB_REASON_FOREIGN_FLUSH 0xffff9698332a9540
+> >>    1275228 WB_REASON_FOREIGN_FLUSH 0xffff969d9b444bc0
+> >>    1099673 WB_REASON_FOREIGN_FLUSH 0xffff969f0954d6c0
+> >>    1351522 WB_REASON_FOREIGN_FLUSH 0xffff969e76713340
+> >>    2567437 WB_REASON_FOREIGN_FLUSH 0xffff9694ae208400
+> >>    2954033 WB_REASON_FOREIGN_FLUSH 0xffff96a22d62cbc0
+> >>    3008860 WB_REASON_FOREIGN_FLUSH 0xffff969eee8ce3c0
+> >>    3337932 WB_REASON_FOREIGN_FLUSH 0xffff9695b45156c0
+> >>    3348916 WB_REASON_FOREIGN_FLUSH 0xffff96a22c7a4f40
+> >>    3345363 WB_REASON_FOREIGN_FLUSH 0xffff969e5d872800
+> >>    3333581 WB_REASON_FOREIGN_FLUSH 0xffff969efd0f4600
+> >>    3382225 WB_REASON_FOREIGN_FLUSH 0xffff969e770edcc0
+> >>    3418770 WB_REASON_FOREIGN_FLUSH 0xffff96a252ceea40
+> >>    3387648 WB_REASON_FOREIGN_FLUSH 0xffff96a3bda86340
+> >>    3385420 WB_REASON_FOREIGN_FLUSH 0xffff969efc6eb280
+> >>    3418730 WB_REASON_FOREIGN_FLUSH 0xffff96a348ab1040
+> >>    3426155 WB_REASON_FOREIGN_FLUSH 0xffff969d90beac00
+> >>    3397995 WB_REASON_FOREIGN_FLUSH 0xffff96a2d7288800
+> >>    3293095 WB_REASON_FOREIGN_FLUSH 0xffff969dab423240
+> >>    3293595 WB_REASON_FOREIGN_FLUSH 0xffff969c765ff400
+> >>    3199511 WB_REASON_FOREIGN_FLUSH 0xffff969a72d5e680
+> >>    3085016 WB_REASON_FOREIGN_FLUSH 0xffff969f0455e000
+> >>    3035712 WB_REASON_FOREIGN_FLUSH 0xffff969d9bbf4b00
+> >>             b. The writeback might severely throttled by wbt, with a s=
+peed
+> >>           possibly less than 100kb/s, leading to a very long writeback=
+ time.
+> >>>>> wb.write_bandwidth
+> >>    (unsigned long)24
+> >>>>> wb.write_bandwidth
+> >>    (unsigned long)13
+> >>         The wb_wait_for_completion() here is probably only used to pre=
+vent
+> >>    use-after-free.  Therefore, we manage 'done' separately and automat=
+ically
+> >>    free it.
+> >>         This allows us to remove wb_wait_for_completion() while preven=
+ting the
+> >>    use-after-free issue.
+> >>     com
+> >>    Fixes: 97b27821b485 ("writeback, memcg: Implement foreign dirty flu=
+shing")
+> >>    Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+> >>    Acked-by: Tejun Heo <tj@kernel.org>
+> >>    Cc: Michal Hocko <mhocko@suse.com>
+> >>    Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> >>    Cc: Johannes Weiner <hannes@cmpxchg.org>
+> >>    Cc: Shakeel Butt <shakeelb@google.com>
+> >>    Cc: Muchun Song <songmuchun@bytedance.com>
+> >>    Cc: <stable@vger.kernel.org>
+> >>    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> >>
+> >> Regards,
+> >> Venkat.
+> >>
+> >>>
+> >>
+> >
+> >
+> > --
+> > Julian Sun <sunjunchao@bytedance.com>
+>
+
+Thanks,
+--=20
+Julian Sun <sunjunchao@bytedance.com>
 
