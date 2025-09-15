@@ -1,72 +1,111 @@
-Return-Path: <cgroups+bounces-10070-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10071-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4479FB57364
-	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 10:49:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24CC3B577A9
+	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 13:07:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDBBA1A2013D
-	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 08:49:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82DB73B3B3D
+	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 11:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2202ECD28;
-	Mon, 15 Sep 2025 08:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546E42FE071;
+	Mon, 15 Sep 2025 11:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pzdaJVk4"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KflZ5prr";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2HNRZWLu";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KflZ5prr";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2HNRZWLu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B9220CCCA;
-	Mon, 15 Sep 2025 08:49:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BC92FD7CF
+	for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 11:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757926150; cv=none; b=U9VW9UPTqIgaiF65iwV5ttRLbuB2EdY953hiJEJsOTh+FPuwhOgxmmB3QRzyFHdua4snkNuRrFu+UbrWQ3HNP7j99QPe+HJA4Edw/w20e3NNEh8TZfAdZhc8Qq3cTIJ8uLgeNb2hGo5HJEtsy/CzurjWbBqkuKBFC0aDgaXgwlk=
+	t=1757934435; cv=none; b=FGA7VIPX0WfayaW+fYJ4F8jORKs8dzpaHaI2tiTuZpUICuxQKdV1AnDqZlHghNRv3drd9X08zmhDlT4FqjNIwMxqWPrspZwQ6BIPtkIMewzTd1KDCFds6PWdjznnRAMSfX21bOMDzNVBAZZH0020Vt2vHXisqtm1QStvYgh1fDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757926150; c=relaxed/simple;
-	bh=1Hq7BE4gdFZftPb1aAXAIghgRQDX8TIAVhdgjgd60QI=;
+	s=arc-20240116; t=1757934435; c=relaxed/simple;
+	bh=2rTj9y3vFl3DSsUtFge7HoysdKEspuu1+SWZm5XQOXg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jdLRqZQ6Cx+U3qsCYSAuVFwxEigL511lynhE/OMTrPvQ4mBr9U7l8ynRlHSvkaojDWiUPtw5X5MEB7flGYTAnG5WJYktffXBKSQ/D2zLCgqDg5G11RsJUJQJ7/oVN1s6fwOcYv03gynqLZRfrhsuB7lFduCmVQBeQdeEDXk2g9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pzdaJVk4; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=3bp4fFVaXgCbZQ3/oZPcoRxfkggdhuJoGajCHZtYWHE=; b=pzdaJVk4fPZ8FnMl5Crsd5o4Nv
-	tRX0PxYhZpf5ZKOrOO3cawf8ukc+mrHznIXLCIq+gCyBRPDeCSuXVgQRAuZLiJ65V5lKgCnlOT6Ki
-	MsgonN0/abMIen/z2+q2Z6t7ZCwEfWk2ng52ok04Kayj+JW/Xi7t4OLNCEZKfqQ19srtf2yWS+VPr
-	/XJFiGLVox9p4wZ7rp5HI8E6Aq7iZ1yEWKqnzmUUXoVxYkcUA8QdK1CudRq3n/WronRTyFuFjX215
-	1Y7ykhBK+gwTc7qmPpy/fpzqcYtwPLSFhnpoYt+MUndEzrYyCa3Y+bVA/UBoppkCt3PqCV0n+I2fm
-	6Pl90Nfw==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uy4tN-0000000BbIv-2cEk;
-	Mon, 15 Sep 2025 08:48:58 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id A57B7300212; Mon, 15 Sep 2025 10:48:56 +0200 (CEST)
-Date: Mon, 15 Sep 2025 10:48:56 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
-	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
-	changwoo@igalia.com, cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
-Subject: Re: [PATCH 13/14] sched: Add {DE,EN}QUEUE_LOCKED
-Message-ID: <20250915084856.GC3289052@noisy.programming.kicks-ass.net>
-References: <20250910154409.446470175@infradead.org>
- <20250910155809.800554594@infradead.org>
- <aMItk3c5H6Z2CD4X@slm.duckdns.org>
- <20250911094240.GW3289052@noisy.programming.kicks-ass.net>
- <aMMzpnyx__ZgZGRc@slm.duckdns.org>
- <20250912141904.GA3289052@noisy.programming.kicks-ass.net>
- <aMRLIEtmcWc0XNmg@slm.duckdns.org>
- <aMXw-xvmGIZ9-UFJ@slm.duckdns.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IyivyiDJ6vrbweqBSbPma1a3SCC3uVzLaTaau7426P2/2wICTAjVAgPt5FNBvfF81HRF112AgJkeHksAw0z9j1FGDZgua+I6kgTDdeq52SD74GPcH0/0Ojb2JWuu3WTL9w2wHeN7vyGJODjXDOVZmUhTHRtWib8K1n92OKts9sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KflZ5prr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2HNRZWLu; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KflZ5prr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2HNRZWLu; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2539C1F8B0;
+	Mon, 15 Sep 2025 11:07:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757934431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cpKepJH4yP8uSf3BpFDlyGc+QODtbZz7D8+877HUnZQ=;
+	b=KflZ5prrtYNzVmL8k1x+IKinkh2EqpPUsKcKlQe2o8DkEj6UfckRnBAk7AQddMPpFg1KZz
+	Nd+4bkps7q0UZs9OuwrdlssIryLTv8Y3wgxHvXfbIu8Lj1zwXIFvFdBrl932x6iguGkm1D
+	s58C3CgZrMGFdfwdGBXfunliqX/vuh8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757934431;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cpKepJH4yP8uSf3BpFDlyGc+QODtbZz7D8+877HUnZQ=;
+	b=2HNRZWLurYY2wsfcOlxWXzeiYIF0ycKfGboF0uoy5qGjuFJKKtuPZ9TwlvrzDkd7wEl8mJ
+	IXL9absr8FMy3lCw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KflZ5prr;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2HNRZWLu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757934431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cpKepJH4yP8uSf3BpFDlyGc+QODtbZz7D8+877HUnZQ=;
+	b=KflZ5prrtYNzVmL8k1x+IKinkh2EqpPUsKcKlQe2o8DkEj6UfckRnBAk7AQddMPpFg1KZz
+	Nd+4bkps7q0UZs9OuwrdlssIryLTv8Y3wgxHvXfbIu8Lj1zwXIFvFdBrl932x6iguGkm1D
+	s58C3CgZrMGFdfwdGBXfunliqX/vuh8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757934431;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cpKepJH4yP8uSf3BpFDlyGc+QODtbZz7D8+877HUnZQ=;
+	b=2HNRZWLurYY2wsfcOlxWXzeiYIF0ycKfGboF0uoy5qGjuFJKKtuPZ9TwlvrzDkd7wEl8mJ
+	IXL9absr8FMy3lCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EDC961372E;
+	Mon, 15 Sep 2025 11:07:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id rqYHOl7zx2jFHQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 15 Sep 2025 11:07:10 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 9A844A09B1; Mon, 15 Sep 2025 13:07:06 +0200 (CEST)
+Date: Mon, 15 Sep 2025 13:07:06 +0200
+From: Jan Kara <jack@suse.cz>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>, 
+	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v2 11/33] net: use ns_common_init()
+Message-ID: <ucldl3baqsuuiwzmubrkloblxfjvcecfhjd2nyvl6boccc3qlh@bumwo2wjyvgr>
+References: <20250912-work-namespace-v2-0-1a247645cef5@kernel.org>
+ <20250912-work-namespace-v2-11-1a247645cef5@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -75,34 +114,69 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aMXw-xvmGIZ9-UFJ@slm.duckdns.org>
+In-Reply-To: <20250912-work-namespace-v2-11-1a247645cef5@kernel.org>
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 2539C1F8B0
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	TAGGED_RCPT(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RL9r1cnt7e4118fjryeg1c95sa)];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,gmail.com,vger.kernel.org,toxicpanda.com,kernel.org,yhndnzj.com,in.waw.pl,0pointer.de,cyphar.com,zeniv.linux.org.uk,kernel.dk,cmpxchg.org,suse.com,google.com,redhat.com,oracle.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.com:email]
+X-Spam-Score: -2.51
 
-On Sat, Sep 13, 2025 at 12:32:27PM -1000, Tejun Heo wrote:
-> Hello,
+On Fri 12-09-25 13:52:34, Christian Brauner wrote:
+> Don't cargo-cult the same thing over and over.
 > 
-> On Fri, Sep 12, 2025 at 06:32:32AM -1000, Tejun Heo wrote:
-> > Yeah, or I can make scx_tasks iteration smarter so that it can skip through
-> > the list for tasks which aren't runnable. As long as it doesn't do lock ops
-> > on every task, it should be fine. I think this is solvable one way or
-> > another. Let's continue in the other subthread.
-> 
-> Thought more about it. There's another use case for this runnable list,
-> which is the watchdog. As in the migration synchronization, I think the
-> right thing to do here is just adding a nested lock. That doesn't add any
-> overhead or complications to other sched classes and from sched_ext POV
-> given how expensive migrations can be, if we make that a bit cheaper (and I
-> believe we will with changes being discussed), added up, the outcome would
-> likely be lower overhead.
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
 
-I really don't see how you could possibly retain that runnable_list.
+...
 
-pick_next_task() must be able to migrate a task from a shared runqueue
-to a local runqueue. It must do this without taking a random other
-per-cpu runqueue. Therefore, a task on a DSQ must have no 'local' state.
+> @@ -559,7 +572,9 @@ struct net *copy_net_ns(unsigned long flags,
+>  		goto dec_ucounts;
+>  	}
+>  
+> -	preinit_net(net, user_ns);
+> +	rv = preinit_net(net, user_ns);
+> +	if (rv < 0)
+> +		goto dec_ucounts;
 
-This very much means the runnable_list cannot be per cpu.
+Umm, this seems to be leaking 'net' on error exit.
 
-No per-task lock is going to help with that.
+>  	net->ucounts = ucounts;
+>  	get_user_ns(user_ns);
+>  
 
-The watchdog will have to go iterate DSQs or something like that.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
