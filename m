@@ -1,88 +1,88 @@
-Return-Path: <cgroups+bounces-10122-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10123-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51DC3B584FA
-	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 20:54:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3BDCB58517
+	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 21:05:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01D7C7A3D93
-	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 18:52:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AA8F1AA80C5
+	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 19:05:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA48A27BF93;
-	Mon, 15 Sep 2025 18:53:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD44327FB12;
+	Mon, 15 Sep 2025 19:05:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W8eduiAQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TNNFNMYU"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1A7215F42
-	for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 18:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD92F27CB38
+	for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 19:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757962432; cv=none; b=CrBotFcOY2/xUf2mGeClb89uqlfWejOsv+9N9Ug9nV/VnNo0FXZPgTmeuwiQ3v8qoDO/+jXKJ4oLJR++lEVX2lGMfE4eT6GMW3ExBJz6e2s3WmENohDd42GbJ0JxBe2PwJXJcRlT4dYDBfdDBDQZIaWJgLvL53ELoMvfz1n7yNY=
+	t=1757963128; cv=none; b=HuKnwgDiJcn9/96wxKRQHcepnSP9T5ZOv8acTs31aeuorn1cgX340udT4ukfp1fEirvo714/heFGoJGpmRc6rbMlp3XNAtZ2Qnszoj0+aQR/2EIMfb5AQsHX8WzTedY2Xe4eqKGNBC8UTTvspYiA3kG92YIvTz9pA/mEes+CqG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757962432; c=relaxed/simple;
-	bh=QkzCkqlzGEtis4r7JhP1vhV8hJjpKR9/PYyZ73sKa6A=;
+	s=arc-20240116; t=1757963128; c=relaxed/simple;
+	bh=x6OhxWHmpF7PMqdFWJh0kMOEKOF31oe1xsXGrZv/zjE=;
 	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=DK+hCTqADDne7KIQ08xzlyzT1+twryRO5AOL4RLi1C9v6Rf6PzL+zfWRHI26vinW/z5DD4NZt1pYnppL5TclbcD8OCSHnonKfh0+2kkgjQJkWNR0oRfp+eMZhIWH0gau3suA8ibOZKUUH/t9vJDYByeztvqnxPXmkhmWNKm2jKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W8eduiAQ; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=OYlIFAi+17jJ69iiNGh5DFrRO97xqqjCozUkuPweMc7UJ89SSzwSaJ1exOMCF7kXreD7yoYMNhp4vWzDr5Jcs2ua8rUdS1QK8qM/ZzU4Fgby4Da3z4IF66X8LEK2YcsiNWrOOY6GiNDb0kwjNLxreHPbA6iI8XIw40o8n5/bM4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TNNFNMYU; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1757962429;
+	s=mimecast20190719; t=1757963125;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EQOD1HrlyQdU3WG5cibV+4OpdKoc/syBueuAerLS0/g=;
-	b=W8eduiAQd/591O819ks6rvB7g78LI4QI3m7YJojpEHlXVDcMeKMPK+S++BEQHWy6ZC+mqJ
-	gRbvn7YgztaAbtiJTJG1MklsGBqZgxbdxTu0q1wBtZHkiSKRlYx5x3tOVlpat0iWF73C5O
-	2xnuSMFzzYFXw5uJ+pSeU8k6EvEf+W4=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=zwQzTP3/YweAQfoN90LeDKpqr7TcbU4HuwusB3h9E/M=;
+	b=TNNFNMYUc0m8qjKk3xMPz3GeVNWd7X9NDI8rWvYhVKDuNvOFFMOBcGk4ZT0NCHhQfnNV9H
+	A83DumLYRvbOXVqNhbkMg46kATWxsVk01uiPyT2H0ee/SRfin7BBwkD7/+layC8iZOj9I/
+	76WJ9lv/sVPPSSaRmWkCRJXajc9B/MQ=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-423-JwGFX9n7OCuFFD_s_evJLg-1; Mon, 15 Sep 2025 14:53:48 -0400
-X-MC-Unique: JwGFX9n7OCuFFD_s_evJLg-1
-X-Mimecast-MFC-AGG-ID: JwGFX9n7OCuFFD_s_evJLg_1757962428
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-77d39d8f55aso25646786d6.0
-        for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 11:53:48 -0700 (PDT)
+ us-mta-553-A92V00ifPbGBIgcC4O35PQ-1; Mon, 15 Sep 2025 15:05:24 -0400
+X-MC-Unique: A92V00ifPbGBIgcC4O35PQ-1
+X-Mimecast-MFC-AGG-ID: A92V00ifPbGBIgcC4O35PQ_1757963123
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7fff4abc97cso1170567485a.1
+        for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 12:05:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757962428; x=1758567228;
+        d=1e100.net; s=20230601; t=1757963123; x=1758567923;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EQOD1HrlyQdU3WG5cibV+4OpdKoc/syBueuAerLS0/g=;
-        b=rzLUGthT+szOLTAUswAR05u2HP1z3D5gjtJqTAdqxOGWDrtahwwslcfiabaU6cf4it
-         /OKpTn5+T1yTZyH7WWsumenQ//Vs1z1AKl5YZn5NwK4h4kTIQRSWdXKwhEuZwYhWthAg
-         tvvYSvBpT95YHa5/UblUPPjVOmrmIfZAJtOaF+XjvOdzGMbYSbTDFXT02YIjf5u+45bK
-         UB7D01EnnuNX5wzvdJdqzPUb6tGFOZq0htR5PAMACydN+nHzlKAxeebzdN0pMtcgQ9MD
-         UoAzQQxC996L8VEtFYYOY6Z3tcclUo/BmMdFKhP2o+YcAJOxRYWdWC+Mqjgu7AIq43Nr
-         3ZnA==
-X-Gm-Message-State: AOJu0YxXQaQPn3ZWHUN18ctlyMr0ARyPUwkXhMwG2khLcidKxRENQyLw
-	et+CdO4OqCRaTdWpOFUGfbw5x0Rlv/7kKgbV+p57TYyEL0cBSHEPfo2s4xLbdfgYitt3phgOg5a
-	Qz1mcxDuCwVQQwsAvJ/svyH7v26SDqMQCk38Qfn9u1kFEInud3jOJ28qHcfI=
-X-Gm-Gg: ASbGncuDSQ1m/mSzIv7XuqQVYiuRN3j08D3owItMe6wireCySj7tK3704rOjfajx0+J
-	CSCLtEBZRFpBUUmKvohka2gVhXAWF/dfQzxBlB0Dy/vVoO89BIQalNCECRjvfl5bJkKfB/NI3v4
-	1sPDE7/HYYov3zJrPrQeuU9IPbHLFsRoIoZLd36uM69vzdNZj0F2QufymKimxN2iLtnn4XEeHZ/
-	PeLYL4SHEUPpn20pgRmiq67x/1BrBtjY19IsMQSA4hdZOnfJeNrRBfb6WNaboz2j3MMtzB2ATFU
-	/MxyYTPLcKKrf6Tt2s/ut+K5aklWecZ9KNBo4qIWiM9XrtU6ayL57dKpdSlskLAWjP/t3lxO4wq
-	kmzgX9DDsqQ==
-X-Received: by 2002:a05:6214:4004:b0:753:c0ea:b052 with SMTP id 6a1803df08f44-767c1aa526bmr199160296d6.32.1757962427677;
-        Mon, 15 Sep 2025 11:53:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHppdcMBvJ2WP5Fi36gAhmWPSKLhdFB9UoLjIzluvCGRkdZF8W61RhlzlHJjN8ifFtnRv99EA==
-X-Received: by 2002:a05:6214:4004:b0:753:c0ea:b052 with SMTP id 6a1803df08f44-767c1aa526bmr199159876d6.32.1757962427051;
-        Mon, 15 Sep 2025 11:53:47 -0700 (PDT)
+        bh=zwQzTP3/YweAQfoN90LeDKpqr7TcbU4HuwusB3h9E/M=;
+        b=fdip8kJi60FuTplrvXRN/LThKiZN/T26nRjtepGtfzp0Ud1W5btHuyRjaTzslSfABC
+         0+XjWgowjY9qv5crg/Tf9HjfBBVJWORv4574BPICbprdq6tAP+4EuGs4mxk8h4Scoto4
+         Wr3cByIR2jYAtILHvP3Ms6v+eFOc6kLOVYYvt2CjSm2DnJo9ZGqayhpMp+2+qXbq77F0
+         XUcFweDAtknVlxdtyeu0Ak7ad5Y0YQtutT7dmwn4Ic+jB9a8qblkV2jzvjny8N5X05lU
+         3uv5UDegAzhqQhZJTqif+70jyslOa23lPLSD54QTa4OlYYYPsl3Ciy+X0lt3odqHeNvF
+         jtWQ==
+X-Gm-Message-State: AOJu0YyvdXWE88xVzKjaUHIbiBo6p0NWmKO1ZIjLMkrZ7etH1FY2pzgk
+	7zdVptlUnRgvwha24LemNr2EQAOwdf1SqlhqwbrXK+6gp+W6WMO0ajMgxyr6aqbSW2YBL08MV3j
+	fBa7hVb26h2uCW2reGYHoO+FYOoggBbeL8QDYt4PKZW5RgK8hvKHK1fPDEPg=
+X-Gm-Gg: ASbGncufk3LQbO0i4gFsml7JFcG57+tWernwicdRxmTufE0XLuFzkSFvKA4vSYlh9wi
+	y2bPE69RCUvmY9lS+7JS7yrk2HsbZx3ZUbWN40lmi8jcszL5XVsfUSWNyYDwR/bQMgjaNQ6YTER
+	CbfKyWU4sMcqQPn7Quz7RNO7igel2Ohu5nxQq6n1gulS1pmlkthBuwc67Dev8+JB+ipbogRCU/V
+	h8rzbI/aSc/HEN59XZo9N56k1zeWdOXplf957kN9To6i+v3Cug6Ptxlw0SoaHiES3GLxTWW2TAD
+	vRMI4Ni1k1yrXb/71n+xDAVUtgxZSgqXG8I89wggBfAq+kQBU0pOjXOphVjUPtkqyAQC+1fH0To
+	SavYcKp4IFQ==
+X-Received: by 2002:a05:620a:4456:b0:827:7a5a:2dcb with SMTP id af79cd13be357-8277a5a2ee1mr841622885a.16.1757963123255;
+        Mon, 15 Sep 2025 12:05:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHzYtJqMF9JX58GAyWPQyWStp0AhvAUxOGTl8eJYqPP0E020LUH9d8N3IQLtC/yG54khQLKEw==
+X-Received: by 2002:a05:620a:4456:b0:827:7a5a:2dcb with SMTP id af79cd13be357-8277a5a2ee1mr841617085a.16.1757963122617;
+        Mon, 15 Sep 2025 12:05:22 -0700 (PDT)
 Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-763b54a20b6sm82855186d6.17.2025.09.15.11.53.46
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-820ca1eaa00sm860868085a.29.2025.09.15.12.05.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Sep 2025 11:53:46 -0700 (PDT)
+        Mon, 15 Sep 2025 12:05:22 -0700 (PDT)
 From: Waiman Long <llong@redhat.com>
 X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <90fb9914-3c6f-4d2a-8512-cebcaa5ddbb6@redhat.com>
-Date: Mon, 15 Sep 2025 14:53:45 -0400
+Message-ID: <7a42945a-9d82-47ad-9175-cfc3c0c311c3@redhat.com>
+Date: Mon, 15 Sep 2025 15:05:21 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,105 +90,177 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next RFC -v2 07/11] cpuset: refactor out
- validate_partition
+Subject: Re: [PATCH -next RFC -v2 08/11] cpuset: refactor
+ cpus_allowed_validate_change
 To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
  hannes@cmpxchg.org, mkoutny@suse.com
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  lujialin4@huawei.com, chenridong@huawei.com
 References: <20250909033233.2731579-1-chenridong@huaweicloud.com>
- <20250909033233.2731579-8-chenridong@huaweicloud.com>
+ <20250909033233.2731579-9-chenridong@huaweicloud.com>
 Content-Language: en-US
-In-Reply-To: <20250909033233.2731579-8-chenridong@huaweicloud.com>
+In-Reply-To: <20250909033233.2731579-9-chenridong@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 9/8/25 11:32 PM, Chen Ridong wrote:
 > From: Chen Ridong <chenridong@huawei.com>
 >
-> Refactor the validate_partition function to handle cpuset partition
-> validation when modifying cpuset.cpus. This refactoring also makes the
-> function reusable for handling cpuset.cpus.exclusive updates in subsequent
-> patches.
+> Refactor cpus_allowed_validate_change to handle the special case where
+> cpuset.cpus can be set even when violating partition sibling CPU
+> exclusivity rules. This differs from the general validation logic in
+> validate_change. Add a wrapper function to properly handle this
+> exceptional case.
+
+That special rule is needed as setting v2 cpuset.cpus will never fail. 
+For v1, it may only fails if the exclusivity rule set by the exclusive 
+flag is violated. For v2, write failure may only happen on 
+cpuset.cpus.exclusive. As a result, existing partitions may have to be 
+invalidated if it will break exclusivity rule.
+
+>
+> The trialcs->prs_err field is cleared before performing validation checks
+> for both CPU changes and partition errors. If cpus_allowed_validate_change
+> fails its validation, trialcs->prs_err is set to PERR_NOTEXCL. If partition
+> validation fails, the specific error code returned by validate_partition
+> is assigned to trialcs->prs_err.
+>
+> With the partition validation status now directly available through
+> trialcs->prs_err, the local boolean variable 'invalidate' becomes
+> redundant and can be safely removed.
 >
 > Signed-off-by: Chen Ridong <chenridong@huawei.com>
 > ---
->   kernel/cgroup/cpuset.c | 48 +++++++++++++++++++++++++++++++-----------
->   1 file changed, 36 insertions(+), 12 deletions(-)
+>   kernel/cgroup/cpuset.c | 84 ++++++++++++++++++++++--------------------
+>   1 file changed, 45 insertions(+), 39 deletions(-)
 >
 > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 389dfd5be6c8..770b33e30576 100644
+> index 770b33e30576..6aa93bd9d5dd 100644
 > --- a/kernel/cgroup/cpuset.c
 > +++ b/kernel/cgroup/cpuset.c
-> @@ -2386,6 +2386,37 @@ static int parse_cpuset_cpulist(const char *buf, struct cpumask *out_mask)
->   	return 0;
+> @@ -2416,6 +2416,42 @@ static enum prs_errcode validate_partition(struct cpuset *cs, struct cpuset *tri
+>   	return PERR_NONE;
 >   }
 >   
-> +/**
-> + * validate_partition - Validate a cpuset partition configuration
-> + * @cs: The cpuset to validate
-> + * @trialcs: The trial cpuset containing proposed configuration changes
-> + *
-> + * If any validation check fails, the appropriate error code is set in the
-> + * cpuset's prs_err field.
-> + *
-> + * Return: PRS error code (0 if valid, non-zero error code if invalid)
-> + */
-> +static enum prs_errcode validate_partition(struct cpuset *cs, struct cpuset *trialcs)
+> +static int cpus_allowed_validate_change(struct cpuset *cs, struct cpuset *trialcs,
+> +					struct tmpmasks *tmp)
 > +{
+> +	int retval;
 > +	struct cpuset *parent = parent_cs(cs);
 > +
-> +	if (cs_is_member(trialcs))
-> +		return PERR_NONE;
+> +	retval = validate_change(cs, trialcs);
 > +
-> +	if (cpumask_empty(trialcs->effective_xcpus))
-> +		return PERR_INVCPUS;
+> +	if ((retval == -EINVAL) && cpuset_v2()) {
+> +		struct cgroup_subsys_state *css;
+> +		struct cpuset *cp;
 > +
-> +	if (prstate_housekeeping_conflict(trialcs->partition_root_state,
-> +					  trialcs->effective_xcpus))
-> +		return PERR_HKEEPING;
+> +		/*
+> +		 * The -EINVAL error code indicates that partition sibling
+> +		 * CPU exclusivity rule has been violated. We still allow
+> +		 * the cpumask change to proceed while invalidating the
+> +		 * partition. However, any conflicting sibling partitions
+> +		 * have to be marked as invalid too.
+> +		 */
+> +		trialcs->prs_err = PERR_NOTEXCL;
+> +		rcu_read_lock();
+> +		cpuset_for_each_child(cp, css, parent) {
+> +			struct cpumask *xcpus = user_xcpus(trialcs);
 > +
-> +	if (tasks_nocpu_error(parent, cs, trialcs->effective_xcpus))
-> +		return PERR_NOCPUS;
-> +
-> +	return PERR_NONE;
+> +			if (is_partition_valid(cp) &&
+> +			    cpumask_intersects(xcpus, cp->effective_xcpus)) {
+> +				rcu_read_unlock();
+> +				update_parent_effective_cpumask(cp, partcmd_invalidate, NULL, tmp);
+> +				rcu_read_lock();
+> +			}
+> +		}
+> +		rcu_read_unlock();
+> +		retval = 0;
+> +	}
+> +	return retval;
 > +}
-> +
-> +
+>   
 >   /**
 >    * update_cpumask - update the cpus_allowed mask of a cpuset and all tasks in it
->    * @cs: the cpuset to consider
-> @@ -2401,6 +2432,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
->   	bool invalidate = false;
+> @@ -2428,8 +2464,6 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>   {
+>   	int retval;
+>   	struct tmpmasks tmp;
+> -	struct cpuset *parent = parent_cs(cs);
+> -	bool invalidate = false;
 >   	bool force = false;
 >   	int old_prs = cs->partition_root_state;
-> +	enum prs_errcode prs_err;
->   
->   	retval = parse_cpuset_cpulist(buf, trialcs->cpus_allowed);
->   	if (retval < 0)
-> @@ -2415,18 +2447,10 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>   	enum prs_errcode prs_err;
+> @@ -2446,12 +2480,10 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>   		return -ENOMEM;
 >   
 >   	compute_trialcs_excpus(trialcs, cs);
+> +	trialcs->prs_err = PERR_NONE;
 >   
-> -	if (old_prs) {
-> -		if (is_partition_valid(cs) &&
-> -		    cpumask_empty(trialcs->effective_xcpus)) {
-> -			invalidate = true;
-> -			cs->prs_err = PERR_INVCPUS;
-> -		} else if (prstate_housekeeping_conflict(old_prs, trialcs->effective_xcpus)) {
-> -			invalidate = true;
-> -			cs->prs_err = PERR_HKEEPING;
-> -		} else if (tasks_nocpu_error(parent, cs, trialcs->effective_xcpus)) {
-> -			invalidate = true;
-> -			cs->prs_err = PERR_NOCPUS;
+> -	prs_err = validate_partition(cs, trialcs);
+> -	if (prs_err) {
+> -		invalidate = true;
+> -		cs->prs_err = prs_err;
+> -	}
+> +	if (cpus_allowed_validate_change(cs, trialcs, &tmp) < 0)
+> +		goto out_free;
+>   
+>   	/*
+>   	 * Check all the descendants in update_cpumasks_hier() if
+> @@ -2459,40 +2491,14 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>   	 */
+>   	force = !cpumask_equal(cs->effective_xcpus, trialcs->effective_xcpus);
+>   
+> -	retval = validate_change(cs, trialcs);
+> -
+> -	if ((retval == -EINVAL) && cpuset_v2()) {
+> -		struct cgroup_subsys_state *css;
+> -		struct cpuset *cp;
+> -
+> -		/*
+> -		 * The -EINVAL error code indicates that partition sibling
+> -		 * CPU exclusivity rule has been violated. We still allow
+> -		 * the cpumask change to proceed while invalidating the
+> -		 * partition. However, any conflicting sibling partitions
+> -		 * have to be marked as invalid too.
+> -		 */
+> -		invalidate = true;
+> -		rcu_read_lock();
+> -		cpuset_for_each_child(cp, css, parent) {
+> -			struct cpumask *xcpus = user_xcpus(trialcs);
+> -
+> -			if (is_partition_valid(cp) &&
+> -			    cpumask_intersects(xcpus, cp->effective_xcpus)) {
+> -				rcu_read_unlock();
+> -				update_parent_effective_cpumask(cp, partcmd_invalidate, NULL, &tmp);
+> -				rcu_read_lock();
+> -			}
 > -		}
+> -		rcu_read_unlock();
+> -		retval = 0;
 > +	prs_err = validate_partition(cs, trialcs);
 > +	if (prs_err) {
-> +		invalidate = true;
+> +		trialcs->prs_err = prs_err;
 > +		cs->prs_err = prs_err;
 >   	}
 >   
->   	/*
+> -	if (retval < 0)
+> -		goto out_free;
+> -
+>   	if (is_partition_valid(cs) ||
+> -	   (is_partition_invalid(cs) && !invalidate)) {
+> +	   (is_partition_invalid(cs) && !trialcs->prs_err)) {
+>   		struct cpumask *xcpus = trialcs->effective_xcpus;
+>   
+>   		if (cpumask_empty(xcpus) && is_partition_invalid(cs))
+> @@ -2503,7 +2509,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>   		 */
+>   		if (is_remote_partition(cs))
+>   			remote_cpus_update(cs, NULL, xcpus, &tmp);
+> -		else if (invalidate)
+> +		else if (trialcs->prs_err)
+>   			update_parent_effective_cpumask(cs, partcmd_invalidate,
+>   							NULL, &tmp);
+>   		else
 Reviewed-by: Waiman Long <longman@redhat.com>
 
 
