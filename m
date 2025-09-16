@@ -1,176 +1,310 @@
-Return-Path: <cgroups+bounces-10165-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10166-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9FF4B594F0
-	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 13:19:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D0B6B5976B
+	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 15:21:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 623CD1BC75F5
-	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 11:19:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16EA3482EAC
+	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 13:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D982D542F;
-	Tue, 16 Sep 2025 11:18:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA5F82D949A;
+	Tue, 16 Sep 2025 13:21:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NQDbh1Va"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="hgGM/QPq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11010039.outbound.protection.outlook.com [52.101.56.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 707232773C3;
-	Tue, 16 Sep 2025 11:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758021539; cv=none; b=EPkEazpkFKMm/0KT7zutLn7lCrawp2HXIN2RF/Y4s40EeRJ8ZiF516E/ywXAXrOCC6+N4Oq4IglM4jqowcr1Pt84mxi4dZMzKTQfexD7zx2qksQqDnsShcFyY13zK1jZqSjua5xLJuqKsuN6GODMRsrNcgDtNa728ZOI53xjaXQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758021539; c=relaxed/simple;
-	bh=fPi2jTo0hJ6xkgxaFB3CE37jdXxU+Q3zu80o0dV1unM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oif6+3BJVrYclfn356Z4EoofjbGMmvGIipGKdVufCUNZt3hfW+73iaejBRO8hCKG2XbSAR8ku3VnnFSy45DCmxvVBb67tCvbpxpi1EbCe4NUtPjMeT7dsEczhORDjn7EFuY4ScSfkDcHVEc1NtV1pKYaft09b6mapD5XQj1j9eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NQDbh1Va; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB3C2C4CEEB;
-	Tue, 16 Sep 2025 11:18:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758021538;
-	bh=fPi2jTo0hJ6xkgxaFB3CE37jdXxU+Q3zu80o0dV1unM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NQDbh1VaUF3+xG9O6//FoHCGnbQqBuJSEFwsn9AWaLs19tnsOKvOZeXgtT2Ppbvh7
-	 zDCkjUFEK2bdYgvEchH4TzeIt6kwysmCsoRqQjdVJbkIYKTZ3q04vmBlHo725QsvxO
-	 7AhrEzl52ZcqfZzj3uI7n5oA/VBZAihCXEtpKdn38X5G1vEogTg4rY1Xs4mpRx0rwL
-	 LuyuHxRxaub0nEEe9tvc8fAnssi5DcdHD1bYPfb2UJIA2PoTryL/GJ7dwW60Kxyoqy
-	 zIXqsQ3Dze7L2+355gXdYkt1Z58WO6RCsVslYfMxHuV++DyfOaya0rg/PVyTka9aHH
-	 QsrmJgW1c/GmA==
-Date: Tue, 16 Sep 2025 12:18:50 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-	Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>,
-	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
-	Lennart Poettering <mzxreary@0pointer.de>,
-	Daan De Meyer <daan.j.demeyer@gmail.com>,
-	Aleksa Sarai <cyphar@cyphar.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v2 04/33] block: use extensible_ioctl_valid()
-Message-ID: <02da33e3-6583-4344-892f-a9784b9c5b1b@sirena.org.uk>
-References: <20250912-work-namespace-v2-0-1a247645cef5@kernel.org>
- <20250912-work-namespace-v2-4-1a247645cef5@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D222830F929
+	for <cgroups@vger.kernel.org>; Tue, 16 Sep 2025 13:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.39
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758028881; cv=fail; b=BfAhF/xdA6DkFAO2As9SlUmy3NgOTh9M5wlJIkd6nTf9NVr3D6ufACT95Q5c8MVsoysGDsPV2i7JJ1ukI2fWpqiG9JWKgi5jA4GwgSgKTl1mH6900wdrqHiKGvG5Nu6u9wennySONSFRxaMc+jVfPElP/ngRb+SR2OGtkiYR7vQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758028881; c=relaxed/simple;
+	bh=XsEqiIwmsGJ0/odt/HT/tDt58foefhyofOvca0TwT6s=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=bj47p5YDAxOsP9jVXErSogU2rkIoxM1KgCN2yX2Zfy24mt3t2XkB/fhVAKmsELN3AKNY/l5cuFtoW7kL2gyYqA1gUySbz1F6kLIz7cJPbGGSAN0QEyI4k69mGu0zNn95mrk+yiNWxYnC0V+S7fZdleLgpMcaSFebq0RhC8nmLcE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=hgGM/QPq; arc=fail smtp.client-ip=52.101.56.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=pTsLisFPcotn6fDqzqmxMq7jJQzV2xoFZ1WWTtV84v8ZsKp7KdsxqsSrOrEUvQ/ueWyeKqmcVQLMPJOOV7wc1ND76KKlldP90rAUUuaGgeAvr9rcmD6AHbAsjyaaIzQ58vOKeYrJVEhZtxljlnEPciKXg36Pwqy02K6l2BMAmdZBtatEQmd7CnUlMuWYnGH0RBQT2oI0z1UrHN/hgs85WY3Gp2Bc/LVHRR53gHo67m1y14TGlS2EZvNhRISVZyGpQzofn8AqOt0knp29yKNPPFRFvuqm0SBvPb6ulYrNzPNzokSl1BurV4rpIp4aLbHp6GoFgYDSvklUnxllfBpZcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8JFsFHBb+7TfOA0v4xOHNRPBIyu8+/RphF92hMpnDiY=;
+ b=eo2Fm81TuSJaKfFYqlXozlSCumomhk8WoL+ayKsYtYCu/QlchouU0+L+0vPAi+p5gkPsbAbvr4X3GKNywU1Xh0pVA0YulRsg+j48SS21Mv7UBFTDcqKdxx603HqLUKVpNIhb6ZH0it76V0nyBu4CmRZuT7GvUOuxfFGMcNV90mMtijLVhxXuJ7/CuNm/wZX3Q8ngODmSlav90XswHiTagXV5DVb+/+ZJwLlOjLm1K8rCfOgokSq51flIEJVTJen+ICZjAHI72aCgKsNqceh60xgw4KtiS0cJvqqBT3taLHJF0CF7OPGbFSZV6MkjIjdv7QODa+I4yxINDYUu9Ie+OQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8JFsFHBb+7TfOA0v4xOHNRPBIyu8+/RphF92hMpnDiY=;
+ b=hgGM/QPqq+mt+TWgtbzWu/D2pCDOGZEZIHurxMjjNMF2B8KwwhIrOp0/KjxPLbEPjGy5FdBKF2Ofs3r1J2eoZM0wh+pamoyvTW3r/XsSgM6dSpcB5XMZsyQdwWP2tAL+JTSXK8fVxwPyBYULocz/RSFQylyiRXTfRYhobkA41kc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by MN6PR12MB8565.namprd12.prod.outlook.com (2603:10b6:208:47d::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9115.22; Tue, 16 Sep
+ 2025 13:21:15 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5%4]) with mapi id 15.20.9115.020; Tue, 16 Sep 2025
+ 13:21:15 +0000
+Message-ID: <d609a298-5a3a-4e4a-8992-868cd02133b4@amd.com>
+Date: Tue, 16 Sep 2025 15:21:10 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 14/15] amdgpu: add support for memory cgroups
+To: Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
+ tj@kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>
+Cc: cgroups@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
+ Waiman Long <longman@redhat.com>, simona@ffwll.ch
+References: <20250902041024.2040450-1-airlied@gmail.com>
+ <20250902041024.2040450-15-airlied@gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20250902041024.2040450-15-airlied@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YT4PR01CA0010.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:d1::17) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pXrdOnUKtpdJm8VZ"
-Content-Disposition: inline
-In-Reply-To: <20250912-work-namespace-v2-4-1a247645cef5@kernel.org>
-X-Cookie: You dialed 5483.
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|MN6PR12MB8565:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16fda615-4701-4dfb-15a7-08ddf523e9bc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?YWE4bjlkOVpjVWtqWW1yK0xjSXdjZWl0K2N1OHhLWWE5QkxrWGY2UXVyQWlD?=
+ =?utf-8?B?bExxZUZCZDhPa1ptM2J6bUxMMVk1VTFFNVNqRHBlZnJwcWx5M1FDVTI3dEhI?=
+ =?utf-8?B?YmR1UGVodVI4QzZDVzNvbU0rcTNBRlA4WWF6a2tSZGFWSmhOMHZPTEVJemdI?=
+ =?utf-8?B?Y1BobFBVZWxqUlpHNUwvaFdOWlQzemI4RXNsdzlyaHBCdUF1K3c2ZCtsUEVZ?=
+ =?utf-8?B?TVZXKytzVnBPa0lTTEdYQnU5TFYyNzV5SXNaV0VWWjdxWVN2ZlZTUlhSM3lv?=
+ =?utf-8?B?d0tKbzVFMHduNzh4YmFXL3I5citlSzJFRnBqSXpXQ2hGRy90cE5Md2NKOU1D?=
+ =?utf-8?B?MFhBM0pvbE4xcHJRZ3gvMG9XdUVNNjZITHNWenFwRzlMRHlEekh6aUhEeVR3?=
+ =?utf-8?B?NFk5bUJrTWxWWE81K2ZzSFVaK3ZlblFRbHpxR2oySEloeTJBSzhHcjk4MDh3?=
+ =?utf-8?B?RFBaQU1tclpUQmJNUzUxYllEeXdyZEE0OXUvSzIyK0xLNzlPSWtxN3hlN2xG?=
+ =?utf-8?B?MGZqdnBNR1QyNlppZTdMbmorZ0pOS0lPVXJHRU05SXlPcU11QjByUXNEdTJl?=
+ =?utf-8?B?U3M3TEk5TGpERjFtN1RiUTBNUWdqOEdLcEIxYlA3OHRLbERoNTFzOElQYy9t?=
+ =?utf-8?B?d0tyRE5wMTZiZDNvbk5pc3diRUdwcm1leFpOd2lxbTRObVEyK2tXeFp0MFkz?=
+ =?utf-8?B?SC9ZN3h6RW5EcFQxL3FqUXkyL0JjeEU1b01XaWdsMTBaZlFBek81STBhekdD?=
+ =?utf-8?B?enBzbnpqRmM2TkNPaU5WU1NIRXd4TjFOZ3Y4cVRBQklIcDBUeXVkM1J0TkIx?=
+ =?utf-8?B?L0Z1bXhDb1NqNVVEblI3cEZnNWZzMFdCVHpFSll0Mzd6WGZUZ1VSeFE5OW5i?=
+ =?utf-8?B?TkNYZlFUTEpsbmNmNXpWM3ljVGdyUks4WGRLekIzbDhuaDZDUVcvZkNKbGVU?=
+ =?utf-8?B?MURvMjhFeTFTRzZ4ZE1QS0ZxL1NhNWpodElXcm51S3lRMDl5LzE1NktrdzNJ?=
+ =?utf-8?B?T3QwWGRENURJczJQMGtUM25sRFg1Y21KSjkybHhaMVZZR2tueFI3VU5hamVG?=
+ =?utf-8?B?Z0NFYXZOSnFVRjVseTlpcWlPWktHOEhwbnVmVEl1NEM0eWhFekg5MjBBQnhC?=
+ =?utf-8?B?OTZORVJCYlJMcHB4Nm16d3VlMHd3UDVFKzRLYnBtUzFpaExsUnd5dmhZakd6?=
+ =?utf-8?B?Q0tDV3l0OEQrTEJ0QVF2RG9EenBlNzNtOEVERW40cjNuTnlQWWgzVmxwSHN5?=
+ =?utf-8?B?bVcyNjg0Unc5b3JHYlNaM2pEVGZ1UlFVUjM4em5McEsrcDVCYlMyQThuQ1Iy?=
+ =?utf-8?B?ald2NHQ5Qmt4OXd2ZVVyRE16ejFNS3poblF2YnBGbXRLRXlxUHkvSXY5Wkpl?=
+ =?utf-8?B?dmN1TUkzaGx3eStxL2d6T3RULzdPY0JkYVhPbjZGMmVLRjcreDQ1OUVBbTgy?=
+ =?utf-8?B?eTBqVWlBalRlY3BFenhvS1NxZFlUU1FKZG1ndG1NZ2haS3p0cEhqSUFrSGJB?=
+ =?utf-8?B?VE5Ka2lmZ3JLSnJsaUdRY2Zqam0vSnNSQkgxWS9lTm9YdXZEbmJCTm1zWmsr?=
+ =?utf-8?B?SVl6SGZoRWlhTVBxUEgxaTNaR2d5OGtseDJLNU1aWFBkcTdjSGl3MFNRUDIx?=
+ =?utf-8?B?T0NzUmdoeUN4clh6czNLa3hsWVVrcTM1ZnNoLy9UUGs1eHlRQnRFUWZvaWpR?=
+ =?utf-8?B?WnM5VjE3U0JCb2tkaVZWdlZzZ0U3b08yUHlYRk1LYzUxQXFIZ3FVdUVJNXRs?=
+ =?utf-8?B?Y0FVYm5May9SN1J5UDNJb1JGU05NVTVTODlIVE5DNkJHTTZIQ3BCQU5oc2pO?=
+ =?utf-8?B?ckhTY3Z1ZkxXTWJ4dDhqS005Q1RtU01EZnFZMWNUQWJVeE8yRFd6L1pzZ3B3?=
+ =?utf-8?B?WEhCK2xsTjlzYXo2ZUJ0amEydXdkOWswMGtqeE1GbHJQeVlHUXJYZmdCbzNt?=
+ =?utf-8?Q?Zgink00h7Ug=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Kzc2Qzk3QTg3cDhDZSt4QjBLVWNXbGJtejRxR1V6dTdzZ0lud2Y0NHZGNXhh?=
+ =?utf-8?B?NEw5dGJvV3MvWXB5WHpBZEdyMjVTMTRsM0ppR1hRbEdnM2gwZndIQW01bXQw?=
+ =?utf-8?B?TVh2VXFwYmRCL3N4bVE4NUM1Mms1aytqTCsxdnNXT002NzY4YnhjcmtPZHJz?=
+ =?utf-8?B?a2paVWhzcWpvLzFmeXBmNk0zcytPSi9SVy9GVEpLVys1K0VwTmFURkdwSU9i?=
+ =?utf-8?B?Q1lEQ3ZodmFVcjRSeDUzaE5LdGpwOUw0OTVsb2FJaXF6QnFhSTd1blY1QnhN?=
+ =?utf-8?B?SlVrMVJZcVJNSlVhdnN2QXNzeUh2Zi9jRjJVdldhUVM4VE9CR213bElNVjMw?=
+ =?utf-8?B?OFMvZWd1dGVzeU40VUVoVlhDNWtnTW5FZHYzdUh3OUF6VGYrcEE4MExkUmR2?=
+ =?utf-8?B?RTFBZXVBemNQUCs0NVB2WEIwQVpteHlUWGJTUVN1bWRFWXZSU2ltZ00zamZC?=
+ =?utf-8?B?Nnh4RlFZMjZzdk5abGVyWFJtVjBYcnZva0t3S3l0NzVmdVJLNU1wOWFibnBk?=
+ =?utf-8?B?eU1hSGhtUVF3NzBGUUV6SmowbzlmZjNXUmlTdXovMEhKZmt1VU5tY2xCcGI4?=
+ =?utf-8?B?K0F1VWt3MXhBMWllZmJYeFFxTmtrSHFLTzBCOU1qTFBCUGVyOGx4MUJWSVBk?=
+ =?utf-8?B?eHkyVXVuNlFIUldDTkgwZW1jVmRDbEVvZWI5REFLNlBpRHpCcUx5eWdlRWox?=
+ =?utf-8?B?ZUF2ZndiSUh1Wm5ablJ1OGIrT3ZRNnpJSEJnczNxcVlzaU5MWmg2WC80Vis1?=
+ =?utf-8?B?N3ZIbDVzMW9NKzJ4d3NRaGJYaVZ2UThZSHlqSkphb0J1KzZDaDFTZnFkeXdH?=
+ =?utf-8?B?dzNJK0c3VTlLNWg4cEZYTi9GWHdHaUV6ZVBqYk5XeFBFYTk0bmtCWUk3djRt?=
+ =?utf-8?B?ZytOcW1BL0FKUkJwQ09zSm9laVNoYlE5MllnUTBNa1VOZHVaemF6ZkVmWGZq?=
+ =?utf-8?B?eGkxZU1OU1B4K3RYK1MrZUlGbk0zdE9rOHh5V2dvc2V3emRVamRLZnpsRTdU?=
+ =?utf-8?B?MEZ2VnZhMUNsVVVUaVYxckl5Y204eFh6OHpSSGVsTmE5b3V6czBNdHJaRkNz?=
+ =?utf-8?B?UnVCNkszeDVMVWE2eGRpSkNhZk9ZYmQvNC9KamJMTUcxaDJzZ0RiSW5NNXJZ?=
+ =?utf-8?B?K3dYcjI4SWg0L2FSNUI0cWdpbDRod2xLMFY5ZHRPcWJHRjRPNGFraTNoYjhy?=
+ =?utf-8?B?RHN1V3RFeXNabjV1UUduQ3lvVlJ1RDdNYVJpWGNNaWFicnNCaDNjWm4vSUpV?=
+ =?utf-8?B?eFFhR0MxNEpwN2haQWhvTmN0WitvcDNBYVRTb1pHZFhEVWJqZnYvazhhTlY5?=
+ =?utf-8?B?djAramhCbXpZeEtybUdJcDVEWGd2UmFJSWswbmdzdmV5aDA1VlhxaWhLZllx?=
+ =?utf-8?B?MzdkQkVHMVJZQW9OR00wZENmVTNrNkZXWHRCdWplV3B6azJqaEw0NFN0ckdQ?=
+ =?utf-8?B?T29UUXU3RzY2L1Y2VzRYcUhmV2Vhek9MLzEyUm96YXRqUXF3dXhlTCttTkxj?=
+ =?utf-8?B?a0Fxa2xrNzFyL1RQclBWMW5EVzlRMHkzeFBYYlMxc2Z0MXV2c2Z3R3dla2dm?=
+ =?utf-8?B?dHdudGRzMzRCeFU1UXk3TnBWSHh0TURlLysxY1JSUlNLTEsvOVl0Vmltejdj?=
+ =?utf-8?B?R2hKemR1c2NmaWdrSmJSS2VHNldtU1dFcE11MlBwaHdyZFA1UkdsaGtRS3cy?=
+ =?utf-8?B?cnovUENsYkp2d3dHbW0yazVtOW81YWpuOUdTVHF6dUlxUU1JK0ZhL21RaFNG?=
+ =?utf-8?B?RldGeG5DZlNNR2Q4QUtFaVVDRDlsY1RyQlR3eHQzN0pYZVgvcU1CaUZEWjQ2?=
+ =?utf-8?B?WVhidjNrUnNZR0RHUG1sRllidUY3cnRuQWE0R1l6US8ybTZPSDEyKzh3K1dz?=
+ =?utf-8?B?SnNEU0xnV0NJTUxjUVFlMHRJRkF5ckg1RjFHTmtJS2thTDBoWDJoYVk3S3FR?=
+ =?utf-8?B?eWFxRGJvRDg1bkVTenJHa0M0SS9MZHkrMHJZQUJ3NzNpaGdWRVFSZ0N3Y1kv?=
+ =?utf-8?B?Z2ZkWFJlMG5kOVg2aGRhVWhpWk8vWjhzNi9YRktlN3NxWlUweWJCWitVdnJR?=
+ =?utf-8?B?K21QTjE4NGlnWUpvNFJMSjkxTkpYSFFsWWROQ1IxVjVRcStDc204azhkcHBn?=
+ =?utf-8?Q?RVWEXgCdRhHrBDxaHunQaAB33?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16fda615-4701-4dfb-15a7-08ddf523e9bc
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2025 13:21:15.3002
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TNEjD8TCHxwiCGTlc5MmVbCpwK5JTSx+MumyTcv/tGBEM+MqGIYm6PsrGDyrEmBY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8565
 
+On 02.09.25 06:06, Dave Airlie wrote:
+> From: Dave Airlie <airlied@redhat.com>
+> 
+> This adds support for adding a obj cgroup to a buffer object,
+> and passing in the placement flags to make sure it's accounted
+> properly.
+> 
+> Signed-off-by: Dave Airlie <airlied@redhat.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c    |  2 ++
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_object.c | 13 +++++++++----
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_object.h |  1 +
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c    |  2 ++
+>  mm/memcontrol.c                            |  1 +
+>  5 files changed, 15 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+> index d1ccbfcf21fa..a01fe7594e3a 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+> @@ -198,6 +198,7 @@ static void amdgpu_gem_object_free(struct drm_gem_object *gobj)
+>  	struct amdgpu_bo *aobj = gem_to_amdgpu_bo(gobj);
+>  
+>  	amdgpu_hmm_unregister(aobj);
+> +	obj_cgroup_put(aobj->tbo.objcg);
 
---pXrdOnUKtpdJm8VZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This should probably be in ttm_bo_release() instead and passed in as parameter to ttm_bo_init_reserved().
 
-On Fri, Sep 12, 2025 at 01:52:27PM +0200, Christian Brauner wrote:
-> Use the new extensible_ioctl_valid() helper which is equivalent to what
-> is done here.
+Apart from tha looks good to me.
 
-I'm seeing several LTP tests (at least getdents02, msync04, renameat01
-and statx12) failing in yesterday's -next pending-fixes on Raspberry Pi
-4 with bisections pointing to this commit.  renameat01 fails with:
+Regards,
+Christian.
 
-  renameat01    0  TINFO  :  Using /tmp/LTP_renEtNZrS as tmpdir (nfs filesystem)
-  renameat01    1  TBROK  :  tst_device.c:97: Could not stat loop device 0
-  renameat01    2  TBROK  :  tst_device.c:97: Remaining cases broken
+>  	ttm_bo_put(&aobj->tbo);
+>  }
+>  
+> @@ -225,6 +226,7 @@ int amdgpu_gem_object_create(struct amdgpu_device *adev, unsigned long size,
+>  	bp.domain = initial_domain;
+>  	bp.bo_ptr_size = sizeof(struct amdgpu_bo);
+>  	bp.xcp_id_plus1 = xcp_id_plus1;
+> +	bp.objcg = get_obj_cgroup_from_current();
+>  
+>  	r = amdgpu_bo_create_user(adev, &bp, &ubo);
+>  	if (r)
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> index 122a88294883..cbd09c680d33 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> @@ -159,7 +159,7 @@ void amdgpu_bo_placement_from_domain(struct amdgpu_bo *abo, u32 domain)
+>  		places[c].mem_type =
+>  			abo->flags & AMDGPU_GEM_CREATE_PREEMPTIBLE ?
+>  			AMDGPU_PL_PREEMPT : TTM_PL_TT;
+> -		places[c].flags = 0;
+> +		places[c].flags = TTM_PL_FLAG_MEMCG;
+>  		/*
+>  		 * When GTT is just an alternative to VRAM make sure that we
+>  		 * only use it as fallback and still try to fill up VRAM first.
+> @@ -174,7 +174,7 @@ void amdgpu_bo_placement_from_domain(struct amdgpu_bo *abo, u32 domain)
+>  		places[c].fpfn = 0;
+>  		places[c].lpfn = 0;
+>  		places[c].mem_type = TTM_PL_SYSTEM;
+> -		places[c].flags = 0;
+> +		places[c].flags = TTM_PL_FLAG_MEMCG;
+>  		c++;
+>  	}
+>  
+> @@ -654,16 +654,21 @@ int amdgpu_bo_create(struct amdgpu_device *adev,
+>  		size = ALIGN(size, PAGE_SIZE);
+>  	}
+>  
+> -	if (!amdgpu_bo_validate_size(adev, size, bp->domain))
+> +	if (!amdgpu_bo_validate_size(adev, size, bp->domain)) {
+> +		obj_cgroup_put(bp->objcg);
+>  		return -ENOMEM;
+> +	}
+>  
+>  	BUG_ON(bp->bo_ptr_size < sizeof(struct amdgpu_bo));
+>  
+>  	*bo_ptr = NULL;
+>  	bo = kvzalloc(bp->bo_ptr_size, GFP_KERNEL);
+> -	if (bo == NULL)
+> +	if (bo == NULL) {
+> +		obj_cgroup_put(bp->objcg);
+>  		return -ENOMEM;
+> +	}
+>  	drm_gem_private_object_init(adev_to_drm(adev), &bo->tbo.base, size);
+> +	bo->tbo.objcg = bp->objcg;
+>  	bo->tbo.base.funcs = &amdgpu_gem_object_funcs;
+>  	bo->vm_bo = NULL;
+>  	bo->preferred_domains = bp->preferred_domain ? bp->preferred_domain :
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.h
+> index c316920f3450..8cccbe62e328 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.h
+> @@ -55,6 +55,7 @@ struct amdgpu_bo_param {
+>  	enum ttm_bo_type		type;
+>  	bool				no_wait_gpu;
+>  	struct dma_resv			*resv;
+> +	struct obj_cgroup               *objcg;
+>  	void				(*destroy)(struct ttm_buffer_object *bo);
+>  	/* xcp partition number plus 1, 0 means any partition */
+>  	int8_t				xcp_id_plus1;
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> index f71431e8e6b9..a3fa28e5a43e 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> @@ -151,11 +151,13 @@ static void amdgpu_evict_flags(struct ttm_buffer_object *bo,
+>  			amdgpu_bo_placement_from_domain(abo, AMDGPU_GEM_DOMAIN_GTT |
+>  							AMDGPU_GEM_DOMAIN_CPU);
+>  		}
+> +		abo->placements[0].flags &= ~TTM_PL_FLAG_MEMCG;
+>  		break;
+>  	case TTM_PL_TT:
+>  	case AMDGPU_PL_PREEMPT:
+>  	default:
+>  		amdgpu_bo_placement_from_domain(abo, AMDGPU_GEM_DOMAIN_CPU);
+> +		abo->placements[0].flags &= ~TTM_PL_FLAG_MEMCG;
+>  		break;
+>  	}
+>  	*placement = abo->placement;
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 3d637c7e10cf..e4dc0cc43bc9 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2722,6 +2722,7 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
+>  
+>  	return objcg;
+>  }
+> +EXPORT_SYMBOL_GPL(current_obj_cgroup);
+>  
+>  struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
+>  {
 
-Full log for that run:
-
-  https://lava.sirena.org.uk/scheduler/job/1830765#L6680
-
-bisect log for renameat (all the bisects cover the same builds, though I
-split the jobs up so it's different test jobs for some of the tests):
-
-# bad: [179688318d56cee63802eb49e3503d799c43db6c] Merge branch 'for-linux-next-fixes' of https://gitlab.freedesktop.org/drm/misc/kernel.git
-# good: [f83ec76bf285bea5727f478a68b894f5543ca76e] Linux 6.17-rc6
-# good: [690aa09b1845c0d5c3c29dabd50a9d0488c97c48] ASoC: Intel: catpt: Expose correct bit depth to userspace
-# good: [3254959b4dd065eae396cf78ccc1361460b2f53e] ASoC: amd: amd_sdw: Add quirks for some new Dell laptops
-# good: [9004a450fccbeb40a71cc173747da37a459fd4dc] ASoC: codecs: lpass-wsa-macro: Fix speaker quality distortion
-# good: [ec630c2c8ce215dd365b8c3644f004f645714a0f] ASoC: SDCA: Reorder members of hide struct to remove holes
-# good: [68f27f7c7708183e7873c585ded2f1b057ac5b97] ASoC: qcom: q6apm-lpass-dais: Fix NULL pointer dereference if source graph failed
-# good: [0c28431f6fe13f3a3be0978f79c1a7ae8a93d028] ASoC: SOF: imx: Fix devm_ioremap_resource check
-# good: [28edfaa10ca1b370b1a27fde632000d35c43402c] ASoC: SDCA: Add quirk for incorrect function types for 3 systems
-# good: [35fc531a59694f24a2456569cf7d1a9c6436841c] ASoC: SOF: Intel: hda-stream: Fix incorrect variable used in error message
-# good: [9b17d3724df55ecc2bc67978822585f2b023be48] ASoC: wm8974: Correct PLL rate rounding
-# good: [f54d87dad7619c8026e95b848d6ef677b9f2b55f] ASoC: rt712: avoid skipping the blind write
-git bisect start '179688318d56cee63802eb49e3503d799c43db6c' 'f83ec76bf285bea5727f478a68b894f5543ca76e' '690aa09b1845c0d5c3c29dabd50a9d0488c97c48' '3254959b4dd065eae396cf78ccc1361460b2f53e' '9004a450fccbeb40a71cc173747da37a459fd4dc' 'ec630c2c8ce215dd365b8c3644f004f645714a0f' '68f27f7c7708183e7873c585ded2f1b057ac5b97' '0c28431f6fe13f3a3be0978f79c1a7ae8a93d028' '28edfaa10ca1b370b1a27fde632000d35c43402c' '35fc531a59694f24a2456569cf7d1a9c6436841c' '9b17d3724df55ecc2bc67978822585f2b023be48' 'f54d87dad7619c8026e95b848d6ef677b9f2b55f'
-# test job: [690aa09b1845c0d5c3c29dabd50a9d0488c97c48] https://lava.sirena.org.uk/scheduler/job/1805508
-# test job: [3254959b4dd065eae396cf78ccc1361460b2f53e] https://lava.sirena.org.uk/scheduler/job/1769788
-# test job: [9004a450fccbeb40a71cc173747da37a459fd4dc] https://lava.sirena.org.uk/scheduler/job/1774162
-# test job: [ec630c2c8ce215dd365b8c3644f004f645714a0f] https://lava.sirena.org.uk/scheduler/job/1772919
-# test job: [68f27f7c7708183e7873c585ded2f1b057ac5b97] https://lava.sirena.org.uk/scheduler/job/1772831
-# test job: [0c28431f6fe13f3a3be0978f79c1a7ae8a93d028] https://lava.sirena.org.uk/scheduler/job/1762707
-# test job: [28edfaa10ca1b370b1a27fde632000d35c43402c] https://lava.sirena.org.uk/scheduler/job/1762245
-# test job: [35fc531a59694f24a2456569cf7d1a9c6436841c] https://lava.sirena.org.uk/scheduler/job/1762959
-# test job: [9b17d3724df55ecc2bc67978822585f2b023be48] https://lava.sirena.org.uk/scheduler/job/1758830
-# test job: [f54d87dad7619c8026e95b848d6ef677b9f2b55f] https://lava.sirena.org.uk/scheduler/job/1758090
-# test job: [179688318d56cee63802eb49e3503d799c43db6c] https://lava.sirena.org.uk/scheduler/job/1830765
-# bad: [179688318d56cee63802eb49e3503d799c43db6c] Merge branch 'for-linux-next-fixes' of https://gitlab.freedesktop.org/drm/misc/kernel.git
-git bisect bad 179688318d56cee63802eb49e3503d799c43db6c
-# test job: [4c3c40178b0e1578a3898092cc33ffb2618edc51] https://lava.sirena.org.uk/scheduler/job/1830986
-# good: [4c3c40178b0e1578a3898092cc33ffb2618edc51] Merge branch 'for-next' of https://git.kernel.org/pub/scm/linux/kernel/git/dlemoal/zonefs.git
-git bisect good 4c3c40178b0e1578a3898092cc33ffb2618edc51
-# test job: [78ca913586336540ec12f262c5bdf16f8925de82] https://lava.sirena.org.uk/scheduler/job/1831233
-# bad: [78ca913586336540ec12f262c5bdf16f8925de82] Merge branch 'vfs.all' of https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-git bisect bad 78ca913586336540ec12f262c5bdf16f8925de82
-# test job: [06dd3eda0e958cdae48ca755eb5047484f678d78] https://lava.sirena.org.uk/scheduler/job/1831745
-# good: [06dd3eda0e958cdae48ca755eb5047484f678d78] Merge branch 'vfs-6.18.rust' into vfs.all
-git bisect good 06dd3eda0e958cdae48ca755eb5047484f678d78
-# test job: [a7ec4da2c05c5f8be52c2ac884d5672d0a805ee0] https://lava.sirena.org.uk/scheduler/job/1832263
-# bad: [a7ec4da2c05c5f8be52c2ac884d5672d0a805ee0] Merge patch series "ns: support file handles"
-git bisect bad a7ec4da2c05c5f8be52c2ac884d5672d0a805ee0
-# test job: [670f2f915084d1c53f14d59946011b7645601813] https://lava.sirena.org.uk/scheduler/job/1832304
-# bad: [670f2f915084d1c53f14d59946011b7645601813] nstree: make iterator generic
-git bisect bad 670f2f915084d1c53f14d59946011b7645601813
-# test job: [011090b6c0a97a3aa1f659d670d85bbf0eddbe06] https://lava.sirena.org.uk/scheduler/job/1832355
-# bad: [011090b6c0a97a3aa1f659d670d85bbf0eddbe06] cgroup: use ns_common_init()
-git bisect bad 011090b6c0a97a3aa1f659d670d85bbf0eddbe06
-# test job: [60949057a2e71c9244e82608adf269e62e6ac443] https://lava.sirena.org.uk/scheduler/job/1832402
-# bad: [60949057a2e71c9244e82608adf269e62e6ac443] block: use extensible_ioctl_valid()
-git bisect bad 60949057a2e71c9244e82608adf269e62e6ac443
-# test job: [4d906371d1f9fc9ce47b2c8f37444680246557bc] https://lava.sirena.org.uk/scheduler/job/1832439
-# good: [4d906371d1f9fc9ce47b2c8f37444680246557bc] nsfs: drop tautological ioctl() check
-git bisect good 4d906371d1f9fc9ce47b2c8f37444680246557bc
-# test job: [f8527a29f4619f74bc30a9845ea87abb9a6faa1e] https://lava.sirena.org.uk/scheduler/job/1832550
-# good: [f8527a29f4619f74bc30a9845ea87abb9a6faa1e] nsfs: validate extensible ioctls
-git bisect good f8527a29f4619f74bc30a9845ea87abb9a6faa1e
-# first bad commit: [60949057a2e71c9244e82608adf269e62e6ac443] block: use extensible_ioctl_valid()
-
---pXrdOnUKtpdJm8VZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmjJR5kACgkQJNaLcl1U
-h9CJ4Af+ISZ3lljoI72V72kUBKwG6lq4beym3VICH+8DyjBOtQJqkqIE5OlcUns9
-gY6sqsqpxxIvI+a6v6GPW0eqWuAu36UuvdqjURrMubJCQi6zeT4lYVIgcioh4U4G
-FWmhUV1LC5FGYKc7KfibPRCcggsT/XKqMH88jkIfAYSUiQHyuMZMaiA+vNDdVDK+
-f3ZZj6bKcB6h0wVse+BUtM5+Ha+RIzS4bpK9JNzJqV3pHra6Yg3myz2sd46lT4mg
-5K5amhS9uYN26RZGTr3ioMhuGUywjeyWsLccmtBq/fG+bofT1tEReGLdVC9fsvOO
-wPu0MoWdSMaeA2rJE/z5wrxA2nePqA==
-=6jkN
------END PGP SIGNATURE-----
-
---pXrdOnUKtpdJm8VZ--
 
