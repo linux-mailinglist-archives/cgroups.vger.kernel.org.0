@@ -1,235 +1,123 @@
-Return-Path: <cgroups+bounces-10167-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10168-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFF98B5977D
-	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 15:24:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11971B597E3
+	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 15:40:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF7702A2B35
-	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 13:24:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FC721B28171
+	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 13:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16D4311C1E;
-	Tue, 16 Sep 2025 13:23:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42DC0315D44;
+	Tue, 16 Sep 2025 13:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="1WRfp6Gz"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="w11yYXx+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013005.outbound.protection.outlook.com [40.107.201.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2939315D23
-	for <cgroups@vger.kernel.org>; Tue, 16 Sep 2025 13:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.5
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758029013; cv=fail; b=EjTbxbbr5ly/i8DCGvmqmcauiTI2lV6dX2mkHeRhogzkDM4H3ALD05oTSagdu7gujC+Z9dUdAy8MJcm6bYg7/rXBjVPo2AboKIL3D+/OgykAzc58YgR4AOKTyg+tnV277nq0RVGNuDASNJyZlP+4xJBYWDWeVBk6n+gyeM70ebc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758029013; c=relaxed/simple;
-	bh=6x9LTKcEd4TgqDDxl/xyHB2Oip/pnnp+C9n4lIl8NKI=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=mQgTlvmUGl9Ixsx3g+X57U7TY/qz2jY1OTyPTGvK7rDXPIErjPKNr0dBes9kOnGX3+7avoqsgnCgi7h+Xo3bKc9pVU5EQMN70M9WEDfwEg00SyyQp0xNZ2wFf0F6rMUBdwZT3+BEzRThZslqa5oq8Y4UYDgYzhkFgXxnxdWT7Ek=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=1WRfp6Gz; arc=fail smtp.client-ip=40.107.201.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=v13zbqaO8eK5dJWEwqv9EAabuxcS+0ZO5B3lq3MhWVMAZUsJyTI5plgz+82gMsASF9r3g5nuZWZAoAGuaS5zErFlBJf9mGJa1kyeKCke2YaXf6pPC38cGl4VXqKZUiIua4QL/P/EVzsWjs52VaV+x+Q2nZ38qwaz21nfqYU571ga/mW0mT0zR+318VgwlRQFYEm1D3VE4q0EjRTFIEbaheRPJ2t8A/U0bZoWYvsHCDqtWyFSi+1sUAjzyZmez8rwWKk7o2koc0ixME9SI0PGhjC0UHcjoJXxbzLUemZN5zAHlfmado/u1+iJe4X4yZOu2Wzo1qcByogb4CDB74MJwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9Q5/ufxF6wnoS7QxOBeLKQ6iAQ5JNQu8neOO0zzECAs=;
- b=L4+iCrOObYZ8UasPC637lnj0vDm4LJPELIC4McZSCd7RnLCDiITMcuU/jtdPfyqJquZHyhPTYxxwplNCeF8RESHtLw7BoXO2YvCcjbGiKEdvYDZwOV/uufuC7bvXJ3PtxrcIbKgvUxQRgYbvUcW8Nzv8vf70WpFytrbHo5IMd8E61IOZpX2GBDuqfvRY5lZ6pjVAufhhQrJNGuW50XqwUNcficmhKSu1/pN9LC0e7smWtX0UqKW5eh9V9npnPvk1ajvyH9oZXsFrddIb6lyKaJ/loxzMdaHMwnAxs4Su/EzymOy85phY7pXo7v9Uveak0K7izNcV2O+k8hwabTOy1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9Q5/ufxF6wnoS7QxOBeLKQ6iAQ5JNQu8neOO0zzECAs=;
- b=1WRfp6Gzk2/9oJZgaoFK5UnoOuxxrx9NSuKuo9f/X4VufJfjzG+XxXn/+3sScL5gr1koeg5SEI0b+o4yKTUzM30un6+CJRDMeMf+NT99KGDLTUu+FxeRUtYvOfXHC+3IW0B75Y2nUPgNq+g4gZh31jM4H8Hh5wMSqhcC97Niowo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by MW6PR12MB8958.namprd12.prod.outlook.com (2603:10b6:303:240::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9115.22; Tue, 16 Sep
- 2025 13:23:27 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::46fb:96f2:7667:7ca5%4]) with mapi id 15.20.9115.020; Tue, 16 Sep 2025
- 13:23:27 +0000
-Message-ID: <424eb21a-8f3c-4749-be5b-f3b732fe79fd@amd.com>
-Date: Tue, 16 Sep 2025 15:23:21 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: drm/ttm/memcg/lru: enable memcg tracking for ttm and amdgpu
- driver (complete series v3)
-To: Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org,
- tj@kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>
-Cc: cgroups@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
- Waiman Long <longman@redhat.com>, simona@ffwll.ch
-References: <20250902041024.2040450-1-airlied@gmail.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20250902041024.2040450-1-airlied@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YT4P288CA0062.CANP288.PROD.OUTLOOK.COM
- (2603:10b6:b01:d2::17) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1131A08CA
+	for <cgroups@vger.kernel.org>; Tue, 16 Sep 2025 13:40:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758030018; cv=none; b=Xg7Qn94tgVtUADbUHsg78LsJhRhyAmPusrWYg68moe2D7MdMKHxzK1DuKzzJEXjxKNKHeK37cFBIuQ93sl9BkpOdoHHJ7JsJX0JKkfCwQ2cASwlJKO+4I7s8+lOw6orJ/DiCgHuFWd+DQgwgsM1p9ie5AUwjfliZYsJzCAyiHqs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758030018; c=relaxed/simple;
+	bh=+gio5aL+IW3u8W8SSU4aBeYKAREDBl4pvtVMTW2Fww4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nHvgI2JA3bGgczJ0XgrSx7MYfB96isfY/I1E7MfsMsXjoLXZSeW0++q2glKRpJ+SPKkWD7SG8SJ4ObL5+F5uQ5mSeXQQnw7d8OmBu4Mb04etKS8fs29tXKORx88+cM7ELnIKLDJr2wQBwLW+mm/+H8mUDUs4kk0IqXlsHYTRdY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=w11yYXx+; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3e8ea11a325so3683628f8f.1
+        for <cgroups@vger.kernel.org>; Tue, 16 Sep 2025 06:40:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1758030015; x=1758634815; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mcfExlni0fgEhBakaF+iv8wUB2vTkCFI57QVuCuRuQI=;
+        b=w11yYXx+PJ2S70aQQE6th1BIImCh6AeKdDLfGNuw5UKqoUlQg24eqiqWzz2LuG36Rr
+         St7GLc6KvVp/2vysYpx1BN3l0cAXG/8+P9e80zbhvu/Kg7OAgIdQCFEeLjhmwiKxH+uf
+         p7ihY0EUmz0EaHqBp8WcDF9zuLuLyQk+vBrXeBBCcAVU8+lRgrLuFbvDVAgOIpnGq/Qi
+         TVC8MIaj7CrgWSh+klvGhsiNYl/1fjByc8yKuEVjD/sDV2EDFt/ZzKKNRqEpI7ky3nTm
+         IhtAJC8awvvIPShrMU6xonUvljn1ALrGtZTid0edYRLBXDT+vBY0Tfbmur/QuBe+zHRM
+         wSpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758030015; x=1758634815;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mcfExlni0fgEhBakaF+iv8wUB2vTkCFI57QVuCuRuQI=;
+        b=w1kap9U+kAIBmKzvGXndgnS8Pz4s1pTiODXCBLo2qlbvOlpx/RadxasYJhy/SHiu9K
+         204quwEWRE+FagzDbwY0faaP+Ft7nM0k5/84VeABb/btgbZ6lEF3XfDoQAdJFIXIVjpn
+         PGdJcww61lb7wi9QxVcNiDo98hawRvU7UKf6U829DfkHGftiLdVQE0u016MvxllvHe8G
+         tElK7bRTXTcCpBC9tYLAV3lSgGMYmYB15jEsF/J/VUAH5ZxFZ9eDSBq27AUQWYDZ0nkK
+         BlMsCwkDpax7J2hzEW2zylSqq5amqaCIBGMkdmk91PthcIEIMrPSmZFDhrBfCTuWrOQo
+         101Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUzkrXYQdA40CwWYGO06PGZkszw0pLTbi6B0BbAbgKw85n7qCyj3wU8eQJwvhGXVY01w7g8N9uC@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+bL9yrGkhRsUhLGupHHE7PD5boXy84LyldxlBd9HTqJgwAGeF
+	09HITKtnwqf8YU50FjqYyOCYPWqDLxRBgmnLsuQLEe0anjRjCrTl2tmpHccCoMa9OyI=
+X-Gm-Gg: ASbGnctl23gwmbkUBhblcdIFrZYIHQ0UkSyqdFHGjwRIawt2z9ebKrfCSAYYiyXK2X/
+	rg0j54kr5uOa+C9YCKISpoT27ktLX8KkfKbLz1+cEldqa+1oAiuTKxqAnT0j5nQ24tOA7rWuczk
+	lxPOqn013NepSElfwTfwKhErKQc8H2nm4hQq3KsaAXn1aNY+990vIZJmlMgHDqKQltygYq8aQuA
+	QodVLaArAHl812S9ZYaSmlOdm/+wE3IF/nWpHeoSuImCUEj/DojqJW5rRJSw2+JrAuH10FGwUCa
+	OC/xR0FvK8mzcNhYIXRt3c6lZ9MyFMeM1e2QERHDvzWl5Qy+GKvHKISTKUJW9TJUlA9OuZtPfQL
+	ylcjQorYa1wpDIHPoqiwEWRLPnIY=
+X-Google-Smtp-Source: AGHT+IG8kaWPMWFHbVd4viKfQeFJBGjRKwC9gr1w5fiYvRQ3T/k+ZTU4DWIxru8SYExw4YHgKkL4Vg==
+X-Received: by 2002:a05:6000:2887:b0:3ec:dbcc:8104 with SMTP id ffacd0b85a97d-3ecdbcc8195mr912496f8f.36.1758030014747;
+        Tue, 16 Sep 2025 06:40:14 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-45f31c51e8dsm41553405e9.1.2025.09.16.06.40.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Sep 2025 06:40:14 -0700 (PDT)
+Date: Tue, 16 Sep 2025 16:40:10 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org,
+	Josef Bacik <josef@toxicpanda.com>,
+	Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>,
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
+	Lennart Poettering <mzxreary@0pointer.de>,
+	Daan De Meyer <daan.j.demeyer@gmail.com>,
+	Aleksa Sarai <cyphar@cyphar.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v2 04/33] block: use extensible_ioctl_valid()
+Message-ID: <aMlouk_55OXZv8w5@stanley.mountain>
+References: <20250912-work-namespace-v2-0-1a247645cef5@kernel.org>
+ <20250912-work-namespace-v2-4-1a247645cef5@kernel.org>
+ <02da33e3-6583-4344-892f-a9784b9c5b1b@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|MW6PR12MB8958:EE_
-X-MS-Office365-Filtering-Correlation-Id: ba95ef74-0e16-4772-0e92-08ddf5243843
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?UkZHdlozUkRZakYyWmkzQ0NGZWM1aGlrbTlvSXBSSFNMMFI3bWZoRGNwdnJq?=
- =?utf-8?B?RUVMY1BkTUtNeFBqR2FBL1plcmJ5bWI5bXZQQnowNnNTZThxWnFNS01peDI3?=
- =?utf-8?B?eHh0MXhOd0VKOVJtRUxtSmFpL1JDR0NlcDA4bU12RUxTQ0lxSVZpZ3Rja2Qr?=
- =?utf-8?B?WHJic2Y3VzJPQzhUd1dqcTlEZWhwSDRnMmxKK3oyQjVqWkxTOTExSEl6d2J3?=
- =?utf-8?B?K2cvckwzT0xtU3pVNTkxRTR5bi96S1VmRVRZeDNYMitsTWhvdW9malRObWhS?=
- =?utf-8?B?KzZ3RDZPOEZLRmVjOStzR3F4MjFmeTF4cHRPTkc1TlJpTlNVTmkvTmlwaHNX?=
- =?utf-8?B?QjRaTDdTYmlBZjlpRTU0SjhLS1JNVG1IaWprU25KNXp0dkRtRk5oR3ZtcWZt?=
- =?utf-8?B?OHdUYklFYTZKYzNaZUdnMjUrZExXN2xCRXlUWUZxMzQvOXVmK05mdS8vdWN4?=
- =?utf-8?B?YTZIUDc5NzEyKzY4RzFMaCtoNzZZS01QazVwanVHMzAzc3pBT2VhQTBOcEZH?=
- =?utf-8?B?K09BdDhKeGUvUm1rNUxMUlFLWHNzeHhJdlpRdTRXRXh2ODk0WDlNSjFCOHdn?=
- =?utf-8?B?eVpOTVgxUDAyNVhnSXpLTWR6c25uZ212bDJYYlhhV1NkRVJTYkh2cm9yb1cy?=
- =?utf-8?B?VHYxQXhoUnZUWGRLY2d1d21aUktiUklWU3dYUUVpOTR5cXVoSnduMFlEVE5K?=
- =?utf-8?B?b0lJV1ZleUErTk8rNGxnS01sTm9QdnBUMmhvS2VCd0ZkekEzSk9KUlRpSHlC?=
- =?utf-8?B?bC9RUDFPaWRJZkttbHBsTTl1RVovK0tRNjBjUE9VRzkycFJnVlZiYW1XbWw3?=
- =?utf-8?B?ZGtNQjNZQURlK3QreCtEMENXaUhoNHNLMUxIcU9zYmlmNStLTlZjWFc5TUEr?=
- =?utf-8?B?NFBaUDJrOHAxc29aUFRVM2U0SjRvQS9oa3JXWTlzTVFGZkdYRGpSZ2FpWERO?=
- =?utf-8?B?Y2VueWU0ajZwQm4yT0U0WDZ2Nks4UVAxRjIvbVg3ZmZnSVR6b1M2eEJERWxs?=
- =?utf-8?B?bGsyQU55RlVwQ3pWMzcyRGYzSXRrL2tmMHdNZFJJWW4rTTFSQ3hwaTQ5QlRF?=
- =?utf-8?B?eW02RE1EajdsZ1EwU3A1aDdnaEpSODV6ZU1wZG9uK2FuWWxBcHJ2azZQYW1W?=
- =?utf-8?B?L3RncEhTR2xCVGlkZHlpYmZ4NjJwYzNHTlRzMWY4bmZBM2l4REJHTDVydWMy?=
- =?utf-8?B?K2hIaGErYmVmTGgyRVMzcmRDTWNhcHgyaG9CL2MxR3dYbis4WUk0Vk1Bb3M1?=
- =?utf-8?B?azlzWlNucXUxZGF0dEZETFYxdXVpWWU4amRBVDFTWGxJMlo2KzEvekdnaEt4?=
- =?utf-8?B?cjJtWkJWbmhiQlN4aWNpWnFKd0lsUTVKS3dDeEtIQ0dzS3B3RXdBOTVEckJu?=
- =?utf-8?B?ZWVRY1hXczB5YmlkYjl5eFN3bGNZS1N0ZkQyYjA1cjlaTE05NGRJN054UXNZ?=
- =?utf-8?B?TG5zVTJLVStRanZPclRHMUNkN0Nua3NRT2M0OWRGdHc3bmFHTFRTdlJhd29z?=
- =?utf-8?B?QmJLRkhDRHBQKzg5bEE2V1JkeTNPZTQ1ZnpIWllHLzVzV0YwQmlRSDhHcWVP?=
- =?utf-8?B?R1M1TExUWkdHUzlkemdQaTV4UkxYNDdQU1FKZkROZ3hoNURCRmV6UkllMzhl?=
- =?utf-8?B?Lys3SVhYdkNPb2NVdGlUZFJiWHpNc1pVOVprWEZmSmpySnZiVW9BYkt1YkQ5?=
- =?utf-8?B?cmJzOGIyWmVFR3VaTklXQWJXNGlHZldRSTI5bER5citHVnJENG04d3ZzQzlK?=
- =?utf-8?B?Q0pQRklYNE9yZVR3dVRVQnlxMWNvTE1UVzZobmRZNWJXTTdzbW05M2tqcWxo?=
- =?utf-8?Q?iDQ+2urgzcbdfxps/YL8a0jynBpm1UpiGJOnw=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?d21Jem1MVG5JTEt5bVEyN3picTJMdWY0RlVYSzdMV095dEpzbmRiRmJVMk9Q?=
- =?utf-8?B?aXc5ekI1MDV0Zzd3cjNRWmkxeXljc0dWVVhiekY3YmR0U0lYVC9SNE41cTNW?=
- =?utf-8?B?UVNjclByemM0QWs2WmMyZlNFU1VMVXFUSHFDZTcwREYvai9FdHVWRUZPTDlp?=
- =?utf-8?B?QTF5Z0NxTkJNNTVoZ1dYWE0yZEZyNnVkK29mTFkvL0FuMXozZzRrOHhZcGRz?=
- =?utf-8?B?ZWtvS1ZLaWJmQUp2TTJFdk0waWpmNFZqa0hydHpIWFFBQ1M3ZkdxTno5dzBS?=
- =?utf-8?B?eVVJZVROWllnL2xETnJ3TVdTUktGb0pwTEl6bUZJL2hKQzhTREErTXQ2QlVw?=
- =?utf-8?B?WDVUbWIyVnFuRVBIUHFucUs4TGpkV3NiRkNnSG1FbHJDK1dlbU5KZHpNR2NM?=
- =?utf-8?B?ODJ3dG1RdG1oSXM3dERIbkdxVnNTOHR0WThCUkNYa0lqTXUzTGpZSVMzZElm?=
- =?utf-8?B?U2VJZTZjVFFCM3diSzVMRUc3R3BGQ3RPSXpjanYrbXk3bjBhUzk5ajBVQkI1?=
- =?utf-8?B?Z1djNEEwMFJqUU1RRmNBWmwxVGdjTjQvckIvYVFRcU1hM2FMQVJ2dDF2anNs?=
- =?utf-8?B?MXgxTlBQU1M3NENYc3FJZU5EdjUxYUtlcTRxWkdzano3QWNRa2I0bWg5T2xT?=
- =?utf-8?B?QmZINWw4RlpXZmVoM2lsTFdSV3lPUHFvL0hhaXp0WGVJK2YxN1N2S3BNdlpw?=
- =?utf-8?B?UEVwSy84bnJ5L3BWNnlqYVJYSFJyZGRIMVNoT3RSYXpUVnRPSVZxdHZXdnBs?=
- =?utf-8?B?RlBmbHl6VmZVRWUyVklYQmFZSi91cm1Wd0hDSmI3QkVuSlVmMlBnbTZrdkE2?=
- =?utf-8?B?Z3F3MDZKWGF5MHNxRWkvQWdpakZydE9BeUFpSnRqVWRMd2k0Z2RJNk9nOUhH?=
- =?utf-8?B?cXNpam1RSW5sUEtTRTVSL0NjckRRbDFicDJlOWxNOGFFeW1mR2dDZlo5dXZB?=
- =?utf-8?B?amtoTW4yb3FiL3hhYXdsRkFJcG1vcFRNcUxXc3Yra1NPcThOQ3lUZnE2R1di?=
- =?utf-8?B?NWdRM0x3VkFQQkt3bXZDTXBRaGIwMkMwZ3lCYkp1M3ZIZ25YZVpPTHVwem1t?=
- =?utf-8?B?ZHBYSkY0SGNGeVJONWJlbUlFT0dNL0xmWGdEaXpkSUJ5dVNPMTZMc3JHZTBW?=
- =?utf-8?B?VWliK3A5eW1pQ2dtMWlISTl5dDVtQ3FEYnIzM1FaZzJ6S290US93WEozTkEw?=
- =?utf-8?B?MVc0cFg2QSsyNThRTklaMmhCVk5ER0gxei90RWR6aGVRWGsyNitlTFpvM2tp?=
- =?utf-8?B?VWFaMEcrYzhwbTJhQlF2TTlHWCtUcldIc2xiak1JWWh5UVVMS0pRNG1sS2lF?=
- =?utf-8?B?eHg5dkJ2dkxGQ0E0NCt0VUV3WkcwN2IydExDSFdLa2tlUVkxVDYzUFJZRXQ4?=
- =?utf-8?B?WU5CaVRRK3ExakNVWUpXbGNYb0c3eElYVVdmMmVpWlRTSlpvSTlOaTNWalRi?=
- =?utf-8?B?d280V3NTNGJqK1BNSm5HcHYybFdyTnFia3lkcUFIbllvUXoxaDJjNkRacWRv?=
- =?utf-8?B?a0YrQVFUYkkxSGExangycFh4UG5YOVNWVnFqMXBqaHVoYi9GTXZCbFZSa3oy?=
- =?utf-8?B?M2pWMDV3Zi91c1pJd2NiUXVqME9uTURDSW1Rb084U3p0NnB6eVhyL2lTQkt3?=
- =?utf-8?B?cDNqa2o2bUliVHFqTVVHMG5BeDVBZStvdHRFTWVyY3FkczNoNE5nTldwTmRZ?=
- =?utf-8?B?bTMzK0hnZysvQmJ4WHlubFphV2FjaU5hakdiYzZweExNSFduZlM0YjBmanBx?=
- =?utf-8?B?UzQrNlRNWTBMcDVhR1dsK3MvZ3JXbHJxQlZvVlJUUFo3a3UwY0w3alNzcjFk?=
- =?utf-8?B?SjV2KzlNbCtHQzgrQm9XRlkwQk9KWXV0dlFOSWJiNjkxbUJpUlZSWTFwWWs3?=
- =?utf-8?B?Y1o2UElUcmpDRkJqYTF6OFZ4ZjhIK3B6VW1ZcG1nbXlMNzBDS1pVbzlCekox?=
- =?utf-8?B?aDJzeENKbExQSHZWQmlOWlNyWHFHVjkyNjlKY1AxWU1qVVZzRlJUYmNLTVdH?=
- =?utf-8?B?blRtWmRhMFVJTlkrYWt6aUhyZGtTVUVGTEJGRWo4UEpKQVdVN1dFUzFWSU1E?=
- =?utf-8?B?dkk4QlVHenhSYUpkRHc5M1ZnWVM3YkxnRllGdVNxZUZsNjltcWYyUXB2Vk82?=
- =?utf-8?Q?u1Eu1rYnepsWFVgjqfVovkcxg?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba95ef74-0e16-4772-0e92-08ddf5243843
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2025 13:23:26.9760
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZyzoeFSAYAzq7Kdw5Va3gQL4I/SRbnuQl8DRIOX0Bm0RHmtYM3lGF5Jq6a7idYrI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8958
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <02da33e3-6583-4344-892f-a9784b9c5b1b@sirena.org.uk>
 
-Patches #1, #2, #7, #13 are Acked-by: Christian König <christian.koenig@amd.com>
+Yeah, the:
 
-Patches #3, #5, #8-#9, #12 and #15 are Reviewed-by: Christian König <christian.koenig@amd.com> 
+	if (extensible_ioctl_valid(cmd, FS_IOC_GETLBMD_CAP, LBMD_SIZE_VER0))
+		return -ENOIOCTLCMD;
 
-Minor comment on patches #10/#14.
+test is inverted...  It should be if (!valid) return instead of if (valid)
+return;
 
-I've just noticed that #4 never made it into my inbox. Which one was that?
-
-Regards,
-Christian.
-
-On 02.09.25 06:06, Dave Airlie wrote:
-> Hi all,
-> 
-> This is a repost with some fixes and cleanups.
-> 
-> I'd really like to land this into drm-next, Maarten posted xe support for this and some other work
-> and I think we need to start moving this forward in tree as I'm not sure what else I can really do
-> out of tree.
-> 
-> Differences since last posting:
-> 1. Squashed exports into where they are used (Shakeel)
-> 2. Fixed bug in uncharge path memcg
-> 3. Fixed config bug in the module option.
-> 
-> Differences since 1st posting:
-> 1. Added patch 18: add a module option to allow pooled pages to not be stored in the lru per-memcg
->    (Requested by Christian Konig)
-> 2. Converged the naming and stats between vmstat and memcg (Suggested by Shakeel Butt)
-> 3. Cleaned up the charge/uncharge code and some other bits.
-> 
-> Dave.
-> 
-> Original cover letter:
-> tl;dr: start using list_lru/numa/memcg in GPU driver core and amdgpu driver for now.
-> 
-> This is a complete series of patches, some of which have been sent before and reviewed,
-> but I want to get the complete picture for others, and try to figure out how best to land this.
-> 
-> There are 3 pieces to this:
-> 01->02: add support for global gpu stat counters (previously posted, patch 2 is newer)
-> 03->06: port ttm pools to list_lru for numa awareness
-> 07->13: add memcg stats + gpu apis, then port ttm pools to memcg aware list_lru and shrinker
-> 14: enable amdgpu to use new functionality.
-> 15: add a module option to turn it all off.
-> 
-> The biggest difference in the memcg code from previously is I discovered what
-> obj cgroups were designed for and I'm reusing the page/objcg intergration that 
-> already exists, to avoid reinventing that wheel right now.
-> 
-> There are some igt-gpu-tools tests I've written at:
-> https://gitlab.freedesktop.org/airlied/igt-gpu-tools/-/tree/amdgpu-cgroups?ref_type=heads
-> 
-> One problem is there are a lot of delayed action, that probably means the testing
-> needs a bit more robustness, but the tests validate all the basic paths.
-> 
-> Regards,
-> Dave.
-> 
+regards,
+dan carpenter
 
 
