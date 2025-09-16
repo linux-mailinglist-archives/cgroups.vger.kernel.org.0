@@ -1,101 +1,124 @@
-Return-Path: <cgroups+bounces-10129-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10130-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F4D8B587F2
-	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 00:59:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC51EB58AF2
+	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 03:19:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A8D57A2EBA
-	for <lists+cgroups@lfdr.de>; Mon, 15 Sep 2025 22:57:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 717112A853A
+	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 01:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 189A12DC34B;
-	Mon, 15 Sep 2025 22:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="KRInvItP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52F41A9FA1;
+	Tue, 16 Sep 2025 01:19:41 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ABBA21A420;
-	Mon, 15 Sep 2025 22:59:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F5670808;
+	Tue, 16 Sep 2025 01:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757977149; cv=none; b=O4w5DHWSEmb8HCXc90tM8yynhOwk6/nLsW0T1P28OcFfCUrGlyDq+iWUZVmk8yXx9PMcekV2SG61wJ7zeUDG3cl8/bVeaNuwhkbwAlPaL0JeXnS3BAqvNqsj1kFE9Lj0R7b9s44i9+WFZxrygRZG56ymELC/Cj8EYfIz290dU6k=
+	t=1757985581; cv=none; b=FK91xyo290OWjXJarP4L1cCFkCmmYGKHUpbXyCm7CVSld2C3xjLjZ6bqdlmo/uMGkpN7bvTuI51mr1JSx4iHzHRgafnPv7SAp/K1ESWkf16lMywC2hlASOIWvpoQkTDHxIjIOJQUqF3P4rZ+OlyU8ugLXoLRJK8/ICPrAmxK77Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757977149; c=relaxed/simple;
-	bh=1/okIRx6o6vXJ31CVPKT9oMoMrLI+nwNYwzkdKXP1jw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LLmOal2Iy6ZxqK42X3cpO1nW586wmBXSu03AbyWhNsEU26Fig35XfF7Yd/5efBjB3Yo91IDHOhvoCQiVgxzeLTALH+ZXshTRhNxy/O1e85SapjlqR5aF6UlxqdwochCPFDtdKSniH/iTzU1cDgtnyZQIL8cDU7qg0MmsaUkXMHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=KRInvItP; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=mdyKMuWGpTGQ0ttuPEqL6sr1d5oGlQeSkZeqJKPbKkQ=; b=KRInvItPTiQ7sozyuVsD7co6HF
-	vxfW8ElvkU/dhOCccE2SPJnhwzjpdgiOudDzvaWosTn2ujITQSuhw7alUhf6nk27jQ62/s1P4Z6a2
-	Nu/Y0ZoYsh5JhxpXdsgsugp+acqkD/MgSbHBi0BrV+0J2JdPCPa2X9GoHVyQ2TVK/3Svjx8ag6WFY
-	StuNrAayldaXINOzw97HMRjLYeSQ7d0qfCww1rnvlxGC93WoQiJ/jesCwguey8dI9yVKzoy6kbnsk
-	nR22zsssC3HmfdCm/v0STAhQTazT3X4Zquqfw2qfLCRjHftac+ivCetImKyTataYaGh/WZrTwjYmR
-	4gui8AyQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uyIA2-00000001xLm-0jr3;
-	Mon, 15 Sep 2025 22:59:02 +0000
-Date: Mon, 15 Sep 2025 23:59:02 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-	Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>,
-	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
-	Lennart Poettering <mzxreary@0pointer.de>,
-	Daan De Meyer <daan.j.demeyer@gmail.com>,
-	Aleksa Sarai <cyphar@cyphar.com>, Jens Axboe <axboe@kernel.dk>,
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v2 11/33] net: use ns_common_init()
-Message-ID: <20250915225902.GK39973@ZenIV>
-References: <20250912-work-namespace-v2-0-1a247645cef5@kernel.org>
- <20250912-work-namespace-v2-11-1a247645cef5@kernel.org>
+	s=arc-20240116; t=1757985581; c=relaxed/simple;
+	bh=U8IR5UvODudAhu7jZXRZ8Pcm3iD0tyERJBfX+nm8YNs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=S/YqL6EN6cOB0CfaiZiLtBO9+Dd6lplqZpeOppTr2BrGF+VkT28oTunCyWhBPNlD9HPy4DUcAhuRcB1uxWK6eHFbLwCXoav2PyEGd+ExRHHZUX2mO3De7x/Twrs86QVuA/AbQKXmmHFxXe2NinDSCk8IWwhFYeP5ujqC4QG9Lrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cQkZv5sqZzKHLxP;
+	Tue, 16 Sep 2025 09:19:35 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 6ECFA1A0D19;
+	Tue, 16 Sep 2025 09:19:36 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgDXIY4ku8hoMgGcCg--.12643S4;
+	Tue, 16 Sep 2025 09:19:34 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: tj@kernel.org,
+	josef@toxicpanda.com,
+	axboe@kernel.dk,
+	liangjie@lixiang.com,
+	yukuai3@huawei.com,
+	hanguangjiang@lixiang.com
+Cc: cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	johnny.chenyi@huawei.com
+Subject: [PATCH] blk-throttle: fix throtl_data leak during disk release
+Date: Tue, 16 Sep 2025 09:09:47 +0800
+Message-Id: <20250916010947.2891471-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250912-work-namespace-v2-11-1a247645cef5@kernel.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDXIY4ku8hoMgGcCg--.12643S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw1xZrWrKr4rCFy5AFyxXwb_yoW8XF15pF
+	W5Zw4UKry5CFnrWayUtr13uFW0ka97JryrJ3s0yr4SkrW2kw18twnFvw1UCF4kAFs2yF4f
+	Zr1rtry0yF1qkFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Fri, Sep 12, 2025 at 01:52:34PM +0200, Christian Brauner wrote:
+From: Yu Kuai <yukuai3@huawei.com>
 
-> +	ret = ns_common_init(&net->ns, ns_ops, false);
-					       ^^^^^
-> +	if (ret)
-> +		return ret;
+Tightening the throttle activation check in blk_throtl_activated() to
+require both q->td presence and policy bit set introduced a memory leak
+during disk release:
 
-How would that possibly fail?  You are not trying to grab inum here,
-what's there to fail?
+blkg_destroy_all() clears the policy bit first during queue deactivation,
+causing subsequent blk_throtl_exit() to skip throtl_data cleanup when
+blk_throtl_activated() fails policy check.
 
-> @@ -559,7 +572,9 @@ struct net *copy_net_ns(unsigned long flags,
->  		goto dec_ucounts;
->  	}
->  
-> -	preinit_net(net, user_ns);
-> +	rv = preinit_net(net, user_ns);
-> +	if (rv < 0)
-> +		goto dec_ucounts;
+Fix by reordering operations in disk_release() to call blk_throtl_exit()
+while throttle policy is still active. We avoid modifying blk_throtl_exit()
+activation check because it's intuitive that blk-throtl start from
+blk_throtl_init() and end in blk_throtl_exit().
 
-Ditto.
+Fixes: bd9fd5be6bc0 ("blk-throttle: fix access race during throttle policy activation")
+Reported-by: Yi Zhang <yi.zhang@redhat.com>
+Closes: https://lore.kernel.org/all/CAHj4cs-p-ZwBEKigBj7T6hQCOo-H68-kVwCrV6ZvRovrr9Z+HA@mail.gmail.com/
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ block/blk-cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 7246fc256315..64a56c8697f9 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1539,8 +1539,8 @@ int blkcg_init_disk(struct gendisk *disk)
+ 
+ void blkcg_exit_disk(struct gendisk *disk)
+ {
+-	blkg_destroy_all(disk);
+ 	blk_throtl_exit(disk);
++	blkg_destroy_all(disk);
+ }
+ 
+ static void blkcg_exit(struct task_struct *tsk)
+-- 
+2.39.2
+
 
