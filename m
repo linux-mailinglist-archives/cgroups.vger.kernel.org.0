@@ -1,78 +1,78 @@
-Return-Path: <cgroups+bounces-10151-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10152-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C3ABB58DA5
-	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 06:58:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C30DB58D85
+	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 06:56:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CC6A3BAEC8
-	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 04:56:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 925D27A8CEF
+	for <lists+cgroups@lfdr.de>; Tue, 16 Sep 2025 04:54:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B382F1FC1;
-	Tue, 16 Sep 2025 04:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D43282F28EC;
+	Tue, 16 Sep 2025 04:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VRPVEEEM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JL+Xia8W"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ABB92EFDA8
-	for <cgroups@vger.kernel.org>; Tue, 16 Sep 2025 04:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFBE7289E07
+	for <cgroups@vger.kernel.org>; Tue, 16 Sep 2025 04:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757998187; cv=none; b=RP3wQBaL1u71pHP7zQHhf75WUtbcwYtbc2rsatHRyLIwbh5EgW+QdkzCoO+9XSa9Xdko/mZJTiSQS+xplXZrttg1NLXJzPxDCVBOn1VYyDSvPp9XpCT/6EUNORxuJvX/R1JA9O5F8boxfogc/XoJRjVmITuXD4uynYl2aiHrZEA=
+	t=1757998190; cv=none; b=sTk6kMJWvAzslH/SOBOrAcAHDZHw8+HUsWYVjIVQ92SWE4fJ+ql2jTetz2oiSecL4Loc/lHcQ453EJfeeL6BmrxYzigWS+LTNkGjBPP/FbCIygKVXPLF6V7pn7AzUJ1FbrYEVMsM5Mr4QGywfmimCHSy6+ZveDYH/7f+iXGw0nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757998187; c=relaxed/simple;
-	bh=xZie7XPvdT38eYIBnvXACDOKlp4uDfFQ6p8xkwCAypA=;
+	s=arc-20240116; t=1757998190; c=relaxed/simple;
+	bh=slyVnZPzDDOXEcpF4QZOR3I7YB3yd3f7Gxtzb+FU87Q=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bS3L4HboduxeOJyS98iFcNyOOjd6eIwQBlb+aMtXvCAPqolbCCUt/bYCn1kGkU2V6/ZJpdr73HEFIJlSj3sYPOouca0mKnQWThiljohKRfntMGqA0AiCC6hJU2p8k/lHXLlJzRxzyQ7pFteTTceaQmrY6U7RC3+dlJ5vshqQH68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VRPVEEEM; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version; b=GgBA8tfsbPyJu+OFl77283+dFoEmNxRA6/CxBwN1VEXb60i4kx4Su6wFAcZoZBY5yfxD6q1lotuYaYnbto+3/wiSNsK5pGoX7Wc1jTOXUY+G8G3Up23RER98nntYtImbfjq8drphQO5QFYlUZ+FkvMde/6tswxiRdlowXM8XBhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JL+Xia8W; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-26799bf6a2eso13907425ad.3
-        for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 21:49:41 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-26060bcc5c8so29016665ad.1
+        for <cgroups@vger.kernel.org>; Mon, 15 Sep 2025 21:49:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757998181; x=1758602981; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1757998187; x=1758602987; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6Tcedso9pzLAwLQitmBj+2+6wC4HZyTUiqHFeMdiOi8=;
-        b=VRPVEEEMyPFp1/apdgsdGcdVZa8RyIEDb4oi+MRkYBM99QFUqx8qesncXE5xPiXr4k
-         5EmQzzVM6ROAy9MD5JQWOsyeqzNpcJOOfhDFpvyiLSBzgAVmSV4PpvkG7J3oLLXh3T2t
-         aSGMxXUkZ/sTwLMVvwCxtrd/98Mzai0cB56bcT2QDXO9wehrl8U9zH9CWY9ycecU5qrW
-         lgZghkMXBNPhiPB0dDJ7sUurWKQUnVaHBn61VqMU8sFvJRgf6DYXbUA1UPvggaPVkZ2/
-         wEyAhf8NXX+w9nILAVNf9HZ/dItwjE6ImKe5EZYWjDrUvt9j68hAE0JwgxYdvG9auYLy
-         KGJw==
+        bh=OlYXyo2uZuFo7JhGyy9UUCXJlKeDR2CbpPIjqr5RgpE=;
+        b=JL+Xia8W4uyroTDLgoFXQGcvga86g7+1VEKz2roIDSxQwxKuGGI1kJw0E5mRvO2QSO
+         m/1WcvkXEpAacTm9jy5S7c5V4Dczrr3meBJOyddNip27HVCCCOgthvtb5FLtkxbvF41s
+         iGlUzzPGymDg3T5amMQJm6PDCBR7n+L0ahtyEay0NJYWIu7m2vFg6tr2ajT32yaanfBd
+         xDtJu+c4X/3CeTjTCyDCOh+jJ9IMVyUrOd4EWhGGuGTa3TWSp3+no8CtHQqAuwI3rWWA
+         BuIdQSsCM/Xgm1YsJeGbAazZkNWV/RcrZ3PBFtpntXLtYH4Vrd8FCoda8o0sXcMxI94o
+         +OOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757998181; x=1758602981;
+        d=1e100.net; s=20230601; t=1757998187; x=1758602987;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6Tcedso9pzLAwLQitmBj+2+6wC4HZyTUiqHFeMdiOi8=;
-        b=S4GkAju0QWjGU00NmQkXUlFj23vUrgn4M3f5noBVelXGv9ECsNH2ffG+iPw28Y8RR2
-         n3jlhIoibnhEGJz7nhlq4o380HVPwH9eadwVQPToM0H3WMvVDCD/HY5yVarCCEC4QkBh
-         AeKY7fzsXxRtYdp/DHJgD09Mxda7m1DD58EHNM66m0WxCGf4oYP5jXhIMCR0D1sFqbeE
-         JrgwxxdicEEMn6uBXbOJt1ySk09eDalRW6GIfIhBpksNfxtSuKhj1lwP7gxXNZTyIajg
-         N57PMde0yGDl3h0wcD4fJeAqJ1Or6BMNGrrsFRHqqXV4lExQaXhC4J0/Br3VYZN/VH3L
-         I8pA==
-X-Forwarded-Encrypted: i=1; AJvYcCVTb0cJNuej2RnitdrFgelERVeaoRlPt/LUZkux6JS9u1l26V+z8Qk+Q4RElkYZSupyVKGe8hIH@vger.kernel.org
-X-Gm-Message-State: AOJu0YyS6sryZmHi7bI/0cWkFquh4xU9jj8/qqTOcWE+jPSzE632QBTC
-	8rbTR7IVIWROrDKqem5OJn9xFl/SpbUtwof9zh5Ff9dr7zfVBDV8QWMG
-X-Gm-Gg: ASbGncs5rMpHhDuJJNO34mH20qsc6l62TJ/j2EO7VQwykzLy2dv4LLfIrtaklIJbHO5
-	RRpxxz2iM3j/Itz7XcVVvlgYh1vUMGWhdvFkNAbBp/86rBewQ3l/f10+BZSaMnlCcSvn/BvhBqy
-	s/Czxd8LdE9ZjODyiTPyyeRw8dEe4lVA+HkPuUn7txS79f5f6jqyOigvmyyVnXj+eRSYvo0iXJx
-	nsr7dog7Uv9Trcx+2VxQWJCyxYMftNesTE0txUD+bwbWSBbZgYpDykjk7Au9zEE9Z6uv2pA6uC6
-	7JKO98aJ8Q7JdNwk8ntIoDZGx8nJ1NJvk61njRqAbXZS2y0rvUIFDOpEMd8a/76bATb1Efgce27
-	6EMwVAE5xYTZbetKBWeEnmiAhlOInAm6uQ8wGkiY=
-X-Google-Smtp-Source: AGHT+IEk/DXYOCMhugqpymqTGh+KMlTQeAIuikssxOXlHLYZS5SBPJrXDrKkOxyomJ+DECodEM8EoQ==
-X-Received: by 2002:a17:902:c40d:b0:251:a3b3:1580 with SMTP id d9443c01a7336-25d24cac4eemr191581215ad.6.1757998180587;
-        Mon, 15 Sep 2025 21:49:40 -0700 (PDT)
+        bh=OlYXyo2uZuFo7JhGyy9UUCXJlKeDR2CbpPIjqr5RgpE=;
+        b=UaWs6uX8BwWfu1lllHU6+HSj5ROZ9ASpHLXCf4dgyzVTlHBNHSwVqAH65ZuHYUkWF3
+         YYN/k0826bhNa8c0aT61KCCng77Sq1rCsu9gpyOILXNjH0CV6QuLgWJRAMoZldmLkSFT
+         YqsX0uj5JBx8ouj9AgYv/ePKtTTpU7XyQNif3tjv9MhK2XsOuZBV6Ff6T7QqlbOTXuVs
+         WW4JaowN0/gFQPxjUHHBoc7rHe9UqZVWbblTYA8gCE9ygR+oW/2rrMYRAzwJclmotOiT
+         Qw4OXE+zSbqjVz5iamqCdd6w0sCKQ6j12GqJWwKun5De4PxTx0HhBiA2V+mvOCbI5fsI
+         7lug==
+X-Forwarded-Encrypted: i=1; AJvYcCXxJ87JrkYaC401lAoKs7egHVmvpt8DmlL6XUvQLOr1OLswEafhf3QxMLaepF+rCavhTxSs2iPJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKlIseOmZeg5CbDAwsM8mJce9sUajSCmfyRAwtgqXocZ4/zJ/c
+	Ii4e65uMgtxyyh1QzuR0CTlC6JrvhSw/Z5Rrz+RrulhjZDiw180vhNsU
+X-Gm-Gg: ASbGncvVF6zzziXe6388VBBF2gfx5p8OWZazFRODvElcOOV3DpgehCIChb4wRwp6yf3
+	6zg4pXbJUsmaLkdywSkmjz9Bk1L4IixJvErfyNg1fJFrSdXGliYXIXDWIsqA7rdZxAU8KUHH9c+
+	ma8R1nI6XowCLhqATK+eZWfWqqz8+8lxplOyTO2OkckQyPIms/LIF5aKVdNs2soRAa1ohlbgbe6
+	vvZuZKn9ejPt3jtKy8zJjntWZ0T3MkS9LpshtvhFAPh86rbHjo3JyBvfNKPU0D4QbHF9qs+KIFs
+	olZrs8wdVUecWyYeBxoZd5Iaa/MM2L26Mn9rNf+T2m1FdBQ/1jHsojd5/kbL5aZlOUJKAS/tVvj
+	mEIflj3XhRK4G0/vfpKkCf5VkV5ZZfk7jgo9KkKqjjXXC5iGX6w==
+X-Google-Smtp-Source: AGHT+IFV4zbzh4iycIfH4WDU92suC0bCanMglT0Ogl2GwpwL8kM68NHrYSygkh1AIkIcAzvJhqwslA==
+X-Received: by 2002:a17:903:2f4f:b0:24c:99bd:52bb with SMTP id d9443c01a7336-25d267641camr179941415ad.30.1757998187203;
+        Mon, 15 Sep 2025 21:49:47 -0700 (PDT)
 Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25ef09c77f8sm104600605ad.15.2025.09.15.21.49.34
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-25ef09c77f8sm104600605ad.15.2025.09.15.21.49.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Sep 2025 21:49:40 -0700 (PDT)
+        Mon, 15 Sep 2025 21:49:46 -0700 (PDT)
 From: pengdonglin <dolinux.peng@gmail.com>
 To: tj@kernel.org,
 	tony.luck@intel.com,
@@ -100,12 +100,12 @@ Cc: bigeasy@linutronix.de,
 	linux-s390@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	pengdonglin <dolinux.peng@gmail.com>,
-	Paolo Abeni <pabeni@redhat.com>,
+	"Toke" <toke@toke.dk>,
 	Jakub Kicinski <kuba@kernel.org>,
 	pengdonglin <pengdonglin@xiaomi.com>
-Subject: [PATCH v3 13/14] net: bonding: Remove redundant rcu_read_lock/unlock() in spin_lock
-Date: Tue, 16 Sep 2025 12:47:34 +0800
-Message-Id: <20250916044735.2316171-14-dolinux.peng@gmail.com>
+Subject: [PATCH v3 14/14] wifi: ath9k: Remove redundant rcu_read_lock/unlock() in spin_lock
+Date: Tue, 16 Sep 2025 12:47:35 +0800
+Message-Id: <20250916044735.2316171-15-dolinux.peng@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250916044735.2316171-1-dolinux.peng@gmail.com>
 References: <20250916044735.2316171-1-dolinux.peng@gmail.com>
@@ -130,35 +130,34 @@ been started implicitly by spin_lock().
 
 Simplify the code and remove the inner rcu_read_lock() invocation.
 
-Cc: Jay Vosburgh <jv@jvosburgh.net>
-Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: "Toke" <toke@toke.dk>
 Cc: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
 Signed-off-by: pengdonglin <dolinux.peng@gmail.com>
 ---
- drivers/net/bonding/bond_3ad.c | 2 --
+ drivers/net/wireless/ath/ath9k/xmit.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_3ad.c b/drivers/net/bonding/bond_3ad.c
-index 4edc8e6b6b64..c53ea73f103a 100644
---- a/drivers/net/bonding/bond_3ad.c
-+++ b/drivers/net/bonding/bond_3ad.c
-@@ -2485,7 +2485,6 @@ void bond_3ad_state_machine_handler(struct work_struct *work)
- 	 * concurrently due to incoming LACPDU as well.
- 	 */
- 	spin_lock_bh(&bond->mode_lock);
+diff --git a/drivers/net/wireless/ath/ath9k/xmit.c b/drivers/net/wireless/ath/ath9k/xmit.c
+index 0ac9212e42f7..4a0f465aa2fe 100644
+--- a/drivers/net/wireless/ath/ath9k/xmit.c
++++ b/drivers/net/wireless/ath/ath9k/xmit.c
+@@ -1993,7 +1993,6 @@ void ath_txq_schedule(struct ath_softc *sc, struct ath_txq *txq)
+ 
+ 	ieee80211_txq_schedule_start(hw, txq->mac80211_qnum);
+ 	spin_lock_bh(&sc->chan_lock);
 -	rcu_read_lock();
  
- 	/* check if there are any slaves */
- 	if (!bond_has_slaves(bond))
-@@ -2537,7 +2536,6 @@ void bond_3ad_state_machine_handler(struct work_struct *work)
- 			break;
- 		}
+ 	if (sc->cur_chan->stopped)
+ 		goto out;
+@@ -2011,7 +2010,6 @@ void ath_txq_schedule(struct ath_softc *sc, struct ath_txq *txq)
  	}
--	rcu_read_unlock();
- 	spin_unlock_bh(&bond->mode_lock);
  
- 	if (update_slave_arr)
+ out:
+-	rcu_read_unlock();
+ 	spin_unlock_bh(&sc->chan_lock);
+ 	ieee80211_txq_schedule_end(hw, txq->mac80211_qnum);
+ }
 -- 
 2.34.1
 
