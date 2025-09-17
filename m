@@ -1,92 +1,92 @@
-Return-Path: <cgroups+bounces-10212-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10213-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40F79B8104B
-	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 18:33:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86E3DB81135
+	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 18:45:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 264131C205B8
-	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 16:32:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A61E7B461C
+	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 16:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9517D2FAC00;
-	Wed, 17 Sep 2025 16:32:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559052FB975;
+	Wed, 17 Sep 2025 16:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1X0FB2mM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="908+1eCG";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1X0FB2mM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="908+1eCG"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mBK7gO1t";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RGbVzhw7";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mBK7gO1t";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RGbVzhw7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D426528E5F3
-	for <cgroups@vger.kernel.org>; Wed, 17 Sep 2025 16:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3BA2FAC1C
+	for <cgroups@vger.kernel.org>; Wed, 17 Sep 2025 16:45:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758126721; cv=none; b=RzzLSnV9S3nLaUgJuzg+D/yiwJ1meeQZXug36cp9oJxPR7ddJlw6TsTKqAijOvwNvtMB0pCFgF2TOxeaxaRTKfwyZ7T4D4Nwvuu9xtRv5Wg9PS3RiOKiN02+q4Qy1fqOTyndlEKVJKbyd8yHJJPQFziWt7nn+TolcYgKXXoDRfY=
+	t=1758127524; cv=none; b=uo9/t65q6AZcf4K4sdoLhcoeUQ6WD62HUTm4OMEsfJ6lfngtJKmzR8go/6qfavzGiX3Vtcv0D6OkaFZ0hmS+m2uVPHTo0nbp6x2oxWeRvRKW0iCn80qwYWAsDRA3Wkc0HGc4927Bma1Qml+ZnVu7fFz8EGSp8RhgU6F3wtrbbrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758126721; c=relaxed/simple;
-	bh=b/sX81J63Q/D5xL8SS2bkKQF5x4z5vx2k9v0pU4YPAw=;
+	s=arc-20240116; t=1758127524; c=relaxed/simple;
+	bh=uYUc+SSJCWLgbh/+WRSu9C/gqTvfR7PLujHxWfgfBww=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tlx0Y/xnqLRMQG8ySiXr2+HC3Z2AbD1GazYFaCxYusPUlJ92t1XFwQzdXBceeXDbPEIx6tJl23PBRNV+4IfaMeLktlZErpDl6vkoNh1J8y3HvN3HsMydo46aV9P8C5EW9dPg7TIgIG4HJo1/cSwogVpz3E0qW8mRcb6Bf3NxkQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1X0FB2mM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=908+1eCG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1X0FB2mM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=908+1eCG; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=TYbC+EhC/x8hNMBz+c24y5T4KtrPSu5mEHXxp/SWEoIVk6Kz0KAc1VcBWlfjKD57XwS2DQRiaBO+g/ilVym3DCHP5rsoFlLOU1raGXQKwItqCr3uRnWTGbf/W1NE88/FzXUly+rROLDB2D+YzeblTXS2/6WpBnULgi48nrYOiVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mBK7gO1t; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RGbVzhw7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mBK7gO1t; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RGbVzhw7; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 17AD633C57;
-	Wed, 17 Sep 2025 16:31:58 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 868B920CCF;
+	Wed, 17 Sep 2025 16:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1758126718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1758127520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aL6KHVqrA0+agv7oS7Ez+IbCA7tUmgOwJs7zPgxI9r0=;
-	b=1X0FB2mMj4oEImvp29+3U2d9zUSH37fSBz56gaAfkm3pwa3Fn89MtqftCAK57YgeBbRMb+
-	vRThtzzMOzDr+uDlLH9PHmA0OYya8/X+/+CiONWoJYVjQsf2z7x1noEXoCEcfCVYK0yuRx
-	CrN2SclEOhWT7tKzdaUlRkjAljo3ySk=
+	bh=1Bp8Go5rdsl2s4/DveaRnepGB9XRFDOIIjd/3pjEQhk=;
+	b=mBK7gO1tSk2oJYQTm0Bz/a3POPx8osq5QUAxF6aeOI5JmP2yo8A+1dIF9xosG+5ujgG7la
+	LwQoM7nt6cPOInJPg5iC7nGO1C/tFbm0O9vXUTpW9vfjRAt+LJLV9WwPW4xLQUPWs2BJM1
+	xV2E8e/eUW/MI1RYLTzgA5f3UB866Pc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1758126718;
+	s=susede2_ed25519; t=1758127520;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aL6KHVqrA0+agv7oS7Ez+IbCA7tUmgOwJs7zPgxI9r0=;
-	b=908+1eCGihaZOHuP+g+77+hlOg8IVfCklFBjjUZddW0lrNLP/KXUPWSEiEi0sSXs1FQi20
-	Y1m/lfGBXiDQCxDw==
-Authentication-Results: smtp-out1.suse.de;
+	bh=1Bp8Go5rdsl2s4/DveaRnepGB9XRFDOIIjd/3pjEQhk=;
+	b=RGbVzhw7oZQmfXmQU4x5KrXIFR+1/1xgEdCemVIq0XGEVtkccO6RAaEmPehEidU2ZzLpAc
+	NmQv4dYu/wkmvJBg==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1758126718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1758127520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aL6KHVqrA0+agv7oS7Ez+IbCA7tUmgOwJs7zPgxI9r0=;
-	b=1X0FB2mMj4oEImvp29+3U2d9zUSH37fSBz56gaAfkm3pwa3Fn89MtqftCAK57YgeBbRMb+
-	vRThtzzMOzDr+uDlLH9PHmA0OYya8/X+/+CiONWoJYVjQsf2z7x1noEXoCEcfCVYK0yuRx
-	CrN2SclEOhWT7tKzdaUlRkjAljo3ySk=
+	bh=1Bp8Go5rdsl2s4/DveaRnepGB9XRFDOIIjd/3pjEQhk=;
+	b=mBK7gO1tSk2oJYQTm0Bz/a3POPx8osq5QUAxF6aeOI5JmP2yo8A+1dIF9xosG+5ujgG7la
+	LwQoM7nt6cPOInJPg5iC7nGO1C/tFbm0O9vXUTpW9vfjRAt+LJLV9WwPW4xLQUPWs2BJM1
+	xV2E8e/eUW/MI1RYLTzgA5f3UB866Pc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1758126718;
+	s=susede2_ed25519; t=1758127520;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aL6KHVqrA0+agv7oS7Ez+IbCA7tUmgOwJs7zPgxI9r0=;
-	b=908+1eCGihaZOHuP+g+77+hlOg8IVfCklFBjjUZddW0lrNLP/KXUPWSEiEi0sSXs1FQi20
-	Y1m/lfGBXiDQCxDw==
+	bh=1Bp8Go5rdsl2s4/DveaRnepGB9XRFDOIIjd/3pjEQhk=;
+	b=RGbVzhw7oZQmfXmQU4x5KrXIFR+1/1xgEdCemVIq0XGEVtkccO6RAaEmPehEidU2ZzLpAc
+	NmQv4dYu/wkmvJBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0EA0213A63;
-	Wed, 17 Sep 2025 16:31:58 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 729C31368D;
+	Wed, 17 Sep 2025 16:45:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CS+QA37iymgrMwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 17 Sep 2025 16:31:58 +0000
+	id bx5jG6Dlymj/NgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 17 Sep 2025 16:45:20 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id AEA3DA083B; Wed, 17 Sep 2025 18:31:53 +0200 (CEST)
-Date: Wed, 17 Sep 2025 18:31:53 +0200
+	id F3BCEA083B; Wed, 17 Sep 2025 18:45:11 +0200 (CEST)
+Date: Wed, 17 Sep 2025 18:45:11 +0200
 From: Jan Kara <jack@suse.cz>
 To: Christian Brauner <brauner@kernel.org>
 Cc: linux-fsdevel@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, 
@@ -98,10 +98,10 @@ Cc: linux-fsdevel@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
 	Jakub Kicinski <kuba@kernel.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
 	Frederic Weisbecker <frederic@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, cgroups@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 5/9] nsfs: add inode number for anon namespace
-Message-ID: <yb2ijk5qzgjz6beqk7vub5uzsensvxrcccllwl5dj4swbbwaik@vt2sqwvgkkyz>
+Subject: Re: [PATCH 6/9] mnt: simplify ns_common_init() handling
+Message-ID: <syskz2nr23sqc27swfxwbvlbnnf7tgglrbn52vjoxd2bn3ryyv@id7hurupxcuy>
 References: <20250917-work-namespace-ns_common-v1-0-1b3bda8ef8f2@kernel.org>
- <20250917-work-namespace-ns_common-v1-5-1b3bda8ef8f2@kernel.org>
+ <20250917-work-namespace-ns_common-v1-6-1b3bda8ef8f2@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -110,10 +110,10 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250917-work-namespace-ns_common-v1-5-1b3bda8ef8f2@kernel.org>
+In-Reply-To: <20250917-work-namespace-ns_common-v1-6-1b3bda8ef8f2@kernel.org>
 X-Spam-Level: 
 X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
+	BAYES_HAM(-3.00)[99.99%];
 	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
@@ -135,44 +135,59 @@ X-Spamd-Result: default: False [-2.30 / 50.00];
 	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
 X-Spam-Flag: NO
 X-Spam-Score: -2.30
 
-On Wed 17-09-25 12:28:04, Christian Brauner wrote:
-> Add an inode number anonymous namespaces.
-                     ^ missing 'for'
- 
+On Wed 17-09-25 12:28:05, Christian Brauner wrote:
+> Assign the reserved MNT_NS_ANON_INO sentinel to anonymous mount
+> namespaces and cleanup the initial mount ns allocation. This is just a
+> preparatory patch and the ns->inum check in ns_common_init() will be
+> dropped in the next patch.
+> 
 > Signed-off-by: Christian Brauner <brauner@kernel.org>
 
-Otherwise looks good. Feel free to add:
+...
+> ---
+>  fs/namespace.c    | 7 ++++---
+>  kernel/nscommon.c | 2 +-
+>  2 files changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index c8251545d57e..09e4ecd44972 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -4104,6 +4104,8 @@ static struct mnt_namespace *alloc_mnt_ns(struct user_namespace *user_ns, bool a
+>  		return ERR_PTR(-ENOMEM);
+>  	}
+>  
+> +	if (anon)
+> +		new_ns->ns.inum = MNT_NS_ANON_INO;
+>  	ret = ns_common_init(&new_ns->ns, &mntns_operations, !anon);
+>  	if (ret) {
+>  		kfree(new_ns);
+> @@ -6020,10 +6022,9 @@ static void __init init_mount_tree(void)
+>  	if (IS_ERR(mnt))
+>  		panic("Can't create rootfs");
+>  
+> -	ns = alloc_mnt_ns(&init_user_ns, true);
+> +	ns = alloc_mnt_ns(&init_user_ns, false);
+>  	if (IS_ERR(ns))
+>  		panic("Can't allocate initial namespace");
+> -	ns->ns.inum = PROC_MNT_INIT_INO;
+>  	m = real_mount(mnt);
+>  	ns->root = m;
+>  	ns->nr_mounts = 1;
+> @@ -6037,7 +6038,7 @@ static void __init init_mount_tree(void)
+>  	set_fs_pwd(current->fs, &root);
+>  	set_fs_root(current->fs, &root);
+>  
+> -	ns_tree_add(ns);
+> +	ns_tree_add_raw(ns);
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+But we don't have ns->ns_id set by anything now? Or am I missing something?
 
 								Honza
-
-> ---
->  include/uapi/linux/nsfs.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/include/uapi/linux/nsfs.h b/include/uapi/linux/nsfs.h
-> index 5d5bf22464c9..e098759ec917 100644
-> --- a/include/uapi/linux/nsfs.h
-> +++ b/include/uapi/linux/nsfs.h
-> @@ -53,6 +53,9 @@ enum init_ns_ino {
->  	TIME_NS_INIT_INO	= 0xEFFFFFFAU,
->  	NET_NS_INIT_INO		= 0xEFFFFFF9U,
->  	MNT_NS_INIT_INO		= 0xEFFFFFF8U,
-> +#ifdef __KERNEL__
-> +	MNT_NS_ANON_INO		= 0xEFFFFFF7U,
-> +#endif
->  };
->  
->  struct nsfs_file_handle {
-> 
-> -- 
-> 2.47.3
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
