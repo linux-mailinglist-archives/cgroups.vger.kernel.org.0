@@ -1,54 +1,55 @@
-Return-Path: <cgroups+bounces-10216-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10217-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12ADCB81916
-	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 21:20:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2C69B81BBF
+	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 22:15:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 347DD7B3890
-	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 19:18:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92D1C7B675D
+	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 20:13:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5113002DC;
-	Wed, 17 Sep 2025 19:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7530D2DE70C;
+	Wed, 17 Sep 2025 20:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qr03+UE9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BMiSRl9c"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49485314D0C;
-	Wed, 17 Sep 2025 19:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6552C327E;
+	Wed, 17 Sep 2025 20:15:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758136790; cv=none; b=l20cMfhjsSkdKsX+CsNCQbqiV9nSRrmrwX6vgG9J/kyKD7rre7HC9bbCzABXCG+tojkmMfKXLLn2sopC9Bih0IqFcw1dddWPBwSLmkixRJw6ti4banKsKnzhdchItB+anL+wXqA8C9lVdRnTPz9HnQO7HfM6JNCJs+NdPNtBB+4=
+	t=1758140123; cv=none; b=O2CIdxHEb1RD/yR3fgw4qb4MF3p6f5UD5P/mK4Ls3gic5WoOMRL4u5EBcS6H+VZu/M2YYQIQbvAWNUvD2djn5+7Rj+ALr5kKc8dMYqE697yaNCcrx4ru67M3nFDbDWISExOw94ofH1nFa7t7HPp6FKcp3hsRFLUzO1iZid0UpQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758136790; c=relaxed/simple;
-	bh=8vOSHuxDh5rS2TQSsLVX8UZJhtTlo0eEN9UUzTM1Sms=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Mtz5sw3VRh97kk1q39KRxYo2/rTxFnkLst8mFH0XfX6N8BPhW9eQtypjF5+Gq2UIZuIpFgNfQ4BQZQE/9yaMplAtL22Afq2r5ktL9YDDtAAvKgfAtgdtuDpVZS5upMWMcqvTGN4yiQ/ULFZr6UYTOuUpZApoy3Yfx7qMSGcw5Cw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qr03+UE9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD5BCC4CEE7;
-	Wed, 17 Sep 2025 19:19:49 +0000 (UTC)
+	s=arc-20240116; t=1758140123; c=relaxed/simple;
+	bh=oNFa9hwyHgBlCFAoJzpEdMKYbKIFK/L49C59hxmtHA4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cYeQaIYohTCU5OjEgjcDDwQBgFJENOnZSWehsGtwDPNMAo4KJUvrWjh3O1slxpbd99tv67xDYkSuNbscsFhdeWIhlaLBgmSWA4fst61D8K4nLjU7uPOhNq746uUkwttagOhAofoOAKMhykkJh+jdHgOyIi45r+/uqILqQPtS0lI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BMiSRl9c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86F29C4CEE7;
+	Wed, 17 Sep 2025 20:15:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758136789;
-	bh=8vOSHuxDh5rS2TQSsLVX8UZJhtTlo0eEN9UUzTM1Sms=;
-	h=Date:From:To:Cc:Subject:From;
-	b=qr03+UE9m4rMoVlZL9vwZ0Bu9KwplUd2GH0IqH1Dqhgp1vR7wEiQmMUF6uKg/26+4
-	 iLZfaJWdSPuhtoyQjxzNCLYwl2O0PWpCdwTKs8NC31jvEcQdNFwkjW5rw4cWjtVL56
-	 aaj0P3bvVLw2E1jdTw9CbhVBxA72bITKgsS48h86m+Zz549hiqIRci2rwoEXUXqoaM
-	 omP0W8cNIUZtubCWf3fhi80I+v/Xs1OBdjWje09TS6KULqLK3DaKpf46ywuAI0W0bf
-	 G0tmCCi8uxEwUOZ13px6WrJ5PfyRdwulUuZ4oJckXld12b66mLRKwYiQPs6Y0/920F
-	 GzKczMNZE2S2A==
-Date: Wed, 17 Sep 2025 09:19:48 -1000
+	s=k20201202; t=1758140122;
+	bh=oNFa9hwyHgBlCFAoJzpEdMKYbKIFK/L49C59hxmtHA4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BMiSRl9cupAEXlLYZ10Y8AkHbXas6DM/97kiiMAA39+cVLoT3at12NXW6WlksxgCA
+	 UTxHalJt+Eh6RnrC2YTJp/ftsgRaOnJpA5kJ3r4U+S4pYJRmeo1Qyn5O/Drv4nkbxl
+	 vYok7WbvAZAKyECtDa+I2D9T7RGiuIDOQD+vqN1UFNNlNvTNO1M3eRQTPQhHW0RfNs
+	 sRraLWuPYupxtDEEa/6xG7hpKyalRZpNB7u1pFOsaa5j6o82ysMK3/1zmKaH2fe2jT
+	 dw55dWxbhpnIG3NaKfBt4tSEJQgnhGDfOk2Kg1D7fj9qytu2YMwD2+UQVWmIPfrOOj
+	 Mbg/viwphoL6Q==
+Date: Wed, 17 Sep 2025 10:15:21 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org
-Subject: [GIT PULL] cgroup: Fixes for v6.17-rc6
-Message-ID: <aMsJ1J994GFBkKt7@slm.duckdns.org>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: longman@redhat.com, hannes@cmpxchg.org, mkoutny@suse.com,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	lujialin4@huawei.com, chenridong@huawei.com
+Subject: Re: [PATCH -next 00/11] Refactor cpus mask setting
+Message-ID: <aMsW2WGWrZUm5Qee@slm.duckdns.org>
+References: <20250917060454.2885698-1-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,41 +58,32 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20250917060454.2885698-1-chenridong@huaweicloud.com>
 
-The following changes since commit 6563623e604e3e235b2cee71190a4972be8f986b:
+On Wed, Sep 17, 2025 at 06:04:43AM +0000, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
+> 
+> This patch series refactors the CPU mask configuration logic for both
+> cpuset.cpus and cpuset.cpus.exclusive settings. The primary goal is to
+> improve code readability through comprehensive function restructuring.
+> 
+> The CPU mask update process follows these steps:
+> 1. Parse user input
+> 2. Skip processing if no actual change to CPU mask
+> 3. Compute trial cpuset's effective exclusive CPUs
+> 4. Validate changes and return error if invalid
+> 5. Handle partition state changes resulting from CPU mask modifications
+> 6. Apply new CPU mask to the cpuset
+> 7. Propagate changes through the hierarchy
+> 
+> The series is organized as follows:
+> patches 1-3: Code cleanup and preparation for refactoring
+> patches 4-9: Refactoring of cpuset.cpus configuration logic
+> patches 10-11: Refactoring of cpuset.cpus.exclusive configuration logic
 
-  docs: cgroup: fixed spelling mistakes in documentation (2025-08-12 10:52:28 -1000)
+Applied to cgroup/for-6.18.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.17-rc6-fixes
-
-for you to fetch changes up to 94a4acfec14615e971eb2c9e1fa6c992c85ff6c6:
-
-  cgroup/psi: Set of->priv to NULL upon file release (2025-08-22 07:47:43 -1000)
-
-----------------------------------------------------------------
-cgroup: Fixes for v6.17-rc6
-
-This contains two cgroup changes. Both are pretty low risk.
-
-- Fix deadlock in cgroup destruction when repeatedly mounting/unmounting
-  perf_event and net_prio controllers. The issue occurs because
-  cgroup_destroy_wq has max_active=1, causing root destruction to wait for
-  CSS offline operations that are queued behind it. The fix splits
-  cgroup_destroy_wq into three separate workqueues to eliminate the
-  blocking.
-
-- Set of->priv to NULL upon file release to make potential bugs to manifest
-  as NULL pointer dereferences rather than use-after-free errors.
-
-----------------------------------------------------------------
-Chen Ridong (2):
-      cgroup: split cgroup_destroy_wq into 3 workqueues
-      cgroup/psi: Set of->priv to NULL upon file release
-
- kernel/cgroup/cgroup.c | 44 +++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 37 insertions(+), 7 deletions(-)
+Thanks.
 
 -- 
 tejun
