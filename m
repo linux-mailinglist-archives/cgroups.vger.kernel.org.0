@@ -1,121 +1,124 @@
-Return-Path: <cgroups+bounces-10194-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10195-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78341B7D0A3
-	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 14:16:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29349B7EB72
+	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 14:58:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 209BA17E3A6
-	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 09:50:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B8971C0303A
+	for <lists+cgroups@lfdr.de>; Wed, 17 Sep 2025 10:29:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74445345730;
-	Wed, 17 Sep 2025 09:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0116309F0C;
+	Wed, 17 Sep 2025 10:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fSuYhjIB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="txxfI2C8"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1598884A3E;
-	Wed, 17 Sep 2025 09:50:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 611D6306498;
+	Wed, 17 Sep 2025 10:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758102638; cv=none; b=IhFJoLDj3Abj7EB6k8YepCEXmLpc7sP2caWygZWllac7LIBvT64ff8qLdXPIB+RJnfWNtMdwMgSfwc4QTc7yaz9Yk8ht6gfgMDbtNBR74V/3IJF6fNRHUJURpI0iOibNHjtzjjp9fdC7bL4QHSPbjeQwN2zES9S7CmFdI4wdhUs=
+	t=1758104915; cv=none; b=CIpWOh+XUzgPIm5w2nlJwdLLGa8+CYQ5X6xXbV7BHD3pUGb4Lj60GiYqcRE14XLddAasXoqZCbso7MRydrbJNog7snWIAy3X2BdOwlRGV4LU0b01SAYcRe90HbJ+A5iteW2ShwVmYqlM7FmKdJYIKTBI6C/77Jrl+CfeE9o0cFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758102638; c=relaxed/simple;
-	bh=R8bBc8E+Z3IqtxfpLmr+7QmObySQ+mWruEPNJ7MrlFc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nRMeF4W6ekx/PijDAcV0ISs+X7z2Fnxendp9khd5uOsLWypBXhciz274l4BSp27TOccjsthLtGBKGdXbtUbQpBt4ZhXoZWDFW7PZMzNRCyQgyMu5o0nZVERtxsGUdLsE+Nb0tDKvBgLzt4dp7fsb1xF3BMA8dCjUzHOmtm07ie4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fSuYhjIB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A16DC4CEF0;
-	Wed, 17 Sep 2025 09:50:31 +0000 (UTC)
+	s=arc-20240116; t=1758104915; c=relaxed/simple;
+	bh=6Fbk1AWCJkKzgSUrfIvCQZYtZjMyGsGaw3a7FOb//jc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Xbx3hoqQYwnI80p1kRIoyTIeltL6Nnj5gPsgCZKGXkR7WL7ou3Zqbc9mKYlZkMe2QsDmEfg0HvlQO2APSpfQly4P9/B4hW5x2qF/lPzgLaqt6M4lSOzVdcgPDTgG9QX7Z3i6SY5c2n8fYdazPqxc8jvzoZehZ7KD0F7DADBvQl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=txxfI2C8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC1FDC4CEF0;
+	Wed, 17 Sep 2025 10:28:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758102637;
-	bh=R8bBc8E+Z3IqtxfpLmr+7QmObySQ+mWruEPNJ7MrlFc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fSuYhjIBPQXozMo1k0MYS23BlFjFflyKzb9M1olal1DqbotYr5zJO8l0sSMemANvr
-	 JIZm0E5KcqWHVcq+UJR7QNrEUu2z+Rqrfyhj932a9O2x1WDTMZMU4LHeGU+0J4eyuJ
-	 K4kixSlqEBJGjJYTr3gob3XKckJSRylgsFH58XOdeqYKnyayTN6YBRMdf+fctC4SK3
-	 AWzPoJBDk4fWUyo6RG6EQbGarou/c5TaQLpI7f38fr8zD+Df32I8yfBtDATeVEFvmA
-	 MZx+1PLSxEuhCwUODD21YBZbHLhi2AHw+SNDcQEVNHcWpClXy2uRenMP8fORyCC7zI
-	 kZFU+jQ0ZIGfA==
-Date: Wed, 17 Sep 2025 11:50:29 +0200
+	s=k20201202; t=1758104915;
+	bh=6Fbk1AWCJkKzgSUrfIvCQZYtZjMyGsGaw3a7FOb//jc=;
+	h=From:Subject:Date:To:Cc:From;
+	b=txxfI2C8t9zqn/W6qoRHRsg9YVf+acGtNqdRHEb735n9avqnFj/OnWflHYRI5zujJ
+	 LP7lzkakqsah4XdI3DOIwvjWZmD3z0MBfkLsOJylm5JwwmqsrZtomxw/+i8X176jLN
+	 HcdeCrixaN2qziTTw1+p/it42cuexxbmmc7k8ayaqU5neYpasjr3bWBkaCv5u+We8Y
+	 w+ZEWm5ZjPnTkRoZLA23JMyzVVZ9Q4vcsaGVWRXPb12Qf+8ggIjGf5JXZNX7MuuDIL
+	 hcYVOxrHwI6LGeEi0snKBvdviv0i6MLMi5XmhrcZkLUaQzLmOa0TsKbMoeVe5ZHZYM
+	 RUbGybX1p0uDw==
 From: Christian Brauner <brauner@kernel.org>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>, 
-	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
-	Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
-	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
-	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, Jens Axboe <axboe@kernel.dk>, 
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v2 18/33] mnt: support ns lookup
-Message-ID: <20250917-garten-nirgendwo-f65f951a9268@brauner>
-References: <20250912-work-namespace-v2-0-1a247645cef5@kernel.org>
- <20250912-work-namespace-v2-18-1a247645cef5@kernel.org>
- <20250916035633.GM39973@ZenIV>
- <20250916035949.GO39973@ZenIV>
- <20250916044648.GP39973@ZenIV>
+Subject: [PATCH 0/9] ns: rework common initialization
+Date: Wed, 17 Sep 2025 12:27:59 +0200
+Message-Id: <20250917-work-namespace-ns_common-v1-0-1b3bda8ef8f2@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250916044648.GP39973@ZenIV>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADCNymgC/0WNQQ6CMBAAv0J6dpESisWvGEOWssDGsiVtoiaEv
+ 1u9eJzDzOwqUWRK6lrsKtKTEwfJoE+FcgvKTMBjZlVXtak6fYFXiA8QXClt6Agk9S6saxAw1nR
+ Na6lxxqisb5Emfv/St3vmARPBEFHc8g2GyDMLoPfnf60ttS0n9tTn9+izfBwfSuxwbKMAAAA=
+X-Change-ID: 20250917-work-namespace-ns_common-5859468e4c55
+To: linux-fsdevel@vger.kernel.org
+Cc: Amir Goldstein <amir73il@gmail.com>, Josef Bacik <josef@toxicpanda.com>, 
+ Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
+ =?utf-8?q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, 
+ Lennart Poettering <mzxreary@0pointer.de>, 
+ Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, 
+ Frederic Weisbecker <frederic@kernel.org>, 
+ Thomas Gleixner <tglx@linutronix.de>, cgroups@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+ Christian Brauner <brauner@kernel.org>
+X-Mailer: b4 0.15-dev-56183
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1854; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=6Fbk1AWCJkKzgSUrfIvCQZYtZjMyGsGaw3a7FOb//jc=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSc6vWNbnF/+9Yg77h7kTXXB3Ym/ea313JzGpeLJOc0n
+ jsT8+JsRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwETelzD8Uym6IFzs6r0gkofh
+ xBlFXe7Db38+OCTS/Vjr5YZ3rAXMiQz/q4sXba/ZVbDqaK25rIJSS4m8CePqL5tsrruWiu0WD87
+ lAQA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-On Tue, Sep 16, 2025 at 05:46:48AM +0100, Al Viro wrote:
-> On Tue, Sep 16, 2025 at 04:59:49AM +0100, Al Viro wrote:
-> > On Tue, Sep 16, 2025 at 04:56:33AM +0100, Al Viro wrote:
-> > > 	if (!RB_EMPTY_NODE(to_ns_common(ns)->ns_tree_node))
-> > 
-> >  	if (!RB_EMPTY_NODE(&to_ns_common(ns)->ns_tree_node))
-> > 
-> > obviously...
-> 
-> FWIW, how about the following - I put the commit below into never-rebased
-> branch, pull it into #work.mount and you do the same to your branch
-> just prior to 18/33?  The difference from one in #work.mount is that
-> this variant checks RB_EMPTY_NODE(&ns->mnt_ns_tree_node) instead of
-> list_empty(&ns->mnt_ns_list).  The reasons why it's safe lockless are
-> pretty much the same...
-> 
-> Objections?  Does vfs/vfs.git #no-rebases-mnt_ns_tree_remove look sane
-> for you?
+The current scheme still involves a lot of open-coding and copy-pasing
+and bleeds a lot of unnecessary details into actual namespace
+implementers. Encapsulate it in the common helpers and simplify it all.
 
-Perfect, thank you!
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+Christian Brauner (9):
+      uts: split namespace into separate header
+      mnt: expose pointer to init_mnt_ns
+      nscommon: move to separate file
+      cgroup: split namespace into separate header
+      nsfs: add inode number for anon namespace
+      mnt: simplify ns_common_init() handling
+      net: centralize ns_common initialization
+      nscommon: simplify initialization
+      ns: add ns_common_free()
 
-> 
-> mnt_ns_tree_remove(): DTRT if mnt_ns had never been added to mnt_ns_list
->     
-> Actual removal is done under the lock, but for checking if need to bother
-> the lockless RB_EMPTY_NODE() is safe - either that namespace had never
-> been added to mnt_ns_tree, in which case the the node will stay empty, or
-> whoever had allocated it has called mnt_ns_tree_add() and it has already
-> run to completion.  After that point RB_EMPTY_NODE() will become false and
-> will remain false, no matter what we do with other nodes in the tree.
->     
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> ---
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index ae6d1312b184..39afeb521a80 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -187,7 +187,7 @@ static void mnt_ns_release_rcu(struct rcu_head *rcu)
->  static void mnt_ns_tree_remove(struct mnt_namespace *ns)
->  {
->  	/* remove from global mount namespace list */
-> -	if (!is_anon_ns(ns)) {
-> +	if (!RB_EMPTY_NODE(&ns->mnt_ns_tree_node)) {
->  		mnt_ns_tree_write_lock();
->  		rb_erase(&ns->mnt_ns_tree_node, &mnt_ns_tree);
->  		list_bidir_del_rcu(&ns->mnt_ns_list);
+ fs/namespace.c                   | 16 ++++++----
+ include/linux/cgroup.h           | 51 +------------------------------
+ include/linux/cgroup_namespace.h | 56 ++++++++++++++++++++++++++++++++++
+ include/linux/mnt_namespace.h    |  2 ++
+ include/linux/ns_common.h        | 43 ++++++++++++++++++++++++++
+ include/linux/proc_ns.h          | 21 -------------
+ include/linux/uts_namespace.h    | 65 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/utsname.h          | 58 +----------------------------------
+ include/uapi/linux/nsfs.h        |  3 ++
+ ipc/namespace.c                  |  6 ++--
+ kernel/Makefile                  |  2 +-
+ kernel/cgroup/namespace.c        |  4 +--
+ kernel/nscommon.c                | 25 ++++++++++++++++
+ kernel/pid_namespace.c           |  6 ++--
+ kernel/time/namespace.c          |  4 +--
+ kernel/user_namespace.c          |  6 ++--
+ kernel/utsname.c                 |  4 +--
+ net/core/net_namespace.c         | 23 ++------------
+ 18 files changed, 225 insertions(+), 170 deletions(-)
+---
+base-commit: bf56a464f4ad7143c6e4b581b411f682f345a344
+change-id: 20250917-work-namespace-ns_common-5859468e4c55
+
 
