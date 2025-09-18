@@ -1,101 +1,87 @@
-Return-Path: <cgroups+bounces-10265-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10266-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D9E9B85E2C
-	for <lists+cgroups@lfdr.de>; Thu, 18 Sep 2025 18:05:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37B39B85E3D
+	for <lists+cgroups@lfdr.de>; Thu, 18 Sep 2025 18:06:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AED7E189319F
-	for <lists+cgroups@lfdr.de>; Thu, 18 Sep 2025 16:00:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 578D03BA8E3
+	for <lists+cgroups@lfdr.de>; Thu, 18 Sep 2025 16:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162412FBDF8;
-	Thu, 18 Sep 2025 15:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB46313D4E;
+	Thu, 18 Sep 2025 16:02:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p4SvCXod"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEcPNDJz"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0DFF23C8AA;
-	Thu, 18 Sep 2025 15:59:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336D5221546;
+	Thu, 18 Sep 2025 16:02:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758211175; cv=none; b=MvHZ+khm8qpxwnRqhOc5QdP5n4EC0AAO1aoAoSzFZCttNBVkcFbJqCq4Fvooeau2NS77GNjxfSAKw8oqbUA2dmCOcjGYZTJSUzArifOn0Byd3n4cM3eSdotN+xFIYxtS4JAPlMVw7GTLkH6LvN2lWWT8B7C3zQ6BX+wU7Eckk1Y=
+	t=1758211364; cv=none; b=oUStM0zIMUj6dkTMgcum7FBJuxOPgTmr5W3u+WBnUvLW9BpaXLFD8K8FGcnojZAlAc7+TjVlCMiSKioPANE0IzqV7ftG27biSBkpRhwYSV7xt+ZnAjHmpX1Z3YAuPKoVr5z5adUiGGW+YA3p+ayNC1eVjbPoVf4jAKnMIuJLk1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758211175; c=relaxed/simple;
-	bh=aQuwObe4h1vc7cwntcxYpwoRZI7cY+TDd5U2RVXloxM=;
+	s=arc-20240116; t=1758211364; c=relaxed/simple;
+	bh=IivB8AXYvbvkTVSSpjLIk3suZxjGmXbht1xnX6maREA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lBXK5FmdWtgabAzWthx7+0dDL4gkHGdIJ5Vvq4UQ5jp+qyyJYLEQjsKWO/P7s6r1ydgLe6jMv1gEtYUhtn4Dc/K3MreQEE8yv3oOY4nL45AKm1KhvwRm+D9AMLtAxlQ9DpoDcGwIzlh+3S1Z5to3cuYya+CXMMcoVulmX13fs4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p4SvCXod; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 595C0C4CEEB;
-	Thu, 18 Sep 2025 15:59:35 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=d9yBFh/ZweNu3hRGjsPlo/l1WIYCKL//4AI9gOsN9VH6c2DspmuZevL6+qPwVqxwbfbRzK2CCOQxWWaiqlKdulZkcwKsUDU6Wx17Lhtr6UIfQmZCE3XhdDA5eCSciiPd3j4aRuNUHfKV8pnyxEn0MwkM6AamdL9wrvwrpSLIxjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AEcPNDJz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1633C4CEEB;
+	Thu, 18 Sep 2025 16:02:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758211175;
-	bh=aQuwObe4h1vc7cwntcxYpwoRZI7cY+TDd5U2RVXloxM=;
+	s=k20201202; t=1758211364;
+	bh=IivB8AXYvbvkTVSSpjLIk3suZxjGmXbht1xnX6maREA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p4SvCXodRR6tWrtsFbq9rIfAjPOhlvM4JzV4+osPtgzRvKe04XOz6xSaUWik4o7Zd
-	 QKdhj+a+oTtOZuHMSGad2LlojtyHIyvboWeQEFLBg8+W3wXtHRbbwUGjl5Kgs6uBPQ
-	 8BCbgyF60NINxfL9WVNs9hhTZQ6jXiaPCtDoWrqdWJd1ZTw7gVJDq3opa0FVHvUZOQ
-	 +ClAxELjOs0ITi5mCNBwDZk8V0AywnzkAMGs/gdg7QEokpwlPwcqrH+ZqNnwulHqq2
-	 aeUl/XS6BnL0eutEMklBHXi3VA7zNHkOcAbl+poqgklFe/mQ1fJHmHg3ql0F9WHyxd
-	 2T4lKdQSBEG3w==
-Date: Thu, 18 Sep 2025 05:59:34 -1000
+	b=AEcPNDJzUB3Hs4On0rA3n0f3Ol8FNKZ0UlUmB0tkyM2hrgspMOO8Tm2XbiuriGKIN
+	 Ubh6VrJ5ORyIpaX9LjrZniUV0a78U3erbGk5XIp1vnIZ3g0y1pXK9Vxs7mMs5JWXZX
+	 jTrlMVw93PiNQ1eFWre42WQa2xVmpG2QQKKmqA/dmJpjHOPKHrf/wn9DpfjJNpFdEk
+	 fB1lmKCEr+sVH1IrgNiJYaokPAa5vshFfk3ttlcIVY4d5YEu/6ewQSrCeCVUcgad++
+	 J8n97wj+YqiJCPLQcSV+acT1YvUAvXA80Fw/0UIlFDyOlFn6fQshL95iKQnzZnJ3ox
+	 fJzfeK130jkdw==
+Date: Thu, 18 Sep 2025 06:02:43 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Bagas Sanjaya <bagasdotme@gmail.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	Linux Documentation <linux-doc@vger.kernel.org>,
 	Linux cgroups <cgroups@vger.kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v3] Documentation: cgroup-v2: Replace manual table of
- contents with contents:: directive
-Message-ID: <aMwsZism0R-ZHLkq@slm.duckdns.org>
-References: <20250918074048.18563-2-bagasdotme@gmail.com>
- <aMwo-IW35bsdc1BM@slm.duckdns.org>
- <ul3hrtvui3wuvchludb67wy7kahsroclvppssmeuqrfwieyfv4@vd3gbuuda2xq>
+	Andrea Righi <arighi@nvidia.com>,
+	Johannes Bechberger <me@mostlynerdless.de>,
+	Changwoo Min <changwoo@igalia.com>,
+	Shashank Balaji <shashank.mahadasyam@sony.com>,
+	Ingo Molnar <mingo@kernel.org>, Jake Rice <jake@jakerice.dev>,
+	Cengiz Can <cengiz@kernel.wtf>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v2 4/4] Documentation: cgroup-v2: Sync manual toctree
+Message-ID: <aMwtI44JEXFuNPA5@slm.duckdns.org>
+References: <20250915081942.25077-1-bagasdotme@gmail.com>
+ <20250915081942.25077-5-bagasdotme@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ul3hrtvui3wuvchludb67wy7kahsroclvppssmeuqrfwieyfv4@vd3gbuuda2xq>
+In-Reply-To: <20250915081942.25077-5-bagasdotme@gmail.com>
 
 Hello,
 
-On Thu, Sep 18, 2025 at 05:55:07PM +0200, Michal Koutný wrote:
-> On Thu, Sep 18, 2025 at 05:44:56AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> > I don't think I'm going to apply this. Sure, it can get out of sync but I'd
-> > rather have TOC which sometimes is a bit out of sync than none at all.
+On Mon, Sep 15, 2025 at 03:19:27PM +0700, Bagas Sanjaya wrote:
+> Sync manually-written toctree with actual list of sections in the
+> automatically-generated counterpart.
 > 
-> The TOC is in the generated output :-p
+> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-I know it's tongue-in-cheek but one big benefit of the doc format we use is
-that these are still very readable as a plain text document. In general, I
-don't want to make changes that worsens plain text accessibility.
+This doesn't apply to cgroup/for-6.18. Can you please respin?
 
-> I understand you want this "[PATCH v2 4/4] Documentation: cgroup-v2: Sync
-> manual toctree" [1], which is also fine.
-> But I'd drop this "[PATCH v2 2/4] Documentation: cgroup-v2: Add section
-> numbers" [2], because that adds more places for out-of-syncness.
-> 
-> [1] https://lore.kernel.org/lkml/20250915081942.25077-5-bagasdotme@gmail.com/
-> [2] https://lore.kernel.org/lkml/20250915081942.25077-3-bagasdotme@gmail.com/
-
-Sure, that makes sense. Will apply [1].
-
-Thanks
-
----
-tejun
-
-Thank.s
+Thanks.
 
 -- 
 tejun
