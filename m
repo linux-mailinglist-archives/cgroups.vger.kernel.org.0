@@ -1,201 +1,240 @@
-Return-Path: <cgroups+bounces-10227-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10228-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BA6FB82C6E
-	for <lists+cgroups@lfdr.de>; Thu, 18 Sep 2025 05:41:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B33B1B82E13
+	for <lists+cgroups@lfdr.de>; Thu, 18 Sep 2025 06:22:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0F2C7A5ED7
-	for <lists+cgroups@lfdr.de>; Thu, 18 Sep 2025 03:39:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CA204A3785
+	for <lists+cgroups@lfdr.de>; Thu, 18 Sep 2025 04:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65DD23C506;
-	Thu, 18 Sep 2025 03:40:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2F4221544;
+	Thu, 18 Sep 2025 04:22:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cyphar.com header.i=@cyphar.com header.b="big4Eoc6"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Fi9XWkQM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f48.google.com (mail-yx1-f48.google.com [74.125.224.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF6D14B06C;
-	Thu, 18 Sep 2025 03:40:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5710881E
+	for <cgroups@vger.kernel.org>; Thu, 18 Sep 2025 04:22:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758166853; cv=none; b=uCgAExDAX9vpLT3+miNlZz5xqFPooFFnt2a77YtT8slrBZr9yY2bpauZ9TfVI/F6T045pYEKNikYA2yNEQadTkK25k6k5QNaWEV+ZFD+OC7mTOIBDM1XjdUQGwfgPZXky7ICgZytQOsnpnLAUsdyKmAy+dGuKOhiNy3S29eHp/E=
+	t=1758169369; cv=none; b=lza6h54emiewpCvhqhrJAWEFLwg6LEx0RQ5xRbDIkKUR8sO8VJSwac/yAXRAsrFGF1QfTKrzMX9C72XvwEfYSxhrqHQVsTC+pGNaKZNLMjva7HER/Wh9+Am7p8SdZt+tDnI++VAAhrERg19akN++QxN7TBkFpB6zRcJXtoKdwJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758166853; c=relaxed/simple;
-	bh=yT3K8uBlaTZ4oRUfArIJX6RgDQSVHzMNclhTow/TmcE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AKYHvAaaWn7oaIhitT7y6Uor4Icp/GYYmJibIkfA64qXXcPRno5aE6RMe/i4jQe9aBlLuPNujtdgp3TA63kXIDjGJLY26+3Rg5HeM6REjPpkztvqguwZDP+qSnXsNP5spj07E1Sos5UAbt6roWaUULikQB8TMSn7VyulgzQ3Cyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cyphar.com; spf=pass smtp.mailfrom=cyphar.com; dkim=pass (2048-bit key) header.d=cyphar.com header.i=@cyphar.com header.b=big4Eoc6; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cyphar.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cyphar.com
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4cS1cm4XT6z9slX;
-	Thu, 18 Sep 2025 05:40:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
-	t=1758166840;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yT3K8uBlaTZ4oRUfArIJX6RgDQSVHzMNclhTow/TmcE=;
-	b=big4Eoc6bqe9q6T1qfJlYA+OdrIwGvvsbDSKl3AuavBpgBdtZE80XTg558Tgu7XEEM8GOu
-	4HUYEXX3fg4YSlTHkbhSzBpl4q+It3vCwD8MPvGv+yvT3h/qqjzlnM6zyF0rYqbmgws1wp
-	izbsOl3m35zhbv9k5i+H5sufoIWJ5Zx22JTz5VfKjy2MPYp0thT/hpGB6m5bKMiCSc4vxo
-	fup1hwDmgk7OLk1BJPCqqYzVpItRsxz5QsfkOyTs5OQi0OIBGdsZDEkui+UTHKBiwFi8J2
-	7Jl+u7/uXJro9unpSw3pyztLb2ULxy77hNAqJxuLy2ZwfGguHTyBWmYb5gA+oA==
-Date: Thu, 18 Sep 2025 13:40:20 +1000
-From: Aleksa Sarai <cyphar@cyphar.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>, 
-	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
-	Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
-	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
-	Daan De Meyer <daan.j.demeyer@gmail.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	netdev@vger.kernel.org
-Subject: Re: [PATCH 27/32] nsfs: support file handles
-Message-ID: <2025-09-18-onyx-sunny-pleats-turbans-lW2ejZ@cyphar.com>
-References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
- <20250910-work-namespace-v1-27-4dd56e7359d8@kernel.org>
- <CAOQ4uxgtQQa-jzsnTBxgUTPzgtCiAaH8X6ffMqd+1Y5Jjy0dmQ@mail.gmail.com>
- <20250911-werken-raubzug-64735473739c@brauner>
- <CAOQ4uxgMgzOjz4E-4kJFJAz3Dpd=Q6vXoGrhz9F0=mb=4XKZqA@mail.gmail.com>
- <20250912-wirsing-karibus-7f6a98621dd1@brauner>
+	s=arc-20240116; t=1758169369; c=relaxed/simple;
+	bh=Ru2G+wzqfu+8Ies7WiStQjgGukOGhgoTbUo3LPNAcW8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u52qzT8iK7M34TJksid7OTEA40lB/ZxXoKqf2seR93PuEYEfXUuRt32fzEQ0Yr3Ai5ddlI0nrAnPHPjU+PnZdz+cEqe7d/45HqMk3mUbSZ8DYi7vL48wpMfNO8V8jC3sDdJ4zh0SVxL39QL1RNwUb3YIbMdMnLJH7gzRYMrXC5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Fi9XWkQM; arc=none smtp.client-ip=74.125.224.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-yx1-f48.google.com with SMTP id 956f58d0204a3-62ef0cd926dso167638d50.0
+        for <cgroups@vger.kernel.org>; Wed, 17 Sep 2025 21:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1758169367; x=1758774167; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m5pp/oS3nVAP+usoANTjckqknf/ZBESQ3tB7xPv6m/A=;
+        b=Fi9XWkQM90yTq6A5lm8xyf+e+cCFR2TOmc+OfyFGh5a4aLPFMmoUAHU/KZyGn6anSR
+         PB10Vs6TwiQxCITAc6UQJ83+v4E2sPcQZpeLhuU0WL43wBPJ1Ka08oMjn9AXM6yGhSIN
+         qLfzF+Ke0I1NIQdxYEeqL2t6Xp1oX6UhdE6Ewxg86NVOFQKqwGMZe+oLejKtPlhCA/8u
+         zxRn2ImNRLJRqjoLpS18EINfB03bJ0/6rE0iLTHLJCz95d2M3PQ5CBALki5xXlOwaFu+
+         EtzDzx+UDIW/WZN68M36NJSHdTRpUm9MRGsbvmpXPCPFX4XozMNq/wJoulbEhitzH4Lj
+         p8BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758169367; x=1758774167;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m5pp/oS3nVAP+usoANTjckqknf/ZBESQ3tB7xPv6m/A=;
+        b=bAQI/D0codDv2N81N73tj5elTpNpj5lIZcDuTJ3Awjzzy4v8EnAj590M2YBorQ9diX
+         v505e6KEOnjncDgSaJ0rq9fJfb4PrKJa7LgaqIC3lvx23eF26QYDsUG1WXL+6AQ4GbN3
+         FHWcjrUXjkeiN8Ih8u7Dp22KI5fJ+rh+En9wAUJM2ung85SJL7giSX2yV83vcINlyWtV
+         cg1Km+oEGHwTLTKjHoVkAooUEhcVtVJ36B+2DvOHzpl9vN8KzuJw5NQ0MmiFXWcx+JXv
+         QP2r8wKFm5fbZy+CEYEc53PgpZ040fCz4spZsbXzHpWsD+n3kNLIKsgEjFSD6lnTEZoT
+         YRKQ==
+X-Gm-Message-State: AOJu0Yz+FyeZBrR0enRtmXKZFuwCFen4ZrvHsm00BMVOkXW33A6u4tLu
+	AaoSAH0Yze+iLaSlt6JkW2kIcLwFZWLQMiTPp3TgVA1NqeKjKdTrbAaoJkKYqyNxVvS9Xva4MQ7
+	nyW9zOBeKpFAB8bAlymaUNQ81VNETtLeQe86rY6CLLA==
+X-Gm-Gg: ASbGncvYz3mdR411aezNYXC2on/RG+qd0I0taJ6n7LQ8kwX9aKR37xVN4fsN949I5E/
+	5WxYHGyFgqb/fSZu2CAhZPTrFTZ/4O6demkTkKuRrZCQObpE5QTgxuunoRmvJxTmZ12qqZVOAAR
+	fgfAGIRVnxxmtYOHxd7TThxmP2YKwBD8J21j+k6KejVCgEn+vw5n65jcxPFkHQnXRetnBtXTe4o
+	CrxeZGSoBYv6W9WgwmArplNoxta6jBo2cF9JPd67S+iCw==
+X-Google-Smtp-Source: AGHT+IH1+pFBZYesJAGB/eDlyPRl1lwhllXbWPu8DzgLWXG1lUHj/S0Zkn6lerF5ywoX/cS1ZFItEI0As+9HXKQT3ss=
+X-Received: by 2002:a05:690e:d48:b0:629:ec90:c456 with SMTP id
+ 956f58d0204a3-633b06a5a8cmr2982235d50.23.1758169366517; Wed, 17 Sep 2025
+ 21:22:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="d2xgw3mufvo5akdl"
-Content-Disposition: inline
-In-Reply-To: <20250912-wirsing-karibus-7f6a98621dd1@brauner>
-
-
---d2xgw3mufvo5akdl
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
+References: <20250917212959.355656-1-sunjunchao@bytedance.com>
+ <20250917152155.5a8ddb3e4ff813289ea0b4c9@linux-foundation.org>
+ <CAHSKhtdt9n-K6KGXTwofpRPo-pH0-YoKFLtEe3Z4CszmNL0rCg@mail.gmail.com> <20250917202606.4fac2c6852abc5ba8894f8ee@linux-foundation.org>
+In-Reply-To: <20250917202606.4fac2c6852abc5ba8894f8ee@linux-foundation.org>
+From: Julian Sun <sunjunchao@bytedance.com>
+Date: Thu, 18 Sep 2025 12:22:35 +0800
+X-Gm-Features: AS18NWBGJrlfGJ_PCm5TEC9HMRnBe4IoEXTWlHp5_aRNtYzwBhtuIlMrUElbbfc
+Message-ID: <CAHSKhtdPGuMW0jRRgARGt+ZdnC02v9O11=ofsgRmnZny3c5aaw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v6] memcg: Don't wait writeback completion
+ when release memcg.
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org, linux-mm@kvack.org, jack@suse.cz, tj@kernel.org, 
+	muchun.song@linux.dev, venkat88@linux.ibm.com, hannes@cmpxchg.org, 
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	Lance Yang <lance.yang@linux.dev>, Masami Hiramatsu <mhiramat@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 27/32] nsfs: support file handles
-MIME-Version: 1.0
 
-On 2025-09-12, Christian Brauner <brauner@kernel.org> wrote:
-> On Thu, Sep 11, 2025 at 01:36:28PM +0200, Amir Goldstein wrote:
-> > On Thu, Sep 11, 2025 at 11:31=E2=80=AFAM Christian Brauner <brauner@ker=
-nel.org> wrote:
+Hi,
+
+On Thu, Sep 18, 2025 at 11:26=E2=80=AFAM Andrew Morton
+<akpm@linux-foundation.org> wrote:
+>
+> On Thu, 18 Sep 2025 11:03:18 +0800 Julian Sun <sunjunchao@bytedance.com> =
+wrote:
+>
+> > Hi,
+> > Thanks for your review and comments.
+> >
+> > On Thu, Sep 18, 2025 at 6:22=E2=80=AFAM Andrew Morton <akpm@linux-found=
+ation.org> wrote:
 > > >
-> > > On Wed, Sep 10, 2025 at 07:21:22PM +0200, Amir Goldstein wrote:
-> > > > On Wed, Sep 10, 2025 at 4:39=E2=80=AFPM Christian Brauner <brauner@=
-kernel.org> wrote:
-> > > > >
-> > > > > A while ago we added support for file handles to pidfs so pidfds =
-can be
-> > > > > encoded and decoded as file handles. Userspace has adopted this q=
-uickly
-> > > > > and it's proven very useful.
+> > > On Thu, 18 Sep 2025 05:29:59 +0800 Julian Sun <sunjunchao@bytedance.c=
+om> wrote:
+> > >
+> > > > Recently, we encountered the following hung task:
 > > > >
-> > > > > Pidfd file handles are exhaustive meaning
-> > > > > they don't require a handle on another pidfd to pass to
-> > > > > open_by_handle_at() so it can derive the filesystem to decode in.
-> > > > >
-> > > > > Implement the exhaustive file handles for namespaces as well.
+> > > > INFO: task kworker/4:1:1334558 blocked for more than 1720 seconds.
+> > > > [Wed Jul 30 17:47:45 2025] Workqueue: cgroup_destroy css_free_rwork=
+_fn
 > > > >
-> > > > I think you decide to split the "exhaustive" part to another patch,
-> > > > so better drop this paragraph?
-> > >
-> > > Yes, good point. I've dont that.
-> > >
-> > > > I am missing an explanation about the permissions for
-> > > > opening these file handles.
+> > > > ...
 > > > >
-> > > > My understanding of the code is that the opener needs to meet one of
-> > > > the conditions:
-> > > > 1. user has CAP_SYS_ADMIN in the userns owning the opened namespace
-> > > > 2. current task is in the opened namespace
-> > >
-> > > Yes.
-> > >
+> > > > The direct cause is that memcg spends a long time waiting for dirty=
+ page
+> > > > writeback of foreign memcgs during release.
 > > > >
-> > > > But I do not fully understand the rationale behind the 2nd conditio=
-n,
-> > > > that is, when is it useful?
+> > > > The root causes are:
+> > > >     a. The wb may have multiple writeback tasks, containing million=
+s
+> > > >        of dirty pages, as shown below:
+> > > >
+> > > > >>> for work in list_for_each_entry("struct wb_writeback_work", \
+> > > >                                   wb.work_list.address_of_(), "list=
+"):
+> > > > ...     print(work.nr_pages, work.reason, hex(work))
+> > > > ...
+> > > > 900628  WB_REASON_FOREIGN_FLUSH 0xffff969e8d956b40
+> > > > 1116521 WB_REASON_FOREIGN_FLUSH 0xffff9698332a9540
+> > > >
+> > > > ...
+> > > >
 > > >
-> > > A caller is always able to open a file descriptor to it's own set of
-> > > namespaces. File handles will behave the same way.
+> > > I don't think it's particularly harmful that a dedicated worker threa=
+d
+> > > has to wait for a long time in this fashion.  It doesn't have anythin=
+g
+> > > else to do (does it?) and a blocked kernel thread is cheap.
+> >
+> > It also delays the release of other resources and the update of
+> > vmstats and vmevents statistics for the parent cgroup.
+>
+> This is new - such considerations weren't described in the changelog.
+> How much of a problem are these things?
+
+The cost of the release of other resources should be fine, but I'm not
+very sure about the impact of delayed statistics..
+>
+> > But we can put
+> > the wb_wait_for_completion() after the release of these resources.
+>
+> Can we move these actions into the writeback completion path which
+> seems to be the most accurate way to do them?
+
+IMHO, it is technically feasible but logically a little bit weird. The
+wb_wait_for_completion() here is only used to wait for wb completion
+of foreign dirty pages (pages that memcg and writeback ownerships
+don't match) and there's no connection between foreign writeback and
+release of memcg resources if I'm not missing something.  It's up to
+Tejun anyway.
+>
 > > >
-> >=20
-> > I understand why it's safe, and I do not object to it at all,
-> > I just feel that I do not fully understand the use case of how ns file =
-handles
-> > are expected to be used.
-> > A process can always open /proc/self/ns/mnt
-> > What's the use case where a process may need to open its own ns by hand=
-le?
-> >=20
-> > I will explain. For CAP_SYS_ADMIN I can see why keeping handles that
-> > do not keep an elevated refcount of ns object could be useful in the sa=
-me
-> > way that an NFS client keeps file handles without keeping the file obje=
-ct alive.
-> >=20
-> > But if you do not have CAP_SYS_ADMIN and can only open your own ns
-> > by handle, what is the application that could make use of this?
-> > and what's the benefit of such application keeping a file handle instea=
-d of
-> > ns fd?
->=20
-> A process is not always able to open /proc/self/ns/. That requires
-> procfs to be mounted and for /proc/self/ or /proc/self/ns/ to not be
-> overmounted. However, they can derive a namespace fd from their own
-> pidfd. And that also always works if it's their own namespace.
+> > > > 3085016 WB_REASON_FOREIGN_FLUSH 0xffff969f0455e000
+> > > > 3035712 WB_REASON_FOREIGN_FLUSH 0xffff969d9bbf4b00
+> > > >
+> > > >     b. The writeback might severely throttled by wbt, with a speed
+> > > >        possibly less than 100kb/s, leading to a very long writeback=
+ time.
+> > > >
+> > > > ...
+> > > >
+> > > >  include/linux/memcontrol.h | 14 +++++++++-
+> > > >  mm/memcontrol.c            | 57 ++++++++++++++++++++++++++++++++--=
+----
+> > > >  2 files changed, 62 insertions(+), 9 deletions(-)
+> > >
+> > > Seems we're adding a bunch of tricky code to fix a non-problem which
+> > > the hung-task detector undesirably reports.
+> >
+> > Emm.. What is the definition of 'undesirably' here?
+>
+> Seems the intent here is mainly to prevent the warning.  If that
+> warning wasn't coming out, would we bother making these changes?  If
+> no, just kill the warning.
 
-It's also important to note that if /proc/self and /proc/thread-self are
-overmounted, you can get into scenarios where /proc/$pid will refer to
-the wrong process (container runtimes run into this scenario a lot --
-when configuring a container there is a point where we are in a new
-pidns but still see the host /proc, which leads to lots of fun bugs).
+Got it. Seems like there's no more impact other than the pesky warning.
+BTW, I'm also seeing many hung task warnings when the mount/umount
+syscall is waiting for the s_umount semaphore=E2=80=94while s_umount is hel=
+d
+by the writeback code path. I think the hung task is also undesirable,
+right? Since AFAICS there's also no more impact instead of the pesky
+warnings.
+>
+> > >
+> > > Would a better fix be to simply suppress the warning?
+> > >
+> > > I don't think we presently have a touch_hung_task_detector() (do we?)
+> > > but it's presumably pretty simple.  And maybe
+> > > touch_softlockup_watchdog) should be taught to call that
+> > > touch_hung_task_dectector().
+> > >
+> > > Another approach might be to set some flag in the task_struct
+> > > instructing the hung task detector to ignore this thread.
+> >
+> > To me, this feels kind of like a workaround rather than a real fix.
+>
+> I don't see why.  It appears that the kworker's intended role is to
+> wait for writeback completion then to finish things up.  Which it does
+> just fine, except there's this pesky warning we get.  Therefore: kill
+> the pesky warning,
+>
+> > And these approaches are beyond the scope of memcg,
+>
+> So expand the scope?  If hung-task doesn't have a way to suppress
+> inappropriate warnings then add it and use it.
 
-> There's no need to introduce unnecessary behavioral differences between
-> /proc/self/ns/, pidfd-derived namespace fs, and file-handle-derived
-> namespace fds. That's just going to be confusing.
->=20
-> The other thing is that there are legitimate use-case for encoding your
-> own namespace. For example, you might store file handles to your set of
-> namespaces in a file on-disk so you can verify when you get rexeced that
-> they're still valid and so on. This is akin to the pidfd use-case.
->=20
-> Or just plainly for namespace comparison reasons where you keep a file
-> handle to your own namespaces and can then easily check against others.
+Sounds good and more general.
+>
+> > I'm not sure how
+> > Tejun thinks about it since he mentioned before wanting to keep the
+> > modifications inside the memcg. Given the fact we already have an
+> > existing solution and code, and the scope of impact is confined to
+> > memcg, I prefer to use the existing solution.
+>
+> mmm...  sunk cost fallacy!  Let's just opt for the best solution,
+> regardless of cost.
 
-I agree wholeheartedly.
+Sure. I will try new approaches if it's fine to Tejun.
+>
 
+Thanks,
 --=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-https://www.cyphar.com/
-
---d2xgw3mufvo5akdl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQS2TklVsp+j1GPyqQYol/rSt+lEbwUCaMt/JBsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQKJf60rfpRG+0QwEAy14crLGqBanw8F+iJGyg
-Ufib+dDPLnlaRH2JgIDOdJgBANhW3e6kOOLSuP7Zb/NhMzS6y+B/qnF8mUByEN7m
-bhII
-=NYA2
------END PGP SIGNATURE-----
-
---d2xgw3mufvo5akdl--
+Julian Sun <sunjunchao@bytedance.com>
 
