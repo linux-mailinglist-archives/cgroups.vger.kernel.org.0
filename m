@@ -1,80 +1,45 @@
-Return-Path: <cgroups+bounces-10272-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10273-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B45EB87352
-	for <lists+cgroups@lfdr.de>; Fri, 19 Sep 2025 00:12:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0178B878B4
+	for <lists+cgroups@lfdr.de>; Fri, 19 Sep 2025 02:58:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D89722A75A7
-	for <lists+cgroups@lfdr.de>; Thu, 18 Sep 2025 22:12:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B9421C262DA
+	for <lists+cgroups@lfdr.de>; Fri, 19 Sep 2025 00:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35D82FDC36;
-	Thu, 18 Sep 2025 22:12:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GUXpodGr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90FFD1E51FB;
+	Fri, 19 Sep 2025 00:58:34 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F002D94B4
-	for <cgroups@vger.kernel.org>; Thu, 18 Sep 2025 22:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6F534BA2A;
+	Fri, 19 Sep 2025 00:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758233571; cv=none; b=nY4FzCKWh4lOuYl4DZUV4mr0Zghfl+iyNNy5pgGStkgdzzFPh9y9yJPjtsVmaR9piorVUkogIT2KpQDNsJn1wvjeSasRTX9Gpq1QIgMziUHlsV3CvI/c9RJxlUdSeiMvYQfu3tNmRp9DaiQlFxYmwL9Q5kpHBcwZlxF42OA/7VE=
+	t=1758243514; cv=none; b=EmoUZaQf9zRjdTlud1TTjMtJfpWLWpanPfcg3Bcl6qMZeZzn5BjvRTn1FzAKGnJXBvzdxzBMZNlEIdnTUpCeiXUk7xBXBcZJxyOkX04UUKDa1hVMLYYRTD72eKK61X69efvYAnwRJ3jl4gZStq3M22tT5hCn7v6TAI1LtGnBNtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758233571; c=relaxed/simple;
-	bh=ajjHKpFPzRYGlqwcSKc2w224hArGFHptRLI5Lz1bLnc=;
+	s=arc-20240116; t=1758243514; c=relaxed/simple;
+	bh=TYS9BnvbY1k2NC4H7JCoVMhCVR0MM15yEaY1vUhXNZE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RsLk/Xf6AFJBEWVE79bRt7Gp8tmXNK1bogIxxAdyliX0R9jRB7ywgWunCRLVV6GcBo8sdjlldOtQSURkbNlqoXKKlbllJ5KTdz3LM+y7fAvoJBUjUZR+aIve3UerhccjCbdC1NG4pI8Gk4Mp4pOYnywNh9O8sI0FkSMuyzxKvbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GUXpodGr; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-32e6f3ed54dso1324653a91.3
-        for <cgroups@vger.kernel.org>; Thu, 18 Sep 2025 15:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758233569; x=1758838369; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uhJCUp3cTgiTgnYs+CkP/JmQFK0RqK1Act/0NFVgCHw=;
-        b=GUXpodGrXj/yoHZYVeN6d0e9MOKEV8ab1v8+cVhZ/ISGrCRo07gFsv8lUsec33yzVV
-         Z3HOqZFGJY9geSvqi6v2kHV0rA62may3yDbi7qjrmz9FVCS25mTJnHCKxiV8lSlPvr9o
-         +C4AvlD53GeBvdW2JNTucBroYimBrbGZxhmlED8/n7dd68SE3GXh1VOAN1XxZEAJ5nGW
-         fZfgdI2bXeF7rpRBH2sNEwk9BNdc8KwE++kiArF+L4y5x0AlQMxUimerjPauzOTH1uVy
-         CkLWaU0EAyIzPHl72vnpwF1l+G9ccAxma2qPD5w2e/f1F5rPUZ3YD/0//WJYPAWFUIHu
-         MOJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758233569; x=1758838369;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uhJCUp3cTgiTgnYs+CkP/JmQFK0RqK1Act/0NFVgCHw=;
-        b=HfmeoUxh7Wk2dktG/bS8vvC8oR/WeNCNK4DKyeJ+JbGpUxAYAYQKHY7+V5gmhA6DY+
-         VHcMZd1yIHjR0qVLeCwwpFqXJSR/YPelmgiw59dgSiERtrjISbQBJDgzanuWYE8vNOIE
-         GG2HJRDBneGdwhn4j5OlsSBdQvLjJWJvFpnEtiK9V16Ss0eAl6fivBxwvB0Y6pYheK7J
-         /UQkBmJk7/mia9aA/jzVfWwZxeajPoF0BKLFKkfuoBssIFGMo7NUeviFQrrvayJwkFiD
-         AIJR3vezfDtnGy0kXGHnmrnvm4kwH1Lu36h8dyh1R+7Xy7p2u+D4KDp8BT8KMfrgM1xV
-         B+sQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUSB7Dtybt4CstNV7RW6LX5qYfjUOYbBTj/yv/lulPuu9brQtn8EWWXrgcnsnWL/98//jgR4Eac@vger.kernel.org
-X-Gm-Message-State: AOJu0YzyPvOlUcC/5nlk3F06JDH4uBqFu4iWjzlmnBra+grs84WtKXu1
-	Df5B7aTMVHgLmcQ3t8bBRdS5LDHCoJfCPWbgNNTANct7hYyUk6m44fJk
-X-Gm-Gg: ASbGnctxbrUfxzltecCuVjfE/B+B1sbWAPU6LkLut/6AIud0PB1ceWk2GhZQhwMrbDx
-	D1Id/G03xvkqwNooQxt5gB3AZYpdlcD6BkRM4dxxK3hX7H8jxkKqpn8q9w2IzJFXBTFm/mzMOWT
-	5hWEQAZ/XzsEnvuAEcdVuKSyn47ZAQLnhk04/UWzIUJy2oNQLrRo5m5CKA51NdqWDu0u+vBP5iV
-	4g3g9ilKqHJ+zC4iGhDkq654J4KsZupNNA467jT/G4s5h07QHadtqImG4Q+/DMmO14fTBVuXVna
-	c2+YOxEttYCS8iINJYaekXwM4CCnYw6EUXsfy0/pAXapriTO3ozAC7Rf2daHY41ueFenWkzGkwB
-	av+wRMIyZj7D3vKaKxRLu6gG6y99tzIEqfPhxsx+29j/oGMmh
-X-Google-Smtp-Source: AGHT+IFAYTSeA07tapHjMoV5p7/O1tEqBeuIBo7k77XWeUxcpjF9dw26+h1YMYgD7yaS4zrWXIacDA==
-X-Received: by 2002:a17:90b:2d0b:b0:32c:c40e:db12 with SMTP id 98e67ed59e1d1-3309834e3c8mr1480022a91.17.1758233569385;
-        Thu, 18 Sep 2025 15:12:49 -0700 (PDT)
-Received: from [192.168.0.150] ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77cfc248fa0sm3344899b3a.30.2025.09.18.15.12.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Sep 2025 15:12:48 -0700 (PDT)
-Message-ID: <034e7936-0fb8-4ae0-bd84-f1bdc3adfb3c@gmail.com>
-Date: Fri, 19 Sep 2025 05:12:44 +0700
+	 In-Reply-To:Content-Type; b=RbOx3zbkEAdDggCZWmaquVh1roGnsxmDTCK3/GgUvIlvV84dp1BQtN772tHPBdbFNlodMJqE+3IF8t6y/azWu2a+GrZ+asRcz8vCiyATSGkkwSDJKmckxc8hW1TVC/l4pKyCboIm9p6Sy+0bLDMRtfjogwNom05OaUu09d0fksw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cSYzB0XLZzYQv1b;
+	Fri, 19 Sep 2025 08:58:30 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id AFF951A0B72;
+	Fri, 19 Sep 2025 08:58:28 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP3 (Coremail) with SMTP id _Ch0CgCnPz6zqsxoSNg8AA--.61139S2;
+	Fri, 19 Sep 2025 08:58:28 +0800 (CST)
+Message-ID: <a1dea9aa-2a9f-4157-b2dc-32b64b9d7679@huaweicloud.com>
+Date: Fri, 19 Sep 2025 08:58:27 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -82,41 +47,90 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] Documentation: cgroup-v2: Replace manual table of
- contents with contents:: directive
-To: Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Documentation <linux-doc@vger.kernel.org>,
- Linux cgroups <cgroups@vger.kernel.org>, Johannes Weiner
- <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>
-References: <20250918074048.18563-2-bagasdotme@gmail.com>
- <aMwo-IW35bsdc1BM@slm.duckdns.org>
- <ul3hrtvui3wuvchludb67wy7kahsroclvppssmeuqrfwieyfv4@vd3gbuuda2xq>
- <aMwsZism0R-ZHLkq@slm.duckdns.org>
+Subject: Re: [PATCH cgroup/for-next 1/2] cpuset: fix failure to enable
+ isolated partition when containing isolcpus
+To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com, chenridong@huawei.com
+References: <20250918122532.2981503-1-chenridong@huaweicloud.com>
+ <20250918122532.2981503-2-chenridong@huaweicloud.com>
+ <0ee6288f-c621-4c18-bd42-22dd4aa2d826@redhat.com>
 Content-Language: en-US
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <aMwsZism0R-ZHLkq@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <0ee6288f-c621-4c18-bd42-22dd4aa2d826@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_Ch0CgCnPz6zqsxoSNg8AA--.61139S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF4kCFWUWryUtryxtw4kCrg_yoW8ZF1xpF
+	Z0ka43Jws8ur1fC3yjvF1I9345KFsrtF1UJrs8GrWxZrsFqFyvkFWj9rZ8Ja4UXr4kGryU
+	ZFy29rsagasrArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On 9/18/25 22:59, Tejun Heo wrote:
-> Hello,
-> 
-> On Thu, Sep 18, 2025 at 05:55:07PM +0200, Michal Koutný wrote:
->> On Thu, Sep 18, 2025 at 05:44:56AM -1000, Tejun Heo <tj@kernel.org> wrote:
->>> I don't think I'm going to apply this. Sure, it can get out of sync but I'd
->>> rather have TOC which sometimes is a bit out of sync than none at all.
+
+
+On 2025/9/19 2:02, Waiman Long wrote:
+> On 9/18/25 8:25 AM, Chen Ridong wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
 >>
->> The TOC is in the generated output :-p
+>> The 'isolcpus' parameter specified at boot time can be assigned to an
+>> isolated partition. While it is valid put the 'isolcpus' in an isolated
+>> partition, attempting to change a member cpuset to an isolated partition
+>> will fail if the cpuset contains any 'isolcpus'.
+>>
+>> For example, the system boots with 'isolcpus=9', and the following
+>> configuration works correctly:
+>>
+>>    # cd /sys/fs/cgroup/
+>>    # mkdir test
+>>    # echo 1 > test/cpuset.cpus
+>>    # echo isolated > test/cpuset.cpus.partition
+>>    # cat test/cpuset.cpus.partition
+>>    isolated
+>>    # echo 9 > test/cpuset.cpus
+>>    # cat test/cpuset.cpus.partition
+>>    isolated
+>>    # cat test/cpuset.cpus
+>>    9
+>>
+>> However, the following steps to convert a member cpuset to an isolated
+>> partition will fail:
+>>
+>>    # cd /sys/fs/cgroup/
+>>    # mkdir test
+>>    # echo 9 > test/cpuset.cpus
+>>    # echo isolated > test/cpuset.cpus.partition
+>>    # cat test/cpuset.cpus.partition
+>>    isolated invalid (partition config conflicts with housekeeping setup)
+>>
+>> The issue occurs because the new partition state (new_prs) is used for
+>> validation against housekeeping constraints before it has been properly
+>> updated. To resolve this, move the assignment of new_prs before the
+>> housekeeping validation check when enabling a root partition.
+>>
+>> Fixes: 11e5f407b64a ("cgroup/cpuset: Keep track of CPUs in isolated partitions")
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
 > 
-> I know it's tongue-in-cheek but one big benefit of the doc format we use is
-> that these are still very readable as a plain text document. In general, I
-> don't want to make changes that worsens plain text accessibility.
+> Thanks for finding the bug. However, I think the commit to be fixed should be 4a74e418881f
+> ("cgroup/cpuset: Check partition conflict with housekeeping setup"), not the one you listed above.
 > 
 
-OK, thanks!
+Thank you for the correction, Longman, you are right. I'll update the commit ID with the correct one
 
 -- 
-An old man doll... just what I always wanted! - Clara
+Best regards,
+Ridong
+
 
