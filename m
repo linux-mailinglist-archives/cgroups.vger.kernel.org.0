@@ -1,154 +1,111 @@
-Return-Path: <cgroups+bounces-10287-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10288-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9679DB8855D
-	for <lists+cgroups@lfdr.de>; Fri, 19 Sep 2025 10:08:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C31B88BFD
+	for <lists+cgroups@lfdr.de>; Fri, 19 Sep 2025 12:04:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6A0014E1A15
-	for <lists+cgroups@lfdr.de>; Fri, 19 Sep 2025 08:08:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCD4A1C80B73
+	for <lists+cgroups@lfdr.de>; Fri, 19 Sep 2025 10:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E7F304BC6;
-	Fri, 19 Sep 2025 08:08:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XfJmdpWV"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3085D2D24BA;
+	Fri, 19 Sep 2025 10:04:24 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545C8303CB6;
-	Fri, 19 Sep 2025 08:08:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFA1D23C4FF;
+	Fri, 19 Sep 2025 10:04:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758269320; cv=none; b=jBfu4uSjPAbLXxx6aenjUc4yrjVU34x9GotrDKa6GGHiFhg4gshZgV1WXdKmdvLMCl51TkKAsKBMkoBT88ydEmZ0nPDLQZlC9P2gP1zhOyTJ77wyNWaxQwcDlViXph63C1tIb22dEcoLDl3pTzWDV6u/htVyEObvvBG5thCG3MA=
+	t=1758276264; cv=none; b=oHQmqwwGxpXB/qWgWZ+QoBzQG3YlIWOt6KkiE/kY9X+FUrNqIP7jAbO1RiUmYI/rbiqntkuj1kuc+hY56N5fjVFui09xCM7dy/8+U8VgSQ71AXAqBpf5KjvSiKMxKMbuN17LRZDtNpV+zvhySYFrpw1iMBTtNlKLTGQHnwK5hSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758269320; c=relaxed/simple;
-	bh=309VdB/dlRAmKQDRXcKVomPzNz0G9kwLcBfQswZ/fLg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p5tYByDbRyU0D9C8P5CbyCLbfH2UOqT11Wgv1cKinEzvoERDY8y4VBpR+NZQ3DsCB9M085zE8EEFxiA+Oyc2rBGud1Pt/r2ji3JslnkLlskG3S1RmmHSBAIjl5yGcygyknzgowcsZocE7xJ79akFxrUoqvJV8JkME3QqpnhPHtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XfJmdpWV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F83BC4CEF0;
-	Fri, 19 Sep 2025 08:08:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758269319;
-	bh=309VdB/dlRAmKQDRXcKVomPzNz0G9kwLcBfQswZ/fLg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XfJmdpWVO/i0Klh9wFxFYR26vN7harEo2PL1CzpfY0MW/QOYu5TNtHj4fHUGrdiXm
-	 NXHUCIGrpYQUbzh36uDRRDfGBoAO6v7Y7gLfk7XRir14+4ff0o58YVgw2kAhncAGn7
-	 8lTH15Q0++/IDz7hrMqcEcrVdhZhSKee0u3nPztEXLxh/HehBe+HsKalu8PZ46692p
-	 1HV6Pi/tYlil/uhxU07QgNVX+ns8ojOFM2QEHeB9qvx5UogRprwMKoQ4ZKbNW2Few9
-	 Se0nHjZJpLDzTfRPl6ywDbryPtqzzPYq9VWvu+69wfLgbkZVC0NAzMWwNHJd531HLW
-	 7mlv/BnmXX0nA==
-Date: Fri, 19 Sep 2025 10:08:33 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, 
-	Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
-	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
-	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org
-Subject: Re: [PATCH 7/9] net: centralize ns_common initialization
-Message-ID: <20250919-fanatiker-ethik-7a9bb32ee334@brauner>
-References: <20250917-work-namespace-ns_common-v1-0-1b3bda8ef8f2@kernel.org>
- <20250917-work-namespace-ns_common-v1-7-1b3bda8ef8f2@kernel.org>
- <kiyr4pnrw2a2oeoc3lavj73glvdg5llsfz2txfnn56bxmytfgw@o6weansm3iyi>
+	s=arc-20240116; t=1758276264; c=relaxed/simple;
+	bh=cL2A2v0YTS+Z9Fb+p2DjEm6Ty1kMPrvE6uA+rVXRv+Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=PlUvu7QvJ3GiCbG5euCX3nluA6FpM/wJZPo7rYfcgbLbF89A03LqzlbEY6WTsGedu/e06QeAKKWHweH+V0yabJ3tIHNMHJa2VCxvZpnBTD3IVEbXwlvW6t86gaD9sE/nZN+OsYpkiffyBMNEytTq2tLLFL5WHO7zPH6Vh9ji/ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cSp4q1hvzzKHNDG;
+	Fri, 19 Sep 2025 18:04:11 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 1C8F51A19DF;
+	Fri, 19 Sep 2025 18:04:12 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP2 (Coremail) with SMTP id Syh0CgAncRWZKs1ojDFoAA--.25819S2;
+	Fri, 19 Sep 2025 18:04:11 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: longman@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lujialin4@huawei.com,
+	chenridong@huawei.com
+Subject: [PATCH cgroup/for-next] cpuset: fix missing error return in update_cpumask
+Date: Fri, 19 Sep 2025 09:49:03 +0000
+Message-Id: <20250919094903.3060470-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250917060454.2885698-9-chenridong@huaweicloud.com>
+References: <20250917060454.2885698-9-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <kiyr4pnrw2a2oeoc3lavj73glvdg5llsfz2txfnn56bxmytfgw@o6weansm3iyi>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgAncRWZKs1ojDFoAA--.25819S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFyrtF1fury8uFWxGFyxAFb_yoWDuFX_uw
+	4Ivr10qrW8Xr1Ig3WUK3W3uF1vkr13tr4DAayYyFWIvFsYyFn2yw1Yqa45ZFy5Aa4xur4Y
+	k3srG3ZxWwn2qjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbzAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+	7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUotCzDUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Thu, Sep 18, 2025 at 11:42:38AM +0200, Jan Kara wrote:
-> On Wed 17-09-25 12:28:06, Christian Brauner wrote:
-> > Centralize ns_common initialization.
-> > 
-> > Signed-off-by: Christian Brauner <brauner@kernel.org>
-> > ---
-> >  net/core/net_namespace.c | 23 +++--------------------
-> >  1 file changed, 3 insertions(+), 20 deletions(-)
-> > 
-> > diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
-> > index a57b3cda8dbc..897f4927df9e 100644
-> > --- a/net/core/net_namespace.c
-> > +++ b/net/core/net_namespace.c
-> > @@ -409,7 +409,7 @@ static __net_init int preinit_net(struct net *net, struct user_namespace *user_n
-> >  	ns_ops = NULL;
-> >  #endif
-> >  
-> > -	ret = ns_common_init(&net->ns, ns_ops, false);
-> > +	ret = ns_common_init(&net->ns, ns_ops, true);
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > @@ -597,6 +597,7 @@ struct net *copy_net_ns(unsigned long flags,
-> >  		net_passive_dec(net);
-> >  dec_ucounts:
-> >  		dec_net_namespaces(ucounts);
-> > +		ns_free_inum(&net->ns);
-> 
-> This looks like a wrong place to put it? dec_ucounts also gets called when we
-> failed to create 'net' and thus net == NULL. 
-> 
-> >  		return ERR_PTR(rv);
-> >  	}
-> >  	return net;
-> > @@ -718,6 +719,7 @@ static void cleanup_net(struct work_struct *work)
-> >  #endif
-> >  		put_user_ns(net->user_ns);
-> >  		net_passive_dec(net);
-> > +		ns_free_inum(&net->ns);
-> 
-> The calling of ns_free_inum() after we've dropped our reference
-> (net_passive_dec()) looks suspicious. Given how 'net' freeing works I don't
-> think this can lead to actual UAF issues but it is in my opinion a bad
-> coding pattern and for no good reason AFAICT.
+From: Chen Ridong <chenridong@huawei.com>
 
-All good points. I can't say I'm fond of the complexity in this specific
-instance in general.
+The commit c6366739804f ("cpuset: refactor cpus_allowed_validate_change")
+inadvertently removed the error return when cpus_allowed_validate_change()
+fails. This patch restores the proper error handling by returning retval
+when the validation check fails.
 
-diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
-index 897f4927df9e..9df236811454 100644
---- a/net/core/net_namespace.c
-+++ b/net/core/net_namespace.c
-@@ -590,6 +590,7 @@ struct net *copy_net_ns(unsigned long flags,
+Fixes: c6366739804f ("cpuset: refactor cpus_allowed_validate_change")
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/cpuset.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-        if (rv < 0) {
- put_userns:
-+               ns_free_inum(&net->ns);
- #ifdef CONFIG_KEYS
-                key_remove_domain(net->key_domain);
- #endif
-@@ -597,7 +598,6 @@ struct net *copy_net_ns(unsigned long flags,
-                net_passive_dec(net);
- dec_ucounts:
-                dec_net_namespaces(ucounts);
--               ns_free_inum(&net->ns);
-                return ERR_PTR(rv);
-        }
-        return net;
-@@ -713,13 +713,13 @@ static void cleanup_net(struct work_struct *work)
-        /* Finally it is safe to free my network namespace structure */
-        list_for_each_entry_safe(net, tmp, &net_exit_list, exit_list) {
-                list_del_init(&net->exit_list);
-+               ns_free_inum(&net->ns);
-                dec_net_namespaces(net->ucounts);
- #ifdef CONFIG_KEYS
-                key_remove_domain(net->key_domain);
- #endif
-                put_user_ns(net->user_ns);
-                net_passive_dec(net);
--               ns_free_inum(&net->ns);
-        }
-        WRITE_ONCE(cleanup_net_task, NULL);
- }
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 506a7178f0b3..20dface3c3e0 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -2515,7 +2515,8 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	compute_trialcs_excpus(trialcs, cs);
+ 	trialcs->prs_err = PERR_NONE;
+ 
+-	if (cpus_allowed_validate_change(cs, trialcs, &tmp) < 0)
++	retval = cpus_allowed_validate_change(cs, trialcs, &tmp);
++	if (retval < 0)
+ 		goto out_free;
+ 
+ 	/*
+-- 
+2.34.1
+
 
