@@ -1,285 +1,171 @@
-Return-Path: <cgroups+bounces-10293-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10294-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D78AB8A5B4
-	for <lists+cgroups@lfdr.de>; Fri, 19 Sep 2025 17:41:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36031B8A731
+	for <lists+cgroups@lfdr.de>; Fri, 19 Sep 2025 17:56:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24071169ECB
-	for <lists+cgroups@lfdr.de>; Fri, 19 Sep 2025 15:40:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CD801B24326
+	for <lists+cgroups@lfdr.de>; Fri, 19 Sep 2025 15:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E226531BC8E;
-	Fri, 19 Sep 2025 15:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00C3131A559;
+	Fri, 19 Sep 2025 15:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="W+VEj1zS"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JqwCD4i9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11010024.outbound.protection.outlook.com [52.101.56.24])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B0C31A819;
-	Fri, 19 Sep 2025 15:39:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.24
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758296372; cv=fail; b=BOprlHX2nmLEulojUxib6TEu4FhhN3J9qKzH7ytmFanbaecaA8ZJnUVObklaogGrl/FyTZ2zSfERJt7knBOP6aShbB3rBVaRFh+R/vrW/1G2wD1P8zrDZNItGDY/F0UvIWVccOKw3WRBWRBWginsPo75hr6PMs9Mz+XSkFpic0U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758296372; c=relaxed/simple;
-	bh=UrO/0BPl+Sqr/J5nrv/WJWk3SOfYnetobw9HDqlH/DM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=rK20cn+rIEVR4weQg9Uk8vE6+QCWnjoG0MKX7YZOJwllRt0J3MAwp2dHOo/m+BemTDuToQv9OoFHI67huSQO7jdx/TZmMyuOhuWMvNTw9PeU0mwrrX+f+yFT/nGXagPZVkWSTmQbLxrOtTbzH35UADI6cODH37s9PTBm0dRptJA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=W+VEj1zS; arc=fail smtp.client-ip=52.101.56.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=repGRHn0oZkXdyZJFCQ4GMjZv8MUEJlpF3kPU2LKkmpjmuAFe6hjL2X15OmcdUoINdVUXXyl3j0ZZS0kVCUXN5Q6mrDv7aDPRTxSBEuulMNylZ9/eQ58cAp4ZSyg2pswQicK20TyoBaqUcTeaFc8ddXHmNTvRI5iDCPGR1mvjR2h5V9BF1G2w8Z6BzrbZAYu7msWHaAy379ASzKXEpIu2I/VChwmmx8GfNOUmu0pLUzKWEXEAmt1vZA49gfB+xQYpeTA0UWluCvSJLZziBsiIuFAk8bpZJpOnFAvHaUpqRlej5ZayVS5Wxs2Xzfl0T7BVEYyIx3Amo/c9UYKa4vWLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QVbrm7mVv1n2mD5F4qZ02G2kUWK1URtIE1tShgYizjA=;
- b=VC8p3D3iKWBppXQehh67UzANVukNuKNGOA9bxXXn7ahyHSIBub2bbq2JLPkrifC85KdWA08J7obuftdjtA1S4nkkyNl/gASMVzIJcT8eXBWUtbvnrlQQCkBNgu6gXQk+qKShl2VRlukygSQ2lJYWgmo3idSICSfZzPXz+Ko4KP4jBxLkKOULcZSNu9Hrsyh7Lpyj3ElBnSsoSuPTi7HQ6lJwyolne2CG7bZ76bcK+ZexO5E/hp9Dg8kT+lakexBZwbRMCUMnTORYIUoYmMsgXbEt3rIlWYSf47BcdGdZl5Dc+VwrSa2qJMRIZG3vsG56w9JtQSEZJq1+CzS02u5PTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QVbrm7mVv1n2mD5F4qZ02G2kUWK1URtIE1tShgYizjA=;
- b=W+VEj1zSKVKKtcWJGnZH4BJcuf/+5f1NB22znEkq1bheY5PWpzqQq7E44FLXbO5jBvFjwUikEM1+B70+sY4i/S5d56/wIGBAHnh1RlQdT+1HK/0+qONZQVrrmtGlvlkTC0M6enTNzDn+GAbHHzPik77d46kj2VDPAdbmNrf1xGwOzcDWuqAtKPK5CnRh2sNff1lrl8vwpihov+xklGW87eS2uKLp2+JDEaOmXxs1lDyyp4CHzFhCx1/x1p9PjTebdnW6MKUh/10R4XgJU1KPOTuQqEAynBO9UFka/fCKe4fIYm6EvXQ+kckbsPBUc2vpJzZhUUnF3msAr6QnF4CmTw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB9473.namprd12.prod.outlook.com (2603:10b6:8:252::5) by
- PH8PR12MB6723.namprd12.prod.outlook.com (2603:10b6:510:1ce::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9137.16; Fri, 19 Sep
- 2025 15:39:26 +0000
-Received: from DS7PR12MB9473.namprd12.prod.outlook.com
- ([fe80::5189:ecec:d84a:133a]) by DS7PR12MB9473.namprd12.prod.outlook.com
- ([fe80::5189:ecec:d84a:133a%6]) with mapi id 15.20.9137.015; Fri, 19 Sep 2025
- 15:39:26 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: Qi Zheng <zhengqi.arch@bytedance.com>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
- david@redhat.com, lorenzo.stoakes@oracle.com, baolin.wang@linux.alibaba.com,
- Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com,
- dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev,
- akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [PATCH 2/4] mm: thp: introduce folio_split_queue_lock and its
- variants
-Date: Fri, 19 Sep 2025 11:39:23 -0400
-X-Mailer: MailMate (2.0r6272)
-Message-ID: <E62A91B2-4221-43B2-9C17-1E48AA5D5544@nvidia.com>
-In-Reply-To: <eb072e71cc39a0ea915347f39f2af29d2e82897f.1758253018.git.zhengqi.arch@bytedance.com>
-References: <cover.1758253018.git.zhengqi.arch@bytedance.com>
- <eb072e71cc39a0ea915347f39f2af29d2e82897f.1758253018.git.zhengqi.arch@bytedance.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BL1PR13CA0105.namprd13.prod.outlook.com
- (2603:10b6:208:2b9::20) To DS7PR12MB9473.namprd12.prod.outlook.com
- (2603:10b6:8:252::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3936F23741
+	for <cgroups@vger.kernel.org>; Fri, 19 Sep 2025 15:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758297406; cv=none; b=DLlXZvVts5jXVSdvUxhsTkyiFUhhliL8/GwQAI+cuQSquJ3L6cOh1UqeZHd0RO4FM5Bu8WqSJ6YWt/2GCsw5bZWI9w4OPoZtlJ7qDPKQWDcDYV7xzGGhc1veSla4Pzs8euR/hEeRoycNyNFlBO3/j9eXpw1Qk+KDmMwmz/GODGM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758297406; c=relaxed/simple;
+	bh=D0R5kVCxPQIDn/il8Ta4k7mCVYofZw2cjllgDPoACfM=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ZGhmtiMTAdtAucP0E3BG1ElWJRFWp/7ltFeMyHhA4NacJhd3jTQQYCAlihLyUxRMCIMP808y3jrA+21UQazEtQ2wZ98wWktcMEOFSNyZXN5GX2rqXEMo8O2n6p8CQ5NbJnW2sRHmOTgdVHh4SRAAbeojL33tDuiokQln3a0bGu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JqwCD4i9; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1758297404;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7sHkXx4w+OoPaSwn+jcuJrB3W8WiBrbLAHFAMNdkKp8=;
+	b=JqwCD4i9QawR1r2JY8gxtpgtJch3FZ/HFFroajf4aY8ZlLRrcSdo88Y2dviVPd9wv3NK7T
+	Bp4TpLfcRnqz3dopremIXbCG5DArF57kD43V1k9iP1kaS80VVCi9Jt6ukP6/awqxnZE6bc
+	ZUQ9lORkb5WvN8BIzVJ7QSjcz9Qps2E=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-61-3KtM_rRpPZCYRrffuRdklg-1; Fri, 19 Sep 2025 11:56:42 -0400
+X-MC-Unique: 3KtM_rRpPZCYRrffuRdklg-1
+X-Mimecast-MFC-AGG-ID: 3KtM_rRpPZCYRrffuRdklg_1758297402
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4b7a5595a05so48682601cf.3
+        for <cgroups@vger.kernel.org>; Fri, 19 Sep 2025 08:56:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758297402; x=1758902202;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7sHkXx4w+OoPaSwn+jcuJrB3W8WiBrbLAHFAMNdkKp8=;
+        b=ctD90yikLelDjjAWJTBZ0AVFS3W4FPR6/SJxFt4SzafAtD8VnNV7eAcy+eSc5kOgcR
+         83HJfN27biuCxm4MhwpZZqERe0NlS5QpRcXizUKax2oTUJqs+kJTb7IG1orKTLlCjH56
+         1u79XoK5gCwNrB+oKnMk1/hUb+G6eIRKwqBwHwq5X/YKwZiyqszuZ3jWqFmUJ859Z8jH
+         C0AcHJsC//IGV+gGTdUuc/mBFCxroUUoG4bSVM+DUi3iZLf5ey/BzOuaDZhZlHP6POud
+         yB1ZaFlpL4GsNGDxbLjqRjBkCE19fRsjJKcaMJHr9h97Q074OI3U8E1oSPWlZL/3NRR5
+         BLtw==
+X-Gm-Message-State: AOJu0YwyNXcPLXtf5bkgXvqu0giI7Z38ywLtHKOvtj9qxVDzEEURQ/Bx
+	jUszOUv4ore0DU4ERoBxsdtdUtBWomIpqZ1HRcMKNqjrgud2VuuHe642UedRpXVvmGgAiMtfajl
+	nr7Dc9l6FOQIsyPQXnrpbLtCC5L0uUbv7R2Adsq1wYaTn4fbbpAVVPjeIgGU=
+X-Gm-Gg: ASbGnctrKCu5eKMjPmG43XwM6WeWVsgsm8n0ngHzYMm46uhNVVDNqYgGQuUwPup0W9T
+	wklczbhTQxdsvqFx2R/axJid9hkUolMXfSVxdav/GOYb7dq/uu98sgkPxEjtHxq64+oK9RkBbno
+	JKT4BgfCDbwdqMipt/yPM94ekAaKqd7mVQHn34tc4P5BnBTCtQDtMwnDH9eTQ1vlM1Ye4L1b8gP
+	+aRA9X+XphGbCs1++3Sg3PFWy4Svofst/lAcKhupdr0Jzf9+KzaoxZ8G9ofE/h/ssoNhfDmCEjd
+	sMXfvPcm3dWIsyr5CRYX6D+4P6ZZ8RzhGXbgQl9I
+X-Received: by 2002:a05:622a:1f85:b0:4b7:a80c:8862 with SMTP id d75a77b69052e-4c074b098a0mr46911201cf.69.1758297402202;
+        Fri, 19 Sep 2025 08:56:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEh71Li8WLeUmgSV4Dl+4mfO+VS0fxYClCgrplm39AM+j63r2SJnEhs5cDod2uOJst3FG4CPg==
+X-Received: by 2002:a05:622a:1f85:b0:4b7:a80c:8862 with SMTP id d75a77b69052e-4c074b098a0mr46910821cf.69.1758297401714;
+        Fri, 19 Sep 2025 08:56:41 -0700 (PDT)
+Received: from [10.192.63.20] ([204.8.158.106])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4bda9bf16f1sm30439431cf.44.2025.09.19.08.56.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Sep 2025 08:56:41 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <0d6a0288-33a9-4dec-8dae-1e9dc3f75185@redhat.com>
+Date: Fri, 19 Sep 2025 11:56:35 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB9473:EE_|PH8PR12MB6723:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2253cb1b-5380-4c34-84b4-08ddf792b6fa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?l2MPTlMCES2d+Oe1XF4DzQOcPE8EXcFkwaR3vwyfH/JAfF2K6PrnzJ8dFL19?=
- =?us-ascii?Q?s6+TqXUk1f/F2B4UcyfSIE3FbfMkhzvl1tF0RuR9juNOD5bZZ/gSnpRRtuPX?=
- =?us-ascii?Q?f0EOgIHR8QlBxkg6TAxoddLvOVNn95qYXh9FJAfmE1hiTSWuD9PN8jB5+/+e?=
- =?us-ascii?Q?jfWnOedm9MfGnoPukWLgBHgqxmrJWUjVQHBhLlV40giEeCRqhA5zbakRlFjl?=
- =?us-ascii?Q?7P492QwIQt4Fk0bE1WWsyI6a1yx4gR3SKfNEhrZBrNRq87V+MGDltQ/dIm0F?=
- =?us-ascii?Q?oEStgOf3BfyyIJ4riTB2kZ1V97ZV4KtYLdao5fNN17rTh0RXsQ0nkPjmFcC8?=
- =?us-ascii?Q?xIzsnjDRpDcV1kpmZpDTAk2vyK9+wKrVZU/x2o2btTfKvCaErlfFrHKmcJ/r?=
- =?us-ascii?Q?w0Ss3LhYWWTWNPNtV2YYG3dfzN9si8cccsKRIyBemG+8y1TmyfiwmbR98377?=
- =?us-ascii?Q?8DnDHG6E/IZJQCC0kACaUwinj463ANpc19lPAKA1mLZ3IF2dJPhM9wNxle3T?=
- =?us-ascii?Q?SYO2JJrIasqpbg+tmQsfXbHYnEm0JElnZDbPT86w75bsu1pe3JBeJswsEuYe?=
- =?us-ascii?Q?7pPWp528NTZ0xR+kgxDTDZqiSLIidr5aMSBkTFcXZ+r5GrGwrk+HthKKqfhw?=
- =?us-ascii?Q?TG3yTvnk+1jZ47OlOW7Ht/wpsWS5jihu9dUdz3meY2p3aN/GYyS3giHb4BMN?=
- =?us-ascii?Q?HdARn2iiHg42B9fltjlhZNdehQQ+TnaXh516DH4jmMJ1ZRPTIzaDB7Z38D4t?=
- =?us-ascii?Q?tyemJxTgh3Eg7bEJWeS3sxlv2pl/YFlOVnPJgqJa13+ZdyitILaa1qF4uWzH?=
- =?us-ascii?Q?jeEFskBBhk5PDAfNKVxuIWrkEIo6iujXgoc/Izzid3koXxE2rEbvP8wCcgVV?=
- =?us-ascii?Q?1JCH/QjcsuAzy74TB5gxqONHKh5O7SeV0U0b5PCD07WYkcjxQIaaLZvjQPRZ?=
- =?us-ascii?Q?7m/DJGQTH6KTnuS+ebPz/TTKoccBut0GGJYKEu+306BSglOpO/pr/YGSj6Qa?=
- =?us-ascii?Q?WQIVgq68P85ZdJpkBICl8ZwJIzAhjaDsCoTNVxbMQ/i63lcczLyo1MpkkeW3?=
- =?us-ascii?Q?azyVO27KHztHMPtIXXBtjY/6Z7V9NkwByDpxHE2gs/4fLQ8OT7AyCsvipNdO?=
- =?us-ascii?Q?/9B3gw6K/d4tW0waMrlm0AgM3GmtGzpTYIo2v7ZvZNaFz9FTCLaxlkEfHQ6k?=
- =?us-ascii?Q?abC5XPxYfLFsmEEvs9rTUwVcslCMN42wMWB7HQowXXp8hC7WNTQzA42y2lHk?=
- =?us-ascii?Q?9tUMQpfmIwnY9eJQ/zd2nkFMqP9WAio77YJs2hTyJQqqs/aG8jzWDU9RhGjX?=
- =?us-ascii?Q?LMxW+M0sDZz1bFLRnFXnj68AyHYDevi51qiUY5T+qG9CmcMxP8/SIaeR54AK?=
- =?us-ascii?Q?cXlwqigTbmqeeRAcMqFgXB5BP1lNwLFIoernD8AlpJAqXCt5LxQFncjUyNMy?=
- =?us-ascii?Q?QfRXkYvAWrU=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?PWoKcJ3ix7fGU7bF4LA22n3kNF3+nP9dQPJnM2LQFdrqIBU60g9HM2s5WTNA?=
- =?us-ascii?Q?W9jyCPaL5FvL470DffR/M0Tj3wVzXO6N6T57dTCJ035bzI+4Bwzc//BVjqOu?=
- =?us-ascii?Q?vLllbUs76+EAKd2ztje5Keq80ZtcKyIgs6FIrlFYEJAAPUZ1L4mCBoWZhk1I?=
- =?us-ascii?Q?9EWC8grPkzy1xvRxdvtFIiODoIJGwMCiP/H9iVn8Cze1gVl9v9aWuvyGmHYS?=
- =?us-ascii?Q?c3OynI52yd688heFeUqPXGzd5zQUPcDCqGQLF5aLTpoDY0OuoJ39LKavKni9?=
- =?us-ascii?Q?SoZdSlQXoRQ3KmYLiN/lFe8fAl8YbgZHgfVi1Mb8a0Q4ZKdMLtRTans83M4S?=
- =?us-ascii?Q?v5N8sx32C5Rzi1qxyEV6D3Vt7tPDnam6VLxsX525nDhobaA+Hx4VScEZdvUz?=
- =?us-ascii?Q?WK5UyMynczCX5HA/oFVuMxoH/M95F3RzAaKBqKwbE47Sr8uAq2I9XWef0lDG?=
- =?us-ascii?Q?Q8b7WfG4PlzoP6L5Stnw8F9MuJQuB8AmpoaGAMVBsrX2Ag6PeswLu35uqTYx?=
- =?us-ascii?Q?Foh9+IxnWisROUp+v8A8YmkzFS/lEPeTy6qvjWxHTYsuoXf9U0md7KI8k7Xq?=
- =?us-ascii?Q?99i6MNftrsjUqhegXKjq+MUbU1Wl0Xv44hPE6wub3EzhJb0/BCZljO1lNNRe?=
- =?us-ascii?Q?rdCAG7C990S6M6H17yyUxlTyGbMpL7nYN5sIwvNw2X/PjuxOxqK8yZhJiLm9?=
- =?us-ascii?Q?hPP4niv3S6zLVUweq/bykDLOf501XfgC4m5VWrVw0zQcTaWZ9xs7euVkoCo7?=
- =?us-ascii?Q?5fXhO7au8UDyFkj6Clrb96gCUOZBs1x4cz+T4NGU4stMbAWkxGFeczeE764t?=
- =?us-ascii?Q?ss0KrQ+r442XiwCM757AIWK6Aes4c2BG34Zt98V/pwVyRScN4IBR9oDYOUVB?=
- =?us-ascii?Q?os6UrfhJgZIx+lfgXM3dqNfJwkP8WK5uQJe4JfVzk9etg24D3HmAcyDva4KV?=
- =?us-ascii?Q?keHkN9Avwv4N70uVbwuJsnW5bj8YsioZ/0Y36Xy9sQQr3krNMMuHocSmMSVL?=
- =?us-ascii?Q?G7WrQBNmjfWyGU6nmeUn/Aq0CJ3Pesao2X1a3E17x1PzUw5jImkxUi6Ysgdb?=
- =?us-ascii?Q?VpVaw1gTtuHPHmxHZdVVvLouB/jfiZAyZpoEwnGS1ZF24/1Xwtxg/Q9env4/?=
- =?us-ascii?Q?JswAp7ipDQSJggMS5IPBiuP0/aYFqQLo2b2HejHNDvSa5JoGCH6ZWwWj1gYX?=
- =?us-ascii?Q?qiZUwuGRxkEZqXu+L3z7eqYW39GH6Hs2n7B7dyAAJXIWrL4xR/PPjf2KQXI+?=
- =?us-ascii?Q?y/z3YgnY7F8Yl55oj0kN3Vl6xi0HNyTjV6fYVNb0gTpvOD/Am+G3ufikF9Zc?=
- =?us-ascii?Q?eL+hYnF6Oi4aXuyAjBp01jjDaJwQPWXfi5Me+RKWpFQj5orCFMqYddoEJNOY?=
- =?us-ascii?Q?j6VfzffsuKrH13Lj3AwPOippZ0FeZohHXASk36OWkJxo+jjSkPCF/ici+2B/?=
- =?us-ascii?Q?7myoqtMwd5KZJFFEOaNUr4+C50RSaUljd0Y0Wttq82DdFDBymuImGqlNCExc?=
- =?us-ascii?Q?i3qAl8NjbIajvTOak1VY13/1VOTIA/++APlu/jAR/43prXfMgxggyOYdBYA+?=
- =?us-ascii?Q?96OCHPD7cKTnoblX2eLXbs6rWTJHMcFe7vWaOt1G?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2253cb1b-5380-4c34-84b4-08ddf792b6fa
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9473.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2025 15:39:26.5247
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ij6onDW6qRkZXlKt7doZalRzSzqmtbkH750GSZXASfDbLuFs0EdyZCrsWWpZFclR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6723
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH cgroup/for-next v2 1/2] cpuset: fix failure to enable
+ isolated partition when containing isolcpus
+To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com, chenridong@huawei.com
+References: <20250919011227.2991696-1-chenridong@huaweicloud.com>
+ <20250919011227.2991696-2-chenridong@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <20250919011227.2991696-2-chenridong@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 18 Sep 2025, at 23:46, Qi Zheng wrote:
-
-> From: Muchun Song <songmuchun@bytedance.com>
+On 9/18/25 9:12 PM, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
 >
-> In future memcg removal, the binding between a folio and a memcg may
-> change, making the split lock within the memcg unstable when held.
+> The 'isolcpus' parameter specified at boot time can be assigned to an
+> isolated partition. While it is valid put the 'isolcpus' in an isolated
+> partition, attempting to change a member cpuset to an isolated partition
+> will fail if the cpuset contains any 'isolcpus'.
 >
-> A new approach is required to reparent the split queue to its parent. This
-> patch starts introducing a unified way to acquire the split lock for
-> future work.
+> For example, the system boots with 'isolcpus=9', and the following
+> configuration works correctly:
 >
-> It's a code-only refactoring with no functional changes.
+>    # cd /sys/fs/cgroup/
+>    # mkdir test
+>    # echo 1 > test/cpuset.cpus
+>    # echo isolated > test/cpuset.cpus.partition
+>    # cat test/cpuset.cpus.partition
+>    isolated
+>    # echo 9 > test/cpuset.cpus
+>    # cat test/cpuset.cpus.partition
+>    isolated
+>    # cat test/cpuset.cpus
+>    9
 >
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> However, the following steps to convert a member cpuset to an isolated
+> partition will fail:
+>
+>    # cd /sys/fs/cgroup/
+>    # mkdir test
+>    # echo 9 > test/cpuset.cpus
+>    # echo isolated > test/cpuset.cpus.partition
+>    # cat test/cpuset.cpus.partition
+>    isolated invalid (partition config conflicts with housekeeping setup)
+>
+> The issue occurs because the new partition state (new_prs) is used for
+> validation against housekeeping constraints before it has been properly
+> updated. To resolve this, move the assignment of new_prs before the
+> housekeeping validation check when enabling a root partition.
+>
+> Fixes: 4a74e418881f ("cgroup/cpuset: Check partition conflict with housekeeping setup")
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
 > ---
->  include/linux/memcontrol.h | 10 +++++
->  mm/huge_memory.c           | 89 ++++++++++++++++++++++++++------------
->  2 files changed, 71 insertions(+), 28 deletions(-)
+>   kernel/cgroup/cpuset.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 16fe0306e50ea..99876af13c315 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1662,6 +1662,11 @@ int alloc_shrinker_info(struct mem_cgroup *memcg);
->  void free_shrinker_info(struct mem_cgroup *memcg);
->  void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id);
->  void reparent_shrinker_deferred(struct mem_cgroup *memcg);
-> +
-> +static inline int shrinker_id(struct shrinker *shrinker)
-> +{
-> +	return shrinker->id;
-> +}
->  #else
->  #define mem_cgroup_sockets_enabled 0
->
-> @@ -1693,6 +1698,11 @@ static inline void set_shrinker_bit(struct mem_cgroup *memcg,
->  				    int nid, int shrinker_id)
->  {
->  }
-> +
-> +static inline int shrinker_id(struct shrinker *shrinker)
-> +{
-> +	return -1;
-> +}
->  #endif
->
->  #ifdef CONFIG_MEMCG
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 582628ddf3f33..d34516a22f5bb 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -1078,26 +1078,62 @@ pmd_t maybe_pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma)
->
->  #ifdef CONFIG_MEMCG
->  static inline
-> -struct deferred_split *get_deferred_split_queue(struct folio *folio)
-> +struct mem_cgroup *folio_split_queue_memcg(struct folio *folio,
-> +					   struct deferred_split *queue)
->  {
-> -	struct mem_cgroup *memcg = folio_memcg(folio);
-> -	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
-> -
-> -	if (memcg)
-> -		return &memcg->deferred_split_queue;
-> -	else
-> -		return &pgdat->deferred_split_queue;
-> +	if (mem_cgroup_disabled())
-> +		return NULL;
-> +	if (&NODE_DATA(folio_nid(folio))->deferred_split_queue == queue)
-> +		return NULL;
-> +	return container_of(queue, struct mem_cgroup, deferred_split_queue);
->  }
->  #else
->  static inline
-> -struct deferred_split *get_deferred_split_queue(struct folio *folio)
-> +struct mem_cgroup *folio_split_queue_memcg(struct folio *folio,
-> +					   struct deferred_split *queue)
->  {
-> -	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
-> -
-> -	return &pgdat->deferred_split_queue;
-> +	return NULL;
->  }
->  #endif
->
-> +static struct deferred_split *folio_split_queue_lock(struct folio *folio)
-> +{
-> +	struct mem_cgroup *memcg;
-> +	struct deferred_split *queue;
-> +
-> +	memcg = folio_memcg(folio);
-> +	queue = memcg ? &memcg->deferred_split_queue :
-> +			&NODE_DATA(folio_nid(folio))->deferred_split_queue;
-> +	spin_lock(&queue->split_queue_lock);
-> +
-> +	return queue;
-> +}
-> +
-> +static struct deferred_split *
-> +folio_split_queue_lock_irqsave(struct folio *folio, unsigned long *flags)
-> +{
-> +	struct mem_cgroup *memcg;
-> +	struct deferred_split *queue;
-> +
-> +	memcg = folio_memcg(folio);
-> +	queue = memcg ? &memcg->deferred_split_queue :
-> +			&NODE_DATA(folio_nid(folio))->deferred_split_queue;
-> +	spin_lock_irqsave(&queue->split_queue_lock, *flags);
-> +
-> +	return queue;
-> +}
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 44231cb1d83f..2b7e2f17577e 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1806,6 +1806,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+>   		xcpus = tmp->delmask;
+>   		if (compute_excpus(cs, xcpus))
+>   			WARN_ON_ONCE(!cpumask_empty(cs->exclusive_cpus));
+> +		new_prs = (cmd == partcmd_enable) ? PRS_ROOT : PRS_ISOLATED;
+>   
+>   		/*
+>   		 * Enabling partition root is not allowed if its
+> @@ -1838,7 +1839,6 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+>   
+>   		deleting = true;
+>   		subparts_delta++;
+> -		new_prs = (cmd == partcmd_enable) ? PRS_ROOT : PRS_ISOLATED;
+>   	} else if (cmd == partcmd_disable) {
+>   		/*
+>   		 * May need to add cpus back to parent's effective_cpus
+Reviewed-by: Waiman Long <longman@redhat.com>
 
-A helper function to get queue from a folio would get rid of duplicated
-code in the two functions above. Hmm, that is the deleted
-get_deferred_split_queue(). So probably retain it.
-
-Otherwise, LGTM. Reviewed-by: Zi Yan <ziy@nvidia.com>
-
-Best Regards,
-Yan, Zi
 
