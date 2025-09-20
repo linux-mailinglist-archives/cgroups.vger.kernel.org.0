@@ -1,68 +1,68 @@
-Return-Path: <cgroups+bounces-10307-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10308-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81377B8C194
-	for <lists+cgroups@lfdr.de>; Sat, 20 Sep 2025 09:43:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C07C3B8C3D9
+	for <lists+cgroups@lfdr.de>; Sat, 20 Sep 2025 10:27:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39983585065
-	for <lists+cgroups@lfdr.de>; Sat, 20 Sep 2025 07:43:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C7CA58101D
+	for <lists+cgroups@lfdr.de>; Sat, 20 Sep 2025 08:27:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F4A1F4621;
-	Sat, 20 Sep 2025 07:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED655278761;
+	Sat, 20 Sep 2025 08:27:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f9UA6nkz"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GbRAN1iA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6C5188A0C;
-	Sat, 20 Sep 2025 07:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0826B34BA47;
+	Sat, 20 Sep 2025 08:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758354214; cv=none; b=QTBZiWihHp9K8nkiY0aqJ2d6oqpSR7wRv+mNOrcPsBLLX22Beh/rhksKjqU+fas/msNv+WBUycGBYKdGvMHUTQgxWk9kUgQKQCqEpZj1fjlaKM56gS8pouPhQyaCN4gZ8S/I19OrtXeTkXdI2Xh1efQ0na41RFqtBpymE/pf5RI=
+	t=1758356859; cv=none; b=UlZ37aLtlD6+VI12/3/aakAAP8URxaanWx8MeMMx0rZyi6uAzv5rQrkVBBL33QcwneKhCot3otvr1E8Mb7fTFnPwWHSoWsMBBYNSq2tj6lDfNiQ/23bxi24Y0WcI2deVI591ODxZkR8iMWsMdW9RpofTBnPdsVu8r1yhDCIAQwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758354214; c=relaxed/simple;
-	bh=kEwh/ekCl/otnpe61Q+7M++Qui9Q62NvcImp583uS/s=;
+	s=arc-20240116; t=1758356859; c=relaxed/simple;
+	bh=fLmBxl6wqNnu65VPgOguy4Rp6FEVvwYxsWhMiq/CrPM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sIQWsGYgHRQ0jTQ9x03pi1DFAFYa5F00eMHAulePLw0dgp8VGyfRIdFPNWfAiU824y2sgQVgbH+TNFpCWqSrpHe+IWAiqYU9iDhxrvJjIaRM6TLEInBRRqBa5gs5OOSbwvuygsXSNh8x00O93ePbgMnaGWd8xrlicyTFasYg2oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f9UA6nkz; arc=none smtp.client-ip=198.175.65.13
+	 Content-Type:Content-Disposition:In-Reply-To; b=MuSNnqPeaMZ/v44Pyf5RevAYrweVTXNTxqbpYpQtXiyLf7R3IeaevDhaQAba0OTACjOVq7GWsz39D6/9c6+A7CS+9ztZtlzsJGVyw6OWqFoN6LFc1NHFeCB3OZYN1dfxKwjSWrHGeNQv3WfozxTVrRbKGVi9YX3EuEoSPU6t4PI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GbRAN1iA; arc=none smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1758354213; x=1789890213;
+  t=1758356858; x=1789892858;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=kEwh/ekCl/otnpe61Q+7M++Qui9Q62NvcImp583uS/s=;
-  b=f9UA6nkzE5xE0ibrfRk/qti7srvCUO8aQPu3q3SvhkLMuhtWWNiTs0dK
-   /hy1lhaneU9DtdYqBwNCfPNFtYo4IgHyFs3OWnSUEls+HXVAmmLQVLZ+T
-   aeOJewzhms9ACi0jm/DxZp059nxqKhggC0XOjL9kBO4j9m+/Z3EBKlvkS
-   6CIM7UE0126PGmP7ZLFUgEMn/6Tazl8en7egNZ+rphv+SvWtxdkfOIZyX
-   VZoiFt81cyHF0vBm4rz2A3N/Ikg+pcQqn9Z3/ZV7CdCjQAdJpWB63ZJEP
-   WmdeIdwhJq4w976FcJRomwaGrRjuDpQt9UUPSaOXl7OMH4q4Og0Er+c+v
-   w==;
-X-CSE-ConnectionGUID: aR5VbE9ESP6JQ2/tWG7kfA==
-X-CSE-MsgGUID: oCfVBuW6R+ehxiw5WF3scw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11558"; a="71798360"
+  bh=fLmBxl6wqNnu65VPgOguy4Rp6FEVvwYxsWhMiq/CrPM=;
+  b=GbRAN1iAwrSzK8I9V+7/wl4it/mJmbiHvuNeJv96+4R3SJJ6VTD3sKWF
+   qQKR4CrKMJgk31DjnU2chrjE7boVemED9cuKiME4Ctc3JOln3alk6QU+d
+   srMgoaaV9LldiBDQXRilRwMtsjGv2QMSmrodH3F5NgsJYR4Z1kgqXF+Hq
+   KvmDGqvKBNBtK/8YtR0zlQzrFrro55S2+ChDoyTGOglrZ4HH5CQSNm/bf
+   R4t4kLaL4ZsjeTibnErZU48Va6VdaIAMz6iqcTAcEa2qVtgQ/dcvvMciT
+   J3WthftVEoVSpJkMMYxWJyti5a3DZUc+zNus4STlZeMkUzEOik4bMBXDc
+   g==;
+X-CSE-ConnectionGUID: bR/LYfzRQTSM8lS/0I1O5g==
+X-CSE-MsgGUID: CfY0FifRSPypGLQj1FcQoQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11558"; a="86131663"
 X-IronPort-AV: E=Sophos;i="6.18,280,1751266800"; 
-   d="scan'208";a="71798360"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2025 00:43:33 -0700
-X-CSE-ConnectionGUID: XhG2d+HRTmeSVCMqd9nXog==
-X-CSE-MsgGUID: YTridhCOTma5012IF8a9Lw==
+   d="scan'208";a="86131663"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2025 01:27:37 -0700
+X-CSE-ConnectionGUID: jgr/78pSTnW+eQNFl3ttBQ==
+X-CSE-MsgGUID: nAsLMnuUTEG0Inx+PrPHOw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.18,280,1751266800"; 
-   d="scan'208";a="206968748"
+   d="scan'208";a="181284823"
 Received: from lkp-server01.sh.intel.com (HELO 84a20bd60769) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 20 Sep 2025 00:43:27 -0700
+  by fmviesa004.fm.intel.com with ESMTP; 20 Sep 2025 01:27:32 -0700
 Received: from kbuild by 84a20bd60769 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1uzsFh-00058h-0d;
-	Sat, 20 Sep 2025 07:43:25 +0000
-Date: Sat, 20 Sep 2025 15:43:18 +0800
+	id 1uzswM-0005Al-0T;
+	Sat, 20 Sep 2025 08:27:30 +0000
+Date: Sat, 20 Sep 2025 16:27:10 +0800
 From: kernel test robot <lkp@intel.com>
 To: Qi Zheng <zhengqi.arch@bytedance.com>, hannes@cmpxchg.org,
 	hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
@@ -73,11 +73,12 @@ To: Qi Zheng <zhengqi.arch@bytedance.com>, hannes@cmpxchg.org,
 	baohua@kernel.org, lance.yang@linux.dev, akpm@linux-foundation.org
 Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	Muchun Song <songmuchun@bytedance.com>,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH 4/4] mm: thp: reparent the split queue during memcg
- offline
-Message-ID: <202509201556.QAvYX4v3-lkp@intel.com>
-References: <bbe3bf8bfce081fdf0815481b2a0c83b89b095b8.1758253018.git.zhengqi.arch@bytedance.com>
+Subject: Re: [PATCH 2/4] mm: thp: introduce folio_split_queue_lock and its
+ variants
+Message-ID: <202509201640.ikJun7XS-lkp@intel.com>
+References: <eb072e71cc39a0ea915347f39f2af29d2e82897f.1758253018.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -86,7 +87,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bbe3bf8bfce081fdf0815481b2a0c83b89b095b8.1758253018.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <eb072e71cc39a0ea915347f39f2af29d2e82897f.1758253018.git.zhengqi.arch@bytedance.com>
 
 Hi Qi,
 
@@ -101,50 +102,50 @@ https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Qi-Zheng/mm-thp-replace-folio_memcg-with-folio_memcg_charged/20250919-115219
 base:   next-20250918
-patch link:    https://lore.kernel.org/r/bbe3bf8bfce081fdf0815481b2a0c83b89b095b8.1758253018.git.zhengqi.arch%40bytedance.com
-patch subject: [PATCH 4/4] mm: thp: reparent the split queue during memcg offline
-config: x86_64-randconfig-004-20250920 (https://download.01.org/0day-ci/archive/20250920/202509201556.QAvYX4v3-lkp@intel.com/config)
+patch link:    https://lore.kernel.org/r/eb072e71cc39a0ea915347f39f2af29d2e82897f.1758253018.git.zhengqi.arch%40bytedance.com
+patch subject: [PATCH 2/4] mm: thp: introduce folio_split_queue_lock and its variants
+config: x86_64-buildonly-randconfig-001-20250920 (https://download.01.org/0day-ci/archive/20250920/202509201640.ikJun7XS-lkp@intel.com/config)
 compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250920/202509201556.QAvYX4v3-lkp@intel.com/reproduce)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250920/202509201640.ikJun7XS-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202509201556.QAvYX4v3-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202509201640.ikJun7XS-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
->> mm/memcontrol.c:3890:2: error: call to undeclared function 'reparent_deferred_split_queue'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    3890 |         reparent_deferred_split_queue(memcg);
-         |         ^
-   1 error generated.
+>> mm/huge_memory.c:1105:24: error: incomplete definition of type 'struct mem_cgroup'
+    1105 |         queue = memcg ? &memcg->deferred_split_queue :
+         |                          ~~~~~^
+   include/linux/mm_types.h:35:8: note: forward declaration of 'struct mem_cgroup'
+      35 | struct mem_cgroup;
+         |        ^
+   mm/huge_memory.c:1119:24: error: incomplete definition of type 'struct mem_cgroup'
+    1119 |         queue = memcg ? &memcg->deferred_split_queue :
+         |                          ~~~~~^
+   include/linux/mm_types.h:35:8: note: forward declaration of 'struct mem_cgroup'
+      35 | struct mem_cgroup;
+         |        ^
+   2 errors generated.
 
 
-vim +/reparent_deferred_split_queue +3890 mm/memcontrol.c
+vim +1105 mm/huge_memory.c
 
-  3877	
-  3878	static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
-  3879	{
-  3880		struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-  3881	
-  3882		memcg1_css_offline(memcg);
-  3883	
-  3884		page_counter_set_min(&memcg->memory, 0);
-  3885		page_counter_set_low(&memcg->memory, 0);
-  3886	
-  3887		zswap_memcg_offline_cleanup(memcg);
-  3888	
-  3889		memcg_offline_kmem(memcg);
-> 3890		reparent_deferred_split_queue(memcg);
-  3891		reparent_shrinker_deferred(memcg);
-  3892		wb_memcg_offline(memcg);
-  3893		lru_gen_offline_memcg(memcg);
-  3894	
-  3895		drain_all_stock(memcg);
-  3896	
-  3897		mem_cgroup_id_put(memcg);
-  3898	}
-  3899	
+  1098	
+  1099	static struct deferred_split *folio_split_queue_lock(struct folio *folio)
+  1100	{
+  1101		struct mem_cgroup *memcg;
+  1102		struct deferred_split *queue;
+  1103	
+  1104		memcg = folio_memcg(folio);
+> 1105		queue = memcg ? &memcg->deferred_split_queue :
+  1106				&NODE_DATA(folio_nid(folio))->deferred_split_queue;
+  1107		spin_lock(&queue->split_queue_lock);
+  1108	
+  1109		return queue;
+  1110	}
+  1111	
 
 -- 
 0-DAY CI Kernel Test Service
