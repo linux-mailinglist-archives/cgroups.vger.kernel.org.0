@@ -1,87 +1,107 @@
-Return-Path: <cgroups+bounces-10301-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10302-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BEF2B8BB51
-	for <lists+cgroups@lfdr.de>; Sat, 20 Sep 2025 02:50:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE0FAB8BB63
+	for <lists+cgroups@lfdr.de>; Sat, 20 Sep 2025 02:54:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0B547AEF7B
-	for <lists+cgroups@lfdr.de>; Sat, 20 Sep 2025 00:48:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F0AA582BB7
+	for <lists+cgroups@lfdr.de>; Sat, 20 Sep 2025 00:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DC8288AD;
-	Sat, 20 Sep 2025 00:49:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f1j61Dzj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51E6218EFD1;
+	Sat, 20 Sep 2025 00:54:51 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D69CF9C1
-	for <cgroups@vger.kernel.org>; Sat, 20 Sep 2025 00:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781E8189;
+	Sat, 20 Sep 2025 00:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758329399; cv=none; b=h48M8+8OVHGq3bSGZ3yah9CiriRPkLvUq4mpvT384XwloPFvTELW8i9Nij0BlyV0cKnB7liYzODxyS9cNw+554IK6lW8CIfYU5hkfSyrexidKkY94GYi15S/zDLpm9omHdP2pD6Id9qD8GzXY/Lkepp7S1v4aGzlxEQu2USHF9E=
+	t=1758329691; cv=none; b=UEdCayr1IQ5CBvXu6K9klCw5PkKzNOpTS2p1wgkQll9lQe776rOQVhFYG+8LE2/kSEINoxzKJzrZySzsTLrzFLlMZo0HbIaSAOtCczDDYgets27qGFiRsCCBu26ExkOZ0gVhtvt9elSwyQSrDC2O0xWs65EHSmeBqQbyfA+7PWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758329399; c=relaxed/simple;
-	bh=BEfv/CXraMXuo0VX8shgY1UFGOdECL5yYJTAksQW18g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bgN/vWOcJJcGt3JszMinn14Zbyg2hu6PM2sNXv27gloRgVZaZvzEcsABPsiA9bCjPNyj+QYm9NGOEKc5A4R8/Qk9tSGcrkSHxsvWNLKa0F1M3g+dD5ZfD9nK7wX16Gr6/XhcvyJa57odBYo8dihfrtNiJYCCiR4eObGq1MjOKJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f1j61Dzj; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 19 Sep 2025 17:49:48 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758329394;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hEihim8vKtht5JHRfmYVIiOJByu0+5c7d4P7gZnX9z0=;
-	b=f1j61DzjTjqsHJ1I+apAfiQAh+xjjjo7Ma1Z9O1gZoZy6hKt0YxvcGoBVQN8F0KjS1zUV+
-	uQ//pI48JWJLaHz+4gPPOBmvMpxPEndCwFmhquFD7xkXk8sOCXBJjicbDXBId/zu/wToGR
-	TpMnO96YyBFTp2XbJdr/fjdxnp8DwIk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Qi Zheng <zhengqi.arch@bytedance.com>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com, 
-	roman.gushchin@linux.dev, muchun.song@linux.dev, david@redhat.com, 
-	lorenzo.stoakes@oracle.com, ziy@nvidia.com, baolin.wang@linux.alibaba.com, 
-	Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com, dev.jain@arm.com, 
-	baohua@kernel.org, lance.yang@linux.dev, akpm@linux-foundation.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [PATCH 2/4] mm: thp: introduce folio_split_queue_lock and its
- variants
-Message-ID: <v7xskholk2cdoofuv247lbk3l643jovxqheuq7hu32wj2ncz64@irs7qwsbaiqz>
-References: <cover.1758253018.git.zhengqi.arch@bytedance.com>
- <eb072e71cc39a0ea915347f39f2af29d2e82897f.1758253018.git.zhengqi.arch@bytedance.com>
+	s=arc-20240116; t=1758329691; c=relaxed/simple;
+	bh=2QERMCIay5DkaJeIepqBAytD+sy6Xn2dPmsJuvn7FvI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s1ye9paqDqojYRLxTjpR0eQJvvEgkgf4XSq8X93Y0Ghc1iU5gZ3tPJi+SydKfVnOgk8/5hQNWsd/l7f+LxODFwrh3Tx/+yR8eV8tdOGmoFXxgc4VizpwkQH7l2cxPJCO76PveOLFbC8vFd96CKz+43wMnZA1fjn8wCqPjcd0BKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cT9rM2NhMzKHMY4;
+	Sat, 20 Sep 2025 08:54:43 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 440BB1A135E;
+	Sat, 20 Sep 2025 08:54:44 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP3 (Coremail) with SMTP id _Ch0CgAnwkBS+81oSYCsAA--.31638S2;
+	Sat, 20 Sep 2025 08:54:44 +0800 (CST)
+Message-ID: <391f3b14-f1ad-483e-9bef-5e6006a39e29@huaweicloud.com>
+Date: Sat, 20 Sep 2025 08:54:42 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eb072e71cc39a0ea915347f39f2af29d2e82897f.1758253018.git.zhengqi.arch@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH cgroup/for-next] cpuset: fix missing error return in
+ update_cpumask
+To: Tejun Heo <tj@kernel.org>
+Cc: longman@redhat.com, hannes@cmpxchg.org, mkoutny@suse.com,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com,
+ chenridong@huawei.com
+References: <20250917060454.2885698-9-chenridong@huaweicloud.com>
+ <20250919094903.3060470-1-chenridong@huaweicloud.com>
+ <aM2ITLVvzU-k9I6i@slm.duckdns.org>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <aM2ITLVvzU-k9I6i@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_Ch0CgAnwkBS+81oSYCsAA--.31638S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GrW8uF1UZF1kZFWDWw45Wrg_yoWxAwc_ur
+	WSv3429r18Jw1I934a9a4UCr1kAF17Jr4DA39xtF4IqF4kAFn7KF1YvryrAFyUAFW7XrnI
+	kr95GanrWw1SgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbwkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
+	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+	vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
+	x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
+	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
+	wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Fri, Sep 19, 2025 at 11:46:33AM +0800, Qi Zheng wrote:
-> From: Muchun Song <songmuchun@bytedance.com>
-> 
-> In future memcg removal, the binding between a folio and a memcg may
-> change, making the split lock within the memcg unstable when held.
-> 
-> A new approach is required to reparent the split queue to its parent. This
-> patch starts introducing a unified way to acquire the split lock for
-> future work.
-> 
-> It's a code-only refactoring with no functional changes.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+
+On 2025/9/20 0:43, Tejun Heo wrote:
+> On Fri, Sep 19, 2025 at 09:49:03AM +0000, Chen Ridong wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
+>>
+>> The commit c6366739804f ("cpuset: refactor cpus_allowed_validate_change")
+>> inadvertently removed the error return when cpus_allowed_validate_change()
+>> fails. This patch restores the proper error handling by returning retval
+>> when the validation check fails.
+>>
+>> Fixes: c6366739804f ("cpuset: refactor cpus_allowed_validate_change")
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> 
+> Applied to cgroup/for-6.18.
+> 
+> Thanks.
+> 
+
+Thank you very much.
+
+-- 
+Best regards,
+Ridong
+
 
