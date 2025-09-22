@@ -1,112 +1,175 @@
-Return-Path: <cgroups+bounces-10356-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10357-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 306DDB91DB2
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 17:10:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A01CEB91ECC
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 17:29:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C125189EA19
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 15:11:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D41A1904982
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 15:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD05F26E711;
-	Mon, 22 Sep 2025 15:10:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33FED2E427F;
+	Mon, 22 Sep 2025 15:27:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OOeJA5W9"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JnCJh8IJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6tDJUbPl";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JnCJh8IJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6tDJUbPl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F49F9EC;
-	Mon, 22 Sep 2025 15:10:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B4CE2E2657
+	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 15:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758553837; cv=none; b=d9xVLegXzv2DLBCeNS5fDud+iZVxKXldCi9G37cOma/Bpxd35F7/MMCke+wD/Ybvymo1VDKPhNDit+gMQeiVRFM9Ue1WObBjomB52B6UmVzDGHPYuPypka8O1JAT6jTedkU3K1yV79rGxCLskpg8cJ6Vm/zIQyzD7pkbsb2auzc=
+	t=1758554859; cv=none; b=eS0TIAiAkHAEG/cKCqtOBGlByIQ0/yUAJ+2y7txWK6jaaIumXDvlfOkT+ekzcv3aLMhjeAcMgFrvxObOY2UzLXpfWJiQTX+z/dWEghLdXd7bhAfRJUV/sHwGVLC26eergsjl5KKUHwSspD2y8jSZVAeWkMSf4ULlGlClMhLnNyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758553837; c=relaxed/simple;
-	bh=JN8oDzMx1WaAixG0/ckzOx5OBDLUH3iItZFLAdr2wko=;
+	s=arc-20240116; t=1758554859; c=relaxed/simple;
+	bh=Vw6JJ7xrCIwh6MqyjOkTVkannJHgEmX47UGmuXG+9Tc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cUjvMIqTh3BrvwkwJtF1K0dBT1fl3YZuHv8leC5DGy1qMnSACf1jh6ac6yjNOk1YNq1twcltJITzUR/oMj0pm5pad2SB1TddO6C9+NnC1ga0na4Atf786RxG1egXXD5+z5jllzf/lQuFx2BtTlJVViRxYF5YhbtS2oCUA4v7hoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OOeJA5W9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F984C4CEF0;
-	Mon, 22 Sep 2025 15:10:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758553837;
-	bh=JN8oDzMx1WaAixG0/ckzOx5OBDLUH3iItZFLAdr2wko=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OOeJA5W9zP0FsNCFmuoLeFacEdE5IgjCqHPfkgpp2uqgBBvwQEhBqgCkpx0J4TW4v
-	 4orpeeHRdTBX/eUJgxLL68tYJtbJ5KwU3+SnCpkAgtrvl8yppYA9Hh3EERSSfRSNeV
-	 DGB2/baO2jQrD2AVxYSyUvI6V7jzZCZ6z4ECqVNVl1CqrbHRxQM3XRkzlAoTJ2pfiu
-	 cmpmOoVL7PdWSwHjN16hc9zdckSG8dW8cz8lizbP/WmoVzFhE4iOPESXQwe5Cvm7ae
-	 0A3CbZEAH5hYp/Tw3PPX8W8W/brhdnuoQj44BbUI4cOQJG1LIBNzAwweL0ZWPb8Sg0
-	 NTsRSWPkJOslA==
-Date: Mon, 22 Sep 2025 17:10:33 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Waiman Long <llong@redhat.com>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org
-Subject: Re: [PATCH 17/33] cpuset: Propagate cpuset isolation update to
- workqueue through housekeeping
-Message-ID: <aNFm6ZhhPpRrguyS@2a01cb069018a81087c6c9b3bf9471d3.ipv6.abo.wanadoo.fr>
-References: <20250829154814.47015-1-frederic@kernel.org>
- <20250829154814.47015-18-frederic@kernel.org>
- <197dd0c0-f4cc-4e75-accb-6bf85ea5291d@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LMaiWR263apMD6dwvsls2mLgl5BAei9B8Q4zjC7oxfkHS/s92Niyc3DPw/wbp+TJuD+5flFF3t7U3z4ca7Yon2KGFZvRla0L7PLoKZeaBukiRQviZyWgNexRUGWU4y+dc8aJKiYTGOOvnWYc91m2EiyAtA6UtqQ5or6DY4dZT0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JnCJh8IJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6tDJUbPl; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JnCJh8IJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6tDJUbPl; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AC9D41F395;
+	Mon, 22 Sep 2025 15:27:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758554855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rb+DXx+3ADAp+EoOOgHeeXZgUzRoFnTs9AYorQ75bCM=;
+	b=JnCJh8IJFkuMqJxVQU00Jyy2lJHqLhBBIjbqNFgL5nOeKX/O/TfNKaSvBgDKiHpRSXN46f
+	X4aIKirmoFDIQ6Ke9+rt0kjUUvrhYip+a/Iawy7fdVspYdB7XcV8xFnK7Zvw4SxD5kkook
+	m2/4+HzM9LAfD9G9vyNJZfEF5ZFhUFw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758554855;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rb+DXx+3ADAp+EoOOgHeeXZgUzRoFnTs9AYorQ75bCM=;
+	b=6tDJUbPlqJioZyGmF1fM2NZufXV2CD+L8O45l0A4SRfTOdLwBwkpTCdfQrZrjthXcYQFy4
+	aHKQ1hYI+3kzguCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758554855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rb+DXx+3ADAp+EoOOgHeeXZgUzRoFnTs9AYorQ75bCM=;
+	b=JnCJh8IJFkuMqJxVQU00Jyy2lJHqLhBBIjbqNFgL5nOeKX/O/TfNKaSvBgDKiHpRSXN46f
+	X4aIKirmoFDIQ6Ke9+rt0kjUUvrhYip+a/Iawy7fdVspYdB7XcV8xFnK7Zvw4SxD5kkook
+	m2/4+HzM9LAfD9G9vyNJZfEF5ZFhUFw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758554855;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rb+DXx+3ADAp+EoOOgHeeXZgUzRoFnTs9AYorQ75bCM=;
+	b=6tDJUbPlqJioZyGmF1fM2NZufXV2CD+L8O45l0A4SRfTOdLwBwkpTCdfQrZrjthXcYQFy4
+	aHKQ1hYI+3kzguCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 92CC21388C;
+	Mon, 22 Sep 2025 15:27:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kRbQI+dq0WgYJAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 22 Sep 2025 15:27:35 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 2AB47A07C4; Mon, 22 Sep 2025 17:27:35 +0200 (CEST)
+Date: Mon, 22 Sep 2025 17:27:35 +0200
+From: Jan Kara <jack@suse.cz>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Julian Sun <sunjunchao@bytedance.com>, cgroups@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, akpm@linux-foundation.org, 
+	lance.yang@linux.dev, mhiramat@kernel.org, agruenba@redhat.com, hannes@cmpxchg.org, 
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	muchun.song@linux.dev
+Subject: Re: [PATCH 0/3] Suppress undesirable hung task warnings.
+Message-ID: <4ntd7nnkoidyakbfm3caieku5tvpmzklhm27vgr3fu746hsrov@wqiqxasc4s7p>
+References: <20250922094146.708272-1-sunjunchao@bytedance.com>
+ <20250922132718.GB49638@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <197dd0c0-f4cc-4e75-accb-6bf85ea5291d@redhat.com>
+In-Reply-To: <20250922132718.GB49638@noisy.programming.kicks-ass.net>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-Le Sun, Aug 31, 2025 at 10:51:27PM -0400, Waiman Long a écrit :
+On Mon 22-09-25 15:27:18, Peter Zijlstra wrote:
+> On Mon, Sep 22, 2025 at 05:41:43PM +0800, Julian Sun wrote:
+> > As suggested by Andrew Morton in [1], we need a general mechanism 
+> > that allows the hung task detector to ignore unnecessary hung 
+> > tasks. This patch set implements this functionality.
+> > 
+> > Patch 1 introduces a PF_DONT_HUNG flag. The hung task detector will 
+> > ignores all tasks that have the PF_DONT_HUNG flag set.
+> > 
+> > Patch 2 introduces wait_event_no_hung() and wb_wait_for_completion_no_hung(), 
+> > which enable the hung task detector to ignore hung tasks caused by these
+> > wait events.
+> > 
+> > Patch 3 uses wb_wait_for_completion_no_hung() in the final phase of memcg 
+> > teardown to eliminate the hung task warning.
+> > 
+> > Julian Sun (3):
+> >   sched: Introduce a new flag PF_DONT_HUNG.
+> >   writeback: Introduce wb_wait_for_completion_no_hung().
+> >   memcg: Don't trigger hung task when memcg is releasing.
 > 
-> On 8/29/25 11:47 AM, Frederic Weisbecker wrote:
-> > --- a/kernel/sched/isolation.c
-> > +++ b/kernel/sched/isolation.c
-> > @@ -102,6 +102,7 @@ EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
-> >   int housekeeping_update(struct cpumask *mask, enum hk_type type)
-> >   {
-> >   	struct cpumask *trial, *old = NULL;
-> > +	int err;
-> >   	if (type != HK_TYPE_DOMAIN)
-> >   		return -ENOTSUPP;
-> > @@ -126,10 +127,11 @@ int housekeeping_update(struct cpumask *mask, enum hk_type type)
-> >   	mem_cgroup_flush_workqueue();
-> >   	vmstat_flush_workqueue();
-> > +	err = workqueue_unbound_exclude_cpumask(housekeeping_cpumask(type));
-> >   	kfree(old);
-> > -	return 0;
-> > +	return err;
-> >   }
-> 
-> Actually workqueue_unbound_exclude_cpumask() expects a cpumask of all the
-> CPUs that have been isolated. IOW, all the CPUs that are not in
-> housekeeping_cpumask(HK_TYPE_DOMAIN). So we do the inversion here or we
-> rename the function to, e.g. workqueue_unbound_cpumask_update() and make the
-> change there.
+> This is all quite terrible. I'm not at all sure why a task that is
+> genuinely not making progress and isn't killable should not be reported.
 
-Whoops! Thanks for noticing this.
+In principle it is a variation of the old problem where hung task detector
+was reporting tasks that were waiting for IO to complete for too long (e.g.
+if sync(2) took longer than 2 minutes or whatever the limit is set). In
+this case we are waiting for IO in a cgroup to complete which has the
+additional dimension that cgroup IO may be throttled so it progresses extra
+slowly. But the reports of hang check firing for long running IO
+disappeared quite some time ago - I have a vague recollection there were
+some tweaks to it for this case but maybe I'm wrong and people just learned
+to tune the hang check timer :).
 
-Thanks.
-
-> Cheers,
-> Longman
-> 
-
+								Honza
 -- 
-Frederic Weisbecker
-SUSE Labs
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
