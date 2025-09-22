@@ -1,69 +1,110 @@
-Return-Path: <cgroups+bounces-10369-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10370-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DDCDB938AE
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 01:10:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B61EB9390A
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 01:23:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8698446691
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 23:10:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E0CA16AD0C
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 23:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FDA3301025;
-	Mon, 22 Sep 2025 23:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F56E2F8BE7;
+	Mon, 22 Sep 2025 23:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NQezPU9i"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EgOGLDog"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AAA21D3E6;
-	Mon, 22 Sep 2025 23:10:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7002D2DEA68
+	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 23:23:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758582604; cv=none; b=GNqCvUwbZh3C67U8GHy3rAzZ7hiu5VKrtLtR5iSHhpjROMoeU7qlTT0lwZ92Xv84/UqZMKYpHqsaIMLWtZXO1IeCwn5iWJ98ejDBApARbDhk4MVBdTToBrh9rApdaY7xa9XOuflf5QjM7fyYK+m2PcZ/qmCVdJOPBFQTg9LiM6Y=
+	t=1758583400; cv=none; b=mirXVU/53m061imbhG5T1QPwzBjDsHVSleKIxN5IncSjWEFevSxpkGE+Dq1MuQAGfRPt3uFbYFVdhuRyNKzwoMN0szIYqhCMVzGdi8UMndpJH+8hRn7l1UwQuDH6G4iKo2sdnyxRTiddrJ8Z8DXUMVsJeuBdg6kg+RELaLzNJHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758582604; c=relaxed/simple;
-	bh=uXzEBNa32draPpqqEbmoU9ipexWgqGY6Nq8nMEu9FSQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=P8+TWpMY8jjUk3zPSD+q0BpF7X/NRQ1OeeqFGSuQkIAaE9o7AfQD3qPYA/WXuOnupA8iiD0y6LlvmiG4WwGedJwL2XqT3IWV7Slzsiq+XHul/PCh5PdTB4SijI6kQOt2gdmH+dKg/7uQrD40frN4PrxZts6/3N1lbYVZDGHkK5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NQezPU9i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BECDC4CEF0;
-	Mon, 22 Sep 2025 23:10:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758582604;
-	bh=uXzEBNa32draPpqqEbmoU9ipexWgqGY6Nq8nMEu9FSQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NQezPU9irkuqQXELYyd53J+7uIr1hQDwUvSycixycsfBrBiZIR0XVj3N3Y58dskpJ
-	 AY2DBl2SMLGQhSBe9F3+omofzIsAr8Iq35Yn5kNGrW9RKenujgO0Zj3CcqluUCTbMO
-	 lwrY0jRrduAhx8vPrHa4vUk2Py6XCxKnE8qYzTkcununn1DL8q3zaZPumuRiOerCCq
-	 CKwQUtUOF8bEEktx+m8KB/FmeGyKMfeXG9jZhEK7aJxXbSXKnjjaQSYsAcgiH97kJW
-	 RfbN8+rGY5R3JSnqDbk0QZNbd1c5b9HD+2BR+oYPwrvJDsHvwfbFIXEAsJeNionpl5
-	 dj6kdT0FnEuvg==
-Date: Mon, 22 Sep 2025 13:10:03 -1000
-Message-ID: <bff70a613775f72eeb8437a3b888c805@kernel.org>
-From: Tejun Heo <tj@kernel.org>
-To: Chen Ridong <chenridong@huaweicloud.com>, longman@redhat.com, hannes@cmpxchg.org, mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com
-Subject: Re: [PATCH 0/3] cpuset: code cleanup and redundancy removal
-In-Reply-To: <20250922130233.3237521-1-chenridong@huaweicloud.com>
-References: <20250922130233.3237521-1-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1758583400; c=relaxed/simple;
+	bh=IH6lVtuTOZRoU62tM1LYTwRC00+znLLpyoSzT0D1sxs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t+MXk0+2FuS2EkAWNHMmkLXsH9U1piOEAWnwA/4bKRVg5HK/t6S8prduBmlTufGqTTkUSXiWt3gOTmWoi3FHd+EtLDAAY8fCsF0ZwPuT8G7R3830AgsKNm+1wuDcCLWV/GBQyFSfqB/hiKIkl+zZToah8XHvzzrenT7sbT4zE1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EgOGLDog; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 22 Sep 2025 16:22:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758583384;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=syOw9Ju7maSQMJoOZeW4RQ04N8SC8w7XMJeEdKsYZk8=;
+	b=EgOGLDogBBbcncEgiOkyC5L1FYT3AhDoDy0JRhVXAGqQ3EWGB2LAy171sGBEWgtks9KSnq
+	zaD0gpqYWWkg3EohVh4C4q/myGGSBRdIMY2JrnjG0m8UO40KgkM/sZWCzjREh5bjCSSeuO
+	btqG8R88PtOb53qbqw3ccmGraMa+gSo=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Peilin Ye <yepeilin@google.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, 
+	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Meta kernel team <kernel-team@meta.com>, Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v2] memcg: skip cgroup_file_notify if spinning is not
+ allowed
+Message-ID: <nzr2ztya3duztwfnpcnl2azzcdg74hjbwzzs3nxax67nsu6ffq@leycq6l5d5y2>
+References: <20250922220203.261714-1-shakeel.butt@linux.dev>
+ <20250922160308.524be6ba4d418886095ab223@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250922160308.524be6ba4d418886095ab223@linux-foundation.org>
+X-Migadu-Flow: FLOW_OUT
 
-> Chen Ridong (3):
->   cpuset: remove redundant special case for null input in node mask
->     update
->   cpuset: remove impossible warning in update_parent_effective_cpumask
->   cpuset: remove is_prs_invalid helper
+On Mon, Sep 22, 2025 at 04:03:08PM -0700, Andrew Morton wrote:
+> On Mon, 22 Sep 2025 15:02:03 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> 
+> > Generally memcg charging is allowed from all the contexts including NMI
+> > where even spinning on spinlock can cause locking issues. However one
+> > call chain was missed during the addition of memcg charging from any
+> > context support. That is try_charge_memcg() -> memcg_memory_event() ->
+> > cgroup_file_notify().
+> > 
+> > The possible function call tree under cgroup_file_notify() can acquire
+> > many different spin locks in spinning mode. Some of them are
+> > cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let's
+> > just skip cgroup_file_notify() from memcg charging if the context does
+> > not allow spinning.
+> > 
+> > Alternative approach was also explored where instead of skipping
+> > cgroup_file_notify(), we defer the memcg event processing to irq_work
+> > [1]. However it adds complexity and it was decided to keep things simple
+> > until we need more memcg events with !allow_spinning requirement.
+> 
+> What are the downsides here?  Inaccurate charging obviously, but how
+> might this affect users?
 
-Applied 1-3 to cgroup/for-6.18.
+Charging will still be accurate. The only thing we will miss is the
+possible notifications to the userspace for memory.events[.local] files.
 
-Thanks.
+> 
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -2307,12 +2307,13 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+> >  	bool drained = false;
+> >  	bool raised_max_event = false;
+> >  	unsigned long pflags;
+> > +	bool allow_spinning = gfpflags_allow_spinning(gfp_mask);
+> >  
+> 
+> Does this affect only the problematic call chain which you have
+> identified, or might other callers be undesirably affected?
 
---
-tejun
+It will only affect the call chain which can not spin due to possibly
+NMI context and at the moment only bpf programs can cause that.
 
