@@ -1,143 +1,175 @@
-Return-Path: <cgroups+bounces-10332-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10333-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC950B8FCEA
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 11:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E15EB8FF75
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 12:19:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3B882A02E1
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 09:42:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08594170548
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 10:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB242FB623;
-	Mon, 22 Sep 2025 09:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EE7C2FC001;
+	Mon, 22 Sep 2025 10:19:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="K41XHuHd"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XkOsV0fZ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WQYkSi8b";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pC0EFtnr";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="g44kVPrl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC8AC2FB98A
-	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 09:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5907927A139
+	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 10:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758534129; cv=none; b=lkNwst8I7Mzfrn03QNtzxAzbnL/s/95U7Sa5p9y0IjRfYaFIX8agco182hEpwxo4MRe12xB8PcxqSKNYkibq7/0G6bKwp3hF7QOYmvjafA+RfzFSaY4u52w1TsxfKIxBiZhzf3eThgeWUie/yaEqQxk6/KHpzmZVl6eX48xqwjA=
+	t=1758536356; cv=none; b=en6NnRCoCu1HM4BwE8hDPGtaiiIeYuRlZMeKm+EtVJXmdWVMa9Q+49BT7YcCC7ZlJe7dfV/89QIMcSrP5AhVMG/2w8C2r4Jtm24kuxZO6P8w9nzxdF0gIKdROw9onUrG0ofrbojlOlnoEqvFFuhnUOKy5H+qoFwYPsX/6eqCbUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758534129; c=relaxed/simple;
-	bh=1fZ7uZviR12rEngACFAWSQEQQ2EujzRN08ukEAfB3yM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cwJ9jh9DeVo1oVXcEprAXm/DYOHPVq4Iwg6zy52KrsN4UEagva+r9OvjS0V9fBkVGfZAUhlfjDeRo3Cn47XwHX83eo8FbM6IBceSo6kYHqhVsbx6nGqFu4YETDWN2fe4bprZHVGPYrOKbth1hbkek53njmlhhZoUxCKI3Xj+1Kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=K41XHuHd; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b5518177251so1743063a12.0
-        for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 02:42:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1758534127; x=1759138927; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=knShu2WB1nekyCXSMkQd4YYY4q1/2M50bRHS1z1OFIA=;
-        b=K41XHuHdO1kdod3v2kDZ6xADmhQyxvefbQjKSRB4OBC1QuzjrUlWSNAcCILxkF27vs
-         AkTqsIyQalAXoWGadaWOwm1NSacTLnmCU9yMWgl2nKGarmeqSslJlf3S3Nh+RJCzVWeK
-         a324n3thQ+u7UKF3pH0cDMg3MzdZQMRR2T54WFHCcZfgjJzLVXiA1HyxhH12d5vAAdtE
-         ZYfjQh2nItO107Ab+Z1m7b7EwyCOuuQz0hIoXA5DjMf+GPSb7lxuYN2NBJAzxMSYeyWZ
-         48I2xu8tKURSuLKg9QU/NTQuw6YGy+xolOlWT8s3rsHyNrF2MBY+WDZzkNXgJ1v+n7LM
-         +zng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758534127; x=1759138927;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=knShu2WB1nekyCXSMkQd4YYY4q1/2M50bRHS1z1OFIA=;
-        b=II+/zBVXy5dDgHANECEyPlji1j7Xb65O6vff3KabOlJt4LeigRqlPOEjZAHBJPBfA2
-         z8GdEVr2hqPh0d3s29H6DJo7KXrJMotved7+1Gd2GBny01kvPzkMRZg1tYhMulWphCDq
-         Ih/9WdxLrBjCD/9INs6JIl6uUwkOCex/0EoobS20TVqOLUCiwlDRjFtygs6LSQF8kLk5
-         YHGZZ/35TXe0anOA3y/HA+PdiX8y+34oytJLUCHzsoxVJxBznSeP4cQ1PtUYRuPSVElc
-         Nczgu6LrPYgznSsx9jCnT6uk2pWVHldJ4bXUGx7O61I5mZTWOrWKU8s1MRf2EQN/eLD/
-         H7LQ==
-X-Gm-Message-State: AOJu0YzKU36SUspgEuqK3wQx0CspNkGlcUiAeEl3At/kjSAku31mxs8k
-	I2w+1T2R2RMwhIIbe10SKAoa+eTSCe9ZcwmyJZfaEyTMAy0dta160QC3QnCzI5n6AkbV5Ww997i
-	qx8+UGPU=
-X-Gm-Gg: ASbGnctVKWu1EfmKSc3sk2wpy6kKqyPP3124QqEnok9gx5xxECm2wFN5dRrHPImvyzn
-	tq4CHu+40Nd/iXHQiCZdGOl63ol3AOuOYRSdH5LF8+H7upxrLrPkT4WAwy+9X5XD6rInS1Us8r9
-	DE4IfgtaIgx68KX5WGwJHLiqlIJcP9SKVN33BQjw4A+fPKB6lMb8WCMNbuK73Ue1G9cty9Ik1Q8
-	ZXrK/3M3q0nr6FmzUWyz3IW4B59yXUXko4SNRbJYgiKC26dYAt02q1KH2Y5MnUwcXqSeCHaPevf
-	A72k9/XNPHecsRGn9FUMHlJ+fpuk5rwiiqj75it+iitZSKuQxejmbT2iV4pbhNj1J2HOc0bSazZ
-	Q4SHUfdgQLSZHOrpJZ9FLbsO5QrEDhrgNfPz5
-X-Google-Smtp-Source: AGHT+IEKQqaW75NwldMxFG0uIxBj1RxwlHvk40EHsE9KBkx/V3aCLEgpZJRJGmMKZpoisXIb1QsxfQ==
-X-Received: by 2002:a17:90b:2681:b0:32e:38b0:1600 with SMTP id 98e67ed59e1d1-33097fd897emr15908772a91.6.1758534126690;
-        Mon, 22 Sep 2025 02:42:06 -0700 (PDT)
-Received: from localhost ([106.38.226.98])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b55268e73f6sm7544132a12.21.2025.09.22.02.42.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Sep 2025 02:42:06 -0700 (PDT)
-From: Julian Sun <sunjunchao@bytedance.com>
-To: cgroups@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	vschneid@redhat.com,
-	akpm@linux-foundation.org,
-	lance.yang@linux.dev,
-	mhiramat@kernel.org,
-	agruenba@redhat.com,
-	hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev
-Subject: [PATCH 3/3] memcg: Don't trigger hung task warnings when memcg is releasing resources.
-Date: Mon, 22 Sep 2025 17:41:46 +0800
-Message-Id: <20250922094146.708272-4-sunjunchao@bytedance.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250922094146.708272-1-sunjunchao@bytedance.com>
-References: <20250922094146.708272-1-sunjunchao@bytedance.com>
+	s=arc-20240116; t=1758536356; c=relaxed/simple;
+	bh=rFQKAqQVDYJQsbAaQKZHWT0W2q8BcuXgJnasZlk1l0c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cSkC9ZGegqqECYYUF7yM/EjgzQaFKTm5A3cgHTFQD3arLgrnbVKZ090l41lT9SVfuLblZ+GH5wvfytXDJztfrrRpOl5bbdftdh44ynyies3K4kfnB2hJfyvySJfiWN+TICf9bIiyzVHopucyaF/3SmhExjFIoopQuKU+6aF9wmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XkOsV0fZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WQYkSi8b; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pC0EFtnr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=g44kVPrl; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9AC091FDBA;
+	Mon, 22 Sep 2025 10:19:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758536352; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V9H+XoRxP3hfVmy7DRmnmX11iPxbEZgAYWR7pZVGL0c=;
+	b=XkOsV0fZkxaCMZWiJYluz9sT9Vd7kKp3c5l+UUq2WXDcs8aZp6yyGLlwCNh+ShWlkGVSH6
+	GnR9XnJ7Nb16rUoMS5iq1F/laiRekCrobI5yOfc9/03UPaG0ys/xhbRz/l8vGKOAA/6SW5
+	EYftJSVmno4IlFCI7ZyGh2cJyB6kuDE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758536352;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V9H+XoRxP3hfVmy7DRmnmX11iPxbEZgAYWR7pZVGL0c=;
+	b=WQYkSi8b0eHFzs1z5JGmDCpb2xmEQq4yfNA/es1YV9C3uek7vyW/g8yJTEmGE1yB853j/7
+	ocbTQ0wOkm1YHZCg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=pC0EFtnr;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=g44kVPrl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1758536351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V9H+XoRxP3hfVmy7DRmnmX11iPxbEZgAYWR7pZVGL0c=;
+	b=pC0EFtnr7YhDNxF61riyl9YpXaB+fzrhnr+WRkSK//NK1bh5KQA/8bJIRxfvH4EOe4ouJB
+	jIMVI/w/hsbOmYZAlZFTB4NwGWv5/xCY4Uke/cz/fIhMo70b5nLX/pBZfVjW6kGNu/f/+2
+	fwCsDk5DOCny7nFw2EeThYcdqgoCJdw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1758536351;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V9H+XoRxP3hfVmy7DRmnmX11iPxbEZgAYWR7pZVGL0c=;
+	b=g44kVPrl1L/xtgDgNnaGbavGEkULaOqezIRaIfVELVoj80kDdj5lFljIX2GAflfFQ73Hhq
+	YW0irUYmFHGNFKCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8EDDC13A63;
+	Mon, 22 Sep 2025 10:19:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id YYPcIp8i0WgmOgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 22 Sep 2025 10:19:11 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 50DEFA07C4; Mon, 22 Sep 2025 12:19:11 +0200 (CEST)
+Date: Mon, 22 Sep 2025 12:19:11 +0200
+From: Jan Kara <jack@suse.cz>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
+	Amir Goldstein <amir73il@gmail.com>, Josef Bacik <josef@toxicpanda.com>, 
+	Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org
+Subject: Re: [PATCH 2/9] mnt: expose pointer to init_mnt_ns
+Message-ID: <b4mb3kj3v453gduhebg5epbsfvoxcldpj3al7kjxnn64cvgi57@77pqiolvgqgt>
+References: <20250917-work-namespace-ns_common-v1-0-1b3bda8ef8f2@kernel.org>
+ <20250917-work-namespace-ns_common-v1-2-1b3bda8ef8f2@kernel.org>
+ <oqtggwqink4kthsxiv6tv6q6l7tgykosz3tenek2vejqfiuqzl@drczxzwwucfi>
+ <20250919-sense-evaluieren-eade772e2e6c@brauner>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250919-sense-evaluieren-eade772e2e6c@brauner>
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,gmail.com,toxicpanda.com,kernel.org,yhndnzj.com,in.waw.pl,0pointer.de,cyphar.com,zeniv.linux.org.uk,cmpxchg.org,suse.com,linutronix.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 9AC091FDBA
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -2.51
 
-Hung task warning in mem_cgroup_css_free() is undesirable and
-unnecessary since it does not affect any user behavior and there
-is no misbehavior at the kernel code level.
+On Fri 19-09-25 12:05:16, Christian Brauner wrote:
+> On Wed, Sep 17, 2025 at 06:28:37PM +0200, Jan Kara wrote:
+> > On Wed 17-09-25 12:28:01, Christian Brauner wrote:
+> > > There's various scenarios where we need to know whether we are in the
+> > > initial set of namespaces or not to e.g., shortcut permission checking.
+> > > All namespaces expose that information. Let's do that too.
+> > > 
+> > > Signed-off-by: Christian Brauner <brauner@kernel.org>
+> 
+> I've changed this so it behaves exactly like all the other init
+> namespaces. See appended.
 
-Use wb_wait_for_completion_no_hung() to eliminate the possible
-hung task warning.
+Yeah, looks good to me. Feel free to add:
 
-Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
----
- mm/memcontrol.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8dd7fbed5a94..b7d9e795dd64 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3913,7 +3913,7 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
- 
- #ifdef CONFIG_CGROUP_WRITEBACK
- 	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
--		wb_wait_for_completion(&memcg->cgwb_frn[i].done);
-+		wb_wait_for_completion_no_hung(&memcg->cgwb_frn[i].done);
- #endif
- 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_nosocket)
- 		static_branch_dec(&memcg_sockets_enabled_key);
+(although I can see you've kept my Reviewed-by in the patch).
+
+								Honza
+
 -- 
-2.39.5
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
