@@ -1,90 +1,94 @@
-Return-Path: <cgroups+bounces-10359-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10360-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90058B928D5
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 20:08:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3055B9362E
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 23:37:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7D2A94E2812
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 18:08:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1ECA3AEC4F
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 21:37:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACFA0317702;
-	Mon, 22 Sep 2025 18:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947A52F9DAE;
+	Mon, 22 Sep 2025 21:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JSX3p04D"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fuoiYeuE";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Q8TbGcw8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0519313526;
-	Mon, 22 Sep 2025 18:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC17623C516;
+	Mon, 22 Sep 2025 21:36:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758564517; cv=none; b=VdZS9yynR3YDebSCTzh51w3f6xHnOcL5Cie6yCMazCYZF4tklBeSDQgDdzq9uG+dOtO4l+IW0Oih2b0VTvVh1tHOYViJU5gr2kRibG2ve0+SERdQ/LIh0R54TEjKhUA4EsN/EpXfTRoixH53qAHsX6kYbEYi1qGvFU0aOP6NKw8=
+	t=1758577019; cv=none; b=Z/Y6Xaj5am+zJ5kY8arpjifRV2MiYAvTdo3ODKxjBIkzr2gUbz4dKzMZG9tEg7SaxXPag785x31LHzfDLweOxWL68apyCoYagZxFYcWAVTtsMdrkiOnYBWJuLHaqWno43sA3j3LRxOqUKdZncboxTVAWTIXpoxiWnE3bFoRkEwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758564517; c=relaxed/simple;
-	bh=tKJT6in7ur7nDpwsOw7KRNMi6M5Kfufpw8RxWEQB3gw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ub/OtjqASEajjnQWhx6TfnSsccV/TFUjXEurxeLp9rDEQrOSzw3g8Ed21Nxu9cHYivKCf8/x2vuMOEusvAwynxbDaFblzOsZ7sjRduOBjU4Z4JxZSZTnRMlMXCoXhSxy0aftqeR12TI6DI0+zGyP8x1FSeU78W6o8BL9pEFIBPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JSX3p04D; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=jQtZMBG55C+hVDGJ8duLOpG289A0c5o5Wr/sU5kj90Q=; b=JSX3p04DHi9p3pN6jPTS1lw8t3
-	t75xjBNCz5FRbj9NFF4C/pi+LN3Y/djhaRl7yPhdImVPEge4SFFM1b7p6OJ1FCAbgvS+V+CjHm8Dw
-	vWQAfu8z3avjmoqoE2zR6tNR+2+GcPz9RWvuNBUdBfyWrPIB6Db+pAqsuw/Ji3K8qpbYbN7k2vRh3
-	6LKjsmlh3ThsCfeyb/Li/zx3GMrUWxF7X+Tty4UIBkAXclq/Umzo9PVGn52ZTfZZ014H/WSkD4VYs
-	hmNoGJK4p6doKz0gCy2sde4ToIA9zKXQvN5NZTHQnjFcfw8mk4Jh29aMTzAOyjTpOSIQUD1HPm3Gq
-	d0kQivmg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v0kxk-0000000BDQU-3Sv6;
-	Mon, 22 Sep 2025 18:08:32 +0000
-Date: Mon, 22 Sep 2025 11:08:32 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Julian Sun <sunjunchao@bytedance.com>, cgroups@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, akpm@linux-foundation.org,
-	lance.yang@linux.dev, mhiramat@kernel.org, agruenba@redhat.com,
-	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev
-Subject: Re: [PATCH 0/3] Suppress undesirable hung task warnings.
-Message-ID: <aNGQoPFTH2_xrd9L@infradead.org>
-References: <20250922094146.708272-1-sunjunchao@bytedance.com>
- <20250922132718.GB49638@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1758577019; c=relaxed/simple;
+	bh=KC96uCx5DSvhx389nDby1jHwBDrEr4sDKF+iChEG1mU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kjLQCFnLYXrBpkd+ML3JB71OpRKRljrDbo3kQubIdY9iEh85GLjfuzLLdOtPwWblgkcd99S1jU5fDFoZTvIFk02y7LB0KdqRHtEDctygqRhzok8bGTbNiT/DvYmTksXEFd6DEh57yGeOEUGavXzpLCtG+O+WZCHcMW236t7bmPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fuoiYeuE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Q8TbGcw8; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1758577015;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s8uS2q661HV+PtHIDEt86BNdyP2JqVrKYxRml3PY7Gk=;
+	b=fuoiYeuErmGIzXsfYRf8I/qnw40UkgsM2hQCOC4SU21p7PVW7vNemjFvJGanmOf8xcmxZU
+	WxwitZF5AIjD2lZGGlDJeVnoD8xHcqjWFH+m+rMcfjo6ysKfqT9j6YTJzasITKNxs5YSeq
+	OZ5L60Nzb5DNpelpA9xwRMfiXpIp0+EnD5qWuVkgRsdZDbsr8nRJMAosv7zAU8KPSodJnP
+	RiYNeuKSZsEvUVMG3pFXIfdyWEKTU2fAC/kOxlp89tFQjahRBqeJbauJ6LykXuVSZSvK9c
+	4jjOeK9RJ7fduRH8zEXNnQbUKwx8SmnSrX0+WA/99HGG/8jZNkAZGSBlXNGIWA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1758577015;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s8uS2q661HV+PtHIDEt86BNdyP2JqVrKYxRml3PY7Gk=;
+	b=Q8TbGcw8AH0H5kK6wnfOpETCALVAyJklHv/VJtrz0zE9VZD4ujt5n/W4OWOqcPicfKZRYH
+	afJ4L3gq0SZYMzDw==
+To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
+Cc: Amir Goldstein <amir73il@gmail.com>, Josef Bacik <josef@toxicpanda.com>,
+ Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, Zbigniew
+ =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering
+ <mzxreary@0pointer.de>, Aleksa Sarai <cyphar@cyphar.com>, Alexander Viro
+ <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Tejun Heo
+ <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?K?=
+ =?utf-8?Q?outn=C3=BD?=
+ <mkoutny@suse.com>, Jakub Kicinski <kuba@kernel.org>, Anna-Maria Behnsen
+ <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH 2/3] ns: simplify ns_common_init() further
+In-Reply-To: <20250922-work-namespace-ns_common-fixes-v1-2-3c26aeb30831@kernel.org>
+References: <20250922-work-namespace-ns_common-fixes-v1-0-3c26aeb30831@kernel.org>
+ <20250922-work-namespace-ns_common-fixes-v1-2-3c26aeb30831@kernel.org>
+Date: Mon, 22 Sep 2025 23:36:54 +0200
+Message-ID: <87h5wu41ah.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250922132718.GB49638@noisy.programming.kicks-ass.net>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 
-On Mon, Sep 22, 2025 at 03:27:18PM +0200, Peter Zijlstra wrote:
-> > Julian Sun (3):
-> >   sched: Introduce a new flag PF_DONT_HUNG.
-> >   writeback: Introduce wb_wait_for_completion_no_hung().
-> >   memcg: Don't trigger hung task when memcg is releasing.
-> 
-> This is all quite terrible. I'm not at all sure why a task that is
-> genuinely not making progress and isn't killable should not be reported.
+On Mon, Sep 22 2025 at 14:42, Christian Brauner wrote:
+> Simply derive the ns operations from the namespace type.
+>
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> ---
+>  fs/namespace.c            |  4 ++--
+>  include/linux/ns_common.h | 30 ++++++++++++++++++++++++++----
+>  ipc/namespace.c           |  2 +-
+>  kernel/cgroup/namespace.c |  2 +-
+>  kernel/pid_namespace.c    |  2 +-
+>  kernel/time/namespace.c   |  2 +-
 
-The hung device detector is way to aggressive for very slow I/O.
-See blk_wait_io, which has been around for a long time to work
-around just that.  Given that this series targets writeback I suspect
-it is about an overloaded device as well.
-
-> 
----end quoted text---
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
 
