@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-10367-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10368-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5289B93878
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 01:03:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F01B5B93881
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 01:04:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DD87164D5E
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 23:03:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABB0444235F
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 23:04:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801CC286427;
-	Mon, 22 Sep 2025 23:03:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9429A287519;
+	Mon, 22 Sep 2025 23:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="pTMVo+nj"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="1dm75PcT"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA3B3AC39;
-	Mon, 22 Sep 2025 23:03:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496853AC39;
+	Mon, 22 Sep 2025 23:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758582191; cv=none; b=XbDzNVXooB9Mf3HfmtcP2nITXlBeb4tMVCV7UTA/ryVKNN33PPrDP6aYJWWt2Dtbxg2pXeDqO/eJ1BfsixlCdefm3Ko78yUaxq7iVlU+66TX62mNRnOxIqFvKNFFAvqRlLS5/UbQMyeDJSQFJ8uL0DlX5cOdCMEFHpVx8AVRKUY=
+	t=1758582285; cv=none; b=YKOOgQBwcka38GAX7AuoJRblytKxtnK7nmAJcZ4YQQgHBpqd0FRn6p61NnAlNyJh8V3cmNoRF/glTtnFswIgNIv2qNs6Ll2CPO4kh//x/hLtwI/1JRvN+8SG9MY+uuQ+GXhrPMUx699EMPLYqrhZJq03g+3rCFgemS1UPxhC498=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758582191; c=relaxed/simple;
-	bh=Ga3iCtdjN8K221Qg5mW5H1wWCF8VcrbTHNLCYL827Tg=;
+	s=arc-20240116; t=1758582285; c=relaxed/simple;
+	bh=uV1BEGwMril5Mf0IeyAdOLV9h4kg1knR4wxauKL6cjg=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=oIPu35HTtydLfOuVg3c5oEIywGHRmGj+oLpWt06xnQjVVTuhoYnRb6RoJSDYpJhhU+s8NTDVH3QBNEDGD3YN2+KVTT+20n7euW6/cQjcv0jOGMAHXFbL27QF06zSbUs/DRWH78q1IRyvkwU8THS/tLgc+1pZjDrdDGjJncqNXbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=pTMVo+nj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E63BFC4CEF0;
-	Mon, 22 Sep 2025 23:03:08 +0000 (UTC)
+	 Mime-Version:Content-Type; b=CK/SNVWLoVDCG16PoNAFES0YNipQvZpMX4cot7EfADc+omIiGgNk0RRpT14U30H7Y/VGQrzkFbEdFKJ1ths6fIFHc41NWMmWftw8RxNw9OsPowgEvKJdg5bPl/ROhX8A4L2fOI21+kNxpWFxRih48LaLkjL15xlPmaAByED+t5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=1dm75PcT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2202AC4CEF0;
+	Mon, 22 Sep 2025 23:04:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1758582189;
-	bh=Ga3iCtdjN8K221Qg5mW5H1wWCF8VcrbTHNLCYL827Tg=;
+	s=korg; t=1758582284;
+	bh=uV1BEGwMril5Mf0IeyAdOLV9h4kg1knR4wxauKL6cjg=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=pTMVo+nj7csww0q3/7UDygDGBnLo3Te9cgJKYwUtiPgeHpi4Cwdke/MPEfT9PnXLX
-	 DXeGEdvIfwsnOf+3RoWJNjmYPfdUYmGAVQd6LMP8N0/qkM1IOGHaiWl/Sl0aHaTn82
-	 E4k7BPsCffyuL2niZV8EMfcE27uUOPkaH9zmFSAw=
-Date: Mon, 22 Sep 2025 16:03:08 -0700
+	b=1dm75PcTM0GNvvo8wLFKhZIacGv6nXR3yYxOxMiiOtNAj5M0ApnHtCXet/LFONcXF
+	 ji2nZFqa7tlksRBYoJEHrP3xc4LSjX0yanqNESbjXkKP4HpEu76FhVnCIIDFprM4da
+	 j7TY40fj8aHE552hd8tU1Zc6xpSMg3h/OtfFCRVw=
+Date: Mon, 22 Sep 2025 16:04:43 -0700
 From: Andrew Morton <akpm@linux-foundation.org>
 To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal
@@ -50,7 +50,7 @@ Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal
  <kernel-team@meta.com>, Michal Hocko <mhocko@suse.com>
 Subject: Re: [PATCH v2] memcg: skip cgroup_file_notify if spinning is not
  allowed
-Message-Id: <20250922160308.524be6ba4d418886095ab223@linux-foundation.org>
+Message-Id: <20250922160443.f48bb14e2d055e6e954cd874@linux-foundation.org>
 In-Reply-To: <20250922220203.261714-1-shakeel.butt@linux.dev>
 References: <20250922220203.261714-1-shakeel.butt@linux.dev>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
@@ -81,19 +81,16 @@ On Mon, 22 Sep 2025 15:02:03 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
 > cgroup_file_notify(), we defer the memcg event processing to irq_work
 > [1]. However it adds complexity and it was decided to keep things simple
 > until we need more memcg events with !allow_spinning requirement.
+> 
+> Link: https://lore.kernel.org/all/5qi2llyzf7gklncflo6gxoozljbm4h3tpnuv4u4ej4ztysvi6f@x44v7nz2wdzd/ [1]
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-What are the downsides here?  Inaccurate charging obviously, but how
-might this affect users?
+Fixes a possible kernel deadlock, yes?
 
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2307,12 +2307,13 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  	bool drained = false;
->  	bool raised_max_event = false;
->  	unsigned long pflags;
-> +	bool allow_spinning = gfpflags_allow_spinning(gfp_mask);
->  
+Is a cc:stable appropriate and can we identify a Fixes: target?
 
-Does this affect only the problematic call chain which you have
-identified, or might other callers be undesirably affected?
+Thanks.
+
+(Did it ever generate lockdep warnings?)
 
