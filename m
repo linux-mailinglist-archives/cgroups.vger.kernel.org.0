@@ -1,88 +1,88 @@
-Return-Path: <cgroups+bounces-10324-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10325-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEA03B8F755
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 10:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C50CB8F77F
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 10:20:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B37B3AE945
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 08:17:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BEF43AD436
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 08:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54F4A2F1FD6;
-	Mon, 22 Sep 2025 08:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233B22D0C7E;
+	Mon, 22 Sep 2025 08:20:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DL9yR+En"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e96SZKxJ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7961427602A
-	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 08:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963883208
+	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 08:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758529043; cv=none; b=DvcO2pnfKzMzX6y0fcgYbvNY+dTq58436Cstc7hNcGKd4mZdSK8VwwqaZHgvxCFBpK7efFg201XCitc+VvOh9WR5WArKrjKlaJlyHay85PC2WVg/ttGeGCxvVqdsvHzkEBjU2khM7W350Vv938oRvXDuanHHKCBfKcZvU07eawc=
+	t=1758529237; cv=none; b=sjex1RQptyLXKqdYOFlZRRKKWigL5sC8gAUuDlQ7gX7FI+r4eK+K48Ypo/PAI/R+xZLPn6EpezwvHUYCehEfHohe6lvOhKvMyTqcxoux8JhaakZ2RV/EGh4gPVQB9g/tuMEp+8XzZA9dSuqqf+Lo3EIsKywdyVWLbKsVrpbDCFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758529043; c=relaxed/simple;
-	bh=hrS1Mkd6QFtNS9i1TzFb5gXkeSmKAzcbUfriBV5IaW8=;
+	s=arc-20240116; t=1758529237; c=relaxed/simple;
+	bh=q4uDnpl//KvaSiLrv1hiujXPyi4VIOjO6H2gptE6lH0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nVl8ZNxzTERNH0lG95Wign2rjcIITZUoP9Kkzc5vPQ16b2wm95bhhD8iYESnU+veSy5ngy7UCLsm9rknFeGJgAkYUcsX2bTY4CpmJJM53s87w6NvBAQMEwEh7Ck5l1pJ2tzhGj2zA5OBBWRvJwUh/07QRIQSsU6tRNoO6iGKsuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DL9yR+En; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=XGu4j/1QXds5T05q8AV2rSRtM+Fj32yhLjiF8v/joZwbjw34RNIjjq5x2T5LZqEiggF9ANbf/EIL0mF76xWjgPFOYcMEdtObyvQNBMU4bB3+m9shhvTrVdAR8QH4FPkTJzsrAevCNruo+yRjXiP4tJE7zkaUjI6iWgiyaAkGpkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e96SZKxJ; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1758529040;
+	s=mimecast20190719; t=1758529234;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=xl+oAizSjcdN2DSW8OsX7gKnJcWLeuJ4HjmHVAHxhI4=;
-	b=DL9yR+EnZdVRxqym30Lsa1rsmAYvoLumkqMyFj8G3bFFFk/RIKhTWWHRBTNpETDWimO/+h
-	FmTdqnl2Hbd5vw3flGznJvpd9sK1Ko7iLOTknJbjl1CluJC1DmOsRBziWfEPubBZCI6AbM
-	17BntO14CoJHM8e/ZhVY4VUkorbfxHM=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=cTSpYQLpgM+WlNuI8Mgb7BwU+wlgVRKKnQKSWw8SEIo=;
+	b=e96SZKxJwmhFg7AXSszvXOctv7o07pcCWLeRFRe8CznGFMkChpDwpCgz3xmMnqZYTSpszq
+	BKcoWZcBaYlJUYTX6PsclcK5/G/RBNtbZA8T7AXEbjvQB8Da5x9HoUwjHcByG71+4x/PZk
+	s+tGNk6dKFynXgNg5RmfshEDPWScJKk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-280-KZjsdXseOleM3NCdTTQ06w-1; Mon, 22 Sep 2025 04:17:17 -0400
-X-MC-Unique: KZjsdXseOleM3NCdTTQ06w-1
-X-Mimecast-MFC-AGG-ID: KZjsdXseOleM3NCdTTQ06w_1758529036
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-45f2f15003aso23313525e9.0
-        for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 01:17:17 -0700 (PDT)
+ us-mta-154-mhWf8nLbOlyG6sZq__NoDg-1; Mon, 22 Sep 2025 04:20:32 -0400
+X-MC-Unique: mhWf8nLbOlyG6sZq__NoDg-1
+X-Mimecast-MFC-AGG-ID: mhWf8nLbOlyG6sZq__NoDg_1758529231
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3ef21d77d2eso3373484f8f.1
+        for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 01:20:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758529036; x=1759133836;
+        d=1e100.net; s=20230601; t=1758529231; x=1759134031;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xl+oAizSjcdN2DSW8OsX7gKnJcWLeuJ4HjmHVAHxhI4=;
-        b=nMSIDVrerTeRuf7io14mFCK60xQOhH5Wav3EM0Vq12F0qa1y5/RGs74UBoZTIr+PQD
-         oKhhIAB1M4CxCD8SLsYB/9+/BTtSF+gEdLhJqmIJHafogPvfGaQssH2jWZdaeUA14DWm
-         4aTeTwX+gKlolkdcBjiVQpyTLUTsNp6cqNzY9QU88BJ8ZYRT6uW/dkVtsb7xARQCpXcE
-         4JcOqDTVkNyRmdXxbax07MVrr5D5bB4YgVx4es1f38dbgGWuj6cv7hwy4O/4QQ8J/Exv
-         cLIsPmYDId7n6gxsijRnWyHiuBGeiGnpdac+0/ANPNL4cNeFL8yqWeHb8mgN395k2oke
-         H5og==
-X-Forwarded-Encrypted: i=1; AJvYcCU2tgyzeC/4chOmzUmn7CHg3bgpnNfkH1AdjSPB18akyQQqunzDdv8hiWTOTY5qg9Oo6dWS6HLP@vger.kernel.org
-X-Gm-Message-State: AOJu0YzmYfWRZaNiDnaB13w1hALTSe53amtNjTbxwh9Se13fcydcWb/O
-	MZ9a/f2lFg5AcazrPan4VfC3KA/cLUYjUQ4Lxwb1Ccha3Bwt091HKRlLEm3MsRvlHu+u9/gpD/w
-	tkmAIpNLF0frCzjuRZPcLqoDhoyo2sUGnUhqH66NTOIRhkZQV/GjStiqv89o=
-X-Gm-Gg: ASbGncvDgmgulS/Ci26kdX0kFEk+xKl7oj9cpr+x8CodOQS+cCFCZQ6Hc6nZTuYeRZw
-	c6kWFycYB5nz/O++4zqaJzXdbdWwkBsR8Yz4lB0CWcebaU/KeePiw4aXZyXk0s9vvNtd+7D/Qrt
-	7at1cWvI6Zr+vkJ4URts6he5a0yOMsMK/53uru/LlxMexG9PEU4V2dR0At6xBiWXtODkgVgQLEg
-	pD2BguI+cPSYfc6aRwYfIf4TbdKYrFLN/my2sPUBq32lrsxnaWeSN8BgsZU8O2OTO1pyTof5Zwq
-	Disma8CbKW00jxZpJRFenbhI6pMdFnx8eTpAxVQNUtsO7FzhHLd+11+w4gjW8IS9N6eyeY6vMQi
-	xQvQhRR25ODf0ZKVtjQ2LO7IF6+0oZo0/1ItFfLZUOD7/2NJ7HcMdfAjrKpkcQbI=
-X-Received: by 2002:a05:600c:c8d:b0:468:4350:c84d with SMTP id 5b1f17b1804b1-4684350c98cmr94305625e9.7.1758529036152;
-        Mon, 22 Sep 2025 01:17:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH20k4kJt62SfinRtlqPZ+1RxOz7CShF583y1p3NV6Zfw2UT9IzSp6E71WCtZFAHxn58tJ9Ag==
-X-Received: by 2002:a05:600c:c8d:b0:468:4350:c84d with SMTP id 5b1f17b1804b1-4684350c98cmr94305285e9.7.1758529035750;
-        Mon, 22 Sep 2025 01:17:15 -0700 (PDT)
+        bh=cTSpYQLpgM+WlNuI8Mgb7BwU+wlgVRKKnQKSWw8SEIo=;
+        b=RYQtm/4Rr5DXlFPGNPJaAWegVGSV/Q9gyTwkZFCSJMILrz288KKTMD4D3L73w9HQKm
+         wZr75IdFmnfESGTumF/QVqw4VWSBGFJ3A5C5Ydrv460YIQtCkE5gBYIkemJUWGUzeNKB
+         yaqM9BIgHkN6KRjDUNwrJy37FebINFA5YiKpsgn3sQq7m37+/Z/waZKqbJmCsweqDavv
+         gDeX8sQVbO6qCMQ7RWT+P2PXxTn9wosMevdEMgVQ4T8F0rPbrm1OvHVGPK6ollw1jEQn
+         iYSN6bwwdYRFRy9UYphVi+gsCEiyseyZ0TgeacZ0RAbXbm5DLJZjljXhKCBBekJT7ajF
+         78EQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWntJDHEAqa1iBoJ+J80Yy7JsUR3T1Bbv1W5VU+55IaPUSjFLLdsCtes/efhWLoE80q3WV0l7Ly@vger.kernel.org
+X-Gm-Message-State: AOJu0YzUcKZNhdooSH7yhpyoVH5Qx4gRWi+jBghx7+YE6ApTEWi1D3Jc
+	hr5k+s13ZOyS1OG8JRxORSvnY2xOEGYDgPI7DV78FsJZZ6RjeGEUcI/peLJw3RhYvHQ9ImDLVSs
+	dlTUWZreOiJ84KK/KU7rJJBU/iJmfPAcz6NqVOPK0Jd8GD8tlIxGRaO6ga5g=
+X-Gm-Gg: ASbGncvithn6D24ecCgfqhTSkqz0j80LpPWlthVoQOkJhCrKE1FgRkAY0DBj0q3v3L3
+	pvTVMnOHtcEQtHvm2iOB47az7zuzChd3HieE6uXP3YYHLNug/8/zg+AG5uOMW2OWgQsKpNWJjoo
+	GVdUQbg/O9jMSL2cwxqZwCQtgHguxIyb5HCEioOM9cS2lh+YriG4KxHLbjJs7CgFqlBz82iu2H0
+	q8++qQUrs8niFAjde4JwSePTScWbV9AQUh/4c2BFYhQlLvKB25VcVm/46y/VehWXaCZi+ySiPj3
+	j9NLDmib7itzcCzTu2ZYswgnwbEa2UyM1aAsjSdVKNis71y2h5wH3EVhAYvDLzfO616UHrFVgLb
+	U5/r8NL6J9lBGdLFMszKPpExDRjyhyTVnsXE3KxvRXAz/8Y8GP6zJ8TT2zo7wZGg=
+X-Received: by 2002:a05:6000:184b:b0:3b7:8da6:1bb4 with SMTP id ffacd0b85a97d-3ee86b847d0mr9158646f8f.58.1758529231154;
+        Mon, 22 Sep 2025 01:20:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEazbIH7Du/DsNo7NjTJHkKOkoTzV8fJz70pe2Vh7GdEk0mHUE3AUP3Fk3uP3f6E62YKDdVFQ==
+X-Received: by 2002:a05:6000:184b:b0:3b7:8da6:1bb4 with SMTP id ffacd0b85a97d-3ee86b847d0mr9158607f8f.58.1758529230671;
+        Mon, 22 Sep 2025 01:20:30 -0700 (PDT)
 Received: from ?IPV6:2003:d8:2f2a:e200:f98f:8d71:83f:f88? (p200300d82f2ae200f98f8d71083f0f88.dip0.t-ipconnect.de. [2003:d8:2f2a:e200:f98f:8d71:83f:f88])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e15d1610fsm8286165e9.7.2025.09.22.01.17.13
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3ef166e62e5sm13959503f8f.40.2025.09.22.01.20.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Sep 2025 01:17:15 -0700 (PDT)
-Message-ID: <a4f7c004-b96a-4902-b003-111c83b0ddc1@redhat.com>
-Date: Mon, 22 Sep 2025 10:17:13 +0200
+        Mon, 22 Sep 2025 01:20:30 -0700 (PDT)
+Message-ID: <835caf4a-0218-4f02-8459-e11757d36e51@redhat.com>
+Date: Mon, 22 Sep 2025 10:20:28 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,8 +90,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] mm: thp: replace folio_memcg() with
- folio_memcg_charged()
+Subject: Re: [PATCH 2/4] mm: thp: introduce folio_split_queue_lock and its
+ variants
 To: Qi Zheng <zhengqi.arch@bytedance.com>, hannes@cmpxchg.org,
  hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
  shakeel.butt@linux.dev, muchun.song@linux.dev, lorenzo.stoakes@oracle.com,
@@ -101,7 +101,7 @@ To: Qi Zheng <zhengqi.arch@bytedance.com>, hannes@cmpxchg.org,
 Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>
 References: <cover.1758253018.git.zhengqi.arch@bytedance.com>
- <35038de39456f827c88766b90a1cec93cf151ef2.1758253018.git.zhengqi.arch@bytedance.com>
+ <eb072e71cc39a0ea915347f39f2af29d2e82897f.1758253018.git.zhengqi.arch@bytedance.com>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -148,21 +148,28 @@ Autocrypt: addr=david@redhat.com; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <35038de39456f827c88766b90a1cec93cf151ef2.1758253018.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <eb072e71cc39a0ea915347f39f2af29d2e82897f.1758253018.git.zhengqi.arch@bytedance.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 19.09.25 05:46, Qi Zheng wrote:
 > From: Muchun Song <songmuchun@bytedance.com>
 > 
-> folio_memcg_charged() is intended for use when the user is unconcerned
-> about the returned memcg pointer. It is more efficient than folio_memcg().
-> Therefore, replace folio_memcg() with folio_memcg_charged().
+> In future memcg removal, the binding between a folio and a memcg may
+> change, making the split lock within the memcg unstable when held.
+> 
+> A new approach is required to reparent the split queue to its parent. This
+> patch starts introducing a unified way to acquire the split lock for
+> future work.
+> 
+> It's a code-only refactoring with no functional changes.
 > 
 > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 > ---
+
+Looks sane, I assume the build issue is easily fixed
 
 Acked-by: David Hildenbrand <david@redhat.com>
 
