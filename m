@@ -1,76 +1,78 @@
-Return-Path: <cgroups+bounces-10329-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10330-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00D35B8FCCF
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 11:42:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C49F1B8FCD8
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 11:42:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F7C917F706
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 09:42:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 608F617FFCC
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 09:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EADE2882B6;
-	Mon, 22 Sep 2025 09:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8112D9ECD;
+	Mon, 22 Sep 2025 09:41:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="YvUCEHa8"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="hrZuo7QI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E518F28313F
-	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 09:41:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2F12D94AC
+	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 09:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758534114; cv=none; b=HOHPfGaS+Tck8nuKYJl8JkjRueejE8NKl4EjxmWThX91qkpTpe6puhOEaq3nfQXz5PAPKqp1UAH0H8QLjZmjFVL5D9w2ya4z45sW2QuxEFLOJJlEF3tjkmUjEPdSCiwX7bUV4Of9FwmJgFbDChADwF00JFwuOlvL3cT/8OVeMWY=
+	t=1758534119; cv=none; b=k1okqUAGu+Rck7fvOnYmE1/s0Ygdz1qCJEALxSe/+dDwGTOPADoeTwUvj15gsLtsMqQa/OZ1PshIckQVuO9uvCh34eHGXY9JLjYP/y9wjoYT5qJCUobFW0aozPyFelkUrHufFqFTWyzxkPU5Db3FnKEkg/GwWKzVUjqbfEIk4Is=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758534114; c=relaxed/simple;
-	bh=12T+kg1WEnlpjNWioyO2nSnxhTXlq9cORsKc6oSrE8s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N0ObxESejDihsdIc8DxXE8haAoQtKcFN5gB3UXXgvo1mzGoPldMUSF4EA8UFtWKw2MgG6tcm6dh9W8Lb56buaIa9CwjCGFGJvk9fkqCNABZ+UI6cvOsDvUG1LmR6UTLxsjHGXSe4j9WnHuKosy2rPNN9o5um5jma5sdTbxWAOxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=YvUCEHa8; arc=none smtp.client-ip=209.85.210.172
+	s=arc-20240116; t=1758534119; c=relaxed/simple;
+	bh=rDbjJqfrVT3iYKOdxeeeDu98RNknKj03jGwDUTalysI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=I5fq7oK2kVsJYGMyG5Oq0fHH2ohkb1/WSjylD0ZYyedBMuaL4AiGUO51dnjUqlnR8iPFnnhS8uYz0aNyVHRec9BHik6EWMEAtD/udpQZg3v60AlbegZh/w3py6Yb6qV8Qc5H6crWpInquijG2yJfxBsPhdPAnU+ysBnvRrg3Tlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=hrZuo7QI; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-77f454c57dbso261908b3a.2
-        for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 02:41:52 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-268107d8662so44780505ad.2
+        for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 02:41:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1758534112; x=1759138912; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gb1Ubbq8FQD3k+io1Te5PTmdOjRv6gyQY3TYHgxdom4=;
-        b=YvUCEHa8HybVy9FglsCF0UZ6GrgLFKvLE24WKb6fQEeorKyHS/+Lamn7BJFWykgb1y
-         70OLy2MACIV7QyI2l/3R/pvgpAJ6b5T1AXFYIPl3Usg/Re8m9lmtvQcBcX5E353Cr7pk
-         bvsFSQRZ/wI7jBCmus07/BN0IuJzSb5EJ2vpwhTCGFYzsHT+b77xevFM7dOY1vQmJc/O
-         Bj40Dtt2XwyybQoX9CSNI4MdRrvu7DlRNf9HFhGwPTglhaYrzajW0FqAmLXmmgxC8S3U
-         HvQJcrb1bHcWd22DlsFy9ErqTrqhECM+zv8qMq2owfkE+1LT1Bm6rgn9qvUe2mLy2FZC
-         ECKA==
+        d=bytedance.com; s=google; t=1758534117; x=1759138917; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ilme44nSGxyu5goRsold31IBeaqSjRBg4bzvILaBH90=;
+        b=hrZuo7QIz+/F8CRd7boT8sJ8wSADHpsnqQvLrOTlqTomWeihHofRkwiirkmeNcP4Ig
+         9VBYP8/jZ1xhf307i3q+GWXHAXZGtk+2HapQV9uXHUZNq5CwWkSmLXniGMmq92KmGqVB
+         NYf5CG/4XDKDb9UIJsxDwrSkFbQPY3LQFv7jq3PhueaV0zm9BupIqpsw3+JlPpSHu03/
+         tzwVCd08cs4YcHyTJ09bM2BHZaVLFqckradmG/FwfxKbslVkVlAURud+YBQpEsPBzkBC
+         J576DHuII6nj69Lp4DsAnEQQodAjm50mW+xzmvrCtjE1/9nEygJeaAr4QGHR7alaLgJR
+         Kqxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758534112; x=1759138912;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gb1Ubbq8FQD3k+io1Te5PTmdOjRv6gyQY3TYHgxdom4=;
-        b=g8JDyo7DZzIrrcbwYyhTU+MzGWqKbsoyReB9r8VP92Ze4fzWqdbUezEZS9m4gtxdpF
-         4XJ1BlP/hF1/DWkWgEBb07XMFqwyu8dW1mDiSw2BiCskkwa0623Dh1NAvsnt6bfOvwqq
-         ZylBz5Jp06yPn1CDfKKgixiZskUuU4mWScGgor7ddNRA/p/1P/RLNpqOaaamKJ1Hqrc/
-         PvOXSl9jG7RrWrK9LHNV4ZlAHjEahe0FxIos9VfAi05U6N9IB79C+DbiOwZw+U98dG8T
-         gwtwMJIWIS85q5w8RxdK5RXXP+C5B2LUGRiQz6SzhNQ4ql5PiF+X27y9d1mSLXfIEblX
-         SEZQ==
-X-Gm-Message-State: AOJu0YxUtyM/MpQkmzPTRAB0AvBFu6WwpLKz77EA4BpkfPMHEZAafqRD
-	/l4GEVnpz9wiJa2UZzDIz9l6LejdovDtuSt9guuDlnq1k9QSLGYsi6UQmKrGiZV4pG+thKJ4ofs
-	tRL6M/m4=
-X-Gm-Gg: ASbGncuOIgc2B6Hu5mQ6XOUrOY+eyh0GQRWQQv2sytgrR8eQrBsbAZVoNBeA3qmcl9H
-	uScYxFq+Lzbv1675fyOVycGXdMHKCX3Z9QJrV/wBx5JQUTUk7DDOoK7RunRajeQoDWHHGb/e7vj
-	pM9KdAZydiTKdhoyiKlFeRD1iHqH2TbOUNNhlMU1mSrwN8LujB2vh/CGGk+bWczt0kgyPFqSuJj
-	sdt9wi4ovWto6AwnzB8Vav6Vb+NpPn5bmSfJ8MngZl0Rrei7TRaayT9ad0KoTLP1djkZZ6HgWAF
-	yjb3uoM8EuTYTBEXQWoNYsFaZsIeEb/AgbVCqxXGMOd8JJP5/I0mDjDnYH120uHlaFXWTaR2H3P
-	+Gsm8J2EPTI2Mk+AUnuh0yyybvQ1rGghU4ryJwQ==
-X-Google-Smtp-Source: AGHT+IEtLgg4zeHMXHyciHj/+jOxGNRUrmic9Rw4+/nHq421LNnyymvdUyXFF6AF8uBt8EQUhHOCSA==
-X-Received: by 2002:a05:6a20:728e:b0:262:e568:b92b with SMTP id adf61e73a8af0-2926f79d12amr19017914637.31.1758534111814;
-        Mon, 22 Sep 2025 02:41:51 -0700 (PDT)
-Received: from localhost ([106.38.226.108])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b552882b177sm7455391a12.11.2025.09.22.02.41.50
+        d=1e100.net; s=20230601; t=1758534117; x=1759138917;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ilme44nSGxyu5goRsold31IBeaqSjRBg4bzvILaBH90=;
+        b=m08ZVOoblDWD6LJmqxkfYHQ+MMEWpiu1YxCxjfKcIaSFKEfbGVJmiZAk8o4KBqsMBS
+         3NIMh4O+m2yChWZb6LsKh3+OqbX6bmscpfI36lZNIVZoRZBESL6hvwaCuzLLuMhzVoCv
+         hdMpbUxoMPqDNB3lopRfLkCmVzYtNlIE4jMoBnFuxMbxQUgKjuU6ueskuUZ52Arz9PKB
+         Aeo7GEQ5NSdbBu64kYcEsKdWyz6ZIdXOSUZVVz0r29yRt/iYG9DOHhxjUVOh7EpUiy9f
+         XGYYtE30QcTlBiBu4jybyQOHu8ZzFYOfie1BncRJZoXRPCJOsn1/pg1W410qYrXeprmG
+         gqnQ==
+X-Gm-Message-State: AOJu0YxNsoLSkOFDzfcel4I3TBi/hVHvCXWVZ40gDAFesmjy5uwchVT8
+	62qZ5U8n2cEylw2PiJzxPM/aQhkKmA7dgnXMxSJ3033yQh3mvLodo6V3r+IROHE3d/V7jtbynmE
+	p3briSfs=
+X-Gm-Gg: ASbGncuWHcX8E9mYt3z6ZOnzE8YFvWNK1le3j5Q5/dyPLhuBjWdcjiYLn8SCAr3WRLs
+	l7FYgqQ70fv0+Yjv5zFE+DyP1hd4QQxXS64tVbd5Zc1kdyueEdBtWpsfrXK6HsobekkMRf/dzlv
+	GLUaHEiHpR2cjUQv999T9Y5up+qYGqk5jbc8m+IX0ah5HYwECH91IJBdbShTJpDfCsZnaxQEMXJ
+	TidvtU+czwjZrxVBRzbSnHqr6TCjFPCppUHgXumvlE7IxAa0AZ9ymOGc1358nPn7EswAi13oKE4
+	PtRKsf15iIVnrcTTtBprzrXWRY/IiyvP8xQrZpnqC8WxvT6PtVdqLCmeVhzSU7KddEHPQO75XUK
+	14qD3MQCYxY2cltASb2NlSVWffEQ=
+X-Google-Smtp-Source: AGHT+IHTVxBH3sMWN6WpoQ12cRY11DoelBPBAV269/lJBRXXkxnuVmCr/ewlC/t72yrjY6SteGk+jA==
+X-Received: by 2002:a17:902:e810:b0:272:dee1:c133 with SMTP id d9443c01a7336-272dee1c1afmr91385565ad.22.1758534116735;
+        Mon, 22 Sep 2025 02:41:56 -0700 (PDT)
+Received: from localhost ([106.38.226.158])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-26980053248sm127745565ad.15.2025.09.22.02.41.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Sep 2025 02:41:51 -0700 (PDT)
+        Mon, 22 Sep 2025 02:41:56 -0700 (PDT)
 From: Julian Sun <sunjunchao@bytedance.com>
 To: cgroups@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
@@ -96,10 +98,12 @@ Cc: viro@zeniv.linux.org.uk,
 	roman.gushchin@linux.dev,
 	shakeel.butt@linux.dev,
 	muchun.song@linux.dev
-Subject: [PATCH 0/3] Suppress undesirable hung task warnings.
-Date: Mon, 22 Sep 2025 17:41:43 +0800
-Message-Id: <20250922094146.708272-1-sunjunchao@bytedance.com>
+Subject: [PATCH 1/3] sched: Introduce a new flag PF_DONT_HUNG.
+Date: Mon, 22 Sep 2025 17:41:44 +0800
+Message-Id: <20250922094146.708272-2-sunjunchao@bytedance.com>
 X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250922094146.708272-1-sunjunchao@bytedance.com>
+References: <20250922094146.708272-1-sunjunchao@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -108,33 +112,73 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As suggested by Andrew Morton in [1], we need a general mechanism 
-that allows the hung task detector to ignore unnecessary hung 
-tasks. This patch set implements this functionality.
+In the kernel, long waits can trigger hung task warnings. However, some
+warnings are undesirable and unnecessary - for example, a hung task
+warning triggered when a background kworker waits for writeback
+completion during resource cleanup(like the context of
+mem_cgroup_css_free()). This kworker does not affect any user behavior
+and there is no erroneous behavior at the kernel code level, yet it
+triggers an annoying hung task warning.
 
-Patch 1 introduces a PF_DONT_HUNG flag. The hung task detector will 
-ignores all tasks that have the PF_DONT_HUNG flag set.
+This patch adds a new flag to task_struct to instruct the hung task
+detector to ignore such cases, as suggested by Andrew Morton in [1].
+Also introduces current_set/clear_flags() to prepare for the next patch.
 
-Patch 2 introduces wait_event_no_hung() and wb_wait_for_completion_no_hung(), 
-which enable the hung task detector to ignore hung tasks caused by these
-wait events.
+[1]: https://lore.kernel.org/cgroups/20250917152155.5a8ddb3e4ff813289ea0b4c9@linux-foundation.org/
 
-Patch 3 uses wb_wait_for_completion_no_hung() in the final phase of memcg 
-teardown to eliminate the hung task warning.
+Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+---
+ include/linux/sched.h | 12 +++++++++++-
+ kernel/hung_task.c    |  6 ++++++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-Julian Sun (3):
-  sched: Introduce a new flag PF_DONT_HUNG.
-  writeback: Introduce wb_wait_for_completion_no_hung().
-  memcg: Don't trigger hung task when memcg is releasing.
-
- fs/fs-writeback.c           | 15 +++++++++++++++
- include/linux/backing-dev.h |  1 +
- include/linux/sched.h       | 12 +++++++++++-
- include/linux/wait.h        | 15 +++++++++++++++
- kernel/hung_task.c          |  6 ++++++
- mm/memcontrol.c             |  2 +-
- 6 files changed, 49 insertions(+), 2 deletions(-)
-
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index f8188b833350..cd70ff051b2a 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1718,6 +1718,16 @@ static inline char task_state_to_char(struct task_struct *tsk)
+ 	return task_index_to_char(task_state_index(tsk));
+ }
+ 
++static inline void current_set_flags(unsigned int flags)
++{
++	current->flags |= flags;
++}
++
++static inline void current_clear_flags(unsigned int flags)
++{
++	current->flags &= ~flags;
++}
++
+ extern struct pid *cad_pid;
+ 
+ /*
+@@ -1747,7 +1757,7 @@ extern struct pid *cad_pid;
+ 						 * I am cleaning dirty pages from some other bdi. */
+ #define PF_KTHREAD		0x00200000	/* I am a kernel thread */
+ #define PF_RANDOMIZE		0x00400000	/* Randomize virtual address space */
+-#define PF__HOLE__00800000	0x00800000
++#define PF_DONT_HUNG		0x00800000	/* Don't trigger hung task warning when waiting for something */
+ #define PF__HOLE__01000000	0x01000000
+ #define PF__HOLE__02000000	0x02000000
+ #define PF_NO_SETAFFINITY	0x04000000	/* Userland is not allowed to meddle with cpus_mask */
+diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+index 8708a1205f82..b16d72276d01 100644
+--- a/kernel/hung_task.c
++++ b/kernel/hung_task.c
+@@ -208,6 +208,12 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+ 		t->last_switch_time = jiffies;
+ 		return;
+ 	}
++
++	if (t->flags & PF_DONT_HUNG) {
++		t->last_switch_time = jiffies;
++		return;
++	}
++
+ 	if (time_is_after_jiffies(t->last_switch_time + timeout * HZ))
+ 		return;
+ 
 -- 
 2.39.5
 
