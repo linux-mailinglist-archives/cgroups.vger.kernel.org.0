@@ -1,78 +1,78 @@
-Return-Path: <cgroups+bounces-10331-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10332-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75179B8FCE7
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 11:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC950B8FCEA
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 11:42:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BEFD2A004B
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 09:42:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3B882A02E1
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 09:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 794302F619B;
-	Mon, 22 Sep 2025 09:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB242FB623;
+	Mon, 22 Sep 2025 09:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="a6MuXr9y"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="K41XHuHd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D172427EC80
-	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 09:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC8AC2FB98A
+	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 09:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758534124; cv=none; b=LzKup35uCvAD+hEScmEteAaQKtx87t65pikfLfmf0Oi7scj1N7wPlJhWC6vhhsH8rHNiaxE1RUaatnygGNel9Y5iqhJLw9M1yW5E1BPm1VUw4BksXh1lcA+pQkZSTY4SYaYucxPzaRtWFdx1DyATjjcAQ6ZtITtfjZ61x5Nd4n4=
+	t=1758534129; cv=none; b=lkNwst8I7Mzfrn03QNtzxAzbnL/s/95U7Sa5p9y0IjRfYaFIX8agco182hEpwxo4MRe12xB8PcxqSKNYkibq7/0G6bKwp3hF7QOYmvjafA+RfzFSaY4u52w1TsxfKIxBiZhzf3eThgeWUie/yaEqQxk6/KHpzmZVl6eX48xqwjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758534124; c=relaxed/simple;
-	bh=w2CQvHkt4M2gPEgsJ1Jr/TEVOrRgfKToXeIBZjuqn4o=;
+	s=arc-20240116; t=1758534129; c=relaxed/simple;
+	bh=1fZ7uZviR12rEngACFAWSQEQQ2EujzRN08ukEAfB3yM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=J5CXl9W+dgPHf71RPrrBdK+mR5njYuOykuNJcH1A5jmhkeEkO9CCG1d1ZQrxthxoY2EaQjV9MqCcxHi4YW4l+lz+DwYqIDtoH3RQMVvLed3FAIaPQQt5E7On9cx3c/01DXHu4PcsbZ/6liE1JurZxv/IDClIn233J9wI+Iohj3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=a6MuXr9y; arc=none smtp.client-ip=209.85.214.169
+	 MIME-Version; b=cwJ9jh9DeVo1oVXcEprAXm/DYOHPVq4Iwg6zy52KrsN4UEagva+r9OvjS0V9fBkVGfZAUhlfjDeRo3Cn47XwHX83eo8FbM6IBceSo6kYHqhVsbx6nGqFu4YETDWN2fe4bprZHVGPYrOKbth1hbkek53njmlhhZoUxCKI3Xj+1Kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=K41XHuHd; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-278bfae33beso6599155ad.0
-        for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 02:42:02 -0700 (PDT)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b5518177251so1743063a12.0
+        for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 02:42:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1758534122; x=1759138922; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1758534127; x=1759138927; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WOurKnsAQJhq1MI/K3lsAX/7s+mLOF8dCVHDunK7rpk=;
-        b=a6MuXr9ymnM1X9xenimqx6UCDnN7iJ0GDjJJaHa/S1t3Qde5Ch8jGLWhUjlqyUhOhQ
-         eerJxUMerpruFgqB1JI7B2pGqCPOnlPMd77gsMe9jKEx154XpiVr7z6u73rrlHdAShbP
-         aCHMPyTFHyYiqR2Wm8SyIAlLMw8oo3wLfTYmBdCKnJ6xzaNxXJq0cTgshrJI01+/46CY
-         8Od4hfqX3j9FwTLVccGQt/6Wm34dGasjENc0P8yc11C8lX0v/VqYSRg7IOY9dC4lQodg
-         iXYPFjHz5ub+2ZblMo9J8W9wQSZFYKtrVjRvRqNWMigcwAxpMh5r56N1V5d2h0PLTP0d
-         KhUg==
+        bh=knShu2WB1nekyCXSMkQd4YYY4q1/2M50bRHS1z1OFIA=;
+        b=K41XHuHdO1kdod3v2kDZ6xADmhQyxvefbQjKSRB4OBC1QuzjrUlWSNAcCILxkF27vs
+         AkTqsIyQalAXoWGadaWOwm1NSacTLnmCU9yMWgl2nKGarmeqSslJlf3S3Nh+RJCzVWeK
+         a324n3thQ+u7UKF3pH0cDMg3MzdZQMRR2T54WFHCcZfgjJzLVXiA1HyxhH12d5vAAdtE
+         ZYfjQh2nItO107Ab+Z1m7b7EwyCOuuQz0hIoXA5DjMf+GPSb7lxuYN2NBJAzxMSYeyWZ
+         48I2xu8tKURSuLKg9QU/NTQuw6YGy+xolOlWT8s3rsHyNrF2MBY+WDZzkNXgJ1v+n7LM
+         +zng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758534122; x=1759138922;
+        d=1e100.net; s=20230601; t=1758534127; x=1759138927;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WOurKnsAQJhq1MI/K3lsAX/7s+mLOF8dCVHDunK7rpk=;
-        b=Su02WQbDc/19VKCpyvwN8LTBxmA6fT/jjyc74L3FAItg0VjK/KYVoj351Z9fB3u/sS
-         NA7qmIA9cn+nukLsGMELIipeN2LWT1ZZUy/pNFHL0RV3G19cpjSGaQzIkkE6n0jk6tM9
-         m07QrlOmZ7iWw8z/Yzo+ImxpxKp2zjODubW80iMgll1RyTm2abZBkladOwxZKJaN/OJp
-         attyO/+E0cNeHu2++oh+WdH/a0rgoPsA9hokDEvZnBf87nhhsCkJ6c5WwXUwXMTBv8/c
-         JjNiui8XWupwIUhaBib2cddGmYh37lnH3JVTeCiu8e/j5aFI39g65kiRqPVTDZxD1RB9
-         zfxA==
-X-Gm-Message-State: AOJu0YwfEdQhU4MGmbCYhi/Tom7Z/+Vab8qDg/rAI7X5Tw+fe0IGRooH
-	D8rkCpSFVRz2DjnSQIaLUfwFXrU+KAf444pjcBTgun/vR18SV+3SrlSoluaNGu4vRGxvgQdMDZu
-	MYO8Ki+w=
-X-Gm-Gg: ASbGnct7NF5FnGC1/lw2aKbugAi7WRImx07MSQOCtq8V5cKUbj4mbpgFdjCicQM28co
-	pFX9Y3C5x++hZnVLEYGAAUtEcnriNoreYPB9i9HfKjpsiF8fFpbU8mc54tKneXW1H3Q1/ieTDfG
-	wkc2WeQDbUxYznyrTZ9tcVd4JYym0lgrJl5zTRcEHUehozaote3EENpJ04L+2OtiXgnDyxxuDMp
-	7Li2ZpDJFXsVnCIqalqe8tmUBzH+/QPC1io7gM6S92cqkkEKv17/H9CD9vn/HlzQJmgY4UFkilD
-	wEy0tqI0w7v+1lStZkWjzqUEweHAqX54m/2LBsmWQ3QDP/41ak9cGyzh2j/kEdHvpOwb1uajbGc
-	UX00G4GSJLbhayTL+pAgGQe5gIEhf8qpoEQdv2g==
-X-Google-Smtp-Source: AGHT+IEYZ/C3dL0qp2wE+58Yl2Bn+i2OwzxTRskr6Hw/lJro+/C/gVzHqm7+saAW2gcX3d53cPh8Dg==
-X-Received: by 2002:a17:903:1b68:b0:266:88ae:be6d with SMTP id d9443c01a7336-269ba3c255emr167678175ad.6.1758534121484;
-        Mon, 22 Sep 2025 02:42:01 -0700 (PDT)
-Received: from localhost ([106.38.226.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2698016c098sm123997705ad.33.2025.09.22.02.42.00
+        bh=knShu2WB1nekyCXSMkQd4YYY4q1/2M50bRHS1z1OFIA=;
+        b=II+/zBVXy5dDgHANECEyPlji1j7Xb65O6vff3KabOlJt4LeigRqlPOEjZAHBJPBfA2
+         z8GdEVr2hqPh0d3s29H6DJo7KXrJMotved7+1Gd2GBny01kvPzkMRZg1tYhMulWphCDq
+         Ih/9WdxLrBjCD/9INs6JIl6uUwkOCex/0EoobS20TVqOLUCiwlDRjFtygs6LSQF8kLk5
+         YHGZZ/35TXe0anOA3y/HA+PdiX8y+34oytJLUCHzsoxVJxBznSeP4cQ1PtUYRuPSVElc
+         Nczgu6LrPYgznSsx9jCnT6uk2pWVHldJ4bXUGx7O61I5mZTWOrWKU8s1MRf2EQN/eLD/
+         H7LQ==
+X-Gm-Message-State: AOJu0YzKU36SUspgEuqK3wQx0CspNkGlcUiAeEl3At/kjSAku31mxs8k
+	I2w+1T2R2RMwhIIbe10SKAoa+eTSCe9ZcwmyJZfaEyTMAy0dta160QC3QnCzI5n6AkbV5Ww997i
+	qx8+UGPU=
+X-Gm-Gg: ASbGnctVKWu1EfmKSc3sk2wpy6kKqyPP3124QqEnok9gx5xxECm2wFN5dRrHPImvyzn
+	tq4CHu+40Nd/iXHQiCZdGOl63ol3AOuOYRSdH5LF8+H7upxrLrPkT4WAwy+9X5XD6rInS1Us8r9
+	DE4IfgtaIgx68KX5WGwJHLiqlIJcP9SKVN33BQjw4A+fPKB6lMb8WCMNbuK73Ue1G9cty9Ik1Q8
+	ZXrK/3M3q0nr6FmzUWyz3IW4B59yXUXko4SNRbJYgiKC26dYAt02q1KH2Y5MnUwcXqSeCHaPevf
+	A72k9/XNPHecsRGn9FUMHlJ+fpuk5rwiiqj75it+iitZSKuQxejmbT2iV4pbhNj1J2HOc0bSazZ
+	Q4SHUfdgQLSZHOrpJZ9FLbsO5QrEDhrgNfPz5
+X-Google-Smtp-Source: AGHT+IEKQqaW75NwldMxFG0uIxBj1RxwlHvk40EHsE9KBkx/V3aCLEgpZJRJGmMKZpoisXIb1QsxfQ==
+X-Received: by 2002:a17:90b:2681:b0:32e:38b0:1600 with SMTP id 98e67ed59e1d1-33097fd897emr15908772a91.6.1758534126690;
+        Mon, 22 Sep 2025 02:42:06 -0700 (PDT)
+Received: from localhost ([106.38.226.98])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b55268e73f6sm7544132a12.21.2025.09.22.02.42.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Sep 2025 02:42:01 -0700 (PDT)
+        Mon, 22 Sep 2025 02:42:06 -0700 (PDT)
 From: Julian Sun <sunjunchao@bytedance.com>
 To: cgroups@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
@@ -98,9 +98,9 @@ Cc: viro@zeniv.linux.org.uk,
 	roman.gushchin@linux.dev,
 	shakeel.butt@linux.dev,
 	muchun.song@linux.dev
-Subject: [PATCH 2/3] writeback: Introduce wb_wait_for_completion_no_hung().
-Date: Mon, 22 Sep 2025 17:41:45 +0800
-Message-Id: <20250922094146.708272-3-sunjunchao@bytedance.com>
+Subject: [PATCH 3/3] memcg: Don't trigger hung task warnings when memcg is releasing resources.
+Date: Mon, 22 Sep 2025 17:41:46 +0800
+Message-Id: <20250922094146.708272-4-sunjunchao@bytedance.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250922094146.708272-1-sunjunchao@bytedance.com>
 References: <20250922094146.708272-1-sunjunchao@bytedance.com>
@@ -112,81 +112,31 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch introduces wait_event_no_hung() and
-wb_wait_for_completion_no_hung() to make hung task detector
-ignore the current task if it waits for a long time.
+Hung task warning in mem_cgroup_css_free() is undesirable and
+unnecessary since it does not affect any user behavior and there
+is no misbehavior at the kernel code level.
+
+Use wb_wait_for_completion_no_hung() to eliminate the possible
+hung task warning.
 
 Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
 ---
- fs/fs-writeback.c           | 15 +++++++++++++++
- include/linux/backing-dev.h |  1 +
- include/linux/wait.h        | 15 +++++++++++++++
- 3 files changed, 31 insertions(+)
+ mm/memcontrol.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index a07b8cf73ae2..eebb7f145734 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -216,6 +216,21 @@ void wb_wait_for_completion(struct wb_completion *done)
- 	wait_event(*done->waitq, !atomic_read(&done->cnt));
- }
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 8dd7fbed5a94..b7d9e795dd64 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3913,7 +3913,7 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
  
-+/*
-+ * Same as wb_wait_for_completion() but hung task warning will not be
-+ * triggered if it wait for a long time. Use this function with caution
-+ * unless you are sure that the hung task is undesirable.
-+ * When is this undesirable? From the kernel code perspective, there is
-+ * no misbehavior and it has no impact on user behavior. For example, a
-+ * *background* kthread/kworker used to clean resources while waiting a
-+ * long time for writeback to finish.
-+ */
-+ void wb_wait_for_completion_no_hung(struct wb_completion *done)
-+ {
-+	atomic_dec(&done->cnt);		/* put down the initial count */
-+	wait_event_no_hung(*done->waitq, !atomic_read(&done->cnt));
-+ }
-+
  #ifdef CONFIG_CGROUP_WRITEBACK
- 
- /*
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index e721148c95d0..9d3335866f6f 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -40,6 +40,7 @@ void wb_start_background_writeback(struct bdi_writeback *wb);
- void wb_workfn(struct work_struct *work);
- 
- void wb_wait_for_completion(struct wb_completion *done);
-+void wb_wait_for_completion_no_hung(struct wb_completion *done);
- 
- extern spinlock_t bdi_lock;
- extern struct list_head bdi_list;
-diff --git a/include/linux/wait.h b/include/linux/wait.h
-index 09855d819418..8f05d0bb8db7 100644
---- a/include/linux/wait.h
-+++ b/include/linux/wait.h
-@@ -330,6 +330,21 @@ __out:	__ret;									\
- 	(void)___wait_event(wq_head, condition, TASK_UNINTERRUPTIBLE, 0, 0,	\
- 			    schedule())
- 
-+#define __wait_event_no_hung(wq_head, condition)					\
-+	(void)___wait_event(wq_head, condition, TASK_UNINTERRUPTIBLE, 0, 0,	\
-+			    current_set_flags(PF_DONT_HUNG);	\
-+			    schedule();						\
-+			    current_clear_flags(PF_DONT_HUNG))
-+
-+#define wait_event_no_hung(wq_head, condition)						\
-+do {										\
-+	might_sleep();								\
-+	if (condition)								\
-+		break;								\
-+	__wait_event_no_hung(wq_head, condition);					\
-+} while (0)
-+
-+
- /**
-  * wait_event - sleep until a condition gets true
-  * @wq_head: the waitqueue to wait on
+ 	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
+-		wb_wait_for_completion(&memcg->cgwb_frn[i].done);
++		wb_wait_for_completion_no_hung(&memcg->cgwb_frn[i].done);
+ #endif
+ 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_nosocket)
+ 		static_branch_dec(&memcg_sockets_enabled_key);
 -- 
 2.39.5
 
