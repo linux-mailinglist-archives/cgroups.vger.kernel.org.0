@@ -1,116 +1,130 @@
-Return-Path: <cgroups+bounces-10321-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10322-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0C5AB8DD3D
-	for <lists+cgroups@lfdr.de>; Sun, 21 Sep 2025 17:15:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E1EBB8F56E
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 09:52:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA2F43ACEC2
-	for <lists+cgroups@lfdr.de>; Sun, 21 Sep 2025 15:15:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 624BA189AD08
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 07:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84203D544;
-	Sun, 21 Sep 2025 15:15:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870872F6184;
+	Mon, 22 Sep 2025 07:51:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="TQ81andO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [160.30.148.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4BD6FC3;
-	Sun, 21 Sep 2025 15:15:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=160.30.148.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6D42749CF
+	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 07:51:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758467728; cv=none; b=VI+5MtRwTDWWtSxt3l1mlyDlMqmGC1zoV5QGJpLH7VOoBrB0ClL9sFGJj0nJJ2Y+mUE8gskb7qkaqT76SLgIUgiTAD/w4oMU150wDMIJoSXsOiSh8cVC2TWs1zf+4wPRSFvuYcnFPvc6+b6nBhyIgvvdWr5xTyb7ZcIHeUyVi14=
+	t=1758527518; cv=none; b=PCi4Qu3xXhWHF+PbUqmS4fmJiapfKLKLY7B12FbFo2OGuLdyUAbUuAgI3PQ4pdLtI2MwXIWcp07Zg3sOE0ejMu8Iyhw9oWkGgeWTD/vk6qFSgxe3C5I5QQy/KpikVeORYbp45MEmByvK8FYNfwNT1cHuGZz8R7fWb+BRgJEloNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758467728; c=relaxed/simple;
-	bh=jdkC5I1ywmOk+XVUobrz8tW9x5D6SlXX/o0ckoJqeYY=;
-	h=Date:Message-ID:In-Reply-To:References:Mime-Version:From:To:Cc:
-	 Subject:Content-Type; b=M8V/hAv4g/SemWqskBy5ccfh+6cBRfABOzLZt8utAqPH1pEELBap7ezdNsCi9c7fBzfepXVHI5e3D0+yVqZ5yMHpYpk+YL9Bz0XxngLGg72Lx2NsdRP59AgMDPydsuW83iXLHJHlv52bqKWK1d1gHrxf8kgY/aeb8Wodm0t15W4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=160.30.148.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4cV8v10dxDz5PM35;
-	Sun, 21 Sep 2025 23:15:25 +0800 (CST)
-Received: from xaxapp02.zte.com.cn ([10.88.97.241])
-	by mse-fl1.zte.com.cn with SMTP id 58LFFFLK072474;
-	Sun, 21 Sep 2025 23:15:15 +0800 (+08)
-	(envelope-from xu.xin16@zte.com.cn)
-Received: from mapi (xaxapp02[null])
-	by mapi (Zmail) with MAPI id mid32;
-	Sun, 21 Sep 2025 23:15:18 +0800 (CST)
-Date: Sun, 21 Sep 2025 23:15:18 +0800 (CST)
-X-Zmail-TransId: 2afa68d01686f1c-20a97
-X-Mailer: Zmail v1.0
-Message-ID: <202509212315188885yTwMVyN-Xn_6tuRc3Zi7@zte.com.cn>
-In-Reply-To: <20250921230726978agBBWNsPLi2hCp9Sxed1Y@zte.com.cn>
-References: 20250921230726978agBBWNsPLi2hCp9Sxed1Y@zte.com.cn
+	s=arc-20240116; t=1758527518; c=relaxed/simple;
+	bh=AigsWdrV8U413sLiWYn0DWOfNdAi83yiRHcmu2AqNU8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h8Z+rjwG3iJxr8DV3RzLMo3ud3iIDAIRz5ns2Zzq0EX5ItWeiOUkflT+b6KPI7htIzC1ntEbDcC89ITOrjbKpZVgvog2WA+Re5EylzC9z3gHz7IwL41GWnLG1MIDSk9VYY9Q9IeHxOSxhr0ZIg3TxCVPZuLbap/4D+hlImF3CGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=TQ81andO; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-77f3580ab80so828022b3a.2
+        for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 00:51:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1758527516; x=1759132316; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UDel7pcF11Oq6yCh9tIpX43vHF5ddtSDLUzVljmeUyU=;
+        b=TQ81andOj0RiDNXpmRhHleqRETx/wj6FE5qD80u74ywpg4erqzE3GJWURBe9q7wGgB
+         Fp8Ulz8CKqCOoXVzdriotZqXQk66usBlVZNxoZIK1MrELuW/PmS3akxqc7vOgAJm+K1L
+         YIeQW2WSKiTrC3D/87h2ZdhNYtv9tlNZBLqpMcnXuhAOZ+PGYlqIpVTb29koKkwaNGGL
+         tqm9kFzih/OtIKIbmvBFgI417+R88rjrs5XROctZY0AS9dwh/kgRjU8EP36JkJfUTLR5
+         54o8ghh7dEowtFKPW4AX83qMprbBRpIVGktb2eZ2wCJhwOgOV6LhtyS6xn6njvyvoxlm
+         BPUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758527516; x=1759132316;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UDel7pcF11Oq6yCh9tIpX43vHF5ddtSDLUzVljmeUyU=;
+        b=pQwidNJM/pT15QA7eDvdacaN5KjUGlU0awIa6Gc32Fq1Pll89fZ15Pv7uSPCNccvyU
+         BptSvbN/T830k4FqlD5pLveaGDoV7GUkGcJuL8gSJbi24u557ikayQ4cIsZcFYB00D65
+         Wyvy+B6V06mHG1r537Y+ao1KlRkjc7jnLnyB/Ie1F3zprdOshD1kSHSwqk9RwnheOY14
+         x4YrGMaNKxReFxxB3EyWCLphQWSHMpT6y58ZNlOoXyWvV81kv8LPsspTjk2xwImhUMib
+         fTGGtHqAEIgrTYffWYz/ekzC7RTMe/bk0sVrMmrciDctEocHn9bwNSgy30LxKYGEVBVo
+         XgMA==
+X-Forwarded-Encrypted: i=1; AJvYcCU4fxYU0CB5gjw/9XuIPHNBCqfHfTAr9Dh5kMpZ9JCnnHwhIXzsDDdiQjm0hDg2lK4/u9ckuzzF@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNlHiDHVkUeWpYM9TgnFJ/ULm47lYk0qcTyCOW3m0+iu6SOTBv
+	/TwDzMLUzheaBGznuKsKzpchQ7nLTJSIy8u2YKL4W2ib6Nx+KJLzThPO+E0nitJJETw=
+X-Gm-Gg: ASbGncvy7i391t7+Xm7KC2L4eX1sE7FnNBXvX5ZSv+PYZjelLf+qC6Px8ZLZWCMqbZn
+	wt0oPMxyMEwh0hUEN3hkLIE1qz2QT3GTfWhLVtHXkferpA9osv7/j7ke6/K39Lr02DwlirRKizN
+	ObLNVCUjJd58pGvUtPOG5T0gEjz28vrDOYpcUqKu3GzxC87nisrEiAukiGmM3qIWBunAWaAL1a0
+	5LmiPqKzYlsplMEz9creyIFY0kCvfS00S5+EBdcpGKvlLn4e3S0iqS3LkTCHl4+O+MgtgUyJMvA
+	IFM0CKq+5HmvWitHgR3H87lqOWHDbKpo79pYKwLLxCIcow9Y24bXpUSadSYmZpSpWcK7RKUGQ0f
+	Xq7lHoeg7yJuimKaxLQ26sRLZIUSKYrPOvBykdiztfQbcF1RdkpQ=
+X-Google-Smtp-Source: AGHT+IFvNwMFCIWEKmfCSKTgy3OoaxHXYVww5vD36PPLuuFVpvLur2RM9yIrNxaf8MVuw+PgrnqE8Q==
+X-Received: by 2002:a05:6a00:114e:b0:771:ead8:dcdb with SMTP id d2e1a72fcca58-77e4d31e124mr13772451b3a.8.1758527516015;
+        Mon, 22 Sep 2025 00:51:56 -0700 (PDT)
+Received: from [100.82.90.25] ([63.216.146.178])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77f315029c0sm3020093b3a.47.2025.09.22.00.51.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Sep 2025 00:51:55 -0700 (PDT)
+Message-ID: <7d76e5ce-22c7-4b9c-bb23-d0ccbe22b745@bytedance.com>
+Date: Mon, 22 Sep 2025 15:51:46 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-From: <xu.xin16@zte.com.cn>
-To: <xu.xin16@zte.com.cn>, <akpm@linux-foundation.org>
-Cc: <shakeel.butt@linux.dev>, <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <roman.gushchin@linux.dev>, <david@redhat.com>,
-        <chengming.zhou@linux.dev>, <muchun.song@linux.dev>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <cgroups@vger.kernel.org>
-Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHQgdjMgNi82XSBEb2N1bWVudGF0aW9uOiBhZGQgS1NNIHN0YXRpc3RpYyBjb3VudGVyc8KgZGVzY3JpcHRpb24=?=
-Content-Type: text/plain;
-	charset="UTF-8"
-X-MAIL:mse-fl1.zte.com.cn 58LFFFLK072474
-X-TLS: YES
-X-SPF-DOMAIN: zte.com.cn
-X-ENVELOPE-SENDER: xu.xin16@zte.com.cn
-X-SPF: None
-X-SOURCE-IP: 10.5.228.132 unknown Sun, 21 Sep 2025 23:15:25 +0800
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 68D0168D.000/4cV8v10dxDz5PM35
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/4] reparent the THP split queue
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, muchun.song@linux.dev, david@redhat.com,
+ lorenzo.stoakes@oracle.com, ziy@nvidia.com, baolin.wang@linux.alibaba.com,
+ Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com,
+ dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev,
+ akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Harry Yoo <harry.yoo@oracle.com>
+References: <cover.1758253018.git.zhengqi.arch@bytedance.com>
+ <svcphrpkfw66t6e4y5uso4zbt2qmgpplazeobnhikukopcz76l@ugqmwtplkbfj>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <svcphrpkfw66t6e4y5uso4zbt2qmgpplazeobnhikukopcz76l@ugqmwtplkbfj>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: xu xin <xu.xin16@zte.com.cn>
-This add KSM-related statistic counters description in cgroup-v2.rst,
-including "ksm_rmap_items", "ksm_zero_pages", "ksm_merging_pages" and
-"ksm_profit".
+Hi Shakeel,
 
-Signed-off-by: xu xin <xu.xin16@zte.com.cn>
----
- Documentation/admin-guide/cgroup-v2.rst | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+On 9/20/25 5:33 AM, Shakeel Butt wrote:
+> Hi Qi,
+> 
+> On Fri, Sep 19, 2025 at 11:46:31AM +0800, Qi Zheng wrote:
+>> Hi all,
+>>
+>> In the future, we will reparent LRU folios during memcg offline to eliminate
+>> dying memory cgroups,
+> 
+> Will you be driving this reparent LRU effort or will Muchun be driving
+> it? I think it is really important work and I would really like to get
+> this upstreamed sooner than later.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index a1e3d431974c..c8c4faa4e3fd 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1776,6 +1776,23 @@ The following nested keys are defined.
- 		up if hugetlb usage is accounted for in memory.current (i.e.
- 		cgroup is mounted with the memory_hugetlb_accounting option).
+I will work with Muchun to drive it. And we are also discussing some
+solutions for adapting MGLRU with Harry Yoo (private email).
 
-+	  ksm_rmap_items
-+		Number of ksm_rmap_item structures in use. The structure
-+		ksm_rmap_item stores the reverse mapping information for virtual
-+		addresses.  KSM will generate a ksm_rmap_item for each
-+		ksm-scanned page of the process.
-+
-+	  ksm_zero_pages
-+		Number of empty pages are merged with kernel zero pages by KSM,
-+		which is only useful when /sys/kernel/mm/ksm/use_zero_pages.
-+
-+	  ksm_merging_pages
-+		Number of pages of this process are involved in KSM merging
-+		(not including ksm_zero_pages).
-+
-+	  ksm_profit
-+		Amount of profitable memory that KSM brings (Saved bytes).
-+
-   memory.numa_stat
- 	A read-only nested-keyed file which exists on non-root cgroups.
+Oh, I forgot to cc Harry in this series.
 
--- 
-2.25.1
++cc Harry Yoo.
+
+Thanks,
+Qi
+
+> 
+> thanks,
+> Shakeel
+
 
