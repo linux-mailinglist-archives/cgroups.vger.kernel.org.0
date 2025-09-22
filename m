@@ -1,117 +1,141 @@
-Return-Path: <cgroups+bounces-10328-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10329-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9013CB8FC3C
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 11:33:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00D35B8FCCF
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 11:42:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 491C73B1354
-	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 09:33:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F7C917F706
+	for <lists+cgroups@lfdr.de>; Mon, 22 Sep 2025 09:42:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC71287262;
-	Mon, 22 Sep 2025 09:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EADE2882B6;
+	Mon, 22 Sep 2025 09:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="YvUCEHa8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mxct.zte.com.cn (mxct.zte.com.cn [183.62.165.209])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C2F286889;
-	Mon, 22 Sep 2025 09:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=183.62.165.209
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E518F28313F
+	for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 09:41:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758533600; cv=none; b=BCviaMDOpB6y6EioE+oCiuYzJAfTVAKOHEBSrJx08jokd7MHin4E3vEc+HFdlSxhJ8Dng5SiDwWYPXdlV0TrtdAU27GP649WJNCL7xAmDggWem7JUC1R6tpAN1k1Gbld9AItRkBCUwLidiuVQnbBIoqFYV3rcFeuGwGVGL4WCU4=
+	t=1758534114; cv=none; b=HOHPfGaS+Tck8nuKYJl8JkjRueejE8NKl4EjxmWThX91qkpTpe6puhOEaq3nfQXz5PAPKqp1UAH0H8QLjZmjFVL5D9w2ya4z45sW2QuxEFLOJJlEF3tjkmUjEPdSCiwX7bUV4Of9FwmJgFbDChADwF00JFwuOlvL3cT/8OVeMWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758533600; c=relaxed/simple;
-	bh=8NgYybOv9WNWz4bn+lQs2bqTHjIC8EFd9xRM5WE1Adg=;
-	h=Date:Message-ID:In-Reply-To:References:Mime-Version:From:To:Cc:
-	 Subject:Content-Type; b=m6gxVdn4gN/B67lJVC8Ai59k45QMxwZe1Xzh6pn22zx2mmYyhUfT5H7pAWfydo5UOgkM1gDKMMaXjhfWrU67gSqGxn/NMWVCEDkso3wq6iD04vTuI+/03EaVlKvfl4MoZYwI87tnv0DmJt83BxYU+tO2L/oSZ7fnS2GvvAT0+Lw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=183.62.165.209
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxct.zte.com.cn (FangMail) with ESMTPS id 4cVdFf3Vtkz501bS;
-	Mon, 22 Sep 2025 17:33:10 +0800 (CST)
-Received: from xaxapp05.zte.com.cn ([10.99.98.109])
-	by mse-fl1.zte.com.cn with SMTP id 58M9Vu75080767;
-	Mon, 22 Sep 2025 17:31:56 +0800 (+08)
-	(envelope-from xu.xin16@zte.com.cn)
-Received: from mapi (xaxapp01[null])
-	by mapi (Zmail) with MAPI id mid32;
-	Mon, 22 Sep 2025 17:31:58 +0800 (CST)
-Date: Mon, 22 Sep 2025 17:31:58 +0800 (CST)
-X-Zmail-TransId: 2af968d1178e17d-217fb
-X-Mailer: Zmail v1.0
-Message-ID: <20250922173158997VPIUgFcs8UoazWb_JQIc9@zte.com.cn>
-In-Reply-To: <aNEG5W0qLPKKflQA@tiehlicka>
-References: 20250921230726978agBBWNsPLi2hCp9Sxed1Y@zte.com.cn,aNEG5W0qLPKKflQA@tiehlicka
+	s=arc-20240116; t=1758534114; c=relaxed/simple;
+	bh=12T+kg1WEnlpjNWioyO2nSnxhTXlq9cORsKc6oSrE8s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N0ObxESejDihsdIc8DxXE8haAoQtKcFN5gB3UXXgvo1mzGoPldMUSF4EA8UFtWKw2MgG6tcm6dh9W8Lb56buaIa9CwjCGFGJvk9fkqCNABZ+UI6cvOsDvUG1LmR6UTLxsjHGXSe4j9WnHuKosy2rPNN9o5um5jma5sdTbxWAOxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=YvUCEHa8; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-77f454c57dbso261908b3a.2
+        for <cgroups@vger.kernel.org>; Mon, 22 Sep 2025 02:41:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1758534112; x=1759138912; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gb1Ubbq8FQD3k+io1Te5PTmdOjRv6gyQY3TYHgxdom4=;
+        b=YvUCEHa8HybVy9FglsCF0UZ6GrgLFKvLE24WKb6fQEeorKyHS/+Lamn7BJFWykgb1y
+         70OLy2MACIV7QyI2l/3R/pvgpAJ6b5T1AXFYIPl3Usg/Re8m9lmtvQcBcX5E353Cr7pk
+         bvsFSQRZ/wI7jBCmus07/BN0IuJzSb5EJ2vpwhTCGFYzsHT+b77xevFM7dOY1vQmJc/O
+         Bj40Dtt2XwyybQoX9CSNI4MdRrvu7DlRNf9HFhGwPTglhaYrzajW0FqAmLXmmgxC8S3U
+         HvQJcrb1bHcWd22DlsFy9ErqTrqhECM+zv8qMq2owfkE+1LT1Bm6rgn9qvUe2mLy2FZC
+         ECKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758534112; x=1759138912;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Gb1Ubbq8FQD3k+io1Te5PTmdOjRv6gyQY3TYHgxdom4=;
+        b=g8JDyo7DZzIrrcbwYyhTU+MzGWqKbsoyReB9r8VP92Ze4fzWqdbUezEZS9m4gtxdpF
+         4XJ1BlP/hF1/DWkWgEBb07XMFqwyu8dW1mDiSw2BiCskkwa0623Dh1NAvsnt6bfOvwqq
+         ZylBz5Jp06yPn1CDfKKgixiZskUuU4mWScGgor7ddNRA/p/1P/RLNpqOaaamKJ1Hqrc/
+         PvOXSl9jG7RrWrK9LHNV4ZlAHjEahe0FxIos9VfAi05U6N9IB79C+DbiOwZw+U98dG8T
+         gwtwMJIWIS85q5w8RxdK5RXXP+C5B2LUGRiQz6SzhNQ4ql5PiF+X27y9d1mSLXfIEblX
+         SEZQ==
+X-Gm-Message-State: AOJu0YxUtyM/MpQkmzPTRAB0AvBFu6WwpLKz77EA4BpkfPMHEZAafqRD
+	/l4GEVnpz9wiJa2UZzDIz9l6LejdovDtuSt9guuDlnq1k9QSLGYsi6UQmKrGiZV4pG+thKJ4ofs
+	tRL6M/m4=
+X-Gm-Gg: ASbGncuOIgc2B6Hu5mQ6XOUrOY+eyh0GQRWQQv2sytgrR8eQrBsbAZVoNBeA3qmcl9H
+	uScYxFq+Lzbv1675fyOVycGXdMHKCX3Z9QJrV/wBx5JQUTUk7DDOoK7RunRajeQoDWHHGb/e7vj
+	pM9KdAZydiTKdhoyiKlFeRD1iHqH2TbOUNNhlMU1mSrwN8LujB2vh/CGGk+bWczt0kgyPFqSuJj
+	sdt9wi4ovWto6AwnzB8Vav6Vb+NpPn5bmSfJ8MngZl0Rrei7TRaayT9ad0KoTLP1djkZZ6HgWAF
+	yjb3uoM8EuTYTBEXQWoNYsFaZsIeEb/AgbVCqxXGMOd8JJP5/I0mDjDnYH120uHlaFXWTaR2H3P
+	+Gsm8J2EPTI2Mk+AUnuh0yyybvQ1rGghU4ryJwQ==
+X-Google-Smtp-Source: AGHT+IEtLgg4zeHMXHyciHj/+jOxGNRUrmic9Rw4+/nHq421LNnyymvdUyXFF6AF8uBt8EQUhHOCSA==
+X-Received: by 2002:a05:6a20:728e:b0:262:e568:b92b with SMTP id adf61e73a8af0-2926f79d12amr19017914637.31.1758534111814;
+        Mon, 22 Sep 2025 02:41:51 -0700 (PDT)
+Received: from localhost ([106.38.226.108])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b552882b177sm7455391a12.11.2025.09.22.02.41.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Sep 2025 02:41:51 -0700 (PDT)
+From: Julian Sun <sunjunchao@bytedance.com>
+To: cgroups@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
+	akpm@linux-foundation.org,
+	lance.yang@linux.dev,
+	mhiramat@kernel.org,
+	agruenba@redhat.com,
+	hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev
+Subject: [PATCH 0/3] Suppress undesirable hung task warnings.
+Date: Mon, 22 Sep 2025 17:41:43 +0800
+Message-Id: <20250922094146.708272-1-sunjunchao@bytedance.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-From: <xu.xin16@zte.com.cn>
-To: <mhocko@suse.com>
-Cc: <akpm@linux-foundation.org>, <shakeel.butt@linux.dev>,
-        <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>, <david@redhat.com>,
-        <chengming.zhou@linux.dev>, <muchun.song@linux.dev>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <cgroups@vger.kernel.org>
-Subject: =?UTF-8?B?562U5aSNOiBbUEFUQ0ggbGludXgtbmV4dCB2MyAwLzZdIG1lbWNnOiBTdXBwb3J0IHBlci1tZW1jZyBLU00gbWV0cmljcw==?=
-Content-Type: text/plain;
-	charset="UTF-8"
-X-MAIL:mse-fl1.zte.com.cn 58M9Vu75080767
-X-TLS: YES
-X-SPF-DOMAIN: zte.com.cn
-X-ENVELOPE-SENDER: xu.xin16@zte.com.cn
-X-SPF: None
-X-SOURCE-IP: 10.5.228.132 unknown Mon, 22 Sep 2025 17:33:10 +0800
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 68D117D6.003/4cVdFf3Vtkz501bS
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-> > From: xu xin <xu.xin16@zte.com.cn>
-> > 
-> > v2->v3:
-> > ------
-> > Some fixes of compilation error due to missed inclusion of header or missed
-> > function definition on some kernel config.
-> > https://lore.kernel.org/all/202509142147.WQI0impC-lkp@intel.com/
-> > https://lore.kernel.org/all/202509142046.QatEaTQV-lkp@intel.com/
-> > 
-> > v1->v2:
-> > ------
-> > According to Shakeel's suggestion, expose these metric item into memory.stat
-> > instead of a new interface.
-> > https://lore.kernel.org/all/ir2s6sqi6hrbz7ghmfngbif6fbgmswhqdljlntesurfl2xvmmv@yp3w2lqyipb5/
-> > 
-> > Background
-> > ==========
-> > 
-> > With the enablement of container-level KSM (e.g., via prctl [1]), there is
-> > a growing demand for container-level observability of KSM behavior. However,
-> > current cgroup implementations lack support for exposing KSM-related metrics.
-> 
-> Could you be more specific why this is needed and what it will be used
-> for?
+As suggested by Andrew Morton in [1], we need a general mechanism 
+that allows the hung task detector to ignore unnecessary hung 
+tasks. This patch set implements this functionality.
 
-Yes. Some Linux application developers or vendors are eager to deploy container-level
-KSM feature in containers (docker, containerd or runc and so on). They have found
-significant memory savings without needing to modify application source code as
-before—for example, by adding prctl to enable KSM in the container’s startup
-program. Processes within the container can inherit KSM attributes via fork,
-allowing the entire container to have KSM enabled.  
+Patch 1 introduces a PF_DONT_HUNG flag. The hung task detector will 
+ignores all tasks that have the PF_DONT_HUNG flag set.
 
-However, in practice, not all containers benefit from KSM’s memory savings. Some
-containers may have few identical pages but incur additional memory overhead due
-to excessive ksm_rmap_items generation from KSM scanning. Therefore, we need to
-provide a container-level KSM monitoring method, enabling users to adjust their
-strategies based on actual KSM merging performance.
+Patch 2 introduces wait_event_no_hung() and wb_wait_for_completion_no_hung(), 
+which enable the hung task detector to ignore hung tasks caused by these
+wait events.
 
-> -- 
-> Michal Hocko
-> SUSE Labs
+Patch 3 uses wb_wait_for_completion_no_hung() in the final phase of memcg 
+teardown to eliminate the hung task warning.
+
+Julian Sun (3):
+  sched: Introduce a new flag PF_DONT_HUNG.
+  writeback: Introduce wb_wait_for_completion_no_hung().
+  memcg: Don't trigger hung task when memcg is releasing.
+
+ fs/fs-writeback.c           | 15 +++++++++++++++
+ include/linux/backing-dev.h |  1 +
+ include/linux/sched.h       | 12 +++++++++++-
+ include/linux/wait.h        | 15 +++++++++++++++
+ kernel/hung_task.c          |  6 ++++++
+ mm/memcontrol.c             |  2 +-
+ 6 files changed, 49 insertions(+), 2 deletions(-)
+
+-- 
+2.39.5
+
 
