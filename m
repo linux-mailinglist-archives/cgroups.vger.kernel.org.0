@@ -1,204 +1,164 @@
-Return-Path: <cgroups+bounces-10378-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10379-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB4BB94166
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 05:19:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 118B8B94B89
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 09:16:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49F28480E65
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 03:19:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFB3A164D1F
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 07:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16701DE4CE;
-	Tue, 23 Sep 2025 03:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBCA93101A3;
+	Tue, 23 Sep 2025 07:16:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LZV82vZI"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="i/vFblrX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CC98F49;
-	Tue, 23 Sep 2025 03:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C539430F7FE;
+	Tue, 23 Sep 2025 07:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758597556; cv=none; b=rjvCNpI+GAqEXWvXntIybk4Ae78LEOz99+d0VDpWojEIYqeT0Tt2LAtorW/xiUaAkwH/sYDzMevWwznJB09OpS8u3Un/67TTg81XCSGcx54eV27KOhPnBH7TmnEq8RgWNRTIpfyiIQMQUAWeJsAzU4EhrKFngcVDIjpmuyueg74=
+	t=1758611792; cv=none; b=Hb11jqLm+lEJylViVLXJN7/YsJe5V7R+MeRJXGs+hLsrmZsnSXNRZcIgDoG9kfDxYRj4qdPiEdj7dBxiMZaG2DonNfTvLoBJhpNaASOuijFl7gfQoEOqmMPUx9Zg+xibw9U7mI85rMTUGxMNeKzVPkp7PWFrMw5j0Bietn3jHq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758597556; c=relaxed/simple;
-	bh=KXDi2j4Nbp116ocXPIYHvxY82ZnBPUMWbX0t8osWhDQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aMMQJHf68H7HcHqxwajhEvNzUqLRnX5/TuDiAPEgclXu7upwPTC39tskPXfCKGFGWX8wKaiNdfssH50xVdhzQo9m/AmLYwsQaPrlp7UKfGGq71+GM/SB3M6h9/U9Rrx8KEAp/n/zXUG8LhhCrO1xaQ5lrOGVdErOpDwS2e3/1d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LZV82vZI; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e204e1fc-dcdf-48a8-ab3d-f136c3a0c8d5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758597550;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JY3gLzohHtQ4KKbBN+vvykpngXqaOlwuy4NvFh6M764=;
-	b=LZV82vZIcd4jtZvfBLpK/DxHwIPTdb6oCSupffToRJsxKCO3F4xdIr2DY35rA6Okpc3Cay
-	8CUIFOyfCLYo7LhDUYbez/Z0dmKfsg6Msqef7yBbocDRveClN/eeca15VWJTZ/VJE1A5H8
-	K1fV1nn5aH2gTjjy+5Q04PZgeyIj2eQ=
-Date: Tue, 23 Sep 2025 11:18:41 +0800
+	s=arc-20240116; t=1758611792; c=relaxed/simple;
+	bh=5fDKVF0izRWroWruPprDXuZ/aZYH/dSrSsguDThEDK8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YN8gflZW+rQoOdUETs1w/aNfDp8LesnZYEP9iderT+NXDK+A5mYYfnzI2GTiLHuRuen80m63ZP6kdQYdk8CUlEYg32nwofTFM0K4qcjWb9G4EEeh96XIwH2MAUqijRtcdvtteVgCgnrSIwcJabNBF7u17VZ6vLoXUuzrzrV12cA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=i/vFblrX; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=gr21sE64KSAPJhmA+bz5GYsvn97jNvphWwGOnPhZYQg=; b=i/vFblrX/G8e6OLXGvktviUrqu
+	/dRaH+KC6I+ldSGmqV3SNGsnvCGwKxxSjC/TZXOWTGXpu4M3dsH17R6MkBkL/d8egR7H16VbAeirY
+	Ej6qwCrx8QSEpuTVex8yVeSs2Owfi2RgeO7SIohXpFb3yaspKtUnnyoBw8GETWq0R+tZPqh/zooX5
+	xYKtBQiZF3wgomx3Bku5NXcBN2yrtijVKq+1WTMU3t1Q+20sVRACkOLDCWHWusoJ85isXxfd5XQqh
+	LRKaggUGUYY/30UY6nFEJQ7YcBf90Tv3/Y/P3sqsLoBsgRIH+ebgSP1KtoCOE6wX9mkIgxktnUWAz
+	rY4pPfig==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1v0xFw-00000008Ti2-468P;
+	Tue, 23 Sep 2025 07:16:09 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id A3CC530049C; Tue, 23 Sep 2025 09:16:07 +0200 (CEST)
+Date: Tue, 23 Sep 2025 09:16:07 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Julian Sun <sunjunchao@bytedance.com>, cgroups@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, vschneid@redhat.com, lance.yang@linux.dev,
+	mhiramat@kernel.org, agruenba@redhat.com, hannes@cmpxchg.org,
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev
+Subject: Re: [PATCH 0/3] Suppress undesirable hung task warnings.
+Message-ID: <20250923071607.GR3245006@noisy.programming.kicks-ass.net>
+References: <20250922094146.708272-1-sunjunchao@bytedance.com>
+ <20250922132718.GB49638@noisy.programming.kicks-ass.net>
+ <aNGQoPFTH2_xrd9L@infradead.org>
+ <20250922145045.afc6593b4e91c55d8edefabb@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [External] Re: [PATCH 0/3] Suppress undesirable hung task
- warnings.
-Content-Language: en-US
-To: Julian Sun <sunjunchao@bytedance.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, mhiramat@kernel.org,
- viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, mingo@redhat.com,
- peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- mgorman@suse.de, vschneid@redhat.com, agruenba@redhat.com,
- hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, muchun.song@linux.dev, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20250922094146.708272-1-sunjunchao@bytedance.com>
- <b31a538a-c361-4e3e-a5b6-6a3d2083ef3b@linux.dev>
- <20250922145754.31890092257495f70db3909d@linux-foundation.org>
- <9665ff9f-3e1d-4c39-8c8f-b9e12fb4d5f4@linux.dev>
- <CAHSKhtee3amv12XdBu0Wbfde_27pSm7WdRtifGhpfycLwmov0A@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Lance Yang <lance.yang@linux.dev>
-In-Reply-To: <CAHSKhtee3amv12XdBu0Wbfde_27pSm7WdRtifGhpfycLwmov0A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250922145045.afc6593b4e91c55d8edefabb@linux-foundation.org>
 
-
-
-On 2025/9/23 10:45, Julian Sun wrote:
-> On Tue, Sep 23, 2025 at 10:30 AM Lance Yang <lance.yang@linux.dev> wrote:
->>
->>
->>
->> On 2025/9/23 05:57, Andrew Morton wrote:
->>> On Mon, 22 Sep 2025 19:38:21 +0800 Lance Yang <lance.yang@linux.dev> wrote:
->>>
->>>> On 2025/9/22 17:41, Julian Sun wrote:
->>>>> As suggested by Andrew Morton in [1], we need a general mechanism
->>>>> that allows the hung task detector to ignore unnecessary hung
->>>>
->>>> Yep, I understand the goal is to suppress what can be a benign hung task
->>>> warning during memcg teardown.
->>>>
->>>>> tasks. This patch set implements this functionality.
->>>>>
->>>>> Patch 1 introduces a PF_DONT_HUNG flag. The hung task detector will
->>>>> ignores all tasks that have the PF_DONT_HUNG flag set.
->>>>
->>>> However, I'm concerned that the PF_DONT_HUNG flag is a bit too powerful
->>>> and might mask real, underlying hangs.
->>>
->>> I think that's OK if the calling task is discriminating about it.  Just
->>> set PF_DONT_HUNG (unpleasing name!) around those bits of code where
->>> it's needed, clear it otherwise.
->>
->> Makes sense to me :)
->>
->>>
->>> Julian, did you take a look at what a touch_hung_task_detector() would
->>> involve?  It's a bit of an interface inconsistency - our various other
->>> timeout detectors (softlockup, NMI, rcu) each have a touch_ function.
->>
->> On second thought, I agree that a touch_hung_task_detector() would be a
->> much better approach for interface consistency.
->>
->> We could implement touch_hung_task_detector() to grant the task temporary
->> immunity from hung task checks for as long as it remains uninterruptible.
->> Once the task becomes runnable again, the immunity is automatically revoked.
+On Mon, Sep 22, 2025 at 02:50:45PM -0700, Andrew Morton wrote:
+> On Mon, 22 Sep 2025 11:08:32 -0700 Christoph Hellwig <hch@infradead.org> wrote:
 > 
-> Yes, this looks much cleaner.  I didn’t think of this specific code
-> implementation method :)
->>
->> Something like this:
->>
->> ---
->> diff --git a/include/linux/hung_task.h b/include/linux/hung_task.h
->> index c4403eeb7144..fac92039dce0 100644
->> --- a/include/linux/hung_task.h
->> +++ b/include/linux/hung_task.h
->> @@ -98,4 +98,9 @@ static inline void *hung_task_blocker_to_lock(unsigned
->> long blocker)
->>    }
->>    #endif
->>
->> +void touch_hung_task_detector(struct task_struct *t)
->> +{
->> +       t->last_switch_count = ULONG_MAX;
->> +}
->> +
->>    #endif /* __LINUX_HUNG_TASK_H */
->> diff --git a/kernel/hung_task.c b/kernel/hung_task.c
->> index 8708a1205f82..094a277b3b39 100644
->> --- a/kernel/hung_task.c
->> +++ b/kernel/hung_task.c
->> @@ -203,6 +203,9 @@ static void check_hung_task(struct task_struct *t,
->> unsigned long timeout)
->>          if (unlikely(!switch_count))
->>                  return;
->>
->> +       if (t->last_switch_count == ULONG_MAX)
->> +               return;
->> +
->>          if (switch_count != t->last_switch_count) {
->>                  t->last_switch_count = switch_count;
->>                  t->last_switch_time = jiffies;
->> @@ -317,6 +320,9 @@ static void
->> check_hung_uninterruptible_tasks(unsigned long timeout)
->>                      !(state & TASK_WAKEKILL) &&
->>                      !(state & TASK_NOLOAD))
->>                          check_hung_task(t, timeout);
->> +               else if (t->last_switch_count == ULONG_MAX)
->> +                       t->last_switch_count = t->nvcsw + t->nivcsw;
+> > On Mon, Sep 22, 2025 at 03:27:18PM +0200, Peter Zijlstra wrote:
+> > > > Julian Sun (3):
+> > > >   sched: Introduce a new flag PF_DONT_HUNG.
+> > > >   writeback: Introduce wb_wait_for_completion_no_hung().
+> > > >   memcg: Don't trigger hung task when memcg is releasing.
+> > > 
+> > > This is all quite terrible. I'm not at all sure why a task that is
+> > > genuinely not making progress and isn't killable should not be reported.
+> > 
+> > The hung device detector is way to aggressive for very slow I/O.
+> > See blk_wait_io, which has been around for a long time to work
+> > around just that.  Given that this series targets writeback I suspect
+> > it is about an overloaded device as well.
 > 
-> Maybe we don't need this statement here, the if (switch_count !=
-> t->last_switch_count) statement inside the check_hung_task() will do
-> it automatically. Or am I missing something?
-
-IIUC, we do need that "else if" block. check_hung_task() is ONLY called
-for tasks that are currently in TASK_UNINTERRUPTIBLE state.
-
-Without the "else if" block, the task's last_switch_count would remain
-ULONG_MAX forever, effectively granting it permanent immunity from all
-future hung task checks. Unless I am missing something ;)
-
->> +
->>          }
->>     unlock:
->>          rcu_read_unlock();
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 8dc470aa6c3c..3d5f36455b74 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -3910,8 +3910,10 @@ static void mem_cgroup_css_free(struct
->> cgroup_subsys_state *css)
->>          int __maybe_unused i;
->>
->>    #ifdef CONFIG_CGROUP_WRITEBACK
->> -       for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
->> +       for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++) {
->> +               touch_hung_task_detector(current);
->>                  wb_wait_for_completion(&memcg->cgwb_frn[i].done);
->> +       }
->>    #endif
->>          if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_nosocket)
->>                  static_branch_dec(&memcg_sockets_enabled_key);
->> ---
->>
->> Using ULONG_MAX as a marker to grant this immunity. As long as the task
->> remains in state D, check_hung_task() sees the marker and bails out.
+> Yup, it's writeback - the bug report is in
+> https://lkml.kernel.org/r/20250917212959.355656-1-sunjunchao@bytedance.com
 > 
-> Thanks for your review, I will send patch v2 with this approach.
+> Memory is big and storage is slow, there's nothing wrong if a task
+> which is designed to wait for writeback waits for a long time.
+> 
+> Of course, there's something wrong if some other task which isn't
+> designed to wait for writeback gets stuck waiting for the task which
+> *is* designed to wait for writeback, but we'll still warn about that.
+> 
+> 
+> Regarding an implementation, I'm wondering if we can put a flag in
+> `struct completion' telling the hung task detector that this one is
+> expected to wait for long periods sometimes.  Probably messy and it
+> only works for completions (not semaphores, mutexes, etc).  Just
+> putting it out there ;)
 
-Cheers!
+So the problem is that there *is* progress (albeit rather slowly), the
+watchdog just doesn't see that. Perhaps that is the thing we should look
+at fixing.
 
+How about something like the below? That will 'spuriously' wake up the
+waiters as long as there is some progress being made. Thereby increasing
+the context switch counters of the tasks and thus the hung_task watchdog
+sees progress.
+
+This approach should be safer than the blk_wait_io() hack, which has a
+timer ticking, regardless of actual completions happening or not.
+
+---
+
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index a07b8cf73ae2..1326193b4d95 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -174,9 +174,10 @@ static void finish_writeback_work(struct wb_writeback_work *work)
+ 		kfree(work);
+ 	if (done) {
+ 		wait_queue_head_t *waitq = done->waitq;
++		bool force_wake = (jiffies - done->stamp) > HZ/2;
+ 
+ 		/* @done can't be accessed after the following dec */
+-		if (atomic_dec_and_test(&done->cnt))
++		if (atomic_dec_and_test(&done->cnt) || force_wake)
+ 			wake_up_all(waitq);
+ 	}
+ }
+@@ -213,7 +214,7 @@ static void wb_queue_work(struct bdi_writeback *wb,
+ void wb_wait_for_completion(struct wb_completion *done)
+ {
+ 	atomic_dec(&done->cnt);		/* put down the initial count */
+-	wait_event(*done->waitq, !atomic_read(&done->cnt));
++	wait_event(*done->waitq, ({ done->stamp = jiffies; !atomic_read(&done->cnt); }));
+ }
+ 
+ #ifdef CONFIG_CGROUP_WRITEBACK
+diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
+index 2ad261082bba..197593193ce3 100644
+--- a/include/linux/backing-dev-defs.h
++++ b/include/linux/backing-dev-defs.h
+@@ -63,6 +63,7 @@ enum wb_reason {
+ struct wb_completion {
+ 	atomic_t		cnt;
+ 	wait_queue_head_t	*waitq;
++	unsigned long		stamp;
+ };
+ 
+ #define __WB_COMPLETION_INIT(_waitq)	\
 
