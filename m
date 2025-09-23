@@ -1,184 +1,162 @@
-Return-Path: <cgroups+bounces-10397-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10398-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70B96B95DC3
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 14:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5360EB962CE
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 16:17:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1863C2A42DA
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 12:44:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0826217295D
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 14:17:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF9F322547;
-	Tue, 23 Sep 2025 12:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B5F221269;
+	Tue, 23 Sep 2025 14:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e9yj99gL"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HPoluiIV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9288A184;
-	Tue, 23 Sep 2025 12:44:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1E51FDE01
+	for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 14:17:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758631486; cv=none; b=fPftpTwLrYVo2PqhpRBDK1UzF/1wvynNvKKGhDH0swUkxRyJPiTB6zUvuxHk7+KlMLM2PcENfUrudgza9+deB5TIRzLZApXy/j3myvCs/ClkYMZM8Wz78zutU2EL0qfmQCpEpLzrt8BTrBA+Xj79cEdhAdV9AMOwCxtU+/FAUxM=
+	t=1758637071; cv=none; b=C87a1R+zNZcL+kadikzebbgtaCBk5cnWV2dmlYgNIslgsxoymxTuYww/6860/Gj+FJ9FzwOYEvlrw3oA/dFGih5ZYwlcqtwTGeAQa9s2YnvYDBD5z6aqwFIGFGeWeHjzFF+musQ0ODVqNNqsX/EuUxAXOHcj7YEOJntPB8ehQtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758631486; c=relaxed/simple;
-	bh=ov3x/Bv7oV50KFhrwrPMRC8zciwGASqntR7tTgePSD8=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=u7anxKOKzB/gXRGHtc0eLUyCGwtmYEJDtCTnPT/iZ/7M757nR9OKiS6VEdYeb6KweVp3aWCCaPzlDmFXVyIV2tgCROmk1vhFlM21u5ONEpUzO9yxU7qY+YsmvXkKUMm5R9K7UIdxUsq3Hj1Q+cf4kBb7W8V656RoP1MfHDg9zTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e9yj99gL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0271BC4CEF5;
-	Tue, 23 Sep 2025 12:44:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758631486;
-	bh=ov3x/Bv7oV50KFhrwrPMRC8zciwGASqntR7tTgePSD8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=e9yj99gLWb6vn8o4oOOQNm7BxB6fejebVGtLUn5foBi7E6sibbmwebGzcvWzT0xVn
-	 iPoL6hD2yYK/J+p1k24PmgEgOLSU3K23YbvEw8Q4dar6REJ4AzUBZy34YsVvCHgspa
-	 9uu6c+ByYoGwJB4idWb2NC5/7mebyLOXtEPl29rHCGz5klbpViRW5jSIOZGk7cs9ro
-	 pV7AAm65xazyrqHkCX3p7ynrT+pwh2PS7yNYnjeRrtqANx4Ke51A5qb7rQEA7FUqIT
-	 5GSKi82jpchy/aJ6Qaa20A5IfjPbX6bTjznxF/o6djMwihOuqXxnL4wqkoWCGp/Aqu
-	 hQ5oPy0iX+QRg==
-Date: Tue, 23 Sep 2025 21:44:38 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig
- <hch@infradead.org>, Julian Sun <sunjunchao@bytedance.com>,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
- jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
- lance.yang@linux.dev, mhiramat@kernel.org, agruenba@redhat.com,
- hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, muchun.song@linux.dev
-Subject: Re: [PATCH 0/3] Suppress undesirable hung task warnings.
-Message-Id: <20250923214438.95e34fc1bbd5cfe5ac0b9dde@kernel.org>
-In-Reply-To: <20250923071607.GR3245006@noisy.programming.kicks-ass.net>
-References: <20250922094146.708272-1-sunjunchao@bytedance.com>
-	<20250922132718.GB49638@noisy.programming.kicks-ass.net>
-	<aNGQoPFTH2_xrd9L@infradead.org>
-	<20250922145045.afc6593b4e91c55d8edefabb@linux-foundation.org>
-	<20250923071607.GR3245006@noisy.programming.kicks-ass.net>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1758637071; c=relaxed/simple;
+	bh=wSMFoqjyLN8Wd3bU4GJnrof3Pb9x9wfb4LqShQL8DPA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f+J23ZdcwwN1z+bI8ELVs57qTL4EuF3AtcVi+B/ubc4L6Cyq51l4MZLI8wnlLsTmsBUSPAMfCy8MEOqWFtfzPOAw6GBoUsF9E+2TolSAazvILDGrCyEIxUnhxP+OWI95Nxp7IIbzPLkiyMqt6u5SdhdOLjN7wi5UIQA05kUK+Os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HPoluiIV; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-afcb7322da8so1029951766b.0
+        for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 07:17:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1758637068; x=1759241868; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=A5q5N3nLYy9yP+B4kwAaZrbrxG23b0NBI/IKB6m71lg=;
+        b=HPoluiIVEI38W28nZs0I9bpmzLGWwnUgG0QeoTFSqWFYAquFFnKABFmz2lJgoQXQPt
+         1SHB/luv8gnHY2J0+PfDl23RrHUOcaBhhV5RwhhJleefcdPfCRoMDOuicLNen2dztL5k
+         HkPJhtDwZ/oZnuyxz+vF2ttaMcrgVBcLtNti4JfRQ6n/pmEBWrE8sRjINKUElvzBUFvu
+         UO35SYugkY6eWBI0uB/APD9V1HxP+WP+kmcrk3/yeM0/pgXdF+xdg4HTeDdBkQFspaoJ
+         Zp3VOGMqXjL/Bai+BohEn5qm78FmwWCRZOcpKXhJ6WUT36eiDUhLyDFjI0DO66FCS7xF
+         /JFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758637068; x=1759241868;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A5q5N3nLYy9yP+B4kwAaZrbrxG23b0NBI/IKB6m71lg=;
+        b=Xonih3ODkj9RwKUVtA3fC5WK0O7agqXV2UpuwKkF7+QZdx+EeBUA2z5gkklbXzODDg
+         bBkSc8cze7jxORFNcpQ35B2As029xQgjicEllb/t2lNUO20y+O9NdTOSQpU2ukuI8It2
+         PdKpbIVUW64uiIE3J4hTOso9NyMCn6AjHCpJHztTO14qKdqHpIVdozjXbkSbh1oYr/pQ
+         X0ovysvV13GnfrBleUsGx/kcUAIjnGAwUBn+Uwo7bbiEXLr+bJGxaraWQ8DJUf5r1L3a
+         krz65dgPpeitANj0Mn3v9gDieIxTg9kTh23KJ9UIe/JaNqdgy7/5Ds7NRI0OW1OhuwiR
+         vEZg==
+X-Forwarded-Encrypted: i=1; AJvYcCXhs+1J+YSXNC9/NtUBmZP9my1bnF84WJpNOdXTfFrvxa3C0ke2IaB0WT6jFQo0m9DHj6pSi8FW@vger.kernel.org
+X-Gm-Message-State: AOJu0YwpVnJXEs6FMlH0U1w4UuwpzwCkLoGoa3qvgXdCWau5cRZrtKKn
+	wlp0thSSV68CWHeQM2Pg0dxI64L8VzfmS3UBIysE/Ot4IBe9vBbXrleGmfpOgxQ1V+A=
+X-Gm-Gg: ASbGncvxW+ERBOdHTJJZJ5N5pdUof5scR+zXXo/FnRMo0gIcQBdJDLounPSHoUg2T8g
+	p+LgsGz8jINUVTSEC6JQOpzPxBH5t6gy5Xgt2NuUC2wrLw7R5ra9vAiqIvQ0OBwdRJGbWLGT0aK
+	2Ll7D4YLJBYX1I5Q9Ct3kGcNV520lrcXRNjpNPnDVJnABprQT2ORQiPxRZBchETM6S24otlRRMr
+	wcfH8syNRlvOrq4NLTjrh+7y7fnSmHwKRyhlQPTXKM0m/aSB/yTEoZXS+csrkulkKQggd1foRHN
+	v4VEsidBgJTqn4zWhyUmuRVlVHTuDMMpFCEiuxPLphjtgm8jqCwAWys4yAazxNX1VvfO2fxy843
+	HVHhuiU1ByVfNqQjm7bzoKg5DQd93gCiT3Q==
+X-Google-Smtp-Source: AGHT+IHv8Ydnb9rIz0+NFvQxdeTcfROor571HxVvcaI2WdRaXpfHr1+DeTmXjRTVXNKfWFeK2MsapA==
+X-Received: by 2002:a17:907:707:b0:b24:6396:c643 with SMTP id a640c23a62f3a-b3028427c9amr256596166b.23.1758637068030;
+        Tue, 23 Sep 2025 07:17:48 -0700 (PDT)
+Received: from localhost (109-81-31-43.rct.o2.cz. [109.81.31.43])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b2aaeea5a1csm621323266b.95.2025.09.23.07.17.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Sep 2025 07:17:47 -0700 (PDT)
+Date: Tue, 23 Sep 2025 16:17:46 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: xu.xin16@zte.com.cn
+Cc: akpm@linux-foundation.org, shakeel.butt@linux.dev, hannes@cmpxchg.org,
+	roman.gushchin@linux.dev, david@redhat.com,
+	chengming.zhou@linux.dev, muchun.song@linux.dev,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	cgroups@vger.kernel.org
+Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= linux-next v3
+ 0/6] memcg: Support per-memcg KSM metrics
+Message-ID: <aNKsCm-SUaxtq2Cl@tiehlicka>
+References: <aNEG5W0qLPKKflQA@tiehlicka>
+ <20250922173158997VPIUgFcs8UoazWb_JQIc9@zte.com.cn>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250922173158997VPIUgFcs8UoazWb_JQIc9@zte.com.cn>
 
-On Tue, 23 Sep 2025 09:16:07 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Mon, Sep 22, 2025 at 02:50:45PM -0700, Andrew Morton wrote:
-> > On Mon, 22 Sep 2025 11:08:32 -0700 Christoph Hellwig <hch@infradead.org> wrote:
-> > 
-> > > On Mon, Sep 22, 2025 at 03:27:18PM +0200, Peter Zijlstra wrote:
-> > > > > Julian Sun (3):
-> > > > >   sched: Introduce a new flag PF_DONT_HUNG.
-> > > > >   writeback: Introduce wb_wait_for_completion_no_hung().
-> > > > >   memcg: Don't trigger hung task when memcg is releasing.
-> > > > 
-> > > > This is all quite terrible. I'm not at all sure why a task that is
-> > > > genuinely not making progress and isn't killable should not be reported.
+On Mon 22-09-25 17:31:58, xu.xin16@zte.com.cn wrote:
+> > > From: xu xin <xu.xin16@zte.com.cn>
 > > > 
-> > > The hung device detector is way to aggressive for very slow I/O.
-> > > See blk_wait_io, which has been around for a long time to work
-> > > around just that.  Given that this series targets writeback I suspect
-> > > it is about an overloaded device as well.
+> > > v2->v3:
+> > > ------
+> > > Some fixes of compilation error due to missed inclusion of header or missed
+> > > function definition on some kernel config.
+> > > https://lore.kernel.org/all/202509142147.WQI0impC-lkp@intel.com/
+> > > https://lore.kernel.org/all/202509142046.QatEaTQV-lkp@intel.com/
+> > > 
+> > > v1->v2:
+> > > ------
+> > > According to Shakeel's suggestion, expose these metric item into memory.stat
+> > > instead of a new interface.
+> > > https://lore.kernel.org/all/ir2s6sqi6hrbz7ghmfngbif6fbgmswhqdljlntesurfl2xvmmv@yp3w2lqyipb5/
+> > > 
+> > > Background
+> > > ==========
+> > > 
+> > > With the enablement of container-level KSM (e.g., via prctl [1]), there is
+> > > a growing demand for container-level observability of KSM behavior. However,
+> > > current cgroup implementations lack support for exposing KSM-related metrics.
 > > 
-> > Yup, it's writeback - the bug report is in
-> > https://lkml.kernel.org/r/20250917212959.355656-1-sunjunchao@bytedance.com
-> > 
-> > Memory is big and storage is slow, there's nothing wrong if a task
-> > which is designed to wait for writeback waits for a long time.
-> > 
-> > Of course, there's something wrong if some other task which isn't
-> > designed to wait for writeback gets stuck waiting for the task which
-> > *is* designed to wait for writeback, but we'll still warn about that.
-> > 
-> > 
-> > Regarding an implementation, I'm wondering if we can put a flag in
-> > `struct completion' telling the hung task detector that this one is
-> > expected to wait for long periods sometimes.  Probably messy and it
-> > only works for completions (not semaphores, mutexes, etc).  Just
-> > putting it out there ;)
+> > Could you be more specific why this is needed and what it will be used
+> > for?
 > 
-> So the problem is that there *is* progress (albeit rather slowly), the
-> watchdog just doesn't see that. Perhaps that is the thing we should look
-> at fixing.
+> Yes. Some Linux application developers or vendors are eager to deploy container-level
+> KSM feature in containers (docker, containerd or runc and so on). They have found
+> significant memory savings without needing to modify application source code as
+> before—for example, by adding prctl to enable KSM in the container’s startup
+> program. Processes within the container can inherit KSM attributes via fork,
+> allowing the entire container to have KSM enabled.  
 > 
-> How about something like the below? That will 'spuriously' wake up the
-> waiters as long as there is some progress being made. Thereby increasing
-> the context switch counters of the tasks and thus the hung_task watchdog
-> sees progress.
-> 
-> This approach should be safer than the blk_wait_io() hack, which has a
-> timer ticking, regardless of actual completions happening or not.
+> However, in practice, not all containers benefit from KSM’s memory savings. Some
+> containers may have few identical pages but incur additional memory overhead due
+> to excessive ksm_rmap_items generation from KSM scanning. Therefore, we need to
+> provide a container-level KSM monitoring method, enabling users to adjust their
+> strategies based on actual KSM merging performance.
 
-I like this idea, because this does not priotize any task, but priotize
-context. The problem sounds like the kernel knows the operation
-should be slow. Then what we need is a "progress bar" for the hung task
-instead of an "ever-spinning circle".
+So what is the strategy here? You watch the runtime behavior and then
+disable KSM based on previous run? I do not think this could be changed
+during the runtime, rigtht? So it would only work for the next run and
+that would rely that the workload is consistent in that over re-runs
+right?
 
-It seems that the task hang detector can be triggered by an IO device
-problem. This is not because IO is slow but in progress, but because
-removable devices, etc., may not return from IO.
+I am not really convinced TBH, but not as much as to NAK this. What
+concerns me a bit is that these per memcg stats are slightly different
+from global ones without a very good explanation (or maybe I have just
+not understood it properly).
 
-So, is it possible to reset such a watchdog only when it is confirmed
-that some IO is slow but in progress? No matter how slow the IO is or
-how throttled it is, I think it's rare for there to be no IO at all
-within a few seconds.
+Also the usecase sounds a bit shaky as it doesn't really give admins
+great control other than a hope that a new execution of the container
+will behave consistently with previous runs. I thought the whole concept
+of per process KSM is based on "we know our userspace benefits" rather
+than "let's try and see". 
 
-Thank you,
-
-> 
-> ---
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index a07b8cf73ae2..1326193b4d95 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -174,9 +174,10 @@ static void finish_writeback_work(struct wb_writeback_work *work)
->  		kfree(work);
->  	if (done) {
->  		wait_queue_head_t *waitq = done->waitq;
-> +		bool force_wake = (jiffies - done->stamp) > HZ/2;
->  
->  		/* @done can't be accessed after the following dec */
-> -		if (atomic_dec_and_test(&done->cnt))
-> +		if (atomic_dec_and_test(&done->cnt) || force_wake)
->  			wake_up_all(waitq);
->  	}
->  }
-> @@ -213,7 +214,7 @@ static void wb_queue_work(struct bdi_writeback *wb,
->  void wb_wait_for_completion(struct wb_completion *done)
->  {
->  	atomic_dec(&done->cnt);		/* put down the initial count */
-> -	wait_event(*done->waitq, !atomic_read(&done->cnt));
-> +	wait_event(*done->waitq, ({ done->stamp = jiffies; !atomic_read(&done->cnt); }));
->  }
->  
->  #ifdef CONFIG_CGROUP_WRITEBACK
-> diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-> index 2ad261082bba..197593193ce3 100644
-> --- a/include/linux/backing-dev-defs.h
-> +++ b/include/linux/backing-dev-defs.h
-> @@ -63,6 +63,7 @@ enum wb_reason {
->  struct wb_completion {
->  	atomic_t		cnt;
->  	wait_queue_head_t	*waitq;
-> +	unsigned long		stamp;
->  };
->  
->  #define __WB_COMPLETION_INIT(_waitq)	\
-
+All in all I worry this will turn out not really used in the end and we
+will have yet another counters to maintain without real users.
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Michal Hocko
+SUSE Labs
 
