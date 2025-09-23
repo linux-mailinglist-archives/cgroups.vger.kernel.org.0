@@ -1,88 +1,88 @@
-Return-Path: <cgroups+bounces-10384-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10385-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B5A7B94FC3
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 10:26:39 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD486B94FD8
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 10:28:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 235717A4892
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 08:24:56 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9138F4E1344
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 08:28:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5340E31A056;
-	Tue, 23 Sep 2025 08:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE0431BCA3;
+	Tue, 23 Sep 2025 08:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UpZRkOb+"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bVyxyaSt"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBA41114
-	for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 08:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8563AC15
+	for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 08:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758615989; cv=none; b=BugvYcWGPo9AorB6GHbvwE+tznkQj0qcfH/ntOKeUp0i2Wsi4XjHh/kTdJwQoBqTnzL9qiOJ90fmcLG/Ce4VMFKL32CMMyFOYLzBZhZbmP0lurCUJ/gZUzrDNm58cTMpgmwm+m4R0oer64KaecJxvqGW99yI/87u6rSa1vVg5IY=
+	t=1758616102; cv=none; b=MQATDYLBHztCmo3D2c/VBIXrX7ZbFIC8GJHmHV6Frudm/UwUcPgoeYH3KYbjNP0cC23EoEdcldlzwR+r5PaMhqBrcG/kGvZpdYlkBTE/GdnzKBvKl9uwSdZHhJ5CwBXfTm+nAcQLFVlSBVdiFQFTewJm4KDlrrboembDoqTpg94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758615989; c=relaxed/simple;
-	bh=RIby1D8riReGlUS5ZL+dKJRUnb/8+ATMrYUYK3UB0Ds=;
+	s=arc-20240116; t=1758616102; c=relaxed/simple;
+	bh=injOZqgHS4KB4CyARpgVAoOe/mChWEdXtR1Ikxu6gVs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SMsRAAkuq796VONQ0O5iUGXDyhzkh9v1AudBAFBedfGnDmvoZNnfZT1h2Hm/Mxs9QOIHYcmgEthKvEir2mEdH/Xh/zVVokX+p42s7/VfQliuEJa1l1IeWmr80h91T4f067CvAPQjD0kpDjrB/bxpTyTGgY/H9YG69+2YoU00wg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UpZRkOb+; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=a6ylHjiurVzjtt4qkn7zu+k6f60oEuzf0kGXHeF/tP/Tb60buX0p3x0HY1F22U8lf271UjCWy6/QoVGhBT+NGzHRqAtyDiMLOeCfVinRMjH6ukxb6ttwjxijvHTYXQAPqvHP17x7qmxP6aM69+NXOYGw1G0UL8ibhLe/MmFRkUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bVyxyaSt; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1758615986;
+	s=mimecast20190719; t=1758616099;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=u158U5eLLkY8pwNFzJaS9pMnHCqEcHc3FLks6NqWdoc=;
-	b=UpZRkOb+x9uOE+USBLDAJg8VSHcIz9gWxOpcWbstYtbAyMj6FsTxlpRZJbk8UK13zL4h46
-	N66JxVOBpww5WAAcXYdyJm5AQwWE1VUuaQ7wmroYXYTqLs0ytvcq0EosIl4HE7lj6kHww1
-	A31qGkxsaO17bYjG5smN0iuI34RCFCc=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=GS+tvOnybnp3O6O0X53XpAdOzzoNNJS6PxgRaybOU24=;
+	b=bVyxyaStH2sC/zPw2mMdEVNhB9kYxq1gO+YsPi2w2bHXEgIE55y/xU4LwSU+kkJE7rl8q4
+	YEMnBrEqKZopCniVbEFMeGNP2a8noeCgRvws1euuzzNd3DP0zmDxKbRNceeQz/+aO13vL+
+	vDRMURmow+mDyPi8ynVIlh+Subesurw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-15-NCbCQTFDMLGpQOxXjzqAvQ-1; Tue, 23 Sep 2025 04:26:24 -0400
-X-MC-Unique: NCbCQTFDMLGpQOxXjzqAvQ-1
-X-Mimecast-MFC-AGG-ID: NCbCQTFDMLGpQOxXjzqAvQ_1758615984
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-45f2b9b99f0so15423385e9.1
-        for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 01:26:24 -0700 (PDT)
+ us-mta-553-E0TiFaSsPvOAQbIQABJ9uA-1; Tue, 23 Sep 2025 04:28:18 -0400
+X-MC-Unique: E0TiFaSsPvOAQbIQABJ9uA-1
+X-Mimecast-MFC-AGG-ID: E0TiFaSsPvOAQbIQABJ9uA_1758616097
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3ece0fd841cso3583963f8f.0
+        for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 01:28:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758615983; x=1759220783;
+        d=1e100.net; s=20230601; t=1758616097; x=1759220897;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=u158U5eLLkY8pwNFzJaS9pMnHCqEcHc3FLks6NqWdoc=;
-        b=gz5UV6vo03JFEmeDxFlfQL//2rNedF/9TfHpDWbifj/xsFC9BJup4ZyX30Eh58ewRq
-         O83ug9TPe4sQapjgH1CarKwjYXYhEy723nauGW2ktFeiicn3gslIvSkXSEMts4zLQSRb
-         7LSOmR52om2tOjYvvs+1rrsGlCP7SCWtiPXBlxaNc/m5LaehDTogVRsmVyz4Yin9/vPI
-         EnhVFgKJK7lb309dwRp49shq1M/YJKUY+5Ow9hXFubKFxEZARR2hWi5jR4fhxfAzpFzX
-         AedvbUfcyVCDYu/VhNmm7BMPVyEQdwvaUhZGHWmEYR9eHlOQyc6lpW3Nz9hOHgmXO9pG
-         nacg==
-X-Forwarded-Encrypted: i=1; AJvYcCXyDOpNyLkqcAL6MRpThpgADQM7w5+Az6Pe6Y8L95lffVqQoQQ472ha65XG2iTlyRy+0ptrOtXs@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPAaFaZ/hEVw54+dA5YmUotAjrLtiXa17BoySpp0mikJ9kYNGG
-	Uco3rJd8tGMpRiYrv3PuD9vUGVJ4uf82Yfzv4TjgzlA9oQh05flNTcRaiHBjaPMGOYwvThYrCIe
-	o6hg/EbPUHmDThQcTiM5MPd5wCGLpFnAj1g2BkQjgpjFzMLiijSXDjDoqpetq4j/eBrQ=
-X-Gm-Gg: ASbGnctKp7FAZbSwa618+Q3zcBuHyOCJ2O48vdPF55+wTcHrg7UgY0xf3UcizbYdRcB
-	TD4oe4FBWSBbtAeSnhnCvOdPmgS2c0sYRftZ9u46G4LXejwiK/nhylsmr7Uykl5M1Gb/TqtJC7d
-	O/7bhrymjMoprKqzu3V04ZZz6/01nF/HXuZXoP07cXGE5AEBgz6gHsGmkI528MnVrNAN0BKJi98
-	lFrkVotM1QWYQjkp3MQwbsJZG096fpjNhZ3R1lj2EJ0JBuLCH8bDXapZfVt2BBgPTYmV0EPW7JV
-	DgnADI9NcBlbc9RKvLF9b+vmlnFJnJVCGZJAhAGezmcDjUeq6G2XZVUebMJKQVsOKAuyMezKPwH
-	46frSwANeq+T2c8gU6hgVc7kLAcnc2/nkqIOTp6PfmpvjvXuI7vHl891D2jnDEAxctA==
-X-Received: by 2002:a05:600c:6610:b0:45f:29eb:2148 with SMTP id 5b1f17b1804b1-46e1e12731cmr16208705e9.7.1758615983564;
-        Tue, 23 Sep 2025 01:26:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEqzL6FPtVZMWa7SDdaAzcN92tCv1s8XBSB/8rSC0slsXilfs71hU7mkj+ZOiqZYqL/7Rz7Hg==
-X-Received: by 2002:a05:600c:6610:b0:45f:29eb:2148 with SMTP id 5b1f17b1804b1-46e1e12731cmr16208405e9.7.1758615983159;
-        Tue, 23 Sep 2025 01:26:23 -0700 (PDT)
+        bh=GS+tvOnybnp3O6O0X53XpAdOzzoNNJS6PxgRaybOU24=;
+        b=QaO5Bqtw9GEqDHJbqAFTyZ6CTsB4hxusXZoYxES0MiqAbufdZU5ma4/ZyQsPykcDTX
+         mQtmPtkTjG0dp/t3Xg8ndehlydUpMZA1eWEVyqWRhyQa0pB/nBhr1qdtL4kP1Wtk6w/8
+         f+oEM4onKTO8vKIXTayFDzOgtQ3buTf83AeIWWdYzdIFZf42xWPlUPl+q4gWjDJhOAz3
+         nGqiZNrxqiOLsdsIPwfVWdPFTg51o1E8XbDFrChOjlHSceh9GIQpeD2xHfX4H7rebc0P
+         Yp054PYI2kKIASXmqcXOg4SeHd0QtaCvmUTn3RA3Wn7X51Dpqqk8zxonhJRPjIMwiMh/
+         Zv9w==
+X-Forwarded-Encrypted: i=1; AJvYcCXz8JJZOihkX7pTK1wtE4SC/VJlTGA8oT5834VvC+22OE4pPlCTECoAHa4wFds+e/rTu5SN+rcu@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywh8W2LnKrbHUKcZqWVh+tivEZtmB7SGc4QBZ9JXfIn43qVBleI
+	b7o4M2HqyRMWASaazBpZ0wRYkSQB2hHT67mcpzTh9OETBC+kEuFE7x0OBbKL1jbB89sTs3kG9Ic
+	kS0VGS/9bPZg/w2yAidhkJ+g2t/UKJGPCI0NsPhMsmSeFyj6/i9+7sDWyprA=
+X-Gm-Gg: ASbGncsbkPexxd8puZyQcXAIF8A2qRZ+9m0m8LCvCO1o/bffqoThTHC1JIqnFrD3GEX
+	fJ322GZ25QCO1rGC2zj1khTR6ENRNBFgaMxKVX9VUqbVywZ6BWt8vfNAvD7l+p013QzGuPafRX6
+	hndRyV/RDCK/SBVVfa61W3aeo0kl8gZ+/xrKkeVp5iyZ2TBujHd5d5iz9qu6CTwTVEIPmngaUc1
+	WumcHeaUC5ODmOmct5+8E703dneBU67atVA82nm/BbJu/zC2ePmDJ+dZrwDdevk50/3pQWOkstP
+	as7TDqT1sVPpJwafLCQwpgXxUKKByL99Al/A/vMqs6pCKTXpktJV5CP04qH7tfiYhOv2faBMtFw
+	zlyCcm9TOJbmUkNJHTgGZb4jekh3YJvwagblzFrkBZ3CZCGnCiPgDVZUijmh3qad7wQ==
+X-Received: by 2002:a05:6000:3106:b0:3f8:e016:41b5 with SMTP id ffacd0b85a97d-405c505241fmr1306399f8f.14.1758616097160;
+        Tue, 23 Sep 2025 01:28:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHziPBDuhBDVi+ICJTxoEgNM/8e+/JtcJ6oteLK0rvVQF1Gr6+D5gkrvEqoxdsbVysMEgvnkg==
+X-Received: by 2002:a05:6000:3106:b0:3f8:e016:41b5 with SMTP id ffacd0b85a97d-405c505241fmr1306375f8f.14.1758616096637;
+        Tue, 23 Sep 2025 01:28:16 -0700 (PDT)
 Received: from ?IPV6:2003:d8:2f4f:700:c9db:579f:8b2b:717c? (p200300d82f4f0700c9db579f8b2b717c.dip0.t-ipconnect.de. [2003:d8:2f4f:700:c9db:579f:8b2b:717c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46d7a566a27sm66347685e9.20.2025.09.23.01.26.21
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3ee0fbc7107sm24037069f8f.30.2025.09.23.01.28.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Sep 2025 01:26:22 -0700 (PDT)
-Message-ID: <0a5482ad-3625-4c22-9eef-574eabd7c2bf@redhat.com>
-Date: Tue, 23 Sep 2025 10:26:21 +0200
+        Tue, 23 Sep 2025 01:28:16 -0700 (PDT)
+Message-ID: <accb281c-3c2a-4162-ab14-38e883d1ff72@redhat.com>
+Date: Tue, 23 Sep 2025 10:28:15 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,12 +90,13 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH linux-next v3 0/6] memcg: Support per-memcg KSM metrics
-To: xu.xin16@zte.com.cn, akpm@linux-foundation.org, shakeel.butt@linux.dev,
- hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev
-Cc: chengming.zhou@linux.dev, muchun.song@linux.dev,
+Subject: Re: [PATCH linux-next v3 1/6] memcg: add per-memcg ksm_rmap_items
+ stat
+To: xu.xin16@zte.com.cn, akpm@linux-foundation.org
+Cc: shakeel.butt@linux.dev, hannes@cmpxchg.org, mhocko@kernel.org,
+ roman.gushchin@linux.dev, chengming.zhou@linux.dev, muchun.song@linux.dev,
  linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org
-References: <20250921230726978agBBWNsPLi2hCp9Sxed1Y@zte.com.cn>
+References: <20250921230854496C6rkj7YZAYi39dNV3t6Fp@zte.com.cn>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -142,50 +143,30 @@ Autocrypt: addr=david@redhat.com; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <20250921230726978agBBWNsPLi2hCp9Sxed1Y@zte.com.cn>
+In-Reply-To: <20250921230854496C6rkj7YZAYi39dNV3t6Fp@zte.com.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 21.09.25 17:07, xu.xin16@zte.com.cn wrote:
-> From: xu xin <xu.xin16@zte.com.cn>
-> 
-> v2->v3:
-> ------
-> Some fixes of compilation error due to missed inclusion of header or missed
-> function definition on some kernel config.
-> https://lore.kernel.org/all/202509142147.WQI0impC-lkp@intel.com/
-> https://lore.kernel.org/all/202509142046.QatEaTQV-lkp@intel.com/
-> 
-> v1->v2:
-> ------
-> According to Shakeel's suggestion, expose these metric item into memory.stat
-> instead of a new interface.
-> https://lore.kernel.org/all/ir2s6sqi6hrbz7ghmfngbif6fbgmswhqdljlntesurfl2xvmmv@yp3w2lqyipb5/
-> 
-> Background
-> ==========
-> 
-> With the enablement of container-level KSM (e.g., via prctl [1]), there is
-> a growing demand for container-level observability of KSM behavior. However,
-> current cgroup implementations lack support for exposing KSM-related metrics.
-> 
-> So add the counter in the existing memory.stat without adding a new interface.
-> To diaplay per-memcg KSM statistic counters,  we traverse all processes of a
-> memcg and summing the processes' ksm_rmap_items counters instead of adding enum
-> item in memcg_stat_item or node_stat_item and updating the corresponding enum
-> counter when ksmd manipulate pages.
-> 
-> Now Linux users can look up all per-memcg KSM counters by:
-> 
-> # cat /sys/fs/cgroup/xuxin/memory.stat | grep ksm
-> ksm_rmap_items 0
-> ksm_zero_pages 0
-> ksm_merging_pages 0
-> ksm_profit 0
 
+> +
+> +/* Show the ksm statistic count at memory.stat under cgroup mountpoint */
+> +void memcg_stat_ksm_show(struct mem_cgroup *memcg, struct seq_buf *s)
+> +{
+> +	struct memcg_ksm_stat ksm_stat;
+> +
+> +	if (mem_cgroup_is_root(memcg)) {
+> +		/* Just use the global counters when root memcg */
+> +		ksm_stat.ksm_rmap_items = ksm_rmap_items;
+> +	} else {
+> +		/* Initialization */
+> +		ksm_stat.ksm_rmap_items = 0;
+> +		/* Summing all processes'ksm statistic items */
+> +		mem_cgroup_scan_tasks(memcg, evaluate_memcg_ksm_stat, &ksm_stat);
 
-No strong opinion from my side: seems to mostly only collect stats from 
-all tasks to summarize them per memcg.
+What happens here if you have to tasks that share the same MM? (CLONE_VM 
+without CLONE_THREAD)?
+
+Wouldn't we end up counting the same MM multiple times?
 
 -- 
 Cheers
