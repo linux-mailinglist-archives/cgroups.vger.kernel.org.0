@@ -1,123 +1,177 @@
-Return-Path: <cgroups+bounces-10375-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10376-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9A1BB93A92
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 02:01:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA63FB94015
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 04:30:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD44716B3C5
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 00:01:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 862973B64D8
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 02:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C14C3BB48;
-	Tue, 23 Sep 2025 00:00:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64DCA146588;
+	Tue, 23 Sep 2025 02:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nbi9ITEc"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bd65Eu2S"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F0D328FD
-	for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 00:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E36ED111A8
+	for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 02:30:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758585656; cv=none; b=ZFy2nIEEAge92cvcC0ZnrO4Yqx5LQGFo8jYYrllEJ71eaeLPa1G9jB6Q3/2aosxYqcchx5DY6ZuhtfZVy4NsIWiZAe62ZA5MrWiyypszpX9H1FyZNFiBqp7UZxakb1zWun4hXgMjFZOOqsdHEnRhsYZmEsLd1J3x41Mdnfg0of8=
+	t=1758594642; cv=none; b=C6jiIFwqZ8bt2rdQhorsl8d+XYwM2m5Za/R9NcgEk7ahWf2Mv5e+wfhQ5yulQ9GFl603Ry0iQmHH0VERMqQR+XsjV0X8YIynwHXa6nABROaBecCmtKi4S/7j9XZHttnIshaR20kTV5Gdu3Kan2wmoQqvEiMtB4tBLYu4ASqjYlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758585656; c=relaxed/simple;
-	bh=Iuj3ujrNKyTx8OvoiktIH9vvg+ZikwuYukI5bLzJ5hY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XnSKRulZ5I7XrrpC5o90CeTz9p/LodTGxtojxMnFKzmRArSeZLmQX/BhJ8xLNpyk4aAsYhRoocfgCJUj1WvJUe06/rGpw/yaLTErb6CJWowcOf5JLq8REKUkN4oTXwvQChXXFOnWwAV8ByixcGcS/1tM5PyHWzEkrjJbOacYOBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nbi9ITEc; arc=none smtp.client-ip=91.218.175.171
+	s=arc-20240116; t=1758594642; c=relaxed/simple;
+	bh=zVsvfzF7l8S37V68K7yE59UBHuIy/MHh6e3O4SFcG5E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h3EdZg9H39q0JhNS6EWB6HiMKwh/O56qZTXKOMbTbvnvvOAuS0mYPyA4IKliwx1qOOQO9wMqq0/h5Pnb09L48fIge42VRrx0BH19Bklb6O/HZV3FCkU16lPjvhyO1kaz2pB7bxL0Es9wD4C77AQyOGkfFxR/YPRsvysGEh28aWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bd65Eu2S; arc=none smtp.client-ip=91.218.175.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 22 Sep 2025 17:00:47 -0700
+Message-ID: <9665ff9f-3e1d-4c39-8c8f-b9e12fb4d5f4@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758585652;
+	t=1758594636;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hCni9d/eLTgrwvyJGOCo83l5nU1UneMhuwcVyu2h7ZU=;
-	b=nbi9ITEca9rnd1tCCtP0aY+2jP9DfRuQMRhbjpXws3XvI9iUVKTjrzdZQoaHsMVQmiVlyB
-	QswcSVIRWORB4DTVq21V9uuCChILFasgsvPjCHjwUeTdVPMZtSM0nIm1k/tUTzHVpF0Jft
-	bOxd5Ys5tT3QGW6ugPwD/FNxVmVWlIQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Peilin Ye <yepeilin@google.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v2] memcg: skip cgroup_file_notify if spinning is not
- allowed
-Message-ID: <24cnhpqz7d6rnkyowfmlgbcx6mt3qaztsxfwgtwafnktbeikya@bex2bp33mub6>
-References: <20250922220203.261714-1-shakeel.butt@linux.dev>
- <20250922160443.f48bb14e2d055e6e954cd874@linux-foundation.org>
- <552lz3qxc3z45r446rfndi7gx6nsht5iuhrhaszljofka2zrfs@odxfnm2blgdd>
- <20250922165509.3fe07892054bb9e149e7cc06@linux-foundation.org>
+	bh=b4s0MlcnpZmVcg3BNEOPRfxUXtgBs293LEDa79kz3gE=;
+	b=bd65Eu2SXHriQjtws44NJSLp1oJPai+UtRQ7VryME04ujiEP6HgCMkmlwobwmV1bjMTnev
+	E+L5ob/VfdXPCUXd0pmX46qini5ReYfjp3lVQJ6TV1EKSH1RD5ayZ1z1P8pGUF8tkQzjQr
+	dYDZyuJayMK6+FV8rxxpi931IMeak5Y=
+Date: Tue, 23 Sep 2025 10:30:18 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250922165509.3fe07892054bb9e149e7cc06@linux-foundation.org>
+Subject: Re: [PATCH 0/3] Suppress undesirable hung task warnings.
+Content-Language: en-US
+To: Julian Sun <sunjunchao@bytedance.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: mhiramat@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ jack@suse.cz, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
+ agruenba@redhat.com, hannes@cmpxchg.org, mhocko@kernel.org,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org
+References: <20250922094146.708272-1-sunjunchao@bytedance.com>
+ <b31a538a-c361-4e3e-a5b6-6a3d2083ef3b@linux.dev>
+ <20250922145754.31890092257495f70db3909d@linux-foundation.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Lance Yang <lance.yang@linux.dev>
+In-Reply-To: <20250922145754.31890092257495f70db3909d@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-On Mon, Sep 22, 2025 at 04:55:09PM -0700, Andrew Morton wrote:
-> On Mon, 22 Sep 2025 16:39:53 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> 
-> > On Mon, Sep 22, 2025 at 04:04:43PM -0700, Andrew Morton wrote:
-> > > On Mon, 22 Sep 2025 15:02:03 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > > 
-> > > > Generally memcg charging is allowed from all the contexts including NMI
-> > > > where even spinning on spinlock can cause locking issues. However one
-> > > > call chain was missed during the addition of memcg charging from any
-> > > > context support. That is try_charge_memcg() -> memcg_memory_event() ->
-> > > > cgroup_file_notify().
-> > > > 
-> > > > The possible function call tree under cgroup_file_notify() can acquire
-> > > > many different spin locks in spinning mode. Some of them are
-> > > > cgroup_file_kn_lock, kernfs_notify_lock, pool_workqeue's lock. So, let's
-> > > > just skip cgroup_file_notify() from memcg charging if the context does
-> > > > not allow spinning.
-> > > > 
-> > > > Alternative approach was also explored where instead of skipping
-> > > > cgroup_file_notify(), we defer the memcg event processing to irq_work
-> > > > [1]. However it adds complexity and it was decided to keep things simple
-> > > > until we need more memcg events with !allow_spinning requirement.
-> > > > 
-> > > > Link: https://lore.kernel.org/all/5qi2llyzf7gklncflo6gxoozljbm4h3tpnuv4u4ej4ztysvi6f@x44v7nz2wdzd/ [1]
-> > > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > > > Acked-by: Michal Hocko <mhocko@suse.com>
-> > > 
-> > > Fixes a possible kernel deadlock, yes?
-> > > 
-> > > Is a cc:stable appropriate and can we identify a Fixes: target?
-> > > 
-> > > Thanks.
-> > > 
-> > > (Did it ever generate lockdep warnings?)
-> > 
-> > The report is here:
-> > https://lore.kernel.org/all/20250905061919.439648-1-yepeilin@google.com/
-> > 
-> > I am not sure about the Fixes tag though or more like which one to put
-> > in the Fixes as we recently started supporting memcg charging for NMI
-> > context or allowing bpf programs to do memcg charged allocations in
-> > recursive context (see the above report for this recursive call chain).
-> > There is no single commit which can be blamed here.
-> 
-> I tend to view the Fixes: as us suggesting which kernel versions should
-> be patched.  I'm suspecting that's 6.16+, so using the final relevant
-> patch in that release as a Fixes: target would work.
-> 
 
-Sounds good. Let use the following.
 
-Fixes: 3ac4638a734a ("memcg: make memcg_rstat_updated nmi safe")
+On 2025/9/23 05:57, Andrew Morton wrote:
+> On Mon, 22 Sep 2025 19:38:21 +0800 Lance Yang <lance.yang@linux.dev> wrote:
+> 
+>> On 2025/9/22 17:41, Julian Sun wrote:
+>>> As suggested by Andrew Morton in [1], we need a general mechanism
+>>> that allows the hung task detector to ignore unnecessary hung
+>>
+>> Yep, I understand the goal is to suppress what can be a benign hung task
+>> warning during memcg teardown.
+>>
+>>> tasks. This patch set implements this functionality.
+>>>
+>>> Patch 1 introduces a PF_DONT_HUNG flag. The hung task detector will
+>>> ignores all tasks that have the PF_DONT_HUNG flag set.
+>>
+>> However, I'm concerned that the PF_DONT_HUNG flag is a bit too powerful
+>> and might mask real, underlying hangs.
+> 
+> I think that's OK if the calling task is discriminating about it.  Just
+> set PF_DONT_HUNG (unpleasing name!) around those bits of code where
+> it's needed, clear it otherwise.
+
+Makes sense to me :)
+
+> 
+> Julian, did you take a look at what a touch_hung_task_detector() would
+> involve?  It's a bit of an interface inconsistency - our various other
+> timeout detectors (softlockup, NMI, rcu) each have a touch_ function.
+
+On second thought, I agree that a touch_hung_task_detector() would be a
+much better approach for interface consistency.
+
+We could implement touch_hung_task_detector() to grant the task temporary
+immunity from hung task checks for as long as it remains uninterruptible.
+Once the task becomes runnable again, the immunity is automatically revoked.
+
+Something like this:
+
+---
+diff --git a/include/linux/hung_task.h b/include/linux/hung_task.h
+index c4403eeb7144..fac92039dce0 100644
+--- a/include/linux/hung_task.h
++++ b/include/linux/hung_task.h
+@@ -98,4 +98,9 @@ static inline void *hung_task_blocker_to_lock(unsigned 
+long blocker)
+  }
+  #endif
+
++void touch_hung_task_detector(struct task_struct *t)
++{
++	t->last_switch_count = ULONG_MAX;
++}
++
+  #endif /* __LINUX_HUNG_TASK_H */
+diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+index 8708a1205f82..094a277b3b39 100644
+--- a/kernel/hung_task.c
++++ b/kernel/hung_task.c
+@@ -203,6 +203,9 @@ static void check_hung_task(struct task_struct *t, 
+unsigned long timeout)
+  	if (unlikely(!switch_count))
+  		return;
+
++	if (t->last_switch_count == ULONG_MAX)
++		return;
++
+  	if (switch_count != t->last_switch_count) {
+  		t->last_switch_count = switch_count;
+  		t->last_switch_time = jiffies;
+@@ -317,6 +320,9 @@ static void 
+check_hung_uninterruptible_tasks(unsigned long timeout)
+  		    !(state & TASK_WAKEKILL) &&
+  		    !(state & TASK_NOLOAD))
+  			check_hung_task(t, timeout);
++		else if (t->last_switch_count == ULONG_MAX)
++			t->last_switch_count = t->nvcsw + t->nivcsw;
++
+  	}
+   unlock:
+  	rcu_read_unlock();
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 8dc470aa6c3c..3d5f36455b74 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3910,8 +3910,10 @@ static void mem_cgroup_css_free(struct 
+cgroup_subsys_state *css)
+  	int __maybe_unused i;
+
+  #ifdef CONFIG_CGROUP_WRITEBACK
+-	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
++	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++) {
++		touch_hung_task_detector(current);
+  		wb_wait_for_completion(&memcg->cgwb_frn[i].done);
++	}
+  #endif
+  	if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_nosocket)
+  		static_branch_dec(&memcg_sockets_enabled_key);
+---
+
+Using ULONG_MAX as a marker to grant this immunity. As long as the task
+remains in state D, check_hung_task() sees the marker and bails out.
 
