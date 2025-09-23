@@ -1,88 +1,88 @@
-Return-Path: <cgroups+bounces-10383-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10384-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6DA2B94FAB
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 10:25:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B5A7B94FC3
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 10:26:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60C6F3A1EFC
-	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 08:25:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 235717A4892
+	for <lists+cgroups@lfdr.de>; Tue, 23 Sep 2025 08:24:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90A53101A3;
-	Tue, 23 Sep 2025 08:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5340E31A056;
+	Tue, 23 Sep 2025 08:26:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N7sSa4VW"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UpZRkOb+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 072B93164C4
-	for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 08:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBA41114
+	for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 08:26:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758615911; cv=none; b=oWv1x/asrV33XwP6hmFmmgBv3DVVvk+vGyCv8tcDfXUzp3eIzyalwWhkmrCQem4rLMVEozwdTXeL7G9kLw+4n37G7CcQOAWiiaIuHdhMGzLm6XdT/p2T+Nkj1DzPJMLwOHxUudnIesHxredYLo3dZTrHQeDdJwMPHu1a5I8syGc=
+	t=1758615989; cv=none; b=BugvYcWGPo9AorB6GHbvwE+tznkQj0qcfH/ntOKeUp0i2Wsi4XjHh/kTdJwQoBqTnzL9qiOJ90fmcLG/Ce4VMFKL32CMMyFOYLzBZhZbmP0lurCUJ/gZUzrDNm58cTMpgmwm+m4R0oer64KaecJxvqGW99yI/87u6rSa1vVg5IY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758615911; c=relaxed/simple;
-	bh=RCqJ+Lp6KKFdVamgmAQ4xFm1iFaBi0fOBeZwXRcWz0I=;
+	s=arc-20240116; t=1758615989; c=relaxed/simple;
+	bh=RIby1D8riReGlUS5ZL+dKJRUnb/8+ATMrYUYK3UB0Ds=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hF8YSZAna7HYYTj3ALC/0rb/sUL7yXn71lLTEvAj307rP7f//zFW2ZNLyJ/6JMaxjYaz1eg96sAnci5GxColAihgb0tqiRDsOySqr1cr1FlWAGruvbQgnHrUQto4D45Pybo+trGUPSAVl+2MGvzmJT2uDutJDoFy8LLGkjaiSfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N7sSa4VW; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=SMsRAAkuq796VONQ0O5iUGXDyhzkh9v1AudBAFBedfGnDmvoZNnfZT1h2Hm/Mxs9QOIHYcmgEthKvEir2mEdH/Xh/zVVokX+p42s7/VfQliuEJa1l1IeWmr80h91T4f067CvAPQjD0kpDjrB/bxpTyTGgY/H9YG69+2YoU00wg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UpZRkOb+; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1758615908;
+	s=mimecast20190719; t=1758615986;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=x97u53GTt2R3N2Pgwrhc5uqxe/T+rOMKjkl/kO4sN+M=;
-	b=N7sSa4VW8et4QpF05QRv+1M7iB5DHWvfEP/htfHRJAyAeu+KmazvU7hyc+JxN3T0SM7KYL
-	JElpFUXG8bmjC6MHmvUSnhI3bg2JUyHMj/HEVN3HGZG99fofc1cY3tn21s0z7o2MKwxl+v
-	N7/9Rs+Nj6NKRop/bKfMDK6LGe4KDg8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=u158U5eLLkY8pwNFzJaS9pMnHCqEcHc3FLks6NqWdoc=;
+	b=UpZRkOb+x9uOE+USBLDAJg8VSHcIz9gWxOpcWbstYtbAyMj6FsTxlpRZJbk8UK13zL4h46
+	N66JxVOBpww5WAAcXYdyJm5AQwWE1VUuaQ7wmroYXYTqLs0ytvcq0EosIl4HE7lj6kHww1
+	A31qGkxsaO17bYjG5smN0iuI34RCFCc=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-650-Lv4PBftTNDOhYyPfBszKUA-1; Tue, 23 Sep 2025 04:25:07 -0400
-X-MC-Unique: Lv4PBftTNDOhYyPfBszKUA-1
-X-Mimecast-MFC-AGG-ID: Lv4PBftTNDOhYyPfBszKUA_1758615906
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3ef9218daf5so977858f8f.1
-        for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 01:25:06 -0700 (PDT)
+ us-mta-15-NCbCQTFDMLGpQOxXjzqAvQ-1; Tue, 23 Sep 2025 04:26:24 -0400
+X-MC-Unique: NCbCQTFDMLGpQOxXjzqAvQ-1
+X-Mimecast-MFC-AGG-ID: NCbCQTFDMLGpQOxXjzqAvQ_1758615984
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-45f2b9b99f0so15423385e9.1
+        for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 01:26:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758615906; x=1759220706;
+        d=1e100.net; s=20230601; t=1758615983; x=1759220783;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=x97u53GTt2R3N2Pgwrhc5uqxe/T+rOMKjkl/kO4sN+M=;
-        b=wTLjwrxxzUbBi0ImnUzG/i+YZ2HbsXyYcU78BzYm7+vM92Mr2yd+i4zyFSxA1+65mM
-         1379E/XVkVBGP+JWDoA2LorsBw5xBddrI+pT/TWCZPIoFvq6ph3GemC5VG0fNCNFNf2B
-         qBSw3fdhQeRjdQ1+HAXXPMmDX6DAdovFt0zVG7o6a5TBEJgxRst2V/FGPEf1V+hfbGDG
-         oURM2MghwXDWXviIy8GDVY0XC73NFzm092SXFgi67yoIndYGjHWHHuTGkW1rboxmh6DR
-         LfTuUANKqtydQxZho+rhlxrASwrVCsrqM7LiL3DfepQbqMD+5Ul9VLCZFfac0De4oPBG
-         Fn8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX6W+eQOn/Dwk5J/i6pLqt8KiPcGcMTnFStCboEM+G9Dy3oUobKPKTpxXvsyU7JS6W7A01o1o5E@vger.kernel.org
-X-Gm-Message-State: AOJu0YwvVcOeJ7FeN3muzX3c+6yMCnWEJlkS3P1S+joPECmVDZe0JUTw
-	QbrhGNoMo7rn3kEbTTdb/uXTQDdn7fBBdjMLjcP7HWRM9ZwHtvRokPENhbDve7ckN/KNtb7dx0d
-	Sr6qbGsVOvdjMlhm5Eo4VN+H7+R6KZ6HmebVtazrBoQueHZc11t1SmVeKGZg=
-X-Gm-Gg: ASbGnctAYcfxOIHV1NgWzXwzmqpXLe8jye7IxYdTE2797xO6oJShj2gfRLAp8ATIECU
-	hmM+EzWaD2GZJcHy/oZLc14zWB75t2DZsuqRD9GkRPXYTUrTvf5anWJd5dtmbOf9OP0jwHhlBwG
-	lzvedsabi034+43noJ2UiohTnKyIjxT3unkTp4PTAro8TceO84047/blLtJMndBQrT1vWPbG4vl
-	MUAGI8XrwD6EqroeXKIPeuaSXYtxwkXU7kQKU5cj5qKSC7bli3PLh7lN09LvK/Uhz1dUG4usxI7
-	7IvL4TL+H7pp86ZNwXBt6eA1Hgeo3vGg63G46hpUA5OU2hUUSIseaZBOXzYYkatiD2lkIRRpGKH
-	H7PEfv/6X+4LOunrhAkx4yuEG3rFllVqlKeTuMT2iCsWHgpGp9OlNJoU67WQaUbnUzg==
-X-Received: by 2002:a5d:5f92:0:b0:3f9:6657:d05 with SMTP id ffacd0b85a97d-405c551a369mr1243713f8f.12.1758615905726;
-        Tue, 23 Sep 2025 01:25:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IECy5ZyUMi86SkAmY3UUEpYt+kdXd66GExl/asl5sc/9lT72Pm81eO5xU3dy52ferMCYaK/cg==
-X-Received: by 2002:a5d:5f92:0:b0:3f9:6657:d05 with SMTP id ffacd0b85a97d-405c551a369mr1243681f8f.12.1758615905225;
-        Tue, 23 Sep 2025 01:25:05 -0700 (PDT)
+        bh=u158U5eLLkY8pwNFzJaS9pMnHCqEcHc3FLks6NqWdoc=;
+        b=gz5UV6vo03JFEmeDxFlfQL//2rNedF/9TfHpDWbifj/xsFC9BJup4ZyX30Eh58ewRq
+         O83ug9TPe4sQapjgH1CarKwjYXYhEy723nauGW2ktFeiicn3gslIvSkXSEMts4zLQSRb
+         7LSOmR52om2tOjYvvs+1rrsGlCP7SCWtiPXBlxaNc/m5LaehDTogVRsmVyz4Yin9/vPI
+         EnhVFgKJK7lb309dwRp49shq1M/YJKUY+5Ow9hXFubKFxEZARR2hWi5jR4fhxfAzpFzX
+         AedvbUfcyVCDYu/VhNmm7BMPVyEQdwvaUhZGHWmEYR9eHlOQyc6lpW3Nz9hOHgmXO9pG
+         nacg==
+X-Forwarded-Encrypted: i=1; AJvYcCXyDOpNyLkqcAL6MRpThpgADQM7w5+Az6Pe6Y8L95lffVqQoQQ472ha65XG2iTlyRy+0ptrOtXs@vger.kernel.org
+X-Gm-Message-State: AOJu0YxPAaFaZ/hEVw54+dA5YmUotAjrLtiXa17BoySpp0mikJ9kYNGG
+	Uco3rJd8tGMpRiYrv3PuD9vUGVJ4uf82Yfzv4TjgzlA9oQh05flNTcRaiHBjaPMGOYwvThYrCIe
+	o6hg/EbPUHmDThQcTiM5MPd5wCGLpFnAj1g2BkQjgpjFzMLiijSXDjDoqpetq4j/eBrQ=
+X-Gm-Gg: ASbGnctKp7FAZbSwa618+Q3zcBuHyOCJ2O48vdPF55+wTcHrg7UgY0xf3UcizbYdRcB
+	TD4oe4FBWSBbtAeSnhnCvOdPmgS2c0sYRftZ9u46G4LXejwiK/nhylsmr7Uykl5M1Gb/TqtJC7d
+	O/7bhrymjMoprKqzu3V04ZZz6/01nF/HXuZXoP07cXGE5AEBgz6gHsGmkI528MnVrNAN0BKJi98
+	lFrkVotM1QWYQjkp3MQwbsJZG096fpjNhZ3R1lj2EJ0JBuLCH8bDXapZfVt2BBgPTYmV0EPW7JV
+	DgnADI9NcBlbc9RKvLF9b+vmlnFJnJVCGZJAhAGezmcDjUeq6G2XZVUebMJKQVsOKAuyMezKPwH
+	46frSwANeq+T2c8gU6hgVc7kLAcnc2/nkqIOTp6PfmpvjvXuI7vHl891D2jnDEAxctA==
+X-Received: by 2002:a05:600c:6610:b0:45f:29eb:2148 with SMTP id 5b1f17b1804b1-46e1e12731cmr16208705e9.7.1758615983564;
+        Tue, 23 Sep 2025 01:26:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEqzL6FPtVZMWa7SDdaAzcN92tCv1s8XBSB/8rSC0slsXilfs71hU7mkj+ZOiqZYqL/7Rz7Hg==
+X-Received: by 2002:a05:600c:6610:b0:45f:29eb:2148 with SMTP id 5b1f17b1804b1-46e1e12731cmr16208405e9.7.1758615983159;
+        Tue, 23 Sep 2025 01:26:23 -0700 (PDT)
 Received: from ?IPV6:2003:d8:2f4f:700:c9db:579f:8b2b:717c? (p200300d82f4f0700c9db579f8b2b717c.dip0.t-ipconnect.de. [2003:d8:2f4f:700:c9db:579f:8b2b:717c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e1ce0f019sm10938525e9.0.2025.09.23.01.25.04
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46d7a566a27sm66347685e9.20.2025.09.23.01.26.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Sep 2025 01:25:04 -0700 (PDT)
-Message-ID: <9688edb5-f474-49a4-ac84-0702ed3af3a2@redhat.com>
-Date: Tue, 23 Sep 2025 10:25:03 +0200
+        Tue, 23 Sep 2025 01:26:22 -0700 (PDT)
+Message-ID: <0a5482ad-3625-4c22-9eef-574eabd7c2bf@redhat.com>
+Date: Tue, 23 Sep 2025 10:26:21 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,13 +90,12 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH linux-next v3 4/6] ksm: make ksm_process_profit available
- on CONFIG_PROCFS=n
-To: xu.xin16@zte.com.cn, akpm@linux-foundation.org
-Cc: shakeel.butt@linux.dev, hannes@cmpxchg.org, mhocko@kernel.org,
- roman.gushchin@linux.dev, chengming.zhou@linux.dev, muchun.song@linux.dev,
+Subject: Re: [PATCH linux-next v3 0/6] memcg: Support per-memcg KSM metrics
+To: xu.xin16@zte.com.cn, akpm@linux-foundation.org, shakeel.butt@linux.dev,
+ hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev
+Cc: chengming.zhou@linux.dev, muchun.song@linux.dev,
  linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org
-References: <20250921231334093OILrn169i655S8Pe0KMUC@zte.com.cn>
+References: <20250921230726978agBBWNsPLi2hCp9Sxed1Y@zte.com.cn>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -143,60 +142,50 @@ Autocrypt: addr=david@redhat.com; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <20250921231334093OILrn169i655S8Pe0KMUC@zte.com.cn>
+In-Reply-To: <20250921230726978agBBWNsPLi2hCp9Sxed1Y@zte.com.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 21.09.25 17:13, xu.xin16@zte.com.cn wrote:
+On 21.09.25 17:07, xu.xin16@zte.com.cn wrote:
 > From: xu xin <xu.xin16@zte.com.cn>
 > 
-> This remove the restriction CONFIG_PROCFS=y for the heler function
-
-s/heler/helper.
-
-> ksm_process_profit(), then we can use it for the later patches on
-> CONFIG_PROCFS=n.
-
-
-Better to something like this:
-
-"Let's provide ksm_process_profit() also without CONFIG_PROCFS so we can 
-use it from memcg code next."
-
-?
-
+> v2->v3:
+> ------
+> Some fixes of compilation error due to missed inclusion of header or missed
+> function definition on some kernel config.
+> https://lore.kernel.org/all/202509142147.WQI0impC-lkp@intel.com/
+> https://lore.kernel.org/all/202509142046.QatEaTQV-lkp@intel.com/
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/all/202509142046.QatEaTQV-lkp@intel.com/
-
-Both tags should be dropped as there is nothing fixed here.
-
-> Signed-off-by: xu xin <xu.xin16@zte.com.cn>
-> ---
->   mm/ksm.c | 2 --
->   1 file changed, 2 deletions(-)
+> v1->v2:
+> ------
+> According to Shakeel's suggestion, expose these metric item into memory.stat
+> instead of a new interface.
+> https://lore.kernel.org/all/ir2s6sqi6hrbz7ghmfngbif6fbgmswhqdljlntesurfl2xvmmv@yp3w2lqyipb5/
 > 
-> diff --git a/mm/ksm.c b/mm/ksm.c
-> index e49f4b86ffb0..a68d4b37b503 100644
-> --- a/mm/ksm.c
-> +++ b/mm/ksm.c
-> @@ -3282,7 +3282,6 @@ static void wait_while_offlining(void)
->   }
->   #endif /* CONFIG_MEMORY_HOTREMOVE */
+> Background
+> ==========
 > 
-> -#ifdef CONFIG_PROC_FS
->   /*
->    * The process is mergeable only if any VMA is currently
->    * applicable to KSM.
-> @@ -3307,7 +3306,6 @@ long ksm_process_profit(struct mm_struct *mm)
->   	return (long)(mm->ksm_merging_pages + mm_ksm_zero_pages(mm)) * PAGE_SIZE -
->   		mm->ksm_rmap_items * sizeof(struct ksm_rmap_item);
->   }
-> -#endif /* CONFIG_PROC_FS */
+> With the enablement of container-level KSM (e.g., via prctl [1]), there is
+> a growing demand for container-level observability of KSM behavior. However,
+> current cgroup implementations lack support for exposing KSM-related metrics.
 > 
->   #ifdef CONFIG_MEMCG
->   struct memcg_ksm_stat {
+> So add the counter in the existing memory.stat without adding a new interface.
+> To diaplay per-memcg KSM statistic counters,  we traverse all processes of a
+> memcg and summing the processes' ksm_rmap_items counters instead of adding enum
+> item in memcg_stat_item or node_stat_item and updating the corresponding enum
+> counter when ksmd manipulate pages.
+> 
+> Now Linux users can look up all per-memcg KSM counters by:
+> 
+> # cat /sys/fs/cgroup/xuxin/memory.stat | grep ksm
+> ksm_rmap_items 0
+> ksm_zero_pages 0
+> ksm_merging_pages 0
+> ksm_profit 0
 
+
+No strong opinion from my side: seems to mostly only collect stats from 
+all tasks to summarize them per memcg.
 
 -- 
 Cheers
