@@ -1,115 +1,130 @@
-Return-Path: <cgroups+bounces-10407-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10408-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A37D9B97F26
-	for <lists+cgroups@lfdr.de>; Wed, 24 Sep 2025 02:52:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B9B4B98260
+	for <lists+cgroups@lfdr.de>; Wed, 24 Sep 2025 05:41:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6FC54A81DA
-	for <lists+cgroups@lfdr.de>; Wed, 24 Sep 2025 00:52:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B9322E50E8
+	for <lists+cgroups@lfdr.de>; Wed, 24 Sep 2025 03:41:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 477B81DF75B;
-	Wed, 24 Sep 2025 00:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381FF22DF9E;
+	Wed, 24 Sep 2025 03:41:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="VwdQtWXj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1071DF723;
-	Wed, 24 Sep 2025 00:52:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C4B21C9F4
+	for <cgroups@vger.kernel.org>; Wed, 24 Sep 2025 03:41:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758675144; cv=none; b=uyvwvwO6HX4+0rg/xCXNUv12awtCPtdIwdj7P3B2/+Tm8/6gMvmqNHR8wwgONno4QttV/1DWkENgN7tjG70xXLPyZnHrtcZjw/neSZLz2m8Ohm/twDreu2Ir+ClRLpFx0QfxtLmAIm2Hs5SlgvzxLz4ozZZpSKZrwADQF9i7ZBw=
+	t=1758685268; cv=none; b=UDxxeHcmwGYepCzLaOVE2P7+XFPFZDWqq+j88CD6nG1XSqV3z6BwroFNjYERxmyj/PIMcrW+hicahnnM2uKOr9gHOim03Pr0nRGk7/wf7Fb+4b1UFQkeXbrdam+8pTm0HTdR0386VDmYpteBTz7si3elWInfKqmMI8+qQU+pSXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758675144; c=relaxed/simple;
-	bh=/lt25bNflVEMIDdCisFY1BN5hH+sjlvDzXLhZfaSmsc=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=GL/JieepdyqIOcgc3aj0IB3boo5PBcNcqGvon4BctlAojCCpBAAMu+9AMAPcpkpz6UZNqjnnpX3KGXxXyavLOYfXDN2OjJiva7xWD+QTwQ9Pv3ye5y4jeIK4AnPgrl+FID7W2KaQCVtYgY1D2/Jwtacm8NaWAuseipFaCEM4mQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cWdbc2BfzzKHMjp;
-	Wed, 24 Sep 2025 08:52:12 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 38BB51A0F42;
-	Wed, 24 Sep 2025 08:52:18 +0800 (CST)
-Received: from [10.174.179.143] (unknown [10.174.179.143])
-	by APP4 (Coremail) with SMTP id gCh0CgAXKWHAQNNo02F0Ag--.29046S3;
-	Wed, 24 Sep 2025 08:52:18 +0800 (CST)
-Subject: Re: [PATCH for-6.18/block 1/2] blk-cgroup: allocate policy data with
- GFP_NOIO in blkcg_activate_policy()
-To: Ming Lei <ming.lei@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: nilay@linux.ibm.com, tj@kernel.org, josef@toxicpanda.com,
- axboe@kernel.dk, cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- johnny.chenyi@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20250923075520.3746244-1-yukuai1@huaweicloud.com>
- <20250923075520.3746244-2-yukuai1@huaweicloud.com>
- <CAFj5m9KSEvP_gqN5_51q_iaUrOS70xC5r-odJYLOami4EKDVUg@mail.gmail.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <7ae65be1-65b2-208c-ad25-68905c4f2331@huaweicloud.com>
-Date: Wed, 24 Sep 2025 08:52:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+	s=arc-20240116; t=1758685268; c=relaxed/simple;
+	bh=T+3/qbPAgyyQ8AOtGCLhNLRG39cRJ4tgCa1PGnwEzHg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QzbwPRg/pUqBKDz/J5blzHXQSRCK/2is68aqPe1QD29SzbmLd2/4ravqXhS2xRElPUiSV0kTHKFV0eCcjCepG+TBQ/5jrdaRW5OS/5PzVV+Z5kOxt5js2jaa/I3FyxezD3MoCIYpUoXa8mXFup3xcZlPkDednItv/sdNQJ2tg3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=VwdQtWXj; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-77f207d0891so2985862b3a.1
+        for <cgroups@vger.kernel.org>; Tue, 23 Sep 2025 20:41:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1758685265; x=1759290065; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ontus9bftLc1g9PbXi6snxrE04UjG3Wyk6lDgBoGb8s=;
+        b=VwdQtWXjWulfa+6PBeZUm5sEDT3CuwJ/k9bMR1zrzftSXKuTkdVEqWwEj2Ch5fUBzx
+         9FkqhmpZhNGFAj88R41xACmhhbcpyXOqXNqWwy3xi8XjWL2fAk9Itrs0IYiT+kSD3NDU
+         di02NMsLR+0X2LtWARCagCMkJ/R+Zkgb4qSvzfqvM7o+KJe3XmUwQBw1ju18w3fHjM3v
+         KUWupKr+Tt0/LxI8Zwffu2FPxMZSDztoHnQllsCgWgXXY7yU+l+FMI+cZc2O1Y3InSCf
+         9WLdko8IFYkW1l5Vhwdoy92MCC81pNpVO6juNO/VB0eh9lM4OoQb0uOcinxnScvEuyhd
+         Xrcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758685265; x=1759290065;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ontus9bftLc1g9PbXi6snxrE04UjG3Wyk6lDgBoGb8s=;
+        b=C9vDZzPeYJ0Ny0XbzGNRk3Sw5evvL+w1dtByvD8RUYSaTZgs/H0HeJeRaZ5bw4vNB0
+         VHBTo9aVf7skn439guD/kFa7my/xTgit4GSULhlGVbypKbVc3WHGWEoPChvhfN/6t7yb
+         3T7Ped9piDtfU0KrWkHDoQo7COnDrG1sQxY3KhFkgRydxsovP9MMX870c+Rg17rK4u1o
+         +jU+PmlsHjy3qdxG4PXUvVgYFcs4J6qI74YmJrRIbFaIBLlTaJ7l32RVFS4BnUfjmURF
+         Qh47jI1NJtkULxmOYGZY1Vh5egjHJtgLrGqTw5Y08e/3wA2qDKuLD7pChAPVRGhECBKe
+         N6oA==
+X-Gm-Message-State: AOJu0YzUYqwr+l6ZZTyJZEYb6ra3A1+I6hihrDvW3aXUyvyU8C7aJCmq
+	c0T39JakBv1XqhUBSWK77UVHNdjefTAtP9ho3ScUsNBTlBwwi2IHVLRuM74/GBWYZZdtEFcuyOB
+	5MXDb0zKt7A==
+X-Gm-Gg: ASbGncvaGv6LzrZiV+UaqPgfMVzGKQoctSl6168sq1jHILjhkcFyYSn8FoyVEFMVrFh
+	g1HfKT/zTpX43WnmxlmhRlBWrRVgIDV03dB0k3Iq13VgST/KiECQZ7u7vWNn2FGGvyqyd2qBTcP
+	DXAEZZM43+s083u/WhnyeaFoF7SD7Wry7wegDrdU8qxr/pNakXdALhYcir63rWwqAD5Q+SjUM6R
+	Q19J0i2+KZ4zICBGgR9lsIEmnSbCQNhW9xQwnc0MaLQVfay/T7UFA9dTg1juTQziUZ8ZQIeaG0B
+	L2gL4gNSCPCCCemQKbiq58GqCzH9pdK3A1GBe4Yr1oI+hqw8cOD78QPtT+b//IJyP+gZV6qvoMJ
+	HWFUKzNaWf8FxVbYDaKG30UDGBbmp1Ok=
+X-Google-Smtp-Source: AGHT+IEDi98HKizARK5fICFnpQr1MYhiHxYWBHLNjcl4h9I6r6dFEDUkUC4ICOYn3zaIm6DYoLTYjA==
+X-Received: by 2002:a05:6a20:a110:b0:244:3a85:cd7c with SMTP id adf61e73a8af0-2cfd4836bc6mr7199434637.10.1758685264845;
+        Tue, 23 Sep 2025 20:41:04 -0700 (PDT)
+Received: from localhost ([106.38.226.2])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77f2f02c15bsm8550793b3a.95.2025.09.23.20.41.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Sep 2025 20:41:04 -0700 (PDT)
+From: Julian Sun <sunjunchao@bytedance.com>
+To: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: akpm@linux-foundation.org,
+	lance.yang@linux.dev,
+	mhiramat@kernel.org,
+	yangyicong@hisilicon.com,
+	will@kernel.org,
+	dianders@chromium.org,
+	mingo@kernel.org,
+	lihuafei1@huawei.com,
+	hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	tj@kernel.org,
+	peterz@infradead.org
+Subject: [PATCH v2 0/2] Suppress undesirable hung task warnings.
+Date: Wed, 24 Sep 2025 11:40:58 +0800
+Message-Id: <20250924034100.3701520-1-sunjunchao@bytedance.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAFj5m9KSEvP_gqN5_51q_iaUrOS70xC5r-odJYLOami4EKDVUg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXKWHAQNNo02F0Ag--.29046S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYt7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8I
-	cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2js
-	IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
-	5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeV
-	CFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxG
-	xcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrw
-	CF54CYxVCY1x0262kKe7AKxVWUtVW8ZwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GF
-	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
-	1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd
-	HUDUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hi,
+As suggested by Andrew Morton in [1], we need a general mechanism 
+that allows the hung task detector to ignore unnecessary hung 
+tasks. This patch set implements this functionality and enables it
+in memcg.
 
-在 2025/09/23 19:03, Ming Lei 写道:
-> On Tue, Sep 23, 2025 at 4:06 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Queue is freezed while activating policy, allocate memory with queue
->> freezed has the risk of deadlock because memory reclaim can issue new
->> IO.
-> 
-> blk_mq_freeze_queue() already covers it by calling memalloc_noio_save(),
-> so this patch looks not necessary.
-> 
-Yes, this can just consider a cleanup, I'll remove this if we think this
-is not necessary.
+Patch 1 introduces touch_hung_task_detector(), which allows a task to 
+mark itself and then hung task detector will ignore warnings for it.
 
-> Or do you have a lockdep warning?
-> 
+Patch 2 uses touch_hung_task_detector() in the final phase of memcg 
+teardown to eliminate the hung task warning.
 
-No.
+[1]: https://lore.kernel.org/all/20250917152155.5a8ddb3e4ff813289ea0b4c9@linux-foundation.org/
 
-Thanks,
-Kuai
+Julian Sun (2):
+  hung_task: Introduce touch_hung_task_dector().
+  memcg: Don't trigger hung task warnings when memcg is releasing
+    resources.
 
-> Thanks,
-> 
-> 
-> 
-> .
-> 
+ include/linux/nmi.h |  2 ++
+ kernel/hung_task.c  | 13 +++++++++++++
+ mm/memcontrol.c     |  5 ++++-
+ 3 files changed, 19 insertions(+), 1 deletion(-)
+
+-- 
+2.39.5
 
 
