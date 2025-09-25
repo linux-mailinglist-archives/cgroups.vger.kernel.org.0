@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-10437-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10438-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D9C6B9E084
-	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 10:26:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1018B9E088
+	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 10:26:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5214B1B24BE1
-	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 08:26:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E1353B696F
+	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 08:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C525927280E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9815272E42;
 	Thu, 25 Sep 2025 08:25:53 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D283D28F4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA5F155C88;
 	Thu, 25 Sep 2025 08:25:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758788753; cv=none; b=QTMqqoX+JA+xqfMQq5tWNBdwgTUbyuzYTDLfnAFShK7IYnjZWBugGhV0wyvx6JDKSj/xffG6itSe+nKcWCoh/PLjgkji8TPSsu8T4IOuLEeUtR35RVtjJI9dPZZLWd8r0U0CnUD4E/PDyR4DRzh/NyVUM3L13ytQsARcISuIWfc=
+	t=1758788753; cv=none; b=n1ZHuRdFu/lFBiwRLfsdav2HscB0tYBE3Un7m+Onto0OX+UVCSKzEDnBhc6UWSTUjaqI/RmeLFgpWe3ReRYsvwZSj0vfcK+Ki31A0eUvFPhxR/6biRC+gQ+nnF51iOWtBLE5NlcpwTYSImdiVX2Y9ucyI0Nh9L/a/wgjEetqIAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1758788753; c=relaxed/simple;
-	bh=uyoC33L1mECK04nAwihRRbXpUtfFIt3Cv02wrL29ymk=;
+	bh=mXGsszJJe36fU64TgCYFXsuq3tNRAsaLRo1fTAjlDpk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nt+pGh9L0rGTeyJ0vL5mZVS101ZKGgdA6ZEpVb911gRBW4OFgNtcKK943itbYggP5rijov0QG4kB5MhIFuobuS+i3OaH2/qneB6x7dY8fraWSHhrIWh13Gpp9ACSdQN0pUvOryNYZJ1tcAfLo+GQKXphF8CcXB1mfbLPdK6gXNk=
+	 MIME-Version; b=dpcJpu7HEM/FEiOu+U/ifBMk8rJJbSkHylUqxC86V2PrXd6WdoT4MT5K7qc52xch4f96chBOiBOb61ZY4jbxlg2UOpvsqvtpcF7sRzGAxfLOOJ/bu11ftZhvBREpgiMZHmQ+cv0IwirbjueJ31tvNqzQMWn2RH6aPv4P+5Na38M=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cXRcN2h7bzKHN4Q;
-	Thu, 25 Sep 2025 16:25:40 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cXRcP04KczKHN6Y;
+	Thu, 25 Sep 2025 16:25:41 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 3A3941A0B16;
+	by mail.maildlp.com (Postfix) with ESMTP id D44B71A0C69;
 	Thu, 25 Sep 2025 16:25:48 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgCna2OH_NRodTcIAw--.12615S7;
-	Thu, 25 Sep 2025 16:25:47 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgCna2OH_NRodTcIAw--.12615S8;
+	Thu, 25 Sep 2025 16:25:48 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: tj@kernel.org,
 	ming.lei@redhat.com,
@@ -56,9 +56,9 @@ Cc: cgroups@vger.kernel.org,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com,
 	johnny.chenyi@huawei.com
-Subject: [PATCH 03/10] blk-cgroup: don't nest queu_lock under rcu in bio_associate_blkg()
-Date: Thu, 25 Sep 2025 16:15:18 +0800
-Message-Id: <20250925081525.700639-4-yukuai1@huaweicloud.com>
+Subject: [PATCH 04/10] blk-cgroup: don't nest queue_lock under blkcg->lock in blkcg_destroy_blkgs()
+Date: Thu, 25 Sep 2025 16:15:19 +0800
+Message-Id: <20250925081525.700639-5-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20250925081525.700639-1-yukuai1@huaweicloud.com>
 References: <20250925081525.700639-1-yukuai1@huaweicloud.com>
@@ -69,70 +69,115 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCna2OH_NRodTcIAw--.12615S7
-X-Coremail-Antispam: 1UD129KBjvdXoWrKryrGry3KFWkur1rZF4kCrg_yoWkuFX_XF
-	1ku3sYgwn5A3W3try5ZF1YvFW8C3yqqr1qga4Y9a43Cry5AFZFgr9Fyw45ArW5Z3Z7Cryj
-	vrWDXr47Grn2gjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbkkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY02
-	0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-	wVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
-	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-	v7MxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-	6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
-	AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
-	2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
-	vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
-	vjDU0xZFpf9x0pRl_MsUUUUU=
+X-CM-TRANSID:gCh0CgCna2OH_NRodTcIAw--.12615S8
+X-Coremail-Antispam: 1UD129KBjvJXoWxGw48ZryUJFyUtr4fKF4Uurg_yoW5GFW8pF
+	sxWw4ayrW8KryI9wsIgF9rX3yS9a18Kr15J3yxWw4fGr4jqrnxWF1UC3ykZFWfJFWxJrs0
+	vrWUtr95Cr4UAwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUmI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
+	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
+	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
+	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
+	kIc2xKxwCY1x0262kKe7AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
+	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
+	AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI
+	42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
+	CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnI
+	WIevJa73UjIFyTuYvjTRNdb1DUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-If bio is already associated with blkg, blkcg is already pinned until
-bio is done, no need for rcu protection; Otherwise protect blkcg_css()
-with rcu independently. Prepare to convert protecting blkcg with
-blkcg_mutex instead of queue_lock.
+The correct lock order is q->queue_lock before blkcg->lock, and in order
+to prevent deadlock from blkcg_destroy_blkgs(), trylock is used for
+q->queue_lock while blkcg->lock is already held, this is hacky.
+
+Hence refactor blkcg_destroy_blkgs(), by holding blkcg->lock to get the
+first blkg and release it, then hold q->queue_lock and blkcg->lock in
+the correct order to destroy blkg. This is super cold path, it's fine to
+grab and release locks.
+
+Also prepare to convert protecting blkcg with blkcg_mutex instead of
+queue_lock.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/blk-cgroup.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ block/blk-cgroup.c | 45 ++++++++++++++++++++++++++-------------------
+ 1 file changed, 26 insertions(+), 19 deletions(-)
 
 diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 9ffc3195f7e4..53a64bfe4a24 100644
+index 53a64bfe4a24..795efb5ccb5e 100644
 --- a/block/blk-cgroup.c
 +++ b/block/blk-cgroup.c
-@@ -2165,16 +2165,20 @@ void bio_associate_blkg(struct bio *bio)
- 	if (blk_op_is_passthrough(bio->bi_opf))
- 		return;
+@@ -1283,6 +1283,21 @@ struct list_head *blkcg_get_cgwb_list(struct cgroup_subsys_state *css)
+  *    This finally frees the blkcg.
+  */
  
--	rcu_read_lock();
--
--	if (bio->bi_blkg)
-+	if (bio->bi_blkg) {
- 		css = bio_blkcg_css(bio);
--	else
-+		bio_associate_blkg_from_css(bio, css);
-+	} else {
-+		rcu_read_lock();
- 		css = blkcg_css();
-+		if (!css_tryget_online(css))
-+			css = NULL;
-+		rcu_read_unlock();
++static struct blkcg_gq *blkcg_get_first_blkg(struct blkcg *blkcg)
++{
++	struct blkcg_gq *blkg = NULL;
++
++	spin_lock_irq(&blkcg->lock);
++	if (!hlist_empty(&blkcg->blkg_list)) {
++		blkg = hlist_entry(blkcg->blkg_list.first, struct blkcg_gq,
++				   blkcg_node);
++		blkg_get(blkg);
++	}
++	spin_unlock_irq(&blkcg->lock);
++
++	return blkg;
++}
++
+ /**
+  * blkcg_destroy_blkgs - responsible for shooting down blkgs
+  * @blkcg: blkcg of interest
+@@ -1296,32 +1311,24 @@ struct list_head *blkcg_get_cgwb_list(struct cgroup_subsys_state *css)
+  */
+ static void blkcg_destroy_blkgs(struct blkcg *blkcg)
+ {
+-	might_sleep();
++	struct blkcg_gq *blkg;
  
--	bio_associate_blkg_from_css(bio, css);
--
--	rcu_read_unlock();
-+		bio_associate_blkg_from_css(bio, css);
-+		if (css)
-+			css_put(css);
+-	spin_lock_irq(&blkcg->lock);
++	might_sleep();
+ 
+-	while (!hlist_empty(&blkcg->blkg_list)) {
+-		struct blkcg_gq *blkg = hlist_entry(blkcg->blkg_list.first,
+-						struct blkcg_gq, blkcg_node);
++	while ((blkg = blkcg_get_first_blkg(blkcg))) {
+ 		struct request_queue *q = blkg->q;
+ 
+-		if (need_resched() || !spin_trylock(&q->queue_lock)) {
+-			/*
+-			 * Given that the system can accumulate a huge number
+-			 * of blkgs in pathological cases, check to see if we
+-			 * need to rescheduling to avoid softlockup.
+-			 */
+-			spin_unlock_irq(&blkcg->lock);
+-			cond_resched();
+-			spin_lock_irq(&blkcg->lock);
+-			continue;
+-		}
++		spin_lock_irq(&q->queue_lock);
++		spin_lock(&blkcg->lock);
+ 
+ 		blkg_destroy(blkg);
+-		spin_unlock(&q->queue_lock);
+-	}
+ 
+-	spin_unlock_irq(&blkcg->lock);
++		spin_unlock(&blkcg->lock);
++		spin_unlock_irq(&q->queue_lock);
++
++		blkg_put(blkg);
++		cond_resched();
 +	}
  }
- EXPORT_SYMBOL_GPL(bio_associate_blkg);
  
+ /**
 -- 
 2.39.2
 
