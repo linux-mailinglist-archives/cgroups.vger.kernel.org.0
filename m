@@ -1,209 +1,158 @@
-Return-Path: <cgroups+bounces-10450-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10451-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3418B9F70B
-	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 15:10:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FB13B9F95E
+	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 15:33:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77B3A386991
-	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 13:10:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 094BE4E4C58
+	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 13:33:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B252C1B4244;
-	Thu, 25 Sep 2025 13:10:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CCF2261B94;
+	Thu, 25 Sep 2025 13:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Him9QCta"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YgrO8NGZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96131C8611;
-	Thu, 25 Sep 2025 13:10:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F43230D1E;
+	Thu, 25 Sep 2025 13:33:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758805839; cv=none; b=IPAsaFnL0/0dYoLsswJpL9RO0DYkkejMW15n2cXUyvYPVd0ZnOXvsjdh6wTX0LLJDhRmGrAbekQaU/WTNm3jw6BKgHq08WXg0eIfAVR6TV3eY1sdB1W2plwfHsqiXpYJhs1qmpJJ2K3vAogK/p5CCBqrP0Ag7zKQpL9IkLA1Q2g=
+	t=1758807196; cv=none; b=RhcWXtr/OYeO2GlIoRqbiZgIaM7eu9xYVlbKfHDS9x/QbMFutIsvhqw8GTBXsiRWlQA8zR8h0l3Bs8kr4FRIaASWe4j/yo4NWjBlQY9tEgdTEeLs5dlSfQycI/64NX1AcUkwuPR6Eol4bRV94DOeSyLcsDU+GqMbfnwcFie8fVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758805839; c=relaxed/simple;
-	bh=VybQroaUrHBuCd5yUTzgUINLCLHwybQTewjv/v0YJvc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kIEO5L2CXBTm3VxgNwlUqOaEYrozyGLc39uPBnJ5FrV77IwtZhejE8s2EMv4swBt2zbWObiNMkzO9OWbDiZSxdqxjcGNlLA9bU60HgefiZmASpGkWHXgFOv6AZrOhHFWdhCRYSuau1hizW5D5NTrxDQcAMevwv7shQCJ8jLElOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Him9QCta; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=1bzY29OP7Rd/KL/PbvCwoEj8UUM7p2Z/euhhEhj9SBI=; b=Him9QCtaskfcH7FE4llgFnwC2w
-	/lxvnFjEyx5ZEQ+nFl5I0IpWuYSe+8uF7N1NA7K6LXptQQmZLIUGu7IkgiB67uKFZINey6u9onAs5
-	n3cC6RgXWvWw1VWCVZzrXMdlA2evhPqCXpQn+KH0axdKJZy2t4fVexjChF3F/giAUfgYbksubW0gl
-	NJP1Kb20hvftc+YFfECCkcOI4CFS4ZXgmN6nWFqUXjKZT8S4RUmkpIzURxourjRfJjgr4SfOu6Egb
-	28qtC8rL6QcgtR59cytBScHkJpDXRjMcxE7uPnXv+8JsLXT0wV1z6fdoJ+voMnjr/EnUuuQaMv+oA
-	+zXA+fhw==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v1lju-000000098lm-22kS;
-	Thu, 25 Sep 2025 13:10:26 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 54798300220; Thu, 25 Sep 2025 15:10:25 +0200 (CEST)
-Date: Thu, 25 Sep 2025 15:10:25 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
-	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
-	changwoo@igalia.com, cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
-Subject: Re: [PATCH 13/14] sched: Add {DE,EN}QUEUE_LOCKED
-Message-ID: <20250925131025.GA4067720@noisy.programming.kicks-ass.net>
-References: <20250910154409.446470175@infradead.org>
- <20250910155809.800554594@infradead.org>
- <aMItk3c5H6Z2CD4X@slm.duckdns.org>
- <20250911094240.GW3289052@noisy.programming.kicks-ass.net>
- <aMMzpnyx__ZgZGRc@slm.duckdns.org>
- <20250912141904.GA3289052@noisy.programming.kicks-ass.net>
- <aMRLIEtmcWc0XNmg@slm.duckdns.org>
+	s=arc-20240116; t=1758807196; c=relaxed/simple;
+	bh=wjriDi598cbHvL0FHK+c0DDXmoMdDEm35C7AQyt1pbA=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=BEaGIy6JOIDwd9/3AoT/HgMmLhdC+m2wHnxdCjP5BfbUgBPYFNeqv28eFE+0TbGBQXIZ0CAVYN7a+8GDq1fiBVSXG++vwzXKB7MRr/BtJsdB4+5+4vPQBJ3ysU4RfZvpoMVo9mENfKqks1CXzIFGOmvjAWvSdunHd6f0/vMV5Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YgrO8NGZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69B5CC4CEF0;
+	Thu, 25 Sep 2025 13:33:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758807196;
+	bh=wjriDi598cbHvL0FHK+c0DDXmoMdDEm35C7AQyt1pbA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=YgrO8NGZCZcHji+EammpDndoXMerNwi7orZ7M8Mz151WGxr4ZGI+YIqAOYwhUk9Me
+	 /XI42gu6oR7hNTz6fL+Eu4z47fzQp2HOi/Stl7K8RzJB7AIduo0jci3FtOThbXMHX2
+	 i44IefRwT8XRmC5ur3wAMsfH7mZ4refLCqhevsKMIR1DpwDA5WUNw0vZdVxPucoEgL
+	 M9+zpJpSfK+bH0CWN0q7jveBM//Va6V8f/vfXbwepIDuwmeV/zYpyntA5qvXAGT3zB
+	 cOIMjqOAvCIgOGe1JOgbUfRv92CfJWH1zgPtWKoqhqbxzh8F6lemPR79l7HCKC0dza
+	 kZSQtc7RLrWFg==
+Date: Thu, 25 Sep 2025 22:33:10 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Julian Sun <sunjunchao@bytedance.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, lance.yang@linux.dev, mhiramat@kernel.org,
+ yangyicong@hisilicon.com, will@kernel.org, dianders@chromium.org,
+ mingo@kernel.org, lihuafei1@huawei.com, hannes@cmpxchg.org,
+ mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+ muchun.song@linux.dev, tj@kernel.org, peterz@infradead.org
+Subject: Re: [PATCH v2 1/2] hung_task: Introduce touch_hung_task_detector().
+Message-Id: <20250925223310.66e769299f7d07491578151d@kernel.org>
+In-Reply-To: <20250924034100.3701520-2-sunjunchao@bytedance.com>
+References: <20250924034100.3701520-1-sunjunchao@bytedance.com>
+	<20250924034100.3701520-2-sunjunchao@bytedance.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aMRLIEtmcWc0XNmg@slm.duckdns.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Sep 12, 2025 at 06:32:32AM -1000, Tejun Heo wrote:
-> Hello,
+On Wed, 24 Sep 2025 11:40:59 +0800
+Julian Sun <sunjunchao@bytedance.com> wrote:
+
+> In the kernel, long waits can trigger hung task warnings. However, some
+> warnings are undesirable and unnecessary - for example, a hung task
+> warning triggered when a background kworker waits for writeback
+> completion during resource cleanup(like the context of
+> mem_cgroup_css_free()). This kworker does not affect any user behavior
+> and there is no erroneous behavior at the kernel code level, yet it
+> triggers an annoying hung task warning.
 > 
-> On Fri, Sep 12, 2025 at 04:19:04PM +0200, Peter Zijlstra wrote:
-> ...
-> > Ah, but I think we *have* to change it :/ The thing is that with the new
-> > pick you can change 'rq' without holding the source rq->lock. So we
-> > can't maintain this list.
-> > 
-> > Could something like so work?
-> > 
-> > 	scoped_guard (rcu) for_each_process_thread(g, p) {
-> > 		if (p->flags & PF_EXITING || p->sched_class != ext_sched_class)
-> > 			continue;
-> > 
-> > 		guard(task_rq_lock)(p);
-> > 		scoped_guard (sched_change, p) {
-> > 			/* no-op */
-> > 		}
-> > 	}	
+> To eliminate such warnings, this patch introduces
+> touch_hung_task_detector() to allow some tasks ignored by hung task
+> detector.
 > 
-> Yeah, or I can make scx_tasks iteration smarter so that it can skip through
-> the list for tasks which aren't runnable. As long as it doesn't do lock ops
-> on every task, it should be fine. I think this is solvable one way or
-> another. Let's continue in the other subthread.
 
-Well, either this or scx_tasks iterator will result in lock ops for
-every task, this is unavoidable if we want the normal p->pi_lock,
-rq->lock (dsq->lock) taken for every sched_change caller.
+Looks good to me.
 
-I have the below which I would like to include in the series such that I
-can clean up all that DEQUEUE_LOCKED stuff a bit, this being the only
-sched_change that's 'weird'.
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Added 'bonus' is of course one less user of the runnable_list.
+Thanks,
 
-(also, I have to note, for_each_cpu with preemption disabled is asking
-for trouble, the enormous core count machines are no longer super
-esoteric)
+> Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+> Suggested-by: Lance Yang <lance.yang@linux.dev>
+> ---
+>  include/linux/nmi.h |  2 ++
+>  kernel/hung_task.c  | 13 +++++++++++++
+>  2 files changed, 15 insertions(+)
+> 
+> diff --git a/include/linux/nmi.h b/include/linux/nmi.h
+> index cf3c6ab408aa..61fc2ad234de 100644
+> --- a/include/linux/nmi.h
+> +++ b/include/linux/nmi.h
+> @@ -59,8 +59,10 @@ static inline void touch_all_softlockup_watchdogs(void) { }
+>  
+>  #ifdef CONFIG_DETECT_HUNG_TASK
+>  void reset_hung_task_detector(void);
+> +void touch_hung_task_detector(struct task_struct *t);
+>  #else
+>  static inline void reset_hung_task_detector(void) { }
+> +static inline void touch_hung_task_detector(struct task_struct *t) { }
+>  #endif
+>  
+>  /*
+> diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+> index 8708a1205f82..6409d3d4bd36 100644
+> --- a/kernel/hung_task.c
+> +++ b/kernel/hung_task.c
+> @@ -184,6 +184,11 @@ static inline void debug_show_blocker(struct task_struct *task)
+>  }
+>  #endif
+>  
+> +void touch_hung_task_detector(struct task_struct *t)
+> +{
+> +	t->last_switch_count = ULONG_MAX;
+> +}
+> +
+>  static void check_hung_task(struct task_struct *t, unsigned long timeout)
+>  {
+>  	unsigned long switch_count = t->nvcsw + t->nivcsw;
+> @@ -203,6 +208,10 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+>  	if (unlikely(!switch_count))
+>  		return;
+>  
+> +	/* The task doesn't want to trigger the hung task warning. */
+> +	if (unlikely(t->last_switch_count == ULONG_MAX))
+> +		return;
+> +
+>  	if (switch_count != t->last_switch_count) {
+>  		t->last_switch_count = switch_count;
+>  		t->last_switch_time = jiffies;
+> @@ -317,6 +326,10 @@ static void check_hung_uninterruptible_tasks(unsigned long timeout)
+>  		    !(state & TASK_WAKEKILL) &&
+>  		    !(state & TASK_NOLOAD))
+>  			check_hung_task(t, timeout);
+> +		else if (unlikely(t->last_switch_count == ULONG_MAX)) {
+> +			t->last_switch_count = t->nvcsw + t->nivcsw;
+> +			t->last_switch_time = jiffies;
+> +		}
+>  	}
+>   unlock:
+>  	rcu_read_unlock();
+> -- 
+> 2.39.5
+> 
 
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -4817,6 +4817,7 @@ static void scx_bypass(bool bypass)
- {
- 	static DEFINE_RAW_SPINLOCK(bypass_lock);
- 	static unsigned long bypass_timestamp;
-+	struct task_struct *g, *p;
- 	struct scx_sched *sch;
- 	unsigned long flags;
- 	int cpu;
-@@ -4849,16 +4850,16 @@ static void scx_bypass(bool bypass)
- 	 * queued tasks are re-queued according to the new scx_rq_bypassing()
- 	 * state. As an optimization, walk each rq's runnable_list instead of
- 	 * the scx_tasks list.
--	 *
--	 * This function can't trust the scheduler and thus can't use
--	 * cpus_read_lock(). Walk all possible CPUs instead of online.
-+	 */
-+
-+	/*
-+	 * XXX online_mask is stable due to !preempt (per bypass_lock)
-+	 * so could this be for_each_online_cpu() ?
- 	 */
- 	for_each_possible_cpu(cpu) {
- 		struct rq *rq = cpu_rq(cpu);
--		struct task_struct *p, *n;
- 
- 		raw_spin_rq_lock(rq);
--
- 		if (bypass) {
- 			WARN_ON_ONCE(rq->scx.flags & SCX_RQ_BYPASSING);
- 			rq->scx.flags |= SCX_RQ_BYPASSING;
-@@ -4866,36 +4867,33 @@ static void scx_bypass(bool bypass)
- 			WARN_ON_ONCE(!(rq->scx.flags & SCX_RQ_BYPASSING));
- 			rq->scx.flags &= ~SCX_RQ_BYPASSING;
- 		}
-+		raw_spin_rq_unlock(rq);
-+	}
-+
-+	/* implicit RCU section due to bypass_lock */
-+	for_each_process_thread(g, p) {
-+		unsigned int state;
- 
--		/*
--		 * We need to guarantee that no tasks are on the BPF scheduler
--		 * while bypassing. Either we see enabled or the enable path
--		 * sees scx_rq_bypassing() before moving tasks to SCX.
--		 */
--		if (!scx_enabled()) {
--			raw_spin_rq_unlock(rq);
-+		guard(raw_spinlock)(&p->pi_lock);
-+		if (p->flags & PF_EXITING || p->sched_class != &ext_sched_class)
-+			continue;
-+
-+		state = READ_ONCE(p->__state);
-+		if (state != TASK_RUNNING && state != TASK_WAKING)
- 			continue;
--		}
- 
--		/*
--		 * The use of list_for_each_entry_safe_reverse() is required
--		 * because each task is going to be removed from and added back
--		 * to the runnable_list during iteration. Because they're added
--		 * to the tail of the list, safe reverse iteration can still
--		 * visit all nodes.
--		 */
--		list_for_each_entry_safe_reverse(p, n, &rq->scx.runnable_list,
--						 scx.runnable_node) {
--			/* cycling deq/enq is enough, see the function comment */
--			scoped_guard (sched_change, p, DEQUEUE_SAVE | DEQUEUE_MOVE) {
--				/* nothing */ ;
--			}
-+		guard(__task_rq_lock)(p);
-+		scoped_guard (sched_change, p, DEQUEUE_SAVE | DEQUEUE_MOVE) {
-+			/* nothing */ ;
- 		}
-+	}
- 
--		/* resched to restore ticks and idle state */
--		if (cpu_online(cpu) || cpu == smp_processor_id())
--			resched_curr(rq);
-+	/* implicit !preempt section due to bypass_lock */
-+	for_each_online_cpu(cpu) {
-+		struct rq *rq = cpu_rq(cpu);
- 
-+		raw_spin_rq_lock(rq);
-+		resched_curr(cpu_rq(cpu));
- 		raw_spin_rq_unlock(rq);
- 	}
- 
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
