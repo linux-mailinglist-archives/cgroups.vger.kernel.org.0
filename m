@@ -1,211 +1,251 @@
-Return-Path: <cgroups+bounces-10459-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10460-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83957BA1355
-	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 21:35:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 559A4BA1439
+	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 21:50:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4279B4A0618
-	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 19:35:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E28E3AB3BF
+	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 19:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3657431CA6D;
-	Thu, 25 Sep 2025 19:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ACB231E88B;
+	Thu, 25 Sep 2025 19:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="buwpZ08M"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PQe70E/a"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010019.outbound.protection.outlook.com [52.101.193.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3563A1DF27D
-	for <cgroups@vger.kernel.org>; Thu, 25 Sep 2025 19:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758828912; cv=none; b=DgMKL2xtruN0E/B0Uyk5RBtNRuiT7f0wtiG4bCDAdBDjQAVqOmx5UyRZwy2MGKtrx79Ll0jt7mv6pravqiXd+hCPxsAr5hEl+T43aJy5gA2eoHt7+kjDdqd0MepG+9VfD13Oy3eT0AywK/FG0f0lKz3Z06PEGtgxUFKWkuytfjg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758828912; c=relaxed/simple;
-	bh=yy6R3RX7QKq2URoVhACzS9tBUVK/EYrCqKqEEOzYF7g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b99zqqHcsbjzbPAMqzjIvev7GifwoepFcaGPY9Kh0H6tkR9b9ChxWeWjNFM7z+qn1TOEWWHHbdM8RO27me/kMG0GBjyludrebuV/N6leR5vShuazCKc1jW2GKDhtX56qMV+RVIJMVceghPj3Es1VWWO47iYW1qYk+DIhJuPW3sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=buwpZ08M; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1758828909;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=VJwwywmn8MlVeferLmRGbOLpNjhdj0h30dn2f1aSujg=;
-	b=buwpZ08MmWBYKSX5DglDcJC86LzHevyf1wHGU0qA0MDvIfz2FSkRMp/Vpjb7KTxdzwK20a
-	3gy9pvdh4goKGliQNoTeXKDuvS7QqVvGnL6VwFTiAHU/3Nj/p1fhuRsBBz0d+AMaUFg3m2
-	wfU5zm98KvVPK2dHMcreMtEAh7IhX+E=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-642-vwrr7glyOf6HZ8VoVLlqSg-1; Thu, 25 Sep 2025 15:35:06 -0400
-X-MC-Unique: vwrr7glyOf6HZ8VoVLlqSg-1
-X-Mimecast-MFC-AGG-ID: vwrr7glyOf6HZ8VoVLlqSg_1758828905
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-46e330a1946so7069375e9.1
-        for <cgroups@vger.kernel.org>; Thu, 25 Sep 2025 12:35:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758828905; x=1759433705;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VJwwywmn8MlVeferLmRGbOLpNjhdj0h30dn2f1aSujg=;
-        b=SNS3YYHiUyAuOjjEmPRmvFwNM6mpMEAPpxtwoe8qoWpILKA2YLkriwl95jIypqGU/U
-         IJrW+g+GjgnyJevJofaKd+6H/0wlJBmJlKgXLgko1Rf6egMUzOva8UaHzJtvuGSwhJNY
-         2igBAHA0ylGg/lSFrXaPGkZ2/YK8guouyCOvOjQXZeuJQ72RBnCpvejyUBAuyGTrfTN9
-         vTYsVdLoI96k1kdNN5UXva+flHYFS0hMdaa2VCoAW1eAN8dmizmYWbKzo5gf4wmmdGLn
-         WVJCRoc04cfP/9dtdp4nks34h4plcfPODuxQCJ5heMeIpCtw/yp7FwNoVMuBFltnnY8N
-         K7tA==
-X-Forwarded-Encrypted: i=1; AJvYcCW1u7/nfjNVF3b00VpFT7qWjDHQsZXcY/08ZdMUQP4Y04RmdXyjFrtkLIsBL7PSCgNgeT36ghlG@vger.kernel.org
-X-Gm-Message-State: AOJu0YzysNh/qIBOK1e81SctrAAyQKtD4r+KyJPFxV5PyNPT4VhXLpM9
-	6H5o5TCSqJt+eAaQ+9UlXCjcu/jbPaRIEdgpYMZKTy84loHHSBBLsMlxg6dYm6MNw6BsrvEjjNV
-	uddafYmIMBQvt71uVELGEt3ytSYT2+036nWveo5gRFA+xfUmjN/BD5FvKR9o=
-X-Gm-Gg: ASbGncvw+miYUME5Gofqw5Tp9C3Bb5/sGHDNtmCzI7lfuc3TthvzrAtv1zPKIVTK+tQ
-	jSttEk5UgD1+Ua7kOcapROSkydZwN8EUm6CzhwwiIsjVquUdxCvTVJ5B6R72Yjri3Sn/aiyMS+z
-	iUz4nLcpHS+W01O3DytAzQCpLNoc51wYxc8G0ZbdXJ9Ule3Nf+pYR2S+do4Rw2RkfAnGKWHdAYt
-	odJKjHblKDoaxJIUbviPWXdRbH8MF1RF+pPYgs1QCt40JLvW2YXzDq1s7Jcka6abpBKf2SKvlRc
-	nYUJ5EAprP7J41g6h76JBjqg9YTZqbrD+GnVl4BFc9z0ZSJsqastIl90HnwB2BLmhwNyajzeJDC
-	jNY7UJeonclbRaENp0G59rokyLaHDVJOEtGc2fPtNkhvivRTKhbOh/ezOwPPvK0utimAH
-X-Received: by 2002:a05:600c:c04b:10b0:46e:2d0d:8053 with SMTP id 5b1f17b1804b1-46e32a30481mr40382325e9.18.1758828904929;
-        Thu, 25 Sep 2025 12:35:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGd82MPk0+1Hmip3UQRbBk+SH7Cq3z6WmT4cbaRtBd04WMOf1YdLsAcp6Q0b+Vu83a2w7bdQg==
-X-Received: by 2002:a05:600c:c04b:10b0:46e:2d0d:8053 with SMTP id 5b1f17b1804b1-46e32a30481mr40382185e9.18.1758828904542;
-        Thu, 25 Sep 2025 12:35:04 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f3f:f800:c101:5c9f:3bc9:3d08? (p200300d82f3ff800c1015c9f3bc93d08.dip0.t-ipconnect.de. [2003:d8:2f3f:f800:c101:5c9f:3bc9:3d08])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e2a9b6e1bsm99082945e9.10.2025.09.25.12.35.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Sep 2025 12:35:04 -0700 (PDT)
-Message-ID: <39f22c1a-705e-4e76-919a-2ca99d1ed7d6@redhat.com>
-Date: Thu, 25 Sep 2025 21:35:02 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6418931E115;
+	Thu, 25 Sep 2025 19:50:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758829802; cv=fail; b=FRh79PeETUgJD4R79G7fiTnLt0ZAxGUecPScfHRv00V8IqjHganDnz+V4Kx8Mo6qQmcXl9MQMOqmm1/zaasVWuIFdQfsHHWkSOMLbmKIVS5JXXnOuKKOzbhnlczoXZeZOIDS6Nv97ILNw9s8MIVt/9MmDGCzz32zn9wlCFnlpjU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758829802; c=relaxed/simple;
+	bh=SdqK+OLaDedAstMYj0nrH5unxZeMysDJr5UcXQlTsq4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=oaYPxrxP4U0RkF1KCSswOAjJtLw5jQfHEH0tPu/DARg7ot1Q1ub+kNdquWQJwtGQwPyd/rz2I6dcmn8Is6ANlGaxTa97NfYeDO3M2iahR5/m0+iHXWEcBzXzbvY4ZUAKJ/dGMVI44rX1x1g8i3/AEqG+OYaInu0TbYAkji/clJ8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PQe70E/a; arc=fail smtp.client-ip=52.101.193.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=aVqnbP3oIwAeN29JivNKuNQTUoiAzDnNWt5TBzkY0aqdFC2uoQZ/bU1rJy1+gP4pSOrmoH5CHu+OjLWNjAYvntdjEhRJZP5gNYNRor5/+XbmKXMRNcQr73shYFV3MUVSGSx0JuGkCGOHlS6VGK90bqMtTUHeMi79V3CuNrxBSlvTo3gzcu79YPb3t+N0/RGY0qiRIHXco3FCJNJM0Z1k9Bk1rbzn792MsnN2cYQpoSmgNP8SUkjnZ6YeIZGi42KwcvA7erHBGPDszFMZjZa1OjI7dshGM1zALgTYo3rZxg3tIjncP1MGH76hSGpVjEZFN858V1ZktHOlev6RocJe/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bLTgUnF1rWLdehCDF1/phtnQJofvB7emxKJnrtSpjeA=;
+ b=nqvvW9v7XgX1hJT2jEd5UG4xDJRnIm55ro7ousPYPv6bZeEuFAkJBIsSI4Q2vBdSszK+UANcFdPtGttlMF/3FhIA75ZlkGHAzObj21V1Uvb8XenP5mF5r4dHPNkn3zUk1QldKkz1N4DnBK/t9QPqcwIpuZi5civvIhTl9DRGiErw9BhB6ybKP5ijkU0gLxb9VaZJBCrn/nBdDOeFlMCj6kSnw/OsFQRlbFAl1uqvUP0TPGEfeDjY72mbw2wPcoRSrPFErfse0eF1J4p/bMAqfgl/BV61Qv+Fm/MJGHXmi+6u1hfWX6k22ZxhAcu90QvZOtqu8egaSbA+M4mROoxUoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bLTgUnF1rWLdehCDF1/phtnQJofvB7emxKJnrtSpjeA=;
+ b=PQe70E/a3spNy9oRRkhDbRY1jmnxoP13eblHi++We9UTfi/1Li6oEXmtaYQW6qF9mOkJd9QF9r+hFM93x/ZbFVyVQ5MR0ONp3EsAAPQwWeFmY8ext1zHQFu3orun1vqAKz4ZndM2gBIf9n9QDJmbASgrHjpOHhfu0YnuIu2B6kFUnlnxiPuI2xpMf9964LapM40VK+Lk7/pvvwMA/1UFAbG7nn7k5Oc9vdtVLATAi3dIN5TJezbqvJAfjPpr3lIh50yNTANkgrOaeylNw339+MTe4hwL/5nFC+ZjoyGibV9b+1sdyk9VvRG5w+9xZULGAUph3NDQ5UAeIDB+CKI9XA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com (2603:10b6:8:252::5) by
+ PH7PR12MB7307.namprd12.prod.outlook.com (2603:10b6:510:20b::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9160.9; Thu, 25 Sep 2025 19:49:56 +0000
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a]) by DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a%5]) with mapi id 15.20.9160.010; Thu, 25 Sep 2025
+ 19:49:56 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>, hannes@cmpxchg.org,
+ hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
+ shakeel.butt@linux.dev, muchun.song@linux.dev, lorenzo.stoakes@oracle.com,
+ harry.yoo@oracle.com, baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com,
+ npache@redhat.com, ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
+ lance.yang@linux.dev, akpm@linux-foundation.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] mm: thp: reparent the split queue during memcg
+ offline
+Date: Thu, 25 Sep 2025 15:49:52 -0400
+X-Mailer: MailMate (2.0r6283)
+Message-ID: <BF7CAAA2-E42B-4D90-8E35-C5936596D4EB@nvidia.com>
+In-Reply-To: <39f22c1a-705e-4e76-919a-2ca99d1ed7d6@redhat.com>
+References: <cover.1758618527.git.zhengqi.arch@bytedance.com>
+ <55370bda7b2df617033ac12116c1712144bb7591.1758618527.git.zhengqi.arch@bytedance.com>
+ <b041b58d-b0e4-4a01-a459-5449c232c437@redhat.com>
+ <46da5d33-20d5-4b32-bca5-466474424178@bytedance.com>
+ <39f22c1a-705e-4e76-919a-2ca99d1ed7d6@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: BN0PR07CA0010.namprd07.prod.outlook.com
+ (2603:10b6:408:141::10) To DS7PR12MB9473.namprd12.prod.outlook.com
+ (2603:10b6:8:252::5)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] mm: thp: reparent the split queue during memcg
- offline
-To: Qi Zheng <zhengqi.arch@bytedance.com>, hannes@cmpxchg.org,
- hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, muchun.song@linux.dev, lorenzo.stoakes@oracle.com,
- ziy@nvidia.com, harry.yoo@oracle.com, baolin.wang@linux.alibaba.com,
- Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com,
- dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev,
- akpm@linux-foundation.org
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <cover.1758618527.git.zhengqi.arch@bytedance.com>
- <55370bda7b2df617033ac12116c1712144bb7591.1758618527.git.zhengqi.arch@bytedance.com>
- <b041b58d-b0e4-4a01-a459-5449c232c437@redhat.com>
- <46da5d33-20d5-4b32-bca5-466474424178@bytedance.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- qIws/H2t
-In-Reply-To: <46da5d33-20d5-4b32-bca5-466474424178@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB9473:EE_|PH7PR12MB7307:EE_
+X-MS-Office365-Filtering-Correlation-Id: 640252b7-4ab4-46c0-585d-08ddfc6cb3d1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|1800799024|376014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?d3V3bTJ5VUp1WjRRMHVhb2VadzBuNWdNdEV5RGRQcjVjZHI5blVXYnorQy9Q?=
+ =?utf-8?B?dEF3ZUVkWFI3czhvREYvNmhxSGJKc2ZXRmUvZHplZkdLOHc4NEFLRno1N3NR?=
+ =?utf-8?B?Rk14akhjR1BEa1crQVRpdTAxN3c1SGJyTGs0OVZlTVFzMDQxQzF5cnB4b2c4?=
+ =?utf-8?B?aWlZRG5rV2NpTVlud2tHUm83MFJ6RlZOUXBYUEdiRzZQZklFK0JGYnJhcnRM?=
+ =?utf-8?B?MHN6ZFJjM3Q5aUI0UGtMZXU0RFdobGRVQUlFRi9zTk1BMTFINzlGSGxCdHFK?=
+ =?utf-8?B?VXQvWTE4QkhaTnN2ZWJVRkV5WlduazZWcHljM3VuUGFzS3drb09uQWJyeDZy?=
+ =?utf-8?B?cTJ2WjlLMWc2bW15cVpGbXR1MHRZczhxS041WEJ0TzhqZEtHU0xmYkFOWGZn?=
+ =?utf-8?B?VElTSDZtN1gzNjdNeWs4ZzJGSS9FSTlDZ1J4eks2V090OFg2ZWhuVWFFQ1VZ?=
+ =?utf-8?B?Q3hudTZsVmowYUU5RW13TndoRmdmUWNtZmJBWEJEb09yV05DdWwzRmVBZGc2?=
+ =?utf-8?B?R1BDWTZQZDBzM2VRY3dCVGpMdDBPZFhNZGU0YVBqM28rSnhHNzhyV0luV09u?=
+ =?utf-8?B?ZVU4TUpJVHRZaXlHNk0rZlp4UVUrWnpRMFdjZ25nSDVqQXhOU2wrMG0va29T?=
+ =?utf-8?B?NEhqckgxcjFvTXc3ZVBWSWVxMG01eHFYdm1FcGJUN3dXdVhMYy9LMisyQzdU?=
+ =?utf-8?B?VURvazAxU3NUQ3lHZHAvcXdoZlU5aU8xeUpYTHFsUFYvZGtEZEpseThzWG5H?=
+ =?utf-8?B?U2MyRGkwV2NEZlFIRWVwSkowQ05mdnNVOE9lNG5jS2FNN0N5S2QwbGVXOWJu?=
+ =?utf-8?B?VGlrTnA5UktxNjZCODQ1b0JLMWQ3aFo0dzRNUnNaenRZWTJQSHdWcXRFSGQv?=
+ =?utf-8?B?Q2M2NVZENTVXNCtZSDlkWkp1L0pSZ09wVlBCZGN4M0ZBN0I4Y20rSjVESWpJ?=
+ =?utf-8?B?N1hDbFB3Y2JDRU80cU5Fd25RSjhRRVRkU2VpYkgyZEJPT3R3M3lUc0pzdTlP?=
+ =?utf-8?B?dW5XbVA3eXNKRU56dnJOWUcxNkRpMk9BK1FTQXk3NGd5R2RWU2pKWjBYRDZX?=
+ =?utf-8?B?Yzg0dUlyRSsybVVOQUtWTW9yRnRWbnBSNTlrb001dk5QODhUMHd2U2MyOGRx?=
+ =?utf-8?B?NU95MmRNd01jekJCaGc0NmM3dG1OdUdpUEc3NzBtSFJzVHlBczd3Sko0cDg4?=
+ =?utf-8?B?U1BNSzdGVnk3c2ZENnJTaHdqcEZDZG92YkFGNml5NUJ4WHVQR0VTMXVsMis2?=
+ =?utf-8?B?ZUN6Z0F0MkhzNkFjb2FxcmRrcEtFemhjcW92YjYxREY2V3JOVG4xa1NVdVU0?=
+ =?utf-8?B?bjcvcnBYUWFTenZWV2JBMVZLRnoxaEd4ZzNOQlZkQVlObUM0aGdlRzVPd1Ix?=
+ =?utf-8?B?RkNjRGsydXBvVld1N1FzOFFHZ1AzTE95aHljdlhoMy9nMzdsUE1ubEFzY0NQ?=
+ =?utf-8?B?OElUcUtHTkY2aWRRbGxDL3JHdUU1VGw0RUpyMHRIZXZnUDhOWnVqaVROUzBJ?=
+ =?utf-8?B?RW0rS3A1TUFEb0NVSXVkTkQ0Wmc1T1dSNThNTjVkaXE4b29xckhlVDJoOXpT?=
+ =?utf-8?B?cVNxdlhYWEZYandVMXdkNXRNWVJ3OC9vdHZQYTlVS25SdVgvTU56MWdJM3hF?=
+ =?utf-8?B?R1lTVFQrUGhWeGRCT2xkb3NsUkpLc1BxS0xsWGlJanUxUU5PbHAxWThOaktY?=
+ =?utf-8?B?V3VFTWFQM3dDUncxUWkxR1krdyt0bnBqNHplS0EwcVBlalRIenJ6M09QK0kr?=
+ =?utf-8?B?UlFrZ1lzWnFuY2lSejYyRHJETEVWalVmLzZwUHlVNjExWWtGbktwalU4aEVT?=
+ =?utf-8?B?b3RFbTRVOHQzdVlqSlJGZ3JWMlcvMUNCNmh0WUlua1Y1WEVEaGVzU2NnSERr?=
+ =?utf-8?B?cHZGRmQ3R1psajBVcWFJUENVc3I0Q1h6NU4zWVRNSEpKeXo4VGx6VzJ0R0hz?=
+ =?utf-8?Q?PXMpsMj6x4OEP2Uluynf0Yj/wbJL/Lq5?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?K291cGFBc3lES3NUQkgxcFV5SFpMdmhiUmxPbHJtSnYxOVYrdWFkZ21raVpE?=
+ =?utf-8?B?TlpnbHpHeldQeHhoZ29URVdtbm9GTlQxQVJlc0hia2JBOElBajJpcWtyWW9j?=
+ =?utf-8?B?YUw3c0RMWmFkNytoU0hkeU1pUDNjTGxHNUJpQUtPTFlFUVJlY2lUMXcvQkIv?=
+ =?utf-8?B?QUlTQnVVUkw4Z0k0MnlhaURDQWJOdk1TTE0vS2FhMzAvZTdRMElxOUlPY2Fh?=
+ =?utf-8?B?L2ZkekltYU1Za25JNldqZzFiakJndU1WbWFwSWg2cU1hNVY4WDJZTEo3ZGQr?=
+ =?utf-8?B?TUE2SU9LNTJxVFk5RE45dDk4RTVtdW8wSnBUKzhsNFJ1NHhmMTVxc2o0b0Fu?=
+ =?utf-8?B?T1QrallxNkN2K1FvVm5ZNVhqdENLaE11Q0tIZjFmMDhIazB6RWZWR1VCUE9H?=
+ =?utf-8?B?MGJhenhlY2tJOXRFTjhqdWRuVVJrZDFybWo3MWxvcUJiYUNzWnpCSUZIRWoy?=
+ =?utf-8?B?Zmg3SE5mUmI3K1lsSDkyTzRVeGZlYm1ORXVuQnFRd2M3ZWszTFl5OGpENURa?=
+ =?utf-8?B?UGNwRElMelpVNDhFRXpoMjFZVUNNNTJqbkxvU1ZwYSt0RzhRMUsxSWlNTE5k?=
+ =?utf-8?B?Zk5Bd3Nrc3Rvb2dMbWNwZ1dmK0Nha3ZJK2k0ZnE3bWtMMXRTQStsVGVTZVE3?=
+ =?utf-8?B?bTB3cWd1V1ZjMHVlemNHeDRFM0pSWk1YdXl5R3N1U3RZVzJjenFDem10dVdN?=
+ =?utf-8?B?SjNFQnYyM2liMXliV09xSEhyeFF5bDl3dkQ3bEc0MGNocU1NM1huZmJkYit5?=
+ =?utf-8?B?akhVTC94a3lZdnoxSG9BZEVGRGVpbHhTL2QwOXZ0dG94bHJEQ0t5MmU1bk1K?=
+ =?utf-8?B?ZTB1eTMyUEtZZkdCRlQxdDdXVU5SWHJIbmxDZCs0KytaKzFwQzg0emFlb0Rr?=
+ =?utf-8?B?K29QQzZ3b0h0am9kR2oxa0JjcWNjRmhBV1hSODAvUU1BT0ZPeFFGQm95cUhu?=
+ =?utf-8?B?UDZkaGNRY0NOY0dKQXhXeC8yZjhvMGM5aWhhR3c2akV3Vm1SaE1IVjUrVld2?=
+ =?utf-8?B?MU5rOE0ySFJnaStYSTgxVDUzY09qdjRBNThKWElrbnhIc3Nha1BxTjFGMmg2?=
+ =?utf-8?B?YnR0VXBLZXFaSmFadDRIdUoyamNRQjdpZDFONUxScGtsYVB4Q3J3eTlPZHdR?=
+ =?utf-8?B?N3Z1RzZmUXIwNjhLNXR1V3h5a210R1BYbkluUWNwNXZoZGZsZHVkandvSVZn?=
+ =?utf-8?B?OVQ4Q1pWMFI4Wk5adDNMRG9ybVp5YkwrRmR4RHM4K3lmenIwSHB4cU9pV2Rr?=
+ =?utf-8?B?MDF2SktOK01CRHRoRnpteUNpeVNKanNHU1ZuUnovbGRSRG1jWWE4Vi9PcFd0?=
+ =?utf-8?B?YmdpSTNGbGJBTWhVY1BzRVlRVWM3K2tYRWdPalBVNGwzZW5LOFg0MVZuUG9t?=
+ =?utf-8?B?dm8vRkZqTGVuanhQN3hzREtzcEVUNXUybXMwYWlzankxZUVONGd4WE9nZlRO?=
+ =?utf-8?B?akdNeDdndThqTjVUMDI4WGhEWUsvQnpxbzg4TGRDbmE0YzRjcjRXVmcrVTdW?=
+ =?utf-8?B?ZzV1RWh6Qlc2S21aaDVKaHVFLzFJb3BidmkwQURYaXFYaDJ0V0xyMmZBNnlT?=
+ =?utf-8?B?TXBQS2RKNXpmRjNtOGRnaXhNOU5HaHNuMGZ1M0NKTmlpRHBtMkU5VUJieDF3?=
+ =?utf-8?B?RTdvVU9ka2ZUbXRlaGNRbFo0VU9iTnUyUjMxcWc1eWJtZUprVmh5Uzlab2g3?=
+ =?utf-8?B?d0s1elgvWjNGc0hhUEJ1Tnc3MHlESm85UUFIc01IQndrMEw1YjVXSGlDRTd0?=
+ =?utf-8?B?c3ljbVdwWEx2SnBSek9OVkpDdWI2a0pMc3RFRS9mM3ptR25BWTNYUnptY3cz?=
+ =?utf-8?B?d3RqYk9IOGZhcVBRL2lGeFp6QWpveGtoMGFPZFdhaDZYWHBqMGFLbzV3bjFW?=
+ =?utf-8?B?NzhjbGZZc2xJZUdkd3Vwd29uR3NqeWdjL1pGSlZsSnBYN2k5QlB3VEpIK3Jl?=
+ =?utf-8?B?cEVQbzdvR2RoWnA0MnJ2MzVQMHZGK09RWGlqVXgrMlAveUhTbDQrSFcwQzNN?=
+ =?utf-8?B?Rk5LcUpCcGZqTndUdEZKZkczZVNCZHRRNHQybk9NMVVlbk96U1NUTW5HZ09i?=
+ =?utf-8?B?YWVFeFMzbUlNdnJ6N1l2aFhBU1BOZ0R4Y1oxVGJMWUlhNHR6Z0lLLzY4WTZh?=
+ =?utf-8?Q?dPvWsmi9Uk23BcQ1Dmrd1YGKf?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 640252b7-4ab4-46c0-585d-08ddfc6cb3d1
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9473.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2025 19:49:56.1401
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Xs5kfJFBGMZZxiWZqiu0G90EALDpi2IEt8Y28YmyE1j9qXSkknhI75NRS5SWzm/S
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7307
 
-On 25.09.25 08:11, Qi Zheng wrote:
-> Hi David,
+On 25 Sep 2025, at 15:35, David Hildenbrand wrote:
 
-Hi :)
-
-[...]
-
->>> +++ b/include/linux/mmzone.h
->>> @@ -1346,6 +1346,7 @@ struct deferred_split {
->>>        spinlock_t split_queue_lock;
->>>        struct list_head split_queue;
->>>        unsigned long split_queue_len;
->>> +    bool is_dying;
+> On 25.09.25 08:11, Qi Zheng wrote:
+>> Hi David,
+>
+> Hi :)
+>
+> [...]
+>
+>>>> +++ b/include/linux/mmzone.h
+>>>> @@ -1346,6 +1346,7 @@ struct deferred_split {
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spinlock_t split_queue_lock;
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct list_head split_queue;
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long split_queue_len;
+>>>> +=C2=A0=C2=A0=C2=A0 bool is_dying;
+>>>
+>>> It's a bit weird to query whether the "struct deferred_split" is dying.
+>>> Shouldn't this be a memcg property? (and in particular, not exist for
 >>
->> It's a bit weird to query whether the "struct deferred_split" is dying.
->> Shouldn't this be a memcg property? (and in particular, not exist for
-> 
-> There is indeed a CSS_DYING flag. But we must modify 'is_dying' under
-> the protection of the split_queue_lock, otherwise the folio may be added
-> back to the deferred_split of child memcg.
-
-Is there no way to reuse the existing mechanisms, and find a way to have 
+>> There is indeed a CSS_DYING flag. But we must modify 'is_dying' under
+>> the protection of the split_queue_lock, otherwise the folio may be added
+>> back to the deferred_split of child memcg.
+>
+> Is there no way to reuse the existing mechanisms, and find a way to have =
 the shrinker / queue locking sync against that?
+>
+> There is also the offline_css() function where we clear CSS_ONLINE. But i=
+t happens after calling ss->css_offline(css);
 
-There is also the offline_css() function where we clear CSS_ONLINE. But 
-it happens after calling ss->css_offline(css);
+I see CSS_DYING will be set by kill_css() before offline_css() is called.
+Probably the code can check CSS_DYING instead.
 
-Being able to query "is the memcg going offline" and having a way to 
-sync against that would be probably cleanest.
+>
+> Being able to query "is the memcg going offline" and having a way to sync=
+ against that would be probably cleanest.
 
-I'll let all the memcg people comment on how that could be done best.
+So basically, something like:
+1. at folio_split_queue_lock*() time, get folio=E2=80=99s memcg or
+   its parent memcg until there is no CSS_DYING set or CSS_ONLINE is set.
+2. return the associated deferred_split_queue.
 
-> 
->> the pglist_data part where it might not make sense at all?).
-> 
-> Maybe:
-> 
-> #ifdef CONFIG_MEMCG
->       bool is_dying;
-> #endif
-> 
+>
+> I'll let all the memcg people comment on how that could be done best.
+>
+>>
+>>> the pglist_data part where it might not make sense at all?).
+>>
+>> Maybe:
+>>
+>> #ifdef CONFIG_MEMCG
+>>       bool is_dying;
+>> #endif
+>>
+>
+> Still doesn't quite look like it would belong here :(
+>
+> Also, is "dying" really the right terminology? It's more like "going offl=
+ine"?
+>
+> But then, the queue is not going offline, the memcg is ...
+>
+> --=20
+> Cheers
+>
+> David / dhildenb
 
-Still doesn't quite look like it would belong here :(
 
-Also, is "dying" really the right terminology? It's more like "going 
-offline"?
-
-But then, the queue is not going offline, the memcg is ...
-
--- 
-Cheers
-
-David / dhildenb
-
+Best Regards,
+Yan, Zi
 
