@@ -1,253 +1,182 @@
-Return-Path: <cgroups+bounces-10452-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10453-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1047BA0362
-	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 17:18:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D6F1BA0652
+	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 17:40:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE7E21898635
-	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 15:15:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD1232A67FD
+	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 15:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F60A2ED15C;
-	Thu, 25 Sep 2025 15:07:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF9BA2F0C7C;
+	Thu, 25 Sep 2025 15:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="aJTLYxvI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gL4nSZAG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yx1-f52.google.com (mail-yx1-f52.google.com [74.125.224.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB5D2E7F06
-	for <cgroups@vger.kernel.org>; Thu, 25 Sep 2025 15:07:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752191DE4E0;
+	Thu, 25 Sep 2025 15:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758812862; cv=none; b=AhEfIEFqYY+xqZneMmh2liDrQNsKXttz6SFBMfY/3w3krC77brAD4++unXzKY+zydxVeHDiraGg5yhgj5nL18L0SnL7ij8ajboapHIhQzvs5PnOnDwjWmj3LVNZ5rcIUixj0M4KSAZprZtb6nRqyKrCbvzfz/KT3C18cz94twmQ=
+	t=1758814828; cv=none; b=uN+QYQOAEHFNilO/Qp+7YX7fBbhrpf4xzDUjKeDXTrnSZNfHUcRpYI+Fjlyg2oCBaXMaGdekjS+sjiKck1ZcidLY1JZxfYpMdJd3pu1oDBsHpauqzSan2KipxaBR+E1pHATKq5mE5BgUk4kpzKclQ9QivVNmzlP2M53Q2Y4HBCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758812862; c=relaxed/simple;
-	bh=KTPdMDFNOlFP4wpn+4ognk+Lj8iX++1s9077Y5P+yK8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BTW5oMIT58eklqsA9Qa0WbHQc0LZlYxxLygKDR8C7L+sp1k2qpvb73AriLuswajij5f3l7Jy2gQRaj2brBqNwBvRZ8wuMVtyx7FF9PmuKv3/QLIi4rFZJQLTH2Xqtk1boRh8BCZCXwxRG5VMgwHqxLXb/F6i/gwwubCeKzb6SzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=aJTLYxvI; arc=none smtp.client-ip=74.125.224.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-yx1-f52.google.com with SMTP id 956f58d0204a3-633bca5451cso555696d50.1
-        for <cgroups@vger.kernel.org>; Thu, 25 Sep 2025 08:07:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1758812858; x=1759417658; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EpLopcviAyL+cm/HeEUTCBhC6Rw+eg0eRJGycPnbyFI=;
-        b=aJTLYxvIYw5XyCMD56WfTg/RkJSK9UKyiSG1C35yBBBCBD1smzAgzBXtz3EayzXUje
-         WaVlqNxq1ASSZQkT0jDhDAL4nYtFbsIoG4kSoESEIgiLH2IFVWqbsW9jCCpe80FDx6Z1
-         01Di0NlJF/9GIVKVXLKYKjEa4FmownW//OQyflTabDfa2MdaDWJ3MGVD41MYlmS/TKv1
-         x4zD04gl7qXdRFDPSaPZX5f+PZopD+KE024ZQcnIm/LS+FhLmiEZnnbzC6dPYDrLFyO+
-         q6eDUEdy11SA2DpJoYR7r0Xvzlw0ESPm0XP4x9kjol6DaSnTbOa4t1i9BqqLYlVGDUGw
-         FAvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758812858; x=1759417658;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EpLopcviAyL+cm/HeEUTCBhC6Rw+eg0eRJGycPnbyFI=;
-        b=bIcn19ewXoxRkJauT4kBpgmlfTZ2dO1q7/AhcVPdZ4hhyM8daoqMw9NZOGH41MNzWa
-         49HoiSqHpGVPx4OcHEsT3hxhxVV77+kxA/MOX5BDreuGTUBagdTL9XpEVTnXWrbaRA2S
-         ehM3JViS7Zf2nJZZWkIstKEp3heqxbj/JVrkOhqtGq0C2f664oO1uXZhjGDvzBbeC3Aw
-         udD3+5AMjvPRMiDqYXaojLfw5LC799h/Jdtkf5xsAHIvrygZZ77nW8+RgcUZCvRPiDvZ
-         IhMPc8ljwBAACI4JM8jdOjJ1hcjTRielUg3k95cz67xfKK10+CWePxdplijAIjkv6Q5v
-         EkRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1N3gSkXzzYlnY5cDRtuW46d5WhDkl5eYUr2lL/RofFzNzDFm0wimZwPIoF9Qee+3JmyxHNYD0@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5hroSigbKPJRrkQDHXiM2Ly3CIZxOms5Rd8bADYelqckj/ma5
-	DL0rKT+/MIJjx7Pew5fQW857/QFTGlIurH6mD/Fcxqmxt1HTkaJZlZYy0/+mNXEiVIZgmkvWSxD
-	59L7jBybiwQziMNEu3aXfNpU1EErnVGs8ZeoNynKguQ==
-X-Gm-Gg: ASbGnctHzVWO2BvvRwXlGmG+/ZMZ480Arcb0Rk3w87BTiOFu0B4UCEridqi30nMnoZ8
-	VqN/Ki/7U1f0EyJmUNWIEwVJRa9Z32TWj+5wwM5FRw/O89g/0NUXBw2gVkGFkva1EeT20HDStkc
-	6Rytd/XGms0xnYaADX9YEwrPlPkcg3WWy9jeEDRHYYIg8SkB1hn+Pgu3nW/pwgmU+DbQ5KsPdP
-X-Google-Smtp-Source: AGHT+IGJjpOjF1gEoONMW3eJFJViXG5AodzdaKYdKIgJXeEIkqy8REpwSvtzJ3VcNK/DtFxa4Brmx09wKn93tzbNHDU=
-X-Received: by 2002:a05:6902:729:b0:eb3:c364:37e with SMTP id
- 3f1490d57ef6-eb3c3640c1fmr1374039276.30.1758812857890; Thu, 25 Sep 2025
- 08:07:37 -0700 (PDT)
+	s=arc-20240116; t=1758814828; c=relaxed/simple;
+	bh=P4FiONYBncg3DGvvDQnxjY4VJKbaCaoVbnyZ6Yba09k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r/Q0LQxf14VZdzYg5hofiAUKH28iITh3NYI3eKf/wjfNP53uw1G/mERTKM1ubzF3LHncnn1Ke05/EIu6suvzRi9KWOcWL+lIQGoD3iEm5KvLizxLvVAA0krcSvLsawaa95Hb8V6Xqwj7y3O1TG8OoZEy60AoQDUlZOAZQ98d2Ds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gL4nSZAG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37627C4CEF0;
+	Thu, 25 Sep 2025 15:40:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758814828;
+	bh=P4FiONYBncg3DGvvDQnxjY4VJKbaCaoVbnyZ6Yba09k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gL4nSZAGvBRpr05w0W7S1rJJv5LP31cmFnZ80BzfbR+cCIKTaLFvIMQWWbh+RgjsD
+	 wP3h9wi8ce/WXwhs8O/UQBhN2eKnSWK+QvhvuzF6TR5WoW/zMOb5qaAQbs5XZyd0wP
+	 yP4bTgWBmuRtJI0rIY7l/esgrJt23turww5rQ554tAR6N8dHE1FkaPgWquwpWPujUg
+	 dn+yHSTYgoo6Kkm4NyiEvyRkAbCWvGZ5cfdb1Lsi33VfB3sv3HCFfO6EflBTEtGeDm
+	 A4hKJSZ+kCi88hY3fF2wRgvgYiWDki0aE4AT4ONsc+HyWLu/dzYXhpIgXsTeXvY7q/
+	 KU2MrXIB0qDwg==
+Date: Thu, 25 Sep 2025 05:40:27 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
+	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
+	changwoo@igalia.com, cgroups@vger.kernel.org,
+	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
+Subject: Re: [PATCH 13/14] sched: Add {DE,EN}QUEUE_LOCKED
+Message-ID: <aNVia1u-GVByUJtC@slm.duckdns.org>
+References: <20250910154409.446470175@infradead.org>
+ <20250910155809.800554594@infradead.org>
+ <aMItk3c5H6Z2CD4X@slm.duckdns.org>
+ <20250911094240.GW3289052@noisy.programming.kicks-ass.net>
+ <aMMzpnyx__ZgZGRc@slm.duckdns.org>
+ <20250912141904.GA3289052@noisy.programming.kicks-ass.net>
+ <aMRLIEtmcWc0XNmg@slm.duckdns.org>
+ <20250925131025.GA4067720@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250922094146.708272-1-sunjunchao@bytedance.com>
- <20250922132718.GB49638@noisy.programming.kicks-ass.net> <aNGQoPFTH2_xrd9L@infradead.org>
- <20250922145045.afc6593b4e91c55d8edefabb@linux-foundation.org>
- <20250923071607.GR3245006@noisy.programming.kicks-ass.net> <dndr5xdp3bweqtwlyixtzajxgkhxbt2qb2fzg6o2wy5msrhzi4@h3klek5hff5i>
-In-Reply-To: <dndr5xdp3bweqtwlyixtzajxgkhxbt2qb2fzg6o2wy5msrhzi4@h3klek5hff5i>
-From: Julian Sun <sunjunchao@bytedance.com>
-Date: Thu, 25 Sep 2025 23:07:24 +0800
-X-Gm-Features: AS18NWCEIRypu1nYMSOfm4MhEFu5D4ZSJZwTJZewijiycz6KgR4n8DcFX7UDH-8
-Message-ID: <CAHSKhteCMv0fUmDKHdKXhg=D-rz-Jmze5ei-Up16vMsNEy898w@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 0/3] Suppress undesirable hung task warnings.
-To: Jan Kara <jack@suse.cz>
-Cc: Peter Zijlstra <peterz@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Christoph Hellwig <hch@infradead.org>, cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org, 
-	mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	mgorman@suse.de, vschneid@redhat.com, lance.yang@linux.dev, 
-	mhiramat@kernel.org, agruenba@redhat.com, hannes@cmpxchg.org, 
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
-	muchun.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250925131025.GA4067720@noisy.programming.kicks-ass.net>
 
-Hi,
+Hello,
 
-On Wed, Sep 24, 2025 at 6:34=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Tue 23-09-25 09:16:07, Peter Zijlstra wrote:
-> > On Mon, Sep 22, 2025 at 02:50:45PM -0700, Andrew Morton wrote:
-> > > On Mon, 22 Sep 2025 11:08:32 -0700 Christoph Hellwig <hch@infradead.o=
-rg> wrote:
-> > >
-> > > > On Mon, Sep 22, 2025 at 03:27:18PM +0200, Peter Zijlstra wrote:
-> > > > > > Julian Sun (3):
-> > > > > >   sched: Introduce a new flag PF_DONT_HUNG.
-> > > > > >   writeback: Introduce wb_wait_for_completion_no_hung().
-> > > > > >   memcg: Don't trigger hung task when memcg is releasing.
-> > > > >
-> > > > > This is all quite terrible. I'm not at all sure why a task that i=
-s
-> > > > > genuinely not making progress and isn't killable should not be re=
-ported.
-> > > >
-> > > > The hung device detector is way to aggressive for very slow I/O.
-> > > > See blk_wait_io, which has been around for a long time to work
-> > > > around just that.  Given that this series targets writeback I suspe=
-ct
-> > > > it is about an overloaded device as well.
-> > >
-> > > Yup, it's writeback - the bug report is in
-> > > https://lkml.kernel.org/r/20250917212959.355656-1-sunjunchao@bytedanc=
-e.com
-> > >
-> > > Memory is big and storage is slow, there's nothing wrong if a task
-> > > which is designed to wait for writeback waits for a long time.
-> > >
-> > > Of course, there's something wrong if some other task which isn't
-> > > designed to wait for writeback gets stuck waiting for the task which
-> > > *is* designed to wait for writeback, but we'll still warn about that.
-> > >
-> > >
-> > > Regarding an implementation, I'm wondering if we can put a flag in
-> > > `struct completion' telling the hung task detector that this one is
-> > > expected to wait for long periods sometimes.  Probably messy and it
-> > > only works for completions (not semaphores, mutexes, etc).  Just
-> > > putting it out there ;)
-> >
-> > So the problem is that there *is* progress (albeit rather slowly), the
-> > watchdog just doesn't see that. Perhaps that is the thing we should loo=
-k
-> > at fixing.
-> >
-> > How about something like the below? That will 'spuriously' wake up the
-> > waiters as long as there is some progress being made. Thereby increasin=
-g
-> > the context switch counters of the tasks and thus the hung_task watchdo=
-g
-> > sees progress.
-> >
-> > This approach should be safer than the blk_wait_io() hack, which has a
-> > timer ticking, regardless of actual completions happening or not.
->
-> I like the idea. The problem with your patch is that the progress is not
-> visible with high enough granularity in wb_writeback_work->done completio=
-n.
-> That is only incremented by 1, when say a request to writeout 1GB is queu=
-ed
-> and decremented by 1 when that 1GB is written. The progress can be observ=
-ed
-> with higher granularity by wb_writeback_work->nr_pages getting decremente=
-d
-> as we submit pages for writeback but this counter still gets updated only
-> once we are done with a particular inode so if all those 1GB of data are =
-in
-> one inode there wouldn't be much to observe. So we might need to observe
-> how struct writeback_control member nr_to_write gets updated. That is
-> really updated frequently on IO submission but each filesystem updates it
-> in their writepages() function so implementing that gets messy pretty
-> quickly.
->
-> But maybe a good place to hook into for registering progress would be
-> wbc_init_bio()? Filesystems call that whenever we create new bio for writ=
-eback
-> purposes. We do have struct writeback_control available there so through
-> that we could propagate information that forward progress is being made.
->
-> What do people think?
+On Thu, Sep 25, 2025 at 03:10:25PM +0200, Peter Zijlstra wrote:
+...
+> Well, either this or scx_tasks iterator will result in lock ops for
+> every task, this is unavoidable if we want the normal p->pi_lock,
+> rq->lock (dsq->lock) taken for every sched_change caller.
+> 
+> I have the below which I would like to include in the series such that I
+> can clean up all that DEQUEUE_LOCKED stuff a bit, this being the only
+> sched_change that's 'weird'.
+> 
+> Added 'bonus' is of course one less user of the runnable_list.
+> 
+> (also, I have to note, for_each_cpu with preemption disabled is asking
+> for trouble, the enormous core count machines are no longer super
+> esoteric)
 
-Sorry for the late reply. Yes, Jan, I agree =E2=80=94 your proposal sounds
-both fine-grained and elegant. But do we really have a strong need for
-such detailed progress tracking?
+Oh yeah, we can break up every N CPUs. There's no cross-CPU atomicity
+requirement.
 
-In background writeback, for example, if the bandwidth is very low
-(e.g. avg_write_bandwidth=3D24), writeback_chunk_size() already splits
-pages into chunks of MIN_WRITEBACK_PAGES (1024). This is usually
-enough to avoid hung task warnings, so reporting progress there might
-be sufficient.
+> +	/*
+> +	 * XXX online_mask is stable due to !preempt (per bypass_lock)
+> +	 * so could this be for_each_online_cpu() ?
+>  	 */
 
-I=E2=80=99m also a bit concerned that reporting progress on every
-wbc_init_bio() could lead to excessive wakeups in normal or
-high-throughput cases, which might have side effects. Please correct
-me if I=E2=80=99m missing something.
+CPUs can go on and offline while CPUs are being bypassed. We can handle that
+in hotplug ops but I'm not sure the complexity is justified in this case.
 
->
->                                                                 Honza
->
-> > ---
-> >
-> > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> > index a07b8cf73ae2..1326193b4d95 100644
-> > --- a/fs/fs-writeback.c
-> > +++ b/fs/fs-writeback.c
-> > @@ -174,9 +174,10 @@ static void finish_writeback_work(struct wb_writeb=
-ack_work *work)
-> >               kfree(work);
-> >       if (done) {
-> >               wait_queue_head_t *waitq =3D done->waitq;
-> > +             bool force_wake =3D (jiffies - done->stamp) > HZ/2;
-> >
-> >               /* @done can't be accessed after the following dec */
-> > -             if (atomic_dec_and_test(&done->cnt))
-> > +             if (atomic_dec_and_test(&done->cnt) || force_wake)
-> >                       wake_up_all(waitq);
-> >       }
-> >  }
-> > @@ -213,7 +214,7 @@ static void wb_queue_work(struct bdi_writeback *wb,
-> >  void wb_wait_for_completion(struct wb_completion *done)
-> >  {
-> >       atomic_dec(&done->cnt);         /* put down the initial count */
-> > -     wait_event(*done->waitq, !atomic_read(&done->cnt));
-> > +     wait_event(*done->waitq, ({ done->stamp =3D jiffies; !atomic_read=
-(&done->cnt); }));
-> >  }
-> >
-> >  #ifdef CONFIG_CGROUP_WRITEBACK
-> > diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-d=
-ev-defs.h
-> > index 2ad261082bba..197593193ce3 100644
-> > --- a/include/linux/backing-dev-defs.h
-> > +++ b/include/linux/backing-dev-defs.h
-> > @@ -63,6 +63,7 @@ enum wb_reason {
-> >  struct wb_completion {
-> >       atomic_t                cnt;
-> >       wait_queue_head_t       *waitq;
-> > +     unsigned long           stamp;
-> >  };
-> >
-> >  #define __WB_COMPLETION_INIT(_waitq) \
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+>  	for_each_possible_cpu(cpu) {
+>  		struct rq *rq = cpu_rq(cpu);
+> -		struct task_struct *p, *n;
+>  
+>  		raw_spin_rq_lock(rq);
+> -
+>  		if (bypass) {
+>  			WARN_ON_ONCE(rq->scx.flags & SCX_RQ_BYPASSING);
+>  			rq->scx.flags |= SCX_RQ_BYPASSING;
+> @@ -4866,36 +4867,33 @@ static void scx_bypass(bool bypass)
+>  			WARN_ON_ONCE(!(rq->scx.flags & SCX_RQ_BYPASSING));
+>  			rq->scx.flags &= ~SCX_RQ_BYPASSING;
 
+I may be using BYPASSING being set as all tasks having been cycled. Will
+check. We may need an extra state to note that bypass switching is complete.
+Hmm... the switching is not synchronized against scheduling operations
+anymore - ie. we can end up mixing regular op and bypassed operation for the
+same scheduling event (e.g. enqueue vs. task state transitions), which can
+lead subtle state inconsistencies on the BPF scheduler side. Either the
+bypassing state should become per-task, which likely has system
+recoverability issues under lock storm conditions, or maybe we can just
+shift it to the scheduling path - e.g. decide whether to bypass or not at
+the beginning of enqueue path and then stick to it until the whole operation
+is finished.
 
-Thanks,
---=20
-Julian Sun <sunjunchao@bytedance.com>
+>  		}
+> +		raw_spin_rq_unlock(rq);
+> +	}
+> +
+> +	/* implicit RCU section due to bypass_lock */
+> +	for_each_process_thread(g, p) {
+
+I don't think this is safe. p->tasks is unlinked from __unhash_process() but
+tasks can schedule between being unhashed and the final preemt_disable() in
+do_exit() and thus the above iteration can miss tasks which may currently be
+runnable.
+
+> +		unsigned int state;
+>  
+> +		guard(raw_spinlock)(&p->pi_lock);
+> +		if (p->flags & PF_EXITING || p->sched_class != &ext_sched_class)
+> +			continue;
+> +
+> +		state = READ_ONCE(p->__state);
+> +		if (state != TASK_RUNNING && state != TASK_WAKING)
+>  			continue;
+>  
+> +		guard(__task_rq_lock)(p);
+> +		scoped_guard (sched_change, p, DEQUEUE_SAVE | DEQUEUE_MOVE) {
+> +			/* nothing */ ;
+>  		}
+> +	}
+
+This is significantly more expensive. On large systems, the number of
+threads can easily reach six digits. Iterating all of them while doing
+locking ops on each of them might become problematic depending on what the
+rest of the system is doing (unfortunately, it's not too difficult to cause
+meltdowns on some NUMA systems with cross-node traffic). I don't think
+p->tasks iterations can be broken up either.
+
+I'm sure there's a solution for all these. Maybe once bypass is set and the
+per-task iteration can be broken up, this is no longer a problem, ok maybe
+there's some other way to maintain runnable list in a way that's decoupled
+from rq lock. The interlocking requirement is relaxed on the removal side.
+There must be a way to visit all runnable tasks but visiting some tasks
+spuriously is not a problem, so there's some leeway too.
+
+As with everything, this part is a bit tricky and will need non-trivial
+amount of testing to verify that it can recover the system from BPF
+scheduler induced death sprials (e.g. migrating tasks too frequently across
+NUMA boundaries on some systems). The change guard cleanups make sense
+regardless of how the rest develops. Would it make sense to land them first?
+Once we know what to do with the core scheduling locking, I'm sure we can
+find a way to make this work accordingly.
+
+Thanks.
+
+-- 
+tejun
 
