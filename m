@@ -1,129 +1,125 @@
-Return-Path: <cgroups+bounces-10463-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10464-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 083DEBA1D09
-	for <lists+cgroups@lfdr.de>; Fri, 26 Sep 2025 00:35:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76495BA21E0
+	for <lists+cgroups@lfdr.de>; Fri, 26 Sep 2025 02:57:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EC7FA4E2510
-	for <lists+cgroups@lfdr.de>; Thu, 25 Sep 2025 22:35:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E164740BE8
+	for <lists+cgroups@lfdr.de>; Fri, 26 Sep 2025 00:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7DA322A1A;
-	Thu, 25 Sep 2025 22:35:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rjFAuv+v"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF8D1514F7;
+	Fri, 26 Sep 2025 00:57:12 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A5BD322539
-	for <cgroups@vger.kernel.org>; Thu, 25 Sep 2025 22:35:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB8426ACB;
+	Fri, 26 Sep 2025 00:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758839734; cv=none; b=EdvccCwfy5neckio5itEnUjwK9RnrUjRAeQI+KBfrBeaFCO50zfXmPqzk67zuI69UKjM1ASw8ViAjkFIMHpqwACSaKiZu/4ey9gB38bKiW55FaW9CLZ1/CQVkpQDUwaa1yaxeeuaiw6a/wFYQLWUAUNCXzOyOzJqxopQqVw7lTg=
+	t=1758848232; cv=none; b=WW0/SnLM4kTwAJraz9qobRs/EijtUDr55PM+AtPAFxFFl+yTKXN3eREHTE+0aPeTfgVZRbHZbTK0Hh6eq7TL47TeoRU1aslKAfcNJMj8+vCjCpvhJFN4kCDH1B8q7jhPiFCFOdmHm9vzi6r5wwiwVRUHZkLRDcP/d5b9LoL6yr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758839734; c=relaxed/simple;
-	bh=qJdQGZQ3zDXQmmgOLYKHh8lTGrdY+5QRtfuuX46dBNc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gpxrIhceOsQQ6nbJlNBQO7zIS0bVu7P29Kl+JLlSq0VzvahfwlqDxe1yKAec3KAoqt76BoaDDgercytywkrwmM8qbB9uctHRAV584+NNWvnjVzQ6hMz46EtRtmcdXVyDh8hOcWuf2nZPWYftBdBXeGqVVA6PQPLhk5C/RvH5vEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rjFAuv+v; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 25 Sep 2025 15:35:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758839730;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hkg5zckxQ8GP8jm1BEOp+9MhHJlmSLMqWWjnVJllXHw=;
-	b=rjFAuv+vIIMF4ssQt7iSaVlPj42f/9JuK/CYoEfllfXBMH/2REL4+FHvtzF/DVKNZen3kW
-	/hbHNQNKe8LTHEsW+5blhwoc8BpG/Tik53Ff8AgJSWsnzGN8OXRO1DKI2t48WnS5pyTKtO
-	KOvRhKrcSCOigK4YnyWCa3/DEkMt/co=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Zi Yan <ziy@nvidia.com>
-Cc: David Hildenbrand <david@redhat.com>, 
-	Qi Zheng <zhengqi.arch@bytedance.com>, hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com, 
-	roman.gushchin@linux.dev, muchun.song@linux.dev, lorenzo.stoakes@oracle.com, 
-	harry.yoo@oracle.com, baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, 
-	npache@redhat.com, ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org, 
-	lance.yang@linux.dev, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] mm: thp: reparent the split queue during memcg
- offline
-Message-ID: <wlbplybaecktirfzygddbvrerzrozzfudlqavkbmhnmoyt6xmf@64ikayr3fdlo>
-References: <cover.1758618527.git.zhengqi.arch@bytedance.com>
- <55370bda7b2df617033ac12116c1712144bb7591.1758618527.git.zhengqi.arch@bytedance.com>
- <b041b58d-b0e4-4a01-a459-5449c232c437@redhat.com>
- <46da5d33-20d5-4b32-bca5-466474424178@bytedance.com>
- <39f22c1a-705e-4e76-919a-2ca99d1ed7d6@redhat.com>
- <BF7CAAA2-E42B-4D90-8E35-C5936596D4EB@nvidia.com>
- <tyl5nag4exta7mmxejhzd5xduulfy5pjzde4mpklscqoygkaso@zdyadmle3wjj>
+	s=arc-20240116; t=1758848232; c=relaxed/simple;
+	bh=4mX3EcmuNBcUPEBlDvx8Usz+XeVEpNdSEwjS9wu5/Aw=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=UHnR1np/J3harX+IE1+Ou/19kDwtsvms2Y5SW4yM0q2bNMCXa0VCnlZe3xTXE0P9bauGq8eWGDmCcz1LqE7wMMB5CkE2ra1Axs4gZRGn+Gf5cIZwnysspc+DXQeuE/utLeBX2edeT5BugOJQOhfHQV6D1797j0Q/r8dsaWTNthk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cXsc814vfzYQv3Z;
+	Fri, 26 Sep 2025 08:56:56 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 3F0771A13AF;
+	Fri, 26 Sep 2025 08:57:06 +0800 (CST)
+Received: from [10.174.179.143] (unknown [10.174.179.143])
+	by APP4 (Coremail) with SMTP id gCh0CgBHCmLf5NVoUKZVAw--.24830S3;
+	Fri, 26 Sep 2025 08:57:05 +0800 (CST)
+Subject: Re: [PATCH 01/10] blk-cgroup: use cgroup lock and rcu to protect
+ iterating blkcg blkgs
+To: Yu Kuai <hailan@yukuai.org.cn>, Bart Van Assche <bvanassche@acm.org>,
+ Yu Kuai <yukuai1@huaweicloud.com>, tj@kernel.org, ming.lei@redhat.com,
+ nilay@linux.ibm.com, hch@lst.de, josef@toxicpanda.com, axboe@kernel.dk,
+ akpm@linux-foundation.org, vgoyal@redhat.com
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, yi.zhang@huawei.com,
+ yangerkun@huawei.com, johnny.chenyi@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20250925081525.700639-1-yukuai1@huaweicloud.com>
+ <20250925081525.700639-2-yukuai1@huaweicloud.com>
+ <bc6fe04d-3245-40dd-aa30-c3a3acb670c2@acm.org>
+ <01e7eccd-3529-4d12-8ad2-fd9e034a026d@yukuai.org.cn>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <688275d5-fbb4-08b3-45e1-798ad8cf77fc@huaweicloud.com>
+Date: Fri, 26 Sep 2025 08:57:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <01e7eccd-3529-4d12-8ad2-fd9e034a026d@yukuai.org.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <tyl5nag4exta7mmxejhzd5xduulfy5pjzde4mpklscqoygkaso@zdyadmle3wjj>
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:gCh0CgBHCmLf5NVoUKZVAw--.24830S3
+X-Coremail-Antispam: 1UD129KBjvdXoWruF1rXF15Ar4kuw1rAr1UKFg_yoWftwbEva
+	n0y3s7Gw15Wwnaq3WrGrnxJFZ5Ka18XryUCF48AFW7twnxAa45G3ZrurWxZFZYka1qywn2
+	gr1ku348Jr4aqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbfAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7V
+	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6x
+	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
+	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRidbbtUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Thu, Sep 25, 2025 at 03:15:26PM -0700, Shakeel Butt wrote:
-> On Thu, Sep 25, 2025 at 03:49:52PM -0400, Zi Yan wrote:
-> > On 25 Sep 2025, at 15:35, David Hildenbrand wrote:
-> > 
-> > > On 25.09.25 08:11, Qi Zheng wrote:
-> > >> Hi David,
-> > >
-> > > Hi :)
-> > >
-> > > [...]
-> > >
-> > >>>> +++ b/include/linux/mmzone.h
-> > >>>> @@ -1346,6 +1346,7 @@ struct deferred_split {
-> > >>>>        spinlock_t split_queue_lock;
-> > >>>>        struct list_head split_queue;
-> > >>>>        unsigned long split_queue_len;
-> > >>>> +    bool is_dying;
-> > >>>
-> > >>> It's a bit weird to query whether the "struct deferred_split" is dying.
-> > >>> Shouldn't this be a memcg property? (and in particular, not exist for
-> > >>
-> > >> There is indeed a CSS_DYING flag. But we must modify 'is_dying' under
-> > >> the protection of the split_queue_lock, otherwise the folio may be added
-> > >> back to the deferred_split of child memcg.
-> > >
-> > > Is there no way to reuse the existing mechanisms, and find a way to have the shrinker / queue locking sync against that?
-> > >
-> > > There is also the offline_css() function where we clear CSS_ONLINE. But it happens after calling ss->css_offline(css);
-> > 
-> > I see CSS_DYING will be set by kill_css() before offline_css() is called.
-> > Probably the code can check CSS_DYING instead.
-> > 
-> > >
-> > > Being able to query "is the memcg going offline" and having a way to sync against that would be probably cleanest.
-> > 
-> > So basically, something like:
-> > 1. at folio_split_queue_lock*() time, get folio’s memcg or
-> >    its parent memcg until there is no CSS_DYING set or CSS_ONLINE is set.
-> > 2. return the associated deferred_split_queue.
-> > 
+Hi,
+
+在 2025/09/26 1:07, Yu Kuai 写道:
+> Hi,
 > 
-> Yes, css_is_dying() can be used but please note that there is a rcu
-> grace period between setting CSS_DYING and clearing CSS_ONLINE (i.e.
-> reparenting deferred split queue) and during that period the deferred
-> split THPs of the dying memcg will be hidden from shrinkers (which
-> might be fine).
+> 在 2025/9/25 23:57, Bart Van Assche 写道:
+>> On 9/25/25 1:15 AM, Yu Kuai wrote:
+>>> It's safe to iterate blkgs with cgroup lock or rcu lock held, prevent
+>>> nested queue_lock under rcu lock, and prepare to convert protecting
+>>> blkcg with blkcg_mutex instead of queuelock.
+>>
+>> Iterating blkgs without holding q->queue_lock is safe but accessing the
+>> blkg members without holding that lock is not safe since q->queue_lock
+>> is acquired by all code that modifies blkg members. Should perhaps a new
+>> spinlock be introduced to serialize blkg modifications?
 
-BTW if this period is not acceptable and we don't want to add is_dying
-to struct deferred_split, we can use something similar to what list_lru
-does in the similar situation i.e. set a special value (LONG_MIN) in its
-nr_items variable. That is make split_queue_len a long and set it to
-LONG_MIN during memcg offlining/reparenting.
+Actually, only blkcg_print_blkgs() is using rcu in this patch, and take
+a look at the callers, I don't see anyone have to hold queue_lock. Can
+you explain in detail which field from blkg is problematic in this
+patch?
+
+Thanks,
+Kuai
+
+>>
+> No need for a new lock, I think blkcg->lock can do that.
+> 
+> Thanks,
+> Kuai
+> 
+>> Thanks,
+>>
+>> Bart.
+>>
+> .
+> 
+
 
