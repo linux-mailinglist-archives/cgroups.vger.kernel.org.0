@@ -1,174 +1,134 @@
-Return-Path: <cgroups+bounces-10474-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10475-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC71BA50DF
-	for <lists+cgroups@lfdr.de>; Fri, 26 Sep 2025 22:22:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26C9CBA53B8
+	for <lists+cgroups@lfdr.de>; Fri, 26 Sep 2025 23:39:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48FC0383D61
-	for <lists+cgroups@lfdr.de>; Fri, 26 Sep 2025 20:22:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE1DA6248CD
+	for <lists+cgroups@lfdr.de>; Fri, 26 Sep 2025 21:39:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F4112285060;
-	Fri, 26 Sep 2025 20:22:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CFD726B2D2;
+	Fri, 26 Sep 2025 21:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YldOrLMh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Me9WeMme"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC6D6270EAB;
-	Fri, 26 Sep 2025 20:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DDCF17BA6;
+	Fri, 26 Sep 2025 21:39:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758918172; cv=none; b=B1mQyLEmKb2fmYPQuhC6v70tDZ8PFkftpyZfUyl6v8udZFdMwZ6b/Jy4/PEmGI3H0fXICeBotezdhiV5Vzh7/L/F/9HTTVuEnk/sCAh+GYP3by7wxKkLBAUWuRZObr4x775hfCs077OfvpAgyvMOie1OR8EEMbz6nV5rBbP9jnc=
+	t=1758922764; cv=none; b=s6/oiXJ4q47fwWDc3cFQx76rNx71mjhZ4YAfcc47phWQp0WM4zMttPuOHBhha3Cw7p9SIIPFIGMZqJmElt5i+DzeXsU2CIeg6jPgy05YJe6j78CnLNeOncgJLqd06HSeoKv04BZ83+LYEymEao0f1RpkjA2qADVSXljN2Wa9BIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758918172; c=relaxed/simple;
-	bh=zeRZTgjI1eA9qSzzRchD1N5m8fTC0ZL6vbZ3BOloNrY=;
-	h=Date:Message-ID:From:To:Cc:Subject; b=jzrcl1qW5e+gZ6dJR3KWinTWBB7zytor/F6RhlqeWv/zoX7LeN8zPhs9jr8244JvhxnYTtrscrWlikJHUg4fwYu9Qo7KwE59WwHkDQUUyhTZmn3OMi+ZFQ3KGCZH9P2ufP9EXgZ/oe34Fb0Qiaavfhao4fTJGWml2o3fAY3r5kQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YldOrLMh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 187E3C4CEF4;
-	Fri, 26 Sep 2025 20:22:51 +0000 (UTC)
+	s=arc-20240116; t=1758922764; c=relaxed/simple;
+	bh=y2HsFa4mUc1wJo6FT6LcQXE3U4dYpvtDPvCC2BQtCW8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cdZQfI9XgjH0acpcZDgbIqtFaTdSj4GN6CzCbBRGosOUjbM8EAe8M2aIrMJZ6tHF+FOMgFZTZtW/ji38gJQWo16qVfTdsU+xkYhFXMeLy5J/XCCjRB2QQDLWcNAp4TJRQYbdrpBFwrpKRhRplNl5R7K/XEsRbdqXbljZzTKUPpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Me9WeMme; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68B4EC4CEF4;
+	Fri, 26 Sep 2025 21:39:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758918171;
-	bh=zeRZTgjI1eA9qSzzRchD1N5m8fTC0ZL6vbZ3BOloNrY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=YldOrLMh8Gc/Qa/goM0tlQp0wplzympB3dPqvKF2MATkZZdwvWthfMKAI+oO53W4X
-	 6e/QPAuRkuTf7sVHObYFEctJ22vuEUep547afNYMUK8qTJ5cyHseNfrLhpqmTBAvek
-	 Zaa952NSgSb0nyzQ5rZ4Kvn94WlRXgDFCE63fFu6k/gLxYWYDt/jZF5EsoYoqdOa1f
-	 rNTgPeKE8HvFimsj8fYJhV/i/vYLjbO0KPAwuXaMngimGvIexzEdt0OnKOMWS+KzZh
-	 Ukfm167c+CtM5ALq+WPVrwR7qlUA8RRnrvNkStgJnWG/YMiFc2vJdoe5cKHsJueNTI
-	 MHzOOdkQGA0cw==
-Date: Fri, 26 Sep 2025 10:22:50 -1000
-Message-ID: <21156f925598248ffe7d2d5f00b212da@kernel.org>
+	s=k20201202; t=1758922762;
+	bh=y2HsFa4mUc1wJo6FT6LcQXE3U4dYpvtDPvCC2BQtCW8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Me9WeMme6rIwdLABYykyG5eNlDK5NFeKiPOz27CP5s++NyyY6mAhY2H4DgUko0w29
+	 lxBJVv7vSYjeXQfha7cgp7tgr1deluwwe8lYKsi1PQlpqgqOWH6CScys8w0NhR42Pg
+	 IyNp08s/PhltIbHg00rg59eMahWe6qOJPZtihAVeaC40jd/joXpTBuf64COhAIzSm9
+	 jlz4Q0qe06dNoBT1HeNhMYrBosdNNSSrzT/Ob9K/6EkWnGwfdPYj+ifzcVU+MD75Ph
+	 dbn4a8oAja4YlPi+T2i4wR7gVLg+WTGEUasL+ruTx2Iwij5wLSxJNpwuSkTkUEvQZ/
+	 fbxQLsrD3Yh5w==
+Date: Fri, 26 Sep 2025 11:39:21 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, Michal Koutný <mkoutny@suse.com>, Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org
-Subject: [GIT PULL] cgroup: Changes for v6.18
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
+	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
+	changwoo@igalia.com, cgroups@vger.kernel.org,
+	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
+Subject: Re: [PATCH 12/14] sched: Add shared runqueue locking to
+ __task_rq_lock()
+Message-ID: <aNcICdscrYDUMKiU@slm.duckdns.org>
+References: <20250910155809.684653538@infradead.org>
+ <aMNnLenCytO_KEKg@slm.duckdns.org>
+ <20250912115459.GZ3289052@noisy.programming.kicks-ass.net>
+ <aMRexZ_SIUVgkIpZ@slm.duckdns.org>
+ <20250915083815.GB3289052@noisy.programming.kicks-ass.net>
+ <aMnk5Wcdr2q6BWqR@slm.duckdns.org>
+ <aMnnslT_mUfAtytN@slm.duckdns.org>
+ <20250925083533.GW4067720@noisy.programming.kicks-ass.net>
+ <aNW3du48v3PvwPbq@slm.duckdns.org>
+ <20250926103628.GE4067720@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250926103628.GE4067720@noisy.programming.kicks-ass.net>
 
-The following changes since commit 94a4acfec14615e971eb2c9e1fa6c992c85ff6c6:
+Hello,
 
-  cgroup/psi: Set of->priv to NULL upon file release (2025-08-22 07:47:43 -1000)
+On Fri, Sep 26, 2025 at 12:36:28PM +0200, Peter Zijlstra wrote:
+> On Thu, Sep 25, 2025 at 11:43:18AM -1000, Tejun Heo wrote:
+> > Yes, I was on a similar train of thought. The only reasonable way that I can
+> > think of for solving this for BPF managed tasks is giving each task its own
+> > inner sched lock, which makes sense as all sched operations (except for
+> > things like watchdog) are per-task and we don't really need wider scope
+> > locking.
+> 
+> Like I've said before; I really don't understand how that would be
+> helpful at all.
+> 
+> How can you migrate a task by holding a per-task lock?
 
-are available in the Git repository at:
+Let's see whether I'm completely confused. Let's say we have p->sub_lock
+which is optionally grabbed by task_rq_lock() if requested by the current
+sched class (maybe it's a sched_class flag). Then, whoever is holding the
+sub_lock would exclude property and other changes to the task.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git tags/cgroup-for-6.18
+In sched_ext, let's say p->sub_lock nests inside dsq locks. Also, right now,
+we're piggy backing on rq lock for local DSQs. We'd need to make local DSQs
+use their own locks like user DSQs. Then,
 
-for you to fetch changes up to 8f0fdbd4a06bf795c68bc9839d9c349ab592654f:
+- If a task needs to be migrated either during enqueue through
+  process_ddsp_deferred_locals() or during dispatch from BPF through
+  finish_dispatch(): Leave rq locks alone. Grab sub_lock inside
+  dispatch_to_local_dsq() after grabbing the target DSQ's lock.
 
-  cpuset: remove is_prs_invalid helper (2025-09-22 12:57:46 -1000)
+- scx_bpf_dsq_move_to_local() from dispatch: This is a bit tricky as we need
+  to scan the tasks on the source DSQ to find the task to dispatch. However,
+  there's a patch being worked on to add rcu protected pointer to the first
+  task which would be the task to be consumed in vast majority of cases, so
+  the fast path wouldn't be complicated - grab sub_lock, do the moving. If
+  the first task isn't a good candidate, we'd have to grab DSQ lock, iterate
+  looking for the right candidate, unlock DSQ and grab sub_lock (or
+  trylock), and see if the task is still on the DSQ and then relock and
+  remove.
 
-----------------------------------------------------------------
-cgroup: Changes for v6.18
+- scx_bpf_dsq_move() during BPF iteration: DSQ is unlocked during each
+  iteration visit, so this is straightforward. Grab sub-lock and do the rest
+  the same.
 
-- Extensive cpuset code cleanup and refactoring work with no functional
-  changes: CPU mask computation logic refactoring, introducing new helpers,
-  removing redundant code paths, and improving error handling for better
-  maintainability.
+Wouldn't something like the above provide equivalent synchronization as the
+dynamic lock approach? Whoever is holding sub_lock would be guaranteed that
+the task won't be migrating while the lock is held.
 
-- A few bug fixes to cpuset including fixes for partition creation failures
-  when isolcpus is in use, missing error returns, and null pointer access
-  prevention in free_tmpmasks().
+However, thinking more about it. I'm unsure how e.g. the actual migration
+would work. The actual migration is done by: deactivate_task() ->
+set_task_cpu() -> switch rq locks -> activate_task(). Enqueueing/dequeueing
+steps have operations that depend on rq lock - psi updates, uclamp updates
+and so on. How would they work?
 
-- Core cgroup changes include replacing the global percpu_rwsem with
-  per-threadgroup rwsem when writing to cgroup.procs for better scalability,
-  workqueue conversions to use WQ_PERCPU and system_percpu_wq to prepare for
-  workqueue default switching from percpu to unbound, and removal of unused
-  code including the post_attach callback.
+Thanks.
 
-- New cgroup.stat.local time accounting feature that tracks frozen time
-  duration.
-
-- Misc changes including selftests updates (new freezer time tests and
-  backward compatibility fixes), documentation sync, string function safety
-  improvements, and 64-bit division fixes.
-
-----------------------------------------------------------------
-Bagas Sanjaya (1):
-      Documentation: cgroup-v2: Sync manual toctree
-
-Chen Ridong (21):
-      cpuset: remove redundant CS_ONLINE flag
-      cpuset: decouple tmpmasks and cpumasks freeing in cgroup
-      cpuset: separate tmpmasks and cpuset allocation logic
-      cpuset: add helpers for cpus read and cpuset_mutex locks
-      cpuset: move the root cpuset write check earlier
-      cpuset: remove unused assignment to trialcs->partition_root_state
-      cpuset: change return type of is_partition_[in]valid to bool
-      cpuset: Refactor exclusive CPU mask computation logic
-      cpuset: refactor CPU mask buffer parsing logic
-      cpuset: introduce cpus_excl_conflict and mems_excl_conflict helpers
-      cpuset: refactor out validate_partition
-      cpuset: refactor cpus_allowed_validate_change
-      cpuset: introduce partition_cpus_change
-      cpuset: use parse_cpulist for setting cpus.exclusive
-      cpuset: use partition_cpus_change for setting exclusive cpus
-      cpuset: fix failure to enable isolated partition when containing isolcpus
-      cpuset: Use new excpus for nocpu error check when enabling root partition
-      cpuset: fix missing error return in update_cpumask
-      cpuset: remove redundant special case for null input in node mask update
-      cpuset: remove impossible warning in update_parent_effective_cpumask
-      cpuset: remove is_prs_invalid helper
-
-Chuyi Zhou (3):
-      cpuset: Don't always flush cpuset_migrate_mm_wq in cpuset_write_resmask
-      cpuset: Defer flushing of the cpuset_migrate_mm_wq to task_work
-      cgroup: Remove unused cgroup_subsys::post_attach
-
-Marco Crivellari (2):
-      cgroup: replace use of system_wq with system_percpu_wq
-      cgroup: WQ_PERCPU added to alloc_workqueue users
-
-Michal Koutný (1):
-      selftests: cgroup: Make test_pids backwards compatible
-
-Tejun Heo (2):
-      cgroup: Remove unused local variables from cgroup_procs_write_finish()
-      cgroup: Merge branch 'for-6.17-fixes' into for-6.18
-
-Thorsten Blum (1):
-      cgroup: Replace deprecated strcpy() with strscpy()
-
-Tiffany Yang (3):
-      cgroup: cgroup.stat.local time accounting
-      cgroup: selftests: Add tests for freezer time
-      cgroup: Fix 64-bit division in cgroup.stat.local
-
-Waiman Long (1):
-      cgroup/cpuset: Prevent NULL pointer access in free_tmpmasks()
-
-Yi Tao (3):
-      cgroup: refactor the cgroup_attach_lock code to make it clearer
-      cgroup: relocate cgroup_attach_lock within cgroup_procs_write_start
-      cgroup: replace global percpu_rwsem with per threadgroup resem when writing to cgroup.procs
-
-pengdonglin (2):
-      cgroup: Remove redundant rcu_read_lock/unlock() in spin_lock
-      cgroup/cpuset: Remove redundant rcu_read_lock/unlock() in spin_lock
-
- Documentation/admin-guide/cgroup-v2.rst            |  33 +-
- include/linux/cgroup-defs.h                        |  43 +-
- include/linux/cgroup.h                             |   5 +
- include/linux/sched/signal.h                       |   4 +
- init/init_task.c                                   |   3 +
- kernel/cgroup/cgroup-internal.h                    |  11 +-
- kernel/cgroup/cgroup-v1.c                          |  19 +-
- kernel/cgroup/cgroup.c                             | 199 ++++--
- kernel/cgroup/cpuset-internal.h                    |   5 +-
- kernel/cgroup/cpuset-v1.c                          |  12 +-
- kernel/cgroup/cpuset.c                             | 752 +++++++++++----------
- kernel/cgroup/debug.c                              |   4 -
- kernel/cgroup/freezer.c                            |  16 +-
- kernel/fork.c                                      |   4 +
- tools/testing/selftests/cgroup/lib/cgroup_util.c   |  12 +
- .../selftests/cgroup/lib/include/cgroup_util.h     |   1 +
- tools/testing/selftests/cgroup/test_freezer.c      | 663 ++++++++++++++++++
- tools/testing/selftests/cgroup/test_pids.c         |   3 +
- 18 files changed, 1355 insertions(+), 434 deletions(-)
+-- 
+tejun
 
