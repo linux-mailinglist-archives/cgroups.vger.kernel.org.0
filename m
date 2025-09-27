@@ -1,134 +1,121 @@
-Return-Path: <cgroups+bounces-10475-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10476-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C9CBA53B8
-	for <lists+cgroups@lfdr.de>; Fri, 26 Sep 2025 23:39:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F131BA5882
+	for <lists+cgroups@lfdr.de>; Sat, 27 Sep 2025 05:23:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE1DA6248CD
-	for <lists+cgroups@lfdr.de>; Fri, 26 Sep 2025 21:39:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 530091BC681C
+	for <lists+cgroups@lfdr.de>; Sat, 27 Sep 2025 03:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CFD726B2D2;
-	Fri, 26 Sep 2025 21:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Me9WeMme"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1C0A1D7984;
+	Sat, 27 Sep 2025 03:23:01 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DDCF17BA6;
-	Fri, 26 Sep 2025 21:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2D519047A;
+	Sat, 27 Sep 2025 03:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758922764; cv=none; b=s6/oiXJ4q47fwWDc3cFQx76rNx71mjhZ4YAfcc47phWQp0WM4zMttPuOHBhha3Cw7p9SIIPFIGMZqJmElt5i+DzeXsU2CIeg6jPgy05YJe6j78CnLNeOncgJLqd06HSeoKv04BZ83+LYEymEao0f1RpkjA2qADVSXljN2Wa9BIM=
+	t=1758943381; cv=none; b=bbsJZIneZc0nX9xgxtF56HG8K0zjSCNcJUNCzTkntuo+xXOvJDqWKuSzJ1wmAy4KU1qGPkKPqqpFv4IHnLnqTMZiqrAdGk7no2ch/s2s7GanwE1SSrdncMqLnXHS+mMuKipQ9smwU1/xfgqq0rljzcKMmRAE9klASIWNzZu9m+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758922764; c=relaxed/simple;
-	bh=y2HsFa4mUc1wJo6FT6LcQXE3U4dYpvtDPvCC2BQtCW8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cdZQfI9XgjH0acpcZDgbIqtFaTdSj4GN6CzCbBRGosOUjbM8EAe8M2aIrMJZ6tHF+FOMgFZTZtW/ji38gJQWo16qVfTdsU+xkYhFXMeLy5J/XCCjRB2QQDLWcNAp4TJRQYbdrpBFwrpKRhRplNl5R7K/XEsRbdqXbljZzTKUPpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Me9WeMme; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68B4EC4CEF4;
-	Fri, 26 Sep 2025 21:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758922762;
-	bh=y2HsFa4mUc1wJo6FT6LcQXE3U4dYpvtDPvCC2BQtCW8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Me9WeMme6rIwdLABYykyG5eNlDK5NFeKiPOz27CP5s++NyyY6mAhY2H4DgUko0w29
-	 lxBJVv7vSYjeXQfha7cgp7tgr1deluwwe8lYKsi1PQlpqgqOWH6CScys8w0NhR42Pg
-	 IyNp08s/PhltIbHg00rg59eMahWe6qOJPZtihAVeaC40jd/joXpTBuf64COhAIzSm9
-	 jlz4Q0qe06dNoBT1HeNhMYrBosdNNSSrzT/Ob9K/6EkWnGwfdPYj+ifzcVU+MD75Ph
-	 dbn4a8oAja4YlPi+T2i4wR7gVLg+WTGEUasL+ruTx2Iwij5wLSxJNpwuSkTkUEvQZ/
-	 fbxQLsrD3Yh5w==
-Date: Fri, 26 Sep 2025 11:39:21 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
-	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
-	changwoo@igalia.com, cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
-Subject: Re: [PATCH 12/14] sched: Add shared runqueue locking to
- __task_rq_lock()
-Message-ID: <aNcICdscrYDUMKiU@slm.duckdns.org>
-References: <20250910155809.684653538@infradead.org>
- <aMNnLenCytO_KEKg@slm.duckdns.org>
- <20250912115459.GZ3289052@noisy.programming.kicks-ass.net>
- <aMRexZ_SIUVgkIpZ@slm.duckdns.org>
- <20250915083815.GB3289052@noisy.programming.kicks-ass.net>
- <aMnk5Wcdr2q6BWqR@slm.duckdns.org>
- <aMnnslT_mUfAtytN@slm.duckdns.org>
- <20250925083533.GW4067720@noisy.programming.kicks-ass.net>
- <aNW3du48v3PvwPbq@slm.duckdns.org>
- <20250926103628.GE4067720@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1758943381; c=relaxed/simple;
+	bh=kg1d0MTY71zfQLb6meJ6ncRhMBIMtCldbRRgQF/Fyog=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=hKCfXvO/QbMa2/4kVmXDV6NFMRBkKIxy07MeLSFwpJYgtT+cynHE0Z9sWoyt6C4ce7Rf+gTt3x1ge3Ig5Na4Tb+cr6rNA8cxA6wor+XEbEnfItlr/TochBhXdikUI8TcZzhm4zuuu3ZtOuEs8y7D/yIjvZxbR23uaAwaUmtufmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4cYXn04fPVztTZc;
+	Sat, 27 Sep 2025 11:21:56 +0800 (CST)
+Received: from dggpemf500002.china.huawei.com (unknown [7.185.36.57])
+	by mail.maildlp.com (Postfix) with ESMTPS id EE906140121;
+	Sat, 27 Sep 2025 11:22:48 +0800 (CST)
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemf500002.china.huawei.com (7.185.36.57) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Sat, 27 Sep 2025 11:22:47 +0800
+Subject: Re: [PATCH v3 01/14] ACPI: APEI: Remove redundant
+ rcu_read_lock/unlock() in spin_lock
+To: pengdonglin <dolinux.peng@gmail.com>, <tj@kernel.org>,
+	<tony.luck@intel.com>, <jani.nikula@linux.intel.com>, <ap420073@gmail.com>,
+	<jv@jvosburgh.net>, <freude@linux.ibm.com>, <bcrl@kvack.org>,
+	<trondmy@kernel.org>, <longman@redhat.com>, <kees@kernel.org>
+CC: <bigeasy@linutronix.de>, <hdanton@sina.com>, <paulmck@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-rt-devel@lists.linux.dev>,
+	<linux-nfs@vger.kernel.org>, <linux-aio@kvack.org>,
+	<linux-fsdevel@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <intel-gfx@lists.freedesktop.org>,
+	<linux-wireless@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<linux-s390@vger.kernel.org>, <cgroups@vger.kernel.org>, "Rafael J. Wysocki"
+	<rafael@kernel.org>, pengdonglin <pengdonglin@xiaomi.com>
+References: <20250916044735.2316171-1-dolinux.peng@gmail.com>
+ <20250916044735.2316171-2-dolinux.peng@gmail.com>
+From: Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <03ad08d9-4510-19fb-bbad-652159308119@huawei.com>
+Date: Sat, 27 Sep 2025 11:22:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250926103628.GE4067720@noisy.programming.kicks-ass.net>
+In-Reply-To: <20250916044735.2316171-2-dolinux.peng@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ dggpemf500002.china.huawei.com (7.185.36.57)
 
-Hello,
-
-On Fri, Sep 26, 2025 at 12:36:28PM +0200, Peter Zijlstra wrote:
-> On Thu, Sep 25, 2025 at 11:43:18AM -1000, Tejun Heo wrote:
-> > Yes, I was on a similar train of thought. The only reasonable way that I can
-> > think of for solving this for BPF managed tasks is giving each task its own
-> > inner sched lock, which makes sense as all sched operations (except for
-> > things like watchdog) are per-task and we don't really need wider scope
-> > locking.
+On 2025/9/16 12:47, pengdonglin wrote:
+> From: pengdonglin <pengdonglin@xiaomi.com>
 > 
-> Like I've said before; I really don't understand how that would be
-> helpful at all.
+> Since commit a8bb74acd8efe ("rcu: Consolidate RCU-sched update-side function definitions")
+> there is no difference between rcu_read_lock(), rcu_read_lock_bh() and
+> rcu_read_lock_sched() in terms of RCU read section and the relevant grace
+> period. That means that spin_lock(), which implies rcu_read_lock_sched(),
+> also implies rcu_read_lock().
 > 
-> How can you migrate a task by holding a per-task lock?
+> There is no need no explicitly start a RCU read section if one has already
+> been started implicitly by spin_lock().
+> 
+> Simplify the code and remove the inner rcu_read_lock() invocation.
+> 
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: Hanjun Guo <guohanjun@huawei.com>
+> Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> Signed-off-by: pengdonglin <dolinux.peng@gmail.com>
+> ---
+>   drivers/acpi/apei/ghes.c | 2 --
+>   1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index a0d54993edb3..97ee19f2cae0 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+> @@ -1207,12 +1207,10 @@ static int ghes_notify_hed(struct notifier_block *this, unsigned long event,
+>   	int ret = NOTIFY_DONE;
+>   
+>   	spin_lock_irqsave(&ghes_notify_lock_irq, flags);
+> -	rcu_read_lock();
+>   	list_for_each_entry_rcu(ghes, &ghes_hed, list) {
+>   		if (!ghes_proc(ghes))
+>   			ret = NOTIFY_OK;
+>   	}
+> -	rcu_read_unlock();
+>   	spin_unlock_irqrestore(&ghes_notify_lock_irq, flags);
+>   
+>   	return ret;
 
-Let's see whether I'm completely confused. Let's say we have p->sub_lock
-which is optionally grabbed by task_rq_lock() if requested by the current
-sched class (maybe it's a sched_class flag). Then, whoever is holding the
-sub_lock would exclude property and other changes to the task.
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
 
-In sched_ext, let's say p->sub_lock nests inside dsq locks. Also, right now,
-we're piggy backing on rq lock for local DSQs. We'd need to make local DSQs
-use their own locks like user DSQs. Then,
-
-- If a task needs to be migrated either during enqueue through
-  process_ddsp_deferred_locals() or during dispatch from BPF through
-  finish_dispatch(): Leave rq locks alone. Grab sub_lock inside
-  dispatch_to_local_dsq() after grabbing the target DSQ's lock.
-
-- scx_bpf_dsq_move_to_local() from dispatch: This is a bit tricky as we need
-  to scan the tasks on the source DSQ to find the task to dispatch. However,
-  there's a patch being worked on to add rcu protected pointer to the first
-  task which would be the task to be consumed in vast majority of cases, so
-  the fast path wouldn't be complicated - grab sub_lock, do the moving. If
-  the first task isn't a good candidate, we'd have to grab DSQ lock, iterate
-  looking for the right candidate, unlock DSQ and grab sub_lock (or
-  trylock), and see if the task is still on the DSQ and then relock and
-  remove.
-
-- scx_bpf_dsq_move() during BPF iteration: DSQ is unlocked during each
-  iteration visit, so this is straightforward. Grab sub-lock and do the rest
-  the same.
-
-Wouldn't something like the above provide equivalent synchronization as the
-dynamic lock approach? Whoever is holding sub_lock would be guaranteed that
-the task won't be migrating while the lock is held.
-
-However, thinking more about it. I'm unsure how e.g. the actual migration
-would work. The actual migration is done by: deactivate_task() ->
-set_task_cpu() -> switch rq locks -> activate_task(). Enqueueing/dequeueing
-steps have operations that depend on rq lock - psi updates, uclamp updates
-and so on. How would they work?
-
-Thanks.
-
--- 
-tejun
+Thanks
+Hanjun
 
