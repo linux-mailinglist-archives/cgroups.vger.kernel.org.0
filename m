@@ -1,212 +1,180 @@
-Return-Path: <cgroups+bounces-10483-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10484-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BABFBA701A
-	for <lists+cgroups@lfdr.de>; Sun, 28 Sep 2025 13:45:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25B3FBA7471
+	for <lists+cgroups@lfdr.de>; Sun, 28 Sep 2025 18:00:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4691917AB04
-	for <lists+cgroups@lfdr.de>; Sun, 28 Sep 2025 11:45:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CD52188FEF8
+	for <lists+cgroups@lfdr.de>; Sun, 28 Sep 2025 16:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 248892DAFD2;
-	Sun, 28 Sep 2025 11:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4578222A4D8;
+	Sun, 28 Sep 2025 16:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JIq1Lufp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F6zhNg0k"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1C9221DB1
-	for <cgroups@vger.kernel.org>; Sun, 28 Sep 2025 11:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393661C861E
+	for <cgroups@vger.kernel.org>; Sun, 28 Sep 2025 16:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759059936; cv=none; b=uZTpH6w/uXwvWKpNZg4W7+2UvxPUZhGdtdLunTkzmr8OiDz+hEFftXAOa30QW8azOTbJPJ6bJRfmj//6i8Au/sHpJ4iYrOZLdUdP+7HnXtV3/z5IIhREOSmBmVy0GrnfSelkcnCP+S2tZl1hgosrUGfgdogmTMeMiMlsAH1ddbY=
+	t=1759075246; cv=none; b=NPIozKmzBc3hxvkrUeNeGeRjvic+8Vgjgt72c02WGzUk8pkhprIpZGy1blDnW6LyQ2HzssT+9l8Grj7qwMVzWiUBUYS04jXlS0r4BVmfjU5tk0j8qohD2YMl8cUd06tOicRmzQ9eplc0dWO712XqSbAmy32WOxyZti45p2JIwaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759059936; c=relaxed/simple;
-	bh=dOaiC7hPdRdNRTiK3Li6yW2D0QVnTDFXT2W26tA/kaY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ew7ylWreuIOsmd/kVs0mead5h4kbYyimEs55UK8q0oBBnCV+/RFLG5NFDA+Y0dJ9AGwYy2meyWn5mYg24kIJSbFKMS+IhSGEKorDBIP+crR9uwrq5Mnh+R8rHQ3BmTHo7iMAz8+/YkV05ddsBS0YYZePsngO1aRNcihcLkawHGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JIq1Lufp; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759059920;
+	s=arc-20240116; t=1759075246; c=relaxed/simple;
+	bh=9LrQVIBHMJJ9SOBDZ8aAkPl2odbwkgagrOP9lMew+n8=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=S6XM2p6TmVzBZDQiFYNVtP7+GNYhmEJbuGyc6zwYh7eURyqVq+sib1q+NTtgWxq4RTlITB9BHM5LAUxrxZ/W8UPc4+/af9beL5jcTYIj06XpCzW8WL9FFIr1oedmBdPj2EMywBV7GNGJ36TeBnd5WAu6B/aCHKkx4QEclYo70OY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F6zhNg0k; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1759075243;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=O81bmHO/De5uM7lSg4FU2b4XyEO6JopNzT32LkacqfA=;
-	b=JIq1LufpQuE8ZgyxbB42qgdDzEoiLyWslWoFZWiXX1nBvJoYOI0iUJTYCWWWrcG9DM8Z1y
-	SRk3pLH0BZTEabjcCsD8hKiuAdZbgQtS6dL7JSMtOHc4NHVtKe8iokFqA6bwqUDe7XQjB5
-	S8G3ATFaBFe2Sj1eyaBxrpoVqKvG9ec=
-From: Qi Zheng <qi.zheng@linux.dev>
-To: hannes@cmpxchg.org,
-	hughd@google.com,
-	mhocko@suse.com,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	david@redhat.com,
-	lorenzo.stoakes@oracle.com,
-	ziy@nvidia.com,
-	harry.yoo@oracle.com,
-	baolin.wang@linux.alibaba.com,
-	Liam.Howlett@oracle.com,
-	npache@redhat.com,
-	ryan.roberts@arm.com,
-	dev.jain@arm.com,
-	baohua@kernel.org,
-	lance.yang@linux.dev,
-	akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 4/4] mm: thp: reparent the split queue during memcg offline
-Date: Sun, 28 Sep 2025 19:45:08 +0800
-Message-ID: <2ddd0c184829e65c5b3afa34e93599783e7af3d4.1759056506.git.zhengqi.arch@bytedance.com>
-In-Reply-To: <cover.1759056506.git.zhengqi.arch@bytedance.com>
-References: <cover.1759056506.git.zhengqi.arch@bytedance.com>
+	bh=iRFlrSNo+OKIG+sGNz6RYa1m/9yNjqMbQ2/tMAQzkUc=;
+	b=F6zhNg0ktj79clhXdvX4NNsQZpmvCOSePYyU9Lm0kjt8iaZgdaZKYhgI9yvewyitVdp35m
+	QxThh29xgcDtJVohBfzW42L69eit9enG84neGhuXZ6TdfM/AwvSWRbLn9fVLldJDewMJ//
+	9lZqJAeb+ITHLNiUeq07cPKRlV2d8pQ=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-505-6uhDpK56M_6CaFCElpjKsQ-1; Sun, 28 Sep 2025 12:00:41 -0400
+X-MC-Unique: 6uhDpK56M_6CaFCElpjKsQ-1
+X-Mimecast-MFC-AGG-ID: 6uhDpK56M_6CaFCElpjKsQ_1759075241
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4dd932741cfso64424231cf.1
+        for <cgroups@vger.kernel.org>; Sun, 28 Sep 2025 09:00:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759075240; x=1759680040;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iRFlrSNo+OKIG+sGNz6RYa1m/9yNjqMbQ2/tMAQzkUc=;
+        b=wcxnoeTQIW0QQhoG6WgEFJiNR+FJJG60sZPrE9sIQHZx7LEA2ofZoM9RoT5BuIvWIh
+         e6XpAOR7LTZBCJhsCF1b2/fy4iOhlFDr/P2yuHODaDIQddQYR3XrfO1MdXYJwvagdRem
+         faLnK9GL7gQSMqhswDF0+PxUarjycfwNOKzIj+7HVCkENB8pvpEGnQSL4NpRGTwN93uX
+         eXni+okvG1MXOTTVAuHI5v9/wdTECmQIa/c7OkI90qL6RzqUCna8GuSfc+afImQQeobW
+         F6hP8YdEOtAzMVai7aLKnYBC6Fyt6MrYLjSnR0UMvtw4wceW7SZ/EWeD5+utM2xUfU98
+         5YDQ==
+X-Gm-Message-State: AOJu0Yx+awqp3v0oKGn+5eJm2X7ns1G8ULINqx3gzEP2kmgfLdu8dFCp
+	qVl1WvjSljTiYFwpo0xaXLCHyldLCnRigbOygg99PWRsgJvs/pNWPkA4KfMU/O2QC/RXeVhyCzf
+	LZgvRLvNFa6FL45wH0aN0GHTY+gkGdT4nIHfgXSbv9dL0fYz3OdTpykccff0YN/jed0k=
+X-Gm-Gg: ASbGncs+0Q+K4xEKlnSBW8m0OQZcJ79X4EwsJ8Rm2EaXy4uq/3x1ldoAe3naES2btVJ
+	Lfac0y2SCo5ZjPxO5z1hRXxR/iIQ7awYqX8zqFEZvh3TFOYaR6Cc6nVGCDH3op718pL/PH6MsIa
+	GxLgGKloLsuaNYt74xr7ClkXW5oxr0e8g8g0la2Ns1moGyAJgSGTDTmeDXQTwQIc+NyhGPjOCPo
+	OyK4IRHIu/c/QsIrunoQVrbRGPXEdiEIj3kQAqZhPlCS6vkJj0OBomrn4dbOP/fuqW+ap4IXZkp
+	SrIxkdYP6tvYhRM1ftHcbdxHR8khzB/f93opzb20G12KJNAf2p323mcHPbOhcSGa/nHTsmZ0Yb/
+	AFUzPRC/uKUw=
+X-Received: by 2002:a05:622a:4a87:b0:4b2:d865:3e5b with SMTP id d75a77b69052e-4da4c9666cfmr178206631cf.68.1759075239747;
+        Sun, 28 Sep 2025 09:00:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH1hINZSe24nntpK+BqyGEpQ7rcyf8UCeVwRKAVOUGc5zCrNOVJqPmei1m/A3TJr+fANHcmSw==
+X-Received: by 2002:a05:622a:4a87:b0:4b2:d865:3e5b with SMTP id d75a77b69052e-4da4c9666cfmr178206101cf.68.1759075239286;
+        Sun, 28 Sep 2025 09:00:39 -0700 (PDT)
+Received: from ?IPV6:2601:188:c180:4250:ecbe:130d:668d:951d? ([2601:188:c180:4250:ecbe:130d:668d:951d])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-85c29ae247fsm603456685a.30.2025.09.28.09.00.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Sep 2025 09:00:38 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <8a6a99e8-f171-4f1a-86db-21ecd3cd2287@redhat.com>
+Date: Sun, 28 Sep 2025 12:00:37 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next RFC 00/16] cpuset: rework local partition logic
+To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com, chenridong@huawei.com
+References: <20250928071306.3797436-1-chenridong@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <20250928071306.3797436-1-chenridong@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Qi Zheng <zhengqi.arch@bytedance.com>
+On 9/28/25 3:12 AM, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
+>
+> The current local partition implementation consolidates all operations
+> (enable, disable, invalidate, and update) within the large
+> update_parent_effective_cpumask() function, which exceeds 300 lines.
+> This monolithic approach has become increasingly difficult to understand
+> and maintain. Additionally, partition-related fields are updated in
+> multiple locations, leading to redundant code and potential corner case
+> oversights.
+>
+> This patch series refactors the local partition logic by separating
+> operations into dedicated functions: local_partition_enable(),
+> local_partition_disable(), and local_partition_update(), creating
+> symmetry with the existing remote partition infrastructure.
+>
+> The series is organized as follows:
+>
+> 1. Infrastructure Preparation (Patches 1-2):
+>     - Code cleanup and preparation for the refactoring work
+>
+> 2. Core Partition Operations (Patches 3-5):
+>     - Factor out partition_enable(), partition_disable(), and
+>       partition_update() functions from remote partition operations
+>
+> 3. Local Partition Implementation (Patches 6-9):
+>     - Separate update_parent_effective_cpumask() into dedicated functions:
+>       * local_partition_enable()
+>       * local_partition_disable()
+>       * local_partition_invalidate()
+>       * local_partition_update()
+>
+> 4. Optimization and Cleanup (Patches 10-16):
+>     - Remove redundant partition-related operations
+>     - Additional optimizations based on the new architecture
+>
+> Key improvements:
+> - Centralized management of partition-related fields (partition_root_state,
+>    prs_err, nr_subparts, remote_sibling, effective_xcpus) within the
+>    partition_enable/disable/update functions
+> - Consistent operation patterns for both local and remote partitions
+>    with type-specific validation checks
+> - Fixed bug where isolcpus remained in root partition after isolated
+>    partition transitioned to root
 
-Similar to list_lru, the split queue is relatively independent and does
-not need to be reparented along with objcg and LRU folios (holding
-objcg lock and lru lock). So let's apply the same mechanism as list_lru
-to reparent the split queue separately when memcg is offine.
+You are really active in restructuring the cpuset code. However, the 
+next merge window for v6.18 is going to open later today or tomorrow. I 
+will start reviewing this patch series once the merge window closes 2 
+weeks later.
 
-This is also a preparation for reparenting LRU folios.
+Cheers,
+Longman
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
----
- include/linux/huge_mm.h |  4 ++++
- mm/huge_memory.c        | 46 +++++++++++++++++++++++++++++++++++++++++
- mm/memcontrol.c         |  1 +
- 3 files changed, 51 insertions(+)
-
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index f327d62fc9852..0c211dcbb0ec1 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -417,6 +417,9 @@ static inline int split_huge_page(struct page *page)
- 	return split_huge_page_to_list_to_order(page, NULL, ret);
- }
- void deferred_split_folio(struct folio *folio, bool partially_mapped);
-+#ifdef CONFIG_MEMCG
-+void reparent_deferred_split_queue(struct mem_cgroup *memcg);
-+#endif
- 
- void __split_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
- 		unsigned long address, bool freeze);
-@@ -611,6 +614,7 @@ static inline int try_folio_split(struct folio *folio, struct page *page,
- }
- 
- static inline void deferred_split_folio(struct folio *folio, bool partially_mapped) {}
-+static inline void reparent_deferred_split_queue(struct mem_cgroup *memcg) {}
- #define split_huge_pmd(__vma, __pmd, __address)	\
- 	do { } while (0)
- 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index bb32091e3133e..5fc0caca71de0 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1094,9 +1094,22 @@ static struct deferred_split *folio_split_queue_lock(struct folio *folio)
- 	struct deferred_split *queue;
- 
- 	memcg = folio_memcg(folio);
-+retry:
- 	queue = memcg ? &memcg->deferred_split_queue :
- 			&NODE_DATA(folio_nid(folio))->deferred_split_queue;
- 	spin_lock(&queue->split_queue_lock);
-+	/*
-+	 * Notice:
-+	 * 1. The memcg could be NULL if cgroup_disable=memory is set.
-+	 * 2. There is a period between setting CSS_DYING and reparenting
-+	 *    deferred split queue, and during this period the THPs in the
-+	 *    deferred split queue will be hidden from the shrinker side.
-+	 */
-+	if (unlikely(memcg && css_is_dying(&memcg->css))) {
-+		spin_unlock(&queue->split_queue_lock);
-+		memcg = parent_mem_cgroup(memcg);
-+		goto retry;
-+	}
- 
- 	return queue;
- }
-@@ -1108,9 +1121,15 @@ folio_split_queue_lock_irqsave(struct folio *folio, unsigned long *flags)
- 	struct deferred_split *queue;
- 
- 	memcg = folio_memcg(folio);
-+retry:
- 	queue = memcg ? &memcg->deferred_split_queue :
- 			&NODE_DATA(folio_nid(folio))->deferred_split_queue;
- 	spin_lock_irqsave(&queue->split_queue_lock, *flags);
-+	if (unlikely(memcg && css_is_dying(&memcg->css))) {
-+		spin_unlock_irqrestore(&queue->split_queue_lock, *flags);
-+		memcg = parent_mem_cgroup(memcg);
-+		goto retry;
-+	}
- 
- 	return queue;
- }
-@@ -4275,6 +4294,33 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
- 	return split;
- }
- 
-+#ifdef CONFIG_MEMCG
-+void reparent_deferred_split_queue(struct mem_cgroup *memcg)
-+{
-+	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
-+	struct deferred_split *ds_queue = &memcg->deferred_split_queue;
-+	struct deferred_split *parent_ds_queue = &parent->deferred_split_queue;
-+	int nid;
-+
-+	spin_lock_irq(&ds_queue->split_queue_lock);
-+	spin_lock_nested(&parent_ds_queue->split_queue_lock, SINGLE_DEPTH_NESTING);
-+
-+	if (!ds_queue->split_queue_len)
-+		goto unlock;
-+
-+	list_splice_tail_init(&ds_queue->split_queue, &parent_ds_queue->split_queue);
-+	parent_ds_queue->split_queue_len += ds_queue->split_queue_len;
-+	ds_queue->split_queue_len = 0;
-+
-+	for_each_node(nid)
-+		set_shrinker_bit(parent, nid, shrinker_id(deferred_split_shrinker));
-+
-+unlock:
-+	spin_unlock(&parent_ds_queue->split_queue_lock);
-+	spin_unlock_irq(&ds_queue->split_queue_lock);
-+}
-+#endif
-+
- #ifdef CONFIG_DEBUG_FS
- static void split_huge_pages_all(void)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e090f29eb03bd..d03da72e7585d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3887,6 +3887,7 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
- 	zswap_memcg_offline_cleanup(memcg);
- 
- 	memcg_offline_kmem(memcg);
-+	reparent_deferred_split_queue(memcg);
- 	reparent_shrinker_deferred(memcg);
- 	wb_memcg_offline(memcg);
- 	lru_gen_offline_memcg(memcg);
--- 
-2.20.1
+> Chen Ridong (16):
+>    cpuset: use update_partition_sd_lb in update_cpumasks_hier
+>    cpuset: generalize validate_partition() interface
+>    cpuset: factor out partition_enable() function
+>    cpuset: factor out partition_disable() function
+>    cpuset: factor out partition_update() function
+>    cpuset: introduce local_partition_enable()
+>    cpuset: introduce local_partition_disable()
+>    cpuset: introduce local_partition_invalidate()
+>    cpuset: introduce local_partition_update()
+>    cpuset: remove redundant partition field updates
+>    cpuset: simplify partition update logic for hotplug tasks
+>    cpuset: unify local partition disable and invalidate
+>    cpuset: use partition_disable for compute_partition_effective_cpumask
+>    cpuset: fix isolcpus stay in root when isolated partition changes to
+>      root
+>    cpuset: use partition_disable for update_prstate
+>    cpuset: remove prs_err clear when notify_partition_change
+>
+>   kernel/cgroup/cpuset.c | 907 ++++++++++++++++++-----------------------
+>   1 file changed, 408 insertions(+), 499 deletions(-)
+>
 
 
