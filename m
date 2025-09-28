@@ -1,77 +1,79 @@
-Return-Path: <cgroups+bounces-10479-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10480-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3239BA6FB1
-	for <lists+cgroups@lfdr.de>; Sun, 28 Sep 2025 13:17:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B40E4BA6FB7
+	for <lists+cgroups@lfdr.de>; Sun, 28 Sep 2025 13:17:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54E88189ACE6
-	for <lists+cgroups@lfdr.de>; Sun, 28 Sep 2025 11:17:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E96917BD71
+	for <lists+cgroups@lfdr.de>; Sun, 28 Sep 2025 11:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86C7929ACDD;
-	Sun, 28 Sep 2025 11:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AF62BE7D2;
+	Sun, 28 Sep 2025 11:17:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="DlYpTOPO"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="huLBu34I"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D1613C914
-	for <cgroups@vger.kernel.org>; Sun, 28 Sep 2025 11:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B5C13C914
+	for <cgroups@vger.kernel.org>; Sun, 28 Sep 2025 11:17:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759058248; cv=none; b=tAwsqUhGtOlYNyV6PVSk+2f7uqYOwLojwrta8zQtxIjwUHKCbXKSp7/m/Lh6w1ma8t1RRmVMn5doDOsp4C11kYn45NsxQlT7cA0fipwA9Fx56agWGRO5K1O2TB5wo2nd+TtwOTTDUMNh0y0/ijGr0gEL6YFkp3UoeTcMyfc0byQ=
+	t=1759058258; cv=none; b=akDWiagxCJ0xAHWyM/BoznhO5d4JifiWxb2vJL4d+k6+afOTv0sEoK47F0UL6BoRi5hXdAuN3k5XBofWD9XOLftmR+c0RL9atAZoANrtzezHu9eC8z3MMC59JVTiE/qm8jCH7U+nJPxaNl/bqmQROEChW52pKODq3/0CDFdrzd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759058248; c=relaxed/simple;
-	bh=Lq13RtqmlhJl9Ou+QEU3MieDQg6z9OoQMyTcDYFUOI0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bx6/fj8r8cIhkhvbe/LhggIL83gUiijONXJ6LQI5qhho2Ff6KBt4pXgbcZmIneQgloEu6XVq+DUAfd+a62vj1fZ4cFlTLU5mR9ZnBJ0at0B+Iy7h7Q870Z7GWX0CckwIc7wnwQTAGYoTs9hFTfcXUvpsbVpkR8lg8c0bo/7bgA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=DlYpTOPO; arc=none smtp.client-ip=209.85.215.182
+	s=arc-20240116; t=1759058258; c=relaxed/simple;
+	bh=7xtZd7Yd8EegYDFC5RFSYuo7Ki9HOkuue2yjH/U0y5c=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=owRNl8vsMS6sve3EWYVaOdwbbxlRvqD86edVoxlz413F6Nm2nJY0CXtxdiUfEEIPdSAJtkapjcvXN3QKzYewp8XtnkGhJ95SFNeqGgY5dZQw2D3aRyTvdnd3bpzJ5IoX3aT4gAIBOi77PLQOVlZRI/V3y3gJSE/L1AGcXk2dwWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=huLBu34I; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-b54a74f9150so3176274a12.0
-        for <cgroups@vger.kernel.org>; Sun, 28 Sep 2025 04:17:26 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-78100be28easo2661823b3a.1
+        for <cgroups@vger.kernel.org>; Sun, 28 Sep 2025 04:17:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1759058246; x=1759663046; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BgJ4Bk/AgLj8OXwTMGRn+fyRsVHIEGunbuVkNEAkF+E=;
-        b=DlYpTOPOONNOaAKK/YzDuJDpwCIuB1r8o787VIwJ9zRHu8I/Qb4aknmY4BVlkIH9z9
-         uiVAWsB0Kbe4eagHpqSBEgqKxwdmUSGgdnVxSRdugkBvdo1z5wAShDJMMuLj5fhIVTAO
-         vKql9FVKyUZtWo+KdC1aJqVN694aoCpqWMQQ38I3XtrDojmLNXQWZnBY7lY1pyhJZq1p
-         dwzhJvzQeMhDvKwxeHlUujYgu1Br1udrZrQC8cNoLaCtxm4Vpi+6/6mAiXANHHgZuhVO
-         qMybYkShEUvtuzFhmUnWMH1xT8OpQm/zv3z9TiDlwMjNTGo6cvD/PK5DWDz97ky8qBe6
-         UYkA==
+        d=bytedance.com; s=google; t=1759058256; x=1759663056; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k1ekZIO3b9Ttpe972UQJNalil++E0ZqVPkWGV+cChaI=;
+        b=huLBu34IMCAeO1FRXhGke5OvTBCjcfYlX8ZtAQEmYTMv0IlVeD0zDYLQRWIauyvJwP
+         UNxWuXF3Xixt4kyUMfbXluxOIH13Dz6BPIoOUtnm5273wAo0hhF3VTNsZSG3Hhele6fY
+         CLBv+ppfaFSNR1suYZ+6L0q7G9LA62Ko9Iy+FlQ2KicxLITfYmHUv3gZ4xwrbw4igSbo
+         6MsiyWBVAaGYgtN2MUettURfLtFIGNeENXR0BydKTmyRqPqOxfSBHc9nVfM9CT4TR5aA
+         AkJmY3mMp7oxK5jADEKMaq6jxEK1kfgdKoqcQ66cbwIry1Hc1mjPFfBv6hlHHDuvy0t8
+         522Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759058246; x=1759663046;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BgJ4Bk/AgLj8OXwTMGRn+fyRsVHIEGunbuVkNEAkF+E=;
-        b=ZMDh3lEBkmX+9uzI8ZQA/purk2BYeEpLDIxO/m7siXuVjRE68AQQd1uIElM9Zq0CRm
-         ndHuONLcdfYilkRXAA3ozM3FNAis55FWPaMdbCqVWdhbGF0k0xLcuu/yAU/GGiKBqf9y
-         3pLgkt0jopTFuHZX58IxgQ9Z8+m9V0Has+13M74Euq7bfhteddLmykcodjkt1AksbxNJ
-         ObJJ7k+GHon3vxSYajbq6Axqk/1rUGRxZhKfGbuzduNkb2WU6wCgWx7vjH5H5ZNp5yS5
-         PRkvvF+RMynwkBiFelpM8vj3mUYqOIj64jcVw5kG0MOkD2aeiv9qhi3FB4t//IFsXCks
-         I+Kw==
-X-Forwarded-Encrypted: i=1; AJvYcCUIHunITZRpjGgSXzvaXhMD6W5EOP9UuK+nKXY4Pmr8Glj4TzGqltJj44MWUpPZfO4Xi7/UNpy2@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTT8VOUSiidg6ybE+YtZOVgSJM2paZXMDTc5PKhlxJYGAiUayC
-	L8Cuyt1mkmkWcHQ6RPGas7bI8jOvi329j2WIe8G613tftQWtkqsgMGw50wltD+Fh+cY=
-X-Gm-Gg: ASbGncsfkWmMyyUF6eLnG0sXMmM1ombW1Fjr9BX8XIxsGPSoZy1lJr+vW6E8mFvaqb4
-	YvbfVwOb4ojl532OrAU6z+iAKJVFz9AVvb9tG6RWT4kk1IWTJdNBOq4kgovI5CRyBZDrSvUy0RK
-	Hzkzvix0aujEIX0Fr68yKDayahflyJKeCYTc4KOZnLot5WosAgz1FqE0+oKnIN8fonYet99s58f
-	ChCX5UQ7U8E4+rXFlP5d3SwUYF7rCPYL7pg+rvB9sD5geunpzh4cxZlkk0uNF3sNx/hG5xpWej9
-	keMfFJBcAdZkYd/VU+VO0icZTMZja25qupOkXsLzm8SlLOr70KHHS+/46K45ibuONFf35w5Gf5R
-	LUSJYDTd632AYi2N/pwcNMs9Rlb00y9OXXZFtsGaJgff4GvYzlJfzGoVI0csN61o0wzlhkxxj9G
-	Ei
-X-Google-Smtp-Source: AGHT+IEIBgcE97CoXC2cuv8USSawi1baX2mBvmMGwoHiSnGzF1+jN6Y2AS3XpbKZjXh6B6f41EZZsg==
-X-Received: by 2002:a17:903:1b28:b0:269:ba8b:8476 with SMTP id d9443c01a7336-27ed4aea2abmr148101555ad.56.1759058245920;
-        Sun, 28 Sep 2025 04:17:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1759058256; x=1759663056;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k1ekZIO3b9Ttpe972UQJNalil++E0ZqVPkWGV+cChaI=;
+        b=hK0q2lefAfhk8eU/bovBy+LI94/G+/FctsR6uzep+wn9VEmztBHF7E2uzPi7YLyG41
+         dXuEQjrVL0MWRusHaBeMpblgCArhZj3tF9k5t2XaIS0fYEUolzXW+q6Nd7NtU5zlacJa
+         mwTJf+Vj0FLl5fNKmu+c/PE3mQcZ1rNxMUtuldP5dVfiD4mRMPnlpunBCDQx2s7BvGsX
+         TTwnismK02zF0Rqk/lkfb1uRPbmamFTGRAXk+Y1KIbzhPscSCx5cLwj/cVsPnKEfaLw5
+         Vx4Pzavh1aVXDtakdhQkIv609BKJwPu/DjGRzSUm0h7zvEgJ/09lBEWYQookcb7TmOBk
+         UZfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXDadE09x16Y83CLNwTyP5cwus9qH8Gkg9huDp3yQhW4/2fiGAxrWDFiCrR9J5MRSpJY0syOy7o@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZsLu3QA2iha9bH7q0d5H1aZ50ISHTVP2zMIGr44USilltFtG8
+	nQNI87Pl9rXpFzdbcEU2uVxPUNZXPdTrlmmT2ThFirBQCWN/9GCdZQnLUiBVKhetaLo=
+X-Gm-Gg: ASbGncuMf+mtvQXd+3UH0lF3sQ8kQGZTmaKWs69AITbR8VbT3lnbfSO7WiEUHg4vTqq
+	7K8aAFPagkAqTRLsNNyoLpAGGadO4IDqU5evtPJigzJJLllQtRqw+AF9bCeqh/LTxXtVU/vlI45
+	8byZAobvET55AxnbZkRZB674iX+7y0DxgkK7yShb2z/fjLwtrYVkKEbj7ajkl/FPUjXz4hqlarp
+	dR+LSZvs/mkzeNuMYaHBz3zU6tEX5tHVNwKvGbAAileR3iMjqTDK0tHtHw6lcgEsJPhDKppc2tQ
+	Gx6njy6fDum+dohrx5zjkNNg/i67qCmMGaRJwRTSsD9S2NJM0XG6KKRZOt71wKqtPpK58mGCuJT
+	j4FBm0mgw88WvbXOuJY78O1SYMBQ5ms+dia4E3QTAPLQE10N0t71VRd2xDcQdUvfUIdFAV6dIkm
+	f0
+X-Google-Smtp-Source: AGHT+IHqrAqU+jC+qNEzoF4LOIdPO8yTHXE2d2ywkwGRffVmCfyJBJS1CU2Vm8Q37E39F0I3wqfN2Q==
+X-Received: by 2002:a05:6a20:734e:b0:2c6:cdcc:5dd2 with SMTP id adf61e73a8af0-2e7be80995fmr15796544637.11.1759058255924;
+        Sun, 28 Sep 2025 04:17:35 -0700 (PDT)
 Received: from G7HT0H2MK4.bytedance.net ([139.177.225.231])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b57c55a2c45sm8687451a12.45.2025.09.28.04.17.17
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b57c55a2c45sm8687451a12.45.2025.09.28.04.17.26
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 28 Sep 2025 04:17:25 -0700 (PDT)
+        Sun, 28 Sep 2025 04:17:35 -0700 (PDT)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: hannes@cmpxchg.org,
 	hughd@google.com,
@@ -94,11 +96,14 @@ To: hannes@cmpxchg.org,
 Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
+	Muchun Song <songmuchun@bytedance.com>,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 0/4] reparent the THP split queue
-Date: Sun, 28 Sep 2025 19:16:58 +0800
-Message-ID: <cover.1759056506.git.zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 1/4] mm: thp: replace folio_memcg() with folio_memcg_charged()
+Date: Sun, 28 Sep 2025 19:16:59 +0800
+Message-ID: <488cc8d44ba9ef1ec8ed2b32e7267d83cfd5736d.1759056506.git.zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.48.1
+In-Reply-To: <cover.1759056506.git.zhengqi.arch@bytedance.com>
+References: <cover.1759056506.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -107,61 +112,35 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Changes in v3:
- - use css_is_dying() in folio_split_queue_lock*() to check if memcg is dying
-   (David Hildenbrand, Shakeel Butt and Zi Yan)
- - modify the commit message in [PATCH v2 4/4]
-   (Roman Gushchin)
- - fix the build error in [PATCH v2 4/4]
- - collect Acked-bys and Reviewed-bys
- - rebase onto the next-20250926
+From: Muchun Song <songmuchun@bytedance.com>
 
-Changes in v2:
- - fix build errors in [PATCH 2/4] and [PATCH 4/4]
- - some cleanups for [PATCH 3/4] (suggested by David Hildenbrand)
- - collect Acked-bys and Reviewed-bys
- - rebase onto the next-20250922
+folio_memcg_charged() is intended for use when the user is unconcerned
+about the returned memcg pointer. It is more efficient than folio_memcg().
+Therefore, replace folio_memcg() with folio_memcg_charged().
 
-Hi all,
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+Acked-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+---
+ mm/huge_memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In the future, we will reparent LRU folios during memcg offline to eliminate
-dying memory cgroups, which requires reparenting the THP split queue to its
-parent memcg.
-
-Similar to list_lru, the split queue is relatively independent and does not need
-to be reparented along with objcg and LRU folios (holding objcg lock and lru
-lock). Therefore, we can apply the same mechanism as list_lru to reparent the
-split queue first when memcg is offine.
-
-The first three patches in this series are separated from the series
-"Eliminate Dying Memory Cgroup" [1], mainly to do some cleanup and preparatory
-work.
-
-The last patch reparents the THP split queue to its parent memcg during memcg
-offline.
-
-Comments and suggestions are welcome!
-
-Thanks,
-Qi
-
-[1]. https://lore.kernel.org/all/20250415024532.26632-1-songmuchun@bytedance.com/
-
-Muchun Song (3):
-  mm: thp: replace folio_memcg() with folio_memcg_charged()
-  mm: thp: introduce folio_split_queue_lock and its variants
-  mm: thp: use folio_batch to handle THP splitting in
-    deferred_split_scan()
-
-Qi Zheng (1):
-  mm: thp: reparent the split queue during memcg offline
-
- include/linux/huge_mm.h    |   4 +
- include/linux/memcontrol.h |  10 ++
- mm/huge_memory.c           | 236 ++++++++++++++++++++++++++-----------
- mm/memcontrol.c            |   1 +
- 4 files changed, 179 insertions(+), 72 deletions(-)
-
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 1b81680b4225f..6db24b3a57005 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -4014,7 +4014,7 @@ bool __folio_unqueue_deferred_split(struct folio *folio)
+ 	bool unqueued = false;
+ 
+ 	WARN_ON_ONCE(folio_ref_count(folio));
+-	WARN_ON_ONCE(!mem_cgroup_disabled() && !folio_memcg(folio));
++	WARN_ON_ONCE(!mem_cgroup_disabled() && !folio_memcg_charged(folio));
+ 
+ 	ds_queue = get_deferred_split_queue(folio);
+ 	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
 -- 
 2.20.1
 
