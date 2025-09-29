@@ -1,131 +1,147 @@
-Return-Path: <cgroups+bounces-10485-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10486-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6427ABA7A6C
-	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 03:02:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 071F3BA7C05
+	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 03:17:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 272433B4FA3
-	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 01:02:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B05CB3B8F42
+	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 01:17:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D973F4207A;
-	Mon, 29 Sep 2025 01:02:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3178B1BD9C9;
+	Mon, 29 Sep 2025 01:17:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2B5A31;
-	Mon, 29 Sep 2025 01:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC744503B;
+	Mon, 29 Sep 2025 01:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759107758; cv=none; b=BIClGgCX4Cr+xxb/4NAxRLcdznYfFo+orGBr3uNFaMGahLatyGcsMJI6V2cu0TeDEzFo2o3i2e9DGGfpKQYoP7c7UgvuV0Gav7tE4ZZw0yb8lL7KHVU7KjyJ9eLUZW7S9HjKguh3lzFPXth44ytQfpUlK9xvrX+Tj4kJeZBeceo=
+	t=1759108639; cv=none; b=tEvSpp/SFb81j++faltpbS2+nHx/8PM1q+QNy2dCyjHLekZv2fe771x/BISc1sdchxN5vM40j9gpkMl4lsRcoZGCpNMn3v4CSzzxmeeilT5Mg00fo+3fvpurW+34SwpsIrU1s+vyu75WvOYv0kshJRIBykBuQlp/6hLPsGm86No=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759107758; c=relaxed/simple;
-	bh=OQ2MWIMo+ifV9PZd1sYqy7TBioUTpaaT/nClxx4qxOk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=G7nRktuVimx2NEXc/gQyo4p1c0WrZPvwiaoKswKTnHHdGNmvWYw3pWGAN2YdtbFffJZpqtfNa2DH8l/+7L12TVRGXsQnaTLL+SLCc5YGe5jM8KnEHukxOsaoiYRrdDBexoxAGb/kD9XiTpp8R1Uqjj0ScU0ZtxqPCDAwrR7FsTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	s=arc-20240116; t=1759108639; c=relaxed/simple;
+	bh=5MiYbiNvJNezXCKPK8O2NZxxNup8Me1COPnBwQyWBss=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EJruymQQNzuLLaX3uW7rtkz4VDfVt8jl0Xinp69c2gu+N2e4HZ57dlkVNZmwSW+MKx8/4ikn/F+O7Z8BVTihgR1yXbM9VlwuOYUisqTradALCtQBorcDZ5drKvW0+BXI50FKAJ+rxRURJoenCddna/zM1AKuU1VFkOtC3A9rJdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cZjZz3DY2zKHMpf;
-	Mon, 29 Sep 2025 09:02:19 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id BC1AD1A1286;
-	Mon, 29 Sep 2025 09:02:32 +0800 (CST)
-Received: from [10.174.179.143] (unknown [10.174.179.143])
-	by APP4 (Coremail) with SMTP id gCh0CgDHi2Om2tlog8ipBA--.21198S3;
-	Mon, 29 Sep 2025 09:02:32 +0800 (CST)
-Subject: Re: [PATCH 01/10] blk-cgroup: use cgroup lock and rcu to protect
- iterating blkcg blkgs
-To: Bart Van Assche <bvanassche@acm.org>, Yu Kuai <yukuai1@huaweicloud.com>,
- Yu Kuai <hailan@yukuai.org.cn>, tj@kernel.org, ming.lei@redhat.com,
- nilay@linux.ibm.com, hch@lst.de, josef@toxicpanda.com, axboe@kernel.dk,
- akpm@linux-foundation.org, vgoyal@redhat.com
-Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, yi.zhang@huawei.com,
- yangerkun@huawei.com, johnny.chenyi@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20250925081525.700639-1-yukuai1@huaweicloud.com>
- <20250925081525.700639-2-yukuai1@huaweicloud.com>
- <bc6fe04d-3245-40dd-aa30-c3a3acb670c2@acm.org>
- <01e7eccd-3529-4d12-8ad2-fd9e034a026d@yukuai.org.cn>
- <688275d5-fbb4-08b3-45e1-798ad8cf77fc@huaweicloud.com>
- <66dcdcd1-df71-43b9-a468-2b4aaa8b6dc7@acm.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <9cf50e70-d2e4-cfd7-da2e-3701da0814b4@huaweicloud.com>
-Date: Mon, 29 Sep 2025 09:02:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cZjvr2sxNzYQvBg;
+	Mon, 29 Sep 2025 09:16:56 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 86D561A1ACB;
+	Mon, 29 Sep 2025 09:17:11 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP1 (Coremail) with SMTP id cCh0CgCXSuMW3tlowGaYBA--.52208S2;
+	Mon, 29 Sep 2025 09:17:11 +0800 (CST)
+Message-ID: <5410a630-dea8-42d9-bf0d-e543352ed969@huaweicloud.com>
+Date: Mon, 29 Sep 2025 09:17:09 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <66dcdcd1-df71-43b9-a468-2b4aaa8b6dc7@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next RFC 00/16] cpuset: rework local partition logic
+To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com, chenridong@huawei.com
+References: <20250928071306.3797436-1-chenridong@huaweicloud.com>
+ <8a6a99e8-f171-4f1a-86db-21ecd3cd2287@redhat.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <8a6a99e8-f171-4f1a-86db-21ecd3cd2287@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDHi2Om2tlog8ipBA--.21198S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7KrW5urWxuryfZw4DJr17Awb_yoW8Xr47p3
-	yFq3W2kr4DtF4q93sFga1jvF1F9an7Gr98Jr4kXry5Aa4qvr1YqFsFyFWqkF1vqanrt3Wq
-	k34jkrZ3Jw10vaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBF14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVW8ZVWrXwCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRHUDLUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CM-TRANSID:cCh0CgCXSuMW3tlowGaYBA--.52208S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr45trWfCr48try7WrWfKrg_yoW5Xw48pF
+	yvkayIya9rGr1rC347JFs7Z3yrWws7Ganrtr15W348Jr47Aw1vqFyI93yjv347XrZ5Jry0
+	vF4jqr1xZ3W2vaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-Hi,
 
-在 2025/09/27 1:19, Bart Van Assche 写道:
-> On 9/25/25 5:57 PM, Yu Kuai wrote:
->> 在 2025/09/26 1:07, Yu Kuai 写道:
->>> 在 2025/9/25 23:57, Bart Van Assche 写道:
->>>> On 9/25/25 1:15 AM, Yu Kuai wrote:
->>>>> It's safe to iterate blkgs with cgroup lock or rcu lock held, prevent
->>>>> nested queue_lock under rcu lock, and prepare to convert protecting
->>>>> blkcg with blkcg_mutex instead of queuelock.
->>>>
->>>> Iterating blkgs without holding q->queue_lock is safe but accessing the
->>>> blkg members without holding that lock is not safe since q->queue_lock
->>>> is acquired by all code that modifies blkg members. Should perhaps a 
->>>> new
->>>> spinlock be introduced to serialize blkg modifications?
+
+On 2025/9/29 0:00, Waiman Long wrote:
+> On 9/28/25 3:12 AM, Chen Ridong wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
 >>
->> Actually, only blkcg_print_blkgs() is using rcu in this patch, and take
->> a look at the callers, I don't see anyone have to hold queue_lock. Can
->> you explain in detail which field from blkg is problematic in this
->> patch?
+>> The current local partition implementation consolidates all operations
+>> (enable, disable, invalidate, and update) within the large
+>> update_parent_effective_cpumask() function, which exceeds 300 lines.
+>> This monolithic approach has become increasingly difficult to understand
+>> and maintain. Additionally, partition-related fields are updated in
+>> multiple locations, leading to redundant code and potential corner case
+>> oversights.
+>>
+>> This patch series refactors the local partition logic by separating
+>> operations into dedicated functions: local_partition_enable(),
+>> local_partition_disable(), and local_partition_update(), creating
+>> symmetry with the existing remote partition infrastructure.
+>>
+>> The series is organized as follows:
+>>
+>> 1. Infrastructure Preparation (Patches 1-2):
+>>     - Code cleanup and preparation for the refactoring work
+>>
+>> 2. Core Partition Operations (Patches 3-5):
+>>     - Factor out partition_enable(), partition_disable(), and
+>>       partition_update() functions from remote partition operations
+>>
+>> 3. Local Partition Implementation (Patches 6-9):
+>>     - Separate update_parent_effective_cpumask() into dedicated functions:
+>>       * local_partition_enable()
+>>       * local_partition_disable()
+>>       * local_partition_invalidate()
+>>       * local_partition_update()
+>>
+>> 4. Optimization and Cleanup (Patches 10-16):
+>>     - Remove redundant partition-related operations
+>>     - Additional optimizations based on the new architecture
+>>
+>> Key improvements:
+>> - Centralized management of partition-related fields (partition_root_state,
+>>    prs_err, nr_subparts, remote_sibling, effective_xcpus) within the
+>>    partition_enable/disable/update functions
+>> - Consistent operation patterns for both local and remote partitions
+>>    with type-specific validation checks
+>> - Fixed bug where isolcpus remained in root partition after isolated
+>>    partition transitioned to root
 > 
-> I'm not a cgroup expert so I cannot answer the above question. But I
-> think it's clear that the description of this patch is not sufficient as
-> motivation for this patch. Removing the blkg->q->queue_lock lock and
-> unlock calls requires a detailed review of all blkcg_print_blkgs() and
-> blkcg_print_stat() callers. There is no evidence available in the patch
-> description that shows that such a review has happened.
+> You are really active in restructuring the cpuset code. However, the next merge window for v6.18 is
+> going to open later today or tomorrow. I will start reviewing this patch series once the merge
+> window closes 2 weeks later.
+> 
+> Cheers,
+> Longman
 > 
 
-Ok, I'll explain more in details in commit message.
+Thank you for letting me know about your schedule.
 
-Thanks,
-Kuai
+I've been quite active in the cgroup, especially with cpuset, I believe. :)
 
-> Thanks,
-> 
-> Bart.
-> .
-> 
+I've been thinking about reworking this series for some time, and I finally got it done.
+Looking forward to your review.
+
+-- 
+Best regards,
+Ridong
 
 
