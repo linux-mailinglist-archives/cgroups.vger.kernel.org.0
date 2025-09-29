@@ -1,240 +1,151 @@
-Return-Path: <cgroups+bounces-10491-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10492-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2523FBA8D09
-	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 12:07:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97AFBBA97A4
+	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 16:07:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A7283A2932
-	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 10:07:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CD8516728B
+	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 14:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187142FA0E9;
-	Mon, 29 Sep 2025 10:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E183074AB;
+	Mon, 29 Sep 2025 14:07:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DxiHbAxQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VIwCs6nE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104BE2E8B86;
-	Mon, 29 Sep 2025 10:07:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7B534BA3B;
+	Mon, 29 Sep 2025 14:07:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759140435; cv=none; b=ZUArcJYYQvhx9RVW6r2cXxjwTI2dTCOYFk9Yh3Eq1mIQbnDvbs47FT/Lf/qJLgMwsWqDKJhzvVZFrcoO2iBwwSor6Fm0iGlZdPV9n/Yz/QbdVDqoKmRXr9fuk4UTtgFVTbVKPjXbFMaxF5NoG5gTJGP48XhcDvSYVIri8vyjVQc=
+	t=1759154846; cv=none; b=o51T/obC1H4tYEi1AB1a79nBDCe8ISeM4WsgmMpHl2VQW2UNUm56GRaFIvXAv8cvaWpyedXcpiUyQY3Jw3DQ9daRJSv4GtMOH7tJ623hdYSmr3BRMbG1KSGG7Ljk5xIY6BYbC94muDIK/0D0edEHLP8elyISWi+tLraQ+75ZiPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759140435; c=relaxed/simple;
-	bh=nt1BCNEJq7BMv2psjfunALasd4EkjDFiwlD+qEdCY1E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DnmJy0zwqzIVk6VdS67VGD+Y80iwK9QkBz21HDmnjtn3lBHpQEKuRLoCmviNMtMspSxvKYed7mIM1NGiK1xkm5vSQslxetCGBgM9IJ7d+STklvB7CL9hGNdriX+4dRH+TJL7IBtwXqlF/1AvGG6xPQbXkEYcidVuH6FL19fzn2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DxiHbAxQ; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=7NB+0C2qsyWHPYK8tQ50R2KyFBHMFnn21/53LdWy8FM=; b=DxiHbAxQzjS899koaklun1rtdA
-	wBnJAkNMb05Ys/MBopFnN9zBTXmGGAn1vSoM5XNG8Q5gUNHMMbKjy33JutUnkky0ehM43+7DFXpPE
-	hnPhNwowkmZp5GmZ2oulV9BuM/eXkfSCj/6InuGP2SraQGROpeUBC3ksic1wnJBu+AN7EWavkXbvS
-	zFLWINcKG2+Fp4FcS0KL9merzbBniNFwgTe+gbMC00UzKv05OlJ0ZG7eyfx/qI1yeTwiBtg9IJkfD
-	NVVvpp8Wz49nXgJm9eqk8z8b8TxGpVIHaHbPMsZyg0oNI2FnpTGFVs3NL0iilS6jbZ20OIWnkIC5S
-	Xc2jxtWA==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v3Ama-0000000Byz0-1Xx5;
-	Mon, 29 Sep 2025 10:07:00 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id C60A5300359; Mon, 29 Sep 2025 12:06:58 +0200 (CEST)
-Date: Mon, 29 Sep 2025 12:06:58 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
-	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
-	changwoo@igalia.com, cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
-Subject: Re: [PATCH 12/14] sched: Add shared runqueue locking to
- __task_rq_lock()
-Message-ID: <20250929100658.GC3245006@noisy.programming.kicks-ass.net>
-References: <aMNnLenCytO_KEKg@slm.duckdns.org>
- <20250912115459.GZ3289052@noisy.programming.kicks-ass.net>
- <aMRexZ_SIUVgkIpZ@slm.duckdns.org>
- <20250915083815.GB3289052@noisy.programming.kicks-ass.net>
- <aMnk5Wcdr2q6BWqR@slm.duckdns.org>
- <aMnnslT_mUfAtytN@slm.duckdns.org>
- <20250925083533.GW4067720@noisy.programming.kicks-ass.net>
- <aNW3du48v3PvwPbq@slm.duckdns.org>
- <20250926103628.GE4067720@noisy.programming.kicks-ass.net>
- <aNcICdscrYDUMKiU@slm.duckdns.org>
+	s=arc-20240116; t=1759154846; c=relaxed/simple;
+	bh=BKY6d1yBc/lroKagYCaSuXxxZ2I6xVz7xuOdW9gGVog=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=Uc4R8JDvM+8fbzgzQveiQR8c0MccrWjMIr8wasY4CT8+1mMx/o0ZnlhqaUWDwpeFooMsKLL10QSm75ZrXrxVwjcpTftVWA3PW9C+fKe5xwP3UAj8HwaKAQI9HMkb1syVxEtvwRUY7mqE4Cye83GvVK9NrG1LeYp8WCNICpFUXH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VIwCs6nE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E39D5C4CEF4;
+	Mon, 29 Sep 2025 14:07:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759154846;
+	bh=BKY6d1yBc/lroKagYCaSuXxxZ2I6xVz7xuOdW9gGVog=;
+	h=Date:Subject:Cc:To:From:References:In-Reply-To:From;
+	b=VIwCs6nERrhW0nxOSUX19uKaSbWaPiA57FLkrY/4Uprkq5LgrHoiUivCfaZvPlDJb
+	 i6KLN/dKDKpt1NR2uxgGrDR52CIUwIHMg23DAcNlGqdewpdtJ70FJNG6vguN5c0uqv
+	 nZXAhALVBgh98eaVa0iqjXEivUiyt33u0EBXa0WBUTXuKPWVYVyzjfZ9M0LVem7OQo
+	 AEEPO53AterwJzs/a9z5iozTdGXW9hC5C2TJZP7d2vbXGRMDMCg6jLfr24uZafLKzw
+	 nS5iP9sVWdC/gpZ6Qm187pNyhz6baXQw04PzSAY31gKs37HoOgNmPLp4Ijx6IsJwhb
+	 y4VzpOZRGf51w==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aNcICdscrYDUMKiU@slm.duckdns.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 29 Sep 2025 16:07:18 +0200
+Message-Id: <DD5CCG4MIODH.1718JI1Z7GH8T@kernel.org>
+Subject: Re: [RFC v8 00/21] DRM scheduling cgroup controller
+Cc: <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
+ <kernel-dev@igalia.com>, <intel-xe@lists.freedesktop.org>,
+ <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, "Leo Liu"
+ <Leo.Liu@amd.com>, =?utf-8?q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>,
+ "Matthew Brost" <matthew.brost@intel.com>, =?utf-8?q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, =?utf-8?q?Michel_D=C3=A4nzer?=
+ <michel.daenzer@mailbox.org>, "Philipp Stanner" <phasta@kernel.org>,
+ "Pierre-Eric Pelloux-Prayer" <pierre-eric.pelloux-prayer@amd.com>, "Rob
+ Clark" <robdclark@gmail.com>, "Tejun Heo" <tj@kernel.org>, "Alexandre
+ Courbot" <acourbot@nvidia.com>, "Alistair Popple" <apopple@nvidia.com>,
+ "John Hubbard" <jhubbard@nvidia.com>, "Joel Fernandes"
+ <joelagnelf@nvidia.com>, "Timur Tabi" <ttabi@nvidia.com>, "Alex Deucher"
+ <alexander.deucher@amd.com>, "Lucas De Marchi" <lucas.demarchi@intel.com>,
+ =?utf-8?q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ "Rodrigo Vivi" <rodrigo.vivi@intel.com>, "Boris Brezillon"
+ <boris.brezillon@collabora.com>, "Rob Herring" <robh@kernel.org>, "Steven
+ Price" <steven.price@arm.com>, "Liviu Dudau" <liviu.dudau@arm.com>, "Daniel
+ Almeida" <daniel.almeida@collabora.com>, "Alice Ryhl"
+ <aliceryhl@google.com>, "Boqun Feng" <boqunf@netflix.com>,
+ =?utf-8?q?Gr=C3=A9goire_P=C3=A9an?= <gpean@netflix.com>
+To: "Tvrtko Ursulin" <tvrtko.ursulin@igalia.com>
+From: "Danilo Krummrich" <dakr@kernel.org>
+References: <20250903152327.66002-1-tvrtko.ursulin@igalia.com>
+In-Reply-To: <20250903152327.66002-1-tvrtko.ursulin@igalia.com>
 
-On Fri, Sep 26, 2025 at 11:39:21AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Fri, Sep 26, 2025 at 12:36:28PM +0200, Peter Zijlstra wrote:
-> > On Thu, Sep 25, 2025 at 11:43:18AM -1000, Tejun Heo wrote:
-> > > Yes, I was on a similar train of thought. The only reasonable way that I can
-> > > think of for solving this for BPF managed tasks is giving each task its own
-> > > inner sched lock, which makes sense as all sched operations (except for
-> > > things like watchdog) are per-task and we don't really need wider scope
-> > > locking.
-> > 
-> > Like I've said before; I really don't understand how that would be
-> > helpful at all.
-> > 
-> > How can you migrate a task by holding a per-task lock?
-> 
-> Let's see whether I'm completely confused. Let's say we have p->sub_lock
-> which is optionally grabbed by task_rq_lock() if requested by the current
-> sched class (maybe it's a sched_class flag). Then, whoever is holding the
-> sub_lock would exclude property and other changes to the task.
-> 
-> In sched_ext, let's say p->sub_lock nests inside dsq locks. Also, right now,
-> we're piggy backing on rq lock for local DSQs. We'd need to make local DSQs
-> use their own locks like user DSQs. Then,
-> 
-> - If a task needs to be migrated either during enqueue through
->   process_ddsp_deferred_locals() or during dispatch from BPF through
->   finish_dispatch(): Leave rq locks alone. Grab sub_lock inside
->   dispatch_to_local_dsq() after grabbing the target DSQ's lock.
-> 
-> - scx_bpf_dsq_move_to_local() from dispatch: This is a bit tricky as we need
->   to scan the tasks on the source DSQ to find the task to dispatch. However,
->   there's a patch being worked on to add rcu protected pointer to the first
->   task which would be the task to be consumed in vast majority of cases, so
->   the fast path wouldn't be complicated - grab sub_lock, do the moving. If
->   the first task isn't a good candidate, we'd have to grab DSQ lock, iterate
->   looking for the right candidate, unlock DSQ and grab sub_lock (or
->   trylock), and see if the task is still on the DSQ and then relock and
->   remove.
-> 
-> - scx_bpf_dsq_move() during BPF iteration: DSQ is unlocked during each
->   iteration visit, so this is straightforward. Grab sub-lock and do the rest
->   the same.
-> 
-> Wouldn't something like the above provide equivalent synchronization as the
-> dynamic lock approach? Whoever is holding sub_lock would be guaranteed that
-> the task won't be migrating while the lock is held.
-> 
-> However, thinking more about it. I'm unsure how e.g. the actual migration
-> would work. The actual migration is done by: deactivate_task() ->
-> set_task_cpu() -> switch rq locks -> activate_task(). Enqueueing/dequeueing
-> steps have operations that depend on rq lock - psi updates, uclamp updates
-> and so on. How would they work?
+On Wed Sep 3, 2025 at 5:23 PM CEST, Tvrtko Ursulin wrote:
+> This is another respin of this old work^1 which since v7 is a total rewri=
+te and
+> completely changes how the control is done.
 
-Suppose __task_rq_lock() will take rq->lock and p->sub_lock, in that
-order, such that task_rq_lock() will take p->pi_lock, rq->lock and
-p->sub_lock.
+I only got some of the patches of the series, can you please send all of th=
+em
+for subsequent submissions? You may also want to consider resending if you'=
+re
+not getting a lot of feedback due to that. :)
 
-Then something like:
+> On the userspace interface side of things it is the same as before. We ha=
+ve
+> drm.weight as an interface, taking integers from 1 to 10000, the same as =
+CPU and
+> IO cgroup controllers.
 
-  guard(task_rq_lock)(p);
-  scoped_guard (sched_change, p, ...) {
-      // change me
-  }
+In general, I think it would be good to get GPU vendors to speak up to what=
+ kind
+of interfaces they're heading to with firmware schedulers and potential fir=
+mware
+APIs to control scheduling; especially given that this will be a uAPI.
 
-Will end up doing something like:
+(Adding a couple of folks to Cc.)
 
-  // task_rq_lock
-  IRQ-DISABLE
-  LOCK pi->lock
-1:
-  rq = task_rq(p);
-  LOCK rq->lock;
-  if (rq != task_rq(p)) {
-    UNLOCK rq->lock
-    goto 1;
-  }
-  LOCK p->sub_lock
+Having that said, I think the basic drm.weight interface is fine and should=
+ work
+in any case; i.e. with the existing DRM GPU scheduler in both modes, the
+upcoming DRM Jobqueue efforts and should be generic enough to work with
+potential firmware interfaces we may see in the future.
 
-  // sched_change
-  dequeue_task() := dequeue_task_scx()
-    LOCK dsq->lock
+Philipp should be talking about the DRM Jobqueue component at XDC (probably=
+ just
+in this moment).
 
-While at the same time, above you argued p->sub_lock should be inside
-dsq->lock. Because:
+--
 
-__schedule()
-  rq = this_rq();
-  LOCK rq->lock
-  next = pick_next() := pick_next_scx()
-    LOCK dsq->lock
-    p = find_task(dsq);
-    LOCK p->sub_lock
-    dequeue(dsq, p);
-    UNLOCK dsq->lock
+Some more thoughts on the DRM Jobqueue and scheduling:
 
-Because if you did something like:
+The idea behind the DRM Jobqueue is to be, as the name suggests, a componen=
+t
+that receives jobs from userspace, handles the dependencies (i.e. dma fence=
+s),
+and executes the job, e.g. by writing to a firmware managed software ring.
 
-__schedule()
-  rq = this_rq();
-  LOCK rq->lock
-  next = pick_next() := pick_next_scx()
-    LOCK dsq->lock (or RCU, doesn't matter)
-    p = find_task(dsq);
-    UNLOCK dsq->lock
-				migrate:
-				LOCK p->pi_lock
-				rq = task_rq(p)
-				LOCK rq->lock
-				(verify bla bla)
-				LOCK p->sub_lock
-				LOCK dsq->lock
-				dequeue(dsq, p)
-				UNLOCK dsq->lock
-				set_task_cpu(n);
-				UNLOCK rq->lock
-				rq = cpu_rq(n);
-				LOCK rq->lock (inversion vs p->sub_lock)
-				LOCK dsq2->lock
-				enqueue(dsq2, p)
-				UNLOCK dsq2->lock
+It basically does what the GPU scheduler does in 1:1 entity-scheduler mode,
+just without all the additional complexity of moving job ownership from one
+component to another (i.e. from entity to scheduler, etc.).
 
-    LOCK p->sub_lock
-    LOCK dsq->lock   (whoopsie, p is on dsq2)
-    dequeue(dsq, p)
-    set_task_cpu(here);
-    UNLOCK dsq->lock
+With just that, there is no scheduling outside the GPU's firmware scheduler=
+ of
+course. However, additional scheduler capabilities, e.g. to support hardwar=
+e
+rings, or manage firmware schedulers that only support a limited number of
+software rings (like some Mali GPUs), can be layered on top of that:
 
+In contrast to the existing GPU scheduler, the idea would be to keep lettin=
+g the
+DRM Jobqueue handle jobs submitted by userspace from end to end (i.e. let t=
+he
+push to the hardware (or software) ring buffer), but have an additional
+component, whose only purpose is to orchestrate the DRM Jobqueues, by manag=
+ing
+when they are allowed to push to a ring and which ring they should push to.
 
-That is, either way around: dsq->lock outside, p->sub_lock inside, or
-the other way around, I emd up with inversions and race conditions that
-are not fun.
-
-Also, if you do put p->sub_lock inside dsq->lock, this means
-__task_rq_lock() cannot take it and it needs to be pushed deep into scx
-(possibly into bpf ?) and that means I'm not sure how to do the change
-pattern sanely.
-
-Having __task_rq_lock() take p->dsq->lock solves all these problems,
-except for that one weird case where BPF wants to do things their own
-way. The longer I'm thinking about it, the more I dislike that. I just
-don't see *ANY* upside from allowing BPF to do this while it is making
-everything else quite awkward.
-
-The easy fix is to have these BPF managed things have a single global
-lock. That works and is correct. Then if they want something better,
-they can use DSQs :-)
-
-Fundamentally, we need the DSQ->lock to cover all CPUs that will pick
-from it, there is no wiggle room there. Also note that while we change
-only the attributes of a single task with the change pattern, that
-affects the whole RQ, since a runqueue is an aggregate of all tasks.
-This is very much why dequeue/enqueue around the change pattern, to keep
-the runqueue aggregates updated.
-
-Use the BPF thing to play with scheduling policies, but leave the
-locking to the core code.
+This way we get rid of one of the issue that the existing GPU scheduler mov=
+es
+job ownership between components of different lifetimes (entity and schedul=
+er),
+which is one of the fundamental hassles to deal with.
 
