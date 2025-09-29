@@ -1,313 +1,240 @@
-Return-Path: <cgroups+bounces-10490-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10491-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A354BA8543
-	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 09:54:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2523FBA8D09
+	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 12:07:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DFAE189BBB5
-	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 07:55:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A7283A2932
+	for <lists+cgroups@lfdr.de>; Mon, 29 Sep 2025 10:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A807260588;
-	Mon, 29 Sep 2025 07:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187142FA0E9;
+	Mon, 29 Sep 2025 10:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Yx1Z/ysK"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DxiHbAxQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A0F225397
-	for <cgroups@vger.kernel.org>; Mon, 29 Sep 2025 07:54:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104BE2E8B86;
+	Mon, 29 Sep 2025 10:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759132481; cv=none; b=PcYfD3+kpk/GWEkOmwdS5XbW+ORjFZIqM01ytUH+AUxZRJH7VOWSlVcfvCit3dzBqtrf2rR3y3eyA88LLVYzRELfdqG2zNPmquFk7FbkW1eO27PJagYCUXvzLMJeSOTvvRBPmf4Bn5CeHIhx4ma255HfXrmHKVh/fkiTjqB8WIU=
+	t=1759140435; cv=none; b=ZUArcJYYQvhx9RVW6r2cXxjwTI2dTCOYFk9Yh3Eq1mIQbnDvbs47FT/Lf/qJLgMwsWqDKJhzvVZFrcoO2iBwwSor6Fm0iGlZdPV9n/Yz/QbdVDqoKmRXr9fuk4UTtgFVTbVKPjXbFMaxF5NoG5gTJGP48XhcDvSYVIri8vyjVQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759132481; c=relaxed/simple;
-	bh=gLjPI+Ty4V5UonNuIad7q0vN67Gxc9NIE8ov/yfxSvQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bsrPj5F1Y8332o/w1+CqIrhkNwFTDn+LIkdJB15jQK8xbQYptaLWdDgvhiyfKXDj+XfD0reu/Rc4tcP9xnd3JvXnuA5wdG/bFW0jxWMAG1FAq/SSDPyRTGM0lldJcyaIXVe2E+qMm1HmZ9y8Gnqto8Drku8k7zoQPQZsYo34Gaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Yx1Z/ysK; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4d13ffd1-25a5-44f7-9d7d-baa8bc576c04@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759132476;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UVpToKISTa8VE/h8x/0KonSGNktaLtqCR9k5a/zcWWQ=;
-	b=Yx1Z/ysKsp9m+j/fouRP9o5rGGuzMMG87cOpe8a9FM3eXbntfj1TuuB8NDst86aPvi9rID
-	6AekzqTQ/Klq9XgQFi/rCzRgv86y7EJrNzUzccesAzKIdf4NLY6NNoXQjxtjKsc+AG8Hjt
-	QG+DtlJxBaBF7w72FO2t67L6JTJebrc=
-Date: Mon, 29 Sep 2025 15:54:26 +0800
+	s=arc-20240116; t=1759140435; c=relaxed/simple;
+	bh=nt1BCNEJq7BMv2psjfunALasd4EkjDFiwlD+qEdCY1E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DnmJy0zwqzIVk6VdS67VGD+Y80iwK9QkBz21HDmnjtn3lBHpQEKuRLoCmviNMtMspSxvKYed7mIM1NGiK1xkm5vSQslxetCGBgM9IJ7d+STklvB7CL9hGNdriX+4dRH+TJL7IBtwXqlF/1AvGG6xPQbXkEYcidVuH6FL19fzn2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DxiHbAxQ; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=7NB+0C2qsyWHPYK8tQ50R2KyFBHMFnn21/53LdWy8FM=; b=DxiHbAxQzjS899koaklun1rtdA
+	wBnJAkNMb05Ys/MBopFnN9zBTXmGGAn1vSoM5XNG8Q5gUNHMMbKjy33JutUnkky0ehM43+7DFXpPE
+	hnPhNwowkmZp5GmZ2oulV9BuM/eXkfSCj/6InuGP2SraQGROpeUBC3ksic1wnJBu+AN7EWavkXbvS
+	zFLWINcKG2+Fp4FcS0KL9merzbBniNFwgTe+gbMC00UzKv05OlJ0ZG7eyfx/qI1yeTwiBtg9IJkfD
+	NVVvpp8Wz49nXgJm9eqk8z8b8TxGpVIHaHbPMsZyg0oNI2FnpTGFVs3NL0iilS6jbZ20OIWnkIC5S
+	Xc2jxtWA==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1v3Ama-0000000Byz0-1Xx5;
+	Mon, 29 Sep 2025 10:07:00 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id C60A5300359; Mon, 29 Sep 2025 12:06:58 +0200 (CEST)
+Date: Mon, 29 Sep 2025 12:06:58 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
+	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
+	changwoo@igalia.com, cgroups@vger.kernel.org,
+	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
+Subject: Re: [PATCH 12/14] sched: Add shared runqueue locking to
+ __task_rq_lock()
+Message-ID: <20250929100658.GC3245006@noisy.programming.kicks-ass.net>
+References: <aMNnLenCytO_KEKg@slm.duckdns.org>
+ <20250912115459.GZ3289052@noisy.programming.kicks-ass.net>
+ <aMRexZ_SIUVgkIpZ@slm.duckdns.org>
+ <20250915083815.GB3289052@noisy.programming.kicks-ass.net>
+ <aMnk5Wcdr2q6BWqR@slm.duckdns.org>
+ <aMnnslT_mUfAtytN@slm.duckdns.org>
+ <20250925083533.GW4067720@noisy.programming.kicks-ass.net>
+ <aNW3du48v3PvwPbq@slm.duckdns.org>
+ <20250926103628.GE4067720@noisy.programming.kicks-ass.net>
+ <aNcICdscrYDUMKiU@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 4/4] mm: thp: reparent the split queue during memcg
- offline
-To: Muchun Song <muchun.song@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, david@redhat.com,
- lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
- baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, npache@redhat.com,
- ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
- lance.yang@linux.dev, akpm@linux-foundation.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <cover.1759056506.git.zhengqi.arch@bytedance.com>
- <2ddd0c184829e65c5b3afa34e93599783e7af3d4.1759056506.git.zhengqi.arch@bytedance.com>
- <2EC0CBCD-73FD-400A-921A-EAB45B21ACB8@linux.dev>
- <08a4f0b2-1735-4e3b-9f61-d55e45e8ec86@linux.dev>
- <1A84CFB1-FB4F-4630-A40C-73CDE7CA8C21@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <1A84CFB1-FB4F-4630-A40C-73CDE7CA8C21@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aNcICdscrYDUMKiU@slm.duckdns.org>
+
+On Fri, Sep 26, 2025 at 11:39:21AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, Sep 26, 2025 at 12:36:28PM +0200, Peter Zijlstra wrote:
+> > On Thu, Sep 25, 2025 at 11:43:18AM -1000, Tejun Heo wrote:
+> > > Yes, I was on a similar train of thought. The only reasonable way that I can
+> > > think of for solving this for BPF managed tasks is giving each task its own
+> > > inner sched lock, which makes sense as all sched operations (except for
+> > > things like watchdog) are per-task and we don't really need wider scope
+> > > locking.
+> > 
+> > Like I've said before; I really don't understand how that would be
+> > helpful at all.
+> > 
+> > How can you migrate a task by holding a per-task lock?
+> 
+> Let's see whether I'm completely confused. Let's say we have p->sub_lock
+> which is optionally grabbed by task_rq_lock() if requested by the current
+> sched class (maybe it's a sched_class flag). Then, whoever is holding the
+> sub_lock would exclude property and other changes to the task.
+> 
+> In sched_ext, let's say p->sub_lock nests inside dsq locks. Also, right now,
+> we're piggy backing on rq lock for local DSQs. We'd need to make local DSQs
+> use their own locks like user DSQs. Then,
+> 
+> - If a task needs to be migrated either during enqueue through
+>   process_ddsp_deferred_locals() or during dispatch from BPF through
+>   finish_dispatch(): Leave rq locks alone. Grab sub_lock inside
+>   dispatch_to_local_dsq() after grabbing the target DSQ's lock.
+> 
+> - scx_bpf_dsq_move_to_local() from dispatch: This is a bit tricky as we need
+>   to scan the tasks on the source DSQ to find the task to dispatch. However,
+>   there's a patch being worked on to add rcu protected pointer to the first
+>   task which would be the task to be consumed in vast majority of cases, so
+>   the fast path wouldn't be complicated - grab sub_lock, do the moving. If
+>   the first task isn't a good candidate, we'd have to grab DSQ lock, iterate
+>   looking for the right candidate, unlock DSQ and grab sub_lock (or
+>   trylock), and see if the task is still on the DSQ and then relock and
+>   remove.
+> 
+> - scx_bpf_dsq_move() during BPF iteration: DSQ is unlocked during each
+>   iteration visit, so this is straightforward. Grab sub-lock and do the rest
+>   the same.
+> 
+> Wouldn't something like the above provide equivalent synchronization as the
+> dynamic lock approach? Whoever is holding sub_lock would be guaranteed that
+> the task won't be migrating while the lock is held.
+> 
+> However, thinking more about it. I'm unsure how e.g. the actual migration
+> would work. The actual migration is done by: deactivate_task() ->
+> set_task_cpu() -> switch rq locks -> activate_task(). Enqueueing/dequeueing
+> steps have operations that depend on rq lock - psi updates, uclamp updates
+> and so on. How would they work?
+
+Suppose __task_rq_lock() will take rq->lock and p->sub_lock, in that
+order, such that task_rq_lock() will take p->pi_lock, rq->lock and
+p->sub_lock.
+
+Then something like:
+
+  guard(task_rq_lock)(p);
+  scoped_guard (sched_change, p, ...) {
+      // change me
+  }
+
+Will end up doing something like:
+
+  // task_rq_lock
+  IRQ-DISABLE
+  LOCK pi->lock
+1:
+  rq = task_rq(p);
+  LOCK rq->lock;
+  if (rq != task_rq(p)) {
+    UNLOCK rq->lock
+    goto 1;
+  }
+  LOCK p->sub_lock
+
+  // sched_change
+  dequeue_task() := dequeue_task_scx()
+    LOCK dsq->lock
+
+While at the same time, above you argued p->sub_lock should be inside
+dsq->lock. Because:
+
+__schedule()
+  rq = this_rq();
+  LOCK rq->lock
+  next = pick_next() := pick_next_scx()
+    LOCK dsq->lock
+    p = find_task(dsq);
+    LOCK p->sub_lock
+    dequeue(dsq, p);
+    UNLOCK dsq->lock
+
+Because if you did something like:
+
+__schedule()
+  rq = this_rq();
+  LOCK rq->lock
+  next = pick_next() := pick_next_scx()
+    LOCK dsq->lock (or RCU, doesn't matter)
+    p = find_task(dsq);
+    UNLOCK dsq->lock
+				migrate:
+				LOCK p->pi_lock
+				rq = task_rq(p)
+				LOCK rq->lock
+				(verify bla bla)
+				LOCK p->sub_lock
+				LOCK dsq->lock
+				dequeue(dsq, p)
+				UNLOCK dsq->lock
+				set_task_cpu(n);
+				UNLOCK rq->lock
+				rq = cpu_rq(n);
+				LOCK rq->lock (inversion vs p->sub_lock)
+				LOCK dsq2->lock
+				enqueue(dsq2, p)
+				UNLOCK dsq2->lock
+
+    LOCK p->sub_lock
+    LOCK dsq->lock   (whoopsie, p is on dsq2)
+    dequeue(dsq, p)
+    set_task_cpu(here);
+    UNLOCK dsq->lock
 
 
+That is, either way around: dsq->lock outside, p->sub_lock inside, or
+the other way around, I emd up with inversions and race conditions that
+are not fun.
 
-On 9/29/25 3:38 PM, Muchun Song wrote:
-> 
-> 
->> On Sep 29, 2025, at 15:22, Qi Zheng <qi.zheng@linux.dev> wrote:
->>
->>
->>
->> On 9/29/25 2:20 PM, Muchun Song wrote:
->>>> On Sep 28, 2025, at 19:45, Qi Zheng <qi.zheng@linux.dev> wrote:
->>>>
->>>> From: Qi Zheng <zhengqi.arch@bytedance.com>
->>>>
->>>> Similar to list_lru, the split queue is relatively independent and does
->>>> not need to be reparented along with objcg and LRU folios (holding
->>>> objcg lock and lru lock). So let's apply the same mechanism as list_lru
->>>> to reparent the split queue separately when memcg is offine.
->>>>
->>>> This is also a preparation for reparenting LRU folios.
->>>>
->>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->>>> ---
->>>> include/linux/huge_mm.h |  4 ++++
->>>> mm/huge_memory.c        | 46 +++++++++++++++++++++++++++++++++++++++++
->>>> mm/memcontrol.c         |  1 +
->>>> 3 files changed, 51 insertions(+)
->>>>
->>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>>> index f327d62fc9852..0c211dcbb0ec1 100644
->>>> --- a/include/linux/huge_mm.h
->>>> +++ b/include/linux/huge_mm.h
->>>> @@ -417,6 +417,9 @@ static inline int split_huge_page(struct page *page)
->>>> 	return split_huge_page_to_list_to_order(page, NULL, ret);
->>>> }
->>>> void deferred_split_folio(struct folio *folio, bool partially_mapped);
->>>> +#ifdef CONFIG_MEMCG
->>>> +void reparent_deferred_split_queue(struct mem_cgroup *memcg);
->>>> +#endif
->>>>
->>>> void __split_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
->>>> 		unsigned long address, bool freeze);
->>>> @@ -611,6 +614,7 @@ static inline int try_folio_split(struct folio *folio, struct page *page,
->>>> }
->>>>
->>>> static inline void deferred_split_folio(struct folio *folio, bool partially_mapped) {}
->>>> +static inline void reparent_deferred_split_queue(struct mem_cgroup *memcg) {}
->>>> #define split_huge_pmd(__vma, __pmd, __address) \
->>>> 	do { } while (0)
->>>>
->>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>>> index bb32091e3133e..5fc0caca71de0 100644
->>>> --- a/mm/huge_memory.c
->>>> +++ b/mm/huge_memory.c
->>>> @@ -1094,9 +1094,22 @@ static struct deferred_split *folio_split_queue_lock(struct folio *folio)
->>>> struct deferred_split *queue;
->>>>
->>>> 	memcg = folio_memcg(folio);
->>>> +retry:
->>>> 	queue = memcg ? &memcg->deferred_split_queue :
->>>> 			&NODE_DATA(folio_nid(folio))->deferred_split_queue;
->>>> 	spin_lock(&queue->split_queue_lock);
->>>> +  /*
->>>> +  * Notice:
->>>> +  * 1. The memcg could be NULL if cgroup_disable=memory is set.
->>>> +  * 2. There is a period between setting CSS_DYING and reparenting
->>>> +  *    deferred split queue, and during this period the THPs in the
->>>> +  *    deferred split queue will be hidden from the shrinker side.
->>
->> The shrinker side can find this deferred split queue by traversing
->> memcgs, so we should check CSS_DYING after we acquire child
->> split_queue_lock in :
->>
->> deferred_split_scan
->> --> spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
->>     if (css_is_dying(&memcg->css))
->>     --> retry to get parent split_queue_lock
->>
->> So during this period, we use parent split_queue_lock to protect
->> child deferred split queue. It's a little weird, but it's safe.
->>
->>>> + 	 */
->>>> +  	if (unlikely(memcg && css_is_dying(&memcg->css))) {
->>>> +  		spin_unlock(&queue->split_queue_lock);
->>>> +  		memcg = parent_mem_cgroup(memcg);
->>>> +  		goto retry;
->>>> +  	}
->>>>
->>>> return queue;
->>>> }
->>>> @@ -1108,9 +1121,15 @@ folio_split_queue_lock_irqsave(struct folio *folio, unsigned long *flags)
->>>> struct deferred_split *queue;
->>>>
->>>> 	memcg = folio_memcg(folio);
->>>> +retry:
->>>> 	queue = memcg ? &memcg->deferred_split_queue :
->>>> 			&NODE_DATA(folio_nid(folio))->deferred_split_queue;
->>>> 	spin_lock_irqsave(&queue->split_queue_lock, *flags);
->>>> +  	if (unlikely(memcg && css_is_dying(&memcg->css))) {
->>>> +  		spin_unlock_irqrestore(&queue->split_queue_lock, *flags);
->>>> +  		memcg = parent_mem_cgroup(memcg);
->>>> +  		goto retry;
->>>> +  	}
->>>>
->>>> return queue;
->>>> }
->>>> @@ -4275,6 +4294,33 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
->>>> return split;
->>>> }
->>>>
->>>> +#ifdef CONFIG_MEMCG
->>>> +void reparent_deferred_split_queue(struct mem_cgroup *memcg)
->>>> +{
->>>> +  	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
->>>> +  	struct deferred_split *ds_queue = &memcg->deferred_split_queue;
->>>> +  	struct deferred_split *parent_ds_queue = &parent->deferred_split_queue;
->>>> +  	int nid;
->>>> +
->>>> + 	spin_lock_irq(&ds_queue->split_queue_lock);
->>>> +  	spin_lock_nested(&parent_ds_queue->split_queue_lock, SINGLE_DEPTH_NESTING);
->>>> +
->>>> +  	if (!ds_queue->split_queue_len)
->>>> +  		goto unlock;
->>>> +
->>>> +  	list_splice_tail_init(&ds_queue->split_queue, &parent_ds_queue->split_queue);
->>>> +  	parent_ds_queue->split_queue_len += ds_queue->split_queue_len;
->>>> +  	ds_queue->split_queue_len = 0;
->>>> +
->>>> +  	for_each_node(nid)
->>>> +  		set_shrinker_bit(parent, nid, shrinker_id(deferred_split_shrinker));
->>>> +
->>>> +unlock:
->>>> +  	spin_unlock(&parent_ds_queue->split_queue_lock);
->>>> +  	spin_unlock_irq(&ds_queue->split_queue_lock);
->>>> +}
->>>> +#endif
->>>> +
->>>> #ifdef CONFIG_DEBUG_FS
->>>> static void split_huge_pages_all(void)
->>>> {
->>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>>> index e090f29eb03bd..d03da72e7585d 100644
->>>> --- a/mm/memcontrol.c
->>>> +++ b/mm/memcontrol.c
->>>> @@ -3887,6 +3887,7 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
->>>> zswap_memcg_offline_cleanup(memcg);
->>>>
->>>> 	memcg_offline_kmem(memcg);
->>>> +  	reparent_deferred_split_queue(memcg);
->>> Since the dying flag of a memcg is not set under split_queue_lock,
->>> two threads holding different split_queue_locks (e.g., one for the
->>> parent memcg and one for the child) can concurrently manipulate the
->>> same split-queue list of a folio. I think we should take the same
->>
->> If we ensure that we will check CSS_DYING every time we take the
->> split_queue_lock, then the lock protecting deferred split queue
->> must be the same lock.
->>
->> To be more clear, consider the following case:
->>
->> CPU0              CPU1              CPU2
->>
->>                   folio_split_queue_lock
->>                   --> get child queue and lock
->>
->> set CSS_DYING
->>
->>                                     deferred_split_scan
->>                   unlock child queue lock
->>                                     --> acquire child queue lock
->>                                         ***WE SHOULD CHECK CSS_DYING HERE***
->>
->>
->> reparent spilt queue
->>
->> The deferred_split_scan() is problematic now, I will fix it as follow:
->>
->> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index 5fc0caca71de0..9f1f61e7e0c8e 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -4208,6 +4208,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
->>         struct folio *folio, *next;
->>         int split = 0, i;
->>         struct folio_batch fbatch;
->> +      struct mem_cgroup *memcg;
->>
->> #ifdef CONFIG_MEMCG
->>         if (sc->memcg)
->> @@ -4217,6 +4218,11 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
->>         folio_batch_init(&fbatch);
->> retry:
->>         spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
->> +      if (sc->memcg && css_is_dying(&sc->memcg->css)) {
-> 
-> There are more than one place where we check whether a memcg is dying,
-> it is better to introduce a helper like mem_cgroup_is_dying to do this
-> in memcontrol.h.
+Also, if you do put p->sub_lock inside dsq->lock, this means
+__task_rq_lock() cannot take it and it needs to be pushed deep into scx
+(possibly into bpf ?) and that means I'm not sure how to do the change
+pattern sanely.
 
-OK. I will try to add a cleanup patch to do this.
+Having __task_rq_lock() take p->dsq->lock solves all these problems,
+except for that one weird case where BPF wants to do things their own
+way. The longer I'm thinking about it, the more I dislike that. I just
+don't see *ANY* upside from allowing BPF to do this while it is making
+everything else quite awkward.
 
-> 
->> +               spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
-> 
-> Yes, we could fix this like this way. But I suggest we introduce another
-> helper like folio_split_queue_lock to do the similar retry logic. Every users
-> of split_queue_lock are supposed to use this new helper or folio_split_queue_lock
-> to get the lock.
+The easy fix is to have these BPF managed things have a single global
+lock. That works and is correct. Then if they want something better,
+they can use DSQs :-)
 
-Yes, will do.
+Fundamentally, we need the DSQ->lock to cover all CPUs that will pick
+from it, there is no wiggle room there. Also note that while we change
+only the attributes of a single task with the change pattern, that
+affects the whole RQ, since a runqueue is an aggregate of all tasks.
+This is very much why dequeue/enqueue around the change pattern, to keep
+the runqueue aggregates updated.
 
-> 
->> +               memcg = parent_mem_cgroup(sc->memcg);
->> + 		spin_lock_irqsave(&memcg->deferred_split_queue.split_queue_lock, flags);
->> +       }
->>         /* Take pin on all head pages to avoid freeing them under us */
->>         list_for_each_entry_safe(folio, next, &ds_queue->split_queue,
->>                                                         _deferred_list) {
->>
->> Of course I'll add helper functions and do some cleanup.
-> 
-> Yes.
-> 
->>
->> Thanks,
->> Qi
->>
->>
->>> solution like list_lru does to fix this.
->>> Muchun,
->>> Thanks.
->>>> reparent_shrinker_deferred(memcg);
->>>> wb_memcg_offline(memcg);
->>>> lru_gen_offline_memcg(memcg);
->>>> -- 
->>>> 2.20.1
-> 
-> 
-
+Use the BPF thing to play with scheduling policies, but leave the
+locking to the core code.
 
