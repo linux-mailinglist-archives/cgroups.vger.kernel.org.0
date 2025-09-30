@@ -1,163 +1,193 @@
-Return-Path: <cgroups+bounces-10499-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10500-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5E1DBAC937
-	for <lists+cgroups@lfdr.de>; Tue, 30 Sep 2025 12:58:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1684BACBDB
+	for <lists+cgroups@lfdr.de>; Tue, 30 Sep 2025 13:57:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C8C5481B76
-	for <lists+cgroups@lfdr.de>; Tue, 30 Sep 2025 10:58:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CC121C7D15
+	for <lists+cgroups@lfdr.de>; Tue, 30 Sep 2025 11:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 991092F7AB9;
-	Tue, 30 Sep 2025 10:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953182EBBAB;
+	Tue, 30 Sep 2025 11:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qLUglUGT"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="mJeoLlpS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bali.collaboradmins.com (bali.collaboradmins.com [148.251.105.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FCDD7D07D;
-	Tue, 30 Sep 2025 10:58:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28D0C26A088;
+	Tue, 30 Sep 2025 11:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.251.105.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759229918; cv=none; b=NR8KecIa5SAFXnCAN+m23xxq8/WC6q4+TOKNFIrLNbfQqno5PJq4oZIywGoqQq2mqXyeUTmTDndPaSCT5DOB3vhcUYK9RUiVJeWrqIgdfmD78Mhsf2iHH81+BOm9jHJRpn3hUu4BhuBjGXRIJ9CJWgSoZrKXBM1h0LmzhpR54bM=
+	t=1759233466; cv=none; b=Fv5jzBex2L+clucP4a/UfqYdL9UgFhZasFxh6mRrAwndjhytzHBCZ/GanIZkRaqshnNikAl7ikpMQjBnerg6cRfsHvjbRrjtIacasWtBbmorIOYfJ3nd1OntOzB9GQS3KMtKlqdG7V5wNh8fjPJySaFhI+xdj9MSRTsa80GYTIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759229918; c=relaxed/simple;
-	bh=IVeKxWEut+Emb9nnqz0yfG5v42zVqYoCwYVmlUPF938=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=AwZLQ2plZLJGBstyujNm7ywjQU6gfmZz/cj9hgD1BIDO4vRAloOInRTr/KhR5UFrTpwfgyf4DVF8573qUAkBgjVAaaiagEAdhl1j3wHI8/CiJOK3kY40DECANECp2u6ojOv6YrQl7dLGcqEA6n89DdeIad+QegV2IYm7vhYTd1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qLUglUGT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46BC3C4CEF0;
-	Tue, 30 Sep 2025 10:58:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759229917;
-	bh=IVeKxWEut+Emb9nnqz0yfG5v42zVqYoCwYVmlUPF938=;
-	h=Date:Subject:Cc:To:From:References:In-Reply-To:From;
-	b=qLUglUGTY+iCDhsOWbxYlW691Zbullyv4GDGSkWQOpYwsuuOxyWeYm6D+g14/zeke
-	 KdUrSOoM4ttNdCtP2bj0sT2eNPIA8841BS1E4LtGbaTE9gh329bC77/WVznvyWf6oH
-	 e2s0P/8Xuz//t5eUBgh1cNeIELhetCeSbaNm903Zu9NK/taHhAbfPg8z1b5bulhM0J
-	 ONaOkIpGxY/obvelLf+sw2sWYMALVjMkYz7efV5JsnMfnPjlp2HHe7nz7OpwLWeAmN
-	 6/wl7Zu4QL+e9zhu0q1GMsiOCiaUHXtw04lNnHUlGPTggCyHQmEDfBR+zODwwLhs1Y
-	 JNTuKJ3tKeZ0g==
-Precedence: bulk
-X-Mailing-List: cgroups@vger.kernel.org
-List-Id: <cgroups.vger.kernel.org>
-List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 30 Sep 2025 12:58:29 +0200
-Message-Id: <DD62YFG2CJ36.1NFKRTR2ZKD6V@kernel.org>
-Subject: Re: [RFC v8 00/21] DRM scheduling cgroup controller
+	s=arc-20240116; t=1759233466; c=relaxed/simple;
+	bh=qBZX0z5CnOtN7+UQ2lvEHHirZ93sseSix/A1K8cdiFc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hSLvOsDPtjE/7O7s8mjW1rYpX1+kXL11UJuh8ViLP/+IA84iSy//QVUP7eqVAzBCWmxbmOFc3tT5OMxXTeqnCGUkAEvCdMakCrgeIxcwYLrEbds3JF4hdLS4N49fFCPYwW1wTOJ+3sb5wpBVGi2u2e/XGuoHtEE8DCvjM7p6VlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=mJeoLlpS; arc=none smtp.client-ip=148.251.105.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1759233462;
+	bh=qBZX0z5CnOtN7+UQ2lvEHHirZ93sseSix/A1K8cdiFc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=mJeoLlpS6xMi4xx9XPVrj1slSC3EBhW5J/50vIMfQpudGEZWvZIr/sfcQCNuoQXKL
+	 ZN76YNOMXYENCdJmsXhZjHuVXocD4Yv+VCe6kU7zNGGHaahVq0up4j9wj958kGv/fm
+	 cqz/o/FCiw7xYQmEmlCGVN/li8NGMFCKIHFza9waOwa2QuNI0oCQP9pGcDHbEObhU9
+	 1J2TtCj7pAnntE45uJAR5JBkNEtnNgQEH7KjcvWcEMflfg/xSMmAu7c3mDucT4qiNM
+	 OZbgWZOYimySVkz8BQR3sd93NttuCTuMJJWWoALkfMez3bUrLmJdw9SWG8hTBRRSM0
+	 1qdZ4npgF3cbg==
+Received: from fedora (unknown [IPv6:2a01:e0a:2c:6930:d919:a6e:5ea1:8a9f])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bbrezillon)
+	by bali.collaboradmins.com (Postfix) with ESMTPSA id 18DA717E00A8;
+	Tue, 30 Sep 2025 13:57:41 +0200 (CEST)
+Date: Tue, 30 Sep 2025 13:57:36 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: "Danilo Krummrich" <dakr@kernel.org>
 Cc: "Philipp Stanner" <phasta@mailbox.org>, <phasta@kernel.org>, "Tvrtko
  Ursulin" <tvrtko.ursulin@igalia.com>, <dri-devel@lists.freedesktop.org>,
  <amd-gfx@lists.freedesktop.org>, <kernel-dev@igalia.com>,
  <intel-xe@lists.freedesktop.org>, <cgroups@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, =?utf-8?q?Christian_K=C3=B6nig?=
- <christian.koenig@amd.com>, "Leo Liu" <Leo.Liu@amd.com>,
- =?utf-8?q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>, "Matthew Brost"
- <matthew.brost@intel.com>, =?utf-8?q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, =?utf-8?q?Michel_D=C3=A4nzer?=
+ <linux-kernel@vger.kernel.org>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, "Leo Liu" <Leo.Liu@amd.com>, =?UTF-8?B?TWE=?=
+ =?UTF-8?B?w61yYQ==?= Canal <mcanal@igalia.com>, "Matthew Brost"
+ <matthew.brost@intel.com>, Michal =?UTF-8?B?S291dG7DvQ==?=
+ <mkoutny@suse.com>, Michel =?UTF-8?B?RMOkbnplcg==?=
  <michel.daenzer@mailbox.org>, "Pierre-Eric Pelloux-Prayer"
  <pierre-eric.pelloux-prayer@amd.com>, "Rob Clark" <robdclark@gmail.com>,
  "Tejun Heo" <tj@kernel.org>, "Alexandre Courbot" <acourbot@nvidia.com>,
  "Alistair Popple" <apopple@nvidia.com>, "John Hubbard"
  <jhubbard@nvidia.com>, "Joel Fernandes" <joelagnelf@nvidia.com>, "Timur
  Tabi" <ttabi@nvidia.com>, "Alex Deucher" <alexander.deucher@amd.com>,
- "Lucas De Marchi" <lucas.demarchi@intel.com>,
- =?utf-8?q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- "Rodrigo Vivi" <rodrigo.vivi@intel.com>, "Rob Herring" <robh@kernel.org>,
- "Steven Price" <steven.price@arm.com>, "Liviu Dudau" <liviu.dudau@arm.com>,
- "Daniel Almeida" <daniel.almeida@collabora.com>, "Alice Ryhl"
- <aliceryhl@google.com>, "Boqun Feng" <boqunf@netflix.com>,
- =?utf-8?q?Gr=C3=A9goire_P=C3=A9an?= <gpean@netflix.com>, "Simona Vetter"
+ "Lucas De Marchi" <lucas.demarchi@intel.com>, Thomas =?UTF-8?B?SGVsbHN0?=
+ =?UTF-8?B?csO2bQ==?= <thomas.hellstrom@linux.intel.com>, "Rodrigo Vivi"
+ <rodrigo.vivi@intel.com>, "Rob Herring" <robh@kernel.org>, "Steven Price"
+ <steven.price@arm.com>, "Liviu Dudau" <liviu.dudau@arm.com>, "Daniel
+ Almeida" <daniel.almeida@collabora.com>, "Alice Ryhl"
+ <aliceryhl@google.com>, "Boqun Feng" <boqunf@netflix.com>, =?UTF-8?B?R3I=?=
+ =?UTF-8?B?w6lnb2lyZSBQw6lhbg==?= <gpean@netflix.com>, "Simona Vetter"
  <simona@ffwll.ch>, <airlied@gmail.com>
-To: "Boris Brezillon" <boris.brezillon@collabora.com>
-From: "Danilo Krummrich" <dakr@kernel.org>
+Subject: Re: [RFC v8 00/21] DRM scheduling cgroup controller
+Message-ID: <20250930135736.02b69c65@fedora>
+In-Reply-To: <DD62YFG2CJ36.1NFKRTR2ZKD6V@kernel.org>
 References: <20250903152327.66002-1-tvrtko.ursulin@igalia.com>
- <DD5CCG4MIODH.1718JI1Z7GH8T@kernel.org>
- <4453e5989b38e99588efd53af674b69016b2c420.camel@mailbox.org>
- <20250930121229.4f265e0c@fedora>
-In-Reply-To: <20250930121229.4f265e0c@fedora>
+	<DD5CCG4MIODH.1718JI1Z7GH8T@kernel.org>
+	<4453e5989b38e99588efd53af674b69016b2c420.camel@mailbox.org>
+	<20250930121229.4f265e0c@fedora>
+	<DD62YFG2CJ36.1NFKRTR2ZKD6V@kernel.org>
+Organization: Collabora
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.49; x86_64-redhat-linux-gnu)
+Precedence: bulk
+X-Mailing-List: cgroups@vger.kernel.org
+List-Id: <cgroups.vger.kernel.org>
+List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue Sep 30, 2025 at 12:12 PM CEST, Boris Brezillon wrote:
-> So, my take on that is that what we want ultimately is to have the
-> functionality provided by drm_sched split into different
-> components that can be used in isolation, or combined to provide
-> advanced scheduling.
->
-> JobQueue:
->  - allows you to queue jobs with their deps
->  - dequeues jobs once their deps are met
-> Not too sure if we want a push or a pull model for the job dequeuing,
-> but the idea is that once the job is dequeued, ownership is passed to
-> the SW entity that dequeued it. Note that I intentionally didn't add
-> the timeout handling here, because dequeueing a job doesn't necessarily
-> mean it's started immediately. If you're dealing with HW queues, you
-> might have to wait for a slot to become available. If you're dealing
-> with something like Mali-CSF, where the amount of FW slots is limited,
-> you want to wait for your execution context to be passed to the FW for
-> scheduling, and the final situation is the full-fledged FW scheduling,
-> where you want things to start as soon as you have space in your FW
-> queue (AKA ring-buffer?).
->
-> JobHWDispatcher: (not sure about the name, I'm bad at naming things)
-> This object basically pulls ready-jobs from one or multiple JobQueues
-> into its own queue, and wait for a HW slot to become available. If you
-> go for the push model, the job gets pushed to the HW dispatcher queue
-> and waits here until a HW slot becomes available.
-> That's where timeouts should be handled, because the job only becomes
-> active when it gets pushed to a HW slot. I guess if we want a
-> resubmit mechanism, it would have to take place here, but give how
-> tricky this has been, I'd be tempted to leave that to drivers, that is,
-> let them requeue the non-faulty jobs directly to their
-> JobHWDispatcher implementation after a reset.
->
-> FWExecutionContextScheduler: (again, pick a different name if you want)
-> This scheduler doesn't know about jobs, meaning there's a
-> driver-specific entity that needs to dequeue jobs from the JobQueue
-> and push those to the relevant ringbuffer. Once a FWExecutionContext
-> has something to execute, it becomes a candidate for
-> FWExecutionContextScheduler, which gets to decide which set of
-> FWExecutionContext get a chance to be scheduled by the FW.
-> That one is for Mali-CSF case I described above, and I'm not too sure
-> we want it to be generic, at least not until we have another GPU driver
-> needing the same kind of scheduling. Again, you want to defer the
-> timeout handling to this component, because the timer should only
-> start/resume when the FWExecutionContext gets scheduled, and it should
-> be paused as soon as the context gets evicted.
+On Tue, 30 Sep 2025 12:58:29 +0200
+"Danilo Krummrich" <dakr@kernel.org> wrote:
 
-This sounds pretty much like the existing design with the Panthor group
-scheduler layered on top of it, no?
+> On Tue Sep 30, 2025 at 12:12 PM CEST, Boris Brezillon wrote:
+> > So, my take on that is that what we want ultimately is to have the
+> > functionality provided by drm_sched split into different
+> > components that can be used in isolation, or combined to provide
+> > advanced scheduling.
+> >
+> > JobQueue:
+> >  - allows you to queue jobs with their deps
+> >  - dequeues jobs once their deps are met
+> > Not too sure if we want a push or a pull model for the job dequeuing,
+> > but the idea is that once the job is dequeued, ownership is passed to
+> > the SW entity that dequeued it. Note that I intentionally didn't add
+> > the timeout handling here, because dequeueing a job doesn't necessarily
+> > mean it's started immediately. If you're dealing with HW queues, you
+> > might have to wait for a slot to become available. If you're dealing
+> > with something like Mali-CSF, where the amount of FW slots is limited,
+> > you want to wait for your execution context to be passed to the FW for
+> > scheduling, and the final situation is the full-fledged FW scheduling,
+> > where you want things to start as soon as you have space in your FW
+> > queue (AKA ring-buffer?).
+> >
+> > JobHWDispatcher: (not sure about the name, I'm bad at naming things)
+> > This object basically pulls ready-jobs from one or multiple JobQueues
+> > into its own queue, and wait for a HW slot to become available. If you
+> > go for the push model, the job gets pushed to the HW dispatcher queue
+> > and waits here until a HW slot becomes available.
+> > That's where timeouts should be handled, because the job only becomes
+> > active when it gets pushed to a HW slot. I guess if we want a
+> > resubmit mechanism, it would have to take place here, but give how
+> > tricky this has been, I'd be tempted to leave that to drivers, that is,
+> > let them requeue the non-faulty jobs directly to their
+> > JobHWDispatcher implementation after a reset.
+> >
+> > FWExecutionContextScheduler: (again, pick a different name if you want)
+> > This scheduler doesn't know about jobs, meaning there's a
+> > driver-specific entity that needs to dequeue jobs from the JobQueue
+> > and push those to the relevant ringbuffer. Once a FWExecutionContext
+> > has something to execute, it becomes a candidate for
+> > FWExecutionContextScheduler, which gets to decide which set of
+> > FWExecutionContext get a chance to be scheduled by the FW.
+> > That one is for Mali-CSF case I described above, and I'm not too sure
+> > we want it to be generic, at least not until we have another GPU driver
+> > needing the same kind of scheduling. Again, you want to defer the
+> > timeout handling to this component, because the timer should only
+> > start/resume when the FWExecutionContext gets scheduled, and it should
+> > be paused as soon as the context gets evicted.  
+> 
+> This sounds pretty much like the existing design with the Panthor group
+> scheduler layered on top of it, no?
 
-Though, one of the fundamental problems I'd like to get rid of is that job
-ownership is transferred between two components with fundamentally differen=
-t
-lifetimes (entity and scheduler).
+Kinda, but with a way to use each component independently.
 
-Instead, I think the new Jobqueue should always own and always dispatch job=
-s
-directly and provide some "control API" to be instructed by an external
-component (orchestrator) on top of it when and to which ring to dispatch jo=
-bs.
+> 
+> Though, one of the fundamental problems I'd like to get rid of is that job
+> ownership is transferred between two components with fundamentally different
+> lifetimes (entity and scheduler).
 
-The group scheduling logic you need for some Mali GPUs can either be implem=
-ented
-by hooks into this orchestrator or by a separate component that attaches to=
- the
-same control API of the Jobqueue.
+Can you remind me what the problem is? I thought the lifetime issue was
+coming from the fact the drm_sched ownership model was lax enough that
+the job could be owned by both drm_gpu_scheduler and drm_sched_entity
+at the same time.
 
-> TLDR; I think the main problem we had with drm_sched is that it had
-> this clear drm_sched_entity/drm_gpu_scheduler separation, but those two
-> components where tightly tied together, with no way to use
-> drm_sched_entity alone for instance, and this led to the weird
-> lifetime/ownership issues that the rust effort made more apparent. If we
-> get to design something new, I think we should try hard to get a clear
-> isolation between each of these components so they can be used alone or
-> combined, with a clear job ownership model.
+> 
+> Instead, I think the new Jobqueue should always own and always dispatch jobs
+> directly and provide some "control API" to be instructed by an external
+> component (orchestrator) on top of it when and to which ring to dispatch jobs.
 
-This I agree with, but as explained above I'd go even one step further.
+Feels to me that we're getting back to a model where the JobQueue needs
+to know about the upper-layer in charge of the scheduling. I mean, it
+can work, but you're adding some complexity back to JobQueue, which I
+was expecting to be a simple FIFO with a dep-tracking logic.
+
+For instance, I'd be curious to know which component is in charge of the
+timeout in your ochestrator-based solution? In Philipp's slides it
+seemed that the timeout was dealt with at the JobQueue level, but that
+wouldn't work for us, because when we push a job to the ringbuf in
+panthor, the group this job is queued to might not be active yet. At
+the moment we have hacks to pause/resume the drm_sched timers [1] but
+this is racy, so I'm really hoping that the new design will let us
+control the timeout at the proper level.
+
+> 
+> The group scheduling logic you need for some Mali GPUs can either be implemented
+> by hooks into this orchestrator or by a separate component that attaches to the
+> same control API of the Jobqueue.
+
+I have a hard time seeing how it can fully integrate in this
+orchestrator model. We can hook ourselves in the JobQueue::run_job()
+and schedule the group for execution when we queue a job to the
+ringbuf, but the group scheduler would still be something on the side.
+This is not a big deal, as long as the group scheduler is in charge of
+the timeout handling.
+
+[1]https://lore-kernel.gnuweeb.org/dri-devel/CAPj87rP=HEfPDX8dDM_-BptLmt054x+WHZdCBZOtdMX=X4VkjA@mail.gmail.com/T/
 
