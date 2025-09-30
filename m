@@ -1,193 +1,137 @@
-Return-Path: <cgroups+bounces-10500-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10501-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1684BACBDB
-	for <lists+cgroups@lfdr.de>; Tue, 30 Sep 2025 13:57:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8B3CBACC57
+	for <lists+cgroups@lfdr.de>; Tue, 30 Sep 2025 14:05:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CC121C7D15
-	for <lists+cgroups@lfdr.de>; Tue, 30 Sep 2025 11:57:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AECD57A8822
+	for <lists+cgroups@lfdr.de>; Tue, 30 Sep 2025 12:04:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953182EBBAB;
-	Tue, 30 Sep 2025 11:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF752F83B8;
+	Tue, 30 Sep 2025 12:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="mJeoLlpS"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AKxD38i0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from bali.collaboradmins.com (bali.collaboradmins.com [148.251.105.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28D0C26A088;
-	Tue, 30 Sep 2025 11:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.251.105.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1820F2343C0
+	for <cgroups@vger.kernel.org>; Tue, 30 Sep 2025 12:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759233466; cv=none; b=Fv5jzBex2L+clucP4a/UfqYdL9UgFhZasFxh6mRrAwndjhytzHBCZ/GanIZkRaqshnNikAl7ikpMQjBnerg6cRfsHvjbRrjtIacasWtBbmorIOYfJ3nd1OntOzB9GQS3KMtKlqdG7V5wNh8fjPJySaFhI+xdj9MSRTsa80GYTIY=
+	t=1759233944; cv=none; b=GeVTlky4oxMtA5+DT3s866O0ZEIe/cAgDCNpPZ5X4pBVIm+B/1v8kSaVTFMXDpm6i8R8pwgW36WbrnAtqlFvVcbCkD1Sf6hFVLYT5RLDlEej2MXYeK2QZRAcN6kbHOaek5Y6KOG7OS11q4pp5MJout/X5GHYeLWD5fhBh4EtJoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759233466; c=relaxed/simple;
-	bh=qBZX0z5CnOtN7+UQ2lvEHHirZ93sseSix/A1K8cdiFc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hSLvOsDPtjE/7O7s8mjW1rYpX1+kXL11UJuh8ViLP/+IA84iSy//QVUP7eqVAzBCWmxbmOFc3tT5OMxXTeqnCGUkAEvCdMakCrgeIxcwYLrEbds3JF4hdLS4N49fFCPYwW1wTOJ+3sb5wpBVGi2u2e/XGuoHtEE8DCvjM7p6VlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=mJeoLlpS; arc=none smtp.client-ip=148.251.105.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1759233462;
-	bh=qBZX0z5CnOtN7+UQ2lvEHHirZ93sseSix/A1K8cdiFc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=mJeoLlpS6xMi4xx9XPVrj1slSC3EBhW5J/50vIMfQpudGEZWvZIr/sfcQCNuoQXKL
-	 ZN76YNOMXYENCdJmsXhZjHuVXocD4Yv+VCe6kU7zNGGHaahVq0up4j9wj958kGv/fm
-	 cqz/o/FCiw7xYQmEmlCGVN/li8NGMFCKIHFza9waOwa2QuNI0oCQP9pGcDHbEObhU9
-	 1J2TtCj7pAnntE45uJAR5JBkNEtnNgQEH7KjcvWcEMflfg/xSMmAu7c3mDucT4qiNM
-	 OZbgWZOYimySVkz8BQR3sd93NttuCTuMJJWWoALkfMez3bUrLmJdw9SWG8hTBRRSM0
-	 1qdZ4npgF3cbg==
-Received: from fedora (unknown [IPv6:2a01:e0a:2c:6930:d919:a6e:5ea1:8a9f])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbrezillon)
-	by bali.collaboradmins.com (Postfix) with ESMTPSA id 18DA717E00A8;
-	Tue, 30 Sep 2025 13:57:41 +0200 (CEST)
-Date: Tue, 30 Sep 2025 13:57:36 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: "Danilo Krummrich" <dakr@kernel.org>
-Cc: "Philipp Stanner" <phasta@mailbox.org>, <phasta@kernel.org>, "Tvrtko
- Ursulin" <tvrtko.ursulin@igalia.com>, <dri-devel@lists.freedesktop.org>,
- <amd-gfx@lists.freedesktop.org>, <kernel-dev@igalia.com>,
- <intel-xe@lists.freedesktop.org>, <cgroups@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, "Leo Liu" <Leo.Liu@amd.com>, =?UTF-8?B?TWE=?=
- =?UTF-8?B?w61yYQ==?= Canal <mcanal@igalia.com>, "Matthew Brost"
- <matthew.brost@intel.com>, Michal =?UTF-8?B?S291dG7DvQ==?=
- <mkoutny@suse.com>, Michel =?UTF-8?B?RMOkbnplcg==?=
- <michel.daenzer@mailbox.org>, "Pierre-Eric Pelloux-Prayer"
- <pierre-eric.pelloux-prayer@amd.com>, "Rob Clark" <robdclark@gmail.com>,
- "Tejun Heo" <tj@kernel.org>, "Alexandre Courbot" <acourbot@nvidia.com>,
- "Alistair Popple" <apopple@nvidia.com>, "John Hubbard"
- <jhubbard@nvidia.com>, "Joel Fernandes" <joelagnelf@nvidia.com>, "Timur
- Tabi" <ttabi@nvidia.com>, "Alex Deucher" <alexander.deucher@amd.com>,
- "Lucas De Marchi" <lucas.demarchi@intel.com>, Thomas =?UTF-8?B?SGVsbHN0?=
- =?UTF-8?B?csO2bQ==?= <thomas.hellstrom@linux.intel.com>, "Rodrigo Vivi"
- <rodrigo.vivi@intel.com>, "Rob Herring" <robh@kernel.org>, "Steven Price"
- <steven.price@arm.com>, "Liviu Dudau" <liviu.dudau@arm.com>, "Daniel
- Almeida" <daniel.almeida@collabora.com>, "Alice Ryhl"
- <aliceryhl@google.com>, "Boqun Feng" <boqunf@netflix.com>, =?UTF-8?B?R3I=?=
- =?UTF-8?B?w6lnb2lyZSBQw6lhbg==?= <gpean@netflix.com>, "Simona Vetter"
- <simona@ffwll.ch>, <airlied@gmail.com>
-Subject: Re: [RFC v8 00/21] DRM scheduling cgroup controller
-Message-ID: <20250930135736.02b69c65@fedora>
-In-Reply-To: <DD62YFG2CJ36.1NFKRTR2ZKD6V@kernel.org>
-References: <20250903152327.66002-1-tvrtko.ursulin@igalia.com>
-	<DD5CCG4MIODH.1718JI1Z7GH8T@kernel.org>
-	<4453e5989b38e99588efd53af674b69016b2c420.camel@mailbox.org>
-	<20250930121229.4f265e0c@fedora>
-	<DD62YFG2CJ36.1NFKRTR2ZKD6V@kernel.org>
-Organization: Collabora
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.49; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1759233944; c=relaxed/simple;
+	bh=FLCedYn1+Pe/8KNo6L8zO2RVgMSCUsKDpJC0WGve6/I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u+bKytBvOdlLu/B5G+VFJ0qbrRoImJJ/RooGAmiSfO6B2HlbY4OVvfX4eukPG1FUYc3EfWgCUh2CSSrKcykpEjOsrZJjLt76KlVsoEs+aQirRtlTNBYo6QatEzkwQupfbq/N4SEsfotGeHnVLTmKPiBwUvBSEwb2S7hQMaV9ELI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AKxD38i0; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-46e2e363118so56254165e9.0
+        for <cgroups@vger.kernel.org>; Tue, 30 Sep 2025 05:05:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1759233940; x=1759838740; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FLCedYn1+Pe/8KNo6L8zO2RVgMSCUsKDpJC0WGve6/I=;
+        b=AKxD38i0Q2/tGPsme7jZ1+EbLReWbmxy++hjSikKeQIuaYTCfSyp/7agdBuna7lm5C
+         M1JnA+a5m2Iow9RuQZVbDot/h/3IXbX7flg8/WdP2fBCZgFTmYe6A+VxJSdIv7+NN9sp
+         DaVnNxBbTjpVPGBHwzSr6i3lF4EHD/NX9Nn9x8NOUg1KJsOae+sHTUj8kfr316s7RoQZ
+         aTBCUcAm4NUY1VcZeNkScz4AA4j7DzsMUxK2U690rm12bfPmuphSnpejNJc6qmHLsqFM
+         t81qPlTwPIERT+3HJivfqeQi4YhzLBhrUr9pk3IY0uCxcIcvVc9brkuvz7Vb5zIorWbt
+         PDWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759233940; x=1759838740;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FLCedYn1+Pe/8KNo6L8zO2RVgMSCUsKDpJC0WGve6/I=;
+        b=c5ElvZixxsVbDCbZvDwzbJfmOeATmJTq9eWdNCfmn/tP75k7lWIYh4PYp8F8tX+xNU
+         ALwBJCOEf106ObdBc0oBR5tOo4Jp8/7HWbrPgjbXR096JEghT1T5Mjt+ErK1oltNc4ub
+         C9zmLth1/McvUTvH2NJ0u5U3JaYA/WfLbG+5Fq0Obtwy92WAKdGTcINP4sVaC/XhsDHb
+         ub8kzYVhz4a22M+/bLKdx4TenJ96F2cyAqLjy5xtqo4GR3SEo3ayIurvm+gdPsQ4dY+L
+         xNwm2xoePe+FSSNyEk6zXM55VR/bpsDVU0/3fCZb2o+Z2c92YFc8bFOD+KU0B+jDuc6m
+         gjRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVcdl7Du0Cv4a5FM+Lp0gUGY9ySnA3LAIugc1DP58S+Dz/NfJa4BqM9Raty3HU8vEhKbi57lpGB@vger.kernel.org
+X-Gm-Message-State: AOJu0YzkVu5WfwApw8SpJYBSuEpEGp38vUi4fTQTm4koiHNTHh9SDS73
+	J1t7aAxfk7yt+6eaM4ILQFGHun01iLHHYxtsGONbmPN9aXv5jJ8O2mlG/aCY9Zdd3Zk=
+X-Gm-Gg: ASbGnctnJgA92eyZw64VN12UtHeMD/LMxe/FT7uTyVyiEJGAQygKve8EGSA+DlGFj8Z
+	WPj2tqO87oKeuIsHEV8WWQGWiulvi5SD5LVOlKbkbkbopZH92Iaa7TGlat7Oyv1YSEkuvr7/6q+
+	Ex6ZrY9RJato9p9PdUnhstTqG2mkcavbwOtc1TIosHrypEMMgpGdER9AC4ysfTWCjIpFYYJNo0G
+	iTKttvFB+GgLy4obSAzCla0IxAkKAliolJCPZVWOO6Kxu2FnuWOc7ehHaqlHLZXI8JShCKPVbmd
+	vHUv6wQJxmZozp0O+NUp/zleQ0AhOAEcOlVzx8ekFotVn8eCTDKqTLLErw/aEYlgLK9ntQByfNf
+	RZetfolpo1qvn8YagSXWSVYKZs7+uCQhF8/1FoPU6Q5Bblj1mbpPlC3qkGkkECLPtKvQ=
+X-Google-Smtp-Source: AGHT+IFZ76r97SBznLgxVm8yCuTausgRSw7E3S71YyAviZVyfhtqjrZ9q86ZcZJDn4o7nlRc0TwdsA==
+X-Received: by 2002:a05:600c:138b:b0:45b:8a0e:cda9 with SMTP id 5b1f17b1804b1-46e329a0e52mr163822455e9.2.1759233940334;
+        Tue, 30 Sep 2025 05:05:40 -0700 (PDT)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e5c4c0321sm11443795e9.8.2025.09.30.05.05.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Sep 2025 05:05:39 -0700 (PDT)
+Date: Tue, 30 Sep 2025 14:05:38 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Cai Xinchen <caixinchen1@huawei.com>
+Cc: llong@redhat.com, tj@kernel.org, hannes@cmpxchg.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com
+Subject: Re: [PATCH -next RFC 0/2] cpuset: Add cpuset.mems.spread_page to
+ cgroup v2
+Message-ID: <wpdddawlyxc27fkkkyfwfulq7zjqkxbqqe2upu4irqkcbzptft@jowwnu3yvgvg>
+References: <20250930093552.2842885-1-caixinchen1@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="fcitis6hrvtt6osy"
+Content-Disposition: inline
+In-Reply-To: <20250930093552.2842885-1-caixinchen1@huawei.com>
 
-On Tue, 30 Sep 2025 12:58:29 +0200
-"Danilo Krummrich" <dakr@kernel.org> wrote:
 
-> On Tue Sep 30, 2025 at 12:12 PM CEST, Boris Brezillon wrote:
-> > So, my take on that is that what we want ultimately is to have the
-> > functionality provided by drm_sched split into different
-> > components that can be used in isolation, or combined to provide
-> > advanced scheduling.
-> >
-> > JobQueue:
-> >  - allows you to queue jobs with their deps
-> >  - dequeues jobs once their deps are met
-> > Not too sure if we want a push or a pull model for the job dequeuing,
-> > but the idea is that once the job is dequeued, ownership is passed to
-> > the SW entity that dequeued it. Note that I intentionally didn't add
-> > the timeout handling here, because dequeueing a job doesn't necessarily
-> > mean it's started immediately. If you're dealing with HW queues, you
-> > might have to wait for a slot to become available. If you're dealing
-> > with something like Mali-CSF, where the amount of FW slots is limited,
-> > you want to wait for your execution context to be passed to the FW for
-> > scheduling, and the final situation is the full-fledged FW scheduling,
-> > where you want things to start as soon as you have space in your FW
-> > queue (AKA ring-buffer?).
-> >
-> > JobHWDispatcher: (not sure about the name, I'm bad at naming things)
-> > This object basically pulls ready-jobs from one or multiple JobQueues
-> > into its own queue, and wait for a HW slot to become available. If you
-> > go for the push model, the job gets pushed to the HW dispatcher queue
-> > and waits here until a HW slot becomes available.
-> > That's where timeouts should be handled, because the job only becomes
-> > active when it gets pushed to a HW slot. I guess if we want a
-> > resubmit mechanism, it would have to take place here, but give how
-> > tricky this has been, I'd be tempted to leave that to drivers, that is,
-> > let them requeue the non-faulty jobs directly to their
-> > JobHWDispatcher implementation after a reset.
-> >
-> > FWExecutionContextScheduler: (again, pick a different name if you want)
-> > This scheduler doesn't know about jobs, meaning there's a
-> > driver-specific entity that needs to dequeue jobs from the JobQueue
-> > and push those to the relevant ringbuffer. Once a FWExecutionContext
-> > has something to execute, it becomes a candidate for
-> > FWExecutionContextScheduler, which gets to decide which set of
-> > FWExecutionContext get a chance to be scheduled by the FW.
-> > That one is for Mali-CSF case I described above, and I'm not too sure
-> > we want it to be generic, at least not until we have another GPU driver
-> > needing the same kind of scheduling. Again, you want to defer the
-> > timeout handling to this component, because the timer should only
-> > start/resume when the FWExecutionContext gets scheduled, and it should
-> > be paused as soon as the context gets evicted.  
-> 
-> This sounds pretty much like the existing design with the Panthor group
-> scheduler layered on top of it, no?
+--fcitis6hrvtt6osy
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH -next RFC 0/2] cpuset: Add cpuset.mems.spread_page to
+ cgroup v2
+MIME-Version: 1.0
 
-Kinda, but with a way to use each component independently.
+Hello Xinchen.
 
-> 
-> Though, one of the fundamental problems I'd like to get rid of is that job
-> ownership is transferred between two components with fundamentally different
-> lifetimes (entity and scheduler).
+On Tue, Sep 30, 2025 at 09:35:50AM +0000, Cai Xinchen <caixinchen1@huawei.com> wrote:
+> I discovered that the DataNode process had requested a large amount
+> of page cache. most of the page cache was concentrated in one NUMA node,
+> ultimately leading to the exhaustion of memory in that NUMA node.
+[...]
+> This issue can be resolved by migrating the DataNode into
+> a cpuset, dropping the cache, and setting cpuset.memory_spread_page to
+> allow it to evenly request memory.
 
-Can you remind me what the problem is? I thought the lifetime issue was
-coming from the fact the drm_sched ownership model was lax enough that
-the job could be owned by both drm_gpu_scheduler and drm_sched_entity
-at the same time.
+Would it work in your case instead to apply memory.max or apply
+MPOL_INTERLEAVE to DataNode process?
 
-> 
-> Instead, I think the new Jobqueue should always own and always dispatch jobs
-> directly and provide some "control API" to be instructed by an external
-> component (orchestrator) on top of it when and to which ring to dispatch jobs.
+In anyway, please see commit 012c419f8d248 ("cgroup/cpuset-v1: Add
+deprecation messages to memory_spread_page and memory_spread_slab")
+since your patchset would need to touch that place(s) too.
 
-Feels to me that we're getting back to a model where the JobQueue needs
-to know about the upper-layer in charge of the scheduling. I mean, it
-can work, but you're adding some complexity back to JobQueue, which I
-was expecting to be a simple FIFO with a dep-tracking logic.
+Thanks,
+Michal
 
-For instance, I'd be curious to know which component is in charge of the
-timeout in your ochestrator-based solution? In Philipp's slides it
-seemed that the timeout was dealt with at the JobQueue level, but that
-wouldn't work for us, because when we push a job to the ringbuf in
-panthor, the group this job is queued to might not be active yet. At
-the moment we have hacks to pause/resume the drm_sched timers [1] but
-this is racy, so I'm really hoping that the new design will let us
-control the timeout at the proper level.
+--fcitis6hrvtt6osy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> The group scheduling logic you need for some Mali GPUs can either be implemented
-> by hooks into this orchestrator or by a separate component that attaches to the
-> same control API of the Jobqueue.
+-----BEGIN PGP SIGNATURE-----
 
-I have a hard time seeing how it can fully integrate in this
-orchestrator model. We can hook ourselves in the JobQueue::run_job()
-and schedule the group for execution when we queue a job to the
-ringbuf, but the group scheduler would still be something on the side.
-This is not a big deal, as long as the group scheduler is in charge of
-the timeout handling.
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaNvHkBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AhT3AD+KHlYLmIxNmdExRmJBIHo
+TrWz6vCQ6NdEpP571RS+KR8BAKhTUtg/9ODujOOm6TZW+z9qjjc7ovQYhj0rhduE
+upQC
+=rm/V
+-----END PGP SIGNATURE-----
 
-[1]https://lore-kernel.gnuweeb.org/dri-devel/CAPj87rP=HEfPDX8dDM_-BptLmt054x+WHZdCBZOtdMX=X4VkjA@mail.gmail.com/T/
+--fcitis6hrvtt6osy--
 
