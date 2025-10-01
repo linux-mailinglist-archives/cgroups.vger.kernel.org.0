@@ -1,225 +1,262 @@
-Return-Path: <cgroups+bounces-10504-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10505-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0606BAECD9
-	for <lists+cgroups@lfdr.de>; Wed, 01 Oct 2025 01:49:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CDA8BAF1C4
+	for <lists+cgroups@lfdr.de>; Wed, 01 Oct 2025 06:55:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6527A4A2DD8
-	for <lists+cgroups@lfdr.de>; Tue, 30 Sep 2025 23:49:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC30F7A328A
+	for <lists+cgroups@lfdr.de>; Wed,  1 Oct 2025 04:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E1A257828;
-	Tue, 30 Sep 2025 23:49:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2E62D838A;
+	Wed,  1 Oct 2025 04:55:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lmd0Svoj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LAkxomep"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D91258CDC;
-	Tue, 30 Sep 2025 23:49:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DD012D7DDC
+	for <cgroups@vger.kernel.org>; Wed,  1 Oct 2025 04:55:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759276154; cv=none; b=dmSDB+AZr5BKq76bNSOIMlbIvyQKfJHJtSVwEOgeJwR30lGAA1KGN0GUHmQMUMoR7FESpgOBFkWHerGinLb3ovuPyXYzxQUpIsaSJKO/38F71BbFrCYG49rjUY/an0YR9jPVMI7Saxv7PVz2JKCJslTbzu0qgCH6JklnrTPDilE=
+	t=1759294514; cv=none; b=P4ORNRBCVhOKk4ZAmRYS3Ju72Fvzmxq9TCQxlJZ1Hhzil3sWMn6iR2IWm2W5OisZ3w9pkaq4Hqdt3yqJtYj16idBDLX3A0Fkj4YECjLFeGDg10l+CW0vylcvRYXOUspJGo0Q8nHGW7CdMCwc41GqCYm5RMjHt9zhMNg9iYVZR1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759276154; c=relaxed/simple;
-	bh=7VAol8rQRsLQd4lbBp1qCT4rhceiGs6eyik3FbiRdyE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PwaOjit81y+Kv0q7KgiEn+LDQAUv6r/8PdF/eKoqpw0CbV31q82ACjTZXT4V7OAGejK0WsbnL8gcu1WLQix5i/CqqttsV/av38vNT0Tm3n1zwzLvjAnlOlE13QHCvQYhJkiL0fgqKM5jFwz0jxDNq5bDe7dS4MMxSsady+Zn+24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lmd0Svoj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DADFDC4CEF0;
-	Tue, 30 Sep 2025 23:49:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759276154;
-	bh=7VAol8rQRsLQd4lbBp1qCT4rhceiGs6eyik3FbiRdyE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lmd0Svoj7Pee3uBFZtW8KHm67+M5ATQAdOhX0uWJxMXalU3c4ApycHGnnXrbdJwhm
-	 Cre0ZgRZLQuY61U5uikz9ccsPJ5/ymErxRiYVHWLQrC/+jvPgMHcZl993sKS8h4d25
-	 pkfUMe9JWIRH+2l07dj22igHfNotMqwOiJAkh/g+WF54jCaEoQqEKPl0bSiE2ust4q
-	 Gh2uPzbFu4ggKiHDDyAoQQTX91PiZvjIWZcwKrvsnUIh7O6X/5x3BIyBI6eQSasfIb
-	 tGMwsxdOLMghyRBFaHxplrg6l5udPhZr/BM9LdpWdvm4+QzgyksmPP9vH2o9IFtPO1
-	 MNWaSBJ5SmUlg==
-Date: Tue, 30 Sep 2025 13:49:12 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
-	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
-	changwoo@igalia.com, cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
-Subject: Re: [PATCH 12/14] sched: Add shared runqueue locking to
- __task_rq_lock()
-Message-ID: <aNxseDZ9bJbKQ36-@slm.duckdns.org>
-References: <20250912115459.GZ3289052@noisy.programming.kicks-ass.net>
- <aMRexZ_SIUVgkIpZ@slm.duckdns.org>
- <20250915083815.GB3289052@noisy.programming.kicks-ass.net>
- <aMnk5Wcdr2q6BWqR@slm.duckdns.org>
- <aMnnslT_mUfAtytN@slm.duckdns.org>
- <20250925083533.GW4067720@noisy.programming.kicks-ass.net>
- <aNW3du48v3PvwPbq@slm.duckdns.org>
- <20250926103628.GE4067720@noisy.programming.kicks-ass.net>
- <aNcICdscrYDUMKiU@slm.duckdns.org>
- <20250929100658.GC3245006@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1759294514; c=relaxed/simple;
+	bh=c8pxOvtyq/c0UIli9jPRzRJjB7VX9/+BBDpMmu+LVPE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PuB+twRVBHsMC3dS00SnoBAY2UFhB4NTEgVDMMY7zKHzL8ipyViuTGguWGPykotcO6rX6mFLvpsuqrqhRT7jSOl5mkEPPt93hdJEA/zNjhsqtytsLmbTLeaMHq+NB/XqkL7AM4MH0twjx677fDZJqu4+iAW1WOvzHHcuSVnFoo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LAkxomep; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-77f605f22easo6193168b3a.2
+        for <cgroups@vger.kernel.org>; Tue, 30 Sep 2025 21:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759294510; x=1759899310; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ri7WDt45zmQrzY579qfISU4VEl3xx5nuQVZaGHjeynE=;
+        b=LAkxomepxKSJ+AD4srYlZjKraEM1bp1Cm9TqdymgVuSRd+kYI09PwBU5JNCNnc4qt4
+         E3zpPhfM/Wf+UoCaqRB7ThbUDX+CG6NdajZmtnMeDye0MLkt38cHrNn9djkWgyw0uCUX
+         25R9Q49yd/6BLk3y5/tKDhb8VRLIMAuMq5bCtxfdPHzQQ7GcnTyEawRiqhF51kX0zQYR
+         fb8AJ3I1C2UQQu+kZCNDFQPI6XY5XQs/STiAXK4Y6NigFcUHqoZifj5b/z6dK/LuJmH6
+         2y6tLKXPKDOCUrBNR5pwaQdKDkuFp1WBTUoLRn+SENt1hjrU5nyh1Nu5oRmp7i0j/Gby
+         eb+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759294510; x=1759899310;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ri7WDt45zmQrzY579qfISU4VEl3xx5nuQVZaGHjeynE=;
+        b=IMT9sgFKl8yJQ30g8oGjC9mEzJnxeQmjjLzb4cd5fz8RApuBFsgR99mZ9dPiu5qb28
+         HhGMuD06CI/P+xvQap5+RDWbwmhMv/BNC3sgMwrdmYVyfEMNY651lMLxr07lOx+bI71h
+         1HVWD6MvBonWvwgMU6RFVMMni4obnXzaZS1n2e46/3qPoWLCsQLLojy8mRDfCUq1xv59
+         Ag/jJJxk8maqGYDYglOAaUplAPzhEfO0ydO0L5jrUEagm9EFe7EQDiukUSUkoaqPgEgy
+         OVZBfHdygJVkOHNXNxWr8bvfTCaNTG0CAIZVlHTbtXy0dGvriuhQp1HrucITl+VEfbZ3
+         0EPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXdOdYYjagEwfiRIg8dg4zwmouHUqwyi5APXfU0i0cgBwpPvK/ICJzTvH0sQsSks43Yok+nB7wL@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOpddzpOlOTrTCyxjR+SNeFhXd1APVcCvFHgjGbyJtf3+IK+9A
+	CLsCTrfOWDij/fP9DrwVqT/8DmEQelg2OsuQdl4IVaMNfkFDNGmvoE9q
+X-Gm-Gg: ASbGncuivagli5kHR5kpMOk7NwjHnqYdiMKjgl5xMi81pbsYaRDdJ7lmRVVe10umT+/
+	JupmAR0JTb5iksYKbC7oqmB2DchNF9J1/AEXHJTYg0kF2uJJvVFMqtui2GYv2lvKP++lSxT5zHs
+	vz0RGiQboB1K2cCSCVDSLeZd92Y/sSNG1VfIjm0AQubiF0TEh/aJNokUl5nk/SpAtawMeh4YQxy
+	1pDEoJeWyG+m7rYo0/+yunJYpB+H/S8hxppr3X9enqKKtqatJJ3xYWIKmq3BumZaskxJONF2Uwc
+	TLQrmwiVvRDnMXZxxtFS5dmIgUddUTNmMdCRFQdZXj5wZZwpeS31yARAIlLAZmUf4eHx823ZqF+
+	NWljUodr3nl99WXOpV4/uFvy5tojgiJfAUnKlxzACdLd+HyLg5xgcUINQNIB8wGmJDFXW78/IWQ
+	==
+X-Google-Smtp-Source: AGHT+IENg8JFMQAvrh08OsAp21v3nqidKkwtj7VlhXv2erEQYAsK9Mahy8m3QZfWW4FUYn06+OTIZQ==
+X-Received: by 2002:a05:6a21:99a6:b0:2bd:2798:7ae7 with SMTP id adf61e73a8af0-321e3edc8cbmr3372698637.31.1759294510242;
+        Tue, 30 Sep 2025 21:55:10 -0700 (PDT)
+Received: from jpkobryn-fedora-PF5CFKNC.lan ([73.222.117.172])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b5f2c1b7608sm1011996a12.5.2025.09.30.21.55.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Sep 2025 21:55:09 -0700 (PDT)
+From: JP Kobryn <inwardvessel@gmail.com>
+To: shakeel.butt@linux.dev,
+	mkoutny@suse.com,
+	yosryahmed@google.com,
+	hannes@cmpxchg.org,
+	tj@kernel.org,
+	akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH] memcg: introduce kfuncs for fetching memcg stats
+Date: Tue, 30 Sep 2025 21:54:56 -0700
+Message-ID: <20251001045456.313750-1-inwardvessel@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250929100658.GC3245006@noisy.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 
-Hello, Peter.
+When reading cgroup memory.stat files there is significant work the kernel
+has to perform in string formatting the numeric data to text. Once a user
+mode program gets this text further work has to be done, converting the
+text back to numeric data. This work can be expensive for programs that
+periodically sample this data over a large enough fleet.
 
-On Mon, Sep 29, 2025 at 12:06:58PM +0200, Peter Zijlstra wrote:
-...
-> > However, thinking more about it. I'm unsure how e.g. the actual migration
-> > would work. The actual migration is done by: deactivate_task() ->
-> > set_task_cpu() -> switch rq locks -> activate_task(). Enqueueing/dequeueing
-> > steps have operations that depend on rq lock - psi updates, uclamp updates
-> > and so on. How would they work?
-> 
-> Suppose __task_rq_lock() will take rq->lock and p->sub_lock, in that
-> order, such that task_rq_lock() will take p->pi_lock, rq->lock and
-> p->sub_lock.
-> 
-...
-> While at the same time, above you argued p->sub_lock should be inside
-> dsq->lock. Because:
-> 
-> __schedule()
->   rq = this_rq();
->   LOCK rq->lock
->   next = pick_next() := pick_next_scx()
->     LOCK dsq->lock
->     p = find_task(dsq);
->     LOCK p->sub_lock
->     dequeue(dsq, p);
->     UNLOCK dsq->lock
+As an alternative to reading memory.stat, introduce new kfuncs to allow
+fetching specific memcg stats from within bpf cgroup iterator programs.
+This approach eliminates the conversion work done by both the kernel and
+user mode programs. Previously a program could open memory.stat and
+repeatedly read from the associated file descriptor (while seeking back to
+zero before each subsequent read). That action can now be replaced by
+setting up a link to the bpf program once in advance and then reusing it to
+invoke the cgroup iterator program each time a read is desired. An example
+program can be found here [0].
 
-I was going back and forth with the locking order. Note that even if
-sub_lock is nested outside DSQ locks, the hot path for the pick_task() path
-wouldn't be that different - it just needs RCU protected first_task pointer
-and the DSQ association needs to be verified after grabbing the sub_lock
-(much like how task_rq_lock() needs to retry).
+There is a significant perf benefit when using this approach. In terms of
+elapsed time, the kfuncs allow a bpf cgroup iterator program to outperform
+the traditional file reading method, saving almost 80% of the time spent in
+kernel.
 
-> Because if you did something like:
-> 
-> __schedule()
->   rq = this_rq();
->   LOCK rq->lock
->   next = pick_next() := pick_next_scx()
->     LOCK dsq->lock (or RCU, doesn't matter)
->     p = find_task(dsq);
->     UNLOCK dsq->lock
-> 				migrate:
-> 				LOCK p->pi_lock
-> 				rq = task_rq(p)
-> 				LOCK rq->lock
-> 				(verify bla bla)
-> 				LOCK p->sub_lock
-> 				LOCK dsq->lock
-> 				dequeue(dsq, p)
-> 				UNLOCK dsq->lock
-> 				set_task_cpu(n);
-> 				UNLOCK rq->lock
-> 				rq = cpu_rq(n);
-> 				LOCK rq->lock (inversion vs p->sub_lock)
-> 				LOCK dsq2->lock
-> 				enqueue(dsq2, p)
-> 				UNLOCK dsq2->lock
-> 
->     LOCK p->sub_lock
->     LOCK dsq->lock   (whoopsie, p is on dsq2)
->     dequeue(dsq, p)
->     set_task_cpu(here);
->     UNLOCK dsq->lock
+control: elapsed time
+real    0m14.421s
+user    0m0.183s
+sys     0m14.184s
 
-I suppose the above is showing that p->sub_lock is nested outside dsq->lock,
-right? If so, the right sequence would be:
+experiment: elapsed time
+real    0m3.250s
+user    0m0.225s
+sys     0m2.916s
 
-        LOCK p->sub_lock
-        LOCK src_dsq->lock
-        verify p is still on src_dsq, if not retry
-        remove from src_dsq
-        UNLOCK src_dsq->lock
-        LOCK dst_dsq->lock
-        insert into dst_dsq
-        UNLOCK dst_dsq->lock
-        UNLOCK p->sub_lock
+control: perf data
+22.24% a.out [kernel.kallsyms] [k] vsnprintf
+17.35% a.out [kernel.kallsyms] [k] format_decode
+12.60% a.out [kernel.kallsyms] [k] string
+12.12% a.out [kernel.kallsyms] [k] number
+ 8.06% a.out [kernel.kallsyms] [k] strlen
+ 5.21% a.out [kernel.kallsyms] [k] memcpy_orig
+ 4.26% a.out [kernel.kallsyms] [k] seq_buf_printf
+ 4.19% a.out [kernel.kallsyms] [k] memory_stat_format
+ 2.53% a.out [kernel.kallsyms] [k] widen_string
+ 1.62% a.out [kernel.kallsyms] [k] put_dec_trunc8
+ 0.99% a.out [kernel.kallsyms] [k] put_dec_full8
+ 0.72% a.out [kernel.kallsyms] [k] put_dec
+ 0.70% a.out [kernel.kallsyms] [k] memcpy
+ 0.60% a.out [kernel.kallsyms] [k] mutex_lock
+ 0.59% a.out [kernel.kallsyms] [k] entry_SYSCALL_64
 
-> That is, either way around: dsq->lock outside, p->sub_lock inside, or
-> the other way around, I emd up with inversions and race conditions that
-> are not fun.
+experiment: perf data
+8.17% memcgstat bpf_prog_c6d320d8e5cfb560_query [k] bpf_prog_c6d320d8e5cfb560_query
+8.03% memcgstat [kernel.kallsyms] [k] memcg_node_stat_fetch
+5.21% memcgstat [kernel.kallsyms] [k] __memcg_slab_post_alloc_hook
+3.87% memcgstat [kernel.kallsyms] [k] _raw_spin_lock
+3.01% memcgstat [kernel.kallsyms] [k] entry_SYSRETQ_unsafe_stack
+2.49% memcgstat [kernel.kallsyms] [k] memcg_vm_event_fetch
+2.47% memcgstat [kernel.kallsyms] [k] __memcg_slab_free_hook
+2.34% memcgstat [kernel.kallsyms] [k] kmem_cache_free
+2.32% memcgstat [kernel.kallsyms] [k] entry_SYSCALL_64
+1.92% memcgstat [kernel.kallsyms] [k] mutex_lock
 
-It's not straightforward for sure but none of these approaches are. They are
-all complicated in some areas. From sched_ext POV, I think what matter most
-are providing as much latitude as possible to BPF scheduler implementations
-and having lower likelihood of really subtle issues.
+The overhead of string formatting and text conversion on the control side
+is eliminated on the experimental side since the values are read directly
+through shared memory with the bpf program. The kfunc/bpf approach also
+provides flexibility in how this numeric data could be delivered to a user
+mode program. It is possible to use a struct for example, with select
+memory stat fields instead of an array. This opens up opportunities for
+custom serialization as well since it is totally up to the bpf programmer
+on how to lay out the data.
 
-> Also, if you do put p->sub_lock inside dsq->lock, this means
-> __task_rq_lock() cannot take it and it needs to be pushed deep into scx
-> (possibly into bpf ?) and that means I'm not sure how to do the change
-> pattern sanely.
+The patch also includes a kfunc for flushing stats. This is not required
+for fetching stats, since the kernel periodically flushes memcg stats every
+2s. It is up to the programmer if they want the very latest stats or not.
 
-I'm not quite following why task_rq_lock() wouldn't be able to take it.
-Whether p->sub_lock nests under or over DSQ locks should only matter to
-sched_ext proper. From core's POV, the only thing that matters is that as
-long as p->sub_lock is held, the task won't be migrating and is safe to
-change states for (more on this later).
+[0] https://gist.github.com/inwardvessel/416d629d6930e22954edb094b4e23347
+    https://gist.github.com/inwardvessel/28e0a9c8bf51ba07fa8516bceeb25669
+    https://gist.github.com/inwardvessel/b05e1b9ea0f766f4ad78dad178c49703
 
-> Having __task_rq_lock() take p->dsq->lock solves all these problems,
-> except for that one weird case where BPF wants to do things their own
-> way. The longer I'm thinking about it, the more I dislike that. I just
-> don't see *ANY* upside from allowing BPF to do this while it is making
-> everything else quite awkward.
+Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+---
+ mm/memcontrol.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-I'm failing to see the problems you're seeing and have to disagree that
-allowing more capabilities on BPF side doesn't bring any upsides. DSQs are
-useful but it quickly becomes too restrictive - e.g. people often want to
-put the same task on multiple queues and other data structures, which is a
-lot more straightforward to do if the data structure and locking are managed
-in BPF. In general, I don't think it's a good direction to be prescriptive
-about how schedulers should be implemented or behave. Even if we might not
-be able to think up something neat right now, someone will.
-
-> The easy fix is to have these BPF managed things have a single global
-> lock. That works and is correct. Then if they want something better,
-> they can use DSQs :-)
-> 
-> Fundamentally, we need the DSQ->lock to cover all CPUs that will pick
-> from it, there is no wiggle room there. Also note that while we change
-> only the attributes of a single task with the change pattern, that
-> affects the whole RQ, since a runqueue is an aggregate of all tasks.
-> This is very much why dequeue/enqueue around the change pattern, to keep
-> the runqueue aggregates updated.
-> 
-> Use the BPF thing to play with scheduling policies, but leave the
-> locking to the core code.
-
-I have two questions:
-
-- Let's say something works, whether that's holding dsq->lock or
-  p->sub_lock. I still don't understand how things would be safe w.r.t.
-  things like PSI and uclamp updates. How would they cope with
-  set_task_cpu() happening without the rq locked?
-
-- This all started from two proposed core changes. One additional hook after
-  task pick regardless of the picked task's class (this is a regression that
-  I missed during the pick_task() conversion) and balance() call for
-  deadline server, which I think can be combined with existing special case
-  for sched_ext. While it'd be nice to be able to migrate without holding rq
-  locks, that path seems very invasive and to have a lot of proposed
-  capability impacts. This doesn't seem like a particularly productive
-  direection to me.
-
-Thanks.
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 8dd7fbed5a94..aa8cbf883d71 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -870,6 +870,73 @@ unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
+ }
+ #endif
+ 
++static inline struct mem_cgroup *memcg_from_cgroup(struct cgroup *cgrp)
++{
++	return cgrp ? mem_cgroup_from_css(cgrp->subsys[memory_cgrp_id]) : NULL;
++}
++
++__bpf_kfunc static void memcg_flush_stats(struct cgroup *cgrp)
++{
++	struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
++
++	if (!memcg)
++		return;
++
++	mem_cgroup_flush_stats(memcg);
++}
++
++__bpf_kfunc static unsigned long memcg_node_stat_fetch(struct cgroup *cgrp,
++		enum node_stat_item item)
++{
++	struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
++
++	if (!memcg)
++		return 0;
++
++	return memcg_page_state_output(memcg, item);
++}
++
++__bpf_kfunc static unsigned long memcg_stat_fetch(struct cgroup *cgrp,
++		enum memcg_stat_item item)
++{
++	struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
++
++	if (!memcg)
++		return 0;
++
++	return memcg_page_state_output(memcg, item);
++}
++
++__bpf_kfunc static unsigned long memcg_vm_event_fetch(struct cgroup *cgrp,
++		enum vm_event_item item)
++{
++	struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
++
++	if (!memcg)
++		return 0;
++
++	return memcg_events(memcg, item);
++}
++
++BTF_KFUNCS_START(bpf_memcontrol_kfunc_ids)
++BTF_ID_FLAGS(func, memcg_flush_stats)
++BTF_ID_FLAGS(func, memcg_node_stat_fetch)
++BTF_ID_FLAGS(func, memcg_stat_fetch)
++BTF_ID_FLAGS(func, memcg_vm_event_fetch)
++BTF_KFUNCS_END(bpf_memcontrol_kfunc_ids)
++
++static const struct btf_kfunc_id_set bpf_memcontrol_kfunc_set = {
++	.owner          = THIS_MODULE,
++	.set            = &bpf_memcontrol_kfunc_ids,
++};
++
++static int __init bpf_memcontrol_kfunc_init(void)
++{
++	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
++					 &bpf_memcontrol_kfunc_set);
++}
++late_initcall(bpf_memcontrol_kfunc_init);
++
+ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p)
+ {
+ 	/*
 -- 
-tejun
+2.47.3
+
 
