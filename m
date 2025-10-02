@@ -1,196 +1,139 @@
-Return-Path: <cgroups+bounces-10523-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10524-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B00BBB4A1B
-	for <lists+cgroups@lfdr.de>; Thu, 02 Oct 2025 19:14:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60449BB4A4C
+	for <lists+cgroups@lfdr.de>; Thu, 02 Oct 2025 19:17:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 066EF19E451E
-	for <lists+cgroups@lfdr.de>; Thu,  2 Oct 2025 17:15:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21B162A2519
+	for <lists+cgroups@lfdr.de>; Thu,  2 Oct 2025 17:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E3122655B;
-	Thu,  2 Oct 2025 17:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7762BD03;
+	Thu,  2 Oct 2025 17:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OiogSUAw"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Sm50b3YV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F292267B89
-	for <cgroups@vger.kernel.org>; Thu,  2 Oct 2025 17:14:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BE042A99
+	for <cgroups@vger.kernel.org>; Thu,  2 Oct 2025 17:17:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759425283; cv=none; b=pxQa+8gxZyvV2hU8fIHjfgK1wkG94BCEyKHIfNbkaOuk/Hi5x6faWlCXqy2T857nND9JE7MOKwCdnVCFlnF+lsV1mEmnmiMSFONYCpjuNKhCQe4ALYNokPo6EMn8273+T3Ryt3FUd5EXt767rXmS52PfN70DKz1Wm/xyKvkKq3s=
+	t=1759425460; cv=none; b=BTcuFIkz1CUVGgHgsPhquvIW255VopViLffMkoRd7/EZeyyudrHQdVvyG2pOx0z1YMSXfb/4d4AFqIETM/tkQqHfrowAwLANASj3K6JIkr7AJRwS9NK/v7p4wkFFooT/Joeyk2JnJyQmNGgAU/ezgYF1A+MkWyjdnJTNUKWjtlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759425283; c=relaxed/simple;
-	bh=PdMR2eXs8RPVLBGtWIlswMR7IDmtsOYvIQ4p+zqnFFA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c88dVkeCs/wLlhzLeG6DgTsfRaTGr5yzY1452lGT4S5UJT53CBgA8qHV0mT3VDgAw4TRmX+NWoZrg3avFEtTFEOHU8nnx1IMypr40/2ta+y/IgUZ4punkM82cOHIOdrXkd4YNSSKy0YW582PgfGqfRFxbPJJwankcgNleDnuPTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OiogSUAw; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-28e7cd34047so12054975ad.2
-        for <cgroups@vger.kernel.org>; Thu, 02 Oct 2025 10:14:41 -0700 (PDT)
+	s=arc-20240116; t=1759425460; c=relaxed/simple;
+	bh=jvFZrFn5e7n6PhwcbhBV7Smq4LwxWDGpJHOfXtGaf3w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ScP9heqgructeWu5OvhfZAerRicXkO16utqVol+opBiron91a2BqhKG6AOZuDPcFSbzokleuxNS7q9M/gWwNyScYdCdJgpjGw0KvYaoXOvO9ldZfsWDLdhhrp4RxptczNa7R1psw5NH8jhS5+yl22vHchUH39MGlVv9EsfGn8pI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Sm50b3YV; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-46e48d6b95fso11360075e9.3
+        for <cgroups@vger.kernel.org>; Thu, 02 Oct 2025 10:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1759425281; x=1760030081; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/dSS/bZVAi53nx7gSnHDBdozny8jZisgC0WMWJX21pw=;
-        b=OiogSUAwj0ZMKzhwOgXaoJiJlCp+DtJXzgEAhgv4jNmW5LMtn7bUgLkvTxLO1xLM0k
-         3RXF7SlRqh6AifVKxQF5Z9ItNpmOMHM5VrZyA+zs6N/viH4G6JO+dthxL+p6lYx8KI1n
-         seuKGFMA2Zvh45JEj784D3E9Iwf9xK2yxAXgsaddCz8qMxiS7XKBhTwF36RguUma35WL
-         4aX/v1weOENTstFq+uR+kLSHcKyVbD6xJfshUjEdfYijcuHvTKwjQDwGBITUQWpVNGWI
-         6sJ8WsYj0RsfzLFMoplnbPxO72EjAAlw/KBZU59dfRAoeAqr0B584DEMOQUaffBo2tgK
-         +eMg==
+        d=suse.com; s=google; t=1759425457; x=1760030257; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nEqi5LiDufQ4XizIhNMHWocMl1nEMNZ4fHJRUgvpBfw=;
+        b=Sm50b3YV9CByaKrnHkwKfxNX/YoXxn9N41S+PW+9az7RnqrKPShYh5m/CpXv2eWcjZ
+         bbpxbQD/EYW102jHEh6WsVaGmySlmmkj7MmfhIywkfUW3OWLnAdl7PjFXZ2RKJLX4A4/
+         IDZu7poqtwMtnm1ZTuTZCkjSXjng1FOa27r+FJfmT2ProktwNjLABFQzjFkJZlJITI07
+         wFz0+MSnHvcbRC3PQrcvixL5xcruednP9aYdehJEm1WNEE4B2lj55bGI9FVK1yBNvD+f
+         mdRoATlBBIfOR43XvCF6T0+LMcwzpfuYzy7hhW4Hcj3ST+TXlh7V2AYUz87St573N9Me
+         Vl4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759425281; x=1760030081;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/dSS/bZVAi53nx7gSnHDBdozny8jZisgC0WMWJX21pw=;
-        b=q5/eNxp/UdOAO9FXPpUrovuaa+8X8oIdn7YSW/ztCKUcXDxmyPMKVsV5Vts2zuNp33
-         2ZA4amTqR2EVj9jDsVjL7sexFVrMWGOC5NaCCa8t9KUKtIgUUuqMYCBGPgnrfVvyDn6C
-         9aldBkrfFR/eQxxUDqOcVkz3cKr/2naYNuvH4vYY0oYQxX8lWGC1EvnI4QlZRijYdwUS
-         qtE+Q+MnUFkuyvwpAZI/dv0BUxvcTx9+TfpZIMZVL2pOmM6WHXPJtGWfxCQDPkd8DoAf
-         z83ygXI8q673Qq27/u23WUOrGc54fPL6y7YcgVVb09iotkEmTE8mjnYv1T21Wwa34s7l
-         THjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVW/e8gQouFUacskx8StA1Gzy8PdSJlEh3qhdTMsbmV710QzDG42oiuUkmpfsLsLjIWSLZs6rfn@vger.kernel.org
-X-Gm-Message-State: AOJu0YxqAkqESM/czqRHaDQkUPUDFJACwjjUEh6eALLVc8S/1Qb73jbB
-	aQoCb4rwkuphEkPnXOq+G5Pbh8k9wOLvrbhWCEtxoszSr9+hSH1OKLyqg1K/fX2SNT1gdFi8Q+z
-	BAIhavijCmUr2M0gLgEEE8ojnetpWwgVZn15UgJda
-X-Gm-Gg: ASbGncsvBTg3Y7YViNsQIRs8sxx8hU3K+KHVqKCWPC2T3OEeWlOep7ITwHMbXtoSy1K
-	RK16vwVH/o45+QZ10uyGy7DzcrC2Pj4YdEuTQ61D3skcm7885ui2GtHzj/7WQWfl1Unf3V95dt0
-	H9QRa4joPbPSEI+R2+dyVpr4pupysyj1BDOFT8VUj43QwJn2WAdiA/c5OPok9cB8v75tf6xkdrc
-	Ob0AqF6lTSIkc3CWIodyaCNggHa2ihQ2HAGxvoFqlNBMeq18rWAmUrRtObPksup25XPQXI=
-X-Google-Smtp-Source: AGHT+IHc05aSQyCBw6dhakriYJ2L2Wiy/hDAUqu1clJJuHsC8Udba2KlYPTUUDKNRMDIWvSTe1BcYdG7+CQRmdW8aC0=
-X-Received: by 2002:a17:903:2f84:b0:270:ced4:911a with SMTP id
- d9443c01a7336-28e9a5133bbmr590985ad.9.1759425281248; Thu, 02 Oct 2025
- 10:14:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1759425457; x=1760030257;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nEqi5LiDufQ4XizIhNMHWocMl1nEMNZ4fHJRUgvpBfw=;
+        b=cOsPV8d6yHy9ehQkJz0ScYV24WJwILVtWRb8bYZDddakYaomi8axsMvTiGcxmhHM2h
+         v/wEzgltfqMttLHf6CPgALC+xlHYACZTqtmakDFaaGcXBIpC4UR+m++wiTcHSjbg8Abf
+         ELv5WTchYMNVMOeRXuBEK9Bm95tqDNbhcO8v/YC/+NwfcAItd5Sc6mPUhdHvxLMdJFtE
+         m+2vpC//b/QjP4MTGYcWzpyitONSpXzP/BNlC57ai/bcsqeGisLNUyGjY1b1tc1oaNeD
+         3bS/jp8xko/Wa77BO2lueL5geU2PhGkr5TCR45elOmR2bbeYsFSNofsDdm+jPXg6WSnI
+         ptWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXJg4MJ0h0/jfOUzhdB+GA63vuWTAPy6ZN9sMO2ZXAFUBVMkAz8x00DOyp26Qw650o6rQdSpj5A@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOGoORytLvK6ML3lMT/Metxz8ditONstUzk4Z+r3ZnfRmLXvzC
+	DimaZG29o+PoDvAFpi/mpUYNAptbBIyvoKBY+cnQAaEIl2OeSyD6DVJD+2OnKp0WfL0=
+X-Gm-Gg: ASbGncsJm+qpF5OYpa0oI7V9wfdynWTVLAHvGmfoiLui/ydgsh/ml53ZbYx5bDzLKmd
+	VBPIIWT1YqKKBeSROpJPkNTIHV3fbHqYUmjpap8AhZpZ/8rxjZQg7Lc2IDrCYx2WP/clHGjV81i
+	W2a2k6v9RuknlkZ/YdeQTc7J0soqXttAdpXrz/R9S9XB8MHR4kpbLdbCoGM92NxzReNgU7mLv/a
+	/w5aI4A+e5KlCbcTEHw5Szq9TUaKzRPHfSBdnWUE4d6u+915VufgYSQZDyoCAl2mGMvXydd9E1D
+	iLJtiibqo3AGqLI3L9rD811Bmew0X+PTf0zgOL0gJibzDaWPe90E84j3iT067ni/WrfT1nojwZ7
+	giHGgiW6GpS4jcpqj1Hf+VhtduPgqnPA6xL+P8MWQeevGqYxVLRH8Hmy77RoSTQ9ZC2M=
+X-Google-Smtp-Source: AGHT+IFVIFNSt0EkPwbXYMRmsUgvjGJ90zoP3cCqPOxCOQ7syB49MVnAQ0tTwadDuJJr+K2gGskVDg==
+X-Received: by 2002:a05:600c:1384:b0:46e:19f8:88d8 with SMTP id 5b1f17b1804b1-46e7115c5cfmr202265e9.34.1759425457072;
+        Thu, 02 Oct 2025 10:17:37 -0700 (PDT)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e61a16e13sm92087335e9.15.2025.10.02.10.17.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Oct 2025 10:17:36 -0700 (PDT)
+Date: Thu, 2 Oct 2025 19:17:34 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Kuniyuki Iwashima <kuniyu@google.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Clark Williams <clrkwllms@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Tiffany Yang <ynaffit@google.com>, 
+	Kuniyuki Iwashima <kuni1840@gmail.com>, cgroups@vger.kernel.org, linux-rt-devel@lists.linux.dev, 
+	syzbot+27a2519eb4dad86d0156@syzkaller.appspotmail.com
+Subject: Re: [PATCH] cgroup: Disable preemption for cgrp->freezer.freeze_seq
+ when CONFIG_PREEMPT_RT=y.
+Message-ID: <3ecuzzwx73xti3hhm6aoolpodpvntdw3b56cq6au63luodhbmo@bwgm4v5rxobo>
+References: <20251002052215.1433055-1-kuniyu@google.com>
+ <5k5g5hlc4pz4cafreojc5qtmp364ev3zxkmahwk4yx7c25fm67@gdxsaj5mwy2j>
+ <CAAVpQUCQaGbV1fUnHWCTqrFmXntpKfg7Gduf+Ezi2e-QMFUTRQ@mail.gmail.com>
+ <20251002165510.KtY3IT--@linutronix.de>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251002052215.1433055-1-kuniyu@google.com> <5k5g5hlc4pz4cafreojc5qtmp364ev3zxkmahwk4yx7c25fm67@gdxsaj5mwy2j>
- <CAAVpQUCQaGbV1fUnHWCTqrFmXntpKfg7Gduf+Ezi2e-QMFUTRQ@mail.gmail.com> <20251002165510.KtY3IT--@linutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="hrmmohwe7ivs4hnr"
+Content-Disposition: inline
 In-Reply-To: <20251002165510.KtY3IT--@linutronix.de>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Thu, 2 Oct 2025 10:14:29 -0700
-X-Gm-Features: AS18NWAFADYSoIBdjVr-Osgzyiuj__dj-h9zRXB09yfJjsY3fsSQEj2RRBzos1Y
-Message-ID: <CAAVpQUBK41P0Z3VRcD6jGrRxhRe7-03srLAiV8eUaEcFu-HRSQ@mail.gmail.com>
+
+
+--hrmmohwe7ivs4hnr
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
 Subject: Re: [PATCH] cgroup: Disable preemption for cgrp->freezer.freeze_seq
  when CONFIG_PREEMPT_RT=y.
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Tiffany Yang <ynaffit@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, cgroups@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, 
-	syzbot+27a2519eb4dad86d0156@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 
-On Thu, Oct 2, 2025 at 9:55=E2=80=AFAM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> On 2025-10-02 09:22:25 [-0700], Kuniyuki Iwashima wrote:
-> > On Thu, Oct 2, 2025 at 1:28=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse=
-.com> wrote:
-> > >
-> > > Hello.
-> > >
-> > > Thanks for looking into this Kuniyuki.
-> > >
-> > > On Thu, Oct 02, 2025 at 05:22:07AM +0000, Kuniyuki Iwashima <kuniyu@g=
-oogle.com> wrote:
-> > > > The writer side is under spin_lock_irq(), but the section is still
-> > > > preemptible with CONFIG_PREEMPT_RT=3Dy.
-> > >
-> > > I see similar construction in other places, e.g.
-> > >         mems_allowed_seq in set_mems_allowed
-> >
-> > IIUC, local_irq_save() or local_irq_disable() is used
-> > for the writer of mems_allowed_seq, so there should
-> > be not preemptible.
->
-> That local_irq_disable() looks odd.
-> mems_allowed_seq is different, it is associated with
-> task_struct::alloc_lock. This lock is acquired by set_mems_allowed() so
-> it is enough. That local_irq_disable() is there because seqcount
-> read side can be used from softirq.
->
-> >
-> > >         period_seqcount in ioc_start_period
-> > >         pidmap_lock_seq in alloc_pid/pidfs_add_pid
-> >
-> > These two seem to have the same problem.
->
+On Thu, Oct 02, 2025 at 06:55:10PM +0200, Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
 > Nope. period_seqcount is a seqcount_spinlock_t. So is pidmap_lock_seq.
 
-Oh thanks, somehow I assumed all of them are seqcount,
--ENOCOFEE :p
+Oops, I didn't check that write_seqcount_{being,end} are macros that may
+accept different types and mistakenly assumed seqcount_t too.
 
->
-> > > (where their outer lock becomes preemptible on PREEMPT_RT.)
-> > >
-> > > > Let's wrap the section with preempt_{disable,enable}_nested().
-> > >
-> > > Is it better to wrap them all (for CONFIG_PREEMPT_RT=3Dy) or should t=
-hey
-> > > become seqlock_t on CONFIG_PREEMPT_RT=3Dy?
-> >
-> > I think wrapping them would be better as the wrapper is just
-> > an lockdep assertion when PREEMPT_RT=3Dn
->
-> Now that I swap in in everything.
->
-> If you have a "naked" seqcount_t then you need manually ensure that
-> there can be only one writer. And then need to disable preemption on top
-> of it in order to ensure that the writer makes always progress.
->
-> In the freezer case, may I suggest the following instead:
-
-Isn't it a bit redundant when PREEMPT_RT=3Dn as we take
-spin_lock_irq() ?
-
-
->
-> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-> index 539c64eeef38f..933c4487a8462 100644
-> --- a/include/linux/cgroup-defs.h
-> +++ b/include/linux/cgroup-defs.h
-> @@ -435,7 +435,7 @@ struct cgroup_freezer_state {
->         int nr_frozen_tasks;
->
->         /* Freeze time data consistency protection */
-> -       seqcount_t freeze_seq;
-> +       seqcount_spinlock_t freeze_seq;
->
->         /*
->          * Most recent time the cgroup was requested to freeze.
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index eb9fc7ae65b08..c0215e7de3666 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -5813,7 +5813,7 @@ static struct cgroup *cgroup_create(struct cgroup *=
-parent, const char *name,
->          * if the parent has to be frozen, the child has too.
->          */
->         cgrp->freezer.e_freeze =3D parent->freezer.e_freeze;
-> -       seqcount_init(&cgrp->freezer.freeze_seq);
-> +       seqcount_spinlock_init(&cgrp->freezer.freeze_seq, &css_set_lock);
->         if (cgrp->freezer.e_freeze) {
->                 /*
->                  * Set the CGRP_FREEZE flag, so when a process will be
->
+>  	/* Freeze time data consistency protection */
+> -	seqcount_t freeze_seq;
+> +	seqcount_spinlock_t freeze_seq;
+...
 > While former works, too this is way nicer. Not sure if it compiles but
 > it should.
->
-> > Thanks!
->
-> Sebastian
+
+Thanks! (It's therefore also better aligned with the other occurences.)
+
+Michal
+
+--hrmmohwe7ivs4hnr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaN6zrBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Ai/IAEAtKwPeHVDsi3iKGHvJSrT
+1RUKf3glL+87w6uXTAAE4v0A/2tUcS+rEgj2/ukWAn1K2FmmP4bHQUMytwfBuB+8
+SFUM
+=AgIL
+-----END PGP SIGNATURE-----
+
+--hrmmohwe7ivs4hnr--
 
