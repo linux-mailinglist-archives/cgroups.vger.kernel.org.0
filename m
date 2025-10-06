@@ -1,264 +1,256 @@
-Return-Path: <cgroups+bounces-10568-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10569-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7BEBBEF0A
-	for <lists+cgroups@lfdr.de>; Mon, 06 Oct 2025 20:26:56 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id F11FDBBF31E
+	for <lists+cgroups@lfdr.de>; Mon, 06 Oct 2025 22:33:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E3B774F1004
-	for <lists+cgroups@lfdr.de>; Mon,  6 Oct 2025 18:26:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 940F84E376A
+	for <lists+cgroups@lfdr.de>; Mon,  6 Oct 2025 20:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5032DFA3A;
-	Mon,  6 Oct 2025 18:19:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CA96244685;
+	Mon,  6 Oct 2025 20:33:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NgcCLchI"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uKjbHzCh"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766B92D6E66;
-	Mon,  6 Oct 2025 18:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A3817DFE7
+	for <cgroups@vger.kernel.org>; Mon,  6 Oct 2025 20:33:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759774769; cv=none; b=bU5R/DjlE+Xxlt93ZZwFZpC7bDYMatCKpf9ZV91yMHlh8dNQJAHzWhRTywMuuRJSr04eBvsUsxoP8iEJfSnSC4o/CVPIyMDNy0Ckx3TVZzMPQGN6zkCk7xSrK8omo8Ri/sQuQc23FMUIkVZSC+NbUCaID8BnRtxiR/F+JXLOkio=
+	t=1759782789; cv=none; b=FwSMAeuZEO1kANe7aB3H/vIUmVgq7UkqA/nnDLDC/svJBzIiMmDqLwxRmWgcrMZxAaovAg5C+8OjoVtj8XZl6A/6QcMTMnvjBtcD13igSPHcvTzcbrRAM0B16KoFbGcGnHQTwF009huaeUwo6BWA3dbra7qXJphfvARIdCALt3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759774769; c=relaxed/simple;
-	bh=N+1Fud0ZOw3fujZjMOhn3VLYI23bDuryBshBwc6HzJI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L85UqCPygoZdnv12/iEwDG2KFrK9rgeLKIJrFFyyRqqo5cyf2wtR7KpoBOOG+o0L/pIBi1WixGvVuKiCU89LOl+R2LzgT8forWTD8i6wYt2PDixOVte7kjmRLdkpLLzQo4C+27ad8667dNzcqMHKy+wGjasnUfpxc92h5+aiPBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NgcCLchI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E625C4CEF5;
-	Mon,  6 Oct 2025 18:19:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759774769;
-	bh=N+1Fud0ZOw3fujZjMOhn3VLYI23bDuryBshBwc6HzJI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NgcCLchI/EHubaVjzkXq+YHIUqrIlqr4Pm10z8i6kaw2mqnmuYufof+JKWpyLJ2Dm
-	 ktmN/dAN4xUnJiAcFqDEa5tAmg2jHFVlZVYvhBTnYlldFZ9FuF77PE/gzauM45y9Jk
-	 XeXtkv1D34scA/t/jnt0Rh2a/Gc3PYw8qYubj9trALKSgbOFu/8RqPhhb7tczcZzod
-	 5yoh+kYFT9BxTiJm3iZ/rKOgYq3csFmxUfak+Sicoo5h/QO+PNgGIaSX/hxVlhLEMq
-	 FwpvZ35hCunqMyrhecKu1g+x6thZXk/3etHT+hMEaEGAAftdyE84TshQP0YerdKpj3
-	 0C2xsn5xeBz8Q==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Chen Ridong <chenridong@huawei.com>,
-	Waiman Long <longman@redhat.com>,
-	Tejun Heo <tj@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	cgroups@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.17-6.12] cpuset: Use new excpus for nocpu error check when enabling root partition
-Date: Mon,  6 Oct 2025 14:17:52 -0400
-Message-ID: <20251006181835.1919496-20-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251006181835.1919496-1-sashal@kernel.org>
-References: <20251006181835.1919496-1-sashal@kernel.org>
+	s=arc-20240116; t=1759782789; c=relaxed/simple;
+	bh=LhWazHeSgl/2OumXm4GVNbbgKcVFqn2w2hSeAUjf9eg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fL0ekN95TKafNn09Gl19by1kI9dRWwanVN2QilKxjWbusL7+gMpJ0YQ07DkxRgGRtcVC0S+XSpzCSkQNRYQsKxrHYIsNUsXb8VOaBo6JSKm2xYW5xGHcR0kHtWPDQcQADqpv7Wr22/tCm7Jgeq0swZIhDzwWk1KD7r1G7CE7hSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uKjbHzCh; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 6 Oct 2025 13:32:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759782781;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JHH+4bf3hlBlZ1LmstUIJffws4jWpMP8V0lgu/gJTUg=;
+	b=uKjbHzChnzx2wm6WdKX0G2O+LfEbF03GVh9A/3b/TBEuOow+68ow8vPjH+P53r8tVxfIYY
+	Xy3oB/BjxBm/7ZPUpEhPclJ5X/SBvU6wHFNuj3oRMrkCbsVeg6scn9Vmaf+j15PBbZiWt8
+	JoZsT/ZOhVwDT9f/n4F61TteGGFb/OA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: JP Kobryn <inwardvessel@gmail.com>, 
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Yosry Ahmed <yosryahmed@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>, 
+	Kernel Team <kernel-team@meta.com>
+Subject: Re: [PATCH] memcg: introduce kfuncs for fetching memcg stats
+Message-ID: <galnconmnd4uoupb5dfa7nbfmpeovpjnov6fnxa56sslejl5em@fmhbdnn5v25e>
+References: <20251001045456.313750-1-inwardvessel@gmail.com>
+ <CAADnVQKQpEsgoR5xw0_32deMqT4Pc7ZOo8jwJWkarcOrZijPzw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.17.1
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKQpEsgoR5xw0_32deMqT4Pc7ZOo8jwJWkarcOrZijPzw@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-From: Chen Ridong <chenridong@huawei.com>
+On Wed, Oct 01, 2025 at 03:25:22PM -0700, Alexei Starovoitov wrote:
+> On Tue, Sep 30, 2025 at 9:57 PM JP Kobryn <inwardvessel@gmail.com> wrote:
+> >
+> > When reading cgroup memory.stat files there is significant work the kernel
+> > has to perform in string formatting the numeric data to text. Once a user
+> > mode program gets this text further work has to be done, converting the
+> > text back to numeric data. This work can be expensive for programs that
+> > periodically sample this data over a large enough fleet.
+> >
+> > As an alternative to reading memory.stat, introduce new kfuncs to allow
+> > fetching specific memcg stats from within bpf cgroup iterator programs.
+> > This approach eliminates the conversion work done by both the kernel and
+> > user mode programs. Previously a program could open memory.stat and
+> > repeatedly read from the associated file descriptor (while seeking back to
+> > zero before each subsequent read). That action can now be replaced by
+> > setting up a link to the bpf program once in advance and then reusing it to
+> > invoke the cgroup iterator program each time a read is desired. An example
+> > program can be found here [0].
+> >
+> > There is a significant perf benefit when using this approach. In terms of
+> > elapsed time, the kfuncs allow a bpf cgroup iterator program to outperform
+> > the traditional file reading method, saving almost 80% of the time spent in
+> > kernel.
+> >
+> > control: elapsed time
+> > real    0m14.421s
+> > user    0m0.183s
+> > sys     0m14.184s
+> >
+> > experiment: elapsed time
+> > real    0m3.250s
+> > user    0m0.225s
+> > sys     0m2.916s
+> 
+> Nice, but github repo somewhere doesn't guarantee that
+> the work is equivalent.
+> Please add it as a selftest/bpf instead.
+> Like was done in commit
+> https://lore.kernel.org/bpf/20200509175921.2477493-1-yhs@fb.com/
+> to demonstrate equivalence of 'cat /proc' vs iterator approach.
 
-[ Upstream commit 59d5de3655698679ad8fd2cc82228de4679c4263 ]
++1.
 
-A previous patch fixed a bug where new_prs should be assigned before
-checking housekeeping conflicts. This patch addresses another potential
-issue: the nocpu error check currently uses the xcpus which is not updated.
-Although no issue has been observed so far, the check should be performed
-using the new effective exclusive cpus.
+> 
+> >
+> > control: perf data
+> > 22.24% a.out [kernel.kallsyms] [k] vsnprintf
+> > 17.35% a.out [kernel.kallsyms] [k] format_decode
+> > 12.60% a.out [kernel.kallsyms] [k] string
+> > 12.12% a.out [kernel.kallsyms] [k] number
+> >  8.06% a.out [kernel.kallsyms] [k] strlen
+> >  5.21% a.out [kernel.kallsyms] [k] memcpy_orig
+> >  4.26% a.out [kernel.kallsyms] [k] seq_buf_printf
+> >  4.19% a.out [kernel.kallsyms] [k] memory_stat_format
+> >  2.53% a.out [kernel.kallsyms] [k] widen_string
+> >  1.62% a.out [kernel.kallsyms] [k] put_dec_trunc8
+> >  0.99% a.out [kernel.kallsyms] [k] put_dec_full8
+> >  0.72% a.out [kernel.kallsyms] [k] put_dec
+> >  0.70% a.out [kernel.kallsyms] [k] memcpy
+> >  0.60% a.out [kernel.kallsyms] [k] mutex_lock
+> >  0.59% a.out [kernel.kallsyms] [k] entry_SYSCALL_64
+> >
+> > experiment: perf data
+> > 8.17% memcgstat bpf_prog_c6d320d8e5cfb560_query [k] bpf_prog_c6d320d8e5cfb560_query
+> > 8.03% memcgstat [kernel.kallsyms] [k] memcg_node_stat_fetch
+> > 5.21% memcgstat [kernel.kallsyms] [k] __memcg_slab_post_alloc_hook
+> > 3.87% memcgstat [kernel.kallsyms] [k] _raw_spin_lock
+> > 3.01% memcgstat [kernel.kallsyms] [k] entry_SYSRETQ_unsafe_stack
+> > 2.49% memcgstat [kernel.kallsyms] [k] memcg_vm_event_fetch
+> > 2.47% memcgstat [kernel.kallsyms] [k] __memcg_slab_free_hook
+> > 2.34% memcgstat [kernel.kallsyms] [k] kmem_cache_free
+> > 2.32% memcgstat [kernel.kallsyms] [k] entry_SYSCALL_64
+> > 1.92% memcgstat [kernel.kallsyms] [k] mutex_lock
+> >
+> > The overhead of string formatting and text conversion on the control side
+> > is eliminated on the experimental side since the values are read directly
+> > through shared memory with the bpf program. The kfunc/bpf approach also
+> > provides flexibility in how this numeric data could be delivered to a user
+> > mode program. It is possible to use a struct for example, with select
+> > memory stat fields instead of an array. This opens up opportunities for
+> > custom serialization as well since it is totally up to the bpf programmer
+> > on how to lay out the data.
+> >
+> > The patch also includes a kfunc for flushing stats. This is not required
+> > for fetching stats, since the kernel periodically flushes memcg stats every
+> > 2s. It is up to the programmer if they want the very latest stats or not.
+> >
+> > [0] https://gist.github.com/inwardvessel/416d629d6930e22954edb094b4e23347
+> >     https://gist.github.com/inwardvessel/28e0a9c8bf51ba07fa8516bceeb25669
+> >     https://gist.github.com/inwardvessel/b05e1b9ea0f766f4ad78dad178c49703
+> >
+> > Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> > ---
+> >  mm/memcontrol.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 67 insertions(+)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 8dd7fbed5a94..aa8cbf883d71 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -870,6 +870,73 @@ unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
+> >  }
+> >  #endif
+> >
+> > +static inline struct mem_cgroup *memcg_from_cgroup(struct cgroup *cgrp)
+> > +{
+> > +       return cgrp ? mem_cgroup_from_css(cgrp->subsys[memory_cgrp_id]) : NULL;
+> > +}
+> > +
+> > +__bpf_kfunc static void memcg_flush_stats(struct cgroup *cgrp)
+> > +{
+> > +       struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
+> > +
+> > +       if (!memcg)
+> > +               return;
+> > +
+> > +       mem_cgroup_flush_stats(memcg);
+> > +}
+> 
+> css_rstat_flush() is sleepable, so this kfunc must be sleepable too.
+> Not sure about the rest.
+> 
+> > +
+> > +__bpf_kfunc static unsigned long memcg_node_stat_fetch(struct cgroup *cgrp,
+> > +               enum node_stat_item item)
+> > +{
+> > +       struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
+> > +
+> > +       if (!memcg)
+> > +               return 0;
+> > +
+> > +       return memcg_page_state_output(memcg, item);
+> > +}
+> > +
+> > +__bpf_kfunc static unsigned long memcg_stat_fetch(struct cgroup *cgrp,
+> > +               enum memcg_stat_item item)
+> > +{
+> > +       struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
+> > +
+> > +       if (!memcg)
+> > +               return 0;
+> > +
+> > +       return memcg_page_state_output(memcg, item);
+> > +}
+> > +
+> > +__bpf_kfunc static unsigned long memcg_vm_event_fetch(struct cgroup *cgrp,
+> > +               enum vm_event_item item)
+> > +{
+> > +       struct mem_cgroup *memcg = memcg_from_cgroup(cgrp);
+> > +
+> > +       if (!memcg)
+> > +               return 0;
+> > +
+> > +       return memcg_events(memcg, item);
+> > +}
+> > +
+> > +BTF_KFUNCS_START(bpf_memcontrol_kfunc_ids)
+> > +BTF_ID_FLAGS(func, memcg_flush_stats)
+> > +BTF_ID_FLAGS(func, memcg_node_stat_fetch)
+> > +BTF_ID_FLAGS(func, memcg_stat_fetch)
+> > +BTF_ID_FLAGS(func, memcg_vm_event_fetch)
+> > +BTF_KFUNCS_END(bpf_memcontrol_kfunc_ids)
+> 
+> At least one of them must be sleepable and the rest probably too?
+> All of them must be KF_TRUSTED_ARGS too.
 
-The comment has been removed because the function returns an error if
-nocpu checking fails, which is unrelated to the parent.
+The *_fetch ones don't need to be sleepable. Will marking them sleepable
+here make them more restrictive?
 
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
-Reviewed-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
+> 
+> > +
+> > +static const struct btf_kfunc_id_set bpf_memcontrol_kfunc_set = {
+> > +       .owner          = THIS_MODULE,
+> > +       .set            = &bpf_memcontrol_kfunc_ids,
+> > +};
+> > +
+> > +static int __init bpf_memcontrol_kfunc_init(void)
+> > +{
+> > +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
+> > +                                        &bpf_memcontrol_kfunc_set);
+> > +}
+> 
+> Why tracing only?
 
-LLM Generated explanations, may be completely bogus:
-
-Now I'll provide my comprehensive analysis and recommendation.
-
-## BACKPORT RECOMMENDATION
-
-**YES**
-
-## EXTENSIVE ANALYSIS
-
-### 1. Bug Origin and Timeline
-
-The bug was introduced in commit **86888c7bd117c** ("cgroup/cpuset: Add
-warnings to catch inconsistency in exclusive CPUs") which first appeared
-in **v6.16-rc1** (April 2025).
-
-**Critical code change that introduced the bug:**
-```c
-- xcpus = tmp->new_cpus;
-+               xcpus = tmp->delmask;
-                if (compute_effective_exclusive_cpumask(cs, xcpus,
-NULL))
-```
-
-This commit changed how `xcpus` is calculated during partition root
-enabling. The variable `xcpus` was reassigned to `tmp->delmask` and then
-recomputed by `compute_excpus()`, but the `nocpu` error checking was
-still using the stale `nocpu` boolean calculated earlier with the old
-xcpus value.
-
-### 2. Detailed Code Flow Analysis
-
-**Before the fix (bugged code):**
-
-At line ~1742 (before partcmd_enable block):
-```c
-xcpus = user_xcpus(cs);  // Initial xcpus
-nocpu = tasks_nocpu_error(parent, cs, xcpus);  // Calculate nocpu with
-OLD xcpus
-```
-
-Inside partcmd_enable block (lines ~1747-1826):
-```c
-xcpus = tmp->delmask;  // **REASSIGN xcpus**
-if (compute_excpus(cs, xcpus))  // **RECOMPUTE into NEW xcpus**
-    WARN_ON_ONCE(!cpumask_empty(cs->exclusive_cpus));
-new_prs = (cmd == partcmd_enable) ? PRS_ROOT : PRS_ISOLATED;
-
-if (cpumask_empty(xcpus))
-    return PERR_INVCPUS;
-
-if (prstate_housekeeping_conflict(new_prs, xcpus))
-    return PERR_HKEEPING;
-
-if (nocpu)  // **BUG: Using OLD nocpu calculated with OLD xcpus**
-    return PERR_NOCPUS;
-```
-
-**After the fix:**
-```c
-if (tasks_nocpu_error(parent, cs, xcpus))  // Recalculate with NEW xcpus
-    return PERR_NOCPUS;
-```
-
-### 3. Bug Impact Assessment
-
-**Severity:** Medium
-
-**Potential manifestations:**
-1. **False negatives:** A partition change could be allowed when it
-   should be rejected if:
-   - Old xcpus had no nocpu error
-   - New xcpus (after compute_excpus) would have a nocpu error
-   - Result: Parent or child tasks left without CPUs → system
-     instability
-
-2. **False positives:** A valid partition change could be rejected if:
-   - Old xcpus had a nocpu error
-   - New xcpus (after compute_excpus) would have no nocpu error
-   - Result: Legitimate partition changes fail
-
-**Observed impact:** According to the commit message, "Although no issue
-has been observed so far," suggesting this is a latent bug that hasn't
-manifested in testing or production yet.
-
-### 4. Why This Should Be Backported
-
-**Strong YES indicators:**
-
-1. **Logical correctness bug**: The code is provably incorrect - using
-   stale data for validation after that data has been updated
-
-2. **Part of a bug fix series**: This commit is the second in a series
-   fixing related issues:
-   - Commit 216217ebee16: Fixed new_prs not being assigned before
-     housekeeping check
-   - Commit 59d5de36556986: Fixed nocpu not using updated xcpus
-
-3. **Low risk change**:
-   - Only 1 line of actual code changed (plus comment removal)
-   - Changes `if (nocpu)` → `if (tasks_nocpu_error(parent, cs, xcpus))`
-   - Function `tasks_nocpu_error()` already exists and is well-tested
-
-4. **Confined scope**: Only affects cpuset partition root enabling path
-
-5. **Prevents potential system instability**: If manifested, could leave
-   tasks without CPUs
-
-6. **Stable tree criteria compliance:**
-   - Important bugfix: ✓ (correctness issue in resource management)
-   - Minimal risk: ✓ (one line change)
-   - No new features: ✓
-   - Confined to subsystem: ✓ (cpuset only)
-
-### 5. Related Context
-
-This fix is directly related to and depends on the understanding of:
-- Commit 216217ebee16 which fixed a similar issue with new_prs
-- The refactoring series by Chen Ridong that reorganized cpuset
-  exclusive CPU handling
-- The tasks_nocpu_error() function introduced in v6.7 (commit
-  e2ffe502ba450)
-
-### 6. Versions Affected
-
-The bug exists in:
-- v6.16-rc1 through v6.16-rc4
-- v6.16 (final)
-- Any stable trees that have backported commit 86888c7bd117c
-
-### 7. Technical Rationale
-
-The `tasks_nocpu_error()` function checks if enabling a partition would
-leave the parent or child without CPUs when they have tasks. The check
-must use the **final computed** exclusive CPUs (`xcpus` after
-`compute_excpus()`), not the initial user-specified exclusive CPUs. The
-bug causes the check to use the wrong cpumask, potentially making
-incorrect decisions about partition validity.
-
-### 8. Recommendation Summary
-
-**This commit should be backported because:**
-- Fixes a logical correctness bug in critical resource management code
-- Minimal risk (one line change, well-tested function)
-- Prevents potential system instability
-- Part of a coherent bug fix series
-- Affects a relatively new feature (v6.16-rc1)
-- Reviewed by cpuset maintainer (Waiman Long)
-- Signed-off-by cgroup maintainer (Tejun Heo)
-
- kernel/cgroup/cpuset.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 27adb04df675d..50f1d33d31bc9 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1727,11 +1727,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 		if (prstate_housekeeping_conflict(new_prs, xcpus))
- 			return PERR_HKEEPING;
- 
--		/*
--		 * A parent can be left with no CPU as long as there is no
--		 * task directly associated with the parent partition.
--		 */
--		if (nocpu)
-+		if (tasks_nocpu_error(parent, cs, xcpus))
- 			return PERR_NOCPUS;
- 
- 		/*
--- 
-2.51.0
-
+I can see sched_ext using these to make fancy scheduling decisions and
+definitely bpf oom-killer will need these.
 
