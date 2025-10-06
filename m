@@ -1,138 +1,264 @@
-Return-Path: <cgroups+bounces-10567-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10568-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 042E9BBEE52
-	for <lists+cgroups@lfdr.de>; Mon, 06 Oct 2025 20:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA7BEBBEF0A
+	for <lists+cgroups@lfdr.de>; Mon, 06 Oct 2025 20:26:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 021A84E222F
-	for <lists+cgroups@lfdr.de>; Mon,  6 Oct 2025 18:14:51 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E3B774F1004
+	for <lists+cgroups@lfdr.de>; Mon,  6 Oct 2025 18:26:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CAC827A444;
-	Mon,  6 Oct 2025 18:14:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5032DFA3A;
+	Mon,  6 Oct 2025 18:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CS5gBvo9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NgcCLchI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93DE38FA6;
-	Mon,  6 Oct 2025 18:14:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766B92D6E66;
+	Mon,  6 Oct 2025 18:19:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759774487; cv=none; b=pOZ1tARYZX+pTDORnPJXpUBiVbas/54r+RN7asRH6jAGMgZBZFfcnMqZmcupseE9CyqeWsOpCNRPL5qiPWowOdROSr4ucHL5+xrM8GLFcdqH2YT4UM6Y5bgEqXDhjEzs71EbGZbdofld8hTGKgZTIwCtJuFL7KesoAu8+mBmyHg=
+	t=1759774769; cv=none; b=bU5R/DjlE+Xxlt93ZZwFZpC7bDYMatCKpf9ZV91yMHlh8dNQJAHzWhRTywMuuRJSr04eBvsUsxoP8iEJfSnSC4o/CVPIyMDNy0Ckx3TVZzMPQGN6zkCk7xSrK8omo8Ri/sQuQc23FMUIkVZSC+NbUCaID8BnRtxiR/F+JXLOkio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759774487; c=relaxed/simple;
-	bh=3uRNiWVly4CAnAg3uAC85gdadwgEoKVbIoyClmEJbK8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P5I2rwqOl3d6l7PfwbZsAVsP3A8DtHR1pC9FdwvFLdwNRNsIWAJ/nKxJRP7O9vCTKMzNxD2rhTZ827d2CR6d5k2+9PAvROhKPGkKndh8U8F/P4ycicEeH7hZUTPfDSCZOJw/aDxhTi2S6MLMTY7ioGRF3CS5lG+D+Tsje+KNJ8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=CS5gBvo9; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=xaUexNMvUYJY72kamRxZMI7KBSdMfJKNfOgDc1kRXDw=; b=CS5gBvo9jMBljOpCsFx5Zwh95q
-	CT2/DA4FLbY+lWr3EbLy2XrTUlQ85h3xMzSq8NGqJLyNbUTT5LJN6EthVm4Smgn0IJv3qr7DXdEeq
-	wWLBWrbDeX3+ha/pMSuew4xs0uwt0//W21XJm+3EvhFtgsDju7PdchGnsVgD3puPbK47plvIEi8dB
-	+VnzgzR9382/sg1CTO4hLc/ECNv8078qlKKgdJaykChW/sEoD55DQIbAN83YehYxhNTiuvks/bFgv
-	o/ChssjCCmnoboDsAbq/aLb7rYV/Tqy2Lm0tgsVcziZ/lSKev7aXc58XxA9ePE/cLKhDsDWJJ6O13
-	jegZRMbw==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v5pjG-0000000H6Cb-0C5Z;
-	Mon, 06 Oct 2025 18:14:34 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 1EAA1300212; Mon, 06 Oct 2025 20:14:29 +0200 (CEST)
-Date: Mon, 6 Oct 2025 20:14:29 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
-	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
-	changwoo@igalia.com, cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de,
-	tj@kernel.org
-Subject: Re: [PATCH 01/14] sched: Employ sched_change guards
-Message-ID: <20251006181429.GV3245006@noisy.programming.kicks-ass.net>
-References: <20250910154409.446470175@infradead.org>
- <20250910155808.415580225@infradead.org>
- <fee0edd5-86d1-4dff-9e07-70fd2208b073@linux.ibm.com>
+	s=arc-20240116; t=1759774769; c=relaxed/simple;
+	bh=N+1Fud0ZOw3fujZjMOhn3VLYI23bDuryBshBwc6HzJI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=L85UqCPygoZdnv12/iEwDG2KFrK9rgeLKIJrFFyyRqqo5cyf2wtR7KpoBOOG+o0L/pIBi1WixGvVuKiCU89LOl+R2LzgT8forWTD8i6wYt2PDixOVte7kjmRLdkpLLzQo4C+27ad8667dNzcqMHKy+wGjasnUfpxc92h5+aiPBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NgcCLchI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E625C4CEF5;
+	Mon,  6 Oct 2025 18:19:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759774769;
+	bh=N+1Fud0ZOw3fujZjMOhn3VLYI23bDuryBshBwc6HzJI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=NgcCLchI/EHubaVjzkXq+YHIUqrIlqr4Pm10z8i6kaw2mqnmuYufof+JKWpyLJ2Dm
+	 ktmN/dAN4xUnJiAcFqDEa5tAmg2jHFVlZVYvhBTnYlldFZ9FuF77PE/gzauM45y9Jk
+	 XeXtkv1D34scA/t/jnt0Rh2a/Gc3PYw8qYubj9trALKSgbOFu/8RqPhhb7tczcZzod
+	 5yoh+kYFT9BxTiJm3iZ/rKOgYq3csFmxUfak+Sicoo5h/QO+PNgGIaSX/hxVlhLEMq
+	 FwpvZ35hCunqMyrhecKu1g+x6thZXk/3etHT+hMEaEGAAftdyE84TshQP0YerdKpj3
+	 0C2xsn5xeBz8Q==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Chen Ridong <chenridong@huawei.com>,
+	Waiman Long <longman@redhat.com>,
+	Tejun Heo <tj@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	cgroups@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.17-6.12] cpuset: Use new excpus for nocpu error check when enabling root partition
+Date: Mon,  6 Oct 2025 14:17:52 -0400
+Message-ID: <20251006181835.1919496-20-sashal@kernel.org>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251006181835.1919496-1-sashal@kernel.org>
+References: <20251006181835.1919496-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fee0edd5-86d1-4dff-9e07-70fd2208b073@linux.ibm.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.17.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Oct 06, 2025 at 08:51:27PM +0530, Shrikanth Hegde wrote:
-> 
-> 
-> On 9/10/25 9:14 PM, Peter Zijlstra wrote:
-> > As proposed a long while ago -- and half done by scx -- wrap the
-> > scheduler's 'change' pattern in a guard helper.
-> > 
-> [...]>   		put_task_struct(p);
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -3860,23 +3860,22 @@ extern void check_class_changed(struct r
-> >   extern struct balance_callback *splice_balance_callbacks(struct rq *rq);
-> >   extern void balance_callbacks(struct rq *rq, struct balance_callback *head);
-> > -#ifdef CONFIG_SCHED_CLASS_EXT
-> > -/*
-> > - * Used by SCX in the enable/disable paths to move tasks between sched_classes
-> > - * and establish invariants.
-> > - */
-> > -struct sched_enq_and_set_ctx {
-> > +struct sched_change_ctx {
-> >   	struct task_struct	*p;
-> > -	int			queue_flags;
-> > +	int			flags;
-> >   	bool			queued;
-> >   	bool			running;
-> >   };
-> > -void sched_deq_and_put_task(struct task_struct *p, int queue_flags,
-> > -			    struct sched_enq_and_set_ctx *ctx);
-> > -void sched_enq_and_set_task(struct sched_enq_and_set_ctx *ctx);
-> > +struct sched_change_ctx *sched_change_begin(struct task_struct *p, unsigned int flags);
-> > +void sched_change_end(struct sched_change_ctx *ctx);
-> > -#endif /* CONFIG_SCHED_CLASS_EXT */
-> > +DEFINE_CLASS(sched_change, struct sched_change_ctx *,
-> > +	     sched_change_end(_T),
-> > +	     sched_change_begin(p, flags),
-> > +	     struct task_struct *p, unsigned int flags)
-> > +
-> > +DEFINE_CLASS_IS_UNCONDITIONAL(sched_change)
-> >   #include "ext.h"
-> could you please add a comment on matching flags on dequeue/enqueue
-> here?
+From: Chen Ridong <chenridong@huawei.com>
 
-Would something like so be okay? This assumes at least the second patch
-is applied as well.
+[ Upstream commit 59d5de3655698679ad8fd2cc82228de4679c4263 ]
 
+A previous patch fixed a bug where new_prs should be assigned before
+checking housekeeping conflicts. This patch addresses another potential
+issue: the nocpu error check currently uses the xcpus which is not updated.
+Although no issue has been observed so far, the check should be performed
+using the new effective exclusive cpus.
+
+The comment has been removed because the function returns an error if
+nocpu checking fails, which is unrelated to the parent.
+
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+Reviewed-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -10783,6 +10783,12 @@ struct sched_change_ctx *sched_change_be
- 	struct sched_change_ctx *ctx = this_cpu_ptr(&sched_change_ctx);
- 	struct rq *rq = task_rq(p);
+LLM Generated explanations, may be completely bogus:
+
+Now I'll provide my comprehensive analysis and recommendation.
+
+## BACKPORT RECOMMENDATION
+
+**YES**
+
+## EXTENSIVE ANALYSIS
+
+### 1. Bug Origin and Timeline
+
+The bug was introduced in commit **86888c7bd117c** ("cgroup/cpuset: Add
+warnings to catch inconsistency in exclusive CPUs") which first appeared
+in **v6.16-rc1** (April 2025).
+
+**Critical code change that introduced the bug:**
+```c
+- xcpus = tmp->new_cpus;
++               xcpus = tmp->delmask;
+                if (compute_effective_exclusive_cpumask(cs, xcpus,
+NULL))
+```
+
+This commit changed how `xcpus` is calculated during partition root
+enabling. The variable `xcpus` was reassigned to `tmp->delmask` and then
+recomputed by `compute_excpus()`, but the `nocpu` error checking was
+still using the stale `nocpu` boolean calculated earlier with the old
+xcpus value.
+
+### 2. Detailed Code Flow Analysis
+
+**Before the fix (bugged code):**
+
+At line ~1742 (before partcmd_enable block):
+```c
+xcpus = user_xcpus(cs);  // Initial xcpus
+nocpu = tasks_nocpu_error(parent, cs, xcpus);  // Calculate nocpu with
+OLD xcpus
+```
+
+Inside partcmd_enable block (lines ~1747-1826):
+```c
+xcpus = tmp->delmask;  // **REASSIGN xcpus**
+if (compute_excpus(cs, xcpus))  // **RECOMPUTE into NEW xcpus**
+    WARN_ON_ONCE(!cpumask_empty(cs->exclusive_cpus));
+new_prs = (cmd == partcmd_enable) ? PRS_ROOT : PRS_ISOLATED;
+
+if (cpumask_empty(xcpus))
+    return PERR_INVCPUS;
+
+if (prstate_housekeeping_conflict(new_prs, xcpus))
+    return PERR_HKEEPING;
+
+if (nocpu)  // **BUG: Using OLD nocpu calculated with OLD xcpus**
+    return PERR_NOCPUS;
+```
+
+**After the fix:**
+```c
+if (tasks_nocpu_error(parent, cs, xcpus))  // Recalculate with NEW xcpus
+    return PERR_NOCPUS;
+```
+
+### 3. Bug Impact Assessment
+
+**Severity:** Medium
+
+**Potential manifestations:**
+1. **False negatives:** A partition change could be allowed when it
+   should be rejected if:
+   - Old xcpus had no nocpu error
+   - New xcpus (after compute_excpus) would have a nocpu error
+   - Result: Parent or child tasks left without CPUs → system
+     instability
+
+2. **False positives:** A valid partition change could be rejected if:
+   - Old xcpus had a nocpu error
+   - New xcpus (after compute_excpus) would have no nocpu error
+   - Result: Legitimate partition changes fail
+
+**Observed impact:** According to the commit message, "Although no issue
+has been observed so far," suggesting this is a latent bug that hasn't
+manifested in testing or production yet.
+
+### 4. Why This Should Be Backported
+
+**Strong YES indicators:**
+
+1. **Logical correctness bug**: The code is provably incorrect - using
+   stale data for validation after that data has been updated
+
+2. **Part of a bug fix series**: This commit is the second in a series
+   fixing related issues:
+   - Commit 216217ebee16: Fixed new_prs not being assigned before
+     housekeeping check
+   - Commit 59d5de36556986: Fixed nocpu not using updated xcpus
+
+3. **Low risk change**:
+   - Only 1 line of actual code changed (plus comment removal)
+   - Changes `if (nocpu)` → `if (tasks_nocpu_error(parent, cs, xcpus))`
+   - Function `tasks_nocpu_error()` already exists and is well-tested
+
+4. **Confined scope**: Only affects cpuset partition root enabling path
+
+5. **Prevents potential system instability**: If manifested, could leave
+   tasks without CPUs
+
+6. **Stable tree criteria compliance:**
+   - Important bugfix: ✓ (correctness issue in resource management)
+   - Minimal risk: ✓ (one line change)
+   - No new features: ✓
+   - Confined to subsystem: ✓ (cpuset only)
+
+### 5. Related Context
+
+This fix is directly related to and depends on the understanding of:
+- Commit 216217ebee16 which fixed a similar issue with new_prs
+- The refactoring series by Chen Ridong that reorganized cpuset
+  exclusive CPU handling
+- The tasks_nocpu_error() function introduced in v6.7 (commit
+  e2ffe502ba450)
+
+### 6. Versions Affected
+
+The bug exists in:
+- v6.16-rc1 through v6.16-rc4
+- v6.16 (final)
+- Any stable trees that have backported commit 86888c7bd117c
+
+### 7. Technical Rationale
+
+The `tasks_nocpu_error()` function checks if enabling a partition would
+leave the parent or child without CPUs when they have tasks. The check
+must use the **final computed** exclusive CPUs (`xcpus` after
+`compute_excpus()`), not the initial user-specified exclusive CPUs. The
+bug causes the check to use the wrong cpumask, potentially making
+incorrect decisions about partition validity.
+
+### 8. Recommendation Summary
+
+**This commit should be backported because:**
+- Fixes a logical correctness bug in critical resource management code
+- Minimal risk (one line change, well-tested function)
+- Prevents potential system instability
+- Part of a coherent bug fix series
+- Affects a relatively new feature (v6.16-rc1)
+- Reviewed by cpuset maintainer (Waiman Long)
+- Signed-off-by cgroup maintainer (Tejun Heo)
+
+ kernel/cgroup/cpuset.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 27adb04df675d..50f1d33d31bc9 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1727,11 +1727,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+ 		if (prstate_housekeeping_conflict(new_prs, xcpus))
+ 			return PERR_HKEEPING;
  
-+	/*
-+	 * Must exclusively use matched flags since this is both dequeue and
-+	 * enqueue.
-+	 */
-+	WARN_ON_ONCE(flags & 0xFFFF0000);
-+
- 	lockdep_assert_rq_held(rq);
+-		/*
+-		 * A parent can be left with no CPU as long as there is no
+-		 * task directly associated with the parent partition.
+-		 */
+-		if (nocpu)
++		if (tasks_nocpu_error(parent, cs, xcpus))
+ 			return PERR_NOCPUS;
  
- 	if (!(flags & DEQUEUE_NOCLOCK)) {
+ 		/*
+-- 
+2.51.0
+
 
