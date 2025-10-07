@@ -1,272 +1,208 @@
-Return-Path: <cgroups+bounces-10571-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10572-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CC2EBBFC28
-	for <lists+cgroups@lfdr.de>; Tue, 07 Oct 2025 01:16:53 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D340BC02E7
+	for <lists+cgroups@lfdr.de>; Tue, 07 Oct 2025 07:13:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 01C6234C23C
-	for <lists+cgroups@lfdr.de>; Mon,  6 Oct 2025 23:16:53 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 47AC04F2DF4
+	for <lists+cgroups@lfdr.de>; Tue,  7 Oct 2025 05:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1201519F137;
-	Mon,  6 Oct 2025 23:16:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715AF1DED52;
+	Tue,  7 Oct 2025 05:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nF+BhiMO"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dxzAiwBk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1C4B661
-	for <cgroups@vger.kernel.org>; Mon,  6 Oct 2025 23:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC4D4C6C;
+	Tue,  7 Oct 2025 05:13:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759792606; cv=none; b=AxiBFGBinDHs7vuvWMmeCVtNHdWUqxTLIlz3n9OXmwyz3cCXtrgy1EtHu3UxyOe1eFWy8EUlYm04mNn7GTJcfbVJJakUbjZ8eO0jyfe692D/7aB/KVFUJVi2jc0Zj8/Akj/f5Prybip9gSEuWZQ8WsLopFh9/YevwdqZ6woIXtM=
+	t=1759814011; cv=none; b=WeSUkJSMFEWOu6MKj6CbQwWHzwCqCe2R8G0QjgJl5QNmdYxjhYG2hbSL6NGQvzOgcYxxsl1o9RYmz6IouzUVp8ZUAoAKNeh228A/wc7CJKY7ELDGikC18Ga1YfJvnT1hCS9Oujw4B/7dcIs5Qn/fhLgO23Nn7Reo7OpAyG8y8NE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759792606; c=relaxed/simple;
-	bh=HwjOM4gJ0l81Q2wE6wvK5BesqWuBejGV2tO8axg3mGs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZGChfdq3yUL98C37hb86rOeca+uHwQqyJgwG7cyCTyS2mXng4K1h3fUF+nTmepwLa4wq6mLfFEsnFByDE40RCqL8znHCxrrGBdCZG18uiuTmzgtAqLVJIsuC7jFQdoXMtQmDTu0ugF6YZh+FgT7E3DoCyyPeSh/IhxzznZxOGrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nF+BhiMO; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 6 Oct 2025 16:16:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759792592;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YAQqFRBgLjNWMysHHUTdJ9birnJGsiwpBAJwhsVCFOg=;
-	b=nF+BhiMOqJadidPnvsG16Wzer5kVYzDfO7ORmBZTFX9lkhuTKv4g3I2r2j5XzU/XsPVsd4
-	wV6tZYU3bCeNpCCTY7mVL/D1/ty6zvNghVe48V8Do81JIFyAa8Ub/YRpYyCEdkJw4fcWiP
-	IuzUXSZ9JV214J+uFpsku/o1xXlL1qE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com, 
-	roman.gushchin@linux.dev, muchun.song@linux.dev, david@redhat.com, 
-	lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com, 
-	baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com, 
-	dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev, 
-	akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>, 
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v4 3/4] mm: thp: use folio_batch to handle THP splitting
- in deferred_split_scan()
-Message-ID: <x4d36plhxcbyp76q4gmesktnnh7yi7bfifx3amk3fwx2moqkk6@77umpnw6rkg3>
-References: <cover.1759510072.git.zhengqi.arch@bytedance.com>
- <304df1ad1e8180e102c4d6931733bcc77774eb9e.1759510072.git.zhengqi.arch@bytedance.com>
+	s=arc-20240116; t=1759814011; c=relaxed/simple;
+	bh=8jMOyjPcJW5s0EO4a4tzQbHaQlEKwAsbkBUuQ52Z2L8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=V0DR0TEOv4WpLSNo57KL2k++mEDAr9Hb1bt3GD0m35oPKrU4HRU0Y8ErKz4A0LevvvXsS/gNL/iDp+t0u48mO8TAdR2CvtcntlBfVv+a7KECcTG4DwxgfmunU9VvEAlhSzn6GlmajoaR0sE4Ngwmb6QE4f+Y7tOYepm5Y5StRIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dxzAiwBk; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 596KJBxc002750;
+	Tue, 7 Oct 2025 05:12:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=XVq5AB
+	Kv33NUVY4bWap2D/BLFM1M8DnbRXmDWdd32HI=; b=dxzAiwBkqcA1o5kDRORsEL
+	Af6dP78M1li9Jc4I9YJKSI04DfkiWp/iiqKgkXaQ5QnCx53wMTJsHHxq9rT8TqQx
+	oHBoLldTak8PVZ5O3BSih/O8exfjLZLxvqTWwYS/MVqCH6lzmKMoel8Vo0020/33
+	CnQV8qCE1kUFh5KOQv2QOhCQADMRy9nmbPvfmo7qzAH3/hTNBRBJzoqZuLewwBJd
+	WGYne6BUnfWRzzx5V57JY/oEyy6qgaIyb3/xESooys7AruFjX8lSi6fWn5vSfENm
+	E27Tpcm2brcPjII68HxANAFx7oR214e+xDcNrfXcpR6dNBzUXPGEpXexyt0RA8uQ
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49js0scwx7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 07 Oct 2025 05:12:38 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 59755rBY025638;
+	Tue, 7 Oct 2025 05:12:38 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49js0scwx5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 07 Oct 2025 05:12:38 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5974tc8C000882;
+	Tue, 7 Oct 2025 05:12:37 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 49ke9y1s34-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 07 Oct 2025 05:12:37 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5975CZ7S45744420
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 7 Oct 2025 05:12:35 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5946320040;
+	Tue,  7 Oct 2025 05:12:35 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D04A220043;
+	Tue,  7 Oct 2025 05:12:30 +0000 (GMT)
+Received: from [9.39.21.122] (unknown [9.39.21.122])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  7 Oct 2025 05:12:30 +0000 (GMT)
+Message-ID: <2b37d74f-7a5d-486b-98df-679bd7e2b0c2@linux.ibm.com>
+Date: Tue, 7 Oct 2025 10:42:29 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <304df1ad1e8180e102c4d6931733bcc77774eb9e.1759510072.git.zhengqi.arch@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/14] sched: Employ sched_change guards
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
+        mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
+        changwoo@igalia.com, cgroups@vger.kernel.org,
+        sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de,
+        tj@kernel.org
+References: <20250910154409.446470175@infradead.org>
+ <20250910155808.415580225@infradead.org>
+ <fee0edd5-86d1-4dff-9e07-70fd2208b073@linux.ibm.com>
+ <20251006181429.GV3245006@noisy.programming.kicks-ass.net>
+Content-Language: en-US
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+In-Reply-To: <20251006181429.GV3245006@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=EqnfbCcA c=1 sm=1 tr=0 ts=68e4a147 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=qX6ajofIpXMs4fIIw1kA:9
+ a=QEXdDO2ut3YA:10 a=nl4s5V0KI7Kw-pW0DWrs:22 a=pHzHmUro8NiASowvMSCR:22
+ a=xoEH_sTeL_Rfw54TyV31:22
+X-Proofpoint-GUID: cAqOOaCKutzRGHdSxvZApmpDB_dpjxLd
+X-Proofpoint-ORIG-GUID: euvDvoERsB13dXaex28twqgFbv7-s7Ba
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDAzMDIwMSBTYWx0ZWRfX32bytjmGzGCV
+ UjpUqZMEWxRLOY1FL939p/tPFpycFWvvjDJDzsR4KycttyTHbQYa4OoMvsQMOs7zBuM9nitRwQs
+ PT1t1OhhYoQzFgug9w9SWc6CaoCha8EBxdz0Cqf7tcSENBQJcR1kw/JujHtem1EkfKL/3XRQPCg
+ kBRssF+nr52FI08nuAvCvqSfhz8UUwR9syE+4nUKmFGsGk9c0dBfSGDNbJUO7sEViryWf7bfeLL
+ MsFssEmH07hcWNnkQivz/5j0xbRYossatwPrinkaHCl1y3dUyjv/C0SjnDq2QFYtIyF+W45GNvi
+ BvcTr1RbeeNyI4UCFmkN2oerfX1fJ2ZwRIoqTGYm/JUq6ztlDUF9Y1AnKdPENmlZPK4U8Lh/x1o
+ eE1uAA0HsB132IpaqyedhF9lRk5TMQ==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-06_07,2025-10-06_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 malwarescore=0 impostorscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 spamscore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2509150000 definitions=main-2510030201
 
-On Sat, Oct 04, 2025 at 12:53:17AM +0800, Qi Zheng wrote:
-> From: Muchun Song <songmuchun@bytedance.com>
-> 
-> The maintenance of the folio->_deferred_list is intricate because it's
-> reused in a local list.
-> 
-> Here are some peculiarities:
-> 
->    1) When a folio is removed from its split queue and added to a local
->       on-stack list in deferred_split_scan(), the ->split_queue_len isn't
->       updated, leading to an inconsistency between it and the actual
->       number of folios in the split queue.
-> 
->    2) When the folio is split via split_folio() later, it's removed from
->       the local list while holding the split queue lock. At this time,
->       this lock protects the local list, not the split queue.
 
-I think the above text needs some massaging. Rather than saying lock
-protects the local list, I think, it would be better to say that the
-lock is not needed as it is not protecting anything.
 
+On 10/6/25 11:44 PM, Peter Zijlstra wrote:
+> On Mon, Oct 06, 2025 at 08:51:27PM +0530, Shrikanth Hegde wrote:
+>>
+>>
+>> On 9/10/25 9:14 PM, Peter Zijlstra wrote:
+>>> As proposed a long while ago -- and half done by scx -- wrap the
+>>> scheduler's 'change' pattern in a guard helper.
+>>>
+>> [...]>   		put_task_struct(p);
+>>> --- a/kernel/sched/sched.h
+>>> +++ b/kernel/sched/sched.h
+>>> @@ -3860,23 +3860,22 @@ extern void check_class_changed(struct r
+>>>    extern struct balance_callback *splice_balance_callbacks(struct rq *rq);
+>>>    extern void balance_callbacks(struct rq *rq, struct balance_callback *head);
+>>> -#ifdef CONFIG_SCHED_CLASS_EXT
+>>> -/*
+>>> - * Used by SCX in the enable/disable paths to move tasks between sched_classes
+>>> - * and establish invariants.
+>>> - */
+>>> -struct sched_enq_and_set_ctx {
+>>> +struct sched_change_ctx {
+>>>    	struct task_struct	*p;
+>>> -	int			queue_flags;
+>>> +	int			flags;
+>>>    	bool			queued;
+>>>    	bool			running;
+>>>    };
+>>> -void sched_deq_and_put_task(struct task_struct *p, int queue_flags,
+>>> -			    struct sched_enq_and_set_ctx *ctx);
+>>> -void sched_enq_and_set_task(struct sched_enq_and_set_ctx *ctx);
+>>> +struct sched_change_ctx *sched_change_begin(struct task_struct *p, unsigned int flags);
+>>> +void sched_change_end(struct sched_change_ctx *ctx);
+>>> -#endif /* CONFIG_SCHED_CLASS_EXT */
+>>> +DEFINE_CLASS(sched_change, struct sched_change_ctx *,
+>>> +	     sched_change_end(_T),
+>>> +	     sched_change_begin(p, flags),
+>>> +	     struct task_struct *p, unsigned int flags)
+>>> +
+>>> +DEFINE_CLASS_IS_UNCONDITIONAL(sched_change)
+>>>    #include "ext.h"
+>> could you please add a comment on matching flags on dequeue/enqueue
+>> here?
 > 
->    3) To handle the race condition with a third-party freeing or migrating
->       the preceding folio, we must ensure there's always one safe (with
->       raised refcount) folio before by delaying its folio_put(). More
->       details can be found in commit e66f3185fa04 ("mm/thp: fix deferred
->       split queue not partially_mapped"). It's rather tricky.
+> Would something like so be okay? This assumes at least the second patch
+> is applied as well.
 > 
-> We can use the folio_batch infrastructure to handle this clearly. In this
-> case, ->split_queue_len will be consistent with the real number of folios
-> in the split queue. If list_empty(&folio->_deferred_list) returns false,
-> it's clear the folio must be in its split queue (not in a local list
-> anymore).
-> 
-> In the future, we will reparent LRU folios during memcg offline to
-> eliminate dying memory cgroups, which requires reparenting the split queue
-> to its parent first. So this patch prepares for using
-> folio_split_queue_lock_irqsave() as the memcg may change then.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Zi Yan <ziy@nvidia.com>
-> Acked-by: David Hildenbrand <david@redhat.com>
-
-One nit below.
-
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-
 > ---
->  mm/huge_memory.c | 85 ++++++++++++++++++++++--------------------------
->  1 file changed, 39 insertions(+), 46 deletions(-)
 > 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 134666503440d..59ddebc9f3232 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -3782,21 +3782,22 @@ static int __folio_split(struct folio *folio, unsigned int new_order,
->  		struct lruvec *lruvec;
->  		int expected_refs;
->  
-> -		if (folio_order(folio) > 1 &&
-> -		    !list_empty(&folio->_deferred_list)) {
-> -			ds_queue->split_queue_len--;
-> +		if (folio_order(folio) > 1) {
-> +			if (!list_empty(&folio->_deferred_list)) {
-> +				ds_queue->split_queue_len--;
-> +				/*
-> +				 * Reinitialize page_deferred_list after removing the
-> +				 * page from the split_queue, otherwise a subsequent
-> +				 * split will see list corruption when checking the
-> +				 * page_deferred_list.
-> +				 */
-> +				list_del_init(&folio->_deferred_list);
-> +			}
->  			if (folio_test_partially_mapped(folio)) {
->  				folio_clear_partially_mapped(folio);
->  				mod_mthp_stat(folio_order(folio),
->  					      MTHP_STAT_NR_ANON_PARTIALLY_MAPPED, -1);
->  			}
-> -			/*
-> -			 * Reinitialize page_deferred_list after removing the
-> -			 * page from the split_queue, otherwise a subsequent
-> -			 * split will see list corruption when checking the
-> -			 * page_deferred_list.
-> -			 */
-> -			list_del_init(&folio->_deferred_list);
->  		}
->  		split_queue_unlock(ds_queue);
->  		if (mapping) {
-> @@ -4185,35 +4186,40 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
->  {
->  	struct deferred_split *ds_queue;
->  	unsigned long flags;
-> -	LIST_HEAD(list);
-> -	struct folio *folio, *next, *prev = NULL;
-> -	int split = 0, removed = 0;
-> +	struct folio *folio, *next;
-> +	int split = 0, i;
-> +	struct folio_batch fbatch;
->  
-> +	folio_batch_init(&fbatch);
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -10783,6 +10783,12 @@ struct sched_change_ctx *sched_change_be
+>   	struct sched_change_ctx *ctx = this_cpu_ptr(&sched_change_ctx);
+>   	struct rq *rq = task_rq(p);
+>   
+> +	/*
+> +	 * Must exclusively use matched flags since this is both dequeue and
+> +	 * enqueue.
+> +	 */
+
+yes. Something like that. Unless callsites explicitly change the flags using
+the scope, enqueue will happen with matching flags.
+
+> +	WARN_ON_ONCE(flags & 0xFFFF0000);
 > +
-> +retry:
->  	ds_queue = split_queue_lock_irqsave(sc->nid, sc->memcg, &flags);
->  	/* Take pin on all head pages to avoid freeing them under us */
->  	list_for_each_entry_safe(folio, next, &ds_queue->split_queue,
->  							_deferred_list) {
->  		if (folio_try_get(folio)) {
-> -			list_move(&folio->_deferred_list, &list);
-> -		} else {
-> +			folio_batch_add(&fbatch, folio);
-> +		} else if (folio_test_partially_mapped(folio)) {
->  			/* We lost race with folio_put() */
-> -			if (folio_test_partially_mapped(folio)) {
-> -				folio_clear_partially_mapped(folio);
-> -				mod_mthp_stat(folio_order(folio),
-> -					      MTHP_STAT_NR_ANON_PARTIALLY_MAPPED, -1);
-> -			}
-> -			list_del_init(&folio->_deferred_list);
-> -			ds_queue->split_queue_len--;
-> +			folio_clear_partially_mapped(folio);
-> +			mod_mthp_stat(folio_order(folio),
-> +				      MTHP_STAT_NR_ANON_PARTIALLY_MAPPED, -1);
->  		}
-> +		list_del_init(&folio->_deferred_list);
-> +		ds_queue->split_queue_len--;
->  		if (!--sc->nr_to_scan)
->  			break;
-> +		if (!folio_batch_space(&fbatch))
-> +			break;
->  	}
->  	split_queue_unlock_irqrestore(ds_queue, flags);
->  
-> -	list_for_each_entry_safe(folio, next, &list, _deferred_list) {
-> +	for (i = 0; i < folio_batch_count(&fbatch); i++) {
->  		bool did_split = false;
->  		bool underused = false;
-> +		struct deferred_split *fqueue;
->  
-> +		folio = fbatch.folios[i];
->  		if (!folio_test_partially_mapped(folio)) {
->  			/*
->  			 * See try_to_map_unused_to_zeropage(): we cannot
-> @@ -4236,38 +4242,25 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
->  		}
->  		folio_unlock(folio);
->  next:
-> +		if (did_split || !folio_test_partially_mapped(folio))
-> +			continue;
->  		/*
-> -		 * split_folio() removes folio from list on success.
->  		 * Only add back to the queue if folio is partially mapped.
->  		 * If thp_underused returns false, or if split_folio fails
->  		 * in the case it was underused, then consider it used and
->  		 * don't add it back to split_queue.
->  		 */
-> -		if (did_split) {
-> -			; /* folio already removed from list */
-> -		} else if (!folio_test_partially_mapped(folio)) {
-> -			list_del_init(&folio->_deferred_list);
-> -			removed++;
-> -		} else {
-> -			/*
-> -			 * That unlocked list_del_init() above would be unsafe,
-> -			 * unless its folio is separated from any earlier folios
-> -			 * left on the list (which may be concurrently unqueued)
-> -			 * by one safe folio with refcount still raised.
-> -			 */
-> -			swap(folio, prev);
-> +		fqueue = folio_split_queue_lock_irqsave(folio, &flags);
-> +		if (list_empty(&folio->_deferred_list)) {
-> +			list_add_tail(&folio->_deferred_list, &fqueue->split_queue);
-> +			fqueue->split_queue_len++;
->  		}
-> -		if (folio)
-> -			folio_put(folio);
-> +		split_queue_unlock_irqrestore(fqueue, flags);
 
-Is it possible to move this lock/list_add/unlock code chunk out of loop
-and before the folios_put(). I think it would be possible if you tag the
-corresponding index or have a separate bool array. It is also reasonable
-to claim that the contention of this lock is not a concern for now.
+A mythical example:
+scope_guard(sched_change, p, DEQUEUE_THROTTLE)
+	scope->flags &= ~DEQUEUE_THROTTLE;
+	scope->flags |= ENQUEUE_HEAD;
 
->  	}
-> +	folios_put(&fbatch);
->  
-> -	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
-> -	list_splice_tail(&list, &ds_queue->split_queue);
-> -	ds_queue->split_queue_len -= removed;
-> -	spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
-> -
-> -	if (prev)
-> -		folio_put(prev);
-> +	if (sc->nr_to_scan)
-> +		goto retry;
->  
->  	/*
->  	 * Stop shrinker if we didn't split any page, but the queue is empty.
-> -- 
-> 2.20.1
-> 
+But, One could still do this right? for such users the warning may be wrong.
+
+>   	lockdep_assert_rq_held(rq);
+>   
+>   	if (!(flags & DEQUEUE_NOCLOCK)) {
+
 
