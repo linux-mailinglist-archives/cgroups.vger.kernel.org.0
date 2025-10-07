@@ -1,87 +1,55 @@
-Return-Path: <cgroups+bounces-10579-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10580-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4410FBC0F77
-	for <lists+cgroups@lfdr.de>; Tue, 07 Oct 2025 12:08:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB746BC0FD2
+	for <lists+cgroups@lfdr.de>; Tue, 07 Oct 2025 12:16:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A8D31899BEC
-	for <lists+cgroups@lfdr.de>; Tue,  7 Oct 2025 10:08:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94EE53AD522
+	for <lists+cgroups@lfdr.de>; Tue,  7 Oct 2025 10:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 453B62D7DE3;
-	Tue,  7 Oct 2025 10:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 577F92D6E6E;
+	Tue,  7 Oct 2025 10:16:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bFkf4gje"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WdB1oNoM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527E52D47EE
-	for <cgroups@vger.kernel.org>; Tue,  7 Oct 2025 10:08:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DE322579E;
+	Tue,  7 Oct 2025 10:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759831691; cv=none; b=lOR+OC40zcnkzKDGd+Qn4R5ra/6Y7dWNCh+RIPr5RzqV06qMguZJmuTpq8MxHqWAylnSXmSqZp9OlmQI6/1PoTY35+IMZOm//bggsdATltVwZRhgcS6mY/V4MqaoEsCG3knY3jXx91P0thgehx10co4VEd3NgpiPPrY/IMfvLV0=
+	t=1759832182; cv=none; b=fG6kyggHh85V3JuKTv3BtKKsuDj3hbDnw7xgxh62sM1wtgN6tSM1U5sV1HGfPXc5/d1pB07vZ4ZTR4cXAWX/rraedoSnlEbbNnKcKjdc+O1VnF0TmVSWkkVlcERoCrN55PZx/NeptYj32d8JilO2VmgfhNLOu4o2rA3u5Ieb44Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759831691; c=relaxed/simple;
-	bh=X1iciAMY8PqRMVBzYSqFJyHJLL4pQ951fQtXxmSzeas=;
+	s=arc-20240116; t=1759832182; c=relaxed/simple;
+	bh=cu5WgrnaZH+RK73IluvxZt1kldsqWNC5A84/kComYHg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=livLr4xt5LwDBiZalSCPhHPGtKCsPtOZLvrMLfkmVHEXkyNJ5RO+P1YrMumXw/sYEvQEnCBxQwtp1McXXKgKPDm+EKpRyrKd1yTYaoHd4CakqsYHz3LZ8WTt8DYCzwGQ+48ceaCqEwdfYyF9QUczDMO4blfTAZnlPwnIQ5YstmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bFkf4gje; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1759831688;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+mtcU9rV2NIG8/Fsnv3bz5W3lOoU/FoKHUxf6Q1GCxg=;
-	b=bFkf4gjeBOdM8bIIO3o1zI93ozAqQNcNPfoXklkK579WKrAHdsvSGJqpvtf5VIzL2FaSt8
-	guRtzxkkXKYkGX0QGw0xbFfdmocmA0hdE4kJnvVcJRH8Gse4fymYnic0UOJBVRDZ0TnZ9D
-	nvMEjJqbe4q/XWb58VN48lJdQMvkiKk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-395-vM7n4Dn2MUC0FMU6l-ghMw-1; Tue, 07 Oct 2025 06:08:07 -0400
-X-MC-Unique: vM7n4Dn2MUC0FMU6l-ghMw-1
-X-Mimecast-MFC-AGG-ID: vM7n4Dn2MUC0FMU6l-ghMw_1759831686
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3ee1317b132so3355451f8f.0
-        for <cgroups@vger.kernel.org>; Tue, 07 Oct 2025 03:08:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759831686; x=1760436486;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+mtcU9rV2NIG8/Fsnv3bz5W3lOoU/FoKHUxf6Q1GCxg=;
-        b=e2T/XQgtT+i8bBKmh8QbbH0h+BZt24p95hvjRM8f+XVabxTKrrEreQ0hUXYI2yp4FU
-         DCSw1xkijWF9pbhAz5SGKWNQq3QnkpeGm3+j1RzXVKedncw2J/dWNLLc5pLDc6JKEHiM
-         IFSkDDhabYGDAcwPYAKBuUncBeiBvW3K9G2waD1X+velavL3+u38ZWhqHWIYuYYzFoIE
-         fCXQ2wFLZt9QA6/GO9lctrK+I353EswZfZNqEVIlgl/lEFlHL2qPY6Zu6qtJaWiBpJjm
-         fCYgE1+EKXtLYP/+gFbx8wlZrTACFVmOJKll9nPsJm86FEmFmR9CdojxCN/jHHjlw9NX
-         Q0/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUsAuITnKGpnEs3p9BiAM8K5MrBJrkXKeujkf1Tr36Iv8LO9GIb5wr5sd3LzC8NTiiYi0tALM1q@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxsphnzVEaEf/yllJSErvp2BIaYo53gtdxdTNZnEBePqN+ftnU
-	nqQ68VjFPP3cvasxYu6LuHZtgop1VDNLhxbavzk3BSjYRrghKaBlDAZkwu8s0xEwCZOWfUlnKEg
-	Kj9IsmWYDYIhoNtLf0eMIZ8oyTFXQxyZcUtkNY8aZMjzlAobUje9UKw55jl4=
-X-Gm-Gg: ASbGnctnpv1Hu9AtcJjo0pWnjkdk8wt0YnsPdK6RXH+s7YVVHaCmRnYo4JoLBemvSav
-	rsALBMFCk6AKXhIwlzJDYU4Bdl5i1KOdUUvHL26RFT54tTX6isaL8HPgbDGO/dw9LxH4phlFQuW
-	MwYVLO7IcOiQI7+88xnvbQMau8DIRQO9GwNmCL/ANcx4hMVcL3GgFDo2dvfrTX+YK1hjl8gvaVy
-	uVHjU331wrypHxGLcesbxxtCOVxokpRogpIQC10RsNlA2JPbmlcmYYQQRfadUKCrmDdgkkSFgPf
-	EskCYL82vllvL9dlKn/H1OgzHdt8zY1bweXSvsGsPmkDI2ojeQSstYpm56/J9yYiscigtj10L2X
-	yug==
-X-Received: by 2002:a05:6000:2484:b0:3fa:87ad:8309 with SMTP id ffacd0b85a97d-425671c5e22mr12150995f8f.56.1759831685977;
-        Tue, 07 Oct 2025 03:08:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFoOnbt3zl/Z0zIFMaawiwiieruc6RIjDSa5Y4OtsLc9P/dDQ+rp/oPqBnApnJV75iKliXKtA==
-X-Received: by 2002:a05:6000:2484:b0:3fa:87ad:8309 with SMTP id ffacd0b85a97d-425671c5e22mr12150970f8f.56.1759831685538;
-        Tue, 07 Oct 2025 03:08:05 -0700 (PDT)
-Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.135.152])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4255d8b0068sm24882138f8f.26.2025.10.07.03.08.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Oct 2025 03:08:05 -0700 (PDT)
-Date: Tue, 7 Oct 2025 12:08:03 +0200
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Peter Zijlstra <peterz@infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=L8zZu5yiU/OQNjFXMvfnIjk3GGLJoFcVU948/4UJTlJxKQNu+hjUqPS/OaklcQGH9owuEI9LiS6L5rUiPMSEYB+P6JQTtnakQmlMVY+whTOzsi90z6Cyt78+tbVrmPQO9wxwVHT7C0rtYSjDHXobtjaRN83poct5QAK7A6wmxZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WdB1oNoM; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Iwif9ExfXZYFRG5YTH8P10iLbyGNxofX7BDXhWql0DM=; b=WdB1oNoM0PZjs3DNOrLnDhkZa7
+	s14Dw1cbIFWC+1iPrfLldF2q7gCtWi9uqTV/XWm0mJKt2o3C+JQhPmZUpGy+fOyn7+BUA5GikR1rD
+	Qf2A+N4tStT1EC4Ko5Za2PlzYs5qXMKmSARrpyLON2LAwZbKT0vsd0crPT3Y2elZMthPgeFRfKL8p
+	19BmFp/sQBRi/0j3XkiRfNEwYBJmtmVyG66s0AOw5n4OiPi0xIo5LUMlm4SAqiko5GBqvcaadJdTs
+	m5J2JOjrHVF+ZWOc9P6tV8RFTZPcZROdO2o1JDq4lIyhZoHjzmPenwVv8Avs35UFEbz2q9qE7lyaD
+	+ILz82qw==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1v64jr-0000000HY5o-0w5r;
+	Tue, 07 Oct 2025 10:16:11 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 20B68300220; Tue, 07 Oct 2025 12:16:10 +0200 (CEST)
+Date: Tue, 7 Oct 2025 12:16:10 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Juri Lelli <juri.lelli@redhat.com>
 Cc: tj@kernel.org, linux-kernel@vger.kernel.org, mingo@kernel.org,
 	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
 	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
@@ -90,9 +58,10 @@ Cc: tj@kernel.org, linux-kernel@vger.kernel.org, mingo@kernel.org,
 	changwoo@igalia.com, cgroups@vger.kernel.org,
 	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
 Subject: Re: [RFC][PATCH 1/3] sched: Detect per-class runqueue changes
-Message-ID: <aOTmg90J1Tdggm5z@jlelli-thinkpadt14gen4.remote.csb>
+Message-ID: <20251007101610.GD3245006@noisy.programming.kicks-ass.net>
 References: <20251006104652.630431579@infradead.org>
  <20251006105453.522934521@infradead.org>
+ <aOTmg90J1Tdggm5z@jlelli-thinkpadt14gen4.remote.csb>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -101,35 +70,45 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251006105453.522934521@infradead.org>
+In-Reply-To: <aOTmg90J1Tdggm5z@jlelli-thinkpadt14gen4.remote.csb>
 
-Hi Peter,
-
-On 06/10/25 12:46, Peter Zijlstra wrote:
-> Have enqueue/dequeue set a per-class bit in rq->queue_mask. This then
-> enables easy tracking of which runqueues are modified over a
-> lock-break.
+On Tue, Oct 07, 2025 at 12:08:03PM +0200, Juri Lelli wrote:
+> Hi Peter,
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
+> On 06/10/25 12:46, Peter Zijlstra wrote:
+> > Have enqueue/dequeue set a per-class bit in rq->queue_mask. This then
+> > enables easy tracking of which runqueues are modified over a
+> > lock-break.
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> 
+> Nice.
+> 
+> > @@ -12887,8 +12888,8 @@ static int sched_balance_newidle(struct
+> >  	if (this_rq->cfs.h_nr_queued && !pulled_task)
+> >  		pulled_task = 1;
+> >  
+> > -	/* Is there a task of a high priority class? */
+> > -	if (this_rq->nr_running != this_rq->cfs.h_nr_queued)
+> > +	/* If a higher prio class was modified, restart the pick */
+> > +	if (this_rq->queue_mask & ~((fair_sched_class.queue_mask << 1)-1))
+> >  		pulled_task = -1;
+> 
+> Does this however want a self-documenting inline helper or macro to make
+> it even more clear? If this is always going to be the only caller maybe
+> not so much.
 
-Nice.
+There's another one in patch 3. I suppose we can do that. Maybe
+something like:
 
-> @@ -12887,8 +12888,8 @@ static int sched_balance_newidle(struct
->  	if (this_rq->cfs.h_nr_queued && !pulled_task)
->  		pulled_task = 1;
->  
-> -	/* Is there a task of a high priority class? */
-> -	if (this_rq->nr_running != this_rq->cfs.h_nr_queued)
-> +	/* If a higher prio class was modified, restart the pick */
-> +	if (this_rq->queue_mask & ~((fair_sched_class.queue_mask << 1)-1))
->  		pulled_task = -1;
+static inline bool rq_modified_above(struct rq *rq, struct sched_class *class)
+{
+	unsigned int mask = class->queue_mask;
+	return rq->queue_mask & ~((mask << 1) - 1);
+}
 
-Does this however want a self-documenting inline helper or macro to make
-it even more clear? If this is always going to be the only caller maybe
-not so much.
+This then writes the above like:
 
-Thanks,
-Juri
-
+	if (rq_modified_above(this_rq, &fair_sched_class))
 
