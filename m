@@ -1,59 +1,67 @@
-Return-Path: <cgroups+bounces-10594-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10595-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B625BC2F7D
-	for <lists+cgroups@lfdr.de>; Wed, 08 Oct 2025 01:40:59 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A484BC3847
+	for <lists+cgroups@lfdr.de>; Wed, 08 Oct 2025 08:51:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0BB724E7795
-	for <lists+cgroups@lfdr.de>; Tue,  7 Oct 2025 23:40:58 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 87B82351F8F
+	for <lists+cgroups@lfdr.de>; Wed,  8 Oct 2025 06:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C94325A2A2;
-	Tue,  7 Oct 2025 23:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 211992EB87E;
+	Wed,  8 Oct 2025 06:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ik2GK1eK"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XBWLez4/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6FA25D209
-	for <cgroups@vger.kernel.org>; Tue,  7 Oct 2025 23:40:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FFC82BE02A;
+	Wed,  8 Oct 2025 06:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759880455; cv=none; b=jqFUX/MDqnZMj1+DmQxNYIuK/QnDwNKEcCrLCBX+iakTuPutZGE2xeS5K8tQZVW6Fyow8G/YTENyvFyEKkbF7bsme7+c1WdOpRcJhSUnvwbfeYVpv8IsIavAJylnKFpvrgEw4MFued1neLyfbkfH9JUIahYEnZGrZwIVGVIfjA8=
+	t=1759906287; cv=none; b=GFQfT2iaIPNbdxjOQLRyxNuChzA/7KBMGLPpze71dlb5MhAXbX2Hp8CllFzlGSsd6ANs5BUmlMrrdYxPB7HKj1AFJZFziQ5frtUb0ewX2HN7K0MaX6pm/tj8kWDrIKXzaC9BWZOf0+ZnTauFb0N4wnma5cWEQha86QRocslO+ZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759880455; c=relaxed/simple;
-	bh=kPOg73LsFm0VhO3hCIMBYbq1D6CbqS1d4DmEn+yVioE=;
+	s=arc-20240116; t=1759906287; c=relaxed/simple;
+	bh=gHRgGh5QI+obHIWHL0SmoWibRidhXELVybYnsbLTG+Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iyL/GWF0HhVefyw5uo6J2nQRVhBHUCNxIMXflnjsJdKHtulac7Jl9lbu64O0EL5a5yLWopbNTiWxKxCFjFQ/Tf+ufQDLGX1YGEmLbSEmogdrLjAcFmJdstSr53UkIZh8f3RhtE0P/SR+OZNsKCJcPt7fTPwv1HMonIcXgwif3zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ik2GK1eK; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 7 Oct 2025 23:40:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1759880450;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E6OD1bQXaicr9WCwyTV1JRRGSFUf3V7VjtgLaaXPLUQ=;
-	b=ik2GK1eKqJ/QpncSodtUJDqaZ1CxjtRJZpZXNofmS05mT7WKjS1TA1XtUWKRbME70i+3CT
-	0BQj1BKgoLhhfoYfbSr8rpw2TuWe4dMMZU+rRfsbTNoEQEqAdNNVJyu6SRXzy0zJoHlFOf
-	gITYeZiFDARdwU/DvrwJixjCfb1CJhw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yosry Ahmed <yosry.ahmed@linux.dev>
-To: SeongJae Park <sj@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
-	Nhat Pham <nphamcs@gmail.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, cgroups@vger.kernel.org, kernel-team@meta.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 2/4] mm/zswap: fix typos: s/zwap/zswap/
-Message-ID: <k7suwksw5kvivopboym4zny3u7rqwq3gw6rvlrcrydo7kiadvg@gumequ2fft7h>
-References: <20251003203851.43128-1-sj@kernel.org>
- <20251003203851.43128-3-sj@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jM7GtnZY2MfEalS4rzLPDHWIr+D5NjXaJtW73bsOrUTCPI6wKBG0/Q7hTdaLE79wEpKVAcrAQsq3667c6QrDN/6M53A7s/3YKeasMYl/9t72T4g1uMwCMcrTMT42FmppxjAgYZK86Qe4+Tf3plnYGMe1cGedvEgk0qkADBdBq2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XBWLez4/; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=4wFNVRKSQ904MaxMgBEMzFphqKMmGj3VtnigXlW9IfY=; b=XBWLez4/oUuPKoWmGzvS8GtVzB
+	5Cb9i0YwY1ECW+F/i0WEzY0EfNPLO8OxEeS4xvEM53InMxK9UGWCJ1K1F7/YJ1u76bPmjJA4xy906
+	YG91cSTfvCj2/qW1ApelDf50/TtY8tfqJbRw6v9LUN/Mox08DI7PYIn1KxOIC6r/cYYxcQ2tPL4yT
+	mvcYK5EPcG1Khme3uBkMwd8GbaxVxqkMiutOjRqcM7IPfrKw4fvVghrwRYY9DIO8rbRcAjOZUBtUw
+	dHnKAdbwKXguRC8HAj6M4zvSVtXnUrPUts+a7gjVVHJrlxFWPCaMsq9s5Mr26Q4USoSFIyb/hIYfY
+	zBv9fkVg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1v6O0u-00000000Xcd-49DX;
+	Wed, 08 Oct 2025 06:51:11 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 46801300230; Wed, 08 Oct 2025 08:51:03 +0200 (CEST)
+Date: Wed, 8 Oct 2025 08:51:03 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Andrea Righi <arighi@nvidia.com>
+Cc: tj@kernel.org, linux-kernel@vger.kernel.org, mingo@kernel.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, vschneid@redhat.com, longman@redhat.com,
+	hannes@cmpxchg.org, mkoutny@suse.com, void@manifault.com,
+	changwoo@igalia.com, cgroups@vger.kernel.org,
+	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
+Subject: Re: [PATCH 01/12] sched: Employ sched_change guards
+Message-ID: <20251008065103.GQ4067720@noisy.programming.kicks-ass.net>
+References: <20251006104402.946760805@infradead.org>
+ <20251006104526.613879143@infradead.org>
+ <aOTNXPTyk4zth-1C@gpd4>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -62,56 +70,62 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251003203851.43128-3-sj@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <aOTNXPTyk4zth-1C@gpd4>
 
-On Fri, Oct 03, 2025 at 01:38:49PM -0700, SeongJae Park wrote:
-> As the subject says.
+On Tue, Oct 07, 2025 at 10:20:44AM +0200, Andrea Righi wrote:
+> Hi Peter,
 > 
-> Signed-off-by: SeongJae Park <sj@kernel.org>
-
-Acked-by: Yosry Ahmed <yosry.ahmed@linux.dev>
-
-> ---
->  mm/memcontrol.c | 2 +-
->  mm/zswap.c      | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
+> On Mon, Oct 06, 2025 at 12:44:03PM +0200, Peter Zijlstra wrote:
+> > As proposed a long while ago -- and half done by scx -- wrap the
+> > scheduler's 'change' pattern in a guard helper.
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Acked-by: Tejun Heo <tj@kernel.org>
+> > ---
+> ...
+> > --- a/kernel/sched/sched.h
+> > +++ b/kernel/sched/sched.h
+> > @@ -3885,23 +3885,22 @@ extern void check_class_changed(struct r
+> >  extern struct balance_callback *splice_balance_callbacks(struct rq *rq);
+> >  extern void balance_callbacks(struct rq *rq, struct balance_callback *head);
+> >  
+> > -#ifdef CONFIG_SCHED_CLASS_EXT
+> > -/*
+> > - * Used by SCX in the enable/disable paths to move tasks between sched_classes
+> > - * and establish invariants.
+> > - */
+> > -struct sched_enq_and_set_ctx {
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 69c970554e85..74b1bc2252b6 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5421,7 +5421,7 @@ bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
->   * @size: size of compressed object
->   *
->   * This forces the charge after obj_cgroup_may_zswap() allowed
-> - * compression and storage in zwap for this cgroup to go ahead.
-> + * compression and storage in zswap for this cgroup to go ahead.
->   */
->  void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size)
->  {
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 80619c8589a7..f6b1c8832a4f 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -879,7 +879,7 @@ static bool zswap_compress(struct page *page, struct zswap_entry *entry,
->  	 * acomp instance, then get those requests done simultaneously. but in this
->  	 * case, zswap actually does store and load page by page, there is no
->  	 * existing method to send the second page before the first page is done
-> -	 * in one thread doing zwap.
-> +	 * in one thread doing zswap.
->  	 * but in different threads running on different cpu, we have different
->  	 * acomp instance, so multiple threads can do (de)compression in parallel.
->  	 */
-> @@ -1128,7 +1128,7 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
->  	 *
->  	 * 1. We extract the swp_entry_t to the stack, allowing
->  	 *    zswap_writeback_entry() to pin the swap entry and
-> -	 *    then validate the zwap entry against that swap entry's
-> +	 *    then validate the zswap entry against that swap entry's
->  	 *    tree using pointer value comparison. Only when that
->  	 *    is successful can the entry be dereferenced.
->  	 *
-> -- 
-> 2.39.5
+> Not necessarily for this patch, we can add it later, but I kinda liked the
+> comment that briefly explained how the context is used. Maybe having
+> something along these lines could be helpful?
+
+I have changed it thus:
+
+
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -3885,6 +3885,22 @@ extern void check_class_changed(struct r
+ extern struct balance_callback *splice_balance_callbacks(struct rq *rq);
+ extern void balance_callbacks(struct rq *rq, struct balance_callback *head);
+ 
++/*
++ * The 'sched_change' pattern is the safe, easy and slow way of changing a
++ * task's scheduling properties. It dequeues a task, such that the scheduler
++ * is fully unaware of it; at which point its properties can be modified;
++ * after which it is enqueued again.
++ *
++ * Typically this must be called while holding task_rq_lock, since most/all
++ * properties are serialized under those locks. There is currently one
++ * exception to this rule in sched/ext which only holds rq->lock.
++ */
++
++/*
++ * This structure is a temporary, used to preserve/convey the queueing state
++ * of the task between sched_change_begin() and sched_change_end(). Ensuring
++ * the task's queueing state is idempotent across the operation.
++ */
+ struct sched_change_ctx {
+ 	struct task_struct	*p;
+ 	int			flags;
 
