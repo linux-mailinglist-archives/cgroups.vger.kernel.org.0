@@ -1,101 +1,101 @@
-Return-Path: <cgroups+bounces-10609-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10610-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42BBABC5EB5
-	for <lists+cgroups@lfdr.de>; Wed, 08 Oct 2025 18:01:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B437ABC643E
+	for <lists+cgroups@lfdr.de>; Wed, 08 Oct 2025 20:18:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4F1E407015
-	for <lists+cgroups@lfdr.de>; Wed,  8 Oct 2025 15:46:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B624C19E0AC7
+	for <lists+cgroups@lfdr.de>; Wed,  8 Oct 2025 18:18:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6960924DCE2;
-	Wed,  8 Oct 2025 15:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F8122BE7A3;
+	Wed,  8 Oct 2025 18:17:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="geQ2wtZ8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GUt9NBVm"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C560E19E7F7
-	for <cgroups@vger.kernel.org>; Wed,  8 Oct 2025 15:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD2D2BDC32;
+	Wed,  8 Oct 2025 18:17:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759938399; cv=none; b=hIHMaGxxchrtnldNHidwDkPEKX5uNO3N9EjM5lpKpCfO6uaKHjcBxrR2AOz0X2INn6D2VuYYML8sL31WKpFCRDtZGA7YskaZ/8+qBKP/7TfTQ3x8H0cW5xRC1uhDK5RCjUjtgLQntPiihT26qLEcxiNBwXqe1zJaGmjsnoBa/jo=
+	t=1759947477; cv=none; b=JaVB2tzkzYnlJt2b+3FNPmNK5UaPKhEuBJ2/eb7F8TKsSDOk7Z1RMpp+ScpQWn0YYCCNr8lMogTBhIwMWFglaNg5V4czHEmNV1FOXs+UdOtcUWSyo+3q/vrA+sTXJbKWjRSMwXlwTdEz0P74Sm8nl+yhnIXv+F6Mr/Yvmz9c8R8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759938399; c=relaxed/simple;
-	bh=uALLMCIlyUutYsvNGQy4FW1LpvrsNjRGPi60Z2f5MyY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J/lXDJkGNuoZaNPaxeD/885C5sYU95Eek30pIPD9skwIAGGPfIlDVUX7QOCRvNoQeLkJ+mB4TgoTy+rhtaaOTqdSAQeRz5vbmGgqgw41zE/LpPu08VoUwFZjU06zVUWLzv5HTkIh9oApwkilhi31QCPlvTDGB1zF+jjzJbxNyZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=geQ2wtZ8; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-9379a062ca8so277189839f.2
-        for <cgroups@vger.kernel.org>; Wed, 08 Oct 2025 08:46:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1759938397; x=1760543197; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uALLMCIlyUutYsvNGQy4FW1LpvrsNjRGPi60Z2f5MyY=;
-        b=geQ2wtZ8KJ9YITT/cEuGV+iC6GYlyag18v1TitMfkDN6Vaubsqrt64/zOOh3J0QzJJ
-         byOT0AYzdXsWOPkrjbiHLSq/1WYwJrRPjMtNiAlDdmQsNOlklt3ib8w3vUPpsrjaYC9L
-         c1yhqCLy+da15g4SnNAheHs0+L9zov4yK/g5cZpbiK4xulcqi5xwKAIq9Kc+FWXKzGri
-         ZIerPtpEt4Mrj1yIj1MpDjbt3P3bDmd6drVktxd9vG551XznbAKtanafEy7YzdajiI3T
-         kC3Oi7cKz5MUx4tDv99y1Dw14i7JJkcEQ3cp+sbeUDth5fmW8R4hA6qJtHwr+OIP+1V+
-         ybyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759938397; x=1760543197;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uALLMCIlyUutYsvNGQy4FW1LpvrsNjRGPi60Z2f5MyY=;
-        b=dys6DgJlW8KQWnZ5/pUgbSctj8LCEzmpG7u2aBJOVx3hF6RC2OOCcig6MHkQtbZENo
-         dEP8w5kHi8COslPVvE9PkwIGMM2CIrHvhiFkJvMT2vzwWw4OUE2troTS33/bAAyhLhm2
-         G2eDa1cCcKH5uYrEE+EoEnQRGwodei2TLg8nfyA+VnXY9vr2UCM2CqDHN8U7qtecK/CB
-         a9p9qV4vKDALBTLP5B2nhgKu5wrseVIf0kRp7YmXfBYCDPmgC0of+yI7KiwPhDh9zGqX
-         0zVV4Si6uNQDyeq8T0nNq5z+PeGplDlQ1xTmJ7O+IS57k+U7mzaKdOllxBXYh/UMiEyI
-         rWOg==
-X-Forwarded-Encrypted: i=1; AJvYcCXedCu0pqatvvg5UlqD0LjwRlLmf25uEbUn959804I/pgunR4aTF7Y2e+fj3N2SKO7R+QtRPMu6@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzz0JcWOQQ0jisEProt6H/QHk5TK31LoMMqNL/vPVi79j3wCkX1
-	mBxaRansYvug8tJ2oEjjuRZ60eBnZxHYXKKg1Ed4IE4+gQjHSyV/29KAl649UmI/PqMU3xo+/IW
-	omlzB2mfBd1xqcC+jlpwNi4smastU0KM=
-X-Gm-Gg: ASbGnctBOsK7DVPH24B64cJX/bVsHsaSbXUu6vH7leSgKaltBu5KmYn/dzz6jaZBIF0
-	tY90brPhqIUpddGLyBoxuSxxt6wb7hENgKqMhukTI58JllgSkpvbdnyGtlM9zmZXpqPMdtY0sMe
-	G/4G7ICXrD5sG2c47O7obvciYEJL1xfphPZLeIZZkiqMTYvEvsdmOuOAJTWTnFBGgQoUfxw9ja8
-	fuwzJXlsSz44Z7k9fcWMEaUnM7z
-X-Google-Smtp-Source: AGHT+IGYka6zTA7SFt5YtxUw1vvapwQ7jyiIHuZuDS5NfBTlBB/gXvXX1CBMTIglIFvrBhIAspJhAwA0nexvYHYEYgI=
-X-Received: by 2002:a05:6602:26c3:b0:92d:99d5:6a00 with SMTP id
- ca18e2360f4ac-93bd1960533mr454130339f.9.1759938396522; Wed, 08 Oct 2025
- 08:46:36 -0700 (PDT)
+	s=arc-20240116; t=1759947477; c=relaxed/simple;
+	bh=4aQzZE4dPKYLC7wE9e+3mYUgK3sZmtIL+KSSPfosfqc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AUHMQXV9xvk6mUqbADeS7rK+R0U40X8mcBP4NNIsZXJqpJM9Xp7TCHDvflWY1grGYqSVLNZ49QlOzvg0r9ni2uKHlT0oYKR7LEsmAzUdCbnLGbPOJ8WL0CVats7crbnZEdbG2cxIL8Y/61n+p87UQGhxOb9AD/iLiIw7Xb6f/yw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GUt9NBVm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F88AC4CEE7;
+	Wed,  8 Oct 2025 18:17:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759947476;
+	bh=4aQzZE4dPKYLC7wE9e+3mYUgK3sZmtIL+KSSPfosfqc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GUt9NBVmokoT4ZHWQS2ZfEzYW9YwNbuP1F8iFd9oXTaOge9DACR/POTm/b7hf7nTE
+	 D8NeRBhkov7umkM+ojr4jlvj5K5NMZ2jC1tTJUGLS6APxkkFjdJrvD7R6eSz26xPUy
+	 OSwziBUZXFcoLJIyC7ffGhxPeJm0XRHHnUjtVHB2pV6MDugaF3Z02jU9/fquKH+XES
+	 kVm4CQhouvOLTs6je5l1/iKeXfqH8aPwKl0DVwfP31DtHo0R9u6V1KARZi1qBLlIF1
+	 rFkJuO/nZENaLaTWVGNKuJoCf9QYxinbpR1Hu84vXb8otD+PMj4mbhMRdPZE1mFAUJ
+	 vyv2kaNgm3NEg==
+Date: Wed, 8 Oct 2025 08:17:55 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Matyas Hurtik <matyas.hurtik@cdn77.com>
+Cc: Daniel Sedlak <daniel.sedlak@cdn77.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Neal Cardwell <ncardwell@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	David Ahern <dsahern@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org,
+	netdev@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH v5] memcg: expose socket memory pressure in a cgroup
+Message-ID: <aOaq07jS60mHYGBe@slm.duckdns.org>
+References: <20251007125056.115379-1-daniel.sedlak@cdn77.com>
+ <aOVxrwQ8MHbaRk6J@slm.duckdns.org>
+ <6cbf24f6-bd05-45d0-9bc8-5369f3708d02@cdn77.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251003203851.43128-1-sj@kernel.org> <20251003203851.43128-3-sj@kernel.org>
-In-Reply-To: <20251003203851.43128-3-sj@kernel.org>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Wed, 8 Oct 2025 08:46:25 -0700
-X-Gm-Features: AS18NWB7B1gBQLMeSyYiISK3rWj8HDsB0McGNEALt0lUkrKO71NOSeQ_6dlZKw8
-Message-ID: <CAKEwX=Pbg=O5MpZk9s8pCZo807ZmGn8N3WoALykbz68=ggb1mw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] mm/zswap: fix typos: s/zwap/zswap/
-To: SeongJae Park <sj@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Chengming Zhou <chengming.zhou@linux.dev>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Muchun Song <muchun.song@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Yosry Ahmed <yosry.ahmed@linux.dev>, cgroups@vger.kernel.org, 
-	kernel-team@meta.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6cbf24f6-bd05-45d0-9bc8-5369f3708d02@cdn77.com>
 
-On Fri, Oct 3, 2025 at 1:38=E2=80=AFPM SeongJae Park <sj@kernel.org> wrote:
->
-> As the subject says.
->
-> Signed-off-by: SeongJae Park <sj@kernel.org>
+On Wed, Oct 08, 2025 at 02:46:23PM +0200, Matyas Hurtik wrote:
+> Hello,
+> > I'm not against going 1) but let's not do a separate file for this. Can't
+> > you do memory.stat.local?
+> 
+> I can't find memory.stat.local, so should we create it and add the counter
+> as an entry there?
 
-Acked-by: Nhat Pham <nphamcs@gmail.com>
+Yes.
+
+> Regarding the code, is there anything you would like us to improve? I had to
+> rewrite it a bit
+> 
+> because of the recent changes.
+
+I think memcg guys will have much better idea on the actual code. Let's wait
+for them to chime in.
+
+Thanks.
+
+-- 
+tejun
 
