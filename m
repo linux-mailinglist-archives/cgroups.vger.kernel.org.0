@@ -1,68 +1,67 @@
-Return-Path: <cgroups+bounces-10605-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10606-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58A97BC5553
-	for <lists+cgroups@lfdr.de>; Wed, 08 Oct 2025 15:58:46 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3D4CBC5572
+	for <lists+cgroups@lfdr.de>; Wed, 08 Oct 2025 16:02:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 125133C11B6
-	for <lists+cgroups@lfdr.de>; Wed,  8 Oct 2025 13:58:45 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B2ECE4E9FD1
+	for <lists+cgroups@lfdr.de>; Wed,  8 Oct 2025 14:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964F9288C34;
-	Wed,  8 Oct 2025 13:58:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6D528A1F1;
+	Wed,  8 Oct 2025 14:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SdaM1Ygh"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="a8Fh4yBU"
 X-Original-To: cgroups@vger.kernel.org
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF0BD235C01;
-	Wed,  8 Oct 2025 13:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1006B283FCD;
+	Wed,  8 Oct 2025 14:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759931921; cv=none; b=AulX8vsVUvlvDt6FUWOY6ekak0csyCtpBoFROnjlWwRxsKrkacUAFE4ezGEtxfPjxgXIcpuBWY5+0IX+wKXa7uU7WU4q2brCsMf/IYsVO05/LZgRzNQMMYrAE2ko3RjuQ+kbksbXZnqtkkFOstysLyEolCNvpIFMLXzYh++SsD4=
+	t=1759932150; cv=none; b=IFvcec7ki5AZGVZpfmhFsDQx/iqT96tDXDfXZGhckR5X9rvHnu8WLBUaAuCn2E4eWOlOAwjzCczMb2A7QmHGJqQkY6FPUWSbIMtHAx+e/06zekXRxwnHNzB+GLsKl7Hpn+zF/W5Q1ONU3As/N98qawxPVBEZs6CDUXkOtNNOBDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759931921; c=relaxed/simple;
-	bh=bIS3CECsL9SwkAipfM5moGJaHurPrBbwODg4g5wtQHM=;
+	s=arc-20240116; t=1759932150; c=relaxed/simple;
+	bh=opMqdbRYxTnREhIqNTP3W4DXVGxMYhP+lE/4l3NC2co=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XJN1pqGDUlW1zyewzIOS7QOpwo3d9KLns7HGlb4IZGZXfVW21fAnFb92SLdEvpG8xD9hJV0RTJ5svUcC6XTf2D70Clxc1cIQdB5Blx0XBxjvPCkZhmJMSkTFajL3kAujhYSNox4djpz2ALuG+GXeS3efXEl2D6Gxa1Krt7yeISs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=SdaM1Ygh; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=VKZ3x7lktZtBnIDptJMNBXpPobrk1It2ghz52BU88In+AX0GwXMAypKxnaHe9RbKOty1GDUMspS7TG50ieuhoCbQZXfOzkRNZZRLYIrUHn1dOevtPTMhlWlizOuY+AANF0iAkgtc0Ciz5mYjEysQh0+zvQtGk8gCRHTtdRWyF5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=a8Fh4yBU; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ipkIo97WbfBXRfA6Awwdt/Zt8vCBI383wL+H18F9oN8=; b=SdaM1Ygh/wofs08waEwgi2Ygfh
-	aowIUPM0qhNBaW7nEsPjVFpsZLgqsDebSdN4+zgzNR51oTyD08eYfhgDK++m5T3vPg6V1off2CPYA
-	HyIS+grnasQCBoViBmGQz/Lv5cOfikc8MYJ5jJ1JiBeXef4FJR4tuuqcl0OtOvdQJbaHo1iuv37iT
-	cDw71CqJyI3IxwSe+PSwjV9uXMQM1o1QdumtEQQMoLcR1mcMbak4i/XhQ4ACOO3KLOTKAIXUS4Wtx
-	wrjx+lMFVd+oTOiFa03/v8NCxYSgG7nlfMAF9xnJm4UIjK7bCFNp9yg5o7p/mNRSZm7cb6SSIfvdj
-	Sve5RPZw==;
+	bh=NuyOa3GaH25lZvs5J1BAadBluclsKsG+L+nNKt9cAIg=; b=a8Fh4yBU3cHoJJlnSR+usd/EJu
+	JnHBk3Ai+HBLPm3GtaV5YJFq6LdxG6qSBmbDSwseKQf7Do/7v3XdLirPhZTOTZSjuyLACQ/En6Luv
+	A0F6XQfgKtxcHkcWR8tiiYFWN/W+FQ07XqiHD5ch8cVQySkC1QWd6Rrplv+zi2FpuiVXiFtZljZXs
+	vOZ38j4/L1S4q0SYq7ypWHPJqyYATtTLgut7CsCcGti/J4GQgvishBUaaIVQo4yIdiwnhIHEDK9oi
+	2r3zF8PYtJyNhWdy2ehEJtlm1WNfCbVyxUy+LekcsCa4Kh86l4nQdfgKLil0NGk92QKZTtD2VUGfG
+	cAVUkDMw==;
 Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v6UgY-00000006LBg-03HX;
-	Wed, 08 Oct 2025 13:58:31 +0000
+	id 1v6UkG-00000006NQe-40hM;
+	Wed, 08 Oct 2025 14:02:22 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id BBA19300400; Wed, 08 Oct 2025 15:58:30 +0200 (CEST)
-Date: Wed, 8 Oct 2025 15:58:30 +0200
+	id B7FE8300462; Wed, 08 Oct 2025 16:02:21 +0200 (CEST)
+Date: Wed, 8 Oct 2025 16:02:21 +0200
 From: Peter Zijlstra <peterz@infradead.org>
-To: Vincent Guittot <vincent.guittot@linaro.org>
+To: Valentin Schneider <vschneid@redhat.com>
 Cc: tj@kernel.org, linux-kernel@vger.kernel.org, mingo@kernel.org,
-	juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, longman@redhat.com, hannes@cmpxchg.org,
 	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
 	changwoo@igalia.com, cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de,
-	Joel Fernandes <joelagnelf@nvidia.com>
-Subject: Re: [RFC][PATCH 2/3] sched: Add support to pick functions to take rf
-Message-ID: <20251008135830.GW4067720@noisy.programming.kicks-ass.net>
-References: <20251006104652.630431579@infradead.org>
- <20251006105453.648473106@infradead.org>
- <CAKfTPtCC3QF5DBn0u2zpYgaCWcoP2nXcvyKMf-aGomoH08NPbA@mail.gmail.com>
+	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de
+Subject: Re: [PATCH 01/12] sched: Employ sched_change guards
+Message-ID: <20251008140221.GX4067720@noisy.programming.kicks-ass.net>
+References: <20251006104402.946760805@infradead.org>
+ <20251006104526.613879143@infradead.org>
+ <xhsmhecrehcmz.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -71,25 +70,22 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtCC3QF5DBn0u2zpYgaCWcoP2nXcvyKMf-aGomoH08NPbA@mail.gmail.com>
+In-Reply-To: <xhsmhecrehcmz.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 
-On Wed, Oct 08, 2025 at 03:16:58PM +0200, Vincent Guittot wrote:
-
-> > +static struct task_struct *
-> > +fair_server_pick_task(struct sched_dl_entity *dl_se, struct rq_flags *rf)
-> >  {
-> > -       return pick_next_task_fair(rq, prev, NULL);
+On Tue, Oct 07, 2025 at 06:58:44PM +0200, Valentin Schneider wrote:
+> On 06/10/25 12:44, Peter Zijlstra wrote:
+> > @@ -7391,52 +7391,42 @@ void rt_mutex_setprio(struct task_struct
+> >       if (prev_class != next_class && p->se.sched_delayed)
+> >               dequeue_task(rq, p, DEQUEUE_SLEEP | DEQUEUE_DELAYED | DEQUEUE_NOCLOCK);
+> >
+> > -	queued = task_on_rq_queued(p);
+> > -	running = task_current_donor(rq, p);
 > 
-> The special case of a NULL rf pointer is used to skip
-> sched_balance_newidle() at the end of pick_next_task_fair() in the
-> pick_next_task() slo path when prev_balance has already it. This means
-> that it will be called twice if prev is not a fair task.
+> 
+> I'm not sure how that plays with sched_ext, but for the "standard" change
+> pattern such as this one & the others in core.c, that becomes a
+> task_current() per sched_change_begin(). I'm guessing we want to make
+> sched_change_begin() use task_current_donor() instead?
 
-Oh right. I suppose we can simply remove balance_fair.
-
-> While reviewing this series, I also noticed an older issue that we
-> have with check pelt lost idle time [1]
-> [1] https://lore.kernel.org/all/20251008131214.3759798-1-vincent.guittot@linaro.org/
-
-Let me go have a look.
+Argh yeah, rebase fail. Let me go fix.
 
