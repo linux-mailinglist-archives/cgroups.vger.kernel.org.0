@@ -1,105 +1,117 @@
-Return-Path: <cgroups+bounces-10613-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10614-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B502BC6986
-	for <lists+cgroups@lfdr.de>; Wed, 08 Oct 2025 22:34:39 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD101BC742E
+	for <lists+cgroups@lfdr.de>; Thu, 09 Oct 2025 05:03:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6925319E4A87
-	for <lists+cgroups@lfdr.de>; Wed,  8 Oct 2025 20:35:02 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DD5624F0D9F
+	for <lists+cgroups@lfdr.de>; Thu,  9 Oct 2025 03:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E03527A103;
-	Wed,  8 Oct 2025 20:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49834212556;
+	Thu,  9 Oct 2025 03:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Le/qC5xJ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VyIJmssX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3433315CD74;
-	Wed,  8 Oct 2025 20:34:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127DA1FF5E3
+	for <cgroups@vger.kernel.org>; Thu,  9 Oct 2025 03:03:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759955674; cv=none; b=OzDj1l+N5ftDksnyFe/RT600sgWGuj2e3ieYmy1FWKTr6Zl5eKtmUurQvGlwkG7K/wDAxAE51hqUVfh94AtPUru2t+VFHvxEPptFBCc2HaN7RLZgjsRWHzIOerSwj8RSOPeMWGxEM6ndOn5wn2lpX9G42G1qmC4ZDN1lwiAuQ7w=
+	t=1759978984; cv=none; b=Dztar7V4e/uNC9gxRZ6LnGggn+km9fC8Ar8MvLMqsGJMKLKlSGhcw9iZVAP3tmuzFmmR0JfBAidb0G0wEf5c0CHrRsIzYCsouc9D09Vdl8qHHPtyxkRDJS3slqTz3Zl5BcqumXRU1vqRKL6tQbEvCwQI9Ue3t1NM0JtYEy7QwsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759955674; c=relaxed/simple;
-	bh=uOrnQlLlM/dsv+7QQ5bHgedTYfgtJ2zrymfXzVq6AFw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iY2TdMfL0c9bRaEJB0Ig31H5yaqAeD2nBv8RosOmmvDfRhH297f3GiJqTRS9pEMBy1ug+POUIBGITGTroEj3F/k1cfewNU3bmE3bsIiwGmAUm+1/hSoiO/CDE8vY8GV6JtAbNf1ikM5vCX/4Ih2xUrv0fRkOjCgD6KbLB8LNjkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Le/qC5xJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85063C4CEE7;
-	Wed,  8 Oct 2025 20:34:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759955673;
-	bh=uOrnQlLlM/dsv+7QQ5bHgedTYfgtJ2zrymfXzVq6AFw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Le/qC5xJF0vtw1r+NaxmhFBRG/BlENPk7cD6UDO3bfLGWG71v02OuYDWUMVPUzSfD
-	 G1MAVd00R02q6iG2NoS2vbpfamzC4ZduSW+RuXmvLQ4bGGvDA010zONkTbh5DELMdP
-	 RIaKgENya05Id10RkQcKOotWgLPZT8B6opuq+ncGav71sVm1e9xMsz7heeThwU14O8
-	 tPCtzJAlm3gWi49szm+KhfTSDLbIVmfqCNAPR6wdDOWH/1Wx1FO+56H1KAIXhKC5YD
-	 WQvMqcEfeNipOAjGpKP/yjKC+2pa8+dcUKeIshCm6wMmGKSfxYLoFLbgrF3ICAyx/P
-	 WxSctpmE/RCzg==
-Date: Wed, 8 Oct 2025 10:34:32 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	mingo@kernel.org, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
-	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
-	changwoo@igalia.com, cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de,
-	Joel Fernandes <joelagnelf@nvidia.com>
-Subject: Re: [RFC][PATCH 2/3] sched: Add support to pick functions to take rf
-Message-ID: <aObK2MfxPyFcovwr@slm.duckdns.org>
-References: <20251006104652.630431579@infradead.org>
- <20251006105453.648473106@infradead.org>
- <CAKfTPtCC3QF5DBn0u2zpYgaCWcoP2nXcvyKMf-aGomoH08NPbA@mail.gmail.com>
- <20251008135830.GW4067720@noisy.programming.kicks-ass.net>
- <CAKfTPtDG9Fz8o1TVPe3w2eNA+Smhmq2utSA_c6X4GJJgt_dAJA@mail.gmail.com>
+	s=arc-20240116; t=1759978984; c=relaxed/simple;
+	bh=jXqYSB6FAdmUnZFoKmnXNwGWyrXkXVtJuSNystAZJCQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T2+s4+HSA/obnTQxhYpZJWOmucIoCfonggCNF+wWjdqJZtdxW9hRs/SDRUKuL6aYH9lnUKnaJXex0kjgEfqSSBqwEhfh2PyuD7z3aWsQ9h8Op48s/5pa+6MN5hZopEeYrpk8nZwxxnBYNku2/pivVriyfEiTdQ3bpL05pgLpTHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VyIJmssX; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7e3de261-0421-439e-a763-7f2895c2496f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759978978;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5YEIJe1l7uPPwXCLKi51on2x3YEMf9V1p1qQ0Ogt3bY=;
+	b=VyIJmssXWpo4mfVElfR8iHujbljan6VThvQAVU7woPIpircc2b+FrP//5zchULofz5Stjn
+	Vty8Ap7MH+g+82dkjpSBtZpApBVxWiDXh95a/dWrMrBWNyrHXlpzmdu6C8xKMGwiHtavco
+	tNyFnoSdV0823jYmFGf9N6JSVGWtXew=
+Date: Thu, 9 Oct 2025 11:02:50 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDG9Fz8o1TVPe3w2eNA+Smhmq2utSA_c6X4GJJgt_dAJA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] mm/zswap: fix typos: s/zwap/zswap/
+To: SeongJae Park <sj@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Muchun Song <muchun.song@linux.dev>, Nhat Pham <nphamcs@gmail.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Yosry Ahmed <yosry.ahmed@linux.dev>,
+ cgroups@vger.kernel.org, kernel-team@meta.com, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org
+References: <20251003203851.43128-1-sj@kernel.org>
+ <20251003203851.43128-3-sj@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20251003203851.43128-3-sj@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
-
-On Wed, Oct 08, 2025 at 05:22:42PM +0200, Vincent Guittot wrote:
-> On Wed, 8 Oct 2025 at 15:58, Peter Zijlstra <peterz@infradead.org> wrote:
-> > On Wed, Oct 08, 2025 at 03:16:58PM +0200, Vincent Guittot wrote:
-> >
-> > > > +static struct task_struct *
-> > > > +fair_server_pick_task(struct sched_dl_entity *dl_se, struct rq_flags *rf)
-> > > >  {
-> > > > -       return pick_next_task_fair(rq, prev, NULL);
-> > >
-> > > The special case of a NULL rf pointer is used to skip
-> > > sched_balance_newidle() at the end of pick_next_task_fair() in the
-> > > pick_next_task() slo path when prev_balance has already it. This means
-> > > that it will be called twice if prev is not a fair task.
-> >
-> > Oh right. I suppose we can simply remove balance_fair.
+On 2025/10/4 04:38, SeongJae Park wrote:
+> As the subject says.
 > 
-> That was the option that I also had in mind but this will change from
-> current behavior and I'm afraid that sched_ext people will complain.
-> Currently, if prev is sched_ext, we don't call higher class.balance()
-> which includes the fair class balance_fair->sched_balance_newidle.  If
-> we now always call sched_balance_newidle() at the end
-> pick_next_task_fair(), we will try to pull a fair task at each
-> schedule between sched_ext tasks
+> Signed-off-by: SeongJae Park <sj@kernel.org>
 
-If we pass in @prev into pick(), can't pick() decide whether to newidle
-balance or not based on that?
+Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
 
-Thanks.
-
--- 
-tejun
+> ---
+>   mm/memcontrol.c | 2 +-
+>   mm/zswap.c      | 4 ++--
+>   2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 69c970554e85..74b1bc2252b6 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5421,7 +5421,7 @@ bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
+>    * @size: size of compressed object
+>    *
+>    * This forces the charge after obj_cgroup_may_zswap() allowed
+> - * compression and storage in zwap for this cgroup to go ahead.
+> + * compression and storage in zswap for this cgroup to go ahead.
+>    */
+>   void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size)
+>   {
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 80619c8589a7..f6b1c8832a4f 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -879,7 +879,7 @@ static bool zswap_compress(struct page *page, struct zswap_entry *entry,
+>   	 * acomp instance, then get those requests done simultaneously. but in this
+>   	 * case, zswap actually does store and load page by page, there is no
+>   	 * existing method to send the second page before the first page is done
+> -	 * in one thread doing zwap.
+> +	 * in one thread doing zswap.
+>   	 * but in different threads running on different cpu, we have different
+>   	 * acomp instance, so multiple threads can do (de)compression in parallel.
+>   	 */
+> @@ -1128,7 +1128,7 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
+>   	 *
+>   	 * 1. We extract the swp_entry_t to the stack, allowing
+>   	 *    zswap_writeback_entry() to pin the swap entry and
+> -	 *    then validate the zwap entry against that swap entry's
+> +	 *    then validate the zswap entry against that swap entry's
+>   	 *    tree using pointer value comparison. Only when that
+>   	 *    is successful can the entry be dereferenced.
+>   	 *
 
