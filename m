@@ -1,237 +1,143 @@
-Return-Path: <cgroups+bounces-10622-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10623-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AC41BCA00B
-	for <lists+cgroups@lfdr.de>; Thu, 09 Oct 2025 18:10:10 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54192BCA143
+	for <lists+cgroups@lfdr.de>; Thu, 09 Oct 2025 18:15:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B38753439C3
-	for <lists+cgroups@lfdr.de>; Thu,  9 Oct 2025 16:07:51 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C046A342A6C
+	for <lists+cgroups@lfdr.de>; Thu,  9 Oct 2025 16:12:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4DC23C4F1;
-	Thu,  9 Oct 2025 16:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B50226CFC;
+	Thu,  9 Oct 2025 16:06:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vQ6Y2Nc3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZUm0GTpV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BCCA230BEC;
-	Thu,  9 Oct 2025 16:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEAF4225A29
+	for <cgroups@vger.kernel.org>; Thu,  9 Oct 2025 16:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760025612; cv=none; b=Y9agvMkqhtpnCUC2Fb7hRjVfdOjnijWz7MBiMrWGaH25wI0qmNVv0WFHoigJ79vVRsB0fPIQq7RVoxmZ0+mO7oxltcGY3bEglmrovdq5Gy/4zqnJabLPp4Q3yQieMEZPm6ajlGMh2+vr3zEjSMU4zgxIVRTIbVs/SwJBtonr1TU=
+	t=1760025985; cv=none; b=T40QaLPObyxGEm0TEF1SfSPiR4wEmtUQI0zb1vA7OYpalAdOPUPRX/EI70mZVrWX5Jm1YAmQu000RjF6tOxprJJrBmfegP8mCIrJPor9P/iKeFFJuFCQ6C9u0dq04ZVW3lSS5s089f3kVbyaClxrilm2lh7Z1rIIo5bGCSjCVNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760025612; c=relaxed/simple;
-	bh=NMWhqpztKsNMnHx4nh4GQe9VPNSbedFScB58mPNOEKA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KIB5kHNZKVuiblWOjdGFS5SuNJIJqmfEer2ceQmYVjelwK32Yq2oNnDh7qnb/MicTg7Gez2boMZvNkt9qSqiTtxx60u9stRFjlGggCheqhqBs+/C8/59PHBq60/OcSs3iT3+azvI/r8YvMkGy+HANznsMcmB5nvVkE4DBYKcAgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vQ6Y2Nc3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9691BC4CEF7;
-	Thu,  9 Oct 2025 16:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760025612;
-	bh=NMWhqpztKsNMnHx4nh4GQe9VPNSbedFScB58mPNOEKA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vQ6Y2Nc3E5Ker5SrKnQcpTm/0pxfnVziosQKN71skA0fbcTOMC/UX8wN6aVSHbpRb
-	 tFAqYQcwV9Qh4Jb6hJzHfIgN5eJaV6A2xOWzPUq1T1JffduBWxjc6VwL78T6QESs8M
-	 RqagDqo7IksaEvodbezhi/hwnSyyaIKBvm+76GbFvMlLzE2rR+0HXxjNTCS/0wHCcS
-	 LJChqPJsTjr5qys7U872ZpVVauSddl6bhPwYyDlFX224Zuwk93oLdvazJj3qhxSC/L
-	 EqgRSBAmMa0Als1VWWsCKRPOQkE2FozJzPhwBlOvoV9Z7wVu/avzWJ0wEdhG3TcxB5
-	 2SB3Ig4BxsKtQ==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Dan Schatzberg <dschatzberg@meta.com>,
-	Tejun Heo <tj@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	cgroups@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.17-6.6] bpf: Do not limit bpf_cgroup_from_id to current's namespace
-Date: Thu,  9 Oct 2025 11:55:40 -0400
-Message-ID: <20251009155752.773732-74-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251009155752.773732-1-sashal@kernel.org>
-References: <20251009155752.773732-1-sashal@kernel.org>
+	s=arc-20240116; t=1760025985; c=relaxed/simple;
+	bh=NcO+P8kozAojpKsaknXrA27jXpe71fCctjMFmkzDnRQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N2AdNjhBfWwDAf8nfQzUOAFlicql0UzAYgslvQgKDG1a/8aE420PCtpEWy+C/ROAnyOODUGpwCMniwKEe4AjfGHDMFfYWNViC/8sOCQGfaH7YOJe6PjjU9CD+6nPohIKC82YdS5B/dQ0BqO95u1jFY26mfHPZGP9gaqLA3Qn/K8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZUm0GTpV; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 9 Oct 2025 09:06:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1760025980;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KukbsMbl2huYRhlfoo2l0mDAbmiuXFQP1BtPelYVi10=;
+	b=ZUm0GTpVawkjiuJwQRpZJGGk3dlnInR8BQqp+avz857kSA9AMtwUiJc7SoyzfdEfczhfgI
+	t4YvP0k8b3mNJ0nUQGPRRxpmwogQOXrODl08eBC2UrQ9b2x+HSYz41SR2yCPRxhwqnizPK
+	1dbY1/nAOQlraza2002+CzXHfj4NQzw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Daniel Sedlak <daniel.sedlak@cdn77.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Neal Cardwell <ncardwell@google.com>, 
+	Kuniyuki Iwashima <kuniyu@google.com>, David Ahern <dsahern@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org, 
+	netdev@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
+	Tejun Heo <tj@kernel.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Matyas Hurtik <matyas.hurtik@cdn77.com>
+Subject: Re: [PATCH v5] memcg: expose socket memory pressure in a cgroup
+Message-ID: <tr7hsmxqqwpwconofyr2a6czorimltte5zp34sp6tasept3t4j@ij7acnr6dpjp>
+References: <20251007125056.115379-1-daniel.sedlak@cdn77.com>
+ <87qzvdqkyh.fsf@linux.dev>
+ <13b5aeb6-ee0a-4b5b-a33a-e1d1d6f7f60e@cdn77.com>
+ <87o6qgnl9w.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.17.1
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o6qgnl9w.fsf@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+On Thu, Oct 09, 2025 at 08:32:27AM -0700, Roman Gushchin wrote:
+> Daniel Sedlak <daniel.sedlak@cdn77.com> writes:
+> 
+> > Hi Roman,
+> >
+> > On 10/8/25 8:58 PM, Roman Gushchin wrote:
+> >>> This patch exposes a new file for each cgroup in sysfs which is a
+> >>> read-only single value file showing how many microseconds this cgroup
+> >>> contributed to throttling the throughput of network sockets. The file is
+> >>> accessible in the following path.
+> >>>
+> >>>    /sys/fs/cgroup/**/<cgroup name>/memory.net.throttled_usec
+> >> Hi Daniel!
+> >> How this value is going to be used? In other words, do you need an
+> >> exact number or something like memory.events::net_throttled would be
+> >> enough for your case?
+> >
+> > Just incrementing a counter each time the vmpressure() happens IMO
+> > provides bad semantics of what is actually happening, because it can
+> > hide important details, mainly the _time_ for how long the network
+> > traffic was slowed down.
+> >
+> > For example, when memory.events::net_throttled=1000, it can mean that
+> > the network was slowed down for 1 second or 1000 seconds or something
+> > between, and the memory.net.throttled_usec proposed by this patch
+> > disambiguates it.
+> >
+> > In addition, v1/v2 of this series started that way, then from v3 we
+> > rewrote it to calculate the duration instead, which proved to be
+> > better information for debugging, as it is easier to understand
+> > implications.
+> 
+> But how are you planning to use this information? Is this just
+> "networking is under pressure for non-trivial amount of time ->
+> raise the memcg limit" or something more complicated?
+> 
+> I am bit concerned about making this metric the part of cgroup API
+> simple because it's too implementation-defined and in my opinion
+> lack the fundamental meaning.
+> 
+> Vmpressure is calculated based on scanned/reclaimed ratio (which is
+> also not always the best proxy for the memory pressure level), then
+> if it reaches some level we basically throttle networking for 1s.
+> So it's all very arbitrary.
+> 
+> I totally get it from the debugging perspective, but not sure about
+> usefulness of it as a permanent metric. This is why I'm asking if there
+> are lighter alternatives, e.g. memory.events or maybe even tracepoints.
+> 
 
-[ Upstream commit 2c895133950646f45e5cf3900b168c952c8dbee8 ]
+I also have a very similar opinion that if we expose the current
+implementation detail through a stable interface, we might get stuck
+with this implementation and I want to change this in future.
 
-The bpf_cgroup_from_id kfunc relies on cgroup_get_from_id to obtain the
-cgroup corresponding to a given cgroup ID. This helper can be called in
-a lot of contexts where the current thread can be random. A recent
-example was its use in sched_ext's ops.tick(), to obtain the root cgroup
-pointer. Since the current task can be whatever random user space task
-preempted by the timer tick, this makes the behavior of the helper
-unreliable.
+Coming back to what information should we expose that will be helpful
+for Daniel & Matyas and will be beneficial in general. After giving some
+thought, I think the time "network was slowed down" or more specifically
+time window when mem_cgroup_sk_under_memory_pressure() returns true
+might not be that useful without the actual network activity. Basically
+if no one is calling mem_cgroup_sk_under_memory_pressure() and doing
+some actions, the time window is not that useful.
 
-Refactor out __cgroup_get_from_id as the non-namespace aware version of
-cgroup_get_from_id, and change bpf_cgroup_from_id to make use of it.
+How about we track the actions taken by the callers of
+mem_cgroup_sk_under_memory_pressure()? Basically if network stack
+reduces the buffer size or whatever the other actions it may take when
+mem_cgroup_sk_under_memory_pressure() returns, tracking those actions
+is what I think is needed here, at least for the debugging use-case.
 
-There is no compatibility breakage here, since changing the namespace
-against which the lookup is being done to the root cgroup namespace only
-permits a wider set of lookups to succeed now. The cgroup IDs across
-namespaces are globally unique, and thus don't need to be retranslated.
-
-Reported-by: Dan Schatzberg <dschatzberg@meta.com>
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://lore.kernel.org/r/20250915032618.1551762-2-memxor@gmail.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-LLM Generated explanations, may be completely bogus:
-
-YES - This patch fixes a real functional bug in `bpf_cgroup_from_id()`
-that breaks sched_ext and other BPF users when the helper runs from
-contexts where `current` lives in an unrelated cgroup namespace.
-
-**Bug Details**
-- Today `bpf_cgroup_from_id()` simply calls `cgroup_get_from_id()`
-  (`kernel/bpf/helpers.c:2539`), and that helper rejects IDs not visible
-  from `current`’s namespace via the `cgroup_is_descendant()` check
-  (`kernel/cgroup/cgroup.c:6407`). When the kfunc is invoked from timer
-  and irq contexts (e.g. sched_ext `ops.tick()`), `current` is just
-  whatever user task was interrupted, so the lookup spuriously returns
-  `NULL` and the BPF scheduler treats valid cgroups as gone.
-- Documentation already describes the ID lookup as global
-  (`Documentation/bpf/kfuncs.rst:653`), so current behaviour contradicts
-  the documented contract and leads to unpredictable failures for BPF
-  programs that cache cgroup IDs.
-
-**Fix Mechanics**
-- The patch factors the namespace-agnostic portion of the lookup into a
-  new `__cgroup_get_from_id()` placed directly above the existing helper
-  in `kernel/cgroup/cgroup.c` (~6376 after applying the change). That
-  routine mirrors the old code path but returns as soon as the
-  refcounted `struct cgroup` is acquired, skipping the namespace filter.
-- `bpf_cgroup_from_id()` is switched to call the new helper
-  (`kernel/bpf/helpers.c:2539` post-patch), so BPF programs always see
-  the globally unique ID mapping they rely on. The public declaration in
-  `include/linux/cgroup.h:653` is added so other in-kernel users can opt
-  into the unrestricted lookup if they intentionally need it.
-- The original `cgroup_get_from_id()` continues to enforce namespace
-  visibility for existing callers (block layer, memcg, BPF iterators),
-  so their semantics are unchanged.
-
-**Risk Assessment**
-- Behaviour only widens the set of IDs that succeed for this BPF kfunc;
-  no kernel data structures or locking rules change. The lookup and
-  refcount handling remain identical, so regression risk is low.
-- The broader visibility is acceptable because accessing kfuncs of this
-  class already requires privileged BPF programs; the cgroup maintainers
-  (Acked-by: Tejun Heo) agreed the helper should operate on the global
-  namespace.
-- No new exports or user-visible ABI are introduced—the change is
-  confined to in-kernel helpers and a single BPF kfunc.
-
-**Stable Backport Notes**
-- The patch is self-contained and applies cleanly as long as commit
-  332ea1f697be (“bpf: Add bpf_cgroup_from_id() kfunc”) is present, which
-  is true for current stable lines. No follow-up fixes are required.
-- Without it, sched_ext BPF schedulers and other consumers that cache
-  cgroup IDs will continue to misbehave whenever executed from
-  asynchronous contexts, so backporting is warranted.
-
- include/linux/cgroup.h |  1 +
- kernel/bpf/helpers.c   |  2 +-
- kernel/cgroup/cgroup.c | 24 ++++++++++++++++++++----
- 3 files changed, 22 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index b18fb5fcb38e2..b08c8e62881cd 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -650,6 +650,7 @@ static inline void cgroup_kthread_ready(void)
- }
- 
- void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen);
-+struct cgroup *__cgroup_get_from_id(u64 id);
- struct cgroup *cgroup_get_from_id(u64 id);
- #else /* !CONFIG_CGROUPS */
- 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 8af62cb243d9e..0bde01edf5e6e 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2540,7 +2540,7 @@ __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
- {
- 	struct cgroup *cgrp;
- 
--	cgrp = cgroup_get_from_id(cgid);
-+	cgrp = __cgroup_get_from_id(cgid);
- 	if (IS_ERR(cgrp))
- 		return NULL;
- 	return cgrp;
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 77d02f87f3f12..c62b98f027f99 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -6373,15 +6373,15 @@ void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen)
- }
- 
- /*
-- * cgroup_get_from_id : get the cgroup associated with cgroup id
-+ * __cgroup_get_from_id : get the cgroup associated with cgroup id
-  * @id: cgroup id
-  * On success return the cgrp or ERR_PTR on failure
-- * Only cgroups within current task's cgroup NS are valid.
-+ * There are no cgroup NS restrictions.
-  */
--struct cgroup *cgroup_get_from_id(u64 id)
-+struct cgroup *__cgroup_get_from_id(u64 id)
- {
- 	struct kernfs_node *kn;
--	struct cgroup *cgrp, *root_cgrp;
-+	struct cgroup *cgrp;
- 
- 	kn = kernfs_find_and_get_node_by_id(cgrp_dfl_root.kf_root, id);
- 	if (!kn)
-@@ -6403,6 +6403,22 @@ struct cgroup *cgroup_get_from_id(u64 id)
- 
- 	if (!cgrp)
- 		return ERR_PTR(-ENOENT);
-+	return cgrp;
-+}
-+
-+/*
-+ * cgroup_get_from_id : get the cgroup associated with cgroup id
-+ * @id: cgroup id
-+ * On success return the cgrp or ERR_PTR on failure
-+ * Only cgroups within current task's cgroup NS are valid.
-+ */
-+struct cgroup *cgroup_get_from_id(u64 id)
-+{
-+	struct cgroup *cgrp, *root_cgrp;
-+
-+	cgrp = __cgroup_get_from_id(id);
-+	if (IS_ERR(cgrp))
-+		return cgrp;
- 
- 	root_cgrp = current_cgns_cgroup_dfl();
- 	if (!cgroup_is_descendant(cgrp, root_cgrp)) {
--- 
-2.51.0
-
+WDYT?
 
