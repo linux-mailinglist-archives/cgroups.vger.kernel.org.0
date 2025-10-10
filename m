@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-10639-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10641-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1A70BCC4C7
-	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 11:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 21075BCC4EE
+	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 11:19:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04534426660
-	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 09:16:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AABF942818D
+	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 09:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE6D27990D;
-	Fri, 10 Oct 2025 09:15:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C172227B331;
+	Fri, 10 Oct 2025 09:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mWeTXK9U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AhMkkYeR"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2077D2765E6;
-	Fri, 10 Oct 2025 09:15:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7660727AC44;
+	Fri, 10 Oct 2025 09:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760087724; cv=none; b=f6JfJ/KR6U0mUvXpRg4BtJTp5eO9Zf0rwVX6KOpJMiEWcM1qKdTKqMRiog62nNJSispHfhAyDV4MQ3ZCIcYf4T7DXb3L0D0UQpANC2zIkAgRVQtJB9tf5w8aO+JcDo1moTqxb7FsYG5kRE2ELZthF9Th9vXpql2eYww0cotrXFo=
+	t=1760087727; cv=none; b=POaZ1dNOcdpUJQN5DOJwCZGeaLOqhEhDyN4t3mwNFyQGd7hyGR9dAXfhZ6YHdYeReNg22aJTzHHsk8LFoEwDEQzpMNvffDryCgfAdlr68zE9IN0K42QPkIHajby5fToREDf/NrxXjMM9AtZHA6s66sOcZKWsirW7egzFlGny2p4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760087724; c=relaxed/simple;
-	bh=71t1rc86LBoLpp/AZ7tkC/o2XX//I5mO8PuzK7GqrtA=;
+	s=arc-20240116; t=1760087727; c=relaxed/simple;
+	bh=5UU4sesvV9+dhG0cfl65lKFBzq/uovJuWrNs1r3kNr0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DHvU+tPieHLVXqJV3N9T+e0FG+2xzm6QBlH1lUAY2oyli48rigj0AinpFmKz32kBL5WABXvzmo819a2CG/Jc8mpoBe3WWpyj4dXyZi8ElIYbJ99Wi90FIfDN9xRQeG1mUVVwiiLJvW7ddXB/SHa/TQUCvYP2lMkyano0Ogf1jjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mWeTXK9U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B958DC4CEF8;
-	Fri, 10 Oct 2025 09:15:21 +0000 (UTC)
+	 MIME-Version; b=JgaH5628vtpnq7gmQofbJyV9BM+67LeeXhrJP400emSXLfK0OOqzeCY7uIjNXrFx1Crw+Sr74tzLHuZEnNhnhJ3xXoPrx6iHXT0FAjbJgycCbT71u9ii/rG6SlzohbbNmHr+x6KffoIA58sN6aB6FEXLBmCFXcU32J+FSRGnDOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AhMkkYeR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71013C4CEFE;
+	Fri, 10 Oct 2025 09:15:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760087724;
-	bh=71t1rc86LBoLpp/AZ7tkC/o2XX//I5mO8PuzK7GqrtA=;
+	s=k20201202; t=1760087727;
+	bh=5UU4sesvV9+dhG0cfl65lKFBzq/uovJuWrNs1r3kNr0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mWeTXK9URzTJtZkBTn/CaM7Kf/qkbsu6fXJWF6j6Sbsw27MnWVf4CjHSlW5/rGzoq
-	 Grt/KJFg3+OBYCqYKrKn3GNYoR2c6FMaPrbGNZvWEKyUOnMPbnCiUs+sp+50Ht9YQT
-	 wrL3xSPARIK4lwh2yg7UaF3dlDIMyWdJdARdKRwKnYfN15SA3TJj4G8BK7Wp0Aps8a
-	 8trw3Qx4+YDddSOwN0ZRp1Mtnc+eNW5MduuW6ptBQq3+ueuzSlIoZ9/g5gE1XYuZsz
-	 uY7NA3sriMnTmZIdmj5rpFIsVQ0oElVS5wBor/LA8ADs8WZQkKdecOhCjFShCB0Mm7
-	 B96uGHcz168gA==
+	b=AhMkkYeR82SsEDde1Ipap7NRuMllA9iW6c5Y+KgG7VjxsSBwLnGlJEQFwmxcxu4s1
+	 pGrqFNO3lPsN8j68ey9s1Of/SYn1W/Vho05Ktfbe2B9mhs8CUNzL+BkMKrHGA3Cgnu
+	 cj+STcglNWjr81v7Q/z2Kt6OpEmsqMPTEdx0pzynwRhJ1P8uWn+74V8R06OZPHJ1uq
+	 TCCJ8wIIfNSBvwPFmyOLUIoJ54oPAHqGSRdcl1+Jz+NzfXhXi1cdOBIHoQsEVQlzQz
+	 4z5laSZiLxcQ3ICivl9pgHVrp/TmI1GydlfxN8vSNAqKjBcABFIN99zhR5Gnrj4fTc
+	 oOv8rPn5ow0uA==
 From: Yu Kuai <yukuai@kernel.org>
 To: axboe@kernel.dk,
 	tj@kernel.org,
@@ -52,9 +52,9 @@ To: axboe@kernel.dk,
 	hch@lst.de
 Cc: linux-kernel@vger.kernel.org,
 	Yu Kuai <yukuai3@huawei.com>
-Subject: [PATCH v2 11/19] blk-cgroup: remove preallocate blkg for blkg_create()
-Date: Fri, 10 Oct 2025 17:14:36 +0800
-Message-ID: <20251010091446.3048529-12-yukuai@kernel.org>
+Subject: [PATCH v2 12/19] blk-throttle: fix possible deadlock due to queue_lock in timer
+Date: Fri, 10 Oct 2025 17:14:37 +0800
+Message-ID: <20251010091446.3048529-13-yukuai@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251010091446.3048529-1-yukuai@kernel.org>
 References: <20251010091446.3048529-1-yukuai@kernel.org>
@@ -68,182 +68,156 @@ Content-Transfer-Encoding: 8bit
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Now that blkg_create is protected with blkcg_mutex, there is no need to
-preallocate blkg, remove related code.
+Abusing queue_lock to protect blk-throttle can cause deadlock:
 
+1) throtl_pending_timer_fn() will hold the lock, while throtl_pd_free()
+   will flush the timer, this is fixed by protecting blkgs with
+   blkcg_mutex instead of queue_lock by previous patches.
+2) queue_lock can be held from hardirq context, hence if
+   throtl_pending_timer_fn() is interrupted by hardirq, deadlock can be
+   triggered as well.
+
+Stop abusing queue_lock to protect blk-throttle, and intorduce a new
+internal lock td->lock for protection. And now that the new lock won't
+be grabbed from hardirq context, it's safe to use spin_lock_bh() from
+thread context and spin_lock() directly from softirq context.
+
+Fixes: 6e1a5704cbbd ("blk-throttle: dispatch from throtl_pending_timer_fn()")
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/blk-cgroup.c | 91 +++++++++++++++++-----------------------------
- 1 file changed, 33 insertions(+), 58 deletions(-)
+ block/blk-throttle.c | 31 +++++++++++++------------------
+ 1 file changed, 13 insertions(+), 18 deletions(-)
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 030499d70543..3c23d2d1e237 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -364,10 +364,9 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
-  * If @new_blkg is %NULL, this function tries to allocate a new one as
-  * necessary using %GFP_NOWAIT.  @new_blkg is always consumed on return.
-  */
--static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk,
--				    struct blkcg_gq *new_blkg)
-+static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk)
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index cb3bfdb4684a..7feaa2ef0a6b 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -33,6 +33,7 @@ static struct workqueue_struct *kthrotld_workqueue;
+ 
+ struct throtl_data
  {
--	struct blkcg_gq *blkg;
-+	struct blkcg_gq *blkg = NULL;
- 	int i, ret;
++	spinlock_t lock;
+ 	/* service tree for active throtl groups */
+ 	struct throtl_service_queue service_queue;
  
- 	lockdep_assert_held(&disk->queue->blkcg_mutex);
-@@ -384,15 +383,11 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk,
- 		goto err_free_blkg;
- 	}
+@@ -1149,7 +1150,7 @@ static void throtl_pending_timer_fn(struct timer_list *t)
+ 	else
+ 		q = td->queue;
  
--	/* allocate */
--	if (!new_blkg) {
--		new_blkg = blkg_alloc(blkcg, disk, GFP_NOWAIT);
--		if (unlikely(!new_blkg)) {
--			ret = -ENOMEM;
--			goto err_put_css;
--		}
-+	blkg = blkg_alloc(blkcg, disk, GFP_NOIO);
-+	if (unlikely(!blkg)) {
-+		ret = -ENOMEM;
-+		goto err_put_css;
- 	}
--	blkg = new_blkg;
+-	spin_lock_irq(&q->queue_lock);
++	spin_lock(&td->lock);
  
- 	/* link parent */
- 	if (blkcg_parent(blkcg)) {
-@@ -415,35 +410,34 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk,
- 	/* insert */
- 	spin_lock(&blkcg->lock);
- 	ret = radix_tree_insert(&blkcg->blkg_tree, disk->queue->id, blkg);
--	if (likely(!ret)) {
--		hlist_add_head_rcu(&blkg->blkcg_node, &blkcg->blkg_list);
--		list_add(&blkg->q_node, &disk->queue->blkg_list);
-+	if (unlikely(ret)) {
-+		spin_unlock(&blkcg->lock);
-+		blkg_put(blkg);
-+		return ERR_PTR(ret);
-+	}
- 
--		for (i = 0; i < BLKCG_MAX_POLS; i++) {
--			struct blkcg_policy *pol = blkcg_policy[i];
-+	hlist_add_head_rcu(&blkg->blkcg_node, &blkcg->blkg_list);
-+	list_add(&blkg->q_node, &disk->queue->blkg_list);
- 
--			if (blkg->pd[i]) {
--				if (pol->pd_online_fn)
--					pol->pd_online_fn(blkg->pd[i]);
--				blkg->pd[i]->online = true;
--			}
-+	for (i = 0; i < BLKCG_MAX_POLS; i++) {
-+		struct blkcg_policy *pol = blkcg_policy[i];
-+
-+		if (blkg->pd[i]) {
-+			if (pol->pd_online_fn)
-+				pol->pd_online_fn(blkg->pd[i]);
-+			blkg->pd[i]->online = true;
- 		}
- 	}
-+
- 	blkg->online = true;
- 	spin_unlock(&blkcg->lock);
--
--	if (!ret)
--		return blkg;
--
--	/* @blkg failed fully initialized, use the usual release path */
--	blkg_put(blkg);
--	return ERR_PTR(ret);
-+	return blkg;
- 
- err_put_css:
- 	css_put(&blkcg->css);
- err_free_blkg:
--	if (new_blkg)
--		blkg_free(new_blkg);
-+	if (blkg)
-+		blkg_free(blkg);
- 	return ERR_PTR(ret);
- }
- 
-@@ -498,7 +492,7 @@ static struct blkcg_gq *blkg_lookup_create(struct blkcg *blkcg,
- 			parent = blkcg_parent(parent);
- 		}
- 
--		blkg = blkg_create(pos, disk, NULL);
-+		blkg = blkg_create(pos, disk);
- 		if (IS_ERR(blkg)) {
- 			blkg = ret_blkg;
+ 	if (!q->root_blkg)
+ 		goto out_unlock;
+@@ -1175,9 +1176,9 @@ static void throtl_pending_timer_fn(struct timer_list *t)
  			break;
-@@ -880,7 +874,6 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 	while (true) {
- 		struct blkcg *pos = blkcg;
- 		struct blkcg *parent;
--		struct blkcg_gq *new_blkg;
  
- 		parent = blkcg_parent(blkcg);
- 		while (parent && !blkg_lookup(parent, q)) {
-@@ -888,23 +881,14 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 			parent = blkcg_parent(parent);
- 		}
+ 		/* this dispatch windows is still open, relax and repeat */
+-		spin_unlock_irq(&q->queue_lock);
++		spin_unlock(&td->lock);
+ 		cpu_relax();
+-		spin_lock_irq(&q->queue_lock);
++		spin_lock(&td->lock);
+ 	}
  
--		new_blkg = blkg_alloc(pos, disk, GFP_NOIO);
--		if (unlikely(!new_blkg)) {
--			ret = -ENOMEM;
--			goto fail_unlock;
--		}
--
- 		if (!blkcg_policy_enabled(q, pol)) {
--			blkg_free(new_blkg);
- 			ret = -EOPNOTSUPP;
- 			goto fail_unlock;
- 		}
- 
- 		blkg = blkg_lookup(pos, q);
--		if (blkg) {
--			blkg_free(new_blkg);
--		} else {
--			blkg = blkg_create(pos, disk, new_blkg);
-+		if (!blkg) {
-+			blkg = blkg_create(pos, disk);
- 			if (IS_ERR(blkg)) {
- 				ret = PTR_ERR(blkg);
- 				goto fail_unlock;
-@@ -1469,27 +1453,18 @@ void blkg_init_queue(struct request_queue *q)
- int blkcg_init_disk(struct gendisk *disk)
- {
- 	struct request_queue *q = disk->queue;
--	struct blkcg_gq *new_blkg, *blkg;
--
--	new_blkg = blkg_alloc(&blkcg_root, disk, GFP_KERNEL);
--	if (!new_blkg)
--		return -ENOMEM;
-+	struct blkcg_gq *blkg;
- 
-+	/* Make sure the root blkg exists. */
- 	mutex_lock(&q->blkcg_mutex);
-+	blkg = blkg_create(&blkcg_root, disk);
-+	mutex_unlock(&q->blkcg_mutex);
- 
--	/* Make sure the root blkg exists. */
--	blkg = blkg_create(&blkcg_root, disk, new_blkg);
- 	if (IS_ERR(blkg))
--		goto err_unlock;
--	q->root_blkg = blkg;
--
--	mutex_unlock(&q->blkcg_mutex);
-+		return PTR_ERR(blkg);
- 
-+	q->root_blkg = blkg;
- 	return 0;
--
--err_unlock:
--	mutex_unlock(&q->blkcg_mutex);
--	return PTR_ERR(blkg);
+ 	if (!dispatched)
+@@ -1200,7 +1201,7 @@ static void throtl_pending_timer_fn(struct timer_list *t)
+ 		queue_work(kthrotld_workqueue, &td->dispatch_work);
+ 	}
+ out_unlock:
+-	spin_unlock_irq(&q->queue_lock);
++	spin_unlock(&td->lock);
  }
  
- void blkcg_exit_disk(struct gendisk *disk)
+ /**
+@@ -1216,7 +1217,6 @@ static void blk_throtl_dispatch_work_fn(struct work_struct *work)
+ 	struct throtl_data *td = container_of(work, struct throtl_data,
+ 					      dispatch_work);
+ 	struct throtl_service_queue *td_sq = &td->service_queue;
+-	struct request_queue *q = td->queue;
+ 	struct bio_list bio_list_on_stack;
+ 	struct bio *bio;
+ 	struct blk_plug plug;
+@@ -1224,11 +1224,11 @@ static void blk_throtl_dispatch_work_fn(struct work_struct *work)
+ 
+ 	bio_list_init(&bio_list_on_stack);
+ 
+-	spin_lock_irq(&q->queue_lock);
++	spin_lock_bh(&td->lock);
+ 	for (rw = READ; rw <= WRITE; rw++)
+ 		while ((bio = throtl_pop_queued(td_sq, NULL, rw)))
+ 			bio_list_add(&bio_list_on_stack, bio);
+-	spin_unlock_irq(&q->queue_lock);
++	spin_unlock_bh(&td->lock);
+ 
+ 	if (!bio_list_empty(&bio_list_on_stack)) {
+ 		blk_start_plug(&plug);
+@@ -1306,7 +1306,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
+ 	rcu_read_unlock();
+ 
+ 	/*
+-	 * We're already holding queue_lock and know @tg is valid.  Let's
++	 * We're already holding td->lock and know @tg is valid.  Let's
+ 	 * apply the new config directly.
+ 	 *
+ 	 * Restart the slices for both READ and WRITES. It might happen
+@@ -1333,6 +1333,7 @@ static int blk_throtl_init(struct gendisk *disk)
+ 	if (!td)
+ 		return -ENOMEM;
+ 
++	spin_lock_init(&td->lock);
+ 	INIT_WORK(&td->dispatch_work, blk_throtl_dispatch_work_fn);
+ 	throtl_service_queue_init(&td->service_queue);
+ 
+@@ -1703,12 +1704,7 @@ void blk_throtl_cancel_bios(struct gendisk *disk)
+ 	if (!blk_throtl_activated(q))
+ 		return;
+ 
+-	spin_lock_irq(&q->queue_lock);
+-	/*
+-	 * queue_lock is held, rcu lock is not needed here technically.
+-	 * However, rcu lock is still held to emphasize that following
+-	 * path need RCU protection and to prevent warning from lockdep.
+-	 */
++	spin_lock_bh(&q->td->lock);
+ 	rcu_read_lock();
+ 	blkg_for_each_descendant_post(blkg, pos_css, q->root_blkg) {
+ 		/*
+@@ -1722,7 +1718,7 @@ void blk_throtl_cancel_bios(struct gendisk *disk)
+ 		tg_flush_bios(blkg_to_tg(blkg));
+ 	}
+ 	rcu_read_unlock();
+-	spin_unlock_irq(&q->queue_lock);
++	spin_unlock_bh(&q->td->lock);
+ }
+ 
+ static bool tg_within_limit(struct throtl_grp *tg, struct bio *bio, bool rw)
+@@ -1755,7 +1751,6 @@ static bool tg_within_limit(struct throtl_grp *tg, struct bio *bio, bool rw)
+ 
+ bool __blk_throtl_bio(struct bio *bio)
+ {
+-	struct request_queue *q = bdev_get_queue(bio->bi_bdev);
+ 	struct blkcg_gq *blkg = bio->bi_blkg;
+ 	struct throtl_qnode *qn = NULL;
+ 	struct throtl_grp *tg = blkg_to_tg(blkg);
+@@ -1765,7 +1760,7 @@ bool __blk_throtl_bio(struct bio *bio)
+ 	struct throtl_data *td = tg->td;
+ 
+ 	rcu_read_lock();
+-	spin_lock_irq(&q->queue_lock);
++	spin_lock_bh(&td->lock);
+ 	sq = &tg->service_queue;
+ 
+ 	while (true) {
+@@ -1841,7 +1836,7 @@ bool __blk_throtl_bio(struct bio *bio)
+ 	}
+ 
+ out_unlock:
+-	spin_unlock_irq(&q->queue_lock);
++	spin_unlock_bh(&td->lock);
+ 
+ 	rcu_read_unlock();
+ 	return throttled;
 -- 
 2.51.0
 
