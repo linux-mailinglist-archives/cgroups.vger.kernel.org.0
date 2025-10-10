@@ -1,45 +1,46 @@
-Return-Path: <cgroups+bounces-10629-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10630-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F624BCC436
-	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 11:14:57 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FA96BCC442
+	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 11:15:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3A05406D9D
-	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 09:14:55 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7F3224E2C26
+	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 09:15:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4492638AF;
-	Fri, 10 Oct 2025 09:14:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F4A26E6F9;
+	Fri, 10 Oct 2025 09:14:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SNAvdHiC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uUcHKBHd"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4845217723;
-	Fri, 10 Oct 2025 09:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DC6226D4EB;
+	Fri, 10 Oct 2025 09:14:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760087692; cv=none; b=OdiMYlOKz8XTor5+0zqqkE2Q36OwNKZD/TgAnU9lVv9oGWhT7B1FCAvi/234d5q0McTt8gFqJfSjxvFSkFeG/2jVqZriRSiTetOvb5AjyQ9Ob9SVWfThKaQbXXYyBDmi+u4g0WvZ2sgo/JlIrZ1tI8bL0P5ZtgtsRD/0byBGlfs=
+	t=1760087695; cv=none; b=GDvinntdsO4xG0oGNvfq44J6En350h/yGekQXKOEhKWT3LwG6eLY0mDbTtkfvoT6YePHX/4yKaG9nxxyptvgl2QfpwloYHR+MrjxoAY7mNFj+8uBuzn8JVAJ3aSvpIZl//NBd10nist3ge47WWdRYqSwAMIqIkJ2ygKFU0o65ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760087692; c=relaxed/simple;
-	bh=vtIRyjcCc6LcebOFxaTxHL4wziQNV8zAxg2EbWDPBRA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hqq2AxsfFXieiJ7XXrcaVrtjwoEoS2k3Lh0ERvqn/xWiL84TgkVDd6v2FWree1Jk8GTnDygOT5ZObcn3Z1SHhStAFjofU2nh4E2RTk2A82ZCt1u0j03t7tADNSg8SPFrjia4EJRuhK8ZOJAut9OZSkOsPVJLtO3htP459BAhhE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SNAvdHiC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1302C4CEF1;
-	Fri, 10 Oct 2025 09:14:49 +0000 (UTC)
+	s=arc-20240116; t=1760087695; c=relaxed/simple;
+	bh=u7SLgLBccucj039JaoAvEvFkT37dkHYadI9yOpx4Z1s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=j3HkZX9Rw4sECi4bPjNQ5soJ5kUr+oiEdGnID6gLYpC2TbQkXO7lOlF3YWdZRD3+5/MlcvN8dOBqvicomA6hz8wNS+kUe7SyTFTygn7LTFyDQHODW2JTXjPLCUOnhocfifmOz8DCmFCSj9hzBmsCk7IxtY6oz3QWf/uLlKoYlOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uUcHKBHd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6362C4CEF8;
+	Fri, 10 Oct 2025 09:14:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760087692;
-	bh=vtIRyjcCc6LcebOFxaTxHL4wziQNV8zAxg2EbWDPBRA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=SNAvdHiCggTSjzJEqcnrJ5ocnUMXSrYN7aKOTF1gzfeQD0Aw/uf9SomcdxK0r0mir
-	 fJCp+rji+RsXmc4pyT+avYO+6TjVZ9ShW/vA5OdyXjQ+zAd9NVgLagM/TSEV1vpfmN
-	 OPoXk9zz8b23YgY3UJeUoutkMPobo5A7q0BrvSUkt0b+GAqZTqSyIqcUbiqcV9Fr3E
-	 85XCyNwIn4JIcUFFie2epDg8YXZPIa6GS82YJGPVna035eL7RCT7AFFT+I0k5L71vN
-	 qroqrCpEvVZ4BHfBWBgxVj4xHIAhErYHRvKD8gIi7xawzVUCVo0afX6Da1kJsi8kKh
-	 m9Zst7jfbEIvg==
+	s=k20201202; t=1760087695;
+	bh=u7SLgLBccucj039JaoAvEvFkT37dkHYadI9yOpx4Z1s=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=uUcHKBHdKBlX+Vk6ZWgSSSlwaDTUs7m64gI4i572Ow6hKpG39/wGQyevudosdQyIx
+	 moWPdYyRaID9tWXKn2C2qiRHzo2GJVDzDXQCT+8wFMqpXqVEAxfMWVV8s15aYO2EwK
+	 W37Bnfp4HO8F0NHqqraIAiu3VbvfndhDG6t8x5T5nQYwkymSkOg8MDnClEJQ9x1ink
+	 4LWftPKPvYgOT9B9glXvdQA+7kcWzuAi2bZuxvdtCKedq3qdpXjHOa6wxm7E3242Ag
+	 9/EZXKMiVe4oE9TI3F2yKBVpbuv+6JxAKnUBiDPal7mghk9mdgR9CEJbPH9RgbSFHZ
+	 PXeIGWshHyKBQ==
 From: Yu Kuai <yukuai@kernel.org>
 To: axboe@kernel.dk,
 	tj@kernel.org,
@@ -51,10 +52,12 @@ To: axboe@kernel.dk,
 	hch@lst.de
 Cc: linux-kernel@vger.kernel.org,
 	Yu Kuai <yukuai3@huawei.com>
-Subject: [PATCH v2 00/19] blk-cgroup: convert to use blkcg_mutex for protection
-Date: Fri, 10 Oct 2025 17:14:25 +0800
-Message-ID: <20251010091446.3048529-1-yukuai@kernel.org>
+Subject: [PATCH v2 01/19] blk-cgroup: protect iterating blkgs with blkcg->lock in blkcg_print_stat()
+Date: Fri, 10 Oct 2025 17:14:26 +0800
+Message-ID: <20251010091446.3048529-2-yukuai@kernel.org>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251010091446.3048529-1-yukuai@kernel.org>
+References: <20251010091446.3048529-1-yukuai@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,53 +68,44 @@ Content-Transfer-Encoding: 8bit
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Changes in v2:
- - add patch 2 to delay freeing policy data, otherwise patch 3 is not
-   safe;
- - add patch 13-19 to cleanup blkcg configuration apis;
+blkcg_print_one_stat() will be called for each blkg:
+- access blkg->iostat, which is freed from rcu callback
+  blkg_free_workfn();
+- access policy data from pd_stat_fn(), which is frred from
+  pd_free_fn(), while pd_free_fn() can be called by removing blkcg or
+  deactivating policy;
 
-patch 1-8 is prep patches to make sure queue_lock is not nested under
-rcu and other spinlocks in blk-cgroup;
-patch 9 convert blk-cgroup to use blkcg_mutex to protect blkgs;
-patch 10,11 are follow cleanups;
-patch 12 fix deadlock in blk-throttle;
-patch 13-19 cleanup blkcg configuration helpers;
+The blkcg->lock can make sure iterated blkgs are still online, and both
+blkg->iostat and policy data for activated policy won't be freed.
 
-Yu Kuai (19):
-  blk-cgroup: protect iterating blkgs with blkcg->lock in
-    blkcg_print_stat()
-  blk-cgroup: delay freeing policy data after rcu grace period
-  blk-cgroup: don't nest queue_lock under rcu in blkcg_print_blkgs()
-  blk-cgroup: don't nest queue_lock under rcu in blkg_lookup_create()
-  blk-cgroup: don't nest queu_lock under rcu in bio_associate_blkg()
-  blk-cgroup: don't nest queue_lock under blkcg->lock in
-    blkcg_destroy_blkgs()
-  mm/page_io: don't nest queue_lock under rcu in
-    bio_associate_blkg_from_page()
-  block, bfq: don't grab queue_lock to initialize bfq
-  blk-cgroup: convert to protect blkgs with blkcg_mutex
-  blk-cgroup: remove radix_tree_preload()
-  blk-cgroup: remove preallocate blkg for blkg_create()
-  blk-throttle: fix possible deadlock due to queue_lock in timer
-  blk-cgroup: add new blkg configuration helpers
-  blk-cgroup: factor out a helper __blkg_activate_policy()
-  blk-throttle: convert to use blkg_conf_{start, end}
-  block, bfq: convert to use blkg_conf_{start, end}
-  blk-iolatency: convert to use blkg_conf_{start, end}
-  blk-iocost: convert to use blkg_conf_{start, end}
-  blk-cgroup: remove unsed blkg configuration helpers
+Prepare to convert protecting blkgs from request_queue with mutex.
 
- block/bfq-cgroup.c        |  27 +-
- block/bfq-iosched.c       |  13 +-
- block/blk-cgroup-rwstat.c |   4 +-
- block/blk-cgroup.c        | 552 +++++++++++---------------------------
- block/blk-cgroup.h        |  51 +++-
- block/blk-iocost.c        |  61 +++--
- block/blk-iolatency.c     |  23 +-
- block/blk-throttle.c      |  73 +++--
- mm/page_io.c              |   7 +-
- 9 files changed, 302 insertions(+), 509 deletions(-)
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ block/blk-cgroup.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index f93de34fe87d..0f6039d468a6 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1242,13 +1242,10 @@ static int blkcg_print_stat(struct seq_file *sf, void *v)
+ 	else
+ 		css_rstat_flush(&blkcg->css);
+ 
+-	rcu_read_lock();
+-	hlist_for_each_entry_rcu(blkg, &blkcg->blkg_list, blkcg_node) {
+-		spin_lock_irq(&blkg->q->queue_lock);
++	guard(spinlock)(&blkcg->lock);
++	hlist_for_each_entry(blkg, &blkcg->blkg_list, blkcg_node)
+ 		blkcg_print_one_stat(blkg, sf);
+-		spin_unlock_irq(&blkg->q->queue_lock);
+-	}
+-	rcu_read_unlock();
++
+ 	return 0;
+ }
+ 
 -- 
 2.51.0
 
