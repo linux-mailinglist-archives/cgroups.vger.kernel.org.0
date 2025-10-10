@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-10641-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10642-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21075BCC4EE
-	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 11:19:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD717BCC4FA
+	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 11:20:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AABF942818D
-	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 09:16:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6BCE5409BF
+	for <lists+cgroups@lfdr.de>; Fri, 10 Oct 2025 09:17:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C172227B331;
-	Fri, 10 Oct 2025 09:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292E327381B;
+	Fri, 10 Oct 2025 09:15:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AhMkkYeR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UiO1TqJi"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7660727AC44;
-	Fri, 10 Oct 2025 09:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D038F274B53;
+	Fri, 10 Oct 2025 09:15:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760087727; cv=none; b=POaZ1dNOcdpUJQN5DOJwCZGeaLOqhEhDyN4t3mwNFyQGd7hyGR9dAXfhZ6YHdYeReNg22aJTzHHsk8LFoEwDEQzpMNvffDryCgfAdlr68zE9IN0K42QPkIHajby5fToREDf/NrxXjMM9AtZHA6s66sOcZKWsirW7egzFlGny2p4=
+	t=1760087729; cv=none; b=QldSlcdBUG7ITHYdH2daajBNIS3GgJKBxrYliN/vHJAN8Qj0vIBpgSIIHe5J0QqOBLrTdmmDmDGj5YKbm4yRfgjwek4315jEtPfOW5xCyVaDBpMpnUhbG5cLYDeyNtdw8WOst+H5mcsSoj9ZbFJ0NmkPCUT3ytgNvkLC6Dj76Xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760087727; c=relaxed/simple;
-	bh=5UU4sesvV9+dhG0cfl65lKFBzq/uovJuWrNs1r3kNr0=;
+	s=arc-20240116; t=1760087729; c=relaxed/simple;
+	bh=32Ngjeq6kVC94iP3qBSCEC2DfH54K3j4MhShjpr2/Wc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JgaH5628vtpnq7gmQofbJyV9BM+67LeeXhrJP400emSXLfK0OOqzeCY7uIjNXrFx1Crw+Sr74tzLHuZEnNhnhJ3xXoPrx6iHXT0FAjbJgycCbT71u9ii/rG6SlzohbbNmHr+x6KffoIA58sN6aB6FEXLBmCFXcU32J+FSRGnDOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AhMkkYeR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71013C4CEFE;
-	Fri, 10 Oct 2025 09:15:24 +0000 (UTC)
+	 MIME-Version; b=ju/xBcRtfmxjBARxgICNgc6a43di7J3y2v7TYIpSSGRKA6tepXid44EwsPQLDqo1yjIZo7F/zQ6AD/nMsixzBBCaSxaN2bkOHUbJuoVxINuqsyyO3iwt4UfxLVkbcnyVFOjK8YHCYvay8v51/5VPPf1ERDLfph+4wG/L6vrbQok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UiO1TqJi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 819D8C4CEF8;
+	Fri, 10 Oct 2025 09:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760087727;
-	bh=5UU4sesvV9+dhG0cfl65lKFBzq/uovJuWrNs1r3kNr0=;
+	s=k20201202; t=1760087729;
+	bh=32Ngjeq6kVC94iP3qBSCEC2DfH54K3j4MhShjpr2/Wc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AhMkkYeR82SsEDde1Ipap7NRuMllA9iW6c5Y+KgG7VjxsSBwLnGlJEQFwmxcxu4s1
-	 pGrqFNO3lPsN8j68ey9s1Of/SYn1W/Vho05Ktfbe2B9mhs8CUNzL+BkMKrHGA3Cgnu
-	 cj+STcglNWjr81v7Q/z2Kt6OpEmsqMPTEdx0pzynwRhJ1P8uWn+74V8R06OZPHJ1uq
-	 TCCJ8wIIfNSBvwPFmyOLUIoJ54oPAHqGSRdcl1+Jz+NzfXhXi1cdOBIHoQsEVQlzQz
-	 4z5laSZiLxcQ3ICivl9pgHVrp/TmI1GydlfxN8vSNAqKjBcABFIN99zhR5Gnrj4fTc
-	 oOv8rPn5ow0uA==
+	b=UiO1TqJiladMMYbFS5lPrCL+ogJQKeMfrxvfYp7mmZIuEpn5elzgbd2w2ZBrXW84F
+	 VtfpfBZQnTDl032+0TxDgjgFf6v1MUi5aAf9VFwVJmWSqf59kwg1kfDQD5AUaNQgPf
+	 /ntqMLA5bzZa/Bdp3Wh+T8IvMnxW2rUauj7Wl/Y0qjwri+5jgFtS3XBvTsVSav7rt7
+	 yaEvhkoP2V3S6IvhZ/I/qsgLrplj8zuOAwr3KXfO8wryeAM5XxzAakKHwsXXl5Q1h3
+	 P4O/lbWYW12zjVtkMCrNyRlpyiMjHm+C7h1uByIzBIs6ppZoW2ZWzLvyw29jp7461h
+	 xVMYLjSqSyIOg==
 From: Yu Kuai <yukuai@kernel.org>
 To: axboe@kernel.dk,
 	tj@kernel.org,
@@ -52,9 +52,9 @@ To: axboe@kernel.dk,
 	hch@lst.de
 Cc: linux-kernel@vger.kernel.org,
 	Yu Kuai <yukuai3@huawei.com>
-Subject: [PATCH v2 12/19] blk-throttle: fix possible deadlock due to queue_lock in timer
-Date: Fri, 10 Oct 2025 17:14:37 +0800
-Message-ID: <20251010091446.3048529-13-yukuai@kernel.org>
+Subject: [PATCH v2 13/19] blk-cgroup: add new blkg configuration helpers
+Date: Fri, 10 Oct 2025 17:14:38 +0800
+Message-ID: <20251010091446.3048529-14-yukuai@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251010091446.3048529-1-yukuai@kernel.org>
 References: <20251010091446.3048529-1-yukuai@kernel.org>
@@ -68,156 +68,121 @@ Content-Transfer-Encoding: 8bit
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Abusing queue_lock to protect blk-throttle can cause deadlock:
+Currently there are many helpers to be used in different cases:
 
-1) throtl_pending_timer_fn() will hold the lock, while throtl_pd_free()
-   will flush the timer, this is fixed by protecting blkgs with
-   blkcg_mutex instead of queue_lock by previous patches.
-2) queue_lock can be held from hardirq context, hence if
-   throtl_pending_timer_fn() is interrupted by hardirq, deadlock can be
-   triggered as well.
+- blkg_conf_open_bdev()
+- blkg_conf_open_bdev_frozen()
+- blkg_conf_prep()
+- blkg_conf_exit()
+- blkg_conf_exit_frozen()
 
-Stop abusing queue_lock to protect blk-throttle, and intorduce a new
-internal lock td->lock for protection. And now that the new lock won't
-be grabbed from hardirq context, it's safe to use spin_lock_bh() from
-thread context and spin_lock() directly from softirq context.
+This patch introduce two new helpers:
 
-Fixes: 6e1a5704cbbd ("blk-throttle: dispatch from throtl_pending_timer_fn()")
+- blkg_conf_start()
+- blkg_conf_end()
+
+And following patches will convert all blkcg policy to use this two
+helpers.
+
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/blk-throttle.c | 31 +++++++++++++------------------
- 1 file changed, 13 insertions(+), 18 deletions(-)
+ block/blk-cgroup.c | 61 ++++++++++++++++++++++++++++++++++++++++++++++
+ block/blk-cgroup.h |  3 +++
+ 2 files changed, 64 insertions(+)
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index cb3bfdb4684a..7feaa2ef0a6b 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -33,6 +33,7 @@ static struct workqueue_struct *kthrotld_workqueue;
- 
- struct throtl_data
- {
-+	spinlock_t lock;
- 	/* service tree for active throtl groups */
- 	struct throtl_service_queue service_queue;
- 
-@@ -1149,7 +1150,7 @@ static void throtl_pending_timer_fn(struct timer_list *t)
- 	else
- 		q = td->queue;
- 
--	spin_lock_irq(&q->queue_lock);
-+	spin_lock(&td->lock);
- 
- 	if (!q->root_blkg)
- 		goto out_unlock;
-@@ -1175,9 +1176,9 @@ static void throtl_pending_timer_fn(struct timer_list *t)
- 			break;
- 
- 		/* this dispatch windows is still open, relax and repeat */
--		spin_unlock_irq(&q->queue_lock);
-+		spin_unlock(&td->lock);
- 		cpu_relax();
--		spin_lock_irq(&q->queue_lock);
-+		spin_lock(&td->lock);
- 	}
- 
- 	if (!dispatched)
-@@ -1200,7 +1201,7 @@ static void throtl_pending_timer_fn(struct timer_list *t)
- 		queue_work(kthrotld_workqueue, &td->dispatch_work);
- 	}
- out_unlock:
--	spin_unlock_irq(&q->queue_lock);
-+	spin_unlock(&td->lock);
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 3c23d2d1e237..63089ae269cb 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -824,6 +824,67 @@ unsigned long __must_check blkg_conf_open_bdev_frozen(struct blkg_conf_ctx *ctx)
+ 	return memflags;
  }
+ 
++void blkg_conf_end(struct blkg_conf_ctx *ctx)
++{
++	struct request_queue *q = bdev_get_queue(ctx->bdev);
++
++	mutex_unlock(&q->blkcg_mutex);
++	mutex_unlock(&q->rq_qos_mutex);
++	mutex_unlock(&q->elevator_lock);
++	blk_mq_unfreeze_queue(q, ctx->memflags);
++	blkdev_put_no_open(ctx->bdev);
++}
++EXPORT_SYMBOL_GPL(blkg_conf_end);
++
++int blkg_conf_start(struct blkcg *blkcg, struct blkg_conf_ctx *ctx)
++{
++	char *input = ctx->input;
++	unsigned int major, minor;
++	struct block_device *bdev;
++	struct request_queue *q;
++	int key_len;
++
++	if (sscanf(input, "%u:%u%n", &major, &minor, &key_len) != 2)
++		return -EINVAL;
++
++	input += key_len;
++	if (!isspace(*input))
++		return -EINVAL;
++
++	input = skip_spaces(input);
++	bdev = blkdev_get_no_open(MKDEV(major, minor), false);
++	if (!bdev)
++		return -ENODEV;
++
++	if (bdev_is_partition(bdev)) {
++		blkdev_put_no_open(bdev);
++		return -ENODEV;
++	}
++
++	if (!disk_live(bdev->bd_disk)) {
++		blkdev_put_no_open(bdev);
++		return -ENODEV;
++	}
++
++	ctx->body = input;
++	ctx->bdev = bdev;
++	ctx->memflags = blk_mq_freeze_queue(ctx->bdev->bd_queue);
++	
++	q = bdev->bd_queue;
++	mutex_lock(&q->elevator_lock);
++	mutex_lock(&q->rq_qos_mutex);
++	mutex_lock(&q->blkcg_mutex);
++
++	ctx->blkg = blkg_lookup_create(blkcg, bdev->bd_disk);
++	if (!ctx->blkg) {
++		blkg_conf_end(ctx);
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(blkg_conf_start);
++
+ /**
+  * blkg_conf_prep - parse and prepare for per-blkg config update
+  * @blkcg: target block cgroup
+diff --git a/block/blk-cgroup.h b/block/blk-cgroup.h
+index 540be30aebcd..e7868989befb 100644
+--- a/block/blk-cgroup.h
++++ b/block/blk-cgroup.h
+@@ -217,6 +217,7 @@ struct blkg_conf_ctx {
+ 	char				*body;
+ 	struct block_device		*bdev;
+ 	struct blkcg_gq			*blkg;
++	unsigned long			memflags;
+ };
+ 
+ void blkg_conf_init(struct blkg_conf_ctx *ctx, char *input);
+@@ -226,6 +227,8 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 		   struct blkg_conf_ctx *ctx);
+ void blkg_conf_exit(struct blkg_conf_ctx *ctx);
+ void blkg_conf_exit_frozen(struct blkg_conf_ctx *ctx, unsigned long memflags);
++void blkg_conf_end(struct blkg_conf_ctx *ctx);
++int blkg_conf_start(struct blkcg *blkcg, struct blkg_conf_ctx *ctx);
  
  /**
-@@ -1216,7 +1217,6 @@ static void blk_throtl_dispatch_work_fn(struct work_struct *work)
- 	struct throtl_data *td = container_of(work, struct throtl_data,
- 					      dispatch_work);
- 	struct throtl_service_queue *td_sq = &td->service_queue;
--	struct request_queue *q = td->queue;
- 	struct bio_list bio_list_on_stack;
- 	struct bio *bio;
- 	struct blk_plug plug;
-@@ -1224,11 +1224,11 @@ static void blk_throtl_dispatch_work_fn(struct work_struct *work)
- 
- 	bio_list_init(&bio_list_on_stack);
- 
--	spin_lock_irq(&q->queue_lock);
-+	spin_lock_bh(&td->lock);
- 	for (rw = READ; rw <= WRITE; rw++)
- 		while ((bio = throtl_pop_queued(td_sq, NULL, rw)))
- 			bio_list_add(&bio_list_on_stack, bio);
--	spin_unlock_irq(&q->queue_lock);
-+	spin_unlock_bh(&td->lock);
- 
- 	if (!bio_list_empty(&bio_list_on_stack)) {
- 		blk_start_plug(&plug);
-@@ -1306,7 +1306,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
- 	rcu_read_unlock();
- 
- 	/*
--	 * We're already holding queue_lock and know @tg is valid.  Let's
-+	 * We're already holding td->lock and know @tg is valid.  Let's
- 	 * apply the new config directly.
- 	 *
- 	 * Restart the slices for both READ and WRITES. It might happen
-@@ -1333,6 +1333,7 @@ static int blk_throtl_init(struct gendisk *disk)
- 	if (!td)
- 		return -ENOMEM;
- 
-+	spin_lock_init(&td->lock);
- 	INIT_WORK(&td->dispatch_work, blk_throtl_dispatch_work_fn);
- 	throtl_service_queue_init(&td->service_queue);
- 
-@@ -1703,12 +1704,7 @@ void blk_throtl_cancel_bios(struct gendisk *disk)
- 	if (!blk_throtl_activated(q))
- 		return;
- 
--	spin_lock_irq(&q->queue_lock);
--	/*
--	 * queue_lock is held, rcu lock is not needed here technically.
--	 * However, rcu lock is still held to emphasize that following
--	 * path need RCU protection and to prevent warning from lockdep.
--	 */
-+	spin_lock_bh(&q->td->lock);
- 	rcu_read_lock();
- 	blkg_for_each_descendant_post(blkg, pos_css, q->root_blkg) {
- 		/*
-@@ -1722,7 +1718,7 @@ void blk_throtl_cancel_bios(struct gendisk *disk)
- 		tg_flush_bios(blkg_to_tg(blkg));
- 	}
- 	rcu_read_unlock();
--	spin_unlock_irq(&q->queue_lock);
-+	spin_unlock_bh(&q->td->lock);
- }
- 
- static bool tg_within_limit(struct throtl_grp *tg, struct bio *bio, bool rw)
-@@ -1755,7 +1751,6 @@ static bool tg_within_limit(struct throtl_grp *tg, struct bio *bio, bool rw)
- 
- bool __blk_throtl_bio(struct bio *bio)
- {
--	struct request_queue *q = bdev_get_queue(bio->bi_bdev);
- 	struct blkcg_gq *blkg = bio->bi_blkg;
- 	struct throtl_qnode *qn = NULL;
- 	struct throtl_grp *tg = blkg_to_tg(blkg);
-@@ -1765,7 +1760,7 @@ bool __blk_throtl_bio(struct bio *bio)
- 	struct throtl_data *td = tg->td;
- 
- 	rcu_read_lock();
--	spin_lock_irq(&q->queue_lock);
-+	spin_lock_bh(&td->lock);
- 	sq = &tg->service_queue;
- 
- 	while (true) {
-@@ -1841,7 +1836,7 @@ bool __blk_throtl_bio(struct bio *bio)
- 	}
- 
- out_unlock:
--	spin_unlock_irq(&q->queue_lock);
-+	spin_unlock_bh(&td->lock);
- 
- 	rcu_read_unlock();
- 	return throttled;
+  * bio_issue_as_root_blkg - see if this bio needs to be issued as root blkg
 -- 
 2.51.0
 
