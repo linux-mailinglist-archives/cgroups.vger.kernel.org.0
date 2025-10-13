@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-10679-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10680-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F7AFBD6241
-	for <lists+cgroups@lfdr.de>; Mon, 13 Oct 2025 22:37:39 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BEA8BD61FF
+	for <lists+cgroups@lfdr.de>; Mon, 13 Oct 2025 22:36:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91A27404843
-	for <lists+cgroups@lfdr.de>; Mon, 13 Oct 2025 20:35:42 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B4B5034450E
+	for <lists+cgroups@lfdr.de>; Mon, 13 Oct 2025 20:36:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA5A30CD8F;
-	Mon, 13 Oct 2025 20:33:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A3C30CDB4;
+	Mon, 13 Oct 2025 20:33:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bBvKYKbP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMPyVftY"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1E030C605;
-	Mon, 13 Oct 2025 20:33:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C2730B51C;
+	Mon, 13 Oct 2025 20:33:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760387613; cv=none; b=XZBX018vDouPC6V0HFOwJDkshkjNRN91RJiyJiIVzjtfdxyE9JBzycH0N3VwXY+Qk7mGpwOISogFHkVLXV2a6B4s4axrS7FtFqHNRsIACiYktiZDlDmt56Vy1BZnF0lJju+NLZd81mCk3UwF3y5jplpmeXWua8eLGsotQ2wmalc=
+	t=1760387621; cv=none; b=EQt3a9cdF6rXOuREIOzNWICKtutKtgNt6FG3umTtFNthOU9Y1XOqDvzCSpj5a7lnYg0SU/FZ50KJlOJ/cxK0fVhOpUTKR2b3S6zLMVpKSBHxonVPxc1To8GVz4Eksn5HlZLKoqHDMLGSM/RJ2KVkKfPsSUZ07ZB4CXs0ydLMW/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760387613; c=relaxed/simple;
-	bh=kjiTGiJ7XGj13DphZPg8K9+3Qbvo5MsVAvIN7OOetmE=;
+	s=arc-20240116; t=1760387621; c=relaxed/simple;
+	bh=mOrMHInwUUAF5x2TPu0KohmBJDCPDZeedSNBGf5P0qs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pTNAlF98eHbJ4SPRuy2T27VT0niaer21i4mu7ZjJm6d8wVixQM+IpArS3VvN8GCxvYhjCrN/YKkWzuFHMvJHrB6WnZoc2upMYgL+HTuXtt5d5zlaAj3iFxDfvIk0uc69RGhVnf9OQYpvPinEvrl6XZOSmyECiiowjMqZVrNZV8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bBvKYKbP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB425C4CEFE;
-	Mon, 13 Oct 2025 20:33:25 +0000 (UTC)
+	 MIME-Version:Content-Type; b=jM4+yrP6xjZmEt2P38ugD9jzusHjiOR8RLaw04jVoWJgcSSy9R7ZUKqKyQKzS9ui0X/33TdKDuLYTrF27J38M3A8BgAIp5mIUzBZjNWsEWMR0t5iS3hCzdDxDJ/MxnCaZDI8gJctjw50Vd/SfC4N84YzcPpG9jQz/01K4fwO5pM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMPyVftY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2E1FC4CEE7;
+	Mon, 13 Oct 2025 20:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760387613;
-	bh=kjiTGiJ7XGj13DphZPg8K9+3Qbvo5MsVAvIN7OOetmE=;
+	s=k20201202; t=1760387621;
+	bh=mOrMHInwUUAF5x2TPu0KohmBJDCPDZeedSNBGf5P0qs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bBvKYKbPljoS1rgueIakosC0OagPw2HPBcDldFxRvd9+bbrCox6vaQGbxcOL6m9tG
-	 xoyBrjm/Nh0FFnjAd7i3etJtf/ZLEbsGLAeDDBUOqNXJqSmkrPSZlLkxY9bIf4JPL9
-	 U+VaQbIi4dXiNCOvoTArYDoidezcJd9fqRHXgp5j0ooNZDsR4wO/FE5QvQip3XO04j
-	 ewTO/wLoozPAAMnUeC5wGg3ZfnpU7aUW+tYLL3wEuJEpJtQXMu6ZxWPuyFeCOphPBw
-	 b9MMLoew4tYeDVqV+8VVBAXKTyX8++POG+steTSFM6GLRWtT257YOcjP8qM2Z4tl6y
-	 3wageBOrrScxA==
+	b=kMPyVftYiGwonaPxPkSe84brMb9jqYboCwHd2zZBPRDl08dCi7W9fE2s2bthYnXhd
+	 sumWJ+6bP3nbIGMrekCn/4W0sfHr/ZjeJqracwuQnQZtgB0r8+ROWsq6904EhhmAJz
+	 lYhFT7jbWsj8yiFQ9tWF3MRKSvUn29nSSC6k9CZUmDsbtednhzyAjB/ypOW2I2fxDM
+	 0HwfUM3M36s1BBQZiiZIkw4s2Z8YOmSjMugkiJIGNXGi0yn6c+xcd06HDEvL9Oao85
+	 CB+af609sbR8m1MH9ROYKIki0Ke9Od/QppZoiPx17IV5O6heaqv8H11HIHNsJ/wiVc
+	 h7ERmhn8Bw7ew==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -79,9 +79,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 12/33] sched/isolation: Convert housekeeping cpumasks to rcu pointers
-Date: Mon, 13 Oct 2025 22:31:25 +0200
-Message-ID: <20251013203146.10162-13-frederic@kernel.org>
+Subject: [PATCH 13/33] cpuset: Update HK_TYPE_DOMAIN cpumask from cpuset
+Date: Mon, 13 Oct 2025 22:31:26 +0200
+Message-ID: <20251013203146.10162-14-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251013203146.10162-1-frederic@kernel.org>
 References: <20251013203146.10162-1-frederic@kernel.org>
@@ -91,159 +91,189 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-HK_TYPE_DOMAIN's cpumask will soon be made modifyable by cpuset.
-A synchronization mechanism is then needed to synchronize the updates
-with the housekeeping cpumask readers.
+Until now, HK_TYPE_DOMAIN used to only include boot defined isolated
+CPUs passed through isolcpus= boot option. Users interested in also
+knowing the runtime defined isolated CPUs through cpuset must use
+different APIs: cpuset_cpu_is_isolated(), cpu_is_isolated(), etc...
 
-Turn the housekeeping cpumasks into RCU pointers. Once a housekeeping
-cpumask will be modified, the update side will wait for an RCU grace
-period and propagate the change to interested subsystem when deemed
-necessary.
+There are many drawbacks to that approach:
+
+1) Most interested subsystems want to know about all isolated CPUs, not
+  just those defined on boot time.
+
+2) cpuset_cpu_is_isolated() / cpu_is_isolated() are not synchronized with
+  concurrent cpuset changes.
+
+3) Further cpuset modifications are not propagated to subsystems
+
+Solve 1) and 2) and centralize all isolated CPUs within the
+HK_TYPE_DOMAIN housekeeping cpumask.
+
+Subsystems can rely on RCU to synchronize against concurrent changes.
+
+The propagation mentioned in 3) will be handled in further patches.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/sched/isolation.c | 58 +++++++++++++++++++++++++---------------
- kernel/sched/sched.h     |  1 +
- 2 files changed, 37 insertions(+), 22 deletions(-)
+ include/linux/sched/isolation.h |  2 +
+ kernel/cgroup/cpuset.c          |  2 +
+ kernel/sched/isolation.c        | 75 ++++++++++++++++++++++++++++++---
+ kernel/sched/sched.h            |  1 +
+ 4 files changed, 74 insertions(+), 6 deletions(-)
 
+diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+index da22b038942a..94d5c835121b 100644
+--- a/include/linux/sched/isolation.h
++++ b/include/linux/sched/isolation.h
+@@ -32,6 +32,7 @@ extern const struct cpumask *housekeeping_cpumask(enum hk_type type);
+ extern bool housekeeping_enabled(enum hk_type type);
+ extern void housekeeping_affine(struct task_struct *t, enum hk_type type);
+ extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
++extern int housekeeping_update(struct cpumask *mask, enum hk_type type);
+ extern void __init housekeeping_init(void);
+ 
+ #else
+@@ -59,6 +60,7 @@ static inline bool housekeeping_test_cpu(int cpu, enum hk_type type)
+ 	return true;
+ }
+ 
++static inline int housekeeping_update(struct cpumask *mask, enum hk_type type) { return 0; }
+ static inline void housekeeping_init(void) { }
+ #endif /* CONFIG_CPU_ISOLATION */
+ 
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index aa1ac7bcf2ea..b04a4242f2fa 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1403,6 +1403,8 @@ static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
+ 
+ 	ret = workqueue_unbound_exclude_cpumask(isolated_cpus);
+ 	WARN_ON_ONCE(ret < 0);
++	ret = housekeeping_update(isolated_cpus, HK_TYPE_DOMAIN);
++	WARN_ON_ONCE(ret < 0);
+ }
+ 
+ /**
 diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 8690fb705089..b46c20b5437f 100644
+index b46c20b5437f..95d69c2102f6 100644
 --- a/kernel/sched/isolation.c
 +++ b/kernel/sched/isolation.c
-@@ -21,7 +21,7 @@ DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
- EXPORT_SYMBOL_GPL(housekeeping_overridden);
+@@ -29,18 +29,48 @@ static struct housekeeping housekeeping;
  
- struct housekeeping {
--	cpumask_var_t cpumasks[HK_TYPE_MAX];
-+	struct cpumask __rcu *cpumasks[HK_TYPE_MAX];
- 	unsigned long flags;
- };
- 
-@@ -33,17 +33,28 @@ bool housekeeping_enabled(enum hk_type type)
+ bool housekeeping_enabled(enum hk_type type)
+ {
+-	return !!(housekeeping.flags & BIT(type));
++	return !!(READ_ONCE(housekeeping.flags) & BIT(type));
  }
  EXPORT_SYMBOL_GPL(housekeeping_enabled);
  
-+const struct cpumask *housekeeping_cpumask(enum hk_type type)
++static bool housekeeping_dereference_check(enum hk_type type)
 +{
-+	if (static_branch_unlikely(&housekeeping_overridden)) {
-+		if (housekeeping.flags & BIT(type)) {
-+			return rcu_dereference_check(housekeeping.cpumasks[type], 1);
-+		}
-+	}
-+	return cpu_possible_mask;
-+}
-+EXPORT_SYMBOL_GPL(housekeeping_cpumask);
++	if (IS_ENABLED(CONFIG_LOCKDEP) && type == HK_TYPE_DOMAIN) {
++		/* Cpuset isn't even writable yet? */
++		if (system_state <= SYSTEM_SCHEDULING)
++			return true;
 +
- int housekeeping_any_cpu(enum hk_type type)
++		/* CPU hotplug write locked, so cpuset partition can't be overwritten */
++		if (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_write_held())
++			return true;
++
++		/* Cpuset lock held, partitions not writable */
++		if (IS_ENABLED(CONFIG_CPUSETS) && lockdep_is_cpuset_held())
++			return true;
++
++		return false;
++	}
++
++	return true;
++}
++
++static inline struct cpumask *housekeeping_cpumask_dereference(enum hk_type type)
++{
++	return rcu_dereference_check(housekeeping.cpumasks[type],
++				     housekeeping_dereference_check(type));
++}
++
+ const struct cpumask *housekeeping_cpumask(enum hk_type type)
  {
- 	int cpu;
- 
++	const struct cpumask *mask = NULL;
++
  	if (static_branch_unlikely(&housekeeping_overridden)) {
- 		if (housekeeping.flags & BIT(type)) {
--			cpu = sched_numa_find_closest(housekeeping.cpumasks[type], smp_processor_id());
-+			cpu = sched_numa_find_closest(housekeeping_cpumask(type), smp_processor_id());
- 			if (cpu < nr_cpu_ids)
- 				return cpu;
- 
--			cpu = cpumask_any_and_distribute(housekeeping.cpumasks[type], cpu_online_mask);
-+			cpu = cpumask_any_and_distribute(housekeeping_cpumask(type), cpu_online_mask);
- 			if (likely(cpu < nr_cpu_ids))
- 				return cpu;
- 			/*
-@@ -59,28 +70,18 @@ int housekeeping_any_cpu(enum hk_type type)
- }
- EXPORT_SYMBOL_GPL(housekeeping_any_cpu);
- 
--const struct cpumask *housekeeping_cpumask(enum hk_type type)
--{
--	if (static_branch_unlikely(&housekeeping_overridden))
--		if (housekeeping.flags & BIT(type))
--			return housekeeping.cpumasks[type];
+-		if (housekeeping.flags & BIT(type)) {
+-			return rcu_dereference_check(housekeeping.cpumasks[type], 1);
+-		}
++		if (READ_ONCE(housekeeping.flags) & BIT(type))
++			mask = housekeeping_cpumask_dereference(type);
+ 	}
 -	return cpu_possible_mask;
--}
--EXPORT_SYMBOL_GPL(housekeeping_cpumask);
--
- void housekeeping_affine(struct task_struct *t, enum hk_type type)
- {
- 	if (static_branch_unlikely(&housekeeping_overridden))
- 		if (housekeeping.flags & BIT(type))
--			set_cpus_allowed_ptr(t, housekeeping.cpumasks[type]);
-+			set_cpus_allowed_ptr(t, housekeeping_cpumask(type));
++	if (!mask)
++		mask = cpu_possible_mask;
++	return mask;
  }
- EXPORT_SYMBOL_GPL(housekeeping_affine);
+ EXPORT_SYMBOL_GPL(housekeeping_cpumask);
+ 
+@@ -80,12 +110,45 @@ EXPORT_SYMBOL_GPL(housekeeping_affine);
  
  bool housekeeping_test_cpu(int cpu, enum hk_type type)
  {
--	if (static_branch_unlikely(&housekeeping_overridden))
--		if (housekeeping.flags & BIT(type))
--			return cpumask_test_cpu(cpu, housekeeping.cpumasks[type]);
-+	if (housekeeping.flags & BIT(type))
-+		return cpumask_test_cpu(cpu, housekeeping_cpumask(type));
+-	if (housekeeping.flags & BIT(type))
++	if (READ_ONCE(housekeeping.flags) & BIT(type))
+ 		return cpumask_test_cpu(cpu, housekeeping_cpumask(type));
  	return true;
  }
  EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
-@@ -96,20 +97,33 @@ void __init housekeeping_init(void)
  
- 	if (housekeeping.flags & HK_FLAG_KERNEL_NOISE)
- 		sched_tick_offload_init();
--
-+	/*
-+	 * Realloc with a proper allocator so that any cpumask update
-+	 * can indifferently free the old version with kfree().
-+	 */
- 	for_each_set_bit(type, &housekeeping.flags, HK_TYPE_MAX) {
-+		struct cpumask *omask, *nmask = kmalloc(cpumask_size(), GFP_KERNEL);
++int housekeeping_update(struct cpumask *mask, enum hk_type type)
++{
++	struct cpumask *trial, *old = NULL;
 +
-+		if (WARN_ON_ONCE(!nmask))
-+			return;
++	if (type != HK_TYPE_DOMAIN)
++		return -ENOTSUPP;
 +
-+		omask = rcu_dereference(housekeeping.cpumasks[type]);
++	trial = kmalloc(sizeof(*trial), GFP_KERNEL);
++	if (!trial)
++		return -ENOMEM;
 +
- 		/* We need at least one CPU to handle housekeeping work */
--		WARN_ON_ONCE(cpumask_empty(housekeeping.cpumasks[type]));
-+		WARN_ON_ONCE(cpumask_empty(omask));
-+		cpumask_copy(nmask, omask);
-+		RCU_INIT_POINTER(housekeeping.cpumasks[type], nmask);
-+		memblock_free(omask, cpumask_size());
- 	}
- }
- 
- static void __init housekeeping_setup_type(enum hk_type type,
- 					   cpumask_var_t housekeeping_staging)
++	cpumask_andnot(trial, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT), mask);
++	if (!cpumask_intersects(trial, cpu_online_mask)) {
++		kfree(trial);
++		return -EINVAL;
++	}
++
++	if (!housekeeping.flags)
++		static_branch_enable(&housekeeping_overridden);
++
++	if (!(housekeeping.flags & BIT(type)))
++		old = housekeeping_cpumask_dereference(type);
++	else
++		WRITE_ONCE(housekeeping.flags, housekeeping.flags | BIT(type));
++	rcu_assign_pointer(housekeeping.cpumasks[type], trial);
++
++	synchronize_rcu();
++
++	kfree(old);
++
++	return 0;
++}
++
+ void __init housekeeping_init(void)
  {
-+	struct cpumask *mask = memblock_alloc_or_panic(cpumask_size(), SMP_CACHE_BYTES);
- 
--	alloc_bootmem_cpumask_var(&housekeeping.cpumasks[type]);
--	cpumask_copy(housekeeping.cpumasks[type],
--		     housekeeping_staging);
-+	cpumask_copy(mask, housekeeping_staging);
-+	RCU_INIT_POINTER(housekeeping.cpumasks[type], mask);
- }
- 
- static int __init housekeeping_setup(char *str, unsigned long flags)
-@@ -162,7 +176,7 @@ static int __init housekeeping_setup(char *str, unsigned long flags)
- 
- 		for_each_set_bit(type, &iter_flags, HK_TYPE_MAX) {
- 			if (!cpumask_equal(housekeeping_staging,
--					   housekeeping.cpumasks[type])) {
-+					   housekeeping_cpumask(type))) {
- 				pr_warn("Housekeeping: nohz_full= must match isolcpus=\n");
- 				goto free_housekeeping_staging;
- 			}
+ 	enum hk_type type;
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 1f5d07067f60..0c0ef8999fd6 100644
+index 0c0ef8999fd6..8fac8aa451c6 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -42,6 +42,7 @@
- #include <linux/ktime_api.h>
- #include <linux/lockdep_api.h>
- #include <linux/lockdep.h>
-+#include <linux/memblock.h>
- #include <linux/minmax.h>
- #include <linux/mm.h>
- #include <linux/module.h>
+@@ -30,6 +30,7 @@
+ #include <linux/context_tracking.h>
+ #include <linux/cpufreq.h>
+ #include <linux/cpumask_api.h>
++#include <linux/cpuset.h>
+ #include <linux/ctype.h>
+ #include <linux/file.h>
+ #include <linux/fs_api.h>
 -- 
 2.51.0
 
