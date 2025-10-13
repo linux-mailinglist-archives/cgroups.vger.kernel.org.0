@@ -1,142 +1,81 @@
-Return-Path: <cgroups+bounces-10654-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10655-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A71BD1CDF
-	for <lists+cgroups@lfdr.de>; Mon, 13 Oct 2025 09:31:11 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C3EBBD1F94
+	for <lists+cgroups@lfdr.de>; Mon, 13 Oct 2025 10:16:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66223189866F
-	for <lists+cgroups@lfdr.de>; Mon, 13 Oct 2025 07:31:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CEE4A4E9A1F
+	for <lists+cgroups@lfdr.de>; Mon, 13 Oct 2025 08:16:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05D92E92C0;
-	Mon, 13 Oct 2025 07:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 442C333086;
+	Mon, 13 Oct 2025 08:16:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BNutXIZ+"
+	dkim=pass (2048-bit key) header.d=brandexo.pl header.i=@brandexo.pl header.b="hhL+Jy+i"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from mail.brandexo.pl (mail.brandexo.pl [37.187.49.236])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF692E92AD
-	for <cgroups@vger.kernel.org>; Mon, 13 Oct 2025 07:29:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6519517A305
+	for <cgroups@vger.kernel.org>; Mon, 13 Oct 2025 08:15:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.187.49.236
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760340580; cv=none; b=f+W2Hi5MCr6n/Tv27TsoD5J3hLIJPmMjuzFX+iUd683fGYOG0uNIamKTb3E1UnpIyuCQYoqIK9dIdzutziwU0sW5fLoqfpBhNjGs3Iydj68ChGU+ual2FMr2x4CFv8qlb7/ARcwIu+VHC6MFQ4g0t0xO/HG2lAtTAKSSzy4vDiE=
+	t=1760343360; cv=none; b=R8vcpYU0spfYAojB/OULfGTkwAfixy5kmexdCZguIwXwKsIEuWjqPtuYV6xidUXhJ9NrVCOB45rdkPehvvr7kXdc/86EV/bb+7/EYtk9T7Iq3RRY85x0fLtScnAU8XPNa91G6Z6cH2Ch3y8ye91f71Wal6fZGNIN9pzpr/5/snc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760340580; c=relaxed/simple;
-	bh=lh1ojtXM+TO/pCbuzBlCz8MfGt6zSeQlY0BcDmXgxRU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ru7HgZUi7oaaoI1/uElBzncF+TKP7VMb05Q95Ygzo4yST87UjPqS2ds4W0rsVL0LYw69S+Kiw+N5gkLt/DjBigtHQ3pi2r1p+yE983utz2gDAy7oZelSfSrcp7lIaY1BwHjDMjGVW6p548tmmT6hsrVrZOAtSvTl3DsWTAl9LYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BNutXIZ+; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ab6edd99-30a3-486c-bc47-ffcac3d93b51@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1760340574;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/vZP9HpsjeKEWQ9ykCUaY7omAgoRs+k/b14bmmT76T0=;
-	b=BNutXIZ+c4siKB0mcFGD5RRZLQ3PNEf4I+6qjrSKnIkaPg0w193ytJEFODM97FcOGAKkFr
-	h3TfaalDIraRKKKPNhyRj0RIk99hSEnanM8rJMAFGpPqpQOTvpybOD19xKYlGgOqyxwCfP
-	/U+6UvEP1XKa3jDhi3iMXOtrkadH7tE=
-Date: Mon, 13 Oct 2025 15:29:11 +0800
+	s=arc-20240116; t=1760343360; c=relaxed/simple;
+	bh=S/mo7cY/2HBN4T3ecXqH6roQE4hmBOwO60AKp4leie8=;
+	h=Message-ID:Date:From:To:Subject:MIME-Version:Content-Type; b=CZEJQFkD/2tbmwitC3c41+hd2gYIxPGDfrMS53Hzzk7uJACFBlS7BDQN+7PW89PaMPZwv9HxQrNBnrHGFzT+cK38WPvfgV1jeGI1f5zoA7QKb3f4E1RtEFmK1roUkXc6uFRhnC0PuxSJMt2HkXKQ8wTPA7HrZBfP/zwYwnyUaKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=brandexo.pl; spf=pass smtp.mailfrom=brandexo.pl; dkim=pass (2048-bit key) header.d=brandexo.pl header.i=@brandexo.pl header.b=hhL+Jy+i; arc=none smtp.client-ip=37.187.49.236
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=brandexo.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=brandexo.pl
+Received: by mail.brandexo.pl (Postfix, from userid 1002)
+	id 4640525579; Mon, 13 Oct 2025 10:15:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=brandexo.pl; s=mail;
+	t=1760343345; bh=S/mo7cY/2HBN4T3ecXqH6roQE4hmBOwO60AKp4leie8=;
+	h=Date:From:To:Subject:From;
+	b=hhL+Jy+ifCPLfJ5TK3VL0f8fdDvQdsC7Md2s1Rv8mSUy6/MQ9E1acPuywQCho3kFT
+	 N0CoV1HslvfWFy0b95dbf6/kvuNJYWcQlcuDqiA6DMvQeX4MM1t7u0chxYJxmtXrvE
+	 7n2w+DC3wMKhYc5HF5jU2HGCC+w05ZwvNXsWZk+WGBAUv7u058qJ2gl067zDiFmYSj
+	 NcoCBH9y4zW/lzN80rbXmLIMkceuSMuawf4hDnt6DErZs84EXf2eln8dbgY9GCsATV
+	 oWH3JYG1rBYFO+u7kCHPLE2xvo5uxycyjT1Jk7HXRqzt9ovMPMT9KAHm+ycZ3Srz83
+	 fZncMdG6VTZ3w==
+Received: by mail.brandexo.pl for <cgroups@vger.kernel.org>; Mon, 13 Oct 2025 08:15:41 GMT
+Message-ID: <20251013084500-0.1.jx.2b6js.0.9ciu2pdx9a@brandexo.pl>
+Date: Mon, 13 Oct 2025 08:15:41 GMT
+From: "Adam Robaczewski" <adam.robaczewski@brandexo.pl>
+To: <cgroups@vger.kernel.org>
+Subject: vPPA dla firm
+X-Mailer: mail.brandexo.pl
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 4/4] mm: thp: reparent the split queue during memcg
- offline
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
- roman.gushchin@linux.dev, muchun.song@linux.dev, david@redhat.com,
- lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
- baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, npache@redhat.com,
- ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
- lance.yang@linux.dev, akpm@linux-foundation.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1759510072.git.zhengqi.arch@bytedance.com>
- <a01588414c9911f2bc912fa87f181aa5620d89d4.1759510072.git.zhengqi.arch@bytedance.com>
- <sdpkprxqf43emy5sttfzxnv4aemlarimdybdva4xyywyndajtx@zyvckuxgujzm>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <sdpkprxqf43emy5sttfzxnv4aemlarimdybdva4xyywyndajtx@zyvckuxgujzm>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Shakeel,
+Dzie=C5=84 dobry,
 
-On 10/8/25 1:56 AM, Shakeel Butt wrote:
-> On Sat, Oct 04, 2025 at 12:53:18AM +0800, Qi Zheng wrote:
->> From: Qi Zheng <zhengqi.arch@bytedance.com>
->>
->> Similar to list_lru, the split queue is relatively independent and does
->> not need to be reparented along with objcg and LRU folios (holding
->> objcg lock and lru lock). So let's apply the similar mechanism as list_lru
->> to reparent the split queue separately when memcg is offine.
->>
->> This is also a preparation for reparenting LRU folios.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   include/linux/huge_mm.h |  4 +++
->>   mm/huge_memory.c        | 54 +++++++++++++++++++++++++++++++++++++++++
->>   mm/memcontrol.c         |  1 +
->>   3 files changed, 59 insertions(+)
->>
->> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->> index f327d62fc9852..0c211dcbb0ec1 100644
->> --- a/include/linux/huge_mm.h
->> +++ b/include/linux/huge_mm.h
->> @@ -417,6 +417,9 @@ static inline int split_huge_page(struct page *page)
->>   	return split_huge_page_to_list_to_order(page, NULL, ret);
->>   }
->>   void deferred_split_folio(struct folio *folio, bool partially_mapped);
->> +#ifdef CONFIG_MEMCG
->> +void reparent_deferred_split_queue(struct mem_cgroup *memcg);
->> +#endif
->>   
->>   void __split_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
->>   		unsigned long address, bool freeze);
->> @@ -611,6 +614,7 @@ static inline int try_folio_split(struct folio *folio, struct page *page,
->>   }
->>   
->>   static inline void deferred_split_folio(struct folio *folio, bool partially_mapped) {}
->> +static inline void reparent_deferred_split_queue(struct mem_cgroup *memcg) {}
->>   #define split_huge_pmd(__vma, __pmd, __address)	\
->>   	do { } while (0)
->>   
->> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index 59ddebc9f3232..b5eea2091cdf6 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -1099,6 +1099,11 @@ static struct deferred_split *memcg_split_queue(int nid, struct mem_cgroup *memc
->>   {
->>   	return memcg ? &memcg->deferred_split_queue : split_queue_node(nid);
->>   }
->> +
->> +static bool memcg_is_dying(struct mem_cgroup *memcg)
->> +{
->> +	return memcg ? css_is_dying(&memcg->css) : false;
->> +}
-> 
-> Please move the above function to include/linux/memcontrol.h
+widz=C4=99, =C5=BCe Pa=C5=84stwa firma nale=C5=BCy do grupy przedsi=C4=99=
+biorstw o znacznym zu=C5=BCyciu energii.=20
 
-OK, will do.
+Zajmujemy si=C4=99 wirtualnymi umowami zakupu energii (VPPA), kt=C3=B3re =
+mog=C4=85 by=C4=87 interesuj=C4=85c=C4=85 opcj=C4=85 dla firm z rocznym z=
+u=C5=BCyciem 3-30 GWh.=20
 
-> 
-> With that, please add:
-> 
-> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+To rozwi=C4=85zanie pozwala na d=C5=82ugoterminowe zabezpieczenie koszt=C3=
+=B3w energii (5-7 lat) przy jednoczesnym wsparciu w raportowaniu ESG.
 
-Thanks!
+Je=C5=9Bli temat mo=C5=BCe by=C4=87 dla Pa=C5=84stwa interesuj=C4=85cy, j=
+estem do dyspozycji na rozmow=C4=99 o mo=C5=BCliwo=C5=9Bciach dopasowania=
+ takiego rozwi=C4=85zania do Pa=C5=84stwa specyfiki.
 
-> 
+Czy s=C4=85 Pa=C5=84stwo zainteresowani?
 
+
+Z wyrazami szacunku.
+Adam Robaczewski
 
