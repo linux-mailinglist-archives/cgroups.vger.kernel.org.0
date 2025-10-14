@@ -1,47 +1,47 @@
-Return-Path: <cgroups+bounces-10749-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10750-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10484BDB525
-	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 22:50:51 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0220BDB546
+	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 22:53:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 172233AABAF
-	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 20:50:40 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 710B04EABD2
+	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 20:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39659307486;
-	Tue, 14 Oct 2025 20:50:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7C1D306B38;
+	Tue, 14 Oct 2025 20:53:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="axsarSWx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="swyR28py"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD25B30505F;
-	Tue, 14 Oct 2025 20:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B373074AF;
+	Tue, 14 Oct 2025 20:53:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760475036; cv=none; b=oeJjPMikxLBkpnt5OSGSavmkMlQj3qGryfh/5F7tcpF5KSnmQ9MX9X+MjvYwWFlU9PQxGEYx+sMoJIc4CTpsqhSOVF6719yPQ7Zlb5KMimF3tLvHyW8vwJSE6IVCfiPXOcLw8sHTIAL8HEgT7/qSU688YerNaQcn7WgZagNoyWw=
+	t=1760475195; cv=none; b=CYo+PYno5QPB+tEBtRPMlA2M984Er5uIlrAjo8ChPrLXsXhTyqqd66hV/lmPXv8L6vcuXZ9qfO3PvLMzru35PYs0ViSSJ1wSJ9ezszTi1GnYwoxSi2Ca2nq7Jqc0R8Qd+grKu5w24F3I2o4ccnjVsq0NXHOCzfwjhcVdqSfIJfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760475036; c=relaxed/simple;
-	bh=5rxoTWolHOm4oraQzi00YA/zUXuac4iY3HiED5t3UAw=;
+	s=arc-20240116; t=1760475195; c=relaxed/simple;
+	bh=n/LR/VOVuEOFCI8XhFHTE8VhAsveYLysbT1xUiVBRoQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=ZjFXygtVo6CxNiA7NDXEKrNo54KlyLLi7noeF9r7PBtGdPVCIkRplHbaPQ4/wuprn968JMm/Mx8oFJmwD7xcbUBQlkEMmmEnjFu3lkP3lKmg4rqUyFs9WpZb7djpnqz61D3NROyNzhIXwut25Qm+IitmZrA9FmF8oUkuMPy8qHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=axsarSWx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45767C4CEE7;
-	Tue, 14 Oct 2025 20:50:35 +0000 (UTC)
+	 Content-Disposition:In-Reply-To; b=mc75yd0ujlKgb/7QKM5kiZW43Gm9/6fNf3dNl8DMsxHxq2bKPlKtgWH8ud6ROrX1i18REc/rnAZFs0jPJcqiiju8EA6IiB0p7YlbZdiHUvYUpUAJWj+dzhrfcu4eFQUAGH+gXfhiLSvN8rt+iqmL7OwHX0SSpp+r14AOlGP0lPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=swyR28py; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D21D6C4CEF9;
+	Tue, 14 Oct 2025 20:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760475035;
-	bh=5rxoTWolHOm4oraQzi00YA/zUXuac4iY3HiED5t3UAw=;
+	s=k20201202; t=1760475195;
+	bh=n/LR/VOVuEOFCI8XhFHTE8VhAsveYLysbT1xUiVBRoQ=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=axsarSWx827Fh8I2C7WoflR8ZEe8mbgEs9R6CNEb6ECRF5VzvbWJ7lxhJgY29BVla
-	 00hCz190I4TJB55vPEw8SOgjqeKIwZNiDizKvjrSRahk1tH4/0AZQwjEGe6AFvBQW7
-	 KMeLDw8WmfkNZa/bigvyqkE8GtU9qkyFABpYhCWiuxdm4ZxzvEPywsTf5N66DmsQpT
-	 OK747OQH2ZOYXfuDc5kNybLckElodrxrtoImcUoDyIeBQJ3xD4cAtL9fAycICL2Oeo
-	 VVEnQeIDZi1UX4ffYitoGKZ/qhA4CW0Ud24/ggKohRDgxpn3zp1xwRgHW83PZ6s3pf
-	 Cz5dN01+ANVYw==
-Date: Tue, 14 Oct 2025 15:50:34 -0500
+	b=swyR28pypyBnRwl4m3DigwMj3bUrxOd00mzjuGD5aTN0FjLn8NZloGgLtoSm4EWF6
+	 U+OQrImhcyFW1VE+1XOf7gsl+Z6u33VL59B3ZFGSMdhSCKfE10SSPf7PmGdnejwJFG
+	 4W7sgMSd47UsSs4bbQQC0m2b54v2j6riWSO3ueU6abtrZ6v3Z1APYa4Dz7eg+oMj1c
+	 E6GAg/xVIOaSHdCbI1G5jNYk9cUVlMAQIS1+cIiZKnhohliyM8TIACP4GiEgzG7+ha
+	 7oSYLyFf2hw0TAj9/uWSaVineqdRxAJldC0oB4sXW5a4J7HK8JAuGF/KcmG4Gk36Tb
+	 fkRsty8PnFzAw==
+Date: Tue, 14 Oct 2025 15:53:13 -0500
 From: Bjorn Helgaas <helgaas@kernel.org>
 To: Frederic Weisbecker <frederic@kernel.org>
 Cc: LKML <linux-kernel@vger.kernel.org>,
@@ -71,9 +71,9 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
 	linux-mm@kvack.org, linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: Re: [PATCH 16/33] PCI: Flush PCI probe workqueue on cpuset isolated
- partition change
-Message-ID: <20251014205034.GA906667@bhelgaas>
+Subject: Re: [PATCH 01/33] PCI: Prepare to protect against concurrent
+ isolated cpuset change
+Message-ID: <20251014205313.GA906793@bhelgaas>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -82,23 +82,20 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251013203146.10162-17-frederic@kernel.org>
+In-Reply-To: <20251013203146.10162-2-frederic@kernel.org>
 
-On Mon, Oct 13, 2025 at 10:31:29PM +0200, Frederic Weisbecker wrote:
-> The HK_TYPE_DOMAIN housekeeping cpumask is now modifyable at runtime. In
-> order to synchronize against PCI probe works and make sure that no
-> asynchronous probing is still pending or executing on a newly made
-> isolated CPU, the housekeeping susbsystem must flush the PCI probe
-> works.
+On Mon, Oct 13, 2025 at 10:31:14PM +0200, Frederic Weisbecker wrote:
+> HK_TYPE_DOMAIN will soon integrate cpuset isolated partitions and
+> therefore be made modifyable at runtime. Synchronize against the cpumask
+> update using RCU.
 > 
-> However the PCI probe works can't be flushed easily since they are
-> queued to the main per-CPU workqueue pool.
+> The RCU locked section includes both the housekeeping CPU target
+> election for the PCI probe work and the work enqueue.
 > 
-> Solve this with creating a PCI probe specific pool and provide and use
-> the appropriate flushing API.
+> This way the housekeeping update side will simply need to flush the
+> pending related works after updating the housekeeping mask in order to
+> make sure that no PCI work ever executes on an isolated CPU. This part
+> will be handled in a subsequent patch.
 
-s/modifyable/modifiable/
-s/newly made isolated/newly isolated/
-s/susbsystem/subsystem/
-s/PCI probe specific pool/PCI probe-specific pool/
+s/modifyable/modifiable/ (also in several other commit logs)
 
