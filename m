@@ -1,230 +1,201 @@
-Return-Path: <cgroups+bounces-10719-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10720-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECA86BD8584
-	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 11:03:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69CFABD8718
+	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 11:32:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 38E994F9FDD
-	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 09:03:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 964311921689
+	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 09:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD11D2E2EF0;
-	Tue, 14 Oct 2025 09:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D792EA170;
+	Tue, 14 Oct 2025 09:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Lb/N2nbn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274F12E718F;
-	Tue, 14 Oct 2025 09:03:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 921ED2EA724
+	for <cgroups@vger.kernel.org>; Tue, 14 Oct 2025 09:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760432618; cv=none; b=oCjlrPy+JAKGWqRD5RDUjiVH7OEjN6F9KVWjMKpvb7LAul4XieTykpj3iRA1mEfXbf1nRBc4ZtJF8ozYeHZrcPlQVr0rbVRf2T2IaP0wVPhckkygK6lJzJdFN/79n76Ret5lVyk4oVYikZbqLjamaa6O/78YvgmYVodI5BFUHV8=
+	t=1760434352; cv=none; b=XD1/xdtR9pH3nHGOfMExJZnlqI15o+bwjLJOOP7y0DQO8nMFuX8xss35uB1VrpngfBeJsisLrnQ4XcArFCxjwQBOI6gHbCmUW3tVBE1/ipguZChgoHR4/J5/9RkETz4z5CCEHttx28NapPMv3krYHq8g4/2pDMa5f7t2q5wWUC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760432618; c=relaxed/simple;
-	bh=qzpSQytulsfACI87Oo+DwR/UtZR57CtnwM47JSBMiz4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=CVwM+6hjh/pAyZtbvsww/Phj+02/73MzlNx1yOl/FluR3gmfYX/Vl6cyhLwi8MXbmdowqPhJNkJbk9Z3/k2VhhS8JldXWYD9ToETW5NXp3gg72iotYbwELmmNJWY91LUo3vJ/9wqg8hOB50h52z9sBJUsO4wZvVdDdIP4yr+b2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cm7Xb6BWrzKHMhK;
-	Tue, 14 Oct 2025 17:02:55 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id D6FED1A1491;
-	Tue, 14 Oct 2025 17:03:31 +0800 (CST)
-Received: from [10.174.179.143] (unknown [10.174.179.143])
-	by APP2 (Coremail) with SMTP id Syh0CgCH3UXhEe5oH8xPAQ--.28714S3;
-	Tue, 14 Oct 2025 17:03:31 +0800 (CST)
-Subject: Re: [PATCH 3/4] blk-rq-qos: fix possible deadlock
-To: Ming Lei <ming.lei@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: nilay@linux.ibm.com, tj@kernel.org, josef@toxicpanda.com,
- axboe@kernel.dk, cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- johnny.chenyi@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20251014022149.947800-1-yukuai3@huawei.com>
- <20251014022149.947800-4-yukuai3@huawei.com> <aO4GPKKpLbj7kMoz@fedora>
- <f0ab9c95-990b-a41d-477e-c1b20b392985@huaweicloud.com>
- <aO4L2THnLFM-_Fb8@fedora>
- <0351f07e-4ac4-a1e2-b4ee-08e49e7d0b6e@huaweicloud.com>
- <aO4P08Sw2YYjOYtu@fedora>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <d216f913-d484-ed6c-78f8-5d53a4b1301d@huaweicloud.com>
-Date: Tue, 14 Oct 2025 17:03:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+	s=arc-20240116; t=1760434352; c=relaxed/simple;
+	bh=eZ5+eDsok7kjQpukFmOgRglwegLra2gCSAMl2Fx7fN0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kpRZorOvYTIT0MEZlQVpjhznPRzg4ChhbB8XxIPBDjFGP7RV38r6bSACGkpEEkv4D70jTNK/gWtxMIkB8AY/AomMn0RLHrKRFW7LaNYayXCi94Dkvy0Y1gysSLKUgamB7Ss3E3QylYUzgzqMxI69q5GaPHSo+HbH3F6MqU6VQHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Lb/N2nbn; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1760434335;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MaJVArJT5DSA2aQdi42cvv24ZzgEQA46Llp+u4DFk7o=;
+	b=Lb/N2nbnUC+KtEZA5YdCQPpps9Cv3ryweXrraIB3a+qMPeI+DdRaj9d5dnTVQDFqYbd4/6
+	KO5FDqdZjAZeg+Yx8O+pttul2MOUXReq/nweJtW6skE52EkkWAoot8WsJkwQG95hqYkBap
+	WDVhc31X/+SlJdB8eeDHTQJeLJ27Uxg=
+From: Hao Ge <hao.ge@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Suren Baghdasaryan <surenb@google.com>
+Cc: Harry Yoo <harry.yoo@oracle.com>,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Hao Ge <gehao@kylinos.cn>
+Subject: [PATCH] slab: Introduce __SECOND_OBJEXT_FLAG for objext_flags
+Date: Tue, 14 Oct 2025 17:31:24 +0800
+Message-Id: <20251014093124.300012-1-hao.ge@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <aO4P08Sw2YYjOYtu@fedora>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCH3UXhEe5oH8xPAQ--.28714S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ww4DJFWDZFy8GF43AFW5Wrg_yoW7Aw4kpa
-	y8KF45Aw4qqr1DX34j9w43Wrn7t3yFgr4UZrWrGr1avryqkF1IvF1UtFWUGFy0vry7Cr40
-	qr1UXr4SkFy5KrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBF14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd-B_UUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
+From: Hao Ge <gehao@kylinos.cn>
 
-在 2025/10/14 16:55, Ming Lei 写道:
-> On Tue, Oct 14, 2025 at 04:42:30PM +0800, Yu Kuai wrote:
->> Hi,
->>
->> 在 2025/10/14 16:37, Ming Lei 写道:
->>> On Tue, Oct 14, 2025 at 04:24:23PM +0800, Yu Kuai wrote:
->>>> Hi,
->>>>
->>>> 在 2025/10/14 16:13, Ming Lei 写道:
->>>>> On Tue, Oct 14, 2025 at 10:21:48AM +0800, Yu Kuai wrote:
->>>>>> Currently rq-qos debugfs entries is created from rq_qos_add(), while
->>>>>> rq_qos_add() requires queue to be freezed. This can deadlock because
->>>>>> creating new entries can trigger fs reclaim.
->>>>>>
->>>>>> Fix this problem by delaying creating rq-qos debugfs entries until
->>>>>> it's initialization is complete.
->>>>>>
->>>>>> - For wbt, it can be initialized by default of by blk-sysfs, fix it by
->>>>>>      calling blk_mq_debugfs_register_rq_qos() after wbt_init;
->>>>>> - For other policies, they can only be initialized by blkg configuration,
->>>>>>      fix it by calling blk_mq_debugfs_register_rq_qos() from
->>>>>>      blkg_conf_end();
->>>>>>
->>>>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->>>>>> ---
->>>>>>     block/blk-cgroup.c | 6 ++++++
->>>>>>     block/blk-rq-qos.c | 7 -------
->>>>>>     block/blk-sysfs.c  | 4 ++++
->>>>>>     block/blk-wbt.c    | 7 ++++++-
->>>>>>     4 files changed, 16 insertions(+), 8 deletions(-)
->>>>>>
->>>>>> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
->>>>>> index d93654334854..e4ccabf132c0 100644
->>>>>> --- a/block/blk-cgroup.c
->>>>>> +++ b/block/blk-cgroup.c
->>>>>> @@ -33,6 +33,7 @@
->>>>>>     #include "blk-cgroup.h"
->>>>>>     #include "blk-ioprio.h"
->>>>>>     #include "blk-throttle.h"
->>>>>> +#include "blk-mq-debugfs.h"
->>>>>>     static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu);
->>>>>> @@ -746,6 +747,11 @@ void blkg_conf_end(struct blkg_conf_ctx *ctx)
->>>>>>     	mutex_unlock(&q->elevator_lock);
->>>>>>     	blk_mq_unfreeze_queue(q, ctx->memflags);
->>>>>>     	blkdev_put_no_open(ctx->bdev);
->>>>>> +
->>>>>> +	mutex_lock(&q->debugfs_mutex);
->>>>>> +	blk_mq_debugfs_register_rq_qos(q);
->>>>>> +	mutex_unlock(&q->debugfs_mutex);
->>>>>> +
->>>>>>     }
->>>>>>     EXPORT_SYMBOL_GPL(blkg_conf_end);
->>>>>> diff --git a/block/blk-rq-qos.c b/block/blk-rq-qos.c
->>>>>> index 654478dfbc20..d7ce99ce2e80 100644
->>>>>> --- a/block/blk-rq-qos.c
->>>>>> +++ b/block/blk-rq-qos.c
->>>>>> @@ -347,13 +347,6 @@ int rq_qos_add(struct rq_qos *rqos, struct gendisk *disk, enum rq_qos_id id,
->>>>>>     	blk_queue_flag_set(QUEUE_FLAG_QOS_ENABLED, q);
->>>>>>     	blk_mq_unfreeze_queue(q, memflags);
->>>>>> -
->>>>>> -	if (rqos->ops->debugfs_attrs) {
->>>>>> -		mutex_lock(&q->debugfs_mutex);
->>>>>> -		blk_mq_debugfs_register_rqos(rqos);
->>>>>> -		mutex_unlock(&q->debugfs_mutex);
->>>>>> -	}
->>>>>> -
->>>>>>     	return 0;
->>>>>>     ebusy:
->>>>>>     	blk_mq_unfreeze_queue(q, memflags);
->>>>>> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
->>>>>> index 76c47fe9b8d6..52bb4db25cf5 100644
->>>>>> --- a/block/blk-sysfs.c
->>>>>> +++ b/block/blk-sysfs.c
->>>>>> @@ -688,6 +688,10 @@ static ssize_t queue_wb_lat_store(struct gendisk *disk, const char *page,
->>>>>>     	mutex_unlock(&disk->rqos_state_mutex);
->>>>>>     	blk_mq_unquiesce_queue(q);
->>>>>> +
->>>>>> +	mutex_lock(&q->debugfs_mutex);
->>>>>> +	blk_mq_debugfs_register_rq_qos(q);
->>>>>> +	mutex_unlock(&q->debugfs_mutex);
->>>>>>     out:
->>>>>>     	blk_mq_unfreeze_queue(q, memflags);
->>>>>> diff --git a/block/blk-wbt.c b/block/blk-wbt.c
->>>>>> index eb8037bae0bd..a120b5ba54db 100644
->>>>>> --- a/block/blk-wbt.c
->>>>>> +++ b/block/blk-wbt.c
->>>>>> @@ -724,8 +724,13 @@ void wbt_enable_default(struct gendisk *disk)
->>>>>>     	if (!blk_queue_registered(q))
->>>>>>     		return;
->>>>>> -	if (queue_is_mq(q) && enable)
->>>>>> +	if (queue_is_mq(q) && enable) {
->>>>>>     		wbt_init(disk);
->>>>>> +
->>>>>> +		mutex_lock(&q->debugfs_mutex);
->>>>>> +		blk_mq_debugfs_register_rq_qos(q);
->>>>>> +		mutex_unlock(&q->debugfs_mutex);
->>>>>> +	}
->>>>>
->>>>> ->debugfs_mutex only may be not enough, because blk_mq_debugfs_register_rq_qos()
->>>>> has to traverse rq_qos single list list, you may have to grab q->rq_qos_mutex
->>>>> for protect the list.
->>>>>
->>>>
->>>> I think we can't grab rq_qos_mutex to create debugfs entries, right?
->>>
->>> It depends on the finalized order between rq_qos_mutex and freezing queue.
->>>
->>>> With the respect of this, perhaps we can grab debugfs_mutex to protect
->>>> insering rq_qos list instead?
->>>
->>> No, debugfs_mutex shouldn't protect rq_qos list, and rq_qos_mutex is
->>> supposed to do the job at least from naming viewpoint.
->>
->> Ok, then we'll have to make sure the order is rq_qos_mutex before
->> freezing queue, I was thinking the inverse order because of the helper
->> blkg_conf_open_bdev_frozen().
->>
->> I'll check first if this is possible.
-> 
-> You may misunderstand my point, I meant `debugfs_mutex` can't be used for
-> protecting rq_qos list because of its name. But order between rq_qos_mutex
-> and freeze queue might be fine in either way, just it has to be fixed.
-> Not look into it yet.
+We should not reuse the first bit for OBJEXTS_ALLOC_FAIL.
+This is because the following scenarios may be encountered:
 
-No misunderstood :) I mean if we want to fix this by delaying creating
-debugfs entries after queue is unfreezed, and we have to hold
-rq_qos_mutex for ierating rqos, then rq_qos_mutex have to be hold before
-freeing queue.
+Under heavy system load, certain sequences of events can trigger the
+VM_BUG_ON_FOLIO(folio->memcg_data & MEMCG_DATA_OBJEXTS, folio) check:
 
-A quick look I feel it's ok, I'll try a new version.
+1. High system pressure may cause objext allocation failure for a slab.
+2. When objext allocation fails, slab->obj_exts is set to
+   OBJEXTS_ALLOC_FAIL (value 1).
+3. Later, this slab may enter the release process.
+4. During release of the associated folio, the existing
+   VM_BUG_ON_FOLIO check validates folio->memcg_data.
+   If the MEMCG_DATA_OBJEXTS bit is unexpectedly
+   set here, the bug check gets triggered.
 
-Thanks,
-Kuai
+We have obtained the following logs:
+[ 7108.343437] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xffff0002deb97600 pfn:0x31eb96
+[ 7108.343482] head: order:1 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+[ 7108.343500] memcg:1
+[ 7108.343507] flags: 0x17ffff800000040(head|node=0|zone=2|lastcpupid=0xfffff)
+[ 7108.343523] raw: 017ffff800000040 ffff0000c000cac0 dead000000000100 0000000000000000
+[ 7108.343528] raw: ffff0002deb97600 0000000000240000 00000000ffffffff 0000000000000001
+[ 7108.343534] head: 017ffff800000040 ffff0000c000cac0 dead000000000100 0000000000000000
+[ 7108.343539] head: ffff0002deb97600 0000000000240000 00000000ffffffff 0000000000000001
+[ 7108.343562] head: 017ffff800000001 fffffdffcb7ae581 00000000ffffffff 00000000ffffffff
+[ 7108.343569] head: ffffffffffffffff 0000000000000000 00000000ffffffff 0000000000000002
+[ 7108.343574] page dumped because: VM_BUG_ON_FOLIO(folio->memcg_data & MEMCG_DATA_OBJEXTS)
+[ 7108.343601] ------------[ cut here ]------------
+[ 7108.343607] kernel BUG at ./include/linux/memcontrol.h:537!
+[ 7108.343617] Internal error: Oops - BUG: 00000000f2000800 [#1]  SMP
+[ 7108.345751] Modules linked in: squashfs isofs vhost_vsock vhost_net vmw_vsock_virtio_transport_common vfio_iommu_type1 vhost vfio vsock vhost_iotlb iommufd tap binfmt_misc nfsv3 nfs_acl nfs lockd grace netfs tls rds dns_resolver tun brd overlay ntfs3 exfat btrfs blake2b_generic xor xor_neon raid6_pq loop sctp ip6_udp_tunnel udp_tunnel nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables rfkill ip_set sunrpc vfat fat joydev sg sch_fq_codel nfnetlink virtio_gpu drm_client_lib virtio_dma_buf drm_shmem_helper sr_mod drm_kms_helper cdrom drm ghash_ce virtio_net virtio_scsi backlight virtio_console virtio_blk net_failover failover virtio_mmio dm_mirror dm_region_hash dm_log dm_multipath dm_mod fuse i2c_dev virtio_pci virtio_pci_legacy_dev virtio_pci_modern_dev virtio virtio_ring autofs4 aes_neon_bs aes_ce_blk [last unloaded: hwpoison_inject]
+[ 7108.355662] CPU: 7 UID: 0 PID: 4470 Comm: kylin-process-m Kdump: loaded Not tainted 6.18.0-rc1-dirty #54 PREEMPT(voluntary)
+[ 7108.356864] Hardware name: QEMU KVM Virtual Machine, BIOS unknown 2/2/2022
+[ 7108.357621] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[ 7108.358981] pc : __free_frozen_pages+0xf18/0x18e8
+[ 7108.359834] lr : __free_frozen_pages+0xf18/0x18e8
+[ 7108.360379] sp : ffff8000a2bb7580
+[ 7108.360786] x29: ffff8000a2bb7580 x28: fffffdffcb7ae580 x27: fffffdffcb7ae580
+[ 7108.362013] x26: fffffdffcb7ae588 x25: 1fffffbff96f5cb1 x24: 1fffffbff96f5cb0
+[ 7108.362804] x23: ffff8000839d6ba0 x22: ffff8000839d6000 x21: 0000000000000000
+[ 7108.363596] x20: 0000000000000000 x19: 0000000000000001 x18: 0000000000000000
+[ 7108.364393] x17: 445f47434d454d20 x16: 2620617461645f67 x15: 636d656d3e2d6f69
+[ 7108.365498] x14: 6c6f66284f494c4f x13: 0000000000000001 x12: ffff600063fece93
+[ 7108.366317] x11: 1fffe00063fece92 x10: ffff600063fece92 x9 : dfff800000000000
+[ 7108.367610] x8 : 00009fff9c01316e x7 : ffff00031ff67493 x6 : 0000000000000001
+[ 7108.368455] x5 : ffff00031ff67490 x4 : ffff600063fece93 x3 : 0000000000000000
+[ 7108.369276] x2 : 0000000000000000 x1 : ffff000103fe5d40 x0 : 000000000000004c
+[ 7108.370140] Call trace:
+[ 7108.370463]  __free_frozen_pages+0xf18/0x18e8 (P)
+[ 7108.371011]  free_frozen_pages+0x1c/0x30
+[ 7108.372040]  __free_slab+0xd0/0x250
+[ 7108.372471]  free_slab+0x38/0x118
+[ 7108.372882]  free_to_partial_list+0x1d4/0x340
+[ 7108.373813]  __slab_free+0x24c/0x348
+[ 7108.374253]  ___cache_free+0xf0/0x110
+[ 7108.374699]  qlist_free_all+0x78/0x130
+[ 7108.375156]  kasan_quarantine_reduce+0x114/0x148
+[ 7108.375695]  __kasan_slab_alloc+0x7c/0xb0
+[ 7108.376668]  kmem_cache_alloc_noprof+0x164/0x5c8
+[ 7108.377206]  __alloc_object+0x44/0x1f8
+[ 7108.377659]  __create_object+0x34/0xc8
+[ 7108.378196]  kmemleak_alloc+0xb8/0xd8
+[ 7108.378644]  kmem_cache_alloc_noprof+0x368/0x5c8
+[ 7108.379224]  getname_flags.part.0+0xa4/0x610
+[ 7108.379733]  getname_flags+0x80/0xd8
+[ 7108.380169]  do_sys_openat2+0xb4/0x178
+[ 7108.380921]  __arm64_sys_openat+0x134/0x1d0
+[ 7108.381952]  invoke_syscall+0xd4/0x258
+[ 7108.382408]  el0_svc_common.constprop.0+0xb4/0x240
+[ 7108.382965]  do_el0_svc+0x48/0x68
+[ 7108.383375]  el0_svc+0x40/0xe0
+[ 7108.383757]  el0t_64_sync_handler+0xa0/0xe8
+[ 7108.384465]  el0t_64_sync+0x1ac/0x1b0
+[ 7108.385284] Code: 91398021 aa1b03e0 91138021 97fd35e3 (d4210000)
+[ 7108.386553] SMP: stopping secondary CPUs
+[ 7108.389714] Starting crashdump kernel...
+[ 7108.390190] Bye!
 
-> 
-> Thanks,
-> Ming
-> 
-> 
-> .
-> 
+So, introduce __SECOND_OBJEXT_FLAG for objext_flags, adjust
+the corresponding order accordingly, and ensure that OBJEXTS_ALLOC_FAIL
+is no longer reused.
+
+Fixes: 7612833192d5 ("slab: Reuse first bit for OBJEXTS_ALLOC_FAIL")
+Signed-off-by: Hao Ge <gehao@kylinos.cn>
+---
+ include/linux/memcontrol.h | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 873e510d6f8d..8ea023944fac 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -341,27 +341,23 @@ enum page_memcg_data_flags {
+ 	__NR_MEMCG_DATA_FLAGS  = (1UL << 2),
+ };
+ 
+-#define __OBJEXTS_ALLOC_FAIL	MEMCG_DATA_OBJEXTS
+ #define __FIRST_OBJEXT_FLAG	__NR_MEMCG_DATA_FLAGS
++#define __SECOND_OBJEXT_FLAG    (__FIRST_OBJEXT_FLAG << 1)
+ 
+ #else /* CONFIG_MEMCG */
+ 
+-#define __OBJEXTS_ALLOC_FAIL	(1UL << 0)
+ #define __FIRST_OBJEXT_FLAG	(1UL << 0)
++#define __SECOND_OBJEXT_FLAG	(1UL << 0)
+ 
+ #endif /* CONFIG_MEMCG */
+ 
+ enum objext_flags {
+-	/*
+-	 * Use bit 0 with zero other bits to signal that slabobj_ext vector
+-	 * failed to allocate. The same bit 0 with valid upper bits means
+-	 * MEMCG_DATA_OBJEXTS.
+-	 */
+-	OBJEXTS_ALLOC_FAIL = __OBJEXTS_ALLOC_FAIL,
++	/* slabobj_ext vector failed to allocate */
++	OBJEXTS_ALLOC_FAIL = __FIRST_OBJEXT_FLAG,
+ 	/* slabobj_ext vector allocated with kmalloc_nolock() */
+-	OBJEXTS_NOSPIN_ALLOC = __FIRST_OBJEXT_FLAG,
++	OBJEXTS_NOSPIN_ALLOC = __SECOND_OBJEXT_FLAG,
+ 	/* the next bit after the last actual flag */
+-	__NR_OBJEXTS_FLAGS  = (__FIRST_OBJEXT_FLAG << 1),
++	__NR_OBJEXTS_FLAGS  = (__SECOND_OBJEXT_FLAG << 1),
+ };
+ 
+ #define OBJEXTS_FLAGS_MASK (__NR_OBJEXTS_FLAGS - 1)
+-- 
+2.25.1
 
 
