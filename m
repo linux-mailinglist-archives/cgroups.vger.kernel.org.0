@@ -1,157 +1,179 @@
-Return-Path: <cgroups+bounces-10732-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10733-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D716BD9BE1
-	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 15:34:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87F10BD9C04
+	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 15:36:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C363218A06A6
-	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 13:30:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03BAD1884D1D
+	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 13:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C07314A63;
-	Tue, 14 Oct 2025 13:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 675A7303A3B;
+	Tue, 14 Oct 2025 13:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DQLkKiQf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FFBF313E2D;
-	Tue, 14 Oct 2025 13:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8641E260C
+	for <cgroups@vger.kernel.org>; Tue, 14 Oct 2025 13:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760448574; cv=none; b=fxHpKTkCu4txXp3bgB2b0G/2xP1zBiCV/Z0ZZLOb47WOCLdDhMNA632S6uVc6b+E6VN+3lcxALvDp5SODP1KdjMqDb/Cd+yeQGWxTLCkeUTthrhXpZ+SDTvs4P3HMpjm/n8U1QRVFFxaAhw6zsPeglfzm3KQRbh4cQ1825E+nvs=
+	t=1760448697; cv=none; b=NBFjdGN88+sQKsrowUuywe9884dO/jVDT67tjLtNSmkYCXa7Y0MDeHs05ZTWj3qYwDQm1OMFoL0SgfvrSiGg9dyRJFgTM6YYoX3wlqhaFbbUq7VPlWUNPak1TrX0vujz2X1PjEKROtoTxLX+8HslYvZ4/WNKPt863c7UxcnE5Yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760448574; c=relaxed/simple;
-	bh=7HV8DsFk4LJDeobEMJ2ek8/UQi2Yz+tHf6C1svO2rHw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JPupmJy4ISYEZBsXuXppmPD+6LULDXjQSJ8h/ZtUPr6e6z7UKGEaFzmenQpnNVrimwtoEbfoQc0tFgq7aW9rQFzstiPhSC119PDpYI0RyZ7YSXD2H5Qy9TSM0DE1mNqppUPTc1HpzjjnyoARztHnoN/AK+7KYoMmG0r1ZpXFx+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4cmFRM5NZGzYQtpy;
-	Tue, 14 Oct 2025 21:28:47 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id C64611A093A;
-	Tue, 14 Oct 2025 21:29:28 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgBnCUI3UO5o6+FkAQ--.29891S2;
-	Tue, 14 Oct 2025 21:29:28 +0800 (CST)
-Message-ID: <b94f6159-a280-4890-a02a-f19ff808de5b@huaweicloud.com>
-Date: Tue, 14 Oct 2025 21:29:25 +0800
+	s=arc-20240116; t=1760448697; c=relaxed/simple;
+	bh=iIjZWpm1TiQUVzmyWQwDNnrEF5an80tu+OC+tdhyZC8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OdmjbT6Br89cGUwjQyLppKJkJ1WIGuaEzeGGe2WgGgmAyOrYw/HaXE2fXhO9itDTTtQqYeTZfYi/ryaBtwqXgIE1sw5SkXxlfWKdwMEgK1clAYW+EEBi9gb/yZpUqZ7p81Z7rtE3RyXIaBruu9lPFC5m+nDQM1/8BOP8NXQFxhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DQLkKiQf; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-63963066fb0so11117368a12.3
+        for <cgroups@vger.kernel.org>; Tue, 14 Oct 2025 06:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760448694; x=1761053494; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JRUz1hWdNpegFSxtg102ODjrrEjXcJrCzI5fyTVJ/6Q=;
+        b=DQLkKiQfZND2IFf/h5wDCcU7nsL9b0MO2/wBM6KPAhNCZWhVN94HQy5fsrTU25tbgB
+         2Gq2QvLkWPnA0xkfn7ycw1MgwA2qLz0g6AbmWxcd6bS2Qhofps5FAzMPAi7eFfr7nrj3
+         9J10C2KCHIbn2+sRa1U7qZRnp1tmnEvHAE9WILBT/9Nb9MvbcypJtByoH3PDylNSnu6z
+         Ql/nNsHVyp7t4cPhcemA2LhGv6CkCqMoygInePHf8U8QXwjfwbEAM4W8B9Bdcu/4Y4re
+         drd4lrgRyWoBlvc2EOxKN69l9MeFWyOnJfPQUx/e+/qOIX/3Rdm/jJCyYkveMuFV8AjL
+         NL1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760448694; x=1761053494;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=JRUz1hWdNpegFSxtg102ODjrrEjXcJrCzI5fyTVJ/6Q=;
+        b=QEjN2howSk99pq6+OWLKRw96pr2EUSszVUkJc/2b9kl2zH7hjnMCY91EL0EDDUDjyr
+         pkTuyq6k+fcZz2C8X0x80b6bp0YXkWF9kOsaA4+8pPCZIcqVAqvgh0a+hmHeY7H+kJek
+         CZQ1ho2c+HODgRCPJIEi7c6JcAbsfhi7rHozts3bDmjF2ltpwcMdVkZg/PX6MHJvF9fr
+         3M0wRM04ki6QCOin58ksH1yb6DEhqF48nyIV832jM5O+WbV1ISUNZsSqesT0kQVbYZjq
+         GK6fJzHlKMgyl/+EUwAhJVRLdip5gKbea32r3yesZg0vCjAGyh1/0ZQHdxgPeb9TWTqs
+         WZog==
+X-Forwarded-Encrypted: i=1; AJvYcCUQ/fllroorAAido6ZmXzkUI3m/200M4opwTefTZnJGk7sOAdcaus/QUto58sZhXDuz8fXONuSQ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyt9gqJORdaz/nkAhkw3z98CGg8Dtz4xqWx/wXTq/gR+0la5cVv
+	90CH6QdDNvoMbSllf28SvtMBHhEaT5/gbEo2Xnyckrtn+oaWKXa13M29
+X-Gm-Gg: ASbGncuk9rWihyseIy2pTTkYqEKtcExVkiKm4KVjjHxu19YTPuwD6iXydWngLVZSV/6
+	aewoMjrb31lMD/z9IJjao2cbQzCBLoWPQLr0H1WAdXNkaHq1Vm1PS7sAZuaxnGXd8NtWv2dIDtK
+	790yrddiwq5rte6aTRhR2OOzWfACvhRu2wBl2iFz03jtJR4lPJ19L53/NOi3g7AqPQBQH45E9Je
+	FXhpVIRlha42tNdP9nJB105PtJwXFuIt0ISY9tdI1n3sRnPFdC2fetBx9jCIvqSYtJVrPtdBPkK
+	LVaaoxT2AgK2VsxEptSrJ3uQtpZbeU1MdM2P/b1E5irLkb59GbtvZMytEKAuihIqikoAkasAc71
+	v1flT5TSvVQy+ZaDVJHNkYU4woJ6/C0iXYGaiwtDM+7+KgLH+XO8=
+X-Google-Smtp-Source: AGHT+IEgU+DdjYJjvofvtunCeX3nSH0eRUv1dqIRtOgeOUMEIzSuMU2hUdZtSc3ZGyXswVn9RHzZCQ==
+X-Received: by 2002:a17:907:7f0b:b0:b46:31be:e8fe with SMTP id a640c23a62f3a-b50aa48c4f0mr2728492866b.11.1760448693406;
+        Tue, 14 Oct 2025 06:31:33 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b55d971ec69sm1123110766b.85.2025.10.14.06.31.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 14 Oct 2025 06:31:32 -0700 (PDT)
+Date: Tue, 14 Oct 2025 13:31:32 +0000
+From: Wei Yang <richard.weiyang@gmail.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: Wei Yang <richard.weiyang@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>, Andy Lutomirski <luto@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH v3 20/20] mm: stop maintaining the per-page mapcount of
+ large folios (CONFIG_NO_PAGE_MAPCOUNT)
+Message-ID: <20251014133132.6garfzi24xlh3jr5@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <20250303163014.1128035-1-david@redhat.com>
+ <20250303163014.1128035-21-david@redhat.com>
+ <20251014122335.dpyk5advbkioojnm@master>
+ <71380b43-c23c-42b5-8aab-f158bb37bc75@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/33] cpuset: Provide lockdep check for cpuset lock held
-To: Frederic Weisbecker <frederic@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Bjorn Helgaas <bhelgaas@google.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Danilo Krummrich
- <dakr@kernel.org>, "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Gabriele Monaco <gmonaco@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
- Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
- Lai Jiangshan <jiangshanlai@gmail.com>,
- Marco Crivellari <marco.crivellari@suse.com>, Michal Hocko
- <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
- Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Phil Auld <pauld@redhat.com>, "Rafael J . Wysocki" <rafael@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Simon Horman <horms@kernel.org>,
- Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, Waiman Long <longman@redhat.com>,
- Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
- linux-mm@kvack.org, linux-pci@vger.kernel.org, netdev@vger.kernel.org
-References: <20251013203146.10162-1-frederic@kernel.org>
- <20251013203146.10162-12-frederic@kernel.org>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251013203146.10162-12-frederic@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgBnCUI3UO5o6+FkAQ--.29891S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFW3Jw18tw15JFWUWw1fXrb_yoW8XFyxpF
-	90krWrG3yFvr4Uua9rGw17ur1vgw4kWF1UKFn8Kr1rXa42vFn2vr1q9FnIqr10q397Gw40
-	qF9xWa1Y9rWDArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
-	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
-	j6a0PUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71380b43-c23c-42b5-8aab-f158bb37bc75@redhat.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 
+On Tue, Oct 14, 2025 at 02:59:30PM +0200, David Hildenbrand wrote:
+>On 14.10.25 14:23, Wei Yang wrote:
+>> On Mon, Mar 03, 2025 at 05:30:13PM +0100, David Hildenbrand wrote:
+>> [...]
+>> > @@ -1678,6 +1726,22 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+>> > 		break;
+>> > 	case RMAP_LEVEL_PMD:
+>> > 	case RMAP_LEVEL_PUD:
+>> > +		if (IS_ENABLED(CONFIG_NO_PAGE_MAPCOUNT)) {
+>> > +			last = atomic_add_negative(-1, &folio->_entire_mapcount);
+>> > +			if (level == RMAP_LEVEL_PMD && last)
+>> > +				nr_pmdmapped = folio_large_nr_pages(folio);
+>> > +			nr = folio_dec_return_large_mapcount(folio, vma);
+>> > +			if (!nr) {
+>> > +				/* Now completely unmapped. */
+>> > +				nr = folio_large_nr_pages(folio);
+>> > +			} else {
+>> > +				partially_mapped = last &&
+>> > +						   nr < folio_large_nr_pages(folio);
+>> 
+>> Hi, David
+>
+>Hi!
+>
+>> 
+>> Do you think this is better to be?
+>> 
+>> 	partially_mapped = last && nr < nr_pmdmapped;
+>
+>I see what you mean, it would be similar to the CONFIG_PAGE_MAPCOUNT case
+>below.
+>
+>But probably it could then be
+>
+>	partially_mapped = nr < nr_pmdmapped;
+>
+>because nr_pmdmapped is only set when "last = true".
+>
+>I'm not sure if there is a good reason to change it at this point though.
+>Smells like a micro-optimization for PUD, which we probably shouldn't worry
+>about.
+>
+>> 
+>> As commit 349994cf61e6 mentioned, we don't support partially mapped PUD-sized
+>> folio yet.
+>
+>We do support partially mapped PUD-sized folios I think, but not anonymous
+>PUD-sized folios.
+>
+>So consequently the partially_mapped variable will never really be used later
+>on, because the folio_test_anon() will never hit in the PUD case.
+>
 
+Ok, folio_test_anon() takes care of it. We won't add it to defer list by
+accident.
 
-On 2025/10/14 4:31, Frederic Weisbecker wrote:
-> cpuset modifies partitions, including isolated, while holding the cpuset
-> mutex.
-> 
-> This means that holding the cpuset mutex is safe to synchronize against
-> housekeeping cpumask changes.
-> 
-> Provide a lockdep check to validate that.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->  include/linux/cpuset.h | 2 ++
->  kernel/cgroup/cpuset.c | 7 +++++++
->  2 files changed, 9 insertions(+)
-> 
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index 2ddb256187b5..051d36fec578 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -18,6 +18,8 @@
->  #include <linux/mmu_context.h>
->  #include <linux/jump_label.h>
->  
-> +extern bool lockdep_is_cpuset_held(void);
-> +
->  #ifdef CONFIG_CPUSETS
->  
->  /*
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 8595f1eadf23..aa1ac7bcf2ea 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -279,6 +279,13 @@ void cpuset_full_unlock(void)
->  	cpus_read_unlock();
->  }
->  
-> +#ifdef CONFIG_LOCKDEP
-> +bool lockdep_is_cpuset_held(void)
-> +{
-> +	return lockdep_is_held(&cpuset_mutex);
-> +}
-> +#endif
-> +
->  static DEFINE_SPINLOCK(callback_lock);
->  
->  void cpuset_callback_lock_irq(void)
-
-Is the lockdep_is_cpuset_held function actually being used?
-If CONFIG_LOCKDEP is disabled, compilation would fail with an "undefined reference to
-lockdep_is_cpuset_held" error.
+>-- 
+>Cheers
+>
+>David / dhildenb
 
 -- 
-Best regards,
-Ridong
-
+Wei Yang
+Help you, Help me
 
