@@ -1,190 +1,139 @@
-Return-Path: <cgroups+bounces-10747-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10748-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0319EBDB414
-	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 22:33:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FC3CBDB4BC
+	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 22:42:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E17C19A3512
-	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 20:33:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6638420D32
+	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 20:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85BD0306B0D;
-	Tue, 14 Oct 2025 20:33:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC75B306B38;
+	Tue, 14 Oct 2025 20:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="l8rkUGSB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LS3UfEh/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB7B2DC35A
-	for <cgroups@vger.kernel.org>; Tue, 14 Oct 2025 20:33:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31287279DC0
+	for <cgroups@vger.kernel.org>; Tue, 14 Oct 2025 20:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760473994; cv=none; b=OrMHf8zzSaQympBlVtp4V467nRDxq6D8VW7pheefNH+5AdO5XsTcMLtSAqsYjKy+2Eld4MMIPHX6B8uYL6gA4PCY2LV4kIZEmFOofDjETDAEkt1J+SOeS2B6Dia/BYfP9fkk6Ff45Ez0divqrAgVqAKYPonHXVSCoRws80oTbt8=
+	t=1760474571; cv=none; b=PgHu42dS5GoLGpxydesbHu9GIo6PGiAF4MKO+XtTMPCmh7xjMx7UMup/sC6aBV8kvtCPmSFvU55ALupDuhGzU4C0oPETEDtNSNpX7OTBp27H4XIWhDW8DdyXXHtCrL3HZwK28E/BXWCP2dn749CuAXW41LFHDazp4RwSJTWoMo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760473994; c=relaxed/simple;
-	bh=K6SR03oWZbp1zF3cy64l53yWJxRSDh3vlbnAx+WnxpE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LsL9rrxJAyl8hOoFSkGlh/Lu6MUNZnYtyD7a94duZ+VTd1p/miuvf1DBQdlAw3oqBOMjCj+2IViXHxYq7g83IbzF2QRKw4Rtf5W5tT+0R3iH8s/qPd7Eh+qCaBmz1KILyonANNSfL/+Dps+/6X8doH4A6zV7kt9urzkkkLxuldQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=l8rkUGSB; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 14 Oct 2025 13:32:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1760473979;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WwSCDIXETHGxMb4XVhxx+vCGIG2/jXfEf6gnZuLgFYM=;
-	b=l8rkUGSBKEErpxxVuhjASwkfNV0le9MZVTgo0/omQyPwbZWoxaOHRfDsXonsm2OiEnPEVz
-	W5vMr040iTYoxIiuHH9PuZwFY8z9h94Ft3umWPAWbd4NJ7FVCaq4rGQ6ORDABsdwVb5eaP
-	QJR9wYJ8cy/x7gXJhRCQJSVURJFVwsc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Daniel Sedlak <daniel.sedlak@cdn77.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Neal Cardwell <ncardwell@google.com>, 
-	Kuniyuki Iwashima <kuniyu@google.com>, David Ahern <dsahern@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org, 
-	netdev@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
-	Tejun Heo <tj@kernel.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Matyas Hurtik <matyas.hurtik@cdn77.com>
-Subject: Re: [PATCH v5] memcg: expose socket memory pressure in a cgroup
-Message-ID: <6ras4hgv32qkkbh6e6btnnwfh2xnpmoftanw4xlbfrekhskpkk@frz4uyuh64eq>
-References: <20251007125056.115379-1-daniel.sedlak@cdn77.com>
- <87qzvdqkyh.fsf@linux.dev>
- <13b5aeb6-ee0a-4b5b-a33a-e1d1d6f7f60e@cdn77.com>
- <87o6qgnl9w.fsf@linux.dev>
- <tr7hsmxqqwpwconofyr2a6czorimltte5zp34sp6tasept3t4j@ij7acnr6dpjp>
- <87a5205544.fsf@linux.dev>
- <qdblzbalf3xqohvw2az3iogevzvgn3c3k64nsmyv2hsxyhw7r4@oo7yrgsume2h>
- <875xcn526v.fsf@linux.dev>
- <89618dcb-7fe3-4f15-931b-17929287c323@cdn77.com>
+	s=arc-20240116; t=1760474571; c=relaxed/simple;
+	bh=X5Wkc3y5XxtvExrMi62ryXeDIWnD8jimxbR2ahS/QXM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c0hQyVM1q+KoB1FcSI+U9DfalkH2i/LJ2tIcbjLQmTGZ/u/eTD4oTnbxIrafdQnjawIWu8tM+9xXO6J3rSNf+q4vEqQ2ZRv8jvPqT7wagPKy88oT/A84FQhgeUQj4959KuGjI8BakUC9/NOwgLmU1Yncc49uFsrGxhxaQdQ3wxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LS3UfEh/; arc=none smtp.client-ip=209.85.221.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-54aa5f70513so1491767e0c.2
+        for <cgroups@vger.kernel.org>; Tue, 14 Oct 2025 13:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760474569; x=1761079369; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uockn1DmFA8ZAnlkgMjydfkJvdgnzoAnn5KXsE8LaOc=;
+        b=LS3UfEh/IXL+QNpzFA/vbBJN7AiGYtMTk/HrMRPAb+DLvF0e7bzNJ41wpo7ULHql5Q
+         g+eU/4egfAPwVoh6+pyrM2v3F3zAy4BNUuVLKizwpzOwTdJbENZhQWmuP3auRUwbqEvk
+         XWAUP/pzuyKzg3MpnzWu26hcbY3kZy/ih0gGZYdJ0pAUh2ZQA0KGn1u5OEFBmADd0oKz
+         QbjnjhpP5oQaF/LmNkpFvbzvQcABo23c01zv09vWAz4WJzofqfL+dJipQjWzV7NT+vF3
+         1nLXbijPnEHCzfSF8VfCGBcRaEdvJ3xByZUwIPoeQKZ5cJezZ9HNVoDo2494cOcn9u6D
+         zDMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760474569; x=1761079369;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uockn1DmFA8ZAnlkgMjydfkJvdgnzoAnn5KXsE8LaOc=;
+        b=SVwGuCtWqdSoyXGGBU4g4aQuAoHygGpyXXPRoOtIOeC/JLDS5LsClEJhgXQk9WVG/2
+         BiZgBZkYOKRIKja7jX8vAxKWv1KYt1/veY3bgIFhEg/JndIXYRd5p2gWPkNf19sgH/D7
+         AeNaLJ+XyZTNPdoAXPTcaFDk39WPNB2LZv4+bZCLaAWV7VFIpTcn+BbWJkWBVXZER4oe
+         g8VVeQTvLyp/Cbo4sSZt+NP0YVoDOr+W9Dh7r6nydpIzzXQGz23lgT6gLwXon664R4wP
+         K2AvgDj4cVnglSmt0FKCdRMe1Z3kSQCXH9EpJeGr2ayQNV+rztoEkDk26ICQ5SMd9oRX
+         atpg==
+X-Forwarded-Encrypted: i=1; AJvYcCWMd5WYpzjqza1sahhUuiwEJPoLQRN1VC920i8hlgjRpXyffK1mVu+jegD8FoNJh2IWu3nP3ht8@vger.kernel.org
+X-Gm-Message-State: AOJu0YyujfEaJm4sg69iUw93gsuT8sUsmgly+AcfWKR4CSph8Qb1VKd8
+	JGzvrcGerr75GQ4u8UNkPERp+mXCrv03RvChkMx7whfdV7SVP0NyR3SN3eiapw5EctlBoSTjZRC
+	5f0yPsyDhO2vIToTBpLoj/qseWJH+R8szD9xH
+X-Gm-Gg: ASbGnctHrWwcizrGUL7jI8OxAFDEDkdH8ZerO8l0oftu3Z2+z4ftJ+1VVo80Thl1cIG
+	A5ZiflL44UVgpCQk2/7ZhIR6dH0U+6EI9hS1EZrbSy7ws6fO25EHSSt1BbHe79NPEeQAQUZlKuy
+	c9fXivYQKz9SWgfSBju27DGUfHpbItVC01Stu+HQ9VOO046iIkpHT8rswNKnwzJkrptl3I/aVJK
+	x8g2XnEPZi499oF15OBWNOCcrn0tnBiYuZkvvrYmxNb2DuC9UoVgocvXEtxJV5WqO4f
+X-Google-Smtp-Source: AGHT+IEnsr51HAAycnl5TJWtojVCtdeDbTLi5HrOIWN/EM0aj7tT4qSjlzWUR1EkpvLjmCuZMzthdHU4KSmPdfVDcS0=
+X-Received: by 2002:a05:6102:1516:b0:5d5:f6ae:38d5 with SMTP id
+ ada2fe7eead31-5d5f6ae3b8bmr6904190137.42.1760474568697; Tue, 14 Oct 2025
+ 13:42:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <89618dcb-7fe3-4f15-931b-17929287c323@cdn77.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20250909065349.574894-1-liulei.rjpt@vivo.com> <CAMgjq7Ca6zOozixPot3j5FP_6A8h=DFc7yjHKp2Lg+qu7gNwMA@mail.gmail.com>
+ <CAGsJ_4xiTteQECtUNBo+eC9uu8R3CgVT2rpvGCGdFqc3psSnWQ@mail.gmail.com> <fe38e328-5e64-44b2-9e62-f764c4b307bd@vivo.com>
+In-Reply-To: <fe38e328-5e64-44b2-9e62-f764c4b307bd@vivo.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 15 Oct 2025 04:42:36 +0800
+X-Gm-Features: AS18NWDkw8474qAcz1fNrydjfJ00yxfFAbDaJ_VQwKfXsjjmOArAdgWL5vP-vUY
+Message-ID: <CAGsJ_4xdvGjZ9YZnc0mk3bDfPCwxdpF_5bhcbca09j=-KBM9Mg@mail.gmail.com>
+Subject: Re: [PATCH v0 0/2] mm: swap: Gather swap entries and batch async release
+To: Lei Liu <liulei.rjpt@vivo.com>
+Cc: Kairui Song <ryncsn@gmail.com>, Michal Hocko <mhocko@suse.com>, 
+	David Rientjes <rientjes@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Chris Li <chrisl@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, David Hildenbrand <david@redhat.com>, 
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+	Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>, 
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Chen Yu <yu.c.chen@intel.com>, 
+	Hao Jia <jiahao1@lixiang.com>, "Kirill A. Shutemov" <kas@kernel.org>, 
+	Usama Arif <usamaarif642@gmail.com>, Oleg Nesterov <oleg@redhat.com>, 
+	Christian Brauner <brauner@kernel.org>, Mateusz Guzik <mjguzik@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Fushuai Wang <wangfushuai@baidu.com>, 
+	"open list:MEMORY MANAGEMENT - OOM KILLER" <linux-mm@kvack.org>, open list <linux-kernel@vger.kernel.org>, 
+	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 13, 2025 at 04:30:53PM +0200, Daniel Sedlak wrote:
-[...]
-> > > > > How about we track the actions taken by the callers of
-> > > > > mem_cgroup_sk_under_memory_pressure()? Basically if network stack
-> > > > > reduces the buffer size or whatever the other actions it may take when
-> > > > > mem_cgroup_sk_under_memory_pressure() returns, tracking those actions
-> > > > > is what I think is needed here, at least for the debugging use-case.
-> 
-> I am not against it, but I feel that conveying those tracked actions (or how
-> to represent them) to the user will be much harder. Are there already
-> existing APIs to push this information to the user?
-> 
+>
+> Hi Barry
+>
+> Thank you for your question. Here is the issue we are encountering:
+>
+> Flame graph of time distribution for douyin process exit (~400MB swapped)=
+:
+> do_notify_resume         3.89%
+> get_signal               3.89%
+> do_signal_exit           3.88%
+> do_exit                  3.88%
+> mmput                    3.22%
+> exit_mmap                3.22%
+> unmap_vmas               3.08%
+> unmap_page_range         3.07%
+> free_swap_and_cache_nr   1.31%****
+> swap_entry_range_free    1.17%****
+> zram_slot_free_notify    1.11%****
 
-I discussed with Wei Wang and she suggested we should start tracking the
-calls to tcp_adjust_rcv_ssthresh() first. So, something like the
-following. I would like feedback frm networking folks as well:
+If 1.11/1.31, or 85% of free_swap_and_cache_nr, comes from zram_free,
+it=E2=80=99s clear that the swap/mm core is not the right place for this op=
+timization.
 
+As it involves too much complexity=E2=80=94for example, synchronization bet=
+ween
+swapoff and your new threads.
 
-From 54bd2bf6681c1c694295646532f2a62a205ee41a Mon Sep 17 00:00:00 2001
-From: Shakeel Butt <shakeel.butt@linux.dev>
-Date: Tue, 14 Oct 2025 13:27:36 -0700
-Subject: [PATCH] memcg: track network throttling due to memcg memory pressure
+> zram_free_hw_entry_dc    0.43%
+> free_zspage[zsmalloc]    0.09%
 
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- include/linux/memcontrol.h | 1 +
- mm/memcontrol.c            | 2 ++
- net/ipv4/tcp_input.c       | 5 ++++-
- net/ipv4/tcp_output.c      | 8 ++++++--
- 4 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 873e510d6f8d..5fe254813123 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -52,6 +52,7 @@ enum memcg_memory_event {
- 	MEMCG_SWAP_HIGH,
- 	MEMCG_SWAP_MAX,
- 	MEMCG_SWAP_FAIL,
-+	MEMCG_SOCK_THROTTLED,
- 	MEMCG_NR_MEMORY_EVENTS,
- };
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 4deda33625f4..9207bba34e2e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -4463,6 +4463,8 @@ static void __memory_events_show(struct seq_file *m, atomic_long_t *events)
- 		   atomic_long_read(&events[MEMCG_OOM_KILL]));
- 	seq_printf(m, "oom_group_kill %lu\n",
- 		   atomic_long_read(&events[MEMCG_OOM_GROUP_KILL]));
-+	seq_printf(m, "sock_throttled %lu\n",
-+		   atomic_long_read(&events[MEMCG_SOCK_THROTTLED]));
- }
- 
- static int memory_events_show(struct seq_file *m, void *v)
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 31ea5af49f2d..2206968fb505 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -713,6 +713,7 @@ static void tcp_grow_window(struct sock *sk, const struct sk_buff *skb,
- 		 * Adjust rcv_ssthresh according to reserved mem
- 		 */
- 		tcp_adjust_rcv_ssthresh(sk);
-+		memcg_memory_event(sk->sk_memcg, MEMCG_SOCK_THROTTLED);
- 	}
- }
- 
-@@ -5764,8 +5765,10 @@ static int tcp_prune_queue(struct sock *sk, const struct sk_buff *in_skb)
- 
- 	if (!tcp_can_ingest(sk, in_skb))
- 		tcp_clamp_window(sk);
--	else if (tcp_under_memory_pressure(sk))
-+	else if (tcp_under_memory_pressure(sk)) {
- 		tcp_adjust_rcv_ssthresh(sk);
-+		memcg_memory_event(sk->sk_memcg, MEMCG_SOCK_THROTTLED);
-+	}
- 
- 	if (tcp_can_ingest(sk, in_skb))
- 		return 0;
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index bb3576ac0ad7..8fe8d973d7ac 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -3275,8 +3275,10 @@ u32 __tcp_select_window(struct sock *sk)
- 	if (free_space < (full_space >> 1)) {
- 		icsk->icsk_ack.quick = 0;
- 
--		if (tcp_under_memory_pressure(sk))
-+		if (tcp_under_memory_pressure(sk)) {
- 			tcp_adjust_rcv_ssthresh(sk);
-+			memcg_memory_event(sk->sk_memcg, MEMCG_SOCK_THROTTLED);
-+		}
- 
- 		/* free_space might become our new window, make sure we don't
- 		 * increase it due to wscale.
-@@ -3334,8 +3336,10 @@ u32 __tcp_select_window(struct sock *sk)
- 	if (free_space < (full_space >> 1)) {
- 		icsk->icsk_ack.quick = 0;
- 
--		if (tcp_under_memory_pressure(sk))
-+		if (tcp_under_memory_pressure(sk)) {
- 			tcp_adjust_rcv_ssthresh(sk);
-+			memcg_memory_event(sk->sk_memcg, MEMCG_SOCK_THROTTLED);
-+		}
- 
- 		/* if free space is too low, return a zero window */
- 		if (free_space < (allowed_space >> 4) || free_space < mss ||
--- 
-2.47.3
-
+Thanks
+Barry
 
