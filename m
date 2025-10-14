@@ -1,131 +1,239 @@
-Return-Path: <cgroups+bounces-10707-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10708-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF497BD7160
-	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 04:29:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D929BBD7C5E
+	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 08:58:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C1FEB4F6FB1
-	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 02:29:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E2C1401AE4
+	for <lists+cgroups@lfdr.de>; Tue, 14 Oct 2025 06:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5B59305076;
-	Tue, 14 Oct 2025 02:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75667303CB6;
+	Tue, 14 Oct 2025 06:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="dOP6xvqW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w5WafnkN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from canpmsgout06.his.huawei.com (canpmsgout06.his.huawei.com [113.46.200.221])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF142288C6;
-	Tue, 14 Oct 2025 02:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A59931283C
+	for <cgroups@vger.kernel.org>; Tue, 14 Oct 2025 06:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760408939; cv=none; b=VSzkeJkvXk1GZRfs4K4/LPaBTj4WWgC6e4nKT8s2UJ+iTl7SPgEU2cU4l0UeUNpL0siPjU4VCwOmgRcE2B7/e5n7nhUe2e4ON1FGYsJ5czW+V56AlnIf5hTrCcL/1NyCx630WsWXr/Dvug4Tycz5xYsh/1cHNE3MLJpy5Qr3R/8=
+	t=1760424584; cv=none; b=DbWPAo+PQ8IXipZILZYJ3CiJYzIoePUO+HHei55XKDu188MvSXkeceCBqB1yRhf40yJzcEfY9At2IagIFrPmY/Ly7eAhi9/GIsGkiFsVRhAP3HW0B6/lJAvQwRe/sQxSZ3mH736E1b40l4oPujajTzZLqXiKfjrN7J6PuZC4Dcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760408939; c=relaxed/simple;
-	bh=t4TmkTnxBxFsPMMgCpLUCqQfV3Ld9evdSq4pBq4ykKg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XZuN+2YSGqf7N69Uh7krFOWYBo6OO28lbiNTDL/ij/PUxfp/qCie2ChRatr11pbApXHTLvXqWso2zPdMR2FvS9Ct253hymYx5nNEdQEvY7YY4wKjxRKopi3DfF+9z1208j9qjHDzQ79Y2Agl7FoU0ytJRa550odSBQUJf+ovO1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=dOP6xvqW; arc=none smtp.client-ip=113.46.200.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=L1Y/dJ23z38rGLpMWBLQrEYtDiYGHHrj1WObdSKChYM=;
-	b=dOP6xvqWwTiLG2O3TkqkahCHEdT60fKJv3t7U06dAwnPUsCh1cbGNi3f50NYAa1AZvwBXu5io
-	lKgcF4rxEB2cZOIs5txAQHmZs3BJ4njib76cWOU0GkvI3tLGV1wdvUan0Qk9g0TZYUIomiwDC3o
-	w4NRyeLlSGyBDGqnjnYBtvg=
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4clynV0xygzRhR0;
-	Tue, 14 Oct 2025 10:28:30 +0800 (CST)
-Received: from kwepemk500007.china.huawei.com (unknown [7.202.194.92])
-	by mail.maildlp.com (Postfix) with ESMTPS id C51F91401E0;
-	Tue, 14 Oct 2025 10:28:49 +0800 (CST)
-Received: from huawei.com (10.50.87.129) by kwepemk500007.china.huawei.com
- (7.202.194.92) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 14 Oct
- 2025 10:28:49 +0800
-From: Yu Kuai <yukuai3@huawei.com>
-To: <nilay@linux.ibm.com>, <ming.lei@redhat.com>, <tj@kernel.org>,
-	<josef@toxicpanda.com>, <axboe@kernel.dk>
-CC: <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-	<yukuai1@huaweicloud.com>, <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-	<johnny.chenyi@huawei.com>
-Subject: [PATCH 4/4] blk-mq-debugfs: make blk_mq_debugfs_register_rqos() static
-Date: Tue, 14 Oct 2025 10:21:49 +0800
-Message-ID: <20251014022149.947800-5-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20251014022149.947800-1-yukuai3@huawei.com>
-References: <20251014022149.947800-1-yukuai3@huawei.com>
+	s=arc-20240116; t=1760424584; c=relaxed/simple;
+	bh=KHv1oPWvS56/sbOUxmLhi54A3IbzEbCV65h12OeEbZ4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sIMucQwgLKiCAiD0ynB/3nbLj6YOZwlr3O8Em0fGupviV+wdYszAQ/aJ36fpdHpe26hhJbWRI7uZrLXrodQnGqifiQDgniMKh2SaqYce9hyVoPnuLhey1GJzC7Lx8DeqBQtHaWfmsNYOKoV/GfhZ6abvarAhu1YUla0PQN9Z86k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=w5WafnkN; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0c833afd-64d5-4128-a03a-c47ff834b7ab@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1760424580;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bqw4wlUUpqHY1zTsNaI6KPl3Fd0ZPpUoNdegpj+F+GI=;
+	b=w5WafnkN4Pd2sN5sguTO6JcMstbnbaCkYxq3XgFIaIrllCvPiKOHODjcdp9y30yM/FexFh
+	0pcwSDLv37z03FGyQCA5tU7vNXsY0ws+RtvH5bmZqDj7hWbTrmm58CuHQwJ1DACW62YOUc
+	CQPua4UYMtenb+k2wGn7Mg7mB3yKIDY=
+Date: Tue, 14 Oct 2025 14:49:27 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemk500007.china.huawei.com (7.202.194.92)
+Subject: Re: [PATCH v4 0/4] reparent the THP split queue
+To: Zi Yan <ziy@nvidia.com>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ david@redhat.com, lorenzo.stoakes@oracle.com, harry.yoo@oracle.com,
+ baolin.wang@linux.alibaba.com, Liam.Howlett@oracle.com, npache@redhat.com,
+ ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
+ lance.yang@linux.dev, akpm@linux-foundation.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1759510072.git.zhengqi.arch@bytedance.com>
+ <925E0247-2976-4D85-A8AA-E8C92C64CED4@nvidia.com>
+ <df9a3e22-caca-4298-b7d8-5334ce5446a0@linux.dev>
+ <C3134C16-584F-41D2-88E4-4B94B58C16F2@nvidia.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <C3134C16-584F-41D2-88E4-4B94B58C16F2@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Because it's only used inside blk-mq-debugfs.c now.
+Hi Zi,
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-mq-debugfs.c | 4 +++-
- block/blk-mq-debugfs.h | 5 -----
- 2 files changed, 3 insertions(+), 6 deletions(-)
+On 10/14/25 12:37 AM, Zi Yan wrote:
+> On 13 Oct 2025, at 3:23, Qi Zheng wrote:
+> 
 
-diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-index 1de9bab7ba80..919e484aa1b2 100644
---- a/block/blk-mq-debugfs.c
-+++ b/block/blk-mq-debugfs.c
-@@ -14,6 +14,8 @@
- #include "blk-mq-sched.h"
- #include "blk-rq-qos.h"
- 
-+static void blk_mq_debugfs_register_rqos(struct rq_qos *rqos);
-+
- static int queue_poll_stat_show(void *data, struct seq_file *m)
- {
- 	return 0;
-@@ -774,7 +776,7 @@ void blk_mq_debugfs_unregister_rqos(struct rq_qos *rqos)
- 	rqos->debugfs_dir = NULL;
- }
- 
--void blk_mq_debugfs_register_rqos(struct rq_qos *rqos)
-+static void blk_mq_debugfs_register_rqos(struct rq_qos *rqos)
- {
- 	struct request_queue *q = rqos->disk->queue;
- 	const char *dir_name = rq_qos_id_to_name(rqos->id);
-diff --git a/block/blk-mq-debugfs.h b/block/blk-mq-debugfs.h
-index 9f76603792fe..d94daa66556b 100644
---- a/block/blk-mq-debugfs.h
-+++ b/block/blk-mq-debugfs.h
-@@ -33,7 +33,6 @@ void blk_mq_debugfs_register_sched_hctx(struct request_queue *q,
- 				       struct blk_mq_hw_ctx *hctx);
- void blk_mq_debugfs_unregister_sched_hctx(struct blk_mq_hw_ctx *hctx);
- 
--void blk_mq_debugfs_register_rqos(struct rq_qos *rqos);
- void blk_mq_debugfs_register_rq_qos(struct request_queue *q);
- void blk_mq_debugfs_unregister_rqos(struct rq_qos *rqos);
- #else
-@@ -75,10 +74,6 @@ static inline void blk_mq_debugfs_unregister_sched_hctx(struct blk_mq_hw_ctx *hc
- {
- }
- 
--static inline void blk_mq_debugfs_register_rqos(struct rq_qos *rqos)
--{
--}
--
- static inline void blk_mq_debugfs_register_rq_qos(struct request_queue *q)
- {
- }
--- 
-2.39.2
+[snip]
+
+>>
+>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>> index b5eea2091cdf6..5353c7bd2c9af 100644
+>> --- a/mm/huge_memory.c
+>> +++ b/mm/huge_memory.c
+>> @@ -4286,8 +4286,10 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>>          }
+>>          folios_put(&fbatch);
+>>
+>> -       if (sc->nr_to_scan)
+>> +       if (sc->nr_to_scan) {
+>> +               cond_resched();
+>>                  goto retry;
+>> +       }
+>>
+>>          /*
+>>           * Stop shrinker if we didn't split any page, but the queue is empty.
+>>
+> 
+> It does not fix the issue, but only gets rid of the soft lockup warning.
+> "echo 3 | sudo tee /proc/sys/vm/drop_caches" just runs forever.
+
+Oh, my bad, I didn't notice that.
+
+> 
+> Looking at the original code, sc->nr_to_scan was one of the two conditions
+> on breaking out of split_queue scanning and was never checked again
+> afterwards. When split_queue size is smaller than nr_to_scan, your code
+> will retry forever but not the original one. After I added pr_info() to
+> print sc->nr_to_scan at
+> 1) before retry:,
+> 2) before for (... folio_batch_count();...),
+> 3) before "if (sc->nr_to_scan)",
+> 
+> I see that 1) printed 2, 2) and 3) kept printing 1. It matches my
+> above guess.
+
+Got it.
+
+> 
+> The below patch fixes the issue:
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 43a3c499aec0..d38816a0c117 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -4415,7 +4415,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>   	}
+>   	folios_put(&fbatch);
+> 
+> -	if (sc->nr_to_scan)
+> +	if (sc->nr_to_scan && !list_empty(&ds_queue->split_queue))
+>   		goto retry;
+> 
+>   	/*
+> 
+
+Thanks! After applying this locally, I no longer see softlockup and
+no longer see deferred_split_scan() in perf hotspots.
+
+Will do this in the next version.
+
+Thanks,
+Qi
+
+> 
+> 
+>>
+>>> [   36.441592] Code: 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 53 48 89 f3 e8 92 68 fd fe 80 e7 02 74 06 fb 0f 1f 44 00 00 <65> ff 0d d0 5f 7e 01 74 06 5b c3 cc cc cc cc 0f 1f 44 00 00 5b c3
+>>> [   36.441594] RSP: 0018:ffffc900029afb60 EFLAGS: 00000202
+>>> [   36.441598] RAX: 0000000000000001 RBX: 0000000000000286 RCX: ffff888101168670
+>>> [   36.441601] RDX: 0000000000000001 RSI: 0000000000000286 RDI: ffff888101168658
+>>> [   36.441602] RBP: 0000000000000001 R08: ffff88813ba44ec0 R09: 0000000000000000
+>>> [   36.441603] R10: 00000000000001a8 R11: 0000000000000000 R12: ffff8881011685e0
+>>> [   36.441604] R13: 0000000000000000 R14: ffff888101168000 R15: ffffc900029afd60
+>>> [   36.441606] FS:  00007f7fe3655740(0000) GS:ffff8881b7e5d000(0000) knlGS:0000000000000000
+>>> [   36.441607] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [   36.441608] CR2: 0000563d4d439bf0 CR3: 000000010873c006 CR4: 0000000000370ef0
+>>> [   36.441614] Call Trace:
+>>> [   36.441616]  <TASK>
+>>> [   36.441619]  deferred_split_scan+0x1e0/0x480
+>>> [   36.441627]  ? _raw_spin_unlock_irqrestore+0xe/0x40
+>>> [   36.441630]  ? kvfree_rcu_queue_batch+0x96/0x1c0
+>>> [   36.441634]  ? do_raw_spin_unlock+0x46/0xd0
+>>> [   36.441639]  ? kfree_rcu_monitor+0x1da/0x2c0
+>>> [   36.441641]  ? list_lru_count_one+0x47/0x90
+>>> [   36.441644]  do_shrink_slab+0x153/0x360
+>>> [   36.441649]  shrink_slab+0xd3/0x390
+>>> [   36.441652]  drop_slab+0x7d/0x130
+>>> [   36.441655]  drop_caches_sysctl_handler+0x98/0xb0
+>>> [   36.441660]  proc_sys_call_handler+0x1c7/0x2c0
+>>> [   36.441664]  vfs_write+0x221/0x450
+>>> [   36.441669]  ksys_write+0x6c/0xe0
+>>> [   36.441672]  do_syscall_64+0x50/0x200
+>>> [   36.441675]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>>> [   36.441678] RIP: 0033:0x7f7fe36e7687
+>>> [   36.441685] Code: 48 89 fa 4c 89 df e8 58 b3 00 00 8b 93 08 03 00 00 59 5e 48 83 f8 fc 74 1a 5b c3 0f 1f 84 00 00 00 00 00 48 8b 44 24 10 0f 05 <5b> c3 0f 1f 80 00 00 00 00 83 e2 39 83 fa 08 75 de e8 23 ff ff ff
+>>> [   36.441686] RSP: 002b:00007ffdffcbba10 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+>>> [   36.441688] RAX: ffffffffffffffda RBX: 00007f7fe3655740 RCX: 00007f7fe36e7687
+>>> [   36.441689] RDX: 0000000000000002 RSI: 00007ffdffcbbbb0 RDI: 0000000000000003
+>>> [   36.441690] RBP: 00007ffdffcbbbb0 R08: 0000000000000000 R09: 0000000000000000
+>>> [   36.441691] R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000002
+>>> [   36.441692] R13: 0000558d40be64c0 R14: 00007f7fe383de80 R15: 0000000000000002
+>>> [   36.441694]  </TASK>
+>>> [   64.441531] watchdog: BUG: soft lockup - CPU#0 stuck for 53s! [tee:810]
+>>> [   64.441537] Modules linked in:
+>>> [   64.441545] CPU: 0 UID: 0 PID: 810 Comm: tee Tainted: G             L      6.17.0-mm-everything-2024-01-29-07-19-no-mglru+ #526 PREEMPT(voluntary)
+>>> [   64.441548] Tainted: [L]=SOFTLOCKUP
+>>> [   64.441552] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.17.0-debian-1.17.0-1 04/01/2014
+>>> [   64.441555] RIP: 0010:_raw_spin_unlock_irqrestore+0x19/0x40
+>>> [   64.441565] Code: 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 53 48 89 f3 e8 92 68 fd fe 80 e7 02 74 06 fb 0f 1f 44 00 00 <65> ff 0d d0 5f 7e 01 74 06 5b c3 cc cc cc cc 0f 1f 44 00 00 5b c3
+>>> [   64.441566] RSP: 0018:ffffc900029afb60 EFLAGS: 00000202
+>>> [   64.441568] RAX: 0000000000000001 RBX: 0000000000000286 RCX: ffff888101168670
+>>> [   64.441570] RDX: 0000000000000001 RSI: 0000000000000286 RDI: ffff888101168658
+>>> [   64.441571] RBP: 0000000000000001 R08: ffff88813ba44ec0 R09: 0000000000000000
+>>> [   64.441572] R10: 00000000000001a8 R11: 0000000000000000 R12: ffff8881011685e0
+>>> [   64.441573] R13: 0000000000000000 R14: ffff888101168000 R15: ffffc900029afd60
+>>> [   64.441574] FS:  00007f7fe3655740(0000) GS:ffff8881b7e5d000(0000) knlGS:0000000000000000
+>>> [   64.441576] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [   64.441577] CR2: 0000563d4d439bf0 CR3: 000000010873c006 CR4: 0000000000370ef0
+>>> [   64.441581] Call Trace:
+>>> [   64.441583]  <TASK>
+>>> [   64.441591]  deferred_split_scan+0x1e0/0x480
+>>> [   64.441598]  ? _raw_spin_unlock_irqrestore+0xe/0x40
+>>> [   64.441599]  ? kvfree_rcu_queue_batch+0x96/0x1c0
+>>> [   64.441603]  ? do_raw_spin_unlock+0x46/0xd0
+>>> [   64.441607]  ? kfree_rcu_monitor+0x1da/0x2c0
+>>> [   64.441610]  ? list_lru_count_one+0x47/0x90
+>>> [   64.441613]  do_shrink_slab+0x153/0x360
+>>> [   64.441618]  shrink_slab+0xd3/0x390
+>>> [   64.441621]  drop_slab+0x7d/0x130
+>>> [   64.441624]  drop_caches_sysctl_handler+0x98/0xb0
+>>> [   64.441629]  proc_sys_call_handler+0x1c7/0x2c0
+>>> [   64.441632]  vfs_write+0x221/0x450
+>>> [   64.441638]  ksys_write+0x6c/0xe0
+>>> [   64.441641]  do_syscall_64+0x50/0x200
+>>> [   64.441645]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>>> [   64.441648] RIP: 0033:0x7f7fe36e7687
+>>> [   64.441654] Code: 48 89 fa 4c 89 df e8 58 b3 00 00 8b 93 08 03 00 00 59 5e 48 83 f8 fc 74 1a 5b c3 0f 1f 84 00 00 00 00 00 48 8b 44 24 10 0f 05 <5b> c3 0f 1f 80 00 00 00 00 83 e2 39 83 fa 08 75 de e8 23 ff ff ff
+>>> [   64.441656] RSP: 002b:00007ffdffcbba10 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
+>>> [   64.441658] RAX: ffffffffffffffda RBX: 00007f7fe3655740 RCX: 00007f7fe36e7687
+>>> [   64.441659] RDX: 0000000000000002 RSI: 00007ffdffcbbbb0 RDI: 0000000000000003
+>>> [   64.441660] RBP: 00007ffdffcbbbb0 R08: 0000000000000000 R09: 0000000000000000
+>>> [   64.441661] R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000002
+>>> [   64.441662] R13: 0000558d40be64c0 R14: 00007f7fe383de80 R15: 0000000000000002
+>>> [   64.441663]  </TASK>
+>>>
+>>>
+>>>
+>>> --
+>>> Best Regards,
+>>> Yan, Zi
+> 
+> 
+> --
+> Best Regards,
+> Yan, Zi
 
 
