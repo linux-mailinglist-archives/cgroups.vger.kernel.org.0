@@ -1,87 +1,87 @@
-Return-Path: <cgroups+bounces-10764-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10765-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C58F1BDD461
-	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 10:01:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19F63BDD46B
+	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 10:01:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 365021922664
-	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 08:01:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7A053C6BA2
+	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 08:01:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C435F2C21F6;
-	Wed, 15 Oct 2025 08:00:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89592C2365;
+	Wed, 15 Oct 2025 08:01:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Og9uLp3d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m90jAOYe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C885D2BEFF0
-	for <cgroups@vger.kernel.org>; Wed, 15 Oct 2025 08:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D322D0275
+	for <cgroups@vger.kernel.org>; Wed, 15 Oct 2025 08:01:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760515256; cv=none; b=HkVwdPCUD8mwPHM66h8qXt6curvOkbIzGBWnzDCSxSnKb3+oUv3hcP9P56Yzi5vFGGoOXkyPQuYQ7L1QNefRwzBKNFrNTnPK7yRmSKIPGFKFZQpXt2633d2j4WwW9979leA6keqnkp+k7VVYPmLi5C7Utf+dC/n9Dmnj/h2TMU8=
+	t=1760515262; cv=none; b=gFHcOt338jI6Q/JCZ2YXwwBd5+sknE9rzGI4rKH18NdmnXIMjWJTLtyccgsq5KY9750LBxaLf9smO4glOEB725g0tozLtwwzktvuoNpj5o3NqaJImvIRBX/LOElIvoryGQhP+1FkXsohGSnGn0OyvjbgYg2yFu/cb7+FfmjuFas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760515256; c=relaxed/simple;
-	bh=fO/xo0y2BCcpgjvIsWqIfok2SsEQ56oWMOaClJaUkFM=;
+	s=arc-20240116; t=1760515262; c=relaxed/simple;
+	bh=MJ9hze2yT4ahH+tTDcdJMKvdVhVZbuQs9ESa30sLEJQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D76rhySMO4/EAsBVkeOrLwEleFz5iS+luOdcqWUaOESp/0257v3krLS3zjE4Zrn0f8629jI4pwX5skjXuwYd0CnXt9o2ejzdgKnsRrgTYOmedmVuwbzxAsyoT2rdK1mTsy/TLqkIQXTpwsvOsILRZKZjzeR7pT/8C57LwvreG6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Og9uLp3d; arc=none smtp.client-ip=209.85.128.50
+	 MIME-Version; b=Xbdj2UkoVuSRJq8zjlGAvP68HrGEaB9acuAdMPpVRewnkYyvhYgqWI9xpycIZpTrLYrlLhDHqRdBqd8QHvdbGdXttJKc00pNkUlPbFYhZkHp3Ckyn1vi6n9V8eQDhGpOyoE1GkClTZPWaM5u528nR4f1kEekFl+uuL6BNvumZYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m90jAOYe; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-46e2e363118so52407585e9.0
-        for <cgroups@vger.kernel.org>; Wed, 15 Oct 2025 01:00:54 -0700 (PDT)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-46e6c8bc46eso41399035e9.3
+        for <cgroups@vger.kernel.org>; Wed, 15 Oct 2025 01:01:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760515253; x=1761120053; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760515258; x=1761120058; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qW4LqkdBRdyjIzBlwSlPKXpQF5rxKjZXPRGr6XSfKtw=;
-        b=Og9uLp3d4F8RXP+svPKuYbrw8j0d5bLDwHIOMinSQlRQuc1OXgxUZOCXhqW8UE20LF
-         INBXU3NLqh439NM3NNT0n12K+uVZGioMP/59osMDyo+DeXS6U792IQWdcEH+8e10tiV0
-         3uTG1Ro17i+hNIpbxsDv1waLNzay5z1q+r2HbK5I0ulfnJqVqoTdQf2F9axfUpwcRISY
-         kvAeTsLe4+Tk+H4+mLSP+IBbMzOzT4nlyoO3GFbpwim/Y2gRyPWHSCbIvASz0c1+WjWU
-         +eUWQmven1Rg3YFPfAcdweeQ4rJpLV4oiqz7b0PjJz6ygBsT/hbfhUMFzDZRPx83FJKS
-         JUDg==
+        bh=PytmB5BuvX8RtIynUIqEqCr1gpI55IJ4in+i47gkw7k=;
+        b=m90jAOYevYGqQ3dtFG6/7pB27pbbAtx7TFtPSAL7GbEeso4eR2p0Nt36zfpxmopFxT
+         0Lm0Hiyn8OZMSRIGSGuQqnjkZi/l2ysGQMZ01CiuFT2hf20yYU3F1H/aYEt5AT3xpqI9
+         l/dbMzoemu0lsXlmBZz3kmOTVqQbWvyJj9aCG8QMKbpbrVJana+ybygiGfbJ8UmSk7x0
+         c2Icnp4KxPK6Gwoq+cFDhsQ2dvrr5lExKZjSqi/A77BgMFfJCET9rnT4rXELJw7uBzSp
+         iiby/sEYoNwyOpRVHf0P3YxUSvdsgARgu1Stlj2vj4VWoj4khlQej/MRhLEtRpxtQ/H8
+         XBug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760515253; x=1761120053;
+        d=1e100.net; s=20230601; t=1760515258; x=1761120058;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qW4LqkdBRdyjIzBlwSlPKXpQF5rxKjZXPRGr6XSfKtw=;
-        b=Vd+V/xSLUAYDMyX+rMHZPMxwsqddFnmY1vh9rf10G8Hd7hKvZUyknCz8lJ5eDa0SQh
-         TmayrhrYerIKML65grW2/I6dvtA0vk6A17iMmvFwvTlJ3yzrpeJlvxB2cn193hZG0R5S
-         bEYndehqvKdcMklVGOWo2i4XbtzrJtOIHOybSeSLedxwdcOlZ+SSo/2sf8X2uvo5tyBM
-         FD9c+xgXCb71vMvlLnSzPpSIIjp57fivzWVIyg1j8EB7J8eGD3diBgeDUlP7YLlLHt+Q
-         ELQAP4o3/zVR4CZEm0E3AVZ7LJoeEGdVzkv9DyPLRfV78aDWY4pUigRF6MBuJREK3CXS
-         KNBg==
-X-Gm-Message-State: AOJu0Yw06JkpWbKmqP1PpDtPrfJwWxUlGK1K/Z0g4iZ0UpqVAH5iasQu
-	x6XT1ePBa5Y4rrf8E+fa9TG+gU9hATZ3Rmec03uvLfZj+J+SzxRxKG2p1W8tqA==
-X-Gm-Gg: ASbGncuNgLW03VukQ865PKb01Qno0E9Z07IDmQpMkQJBOPzQ+6JCovxKmKNUh5rOfqN
-	WOAJ0pekp5sgIu/JMC0ne4i4/PRpO0HYXCIfYhpi4CN9xyb0S+hGx7cWFR9Hey/5y8VPfdNJ+R1
-	t+GmSMiJehHZ6e46ZAzqQ+UvJ/qelPgDxVz2V1YXGG2psqBwVpvpvPerMuvyI621bfB7xZh3RYJ
-	BIcpq8E5jqmd47qYDnmIGqKDmKq1sAyB6d/vMuMytHcrzuwBa647J+8ac18xxElI3RRKHYewJY4
-	FgrYNF8BHxXvAlz6zSLiHh+fhhi+HiJkVJeFYDpfhjn9M3csRW+42Y7VVGPrH6ebJgNjc8WuCPm
-	Idy0n2IQb6WqxJhf2ENESuVheAw8WXxH0Tr3cw8r95m3OvKL/2ymkTOYgHFm1FC7g0rspGE6RDj
-	Mv8lzaMxbhJdGV3uQ=
-X-Google-Smtp-Source: AGHT+IHAUPMMlL9GxedlofFjXKt07x5bjy7a2bWw5k56kprfJ64+YVqsdM931d2XPpMSH9AQMv4xfw==
-X-Received: by 2002:a05:600c:4ed1:b0:46f:b42e:e393 with SMTP id 5b1f17b1804b1-46fb42ee481mr131224355e9.40.1760515252583;
-        Wed, 15 Oct 2025 01:00:52 -0700 (PDT)
+        bh=PytmB5BuvX8RtIynUIqEqCr1gpI55IJ4in+i47gkw7k=;
+        b=ANxm76Skt9k5W6oBhM26YC6bdzk2G3qswzQym8IQgAr6p3zbZSQ0VwUqeHKj2q4Hsx
+         kmaX6n+Os2igezZBKOOzFnUVQGXxNxKZfgmLS0yYDGPE1FY+UBzXHm/KYLe8uLdD7f9O
+         W80TSjZ9Q9QGe2hjBmCsIaXeF920GSH2TLUP39KOaQVWCu126C1ze1crBPBgs5aAsc13
+         EaKLo6JszwIskhcMvDG9TQMY03SkS3jtVyM428SFcofZeg+6aj1wC3OVU9p1hWdNG5s1
+         RMTFNJfj4sXshm9RMuhTcmn+LgLoKHrueIiEdXKyX4W7qz20hETMZXAr5h6EoovfdpWh
+         Dhbg==
+X-Gm-Message-State: AOJu0Yye56E9tuN9+kyWaSBcu4B3X13bN9jAUZ2imuohwVbDsCZLolAi
+	rp4NYxiO7r/w9lUtsYHuWawHQt7voNX02KubKVfQ8xkhpR3AB26HD0j5SmSpbQ==
+X-Gm-Gg: ASbGncs1aaO+TNqrc8vhJS+jZnv4FdDbf5bGHUZOWkXRI7EW6HggMPQjO4QN6qPVRx8
+	nGMmvlhXK0LxmeEYyuvSuVwzbpKzvc93ZtJvEkatBl/6Ol4R//rP5F6c40e22G8nZv2HQ6AB9bJ
+	jBLT4leXXBuxySNAXI9SFgZW1s1OzkqZHcxfLrlKjT+FkrvkhcTkSvyrrfX9lvuEHpvAlNq1K3P
+	EzUlgQp1u3hhP/lrxwTLgD0ZtkqYvM4rqfD2CdqHJ7Mi238IokRPxumD0MnCkC/pIPlp0AcpWU4
+	KlKp6DVRA57bQFixexGmwYOrAUdiHgyz7dalqStX7gpV6YdO3z/ZLis3YtchFICwkvicq7vECbu
+	5T8HmCeZSLdAkij0v+m2k2wizIEAlU03PePteak3viOfR5P5w97logKaA69xwRYam5pdXNJD6LT
+	qSx5zWOvlkLSd2R744/fxR4dEn+Q==
+X-Google-Smtp-Source: AGHT+IHaABIHuAIiW9HqRfDV35Xm09By2XhdDQoHDyw4SzSoIn4nkgP3r0XC/gcZKghlsk2oCrtgmg==
+X-Received: by 2002:a05:600c:4f08:b0:46e:3dcb:35b0 with SMTP id 5b1f17b1804b1-46fa9a94553mr202964815e9.2.1760515257486;
+        Wed, 15 Oct 2025 01:00:57 -0700 (PDT)
 Received: from localhost.suse.cz (apn-78-30-82-56.dynamic.gprs.plus.pl. [78.30.82.56])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5e1024sm27520095f8f.42.2025.10.15.01.00.51
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5e1024sm27520095f8f.42.2025.10.15.01.00.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Oct 2025 01:00:52 -0700 (PDT)
+        Wed, 15 Oct 2025 01:00:57 -0700 (PDT)
 From: Sebastian Chlad <sebastianchlad@gmail.com>
 X-Google-Original-From: Sebastian Chlad <sebastian.chlad@suse.com>
 To: cgroups@vger.kernel.org
 Cc: tejun@kernel.org,
 	mkoutny@suse.com,
 	Sebastian Chlad <sebastian.chlad@suse.com>
-Subject: [PATCH v2 1/2] selftests: cgroup: add values_close_assert helper
-Date: Wed, 15 Oct 2025 10:00:21 +0200
-Message-ID: <20251015080022.14883-2-sebastian.chlad@suse.com>
+Subject: [PATCH v2 2/2] selftests: cgroup: Use values_close_assert in test_cpu
+Date: Wed, 15 Oct 2025 10:00:22 +0200
+Message-ID: <20251015080022.14883-3-sebastian.chlad@suse.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251015080022.14883-1-sebastian.chlad@suse.com>
 References: <20251014143151.5790-1-sebastian.chlad@suse.com>
@@ -94,50 +94,93 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some cgroup selftests, such as test_cpu, occasionally fail by a very
-small margin and if run in the CI context, it is useful to have detailed
-diagnostic output to understand the deviation.
-
-Introduce a values_close_assert() helper which performs the same
-comparison as values_close(), but prints detailed information when the
-values differ beyond the allowed tolerance.
+Convert test_cpu to use the newly added values_close_assert() helper
+to print detailed diagnostics when a tolerance check fails. This
+provides clearer insight into deviations while run in the CI.
 
 Signed-off-by: Sebastian Chlad <sebastian.chlad@suse.com>
 ---
- .../cgroup/lib/include/cgroup_util.h          | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ tools/testing/selftests/cgroup/test_cpu.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/tools/testing/selftests/cgroup/lib/include/cgroup_util.h b/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
-index 9dc90a1b386d..7ab2824ed7b5 100644
---- a/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
-+++ b/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
-@@ -25,6 +25,26 @@ static inline int values_close(long a, long b, int err)
- 	return labs(a - b) <= (a + b) / 100 * err;
- }
+diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
+index 2a60e6c41940..d54e2317efff 100644
+--- a/tools/testing/selftests/cgroup/test_cpu.c
++++ b/tools/testing/selftests/cgroup/test_cpu.c
+@@ -219,7 +219,7 @@ static int test_cpucg_stats(const char *root)
+ 	if (user_usec <= 0)
+ 		goto cleanup;
  
-+/*
-+ * Checks if two given values differ by less than err% of their sum and assert
-+ * with detailed debug info if not.
-+ */
-+static inline int values_close_report(long a, long b, int err)
-+{
-+	long diff  = labs(a - b);
-+	long limit = (a + b) / 100 * err;
-+	double actual_err = (a + b) ? (100.0 * diff / (a + b)) : 0.0;
-+	int close = diff <= limit;
-+
-+	if (!close)
-+		fprintf(stderr,
-+			"[FAIL] actual=%ld expected=%ld | diff=%ld | limit=%ld | "
-+			"tolerance=%d%% | actual_error=%.2f%%\n",
-+			a, b, diff, limit, err, actual_err);
-+
-+	return close;
-+}
-+
- extern ssize_t read_text(const char *path, char *buf, size_t max_len);
- extern ssize_t write_text(const char *path, char *buf, ssize_t len);
+-	if (!values_close(usage_usec, expected_usage_usec, 1))
++	if (!values_close_report(usage_usec, expected_usage_usec, 1))
+ 		goto cleanup;
  
+ 	ret = KSFT_PASS;
+@@ -291,7 +291,7 @@ static int test_cpucg_nice(const char *root)
+ 
+ 		user_usec = cg_read_key_long(cpucg, "cpu.stat", "user_usec");
+ 		nice_usec = cg_read_key_long(cpucg, "cpu.stat", "nice_usec");
+-		if (!values_close(nice_usec, expected_nice_usec, 1))
++		if (!values_close_report(nice_usec, expected_nice_usec, 1))
+ 			goto cleanup;
+ 
+ 		ret = KSFT_PASS;
+@@ -404,7 +404,7 @@ overprovision_validate(const struct cpu_hogger *children, int num_children)
+ 			goto cleanup;
+ 
+ 		delta = children[i + 1].usage - children[i].usage;
+-		if (!values_close(delta, children[0].usage, 35))
++		if (!values_close_report(delta, children[0].usage, 35))
+ 			goto cleanup;
+ 	}
+ 
+@@ -444,7 +444,7 @@ underprovision_validate(const struct cpu_hogger *children, int num_children)
+ 	int ret = KSFT_FAIL, i;
+ 
+ 	for (i = 0; i < num_children - 1; i++) {
+-		if (!values_close(children[i + 1].usage, children[0].usage, 15))
++		if (!values_close_report(children[i + 1].usage, children[0].usage, 15))
+ 			goto cleanup;
+ 	}
+ 
+@@ -573,16 +573,16 @@ run_cpucg_nested_weight_test(const char *root, bool overprovisioned)
+ 
+ 	nested_leaf_usage = leaf[1].usage + leaf[2].usage;
+ 	if (overprovisioned) {
+-		if (!values_close(leaf[0].usage, nested_leaf_usage, 15))
++		if (!values_close_report(leaf[0].usage, nested_leaf_usage, 15))
+ 			goto cleanup;
+-	} else if (!values_close(leaf[0].usage * 2, nested_leaf_usage, 15))
++	} else if (!values_close_report(leaf[0].usage * 2, nested_leaf_usage, 15))
+ 		goto cleanup;
+ 
+ 
+ 	child_usage = cg_read_key_long(child, "cpu.stat", "usage_usec");
+ 	if (child_usage <= 0)
+ 		goto cleanup;
+-	if (!values_close(child_usage, nested_leaf_usage, 1))
++	if (!values_close_report(child_usage, nested_leaf_usage, 1))
+ 		goto cleanup;
+ 
+ 	ret = KSFT_PASS;
+@@ -691,7 +691,7 @@ static int test_cpucg_max(const char *root)
+ 	expected_usage_usec
+ 		= n_periods * quota_usec + MIN(remainder_usec, quota_usec);
+ 
+-	if (!values_close(usage_usec, expected_usage_usec, 10))
++	if (!values_close_report(usage_usec, expected_usage_usec, 10))
+ 		goto cleanup;
+ 
+ 	ret = KSFT_PASS;
+@@ -762,7 +762,7 @@ static int test_cpucg_max_nested(const char *root)
+ 	expected_usage_usec
+ 		= n_periods * quota_usec + MIN(remainder_usec, quota_usec);
+ 
+-	if (!values_close(usage_usec, expected_usage_usec, 10))
++	if (!values_close_report(usage_usec, expected_usage_usec, 10))
+ 		goto cleanup;
+ 
+ 	ret = KSFT_PASS;
 -- 
 2.51.0
 
