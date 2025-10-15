@@ -1,116 +1,243 @@
-Return-Path: <cgroups+bounces-10776-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10778-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8457BBDEDEF
-	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 15:58:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20305BDEE0A
+	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 15:58:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 44B974FDD8C
-	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 13:57:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B89253E761F
+	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 13:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C5AF23B604;
-	Wed, 15 Oct 2025 13:57:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70E7B2405E8;
+	Wed, 15 Oct 2025 13:58:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=cdn77.com header.i=@cdn77.com header.b="GTRNRPra"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="QvzMzjo0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-internal.sh.cz (mail-internal.sh.cz [95.168.196.40])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 192DD2459C6;
-	Wed, 15 Oct 2025 13:57:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.168.196.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA93B23BD1D
+	for <cgroups@vger.kernel.org>; Wed, 15 Oct 2025 13:57:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760536664; cv=none; b=QEXCIigXYBQV4fdFzr0DwVXLvl2ZkK61LejRrAaSDZu+LYvRUuoEJlo5QjeBCUnHa0L0y9G4qbvj3OVk6Bvcy+Qgpo4o+afNPIQihg8Xx6NTNJU8On/qFVRrzJxwFYDfVEi/SVfAQ4Taa7kacVHcFsH3gvEDW5/rf1guZozJYFU=
+	t=1760536680; cv=none; b=YZH/Y/ydP4isM6U49jeyoQDmIlhoKa0u9T0z9qa9NamIBnHmLNWP5aNkOkutbNiKrawL3WgMN56Bg1hXQ+miVrs8mPaZJgFz1XEqWIc7LMSidUCv/HjqbA8WTZLptKuZovGjawif6ZwG9wET6RqQcbCofqdNZ+yxiH4azseRcoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760536664; c=relaxed/simple;
-	bh=IC/A2xrVn0KsZs6cTMAvZegDyu//Z94Lb+/v2uVh0tw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GRsXtYBsmfRdRzRhaxSqWXjVqUQd0oNB9tJadeSxR3ejsi9yzUYXpOUphbbNVpP5lOJ65Z6Uvg9ABtohEQVs2AFSP/7yMt45gkG5WCT4ECjgbE9UsCsDv6x5woPMHWSDtF25Zv8l87/PIyRAaVCXn0v9UCvCsy2b5MSXac4jHLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cdn77.com; spf=pass smtp.mailfrom=cdn77.com; dkim=pass (1024-bit key) header.d=cdn77.com header.i=@cdn77.com header.b=GTRNRPra; arc=none smtp.client-ip=95.168.196.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cdn77.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cdn77.com
-DKIM-Signature: a=rsa-sha256; t=1760536651; x=1761141451; s=dkim2019; d=cdn77.com; c=relaxed/relaxed; v=1; bh=UoCSU4XyYx59fD12dxoPWCIwk1oQ2hfxBjxFdeb3MWY=; h=From:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To:References;
-   b=GTRNRPra9zCnXGizQYbz/tnpG+eEpB/eReNgN4avTVOY25rovQ4/A57OZYw69x3YXXqieJC6zgIOzGJ+sjAxmIGpDsp8/5iLWU64ArpDNbyBC7z1gQ0X3IspmfhNYeN72xRF65U1keYTDEYYgXqqjvNkB8WBk3bHHXkw4oUeZ6Q=
-Received: from [10.0.5.28] ([95.168.203.222])
-        by mail.sh.cz (14.1.0 build 17 ) with ASMTP (SSL) id 202510151557309450;
-        Wed, 15 Oct 2025 15:57:30 +0200
-Message-ID: <5e603850-2cfc-4eb6-a5cc-da5282525b0d@cdn77.com>
+	s=arc-20240116; t=1760536680; c=relaxed/simple;
+	bh=pONa5grEbBaJ8DHbOdslTdJijsBmkjYL4h5XrJ48be8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=SqP1tTIp8ZlVtOOE/Kq6QZTy10n0p5Nu+fFpfUTc1H9lYDLpGuuGKEfCbUo3g90WmDB6s8Xyn+UL8kIP1LyveBio/0nZ8/aAppcfBS9EddiLZ70NPE/igzx527glZ25qrRzdZGxlZWyPI9t7ORL7Fjtnaiv8ZerVgwLSeuKxVw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=QvzMzjo0; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1760536672; x=1761141472; i=natalie.vock@gmx.de;
+	bh=jUP3qCgF//ScbF5bFjG0nFq6Kt8z8eeKDh3pZNjxC5o=;
+	h=X-UI-Sender-Class:From:Date:Subject:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=QvzMzjo0L0NvJe0ykLHLJe9vLBOAKpM9ARdcn15n3cP20sbMX0GfT7eqD6z2QfGr
+	 iB8C40+S4tQj5d4UjF79qrV35EAApUM1YsY4w8W1oky/nyXgNBXg57XzvgJOokiX9
+	 lgjLcLGRgg9e/s8nql+p36fL9dsAaXL5baNjW4zohwAbqMqDQmVW2xeF/Cao7tnUb
+	 miO8NvDlx7D9zyl0HOaadSvgXDu1DJrvllIatIEK1Trw3XJGWRrMeK8yQGITloA+f
+	 AowrwvDGwlgYEqXJ+Iy2p9Dx0CcsNexJYk+7bgupvFGZIM4A/INoiR6PkIuoU3/6H
+	 Pf8ahOQ5pyUKofyGiw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.0.3] ([109.91.201.165]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MVvPD-1uhIVp1puH-00WaKJ; Wed, 15
+ Oct 2025 15:57:52 +0200
+From: Natalie Vock <natalie.vock@gmx.de>
 Date: Wed, 15 Oct 2025 15:57:29 +0200
+Subject: [PATCH v2 2/5] cgroup/dmem: Add dmem_cgroup_common_ancestor helper
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] memcg: expose socket memory pressure in a cgroup
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Neal Cardwell <ncardwell@google.com>, Kuniyuki Iwashima <kuniyu@google.com>,
- David Ahern <dsahern@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org,
- netdev@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>,
- cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Matyas Hurtik <matyas.hurtik@cdn77.com>
-References: <20251007125056.115379-1-daniel.sedlak@cdn77.com>
- <87qzvdqkyh.fsf@linux.dev> <13b5aeb6-ee0a-4b5b-a33a-e1d1d6f7f60e@cdn77.com>
- <87o6qgnl9w.fsf@linux.dev>
- <tr7hsmxqqwpwconofyr2a6czorimltte5zp34sp6tasept3t4j@ij7acnr6dpjp>
- <87a5205544.fsf@linux.dev>
- <qdblzbalf3xqohvw2az3iogevzvgn3c3k64nsmyv2hsxyhw7r4@oo7yrgsume2h>
- <875xcn526v.fsf@linux.dev> <89618dcb-7fe3-4f15-931b-17929287c323@cdn77.com>
- <6ras4hgv32qkkbh6e6btnnwfh2xnpmoftanw4xlbfrekhskpkk@frz4uyuh64eq>
-Content-Language: en-US
-From: Daniel Sedlak <daniel.sedlak@cdn77.com>
-In-Reply-To: <6ras4hgv32qkkbh6e6btnnwfh2xnpmoftanw4xlbfrekhskpkk@frz4uyuh64eq>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CTCH: RefID="str=0001.0A2D031F.68EFA84A.007C,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0"; Spam="Unknown"; VOD="Unknown"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <20251015-dmemcg-aggressive-protect-v2-2-36644fb4e37f@gmx.de>
+References: <20251015-dmemcg-aggressive-protect-v2-0-36644fb4e37f@gmx.de>
+In-Reply-To: <20251015-dmemcg-aggressive-protect-v2-0-36644fb4e37f@gmx.de>
+To: Maarten Lankhorst <dev@lankhorst.se>, 
+ Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>, 
+ Johannes Weiner <hannes@cmpxchg.org>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+ Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>, 
+ Matthew Auld <matthew.auld@intel.com>, 
+ Matthew Brost <matthew.brost@intel.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+ Simona Vetter <simona@ffwll.ch>
+Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
+X-Mailer: b4 0.14.2
+X-Provags-ID: V03:K1:DGGDhYKxLzy//RADh2iYfAGbJAGJAw0xtp647w7YBHjnAl4OyyQ
+ rkL1Y6mSfLWbLyDPFF/xYUTnM+olKUiTWgvlCACIHLUr4aLi8ZsRNo39Q6UCKWVtR1FjDL8
+ 1QGhGMwzmFvglH7D9susAj4Kt4WdjcY0t03wj9UTm5+Nbk8UfaqGdWxO0edyhL5rCwZxFFk
+ DizUimbz3IEbhcxN4euGg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:FFu/mgCGo2U=;PKP3eRqPWQQ+ksrbISHnbPltYyd
+ 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
+ v6Mkg==
 
-On 10/14/25 10:32 PM, Shakeel Butt wrote:
-> On Mon, Oct 13, 2025 at 04:30:53PM +0200, Daniel Sedlak wrote:
-> [...]
->>>>>> How about we track the actions taken by the callers of
->>>>>> mem_cgroup_sk_under_memory_pressure()? Basically if network stack
->>>>>> reduces the buffer size or whatever the other actions it may take when
->>>>>> mem_cgroup_sk_under_memory_pressure() returns, tracking those actions
->>>>>> is what I think is needed here, at least for the debugging use-case.
->>
->> I am not against it, but I feel that conveying those tracked actions (or how
->> to represent them) to the user will be much harder. Are there already
->> existing APIs to push this information to the user?
->>
-> 
-> I discussed with Wei Wang and she suggested we should start tracking the
-> calls to tcp_adjust_rcv_ssthresh() first. So, something like the
-> following. I would like feedback frm networking folks as well:
+This helps to find a common subtree of two resources, which is important
+when determining whether it's helpful to evict one resource in favor of
+another.
 
-Looks like a good start. Are you planning on sending this patch 
-separately, or can we include it in our v6 (with maybe slight 
-modifications)?
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 873e510d6f8d..5fe254813123 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -52,6 +52,7 @@ enum memcg_memory_event {
->   	MEMCG_SWAP_HIGH,
->   	MEMCG_SWAP_MAX,
->   	MEMCG_SWAP_FAIL,
-> +	MEMCG_SOCK_THROTTLED,
+Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
+=2D--
+ include/linux/cgroup_dmem.h |  9 +++++++++
+ kernel/cgroup/dmem.c        | 25 +++++++++++++++++++++++++
+ 2 files changed, 34 insertions(+)
 
-This probably should be MEMCG_TCP_SOCK_THROTTLED, because it checks only 
-tcp_under_memory_pressure, however there is also the 
-sk_under_memory_pressure used in net/sctp/sm_statefuns.c:6597 to also 
-reduce the sending rate. Or also add the counter there and keep the name?
+diff --git a/include/linux/cgroup_dmem.h b/include/linux/cgroup_dmem.h
+index 1a88cd0c9eb00409ddd07d1f06eb63d2e55e8805..444b84f4c253aded9e4e59d051=
+e3ac34a851b9d7 100644
+=2D-- a/include/linux/cgroup_dmem.h
++++ b/include/linux/cgroup_dmem.h
+@@ -28,6 +28,8 @@ bool dmem_cgroup_below_min(struct dmem_cgroup_pool_state=
+ *root,
+ 			   struct dmem_cgroup_pool_state *test);
+ bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *root,
+ 			   struct dmem_cgroup_pool_state *test);
++struct dmem_cgroup_pool_state *dmem_cgroup_common_ancestor(struct dmem_cg=
+roup_pool_state *a,
++							   struct dmem_cgroup_pool_state *b);
+=20
+ void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool);
+ #else
+@@ -75,6 +77,13 @@ static inline bool dmem_cgroup_below_low(struct dmem_cg=
+roup_pool_state *root,
+ 	return false;
+ }
+=20
++static inline
++struct dmem_cgroup_pool_state *dmem_cgroup_common_ancestor(struct dmem_cg=
+roup_pool_state *a,
++							   struct dmem_cgroup_pool_state *b)
++{
++	return NULL;
++}
++
+ static inline void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_sta=
+te *pool)
+ { }
+=20
+diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+index ece23f77f197f1b2da3ee322ff176460801907c6..0914fc8fd97f49d246da0344ab=
+edaf9244e8fbad 100644
+=2D-- a/kernel/cgroup/dmem.c
++++ b/kernel/cgroup/dmem.c
+@@ -689,6 +689,31 @@ bool dmem_cgroup_below_low(struct dmem_cgroup_pool_st=
+ate *root,
+ }
+ EXPORT_SYMBOL_GPL(dmem_cgroup_below_low);
+=20
++/**
++ * dmem_cgroup_common_ancestor(): Find the first common ancestor of two p=
+ools.
++ * @a: First pool to find the common ancestor of.
++ * @b: First pool to find the common ancestor of.
++ *
++ * Return: The first pool that is a parent of both @a and @b, or NULL if =
+either @a or @b are NULL.
++ */
++struct dmem_cgroup_pool_state *dmem_cgroup_common_ancestor(struct dmem_cg=
+roup_pool_state *a,
++							   struct dmem_cgroup_pool_state *b)
++{
++	struct dmem_cgroup_pool_state *parent;
++
++	while (a) {
++		parent =3D b;
++		while (parent) {
++			if (a =3D=3D parent)
++				return a;
++			parent =3D pool_parent(parent);
++		}
++		a =3D pool_parent(a);
++	}
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(dmem_cgroup_common_ancestor);
++
+ static int dmem_cgroup_region_capacity_show(struct seq_file *sf, void *v)
+ {
+ 	struct dmem_cgroup_region *region;
 
-Thanks!
-Daniel
+=2D-=20
+2.51.0
+
 
