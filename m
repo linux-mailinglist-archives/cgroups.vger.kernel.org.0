@@ -1,408 +1,235 @@
-Return-Path: <cgroups+bounces-10775-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10780-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58B85BDE4EF
-	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 13:42:07 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CAC9BDEDFB
+	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 15:58:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CB13735774C
-	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 11:42:06 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E9B254F49E2
+	for <lists+cgroups@lfdr.de>; Wed, 15 Oct 2025 13:58:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3AE322A18;
-	Wed, 15 Oct 2025 11:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8863220E029;
+	Wed, 15 Oct 2025 13:58:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="X96a4lmF";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="hbtu52RB"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="W6pZJYuu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06208322A09;
-	Wed, 15 Oct 2025 11:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760528505; cv=fail; b=OQ4U+3AfqroxsnTkXlzc4Dqtz17c55VKH42g2ItwOAlZ9scwOrFNLEtNZZzncffTOKNVu05VqvZewigMsSobe8smewIbNcxoqQPktzc8i8Zh7BQIAmRgVIAVSoqcgpZlkDPFtzYytSZUixjlp10huBSAtOJSXcfY8qhdJI7K34s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760528505; c=relaxed/simple;
-	bh=yzMimtBAGVQazHY5re1zp/o14jTD06GtqDGg/wWc/Ns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Mbc3iRjF+JQ6W9Ijr6hlEGOoDVSMPj0t+LKKm2EmB4YZEReK2X7TVmWUD1iX33SoJ0oGaXSKKqro+3vte5OVP1HMAYv4xRWU78fo+ZzJUagBMZDUSc5g8quNx0SZ+irSPxCvoc3tD6bwPXmEwoQGqGCAqsDWeOiwjiLnCQolar4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=X96a4lmF; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=hbtu52RB; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59F9nh5U023868;
-	Wed, 15 Oct 2025 11:41:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=LVuzkp0LM8u8ZgxV075nNDMfxIN4m1ywUuIYgyupIow=; b=
-	X96a4lmF+nslKtuBpDc2A0d/rJZq6F1eOPLqmX9UXGFjFq37TeKmxVhQ4+i8g5EI
-	7PdiVl9Rg883IckDd8sHUINvZwaKFDnPrXCVpswBLQUJYgTNJ8gl/Kf8lFVerXu4
-	VZbM+aY2JpA728GMO7mNgt/9L8WxEeqS2wNl/16qxKzVz8SChj103QQW/Hf/Vfvq
-	Y+UUqU4VGtCqb0yfYcIY9oa5cZ2eP1M9dak5eBSD26p5568cthNsJQe58qpO+uH7
-	xAqvS4854ZCGsWMX22wsNrq1RBdOT7ZWhiGkmRi8AIqHhx7TOACUQ2CX3kRhptW5
-	8TWeklbuv06DclbrZMBVbw==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 49qf47pb7m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 15 Oct 2025 11:41:10 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 59F9DuP1036619;
-	Wed, 15 Oct 2025 11:41:10 GMT
-Received: from dm1pr04cu001.outbound.protection.outlook.com (mail-centralusazon11010067.outbound.protection.outlook.com [52.101.61.67])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 49qdpa7xrg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 15 Oct 2025 11:41:10 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xfTVUfERuXt+NPRaOVIJxNs2gZUdcJEj0UWvgrwf+dEaLSxHm8b7Ph16dG4rqNaM7rMenvEvPP2kFoqmj6iP7SAxFbMdari0VnoTuyuBsTxDsGzr9RNiIP2Qr8b4XOBziMA/5YL11rxtCoiXliuN8L3yCNEVQ22QOg9b4nhMw5GEyXGED4c5wkg2wF5XUzzlFIhQZCxC9Enw3rggPvJufSqe8FSFiWvDiLi9a8vRZY+vnFdBo5WPkqqVoNCW9CWjLgjCyYiFmF0HwFLHg8Q7iBy6NyMeYlz3odYD7eyvhUXxOTi/3RA7QD9k53yZIsj8f/PSrqxb9V+Ja+1qSL94ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LVuzkp0LM8u8ZgxV075nNDMfxIN4m1ywUuIYgyupIow=;
- b=fce1RAjy4/cKFdrHkv0IebmELuFn2BllGfA3Uksmz88pMkrPc3S7pm1RiJCv+AfH9u+oefFrYwJmj5zUzn3ImjGi9wW4P+5fYRf9y8zT0b1coMTASH0lhehhwf8NbHE1iZfE+E5RsPVpHmR619b4NHZ6toNd88+t+oc2H/ouDlQpM8UEeeLJdjJsyBj4R5FVOMeU1J/aciZG1mEq0fPJhJNZ0nhAT6Kvr8/uf4Eha2JH3PlOIhDSsfJ3XgFX9KoVT9AQYRMdwKb8Pi96KUPJZI8CiXx+DYyOhgcVeDua5AMKZugJCx6TI9STJB2NEMZigOcXiYCKmYELEEKtJTy81A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LVuzkp0LM8u8ZgxV075nNDMfxIN4m1ywUuIYgyupIow=;
- b=hbtu52RBx+uYG31DK1546Owac0Hc73UAOs/9pEqh+d+Is8S6IWx5ugAAGenC1iNru/jRgxz5v1l36tCtzfy2dEhLv4S6RrqaT5UDJzZcOW3DHuUXghaQC+g3mPazylpjIbBSA1HYGmJl2x/W4ql4QIrbMpzfjmQdqX744oGuyJc=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by DM3PPFFE6A35993.namprd10.prod.outlook.com (2603:10b6:f:fc00::c5b) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9203.10; Wed, 15 Oct
- 2025 11:41:07 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71%4]) with mapi id 15.20.9228.009; Wed, 15 Oct 2025
- 11:41:06 +0000
-Date: Wed, 15 Oct 2025 20:40:57 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Hao Ge <hao.ge@linux.dev>
-Cc: Vlastimil Babka <vbabka@suse.cz>, Suren Baghdasaryan <surenb@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeel.butt@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Hao Ge <gehao@kylinos.cn>
-Subject: Re: [PATCH v3] slab: Add check for memcg_data != OBJEXTS_ALLOC_FAIL
- in folio_memcg_kmem
-Message-ID: <aO-ISd4W-6cl49OO@hyeyoo>
-References: <20251014152751.499376-1-hao.ge@linux.dev>
- <CAJuCfpGBxUmvWoe2xv2-bsF+TY4fK-m1-Z_E3OcyTiSYz5KeAA@mail.gmail.com>
- <aO9okBEZiA4pCNku@hyeyoo>
- <c07838ca-4e6e-4837-b99f-09fd44c7801c@suse.cz>
- <aO93GHNR_32-Pmom@hyeyoo>
- <6194b6ab-6b43-468d-ba78-a95594c48798@suse.cz>
- <8f161ba2-6d0f-4dbb-85bc-ab4bff04f24a@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8f161ba2-6d0f-4dbb-85bc-ab4bff04f24a@linux.dev>
-X-ClientProxiedBy: SL2P216CA0093.KORP216.PROD.OUTLOOK.COM (2603:1096:101:3::8)
- To CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5739C23BD1D
+	for <cgroups@vger.kernel.org>; Wed, 15 Oct 2025 13:58:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1760536691; cv=none; b=RhYgobqNzECEE1pVAUOqEpNPzn8H6vs8J6CG11ullSh4mIUHSrKuxk6p7f6Zmth3SU3TjR4k/wVn/xm9cySqCDNmh1B1HxMkJxjYWPGTsIFYIl5EH4GvfdAvhAGUWPThGCoOlDa2j6PjIuD8LECiReGALs+/zmReqJpifK8pcgQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1760536691; c=relaxed/simple;
+	bh=IAC1kbu9p9T3B31eCOUYiL6+CWNFn1elrybMZ3YGc54=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Z2T9ZuB+Dol5u3Rue7KWwL72HsuMUUCnbmTWlhYQPW/uhx7yqvx5tpBaOQvIp6PPL+5m7jMsVJdtPYEPI5YJ8DHO4ErxznSLXfPFiY8BDS6r2tqelkGQM11XQHATZ/CZbq1T12DTrnFerOIC/VDnTV8kozuo67cDU5kFE/DdrXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=W6pZJYuu; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1760536670; x=1761141470; i=natalie.vock@gmx.de;
+	bh=XOuZcXyIp3/53q/5u2NeWtvU5bkFV4TO99WTVHyFobE=;
+	h=X-UI-Sender-Class:From:Subject:Date:Message-Id:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:To:Cc:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=W6pZJYuuH1K+M5Xoc+YSp1Oo3QN15dktGmc4tK8zZbd/pbKH4XSumJaqKVM2yAOZ
+	 VxNowHwbW7eOXYti4hZzml32fFJEmNiMoLSN2NNx8+H7CokIWt32Ho0vSo4NW47f0
+	 xohneCUTdaXLCPpGJEiolv9M8gO0coaT/crJ8cFgFAwNcCtrWC3aLD/LUfRqVWpJf
+	 P+fv33uYqPK3KrM7JzbyMZKd1XdvDhLf3YniI+Zqo9HUbFtVmAw4klveM06tenZjb
+	 GRTa8oQfnm5aaG7XebRXy1nzd5TVNDgf2YepRgSRBREOeUGMbK4XW+qUs3HjrBwuA
+	 XbAYblzoTuc6ci69ww==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.0.3] ([109.91.201.165]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N0X8o-1uLUHy21n2-00sm30; Wed, 15
+ Oct 2025 15:57:50 +0200
+From: Natalie Vock <natalie.vock@gmx.de>
+Subject: [PATCH v2 0/5] cgroup/dmem,drm/ttm: Improve protection in
+ contended cases
+Date: Wed, 15 Oct 2025 15:57:27 +0200
+Message-Id: <20251015-dmemcg-aggressive-protect-v2-0-36644fb4e37f@gmx.de>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|DM3PPFFE6A35993:EE_
-X-MS-Office365-Filtering-Correlation-Id: fde77404-82b2-4096-9922-08de0bdfba6a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|366016|1800799024|7416014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Yy8rQ3hFU1F5MEovTFowb3V0ek9GbHhRN2JsZFVOaXZXdnI2U3ZuWXNvWm5K?=
- =?utf-8?B?ZUpoL0EyZWtZUVprdm5tazJYSjVjTVA2Q245aUdUckpybTZqZXpuV1pvZTdB?=
- =?utf-8?B?K0hhUzg3TWNaL3pjcVk0SjhHWURVdWJFRFFBSXorZS9rK01yN0pqQU1wTmFm?=
- =?utf-8?B?UzdHRDRzc1hOTVpsaG1Oa1dQTW55cVBiL0FkbDQySGtCU09rUTBKSmNWRTJq?=
- =?utf-8?B?aUhHb0hsNmc0UnJNQVpXcWpnbUN5ZDRsaTlRV0pNQmExdllFSkcrQSthSGNJ?=
- =?utf-8?B?RUFCUlRuZ1lhLy9rTzJ6cXZ5TFdNZW5ra2dkRFlXZlh4aEhSUURZZDRvcG43?=
- =?utf-8?B?VHRCNUZuci9OZm5vSG8vWVJwSXlLMGQ1NHoyMDNSSDRYOU40cnZEQnRFMlVi?=
- =?utf-8?B?Q1V3YWhzZ1FBREgxbW84c1hWaW9ZRmVFYnN2U3ptSjR1RUVVVUxJb1BpMVBC?=
- =?utf-8?B?MzkrTm9IRWcrZU1OcWhpOFU2OVdITXdUSTZrc3JYRUlqMjJrRzlUSFFWL2k0?=
- =?utf-8?B?V2N4cWc4cjgreDhWZnpXU2NYMzNNOURYVXNvUnlDeHR4ZjgzWktIS3BKN01F?=
- =?utf-8?B?Q2hFWTFnZmxVMGgyWGlKcDhhTmI5aWtSSFBUWU04TVZod2pUYzNHTVJNK0tJ?=
- =?utf-8?B?TGt3cTQ5VTF1WmZ2QUtwK0duSXFlR2I5MGd0UDV6azBpZlZLdFlMcWlwcUc5?=
- =?utf-8?B?MGpvazBOWWh2TkEwOUthMlVMNG9RaVVFQytIMkxlSGZkNlBhcEpkU0VZZFhX?=
- =?utf-8?B?SHBJdmQ0TG9xVnRyZ2txT0xNWGJua3JnWW53OFlaTzlWUVNPdzA5UHJtcWdx?=
- =?utf-8?B?dU1ZSDk2V3hXcmwzZ01qVTlvWUhHQ3AzOVRIU3FiUWMranM3MUNlYmc5ZHdO?=
- =?utf-8?B?SS9FeTg2d2J6TVErMUgxT3QwcHRGb2Jib21GM2piRVVsZHorMHEzM2lQWEtE?=
- =?utf-8?B?d3NXQVQwWisrakx4T3dFQnJwNjJnTGdJeXdOclBTeFJ1QkNNTlRNOXRNUUt1?=
- =?utf-8?B?alNleXdxN0F6Y2cyQnJHRFhqNmc4MDBxQUZsemJVQXUxdktGWEs5bHlwZ2Z1?=
- =?utf-8?B?OVV1UjFEdjJKZE4vTXNPdGZPZkdxQ3BPOERvR3pVRXJZcHIvaTh4Vm91YjNs?=
- =?utf-8?B?N21JekFaNWd4ZnVZeVVocUFlcWdZZWs3NzJHb0cwZ29CSXlUNXkwVlNkNVZv?=
- =?utf-8?B?Z1BKcnh3SVZ4cE5CWVc5enhMU3NobW5Kb1lFcVZHNlVoU09iY3ozZVFwWVNp?=
- =?utf-8?B?UkZFeDJhODVpQ1BFdk4yeVBtNXFaM0FtU2VzMjFsejBDWm5BZG95L3kyWWtQ?=
- =?utf-8?B?dTgvd0lZR1pZMjVQbG1POW1tN1lFaTV5Um54a0NYSHNRSUdVK2FMWm9yN0Y2?=
- =?utf-8?B?M2hsaGMycENwQ3lhMjdkNWtoZWtrWHp2c1JHQmowS2hHZm51cDEzakRISDU2?=
- =?utf-8?B?bjNHRFoxSXdIdUhQNjNYbGNrMmRNbmdMU3ovOFBtOVpyb2xHSGtRbkZDN0lB?=
- =?utf-8?B?SlZsaDl2S1VjbWkweTZCY0R1YlVXVUo3WUVoNUN4ZzFnajNhNlBCQ1NGZ29K?=
- =?utf-8?B?TE5kM3VJM3JRM1BLT2ZlK3NaQU5UTlVWSXlBMm5XTkF6R0xleUo0aTJtNEdl?=
- =?utf-8?B?aFJHNVh2NDVvcFhRcXllc2tQNXpoVUhxNHB6cGdxOCtrQm9EUFkrSUNQMDQ5?=
- =?utf-8?B?SENEVjJzWGtGOUVGZzdkL1ZrSGVnMVVyNlJqekViK2szcVVCWU1qQ0xPcnMw?=
- =?utf-8?B?VGU1SjBTWnV6R3dsK0Vxb2Y4Y2VBb3FMTXFvNGF2VDdNMmpucHRXMHdTOVJw?=
- =?utf-8?B?ZEFrY0Y5T2pvZkJkdWtaOGFmT0VBTHhZMG9ielorOGh5WTc5OGplZGcwOFNY?=
- =?utf-8?B?bm9yVXJoUjEwdWZGL2VpcXB1S0NjTUdDNEF1eXd1QTloNGlTVDh3MzFjaFZ6?=
- =?utf-8?Q?TrkgC1KCtd3P+vcVYJ6JSZo4fdg2IKCm?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(7416014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?R21ucU4wUjhRUDVGOEJWY290SVgrWHZOQmE3TWhVU2tMOGY3akhUbkhGbUNW?=
- =?utf-8?B?STV5WGpWdFBQREtSbHk2KzI5Tm1FRmlkYVFXTS84d3JlYXdZR3ZaNGFtQUJq?=
- =?utf-8?B?TmJxNThpOFlvOVQvNzcvemZNYi9STXFzVTZUQ0xoQzltYThVQmNqTlUzNVlq?=
- =?utf-8?B?cHdWNzBBNDdXcUhyZVVwSVRaRisrb1NVRm05RHVyanI5UnhlOXlUdzNKSHBv?=
- =?utf-8?B?T0MvdmZZdytTT2ZVZDR2VUpWVlVqSktmY0pXR0k3SjFCQlRISkJtRUFhU0U5?=
- =?utf-8?B?dmMzREphcUl5Z0VlMDJSSlFiV1pkQXpYcmU4TFg0cWNNajErOURjRE1Ib0xj?=
- =?utf-8?B?WUVsOWJGc2RWRFRlN0k0Q1U0alZPekJOeEhtTzdSOG0xdDROZ1FCenlFODdh?=
- =?utf-8?B?dXVrS3hONU5NMlNmd3VFZ25zWjVLL25BTTkvdEVGNkVEeHl2MjBwb2w4NlRJ?=
- =?utf-8?B?bXhFZzdOYlpTN0t2Zml4WG9zdVNaMTcyTUkxdHFUNXdmT0NJeUUvVVlNUkNK?=
- =?utf-8?B?c2orelJpZ0lSaWJLVTltR1BJQVlNWGRMeTJkcmt0Vk5JMEFEZlhvWGpyVS9S?=
- =?utf-8?B?dDdadzJCUFRjTEVRT0R2L0toQVVieHJQQ2hSRmpicXdmLzlRSmN5UzRCak9T?=
- =?utf-8?B?N0FOc1RLMURZeHAxeEJaVkNMNzF5ZXgveUY0UElWbi93RGtaMDdvQ1huSHpT?=
- =?utf-8?B?Q1JvV25aZDBSZmQwakpYWVNrSzUyYnNXczNnL3lPZnFTUGRQSnM1QVQvVkxp?=
- =?utf-8?B?VzZiNnZTNVplV1FFbTVpVU5OMmdHUkxXUHhHS01UQnlQSm5qREJudGRTa256?=
- =?utf-8?B?ZW1IZWRNWDMrbUp1eFRtWTdwRWY0bUdwSU1OWkhVY0twMW5FejhkeGl6TklB?=
- =?utf-8?B?TGhwc3p4clVFT3JuS080UHBLY2ZjYm90ak5CUXpZcFRONGN0TGRwUHNEQXVH?=
- =?utf-8?B?SU9kVnRrMkNFdjVJUS9UMHA3aExDeVRudDF6Ty82MGhNckJvNm1zS3VjcjFz?=
- =?utf-8?B?Q1lsOW5YbUVRK0ZicnpJdUlpV0ZNM2NHZVNjZ0ZZZzN1bmltcXBaelo1NHh4?=
- =?utf-8?B?Rkp1czNGZlpWZDV4a0xsbTFvbll1OUdnK21IdmxLeFJoQmdNaHRKN1crSjh4?=
- =?utf-8?B?UitzUHpGS3R3ZVFiZ2c3c3h2Q3djUXBLRld2azZKUU9rTElRZGJVenhOS2cr?=
- =?utf-8?B?YkNqT1JKSUdWa0kxLzJZMk0vZm4rc0FjL1RULzBzbUJ6RnRxUkxUd2NqOGli?=
- =?utf-8?B?Zzk2UmgxZWVzVHZwU0NEL2NrM2Q4ZmtWZnhRbEI5V0s3ZWZLdi9SUGVyZGdG?=
- =?utf-8?B?OGJOaUlMbUtoa3VuM0xheDVmWHpSbGdpbks4OGFGbnBzYVl2anJRZVFobm1K?=
- =?utf-8?B?WnUzVHlZeWlUSUJDQjVOZ3h6MFQ1bDk4MlllRDlCQjE1a3FWM29pNzloNzJl?=
- =?utf-8?B?bWxXNmN3TWNvRnhJdE1nMkdndURmdGM2RGM5ZE1aQnRSYXZKbUhMYTBwbW4v?=
- =?utf-8?B?eXh5UGMyUDRsaFl3dk9xNFpmMUpjS0R6Q1NrUldNRXE1M2JML3U5TWplblNl?=
- =?utf-8?B?YnZMWHppWjlaSGpHdkR2Um1Pb2NpWHk2bDZGN0pCUERLN1YzdTB1UFNaV0E5?=
- =?utf-8?B?OUs2UnJMRzJJdlVVZHZyOE12Z3MzSUNtem8yNFQ2emFwOUd5UW5GK2trN3pH?=
- =?utf-8?B?cUZmZThVZnFvZzljQ1BQT1YwVnNLYTRFNUQvRHNVY0JWK05qTDBFOFd1bFlS?=
- =?utf-8?B?SHE5eFAwUlJsMDAwMzRzcFdsVTZWcHpPOUJncC91b2UzUlpXL0VKQk9YejEw?=
- =?utf-8?B?d1hLOGlWRVpJS3QyQWlxditPcGpGUng5VVc3MHhUb2llMm1LZVhaYk1XaFpt?=
- =?utf-8?B?Tm1uZDNDZUF4NEtlUEorOUNJc0YwRGRZaFRIUm0rdXlSQmhTOWVuZVN5WVg2?=
- =?utf-8?B?SVRPcS9uUGRrTjU4ZjVpTi84Sk5tRWRaMTJFMm40SUEvUVdFY2YxVllpL1Ur?=
- =?utf-8?B?dEJSQ25pYXZNQms2TCtiUVF0L2JmYUhlQW1lZndvRnBoUm41WVFYRTZMc2RY?=
- =?utf-8?B?dHVVSnJrQlQ3aWdCRWFla29nQ1RMUElwYlVjcGlBeS9iakVLblAxV3lhVlVQ?=
- =?utf-8?Q?OxFgHg/V/8Yl3QuRxP3C+2Lmw?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	2hsWYp3lS0LXU5koSKC9r4iOK77bUad/ilujk8vowgx8ChUEl3n1vME4oqjZuaabIZyNwVA0gJ2/IXhkJBmDnAttOISSZv/Zohnol92Cff3nNk3OKNng4fkw0Gm0n3kFcZUf1IYeZR8CjK3U2Ll901Qv4sxmlHwgA7uHxlG1ES4FXka4yQBWRbY3j7kVgyFkucpDQcJMbdJx4Mxx7Tnvr145y4l6ZQ5BqXTWmgiZlN3QiE7kHCK6beXWCqCTN0FDWjLPQtAw23b7Rj8W9f/Drm079em0eQvR3lwRUMUTQqtFqw5ZSYebg2JTTwQ8UruNREwZjwvOTZEMvcBXOQRygMyCAwoQsecwV2y02J3Fz+hjDt70E6iOEhXAOy36cshxSap26djZwcgMtPi+uSYJBfykr/9UZg/qtmPcZtyD6BdyMM+cRET7q3skcSzElJxJAxljKQeTdIor9fbbpqIQc00LaABB46KsgxvIdYDLMjsR2Eq+pexdbIqfKJefQUUSPrY8vHTsKTbHz26rd6pUjY9NIdsb0sjkGqU1P+KCjN937ihsYPuDFd1fAkC283C4b/fQ677BrXeXt2RRxnOFg3oMQftLFPEpdriHwppEuZ4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fde77404-82b2-4096-9922-08de0bdfba6a
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2025 11:41:06.8288
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: p4dWtuY3fGVmE9ITXTAN+48DhU0IujiibCw31At6cnfvnpvzyOM56UyRqKUsNpd4A3TBsfYnbtHUiP0uVbLepQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PPFFE6A35993
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-10-15_05,2025-10-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510020000
- definitions=main-2510150090
-X-Authority-Analysis: v=2.4 cv=SK9PlevH c=1 sm=1 tr=0 ts=68ef8856 cx=c_pps
- a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=x6icFKpwvdMA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=yPCof4ZbAAAA:8 a=1XWaLZrsAAAA:8 a=G_yb82s2WI6yuWXeohIA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-GUID: cYV8ixIaPSZHaLbn1rKfw8pgpZHDRB2S
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDExMDAxNiBTYWx0ZWRfX5IUuOOwr1zGT
- Bfm8f5SlLamNNzrcmlU0wLoKBbE6weiJSj+wCe7u1uk/dsc6s1xtyc4pwknKz1QU8V29iFjJ1Ak
- eKDQ0R0Q19J7evHqn+MX9hwHwT+YRXyNZm1MyWQ45W5EXLduTRV/LaFlBjo1ydER9pfQOaCCznv
- rNC7izxSR0kWcHJbHomOLZxvsiiJe0Em37q7OELM1r5Yz6z/4DV/is2NWXpeTWZm4vGObZmkjzl
- 95dLtj/9lHjuVcQph21xPve/rkdJ4ZjHqT6SqEIr32jR1Sr1QyQIskbJGDMd4/twk3MReezTLEq
- PCQVFkQF2eTVMCL6bnFFJqwWw2AYBhFl2nBuaICztRdjIfjbZEeL1eTBMjxp0N4/13i4jITtYk/
- iO8ffHIStA+k5gtn0ZW4EzXTm9II+A==
-X-Proofpoint-ORIG-GUID: cYV8ixIaPSZHaLbn1rKfw8pgpZHDRB2S
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-B4-Tracking: v=1; b=H4sIAEeo72gC/42NTQrDIBBGrxJm3SlRkdCueo+SRTKOZhb5QUVSQ
+ u5emxN0+R587zsgcRRO8GwOiFwkybpU0LcGaBqWwCiuMuhW2/ahLLqZZwo4hBA5JSmMW1wzU0Z
+ L3nS+Ux25Eep+i+xlv9rvvvIkKa/xc10V9bP/VIvCFrU3xprRkxvoFeb97hj68zy/6uZZg78AA
+ AA=
+X-Change-ID: 20250915-dmemcg-aggressive-protect-5cf37f717cdb
+To: Maarten Lankhorst <dev@lankhorst.se>, 
+ Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>, 
+ Johannes Weiner <hannes@cmpxchg.org>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+ Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>, 
+ Matthew Auld <matthew.auld@intel.com>, 
+ Matthew Brost <matthew.brost@intel.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+ Simona Vetter <simona@ffwll.ch>
+Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
+X-Mailer: b4 0.14.2
+X-Provags-ID: V03:K1:zN3Oi2L89i57JQRq1YnG+3afvBL30CfNVISujfbxehkWOD5PA1U
+ ZbfvxrwFNBvRbGuys5BsMYclAmtGzoWFcYS1Bbh+zRtkf32t8SPChdPCSYRJ5J5Xe0L0apM
+ x/hXCNRTnt/IHZWIOs8GDMbVVqz1mGa6fEnInitPRd6IWrX6NFZrlFrZU/aEKPmg/I7n/YQ
+ H9Bv+y+qBeggt5B7SglSQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:HDWEgEb8nUY=;TvpD1jpPg9PnI4E3qd09b/SThBy
+ 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
 
-On Wed, Oct 15, 2025 at 07:22:59PM +0800, Hao Ge wrote:
-> Hi Vlastimil and Harry
-> 
->  Thank you for your professional guidance.
-> 
-> On 2025/10/15 18:37, Vlastimil Babka wrote:
-> > On 10/15/25 12:27, Harry Yoo wrote:
-> > > On Wed, Oct 15, 2025 at 11:54:18AM +0200, Vlastimil Babka wrote:
-> > > > On 10/15/25 11:25, Harry Yoo wrote:
-> > > > > On Tue, Oct 14, 2025 at 09:12:43AM -0700, Suren Baghdasaryan wrote:
-> > > > > > On Tue, Oct 14, 2025 at 8:28 AM Hao Ge <hao.ge@linux.dev> wrote:
-> > > > > > > From: Hao Ge <gehao@kylinos.cn>
-> > > > > > > 
-> > > > > > > Since OBJEXTS_ALLOC_FAIL and MEMCG_DATA_OBJEXTS currently share
-> > > > > > > the same bit position, we cannot determine whether memcg_data still
-> > > > > > > points to the slabobj_ext vector simply by checking
-> > > > > > > folio->memcg_data & MEMCG_DATA_OBJEXTS.
-> > > > > > > 
-> > > > > > > If obj_exts allocation failed, slab->obj_exts is set to OBJEXTS_ALLOC_FAIL,
-> > > > > > > and during the release of the associated folio, the BUG check is triggered
-> > > > > > > because it was mistakenly assumed that a valid folio->memcg_data
-> > > > > > > was not cleared before freeing the folio.
-> > > > > nit: yesterday I was confused that this is sanity checks in buddy complaining
-> > > > > folio->memcg_data not being cleared, but it's actually folio_memcg_kmem()
-> > > > > complaining that MEMCG_OBJEXTS_DATA flag is set on non-slab folios (in
-> > > > > free_pages_prepare(), if PageMemcgKmem(page) -> __memcg_kmem_uncharge_page()))
-> > > > > So the paragraph above should be updated?
-> 
-> Hi Harry
-> 
-> We don't need to update the paragraph.
-> 
-> We did have cgroups running at that time, but they had no connection to this
-> page.
-> 
-> The entry  "[ 7108.343500] memcg:1" can also be seen in the v1 logs,
-> 
-> Therefore, the situation at that time was indeed consistent with what I
-> described above.
-> 
-> As discussed below, this only occurs because the OBJEXTS_ALLOC_FAIL flag
-> 
-> was not cleared when the slab was about to be freed.
-> 
-> Or have I missed anything?
+Hi all,
 
-Oh, I meant "the BUG check is triggered because it was mistakenly
-assumed that a valid folio->memcg_data was not cleared before freeing
-the folio" is misleading.
+I've been looking into some cases where dmem protection fails to prevent
+allocations from ending up in GTT when VRAM gets scarce and apps start
+competing hard.
 
-Not clearing folio->memcg_data before freeing is considered an error, and
-page_expected_state() indeed checks if ->memcg_data is cleared and reports
-an error if it's not cleared. But that's not what we're talking about, right?
+In short, this is because other (unprotected) applications end up
+filling VRAM before protected applications do. This causes TTM to back
+off and try allocating in GTT before anything else, and that is where
+the allocation is placed in the end. The existing eviction protection
+cannot prevent this, because no attempt at evicting is ever made
+(although you could consider the backing-off as an immediate eviction to
+GTT).
 
-Instead, what we're looking at is that "the BUG is triggered because
-the OBJEXTS_ALLOC_FAIL flag was not cleared, causing it to be
-interpreted as a kmem folio (non-slab) with MEMCG_OBJEXTS_DATA flag set,
-which is invalid because MEMCG_OBJEXTS_DATA is supposed to be set only
-on slabs."
+This series tries to alleviate this by adding a special case when the
+allocation is protected by cgroups: Instead of backing off immediately,
+TTM will try evicting unprotected buffers from the domain to make space
+for the protected one. This ensures that applications can actually use
+all the memory protection awarded to them by the system, without being
+prone to ping-ponging (only protected allocations can evict unprotected
+ones, never the other way around).
 
-> > > > > And as a side question, we clear slab->obj_exts when freeing obj_ext array,
-> > > > > but don't clear OBJEXTS_ALLOC_FAIL when freeing a slab? That's not good.
-> > > > Hm great point. We should rather make sure it's cleared always, instead of
-> > > > adjusting the debugging check, which shouldn't be then necessary, right?
-> > > Yeah folio_memcg_kmem() isn't supposed to be called on slabs anyway
-> > > (it's not a slab at the time we free it to buddy), so we don't have to
-> > > adjust the debug check.
-> > Great. Hao Ge, can you please send v4 that instead of adjusting the
-> > VM_BUG_ON modifies free_slab_obj_exts() to always clear slab->obj_exts? Thanks!
-> 
-> 
-> Okay, I will send v4 as soon as possible.
-> 
-> 
-> Thanks
-> 
-> Best Regards
-> 
-> Hao
-> 
-> > 
-> > > > > > > So let's check for memcg_data != OBJEXTS_ALLOC_FAIL in folio_memcg_kmem.
-> > > > > > > 
-> > > > > > > Fixes: 7612833192d5 ("slab: Reuse first bit for OBJEXTS_ALLOC_FAIL")
-> > > > > > > Suggested-by: Harry Yoo <harry.yoo@oracle.com>
-> > > > > > > Signed-off-by: Hao Ge <gehao@kylinos.cn>
-> > > > > > Reviewed-by: Suren Baghdasaryan <surenb@google.com>
-> > > > > > 
-> > > > > > nit: I think it would be helpful if the changelog explained why we
-> > > > > > need the additional check. We can have the same bit set in two
-> > > > > > different situations:
-> > > > > > 1. object extension vector allocation failure;
-> > > > > > 2. memcg_data pointing to a valid mem_cgroup.
-> > > > > > To distinguish between them, we need to check not only the bit itself
-> > > > > > but also the rest of this field. If the rest is NULL, we have case 1,
-> > > > > > otherwise case 2.
-> > > > > Agreed.
-> > > > > 
-> > > > > In general LGTM,
-> > > > > Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
-> > > > > 
-> > > > > By the way, maybe it'd be nice to introduce a new helper function that
-> > > > > properly checks MEMCG_DATA_OBJEXTS flag.
-> > > > I thought so too at first...
-> > > > 
-> > > > > > ~/slab (slab/for-next-fixes)> git grep -n MEMCG_DATA_OBJEXTS
-> > > > > > include/linux/memcontrol.h:337:	MEMCG_DATA_OBJEXTS = (1UL << 0),
-> > > > > > include/linux/memcontrol.h:344:#define __OBJEXTS_ALLOC_FAIL	MEMCG_DATA_OBJEXTS
-> > > > > > include/linux/memcontrol.h:358:	 * MEMCG_DATA_OBJEXTS.
-> > > > > > include/linux/memcontrol.h:400:	VM_BUG_ON_FOLIO(memcg_data & MEMCG_DATA_OBJEXTS, folio);
-> > > > > > include/linux/memcontrol.h:421:	VM_BUG_ON_FOLIO(memcg_data & MEMCG_DATA_OBJEXTS, folio);
-> > > > > these two,
-> > > > > 
-> > > > > > include/linux/memcontrol.h:492:	if (memcg_data & MEMCG_DATA_OBJEXTS)
-> > > > > this,
-> > > > > 
-> > > > > > include/linux/memcontrol.h:538:			(folio->memcg_data & MEMCG_DATA_OBJEXTS),
-> > > > > > include/linux/memcontrol.h:1491: * if MEMCG_DATA_OBJEXTS is set.
-> > > > > > mm/kfence/core.c:624:				 MEMCG_DATA_OBJEXTS;
-> > > > > > mm/page_owner.c:513:	if (memcg_data & MEMCG_DATA_OBJEXTS)
-> > > > > this,
-> > > > > 
-> > > > > > mm/slab.h:541:	 * MEMCG_DATA_OBJEXTS bit set or be equal to OBJEXTS_ALLOC_FAIL.
-> > > > > > mm/slab.h:543:	VM_BUG_ON_PAGE(obj_exts && !(obj_exts & MEMCG_DATA_OBJEXTS) &&
-> > > > > > mm/slub.c:2137:	new_exts |= MEMCG_DATA_OBJEXTS;
-> > > > > > tools/mm/show_page_info.py:55:        MEMCG_DATA_OBJEXTS = prog.constant("MEMCG_DATA_OBJEXTS").value_()
-> > > > > > tools/mm/show_page_info.py:59:        if memcg_data & MEMCG_DATA_OBJEXTS:
-> > > > > and this do not look good.
-> > > > > 
-> > > > > I mean technically they are fine since OBJEXTS_ALLOC_FAIL is set on
-> > > > > slabs only, but that's just a coincidence.
-> > > > And checked the the other debugging checks too. But then thought it's better
-> > > > that if these are not expected to see slabs, then they should not be
-> > > > adjusted. I don't see it as a coincidence but as intention to keep it slab
-> > > > specific. It will be also more future proof for the upcoming separation of
-> > > > struct slab from struct page.
-> > > Then we're intentionally using (folio->memcg_data & MEMCG_DATA_OBJEXTS) check
-> > > as a way to determine whether the folio is a slab (either slabobj_ext array
-> > > allocation succeeded or failed).
-> > > 
-> > > That makes sense to me!
-> > > 
-> > > > > > > ---
-> > > > > > > v3: Simplify the solution, per Harry's suggestion in the v1 comments
-> > > > > > >      Add Suggested-by: Harry Yoo <harry.yoo@oracle.com>
-> > > > > > > ---
-> > > > > > >   include/linux/memcontrol.h | 4 +++-
-> > > > > > >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > > > > 
-> > > > > > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > > > > > index 873e510d6f8d..7ed15f858dc4 100644
-> > > > > > > --- a/include/linux/memcontrol.h
-> > > > > > > +++ b/include/linux/memcontrol.h
-> > > > > > > @@ -534,7 +534,9 @@ static inline struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *ob
-> > > > > > >   static inline bool folio_memcg_kmem(struct folio *folio)
-> > > > > > >   {
-> > > > > > >          VM_BUG_ON_PGFLAGS(PageTail(&folio->page), &folio->page);
-> > > > > > > -       VM_BUG_ON_FOLIO(folio->memcg_data & MEMCG_DATA_OBJEXTS, folio);
-> > > > > > > +       VM_BUG_ON_FOLIO((folio->memcg_data != OBJEXTS_ALLOC_FAIL) &&
-> > > > > > > +                       (folio->memcg_data & MEMCG_DATA_OBJEXTS),
-> > > > > > > +                       folio);
-> > > > > > >          return folio->memcg_data & MEMCG_DATA_KMEM;
-> > > > > > >   }
-> > > > > > > 
-> > > > > > > --
-> > > > > > > 2.25.1
-> 
+The first two patches just add a few small utilities needed to implement
+this to the dmem controller. The second two patches are the TTM
+implementation:
 
--- 
-Cheers,
-Harry / Hyeonggon
+"drm/ttm: Be more aggressive..." decouples cgroup charging from resource
+allocation to allow us to hold on to the charge even if allocation fails
+on first try, and adds a path to call ttm_bo_evict_alloc when the
+charged allocation falls within min/low protection limits.
+
+"drm/ttm: Use common ancestor..." is a more general improvement in
+correctly implementing cgroup protection semantics. With recursive
+protection rules, unused memory protection afforded to a parent node is
+transferred to children recursively, which helps protect entire
+subtrees from stealing each others' memory without needing to protect
+each cgroup individually. This doesn't apply when considering direct
+siblings inside the same subtree, so in order to not break
+prioritization between these siblings, we need to consider the
+relationship of evictor and evictee when calculating protection.
+In practice, this fixes cases where a protected cgroup cannot steal
+memory from unprotected siblings (which, in turn, leads to eviction
+failures and new allocations being placed in GTT).
+
+Thanks,
+Natalie
+
+Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
+=2D--
+Changes in v2:
+- Factored out the ttm logic for charging/allocating/evicting into a
+  separate helper to keep things simpler
+- Link to v1: https://lore.kernel.org/r/20250915-dmemcg-aggressive-protect=
+-v1-0-2f3353bfcdac@gmx.de
+
+=2D--
+Natalie Vock (5):
+      cgroup/dmem: Add queries for protection values
+      cgroup/dmem: Add dmem_cgroup_common_ancestor helper
+      drm/ttm: Make a helper for attempting allocation in a place
+      drm/ttm: Be more aggressive when allocating below protection limit
+      drm/ttm: Use common ancestor of evictor and evictee as limit pool
+
+ drivers/gpu/drm/ttm/ttm_bo.c       | 147 ++++++++++++++++++++++++++++++--=
+=2D----
+ drivers/gpu/drm/ttm/ttm_resource.c |  48 ++++++++----
+ include/drm/ttm/ttm_resource.h     |   6 +-
+ include/linux/cgroup_dmem.h        |  25 +++++++
+ kernel/cgroup/dmem.c               |  73 ++++++++++++++++++
+ 5 files changed, 258 insertions(+), 41 deletions(-)
+=2D--
+base-commit: f3e82936857b3bd77b824ecd2fa7839dd99ec0c6
+change-id: 20250915-dmemcg-aggressive-protect-5cf37f717cdb
+
+Best regards,
+=2D-=20
+Natalie Vock <natalie.vock@gmx.de>
+
 
