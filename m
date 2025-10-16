@@ -1,143 +1,122 @@
-Return-Path: <cgroups+bounces-10831-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10832-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51F5BE5AF6
-	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 00:29:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E8BFBE5C0F
+	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 01:01:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F1561A6757E
-	for <lists+cgroups@lfdr.de>; Thu, 16 Oct 2025 22:30:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA6705425F4
+	for <lists+cgroups@lfdr.de>; Thu, 16 Oct 2025 23:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B7F22E5B26;
-	Thu, 16 Oct 2025 22:28:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1B72DF6E3;
+	Thu, 16 Oct 2025 23:01:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bU0brkBc"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F81fm32C"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFD42E1F01;
-	Thu, 16 Oct 2025 22:28:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301C11917F1
+	for <cgroups@vger.kernel.org>; Thu, 16 Oct 2025 23:01:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760653727; cv=none; b=iAA7cv4X0Eb+YLVaa8Gr6n31zQxuxNlRdo9SvbMQaVrriZRmAhLdborEQWfsJ06jqqFV5FxrlolQc3oJJefNFUpXNgO0QTjjpJyW0JEj+fiys6LQfqMWHuSB5Bu/wTkzap5S3wFmgm+L5MHUy1fB53rXDs7z2UxThR1tdHcHq7E=
+	t=1760655682; cv=none; b=D1tmBJ477gu0YCwHB2x3iyWl0/8VnYdCBhRi4xntbLLKVtvsM4WKE4y6EIE3U8ZETBDL0FFrTXR1Bnc1R91SadUdNEDSMEeF+Ac2eZJrkvqGISCErq7PMmCo/bOXz9p9dhsWmo75U81cACh7HcuoyK5qL7KdPO7/rd7BJ0scSLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760653727; c=relaxed/simple;
-	bh=ciKQIk52+iRfgjCWilAdkX6YNbNDCJyfo9BtEuwQYqQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=coIomgA/9D2l6X6Fmp69knMt04p/cG30HFXO4dDAPp4h+eLjmg7/EjaBY9XC4569vwhtPqDoY1LcFwzLcP7IGY7uEEA9jQwkVv5l49zmp89xqCkFblYqh0tT7Nid5XhsfBJlJ59CSG9VKy2MXBjXe3CHlZmcBhx24A7dqIsKovA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bU0brkBc; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1760653726; x=1792189726;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ciKQIk52+iRfgjCWilAdkX6YNbNDCJyfo9BtEuwQYqQ=;
-  b=bU0brkBcVi/UuQSMcCxobLlxbuQ9Wy4msCdCg+X+ArFG+xYC16YRQv8s
-   vLw4+62ulFfwAqM6k55NFNkz3k29B2HxrgCO5GTL+mKT1QEZ2Sd/tQmj5
-   426xncBiIDuP2hMMcDXmbCdhCgcnAR2uuyi1+aBdy4RZVjzl7A+B272kD
-   8vwWU0222GHNapAwL4TYbg/YYynz7iK6AOXFwDYSTcnQ73fBSiOcwQzTH
-   DYwZ+DbrRtjefP5yyXamxqc1aPRAwtNw5EQ4+a7GWE4538s5GHmq98J3s
-   hOU2pcU8CWOi/O3AnG1V9zy1kUFJXgxARLt9m1avh8bC6ePQ6Fi8HWFNJ
-   Q==;
-X-CSE-ConnectionGUID: soHQ0f4pQjSpEDhpda6WFw==
-X-CSE-MsgGUID: e7hCY9d6R2KBbvL/UD6s0A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11584"; a="62071723"
-X-IronPort-AV: E=Sophos;i="6.19,234,1754982000"; 
-   d="scan'208";a="62071723"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2025 15:28:45 -0700
-X-CSE-ConnectionGUID: /2MsaDmgTJmh3x2o1fWcuQ==
-X-CSE-MsgGUID: 4Xm1/v/rTaScrK/tKgO49Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,234,1754982000"; 
-   d="scan'208";a="182132113"
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by orviesa009.jf.intel.com with ESMTP; 16 Oct 2025 15:28:41 -0700
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1v9WSd-0005J9-0C;
-	Thu, 16 Oct 2025 22:28:39 +0000
-Date: Fri, 17 Oct 2025 06:28:31 +0800
-From: kernel test robot <lkp@intel.com>
-To: JP Kobryn <inwardvessel@gmail.com>, shakeel.butt@linux.dev,
-	andrii@kernel.org, ast@kernel.org, mkoutny@suse.com,
-	yosryahmed@google.com, hannes@cmpxchg.org, tj@kernel.org,
-	akpm@linux-foundation.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH v2 1/2] memcg: introduce kfuncs for fetching memcg stats
-Message-ID: <202510170654.s2j4GuCs-lkp@intel.com>
-References: <20251015190813.80163-2-inwardvessel@gmail.com>
+	s=arc-20240116; t=1760655682; c=relaxed/simple;
+	bh=w4f2ytD54mzA08kI5uCBJGg0Y29BYgb/Cc4Yp7o1XjI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YDqe5Qhw1bWyLVFuOw+v3XWEZmllxH9LhHeBNo+TbmDnDZrK/pqo/rcvwFTGFZfz+8t6wyytoE5Vs33jSqEm+9C2n2wjN1NHadSZEAVvKINSSObOZ4RKr/6d5mNv2f/baapq9P67s1aUT4QErtUk7gfTEKC3HbLD/mzGNqruti0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F81fm32C; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1760655667;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6lnf0SlVNBa1MHaoQqJyDwakLfgUyXqJdGj6LGOIvyI=;
+	b=F81fm32Cy9ymkg8hRJwfUSBZlIddtx0rrYIvKNcMyGg30wqq+TDhJUAppy/zpkfR7sFmUK
+	BzJxiPuQqKecd1ogb3moIZcub+cle2Sxur8YuNi1pZq//SzlgI1qC6Sn5lbVo6FSMWjAnW
+	y/NyoB4mkR2VXNeGoRNPM9pqofHXBpU=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>,  andrii@kernel.org,
+  ast@kernel.org,  mkoutny@suse.com,  yosryahmed@google.com,
+  hannes@cmpxchg.org,  tj@kernel.org,  akpm@linux-foundation.org,
+  linux-kernel@vger.kernel.org,  cgroups@vger.kernel.org,
+  linux-mm@kvack.org,  bpf@vger.kernel.org,  kernel-team@meta.com,
+  mhocko@kernel.org,  muchun.song@linux.dev
+Subject: Re: [PATCH v2 0/2] memcg: reading memcg stats more efficiently
+In-Reply-To: <2fa573e6-bd9a-46b9-a2a6-bfb233d0389a@gmail.com> (JP Kobryn's
+	message of "Thu, 16 Oct 2025 13:26:44 -0700")
+References: <20251015190813.80163-1-inwardvessel@gmail.com>
+	<uxpsukgoj5y4ex2sj57ujxxcnu7siez2hslf7ftoy6liifv6v5@jzehpby6h2ps>
+	<e102f50a-efa5-49b9-927a-506b7353bac0@gmail.com>
+	<87wm4v7isj.fsf@linux.dev>
+	<2fa573e6-bd9a-46b9-a2a6-bfb233d0389a@gmail.com>
+Date: Thu, 16 Oct 2025 16:00:58 -0700
+Message-ID: <87frbimoyd.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251015190813.80163-2-inwardvessel@gmail.com>
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-Hi JP,
+JP Kobryn <inwardvessel@gmail.com> writes:
 
-kernel test robot noticed the following build warnings:
+> On 10/15/25 6:10 PM, Roman Gushchin wrote:
+>> JP Kobryn <inwardvessel@gmail.com> writes:
+>> 
+>>> On 10/15/25 1:46 PM, Shakeel Butt wrote:
+>>>> Cc memcg maintainers.
+>>>> On Wed, Oct 15, 2025 at 12:08:11PM -0700, JP Kobryn wrote:
+>>>>> When reading cgroup memory.stat files there is significant kernel overhead
+>>>>> in the formatting and encoding of numeric data into a string buffer. Beyond
+>>>>> that, the given user mode program must decode this data and possibly
+>>>>> perform filtering to obtain the desired stats. This process can be
+>>>>> expensive for programs that periodically sample this data over a large
+>>>>> enough fleet.
+>>>>>
+>>>>> As an alternative to reading memory.stat, introduce new kfuncs that allow
+>>>>> fetching specific memcg stats from within cgroup iterator based bpf
+>>>>> programs. This approach allows for numeric values to be transferred
+>>>>> directly from the kernel to user mode via the mapped memory of the bpf
+>>>>> program's elf data section. Reading stats this way effectively eliminates
+>>>>> the numeric conversion work needed to be performed in both kernel and user
+>>>>> mode. It also eliminates the need for filtering in a user mode program.
+>>>>> i.e. where reading memory.stat returns all stats, this new approach allows
+>>>>> returning only select stats.
+>> It seems like I've most of these functions implemented as part of
+>> bpfoom: https://lkml.org/lkml/2025/8/18/1403
+>> So I definitely find them useful. Would be nice to merge our
+>> efforts.
+>
+> Sounds great. I see in your series that you allow the kfuncs to accept
+> integers as item numbers. Would my approach of using typed enums work
+> for you? I wanted to take advantage of libbpf core so that the bpf
+> program could gracefully handle cases where a given enumerator is not
+> present in a given kernel version. I made use of this in the
+> selftests.
 
-[auto build test WARNING on bpf-next/net]
-[also build test WARNING on bpf-next/master bpf/master akpm-mm/mm-everything linus/master v6.18-rc1 next-20251016]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Good point, I'm going to change it in the next version, which I'm about
+to send out: tomorrow or early next week.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/JP-Kobryn/memcg-introduce-kfuncs-for-fetching-memcg-stats/20251016-030920
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git net
-patch link:    https://lore.kernel.org/r/20251015190813.80163-2-inwardvessel%40gmail.com
-patch subject: [PATCH v2 1/2] memcg: introduce kfuncs for fetching memcg stats
-config: x86_64-randconfig-121-20251016 (https://download.01.org/0day-ci/archive/20251017/202510170654.s2j4GuCs-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251017/202510170654.s2j4GuCs-lkp@intel.com/reproduce)
+> I'm planning on sending out a v3 so let me know if you would like to see
+> any alterations that would align with bpfoom.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510170654.s2j4GuCs-lkp@intel.com/
+I kinda prefer my version regarding taking a memcg argument instead of cgroup
+and also regarding naming. I also think it's safer to expose the
+rate-limited version of stats flushing function. But I do lack the
+node-level statistics (which I don't need)
 
-sparse warnings: (new ones prefixed by >>)
-   mm/memcontrol.c:4236:52: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   mm/memcontrol.c:4236:52: sparse:    struct task_struct [noderef] __rcu *
-   mm/memcontrol.c:4236:52: sparse:    struct task_struct *
->> mm/memcontrol.c:876:55: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct cgroup_subsys_state *css @@     got struct cgroup_subsys_state [noderef] __rcu * @@
-   mm/memcontrol.c:876:55: sparse:     expected struct cgroup_subsys_state *css
-   mm/memcontrol.c:876:55: sparse:     got struct cgroup_subsys_state [noderef] __rcu *
->> mm/memcontrol.c:876:55: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct cgroup_subsys_state *css @@     got struct cgroup_subsys_state [noderef] __rcu * @@
-   mm/memcontrol.c:876:55: sparse:     expected struct cgroup_subsys_state *css
-   mm/memcontrol.c:876:55: sparse:     got struct cgroup_subsys_state [noderef] __rcu *
->> mm/memcontrol.c:876:55: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct cgroup_subsys_state *css @@     got struct cgroup_subsys_state [noderef] __rcu * @@
-   mm/memcontrol.c:876:55: sparse:     expected struct cgroup_subsys_state *css
-   mm/memcontrol.c:876:55: sparse:     got struct cgroup_subsys_state [noderef] __rcu *
->> mm/memcontrol.c:876:55: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct cgroup_subsys_state *css @@     got struct cgroup_subsys_state [noderef] __rcu * @@
-   mm/memcontrol.c:876:55: sparse:     expected struct cgroup_subsys_state *css
-   mm/memcontrol.c:876:55: sparse:     got struct cgroup_subsys_state [noderef] __rcu *
-   mm/memcontrol.c: note: in included file:
-   include/linux/memcontrol.h:729:9: sparse: sparse: context imbalance in 'folio_lruvec_lock' - wrong count at exit
-   include/linux/memcontrol.h:729:9: sparse: sparse: context imbalance in 'folio_lruvec_lock_irq' - wrong count at exit
-   include/linux/memcontrol.h:729:9: sparse: sparse: context imbalance in 'folio_lruvec_lock_irqsave' - wrong count at exit
+If it's ok with you, maybe you can rebase your patches on top of my v2
+and I can include your patches in the series?
 
-vim +876 mm/memcontrol.c
-
-   873	
-   874	static inline struct mem_cgroup *memcg_from_cgroup(struct cgroup *cgrp)
-   875	{
- > 876		return cgrp ? mem_cgroup_from_css(cgrp->subsys[memory_cgrp_id]) : NULL;
-   877	}
-   878	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks!
 
