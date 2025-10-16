@@ -1,123 +1,138 @@
-Return-Path: <cgroups+bounces-10827-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10828-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15F76BE54BD
-	for <lists+cgroups@lfdr.de>; Thu, 16 Oct 2025 21:57:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE6F5BE5642
+	for <lists+cgroups@lfdr.de>; Thu, 16 Oct 2025 22:26:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B5BEA3596F7
-	for <lists+cgroups@lfdr.de>; Thu, 16 Oct 2025 19:57:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5EF71889EE4
+	for <lists+cgroups@lfdr.de>; Thu, 16 Oct 2025 20:27:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99BFC2DC793;
-	Thu, 16 Oct 2025 19:57:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 975AF2DECDF;
+	Thu, 16 Oct 2025 20:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cavN09Bs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SoQK19Z7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B4A2DC78D
-	for <cgroups@vger.kernel.org>; Thu, 16 Oct 2025 19:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 945C42DC76C
+	for <cgroups@vger.kernel.org>; Thu, 16 Oct 2025 20:26:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760644668; cv=none; b=UbaZV7MQkdhyij5iyegCIggUGJnaIIyx44LaQsobhJJTbrChXcekn8t0EDOPrb5CdE6bIlIWVm0TfpF05In8XUjeZjTwqHJ6TpzCBJNWST24xjlgehjct0MF9F+LL6h3kRnqSrLqblyyWJ8M00Dg+FtmgxisStNIEFN5MFUi/Ds=
+	t=1760646413; cv=none; b=E7PfMha+auU92UIRhUkQvUwCWVdX8tTk232fnMiSavI9G0RMkfZycTArDfCtYNhwE6stKcR1ZUBQXKU++NyONonVhmiczY9yF4b/dXhswzVa8VQH9m2Jy5afuSH8bXdgonlAg2Y+sh8yVMyot9eNm9frXQ5V6ErcNbuMkDdqKFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760644668; c=relaxed/simple;
-	bh=VOTlOzJ0HPYw5d7WJPmbWEHOA2OmD4JtKDS7yjUv5Gs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MvVIeGHx8UdV41VbUZGg5FXMuZHrENBEpdhxVY6O0UWKbwXK7BbeIQkB2shxV54fOIQ9vG5XfYUVt4ZWEPF3ctH+cr40GPX+X3v+AoLlaz5tHdfNlMBH8XZhcv9LdO5PMgEIn95xiBjklw3rbB6Iw87Bhha6iJbzVmOLpftH28k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cavN09Bs; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 16 Oct 2025 12:57:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1760644663;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A6QNM0LEjMhDM1AhzKkrXtK0wDpQlcn/3jFNh89PFW4=;
-	b=cavN09Bsrq20N4KdKPWHM3D4vp7y79G96geueuYvCN/GClE8DD+V9Zb9uYlORCxcKV8RBo
-	wCw6LqJx7EjOCW508calrRTToHHshth4/lAEfrtzLAAibUS8iH2yfGak6KWNIKmsjMiFuQ
-	HDZhnN3zBftFsukEePJ+mHPWn7HnDWo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>, 
-	Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
-	Matyas Hurtik <matyas.hurtik@cdn77.com>, Daniel Sedlak <daniel.sedlak@cdn77.com>, 
-	Simon Horman <horms@kernel.org>, Neal Cardwell <ncardwell@google.com>, 
-	Wei Wang <weibunny@meta.com>, netdev@vger.kernel.org, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH v2] memcg: net: track network throttling due to memcg
- memory pressure
-Message-ID: <sntikxyoeveee3tkrxwr5rrztzr26sqzpn63r5nrel6vdyb7as@6mpya3n4mxju>
-References: <20251016161035.86161-1-shakeel.butt@linux.dev>
- <20251016124610.0fcf17313c649795881db43c@linux-foundation.org>
+	s=arc-20240116; t=1760646413; c=relaxed/simple;
+	bh=xdxf4bGgZ3b0nAJDzpJIh8oNb3BVl6MHHNAqkvbVLn8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mSuskE4krU2D6P1f8qQueFHRLQkqtmNJMh3xsRSkXyiwH4XLeb+E64E8gmKmEd9q0ntxMZl287P71z6myHq8ml2dKzToITzyoaAtjCne+wFYEk7XXgJd/h2YgCO/u06Bu+kWqrQTQkt5smCnb1vEwmjlYf5XOh5u10HE2Q5uqvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SoQK19Z7; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-33bc2178d6aso520939a91.0
+        for <cgroups@vger.kernel.org>; Thu, 16 Oct 2025 13:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760646411; x=1761251211; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bo5Pb4pEnCN8Qp9wO+FXoUs/VjBU1u60no/MUECaFf8=;
+        b=SoQK19Z7A9eR9ukTH8+3c4LN+x14wDqjGqoyVh+5sugwUg+ZjfXBol1okUTDeA25en
+         vwOTU9K/nct0pKJVYj1rNFFUh7iI1UDRCJPK0Y1w8B/k5808oxRfnXWAKjI852FgNJlS
+         syNot3sqCqg+Q/UjdZyQu+uPooBhVnnBs6VArKrhCuM/VzhJr+5QszH0X7iYKcDHRETR
+         f2t6aL3fIFgFP45cbDWpuMMwngk7CTeTMVm99qXKczJCsDpLbSEYZmztrZGrh9R/YunG
+         pI6WamFvdZmFhA70F4yT+yurmZyeabfVa1rQ3HpO6bzo7NMWosAsomOfDahcVHAijaX2
+         mSHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760646411; x=1761251211;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bo5Pb4pEnCN8Qp9wO+FXoUs/VjBU1u60no/MUECaFf8=;
+        b=Wt4R/2VnFGPP8Hr/8N0jJ9lMQEXavPvVEvJTKh2rQNhJxq8VgwdVS50ULjU6RV+FlG
+         gx472UHueSYflerlSE1QAiny0O04zcLauzbuc2o5N7UIzhQUy+Lw6KTN5LgoDz7DGgrQ
+         KvHGqGZ4HcATb7g8llENed80j2pah+zB4KeSmMtAGjmp7VJojUNJolMP2Kd075tzQ93V
+         aijOLx44JOgUn8DrZEA9pydWjYfPSkE0P/Ihj/8vl4mtT6Q3bYxarYG0eEFCQnR3LVY4
+         SfbDsDHEMZ6xuQiN9y6AG214iM95rD96P2kH5vm4kpG+YlY7Rwo+tt0UDj0ASGzl+BTW
+         79Zg==
+X-Forwarded-Encrypted: i=1; AJvYcCVDtykQ/0rScnLNmOx13dI07hFGGdHsAoHpcpkFEfVrLNLNgrxl0rbzJTaEmgt4KuktauhFMlCh@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx83i9FxXjdYvXVHf3wDgkdBCKzS9DJl1av670ICUbV57/s7lsi
+	xT6KHMn0FzPzO5IDdxK3nwzpjryj+oSTKz3A4N1eJDXt9yL8yaeDmOL3
+X-Gm-Gg: ASbGncugXxDjYXTllZjajhk7C+yLMZ+hYT8+ywB5SuZewJk5xbHdLHO5MgZjGYwfrWO
+	SdFL0UIJB15GnqeQZSCRja+Rm2KBzzyzkluMK9r7zFrWqh/bakm73Rm4YAnIXi29xtyDVtXBqxS
+	3YTGezV5YHr/MxmdXRGNg4wierCRLnScFRFn6LmnEfLZTaFsLeFekna2IEQ2viG4hzoShzD2qTY
+	3diaC2nUBcAO/jLXIOZb8lJtPwRqvKGMmnTRdpRJaLTgcdHNNNUA6s0SBLp2oP1EQoYUqOEWM/d
+	W7JOAfnvLAsQ5mXggTDns81bTXwxmuXUIOohAwerWQRHsRT91ZUtE4D3PVW3mMZ3qezwsEL96sh
+	it9Uy6hkpKjp8L8L0+PKbwAZv+mp9id/4gX8E+CC+B1fjyfIImWl8n6qLNESKRPIWPskhZ8zSHi
+	Y533LS/8JbtUU9X4ERdDZl6EQTfa7xKEYK3uKpF/d64RV6ebnxqrU5EzA=
+X-Google-Smtp-Source: AGHT+IE9B5Vdk4petXHg7AQwUSLZThEnOzKfYaaM8uzg+9wXXauMcXrMjeybYvp0mkVR/VZkAIO0fw==
+X-Received: by 2002:a17:90b:28c4:b0:338:2c90:1540 with SMTP id 98e67ed59e1d1-33bcf8e7174mr1148401a91.20.1760646410655;
+        Thu, 16 Oct 2025 13:26:50 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1151:15:6028:a61a:a132:9634? ([2620:10d:c090:500::5:e774])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-33bd7b3da16sm314131a91.18.2025.10.16.13.26.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Oct 2025 13:26:50 -0700 (PDT)
+Message-ID: <2fa573e6-bd9a-46b9-a2a6-bfb233d0389a@gmail.com>
+Date: Thu, 16 Oct 2025 13:26:44 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251016124610.0fcf17313c649795881db43c@linux-foundation.org>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] memcg: reading memcg stats more efficiently
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, andrii@kernel.org, ast@kernel.org,
+ mkoutny@suse.com, yosryahmed@google.com, hannes@cmpxchg.org, tj@kernel.org,
+ akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+ kernel-team@meta.com, mhocko@kernel.org, muchun.song@linux.dev
+References: <20251015190813.80163-1-inwardvessel@gmail.com>
+ <uxpsukgoj5y4ex2sj57ujxxcnu7siez2hslf7ftoy6liifv6v5@jzehpby6h2ps>
+ <e102f50a-efa5-49b9-927a-506b7353bac0@gmail.com> <87wm4v7isj.fsf@linux.dev>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <87wm4v7isj.fsf@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Oct 16, 2025 at 12:46:10PM -0700, Andrew Morton wrote:
-> On Thu, 16 Oct 2025 09:10:35 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
+On 10/15/25 6:10 PM, Roman Gushchin wrote:
+> JP Kobryn <inwardvessel@gmail.com> writes:
 > 
-> > The kernel can throttle network sockets if the memory cgroup associated
-> > with the corresponding socket is under memory pressure. The throttling
-> > actions include clamping the transmit window, failing to expand receive
-> > or send buffers, aggressively prune out-of-order receive queue, FIN
-> > deferred to a retransmitted packet and more. Let's add memcg metric to
-> > indicate track such throttling actions.
-> > 
-> > At the moment memcg memory pressure is defined through vmpressure and in
-> > future it may be defined using PSI or we may add more flexible way for
-> > the users to define memory pressure, maybe through ebpf. However the
-> > potential throttling actions will remain the same, so this newly
-> > introduced metric will continue to track throttling actions irrespective
-> > of how memcg memory pressure is defined.
-> > 
-> > ...
-> >
-> > --- a/include/net/sock.h
-> > +++ b/include/net/sock.h
-> > @@ -2635,8 +2635,12 @@ static inline bool mem_cgroup_sk_under_memory_pressure(const struct sock *sk)
-> >  #endif /* CONFIG_MEMCG_V1 */
-> >  
-> >  	do {
-> > -		if (time_before64(get_jiffies_64(), mem_cgroup_get_socket_pressure(memcg)))
-> > +		if (time_before64(get_jiffies_64(),
-> > +				  mem_cgroup_get_socket_pressure(memcg))) {
-> > +			memcg_memory_event(mem_cgroup_from_sk(sk),
-> > +					   MEMCG_SOCK_THROTTLED);
-> >  			return true;
-> > +		}
-> >  	} while ((memcg = parent_mem_cgroup(memcg)));
-> >  
+>> On 10/15/25 1:46 PM, Shakeel Butt wrote:
+>>> Cc memcg maintainers.
+>>> On Wed, Oct 15, 2025 at 12:08:11PM -0700, JP Kobryn wrote:
+>>>> When reading cgroup memory.stat files there is significant kernel overhead
+>>>> in the formatting and encoding of numeric data into a string buffer. Beyond
+>>>> that, the given user mode program must decode this data and possibly
+>>>> perform filtering to obtain the desired stats. This process can be
+>>>> expensive for programs that periodically sample this data over a large
+>>>> enough fleet.
+>>>>
+>>>> As an alternative to reading memory.stat, introduce new kfuncs that allow
+>>>> fetching specific memcg stats from within cgroup iterator based bpf
+>>>> programs. This approach allows for numeric values to be transferred
+>>>> directly from the kernel to user mode via the mapped memory of the bpf
+>>>> program's elf data section. Reading stats this way effectively eliminates
+>>>> the numeric conversion work needed to be performed in both kernel and user
+>>>> mode. It also eliminates the need for filtering in a user mode program.
+>>>> i.e. where reading memory.stat returns all stats, this new approach allows
+>>>> returning only select stats.
 > 
-> Totally OT, but that's one bigass inlined function.  A quick test
-> indicates that uninlining just this function reduces the size of
-> tcp_input.o and tcp_output.o nicely.  x86_64 defconfig:
+> It seems like I've most of these functions implemented as part of
+> bpfoom: https://lkml.org/lkml/2025/8/18/1403
 > 
->    text	   data	    bss	    dec	    hex	filename
->   52130	   1686	      0	  53816	   d238	net/ipv4/tcp_input.o
->   32335	   1221	      0	  33556	   8314	net/ipv4/tcp_output.o
-> 
->    text	   data	    bss	    dec	    hex	filename
->   51346	   1494	      0	  52840	   ce68	net/ipv4/tcp_input.o
->   31911	   1125	      0	  33036	   810c	net/ipv4/tcp_output.o
-> 
+> So I definitely find them useful. Would be nice to merge our efforts.
 
-Nice find and this inlining might be hurting instead of helping. I will
-look into it if no one else comes to it before me.
+Sounds great. I see in your series that you allow the kfuncs to accept
+integers as item numbers. Would my approach of using typed enums work
+for you? I wanted to take advantage of libbpf core so that the bpf
+program could gracefully handle cases where a given enumerator is not
+present in a given kernel version. I made use of this in the selftests.
+
+I'm planning on sending out a v3 so let me know if you would like to see
+any alterations that would align with bpfoom.
 
