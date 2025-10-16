@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-10812-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10814-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CAA6BE14AA
-	for <lists+cgroups@lfdr.de>; Thu, 16 Oct 2025 04:34:06 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F949BE14B0
+	for <lists+cgroups@lfdr.de>; Thu, 16 Oct 2025 04:34:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C057F485ADC
-	for <lists+cgroups@lfdr.de>; Thu, 16 Oct 2025 02:34:04 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C07283513A7
+	for <lists+cgroups@lfdr.de>; Thu, 16 Oct 2025 02:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0224212566;
-	Thu, 16 Oct 2025 02:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4966B212566;
+	Thu, 16 Oct 2025 02:34:07 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DFD986329
-	for <cgroups@vger.kernel.org>; Thu, 16 Oct 2025 02:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB4686329
+	for <cgroups@vger.kernel.org>; Thu, 16 Oct 2025 02:34:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.139.111.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760582041; cv=none; b=coxamyuJkJ3bHa8KgQ+dh+WBx+4XL4KWk0SX3Lyuugy8WZVVI1W0ATpPfeZZ6MuTN0eK/IwURD1t4mSb69aqPJgyckmgHMmxkIesc08bpBmhGJxRgRKzOUgGYgijyrUdot4TkQPEIzZiyJQg8FOnbzFbMyc+wedrKyzos2n6jLs=
+	t=1760582047; cv=none; b=ZJkq8bbWV8W/O9m9YXIpeh13wL8E2vFVE7Ek6yFun8wA8D2vRD9/AeBeC7JjfHPiLXim8OUFXmvjhph1FXtm08f6fXyeOv+L1+WdHBZYfeRFsgaB5nDupWZhTDhOyooCXMk4CdivRSWv8XahV9A1RJaD/azMeIKI2N3ZRes04VQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760582041; c=relaxed/simple;
-	bh=PGxsbWjiMryP2IW+SQbKu/rdjbdntQ2WuG3gFpn3Xlo=;
+	s=arc-20240116; t=1760582047; c=relaxed/simple;
+	bh=bkUL08IFnEJnzavO4k4ssNdQcB+G58Y7uNxihn0O1no=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ItBSo7ozCOWRv72mgE8AbIKEoT3lvgghXyzCXbOMiE0S6e4yb6jzT9JK5nv9FRnY6FgdmuPB4ufiwzvjhII/ym10G3g2LuNon5F9tDjfocrz4/iMJY+GDLd0l33i5r5iPx4uggaPW2s5oYmty6qtnhQuLdRYg1invpIsX0WfqWE=
+	 MIME-Version:content-type; b=bCFMxCX9ic0g4CF6+ncejedXV9hzVOui6UD+lPEI45qA0YdX0VcWs9oa9xzse61ef2HGSFHgQhysOurbFrX/aWB6PTnpicLs/oCVcMKmvQLMzHNBWvQGldxhITLCqdLmOJESPPTeEBMOkH7A+QazTwRlaZkBTfWp52TdrsXwQ5c=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=205.139.111.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-536-jjQa8WwgMZy9ZJxTZ7WX_A-1; Wed,
- 15 Oct 2025 22:33:54 -0400
-X-MC-Unique: jjQa8WwgMZy9ZJxTZ7WX_A-1
-X-Mimecast-MFC-AGG-ID: jjQa8WwgMZy9ZJxTZ7WX_A_1760582032
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-688-HCEj1lEbO1q2cjFbFSrZ1w-1; Wed,
+ 15 Oct 2025 22:34:01 -0400
+X-MC-Unique: HCEj1lEbO1q2cjFbFSrZ1w-1
+X-Mimecast-MFC-AGG-ID: HCEj1lEbO1q2cjFbFSrZ1w_1760582039
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A9A861954200;
-	Thu, 16 Oct 2025 02:33:52 +0000 (UTC)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CB9A4180034C;
+	Thu, 16 Oct 2025 02:33:59 +0000 (UTC)
 Received: from dreadlord.taild9177d.ts.net (unknown [10.67.32.64])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 2FFD81800353;
-	Thu, 16 Oct 2025 02:33:45 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8C036180057A;
+	Thu, 16 Oct 2025 02:33:53 +0000 (UTC)
 From: Dave Airlie <airlied@gmail.com>
 To: dri-devel@lists.freedesktop.org,
 	tj@kernel.org,
@@ -58,9 +58,9 @@ Cc: cgroups@vger.kernel.org,
 	Dave Chinner <david@fromorbit.com>,
 	Waiman Long <longman@redhat.com>,
 	simona@ffwll.ch
-Subject: [PATCH 13/16] memcontrol: allow objcg api when memcg is config off.
-Date: Thu, 16 Oct 2025 12:31:41 +1000
-Message-ID: <20251016023205.2303108-14-airlied@gmail.com>
+Subject: [PATCH 14/16] amdgpu: add support for memory cgroups
+Date: Thu, 16 Oct 2025 12:31:42 +1000
+Message-ID: <20251016023205.2303108-15-airlied@gmail.com>
 In-Reply-To: <20251016023205.2303108-1-airlied@gmail.com>
 References: <20251016023205.2303108-1-airlied@gmail.com>
 Precedence: bulk
@@ -71,40 +71,136 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: MnZUEqbQ7CHbd2Fvl431UwoX_exMKYzWd2dEbrDqw4o_1760582032
+X-Mimecast-MFC-PROC-ID: j_hADZhkesvi8vAU1cq71UgShZKKIQf-lK1dDYHNOVw_1760582039
 X-Mimecast-Originator: gmail.com
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+content-type: text/plain; charset=WINDOWS-1252; x-default=true
 
 From: Dave Airlie <airlied@redhat.com>
 
-amdgpu wants to use the objcg api and not have to enable ifdef
-around it, so just add a dummy function for the config off path.
+This adds support for adding a obj cgroup to a buffer object,
+and passing in the placement flags to make sure it's accounted
+properly.
 
-Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
 Signed-off-by: Dave Airlie <airlied@redhat.com>
 ---
- include/linux/memcontrol.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c    |  1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.c | 13 +++++++++----
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.h |  1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c    |  2 ++
+ mm/memcontrol.c                            |  1 +
+ 5 files changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 62c46c33f84f..8401b272495e 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1828,6 +1828,11 @@ static inline void __memcg_kmem_uncharge_page(struct=
- page *page, int order)
- {
- }
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c b/drivers/gpu/drm/amd/=
+amdgpu/amdgpu_gem.c
+index b7ebae289bea..85ff70a399bc 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+@@ -225,6 +225,7 @@ int amdgpu_gem_object_create(struct amdgpu_device *adev=
+, unsigned long size,
+ =09bp.domain =3D initial_domain;
+ =09bp.bo_ptr_size =3D sizeof(struct amdgpu_bo);
+ =09bp.xcp_id_plus1 =3D xcp_id_plus1;
++=09bp.objcg =3D get_obj_cgroup_from_current();
 =20
-+static inline struct obj_cgroup *get_obj_cgroup_from_current(void)
-+{
-+=09return NULL;
-+}
-+
- static inline struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *f=
-olio)
+ =09r =3D amdgpu_bo_create_user(adev, &bp, &ubo);
+ =09if (r)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm/a=
+md/amdgpu/amdgpu_object.c
+index e08f58de4b17..d6a6f7e17a2a 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+@@ -167,7 +167,7 @@ void amdgpu_bo_placement_from_domain(struct amdgpu_bo *=
+abo, u32 domain)
+ =09=09places[c].mem_type =3D
+ =09=09=09abo->flags & AMDGPU_GEM_CREATE_PREEMPTIBLE ?
+ =09=09=09AMDGPU_PL_PREEMPT : TTM_PL_TT;
+-=09=09places[c].flags =3D 0;
++=09=09places[c].flags =3D TTM_PL_FLAG_MEMCG;
+ =09=09/*
+ =09=09 * When GTT is just an alternative to VRAM make sure that we
+ =09=09 * only use it as fallback and still try to fill up VRAM first.
+@@ -182,7 +182,7 @@ void amdgpu_bo_placement_from_domain(struct amdgpu_bo *=
+abo, u32 domain)
+ =09=09places[c].fpfn =3D 0;
+ =09=09places[c].lpfn =3D 0;
+ =09=09places[c].mem_type =3D TTM_PL_SYSTEM;
+-=09=09places[c].flags =3D 0;
++=09=09places[c].flags =3D TTM_PL_FLAG_MEMCG;
+ =09=09c++;
+ =09}
+=20
+@@ -662,16 +662,21 @@ int amdgpu_bo_create(struct amdgpu_device *adev,
+ =09=09size =3D ALIGN(size, PAGE_SIZE);
+ =09}
+=20
+-=09if (!amdgpu_bo_validate_size(adev, size, bp->domain))
++=09if (!amdgpu_bo_validate_size(adev, size, bp->domain)) {
++=09=09obj_cgroup_put(bp->objcg);
+ =09=09return -ENOMEM;
++=09}
+=20
+ =09BUG_ON(bp->bo_ptr_size < sizeof(struct amdgpu_bo));
+=20
+ =09*bo_ptr =3D NULL;
+ =09bo =3D kvzalloc(bp->bo_ptr_size, GFP_KERNEL);
+-=09if (bo =3D=3D NULL)
++=09if (bo =3D=3D NULL) {
++=09=09obj_cgroup_put(bp->objcg);
+ =09=09return -ENOMEM;
++=09}
+ =09drm_gem_private_object_init(adev_to_drm(adev), &bo->tbo.base, size);
++=09ttm_bo_set_cgroup(&bo->tbo, bp->objcg); /* hand the reference to the tt=
+m bo */
+ =09bo->tbo.base.funcs =3D &amdgpu_gem_object_funcs;
+ =09bo->vm_bo =3D NULL;
+ =09bo->preferred_domains =3D bp->preferred_domain ? bp->preferred_domain :
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.h b/drivers/gpu/drm/a=
+md/amdgpu/amdgpu_object.h
+index 656b8a931dae..b07a168a6665 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.h
+@@ -55,6 +55,7 @@ struct amdgpu_bo_param {
+ =09enum ttm_bo_type=09=09type;
+ =09bool=09=09=09=09no_wait_gpu;
+ =09struct dma_resv=09=09=09*resv;
++=09struct obj_cgroup               *objcg;
+ =09void=09=09=09=09(*destroy)(struct ttm_buffer_object *bo);
+ =09/* xcp partition number plus 1, 0 means any partition */
+ =09int8_t=09=09=09=09xcp_id_plus1;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/=
+amdgpu/amdgpu_ttm.c
+index bcab4a83137b..7642c17ebda7 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -152,11 +152,13 @@ static void amdgpu_evict_flags(struct ttm_buffer_obje=
+ct *bo,
+ =09=09=09amdgpu_bo_placement_from_domain(abo, AMDGPU_GEM_DOMAIN_GTT |
+ =09=09=09=09=09=09=09AMDGPU_GEM_DOMAIN_CPU);
+ =09=09}
++=09=09abo->placements[0].flags &=3D ~TTM_PL_FLAG_MEMCG;
+ =09=09break;
+ =09case TTM_PL_TT:
+ =09case AMDGPU_PL_PREEMPT:
+ =09default:
+ =09=09amdgpu_bo_placement_from_domain(abo, AMDGPU_GEM_DOMAIN_CPU);
++=09=09abo->placements[0].flags &=3D ~TTM_PL_FLAG_MEMCG;
+ =09=09break;
+ =09}
+ =09*placement =3D abo->placement;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ece340f3e391..b5782f6d21c2 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2721,6 +2721,7 @@ __always_inline struct obj_cgroup *current_obj_cgroup=
+(void)
+=20
+ =09return objcg;
+ }
++EXPORT_SYMBOL_GPL(current_obj_cgroup);
+=20
+ struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
  {
- =09return NULL;
 --=20
 2.51.0
 
