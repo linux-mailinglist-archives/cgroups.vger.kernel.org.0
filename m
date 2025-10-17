@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-10866-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10869-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 881FDBEB902
-	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 22:20:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBCC0BEB929
+	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 22:21:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 57B494FBD72
-	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 20:20:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 910DD19A0D65
+	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 20:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB003346A9;
-	Fri, 17 Oct 2025 20:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80EBF3446B7;
+	Fri, 17 Oct 2025 20:13:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="o6m3F24t"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sZrdZ1Z9"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977F03446AF
-	for <cgroups@vger.kernel.org>; Fri, 17 Oct 2025 20:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A203345CB0
+	for <cgroups@vger.kernel.org>; Fri, 17 Oct 2025 20:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760731997; cv=none; b=DqIVk6sVMMvm2Xk4nGtqq3WhO8dggyywt/8NdBJS3C69bxcFCWrEyFRavuq14g/aF/6CBnt4h6YA/Kg7hJ6f4CsXNri/pvP2DWNnH5ouLTvh1pyhYxCVGL6QWztNPxwMDvtrLBE3i+gkpEzflDgP2GGapPEsj34QlbXZpvvLIS4=
+	t=1760732004; cv=none; b=hb4Njky1f1EjO9C/YrKMFbg+asv+Qe4W4RmSynTJt0n41iUojZ4TYYX6j13JZ+SPUD6FzbKXcJKX4x29pooYSwCQ2PrWjE3+f1dVXsJcxRw6u9Y6jLZe4weeoPTDftI9q5usKVEQGV4jUNMfnNjZi0xCMVWOUBe0fFWKafIcUNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760731997; c=relaxed/simple;
-	bh=i0JjKVivSfUtEJKMtg8Zh0aQ6cl6o1OLhPEiIgjuNsg=;
+	s=arc-20240116; t=1760732004; c=relaxed/simple;
+	bh=z3QufnJXtifWlXsqexaQeYQRW2Yct3n/gif5OWOyNdM=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=m5PyKfoulvJAJgCs7qVaXUFxPsp7wSdzB7mhS7+1msEmwM7bTdsJTMy+PkkGw6L8I1R04t/yoC7HBnqIgfmurtcUmDtDNRftUmk0Wd/E5gH73668+QjYRQ7W7vhbe2YG69dydpxsb7l3JqwrGPt3qN1hYF57XQJScZGr0ROVAxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=o6m3F24t; arc=none smtp.client-ip=209.85.216.73
+	 To:Cc:Content-Type; b=f2QxU+6mTz4gKvMQmjR1I6Ww94TYZj+64D+CE/53RoeQ0A7CKBV1x80KlJtz7Jn7KErP+Ia2FnQY0eAtc8QLg/swKe7AALMJCZspIo22WrUB2aUcgBViPxw3WmRCAT0P1dl7n5Dy9O5RqRb92g1ZKX6RGLQEV8+G+ZRG/UUkrWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sZrdZ1Z9; arc=none smtp.client-ip=209.85.216.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-33ba91f1660so2536981a91.1
-        for <cgroups@vger.kernel.org>; Fri, 17 Oct 2025 13:13:10 -0700 (PDT)
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-33428befc49so3732742a91.0
+        for <cgroups@vger.kernel.org>; Fri, 17 Oct 2025 13:13:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1760731989; x=1761336789; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1760731991; x=1761336791; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VpPPOYob1QZnV0MVjnp55PhCGroJIJiVg+QyoFgvrb4=;
-        b=o6m3F24tRsPq9P4NPJhmfTWrG4BdLk2T/WASQpjELyVLd9VMn5FU5oUZfDQwGQfc+8
-         +7kTRNRKmUSO7uloSRYHFD4uLlP5iKToBsBFR2j6VV2hwMDRZUlbtGJeFSCbwiLpDl96
-         vtDizrT9okrWS7aTy2y989ho47H6BgvAWshZckIcg7nI0TQcC9/LQUUdQiynCQqdw0GH
-         LXtw123RB9xGPfOkvhA16sNsnQEmHngbg+cAuI0/uWuB3fPtXJWbpcAOsMJ8j7b9nKdX
-         s59xe4bdk1DZPWAebNBiiINchsLrdqQT5wwhn/Jay/69yxLKiDXIpEneGcqKKljWdiub
-         aLLg==
+        bh=zZ34d+VZkuHwS4Tl5hmiFloUpUjtvLj/jsnwlnFoI8s=;
+        b=sZrdZ1Z9gTN7fvVPurXJs+P5+sTqxUebcDa8lMe3Kuu6jpAGWCLzJWJpJLOVbdPOKl
+         Kqf0PesYbsM4wb87fw/oHnfUASiedRqYuDi1bUMX3lBVNuk/eDnPwAAIyDegkpDdArr7
+         uQF4Wg0SU53O8SpYjsBP9DcqC6SycJpvXvLwURAxaFQv9ac9qleg5UQyTlD4zsAcSKPF
+         duGlADXNgMTu/AsjmSmmRjfehoVK+a8OsgoI5Qo1uFSxeCG8URVMp52dKuJORVugpXxJ
+         nHo6S8A/AwXkmhqEITcBftEdditU+ugCDfUBiViTh6jw+0grlFARlJIK3eWOw5BANE4C
+         ab2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760731989; x=1761336789;
+        d=1e100.net; s=20230601; t=1760731991; x=1761336791;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VpPPOYob1QZnV0MVjnp55PhCGroJIJiVg+QyoFgvrb4=;
-        b=Y9ROChoCS5BcXFhvlnEwvZAQnJl6ASJyICVcsaxJc9D0iw+CEQgT2aF/4f5tA+OLpr
-         cXNNJbE0FsnMlFOjAXhycFoNFEMIFiETVFPDcvahhvWxaMil7QQvcGGA1kk3XeZk76hj
-         LGRtnhPdNNboYh6lxzlJk7F4FuHudDJG9YeBc1HFxZmXhutB+FFNmhk2Rso2cGuvkL3b
-         jkP2IsBGQaS0YnOTkErWTo1KJkcIHW08UudYT/sVrXxSsIVT5FfCfBFi6Q4EQruQXDl+
-         /ZH/enkLjeIFzdRG2irlHpchprOWUqqd97Tg/nrXFtYQT81zIJdISfK8Mt0TzT4CvHrl
-         EONg==
-X-Gm-Message-State: AOJu0YxbBR6Ms3PKR9amjX+YqSjgYPOx0+cmGipvGi2rKWotGf9bj3Py
-	okcoHNgms9wqkKwb6QN/88UYv9SlarrHh/99m6RfZ3F705ZOyP7QFJuiHdDC1FbKgOc007SPIxs
-	xuhW0gJ2wnDUYFl2SKWLquWn5pzbDqVvK7FHgde+alOB7b2vFUIvIS27niDrjnggXj/Yjgoa+8R
-	SUBCK82PEKVktuFS7fIK95TYm55JLynUfcJ8ytyFN0QrFSRSI0jlGYk0p89UN52vuh
-X-Google-Smtp-Source: AGHT+IFaVh5FLKaAG/q3ccs7S5CZUmyME95ySy5g2wu/pIuJKr9rpIYkO/d4uo4694WlqOqMAyATNgjBKMjQAO8boA==
-X-Received: from pjbnl2.prod.google.com ([2002:a17:90b:3842:b0:33b:51fe:1a73])
+        bh=zZ34d+VZkuHwS4Tl5hmiFloUpUjtvLj/jsnwlnFoI8s=;
+        b=g9Ym/Up9SiaI1RqE1/fMO2hOPSzMXPePt9r9yc+sdOTD7JkrZmkv++BKdF3eU7Dh6v
+         Vp7uDHhIr67L6nFSI8bMtaLPlXBOaxtmPWiBVDVov85BYVsz0PohDLu/uY+1/mlHjusF
+         QX0URDR0m5gwLmoveGQKR+VQ2zd7GYA7EmvsF/d03flL60yQWcPmZYsC3zrp+0zjjmrw
+         Sg805PQK9pRthaykMYQ6SaCpprATHat/SvlY9aPO9/L7dO9JSnbBqszvp8h/3ra0OvFt
+         WVl/n9dHsAFKmAHxBYAzKf7C3uX+y7kl5DK1S0B6U4YSQPtd6xBBMQr3oW1B8Ij1XCwm
+         3Jcw==
+X-Gm-Message-State: AOJu0YzJUghLmQaGlN6Fjc+ltBYvb0GqqB1rkvJr7ndySX2nCUotO4Ip
+	BjryDHVt6sHMhtVMrxpKsUpWDVGYsL+2rgN97LcawwsfRdXUAp5+tyNcQ462EV2ExYurdCcmSYk
+	YJd44GMeeXiXn2ylWI7KYOc61OCzz7VyLdRwIJWxlzxfZRHBRdFiY5+IzGGhA04pxoRwFKwy33/
+	cCAu+G3bctJNiso66/oZkp55qBO8IuN5EYetNy7HHo8l77+9t7QGuYNT3Rp0KNQO5g
+X-Google-Smtp-Source: AGHT+IHzx6Q3hHG57ljkrAP15mW/fSli8KOfzlU9yowcOYAMM7uKRQLpZuKh9dqK1n26N00k3XfO53kYXQVOFNP6YA==
+X-Received: from pjbpj3.prod.google.com ([2002:a17:90b:4f43:b0:332:4129:51b2])
  (user=ackerleytng job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90a:ec8b:b0:32e:d011:ea0f with SMTP id 98e67ed59e1d1-33bcf8f7280mr5551444a91.25.1760731988400;
- Fri, 17 Oct 2025 13:13:08 -0700 (PDT)
-Date: Fri, 17 Oct 2025 13:12:05 -0700
+ 2002:a17:90a:e7d0:b0:32e:23c9:6f41 with SMTP id 98e67ed59e1d1-33bc9b8dd13mr6981801a91.5.1760731989968;
+ Fri, 17 Oct 2025 13:13:09 -0700 (PDT)
+Date: Fri, 17 Oct 2025 13:12:06 -0700
 In-Reply-To: <cover.1760731772.git.ackerleytng@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,8 +74,9 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <cover.1760731772.git.ackerleytng@google.com>
 X-Mailer: git-send-email 2.51.0.858.gf9c4a03a3a-goog
-Message-ID: <1869a0b8eaf867052c11a04fe1efb1442ba1897d.1760731772.git.ackerleytng@google.com>
-Subject: [RFC PATCH v1 24/37] KVM: selftests: guest_memfd: Test precision of conversion
+Message-ID: <00b93a008a75a345f71b61ac67a2ffa068bc67d7.1760731772.git.ackerleytng@google.com>
+Subject: [RFC PATCH v1 25/37] KVM: selftests: guest_memfd: Test that
+ truncation does not change shared/private status
 From: Ackerley Tng <ackerleytng@google.com>
 To: cgroups@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, 
 	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -111,60 +112,54 @@ Cc: ackerleytng@google.com, akpm@linux-foundation.org,
 	yuzenghui@huawei.com, zhiquan1.li@intel.com
 Content-Type: text/plain; charset="UTF-8"
 
-Enhance the guest_memfd indexing selftest to also verify the precision of
-memory conversions between private and shared.
+Add a test to verify that deallocating a page in a guest memfd region via
+fallocate() with FALLOC_FL_PUNCH_HOLE does not alter the shared or private
+status of the corresponding memory range.
 
-The existing test converted a single page within a multi-page mapping but
-did not explicitly check the state of the surrounding pages after the
-conversion loop.
-
-Add checks to confirm that converting a single page from shared to private
-only affects the target page. Iterate through all other pages in the
-guest_memfd region to ensure they remain in their original shared state,
-thus verifying that the conversion operation is precise and does not have
-unintended side effects.
+When a page backing a guest memfd mapping is deallocated, e.g., by punching
+a hole or truncating the file, and then subsequently faulted back in, the
+new page must inherit the correct shared/private status tracked by
+guest_memfd.
 
 Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+Co-developed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/kvm/guest_memfd_conversions_test.c    | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ .../selftests/kvm/guest_memfd_conversions_test.c   | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/tools/testing/selftests/kvm/guest_memfd_conversions_test.c b/tools/testing/selftests/kvm/guest_memfd_conversions_test.c
-index b42b1b27cb727..43efe4af1403c 100644
+index 43efe4af1403c..907d415d72315 100644
 --- a/tools/testing/selftests/kvm/guest_memfd_conversions_test.c
 +++ b/tools/testing/selftests/kvm/guest_memfd_conversions_test.c
-@@ -235,7 +235,8 @@ GMEM_CONVERSION_TEST_INIT_SHARED(init_shared)
+@@ -10,6 +10,7 @@
+ #include <linux/sizes.h>
  
- /*
-  * Test indexing of pages within guest_memfd, using test data that is a multiple
-- * of page index.
-+ * of page index.  Also test the precision of conversion, that it does not
-+ * affect surrounding pages.
-  */
- GMEM_CONVERSION_MULTIPAGE_TEST_INIT_SHARED(indexing, 4)
- {
-@@ -255,12 +256,20 @@ GMEM_CONVERSION_MULTIPAGE_TEST_INIT_SHARED(indexing, 4)
- 			test_shared(t, i, i * 2, i * 3, i * 4);
- 	}
- 
-+	/* Confirm that only one page was converted */
- 	for (i = 0; i < nr_pages; ++i) {
- 		if (i == test_page)
--			test_convert_to_shared(t, i, i * 4, i * 5, i * 6);
-+			test_private(t, i, i * 4, i * 6);
- 		else
- 			test_shared(t, i, i * 4, i * 5, i * 6);
- 	}
-+
-+	for (i = 0; i < nr_pages; ++i) {
-+		if (i == test_page)
-+			test_convert_to_shared(t, i, i * 6, i * 7, i * 8);
-+		else
-+			test_shared(t, i, i * 6, i * 7, i * 8);
-+	}
+ #include "kvm_util.h"
++#include "kvm_syscalls.h"
+ #include "kselftest_harness.h"
+ #include "test_util.h"
+ #include "ucall_common.h"
+@@ -316,6 +317,19 @@ GMEM_CONVERSION_MULTIPAGE_TEST_INIT_SHARED(unallocated_folios, 8)
+ 		test_convert_to_shared(t, i, 'B', 'C', 'D');
  }
  
- /*
++/* Truncation should not affect shared/private status. */
++GMEM_CONVERSION_TEST_INIT_SHARED(truncate)
++{
++	host_do_rmw(t->mem, 0, 0, 'A');
++	kvm_fallocate(t->gmem_fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE, 0, page_size);
++	host_do_rmw(t->mem, 0, 0, 'A');
++
++	test_convert_to_private(t, 0, 'A', 'B');
++
++	kvm_fallocate(t->gmem_fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE, 0, page_size);
++	test_private(t, 0, 0, 'A');
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	TEST_REQUIRE(kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM));
 -- 
 2.51.0.858.gf9c4a03a3a-goog
 
