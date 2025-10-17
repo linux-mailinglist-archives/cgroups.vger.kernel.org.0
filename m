@@ -1,314 +1,249 @@
-Return-Path: <cgroups+bounces-10841-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10842-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EC4ABEB1F3
-	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 19:52:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D512BEB763
+	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 22:13:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 853F11AE060C
-	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 17:53:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 262AB6E7A79
+	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 20:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B0332C92D;
-	Fri, 17 Oct 2025 17:52:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832E92874F6;
+	Fri, 17 Oct 2025 20:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CCpzcIIU"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3iktQPFY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACE40261595
-	for <cgroups@vger.kernel.org>; Fri, 17 Oct 2025 17:52:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5716032ED59
+	for <cgroups@vger.kernel.org>; Fri, 17 Oct 2025 20:12:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760723573; cv=none; b=u2AZzkZR+EEQTO/XUkAceXuQS6fsnOKrQi1RdAllBU2NNIlQbCYLF7o6U0Vjy+kQDO07giu+R0oVyC5zkmtTWvsvJGljGu6JZkm4f+Ol5mjWVv7mMhJxMLp1dEARG2LLqyt+LM+jjk9kgxR+ZChqr9FSD4n4TToKjD75bOdqubU=
+	t=1760731952; cv=none; b=Vqg0IqpjqJb/zkbWgDyO8eZQrN24INo8GYNZVYNmTHvLEBpgX+Y6V/n1P5u1cdVkPI7qrnbA4TvCdVgbm4DCQJEBR2i6lbfjr+64QWIhU74AS69nXSLNr2TTaLn2OL5T9mZj1QJBdn6keLZyCrbhEl7FswvK3gDnW8NfcwhdeXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760723573; c=relaxed/simple;
-	bh=g88HbHHTSRSg4gKlhrfAykhenuBvTbK02JjqS/jVAfk=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Pvh2YNeFndhZ0MdpsLRlSDugbZE8PtHNAjPjjhQAB61dLBp9lZZh+EPhlHcAZEORNGT0TI7MLd7SDPKhQ5E0AQXfcD4qwAaewWejKd5QLKMyHs55rm+Xdj3SVlMrF+thzMwInmzckUXJiqayRdYivzIqiD1ydO9VHjypHYNaJcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CCpzcIIU; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760723569;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7uFNgRkQxgrcaDrhBce90BY6iLcFw7TEYkoT72st+3g=;
-	b=CCpzcIIUcv8YneLlGgAnvTE0DZKGXi/pCNQehABONgrd8WPXVvzmr/sgPtYJ1HlDf6rlZk
-	XRx8d1GRCV+wb2WYHrpLjp2XV+PdQKDhQIf6dd5ZS+TzwsgY/CWnflSA3EU6OMB/ILemp/
-	eXhdU1sN8eE2iKeT/j8aetRd3E6HAwc=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-676-jrmZjiyQNnCn56JHorBgzA-1; Fri, 17 Oct 2025 13:52:48 -0400
-X-MC-Unique: jrmZjiyQNnCn56JHorBgzA-1
-X-Mimecast-MFC-AGG-ID: jrmZjiyQNnCn56JHorBgzA_1760723568
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-272b7bdf41fso29337605ad.0
-        for <cgroups@vger.kernel.org>; Fri, 17 Oct 2025 10:52:48 -0700 (PDT)
+	s=arc-20240116; t=1760731952; c=relaxed/simple;
+	bh=siWpafnUKoLg4oB+hPXsnce7fcIsRgiCopc1fvAbvC8=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=B4Ih0H3E3UKNkIh/H9dsx2BfXp8NNhOoV9Kx2Qj5DEXMYqeIjm+L6f7InQRskNG2+TVMK0g9LEsYgf6sxTwNhYDyuv/MgtEFGsZG/LKIPlc1NzwLptlkwMbr4nToZhbuXOT3gHXW0UpnuMURc/wmYs3QX3y7rs+8cQF6sX5GCrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3iktQPFY; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-33bcb779733so1622194a91.3
+        for <cgroups@vger.kernel.org>; Fri, 17 Oct 2025 13:12:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1760731949; x=1761336749; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MvNEuSw58UwdjUzqQehycSdzJ+PYeq3LWgjQi3Vxd7A=;
+        b=3iktQPFYRvpQB02J7IsxLgzetTDdC4IfsafK0tnpmojWN4z09ctQkKghFpdWLCFEZm
+         jwC8QIhkztQq9jTLx1dkDq+IQT4V0op7FiD6qw7vCwD/7C1WKcz5IIypiEtddQMUyrry
+         XT9Ic+sHfM+RT/2/qh6eEjRlTC6/XsPgHFaRh4cdJZZrnSPFloueN6Cg8chErztytpg9
+         fKHZ+ZQSMsK5w1P5t9FYGo2VsfQJLynOwKlZz3tDsA8qESr56A0ipqPPoT8Tq3/Kwzs3
+         r5tfgMICeBBfB+/gqKoV8VlM7hm6SU/RxqBsL9a+JCrDF0Hf1k+/q//Rzli2xEn2jrco
+         pklA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760723567; x=1761328367;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7uFNgRkQxgrcaDrhBce90BY6iLcFw7TEYkoT72st+3g=;
-        b=JcWdiA/q++5Ymcs9nslBSUjHUM46TrSd/8nkeIwK5cDFfy0CmvtoOdKA//gWuYhuYx
-         7ccYRa9BWe0dT1pk/sAmABb6ngzQdHez5ZeRX07X4E0mJrPIgtx3xLaJz1b+WoAOhADG
-         UjK0Y7fY3F3iQBcvjK8DGhQxRTg16p5DWB4Q2RsUOxfXEkm3NwZ4gHDyaCWvS0pdLw3m
-         cHGwkkmUOxUgsIFhhtg4iWbPm0+ce8jgVtyLD6XOoGnnJZGMEqmq7Au7M0OLHZcpAq75
-         dXDEHr6p4PosBs/06qLIjgfNJe090U+CCx2FjLCr0JVDGeRBbJN0wMh3UBKHplZq8T2W
-         W7Dw==
-X-Forwarded-Encrypted: i=1; AJvYcCUhr/u+d3kPxY6gph9w3qTdHPDhn7rZT34pOMyVdvvuMQuZQ3ly2fXCWpZEH0F+c+0YXj8SrvMs@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhzbkBBzNsLBPYAu/CJScgbpx3ASgZuQEzBvHCEyrKCuZsSxXi
-	9WoJnv0U/0PjXDkYfaAc8fcs7g0kkY8NChHAHUVO3ZookMroVFWGDlQujMjxnx+oP0lh+9Jcjz/
-	DTCGmzzyPuFUkilMouxuJpS9cOFVphBFQMaTHVamEQ/bllVzcQsJRZhmlUPs=
-X-Gm-Gg: ASbGncu120Qn5tNISfg0xV6DXWxJWNW7HthJxWPGUDFZFfbsMSr+XiIUElME6+qBMQU
-	5AAazTssWU8cmZygfshjbSwO6qb52M/064qJK0eMwqohZ2cYNknhkIWrwyItJ1UEeE49uYPK1kg
-	0+tm+u3heQMOy4v+PuiuQxtX+WFXkk0OkXdoCBEGD9IVH476HfL6wjwBGH0sUjva/fkZDu2dX/M
-	vGBvQBCvCW2cfQNnhvhKX25rjwudGKlmZvIGB/LkezOt09kNj4XtT97qiGqIF8YA4MdskkA+QYK
-	f2xIvB/6cgUVji0yLUpGMpj0rK7Nl+GqsdkqFoMxuXfr1sZ/PHwlYOrWYk5ZohVSjjxepV2EchB
-	bVTVwHVYKVPFaN82F8IKzqPtJo7HOMhFARNELxsQNL/JZ/Q==
-X-Received: by 2002:a17:902:ce8d:b0:27e:dc53:d239 with SMTP id d9443c01a7336-290caf84628mr52931075ad.35.1760723567604;
-        Fri, 17 Oct 2025 10:52:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFtHI8zEiYjDKM4Y0n1dEzB5SaaQjotwDpGDbW63VJ9IKLOCmrbNidjMc/GBXbcWjXcLUPAwg==
-X-Received: by 2002:a17:902:ce8d:b0:27e:dc53:d239 with SMTP id d9443c01a7336-290caf84628mr52930715ad.35.1760723567190;
-        Fri, 17 Oct 2025 10:52:47 -0700 (PDT)
-Received: from ?IPV6:2601:600:947f:f020:85dc:d2b2:c5ee:e3c4? ([2601:600:947f:f020:85dc:d2b2:c5ee:e3c4])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-292471fdce3sm981955ad.90.2025.10.17.10.52.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Oct 2025 10:52:46 -0700 (PDT)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <1b510c7e-6d48-4f3c-b3cb-8a7a0834784c@redhat.com>
-Date: Fri, 17 Oct 2025 13:52:45 -0400
+        d=1e100.net; s=20230601; t=1760731949; x=1761336749;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MvNEuSw58UwdjUzqQehycSdzJ+PYeq3LWgjQi3Vxd7A=;
+        b=La7ffksnriaQM1UTvZEpw59BjWvb5dA8zSgoqUqZG9EX/m95RAyDjflbUoxNrwyX6z
+         dsUQ9VME6ciZ7Rqllw3q4nuI4mcBqRnNB773TD826SKZp9AW5wwt0BxJZRzJs+Wem/ug
+         ZZ2e/X8bvPHJMTQ0UpeosXZGksxPqouoqJPNe+WvsnV0JIgl4baDCZpQjlxk/VCy0RfK
+         rNoItqC8H1+Lb9uqLbaPpcIsqO92FPyKPoDOTSEVxDLam7a9RcIZeNj6oqmoCSRYSFAq
+         BNGo1yL3qotdK/BaMXmfTl7ACmTSJDCVl1h7plKda87VrW7GgZN6uuBD4ENmcwBxcT9n
+         UAAw==
+X-Gm-Message-State: AOJu0YyhFZBCKZ1pv6etQKvlvySO85w0iTLo9PpahB0plMZi00/6X0yR
+	64YKQJ68gm0C8z/LQrxHMoOH2fF56SzYnChS45q6DIaKqjqyTtrrZNuzBqPhkwIDZvbXeM+oj68
+	O3Dmhz55r4fSsyGUzOE46SvFXT2VLGIvOzcAosUQQU8ujD0WkuExJ4qipEd/MW6A9JFxuXPbN9o
+	uWPjskHmOLENO3Pqd3DhR1DpFWEy3fA3qwl+ecX8rzCU7nJI4qiRY8Ahc4jb7E2jGh
+X-Google-Smtp-Source: AGHT+IGm0uDnlmmvVqLxeQbS/GkNVcVJ1vJxluasBXbGw+YdYIXcsi2a/48HhtEUh6v1e/OBtWieEkqS8C8YBg1I5A==
+X-Received: from pjbpm17.prod.google.com ([2002:a17:90b:3c51:b0:33b:b692:47b0])
+ (user=ackerleytng job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:4c4e:b0:32e:6019:5d19 with SMTP id 98e67ed59e1d1-33bcf921526mr5690604a91.34.1760731948481;
+ Fri, 17 Oct 2025 13:12:28 -0700 (PDT)
+Date: Fri, 17 Oct 2025 13:11:41 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv3] sched/deadline: Walk up cpuset hierarchy to decide root
- domain when hot-unplug
-To: Pingfan Liu <piliu@redhat.com>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>, Pierre Gondois <pierre.gondois@arm.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
-References: <20251017122636.17671-1-piliu@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20251017122636.17671-1-piliu@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.51.0.858.gf9c4a03a3a-goog
+Message-ID: <cover.1760731772.git.ackerleytng@google.com>
+Subject: [RFC PATCH v1 00/37] guest_memfd: In-place conversion support
+From: Ackerley Tng <ackerleytng@google.com>
+To: cgroups@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org
+Cc: ackerleytng@google.com, akpm@linux-foundation.org, 
+	binbin.wu@linux.intel.com, bp@alien8.de, brauner@kernel.org, 
+	chao.p.peng@intel.com, chenhuacai@kernel.org, corbet@lwn.net, 
+	dave.hansen@intel.com, dave.hansen@linux.intel.com, david@redhat.com, 
+	dmatlack@google.com, erdemaktas@google.com, fan.du@intel.com, fvdl@google.com, 
+	haibo1.xu@intel.com, hannes@cmpxchg.org, hch@infradead.org, hpa@zytor.com, 
+	hughd@google.com, ira.weiny@intel.com, isaku.yamahata@intel.com, jack@suse.cz, 
+	james.morse@arm.com, jarkko@kernel.org, jgg@ziepe.ca, jgowans@amazon.com, 
+	jhubbard@nvidia.com, jroedel@suse.de, jthoughton@google.com, 
+	jun.miao@intel.com, kai.huang@intel.com, keirf@google.com, 
+	kent.overstreet@linux.dev, liam.merwick@oracle.com, 
+	maciej.wieczor-retman@intel.com, mail@maciej.szmigiero.name, 
+	maobibo@loongson.cn, mathieu.desnoyers@efficios.com, maz@kernel.org, 
+	mhiramat@kernel.org, mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com, 
+	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au, 
+	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es, 
+	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com, 
+	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com, 
+	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz, qperret@google.com, 
+	richard.weiyang@gmail.com, rick.p.edgecombe@intel.com, rientjes@google.com, 
+	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org, seanjc@google.com, 
+	shakeel.butt@linux.dev, shuah@kernel.org, steven.price@arm.com, 
+	steven.sistare@oracle.com, suzuki.poulose@arm.com, tabba@google.com, 
+	tglx@linutronix.de, thomas.lendacky@amd.com, vannapurve@google.com, 
+	vbabka@suse.cz, viro@zeniv.linux.org.uk, vkuznets@redhat.com, 
+	wei.w.wang@intel.com, will@kernel.org, willy@infradead.org, wyihan@google.com, 
+	xiaoyao.li@intel.com, yan.y.zhao@intel.com, yilun.xu@intel.com, 
+	yuzenghui@huawei.com, zhiquan1.li@intel.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 10/17/25 8:26 AM, Pingfan Liu wrote:
-> When testing kexec-reboot on a 144 cpus machine with
-> isolcpus=managed_irq,domain,1-71,73-143 in kernel command line, I
-> encounter the following bug:
->
-> [   97.114759] psci: CPU142 killed (polled 0 ms)
-> [   97.333236] Failed to offline CPU143 - error=-16
-> [   97.333246] ------------[ cut here ]------------
-> [   97.342682] kernel BUG at kernel/cpu.c:1569!
-> [   97.347049] Internal error: Oops - BUG: 00000000f2000800 [#1] SMP
-> [   97.353281] Modules linked in: rfkill sunrpc dax_hmem cxl_acpi cxl_port cxl_core einj vfat fat arm_smmuv3_pmu nvidia_cspmu arm_spe_pmu coresight_trbe arm_cspmu_module rndis_host ipmi_ssif cdc_ether i2c_smbus spi_nor usbnet ast coresight_tmc mii ixgbe i2c_algo_bit mdio mtd coresight_funnel coresight_stm stm_core coresight_etm4x coresight cppc_cpufreq loop fuse nfnetlink xfs crct10dif_ce ghash_ce sha2_ce sha256_arm64 sha1_ce sbsa_gwdt nvme nvme_core nvme_auth i2c_tegra acpi_power_meter acpi_ipmi ipmi_devintf ipmi_msghandler dm_mirror dm_region_hash dm_log dm_mod
-> [   97.404119] CPU: 0 UID: 0 PID: 2583 Comm: kexec Kdump: loaded Not tainted 6.12.0-41.el10.aarch64 #1
-> [   97.413371] Hardware name: Supermicro MBD-G1SMH/G1SMH, BIOS 2.0 07/12/2024
-> [   97.420400] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-> [   97.427518] pc : smp_shutdown_nonboot_cpus+0x104/0x128
-> [   97.432778] lr : smp_shutdown_nonboot_cpus+0x11c/0x128
-> [   97.438028] sp : ffff800097c6b9a0
-> [   97.441411] x29: ffff800097c6b9a0 x28: ffff0000a099d800 x27: 0000000000000000
-> [   97.448708] x26: 0000000000000000 x25: 0000000000000000 x24: ffffb94aaaa8f218
-> [   97.456004] x23: ffffb94aaaabaae0 x22: ffffb94aaaa8f018 x21: 0000000000000000
-> [   97.463301] x20: ffffb94aaaa8fc10 x19: 000000000000008f x18: 00000000fffffffe
-> [   97.470598] x17: 0000000000000000 x16: ffffb94aa958fcd0 x15: ffff103acfca0b64
-> [   97.477894] x14: ffff800097c6b520 x13: 36312d3d726f7272 x12: ffff103acfc6ffa8
-> [   97.485191] x11: ffff103acf6f0000 x10: ffff103bc085c400 x9 : ffffb94aa88a0eb0
-> [   97.492488] x8 : 0000000000000001 x7 : 000000000017ffe8 x6 : c0000000fffeffff
-> [   97.499784] x5 : ffff003bdf62b408 x4 : 0000000000000000 x3 : 0000000000000000
-> [   97.507081] x2 : 0000000000000000 x1 : ffff0000a099d800 x0 : 0000000000000002
-> [   97.514379] Call trace:
-> [   97.516874]  smp_shutdown_nonboot_cpus+0x104/0x128
-> [   97.521769]  machine_shutdown+0x20/0x38
-> [   97.525693]  kernel_kexec+0xc4/0xf0
-> [   97.529260]  __do_sys_reboot+0x24c/0x278
-> [   97.533272]  __arm64_sys_reboot+0x2c/0x40
-> [   97.537370]  invoke_syscall.constprop.0+0x74/0xd0
-> [   97.542179]  do_el0_svc+0xb0/0xe8
-> [   97.545562]  el0_svc+0x44/0x1d0
-> [   97.548772]  el0t_64_sync_handler+0x120/0x130
-> [   97.553222]  el0t_64_sync+0x1a4/0x1a8
-> [   97.556963] Code: a94363f7 a8c47bfd d50323bf d65f03c0 (d4210000)
-> [   97.563191] ---[ end trace 0000000000000000 ]---
-> [   97.595854] Kernel panic - not syncing: Oops - BUG: Fatal exception
-> [   97.602275] Kernel Offset: 0x394a28600000 from 0xffff800080000000
-> [   97.608502] PHYS_OFFSET: 0x80000000
-> [   97.612062] CPU features: 0x10,0000000d,002a6928,5667fea7
-> [   97.617580] Memory Limit: none
-> [   97.648626] ---[ end Kernel panic - not syncing: Oops - BUG: Fatal exception ]
->
-> Tracking down this issue, I found that dl_bw_deactivate() returned
-> -EBUSY, which caused sched_cpu_deactivate() to fail on the last CPU.
-> When a CPU is inactive, its rd is set to def_root_domain. For an
-> blocked-state deadline task (in this case, "cppc_fie"), it was not
-> migrated to CPU0, and its task_rq() information is stale. As a result,
-> its bandwidth is wrongly accounted into def_root_domain during domain
-> rebuild.
+Hello,
 
-First of all, in an emergency situation when we need to shutdown the 
-kernel, does it really matter if dl_bw_activate() returns -EBUSY? Should 
-we just go ahead and ignore this dl_bw generated error?
+IIUC this is the first independent patch series for guest_memfd's in-place
+conversion series! Happy to finally bring this out on its own.
 
+Previous versions of this feature, part of other series, are available at
+[1][2][3].
 
-> The key point is that root_domain is only tracked through active rq->rd.
-> To avoid using a global data structure to track all root_domains in the
-> system, we need a way to locate an active CPU within the corresponding
-> root_domain.
->
-> The following rules stand for deadline sub-system and help locating the
-> active cpu
->    -1.any cpu belongs to a unique root domain at a given time
->    -2.DL bandwidth checker ensures that the root domain has active cpus.
->
-> Now, let's examine the blocked-state task P.
-> If P is attached to a cpuset that is a partition root, it is
-> straightforward to find an active CPU.
-> If P is attached to a cpuset that has changed from 'root' to 'member',
-> the active CPUs are grouped into the parent root domain. Naturally, the
-> CPUs' capacity and reserved DL bandwidth are taken into account in the
-> ancestor root domain. (In practice, it may be unsafe to attach P to an
-> arbitrary root domain, since that domain may lack sufficient DL
-> bandwidth for P.) Again, it is straightforward to find an active CPU in
-> the ancestor root domain.
->
-> This patch groups CPUs into isolated and housekeeping sets. For the
-> housekeeping group, it walks up the cpuset hierarchy to find active CPUs
-> in P's root domain and retrieves the valid rd from cpu_rq(cpu)->rd.
->
-> Signed-off-by: Pingfan Liu <piliu@redhat.com>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: "Michal Koutný" <mkoutny@suse.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Pierre Gondois <pierre.gondois@arm.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> To: cgroups@vger.kernel.org
-> To: linux-kernel@vger.kernel.org
-> ---
->   include/linux/cpuset.h  | 18 ++++++++++++++++++
->   kernel/cgroup/cpuset.c  | 27 +++++++++++++++++++++++++++
->   kernel/sched/deadline.c | 30 ++++++++++++++++++++++++------
->   3 files changed, 69 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index 2ddb256187b51..7c00ebcdf85d9 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -130,6 +130,7 @@ extern void rebuild_sched_domains(void);
->   
->   extern void cpuset_print_current_mems_allowed(void);
->   extern void cpuset_reset_sched_domains(void);
-> +extern void task_get_rd_effective_cpus(struct task_struct *p, struct cpumask *cpus);
->   
->   /*
->    * read_mems_allowed_begin is required when making decisions involving
-> @@ -276,6 +277,23 @@ static inline void cpuset_reset_sched_domains(void)
->   	partition_sched_domains(1, NULL, NULL);
->   }
->   
-> +static inline void task_get_rd_effective_cpus(struct task_struct *p,
-> +		struct cpumask *cpus)
-> +{
-> +	const struct cpumask *hk_msk;
-> +	struct cpumask msk;
-> +
-> +	hk_msk = housekeeping_cpumask(HK_TYPE_DOMAIN);
-> +	if (housekeeping_enabled(HK_TYPE_DOMAIN)) {
-> +		if (!cpumask_and(&msk, p->cpus_ptr, hk_msk)) {
-> +			/* isolated cpus belong to a root domain */
-> +			cpumask_andnot(cpus, cpu_active_mask, hk_msk);
-> +			return;
-> +		}
-> +	}
-> +	cpumask_and(cpus, cpu_active_mask, hk_msk);
-> +}
+Many prior discussions have led up to these main features of this series, and
+these are the main points I'd like feedback on.
 
-The size of struct cpumask can be large depending on the extra value of 
-NR_CPUS. For a x86-64 RHEL kernel, it is over 1 kbytes. We can actually 
-eliminate the use of a struct cpumask variable by replacing 
-cpumask_and() with cpumask_intersects().
+1. Having private/shared status stored in a maple tree (Thanks Michael for your
+   support of using maple trees over xarrays for performance! [4]).
+2. Having a new guest_memfd ioctl (not a vm ioctl) that performs conversions.
+3. Using ioctls/structs/input attribute similar to the existing vm ioctl
+   KVM_SET_MEMORY_ATTRIBUTES to perform conversions.
+4. Storing requested attributes directly in the maple tree.
+5. Using a KVM module-wide param to toggle between setting memory attributes via
+   vm and guest_memfd ioctls (making them mututally exclusive - a single loaded
+   KVM module can only do one of the two.)
+6. Skipping LRU in guest_memfd folios - make guest_memfd folios not participate
+   in LRU to avoid LRU refcounts from interfering with conversions.
 
-You said that isolated CPUs belong to a root domain. In the case of CPUs 
-within an isolated partition, the CPUs are in a null root domain which I 
-don't know if it is problematic or not.
+This series is based on kvm/next, followed by
 
-We usually prefix an externally visible function from cpuset with the 
-cpuset prefix to avoid namespace collision. You should consider doing 
-that for this function.
++ v12 of NUMA mempolicy support patches [5]
++ 3 cleanup patches from Sean [6][7][8]
 
-Also I am still not very clear about the exact purpose of this function. 
-You should probably add comment about this.
+Everything is stitched together here for your convenience
 
-> +
->   static inline void cpuset_print_current_mems_allowed(void)
->   {
->   }
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 27adb04df675d..f7b18892ed093 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1102,6 +1102,33 @@ void cpuset_reset_sched_domains(void)
->   	mutex_unlock(&cpuset_mutex);
->   }
->   
-> +/* caller hold RCU read lock */
-> +void task_get_rd_effective_cpus(struct task_struct *p, struct cpumask *cpus)
-> +{
-> +	const struct cpumask *hk_msk;
-> +	struct cpumask msk;
-> +	struct cpuset *cs;
-> +
-> +	hk_msk = housekeeping_cpumask(HK_TYPE_DOMAIN);
-> +	if (housekeeping_enabled(HK_TYPE_DOMAIN)) {
-> +		if (!cpumask_and(&msk, p->cpus_ptr, hk_msk)) {
-> +			/* isolated cpus belong to a root domain */
-> +			cpumask_andnot(cpus, cpu_active_mask, hk_msk);
-> +			return;
-> +		}
-> +	}
-> +	/* In HK_TYPE_DOMAIN, cpuset can be applied */
-> +	cs = task_cs(p);
-> +	while (cs != &top_cpuset) {
-> +		if (is_sched_load_balance(cs))
-> +			break;
-> +		cs = parent_cs(cs);
-> +	}
-> +
-> +	/* For top_cpuset, its effective_cpus does not exclude isolated cpu */
-> +	cpumask_and(cpus, cs->effective_cpus, hk_msk);
-> +}
-> +
+https://github.com/googleprodkernel/linux-cc/commits/guest_memfd-inplace-conversion-v1
 
-Similar problems with the non-CONFIG_CPUSETS version in cpuset.h.
+Thank you all for helping with this series!
 
-Cheers,
-Longman
+If I missed out your comment from a previous series, it's not intentional!
+Please do raise it again.
 
+TODOs:
+
++ There might be an issue with memory failure handling because when guest_memfd
+  folios stop participating in LRU. From a preliminary analysis,
+  HWPoisonHandlable() is only true if PageLRU() is true. This needs further
+  investigation.
+
+[1] https://lore.kernel.org/all/bd163de3118b626d1005aa88e71ef2fb72f0be0f.1726009989.git.ackerleytng@google.com/
+[2] https://lore.kernel.org/all/20250117163001.2326672-6-tabba@google.com/
+[3] https://lore.kernel.org/all/b784326e9ccae6a08388f1bf39db70a2204bdc51.1747264138.git.ackerleytng@google.com/
+[4] https://lore.kernel.org/all/20250529054227.hh2f4jmyqf6igd3i@amd.com/
+[5] https://lore.kernel.org/all/20251007221420.344669-1-seanjc@google.com/T/
+[6] https://lore.kernel.org/all/20250924174255.2141847-1-seanjc@google.com/
+[7] https://lore.kernel.org/all/20251007224515.374516-1-seanjc@google.com/
+[8] https://lore.kernel.org/all/20251007223625.369939-1-seanjc@google.com/
+
+Ackerley Tng (19):
+  KVM: guest_memfd: Update kvm_gmem_populate() to use gmem attributes
+  KVM: Introduce KVM_SET_MEMORY_ATTRIBUTES2
+  KVM: guest_memfd: Don't set FGP_ACCESSED when getting folios
+  KVM: guest_memfd: Skip LRU for guest_memfd folios
+  KVM: guest_memfd: Add support for KVM_SET_MEMORY_ATTRIBUTES
+  KVM: selftests: Update framework to use KVM_SET_MEMORY_ATTRIBUTES2
+  KVM: selftests: guest_memfd: Test basic single-page conversion flow
+  KVM: selftests: guest_memfd: Test conversion flow when INIT_SHARED
+  KVM: selftests: guest_memfd: Test indexing in guest_memfd
+  KVM: selftests: guest_memfd: Test conversion before allocation
+  KVM: selftests: guest_memfd: Convert with allocated folios in
+    different layouts
+  KVM: selftests: guest_memfd: Test precision of conversion
+  KVM: selftests: guest_memfd: Test that truncation does not change
+    shared/private status
+  KVM: selftests: guest_memfd: Test conversion with elevated page
+    refcount
+  KVM: selftests: Reset shared memory after hole-punching
+  KVM: selftests: Provide function to look up guest_memfd details from
+    gpa
+  KVM: selftests: Make TEST_EXPECT_SIGBUS thread-safe
+  KVM: selftests: Update private_mem_conversions_test to mmap()
+    guest_memfd
+  KVM: selftests: Add script to exercise private_mem_conversions_test
+
+Sean Christopherson (18):
+  KVM: guest_memfd: Introduce per-gmem attributes, use to guard user
+    mappings
+  KVM: Rename KVM_GENERIC_MEMORY_ATTRIBUTES to KVM_VM_MEMORY_ATTRIBUTES
+  KVM: Enumerate support for PRIVATE memory iff kvm_arch_has_private_mem
+    is defined
+  KVM: Stub in ability to disable per-VM memory attribute tracking
+  KVM: guest_memfd: Wire up kvm_get_memory_attributes() to per-gmem
+    attributes
+  KVM: guest_memfd: Enable INIT_SHARED on guest_memfd for x86 Coco VMs
+  KVM: Move KVM_VM_MEMORY_ATTRIBUTES config definition to x86
+  KVM: Let userspace disable per-VM mem attributes, enable per-gmem
+    attributes
+  KVM: selftests: Create gmem fd before "regular" fd when adding memslot
+  KVM: selftests: Rename guest_memfd{,_offset} to gmem_{fd,offset}
+  KVM: selftests: Add support for mmap() on guest_memfd in core library
+  KVM: selftests: Add helpers for calling ioctls on guest_memfd
+  KVM: selftests: guest_memfd: Test that shared/private status is
+    consistent across processes
+  KVM: selftests: Add selftests global for guest memory attributes
+    capability
+  KVM: selftests: Provide common function to set memory attributes
+  KVM: selftests: Check fd/flags provided to mmap() when setting up
+    memslot
+  KVM: selftests: Update pre-fault test to work with per-guest_memfd
+    attributes
+  KVM: selftests: Update private memory exits test work with per-gmem
+    attributes
+
+ Documentation/virt/kvm/api.rst                |  72 ++-
+ arch/x86/include/asm/kvm_host.h               |   2 +-
+ arch/x86/kvm/Kconfig                          |  15 +-
+ arch/x86/kvm/mmu/mmu.c                        |   4 +-
+ arch/x86/kvm/x86.c                            |  13 +-
+ include/linux/kvm_host.h                      |  44 +-
+ include/trace/events/kvm.h                    |   4 +-
+ include/uapi/linux/kvm.h                      |  17 +
+ mm/filemap.c                                  |   1 +
+ mm/memcontrol.c                               |   2 +
+ tools/testing/selftests/kvm/.gitignore        |   1 +
+ tools/testing/selftests/kvm/Makefile.kvm      |   1 +
+ .../kvm/guest_memfd_conversions_test.c        | 498 ++++++++++++++++++
+ .../testing/selftests/kvm/include/kvm_util.h  | 127 ++++-
+ .../testing/selftests/kvm/include/test_util.h |  29 +-
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 128 +++--
+ tools/testing/selftests/kvm/lib/test_util.c   |   7 -
+ .../selftests/kvm/pre_fault_memory_test.c     |   2 +-
+ .../kvm/x86/private_mem_conversions_test.c    |  55 +-
+ .../kvm/x86/private_mem_conversions_test.py   | 159 ++++++
+ .../kvm/x86/private_mem_kvm_exits_test.c      |  36 +-
+ virt/kvm/Kconfig                              |   4 +-
+ virt/kvm/guest_memfd.c                        | 414 +++++++++++++--
+ virt/kvm/kvm_main.c                           | 104 +++-
+ 24 files changed, 1554 insertions(+), 185 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/guest_memfd_conversions_test.c
+ create mode 100755 tools/testing/selftests/kvm/x86/private_mem_conversions_test.py
+
+--
+2.51.0.858.gf9c4a03a3a-goog
 
