@@ -1,98 +1,146 @@
-Return-Path: <cgroups+bounces-10880-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10881-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8245EBEBCCC
-	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 23:21:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48575BEC01E
+	for <lists+cgroups@lfdr.de>; Sat, 18 Oct 2025 01:33:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4BBA1892795
-	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 21:21:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9C271AA687D
+	for <lists+cgroups@lfdr.de>; Fri, 17 Oct 2025 23:34:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327503112B0;
-	Fri, 17 Oct 2025 21:21:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C52842DC35F;
+	Fri, 17 Oct 2025 23:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cVMhyYb7"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pg4b2UNh"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A50230BB9A
-	for <cgroups@vger.kernel.org>; Fri, 17 Oct 2025 21:21:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F87F2D9494
+	for <cgroups@vger.kernel.org>; Fri, 17 Oct 2025 23:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760736087; cv=none; b=kjBnlwCpYk3t8ScKIj/3eRJP8gfJIrIDARS1Zyu+xFAZE9O8KIEx395TYX+bSRyXROJPSu036NiJFAjY6lJ4nVwFavs2m/FrsDhIThKpXBoTaidbKgbmmHZ014aBVLZdRfHqh4Oxopq2QFRKt1MEMxi95jQrFmptc7/yXUAT2u0=
+	t=1760744024; cv=none; b=rRXr2OfcMi4cKLY3kSHitUZ0wXrmyHdKgzMRWwxQviqZjYstKpo8Whbpw+cLhOBA4rcz9Nfc3ow3sLNG+KLVb3tcnDXm2h0VQCJoe9pJ+4kURpCFjEgp4o/8hZSXZaIP0o4xhS57+MWTE7Gb7H3Pb/iMNOGz5crhvP/pAOiv1UI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760736087; c=relaxed/simple;
-	bh=T4OYMvTdftxqFeyP56L6EtPT4hQ212hpYAZglMGTiNQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A1XlGzVa/4Xs4GeM9xvIoGqPE+1SzQXcU6wjbY9MTV16qnY1JD6Yc2VIGwauqiLKBOntd0SGlyiEAWt0Q5ZS9M9Dyu7bWH8jd/5Oj99KltmuZ60lR7cdHtj+g9riAJuwKafTMqdnlJ73I7iXZXPHNpNyGbvrjp3nmCsYQ5VSizY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cVMhyYb7; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 17 Oct 2025 14:21:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1760736071;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YrDL0c/M+J3ZU+1YrOf5u7VfSDUST8z9dw2cDkrdgtQ=;
-	b=cVMhyYb7hm2NG2noNVsHxfNZoFjbk7DYfg8bEDXc9k/szYHZqW3C+jIj6+SOEfnqf3XzBT
-	fmGJWza+QDJZTFeIMiFJPnSvZ7lXpsVMhijyqBvUKirYWxPZ88gsco4LplzoQdQ8VI+yCG
-	f/k2OAlWePwj/uG0Ps9Rj0RbLohCGOM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Daniel Sedlak <daniel.sedlak@cdn77.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>, 
-	Eric Dumazet <edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
-	Matyas Hurtik <matyas.hurtik@cdn77.com>, Simon Horman <horms@kernel.org>, 
-	Neal Cardwell <ncardwell@google.com>, Wei Wang <weibunny@meta.com>, netdev@vger.kernel.org, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: net: track network throttling due to memcg memory
- pressure
-Message-ID: <cyg7k36ohtg3irtz7qqlyzsgh27ewibbsornq6xe2cjw66zsy7@cjpxycqwgigy>
-References: <20251016013116.3093530-1-shakeel.butt@linux.dev>
- <59163049-5487-45b4-a7aa-521b160fdebd@cdn77.com>
- <pwy7qfx3afnadkjtemftqyrufhhexpw26srxfeilel5uhbywtt@cjvaean56txc>
- <209038ea-e4fa-423c-a488-a86194cd5b04@cdn77.com>
+	s=arc-20240116; t=1760744024; c=relaxed/simple;
+	bh=O4poxL3uV+mMir/NtnbsQIIOJ7Lzn0S5rcHjXTbpNqI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=cBVJocpb0rqUNVqy6azNiz4yZ8vH4M6bEFER4j3XDdOvbc4UMQM8CXw+QT1vEfP5SzEt1fwFuREdqr+4VBaH3Ww2VBshSf52Tt5RKnG1Gx5kIPqUczNMZEQ+Pycy6DPYgGPQuvqBaFi/KTkaiUIGdSxuysbo482oxtwRCpVp8U0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pg4b2UNh; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-336b646768eso2796785a91.1
+        for <cgroups@vger.kernel.org>; Fri, 17 Oct 2025 16:33:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1760744021; x=1761348821; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LwfPpMJqaisEQVUu9wiIDJQK1raYpWFG3P+DdjsMb18=;
+        b=pg4b2UNh+QqsymTP+EPxRvexef0D/l+4uEdhLzkmEL31PzZd9Wt63l51iEW9pkpMDz
+         BYCtvFymOPYMzCD7Wt5Thdv3/8hG7fBz3B47wYQa6Kg2Nt65WTHgNpsy5KvNMk3airB+
+         xrX7YE8U7xqscXaqqmqmPS/ZTiscGSmRETBg6GDOF/vGj+41VY3j59ZR3z7VxVAkrnF5
+         5U08av++QJb9h6A1YL4MLnj+vAiSlZa1j6Nihq4RTopZ/4T2q79lWHdm6xS7IRi4ygeY
+         0Y3G/PULl/W7UlrUuysNEXdJ0wtKApTFgnRnhFWhEv6YbKFOmbUPxKr7YcUQeynjZ+Qt
+         kmsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760744021; x=1761348821;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LwfPpMJqaisEQVUu9wiIDJQK1raYpWFG3P+DdjsMb18=;
+        b=iBrAnc3qx33EOaqCDhnQbklhCVD9WRnloKodLMtLEdDoao8KOZpCQoHumpzTsCElAR
+         InEnY9D6qZTqxgR1yVljXIfdfsjM0uBGlWf8XEjDs9QHPqlG9wZ3asGO3WMRP6BzaZt0
+         71c8Vd6TlSdaXujr3Hjc9gFrOj75MU1gvsGjyh5yEguDziRiq7N98nBchoy/df3MUZMA
+         yOostE9/Tj8AoJIakQRmSYP7puqkdHP+2gPNANs8Di9t/lsClIDbD4eViRNhdJsnRGHe
+         AFHDTRh066XmL2RrmN5ZRTRF+2s608UtYeDIEBMcz50HiISoNxc7FZiqGqOsQun3fGm0
+         Bosw==
+X-Gm-Message-State: AOJu0YxkmtJMELTIidS/j9/NnbZXeplOaUtdl8KkGZFmyG9lgIw2QpJa
+	M4/ivgCLxjv1Eh0/AUawsJY3KMJ9tLQLjAP3vFKuuqK1cZ/OjU3mohBqGfi7TT1zQncrUFkDxua
+	F0M3tLF/zyRDG7v+C4K2cCgChaA+o5bXoG9MJqVp6IGxNm16JSPSMWBU5eGkWZserjow2bscCbo
+	5YEfbTVqhp9bcloomhgodfZzjWweq6DoeQvVLoSfzvctZIHmZI2iIIU7NheqKMAcET
+X-Google-Smtp-Source: AGHT+IEJkm1Y/xUQeOW9OSrw7fOIA8LhUvRSTlkRcfM+UNWeMSJmrld0H6KUJsXbTWNmxyDTB1XySSWqNmUDg7YYhA==
+X-Received: from pjtn11.prod.google.com ([2002:a17:90a:c68b:b0:32b:8eda:24e8])
+ (user=ackerleytng job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:1d88:b0:32b:df0e:9283 with SMTP id 98e67ed59e1d1-33bcf90e86cmr6755629a91.34.1760744020326;
+ Fri, 17 Oct 2025 16:33:40 -0700 (PDT)
+Date: Fri, 17 Oct 2025 16:33:38 -0700
+In-Reply-To: <bb336979b10ee5b9c6b3c3934ec3aff19330b3e7.1760731772.git.ackerleytng@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <209038ea-e4fa-423c-a488-a86194cd5b04@cdn77.com>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+References: <cover.1760731772.git.ackerleytng@google.com> <bb336979b10ee5b9c6b3c3934ec3aff19330b3e7.1760731772.git.ackerleytng@google.com>
+Message-ID: <diqzcy6lp0h9.fsf@google.com>
+Subject: Re: [RFC PATCH v1 26/37] KVM: selftests: guest_memfd: Test that
+ shared/private status is consistent across processes
+From: Ackerley Tng <ackerleytng@google.com>
+To: cgroups@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org
+Cc: akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de, 
+	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org, 
+	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com, 
+	david@redhat.com, dmatlack@google.com, erdemaktas@google.com, 
+	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com, hannes@cmpxchg.org, 
+	hch@infradead.org, hpa@zytor.com, hughd@google.com, ira.weiny@intel.com, 
+	isaku.yamahata@intel.com, jack@suse.cz, james.morse@arm.com, 
+	jarkko@kernel.org, jgg@ziepe.ca, jgowans@amazon.com, jhubbard@nvidia.com, 
+	jroedel@suse.de, jthoughton@google.com, jun.miao@intel.com, 
+	kai.huang@intel.com, keirf@google.com, kent.overstreet@linux.dev, 
+	liam.merwick@oracle.com, maciej.wieczor-retman@intel.com, 
+	mail@maciej.szmigiero.name, maobibo@loongson.cn, 
+	mathieu.desnoyers@efficios.com, maz@kernel.org, mhiramat@kernel.org, 
+	mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com, mingo@redhat.com, 
+	mlevitsk@redhat.com, mpe@ellerman.id.au, muchun.song@linux.dev, 
+	nikunj@amd.com, nsaenz@amazon.es, oliver.upton@linux.dev, palmer@dabbelt.com, 
+	pankaj.gupta@amd.com, paul.walmsley@sifive.com, pbonzini@redhat.com, 
+	peterx@redhat.com, pgonda@google.com, prsampat@amd.com, pvorel@suse.cz, 
+	qperret@google.com, richard.weiyang@gmail.com, rick.p.edgecombe@intel.com, 
+	rientjes@google.com, rostedt@goodmis.org, roypat@amazon.co.uk, 
+	rppt@kernel.org, seanjc@google.com, shakeel.butt@linux.dev, shuah@kernel.org, 
+	steven.price@arm.com, steven.sistare@oracle.com, suzuki.poulose@arm.com, 
+	tabba@google.com, tglx@linutronix.de, thomas.lendacky@amd.com, 
+	vannapurve@google.com, vbabka@suse.cz, viro@zeniv.linux.org.uk, 
+	vkuznets@redhat.com, wei.w.wang@intel.com, will@kernel.org, 
+	willy@infradead.org, wyihan@google.com, xiaoyao.li@intel.com, 
+	yan.y.zhao@intel.com, yilun.xu@intel.com, yuzenghui@huawei.com, 
+	zhiquan1.li@intel.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Oct 17, 2025 at 04:15:18PM +0200, Daniel Sedlak wrote:
-> On 10/16/25 6:02 PM, Shakeel Butt wrote:
-> > On Thu, Oct 16, 2025 at 12:42:19PM +0200, Daniel Sedlak wrote:
-> > > On 10/16/25 3:31 AM, Shakeel Butt wrote:
-> > > I am curious how the future work will unfold. If you need help with future
-> > > developments I can help you, we have hundreds of servers where this
-> > > throttling is happening.
-> > 
-> > I think first thing I would like to know if this patch is a good start
-> > for your use-case of observability and debugging.What else do you need
-> > for sufficient support for your use-case?
-> 
-> Yes, it is a good start, we can now hook this easily into our monitoring
-> system and detect affected servers more easily.
-> 
-> > I imagine that would be
-> > tracepoints to extract more information on the source of the throttling.
-> > If you don't mind, can you take a stab at that?
-> 
-> We have some tracepoints that we have used for debugging this. We would like
-> to upstream them, if that makes sense to you?
+Ackerley Tng <ackerleytng@google.com> writes:
 
-Yes please, send them out.
+> From: Sean Christopherson <seanjc@google.com>
+>
+> Add a test to verify that a guest_memfd's shared/private status is
+> consistent across processes.
+>
+
+Missed copying Sean's note from [1]. Rephrased:
+
+Test that on shared to private conversion, any shared pages previously
+mapped in any process are unmapped from all processes.
+
+[1] https://lore.kernel.org/all/aN7U1ewx8dNOKl1n@google.com/
+
+> The test forks a child process after creating the shared guest_memfd
+> region so that the second process exists alongside the main process for the
+> entire test.
+>
+> The processes then take turns to access memory to check that the
+> shared/private status is consistent across processes.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Co-developed-by: Ackerley Tng <ackerleytng@google.com>
+> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+> ---
+>  .../kvm/guest_memfd_conversions_test.c        | 74 +++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+>
+> 
+> [...snip...]
+> 
 
