@@ -1,459 +1,332 @@
-Return-Path: <cgroups+bounces-10890-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10891-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30CA8BEF16D
-	for <lists+cgroups@lfdr.de>; Mon, 20 Oct 2025 04:32:58 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23050BEF2E8
+	for <lists+cgroups@lfdr.de>; Mon, 20 Oct 2025 05:21:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A0D83E09BF
-	for <lists+cgroups@lfdr.de>; Mon, 20 Oct 2025 02:32:56 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9CD04343C80
+	for <lists+cgroups@lfdr.de>; Mon, 20 Oct 2025 03:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B2C29B8E8;
-	Mon, 20 Oct 2025 02:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB6C29BD90;
+	Mon, 20 Oct 2025 03:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UHvvc4u7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dQzaY5yq"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6A429B20A
-	for <cgroups@vger.kernel.org>; Mon, 20 Oct 2025 02:32:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27BED281504
+	for <cgroups@vger.kernel.org>; Mon, 20 Oct 2025 03:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760927560; cv=none; b=KPA9RNZWZcakTzxBy0F941QbS2PtApk9Imj3SczD2Gn0w1U9jjk5JRugl5l5G/r4zj0XPdcZgCb8CCTLmGNgbCnpDBFmEvVyL03VmK3mWICuv02b1UlscX6EwHxpqtZI7PI3Bze0ynI91d0PtVwvhpPd/NlQ9IjHnD+g4OGmJqs=
+	t=1760930506; cv=none; b=Eo6PCo2D0vP4GMCpkntzCH8blKCc145u495sEuFK8FrezokqV09S3ncJaF/jp/yIm4fTgj8y41nmsdV0eJGw2VODAKwn2jWXAr2/1u9z17QrDS8WIj2WaZfx/J8c3YSMaiCEvESk6xHyiy1wE8zfM+vXPVirUAr/xgEsRi1VOhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760927560; c=relaxed/simple;
-	bh=Qyu5x+rIDV9rj8o4/gyGLVDwjVhwowYPbcL/S9+e/tA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MpVT25YD8wu0DfXylzHUfWpw//AYl+TodgYXp7gnufPBALkOl45e9bT3AAWJisDijn+pjTTCG+TDO/LlA5j7qjp5sVCXdPvvH13gC610GyatsBJ6rmfGQGTk+fJ1LN7WAKJSP3KZo0kg1/ppGRE65sFK1ws0xqjWqIugb9LLtvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UHvvc4u7; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1760930506; c=relaxed/simple;
+	bh=iAHbKOlodD1oxWd5bp7bH8X2p0ded5kYJMwBBjJ9nmU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bOy7uvOsTCGf8xbLlRMBTIFyFoCWXJQIulJTsiDALsUDXCHB29TGpr96NYTq2ywTyxebDFi8Iv04nxXSszI86ZqW5DWWJ2eCFcTva+UdOiDVhT9pjGLCFoa3b1nMjqTyrNY7YejPdX9/xAWl/sVQSbPGu7ZLl6s3Bc37JVMsTs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dQzaY5yq; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760927557;
+	s=mimecast20190719; t=1760930501;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jX5MTENNNovMHiufRZKIYxUV8K61rf34joxQCU3I40c=;
-	b=UHvvc4u7KI/4pZhjXAzqYfhucinWcAO1V2cItgYWrJ9fg3QcXb58CG2s3alIZal9bC8YmM
-	022hz/+FeWYRaDRRiGN/gHEYZo3RZKSGjZ66+q+XqlSxVx0QqY49J5fHeLEfN8ftHUYgWi
-	ptIQTfDr2v6hFraLXAa5dP/hWdIxQew=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=F0JKqsT+pVGb3yUUgF+L5kb6vD8xkT98BOWqh/DjwhU=;
+	b=dQzaY5yqLiWMgyWZs20g/qIe2XXFQl2WgzSg8JkbSkbXxIbOLzDvfAI/2J51fLFNzpd29z
+	OeqZq4gm59iagkZEWzObOmSYfExBusMYUA1/Tq9eSbrbb0yoT7JSX2FkMidovLbBeS/den
+	hYVdq67xt6zyVwkh9B67UWwB7Z6zpDY=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-313-NsIHmlbxOjunld_qRoDm1w-1; Sun,
- 19 Oct 2025 22:32:33 -0400
-X-MC-Unique: NsIHmlbxOjunld_qRoDm1w-1
-X-Mimecast-MFC-AGG-ID: NsIHmlbxOjunld_qRoDm1w_1760927552
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-401-ld6iHKT8PCer6Wz2wzS7-w-1; Sun,
+ 19 Oct 2025 23:21:31 -0400
+X-MC-Unique: ld6iHKT8PCer6Wz2wzS7-w-1
+X-Mimecast-MFC-AGG-ID: ld6iHKT8PCer6Wz2wzS7-w_1760930489
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2958E1956063;
-	Mon, 20 Oct 2025 02:32:32 +0000 (UTC)
-Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.2.16.62])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id DA8BC180057E;
-	Mon, 20 Oct 2025 02:32:29 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chen Ridong <chenridong@huawei.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH 2/2] cgroup/cpuset: Change callback_lock to raw_spinlock_t
-Date: Sun, 19 Oct 2025 22:32:07 -0400
-Message-ID: <20251020023207.177809-3-longman@redhat.com>
-In-Reply-To: <20251020023207.177809-1-longman@redhat.com>
-References: <20251020023207.177809-1-longman@redhat.com>
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B159F18002C9;
+	Mon, 20 Oct 2025 03:21:27 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.104])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 047E3300019F;
+	Mon, 20 Oct 2025 03:21:24 +0000 (UTC)
+Date: Mon, 20 Oct 2025 11:21:22 +0800
+From: Pingfan Liu <piliu@redhat.com>
+To: Waiman Long <llong@redhat.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Pierre Gondois <pierre.gondois@arm.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [PATCHv3] sched/deadline: Walk up cpuset hierarchy to decide
+ root domain when hot-unplug
+Message-ID: <aPWqsui-7HCUB5g-@fedora>
+References: <20251017122636.17671-1-piliu@redhat.com>
+ <1b510c7e-6d48-4f3c-b3cb-8a7a0834784c@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+In-Reply-To: <1b510c7e-6d48-4f3c-b3cb-8a7a0834784c@redhat.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-The callback_lock is acquired either to read a stable set of cpu
-or node masks or to modify those masks when cpuset_mutex is also
-acquired. Sometime, it may need to go up the cgroup hierarchy while
-holding the lock to find the right set of masks to use. Assuming that
-the depth of the cgroup hierarch is finite and typically small, the
-lock hold time should be limited.
+Hi Waiman,
 
-As a result, it can be converted to raw_spinlock_t to reduce overhead
-in a PREEMPT_RT setting without introducing excessive latency.
+I appreciate your time in reviewing my patch. Please see the comment
+belows.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/cgroup/cpuset.c | 94 +++++++++++++++++++++---------------------
- 1 file changed, 47 insertions(+), 47 deletions(-)
+On Fri, Oct 17, 2025 at 01:52:45PM -0400, Waiman Long wrote:
+> On 10/17/25 8:26 AM, Pingfan Liu wrote:
+> > When testing kexec-reboot on a 144 cpus machine with
+> > isolcpus=managed_irq,domain,1-71,73-143 in kernel command line, I
+> > encounter the following bug:
+> > 
+> > [   97.114759] psci: CPU142 killed (polled 0 ms)
+> > [   97.333236] Failed to offline CPU143 - error=-16
+> > [   97.333246] ------------[ cut here ]------------
+> > [   97.342682] kernel BUG at kernel/cpu.c:1569!
+> > [   97.347049] Internal error: Oops - BUG: 00000000f2000800 [#1] SMP
+> > [   97.353281] Modules linked in: rfkill sunrpc dax_hmem cxl_acpi cxl_port cxl_core einj vfat fat arm_smmuv3_pmu nvidia_cspmu arm_spe_pmu coresight_trbe arm_cspmu_module rndis_host ipmi_ssif cdc_ether i2c_smbus spi_nor usbnet ast coresight_tmc mii ixgbe i2c_algo_bit mdio mtd coresight_funnel coresight_stm stm_core coresight_etm4x coresight cppc_cpufreq loop fuse nfnetlink xfs crct10dif_ce ghash_ce sha2_ce sha256_arm64 sha1_ce sbsa_gwdt nvme nvme_core nvme_auth i2c_tegra acpi_power_meter acpi_ipmi ipmi_devintf ipmi_msghandler dm_mirror dm_region_hash dm_log dm_mod
+> > [   97.404119] CPU: 0 UID: 0 PID: 2583 Comm: kexec Kdump: loaded Not tainted 6.12.0-41.el10.aarch64 #1
+> > [   97.413371] Hardware name: Supermicro MBD-G1SMH/G1SMH, BIOS 2.0 07/12/2024
+> > [   97.420400] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
+> > [   97.427518] pc : smp_shutdown_nonboot_cpus+0x104/0x128
+> > [   97.432778] lr : smp_shutdown_nonboot_cpus+0x11c/0x128
+> > [   97.438028] sp : ffff800097c6b9a0
+> > [   97.441411] x29: ffff800097c6b9a0 x28: ffff0000a099d800 x27: 0000000000000000
+> > [   97.448708] x26: 0000000000000000 x25: 0000000000000000 x24: ffffb94aaaa8f218
+> > [   97.456004] x23: ffffb94aaaabaae0 x22: ffffb94aaaa8f018 x21: 0000000000000000
+> > [   97.463301] x20: ffffb94aaaa8fc10 x19: 000000000000008f x18: 00000000fffffffe
+> > [   97.470598] x17: 0000000000000000 x16: ffffb94aa958fcd0 x15: ffff103acfca0b64
+> > [   97.477894] x14: ffff800097c6b520 x13: 36312d3d726f7272 x12: ffff103acfc6ffa8
+> > [   97.485191] x11: ffff103acf6f0000 x10: ffff103bc085c400 x9 : ffffb94aa88a0eb0
+> > [   97.492488] x8 : 0000000000000001 x7 : 000000000017ffe8 x6 : c0000000fffeffff
+> > [   97.499784] x5 : ffff003bdf62b408 x4 : 0000000000000000 x3 : 0000000000000000
+> > [   97.507081] x2 : 0000000000000000 x1 : ffff0000a099d800 x0 : 0000000000000002
+> > [   97.514379] Call trace:
+> > [   97.516874]  smp_shutdown_nonboot_cpus+0x104/0x128
+> > [   97.521769]  machine_shutdown+0x20/0x38
+> > [   97.525693]  kernel_kexec+0xc4/0xf0
+> > [   97.529260]  __do_sys_reboot+0x24c/0x278
+> > [   97.533272]  __arm64_sys_reboot+0x2c/0x40
+> > [   97.537370]  invoke_syscall.constprop.0+0x74/0xd0
+> > [   97.542179]  do_el0_svc+0xb0/0xe8
+> > [   97.545562]  el0_svc+0x44/0x1d0
+> > [   97.548772]  el0t_64_sync_handler+0x120/0x130
+> > [   97.553222]  el0t_64_sync+0x1a4/0x1a8
+> > [   97.556963] Code: a94363f7 a8c47bfd d50323bf d65f03c0 (d4210000)
+> > [   97.563191] ---[ end trace 0000000000000000 ]---
+> > [   97.595854] Kernel panic - not syncing: Oops - BUG: Fatal exception
+> > [   97.602275] Kernel Offset: 0x394a28600000 from 0xffff800080000000
+> > [   97.608502] PHYS_OFFSET: 0x80000000
+> > [   97.612062] CPU features: 0x10,0000000d,002a6928,5667fea7
+> > [   97.617580] Memory Limit: none
+> > [   97.648626] ---[ end Kernel panic - not syncing: Oops - BUG: Fatal exception ]
+> > 
+> > Tracking down this issue, I found that dl_bw_deactivate() returned
+> > -EBUSY, which caused sched_cpu_deactivate() to fail on the last CPU.
+> > When a CPU is inactive, its rd is set to def_root_domain. For an
+> > blocked-state deadline task (in this case, "cppc_fie"), it was not
+> > migrated to CPU0, and its task_rq() information is stale. As a result,
+> > its bandwidth is wrongly accounted into def_root_domain during domain
+> > rebuild.
+> 
+> First of all, in an emergency situation when we need to shutdown the kernel,
+> does it really matter if dl_bw_activate() returns -EBUSY? Should we just go
+> ahead and ignore this dl_bw generated error?
+> 
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 7aef59ea9627..026eb1a17ad2 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -285,16 +285,16 @@ void cpuset_full_unlock(void)
- 	cpus_read_unlock();
- }
- 
--static DEFINE_SPINLOCK(callback_lock);
-+static DEFINE_RAW_SPINLOCK(callback_lock);
- 
- void cpuset_callback_lock_irq(void)
- {
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- }
- 
- void cpuset_callback_unlock_irq(void)
- {
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- }
- 
- static struct workqueue_struct *cpuset_migrate_mm_wq;
-@@ -1552,11 +1552,11 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 	    cpumask_subset(top_cpuset.effective_cpus, tmp->new_cpus))
- 		return PERR_INVCPUS;
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	isolcpus_updated = partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
- 	list_add(&cs->remote_sibling, &remote_children);
- 	cpumask_copy(cs->effective_xcpus, tmp->new_cpus);
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 	update_unbound_workqueue_cpumask(isolcpus_updated);
- 	cpuset_force_rebuild();
- 	cs->prs_err = 0;
-@@ -1585,7 +1585,7 @@ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
- 	WARN_ON_ONCE(!is_remote_partition(cs));
- 	WARN_ON_ONCE(!cpumask_subset(cs->effective_xcpus, subpartitions_cpus));
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	list_del_init(&cs->remote_sibling);
- 	isolcpus_updated = partition_xcpus_del(cs->partition_root_state,
- 					       NULL, cs->effective_xcpus);
-@@ -1597,7 +1597,7 @@ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
- 	/* effective_xcpus may need to be changed */
- 	compute_excpus(cs, cs->effective_xcpus);
- 	reset_partition_data(cs);
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 	update_unbound_workqueue_cpumask(isolcpus_updated);
- 	cpuset_force_rebuild();
- 
-@@ -1654,7 +1654,7 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
- 			goto invalidate;
- 	}
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	if (adding)
- 		isolcpus_updated += partition_xcpus_add(prs, NULL, tmp->addmask);
- 	if (deleting)
-@@ -1666,7 +1666,7 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
- 	cpumask_copy(cs->effective_xcpus, excpus);
- 	if (xcpus)
- 		cpumask_copy(cs->exclusive_cpus, xcpus);
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 	update_unbound_workqueue_cpumask(isolcpus_updated);
- 	if (adding || deleting)
- 		cpuset_force_rebuild();
-@@ -1995,7 +1995,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 	 * Newly added CPUs will be removed from effective_cpus and
- 	 * newly deleted ones will be added back to effective_cpus.
- 	 */
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	if (old_prs != new_prs)
- 		cs->partition_root_state = new_prs;
- 
-@@ -2010,7 +2010,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 		isolcpus_updated += partition_xcpus_add(new_prs, parent,
- 							tmp->delmask);
- 
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 	update_unbound_workqueue_cpumask(isolcpus_updated);
- 
- 	if ((old_prs != new_prs) && (cmd == partcmd_update))
-@@ -2091,9 +2091,9 @@ static void compute_partition_effective_cpumask(struct cpuset *cs,
- 			/*
- 			 * Invalidate child partition
- 			 */
--			spin_lock_irq(&callback_lock);
-+			raw_spin_lock_irq(&callback_lock);
- 			make_partition_invalid(child);
--			spin_unlock_irq(&callback_lock);
-+			raw_spin_unlock_irq(&callback_lock);
- 			notify_partition_change(child, old_prs);
- 			continue;
- 		}
-@@ -2239,7 +2239,7 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp,
- 			new_prs = cp->partition_root_state;
- 		}
- 
--		spin_lock_irq(&callback_lock);
-+		raw_spin_lock_irq(&callback_lock);
- 		cpumask_copy(cp->effective_cpus, tmp->new_cpus);
- 		cp->partition_root_state = new_prs;
- 		if (!cpumask_empty(cp->exclusive_cpus) && (cp != cs))
-@@ -2254,7 +2254,7 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp,
- 				    cp->cpus_allowed, parent->effective_xcpus);
- 		else if (new_prs < 0)
- 			reset_partition_data(cp);
--		spin_unlock_irq(&callback_lock);
-+		raw_spin_unlock_irq(&callback_lock);
- 
- 		notify_partition_change(cp, old_prs);
- 
-@@ -2507,12 +2507,12 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
- 
- 	partition_cpus_change(cs, trialcs, &tmp);
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	cpumask_copy(cs->cpus_allowed, trialcs->cpus_allowed);
- 	cpumask_copy(cs->effective_xcpus, trialcs->effective_xcpus);
- 	if ((old_prs > 0) && !is_partition_valid(cs))
- 		reset_partition_data(cs);
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 
- 	/* effective_cpus/effective_xcpus will be updated here */
- 	update_cpumasks_hier(cs, &tmp, force);
-@@ -2572,12 +2572,12 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
- 	trialcs->prs_err = PERR_NONE;
- 	partition_cpus_change(cs, trialcs, &tmp);
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	cpumask_copy(cs->exclusive_cpus, trialcs->exclusive_cpus);
- 	cpumask_copy(cs->effective_xcpus, trialcs->effective_xcpus);
- 	if ((old_prs > 0) && !is_partition_valid(cs))
- 		reset_partition_data(cs);
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 
- 	/*
- 	 * Call update_cpumasks_hier() to update effective_cpus/effective_xcpus
-@@ -2792,9 +2792,9 @@ static void update_nodemasks_hier(struct cpuset *cs, nodemask_t *new_mems)
- 			continue;
- 		rcu_read_unlock();
- 
--		spin_lock_irq(&callback_lock);
-+		raw_spin_lock_irq(&callback_lock);
- 		cp->effective_mems = *new_mems;
--		spin_unlock_irq(&callback_lock);
-+		raw_spin_unlock_irq(&callback_lock);
- 
- 		WARN_ON(!is_in_v2_mode() &&
- 			!nodes_equal(cp->mems_allowed, cp->effective_mems));
-@@ -2849,9 +2849,9 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
- 
- 	check_insane_mems_config(&trialcs->mems_allowed);
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	cs->mems_allowed = trialcs->mems_allowed;
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 
- 	/* use trialcs->mems_allowed as a temp variable */
- 	update_nodemasks_hier(cs, &trialcs->mems_allowed);
-@@ -2906,9 +2906,9 @@ int cpuset_update_flag(cpuset_flagbits_t bit, struct cpuset *cs,
- 	spread_flag_changed = ((is_spread_slab(cs) != is_spread_slab(trialcs))
- 			|| (is_spread_page(cs) != is_spread_page(trialcs)));
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	cs->flags = trialcs->flags;
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 
- 	if (!cpumask_empty(trialcs->cpus_allowed) && balance_flag_changed) {
- 		if (cpuset_v2())
-@@ -3021,14 +3021,14 @@ static int update_prstate(struct cpuset *cs, int new_prs)
- 		update_partition_exclusive_flag(cs, new_prs);
- 	}
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	cs->partition_root_state = new_prs;
- 	WRITE_ONCE(cs->prs_err, err);
- 	if (!is_partition_valid(cs))
- 		reset_partition_data(cs);
- 	else if (isolcpus_updated)
- 		isolated_cpus_update(old_prs, new_prs, cs->effective_xcpus);
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 	update_unbound_workqueue_cpumask(isolcpus_updated);
- 
- 	/* Force update if switching back to member & update effective_xcpus */
-@@ -3342,7 +3342,7 @@ int cpuset_common_seq_show(struct seq_file *sf, void *v)
- 	cpuset_filetype_t type = seq_cft(sf)->private;
- 	int ret = 0;
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 
- 	switch (type) {
- 	case FILE_CPULIST:
-@@ -3373,7 +3373,7 @@ int cpuset_common_seq_show(struct seq_file *sf, void *v)
- 		ret = -EINVAL;
- 	}
- 
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 	return ret;
- }
- 
-@@ -3567,12 +3567,12 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- 
- 	cpuset_inc();
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	if (is_in_v2_mode()) {
- 		cpumask_copy(cs->effective_cpus, parent->effective_cpus);
- 		cs->effective_mems = parent->effective_mems;
- 	}
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 
- 	if (!test_bit(CGRP_CPUSET_CLONE_CHILDREN, &css->cgroup->flags))
- 		goto out_unlock;
-@@ -3599,12 +3599,12 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- 	}
- 	rcu_read_unlock();
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	cs->mems_allowed = parent->mems_allowed;
- 	cs->effective_mems = parent->mems_allowed;
- 	cpumask_copy(cs->cpus_allowed, parent->cpus_allowed);
- 	cpumask_copy(cs->effective_cpus, parent->cpus_allowed);
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- out_unlock:
- 	cpuset_full_unlock();
- 	return 0;
-@@ -3655,7 +3655,7 @@ static void cpuset_css_free(struct cgroup_subsys_state *css)
- static void cpuset_bind(struct cgroup_subsys_state *root_css)
- {
- 	mutex_lock(&cpuset_mutex);
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 
- 	if (is_in_v2_mode()) {
- 		cpumask_copy(top_cpuset.cpus_allowed, cpu_possible_mask);
-@@ -3667,7 +3667,7 @@ static void cpuset_bind(struct cgroup_subsys_state *root_css)
- 		top_cpuset.mems_allowed = top_cpuset.effective_mems;
- 	}
- 
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 	mutex_unlock(&cpuset_mutex);
- }
- 
-@@ -3831,10 +3831,10 @@ hotplug_update_tasks(struct cpuset *cs,
- 	if (nodes_empty(*new_mems))
- 		*new_mems = parent_cs(cs)->effective_mems;
- 
--	spin_lock_irq(&callback_lock);
-+	raw_spin_lock_irq(&callback_lock);
- 	cpumask_copy(cs->effective_cpus, new_cpus);
- 	cs->effective_mems = *new_mems;
--	spin_unlock_irq(&callback_lock);
-+	raw_spin_unlock_irq(&callback_lock);
- 
- 	if (cpus_updated)
- 		cpuset_update_tasks_cpumask(cs, new_cpus);
-@@ -3996,7 +3996,7 @@ static void cpuset_handle_hotplug(void)
- 	/* For v1, synchronize cpus_allowed to cpu_active_mask */
- 	if (cpus_updated) {
- 		cpuset_force_rebuild();
--		spin_lock_irq(&callback_lock);
-+		raw_spin_lock_irq(&callback_lock);
- 		if (!on_dfl)
- 			cpumask_copy(top_cpuset.cpus_allowed, &new_cpus);
- 		/*
-@@ -4014,17 +4014,17 @@ static void cpuset_handle_hotplug(void)
- 			}
- 		}
- 		cpumask_copy(top_cpuset.effective_cpus, &new_cpus);
--		spin_unlock_irq(&callback_lock);
-+		raw_spin_unlock_irq(&callback_lock);
- 		/* we don't mess with cpumasks of tasks in top_cpuset */
- 	}
- 
- 	/* synchronize mems_allowed to N_MEMORY */
- 	if (mems_updated) {
--		spin_lock_irq(&callback_lock);
-+		raw_spin_lock_irq(&callback_lock);
- 		if (!on_dfl)
- 			top_cpuset.mems_allowed = new_mems;
- 		top_cpuset.effective_mems = new_mems;
--		spin_unlock_irq(&callback_lock);
-+		raw_spin_unlock_irq(&callback_lock);
- 		cpuset_update_tasks_nodemask(&top_cpuset);
- 	}
- 
-@@ -4117,7 +4117,7 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
- 	unsigned long flags;
- 	struct cpuset *cs;
- 
--	spin_lock_irqsave(&callback_lock, flags);
-+	raw_spin_lock_irqsave(&callback_lock, flags);
- 
- 	cs = task_cs(tsk);
- 	if (cs != &top_cpuset)
-@@ -4139,7 +4139,7 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
- 			cpumask_copy(pmask, possible_mask);
- 	}
- 
--	spin_unlock_irqrestore(&callback_lock, flags);
-+	raw_spin_unlock_irqrestore(&callback_lock, flags);
- }
- 
- /**
-@@ -4210,9 +4210,9 @@ nodemask_t cpuset_mems_allowed(struct task_struct *tsk)
- 	nodemask_t mask;
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&callback_lock, flags);
-+	raw_spin_lock_irqsave(&callback_lock, flags);
- 	guarantee_online_mems(task_cs(tsk), &mask);
--	spin_unlock_irqrestore(&callback_lock, flags);
-+	raw_spin_unlock_irqrestore(&callback_lock, flags);
- 
- 	return mask;
- }
-@@ -4304,12 +4304,12 @@ bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
- 		return true;
- 
- 	/* Not hardwall and node outside mems_allowed: scan up cpusets */
--	spin_lock_irqsave(&callback_lock, flags);
-+	raw_spin_lock_irqsave(&callback_lock, flags);
- 
- 	cs = nearest_hardwall_ancestor(task_cs(current));
- 	allowed = node_isset(node, cs->mems_allowed);
- 
--	spin_unlock_irqrestore(&callback_lock, flags);
-+	raw_spin_unlock_irqrestore(&callback_lock, flags);
- 	return allowed;
- }
- 
--- 
-2.51.0
+Ah, sorry - the previous test example was misleading. Let me restate it
+as an equivalent operation on a system with 144 CPUs:
+  sudo bash -c 'taskset -cp 0 $$ && for i in {1..143}; do echo 0 > /sys/devices/system/cpu/cpu$i/online 2>/dev/null; done'
+
+That extracts the hot-removal part, which is affected by the bug, from
+the kexec reboot process. It expects that only cpu0 is online, but in
+practice, the cpu143 refused to be offline due to this bug.
+
+As for the ignorance of dl_bw in the kexec process, I have a dedicated
+draft for it. Later I will send it out and cc you.
+
+> 
+> > The key point is that root_domain is only tracked through active rq->rd.
+> > To avoid using a global data structure to track all root_domains in the
+> > system, we need a way to locate an active CPU within the corresponding
+> > root_domain.
+> > 
+> > The following rules stand for deadline sub-system and help locating the
+> > active cpu
+> >    -1.any cpu belongs to a unique root domain at a given time
+> >    -2.DL bandwidth checker ensures that the root domain has active cpus.
+> > 
+> > Now, let's examine the blocked-state task P.
+> > If P is attached to a cpuset that is a partition root, it is
+> > straightforward to find an active CPU.
+> > If P is attached to a cpuset that has changed from 'root' to 'member',
+> > the active CPUs are grouped into the parent root domain. Naturally, the
+> > CPUs' capacity and reserved DL bandwidth are taken into account in the
+> > ancestor root domain. (In practice, it may be unsafe to attach P to an
+> > arbitrary root domain, since that domain may lack sufficient DL
+> > bandwidth for P.) Again, it is straightforward to find an active CPU in
+> > the ancestor root domain.
+> > 
+> > This patch groups CPUs into isolated and housekeeping sets. For the
+> > housekeeping group, it walks up the cpuset hierarchy to find active CPUs
+> > in P's root domain and retrieves the valid rd from cpu_rq(cpu)->rd.
+> > 
+> > Signed-off-by: Pingfan Liu <piliu@redhat.com>
+> > Cc: Waiman Long <longman@redhat.com>
+> > Cc: Tejun Heo <tj@kernel.org>
+> > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > Cc: "Michal Koutný" <mkoutny@suse.com>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > Cc: Pierre Gondois <pierre.gondois@arm.com>
+> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Ben Segall <bsegall@google.com>
+> > Cc: Mel Gorman <mgorman@suse.de>
+> > Cc: Valentin Schneider <vschneid@redhat.com>
+> > To: cgroups@vger.kernel.org
+> > To: linux-kernel@vger.kernel.org
+> > ---
+> >   include/linux/cpuset.h  | 18 ++++++++++++++++++
+> >   kernel/cgroup/cpuset.c  | 27 +++++++++++++++++++++++++++
+> >   kernel/sched/deadline.c | 30 ++++++++++++++++++++++++------
+> >   3 files changed, 69 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> > index 2ddb256187b51..7c00ebcdf85d9 100644
+> > --- a/include/linux/cpuset.h
+> > +++ b/include/linux/cpuset.h
+> > @@ -130,6 +130,7 @@ extern void rebuild_sched_domains(void);
+> >   extern void cpuset_print_current_mems_allowed(void);
+> >   extern void cpuset_reset_sched_domains(void);
+> > +extern void task_get_rd_effective_cpus(struct task_struct *p, struct cpumask *cpus);
+> >   /*
+> >    * read_mems_allowed_begin is required when making decisions involving
+> > @@ -276,6 +277,23 @@ static inline void cpuset_reset_sched_domains(void)
+> >   	partition_sched_domains(1, NULL, NULL);
+> >   }
+> > +static inline void task_get_rd_effective_cpus(struct task_struct *p,
+> > +		struct cpumask *cpus)
+> > +{
+> > +	const struct cpumask *hk_msk;
+> > +	struct cpumask msk;
+> > +
+> > +	hk_msk = housekeeping_cpumask(HK_TYPE_DOMAIN);
+> > +	if (housekeeping_enabled(HK_TYPE_DOMAIN)) {
+> > +		if (!cpumask_and(&msk, p->cpus_ptr, hk_msk)) {
+> > +			/* isolated cpus belong to a root domain */
+> > +			cpumask_andnot(cpus, cpu_active_mask, hk_msk);
+> > +			return;
+> > +		}
+> > +	}
+> > +	cpumask_and(cpus, cpu_active_mask, hk_msk);
+> > +}
+> 
+> The size of struct cpumask can be large depending on the extra value of
+> NR_CPUS. For a x86-64 RHEL kernel, it is over 1 kbytes. We can actually
+> eliminate the use of a struct cpumask variable by replacing cpumask_and()
+> with cpumask_intersects().
+> 
+
+OK.
+
+> You said that isolated CPUs belong to a root domain. In the case of CPUs
+> within an isolated partition, the CPUs are in a null root domain which I
+> don't know if it is problematic or not.
+> 
+
+If I understand correctly, during CPU hot-removal, the following rules apply:
+
+-1.Check whether the total dl_bw of all DL tasks in the affected root
+domain can be satisfied by the remaining CPUs in the same root domain.
+If it can, the hot-removal proceeds; otherwise, the hot-removal is rejected.
+
+-2.During the CPU hot-removal process, migratable tasks on the dying CPU
+are forcibly migrated to other CPUs in the same root domain, regardless
+of their CPU affinity.
+
+My patch does not violate these rules.
+
+> We usually prefix an externally visible function from cpuset with the cpuset
+> prefix to avoid namespace collision. You should consider doing that for this
+> function.
+> 
+
+OK.
+
+> Also I am still not very clear about the exact purpose of this function. You
+> should probably add comment about this.
+> 
+
+> > +
+> >   static inline void cpuset_print_current_mems_allowed(void)
+> >   {
+> >   }
+> > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> > index 27adb04df675d..f7b18892ed093 100644
+> > --- a/kernel/cgroup/cpuset.c
+> > +++ b/kernel/cgroup/cpuset.c
+> > @@ -1102,6 +1102,33 @@ void cpuset_reset_sched_domains(void)
+> >   	mutex_unlock(&cpuset_mutex);
+> >   }
+> > +/* caller hold RCU read lock */
+> > +void task_get_rd_effective_cpus(struct task_struct *p, struct cpumask *cpus)
+> > +{
+> > +	const struct cpumask *hk_msk;
+> > +	struct cpumask msk;
+> > +	struct cpuset *cs;
+> > +
+> > +	hk_msk = housekeeping_cpumask(HK_TYPE_DOMAIN);
+> > +	if (housekeeping_enabled(HK_TYPE_DOMAIN)) {
+> > +		if (!cpumask_and(&msk, p->cpus_ptr, hk_msk)) {
+> > +			/* isolated cpus belong to a root domain */
+> > +			cpumask_andnot(cpus, cpu_active_mask, hk_msk);
+> > +			return;
+> > +		}
+> > +	}
+> > +	/* In HK_TYPE_DOMAIN, cpuset can be applied */
+> > +	cs = task_cs(p);
+> > +	while (cs != &top_cpuset) {
+> > +		if (is_sched_load_balance(cs))
+> > +			break;
+> > +		cs = parent_cs(cs);
+> > +	}
+> > +
+> > +	/* For top_cpuset, its effective_cpus does not exclude isolated cpu */
+> > +	cpumask_and(cpus, cs->effective_cpus, hk_msk);
+> > +}
+> > +
+> 
+> Similar problems with the non-CONFIG_CPUSETS version in cpuset.h.
+> 
+
+OK, I will fix it.
+
+Thanks,
+
+Pingfan
 
 
