@@ -1,242 +1,182 @@
-Return-Path: <cgroups+bounces-10960-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10965-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id F10D8BF64D9
-	for <lists+cgroups@lfdr.de>; Tue, 21 Oct 2025 14:05:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930BDBF6D58
+	for <lists+cgroups@lfdr.de>; Tue, 21 Oct 2025 15:40:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A97275049F4
-	for <lists+cgroups@lfdr.de>; Tue, 21 Oct 2025 12:03:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 034A41885276
+	for <lists+cgroups@lfdr.de>; Tue, 21 Oct 2025 13:39:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398CA3570AF;
-	Tue, 21 Oct 2025 11:47:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F1C33509E;
+	Tue, 21 Oct 2025 13:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UnllnALm"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SG2zq2MF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6CB3314C0;
-	Tue, 21 Oct 2025 11:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A86B8333430
+	for <cgroups@vger.kernel.org>; Tue, 21 Oct 2025 13:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761047273; cv=none; b=J47xOV0+1IGCnVD2kWGw6S7wMPF0KWVpzOEQYuOXUm0zgZHXyeDXg+0No98cLgCW0LFo8K+zD+beEyfjza8kv3DO01GgOxX4hiqfR0jAeWG2HpVuU1isXdPE2IJZCIr2ioNB62JV8em7QX7JlqUcCZbtwlknMQ7zHTqDUxxhMqc=
+	t=1761053960; cv=none; b=rW9PqKbAiW3lKsFDWGz/JF60BXcbsxo6R3cqyu5MPLzLVvgGbVd8o5NKOrSbWG+Qg8ZP6oCA7A05RyavkHI8eQisgeW3ZbYrurC9b/nrcoxq2WCnEwl29oZbs2hqaDDE7xXam8vD/QLXDWxusxY5xAi3tdY7QLVVlEcHVlFc9ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761047273; c=relaxed/simple;
-	bh=qOQpMwb8a6Ty7XQD33x8dOA998CFgN+vzt4Bsk/lfA4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Y+j3wWpIBeAI9QvXaKwzB651qDc8MdwUrsTfXJCycSRzTUm6D6ZHixEbqBAYXqVhaoi+g8OiWFprQkvbFwI1DbXbSGUdbPRnptVw/Orzbeu9S9CUm7t37OM1QqquiVgLoaiTDZ3d/EQ0Pn933MQchLIM5AWS499QhVRjMFtEA+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UnllnALm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A35CC4CEF1;
-	Tue, 21 Oct 2025 11:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761047272;
-	bh=qOQpMwb8a6Ty7XQD33x8dOA998CFgN+vzt4Bsk/lfA4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=UnllnALmRxvfKcaWrXUqHNeJcbwIjlN5jFQVsQ8XdMqXlAu5/BKDB6VPHHf9O+IWn
-	 NwPlrwboArjmrr6tZm4Ba4LFWj3u9ZP3rQLtXLToL9L5RL1nme1f5qsGaEcCBS1N15
-	 nXGw+c04Vos0ywnHGpPOeHhWsCXFoWFrHXazxYLma/wH/92Skh9oGOU/jjx4UVUukX
-	 CZg1g980uP0WLmjdt/uAnX2woKdI/0ED+ScRpWG8pFKGfC9k7HKAmHbgLtMvoWHCmC
-	 WsW5YUHpHxvksQbSJYdtFPZojCYyYyeg535H0TvdohGp5PcREXYbyEcDKNmd5Wh8NN
-	 h6WLrPtN6lRSw==
-From: Christian Brauner <brauner@kernel.org>
-Date: Tue, 21 Oct 2025 13:43:52 +0200
-Subject: [PATCH RFC DRAFT 46/50] selftests/namespaces: third listns()
- permission test
+	s=arc-20240116; t=1761053960; c=relaxed/simple;
+	bh=A2vdq3fjCx6AIl2BDZIfxhOwGIe9UlrZ+Owl/fdNpyU=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=XOXs/jn16SCXQCtDhwjqet+up+k95nlFqbuAiX8Y2fFvRu+DG8+OqVdu/SlFUzUMR79R9MYl/2+K1VwWKs+m6VF05j/oSboX5UJ43HVpntvzlkGFFWS+ES9THt+f71P6XtUgGmehMMYIlv0jZCBite4YGdtT3xD4GBMnc7Xkv70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SG2zq2MF; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1761053957;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j3KJELQ+1zBaV6zsfBpuZG8t84lL3xkiKid35BQ9x2E=;
+	b=SG2zq2MFO/c/UsWw/U6WiCzx7HXsmA0d4S7xKDNHiQmg2V9yXIcOfAUVs2GaS96v/vBN6B
+	sWr2CPJiLCfBWFASyiQDpYEPYmia9xSvo/BnqISmqeFzk6AJANazx0qpYOCQ8ZBYqGgIxv
+	u2jLRCvjvbYJs0lN6iBjr2ppYNmfY78=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-21-6Oecs9c6OrW1uv5pFu_-Rw-1; Tue, 21 Oct 2025 09:39:16 -0400
+X-MC-Unique: 6Oecs9c6OrW1uv5pFu_-Rw-1
+X-Mimecast-MFC-AGG-ID: 6Oecs9c6OrW1uv5pFu_-Rw_1761053956
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-78e45d71f05so175401206d6.2
+        for <cgroups@vger.kernel.org>; Tue, 21 Oct 2025 06:39:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761053956; x=1761658756;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j3KJELQ+1zBaV6zsfBpuZG8t84lL3xkiKid35BQ9x2E=;
+        b=di8234tAUewxL5JPAz81tzZGhCDtJvr8+Z+aDoCJ5Yt3H0LhoB9rQAssHGiiyeMWx0
+         6PcP6Zr2WPehcxYyTtQ60/Tg0S98d4xfZKRJLGcN0v/OsFFd5+KFc9NHjmARpNryO2Hy
+         j0oqSkNjBwi1bSops6UMifD2UDcXmoDUIDnVgqxJyMESf927Ase4D99U6BtYnsA0CnBv
+         pEUDv9czBHzdyviZjo38v6lIIh6GmsKf1NYSsS7z+xIaAn+lXEV7OiH3zeLfmozQL9PI
+         mtwDLNza1wGGalVL2OpTQheZImmr1NeJ7hJDkLo/ZASlz9r/MyvXimfNvC+cUOldzSNj
+         I+BQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUbi3V+OnHeRDpOSni55Y4nL7vkz5YwR+kgp+1d9qr22cAlrj54RUqM5HxHkr3M3+pd/Z05ZZ+@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz8hWw+9K22SVxSB4FRBakz+oQmqtsX0o+21jMduPzcdl8fVg5E
+	zo0AZ6esDrdpcNfnV9RMnGog0xIEqvw6HZ6OOiezbO4yd4L5FCOBLDB9tV8pJ3DeXdOxkRz5IBA
+	PzPEckXnCAi2s4bk7xTdNg5x30pTWcv2MusKujYTpZnyHBr9aM+UdEoK5XrE=
+X-Gm-Gg: ASbGncunpsTXTxxOhZ/MlM2QaDQWmgzqRURv8d6iB1t+CWkBg5GphZ2zu52wfy/+sOW
+	88JWz8wCbOLJNbDLDTn7pIkjIqXy87sDGzqQGENY8G516hbk8Ohu18JaFNL+A+Na4aD/P6ThO9s
+	FZxGKliea7D2YBeOPkDcdF/veHe5ubSZVeCMwCbV3hPcSXTBlV73PG0hzEJghgI8YmpjZW7rx6M
+	BkKmZr6/t+eLImwKTGPKfNlllOo58yYLeAwY8U1+6FMzq/M0+eU36P+LgaG/zxI1e7DUlM4Xg9L
+	//B71fNnYx9aE2CImj/WVhycIjm7gbfRbJ7Js7ysfpayzh4xFCwNd3RaIGA7Cd8+7vYvDaBIYtC
+	dXZsGjT2K9gLGK5VpP2y1hWZFqtoc2Vm/M8wnreu5MmeuUQ==
+X-Received: by 2002:ac8:7d8a:0:b0:4e8:a6c3:4322 with SMTP id d75a77b69052e-4e8a6c343dbmr147838451cf.68.1761053955824;
+        Tue, 21 Oct 2025 06:39:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFz7AKLLzN2UNU/guKrJvkpbFnggCrMTTSh4yWUy38aXqbwBFVcdBvCw2i1DLngSoeAJ3ah8Q==
+X-Received: by 2002:ac8:7d8a:0:b0:4e8:a6c3:4322 with SMTP id d75a77b69052e-4e8a6c343dbmr147838031cf.68.1761053955419;
+        Tue, 21 Oct 2025 06:39:15 -0700 (PDT)
+Received: from ?IPV6:2601:600:947f:f020:85dc:d2b2:c5ee:e3c4? ([2601:600:947f:f020:85dc:d2b2:c5ee:e3c4])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4e8aaf3370fsm74330521cf.3.2025.10.21.06.39.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Oct 2025 06:39:14 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <ea2d3e0e-b1ee-4b58-a93a-b9d127258e75@redhat.com>
+Date: Tue, 21 Oct 2025 09:39:10 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/33] cpuset: Update HK_TYPE_DOMAIN cpumask from cpuset
+To: Frederic Weisbecker <frederic@kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Danilo Krummrich
+ <dakr@kernel.org>, "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Gabriele Monaco <gmonaco@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+ Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
+ Lai Jiangshan <jiangshanlai@gmail.com>,
+ Marco Crivellari <marco.crivellari@suse.com>, Michal Hocko
+ <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
+ Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Phil Auld <pauld@redhat.com>, "Rafael J . Wysocki" <rafael@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Simon Horman <horms@kernel.org>,
+ Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Vlastimil Babka <vbabka@suse.cz>, Will Deacon <will@kernel.org>,
+ cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-block@vger.kernel.org, linux-mm@kvack.org, linux-pci@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20251013203146.10162-1-frederic@kernel.org>
+ <20251013203146.10162-14-frederic@kernel.org>
+Content-Language: en-US
+In-Reply-To: <20251013203146.10162-14-frederic@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251021-work-namespace-nstree-listns-v1-46-ad44261a8a5b@kernel.org>
-References: <20251021-work-namespace-nstree-listns-v1-0-ad44261a8a5b@kernel.org>
-In-Reply-To: <20251021-work-namespace-nstree-listns-v1-0-ad44261a8a5b@kernel.org>
-To: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
- Jeff Layton <jlayton@kernel.org>
-Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
- =?utf-8?q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, 
- Lennart Poettering <mzxreary@0pointer.de>, 
- Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
- Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, 
- Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>, 
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
- Christian Brauner <brauner@kernel.org>
-X-Mailer: b4 0.15-dev-96507
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4038; i=brauner@kernel.org;
- h=from:subject:message-id; bh=qOQpMwb8a6Ty7XQD33x8dOA998CFgN+vzt4Bsk/lfA4=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWR8L3xvFT+bOeOmqer+fnmXpylqOb7HjOYkFsx/Vre/M
- jhf8PnDjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIlUijEy7JrA3HZh2qfyaPut
- krpvinyvdr7Mtb/+YN69mrXfLq3e6sbIcL564b/W5K9v7ym9qdljPcuP5XyBS9CpyI09D/9sYT/
- vyQgA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp;
- fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-Test that users cannot see namespaces from unrelated user namespaces.
-Create two sibling user namespaces, verify they can't see each other's
-owned namespaces.
+On 10/13/25 4:31 PM, Frederic Weisbecker wrote:
+> @@ -80,12 +110,45 @@ EXPORT_SYMBOL_GPL(housekeeping_affine);
+>   
+>   bool housekeeping_test_cpu(int cpu, enum hk_type type)
+>   {
+> -	if (housekeeping.flags & BIT(type))
+> +	if (READ_ONCE(housekeeping.flags) & BIT(type))
+>   		return cpumask_test_cpu(cpu, housekeeping_cpumask(type));
+>   	return true;
+>   }
+>   EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
+>   
+> +int housekeeping_update(struct cpumask *mask, enum hk_type type)
+> +{
+> +	struct cpumask *trial, *old = NULL;
+> +
+> +	if (type != HK_TYPE_DOMAIN)
+> +		return -ENOTSUPP;
+> +
+> +	trial = kmalloc(sizeof(*trial), GFP_KERNEL);
+Should you use cpumask_size() instead of sizeof(*trial) as the latter 
+can be much bigger?
+> +	if (!trial)
+> +		return -ENOMEM;
+> +
+> +	cpumask_andnot(trial, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT), mask);
+> +	if (!cpumask_intersects(trial, cpu_online_mask)) {
+> +		kfree(trial);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!housekeeping.flags)
+> +		static_branch_enable(&housekeeping_overridden);
+> +
+> +	if (!(housekeeping.flags & BIT(type)))
+> +		old = housekeeping_cpumask_dereference(type);
+> +	else
+> +		WRITE_ONCE(housekeeping.flags, housekeeping.flags | BIT(type));
+> +	rcu_assign_pointer(housekeeping.cpumasks[type], trial);
+> +
+> +	synchronize_rcu();
+> +
+> +	kfree(old);
 
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- .../selftests/namespaces/listns_permissions_test.c | 138 +++++++++++++++++++++
- 1 file changed, 138 insertions(+)
+If "isolcpus" boot command line option is set, old can be a pointer to 
+the boot time memblock area which isn't a pointer that can be handled by 
+the slab allocator AFAIU. I don't know the exact consequence, but it may 
+not be good. One possible solution I can think of is to make 
+HK_TYPE_DOMAIN and HK_TYPE_DOMAIN_ROOT point to the same memblock 
+pointer and don't pass the old HK_TYPE_DOMAIN pointer to kfree() if it 
+matches HK_TYPE_DOMAIN_BOOT one. Alternatively, we can just set the 
+HK_TYPE_DOMAIN_BOOT pointer at boot and make HK_TYPE_DOMAIN falls back 
+to HK_TYPE_DOMAIN_BOOT if not set.
 
-diff --git a/tools/testing/selftests/namespaces/listns_permissions_test.c b/tools/testing/selftests/namespaces/listns_permissions_test.c
-index 803c42fc76ec..4e47b4c82c56 100644
---- a/tools/testing/selftests/namespaces/listns_permissions_test.c
-+++ b/tools/testing/selftests/namespaces/listns_permissions_test.c
-@@ -234,4 +234,142 @@ TEST(listns_cap_sys_admin_in_userns)
- 			count);
- }
- 
-+/*
-+ * Test that users cannot see namespaces from unrelated user namespaces.
-+ * Create two sibling user namespaces, verify they can't see each other's
-+ * owned namespaces.
-+ */
-+TEST(listns_cannot_see_sibling_userns_namespaces)
-+{
-+	int pipefd[2];
-+	pid_t pid1, pid2;
-+	int status;
-+	__u64 netns_a_id;
-+	int pipefd2[2];
-+	bool found_sibling_netns;
-+
-+	ASSERT_EQ(pipe(pipefd), 0);
-+
-+	/* Fork first child - creates user namespace A */
-+	pid1 = fork();
-+	ASSERT_GE(pid1, 0);
-+
-+	if (pid1 == 0) {
-+		int fd;
-+		__u64 netns_a_id;
-+		char buf;
-+
-+		close(pipefd[0]);
-+
-+		/* Create user namespace A */
-+		if (setup_userns() < 0) {
-+			close(pipefd[1]);
-+			exit(1);
-+		}
-+
-+		/* Create network namespace owned by user namespace A */
-+		if (unshare(CLONE_NEWNET) < 0) {
-+			close(pipefd[1]);
-+			exit(1);
-+		}
-+
-+		/* Get network namespace ID */
-+		fd = open("/proc/self/ns/net", O_RDONLY);
-+		if (fd < 0) {
-+			close(pipefd[1]);
-+			exit(1);
-+		}
-+
-+		if (ioctl(fd, NS_GET_ID, &netns_a_id) < 0) {
-+			close(fd);
-+			close(pipefd[1]);
-+			exit(1);
-+		}
-+		close(fd);
-+
-+		/* Send namespace ID to parent */
-+		write(pipefd[1], &netns_a_id, sizeof(netns_a_id));
-+
-+		/* Keep alive for sibling to check */
-+		read(pipefd[1], &buf, 1);
-+		close(pipefd[1]);
-+		exit(0);
-+	}
-+
-+	/* Parent reads namespace A ID */
-+	close(pipefd[1]);
-+	netns_a_id = 0;
-+	read(pipefd[0], &netns_a_id, sizeof(netns_a_id));
-+
-+	TH_LOG("User namespace A created network namespace with ID %llu",
-+	       (unsigned long long)netns_a_id);
-+
-+	/* Fork second child - creates user namespace B */
-+	ASSERT_EQ(pipe(pipefd2), 0);
-+
-+	pid2 = fork();
-+	ASSERT_GE(pid2, 0);
-+
-+	if (pid2 == 0) {
-+		struct ns_id_req req = {
-+			.size = sizeof(req),
-+			.spare = 0,
-+			.ns_id = 0,
-+			.ns_type = CLONE_NEWNET,
-+			.spare2 = 0,
-+			.user_ns_id = 0,
-+		};
-+		__u64 ns_ids[100];
-+		ssize_t ret;
-+		bool found_sibling_netns;
-+
-+		close(pipefd[0]);
-+		close(pipefd2[0]);
-+
-+		/* Create user namespace B (sibling to A) */
-+		if (setup_userns() < 0) {
-+			close(pipefd2[1]);
-+			exit(1);
-+		}
-+
-+		/* Try to list all network namespaces */
-+		ret = sys_listns(&req, ns_ids, ARRAY_SIZE(ns_ids), 0);
-+
-+		found_sibling_netns = false;
-+		if (ret > 0) {
-+			for (ssize_t i = 0; i < ret; i++) {
-+				if (ns_ids[i] == netns_a_id) {
-+					found_sibling_netns = true;
-+					break;
-+				}
-+			}
-+		}
-+
-+		/* We should NOT see the sibling's network namespace */
-+		write(pipefd2[1], &found_sibling_netns, sizeof(found_sibling_netns));
-+		close(pipefd2[1]);
-+		exit(0);
-+	}
-+
-+	/* Parent reads result from second child */
-+	close(pipefd2[1]);
-+	found_sibling_netns = false;
-+	read(pipefd2[0], &found_sibling_netns, sizeof(found_sibling_netns));
-+	close(pipefd2[0]);
-+
-+	/* Signal first child to exit */
-+	close(pipefd[0]);
-+
-+	/* Wait for both children */
-+	waitpid(pid2, &status, 0);
-+	ASSERT_TRUE(WIFEXITED(status));
-+
-+	waitpid(pid1, &status, 0);
-+	ASSERT_TRUE(WIFEXITED(status));
-+
-+	/* Second child should NOT have seen first child's namespace */
-+	ASSERT_FALSE(found_sibling_netns);
-+	TH_LOG("User namespace B correctly could not see sibling namespace A's network namespace");
-+}
-+
- TEST_HARNESS_MAIN
-
--- 
-2.47.3
+Cheers,
+Longman
 
 
