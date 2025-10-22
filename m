@@ -1,216 +1,354 @@
-Return-Path: <cgroups+bounces-11054-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11055-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 601CDBFDFD4
-	for <lists+cgroups@lfdr.de>; Wed, 22 Oct 2025 21:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC58BBFE721
+	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 00:45:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CAC518827B3
-	for <lists+cgroups@lfdr.de>; Wed, 22 Oct 2025 19:16:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EF901A059E1
+	for <lists+cgroups@lfdr.de>; Wed, 22 Oct 2025 22:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D562DF134;
-	Wed, 22 Oct 2025 19:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408F5301014;
+	Wed, 22 Oct 2025 22:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ps5i16Lv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800ED241114
-	for <cgroups@vger.kernel.org>; Wed, 22 Oct 2025 19:16:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD1422D4E9
+	for <cgroups@vger.kernel.org>; Wed, 22 Oct 2025 22:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761160573; cv=none; b=r+DSl6iWnlhjun2HkE9k5P0LAQgPi+4aC+QPfusrei9IWN8pjbGlNuGAZ25RzSsVfaSwGZ28Giuxa2qOf8T3zVeZlzbIR3oJUnqQ5bfJPc0zByKxp/cP69NOAHYKyUBnOmZF79GDmT1njnQPZKVGAynE86bATKk9LCTC7E3K77U=
+	t=1761173133; cv=none; b=fNYPC3re7slRvvQMi/aeewnl4XjWpKrLa5QIOuZAhU97v/soXRewOhrGI/QO2r4OyWIIHZmvV/aFnQivyGwkVgR961419w3EYC3boCGdTl+FC4MFuRmheEr6E+3fJJGecsB7UDMvEHzYhAw7Y/QhTUS/39erHSepZIz2HChRJhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761160573; c=relaxed/simple;
-	bh=jTqzqpq0wKiEGFhz2E0f2SrvJaKKx2gYXx+fetZYG/I=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=r/5SXnYtEgrnNQV88gGIIEg5z+ppowTN/RbhXZ/qgYYnnHKnHws3aZo1/EGez9Rnywm4figoDG2xfOqGOR2+miljCw5k9qD8Mgg7kIEf2fIpwqjO938CUqzv6icTL3eWodrxtv7sGLFxBgWO88gOA9KCqTxkH9G0EY9LZ+VBfcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-93e7ece2ff4so1710279539f.2
-        for <cgroups@vger.kernel.org>; Wed, 22 Oct 2025 12:16:11 -0700 (PDT)
+	s=arc-20240116; t=1761173133; c=relaxed/simple;
+	bh=V5Zc0HlkBIosrLePMk48I+xG6HyK0OvSh8a8dnHIO80=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=LTy6e622wJoa/VMK9We7I+/1C1UB2yUmaClow1tRXU9IRKxGddpawOg77/lSU8ryy0lKhen0oCH6EQP+igJdA5zSrh0FFYXQKQpD7QsFPfumgtwiBaAtWAwPNzCHKGWih8JUlaRAlL7ROkmGx5M+wvm9JzzepqW7mz3f4ixClJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ps5i16Lv; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-269880a7bd9so1027625ad.3
+        for <cgroups@vger.kernel.org>; Wed, 22 Oct 2025 15:45:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1761173130; x=1761777930; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gGF3nY+bQhEuJksVeN/ApJVbDNkeBuYq31H02jFVpBo=;
+        b=ps5i16Lv1zKL9/XFMVts0n4wGDIzrh0w5Bb0iMcHwe17/Bn/MfXvNpfKwgxWyfyd3S
+         2WX0Wi5J15awVyYZb0IWIQAiUQsWCgsC656RbO04esie6zAWC88+HIJQq8Da7EDDmU3T
+         rn6VPN/jfAdNxFmF+wwRRxasVdFa8sE3JiCuYx8fywZXGYuwzvpZn7AKV5XKS1CeRFct
+         SV1o2HoGwwSTmB5jrKDu2uKEQhQZTvnyylFTASo/G3JAGNpqTkBAL9XgGcXpsbdohHKO
+         E8iqsSqnZUNBxWJzdY9AeeghbDFWU5rIIM4wGV/6xTzaQbuXvCY8LOJuEfJjXN2bG9br
+         q+XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761160570; x=1761765370;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xVAwk4TZwAsOUy7yFniWKauZ87Pvr8R3p3UyVOapIqY=;
-        b=RIk/9KG4lnAUYN9PbhYiSMcR+O6Ca3QlCeXf2HPyIyvHp2rYtnn9JFjzMJy8jCqmeh
-         QIXZsF2CVW2tJ6d2AkiS+LKn86i3iOisVPc3IA+ofeTXK6uHTAtVWS09C+pkQCLh6p6u
-         t9/6WQFKkSmXYTt2p7ovZnvlGQ3C6paRDwlnjS0t0XO/JVGJ+rUC4kOn4MD6qWKmWvyS
-         uTCVZxpkz1eA/av1JmM0GYTgY/m/G2A3stmSM0LU4F8WprK4ap5EI2F5txHw3eGnoLl+
-         Xc3UUc0bX4H+yR7JCcn88Q1L9DY2hLzgWuzh0FC4RLfzmeCGzCQfyd1eyZSVriRq4RRf
-         x2BA==
-X-Forwarded-Encrypted: i=1; AJvYcCWxt8u+2nT994qHFxXILSw2LFUr80bxLqkyvLudowh69uSgDGzGGiuF57N/VvLUfd5WZu1F1n3I@vger.kernel.org
-X-Gm-Message-State: AOJu0YxwOmSH3kIAuTCGpvei/Qw6Nm3skwZFyCHKCvmgsnGmLvpll8PM
-	Xz33h2UjaV8sddJSy1S0NNub5KaauMXESkZ+NISw8ghjVQPFZ04gFa8RT1XenxB44R9LiomhVDB
-	fJ8hiBQFIiSwZacFT27zefQxVpMSGsDVxgjYRDDyKeBx9IHbZql3o0lFdcXw=
-X-Google-Smtp-Source: AGHT+IE9YMgRXbsiBihlZmXvuOwlYJ4oAY1aAdGjqEgMOZ45S4fxNHwYERqLkPKagaAfa1OpMchm7B1RZCBA6JqTCf4avvHGfRRz
+        d=1e100.net; s=20230601; t=1761173130; x=1761777930;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gGF3nY+bQhEuJksVeN/ApJVbDNkeBuYq31H02jFVpBo=;
+        b=j20H4ZKcCjUkE/+X+GG/Cd5d9CoU6iHwHs6SzD8ITQEgN+8JN9+5BHJyAkRVBZPlk4
+         eC/zsBGNGny9X0T9bnDJo9gSnuOHn3et6dTNgeQ8kAQuf9lnC2RTmB5Yu5JIuMTC+UXk
+         TFvhlKY7z5gMjeZ9I3wnyp1QFLh9YSLmZYVCEegniRu76sC0llKP56OpWMuIpeUFkyk8
+         gbtmaCqbH5t84hCTuG/oNJaJ82v2bZDvAaXM18WHnyzWeImi4ILF7sn9/Hbw0F4OZXH9
+         fDBnangxDoz4vHN2h1h8nO6bmdwYk7zPeeS90FH6ELg9Au0HAYAVqbrSb2m5M7z8xdRE
+         gpJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUZBSw10MadUTi7o9eoV61T9Ft/OAXHowtdpNqHvgjF9p3dCyhJwVkYh+edOxRo5NmYvO1sKLZ2@vger.kernel.org
+X-Gm-Message-State: AOJu0YwgZru2jn9zAizPMIpdS0O5VRAJT83PJm/ETQ8FupYjSTeI2G6Q
+	7Ea8wnz9SOwZXcBkWTHx+KGQp+jsKSALxlQ6kS5tQWcmM8hwdigBxzXzGJghcqDrS7MYFDJXCGB
+	sbQKw9UdHfEinGvANI5+AyLklLQ==
+X-Google-Smtp-Source: AGHT+IHD5TZ3PlH4BoXojkeR7Hq6pa25rPFAC44tSG4hp0SVSWugJiynOfGyj0/LVdH6RcIi4tLRlKxt4/SfCTBJBg==
+X-Received: from pjbfv10.prod.google.com ([2002:a17:90b:e8a:b0:33b:ab61:4f71])
+ (user=ackerleytng job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:902:f70b:b0:283:c950:a76f with SMTP id d9443c01a7336-290cc2f91d2mr289431935ad.43.1761173129640;
+ Wed, 22 Oct 2025 15:45:29 -0700 (PDT)
+Date: Wed, 22 Oct 2025 15:45:28 -0700
+In-Reply-To: <diqz4irqg9qy.fsf@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2c05:b0:940:f0a7:30d7 with SMTP id
- ca18e2360f4ac-940f0a7354emr996339639f.15.1761160570591; Wed, 22 Oct 2025
- 12:16:10 -0700 (PDT)
-Date: Wed, 22 Oct 2025 12:16:10 -0700
-In-Reply-To: <20251022-work-namespace-nstree-listns-v2-0-71a588572371@kernel.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68f92d7a.a70a0220.3bf6c6.0023.GAE@google.com>
-Subject: [syzbot ci] Re: nstree: listns()
-From: syzbot ci <syzbot+cia016abba7fbbfb27@syzkaller.appspotmail.com>
-To: amir73il@gmail.com, arnd@arndb.de, bpf@vger.kernel.org, brauner@kernel.org, 
-	cgroups@vger.kernel.org, cyphar@cyphar.com, daan.j.demeyer@gmail.com, 
-	edumazet@google.com, hannes@cmpxchg.org, jack@suse.cz, jannh@google.com, 
-	jlayton@kernel.org, josef@toxicpanda.com, kuba@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, me@yhndnzj.com, 
-	mzxreary@0pointer.de, netdev@vger.kernel.org, tglx@linutronix.de, 
-	tj@kernel.org, viro@zeniv.linux.org.uk, zbyszek@in.waw.pl
-Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Mime-Version: 1.0
+References: <cover.1760731772.git.ackerleytng@google.com> <8ee16fbf254115b0fd72cc2b5c06d2ccef66eca9.1760731772.git.ackerleytng@google.com>
+ <2457cb3b-5dde-4ca1-b75d-174b5daee28a@arm.com> <diqz4irqg9qy.fsf@google.com>
+Message-ID: <diqzy0p2eet3.fsf@google.com>
+Subject: Re: [RFC PATCH v1 07/37] KVM: Introduce KVM_SET_MEMORY_ATTRIBUTES2
+From: Ackerley Tng <ackerleytng@google.com>
+To: Steven Price <steven.price@arm.com>, cgroups@vger.kernel.org, kvm@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, x86@kernel.org
+Cc: akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de, 
+	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org, 
+	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com, 
+	david@redhat.com, dmatlack@google.com, erdemaktas@google.com, 
+	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com, hannes@cmpxchg.org, 
+	hch@infradead.org, hpa@zytor.com, hughd@google.com, ira.weiny@intel.com, 
+	isaku.yamahata@intel.com, jack@suse.cz, james.morse@arm.com, 
+	jarkko@kernel.org, jgg@ziepe.ca, jgowans@amazon.com, jhubbard@nvidia.com, 
+	jthoughton@google.com, jun.miao@intel.com, kai.huang@intel.com, 
+	keirf@google.com, kent.overstreet@linux.dev, liam.merwick@oracle.com, 
+	maciej.wieczor-retman@intel.com, mail@maciej.szmigiero.name, 
+	maobibo@loongson.cn, mathieu.desnoyers@efficios.com, maz@kernel.org, 
+	mhiramat@kernel.org, mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com, 
+	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au, 
+	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es, 
+	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com, 
+	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com, 
+	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz, qperret@google.com, 
+	richard.weiyang@gmail.com, rick.p.edgecombe@intel.com, rientjes@google.com, 
+	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org, seanjc@google.com, 
+	shakeel.butt@linux.dev, shuah@kernel.org, suzuki.poulose@arm.com, 
+	tabba@google.com, tglx@linutronix.de, thomas.lendacky@amd.com, 
+	vannapurve@google.com, vbabka@suse.cz, viro@zeniv.linux.org.uk, 
+	vkuznets@redhat.com, will@kernel.org, willy@infradead.org, wyihan@google.com, 
+	xiaoyao.li@intel.com, yan.y.zhao@intel.com, yilun.xu@intel.com, 
+	yuzenghui@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 
-syzbot ci has tested the following series
+Ackerley Tng <ackerleytng@google.com> writes:
 
-[v2] nstree: listns()
-https://lore.kernel.org/all/20251022-work-namespace-nstree-listns-v2-0-71a588572371@kernel.org
-* [PATCH v2 01/63] libfs: allow to specify s_d_flags
-* [PATCH v2 02/63] nsfs: use inode_just_drop()
-* [PATCH v2 03/63] nsfs: raise DCACHE_DONTCACHE explicitly
-* [PATCH v2 04/63] pidfs: raise DCACHE_DONTCACHE explicitly
-* [PATCH v2 05/63] nsfs: raise SB_I_NODEV and SB_I_NOEXEC
-* [PATCH v2 06/63] cgroup: add cgroup namespace to tree after owner is set
-* [PATCH v2 07/63] nstree: simplify return
-* [PATCH v2 08/63] ns: initialize ns_list_node for initial namespaces
-* [PATCH v2 09/63] ns: add __ns_ref_read()
-* [PATCH v2 10/63] ns: add active reference count
-* [PATCH v2 11/63] ns: use anonymous struct to group list member
-* [PATCH v2 12/63] nstree: introduce a unified tree
-* [PATCH v2 13/63] nstree: allow lookup solely based on inode
-* [PATCH v2 14/63] nstree: assign fixed ids to the initial namespaces
-* [PATCH v2 15/63] ns: maintain list of owned namespaces
-* [PATCH v2 16/63] nstree: add listns()
-* [PATCH v2 17/63] arch: hookup listns() system call
-* [PATCH v2 18/63] nsfs: update tools header
-* [PATCH v2 19/63] selftests/filesystems: remove CLONE_NEWPIDNS from setup_userns() helper
-* [PATCH v2 20/63] selftests/namespaces: first active reference count tests
-* [PATCH v2 21/63] selftests/namespaces: second active reference count tests
-* [PATCH v2 22/63] selftests/namespaces: third active reference count tests
-* [PATCH v2 23/63] selftests/namespaces: fourth active reference count tests
-* [PATCH v2 24/63] selftests/namespaces: fifth active reference count tests
-* [PATCH v2 25/63] selftests/namespaces: sixth active reference count tests
-* [PATCH v2 26/63] selftests/namespaces: seventh active reference count tests
-* [PATCH v2 27/63] selftests/namespaces: eigth active reference count tests
-* [PATCH v2 28/63] selftests/namespaces: ninth active reference count tests
-* [PATCH v2 29/63] selftests/namespaces: tenth active reference count tests
-* [PATCH v2 30/63] selftests/namespaces: eleventh active reference count tests
-* [PATCH v2 31/63] selftests/namespaces: twelth active reference count tests
-* [PATCH v2 32/63] selftests/namespaces: thirteenth active reference count tests
-* [PATCH v2 33/63] selftests/namespaces: fourteenth active reference count tests
-* [PATCH v2 34/63] selftests/namespaces: fifteenth active reference count tests
-* [PATCH v2 35/63] selftests/namespaces: add listns() wrapper
-* [PATCH v2 36/63] selftests/namespaces: first listns() test
-* [PATCH v2 37/63] selftests/namespaces: second listns() test
-* [PATCH v2 38/63] selftests/namespaces: third listns() test
-* [PATCH v2 39/63] selftests/namespaces: fourth listns() test
-* [PATCH v2 40/63] selftests/namespaces: fifth listns() test
-* [PATCH v2 41/63] selftests/namespaces: sixth listns() test
-* [PATCH v2 42/63] selftests/namespaces: seventh listns() test
-* [PATCH v2 43/63] selftests/namespaces: ninth listns() test
-* [PATCH v2 44/63] selftests/namespaces: ninth listns() test
-* [PATCH v2 45/63] selftests/namespaces: first listns() permission test
-* [PATCH v2 46/63] selftests/namespaces: second listns() permission test
-* [PATCH v2 47/63] selftests/namespaces: third listns() permission test
-* [PATCH v2 48/63] selftests/namespaces: fourth listns() permission test
-* [PATCH v2 49/63] selftests/namespaces: fifth listns() permission test
-* [PATCH v2 50/63] selftests/namespaces: sixth listns() permission test
-* [PATCH v2 51/63] selftests/namespaces: seventh listns() permission test
-* [PATCH v2 52/63] selftests/namespaces: first inactive namespace resurrection test
-* [PATCH v2 53/63] selftests/namespaces: second inactive namespace resurrection test
-* [PATCH v2 54/63] selftests/namespaces: third inactive namespace resurrection test
-* [PATCH v2 55/63] selftests/namespaces: fourth inactive namespace resurrection test
-* [PATCH v2 56/63] selftests/namespaces: fifth inactive namespace resurrection test
-* [PATCH v2 57/63] selftests/namespaces: sixth inactive namespace resurrection test
-* [PATCH v2 58/63] selftests/namespaces: seventh inactive namespace resurrection test
-* [PATCH v2 59/63] selftests/namespaces: eigth inactive namespace resurrection test
-* [PATCH v2 60/63] selftests/namespaces: ninth inactive namespace resurrection test
-* [PATCH v2 61/63] selftests/namespaces: tenth inactive namespace resurrection test
-* [PATCH v2 62/63] selftests/namespaces: eleventh inactive namespace resurrection test
-* [PATCH v2 63/63] selftests/namespaces: twelth inactive namespace resurrection test
+Found another issue with KVM_CAP_MEMORY_ATTRIBUTES2.
 
-and found the following issue:
-general protection fault in copy_creds
+KVM_CAP_MEMORY_ATTRIBUTES2 was defined to do the same thing as
+KVM_CAP_MEMORY_ATTRIBUTES, but that's wrong since
+KVM_CAP_MEMORY_ATTRIBUTES2 should indicate the presence of
+KVM_SET_MEMORY_ATTRIBUTES2 and struct kvm_memory_attributes2.
 
-Full report is available here:
-https://ci.syzbot.org/series/edb88bd4-fe2f-4399-a44b-69d30faa57fb
+Usage is kind of weird and I hope to get feedback on this as
+well.
 
-***
+This describes the difference between the previous version of this patch
+and the one attached below.
 
-general protection fault in copy_creds
+I also added this to the changelog
 
-tree:      bpf
-URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/bpf.git
-base:      5fb750e8a9ae123b2034771b864b8a21dbef65cd
-arch:      amd64
-compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-config:    https://ci.syzbot.org/builds/b6fa4981-93e1-4b9c-a4b4-a1be1c33d835/config
+  Add KVM_CAP_MEMORY_ATTRIBUTES2 to indicate that struct
+  kvm_memory_attributes2 exists and can be used either with
+  KVM_SET_MEMORY_ATTRIBUTES2 via the vm or guest_memfd ioctl.
 
-Oops: general protection fault, probably for non-canonical address 0xdffffc0000000012: 0000 [#1] SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000090-0x0000000000000097]
-CPU: 1 UID: 0 PID: 5952 Comm: syz-executor Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:copy_creds+0x473/0xd10
-Code: 6a 8b e8 a0 76 0f 00 48 c7 c7 e0 cd 13 8e 48 89 de e8 81 5c 0f 00 e8 6c 01 19 00 ba 01 00 00 00 4c 89 f7 31 f6 e8 6d 99 00 00 <41> 80 7c 24 12 00 74 0a bf 90 00 00 00 e8 eb bc 97 00 4c 8b 34 25
-RSP: 0018:ffffc900045d7938 EFLAGS: 00010286
-RAX: 0000000000000131 RBX: ffffffff818e8499 RCX: ffff88810d1ad700
-RDX: 0000000000000000 RSI: 7fffffffffffffff RDI: 0000000000000131
-RBP: 0000000000000001 R08: ffffffff8dfef75f R09: 1ffffffff1bfdeeb
-R10: dffffc0000000000 R11: fffffbfff1bfdeec R12: dffffc0000000000
-R13: 0000000000010000 R14: ffffffff8dfef6c0 R15: 1ffff110216064bd
-FS:  000055558d65c500(0000) GS:ffff8882a9d02000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd1e15c36f0 CR3: 000000011b786000 CR4: 00000000000006f0
-Call Trace:
- <TASK>
- copy_process+0x964/0x3c00
- kernel_clone+0x21e/0x840
- __se_sys_clone3+0x256/0x2d0
- do_syscall_64+0xfa/0xfa0
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fd1e15c3709
-Code: d6 08 00 48 8d 3d bc d6 08 00 e8 02 29 f6 ff 66 90 b8 ea ff ff ff 48 85 ff 74 2c 48 85 d2 74 27 49 89 c8 b8 b3 01 00 00 0f 05 <48> 85 c0 7c 18 74 01 c3 31 ed 48 83 e4 f0 4c 89 c7 ff d2 48 89 c7
-RSP: 002b:00007fff0ae99118 EFLAGS: 00000202 ORIG_RAX: 00000000000001b3
-RAX: ffffffffffffffda RBX: 00007fd1e1545b10 RCX: 00007fd1e15c3709
-RDX: 00007fd1e1545b10 RSI: 0000000000000058 RDI: 00007fff0ae99160
-RBP: 00007fd1e13ff6c0 R08: 00007fd1e13ff6c0 R09: 00007fff0ae99247
-R10: 0000000000000008 R11: 0000000000000202 R12: ffffffffffffffa8
-R13: 0000000000000009 R14: 00007fff0ae99160 R15: 00007fff0ae99248
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:copy_creds+0x473/0xd10
-Code: 6a 8b e8 a0 76 0f 00 48 c7 c7 e0 cd 13 8e 48 89 de e8 81 5c 0f 00 e8 6c 01 19 00 ba 01 00 00 00 4c 89 f7 31 f6 e8 6d 99 00 00 <41> 80 7c 24 12 00 74 0a bf 90 00 00 00 e8 eb bc 97 00 4c 8b 34 25
-RSP: 0018:ffffc900045d7938 EFLAGS: 00010286
-RAX: 0000000000000131 RBX: ffffffff818e8499 RCX: ffff88810d1ad700
-RDX: 0000000000000000 RSI: 7fffffffffffffff RDI: 0000000000000131
-RBP: 0000000000000001 R08: ffffffff8dfef75f R09: 1ffffffff1bfdeeb
-R10: dffffc0000000000 R11: fffffbfff1bfdeec R12: dffffc0000000000
-R13: 0000000000010000 R14: ffffffff8dfef6c0 R15: 1ffff110216064bd
-FS:  000055558d65c500(0000) GS:ffff8882a9d02000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fed5f717d60 CR3: 000000011b786000 CR4: 00000000000006f0
+  Since KVM_SET_MEMORY_ATTRIBUTES2 is not limited to be used only with the vm
+  ioctl, return 1 for KVM_CAP_MEMORY_ATTRIBUTES2 as long as struct
+  kvm_memory_attributes2 and KVM_SET_MEMORY_ATTRIBUTES2 can be
+  used. KVM_CAP_MEMORY_ATTRIBUTES must still be used to actually get valid
+  attributes.
+
+  Handle KVM_CAP_MEMORY_ATTRIBUTES2 and return 1 regardless of
+  CONFIG_KVM_VM_MEMORY_ATTRIBUTES, since KVM_SET_MEMORY_ATTRIBUTES2 is not
+  limited to a vm ioctl and can also be used with the guest_memfd ioctl.
 
 
-***
+Here's the entire patch so hopefully it's easy to swap out this entire
+patch over the original one.
 
-If these findings have caused you to resend the series or submit a
-separate fix, please add the following tag to your commit message:
-  Tested-by: syzbot@syzkaller.appspotmail.com
 
+
+From 8887ba58f6fd97c529c8152d6f18e5e26651dbec Mon Sep 17 00:00:00 2001
+From: Ackerley Tng <ackerleytng@google.com>
+Date: Thu, 16 Oct 2025 11:48:01 -0700
+Subject: [PATCH] KVM: Introduce KVM_SET_MEMORY_ATTRIBUTES2
+
+Introduce a "version 2" of KVM_SET_MEMORY_ATTRIBUTES to support returning
+information back to userspace.
+
+This new ioctl and structure will, in a later patch, be shared as a
+guest_memfd ioctl, where the padding in the new kvm_memory_attributes2
+structure will be for writing the response from the guest_memfd ioctl to
+userspace.
+
+A new ioctl is necessary for these reasons:
+
+1. KVM_SET_MEMORY_ATTRIBUTES is currently a write-only ioctl and does not
+   allow userspace to read fields. There's nothing in code (yet?) that
+   validates this, but using _IOWR for consistency would be prudent.
+
+2. KVM_SET_MEMORY_ATTRIBUTES, when used as a guest_memfd ioctl, will need
+   an additional field to provide userspace with more error details.
+
+Alternatively, a completely new ioctl could be defined, unrelated to
+KVM_SET_MEMORY_ATTRIBUTES, but using the same ioctl number and struct for
+the vm and guest_memfd ioctls streamlines the interface for userspace. In
+addition, any memory attributes, implemented on the vm or guest_memfd
+ioctl, can be easily shared with the other.
+
+Add KVM_CAP_MEMORY_ATTRIBUTES2 to indicate that struct
+kvm_memory_attributes2 exists and can be used either with
+KVM_SET_MEMORY_ATTRIBUTES2 via the vm or guest_memfd ioctl.
+
+Since KVM_SET_MEMORY_ATTRIBUTES2 is not limited to be used only with the vm
+ioctl, return 1 for KVM_CAP_MEMORY_ATTRIBUTES2 as long as struct
+kvm_memory_attributes2 and KVM_SET_MEMORY_ATTRIBUTES2 can be
+used. KVM_CAP_MEMORY_ATTRIBUTES must still be used to actually get valid
+attributes.
+
+Handle KVM_CAP_MEMORY_ATTRIBUTES2 and return 1 regardless of
+CONFIG_KVM_VM_MEMORY_ATTRIBUTES, since KVM_SET_MEMORY_ATTRIBUTES2 is not
+limited to a vm ioctl and can also be used with the guest_memfd ioctl.
+
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Change-Id: I50cd506d9a28bf68a90e659015603de579569bc1
+Signed-off-by: Ackerley Tng <ackerleytng@google.com>
 ---
-This report is generated by a bot. It may contain errors.
-syzbot ci engineers can be reached at syzkaller@googlegroups.com.
+ Documentation/virt/kvm/api.rst | 32 ++++++++++++++++++++++++++++++++
+ include/uapi/linux/kvm.h       | 12 ++++++++++++
+ virt/kvm/kvm_main.c            | 34 +++++++++++++++++++++++++++++++---
+ 3 files changed, 75 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index 754b662a453c3..a812769d79bf6 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -6355,6 +6355,8 @@ S390:
+ Returns -EINVAL if the VM has the KVM_VM_S390_UCONTROL flag set.
+ Returns -EINVAL if called on a protected VM.
+ 
++.. _KVM_SET_MEMORY_ATTRIBUTES:
++
+ 4.141 KVM_SET_MEMORY_ATTRIBUTES
+ -------------------------------
+ 
+@@ -6512,6 +6514,36 @@ the capability to be present.
+ 
+ `flags` must currently be zero.
+ 
++4.144 KVM_SET_MEMORY_ATTRIBUTES2
++---------------------------------
++
++:Capability: KVM_CAP_MEMORY_ATTRIBUTES2
++:Architectures: x86
++:Type: vm ioctl
++:Parameters: struct kvm_memory_attributes2 (in/out)
++:Returns: 0 on success, <0 on error
++
++KVM_SET_MEMORY_ATTRIBUTES2 is an extension to
++KVM_SET_MEMORY_ATTRIBUTES that supports returning (writing) values to
++userspace.  The original (pre-extension) fields are shared with
++KVM_SET_MEMORY_ATTRIBUTES identically.
++
++Attribute values are shared with KVM_SET_MEMORY_ATTRIBUTES.
++
++::
++
++  struct kvm_memory_attributes2 {
++	__u64 address;
++	__u64 size;
++	__u64 attributes;
++	__u64 flags;
++	__u64 reserved[4];
++  };
++
++  #define KVM_MEMORY_ATTRIBUTE_PRIVATE           (1ULL << 3)
++
++See also: :ref: `KVM_SET_MEMORY_ATTRIBUTES`.
++
+ 
+ .. _kvm_run:
+ 
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index 52f6000ab0208..c300e38c7c9cd 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -963,6 +963,7 @@ struct kvm_enable_cap {
+ #define KVM_CAP_RISCV_MP_STATE_RESET 242
+ #define KVM_CAP_ARM_CACHEABLE_PFNMAP_SUPPORTED 243
+ #define KVM_CAP_GUEST_MEMFD_FLAGS 244
++#define KVM_CAP_MEMORY_ATTRIBUTES2 245
+ 
+ struct kvm_irq_routing_irqchip {
+ 	__u32 irqchip;
+@@ -1617,4 +1618,15 @@ struct kvm_pre_fault_memory {
+ 	__u64 padding[5];
+ };
+ 
++/* Available with KVM_CAP_MEMORY_ATTRIBUTES2 */
++#define KVM_SET_MEMORY_ATTRIBUTES2              _IOWR(KVMIO,  0xd6, struct kvm_memory_attributes2)
++
++struct kvm_memory_attributes2 {
++	__u64 address;
++	__u64 size;
++	__u64 attributes;
++	__u64 flags;
++	__u64 reserved[4];
++};
++
+ #endif /* __LINUX_KVM_H */
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 35166754a22b4..d083011744eba 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -2621,7 +2621,7 @@ static int kvm_vm_set_mem_attributes(struct kvm *kvm, gfn_t start, gfn_t end,
+ 	return r;
+ }
+ static int kvm_vm_ioctl_set_mem_attributes(struct kvm *kvm,
+-					   struct kvm_memory_attributes *attrs)
++					   struct kvm_memory_attributes2 *attrs)
+ {
+ 	gfn_t start, end;
+ 
+@@ -4957,6 +4957,7 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
+ 	case KVM_CAP_BINARY_STATS_FD:
+ 	case KVM_CAP_SYSTEM_EVENT_DATA:
+ 	case KVM_CAP_DEVICE_CTRL:
++	case KVM_CAP_MEMORY_ATTRIBUTES2:
+ 		return 1;
+ #ifdef CONFIG_KVM_VM_MEMORY_ATTRIBUTES
+ 	case KVM_CAP_MEMORY_ATTRIBUTES:
+@@ -5184,6 +5185,14 @@ do {										\
+ 		     sizeof_field(struct kvm_userspace_memory_region2, field));	\
+ } while (0)
+ 
++#define SANITY_CHECK_MEMORY_ATTRIBUTES_FIELD(field)				\
++do {										\
++	BUILD_BUG_ON(offsetof(struct kvm_memory_attributes, field) !=		\
++		     offsetof(struct kvm_memory_attributes2, field));		\
++	BUILD_BUG_ON(sizeof_field(struct kvm_memory_attributes, field) !=	\
++		     sizeof_field(struct kvm_memory_attributes2, field));	\
++} while (0)
++
+ static long kvm_vm_ioctl(struct file *filp,
+ 			   unsigned int ioctl, unsigned long arg)
+ {
+@@ -5366,15 +5375,34 @@ static long kvm_vm_ioctl(struct file *filp,
+ 	}
+ #endif /* CONFIG_HAVE_KVM_IRQ_ROUTING */
+ #ifdef CONFIG_KVM_VM_MEMORY_ATTRIBUTES
++	case KVM_SET_MEMORY_ATTRIBUTES2:
+ 	case KVM_SET_MEMORY_ATTRIBUTES: {
+-		struct kvm_memory_attributes attrs;
++		struct kvm_memory_attributes2 attrs;
++		unsigned long size;
++
++		if (ioctl == KVM_SET_MEMORY_ATTRIBUTES) {
++			/*
++			 * Fields beyond struct kvm_userspace_memory_region shouldn't be
++			 * accessed, but avoid leaking kernel memory in case of a bug.
++			 */
++			memset(&attrs, 0, sizeof(attrs));
++			size = sizeof(struct kvm_memory_attributes);
++		} else {
++			size = sizeof(struct kvm_memory_attributes2);
++		}
++
++		/* Ensure the common parts of the two structs are identical. */
++		SANITY_CHECK_MEMORY_ATTRIBUTES_FIELD(address);
++		SANITY_CHECK_MEMORY_ATTRIBUTES_FIELD(size);
++		SANITY_CHECK_MEMORY_ATTRIBUTES_FIELD(attributes);
++		SANITY_CHECK_MEMORY_ATTRIBUTES_FIELD(flags);
+ 
+ 		r = -ENOTTY;
+ 		if (!vm_memory_attributes)
+ 			goto out;
+ 
+ 		r = -EFAULT;
+-		if (copy_from_user(&attrs, argp, sizeof(attrs)))
++		if (copy_from_user(&attrs, argp, size))
+ 			goto out;
+ 
+ 		r = kvm_vm_ioctl_set_mem_attributes(kvm, &attrs);
+-- 
+2.51.1.838.g19442a804e-goog
+
 
