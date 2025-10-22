@@ -1,86 +1,86 @@
-Return-Path: <cgroups+bounces-10981-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10982-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5396BFA4B1
-	for <lists+cgroups@lfdr.de>; Wed, 22 Oct 2025 08:46:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23F73BFA4C9
+	for <lists+cgroups@lfdr.de>; Wed, 22 Oct 2025 08:47:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id F1042352F49
-	for <lists+cgroups@lfdr.de>; Wed, 22 Oct 2025 06:46:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 867FB3B61A7
+	for <lists+cgroups@lfdr.de>; Wed, 22 Oct 2025 06:46:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815712F1FFC;
-	Wed, 22 Oct 2025 06:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241062F25FA;
+	Wed, 22 Oct 2025 06:46:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aSQhZIgm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lVjCAa3o"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E447248F77
-	for <cgroups@vger.kernel.org>; Wed, 22 Oct 2025 06:46:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B640C38FA3
+	for <cgroups@vger.kernel.org>; Wed, 22 Oct 2025 06:46:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761115599; cv=none; b=T0D0t6XG4UUWJHLybcW9ll2sovFPQiBtrOVTnjeOeYzIpbbU4MRvpW+pncl/RaMegKYvgB0qgfgyNSZ8ggTZQ6ALFA5DNxUFEwWgTPnl2p911morCQVkPyjT5oXwTdanYWwTT0jBQLXqUFiIn/IvxH3eZ3ijBOx+YfIWPS0BKD4=
+	t=1761115600; cv=none; b=pj+L67sZ+2xcU88pmb8AKG5gcMyXPgvw7WUugFwqAP0HIMqdyLBlAbY66lUb6B/sDnU3GLpoVy9T1k6Hc4yq5QZ+/g0tnX0Ve4PoeYB5zjmVKHzhVn7sYsbwIQw+AeMOjrV3UK0igFc0uO0NxzgtSzHbDzYe5NElOrgXfRqH71A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761115599; c=relaxed/simple;
-	bh=XzKbB+mGRT6gkaN84SaEwZW484lLeG1tuFmX92PEL5w=;
+	s=arc-20240116; t=1761115600; c=relaxed/simple;
+	bh=dicC0NWkHzLlwt/5mNQDnPGG/cq4/W7oaNhyfBVGTJc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MWRH8bJ1h1hgjU7yXpcnjll35w4iRQJOxP0HCOb1eiaZXOk+ezTMnjve8RWRCDHmSBnCT9y4ARhGaNk6cRB8mlrYCJuxNXhyyw+U1hX8UcT66ULPK0nKxamr28den+YnYnubWSuPWtK+HSkq8uUYgM+ooJ69G9M5V9AqyCHPmLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aSQhZIgm; arc=none smtp.client-ip=209.85.128.46
+	 MIME-Version; b=f2xLTqvoToJ2OEdbBskFWDW6Wd6BfSUXWa3mHcnpnrTHHljAp8517i6UZI8op4yvO1KDkaeBdmp0ebUawWRruLQ51ZPf9T3fvnk5vC2kzzdhelC6xOJv6qE8UOn+K0qch9yYJvIvACyE4tdkN2T2L6DhBK6twkEUa+m0U3tzhvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lVjCAa3o; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47495477241so14515745e9.3
-        for <cgroups@vger.kernel.org>; Tue, 21 Oct 2025 23:46:36 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4711f3c386eso32689385e9.0
+        for <cgroups@vger.kernel.org>; Tue, 21 Oct 2025 23:46:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761115595; x=1761720395; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761115597; x=1761720397; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pYPDs0qZ3gamg9rOKiLO8J5gc0Br24fO7YovJCgAXSw=;
-        b=aSQhZIgmi2wYz2lqR3cHWbbC5sVwc5R2QSaE7arKC1Mw/Pev8sIk8NRofx/0FbwzG+
-         Dd8QPdcIOT2OhiTJbNrSIJS7RXuDB3VIKAM3Sqjyl2R8pcTkW2y60E5ccC58wRsSAnx0
-         /R7cRIWecVO7NzmGb34K5V4RJmc02YdyxuYQkVmLhbUHCmG/Q0iKlGajWr4tLGioOFWl
-         yT7zzzeWkqif4UPe5RI5J8dTstd30fdsDIS8KgAftz0h3RFG6///YiXfub9BhkWdbpdr
-         nkUop9h1LYL3OkQmtLG4fOfIuSMaqh1yQ4St3TsgXNl/QJZDpPeVDc6v2czeusxXHEc4
-         OQ1w==
+        bh=+X+dtF6qnjhqjzOmEw4HuqkbSKUC3KKz5ld8iJNzfyw=;
+        b=lVjCAa3opRA/3hfMgmFljymE8KujcwmkT2Gv1KVR6gbDIxqbFc8lMC3XR8y1/zBXGr
+         35R2CT/yg1gxCRn2dI8E8yVLc76UMTBg4cl0jIg1Upb5aFbUlipG/2c+i1WXmnXbMCDO
+         g7OdsP9iaDTWCEtqtxEusxCkY5pEVj1eyS9qjMavcRKy8qStKhZfyTToXR2N+K4jwt+7
+         adq/cLOrYNXD+YT0xbD4TyBxU2BOh7lwRbI+BwVogKQ59HZxpb2HcRxmnoEc5TXOTQIm
+         6pOQrlL3P043WIATAwvfPxtV3HTnHZcfYpLIvjm2jIKTzCPUV2E9VdIDchbyaDCIYpLW
+         wJkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761115595; x=1761720395;
+        d=1e100.net; s=20230601; t=1761115597; x=1761720397;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pYPDs0qZ3gamg9rOKiLO8J5gc0Br24fO7YovJCgAXSw=;
-        b=xSLmA9BkTqf4t7yWT133kosBoMX75Mr87FnFGW6pVMR5a0SLNqdJj/qtELwLI1SaqN
-         b/g6TNExHmVjVqDRfils5u/P+RR5oA1HaYH/tDB0y2SXlNfp+J0lEpQpKqJxb+0LUKAi
-         PcOX2LvYy7gxkSTNhRuD5afDBAcYk1WGzxV5XfEfInGqe1M1AnOxjz0W8ZFPbqW4mrVF
-         h5RjUYA/rpAE+uL3sn2DDmmrMgCIccKsVxg4SFTkVCxUEd9Z9xCD0R+zK6VazC+XZB8P
-         WNWnpAtGwj/4GNAbnxmelm+SStWnte3cITLq9odFusyBSfPXlqn+hRh0ToTwdCjijlKi
-         e7Qw==
-X-Gm-Message-State: AOJu0YxCAUW4AQZNLn/SbzuuGoiwpdeqEwvxsxyxOK8DExavStiCvJw1
-	XGVe+3VHXW//upbBDAraHv4vgtNJmc8nM/m1AgqSCP7l1JsUMr4tY2fEztsddA==
-X-Gm-Gg: ASbGnctyCF/5OL4awHp0Bjez6teEEODQu9k62BGPQLIZTd2SUGQ4weGGDCAXaF9ItiS
-	QXaCRhfnXfu5gUw185UU8ZZfcqd7IThBYXOzxgS8NxC8hAtMjiziN9ykETAViujq8vv6Zyby8qV
-	nEf1vMwUg6TiGQhsHbEerrcIQKSHkcBMZpd6b2c45bDj9rz1owrpBOwxR3Eq7jRQPlLRea7nxUi
-	iuqQtSSdimnwW8r4s7tW2COXZBzE3pU4iDdlJWbKk40J7JOau2oyOLo+OL2CiGizkFNdvkRCWc0
-	pU1bHO0/X9QLbYElM0CAwTjhzI1GI1STicPG29UsR1LKNWdlHA1+O34G5llFEjHfz4VNfUUkTf3
-	xr+IYSq5TvHb6tk5kFM3VPSmdArk2QPmXGg0bve1MFbajUbRtmwL8jelbofJx8MMX4tsHwDTC4M
-	wanug2sOKBEl1Eg25vbH9iAvCwNJyes1BdFZOVbmALUMxDerqEoiyQmSMpPdCJ
-X-Google-Smtp-Source: AGHT+IFt7+LnDiNDDeD0mWX4Ee7d9UD4ZQpOBP6B85a7u9XGELBu3j+mi1cNgchwD6VugL8vORYmWg==
-X-Received: by 2002:a05:600c:4e42:b0:46e:31c3:1442 with SMTP id 5b1f17b1804b1-471178afc07mr134422255e9.18.1761115595263;
-        Tue, 21 Oct 2025 23:46:35 -0700 (PDT)
+        bh=+X+dtF6qnjhqjzOmEw4HuqkbSKUC3KKz5ld8iJNzfyw=;
+        b=aqnVkdjp7MtsfsyNDwOdBX3WoDip1agm1x16RRWeEXcza+z7VWXKwjyDwaSuuXJRTZ
+         YqS2zUnNtKC3cwqVlS7/LWNJVdvzT0GQYN4fQXkHHd6MoKlqSDsUhBKTOdqEQZEcFNWx
+         j6XSLqJQAuWLSYgkEiFfyfMCjzBmbTjsTQYnC16g/CB+/cApW04EoTfrw4cXAWtTPXpH
+         Zw2pGTYipL7aQPGt1TptSVM1YREGAKCW2zCsGP1dWcoE9vwlsWGcPMx65MTdibneU3OA
+         XNNUJ2MnJkoDFRh/Xuqt3oapmII5MpnWVjOPRjrKSa+avHqHq/TZg0D90hhBkmWe/Uea
+         M/BA==
+X-Gm-Message-State: AOJu0YxtwX6P3ullXT/r4Etx27Eg5rt8ojh87Wn+Cgvj6v9Uxdi2C4WM
+	SZTcvWsV56XnwxRZTMfecIXUMXnuYFnungJiWklYdwL/4tjg2baY5+dNimWiWQ==
+X-Gm-Gg: ASbGnctPulKpJ0mYGyuWxyWOtUCUaLXNy3GFaEG4VkSLFbXnuQ1I1oDI/Y8+IrcqxzQ
+	xlTOHk9eNuCgLYkHfh1iFvY+re1ixoDU132Skr+dbMSjUF/ug7VE45iIzazA0iEQrI5eQLYERmB
+	f3mzKRmsVsuFbhQ7bRJZZBskiU8yBPi7pjyNxC2iKAMWXi8pvn+6tsjTps6XtO5TUzzmX51sEzP
+	/aCPh4VIxZGpx+m9Hwp6nfRLTy4O4JwpX94739gTuZLfoRz52mP+DXT750k+ja+2+FTIg4DEaKd
+	TZmMMFQhxa++DXUOJvdlhhv3MSi4CrXs+XhD/4owIaLaCC8Oe5WoHhvKp2on71zIJdKlFDO7vp3
+	7yEbXexw2aqhsWY6dc4KxezRo3qRME6SqXIDAgZjFzg0xbIiQkHCGJjUgC5wqH6lMaJ4F6p8s6W
+	/na+peRpPZ7xQb5zRnORNLuPC+5FFDXXtr19anvZqSsb2kNKkcq5QE6SsEF4fR
+X-Google-Smtp-Source: AGHT+IHdAIIKe3pgWU/rve9NQZvyXQyA406zChkIFiW8Wmu8xswMNG6z3qeC3uaoH1Ht+hHmlyI+jA==
+X-Received: by 2002:a05:600c:3b0c:b0:471:669:ec1f with SMTP id 5b1f17b1804b1-471178785e1mr146235755e9.8.1761115596598;
+        Tue, 21 Oct 2025 23:46:36 -0700 (PDT)
 Received: from localhost.suse.cz (apn-78-30-82-56.dynamic.gprs.plus.pl. [78.30.82.56])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475c4369b5esm29931785e9.15.2025.10.21.23.46.34
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475c4369b5esm29931785e9.15.2025.10.21.23.46.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Oct 2025 23:46:35 -0700 (PDT)
+        Tue, 21 Oct 2025 23:46:36 -0700 (PDT)
 From: Sebastian Chlad <sebastianchlad@gmail.com>
 X-Google-Original-From: Sebastian Chlad <sebastian.chlad@suse.com>
 To: cgroups@vger.kernel.org
 Cc: mkoutny@suse.com,
 	Sebastian Chlad <sebastian.chlad@suse.com>
-Subject: [PATCH 3/5] selftests/cgroup: rename values_close() to check_tolerance()
-Date: Wed, 22 Oct 2025 08:45:59 +0200
-Message-ID: <20251022064601.15945-4-sebastian.chlad@suse.com>
+Subject: [PATCH 4/5] selftests/cgroup: rename values_close_report() to report_metrics()
+Date: Wed, 22 Oct 2025 08:46:00 +0200
+Message-ID: <20251022064601.15945-5-sebastian.chlad@suse.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251022064601.15945-1-sebastian.chlad@suse.com>
 References: <20251022064601.15945-1-sebastian.chlad@suse.com>
@@ -92,193 +92,214 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename the helper function `values_close()` to `check_tolerance()` across
-all relevant source files for improved clarity and consistency.
+The function values_close_report() is being renamed for the sake of
+clarity and consistency with its purpose - reporting detailed usage
+metrics during cgroup tests. Since this is a reporting function which
+is controlled by the metrics_mode env variable there is no more print
+of the metrics in case the test fails and this env var isn't set.
+All references in the cpu tests use use the new function name.
 
 Signed-off-by: Sebastian Chlad <sebastian.chlad@suse.com>
 ---
- .../selftests/cgroup/lib/cgroup_util.c        |  2 +-
+ .../selftests/cgroup/lib/cgroup_util.c        | 15 ++++----
  .../cgroup/lib/include/cgroup_util.h          |  2 +-
- .../selftests/cgroup/test_hugetlb_memcg.c     |  6 ++--
- .../selftests/cgroup/test_memcontrol.c        | 28 +++++++++----------
- 4 files changed, 19 insertions(+), 19 deletions(-)
+ tools/testing/selftests/cgroup/test_cpu.c     | 38 +++++++++++++------
+ 3 files changed, 35 insertions(+), 20 deletions(-)
 
 diff --git a/tools/testing/selftests/cgroup/lib/cgroup_util.c b/tools/testing/selftests/cgroup/lib/cgroup_util.c
-index 32ecc50e50fc..9735df26b163 100644
+index 9735df26b163..9414d522613d 100644
 --- a/tools/testing/selftests/cgroup/lib/cgroup_util.c
 +++ b/tools/testing/selftests/cgroup/lib/cgroup_util.c
-@@ -34,7 +34,7 @@ static void init_metric_mode(void)
- /*
-  * Checks if two given values differ by less than err% of their sum.
-  */
--int values_close(long a, long b, int err)
-+int check_tolerance(long a, long b, int err)
+@@ -22,13 +22,13 @@
+ 
+ bool cg_test_v1_named;
+ 
+-static bool metric_mode = false;
++static bool metrics_mode = false;
+ 
+ __attribute__((constructor))
+ static void init_metric_mode(void)
  {
- 	return labs(a - b) <= (a + b) / 100 * err;
+     char *env = getenv("CGROUP_TEST_METRICS");
+-    metric_mode = (env && atoi(env));
++    metrics_mode = (env && atoi(env));
+ }
+ 
+ /*
+@@ -40,21 +40,20 @@ int check_tolerance(long a, long b, int err)
+ }
+ 
+ /*
+- * Checks if two given values differ by less than err% of their sum and assert
+- * with detailed debug info if not.
++ * Report detailed metrics if metrics_mode is enabled.
+  */
+-int values_close_report(long a, long b, int err)
++int report_metrics(long a, long b, int err, const char *test_name)
+ {
+ 	long diff  = labs(a - b);
+ 	long limit = (a + b) / 100 * err;
+ 	double actual_err = (a + b) ? (100.0 * diff / (a + b)) : 0.0;
+ 	int close = diff <= limit;
+ 
+-	if (metric_mode || !close)
++	if (metrics_mode)
+ 		fprintf(stderr,
+-			"[METRICS] actual=%ld expected=%ld | diff=%ld | limit=%ld | "
++			"[METRICS: %s] actual=%ld expected=%ld | diff=%ld | limit=%ld | "
+ 			"tolerance=%d%% | actual_error=%.2f%%\n",
+-			a, b, diff, limit, err, actual_err);
++			test_name, a, b, diff, limit, err, actual_err);
+ 
+ 	return close;
  }
 diff --git a/tools/testing/selftests/cgroup/lib/include/cgroup_util.h b/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
-index d0e8cfbc3a4b..7b6c51f91937 100644
+index 7b6c51f91937..3f5002810729 100644
 --- a/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
 +++ b/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
-@@ -17,7 +17,7 @@
- #define CG_NAMED_NAME "selftest"
+@@ -18,7 +18,7 @@
  #define CG_PATH_FORMAT (!cg_test_v1_named ? "0::%s" : (":name=" CG_NAMED_NAME ":%s"))
  
--int values_close(long a, long b, int err);
-+int check_tolerance(long a, long b, int err);
- int values_close_report(long a, long b, int err);
+ int check_tolerance(long a, long b, int err);
+-int values_close_report(long a, long b, int err);
++int report_metrics(long a, long b, int err, const char *test_name);
  
  extern ssize_t read_text(const char *path, char *buf, size_t max_len);
-diff --git a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-index 856f9508ea56..6d636ef5f95b 100644
---- a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-+++ b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-@@ -126,7 +126,7 @@ static int hugetlb_test_program(const char *cgroup, void *arg)
- 	check_first(addr);
- 	expected_current = old_current + MB(2);
- 	current = cg_read_long(test_group, "memory.current");
--	if (!values_close(expected_current, current, 5)) {
-+	if (!check_tolerance(expected_current, current, 5)) {
- 		ksft_print_msg("memory usage should increase by around 2MB.\n");
- 		ksft_print_msg(
- 			"expected memory: %ld, actual memory: %ld\n",
-@@ -138,7 +138,7 @@ static int hugetlb_test_program(const char *cgroup, void *arg)
- 	write_data(addr);
- 	current = cg_read_long(test_group, "memory.current");
- 	expected_current = old_current + MB(8);
--	if (!values_close(expected_current, current, 5)) {
-+	if (!check_tolerance(expected_current, current, 5)) {
- 		ksft_print_msg("memory usage should increase by around 8MB.\n");
- 		ksft_print_msg(
- 			"expected memory: %ld, actual memory: %ld\n",
-@@ -150,7 +150,7 @@ static int hugetlb_test_program(const char *cgroup, void *arg)
- 	munmap(addr, LENGTH);
- 	current = cg_read_long(test_group, "memory.current");
- 	expected_current = old_current;
--	if (!values_close(expected_current, current, 5)) {
-+	if (!check_tolerance(expected_current, current, 5)) {
- 		ksft_print_msg("memory usage should go back down.\n");
- 		ksft_print_msg(
- 			"expected memory: %ld, actual memory: %ld\n",
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index a680f773f2d5..648a713918e4 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -188,14 +188,14 @@ static int alloc_anon_50M_check(const char *cgroup, void *arg)
- 	if (current < size)
+ extern ssize_t write_text(const char *path, char *buf, ssize_t len);
+diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
+index d54e2317efff..ff76eda99acd 100644
+--- a/tools/testing/selftests/cgroup/test_cpu.c
++++ b/tools/testing/selftests/cgroup/test_cpu.c
+@@ -187,6 +187,7 @@ static int test_cpucg_stats(const char *root)
+ 	int ret = KSFT_FAIL;
+ 	long usage_usec, user_usec, system_usec;
+ 	long usage_seconds = 2;
++	int error_margin = 1;
+ 	long expected_usage_usec = usage_seconds * USEC_PER_SEC;
+ 	char *cpucg;
+ 
+@@ -219,7 +220,8 @@ static int test_cpucg_stats(const char *root)
+ 	if (user_usec <= 0)
  		goto cleanup;
  
--	if (!values_close(size, current, 3))
-+	if (!check_tolerance(size, current, 3))
+-	if (!values_close_report(usage_usec, expected_usage_usec, 1))
++	report_metrics(usage_usec, expected_usage_usec, error_margin, __func__);
++	if (!check_tolerance(usage_usec, expected_usage_usec, error_margin))
  		goto cleanup;
  
- 	anon = cg_read_key_long(cgroup, "memory.stat", "anon ");
- 	if (anon < 0)
- 		goto cleanup;
+ 	ret = KSFT_PASS;
+@@ -241,6 +243,7 @@ static int test_cpucg_nice(const char *root)
+ 	int status;
+ 	long user_usec, nice_usec;
+ 	long usage_seconds = 2;
++	int error_margin = 1;
+ 	long expected_nice_usec = usage_seconds * USEC_PER_SEC;
+ 	char *cpucg;
+ 	pid_t pid;
+@@ -291,7 +294,8 @@ static int test_cpucg_nice(const char *root)
  
--	if (!values_close(anon, current, 3))
-+	if (!check_tolerance(anon, current, 3))
- 		goto cleanup;
+ 		user_usec = cg_read_key_long(cpucg, "cpu.stat", "user_usec");
+ 		nice_usec = cg_read_key_long(cpucg, "cpu.stat", "nice_usec");
+-		if (!values_close_report(nice_usec, expected_nice_usec, 1))
++		report_metrics(nice_usec, expected_nice_usec, error_margin, __func__);
++		if (!check_tolerance(nice_usec, expected_nice_usec, error_margin))
+ 			goto cleanup;
  
- 	ret = 0;
-@@ -226,7 +226,7 @@ static int alloc_pagecache_50M_check(const char *cgroup, void *arg)
- 	if (file < 0)
- 		goto cleanup;
+ 		ret = KSFT_PASS;
+@@ -395,6 +399,7 @@ static pid_t weight_hog_all_cpus(const struct cpu_hogger *child)
+ static int
+ overprovision_validate(const struct cpu_hogger *children, int num_children)
+ {
++	int error_margin = 35;
+ 	int ret = KSFT_FAIL, i;
  
--	if (!values_close(file, current, 10))
-+	if (!check_tolerance(file, current, 10))
- 		goto cleanup;
+ 	for (i = 0; i < num_children - 1; i++) {
+@@ -404,7 +409,8 @@ overprovision_validate(const struct cpu_hogger *children, int num_children)
+ 			goto cleanup;
  
- 	ret = 0;
-@@ -558,7 +558,7 @@ static int test_memcg_protection(const char *root, bool min)
- 		goto cleanup;
- 
- 	attempts = 0;
--	while (!values_close(cg_read_long(parent[1], "memory.current"),
-+	while (!check_tolerance(cg_read_long(parent[1], "memory.current"),
- 			     MB(150), 3)) {
- 		if (attempts++ > 5)
- 			break;
-@@ -568,16 +568,16 @@ static int test_memcg_protection(const char *root, bool min)
- 	if (cg_run(parent[2], alloc_anon, (void *)MB(148)))
- 		goto cleanup;
- 
--	if (!values_close(cg_read_long(parent[1], "memory.current"), MB(50), 3))
-+	if (!check_tolerance(cg_read_long(parent[1], "memory.current"), MB(50), 3))
- 		goto cleanup;
- 
- 	for (i = 0; i < ARRAY_SIZE(children); i++)
- 		c[i] = cg_read_long(children[i], "memory.current");
- 
--	if (!values_close(c[0], MB(29), 15))
-+	if (!check_tolerance(c[0], MB(29), 15))
- 		goto cleanup;
- 
--	if (!values_close(c[1], MB(21), 20))
-+	if (!check_tolerance(c[1], MB(21), 20))
- 		goto cleanup;
- 
- 	if (c[3] != 0)
-@@ -593,7 +593,7 @@ static int test_memcg_protection(const char *root, bool min)
+ 		delta = children[i + 1].usage - children[i].usage;
+-		if (!values_close_report(delta, children[0].usage, 35))
++		report_metrics(delta, children[0].usage, error_margin, __func__);
++		if (!check_tolerance(delta, children[0].usage, error_margin))
+ 			goto cleanup;
  	}
  
- 	current = min ? MB(50) : MB(30);
--	if (!values_close(cg_read_long(parent[1], "memory.current"), current, 3))
-+	if (!check_tolerance(cg_read_long(parent[1], "memory.current"), current, 3))
+@@ -441,10 +447,12 @@ static pid_t weight_hog_one_cpu(const struct cpu_hogger *child)
+ static int
+ underprovision_validate(const struct cpu_hogger *children, int num_children)
+ {
++	int error_margin = 15;
+ 	int ret = KSFT_FAIL, i;
+ 
+ 	for (i = 0; i < num_children - 1; i++) {
+-		if (!values_close_report(children[i + 1].usage, children[0].usage, 15))
++		report_metrics(children[i + 1].usage, children[0].usage, error_margin, __func__);
++		if (!check_tolerance(children[i + 1].usage, children[0].usage, error_margin))
+ 			goto cleanup;
+ 	}
+ 
+@@ -573,16 +581,20 @@ run_cpucg_nested_weight_test(const char *root, bool overprovisioned)
+ 
+ 	nested_leaf_usage = leaf[1].usage + leaf[2].usage;
+ 	if (overprovisioned) {
+-		if (!values_close_report(leaf[0].usage, nested_leaf_usage, 15))
++		report_metrics(leaf[0].usage, nested_leaf_usage, 15, __func__);
++		if (!check_tolerance(leaf[0].usage, nested_leaf_usage, 15))
+ 			goto cleanup;
+-	} else if (!values_close_report(leaf[0].usage * 2, nested_leaf_usage, 15))
+-		goto cleanup;
+-
++	} else {
++		report_metrics(leaf[0].usage * 2, nested_leaf_usage, 15, __func__);
++		if (!check_tolerance(leaf[0].usage * 2, nested_leaf_usage, 15))
++			goto cleanup;
++	}
+ 
+ 	child_usage = cg_read_key_long(child, "cpu.stat", "usage_usec");
+ 	if (child_usage <= 0)
+ 		goto cleanup;
+-	if (!values_close_report(child_usage, nested_leaf_usage, 1))
++	report_metrics(child_usage, nested_leaf_usage, 1, __func__);
++	if (!check_tolerance(child_usage, nested_leaf_usage, 1))
  		goto cleanup;
  
- 	if (!reclaim_until(children[0], MB(10)))
-@@ -681,7 +681,7 @@ static int alloc_pagecache_max_30M(const char *cgroup, void *arg)
+ 	ret = KSFT_PASS;
+@@ -649,6 +661,7 @@ static int test_cpucg_max(const char *root)
+ 	long quota_usec = 1000;
+ 	long default_period_usec = 100000; /* cpu.max's default period */
+ 	long duration_seconds = 1;
++	int error_margin = 10;
+ 
+ 	long duration_usec = duration_seconds * USEC_PER_SEC;
+ 	long usage_usec, n_periods, remainder_usec, expected_usage_usec;
+@@ -691,7 +704,8 @@ static int test_cpucg_max(const char *root)
+ 	expected_usage_usec
+ 		= n_periods * quota_usec + MIN(remainder_usec, quota_usec);
+ 
+-	if (!values_close_report(usage_usec, expected_usage_usec, 10))
++	report_metrics(usage_usec, expected_usage_usec, error_margin, __func__);
++	if (!check_tolerance(usage_usec, expected_usage_usec, error_margin))
  		goto cleanup;
  
- 	current = cg_read_long(cgroup, "memory.current");
--	if (!values_close(current, MB(30), 5))
-+	if (!check_tolerance(current, MB(30), 5))
+ 	ret = KSFT_PASS;
+@@ -713,6 +727,7 @@ static int test_cpucg_max_nested(const char *root)
+ 	long quota_usec = 1000;
+ 	long default_period_usec = 100000; /* cpu.max's default period */
+ 	long duration_seconds = 1;
++	int error_margin = 10;
+ 
+ 	long duration_usec = duration_seconds * USEC_PER_SEC;
+ 	long usage_usec, n_periods, remainder_usec, expected_usage_usec;
+@@ -762,7 +777,8 @@ static int test_cpucg_max_nested(const char *root)
+ 	expected_usage_usec
+ 		= n_periods * quota_usec + MIN(remainder_usec, quota_usec);
+ 
+-	if (!values_close_report(usage_usec, expected_usage_usec, 10))
++	report_metrics(usage_usec, expected_usage_usec, error_margin, __func__);
++	if (!check_tolerance(usage_usec, expected_usage_usec, error_margin))
  		goto cleanup;
  
- 	ret = 0;
-@@ -893,7 +893,7 @@ static bool reclaim_until(const char *memcg, long goal)
- 	for (retries = 5; retries > 0; retries--) {
- 		current = cg_read_long(memcg, "memory.current");
- 
--		if (current < goal || values_close(current, goal, 3))
-+		if (current < goal || check_tolerance(current, goal, 3))
- 			break;
- 		/* Did memory.reclaim return 0 incorrectly? */
- 		else if (reclaimed)
-@@ -954,7 +954,7 @@ static int test_memcg_reclaim(const char *root)
- 	 * retries).
- 	 */
- 	retries = 5;
--	while (!values_close(cg_read_long(memcg, "memory.current"),
-+	while (!check_tolerance(cg_read_long(memcg, "memory.current"),
- 			    expected_usage, 10)) {
- 		if (retries--) {
- 			sleep(1);
-@@ -1001,12 +1001,12 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
- 		*ptr = 0;
- 
- 	mem_current = cg_read_long(cgroup, "memory.current");
--	if (!mem_current || !values_close(mem_current, mem_max, 3))
-+	if (!mem_current || !check_tolerance(mem_current, mem_max, 3))
- 		goto cleanup;
- 
- 	swap_current = cg_read_long(cgroup, "memory.swap.current");
- 	if (!swap_current ||
--	    !values_close(mem_current + swap_current, size, 3))
-+	    !check_tolerance(mem_current + swap_current, size, 3))
- 		goto cleanup;
- 
- 	ret = 0;
-@@ -1358,7 +1358,7 @@ static int tcp_client(const char *cgroup, unsigned short port)
- 			goto close_sk;
- 
- 		/* exclude the memory not related to socket connection */
--		if (values_close(current - allocated, sock, 10)) {
-+		if (check_tolerance(current - allocated, sock, 10)) {
- 			ret = KSFT_PASS;
- 			break;
- 		}
+ 	ret = KSFT_PASS;
 -- 
 2.51.0
 
