@@ -1,64 +1,85 @@
-Return-Path: <cgroups+bounces-10977-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-10978-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EE6DBF9B1A
-	for <lists+cgroups@lfdr.de>; Wed, 22 Oct 2025 04:16:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A318CBFA4AB
+	for <lists+cgroups@lfdr.de>; Wed, 22 Oct 2025 08:46:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0EA919A8401
-	for <lists+cgroups@lfdr.de>; Wed, 22 Oct 2025 02:16:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D33093ABF1C
+	for <lists+cgroups@lfdr.de>; Wed, 22 Oct 2025 06:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6261421A459;
-	Wed, 22 Oct 2025 02:15:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621F52F1FEE;
+	Wed, 22 Oct 2025 06:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z9sc0WbR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EPmNdNta"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C8C21019C;
-	Wed, 22 Oct 2025 02:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624522F2604
+	for <cgroups@vger.kernel.org>; Wed, 22 Oct 2025 06:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761099353; cv=none; b=Gyj4+20q5/vwp0Oy8C8GodZ/XpbsHz2nZDXTvsRhFEDPFt+SMapWTxYqVq9Vh5rhoY5jgiwhtkJ0Zx+qUQJFpbkJNCxpN6+/m+ORHfDCapRJGY2hsa3Qg07LZ46a+bi+/p/zWnKqt4eZz37EkSH5YwCnOIxpF23aqhuQ6retfuI=
+	t=1761115579; cv=none; b=u3oWZmUP52zYr6qRmy6iD93bjITTewz3NErm/t56wmMhW2oryJe95kXBeyx5ht6nwKLUiIcnxOpqAPGLSVHhqkCFTuwmdVDaov6NKoPFzL04YYTvuL6ACTtK0rEywo/EZ3S8u3j0jzZLXDQoa18ecYrYb5mg/kAcTvRLnhQ1N+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761099353; c=relaxed/simple;
-	bh=K8KyPpuWFb8QcJ7XXOwUi5j8hUUNg/w4R0Rxk5mqPqg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d1dd5rUox79LdoK5FWvOfnBuIdMEsxrF7sijVmqkhKLpGKBBWYD/etwjNghHV3OUVgctfwT6Vd3xg09vlq69TmkEd1XCewCbLb4+m1oJPaG92zPXf2p7qdEsqs2TqIc2lrCQ2e+HNK39f8saJcDMfBxSRScI/nkf3w1RoW8l64A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z9sc0WbR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AA5EC4CEF1;
-	Wed, 22 Oct 2025 02:15:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761099352;
-	bh=K8KyPpuWFb8QcJ7XXOwUi5j8hUUNg/w4R0Rxk5mqPqg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Z9sc0WbR5vWlhZcCkAalZUcE8a6choXCT7cZiw3CKT+J/5fC9T7v5u8AnSqXnYbsV
-	 P7P2b6ik+JssEgaNDkNe2XnMW4PsoELzAWa2A70O8bYwKlVoCYveujBcfn2DN4GtuH
-	 MtHpRjUE6qp40ZhvgbtLft0TF6MRQ4LrPNFHLLcWBElzO1sWuP5sZDzcxyqfyB6kKd
-	 elTIYyj9yvVuubI/W/MSif1lULq9VXO5m4e9ogOmWMceGRX4NKD8H9fwlcT7ds2NBq
-	 W+tjZ3+hUcvB8bsnj7q6LbFpYZppFs72qrTfn98svYFY45qzgLUFnjHr+RByRQO4aA
-	 r1dgolbERzVsQ==
-From: SeongJae Park <sj@kernel.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: SeongJae Park <sj@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: manually uninline __memcg_memory_event
-Date: Tue, 21 Oct 2025 19:15:49 -0700
-Message-ID: <20251022021549.129413-1-sj@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <3h26sozqgksxn4fvh7i6qjhtbnrtzit6eluyieyhsvycs3fbs5@ddblsq2crkit>
-References: 
+	s=arc-20240116; t=1761115579; c=relaxed/simple;
+	bh=VoHNU79GvKrSKfQmG6epwNhyluBaNgi52sGNFJTeT0I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U/cKTPwk23vRxuEo79Oo1uOOxKs6IMTloz1675EuMInVpUkCrsA0pMKd7YyqY9cc/FC7Z0DoZ0tk4dStMPzWRD3HZHOlk1o5muGcFfiAiF6MsFJWEHUXXu0BdV/HVWkepOOdAxnvL9bw3jbYnGsbn+t3LekH8Vh6tKcowBaqpMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EPmNdNta; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-47103b6058fso4012305e9.1
+        for <cgroups@vger.kernel.org>; Tue, 21 Oct 2025 23:46:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761115575; x=1761720375; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SC78h9CGmJYdLYYgLZzfeVoSnDU5W9zxrCuIx9lESzk=;
+        b=EPmNdNtaNyyxhZWV5ZoCJeLrtKgTk6LGs4rbshdx0zxZfSnjIDRufWp5WuRvYiyy7j
+         guSL5PDd7MsCT80sUJczGZVbykJ21Tj8BPXavF6scc46vFt/Ufjx0PdoqLX6mIRXERCe
+         EWQagTa77GTdtwKedmojipbYiebWe96SRLvFysL+Cz6t+IqbD6DgIz8rDRw7NZvbj9qB
+         8dIf8A+b07gMhsLIGO0/uUqnWtsuns/fkODe60LhIFAxX7kOj/g6l9hvZmqKHP3Oyym9
+         3xSZH1AWdwl2LZgEJl2BjlpqsWxbCCIkU2Bo21iHJ+a9ix7ymA4K4h5vZPNiThzp8iUQ
+         rUcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761115575; x=1761720375;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SC78h9CGmJYdLYYgLZzfeVoSnDU5W9zxrCuIx9lESzk=;
+        b=YcEv8VWG4Wucg9uF7MKLVmwUqEVr4kag2tuCdl2ugJJp1GTy8fDvPxRHC5r+CmN7Rh
+         fx1RX5HKOhpyAhfCO8CXuAv00p/QdsTrA4Q9Xwvh3/uIXGGxrdDNKbmLuU0P0RcTlrEd
+         tziY4roKTC7Y4hXskAUdaNhgd6WVQx7khtHSrCoCmkZ6S2AyGKeWkbiMfOGGghqigGsF
+         z7Z+/K4TZ9HYTXf9DRktn0b9azWGQiR0aZF6HqVuwNx1gruRY2Uifb2TmqQhcVS6DB3J
+         JkF7ao5Xzlgnoh0c7Ily3pSQUs5pJQVYq+Uachx49Xb9pWGTwR/ipwX52byrRdRz014c
+         y0cA==
+X-Gm-Message-State: AOJu0YxsWdmTCVxFxEKusQN8JmWX2Hyi+Hd4fMkAWGHnqMfFA7eaECTc
+	RsWidlG1hcltI9e+iJk1fLdLim8YTb1Birdgarb8ybAXUZmMc7vsYNaFQcjZww==
+X-Gm-Gg: ASbGncst3592sQ3Pk485wSO87UJEWqySDeWjOOMjqbQ2XGVL/Vk6RVIxEo1gKS0AtV3
+	M/A8vxWx28po0WGtdOeNwxxglWPxdbXaoJu1yCM9+6Zq+ZajabnrM9Vf5V/zLRzLeko+C+m46gY
+	mgYUZNHaQ+ZYE3nGTVq/NJBsQw6hAyU7O96M+PplKxRcXTLxFp9bhhpwMa11m77gz4PAIRHC+Hs
+	I6tLZ1bab4lZAjko+qlZobSdQj3wqTYnEzPNavgygkIvx7MSoDoPnhuKK3/UcX9ESiV4F2YDo/H
+	rH+OvVZBmBtWbu7Cy0G8SAxfrH6hRctAFgiZYVIiIeGiGzUErwEibMbG5+REiA+zitlMRskSc1D
+	42VWtVVTUdrMOjGq2ktj7OcEk1YFvOjSH9gQ4a6bxNLLnF+IgxTsOgX7ERb84xz0L4Z1AP4+nW1
+	/Z+B8s56LMNapNv2N1phiAZrWMRrFjJK/6r2gNQNexXa1Nh+eD1PNPVTQZXwt1
+X-Google-Smtp-Source: AGHT+IFtT75sCC+cIJ8tS3pWdbqHOYBRH10Anf71XABUd9YbEISRoY9C0RptuG+0Vrk1OlCkO/wjdQ==
+X-Received: by 2002:a05:600c:8b84:b0:471:793:e795 with SMTP id 5b1f17b1804b1-475c6ed4639mr2954135e9.0.1761115575338;
+        Tue, 21 Oct 2025 23:46:15 -0700 (PDT)
+Received: from localhost.suse.cz (apn-78-30-82-56.dynamic.gprs.plus.pl. [78.30.82.56])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475c4369b5esm29931785e9.15.2025.10.21.23.46.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Oct 2025 23:46:15 -0700 (PDT)
+From: Sebastian Chlad <sebastianchlad@gmail.com>
+X-Google-Original-From: Sebastian Chlad <sebastian.chlad@suse.com>
+To: cgroups@vger.kernel.org
+Cc: mkoutny@suse.com,
+	Sebastian Chlad <sebastian.chlad@suse.com>
+Subject: [PATCH 0/5] selftests/cgroup: add metrics mode and detailed CPU test diagnostics
+Date: Wed, 22 Oct 2025 08:45:56 +0200
+Message-ID: <20251022064601.15945-1-sebastian.chlad@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -67,143 +88,44 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Tue, 21 Oct 2025 18:28:02 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
+Hi,
 
-> On Tue, Oct 21, 2025 at 05:58:00PM -0700, SeongJae Park wrote:
-> > On Tue, 21 Oct 2025 16:44:25 -0700 Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > 
-> > > The function __memcg_memory_event has been unnecessarily marked inline
-> > > even when it is not really performance critical. It is usually called
-> > > to track extreme conditions. Over the time, it has evolved to include
-> > > more functionality and inlining it is causing more harm.
-> > > 
-> > > Before the patch:
-> > > $ size mm/memcontrol.o net/ipv4/tcp_input.o net/ipv4/tcp_output.o
-> > >    text    data     bss     dec     hex filename
-> > >   35645   10574    4192   50411    c4eb mm/memcontrol.o
-> > >   54738    1658       0   56396    dc4c net/ipv4/tcp_input.o
-> > >   34644    1065       0   35709    8b7d net/ipv4/tcp_output.o
-> > > 
-> > > After the patch:
-> > > $ size mm/memcontrol.o net/ipv4/tcp_input.o net/ipv4/tcp_output.o
-> > >    text    data     bss     dec     hex filename
-> > >   35137   10446    4192   49775    c26f mm/memcontrol.o
-> > >   54322    1562       0   55884    da4c net/ipv4/tcp_input.o
-> > >   34492    1017       0   35509    8ab5 net/ipv4/tcp_output.o
-> > > 
-> > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > > ---
-> > >  include/linux/memcontrol.h | 32 ++------------------------------
-> > >  mm/memcontrol.c            | 31 +++++++++++++++++++++++++++++++
-> > >  2 files changed, 33 insertions(+), 30 deletions(-)
-> > > 
-> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > index d37e7c93bb8c..8d2e250535a8 100644
-> > > --- a/include/linux/memcontrol.h
-> > > +++ b/include/linux/memcontrol.h
-> > > @@ -1002,36 +1002,8 @@ static inline void count_memcg_event_mm(struct mm_struct *mm,
-> > >  	count_memcg_events_mm(mm, idx, 1);
-> > >  }
-> > >  
-> > > -static inline void __memcg_memory_event(struct mem_cgroup *memcg,
-> > > -					enum memcg_memory_event event,
-> > > -					bool allow_spinning)
-> > > -{
-> > > -	bool swap_event = event == MEMCG_SWAP_HIGH || event == MEMCG_SWAP_MAX ||
-> > > -			  event == MEMCG_SWAP_FAIL;
-> > > -
-> > > -	/* For now only MEMCG_MAX can happen with !allow_spinning context. */
-> > > -	VM_WARN_ON_ONCE(!allow_spinning && event != MEMCG_MAX);
-> > > -
-> > > -	atomic_long_inc(&memcg->memory_events_local[event]);
-> > > -	if (!swap_event && allow_spinning)
-> > > -		cgroup_file_notify(&memcg->events_local_file);
-> > > -
-> > > -	do {
-> > > -		atomic_long_inc(&memcg->memory_events[event]);
-> > > -		if (allow_spinning) {
-> > > -			if (swap_event)
-> > > -				cgroup_file_notify(&memcg->swap_events_file);
-> > > -			else
-> > > -				cgroup_file_notify(&memcg->events_file);
-> > > -		}
-> > > -
-> > > -		if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> > > -			break;
-> > > -		if (cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_LOCAL_EVENTS)
-> > > -			break;
-> > > -	} while ((memcg = parent_mem_cgroup(memcg)) &&
-> > > -		 !mem_cgroup_is_root(memcg));
-> > > -}
-> > > +void __memcg_memory_event(struct mem_cgroup *memcg,
-> > > +			  enum memcg_memory_event event, bool allow_spinning);
-> > >  
-> > >  static inline void memcg_memory_event(struct mem_cgroup *memcg,
-> > >  				      enum memcg_memory_event event)
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 1a95049d8b88..93f7c76f0ce9 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -1626,6 +1626,37 @@ unsigned long mem_cgroup_size(struct mem_cgroup *memcg)
-> > >  	return page_counter_read(&memcg->memory);
-> > >  }
-> > >  
-> > > +void __memcg_memory_event(struct mem_cgroup *memcg,
-> > > +			  enum memcg_memory_event event, bool allow_spinning)
-> > 
-> > Seems this function is called only from memcontrol.c.  Why not making it a
-> > static function?
-> 
-> There is a recent code where this is called (indirectly) from networking
-> stack for MEMCG_SOCK_THROTTLED.
+following the idea of better diagnostics and debugging for the cgroup tests:
+https://lore.kernel.org/cgroups/20251015080022.14883-1-sebastian.chlad@suse.com
+here is a proposal how to go further with this.
 
-Thank you for enlightening me.  Apparently the code is from
-https://lore.kernel.org/20251016161035.86161-1-shakeel.butt@linux.dev.
+The series consolidates helper functions in the utils file and renames them
+for clarity. It also introduces the `CGROUP_TEST_METRICS` environment variable,
+which, when set, enables detailed per-test metrics reporting. This makes it
+much easier to analyze trends across CI runs, track regressions, and assess
+how close actual results are to expected tolerances.
 
-> 
-> > 
-> > > +{
-> > > +	bool swap_event = event == MEMCG_SWAP_HIGH || event == MEMCG_SWAP_MAX ||
-> > > +			  event == MEMCG_SWAP_FAIL;
-> > > +
-> > > +	/* For now only MEMCG_MAX can happen with !allow_spinning context. */
-> > > +	VM_WARN_ON_ONCE(!allow_spinning && event != MEMCG_MAX);
-> > > +
-> > > +	atomic_long_inc(&memcg->memory_events_local[event]);
-> > > +	if (!swap_event && allow_spinning)
-> > > +		cgroup_file_notify(&memcg->events_local_file);
-> > > +
-> > > +	do {
-> > > +		atomic_long_inc(&memcg->memory_events[event]);
-> > > +		if (allow_spinning) {
-> > > +			if (swap_event)
-> > > +				cgroup_file_notify(&memcg->swap_events_file);
-> > > +			else
-> > > +				cgroup_file_notify(&memcg->events_file);
-> > > +		}
-> > > +
-> > > +		if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> > > +			break;
-> > > +		if (cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_LOCAL_EVENTS)
-> > > +			break;
-> > > +	} while ((memcg = parent_mem_cgroup(memcg)) &&
-> > > +		 !mem_cgroup_is_root(memcg));
-> > > +}
-> > > +EXPORT_SYMBOL(__memcg_memory_event);
-> > 
-> > Also, seems there is no reason to export this symbol?
-> 
-> The networking code needs this export.
-> 
-> Thanks for taking a look.
-
-Again, thank you for clarifying.
-
-Acked-by: SeongJae Park <sj@kernel.org>
-
+If this approach looks acceptable, I plan to extend it to additional cgroup
+tests and introduce supporting utility functions where appropriate.
+Also I consider metrics_report.txt to be updated with more serious test runs against
+multicore server(s) and possibily some cloud-based machines.
 
 Thanks,
-SJ
+Sebastian Chlad
 
-[...]
+
+Sebastian Chlad (5):
+  selftests/cgroup: move utils functions to .c file
+  selftests/cgroup: add metrics mode for detailed test reporting
+  selftests/cgroup: rename values_close() to check_tolerance()
+  selftests/cgroup: rename values_close_report() to report_metrics()
+  selftests/cgroup: add aggregated CPU test metrics report
+
+ .../selftests/cgroup/lib/cgroup_util.c        | 37 ++++++++++++++++++
+ .../cgroup/lib/include/cgroup_util.h          | 29 +-------------
+ .../selftests/cgroup/metrics_report.txt       | 20 ++++++++++
+ tools/testing/selftests/cgroup/test_cpu.c     | 38 +++++++++++++------
+ .../selftests/cgroup/test_hugetlb_memcg.c     |  6 +--
+ .../selftests/cgroup/test_memcontrol.c        | 28 +++++++-------
+ 6 files changed, 103 insertions(+), 55 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/metrics_report.txt
+
+-- 
+2.51.0
+
 
