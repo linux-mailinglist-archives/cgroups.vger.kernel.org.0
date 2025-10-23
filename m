@@ -1,410 +1,184 @@
-Return-Path: <cgroups+bounces-11059-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11060-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90EDCC00586
-	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 11:51:22 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58874C0090C
+	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 12:47:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17030188287A
-	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 09:51:46 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0CF564F92D2
+	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 10:47:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2682FDC29;
-	Thu, 23 Oct 2025 09:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C02F030AAD7;
+	Thu, 23 Oct 2025 10:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="azfDjNK/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLokn6j7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C94D30AAC4
-	for <cgroups@vger.kernel.org>; Thu, 23 Oct 2025 09:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 622622765DC;
+	Thu, 23 Oct 2025 10:46:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761213077; cv=none; b=SdMuuEJd7v1xdi8aiDU8YQVv5Mjc6T7TbOk5lqeizE7+MgXzFY4BkHifCQnSl47rEwOy1yDI3/os05FU+1XJ3A1M9k6KkMZWZ4fNHdtt9yqcpxkNpz9pBU8o7X1QZRmfnIg1NTRKkkDYun3URTVygBuAB/NrA6tt7byFiVAYmLM=
+	t=1761216413; cv=none; b=J7acZ53Z08PuI0EZ94hojatEirftDrp9WXg5qkcBAkfJI3/SU8yJrIKpyeY84JfavYr9Pt7eA0VXrrfIZwTupibz/vbKJo1ZYsX43B99IwVxUTGis1V6vBqP55s2JalCr2mzwYIvKwLJIlZ/fojSOYLZjU0FUWhvb267sYP92JA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761213077; c=relaxed/simple;
-	bh=CXbrKa1hvLe6JmQp/xqyfACy+pFVJ+FMVXMF2mo35cQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q7Mhjgs/Nddadqg4jeezMpXzzBNvB3h4PXXPSOHnZpj+ZYKofMHrWyCrGax8etqNw9QBfy3WT+XivcMKXb667LlzTbnfJrhr7Z9rJAJpf2jyfq2i9QFGI9JrUsDoWlIhSsqqoTVD8JQ5c1FoTF1mf4byQWmHowL4WiBXntIQM+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=azfDjNK/; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-475c696ab72so4610255e9.1
-        for <cgroups@vger.kernel.org>; Thu, 23 Oct 2025 02:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1761213071; x=1761817871; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kgI1/2/m5YMCpla75pJWeIqwruSPrdmkAcaa18QQU7s=;
-        b=azfDjNK/z6WgPFbSKSvLCsjZR+98elUy0QAgwre/qAPRHy2YU4xVLiXjO6JJIr6n+5
-         r+rRe1b6KUgbgsuZ/cBstY2phmt3R7y/1dCPg3Sfk6vpXsasqFukeEi+3sRjyB8IyCGE
-         timVz95KscwhQCXKiXEzYOXF2f8NnMlz27ZkaBiXnkbwgArT3qs0d1/A1rgK6lltFXai
-         jP09mPKRGDLrVAkGHIj3h9wvx0NW3XUOdqvNijOEYDmhuxvh+RkDmdCvg2bnY8G4z7gu
-         pH4Ysh8X4gSVG9cwsHCoL51zYIyu8EnUbCsS/36luNxpXpKsdGSIsngsKefLFB+lKig2
-         yqQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761213071; x=1761817871;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kgI1/2/m5YMCpla75pJWeIqwruSPrdmkAcaa18QQU7s=;
-        b=caqeDDUrBGpnxfaz55KpDeGcRXApoqIoUM1wSZPUK0hfteoo9y2P0a9hnVdsNPE9AS
-         8MMHskj/PpshNNI5msjRo/VnUe26paCxC4E8EXkBoi1bFiMj1FTmbf7gpf10wdmp9qSl
-         v6lT5bqoOrPm/sgvFXkcc7O+p2peR22yoV07Os7f33syJmLsaK2lrOjjICKhjRbHgSfa
-         v9A6guYPZNaHVCgL3xTXXAMdfutKkL1kCTPsDYvsL5LPzBrhXEyArwaCjFjT5nipG1Kg
-         bZtXlhNzgk8lwotHAgYoT6z0VNKvwl1VR9kuZztPw9nSU/yTCqDBx7tEeKqDH/9naSvF
-         KbBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVz2dUNHKReAOp5MIUmDeTJbBGcoY4YbbiKAch4ZQHPtMFi3vUSUoq7RtGIHDyEo200W/qj7vF9@vger.kernel.org
-X-Gm-Message-State: AOJu0YwrFEMCCiaB8RpXCbAG+q8mSdV4icbBI0km13UAhnvNikW6FCfj
-	+PyN9oQ252Lmg2e50c2OpNVWncykID1H4hJZsqSXCdFFgI88xfoXp5NMhqOxjWLDI6sLO04rDp7
-	XazGf/LG5Q4u1rppk2Ti3zsGqHCEpV+QwMegOW7Bb3g==
-X-Gm-Gg: ASbGncuwNTcxbfN3KUjjVsrV/NCtUNcaNYmW+NPpFeZdKRwJyAS0K02g8jBH7J2Y88T
-	UGj5oWxq/pReu1VvYh1kMxXjs1lvSoOjabD4vCE15ShNfgvglpwmmU2K/idaqsRFQMKC/RaRunW
-	BhdK4yQrBio6RoEFGnCG+BATQkzO1/2a9Nmjga0UThQbxVrOeMdLRMkD0K2i6tNNBEPdpzzb4WR
-	xBN3Qxn+Hyon15bAC+VyuRq4AVrqlUTAoztb+xHrHzfGBTeo5FyunPq4w==
-X-Google-Smtp-Source: AGHT+IG7meu9BpxIPzPnU9U+2aAU60beBZJwxQU/bnKug2rbcmSKjhZT5wO4UhS1t/oHzSaXQuCYigZkfet12DdBuP0=
-X-Received: by 2002:a05:600c:37c7:b0:46e:1fb7:a1b3 with SMTP id
- 5b1f17b1804b1-4711790b56emr147936735e9.23.1761213071378; Thu, 23 Oct 2025
- 02:51:11 -0700 (PDT)
+	s=arc-20240116; t=1761216413; c=relaxed/simple;
+	bh=4Nycx1ORZclwlAUuSrDPm+Q6EH8JvLo9+c1zBeefgcA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CbHMTTQpLwl2OGBKFVjSqqSs5a7Kl03vI7CkwY/b+MOtlAdKnt80XVYlnIPw9fy+aqVGiGgUv0Eo8R0gZ4Ef4lHRZpI4TgpCPRs7CkHjpL98MI/jN8P97crQHkOOD1X62f310tNVtCXmzuyO8cpNGs/fohkpICcaRYMV4zVVX9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLokn6j7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD9B7C4CEE7;
+	Thu, 23 Oct 2025 10:46:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761216412;
+	bh=4Nycx1ORZclwlAUuSrDPm+Q6EH8JvLo9+c1zBeefgcA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=MLokn6j7bsPTtDKzR8pqjp2OIR+OMKA1rj3J/6jxNvlhgcsOoQ+moyQ5GdMJY0dDs
+	 Znmt5H3FHjRCN/E5Q2OiSn3Lge5IHCXD/l7T7/WJ6bkLphXMC2HXV8rhysZfDX6Sr+
+	 rNUl8sN5/1gEAa9ysrMEafdWcYQ0VQhevGk1H7BhaFT8iiTd5n9BTY4verf1aGvcpu
+	 2n7qQ7sTY81LVQ1UhGF1Gtff22NCJXEfiZHTApKvHY7cQr6tmKVbYlAGr+xV9kWFbP
+	 87li730Z1OQYtoHcpFjViMqnavqolBedQ+OYK4M6H1LebiK34NEzwo7Gy1V6/AuNf7
+	 96d0cS8eISSpA==
+Message-ID: <5b287ec6-72ff-4707-9040-3c84efc58b94@kernel.org>
+Date: Thu, 23 Oct 2025 12:46:45 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251022064601.15945-1-sebastian.chlad@suse.com>
- <20251022064601.15945-5-sebastian.chlad@suse.com> <d6594555-d257-4f5e-8495-d902151b166b@huaweicloud.com>
-In-Reply-To: <d6594555-d257-4f5e-8495-d902151b166b@huaweicloud.com>
-From: Sebastian Chlad <sebastian.chlad@suse.com>
-Date: Thu, 23 Oct 2025 11:50:59 +0200
-X-Gm-Features: AWmQ_bknX2i_NsEpNjWS_DyL8EQCoqCK7T1wIVOGqNBdAvNQ3gySV9fk-0wzX9A
-Message-ID: <CAJR+Y9J1fPRACgt0sscrhDQjZ4XdKQGSnEdm01v4=4oTb68_0w@mail.gmail.com>
-Subject: Re: [PATCH 4/5] selftests/cgroup: rename values_close_report() to report_metrics()
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: Sebastian Chlad <sebastianchlad@gmail.com>, cgroups@vger.kernel.org, mkoutny@suse.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/32] pidfs: validate extensible ioctls
+To: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org
+Cc: Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>,
+ Mike Yuan <me@yhndnzj.com>, =?UTF-8?Q?Zbigniew_J=C4=99drzejewski-Szmek?=
+ <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>,
+ Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, netdev@vger.kernel.org
+References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
+ <20250910-work-namespace-v1-1-4dd56e7359d8@kernel.org>
+Content-Language: en-US
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20250910-work-namespace-v1-1-4dd56e7359d8@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 10. 09. 25, 16:36, Christian Brauner wrote:
+> Validate extensible ioctls stricter than we do now.
+> 
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> ---
+>   fs/pidfs.c         |  2 +-
+>   include/linux/fs.h | 14 ++++++++++++++
+>   2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/pidfs.c b/fs/pidfs.c
+> index edc35522d75c..0a5083b9cce5 100644
+> --- a/fs/pidfs.c
+> +++ b/fs/pidfs.c
+> @@ -440,7 +440,7 @@ static bool pidfs_ioctl_valid(unsigned int cmd)
+>   		 * erronously mistook the file descriptor for a pidfd.
+>   		 * This is not perfect but will catch most cases.
+>   		 */
+> -		return (_IOC_TYPE(cmd) == _IOC_TYPE(PIDFD_GET_INFO));
+> +		return extensible_ioctl_valid(cmd, PIDFD_GET_INFO, PIDFD_INFO_SIZE_VER0);
 
 Hi,
 
-On Thu, Oct 23, 2025 at 3:29=E2=80=AFAM Chen Ridong <chenridong@huaweicloud=
-.com> wrote:
->
->
->
-> On 2025/10/22 14:46, Sebastian Chlad wrote:
-> > The function values_close_report() is being renamed for the sake of
-> > clarity and consistency with its purpose - reporting detailed usage
-> > metrics during cgroup tests. Since this is a reporting function which
-> > is controlled by the metrics_mode env variable there is no more print
-> > of the metrics in case the test fails and this env var isn't set.
-> > All references in the cpu tests use use the new function name.
-> >
-> > Signed-off-by: Sebastian Chlad <sebastian.chlad@suse.com>
-> > ---
-> >  .../selftests/cgroup/lib/cgroup_util.c        | 15 ++++----
-> >  .../cgroup/lib/include/cgroup_util.h          |  2 +-
-> >  tools/testing/selftests/cgroup/test_cpu.c     | 38 +++++++++++++------
-> >  3 files changed, 35 insertions(+), 20 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/cgroup/lib/cgroup_util.c b/tools/t=
-esting/selftests/cgroup/lib/cgroup_util.c
-> > index 9735df26b163..9414d522613d 100644
-> > --- a/tools/testing/selftests/cgroup/lib/cgroup_util.c
-> > +++ b/tools/testing/selftests/cgroup/lib/cgroup_util.c
-> > @@ -22,13 +22,13 @@
-> >
-> >  bool cg_test_v1_named;
-> >
-> > -static bool metric_mode =3D false;
-> > +static bool metrics_mode =3D false;
-> >
-> >  __attribute__((constructor))
-> >  static void init_metric_mode(void)
-> >  {
-> >      char *env =3D getenv("CGROUP_TEST_METRICS");
-> > -    metric_mode =3D (env && atoi(env));
-> > +    metrics_mode =3D (env && atoi(env));
-> >  }
-> >
->
-> Could you name it metrics_mode from the start? That way, we can avoid ren=
-aming it later.
->
-> >  /*
-> > @@ -40,21 +40,20 @@ int check_tolerance(long a, long b, int err)
-> >  }
-> >
-> >  /*
-> > - * Checks if two given values differ by less than err% of their sum an=
-d assert
-> > - * with detailed debug info if not.
-> > + * Report detailed metrics if metrics_mode is enabled.
-> >   */
-> > -int values_close_report(long a, long b, int err)
-> > +int report_metrics(long a, long b, int err, const char *test_name)
-> >  {
-> >       long diff  =3D labs(a - b);
-> >       long limit =3D (a + b) / 100 * err;
-> >       double actual_err =3D (a + b) ? (100.0 * diff / (a + b)) : 0.0;
-> >       int close =3D diff <=3D limit;
-> >
-> > -     if (metric_mode || !close)
-> > +     if (metrics_mode)
-> >               fprintf(stderr,
-> > -                     "[METRICS] actual=3D%ld expected=3D%ld | diff=3D%=
-ld | limit=3D%ld | "
-> > +                     "[METRICS: %s] actual=3D%ld expected=3D%ld | diff=
-=3D%ld | limit=3D%ld | "
-> >                       "tolerance=3D%d%% | actual_error=3D%.2f%%\n",
-> > -                     a, b, diff, limit, err, actual_err);
-> > +                     test_name, a, b, diff, limit, err, actual_err);
-> >
-> >       return close;
-> >  }
->
-> Consider moving the metrics_mode check to the beginning of the function. =
-If metrics are disabled,
-> this avoids the unnecessary calculations.
->
-> > diff --git a/tools/testing/selftests/cgroup/lib/include/cgroup_util.h b=
-/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
-> > index 7b6c51f91937..3f5002810729 100644
-> > --- a/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
-> > +++ b/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
-> > @@ -18,7 +18,7 @@
-> >  #define CG_PATH_FORMAT (!cg_test_v1_named ? "0::%s" : (":name=3D" CG_N=
-AMED_NAME ":%s"))
-> >
-> >  int check_tolerance(long a, long b, int err);
-> > -int values_close_report(long a, long b, int err);
-> > +int report_metrics(long a, long b, int err, const char *test_name);
-> >
-> >  extern ssize_t read_text(const char *path, char *buf, size_t max_len);
-> >  extern ssize_t write_text(const char *path, char *buf, ssize_t len);
-> > diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/=
-selftests/cgroup/test_cpu.c
-> > index d54e2317efff..ff76eda99acd 100644
-> > --- a/tools/testing/selftests/cgroup/test_cpu.c
-> > +++ b/tools/testing/selftests/cgroup/test_cpu.c
-> > @@ -187,6 +187,7 @@ static int test_cpucg_stats(const char *root)
-> >       int ret =3D KSFT_FAIL;
-> >       long usage_usec, user_usec, system_usec;
-> >       long usage_seconds =3D 2;
-> > +     int error_margin =3D 1;
-> >       long expected_usage_usec =3D usage_seconds * USEC_PER_SEC;
-> >       char *cpucg;
-> >
-> > @@ -219,7 +220,8 @@ static int test_cpucg_stats(const char *root)
-> >       if (user_usec <=3D 0)
-> >               goto cleanup;
-> >
-> > -     if (!values_close_report(usage_usec, expected_usage_usec, 1))
-> > +     report_metrics(usage_usec, expected_usage_usec, error_margin, __f=
-unc__);
-> > +     if (!check_tolerance(usage_usec, expected_usage_usec, error_margi=
-n))
-> >               goto cleanup;
-> >
-> >       ret =3D KSFT_PASS;
-> > @@ -241,6 +243,7 @@ static int test_cpucg_nice(const char *root)
-> >       int status;
-> >       long user_usec, nice_usec;
-> >       long usage_seconds =3D 2;
-> > +     int error_margin =3D 1;
-> >       long expected_nice_usec =3D usage_seconds * USEC_PER_SEC;
-> >       char *cpucg;
-> >       pid_t pid;
-> > @@ -291,7 +294,8 @@ static int test_cpucg_nice(const char *root)
-> >
-> >               user_usec =3D cg_read_key_long(cpucg, "cpu.stat", "user_u=
-sec");
-> >               nice_usec =3D cg_read_key_long(cpucg, "cpu.stat", "nice_u=
-sec");
-> > -             if (!values_close_report(nice_usec, expected_nice_usec, 1=
-))
-> > +             report_metrics(nice_usec, expected_nice_usec, error_margi=
-n, __func__);
-> > +             if (!check_tolerance(nice_usec, expected_nice_usec, error=
-_margin))
-> >                       goto cleanup;
-> >
-> >               ret =3D KSFT_PASS;
-> > @@ -395,6 +399,7 @@ static pid_t weight_hog_all_cpus(const struct cpu_h=
-ogger *child)
-> >  static int
-> >  overprovision_validate(const struct cpu_hogger *children, int num_chil=
-dren)
-> >  {
-> > +     int error_margin =3D 35;
-> >       int ret =3D KSFT_FAIL, i;
-> >
-> >       for (i =3D 0; i < num_children - 1; i++) {
-> > @@ -404,7 +409,8 @@ overprovision_validate(const struct cpu_hogger *chi=
-ldren, int num_children)
-> >                       goto cleanup;
-> >
-> >               delta =3D children[i + 1].usage - children[i].usage;
-> > -             if (!values_close_report(delta, children[0].usage, 35))
-> > +             report_metrics(delta, children[0].usage, error_margin, __=
-func__);
-> > +             if (!check_tolerance(delta, children[0].usage, error_marg=
-in))
-> >                       goto cleanup;
-> >       }
-> >
-> > @@ -441,10 +447,12 @@ static pid_t weight_hog_one_cpu(const struct cpu_=
-hogger *child)
-> >  static int
-> >  underprovision_validate(const struct cpu_hogger *children, int num_chi=
-ldren)
-> >  {
-> > +     int error_margin =3D 15;
-> >       int ret =3D KSFT_FAIL, i;
-> >
-> >       for (i =3D 0; i < num_children - 1; i++) {
-> > -             if (!values_close_report(children[i + 1].usage, children[=
-0].usage, 15))
-> > +             report_metrics(children[i + 1].usage, children[0].usage, =
-error_margin, __func__);
-> > +             if (!check_tolerance(children[i + 1].usage, children[0].u=
-sage, error_margin))
-> >                       goto cleanup;
-> >       }
-> >
-> > @@ -573,16 +581,20 @@ run_cpucg_nested_weight_test(const char *root, bo=
-ol overprovisioned)
-> >
-> >       nested_leaf_usage =3D leaf[1].usage + leaf[2].usage;
-> >       if (overprovisioned) {
-> > -             if (!values_close_report(leaf[0].usage, nested_leaf_usage=
-, 15))
-> > +             report_metrics(leaf[0].usage, nested_leaf_usage, 15, __fu=
-nc__);
-> > +             if (!check_tolerance(leaf[0].usage, nested_leaf_usage, 15=
-))
-> >                       goto cleanup;
-> > -     } else if (!values_close_report(leaf[0].usage * 2, nested_leaf_us=
-age, 15))
-> > -             goto cleanup;
-> > -
-> > +     } else {
-> > +             report_metrics(leaf[0].usage * 2, nested_leaf_usage, 15, =
-__func__);
-> > +             if (!check_tolerance(leaf[0].usage * 2, nested_leaf_usage=
-, 15))
-> > +                     goto cleanup;
-> > +     }
-> >
-> >       child_usage =3D cg_read_key_long(child, "cpu.stat", "usage_usec")=
-;
-> >       if (child_usage <=3D 0)
-> >               goto cleanup;
-> > -     if (!values_close_report(child_usage, nested_leaf_usage, 1))
-> > +     report_metrics(child_usage, nested_leaf_usage, 1, __func__);
-> > +     if (!check_tolerance(child_usage, nested_leaf_usage, 1))
-> >               goto cleanup;
-> >
-> >       ret =3D KSFT_PASS;
-> > @@ -649,6 +661,7 @@ static int test_cpucg_max(const char *root)
-> >       long quota_usec =3D 1000;
-> >       long default_period_usec =3D 100000; /* cpu.max's default period =
-*/
-> >       long duration_seconds =3D 1;
-> > +     int error_margin =3D 10;
-> >
-> >       long duration_usec =3D duration_seconds * USEC_PER_SEC;
-> >       long usage_usec, n_periods, remainder_usec, expected_usage_usec;
-> > @@ -691,7 +704,8 @@ static int test_cpucg_max(const char *root)
-> >       expected_usage_usec
-> >               =3D n_periods * quota_usec + MIN(remainder_usec, quota_us=
-ec);
-> >
-> > -     if (!values_close_report(usage_usec, expected_usage_usec, 10))
-> > +     report_metrics(usage_usec, expected_usage_usec, error_margin, __f=
-unc__);
-> > +     if (!check_tolerance(usage_usec, expected_usage_usec, error_margi=
-n))
-> >               goto cleanup;
-> >
-> >       ret =3D KSFT_PASS;
-> > @@ -713,6 +727,7 @@ static int test_cpucg_max_nested(const char *root)
-> >       long quota_usec =3D 1000;
-> >       long default_period_usec =3D 100000; /* cpu.max's default period =
-*/
-> >       long duration_seconds =3D 1;
-> > +     int error_margin =3D 10;
-> >
-> >       long duration_usec =3D duration_seconds * USEC_PER_SEC;
-> >       long usage_usec, n_periods, remainder_usec, expected_usage_usec;
-> > @@ -762,7 +777,8 @@ static int test_cpucg_max_nested(const char *root)
-> >       expected_usage_usec
-> >               =3D n_periods * quota_usec + MIN(remainder_usec, quota_us=
-ec);
-> >
-> > -     if (!values_close_report(usage_usec, expected_usage_usec, 10))
-> > +     report_metrics(usage_usec, expected_usage_usec, error_margin, __f=
-unc__);
-> > +     if (!check_tolerance(usage_usec, expected_usage_usec, error_margi=
-n))
-> >               goto cleanup;
-> >
-> >       ret =3D KSFT_PASS;
->
-> Is this patch necessary?
->
-> I'm concerned that users might not discover the environment variable to c=
-ontrol output, I agree that
-> detailed printouts on test failure are valuable. A better approach might =
-be to print details only
-> when a test fails, regardless of the environment variable.
+this turned EINVAL (from pidfd_info()) into ENOTTY (from pidfd_ioctl()) 
+for at least LTP's:
+struct pidfd_info_invalid {
+	uint32_t dummy;
+};
 
-Good point. I was considering this and my earlier patch focused on
-that - provide the metrics in case the test fails hence I added
-values_close_report().
-I think this is a good approach that we could probably apply to more
-tests, especially those that determine PASS/FAIL based on some
-tolerance.
+#define PIDFD_GET_INFO_SHORT _IOWR(PIDFS_IOCTL_MAGIC, 11, struct 
+pidfd_info_invalid)
 
-Adding a print on failure directly to values_close() doesn=E2=80=99t work a=
-t
-the moment, since test_memcontrol uses that function for intermediate
-checks.
+ioctl(pidfd, PIDFD_GET_INFO_SHORT, info_invalid) == EINVAL
 
-That said, I=E2=80=99d like to go a step further and enable a sort of
-diagnostic mode for some tests, so we can see what metrics we get
-regardless of whether
-a PASS condition is met.
-Since these tests also run in CI, it would be highly beneficial to
-collect the metrics whenever desired - this would allow us
-to observe trends over time and benchmark each kernel release against
-previous ones. I imagine this would be also useful,
-to any user who would like to compare a specific deployment/fork
-against upstream vanilla benchmarks hence I also suggested publishing
-sort of initial test results.
+at:
+https://github.com/linux-test-project/ltp/blob/9bb94efa39bb1b08f37e56c7437db5fa13ddcae2/testcases/kernel/syscalls/ioctl/ioctl_pidfd05.c#L46
 
-I think ideally we would be to have the value_close (renamed to
-check_tolerance) returning the metrics in case of a fail; The only
-caveat is  - as mentioned above -
-that in some test_memcontrol cases, that function is used for
-intermediate checks, which I=E2=80=99d need to handle carefully.
-And we would still get the report_metrics() as an optional step to be
-enabled using env var.
+Is this expected?
 
-I'm happy to work on that but I wanted to get some initial feedback
-and ideas to see if others find this useful.
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -4023,4 +4023,18 @@ static inline bool vfs_empty_path(int dfd, const char __user *path)
+>   
+>   int generic_atomic_write_valid(struct kiocb *iocb, struct iov_iter *iter);
+>   
+> +static inline bool extensible_ioctl_valid(unsigned int cmd_a,
+> +					  unsigned int cmd_b, size_t min_size)
+> +{
+> +	if (_IOC_DIR(cmd_a) != _IOC_DIR(cmd_b))
+> +		return false;
+> +	if (_IOC_TYPE(cmd_a) != _IOC_TYPE(cmd_b))
+> +		return false;
+> +	if (_IOC_NR(cmd_a) != _IOC_NR(cmd_b))
+> +		return false;
+> +	if (_IOC_SIZE(cmd_a) < min_size)
+> +		return false;
+> +	return true;
+> +}
+> +
+>   #endif /* _LINUX_FS_H */
+> 
 
-Thanks again for your feedback.
+thanks,
+-- 
+js
+suse labs
 
-Best Regards,
-Sebastian
-
->
-> --
-> Best regards,
-> Ridong
->
 
