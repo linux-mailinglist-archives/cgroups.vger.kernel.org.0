@@ -1,164 +1,201 @@
-Return-Path: <cgroups+bounces-11064-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11065-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7254C01FA2
-	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 17:05:43 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C521C0238F
+	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 17:46:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70CE019A5C9E
-	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 15:06:07 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 10A374FCC19
+	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 15:45:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29C3832ED3B;
-	Thu, 23 Oct 2025 15:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8263221703;
+	Thu, 23 Oct 2025 15:45:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="M7Zby9xO"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XxPW51e9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84B2222068D
-	for <cgroups@vger.kernel.org>; Thu, 23 Oct 2025 15:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C093217C21B
+	for <cgroups@vger.kernel.org>; Thu, 23 Oct 2025 15:45:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761231937; cv=none; b=iOFKt/18T1KZkBeGONcXDKvoWdayl+hVD6KYNi5y7jdoVpZAiv2onjD7hX4cOugoUbRYjiHEMUFIiUB0pP8wehsoTUqX2cquFMf99S49TefMTRGc3sxqdnOrFV9OA9sy23CEPGLGzrtENCtaDJU7aSdbs+f6L0DyqHPgA9b0qwY=
+	t=1761234348; cv=none; b=VCavJm9t05vYG5MPpsmzdfek6Vwg7QmR0/UqNqaHT7Ge+gPaYty5QvGkF/VgaL1Y9gWk2tmSKe2Dmph/pcpoEklX2u26YTH26yzgUu5m+EVpKUTCRRI9DVw9jAkJbuk+QCYLIzj9rCQ18PpQU8arGBYzBxGKLxcamXMp9uqEojE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761231937; c=relaxed/simple;
-	bh=jz93bF63ecWHqlpsfaTIWZ1F+DloVz29gxl65xxvxP8=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=jipOCTv4VDWt2f4ejF0kJYHemsPpDBiYt6WHjASdGJDK5CSja9WTentRRx+7RiM0AEMk6tERXx24oeKaMly2lOyFBPgtROfKmYS8QPjwCddy9domGQ061u8FxkjpzDZa29jYgSkF8a52ZKyqBlFyHFv0WUO/kEadDUGSdmTD73I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=M7Zby9xO; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-b630b4d8d52so696696a12.3
-        for <cgroups@vger.kernel.org>; Thu, 23 Oct 2025 08:05:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761231936; x=1761836736; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PvcmXgf+o6Tu2cYvhHpGmpe9m3a/ceHWHcYak3PalII=;
-        b=M7Zby9xOPXaShDYfHfELOZo+QIPupBI+fSUhPtUzu8LpLDzqODas4KLyd45oYCyAF8
-         BDxJv0hNgFLFoB8WQcIXM00OkNa79EuitP9lwB6a1flH00FPjoJql2i6MS0i6b4VNMHd
-         YNSloQK9lH9CXXwzouz+JypLxzeZxgc1xeDUpSCTKAItWzF7UiMt+e/I1MBpFeRulRun
-         HKkA6NEPOx8XCDgUnnkYTUJNHuXc9jt68IA6uqroZdH3pPDKlADQDB4/t2+S7B22u6Hd
-         Xei2sVhVvQyzMKQeO5urHWG2DtyKldzVKDB6mFy7mjgIM6JQsZqlWiyEmbDgTN26HkJA
-         bMfA==
+	s=arc-20240116; t=1761234348; c=relaxed/simple;
+	bh=WpbcaF8x2sasj+ApAXCwoMuJpqNIfGogMerrRKXqC4s=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=gteGWsq3HU2PtBwIy8BPTCaQEmNlSt7d0UmnfyVikmLA3jYBsA6X6eOMbF/1q+BeKvOtw8s+a0FqntiyU+OVhbQFbNoTpuPWuof/pvtqPSjdEIHvIpkqX8DORspaXesafwE6Tk6GtJ3pYrtVjcdHF3ceczwG5gmn6BU0anBddMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XxPW51e9; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1761234345;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=50SfSxS4nKgs8hxb+bOC3hzEIaH0AgAoPcaR+jSb2yk=;
+	b=XxPW51e91+UKRec3aRTDz3TEGRt0gPYkHgSt/6l6h5HIu+wgrWd5Rdop6Iq/EtB85EE8MJ
+	pOj1sMi0dfvfV09IRgG+1QYhsgfKcWZh/YcH/E6q7H34oTMR8WIUdhsVVCtCxYMWtvCkz/
+	ZHrmBWqLefVYWy0etwQQ5PJje6rh230=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-104-hswHRTp7OEyqqHy1PGubWA-1; Thu, 23 Oct 2025 11:45:44 -0400
+X-MC-Unique: hswHRTp7OEyqqHy1PGubWA-1
+X-Mimecast-MFC-AGG-ID: hswHRTp7OEyqqHy1PGubWA_1761234343
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4710d174c31so11895545e9.0
+        for <cgroups@vger.kernel.org>; Thu, 23 Oct 2025 08:45:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761231936; x=1761836736;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PvcmXgf+o6Tu2cYvhHpGmpe9m3a/ceHWHcYak3PalII=;
-        b=tjLTadeCFiyScqiGz67oShmkcUP/X2WiLp68wPvRBvsN5yEUx8NFBsn3b50oF9rrh8
-         Ud2f78ikP/qltAVWn5Yc2fbYEgXm30vF3A8Rp/sk83ZofKgWvUKyzMycS70/oxLia2os
-         3Vrf5RngOdmSJtaLnpej1wHS1Z4+Eh7lznZxb2GIsoA8uzMpu7h9TuSAdeiyQk5y61Qg
-         DX3IFtT6nJ7JEDcPCEXAOzvZrvs6V2Le4OAmLI30vls0ktdhxJT+e2wIcDMaRq71m4u3
-         CpeYIIbXaemW2KMJggaDQ8jCT9f+ck8s+2D3hgH71m01R49HX6vdp7t1dPlb/jBnTLgH
-         zJWA==
-X-Forwarded-Encrypted: i=1; AJvYcCVkPqPU0zFwwZenoDY7ApLGE5BSP+pZsB3m3pkvKAC8uLHgo5X4Bap2ifI+KAmuMpmIekOZaklx@vger.kernel.org
-X-Gm-Message-State: AOJu0Yww6fEu9S2cAIo4S73fM7iHJSM4iDTB4ntYnxO+b82UKDG3cTkK
-	WEuU6dSlLPhFLYabbFGSVC35pniOafN63G81z0CRG5ZTRyEDAUfqyJZgg12M2lr8ACi2vkMa9+I
-	kPEjzbw==
-X-Google-Smtp-Source: AGHT+IHpWV5RNhKUXvWMGZ+xD8d/MTd1Ze+E21K0nbVEiBP6P7EQ34tE5jerqVVq8m5WkJ7UUYnKv9jKozQ=
-X-Received: from pjbsd7.prod.google.com ([2002:a17:90b:5147:b0:33b:b3b8:216b])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:3141:b0:32d:e07f:3236
- with SMTP id 98e67ed59e1d1-33bcf8e3ab0mr32372876a91.22.1761231935591; Thu, 23
- Oct 2025 08:05:35 -0700 (PDT)
-Date: Thu, 23 Oct 2025 08:05:33 -0700
-In-Reply-To: <diqzv7k5emza.fsf@google.com>
+        d=1e100.net; s=20230601; t=1761234343; x=1761839143;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=50SfSxS4nKgs8hxb+bOC3hzEIaH0AgAoPcaR+jSb2yk=;
+        b=o6dVajTYRP65zRLu4XKyxBIbKFGt9mGAwqYwb/EfVCNM/gLZuSbDxkAhrq7QrlN0kp
+         /IkGQnZ2YC+I+ltEQQRhVYQPmmGPxcPwSax6V2ptinont0Yhv4OeiHPuKrQC3VzoRD5U
+         VjhovGH6x8rP+ivlRRkiqrGcDUveriG0fOj0DiuUOw7MdQSCJdrxmQaPnSHwD9IJeBhn
+         xLONk9d1NCKj0onABX+B/Rkeff3OSnYaETrs6xsTJ1+LrcmQLhddPDjYilGXGxT/Z8lU
+         2HkEBpHMBLhOr3IUcV+tRxVtCeJQA61bv7YHDNOM4wnm9R39ppVYuZvI4LzqiL+dPw00
+         rUXg==
+X-Forwarded-Encrypted: i=1; AJvYcCWTqvMMy1Alv7YqIpiXdNx/7OPKlRFKgp/QqncDt/AH+XuAtQqonWfU2V6gHKaTSQoeW5UfJ7DP@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzz5ARLPCryEdd9HhJi0iNzgHT6hygjh5F9bPS4ls/qJfg6Nhjh
+	NYFGlHGoL4BPnVsgkRg9paj8nHmcB8bWL8mOD3vMAV1kMdrttk7EqTx9PZ+IlS1mmz756DkQouR
+	pVORRLh3AziLkeIaZAgAq0Q4GgBo+fHrlF38dT8FkjyDP/0hogYNA2XoU24U=
+X-Gm-Gg: ASbGncvvWzSfUd2eTRVjRgiWveorBdkBxS3OalyE9e89vmMJ2qRUhqGuNxk8jYXgcVx
+	4eQwvw2jFTXZRjbXg20KLwertk8Ud2LRnhp+ZcEqiTudIOTDkyt4EQdcgeZ2IQOh4dPBXPnA5Pj
+	psYzwbfrVwOf2CuLQenBUVm3FJgOjC3fTwVoqwo7J6MvLquOnPH4v7VeDVPf+a4jnbbaeY7ckTu
+	keLx7hPOER3AmhhyxT8Z3fpPA3Pkx4kkoFO5+Ntq9n4yF2kfsIhcoqfALcZ0+D07LpOTWPCOjx6
+	jzKrh4+5NJd/7xet7jaUJ5YXkXcln0puAtlLOsxkBGe+aXQnhRKFaNWdrWyf2DHoBhfSz/h9lxD
+	8xEqZMhYueNOJGB/4vz9IToyEe4cuNVAQBl3Aj9p6DVFKinm79S4ro6hqVJIx
+X-Received: by 2002:a05:600c:548a:b0:46e:6d5f:f68 with SMTP id 5b1f17b1804b1-4711787a2cdmr173963735e9.12.1761234342946;
+        Thu, 23 Oct 2025 08:45:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IENvjJfnRqlEPVbQJG/5+2SRFe/+XvUSWY4e9vS8wIYZ+gnFtpWxD3L8rMa8r5ek+Ptfbuv2w==
+X-Received: by 2002:a05:600c:548a:b0:46e:6d5f:f68 with SMTP id 5b1f17b1804b1-4711787a2cdmr173963305e9.12.1761234342435;
+        Thu, 23 Oct 2025 08:45:42 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-135-146.abo.bbox.fr. [213.44.135.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475cad4c81dsm44883515e9.0.2025.10.23.08.45.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Oct 2025 08:45:41 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Frederic Weisbecker <frederic@kernel.org>, LKML
+ <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>, Michal =?utf-8?Q?Koutn?=
+ =?utf-8?Q?=C3=BD?=
+ <mkoutny@suse.com>, Andrew Morton <akpm@linux-foundation.org>, Bjorn
+ Helgaas <bhelgaas@google.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Danilo Krummrich <dakr@kernel.org>, "David S . Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Gabriele Monaco
+ <gmonaco@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, Jens
+ Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>, Lai
+ Jiangshan <jiangshanlai@gmail.com>, Marco Crivellari
+ <marco.crivellari@suse.com>, Michal Hocko <mhocko@suse.com>, Muchun Song
+ <muchun.song@linux.dev>, Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra
+ <peterz@infradead.org>, Phil Auld <pauld@redhat.com>, "Rafael J . Wysocki"
+ <rafael@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, Shakeel
+ Butt <shakeel.butt@linux.dev>, Simon Horman <horms@kernel.org>, Tejun Heo
+ <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Vlastimil Babka
+ <vbabka@suse.cz>, Waiman Long <longman@redhat.com>, Will Deacon
+ <will@kernel.org>, cgroups@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+ linux-mm@kvack.org, linux-pci@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 05/33] sched/isolation: Save boot defined domain flags
+In-Reply-To: <20251013203146.10162-6-frederic@kernel.org>
+References: <20251013203146.10162-1-frederic@kernel.org>
+ <20251013203146.10162-6-frederic@kernel.org>
+Date: Thu, 23 Oct 2025 17:45:40 +0200
+Message-ID: <xhsmhecqtoc4b.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1760731772.git.ackerleytng@google.com> <8ee16fbf254115b0fd72cc2b5c06d2ccef66eca9.1760731772.git.ackerleytng@google.com>
- <2457cb3b-5dde-4ca1-b75d-174b5daee28a@arm.com> <diqz4irqg9qy.fsf@google.com>
- <diqzy0p2eet3.fsf@google.com> <aPlpKbHGea90IebS@google.com> <diqzv7k5emza.fsf@google.com>
-Message-ID: <aPpEPZ4YfrRHIkal@google.com>
-Subject: Re: [RFC PATCH v1 07/37] KVM: Introduce KVM_SET_MEMORY_ATTRIBUTES2
-From: Sean Christopherson <seanjc@google.com>
-To: Ackerley Tng <ackerleytng@google.com>
-Cc: Steven Price <steven.price@arm.com>, cgroups@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de, 
-	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org, 
-	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com, 
-	david@redhat.com, dmatlack@google.com, erdemaktas@google.com, 
-	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com, hannes@cmpxchg.org, 
-	hch@infradead.org, hpa@zytor.com, hughd@google.com, ira.weiny@intel.com, 
-	isaku.yamahata@intel.com, jack@suse.cz, james.morse@arm.com, 
-	jarkko@kernel.org, jgg@ziepe.ca, jgowans@amazon.com, jhubbard@nvidia.com, 
-	jthoughton@google.com, jun.miao@intel.com, kai.huang@intel.com, 
-	keirf@google.com, kent.overstreet@linux.dev, liam.merwick@oracle.com, 
-	maciej.wieczor-retman@intel.com, mail@maciej.szmigiero.name, 
-	maobibo@loongson.cn, mathieu.desnoyers@efficios.com, maz@kernel.org, 
-	mhiramat@kernel.org, mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com, 
-	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au, 
-	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es, 
-	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com, 
-	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com, 
-	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz, qperret@google.com, 
-	richard.weiyang@gmail.com, rick.p.edgecombe@intel.com, rientjes@google.com, 
-	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org, 
-	shakeel.butt@linux.dev, shuah@kernel.org, suzuki.poulose@arm.com, 
-	tabba@google.com, tglx@linutronix.de, thomas.lendacky@amd.com, 
-	vannapurve@google.com, vbabka@suse.cz, viro@zeniv.linux.org.uk, 
-	vkuznets@redhat.com, will@kernel.org, willy@infradead.org, wyihan@google.com, 
-	xiaoyao.li@intel.com, yan.y.zhao@intel.com, yilun.xu@intel.com, 
-	yuzenghui@huawei.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain
 
-On Thu, Oct 23, 2025, Ackerley Tng wrote:
-> Sean Christopherson <seanjc@google.com> writes:
-> 
-> > On Wed, Oct 22, 2025, Ackerley Tng wrote:
-> >> Ackerley Tng <ackerleytng@google.com> writes:
-> >> 
-> >> Found another issue with KVM_CAP_MEMORY_ATTRIBUTES2.
-> >> 
-> >> KVM_CAP_MEMORY_ATTRIBUTES2 was defined to do the same thing as
-> >> KVM_CAP_MEMORY_ATTRIBUTES, but that's wrong since
-> >> KVM_CAP_MEMORY_ATTRIBUTES2 should indicate the presence of
-> >> KVM_SET_MEMORY_ATTRIBUTES2 and struct kvm_memory_attributes2.
-> >
-> > No?  If no attributes are supported, whether or not KVM_SET_MEMORY_ATTRIBUTES2
-> > exists is largely irrelevant.
-> 
-> That's true.
-> 
-> > We can even provide the same -ENOTTY errno by
-> > checking that _any_ attributes are supported, i.e. so that doing
-> > KVM_SET_MEMORY_ATTRIBUTES2 on KVM without any support whatsoever fails in the
-> > same way that KVM with code support but no attributes fails.
-> 
-> IIUC KVM_SET_MEMORY_ATTRIBUTES doesn't fail with -ENOTTY now when there
-> are no valid attributes.
-> 
-> Even if there's no valid attributes (as in
-> kvm_supported_mem_attributes() returns 0), it's possible to call
-> KVM_SET_MEMORY_ATTRIBUTES with .attributes set to 0, which will be a
-> no-op, but will return 0.
-> 
-> I think this is kind of correct behavior since .attributes = 0 is
-> actually a valid expression for "I want this range to be shared", and
-> for a VM that doesn't support private memory, it's a valid expression.
-> 
-> 
-> The other way that there are "no attributes" would be if there are no
-> /VM/ attributes, in which case KVM_SET_MEMORY_ATTRIBUTES, sent to as a
-> vm ioctl, will return -ENOTTY.
+On 13/10/25 22:31, Frederic Weisbecker wrote:
+> HK_TYPE_DOMAIN will soon integrate not only boot defined isolcpus= CPUs
+> but also cpuset isolated partitions.
+>
+> Housekeeping still needs a way to record what was initially passed
+> to isolcpus= in order to keep these CPUs isolated after a cpuset
+> isolated partition is modified or destroyed while containing some of
+> them.
+>
+> Create a new HK_TYPE_DOMAIN_BOOT to keep track of those.
+>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Reviewed-by: Phil Auld <pauld@redhat.com>
+> ---
+>  include/linux/sched/isolation.h | 1 +
+>  kernel/sched/isolation.c        | 5 +++--
+>  2 files changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+> index d8501f4709b5..da22b038942a 100644
+> --- a/include/linux/sched/isolation.h
+> +++ b/include/linux/sched/isolation.h
+> @@ -7,6 +7,7 @@
+>  #include <linux/tick.h>
+>
+>  enum hk_type {
+> +	HK_TYPE_DOMAIN_BOOT,
+>       HK_TYPE_DOMAIN,
+>       HK_TYPE_MANAGED_IRQ,
+>       HK_TYPE_KERNEL_NOISE,
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index a4cf17b1fab0..8690fb705089 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -11,6 +11,7 @@
+>  #include "sched.h"
+>
+>  enum hk_flags {
+> +	HK_FLAG_DOMAIN_BOOT	= BIT(HK_TYPE_DOMAIN_BOOT),
+>       HK_FLAG_DOMAIN		= BIT(HK_TYPE_DOMAIN),
+>       HK_FLAG_MANAGED_IRQ	= BIT(HK_TYPE_MANAGED_IRQ),
+>       HK_FLAG_KERNEL_NOISE	= BIT(HK_TYPE_KERNEL_NOISE),
+> @@ -216,7 +217,7 @@ static int __init housekeeping_isolcpus_setup(char *str)
+>
+>               if (!strncmp(str, "domain,", 7)) {
+>                       str += 7;
+> -			flags |= HK_FLAG_DOMAIN;
+> +			flags |= HK_FLAG_DOMAIN | HK_FLAG_DOMAIN_BOOT;
+>                       continue;
+>               }
+>
+> @@ -246,7 +247,7 @@ static int __init housekeeping_isolcpus_setup(char *str)
+>
+>       /* Default behaviour for isolcpus without flags */
+>       if (!flags)
+> -		flags |= HK_FLAG_DOMAIN;
+> +		flags |= HK_FLAG_DOMAIN | HK_FLAG_DOMAIN_BOOT;
 
-Ya, this is what I was trying to say with "_any_ attributes are supported".  I.e.
-by "any" I meant "any attributes in KVM for VMs vs. gmems", not "any attributes
-for this specific VM/gmem instance".
+I got stupidly confused by the cpumask_andnot() used later on since these
+are housekeeping cpumasks and not isolated ones; AFAICT HK_FLAG_DOMAIN_BOOT
+is meant to be a superset of HK_FLAG_DOMAIN - or, put in a way my brain
+comprehends, NOT(HK_FLAG_DOMAIN) (i.e. runtime isolated cpumask) is a
+superset of NOT(HK_FLAG_DOMAIN_BOOT) (i.e. boottime isolated cpumask),
+thus the final shape of cpu_is_isolated() makes sense:
 
-> > In other words, I don't see why it can't do both.  Even if we can't massage the
-> > right errno, I would much rather KVM_SET_MEMORY_ATTRIBUTES2 enumerate the set of
-> 
-> Did you mean KVM_CAP_MEMORY_ATTRIBUTES2 in the line above?
+  static inline bool cpu_is_isolated(int cpu)
+  {
+          return !housekeeping_test_cpu(cpu, HK_TYPE_DOMAIN);
+  }
 
-Doh, yes.
+Could we document that to make it a bit more explicit? Maybe something like
+
+  enum hk_type {
+        /* Set at boot-time via the isolcpus= cmdline argument */
+        HK_TYPE_DOMAIN_BOOT,
+        /*
+         * Updated at runtime via isolated cpusets; strict subset of
+         * HK_TYPE_DOMAIN_BOOT as it accounts for boot-time isolated CPUs.
+         */
+        HK_TYPE_DOMAIN,
+        ...
+  }
+
 
