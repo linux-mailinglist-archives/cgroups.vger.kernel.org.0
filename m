@@ -1,128 +1,195 @@
-Return-Path: <cgroups+bounces-11062-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11063-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9A10C01536
-	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 15:20:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9948CC01AF6
+	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 16:15:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0F2F54F24BB
-	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 13:18:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 800F43B589D
+	for <lists+cgroups@lfdr.de>; Thu, 23 Oct 2025 14:02:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BECC314D38;
-	Thu, 23 Oct 2025 13:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13BF932B9B6;
+	Thu, 23 Oct 2025 14:01:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="awbeEmJn"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FvgvWu7l"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E624B314B71
-	for <cgroups@vger.kernel.org>; Thu, 23 Oct 2025 13:18:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16CF32AAAC
+	for <cgroups@vger.kernel.org>; Thu, 23 Oct 2025 14:01:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761225500; cv=none; b=lwwaEBNEVg/heMBdq7vEASQTyH6xNDcfCJK/kCufydD5jPo4eVD8c/ClvY2aF+fMFUoWsrbqTlLdxTcava7fby/HLOFJrmGpvHwPZRww4fRUo9jcPq5TL5/1lKatOYrB9ATR4O9MND7xo0WZ54pEJFxUH/rH4wIN6ZeOoX2fgcE=
+	t=1761228077; cv=none; b=oHgwsaphCqWmZN3aL3B+KZfoorkuBqypPMd22HkakfDxAqoGT7fHhqQd2Z4LPo7VyizgZm9Jx42ztU7OVgRyLKskbRyaVSMR1wP+1pd2KuQeUw2Ps2uiDYJunl6Xe7sos6MALQP2OXUlOqvCivdVuH6zcyeQHAJFxnP4pHmQh4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761225500; c=relaxed/simple;
-	bh=Lc1Mo56YYeHKGhtOHcFCM5aAwC89s+OOPJH/HCtbr+s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A9H6L37+yufLwoeFYkch5+UiahAFMvsnR4RbRP/ndc8X7xsfKAaQRleoCpe7h74W3URb8DKG951goU3V5ZGDYs69vWEouTt/9XPTAhdVEcSKuEE5m6MhOTWzC/2hkdMmw64kapahH9fT0P1izOMxvt22uszFqMUl0uV7vm+bjDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=awbeEmJn; arc=none smtp.client-ip=209.85.128.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-471bde1e8f8so4461595e9.0
-        for <cgroups@vger.kernel.org>; Thu, 23 Oct 2025 06:18:17 -0700 (PDT)
+	s=arc-20240116; t=1761228077; c=relaxed/simple;
+	bh=nf2ne/DcUThRcyjkcAtbjjiK8XPQU5PLVC7WSh7jfZU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=GRGwBiPJEfRzFZDx7lIfsRV7GacppPgidG+5WmWnwoZ9ujn7sfDHaCyKoQBmMxwXdK/GIE5sCLYQAV9msE+u8PQCv/v/HjoYNmTA4GRlSKSsYIEi63wY8t1qc5fiz8FLAZoe1A2oWBW6qRJnhECzCJsvas7xD097YcoeTaJy+4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FvgvWu7l; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-b609c0f6522so1785064a12.3
+        for <cgroups@vger.kernel.org>; Thu, 23 Oct 2025 07:01:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1761225496; x=1761830296; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3He/u9vFruVYiw+KrZIv2T9bBvLzWNfQ1++/hzzXmzs=;
-        b=awbeEmJnt394LyQM7QuLbDnvuoiIc5klnnJgDryMDLr+VGZo1qYUGw6HLuAC9pc4aH
-         dn2TA4tgT+dgBBNPr+6MK2uiB20xYtM5NCr+Xx3wD7UzRXXp0OYpBErdaw/7TvmhOjbf
-         WT22bUkCD16E9Fql7QmH4xGciMGTTE9VM0jBSA3qGYWu0XiUciq/15mwIn8hh7+1wKrB
-         JpTrhXIMWrOFdzhCvzJefooK30sJS9ASZ+cCLpqciv/Ne222O+ciTVoMsAifqRSUO51a
-         Wd8fcgpRmGWTEQspZQgXJPS7rqxg6gqczqGdFFQChXosFgRe0lEL15QnLhGL5QsLwE7d
-         Jysg==
+        d=google.com; s=20230601; t=1761228075; x=1761832875; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=inXfddpf6Feyogc8n8Jl5cqVWZOSr51ivnMHY9v0Ey4=;
+        b=FvgvWu7lfkFsFHXEZtj4lw7glbTHzzUEGsEFkLBSyj5lOlrLDU1oghGofvy5n8eOsf
+         hNVds9VXo38wQYB6NTIGzXHSQxJqYajWlPt7009pp2gIii3hh6WwEU9ZD/I4QT7d2bea
+         WCWA56SQxCTKKATjTNzT+lP8oUtynF4+UfwgKPQjst0Xh/ycZHGg8SpB0lZqE/5jPJp6
+         CFTvHYr2ydcrrce3Dm0itC9rIq2bP6EIsKxFqfTiJrJTlg+JsT7q3befgm83FU6T6yNe
+         NI15GlfmkS+YcZs/EH0m47+UgRKGlt6IVvi766TFbKBUkqMBdAj7OK5mBSQiizp6e0mx
+         bTcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761225496; x=1761830296;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3He/u9vFruVYiw+KrZIv2T9bBvLzWNfQ1++/hzzXmzs=;
-        b=ZjPhNX4zO8eugR/y30GpWrKs4VzMh3pCfy+3NzfgRAWOarRHC4yWqQ/xs7QPVO/G4x
-         o0GR6f2JCxBFQyumEQH7CHc+LfR0ZfeQM/AaoVLjGdw+3yAMLbrT79zt2Kf/apXLx5nl
-         IhwjdD9lUc1HnOxX53X28sWB06T1bMSIaJ5Et9CAeMqXhpKEZ4aAu+Fq6kmux5uS835R
-         Bb66HjAN1zgwsdCqgw3xuDmM16Dcz/E++rRkUYYB/tY4E2Qa1pulCeTDZj81ke+cnOBH
-         LXsFmXm6GJ7a7+HkbnqpvPxrZP/YnSeJL4lRK4xuJw1V9xFdb3J54Yf8uHBSwRqDtKaV
-         23Pg==
-X-Forwarded-Encrypted: i=1; AJvYcCVZppHkarh1/15QP/iCtl1Pz9tGv3kahorBvxrZ4iBIQBPUqbPveHa6reM1vUzIvcUZc5TNPs8y@vger.kernel.org
-X-Gm-Message-State: AOJu0YwicnUE/g14K8BKT2I8mxpnKPNE1gBJ3N8AMc5UjZ3YecUrgbXr
-	6AcUhFdRIbf7VhZA2PZUBgJcnKB4xuBnbj1zsn2IShvYNMXhMiZmBeJavWvPpD96IHc=
-X-Gm-Gg: ASbGnct/bryVbcgx+9IMllsxhnnfpZwHcEPK+sb6llMKz/DjJjf8uSOnd24pTf3WpBj
-	DIs7j2YX69Tc0nFpcii85yA2PsWH+BHgXCFRvoejZQFhgwhtiBjmul/ISD0q+6/23XlPwk134Ki
-	yrIMaFU3AMGACvtMmqJvMy5TQDBLFmLb1YvjxCDA1TSLAroAGiIGrnHJQL+CDKtf+Ccy1kSzHC6
-	vsSa17cEhUEsZZwEiAxhQbZoeToTLksu54K0i9fOpw905c6LYXGfrqzA8WmpIPbrAbrEeWkzYdW
-	NYrjO3xxrO31YhXNZs705/bAD+pgQb3GWJCri2gO9PCunS5nZtgvcmTspf+p6PUeUr63DxFJl2e
-	2CoRsCfCl0tdVhUHcFCgCz5S9Sjfz1jm/QNSRXKnXRCLL/+JeIVcAKMeDgiPiLy8igrPvVK6IZM
-	I150sIrY/91OB3+cmsXxFKGEw19SLio5wuZoyP
-X-Google-Smtp-Source: AGHT+IFI7d4omhBXbweB66gvKZIb/3KhXaNp52twT+N2y9aaJX7j7EPXuCFbvF4eTwXcj+1QGz7jOQ==
-X-Received: by 2002:a05:600c:3512:b0:471:12c2:201f with SMTP id 5b1f17b1804b1-471179134f0mr209161265e9.32.1761225496200;
-        Thu, 23 Oct 2025 06:18:16 -0700 (PDT)
-Received: from localhost (134.pool62-36-43.static.orange.es. [62.36.43.134])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-475c428f709sm98414875e9.8.2025.10.23.06.18.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Oct 2025 06:18:15 -0700 (PDT)
-Date: Thu, 23 Oct 2025 15:18:14 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH] memcg: manually uninline __memcg_memory_event
-Message-ID: <aPorFhxQc7K5iLZc@tiehlicka>
-References: <20251021234425.1885471-1-shakeel.butt@linux.dev>
+        d=1e100.net; s=20230601; t=1761228075; x=1761832875;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=inXfddpf6Feyogc8n8Jl5cqVWZOSr51ivnMHY9v0Ey4=;
+        b=LXpNmMtkV8+jLIdLRjii0fir+eZm67nwjFHuafo8OlMlg92w/Bp/KBK3K42iD09U/W
+         HKqkxyXzlup2jCn20ujz+1QcR5catjyVA7KCKW+jJvnzu5tcn7tvcVxZ4JwonA5SEiw5
+         XkgVNmSjnnWXCt9gL6gL7ZzBRVKmzTbrroYmLnx/38FCDdDO+FHk3YYGY5ldN1KUg7pN
+         pgfrts4PZvnv0NhKqI+b1Hl/HWD0sXmDCPS0xW70ifROP11g7NarzWYb9ephde/nSbGX
+         Gh/Kl/YvvVpSVGLBWv/Huh7++MG3HfpplYkHnLqFhQoH6VvA9aC+WSxs5lr3c0N/1SIS
+         ouFg==
+X-Forwarded-Encrypted: i=1; AJvYcCXmkteY7/ZEzRObEFe9JIEXmZjFJcrlny8hzTr9leZPrY5/MWli9mSk0MLqU9YEYWHWkJpAu2em@vger.kernel.org
+X-Gm-Message-State: AOJu0YzboF2sueZC4ccDNBRQxMU5G/3wTlERkrafHtLaWN2KhwQh8HnM
+	9sEaFnGBdQzBaPxwCc/ZBDKOZ8tcGpAjv9L383U/TV3u7fmxpY5Pgz21Qf2uF913bLTo2TotWbc
+	kbth358S++9eGYD1K9HjSKeSyww==
+X-Google-Smtp-Source: AGHT+IFIN8uFRC6EtqcEGeMEkYd8inzutN6W/XJij2WhQjtYZx5ArSxhlm3XOqfP/3yjcqmWzVtyJ1fSE/ev6eLgRw==
+X-Received: from pjnu4.prod.google.com ([2002:a17:90a:8904:b0:339:dc19:ae5d])
+ (user=ackerleytng job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6a20:3956:b0:334:91ab:f182 with SMTP id adf61e73a8af0-334a85286f8mr35842433637.10.1761228074886;
+ Thu, 23 Oct 2025 07:01:14 -0700 (PDT)
+Date: Thu, 23 Oct 2025 07:01:13 -0700
+In-Reply-To: <aPlpKbHGea90IebS@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251021234425.1885471-1-shakeel.butt@linux.dev>
+Mime-Version: 1.0
+References: <cover.1760731772.git.ackerleytng@google.com> <8ee16fbf254115b0fd72cc2b5c06d2ccef66eca9.1760731772.git.ackerleytng@google.com>
+ <2457cb3b-5dde-4ca1-b75d-174b5daee28a@arm.com> <diqz4irqg9qy.fsf@google.com>
+ <diqzy0p2eet3.fsf@google.com> <aPlpKbHGea90IebS@google.com>
+Message-ID: <diqzv7k5emza.fsf@google.com>
+Subject: Re: [RFC PATCH v1 07/37] KVM: Introduce KVM_SET_MEMORY_ATTRIBUTES2
+From: Ackerley Tng <ackerleytng@google.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Steven Price <steven.price@arm.com>, cgroups@vger.kernel.org, kvm@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
+	akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de, 
+	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org, 
+	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com, 
+	david@redhat.com, dmatlack@google.com, erdemaktas@google.com, 
+	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com, hannes@cmpxchg.org, 
+	hch@infradead.org, hpa@zytor.com, hughd@google.com, ira.weiny@intel.com, 
+	isaku.yamahata@intel.com, jack@suse.cz, james.morse@arm.com, 
+	jarkko@kernel.org, jgg@ziepe.ca, jgowans@amazon.com, jhubbard@nvidia.com, 
+	jthoughton@google.com, jun.miao@intel.com, kai.huang@intel.com, 
+	keirf@google.com, kent.overstreet@linux.dev, liam.merwick@oracle.com, 
+	maciej.wieczor-retman@intel.com, mail@maciej.szmigiero.name, 
+	maobibo@loongson.cn, mathieu.desnoyers@efficios.com, maz@kernel.org, 
+	mhiramat@kernel.org, mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com, 
+	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au, 
+	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es, 
+	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com, 
+	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com, 
+	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz, qperret@google.com, 
+	richard.weiyang@gmail.com, rick.p.edgecombe@intel.com, rientjes@google.com, 
+	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org, 
+	shakeel.butt@linux.dev, shuah@kernel.org, suzuki.poulose@arm.com, 
+	tabba@google.com, tglx@linutronix.de, thomas.lendacky@amd.com, 
+	vannapurve@google.com, vbabka@suse.cz, viro@zeniv.linux.org.uk, 
+	vkuznets@redhat.com, will@kernel.org, willy@infradead.org, wyihan@google.com, 
+	xiaoyao.li@intel.com, yan.y.zhao@intel.com, yilun.xu@intel.com, 
+	yuzenghui@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue 21-10-25 16:44:25, Shakeel Butt wrote:
-> The function __memcg_memory_event has been unnecessarily marked inline
-> even when it is not really performance critical. It is usually called
-> to track extreme conditions. Over the time, it has evolved to include
-> more functionality and inlining it is causing more harm.
-> 
-> Before the patch:
-> $ size mm/memcontrol.o net/ipv4/tcp_input.o net/ipv4/tcp_output.o
->    text    data     bss     dec     hex filename
->   35645   10574    4192   50411    c4eb mm/memcontrol.o
->   54738    1658       0   56396    dc4c net/ipv4/tcp_input.o
->   34644    1065       0   35709    8b7d net/ipv4/tcp_output.o
-> 
-> After the patch:
-> $ size mm/memcontrol.o net/ipv4/tcp_input.o net/ipv4/tcp_output.o
->    text    data     bss     dec     hex filename
->   35137   10446    4192   49775    c26f mm/memcontrol.o
->   54322    1562       0   55884    da4c net/ipv4/tcp_input.o
->   34492    1017       0   35509    8ab5 net/ipv4/tcp_output.o
-> 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+Sean Christopherson <seanjc@google.com> writes:
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+> On Wed, Oct 22, 2025, Ackerley Tng wrote:
+>> Ackerley Tng <ackerleytng@google.com> writes:
+>> 
+>> Found another issue with KVM_CAP_MEMORY_ATTRIBUTES2.
+>> 
+>> KVM_CAP_MEMORY_ATTRIBUTES2 was defined to do the same thing as
+>> KVM_CAP_MEMORY_ATTRIBUTES, but that's wrong since
+>> KVM_CAP_MEMORY_ATTRIBUTES2 should indicate the presence of
+>> KVM_SET_MEMORY_ATTRIBUTES2 and struct kvm_memory_attributes2.
+>
+> No?  If no attributes are supported, whether or not KVM_SET_MEMORY_ATTRIBUTES2
+> exists is largely irrelevant.
 
-As the only user is in tree should we make that EXPORT_SYMBOL_GPL
-instead?
+That's true.
 
--- 
-Michal Hocko
-SUSE Labs
+> We can even provide the same -ENOTTY errno by
+> checking that _any_ attributes are supported, i.e. so that doing
+> KVM_SET_MEMORY_ATTRIBUTES2 on KVM without any support whatsoever fails in the
+> same way that KVM with code support but no attributes fails.
+>
+
+IIUC KVM_SET_MEMORY_ATTRIBUTES doesn't fail with -ENOTTY now when there
+are no valid attributes.
+
+Even if there's no valid attributes (as in
+kvm_supported_mem_attributes() returns 0), it's possible to call
+KVM_SET_MEMORY_ATTRIBUTES with .attributes set to 0, which will be a
+no-op, but will return 0.
+
+I think this is kind of correct behavior since .attributes = 0 is
+actually a valid expression for "I want this range to be shared", and
+for a VM that doesn't support private memory, it's a valid expression.
+
+
+The other way that there are "no attributes" would be if there are no
+/VM/ attributes, in which case KVM_SET_MEMORY_ATTRIBUTES, sent to as a
+vm ioctl, will return -ENOTTY.
+
+> In other words, I don't see why it can't do both.  Even if we can't massage the
+> right errno, I would much rather KVM_SET_MEMORY_ATTRIBUTES2 enumerate the set of
+
+Did you mean KVM_CAP_MEMORY_ATTRIBUTES2 in the line above?
+
+> supported attributes than simply '1'.  E.g. we have no plans to support
+> KVM_SET_MEMORY_ATTRIBUTES on guest_memfd, and so returning simply '1' creates an
+> unwanted and unnecessary dependency.
+>
+
+Okay I'll switch this back to what it was.
+
+>> @@ -1617,4 +1618,15 @@ struct kvm_pre_fault_memory {
+>>  	__u64 padding[5];
+>>  };
+>>  
+>> +/* Available with KVM_CAP_MEMORY_ATTRIBUTES2 */
+>> +#define KVM_SET_MEMORY_ATTRIBUTES2              _IOWR(KVMIO,  0xd6, struct kvm_memory_attributes2)
+>
+> Please use the same literal number, 0xd2, as
+>
+>   #define KVM_SET_MEMORY_ATTRIBUTES              _IOW(KVMIO,  0xd2, struct kvm_memory_attributes)
+>
+> The "final" ioctl number that userspace sees incorporates the directionality and
+> the size of the struct, i.e. KVM_SET_MEMORY_ATTRIBUTES and KVM_SET_MEMORY_ATTRIBUTES2
+> are guaranteed to be distinct even if they both use 0xd2 as the "minor" number.
+>
+
+Will do.
+
+>> +
+>> +struct kvm_memory_attributes2 {
+>> +	__u64 address;
+>> +	__u64 size;
+>> +	__u64 attributes;
+>> +	__u64 flags;
+>> +	__u64 reserved[4];
+>
+> Maybe be paranoid and reserve 12 u64s?
+
+Will do.
 
