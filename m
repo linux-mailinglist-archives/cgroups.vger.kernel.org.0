@@ -1,195 +1,197 @@
-Return-Path: <cgroups+bounces-11154-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11155-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5232C07B9E
-	for <lists+cgroups@lfdr.de>; Fri, 24 Oct 2025 20:23:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA528C083E1
+	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 00:31:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 345F6421EC0
-	for <lists+cgroups@lfdr.de>; Fri, 24 Oct 2025 18:20:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BA5E3AE979
+	for <lists+cgroups@lfdr.de>; Fri, 24 Oct 2025 22:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545EA34B664;
-	Fri, 24 Oct 2025 18:19:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFF8302CC3;
+	Fri, 24 Oct 2025 22:31:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bb7LhUYc"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WTTwjRCx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zPY0qqdk";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WTTwjRCx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zPY0qqdk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31C7934B697
-	for <cgroups@vger.kernel.org>; Fri, 24 Oct 2025 18:19:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B7C19C553
+	for <cgroups@vger.kernel.org>; Fri, 24 Oct 2025 22:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761329944; cv=none; b=XgVAmzkxahYYzj4751Dzq7vTliC920lF/JSh/mY4lgcIrPHo505tx2fQdJtowsA6pEn7+YIsXo2eVwLQtfVAVFAdYOhgG6nq8Z2z8horJi15AHCHeTgiLpbY5t3H9+XCcuq5TqsNjaoWQ5NzMhbB8wslEVeP+nq+F+/7zugQsKc=
+	t=1761345071; cv=none; b=fXPnn4WhTaGqd76IsQviWTDBdm8/o9isgYhjWq5qN+i+Yt3J8NgPsXoqYhBVmU6XFA5kEvMHVmBuj+Ih2Fy+Xu5iui2yseRkxN0Kf/0HmKx99B6/IpTbPsZiArtM/r0nftkITPj7cJZ8IBDNmitL5hVrWLliIkyMl+8xJdkmpx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761329944; c=relaxed/simple;
-	bh=/MLpG4k/snGbFR7n6naVcLBN24KEMektQ9HLEgX83ME=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=o+LFAJA5e2rJKzy4W1Hwh/97MdYHixYkGlCQZvHcc3j+qZ666EJht9kB1DKXbiYVkM/NR07ZJwoOBc5UVpEZhoiXwcQB+aWnSlbfqMAwtYtNMtxAVekIWWqFsQEVnQYETsw/KKypozhELtbetN9Z6Cz8x8F2ptJcnYC4MhQTcc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bb7LhUYc; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-33428befbbaso2603856a91.0
-        for <cgroups@vger.kernel.org>; Fri, 24 Oct 2025 11:19:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1761329940; x=1761934740; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cdTxyUifw7MNQO0DnSkAJL4ChxKgMzzVSN+wxqVSJZ8=;
-        b=bb7LhUYc7dE1MlJ3hn4vSFw/3f96FJuo+jNnG7WwO5ZUBaMZUJ0Tfy37suXo4rj8Hq
-         GNJcqdfsLEWCouKJC/COnGEwC+7ohBE+e96qK40Fyy0hqKXmZsPkhtPuh7Xh1d+4J8gA
-         ktXwT/awnjJ9z0amxoHUcCpnNGpnr5AQ7Fu/JrKglgSTumQvK8egcyg/Q2hYeCLx7nNY
-         fomwoH72T/pflZECz6QDaBxf6LXwIJUi9qhGx+pf3ptByHW7qlBthw0T8HL4aYM2AQ2j
-         aS5NETrxHRoAsc7+sWpsbVQRRbc+iLLk6lwLpgOnLnqv/vBRiJAq/89SbRThBaE4/Xog
-         PkEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761329940; x=1761934740;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cdTxyUifw7MNQO0DnSkAJL4ChxKgMzzVSN+wxqVSJZ8=;
-        b=oPV7TdjAQQNaHNcxIfE2dWaKTXjvmYR5X35d1+SjWGZJIeB+bQtl+qe9C0jmsbPwBW
-         zEPRDflz12D6JxoEyfyGTy09wXyZM/yvBqoy0o8OCjVCVxloq8QP6NFCHcV+8L7jZ09b
-         rKN+/yMm5qo1sNkPpdU7PYC3Kv9TGS29EbE6nLxbs438Q6lIG+6Wjjs/b4LuDPbjJxq+
-         e1J7AfATiECux8WiN08TKEdeJ0iJOqfLZ8rc9KX/YZnJZYS2CT8Z+U7qA6FR8YI1yXkQ
-         H4W7NGhGOVthvqSP+VtaS5tzydX5grR/MLKyfBJrw6BY9UT7zA7MnOHumoNkih7zJFYa
-         9ilQ==
-X-Gm-Message-State: AOJu0YyK6qbK4WpuI5Qij+csqRegeRYKLABdmlRSopEqvNqhHS3EAqUa
-	jBgPSYAG3kdNOeha9jLvfQN6GMZqy/msRLbW8l37vi3MbRc1+xjDTN9yXIl/hPxlA+6wQExa6bs
-	hYKjZWA==
-X-Google-Smtp-Source: AGHT+IEwU7cgqhi7yxcDGgJmntbDXrYh2S5Lt4c3VipRpyfkwWodcxupSfQzFuZEDCpb4LtVbKjpe2rZJEE=
-X-Received: from pjob9.prod.google.com ([2002:a17:90a:8c89:b0:33b:8aa1:75ed])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:2247:b0:32d:e780:e9d5
- with SMTP id 98e67ed59e1d1-33bcf8e5f10mr38003967a91.22.1761329940388; Fri, 24
- Oct 2025 11:19:00 -0700 (PDT)
-Date: Fri, 24 Oct 2025 11:18:58 -0700
-In-Reply-To: <diqzldl0dz5f.fsf@google.com>
+	s=arc-20240116; t=1761345071; c=relaxed/simple;
+	bh=TdtvSFhVumAdCHdZdAGKLPPL1lptHcjWodC1ykDPzY0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mbUZJ463jhZfoT7RdmaBsaa5StEFphKgCKhn9B4W45ullX0nonFcFg1tzbJ3PqWr7O+ubCS1ISzhgiR3TlchynUxw2wKaffpRShY/O6SzBnh4er8nYIyX1QwqbinWecqLfj0VuNBtV+/ZYceBnSH/WHkn/uw6R3OBv/m7Dr5LSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WTTwjRCx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zPY0qqdk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WTTwjRCx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zPY0qqdk; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 47D59211E8;
+	Fri, 24 Oct 2025 22:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1761345066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XaDkQXEDq3kiZtr1ll+BBk3Dg0qixXh2ek2kyEyFBLo=;
+	b=WTTwjRCxGB26PULa/ak6Okz4dsHb+N43kdKOP+ED1wRE0ANRFxocl1iqwChFEy2qFVB/t6
+	HnEQ3y1qKQv843HJdWRHWuu4eFa4nPQefDPcdaBUEglKWx/SC6JaFoKeiEMw+zjey+sGE2
+	6Dj8XTGGp0WYBlgpxYMuJIB1ygGaM+o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1761345066;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XaDkQXEDq3kiZtr1ll+BBk3Dg0qixXh2ek2kyEyFBLo=;
+	b=zPY0qqdke3Lu6ES/8PPTBWAO0LRSuqxdR+K2yGNe1/3Z3gdUGnz7iONCHFZFcx+3YtYOC6
+	dAYr1MrZU4+GekDw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1761345066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XaDkQXEDq3kiZtr1ll+BBk3Dg0qixXh2ek2kyEyFBLo=;
+	b=WTTwjRCxGB26PULa/ak6Okz4dsHb+N43kdKOP+ED1wRE0ANRFxocl1iqwChFEy2qFVB/t6
+	HnEQ3y1qKQv843HJdWRHWuu4eFa4nPQefDPcdaBUEglKWx/SC6JaFoKeiEMw+zjey+sGE2
+	6Dj8XTGGp0WYBlgpxYMuJIB1ygGaM+o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1761345066;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XaDkQXEDq3kiZtr1ll+BBk3Dg0qixXh2ek2kyEyFBLo=;
+	b=zPY0qqdke3Lu6ES/8PPTBWAO0LRSuqxdR+K2yGNe1/3Z3gdUGnz7iONCHFZFcx+3YtYOC6
+	dAYr1MrZU4+GekDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 25DF813693;
+	Fri, 24 Oct 2025 22:31:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id JqLLCCr++2gdDAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 24 Oct 2025 22:31:06 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 80A6CA280E; Sat, 25 Oct 2025 00:31:05 +0200 (CEST)
+Date: Sat, 25 Oct 2025 00:31:05 +0200
+From: Jan Kara <jack@suse.cz>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org, 
+	Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	netdev@vger.kernel.org
+Subject: Re: [PATCH 01/32] pidfs: validate extensible ioctls
+Message-ID: <s57bjg2caxa5zhsamkll7b637omcszkammckb56pexs5m3uu4s@fyqo2js5flrk>
+References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
+ <20250910-work-namespace-v1-1-4dd56e7359d8@kernel.org>
+ <5b287ec6-72ff-4707-9040-3c84efc58b94@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1760731772.git.ackerleytng@google.com> <727482ec42baa50cb1488ad89d02e732defda3db.1760731772.git.ackerleytng@google.com>
- <diqzldl0dz5f.fsf@google.com>
-Message-ID: <aPvDEl0kGdZfcAD9@google.com>
-Subject: Re: [RFC PATCH v1 16/37] KVM: selftests: Add support for mmap() on
- guest_memfd in core library
-From: Sean Christopherson <seanjc@google.com>
-To: Ackerley Tng <ackerleytng@google.com>
-Cc: cgroups@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, akpm@linux-foundation.org, 
-	binbin.wu@linux.intel.com, bp@alien8.de, brauner@kernel.org, 
-	chao.p.peng@intel.com, chenhuacai@kernel.org, corbet@lwn.net, 
-	dave.hansen@intel.com, dave.hansen@linux.intel.com, david@redhat.com, 
-	dmatlack@google.com, erdemaktas@google.com, fan.du@intel.com, fvdl@google.com, 
-	haibo1.xu@intel.com, hannes@cmpxchg.org, hch@infradead.org, hpa@zytor.com, 
-	hughd@google.com, ira.weiny@intel.com, isaku.yamahata@intel.com, jack@suse.cz, 
-	james.morse@arm.com, jarkko@kernel.org, jgg@ziepe.ca, jgowans@amazon.com, 
-	jhubbard@nvidia.com, jroedel@suse.de, jthoughton@google.com, 
-	jun.miao@intel.com, kai.huang@intel.com, keirf@google.com, 
-	kent.overstreet@linux.dev, liam.merwick@oracle.com, 
-	maciej.wieczor-retman@intel.com, mail@maciej.szmigiero.name, 
-	maobibo@loongson.cn, mathieu.desnoyers@efficios.com, maz@kernel.org, 
-	mhiramat@kernel.org, mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com, 
-	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au, 
-	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es, 
-	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com, 
-	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com, 
-	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz, qperret@google.com, 
-	richard.weiyang@gmail.com, rick.p.edgecombe@intel.com, rientjes@google.com, 
-	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org, 
-	shakeel.butt@linux.dev, shuah@kernel.org, steven.price@arm.com, 
-	steven.sistare@oracle.com, suzuki.poulose@arm.com, tabba@google.com, 
-	tglx@linutronix.de, thomas.lendacky@amd.com, vannapurve@google.com, 
-	vbabka@suse.cz, viro@zeniv.linux.org.uk, vkuznets@redhat.com, 
-	wei.w.wang@intel.com, will@kernel.org, willy@infradead.org, wyihan@google.com, 
-	xiaoyao.li@intel.com, yan.y.zhao@intel.com, yilun.xu@intel.com, 
-	yuzenghui@huawei.com, zhiquan1.li@intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5b287ec6-72ff-4707-9040-3c84efc58b94@kernel.org>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	TAGGED_RCPT(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	R_RATELIMIT(0.00)[to_ip_from(RLbyy5b47ky7xssyr143sji8pp)];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,suse.cz,gmail.com,vger.kernel.org,toxicpanda.com,yhndnzj.com,in.waw.pl,0pointer.de,cyphar.com,zeniv.linux.org.uk,kernel.dk,cmpxchg.org,suse.com,google.com,redhat.com,oracle.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Score: -2.30
 
-On Fri, Oct 24, 2025, Ackerley Tng wrote:
-> Ackerley Tng <ackerleytng@google.com> writes:
-> 
-> > From: Sean Christopherson <seanjc@google.com>
-> >
-> > Accept gmem_flags in vm_mem_add() to be able to create a guest_memfd within
-> > vm_mem_add().
-> >
-> > When vm_mem_add() is used to set up a guest_memfd for a memslot, set up the
-> > provided (or created) gmem_fd as the fd for the user memory region. This
-> > makes it available to be mmap()-ed from just like fds from other memory
-> > sources. mmap() from guest_memfd using the provided gmem_flags and
-> > gmem_offset.
-> >
-> > Add a kvm_slot_to_fd() helper to provide convenient access to the file
-> > descriptor of a memslot.
-> >
-> > Update existing callers of vm_mem_add() to pass 0 for gmem_flags to
-> > preserve existing behavior.
-> >
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > [For guest_memfds, mmap() using gmem_offset instead of 0 all the time.]
-> > Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+On Thu 23-10-25 12:46:45, Jiri Slaby wrote:
+> On 10. 09. 25, 16:36, Christian Brauner wrote:
+> > Validate extensible ioctls stricter than we do now.
+> > 
+> > Signed-off-by: Christian Brauner <brauner@kernel.org>
 > > ---
-> >  tools/testing/selftests/kvm/include/kvm_util.h |  7 ++++++-
-> >  tools/testing/selftests/kvm/lib/kvm_util.c     | 18 ++++++++++--------
-> >  .../kvm/x86/private_mem_conversions_test.c     |  2 +-
-> >  3 files changed, 17 insertions(+), 10 deletions(-)
-> >
+> >   fs/pidfs.c         |  2 +-
+> >   include/linux/fs.h | 14 ++++++++++++++
+> >   2 files changed, 15 insertions(+), 1 deletion(-)
 > > 
-> > [...snip...]
-> > 
-> > @@ -1050,13 +1049,16 @@ void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type,
-> >  	}
-> >  
-> >  	region->fd = -1;
-> > -	if (backing_src_is_shared(src_type))
-> > +	if (flags & KVM_MEM_GUEST_MEMFD && gmem_flags & GUEST_MEMFD_FLAG_MMAP)
-> > +		region->fd = kvm_dup(gmem_fd);
-> > +	else if (backing_src_is_shared(src_type))
-> >  		region->fd = kvm_memfd_alloc(region->mmap_size,
-> >  					     src_type == VM_MEM_SRC_SHARED_HUGETLB);
-> >  
+> > diff --git a/fs/pidfs.c b/fs/pidfs.c
+> > index edc35522d75c..0a5083b9cce5 100644
+> > --- a/fs/pidfs.c
+> > +++ b/fs/pidfs.c
+> > @@ -440,7 +440,7 @@ static bool pidfs_ioctl_valid(unsigned int cmd)
+> >   		 * erronously mistook the file descriptor for a pidfd.
+> >   		 * This is not perfect but will catch most cases.
+> >   		 */
+> > -		return (_IOC_TYPE(cmd) == _IOC_TYPE(PIDFD_GET_INFO));
+> > +		return extensible_ioctl_valid(cmd, PIDFD_GET_INFO, PIDFD_INFO_SIZE_VER0);
 > 
-> Doing this makes it hard to test the legacy dual-backing case.
+> Hi,
 > 
-> It actually broke x86/private_mem_conversions_test for the legacy
-> dual-backing case because there's no way to mmap or provide a
-> userspace_address from the memory provider that is not guest_memfd, as
-> determined by src_type.
+> this turned EINVAL (from pidfd_info()) into ENOTTY (from pidfd_ioctl()) for
+> at least LTP's:
+> struct pidfd_info_invalid {
+> 	uint32_t dummy;
+> };
+> 
+> #define PIDFD_GET_INFO_SHORT _IOWR(PIDFS_IOCTL_MAGIC, 11, struct
+> pidfd_info_invalid)
+> 
+> ioctl(pidfd, PIDFD_GET_INFO_SHORT, info_invalid) == EINVAL
+> 
+> at:
+> https://github.com/linux-test-project/ltp/blob/9bb94efa39bb1b08f37e56c7437db5fa13ddcae2/testcases/kernel/syscalls/ioctl/ioctl_pidfd05.c#L46
+> 
+> Is this expected?
 
-Yes there is.  This patch is a giant nop.  The only thing that the core library
-doesn't support is mmap() on guest_memfd *and* the other src_type, and IMO that
-is big "don't care", because KVM doesn't even support that combination:
+We already discussed this internally but for others the problem was
+discussed here [1] and we decided the new errno value is OK and LTP test is
+being fixed up.
 
-	if (kvm_gmem_supports_mmap(inode))
-		slot->flags |= KVM_MEMSLOT_GMEM_ONLY;
+								Honza
 
-I mean, we _could_ test that KVM ignores the hva for mapping, but that's a
-different and unique test entirely.
+[1] https://lore.kernel.org/all/aPIPGeWo8gtxVxQX@yuki.lan/
 
-I did break x86/private_mem_conversions_test (I could have sworn I tested, *sigh*),
-but the bug is in:
-
-  KVM: selftests: Provide function to look up guest_memfd details from gpa
-
-not here.  And it's a trivial /facepalm-style fix:
-
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index ee5b63f7cb50..23a8676fee6d 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -1680,7 +1680,7 @@ int kvm_gpa_to_guest_memfd(struct kvm_vm *vm, vm_paddr_t gpa, off_t *fd_offset,
-        gpa_offset = gpa - region->region.guest_phys_addr;
-        *fd_offset = region->region.guest_memfd_offset + gpa_offset;
-        *nr_bytes = region->region.memory_size - gpa_offset;
--       return region->fd;
-+       return region->region.guest_memfd;
- }
- 
- /* Create an interrupt controller chip for the specified VM. */
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
