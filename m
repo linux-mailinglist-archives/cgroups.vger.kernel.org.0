@@ -1,153 +1,230 @@
-Return-Path: <cgroups+bounces-11145-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11146-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADBF7C069EF
-	for <lists+cgroups@lfdr.de>; Fri, 24 Oct 2025 16:10:14 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3E10C06BA5
+	for <lists+cgroups@lfdr.de>; Fri, 24 Oct 2025 16:37:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 10702507F84
-	for <lists+cgroups@lfdr.de>; Fri, 24 Oct 2025 14:09:09 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0BF7035C9A3
+	for <lists+cgroups@lfdr.de>; Fri, 24 Oct 2025 14:37:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11AF2322524;
-	Fri, 24 Oct 2025 14:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D5DF31D746;
+	Fri, 24 Oct 2025 14:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="hlVWpuEo";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Q3qANt1i"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="f4LruAbw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from flow-b8-smtp.messagingengine.com (flow-b8-smtp.messagingengine.com [202.12.124.143])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C8B31814A;
-	Fri, 24 Oct 2025 14:08:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.143
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 578513195F4
+	for <cgroups@vger.kernel.org>; Fri, 24 Oct 2025 14:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761314920; cv=none; b=bIZwyYOF/2PbpKOMKnewspX4vNdkrR4gNlEMt4uxz3ixb4VUqifHp6ERPdW2Tu5GljA58BTfGUCfaXntArIQ5zLJ5hjuoLrKVCSMKPl7rx8YSX/BPKXhizUYk3eIJVOx16skUAVEbnqjGRyPAKw2s/SiZPo4LggJxHyV7RkWSEI=
+	t=1761316616; cv=none; b=avv/cDQbOVr4duB0cYjnYBBY2uQFlJ+kgMumnbdc5MKh3Z3qZkq3DBZJ0LKcb/fhJRqHFG8EofL+EzspUvrzt19a8OD7QI/G7/33cVL7T8qLUzDIdLiowYR6cR+jWiiEFXd7tVIOE90QsxqZZNzMQap6UXWCccq6SuKYz0yFzRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761314920; c=relaxed/simple;
-	bh=VB7MUbFzQw0hGAqr2p+CQiUuP9dG3eG52n6sxVb7FEk=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=Kn2EGa8N1ppsuIUSU6uAfpeEARpbX/XGo5RvU0xrWrMURr/3d58/k0aUW8VpAK6OybhfNsI/CBCKMchy2MuGPRfxlahOqDyh1m2K3gE2IILuvYRGfMOUmz3EphKnBOqwV65MPhFemfhbl/oQ0ze15RP7vF8g4GU9gfpFsGxHo4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=hlVWpuEo; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Q3qANt1i; arc=none smtp.client-ip=202.12.124.143
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailflow.stl.internal (Postfix) with ESMTP id AEEFD13006B5;
-	Fri, 24 Oct 2025 10:08:37 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-05.internal (MEProxy); Fri, 24 Oct 2025 10:08:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1761314917;
-	 x=1761322117; bh=Cb+ptnx07ebPr7o44PcZpvCH+xBEfVRPWdIj9Bu8PAI=; b=
-	hlVWpuEowvcQ6T6uZqLHfrUU9JlFXqGHcV8BHQkCM0MzrkM4uyGfftYu1MeCSqni
-	QUWKUgEfY83yORtU0utfCF2h4y0inSZNJyvQdZtaxL5NNctp0Xdcf53q8wtR7E9c
-	xvUMbDaI5R/3AGOwHOlOGpQBi0tChugU5qRNoml9LZuXqNSMOYFRH0KMgVHAT0/I
-	gRfJh3uJDQGKxtA/lwkNSoeG9L92ihfF9XSiEwauzOyY80tA/Mge612399gJSGxJ
-	kUpnX157bWwSifx3GLcd8eaEmERuOkWZSJgFDhu6CRNExLfKS6Jh7urUEzMXadoB
-	zoGexToHJXiWQMTgw8ynEA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1761314917; x=
-	1761322117; bh=Cb+ptnx07ebPr7o44PcZpvCH+xBEfVRPWdIj9Bu8PAI=; b=Q
-	3qANt1i+zXY6oUOAlXErT5FKFmPLwU+e0ZdhkeYCRbn8e8NVgiOQoa4NhDvRL+0Z
-	J7MIR9cWPfn96kD8nYrOZVFb1vlglmDP24GBi5iYU7+0GVoSgwVdXyL0h68qPMVR
-	BXD02sO1Ls9m7FOWtVaMLms+Wjv6KgV5URYsYaJJKChl87/+WPQE3QmDyrsZxrBH
-	X8564wcaN4vIXrhYz9ggib+c0Nsm/xbM2LwhrMasDqVksXgZwAev+id6/75mFMHP
-	Tsw4pQwkaJl1IZC2JzW+5LizuevV3AdysERGuzFlTqHnujuGdElQWJMaDBX8ZCDB
-	i4vO+HXb1nqngVqDTnkGA==
-X-ME-Sender: <xms:ZIj7aA3Eg3Y0rlzk26ezjCER1IzRbSwN2wjgyobpPn-bU88Qf21ZAQ>
-    <xme:ZIj7aF77yLXSQjINknf_EQXACdywcpQQUYKqCnaMnAKK8PTIjJT8EVsUlpIE2YeBc
-    9Ly1OQd9u0EbOnRqmT7Y1GJn6AczAC_Jx25CRn-xdDC47-qzdNu>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddugeelheegucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
-    necuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
-    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepvddvpdhmohguvgepshhmthhpohhu
-    thdprhgtphhtthhopehmiiigrhgvrghrhiestdhpohhinhhtvghrrdguvgdprhgtphhtth
-    hopehhrghnnhgvshestghmphigtghhghdrohhrghdprhgtphhtthhopegthihphhgrrhes
-    tgihphhhrghrrdgtohhmpdhrtghpthhtoheprghmihhrjeefihhlsehgmhgrihhlrdgtoh
-    hmpdhrtghpthhtohepuggrrghnrdhjrdguvghmvgihvghrsehgmhgrihhlrdgtohhmpdhr
-    tghpthhtohepvgguuhhmrgiivghtsehgohhoghhlvgdrtghomhdprhgtphhtthhopehjrg
-    hnnhhhsehgohhoghhlvgdrtghomhdprhgtphhtthhopeiisgihshiivghksehinhdrfigr
-    fidrphhlpdhrtghpthhtohepsghrrghunhgvrheskhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:ZYj7aG4UJ2M8mc3pnSzWeFpW2CG5XHRvFuvCPGbR3JoK59nl83qsmQ>
-    <xmx:ZYj7aBPgrinlB_DSWtycLsEcaniQY6W2WbSpix2NBrnlgimoI32iDQ>
-    <xmx:ZYj7aH7BdLb6AqXBIH_FZBmjsIWL8OL5ThWIUAzV5tYwajH9yU0IbA>
-    <xmx:ZYj7aIzWcoJTsQ_UTsWxc6_N0j7AIb1XaVzd0jMwaWXpD3G9F5ukbQ>
-    <xmx:ZYj7aPDZv86yheOLByNFoKdlBVjT8Z9V_vZax3GzdYaa2VPAbx1q-aCp>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id DCF42700054; Fri, 24 Oct 2025 10:08:36 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1761316616; c=relaxed/simple;
+	bh=7POTLgOQMSvDxIjq1wqPOOdPmObt8KgLrizCHzkYhn0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=lFHEdMN9TUmyhQTib3f0GgsLNy8C2TRsspAwy9+krmaUgwD+RBdnLy52MYd2TY/6s2muqC3SfKjIQgEfgKFFlXRhZK7hwfHw3hwk0qj6X1/gxHcfPjymhG3QiGfIz39L+vhSeDkeqY4vlb9JLpkIzyzMp4m4XKiNPqZoAK0u6KI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=f4LruAbw; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-290cd61855eso19672895ad.1
+        for <cgroups@vger.kernel.org>; Fri, 24 Oct 2025 07:36:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1761316614; x=1761921414; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8gWpJOPikpazVbpXRSUPMCcvrbTBk5c7sNdJD5ZAL5c=;
+        b=f4LruAbwGC7NvQfpfbN76Yj4wOdfUQMXmRa9yXRCYqVLCvpKM+DOcf8qKT+Cq5HmpF
+         eFGQ3Zs08aupJi37oT0laKXktHx9Hi/4GTGLFUSOFQEoa+8RL3W+oi8rjz2N97b8SulF
+         khZYHZdNmQHASNx7zXNnzE691sq0q9m1MBeN5oeldppylyeWbhR2ZjdULm8lPQBDMYTN
+         LqhZ69mvKkaBI53bmuDMu0e0bdTXp4uy5WsJRMXvmTuRz2+DEcMjUKilqSyCN1ACboLD
+         29ytfDZiogxJB0mhQ01wbrG89uPplqKmXe3BJUX/JxkMhigOzYgppF8cNvl2YODRER7r
+         2+Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761316614; x=1761921414;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8gWpJOPikpazVbpXRSUPMCcvrbTBk5c7sNdJD5ZAL5c=;
+        b=cmn+/8qmik64IhgCw1W6T/8H9kbW/QizgJYyUGygCsB+bXk1rNenwSIdj5EEyjOIbM
+         TVbof7JJURp8Snv8fn0GeAfMhInawTd4OkDONtnZh7+ZEZYEG1P3qWHo0C4vY90afHzM
+         lKJWfUkEXpcT1kKg0ZNjMXg3ws0p8I89p80HnriX4seilvWcvIMRR5YNfHpyA1TRCay1
+         DFwZZT5jOUrLF4PjaPG8EqlIb8GzDMfUc418H/QiDYyLhjYkDhmEwT4uL9PmmxP9PUt9
+         J7bYPUBE4l5/WS4qw8o/Zwolg8nYWdWgGlJrJ7ZQd2DruxoVcWRAjWjV+6iqphbkN2PE
+         8EKg==
+X-Forwarded-Encrypted: i=1; AJvYcCUAodBlZpyoToqXuSU2QAUajuQm+QurwZUC+d0TvWrPIt7N0sUGH+S1VIbpKSTGdd+9QXtmU7BS@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywjv5KL5EkTiV9dblBXPtXKnyoNr92FyQgLU117vATpLCluqopH
+	MYlRyy93y7kpXLTwygkWIotp1IEEnQnBWeZQbbMW6s696FuzhO2b/FMpbDaR7GhnggTB/f6Cxy3
+	4HQEFd4wCyYEWO7waON5ZnpRE0Q==
+X-Google-Smtp-Source: AGHT+IHpZZ9f9FI2oIDKJuatT8tIt0u+E9sskkPVtdG8cewdd4WM+aJNDiUGBZhPHxdPQPN/WAuNAtpnF8qjPR3V7w==
+X-Received: from plcq12.prod.google.com ([2002:a17:902:e30c:b0:290:28e2:ce4e])
+ (user=ackerleytng job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:902:f68c:b0:290:91d2:9304 with SMTP id d9443c01a7336-290c9c8a770mr324316695ad.4.1761316613376;
+ Fri, 24 Oct 2025 07:36:53 -0700 (PDT)
+Date: Fri, 24 Oct 2025 07:36:51 -0700
+In-Reply-To: <aPpEPZ4YfrRHIkal@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-ThreadId: AvgbtRMgB1Po
-Date: Fri, 24 Oct 2025 16:08:16 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
- "Josef Bacik" <josef@toxicpanda.com>, "Jeff Layton" <jlayton@kernel.org>
-Cc: "Jann Horn" <jannh@google.com>, "Mike Yuan" <me@yhndnzj.com>,
- =?UTF-8?Q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
- "Lennart Poettering" <mzxreary@0pointer.de>,
- "Daan De Meyer" <daan.j.demeyer@gmail.com>,
- "Aleksa Sarai" <cyphar@cyphar.com>, "Amir Goldstein" <amir73il@gmail.com>,
- "Tejun Heo" <tj@kernel.org>, "Johannes Weiner" <hannes@cmpxchg.org>,
- "Thomas Gleixner" <tglx@linutronix.de>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>, "Jan Kara" <jack@suse.cz>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- Netdev <netdev@vger.kernel.org>
-Message-Id: <cfefa1c8-4cd2-478e-8c68-627a0a767f7d@app.fastmail.com>
-In-Reply-To: 
- <20251024-work-namespace-nstree-listns-v3-18-b6241981b72b@kernel.org>
-References: 
- <20251024-work-namespace-nstree-listns-v3-0-b6241981b72b@kernel.org>
- <20251024-work-namespace-nstree-listns-v3-18-b6241981b72b@kernel.org>
-Subject: Re: [PATCH v3 18/70] arch: hookup listns() system call
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <cover.1760731772.git.ackerleytng@google.com> <8ee16fbf254115b0fd72cc2b5c06d2ccef66eca9.1760731772.git.ackerleytng@google.com>
+ <2457cb3b-5dde-4ca1-b75d-174b5daee28a@arm.com> <diqz4irqg9qy.fsf@google.com>
+ <diqzy0p2eet3.fsf@google.com> <aPlpKbHGea90IebS@google.com>
+ <diqzv7k5emza.fsf@google.com> <aPpEPZ4YfrRHIkal@google.com>
+Message-ID: <diqzqzuse58c.fsf@google.com>
+Subject: Re: [RFC PATCH v1 07/37] KVM: Introduce KVM_SET_MEMORY_ATTRIBUTES2
+From: Ackerley Tng <ackerleytng@google.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Steven Price <steven.price@arm.com>, cgroups@vger.kernel.org, kvm@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
+	akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de, 
+	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org, 
+	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com, 
+	david@redhat.com, dmatlack@google.com, erdemaktas@google.com, 
+	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com, hannes@cmpxchg.org, 
+	hch@infradead.org, hpa@zytor.com, hughd@google.com, ira.weiny@intel.com, 
+	isaku.yamahata@intel.com, jack@suse.cz, james.morse@arm.com, 
+	jarkko@kernel.org, jgg@ziepe.ca, jgowans@amazon.com, jhubbard@nvidia.com, 
+	jthoughton@google.com, jun.miao@intel.com, kai.huang@intel.com, 
+	keirf@google.com, kent.overstreet@linux.dev, liam.merwick@oracle.com, 
+	maciej.wieczor-retman@intel.com, mail@maciej.szmigiero.name, 
+	maobibo@loongson.cn, mathieu.desnoyers@efficios.com, maz@kernel.org, 
+	mhiramat@kernel.org, mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com, 
+	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au, 
+	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es, 
+	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com, 
+	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com, 
+	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz, qperret@google.com, 
+	richard.weiyang@gmail.com, rick.p.edgecombe@intel.com, rientjes@google.com, 
+	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org, 
+	shakeel.butt@linux.dev, shuah@kernel.org, suzuki.poulose@arm.com, 
+	tabba@google.com, tglx@linutronix.de, thomas.lendacky@amd.com, 
+	vannapurve@google.com, vbabka@suse.cz, viro@zeniv.linux.org.uk, 
+	vkuznets@redhat.com, will@kernel.org, willy@infradead.org, wyihan@google.com, 
+	xiaoyao.li@intel.com, yan.y.zhao@intel.com, yilun.xu@intel.com, 
+	yuzenghui@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Oct 24, 2025, at 12:52, Christian Brauner wrote:
-> Add the listns() system call to all architectures.
+Sean Christopherson <seanjc@google.com> writes:
+
+> On Thu, Oct 23, 2025, Ackerley Tng wrote:
+>> Sean Christopherson <seanjc@google.com> writes:
+>> 
+>> > On Wed, Oct 22, 2025, Ackerley Tng wrote:
+>> >> Ackerley Tng <ackerleytng@google.com> writes:
+>> >> 
+>> >> Found another issue with KVM_CAP_MEMORY_ATTRIBUTES2.
+>> >> 
+>> >> KVM_CAP_MEMORY_ATTRIBUTES2 was defined to do the same thing as
+>> >> KVM_CAP_MEMORY_ATTRIBUTES, but that's wrong since
+>> >> KVM_CAP_MEMORY_ATTRIBUTES2 should indicate the presence of
+>> >> KVM_SET_MEMORY_ATTRIBUTES2 and struct kvm_memory_attributes2.
+>> >
+>> > No?  If no attributes are supported, whether or not KVM_SET_MEMORY_ATTRIBUTES2
+>> > exists is largely irrelevant.
+>> 
+>> That's true.
+>> 
+>> > We can even provide the same -ENOTTY errno by
+>> > checking that _any_ attributes are supported, i.e. so that doing
+>> > KVM_SET_MEMORY_ATTRIBUTES2 on KVM without any support whatsoever fails in the
+>> > same way that KVM with code support but no attributes fails.
+>> 
+>> IIUC KVM_SET_MEMORY_ATTRIBUTES doesn't fail with -ENOTTY now when there
+>> are no valid attributes.
+>> 
+>> Even if there's no valid attributes (as in
+>> kvm_supported_mem_attributes() returns 0), it's possible to call
+>> KVM_SET_MEMORY_ATTRIBUTES with .attributes set to 0, which will be a
+>> no-op, but will return 0.
+>> 
+>> I think this is kind of correct behavior since .attributes = 0 is
+>> actually a valid expression for "I want this range to be shared", and
+>> for a VM that doesn't support private memory, it's a valid expression.
+>> 
+>> 
+>> The other way that there are "no attributes" would be if there are no
+>> /VM/ attributes, in which case KVM_SET_MEMORY_ATTRIBUTES, sent to as a
+>> vm ioctl, will return -ENOTTY.
 >
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> Ya, this is what I was trying to say with "_any_ attributes are supported".  I.e.
+> by "any" I meant "any attributes in KVM for VMs vs. gmems", not "any attributes
+> for this specific VM/gmem instance".
+>
+>> 
+>> [...snip...]
+>> 
 
-This looks correct to me,
+I've been thinking more about this:
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+  #ifdef CONFIG_KVM_VM_MEMORY_ATTRIBUTES
+  	case KVM_CAP_MEMORY_ATTRIBUTES2:
+  	case KVM_CAP_MEMORY_ATTRIBUTES:
+  		if (!vm_memory_attributes)
+  			return 0;
+  
+  		return kvm_supported_mem_attributes(kvm);
+  #endif
 
-> diff --git a/include/uapi/asm-generic/unistd.h 
-> b/include/uapi/asm-generic/unistd.h
-> index 04e0077fb4c9..942370b3f5d2 100644
-> --- a/include/uapi/asm-generic/unistd.h
-> +++ b/include/uapi/asm-generic/unistd.h
-> @@ -857,9 +857,11 @@ __SYSCALL(__NR_open_tree_attr, sys_open_tree_attr)
->  __SYSCALL(__NR_file_getattr, sys_file_getattr)
->  #define __NR_file_setattr 469
->  __SYSCALL(__NR_file_setattr, sys_file_setattr)
-> +#define __NR_listns 470
-> +__SYSCALL(__NR_listns, sys_listns)
-> 
->  #undef __NR_syscalls
-> -#define __NR_syscalls 470
-> +#define __NR_syscalls 471
-> 
+And the purpose of adding KVM_CAP_MEMORY_ATTRIBUTES2 is that
+KVM_CAP_MEMORY_ATTRIBUTES2 tells userspace that
+KVM_SET_MEMORY_ATTRIBUTES2 is available iff there are valid
+attributes.
 
-I still need to remove this unused file, but that is my problem,
-not yours. No need to add patch 71 to your series ;-)
+(So there's still a purpose)
 
-    Arnd
+Without valid attributes, userspace can't tell if it should use
+KVM_SET_MEMORY_ATTRIBUTES or the 2 version.
+
+I also added KVM_CAP_GUEST_MEMFD_MEMORY_ATTRIBUTES, which tells
+userspace the valid attributes when calling KVM_SET_MEMORY_ATTRIBUTES2
+on a guest_memfd:
+
+  #ifdef CONFIG_KVM_GUEST_MEMFD
+  	case KVM_CAP_GUEST_MEMFD:
+  		return 1;
+  	case KVM_CAP_GUEST_MEMFD_FLAGS:
+  		return kvm_gmem_get_supported_flags(kvm);
+  	case KVM_CAP_GUEST_MEMFD_MEMORY_ATTRIBUTES:
+  		if (vm_memory_attributes)
+  			return 0;
+  
+  		return kvm_supported_mem_attributes(kvm);
+  #endif
+  
+So to set memory attributes, userspace should
+
+  if (kvm_check_cap(KVM_CAP_GUEST_MEMFD_MEMORY_ATTRIBUTES) > 0)
+	use KVM_SET_MEMORY_ATTRIBUTES2 with guest_memfd
+  else if (kvm_check_cap(KVM_CAP_MEMORY_ATTRIBUTES2) > 0)
+        use KVM_SET_MEMORY_ATTRIBUTES2 with VM fd
+  else if (kvm_check_cap(KVM_CAP_MEMORY_ATTRIBUTES) > 0)
+	use KVM_SET_MEMORY_ATTRIBUTES with VM fd
+  else
+	can't set memory attributes
+
+Something like that?
+
+
+In selftests there's this, when KVM_SET_USER_MEMORY_REGION2 was
+introduced:
+
+  #define TEST_REQUIRE_SET_USER_MEMORY_REGION2()			\
+	__TEST_REQUIRE(kvm_has_cap(KVM_CAP_USER_MEMORY2),	\
+		       "KVM selftests now require KVM_SET_USER_MEMORY_REGION2 (introduced in v6.8)")
+
+But looks like there's no direct equivalent for the introduction of
+KVM_SET_MEMORY_ATTRIBUTES2?
+
+The closest would be to add a TEST_REQUIRE_VALID_ATTRIBUTES() which
+checks KVM_CAP_MEMORY_ATTRIBUTES2 or
+KVM_CAP_GUEST_MEMFD_MEMORY_ATTRIBUTES before making the vm or
+guest_memfd ioctl respsectively.
 
