@@ -1,42 +1,42 @@
-Return-Path: <cgroups+bounces-11168-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11173-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50AF2C08CBA
-	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 09:05:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A660FC08CEA
+	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 09:06:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id F37344E7CAF
-	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 07:05:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F0BE1897EA4
+	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 07:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593DE2E11AE;
-	Sat, 25 Oct 2025 07:04:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BC2D2F1FD5;
+	Sat, 25 Oct 2025 07:04:04 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CC722DEA87;
-	Sat, 25 Oct 2025 07:03:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B0C2E3B03;
+	Sat, 25 Oct 2025 07:04:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761375840; cv=none; b=sKqaibH/dDdMvYv6UBPurQtNV2xLOQp00dJgRun1NdQf0ycWGnIrgDJsuiIeLQykLoIMNoxdDPTdpnGKKFQ519fUGLfSd+A3vH5o5tf/0pJifwXmScekgD/8Tnk+jfXXYWVladNmO20EXxwdPfBq6Kw2z+8FXUEXgsw0r+KeqT8=
+	t=1761375843; cv=none; b=p6pLTD0SLbvoZOaiUD34MdO+PQ1Q7VHfOwo3j+dBXPAhuSwP19GczW2f4cbRVvcOzddQhN+aV11jN7wpIGQlKCxZaSMkjCJEjtA2n2dWt8O+qCw2cIr3aXusaEN5NqNBzENdUh2ksXdx7Ubfr5hnZcbUXK9QEh2XDTbBff1vFrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761375840; c=relaxed/simple;
-	bh=vT/PTr9YVgCPZggcmQy3GQbCZx7tYxu7afEvf1U9THg=;
+	s=arc-20240116; t=1761375843; c=relaxed/simple;
+	bh=ekgS+jZiOyBlWnTKH5eHUTlgI96TfeJ3HmE303xch30=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=edhbQ/QvBRjCsNwjAMhhLNaT4PlZt6D3Fv2WSbGpXpkCjIj3DHyVkTl5a6oJN90vsmHuHdNl8aRPDk2mFy/uFtuMPXVHbKXAZWxYawjFCFau/Rs81g+uDooptG94hAHXlueKBP5Rmo2zjIpkGeZ96kOJ2MVeRNpJR1pQjztOEEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=pnfdnyYHEzB+pndv7IJLbcY1BcvIiRhspBSK9CEWXjy0S0lCtRl1ezzJ58QOBGZTz/TxHR0Et9utVtNuisgWQ2OVZrnFMJlaT7CH3zNXf22GpsNTOIbbqKHcOTVkwMAU5ZTq0vZ9IS66iqUMhsIORfNGnfbM7AJv0g7X+rbIHWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4ctrM6672hzKHMZT;
-	Sat, 25 Oct 2025 15:02:58 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4ctrLz6lhCzYQtwM;
+	Sat, 25 Oct 2025 15:02:51 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id C48FF1A19BF;
+	by mail.maildlp.com (Postfix) with ESMTP id CE64D1A0E86;
 	Sat, 25 Oct 2025 15:03:50 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP2 (Coremail) with SMTP id Syh0CgCHKUJGdvxovSssBg--.49460S18;
+	by APP2 (Coremail) with SMTP id Syh0CgCHKUJGdvxovSssBg--.49460S19;
 	Sat, 25 Oct 2025 15:03:50 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: longman@redhat.com,
@@ -47,9 +47,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lujialin4@huawei.com,
 	chenridong@huawei.com
-Subject: [PATCH RFC v2 16/22] cpuset: simplify partition update logic for hotplug tasks
-Date: Sat, 25 Oct 2025 06:48:38 +0000
-Message-Id: <20251025064844.495525-17-chenridong@huaweicloud.com>
+Subject: [PATCH RFC v2 17/22] cpuset: unify local partition disable and invalidate
+Date: Sat, 25 Oct 2025 06:48:39 +0000
+Message-Id: <20251025064844.495525-18-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251025064844.495525-1-chenridong@huaweicloud.com>
 References: <20251025064844.495525-1-chenridong@huaweicloud.com>
@@ -60,10 +60,10 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCHKUJGdvxovSssBg--.49460S18
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr47ZFy3tryrKrWxJr18Zrb_yoW7Jr4kpF
-	y3Cr47tayUGr15C3sxJFs7A3yrKws7JFyjy3ZxJ3yrJF12v3WvyFyjk395ZayYqryDXry7
-	Za4qgr4xJF17ArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:Syh0CgCHKUJGdvxovSssBg--.49460S19
+X-Coremail-Antispam: 1UD129KBjvJXoWxurWUZr45uF47Zw43uw1rWFg_yoW5Ww4UpF
+	y3Cr42qrWUJFy5u347JFs7C34rKwnrXa9FywnxX3WrJF12y3Wvya40y3s7Za45XF9rGryU
+	Z3Z09r48X3W2kwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -81,133 +81,83 @@ X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-Simplify the partition update logic in cpuset_hotplug_update_tasks() by
-calling the unified local_partition_update() interface.
+The local_partition_invalidate() and local_partition_disable() functions
+contain similar logic that can be unified into a single implementation.
+This patch consolidates both functions into local_partition_disable(),
+creating symmetry with the existing remote_partition_disable() function.
 
-For local partitions, the previous patch introduced local_partition_update
-which handles both validation state transitions:
-- Invalidates local partitions that fail validation checks
-- Transitions invalid partitions to valid state when no errors are detected
-
-This eliminates the need for separate transition logic
-in cpuset_hotplug_update_tasks(), which can now simply call
-local_partition_update() to handle all local partition changes.
-
-For remote partitions, the logic is adjusted to always proceed to
-update_tasks regardless of whether the partition was disabled, as the
-original skip condition was not valid for remote partitions. This change
-maintains existing functionality while simplifying the code path.
-
-The partition_cmd emum type can now be safely removed as it is no longer
-referenced by any code paths after the partition update logic
-simplification.
+This refactoring reduces code duplication and establishes a consistent
+interface for partition disable operations across both local and remote
+partition types.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/cpuset.c | 64 +++++++++++++++---------------------------
- 1 file changed, 23 insertions(+), 41 deletions(-)
+ kernel/cgroup/cpuset.c | 38 ++------------------------------------
+ 1 file changed, 2 insertions(+), 36 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 3c499bd3b899..3d4f2dc63c50 100644
+index 3d4f2dc63c50..e60a774a3654 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -1214,17 +1214,6 @@ static void compute_effective_cpumask(struct cpumask *new_cpus,
- 	cpumask_and(new_cpus, cs->cpus_allowed, parent->effective_cpus);
+@@ -1956,40 +1956,6 @@ static void local_partition_disable(struct cpuset *cs, enum prs_errcode part_err
+ 	}
  }
  
--/*
-- * Commands for update_parent_effective_cpumask
+-/**
+- * local_partition_invalidate - Invalidate a local partition
+- * @cs: Target cpuset (local partition root) to invalidate
+- * @tmp: Temporary masks
 - */
--enum partition_cmd {
--	partcmd_enable,		/* Enable partition root	  */
--	partcmd_enablei,	/* Enable isolated partition root */
--	partcmd_disable,	/* Disable partition root	  */
--	partcmd_update,		/* Update parent's effective_cpus */
--	partcmd_invalidate,	/* Make partition invalid	  */
--};
+-static void local_partition_invalidate(struct cpuset *cs, struct tmpmasks *tmp)
+-{
+-	struct cpumask *xcpus = user_xcpus(cs);
+-	struct cpuset *parent = parent_cs(cs);
+-	int new_prs = cs->partition_root_state;
+-	bool cpumask_updated = false;
 -
- static void update_sibling_cpumasks(struct cpuset *parent, struct cpuset *cs,
- 				    struct tmpmasks *tmp);
- 
-@@ -3881,8 +3870,6 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	static nodemask_t new_mems;
- 	bool cpus_updated;
- 	bool mems_updated;
--	bool remote;
--	int partcmd = -1;
- 	struct cpuset *parent;
- retry:
- 	wait_event(cpuset_attach_wq, cs->attach_in_progress == 0);
-@@ -3909,16 +3896,15 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	 * Compute effective_cpus for valid partition root, may invalidate
- 	 * child partition roots if necessary.
- 	 */
--	remote = is_remote_partition(cs);
--	if (remote || (is_partition_valid(cs) && is_partition_valid(parent)))
-+	if (is_remote_partition(cs)) {
- 		compute_partition_effective_cpumask(cs, &new_cpus);
+-	lockdep_assert_held(&cpuset_mutex);
+-	WARN_ON_ONCE(is_remote_partition(cs));	/* For local partition only */
 -
--	if (remote && cpumask_empty(&new_cpus) &&
--	    partition_is_populated(cs, NULL)) {
--		cs->prs_err = PERR_HOTPLUG;
--		remote_partition_disable(cs, tmp);
--		compute_effective_cpumask(&new_cpus, cs, parent);
--		remote = false;
-+		if (cpumask_empty(&new_cpus) &&
-+		    partition_is_populated(cs, NULL)) {
-+			cs->prs_err = PERR_HOTPLUG;
-+			remote_partition_disable(cs, tmp);
-+			compute_effective_cpumask(&new_cpus, cs, parent);
-+		}
-+		goto update_tasks;
- 	}
- 
- 	/*
-@@ -3926,29 +3912,25 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	 * the following conditions hold:
- 	 * 1) empty effective cpus but not valid empty partition.
- 	 * 2) parent is invalid or doesn't grant any cpus to child
--	 *    partitions.
--	 */
--	if (is_local_partition(cs) && (!is_partition_valid(parent) ||
--				tasks_nocpu_error(parent, cs, &new_cpus))) {
--		partcmd = partcmd_invalidate;
--		local_partition_invalidate(cs, tmp);
--	}
+-	if (!is_partition_valid(cs))
+-		return;
+-
 -	/*
-+	 *  partitions.
-+	 *
- 	 * On the other hand, an invalid partition root may be transitioned
- 	 * back to a regular one with a non-empty user xcpus.
-+	 *
-+	 * local_partition_update can handle these cases.
- 	 */
--	else if (is_partition_valid(parent) && is_partition_invalid(cs) &&
--		 !cpumask_empty(user_xcpus(cs))) {
--		partcmd = partcmd_update;
--		local_partition_update(cs, tmp);
+-	 * Make the current partition invalid.
+-	 */
+-	if (is_partition_valid(parent))
+-		cpumask_updated = cpumask_and(tmp->addmask,
+-					      xcpus, parent->effective_xcpus);
+-	if (cs->partition_root_state > 0)
+-		new_prs = -cs->partition_root_state;
+-
+-	partition_disable(cs, parent, new_prs, cs->prs_err);
+-	if (cpumask_updated) {
+-		cpuset_update_tasks_cpumask(parent, tmp->addmask);
+-		update_sibling_cpumasks(parent, cs, tmp);
 -	}
-+	local_partition_update(cs, tmp);
-+
-+	/*
-+	 * Recompute effective CPU mask after partition state update:
-+	 * - For valid partitions: calculate partition-specific effective CPUs
-+	 * - For invalid partitions: compute member effective CPU mask
-+	 */
-+	if (is_partition_valid(cs))
-+		compute_partition_effective_cpumask(cs, &new_cpus);
-+	else
-+		compute_effective_cpumask(&new_cpus, cs, parent);
- 
--	if (partcmd >= 0) {
--		if ((partcmd == partcmd_invalidate) || is_partition_valid(cs)) {
--			compute_partition_effective_cpumask(cs, &new_cpus);
--			cpuset_force_rebuild();
--		}
--	}
- 
- update_tasks:
- 	cpus_updated = !cpumask_equal(&new_cpus, cs->effective_cpus);
+-}
+-
+ /**
+  * __local_partition_update - Update local partition configuration
+  * @cs: Target cpuset to update
+@@ -2437,7 +2403,7 @@ static int cpus_allowed_validate_change(struct cpuset *cs, struct cpuset *trialc
+ 			if (is_partition_valid(cp) &&
+ 			    cpumask_intersects(xcpus, cp->effective_xcpus)) {
+ 				rcu_read_unlock();
+-				local_partition_invalidate(cp, tmp);
++				local_partition_disable(cp, PERR_NOTEXCL, tmp);
+ 				rcu_read_lock();
+ 			}
+ 		}
+@@ -2477,7 +2443,7 @@ static void partition_cpus_change(struct cpuset *cs, struct cpuset *trialcs,
+ 					   trialcs->effective_xcpus, tmp);
+ 	} else {
+ 		if (trialcs->prs_err)
+-			local_partition_invalidate(cs, tmp);
++			local_partition_disable(cs, trialcs->prs_err, tmp);
+ 		else
+ 			__local_partition_update(cs, trialcs->exclusive_cpus,
+ 						 trialcs->effective_xcpus, tmp, false);
 -- 
 2.34.1
 
