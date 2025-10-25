@@ -1,197 +1,156 @@
-Return-Path: <cgroups+bounces-11155-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11158-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA528C083E1
-	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 00:31:22 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A55EEC08C99
+	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 09:04:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BA5E3AE979
-	for <lists+cgroups@lfdr.de>; Fri, 24 Oct 2025 22:31:21 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1487D3510EA
+	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 07:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFF8302CC3;
-	Fri, 24 Oct 2025 22:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WTTwjRCx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zPY0qqdk";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WTTwjRCx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zPY0qqdk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1AA2DCBF3;
+	Sat, 25 Oct 2025 07:03:55 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B7C19C553
-	for <cgroups@vger.kernel.org>; Fri, 24 Oct 2025 22:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A64A2512EE;
+	Sat, 25 Oct 2025 07:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761345071; cv=none; b=fXPnn4WhTaGqd76IsQviWTDBdm8/o9isgYhjWq5qN+i+Yt3J8NgPsXoqYhBVmU6XFA5kEvMHVmBuj+Ih2Fy+Xu5iui2yseRkxN0Kf/0HmKx99B6/IpTbPsZiArtM/r0nftkITPj7cJZ8IBDNmitL5hVrWLliIkyMl+8xJdkmpx8=
+	t=1761375835; cv=none; b=YP+q9ugvefAZxUkEapHLnXy+O32OKZ4Kaix/TLdy3GMK5gVgsCwbA2F0Q6qeXtJcbnMCMGXzlftbOyRIuWeYkqL8uMk0BHMe4Dk/QwO056+Butj1deseut5HH3iiRSzVER9/4WWTy37Y+hBpvoTb8FVhE6dEu7ffsKHrtPDZi1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761345071; c=relaxed/simple;
-	bh=TdtvSFhVumAdCHdZdAGKLPPL1lptHcjWodC1ykDPzY0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mbUZJ463jhZfoT7RdmaBsaa5StEFphKgCKhn9B4W45ullX0nonFcFg1tzbJ3PqWr7O+ubCS1ISzhgiR3TlchynUxw2wKaffpRShY/O6SzBnh4er8nYIyX1QwqbinWecqLfj0VuNBtV+/ZYceBnSH/WHkn/uw6R3OBv/m7Dr5LSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WTTwjRCx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zPY0qqdk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WTTwjRCx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zPY0qqdk; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 47D59211E8;
-	Fri, 24 Oct 2025 22:31:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761345066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XaDkQXEDq3kiZtr1ll+BBk3Dg0qixXh2ek2kyEyFBLo=;
-	b=WTTwjRCxGB26PULa/ak6Okz4dsHb+N43kdKOP+ED1wRE0ANRFxocl1iqwChFEy2qFVB/t6
-	HnEQ3y1qKQv843HJdWRHWuu4eFa4nPQefDPcdaBUEglKWx/SC6JaFoKeiEMw+zjey+sGE2
-	6Dj8XTGGp0WYBlgpxYMuJIB1ygGaM+o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761345066;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XaDkQXEDq3kiZtr1ll+BBk3Dg0qixXh2ek2kyEyFBLo=;
-	b=zPY0qqdke3Lu6ES/8PPTBWAO0LRSuqxdR+K2yGNe1/3Z3gdUGnz7iONCHFZFcx+3YtYOC6
-	dAYr1MrZU4+GekDw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1761345066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XaDkQXEDq3kiZtr1ll+BBk3Dg0qixXh2ek2kyEyFBLo=;
-	b=WTTwjRCxGB26PULa/ak6Okz4dsHb+N43kdKOP+ED1wRE0ANRFxocl1iqwChFEy2qFVB/t6
-	HnEQ3y1qKQv843HJdWRHWuu4eFa4nPQefDPcdaBUEglKWx/SC6JaFoKeiEMw+zjey+sGE2
-	6Dj8XTGGp0WYBlgpxYMuJIB1ygGaM+o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1761345066;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XaDkQXEDq3kiZtr1ll+BBk3Dg0qixXh2ek2kyEyFBLo=;
-	b=zPY0qqdke3Lu6ES/8PPTBWAO0LRSuqxdR+K2yGNe1/3Z3gdUGnz7iONCHFZFcx+3YtYOC6
-	dAYr1MrZU4+GekDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 25DF813693;
-	Fri, 24 Oct 2025 22:31:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id JqLLCCr++2gdDAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 24 Oct 2025 22:31:06 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 80A6CA280E; Sat, 25 Oct 2025 00:31:05 +0200 (CEST)
-Date: Sat, 25 Oct 2025 00:31:05 +0200
-From: Jan Kara <jack@suse.cz>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org, 
-	Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>, Mike Yuan <me@yhndnzj.com>, 
-	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
-	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	netdev@vger.kernel.org
-Subject: Re: [PATCH 01/32] pidfs: validate extensible ioctls
-Message-ID: <s57bjg2caxa5zhsamkll7b637omcszkammckb56pexs5m3uu4s@fyqo2js5flrk>
-References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
- <20250910-work-namespace-v1-1-4dd56e7359d8@kernel.org>
- <5b287ec6-72ff-4707-9040-3c84efc58b94@kernel.org>
+	s=arc-20240116; t=1761375835; c=relaxed/simple;
+	bh=VUCkL1G2EBUWyn9nn3uK4N45ALqDuTK7WjoReHz3Mek=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Vq7xU2cTfmAqzbH+NqXGvjoggXpY4SpV82tGepdcIHEtG8xUd9yvZjZkuITf25aKfknYI/+kELzgUnW5GkiDlOHxGnmBiv7thvz8+cK77n4UWz8KusWxmGaXZxAsNcHLO93rywqfZrL3jrgCBXir1tlj9U2LoaMby3/vN+xIn+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4ctrM56rMTzKHMYH;
+	Sat, 25 Oct 2025 15:02:57 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id D815E1A121F;
+	Sat, 25 Oct 2025 15:03:49 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP2 (Coremail) with SMTP id Syh0CgCHKUJGdvxovSssBg--.49460S2;
+	Sat, 25 Oct 2025 15:03:49 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: longman@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lujialin4@huawei.com,
+	chenridong@huawei.com
+Subject: [PATCH RFC v2 00/22] cpuset: rework local partition logic
+Date: Sat, 25 Oct 2025 06:48:22 +0000
+Message-Id: <20251025064844.495525-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b287ec6-72ff-4707-9040-3c84efc58b94@kernel.org>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	TAGGED_RCPT(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	R_RATELIMIT(0.00)[to_ip_from(RLbyy5b47ky7xssyr143sji8pp)];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,suse.cz,gmail.com,vger.kernel.org,toxicpanda.com,yhndnzj.com,in.waw.pl,0pointer.de,cyphar.com,zeniv.linux.org.uk,kernel.dk,cmpxchg.org,suse.com,google.com,redhat.com,oracle.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Score: -2.30
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgCHKUJGdvxovSssBg--.49460S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr15CrWxZFWUAr4DJw1DKFg_yoW5ur1rpF
+	y3GaySy34UGry5C3srJan7Aw4FgwsrJa4Utwnxu348Xr13Aw1vya40y395Za47Wr9rZryU
+	Z3ZrWr48X3W7u3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
+	AIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Thu 23-10-25 12:46:45, Jiri Slaby wrote:
-> On 10. 09. 25, 16:36, Christian Brauner wrote:
-> > Validate extensible ioctls stricter than we do now.
-> > 
-> > Signed-off-by: Christian Brauner <brauner@kernel.org>
-> > ---
-> >   fs/pidfs.c         |  2 +-
-> >   include/linux/fs.h | 14 ++++++++++++++
-> >   2 files changed, 15 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/pidfs.c b/fs/pidfs.c
-> > index edc35522d75c..0a5083b9cce5 100644
-> > --- a/fs/pidfs.c
-> > +++ b/fs/pidfs.c
-> > @@ -440,7 +440,7 @@ static bool pidfs_ioctl_valid(unsigned int cmd)
-> >   		 * erronously mistook the file descriptor for a pidfd.
-> >   		 * This is not perfect but will catch most cases.
-> >   		 */
-> > -		return (_IOC_TYPE(cmd) == _IOC_TYPE(PIDFD_GET_INFO));
-> > +		return extensible_ioctl_valid(cmd, PIDFD_GET_INFO, PIDFD_INFO_SIZE_VER0);
-> 
-> Hi,
-> 
-> this turned EINVAL (from pidfd_info()) into ENOTTY (from pidfd_ioctl()) for
-> at least LTP's:
-> struct pidfd_info_invalid {
-> 	uint32_t dummy;
-> };
-> 
-> #define PIDFD_GET_INFO_SHORT _IOWR(PIDFS_IOCTL_MAGIC, 11, struct
-> pidfd_info_invalid)
-> 
-> ioctl(pidfd, PIDFD_GET_INFO_SHORT, info_invalid) == EINVAL
-> 
-> at:
-> https://github.com/linux-test-project/ltp/blob/9bb94efa39bb1b08f37e56c7437db5fa13ddcae2/testcases/kernel/syscalls/ioctl/ioctl_pidfd05.c#L46
-> 
-> Is this expected?
+From: Chen Ridong <chenridong@huawei.com>
 
-We already discussed this internally but for others the problem was
-discussed here [1] and we decided the new errno value is OK and LTP test is
-being fixed up.
+The current local partition implementation consolidates all operations
+(enable, disable, invalidate, and update) within the large
+update_parent_effective_cpumask() function, which exceeds 300 lines.
+This monolithic approach has become increasingly difficult to understand
+and maintain. Additionally, partition-related fields are updated in
+multiple locations, leading to redundant code and potential corner case
+oversights.
 
-								Honza
+This patch series refactors the local partition logic by separating
+operations into dedicated functions: local_partition_enable(),
+local_partition_disable(), and local_partition_update(), creating
+symmetry with the existing remote partition infrastructure.
 
-[1] https://lore.kernel.org/all/aPIPGeWo8gtxVxQX@yuki.lan/
+The series is organized as follows:
+
+1. Fix a bug that isolcpus stat in root partition.
+
+2. Infrastructure Preparation (Patches 2-3):
+   - Code cleanup and preparation for the refactoring work
+
+3. Introduce partition operation helpers (Patches 4-6):
+   - Intoduce out partition_enable(), partition_disable(), and
+     partition_update() functions.
+
+4. Use new helpers for remote partition (Patches 7-9)
+
+5. Local Partition Implementation (Patches 10-13):
+   - Separate update_parent_effective_cpumask() into dedicated functions:
+     * local_partition_enable()
+     * local_partition_disable()
+     * local_partition_invalidate()
+     * local_partition_update()
+
+6. Optimization and Cleanup (Patches 14-22):
+   - Remove redundant partition-related operations
+   - Additional optimizations based on the new architecture
+
+---
+
+Changes in v2:
+- Added bugfix for root partition isolcpus at series start.
+- Completed helper function implementations when first introduced.
+- Split larger patches into smaller, more reviewable units.
+- Incorporated feedback from Longman.
+
+Chen Ridong (22):
+  cpuset: fix isolcpus stay in root when isolated partition changes to
+    root
+  cpuset: add early empty cpumask check in partition_xcpus_add/del
+  cpuset: generalize validate_partition() interface
+  cpuset: introduce partition_enable()
+  cpuset: introduce partition_disable()
+  cpuset: introduce partition_update()
+  cpuset: use partition_enable() for remote partition enablement
+  cpuset: use partition_disable() for remote partition disablement
+  cpuset: use partition_update() for remote partition update
+  cpuset: introduce local_partition_enable()
+  cpuset: introduce local_partition_disable()
+  cpuset: introduce local_partition_invalidate()
+  cpuset: introduce local_partition_update()
+  cpuset: remove update_parent_effective_cpumask
+  cpuset: remove redundant partition field updates
+  cpuset: simplify partition update logic for hotplug tasks
+  cpuset: unify local partition disable and invalidate
+  cpuset: use partition_disable for compute_partition_effective_cpumask
+  cpuset: use validate_local_partition in local_partition_enable
+  cpuset: introduce validate_remote_partition
+  cpuset: simplify update_prstate() function
+  cpuset: remove prs_err clear when notify_partition_change
+
+ kernel/cgroup/cpuset.c | 1000 +++++++++++++++++++---------------------
+ 1 file changed, 463 insertions(+), 537 deletions(-)
 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.1
+
 
