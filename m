@@ -1,42 +1,42 @@
-Return-Path: <cgroups+bounces-11178-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11156-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53891C08D4E
-	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 09:20:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AF69C08C90
+	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 09:03:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C0291C662EE
-	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 07:20:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1E2C3BA231
+	for <lists+cgroups@lfdr.de>; Sat, 25 Oct 2025 07:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33332773E3;
-	Sat, 25 Oct 2025 07:20:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7131A2DA756;
+	Sat, 25 Oct 2025 07:03:54 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FCF03BB4A;
-	Sat, 25 Oct 2025 07:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7222C0F8F;
+	Sat, 25 Oct 2025 07:03:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761376820; cv=none; b=t9+tzZrpG9GxVSCbIcps8xmE6DNrbdO5jqPTFh6P2szjIkn7JN4rJgTdhQNyMKGGJU3jGCFBM5jfWpE+frtkvSXAUWgpnZwNxiXE8ZDLVg+KqoZgcBWjX6lfpPjRPWGlGResrgAmeKNfv5UNNBN8yyZOpC9vr+efu6MXDoFazuc=
+	t=1761375834; cv=none; b=tvVdzjw8yFPl+hyqGaTKEyeA4Ju2FkamD+SMJc7GneSpeJZJTJpRqkwwaTQBjc2jLTuZA8rOWuhe+MJ30YblTMHpI0pD8vecs2OH+9HPe9jI6d78BxXCcqORT7eDVv5CmTy2hveAYDpHzTixc5/tTWO2fZQOypxF0R6ztA5w/SU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761376820; c=relaxed/simple;
-	bh=qC9HgPgwSeATOR3lNls7yTzE7d5jE2muIgPnJ2leiU0=;
+	s=arc-20240116; t=1761375834; c=relaxed/simple;
+	bh=z/FuJIjISU5j5sPDMZ7JaOuIc2RoGP0TaWr5sWNIoxM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YWwxl5V/2nacrnad9TvLY8FBgl7AO0tCqmhTvedEjgqqkOk/L+pn4HpeAk62mPXtbqviDek7Bgj9hPJV07k0jQ1MkxrONaC0wO0FTZ7rMD7GSLdYZFXFSdE8LXb32XwNcLtL+hMXHt5329UZo7UBocYtWs86uxZZgizb3gKzEaw=
+	 MIME-Version; b=YbRZrS8ZR9qrbEjNor0hgA5BdolnJ/6WT/weOREmYaJkJ3z3XxHlL1iF2xG2SsrQ17Vju1K0+RbAIZWRgmXGEXfdcjb8z471tzSkAUxAP75oQAQB7HP4unRCrIxDOBsyOJJnxvgeR6FodXYRX4Z34z19kn+rigzzObAavGSX0E8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4ctrM62jqHzKHMZ3;
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4ctrM62wYfzKHMYT;
 	Sat, 25 Oct 2025 15:02:58 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 49F351A1562;
+	by mail.maildlp.com (Postfix) with ESMTP id 525871A0359;
 	Sat, 25 Oct 2025 15:03:50 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP2 (Coremail) with SMTP id Syh0CgCHKUJGdvxovSssBg--.49460S9;
+	by APP2 (Coremail) with SMTP id Syh0CgCHKUJGdvxovSssBg--.49460S10;
 	Sat, 25 Oct 2025 15:03:50 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: longman@redhat.com,
@@ -47,9 +47,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lujialin4@huawei.com,
 	chenridong@huawei.com
-Subject: [PATCH RFC v2 07/22] cpuset: use partition_enable() for remote partition enablement
-Date: Sat, 25 Oct 2025 06:48:29 +0000
-Message-Id: <20251025064844.495525-8-chenridong@huaweicloud.com>
+Subject: [PATCH RFC v2 08/22] cpuset: use partition_disable() for remote partition disablement
+Date: Sat, 25 Oct 2025 06:48:30 +0000
+Message-Id: <20251025064844.495525-9-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251025064844.495525-1-chenridong@huaweicloud.com>
 References: <20251025064844.495525-1-chenridong@huaweicloud.com>
@@ -60,10 +60,10 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCHKUJGdvxovSssBg--.49460S9
-X-Coremail-Antispam: 1UD129KBjvJXoW7WrWxCFy3KFWfGF4UCw4fGrg_yoW8Xw4xpF
-	y3Cr47KayUXa45ua9FqFs29wn7Kw4DKFy2yasxW34rZa42y34DKa4jk390q3WYqasrGrW5
-	X3Z0qF4UtFy7A37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:Syh0CgCHKUJGdvxovSssBg--.49460S10
+X-Coremail-Antispam: 1UD129KBjvJXoW7WrWxCFyxJr48Gw4xtF15CFg_yoW8AF1rpF
+	nxCrW7KFW5XF15uasrtFnFgw1rKa1DXa9rt3srWryfXFy7Aa4vka4jk39Yv34UXFyDW345
+	Z3Z09rWjqF12ywUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -81,42 +81,47 @@ X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-Now that the partition_enable() helper is available, replace the
-existing implementation for remote partition enablement with this
-centralized function to unify the enablement logic.
+Now that the partition_disable() helper is available, replace the
+existing implementation for remote partition disablement with this
+centralized function to unify the disablement logic.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/cpuset.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ kernel/cgroup/cpuset.c | 20 +++-----------------
+ 1 file changed, 3 insertions(+), 17 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 3e414e19ae31..ee1140cf45b9 100644
+index ee1140cf45b9..7577e9134094 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -1712,8 +1712,6 @@ static enum prs_errcode validate_partition(struct cpuset *cs, int new_prs,
- static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 				   struct tmpmasks *tmp)
+@@ -1754,27 +1754,13 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
+  */
+ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
  {
 -	bool isolcpus_updated;
--
- 	/*
- 	 * The user must have sysadmin privilege.
- 	 */
-@@ -1736,15 +1734,7 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 	    cpumask_subset(top_cpuset.effective_cpus, tmp->new_cpus))
- 		return PERR_INVCPUS;
++	int new_prs;
+ 
+ 	WARN_ON_ONCE(!is_remote_partition(cs));
+ 	WARN_ON_ONCE(!cpumask_subset(cs->effective_xcpus, subpartitions_cpus));
  
 -	spin_lock_irq(&callback_lock);
--	isolcpus_updated = partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
--	list_add(&cs->remote_sibling, &remote_children);
--	cpumask_copy(cs->effective_xcpus, tmp->new_cpus);
+-	list_del_init(&cs->remote_sibling);
+-	isolcpus_updated = partition_xcpus_del(cs->partition_root_state,
+-					       NULL, cs->effective_xcpus);
+-	if (cs->prs_err)
+-		cs->partition_root_state = -cs->partition_root_state;
+-	else
+-		cs->partition_root_state = PRS_MEMBER;
+-
+-	/* effective_xcpus may need to be changed */
+-	compute_excpus(cs, cs->effective_xcpus);
+-	reset_partition_data(cs);
 -	spin_unlock_irq(&callback_lock);
 -	update_unbound_workqueue_cpumask(isolcpus_updated);
 -	cpuset_force_rebuild();
--	cs->prs_err = 0;
 -
-+	partition_enable(cs, NULL, new_prs, tmp->new_cpus);
++	new_prs = cs->prs_err ? -cs->partition_root_state : PRS_MEMBER;
++	partition_disable(cs, NULL, new_prs, cs->prs_err);
  	/*
  	 * Propagate changes in top_cpuset's effective_cpus down the hierarchy.
  	 */
