@@ -1,79 +1,79 @@
-Return-Path: <cgroups+bounces-11180-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11181-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39A30C0A16B
-	for <lists+cgroups@lfdr.de>; Sun, 26 Oct 2025 02:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D3056C0A177
+	for <lists+cgroups@lfdr.de>; Sun, 26 Oct 2025 02:05:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 393E93B671A
-	for <lists+cgroups@lfdr.de>; Sun, 26 Oct 2025 01:05:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4243A3B854E
+	for <lists+cgroups@lfdr.de>; Sun, 26 Oct 2025 01:05:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1712040B6;
-	Sun, 26 Oct 2025 01:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87050243964;
+	Sun, 26 Oct 2025 01:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j1Iy9f2T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZFgbfL/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB6E190685
-	for <cgroups@vger.kernel.org>; Sun, 26 Oct 2025 01:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77B623EAAC
+	for <cgroups@vger.kernel.org>; Sun, 26 Oct 2025 01:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761440733; cv=none; b=TETo99RJh/tI+NMMUTzAPlaffEd6YDiMMddcP4LM4G+pRKSONPf2k3WY6wY7PgeWNDLByLqYYeQRc6hvKhMuaBqMn8CV/V3LbjGnGBZquHfU59qhrGrGSw8ZdosMoQuNNWjhFQvRXX0/rsabmj7pdGV/ierAgHWlgUyVHzEcLrc=
+	t=1761440742; cv=none; b=WZaCA/sGXo4WXft/Jhyp0sFkIAQG5b1vcTezwRW4dxIj+GN5jroHy38SqE+rYGlX8QkRDPh1k4ScfXcg9XCgDpAUgVxQ32uuuw3CriJsWNxtfifEndeD5QEBUyKCXBlPB3HDrsQ9CGcnpIGkdXfO11fouduO0svpeT3QygF2WLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761440733; c=relaxed/simple;
-	bh=U5EN1inT/kWM5m4A5MzxqH+G+G2lk8n2GRDVD/piabQ=;
+	s=arc-20240116; t=1761440742; c=relaxed/simple;
+	bh=Gp+VLR61Dl9CsyJ61qEVNObKOU3+x56JQIrKxWVLSgw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KLBKq350AIeoIGOt0WrB6iuYV5YTIyV5o8DtZP2y/gHMuLQNQ2HWhoveQtXKENNGoIhV7NhJmNahSk71vfIbmGA8KhE4OUEVWzsgaL6/Ipx2+XE1dCDkeVpOYvTZ05iABF8mqYL+PPYxh7oGCHDaKe55Hh0nPvEewn9YZ8ctIXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j1Iy9f2T; arc=none smtp.client-ip=209.85.210.179
+	 MIME-Version; b=Q1y5Ze+dB0gnLXMKByCw//APK3Ff4kJ0zt0m8aKatP5mu0EEwxELGuAI3wU+8nCIjKAh8GtUDwGGPnHaX9PwKTgz4cZZY0OyXmLHMZJWEYNZaKqSAQE/Bl0JPbNkuWn2GfNqeQk+AoIZQ9jhbWOhvE+tjlhfulcLZB9vXXpwyJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZFgbfL/; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-78af743c232so3184919b3a.1
-        for <cgroups@vger.kernel.org>; Sat, 25 Oct 2025 18:05:32 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-77f67ba775aso4238755b3a.3
+        for <cgroups@vger.kernel.org>; Sat, 25 Oct 2025 18:05:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761440731; x=1762045531; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1761440740; x=1762045540; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N36vhbRkSG6GC2TdNjzZ1OMz+RKJl4mIAfGLbGj75+A=;
-        b=j1Iy9f2TPRyMJwkKPAyvnPC1tYWEIeFChtNr/s6cVRRys/vLihi499e2NJ7oHEyHrN
-         KGrGbLXQGwxWQlbckgT1uODniyVUWl/g4hdoTb3PRsxO8yXa+U0XSVWckRqDAxUXaXMJ
-         N/tRdXqjaGCtUDlU4B/KI2KLSBKNgQVMZlkJFumzr4P436F4/CEkBW9MozD8CN0kUVdJ
-         zV0f0hsHgpzJzBDk5Uf/uoj/W2QTCyyx4ZmGfT0jRzcbwbU0VeMbN2Pd6oXWcnIJ2pRH
-         v7syxewPeEEjzsHCVtpvLxSL37pmn5RUQL3Kt1Ae6ge3+8w7CiFTiWQgV6neqZ26gNdU
-         jaTA==
+        bh=S45Vd5RIAYqg0q86pnKyuOv36CWTtcQIjH0J0fCtYok=;
+        b=OZFgbfL/R16jY5xLMT6zm5P/ULKLCNNWRqrgwJxpIKscH+yCCCzlAPqvio2ehgfZZD
+         SIbmtIngnPlVSttwEZqbjXxsqcj5hSx/63tmXRvzmfiW4MSlXsfV4wwvcRQKD0f8kMBy
+         pVOAknVOhs7eIgBonKRPzPUcW2QK01VqF5aIcUzXDApQsbF1Ju4rge2OQIObntgMecRj
+         ufYGXSwUrA8kTSxE9p9yEYwH9xXLDUUmVTPRn8OWaiOtVaMAsSIHB6m4EnAfPe+qVDWj
+         smOHjBB+lQaw6OZwoLKfZgwru4/E2cnkNwXh/Ma8tXSjfKg6wKrlmuMWxyn0eV64Pksx
+         8Gvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761440731; x=1762045531;
+        d=1e100.net; s=20230601; t=1761440740; x=1762045540;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N36vhbRkSG6GC2TdNjzZ1OMz+RKJl4mIAfGLbGj75+A=;
-        b=id1sbL+jYmpEuxkt79DwnthOsvLVM6/qIliv9uAWYPe6HH/DPYgnuHufFKSV6qipGR
-         gVHKokV73TRoxt7ojnMdX1X9zjuQ2CD3x6V8a0BmyZcoz9S+wiB+uajbPNiQDhy9HuQk
-         JK4EG2O+fRMjrp7qSywH2CWw87qjZnrDZNPwKQ+ExCMUKA4BoiNS4nBZc/kCagyS6NkY
-         IK7N/Ky9EAxsvirB3FewYEogZCGh4ySavVPSmjmJa0rTgm2N32W2hP3Fj1TgnjXaA9d2
-         tybRL5Cye6oMR5FVOstTWwFWoSshPmm+ga9JcXV2aBD+/iG+5ABy+pj/bceTJPbGuHmS
-         giRg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJ3LuomUdbjgenUbWANFt1a0nnO8vUpNbZut6WiCwM9QJ0cPKfuY5QE5se7x7rKmeJwPMEJE4N@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzHh5ol1d75ZknQY/jqqmHBe1QTcpBfZpr79d+naZTzsbGSiUy
-	sX0tkdyvKs7uo2HcOpwMyx8P8ydv3N+SbRYghFDwe27Ig9CQpwQLQBsg
-X-Gm-Gg: ASbGncuS4VBQWeQ26BJj6eEKqu5FAAPTQk9GiImnCUJqGXACgxAuOpxi3veLDcLv+0d
-	YVxHrDHk/vW5x0/X8HX2zJgIEncM17bhBMRSMbDzEsYlFFbHsIchsjS/K2yPIOAEmO8XKKcgTiu
-	HHtb440VlalIz9T6SbSfBMJiev5u+SDq09IFoHgIB3H7FUIE9WUhLPkTNif2oUOhD1xwf9H+/xt
-	Es6+08F+yr+5ra6Dwux0PQQ9OW+wdNeSq7RCZf1G1Ng/qhlE+RymdmFeJuXx+EH0qgg7mkkSmXV
-	hBzIWSL3837UGi/IWAp+iFOnLfwxX6sHny3RgjIod9D0eP/aq26K25snB3LI1wxGWSivFX0sQf7
-	jzMVCG2Bn/We0mHtXtvcKPn+Lp7YUe6arjVJ+Tfls/dt2Pz0iHYWXVDZoZCCaG08aTEJaHXRsrR
-	zKMx8=
-X-Google-Smtp-Source: AGHT+IFqnGHut/11Suj2FeTeWv27UHLAlLr0nFmnErIj4agIj4rm3uNWP4XEpAPa8D23/k1s6P6wnQ==
-X-Received: by 2002:a05:6a21:4cc5:b0:340:6a50:7e9d with SMTP id adf61e73a8af0-3406a50809cmr6289528637.54.1761440731426;
-        Sat, 25 Oct 2025 18:05:31 -0700 (PDT)
+        bh=S45Vd5RIAYqg0q86pnKyuOv36CWTtcQIjH0J0fCtYok=;
+        b=UY3sPf1cZBtNuc6mHHlWtiMtgnsCU3ecODWNdtqvG9YY+wHmq1dIDN+uYpmY3+2E1J
+         Xyiv3rTmlV7XHF2lvRnzDzj0/NTlPl70BMcsVvl7JnFz/IBns/ekD/zDlD7+nVfafl/K
+         yQcqrrI44EZcqzQz7A2PgLju67tOdbvn3GZ+2znyPLNjcPn1X6m5nJ029a+XOheaoVzQ
+         Rc8vmynv5Z0+uUH0FEMOBt6D38WHjGJTVmdCx/b0usFntHwB3KnKsSqtnveKQSahQQhN
+         +rumxj2ErGLrX7WrEL6uppdP3ptHIYFLGCdu4s7nN581ChEu47vUYBypAYLmY2UIF0ET
+         K5aQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUepYCF/Zp1nw2SKk53lv0EkdLYx55vSXgfBhtbPpk1B8uxHZBEPe54Q/b0IdynLbtGR2ycL1qR@vger.kernel.org
+X-Gm-Message-State: AOJu0YxRm3Gn2TVPSFwNCK3+LJWEacv/xYWd9hDe1gNODXqk99ShMvjx
+	yImTO3hyoimTxbeqwZ+IMDld4aExfvsd7A9n82cK2NcYCDRqT+PSQMI2
+X-Gm-Gg: ASbGncupp6gbeI8xA9+a8Vsuil785+lOekhsuQRmRRfuy8LSX9nXBu0PAZLfBuGeCCr
+	cN4BtoM9rIdhxr1qvSUt3iMM5V1Z9QOAcYTcdqEAAlth/peDbycGdDNeq2o3RoRxxADLJ4oPKU+
+	H/xXDn1LCzc7MdOKxaw1EIY1881GhZgO81F952SbcLjH/6V0pz7KJZncAs5PuKSKXLxhEraNMh6
+	esBO5ZgWPJ4ckr91j+gJpPMBmaTemP1dk3lpEigpia0TzysrWBF+IfZcKtFZkwQIK21Fukiqn/8
+	VqYD0Q3PZV6Vl27jKgfCTXHbshjEJRojnrp8Dz8+K08dKp6dQtUmFzbSFj0FYE3QJZmvRXTgfF2
+	GDt61azDF5HvZ9WGIrSMk1yAiPBMuYDAz0eaOk37oSyGuOIajZslefTkULuERy6h6nyK1HcyYLX
+	722F41gP39URjaKBSieCglAS95
+X-Google-Smtp-Source: AGHT+IH3gaZfX15xSYXSXwe2kaT3c45YGp22P1ke9T0VYUHajdlPt4RUIsJeGLbWWKCn87o/Tq/dUg==
+X-Received: by 2002:a05:6a20:3c8d:b0:2e5:c9ee:96fb with SMTP id adf61e73a8af0-334a8650396mr43445620637.59.1761440740211;
+        Sat, 25 Oct 2025 18:05:40 -0700 (PDT)
 Received: from daniel.. ([221.218.137.209])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a41404987esm3371597b3a.36.2025.10.25.18.05.25
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7a41404987esm3371597b3a.36.2025.10.25.18.05.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Oct 2025 18:05:31 -0700 (PDT)
+        Sat, 25 Oct 2025 18:05:39 -0700 (PDT)
 From: jinji zhong <jinji.z.zhong@gmail.com>
 To: minchan@kernel.org,
 	senozhatsky@chromium.org,
@@ -102,9 +102,9 @@ Cc: muchun.song@linux.dev,
 	liulu.liu@honor.com,
 	feng.han@honor.com,
 	jinji zhong <jinji.z.zhong@gmail.com>
-Subject: [RFC PATCH 1/3] mm/memcontrol: Introduce per-cgroup compression priority
-Date: Sun, 26 Oct 2025 01:05:08 +0000
-Message-ID: <18d8e6b876ea3ae98bff710474423a9a530f4a8a.1761439133.git.jinji.z.zhong@gmail.com>
+Subject: [RFC PATCH 2/3] zram: Zram supports per-cgroup compression priority
+Date: Sun, 26 Oct 2025 01:05:09 +0000
+Message-ID: <0eef2265014bf9806eeaf5a00c9632958668c257.1761439133.git.jinji.z.zhong@gmail.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1761439133.git.jinji.z.zhong@gmail.com>
 References: <cover.1761439133.git.jinji.z.zhong@gmail.com>
@@ -116,108 +116,200 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Android, applications have varying tolerance for decompression speed.
-Background and lightweight applications tolerate slower decompression
-better than large, foreground applications. They are suitable for
-algorithms like ZSTD, which has a high compression ratio but slower
-decompression. Other applications may prefer algorithms with faster
-decompression.
+This patch allows zram to get the per-cgroup compression priority,
+enabling administrators to select different compression algorithms
+for different cgroups.
 
-This patch introduces a per-cgroup compression priority mechanism.
-Different compression priorities map to different algorithms. This
-allows administrators to select the appropriate compression algorithm
-on a per-cgroup basis.
+The feature is enabled by:
+echo 1 > /sys/block/zramX/per_cgroup_comp_enable.
 ---
- include/linux/memcontrol.h | 19 +++++++++++++++++++
- mm/memcontrol.c            | 31 +++++++++++++++++++++++++++++++
- 2 files changed, 50 insertions(+)
+ drivers/block/zram/zram_drv.c | 74 +++++++++++++++++++++++++++++++----
+ drivers/block/zram/zram_drv.h |  2 +
+ 2 files changed, 68 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 873e510d6f8d..a91670b8c469 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -228,6 +228,9 @@ struct mem_cgroup {
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index a43074657531..da79034f2efa 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -23,6 +23,7 @@
+ #include <linux/buffer_head.h>
+ #include <linux/device.h>
+ #include <linux/highmem.h>
++#include <linux/memcontrol.h>
+ #include <linux/slab.h>
+ #include <linux/backing-dev.h>
+ #include <linux/string.h>
+@@ -1223,6 +1224,7 @@ static void comp_algorithm_set(struct zram *zram, u32 prio, const char *alg)
+ 		kfree(zram->comp_algs[prio]);
  
- 	int swappiness;
- 
-+	/* The priority of the compression algorithm used by the cgroup. */
-+	int comp_priority;
-+
- 	/* memory.events and memory.events.local */
- 	struct cgroup_file events_file;
- 	struct cgroup_file events_local_file;
-@@ -523,6 +526,22 @@ static inline struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *ob
- 	return memcg;
+ 	zram->comp_algs[prio] = alg;
++	zram->comp_algs_flag |= (1 << prio);
  }
  
-+#define DEF_COMP_PRIORITY 0
+ static int __comp_algorithm_store(struct zram *zram, u32 prio, const char *buf)
+@@ -1396,7 +1398,7 @@ static ssize_t comp_algorithm_store(struct device *dev,
+ }
+ 
+ #ifdef CONFIG_ZRAM_MULTI_COMP
+-static ssize_t recomp_algorithm_show(struct device *dev,
++static ssize_t multi_comp_algorithm_show(struct device *dev,
+ 				     struct device_attribute *attr,
+ 				     char *buf)
+ {
+@@ -1405,7 +1407,7 @@ static ssize_t recomp_algorithm_show(struct device *dev,
+ 	u32 prio;
+ 
+ 	down_read(&zram->init_lock);
+-	for (prio = ZRAM_SECONDARY_COMP; prio < ZRAM_MAX_COMPS; prio++) {
++	for (prio = ZRAM_PRIMARY_COMP; prio < ZRAM_MAX_COMPS; prio++) {
+ 		if (!zram->comp_algs[prio])
+ 			continue;
+ 
+@@ -1416,7 +1418,7 @@ static ssize_t recomp_algorithm_show(struct device *dev,
+ 	return sz;
+ }
+ 
+-static ssize_t recomp_algorithm_store(struct device *dev,
++static ssize_t multi_comp_algorithm_store(struct device *dev,
+ 				      struct device_attribute *attr,
+ 				      const char *buf,
+ 				      size_t len)
+@@ -1450,12 +1452,43 @@ static ssize_t recomp_algorithm_store(struct device *dev,
+ 	if (!alg)
+ 		return -EINVAL;
+ 
+-	if (prio < ZRAM_SECONDARY_COMP || prio >= ZRAM_MAX_COMPS)
++	if (prio < ZRAM_PRIMARY_COMP || prio >= ZRAM_MAX_COMPS)
+ 		return -EINVAL;
+ 
+ 	ret = __comp_algorithm_store(zram, prio, alg);
+ 	return ret ? ret : len;
+ }
 +
-+/*
-+* get_cgroup_comp_priority - Get the compression priority of the memcg
-+* @page: Pointer to the page.
-+* Returns the compression priority of the memcg the page belongs to.
-+*/
-+static inline int get_cgroup_comp_priority(struct page *page)
++static ssize_t per_cgroup_comp_enable_store(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t len)
 +{
-+	struct mem_cgroup *memcg = folio_memcg(page_folio(page));
-+	if (!memcg)
-+		return DEF_COMP_PRIORITY;
++	struct zram *zram = dev_to_zram(dev);
++	u64 val;
++	ssize_t ret = -EINVAL;
 +
-+	return memcg->comp_priority;
++	if (kstrtoull(buf, 10, &val))
++		return ret;
++
++	down_read(&zram->init_lock);
++	zram->per_cgroup_comp_enable = val;
++	up_read(&zram->init_lock);
++	ret = len;
++
++	return ret;
 +}
 +
- /*
-  * folio_memcg_kmem - Check if the folio has the memcg_kmem flag set.
-  * @folio: Pointer to the folio.
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 4deda33625f4..436cbc8ddcc2 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5356,6 +5356,31 @@ static int swap_events_show(struct seq_file *m, void *v)
++static ssize_t per_cgroup_comp_enable_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	bool val;
++	struct zram *zram = dev_to_zram(dev);
++
++	down_read(&zram->init_lock);
++	val = zram->per_cgroup_comp_enable;
++	up_read(&zram->init_lock);
++
++	return sysfs_emit(buf, "%d\n", val);
++}
+ #endif
+ 
+ static ssize_t compact_store(struct device *dev,
+@@ -1840,9 +1873,30 @@ static int write_incompressible_page(struct zram *zram, struct page *page,
  	return 0;
  }
  
-+static int swap_comp_priority_show(struct seq_file *m, void *v)
++static inline bool is_comp_priority_valid(struct zram *zram, int prio)
 +{
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+
-+	seq_printf(m, "%d\n", READ_ONCE(memcg->comp_priority));
-+	return 0;
++	return zram->comp_algs_flag & (1 << prio);
 +}
 +
-+static ssize_t swap_comp_priority_write(struct kernfs_open_file *of,
-+					  char *buf, size_t nbytes, loff_t off)
++static inline int get_comp_priority(struct zram *zram, struct page *page)
 +{
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+	int comp_priority;
-+	ssize_t parse_ret = kstrtoint(strstrip(buf), 10, &comp_priority);
++	int prio;
 +
-+	if (parse_ret)
-+		return parse_ret;
++	if (!zram->per_cgroup_comp_enable)
++		return ZRAM_PRIMARY_COMP;
 +
-+	if (comp_priority < 0)
-+		return -EINVAL;
-+
-+	WRITE_ONCE(memcg->comp_priority, comp_priority);
-+	return nbytes;
++	prio = get_cgroup_comp_priority(page);
++	if (unlikely(!is_comp_priority_valid(zram, prio))) {
++		WARN_ON_ONCE(1);
++		return ZRAM_PRIMARY_COMP;
++	}
++	return prio;
 +}
 +
- static struct cftype swap_files[] = {
- 	{
- 		.name = "swap.current",
-@@ -5388,6 +5413,12 @@ static struct cftype swap_files[] = {
- 		.file_offset = offsetof(struct mem_cgroup, swap_events_file),
- 		.seq_show = swap_events_show,
- 	},
-+	{
-+		.name = "swap.comp_priority",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.seq_show = swap_comp_priority_show,
-+		.write = swap_comp_priority_write,
-+	},
- 	{ }	/* terminate */
- };
+ static int zram_write_page(struct zram *zram, struct page *page, u32 index)
+ {
+ 	int ret = 0;
++	int prio;
+ 	unsigned long handle;
+ 	unsigned int comp_len;
+ 	void *mem;
+@@ -1856,9 +1910,10 @@ static int zram_write_page(struct zram *zram, struct page *page, u32 index)
+ 	if (same_filled)
+ 		return write_same_filled_page(zram, element, index);
  
+-	zstrm = zcomp_stream_get(zram->comps[ZRAM_PRIMARY_COMP]);
++	prio = get_comp_priority(zram, page);
++	zstrm = zcomp_stream_get(zram->comps[prio]);
+ 	mem = kmap_local_page(page);
+-	ret = zcomp_compress(zram->comps[ZRAM_PRIMARY_COMP], zstrm,
++	ret = zcomp_compress(zram->comps[prio], zstrm,
+ 			     mem, &comp_len);
+ 	kunmap_local(mem);
+ 
+@@ -1894,6 +1949,7 @@ static int zram_write_page(struct zram *zram, struct page *page, u32 index)
+ 	zram_free_page(zram, index);
+ 	zram_set_handle(zram, index, handle);
+ 	zram_set_obj_size(zram, index, comp_len);
++	zram_set_priority(zram, index, prio);
+ 	zram_slot_unlock(zram, index);
+ 
+ 	/* Update stats */
+@@ -2612,7 +2668,8 @@ static DEVICE_ATTR_RW(writeback_limit);
+ static DEVICE_ATTR_RW(writeback_limit_enable);
+ #endif
+ #ifdef CONFIG_ZRAM_MULTI_COMP
+-static DEVICE_ATTR_RW(recomp_algorithm);
++static DEVICE_ATTR_RW(multi_comp_algorithm);
++static DEVICE_ATTR_RW(per_cgroup_comp_enable);
+ static DEVICE_ATTR_WO(recompress);
+ #endif
+ static DEVICE_ATTR_WO(algorithm_params);
+@@ -2639,8 +2696,9 @@ static struct attribute *zram_disk_attrs[] = {
+ #endif
+ 	&dev_attr_debug_stat.attr,
+ #ifdef CONFIG_ZRAM_MULTI_COMP
+-	&dev_attr_recomp_algorithm.attr,
++	&dev_attr_multi_comp_algorithm.attr,
+ 	&dev_attr_recompress.attr,
++	&dev_attr_per_cgroup_comp_enable.attr,
+ #endif
+ 	&dev_attr_algorithm_params.attr,
+ 	NULL,
+diff --git a/drivers/block/zram/zram_drv.h b/drivers/block/zram/zram_drv.h
+index 6cee93f9c0d0..34ae0c3a9130 100644
+--- a/drivers/block/zram/zram_drv.h
++++ b/drivers/block/zram/zram_drv.h
+@@ -120,11 +120,13 @@ struct zram {
+ 	 */
+ 	u64 disksize;	/* bytes */
+ 	const char *comp_algs[ZRAM_MAX_COMPS];
++	u8 comp_algs_flag;
+ 	s8 num_active_comps;
+ 	/*
+ 	 * zram is claimed so open request will be failed
+ 	 */
+ 	bool claim; /* Protected by disk->open_mutex */
++	bool per_cgroup_comp_enable;
+ #ifdef CONFIG_ZRAM_WRITEBACK
+ 	struct file *backing_dev;
+ 	spinlock_t wb_limit_lock;
 -- 
 2.48.1
 
