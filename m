@@ -1,276 +1,436 @@
-Return-Path: <cgroups+bounces-11183-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11184-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id D663FC0A195
-	for <lists+cgroups@lfdr.de>; Sun, 26 Oct 2025 02:13:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D6EAC0A85C
+	for <lists+cgroups@lfdr.de>; Sun, 26 Oct 2025 13:56:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 73F3634B9AE
-	for <lists+cgroups@lfdr.de>; Sun, 26 Oct 2025 01:13:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11BF53B03A3
+	for <lists+cgroups@lfdr.de>; Sun, 26 Oct 2025 12:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55DFC22A817;
-	Sun, 26 Oct 2025 01:13:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148C726B765;
+	Sun, 26 Oct 2025 12:56:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="ZYv1kfvC"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6797F21CC71
-	for <cgroups@vger.kernel.org>; Sun, 26 Oct 2025 01:13:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C013824A04A
+	for <cgroups@vger.kernel.org>; Sun, 26 Oct 2025 12:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761441211; cv=none; b=pQDSru231Ap5AhRzcXHDDRJDDZ8cEnsrUb1GzY0lb9G+hH1IDobYt+UCcE3o0hjpocA3DGUChjWUSOY8F98hnrnOfzHNFBs1IxWKTTevBZ9KsdPwdpolmVBOM3R9p6f8rQiss1lvdLn0xXfip30GTgD2DMwGFr1pwxk2v2vcBfA=
+	t=1761483383; cv=none; b=piJG+7B6xjOtTInzvKd7VWQ8DHC/8hpuNkpivkjJnJUcoLLzf5Nyo1nIsPZ5eFcWNX9cZ3THA7emlTn8VgWvdqc/GEKxSitVrRngO4CoW1B+o1oRcNk2btS90tm+uTwJAVIfC14ZRlzBzaSpd89Aw/bPR0epfqAsL9tpMcr3EFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761441211; c=relaxed/simple;
-	bh=yZNSZAaAP8XTL+7fHEKhij0JEuH1mWTASoGpNAaKT84=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=vFBEqOCV4N6JJxdNkcbvaxEYsXUfToue57eI9hqybjmCXLLf10ZBO3ByiPLitInCays/xOwc9cqf2DD02EwjqMF0MZA4t5SBwsQHwBzeM1wdO0ruN/O1jBXSryt8qvA+QCJQoPPA77VzTaPVq0J/XD1sDItrSC72fqhAkVgDKD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-430ce62d138so42865755ab.3
-        for <cgroups@vger.kernel.org>; Sat, 25 Oct 2025 18:13:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761441208; x=1762046008;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8IZU6g05Z0PoHSaNTfoKrSsnvOT/w1h4LtDavdgSvoo=;
-        b=gtgyxdo27YtAYQi/Wx9vVuK/6RW+v1Vqfxn2m22IAbxC8A6CMcoKbjv8NjT/pzxrwd
-         FMG2PU3tufks4FDldhEXyBqDI2YbYiStc8bfbfKXyIelSBmFWwUp+mfPdWhaRamnCltZ
-         g/ZdGcpqgLRzXTpVYDj8GqH0cFU/QOiF4egWU0hjCmcmZ7wqzwQ8L0rVPZZLxYwJosz4
-         SWXERLvn1CDFBU+XXoMylVpZMSJBVjoWNXlaIqs+hwCtpX/CNtf5K0hbQMH9VCNPoS9w
-         l+wlzlvhNDkrPzGy7nyn0rpFVddQ1vIDIh62FcqcwXRGG1MvsG0XJbFSEbPWkS3XYR++
-         31Ew==
-X-Gm-Message-State: AOJu0Yy6itqtEZGIfgkVD1IO8GuZ2P8uHTJPCDf/sPELBb480EsdZA8U
-	uRAGcEDUciWDF/tTupXwIeY+TlSPSOW4Wu+i/lc5h+k6qkVULzUuBdjXmZdNxT0TCkYvhCYal3M
-	xWMhy3AD4h8FSrdsXnWoa8vY1TGzX0UoVZAv59q/kz6/dL+w/9Jd2X2Fp6/TjwQ==
-X-Google-Smtp-Source: AGHT+IEcnRmfHBgWT4pSOIIuD8IOq8QQrdqx1ILMOd1z6VsvEOhf4+6NU3uguKkPAWXWI0j0Wt6oCvSetTfSLWnaTD6Wlz/QpJa5
+	s=arc-20240116; t=1761483383; c=relaxed/simple;
+	bh=/dd+bCKt9lloqc1Q4zE2upDzSSNCoZc3Vz3YJU/YQkw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=upD9UNQCs1/ji+4fOH8Prh8lOBiBmAETPFejkBi8gdHrsJeRKFdyVQ3qDOKJKpjV9OeyxpGyabNYIdWItkVMgUKuI4TGVPY4ogHcinQeBUrlZR7JNoTJhBx/iGRWvvLNwcH2nORBod7L+PGUQOwNac8TxZzeTHeuZ3tw0+dofFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=ZYv1kfvC; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1761483378; x=1762088178; i=natalie.vock@gmx.de;
+	bh=b9pOLJD8s2D1NEIJCyFpXAgrTZKXeobbnooSip1UEzc=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=ZYv1kfvC78ccAh94JJZuS0UiaQ23qJSUQjmEWIZ+Bb9nqoOTwt9IGhYt1rTOe7IA
+	 R7qJg8Pq5MA741qpNrsq6mFYwxRMd2NNGLRGhwoR8ftfW+CNG6j34Hi1ml/rVB1Tp
+	 W9nIOrYjvyNeqITb4WUiNkJVQw6dEIkpLP/qwPEAn0trbuTn/v6DJ9DDEM30cU+an
+	 i3p6SXBAtr56awfwVb2M1t226GMvgNl0GUbUV9FW5a1Ao33dxTor5g+sGhiWzcvV+
+	 VciEPI7bORdu8U6fz501RBslbOm/uwoZU9o53XgShFIdn103oDp+75xM4vRAzn+uJ
+	 JMY7edtj/fChWImi6A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.0.3] ([109.91.201.165]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N0X8o-1uGtvS04BQ-00smwy; Sun, 26
+ Oct 2025 13:56:18 +0100
+Message-ID: <bb112ec0-e920-4f23-9bb8-16b591eae128@gmx.de>
+Date: Sun, 26 Oct 2025 13:56:16 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1fca:b0:430:ab63:69d6 with SMTP id
- e9e14a558f8ab-430c527dc00mr408584285ab.21.1761441208586; Sat, 25 Oct 2025
- 18:13:28 -0700 (PDT)
-Date: Sat, 25 Oct 2025 18:13:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68fd75b8.050a0220.346f24.03e0.GAE@google.com>
-Subject: [syzbot] [cgroups?] possible deadlock in cgroup_kn_lock_live
-From: syzbot <syzbot+77c195c2ab76e1dffd96@syzkaller.appspotmail.com>
-To: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
-	mkoutny@suse.com, syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/5] drm/ttm: Be more aggressive when allocating below
+ protection limit
+To: Maarten Lankhorst <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>,
+ Matthew Auld <matthew.auld@intel.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>
+Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20251015-dmemcg-aggressive-protect-v2-0-36644fb4e37f@gmx.de>
+ <20251015-dmemcg-aggressive-protect-v2-4-36644fb4e37f@gmx.de>
+ <1ebc018f-fee0-4813-8e2e-7a704d3334b0@lankhorst.se>
+Content-Language: en-US
+From: Natalie Vock <natalie.vock@gmx.de>
+In-Reply-To: <1ebc018f-fee0-4813-8e2e-7a704d3334b0@lankhorst.se>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:xqoCqlL5agbLgr2mY0SY4z5gPs1TCgFEhr4e0urgBt1mw+RzAWH
+ vA2ucUYxkEivtE566WXw6SGOR0WLgVZJJIRvRJwWMnZN2013khCF7W4z4AM2hS+j7xm9Ru5
+ 2nUXpgoMG0iYxkPzqe5Faz9LmmM2ZyYn7joMjQhSdIQcIA1wc2YgVsuQ91HOvE+E25J3fs7
+ WDCZcKmkYZatqecKpA75A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:49hikTeLkB0=;XxnU9XNN7nX/bYTp78vpdFf9HeW
+ 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
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+On 10/24/25 14:14, Maarten Lankhorst wrote:
+> Hey,
+>=20
+> Den 2025-10-15 kl. 15:57, skrev Natalie Vock:
+>> When the cgroup's memory usage is below the low/min limit and allocatio=
+n
+>> fails, try evicting some unprotected buffers to make space. Otherwise,
+>> application buffers may be forced to go into GTT even though usage is
+>> below the corresponding low/min limit, if other applications filled VRA=
+M
+>> with their allocations first.
+>>
+>> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
+>> ---
+>>   drivers/gpu/drm/ttm/ttm_bo.c       | 43 ++++++++++++++++++++++++++++-=
+=2D----
+>>   drivers/gpu/drm/ttm/ttm_resource.c | 48 +++++++++++++++++++++++++++--=
+=2D--------
+>>   include/drm/ttm/ttm_resource.h     |  6 ++++-
+>>   3 files changed, 76 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.=
+c
+>> index 829d99479883594f8be5b9ceed4cc53c4864ace5..7f7872ab2090cc8db188e08=
+ddfdcd12fe924f743 100644
+>> --- a/drivers/gpu/drm/ttm/ttm_bo.c
+>> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
+>> @@ -490,8 +490,12 @@ int ttm_bo_evict_first(struct ttm_device *bdev, st=
+ruct ttm_resource_manager *man
+>>   }
+>>  =20
+>>   struct ttm_bo_alloc_state {
+>> +	/** @charge_pool: The memory pool the resource is charged to */
+>> +	struct dmem_cgroup_pool_state *charge_pool;
+>>   	/** @limit_pool: Which pool limit we should test against */
+>>   	struct dmem_cgroup_pool_state *limit_pool;
+>> +	/** @only_evict_unprotected: If eviction should be restricted to unpr=
+otected BOs */
+>> +	bool only_evict_unprotected;
+> I'm not entirely sure we should put 'low' and 'min' limits together here=
+.
 
-HEAD commit:    552c50713f27 Merge tag 'vfio-v6.18-rc3' of https://github...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=130b53e2580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=94e79a41e05959dd
-dashboard link: https://syzkaller.appspot.com/bug?extid=77c195c2ab76e1dffd96
-compiler:       gcc (Debian 12.2.0-14+deb12u1) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+I think putting 'low' and 'min' together here is accurate. When the=20
+allocation is covered by the 'low' limit, but not the 'min' limit, we=20
+should evict only allocations that are covered by neither (which is what=
+=20
+this flag controls).
 
-Unfortunately, I don't have any reproducer for this issue yet.
+However maybe we should allow evicting allocations covered by 'low' when=
+=20
+the new allocation is covered by 'min' in ttm_resource_alloc_at_place=20
+down below (because 'min' is a stronger guarantee). We could do this=20
+simply by setting 'only_evict_unprotected' to false, since memory=20
+covered by 'min' can never get evicted anyway.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ff21b83406f0/disk-552c5071.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ca4d7185104e/vmlinux-552c5071.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/69833d927f04/bzImage-552c5071.xz
+>>   };
+>>  =20
+>>   /**
+>> @@ -546,7 +550,7 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *wal=
+k, struct ttm_buffer_object *
+>>   	evict_walk->evicted++;
+>>   	if (evict_walk->res)
+>>   		lret =3D ttm_resource_alloc(evict_walk->evictor, evict_walk->place,
+>> -					  evict_walk->res, NULL);
+>> +					  evict_walk->res, evict_walk->alloc_state->charge_pool);
+>>   	if (lret =3D=3D 0)
+>>   		return 1;
+>>   out:
+>> @@ -589,7 +593,7 @@ static int ttm_bo_evict_alloc(struct ttm_device *bd=
+ev,
+>>   	lret =3D ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
+>>  =20
+>>   	/* One more attempt if we hit low limit? */
+>> -	if (!lret && evict_walk.hit_low) {
+>> +	if (!lret && evict_walk.hit_low && !state->only_evict_unprotected) {
+>>   		evict_walk.try_low =3D true;
+>>   		lret =3D ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
+>>   	}
+>> @@ -610,7 +614,8 @@ static int ttm_bo_evict_alloc(struct ttm_device *bd=
+ev,
+>>   	} while (!lret && evict_walk.evicted);
+>>  =20
+>>   	/* We hit the low limit? Try once more */
+>> -	if (!lret && evict_walk.hit_low && !evict_walk.try_low) {
+>> +	if (!lret && evict_walk.hit_low && !evict_walk.try_low &&
+>> +			!state->only_evict_unprotected) {
+>>   		evict_walk.try_low =3D true;
+>>   		goto retry;
+>>   	}
+>> @@ -719,20 +724,40 @@ static int ttm_bo_alloc_at_place(struct ttm_buffe=
+r_object *bo,
+>>   				 struct ttm_resource **res,
+>>   				 struct ttm_bo_alloc_state *alloc_state)
+>>   {
+>> -	bool may_evict;
+>> +	bool may_evict, is_protected =3D false;
+>>   	int ret;
+>>  =20
+>>   	may_evict =3D (force_space && place->mem_type !=3D TTM_PL_SYSTEM);
+>> +	ret =3D ttm_resource_try_charge(bo, place, &alloc_state->charge_pool,
+>> +				      force_space ? &alloc_state->limit_pool : NULL);
+>> +	if (ret) {
+>> +		/*
+>> +		 * -EAGAIN means the charge failed, which we treat like an
+>> +		 * allocation failure. Allocation failures are indicated
+>> +		 * by -ENOSPC, so return that instead.
+>> +		 */
+>> +		if (ret =3D=3D -EAGAIN && !may_evict)
+>> +			ret =3D -ENOSPC;
+>> +		return ret;
+>> +	}
+>>  =20
+>> -	ret =3D ttm_resource_alloc(bo, place, res,
+>> -				 force_space ? &alloc_state->limit_pool : NULL);
+>> +	is_protected =3D dmem_cgroup_below_min(NULL, alloc_state->charge_pool=
+) ||
+>> +		       dmem_cgroup_below_low(NULL, alloc_state->charge_pool);
+>> +	ret =3D ttm_resource_alloc(bo, place, res, alloc_state->charge_pool);
+>> +	alloc_state->only_evict_unprotected =3D !may_evict && is_protected;
+>=20
+> This probably deserves a comment to explaing it's ok if we haven't hit l=
+ow/min yet to evict from
+> those cgroups that did those limits already. It took me a bit of time to=
+ understand the idea.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+77c195c2ab76e1dffd96@syzkaller.appspotmail.com
+Yeah, that's a bit non-obvious. I'll add a comment.
 
-======================================================
-WARNING: possible circular locking dependency detected
-syzkaller #0 Tainted: G     U             
-------------------------------------------------------
-syz.5.6541/25846 is trying to acquire lock:
-ffffffff8e41fd48 (cgroup_mutex){+.+.}-{4:4}, at: cgroup_lock include/linux/cgroup.h:393 [inline]
-ffffffff8e41fd48 (cgroup_mutex){+.+.}-{4:4}, at: cgroup_kn_lock_live+0x116/0x520 kernel/cgroup/cgroup.c:1735
+Thanks,
+Natalie
 
-but task is already holding lock:
-ffff888038fdd0c8 (&type->i_mutex_dir_key#6){++++}-{4:4}, at: inode_lock include/linux/fs.h:980 [inline]
-ffff888038fdd0c8 (&type->i_mutex_dir_key#6){++++}-{4:4}, at: vfs_rmdir fs/namei.c:4537 [inline]
-ffff888038fdd0c8 (&type->i_mutex_dir_key#6){++++}-{4:4}, at: vfs_rmdir+0xe9/0x690 fs/namei.c:4525
+>=20
+>>  =20
+>>   	if (ret) {
+>> -		if ((ret =3D=3D -ENOSPC || ret =3D=3D -EAGAIN) && may_evict)
+>> +		if ((ret =3D=3D -ENOSPC || ret =3D=3D -EAGAIN) &&
+>> +				(may_evict || is_protected))
+>>   			ret =3D -EBUSY;
+>>   		return ret;
+>>   	}
+>>  =20
+>> +	/*
+>> +	 * Ownership of charge_pool has been transferred to the TTM resource,
+>> +	 * don't make the caller think we still hold a reference to it.
+>> +	 */
+>> +	alloc_state->charge_pool =3D NULL;
+>>   	return 0;
+>>   }
+>>  =20
+>> @@ -787,6 +812,7 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_=
+object *bo,
+>>   				res, &alloc_state);
+>>  =20
+>>   		if (ret =3D=3D -ENOSPC) {
+>> +			dmem_cgroup_pool_state_put(alloc_state.charge_pool);
+>>   			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
+>>   			continue;
+>>   		} else if (ret =3D=3D -EBUSY) {
+>> @@ -796,11 +822,14 @@ static int ttm_bo_alloc_resource(struct ttm_buffe=
+r_object *bo,
+>>   			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
+>>  =20
+>>   			if (ret) {
+>> +				dmem_cgroup_pool_state_put(
+>> +						alloc_state.charge_pool);
+>>   				if (ret !=3D -ENOSPC && ret !=3D -EBUSY)
+>>   					return ret;
+>>   				continue;
+>>   			}
+>>   		} else if (ret) {
+>> +			dmem_cgroup_pool_state_put(alloc_state.charge_pool);
+>>   			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
+>>   			return ret;
+>>   		}
+>> diff --git a/drivers/gpu/drm/ttm/ttm_resource.c b/drivers/gpu/drm/ttm/t=
+tm_resource.c
+>> index e2c82ad07eb44b5e88bf5b5db1ef54dd6d27823b..fcfa8b51b033745f46a01e4=
+0a9dc83e0c69165fc 100644
+>> --- a/drivers/gpu/drm/ttm/ttm_resource.c
+>> +++ b/drivers/gpu/drm/ttm/ttm_resource.c
+>> @@ -372,30 +372,52 @@ void ttm_resource_fini(struct ttm_resource_manage=
+r *man,
+>>   }
+>>   EXPORT_SYMBOL(ttm_resource_fini);
+>>  =20
+>> +/**
+>> + * ttm_resource_try_charge - charge a resource manager's cgroup pool
+>> + * @bo: buffer for which an allocation should be charged
+>> + * @place: where the allocation is attempted to be placed
+>> + * @ret_pool: on charge success, the pool that was charged
+>> + * @ret_limit_pool: on charge failure, the pool responsible for the fa=
+ilure
+>> + *
+>> + * Should be used to charge cgroups before attempting resource allocat=
+ion.
+>> + * When charging succeeds, the value of ret_pool should be passed to
+>> + * ttm_resource_alloc.
+>> + *
+>> + * Returns: 0 on charge success, negative errno on failure.
+>> + */
+>> +int ttm_resource_try_charge(struct ttm_buffer_object *bo,
+>> +			    const struct ttm_place *place,
+>> +			    struct dmem_cgroup_pool_state **ret_pool,
+>> +			    struct dmem_cgroup_pool_state **ret_limit_pool)
+>> +{
+>> +	struct ttm_resource_manager *man =3D
+>> +		ttm_manager_type(bo->bdev, place->mem_type);
+>> +
+>> +	if (!man->cg) {
+>> +		*ret_pool =3D NULL;
+>> +		if (ret_limit_pool)
+>> +			*ret_limit_pool =3D NULL;
+>> +		return 0;
+>> +	}
+>> +
+>> +	return dmem_cgroup_try_charge(man->cg, bo->base.size, ret_pool,
+>> +				      ret_limit_pool);
+>> +}
+>> +
+>>   int ttm_resource_alloc(struct ttm_buffer_object *bo,
+>>   		       const struct ttm_place *place,
+>>   		       struct ttm_resource **res_ptr,
+>> -		       struct dmem_cgroup_pool_state **ret_limit_pool)
+>> +		       struct dmem_cgroup_pool_state *charge_pool)
+>>   {
+>>   	struct ttm_resource_manager *man =3D
+>>   		ttm_manager_type(bo->bdev, place->mem_type);
+>> -	struct dmem_cgroup_pool_state *pool =3D NULL;
+>>   	int ret;
+>>  =20
+>> -	if (man->cg) {
+>> -		ret =3D dmem_cgroup_try_charge(man->cg, bo->base.size, &pool, ret_li=
+mit_pool);
+>> -		if (ret)
+>> -			return ret;
+>> -	}
+>> -
+>>   	ret =3D man->func->alloc(man, bo, place, res_ptr);
+>> -	if (ret) {
+>> -		if (pool)
+>> -			dmem_cgroup_uncharge(pool, bo->base.size);
+>> +	if (ret)
+>>   		return ret;
+>> -	}
+>>  =20
+>> -	(*res_ptr)->css =3D pool;
+>> +	(*res_ptr)->css =3D charge_pool;
+>>  =20
+>>   	spin_lock(&bo->bdev->lru_lock);
+>>   	ttm_resource_add_bulk_move(*res_ptr, bo);
+>> diff --git a/include/drm/ttm/ttm_resource.h b/include/drm/ttm/ttm_resou=
+rce.h
+>> index e52bba15012f78e352f392232ac2e89a83afd311..3aef7efdd7cfb8fd93071db=
+85e632b975b53cf81 100644
+>> --- a/include/drm/ttm/ttm_resource.h
+>> +++ b/include/drm/ttm/ttm_resource.h
+>> @@ -442,10 +442,14 @@ void ttm_resource_init(struct ttm_buffer_object *=
+bo,
+>>   void ttm_resource_fini(struct ttm_resource_manager *man,
+>>   		       struct ttm_resource *res);
+>>  =20
+>> +int ttm_resource_try_charge(struct ttm_buffer_object *bo,
+>> +			    const struct ttm_place *place,
+>> +			    struct dmem_cgroup_pool_state **ret_pool,
+>> +			    struct dmem_cgroup_pool_state **ret_limit_pool);
+>>   int ttm_resource_alloc(struct ttm_buffer_object *bo,
+>>   		       const struct ttm_place *place,
+>>   		       struct ttm_resource **res,
+>> -		       struct dmem_cgroup_pool_state **ret_limit_pool);
+>> +		       struct dmem_cgroup_pool_state *charge_pool);
+>>   void ttm_resource_free(struct ttm_buffer_object *bo, struct ttm_resou=
+rce **res);
+>>   bool ttm_resource_intersects(struct ttm_device *bdev,
+>>   			     struct ttm_resource *res,
+>>
+>=20
 
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #3 (&type->i_mutex_dir_key#6){++++}-{4:4}:
-       down_read+0x9b/0x480 kernel/locking/rwsem.c:1537
-       inode_lock_shared include/linux/fs.h:995 [inline]
-       lookup_slow fs/namei.c:1832 [inline]
-       walk_component+0x345/0x5b0 fs/namei.c:2151
-       lookup_last fs/namei.c:2652 [inline]
-       path_lookupat+0x142/0x6d0 fs/namei.c:2676
-       filename_lookup+0x224/0x5f0 fs/namei.c:2705
-       kern_path+0x35/0x50 fs/namei.c:2863
-       lookup_bdev+0xd8/0x280 block/bdev.c:1205
-       bdev_file_open_by_path+0x82/0x330 block/bdev.c:1078
-       add_device drivers/mtd/devices/block2mtd.c:279 [inline]
-       block2mtd_setup2+0x317/0xe10 drivers/mtd/devices/block2mtd.c:459
-       block2mtd_setup+0xbd/0x110 drivers/mtd/devices/block2mtd.c:476
-       param_attr_store+0x199/0x300 kernel/params.c:589
-       module_attr_store+0x58/0x80 kernel/params.c:919
-       sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:142
-       kernfs_fop_write_iter+0x3af/0x570 fs/kernfs/file.c:352
-       new_sync_write fs/read_write.c:593 [inline]
-       vfs_write+0x7d3/0x11d0 fs/read_write.c:686
-       ksys_write+0x12a/0x250 fs/read_write.c:738
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0xcd/0xfa0 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #2 (param_lock){+.+.}-{4:4}:
-       __mutex_lock_common kernel/locking/mutex.c:598 [inline]
-       __mutex_lock+0x193/0x1060 kernel/locking/mutex.c:760
-       ieee80211_rate_control_ops_get net/mac80211/rate.c:223 [inline]
-       rate_control_alloc net/mac80211/rate.c:269 [inline]
-       ieee80211_init_rate_ctrl_alg+0x18d/0x6b0 net/mac80211/rate.c:1016
-       ieee80211_register_hw+0x21b5/0x4120 net/mac80211/main.c:1535
-       mac80211_hwsim_new_radio+0x32d8/0x50b0 drivers/net/wireless/virtual/mac80211_hwsim.c:5803
-       init_mac80211_hwsim+0x44e/0x900 drivers/net/wireless/virtual/mac80211_hwsim.c:7167
-       do_one_initcall+0x123/0x6e0 init/main.c:1283
-       do_initcall_level init/main.c:1345 [inline]
-       do_initcalls init/main.c:1361 [inline]
-       do_basic_setup init/main.c:1380 [inline]
-       kernel_init_freeable+0x5c8/0x920 init/main.c:1593
-       kernel_init+0x1c/0x2b0 init/main.c:1483
-       ret_from_fork+0x675/0x7d0 arch/x86/kernel/process.c:158
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
--> #1 (rtnl_mutex){+.+.}-{4:4}:
-       __mutex_lock_common kernel/locking/mutex.c:598 [inline]
-       __mutex_lock+0x193/0x1060 kernel/locking/mutex.c:760
-       cgrp_css_online+0xa2/0x1f0 net/core/netprio_cgroup.c:157
-       online_css+0xb2/0x350 kernel/cgroup/cgroup.c:5735
-       css_create kernel/cgroup/cgroup.c:5823 [inline]
-       cgroup_apply_control_enable+0x702/0xbb0 kernel/cgroup/cgroup.c:3391
-       cgroup_mkdir+0x5e0/0x1310 kernel/cgroup/cgroup.c:6024
-       kernfs_iop_mkdir+0x111/0x190 fs/kernfs/dir.c:1268
-       vfs_mkdir+0x593/0x8c0 fs/namei.c:4453
-       do_mkdirat+0x304/0x3e0 fs/namei.c:4486
-       __do_sys_mkdirat fs/namei.c:4503 [inline]
-       __se_sys_mkdirat fs/namei.c:4501 [inline]
-       __x64_sys_mkdirat+0x83/0xb0 fs/namei.c:4501
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0xcd/0xfa0 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #0 (cgroup_mutex){+.+.}-{4:4}:
-       check_prev_add kernel/locking/lockdep.c:3165 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3284 [inline]
-       validate_chain kernel/locking/lockdep.c:3908 [inline]
-       __lock_acquire+0x126f/0x1c90 kernel/locking/lockdep.c:5237
-       lock_acquire kernel/locking/lockdep.c:5868 [inline]
-       lock_acquire+0x179/0x350 kernel/locking/lockdep.c:5825
-       __mutex_lock_common kernel/locking/mutex.c:598 [inline]
-       __mutex_lock+0x193/0x1060 kernel/locking/mutex.c:760
-       cgroup_lock include/linux/cgroup.h:393 [inline]
-       cgroup_kn_lock_live+0x116/0x520 kernel/cgroup/cgroup.c:1735
-       cgroup_rmdir+0x20/0x2b0 kernel/cgroup/cgroup.c:6229
-       kernfs_iop_rmdir+0x106/0x170 fs/kernfs/dir.c:1286
-       vfs_rmdir fs/namei.c:4548 [inline]
-       vfs_rmdir+0x206/0x690 fs/namei.c:4525
-       do_rmdir+0x2e8/0x3c0 fs/namei.c:4603
-       __do_sys_rmdir fs/namei.c:4622 [inline]
-       __se_sys_rmdir fs/namei.c:4620 [inline]
-       __x64_sys_rmdir+0xc5/0x110 fs/namei.c:4620
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0xcd/0xfa0 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-other info that might help us debug this:
-
-Chain exists of:
-  cgroup_mutex --> param_lock --> &type->i_mutex_dir_key#6
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&type->i_mutex_dir_key#6);
-                               lock(param_lock);
-                               lock(&type->i_mutex_dir_key#6);
-  lock(cgroup_mutex);
-
- *** DEADLOCK ***
-
-3 locks held by syz.5.6541/25846:
- #0: ffff888033b9a420 (sb_writers#9){.+.+}-{0:0}, at: do_rmdir+0x1e2/0x3c0 fs/namei.c:4591
- #1: ffff88805fb0b7f0 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:1025 [inline]
- #1: ffff88805fb0b7f0 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at: do_rmdir+0x233/0x3c0 fs/namei.c:4595
- #2: ffff888038fdd0c8 (&type->i_mutex_dir_key#6){++++}-{4:4}, at: inode_lock include/linux/fs.h:980 [inline]
- #2: ffff888038fdd0c8 (&type->i_mutex_dir_key#6){++++}-{4:4}, at: vfs_rmdir fs/namei.c:4537 [inline]
- #2: ffff888038fdd0c8 (&type->i_mutex_dir_key#6){++++}-{4:4}, at: vfs_rmdir+0xe9/0x690 fs/namei.c:4525
-
-stack backtrace:
-CPU: 0 UID: 0 PID: 25846 Comm: syz.5.6541 Tainted: G     U              syzkaller #0 PREEMPT(full) 
-Tainted: [U]=USER
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/02/2025
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
- print_circular_bug+0x275/0x350 kernel/locking/lockdep.c:2043
- check_noncircular+0x14c/0x170 kernel/locking/lockdep.c:2175
- check_prev_add kernel/locking/lockdep.c:3165 [inline]
- check_prevs_add kernel/locking/lockdep.c:3284 [inline]
- validate_chain kernel/locking/lockdep.c:3908 [inline]
- __lock_acquire+0x126f/0x1c90 kernel/locking/lockdep.c:5237
- lock_acquire kernel/locking/lockdep.c:5868 [inline]
- lock_acquire+0x179/0x350 kernel/locking/lockdep.c:5825
- __mutex_lock_common kernel/locking/mutex.c:598 [inline]
- __mutex_lock+0x193/0x1060 kernel/locking/mutex.c:760
- cgroup_lock include/linux/cgroup.h:393 [inline]
- cgroup_kn_lock_live+0x116/0x520 kernel/cgroup/cgroup.c:1735
- cgroup_rmdir+0x20/0x2b0 kernel/cgroup/cgroup.c:6229
- kernfs_iop_rmdir+0x106/0x170 fs/kernfs/dir.c:1286
- vfs_rmdir fs/namei.c:4548 [inline]
- vfs_rmdir+0x206/0x690 fs/namei.c:4525
- do_rmdir+0x2e8/0x3c0 fs/namei.c:4603
- __do_sys_rmdir fs/namei.c:4622 [inline]
- __se_sys_rmdir fs/namei.c:4620 [inline]
- __x64_sys_rmdir+0xc5/0x110 fs/namei.c:4620
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xcd/0xfa0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f02b3f8efc9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f02b4ee5038 EFLAGS: 00000246 ORIG_RAX: 0000000000000054
-RAX: ffffffffffffffda RBX: 00007f02b41e5fa0 RCX: 00007f02b3f8efc9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000200000000300
-RBP: 00007f02b4011f91 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f02b41e6038 R14: 00007f02b41e5fa0 R15: 00007ffe3049da48
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
