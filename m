@@ -1,436 +1,318 @@
-Return-Path: <cgroups+bounces-11184-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11185-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D6EAC0A85C
-	for <lists+cgroups@lfdr.de>; Sun, 26 Oct 2025 13:56:30 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3939C0BCEE
+	for <lists+cgroups@lfdr.de>; Mon, 27 Oct 2025 06:14:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11BF53B03A3
-	for <lists+cgroups@lfdr.de>; Sun, 26 Oct 2025 12:56:27 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 57B0E4E2EEF
+	for <lists+cgroups@lfdr.de>; Mon, 27 Oct 2025 05:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148C726B765;
-	Sun, 26 Oct 2025 12:56:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8AA72877C2;
+	Mon, 27 Oct 2025 05:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="ZYv1kfvC"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Mzuxiqey"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C013824A04A
-	for <cgroups@vger.kernel.org>; Sun, 26 Oct 2025 12:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761483383; cv=none; b=piJG+7B6xjOtTInzvKd7VWQ8DHC/8hpuNkpivkjJnJUcoLLzf5Nyo1nIsPZ5eFcWNX9cZ3THA7emlTn8VgWvdqc/GEKxSitVrRngO4CoW1B+o1oRcNk2btS90tm+uTwJAVIfC14ZRlzBzaSpd89Aw/bPR0epfqAsL9tpMcr3EFs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761483383; c=relaxed/simple;
-	bh=/dd+bCKt9lloqc1Q4zE2upDzSSNCoZc3Vz3YJU/YQkw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=upD9UNQCs1/ji+4fOH8Prh8lOBiBmAETPFejkBi8gdHrsJeRKFdyVQ3qDOKJKpjV9OeyxpGyabNYIdWItkVMgUKuI4TGVPY4ogHcinQeBUrlZR7JNoTJhBx/iGRWvvLNwcH2nORBod7L+PGUQOwNac8TxZzeTHeuZ3tw0+dofFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=ZYv1kfvC; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1761483378; x=1762088178; i=natalie.vock@gmx.de;
-	bh=b9pOLJD8s2D1NEIJCyFpXAgrTZKXeobbnooSip1UEzc=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=ZYv1kfvC78ccAh94JJZuS0UiaQ23qJSUQjmEWIZ+Bb9nqoOTwt9IGhYt1rTOe7IA
-	 R7qJg8Pq5MA741qpNrsq6mFYwxRMd2NNGLRGhwoR8ftfW+CNG6j34Hi1ml/rVB1Tp
-	 W9nIOrYjvyNeqITb4WUiNkJVQw6dEIkpLP/qwPEAn0trbuTn/v6DJ9DDEM30cU+an
-	 i3p6SXBAtr56awfwVb2M1t226GMvgNl0GUbUV9FW5a1Ao33dxTor5g+sGhiWzcvV+
-	 VciEPI7bORdu8U6fz501RBslbOm/uwoZU9o53XgShFIdn103oDp+75xM4vRAzn+uJ
-	 JMY7edtj/fChWImi6A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.0.3] ([109.91.201.165]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N0X8o-1uGtvS04BQ-00smwy; Sun, 26
- Oct 2025 13:56:18 +0100
-Message-ID: <bb112ec0-e920-4f23-9bb8-16b591eae128@gmx.de>
-Date: Sun, 26 Oct 2025 13:56:16 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180A51FF1AD;
+	Mon, 27 Oct 2025 05:14:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761542065; cv=fail; b=DRPCY1mPglyXy30kM+SuH9zZrcvaaQD4yQ8HaIxncth6hhXloSSHGd24EjEWk+NCe5PASC7u+HAUj1jzq0FWSpErCNkKu1Pfu3s8CfxILl+d92Zs7kdkq1A6O5wshs4dxCUpmG9m4UPTUSsY+SoMO1mDq7QKoQXcPKrTGJ8a62U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761542065; c=relaxed/simple;
+	bh=abHsTALfWlZqGKhFgoM3eI2zXf3BE4jVQtIecxH528I=;
+	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=PjxX1Mev/gnDdsyyeH8wE+lUNP+sbCBD5QJs7ofphBHPGyYDN6RyZZUyRfokIHZEBDWBC5dAr79lzq2k61o1khTE8wriZK/AGwe+Lk+Zvhu0iuIWr9ViY3gTOl1uGnTKJoDpI7dHtkb5Lwja8phZ0qcz1vopOlQLEoILPAy7wT8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Mzuxiqey; arc=fail smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1761542065; x=1793078065;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=abHsTALfWlZqGKhFgoM3eI2zXf3BE4jVQtIecxH528I=;
+  b=Mzuxiqey08ZYXB3MIJzZzZYmFlBnNc1VBOi5BMu3B8YxYm7EK9rLq7yi
+   Glj3XN5tHaTHKwwTPHgiZQCKeLetuBR2Wm6dI7U97xIDlSwi92TA2Rdxy
+   oS7p4WUObt2W2p9W4EvUiG2kPMrsdNypnSI2AU4XminE1NgTAGMtmo370
+   XIiL5RAJtcCI1pnb3LrwQy+0uqJD2g7iyiI8HvtqDrHpu/JBlc1b5m9uq
+   zaZwuSqhwgN2s9NV+z46rE+TROzpN8sb6M6kmtw2J1RLbBh/5Bckb78gC
+   RNLFD+9bbLLSdxvNGDtpB/WjWIyYe2EuWCu2/ijwRTO0xjnW+bARkicPX
+   g==;
+X-CSE-ConnectionGUID: /XCHgyMwRHa7FcTs1/hhiw==
+X-CSE-MsgGUID: tTafLf3bR7mQZVLrSP7GNg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="75060090"
+X-IronPort-AV: E=Sophos;i="6.19,258,1754982000"; 
+   d="scan'208";a="75060090"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2025 22:14:24 -0700
+X-CSE-ConnectionGUID: eg4UOMs8QR6L2bmUgxv+Zg==
+X-CSE-MsgGUID: bR+sH+FtSDiTClySBMkdQQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,258,1754982000"; 
+   d="scan'208";a="184127374"
+Received: from fmsmsx902.amr.corp.intel.com ([10.18.126.91])
+  by orviesa006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2025 22:14:23 -0700
+Received: from FMSMSX902.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27; Sun, 26 Oct 2025 22:14:22 -0700
+Received: from fmsedg901.ED.cps.intel.com (10.1.192.143) by
+ FMSMSX902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27 via Frontend Transport; Sun, 26 Oct 2025 22:14:22 -0700
+Received: from BN1PR04CU002.outbound.protection.outlook.com (52.101.56.23) by
+ edgegateway.intel.com (192.55.55.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.27; Sun, 26 Oct 2025 22:14:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Qun6T+ZUck6k2WLZLrUaGkl7CJOaK+plGmG8jmSaCwYQIIErLVXvRQOpJ3Ys9sBH8g8ZniFmJaL2Xr9xwRO71KaLdTe2YqQUk2uZO24YQ4vROOFdl3nYWeelcLzclrAeUdADa0MGXIN7zkJT/xrtCmHluszY/IUSA7xeqk7eJEBRAXLYZODKlxVQ4gbwut8HKA64QfkASxTqQbvOhBP+dcIru2cC03vQo0tdKJHWF+EsdBdXi/6VJhyL/L+r1yNIkgRDVSq+9GOAKgjutIBjKnHx8keP3enbVb0U3Ggo0bPILEWShGpRsi181RuMTdU2ao3YXIm2QTHjxPi+xOp9DA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0/KR/NXwcrxrG/SoLd4Q+L/LoY9o5RxG/P1pXkMjOA8=;
+ b=BtMsm9S9VQFIvyX96zDxCMqYYf1rpbBpRbjMNneLRbBgLwIgHdu0UzVdJJEVFAtfn+g4SAfKrEnCRBv+YEn3BjwU5h8u/DK8hoTPzDw2IDC+ZdM7KkmWCMPqrXLZR4EbLQS5u0/MZJOY+LDrjHvXva2mEimFyz6jsM0Kir/bvelDMVz/dfowZ3XaNxCca5g8E5Og3Jdi6HMxRxsxZJH6AfPbDfQD5cfMTFQsMySdhjHmJSEXNJyRBF/XK2dvEd/VvAY3BTG7bGVRk7/Q6ek4yKiJ4aDaoa3iDRIFmcZPdvtjGDQt54CR+X3aMqwZDkwihXIWoGFhm99VZOJhFPU8zw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by SJ0PR11MB5119.namprd11.prod.outlook.com (2603:10b6:a03:2d6::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9253.19; Mon, 27 Oct
+ 2025 05:14:19 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%5]) with mapi id 15.20.9253.013; Mon, 27 Oct 2025
+ 05:14:19 +0000
+Date: Mon, 27 Oct 2025 13:14:09 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Peter Zijlstra <peterz@infradead.org>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-kernel@vger.kernel.org>,
+	<x86@kernel.org>, Juri Lelli <juri.lelli@redhat.com>, Tejun Heo
+	<tj@kernel.org>, Vincent Guittot <vincent.guittot@linaro.org>,
+	<cgroups@vger.kernel.org>, <aubrey.li@linux.intel.com>,
+	<yu.c.chen@intel.com>, <oliver.sang@intel.com>
+Subject: [tip:sched/core] [sched]  b079d93796:
+ WARNING:possible_recursive_locking_detected_migration_is_trying_to_acquire_lock:at:set_cpus_allowed_force_but_task_is_already_holding_lock:at:cpu_stopper_thread
+Message-ID: <202510271206.24495a68-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: PSBPR02CA0017.apcprd02.prod.outlook.com (2603:1096:301::27)
+ To LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/5] drm/ttm: Be more aggressive when allocating below
- protection limit
-To: Maarten Lankhorst <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>,
- Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>,
- Matthew Auld <matthew.auld@intel.com>,
- Matthew Brost <matthew.brost@intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>
-Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20251015-dmemcg-aggressive-protect-v2-0-36644fb4e37f@gmx.de>
- <20251015-dmemcg-aggressive-protect-v2-4-36644fb4e37f@gmx.de>
- <1ebc018f-fee0-4813-8e2e-7a704d3334b0@lankhorst.se>
-Content-Language: en-US
-From: Natalie Vock <natalie.vock@gmx.de>
-In-Reply-To: <1ebc018f-fee0-4813-8e2e-7a704d3334b0@lankhorst.se>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xqoCqlL5agbLgr2mY0SY4z5gPs1TCgFEhr4e0urgBt1mw+RzAWH
- vA2ucUYxkEivtE566WXw6SGOR0WLgVZJJIRvRJwWMnZN2013khCF7W4z4AM2hS+j7xm9Ru5
- 2nUXpgoMG0iYxkPzqe5Faz9LmmM2ZyYn7joMjQhSdIQcIA1wc2YgVsuQ91HOvE+E25J3fs7
- WDCZcKmkYZatqecKpA75A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:49hikTeLkB0=;XxnU9XNN7nX/bYTp78vpdFf9HeW
- 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
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|SJ0PR11MB5119:EE_
+X-MS-Office365-Filtering-Correlation-Id: 671b69e2-7044-4e02-d94e-08de1517ae8c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?27GagQ0ojde3ivCkwNsDi2aWijFHuRlq/gL+BpGKJJ5t85dySk/h+hNZtZLf?=
+ =?us-ascii?Q?A2Y+46Cu3paB9smLGZuaTnOw8+OdW4oIqfeKtoe+Th/lMyym0vh6rk/7tWHt?=
+ =?us-ascii?Q?KqKx4SDxkmFyxAl5VqrqdHcthAFgBgsU3vMGDBNRSmnkKG51TYwiUWLJMaBb?=
+ =?us-ascii?Q?dAsioOYm5735Qw34D8AtHC4HtMh7DDzcA5wiyO40Xd+ufOfgDzXuFRHpph95?=
+ =?us-ascii?Q?MWMoXocfk467CDyrnFGcCSEipR1SU4ZX6ceWkBj2KKlWpOji7yo0cxg/OHDV?=
+ =?us-ascii?Q?4GDO9XZahuD4vVe0WAolvLkGpdR2eTkBEQ2lRqAVDuyTmq1DwZVYbAf2plAA?=
+ =?us-ascii?Q?Jizb878ku8pyQOUnPcT2VtmQc4MBPTn31D8GBaY5U4ChhquFYcFljrhhzRrl?=
+ =?us-ascii?Q?PAW4lYRFY8OhrehgHIQSVD4M8OKBpjAyHQiW91snmiUhLB/GWZvO43X28kR5?=
+ =?us-ascii?Q?ELRQyIEpQJ9ucJ6A7KMfhRESNmCG01Y5gc9FU+aB1SIxRndp6coosC/e+l7p?=
+ =?us-ascii?Q?HMPVtH73YYkHRWJ8D6hajh+rpbUo+clkrxr3I5rGI3CUXHRb/a4/8Nm1TIT6?=
+ =?us-ascii?Q?DUFD3r0Jpf9cRh7QVzyTsjW76mwU2E9fhF02TV4J9F4uH8sGi4PZflM9PczA?=
+ =?us-ascii?Q?KCQcBLPtcyn7E5rDgWTO2ABzvEaXidIOVM8g0qA6XR+WKng9S0xVrvnqAWWV?=
+ =?us-ascii?Q?qo/EBeLvn67bhaglxWOUVffy1TmrW8g8/viQ1+kz15S2wZtCz/e8WVLI4EgE?=
+ =?us-ascii?Q?ReYcO+IEqZhlLTk90FXu2A0kyr7x0BEE2yJFzpmfiMcknRSBjLFIEaV0MmAC?=
+ =?us-ascii?Q?HShhepUuald4KJRS9S2oCgBl/ghQK5/DPfC88ahN1afkihDFbyC4XgfAa4J8?=
+ =?us-ascii?Q?aJpkQwlAGyOHKPpAtdHTVx+aOb0ODKbOKxZW86TtmwW3dsImGmF9zpbapfqu?=
+ =?us-ascii?Q?5cs1FIkuUybBGDyLXrJFrV2//qV3wq+CzTz4SaOFbuqpx9hJvrOwRcZcH+rq?=
+ =?us-ascii?Q?X2qLZEIX8Vqude+Iag/k4//6SmX5H8/L7EugITDlH9a0Z0e8AXZi2i/i3z6L?=
+ =?us-ascii?Q?HeO0uAphudV2anqDPwTbYmg1kHJPYHbxGb8UaMG1NvdNjTPjJPmBXoYcGyp9?=
+ =?us-ascii?Q?ZlwTglWa0dRj/DdYZC3N89bGiHL3jKaU+mQ4wxFBxYibiXqLHUDJEygf29cP?=
+ =?us-ascii?Q?FpRTTKHeJ/xPeEDDySzBg5KAEXboE4Z3C07P639sUWiT6iXuVLQxzmc8UULg?=
+ =?us-ascii?Q?7oB+HO/VwPxD2GpMNOvhpenI6b1UPW3yX5bkkiqL/bMAoIUn4Bot0uj8OXp7?=
+ =?us-ascii?Q?9RfkyzkbvL/1t04kK/Pf8DmUSDcSrsI9pxFSiZHx0WvQZz7sDFhmbBEuuHWA?=
+ =?us-ascii?Q?+BeyWOUOeEe6NESU/BT+wNufqR8KDpBbDAxlyeA1wCqY4OjddV+hME/4jSoP?=
+ =?us-ascii?Q?evPIzftbGujOy5PFi8g02/YaIa1swSuZvrpqIzsSsYbVHVu5nQVzMg=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?oJg1WTruEUhB/jtg0LkTyYDz/useaPlxpi4Vl5MELelTUVJFCSLjcXG+wb5b?=
+ =?us-ascii?Q?KDeBlBRLynPzzu7/1B1cdWXWbTlBFGBTcNfoXM2aGfLLni5N7yBkWnr0UmE8?=
+ =?us-ascii?Q?/gFNMoil4gC1dCt6BDW4gCz8okD9cmE53l+t+RD9RdnDfURt13LUm6tu0/Vc?=
+ =?us-ascii?Q?WtKn1A/h/hEz9DFQe1xF/JSD/oiLxzMjBzxYeZBUMHqfomDL2juTQcajaMk5?=
+ =?us-ascii?Q?c0l77yXaw2tsoZlxFdjZ/ZVgo9tx0f+jQrpMoBJ9SdVmgtTekRpjiCvlifqX?=
+ =?us-ascii?Q?zIdPhTm3FY+5XT2nDxkKvjDNbQgUE1siRFldx9hlLgTeVbnPuFAEXkdkz5/3?=
+ =?us-ascii?Q?79V/cfmgBSPFfZeeVgOG5zGtgLtLyM7ty4Ne6dyRAhPvWBdp05qMGU3PvScq?=
+ =?us-ascii?Q?tDWR1Iy2P0DOMgDkGL79+fPCZ04pI90ZVGMFEvotbsMCyu+nkF+NVVJhA97w?=
+ =?us-ascii?Q?pH9tZmhL8YG0U3w9ZC/W47gXbsKOzBiSZCvgUM+LajBe8tXeIYxdWAPHIcXw?=
+ =?us-ascii?Q?YtJuoc6leQFk2mNYYNF6Vhwib3we51CZDMCCyVBJW/EkKb4861b8C2hYIXCR?=
+ =?us-ascii?Q?sKRVAGbPKaQXTvqENpv/Sla78n0JWeVmpsiJq5oAYxLqPKZyd87uTwnJSyVy?=
+ =?us-ascii?Q?9M2mtNTWKyQytHR9KC4a6gjqMALLXwhCFSJuwirVNe/qJOWh83mzV6zuLBhy?=
+ =?us-ascii?Q?zshtXNNGmTgjukEvlO+cJz6Y0vgRtvLmG13nPcNpSQkUkYvH5vX5hRSQSVtE?=
+ =?us-ascii?Q?184TzNe47pihkynrYyMKJ/YyD9k0FVwNKKSxq74Ob6qtI9OqhB04STMH/psV?=
+ =?us-ascii?Q?6pSGDTVXjFDtygpWjgjnIYFfx917M6fxIVfeQzaPVul6DzcEkd0+UJNrNmzg?=
+ =?us-ascii?Q?h4WIzRAIP4a63EicBQsBZ4iIJXZLVGd9wLA4ttJmQ6MGELpHWxhI/rFqP4kq?=
+ =?us-ascii?Q?jdcZiR7w5DMyO3lRWwPmUmAlBGIe9c/NMP8wxZgjejWhaA91+5Lwu42SDs0p?=
+ =?us-ascii?Q?jTW24SotvSXROE2/iUfwRwFoI9FZXTQLBZ6/0dywuIMkVD6NBRXl/D0dHx65?=
+ =?us-ascii?Q?rdXINvXVHh0zIfzydEYL/bptoyoknFYMkHmDR2cpOzvYVFsV//w2zm18hznb?=
+ =?us-ascii?Q?3zS9Tz51MDyMZMk6ByV9OsBCVii7dFkBqr8eUvhyjU4rMD9sli1HSCoK/BN2?=
+ =?us-ascii?Q?SSKxPZWzByv/WRzGcBN42J7jdG8hefop9gk6oDKIVKpedzbqFp8W0gx2w5Ri?=
+ =?us-ascii?Q?MFQ2Ut8Ir5S1bWfC5J+ncP7NKL3IzWeKxN3MDCYQ1a/TPvW3CC3+iCulpqVw?=
+ =?us-ascii?Q?3mMrXB0y0NSZWNomOA/kp00hQnC9i63epLCYq1G9FrGHK+s/YT4TQzg3aHGp?=
+ =?us-ascii?Q?8ocZHOaqZugmqrecIa6qJnx/Us/EoVBAFBkf2Yeb6mwpU85uhpYKOL9G8cVX?=
+ =?us-ascii?Q?Rzl9rSjNr8qlB4CDQGbAsZRCyUgKh96aRu0nTq1BGwpOn5aso3SyIHYC5kAe?=
+ =?us-ascii?Q?hmQjSNfzNkZffRQ3wNvVLq8uEVRqgzb8N5OIv5mRT1NijXe3HICm3J9ITZSq?=
+ =?us-ascii?Q?d8NFvNL/TIXK5xNoQ9JDmo4iWEpXr9awYeY0hYo6mt1fqYjqLFnqrrcUD918?=
+ =?us-ascii?Q?mg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 671b69e2-7044-4e02-d94e-08de1517ae8c
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2025 05:14:19.1384
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: umUpX49kAgXDPmsAkMy4gOQXOWWF2qnjoI6W0GW1n0Dty/TaT6qhhOjVMF8KV9JCoPxdqCfwnwJeZ295fdyCMQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5119
+X-OriginatorOrg: intel.com
 
-Hi,
 
-On 10/24/25 14:14, Maarten Lankhorst wrote:
-> Hey,
->=20
-> Den 2025-10-15 kl. 15:57, skrev Natalie Vock:
->> When the cgroup's memory usage is below the low/min limit and allocatio=
-n
->> fails, try evicting some unprotected buffers to make space. Otherwise,
->> application buffers may be forced to go into GTT even though usage is
->> below the corresponding low/min limit, if other applications filled VRA=
-M
->> with their allocations first.
->>
->> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
->> ---
->>   drivers/gpu/drm/ttm/ttm_bo.c       | 43 ++++++++++++++++++++++++++++-=
-=2D----
->>   drivers/gpu/drm/ttm/ttm_resource.c | 48 +++++++++++++++++++++++++++--=
-=2D--------
->>   include/drm/ttm/ttm_resource.h     |  6 ++++-
->>   3 files changed, 76 insertions(+), 21 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.=
-c
->> index 829d99479883594f8be5b9ceed4cc53c4864ace5..7f7872ab2090cc8db188e08=
-ddfdcd12fe924f743 100644
->> --- a/drivers/gpu/drm/ttm/ttm_bo.c
->> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
->> @@ -490,8 +490,12 @@ int ttm_bo_evict_first(struct ttm_device *bdev, st=
-ruct ttm_resource_manager *man
->>   }
->>  =20
->>   struct ttm_bo_alloc_state {
->> +	/** @charge_pool: The memory pool the resource is charged to */
->> +	struct dmem_cgroup_pool_state *charge_pool;
->>   	/** @limit_pool: Which pool limit we should test against */
->>   	struct dmem_cgroup_pool_state *limit_pool;
->> +	/** @only_evict_unprotected: If eviction should be restricted to unpr=
-otected BOs */
->> +	bool only_evict_unprotected;
-> I'm not entirely sure we should put 'low' and 'min' limits together here=
-.
 
-I think putting 'low' and 'min' together here is accurate. When the=20
-allocation is covered by the 'low' limit, but not the 'min' limit, we=20
-should evict only allocations that are covered by neither (which is what=
-=20
-this flag controls).
+Hello,
 
-However maybe we should allow evicting allocations covered by 'low' when=
-=20
-the new allocation is covered by 'min' in ttm_resource_alloc_at_place=20
-down below (because 'min' is a stronger guarantee). We could do this=20
-simply by setting 'only_evict_unprotected' to false, since memory=20
-covered by 'min' can never get evicted anyway.
 
->>   };
->>  =20
->>   /**
->> @@ -546,7 +550,7 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *wal=
-k, struct ttm_buffer_object *
->>   	evict_walk->evicted++;
->>   	if (evict_walk->res)
->>   		lret =3D ttm_resource_alloc(evict_walk->evictor, evict_walk->place,
->> -					  evict_walk->res, NULL);
->> +					  evict_walk->res, evict_walk->alloc_state->charge_pool);
->>   	if (lret =3D=3D 0)
->>   		return 1;
->>   out:
->> @@ -589,7 +593,7 @@ static int ttm_bo_evict_alloc(struct ttm_device *bd=
-ev,
->>   	lret =3D ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
->>  =20
->>   	/* One more attempt if we hit low limit? */
->> -	if (!lret && evict_walk.hit_low) {
->> +	if (!lret && evict_walk.hit_low && !state->only_evict_unprotected) {
->>   		evict_walk.try_low =3D true;
->>   		lret =3D ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
->>   	}
->> @@ -610,7 +614,8 @@ static int ttm_bo_evict_alloc(struct ttm_device *bd=
-ev,
->>   	} while (!lret && evict_walk.evicted);
->>  =20
->>   	/* We hit the low limit? Try once more */
->> -	if (!lret && evict_walk.hit_low && !evict_walk.try_low) {
->> +	if (!lret && evict_walk.hit_low && !evict_walk.try_low &&
->> +			!state->only_evict_unprotected) {
->>   		evict_walk.try_low =3D true;
->>   		goto retry;
->>   	}
->> @@ -719,20 +724,40 @@ static int ttm_bo_alloc_at_place(struct ttm_buffe=
-r_object *bo,
->>   				 struct ttm_resource **res,
->>   				 struct ttm_bo_alloc_state *alloc_state)
->>   {
->> -	bool may_evict;
->> +	bool may_evict, is_protected =3D false;
->>   	int ret;
->>  =20
->>   	may_evict =3D (force_space && place->mem_type !=3D TTM_PL_SYSTEM);
->> +	ret =3D ttm_resource_try_charge(bo, place, &alloc_state->charge_pool,
->> +				      force_space ? &alloc_state->limit_pool : NULL);
->> +	if (ret) {
->> +		/*
->> +		 * -EAGAIN means the charge failed, which we treat like an
->> +		 * allocation failure. Allocation failures are indicated
->> +		 * by -ENOSPC, so return that instead.
->> +		 */
->> +		if (ret =3D=3D -EAGAIN && !may_evict)
->> +			ret =3D -ENOSPC;
->> +		return ret;
->> +	}
->>  =20
->> -	ret =3D ttm_resource_alloc(bo, place, res,
->> -				 force_space ? &alloc_state->limit_pool : NULL);
->> +	is_protected =3D dmem_cgroup_below_min(NULL, alloc_state->charge_pool=
-) ||
->> +		       dmem_cgroup_below_low(NULL, alloc_state->charge_pool);
->> +	ret =3D ttm_resource_alloc(bo, place, res, alloc_state->charge_pool);
->> +	alloc_state->only_evict_unprotected =3D !may_evict && is_protected;
->=20
-> This probably deserves a comment to explaing it's ok if we haven't hit l=
-ow/min yet to evict from
-> those cgroups that did those limits already. It took me a bit of time to=
- understand the idea.
+as we understand, this commit is not the root cause of the
+possible_recursive_locking_detected issue.
+but due to the renaming, the detail stats change from form (1) to (2).
 
-Yeah, that's a bit non-obvious. I'll add a comment.
+we failed to bisect to real first bad commit for
+"possible_recursive_locking_detected" issue. so just make out this report FYI
+that there is this issue caused by related code.
 
-Thanks,
-Natalie
 
->=20
->>  =20
->>   	if (ret) {
->> -		if ((ret =3D=3D -ENOSPC || ret =3D=3D -EAGAIN) && may_evict)
->> +		if ((ret =3D=3D -ENOSPC || ret =3D=3D -EAGAIN) &&
->> +				(may_evict || is_protected))
->>   			ret =3D -EBUSY;
->>   		return ret;
->>   	}
->>  =20
->> +	/*
->> +	 * Ownership of charge_pool has been transferred to the TTM resource,
->> +	 * don't make the caller think we still hold a reference to it.
->> +	 */
->> +	alloc_state->charge_pool =3D NULL;
->>   	return 0;
->>   }
->>  =20
->> @@ -787,6 +812,7 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_=
-object *bo,
->>   				res, &alloc_state);
->>  =20
->>   		if (ret =3D=3D -ENOSPC) {
->> +			dmem_cgroup_pool_state_put(alloc_state.charge_pool);
->>   			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
->>   			continue;
->>   		} else if (ret =3D=3D -EBUSY) {
->> @@ -796,11 +822,14 @@ static int ttm_bo_alloc_resource(struct ttm_buffe=
-r_object *bo,
->>   			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
->>  =20
->>   			if (ret) {
->> +				dmem_cgroup_pool_state_put(
->> +						alloc_state.charge_pool);
->>   				if (ret !=3D -ENOSPC && ret !=3D -EBUSY)
->>   					return ret;
->>   				continue;
->>   			}
->>   		} else if (ret) {
->> +			dmem_cgroup_pool_state_put(alloc_state.charge_pool);
->>   			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
->>   			return ret;
->>   		}
->> diff --git a/drivers/gpu/drm/ttm/ttm_resource.c b/drivers/gpu/drm/ttm/t=
-tm_resource.c
->> index e2c82ad07eb44b5e88bf5b5db1ef54dd6d27823b..fcfa8b51b033745f46a01e4=
-0a9dc83e0c69165fc 100644
->> --- a/drivers/gpu/drm/ttm/ttm_resource.c
->> +++ b/drivers/gpu/drm/ttm/ttm_resource.c
->> @@ -372,30 +372,52 @@ void ttm_resource_fini(struct ttm_resource_manage=
-r *man,
->>   }
->>   EXPORT_SYMBOL(ttm_resource_fini);
->>  =20
->> +/**
->> + * ttm_resource_try_charge - charge a resource manager's cgroup pool
->> + * @bo: buffer for which an allocation should be charged
->> + * @place: where the allocation is attempted to be placed
->> + * @ret_pool: on charge success, the pool that was charged
->> + * @ret_limit_pool: on charge failure, the pool responsible for the fa=
-ilure
->> + *
->> + * Should be used to charge cgroups before attempting resource allocat=
-ion.
->> + * When charging succeeds, the value of ret_pool should be passed to
->> + * ttm_resource_alloc.
->> + *
->> + * Returns: 0 on charge success, negative errno on failure.
->> + */
->> +int ttm_resource_try_charge(struct ttm_buffer_object *bo,
->> +			    const struct ttm_place *place,
->> +			    struct dmem_cgroup_pool_state **ret_pool,
->> +			    struct dmem_cgroup_pool_state **ret_limit_pool)
->> +{
->> +	struct ttm_resource_manager *man =3D
->> +		ttm_manager_type(bo->bdev, place->mem_type);
->> +
->> +	if (!man->cg) {
->> +		*ret_pool =3D NULL;
->> +		if (ret_limit_pool)
->> +			*ret_limit_pool =3D NULL;
->> +		return 0;
->> +	}
->> +
->> +	return dmem_cgroup_try_charge(man->cg, bo->base.size, ret_pool,
->> +				      ret_limit_pool);
->> +}
->> +
->>   int ttm_resource_alloc(struct ttm_buffer_object *bo,
->>   		       const struct ttm_place *place,
->>   		       struct ttm_resource **res_ptr,
->> -		       struct dmem_cgroup_pool_state **ret_limit_pool)
->> +		       struct dmem_cgroup_pool_state *charge_pool)
->>   {
->>   	struct ttm_resource_manager *man =3D
->>   		ttm_manager_type(bo->bdev, place->mem_type);
->> -	struct dmem_cgroup_pool_state *pool =3D NULL;
->>   	int ret;
->>  =20
->> -	if (man->cg) {
->> -		ret =3D dmem_cgroup_try_charge(man->cg, bo->base.size, &pool, ret_li=
-mit_pool);
->> -		if (ret)
->> -			return ret;
->> -	}
->> -
->>   	ret =3D man->func->alloc(man, bo, place, res_ptr);
->> -	if (ret) {
->> -		if (pool)
->> -			dmem_cgroup_uncharge(pool, bo->base.size);
->> +	if (ret)
->>   		return ret;
->> -	}
->>  =20
->> -	(*res_ptr)->css =3D pool;
->> +	(*res_ptr)->css =3D charge_pool;
->>  =20
->>   	spin_lock(&bo->bdev->lru_lock);
->>   	ttm_resource_add_bulk_move(*res_ptr, bo);
->> diff --git a/include/drm/ttm/ttm_resource.h b/include/drm/ttm/ttm_resou=
-rce.h
->> index e52bba15012f78e352f392232ac2e89a83afd311..3aef7efdd7cfb8fd93071db=
-85e632b975b53cf81 100644
->> --- a/include/drm/ttm/ttm_resource.h
->> +++ b/include/drm/ttm/ttm_resource.h
->> @@ -442,10 +442,14 @@ void ttm_resource_init(struct ttm_buffer_object *=
-bo,
->>   void ttm_resource_fini(struct ttm_resource_manager *man,
->>   		       struct ttm_resource *res);
->>  =20
->> +int ttm_resource_try_charge(struct ttm_buffer_object *bo,
->> +			    const struct ttm_place *place,
->> +			    struct dmem_cgroup_pool_state **ret_pool,
->> +			    struct dmem_cgroup_pool_state **ret_limit_pool);
->>   int ttm_resource_alloc(struct ttm_buffer_object *bo,
->>   		       const struct ttm_place *place,
->>   		       struct ttm_resource **res,
->> -		       struct dmem_cgroup_pool_state **ret_limit_pool);
->> +		       struct dmem_cgroup_pool_state *charge_pool);
->>   void ttm_resource_free(struct ttm_buffer_object *bo, struct ttm_resou=
-rce **res);
->>   bool ttm_resource_intersects(struct ttm_device *bdev,
->>   			     struct ttm_resource *res,
->>
->=20
+=========================================================================================
+tbox_group/testcase/rootfs/kconfig/compiler/runtime/test/torture_type:
+  vm-snb/rcutorture/debian-11.1-i386-20220923.cgz/i386-randconfig-062-20251022/clang-20/300s/cpuhotplug/tasks-tracing
+
+
+abfc01077df66593 b079d93796528053cde322f2ca8
+---------------- ---------------------------
+       fail:runs  %reproduction    fail:runs
+           |             |             |
+          6:6            0%           6:6     dmesg.WARNING:possible_recursive_locking_detected
+          6:6         -100%            :6     dmesg.WARNING:possible_recursive_locking_detected_migration_is_trying_to_acquire_lock:at:do_set_cpus_allowed_but_task_is_already_holding_lock:at:cpu_stopper_thread          <-------- (1)
+           :6          100%           6:6     dmesg.WARNING:possible_recursive_locking_detected_migration_is_trying_to_acquire_lock:at:set_cpus_allowed_force_but_task_is_already_holding_lock:at:cpu_stopper_thread       <-------- (2)
+
+
+
+kernel test robot noticed "WARNING:possible_recursive_locking_detected_migration_is_trying_to_acquire_lock:at:set_cpus_allowed_force_but_task_is_already_holding_lock:at:cpu_stopper_thread" on:
+
+commit: b079d93796528053cde322f2ca838c2d21c297e7 ("sched: Rename do_set_cpus_allowed()")
+https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git sched/core
+
+[test failed on linux-next/master 72fb0170ef1f45addf726319c52a0562b6913707]
+
+in testcase: rcutorture
+version: 
+with following parameters:
+
+	runtime: 300s
+	test: cpuhotplug
+	torture_type: tasks-tracing
+
+
+
+config: i386-randconfig-062-20251022
+compiler: clang-20
+test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202510271206.24495a68-lkp@intel.com
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20251027/202510271206.24495a68-lkp@intel.com
+
+
+[  116.814009][   T21] 
+[  116.814488][   T21] ============================================
+[  116.815227][   T21] WARNING: possible recursive locking detected
+[  116.815957][   T21] 6.18.0-rc1-00014-gb079d9379652 #1 Tainted: G S                 
+[  116.816878][   T21] --------------------------------------------
+[  116.817602][   T21] migration/1/21 is trying to acquire lock:
+[  116.818301][   T21] ee7f1930 (&rq->__lock){-.-.}-{2:2}, at: set_cpus_allowed_force+0x3c/0xc0
+[  116.820432][   T21] 
+[  116.820432][   T21] but task is already holding lock:
+[  116.821314][   T21] ee7f1930 (&rq->__lock){-.-.}-{2:2}, at: cpu_stopper_thread+0x93/0x170
+[  116.822291][   T21] 
+[  116.822291][   T21] other info that might help us debug this:
+[  116.826420][   T21]  Possible unsafe locking scenario:
+[  116.826420][   T21] 
+[  116.836196][   T21]        CPU0
+[  116.836895][   T21]        ----
+[  116.837592][   T21]   lock(&rq->__lock);
+[  116.838388][   T21]   lock(&rq->__lock);
+[  116.839558][   T21] 
+[  116.839558][   T21]  *** DEADLOCK ***
+[  116.839558][   T21] 
+[  116.841003][   T21]  May be due to missing lock nesting notation
+[  116.841003][   T21] 
+[  116.842427][   T21] 2 locks held by migration/1/21:
+[  116.843393][   T21]  #0: b92d06dc (&p->pi_lock){-.-.}-{2:2}, at: __balance_push_cpu_stop+0x28/0x2b0
+[  116.845044][   T21]  #1: ee7f1930 (&rq->__lock){-.-.}-{2:2}, at: cpu_stopper_thread+0x93/0x170
+[  116.846669][   T21] 
+[  116.846669][   T21] stack backtrace:
+[  116.847890][   T21] CPU: 1 UID: 0 PID: 21 Comm: migration/1 Tainted: G S                  6.18.0-rc1-00014-gb079d9379652 #1 NONE  6d63d2e836521c1c681a07c673117fb98e4815ab
+[  116.847897][   T21] Tainted: [S]=CPU_OUT_OF_SPEC
+[  116.847898][   T21] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[  116.847901][   T21] Stopper: __balance_push_cpu_stop+0x0/0x2b0 <- finish_lock_switch+0x7d/0xd0
+[  116.847909][   T21] Call Trace:
+[  116.847914][   T21]  ? dump_stack_lvl+0xa4/0xdc
+[  116.847919][   T21]  ? print_deadlock_bug+0x2df/0x300
+[  116.847925][   T21]  ? __lock_acquire+0x268c/0x2ce0
+[  116.847929][   T21]  ? __lock_acquire+0x601/0x2ce0
+[  116.847933][   T21]  ? __lock_acquire+0x601/0x2ce0
+[  116.847939][   T21]  ? lock_acquire+0xc3/0x1f0
+[  116.847943][   T21]  ? set_cpus_allowed_force+0x3c/0xc0
+[  116.847947][   T21]  ? lock_acquire+0xc3/0x1f0
+[  116.847952][   T21]  ? __task_rq_lock+0x73/0x1d0
+[  116.847955][   T21]  ? set_cpus_allowed_force+0x3c/0xc0
+[  116.847959][   T21]  ? set_cpus_allowed_force+0x3c/0xc0
+[  116.847962][   T21]  ? __balance_push_cpu_stop+0x136/0x2b0
+[  116.847966][   T21]  ? select_fallback_rq+0x148/0x230
+[  116.847970][   T21]  ? __balance_push_cpu_stop+0x163/0x2b0
+[  116.847974][   T21]  ? cpu_stopper_thread+0x93/0x170
+[  116.847978][   T21]  ? raw_spin_rq_lock_nested+0xb0/0xb0
+[  116.847982][   T21]  ? smpboot_thread_fn+0x11b/0x260
+[  116.847986][   T21]  ? kthread+0x2ef/0x330
+[  116.847992][   T21]  ? trace_hardirqs_on+0x76/0xe0
+[  116.847996][   T21]  ? kthreadd+0x2a0/0x2a0
+[  116.847999][   T21]  ? __smpboot_create_thread+0x1c0/0x1c0
+[  116.848003][   T21]  ? schedule_tail+0xa6/0x100
+[  116.848006][   T21]  ? kthreadd+0x2a0/0x2a0
+[  116.848009][   T21]  ? kthreadd+0x2a0/0x2a0
+[  116.848012][   T21]  ? ret_from_fork+0x1cd/0x290
+[  116.848017][   T21]  ? kthreadd+0x2a0/0x2a0
+[  116.848020][   T21]  ? ret_from_fork_asm+0x12/0x18
+[  116.848023][   T21]  ? entry_INT80_32+0xf0/0xf0
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
