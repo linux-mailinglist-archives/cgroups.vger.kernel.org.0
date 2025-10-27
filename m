@@ -1,161 +1,171 @@
-Return-Path: <cgroups+bounces-11235-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11236-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C72C121D5
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 00:58:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42BE1C121CF
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 00:57:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9C3EB4F39B5
-	for <lists+cgroups@lfdr.de>; Mon, 27 Oct 2025 23:57:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E38D44666E6
+	for <lists+cgroups@lfdr.de>; Mon, 27 Oct 2025 23:57:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F56930F95F;
-	Mon, 27 Oct 2025 23:57:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956B632F74B;
+	Mon, 27 Oct 2025 23:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="el+rZW6Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lJ/KUmyJ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D29932E7F29;
-	Mon, 27 Oct 2025 23:57:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1BE2E7F29;
+	Mon, 27 Oct 2025 23:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761609439; cv=none; b=W81ngmX5/ahf/DfQDiI6VEOBXxfUzcKqJkTq71z4qas2XzbEOMVc+BLK0q1cGdI742Xz10vYpplE5fyVdYPDdHKMeCKK0AWacROhMwgduyvyKEvKoOm5Elq13hq66jtCQv7C76ZyOmAcKFYsvr9SSSwagVTuybYQjkpMO/I/nyY=
+	t=1761609443; cv=none; b=TT/3IGYfA5aMC2J0wRfzbHEmv+XFLKMlzPoCd7hfwJC2CiwvWnQvJbkwvK58RFoJLoZ9Y/SbrBb+zrQxqzimvBcS9nIn0u7us1a9jefyPHatKUW/XBc9C9GnpZd61VZTT36Y7dJLUiT/P1jTnjXY2W0rlylXVn4H0SPCmo0Dv5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761609439; c=relaxed/simple;
-	bh=hHcSm05XIBBgOwCK09Y1TkRueDxudZm+Q2Tyf5+OBPs=;
+	s=arc-20240116; t=1761609443; c=relaxed/simple;
+	bh=jXLAtIGL3t3Eeivlb10T/oIzaKMtHVUOwyi8U5Ge+jA=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=Fw5kLV26ycCTeTZYnKbg3voD3zubI/cCA1jJ36/nKAr/n3Qtm7qKoogMCenz+/3OyB+Jv4+1lhvNTV0/nCOLF8lwVQdOQmnVn+oDvOM9bwa+cA6kpm+4PVuiKEMLh1ZO9onG9cCVBdC9HzT6Qk/0MzvBv91mSFN0phHUGtQUEIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=el+rZW6Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD325C4CEF1;
-	Mon, 27 Oct 2025 23:57:17 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=ntO0xGY0f2rDTgJzWMvsZeHfa4BVadM/WoXT9dQe7AHwJznRFzNSyMuEhiluSSA98QHvetceZxtpM2g+jsKMdPt7nVljbzI+aLmMeecC9RO2RmDKV0CNCP7993Sctc5WasPEMVpN2GypHNB9SpFsms7wxMSbdKf6pwlsfgkE0Ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lJ/KUmyJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1076EC4CEFB;
+	Mon, 27 Oct 2025 23:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761609439;
-	bh=hHcSm05XIBBgOwCK09Y1TkRueDxudZm+Q2Tyf5+OBPs=;
+	s=k20201202; t=1761609442;
+	bh=jXLAtIGL3t3Eeivlb10T/oIzaKMtHVUOwyi8U5Ge+jA=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=el+rZW6YqdjguTckqMm+T3D5I6sRSJ8xSvE0a+JkE+h/lOLW6oWVRVnLsS7RtSsnm
-	 pgXzeawehSw76pOhKlUKPjIQyqaw8DYGm9rv+r+3/1OytvT23lHy5GnTLPHh0nr/wV
-	 /Oz2t4eG4ujYjfVPTyHllGTs+dGVdTe90QznEkEp6TxttLKf82VjA3A7+oPmOi7qKv
-	 ASU7WmwBtdF3fQvraeecaEkD5fTaz1Xtwso6lyOcb4x+JQF31Ic2WAtQmvr7G7DjV5
-	 hnKWQIpQUmLHM8yLvJ1fLJBI76a9GoZhX39bwNlBcVnj8YOkwd15Tzp+n6c/h8InHJ
-	 d3Chi/NEyYjLA==
-Content-Type: multipart/mixed; boundary="===============5183752388224874090=="
+	b=lJ/KUmyJsclpDQQ2M+QMnXvOZZC6krQiFKX8sOxfOpoaqG4LjkXXRw347U0yA/XVL
+	 Rey0uasO7GpRSs56MfV8SO/NJ2mhK21qIXIQDLmbdzJ2+MjYXzmAD2ySoASlOgr5WZ
+	 qI6vVen1gQRkaKqCiQHBrMuinOcBpybHtrxPdFPBA5k84RpmR84/2G2c3NfktLDXQj
+	 fL5lj8pzXbT6Q5LPKIkdl4K4tCUYoR3e3CDY/Sukgi/Pg7WcUvXpgtx3WwcOAY7S9H
+	 Gl8/cAJIBIOuHsiYgiz1WYIYG0ofPZnG52T6c3hXqIEUHthM1bXhSA6SkrY2an/ZhX
+	 IoAhcgPK/opuw==
+Content-Type: multipart/mixed; boundary="===============5693088593246735983=="
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <29c2837ee641cb1cb0ce3bbdd3a597d9488c04eb838ffe19902c9461a4d282a2@mail.kernel.org>
-In-Reply-To: <20251027231727.472628-7-roman.gushchin@linux.dev>
-References: <20251027231727.472628-7-roman.gushchin@linux.dev>
-Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
+Message-Id: <2b04ce21d82f2118c291c49ace22d685bcbbd45d203b2f676556d3e5a90eebd1@mail.kernel.org>
+In-Reply-To: <20251027232206.473085-3-roman.gushchin@linux.dev>
+References: <20251027232206.473085-3-roman.gushchin@linux.dev>
+Subject: Re: [PATCH v2 13/23] mm: introduce bpf_out_of_memory() BPF kfunc
 From: bot+bpf-ci@kernel.org
 To: roman.gushchin@linux.dev,akpm@linux-foundation.org
 Cc: linux-kernel@vger.kernel.org,ast@kernel.org,surenb@google.com,mhocko@kernel.org,shakeel.butt@linux.dev,hannes@cmpxchg.org,andrii@kernel.org,inwardvessel@gmail.com,linux-mm@kvack.org,cgroups@vger.kernel.org,bpf@vger.kernel.org,martin.lau@kernel.org,song@kernel.org,memxor@gmail.com,tj@kernel.org,roman.gushchin@linux.dev,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Mon, 27 Oct 2025 23:57:17 +0000 (UTC)
+Date: Mon, 27 Oct 2025 23:57:21 +0000 (UTC)
 
---===============5183752388224874090==
+--===============5693088593246735983==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
 
 ```
-commit 16c40fd36bbe32c63f44388b5613db55c6b27557
+commit bce57b9b96e05731a14c7e10a364fdd9b733cda2
 Author: Roman Gushchin <roman.gushchin@linux.dev>
 
-mm: introduce BPF struct ops for OOM handling
+mm: introduce bpf_out_of_memory() BPF kfunc
 
-This patch introduces a BPF struct ops mechanism for custom OOM handling
-policies. It allows attaching bpf_oom_ops system-wide or per-memcg, with
-handlers executed before the kernel OOM killer.
+This patch introduces bpf_out_of_memory() BPF kfunc to allow BPF programs
+to declare OOM events and trigger the kernel OOM handling mechanism. The
+function accepts a nullable memcg pointer for system-wide or memcg-scoped
+OOMs.
 
-> diff --git a/mm/bpf_oom.c b/mm/bpf_oom.c
-> new file mode 100644
-> index 000000000..c4d09ed9d
-> --- /dev/null
-> +++ b/mm/bpf_oom.c
+> diff --git a/include/linux/oom.h b/include/linux/oom.h
+> index 721087952..3cbdcd013 100644
+> --- a/include/linux/oom.h
+> +++ b/include/linux/oom.h
+> @@ -21,6 +21,11 @@ enum oom_constraint {
+>  	CONSTRAINT_MEMCG,
+>  };
+>
+> +enum bpf_oom_flags {
+> +	BPF_OOM_FLAGS_WAIT_ON_OOM_LOCK = 1 << 0,
+> +	BPF_OOM_FLAGS_LAST = 1 << 1,
+> +};
+> +
+>  /*
+>   * Details of the page allocation that triggered the oom killer that are used to
+>   * determine what should be killed.
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 3c86cd755..d7fca4bf5 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
 
 [ ... ]
 
-> @@ -0,0 +1,272 @@
-
-[ ... ]
-
-> +static void bpf_oom_ops_unreg(void *kdata, struct bpf_link *link)
+> +/**
+> + * bpf_out_of_memory - declare Out Of Memory state and invoke OOM killer
+> + * @memcg__nullable: memcg or NULL for system-wide OOMs
+> + * @order: order of page which wasn't allocated
+> + * @flags: flags
+> + * @constraint_text__nullable: custom constraint description for the OOM report
+> + *
+> + * Declares the Out Of Memory state and invokes the OOM killer.
+> + *
+> + * OOM handlers are synchronized using the oom_lock mutex. If wait_on_oom_lock
+> + * is true, the function will wait on it. Otherwise it bails out with -EBUSY
+> + * if oom_lock is contended.
+> + *
+> + * Generally it's advised to pass wait_on_oom_lock=false for global OOMs
+> + * and wait_on_oom_lock=true for memcg-scoped OOMs.
+> + *
+> + * Returns 1 if the forward progress was achieved and some memory was freed.
+> + * Returns a negative value if an error occurred.
+> + */
+> +__bpf_kfunc int bpf_out_of_memory(struct mem_cgroup *memcg__nullable,
+> +				  int order, u64 flags)
 > +{
-> +	struct bpf_struct_ops_link *ops_link = container_of(link, struct bpf_struct_ops_link, link);
-> +	struct bpf_oom_ops **bpf_oom_ops_ptr = NULL;
-> +	struct bpf_oom_ops *bpf_oom_ops = kdata;
-> +	struct mem_cgroup *memcg = NULL;
+> +	struct oom_control oc = {
+> +		.memcg = memcg__nullable,
+> +		.order = order,
+> +	};
+
+Can bpf_out_of_memory() work correctly for system-wide OOMs with
+uninitialized gfp_mask?
+
+Looking at out_of_memory():
+
+    if (!(oc->gfp_mask & __GFP_FS) && !is_memcg_oom(oc))
+        return true;
+
+With gfp_mask=0 and memcg=NULL (system-wide OOM), this evaluates to:
+!(0 & __GFP_FS) && !false = true, causing an early return without
+invoking the OOM killer. The comment in out_of_memory() explains this
+check is about allocation context: "The OOM killer does not compensate
+for IO-less reclaim."
+
+All other callers of out_of_memory() initialize gfp_mask:
+- mm/page_alloc.c: .gfp_mask = gfp_mask
+- mm/memcontrol.c: .gfp_mask = gfp_mask
+
+For memcg OOMs, the code works because is_memcg_oom(oc) is true,
+bypassing the check. But for system-wide OOMs (NULL memcg), won't this
+cause the function to return immediately without killing any process?
+
+> +	int ret;
 > +
-> +	if (IS_ENABLED(CONFIG_MEMCG) && ops_link->cgroup_id) {
-> +		/* Detach from a memory cgroup? */
-> +		memcg = mem_cgroup_get_from_ino(ops_link->cgroup_id);
-> +		if (IS_ERR_OR_NULL(memcg))
-> +			goto exit;
-> +		bpf_oom_ops_ptr = bpf_oom_memcg_ops_ptr(memcg);
-> +	} else {
-> +		/* System-wide OOM handler */
-> +		bpf_oom_ops_ptr = &system_bpf_oom;
-> +	}
+> +	if (flags & ~(BPF_OOM_FLAGS_LAST - 1))
+> +		return -EINVAL;
 > +
-> +	/* Hide bpf_oom_ops from new callers */
-> +	if (!WARN_ON(READ_ONCE(*bpf_oom_ops_ptr) != bpf_oom_ops))
-> +		WRITE_ONCE(*bpf_oom_ops_ptr, NULL);
+> +	if (oc.order < 0 || oc.order > MAX_PAGE_ORDER)
+> +		return -EINVAL;
 > +
-> +	mem_cgroup_put(memcg);
+> +	if (flags & BPF_OOM_FLAGS_WAIT_ON_OOM_LOCK) {
+> +		ret = mutex_lock_killable(&oom_lock);
+> +		if (ret)
+> +			return ret;
+> +	} else if (!mutex_trylock(&oom_lock))
+> +		return -EBUSY;
 > +
-> +exit:
-> +	/* Release bpf_oom_ops after a srcu grace period */
-> +	synchronize_srcu(&bpf_oom_srcu);
+> +	ret = out_of_memory(&oc);
+> +
+> +	mutex_unlock(&oom_lock);
+> +	return ret;
 > +}
-> +
-> +#ifdef CONFIG_MEMCG
-> +void bpf_oom_memcg_offline(struct mem_cgroup *memcg)
-> +{
-> +	struct bpf_oom_ops *bpf_oom_ops;
-> +	struct bpf_oom_ctx exec_ctx;
-> +	u64 cgrp_id;
-> +	int idx;
-> +
-> +	/* All bpf_oom_ops structures are protected using bpf_oom_srcu */
-> +	idx = srcu_read_lock(&bpf_oom_srcu);
-> +
-> +	bpf_oom_ops = READ_ONCE(memcg->bpf_oom);
-> +	WRITE_ONCE(memcg->bpf_oom, NULL);
-
-Can bpf_oom_ops_unreg() race with bpf_oom_memcg_offline()? If userspace
-closes the BPF struct ops link FD while or after the cgroup is being
-deleted, both functions could run concurrently on the same memcg:
-
-  Thread 1 (unreg):                Thread 2 (offline):
-  mem_cgroup_get_from_ino()
-  [succeeds, cgroup exists]
-                                   srcu_read_lock()
-                                   READ_ONCE(memcg->bpf_oom) [gets ops]
-                                   WRITE_ONCE(memcg->bpf_oom, NULL)
-  READ_ONCE(*bpf_oom_ops_ptr)
-  [sees NULL]
-  WARN_ON() triggers
-
-The WARN_ON in bpf_oom_ops_unreg() assumes *bpf_oom_ops_ptr matches
-bpf_oom_ops, but bpf_oom_memcg_offline() can clear it first during
-concurrent execution.
-
-> +
-> +	if (bpf_oom_ops && bpf_oom_ops->handle_cgroup_offline) {
-> +		cgrp_id = cgroup_id(memcg->css.cgroup);
-> +		exec_ctx.cgroup_id = cgrp_id;
-> +		bpf_oom_ops->handle_cgroup_offline(&exec_ctx, cgrp_id);
-> +	}
-> +
-> +	srcu_read_unlock(&bpf_oom_srcu, idx);
-> +}
-> +#endif /* CONFIG_MEMCG */
 
 [ ... ]
 
@@ -166,8 +176,8 @@ concurrent execution.
 AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
 See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-In-Reply-To-Subject: `mm: introduce BPF struct ops for OOM handling`
+In-Reply-To-Subject: `mm: introduce bpf_out_of_memory() BPF kfunc`
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18859027430
 
---===============5183752388224874090==--
+--===============5693088593246735983==--
 
