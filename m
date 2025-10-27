@@ -1,136 +1,165 @@
-Return-Path: <cgroups+bounces-11230-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11231-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FCF7C121A6
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 00:49:52 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 616A7C12196
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 00:49:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66C17466B23
-	for <lists+cgroups@lfdr.de>; Mon, 27 Oct 2025 23:48:53 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 115CD4E1FA9
+	for <lists+cgroups@lfdr.de>; Mon, 27 Oct 2025 23:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9174F331A46;
-	Mon, 27 Oct 2025 23:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93FE53328EA;
+	Mon, 27 Oct 2025 23:48:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LdfSt+qE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gfIQEUEQ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5B28330328;
-	Mon, 27 Oct 2025 23:48:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A5FE320CCE;
+	Mon, 27 Oct 2025 23:48:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761608899; cv=none; b=jcC7JkwS1uuOR9mFGUP++jjejlGdVx19nJlOJHUVQ2d12F9bhIyQz3ryBFdpf6uyF2i0VkODiBWuQ20acJL/UY/2Fr4HPFPdxcNxKjoM3d+blzhqgrEHfIQuwhf/wtSvOEzsyIgPAiBorvJzgRJZwLg0jrSxl0eWVCYe+DI8iBc=
+	t=1761608903; cv=none; b=AJW1ERUfvOhEuAwh7F/WCuF5ITLVHb26bycj497Yv2b/TrtW3N5kpk6/dPX10WhINbni0b+aSlrgcA4DersTuCdWdPM1Mfv4MDM8Qd/Sk0XXAj6TNgux1fSk9baV9YhaFXxZpiXGJgeulf5tzTFd2AZjnVYsOT/Za3xS9HH5P2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761608899; c=relaxed/simple;
-	bh=MLA2F7QqX/OHamOWtkCHp8EpAAyPqD+AKaVfDclzErY=;
+	s=arc-20240116; t=1761608903; c=relaxed/simple;
+	bh=AnKh9TnjGx6cTQHLhdWTDeeCl/DZJcm2y5DLoUM1VdQ=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=NBk/BwqBWrTerfJtOOUd58TcAZ/JEqNPOvfZLsOdTz7TEa4X2BzQXiI7R/D8ETQYsVl+1wpJFQw8X+1Iay0kSD30y+CytmnZbERcWnyTWZlz+3aDOg33xd0IZN1sH/+rWMpAASw2XQaTOSZla+JU1VIXB8NpGF4m2AzT81dNM3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LdfSt+qE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EB21C116C6;
-	Mon, 27 Oct 2025 23:48:17 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=SOWvRn3gmmdvrODcgSvWvr2JGG8pc/tU3fWBSMyU2YoIS3oI1kTQvLbCvBLoBFrSgtzopVUjQKFzTg6WNA8Yqc+ZGonufbVjMakSUOhgvg59rCynMDivETPA4oQWTrfYw6HS+Ku/xOBwuDB0YQXNtNznflhetbeJ57kMvkvEd7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gfIQEUEQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11819C4CEF1;
+	Mon, 27 Oct 2025 23:48:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761608899;
-	bh=MLA2F7QqX/OHamOWtkCHp8EpAAyPqD+AKaVfDclzErY=;
+	s=k20201202; t=1761608902;
+	bh=AnKh9TnjGx6cTQHLhdWTDeeCl/DZJcm2y5DLoUM1VdQ=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=LdfSt+qEFuOsqzkDcGpesXghVhkT08jYCM7RP9OwYjDu8goGtG28bHymsIza1f3BE
-	 zl+bGqEumbTVhZbCz9Vm7LP0GMoDYhfhKHBm+8P3+/YSE03HJJgZ4xsYw/uLHkfd6r
-	 IGoVQDSopFluJExhyOWO4BcEufV9V/kUvn8Orm5WLj5X4y3UYRfkBY7dGA8KvOgK7l
-	 D1r5CIlh8U1OofwiyOLa1TW+FwjrHhXPqbQobUVJOd0PSigXtnlG8LdNN9mQVoCHT2
-	 Iks6j5+9GVa3GXdk6fcuLA509k+mD5Z+oFUNBfWohSiCIukWUxyCx/NRMkXHUD2JYB
-	 GLXAEufzn+/CA==
-Content-Type: multipart/mixed; boundary="===============6631180569956951959=="
+	b=gfIQEUEQEQi+CfwEFux9nzPvcCq3QrhwulrRz3IrdqsruHvUIgsPMK56xlLanv3zY
+	 peCjFOLErcM8XS1tvtrG4GU+RtTgLDu19+0Y0EByMZ7MftGEW7mYNYkwnMLwp70Cs7
+	 iLtvefYfCXDM1Edbuvmzg+SJteDVp//b3FDA6wM2dx1uowvn/OM6klNwml72HvDhIE
+	 gfWNkzOPxRryVmkpj3rmhNKPTEq6FC+ksk5gMdm7EKO19FAipFoiy5qPnpYDJRrITb
+	 A+JisPsY7cXjEB4fut3FGxq16Nb5pIj7O5+3Qtzn5nssYXobEmdl/FacvC3lNp9Kuk
+	 +uS6QYXz1VU8Q==
+Content-Type: multipart/mixed; boundary="===============4764234490748152666=="
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <9fd0fbd3d6e704d106423a333106d1296c916f288c3c3600ffde0539e8c266ec@mail.kernel.org>
-In-Reply-To: <20251027231727.472628-3-roman.gushchin@linux.dev>
-References: <20251027231727.472628-3-roman.gushchin@linux.dev>
-Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops to cgroups
+Message-Id: <2c91977fcab04be6305bf4be57e825f7e84005d16667adcdfad0585be506537c@mail.kernel.org>
+In-Reply-To: <20251027231727.472628-9-roman.gushchin@linux.dev>
+References: <20251027231727.472628-9-roman.gushchin@linux.dev>
+Subject: Re: [PATCH v2 08/23] mm: introduce BPF kfuncs to deal with memcg pointers
 From: bot+bpf-ci@kernel.org
 To: roman.gushchin@linux.dev,akpm@linux-foundation.org
 Cc: linux-kernel@vger.kernel.org,ast@kernel.org,surenb@google.com,mhocko@kernel.org,shakeel.butt@linux.dev,hannes@cmpxchg.org,andrii@kernel.org,inwardvessel@gmail.com,linux-mm@kvack.org,cgroups@vger.kernel.org,bpf@vger.kernel.org,martin.lau@kernel.org,song@kernel.org,memxor@gmail.com,tj@kernel.org,roman.gushchin@linux.dev,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Mon, 27 Oct 2025 23:48:17 +0000 (UTC)
+Date: Mon, 27 Oct 2025 23:48:21 +0000 (UTC)
 
---===============6631180569956951959==
+--===============4764234490748152666==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
 
 ```
-commit 31d238f36a0a6a56efa48c847cb776e67ba2f079
+commit ec8e2e1769704b4f69261f36e6aaf035d47c5f0f
 Author: Roman Gushchin <roman.gushchin@linux.dev>
 
-bpf: initial support for attaching struct ops to cgroups
+mm: introduce BPF kfuncs to deal with memcg pointers
 
-When a struct ops is being attached and a bpf link is created, allow to
-pass a cgroup fd using bpf attr, so that struct ops can be attached to a
-cgroup instead of globally. Attached struct ops doesn't hold a reference
-to the cgroup, only preserves cgroup id.
+This commit introduces two new BPF kfuncs for converting css pointers
+to memcg pointers with proper reference counting: bpf_get_mem_cgroup()
+and bpf_put_mem_cgroup().
 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index eae907218..7205b813e 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1849,6 +1849,7 @@ struct bpf_struct_ops_link {
->  	struct bpf_link link;
->  	struct bpf_map __rcu *map;
->  	wait_queue_head_t wait_hup;
-> +	u64 cgroup_id;
->  };
->
->  struct bpf_link_primer {
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index 45cc5ee19..58664779a 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -13,6 +13,7 @@
->  #include <linux/btf_ids.h>
->  #include <linux/rcupdate_wait.h>
->  #include <linux/poll.h>
-> +#include <linux/cgroup.h>
->
->  struct bpf_struct_ops_value {
->  	struct bpf_struct_ops_common_value common;
+> diff --git a/mm/Makefile b/mm/Makefile
+> index 051e88c69..2d8f9beb3 100644
+> --- a/mm/Makefile
+> +++ b/mm/Makefile
+> @@ -107,6 +107,7 @@ obj-$(CONFIG_MEMCG) += swap_cgroup.o
+>  endif
+>  ifdef CONFIG_BPF_SYSCALL
+>  obj-y += bpf_oom.o
+> +obj-$(CONFIG_MEMCG) += bpf_memcontrol.o
+>  endif
+>  obj-$(CONFIG_CGROUP_HUGETLB) += hugetlb_cgroup.o
+>  obj-$(CONFIG_GUP_TEST) += gup_test.o
+> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
+> new file mode 100644
+> index 000000000..1e4609774
+> --- /dev/null
+> +++ b/mm/bpf_memcontrol.c
+> @@ -0,0 +1,88 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Memory Controller-related BPF kfuncs and auxiliary code
+> + *
+> + * Author: Roman Gushchin <roman.gushchin@linux.dev>
+> + */
+> +
+> +#include <linux/memcontrol.h>
+> +#include <linux/bpf.h>
+> +
+> +__bpf_kfunc_start_defs();
+> +
+> +/**
+> + * bpf_get_mem_cgroup - Get a reference to a memory cgroup
+> + * @css: pointer to the css structure
+> + *
+> + * Returns a pointer to a mem_cgroup structure after bumping
+> + * the corresponding css's reference counter.
+> + *
+> + * It's fine to pass a css which belongs to any cgroup controller,
+> + * e.g. unified hierarchy's main css.
+> + *
+> + * Implements KF_ACQUIRE semantics.
+> + */
+> +__bpf_kfunc struct mem_cgroup *
+> +bpf_get_mem_cgroup(struct cgroup_subsys_state *css)
+> +{
+> +	struct mem_cgroup *memcg = NULL;
+> +	bool rcu_unlock = false;
+> +
+> +	if (!root_mem_cgroup)
+> +		return NULL;
+> +
+> +	if (root_mem_cgroup->css.ss != css->ss) {
+                                            ^^^^^^^
+
+Can this dereference a NULL css pointer?  The function checks css for
+NULL at line 42 with "if (css && css_tryget(css))", which suggests css
+can be NULL.  If a BPF program calls this function with a NULL css,
+wouldn't it crash here before reaching that check?
+
+> +		struct cgroup *cgroup = css->cgroup;
+> +		int ssid = root_mem_cgroup->css.ss->id;
+> +
+> +		rcu_read_lock();
+> +		rcu_unlock = true;
+> +		css = rcu_dereference_raw(cgroup->subsys[ssid]);
+> +	}
+> +
+> +	if (css && css_tryget(css))
+> +		memcg = container_of(css, struct mem_cgroup, css);
+> +
+> +	if (rcu_unlock)
+> +		rcu_read_unlock();
+> +
+> +	return memcg;
+> +}
 
 [ ... ]
 
-> @@ -1359,6 +1360,18 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
->  	}
->  	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map_lops, NULL,
->  		      attr->link_create.attach_type);
-> +#ifdef CONFIG_CGROUPS
-> +	if (attr->link_create.cgroup.relative_fd) {
-> +		struct cgroup *cgrp;
+> +__bpf_kfunc_end_defs();
 > +
-> +		cgrp = cgroup_get_from_fd(attr->link_create.cgroup.relative_fd);
-> +		if (IS_ERR(cgrp))
-> +			return PTR_ERR(cgrp);
-                        ^^^^^^^^^^^^^^^^^^^^^^
-
-Can this leak the link and map? In bpf_struct_ops_link_create(), the link
-is allocated with kzalloc(GFP_USER) and map is obtained with bpf_map_get()
-before this point. If cgroup_get_from_fd() fails, the early return skips
-the err_out label which does kfree(link) and bpf_map_put(map).
-
-All other error paths in this function use "err = <error>; goto err_out;"
-but this one returns directly.
-
+> +BTF_KFUNCS_START(bpf_memcontrol_kfuncs)
+> +BTF_ID_FLAGS(func, bpf_get_mem_cgroup, KF_ACQUIRE | KF_RET_NULL | KF_RCU)
+> +BTF_ID_FLAGS(func, bpf_put_mem_cgroup, KF_RELEASE)
 > +
-> +		link->cgroup_id = cgroup_id(cgrp);
-> +		cgroup_put(cgrp);
-> +	}
-> +#endif /* CONFIG_CGROUPS */
-> +
->  	err = bpf_link_prime(&link->link, &link_primer);
->  	if (err)
->  		goto err_out;
+> +BTF_KFUNCS_END(bpf_memcontrol_kfuncs)
+
+[ ... ]
 
 
 ```
@@ -139,8 +168,8 @@ but this one returns directly.
 AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
 See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-In-Reply-To-Subject: `bpf: initial support for attaching struct ops to cgroups`
+In-Reply-To-Subject: `mm: introduce BPF kfuncs to deal with memcg pointers`
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18859027430
 
---===============6631180569956951959==--
+--===============4764234490748152666==--
 
