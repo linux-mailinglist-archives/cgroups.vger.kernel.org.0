@@ -1,47 +1,47 @@
-Return-Path: <cgroups+bounces-11252-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11253-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3293C1512E
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 15:10:30 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20BFEC15105
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 15:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E695B5E48FF
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 14:04:21 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B5625502206
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 14:04:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C350A337B9D;
-	Tue, 28 Oct 2025 14:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1C98336ED2;
+	Tue, 28 Oct 2025 14:03:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="q4KXYujY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="maDouu5c"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71182337BB1
-	for <cgroups@vger.kernel.org>; Tue, 28 Oct 2025 14:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84A93396E0
+	for <cgroups@vger.kernel.org>; Tue, 28 Oct 2025 14:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761660180; cv=none; b=I9UL79m1h0armUlGmoQA8baZHaXuoekARCtmPf9sP6DbNa1PlTHHA27fAgda5XhECtHfwUWF+GL90wGlvdLX6jlml+fHCesGmoH6QyMFob+0w4muB4GEmjySy4lgf2vKzsyFyl+/IcYO/tLm9LLp6NRdH8C/53341qvFo3Vvu5g=
+	t=1761660191; cv=none; b=mLNb7rgy9lUib6tZFQEPnWE4PDgzeo4K8YM7EHyQKj56Oh2EKFCu4HqrNtAIdeR/0eHsSM0cXolKahRwUnCFm57C9Bq3wIj6x5gMQem3J0mIpCwVp0u0U5n3ZTR1kvWLKu+CMC0iGqo302dmZa2hv202V482vOsZ6+LbQdvIVKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761660180; c=relaxed/simple;
-	bh=4zZme6vj/fv/F0aMJBOYAzVbwej+e7U6DodAB6yUuBM=;
+	s=arc-20240116; t=1761660191; c=relaxed/simple;
+	bh=d3HGIX+5xqQ3gJbNPVc+GczUi6vw7BKVy2gymVINVFw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bMcnd5Uz2NyUuHLQ/9ukPUpTURNx1xmLcJo5XSo3mWefENNXwefPQQQ/WQaFqDYVCSHqiWrtNQhq7vYsTlK0uVQtOz3EpSE4hC0drk8b1m3pks2OXCYRudfAV9HvBRw1+isnJXw0pUZbfa4PVJd8b6JEW3+7R3MSzt7HP24Q04M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=q4KXYujY; arc=none smtp.client-ip=91.218.175.179
+	 MIME-Version; b=ezP+XVD+yUo/Nn8mHs61cZF3iYKSDCcal4qH2dNkJqX6ldwDRJ8ClRXY6+VWTVoI/FcQlY0DKkEC2z8COPAQV0ueFqNf3AhKrFjfgaolrW789R3hB+2oMFRyqKk/VRVBmb06hYSZSKc2kFdds8dGDHs5+CnouOYMNl97Z1p5yuo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=maDouu5c; arc=none smtp.client-ip=91.218.175.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761660176;
+	t=1761660182;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KwZ644xbYvlNcagDZjQ0mKRDmPXR0vZ+/IMJ8ruGmik=;
-	b=q4KXYujYUCNGMd6/2GfYLrwuY6WKfDyyGjAFmIfFVpIINUQT+TYRszwkW0sd/3PfetejZz
-	qFDU7mIuGhZ3R8LP+L8tH0OPOfJMdxCIBW7lZeAT7MGVMa+sgKyH9un9PUQmNiCyyFDaba
-	dJb66qMsLrpMqVBKRqibHSucfgUHoak=
+	bh=ul0akWBgQO9d8PYcmieApSptZ1K1m0W1WjLnOQW3EIU=;
+	b=maDouu5ce544NaChXO2olwlSoJjFWIOouCmnASfkFN706sflQURVJ7rfqaMcU+KKGFzR1j
+	b7Gq5siNpsBiC9GDc6Px2VT6uFOE0GtMoXgS/KvQOSx48h4q9XxMHVQ0aMWon1S84m/pky
+	13xFZW1Z9O3abQIUUWzA2GfMn4SyxBM=
 From: Qi Zheng <qi.zheng@linux.dev>
 To: hannes@cmpxchg.org,
 	hughd@google.com,
@@ -64,9 +64,9 @@ Cc: linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	Muchun Song <songmuchun@bytedance.com>,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v1 07/26] mm: memcontrol: prevent memory cgroup release in get_mem_cgroup_from_folio()
-Date: Tue, 28 Oct 2025 21:58:20 +0800
-Message-ID: <9eca65dec044d4352bee84511fb58960a1402ddf.1761658310.git.zhengqi.arch@bytedance.com>
+Subject: [PATCH v1 08/26] buffer: prevent memory cgroup release in folio_alloc_buffers()
+Date: Tue, 28 Oct 2025 21:58:21 +0800
+Message-ID: <f62ef59c751a710b0e1adff07876c02942664a7b.1761658310.git.zhengqi.arch@bytedance.com>
 In-Reply-To: <cover.1761658310.git.zhengqi.arch@bytedance.com>
 References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
@@ -85,45 +85,39 @@ memory cgroup. To ensure safety, it will only be appropriate to
 hold the rcu read lock or acquire a reference to the memory cgroup
 returned by folio_memcg(), thereby preventing it from being released.
 
-In the current patch, the rcu read lock is employed to safeguard
-against the release of the memory cgroup in get_mem_cgroup_from_folio().
-
+In the current patch, the function get_mem_cgroup_from_folio() is
+employed to safeguard against the release of the memory cgroup.
 This serves as a preparatory measure for the reparenting of the
 LRU pages.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- mm/memcontrol.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ fs/buffer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d484b632c790f..1da3ad77054d3 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -973,14 +973,19 @@ struct mem_cgroup *get_mem_cgroup_from_current(void)
-  */
- struct mem_cgroup *get_mem_cgroup_from_folio(struct folio *folio)
- {
--	struct mem_cgroup *memcg = folio_memcg(folio);
-+	struct mem_cgroup *memcg;
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 6a8752f7bbedb..bc93d0b1d0c30 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -925,8 +925,7 @@ struct buffer_head *folio_alloc_buffers(struct folio *folio, unsigned long size,
+ 	long offset;
+ 	struct mem_cgroup *memcg, *old_memcg;
  
- 	if (mem_cgroup_disabled())
- 		return NULL;
+-	/* The folio lock pins the memcg */
+-	memcg = folio_memcg(folio);
++	memcg = get_mem_cgroup_from_folio(folio);
+ 	old_memcg = set_active_memcg(memcg);
  
-+	if (!folio_memcg_charged(folio))
-+		return root_mem_cgroup;
-+
- 	rcu_read_lock();
--	if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
--		memcg = root_mem_cgroup;
-+retry:
-+	memcg = folio_memcg(folio);
-+	if (unlikely(!css_tryget(&memcg->css)))
-+		goto retry;
- 	rcu_read_unlock();
- 	return memcg;
- }
+ 	head = NULL;
+@@ -947,6 +946,7 @@ struct buffer_head *folio_alloc_buffers(struct folio *folio, unsigned long size,
+ 	}
+ out:
+ 	set_active_memcg(old_memcg);
++	mem_cgroup_put(memcg);
+ 	return head;
+ /*
+  * In case anything failed, we just free everything we got.
 -- 
 2.20.1
 
