@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-11284-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11285-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BC66C15F18
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 17:51:24 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8BADC160BD
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 18:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C6843AA98B
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 16:43:52 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 998214EA693
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 17:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA66033F8AA;
-	Tue, 28 Oct 2025 16:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8B8F348898;
+	Tue, 28 Oct 2025 17:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="C9XyJNAQ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iGxR66ac"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B7427F171
-	for <cgroups@vger.kernel.org>; Tue, 28 Oct 2025 16:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894CD348460
+	for <cgroups@vger.kernel.org>; Tue, 28 Oct 2025 17:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761669828; cv=none; b=GMReX19I2eMIog7OthONIULqWnZjlL4BvAfksCsmssME0b+TKNQVPL4ReVUhL/JufeRe8G30dcaIdsWjza4hH4KQ4NTHYdcCCOe+L0xMxp8TLWU3pmNECCxfPpD4QVDet2B8ZfsxqawxHuxAvLthkFlK8sqnhWyXQLSfhsaf0IE=
+	t=1761671240; cv=none; b=c6SKkiUOjhmKeHFbZCq8r74RPUtVm3i/6bVwcfxvPN1tEHLl203qNSYF7zW/iWB94lN7cOHONvOjvsSkXNvCN2+gKAs38R5TNv42zOAbwCAVcRjVANrI+9pgscyBpOqio8VSQisa6l33D2xoAsVSJpGJO6+EQFExrXrvsobsXrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761669828; c=relaxed/simple;
-	bh=nf40Jfi8RubCITdyh8WZ7pq2NikxPd5ZwWauOZT+p2A=;
+	s=arc-20240116; t=1761671240; c=relaxed/simple;
+	bh=3LKMsmv0SwwVJPfJr0Fzwyrb1geTmwxPKDxfrNjRMBM=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Ie+xUqu2DwJPxJmxy6lSYQOEjDyn9WvrHWfeLySM3ueodfepY6MAtQHjvP8s0GUspzfP68spYBCH2eCi6q0qptwjpaxAxAuo7KPWwk6OYvVh0oIS+Sr+qoN9Cwudrcj0uJuTysCEyqUbWIZDPFQ5cG175KFmpU6AzhlLY2UOJ9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=C9XyJNAQ; arc=none smtp.client-ip=91.218.175.177
+	 MIME-Version:Content-Type; b=H7d0GwdPH6CRUF5amfPcnMo/2zu0C8cg6D+FbAde2vgmL5mNv6OyCX45NZd7RS2BYQlYnpQwyQXj8twWdGAl10RyhqYPHDqvGoVAgu4ZOFj3zcOPDvoWeWdXtiHpbUfR5YUe2SEZ13LMfU34ezbN2dlJI117yePzp+k8pIAbdCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iGxR66ac; arc=none smtp.client-ip=91.218.175.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761669824;
+	t=1761671234;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kSNkRhOJhrPtd4Js2oBI0wr+MEc/sKamTAOCSggnfZY=;
-	b=C9XyJNAQbLdaKmF6tYaMQJgBraElANn8UZADDHK2VL+pgdD76IApnxrZRyQYAaT6rFTarg
-	tYoLJbg0VWb22xMZArp0wH2Ft+STPLO0i2hYX2TtGMWEJM/N10vBHM5tQfD5nGj0ItMa51
-	otG8PaOIqzlX0JNrVvhEtQ7NWlSELLQ=
+	bh=mSDMZEnhQraFtTVM8HTNniThlkRiXJWMYrj8+oAXJIw=;
+	b=iGxR66acQyngyL2qi4BOBXGsUCyP+daS9iWon0hZ5r54kQTcFpt1nd7l8KG7fvUyvbTnrF
+	6CAST3vIF1ZJw/DoUvX3lIWScgV8oH3hAUfGma8ixVXV42n02K8zOB71ozkNkyG51Z8DOE
+	XN6ucICOhHoRAiQoqsOffgPkp3aWf/M=
 From: Roman Gushchin <roman.gushchin@linux.dev>
 To: bot+bpf-ci@kernel.org
 Cc: akpm@linux-foundation.org,  linux-kernel@vger.kernel.org,
@@ -50,13 +50,14 @@ Cc: akpm@linux-foundation.org,  linux-kernel@vger.kernel.org,
  bpf@vger.kernel.org, martin.lau@kernel.org, song@kernel.org,
  memxor@gmail.com, tj@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
  yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCH v2 13/23] mm: introduce bpf_out_of_memory() BPF kfunc
-In-Reply-To: <2b04ce21d82f2118c291c49ace22d685bcbbd45d203b2f676556d3e5a90eebd1@mail.kernel.org>
-	(bot's message of "Mon, 27 Oct 2025 23:57:21 +0000 (UTC)")
-References: <20251027232206.473085-3-roman.gushchin@linux.dev>
-	<2b04ce21d82f2118c291c49ace22d685bcbbd45d203b2f676556d3e5a90eebd1@mail.kernel.org>
-Date: Tue, 28 Oct 2025 09:43:36 -0700
-Message-ID: <87cy673rk7.fsf@linux.dev>
+Subject: Re: [PATCH v2 16/23] libbpf: introduce
+ bpf_map__attach_struct_ops_opts()
+In-Reply-To: <5e97ecea6574f100385cb21507076c6efb2667eb9def24f322306be038e98165@mail.kernel.org>
+	(bot's message of "Mon, 27 Oct 2025 23:48:10 +0000 (UTC)")
+References: <20251027232206.473085-6-roman.gushchin@linux.dev>
+	<5e97ecea6574f100385cb21507076c6efb2667eb9def24f322306be038e98165@mail.kernel.org>
+Date: Tue, 28 Oct 2025 10:07:04 -0700
+Message-ID: <87o6pruf9j.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -69,91 +70,74 @@ X-Migadu-Flow: FLOW_OUT
 bot+bpf-ci@kernel.org writes:
 
 > ```
-> commit bce57b9b96e05731a14c7e10a364fdd9b733cda2
+> commit b58d54ed56054e3a550e02c324982feb20a2671e
 > Author: Roman Gushchin <roman.gushchin@linux.dev>
 >
-> mm: introduce bpf_out_of_memory() BPF kfunc
+> libbpf: introduce bpf_map__attach_struct_ops_opts()
 >
-> This patch introduces bpf_out_of_memory() BPF kfunc to allow BPF programs
-> to declare OOM events and trigger the kernel OOM handling mechanism. The
-> function accepts a nullable memcg pointer for system-wide or memcg-scoped
-> OOMs.
+> This commit introduces a new API function that extends the existing
+> bpf_map__attach_struct_ops() to accept additional options, specifically
+> allowing attachment of struct_ops maps to cgroups via a relative_fd.
 >
->> diff --git a/include/linux/oom.h b/include/linux/oom.h
->> index 721087952..3cbdcd013 100644
->> --- a/include/linux/oom.h
->> +++ b/include/linux/oom.h
->> @@ -21,6 +21,11 @@ enum oom_constraint {
->>  	CONSTRAINT_MEMCG,
->>  };
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index b90574f39..be56a5dee 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -13196,12 +13196,19 @@ static int bpf_link__detach_struct_ops(struct bpf_link *link)
+>>  	return close(link->fd);
+>>  }
 >>
->> +enum bpf_oom_flags {
->> +	BPF_OOM_FLAGS_WAIT_ON_OOM_LOCK = 1 << 0,
->> +	BPF_OOM_FLAGS_LAST = 1 << 1,
->> +};
+>> -struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>> +struct bpf_link *bpf_map__attach_struct_ops_opts(const struct bpf_map *map,
+>> +						 const struct bpf_struct_ops_opts *opts)
+>>  {
+>> +	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, link_opts);
+>>  	struct bpf_link_struct_ops *link;
+>>  	__u32 zero = 0;
+>>  	int err, fd;
+>>
+>> +	if (!OPTS_VALID(opts, bpf_struct_ops_opts)) {
+>> +		pr_warn("map '%s': invalid opts\n", map->name);
+>> +		return libbpf_err_ptr(-EINVAL);
+>> +	}
 >> +
->>  /*
->>   * Details of the page allocation that triggered the oom killer that are used to
->>   * determine what should be killed.
->> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
->> index 3c86cd755..d7fca4bf5 100644
->> --- a/mm/oom_kill.c
->> +++ b/mm/oom_kill.c
+>>  	if (!bpf_map__is_struct_ops(map)) {
+>>  		pr_warn("map '%s': can't attach non-struct_ops map\n", map->name);
+>>  		return libbpf_err_ptr(-EINVAL);
 >
 > [ ... ]
 >
->> +/**
->> + * bpf_out_of_memory - declare Out Of Memory state and invoke OOM killer
->> + * @memcg__nullable: memcg or NULL for system-wide OOMs
->> + * @order: order of page which wasn't allocated
->> + * @flags: flags
->> + * @constraint_text__nullable: custom constraint description for the OOM report
->> + *
->> + * Declares the Out Of Memory state and invokes the OOM killer.
->> + *
->> + * OOM handlers are synchronized using the oom_lock mutex. If wait_on_oom_lock
->> + * is true, the function will wait on it. Otherwise it bails out with -EBUSY
->> + * if oom_lock is contended.
->> + *
->> + * Generally it's advised to pass wait_on_oom_lock=false for global OOMs
->> + * and wait_on_oom_lock=true for memcg-scoped OOMs.
->> + *
->> + * Returns 1 if the forward progress was achieved and some memory was freed.
->> + * Returns a negative value if an error occurred.
->> + */
->> +__bpf_kfunc int bpf_out_of_memory(struct mem_cgroup *memcg__nullable,
->> +				  int order, u64 flags)
->> +{
->> +	struct oom_control oc = {
->> +		.memcg = memcg__nullable,
->> +		.order = order,
->> +	};
+>>  	link = calloc(1, sizeof(*link));
+>>  	if (!link)
+>>  		return libbpf_err_ptr(-EINVAL);
 >
-> Can bpf_out_of_memory() work correctly for system-wide OOMs with
-> uninitialized gfp_mask?
->
-> Looking at out_of_memory():
->
->     if (!(oc->gfp_mask & __GFP_FS) && !is_memcg_oom(oc))
->         return true;
->
-> With gfp_mask=0 and memcg=NULL (system-wide OOM), this evaluates to:
-> !(0 & __GFP_FS) && !false = true, causing an early return without
-> invoking the OOM killer. The comment in out_of_memory() explains this
-> check is about allocation context: "The OOM killer does not compensate
-> for IO-less reclaim."
->
-> All other callers of out_of_memory() initialize gfp_mask:
-> - mm/page_alloc.c: .gfp_mask = gfp_mask
-> - mm/memcontrol.c: .gfp_mask = gfp_mask
->
-> For memcg OOMs, the code works because is_memcg_oom(oc) is true,
-> bypassing the check. But for system-wide OOMs (NULL memcg), won't this
-> cause the function to return immediately without killing any process?
+> Should this return -ENOMEM instead of -EINVAL? All other calloc failures
+> in libbpf.c return -ENOMEM (see lines 11006, 11802, 12288, 12746, 12829,
+> 12891, 13089, 13129 in the same file).
 
-This is a good catch! It must be .gfp_mask = GFP_KERNEL.
+This code was introduced by e9fc3ce99b34 ("libbpf: Streamline error
+reporting for high-level APIs"), so it's new. I agree that ENOMEM is
+correct, however it might be too late to fix. I'll let libbpf
+maintainers to decide.
 
-Fixed.
+>
+> [ ... ]
+>
+>> -	fd = bpf_link_create(map->fd, 0, BPF_STRUCT_OPS, NULL);
+>> +	link_opts.cgroup.relative_fd = OPTS_GET(opts, relative_fd, 0);
+>> +
+>> +	fd = bpf_link_create(map->fd, 0, BPF_STRUCT_OPS, &link_opts);
+>
+> Is the expected_revision field being propagated correctly? The new
+> bpf_struct_ops_opts structure includes an expected_revision field
+> (see libbpf.h), and bpf_link_create() with BPF_STRUCT_OPS reads
+> opts->cgroup.expected_revision (see bpf.c line 889), but this code only
+> sets relative_fd in link_opts. Should it also include:
+>
+>     link_opts.cgroup.expected_revision = OPTS_GET(opts,
+>     expected_revision, 0);
+
+Correct, fixed.
 
 Thanks!
 
