@@ -1,183 +1,107 @@
-Return-Path: <cgroups+bounces-11236-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11237-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42BE1C121CF
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 00:57:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 957EBC12C3D
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 04:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E38D44666E6
-	for <lists+cgroups@lfdr.de>; Mon, 27 Oct 2025 23:57:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0FAE1887DA2
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 03:31:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956B632F74B;
-	Mon, 27 Oct 2025 23:57:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75ABB38DD8;
+	Tue, 28 Oct 2025 03:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lJ/KUmyJ"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mr0pPjTK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1BE2E7F29;
-	Mon, 27 Oct 2025 23:57:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1CB719E968
+	for <cgroups@vger.kernel.org>; Tue, 28 Oct 2025 03:31:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761609443; cv=none; b=TT/3IGYfA5aMC2J0wRfzbHEmv+XFLKMlzPoCd7hfwJC2CiwvWnQvJbkwvK58RFoJLoZ9Y/SbrBb+zrQxqzimvBcS9nIn0u7us1a9jefyPHatKUW/XBc9C9GnpZd61VZTT36Y7dJLUiT/P1jTnjXY2W0rlylXVn4H0SPCmo0Dv5A=
+	t=1761622283; cv=none; b=fJNVxMl6uPUUtXi5o+h/X2B1eS6QmBs4Yf50tSFGB7Nb9cabGxhWi9ocohOGam/KMjjsbfiGYbqZvk+wSebEt1jAg6a3I8ZAGgMENJQr2rFxeBxf3hpkFFAuOXaB4vyCBJY5McWLXMoo3y8GOCQkIth4HV0SHVwNR3clTnQFMvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761609443; c=relaxed/simple;
-	bh=jXLAtIGL3t3Eeivlb10T/oIzaKMtHVUOwyi8U5Ge+jA=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=ntO0xGY0f2rDTgJzWMvsZeHfa4BVadM/WoXT9dQe7AHwJznRFzNSyMuEhiluSSA98QHvetceZxtpM2g+jsKMdPt7nVljbzI+aLmMeecC9RO2RmDKV0CNCP7993Sctc5WasPEMVpN2GypHNB9SpFsms7wxMSbdKf6pwlsfgkE0Ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lJ/KUmyJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1076EC4CEFB;
-	Mon, 27 Oct 2025 23:57:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761609442;
-	bh=jXLAtIGL3t3Eeivlb10T/oIzaKMtHVUOwyi8U5Ge+jA=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=lJ/KUmyJsclpDQQ2M+QMnXvOZZC6krQiFKX8sOxfOpoaqG4LjkXXRw347U0yA/XVL
-	 Rey0uasO7GpRSs56MfV8SO/NJ2mhK21qIXIQDLmbdzJ2+MjYXzmAD2ySoASlOgr5WZ
-	 qI6vVen1gQRkaKqCiQHBrMuinOcBpybHtrxPdFPBA5k84RpmR84/2G2c3NfktLDXQj
-	 fL5lj8pzXbT6Q5LPKIkdl4K4tCUYoR3e3CDY/Sukgi/Pg7WcUvXpgtx3WwcOAY7S9H
-	 Gl8/cAJIBIOuHsiYgiz1WYIYG0ofPZnG52T6c3hXqIEUHthM1bXhSA6SkrY2an/ZhX
-	 IoAhcgPK/opuw==
-Content-Type: multipart/mixed; boundary="===============5693088593246735983=="
+	s=arc-20240116; t=1761622283; c=relaxed/simple;
+	bh=/WJvY11yZe5DNuh0SmLl84KhyrfL2n7Y6FVCkvFsiMg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Njll4cR5Ue49qXwGWEx2qL1Y//HJx3kEqjjn19hi/Y3ChNMdsy8ULIP/RbEo6Th1iA1kRiOOuJIfpYo7pqoyqG2dZpH+23bG0kq8JbWufIXgVywztJXO2+JiYwlFWhKPvd+BDt7vGB3mLipKdNPW2m8iGisEedLI7xkt34zOfeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=mr0pPjTK; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-292fd52d527so55057815ad.2
+        for <cgroups@vger.kernel.org>; Mon, 27 Oct 2025 20:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1761622281; x=1762227081; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/WJvY11yZe5DNuh0SmLl84KhyrfL2n7Y6FVCkvFsiMg=;
+        b=mr0pPjTKpqmKglIs4NbjktC22qUtAQDnv5F7niBoXR9XL6cq0j8BGWDf1xYaQ4GzNp
+         ZqMtTTTmHGkW8/iZTQR2hgm67vDtkBS9v//LIu7KXOPI1zV+hB8mEHSdopPUyvAcVWZo
+         M/lxNmOSp4JvdjK/7ouP+R64DZCKANW/dXJI8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761622281; x=1762227081;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/WJvY11yZe5DNuh0SmLl84KhyrfL2n7Y6FVCkvFsiMg=;
+        b=ofUarTBx7+2a+0zy/EPvXVZsj2yKZl3DkCZ8mwYoNZpyPWECbdcPy8GKUEKI1zWkwL
+         CCt3gu9bGlxWGBkOYqvNokx7GZ0mreSLmZekrvI+EA6ZqI8AqcdoAxao9JG04meHuHSK
+         p+LHmFz5C3+6nKVBF/kpHZhUDGXnE/5LMg/b4UeIenEymP7yAZE0s2UOSm5E81vgfjwb
+         Wv/s9vsKP2jhmVoDhSQchM7yJ7Ol4OQOw2cqc2d9RqxJO94uAhPrzlCQOUt47OAYyfiq
+         KzRjMV99sZwCd7YXpalpswpjzZh8XO1hP8bsumZgQOCgnCYMC80o7FepdtYmirQT0cXS
+         S0Sw==
+X-Forwarded-Encrypted: i=1; AJvYcCUHZ03K6kLshWWcO8GHWsKg2aJFY3R1zuVPZAfY7PTa7P19XinxAdiV3BbYuGr+5USb13SowFFL@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBwwKP0vypat5XLYT9njV9Z4vWRmRa7YeOc6xGJEHRRSa7T8mr
+	Ap9FGWk4xo+n85IcPmQhA+DIV0fqblb/0qwy5XIix2Z7oZ8qvodP9wubbTiZaVr7Kw==
+X-Gm-Gg: ASbGncureHdtGSc9nXODUmQxjhcqcmucAXTvOoPKTgGVPNPsMqaTdxQ9OfHSoFNdCsS
+	wuKNjFzWPeS/+f3rey2Sl3MNApNjRSHobEqGd4Eww0q4ZSNMMwYk+Fh0S4Y3XeMnyiFWZ7wuTV+
+	bd0PVIczgdXP9ERToSmtOukaaXIO2VUUzHEZ8MWri3E5wqGtJzXkoguIbJnkpiw/UzauV1Y14ak
+	5qkZvJRXLHDGY2HQH/KBbhL3C9+rjys2vIF1Uh8G0/CHx9EBxyHwLmJ42eCt0pBqfSND2WpQoqO
+	N38JZCtKSfLE+un9yNtDVa2sEPJQCaP030MW9Gk6YxNea+1iWfJz+JoqClOtz8zLhFoaJNG4UML
+	T2lD9NGdzee81ON2BaFq5DQHbxW9bFPxI575MAcVcVdzKg8cHsz9fvpRalpje/lViSPXFwTj9QV
+	DbIyE7
+X-Google-Smtp-Source: AGHT+IG4vfR0LE0WG8LCYJmEN31gkl7hCsYmhmgxpsNHn1XBOsYb/cbkA/Iv5cZPqQ3IQLRXV2PyoQ==
+X-Received: by 2002:a17:902:dacd:b0:290:af0e:1183 with SMTP id d9443c01a7336-294cb6746c8mr22090685ad.51.1761622280960;
+        Mon, 27 Oct 2025 20:31:20 -0700 (PDT)
+Received: from google.com ([2401:fa00:8f:203:2c65:61c5:8aa8:4b47])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29498cf4a53sm100342125ad.6.2025.10.27.20.31.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Oct 2025 20:31:20 -0700 (PDT)
+Date: Tue, 28 Oct 2025 12:31:12 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: jinji zhong <jinji.z.zhong@gmail.com>, minchan@kernel.org, 
+	senozhatsky@chromium.org, philipp.reisner@linbit.com, lars.ellenberg@linbit.com, 
+	christoph.boehmwalder@linbit.com, corbet@lwn.net, tj@kernel.org, hannes@cmpxchg.org, 
+	mkoutny@suse.com, axboe@kernel.dk, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, akpm@linux-foundation.org, terrelln@fb.com, dsterba@suse.com, 
+	muchun.song@linux.dev, linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com, 
+	linux-doc@vger.kernel.org, cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-mm@kvack.org, zhongjinji@honor.com, liulu.liu@honor.com, feng.han@honor.com, 
+	YoungJun Park <youngjun.park@lge.com>
+Subject: Re: [RFC PATCH 0/3] Introduce per-cgroup compression priority
+Message-ID: <4tqwviq3dmz2536eahhxxw6nj24tbg5am57yybgmmwcf4vtwdn@s7f4n2yfszbe>
+References: <cover.1761439133.git.jinji.z.zhong@gmail.com>
+ <CAKEwX=MqsyWki+DfzePb3SwXWTZ_2tcDV-ONBQu62=otnBXCiQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <2b04ce21d82f2118c291c49ace22d685bcbbd45d203b2f676556d3e5a90eebd1@mail.kernel.org>
-In-Reply-To: <20251027232206.473085-3-roman.gushchin@linux.dev>
-References: <20251027232206.473085-3-roman.gushchin@linux.dev>
-Subject: Re: [PATCH v2 13/23] mm: introduce bpf_out_of_memory() BPF kfunc
-From: bot+bpf-ci@kernel.org
-To: roman.gushchin@linux.dev,akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org,ast@kernel.org,surenb@google.com,mhocko@kernel.org,shakeel.butt@linux.dev,hannes@cmpxchg.org,andrii@kernel.org,inwardvessel@gmail.com,linux-mm@kvack.org,cgroups@vger.kernel.org,bpf@vger.kernel.org,martin.lau@kernel.org,song@kernel.org,memxor@gmail.com,tj@kernel.org,roman.gushchin@linux.dev,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Mon, 27 Oct 2025 23:57:21 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKEwX=MqsyWki+DfzePb3SwXWTZ_2tcDV-ONBQu62=otnBXCiQ@mail.gmail.com>
 
---===============5693088593246735983==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On (25/10/27 15:46), Nhat Pham wrote:
+> Another alternative is to make this zram-internal, i.e add knobs to
+> zram sysfs, or extend the recomp parameter. I'll defer to zram
+> maintainers and users to comment on this :)
 
-
-```
-commit bce57b9b96e05731a14c7e10a364fdd9b733cda2
-Author: Roman Gushchin <roman.gushchin@linux.dev>
-
-mm: introduce bpf_out_of_memory() BPF kfunc
-
-This patch introduces bpf_out_of_memory() BPF kfunc to allow BPF programs
-to declare OOM events and trigger the kernel OOM handling mechanism. The
-function accepts a nullable memcg pointer for system-wide or memcg-scoped
-OOMs.
-
-> diff --git a/include/linux/oom.h b/include/linux/oom.h
-> index 721087952..3cbdcd013 100644
-> --- a/include/linux/oom.h
-> +++ b/include/linux/oom.h
-> @@ -21,6 +21,11 @@ enum oom_constraint {
->  	CONSTRAINT_MEMCG,
->  };
->
-> +enum bpf_oom_flags {
-> +	BPF_OOM_FLAGS_WAIT_ON_OOM_LOCK = 1 << 0,
-> +	BPF_OOM_FLAGS_LAST = 1 << 1,
-> +};
-> +
->  /*
->   * Details of the page allocation that triggered the oom killer that are used to
->   * determine what should be killed.
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 3c86cd755..d7fca4bf5 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-
-[ ... ]
-
-> +/**
-> + * bpf_out_of_memory - declare Out Of Memory state and invoke OOM killer
-> + * @memcg__nullable: memcg or NULL for system-wide OOMs
-> + * @order: order of page which wasn't allocated
-> + * @flags: flags
-> + * @constraint_text__nullable: custom constraint description for the OOM report
-> + *
-> + * Declares the Out Of Memory state and invokes the OOM killer.
-> + *
-> + * OOM handlers are synchronized using the oom_lock mutex. If wait_on_oom_lock
-> + * is true, the function will wait on it. Otherwise it bails out with -EBUSY
-> + * if oom_lock is contended.
-> + *
-> + * Generally it's advised to pass wait_on_oom_lock=false for global OOMs
-> + * and wait_on_oom_lock=true for memcg-scoped OOMs.
-> + *
-> + * Returns 1 if the forward progress was achieved and some memory was freed.
-> + * Returns a negative value if an error occurred.
-> + */
-> +__bpf_kfunc int bpf_out_of_memory(struct mem_cgroup *memcg__nullable,
-> +				  int order, u64 flags)
-> +{
-> +	struct oom_control oc = {
-> +		.memcg = memcg__nullable,
-> +		.order = order,
-> +	};
-
-Can bpf_out_of_memory() work correctly for system-wide OOMs with
-uninitialized gfp_mask?
-
-Looking at out_of_memory():
-
-    if (!(oc->gfp_mask & __GFP_FS) && !is_memcg_oom(oc))
-        return true;
-
-With gfp_mask=0 and memcg=NULL (system-wide OOM), this evaluates to:
-!(0 & __GFP_FS) && !false = true, causing an early return without
-invoking the OOM killer. The comment in out_of_memory() explains this
-check is about allocation context: "The OOM killer does not compensate
-for IO-less reclaim."
-
-All other callers of out_of_memory() initialize gfp_mask:
-- mm/page_alloc.c: .gfp_mask = gfp_mask
-- mm/memcontrol.c: .gfp_mask = gfp_mask
-
-For memcg OOMs, the code works because is_memcg_oom(oc) is true,
-bypassing the check. But for system-wide OOMs (NULL memcg), won't this
-cause the function to return immediately without killing any process?
-
-> +	int ret;
-> +
-> +	if (flags & ~(BPF_OOM_FLAGS_LAST - 1))
-> +		return -EINVAL;
-> +
-> +	if (oc.order < 0 || oc.order > MAX_PAGE_ORDER)
-> +		return -EINVAL;
-> +
-> +	if (flags & BPF_OOM_FLAGS_WAIT_ON_OOM_LOCK) {
-> +		ret = mutex_lock_killable(&oom_lock);
-> +		if (ret)
-> +			return ret;
-> +	} else if (!mutex_trylock(&oom_lock))
-> +		return -EBUSY;
-> +
-> +	ret = out_of_memory(&oc);
-> +
-> +	mutex_unlock(&oom_lock);
-> +	return ret;
-> +}
-
-[ ... ]
-
-
-```
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-In-Reply-To-Subject: `mm: introduce bpf_out_of_memory() BPF kfunc`
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/18859027430
-
---===============5693088593246735983==--
+I think this cannot be purely zram-internal, we'd need some "hint"
+from upper layers which process/cgroup each particular page belongs
+to and what's its priority.
 
