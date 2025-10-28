@@ -1,138 +1,152 @@
-Return-Path: <cgroups+bounces-11243-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11244-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FECFC14C22
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 14:06:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B0B7C14E10
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 14:34:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 47AAE4E81E1
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 13:06:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2464C1A656FB
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 13:34:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3FC9330B14;
-	Tue, 28 Oct 2025 13:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA7A337114;
+	Tue, 28 Oct 2025 13:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WGi+3WJ9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qmEwP7kC"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8E433031E;
-	Tue, 28 Oct 2025 13:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2460B335063;
+	Tue, 28 Oct 2025 13:33:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761656807; cv=none; b=Kvj2U1ZkSYLiTIBeD86g0obFOIzNnKE3V+HAtzoqT7aLWbrW7QgKXFK9fTJKzkU2KiFZYPl6YlFMheXS8EpO5xXR3xueI6ieWwt8Q7D6Sau8kCZd2ic7clNsoJXsDrbC9N/bg9sgmnQGRU45OGdvTJNWvVME3gtasrkoGUgsr8o=
+	t=1761658391; cv=none; b=ZkV7gpEPfR9pH/ktFfXtcN9rsAzmO9BjzrYaj6WmTZqewe9EwVwid+7g6Z5OI/Hme6ZiaiaMVqWQLEHEeXPBlI3uuyc2QuzRtMMGSvjhsa7LRyf4kIy4B8MOcVjhtSbpMkN/jPNHQwjrNsC4e40FobMZ0NJVzGmlM9vu8/mOFag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761656807; c=relaxed/simple;
-	bh=7vB9WSLdaId0S4kzNtTPDpMUfT1DBxQg+ULFJ8/2J1A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IoR093AUyi91/vSl1ysRDtiuZso6TLy6I0s3W7pi9g2eaOBCN1PVJ8nS6NL6ndx6F7TnHKybPN1jba/YOem7T2sdNba2tq6DBVMeqG/osEHN1z4jQH6cvfAdUD+FpLBThMAsAStDc/k/pzwC6V4e7R5FqgF43CPJDvqUqeUJtAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WGi+3WJ9; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59S47CRS014181;
-	Tue, 28 Oct 2025 13:06:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=96JQNh
-	KOUBLMAp+sGP4AUbbzpGWvaanYUgX6geyOwcY=; b=WGi+3WJ9h3oOk6GmUladXN
-	wT3MctSZDpOkSGAtOupKO2qPxu7wt7zEKo4uyneSdiCiKUsbeYPVqbsoFLCXm0FI
-	h0KUaH2JReq0xqZlTLlM/kBxXK5GHydUMrcDrQu4LIGaAYZwyi9C1st0GNuH8zYc
-	3mQ6J5SYurC/6hh2zbhhNNG/heUr8hh1QPTQx7gVF8B7bQcP+DvoZSZghf0ZR0H7
-	IyQ+ZgZVfITXsAog94+YdmDosfXw7MEXA9VhwJRKCwC1OEf1rSaAvuCBBrwjK9Pi
-	w7fMBPOFxVTFAjpXH0ec6PKI0yS3CxXbBMnmpMFAgkiv07v2hkgko/nHzGoSNJeQ
-	==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a0p81v24v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 28 Oct 2025 13:06:28 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 59SBcCZe021604;
-	Tue, 28 Oct 2025 13:06:27 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4a18vs2y4t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 28 Oct 2025 13:06:27 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 59SD6QIs21758700
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 28 Oct 2025 13:06:27 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8834358056;
-	Tue, 28 Oct 2025 13:06:26 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CEEBA5805D;
-	Tue, 28 Oct 2025 13:06:21 +0000 (GMT)
-Received: from [9.109.198.245] (unknown [9.109.198.245])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 28 Oct 2025 13:06:21 +0000 (GMT)
-Message-ID: <544b60be-376c-4891-95a4-361b4a207b8a@linux.ibm.com>
-Date: Tue, 28 Oct 2025 18:36:20 +0530
+	s=arc-20240116; t=1761658391; c=relaxed/simple;
+	bh=zHgFOuY5SFOlmk5HuLBk82BmMu84ypaw7kIZB0Jb67g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kDYzFO+0hQwTB4OtoiFLwXIKBFzD5Wpun20rJFfBYpUzFzjfs1XL5s85+MNyJieF7hpEOIDjByu7ve0Rg/ATjEvqXNljIdgiAJWIL+JVkrfWC+0De5ylVtcN8mTQv6eeblWl14e4oqorPgA55D1CGIs4S345nDVDnBV9dSXdvYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qmEwP7kC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85C9FC4CEFD;
+	Tue, 28 Oct 2025 13:33:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761658389;
+	bh=zHgFOuY5SFOlmk5HuLBk82BmMu84ypaw7kIZB0Jb67g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qmEwP7kCXosfzQMpvMsWAoDgsyCyr9vumhoiyjhDQSMhSj//+fr3N8ViVDH/1DqCg
+	 iAMw0x2GF3UG7huzPYCoPAkfzimdyOxCJhjb5mf05XfiEQVYhCFA+4QAFPtts3IlXB
+	 lPdUPauefx0LtL5fiP4/Mj2+61oLsJl41mmeNNYpba65hCxz3HEel+JqqHudtWIHKo
+	 jgkirCJx9EF8ri80XldJOfj3NU3a5MJ7wL09fNTco1ScemLB3nG9W9WRJNRWMeelew
+	 kkwy/5o3D12FZKSUQ+CpGyeYWNpXg5lEx26xNf8uLQm98HShqQbOzn2XDomyCTGTbR
+	 MNaHUqpecxTiQ==
+Date: Tue, 28 Oct 2025 14:33:02 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Simon Horman <horms@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Jeff Layton <jlayton@kernel.org>, Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3 17/70] nstree: add listns()
+Message-ID: <20251028-fenchel-roman-75c1c7e13c93@brauner>
+References: <20251024-work-namespace-nstree-listns-v3-0-b6241981b72b@kernel.org>
+ <20251024-work-namespace-nstree-listns-v3-17-b6241981b72b@kernel.org>
+ <aQCcrqp7qxY8ew8T@horms.kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [REPORT] Possible circular locking dependency on 6.18-rc2 in
- blkg_conf_open_bdev_frozen+0x80/0xa0
-To: Bart Van Assche <bvanassche@acm.org>, David Wei <dw@davidwei.uk>,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org
-Cc: hch@lst.de, hare@suse.de, ming.lei@redhat.com, dlemoal@kernel.org,
-        axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com, gjoyce@ibm.com,
-        lkp@intel.com, oliver.sang@intel.com
-References: <63c97224-0e9a-4dd8-8706-38c10a1506e9@davidwei.uk>
- <5b403c7c-67f5-4f42-a463-96aa4a7e6af8@linux.ibm.com>
- <5c29fa84-3a2c-44be-9842-f0230e7b46dd@acm.org>
-Content-Language: en-US
-From: Nilay Shroff <nilay@linux.ibm.com>
-In-Reply-To: <5c29fa84-3a2c-44be-9842-f0230e7b46dd@acm.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=fIQ0HJae c=1 sm=1 tr=0 ts=6900bfd4 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=PGCdswBLe-Oi2NptYxEA:9 a=QEXdDO2ut3YA:10 a=zZCYzV9kfG8A:10
- a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-ORIG-GUID: 2BwY0Bm3qfLhk62aaeYB__bxQ_OJEtHC
-X-Proofpoint-GUID: 2BwY0Bm3qfLhk62aaeYB__bxQ_OJEtHC
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDI1MDAyNCBTYWx0ZWRfXwDiLLcg2bSMH
- 1glaaqGVuuVKUNkV+BE1FT5PB0yPDM5d32LRdRMFHIMry5p++gYI3NeObdvIxaJZPUNJKBW+tHf
- CsO3BzoDscLKZ17EDtH9x479Zn+UKxN6VhRMmI2mXda6A5ALpg5Bz1dNdrDPF06c3vaT0XJIdTb
- qYd45Mo5X/IiUi6ScPP2n2Vhy/llBYHcieGCR+atx79EndKf6aaHuEL2H3+57IlWPgeCdUoOOwo
- WncBl26n8fa9mHOpBR7XNNioeikBLmjkJ61bpchHicXdb9579XDCGncHo4dssifK3osN2QEgL+8
- dgsyosQvQYidXb49zP97agmFM57Z28EXLUNu1hlWiazByqNUq20pQk3ffjcb8Ostg6r22CpQxIS
- osfqvBfyZbxSBFdGPxLNSZjVqul2VQ==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-10-28_04,2025-10-22_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 priorityscore=1501 adultscore=0 suspectscore=0 spamscore=0
- clxscore=1015 bulkscore=0 lowpriorityscore=0 phishscore=0 impostorscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510020000 definitions=main-2510250024
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <aQCcrqp7qxY8ew8T@horms.kernel.org>
 
-
-
-On 10/28/25 2:00 AM, Bart Van Assche wrote:
-> On 10/23/25 9:54 PM, Nilay Shroff wrote:
->> IMO, we need to make lockdep learn about this differences by assigning separate
->> lockdep key/class for each queue's q->debugfs_mutex to avoid this false positive.
->> As this is another report with the same false-positive lockdep splat, I think we
->> should address this.
->>
->> Any other thoughts or suggestions from others on the list?
+On Tue, Oct 28, 2025 at 10:36:30AM +0000, Simon Horman wrote:
+> On Fri, Oct 24, 2025 at 12:52:46PM +0200, Christian Brauner wrote:
 > 
-> Please take a look at lockdep_register_key() and
-> lockdep_unregister_key(). I introduced these functions six years ago to
-> suppress false positive lockdep complaints like this one.
+> ...
 > 
-Thanks Bart! I'll send out patch with the above proposed fix.
+> > diff --git a/kernel/nstree.c b/kernel/nstree.c
+> 
+> ...
+> 
+> > +static ssize_t do_listns(struct klistns *kls)
+> > +{
+> > +	u64 *ns_ids = kls->kns_ids;
+> > +	size_t nr_ns_ids = kls->nr_ns_ids;
+> > +	struct ns_common *ns, *first_ns = NULL;
+> > +	struct ns_tree *ns_tree = NULL;
+> > +	const struct list_head *head;
+> > +	struct user_namespace *user_ns;
+> > +	u32 ns_type;
+> > +	ssize_t ret;
+> > +
+> > +	if (hweight32(kls->ns_type) == 1)
+> > +		ns_type = kls->ns_type;
+> > +	else
+> > +		ns_type = 0;
+> > +
+> > +	if (ns_type) {
+> > +		ns_tree = ns_tree_from_type(ns_type);
+> > +		if (!ns_tree)
+> > +			return -EINVAL;
+> > +	}
+> > +
+> > +	if (kls->last_ns_id) {
+> > +		kls->first_ns = lookup_ns_id_at(kls->last_ns_id + 1, ns_type);
+> > +		if (!kls->first_ns)
+> > +			return -ENOENT;
+> > +		first_ns = kls->first_ns;
+> > +	}
+> > +
+> > +	ret = 0;
+> > +	if (ns_tree)
+> > +		head = &ns_tree->ns_list;
+> > +	else
+> > +		head = &ns_unified_list;
+> > +
+> > +	guard(rcu)();
+> > +	if (!first_ns)
+> > +		first_ns = first_ns_common(head, ns_tree);
+> > +
+> > +	for (ns = first_ns; !ns_common_is_head(ns, head, ns_tree) && nr_ns_ids;
+> > +	     ns = next_ns_common(ns, ns_tree)) {
+> > +		if (kls->ns_type && !(kls->ns_type & ns->ns_type))
+> > +			continue;
+> > +		if (!ns_get_unless_inactive(ns))
+> > +			continue;
+> > +		/* Check permissions */
+> > +		if (!ns->ops)
+> > +			user_ns = NULL;
+> 
+> Hi Christian,
+> 
+> Here it is assumed that ns->ops may be NULL.
+> 
+> > +		else
+> > +			user_ns = ns->ops->owner(ns);
+> > +		if (!user_ns)
+> > +			user_ns = &init_user_ns;
+> > +		if (ns_capable_noaudit(user_ns, CAP_SYS_ADMIN) ||
+> > +		    is_current_namespace(ns) ||
+> > +		    ((ns->ns_type == CLONE_NEWUSER) && ns_capable_noaudit(to_user_ns(ns), CAP_SYS_ADMIN))) {
+> > +			*ns_ids++ = ns->ns_id;
+> > +			nr_ns_ids--;
+> > +			ret++;
+> > +		}
+> > +		if (need_resched())
+> > +			cond_resched_rcu();
+> > +		/* doesn't sleep */
+> > +		ns->ops->put(ns);
+> 
+> And, if so, it isn't clear to me why that wouldn't also be the case here.
 
-Thanks,
---Nilay
+Right you are. Fixed.
 
