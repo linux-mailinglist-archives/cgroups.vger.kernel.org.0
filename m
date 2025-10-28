@@ -1,47 +1,47 @@
-Return-Path: <cgroups+bounces-11257-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11258-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4ACFC15140
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 15:11:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62187C150E9
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 15:08:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DA62626EAE
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 14:05:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B34991B22AC2
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 14:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D4E3370FE;
-	Tue, 28 Oct 2025 14:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F3333A00C;
+	Tue, 28 Oct 2025 14:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MbNGCPjX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fhoHKTrq"
 X-Original-To: cgroups@vger.kernel.org
 Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA8A43375C3
-	for <cgroups@vger.kernel.org>; Tue, 28 Oct 2025 14:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899E133B975
+	for <cgroups@vger.kernel.org>; Tue, 28 Oct 2025 14:03:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761660217; cv=none; b=sSI0i1b+WY9To4xxUVgjfnqFn6auOOb9ARB3ozS6qjDCnL/0e1KyHMiJvsw79s2BE+XTF77pIa63DUqGL4oTZb8qgABJ4Ce9HBfl1L5nqvKUaFIKSz86YDqzaLV+whkDqF1hkPkL7Pa8HJWxE0IudqcG4wcVDw871z+iEgnhFvg=
+	t=1761660224; cv=none; b=hrAHRhVfCkBamBCUCc+8hIzUDeBuy1rvP1905DtkV0Ct7jeMHndDkkk8Z5mtc+YU/YZKbdAhXXrBQewhbySbfzqdmNcuryO9aZxH5hQxZ+rUHbIcebJfHH6Wt97NCuwxXmzq0xgaS+cTM44kZM6mvl9zGGoRJti3CHdyxaroW+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761660217; c=relaxed/simple;
-	bh=Yc9DHXI7rCsRGLUF4OcSKmvJ70rdkg6hmVUqegpf2ws=;
+	s=arc-20240116; t=1761660224; c=relaxed/simple;
+	bh=0WOzV3O7yun4QmZNfkHeGCtNjrtReHHgOdRYuRd4qyA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nIkiRwCyNqcu16WhvWRG/WJ2IDf4EYNRSsoD8ljqFIb98FEQGyFexXmWrUU2L6SdXPBD350rtbge4bfEzW/+/jyUX/Unh0RvNYq1454P2HMjZYq1fdYLx10otPMTQ8Ybp3Vd918SfAbp8usBXQXtqti8PucjUpztLEOpanoFo6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MbNGCPjX; arc=none smtp.client-ip=91.218.175.178
+	 MIME-Version; b=TSkH9L5IoObIVKaJFYWtK4ctP8QViyTtuSS9+Cb76kBNopW4Mm55PT7oaOpj/b/cRXtMGip9Gph9KSmq3M/p13cpQnivzEVxmVKu2+8t5kDjZysbtpqA6uB57nTsQcHbrMr4jpxkgbxfKNTp3+KBMj3iw3rgllEq+3wcvQ2JD4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fhoHKTrq; arc=none smtp.client-ip=91.218.175.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761660211;
+	t=1761660219;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4oMNhuRAi27cTHrhaZltmQus/gsvCkLckLS+iJA38nw=;
-	b=MbNGCPjX2eMT1kl0IeUIiPgzGhk9+LXl8jF+2FbuFvx9cFOCbfxtLGhzIX0YHs43F8rw0q
-	MOMy/qbzVn5dCpvh5smAIvBZR6AFMi1nbijvzmHsPNRZR6Crox1yE20Tq1CRzKFdbfjJ5E
-	/C/lzYoQFfNgDHCjcMQg1QkXB/WzS4c=
+	bh=wkLnu/O9q4xdyqjaFOUvki0UTYleR0McbTd1ETEhnKE=;
+	b=fhoHKTrqeVk6EZTuFAS26dH7KFQqARavNeR76iE73qBaEIWQbclTIzwrgj8JSL8qtfhWPz
+	Prin+M4U0nQHEyZAfPOwRr6LzXUBd1RKMclEfqJMc+oKdYk9NayqXqvzChMmpi6ZmtuPOL
+	IHh2SSrRo7IPh5r1+4Fh+biiYMfo3io=
 From: Qi Zheng <qi.zheng@linux.dev>
 To: hannes@cmpxchg.org,
 	hughd@google.com,
@@ -64,9 +64,9 @@ Cc: linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	Muchun Song <songmuchun@bytedance.com>,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v1 12/26] mm: migrate: prevent memory cgroup release in folio_migrate_mapping()
-Date: Tue, 28 Oct 2025 21:58:25 +0800
-Message-ID: <2ff7f2f1ac1d3884c549d9b5134322df21703018.1761658310.git.zhengqi.arch@bytedance.com>
+Subject: [PATCH v1 13/26] mm: mglru: prevent memory cgroup release in mglru
+Date: Tue, 28 Oct 2025 21:58:26 +0800
+Message-ID: <da4182d4f912a00e0cbe377f424f1e94afd3e5c3.1761658310.git.zhengqi.arch@bytedance.com>
 In-Reply-To: <cover.1761658310.git.zhengqi.arch@bytedance.com>
 References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
@@ -86,7 +86,7 @@ hold the rcu read lock or acquire a reference to the memory cgroup
 returned by folio_memcg(), thereby preventing it from being released.
 
 In the current patch, the rcu read lock is employed to safeguard
-against the release of the memory cgroup in folio_migrate_mapping().
+against the release of the memory cgroup in mglru.
 
 This serves as a preparatory measure for the reparenting of the
 LRU pages.
@@ -94,29 +94,66 @@ LRU pages.
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- mm/migrate.c | 2 ++
- 1 file changed, 2 insertions(+)
+ mm/vmscan.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index ceee354ef2152..cdab1b652c530 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -664,6 +664,7 @@ static int __folio_migrate_mapping(struct address_space *mapping,
- 		struct lruvec *old_lruvec, *new_lruvec;
- 		struct mem_cgroup *memcg;
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 660cd40cfddd4..676e6270e5b45 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -3445,8 +3445,10 @@ static struct folio *get_pfn_folio(unsigned long pfn, struct mem_cgroup *memcg,
+ 	if (folio_nid(folio) != pgdat->node_id)
+ 		return NULL;
  
-+		rcu_read_lock();
- 		memcg = folio_memcg(folio);
- 		old_lruvec = mem_cgroup_lruvec(memcg, oldzone->zone_pgdat);
- 		new_lruvec = mem_cgroup_lruvec(memcg, newzone->zone_pgdat);
-@@ -691,6 +692,7 @@ static int __folio_migrate_mapping(struct address_space *mapping,
- 			__mod_lruvec_state(new_lruvec, NR_FILE_DIRTY, nr);
- 			__mod_zone_page_state(newzone, NR_ZONE_WRITE_PENDING, nr);
++	rcu_read_lock();
+ 	if (folio_memcg(folio) != memcg)
+-		return NULL;
++		folio = NULL;
++	rcu_read_unlock();
+ 
+ 	return folio;
+ }
+@@ -4203,12 +4205,12 @@ bool lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
+ 	unsigned long addr = pvmw->address;
+ 	struct vm_area_struct *vma = pvmw->vma;
+ 	struct folio *folio = pfn_folio(pvmw->pfn);
+-	struct mem_cgroup *memcg = folio_memcg(folio);
++	struct mem_cgroup *memcg;
+ 	struct pglist_data *pgdat = folio_pgdat(folio);
+-	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
+-	struct lru_gen_mm_state *mm_state = get_mm_state(lruvec);
+-	DEFINE_MAX_SEQ(lruvec);
+-	int gen = lru_gen_from_seq(max_seq);
++	struct lruvec *lruvec;
++	struct lru_gen_mm_state *mm_state;
++	unsigned long max_seq;
++	int gen;
+ 
+ 	lockdep_assert_held(pvmw->ptl);
+ 	VM_WARN_ON_ONCE_FOLIO(folio_test_lru(folio), folio);
+@@ -4243,6 +4245,13 @@ bool lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
  		}
-+		rcu_read_unlock();
  	}
- 	local_irq_enable();
  
++	rcu_read_lock();
++	memcg = folio_memcg(folio);
++	lruvec = mem_cgroup_lruvec(memcg, pgdat);
++	max_seq = READ_ONCE((lruvec)->lrugen.max_seq);
++	gen = lru_gen_from_seq(max_seq);
++	mm_state = get_mm_state(lruvec);
++
+ 	arch_enter_lazy_mmu_mode();
+ 
+ 	pte -= (addr - start) / PAGE_SIZE;
+@@ -4279,6 +4288,8 @@ bool lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
+ 
+ 	arch_leave_lazy_mmu_mode();
+ 
++	rcu_read_unlock();
++
+ 	/* feedback from rmap walkers to page table walkers */
+ 	if (mm_state && suitable_to_scan(i, young))
+ 		update_bloom_filter(mm_state, max_seq, pvmw->pmd);
 -- 
 2.20.1
 
