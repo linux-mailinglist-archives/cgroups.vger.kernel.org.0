@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-11279-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11280-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E9BDC15B65
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 17:15:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF608C15CB0
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 17:27:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6DDEA4E344B
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 16:11:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4F523A15F7
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 16:20:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0363446B5;
-	Tue, 28 Oct 2025 16:11:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C75B834889A;
+	Tue, 28 Oct 2025 16:16:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SyxgsjzA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mN8LxUn5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBDF23ABBD
-	for <cgroups@vger.kernel.org>; Tue, 28 Oct 2025 16:10:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0FA7292936
+	for <cgroups@vger.kernel.org>; Tue, 28 Oct 2025 16:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761667862; cv=none; b=mlJiiJEZA7nPiHPpwbcZdgL1PQ3chCQ+ZKdshmwp8JwNMG0r5GyND6VKLh6ETlLtDygNt5aHLOBCVLn2Dt5Vnuo9Yo68ugqAT2xirvlTgfWR9ApVnLXl1L7Hex/6ujrmgP6XY2tIr8hJ6Pn5oHKaf1CTswsuvY+TSGZu0LF1O9w=
+	t=1761668198; cv=none; b=qVrUz1OB4XBY4TB56c66lhSWml3kvdpV6medaSRVSo8zok5EPPQgmpCm6ZuyUIwFn7veBloeR++K1q+9q6tybxHLfw7EPbrS1Ye3YOCirUemkQ+TxjUF0qo+bspsaDwX2bJv5Xb/qxMWRXbwLijk1ZkIPo7063rpmO4icwgLH+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761667862; c=relaxed/simple;
-	bh=dJBi1SI6KRLdskO7pfO8PR4VwDReQHqZlMyEW6CEiGU=;
+	s=arc-20240116; t=1761668198; c=relaxed/simple;
+	bh=j9ZSlSw6quumBjZ2p2Hyq3PBFvjOYyL0TV4dOFji2xU=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=aoe6rBwMO8zfHCKQ2qU/Wtfeyb0HPGrMEp7XAvzJkftY/VXBHlU/j9BSDCZV0COxaNaOiIYXPXhuVAiHAp3sEYxC0K7PK1DX779quosCi5hOORq+qR+JHC7LFT+4UvqF2yB4W31hwnxSRbNltTxlftP24FGf1HBmhvUtTrKvxGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SyxgsjzA; arc=none smtp.client-ip=95.215.58.188
+	 MIME-Version:Content-Type; b=X266wvq9okTNJtlGS1f6vl/A7NmyUPwL9VfkAKbXJu9kQM+lCtj4XsbMZN2kN2K0gFdSqezTBoRix26XFBwY3TsO/OR0ppQUJgmEnEgYjdFs7j0SCmEjQygnoteKMZE7MgTJKurwUKp5geInP7iGtk0YW3G54KSCyOecLmAp8FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mN8LxUn5; arc=none smtp.client-ip=91.218.175.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761667858;
+	t=1761668192;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=D4PZj+Z/AUd5TD2H5mliXY1n/lg/WeR66f3O6rTVgL0=;
-	b=SyxgsjzAaP3eQ9upztzSYWfJ4WsFRqyGC+WNAlDIHsVjNFkuLy+80+fxZhJbxoF71KM/Sb
-	2dXtGFR0Z9YliT37NCbk2o9jgMkSzntlWrQPUd9ujQ4NC2Ewk5O6GCMZUgB8sGf6/K33Ov
-	Tv8wxDHZwyaHL5z9MiCmBhWGX4QJh9c=
+	bh=1ftyXtMKJiXGvCol0LZq8LgVSc8+XJJVccDr9V2Jw64=;
+	b=mN8LxUn58/1ZZZ/JYFD69p+VTvbUvckaGk22+fnxe34+5t8PYP10haz/y/SISWoUsxA52i
+	u2y1/eANPZbA7rvm3e3BNQsgR1RxKB6lu7ZYWnW4DAGhlmqfK0IzwereJpZoSEIvhmA+1m
+	D30KR/rPZMO1xkVGtlPFPmVGFEUYDMw=
 From: Roman Gushchin <roman.gushchin@linux.dev>
 To: bot+bpf-ci@kernel.org
 Cc: akpm@linux-foundation.org,  linux-kernel@vger.kernel.org,
@@ -50,14 +50,14 @@ Cc: akpm@linux-foundation.org,  linux-kernel@vger.kernel.org,
  bpf@vger.kernel.org, martin.lau@kernel.org, song@kernel.org,
  memxor@gmail.com, tj@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
  yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCH v2 08/23] mm: introduce BPF kfuncs to deal with memcg
- pointers
-In-Reply-To: <2c91977fcab04be6305bf4be57e825f7e84005d16667adcdfad0585be506537c@mail.kernel.org>
-	(bot's message of "Mon, 27 Oct 2025 23:48:21 +0000 (UTC)")
-References: <20251027231727.472628-9-roman.gushchin@linux.dev>
-	<2c91977fcab04be6305bf4be57e825f7e84005d16667adcdfad0585be506537c@mail.kernel.org>
-Date: Tue, 28 Oct 2025 09:10:47 -0700
-Message-ID: <87ldkv57nc.fsf@linux.dev>
+Subject: Re: [PATCH v2 10/23] mm: introduce BPF kfuncs to access memcg
+ statistics and events
+In-Reply-To: <45ee5e2e857a2e4022eb380f854d2a7cf27f3ec97d75a0200b46be95ae921d3b@mail.kernel.org>
+	(bot's message of "Mon, 27 Oct 2025 23:48:14 +0000 (UTC)")
+References: <20251027231727.472628-11-roman.gushchin@linux.dev>
+	<45ee5e2e857a2e4022eb380f854d2a7cf27f3ec97d75a0200b46be95ae921d3b@mail.kernel.org>
+Date: Tue, 28 Oct 2025 09:16:23 -0700
+Message-ID: <87cy6757e0.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -70,78 +70,67 @@ X-Migadu-Flow: FLOW_OUT
 bot+bpf-ci@kernel.org writes:
 
 > ```
-> commit ec8e2e1769704b4f69261f36e6aaf035d47c5f0f
+> commit 96abfe0549713749f00e32bff919a759db284a58
 > Author: Roman Gushchin <roman.gushchin@linux.dev>
 >
-> mm: introduce BPF kfuncs to deal with memcg pointers
+> mm: introduce BPF kfuncs to access memcg statistics and events
 >
-> This commit introduces two new BPF kfuncs for converting css pointers
-> to memcg pointers with proper reference counting: bpf_get_mem_cgroup()
-> and bpf_put_mem_cgroup().
+> This patch adds four new BPF kfuncs for accessing memory cgroup statistics
+> and events, making them available to all BPF program types for implementing
+> OOM policies and accelerating memcg data access.
 >
->> diff --git a/mm/Makefile b/mm/Makefile
->> index 051e88c69..2d8f9beb3 100644
->> --- a/mm/Makefile
->> +++ b/mm/Makefile
->> @@ -107,6 +107,7 @@ obj-$(CONFIG_MEMCG) += swap_cgroup.o
->>  endif
->>  ifdef CONFIG_BPF_SYSCALL
->>  obj-y += bpf_oom.o
->> +obj-$(CONFIG_MEMCG) += bpf_memcontrol.o
->>  endif
->>  obj-$(CONFIG_CGROUP_HUGETLB) += hugetlb_cgroup.o
->>  obj-$(CONFIG_GUP_TEST) += gup_test.o
+>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> index 39a6c7c87..b9e08dddd 100644
+>> --- a/include/linux/memcontrol.h
+>> +++ b/include/linux/memcontrol.h
+>
+> [ ... ]
+>
 >> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
->> new file mode 100644
->> index 000000000..1e4609774
->> --- /dev/null
+>> index 76c342318..387255b8a 100644
+>> --- a/mm/bpf_memcontrol.c
 >> +++ b/mm/bpf_memcontrol.c
->> @@ -0,0 +1,88 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Memory Controller-related BPF kfuncs and auxiliary code
+>
+> [ ... ]
+>
+>> @@ -75,6 +75,56 @@ __bpf_kfunc void bpf_put_mem_cgroup(struct mem_cgroup *memcg)
+>>  	css_put(&memcg->css);
+>>  }
+>>
+>> +/**
+>> + * bpf_mem_cgroup_vm_events - Read memory cgroup's vm event counter
+>> + * @memcg: memory cgroup
+>> + * @event: event id
 >> + *
->> + * Author: Roman Gushchin <roman.gushchin@linux.dev>
+>> + * Allows to read memory cgroup event counters.
 >> + */
->> +
->> +#include <linux/memcontrol.h>
->> +#include <linux/bpf.h>
->> +
->> +__bpf_kfunc_start_defs();
+>> +__bpf_kfunc unsigned long bpf_mem_cgroup_vm_events(struct mem_cgroup *memcg,
+>> +						enum vm_event_item event)
+>> +{
+>> +	return memcg_events(memcg, event);
+>> +}
 >> +
 >> +/**
->> + * bpf_get_mem_cgroup - Get a reference to a memory cgroup
->> + * @css: pointer to the css structure
+>> + * bpf_mem_cgroup_usage - Read memory cgroup's usage
+>> + * @memcg: memory cgroup
 >> + *
->> + * Returns a pointer to a mem_cgroup structure after bumping
->> + * the corresponding css's reference counter.
->> + *
->> + * It's fine to pass a css which belongs to any cgroup controller,
->> + * e.g. unified hierarchy's main css.
->> + *
->> + * Implements KF_ACQUIRE semantics.
+>> + * Returns current memory cgroup size in bytes.
 >> + */
->> +__bpf_kfunc struct mem_cgroup *
->> +bpf_get_mem_cgroup(struct cgroup_subsys_state *css)
+>> +__bpf_kfunc unsigned long bpf_mem_cgroup_usage(struct mem_cgroup *memcg)
 >> +{
->> +	struct mem_cgroup *memcg = NULL;
->> +	bool rcu_unlock = false;
->> +
->> +	if (!root_mem_cgroup)
->> +		return NULL;
->> +
->> +	if (root_mem_cgroup->css.ss != css->ss) {
->                                             ^^^^^^^
+>> +	return page_counter_read(&memcg->memory);
+>> +}
+>      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 >
-> Can this dereference a NULL css pointer?  The function checks css for
-> NULL at line 42 with "if (css && css_tryget(css))", which suggests css
-> can be NULL.  If a BPF program calls this function with a NULL css,
-> wouldn't it crash here before reaching that check?
+> The documentation says this returns bytes, but page_counter_read() returns
+> pages. In mm/memcontrol-v1.c, the existing mem_cgroup_usage() function's
+> return value is multiplied by PAGE_SIZE to convert to bytes:
+>
+>     return (u64)mem_cgroup_usage(memcg, false) * PAGE_SIZE;
+>
+> Should this function multiply the result by PAGE_SIZE to match its
+> documentation, or should the documentation be updated to say it returns
+> pages?
 
-Here css passed as an argument to bpf_get_mem_cgroup() can't be NULL,
-because the BPF verifier guarantees that it's a valid css pointer.
-
-However the result of rcu_dereference_raw(cgroup->subsys[ssid]) can be
-NULL, this is why the "if (css && css_tryget(css))" check is required
-down below.
+Yep, correct, fixed.
 
