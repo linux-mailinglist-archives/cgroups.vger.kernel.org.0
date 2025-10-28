@@ -1,121 +1,123 @@
-Return-Path: <cgroups+bounces-11298-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11299-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07A89C16816
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 19:37:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 696C1C167E9
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 19:32:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 82F714E73BB
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 18:32:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91FD41B27580
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 18:33:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52D2E2853FD;
-	Tue, 28 Oct 2025 18:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41A634AB1C;
+	Tue, 28 Oct 2025 18:32:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dSTQ7fLp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hssVsn3Q"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A6B34887B;
-	Tue, 28 Oct 2025 18:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC302288C0A
+	for <cgroups@vger.kernel.org>; Tue, 28 Oct 2025 18:32:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761676317; cv=none; b=hGWGNvbkuCrjEX1EsO62foU2tmmFzxj54Og8LqvRHodTZeBRQen9WMIaHSrMrfXcpa2uVvVlIo35grqSPnoJ27NXUmiO6rZY7f+Kpx9PgKOUFcizgwpY+7Sf/BaCDqjgGj5uiDhba5AlI7bV3ByTaffrNtgV98ti5tHCcE0tAFA=
+	t=1761676364; cv=none; b=WLOy2SbOiUdZc8YCZzLgkGqJvdP8eBETrEDSZm+4TxK8YpMj31OWVhKEdDoCmj62GJG782+mp+MMoaJDrQTLWmQBUX15llZ+8DukQAqokbzuHMpflVgzKoiVZ6eFntOj3KeefXmEnuay18i1X4p080vcpAEvci8zcfTXlUWxb8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761676317; c=relaxed/simple;
-	bh=Jz+xbsYpIW+XRlp07m9hjFj4lzFgfq3vzbi6oujtiOg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HZJ97ghy0ZTrHh9e24GDQCLSSs94ltF5sfneMIyCZzIMtp+RUQFxMH2QJgCKaYV+9F+BOuDZui5C74mubiYNsOfjPtP9PwiNlBL1E03oC0hY3/PiCgFgPNZ5X0jx/HpL4So2xTJJpm5HKspUjZF1/qD616wBdzTt+ajGDkf1/bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dSTQ7fLp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6875EC4CEE7;
-	Tue, 28 Oct 2025 18:31:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761676316;
-	bh=Jz+xbsYpIW+XRlp07m9hjFj4lzFgfq3vzbi6oujtiOg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dSTQ7fLpUEgaQWMm3JM9x2uJw2teY3OFi61nzuGcSC/ofmmQ4UUNKJFKwIzyzeJS0
-	 o13aHsL5FHta5P7B7VftG1sj2/BhBPaKCqolUUi5NUXMEoT368Gb4Cq15IyN8NYome
-	 1uIWQA5X0apRwJQPgUSoIl5K3q1GbuAGJHDPgcjwYSl+ct5Qb5SZcZC8tdhWbtgmoH
-	 ydA1FRB5VQ/1yl0dauTiEMWJnNV0uKGzpxAopHKgnLPhlsxZj+Vqi2CMfarQCfe+LO
-	 p/HfLi7jFpBX5eX3pIVLc90evL+Npo9KZQtz16HvE5k6LWE6GkZlGdZrAUQggXrhIn
-	 WOQnwjho4g7oQ==
-Date: Tue, 28 Oct 2025 08:31:55 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH v2 15/23] mm: introduce bpf_task_is_oom_victim() kfunc
-Message-ID: <aQEMG508sUQWDGrn@slm.duckdns.org>
-References: <20251027232206.473085-1-roman.gushchin@linux.dev>
- <20251027232206.473085-5-roman.gushchin@linux.dev>
- <aQD-RvxrX8_7QtxT@slm.duckdns.org>
- <877bwevqxz.fsf@linux.dev>
+	s=arc-20240116; t=1761676364; c=relaxed/simple;
+	bh=rwcnxNG6I32u+/Nrolp8o34FZIHcZuGuCps+y7MpA84=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=oTQG/ZYcu+sL7mJrEqZwSxpoe6sfupOycw5n7BJQpzXa4YNOmTrcoQQ9puNTKLRTDsydhoIYusDdlQtZQV1Ir43uZ1LjZbFdRQ0thv5eqxpIOEF+wWRk+TbSXIK/zYdvYcDvprfIRTQFyU210gZrLysHGNklVmS8JbF0CRQ67FY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hssVsn3Q; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761676360;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nf6l5EBnraIwk2fFm2crn/UFRlvBCZhPypt0K7UxZjY=;
+	b=hssVsn3Q/lG0Ha8WD0NuxkPn5nIfYTE9daX6kZTPWtQkfcc3c5liTlrsaeobIK+I5u/Qsi
+	5u5PKy2Fn5+Y3sy756yujLmcWPZCVTncPzc64DvnC8OzMF/k3zCALlzXU5oKmoAsWHtJ7d
+	ssChMGvkIZRChpOs5U70e0V6baHPiU0=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Chris Mason <clm@meta.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+  bot+bpf-ci@kernel.org,  Andrew Morton <akpm@linux-foundation.org>,  LKML
+ <linux-kernel@vger.kernel.org>,  Alexei Starovoitov <ast@kernel.org>,
+  Suren Baghdasaryan <surenb@google.com>,  Michal Hocko
+ <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,  Johannes
+ Weiner <hannes@cmpxchg.org>,  Andrii Nakryiko <andrii@kernel.org>,
+  inwardvessel <inwardvessel@gmail.com>,  linux-mm <linux-mm@kvack.org>,
+  "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,  bpf
+ <bpf@vger.kernel.org>,  Martin KaFai Lau <martin.lau@kernel.org>,  Song
+ Liu <song@kernel.org>,  Kumar Kartikeya Dwivedi <memxor@gmail.com>,  Tejun
+ Heo <tj@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,  Eduard
+ <eddyz87@gmail.com>,  Yonghong Song <yonghong.song@linux.dev>,  Ihor
+ Solodrai <ihor.solodrai@linux.dev>
+Subject: Re: [PATCH v2 08/23] mm: introduce BPF kfuncs to deal with memcg
+ pointers
+In-Reply-To: <f5d71202-188d-45ff-a5e8-387d060fca47@meta.com> (Chris Mason's
+	message of "Tue, 28 Oct 2025 14:03:18 -0400")
+References: <20251027231727.472628-9-roman.gushchin@linux.dev>
+	<2c91977fcab04be6305bf4be57e825f7e84005d16667adcdfad0585be506537c@mail.kernel.org>
+	<87ldkv57nc.fsf@linux.dev>
+	<CAADnVQLkza5_95qc0vGYBLUu-4FN_cZEcVywTs5XemTE9O-ZtQ@mail.gmail.com>
+	<f5d71202-188d-45ff-a5e8-387d060fca47@meta.com>
+Date: Tue, 28 Oct 2025 11:32:31 -0700
+Message-ID: <87y0ouri68.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877bwevqxz.fsf@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+Chris Mason <clm@meta.com> writes:
 
-On Tue, Oct 28, 2025 at 11:09:28AM -0700, Roman Gushchin wrote:
-> > In general, I'm not sure it's a good idea to add kfuncs for things which are
-> > trivially accessible. Why can't things like this be provided as BPF
-> > helpers?
-> 
-> I agree that this one might be too trivial, but I added it based on the
-> request from Michal Hocko. But with other helpers (e.g. for accessing
-> memcg stats) the idea is to provide a relatively stable interface for
-> bpf programs, which is not dependent on the implementation details. This
-> will simplify the maintenance of bpf programs across multiple kernel
-> versions.
+> On 10/28/25 1:12 PM, Alexei Starovoitov wrote:
+>> On Tue, Oct 28, 2025 at 9:11=E2=80=AFAM Roman Gushchin <roman.gushchin@l=
+inux.dev> wrote:
+>>>
+>>> bot+bpf-ci@kernel.org writes:
+>>>
+>>>> ```
+>>>> commit ec8e2e1769704b4f69261f36e6aaf035d47c5f0f
+>>>> Author: Roman Gushchin <roman.gushchin@linux.dev>
+>>>> Can this dereference a NULL css pointer?  The function checks css for
+>>>> NULL at line 42 with "if (css && css_tryget(css))", which suggests css
+>>>> can be NULL.  If a BPF program calls this function with a NULL css,
+>>>> wouldn't it crash here before reaching that check?
+>>>
+>>> Here css passed as an argument to bpf_get_mem_cgroup() can't be NULL,
+>>> because the BPF verifier guarantees that it's a valid css pointer.
+>>>
+>>> However the result of rcu_dereference_raw(cgroup->subsys[ssid]) can be
+>>> NULL, this is why the "if (css && css_tryget(css))" check is required
+>>> down below.
+>>=20
+>> Yeah. Not sure how feasible it is to teach AI about KF_RCU semantics.
+>
+> I pulled it down locally to try and w/semcode it is properly catching thi=
+s:
+>
+> False Positives Eliminated
+>
+> 1. EH-001 NULL dereference - css parameter dereferenced without check
+>
+> - Why false positive: BPF verifier ensures pointer parameters are
+> non-NULL. All kernel kfuncs follow the same pattern of not checking
+> parameters for NULL (css_rstat_updated, css_rstat_flush,
+> bpf_put_mem_cgroup, etc.). The KF_RET_NULL flag controls return value,
+> not parameter nullability.
+>
+> My plan is to just have the prompt read Documentation/bpf/kfuncs.rst,
+> which Eduard suggested.  I'll make a bpf kfuncs pattern and do that.
 
-This is an abstract subject and thus a bit difficult to argue concretely.
-I'll just share my take on it based on my experience w/ sched_ext.
-
-The main problem with "I'll add enough interfaces to keep the BPF programs
-stable" is that it's really difficult to foresee how BPF programs will
-actually use them. You may have certain ideas on what information they would
-consume and how but other people may have completely different ideas. After
-all, that's why we want this to be BPF defined.
-
-Projecting to the future, there's a pretty good chance that some programs
-will be using mix of these hard coded interfaces and other generic BPF hooks
-and mechanisms. At that point, when you want to add access to something new,
-the decision becomes awakward. Adding a new hard coded interface doesn't
-really enable anything that isn't possible otherwise while creating
-compatibility problems for older kernels.
-
-The other side of that coin is that BPF has a lot of mechanisms that support
-backward and forward binary compatibility such as CO-RE relocations,
-polymorhpic struct_ops and kfunc matching, type-aware symbol existence
-testing and so on. It really is not that difficult to maintain a pretty
-large sliding window of compatibility using these mechanisms and I believe
-concerns over interface stability is overblown.
-
-So, my take is that trying to bolster interface stability doesn't really
-solve serious enough problems that justify the downsides of adding those
-hard coded interface. There are just better and more flexible ways to deal
-with them.
-
-Thanks.
-
--- 
-tejun
+Awesome, thank you!
 
