@@ -1,66 +1,68 @@
-Return-Path: <cgroups+bounces-11239-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11240-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1AEBC13AD1
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 10:03:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52225C141B9
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 11:30:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C0941A25FBF
-	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 09:04:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8693B581BE3
+	for <lists+cgroups@lfdr.de>; Tue, 28 Oct 2025 10:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E502DF14A;
-	Tue, 28 Oct 2025 09:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FEC7305E1B;
+	Tue, 28 Oct 2025 10:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CGNB3GBc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aIz761tk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0906C2D978C;
-	Tue, 28 Oct 2025 09:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A5A30595D;
+	Tue, 28 Oct 2025 10:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761642221; cv=none; b=DdTff1ov4PgJEQpNYJu2G4H5+S+58XwEz9q4t6kQkyPxSeom/fQK5qLYZpzy7/HWEI41TLJ/4BfN4qfovRwzmoWaNwxDwYt0K/Rgq63HLNnYXqD8DPRCrukEqycY7UtnjxBs44znW8HxR8yhpHpln+odHI9V9qGgt8tuGv0f2cI=
+	t=1761647414; cv=none; b=FPUkwduTwA+RzvoCWKUxcI4rAPpqTFg7O0cncIJZkypM8VNylO0cm7NO15rGCdgMMRDomWZ6fk0VErf74uxNsjzTuRL2hcN4Mp8p+Zlbqi2rtni9muxLkPuxX01+wEl1Y7IK25UCleUxKQQzDw2AkVGmxxF2GqMX+Dsv2CXImWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761642221; c=relaxed/simple;
-	bh=FYchjVqAMBQv9LBq46poc1KVyQCj9SBIi0pkPIA8Og4=;
+	s=arc-20240116; t=1761647414; c=relaxed/simple;
+	bh=i1oPG+ZRf9OGbhOOSsSjORFIrBtTLS/S2tOyv4Wk8Uo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rFX4Hrkoe8o4vkMLJOUqWL6Sii49fGjeDAS9dUGY4kQ6FZMj0+AIEJT5W211pL5HbPdkA7xhWq6EwyJLTo1yAQkb0y8mWA2pkDKD1m7a2CKcBiz8FmAtI3yeWYp2/UodXT6CCnrpmXue2C4mqs/gU9K8NfHmuihPY7Kn3+yqVNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=CGNB3GBc; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=+9Ze56vyjrFGBBLikcAq8sc6beALo9Z6C9Ec7GUdfW4=; b=CGNB3GBcvuX2cPKZk+73pjOZX+
-	QJKofhcWvyXNpepFZwC9YNGrYs+AzjkJX2Avt31iCqWoGx+ffgp43DbWt5D0zUKp+0mlknxdwlh6p
-	F2+X/4gILWHSJL7jg5yYffwUl0BpaBJXkr7Hd9DzKOWlv5sSuXs5MiQQ64AKYrDPHwvU5aUqhB5Ob
-	A5957Y+8KSfhPv0zh1Xh1gPqD6A60ZncX4t5rcoVD6YSrFnf+nzGusyCOtYW/A8e1F5v5GyjWO/Ft
-	Xq6jR3jlZ7MjOE3yH0GqKv1TqDn1ux8ATJm0Y9MhRRCculYdQZsggQsvwHM7yg/eEJvtx+FsmL3rI
-	ODQPG1KQ==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDfbw-00000009xri-12M5;
-	Tue, 28 Oct 2025 09:03:25 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 47151300289; Tue, 28 Oct 2025 10:03:24 +0100 (CET)
-Date: Tue, 28 Oct 2025 10:03:24 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: kernel test robot <oliver.sang@intel.com>, japo@linux.ibm.com
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
-	x86@kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-	Tejun Heo <tj@kernel.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	cgroups@vger.kernel.org, aubrey.li@linux.intel.com,
-	yu.c.chen@intel.com
-Subject: Re: [tip:sched/core] [sched]  b079d93796:
- WARNING:possible_recursive_locking_detected_migration_is_trying_to_acquire_lock:at:set_cpus_allowed_force_but_task_is_already_holding_lock:at:cpu_stopper_thread
-Message-ID: <20251028090324.GQ4068168@noisy.programming.kicks-ass.net>
-References: <202510271206.24495a68-lkp@intel.com>
- <20251027110133.GI3245006@noisy.programming.kicks-ass.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=f1bBpUfaFBJIrB9vqUuhBZ59tj1Vz+gGcJsXqfB6i8PFGTVV9LqgvF7Qwb/Ljo/sKLBmMPZObjZtmmfMFVtMgO22MMwaQ/wAfI4bDBi7uOSZpRps0DCQ9MkPQk8AWl1ogRQerHAFcd1afAepGb8lw7+PtJlgF+VG3WR+Tzv0dcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aIz761tk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3943BC4CEE7;
+	Tue, 28 Oct 2025 10:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761647413;
+	bh=i1oPG+ZRf9OGbhOOSsSjORFIrBtTLS/S2tOyv4Wk8Uo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aIz761tkfMijGB9dzdh0STq9BQJHU88Zo9UFP6+HR5Xd8nnP5rNt1c0YecS8UUc76
+	 /vBdjapAWJbyYr+ekyE2DL1r43K0mC/5MspG+YVXW4LLo17/mr2qrahIEM6KgS2Zo6
+	 kWGgBMeTlRsUFiqaEIaUkXxUvFcH8CVOC0m76yRFtNriBD0qIxda9ohFQqVRU9C5Uu
+	 WqCISo1yRBGqCnft3OK+/XYzYNrGYqDgF+Rh0YwqkBCrbI6P2XbQDWc15IXmPbHlW4
+	 ltqWOPcOWLIxBN/gxwRe+fYKVy0ofU1yoLWInHC3iFcsGoUBtvBQfs2xiq7H6Tp7k8
+	 wLpzcIbGGY3jA==
+Date: Tue, 28 Oct 2025 10:30:06 +0000
+From: Simon Horman <horms@kernel.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+	Jeff Layton <jlayton@kernel.org>, Jann Horn <jannh@google.com>,
+	Mike Yuan <me@yhndnzj.com>,
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
+	Lennart Poettering <mzxreary@0pointer.de>,
+	Daan De Meyer <daan.j.demeyer@gmail.com>,
+	Aleksa Sarai <cyphar@cyphar.com>,
+	Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+	Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3 11/70] ns: add active reference count
+Message-ID: <aQCbLrYf_KTdxZjU@horms.kernel.org>
+References: <20251024-work-namespace-nstree-listns-v3-0-b6241981b72b@kernel.org>
+ <20251024-work-namespace-nstree-listns-v3-11-b6241981b72b@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -69,63 +71,41 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251027110133.GI3245006@noisy.programming.kicks-ass.net>
+In-Reply-To: <20251024-work-namespace-nstree-listns-v3-11-b6241981b72b@kernel.org>
 
-On Mon, Oct 27, 2025 at 12:01:33PM +0100, Peter Zijlstra wrote:
+On Fri, Oct 24, 2025 at 12:52:40PM +0200, Christian Brauner wrote:
 
-Could someone confirm this fixes the problem?
+...
 
-> ---
-> Subject: sched: Fix the do_set_cpus_allowed() locking fix
-> 
-> Commit abfc01077df6 ("sched: Fix do_set_cpus_allowed() locking")
-> overlooked that __balance_push_cpu_stop() calls select_fallback_rq()
-> with rq->lock held. This makes that set_cpus_allowed_force() will
-> recursively take rq->lock and the machine locks up.
-> 
-> Run select_fallback_rq() earlier, without holding rq->lock. This opens
-> up a race window where a task could get migrated out from under us, but
-> that is harmless, we want the task migrated.
-> 
-> select_fallback_rq() itself will not be subject to concurrency as it
-> will be fully serialized by p->pi_lock, so there is no chance of
-> set_cpus_allowed_force() getting called with different arguments and
-> selecting different fallback CPUs for one task.
-> 
-> Fixes: abfc01077df6 ("sched: Fix do_set_cpus_allowed() locking")
-> Reported-by: Jan Polensky <japo@linux.ibm.com>
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Closes: https://lore.kernel.org/oe-lkp/202510271206.24495a68-lkp@intel.com
-> ---
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 1842285eac1e..67b5f2faab36 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -8044,18 +8044,15 @@ static int __balance_push_cpu_stop(void *arg)
->  	struct rq_flags rf;
->  	int cpu;
->  
-> -	raw_spin_lock_irq(&p->pi_lock);
-> -	rq_lock(rq, &rf);
-> -
-> -	update_rq_clock(rq);
-> -
-> -	if (task_rq(p) == rq && task_on_rq_queued(p)) {
-> +	scoped_guard (raw_spinlock_irq, &p->pi_lock) {
->  		cpu = select_fallback_rq(rq->cpu, p);
-> -		rq = __migrate_task(rq, &rf, p, cpu);
-> -	}
->  
-> -	rq_unlock(rq, &rf);
-> -	raw_spin_unlock_irq(&p->pi_lock);
-> +		rq_lock(rq, &rf);
-> +		update_rq_clock(rq);
-> +		if (task_rq(p) == rq && task_on_rq_queued(p))
-> +			rq = __migrate_task(rq, &rf, p, cpu);
-> +		rq_unlock(rq, &rf);
-> +	}
->  
->  	put_task_struct(p);
->  
+> diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
+
+...
+
+> +void get_cred_namespaces(struct task_struct *tsk)
+> +{
+> +	ns_ref_active_get(tsk->real_cred->user_ns);
+
+Hi Christian,
+
+real_cred is protected by RCU, but this code doesn't seem to take
+that into account. Or, at least Sparse doesn't think so:
+
+.../nsproxy.c:264:9: error: no generic selection for 'struct user_namespace *const [noderef] __rcu user_ns'
+.../nsproxy.c:264:9: warning: dereference of noderef expression
+
+> +}
+> +
+> +void exit_cred_namespaces(struct task_struct *tsk)
+> +{
+> +	ns_ref_active_put(tsk->real_cred->user_ns);
+
+Likewise here.
+
+> +}
+> +
+>  int exec_task_namespaces(void)
+>  {
+>  	struct task_struct *tsk = current;
+
+...
 
