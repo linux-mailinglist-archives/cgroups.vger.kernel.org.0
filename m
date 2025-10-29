@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-11315-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11316-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04949C186E9
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 07:22:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED67FC186E6
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 07:22:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 623E150738F
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 06:19:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E706F1C65A52
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 06:20:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD66307AC4;
-	Wed, 29 Oct 2025 06:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A89330ACE5;
+	Wed, 29 Oct 2025 06:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HTljxmxP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WW2j3Lpl"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6617D306B18;
-	Wed, 29 Oct 2025 06:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79E73090D7;
+	Wed, 29 Oct 2025 06:19:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761718763; cv=none; b=h7oKvTdzc1Es14WHG+cR1XE0zatZobdLrmKuQQqdcO8mWTGRx292Oo3CGGzjOlQ9OcNqO+XUirf/0q0cqGasN6ipHO8H7na6DdZ47YZpBPNoTX7OTzqo6pYKPOITFOYWQafi+rntRdNTfVgvEsU5KJXXUN6zftFw+7gHO326+i8=
+	t=1761718764; cv=none; b=uArzMtG+FpJV4hxT7Px8zAT5CQsBMIYZNAALLNwvis26E67kO+dGuqqVYE5W1id8NupcxrTrzQZY9OqBB9oBbRxauWHpdrPDwZbSPaXo11jmDRZb+6h3ndqxKJjs7zuenbWEVSfcrWbnlYetbvjrvB4HFzWa5omxfa/mpvY8a2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761718763; c=relaxed/simple;
-	bh=xLja+6Rkfm+qf7bLqyram6ZKvNu8oo/lxskLoz2t7VQ=;
+	s=arc-20240116; t=1761718764; c=relaxed/simple;
+	bh=dki8nbEv4ptLcRQV89oVJKBG9e0Mf4cnUWQSzd2iXDo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TgMNP7HU55N0GRkwyjMFsdGL+1PP0vW1VncwvX7D2o+IrfPL+bFVEPm9sSloEJjC2Tqk+CJG/KdFB657pdk8jPjKFMD+P5bEP5UTRpAGsG9Iy3CKsb8dD69Zt2npu/YbSvgWjb3BKb380mtAdTksP4dC0pBWRAd97Gjr3d3cOGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HTljxmxP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D48AC16AAE;
-	Wed, 29 Oct 2025 06:19:23 +0000 (UTC)
+	 MIME-Version; b=csYX8MoTiOp6kY71SGljxwLqteN7x5+Nifcd7S1aouI8kdqkSWKpvnVDNKbVyKYVWO80mwfHiliro2Vq/W7FNn35meEP0ekv4ij2M/awMkun6aGFpGxxoi4d9odK3wsRc0RWEOCGxEfejo8nToF5X/z7PeNLPdqVtfj3QKrmOyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WW2j3Lpl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37238C4CEFB;
+	Wed, 29 Oct 2025 06:19:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761718763;
-	bh=xLja+6Rkfm+qf7bLqyram6ZKvNu8oo/lxskLoz2t7VQ=;
+	s=k20201202; t=1761718764;
+	bh=dki8nbEv4ptLcRQV89oVJKBG9e0Mf4cnUWQSzd2iXDo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HTljxmxP4DbsKjGQyal+hr8dCYd2K/kw5Dk8Df3KNjHuaBOLqZnq5Qr2jEtycg7oO
-	 8Jxq6y/g/tv9WMwhNlhfzhmoJizkhThZh1Bla+F5LnAgoWqi9/JOf5GHtUGF2b2xft
-	 J8QgcBeb7mi3lmplgWE8SBOH+dXSPGQcDFEEtv2YKsrRPNdDNv9AuD0k5znOkpvDfk
-	 EmoAjW0jOBRc6cxUFJWwYnt7c7UL1vBU10ACS7PVexLLBInBbdBCPGnFvArN9sR7ua
-	 O8MxIHmA9MtJXC3uLdVBBiBVQr0LGUsUIrFH3HN6hVdO/GeJAhZHWxkujLZ/l8wbdh
-	 gLGcsUUXJWCwg==
+	b=WW2j3Lpl0ywQwK42Njugukie2hynAJSok5DBhtbtB8DV3MGgSvGbya6NQVSTaLWxJ
+	 1u6USythLZvxCXW2kTVyXrO3Mlw669uh3BD2SnCTWP+K45WeXlmT/8yIUEZORz0j+R
+	 eOoCtozhoFksLgauzWXw2gyupxM46le70Qq/K3o+dpbvy60KkCt4cjMzBnZ0ZvRKRi
+	 jfxoTPk3LwRXG8+0haeaDnGfpI2MAs5EcvsCyMFCW3bZ9uzygWQ02XFwNfLitN3k3/
+	 Trr8BM7VQmqW5vNUZtBEcip7lltZBZqFZ0JQSlpXpjqEF49AHjrW3DvhyGob5lFLF0
+	 jEzXOApas9BaQ==
 From: Tejun Heo <tj@kernel.org>
 To: David Vernet <void@manifault.com>,
 	Andrea Righi <arighi@nvidia.com>,
@@ -51,9 +51,9 @@ Cc: Dan Schatzberg <dschatzberg@meta.com>,
 	cgroups@vger.kernel.org,
 	sched-ext@lists.linux.dev,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 3/4] cgroup: Defer task cgroup unlink until after the task is done switching out
-Date: Tue, 28 Oct 2025 20:19:17 -1000
-Message-ID: <20251029061918.4179554-4-tj@kernel.org>
+Subject: [PATCH 4/4] sched_ext: Fix cgroup exit ordering by moving sched_ext_free() to finish_task_switch()
+Date: Tue, 28 Oct 2025 20:19:18 -1000
+Message-ID: <20251029061918.4179554-5-tj@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251029061918.4179554-1-tj@kernel.org>
 References: <20251029061918.4179554-1-tj@kernel.org>
@@ -65,117 +65,105 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When a task exits, css_set_move_task(tsk, cset, NULL, false) unlinks the task
-from its cgroup. From the cgroup's perspective, the task is now gone. If this
-makes the cgroup empty, it can be removed, triggering ->css_offline() callbacks
-that notify controllers the cgroup is going offline resource-wise.
+sched_ext_free() was called from __put_task_struct() when the last reference
+to the task is dropped, which could be long after the task has finished
+running. This causes cgroup-related problems:
 
-However, the exiting task can still run, perform memory operations, and schedule
-until the final context switch in finish_task_switch(). This creates a confusing
-situation where controllers are told a cgroup is offline while resource
-activities are still happening in it. While this hasn't broken existing
-controllers, it has caused direct confusion for sched_ext schedulers.
+- ops.task_init() can be called on a cgroup which didn't get ops.cgroup_init()'d
+  during scheduler load.
 
-Split cgroup_task_exit() into two functions. cgroup_task_exit() now only calls
-the subsystem exit callbacks and continues to be called from do_exit(). The
-css_set cleanup is moved to the new cgroup_task_dead() which is called from
-finish_task_switch() after the final context switch, so that the cgroup only
-appears empty after the task is truly done running.
+- ops.cgroup_exit() could be called before ops.exit_task() is called on all
+  member tasks, leading to incorrect exit ordering.
 
-This also reorders operations so that subsys->exit() is now called before
-unlinking from the cgroup, which shouldn't break anything.
+Fix by moving it to finish_task_switch() to be called right after the final
+context switch away from the dying task, matching when sched_class->task_dead()
+is called. Rename it to sched_ext_dead() to match the new calling context.
 
-Cc: Dan Schatzberg <dschatzberg@meta.com>
+By calling sched_ext_dead() before cgroup_task_dead(), we ensure that:
+
+- Tasks visible on scx_tasks list have valid cgroups during scheduler load,
+  as cgroup_mutex prevents cgroup destruction while the task is still linked.
+
+- All member tasks have ops.exit_task() called and are removed from scx_tasks
+  before the cgroup can be destroyed and trigger ops.cgroup_exit().
+
+This fix is made possible by the cgroup_task_dead() split in the previous patch.
+
+This also makes more sense resource-wise as there's no point in keeping
+scheduler side resources around for dead tasks.
+
+Reported-by: Dan Schatzberg <dschatzberg@meta.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- include/linux/cgroup.h |  2 ++
- kernel/cgroup/cgroup.c | 23 ++++++++++++++---------
- kernel/sched/core.c    |  2 ++
- 3 files changed, 18 insertions(+), 9 deletions(-)
+ include/linux/sched/ext.h | 4 ++--
+ kernel/fork.c             | 1 -
+ kernel/sched/core.c       | 6 ++++++
+ kernel/sched/ext.c        | 2 +-
+ 4 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 4068035176c4..bc892e3b37ee 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -138,6 +138,7 @@ extern void cgroup_cancel_fork(struct task_struct *p,
- extern void cgroup_post_fork(struct task_struct *p,
- 			     struct kernel_clone_args *kargs);
- void cgroup_task_exit(struct task_struct *p);
-+void cgroup_task_dead(struct task_struct *p);
- void cgroup_task_release(struct task_struct *p);
- void cgroup_task_free(struct task_struct *p);
+diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
+index d82b7a9b0658..d7dd77be571f 100644
+--- a/include/linux/sched/ext.h
++++ b/include/linux/sched/ext.h
+@@ -207,14 +207,14 @@ struct sched_ext_entity {
+ 	struct list_head	tasks_node;
+ };
  
-@@ -681,6 +682,7 @@ static inline void cgroup_cancel_fork(struct task_struct *p,
- static inline void cgroup_post_fork(struct task_struct *p,
- 				    struct kernel_clone_args *kargs) {}
- static inline void cgroup_task_exit(struct task_struct *p) {}
-+static inline void cgroup_task_dead(struct task_struct *p) {}
- static inline void cgroup_task_release(struct task_struct *p) {}
- static inline void cgroup_task_free(struct task_struct *p) {}
+-void sched_ext_free(struct task_struct *p);
++void sched_ext_dead(struct task_struct *p);
+ void print_scx_info(const char *log_lvl, struct task_struct *p);
+ void scx_softlockup(u32 dur_s);
+ bool scx_rcu_cpu_stall(void);
  
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index b3c27900c5d2..aae180d56c8c 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -944,7 +944,7 @@ static void css_set_move_task(struct task_struct *task,
- 		/*
- 		 * We are synchronized through cgroup_threadgroup_rwsem
- 		 * against PF_EXITING setting such that we can't race
--		 * against cgroup_task_exit()/cgroup_task_free() dropping
-+		 * against cgroup_task_dead()/cgroup_task_free() dropping
- 		 * the css_set.
- 		 */
- 		WARN_ON_ONCE(task->flags & PF_EXITING);
-@@ -6982,10 +6982,20 @@ void cgroup_post_fork(struct task_struct *child,
- void cgroup_task_exit(struct task_struct *tsk)
- {
- 	struct cgroup_subsys *ss;
--	struct css_set *cset;
- 	int i;
+ #else	/* !CONFIG_SCHED_CLASS_EXT */
  
--	spin_lock_irq(&css_set_lock);
-+	/* see cgroup_post_fork() for details */
-+	do_each_subsys_mask(ss, i, have_exit_callback) {
-+		ss->exit(tsk);
-+	} while_each_subsys_mask();
-+}
-+
-+void cgroup_task_dead(struct task_struct *tsk)
-+{
-+	struct css_set *cset;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&css_set_lock, flags);
+-static inline void sched_ext_free(struct task_struct *p) {}
++static inline void sched_ext_dead(struct task_struct *p) {}
+ static inline void print_scx_info(const char *log_lvl, struct task_struct *p) {}
+ static inline void scx_softlockup(u32 dur_s) {}
+ static inline bool scx_rcu_cpu_stall(void) { return false; }
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 960c39c9c264..5ae37909a813 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -736,7 +736,6 @@ void __put_task_struct(struct task_struct *tsk)
+ 	WARN_ON(tsk == current);
  
- 	WARN_ON_ONCE(list_empty(&tsk->cg_list));
- 	cset = task_css_set(tsk);
-@@ -7003,12 +7013,7 @@ void cgroup_task_exit(struct task_struct *tsk)
- 		     test_bit(CGRP_FREEZE, &task_dfl_cgroup(tsk)->flags)))
- 		cgroup_update_frozen(task_dfl_cgroup(tsk));
- 
--	spin_unlock_irq(&css_set_lock);
--
--	/* see cgroup_post_fork() for details */
--	do_each_subsys_mask(ss, i, have_exit_callback) {
--		ss->exit(tsk);
--	} while_each_subsys_mask();
-+	spin_unlock_irqrestore(&css_set_lock, flags);
- }
- 
- void cgroup_task_release(struct task_struct *task)
+ 	unwind_task_free(tsk);
+-	sched_ext_free(tsk);
+ 	io_uring_free(tsk);
+ 	cgroup_task_free(tsk);
+ 	task_numa_free(tsk, true);
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index f1ebf67b48e2..40f12e37f60f 100644
+index 40f12e37f60f..d4dbffb27a66 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -5222,6 +5222,8 @@ static struct rq *finish_task_switch(struct task_struct *prev)
+@@ -5222,6 +5222,12 @@ static struct rq *finish_task_switch(struct task_struct *prev)
  		if (prev->sched_class->task_dead)
  			prev->sched_class->task_dead(prev);
  
-+		cgroup_task_dead(prev);
-+
++		/*
++		 * sched_ext_dead() must come before cgroup_task_dead() to
++		 * prevent cgroups from being removed while its member tasks are
++		 * visible to SCX schedulers.
++		 */
++		sched_ext_dead(prev);
+ 		cgroup_task_dead(prev);
+ 
  		/* Task is done with its stack. */
- 		put_task_stack(prev);
+diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+index 2b0e88206d07..840bc76210c8 100644
+--- a/kernel/sched/ext.c
++++ b/kernel/sched/ext.c
+@@ -2926,7 +2926,7 @@ void scx_cancel_fork(struct task_struct *p)
+ 	percpu_up_read(&scx_fork_rwsem);
+ }
+ 
+-void sched_ext_free(struct task_struct *p)
++void sched_ext_dead(struct task_struct *p)
+ {
+ 	unsigned long flags;
  
 -- 
 2.51.1
