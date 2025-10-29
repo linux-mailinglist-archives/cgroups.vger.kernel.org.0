@@ -1,49 +1,50 @@
-Return-Path: <cgroups+bounces-11395-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11382-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8112C1A636
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 13:52:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D85FAC1A879
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 14:09:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 52C653586C7
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 12:52:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7005D46711F
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 12:46:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F38836E36E;
-	Wed, 29 Oct 2025 12:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F7A233F399;
+	Wed, 29 Oct 2025 12:25:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="efcNJ+8u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AVaWB+9l"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 142EE36E364;
-	Wed, 29 Oct 2025 12:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75AD33F388;
+	Wed, 29 Oct 2025 12:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761740804; cv=none; b=dUmlNxkuZ2nlMcAtr5LpA03TKpna64U/GnolDi9fYx3/j2BwELeO8suRxa5GIwJ8pMh9AhYZ4jOyQjihty19GCFCTqqqG7qAnxxtpE8O/r+noVGnVgOdjwO0MS8tM1iW2AKJCnfa1AUOn8c3BpasmkXfqHR2d9pU7BfrnZmOX08=
+	t=1761740737; cv=none; b=LEPS+yKvG7SCSg63A1bnn5MY1FSF9Md2hoSvDaXB0uJfLjyQi4/UXWGT4ztaU1OB0qZrqJjJCAdUjINCXw7pHGLVV6YHK5sKoNh712fT6LhK3pllbDFNIs5vPeJQ7WtrrEmCY6rtf7sCC1Cwauokk440LItWNmyCNp7fmuPFLyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761740804; c=relaxed/simple;
-	bh=QwDkSH3kLhu9Ya7BrIayv5fawfziMOL3Z/w1iCrFClA=;
+	s=arc-20240116; t=1761740737; c=relaxed/simple;
+	bh=KWYYGboDUt3swjKDxkebVx+xZOw67uWV/kh+IrzwFAE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=kgnelzXUPcVlxlSI7qSUeg5IWGVj4exXoycE66qhMr2t5kWuA57SPUL+buhxzIhm7HPnsFZNq5mdtrbbogR2El/pA328n+n22Qk5gkT+rWhywcXvaxNAe5bDCwGGj6ZgWF11vwUDwOu0Sy82GwGgZVcup2UMHAVzrx2H6GrWmo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=efcNJ+8u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81FF3C4CEFD;
-	Wed, 29 Oct 2025 12:26:39 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=ijfSe8vQtUjoQoNl6ren5XPmGxOSEg5Db3mmnJwz9qes386FQlc1w80IY0AeOIxbXuES/wQkh/yVSqiAzOXOJVeZCFlb76dRmB8IUEa7gEw5WcnDyEF6PPiyw+jS7+anLwXiVBNn9GmCX7kKawu/RWxuKnXq61FJ429gTsHN9U0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AVaWB+9l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCA9DC4CEF7;
+	Wed, 29 Oct 2025 12:25:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761740803;
-	bh=QwDkSH3kLhu9Ya7BrIayv5fawfziMOL3Z/w1iCrFClA=;
+	s=k20201202; t=1761740737;
+	bh=KWYYGboDUt3swjKDxkebVx+xZOw67uWV/kh+IrzwFAE=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=efcNJ+8uAGYgVJbZ2+NBccn0ZQjG0fPIeB9bz8Nq0SvOmbsmZbWL2tJv0RmtWuAcT
-	 6zjksw5gEJUS3CTWxDoMFibgLEB6AUF2Q7gb2xiMSUXtFtWn/R23M4jOL7ltrbeb/u
-	 ol8T5k8j2uI36alxuWbyjFpN2yh7nG2YVvLZ2jnHaycmO1CiR3Mgvg7JyP2LGmIYiG
-	 +rZ9q07n80+XgXbYUo7iiqhpAueRLthbXqwJfOlMJ3cZZDTiz5X3Rv/FWRu7/ys5fc
-	 plACgDT26f5t1kqpEDGrpKLNv9NHobqbxbvmjqzWpAzf61uvI7d9JY44s3T43Yd6fv
-	 x+fe2AFckhDvw==
+	b=AVaWB+9lgEiya89wxq9QmoGHXnKfVa+Etod4Hrej3a5f2Eg6FStTI1xbIgXRFA9zC
+	 PI4r41FIV9BASaM+eRPN8NZw4Up9UJl79JByB5Hs0gKRpfk4WShrDkQ7f6w6HLldKO
+	 FmQdbt7uVt95/SJHqCkTIrk4ZraDzXhZFYgVIU8MsZJLlY5ThfNPg71Q/BmJKtVah8
+	 DzgBL3es4Es58K/yWJRDK1FLJekz6STMgszsauBgsveIVIXQyBqeFJ12VHqP5yv4az
+	 kiB3GKQAnhG9N3Pvyc03IS0J143ZuH37Py6BG3f5udqUHtbsDbs2vFPw/2ejS/2k0s
+	 hXQUrDuJa1Icw==
 From: Christian Brauner <brauner@kernel.org>
-Date: Wed, 29 Oct 2025 13:21:25 +0100
-Subject: [PATCH v4 72/72] selftests/namespace: test listns() pagination
+Date: Wed, 29 Oct 2025 13:21:12 +0100
+Subject: [PATCH v4 59/72] selftests/namespaces: fifth inactive namespace
+ resurrection test
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -52,7 +53,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251029-work-namespace-nstree-listns-v4-72-2e6f823ebdc0@kernel.org>
+Message-Id: <20251029-work-namespace-nstree-listns-v4-59-2e6f823ebdc0@kernel.org>
 References: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
 In-Reply-To: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
 To: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
@@ -69,197 +70,57 @@ Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>,
  netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
  Christian Brauner <brauner@kernel.org>
 X-Mailer: b4 0.15-dev-96507
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5137; i=brauner@kernel.org;
- h=from:subject:message-id; bh=QwDkSH3kLhu9Ya7BrIayv5fawfziMOL3Z/w1iCrFClA=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQysU2Q6TYOOrAk4Uqv2a6PU97OSDk4V3iXc2lF9qw7V
- 9bLNs/f0VHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCRr7cY/ns7ZRsJZzbwPppe
- 8cv9zwKpRUsNd3+Z+mvKtucPDonOmLybkWGV8ufIx7KLt98y1tn/RHRfXY2bu71myPa+d+eblx/
- 4ncAFAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1167; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=KWYYGboDUt3swjKDxkebVx+xZOw67uWV/kh+IrzwFAE=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQysfW/VN/m4BTSM/f00QkLPtR9/Rzjo2cSfWd9s3HFI
+ t8FcdbTO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACaSz8rIsMFt9a8jxyUuv87Y
+ Gv3kU8nz3S9Zk++df8F0tluwXY9v5j6Gf2ZGLJtVuwxu+j79X3MnQ4cl5vFLrvKQoopO56fmX9t
+ EmAE=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-Minimal test case to reproduce KASAN out-of-bounds in listns pagination.
+Test SIOCGSKNS fails on non-socket file descriptors.
 
 Signed-off-by: Christian Brauner <brauner@kernel.org>
 ---
- tools/testing/selftests/namespaces/.gitignore      |   1 +
- tools/testing/selftests/namespaces/Makefile        |   4 +-
- .../selftests/namespaces/listns_pagination_bug.c   | 138 +++++++++++++++++++++
- 3 files changed, 142 insertions(+), 1 deletion(-)
+ .../testing/selftests/namespaces/siocgskns_test.c  | 26 ++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/tools/testing/selftests/namespaces/.gitignore b/tools/testing/selftests/namespaces/.gitignore
-index f6dcf769f150..f4d2209ca4e4 100644
---- a/tools/testing/selftests/namespaces/.gitignore
-+++ b/tools/testing/selftests/namespaces/.gitignore
-@@ -7,3 +7,4 @@ listns_permissions_test
- siocgskns_test
- cred_change_test
- stress_test
-+listns_pagination_bug
-diff --git a/tools/testing/selftests/namespaces/Makefile b/tools/testing/selftests/namespaces/Makefile
-index 3c776740f3ac..01569e0abbdb 100644
---- a/tools/testing/selftests/namespaces/Makefile
-+++ b/tools/testing/selftests/namespaces/Makefile
-@@ -10,7 +10,8 @@ TEST_GEN_PROGS := nsid_test \
- 		  listns_permissions_test \
- 		  siocgskns_test \
- 		  cred_change_test \
--		  stress_test
-+		  stress_test \
-+		  listns_pagination_bug
+diff --git a/tools/testing/selftests/namespaces/siocgskns_test.c b/tools/testing/selftests/namespaces/siocgskns_test.c
+index 28e45954c4fa..bbfef3c51ac1 100644
+--- a/tools/testing/selftests/namespaces/siocgskns_test.c
++++ b/tools/testing/selftests/namespaces/siocgskns_test.c
+@@ -307,4 +307,30 @@ TEST(siocgskns_across_setns)
+ 	close(netns_a_fd);
+ }
  
- include ../lib.mk
- 
-@@ -20,4 +21,5 @@ $(OUTPUT)/listns_permissions_test: ../filesystems/utils.c
- $(OUTPUT)/siocgskns_test: ../filesystems/utils.c
- $(OUTPUT)/cred_change_test: ../filesystems/utils.c
- $(OUTPUT)/stress_test: ../filesystems/utils.c
-+$(OUTPUT)/listns_pagination_bug: ../filesystems/utils.c
- 
-diff --git a/tools/testing/selftests/namespaces/listns_pagination_bug.c b/tools/testing/selftests/namespaces/listns_pagination_bug.c
-new file mode 100644
-index 000000000000..da7d33f96397
---- /dev/null
-+++ b/tools/testing/selftests/namespaces/listns_pagination_bug.c
-@@ -0,0 +1,138 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <sched.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/socket.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+#include "../kselftest_harness.h"
-+#include "../filesystems/utils.h"
-+#include "wrappers.h"
-+
 +/*
-+ * Minimal test case to reproduce KASAN out-of-bounds in listns pagination.
-+ *
-+ * The bug occurs when:
-+ * 1. Filtering by a specific namespace type (e.g., CLONE_NEWUSER)
-+ * 2. Using pagination (req.ns_id != 0)
-+ * 3. The lookup_ns_id_at() call in do_listns() passes ns_type=0 instead of
-+ *    the filtered type, causing it to search the unified tree and potentially
-+ *    return a namespace of the wrong type.
++ * Test SIOCGSKNS fails on non-socket file descriptors.
 + */
-+TEST(pagination_with_type_filter)
++TEST(siocgskns_non_socket)
 +{
-+	struct ns_id_req req = {
-+		.size = sizeof(req),
-+		.spare = 0,
-+		.ns_id = 0,
-+		.ns_type = CLONE_NEWUSER,  /* Filter by user namespace */
-+		.spare2 = 0,
-+		.user_ns_id = 0,
-+	};
-+	pid_t pids[10];
-+	int num_children = 10;
-+	int i;
-+	int sv[2];
-+	__u64 first_batch[3];
-+	ssize_t ret;
++	int fd;
++	int pipefd[2];
 +
-+	ASSERT_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
++	/* Test on regular file */
++	fd = open("/dev/null", O_RDONLY);
++	ASSERT_GE(fd, 0);
 +
-+	/* Create children with user namespaces */
-+	for (i = 0; i < num_children; i++) {
-+		pids[i] = fork();
-+		ASSERT_GE(pids[i], 0);
++	ASSERT_LT(ioctl(fd, SIOCGSKNS), 0);
++	ASSERT_TRUE(errno == ENOTTY || errno == EINVAL);
++	close(fd);
 +
-+		if (pids[i] == 0) {
-+			char c;
-+			close(sv[0]);
++	/* Test on pipe */
++	ASSERT_EQ(pipe(pipefd), 0);
 +
-+			if (setup_userns() < 0) {
-+				close(sv[1]);
-+				exit(1);
-+			}
++	ASSERT_LT(ioctl(pipefd[0], SIOCGSKNS), 0);
++	ASSERT_TRUE(errno == ENOTTY || errno == EINVAL);
 +
-+			/* Signal parent we're ready */
-+			if (write(sv[1], &c, 1) != 1) {
-+				close(sv[1]);
-+				exit(1);
-+			}
-+
-+			/* Wait for parent signal to exit */
-+			if (read(sv[1], &c, 1) != 1) {
-+				close(sv[1]);
-+				exit(1);
-+			}
-+
-+			close(sv[1]);
-+			exit(0);
-+		}
-+	}
-+
-+	close(sv[1]);
-+
-+	/* Wait for all children to signal ready */
-+	for (i = 0; i < num_children; i++) {
-+		char c;
-+		if (read(sv[0], &c, 1) != 1) {
-+			close(sv[0]);
-+			for (int j = 0; j < num_children; j++)
-+				kill(pids[j], SIGKILL);
-+			for (int j = 0; j < num_children; j++)
-+				waitpid(pids[j], NULL, 0);
-+			ASSERT_TRUE(false);
-+		}
-+	}
-+
-+	/* First batch - this should work */
-+	ret = sys_listns(&req, first_batch, 3, 0);
-+	if (ret < 0) {
-+		if (errno == ENOSYS) {
-+			close(sv[0]);
-+			for (i = 0; i < num_children; i++)
-+				kill(pids[i], SIGKILL);
-+			for (i = 0; i < num_children; i++)
-+				waitpid(pids[i], NULL, 0);
-+			SKIP(return, "listns() not supported");
-+		}
-+		ASSERT_GE(ret, 0);
-+	}
-+
-+	TH_LOG("First batch returned %zd entries", ret);
-+
-+	if (ret == 3) {
-+		__u64 second_batch[3];
-+
-+		/* Second batch - pagination triggers the bug */
-+		req.ns_id = first_batch[2];  /* Continue from last ID */
-+		ret = sys_listns(&req, second_batch, 3, 0);
-+
-+		TH_LOG("Second batch returned %zd entries", ret);
-+		ASSERT_GE(ret, 0);
-+	}
-+
-+	/* Signal all children to exit */
-+	for (i = 0; i < num_children; i++) {
-+		char c = 'X';
-+		if (write(sv[0], &c, 1) != 1) {
-+			close(sv[0]);
-+			for (int j = i; j < num_children; j++)
-+				kill(pids[j], SIGKILL);
-+			for (int j = 0; j < num_children; j++)
-+				waitpid(pids[j], NULL, 0);
-+			ASSERT_TRUE(false);
-+		}
-+	}
-+
-+	close(sv[0]);
-+
-+	/* Cleanup */
-+	for (i = 0; i < num_children; i++) {
-+		int status;
-+		waitpid(pids[i], &status, 0);
-+	}
++	close(pipefd[0]);
++	close(pipefd[1]);
 +}
 +
-+TEST_HARNESS_MAIN
+ TEST_HARNESS_MAIN
 
 -- 
 2.47.3
