@@ -1,343 +1,336 @@
-Return-Path: <cgroups+bounces-11397-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11398-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37AB0C1BA4C
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 16:26:57 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55E19C1BE0B
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 16:59:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BA256486E6
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 15:02:11 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 154DD5C5C46
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 15:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B172DC774;
-	Wed, 29 Oct 2025 15:01:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A8F330D51;
+	Wed, 29 Oct 2025 15:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g0/xvo5Y"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FdCm4kM2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E19712DC331;
-	Wed, 29 Oct 2025 15:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0058D239573
+	for <cgroups@vger.kernel.org>; Wed, 29 Oct 2025 15:31:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761750062; cv=none; b=JIlJfd85jrILdl3rFezh0NeuMQoczWq4NK11qFBLGBRhdTsQZwm6cObyWxt35ejikUB9/JfHp93+KxBGj/1hWko84CMXj/I/z3HllFcE7z4qejIMtKHrNffovLTVfpFq6jbk8GlA4eGfPpMpOvv4SHz1puRyGaAM7Gb7uQ8a9js=
+	t=1761751892; cv=none; b=cjjTGA4EtLMLoCWbdEAowoLeq0OObPqNcBqq+nxPVkJ9Vo9G05IduJRo02EUgNDtTqvAI4dwZR9gsjHbnDePQ7LQ3M+AFV3PB3OlbwwrV8VOctHPqLh0Z42Ef1vcC+4bO3ItY9iAkJk5bPkduXUUgwgi40envdOCOrjrkrd6blA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761750062; c=relaxed/simple;
-	bh=F5n5z0KyfWMmHsQHJAWC2zWOC4RT8iQtcP2+/uIr83Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y85Ih+CUV7XQlGJWxmocFYDiECWZikkNNW8Dx9jl/f565gBtBRmAURJvfgJ+vnO5eG4XyiHdQPbauMd00zlgs+224vk1cEkVbToWJVisbS29NGX+U7qBUhfU/A+6LQQ6PcXSMYo03XCIWIwlDG9TtvSP+jucxGFlnXUMmMJXbdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g0/xvo5Y; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1761750060; x=1793286060;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=F5n5z0KyfWMmHsQHJAWC2zWOC4RT8iQtcP2+/uIr83Y=;
-  b=g0/xvo5YoFNAqu15sBK6xVp6sh1rvNY5zaJ/6J7mEFaIrqJKDqFbJysB
-   DO+oiYtIJYRULL+pl31L8sWgYHUTlXvz1J1POMWpIAKKQeJ5oNn8oxsTl
-   3VbsvcPeFHOSa+UPLiHRuJdqn5ttUKusriqQGfHVNVJ94OFhICjGN03ud
-   Z6aHGooELvEIczdHOL3dy1bYQmnkyoOWIVy8zw0nTD5bBHVuG6Hr9idDA
-   PkbpkueX5gJOnKDy6IYWurMU2Nmz5k17FRDj7zFFgVV1M9B+k7gwKWfoU
-   Sjo7CmdlavHzlPY/jeouUlSt7/+pSRVGNYCbdu9zVQbocvqVDNRO0k8kW
-   A==;
-X-CSE-ConnectionGUID: DgXMmgJQREeuu8ZkhRqsCw==
-X-CSE-MsgGUID: W4HhHCbLSnqxiYdmqwN44g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11597"; a="74992007"
-X-IronPort-AV: E=Sophos;i="6.19,264,1754982000"; 
-   d="scan'208";a="74992007"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2025 08:00:59 -0700
-X-CSE-ConnectionGUID: pK2T9YRIRm6PeQVebwJAJA==
-X-CSE-MsgGUID: jevWLkN2QvCOWGSZVzvg2g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,264,1754982000"; 
-   d="scan'208";a="190862784"
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by fmviesa004.fm.intel.com with ESMTP; 29 Oct 2025 08:00:53 -0700
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vE7b8-000Khx-2A;
-	Wed, 29 Oct 2025 14:57:12 +0000
-Date: Wed, 29 Oct 2025 22:55:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>,
-	Jeff Layton <jlayton@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, Jann Horn <jannh@google.com>,
-	Mike Yuan <me@yhndnzj.com>,
-	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
-	Lennart Poettering <mzxreary@0pointer.de>,
-	Daan De Meyer <daan.j.demeyer@gmail.com>,
-	Aleksa Sarai <cyphar@cyphar.com>,
-	Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v4 13/72] nstree: introduce a unified tree
-Message-ID: <202510292238.OTyD5CXw-lkp@intel.com>
-References: <20251029-work-namespace-nstree-listns-v4-13-2e6f823ebdc0@kernel.org>
+	s=arc-20240116; t=1761751892; c=relaxed/simple;
+	bh=4kJkPpViT84UOyWJPK2MzMaXfq/uCGJY++sop0qrvwA=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=cOZwrk/c0+FsL04WBWxw/1j/5zyxpPIsEI5utS5L5F/NB94CFgMGywaiR0kgADsfQ/l084iWHmN1qSPm7eNnnY2oIlpRvBydCWCsULrbDNxeDYHrTF7n/bIjATRt11VESzrPetlMyXiRXos86n6Cd62aZNVxvNjhcIGIQ/2YuA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FdCm4kM2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1761751890;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ay3GVREC02A0XZ2TjQyfHhRYCkbbQhZBnuTohtO/ndA=;
+	b=FdCm4kM2ot2zx7vXPnFnQsGMHK4+1jd1X48caT2kg0G3wmorYrI3RJhPJVbQaxNSpoyfb1
+	yFLfQ4GylZ09WTlYHcIM9ZZyApyuABiMdKmNz28Y8VfaiFATnngkztsC0eSGNJDsgnuRE8
+	D45GkDpu4VWq+i6YH1yimn0lKMmFBOc=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-489-7_-TAqs8NDCjViwsR53tGg-1; Wed, 29 Oct 2025 11:31:27 -0400
+X-MC-Unique: 7_-TAqs8NDCjViwsR53tGg-1
+X-Mimecast-MFC-AGG-ID: 7_-TAqs8NDCjViwsR53tGg_1761751886
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-87c1cc5a75dso2352956d6.0
+        for <cgroups@vger.kernel.org>; Wed, 29 Oct 2025 08:31:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761751886; x=1762356686;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ay3GVREC02A0XZ2TjQyfHhRYCkbbQhZBnuTohtO/ndA=;
+        b=nyBxXv9riY50ouw23TabdUP6ev0Qg+U6sPXLjZtXdM5D0K6m18XsQ5+O9z1g8PaaCR
+         tHf+7vSBxx44IMbzdQn58hIS86hhMGbv2Gc5Lz9cjc6Kc7bxM+W8T5zW6TY7CW0iaE4X
+         AQBCqvARjJLNXR5SzNjPpp6eeGsWSgKQPPFIFyn+Bkj1ncH6K5N2MAGGrpVW2vl7VplR
+         mbsBbYXM7D6UreBGtRJSfXmX63du8mlhZDVMtatiFLV7Ud6GRQKrr197Wfoj5URk6TCm
+         PYhk8mLSHopXYbXpKDW5FX3XKMA5/qHqhR18Vtxnj4MRHVGzmH1CcdUqABU4y2qvGxqh
+         ivmw==
+X-Forwarded-Encrypted: i=1; AJvYcCWCQo7+CsU3jB5V0fzJzL+/8y7HURM1TU+be90xdGDMMdPww8xSfx6HqzVY2bdwGE1mNh1mLggj@vger.kernel.org
+X-Gm-Message-State: AOJu0YwiJd76Ce/nTOdQUW0BxQKQ4unSJOlaDSOJIa4NHjqeuotzBfZ9
+	DU6t2GXh/mp56Lb6NLWdsYBeUYjMOq3O3NFgLOvkNv2wF8gzvSBs7u/FcdVCLO1SPLg8RZfOalU
+	xF+Wq+sCc9F7NpIvOJDmkX2+QW/px2QE3LjGL/tY1W3XNOv6BV6+XvMMWR4Q=
+X-Gm-Gg: ASbGncueTl1oXRrFCtiksGDEEmQ6IZlcjU79rPtGX30/lyHcY9JKdp7BRVHeUi3XuDP
+	3UwKJtpEx8CmmDzXBKLrltuPQfOgu7NQibhYTqCGl9j+fw8OVuSVfwEFRVu1kFPGDocW0gFGl7X
+	EeMRWn8diPd1NDS9npgI7iVLavZa+/gJOvyhk7ySnl6hHNj+g504dfKx0sIoykONKrjJ7tOgLWi
+	pzwGi53zE0sIFeYIU3L8rKxiE5//JYC3pujvUkInqQNCkt1lqVqJELwHKIG2ZIzOl0MXbpVEXf8
+	8xE1ATHLYBojX9R1Pe+GuQ1eWkbN7yeIgnWVUueWg1Eth7s9wmidR00k9spLXkblARS348GIY1m
+	DgxzRZKojrQ1JDRfSDiS8o238f5jIluek0wZMsHmVjOCPJQ==
+X-Received: by 2002:a05:6214:d67:b0:81b:23d:55a8 with SMTP id 6a1803df08f44-88009c2847cmr40476186d6.59.1761751886324;
+        Wed, 29 Oct 2025 08:31:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFys7HZ0z2qOJPlFPdrALA3NTmGw21B0aVlfZnCHalAutSq/VNf86cOTWelivjXx+NLDX1KNg==
+X-Received: by 2002:a05:6214:d67:b0:81b:23d:55a8 with SMTP id 6a1803df08f44-88009c2847cmr40475516d6.59.1761751885717;
+        Wed, 29 Oct 2025 08:31:25 -0700 (PDT)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-87fc4962376sm100081026d6.41.2025.10.29.08.31.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Oct 2025 08:31:25 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <52252077-30cb-4a71-ba2a-1c4ecb36df37@redhat.com>
+Date: Wed, 29 Oct 2025 11:31:23 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251029-work-namespace-nstree-listns-v4-13-2e6f823ebdc0@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv4 2/2] sched/deadline: Walk up cpuset hierarchy to decide
+ root domain when hot-unplug
+To: Pingfan Liu <piliu@redhat.com>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Juri Lelli
+ <juri.lelli@redhat.com>, Pierre Gondois <pierre.gondois@arm.com>,
+ Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
+References: <20251028034357.11055-1-piliu@redhat.com>
+ <20251028034357.11055-2-piliu@redhat.com>
+Content-Language: en-US
+In-Reply-To: <20251028034357.11055-2-piliu@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Christian,
+On 10/27/25 11:43 PM, Pingfan Liu wrote:
+> *** Bug description ***
+> When testing kexec-reboot on a 144 cpus machine with
+> isolcpus=managed_irq,domain,1-71,73-143 in kernel command line, I
+> encounter the following bug:
+>
+> [   97.114759] psci: CPU142 killed (polled 0 ms)
+> [   97.333236] Failed to offline CPU143 - error=-16
+> [   97.333246] ------------[ cut here ]------------
+> [   97.342682] kernel BUG at kernel/cpu.c:1569!
+> [   97.347049] Internal error: Oops - BUG: 00000000f2000800 [#1] SMP
+> [...]
+>
+> In essence, the issue originates from the CPU hot-removal process, not
+> limited to kexec. It can be reproduced by writing a SCHED_DEADLINE
+> program that waits indefinitely on a semaphore, spawning multiple
+> instances to ensure some run on CPU 72, and then offlining CPUs 1–143
+> one by one. When attempting this, CPU 143 failed to go offline.
+>    bash -c 'taskset -cp 0 $$ && for i in {1..143}; do echo 0 > /sys/devices/system/cpu/cpu$i/online 2>/dev/null; done'
+>
+> `
+> *** Issue ***
+> Tracking down this issue, I found that dl_bw_deactivate() returned
+> -EBUSY, which caused sched_cpu_deactivate() to fail on the last CPU.
+> But that is not the fact, and contributed by the following factors:
+> When a CPU is inactive, cpu_rq()->rd is set to def_root_domain. For an
+> blocked-state deadline task (in this case, "cppc_fie"), it was not
+> migrated to CPU0, and its task_rq() information is stale. So its rq->rd
+> points to def_root_domain instead of the one shared with CPU0.  As a
+> result, its bandwidth is wrongly accounted into a wrong root domain
+> during domain rebuild.
+>
+> The key point is that root_domain is only tracked through active rq->rd.
+> To avoid using a global data structure to track all root_domains in the
+> system, there should be a method to locate an active CPU within the
+> corresponding root_domain.
+>
+> *** Solution ***
+> To locate the active cpu, the following rules for deadline
+> sub-system is useful
+>    -1.any cpu belongs to a unique root domain at a given time
+>    -2.DL bandwidth checker ensures that the root domain has active cpus.
+>
+> Now, let's examine the blocked-state task P.
+> If P is attached to a cpuset that is a partition root, it is
+> straightforward to find an active CPU.
+> If P is attached to a cpuset that has changed from 'root' to 'member',
+> the active CPUs are grouped into the parent root domain. Naturally, the
+> CPUs' capacity and reserved DL bandwidth are taken into account in the
+> ancestor root domain. (In practice, it may be unsafe to attach P to an
+> arbitrary root domain, since that domain may lack sufficient DL
+> bandwidth for P.) Again, it is straightforward to find an active CPU in
+> the ancestor root domain.
+>
+> This patch groups CPUs into isolated and housekeeping sets. For the
+> housekeeping group, it walks up the cpuset hierarchy to find active CPUs
+> in P's root domain and retrieves the valid rd from cpu_rq(cpu)->rd.
+>
+> Signed-off-by: Pingfan Liu <piliu@redhat.com>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: "Michal Koutný" <mkoutny@suse.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Pierre Gondois <pierre.gondois@arm.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> To: cgroups@vger.kernel.org
+> To: linux-kernel@vger.kernel.org
+> ---
+> v3 -> v4:
+> rename function with cpuset_ prefix
+> improve commit log
+>
+>   include/linux/cpuset.h  | 18 ++++++++++++++++++
+>   kernel/cgroup/cpuset.c  | 26 ++++++++++++++++++++++++++
+>   kernel/sched/deadline.c | 30 ++++++++++++++++++++++++------
+>   3 files changed, 68 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> index 2ddb256187b51..d4da93e51b37b 100644
+> --- a/include/linux/cpuset.h
+> +++ b/include/linux/cpuset.h
+> @@ -12,6 +12,7 @@
+>   #include <linux/sched.h>
+>   #include <linux/sched/topology.h>
+>   #include <linux/sched/task.h>
+> +#include <linux/sched/housekeeping.h>
+>   #include <linux/cpumask.h>
+>   #include <linux/nodemask.h>
+>   #include <linux/mm.h>
+> @@ -130,6 +131,7 @@ extern void rebuild_sched_domains(void);
+>   
+>   extern void cpuset_print_current_mems_allowed(void);
+>   extern void cpuset_reset_sched_domains(void);
+> +extern void cpuset_get_task_effective_cpus(struct task_struct *p, struct cpumask *cpus);
+>   
+>   /*
+>    * read_mems_allowed_begin is required when making decisions involving
+> @@ -276,6 +278,22 @@ static inline void cpuset_reset_sched_domains(void)
+>   	partition_sched_domains(1, NULL, NULL);
+>   }
+>   
+> +static inline void cpuset_get_task_effective_cpus(struct task_struct *p,
+> +		struct cpumask *cpus)
+> +{
+> +	const struct cpumask *hk_msk;
+> +
+> +	hk_msk = housekeeping_cpumask(HK_TYPE_DOMAIN);
+> +	if (housekeeping_enabled(HK_TYPE_DOMAIN)) {
+> +		if (!cpumask_intersects(p->cpus_ptr, hk_msk)) {
+> +			/* isolated cpus belong to a root domain */
+> +			cpumask_andnot(cpus, cpu_active_mask, hk_msk);
+> +			return;
+> +		}
+> +	}
+> +	cpumask_and(cpus, cpu_active_mask, hk_msk);
+> +}
+> +
+>   static inline void cpuset_print_current_mems_allowed(void)
+>   {
+>   }
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 27adb04df675d..6ad88018f1a4e 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1102,6 +1102,32 @@ void cpuset_reset_sched_domains(void)
+>   	mutex_unlock(&cpuset_mutex);
+>   }
+>   
+> +/* caller hold RCU read lock */
+> +void cpuset_get_task_effective_cpus(struct task_struct *p, struct cpumask *cpus)
+> +{
+> +	const struct cpumask *hk_msk;
+> +	struct cpuset *cs;
+> +
+> +	hk_msk = housekeeping_cpumask(HK_TYPE_DOMAIN);
+> +	if (housekeeping_enabled(HK_TYPE_DOMAIN)) {
+> +		if (!cpumask_intersects(p->cpus_ptr, hk_msk)) {
+> +			/* isolated cpus belong to a root domain */
+> +			cpumask_andnot(cpus, cpu_active_mask, hk_msk);
+> +			return;
+> +		}
+> +	}
+> +	/* In HK_TYPE_DOMAIN, cpuset can be applied */
+> +	cs = task_cs(p);
+> +	while (cs != &top_cpuset) {
+> +		if (is_sched_load_balance(cs))
+> +			break;
+> +		cs = parent_cs(cs);
+> +	}
+> +
+> +	/* For top_cpuset, its effective_cpus does not exclude isolated cpu */
+> +	cpumask_and(cpus, cs->effective_cpus, hk_msk);
+> +}
+> +
 
-kernel test robot noticed the following build errors:
+It looks like you are trying to find a set of CPUs that are definitely 
+in a active sched domain. The difference between this version and the 
+!CONFIG_CPUSETS version in cpuset.h is the going up the cpuset hierarchy 
+to find one with load balancing enabled. I would suggest you extract 
+just this part out as a cpuset helper function and put the rests into 
+deadline.c as a separate helper function without the cpuset prefix. In 
+that way, you don't create a new housekeeping.h header file.
 
-[auto build test ERROR on 3a8660878839faadb4f1a6dd72c3179c1df56787]
+>   /**
+>    * cpuset_update_tasks_cpumask - Update the cpumasks of tasks in the cpuset.
+>    * @cs: the cpuset in which each task's cpus_allowed mask needs to be changed
+> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> index 72c1f72463c75..a3a43baf4314e 100644
+> --- a/kernel/sched/deadline.c
+> +++ b/kernel/sched/deadline.c
+> @@ -2884,6 +2884,8 @@ void dl_add_task_root_domain(struct task_struct *p)
+>   	struct rq_flags rf;
+>   	struct rq *rq;
+>   	struct dl_bw *dl_b;
+> +	unsigned int cpu;
+> +	struct cpumask msk;
+>   
+>   	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
+>   	if (!dl_task(p) || dl_entity_is_special(&p->dl)) {
+> @@ -2891,16 +2893,32 @@ void dl_add_task_root_domain(struct task_struct *p)
+>   		return;
+>   	}
+>   
+> -	rq = __task_rq_lock(p, &rf);
+> -
+> +	/* prevent race among cpu hotplug, changing of partition_root_state */
+> +	lockdep_assert_cpus_held();
+> +	/*
+> +	 * If @p is in blocked state, task_cpu() may be not active. In that
+> +	 * case, rq->rd does not trace a correct root_domain. On the other hand,
+> +	 * @p must belong to an root_domain at any given time, which must have
+> +	 * active rq, whose rq->rd traces the valid root domain.
+> +	 */
+> +	cpuset_get_task_effective_cpus(p, &msk);
+> +	cpu = cpumask_first_and(cpu_active_mask, &msk);
+> +	/*
+> +	 * If a root domain reserves bandwidth for a DL task, the DL bandwidth
+> +	 * check prevents CPU hot removal from deactivating all CPUs in that
+> +	 * domain.
+> +	 */
+> +	BUG_ON(cpu >= nr_cpu_ids);
+> +	rq = cpu_rq(cpu);
+> +	/*
+> +	 * This point is under the protection of cpu_hotplug_lock. Hence
+> +	 * rq->rd is stable.
+> +	 */
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Brauner/libfs-allow-to-specify-s_d_flags/20251029-205841
-base:   3a8660878839faadb4f1a6dd72c3179c1df56787
-patch link:    https://lore.kernel.org/r/20251029-work-namespace-nstree-listns-v4-13-2e6f823ebdc0%40kernel.org
-patch subject: [PATCH v4 13/72] nstree: introduce a unified tree
-config: m68k-allnoconfig (https://download.01.org/0day-ci/archive/20251029/202510292238.OTyD5CXw-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 15.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251029/202510292238.OTyD5CXw-lkp@intel.com/reproduce)
+So you trying to find a active sched domain with some dl bw to use for 
+checking. I don't know enough about this dl bw checking code to know if 
+it is valid or not. I will let Juri comment on that.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510292238.OTyD5CXw-lkp@intel.com/
+Cheers,
+Longman
 
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/init.h:5,
-                    from include/linux/printk.h:6,
-                    from include/asm-generic/bug.h:22,
-                    from arch/m68k/include/asm/bug.h:32,
-                    from include/linux/bug.h:5,
-                    from include/linux/thread_info.h:13,
-                    from include/asm-generic/preempt.h:5,
-                    from ./arch/m68k/include/generated/asm/preempt.h:1,
-                    from include/linux/preempt.h:79,
-                    from arch/m68k/include/asm/irqflags.h:6,
-                    from include/linux/irqflags.h:18,
-                    from arch/m68k/include/asm/atomic.h:6,
-                    from include/linux/atomic.h:7,
-                    from include/linux/refcount.h:104,
-                    from include/linux/ns_common.h:5,
-                    from include/linux/nstree.h:5,
-                    from kernel/nstree.c:3:
-   kernel/nstree.c: In function '__ns_tree_remove':
->> kernel/nstree.c:170:48: error: 'struct ns_tree' has no member named 'type'
-     170 |         VFS_WARN_ON_ONCE(ns->ns_type != ns_tree->type);
-         |                                                ^~
-   include/linux/build_bug.h:30:63: note: in definition of macro 'BUILD_BUG_ON_INVALID'
-      30 | #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
-         |                                                               ^
-   kernel/nstree.c:170:9: note: in expansion of macro 'VFS_WARN_ON_ONCE'
-     170 |         VFS_WARN_ON_ONCE(ns->ns_type != ns_tree->type);
-         |         ^~~~~~~~~~~~~~~~
-   kernel/nstree.c: In function '__ns_tree_adjoined_rcu':
-   kernel/nstree.c:297:98: error: 'struct ns_tree' has no member named 'type'
-     297 |         VFS_WARN_ON_ONCE(list_entry_rcu(list, struct ns_common, ns_list_node)->ns_type != ns_tree->type);
-         |                                                                                                  ^~
-   include/linux/build_bug.h:30:63: note: in definition of macro 'BUILD_BUG_ON_INVALID'
-      30 | #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
-         |                                                               ^
-   kernel/nstree.c:297:9: note: in expansion of macro 'VFS_WARN_ON_ONCE'
-     297 |         VFS_WARN_ON_ONCE(list_entry_rcu(list, struct ns_common, ns_list_node)->ns_type != ns_tree->type);
-         |         ^~~~~~~~~~~~~~~~
-
-
-vim +170 kernel/nstree.c
-
-885fc8ac0a4dc7 Christian Brauner 2025-09-12    2  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   @3  #include <linux/nstree.h>
-885fc8ac0a4dc7 Christian Brauner 2025-09-12    4  #include <linux/proc_ns.h>
-885fc8ac0a4dc7 Christian Brauner 2025-09-12    5  #include <linux/vfsdebug.h>
-885fc8ac0a4dc7 Christian Brauner 2025-09-12    6  
-01da9c6ec4269b Christian Brauner 2025-10-29    7  __cacheline_aligned_in_smp DEFINE_SEQLOCK(ns_tree_lock);
-01da9c6ec4269b Christian Brauner 2025-10-29    8  static struct rb_root ns_unified_tree = RB_ROOT; /* protected by ns_tree_lock */
-01da9c6ec4269b Christian Brauner 2025-10-29    9  
-10cdfcd37ade7c Christian Brauner 2025-09-24   10  /**
-10cdfcd37ade7c Christian Brauner 2025-09-24   11   * struct ns_tree - Namespace tree
-10cdfcd37ade7c Christian Brauner 2025-09-24   12   * @ns_tree: Rbtree of namespaces of a particular type
-10cdfcd37ade7c Christian Brauner 2025-09-24   13   * @ns_list: Sequentially walkable list of all namespaces of this type
-10cdfcd37ade7c Christian Brauner 2025-09-24   14   * @type: type of namespaces in this tree
-10cdfcd37ade7c Christian Brauner 2025-09-24   15   */
-10cdfcd37ade7c Christian Brauner 2025-09-24   16  struct ns_tree {
-10cdfcd37ade7c Christian Brauner 2025-09-24   17  	struct rb_root ns_tree;
-10cdfcd37ade7c Christian Brauner 2025-09-24   18  	struct list_head ns_list;
-01da9c6ec4269b Christian Brauner 2025-10-29   19  #ifdef CONFIG_DEBUG_VFS
-10cdfcd37ade7c Christian Brauner 2025-09-24   20  	int type;
-01da9c6ec4269b Christian Brauner 2025-10-29   21  #endif
-10cdfcd37ade7c Christian Brauner 2025-09-24   22  };
-10cdfcd37ade7c Christian Brauner 2025-09-24   23  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   24  struct ns_tree mnt_ns_tree = {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   25  	.ns_tree = RB_ROOT,
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   26  	.ns_list = LIST_HEAD_INIT(mnt_ns_tree.ns_list),
-01da9c6ec4269b Christian Brauner 2025-10-29   27  #ifdef CONFIG_DEBUG_VFS
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   28  	.type = CLONE_NEWNS,
-01da9c6ec4269b Christian Brauner 2025-10-29   29  #endif
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   30  };
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   31  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   32  struct ns_tree net_ns_tree = {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   33  	.ns_tree = RB_ROOT,
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   34  	.ns_list = LIST_HEAD_INIT(net_ns_tree.ns_list),
-01da9c6ec4269b Christian Brauner 2025-10-29   35  #ifdef CONFIG_DEBUG_VFS
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   36  	.type = CLONE_NEWNET,
-01da9c6ec4269b Christian Brauner 2025-10-29   37  #endif
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   38  };
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   39  EXPORT_SYMBOL_GPL(net_ns_tree);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   40  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   41  struct ns_tree uts_ns_tree = {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   42  	.ns_tree = RB_ROOT,
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   43  	.ns_list = LIST_HEAD_INIT(uts_ns_tree.ns_list),
-01da9c6ec4269b Christian Brauner 2025-10-29   44  #ifdef CONFIG_DEBUG_VFS
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   45  	.type = CLONE_NEWUTS,
-01da9c6ec4269b Christian Brauner 2025-10-29   46  #endif
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   47  };
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   48  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   49  struct ns_tree user_ns_tree = {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   50  	.ns_tree = RB_ROOT,
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   51  	.ns_list = LIST_HEAD_INIT(user_ns_tree.ns_list),
-01da9c6ec4269b Christian Brauner 2025-10-29   52  #ifdef CONFIG_DEBUG_VFS
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   53  	.type = CLONE_NEWUSER,
-01da9c6ec4269b Christian Brauner 2025-10-29   54  #endif
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   55  };
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   56  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   57  struct ns_tree ipc_ns_tree = {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   58  	.ns_tree = RB_ROOT,
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   59  	.ns_list = LIST_HEAD_INIT(ipc_ns_tree.ns_list),
-01da9c6ec4269b Christian Brauner 2025-10-29   60  #ifdef CONFIG_DEBUG_VFS
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   61  	.type = CLONE_NEWIPC,
-01da9c6ec4269b Christian Brauner 2025-10-29   62  #endif
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   63  };
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   64  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   65  struct ns_tree pid_ns_tree = {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   66  	.ns_tree = RB_ROOT,
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   67  	.ns_list = LIST_HEAD_INIT(pid_ns_tree.ns_list),
-01da9c6ec4269b Christian Brauner 2025-10-29   68  #ifdef CONFIG_DEBUG_VFS
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   69  	.type = CLONE_NEWPID,
-01da9c6ec4269b Christian Brauner 2025-10-29   70  #endif
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   71  };
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   72  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   73  struct ns_tree cgroup_ns_tree = {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   74  	.ns_tree = RB_ROOT,
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   75  	.ns_list = LIST_HEAD_INIT(cgroup_ns_tree.ns_list),
-01da9c6ec4269b Christian Brauner 2025-10-29   76  #ifdef CONFIG_DEBUG_VFS
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   77  	.type = CLONE_NEWCGROUP,
-01da9c6ec4269b Christian Brauner 2025-10-29   78  #endif
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   79  };
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   80  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   81  struct ns_tree time_ns_tree = {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   82  	.ns_tree = RB_ROOT,
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   83  	.ns_list = LIST_HEAD_INIT(time_ns_tree.ns_list),
-01da9c6ec4269b Christian Brauner 2025-10-29   84  #ifdef CONFIG_DEBUG_VFS
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   85  	.type = CLONE_NEWTIME,
-01da9c6ec4269b Christian Brauner 2025-10-29   86  #endif
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   87  };
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   88  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   89  DEFINE_COOKIE(namespace_cookie);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   90  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   91  static inline struct ns_common *node_to_ns(const struct rb_node *node)
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   92  {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   93  	if (!node)
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   94  		return NULL;
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   95  	return rb_entry(node, struct ns_common, ns_tree_node);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   96  }
-885fc8ac0a4dc7 Christian Brauner 2025-09-12   97  
-01da9c6ec4269b Christian Brauner 2025-10-29   98  static inline struct ns_common *node_to_ns_unified(const struct rb_node *node)
-01da9c6ec4269b Christian Brauner 2025-10-29   99  {
-01da9c6ec4269b Christian Brauner 2025-10-29  100  	if (!node)
-01da9c6ec4269b Christian Brauner 2025-10-29  101  		return NULL;
-01da9c6ec4269b Christian Brauner 2025-10-29  102  	return rb_entry(node, struct ns_common, ns_unified_tree_node);
-01da9c6ec4269b Christian Brauner 2025-10-29  103  }
-01da9c6ec4269b Christian Brauner 2025-10-29  104  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  105  static inline int ns_cmp(struct rb_node *a, const struct rb_node *b)
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  106  {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  107  	struct ns_common *ns_a = node_to_ns(a);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  108  	struct ns_common *ns_b = node_to_ns(b);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  109  	u64 ns_id_a = ns_a->ns_id;
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  110  	u64 ns_id_b = ns_b->ns_id;
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  111  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  112  	if (ns_id_a < ns_id_b)
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  113  		return -1;
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  114  	if (ns_id_a > ns_id_b)
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  115  		return 1;
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  116  	return 0;
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  117  }
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  118  
-01da9c6ec4269b Christian Brauner 2025-10-29  119  static inline int ns_cmp_unified(struct rb_node *a, const struct rb_node *b)
-01da9c6ec4269b Christian Brauner 2025-10-29  120  {
-01da9c6ec4269b Christian Brauner 2025-10-29  121  	struct ns_common *ns_a = node_to_ns_unified(a);
-01da9c6ec4269b Christian Brauner 2025-10-29  122  	struct ns_common *ns_b = node_to_ns_unified(b);
-01da9c6ec4269b Christian Brauner 2025-10-29  123  	u64 ns_id_a = ns_a->ns_id;
-01da9c6ec4269b Christian Brauner 2025-10-29  124  	u64 ns_id_b = ns_b->ns_id;
-01da9c6ec4269b Christian Brauner 2025-10-29  125  
-01da9c6ec4269b Christian Brauner 2025-10-29  126  	if (ns_id_a < ns_id_b)
-01da9c6ec4269b Christian Brauner 2025-10-29  127  		return -1;
-01da9c6ec4269b Christian Brauner 2025-10-29  128  	if (ns_id_a > ns_id_b)
-01da9c6ec4269b Christian Brauner 2025-10-29  129  		return 1;
-01da9c6ec4269b Christian Brauner 2025-10-29  130  	return 0;
-01da9c6ec4269b Christian Brauner 2025-10-29  131  }
-01da9c6ec4269b Christian Brauner 2025-10-29  132  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  133  void __ns_tree_add_raw(struct ns_common *ns, struct ns_tree *ns_tree)
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  134  {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  135  	struct rb_node *node, *prev;
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  136  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  137  	VFS_WARN_ON_ONCE(!ns->ns_id);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  138  
-01da9c6ec4269b Christian Brauner 2025-10-29  139  	write_seqlock(&ns_tree_lock);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  140  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  141  	node = rb_find_add_rcu(&ns->ns_tree_node, &ns_tree->ns_tree, ns_cmp);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  142  	/*
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  143  	 * If there's no previous entry simply add it after the
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  144  	 * head and if there is add it after the previous entry.
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  145  	 */
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  146  	prev = rb_prev(&ns->ns_tree_node);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  147  	if (!prev)
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  148  		list_add_rcu(&ns->ns_list_node, &ns_tree->ns_list);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  149  	else
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  150  		list_add_rcu(&ns->ns_list_node, &node_to_ns(prev)->ns_list_node);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  151  
-01da9c6ec4269b Christian Brauner 2025-10-29  152  	rb_find_add_rcu(&ns->ns_unified_tree_node, &ns_unified_tree, ns_cmp_unified);
-01da9c6ec4269b Christian Brauner 2025-10-29  153  	write_sequnlock(&ns_tree_lock);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  154  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  155  	VFS_WARN_ON_ONCE(node);
-cb9044bf715ece Christian Brauner 2025-10-29  156  
-cb9044bf715ece Christian Brauner 2025-10-29  157  	/*
-cb9044bf715ece Christian Brauner 2025-10-29  158  	 * Take an active reference on the owner namespace. This ensures
-cb9044bf715ece Christian Brauner 2025-10-29  159  	 * that the owner remains visible while any of its child namespaces
-cb9044bf715ece Christian Brauner 2025-10-29  160  	 * are active. For init namespaces this is a no-op as ns_owner()
-cb9044bf715ece Christian Brauner 2025-10-29  161  	 * returns NULL for namespaces owned by init_user_ns.
-cb9044bf715ece Christian Brauner 2025-10-29  162  	 */
-cb9044bf715ece Christian Brauner 2025-10-29  163  	__ns_ref_active_get_owner(ns);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  164  }
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  165  
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  166  void __ns_tree_remove(struct ns_common *ns, struct ns_tree *ns_tree)
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  167  {
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  168  	VFS_WARN_ON_ONCE(RB_EMPTY_NODE(&ns->ns_tree_node));
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  169  	VFS_WARN_ON_ONCE(list_empty(&ns->ns_list_node));
-4055526d35746c Christian Brauner 2025-09-24 @170  	VFS_WARN_ON_ONCE(ns->ns_type != ns_tree->type);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  171  
-01da9c6ec4269b Christian Brauner 2025-10-29  172  	write_seqlock(&ns_tree_lock);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  173  	rb_erase(&ns->ns_tree_node, &ns_tree->ns_tree);
-01da9c6ec4269b Christian Brauner 2025-10-29  174  	rb_erase(&ns->ns_unified_tree_node, &ns_unified_tree);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  175  	list_bidir_del_rcu(&ns->ns_list_node);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  176  	RB_CLEAR_NODE(&ns->ns_tree_node);
-01da9c6ec4269b Christian Brauner 2025-10-29  177  	write_sequnlock(&ns_tree_lock);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  178  }
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  179  EXPORT_SYMBOL_GPL(__ns_tree_remove);
-885fc8ac0a4dc7 Christian Brauner 2025-09-12  180  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
