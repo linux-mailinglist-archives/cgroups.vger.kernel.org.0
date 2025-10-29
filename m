@@ -1,62 +1,109 @@
-Return-Path: <cgroups+bounces-11316-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11317-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED67FC186E6
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 07:22:16 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05963C1895D
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 08:07:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E706F1C65A52
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 06:20:29 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4A4174EE883
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 07:02:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A89330ACE5;
-	Wed, 29 Oct 2025 06:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879833093D8;
+	Wed, 29 Oct 2025 07:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WW2j3Lpl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j29ntzDM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79E73090D7;
-	Wed, 29 Oct 2025 06:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC982EC553
+	for <cgroups@vger.kernel.org>; Wed, 29 Oct 2025 07:02:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761718764; cv=none; b=uArzMtG+FpJV4hxT7Px8zAT5CQsBMIYZNAALLNwvis26E67kO+dGuqqVYE5W1id8NupcxrTrzQZY9OqBB9oBbRxauWHpdrPDwZbSPaXo11jmDRZb+6h3ndqxKJjs7zuenbWEVSfcrWbnlYetbvjrvB4HFzWa5omxfa/mpvY8a2g=
+	t=1761721333; cv=none; b=Y/MCuiOra3mF0qjp2iL8BcUC4tuYMwM5y8bk0oofYRtwCocmrRonWcBXbWbbCpCnU7I/zGBLdk58/SUwVRqv/x7xkCx9dkehdUH8K38niTXcpIPoyppDRM4X7uhpxAfMKahwk9OlzzLU3e3CnV7Yjm5x/bPGhXCuNkFU+E6sDbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761718764; c=relaxed/simple;
-	bh=dki8nbEv4ptLcRQV89oVJKBG9e0Mf4cnUWQSzd2iXDo=;
+	s=arc-20240116; t=1761721333; c=relaxed/simple;
+	bh=bOMMbexI6aDIrNtf5vFEnbq7xQbKAIAvzY9lE5k/XRM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=csYX8MoTiOp6kY71SGljxwLqteN7x5+Nifcd7S1aouI8kdqkSWKpvnVDNKbVyKYVWO80mwfHiliro2Vq/W7FNn35meEP0ekv4ij2M/awMkun6aGFpGxxoi4d9odK3wsRc0RWEOCGxEfejo8nToF5X/z7PeNLPdqVtfj3QKrmOyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WW2j3Lpl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37238C4CEFB;
-	Wed, 29 Oct 2025 06:19:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761718764;
-	bh=dki8nbEv4ptLcRQV89oVJKBG9e0Mf4cnUWQSzd2iXDo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WW2j3Lpl0ywQwK42Njugukie2hynAJSok5DBhtbtB8DV3MGgSvGbya6NQVSTaLWxJ
-	 1u6USythLZvxCXW2kTVyXrO3Mlw669uh3BD2SnCTWP+K45WeXlmT/8yIUEZORz0j+R
-	 eOoCtozhoFksLgauzWXw2gyupxM46le70Qq/K3o+dpbvy60KkCt4cjMzBnZ0ZvRKRi
-	 jfxoTPk3LwRXG8+0haeaDnGfpI2MAs5EcvsCyMFCW3bZ9uzygWQ02XFwNfLitN3k3/
-	 Trr8BM7VQmqW5vNUZtBEcip7lltZBZqFZ0JQSlpXpjqEF49AHjrW3DvhyGob5lFLF0
-	 jEzXOApas9BaQ==
-From: Tejun Heo <tj@kernel.org>
-To: David Vernet <void@manifault.com>,
-	Andrea Righi <arighi@nvidia.com>,
-	Changwoo Min <changwoo@igalia.com>
-Cc: Dan Schatzberg <dschatzberg@meta.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	linux-kernel@vger.kernel.org,
+	 MIME-Version; b=SI40E7IbcpC6c5xdGczifpJ4H1tgWaxSWz0Hnxf41PF+IOvqPrEUX2JHBExYgB7B+21u9oYfukShXy+9qjpyYxYn/ncqdq6om6mmehupwN/dc6oMONd8OlScx+ndqFR9DPyEp2DTrbceauVYu3/RMWsCqWnoOEK7S/AJTP+mx4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j29ntzDM; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b6d855ca585so404640366b.0
+        for <cgroups@vger.kernel.org>; Wed, 29 Oct 2025 00:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761721330; x=1762326130; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WJozr33q7O27eAQclKBlJRIBGxacAxdnJElnx38SopM=;
+        b=j29ntzDMrMILNznyMnLaFNonyxUQlkI17x0SAIP+O3S3kkRi6A5wz4D8Sh4N6ipdP5
+         bXNJXLez1aVZ9szkbqccEd65LzvkN8QJFNy29rRUEaRL2S1fTqWSrAlNnLNLkx5AG+rk
+         Yh9Xg2JEralnbPrlvuVekssLc4/FLAxJBPNLj8K6NLZqJKv2mvsshXtIC+HRo+Hm5EH6
+         inOLl3GfFrmR/sEI7AD1KVrW29YDyiHfIUtSQkHRoG3gBQlu9w/RSkS3mLAG0SV4P7ol
+         q4O2r8FzF55Z4oFF63Pw/GV2F1psb4ALwL+c6Mqu8zS+Kcmixkt3E349qPGnB8v/pk/T
+         rciA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761721330; x=1762326130;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WJozr33q7O27eAQclKBlJRIBGxacAxdnJElnx38SopM=;
+        b=YkF8mXaJRjV13NKJ81QEtpPWMNt91vSkOND14x7OMVgT0d+pg+exdV5g9GgshYvci8
+         0LPuEDLwbmIIc2kjdHhKvxuMUG/SlmgFDz+Z/FfB9yzwJafEzNtSLFzRd7fMho+zZF3c
+         vGyg0PVLLnEXRr3FQUi5oJC6uKrPGcICrp4vmsvKBlI+Bkzm2KnI9UEPOeN1youTKsZN
+         fUPy61y95SxwCk+vuJidn425MiqCYCne7lVbk3PkwGZKbtkcJGnSZwuRsvH3Wuec/ozd
+         6iDc1uGpWDsPU3JDgEKz+2ZBFvyx/PB7wDRw8gcF98nSUn+1Szjd4riY1g7mYqrBLPey
+         lhQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUtv4GCMNsG2J3ihMaqGpMuwWPw62kOOvWDIzWeFsjJ2ANBmMwcOztC8X0Me5xYAr9O2tTCyMab@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzxd9V8vfQIVmQPGwPVLaS8FC3HSUGEcoLHJ/cTjRM5/yGxTybF
+	5ilNk+RmUne3DWP24ngsPZKBXwa2hPOUCCXmq/bDNO5yxAgE+Xr0VJfo
+X-Gm-Gg: ASbGncv6IOAxn6jtiMTpHfKzLvSX6vnyHjxuDebjJk+q6NEOFejUHkAPQm2Rhyq0EJF
+	PgfTW5oSKr0HUMzdh+3XyZRL+VgaY656xiaEMPzkJtUWSTsdKlgnsIro8eYJsTq5GtEGhfy/qMD
+	DXcj4t2LImR/8RGzPLza86UpNTAXqIsXWPxgS6zaxzw1YmgJGU7Z4j2iDPKaAdrDoJCsgRs+EJY
+	Q6g7/voJJSi9TiHQFQ043VhBZy/hOg97f+ijLJ19vZxdQy1qKp0rQg874XO8wF0WIF2dvNsQzjX
+	c6A6lcRFagGa27+8JQ6Yjz/X45FR9zVqM+ZCexc7ews9UPMfvQ0orHdWVUosmYM8H6RekcctB/k
+	p61aCrRxXCmQEGGY0AzqKY91O7ODbhTUijvqSmYTGcfLdkeObiBy7MFTy1zxgdhwH7vguJPYyXg
+	fd
+X-Google-Smtp-Source: AGHT+IGTI1ZIZClWng4yye7JAJ7wCJzANK4Z/hes/dqfq35lpCLXUzEK0uKqA6TU/xduUI8nwCqpug==
+X-Received: by 2002:a17:907:971b:b0:b0d:ee43:d762 with SMTP id a640c23a62f3a-b703d2cdeadmr175477166b.4.1761721329730;
+        Wed, 29 Oct 2025 00:02:09 -0700 (PDT)
+Received: from localhost ([212.73.77.104])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b6d853386d8sm1318508566b.18.2025.10.29.00.02.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Oct 2025 00:02:09 -0700 (PDT)
+From: Askar Safin <safinaskar@gmail.com>
+To: brauner@kernel.org
+Cc: amir73il@gmail.com,
+	arnd@arndb.de,
+	bpf@vger.kernel.org,
 	cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 4/4] sched_ext: Fix cgroup exit ordering by moving sched_ext_free() to finish_task_switch()
-Date: Tue, 28 Oct 2025 20:19:18 -1000
-Message-ID: <20251029061918.4179554-5-tj@kernel.org>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <20251029061918.4179554-1-tj@kernel.org>
-References: <20251029061918.4179554-1-tj@kernel.org>
+	cyphar@cyphar.com,
+	daan.j.demeyer@gmail.com,
+	edumazet@google.com,
+	hannes@cmpxchg.org,
+	jack@suse.cz,
+	jannh@google.com,
+	jlayton@kernel.org,
+	josef@toxicpanda.com,
+	kuba@kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	me@yhndnzj.com,
+	mzxreary@0pointer.de,
+	netdev@vger.kernel.org,
+	tglx@linutronix.de,
+	tj@kernel.org,
+	viro@zeniv.linux.org.uk,
+	zbyszek@in.waw.pl
+Subject: Re: [PATCH v3 11/70] ns: add active reference count
+Date: Wed, 29 Oct 2025 10:02:01 +0300
+Message-ID: <20251029070201.2327405-1-safinaskar@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251024-work-namespace-nstree-listns-v3-11-b6241981b72b@kernel.org>
+References: <20251024-work-namespace-nstree-listns-v3-11-b6241981b72b@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,107 +112,45 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-sched_ext_free() was called from __put_task_struct() when the last reference
-to the task is dropped, which could be long after the task has finished
-running. This causes cgroup-related problems:
+Christian Brauner <brauner@kernel.org>:
+> Currently namespace file handles allow much broader access to namespaces
+> than what is currently possible via (1)-(4). The reason is that
 
-- ops.task_init() can be called on a cgroup which didn't get ops.cgroup_init()'d
-  during scheduler load.
+There is no any (4) here.
 
-- ops.cgroup_exit() could be called before ops.exit_task() is called on all
-  member tasks, leading to incorrect exit ordering.
 
-Fix by moving it to finish_task_switch() to be called right after the final
-context switch away from the dying task, matching when sched_class->task_dead()
-is called. Rename it to sched_ext_dead() to match the new calling context.
+> On current kernels a namespace is visible to userspace in the
+> following cases:
+[...]
+> (3) The namespace is a hierarchical namespace type and is the parent of
+>     a single or multiple child namespaces.
+[...]
+> To handle this nicely we introduce an active reference count which
+> tracks (1)-(3). This is easy to do as all of these things are already
+[...]
+> + * Inactive -> Active:
+> + *   When walking a hierarchical namespace tree upwards and reopening
+> + *   parent namespaces via NS_GET_PARENT that only exist because they
+> + *   are a parent of an actively used namespace it is possible to
+> + *   necrobump an inactive namespace back to the active state.
 
-By calling sched_ext_dead() before cgroup_task_dead(), we ensure that:
+These quoted parts contradict to each other. You say "we introduce an
+active reference count which tracks (1)-(3)", and (3) says "The namespace
+is a hierarchical namespace type and is the parent of a single or multiple
+child namespaces". I. e. active reference will count such parents. But then
+in code you say:
 
-- Tasks visible on scx_tasks list have valid cgroups during scheduler load,
-  as cgroup_mutex prevents cgroup destruction while the task is still linked.
+> + * Inactive -> Active:
+> + *   When walking a hierarchical namespace tree upwards and reopening
+> + *   parent namespaces via NS_GET_PARENT that only exist because they
+> + *   are a parent of an actively used namespace it is possible to
+> + *   necrobump an inactive namespace back to the active state.
 
-- All member tasks have ops.exit_task() called and are removed from scx_tasks
-  before the cgroup can be destroyed and trigger ops.cgroup_exit().
+I. e. now you say that such parents are inactive and can become active.
 
-This fix is made possible by the cgroup_task_dead() split in the previous patch.
 
-This also makes more sense resource-wise as there's no point in keeping
-scheduler side resources around for dead tasks.
 
-Reported-by: Dan Schatzberg <dschatzberg@meta.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- include/linux/sched/ext.h | 4 ++--
- kernel/fork.c             | 1 -
- kernel/sched/core.c       | 6 ++++++
- kernel/sched/ext.c        | 2 +-
- 4 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
-index d82b7a9b0658..d7dd77be571f 100644
---- a/include/linux/sched/ext.h
-+++ b/include/linux/sched/ext.h
-@@ -207,14 +207,14 @@ struct sched_ext_entity {
- 	struct list_head	tasks_node;
- };
- 
--void sched_ext_free(struct task_struct *p);
-+void sched_ext_dead(struct task_struct *p);
- void print_scx_info(const char *log_lvl, struct task_struct *p);
- void scx_softlockup(u32 dur_s);
- bool scx_rcu_cpu_stall(void);
- 
- #else	/* !CONFIG_SCHED_CLASS_EXT */
- 
--static inline void sched_ext_free(struct task_struct *p) {}
-+static inline void sched_ext_dead(struct task_struct *p) {}
- static inline void print_scx_info(const char *log_lvl, struct task_struct *p) {}
- static inline void scx_softlockup(u32 dur_s) {}
- static inline bool scx_rcu_cpu_stall(void) { return false; }
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 960c39c9c264..5ae37909a813 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -736,7 +736,6 @@ void __put_task_struct(struct task_struct *tsk)
- 	WARN_ON(tsk == current);
- 
- 	unwind_task_free(tsk);
--	sched_ext_free(tsk);
- 	io_uring_free(tsk);
- 	cgroup_task_free(tsk);
- 	task_numa_free(tsk, true);
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 40f12e37f60f..d4dbffb27a66 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5222,6 +5222,12 @@ static struct rq *finish_task_switch(struct task_struct *prev)
- 		if (prev->sched_class->task_dead)
- 			prev->sched_class->task_dead(prev);
- 
-+		/*
-+		 * sched_ext_dead() must come before cgroup_task_dead() to
-+		 * prevent cgroups from being removed while its member tasks are
-+		 * visible to SCX schedulers.
-+		 */
-+		sched_ext_dead(prev);
- 		cgroup_task_dead(prev);
- 
- 		/* Task is done with its stack. */
-diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 2b0e88206d07..840bc76210c8 100644
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -2926,7 +2926,7 @@ void scx_cancel_fork(struct task_struct *p)
- 	percpu_up_read(&scx_fork_rwsem);
- }
- 
--void sched_ext_free(struct task_struct *p)
-+void sched_ext_dead(struct task_struct *p)
- {
- 	unsigned long flags;
- 
 -- 
-2.51.1
-
+Askar Safin
 
