@@ -1,298 +1,570 @@
-Return-Path: <cgroups+bounces-11322-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11323-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF58CC19F5D
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 12:18:45 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11923C1A2B5
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 13:20:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCE3C1B223F0
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 11:19:04 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id F1C854E7BBF
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 12:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA76530E0E7;
-	Wed, 29 Oct 2025 11:18:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8125C33C52F;
+	Wed, 29 Oct 2025 12:20:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e6ZzXcAZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HF2azsTm"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C454430BF4F
-	for <cgroups@vger.kernel.org>; Wed, 29 Oct 2025 11:18:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2887033A010;
+	Wed, 29 Oct 2025 12:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761736716; cv=none; b=BfMavwFXmmnHrZr1qWxuTVrLNLGB0SR1+CldEmkLzvsUXKuJOInjKSOwpiUIrKDA9exHaiSMgG2IJ/U4JKiQcYi6XBhBiJeqeb/oa5mVBBNIlTGY1iTtaOnFM4tAn+okd0C96dHItXXyuJhUWxYXxRteNfiWi4KrkFGymcK4CsE=
+	t=1761740438; cv=none; b=i4CHBnyFK4xB7Z5y5v1cunkjre+H7Re7vKb+xbi6C322avK2cc9SuV4UlPtiwnbpbHsoQSzcKNwt3mz/ga2MlEyaWdOig5VmEp4qZi3gYWyrYOEBQY6vsNr1UiSspNboxPgscExrYZf6sbaM1BDxfSL6lQ7Z6BCOkbdLdQpC2N8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761736716; c=relaxed/simple;
-	bh=LOHpeoc1BBYS0BT77FH//asSo9dyvwlHuoPTPvgBCbM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BXtva+vVDZ1LrfpQTpWq5smT1f+7r69oTpsnxguHraUVaIDtQRXCm/lJ9rz4bQkYPFjOyHMN7/f131UVytVcxfLPSJcRsozn0BFzZHd8Omq2XmVA8u2hbwnrHakccluR9WxyRZdfEmS7QmzHwBMgpoM4oA4MvLYYR9d0MRx3WpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e6ZzXcAZ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1761736714;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CTZCxZiNVON13W4M6gJL1UnaKBDceyHLFcooUklCvOg=;
-	b=e6ZzXcAZyilCpsYZryFVSxyZMNZzyEB7ywNgx3ZJqbyD2dufJfzXJdRrt3fXTxxl4MrAAd
-	tSfLCfRhemOt0CKaMRXziYbeUiaNdB6HiOvgZLp9cSkMMMCXN1tO4AS0BD8g/BgJVduMPZ
-	QavcHB2rIg9psu+33xcVR8ZdZAjVYo0=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-693-XcNhgFwkOb-QNiyNsT0TXw-1; Wed,
- 29 Oct 2025 07:18:30 -0400
-X-MC-Unique: XcNhgFwkOb-QNiyNsT0TXw-1
-X-Mimecast-MFC-AGG-ID: XcNhgFwkOb-QNiyNsT0TXw_1761736708
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F03081800D82;
-	Wed, 29 Oct 2025 11:18:27 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.80])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5162E30002DE;
-	Wed, 29 Oct 2025 11:18:21 +0000 (UTC)
-Date: Wed, 29 Oct 2025 19:18:19 +0800
-From: Pingfan Liu <piliu@redhat.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Waiman Long <longman@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Pierre Gondois <pierre.gondois@arm.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>
-Subject: Re: [PATCHv4 2/2] sched/deadline: Walk up cpuset hierarchy to decide
- root domain when hot-unplug
-Message-ID: <aQH3-_YmqAq9aE67@fedora>
-References: <20251028034357.11055-1-piliu@redhat.com>
- <20251028034357.11055-2-piliu@redhat.com>
- <73663a65-8028-4294-8eaf-9c94dc4451ff@huaweicloud.com>
+	s=arc-20240116; t=1761740438; c=relaxed/simple;
+	bh=IXAKaRmQx8kCXopK1IeSRTC4xw+HPJ9tb8xoGXoljRE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=TGe8gFfP91T6bwY3rp0C+7E+01QG/7b55QfJoPc1pEwH6nicTH2WZpmA1LMoJcRLI06x8hpFsOYhKgkDBbmS0BUu62KEF/RIdn6SJNN3RT4WNsJqrTt69dhnATwummppQo0/djqeV8J6VT1+ZP6xOrDIih+nTWyH6OwMifxKrmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HF2azsTm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D105AC4CEFD;
+	Wed, 29 Oct 2025 12:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761740437;
+	bh=IXAKaRmQx8kCXopK1IeSRTC4xw+HPJ9tb8xoGXoljRE=;
+	h=From:Subject:Date:To:Cc:From;
+	b=HF2azsTmpEq32rvGJ0E58bJvw+RCB8i+aXWgMv4ludxrzkP6exs76ZTf58Qf2pPIc
+	 4wNjTORsN6/fOoF7zGcO2sxa0mO6wHiQgPjcs1MspSjkSF/UOm7usBgJG5L1T9b7Fz
+	 C09Qo0S+x+7V2uVwMgu5kodfKB4GkHg0dIYGRJgVYX2IU/6OUeqPAmlY6Vf10XBtMI
+	 2QIoxzPzdAIYkLZ720JmOq/kWuZAT7LvBxDHh5hyX0vtDM9MCCbwC6Y9v7K082C2TH
+	 AxMvC1oQ8jp4gunU7XLU6hs2xN+ObIgNaijTj426s1QTSbnwX4J/d+X7fnrsNUpNKG
+	 TTmssRxnkRabA==
+From: Christian Brauner <brauner@kernel.org>
+Subject: [PATCH v4 00/72] nstree: listns()
+Date: Wed, 29 Oct 2025 13:20:13 +0100
+Message-Id: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <73663a65-8028-4294-8eaf-9c94dc4451ff@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAH0GAmkC/4XOwWrDMBAE0F8JOlfGu5YsJaf+R8lBkjexSCKHl
+ VFagv+9cqCQUmiOc5g3cxeZOFIWu81dMJWY45RqUG8bEUaXjiTjULPAFjW02MrbxCeZ3IXy1QW
+ SKc9MJM8xzynL7WEwoMFq0EFU4sp0iJ8P/mNfs3eZpGeXwriiF5dn4qb0DVjJAdbKWKWJvx6HC
+ qzFn234f7uAbKUblMIenHXav5+IE52biY9iHS/4rOELDatmwGlrtcHOwB+te9bUC62rmu9Rwda
+ CN/j727Is32e2laiIAQAA
+X-Change-ID: 20251020-work-namespace-nstree-listns-9fd71518515c
+To: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+ Jeff Layton <jlayton@kernel.org>
+Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
+ =?utf-8?q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, 
+ Lennart Poettering <mzxreary@0pointer.de>, 
+ Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+ Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, 
+ Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+ Christian Brauner <brauner@kernel.org>
+X-Mailer: b4 0.15-dev-96507
+X-Developer-Signature: v=1; a=openpgp-sha256; l=21424; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=IXAKaRmQx8kCXopK1IeSRTC4xw+HPJ9tb8xoGXoljRE=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQysXWX9ea4299an7l4TfnEGYaTas9O3VtdOSVLbG1d0
+ Uv+rsr+jlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIm8qWdk6OWUnS3vVVl8KGTj
+ jcrXp9lVuJh6nbvSdzCKbLkZ86jmKMNfqSVhQc4LK/p9Hd/V/laTFkjc+qhGa8lUzcMHe2ZZLRB
+ jBQA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-Hi Ridong,
+Hey,
 
-Thank you for your review, please see the comment below.
+As announced a while ago this is the next step building on the nstree
+work from prior cycles. There's a bunch of fixes and semantic cleanups
+in here and a ton of tests.
 
-On Wed, Oct 29, 2025 at 10:37:47AM +0800, Chen Ridong wrote:
-> 
-> 
-> On 2025/10/28 11:43, Pingfan Liu wrote:
-> > *** Bug description ***
-> > When testing kexec-reboot on a 144 cpus machine with
-> > isolcpus=managed_irq,domain,1-71,73-143 in kernel command line, I
-> > encounter the following bug:
-> > 
-> > [   97.114759] psci: CPU142 killed (polled 0 ms)
-> > [   97.333236] Failed to offline CPU143 - error=-16
-> > [   97.333246] ------------[ cut here ]------------
-> > [   97.342682] kernel BUG at kernel/cpu.c:1569!
-> > [   97.347049] Internal error: Oops - BUG: 00000000f2000800 [#1] SMP
-> > [...]
-> > 
-> > In essence, the issue originates from the CPU hot-removal process, not
-> > limited to kexec. It can be reproduced by writing a SCHED_DEADLINE
-> > program that waits indefinitely on a semaphore, spawning multiple
-> > instances to ensure some run on CPU 72, and then offlining CPUs 1–143
-> > one by one. When attempting this, CPU 143 failed to go offline.
-> >   bash -c 'taskset -cp 0 $$ && for i in {1..143}; do echo 0 > /sys/devices/system/cpu/cpu$i/online 2>/dev/null; done'
-> > 
-> > `
-> > *** Issue ***
-> > Tracking down this issue, I found that dl_bw_deactivate() returned
-> > -EBUSY, which caused sched_cpu_deactivate() to fail on the last CPU.
-> > But that is not the fact, and contributed by the following factors:
-> > When a CPU is inactive, cpu_rq()->rd is set to def_root_domain. For an
-> > blocked-state deadline task (in this case, "cppc_fie"), it was not
-> > migrated to CPU0, and its task_rq() information is stale. So its rq->rd
-> > points to def_root_domain instead of the one shared with CPU0.  As a
-> > result, its bandwidth is wrongly accounted into a wrong root domain
-> > during domain rebuild.
-> > 
-> > The key point is that root_domain is only tracked through active rq->rd.
-> > To avoid using a global data structure to track all root_domains in the
-> > system, there should be a method to locate an active CPU within the
-> > corresponding root_domain.
-> > 
-> > *** Solution ***
-> > To locate the active cpu, the following rules for deadline
-> > sub-system is useful
-> >   -1.any cpu belongs to a unique root domain at a given time
-> >   -2.DL bandwidth checker ensures that the root domain has active cpus.
-> > 
-> > Now, let's examine the blocked-state task P.
-> > If P is attached to a cpuset that is a partition root, it is
-> > straightforward to find an active CPU.
-> > If P is attached to a cpuset that has changed from 'root' to 'member',
-> > the active CPUs are grouped into the parent root domain. Naturally, the
-> > CPUs' capacity and reserved DL bandwidth are taken into account in the
-> > ancestor root domain. (In practice, it may be unsafe to attach P to an
-> > arbitrary root domain, since that domain may lack sufficient DL
-> > bandwidth for P.) Again, it is straightforward to find an active CPU in
-> > the ancestor root domain.
-> > 
-> > This patch groups CPUs into isolated and housekeeping sets. For the
-> > housekeeping group, it walks up the cpuset hierarchy to find active CPUs
-> > in P's root domain and retrieves the valid rd from cpu_rq(cpu)->rd.
-> > 
-> > Signed-off-by: Pingfan Liu <piliu@redhat.com>
-> > Cc: Waiman Long <longman@redhat.com>
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > Cc: "Michal Koutný" <mkoutny@suse.com>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Juri Lelli <juri.lelli@redhat.com>
-> > Cc: Pierre Gondois <pierre.gondois@arm.com>
-> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Ben Segall <bsegall@google.com>
-> > Cc: Mel Gorman <mgorman@suse.de>
-> > Cc: Valentin Schneider <vschneid@redhat.com>
-> > To: cgroups@vger.kernel.org
-> > To: linux-kernel@vger.kernel.org
-> > ---
-> > v3 -> v4:
-> > rename function with cpuset_ prefix
-> > improve commit log
-> > 
-> >  include/linux/cpuset.h  | 18 ++++++++++++++++++
-> >  kernel/cgroup/cpuset.c  | 26 ++++++++++++++++++++++++++
-> >  kernel/sched/deadline.c | 30 ++++++++++++++++++++++++------
-> >  3 files changed, 68 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> > index 2ddb256187b51..d4da93e51b37b 100644
-> > --- a/include/linux/cpuset.h
-> > +++ b/include/linux/cpuset.h
-> > @@ -12,6 +12,7 @@
-> >  #include <linux/sched.h>
-> >  #include <linux/sched/topology.h>
-> >  #include <linux/sched/task.h>
-> > +#include <linux/sched/housekeeping.h>
-> >  #include <linux/cpumask.h>
-> >  #include <linux/nodemask.h>
-> >  #include <linux/mm.h>
-> > @@ -130,6 +131,7 @@ extern void rebuild_sched_domains(void);
-> >  
-> >  extern void cpuset_print_current_mems_allowed(void);
-> >  extern void cpuset_reset_sched_domains(void);
-> > +extern void cpuset_get_task_effective_cpus(struct task_struct *p, struct cpumask *cpus);
-> >  
-> >  /*
-> >   * read_mems_allowed_begin is required when making decisions involving
-> > @@ -276,6 +278,22 @@ static inline void cpuset_reset_sched_domains(void)
-> >  	partition_sched_domains(1, NULL, NULL);
-> >  }
-> >  
-> > +static inline void cpuset_get_task_effective_cpus(struct task_struct *p,
-> > +		struct cpumask *cpus)
-> > +{
-> > +	const struct cpumask *hk_msk;
-> > +
-> > +	hk_msk = housekeeping_cpumask(HK_TYPE_DOMAIN);
-> > +	if (housekeeping_enabled(HK_TYPE_DOMAIN)) {
-> > +		if (!cpumask_intersects(p->cpus_ptr, hk_msk)) {
-> > +			/* isolated cpus belong to a root domain */
-> > +			cpumask_andnot(cpus, cpu_active_mask, hk_msk);
-> > +			return;
-> > +		}
-> > +	}
-> > +	cpumask_and(cpus, cpu_active_mask, hk_msk);
-> > +}
-> > +
-> >  static inline void cpuset_print_current_mems_allowed(void)
-> >  {
-> >  }
-> > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> > index 27adb04df675d..6ad88018f1a4e 100644
-> > --- a/kernel/cgroup/cpuset.c
-> > +++ b/kernel/cgroup/cpuset.c
-> > @@ -1102,6 +1102,32 @@ void cpuset_reset_sched_domains(void)
-> >  	mutex_unlock(&cpuset_mutex);
-> >  }
-> >  
-> > +/* caller hold RCU read lock */
-> > +void cpuset_get_task_effective_cpus(struct task_struct *p, struct cpumask *cpus)
-> > +{
-> > +	const struct cpumask *hk_msk;
-> > +	struct cpuset *cs;
-> > +
-> > +	hk_msk = housekeeping_cpumask(HK_TYPE_DOMAIN);
-> > +	if (housekeeping_enabled(HK_TYPE_DOMAIN)) {
-> > +		if (!cpumask_intersects(p->cpus_ptr, hk_msk)) {
-> > +			/* isolated cpus belong to a root domain */
-> > +			cpumask_andnot(cpus, cpu_active_mask, hk_msk);
-> > +			return;
-> > +		}
-> > +	}
-> > +	/* In HK_TYPE_DOMAIN, cpuset can be applied */
-> > +	cs = task_cs(p);
-> > +	while (cs != &top_cpuset) {
-> > +		if (is_sched_load_balance(cs))
-> > +			break;
-> > +		cs = parent_cs(cs);
-> > +	}
-> > +
-> > +	/* For top_cpuset, its effective_cpus does not exclude isolated cpu */
-> > +	cpumask_and(cpus, cs->effective_cpus, hk_msk);
-> > +}
-> > +
-> 
-> It seems you may have misunderstood what Longman intended to convey.
-> 
+Currently listns() is relying on active namespace reference counts which
+are introduced alongside this series.
 
-Thanks for pointing that out. That is possible and please let me address
-your concern.
+While a namespace is on the namespace trees with a valid reference count
+it is possible to reopen it through a namespace file handle. This is all
+fine but has some issues that should be addressed.
 
-> First, you should add comments to this function because its purpose is not clear. When I first saw
+On current kernels a namespace is visible to userspace in the
+following cases:
 
-OK, I will.
+(1) The namespace is in use by a task.
+(2) The namespace is persisted through a VFS object (namespace file
+    descriptor or bind-mount).
+    Note that (2) only cares about direct persistence of the namespace
+    itself not indirectly via e.g., file->f_cred file references or
+    similar.
+(3) The namespace is a hierarchical namespace type and is the parent of
+    a single or multiple child namespaces.
 
-> this function, I thought it was supposed to retrieve p->cpus_ptr excluding the offline CPU mask.
-> However, I'm genuinely confused about the function's actual purpose.
-> 
+Case (3) is interesting because it is possible that a parent namespace
+might not fulfill any of (1) or (2), i.e., is invisible to userspace but
+it may still be resurrected through the NS_GET_PARENT ioctl().
 
-This function retrieves the active CPUs within the root domain where a specified task resides.
+Currently namespace file handles allow much broader access to namespaces
+than what is currently possible via (1)-(3). The reason is that
+namespaces may remain pinned for completely internal reasons yet are
+inaccessible to userspace.
 
-> Regarding the isolated partition concept: isolated CPUs (isolcpus) can be included in cpusets. For
-> example, if the system boots with isolcpus=9, and when process p is in a isolated partition that
-> only contains CPU 9 (which is listed in isolcpus), will this function return all CPUs except CPU 9?
-> Is that the behavior you intended?
-> 
+For example, a user namespace my remain pinned by get_cred() calls to
+stash the opener's credentials into file->f_cred. As it stands file
+handles allow to resurrect such a users namespace even though this
+should not be possible via (1)-(3). This is a fundamental uapi change
+that we shouldn't do if we don't have to.
 
-First, to clarify the scope of this discussion, it should be limited to
-the isolcpus=domain case, excluding other isolcpus options. If a CPU is
-in an isolated domain, that domain can only be the def_root_domain,
-regardless of whether it is added to a user cpuset or not. In your
-example (isolcpus="domain,9"), all the other CPUs form a new root domain,
-so the function is expected to return only CPU 9.
+Consider the following insane case: Various architectures support the
+CONFIG_MMU_LAZY_TLB_REFCOUNT option which uses lazy TLB destruction.
+When this option is set a userspace task's struct mm_struct may be used
+for kernel threads such as the idle task and will only be destroyed once
+the cpu's runqueue switches back to another task. But because of ptrace()
+permission checks struct mm_struct stashes the user namespace of the
+task that struct mm_struct originally belonged to. The kernel thread
+will take a reference on the struct mm_struct and thus pin it.
 
-Thanks,
+So on an idle system user namespaces can be persisted for arbitrary
+amounts of time which also means that they can be resurrected using
+namespace file handles. That makes no sense whatsoever. The problem is
+of course excarabted on large systems with a huge number of cpus.
 
-Pingfan
+To handle this nicely we introduce an active reference count which
+tracks (1)-(3). This is easy to do as all of these things are already
+managed centrally. Only (1)-(3) will count towards the active reference
+count and only namespaces which are active may be opened via namespace
+file handles.
+
+The problem is that namespaces may be resurrected. Which means that they
+can become temporarily inactive and will be reactived some time later.
+Currently the only example of this is the SIOGCSKNS socket ioctl. The
+SIOCGSKNS ioctl allows to open a network namespace file descriptor based
+on a socket file descriptor.
+
+If a socket is tied to a network namespace that subsequently becomes
+inactive but that socket is persisted by another process in another
+network namespace (e.g., via SCM_RIGHTS of pidfd_getfd()) then the
+SIOCGSKNS ioctl will resurrect this network namespace.
+
+So calls to open_related_ns() and open_namespace() will end up
+resurrecting the corresponding namespace tree.
+
+Note that the active reference count does not regulate the lifetime of
+the namespace itself. This is still done by the normal reference count.
+The active reference count can only be elevated if the regular reference
+count is elevated.
+
+The active reference count also doesn't regulate the presence of a
+namespace on the namespace trees. It only regulates its visiblity to
+namespace file handles (and in later patches to listns()).
+
+A namespace remains on the namespace trees from creation until its
+actual destruction. This will allow the kernel to always reach any
+namespace trivially and it will also enable subsystems like bpf to walk
+the namespace lists on the system for tracing or general introspection
+purposes.
+
+Note that different namespaces have different visibility lifetimes on
+current kernels. While most namespace are immediately released when the
+last task using them exits, the user- and pid namespace are persisted
+and thus both remain accessible via /proc/<pid>/ns/<ns_type>.
+
+The user namespace lifetime is aliged with struct cred and is only
+released through exit_creds(). However, it becomes inaccessible to
+userspace once the last task using it is reaped, i.e., when
+release_task() is called and all proc entries are flushed. Similarly,
+the pid namespace is also visible until the last task using it has been
+reaped and the associated pid numbers are freed.
+
+The active reference counts of the user- and pid namespace are
+decremented once the task is reaped.
+
+Based on the namespace trees and the active reference count, a new
+listns() system call that allows userspace to iterate through namespaces
+in the system. This provides a programmatic interface to discover and
+inspect namespaces, enhancing existing namespace apis.
+
+Currently, there is no direct way for userspace to enumerate namespaces
+in the system. Applications must resort to scanning /proc/<pid>/ns/
+across all processes, which is:
+
+1. Inefficient - requires iterating over all processes
+2. Incomplete - misses inactive namespaces that aren't attached to any
+   running process but are kept alive by file descriptors, bind mounts,
+   or parent namespace references
+3. Permission-heavy - requires access to /proc for many processes
+4. No ordering or ownership.
+5. No filtering per namespace type: Must always iterate and check all
+   namespaces.
+
+The list goes on. The listns() system call solves these problems by
+providing direct kernel-level enumeration of namespaces. It is similar
+to listmount() but obviously tailored to namespaces.
+
+/*
+ * @req: Pointer to struct ns_id_req specifying search parameters
+ * @ns_ids: User buffer to receive namespace IDs
+ * @nr_ns_ids: Size of ns_ids buffer (maximum number of IDs to return)
+ * @flags: Reserved for future use (must be 0)
+ */
+ssize_t listns(const struct ns_id_req *req, u64 *ns_ids,
+               size_t nr_ns_ids, unsigned int flags);
+
+Returns:
+- On success: Number of namespace IDs written to ns_ids
+- On error: Negative error code
+
+/*
+ * @size: Structure size
+ * @ns_id: Starting point for iteration; use 0 for first call, then
+ *         use the last returned ID for subsequent calls to paginate
+ * @ns_type: Bitmask of namespace types to include (from enum ns_type):
+ *           0: Return all namespace types
+ *           MNT_NS: Mount namespaces
+ *           NET_NS: Network namespaces
+ *           USER_NS: User namespaces
+ *           etc. Can be OR'd together
+ * @user_ns_id: Filter results to namespaces owned by this user namespace:
+ *              0: Return all namespaces (subject to permission checks)
+ *              LISTNS_CURRENT_USER: Namespaces owned by caller's user namespace
+ *              Other value: Namespaces owned by the specified user namespace ID
+ */
+struct ns_id_req {
+        __u32 size;         /* sizeof(struct ns_id_req) */
+        __u32 spare;        /* Reserved, must be 0 */
+        __u64 ns_id;        /* Last seen namespace ID (for pagination) */
+        __u32 ns_type;      /* Filter by namespace type(s) */
+        __u32 spare2;       /* Reserved, must be 0 */
+        __u64 user_ns_id;   /* Filter by owning user namespace */
+};
+
+Example 1: List all namespaces
+
+void list_all_namespaces(void)
+{
+	struct ns_id_req req = {
+		.size = sizeof(req),
+		.ns_id = 0,      /* Start from beginning */
+		.ns_type = 0,    /* All types */
+		.user_ns_id = 0, /* All user namespaces */
+	};
+	uint64_t ids[100];
+	ssize_t ret;
+
+	printf("All namespaces in the system:\n");
+	do {
+		ret = listns(&req, ids, 100, 0);
+		if (ret < 0) {
+			perror("listns");
+			break;
+		}
+
+		for (ssize_t i = 0; i < ret; i++)
+			printf("  Namespace ID: %llu\n", (unsigned long long)ids[i]);
+
+		/* Continue from last seen ID */
+		if (ret > 0)
+			req.ns_id = ids[ret - 1];
+	} while (ret == 100); /* Buffer was full, more may exist */
+}
+
+Example 2 : List network namespaces only
+
+void list_network_namespaces(void)
+{
+	struct ns_id_req req = {
+		.size = sizeof(req),
+		.ns_id = 0,
+		.ns_type = NET_NS, /* Only network namespaces */
+		.user_ns_id = 0,
+	};
+	uint64_t ids[100];
+	ssize_t ret;
+
+	ret = listns(&req, ids, 100, 0);
+	if (ret < 0) {
+		perror("listns");
+		return;
+	}
+
+	printf("Network namespaces: %zd found\n", ret);
+	for (ssize_t i = 0; i < ret; i++)
+		printf("  netns ID: %llu\n", (unsigned long long)ids[i]);
+}
+
+Example 3 : List namespaces owned by current user namespace
+
+void list_owned_namespaces(void)
+{
+	struct ns_id_req req = {
+		.size = sizeof(req),
+		.ns_id = 0,
+		.ns_type = 0,                      /* All types */
+		.user_ns_id = LISTNS_CURRENT_USER, /* Current userns */
+	};
+	uint64_t ids[100];
+	ssize_t ret;
+
+	ret = listns(&req, ids, 100, 0);
+	if (ret < 0) {
+		perror("listns");
+		return;
+	}
+
+	printf("Namespaces owned by my user namespace: %zd\n", ret);
+	for (ssize_t i = 0; i < ret; i++)
+		printf("  ns ID: %llu\n", (unsigned long long)ids[i]);
+}
+
+Example 4 : List multiple namespace types
+
+void list_network_and_mount_namespaces(void)
+{
+	struct ns_id_req req = {
+		.size = sizeof(req),
+		.ns_id = 0,
+		.ns_type = NET_NS | MNT_NS, /* Network and mount */
+		.user_ns_id = 0,
+	};
+	uint64_t ids[100];
+	ssize_t ret;
+
+	ret = listns(&req, ids, 100, 0);
+	printf("Network and mount namespaces: %zd found\n", ret);
+}
+
+Example 5 : Pagination through large namespace sets
+
+void list_all_with_pagination(void)
+{
+	struct ns_id_req req = {
+		.size = sizeof(req),
+		.ns_id = 0,
+		.ns_type = 0,
+		.user_ns_id = 0,
+	};
+	uint64_t ids[50];
+	size_t total = 0;
+	ssize_t ret;
+
+	printf("Enumerating all namespaces with pagination:\n");
+
+	while (1) {
+		ret = listns(&req, ids, 50, 0);
+		if (ret < 0) {
+			perror("listns");
+			break;
+		}
+		if (ret == 0)
+			break; /* No more namespaces */
+
+		total += ret;
+		printf("  Batch: %zd namespaces\n", ret);
+
+		/* Last ID in this batch becomes start of next batch */
+		req.ns_id = ids[ret - 1];
+
+		if (ret < 50)
+			break; /* Partial batch = end of results */
+	}
+
+	printf("Total: %zu namespaces\n", total);
+}
+
+listns() respects namespace isolation and capabilities:
+
+(1) Global listing (user_ns_id = 0):
+    - Requires CAP_SYS_ADMIN in the namespace's owning user namespace
+    - OR the namespace must be in the caller's namespace context (e.g.,
+      a namespace the caller is currently using)
+    - User namespaces additionally allow listing if the caller has
+      CAP_SYS_ADMIN in that user namespace itself
+(2) Owner-filtered listing (user_ns_id != 0):
+    - Requires CAP_SYS_ADMIN in the specified owner user namespace
+    - OR the namespace must be in the caller's namespace context
+    - This allows unprivileged processes to enumerate namespaces they own
+(3) Visibility:
+    - Only "active" namespaces are listed
+    - A namespace is active if it has a non-zero __ns_ref_active count
+    - This includes namespaces used by running processes, held by open
+      file descriptors, or kept active by bind mounts
+    - Inactive namespaces (kept alive only by internal kernel
+      references) are not visible via listns()
+
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+Changes in v4:
+- Fold __ns_ref_active_get_owner() into __ns_tree_add_raw() as suggested
+  by Thomas.
+- Don't use kvmalloc() instead use put_user() directly as suggested by
+  Arnd.
+- Various minor documentation fixes.
+- Unify various codepaths in the listns() implementation.
+- Link to v3: https://patch.msgid.link/20251024-work-namespace-nstree-listns-v3-0-b6241981b72b@kernel.org
+
+Changes in v3:
+- Expanded test-suite.
+- Moved active reference count tracking for task-attached namespaces to
+  dedicated helpers.
+- Fixed active reference count leaks when creating a new process fails.
+- Allow to be rescheduled when walking a a long namespace list.
+- Grab reference count when accessing a namespace when walking the list.
+- Link to v2: https://patch.msgid.link/20251022-work-namespace-nstree-listns-v2-0-71a588572371@kernel.org
+
+Changes in v2:
+- Fully implement the active reference count.
+- Fix various minor issues.
+- Expand the testsuite to test complex resurrection scenarios due to SIOCGSKNS.
+- Currently each task takes an active reference on the user namespace as
+  credentials can be persisted for a very long time and completely
+  arbitrary reasons but we don't want to tie the lifetime of a user
+  namespace being visible to userspace to the existence of some
+  credentials being stashed somewhere. We want to tie it to it being
+  in-use by actual tasks or vfs objects and then go away. There might be
+  more clever ways of doing this but for now this is good enough.
+- TODO: Add detailed tests for multi-threaded namespace sharing.
+- Link to v1: https://patch.msgid.link/20251021-work-namespace-nstree-listns-v1-0-ad44261a8a5b@kernel.org
+
+---
+Christian Brauner (72):
+      libfs: allow to specify s_d_flags
+      nsfs: use inode_just_drop()
+      nsfs: raise DCACHE_DONTCACHE explicitly
+      pidfs: raise DCACHE_DONTCACHE explicitly
+      nsfs: raise SB_I_NODEV and SB_I_NOEXEC
+      cgroup: add cgroup namespace to tree after owner is set
+      nstree: simplify return
+      ns: initialize ns_list_node for initial namespaces
+      ns: add __ns_ref_read()
+      ns: rename to exit_nsproxy_namespaces()
+      ns: add active reference count
+      ns: use anonymous struct to group list member
+      nstree: introduce a unified tree
+      nstree: allow lookup solely based on inode
+      nstree: assign fixed ids to the initial namespaces
+      nstree: maintain list of owned namespaces
+      nstree: simplify rbtree comparison helpers
+      nstree: add unified namespace list
+      nstree: add listns()
+      arch: hookup listns() system call
+      nsfs: update tools header
+      selftests/filesystems: remove CLONE_NEWPIDNS from setup_userns() helper
+      selftests/namespaces: first active reference count tests
+      selftests/namespaces: second active reference count tests
+      selftests/namespaces: third active reference count tests
+      selftests/namespaces: fourth active reference count tests
+      selftests/namespaces: fifth active reference count tests
+      selftests/namespaces: sixth active reference count tests
+      selftests/namespaces: seventh active reference count tests
+      selftests/namespaces: eigth active reference count tests
+      selftests/namespaces: ninth active reference count tests
+      selftests/namespaces: tenth active reference count tests
+      selftests/namespaces: eleventh active reference count tests
+      selftests/namespaces: twelth active reference count tests
+      selftests/namespaces: thirteenth active reference count tests
+      selftests/namespaces: fourteenth active reference count tests
+      selftests/namespaces: fifteenth active reference count tests
+      selftests/namespaces: add listns() wrapper
+      selftests/namespaces: first listns() test
+      selftests/namespaces: second listns() test
+      selftests/namespaces: third listns() test
+      selftests/namespaces: fourth listns() test
+      selftests/namespaces: fifth listns() test
+      selftests/namespaces: sixth listns() test
+      selftests/namespaces: seventh listns() test
+      selftests/namespaces: eigth listns() test
+      selftests/namespaces: ninth listns() test
+      selftests/namespaces: first listns() permission test
+      selftests/namespaces: second listns() permission test
+      selftests/namespaces: third listns() permission test
+      selftests/namespaces: fourth listns() permission test
+      selftests/namespaces: fifth listns() permission test
+      selftests/namespaces: sixth listns() permission test
+      selftests/namespaces: seventh listns() permission test
+      selftests/namespaces: first inactive namespace resurrection test
+      selftests/namespaces: second inactive namespace resurrection test
+      selftests/namespaces: third inactive namespace resurrection test
+      selftests/namespaces: fourth inactive namespace resurrection test
+      selftests/namespaces: fifth inactive namespace resurrection test
+      selftests/namespaces: sixth inactive namespace resurrection test
+      selftests/namespaces: seventh inactive namespace resurrection test
+      selftests/namespaces: eigth inactive namespace resurrection test
+      selftests/namespaces: ninth inactive namespace resurrection test
+      selftests/namespaces: tenth inactive namespace resurrection test
+      selftests/namespaces: eleventh inactive namespace resurrection test
+      selftests/namespaces: twelth inactive namespace resurrection test
+      selftests/namespace: first threaded active reference count test
+      selftests/namespace: second threaded active reference count test
+      selftests/namespace: third threaded active reference count test
+      selftests/namespace: commit_creds() active reference tests
+      selftests/namespace: add stress test
+      selftests/namespace: test listns() pagination
+
+ arch/alpha/kernel/syscalls/syscall.tbl             |    1 +
+ arch/arm/tools/syscall.tbl                         |    1 +
+ arch/arm64/tools/syscall_32.tbl                    |    1 +
+ arch/m68k/kernel/syscalls/syscall.tbl              |    1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl        |    1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl          |    1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl          |    1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl          |    1 +
+ arch/parisc/kernel/syscalls/syscall.tbl            |    1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl           |    1 +
+ arch/s390/kernel/syscalls/syscall.tbl              |    1 +
+ arch/sh/kernel/syscalls/syscall.tbl                |    1 +
+ arch/sparc/kernel/syscalls/syscall.tbl             |    1 +
+ arch/x86/entry/syscalls/syscall_32.tbl             |    1 +
+ arch/x86/entry/syscalls/syscall_64.tbl             |    1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl            |    1 +
+ fs/libfs.c                                         |    1 +
+ fs/namespace.c                                     |    7 +-
+ fs/nsfs.c                                          |   94 +-
+ fs/pidfs.c                                         |    1 +
+ include/linux/ns_common.h                          |  165 +-
+ include/linux/nsfs.h                               |    3 +
+ include/linux/nsproxy.h                            |    5 +-
+ include/linux/nstree.h                             |   26 +-
+ include/linux/pseudo_fs.h                          |    1 +
+ include/linux/syscalls.h                           |    4 +
+ include/linux/user_namespace.h                     |    4 +-
+ include/uapi/asm-generic/unistd.h                  |    4 +-
+ include/uapi/linux/nsfs.h                          |   58 +
+ init/version-timestamp.c                           |    5 +
+ ipc/msgutil.c                                      |    5 +
+ kernel/cgroup/cgroup.c                             |   11 +-
+ kernel/cgroup/namespace.c                          |    2 +-
+ kernel/cred.c                                      |    6 +
+ kernel/exit.c                                      |    3 +-
+ kernel/fork.c                                      |    3 +-
+ kernel/nscommon.c                                  |  220 +-
+ kernel/nsproxy.c                                   |   25 +-
+ kernel/nstree.c                                    |  610 ++++-
+ kernel/pid.c                                       |   10 +
+ kernel/time/namespace.c                            |    5 +
+ kernel/user.c                                      |    5 +
+ net/core/net_namespace.c                           |    2 +-
+ scripts/syscall.tbl                                |    1 +
+ tools/include/uapi/linux/nsfs.h                    |   70 +
+ tools/testing/selftests/filesystems/utils.c        |    2 +-
+ tools/testing/selftests/namespaces/.gitignore      |    7 +
+ tools/testing/selftests/namespaces/Makefile        |   20 +-
+ .../selftests/namespaces/cred_change_test.c        |  814 ++++++
+ .../selftests/namespaces/listns_pagination_bug.c   |  138 +
+ .../selftests/namespaces/listns_permissions_test.c |  759 ++++++
+ tools/testing/selftests/namespaces/listns_test.c   |  679 +++++
+ .../selftests/namespaces/ns_active_ref_test.c      | 2672 ++++++++++++++++++++
+ .../testing/selftests/namespaces/siocgskns_test.c  | 1824 +++++++++++++
+ tools/testing/selftests/namespaces/stress_test.c   |  626 +++++
+ tools/testing/selftests/namespaces/wrappers.h      |   35 +
+ 56 files changed, 8879 insertions(+), 69 deletions(-)
+---
+base-commit: 3a8660878839faadb4f1a6dd72c3179c1df56787
+change-id: 20251020-work-namespace-nstree-listns-9fd71518515c
 
 
