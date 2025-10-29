@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-11377-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11378-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 671D4C1A68A
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 13:54:12 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2087AC1A60F
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 13:51:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B46EC566146
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 12:44:01 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D88AF56732A
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 12:44:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171C63271FE;
-	Wed, 29 Oct 2025 12:25:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC5F34F256;
+	Wed, 29 Oct 2025 12:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qDjk5PFV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="alegEg+W"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F043271F1;
-	Wed, 29 Oct 2025 12:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CBE532721D;
+	Wed, 29 Oct 2025 12:25:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761740712; cv=none; b=VsocierDxJxQ/8z/UO+jmWLaIHgHjp32oGY06UvkD4mhhkVWmMRKqQ3RWw+F1HGII1di4n2L++iT2/6+uo4e4XOndQ0GoniCJRz0LY+MtuK6p43Q4lI5TufFa2tyPmYh6vAHNVSUBT2EdgU/326HrquO72sAqFuC/N1QiRl4Wf4=
+	t=1761740718; cv=none; b=iDZxmPAZLED/X3/mehEOstZzuXDpC69dXpRoDdaBR0leuPqidO7Mc3rcnCjPzPCOySxVGZ1qJTkmIpEyuR4tVW6YmjF/B2hFCLyFf23MTnw3fNIashDrJHAggVByXBRFJcpjHxKO0vGj0SS3gWTt8uZW5prOXxtvwiUz0+axYBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761740712; c=relaxed/simple;
-	bh=lxk3HyfGnG2LzFtd9uD08385YY9HWIbP9txgILZ5aFQ=;
+	s=arc-20240116; t=1761740718; c=relaxed/simple;
+	bh=YEySNnwHHlcAx8fWB+paH4j8S+yvwldW7xKcAutT9lM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=AOvmL7ZDKwyla4PKHkmaVxgRqE8nIw1XQmUjxlRWVQzRSWMA6xPOASPQSDASx2KqcAWUUyN8iIgwxmY7gUry9iRadk8UYfnnqD2PuXcj/03l7t/Pz9+8+W27lmi3ZLASWIvsnKoSKDguvX8RCLPEqLz+y45QtM54K9Nlt1mtWjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qDjk5PFV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0CA4C116B1;
-	Wed, 29 Oct 2025 12:25:07 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=aXttWv/mfMzrk2+Orc0HZ0csS60qHX0Ayo1TREvDgqI2Bb0UXKBJpPLsGE7G2M4LLXaw9/fiu9uBeS0erUWPsG9HFPnUuHODDjrawzJWAdReLm8KcO8YWpTiZvr/yZnZzkoB+0gH1DZcoq+3ySaE0rnMykFnDG9b84ti0TSqiv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=alegEg+W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABF2BC4CEF7;
+	Wed, 29 Oct 2025 12:25:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761740712;
-	bh=lxk3HyfGnG2LzFtd9uD08385YY9HWIbP9txgILZ5aFQ=;
+	s=k20201202; t=1761740717;
+	bh=YEySNnwHHlcAx8fWB+paH4j8S+yvwldW7xKcAutT9lM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=qDjk5PFVNfVA7t/elYjPCBRbnMisSHODB3s6btyV0MEPeA9POvC9wIWuXEFWT5zXC
-	 uXIu80qEG4OShSIS2aiz7EDV7otagu5YpwkHRvDeFCKlJqS/1GkXmbYmm7/uaeS9K5
-	 eKY9BHaIrcxRR2+9DQlJXDeug8Q1L9oI3rPE/tzrwE+L1FK6Bq6JtJAPgmEEGqM4fa
-	 FCMohp7sNNx7RnprZC70f5IN0aqR7irFyZj6ei1mPync8Gu/HWA8FxgtBoDPCbrkV1
-	 ipqbmFSZpjw+uks/ZqhIItmjsGP4M2S4TxrI+s49Iw/kzht2hTtjF9IKSEPmeW5yvM
-	 hPtWftx2PRAQw==
+	b=alegEg+WcJzxaHq0d3Mu8J/r0uwNGYiPGYY6J50eS9OgmZdIDS1rOhiMcZ8Ue6AQV
+	 5Ma4HSSoCyxrfDHOQ19AnfRTtvVGfbjifJsz6TjkRAOzaSSTuyhgNp0k9xGZzQ+/Q5
+	 Zs19Ss1bmLsB2cB8Vl901HKmXv31WAU4Qg0tYQUOQlYJxjpyBfaer9b3wIkhnNUPct
+	 xsq0Bw5xSSPDKfwq/k/7GPyk36Nig28WnY6GnmOTB29o77K9HXzCEBuV/+GgryEY1W
+	 bvAp7IbI3uJjvS2APMhb32HnzguypJIA8tDFlkBXH4/esX2eBgQ320w8wxTb7oWwWN
+	 Hk0i71EbikrrQ==
 From: Christian Brauner <brauner@kernel.org>
-Date: Wed, 29 Oct 2025 13:21:07 +0100
-Subject: [PATCH v4 54/72] selftests/namespaces: seventh listns() permission
- test
+Date: Wed, 29 Oct 2025 13:21:08 +0100
+Subject: [PATCH v4 55/72] selftests/namespaces: first inactive namespace
+ resurrection test
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -53,7 +53,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251029-work-namespace-nstree-listns-v4-54-2e6f823ebdc0@kernel.org>
+Message-Id: <20251029-work-namespace-nstree-listns-v4-55-2e6f823ebdc0@kernel.org>
 References: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
 In-Reply-To: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
 To: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
@@ -70,139 +70,136 @@ Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>,
  netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
  Christian Brauner <brauner@kernel.org>
 X-Mailer: b4 0.15-dev-96507
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3491; i=brauner@kernel.org;
- h=from:subject:message-id; bh=lxk3HyfGnG2LzFtd9uD08385YY9HWIbP9txgILZ5aFQ=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQysfX7Tmg+K9CYf3z6lpqDzw2NlFRXG01TZ+rX8tuRN
- v/2uQTDjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgJtsz8iwK2Px0hvrWW6dfc4f
- ftTzroR5jkjVzc3JYVtubvvuL7rdkeGfmmRz7ByLzIM/+Tm8flvVVVyW52ebfFlnc6an3SNv11R
- WAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3689; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=YEySNnwHHlcAx8fWB+paH4j8S+yvwldW7xKcAutT9lM=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQysfW32czN1b10LU/Q+8wn9tSeqffV3Tlexbxa2XdB2
+ ecQu25aRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwESOlTL8j7TxDCn4xve3Mcln
+ TVTt9abCeypL0sJuf+Vza/TcpuM/gZFh8p8DnIb5gpJ2V1r6emZI6b3tl4usYLr65dLSoj1LlV+
+ wAwA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-Test that dropping CAP_SYS_ADMIN restricts what we can see.
+Test basic SIOCGSKNS functionality. Create a socket and verify SIOCGSKNS
+returns the correct network namespace.
 
 Signed-off-by: Christian Brauner <brauner@kernel.org>
 ---
- .../selftests/namespaces/listns_permissions_test.c | 108 +++++++++++++++++++++
- 1 file changed, 108 insertions(+)
+ tools/testing/selftests/namespaces/.gitignore      |  1 +
+ tools/testing/selftests/namespaces/Makefile        |  9 ++-
+ .../testing/selftests/namespaces/siocgskns_test.c  | 72 ++++++++++++++++++++++
+ 3 files changed, 81 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/namespaces/listns_permissions_test.c b/tools/testing/selftests/namespaces/listns_permissions_test.c
-index 9aa06ff76333..82d818751a5f 100644
---- a/tools/testing/selftests/namespaces/listns_permissions_test.c
-+++ b/tools/testing/selftests/namespaces/listns_permissions_test.c
-@@ -648,4 +648,112 @@ TEST(listns_cap_sys_admin_inside_userns)
- 	TH_LOG("Process can see user namespace it has CAP_SYS_ADMIN inside of");
- }
+diff --git a/tools/testing/selftests/namespaces/.gitignore b/tools/testing/selftests/namespaces/.gitignore
+index 17f9c675a60b..aeb5f2711ff6 100644
+--- a/tools/testing/selftests/namespaces/.gitignore
++++ b/tools/testing/selftests/namespaces/.gitignore
+@@ -4,3 +4,4 @@ init_ino_test
+ ns_active_ref_test
+ listns_test
+ listns_permissions_test
++siocgskns_test
+diff --git a/tools/testing/selftests/namespaces/Makefile b/tools/testing/selftests/namespaces/Makefile
+index 2dd22bc68b89..d456505189cd 100644
+--- a/tools/testing/selftests/namespaces/Makefile
++++ b/tools/testing/selftests/namespaces/Makefile
+@@ -2,11 +2,18 @@
+ CFLAGS += -Wall -O0 -g $(KHDR_INCLUDES) $(TOOLS_INCLUDES)
+ LDLIBS += -lcap
  
+-TEST_GEN_PROGS := nsid_test file_handle_test init_ino_test ns_active_ref_test listns_test listns_permissions_test
++TEST_GEN_PROGS := nsid_test \
++		  file_handle_test \
++		  init_ino_test \
++		  ns_active_ref_test \
++		  listns_test \
++		  listns_permissions_test \
++		  siocgskns_test
+ 
+ include ../lib.mk
+ 
+ $(OUTPUT)/ns_active_ref_test: ../filesystems/utils.c
+ $(OUTPUT)/listns_test: ../filesystems/utils.c
+ $(OUTPUT)/listns_permissions_test: ../filesystems/utils.c
++$(OUTPUT)/siocgskns_test: ../filesystems/utils.c
+ 
+diff --git a/tools/testing/selftests/namespaces/siocgskns_test.c b/tools/testing/selftests/namespaces/siocgskns_test.c
+new file mode 100644
+index 000000000000..0c9098624cd4
+--- /dev/null
++++ b/tools/testing/selftests/namespaces/siocgskns_test.c
+@@ -0,0 +1,72 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <sched.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/ioctl.h>
++#include <sys/socket.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <unistd.h>
++#include <linux/if.h>
++#include <linux/sockios.h>
++#include <linux/nsfs.h>
++#include <arpa/inet.h>
++#include "../kselftest_harness.h"
++#include "../filesystems/utils.h"
++#include "wrappers.h"
++
++#ifndef SIOCGSKNS
++#define SIOCGSKNS 0x894C
++#endif
++
++#ifndef FD_NSFS_ROOT
++#define FD_NSFS_ROOT -10003
++#endif
++
++#ifndef FILEID_NSFS
++#define FILEID_NSFS 0xf1
++#endif
++
 +/*
-+ * Test that dropping CAP_SYS_ADMIN restricts what we can see.
++ * Test basic SIOCGSKNS functionality.
++ * Create a socket and verify SIOCGSKNS returns the correct network namespace.
 + */
-+TEST(listns_drop_cap_sys_admin)
++TEST(siocgskns_basic)
 +{
-+	cap_t caps;
-+	cap_value_t cap_list[1] = { CAP_SYS_ADMIN };
++	int sock_fd, netns_fd, current_netns_fd;
++	struct stat st1, st2;
 +
-+	/* This test needs to start with CAP_SYS_ADMIN */
-+	caps = cap_get_proc();
-+	if (!caps) {
-+		SKIP(return, "Cannot get capabilities");
++	/* Create a TCP socket */
++	sock_fd = socket(AF_INET, SOCK_STREAM, 0);
++	ASSERT_GE(sock_fd, 0);
++
++	/* Use SIOCGSKNS to get network namespace */
++	netns_fd = ioctl(sock_fd, SIOCGSKNS);
++	if (netns_fd < 0) {
++		close(sock_fd);
++		if (errno == ENOTTY || errno == EINVAL)
++			SKIP(return, "SIOCGSKNS not supported");
++		ASSERT_GE(netns_fd, 0);
 +	}
 +
-+	cap_flag_value_t cap_val;
-+	if (cap_get_flag(caps, CAP_SYS_ADMIN, CAP_EFFECTIVE, &cap_val) < 0) {
-+		cap_free(caps);
-+		SKIP(return, "Cannot check CAP_SYS_ADMIN");
-+	}
++	/* Get current network namespace */
++	current_netns_fd = open("/proc/self/ns/net", O_RDONLY);
++	ASSERT_GE(current_netns_fd, 0);
 +
-+	if (cap_val != CAP_SET) {
-+		cap_free(caps);
-+		SKIP(return, "Test needs CAP_SYS_ADMIN to start");
-+	}
-+	cap_free(caps);
++	/* Verify they match */
++	ASSERT_EQ(fstat(netns_fd, &st1), 0);
++	ASSERT_EQ(fstat(current_netns_fd, &st2), 0);
++	ASSERT_EQ(st1.st_ino, st2.st_ino);
 +
-+	int pipefd[2];
-+	pid_t pid;
-+	int status;
-+	bool correct;
-+	ssize_t count_before, count_after;
-+
-+	ASSERT_EQ(pipe(pipefd), 0);
-+
-+	pid = fork();
-+	ASSERT_GE(pid, 0);
-+
-+	if (pid == 0) {
-+		struct ns_id_req req = {
-+			.size = sizeof(req),
-+			.spare = 0,
-+			.ns_id = 0,
-+			.ns_type = CLONE_NEWNET,
-+			.spare2 = 0,
-+			.user_ns_id = LISTNS_CURRENT_USER,
-+		};
-+		__u64 ns_ids_before[100];
-+		ssize_t count_before;
-+		__u64 ns_ids_after[100];
-+		ssize_t count_after;
-+		bool correct;
-+
-+		close(pipefd[0]);
-+
-+		/* Create user namespace */
-+		if (setup_userns() < 0) {
-+			close(pipefd[1]);
-+			exit(1);
-+		}
-+
-+		/* Count namespaces with CAP_SYS_ADMIN */
-+		count_before = sys_listns(&req, ns_ids_before, ARRAY_SIZE(ns_ids_before), 0);
-+
-+		/* Drop CAP_SYS_ADMIN */
-+		caps = cap_get_proc();
-+		if (caps) {
-+			cap_set_flag(caps, CAP_EFFECTIVE, 1, cap_list, CAP_CLEAR);
-+			cap_set_flag(caps, CAP_PERMITTED, 1, cap_list, CAP_CLEAR);
-+			cap_set_proc(caps);
-+			cap_free(caps);
-+		}
-+
-+		/* Ensure we can't regain the capability */
-+		prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+
-+		/* Count namespaces without CAP_SYS_ADMIN */
-+		count_after = sys_listns(&req, ns_ids_after, ARRAY_SIZE(ns_ids_after), 0);
-+
-+		/* Without CAP_SYS_ADMIN, we should see same or fewer namespaces */
-+		correct = (count_after <= count_before);
-+
-+		write(pipefd[1], &correct, sizeof(correct));
-+		write(pipefd[1], &count_before, sizeof(count_before));
-+		write(pipefd[1], &count_after, sizeof(count_after));
-+		close(pipefd[1]);
-+		exit(0);
-+	}
-+
-+	/* Parent */
-+	close(pipefd[1]);
-+
-+	correct = false;
-+	count_before = 0;
-+	count_after = 0;
-+	read(pipefd[0], &correct, sizeof(correct));
-+	read(pipefd[0], &count_before, sizeof(count_before));
-+	read(pipefd[0], &count_after, sizeof(count_after));
-+	close(pipefd[0]);
-+
-+	waitpid(pid, &status, 0);
-+	ASSERT_TRUE(WIFEXITED(status));
-+	ASSERT_EQ(WEXITSTATUS(status), 0);
-+
-+	ASSERT_TRUE(correct);
-+	TH_LOG("With CAP_SYS_ADMIN: %zd namespaces, without: %zd namespaces",
-+			count_before, count_after);
++	close(sock_fd);
++	close(netns_fd);
++	close(current_netns_fd);
 +}
 +
- TEST_HARNESS_MAIN
++TEST_HARNESS_MAIN
 
 -- 
 2.47.3
