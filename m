@@ -1,45 +1,46 @@
-Return-Path: <cgroups+bounces-11312-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11313-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 275AEC186C5
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 07:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4891C186CE
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 07:21:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1727F1A66B3C
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 06:19:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D38A51A67578
+	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 06:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C0F30170D;
-	Wed, 29 Oct 2025 06:19:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FA92E2DD4;
+	Wed, 29 Oct 2025 06:19:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tgBVHq6f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BCSAI/Ju"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C41E2F9D88;
-	Wed, 29 Oct 2025 06:19:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A850302161;
+	Wed, 29 Oct 2025 06:19:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761718760; cv=none; b=o/DaP1JDymrpGMgsyxwNSqGg1ojvq6jqmbIyQKZpbSpgAiUPKmxZa12RFS+7Dppo83VSusYs4dX4fXHmgadYdMTB9l3FuIZlXV38UE/vVc2JFqCm4nEYs7PbRgASnPWwZ5KD934gWMLtbLEJVoEYXJ5jf+ppbSeLovVT0oUy2WU=
+	t=1761718761; cv=none; b=PPpZPWOcasgSwCrVDVjnaM7xOJv2HIiSpqiflIekxjk4PumTkoaKhkC6JMgRNt9Pc4oEEBRoF8A4t6if4P2VY5SdA0WZmaiOq9kJV0qt4wYeDuduNrDjAmbIinuR1YRZIG81Ykb4N7WY89YisY7luN7lhlc8mIrxmtoEnU7oPeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761718760; c=relaxed/simple;
-	bh=HPV6sOpBQAfE4Ue/L/fxbs1a18Xiw9Af+NS/cSFNbc0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VbL4Amsr/Z1IQ9rVvnP8V7zNSrgm8uWLmtwXN7vNMFXmjj5DNo2nshqG3YcGh9f6hYUeyZuc30tTdj6GILcSL/Zn6UDX/OSRv0KT+3REuUOv3roQzCnpLMBBrb+DJgrxa4UxlleMP15S7MG2g25PcZLqCzh/TnpXpgJwYE56O0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tgBVHq6f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D78F9C4CEFB;
-	Wed, 29 Oct 2025 06:19:19 +0000 (UTC)
+	s=arc-20240116; t=1761718761; c=relaxed/simple;
+	bh=C3qiyb0AGlf68bONmjvKkvJoAeN9b4+b7I5Eu1bkWB8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=DOQs85DgVBsH6JqFCfPMEuEDi1/Yvum4z/CmfI0sxg34kyp8sy+BbCE/jD3OvV41phbx6fcyMA5q9vUVngszXQ3j+Yc+IwvJBc48cpUnDli9wb2fEIJ81MozUKJ6jxugaZvMJfPlgYWESRIGnNuADxT15rGR4PtR5t+RJ58md2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BCSAI/Ju; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBC75C4CEFB;
+	Wed, 29 Oct 2025 06:19:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761718760;
-	bh=HPV6sOpBQAfE4Ue/L/fxbs1a18Xiw9Af+NS/cSFNbc0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=tgBVHq6fA7uZ5cwFLqKC8DAmTVW0AWoz1X4MhyDD1X9etbrMdfJDmbvRynqt+3JHB
-	 WD0uIxuwpkVnERYuyG7+gSfmz7FXFzli9kq4JDMxOEDuMxkavNNJJtFlxY4OsGWAwO
-	 bUe2cdT0Xqj6c1NkHrcyD/ttgL88V6ZHLIz7mCDkPnsCJlKFtiwHTul6KRMqvoO94J
-	 j8rW1sGkIOA4+dO0JtWDJzC/uEtIJPdkI0X/H+llOF/wKLmb7pao/MLwMeQaWp/8An
-	 OXs9YmLE6c7D917/Q+9NuDII3bVqhoWJiyYrm5lqHiXEP3TA5CSBPse1lBKpe7e45U
-	 mevkc25WvyeoQ==
+	s=k20201202; t=1761718761;
+	bh=C3qiyb0AGlf68bONmjvKkvJoAeN9b4+b7I5Eu1bkWB8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=BCSAI/Ju9X17B6lcmWaPmviBoHWjWp5QBlCWt7e/iq9fmps5z3J/VoRhmi7GKD4ES
+	 EFiEYBuj1FLfPzJx1AVs5tFN0/DzPYL4VQOglt8rQgl2VJNq19cYTD6Vl61KonlY00
+	 vGcHjlwSHzl3xqlrcjEsi61ecm7aLeBZ8Qw5BIp+kTgdR/Y4zNmMAcNasGXvzjBM/U
+	 ySdfCSEjkFaKQmLy0mcfYR4eSwD13IUN9xGc835DaV7P15aLiChJo3DCq5KP8lxG5r
+	 H6dQnF9wkvxIFUPCTlYDbZ4IlZSySeofSAFWCBmQf0F++uAaALJ+xG788S63YkqZHK
+	 WiqX3x5ALmrdw==
 From: Tejun Heo <tj@kernel.org>
 To: David Vernet <void@manifault.com>,
 	Andrea Righi <arighi@nvidia.com>,
@@ -50,10 +51,12 @@ Cc: Dan Schatzberg <dschatzberg@meta.com>,
 	cgroups@vger.kernel.org,
 	sched-ext@lists.linux.dev,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCHSET cgroup/for-6.19] cgroup: Fix task exit ordering
-Date: Tue, 28 Oct 2025 20:19:14 -1000
-Message-ID: <20251029061918.4179554-1-tj@kernel.org>
+Subject: [PATCH 1/4] cgroup: Rename cgroup lifecycle hooks to cgroup_task_*()
+Date: Tue, 28 Oct 2025 20:19:15 -1000
+Message-ID: <20251029061918.4179554-2-tj@kernel.org>
 X-Mailer: git-send-email 2.51.1
+In-Reply-To: <20251029061918.4179554-1-tj@kernel.org>
+References: <20251029061918.4179554-1-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -62,77 +65,153 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello,
+The current names cgroup_exit(), cgroup_release(), and cgroup_free() are
+confusing because they look like they're operating on cgroups themselves when
+they're actually task lifecycle hooks. For example, cgroup_init() initializes
+the cgroup subsystem while cgroup_exit() is a task exit notification to
+cgroup. Rename them to cgroup_task_exit(), cgroup_task_release(), and
+cgroup_task_free() to make it clear that these operate on tasks.
 
-This series fixes a cgroup task exit ordering issue that is generally
-suboptimal for all cgroup controllers and has caused real breakage for
-sched_ext schedulers.
+Cc: Dan Schatzberg <dschatzberg@meta.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+ include/linux/cgroup.h   | 12 ++++++------
+ kernel/cgroup/cgroup.c   | 11 ++++++-----
+ kernel/exit.c            |  4 ++--
+ kernel/fork.c            |  2 +-
+ kernel/sched/autogroup.c |  4 ++--
+ 5 files changed, 17 insertions(+), 16 deletions(-)
 
-Currently, when a task exits, cgroup_task_exit() in do_exit() immediately
-unlinks the task from its cgroup via css_set_move_task(). From the cgroup's
-perspective, the task is now gone. If this makes the cgroup empty, it can be
-destroyed, triggering ->css_offline() callbacks that notify controllers the
-cgroup is going offline resource-wise.
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 6ed477338b16..4068035176c4 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -137,9 +137,9 @@ extern void cgroup_cancel_fork(struct task_struct *p,
+ 			       struct kernel_clone_args *kargs);
+ extern void cgroup_post_fork(struct task_struct *p,
+ 			     struct kernel_clone_args *kargs);
+-void cgroup_exit(struct task_struct *p);
+-void cgroup_release(struct task_struct *p);
+-void cgroup_free(struct task_struct *p);
++void cgroup_task_exit(struct task_struct *p);
++void cgroup_task_release(struct task_struct *p);
++void cgroup_task_free(struct task_struct *p);
+ 
+ int cgroup_init_early(void);
+ int cgroup_init(void);
+@@ -680,9 +680,9 @@ static inline void cgroup_cancel_fork(struct task_struct *p,
+ 				      struct kernel_clone_args *kargs) {}
+ static inline void cgroup_post_fork(struct task_struct *p,
+ 				    struct kernel_clone_args *kargs) {}
+-static inline void cgroup_exit(struct task_struct *p) {}
+-static inline void cgroup_release(struct task_struct *p) {}
+-static inline void cgroup_free(struct task_struct *p) {}
++static inline void cgroup_task_exit(struct task_struct *p) {}
++static inline void cgroup_task_release(struct task_struct *p) {}
++static inline void cgroup_task_free(struct task_struct *p) {}
+ 
+ static inline int cgroup_init_early(void) { return 0; }
+ static inline int cgroup_init(void) { return 0; }
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 6ae5f48cf64e..826b7fd2f85d 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -944,7 +944,8 @@ static void css_set_move_task(struct task_struct *task,
+ 		/*
+ 		 * We are synchronized through cgroup_threadgroup_rwsem
+ 		 * against PF_EXITING setting such that we can't race
+-		 * against cgroup_exit()/cgroup_free() dropping the css_set.
++		 * against cgroup_task_exit()/cgroup_task_free() dropping
++		 * the css_set.
+ 		 */
+ 		WARN_ON_ONCE(task->flags & PF_EXITING);
+ 
+@@ -6972,13 +6973,13 @@ void cgroup_post_fork(struct task_struct *child,
+ }
+ 
+ /**
+- * cgroup_exit - detach cgroup from exiting task
++ * cgroup_task_exit - detach cgroup from exiting task
+  * @tsk: pointer to task_struct of exiting process
+  *
+  * Description: Detach cgroup from @tsk.
+  *
+  */
+-void cgroup_exit(struct task_struct *tsk)
++void cgroup_task_exit(struct task_struct *tsk)
+ {
+ 	struct cgroup_subsys *ss;
+ 	struct css_set *cset;
+@@ -7010,7 +7011,7 @@ void cgroup_exit(struct task_struct *tsk)
+ 	} while_each_subsys_mask();
+ }
+ 
+-void cgroup_release(struct task_struct *task)
++void cgroup_task_release(struct task_struct *task)
+ {
+ 	struct cgroup_subsys *ss;
+ 	int ssid;
+@@ -7027,7 +7028,7 @@ void cgroup_release(struct task_struct *task)
+ 	}
+ }
+ 
+-void cgroup_free(struct task_struct *task)
++void cgroup_task_free(struct task_struct *task)
+ {
+ 	struct css_set *cset = task_css_set(task);
+ 	put_css_set(cset);
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 9f74e8f1c431..46173461e8de 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -257,7 +257,7 @@ void release_task(struct task_struct *p)
+ 	rcu_read_unlock();
+ 
+ 	pidfs_exit(p);
+-	cgroup_release(p);
++	cgroup_task_release(p);
+ 
+ 	/* Retrieve @thread_pid before __unhash_process() may set it to NULL. */
+ 	thread_pid = task_pid(p);
+@@ -967,7 +967,7 @@ void __noreturn do_exit(long code)
+ 	exit_thread(tsk);
+ 
+ 	sched_autogroup_exit_task(tsk);
+-	cgroup_exit(tsk);
++	cgroup_task_exit(tsk);
+ 
+ 	/*
+ 	 * FIXME: do that only when needed, using sched_exit tracepoint
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 3da0f08615a9..960c39c9c264 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -738,7 +738,7 @@ void __put_task_struct(struct task_struct *tsk)
+ 	unwind_task_free(tsk);
+ 	sched_ext_free(tsk);
+ 	io_uring_free(tsk);
+-	cgroup_free(tsk);
++	cgroup_task_free(tsk);
+ 	task_numa_free(tsk, true);
+ 	security_task_free(tsk);
+ 	exit_creds(tsk);
+diff --git a/kernel/sched/autogroup.c b/kernel/sched/autogroup.c
+index cdea931aae30..954137775f38 100644
+--- a/kernel/sched/autogroup.c
++++ b/kernel/sched/autogroup.c
+@@ -178,8 +178,8 @@ autogroup_move_group(struct task_struct *p, struct autogroup *ag)
+ 	 * this process can already run with task_group() == prev->tg or we can
+ 	 * race with cgroup code which can read autogroup = prev under rq->lock.
+ 	 * In the latter case for_each_thread() can not miss a migrating thread,
+-	 * cpu_cgroup_attach() must not be possible after cgroup_exit() and it
+-	 * can't be removed from thread list, we hold ->siglock.
++	 * cpu_cgroup_attach() must not be possible after cgroup_task_exit()
++	 * and it can't be removed from thread list, we hold ->siglock.
+ 	 *
+ 	 * If an exiting thread was already removed from thread list we rely on
+ 	 * sched_autogroup_exit_task().
+-- 
+2.51.1
 
-However, the exiting task continues to run, perform memory operations, and
-schedule until the final context switch in finish_task_switch(). This creates
-a problematic window where controllers are told a cgroup is offline while
-resource activities are still occurring in it. While this hasn't broken
-existing controllers, it's clearly suboptimal and has caused real breakage
-for sched_ext schedulers.
-
-The sched_ext breakage manifests in two ways:
-
-1. When a sched_ext scheduler is loaded, it walks all tasks and calls
-   ops.init_task() on each. For tasks in a cgroup, it first ensures the
-   cgroup has been initialized via ops.cgroup_init(). However, if the task
-   is in the dying state (still running but already unlinked from its
-   cgroup), the cgroup may already be offline. This results in
-   ops.init_task() being called on a cgroup that never received
-   ops.cgroup_init(), breaking the initialization invariant.
-
-   This broke the scx_mitosis scheduler with errors like "cgrp_ctx lookup
-   failed for cgid 3869" where the BPF program couldn't find cgroup context
-   that was never created. See: https://github.com/sched-ext/scx/issues/2846
-
-2. Because sched_ext_free() was called from __put_task_struct() (which can
-   happen long after the task stops running), ops.cgroup_exit() could be
-   called before ops.exit_task() was called on all member tasks, violating
-   the expected ordering where all tasks exit before their cgroup does.
-
-The fix defers the cgroup unlinking from do_exit() to finish_task_switch(),
-ensuring the task remains linked to its cgroup until it's truly done running.
-For sched_ext specifically, we also move the cleanup earlier to
-finish_task_switch() to ensure proper ordering with cgroup operations.
-
-This adds two new calls to finish_task_switch() that operate on the dead task
-after the final switch: cgroup_task_dead() and sched_ext_dead(). It may make
-sense to factor these into a helper function located in kernel/exit.c if this
-pattern continues to grow.
-
-Patch 0004 changes sched_ext and can be applied to sched_ext/for-6.19 after
-pulling cgroup/for-6.19. Alternatively, would it be easier for some or all of
-this series to go through the tip tree?
-
-Based on cgroup/for-6.19 (d5cf4d34a333).
-
- 0001 cgroup: Rename cgroup lifecycle hooks to cgroup_task_*()
- 0002 cgroup: Move dying_tasks cleanup from cgroup_task_release() to cgroup_task_free()
- 0003 cgroup: Defer task cgroup unlink until after the task is done switching out
- 0004 sched_ext: Fix cgroup exit ordering by moving sched_ext_free() to finish_task_switch()
-
-Git tree: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git cgroup-fix-exit-ordering
-
- include/linux/cgroup.h    | 14 ++++++++------
- include/linux/sched/ext.h |  4 ++--
- kernel/cgroup/cgroup.c    | 39 +++++++++++++++++++++++----------------
- kernel/exit.c             |  4 ++--
- kernel/fork.c             |  3 +--
- kernel/sched/autogroup.c  |  4 ++--
- kernel/sched/core.c       |  8 ++++++++
- kernel/sched/ext.c        |  2 +-
- 8 files changed, 47 insertions(+), 31 deletions(-)
-
---
-tejun
 
