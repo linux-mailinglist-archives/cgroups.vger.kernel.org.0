@@ -1,156 +1,124 @@
-Return-Path: <cgroups+bounces-11414-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11415-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 269C0C1DD53
-	for <lists+cgroups@lfdr.de>; Thu, 30 Oct 2025 00:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7413C1DD89
+	for <lists+cgroups@lfdr.de>; Thu, 30 Oct 2025 01:04:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 601BD3A7311
-	for <lists+cgroups@lfdr.de>; Wed, 29 Oct 2025 23:53:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ECEB3B0BE5
+	for <lists+cgroups@lfdr.de>; Thu, 30 Oct 2025 00:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 584B731B830;
-	Wed, 29 Oct 2025 23:53:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FF8F11CBA;
+	Thu, 30 Oct 2025 00:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GdjEmTlF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c2xwHM38"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3493203A7
-	for <cgroups@vger.kernel.org>; Wed, 29 Oct 2025 23:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359541C68F;
+	Thu, 30 Oct 2025 00:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761782003; cv=none; b=kxuBKw2V17vos5lxXu/L58InP7t7N7Ql7ItiQhhNWFMUxsIzu2gr/fOU8cQX1iqjUaDnjvxYgtBtVsVpPv6+OevU5JLcJ9gZu0Ng5BmvFUlGV8MME3vKNkhYhVW27fpu/BdULPoZdRPCK1676vT8yeM6hC8MiOOHoumH7h5hRZs=
+	t=1761782633; cv=none; b=XaIZNp8Uz8LH0oHItRPcvLa+6xBwuQAsNZGPPsXoCa0vf4dhrXKO9bdGrB0PDl68kvXNSW73ZF4USEeJmsP5QdTpMbbgQb5rksWl2sARx4TVH9YnEocLz+QyxSbqtVGre76ngJ5500N+22QIzGD485R48i6gfqOTSeEn081RIEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761782003; c=relaxed/simple;
-	bh=D2m0EPDbKpZ3JRo0DT82GnQ89LW7K7rjeczuEkHf41c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DwKaZNkyxwAC0hNJuYw69/+8Q1CKKYqs0tq7Hz4isCKkLipEiR884fuoO8Ja6hiJJietXpclUqO4PnDaVrWDrZFkyLmh7Sr6/Y6nKko9kqGv5tO9uAAKqYb883NOUlL7ygnEJcrrTce4Mc338RMu/UxK+Zi6QnrRWz9tGJUggqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GdjEmTlF; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-42421b1514fso250298f8f.2
-        for <cgroups@vger.kernel.org>; Wed, 29 Oct 2025 16:53:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761781999; x=1762386799; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tPZgBPK4KYbf0wiRz1OKb0KetLC+LXdJvV1wxFVXEDg=;
-        b=GdjEmTlFtXhTuQnUYJW+l0CfSZil3NOWdcMOyTAXh5I70y6DEjmmTxMNcoW7NaLTEa
-         SAy6cQec1OySTTXC5MGmJWDdby8z3p9gdF7DzIDggB+3df2Kp3eJbb1Uprx+O1IEMbQP
-         MJDc3yUEFAvpfPUuivxzBLmhICzm0/mxjw+xNP3rxBFli80mD6knr3G+DKcIgbZsFucp
-         wi9WxIrZCghgbFLFswKp874Hx3Hi69+RVFmrGj8gWqvfLBQBxRB+x1Zf5/1zlLsMRMe3
-         +aJuRwE5VSq5PvqyR+Wxb7/2fLXeu/8dWOhl5/yiBjTzeM2oyHQgOyOGO4KjUdoJBVPy
-         aIPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761781999; x=1762386799;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tPZgBPK4KYbf0wiRz1OKb0KetLC+LXdJvV1wxFVXEDg=;
-        b=WhpdPJ+vPjMfeOd4F9gCKIj4r8ErfW5gbMJK4/JEvW/9MVOZGd3kq8sjaZcfyGVzEj
-         yaAk7xDaVcUsXfbMkMdENJNxfzvfwDddtx855yxXsrIRjaSfp6CmKGigr13O2cpQ249S
-         1Dw1IHBC12xwBB5o7gYgKgq0plDgcC0+FRBqZMEZzv7Pj62DlGld9egI/Wf1Kn/6IG3t
-         nY6iimtSzEV3UY/wuIexwM9nFv3hwNtgCOXWzwJgbcv0BXwQGGoZLLn/3Yga43JL6+mf
-         zVD5WXd4zJbW6onSyBhZvqdbZ+cSp4ornmxwtBOiDv1pICFEfRYI1nWJQo5Ejg4PKbFK
-         iGZg==
-X-Forwarded-Encrypted: i=1; AJvYcCXNyRBF6JpfOXyoixD4U+jbLzSky7ODE3TxyqDJjKUHEYQ8g5RuYdhTxkPFeqA04VsB3s8Ha6M7@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDLZdcwht52ZFI80EeopqFb4EPOk/EAWR+Fy8Wju0Qw9ePGTqN
-	3bhsGhc6gIsSnUgYbBSl2OzfEKcl/napIh2RSdKJe6mXmCtpfraNj/MTVwpmzUsTuD9+LL1dY9c
-	B7+uZeU99rEtCQq3qOiWSLBrRFq5s9w0=
-X-Gm-Gg: ASbGncsBecrUgucAld9QaeZa569DGzTI5JpHLPZHFYtFJGEh3kdvT/95fNnH+em8Akg
-	WP2u1aatzmR1vaS+bSfgUjjKeZUmmH85CIr7TyySA/h2coDLvaztXol9KTW8i5LKmexyHH2JyfV
-	uaAEsYkSB12o8+vqUb4dzo5dD5MbLoxuwCtr39ktwIRZph+spiw0TwHOFBEiXrxn8pjldO73yti
-	kLHmzhc+9W6uhui+hAPHDuCA7AVmLyx67ltg0Ujz3iMX6zt0OoJmmUgfap0mjfEcnnhZGx/USux
-	4CPIOmK5jtUX+SkkvnA1TCbCMPLkmSiMCHjfigk=
-X-Google-Smtp-Source: AGHT+IGrKp5MfacnbzNbpqAIhTO7ERG2WHtS4t6jru8KJPhlxG//rUzfqdjALv0fSxc61RpV8oyRKHl4WsT9w4GfLtM=
-X-Received: by 2002:a05:6000:2005:b0:425:7e38:419f with SMTP id
- ffacd0b85a97d-429aef82fd5mr3552778f8f.16.1761781999226; Wed, 29 Oct 2025
- 16:53:19 -0700 (PDT)
+	s=arc-20240116; t=1761782633; c=relaxed/simple;
+	bh=1XnGr1V9M31iKuMKW3cadiXKYVM5ogphmXcmc2DRafs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IbzCYLn11duTD4shRR748QKIiwSOC91MpRuV20DVNyODMr+HjCHIonhta7uDzCSizhF8ErISdtICWXFZtynoEI0JQZC6POsF91Q7O0I1LE1LmDlYcTKFu4lyl8u2rUsM8SvmyiLerlNvVPxNnEwxrw5aAhF32/Jg+fCwixcpvZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c2xwHM38; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 842BCC4CEF7;
+	Thu, 30 Oct 2025 00:03:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761782632;
+	bh=1XnGr1V9M31iKuMKW3cadiXKYVM5ogphmXcmc2DRafs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=c2xwHM38YkX0bt2FauUNoc+p8aNebX3OddEiZzpbnty76brkQojdA10bHHlhYJyoz
+	 8Q0JOl4clPV7GExdOLx+2nQrAJ51ZiSOG+KsKDerEiWItE4827kdsS1ONn2VO4m4A6
+	 OUH95kE6wD2yz1njEkr80MmZJ+zFV0u/jFHts1JjypsHf5fKSn3DG65xxeQBqQkQbf
+	 NmIp/MWjz4cRe0I2mJ88CHgOdxMNZEPp0te5nIOHcD53vxTeYM9yurfxQIRCTFfvu3
+	 38w+VTOCZP3ZPCgg/03pa3LcFGE7sRMdrnQQDyEuwhUeVdEykX3S4+H0HfwGrCjNNC
+	 7OwjtmPn74xTA==
+Date: Wed, 29 Oct 2025 14:03:51 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>, Song Liu <song@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	JP Kobryn <inwardvessel@gmail.com>, linux-mm <linux-mm@kvack.org>,
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
+ to cgroups
+Message-ID: <aQKrZ2bQan8PnAQA@slm.duckdns.org>
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+ <20251027231727.472628-3-roman.gushchin@linux.dev>
+ <aQJZgd8-xXpK-Af8@slm.duckdns.org>
+ <87ldkte9pr.fsf@linux.dev>
+ <aQJ61wC0mvzc7qIU@slm.duckdns.org>
+ <CAHzjS_vhk6RM6pkfKNrDNeEC=eObofL=f9FZ51tyqrFFz9tn1w@mail.gmail.com>
+ <871pmle5ng.fsf@linux.dev>
+ <CAADnVQJ+4a97bp26BOpD5A9LOzfJ+XxyNt4bdG8n7jaO6+nV3Q@mail.gmail.com>
+ <aQKa5L345s-vBJR1@slm.duckdns.org>
+ <CAADnVQJp9FkPDA7oo-+yZ0SKFbE6w7FzARosLgzLmH74Vv+dow@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-3-roman.gushchin@linux.dev> <aQJZgd8-xXpK-Af8@slm.duckdns.org>
- <87ldkte9pr.fsf@linux.dev> <aQJ61wC0mvzc7qIU@slm.duckdns.org>
- <CAHzjS_vhk6RM6pkfKNrDNeEC=eObofL=f9FZ51tyqrFFz9tn1w@mail.gmail.com>
- <871pmle5ng.fsf@linux.dev> <CAADnVQJ+4a97bp26BOpD5A9LOzfJ+XxyNt4bdG8n7jaO6+nV3Q@mail.gmail.com>
- <aQKa5L345s-vBJR1@slm.duckdns.org>
-In-Reply-To: <aQKa5L345s-vBJR1@slm.duckdns.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 29 Oct 2025 16:53:07 -0700
-X-Gm-Features: AWmQ_bmmWr20Sr7nISe9-dxnu7qiuhrtBr-MHR5CpH7Nay8Y8PduHzn8NSxStmM
-Message-ID: <CAADnVQJp9FkPDA7oo-+yZ0SKFbE6w7FzARosLgzLmH74Vv+dow@mail.gmail.com>
-Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops to cgroups
-To: Tejun Heo <tj@kernel.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>, Song Liu <song@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, JP Kobryn <inwardvessel@gmail.com>, 
-	linux-mm <linux-mm@kvack.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJp9FkPDA7oo-+yZ0SKFbE6w7FzARosLgzLmH74Vv+dow@mail.gmail.com>
 
-On Wed, Oct 29, 2025 at 3:53=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Wed, Oct 29, 2025 at 03:43:39PM -0700, Alexei Starovoitov wrote:
-> ...
-> > I think the general bpf philosophy that load and attach are two
-> > separate steps. For struct-ops it's almost there, but not quite.
-> > struct-ops shouldn't be an exception.
-> > The bpf infra should be able to load a set of progs (aka struct-ops)
-> > and attach it with a link to different entities. Like cgroups.
-> > I think sched-ext should do that too. Even if there is no use case
-> > today for the same sched-ext in two different cgroups.
->
-> I'm not sure it's just that there's no use case.
+Hello,
 
-I think there will be a use case for sched-ext as well,
-just the current way the scheds are written is too specific.
-There is cgroup local storage, so scheds can certainly
-store whatever state there.
-Potentially we can improve UX further by utilizing __thread on bpf.c
-side in some way.
+On Wed, Oct 29, 2025 at 04:53:07PM -0700, Alexei Starovoitov wrote:
+...
+> > - How would recursion work with private stacks? Aren't those attached to
+> >   each BPF program?
+> 
+> yes. private stack is per prog, but why does it matter?
+> I'm not suggesting that the same prog to be attached at different
+> levels of the cgroup hierarchy, because such configuration
+> will indeed trigger recursion prevention logic (with or without private
+> stack).
+> But having one logical sched-ext prog set to manage tasks
+> in container A and in container B makes sense as a use case to me
+> where A and B are different cgroups.
+> DSQs can be cgroup scoped too.
 
-> - How would recursion work with private stacks? Aren't those attached to
->   each BPF program?
+I don't know. Maybe, but this is kinda specific and I don't see how this
+would be useful in practical sense. Have nothing against using the
+mechanism. I can still enforce the same rules from scx side. It just looks
+unnecessarily over-designed. Maybe consistency with other BPF progs
+justifies it.
 
-yes. private stack is per prog, but why does it matter?
-I'm not suggesting that the same prog to be attached at different
-levels of the cgroup hierarchy, because such configuration
-will indeed trigger recursion prevention logic (with or without private
-stack).
-But having one logical sched-ext prog set to manage tasks
-in container A and in container B makes sense as a use case to me
-where A and B are different cgroups.
-DSQs can be cgroup scoped too.
+> > If there is one struct_ops per cgroup, the oom kill kfunc can
+> >   look that up and then verify that the struct_ops has authority over the
+> >   target process. Multiple attachments can work too but that'd require
+> >   iterating all attachments, right?
+> 
+> Are you talking about bpf_oom_kill_process() kfunc from these patch set?
+> I don't think it needs any changes. oom context is passed into prog
+> and passed along to kfunc. Doesn't matter the cgroup origin.
 
-> - Wouldn't that also complicate attributing kfunc calls to the handle
->   instance?
+Oh, if there are other mechanisms to enforce boundaries, it's not a problem,
+but I can almost guarantee as the framework grows, there will be needs for
+kfuncs to identify and verify the callers and handlers communicating with
+each other along the hierarchy requiring recursive calls.
 
-you mean the whole prog_assoc stuff ?
-That's orthogonal. tracing progs are global so there is
-no perfect place to associate them with. struct-ops map
-is the best we can do today, but ideally it's run_ctx
-that should be per-attachment. Like cookie.
+Thanks.
 
-> If there is one struct_ops per cgroup, the oom kill kfunc can
->   look that up and then verify that the struct_ops has authority over the
->   target process. Multiple attachments can work too but that'd require
->   iterating all attachments, right?
-
-Are you talking about bpf_oom_kill_process() kfunc from these patch set?
-I don't think it needs any changes. oom context is passed into prog
-and passed along to kfunc. Doesn't matter the cgroup origin.
+-- 
+tejun
 
