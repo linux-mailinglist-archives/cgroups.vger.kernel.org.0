@@ -1,136 +1,143 @@
-Return-Path: <cgroups+bounces-11436-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11437-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AF43C217CB
-	for <lists+cgroups@lfdr.de>; Thu, 30 Oct 2025 18:27:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5DADC219E7
+	for <lists+cgroups@lfdr.de>; Thu, 30 Oct 2025 19:01:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03A184608C4
-	for <lists+cgroups@lfdr.de>; Thu, 30 Oct 2025 17:23:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D35AE1889384
+	for <lists+cgroups@lfdr.de>; Thu, 30 Oct 2025 17:59:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C9D3683B6;
-	Thu, 30 Oct 2025 17:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2CB936E34F;
+	Thu, 30 Oct 2025 17:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fRYib/kM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bNy1TNIH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9AA63191B7
-	for <cgroups@vger.kernel.org>; Thu, 30 Oct 2025 17:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7015136CE0C
+	for <cgroups@vger.kernel.org>; Thu, 30 Oct 2025 17:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761844973; cv=none; b=FJ0KoSlAq0AVcUdqiLAVd5GtaHUTWheHi7jr+q1h2kR+O13jU0/JFA/W+ugeZETjMSb4SLZ29D1TlrqEnpw9/uGfUEJxAdgq5QXGhq8bB0iQCfasc9SkOAORhL2Dr9Tqyjk2Bc5OHgKwP71OGhu1LFbRcVTlJv+AeQyDvEV5G4g=
+	t=1761847018; cv=none; b=sqBFMHxgoqUrz08jasGMfyvU09WznK2UOsFnt+Bz5qsy9dNz362Ucxd/XlmMXctsyekAosw1b8+/wqqGAcKcUtxf/m+x3PAYLirZJhkWrVc9jTrzWMgZuGJ2UgtIFVlk7VF0hypu1t0PpQuuUUmsQXoUyrr/5R014i8rQyZC/2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761844973; c=relaxed/simple;
-	bh=BCoHEyyxZKYrrU4Ot3G1OWMRdoW/WRM++mtFk8nDG6U=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=CxdzPUmVvYOaM464r30nVwpT/RVPdlFUhgPa5DfIgEWOnlpfGV0ECmzGdfbXZ/F9KvDdHLrpuoANB7camMA/a3nn418fxm2R/O7gfuFkLsz2aWk+dCnkyJ8gqQIdQGNm60o5UEINoHyS/rDpr64CGMqrkOqqVOYnhUMEl/km2zQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fRYib/kM; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761844959;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1yKUVg2QX7KLyptUjcVniVMmwZzulWf6rl33AVF5l/o=;
-	b=fRYib/kMeIDOH90ZS1ch2yNi5D8QUkaH4tedw7Z/hSbGGXrRmdrIpZ8M9Y/J8qtzjFwMqj
-	yOKKjjMwh9zn0bUKfvhmXdxn7jOOZaENuw1uvt38qHMAoafwoGb86QAtAWCbFkqIJfFVC+
-	6SEitYt7Mlk0NycoOGJBAnM9Rn6cvbE=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Song Liu <song@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-  linux-kernel@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,
-  Suren Baghdasaryan <surenb@google.com>,  Michal Hocko
- <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,  Johannes
- Weiner <hannes@cmpxchg.org>,  Andrii Nakryiko <andrii@kernel.org>,  JP
- Kobryn <inwardvessel@gmail.com>,  linux-mm@kvack.org,
-  cgroups@vger.kernel.org,  bpf@vger.kernel.org,  Martin KaFai Lau
- <martin.lau@kernel.org>,  Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-  Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops
- to cgroups
-In-Reply-To: <CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
-	(Song Liu's message of "Wed, 29 Oct 2025 11:01:00 -0700")
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
-	<20251027231727.472628-3-roman.gushchin@linux.dev>
-	<CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
-Date: Thu, 30 Oct 2025 10:22:31 -0700
-Message-ID: <87zf98xq20.fsf@linux.dev>
+	s=arc-20240116; t=1761847018; c=relaxed/simple;
+	bh=L4e38dPwrZFuVUdrOXcK15IuGB2HADfsVSi/LH7EXVY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fc9Xt3XK4It/lnK1qddglY4vdGj3I6tj2vMO85V1jSInLhHD1ncY8U6UsLKM5f91738giDCe8wEGUhInMkQcSV9TBEZ7Zb+ECA5bfLCiy3dkakzWoItLYJgNQrXL5hQjSHhif3H+Bxy7HcZKLkiJSG6i5w027Yav4a2uPFmi1OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bNy1TNIH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25744C19424
+	for <cgroups@vger.kernel.org>; Thu, 30 Oct 2025 17:56:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761847018;
+	bh=L4e38dPwrZFuVUdrOXcK15IuGB2HADfsVSi/LH7EXVY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=bNy1TNIHT4oh1zNcC8sVErbqeUGH0NdpOLL23T5ZLdkao4z9GIIVqIiseSkcpwvnR
+	 ODrApNwOMu49aC8f4/Ay41C2Z5Rl/jRXuTbwc9uutwpuYKYafqz0lfzpHPZaFkjPBq
+	 /Gv6wJwGllB3EB5b7c/8Udarnxn4FJqQmba34/yh/jurgpBWzaUJ4WEGVxChmZmPJy
+	 Lbw1PHiI9glZW16qK1noe35LNZQ++1PZHp+hRcUyFMgZh4Ha0OmebYoBHW3ZaQiJcs
+	 pGoSX9w/5hQsrXHv9WVMNE0RFVMjDdhb6XaZv79XOUPhKxk0fCz2g8LLZt+FKlZGZT
+	 lHoN6TphqhRWw==
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-87a092251eeso31314566d6.0
+        for <cgroups@vger.kernel.org>; Thu, 30 Oct 2025 10:56:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWn1pleAHES4CSilgHUsbpGyyG6y+YOSbraGu6VEZ39NPVkM6gT4r9ZGoYcqsUKS0yjL2/0licH@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWhv2FeT9J6I5cnDMm6o+BlR8AvHduyBJRLRKyA2N0tbR6AmTT
+	QWfaAz4fsu0yXVIiFpuwWglI5wvm4T8NUbIDKaoANNhE8BBHMBeeA6lnvo9j5tpZWKgbXwZfk5M
+	7kD2xwqRs6fQKpejse4VuKS+funG1WeU=
+X-Google-Smtp-Source: AGHT+IGYyUVn099A8jUIhDfDtH7YzdBkaylMEjjWSMZn4ZGTG4lQaMNVRWm1lO7yUAm0bhxQuqgolicbaQLQisRUzJg=
+X-Received: by 2002:ad4:5e87:0:b0:87c:2405:5d93 with SMTP id
+ 6a1803df08f44-8801ace00d3mr46673516d6.26.1761847017110; Thu, 30 Oct 2025
+ 10:56:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+ <20251027231727.472628-3-roman.gushchin@linux.dev> <aQJZgd8-xXpK-Af8@slm.duckdns.org>
+ <87ldkte9pr.fsf@linux.dev> <aQJ61wC0mvzc7qIU@slm.duckdns.org>
+ <CAHzjS_vhk6RM6pkfKNrDNeEC=eObofL=f9FZ51tyqrFFz9tn1w@mail.gmail.com>
+ <aQKGrqAf2iKZQD_q@slm.duckdns.org> <CAHzjS_tEYA2oboJ-SPq5wJLJTpJDNiA2Fk1wMRgyEpH0gjZRJw@mail.gmail.com>
+ <aQKLCuX5v5aO3fDa@slm.duckdns.org> <CAHzjS_uqFLEzvU0PTQiXajdFDsjC4gfk0Z4qMoiRQJ2uVPw6BA@mail.gmail.com>
+ <aQOOxybyymnUk8fr@slm.duckdns.org>
+In-Reply-To: <aQOOxybyymnUk8fr@slm.duckdns.org>
+From: Song Liu <song@kernel.org>
+Date: Thu, 30 Oct 2025 10:56:46 -0700
+X-Gmail-Original-Message-ID: <CAHzjS_vp3xpCx8w9k7ct1RHOLnwu5og59Uxqs9DE_Ye06x3m4w@mail.gmail.com>
+X-Gm-Features: AWmQ_bkz9aBpQvreSJqyHHlBR3lFj06W4EhoUxVWBl9_g8_PXU87iBGP0a7GP5w
+Message-ID: <CAHzjS_vp3xpCx8w9k7ct1RHOLnwu5og59Uxqs9DE_Ye06x3m4w@mail.gmail.com>
+Subject: Re: [PATCH v2 02/23] bpf: initial support for attaching struct ops to cgroups
+To: Tejun Heo <tj@kernel.org>
+Cc: Song Liu <song@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, bpf@vger.kernel.org, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Migadu-Flow: FLOW_OUT
 
-Song Liu <song@kernel.org> writes:
-
-> On Mon, Oct 27, 2025 at 4:17=E2=80=AFPM Roman Gushchin <roman.gushchin@li=
-nux.dev> wrote:
-> [...]
->>  struct bpf_struct_ops_value {
->>         struct bpf_struct_ops_common_value common;
->> @@ -1359,6 +1360,18 @@ int bpf_struct_ops_link_create(union bpf_attr *at=
-tr)
->>         }
->>         bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct=
-_ops_map_lops, NULL,
->>                       attr->link_create.attach_type);
->> +#ifdef CONFIG_CGROUPS
->> +       if (attr->link_create.cgroup.relative_fd) {
->> +               struct cgroup *cgrp;
->> +
->> +               cgrp =3D cgroup_get_from_fd(attr->link_create.cgroup.rel=
-ative_fd);
+On Thu, Oct 30, 2025 at 9:14=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
 >
-> We should use "target_fd" here, not relative_fd.
+> Hello,
 >
-> Also, 0 is a valid fd, so we cannot use target_fd =3D=3D 0 to attach to
-> global memcg.
+> On Wed, Oct 29, 2025 at 09:32:44PM -0700, Song Liu wrote:
+> > If the use case is to attach a single struct_ops to a single cgroup, th=
+e author
+> > of that BPF program can always ignore the memcg parameter and use
+> > global variables, etc. We waste a register in BPF ISA to save the point=
+er to
+> > memcg,  but JiT may recover that in native instructions.
+> >
+> > OTOH, starting without a memcg parameter, it will be impossible to allo=
+w
+> > attaching the same struct_ops to different cgroups. I still think it is=
+ a valid
+> > use case that the sysadmin loads a set of OOM handlers for users in the
+> > containers to choose from is a valid use case.
+>
+> I find something like that being implemented through struct_ops attaching
+> rather unlikely. Wouldn't it look more like the following?
+>
+> - Attach a handler at the parent level which implements different policie=
+s.
+>
+> - Child cgroups pick the desired policy using e.g. cgroup xattrs and when
+>   OOM event happens, the OOM handler attached at the parent implements th=
+e
+>   requested policy.
 
-Yep, but then we need somehow signal there is a cgroup fd passed,
-so that struct ops'es which are not attached to cgroups keep working
-as previously. And we can't use link_create.attach_type.
+OK, using xattrs is another way to achieve this.
 
-Should I use link_create.flags? E.g. something like add new flag
+> - If further customization is desired and supported, it's implemented
+>   through child loading its own OOM handler which operates under the
+>   parent's OOM handler.
+>
+> > Also, a per cgroup oom handler may need to access the memcg information
+> > anyway. Without a dedicated memcg argument, the user need to fetch it
+> > somewhere else.
+>
+> An OOM handler attached to a cgroup doesn't just need to handle OOM event=
+s
+> in the cgroup itself. It's responsible for the whole sub-hierarchy. ie. I=
+t
+> will need accessors to reach all those memcgs anyway.
+>
+> Another thing to consider is that the memcg for a given cgroup can change=
+ by
+> the controller being enabled and disabled. There isn't the one permanent
+> memcg that a given cgroup is associated with.
 
-@@ -1224,6 +1224,7 @@ enum bpf_perf_event_type {
- #define BPF_F_AFTER		(1U << 4)
- #define BPF_F_ID		(1U << 5)
- #define BPF_F_PREORDER		(1U << 6)
-+#define BPF_F_CGROUP		(1U << 7)
- #define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
-=20
- /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+In the current version, bpf_oom_ops is attached to the memcg. As long as
+we feed a pointer to memcg to all struct_ops functions, these functions
+can be implemented in a stateless way. I think having the option to do
+this stateless implementation will help us in the long term.
 
-and then do something like this:
-
-int bpf_struct_ops_link_create(union bpf_attr *attr)
-{
-	<...>
-	if (attr->link_create.flags & BPF_F_CGROUP) {
-		struct cgroup *cgrp;
-
-		cgrp =3D cgroup_get_from_fd(attr->link_create.target_fd);
-		if (IS_ERR(cgrp)) {
-			err =3D PTR_ERR(cgrp);
-			goto err_out;
-		}
-
-		link->cgroup_id =3D cgroup_id(cgrp);
-		cgroup_put(cgrp);
-	}
-
-Does it sound right?
-
-Thanks
+Thanks,
+Song
 
