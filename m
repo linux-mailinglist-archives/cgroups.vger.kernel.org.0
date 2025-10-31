@@ -1,241 +1,163 @@
-Return-Path: <cgroups+bounces-11449-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11450-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE24C22FCF
-	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 03:26:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C69CC231DE
+	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 04:04:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8FCA406EED
-	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 02:25:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 263EF1A20967
+	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 03:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 509F527E7EB;
-	Fri, 31 Oct 2025 02:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FD5255248;
+	Fri, 31 Oct 2025 03:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DLzBiQf0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f47.google.com (mail-yx1-f47.google.com [74.125.224.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632E1279DCE;
-	Fri, 31 Oct 2025 02:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C821DB15F
+	for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 03:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761877539; cv=none; b=Qgo8PXkZPmVXiga5ILuLfS/71fypPG5+JIwqCO8w/6pBzHUMIqOh7tghRXDVDTJR5ekxpb634eekSistFgcVtVSjYTDeRfQSAo4YzM/r3cO6t5cyB2GfrCl3R/Y/0UVk8+WuI3O7xSxxPl3sLTXcEyC+TOmKOt9Iqv0DuXIa+gA=
+	t=1761879850; cv=none; b=YRzqvzUPAq8YQQbHLkQ11B1fNuxDNmRv1pyJHOaJulO9DMbRGblY36zIf7U3/0cPVRsw/BAaMEo1C2jhhRuqZkvFTafkeRZgM2+ZZq81MD6LtwmUCEumcALXPjEtJ67Zoi0ugPNP0l55xnn5hoyjOartumc3Gb0KrrfvPlkF1UY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761877539; c=relaxed/simple;
-	bh=FCMDZpo+zPOaucjsv5ocR/PPIqQlRU1b4RGM6RBMBDo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YGQemGSesqkLv6a/vGFKe/ixpq/Q/DB/ZJv3sC78jacoIjVuQ9ml8480pt5FrhaTGtxJD41uSvuU8oQtaDFToy4FFEJuD2K9jMoamUr6f4HHuGzJrSXB3+T8amrCEk3md4KScGpbm2SBjzv1cTYImS35Sz6G94dy+hwCqDOJiQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4cyPv50WnqzKHMLG;
-	Fri, 31 Oct 2025 10:24:33 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 7BEB61A06E0;
-	Fri, 31 Oct 2025 10:25:33 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgA32EAcHgRpbQXDCA--.35193S2;
-	Fri, 31 Oct 2025 10:25:33 +0800 (CST)
-Message-ID: <bb99364a-3143-4911-9b86-81fe5a11e1eb@huaweicloud.com>
-Date: Fri, 31 Oct 2025 10:25:31 +0800
+	s=arc-20240116; t=1761879850; c=relaxed/simple;
+	bh=k4vEw8EY43K8XMI5/V9THCw3n8L7r2pGWAp1vr5FCMc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fefmCw0oHne0IVr5NMKLWRqVExd4kQ8JLiCMWyS05tQZwNdvXfG5M1Q5djgAj57UVIM99aqFPRJL/eO6Q1aWyJ7dhgxbQo1hi081JvovG+6EoYEu7TuZb4Ztiynapb+oRoWU0L6W4qx8BPttit5sM8an1MMoJryamoIpMVGsW94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DLzBiQf0; arc=none smtp.client-ip=74.125.224.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yx1-f47.google.com with SMTP id 956f58d0204a3-63e1e1bf882so1805419d50.1
+        for <cgroups@vger.kernel.org>; Thu, 30 Oct 2025 20:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761879848; x=1762484648; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rB1+LZPkwFY008oY4N4SwT8A6lc9mI9L3ZvDOPN4piw=;
+        b=DLzBiQf0msab7dX9UbQrn/hGecPBWjrruen3bRaE78U8k/5MelnLUrsZMPc9DayuHD
+         EChe1xZB/ZFEL7ypBuM8Z8+r2NivHg8Drxu/HkFWDy19HOlMLuNBThDcH7Fna8B4p4Z7
+         1ny0FTUEfgtU9FJ8SiUUwAnAANcA38L8vOo9pjUoF1mZiRXyWjPtnFIpta2LJPr+mW+i
+         B3RXeOJrDwONcTWCN0aNeFOpyTUG10o1Uc0QMESVwbfcELxQ2byWEgAqsBnMtCOI9TkC
+         j/MorT05+gI6N2phFgMqWTjEhqDSE5+0WcWrpSj7QYVRNbPl/6ywRz9rxsqlIlUvRavY
+         pceg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761879848; x=1762484648;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rB1+LZPkwFY008oY4N4SwT8A6lc9mI9L3ZvDOPN4piw=;
+        b=miFLW7Pm0HIs1c4exUbsm+STmQHFl1iqpTLYHroLXTD61KuVfgjmvndBGWVC5KKbt1
+         Q0mevg2cHrgATFvifPYnch2QgHZ2z/Ct/otejbLmJPDOPSYpL/1gAr06eClIed+J+2s0
+         AmaIeK8CDt9hKbp29Ibz03MX6ni291N7g+uqZQ3yUaUAiW0vfZvbpH+pmuz2rHoP/3q6
+         35QJMvgNANhTdN3BDWUZvAxZhEZjM9bHFQST48jknBD+h0DgxavsAUU36qvoCI913Tz6
+         Td/GnSOVTOg8yIClT+6Md+AB7QS0K+hMqlopDp2IETacrakLcU4tiPOfCZycIo4NrXih
+         fp+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXMsDi2ZTJC7O7H9npspiLQEh1IgIYW3b5niG8mAHO9EKcAvki6uGzlNUy1iTFr8jXfXobh7nSR@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywed8R8tpnoH+JvInxMpzALzqMIaV1MivsI5eep5zRjofZfijZD
+	4DewGhwCpjGEeAxDTa8DHUk/8XIB8pnurHX+f5T+ArcRs/nudBLzp1+b5C8Ow9fGAysvWwJSkHm
+	gjpQKFbyOO4LXtUIZpd33yXehA4nkqI0=
+X-Gm-Gg: ASbGnctDPUF/W1eB2lcIfD4ruYOJfMmCnzs41ELYizuWkRldhhKn5QUBPgyrSfgGVtZ
+	u6UHrqm7ejkw+elkvUpTxswbwP7sdjh6MfwycJOkhvBxefol0SqvtT1cKPrulQbE9RupcGS8r4v
+	fZH3Yumv6eAkV/0x8pe33K7u/8oZy9gH2VSm+uJ+DnS+cbWpAEmW42ypEIQsPehb220/dr/pLbZ
+	R65+ndGECXfJ2nuf4ldQY7mHhgDu4q1W0e4uhydI5x/foob73rtkjjkxe5StAs/mbrOZ15H
+X-Google-Smtp-Source: AGHT+IEsp6bhgRsy8ZEn85Qr6vOIkt2gdB3bVnGU3Gq1UCl2kGI49jRJiPmXq7RgqzS4b09IRWebGz2bLvXPLAd+uuk=
+X-Received: by 2002:a05:690c:45c4:b0:717:ca51:d781 with SMTP id
+ 00721157ae682-7864841b780mr30065937b3.17.1761879847982; Thu, 30 Oct 2025
+ 20:04:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] cgroup: Rename cgroup lifecycle hooks to
- cgroup_task_*()
-To: Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
- Andrea Righi <arighi@nvidia.com>, Changwoo Min <changwoo@igalia.com>
-Cc: Dan Schatzberg <dschatzberg@meta.com>,
- Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, sched-ext@lists.linux.dev
-References: <20251029061918.4179554-1-tj@kernel.org>
- <20251029061918.4179554-2-tj@kernel.org>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251029061918.4179554-2-tj@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgA32EAcHgRpbQXDCA--.35193S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3WFy8Xw18Xr43XrW7KFW5GFg_yoW7KFW3pa
-	yDC3WUGw43Ja4jgFn7t3yqvFySgws7W3W5Gryrt3yFyr43tr10qF9rCry7ur4rt3Z2gF1a
-	qrsYkr47Kr4Dtr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU17KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+ <20251027231727.472628-3-roman.gushchin@linux.dev> <CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
+ <87zf98xq20.fsf@linux.dev> <CAHzjS_tnmSPy_cqCUHiLGt8Ouf079wQBQkostqJqfyKcJZPXLA@mail.gmail.com>
+ <CAMB2axMkYS1j=KeECZQ9rnupP8kw7dn1LnGV4udxMp=f=qoEQA@mail.gmail.com>
+ <877bwcus3h.fsf@linux.dev> <CAADnVQJGiH_yF=AoFSRy4zh20uneJgBfqGshubLM6aVq069Fhg@mail.gmail.com>
+ <87bjloht28.fsf@linux.dev>
+In-Reply-To: <87bjloht28.fsf@linux.dev>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Fri, 31 Oct 2025 11:03:30 +0800
+X-Gm-Features: AWmQ_bmM-gv798v1iqUntXkV_a5zia70abL0uoWQ696LNsBFCfXEwG0AGFz5jnE
+Message-ID: <CALOAHbAnH=mRmWUX8v_8GcnvEYTN6cDR+w9AM1p+nYezA+LD4g@mail.gmail.com>
+Subject: Re: bpf_st_ops and cgroups. Was: [PATCH v2 02/23] bpf: initial
+ support for attaching struct ops to cgroups
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Amery Hung <ameryhung@gmail.com>, 
+	Song Liu <song@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, JP Kobryn <inwardvessel@gmail.com>, 
+	linux-mm <linux-mm@kvack.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Oct 31, 2025 at 7:30=E2=80=AFAM Roman Gushchin <roman.gushchin@linu=
+x.dev> wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>
+> > On Thu, Oct 30, 2025 at 12:06=E2=80=AFPM Roman Gushchin
+> > <roman.gushchin@linux.dev> wrote:
+> >>
+> >> Ok, let me summarize the options we discussed here:
+> >>
+> >> 1) Make the attachment details (e.g. cgroup_id) the part of struct ops
+> >> itself. The attachment is happening at the reg() time.
+> >>
+> >>   +: It's convenient for complex stateful struct ops'es, because a
+> >>       single entity represents a combination of code and data.
+> >>   -: No way to attach a single struct ops to multiple entities.
+> >>
+> >> This approach is used by Tejun for per-cgroup sched_ext prototype.
+> >
+> > It's wrong. It should adopt bpf_struct_ops_link_create() approach
+> > and use attr->link_create.cgroup.relative_fd to attach.
+>
+> This is basically what I have in v2, but Andrii and Song suggested that
+> I should use attr->link_create.target_fd instead.
+>
+> I have a slight preference towards attr->link_create.cgroup.relative_fd
+> because it makes it clear that fd is a cgroup fd and potentially opens
+> a possibility to e.g. attach struct_ops to individual tasks and
+> cgroups, but I'm fine with both options.
+>
+> Also, as Song pointed out, fd=3D=3D0 is in theory a valid target, so inst=
+ead of
+> using the "if (fd) {...}" check we might need a new flag.
 
+I recall that Linus has reminded the BPF subsystem not to use `if
+(fd)` to check for a valid fd. We should avoid repeating this mistake.
+The proper solution is to add a new flag to indicate whether a fd is
+valid.
 
-On 2025/10/29 14:19, Tejun Heo wrote:
-> The current names cgroup_exit(), cgroup_release(), and cgroup_free() are
-> confusing because they look like they're operating on cgroups themselves when
-> they're actually task lifecycle hooks. For example, cgroup_init() initializes
-> the cgroup subsystem while cgroup_exit() is a task exit notification to
-> cgroup. Rename them to cgroup_task_exit(), cgroup_task_release(), and
-> cgroup_task_free() to make it clear that these operate on tasks.
-> 
+> Idk if it
+> really makes sense to complicate the code for it.
+>
+> Can we, please, decide on what's best here?
+>
 
-This makes sense.
+It seems the only way for us to learn is through practice=E2=80=94even if t=
+hat
+means making mistakes first ;-)
 
-> Cc: Dan Schatzberg <dschatzberg@meta.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> ---
->  include/linux/cgroup.h   | 12 ++++++------
->  kernel/cgroup/cgroup.c   | 11 ++++++-----
->  kernel/exit.c            |  4 ++--
->  kernel/fork.c            |  2 +-
->  kernel/sched/autogroup.c |  4 ++--
->  5 files changed, 17 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-> index 6ed477338b16..4068035176c4 100644
-> --- a/include/linux/cgroup.h
-> +++ b/include/linux/cgroup.h
-> @@ -137,9 +137,9 @@ extern void cgroup_cancel_fork(struct task_struct *p,
->  			       struct kernel_clone_args *kargs);
->  extern void cgroup_post_fork(struct task_struct *p,
->  			     struct kernel_clone_args *kargs);
-> -void cgroup_exit(struct task_struct *p);
-> -void cgroup_release(struct task_struct *p);
-> -void cgroup_free(struct task_struct *p);
-> +void cgroup_task_exit(struct task_struct *p);
-> +void cgroup_task_release(struct task_struct *p);
-> +void cgroup_task_free(struct task_struct *p);
->  
->  int cgroup_init_early(void);
->  int cgroup_init(void);
-> @@ -680,9 +680,9 @@ static inline void cgroup_cancel_fork(struct task_struct *p,
->  				      struct kernel_clone_args *kargs) {}
->  static inline void cgroup_post_fork(struct task_struct *p,
->  				    struct kernel_clone_args *kargs) {}
-> -static inline void cgroup_exit(struct task_struct *p) {}
-> -static inline void cgroup_release(struct task_struct *p) {}
-> -static inline void cgroup_free(struct task_struct *p) {}
-> +static inline void cgroup_task_exit(struct task_struct *p) {}
-> +static inline void cgroup_task_release(struct task_struct *p) {}
-> +static inline void cgroup_task_free(struct task_struct *p) {}
->  
->  static inline int cgroup_init_early(void) { return 0; }
->  static inline int cgroup_init(void) { return 0; }
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 6ae5f48cf64e..826b7fd2f85d 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -944,7 +944,8 @@ static void css_set_move_task(struct task_struct *task,
->  		/*
->  		 * We are synchronized through cgroup_threadgroup_rwsem
->  		 * against PF_EXITING setting such that we can't race
-> -		 * against cgroup_exit()/cgroup_free() dropping the css_set.
-> +		 * against cgroup_task_exit()/cgroup_task_free() dropping
-> +		 * the css_set.
->  		 */
->  		WARN_ON_ONCE(task->flags & PF_EXITING);
->  
-> @@ -6972,13 +6973,13 @@ void cgroup_post_fork(struct task_struct *child,
->  }
->  
->  /**
-> - * cgroup_exit - detach cgroup from exiting task
-> + * cgroup_task_exit - detach cgroup from exiting task
->   * @tsk: pointer to task_struct of exiting process
->   *
->   * Description: Detach cgroup from @tsk.
->   *
->   */
-> -void cgroup_exit(struct task_struct *tsk)
-> +void cgroup_task_exit(struct task_struct *tsk)
->  {
->  	struct cgroup_subsys *ss;
->  	struct css_set *cset;
-> @@ -7010,7 +7011,7 @@ void cgroup_exit(struct task_struct *tsk)
->  	} while_each_subsys_mask();
->  }
->  
-> -void cgroup_release(struct task_struct *task)
-> +void cgroup_task_release(struct task_struct *task)
->  {
->  	struct cgroup_subsys *ss;
->  	int ssid;
-> @@ -7027,7 +7028,7 @@ void cgroup_release(struct task_struct *task)
->  	}
->  }
->  
-> -void cgroup_free(struct task_struct *task)
-> +void cgroup_task_free(struct task_struct *task)
->  {
->  	struct css_set *cset = task_css_set(task);
->  	put_css_set(cset);
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index 9f74e8f1c431..46173461e8de 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -257,7 +257,7 @@ void release_task(struct task_struct *p)
->  	rcu_read_unlock();
->  
->  	pidfs_exit(p);
-> -	cgroup_release(p);
-> +	cgroup_task_release(p);
->  
->  	/* Retrieve @thread_pid before __unhash_process() may set it to NULL. */
->  	thread_pid = task_pid(p);
-> @@ -967,7 +967,7 @@ void __noreturn do_exit(long code)
->  	exit_thread(tsk);
->  
->  	sched_autogroup_exit_task(tsk);
-> -	cgroup_exit(tsk);
-> +	cgroup_task_exit(tsk);
->  
->  	/*
->  	 * FIXME: do that only when needed, using sched_exit tracepoint
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 3da0f08615a9..960c39c9c264 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -738,7 +738,7 @@ void __put_task_struct(struct task_struct *tsk)
->  	unwind_task_free(tsk);
->  	sched_ext_free(tsk);
->  	io_uring_free(tsk);
-> -	cgroup_free(tsk);
-> +	cgroup_task_free(tsk);
->  	task_numa_free(tsk, true);
->  	security_task_free(tsk);
->  	exit_creds(tsk);
-> diff --git a/kernel/sched/autogroup.c b/kernel/sched/autogroup.c
-> index cdea931aae30..954137775f38 100644
-> --- a/kernel/sched/autogroup.c
-> +++ b/kernel/sched/autogroup.c
-> @@ -178,8 +178,8 @@ autogroup_move_group(struct task_struct *p, struct autogroup *ag)
->  	 * this process can already run with task_group() == prev->tg or we can
->  	 * race with cgroup code which can read autogroup = prev under rq->lock.
->  	 * In the latter case for_each_thread() can not miss a migrating thread,
-> -	 * cpu_cgroup_attach() must not be possible after cgroup_exit() and it
-> -	 * can't be removed from thread list, we hold ->siglock.
-> +	 * cpu_cgroup_attach() must not be possible after cgroup_task_exit()
-> +	 * and it can't be removed from thread list, we hold ->siglock.
->  	 *
->  	 * If an exiting thread was already removed from thread list we rely on
->  	 * sched_autogroup_exit_task().
+I can imagine a key benefit of a single struct-ops-to-multiple-cgroups
+model is the ability to pre-load all required policies. This allows
+users the flexibility to attach them on demand, while completely
+avoiding the complex lifecycle management of individual links=E2=80=94a maj=
+or
+practical pain point.
 
-Reviewed-by: Chen Ridong<chenridong@huawei.com>
-
--- 
-Best regards,
-Ridong
-
+--=20
+Regards
+Yafang
 
