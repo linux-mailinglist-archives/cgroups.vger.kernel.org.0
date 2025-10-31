@@ -1,96 +1,93 @@
-Return-Path: <cgroups+bounces-11457-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11458-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 849C6C242A8
-	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 10:31:47 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72C2DC247C0
+	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 11:36:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5BA444E5709
-	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 09:31:46 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E2B5934E0BA
+	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 10:36:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B8D33271F8;
-	Fri, 31 Oct 2025 09:31:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1267E3321DB;
+	Fri, 31 Oct 2025 10:35:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="a1XIlnFG"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="IEmiozuQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52646304963
-	for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 09:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897912356A4
+	for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 10:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761903102; cv=none; b=uLHL00uAnTPcfFBQ5YsRo0njK46tO8X4Uuy7GmgrGktZVexsKPEi0AEqU7dMm5SjJL/gLx42JOcYPK76hG3wbCswK5bm34REciYXkLw+UhF5wTl7IH7jKwA+xkC36GRza8AFdANTlqq+uCBs7gxB1I1Ki0Xp3tPK0rHe2Ma0PiQ=
+	t=1761906955; cv=none; b=ChjjqzXAp5EQ5BwgFJDqPr99nVjxjrcdufoZCzBaihue0w1Kbb8uxU+JtXUCNcBpittbzLG9fDc+b/obaV6OWIu7DNGzVOsR73asZH1a2OKn8CCMXPycO5AqzxX1XlpdOwSFw9vhbFxpEvrdKCXP2P5iUKs6XVUBHHV/DdpUneY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761903102; c=relaxed/simple;
-	bh=i4aMKq8odkJsmnkgFgZb/jGnVc3hqLQys6Z2jKNzKJY=;
+	s=arc-20240116; t=1761906955; c=relaxed/simple;
+	bh=1eEt65Ofs+/r5l4cleXlDhf2myoCEBlgqwIcB0WQFuY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YZhbcKVTGVc4BHE4cctDeD19awmd2uCLLYm1ba2TDgJdsYCXA+vNXnsSHlaS8/Y+KYMpN5dnc05VOESf3L4yxouPx0SIj1LbkT30kjIgbc7ygwJ+ranGtgsdXSCu4MrtoiE2ZKcVmoKPQHbIg+rT77xs0Rmj51HTBo5gtjj9nqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=a1XIlnFG; arc=none smtp.client-ip=209.85.221.51
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hp8LbSWv0oCS8int2SqfGDbFJyArYR8fST6SCzO1Xn0q3fTiFjt1Q6MJFCKyD6rtjhPsJQx4ZGHbGCOjpxAnZPFnVMAUt+bWSXQnbXFXu6pT4SfMcEPJGXkoRNKT9VA6xQGlYcbmcfilk870L5jZoqyktjOLY8Q7sbescF2qVJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=IEmiozuQ; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-426fc536b5dso1268256f8f.3
-        for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 02:31:40 -0700 (PDT)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4711810948aso15511365e9.2
+        for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 03:35:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1761903098; x=1762507898; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1761906952; x=1762511752; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eZqsIXX4i9fDMKAO6vBiIA93QUBSotAqCxkbGp8FfSY=;
-        b=a1XIlnFGbVmSXPIHKjrxruZ3Z2498LvXcobTpqUdQUR9MFYuQyd24n7i/YARgRZxR1
-         TYecy44ZiilnBYTWe0m6wYXmN7Kx6bRYSZGQpM9NldJgYGPbNn8kT0fe/p43Y4yojfY6
-         Mc6JuF6rxIDWn13xGQ782UIJnBVExxtpgLipGeexq7DHgcjHXZ4DMZ7Zs5Ug4LtSCrou
-         bJD7YS5GLhhB4QjPpN0dMjI2cR3pnK2XGapHnjroIWpuLSM2GV7RQPq7/FZsc1J+VTDP
-         ZPlGmZGU9WOB6/bl+2yUJIycEXrVTFmvJxx8wVTU36ytYsadSZZN+7oaY7+8YeAAaP/p
-         LZ/g==
+        bh=HzZMIk02Nqu6V1427BR/J6vEzSH1QrB2vBKOtaJmgIs=;
+        b=IEmiozuQNrOOtEwKzBBIDLeoQ+Mu5wyjQW9isKu/ZfIVyzRFZK+k/4CQDByE5NYXvn
+         wTFtdKgODOpwLn9LtxapCh61CyEZtcuv3e2CTNrIbIOKbU9FsmW63Rpz4V5ihUhFxou5
+         MO+02xGRIJ/xSnvn3hyxymv3OGYVYaGXNZg/RCoKHwsD3os8xpXrVfMwC21Pbn5W1umF
+         hqBYXyJ7TgF12ZZLkLzfaXhzTLqkYHqfV7bM+ZvIljb087mYvQev07SF+g7d0+wgaWRH
+         rnMPdU7LwMwbgtEJuc7Iu8YStNKr7pyyrxv9sTzhJhw7L5q5NMaPSsoYhKnEhnbrC1m8
+         bEtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761903098; x=1762507898;
+        d=1e100.net; s=20230601; t=1761906952; x=1762511752;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eZqsIXX4i9fDMKAO6vBiIA93QUBSotAqCxkbGp8FfSY=;
-        b=hDhZvmHrSJ3f3K0G3+gSrZAh2ZwAZ8Jv1m992LrLTBCHwcEutwdpQTu/peostsiyUD
-         6znQMZtXFEnrzmNLWib04wMK9uVmVsTJLfkJDNqbWZ60i/ATKXbz41r7JOf46uywFRX9
-         UNK4ZDFvpU39YvGiZla80SMGCSxfYMGokVf8ZUCaW5Tw8O0qswGNBVcXuD9wAow3wctG
-         4NkZxqvLSnZ6Ixq0whCGA1ycyy9RT1PmsNNeAOeJhhLykgdjtkSyYRMAfwX+PKeE4MqL
-         b5Osr8ayYcBfuyUq7tznhkfbQE1wdLXD/RIjRE2c+KRNmT6oADgKvLa6J61pHI57ij0F
-         QNVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWl5CR5ZSQPrrKWHAtX+7JQEMeI5iT4/SBISszjzJdJrFeA7t5L5VLxmtEkUtrAJHqXPHkVFl1R@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzz9PjPRgY9bOZj8gjvS+BZ4Yk8x9c+LQ/Y0xWt8eca/x8JlDOq
-	rxROAS86a8tdwkVd9UHvy1ZNZJrq6w9iQ0zc6pGW70lcIq7pTj+rZiCo58cIf/O/1N4=
-X-Gm-Gg: ASbGncvS4CI9t0WfolUEDz6DcH4G+e4nePzFrgBBiAJN+RzzT8a4zHfDlqDFLnhDAvP
-	TngQFYm0ak9uuo/OjCGi7GfX+/oiUw6hHDbGDDf9Cr45LRe11o1vOSOL0GYEakvRRB8egZxoOz2
-	0LSfqJHgIqyLaCugqSoiaKDmmFY8iabOrlcKCQ4bLePDCdgNUGHersEFTrs1CZ20E0LQfDIZi8Q
-	LgvfPksRa7TyVO4ZGoKzbOGqpzoVTG85/Qj0zD0pQ4KLmq8sl1Cg+Ie25qj1s0xsxFG0XM9r/1x
-	DgtV8AM2DRZf3a+9IruG3oazSNC6ed0/7TnBFy3y/ihLL0rMlLRLT3usartnR8h5HSxwjANWIBh
-	4BxooxRGIT5acd0nr78wMv1Fe57mCZvkMVz/uXs2TVIq7kKHm4S2069/KRyS4TWPLZR+PKUtB9m
-	WGHVbDyjlVI9EFiw==
-X-Google-Smtp-Source: AGHT+IG50zQtJd3CIUQKj9ncFkPdrH/t/rsOh53ftoZJnLGX9Bc7esexz1A2xxBb08Zp7FtUCXSR/Q==
-X-Received: by 2002:a5d:588a:0:b0:429:b52e:351c with SMTP id ffacd0b85a97d-429bd69ff31mr2719399f8f.38.1761903098515;
-        Fri, 31 Oct 2025 02:31:38 -0700 (PDT)
+        bh=HzZMIk02Nqu6V1427BR/J6vEzSH1QrB2vBKOtaJmgIs=;
+        b=vBDntOOEcUprbjhtJBm941KzZ1KvQDj7TzQuZSJ8xT49AHSVjVchrsgUS/Oooj/M3l
+         82sNpi57AKppVFNqX23cBmvVnVS9cUGwWIuwq8Jz9ge2mLEwLe2e2H/0MdtDXxGV9gvX
+         NfYiYrxJtTrcDo9LCQgs0dvA5HjPiOj9fzGquNQxOAq6LJObpIXUZV5Vta2QTDV4nFo7
+         nGsknrw47ESl2qFvnX9mlnyLxSES9gJ1KEJS3svf5CN2S68jjnKTpRZd68nwhFJQabWs
+         Sh/uXTajL2VBHxZzzHv4nsVUNfqKARN7i8084S0PohBZbcPZOCF4k+CgYjdJn0G+mgdS
+         PJFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWEi5mQx/iLloAZwSTuN584HxMMmJ2GDIIW8FQAtxw3oLuE+J+tcbCBEWdF/6A+2vVqggAQNufD@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7IxJFDX6KJqoIkIl5GRoMu8N3Y5x/YbZ12szKF8Vx5TyxZ9+E
+	8OlTtAAp9WTSg/PJdY2sY2zC8NFXx58Cs9bCt7W94GruVpmRClo8nyEJ+TRCf2kAFS8=
+X-Gm-Gg: ASbGncsz3aUWltQgxaw+aXF4UH/MjvcjCUIGHjEysrNtQHrJsfsmEEDQfjBCg27KKx/
+	0PrwfiYfdsEP3AE3mSW6NRgu8qIb8wvcHVClrXm46WHO+9u4g1SYK6Aq6Oj4oq5xV4C3ITm8l0N
+	eawpEdejKPwH4/6rmYigJG7D9ZVj+JP5hhF/rMmvQwIjahwUpM19YCkOEUeHqVnd8BAV4Naer/r
+	5u3vdELIV4d1bfGUt9GMa6EBidWov522JdHCkIQ5KvBeOpsFN/IFmo2ZFw2UXaCdKxh1L9+GhIa
+	HfQp6UABjzgG7cnUqZSBLsFYH1ZdsPmD7svCWCVD4GCvt7cVuE6pkfG+ofKo0xXF02FvT3u8kTU
+	sI3eJmrD8SwzV3KLV95Bk1y6YyT+dwjzIpQxv8bpex+VOHzBZ4JQBO8ogDJIEs8pEd51ko3fd0D
+	LW9U8WBG4ieju96A==
+X-Google-Smtp-Source: AGHT+IG7O9Y6l9WMooa1HgoKgieD6/ZhET+Ll2xATp5EvgMTaFPocp0XktS42l0peKgogXQ+h4nHIw==
+X-Received: by 2002:a05:600c:4f0b:b0:45d:d353:a491 with SMTP id 5b1f17b1804b1-47730797bbfmr22646085e9.1.1761906951752;
+        Fri, 31 Oct 2025 03:35:51 -0700 (PDT)
 Received: from localhost (109-81-31-109.rct.o2.cz. [109.81.31.109])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429c13edc36sm2536910f8f.37.2025.10.31.02.31.37
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47732ddff0csm26082275e9.8.2025.10.31.03.35.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Oct 2025 02:31:37 -0700 (PDT)
-Date: Fri, 31 Oct 2025 10:31:36 +0100
+        Fri, 31 Oct 2025 03:35:51 -0700 (PDT)
+Date: Fri, 31 Oct 2025 11:35:50 +0100
 From: Michal Hocko <mhocko@suse.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 00/23] mm: BPF OOM
-Message-ID: <aQSB-BgjKmSkrSO7@tiehlicka>
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+To: Qi Zheng <qi.zheng@linux.dev>
+Cc: hannes@cmpxchg.org, hughd@google.com, roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev, muchun.song@linux.dev, david@redhat.com,
+	lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
+	imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+	akpm@linux-foundation.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v1 00/26] Eliminate Dying Memory Cgroup
+Message-ID: <aQSRBjdhdMR8iD6n@tiehlicka>
+References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
+ <aQHIDWDx3puT5XZd@tiehlicka>
+ <8edf2f49-54f6-4604-8d01-42751234bee9@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -99,31 +96,167 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251027231727.472628-1-roman.gushchin@linux.dev>
+In-Reply-To: <8edf2f49-54f6-4604-8d01-42751234bee9@linux.dev>
 
-On Mon 27-10-25 16:17:03, Roman Gushchin wrote:
-> The second part is related to the fundamental question on when to
-> declare the OOM event. It's a trade-off between the risk of
-> unnecessary OOM kills and associated work losses and the risk of
-> infinite trashing and effective soft lockups.  In the last few years
-> several PSI-based userspace solutions were developed (e.g. OOMd [3] or
-> systemd-OOMd [4]). The common idea was to use userspace daemons to
-> implement custom OOM logic as well as rely on PSI monitoring to avoid
-> stalls. In this scenario the userspace daemon was supposed to handle
-> the majority of OOMs, while the in-kernel OOM killer worked as the
-> last resort measure to guarantee that the system would never deadlock
-> on the memory. But this approach creates additional infrastructure
-> churn: userspace OOM daemon is a separate entity which needs to be
-> deployed, updated, monitored. A completely different pipeline needs to
-> be built to monitor both types of OOM events and collect associated
-> logs. A userspace daemon is more restricted in terms on what data is
-> available to it. Implementing a daemon which can work reliably under a
-> heavy memory pressure in the system is also tricky.
+On Wed 29-10-25 16:05:16, Qi Zheng wrote:
+> Hi Michal,
+> 
+> On 10/29/25 3:53 PM, Michal Hocko wrote:
+> > On Tue 28-10-25 21:58:13, Qi Zheng wrote:
+> > > From: Qi Zheng <zhengqi.arch@bytedance.com>
+> > > 
+> > > Hi all,
+> > > 
+> > > This series aims to eliminate the problem of dying memory cgroup. It completes
+> > > the adaptation to the MGLRU scenarios based on the Muchun Song's patchset[1].
+> > 
+> > I high level summary and main design decisions should be describe in the
+> > cover letter.
+> 
+> Got it. Will add it in the next version.
+> 
+> I've pasted the contents of Muchun Song's cover letter below:
+> 
+> ```
+> ## Introduction
+> 
+> This patchset is intended to transfer the LRU pages to the object cgroup
+> without holding a reference to the original memory cgroup in order to
+> address the issue of the dying memory cgroup. A consensus has already been
+> reached regarding this approach recently [1].
 
-I do not see this part addressed in the series. Am I just missing
-something or this will follow up once the initial (plugging to the
-existing OOM handling) is merged?
+Could you add those referenced links as well please?
 
+> ## Background
+> 
+> The issue of a dying memory cgroup refers to a situation where a memory
+> cgroup is no longer being used by users, but memory (the metadata
+> associated with memory cgroups) remains allocated to it. This situation
+> may potentially result in memory leaks or inefficiencies in memory
+> reclamation and has persisted as an issue for several years. Any memory
+> allocation that endures longer than the lifespan (from the users'
+> perspective) of a memory cgroup can lead to the issue of dying memory
+> cgroup. We have exerted greater efforts to tackle this problem by
+> introducing the infrastructure of object cgroup [2].
+> 
+> Presently, numerous types of objects (slab objects, non-slab kernel
+> allocations, per-CPU objects) are charged to the object cgroup without
+> holding a reference to the original memory cgroup. The final allocations
+> for LRU pages (anonymous pages and file pages) are charged at allocation
+> time and continues to hold a reference to the original memory cgroup
+> until reclaimed.
+> 
+> File pages are more complex than anonymous pages as they can be shared
+> among different memory cgroups and may persist beyond the lifespan of
+> the memory cgroup. The long-term pinning of file pages to memory cgroups
+> is a widespread issue that causes recurring problems in practical
+> scenarios [3]. File pages remain unreclaimed for extended periods.
+> Additionally, they are accessed by successive instances (second, third,
+> fourth, etc.) of the same job, which is restarted into a new cgroup each
+> time. As a result, unreclaimable dying memory cgroups accumulate,
+> leading to memory wastage and significantly reducing the efficiency
+> of page reclamation.
+
+Very useful introduction to the problem. Thanks!
+
+> ## Fundamentals
+> 
+> A folio will no longer pin its corresponding memory cgroup. It is necessary
+> to ensure that the memory cgroup or the lruvec associated with the memory
+> cgroup is not released when a user obtains a pointer to the memory cgroup
+> or lruvec returned by folio_memcg() or folio_lruvec(). Users are required
+> to hold the RCU read lock or acquire a reference to the memory cgroup
+> associated with the folio to prevent its release if they are not concerned
+> about the binding stability between the folio and its corresponding memory
+> cgroup. However, some users of folio_lruvec() (i.e., the lruvec lock)
+> desire a stable binding between the folio and its corresponding memory
+> cgroup. An approach is needed to ensure the stability of the binding while
+> the lruvec lock is held, and to detect the situation of holding the
+> incorrect lruvec lock when there is a race condition during memory cgroup
+> reparenting. The following four steps are taken to achieve these goals.
+> 
+> 1. The first step  to be taken is to identify all users of both functions
+>    (folio_memcg() and folio_lruvec()) who are not concerned about binding
+>    stability and implement appropriate measures (such as holding a RCU read
+>    lock or temporarily obtaining a reference to the memory cgroup for a
+>    brief period) to prevent the release of the memory cgroup.
+> 
+> 2. Secondly, the following refactoring of folio_lruvec_lock() demonstrates
+>    how to ensure the binding stability from the user's perspective of
+>    folio_lruvec().
+> 
+>    struct lruvec *folio_lruvec_lock(struct folio *folio)
+>    {
+>            struct lruvec *lruvec;
+> 
+>            rcu_read_lock();
+>    retry:
+>            lruvec = folio_lruvec(folio);
+>            spin_lock(&lruvec->lru_lock);
+>            if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
+>                    spin_unlock(&lruvec->lru_lock);
+>                    goto retry;
+>            }
+> 
+>            return lruvec;
+>    }
+> 
+>    From the perspective of memory cgroup removal, the entire reparenting
+>    process (altering the binding relationship between folio and its memory
+>    cgroup and moving the LRU lists to its parental memory cgroup) should be
+>    carried out under both the lruvec lock of the memory cgroup being removed
+>    and the lruvec lock of its parent.
+> 
+> 3. Thirdly, another lock that requires the same approach is the split-queue
+>    lock of THP.
+> 
+> 4. Finally, transfer the LRU pages to the object cgroup without holding a
+>    reference to the original memory cgroup.
+> ```
+> 
+> And the details of the adaptation are below:
+> 
+> ```
+> Similar to traditional LRU folios, in order to solve the dying memcg
+> problem, we also need to reparenting MGLRU folios to the parent memcg when
+> memcg offline.
+> 
+> However, there are the following challenges:
+> 
+> 1. Each lruvec has between MIN_NR_GENS and MAX_NR_GENS generations, the
+>    number of generations of the parent and child memcg may be different,
+>    so we cannot simply transfer MGLRU folios in the child memcg to the
+>    parent memcg as we did for traditional LRU folios.
+> 2. The generation information is stored in folio->flags, but we cannot
+>    traverse these folios while holding the lru lock, otherwise it may
+>    cause softlockup.
+> 3. In walk_update_folio(), the gen of folio and corresponding lru size
+>    may be updated, but the folio is not immediately moved to the
+>    corresponding lru list. Therefore, there may be folios of different
+>    generations on an LRU list.
+> 4. In lru_gen_del_folio(), the generation to which the folio belongs is
+>    found based on the generation information in folio->flags, and the
+>    corresponding LRU size will be updated. Therefore, we need to update
+>    the lru size correctly during reparenting, otherwise the lru size may
+>    be updated incorrectly in lru_gen_del_folio().
+> 
+> Finally, this patch chose a compromise method, which is to splice the lru
+> list in the child memcg to the lru list of the same generation in the
+> parent memcg during reparenting. And in order to ensure that the parent
+> memcg has the same generation, we need to increase the generations in the
+> parent memcg to the MAX_NR_GENS before reparenting.
+> 
+> Of course, the same generation has different meanings in the parent and
+> child memcg, this will cause confusion in the hot and cold information of
+> folios. But other than that, this method is simple enough, the lru size
+> is correct, and there is no need to consider some concurrency issues (such
+> as lru_gen_del_folio()).
+> ```
+
+Thanks you this is very useful.
+
+A high level overview on how the patch series (of this size) would be
+appreaciate as well.
 -- 
 Michal Hocko
 SUSE Labs
