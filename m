@@ -1,134 +1,174 @@
-Return-Path: <cgroups+bounces-11451-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11452-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C8C3C23541
-	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 07:15:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DE77C23D1D
+	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 09:32:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8E68A4E362C
-	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 06:14:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A168C18926ED
+	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 08:33:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF1E2EC562;
-	Fri, 31 Oct 2025 06:14:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD6162BE646;
+	Fri, 31 Oct 2025 08:32:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rKCJJoCN"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WoyDtMBu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9712E7F38
-	for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 06:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9668E22172E
+	for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 08:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761891277; cv=none; b=jMBY6q5w+sdecSlf6B6i+RMLDYBXG3ftiBVvjHZaqztU1v1EcCoWTewPyIIvIDCBAPoYZ/eU0d5Vm3nf9vnbhy+CqWFAZ4y7fFPBadnY4+EfkpmxzdVZpCVSlJFAkuOmM/gvJ94FEc15F9Hz1wl/9bUyTyVVW+CXe9TFwCC2j+w=
+	t=1761899560; cv=none; b=tqTgcmNbLxVZwCZFXPjMY0H7Mcw/G+vwoRBpr9N4kqQOi7qrgMEKBotauYEKD38lh2CLcpYXX7WO+JwkdBKAI2VflhthOcRCjyh1dkGaVkriPA1kyrHo5AYCf0m1Z4rkWySuIC4DUPjEwoCt33d8L0Vzezx2VwZWgHuxIAAD2HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761891277; c=relaxed/simple;
-	bh=ulqQ2Efc96Ndv0ALKnZyWiWyzX2vMFMpabUS/C/Sh3Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kCkkfiOzBXRyXmUljR8Xmd4E23O3c5SvrDg0ZJhdOFe+wbbxEvC7K0P7PiXnbyN769HPHiePO/tJQSG/c+Hc5RZyDcM0XtEKJTuI3F7D4QhuNfE8KxtVFYpZO0iPN9gvEl7hF0NNhY55UI9eYyZV0r6RocHo5Ss6YbXJd/EKbxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rKCJJoCN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 025D7C116C6
-	for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 06:14:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761891277;
-	bh=ulqQ2Efc96Ndv0ALKnZyWiWyzX2vMFMpabUS/C/Sh3Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=rKCJJoCNVl0Q5qtaH1Z+C7B1Oz+Fl08Rl8H0qpFx06zWBR66UY0lqEwb3iTi0T7bZ
-	 iUo9iMhXwDO1C9+a/RSFlW0WTKwANQWJQ8up+KtwVzuAsT0So20658/XXdq0NWtphE
-	 gkxQDiUHsr7C4T3wMDNAw3HFdzQLreVT717xnA/vyNUP8KC0C+zCtguLL8LVOJVhTh
-	 ZtKH+qq8rbVN87I0SYHf2gnCjl8TbdTuDIGUVJSwLcNn6hCe162OTbkUhb0vZ2YZyG
-	 TiXtol0bImMwkIReazkIjp2LKKFWPVssG+caVhcpP5V3ZVba/UK3e9lx3N681S99ct
-	 WyIMCunGgs8qA==
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-87499a3cd37so13740766d6.3
-        for <cgroups@vger.kernel.org>; Thu, 30 Oct 2025 23:14:36 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXPJrBSbp4Ia895fCGnGEmbhjE4Xwa32ZuvchUI3ybxxE1x8eD8UZ1FyiPGwkkXU8EDybG16P5t@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxo6hS7pUSGjPk1ahtUz+kwY/FIMvmmGufUL0GNpGiFoN0tXM7I
-	6Z68PJdkRGUfMf6p9kNN0WSTqwRMrUa+nvV15e1IfUFbgMGTJmXEHtm+H1iLoOx1TbbVSZqwSGA
-	dSyhAjyUSGMe1YIuXzHPmRrkSsCakzcQ=
-X-Google-Smtp-Source: AGHT+IERuBxgQd6R3EQpmFyFGBh/OYNUCmHcFdqHl5UpwHFlKQJ7KunNCXQLp2T8SUK1j4VkBMM2BQqqeY80Jp9bKs0=
-X-Received: by 2002:a05:6214:2a8b:b0:87c:a721:42f3 with SMTP id
- 6a1803df08f44-8802f450e57mr23817426d6.41.1761891276053; Thu, 30 Oct 2025
- 23:14:36 -0700 (PDT)
+	s=arc-20240116; t=1761899560; c=relaxed/simple;
+	bh=3j8afmSJ7Nmsi16sNeqRifyt/WmVa4gl82NY0GZWAqA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HXkrfHsqUF7jvqEdWbEDpw4e6t6IANo/xgulyK8Ie2Gzlrvo66vVkdUL788r292IIi3HzgpkyJ72F3VfImUpin11F7Bz/VSiTcrUUCWcTOhV4fbPW4yF8YXHMKwDU4dizPO5vGiPmBzagXOYEGI9gNE2shaEWYYhjuEoAzHwLDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WoyDtMBu; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-47117f92e32so16543635e9.1
+        for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 01:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1761899557; x=1762504357; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4h4q0wa7BdASeLKkAa33sOr+LqpNtBVUob6S/qE5mOw=;
+        b=WoyDtMBuNhhFFznEpNIVqcF2X8Widy/OoxXlAPNS9tf4RR1UCNUREksKORQRI6yHHa
+         Z0XjnXYYxmTep6USUQftuXPQ3AKA3IOLtlc1K5UrfKYJzIkvcXYzVYvqvq93a/eODgSt
+         fNmeJIAoydG1RoAtJAc53SELCfJzaqJDms83Z+HfMZs8ZZd06vetrDwxcnqbWlT+Bhsx
+         n3qz0JDHWCbYfLpbZTghOvE2Y3XqVOtRecg0gjvV/3NGn9eMZsx9t4KywxXTkZesTyFT
+         TRez8XiTcf77/jOFeVVke5YfzY7UVYW4G2kz59apMI1vXAs7kdwJzqfdC5+RzCoMOO9N
+         NnHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761899557; x=1762504357;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4h4q0wa7BdASeLKkAa33sOr+LqpNtBVUob6S/qE5mOw=;
+        b=u/NntIY8KYCjQMfVX1m28flcMU+2c8gIvIecnerLrASXcaiTWgJrcAhnAQ41jr8XLO
+         1I5OmHH9ksLrdgtjgU5SdQ6UyULh6kWU5NrO8gYxEh0NPur8sNgCTDT1HGvcMFUoNflv
+         HiW/LYBISWOnkxuw8qeEcB4Jz+tuLL7SrF/jHSs2fmdajGaEn7lb2lMqLhoTniPPjv3t
+         1FHydvrVfgFOyTsrU4P0gT5cCzJFotaSiD8PBEYy+9tmNA5GAM3yZQGtz4jWPUdQJ2H0
+         Rv65VVkvMCX9qFc42cXP2N9ZK0TMcZNiY4XX96WFY4man/u6JzGr311CMwQe9DNa37jF
+         HXjg==
+X-Forwarded-Encrypted: i=1; AJvYcCXPzywK57KMFNcB8sW1ZMyLlh3jIl04BR3+c5MJrP8UA6ugkfjedvzWisKKqKlQukxEFYudIVTG@vger.kernel.org
+X-Gm-Message-State: AOJu0YyU34nDA5Vx+rfUe2pAwJiG5WMmBv9JE6ONjG7aLoh3q9jjbKMF
+	0R7AiEBzfBgxm2FNy/nk5XDw1Vpzgh+Q6Y1MkAFMAVMJTuNkpN0GA6tLWXJCDdK0baY=
+X-Gm-Gg: ASbGncs2LDROaQYbnFW82LMuT5i99Vh1Em3dcys+aNlrEjcfEtSh7E6lHNu8czFQCtU
+	ZAEwKw2oM+Q1OUcatzXAQ7PKQBycwaygMyJe+LPm7ZllrjbUtyTOUJ6AjO2RiB7H+ovif7jJTsC
+	3jRB1NyICdcHDMpjwEYKUFcaM3/jt4gUwU9vEP2yYnDjgksM9qYb5xlO1OxFM0D+rrddxH6+62p
+	hga4kKIAJrjb82w6w8us+z9f2gRLLa9XFT0k9i4vbCs149TGKOWzeryYg/l6IDkUrUx5j96JmUG
+	GvqoT3lbGuOi02XFa3Skt1Wi2mWjI55kUYlE3xPVIbKLRJndqXDHFuDHKyW5MXcMCRqnOQKruHG
+	r328pEAr9I4c3z11qozKtxMA7emD64oOtSw/hKv8q2P1yS7XNdxf/UD673s8Xzp1kwRGInY/yRF
+	a2sxhVnvA/3iTagitGgKuppqPM
+X-Google-Smtp-Source: AGHT+IGfDhEwc+4540g9zxrsusq87Jw5oannsM7AsDgvzrefgTdYZ1mcnrXQoAnn7esV8SehlhvpnQ==
+X-Received: by 2002:a05:600c:1f91:b0:475:daba:d03c with SMTP id 5b1f17b1804b1-477307c51d5mr21021365e9.13.1761899556870;
+        Fri, 31 Oct 2025 01:32:36 -0700 (PDT)
+Received: from localhost (109-81-31-109.rct.o2.cz. [109.81.31.109])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47732cb7f41sm20722905e9.0.2025.10.31.01.32.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Oct 2025 01:32:36 -0700 (PDT)
+Date: Fri, 31 Oct 2025 09:32:35 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, bpf@vger.kernel.org,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Song Liu <song@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 04/23] mm: define mem_cgroup_get_from_ino() outside of
+ CONFIG_SHRINKER_DEBUG
+Message-ID: <aQR0I9B9b1VvmYl2@tiehlicka>
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+ <20251027231727.472628-5-roman.gushchin@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-3-roman.gushchin@linux.dev> <CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
- <87zf98xq20.fsf@linux.dev> <CAHzjS_tnmSPy_cqCUHiLGt8Ouf079wQBQkostqJqfyKcJZPXLA@mail.gmail.com>
- <CAMB2axMkYS1j=KeECZQ9rnupP8kw7dn1LnGV4udxMp=f=qoEQA@mail.gmail.com>
- <877bwcus3h.fsf@linux.dev> <CAADnVQJGiH_yF=AoFSRy4zh20uneJgBfqGshubLM6aVq069Fhg@mail.gmail.com>
- <87bjloht28.fsf@linux.dev>
-In-Reply-To: <87bjloht28.fsf@linux.dev>
-From: Song Liu <song@kernel.org>
-Date: Thu, 30 Oct 2025 23:14:24 -0700
-X-Gmail-Original-Message-ID: <CAHzjS_vRrxTLR0kFJvm4R3kO0s8hyN5Onsr6XfbA3Peyasz+Cg@mail.gmail.com>
-X-Gm-Features: AWmQ_bndcOuOp7qdV3wXaWKIXpuAyFBwWSClkxOKSazNGGK9yzrR9MBHnc604rU
-Message-ID: <CAHzjS_vRrxTLR0kFJvm4R3kO0s8hyN5Onsr6XfbA3Peyasz+Cg@mail.gmail.com>
-Subject: Re: bpf_st_ops and cgroups. Was: [PATCH v2 02/23] bpf: initial
- support for attaching struct ops to cgroups
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Amery Hung <ameryhung@gmail.com>, 
-	Song Liu <song@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, JP Kobryn <inwardvessel@gmail.com>, 
-	linux-mm <linux-mm@kvack.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251027231727.472628-5-roman.gushchin@linux.dev>
 
-On Thu, Oct 30, 2025 at 4:24=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
-x.dev> wrote:
->
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->
-> > On Thu, Oct 30, 2025 at 12:06=E2=80=AFPM Roman Gushchin
-> > <roman.gushchin@linux.dev> wrote:
-> >>
-> >> Ok, let me summarize the options we discussed here:
-> >>
-> >> 1) Make the attachment details (e.g. cgroup_id) the part of struct ops
-> >> itself. The attachment is happening at the reg() time.
-> >>
-> >>   +: It's convenient for complex stateful struct ops'es, because a
-> >>       single entity represents a combination of code and data.
-> >>   -: No way to attach a single struct ops to multiple entities.
-> >>
-> >> This approach is used by Tejun for per-cgroup sched_ext prototype.
-> >
-> > It's wrong. It should adopt bpf_struct_ops_link_create() approach
-> > and use attr->link_create.cgroup.relative_fd to attach.
->
-> This is basically what I have in v2, but Andrii and Song suggested that
-> I should use attr->link_create.target_fd instead.
->
-> I have a slight preference towards attr->link_create.cgroup.relative_fd
-> because it makes it clear that fd is a cgroup fd and potentially opens
-> a possibility to e.g. attach struct_ops to individual tasks and
-> cgroups, but I'm fine with both options.
+On Mon 27-10-25 16:17:07, Roman Gushchin wrote:
+> mem_cgroup_get_from_ino() can be reused by the BPF OOM implementation,
+> but currently depends on CONFIG_SHRINKER_DEBUG. Remove this dependency.
+> 
+> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-relative_fd and relative_id have specific meaning. When multiple
-programs are attached to the same object (cgroup, socket, etc.),
-relative_fd and relative_id (together with BPF_F_BEFORE and
-BPF_F_AFTER) are used to specify the order of execution.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
->
-> Also, as Song pointed out, fd=3D=3D0 is in theory a valid target, so inst=
-ead of
-> using the "if (fd) {...}" check we might need a new flag. Idk if it
-> really makes sense to complicate the code for it.
->
-> Can we, please, decide on what's best here?
+> ---
+>  include/linux/memcontrol.h | 4 ++--
+>  mm/memcontrol.c            | 2 --
+>  2 files changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 873e510d6f8d..9af9ae28afe7 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -832,9 +832,9 @@ static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
+>  {
+>  	return memcg ? cgroup_ino(memcg->css.cgroup) : 0;
+>  }
+> +#endif
+>  
+>  struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino);
+> -#endif
+>  
+>  static inline struct mem_cgroup *mem_cgroup_from_seq(struct seq_file *m)
+>  {
+> @@ -1331,12 +1331,12 @@ static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
+>  {
+>  	return 0;
+>  }
+> +#endif
+>  
+>  static inline struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
+>  {
+>  	return NULL;
+>  }
+> -#endif
+>  
+>  static inline struct mem_cgroup *mem_cgroup_from_seq(struct seq_file *m)
+>  {
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 4deda33625f4..5d27cd5372aa 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3618,7 +3618,6 @@ struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
+>  	return xa_load(&mem_cgroup_ids, id);
+>  }
+>  
+> -#ifdef CONFIG_SHRINKER_DEBUG
+>  struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
+>  {
+>  	struct cgroup *cgrp;
+> @@ -3639,7 +3638,6 @@ struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
+>  
+>  	return memcg;
+>  }
+> -#endif
+>  
+>  static void free_mem_cgroup_per_node_info(struct mem_cgroup_per_node *pn)
+>  {
+> -- 
+> 2.51.0
 
-How about we add a new attach_type BPF_STRUCT_OPS_CGROUP?
-
-Thanks,
-Song
+-- 
+Michal Hocko
+SUSE Labs
 
