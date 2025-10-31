@@ -1,161 +1,302 @@
-Return-Path: <cgroups+bounces-11459-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11460-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BB81C24CDC
-	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 12:35:49 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2134C252BE
+	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 14:06:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 661261891737
-	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 11:36:13 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 45E114F47B1
+	for <lists+cgroups@lfdr.de>; Fri, 31 Oct 2025 13:00:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0295134678D;
-	Fri, 31 Oct 2025 11:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD871A2C04;
+	Fri, 31 Oct 2025 13:00:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dmczZhTo"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aawpblLi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yx1-f45.google.com (mail-yx1-f45.google.com [74.125.224.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46BAE345CCA
-	for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 11:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478203451D1
+	for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 13:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761910543; cv=none; b=A5bYrsVAzr95sCrM4x07sOm9OLyFlibxCikDn98hTgSkewSAqGf5gxmjAUx9MvjgeOfI7lCZjq7c/dan6eTqxZ9foIIMUTfbjL6GJThEdOFr/uWeJAJWgTpO++ky8+S/aCfk/MOIduOcyZ6dYI6D1lkw5IYJFYROGRqIx1pzJqA=
+	t=1761915617; cv=none; b=FpN3ltjytjZAGBc9Nmo3+pd4AJ9dXUH2dRevwWQvKQ72rEZQDS3mkshgk8z8AJiE8iB/Gq04qUDvfPPtys+WQPSbvU1BV2eRo4qv4dP+t/tHfXx+8VlkVmwYpRSICRSVRWyRFMhU4JUH9hkBrG+rkkEYwEAtvvsa+l+p66sU29w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761910543; c=relaxed/simple;
-	bh=zGfOY1YKgFGvpQyOBRrxFHQgGi+qTE8E9CATiNKrKcc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tCxAR5QunhPJhvjpd7YGRlrbRxVFu7jK6tw7G2AzM8mSiU8nLgsC/Vo65s3RYRzjhNx3CnGpENtxBR6+boc4yk/zI8X+rcmth92hxyYA2RFaZTs4LhzpWj0MnzXnL4vxvPK5EWwn6E+9rakfZItnlKmpraLCHHD9HXRE/ty7PCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dmczZhTo; arc=none smtp.client-ip=74.125.224.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f45.google.com with SMTP id 956f58d0204a3-63d97bcb898so3631546d50.0
-        for <cgroups@vger.kernel.org>; Fri, 31 Oct 2025 04:35:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1761910541; x=1762515341; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sbYQROsqbxlCCT18FcNDkFe0rlrcvGndQ8kTMkEAgwk=;
-        b=dmczZhTocGyCImgJzd+gMPfbpRCRNsfJ9UXVNKH/CVsAL/s3WuxWysiP44c1xxC3kn
-         ps5fkQC0HjvhMKdADrLKUZqrOFIisFoE+fNa9O+8qS8NHkPrHwcumEArGFIzEZtDjMZj
-         7ufN9FR7SqYBpZVnZUbwiiqTj3hhEZnxJcXoLJ26BLpIZGBVYcszIMCBdDsEyS+69yzm
-         Dil7VXnVT22pZCfapyTkeRxpz2kmuM+KFeZACj1QjDiR0WlYS7Vp6WuftAgBIth1dnTA
-         rMYQpGj7okJnGUFWOVqwxiqbvMETQUYLsSJC/zZgY8/Q/HlUcXLfF6F3J9QrUO131zLd
-         lT2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761910541; x=1762515341;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sbYQROsqbxlCCT18FcNDkFe0rlrcvGndQ8kTMkEAgwk=;
-        b=MoxGDtuMG/Z9XLwcpasIrpAmShP5V7j3OwQnPeeNyx8P4jTKnCB3rMIlMqXo47NIsj
-         fIGS6BCn46Tmw+f0WifrRnYa1AlG3O01rYRZG31QRY5HyBaAhohT74ZU40E6t+yio7jg
-         aAWi9WI7goPMiDVDtmsBc3oa0Cz72IORxc9AqaKzcYKLkvU0k1CuuceEofoVm2ojP1JU
-         MCRR9fy4QionpsA50GNVgJ7mDnUIsJVmQVCWjd9bwOk9f03wfe4wM9FAC1tXpY89EqXC
-         yEwoV8BTftJCXwvRnOYYhCHidIQAqfrBmHYbKNR38xzYKY6oID7+e3Qio3YmPtPoP6IG
-         YN+g==
-X-Forwarded-Encrypted: i=1; AJvYcCUgS58eWqirqfpu++BKOs8RyZifvKwKQ4k5l8JmfGVB6qgDUzj8yz395iXGP1Nyj5p+UnKOeCa9@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxk+pZm/oPTu5Kc53AiqItgke2S9XCot1GTE4mIsbmForP2PnRG
-	CCloyrACDGgsCnSVglS3XPwwZdxoQpUlTdHctKtpg1geQPhbBvEXL6MPC5Q5GTVOb4fZkrGio2y
-	kYSfmkaGPDtDwu9gqGN0bVrqhDcZTaKQ=
-X-Gm-Gg: ASbGnct6yMJEe+jpbuOaRkNN4rHCawbTN+5pYju+5yBWcOLFi/pP9VQocfwakJ8N78u
-	5zfXpLEIKCG43lndqsny1ZdQtvGQ9WomdfiE1B0piDoPnigyyVKyWA9PVp7DYht857iBf3NKQfN
-	29nrsYUcb4vFAkr6IUKW7kd2pabQHJUzVaaAbcD9rVTSRjGrf236n6kCvtLUPxE/QLtFbvidhaE
-	5OphiPJAIY/YyzseZwI59yXYt4OhbJSFbDJr1o5H2ouft889QtUv9Cr+HibWw==
-X-Google-Smtp-Source: AGHT+IEu9dWSv5Gv4oIclWkYCdwjipk6IKPGLuplrWhNfsF2BSjzskyBODi71LrFaVQiUOiO05FML1vQlRoaBoKLGH4=
-X-Received: by 2002:a05:690e:4311:b0:63f:471b:c949 with SMTP id
- 956f58d0204a3-63f828dc3f4mr4262945d50.8.1761910541181; Fri, 31 Oct 2025
- 04:35:41 -0700 (PDT)
+	s=arc-20240116; t=1761915617; c=relaxed/simple;
+	bh=0gvffhtHm9TKGqAoa6OvbnQN2GBuYskUEFqtaqSKDrs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bLvAAB6wTsIJ0v/AdvzeiZ/ENI2s/MKadBwW98Q2f1U1y4B8/5V11Vv50x+qboRnLnoYe9BrneyzNtffTaS/dbM0XkVmc9baoEM0GABCQUunSJAomHY18BtKtkSkLEpDnwILTskUGbhvctXiZzzr8oRUiR1dfPCa9TVkKWNfljo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aawpblLi; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1761915614;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uLDwt+NU3vvKrlrQRKfDo5aEPn3HnX2ZWzIgGku0kDc=;
+	b=aawpblLiJBSomgn/tACuXWqcbngMnWrm2V+DfGvyz7+L+ypG1jpoyICEziYwcO0OqD35Ny
+	EGoAqtZeHjIXVX0UDwJ2qECYVI6aYsIYwFhTJr1ZkpjXJiPOFAT15z3YqXl3Tj2exFXNLU
+	HyMiHZJHi6fLgjlxgIIra+p+ZQgvzts=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-607-qDUMAdLUOq24oc-NOEKyLQ-1; Fri,
+ 31 Oct 2025 09:00:10 -0400
+X-MC-Unique: qDUMAdLUOq24oc-NOEKyLQ-1
+X-Mimecast-MFC-AGG-ID: qDUMAdLUOq24oc-NOEKyLQ_1761915606
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CB1101955F3E;
+	Fri, 31 Oct 2025 13:00:03 +0000 (UTC)
+Received: from pauld.westford.csb (unknown [10.22.80.244])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2491A1955BE3;
+	Fri, 31 Oct 2025 12:59:53 +0000 (UTC)
+Date: Fri, 31 Oct 2025 08:59:51 -0400
+From: Phil Auld <pauld@redhat.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Danilo Krummrich <dakr@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Gabriele Monaco <gmonaco@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Simon Horman <horms@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>, Waiman Long <longman@redhat.com>,
+	Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+	linux-mm@kvack.org, linux-pci@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH 13/33] cpuset: Update HK_TYPE_DOMAIN cpumask from cpuset
+Message-ID: <20251031125951.GA430420@pauld.westford.csb>
+References: <20251013203146.10162-1-frederic@kernel.org>
+ <20251013203146.10162-14-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-3-roman.gushchin@linux.dev> <CAHzjS_sLqPZFqsGXB+wVzRE=Z9sQ-ZFMjy8T__50D4z44yqctg@mail.gmail.com>
- <87zf98xq20.fsf@linux.dev> <CAHzjS_tnmSPy_cqCUHiLGt8Ouf079wQBQkostqJqfyKcJZPXLA@mail.gmail.com>
- <CAMB2axMkYS1j=KeECZQ9rnupP8kw7dn1LnGV4udxMp=f=qoEQA@mail.gmail.com>
- <877bwcus3h.fsf@linux.dev> <CAADnVQJGiH_yF=AoFSRy4zh20uneJgBfqGshubLM6aVq069Fhg@mail.gmail.com>
- <87bjloht28.fsf@linux.dev> <CAHzjS_vRrxTLR0kFJvm4R3kO0s8hyN5Onsr6XfbA3Peyasz+Cg@mail.gmail.com>
-In-Reply-To: <CAHzjS_vRrxTLR0kFJvm4R3kO0s8hyN5Onsr6XfbA3Peyasz+Cg@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 31 Oct 2025 19:35:05 +0800
-X-Gm-Features: AWmQ_bnhSoJ6Ut36XhdxJDrXBHOIvRPVygYW6oOyCo1P7xEhTIcG9Z7qxfxs8eM
-Message-ID: <CALOAHbAAjx+OAOd=2y-fQUTbPd6gxVeybJd3RoTLYahb_ZO8DA@mail.gmail.com>
-Subject: Re: bpf_st_ops and cgroups. Was: [PATCH v2 02/23] bpf: initial
- support for attaching struct ops to cgroups
-To: Song Liu <song@kernel.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Amery Hung <ameryhung@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, JP Kobryn <inwardvessel@gmail.com>, 
-	linux-mm <linux-mm@kvack.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251013203146.10162-14-frederic@kernel.org>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-On Fri, Oct 31, 2025 at 2:14=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Thu, Oct 30, 2025 at 4:24=E2=80=AFPM Roman Gushchin <roman.gushchin@li=
-nux.dev> wrote:
-> >
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >
-> > > On Thu, Oct 30, 2025 at 12:06=E2=80=AFPM Roman Gushchin
-> > > <roman.gushchin@linux.dev> wrote:
-> > >>
-> > >> Ok, let me summarize the options we discussed here:
-> > >>
-> > >> 1) Make the attachment details (e.g. cgroup_id) the part of struct o=
-ps
-> > >> itself. The attachment is happening at the reg() time.
-> > >>
-> > >>   +: It's convenient for complex stateful struct ops'es, because a
-> > >>       single entity represents a combination of code and data.
-> > >>   -: No way to attach a single struct ops to multiple entities.
-> > >>
-> > >> This approach is used by Tejun for per-cgroup sched_ext prototype.
-> > >
-> > > It's wrong. It should adopt bpf_struct_ops_link_create() approach
-> > > and use attr->link_create.cgroup.relative_fd to attach.
-> >
-> > This is basically what I have in v2, but Andrii and Song suggested that
-> > I should use attr->link_create.target_fd instead.
-> >
-> > I have a slight preference towards attr->link_create.cgroup.relative_fd
-> > because it makes it clear that fd is a cgroup fd and potentially opens
-> > a possibility to e.g. attach struct_ops to individual tasks and
-> > cgroups, but I'm fine with both options.
->
-> relative_fd and relative_id have specific meaning. When multiple
-> programs are attached to the same object (cgroup, socket, etc.),
-> relative_fd and relative_id (together with BPF_F_BEFORE and
-> BPF_F_AFTER) are used to specify the order of execution.
->
-> >
-> > Also, as Song pointed out, fd=3D=3D0 is in theory a valid target, so in=
-stead of
-> > using the "if (fd) {...}" check we might need a new flag. Idk if it
-> > really makes sense to complicate the code for it.
-> >
-> > Can we, please, decide on what's best here?
->
-> How about we add a new attach_type BPF_STRUCT_OPS_CGROUP?
+Hi Frederic,
 
-I'm concerned that defining a unique BPF_STRUCT_OPS_XXX for each type
-might lead to a maintainability challenge. To keep the design clean
-and forward-looking, we might want to consider a more generic
-abstraction that could easily accommodate other kernel structures
-(task_struct, mm_struct, etc.) without duplication.
+On Mon, Oct 13, 2025 at 10:31:26PM +0200 Frederic Weisbecker wrote:
+> Until now, HK_TYPE_DOMAIN used to only include boot defined isolated
+> CPUs passed through isolcpus= boot option. Users interested in also
+> knowing the runtime defined isolated CPUs through cpuset must use
+> different APIs: cpuset_cpu_is_isolated(), cpu_is_isolated(), etc...
+> 
+> There are many drawbacks to that approach:
+> 
+> 1) Most interested subsystems want to know about all isolated CPUs, not
+>   just those defined on boot time.
+> 
+> 2) cpuset_cpu_is_isolated() / cpu_is_isolated() are not synchronized with
+>   concurrent cpuset changes.
+> 
+> 3) Further cpuset modifications are not propagated to subsystems
+> 
+> Solve 1) and 2) and centralize all isolated CPUs within the
+> HK_TYPE_DOMAIN housekeeping cpumask.
+> 
+> Subsystems can rely on RCU to synchronize against concurrent changes.
+> 
+> The propagation mentioned in 3) will be handled in further patches.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  include/linux/sched/isolation.h |  2 +
+>  kernel/cgroup/cpuset.c          |  2 +
+>  kernel/sched/isolation.c        | 75 ++++++++++++++++++++++++++++++---
+>  kernel/sched/sched.h            |  1 +
+>  4 files changed, 74 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+> index da22b038942a..94d5c835121b 100644
+> --- a/include/linux/sched/isolation.h
+> +++ b/include/linux/sched/isolation.h
+> @@ -32,6 +32,7 @@ extern const struct cpumask *housekeeping_cpumask(enum hk_type type);
+>  extern bool housekeeping_enabled(enum hk_type type);
+>  extern void housekeeping_affine(struct task_struct *t, enum hk_type type);
+>  extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
+> +extern int housekeeping_update(struct cpumask *mask, enum hk_type type);
+>  extern void __init housekeeping_init(void);
+>  
+>  #else
+> @@ -59,6 +60,7 @@ static inline bool housekeeping_test_cpu(int cpu, enum hk_type type)
+>  	return true;
+>  }
+>  
+> +static inline int housekeeping_update(struct cpumask *mask, enum hk_type type) { return 0; }
+>  static inline void housekeeping_init(void) { }
+>  #endif /* CONFIG_CPU_ISOLATION */
+>  
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index aa1ac7bcf2ea..b04a4242f2fa 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1403,6 +1403,8 @@ static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
+>  
+>  	ret = workqueue_unbound_exclude_cpumask(isolated_cpus);
+>  	WARN_ON_ONCE(ret < 0);
+> +	ret = housekeeping_update(isolated_cpus, HK_TYPE_DOMAIN);
+> +	WARN_ON_ONCE(ret < 0);
+>  }
+>  
+>  /**
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index b46c20b5437f..95d69c2102f6 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -29,18 +29,48 @@ static struct housekeeping housekeeping;
+>  
+>  bool housekeeping_enabled(enum hk_type type)
+>  {
+> -	return !!(housekeeping.flags & BIT(type));
+> +	return !!(READ_ONCE(housekeeping.flags) & BIT(type));
+>  }
+>  EXPORT_SYMBOL_GPL(housekeeping_enabled);
+>  
+> +static bool housekeeping_dereference_check(enum hk_type type)
+> +{
+> +	if (IS_ENABLED(CONFIG_LOCKDEP) && type == HK_TYPE_DOMAIN) {
+> +		/* Cpuset isn't even writable yet? */
+> +		if (system_state <= SYSTEM_SCHEDULING)
+> +			return true;
+> +
+> +		/* CPU hotplug write locked, so cpuset partition can't be overwritten */
+> +		if (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_write_held())
+> +			return true;
+> +
+> +		/* Cpuset lock held, partitions not writable */
+> +		if (IS_ENABLED(CONFIG_CPUSETS) && lockdep_is_cpuset_held())
+> +			return true;
+> +
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +static inline struct cpumask *housekeeping_cpumask_dereference(enum hk_type type)
+> +{
+> +	return rcu_dereference_check(housekeeping.cpumasks[type],
+> +				     housekeeping_dereference_check(type));
+> +}
+> +
+>  const struct cpumask *housekeeping_cpumask(enum hk_type type)
+>  {
+> +	const struct cpumask *mask = NULL;
+> +
+>  	if (static_branch_unlikely(&housekeeping_overridden)) {
+> -		if (housekeeping.flags & BIT(type)) {
+> -			return rcu_dereference_check(housekeeping.cpumasks[type], 1);
+> -		}
+> +		if (READ_ONCE(housekeeping.flags) & BIT(type))
+> +			mask = housekeeping_cpumask_dereference(type);
+>  	}
+> -	return cpu_possible_mask;
+> +	if (!mask)
+> +		mask = cpu_possible_mask;
+> +	return mask;
+>  }
+>  EXPORT_SYMBOL_GPL(housekeeping_cpumask);
+>  
+> @@ -80,12 +110,45 @@ EXPORT_SYMBOL_GPL(housekeeping_affine);
+>  
+>  bool housekeeping_test_cpu(int cpu, enum hk_type type)
+>  {
+> -	if (housekeeping.flags & BIT(type))
+> +	if (READ_ONCE(housekeeping.flags) & BIT(type))
+>  		return cpumask_test_cpu(cpu, housekeeping_cpumask(type));
+>  	return true;
+>  }
+>  EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
+>  
+> +int housekeeping_update(struct cpumask *mask, enum hk_type type)
+> +{
+> +	struct cpumask *trial, *old = NULL;
+> +
+> +	if (type != HK_TYPE_DOMAIN)
+> +		return -ENOTSUPP;
+> +
+> +	trial = kmalloc(sizeof(*trial), GFP_KERNEL);
+> +	if (!trial)
+> +		return -ENOMEM;
+> +
+> +	cpumask_andnot(trial, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT), mask);
+> +	if (!cpumask_intersects(trial, cpu_online_mask)) {
+> +		kfree(trial);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!housekeeping.flags)
+> +		static_branch_enable(&housekeeping_overridden);
+> +
+> +	if (!(housekeeping.flags & BIT(type)))
+> +		old = housekeeping_cpumask_dereference(type);
+> +	else
+> +		WRITE_ONCE(housekeeping.flags, housekeeping.flags | BIT(type));
 
---=20
-Regards
-Yafang
+Isn't this backwards?   If the bit is not set you save old to free it
+and if the bit is set you set it again.
+
+
+Cheers,
+Phil
+
+
+> +	rcu_assign_pointer(housekeeping.cpumasks[type], trial);
+> +
+> +	synchronize_rcu();
+> +
+> +	kfree(old);
+> +
+> +	return 0;
+> +}
+> +
+>  void __init housekeeping_init(void)
+>  {
+>  	enum hk_type type;
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 0c0ef8999fd6..8fac8aa451c6 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -30,6 +30,7 @@
+>  #include <linux/context_tracking.h>
+>  #include <linux/cpufreq.h>
+>  #include <linux/cpumask_api.h>
+> +#include <linux/cpuset.h>
+>  #include <linux/ctype.h>
+>  #include <linux/file.h>
+>  #include <linux/fs_api.h>
+> -- 
+> 2.51.0
+> 
+
+-- 
+
 
