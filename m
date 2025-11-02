@@ -1,75 +1,63 @@
-Return-Path: <cgroups+bounces-11470-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11471-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3EFAC2861A
-	for <lists+cgroups@lfdr.de>; Sat, 01 Nov 2025 20:21:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73363C296C2
+	for <lists+cgroups@lfdr.de>; Sun, 02 Nov 2025 21:54:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6C4D188F2DC
-	for <lists+cgroups@lfdr.de>; Sat,  1 Nov 2025 19:21:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 227233A81C8
+	for <lists+cgroups@lfdr.de>; Sun,  2 Nov 2025 20:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F0533009D3;
-	Sat,  1 Nov 2025 19:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D331EBA14;
+	Sun,  2 Nov 2025 20:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4Q3V8++I";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Y7sVe5FL"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FAL7bBL+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334E82FF678;
-	Sat,  1 Nov 2025 19:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618D519F12D
+	for <cgroups@vger.kernel.org>; Sun,  2 Nov 2025 20:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762024856; cv=none; b=iSJUMkL32R+/094n8OO7KA5i+hQPGUW7rNVxSJaspJA+lovf/uMDSzAgdAUA4tLZSj1cRO1R0bXhY4sB92Y6uRdRJqICCyrC0slcKe3FEsUzTyicJOwA1dAxZMwfOZDbD5XNoXIFyTS2m84+38TB3uu5eHBRoF1Z2SHOOFBhpSA=
+	t=1762116880; cv=none; b=ZZpP2UmRghvJu/IlqJ6brWdxj3JWhW7P9EI4vZi4r35CM3opzmw05EuJtAP+Bnm5lJnb9QU95asMOUP2KGrwUV3T0BMWVefa1Ij3ScYB4lpDMHzhRggsRWAZlMmQUbOt5Qf4SilGYlOk79DEya+oWMivjmrK4L5/AujC1YoWVXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762024856; c=relaxed/simple;
-	bh=KHDhI+OMbYsFp6vu64Dav6dGQ4hKGh0ZnHirB5dDyjg=;
+	s=arc-20240116; t=1762116880; c=relaxed/simple;
+	bh=znhB0HYu7BCHSK5WYxf36KgmWLvUZu3y3u3yHP4Ud0w=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ccPqIIH4+Rig4vsSRMC7Er+Vsv6ZwUbh/3ZaKN8hsGr0Sgxp0Mi9B37f81LZBReNwCAwaScb+akdD3ByyzqDEw8cbzCVICI+9B+EZhozQE0Mb9VudEgGvX87rhFCBAkAR6mrmu4mSXs+kwjOhTCQKiNbfbtSllT9HlNooibv92Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4Q3V8++I; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Y7sVe5FL; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1762024852;
+	 MIME-Version:Content-Type; b=re5XkvgE3TBQZKpn5GcitzumPwGXEP9xVbsxfsb6S3AX5ounxt1tiVVQFBT2IkHOfywFo6Q+HZNrYmTVGogFUzrvtP8cwnq8YOxZp8YqCcX4SghwLBisFvomaPP2FCGd9u/pqEWy37WPQuUdEzPwivcRl1lSUEBlDvXxaOW6xsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FAL7bBL+; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762116875;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zhGK+60JgBD3s2NPs/WG00WWgCrD3JAI9aGx3Giow6U=;
-	b=4Q3V8++IhPzdnCkY/fLpB838bS06LVS94OomrBx0h8qStWpHMqKWCW7j3ayeDgp5U0Lo/o
-	F+eq5PBK+kBuHixm5ic5qF0dA/DUmZ1MrUNzAo7FttEZuPrAzN9Bzo8DxZM1Me6JgPXR42
-	bd7fUT2D+vvzoQ8rYAboiMu1rOqt4/bM+p0UPIVOd13XLnr2+1lXWXq6dN8HEyX63uQvDG
-	YMGO6RzlzV2FncmPvQhB/oqPIK2uK0CKd+qE61wRVtsn0LfBbEhnqql3O3cjOpXguhyt9e
-	L7TETIY2pp3GHotPjDUBWjvuikX2V/O9q40/uAEYspHz64dZunswmNCX7hLAtQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1762024852;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zhGK+60JgBD3s2NPs/WG00WWgCrD3JAI9aGx3Giow6U=;
-	b=Y7sVe5FL9smASbvnWfH1rQIQ1Cxz51UnrlRZ8UUXPH2YhpFaoGbhA2mwjMjxokyAuxFRtd
-	t2+fvCz4NdQZAqDA==
-To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
- Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>
-Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, Zbigniew
- =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering
- <mzxreary@0pointer.de>, Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa
- Sarai <cyphar@cyphar.com>, Amir Goldstein <amir73il@gmail.com>, Tejun Heo
- <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v4 18/72] nstree: add unified namespace list
-In-Reply-To: <20251029-work-namespace-nstree-listns-v4-18-2e6f823ebdc0@kernel.org>
-References: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
- <20251029-work-namespace-nstree-listns-v4-18-2e6f823ebdc0@kernel.org>
-Date: Sat, 01 Nov 2025 20:20:50 +0100
-Message-ID: <87ecqhy2y5.ffs@tglx>
+	bh=vSoLTMn7D7wRI+KcjGWMGJNZbmIDanYc/C6CsZGY6C4=;
+	b=FAL7bBL+C4exDYR5oCnLVtwAWj+9G1H9ZgsdMgNY1fT9EkYaCt1Oyygsfg30HqDWIOTChr
+	Drhu3O+o/jfQzjrcQwvyWMuxQ1W4mQNaTYonOereiy54CtofgwkshbhVvMobBUBKFZ4/6d
+	EroT4lTO5LUCSggGDgSv6KlmZ+MNLtg=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+  linux-kernel@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,
+  Suren Baghdasaryan <surenb@google.com>,  Shakeel Butt
+ <shakeel.butt@linux.dev>,  Johannes Weiner <hannes@cmpxchg.org>,  Andrii
+ Nakryiko <andrii@kernel.org>,  JP Kobryn <inwardvessel@gmail.com>,
+  linux-mm@kvack.org,  cgroups@vger.kernel.org,  bpf@vger.kernel.org,
+  Martin KaFai Lau <martin.lau@kernel.org>,  Song Liu <song@kernel.org>,
+  Kumar Kartikeya Dwivedi <memxor@gmail.com>,  Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 00/23] mm: BPF OOM
+In-Reply-To: <aQSB-BgjKmSkrSO7@tiehlicka> (Michal Hocko's message of "Fri, 31
+	Oct 2025 10:31:36 +0100")
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+	<aQSB-BgjKmSkrSO7@tiehlicka>
+Date: Sun, 02 Nov 2025 12:53:53 -0800
+Message-ID: <87ldkonoke.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -77,192 +65,40 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-Christian!
+Michal Hocko <mhocko@suse.com> writes:
 
-On Wed, Oct 29 2025 at 13:20, Christian Brauner wrote:
-> --- a/kernel/time/namespace.c
-> +++ b/kernel/time/namespace.c
-> @@ -488,6 +488,7 @@ struct time_namespace init_time_ns = {
->  	.ns.ns_owner = LIST_HEAD_INIT(init_time_ns.ns.ns_owner),
->  	.frozen_offsets	= true,
->  	.ns.ns_list_node = LIST_HEAD_INIT(init_time_ns.ns.ns_list_node),
-> +	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_time_ns.ns.ns_unified_list_node),
+> On Mon 27-10-25 16:17:03, Roman Gushchin wrote:
+>> The second part is related to the fundamental question on when to
+>> declare the OOM event. It's a trade-off between the risk of
+>> unnecessary OOM kills and associated work losses and the risk of
+>> infinite trashing and effective soft lockups.  In the last few years
+>> several PSI-based userspace solutions were developed (e.g. OOMd [3] or
+>> systemd-OOMd [4]). The common idea was to use userspace daemons to
+>> implement custom OOM logic as well as rely on PSI monitoring to avoid
+>> stalls. In this scenario the userspace daemon was supposed to handle
+>> the majority of OOMs, while the in-kernel OOM killer worked as the
+>> last resort measure to guarantee that the system would never deadlock
+>> on the memory. But this approach creates additional infrastructure
+>> churn: userspace OOM daemon is a separate entity which needs to be
+>> deployed, updated, monitored. A completely different pipeline needs to
+>> be built to monitor both types of OOM events and collect associated
+>> logs. A userspace daemon is more restricted in terms on what data is
+>> available to it. Implementing a daemon which can work reliably under a
+>> heavy memory pressure in the system is also tricky.
+>
+> I do not see this part addressed in the series. Am I just missing
+> something or this will follow up once the initial (plugging to the
+> existing OOM handling) is merged?
 
-Sorry that I did not catch that earlier, but
+Did you receive patches 11-23?
+git send-email failed on patch 10, so I had to send the second part separately.
+It seems like the second part did at least to some recipients, as I got
+feedback to some patches from that part.
 
-  1) this screws up the proper tabular struct initializer
+In any case, you can find the whole series here:
+https://github.com/rgushchin/linux/tree/bpfoom.2
 
-  2) the churn of touching every compile time struct each time you add a
-     new field and add the same stupid initialization to each of them
-     can be avoided, when you do something like the uncompiled below.
-     You get the idea.
-
-Thanks,
-
-        tglx
----
- fs/namespace.c            |    9 +--------
- include/linux/ns_common.h |   12 ++++++++++++
- init/version-timestamp.c  |    9 +--------
- ipc/msgutil.c             |    9 +--------
- kernel/pid.c              |    8 +-------
- kernel/time/namespace.c   |    9 +--------
- kernel/user.c             |    9 +--------
- 7 files changed, 18 insertions(+), 47 deletions(-)
-
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -5985,19 +5985,12 @@ SYSCALL_DEFINE4(listmount, const struct
- }
- 
- struct mnt_namespace init_mnt_ns = {
--	.ns.inum	= ns_init_inum(&init_mnt_ns),
-+	.ns		= NS_COMMON_INIT(init_mnt_ns, 1, 1),
- 	.ns.ops		= &mntns_operations,
- 	.user_ns	= &init_user_ns,
--	.ns.__ns_ref	= REFCOUNT_INIT(1),
--	.ns.__ns_ref_active = ATOMIC_INIT(1),
--	.ns.ns_type	= ns_common_type(&init_mnt_ns),
- 	.passive	= REFCOUNT_INIT(1),
- 	.mounts		= RB_ROOT,
- 	.poll		= __WAIT_QUEUE_HEAD_INITIALIZER(init_mnt_ns.poll),
--	.ns.ns_list_node = LIST_HEAD_INIT(init_mnt_ns.ns.ns_list_node),
--	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_mnt_ns.ns.ns_unified_list_node),
--	.ns.ns_owner_entry = LIST_HEAD_INIT(init_mnt_ns.ns.ns_owner_entry),
--	.ns.ns_owner = LIST_HEAD_INIT(init_mnt_ns.ns.ns_owner),
- };
- 
- static void __init init_mount_tree(void)
---- a/include/linux/ns_common.h
-+++ b/include/linux/ns_common.h
-@@ -129,6 +129,18 @@ struct ns_common {
- 	};
- };
- 
-+#define NS_COMMON_INIT(nsname, refs, active)						\
-+{											\
-+	.ns_type		= ns_common_type(&nsname),				\
-+	.inum			= ns_init_inum(&nsname),				\
-+	.__ns_ref		= REFCOUNT_INIT(refs),					\
-+	.__ns_ref_active	= ATOMIC_INIT(active),					\
-+	.ns_list_node		= LIST_HEAD_INIT(nsname.ns.ns_list_node),		\
-+	.ns_unified_list_node	= LIST_HEAD_INIT(nsname.ns.ns_unified_list_node),	\
-+	.ns_owner_entry		= LIST_HEAD_INIT(nsname.ns.ns_owner_entry),		\
-+	.ns_owner		= LIST_HEAD_INIT(nsname.ns.ns_owner),			\
-+}
-+
- int __ns_common_init(struct ns_common *ns, u32 ns_type, const struct proc_ns_operations *ops, int inum);
- void __ns_common_free(struct ns_common *ns);
- 
---- a/init/version-timestamp.c
-+++ b/init/version-timestamp.c
-@@ -8,9 +8,7 @@
- #include <linux/utsname.h>
- 
- struct uts_namespace init_uts_ns = {
--	.ns.ns_type = ns_common_type(&init_uts_ns),
--	.ns.__ns_ref = REFCOUNT_INIT(2),
--	.ns.__ns_ref_active = ATOMIC_INIT(1),
-+	.ns = NS_COMMON_INIT(init_uts_ns, 2, 1),
- 	.name = {
- 		.sysname	= UTS_SYSNAME,
- 		.nodename	= UTS_NODENAME,
-@@ -20,11 +18,6 @@ struct uts_namespace init_uts_ns = {
- 		.domainname	= UTS_DOMAINNAME,
- 	},
- 	.user_ns = &init_user_ns,
--	.ns.inum = ns_init_inum(&init_uts_ns),
--	.ns.ns_list_node = LIST_HEAD_INIT(init_uts_ns.ns.ns_list_node),
--	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_uts_ns.ns.ns_unified_list_node),
--	.ns.ns_owner_entry = LIST_HEAD_INIT(init_uts_ns.ns.ns_owner_entry),
--	.ns.ns_owner = LIST_HEAD_INIT(init_uts_ns.ns.ns_owner),
- #ifdef CONFIG_UTS_NS
- 	.ns.ops = &utsns_operations,
- #endif
---- a/ipc/msgutil.c
-+++ b/ipc/msgutil.c
-@@ -27,18 +27,11 @@ DEFINE_SPINLOCK(mq_lock);
-  * and not CONFIG_IPC_NS.
-  */
- struct ipc_namespace init_ipc_ns = {
--	.ns.__ns_ref = REFCOUNT_INIT(1),
--	.ns.__ns_ref_active = ATOMIC_INIT(1),
-+	.ns = NS_COMMON_INIT(init_ipc_ns, 1, 1),
- 	.user_ns = &init_user_ns,
--	.ns.inum = ns_init_inum(&init_ipc_ns),
--	.ns.ns_list_node = LIST_HEAD_INIT(init_ipc_ns.ns.ns_list_node),
--	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_ipc_ns.ns.ns_unified_list_node),
--	.ns.ns_owner_entry = LIST_HEAD_INIT(init_ipc_ns.ns.ns_owner_entry),
--	.ns.ns_owner = LIST_HEAD_INIT(init_ipc_ns.ns.ns_owner),
- #ifdef CONFIG_IPC_NS
- 	.ns.ops = &ipcns_operations,
- #endif
--	.ns.ns_type = ns_common_type(&init_ipc_ns),
- };
- 
- struct msg_msgseg {
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -71,18 +71,12 @@ static int pid_max_max = PID_MAX_LIMIT;
-  * the scheme scales to up to 4 million PIDs, runtime.
-  */
- struct pid_namespace init_pid_ns = {
--	.ns.__ns_ref = REFCOUNT_INIT(2),
--	.ns.__ns_ref_active = ATOMIC_INIT(1),
-+	.ns = NS_COMMON_INIT(init_pid_ns, 2, 1),
- 	.idr = IDR_INIT(init_pid_ns.idr),
- 	.pid_allocated = PIDNS_ADDING,
- 	.level = 0,
- 	.child_reaper = &init_task,
- 	.user_ns = &init_user_ns,
--	.ns.inum = ns_init_inum(&init_pid_ns),
--	.ns.ns_list_node = LIST_HEAD_INIT(init_pid_ns.ns.ns_list_node),
--	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_pid_ns.ns.ns_unified_list_node),
--	.ns.ns_owner_entry = LIST_HEAD_INIT(init_pid_ns.ns.ns_owner_entry),
--	.ns.ns_owner = LIST_HEAD_INIT(init_pid_ns.ns.ns_owner),
- #ifdef CONFIG_PID_NS
- 	.ns.ops = &pidns_operations,
- #endif
---- a/kernel/time/namespace.c
-+++ b/kernel/time/namespace.c
-@@ -478,17 +478,10 @@ const struct proc_ns_operations timens_f
- };
- 
- struct time_namespace init_time_ns = {
--	.ns.ns_type	= ns_common_type(&init_time_ns),
--	.ns.__ns_ref	= REFCOUNT_INIT(3),
--	.ns.__ns_ref_active = ATOMIC_INIT(1),
-+	.ns		= NS_COMMON_INIT(init_time_ns, 3, 1),
- 	.user_ns	= &init_user_ns,
--	.ns.inum	= ns_init_inum(&init_time_ns),
- 	.ns.ops		= &timens_operations,
--	.ns.ns_owner_entry = LIST_HEAD_INIT(init_time_ns.ns.ns_owner_entry),
--	.ns.ns_owner = LIST_HEAD_INIT(init_time_ns.ns.ns_owner),
- 	.frozen_offsets	= true,
--	.ns.ns_list_node = LIST_HEAD_INIT(init_time_ns.ns.ns_list_node),
--	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_time_ns.ns.ns_unified_list_node),
- };
- 
- void __init time_ns_init(void)
---- a/kernel/user.c
-+++ b/kernel/user.c
-@@ -65,16 +65,9 @@ struct user_namespace init_user_ns = {
- 			.nr_extents = 1,
- 		},
- 	},
--	.ns.ns_type = ns_common_type(&init_user_ns),
--	.ns.__ns_ref = REFCOUNT_INIT(3),
--	.ns.__ns_ref_active = ATOMIC_INIT(1),
-+	.ns = NS_COMMON_INIT(init_user_ns, 3, 1),
- 	.owner = GLOBAL_ROOT_UID,
- 	.group = GLOBAL_ROOT_GID,
--	.ns.inum = ns_init_inum(&init_user_ns),
--	.ns.ns_list_node = LIST_HEAD_INIT(init_user_ns.ns.ns_list_node),
--	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_user_ns.ns.ns_unified_list_node),
--	.ns.ns_owner_entry = LIST_HEAD_INIT(init_user_ns.ns.ns_owner_entry),
--	.ns.ns_owner = LIST_HEAD_INIT(init_user_ns.ns.ns_owner),
- #ifdef CONFIG_USER_NS
- 	.ns.ops = &userns_operations,
- #endif
+And thank you for reviewing the series!
 
