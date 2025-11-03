@@ -1,165 +1,262 @@
-Return-Path: <cgroups+bounces-11498-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11499-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79D50C2B45F
-	for <lists+cgroups@lfdr.de>; Mon, 03 Nov 2025 12:19:04 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EA7FC2B4DA
+	for <lists+cgroups@lfdr.de>; Mon, 03 Nov 2025 12:24:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2AB654EBAAB
-	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 11:19:03 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3126B4F3A73
+	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 11:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40872EB87A;
-	Mon,  3 Nov 2025 11:18:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545B3302CA5;
+	Mon,  3 Nov 2025 11:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tKubhfGZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344F22E1EE7;
-	Mon,  3 Nov 2025 11:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05DC30171A;
+	Mon,  3 Nov 2025 11:22:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762168739; cv=none; b=YLfLUVMYNS0vVfHRDmHrd5exd9kJiHhxR0dFESDDZqfdhUDVePNL3BrcLaz8UnWVn3hKRkrbHgRymtGGjVxs1YimMAtf3QA8a71a5DxGOtDFUFbZVS3UDsLsX75o+EFKgFqiSaABRZL7SMUtiXUS4DLr0SCWnuo2Y2OFNDWj6WE=
+	t=1762168927; cv=none; b=NaRA4DFgxX4g/lDOe6NV898xJ9TcSyyR34i1dR86Wj1QeTiSbodfOzcWMqpFPRGcmsv3v3lPPtVTT979h8nwe8YOJj2HwkVajlnER4icm4O1QNs3SJk5UavCNejEmXUuT4YiUgRlJVd++VMPhj7KHivLOI1/3o6wGWF+Dj5EjxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762168739; c=relaxed/simple;
-	bh=taFBnJJqqaEpZM3jo5utaLQzQlREaiFFTxcTAHk/CIA=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=qo/4XeyRTkYn7QxAWhyKvKXMF7O9Uts17zAce6cnfUZ9Gfm1aT3whJ6tUIBlFEkKNqSfaSY7IsGY3hCfE+ZKKkxYJEOlgBNc20W/SmMBIHAikOBgWWRgn1f3Hr4shPO36Dmkf4kbvbaudW9EnzDBvHPZ+nZGs5iSOYGUmH1l2+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d0Tc11XnHzYQttL;
-	Mon,  3 Nov 2025 19:18:41 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 7AB231A0C73;
-	Mon,  3 Nov 2025 19:18:54 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP3 (Coremail) with SMTP id _Ch0CgDHWt+djwhp8cQMCg--.64504S2;
-	Mon, 03 Nov 2025 19:18:54 +0800 (CST)
-Message-ID: <31b58b15-0b46-4eba-bd50-afc99203695a@huaweicloud.com>
-Date: Mon, 3 Nov 2025 19:18:52 +0800
+	s=arc-20240116; t=1762168927; c=relaxed/simple;
+	bh=zZlF5mFS0f/Oq95hrQaLrWEgcxubppt7A+bJPXZk8eE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jmPsyzbDY/7IJXhm1k+75I7CwI6JRH52HF2v53ZVeCvMYMYDZxQKYR1AHZBVSWtVuN1PXU0VHAGOB4auMhDRbUmN3K7hczWVmKzvXNx6+oF7AvusCfmN34pydvsTJEtdvTm0wZzdumwR0SiK82G3jH6o+wUdXUT7H9US2HWNtls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tKubhfGZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDD38C4CEE7;
+	Mon,  3 Nov 2025 11:22:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762168926;
+	bh=zZlF5mFS0f/Oq95hrQaLrWEgcxubppt7A+bJPXZk8eE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tKubhfGZ1E3MStl1BRbOzd2Q8vO1r0ckcnlGtZNrHz/RNHeEjLwXnDvVXIV0c6TYz
+	 KNKPv8aObnAuFGp3Z55H2JmW2+92bW4vRZjS6IyEegkcbwMNRWtRu2UToQNkZtro3m
+	 g5ozgD6/Jbdhk/RN4XxvUAr9UjaLb5OhQbBUBf8tfJcg4LetahlzKygwN78VAKG3bY
+	 uLgDEg203RIUt31Ie/o7VV8TTHy94ZLqBWKZZl73KTARp2BEgaa5nygNPr90jeKk+F
+	 KHH2mNubBAoPfyxFwy7RZ6a4g/BnE+ssGrAYUXuaYea164SPMWY5wjkLX/RGhBvut8
+	 5GzQycJcNdYWg==
+Date: Mon, 3 Nov 2025 12:21:59 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Jeff Layton <jlayton@kernel.org>, Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
+	Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering <mzxreary@0pointer.de>, 
+	Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v4 18/72] nstree: add unified namespace list
+Message-ID: <20251103-morsch-kunst-e8d040981325@brauner>
+References: <20251029-work-namespace-nstree-listns-v4-0-2e6f823ebdc0@kernel.org>
+ <20251029-work-namespace-nstree-listns-v4-18-2e6f823ebdc0@kernel.org>
+ <87ecqhy2y5.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 00/22] cpuset: rework local partition logic
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com
-References: <20251025064844.495525-1-chenridong@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <20251025064844.495525-1-chenridong@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgDHWt+djwhp8cQMCg--.64504S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF1kWFWruFWDKr15tFW3GFg_yoW5tw4kpF
-	98GaySyryUGry5C3srJFs7Aw4rWwsrJFyUtwnxu348Xr17Aw1vvayIy395Za47XryDZryU
-	Z3ZrWr4xX3W7C3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU8YYLPUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87ecqhy2y5.ffs@tglx>
 
+On Sat, Nov 01, 2025 at 08:20:50PM +0100, Thomas Gleixner wrote:
+> Christian!
+> 
+> On Wed, Oct 29 2025 at 13:20, Christian Brauner wrote:
+> > --- a/kernel/time/namespace.c
+> > +++ b/kernel/time/namespace.c
+> > @@ -488,6 +488,7 @@ struct time_namespace init_time_ns = {
+> >  	.ns.ns_owner = LIST_HEAD_INIT(init_time_ns.ns.ns_owner),
+> >  	.frozen_offsets	= true,
+> >  	.ns.ns_list_node = LIST_HEAD_INIT(init_time_ns.ns.ns_list_node),
+> > +	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_time_ns.ns.ns_unified_list_node),
+> 
+> Sorry that I did not catch that earlier, but
+> 
+>   1) this screws up the proper tabular struct initializer
+> 
+>   2) the churn of touching every compile time struct each time you add a
+>      new field and add the same stupid initialization to each of them
+>      can be avoided, when you do something like the uncompiled below.
+>      You get the idea.
+> 
+> Thanks,
 
+Nice! I'm stealing that and I'll slap a Suggested-by for you on it.
+Thanks!
 
-On 2025/10/25 14:48, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
 > 
-> The current local partition implementation consolidates all operations
-> (enable, disable, invalidate, and update) within the large
-> update_parent_effective_cpumask() function, which exceeds 300 lines.
-> This monolithic approach has become increasingly difficult to understand
-> and maintain. Additionally, partition-related fields are updated in
-> multiple locations, leading to redundant code and potential corner case
-> oversights.
-> 
-> This patch series refactors the local partition logic by separating
-> operations into dedicated functions: local_partition_enable(),
-> local_partition_disable(), and local_partition_update(), creating
-> symmetry with the existing remote partition infrastructure.
-> 
-> The series is organized as follows:
-> 
-> 1. Fix a bug that isolcpus stat in root partition.
-> 
-> 2. Infrastructure Preparation (Patches 2-3):
->    - Code cleanup and preparation for the refactoring work
-> 
-> 3. Introduce partition operation helpers (Patches 4-6):
->    - Intoduce out partition_enable(), partition_disable(), and
->      partition_update() functions.
-> 
-> 4. Use new helpers for remote partition (Patches 7-9)
-> 
-> 5. Local Partition Implementation (Patches 10-13):
->    - Separate update_parent_effective_cpumask() into dedicated functions:
->      * local_partition_enable()
->      * local_partition_disable()
->      * local_partition_invalidate()
->      * local_partition_update()
-> 
-> 6. Optimization and Cleanup (Patches 14-22):
->    - Remove redundant partition-related operations
->    - Additional optimizations based on the new architecture
-> 
+>         tglx
 > ---
+>  fs/namespace.c            |    9 +--------
+>  include/linux/ns_common.h |   12 ++++++++++++
+>  init/version-timestamp.c  |    9 +--------
+>  ipc/msgutil.c             |    9 +--------
+>  kernel/pid.c              |    8 +-------
+>  kernel/time/namespace.c   |    9 +--------
+>  kernel/user.c             |    9 +--------
+>  7 files changed, 18 insertions(+), 47 deletions(-)
 > 
-> Changes in v2:
-> - Added bugfix for root partition isolcpus at series start.
-> - Completed helper function implementations when first introduced.
-> - Split larger patches into smaller, more reviewable units.
-> - Incorporated feedback from Longman.
-> 
-> Chen Ridong (22):
->   cpuset: fix isolcpus stay in root when isolated partition changes to
->     root
->   cpuset: add early empty cpumask check in partition_xcpus_add/del
->   cpuset: generalize validate_partition() interface
->   cpuset: introduce partition_enable()
->   cpuset: introduce partition_disable()
->   cpuset: introduce partition_update()
->   cpuset: use partition_enable() for remote partition enablement
->   cpuset: use partition_disable() for remote partition disablement
->   cpuset: use partition_update() for remote partition update
->   cpuset: introduce local_partition_enable()
->   cpuset: introduce local_partition_disable()
->   cpuset: introduce local_partition_invalidate()
->   cpuset: introduce local_partition_update()
->   cpuset: remove update_parent_effective_cpumask
->   cpuset: remove redundant partition field updates
->   cpuset: simplify partition update logic for hotplug tasks
->   cpuset: unify local partition disable and invalidate
->   cpuset: use partition_disable for compute_partition_effective_cpumask
->   cpuset: use validate_local_partition in local_partition_enable
->   cpuset: introduce validate_remote_partition
->   cpuset: simplify update_prstate() function
->   cpuset: remove prs_err clear when notify_partition_change
-> 
->  kernel/cgroup/cpuset.c | 1000 +++++++++++++++++++---------------------
->  1 file changed, 463 insertions(+), 537 deletions(-)
-> 
-
-Hi Longman,
-
-I'd appreciate it if you could have a look at this series when you have a moment.
-
--- 
-Best regards,
-Ridong
-
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -5985,19 +5985,12 @@ SYSCALL_DEFINE4(listmount, const struct
+>  }
+>  
+>  struct mnt_namespace init_mnt_ns = {
+> -	.ns.inum	= ns_init_inum(&init_mnt_ns),
+> +	.ns		= NS_COMMON_INIT(init_mnt_ns, 1, 1),
+>  	.ns.ops		= &mntns_operations,
+>  	.user_ns	= &init_user_ns,
+> -	.ns.__ns_ref	= REFCOUNT_INIT(1),
+> -	.ns.__ns_ref_active = ATOMIC_INIT(1),
+> -	.ns.ns_type	= ns_common_type(&init_mnt_ns),
+>  	.passive	= REFCOUNT_INIT(1),
+>  	.mounts		= RB_ROOT,
+>  	.poll		= __WAIT_QUEUE_HEAD_INITIALIZER(init_mnt_ns.poll),
+> -	.ns.ns_list_node = LIST_HEAD_INIT(init_mnt_ns.ns.ns_list_node),
+> -	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_mnt_ns.ns.ns_unified_list_node),
+> -	.ns.ns_owner_entry = LIST_HEAD_INIT(init_mnt_ns.ns.ns_owner_entry),
+> -	.ns.ns_owner = LIST_HEAD_INIT(init_mnt_ns.ns.ns_owner),
+>  };
+>  
+>  static void __init init_mount_tree(void)
+> --- a/include/linux/ns_common.h
+> +++ b/include/linux/ns_common.h
+> @@ -129,6 +129,18 @@ struct ns_common {
+>  	};
+>  };
+>  
+> +#define NS_COMMON_INIT(nsname, refs, active)						\
+> +{											\
+> +	.ns_type		= ns_common_type(&nsname),				\
+> +	.inum			= ns_init_inum(&nsname),				\
+> +	.__ns_ref		= REFCOUNT_INIT(refs),					\
+> +	.__ns_ref_active	= ATOMIC_INIT(active),					\
+> +	.ns_list_node		= LIST_HEAD_INIT(nsname.ns.ns_list_node),		\
+> +	.ns_unified_list_node	= LIST_HEAD_INIT(nsname.ns.ns_unified_list_node),	\
+> +	.ns_owner_entry		= LIST_HEAD_INIT(nsname.ns.ns_owner_entry),		\
+> +	.ns_owner		= LIST_HEAD_INIT(nsname.ns.ns_owner),			\
+> +}
+> +
+>  int __ns_common_init(struct ns_common *ns, u32 ns_type, const struct proc_ns_operations *ops, int inum);
+>  void __ns_common_free(struct ns_common *ns);
+>  
+> --- a/init/version-timestamp.c
+> +++ b/init/version-timestamp.c
+> @@ -8,9 +8,7 @@
+>  #include <linux/utsname.h>
+>  
+>  struct uts_namespace init_uts_ns = {
+> -	.ns.ns_type = ns_common_type(&init_uts_ns),
+> -	.ns.__ns_ref = REFCOUNT_INIT(2),
+> -	.ns.__ns_ref_active = ATOMIC_INIT(1),
+> +	.ns = NS_COMMON_INIT(init_uts_ns, 2, 1),
+>  	.name = {
+>  		.sysname	= UTS_SYSNAME,
+>  		.nodename	= UTS_NODENAME,
+> @@ -20,11 +18,6 @@ struct uts_namespace init_uts_ns = {
+>  		.domainname	= UTS_DOMAINNAME,
+>  	},
+>  	.user_ns = &init_user_ns,
+> -	.ns.inum = ns_init_inum(&init_uts_ns),
+> -	.ns.ns_list_node = LIST_HEAD_INIT(init_uts_ns.ns.ns_list_node),
+> -	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_uts_ns.ns.ns_unified_list_node),
+> -	.ns.ns_owner_entry = LIST_HEAD_INIT(init_uts_ns.ns.ns_owner_entry),
+> -	.ns.ns_owner = LIST_HEAD_INIT(init_uts_ns.ns.ns_owner),
+>  #ifdef CONFIG_UTS_NS
+>  	.ns.ops = &utsns_operations,
+>  #endif
+> --- a/ipc/msgutil.c
+> +++ b/ipc/msgutil.c
+> @@ -27,18 +27,11 @@ DEFINE_SPINLOCK(mq_lock);
+>   * and not CONFIG_IPC_NS.
+>   */
+>  struct ipc_namespace init_ipc_ns = {
+> -	.ns.__ns_ref = REFCOUNT_INIT(1),
+> -	.ns.__ns_ref_active = ATOMIC_INIT(1),
+> +	.ns = NS_COMMON_INIT(init_ipc_ns, 1, 1),
+>  	.user_ns = &init_user_ns,
+> -	.ns.inum = ns_init_inum(&init_ipc_ns),
+> -	.ns.ns_list_node = LIST_HEAD_INIT(init_ipc_ns.ns.ns_list_node),
+> -	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_ipc_ns.ns.ns_unified_list_node),
+> -	.ns.ns_owner_entry = LIST_HEAD_INIT(init_ipc_ns.ns.ns_owner_entry),
+> -	.ns.ns_owner = LIST_HEAD_INIT(init_ipc_ns.ns.ns_owner),
+>  #ifdef CONFIG_IPC_NS
+>  	.ns.ops = &ipcns_operations,
+>  #endif
+> -	.ns.ns_type = ns_common_type(&init_ipc_ns),
+>  };
+>  
+>  struct msg_msgseg {
+> --- a/kernel/pid.c
+> +++ b/kernel/pid.c
+> @@ -71,18 +71,12 @@ static int pid_max_max = PID_MAX_LIMIT;
+>   * the scheme scales to up to 4 million PIDs, runtime.
+>   */
+>  struct pid_namespace init_pid_ns = {
+> -	.ns.__ns_ref = REFCOUNT_INIT(2),
+> -	.ns.__ns_ref_active = ATOMIC_INIT(1),
+> +	.ns = NS_COMMON_INIT(init_pid_ns, 2, 1),
+>  	.idr = IDR_INIT(init_pid_ns.idr),
+>  	.pid_allocated = PIDNS_ADDING,
+>  	.level = 0,
+>  	.child_reaper = &init_task,
+>  	.user_ns = &init_user_ns,
+> -	.ns.inum = ns_init_inum(&init_pid_ns),
+> -	.ns.ns_list_node = LIST_HEAD_INIT(init_pid_ns.ns.ns_list_node),
+> -	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_pid_ns.ns.ns_unified_list_node),
+> -	.ns.ns_owner_entry = LIST_HEAD_INIT(init_pid_ns.ns.ns_owner_entry),
+> -	.ns.ns_owner = LIST_HEAD_INIT(init_pid_ns.ns.ns_owner),
+>  #ifdef CONFIG_PID_NS
+>  	.ns.ops = &pidns_operations,
+>  #endif
+> --- a/kernel/time/namespace.c
+> +++ b/kernel/time/namespace.c
+> @@ -478,17 +478,10 @@ const struct proc_ns_operations timens_f
+>  };
+>  
+>  struct time_namespace init_time_ns = {
+> -	.ns.ns_type	= ns_common_type(&init_time_ns),
+> -	.ns.__ns_ref	= REFCOUNT_INIT(3),
+> -	.ns.__ns_ref_active = ATOMIC_INIT(1),
+> +	.ns		= NS_COMMON_INIT(init_time_ns, 3, 1),
+>  	.user_ns	= &init_user_ns,
+> -	.ns.inum	= ns_init_inum(&init_time_ns),
+>  	.ns.ops		= &timens_operations,
+> -	.ns.ns_owner_entry = LIST_HEAD_INIT(init_time_ns.ns.ns_owner_entry),
+> -	.ns.ns_owner = LIST_HEAD_INIT(init_time_ns.ns.ns_owner),
+>  	.frozen_offsets	= true,
+> -	.ns.ns_list_node = LIST_HEAD_INIT(init_time_ns.ns.ns_list_node),
+> -	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_time_ns.ns.ns_unified_list_node),
+>  };
+>  
+>  void __init time_ns_init(void)
+> --- a/kernel/user.c
+> +++ b/kernel/user.c
+> @@ -65,16 +65,9 @@ struct user_namespace init_user_ns = {
+>  			.nr_extents = 1,
+>  		},
+>  	},
+> -	.ns.ns_type = ns_common_type(&init_user_ns),
+> -	.ns.__ns_ref = REFCOUNT_INIT(3),
+> -	.ns.__ns_ref_active = ATOMIC_INIT(1),
+> +	.ns = NS_COMMON_INIT(init_user_ns, 3, 1),
+>  	.owner = GLOBAL_ROOT_UID,
+>  	.group = GLOBAL_ROOT_GID,
+> -	.ns.inum = ns_init_inum(&init_user_ns),
+> -	.ns.ns_list_node = LIST_HEAD_INIT(init_user_ns.ns.ns_list_node),
+> -	.ns.ns_unified_list_node = LIST_HEAD_INIT(init_user_ns.ns.ns_unified_list_node),
+> -	.ns.ns_owner_entry = LIST_HEAD_INIT(init_user_ns.ns.ns_owner_entry),
+> -	.ns.ns_owner = LIST_HEAD_INIT(init_user_ns.ns.ns_owner),
+>  #ifdef CONFIG_USER_NS
+>  	.ns.ops = &userns_operations,
+>  #endif
 
