@@ -1,119 +1,84 @@
-Return-Path: <cgroups+bounces-11534-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11535-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F06EDC2CE2F
-	for <lists+cgroups@lfdr.de>; Mon, 03 Nov 2025 16:49:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02FD3C2D05D
+	for <lists+cgroups@lfdr.de>; Mon, 03 Nov 2025 17:14:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0544560D87
-	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 15:12:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83241188774A
+	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 16:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68EE337B9C;
-	Mon,  3 Nov 2025 14:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rpBZwE5Z"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9B8931579F;
+	Mon,  3 Nov 2025 16:09:56 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E0233710D;
-	Mon,  3 Nov 2025 14:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D2A313285;
+	Mon,  3 Nov 2025 16:09:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762181910; cv=none; b=mHcmW+5a8hmzO2t5gvlY9ITKVWnfWe63KpcqdHsoYXe5/O8xmUaQ1J2wfo35V8hd96tCWHvPbi1v8Y3S3qpE18axzsUEzCBCepTv3Xi6O3wZoORU5cODkWVvodqBgAv0gCMSYz1kkFaJov4PcutNvXPdK8SlF4JvsdijTAF0H+w=
+	t=1762186196; cv=none; b=EmI8pzwU/EiMTvEl6akZ8hYLkLS+z+TzRvtDgkJy1GjTg+dw8smm0huWWlfMWFYR2MSDo+BECUMyOy4i+HVeMvEhi/UsAqvY77wkCk1F7zuRrYcyw31dL/kG2cC1Vy1z/AtNxWSxeSqxw+uMV6iPPSGtY6lO53+CTkb1EyMQQLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762181910; c=relaxed/simple;
-	bh=CN70SPaB9uDUTmoTMFQEikVK97VTOop0si2tr6t5dG8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=M3oOW0TSOojHQ6xnOcd71thMH7XdqcIMFebRg4tLOPmpM5vYTN5Q27c9KUDcG4O/kXapuv8rZ1uzNb/njgbqjZyHljXq9uDmXmnaBzYmHSfvWXcQW3vNUvRH377aTt1g/qrXXaGEM1m25zioGR6et149Bzs4olRacNsG9VsGz8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rpBZwE5Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3F91C116C6;
-	Mon,  3 Nov 2025 14:58:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762181909;
-	bh=CN70SPaB9uDUTmoTMFQEikVK97VTOop0si2tr6t5dG8=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=rpBZwE5Zcf6RBsQu6RQgpC/IOnpRjzOaYYoomnODvXeBO85TArXHgKIPf4o1KLwv+
-	 RzbpwGM3RxPzCzAdgmmMBq25UmuptGH+6wBUSwwshEax8fSLZR8yw1RvBLk8qqC/aH
-	 KP5SheycNIKw15+ZoULoPxIOaz0zpAswNDYLIql7dCo2kLGz/ij6CMdf+3eWWVapx6
-	 RZ1qngT/jX1ctwOiKGTwXqW3OsUQjlbR1YFn6LrpLXVUirPAj1UyARzoJNT8UMd9Tf
-	 BurHwguSrbMYI64Yi9BpIUYlkZDPch+DB9a1ZZh9PiZppcpFnDUgTLvy+Qu3Rh8Uop
-	 RJxn/Pes4VDBw==
-From: Christian Brauner <brauner@kernel.org>
-Date: Mon, 03 Nov 2025 15:57:38 +0100
-Subject: [PATCH 12/12] trace: use override credential guard
+	s=arc-20240116; t=1762186196; c=relaxed/simple;
+	bh=xrxwG32n/y2oy1YHTu3G6RDWmunQWMgWRiwV4cS732s=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=l84mKzEjjQ5PFyBts8qGnpqfyiqRmyyCH65hA9dglaDh5jRISTBBmCfUVQFG+QeknFX1NY1ptoALaQWoB+dU78Fl2fJvsRXSypdGckZIOAz2x4DXmjuslt6ymZk1Ue+Xg5Aamvh7FC9jiG792Yl+EDuAwcyfj7EZuQ1WyWbfdjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf07.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id C84CD12ACEE;
+	Mon,  3 Nov 2025 16:09:45 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf07.hostedemail.com (Postfix) with ESMTPA id E4D1E20024;
+	Mon,  3 Nov 2025 16:09:42 +0000 (UTC)
+Date: Mon, 3 Nov 2025 11:09:46 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-aio@kvack.org, linux-unionfs@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-nfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+ cgroups@vger.kernel.org, netdev@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/12] trace: use prepare credential guard
+Message-ID: <20251103110946.063f53da@gandalf.local.home>
+In-Reply-To: <20251103-work-creds-guards-prepare_creds-v1-11-b447b82f2c9b@kernel.org>
+References: <20251103-work-creds-guards-prepare_creds-v1-0-b447b82f2c9b@kernel.org>
+	<20251103-work-creds-guards-prepare_creds-v1-11-b447b82f2c9b@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251103-work-creds-guards-prepare_creds-v1-12-b447b82f2c9b@kernel.org>
-References: <20251103-work-creds-guards-prepare_creds-v1-0-b447b82f2c9b@kernel.org>
-In-Reply-To: <20251103-work-creds-guards-prepare_creds-v1-0-b447b82f2c9b@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-aio@kvack.org, linux-unionfs@vger.kernel.org, 
- linux-erofs@lists.ozlabs.org, linux-nfs@vger.kernel.org, 
- linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
- cgroups@vger.kernel.org, netdev@vger.kernel.org, 
- linux-crypto@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- Christian Brauner <brauner@kernel.org>
-X-Mailer: b4 0.15-dev-96507
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1248; i=brauner@kernel.org;
- h=from:subject:message-id; bh=CN70SPaB9uDUTmoTMFQEikVK97VTOop0si2tr6t5dG8=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWRyHHq5Of6I49wDL3cuF1ZOPtQr8766w3eGAQuLxusP1
- 745yP973lHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjARwQ+MDN8aFc4c2FSw7vom
- C+OaYwbfUtlcVpxTr9tpcMK7rDm9Zg7DX5Gwnl2dczkKWLtTnGf/eyuVkLYqfc3KE1JmTosWnJ+
- jzAoA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp;
- fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+X-Stat-Signature: f3a1jbh7gz5tygnr9ophixt6pum6i47w
+X-Rspamd-Server: rspamout07
+X-Rspamd-Queue-Id: E4D1E20024
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX18u0U/NQFwhYc5xAY2TcmGwcG1D2BgWoTc=
+X-HE-Tag: 1762186182-249034
+X-HE-Meta: U2FsdGVkX1/oN4yafgD+MyqaAV3m0VoVtYRzu0D3nhVrjp7q8uA8Uc/g3Y1973pDGRtBMJFIpQ7B0O+F37rmbF8kIjhS7YPoQfvuYhqXbP66FkjkDqcxlSq/f9rE0VLfodvjXBeCq8tk6S9A50kqMRPnFBqoeWWggpvhArKEUJcxWbwhtGBUJA9D9GDy2rYSO7wzCitOaHdm8UT261o9vVM0wBxFfhfhIDvg4yDkUhUWC4l4RdGwq0vyz6roxCpZv5oWzdyX4MkQM3lYByyuZonkzkJpT2nT1UIISYlOxhoA6jv36VwIlmUVdl8Rp2E7rl7MGO6o9ABv2Rp0ARVpE/1Y8CPdK53RazVlow3RlyHTtAdeg3sjiAKEZ+dX7QrpdQ7cwXCa90kYxiksyJez7g==
 
-Use override credential guards for scoped credential override with
-automatic restoration on scope exit.
+On Mon, 03 Nov 2025 15:57:37 +0100
+Christian Brauner <brauner@kernel.org> wrote:
 
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- kernel/trace/trace_events_user.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+> Use the prepare credential guard for allocating a new set of
+> credentials.
+> 
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> ---
+>  kernel/trace/trace_events_user.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 3461b1d29276..4528c058d7cd 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -1449,8 +1449,6 @@ static struct trace_event_functions user_event_funcs = {
- 
- static int user_event_set_call_visible(struct user_event *user, bool visible)
- {
--	int ret;
--	const struct cred *old_cred;
- 	struct cred *cred;
- 
- 	CLASS(prepare_creds, cred)();
-@@ -1470,14 +1468,11 @@ static int user_event_set_call_visible(struct user_event *user, bool visible)
- 
- 	old_cred = override_creds(cred);
- 
-+	with_creds(cred);
- 	if (visible)
--		ret = trace_add_event_call(&user->call);
--	else
--		ret = trace_remove_event_call(&user->call);
-+		return trace_add_event_call(&user->call);
- 
--	revert_creds(old_cred);
--
--	return ret;
-+	return trace_remove_event_call(&user->call);
- }
- 
- static int destroy_user_event(struct user_event *user)
+Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
--- 
-2.47.3
-
+-- Steve
 
