@@ -1,45 +1,101 @@
-Return-Path: <cgroups+bounces-11481-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11482-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id F188EC29E58
-	for <lists+cgroups@lfdr.de>; Mon, 03 Nov 2025 03:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BB18C29ED4
+	for <lists+cgroups@lfdr.de>; Mon, 03 Nov 2025 04:13:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B4F684EA0F1
-	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 02:57:00 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 859614E6790
+	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 03:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0DA2874E9;
-	Mon,  3 Nov 2025 02:56:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96DEF9460;
+	Mon,  3 Nov 2025 03:12:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OTHY9x+z";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="PujspCJK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C3A286887;
-	Mon,  3 Nov 2025 02:56:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3B334D3B5
+	for <cgroups@vger.kernel.org>; Mon,  3 Nov 2025 03:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762138613; cv=none; b=qqVNV9w4PM6gC+tMklMhIWqiKfTD4snQ3W2p/CcQ501UdzVOe6yrvT0ZUmVokEWxo8jocTPAwN8LtKruWKPMXtPvNoxEVFUNBrsCx8bOwxRqvTS8e5kA5Ji7aEg0kNp5f1IA/rSdymMdB7+JwrWru16tZ5+ASweF452+Mk1p/0c=
+	t=1762139562; cv=none; b=XTLH5cYH05uE+Muhgzrvq9Qs6lVLOweGtI5bWfXsah8hTxCYII6hb2PrMXsjvpfsa3OkA8DWLPqhUbz1OWFlAseA4+GwYfIeF0Pyku7f3/Ip7pbhw+FGWiChvvTOF20grXRdeoSN38GDHKeFQzVCWptd88QGuQ423/cmok1JrYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762138613; c=relaxed/simple;
-	bh=Li2Y5ViLOwdmo7AahR2So4fNyrxRb9RAKN8qSFD5SA0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cu29HTXxR4NLLkfmMg1Xc/hUPWAbn0EiciEGxyMgPTZ/DTLnDeGcuBt2ez28gWkzAeB8K7dBZmKjp4zZemXd8fA+/FT76ypYkxw6xG65EmlWvlWwPjR2xwWcaH616LAtMPkmDRA4SeTnK3Nwav5LD7hyxJWWt8ejeT6WNcCWCy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d0GSh0dqdzYQtrv;
-	Mon,  3 Nov 2025 10:56:36 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id C62FE1A17CC;
-	Mon,  3 Nov 2025 10:56:48 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP3 (Coremail) with SMTP id _Ch0CgBHjuLwGQhp6oLlCQ--.29120S2;
-	Mon, 03 Nov 2025 10:56:48 +0800 (CST)
-Message-ID: <d8726de9-55ad-49b0-a434-cc580ebc3ea5@huaweicloud.com>
-Date: Mon, 3 Nov 2025 10:56:47 +0800
+	s=arc-20240116; t=1762139562; c=relaxed/simple;
+	bh=S5lhzElP8mKmku7HndUOsllDqxcCj00rLtLHo93bS6U=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=PcKIzYKYdSlDbnODaJBTYOfEIA7iCWW8vIHSrL8MP3y7CKM2/knsQ1a2+gZ7c7JZFKftgYe+kbVbceOzyHZ3Dy2J7Tc9z1LTWJILfJgkk09NpWcB2SQlxfMIPJEF5WtV7NEvp98fFL3Bar2gPn9t+CcXAFWFuLjNmeD8oJPaf3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OTHY9x+z; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=PujspCJK; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762139559;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qfdEr1jxJKtYpq9KoY5qe0Z0hYY/0s/1RnPyyPEXS34=;
+	b=OTHY9x+z2o8xACLodO7hrqmacgADuXqF4y5xb+ClQvOad+OAq9LpmS4cL/AC/+FGIQfZ6l
+	ebdIIfhsUrUWSx0Eve2bvAZEjmqq2eoGiryFtTRTLck7xs5cnp+XZh5nCUUq97xSXrPJKU
+	0wm25Syz8HdVlgG77Bz3X3HS+Soj6lY=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-215-pzBocHDJM8meYIx_P2L90Q-1; Sun, 02 Nov 2025 22:12:37 -0500
+X-MC-Unique: pzBocHDJM8meYIx_P2L90Q-1
+X-Mimecast-MFC-AGG-ID: pzBocHDJM8meYIx_P2L90Q_1762139556
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-78f2b1bacfcso89972296d6.3
+        for <cgroups@vger.kernel.org>; Sun, 02 Nov 2025 19:12:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1762139556; x=1762744356; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qfdEr1jxJKtYpq9KoY5qe0Z0hYY/0s/1RnPyyPEXS34=;
+        b=PujspCJKr5I5ja9cvUq/6AWaku4kgiIl6jbYNFJb32J7efL/FKhOnojvOVdfcejuih
+         1tjdBv5I1NWhZx/QLIpC/9yuCq6SjVx1hMg28jGMACrjxGxtQx8nqitanQ2GC+jnXFSM
+         KrNI82xRtgpAupxqWE0IV7nXw+Ly+q5rfJZeT1KCX0BjE/5emRqZv+EIzMxowZLy8LcZ
+         gq5Q9Xf8uLxBdakFeKceb0HWlDKzhiBBeF7rpRreInjTkhNY1ZJEdh4/RwOiHy2AHDhr
+         Hx0FxsVxXVVOIb+ZtcujEUrthDb05JhW4Qiv+eVcvGLujJ7exZOF9lpoUa12zbliPz+m
+         XRyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762139556; x=1762744356;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qfdEr1jxJKtYpq9KoY5qe0Z0hYY/0s/1RnPyyPEXS34=;
+        b=H6W1llF4dm+Fap5YApT2/xo/WOhMbcRvuJ8AisgXyqSqm+8V0oz3wPkFRXVVsDaTth
+         AJE8awnG+4iomZ5tBbK3Yq+6PZadFRIhPmgPc4AnLnCeoIqwdVS2ja3cHYIikJZfOoR3
+         x4sGTxEBVKte4hI/BS+E1g56SnV5vos6tK1QlsoNCM60/YtMZcH0FimYrq9U1Giz+vpe
+         TX6UbNOGCDrNQMhFSJdS8VdA3LUlHFcIOjU0aHsKJyddYBGo0gKU0B+6BkDGXOwoA2Dd
+         6C2uJauzIYUdr1+I9bn3/rKLO6iiF+di5VFcOGvU3v68L5YzKAJg0Rl5cmKFTgUjhWif
+         faMQ==
+X-Gm-Message-State: AOJu0YwZaQvA/HpfSGzRIFDRKtNAsY+hWSejxuI0ml2XAmmTCIXqKI2T
+	a4fU5hd3H8cpx6OQpAeOMvkjoIuxO0OaRqnX8I4Js8PGJV3EMZy1IvwyxfA5XAlWEWmrI8VvEdA
+	EoC8TFDdpd1m9J+H/H8I8bAMYkf3FF/chNBbZzID4gZIYEBYTAdafJ6m0qLQ=
+X-Gm-Gg: ASbGnctwLH5xyIzVh5lW4A+tUtS0hEKvaGQEV3dKJJ6j5w4zdjScUwbBc4snoccNkpG
+	zmaIqMGJYDmByKXE6MwWsDEZvab9nlTplNBTL3W5zL5wUxt0FcP/0EEK3TElWD6pki0vLVDPCZS
+	3osetpCTh5pNw649gDPbECL+PUaXEzqVetdyFsWVC+u3VIyKh8+B2hJl0WQwUb29f7JdiVnx9n7
+	2Al+CIGDZ2OmnsuFA5huvwtTic08nB0z+z8QutEy2LppOqGYOOczefiLYPH0CoQDF5BYrrm9BHx
+	DBf/ussXas8FAoOlUoyndqqLEDK+zHIxjKiK1FDT9EIgeTYwH2Cs8P5zffj6+9Wi/Bx/1AsAZCk
+	Je/cH40YSzkilYVl4LtQEaELitMM/0qUTI/2fuN6Trs5Baw==
+X-Received: by 2002:a05:6214:d64:b0:880:4f33:4666 with SMTP id 6a1803df08f44-8804f334d94mr58783016d6.20.1762139556269;
+        Sun, 02 Nov 2025 19:12:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGcfeKBmG70eDimSeDmwKwC562nYZpblijcMB08FrdeomYXqHJAlEgptfXX8UOLwzXJtatUYw==
+X-Received: by 2002:a05:6214:d64:b0:880:4f33:4666 with SMTP id 6a1803df08f44-8804f334d94mr58782786d6.20.1762139555843;
+        Sun, 02 Nov 2025 19:12:35 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8804ba4b832sm31857146d6.36.2025.11.02.19.12.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 02 Nov 2025 19:12:35 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <b34dc762-5a90-428b-815f-0c2b351078bf@redhat.com>
+Date: Sun, 2 Nov 2025 22:12:34 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,126 +103,101 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [cgroup/for-6.19 PATCH 1/3] cgroup/cpuset: Rename
- update_unbound_workqueue_cpumask() to update_isolation_cpumasks()
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+Subject: Re: [cgroup/for-6.19 PATCH 2/3] cgroup/cpuset: Fail if isolated and
+ nohz_full don't leave any housekeeping
+To: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
  Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
  <mkoutny@suse.com>
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  Chen Ridong <chenridong@huawei.com>, Gabriele Monaco <gmonaco@redhat.com>,
  Frederic Weisbecker <frederic@kernel.org>
 References: <20251103013411.239610-1-longman@redhat.com>
- <20251103013411.239610-2-longman@redhat.com>
+ <20251103013411.239610-3-longman@redhat.com>
+ <8da89966-b891-4088-9699-e82863e52415@huaweicloud.com>
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251103013411.239610-2-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <8da89966-b891-4088-9699-e82863e52415@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgBHjuLwGQhp6oLlCQ--.29120S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF4Dur45trykuFyrXw1kZrb_yoW5tF1Dpr
-	y5CFWIkayxtw45uas8JFsFgr4xKw4Dt3ZFywnrXr1ftFyaqwn7Aw1UKFs0qr4rXr98Gr45
-	ZFWqvrsrXr40kwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbmii3UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+On 11/2/25 9:55 PM, Chen Ridong wrote:
+>
+> On 2025/11/3 9:34, Waiman Long wrote:
+>> From: Gabriele Monaco <gmonaco@redhat.com>
+>>
+>> Currently the user can set up isolated cpus via cpuset and nohz_full in
+>> such a way that leaves no housekeeping CPU (i.e. no CPU that is neither
+>> domain isolated nor nohz full). This can be a problem for other
+>> subsystems (e.g. the timer wheel imgration).
+>>
+>> Prevent this configuration by blocking any assignation that would cause
+>> the union of domain isolated cpus and nohz_full to covers all CPUs.
+>>
+>> Acked-by: Frederic Weisbecker <frederic@kernel.org>
+>> Reviewed-by: Waiman Long <longman@redhat.com>
+>> Signed-off-by: Gabriele Monaco <gmonaco@redhat.com>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 67 +++++++++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 66 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index da770dac955e..d6d459c95d82 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -1329,6 +1329,19 @@ static void isolated_cpus_update(int old_prs, int new_prs, struct cpumask *xcpus
+>>   		cpumask_andnot(isolated_cpus, isolated_cpus, xcpus);
+>>   }
+>>   
+>> +/*
+>> + * isolated_cpus_should_update - Returns if the isolated_cpus mask needs update
+>> + * @prs: new or old partition_root_state
+>> + * @parent: parent cpuset
+>> + * Return: true if isolated_cpus needs modification, false otherwise
+>> + */
+>> +static bool isolated_cpus_should_update(int prs, struct cpuset *parent)
+>> +{
+>> +	if (!parent)
+>> +		parent = &top_cpuset;
+>> +	return prs != parent->partition_root_state;
+>> +}
+>> +
+> Hi Longman,
+>
+> I am confused about this function.
+>
+> Why do we need to compare the partition_root_state (prs) with the parent's partition_root_state?
+>
+> For example, when a local partition is assigned to a member, I don't think the isolated cpumasks
+> should be updated in this case.
+>
+> In my understanding, the isolated CPUs should only be updated when an isolated partition is being
+> disabled or enabled. I was thinking of something like this:
+>
+> bool isolated_cpus_should_update(int new_prs, int old_prs)
+> {
+>      if (new_prs == old_prs)
+>          return false;
+>      if (old_prs == 2 || new_prs == 2)
+>          return true;
+>      return false;
+> }
+>
+> I would really appreciate it if you could provide some further explanation on this.
 
+This function should only be called when both the current and the parent 
+(top_cpuset for remote) are valid partition roots. For both local and 
+remote partition, the child cpuset takes CPUs from the parent. The list 
+of isolated CPUs will only change if parent and child cpusets have 
+different partition root types. If parent is an isolated partition, 
+taking CPUs from parent to form another isolated partition will not 
+change isolated_cpus. The same is true if both parent and child are root.
 
-On 2025/11/3 9:34, Waiman Long wrote:
-> From: Gabriele Monaco <gmonaco@redhat.com>
-> 
-> update_unbound_workqueue_cpumask() updates unbound workqueues settings
-> when there's a change in isolated CPUs, but it can be used for other
-> subsystems requiring updated when isolated CPUs change.
-> 
-> Generalise the name to update_isolation_cpumasks() to prepare for other
-> functions unrelated to workqueues to be called in that spot.
-> 
-> [longman: Change the function name to update_isolation_cpumasks()]
-> 
-> Acked-by: Frederic Weisbecker <frederic@kernel.org>
-> Acked-by: Waiman Long <longman@redhat.com>
-> Signed-off-by: Gabriele Monaco <gmonaco@redhat.com>
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  kernel/cgroup/cpuset.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 7aef59ea9627..da770dac955e 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1393,7 +1393,7 @@ static bool partition_xcpus_del(int old_prs, struct cpuset *parent,
->  	return isolcpus_updated;
->  }
->  
-> -static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
-> +static void update_isolation_cpumasks(bool isolcpus_updated)
->  {
->  	int ret;
->  
-> @@ -1557,7 +1557,7 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
->  	list_add(&cs->remote_sibling, &remote_children);
->  	cpumask_copy(cs->effective_xcpus, tmp->new_cpus);
->  	spin_unlock_irq(&callback_lock);
-> -	update_unbound_workqueue_cpumask(isolcpus_updated);
-> +	update_isolation_cpumasks(isolcpus_updated);
->  	cpuset_force_rebuild();
->  	cs->prs_err = 0;
->  
-> @@ -1598,7 +1598,7 @@ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
->  	compute_excpus(cs, cs->effective_xcpus);
->  	reset_partition_data(cs);
->  	spin_unlock_irq(&callback_lock);
-> -	update_unbound_workqueue_cpumask(isolcpus_updated);
-> +	update_isolation_cpumasks(isolcpus_updated);
->  	cpuset_force_rebuild();
->  
->  	/*
-> @@ -1667,7 +1667,7 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
->  	if (xcpus)
->  		cpumask_copy(cs->exclusive_cpus, xcpus);
->  	spin_unlock_irq(&callback_lock);
-> -	update_unbound_workqueue_cpumask(isolcpus_updated);
-> +	update_isolation_cpumasks(isolcpus_updated);
->  	if (adding || deleting)
->  		cpuset_force_rebuild();
->  
-> @@ -2011,7 +2011,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->  							tmp->delmask);
->  
->  	spin_unlock_irq(&callback_lock);
-> -	update_unbound_workqueue_cpumask(isolcpus_updated);
-> +	update_isolation_cpumasks(isolcpus_updated);
->  
->  	if ((old_prs != new_prs) && (cmd == partcmd_update))
->  		update_partition_exclusive_flag(cs, new_prs);
-> @@ -3029,7 +3029,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
->  	else if (isolcpus_updated)
->  		isolated_cpus_update(old_prs, new_prs, cs->effective_xcpus);
->  	spin_unlock_irq(&callback_lock);
-> -	update_unbound_workqueue_cpumask(isolcpus_updated);
-> +	update_isolation_cpumasks(isolcpus_updated);
->  
->  	/* Force update if switching back to member & update effective_xcpus */
->  	update_cpumasks_hier(cs, &tmpmask, !new_prs);
+You are right that this check may not be obvious for a casual observer. 
+I can add some more comments to clarify that.
 
-LGTM
+Cheers,
+Longman
 
-Reviewed-by: Chen Ridong<chenridong@huawei.com>
-
--- 
-Best regards,
-Ridong
+>
 
 
