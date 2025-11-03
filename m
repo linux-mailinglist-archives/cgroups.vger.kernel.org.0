@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-11479-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11480-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1D69C29DD1
-	for <lists+cgroups@lfdr.de>; Mon, 03 Nov 2025 03:32:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4287BC29E4A
+	for <lists+cgroups@lfdr.de>; Mon, 03 Nov 2025 03:55:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6DBEE3480DC
-	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 02:32:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C35463AC286
+	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 02:55:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A65DC283FF9;
-	Mon,  3 Nov 2025 02:32:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9422868BD;
+	Mon,  3 Nov 2025 02:55:40 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D73283686;
-	Mon,  3 Nov 2025 02:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94666285CAA;
+	Mon,  3 Nov 2025 02:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762137132; cv=none; b=JjPCYp879mOJoeWeGQMEGycS9jjniL/EndR2IAXaLj6Eb6f1FdIC+JZQyLJLKvvWk4KxJs+MlqvPcT+BzyG/QJpfmI2sL2ImjkZ2xeKXhCfl9v2rQiNpmbGnk2/RPiIlgCkk3zMPaw4bJF7sUd4CTUBbqMfksms4DzbyJLFeKW4=
+	t=1762138540; cv=none; b=GMdE9ApzdpIdvAFJH9hoQ7F2DbUyc5yEwbuqRQ0txS8m0opY3+PFts3kw/r60YlJDcCBRLmPFr1Y7m44OE850/2qjt8y7tGqpibSqHQh+Jbc4IfPPqaFnmQSpbjE10kyI9SVX+MyUZ8vnOHtFoHkFurmCNA35gAS6p33+rHkAp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762137132; c=relaxed/simple;
-	bh=VnBBYLunQzYKbo73WqVJBPX3RlrHr7fLVQ0+GI0Sv3k=;
+	s=arc-20240116; t=1762138540; c=relaxed/simple;
+	bh=tcM2uw/jn6NjgMU6VSrAA9eQAhslQZsksT8GAkrqt2Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hPYHbmph26An2xqHiP0jPOaY20HCW4OuOIZKpCmSZYfWHGBf/qART2A29z3TVWC+gkrLcDLJ2KICZ67Ri5xLR04paNbTFWNyyLPwUttOSh6tyfr7pYYopeKFVhuZ645aUQM/S19SYnjplLY16/vhrCtoFgwmhqka4kGv5/Jcz1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 In-Reply-To:Content-Type; b=EEYHJd9qhoYROaJzq8OQxKF6dJq8OB7L+gQ48mkPdGMW444Pg2kgeulLbKPpQYF+maOKxsPK21wN4I7MTNtf063f1+ZWnslaFndgcAEH00azfhS6n9+SQv+nQhmzlGfWhMIcH8mLKqtSKmN3HOc07ezL5dPqcn5M0Vly96Ndt7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d0FwL2HNCzKHMVY;
-	Mon,  3 Nov 2025 10:32:02 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d0GRF267kzYQtph;
+	Mon,  3 Nov 2025 10:55:21 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 032E71A18D1;
-	Mon,  3 Nov 2025 10:32:06 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 002BC1A07BB;
+	Mon,  3 Nov 2025 10:55:33 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP1 (Coremail) with SMTP id cCh0CgDHN0slFAhpPKf4CQ--.38631S2;
-	Mon, 03 Nov 2025 10:32:05 +0800 (CST)
-Message-ID: <400165fe-18d5-4a78-b4bd-4e5b55de0c04@huaweicloud.com>
-Date: Mon, 3 Nov 2025 10:32:04 +0800
+	by APP1 (Coremail) with SMTP id cCh0CgAnm06jGQhpnXn6CQ--.43837S2;
+	Mon, 03 Nov 2025 10:55:33 +0800 (CST)
+Message-ID: <8da89966-b891-4088-9699-e82863e52415@huaweicloud.com>
+Date: Mon, 3 Nov 2025 10:55:31 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,132 +47,104 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/33] cpuset: Provide lockdep check for cpuset lock held
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Andrew Morton <akpm@linux-foundation.org>,
- Bjorn Helgaas <bhelgaas@google.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Danilo Krummrich
- <dakr@kernel.org>, "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Gabriele Monaco <gmonaco@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
- Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
- Lai Jiangshan <jiangshanlai@gmail.com>,
- Marco Crivellari <marco.crivellari@suse.com>, Michal Hocko
- <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
- Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Phil Auld <pauld@redhat.com>, "Rafael J . Wysocki" <rafael@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Simon Horman <horms@kernel.org>,
- Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, Waiman Long <longman@redhat.com>,
- Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
- linux-mm@kvack.org, linux-pci@vger.kernel.org, netdev@vger.kernel.org
-References: <20251013203146.10162-1-frederic@kernel.org>
- <20251013203146.10162-12-frederic@kernel.org>
- <b94f6159-a280-4890-a02a-f19ff808de5b@huaweicloud.com>
- <aQTe6X5XXSp8_3z5@localhost.localdomain>
+Subject: Re: [cgroup/for-6.19 PATCH 2/3] cgroup/cpuset: Fail if isolated and
+ nohz_full don't leave any housekeeping
+To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Chen Ridong <chenridong@huawei.com>, Gabriele Monaco <gmonaco@redhat.com>,
+ Frederic Weisbecker <frederic@kernel.org>
+References: <20251103013411.239610-1-longman@redhat.com>
+ <20251103013411.239610-3-longman@redhat.com>
 Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <aQTe6X5XXSp8_3z5@localhost.localdomain>
+In-Reply-To: <20251103013411.239610-3-longman@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHN0slFAhpPKf4CQ--.38631S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tryxCw1kAF1UJrWfKw4DJwb_yoW5Jr1rpF
-	yDKFyrCF4rZr4UuFy2qw17uF1vqw4kWF1UGFn5tr18XasFvFn2vF1v9r1Ygr1F9rs7Gw40
-	vF17Wa9I9FWqyrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgAnm06jGQhpnXn6CQ--.43837S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KrykAw4DZr4kWw4kXw4Utwb_yoW8KF17pF
+	yUKFy3A3ykta13C343W3Wkur1Fgw4kJr17K3W3GrykX3Zxt3ZrKr1Ivwn8ur4ku34rWry0
+	qrZF9rZYga48ArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
 	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
 	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
-	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-	xUsPfHUUUUU
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU17KsUUUUUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
 
-On 2025/11/1 0:08, Frederic Weisbecker wrote:
-> Le Tue, Oct 14, 2025 at 09:29:25PM +0800, Chen Ridong a écrit :
->>
->>
->> On 2025/10/14 4:31, Frederic Weisbecker wrote:
->>> cpuset modifies partitions, including isolated, while holding the cpuset
->>> mutex.
->>>
->>> This means that holding the cpuset mutex is safe to synchronize against
->>> housekeeping cpumask changes.
->>>
->>> Provide a lockdep check to validate that.
->>>
->>> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
->>> ---
->>>  include/linux/cpuset.h | 2 ++
->>>  kernel/cgroup/cpuset.c | 7 +++++++
->>>  2 files changed, 9 insertions(+)
->>>
->>> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
->>> index 2ddb256187b5..051d36fec578 100644
->>> --- a/include/linux/cpuset.h
->>> +++ b/include/linux/cpuset.h
->>> @@ -18,6 +18,8 @@
->>>  #include <linux/mmu_context.h>
->>>  #include <linux/jump_label.h>
->>>  
->>> +extern bool lockdep_is_cpuset_held(void);
->>> +
->>>  #ifdef CONFIG_CPUSETS
->>>  
->>>  /*
->>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>> index 8595f1eadf23..aa1ac7bcf2ea 100644
->>> --- a/kernel/cgroup/cpuset.c
->>> +++ b/kernel/cgroup/cpuset.c
->>> @@ -279,6 +279,13 @@ void cpuset_full_unlock(void)
->>>  	cpus_read_unlock();
->>>  }
->>>  
->>> +#ifdef CONFIG_LOCKDEP
->>> +bool lockdep_is_cpuset_held(void)
->>> +{
->>> +	return lockdep_is_held(&cpuset_mutex);
->>> +}
->>> +#endif
->>> +
->>>  static DEFINE_SPINLOCK(callback_lock);
->>>  
->>>  void cpuset_callback_lock_irq(void)
->>
->> Is the lockdep_is_cpuset_held function actually being used?
->> If CONFIG_LOCKDEP is disabled, compilation would fail with an "undefined reference to
->> lockdep_is_cpuset_held" error.
+On 2025/11/3 9:34, Waiman Long wrote:
+> From: Gabriele Monaco <gmonaco@redhat.com>
 > 
-> Although counter-intuitive, this is how the lockdep_is_held() functions family
-> do work.
+> Currently the user can set up isolated cpus via cpuset and nohz_full in
+> such a way that leaves no housekeeping CPU (i.e. no CPU that is neither
+> domain isolated nor nohz full). This can be a problem for other
+> subsystems (e.g. the timer wheel imgration).
 > 
-> This allows this kind of trick:
+> Prevent this configuration by blocking any assignation that would cause
+> the union of domain isolated cpus and nohz_full to covers all CPUs.
 > 
-> if (IS_ENABLED(CONFIG_LOCKDEP))
->    WARN_ON_ONCE(!lockdep_is_held(&some_lock))
+> Acked-by: Frederic Weisbecker <frederic@kernel.org>
+> Reviewed-by: Waiman Long <longman@redhat.com>
+> Signed-off-by: Gabriele Monaco <gmonaco@redhat.com>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  kernel/cgroup/cpuset.c | 67 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 66 insertions(+), 1 deletion(-)
 > 
-> This works during the compilation because the prototype of lockdep_is_held()
-> is declared. And since the IS_ENABLED() is resolved during compilation as well,
-> the conditional code is wiped out and therefore not linked. As a result the
-> linker doesn't even look for the definition of lockdep_is_held() and we don't
-> need to define an off case that would return a wrong assumption.
-> 
-> Thanks.
-> 
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index da770dac955e..d6d459c95d82 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1329,6 +1329,19 @@ static void isolated_cpus_update(int old_prs, int new_prs, struct cpumask *xcpus
+>  		cpumask_andnot(isolated_cpus, isolated_cpus, xcpus);
+>  }
+>  
+> +/*
+> + * isolated_cpus_should_update - Returns if the isolated_cpus mask needs update
+> + * @prs: new or old partition_root_state
+> + * @parent: parent cpuset
+> + * Return: true if isolated_cpus needs modification, false otherwise
+> + */
+> +static bool isolated_cpus_should_update(int prs, struct cpuset *parent)
+> +{
+> +	if (!parent)
+> +		parent = &top_cpuset;
+> +	return prs != parent->partition_root_state;
+> +}
+> +
 
-Thank you for your explanation
+Hi Longman,
+
+I am confused about this function.
+
+Why do we need to compare the partition_root_state (prs) with the parent's partition_root_state?
+
+For example, when a local partition is assigned to a member, I don't think the isolated cpumasks
+should be updated in this case.
+
+In my understanding, the isolated CPUs should only be updated when an isolated partition is being
+disabled or enabled. I was thinking of something like this:
+
+bool isolated_cpus_should_update(int new_prs, int old_prs)
+{
+    if (new_prs == old_prs)
+        return false;
+    if (old_prs == 2 || new_prs == 2)
+        return true;
+    return false;
+}
+
+I would really appreciate it if you could provide some further explanation on this.
 
 -- 
 Best regards,
