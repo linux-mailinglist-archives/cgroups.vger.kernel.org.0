@@ -1,157 +1,139 @@
-Return-Path: <cgroups+bounces-11518-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11519-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDBA8C2C1C4
-	for <lists+cgroups@lfdr.de>; Mon, 03 Nov 2025 14:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 57B6DC2C3B1
+	for <lists+cgroups@lfdr.de>; Mon, 03 Nov 2025 14:47:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92AF13B6486
-	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 13:29:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 884823AB273
+	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 13:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69ADC270575;
-	Mon,  3 Nov 2025 13:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A393F2FFF91;
+	Mon,  3 Nov 2025 13:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iIfc0l6k"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="XNsI3sMT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5549526FA4B
-	for <cgroups@vger.kernel.org>; Mon,  3 Nov 2025 13:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E7B526E6F4
+	for <cgroups@vger.kernel.org>; Mon,  3 Nov 2025 13:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762176596; cv=none; b=efeuXDdy4pHW6kbTYi9x4pk7LlFnjAeqLomXfN9AU/fJxHXNpZF/QF1iXUfsLxn3ZDfGbwsY7mM6hyyWRIsnRLjtWpBEy905hoovY61jhhQG4sNh5phOEG4lrTTeR/sE+V7XU/bCqhQ8UOoZBBbO5XRKfAMoN6wwOmfDTIz2GZA=
+	t=1762177189; cv=none; b=Hiu5BVYSGcgKGzfc7uKSbh5sJTeR+fTLDBHvyz9Qhf97cCp7/1rVfNFmkeYPdAfwxc1Jz/7To+ALzddvT2TE/pv+OoUBEhZtN0p9AxY0/vF9MuTBrLabrGNe6Ep2Cxbh9pF6Ts20ufcGoWo1OVtiEN2dds/x5VJejh7Vcbm2zzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762176596; c=relaxed/simple;
-	bh=3P4uhXaD5ilvYs+a4RtrwVqLA5w/zngN8+yS2F+4lkk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DJWm1XH5uylpJQ7v33ic9N5ng1XHMD+plirswRINIBx6JFYOHluC1LoprtkBVlSG3nwt4w3NDrEsDJVHDy6H1W6Hr4pI098CB5Q3NomJspfAE9GuR+LR3Llnk50GEAe0zFTgzrePrQouZm7jGySvC7agC813l+NyJB6Vh7ivoT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iIfc0l6k; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-640bd9039fbso1611643a12.2
-        for <cgroups@vger.kernel.org>; Mon, 03 Nov 2025 05:29:54 -0800 (PST)
+	s=arc-20240116; t=1762177189; c=relaxed/simple;
+	bh=kTeLgj7WTbbGhF5u6TxRlGt9WwcaFkoX8T6Mdc1zC8w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bmncOyt7CeUdFEn/C3uFofSvbyImQ6e90vsq7CqJ4lS7E/DQUk2gxgVk3K1Ue9+9ZEWzf8r6dbSrhoiK9EYn8o+37hRKA31JmHUv6sQcRAmMFTHZZAOu0g4pW0m65AVci0B4IvAloX6VEPMEvA1LM7bxrfZsT3A3X5b0mXdnnVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=XNsI3sMT; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-475dae5d473so34986765e9.2
+        for <cgroups@vger.kernel.org>; Mon, 03 Nov 2025 05:39:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762176593; x=1762781393; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a21JbFZrSRmyl+TIWUp5y75+miyXDqyFyLKW07xgMRE=;
-        b=iIfc0l6k9iNQArxxX2qbTR4pYsdaNIZ+O0bZS+XBE8EwQROeAVrFCu2U6PBIjIhraX
-         suZNP2HKkCrkhFRfJVo9pyOplIYGW7dcmUuqnY9c40lEekzqbtTY4i73leXVc8hl4+jE
-         ZWGuzBP6tGg8MH0wbbwhE09bM1bGXHolSrhfM1prGDB9cyYHmiQ0l86NMY9N9e22F752
-         ccz127Qgm/Zwcw4gYj9gylM3DpNnvguc4OeZElaIjAP9QE6YuQMj3CCTOmjmIvcXW2At
-         4esTOikzxDAhxUICWw0ISVF7OFAeqdFTaNPpF0fHIOFA39W8YGD9CwZ0m5QUbAAdpKLC
-         f7VQ==
+        d=suse.com; s=google; t=1762177186; x=1762781986; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kTeLgj7WTbbGhF5u6TxRlGt9WwcaFkoX8T6Mdc1zC8w=;
+        b=XNsI3sMTV3TwFGgPn0vsevnTeQ9wZaj22zsk0e7LsSoriIVR28ZzcW7cnwmnu4xzGW
+         6IdZxf/SeIn6R2EThFfeKdWZnabC1S0lxyTRAP6jomlTtB4bAvH6Yq2JPrcIEjV90Alx
+         WYkSQ0NMveOYHjylh6225lGOqcpRaWn7/t+4fG+HaSteD8b4XexzB/64NOhzfykWl5oY
+         XqQBrs/+QM/CI0eP7dQN6K8KG/u/MKsWlkjwBjuTx/IRp+GnErwbY46BjWvmq1eESOZo
+         DGQVBiwTKcectt4flmwcpImTw+FkK8Qhi4+avRl8afBbEmqF6ih4UoRDliI6fyN8u/Cw
+         ubgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762176593; x=1762781393;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a21JbFZrSRmyl+TIWUp5y75+miyXDqyFyLKW07xgMRE=;
-        b=AoPpZz/eDD33ZeyFFQd1aHKnakDH1XSYBvkB196+aev1jeBjh6CPkfSFZs6ux+1w84
-         hb+IFD2z9Q0wb3npaq3QTXCF1iSkuTan4XR1NlpjcS1Trx3fwSTUUV8Laj14oorQ23Sr
-         mZ0xPoBFud+9NwlKh5a/4bw/pHwXFf5ZxF/m4tweDTlPF4cU5hQOla0i4dstdwVmqjHK
-         Y9uTf69s+I97b4yG8tmU/xMjknExHuJbkwNr9pnMZrVNncKBsc9ycFjcQ7r6IdsDesa1
-         7jVnqSKiJP650tE3Y2KsO+Ro7bJDq5ijaK3gkl1acpfZmPwvodAEHAx+6gO2Ee0PglX3
-         YNEw==
-X-Forwarded-Encrypted: i=1; AJvYcCUg5ut2qmY3GM+SqoXQF81rINFTsujyQpAyz+jG0ifTJncnBzli5KWbR6uqzQBFvo0cBj5R3EuA@vger.kernel.org
-X-Gm-Message-State: AOJu0YyVbDa7PnQPMiYib5mL4dSczvwzj3ErS3/D6S4UXjCLuqp7hZz9
-	/aXUS34Kng9uWhxgVxPft3kFPxT62/gi4iReTMFDPvaoG5ojKYKFofzONJVBRPWk8MEeqE4k8sy
-	rV/hMGdiL0aejmYyS4vK1Ntm2LJinu+4=
-X-Gm-Gg: ASbGnctcJ7JODOEM3ZvtaNls4Y4y7tW3aprjGhPyWCcqr3COG6PGfj6u3nn7QhyOcRs
-	l5vi9EG1lq1bJzaUOX1dvlQVc1GT1bUb9+2jMmii7KehnCP0IBeVuskUOEI2mkmTN+qN4lk6yOI
-	4qGgYu9sxr9tZEZZa2LBGTh6usiZYxkVeJRjNpKMIl9uvMJ6cgxHzr5eSfYFv6EFi15xMPRaHyc
-	zDHDoAJP00obD8QHv9ew3Tss598WcbHgx0T1ULB2ZaeCYZEaei+Phvsuvwv50dlWf2Dpd3lcyLd
-	Xhsrbn902HIUB9JULn6494NbozM9r5yrBlwJaSQG
-X-Google-Smtp-Source: AGHT+IGWyTZduHZ2AUQOMuHAUDSKDxSYh2Boylo//kHY7uALzcMyPCHh3aobLMS0sfZ3SBLE+RqIGbSBBaWJY8VJe/k=
-X-Received: by 2002:a05:6402:5108:b0:640:aa67:2933 with SMTP id
- 4fb4d7f45d1cf-640aa672a40mr5173930a12.21.1762176592344; Mon, 03 Nov 2025
- 05:29:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1762177186; x=1762781986;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kTeLgj7WTbbGhF5u6TxRlGt9WwcaFkoX8T6Mdc1zC8w=;
+        b=u4u91goOh+Av93YF1GLt+n6BYgIt0O6jVRt5lapuKtC6zNnsnrdPqaEqNRj+eE9oX2
+         Y7h8JJB5PYFHvo8ohZl2l+sBalCYgp/n8y7XfAJ6+MC5p9Ypxs1FhPXy2PaQlcn4mAav
+         2d1NDkQv6/5KfW2oXpOgzeU24v9qvSw/H7BLdtddRsevtsXFwrv+I84idpC3onjr9aAY
+         Nc/g4F3cUdIKkgU4UiXqbItLAI5OFmSBahVWcBlGM9IRCMKOAlofcRmXRxTlm245WUOB
+         qH13zJf4s183ziinXuyKyrVdw55ne4xXu6zkBTUWlS6lL1EcBbrTQrvkrc0aEAcIdJLF
+         LOkw==
+X-Forwarded-Encrypted: i=1; AJvYcCXfAZw60Mnx1/WYlwnB1JqhwpAKiss4j3hNNdPjFHqCHLQDoURXpS/Hcot4BaN0d/0J4NEFArTB@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOPxn3Qx85SkUH3CSsMxC6tmDq3Fm1eVUBcWJHy0iRHIaGz+St
+	M8ufqAbeDQhLfVzFuXVLUQuiG9AfZwjm3ABwj2cvOyG+/9ikq6mEyo8J9YOxpqFogp0=
+X-Gm-Gg: ASbGnctN7edPJCDK3/kRdumoFq1vpyw8YUIKpVFQC6yMx+hjef7G/DuH7sn3QLIejqr
+	Xzg/+zb17FA1i3b+3pO1b/91Fx/G1yxOkKpcR8a0HPa2iiX0oHyQRky6vh4stRA8zhA9TjSDxZ3
+	FXyqwo05hoJSoTFCLi6y+l8s0/FsB/YtlDHAxLWerSFojcB2EUMvArcqpIqFDwlE7YS2XmEL5KT
+	RuMLMZq+db/VKLijUYfxQQLqneBWwsy8rLAzdSGWBQIxEoxBE43URX2X6lWQ9p/MF480ALwYIRL
+	gQIUZt5bFbw6nUn49PsO4dHBEFMsWZs88Th+GUIKJ3N6VqeF1E8q028vJqhVYFMXhrFl4gFAfgr
+	ZhQkzCrniAziv8moo+pnZCgRibtZiR06oW9mxzYWXyxv1QOVVUVxPiuoHz2UEcgkyMkxION6jMx
+	55icnnyCNvXBrm7thYIp1XEEL63yWtGac=
+X-Google-Smtp-Source: AGHT+IGibbck/AAf9SyS4zHylpAfJRcdzmmFe7WDPzZu/EC/amCYRsgsCfpZHjx/bb+cHpeylOXfsg==
+X-Received: by 2002:a05:600c:5197:b0:475:d8c8:6894 with SMTP id 5b1f17b1804b1-477307e4264mr116932235e9.9.1762177185738;
+        Mon, 03 Nov 2025 05:39:45 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4773c727cb0sm159035135e9.10.2025.11.03.05.39.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Nov 2025 05:39:45 -0800 (PST)
+Date: Mon, 3 Nov 2025 14:39:43 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Cai Xinchen <caixinchen1@huawei.com>
+Cc: llong@redhat.com, tj@kernel.org, hannes@cmpxchg.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com
+Subject: Re: [PATCH -next RFC 0/2] cpuset: Add cpuset.mems.spread_page to
+ cgroup v2
+Message-ID: <doalyrbxmhzm6vvkotoqganga7s375athzlsnbab343wadijb5@winjpuf5m7dd>
+References: <20250930093552.2842885-1-caixinchen1@huawei.com>
+ <wpdddawlyxc27fkkkyfwfulq7zjqkxbqqe2upu4irqkcbzptft@jowwnu3yvgvg>
+ <0d67adac-7ca2-4467-9d2e-049b62fcd7a2@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251103-work-creds-guards-simple-v1-0-a3e156839e7f@kernel.org>
-In-Reply-To: <20251103-work-creds-guards-simple-v1-0-a3e156839e7f@kernel.org>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 3 Nov 2025 14:29:40 +0100
-X-Gm-Features: AWmQ_bmz-aFyM_2e0ocdnrdFR9IUaRm9-CuMDUtbkHwY8CVjQjk6nDFhXg5Zzks
-Message-ID: <CAOQ4uxgr33rf1tzjqdJex_tzNYDqj45=qLzi3BkMUaezgbJqoQ@mail.gmail.com>
-Subject: Re: [PATCH 00/16] credentials guards: the easy cases
-To: Christian Brauner <brauner@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-aio@kvack.org, 
-	linux-unionfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
-	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, cgroups@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="x4np274spoth5vwq"
+Content-Disposition: inline
+In-Reply-To: <0d67adac-7ca2-4467-9d2e-049b62fcd7a2@huawei.com>
 
-On Mon, Nov 3, 2025 at 12:28=E2=80=AFPM Christian Brauner <brauner@kernel.o=
-rg> wrote:
->
-> This converts all users of override_creds() to rely on credentials
-> guards. Leave all those that do the prepare_creds() + modify creds +
-> override_creds() dance alone for now. Some of them qualify for their own
-> variant.
 
-Nice!
+--x4np274spoth5vwq
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH -next RFC 0/2] cpuset: Add cpuset.mems.spread_page to
+ cgroup v2
+MIME-Version: 1.0
 
-What about with_ovl_creator_cred()/scoped_with_ovl_creator_cred()?
-Is there any reason not to do it as well?
+On Mon, Oct 20, 2025 at 02:20:30PM +0800, Cai Xinchen <caixinchen1@huawei.com> wrote:
+> The MPOL_INTERLEAVE setting requires restarting the DataNode service.
+> In this scenario, the issue can be resolved by restarting the service,
 
-I can try to clear some time for this cleanup.
+\o/
 
-For this series, feel free to add:
+> but I would prefer not to restart the DataNode service if possible,
+> as it would cause a period of service interruption.
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+AFAICS, the implementation of cpuset's spread page works only for new
+allocations (filemap_alloc_folio_noprof/cpuset_do_page_mem_spread) and
+there's no migraion in cpuset1_update_task_spread_flags(). So this
+simple v1-like spreading would still require restart of the service.
 
-Thanks,
-Amir.
+(This challenge of dynamism also a reason why it's not ready for v2,
+IMO.)
 
->
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> ---
-> Christian Brauner (16):
->       cred: add {scoped_}with_creds() guards
->       aio: use credential guards
->       backing-file: use credential guards for reads
->       backing-file: use credential guards for writes
->       backing-file: use credential guards for splice read
->       backing-file: use credential guards for splice write
->       backing-file: use credential guards for mmap
->       binfmt_misc: use credential guards
->       erofs: use credential guards
->       nfs: use credential guards in nfs_local_call_read()
->       nfs: use credential guards in nfs_local_call_write()
->       nfs: use credential guards in nfs_idmap_get_key()
->       smb: use credential guards in cifs_get_spnego_key()
->       act: use credential guards in acct_write_process()
->       cgroup: use credential guards in cgroup_attach_permissions()
->       net/dns_resolver: use credential guards in dns_query()
->
->  fs/aio.c                     |   6 +-
->  fs/backing-file.c            | 147 ++++++++++++++++++++++---------------=
-------
->  fs/binfmt_misc.c             |   7 +--
->  fs/erofs/fileio.c            |   6 +-
->  fs/nfs/localio.c             |  59 +++++++++--------
->  fs/nfs/nfs4idmap.c           |   7 +--
->  fs/smb/client/cifs_spnego.c  |   6 +-
->  include/linux/cred.h         |  12 ++--
->  kernel/acct.c                |   6 +-
->  kernel/cgroup/cgroup.c       |  10 ++-
->  net/dns_resolver/dns_query.c |   6 +-
->  11 files changed, 133 insertions(+), 139 deletions(-)
-> ---
-> base-commit: fea79c89ff947a69a55fed5ce86a70840e6d719c
-> change-id: 20251103-work-creds-guards-simple-619ef2200d22
->
->
+HTH,
+Michal
+
+--x4np274spoth5vwq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaQiwnRsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjYPAEA0KNChFimqInIrzKM71dn
+obF2YcUBKSUirLlWPrHnpIIBAJJNZ81rVhSMOzP3TEfdD2Ga2U/cXiJiHQQezVcu
+o3gJ
+=2pY7
+-----END PGP SIGNATURE-----
+
+--x4np274spoth5vwq--
 
