@@ -1,167 +1,106 @@
-Return-Path: <cgroups+bounces-11473-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11474-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA6B0C2973F
-	for <lists+cgroups@lfdr.de>; Sun, 02 Nov 2025 22:38:27 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17E87C29C94
+	for <lists+cgroups@lfdr.de>; Mon, 03 Nov 2025 02:35:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 812654E3FF5
-	for <lists+cgroups@lfdr.de>; Sun,  2 Nov 2025 21:36:42 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 686784E977C
+	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 01:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D6481DE4FB;
-	Sun,  2 Nov 2025 21:36:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631D7277037;
+	Mon,  3 Nov 2025 01:34:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uWjkOvIW"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e5jdEu7Y"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C5602BCF5
-	for <cgroups@vger.kernel.org>; Sun,  2 Nov 2025 21:36:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2BCE2765DF
+	for <cgroups@vger.kernel.org>; Mon,  3 Nov 2025 01:34:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762119399; cv=none; b=AH2BotFnEc9WkBDNhSzxIMkZA0sn9JICoeN70dZXJ/o1d3VBl1xJ7yLk+N/nX8ZoYVsfYM1VoeJe3YxTB0mufkP5+ZvxYXw+HyrrhJc6v94RSG6B30WbxPa+ndzOwat0N3yhC07JuyvECkad7et+vfek0h2OdwdiP2pO46oiQ9g=
+	t=1762133688; cv=none; b=f1nE09RcToBcCKl7CaXb4mWjbf4oLx8c1p3roJRGTz76V5CkpwRQVhv+1vPuMN83kFBt7U1RYVY6C7uO2HITG7LZM0Y+I3w5eq7LSes8C8qD/lVwu7yt/+DZ3ip2s202Ld0kKyYp0NlZPu2I+XkxBpiYLwDPc3jlV5d1nqLmZfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762119399; c=relaxed/simple;
-	bh=i3EklB5KO1R4QxKOcGYeVk40OcIAul9sYhoKiHZt5NM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=kpHnBfQO/dea5S0dkivYvaFpid9Ojj3C5tLRju7Fvg2YChuJCh4BV8UqJYCa4dXfLmXgKRzxrIxI3dH+uvvMhgrFJgDbRk6t1TS7Z2dNIIjQMkFIMqjRVx1VHjS04AIx3a6+KcfPz9CzPTmcR/T/OafP/PxEQBWc72kRim6ZwPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uWjkOvIW; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762119394;
+	s=arc-20240116; t=1762133688; c=relaxed/simple;
+	bh=ftMbpL6j/uQsNO3O6mNfkO4ZVF4ndgDgaVSJY8PJAk8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VgWqZ71T3gVO8A27oxyCl55tbtEDdXn9HJDJmHVtY39AQ3ijYvvl4pf22BuEOV0JLp9PIKVYDaFQ3h3f8LYDA4l6+32rxCtaz0ZpNJubHdTKKQHdqAHbGqY70RHChMhUt4A5OYkorM0S4UReg44nr2YYc1o5WbnkLIXyqfEV/Hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e5jdEu7Y; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762133685;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qcGx6i/+++ufNscO90BKEs/b8++kUKzaqmiZ//H9ISU=;
-	b=uWjkOvIWS/CmQ5V4hKpdOf06Eo4ZAkvv91DlTySCJ+m53/jNAeeaZdCBfaDTh6/k+AtkyR
-	OVFVRg96tGQ0GJMt7tJOycDaK3A5j0R8batwvzteEfJiSGDHZ8F1jonFIuRsADZ6tdXsD3
-	F1obi2np1FqjXVQ+3cEKvINCpn4xOk4=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-  linux-kernel@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,
-  Suren Baghdasaryan <surenb@google.com>,  Shakeel Butt
- <shakeel.butt@linux.dev>,  Johannes Weiner <hannes@cmpxchg.org>,  Andrii
- Nakryiko <andrii@kernel.org>,  JP Kobryn <inwardvessel@gmail.com>,
-  linux-mm@kvack.org,  cgroups@vger.kernel.org,  bpf@vger.kernel.org,
-  Martin KaFai Lau <martin.lau@kernel.org>,  Song Liu <song@kernel.org>,
-  Kumar Kartikeya Dwivedi <memxor@gmail.com>,  Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
-In-Reply-To: <aQR7HIiQ82Ye2UfA@tiehlicka> (Michal Hocko's message of "Fri, 31
-	Oct 2025 10:02:20 +0100")
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
-	<20251027231727.472628-7-roman.gushchin@linux.dev>
-	<aQR7HIiQ82Ye2UfA@tiehlicka>
-Date: Sun, 02 Nov 2025 13:36:25 -0800
-Message-ID: <875xbsglra.fsf@linux.dev>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=lfUe6keLvgZWmVlJAkKYXrc9NNITdmhd/cHUPUOe4OU=;
+	b=e5jdEu7Y4tL8tDhscr3STQ+yM3U4Z7iZXV6o+wpoua14qUg2XLHk8MaSI5fHWLM6lhM1AY
+	p8G7tXskYO8ZifMaAbWTi14jvrCpOvHyPxy6VmR7iuEkzNBeRwqfA9Y81z0vJ+3qcdkZQI
+	NLv633u8aOTvWtNAoJJW6SGIyC8FPUk=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-523-GrnURyw5OYSREck9qxKEXQ-1; Sun,
+ 02 Nov 2025 20:34:42 -0500
+X-MC-Unique: GrnURyw5OYSREck9qxKEXQ-1
+X-Mimecast-MFC-AGG-ID: GrnURyw5OYSREck9qxKEXQ_1762133681
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BDE851956094;
+	Mon,  3 Nov 2025 01:34:40 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.88.7])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5A7A21956056;
+	Mon,  3 Nov 2025 01:34:38 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chen Ridong <chenridong@huawei.com>,
+	Gabriele Monaco <gmonaco@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Waiman Long <longman@redhat.com>
+Subject: [cgroup/for-6.19 PATCH 0/3] cgroup/cpuset: Additional housekeeping check & cleanup
+Date: Sun,  2 Nov 2025 20:34:08 -0500
+Message-ID: <20251103013411.239610-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-Michal Hocko <mhocko@suse.com> writes:
+The first two patches are based on the two cpuset patches from the
+"timers: Exclude isolated cpus from timer migration" patch series [1]
+with some minor modifications. They add additional nohz_full housekeeping
+mask check to ensure that there is at least one common housekeeping
+CPU that is not domain and nohz_full isolated.
 
-> On Mon 27-10-25 16:17:09, Roman Gushchin wrote:
->> Introduce a bpf struct ops for implementing custom OOM handling
->> policies.
->> 
->> It's possible to load one bpf_oom_ops for the system and one
->> bpf_oom_ops for every memory cgroup. In case of a memcg OOM, the
->> cgroup tree is traversed from the OOM'ing memcg up to the root and
->> corresponding BPF OOM handlers are executed until some memory is
->> freed. If no memory is freed, the kernel OOM killer is invoked.
->
-> Do you have any usecase in mind where parent memcg oom handler decides
-> to not kill or cannot kill anything and hand over upwards in the
-> hierarchy?
+The last patch is another cleanup patch to simplify the current
+partition code.
 
-I believe that in most cases bpf handlers will handle ooms themselves,
-but because strictly speaking I don't have control over what bpf
-programs do or do not, the kernel should provide the fallback mechanism.
-This is a common practice with bpf, e.g. sched_ext falls back to
-CFS/EEVDF in case something is wrong.
+[1] https://lore.kernel.org/lkml/20251020112802.102451-1-gmonaco@redhat.com/
 
-Specifically to OOM case, I believe someone might want to use bpf
-programs just for monitoring/collecting some information, without
-trying to actually free some memory.
+Gabriele Monaco (2):
+  cgroup/cpuset: Rename update_unbound_workqueue_cpumask() to
+    update_isolation_cpumasks()
+  cgroup/cpuset: Fail if isolated and nohz_full don't leave any
+    housekeeping
 
->> The struct ops provides the bpf_handle_out_of_memory() callback,
->> which expected to return 1 if it was able to free some memory and 0
->> otherwise. If 1 is returned, the kernel also checks the bpf_memory_freed
->> field of the oom_control structure, which is expected to be set by
->> kfuncs suitable for releasing memory. If both are set, OOM is
->> considered handled, otherwise the next OOM handler in the chain
->> (e.g. BPF OOM attached to the parent cgroup or the in-kernel OOM
->> killer) is executed.
->
-> Could you explain why do we need both? Why is not bpf_memory_freed
-> return value sufficient?
+Waiman Long (1):
+  cgroup/cpuset: Globally track isolated_cpus update
 
-Strictly speaking, bpf_memory_freed should be enough, but because
-bpf programs have to return an int and there is no additional cost
-to add this option (pass to next or in-kernel oom handler), I thought
-it's not a bad idea. If you feel strongly otherwise, I can ignore
-the return value on rely on bpf_memory_freed only.
+ kernel/cgroup/cpuset.c | 139 +++++++++++++++++++++++++++++------------
+ 1 file changed, 100 insertions(+), 39 deletions(-)
 
->
->> The bpf_handle_out_of_memory() callback program is sleepable to enable
->> using iterators, e.g. cgroup iterators. The callback receives struct
->> oom_control as an argument, so it can determine the scope of the OOM
->> event: if this is a memcg-wide or system-wide OOM.
->
-> This could be tricky because it might introduce a subtle and hard to
-> debug lock dependency chain. lock(a); allocation() -> oom -> lock(a).
-> Sleepable locks should be only allowed in trylock mode.
+-- 
+2.51.1
 
-Agree, but it's achieved by controlling the context where oom can be
-declared (e.g. in bpf_psi case it's done from a work context).
-
->
->> The callback is executed just before the kernel victim task selection
->> algorithm, so all heuristics and sysctls like panic on oom,
->> sysctl_oom_kill_allocating_task and sysctl_oom_kill_allocating_task
->> are respected.
->
-> I guess you meant to say and sysctl_panic_on_oom.
-
-Yep, fixed.
->
->> BPF OOM struct ops provides the handle_cgroup_offline() callback
->> which is good for releasing struct ops if the corresponding cgroup
->> is gone.
->
-> What kind of synchronization is expected between handle_cgroup_offline
-> and bpf_handle_out_of_memory?
-
-You mean from a user's perspective? E.g. can these two callbacks run in
-parallel? Currently yes, but it's a good question, I haven't thought
-about it, maybe it's better to synchronize them.
-Internally both rely on srcu to pin bpf_oom_ops in memory.
-
->  
->> The struct ops also has the name field, which allows to define a
->> custom name for the implemented policy. It's printed in the OOM report
->> in the oom_policy=<policy> format. "default" is printed if bpf is not
->> used or policy name is not specified.
->
-> oom_handler seems like a better fit but nothing I would insist on. Also
-> I would just print it if there is an actual handler so that existing
-> users who do not use bpf oom killers do not need to change their
-> parsers.
-
-Sure, works for me too.
-
->
-> Other than that this looks reasonable to me.
-
-Sound great, thank you for taking a look!
 
