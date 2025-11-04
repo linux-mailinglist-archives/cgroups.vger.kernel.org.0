@@ -1,124 +1,150 @@
-Return-Path: <cgroups+bounces-11567-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11568-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5A20C30D93
-	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 13:00:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90BB5C31D66
+	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 16:29:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A98694E425B
-	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 12:00:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7515189FDCE
+	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 15:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85AC42DA765;
-	Tue,  4 Nov 2025 12:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7F2264FB5;
+	Tue,  4 Nov 2025 15:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="Rt4arT8K"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="komXz4R+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B0E242D87;
-	Tue,  4 Nov 2025 12:00:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A7E1C8606
+	for <cgroups@vger.kernel.org>; Tue,  4 Nov 2025 15:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762257619; cv=none; b=uYyq4Zt2Bvn8pP1ELGICwW/yNU6dF2bw6xdpCCnpP1sMlKFD4l7CV8dzMKI9hwQ4eswi7D8nIZ1V4BRGbvrudR9K+DFIQyJ8rrYQbVeih/it1YWGkd+8tfuPSjOe3EffvGgJg1zKbih6dIh95pxfvU1DgkIJilS1N68tA7Jh8Oo=
+	t=1762270172; cv=none; b=jIFi84nWv8qoajr3Zm8bsMhtTEqW3JDehzD7Ej7ZID0RAP3IzaAMjvxTLD2y8ot9mmwLYR4J4W0aUVkgASa2G7FBwZ8XTRMX33bWa+89tzOUnYKuc1Sarr6d239/ffV+pLlfzZ9AYD1Gb5mqWTOYuMfqzboPmb3bSbAYI1skZnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762257619; c=relaxed/simple;
-	bh=Ws6Yw4vhHdh8BJHsetlG4FaY/IjUPbpyuyYf2aLMOkU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=RKRFPUsQa3YxnAMS15/moNg1V9hZrUxVs0pORhYbLoQxgzdRlDUZ/Hid0+T0lFRI0xdYHhkwz+vKxPxOCCtu+Qz0cKd0bY53Fayc6njka88xSZRdHbqxNo/NsRGvxZ08kbsSmtqGSI6bbhYb3IRub13i50vJewc0wxu295epBeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=Rt4arT8K; arc=none smtp.client-ip=113.46.200.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=GWGWKICQYbA8YGXyToNZABRrr/HL05Pn+y+G4CDwib4=;
-	b=Rt4arT8KaGGJORIzSrG9G7VkvSKQdLjrARcaKIPiSAL2WjMy/iJ3Gw/e1AGBEV9uawwizOaRH
-	4xQ+7ngz5Wq9Jx4On7AwcoQE0EJLsBT4qx9vc3z+9rNlzp2I3kqNp6pH7yKqN5lbKnrok/ongo4
-	/D4nSWzNWIyjpmZ/WKoloyQ=
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4d16RW5Wm1z1prKB;
-	Tue,  4 Nov 2025 19:58:31 +0800 (CST)
-Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0F97D140156;
-	Tue,  4 Nov 2025 20:00:07 +0800 (CST)
-Received: from kwepemq200017.china.huawei.com (7.202.195.228) by
- dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 4 Nov 2025 20:00:06 +0800
-Received: from [10.67.110.40] (10.67.110.40) by kwepemq200017.china.huawei.com
- (7.202.195.228) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 4 Nov
- 2025 20:00:06 +0800
-Message-ID: <032f82e9-552a-4ad8-aff7-717e6f38af43@huawei.com>
-Date: Tue, 4 Nov 2025 20:00:05 +0800
+	s=arc-20240116; t=1762270172; c=relaxed/simple;
+	bh=8GNMbexAGe1nKqMzzLVClEkNd7j6DVDRkgcdOMp8ajQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iqo3CllkY/b9Q8yWn1hIGrvfd8by2SAxn5EdMUNIqlOmjlhdd7vFefHVW8Ls32abXPZvroQw8ZFQvyvPjza4XX93r05s/4mBMJQRd8qbjFKWgn8cp50qhqmTfhM0vEgwHgWAvVAkawe1HExtdl8Hyg/lBJxpCEyBTpo/xbV29S4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=komXz4R+; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2959197b68eso195855ad.1
+        for <cgroups@vger.kernel.org>; Tue, 04 Nov 2025 07:29:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1762270170; x=1762874970; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8GNMbexAGe1nKqMzzLVClEkNd7j6DVDRkgcdOMp8ajQ=;
+        b=komXz4R+41dzT/XSiGVn89xk28v1lVjn5ZUX4+R3Vry1fRFm0on3hzx47TViArkgsV
+         64igP4q74IHlHGz/e6WNOhIzO4NoXFVpzWZY5PT6xsU5aMt5urG5Tmgum3HpayNNAR7W
+         qMgE5xpOgsKWwcZiD/HiON3MyShaU7sEGd9iKE/mhwXRZZth+xK/SZMi8eNiy6M2u/JN
+         mu5mOt3DcNFAVsM5g7HUMIvWJa2e7uJ6jJGTK7/tdfqn1iuKZ03YmvQ6604ISnoZsI6F
+         EwQrKMGUNWm7ChO2CPB+o/p4InWbwf4bs/Ew38x9e09dHaSp+1R2iw0gthCKjcs7qe3Y
+         ZcNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762270170; x=1762874970;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8GNMbexAGe1nKqMzzLVClEkNd7j6DVDRkgcdOMp8ajQ=;
+        b=AzNmRxjwaYZyrH9QaNuc19j6ysoqQg5/RdaVMRwHS8OUYXVR4zBsBBu458aOz3/tQ6
+         +2kO6LD2+7M5E2BMeG5RseJSXEWOuOS1uYV4vZPz70HGcyE9xo8x35XO8JHubwLhH74J
+         Is28HmQt9xDKVEdMe+SqNI6MJWF/f3bbRaZTNpRqj4/i9Hv0d180QMBFlILu6fkSjFhS
+         9GlWpwpuYYyrMK1K9/rUw1WSuuXzuXVptbmIJWBLGeJ82q/E6v6KF6VYE9okgaaiAscr
+         rXqPt/P5ycF7PnHlW7ofXxNx0wgx18o8G456h7CKxa0z7F/qPsXlxdhoPBtFmmp6hxtY
+         EOPg==
+X-Forwarded-Encrypted: i=1; AJvYcCUUeoIduYfaWbQGj5Gdrh4fKyfBuyDFMx/bECHp9Ns3CwKcZVHbc9Xkdzm/1F5wjyQnQ0IfNCyc@vger.kernel.org
+X-Gm-Message-State: AOJu0YwvawN/vbfcvA1ldSGdcicD9pys6r6r2Vg6BLT/jApGhPILkub/
+	K6NG2xF09xMGOvdIcImRDzlQlg3YIeBS6vBbTCAauzeZ4lo5OzbOU/5TUKoOD9KQM0ExApj9yEj
+	sR+At1O+piqSA8GFZDMt7QLwBhDNyCjVnRjE211bq
+X-Gm-Gg: ASbGncv4eKgBeev8hOd+uLVvkA0ChpcBOuJ+cKH9yBlfMp/ANRiTrDedxpFxSTyBctW
+	SD5DPE9qgq7NhCpOmmYNoCyxvZUZ//ymvFXvnuRU5r2K8bVYNhY7E6uf/wiYS4jOpUqyeQM+wVO
+	Ua8d9GK5oTLF9I0dp92xkmUHKjIMd1VLWlLH53QawZAqxnGbvZYpZgkazGu9XcqbR3413VdMF+W
+	5xU6JKJzrYain2y/jHSUGgojT5aAIPKg6MFkcIaBXXPuHSAiaq7EYEL4sAM/mwR6FALQkBPEXwe
+	nc77B3k4aHreXQ2jsQ==
+X-Google-Smtp-Source: AGHT+IH4UAJnle8ScuJWqynVoBOWdaJhxSn6rAs6bqvidoqyAcb3/mjW+zeWXvxPSrbgnMnIJK48J8HHgBswCtIjjHM=
+X-Received: by 2002:a17:902:c412:b0:294:d42c:ca0f with SMTP id
+ d9443c01a7336-295fd276d54mr4970305ad.2.1762270169379; Tue, 04 Nov 2025
+ 07:29:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next RFC 0/2] cpuset: Add cpuset.mems.spread_page to
- cgroup v2
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-CC: <llong@redhat.com>, <tj@kernel.org>, <hannes@cmpxchg.org>,
-	<cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<lujialin4@huawei.com>
-References: <20250930093552.2842885-1-caixinchen1@huawei.com>
- <wpdddawlyxc27fkkkyfwfulq7zjqkxbqqe2upu4irqkcbzptft@jowwnu3yvgvg>
- <0d67adac-7ca2-4467-9d2e-049b62fcd7a2@huawei.com>
- <doalyrbxmhzm6vvkotoqganga7s375athzlsnbab343wadijb5@winjpuf5m7dd>
-Content-Language: en-US
-From: Cai Xinchen <caixinchen1@huawei.com>
-In-Reply-To: <doalyrbxmhzm6vvkotoqganga7s375athzlsnbab343wadijb5@winjpuf5m7dd>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemq200017.china.huawei.com (7.202.195.228)
+References: <cover.1760731772.git.ackerleytng@google.com> <5a4dfc265a46959953e6c24730d22584972b1179.1760731772.git.ackerleytng@google.com>
+ <aQnGJ5agTohMijj8@yzhao56-desk.sh.intel.com>
+In-Reply-To: <aQnGJ5agTohMijj8@yzhao56-desk.sh.intel.com>
+From: Vishal Annapurve <vannapurve@google.com>
+Date: Tue, 4 Nov 2025 07:29:14 -0800
+X-Gm-Features: AWmQ_bl_ayCFfhnMsugNyyrAbP6HSGsNUxGOugUtPG7U3zm3zMrinB0nHoIiMMY
+Message-ID: <CAGtprH9cajbGWrU9PAZWNKMeKJ9DyhoV=nEYk_DnYnR8Fyapww@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 11/37] KVM: guest_memfd: Add support for KVM_SET_MEMORY_ATTRIBUTES
+To: Yan Zhao <yan.y.zhao@intel.com>
+Cc: Ackerley Tng <ackerleytng@google.com>, cgroups@vger.kernel.org, kvm@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
+	akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de, 
+	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org, 
+	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com, 
+	david@redhat.com, dmatlack@google.com, erdemaktas@google.com, 
+	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com, hannes@cmpxchg.org, 
+	hch@infradead.org, hpa@zytor.com, hughd@google.com, ira.weiny@intel.com, 
+	isaku.yamahata@intel.com, jack@suse.cz, james.morse@arm.com, 
+	jarkko@kernel.org, jgg@ziepe.ca, jgowans@amazon.com, jhubbard@nvidia.com, 
+	jroedel@suse.de, jthoughton@google.com, jun.miao@intel.com, 
+	kai.huang@intel.com, keirf@google.com, kent.overstreet@linux.dev, 
+	liam.merwick@oracle.com, maciej.wieczor-retman@intel.com, 
+	mail@maciej.szmigiero.name, maobibo@loongson.cn, 
+	mathieu.desnoyers@efficios.com, maz@kernel.org, mhiramat@kernel.org, 
+	mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com, mingo@redhat.com, 
+	mlevitsk@redhat.com, mpe@ellerman.id.au, muchun.song@linux.dev, 
+	nikunj@amd.com, nsaenz@amazon.es, oliver.upton@linux.dev, palmer@dabbelt.com, 
+	pankaj.gupta@amd.com, paul.walmsley@sifive.com, pbonzini@redhat.com, 
+	peterx@redhat.com, pgonda@google.com, prsampat@amd.com, pvorel@suse.cz, 
+	qperret@google.com, richard.weiyang@gmail.com, rick.p.edgecombe@intel.com, 
+	rientjes@google.com, rostedt@goodmis.org, roypat@amazon.co.uk, 
+	rppt@kernel.org, seanjc@google.com, shakeel.butt@linux.dev, shuah@kernel.org, 
+	steven.price@arm.com, steven.sistare@oracle.com, suzuki.poulose@arm.com, 
+	tabba@google.com, tglx@linutronix.de, thomas.lendacky@amd.com, vbabka@suse.cz, 
+	viro@zeniv.linux.org.uk, vkuznets@redhat.com, wei.w.wang@intel.com, 
+	will@kernel.org, willy@infradead.org, wyihan@google.com, xiaoyao.li@intel.com, 
+	yilun.xu@intel.com, yuzenghui@huawei.com, zhiquan1.li@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Therefore, when setting memory_spread_page, I also need to perform a 
-drop cache operation.
-
-This way, there is no need to restart the service.
-
-
-Some previous ideas, such as using procfs or set_mempolicy to change the 
-mempolicy of
-
-non-current processes, could also achieve the goal after dropping the 
-cache. [1]
-
-
-Of course, changing the current memory distribution does not necessarily 
-require dropping
-
-the cache, but it will inevitably lead to a series of memory migrations.
-
-
-[1] 
-https://lore.kernel.org/all/20231122211200.31620-1-gregory.price@memverge.com/
-
-https://lore.kernel.org/all/ZWS19JFHm_LFSsFd@tiehlicka/
-
-On 11/3/2025 9:39 PM, Michal Koutný wrote:
-> On Mon, Oct 20, 2025 at 02:20:30PM +0800, Cai Xinchen <caixinchen1@huawei.com> wrote:
->> The MPOL_INTERLEAVE setting requires restarting the DataNode service.
->> In this scenario, the issue can be resolved by restarting the service,
-> \o/
+On Tue, Nov 4, 2025 at 1:27=E2=80=AFAM Yan Zhao <yan.y.zhao@intel.com> wrot=
+e:
 >
->> but I would prefer not to restart the DataNode service if possible,
->> as it would cause a period of service interruption.
-> AFAICS, the implementation of cpuset's spread page works only for new
-> allocations (filemap_alloc_folio_noprof/cpuset_do_page_mem_spread) and
-> there's no migraion in cpuset1_update_task_spread_flags(). So this
-> simple v1-like spreading would still require restart of the service.
->
-> (This challenge of dynamism also a reason why it's not ready for v2,
-> IMO.)
->
-> HTH,
-> Michal
+> On Fri, Oct 17, 2025 at 01:11:52PM -0700, Ackerley Tng wrote:
+> > For shared to private conversions, if refcounts on any of the folios
+> > within the range are elevated, fail the conversion with -EAGAIN.
+> >
+> > At the point of shared to private conversion, all folios in range are
+> > also unmapped. The filemap_invalidate_lock() is held, so no faulting
+> > can occur. Hence, from that point on, only transient refcounts can be
+> > taken on the folios associated with that guest_memfd.
+> >
+> > Hence, it is safe to do the conversion from shared to private.
+> >
+> > After conversion is complete, refcounts may become elevated, but that
+> > is fine since users of transient refcounts don't actually access
+> > memory.
+> >
+> > For private to shared conversions, there are no refcount checks. any
+> > transient refcounts are expected to drop their refcounts soon. The
+> > conversion process will spin waiting for these transient refcounts to
+> > go away.
+> Where's the code to spin?
+
+When dealing with 4k pages, I think we don't need to spin waiting for
+transient refcounts to drop, that logic will be needed when dealing
+with huge folios in order to restructure them while handling
+conversion. So the specific part can be safely dropped from the commit
+message.
 
