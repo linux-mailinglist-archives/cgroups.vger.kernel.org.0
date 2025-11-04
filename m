@@ -1,214 +1,788 @@
-Return-Path: <cgroups+bounces-11570-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11571-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A47EC32C29
-	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 20:22:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29326C32CE6
+	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 20:34:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAB6C18C0550
-	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 19:22:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 617DB3B6EA9
+	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 19:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE842D3A6A;
-	Tue,  4 Nov 2025 19:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD76284671;
+	Tue,  4 Nov 2025 19:32:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="et7KA9Nj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t0CQcccU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C78442949E0
-	for <cgroups@vger.kernel.org>; Tue,  4 Nov 2025 19:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC67E154BE2;
+	Tue,  4 Nov 2025 19:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762284136; cv=none; b=Jlk49G2Ys+D5op5q/V6WZGL7TZhNwtVw9H2PNEvjSDKnTtAHLIEUphE2xhFa1bSQDihGmxCBOv4crLbkZ71YYex3d22TP+DkMCekAF0pajfPWunpZ1upVNjcsQVpgYNl4ZFjjadTDvyysM4Ps3wlzVYRFSVcxVFcfySFFGNUp18=
+	t=1762284746; cv=none; b=VIqb+wfBj89PgqzBJhFZCN9DDdMHzPCWxtMdUVXtPoXlt4GIVR6MU1JA82zDEASW8lWnGfAisKtzmvWDrZCn9foRtLFtuUDOQFvw3E4qeFpMB1giGLHHDW7NT9jYdrSSgMsAjnEMqIaQpw0lSTBQSTix3WhqGoJb3/7EciYb60k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762284136; c=relaxed/simple;
-	bh=WbhMZPXHui4/68TSc/Fw9kwjHb3ZGo9L4Ezoe48x7ZI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OsNmeVG1xv4C28TJUsUF1b2rwZxY5RuUOTgC4XEw+qoJfIqWj6svsFmdE3Mi2OdHE0R4kLoWXlLD1SvCC8hTBgkIX7G8yye1aZnqjTuSgeZ33fm7CPNR7fH4E47tjVeaxf7/X+K3Wxe8UkafwrdouMom6Brmb2AoptU8sH6GY+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=et7KA9Nj; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b70fb7b54cdso260839566b.1
-        for <cgroups@vger.kernel.org>; Tue, 04 Nov 2025 11:22:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762284133; x=1762888933; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Ekbw2JAUHQcxMukPAtOc9LSVhS6WclBdtt7KL4LfcQ=;
-        b=et7KA9Nj65dv1MgQqmoM+bKuQryuUn3xss6RS8d7RwbO9+dc21CuHCv6iHuaEYPQYR
-         hLkIIgQ4a48bhi9EnuKUtm4BA5OKOilVtpwrq7LeA4HMyfDNs5EpwM9oVYJtkNgL5uXp
-         YKfEJONmr+h604CSj/FhxEb9WkDgMvMZm0os/YsKEjStc0fLrHiBjYH9BcZjnmUO2+pq
-         2OQch7LFSQzt+GfTtLa989ISTwJajZmvY3WdXwQSAqZRYqRGcGjbiIVp5TLMatgD0URx
-         8Jh81kT0Xx1/iYs3R/JzDWZCVfFPhKaJWvJZkPHiAoloDxtAmGjToGGAlrNSScVH1QqC
-         i+bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762284133; x=1762888933;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Ekbw2JAUHQcxMukPAtOc9LSVhS6WclBdtt7KL4LfcQ=;
-        b=VeyPREzj0jZ5ixkWdv25dHDdEjYigml/gWn0IBLRWNkfhwEG0SPYyHSt1WjW8AmB00
-         WIEBjPKtPXLUcPN882Vuk1TtaRAhEN2bzgcXkkqQ3T579WSRoA7EkNPaLqQkxWQdMJ7T
-         A0UZDlt3IPMgRl6m14p9fcrvVbWBw+rD5oYgz8bup8IvmIXDrOtlIFWHjSHWP8MzIprY
-         NPLzrAqsAJgTVH13OU2ukxNc8O5mfD7uXKVSbVTFcX6sHaTnehQiZuaKS9IDM3JGXYLp
-         McsSsJh7EQXmWGnJchatxKxYGk8McvgnGKxrifEgqta6cxX4NWNHoD54HKkEJiSr6NdA
-         viaw==
-X-Forwarded-Encrypted: i=1; AJvYcCXmgdqRZBWxoYEDVwdWC9jaek/eybfHlt8Of69+CkKcKxnxH/GKKkf+TLDmwR4oakl8kK9BoW8/@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGU+dXqfEdmZNum3cUZ2xbEiRfg5mDdGoMRE6Wzzhbe7iLge7I
-	zdNEKrdGU9P+Y66H0aQ5FRc16XP3+rsSnJ3NpjjyzXIP+94VsnsWazObNKNslTKm0Rc=
-X-Gm-Gg: ASbGncsX6fhJmsoSVM+XMGesiDGSzeqAyUj2f1H1KKMfdVVal5dF+BeSkMkkBOceSxz
-	kSlNhHIuxyfeO1XdonCY30qtPbznFGTqHJ2WMkY+dsTtC5oW4fCTdSyjYB+3MD6FCEDVrDx5azl
-	Uzmo555r4AoS8b54Wrroew5mIOLGGX+2xaJQu+V694Z+cDGC9MJNBlKeKizCFAOCoTcySi1khrB
-	W1o7ak3lNN/a0PcoclKMLRNAhgPtoi8qpdNCHDHB5DU+aedSAY/ztRG9JXRGYoL1yMWsl3Xdfhw
-	GW1kFy94u19r0y/nJS5RoGsZVuxJXHW3Fbi1rNV8BuUjQmHK96yNGVFkK18KUM8ThGtLAobnjQO
-	vqMTbjRrKlIphcLabRHEiGbaaLYkinwwVEHZYpUBn65Dl7CoqMJiutvwdpbicoLEjuXbjIJjRm4
-	PfgIfQImPw6DHH2A==
-X-Google-Smtp-Source: AGHT+IFik8SalFdLc/bnmoU3LnAmqT4cTwgJ3PvSTxEZQ+CS4V8zLsokvxKnUaET/LmVBxkwZrJpyw==
-X-Received: by 2002:a17:907:9721:b0:b6d:5bc1:4859 with SMTP id a640c23a62f3a-b72653cb70amr25182666b.29.1762284133077;
-        Tue, 04 Nov 2025 11:22:13 -0800 (PST)
-Received: from localhost (109-81-31-109.rct.o2.cz. [109.81.31.109])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b723fe3902bsm285399366b.63.2025.11.04.11.22.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Nov 2025 11:22:12 -0800 (PST)
-Date: Tue, 4 Nov 2025 20:22:06 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
-Message-ID: <aQpSXgUL1fUzRgyL@tiehlicka>
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-7-roman.gushchin@linux.dev>
- <aQR7HIiQ82Ye2UfA@tiehlicka>
- <875xbsglra.fsf@linux.dev>
- <aQj7uRjz668NNrm_@tiehlicka>
- <87a512muze.fsf@linux.dev>
- <aQm2zqmD9mHE1psg@tiehlicka>
- <87h5v93bte.fsf@linux.dev>
+	s=arc-20240116; t=1762284746; c=relaxed/simple;
+	bh=JH+mRR7TUwL/CNHR69rKgSAsgDxkFWceh6oFwY6kHb4=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=gpB4/oEhxNDc1rWNjcnyQ5EwBZ7GjdxPM1iocqGLdPgfDqyf5CZ1N0V3Y9hG71FcOPtZ5O1v5v5emWLwWRyYYKgnxqV6livUbZLUNhUD50ZzN78jQclKrZTFFtXmTyIstrneAvLXQL3F78CjP2fbFgAfd9hNUn9fJctgCOVVceY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t0CQcccU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 461D6C4CEF8;
+	Tue,  4 Nov 2025 19:32:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762284745;
+	bh=JH+mRR7TUwL/CNHR69rKgSAsgDxkFWceh6oFwY6kHb4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=t0CQcccUInDc8GsYkUbjO25f/YFmFnMXZESck3y87ha9teTfheMVFLkN45U9OFeYT
+	 XH85Zed1hsV9joKh/bb1XolFRYgquSReDEb5qy2teynH1EiKRTukTPsve2bD+MRLV7
+	 Ef2IF/YeytwOgiINqmPBWm0mG8KzmEii5UlUh2CXmtjGw4y6QUV4TXt6g0hAuV5HjY
+	 kSYRcNTzJnV7ePwlpasDkq9zJQCqqXJrQy8gIv0uE9V7slnBQ+AJba99bakgQ1ukG/
+	 TlJymmrqIDR+iE65o4tkLAFzTl9ThtO/AVYFdgBB+pUmsnbAxm/ujEvja/18HwSRPX
+	 ak3H8WzJxHpNg==
+Date: Tue, 04 Nov 2025 09:32:24 -1000
+Message-ID: <d03d2a6e0d0a09e9da6a54370f253c00@kernel.org>
+From: Tejun Heo <tj@kernel.org>
+To: Calvin Owens <calvin@wbinvd.org>
+Cc: linux-kernel@vger.kernel.org, Dan Schatzberg <dschatzberg@meta.com>, Peter Zijlstra <peterz@infradead.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal Koutný <mkoutny@suse.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, cgroups@vger.kernel.org, linux-rt-devel@lists.linux.dev
+Subject: [PATCH cgroup/for-6.19 1/2] cgroup: Convert css_set_lock from spinlock_t to raw_spinlock_t
+In-Reply-To: <20251104181114.489391-1-calvin@wbinvd.org>
+References: <20251104181114.489391-1-calvin@wbinvd.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h5v93bte.fsf@linux.dev>
 
-On Tue 04-11-25 10:14:05, Roman Gushchin wrote:
-> Michal Hocko <mhocko@suse.com> writes:
-> 
-> > On Mon 03-11-25 17:45:09, Roman Gushchin wrote:
-> >> Michal Hocko <mhocko@suse.com> writes:
-> >> 
-> >> > On Sun 02-11-25 13:36:25, Roman Gushchin wrote:
-> >> >> Michal Hocko <mhocko@suse.com> writes:
-> > [...]
-> >> > No, I do not feel strongly one way or the other but I would like to
-> >> > understand thinking behind that. My slight preference would be to have a
-> >> > single return status that clearly describe the intention. If you want to
-> >> > have more flexible chaining semantic then an enum { IGNORED, HANDLED,
-> >> > PASS_TO_PARENT, ...} would be both more flexible, extensible and easier
-> >> > to understand.
-> >> 
-> >> The thinking is simple:
-> >> 1) Most users will have a single global bpf oom policy, which basically
-> >> replaces the in-kernel oom killer.
-> >> 2) If there are standalone containers, they might want to do the same on
-> >> their level. And the "host" system doesn't directly control it.
-> >> 3) If for some reason the inner oom handler fails to free up some
-> >> memory, there are two potential fallback options: call the in-kernel oom
-> >> killer for that memory cgroup or call an upper level bpf oom killer, if
-> >> there is one.
-> >> 
-> >> I think the latter is more logical and less surprising. Imagine you're
-> >> running multiple containers and some of them implement their own bpf oom
-> >> logic and some don't. Why would we treat them differently if their bpf
-> >> logic fails?
-> >
-> > I think both approaches are valid and it should be the actual handler to
-> > tell what to do next. If the handler would prefer the in-kernel fallback
-> > it should be able to enforce that rather than a potentially unknown bpf
-> > handler up the chain.
-> 
-> The counter-argument is that cgroups are hierarchical and higher level
-> cgroups should be able to enforce the desired behavior for their
-> sub-trees. I'm not sure what's more important here and have to think
-> more about it.
+Convert css_set_lock from spinlock_t to raw_spinlock_t to address RT-related
+scheduling constraints. cgroup_task_dead() is called from finish_task_switch()
+which cannot schedule even in PREEMPT_RT kernels, requiring css_set_lock to be
+a raw spinlock to avoid sleeping in a non-preemptible context.
 
-Right and they can enforce that through their limits - hence oom.
+Fixes: d245698d727a ("cgroup: Defer task cgroup unlink until after the task is done switching out")
+Reported-by: Calvin Owens <calvin@wbinvd.org>
+Link: https://lore.kernel.org/r/20251104181114.489391-1-calvin@wbinvd.org
+Signed-off-by: Tejun Heo <tj@kernel.org>
+ kernel/cgroup/cgroup.c          |  130 ++++++++++++++++++++--------------------
+ kernel/cgroup/debug.c           |   12 +--
+ kernel/cgroup/freezer.c         |   16 ++--
+ kernel/cgroup/namespace.c       |    4 -
+ 7 files changed, 91 insertions(+), 89 deletions(-)
 
-> Do you have an example when it might be important for container to not
-> pass to a higher level bpf handler?
-
-Nothing really specific. I still trying to wrap my head around what
-level of flexibility is necessary here. My initial thoughts would be
-just deal with it in the scope of the bpf handler and fallback to the
-kernel implementation if it cannot deal with the situation. Since you
-brought that up you made me think.
-
-I know that we do not provide userspace like no-regression policy to BPF
-programs but it would be still good to have a way to add new potential
-fallback policies without breaking existing handlers.
-
-> >> Re a single return value: I can absolutely specify return values as an
-> >> enum, my point is that unlike the kernel code we can't fully trust the
-> >> value returned from a bpf program, this is why the second check is in
-> >> place.
-> >
-> > I do not understand this. Could you elaborate? Why we cannot trust the
-> > return value but we can trust a combination of the return value and a
-> > state stored in a helper structure?
-> 
-> Imagine bpf program which does nothing and simple returns 1. Imagine
-> it's loaded as a system-wide oom handler. This will effectively disable
-> the oom killer and lead to a potential deadlock on memory.
-> But it's a perfectly valid bpf program.
-> This is something I want to avoid (and it's a common practice with other
-> bpf programs).
-> 
-> What I do I also rely on the value of the oom control's field, which is
-> not accessible to the bpf program for write directly, but can be changed
-> by calling certain helper functions, e.g. bpf_oom_kill_process.
-
-OK, now I can see your point. You want to have a line of defense from
-trusted BPF facing interface. This makes sense to me. Maybe it would be
-good to call that out more explicitly. Something like 
-The BPF OOM infrastructure only trusts BPF handlers which are using pre
-selected functions to free up memory e.g. bpf_oom_kill_process. Those
-will set an internal state not available to those handlers directly.
-BPF handler return value is ignored if that state is not set.
-
-I would rather call this differently to freed_memory as the actual
-memory might be freed asynchronously (e.g. oom_reaper) and this is more
-about conformity/trust than actual physical memory being freed. I do not
-care much about naming as long as this is clearly document though.
-Including set of functions that are forming that prescribed API.
-
-[...]
-> > OK. All I am trying to say is that only safe sleepable locks are
-> > trylocks and that should be documented because I do not think it can be
-> > enforced
-> 
-> It can! Not directly, but by controlling which kfuncs/helpers are
-> available to bpf programs.
-
-OK, I see. This is better than relying only on having this documented.
-
--- 
-Michal Hocko
-SUSE Labs
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -76,7 +76,7 @@ enum cgroup_lifetime_events {
+ extern struct file_system_type cgroup_fs_type;
+ extern struct cgroup_root cgrp_dfl_root;
+ extern struct css_set init_css_set;
+-extern spinlock_t css_set_lock;
++extern raw_spinlock_t css_set_lock;
+ extern struct blocking_notifier_head cgroup_lifetime_notifier;
+ 
+ #define SUBSYS(_x) extern struct cgroup_subsys _x ## _cgrp_subsys;
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -208,9 +208,9 @@ static inline void put_css_set(struct cs
+ 	if (refcount_dec_not_one(&cset->refcount))
+ 		return;
+ 
+-	spin_lock_irqsave(&css_set_lock, flags);
++	raw_spin_lock_irqsave(&css_set_lock, flags);
+ 	put_css_set_locked(cset);
+-	spin_unlock_irqrestore(&css_set_lock, flags);
++	raw_spin_unlock_irqrestore(&css_set_lock, flags);
+ }
+ 
+ /*
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -73,9 +73,9 @@ int cgroup_attach_task_all(struct task_s
+ 	for_each_root(root) {
+ 		struct cgroup *from_cgrp;
+ 
+-		spin_lock_irq(&css_set_lock);
++		raw_spin_lock_irq(&css_set_lock);
+ 		from_cgrp = task_cgroup_from_root(from, root);
+-		spin_unlock_irq(&css_set_lock);
++		raw_spin_unlock_irq(&css_set_lock);
+ 
+ 		retval = cgroup_attach_task(from_cgrp, tsk, false);
+ 		if (retval)
+@@ -121,10 +121,10 @@ int cgroup_transfer_tasks(struct cgroup
+ 	cgroup_attach_lock(CGRP_ATTACH_LOCK_GLOBAL, NULL);
+ 
+ 	/* all tasks in @from are being moved, all csets are source */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	list_for_each_entry(link, &from->cset_links, cset_link)
+ 		cgroup_migrate_add_src(link->cset, to, &mgctx);
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	ret = cgroup_migrate_prepare_dst(&mgctx);
+ 	if (ret)
+@@ -1308,11 +1308,11 @@ struct cgroup *task_get_cgroup1(struct t
+ 			continue;
+ 		if (root->hierarchy_id != hierarchy_id)
+ 			continue;
+-		spin_lock_irqsave(&css_set_lock, flags);
++		raw_spin_lock_irqsave(&css_set_lock, flags);
+ 		cgrp = task_cgroup_from_root(tsk, root);
+ 		if (!cgrp || !cgroup_tryget(cgrp))
+ 			cgrp = ERR_PTR(-ENOENT);
+-		spin_unlock_irqrestore(&css_set_lock, flags);
++		raw_spin_unlock_irqrestore(&css_set_lock, flags);
+ 		break;
+ 	}
+ 	rcu_read_unlock();
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -83,13 +83,15 @@
+  * hierarchy must be performed while holding it.
+  *
+  * css_set_lock protects task->cgroups pointer, the list of css_set
+- * objects, and the chain of tasks off each css_set.
++ * objects, and the chain of tasks off each css_set. This needs to be
++ * a raw spinlock as cgroup_task_dead() which grabs the lock is called
++ * from finish_task_switch() which can't schedule even in RT.
+  *
+  * These locks are exported if CONFIG_PROVE_RCU so that accessors in
+  * cgroup.h can use them for lockdep annotations.
+  */
+ DEFINE_MUTEX(cgroup_mutex);
+-DEFINE_SPINLOCK(css_set_lock);
++DEFINE_RAW_SPINLOCK(css_set_lock);
+ 
+ #if (defined CONFIG_PROVE_RCU || defined CONFIG_LOCKDEP)
+ EXPORT_SYMBOL_GPL(cgroup_mutex);
+@@ -666,9 +668,9 @@ int cgroup_task_count(const struct cgrou
+ {
+ 	int count;
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	count = __cgroup_task_count(cgrp);
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	return count;
+ }
+@@ -1236,11 +1238,11 @@ static struct css_set *find_css_set(stru
+ 
+ 	/* First see if we already have a cgroup group that matches
+ 	 * the desired set */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	cset = find_existing_css_set(old_cset, cgrp, template);
+ 	if (cset)
+ 		get_css_set(cset);
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	if (cset)
+ 		return cset;
+@@ -1272,7 +1274,7 @@ static struct css_set *find_css_set(stru
+ 	 * find_existing_css_set() */
+ 	memcpy(cset->subsys, template, sizeof(cset->subsys));
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	/* Add reference counts and links from the new css_set. */
+ 	list_for_each_entry(link, &old_cset->cgrp_links, cgrp_link) {
+ 		struct cgroup *c = link->cgrp;
+@@ -1298,7 +1300,7 @@ static struct css_set *find_css_set(stru
+ 		css_get(css);
+ 	}
+ 
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	/*
+ 	 * If @cset should be threaded, look up the matching dom_cset and
+@@ -1315,11 +1317,11 @@ static struct css_set *find_css_set(stru
+ 			return NULL;
+ 		}
+ 
+-		spin_lock_irq(&css_set_lock);
++		raw_spin_lock_irq(&css_set_lock);
+ 		cset->dom_cset = dcset;
+ 		list_add_tail(&cset->threaded_csets_node,
+ 			      &dcset->threaded_csets);
+-		spin_unlock_irq(&css_set_lock);
++		raw_spin_unlock_irq(&css_set_lock);
+ 	}
+ 
+ 	return cset;
+@@ -1412,7 +1414,7 @@ static void cgroup_destroy_root(struct c
+ 	 * Release all the links from cset_links to this hierarchy's
+ 	 * root cgroup
+ 	 */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 
+ 	list_for_each_entry_safe(link, tmp_link, &cgrp->cset_links, cset_link) {
+ 		list_del(&link->cset_link);
+@@ -1420,7 +1422,7 @@ static void cgroup_destroy_root(struct c
+ 		kfree(link);
+ 	}
+ 
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	WARN_ON_ONCE(list_empty(&root->root_list));
+ 	list_del_rcu(&root->root_list);
+@@ -1917,7 +1919,7 @@ int rebind_subsystems(struct cgroup_root
+ 		rcu_assign_pointer(dcgrp->subsys[ssid], css);
+ 		ss->root = dst_root;
+ 
+-		spin_lock_irq(&css_set_lock);
++		raw_spin_lock_irq(&css_set_lock);
+ 		css->cgroup = dcgrp;
+ 		WARN_ON(!list_empty(&dcgrp->e_csets[ss->id]));
+ 		list_for_each_entry_safe(cset, cset_pos, &scgrp->e_csets[ss->id],
+@@ -1935,7 +1937,7 @@ int rebind_subsystems(struct cgroup_root
+ 				if (it->cset_head == &scgrp->e_csets[ss->id])
+ 					it->cset_head = &dcgrp->e_csets[ss->id];
+ 		}
+-		spin_unlock_irq(&css_set_lock);
++		raw_spin_unlock_irq(&css_set_lock);
+ 
+ 		/* default hierarchy doesn't enable controllers by default */
+ 		dst_root->subsys_mask |= 1 << ssid;
+@@ -1971,10 +1973,10 @@ int cgroup_show_path(struct seq_file *sf
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	ns_cgroup = current_cgns_cgroup_from_root(kf_cgroot);
+ 	len = kernfs_path_from_node(kf_node, ns_cgroup->kn, buf, PATH_MAX);
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	if (len == -E2BIG)
+ 		len = -ERANGE;
+@@ -2230,13 +2232,13 @@ int cgroup_setup_root(struct cgroup_root
+ 	 * Link the root cgroup in this hierarchy into all the css_set
+ 	 * objects.
+ 	 */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	hash_for_each(css_set_table, i, cset, hlist) {
+ 		link_css_set(&tmp_links, cset, root_cgrp);
+ 		if (css_set_populated(cset))
+ 			cgroup_update_populated(root_cgrp, true);
+ 	}
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	BUG_ON(!list_empty(&root_cgrp->self.children));
+ 	BUG_ON(atomic_read(&root->nr_cgrps) != 1);
+@@ -2280,11 +2282,11 @@ int cgroup_do_get_tree(struct fs_context
+ 		struct cgroup *cgrp;
+ 
+ 		cgroup_lock();
+-		spin_lock_irq(&css_set_lock);
++		raw_spin_lock_irq(&css_set_lock);
+ 
+ 		cgrp = cset_cgroup_from_root(ctx->ns->root_cset, ctx->root);
+ 
+-		spin_unlock_irq(&css_set_lock);
++		raw_spin_unlock_irq(&css_set_lock);
+ 		cgroup_unlock();
+ 
+ 		nsdentry = kernfs_node_dentry(cgrp->kn, sb);
+@@ -2496,11 +2498,11 @@ int cgroup_path_ns(struct cgroup *cgrp,
+ 	int ret;
+ 
+ 	cgroup_lock();
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 
+ 	ret = cgroup_path_ns_locked(cgrp, buf, buflen, ns);
+ 
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 	cgroup_unlock();
+ 
+ 	return ret;
+@@ -2719,7 +2721,7 @@ static int cgroup_migrate_execute(struct
+ 	 * the new cgroup.  There are no failure cases after here, so this
+ 	 * is the commit point.
+ 	 */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	list_for_each_entry(cset, &tset->src_csets, mg_node) {
+ 		list_for_each_entry_safe(task, tmp_task, &cset->mg_tasks, cg_list) {
+ 			struct css_set *from_cset = task_css_set(task);
+@@ -2739,7 +2741,7 @@ static int cgroup_migrate_execute(struct
+ 
+ 		}
+ 	}
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	/*
+ 	 * Migration is committed, all target tasks are now on dst_csets.
+@@ -2772,13 +2774,13 @@ out_cancel_attach:
+ 		} while_each_subsys_mask();
+ 	}
+ out_release_tset:
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	list_splice_init(&tset->dst_csets, &tset->src_csets);
+ 	list_for_each_entry_safe(cset, tmp_cset, &tset->src_csets, mg_node) {
+ 		list_splice_tail_init(&cset->mg_tasks, &cset->tasks);
+ 		list_del_init(&cset->mg_node);
+ 	}
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	/*
+ 	 * Re-initialize the cgroup_taskset structure in case it is reused
+@@ -2836,7 +2838,7 @@ void cgroup_migrate_finish(struct cgroup
+ 
+ 	lockdep_assert_held(&cgroup_mutex);
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 
+ 	list_for_each_entry_safe(cset, tmp_cset, &mgctx->preloaded_src_csets,
+ 				 mg_src_preload_node) {
+@@ -2856,7 +2858,7 @@ void cgroup_migrate_finish(struct cgroup
+ 		put_css_set_locked(cset);
+ 	}
+ 
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ }
+ 
+ /**
+@@ -2999,14 +3001,14 @@ int cgroup_migrate(struct task_struct *l
+ 	 * section to prevent tasks from being freed while taking the snapshot.
+ 	 * spin_lock_irq() implies RCU critical section here.
+ 	 */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	task = leader;
+ 	do {
+ 		cgroup_migrate_add_task(task, mgctx);
+ 		if (!threadgroup)
+ 			break;
+ 	} while_each_thread(leader, task);
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	return cgroup_migrate_execute(mgctx);
+ }
+@@ -3027,14 +3029,14 @@ int cgroup_attach_task(struct cgroup *ds
+ 	int ret = 0;
+ 
+ 	/* look up all src csets */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	task = leader;
+ 	do {
+ 		cgroup_migrate_add_src(task_css_set(task), dst_cgrp, &mgctx);
+ 		if (!threadgroup)
+ 			break;
+ 	} while_each_thread(leader, task);
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	/* prepare dst csets and commit */
+ 	ret = cgroup_migrate_prepare_dst(&mgctx);
+@@ -3191,7 +3193,7 @@ static int cgroup_update_dfl_csses(struc
+ 	lockdep_assert_held(&cgroup_mutex);
+ 
+ 	/* look up all csses currently attached to @cgrp's subtree */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	cgroup_for_each_live_descendant_pre(dsct, d_css, cgrp) {
+ 		struct cgrp_cset_link *link;
+ 
+@@ -3207,7 +3209,7 @@ static int cgroup_update_dfl_csses(struc
+ 		list_for_each_entry(link, &dsct->cset_links, cset_link)
+ 			cgroup_migrate_add_src(link->cset, dsct, &mgctx);
+ 	}
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	/*
+ 	 * We need to write-lock threadgroup_rwsem while migrating tasks.
+@@ -3229,7 +3231,7 @@ static int cgroup_update_dfl_csses(struc
+ 	if (ret)
+ 		goto out_finish;
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	list_for_each_entry(src_cset, &mgctx.preloaded_src_csets,
+ 			    mg_src_preload_node) {
+ 		struct task_struct *task, *ntask;
+@@ -3238,7 +3240,7 @@ static int cgroup_update_dfl_csses(struc
+ 		list_for_each_entry_safe(task, ntask, &src_cset->tasks, cg_list)
+ 			cgroup_migrate_add_task(task, &mgctx);
+ 	}
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	ret = cgroup_migrate_execute(&mgctx);
+ out_finish:
+@@ -4186,9 +4188,9 @@ static void __cgroup_kill(struct cgroup
+ 
+ 	lockdep_assert_held(&cgroup_mutex);
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	cgrp->kill_seq++;
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	css_task_iter_start(&cgrp->self, CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED, &it);
+ 	while ((task = css_task_iter_next(&it))) {
+@@ -5146,7 +5148,7 @@ void css_task_iter_start(struct cgroup_s
+ 
+ 	memset(it, 0, sizeof(*it));
+ 
+-	spin_lock_irqsave(&css_set_lock, irqflags);
++	raw_spin_lock_irqsave(&css_set_lock, irqflags);
+ 
+ 	it->ss = css->ss;
+ 	it->flags = flags;
+@@ -5160,7 +5162,7 @@ void css_task_iter_start(struct cgroup_s
+ 
+ 	css_task_iter_advance(it);
+ 
+-	spin_unlock_irqrestore(&css_set_lock, irqflags);
++	raw_spin_unlock_irqrestore(&css_set_lock, irqflags);
+ }
+ 
+ /**
+@@ -5180,7 +5182,7 @@ struct task_struct *css_task_iter_next(s
+ 		it->cur_task = NULL;
+ 	}
+ 
+-	spin_lock_irqsave(&css_set_lock, irqflags);
++	raw_spin_lock_irqsave(&css_set_lock, irqflags);
+ 
+ 	/* @it may be half-advanced by skips, finish advancing */
+ 	if (it->flags & CSS_TASK_ITER_SKIPPED)
+@@ -5193,7 +5195,7 @@ struct task_struct *css_task_iter_next(s
+ 		css_task_iter_advance(it);
+ 	}
+ 
+-	spin_unlock_irqrestore(&css_set_lock, irqflags);
++	raw_spin_unlock_irqrestore(&css_set_lock, irqflags);
+ 
+ 	return it->cur_task;
+ }
+@@ -5209,10 +5211,10 @@ void css_task_iter_end(struct css_task_i
+ 	unsigned long irqflags;
+ 
+ 	if (it->cur_cset) {
+-		spin_lock_irqsave(&css_set_lock, irqflags);
++		raw_spin_lock_irqsave(&css_set_lock, irqflags);
+ 		list_del(&it->iters_node);
+ 		put_css_set_locked(it->cur_cset);
+-		spin_unlock_irqrestore(&css_set_lock, irqflags);
++		raw_spin_unlock_irqrestore(&css_set_lock, irqflags);
+ 	}
+ 
+ 	if (it->cur_dcset)
+@@ -5378,9 +5380,9 @@ static ssize_t __cgroup_procs_write(stru
+ 		goto out_unlock;
+ 
+ 	/* find the source cgroup */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	src_cgrp = task_cgroup_from_root(task, &cgrp_dfl_root);
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	/*
+ 	 * Process and thread migrations follow same delegation rule. Check
+@@ -5667,11 +5669,11 @@ static void css_release_work_fn(struct w
+ 
+ 		css_rstat_flush(&cgrp->self);
+ 
+-		spin_lock_irq(&css_set_lock);
++		raw_spin_lock_irq(&css_set_lock);
+ 		for (tcgrp = cgroup_parent(cgrp); tcgrp;
+ 		     tcgrp = cgroup_parent(tcgrp))
+ 			tcgrp->nr_dying_descendants--;
+-		spin_unlock_irq(&css_set_lock);
++		raw_spin_unlock_irq(&css_set_lock);
+ 
+ 		/*
+ 		 * There are two control paths which try to determine
+@@ -5922,7 +5924,7 @@ static struct cgroup *cgroup_create(stru
+ 		goto out_psi_free;
+ 
+ 	/* allocation complete, commit to creation */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	for (i = 0; i < level; i++) {
+ 		tcgrp = cgrp->ancestors[i];
+ 		tcgrp->nr_descendants++;
+@@ -5935,7 +5937,7 @@ static struct cgroup *cgroup_create(stru
+ 		if (cgrp->freezer.e_freeze)
+ 			tcgrp->freezer.nr_frozen_descendants++;
+ 	}
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	list_add_tail_rcu(&cgrp->self.sibling, &cgroup_parent(cgrp)->self.children);
+ 	atomic_inc(&root->nr_cgrps);
+@@ -6181,10 +6183,10 @@ static int cgroup_destroy_locked(struct
+ 	 */
+ 	cgrp->self.flags &= ~CSS_ONLINE;
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	list_for_each_entry(link, &cgrp->cset_links, cset_link)
+ 		link->cset->dead = true;
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	/* initiate massacre of all css's */
+ 	for_each_css(css, ssid, cgrp)
+@@ -6197,7 +6199,7 @@ static int cgroup_destroy_locked(struct
+ 	if (cgroup_is_threaded(cgrp))
+ 		parent->nr_threaded_children--;
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	for (tcgrp = parent; tcgrp; tcgrp = cgroup_parent(tcgrp)) {
+ 		tcgrp->nr_descendants--;
+ 		tcgrp->nr_dying_descendants++;
+@@ -6208,7 +6210,7 @@ static int cgroup_destroy_locked(struct
+ 		if (test_bit(CGRP_FROZEN, &cgrp->flags))
+ 			tcgrp->freezer.nr_frozen_descendants--;
+ 	}
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	cgroup1_check_for_release(parent);
+ 
+@@ -6557,7 +6559,7 @@ int proc_cgroup_show(struct seq_file *m,
+ 		goto out;
+ 
+ 	rcu_read_lock();
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 
+ 	for_each_root(root) {
+ 		struct cgroup_subsys *ss;
+@@ -6612,7 +6614,7 @@ int proc_cgroup_show(struct seq_file *m,
+ 
+ 	retval = 0;
+ out_unlock:
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 	rcu_read_unlock();
+ 	kfree(buf);
+ out:
+@@ -6700,14 +6702,14 @@ static int cgroup_css_set_fork(struct ke
+ 
+ 	cgroup_threadgroup_change_begin(current);
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	cset = task_css_set(current);
+ 	get_css_set(cset);
+ 	if (kargs->cgrp)
+ 		kargs->kill_seq = kargs->cgrp->kill_seq;
+ 	else
+ 		kargs->kill_seq = cset->dfl_cgrp->kill_seq;
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	if (!(kargs->flags & CLONE_INTO_CGROUP)) {
+ 		kargs->cset = cset;
+@@ -6897,7 +6899,7 @@ void cgroup_post_fork(struct task_struct
+ 	cset = kargs->cset;
+ 	kargs->cset = NULL;
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 
+ 	/* init tasks are special, only link regular threads */
+ 	if (likely(child->pid)) {
+@@ -6945,7 +6947,7 @@ void cgroup_post_fork(struct task_struct
+ 		kill = kargs->kill_seq != cgrp_kill_seq;
+ 	}
+ 
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	/*
+ 	 * Call ss->fork().  This must happen after @child is linked on
+@@ -6995,7 +6997,7 @@ void cgroup_task_dead(struct task_struct
+ 	struct css_set *cset;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&css_set_lock, flags);
++	raw_spin_lock_irqsave(&css_set_lock, flags);
+ 
+ 	WARN_ON_ONCE(list_empty(&tsk->cg_list));
+ 	cset = task_css_set(tsk);
+@@ -7013,7 +7015,7 @@ void cgroup_task_dead(struct task_struct
+ 		     test_bit(CGRP_FREEZE, &task_dfl_cgroup(tsk)->flags)))
+ 		cgroup_update_frozen(task_dfl_cgroup(tsk));
+ 
+-	spin_unlock_irqrestore(&css_set_lock, flags);
++	raw_spin_unlock_irqrestore(&css_set_lock, flags);
+ }
+ 
+ void cgroup_task_release(struct task_struct *task)
+@@ -7031,10 +7033,10 @@ void cgroup_task_free(struct task_struct
+ 	struct css_set *cset = task_css_set(task);
+ 
+ 	if (!list_empty(&task->cg_list)) {
+-		spin_lock_irq(&css_set_lock);
++		raw_spin_lock_irq(&css_set_lock);
+ 		css_set_skip_task_iters(task_css_set(task), task);
+ 		list_del_init(&task->cg_list);
+-		spin_unlock_irq(&css_set_lock);
++		raw_spin_unlock_irq(&css_set_lock);
+ 	}
+ 
+ 	put_css_set(cset);
+--- a/kernel/cgroup/debug.c
++++ b/kernel/cgroup/debug.c
+@@ -48,7 +48,7 @@ static int current_css_set_read(struct s
+ 	if (!cgroup_kn_lock_live(of->kn, false))
+ 		return -ENODEV;
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	cset = task_css_set(current);
+ 	refcnt = refcount_read(&cset->refcount);
+ 	seq_printf(seq, "css_set %pK %d", cset, refcnt);
+@@ -66,7 +66,7 @@ static int current_css_set_read(struct s
+ 		seq_printf(seq, "%2d: %-4s\t- %p[%d]\n", ss->id, ss->name,
+ 			  css, css->id);
+ 	}
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 	cgroup_kn_unlock(of->kn);
+ 	return 0;
+ }
+@@ -92,7 +92,7 @@ static int current_css_set_cg_links_read
+ 	if (!name_buf)
+ 		return -ENOMEM;
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	cset = task_css_set(current);
+ 	list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
+ 		struct cgroup *c = link->cgrp;
+@@ -101,7 +101,7 @@ static int current_css_set_cg_links_read
+ 		seq_printf(seq, "Root %d group %s\n",
+ 			   c->root->hierarchy_id, name_buf);
+ 	}
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 	kfree(name_buf);
+ 	return 0;
+ }
+@@ -113,7 +113,7 @@ static int cgroup_css_links_read(struct
+ 	struct cgrp_cset_link *link;
+ 	int dead_cnt = 0, extra_refs = 0, threaded_csets = 0;
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 
+ 	list_for_each_entry(link, &css->cgroup->cset_links, cset_link) {
+ 		struct css_set *cset = link->cset;
+@@ -180,7 +180,7 @@ static int cgroup_css_links_read(struct
+ 
+ 		WARN_ON(count != cset->nr_tasks);
+ 	}
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	if (!dead_cnt && !extra_refs && !threaded_csets)
+ 		return 0;
+--- a/kernel/cgroup/freezer.c
++++ b/kernel/cgroup/freezer.c
+@@ -108,12 +108,12 @@ void cgroup_enter_frozen(void)
+ 	if (current->frozen)
+ 		return;
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	current->frozen = true;
+ 	cgrp = task_dfl_cgroup(current);
+ 	cgroup_inc_frozen_cnt(cgrp);
+ 	cgroup_update_frozen(cgrp);
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ }
+ 
+ /*
+@@ -129,7 +129,7 @@ void cgroup_leave_frozen(bool always_lea
+ {
+ 	struct cgroup *cgrp;
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	cgrp = task_dfl_cgroup(current);
+ 	if (always_leave || !test_bit(CGRP_FREEZE, &cgrp->flags)) {
+ 		cgroup_dec_frozen_cnt(cgrp);
+@@ -142,7 +142,7 @@ void cgroup_leave_frozen(bool always_lea
+ 		set_thread_flag(TIF_SIGPENDING);
+ 		spin_unlock(&current->sighand->siglock);
+ 	}
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ }
+ 
+ /*
+@@ -178,7 +178,7 @@ static void cgroup_do_freeze(struct cgro
+ 
+ 	lockdep_assert_held(&cgroup_mutex);
+ 
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	write_seqcount_begin(&cgrp->freezer.freeze_seq);
+ 	if (freeze) {
+ 		set_bit(CGRP_FREEZE, &cgrp->flags);
+@@ -189,7 +189,7 @@ static void cgroup_do_freeze(struct cgro
+ 			cgrp->freezer.freeze_start_nsec);
+ 	}
+ 	write_seqcount_end(&cgrp->freezer.freeze_seq);
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	if (freeze)
+ 		TRACE_CGROUP_PATH(freeze, cgrp);
+@@ -212,10 +212,10 @@ static void cgroup_do_freeze(struct cgro
+ 	 * Cgroup state should be revisited here to cover empty leaf cgroups
+ 	 * and cgroups which descendants are already in the desired state.
+ 	 */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	if (cgrp->nr_descendants == cgrp->freezer.nr_frozen_descendants)
+ 		cgroup_update_frozen(cgrp);
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ }
+ 
+ /*
+--- a/kernel/cgroup/namespace.c
++++ b/kernel/cgroup/namespace.c
+@@ -70,10 +70,10 @@ struct cgroup_namespace *copy_cgroup_ns(
+ 		return ERR_PTR(-ENOSPC);
+ 
+ 	/* It is not safe to take cgroup_mutex here */
+-	spin_lock_irq(&css_set_lock);
++	raw_spin_lock_irq(&css_set_lock);
+ 	cset = task_css_set(current);
+ 	get_css_set(cset);
+-	spin_unlock_irq(&css_set_lock);
++	raw_spin_unlock_irq(&css_set_lock);
+ 
+ 	new_ns = alloc_cgroup_ns();
+ 	if (IS_ERR(new_ns)) {
 
