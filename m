@@ -1,123 +1,109 @@
-Return-Path: <cgroups+bounces-11547-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11548-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9118BC2E5D9
-	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 00:04:54 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93C07C2EC2D
+	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 02:33:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F8073A943B
-	for <lists+cgroups@lfdr.de>; Mon,  3 Nov 2025 23:04:53 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 470B54F385A
+	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 01:31:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF7A2FD66D;
-	Mon,  3 Nov 2025 23:04:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DE5A205E26;
+	Tue,  4 Nov 2025 01:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="YM/vBNLf"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b/aSpWgh"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A276D23184F
-	for <cgroups@vger.kernel.org>; Mon,  3 Nov 2025 23:04:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA5A204583
+	for <cgroups@vger.kernel.org>; Tue,  4 Nov 2025 01:30:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762211089; cv=none; b=qDIfRZpYGBszigVNb6mtQC0JlZCvA7xnfVKAeK6uKZV71PZSVbmj3CWXT8I+DqfzRrcsh9+6cnfjlwdE+BlJhxqGg5e8TXK6tFne1loNB41xAUvA7G8KiNTrRFW8aPHhIeJgXool7UyiISrEaUAI8EQ+kHsIYEXtrdO1s/IxcVQ=
+	t=1762219858; cv=none; b=K4/S/+mdGCxWmVGa6VpeEQnNcxDdeYYL082nFRXjALPsBSAbQM4JTjnbzGdi+JDoEYH9wkEJRchFg2UTsefhcaXMpfXW/pZQxouMi8r1GxUI8UiqGNB7L58rcUCMpDicHFzKMX5dxKjJXEBw+gVOU2fiS6h1SE/5E34rpIoOUMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762211089; c=relaxed/simple;
-	bh=qFJb3QTz/3jg/L6x2lbG2psgJfjIQh5q1KW1+nPPaBI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fa9wM56mq1ttSLtx14XBEjd2tQGiBxUWUKu/xvIv+rp9Jnzb5PQVKuq6pl1Eel1ypWcQBnCzYZnWu5ThcKAr43YVfipvPVa4wVj4uhSI0nBGMqVzsPW0qETPOcfHgfjwJTM9Z310VZrXPONfd1x2VKRpmOEqgpTFfe3IpKLuTtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=YM/vBNLf; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b3e7cc84b82so989167366b.0
-        for <cgroups@vger.kernel.org>; Mon, 03 Nov 2025 15:04:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1762211086; x=1762815886; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZH0fDpUKrbZ7Y4RH7y1khfYrGo0F4yDKdY+imctMyp4=;
-        b=YM/vBNLfGZhALocJlfoM6aqdmbn5u8aYcjTXacwZOFqpL3l5z8OuzQs6K2rZ842TQq
-         JDUFj37ukjeLXKuhviMAaY+wo1sBiAhilUnarZzwRPT0jgmXXWP8ZMmsSwdqGyzz6RnZ
-         yxZ7p0axNYKHN/OuxGRYqE0I0tFcS69gd7FaM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762211086; x=1762815886;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZH0fDpUKrbZ7Y4RH7y1khfYrGo0F4yDKdY+imctMyp4=;
-        b=siDzrP3EODzKQwtgadJwAYpBTbZEqd2H8ef7kD8I4qvbD06byg2mMX3jW7wL/kTtM/
-         kJn8Var94L9N79fhAR6dYT66jXkEgpdAJwRMyrbDdUmMZ8L0vTnbqwV5VsSIPmJEAW7p
-         X2kkSQ/5gW2aFGQhBgQWklFp7HY9Sb5VFiTgXH9B05FvsdQ1XgNCyAHHWe1s9u46BtVX
-         bhV9Zy92n/mYFxy+bht6KyLfazB4QbQGt4cuROh/CNbtxBbjozptmK2yyBHCxU5Tj1xh
-         mNMKSDvoNbZV/kDu3o9mfPx7+tzKdw3EGp10VXG+iH+xTNUI8FGwAh3p+v2tQSrufG0v
-         jibg==
-X-Forwarded-Encrypted: i=1; AJvYcCXiHwQi2+QSuGdwO4ag9xWsfiH7+j3FNcTe/JVp1DsL6bBJTcm+xaplRyGClwvO+hWBWfbtBK0y@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzam9+JY+XWQTjsZloxt1OG8f5ZovnZQZCd4QTru8w+xz716JH4
-	TYvB2XKfTJkv1IoNmjeRDec8qEkRmbXHq/gXlR5nJ7tTGscHDMqSTvmOmqEsCbllNIfYcYEeSUE
-	gHbJcSTwpZw==
-X-Gm-Gg: ASbGnctDSxiEpgnfK0szxb+kzoRuCCasGOBqZU10NxxjzoHZdivntDC+NL2nM3keXcc
-	lxMu0nuCXxlb7YQ74PF0PiWwL3c6bdLKKtoLdf8hPFHVtP65+OArdrcnQ57ErGRVwRX3qkgBZ9o
-	/mnHohVuP8Psvc4GnhhUi0DDbzVNioCJPX6SUKs9hxGDekPxboLO6cN7Z5wgWn0Ruj0T4SjTljc
-	yoC3cPSDu3XXhbIjKYonM0J+pO3oSiyat8HQrpTkZKVxmMbWgCy1UUtTGM31jJZZpedmQOhWbaB
-	NbeREAgx/EvlWQXYdxzPAZVzO5JFwO+VMv5OD0WW9SCSN2yvOKfP0JG2L5Zx6xS1I7TVb0SVTMP
-	rc5B4ryHSY+QgeidKixiljF748x8emTsv6NjJmN36JHKsl+OWImSacfuQOhWi/YQbrHPQHM1o3P
-	/DL890pruYI5yvqLfZ9jQY6hrO0CyC6ZBuQBwmuo+D0OcRJ0DfDg==
-X-Google-Smtp-Source: AGHT+IHXYH9sIAXGV4RqgR1WZQftHppNjbGOg3vCLwMsXjEWBeF8vPB3pf6aQUGrH/N/eqvOslEddg==
-X-Received: by 2002:a17:907:3e11:b0:b64:8464:68cb with SMTP id a640c23a62f3a-b70700d1daamr1637636366b.10.1762211085668;
-        Mon, 03 Nov 2025 15:04:45 -0800 (PST)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b723db0f1besm32527166b.31.2025.11.03.15.04.44
-        for <cgroups@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Nov 2025 15:04:44 -0800 (PST)
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-b3e7cc84b82so989163566b.0
-        for <cgroups@vger.kernel.org>; Mon, 03 Nov 2025 15:04:44 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWV7C7SFXXMG8F6SaeickX548H6xiQjKqzM59C5vxn836R/724uSL6JPw7AsblXGkFMIFtMOsi9@vger.kernel.org
-X-Received: by 2002:a17:907:1c28:b0:b71:854:4e49 with SMTP id
- a640c23a62f3a-b710854688emr499540366b.56.1762211084280; Mon, 03 Nov 2025
- 15:04:44 -0800 (PST)
+	s=arc-20240116; t=1762219858; c=relaxed/simple;
+	bh=wyI6JuoFFvcp2coubHDVUmKQi19UlKB889L9cYsosn8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UV0zNszwUUljS5i878SkxW/tmSEngwl1Zl6iNakSY5EAWVYyfvR0zb8vXmtIIpfb3IoecTX9SYF+ELrypNyUbHNwgaKD+Fjqc7FEBp90+InoO7JGb2zmRQRHPnHdgF6aff7z6xyNWFPMgUottrguIbxgstKfFgjObJ1Vlcp/bjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b/aSpWgh; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762219855;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=63+VzXcuonlOm2rn3TRZvFDWJecsweUFsYVd2rNOP/o=;
+	b=b/aSpWghYChjOsAm+OZftCTFqhYonKdDgbwJUnUW/aYKikdgInvqi2gDW8HbFOf5WoW3Vz
+	qXkMe27hl0nUWIv6uEfRpGI/Ez37uBzGVs0u2UEbE9mq19lSCd1Isg0/Ep3JMbiTMJy1+R
+	jJlw+AgRmVQPe5QzXP3pSbDJXvjotfs=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-108-_0KbAWghP3e8X5irLt1UbA-1; Mon,
+ 03 Nov 2025 20:30:52 -0500
+X-MC-Unique: _0KbAWghP3e8X5irLt1UbA-1
+X-Mimecast-MFC-AGG-ID: _0KbAWghP3e8X5irLt1UbA_1762219851
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5EDC9195609D;
+	Tue,  4 Nov 2025 01:30:50 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.81.236])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id E933F30001A1;
+	Tue,  4 Nov 2025 01:30:47 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chen Ridong <chenridong@huawei.com>,
+	Gabriele Monaco <gmonaco@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Waiman Long <longman@redhat.com>
+Subject: [cgroup/for-6.19 PATCH v2 0/3] cgroup/cpuset: Additional housekeeping check & cleanup
+Date: Mon,  3 Nov 2025 20:30:34 -0500
+Message-ID: <20251104013037.296013-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251103-work-creds-guards-simple-v1-0-a3e156839e7f@kernel.org> <20251103-work-creds-guards-simple-v1-14-a3e156839e7f@kernel.org>
-In-Reply-To: <20251103-work-creds-guards-simple-v1-14-a3e156839e7f@kernel.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 4 Nov 2025 08:04:28 +0900
-X-Gmail-Original-Message-ID: <CAHk-=wiSmez2LFEpM05VUX=_GKJC8Ag68TJDByVPO=x4QwjyuA@mail.gmail.com>
-X-Gm-Features: AWmQ_bmQaBgs1Hs2Yx75LVx_L0plRwfdpBhmjm5wyWf-G7aoJOGX7gmwXWEf8f8
-Message-ID: <CAHk-=wiSmez2LFEpM05VUX=_GKJC8Ag68TJDByVPO=x4QwjyuA@mail.gmail.com>
-Subject: Re: [PATCH 14/16] act: use credential guards in acct_write_process()
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-aio@kvack.org, linux-unionfs@vger.kernel.org, 
-	linux-erofs@lists.ozlabs.org, linux-nfs@vger.kernel.org, 
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
-	cgroups@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-On Mon, 3 Nov 2025 at 20:27, Christian Brauner <brauner@kernel.org> wrote:
->
->         /* Perform file operations on behalf of whoever enabled accounting */
-> -       cred = override_creds(file->f_cred);
-> -
-> +       with_creds(file->f_cred);
+ v2: Update patch 2 to correct some of the checking code and add
+     prstate_housekeeping_conflict() as suggested by Chen Ridong.
 
-I'd almost prefer if we *only* did "scoped_with_creds()" and didn't
-have this version at all.
+The first two patches are based on the two cpuset patches from the
+"timers: Exclude isolated cpus from timer migration" patch series [1]
+with some modifications. They add additional nohz_full housekeeping
+mask check to ensure that there is at least one common housekeeping
+CPU that is not domain and nohz_full isolated.
 
-Most of the cases want that anyway, and the couple of plain
-"with_creds()" cases look like they would only be cleaned up by making
-the cred scoping more explicit.
+The last patch is another cleanup patch to simplify the current
+partition code.
 
-What do you think?
+[1] https://lore.kernel.org/lkml/20251020112802.102451-1-gmonaco@redhat.com/
 
-Anyway, I approve of the whole series, obviously, I just suspect we
-could narrow down the new interface a bit more.
+Gabriele Monaco (1):
+  cgroup/cpuset: Rename update_unbound_workqueue_cpumask() to
+    update_isolation_cpumasks()
 
-                Linus
+Waiman Long (2):
+  cgroup/cpuset: Fail if isolated and nohz_full don't leave any
+    housekeeping
+  cgroup/cpuset: Globally track isolated_cpus update
+
+ kernel/cgroup/cpuset.c | 148 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 109 insertions(+), 39 deletions(-)
+
+-- 
+2.51.1
+
 
