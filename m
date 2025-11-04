@@ -1,196 +1,278 @@
-Return-Path: <cgroups+bounces-11561-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11562-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D4E0C2FDE6
-	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 09:29:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BD82C30284
+	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 10:06:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DC89188B3AE
-	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 08:25:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99FCA3B8EFB
+	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 09:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792C631195B;
-	Tue,  4 Nov 2025 08:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F5E2951A7;
+	Tue,  4 Nov 2025 09:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="E1uEMldG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rkA5MSK0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E323D303C93
-	for <cgroups@vger.kernel.org>; Tue,  4 Nov 2025 08:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE86295516
+	for <cgroups@vger.kernel.org>; Tue,  4 Nov 2025 08:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762244309; cv=none; b=gZKf3iyg5uEApss8ZCnB51eVedOED2mABpH7x4aTr5NV1Ux7gBT84zZuL6lMBAFud8DYGwuLb9kLSmJCWNeh6ZBmZKMW/CxuqkFYhtk7HSSQTHvY/xpeT7vM8jMTJvYyY0FWrf3wFoz06Q7g8ZGdIQplG7bj2U63G0/qR3FVJ8Y=
+	t=1762246801; cv=none; b=KnU+JwxuU43X9zRVUhrczr2OWbo+MEDAI+bYr8C/3trNZ4jk6Bi7H8mHkD0aRqQY0EUckM0zefaS1oFsGVn+uF4LKOc8iZYbzHmTm3mGJxXllHizHO6uD8pP+rul3PQj0xvJXysZvhgqZrn+5yhVamWV0asnG8wEquVJXIuuSkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762244309; c=relaxed/simple;
-	bh=y1H0J8xShtW8C86BhW+X8QqScD8LGdJ12xq4p3MILSY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ieQqdi0zkdu76czk4tu+joOeHSFskZX4tslGq2bzL7kbVJ1ZwM8cZTIVoRBWC2Y8tdvYRM9NK99VmEDtKw8ixVcYWBbN/UFxl+AaOoFZq4a+wmKHmxTpQeYS5iU4JyAgQstDX/HmXAxpW5T3SdOBJWrLXqnFDSdrh4BsbxR5A2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=E1uEMldG; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-429c19b5de4so193389f8f.3
-        for <cgroups@vger.kernel.org>; Tue, 04 Nov 2025 00:18:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762244304; x=1762849104; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HDGrwGIAe+HNiwkyvFhP/kp5qQx4Bemq/CCgC2+MOGE=;
-        b=E1uEMldGmpryX7F87XkuxTRDtdwDgdHX1+Ghb8cr9Y+KDJ084RLi5KHRRsc9uMWuZ2
-         si/J3mlAwe6fCyi35LOCST0p2smFYFBlJDjAdr3DuhcX08k0b0aNWmC0KtcLQyr4CPMU
-         qEQJQUlI3YSd2twL/M9XEGogCnLBxCBkjm8MSRVhj1EDdA9P9/Zk3vcqEsial8zOaA1r
-         iSoALBkdeI+ve9EVjjS63MNaxxeWZsQjamPCEn9CaW2QhkLMioynSBZd93yQg2NXqniq
-         UhyqlI9cgPmXfJvXzCE6dNDBtyO64WoEaFZukUXORJGwCC4FdNVSjFDIBfVJozzpfI9X
-         AvbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762244304; x=1762849104;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HDGrwGIAe+HNiwkyvFhP/kp5qQx4Bemq/CCgC2+MOGE=;
-        b=mD4Xk9V9aHsSZlIMiEUqczbsxuk5rCIoYDFwCDBWYOm8SWC8I+Du6Xr71UPIg3BU49
-         hcohR+vJkk8DwBuyQLj3sll92Wc+LkqU9cqBRC90kv1O0xXddEMRZjmROg/JZbGVVqqF
-         ikj1pNCbF5KS+UCi/mCFCzeLfbJ4ArHLY9Z6G0r7rlxBLTq9l9XSHYOKLEhuzhvXmRVu
-         8pFfGFM4n9ufjwzRO1tugqUhPZB15ID+C6QNcmaREi1GOIkTudpg5PvQM5Tvqarifd0g
-         lh38ph2KzDePYNerxV+di9vIQmkiIYfClt0wXdsZUTGWT2xkxVZdyHsqOwIdEdVMR5Pu
-         +ffQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXfVNjTZ1GZMfzDJ3tsg2WR4q5mJNN8f7nUzQHoxP8cxzkQFlx954LDLCtDOfhN4/AOgoRx+Q0m@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3M6gtS+Mi9vAci2Ld69e9NmgTl1kh7JZK6omrm9FAJmjXYZAK
-	VpW5OTfD/rMDWjqo6ymZXcfWa5fkvr/SmTZ/Ihcam1xk5lZCquwclQWgppqKauv3oxs=
-X-Gm-Gg: ASbGnct3a1qzLpH8sqaPIVSY6synNF0x0oLCP6/R3jrgV/Rm1qUJ0V3JUKWgHUZ7Rz/
-	tBKAiPnTpOSYs/+S3VTmyD//8eYfnKiN0a1cQ6vYGYVpDN+fGvKq76kM7/bhiZNWSYCJw/W36r/
-	+nqWjYcqkSser98k8eTB0sLgP5E/U5VUc4O26Aa3KW2IhELrkpcXlg+btz4qJy62Kpk1m8ZDXNc
-	4akAPw4PNme+euueUbgT9PuBX9NbRo75U5KW8wogHjPRNUotpVaWy1r9hRERHLd49kT3lpeO1O3
-	TVVUoM1yraRe1sGZar6TBwpRqwY6T5HzyJR3gLuOCx4OitJHxtpbGuPuBkJVMjPgnMOe6hmtxXG
-	AcKcmJXSjlXJEGcUQaSYRw9IEOAfxYLWbPgXyL5ZOBf3yad6b0IQTLuLy6dSDWePrtRo51H3V+Q
-	nhEYFYQEv4luWYhHj7ztE=
-X-Google-Smtp-Source: AGHT+IER82dbwOAWSEGagB9JoBAQ4DFL/N85XJT6dQwU/F6NCVBuyJKblUAv95YkwnJ9rUbOTpPUNg==
-X-Received: by 2002:a05:6000:40c7:b0:425:76e3:81c5 with SMTP id ffacd0b85a97d-429bd6827fcmr12672112f8f.17.1762244303953;
-        Tue, 04 Nov 2025 00:18:23 -0800 (PST)
-Received: from localhost (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429dc193e27sm3237804f8f.18.2025.11.04.00.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Nov 2025 00:18:23 -0800 (PST)
-Date: Tue, 4 Nov 2025 09:18:22 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
-Message-ID: <aQm2zqmD9mHE1psg@tiehlicka>
-References: <20251027231727.472628-1-roman.gushchin@linux.dev>
- <20251027231727.472628-7-roman.gushchin@linux.dev>
- <aQR7HIiQ82Ye2UfA@tiehlicka>
- <875xbsglra.fsf@linux.dev>
- <aQj7uRjz668NNrm_@tiehlicka>
- <87a512muze.fsf@linux.dev>
+	s=arc-20240116; t=1762246801; c=relaxed/simple;
+	bh=GS6e2b3oH37jxFOIhSoa8Ixlw2ZpbQh35bnVCEiVku8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G/OoCghJj3Vo6iDQipmCs+u+cXJGEqczWWxClGpbZ1dnFbySHg5ZDpoIlLMWARc6plsxOZ1/g26zHii8tpwpiOZ6uSwPcAFCp0MSZQVNP3mbuFa+Vs25UVk8Afj2HbqEVaNkaIE+aLKeAdOCbOH+3eulzbPOYRzmsf7rp4O6Hds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rkA5MSK0; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <9e4b1242-a4a0-4292-be0e-cfd24c640d3c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762246786;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ACoxnsLPwifItDCLqYhT5k8XWG0ViCrKK5nRSuUSDtc=;
+	b=rkA5MSK0BMXWXwjbNLCwrj3u4Fv4kpzo9wawRX6o70dvqp7dWu3z9EJU6RtFsxtf4MIKfo
+	jH60YzITDWU5qvfBCRfmr1vjQDlkhBVvgTtIAVUObBKzz5OOshhE9g2oitRB0BXXZoi6VN
+	NVRxzpbihEUnPNBKhCMsuj8VNiQUHY4=
+Date: Tue, 4 Nov 2025 16:59:32 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a512muze.fsf@linux.dev>
+Subject: Re: [PATCH v1 21/26] mm: memcontrol: prepare for reparenting LRU
+ pages for lruvec lock
+To: kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, cgroups@vger.kernel.org,
+ linux-mm@kvack.org, hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ david@redhat.com, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
+ harry.yoo@oracle.com, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+ Muchun Song <songmuchun@bytedance.com>
+References: <202511041421.784bbd5e-lkp@intel.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <202511041421.784bbd5e-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon 03-11-25 17:45:09, Roman Gushchin wrote:
-> Michal Hocko <mhocko@suse.com> writes:
+
+
+On 11/4/25 2:49 PM, kernel test robot wrote:
 > 
-> > On Sun 02-11-25 13:36:25, Roman Gushchin wrote:
-> >> Michal Hocko <mhocko@suse.com> writes:
+
 [...]
-> > No, I do not feel strongly one way or the other but I would like to
-> > understand thinking behind that. My slight preference would be to have a
-> > single return status that clearly describe the intention. If you want to
-> > have more flexible chaining semantic then an enum { IGNORED, HANDLED,
-> > PASS_TO_PARENT, ...} would be both more flexible, extensible and easier
-> > to understand.
+
 > 
-> The thinking is simple:
-> 1) Most users will have a single global bpf oom policy, which basically
-> replaces the in-kernel oom killer.
-> 2) If there are standalone containers, they might want to do the same on
-> their level. And the "host" system doesn't directly control it.
-> 3) If for some reason the inner oom handler fails to free up some
-> memory, there are two potential fallback options: call the in-kernel oom
-> killer for that memory cgroup or call an upper level bpf oom killer, if
-> there is one.
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202511041421.784bbd5e-lkp@intel.com
 > 
-> I think the latter is more logical and less surprising. Imagine you're
-> running multiple containers and some of them implement their own bpf oom
-> logic and some don't. Why would we treat them differently if their bpf
-> logic fails?
-
-I think both approaches are valid and it should be the actual handler to
-tell what to do next. If the handler would prefer the in-kernel fallback
-it should be able to enforce that rather than a potentially unknown bpf
-handler up the chain.
-
-> Re a single return value: I can absolutely specify return values as an
-> enum, my point is that unlike the kernel code we can't fully trust the
-> value returned from a bpf program, this is why the second check is in
-> place.
-
-I do not understand this. Could you elaborate? Why we cannot trust the
-return value but we can trust a combination of the return value and a
-state stored in a helper structure?
-
-> Can we just ignore the returned value and rely on the freed_memory flag?
-
-I do not think having a single freed_memory flag is more helpful. This
-is just a number that cannot say much more than a memory has been freed.
-It is not really important whether and how much memory bpf handler
-believes it has freed. It is much more important to note whether it
-believes it is done, it needs assistance from a different handler up the
-chain or just pass over to the in-kernel implementation.
-
-> Sure, but I don't think it bus us anything.
 > 
-> Also, I have to admit that I don't have an immediate production use case
-> for nested oom handlers (I'm fine with a global one), but it was asked
-> by Alexei Starovoitov. And I agree with him that the containerized case
-> will come up soon, so it's better to think of it in advance.
-
-I agree it is good to be prepared for that.
-
-> >> >> The bpf_handle_out_of_memory() callback program is sleepable to enable
-> >> >> using iterators, e.g. cgroup iterators. The callback receives struct
-> >> >> oom_control as an argument, so it can determine the scope of the OOM
-> >> >> event: if this is a memcg-wide or system-wide OOM.
-> >> >
-> >> > This could be tricky because it might introduce a subtle and hard to
-> >> > debug lock dependency chain. lock(a); allocation() -> oom -> lock(a).
-> >> > Sleepable locks should be only allowed in trylock mode.
-> >> 
-> >> Agree, but it's achieved by controlling the context where oom can be
-> >> declared (e.g. in bpf_psi case it's done from a work context).
-> >
-> > but out_of_memory is any sleepable context. So this is a real problem.
+> [    1.392214][   T45] WARNING: bad unlock balance detected!
+> [    1.393285][   T45] 6.18.0-rc3-00251-gdd9e066d9677 #1 Not tainted
+> [    1.394579][   T45] -------------------------------------
+> [    1.395442][   T45] kworker/u9:1/45 is trying to release lock (rcu_read_lock) at:
+> [    1.396977][   T45] rcu_read_unlock (include/linux/rcupdate.h:341 include/linux/rcupdate.h:897)
+> [    1.398160][   T45] but there are no more locks to release!
+> [    1.399337][   T45]
+> [    1.399337][   T45] other info that might help us debug this:
+> [    1.399707][   T45] 5 locks held by kworker/u9:1/45:
+> [    1.399707][   T45]  #0: c01ad6c4 ((wq_completion)async){+.+.}-{0:0}, at: process_one_work (kernel/workqueue.c:3238)
+> [    1.399707][   T45]  #1: c08e9f18 ((work_completion)(&entry->work)){+.+.}-{0:0}, at: process_one_work (kernel/workqueue.c:3239)
+> [    1.399707][   T45]  #2: c02ed27c (sb_writers#2){.+.+}-{0:0}, at: file_start_write+0x1e/0x30
+> [    1.399707][   T45]  #3: c042e0ec (&sb->s_type->i_mutex_key){++++}-{4:4}, at: generic_file_write_iter (mm/filemap.c:4404)
+> [    1.399707][   T45]  #4: eaa771a0 (lock#3){+.+.}-{3:3}, at: local_lock_acquire (include/linux/local_lock_internal.h:40)
+> [    1.399707][   T45]
+> [    1.399707][   T45] stack backtrace:
+> [    1.399707][   T45] CPU: 0 UID: 0 PID: 45 Comm: kworker/u9:1 Not tainted 6.18.0-rc3-00251-gdd9e066d9677 #1 PREEMPT(none)
+> [    1.399707][   T45] Workqueue: async async_run_entry_fn
+> [    1.399707][   T45] Call Trace:
+> [    1.399707][   T45]  dump_stack_lvl (lib/dump_stack.c:122)
+> [    1.399707][   T45]  ? rcu_read_unlock (include/linux/rcupdate.h:341 include/linux/rcupdate.h:897)
+> [    1.399707][   T45]  dump_stack (lib/dump_stack.c:130)
+> [    1.399707][   T45]  print_unlock_imbalance_bug (kernel/locking/lockdep.c:5300 kernel/locking/lockdep.c:5272)
+> [    1.399707][   T45]  ? rcu_read_unlock (include/linux/rcupdate.h:341 include/linux/rcupdate.h:897)
+> [    1.399707][   T45]  __lock_release+0x5e/0x150
+> [    1.399707][   T45]  ? rcu_read_unlock (include/linux/rcupdate.h:341 include/linux/rcupdate.h:897)
+> [    1.399707][   T45]  lock_release (kernel/locking/lockdep.c:470 kernel/locking/lockdep.c:5891 kernel/locking/lockdep.c:5875)
+> [    1.399707][   T45]  ? lru_deactivate_file (mm/swap.c:119)
+> [    1.399707][   T45]  rcu_read_unlock (include/linux/rcupdate.h:899)
+> [    1.399707][   T45]  lruvec_unlock_irqrestore (include/linux/memcontrol.h:1522)
+> [    1.399707][   T45]  folio_batch_move_lru (include/linux/mm.h:1501 mm/swap.c:179)
+> [    1.399707][   T45]  __folio_batch_add_and_move (mm/swap.c:196 (discriminator 2))
+> [    1.399707][   T45]  ? lru_deactivate_file (mm/swap.c:119)
+> [    1.399707][   T45]  folio_add_lru (mm/swap.c:514)
+> [    1.399707][   T45]  filemap_add_folio (mm/filemap.c:996)
+> [    1.399707][   T45]  __filemap_get_folio (mm/filemap.c:2023)
+> [    1.399707][   T45]  simple_write_begin (fs/libfs.c:932 (discriminator 1))
+> [    1.399707][   T45]  generic_perform_write (mm/filemap.c:4263)
+> [    1.399707][   T45]  __generic_file_write_iter (mm/filemap.c:4380)
+> [    1.399707][   T45]  generic_file_write_iter (mm/filemap.c:4406)
+> [    1.399707][   T45]  __kernel_write_iter (fs/read_write.c:619)
+> [    1.399707][   T45]  __kernel_write (fs/read_write.c:640)
+> [    1.399707][   T45]  kernel_write (fs/read_write.c:660 fs/read_write.c:650)
+> [    1.399707][   T45]  xwrite+0x27/0x80
+> [    1.399707][   T45]  do_copy (init/initramfs.c:417 (discriminator 1))
+> [    1.399707][   T45]  write_buffer (init/initramfs.c:470 (discriminator 1))
+> [    1.399707][   T45]  flush_buffer (init/initramfs.c:482 (discriminator 1))
+> [    1.399707][   T45]  __gunzip+0x21d/0x2c0
+> [    1.399707][   T45]  ? bunzip2 (lib/decompress_inflate.c:39)
+> [    1.399707][   T45]  ? __gunzip+0x2c0/0x2c0
+> [    1.399707][   T45]  gunzip (lib/decompress_inflate.c:208)
+> [    1.399707][   T45]  ? write_buffer (init/initramfs.c:476)
+> [    1.399707][   T45]  ? initrd_load (init/initramfs.c:64)
+> [    1.399707][   T45]  unpack_to_rootfs (init/initramfs.c:553)
+> [    1.399707][   T45]  ? write_buffer (init/initramfs.c:476)
+> [    1.399707][   T45]  ? initrd_load (init/initramfs.c:64)
+> [    1.399707][   T45]  ? reserve_initrd_mem (init/initramfs.c:719)
+> [    1.399707][   T45]  do_populate_rootfs (init/initramfs.c:734)
+> [    1.399707][   T45]  async_run_entry_fn (kernel/async.c:136 (discriminator 1))
+> [    1.399707][   T45]  ? async_schedule_node (kernel/async.c:118)
+> [    1.399707][   T45]  process_one_work (arch/x86/include/asm/atomic.h:23 include/linux/atomic/atomic-arch-fallback.h:457 include/linux/jump_label.h:262 include/trace/events/workqueue.h:110 kernel/workqueue.c:3268)
+> [    1.399707][   T45]  process_scheduled_works (kernel/workqueue.c:3346)
+> [    1.399707][   T45]  worker_thread (include/linux/list.h:381 (discriminator 2) kernel/workqueue.c:952 (discriminator 2) kernel/workqueue.c:3428 (discriminator 2))
+> [    1.399707][   T45]  kthread (kernel/kthread.c:465)
+> [    1.399707][   T45]  ? process_scheduled_works (kernel/workqueue.c:3373)
+> [    1.399707][   T45]  ? kthread_is_per_cpu (kernel/kthread.c:412)
+> [    1.399707][   T45]  ret_from_fork (arch/x86/kernel/process.c:164)
+> [    1.399707][   T45]  ? kthread_is_per_cpu (kernel/kthread.c:412)
+> [    1.399707][   T45]  ret_from_fork_asm (arch/x86/entry/entry_32.S:737)
+> [    1.399707][   T45]  entry_INT80_32 (arch/x86/entry/entry_32.S:945)
+> [    1.467118][   T32] Callback from call_rcu_tasks() invoked.
+> [    1.468370][   T45] ------------[ cut here ]------------
+> [    1.469508][   T45] WARNING: CPU: 0 PID: 45 at kernel/rcu/tree_plugin.h:443 __rcu_read_unlock (kernel/rcu/tree_plugin.h:443)
+> [    1.471711][   T45] Modules linked in:
+> [    1.472490][   T45] CPU: 0 UID: 0 PID: 45 Comm: kworker/u9:1 Not tainted 6.18.0-rc3-00251-gdd9e066d9677 #1 PREEMPT(none)
+> [    1.474777][   T45] Workqueue: async async_run_entry_fn
+> [    1.475823][   T45] EIP: __rcu_read_unlock (kernel/rcu/tree_plugin.h:443)
+> [    1.476872][   T45] Code: 0c d0 56 c2 ff 8b a4 02 00 00 75 11 8b 83 a8 02 00 00 85 c0 74 07 89 d8 e8 7c fe ff ff 8b 83 a4 02 00 00 3d ff ff ff 3f 76 02 <0f> 0b 5b 5d 31 c0 c3 2e 8d b4 26 00 00 00 00 55 89 e5 57 56 89 c6
+> All code
+> ========
+>     0:	0c d0                	or     $0xd0,%al
+>     2:	56                   	push   %rsi
+>     3:	c2 ff 8b             	ret    $0x8bff
+>     6:	a4                   	movsb  %ds:(%rsi),%es:(%rdi)
+>     7:	02 00                	add    (%rax),%al
+>     9:	00 75 11             	add    %dh,0x11(%rbp)
+>     c:	8b 83 a8 02 00 00    	mov    0x2a8(%rbx),%eax
+>    12:	85 c0                	test   %eax,%eax
+>    14:	74 07                	je     0x1d
+>    16:	89 d8                	mov    %ebx,%eax
+>    18:	e8 7c fe ff ff       	call   0xfffffffffffffe99
+>    1d:	8b 83 a4 02 00 00    	mov    0x2a4(%rbx),%eax
+>    23:	3d ff ff ff 3f       	cmp    $0x3fffffff,%eax
+>    28:	76 02                	jbe    0x2c
+>    2a:*	0f 0b                	ud2		<-- trapping instruction
+>    2c:	5b                   	pop    %rbx
+>    2d:	5d                   	pop    %rbp
+>    2e:	31 c0                	xor    %eax,%eax
+>    30:	c3                   	ret
+>    31:	2e 8d b4 26 00 00 00 	cs lea 0x0(%rsi,%riz,1),%esi
+>    38:	00
+>    39:	55                   	push   %rbp
+>    3a:	89 e5                	mov    %esp,%ebp
+>    3c:	57                   	push   %rdi
+>    3d:	56                   	push   %rsi
+>    3e:	89 c6                	mov    %eax,%esi
 > 
-> We need to restrict both:
-> 1) where from bpf_out_of_memory() can be called (already done, as of now
-> only from bpf_psi callback, which is safe).
-> 2) which kfuncs are available to bpf oom handlers (only those, which are
-> not trying to grab unsafe locks) - I'll double check it in thenext version.
+> Code starting with the faulting instruction
+> ===========================================
+>     0:	0f 0b                	ud2
+>     2:	5b                   	pop    %rbx
+>     3:	5d                   	pop    %rbp
+>     4:	31 c0                	xor    %eax,%eax
+>     6:	c3                   	ret
+>     7:	2e 8d b4 26 00 00 00 	cs lea 0x0(%rsi,%riz,1),%esi
+>     e:	00
+>     f:	55                   	push   %rbp
+>    10:	89 e5                	mov    %esp,%ebp
+>    12:	57                   	push   %rdi
+>    13:	56                   	push   %rsi
+>    14:	89 c6                	mov    %eax,%esi
+> [    1.480862][   T45] EAX: ffffffff EBX: c0bfd640 ECX: 00000000 EDX: 00000000
+> [    1.482292][   T45] ESI: eaa771c0 EDI: c119e160 EBP: c08e9c0c ESP: c08e9c08
+> [    1.483721][   T45] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
+> [    1.485350][   T45] CR0: 80050033 CR2: ffbff000 CR3: 026c6000 CR4: 000006f0
+> [    1.486725][   T45] Call Trace:
+> [    1.487465][   T45]  rcu_read_unlock (include/linux/rcupdate.h:900)
+> [    1.488404][   T45]  lruvec_unlock_irqrestore (include/linux/memcontrol.h:1522)
+> [    1.489570][   T45]  folio_batch_move_lru (include/linux/mm.h:1501 mm/swap.c:179)
+> [    1.491100][   T45]  __folio_batch_add_and_move (mm/swap.c:196 (discriminator 2))
+> [    1.492318][   T45]  ? lru_deactivate_file (mm/swap.c:119)
+> [    1.493827][   T45]  folio_add_lru (mm/swap.c:514)
+> [    1.494817][   T45]  filemap_add_folio (mm/filemap.c:996)
+> [    1.495891][   T45]  __filemap_get_folio (mm/filemap.c:2023)
+> [    1.497735][   T45]  simple_write_begin (fs/libfs.c:932 (discriminator 1))
+> [    1.498813][   T45]  generic_perform_write (mm/filemap.c:4263)
+> [    1.500292][   T45]  __generic_file_write_iter (mm/filemap.c:4380)
+> [    1.501552][   T45]  generic_file_write_iter (mm/filemap.c:4406)
+> [    1.502790][   T45]  __kernel_write_iter (fs/read_write.c:619)
+> [    1.504090][   T45]  __kernel_write (fs/read_write.c:640)
+> [    1.505377][   T45]  kernel_write (fs/read_write.c:660 fs/read_write.c:650)
+> [    1.506306][   T45]  xwrite+0x27/0x80
+> [    1.507429][   T45]  do_copy (init/initramfs.c:417 (discriminator 1))
+> [    1.508361][   T45]  write_buffer (init/initramfs.c:470 (discriminator 1))
+> [    1.509300][   T45]  flush_buffer (init/initramfs.c:482 (discriminator 1))
+> [    1.510307][   T45]  __gunzip+0x21d/0x2c0
+> [    1.511424][   T45]  ? bunzip2 (lib/decompress_inflate.c:39)
+> [    1.512312][   T45]  ? __gunzip+0x2c0/0x2c0
+> [    1.513515][   T45]  gunzip (lib/decompress_inflate.c:208)
+> [    1.514359][   T45]  ? write_buffer (init/initramfs.c:476)
+> [    1.515304][   T45]  ? initrd_load (init/initramfs.c:64)
+> [    1.516217][   T45]  unpack_to_rootfs (init/initramfs.c:553)
+> [    1.517220][   T45]  ? write_buffer (init/initramfs.c:476)
+> [    1.518175][   T45]  ? initrd_load (init/initramfs.c:64)
+> [    1.519172][   T45]  ? reserve_initrd_mem (init/initramfs.c:719)
+> [    1.520375][   T45]  do_populate_rootfs (init/initramfs.c:734)
+> [    1.521401][   T45]  async_run_entry_fn (kernel/async.c:136 (discriminator 1))
+> [    1.522378][   T45]  ? async_schedule_node (kernel/async.c:118)
+> [    1.523492][   T45]  process_one_work (arch/x86/include/asm/atomic.h:23 include/linux/atomic/atomic-arch-fallback.h:457 include/linux/jump_label.h:262 include/trace/events/workqueue.h:110 kernel/workqueue.c:3268)
+> [    1.526446][   T45]  process_scheduled_works (kernel/workqueue.c:3346)
+> [    1.527578][   T45]  worker_thread (include/linux/list.h:381 (discriminator 2) kernel/workqueue.c:952 (discriminator 2) kernel/workqueue.c:3428 (discriminator 2))
+> [    1.528573][   T45]  kthread (kernel/kthread.c:465)
+> [    1.529483][   T45]  ? process_scheduled_works (kernel/workqueue.c:3373)
+> [    1.530780][   T45]  ? kthread_is_per_cpu (kernel/kthread.c:412)
+> [    1.531779][   T45]  ret_from_fork (arch/x86/kernel/process.c:164)
+> [    1.532664][   T45]  ? kthread_is_per_cpu (kernel/kthread.c:412)
+> [    1.533736][   T45]  ret_from_fork_asm (arch/x86/entry/entry_32.S:737)
+> [    1.534846][   T45]  entry_INT80_32 (arch/x86/entry/entry_32.S:945)
+> [    1.536182][   T45] irq event stamp: 2161
+> [    1.536994][   T45] hardirqs last  enabled at (2161): _raw_spin_unlock_irqrestore (arch/x86/include/asm/irqflags.h:26 arch/x86/include/asm/irqflags.h:109 arch/x86/include/asm/irqflags.h:151 include/linux/spinlock_api_smp.h:151 kernel/locking/spinlock.c:194)
+> [    1.538763][   T45] hardirqs last disabled at (2160): _raw_spin_lock_irqsave (include/linux/spinlock_api_smp.h:109 kernel/locking/spinlock.c:162)
+> [    1.540674][   T45] softirqs last  enabled at (1956): handle_softirqs (kernel/softirq.c:469 (discriminator 2) kernel/softirq.c:650 (discriminator 2))
+> [    1.542454][   T45] softirqs last disabled at (1949): __do_softirq (kernel/softirq.c:657)
+> [    1.544105][   T45] ---[ end trace 0000000000000000 ]---
+> 
+> 
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20251104/202511041421.784bbd5e-lkp@intel.com
 
-OK. All I am trying to say is that only safe sleepable locks are
-trylocks and that should be documented because I do not think it can be
-enforced
+In this config file, CONFIG_MEMCG is not set:
 
--- 
-Michal Hocko
-SUSE Labs
+# CONFIG_MEMCG is not set
+
+In this case, folio_lruvec_lock*() was not modified (add
+rcu_read_lock()), will fix it in the next version.
+
+Thanks,
+Qi
+
+> 
+> 
+> 
+
 
