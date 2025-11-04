@@ -1,92 +1,124 @@
-Return-Path: <cgroups+bounces-11566-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11567-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B04ECC30CBE
-	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 12:43:12 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5A20C30D93
+	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 13:00:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2372460D95
-	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 11:40:57 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A98694E425B
+	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 12:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D34E72EB5CF;
-	Tue,  4 Nov 2025 11:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85AC42DA765;
+	Tue,  4 Nov 2025 12:00:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TjxRGUvs"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="Rt4arT8K"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7786D2EAB70;
-	Tue,  4 Nov 2025 11:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B0E242D87;
+	Tue,  4 Nov 2025 12:00:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762256442; cv=none; b=fRl/o3heD+pp0smogX084MJmvAgIxYiMzApEVLz8d9zpa0loHukCPZlUWSksh8XX/pKRZAY6XvG16PLE1MgvsNahq/C7o0H7VHuzk40aYCkimtxCocCQAuQRhAh2arNkwzXB1b8mG4aHfs6yv5cmvvdCrfLmvHv+LYcLA6cK6jo=
+	t=1762257619; cv=none; b=uYyq4Zt2Bvn8pP1ELGICwW/yNU6dF2bw6xdpCCnpP1sMlKFD4l7CV8dzMKI9hwQ4eswi7D8nIZ1V4BRGbvrudR9K+DFIQyJ8rrYQbVeih/it1YWGkd+8tfuPSjOe3EffvGgJg1zKbih6dIh95pxfvU1DgkIJilS1N68tA7Jh8Oo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762256442; c=relaxed/simple;
-	bh=W07D7k8d9r42eIB9elVR5UyKqnAXxbxiWn376ofpzAE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PhNaOALMln6C4DVPsoNqEhl1J1C7OrpSWydmoYXAmvu/kRH0am3lCyIHyvA6b0i6/3uMWLLTNdlgynZ/dD20WFf9IgPN6MLHXTqrCjWdgBsCkbVQn4UZy/2CNFn1zsO420pa9gTIjJC/Uz2lwsFjSnvnc5mJd0jOoCwPveDz9Qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TjxRGUvs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 578D9C116B1;
-	Tue,  4 Nov 2025 11:40:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762256442;
-	bh=W07D7k8d9r42eIB9elVR5UyKqnAXxbxiWn376ofpzAE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TjxRGUvsTz2TY9x558mHTIz1Ih91p9JqOFsGFSwluMb08sYCfC6Ta+zRipYa9vIQO
-	 sibc5N5/8swj3yBcqMXzlZviupVerLGaz7oBWIfyw0edv8u8ZJoJ/Jad9Wfy3QYUTJ
-	 WxUM9obfJfM21WpmvJzLl6YFVkGFkqwhWyuF/cDhSjTUDFTux0PggSbhNbsoGf3D7J
-	 cXkQaq1eT0oOY29VqHb9Fwjpnefr6N/CoaJP2W9ISCdRcRvl8DTW4iG1YeYHw7WC6H
-	 8U8SBPX4W5hp7daJ1pRBpbhJIzlkSSgVCiQid6fuR9ivcp6dJvC9HEt0z/VPCUfUVy
-	 rTpA4nSfJZaqA==
-Date: Tue, 4 Nov 2025 12:40:36 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-aio@kvack.org, linux-unionfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
-	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
-	cgroups@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 14/16] act: use credential guards in acct_write_process()
-Message-ID: <20251104-hebamme-sinnieren-a30735196a26@brauner>
-References: <20251103-work-creds-guards-simple-v1-0-a3e156839e7f@kernel.org>
- <20251103-work-creds-guards-simple-v1-14-a3e156839e7f@kernel.org>
- <CAHk-=wiSmez2LFEpM05VUX=_GKJC8Ag68TJDByVPO=x4QwjyuA@mail.gmail.com>
+	s=arc-20240116; t=1762257619; c=relaxed/simple;
+	bh=Ws6Yw4vhHdh8BJHsetlG4FaY/IjUPbpyuyYf2aLMOkU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=RKRFPUsQa3YxnAMS15/moNg1V9hZrUxVs0pORhYbLoQxgzdRlDUZ/Hid0+T0lFRI0xdYHhkwz+vKxPxOCCtu+Qz0cKd0bY53Fayc6njka88xSZRdHbqxNo/NsRGvxZ08kbsSmtqGSI6bbhYb3IRub13i50vJewc0wxu295epBeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=Rt4arT8K; arc=none smtp.client-ip=113.46.200.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=GWGWKICQYbA8YGXyToNZABRrr/HL05Pn+y+G4CDwib4=;
+	b=Rt4arT8KaGGJORIzSrG9G7VkvSKQdLjrARcaKIPiSAL2WjMy/iJ3Gw/e1AGBEV9uawwizOaRH
+	4xQ+7ngz5Wq9Jx4On7AwcoQE0EJLsBT4qx9vc3z+9rNlzp2I3kqNp6pH7yKqN5lbKnrok/ongo4
+	/D4nSWzNWIyjpmZ/WKoloyQ=
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4d16RW5Wm1z1prKB;
+	Tue,  4 Nov 2025 19:58:31 +0800 (CST)
+Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0F97D140156;
+	Tue,  4 Nov 2025 20:00:07 +0800 (CST)
+Received: from kwepemq200017.china.huawei.com (7.202.195.228) by
+ dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 4 Nov 2025 20:00:06 +0800
+Received: from [10.67.110.40] (10.67.110.40) by kwepemq200017.china.huawei.com
+ (7.202.195.228) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 4 Nov
+ 2025 20:00:06 +0800
+Message-ID: <032f82e9-552a-4ad8-aff7-717e6f38af43@huawei.com>
+Date: Tue, 4 Nov 2025 20:00:05 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiSmez2LFEpM05VUX=_GKJC8Ag68TJDByVPO=x4QwjyuA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next RFC 0/2] cpuset: Add cpuset.mems.spread_page to
+ cgroup v2
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+CC: <llong@redhat.com>, <tj@kernel.org>, <hannes@cmpxchg.org>,
+	<cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<lujialin4@huawei.com>
+References: <20250930093552.2842885-1-caixinchen1@huawei.com>
+ <wpdddawlyxc27fkkkyfwfulq7zjqkxbqqe2upu4irqkcbzptft@jowwnu3yvgvg>
+ <0d67adac-7ca2-4467-9d2e-049b62fcd7a2@huawei.com>
+ <doalyrbxmhzm6vvkotoqganga7s375athzlsnbab343wadijb5@winjpuf5m7dd>
+Content-Language: en-US
+From: Cai Xinchen <caixinchen1@huawei.com>
+In-Reply-To: <doalyrbxmhzm6vvkotoqganga7s375athzlsnbab343wadijb5@winjpuf5m7dd>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ kwepemq200017.china.huawei.com (7.202.195.228)
 
-On Tue, Nov 04, 2025 at 08:04:28AM +0900, Linus Torvalds wrote:
-> On Mon, 3 Nov 2025 at 20:27, Christian Brauner <brauner@kernel.org> wrote:
-> >
-> >         /* Perform file operations on behalf of whoever enabled accounting */
-> > -       cred = override_creds(file->f_cred);
-> > -
-> > +       with_creds(file->f_cred);
-> 
-> I'd almost prefer if we *only* did "scoped_with_creds()" and didn't
-> have this version at all.
-> 
-> Most of the cases want that anyway, and the couple of plain
-> "with_creds()" cases look like they would only be cleaned up by making
-> the cred scoping more explicit.
-> 
-> What do you think?
+Therefore, when setting memory_spread_page, I also need to perform a 
+drop cache operation.
 
-Yeah, good idea. I reworked it all so now we're only left with:
+This way, there is no need to restart the service.
 
-scoped_with_creds()
-scoped_with_kernel_creds()
 
-It increases the indentation for about 3 cases but otherwise is safer.
-It's all in:
+Some previous ideas, such as using procfs or set_mempolicy to change the 
+mempolicy of
 
-https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/log/?h=kernel-6.19.cred
+non-current processes, could also achieve the goal after dropping the 
+cache. [1]
+
+
+Of course, changing the current memory distribution does not necessarily 
+require dropping
+
+the cache, but it will inevitably lead to a series of memory migrations.
+
+
+[1] 
+https://lore.kernel.org/all/20231122211200.31620-1-gregory.price@memverge.com/
+
+https://lore.kernel.org/all/ZWS19JFHm_LFSsFd@tiehlicka/
+
+On 11/3/2025 9:39 PM, Michal Koutný wrote:
+> On Mon, Oct 20, 2025 at 02:20:30PM +0800, Cai Xinchen <caixinchen1@huawei.com> wrote:
+>> The MPOL_INTERLEAVE setting requires restarting the DataNode service.
+>> In this scenario, the issue can be resolved by restarting the service,
+> \o/
+>
+>> but I would prefer not to restart the DataNode service if possible,
+>> as it would cause a period of service interruption.
+> AFAICS, the implementation of cpuset's spread page works only for new
+> allocations (filemap_alloc_folio_noprof/cpuset_do_page_mem_spread) and
+> there's no migraion in cpuset1_update_task_spread_flags(). So this
+> simple v1-like spreading would still require restart of the service.
+>
+> (This challenge of dynamism also a reason why it's not ready for v2,
+> IMO.)
+>
+> HTH,
+> Michal
 
