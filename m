@@ -1,130 +1,92 @@
-Return-Path: <cgroups+bounces-11565-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11566-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D91FC3052F
-	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 10:45:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B04ECC30CBE
+	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 12:43:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 53D844E4623
-	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 09:45:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2372460D95
+	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 11:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DEC2311587;
-	Tue,  4 Nov 2025 09:45:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D34E72EB5CF;
+	Tue,  4 Nov 2025 11:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rf3pNu0C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TjxRGUvs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E57529BDBF
-	for <cgroups@vger.kernel.org>; Tue,  4 Nov 2025 09:45:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7786D2EAB70;
+	Tue,  4 Nov 2025 11:40:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762249550; cv=none; b=j/Qr72wBoMGZ6PFAztaOUdWzyzL9TD8WrVwbBVO/q62bvKq8JC+mAAC5LqQcf0YqlyZRSnIGsmtIg/VRwXa0N2Yvvi0+3TYX8ZjUUgDUae30M4mmH1kaEgWMOXV+ZNVjNTidme3X3agpJVel6oIlypZTKmuTKtmEreBb/U/5eIs=
+	t=1762256442; cv=none; b=fRl/o3heD+pp0smogX084MJmvAgIxYiMzApEVLz8d9zpa0loHukCPZlUWSksh8XX/pKRZAY6XvG16PLE1MgvsNahq/C7o0H7VHuzk40aYCkimtxCocCQAuQRhAh2arNkwzXB1b8mG4aHfs6yv5cmvvdCrfLmvHv+LYcLA6cK6jo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762249550; c=relaxed/simple;
-	bh=Y/8kkJtUlvT/f8ywlYeX1B4ZoD/ySaLtnH0dGnqnmAA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PZh9F6F7V4iDtoAcTmjbIJySQH6JxZFXWIV0a0fYRvVepnKCa8/JEza30RbEq4zj0OLsXRnMFof/3uKa4gyp0hV5xFi7p3K1CjpVjmE6V/6F35TxLo+hPPPx8ojkMuNcqXial39kBEjGZyD9npYl+SasEiHJfC5jQQdTyLslkFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rf3pNu0C; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-640aa1445c3so3988190a12.1
-        for <cgroups@vger.kernel.org>; Tue, 04 Nov 2025 01:45:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762249547; x=1762854347; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xKJdWvkPbuojvyFkWrgOJDggLZVTca+r/oAisy+M4uA=;
-        b=Rf3pNu0Cg1d48tOeaZtZaLUkE/PEszLIZCf1p0J0eQREPNueGK+mEQ6TOQwKX0fevP
-         DG7Bf49VqBKXjMXfX+cxHFvoOdj0HEyx787WuG/kGgy0ZKASykSskdCNsJbQakDLDfmB
-         t87jC0FfJaGK2EkHbJ2skXAhafGEtVnaWmFwNihX/9k+M/WkZkLc1S7n6MArxGDLViHA
-         mxPiF89Dk7LQiqHnGfCi3TdkBqKIDuUcIWubluYRrUL9svX3Pgcse/je3swjxwnN1W1E
-         gUlOLs/2RRZquqbAd/Rto2820kkWJatdFt7IFS0sjW6lP07/tMpw3G0PdkY6g5ulk8uB
-         zzkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762249547; x=1762854347;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xKJdWvkPbuojvyFkWrgOJDggLZVTca+r/oAisy+M4uA=;
-        b=gkCP329A1PKuKXllpSQGypXe48VlOkFqgL5REqH3STG06UV6jbtqBLo9sQpTq6RmIY
-         U7F+Ck48PbWAm+72rmyMxKF5rR8EfksWvdfIuIPxTJpyxszyZ7eymCD4NmmFbYmZ8GbP
-         9UVmZPEJRWYEMd/BAkLNzDN8o6D+ufBXTXyocagOyB/y09NGDF2eiVnxU/K77FHNu40I
-         wQUSJB2i7cciMpWpPE595fTyjrjQrcYMMVgWqpYxxboaoPlBL7a8t2jVpVBYNcEaAn/x
-         rhWDNogKNai7WfENQZKwhs+xRP9Os9Y/tbvkWhVoFrzqYyDk4PYSN61GhJWLuWZBrJUU
-         XxAw==
-X-Forwarded-Encrypted: i=1; AJvYcCUBjiYtOKjxpbWu6JWC5fz5i4CKQwoKsUGBkwiiAPRLgyk39nPB2S3ZJwcgJTJulBqXql17bLkW@vger.kernel.org
-X-Gm-Message-State: AOJu0YweIwe9ULgQENS5GuSiWoXRXZi4SdOKgs9PkVAdQ7+SxhlDH5ag
-	zfaDmn0iQh+xUlpMRs+eQCvONOfdeN4NIuqFS7+JBFvFZrcIHhT3p5evhqCIBvxb+1LpgfU6AJR
-	Hedd6qz8q6oXsbfR2FJ1WtYfpAdkmicQ=
-X-Gm-Gg: ASbGncuxLFUbpqPHcevLFnxWikB9gqm8uoQdNlIXp5VObsIjHFGEaD1IyRGzHm0dkhA
-	2K/8km5j58OkY4JQJd25Ut/fdJvXMP7EY/YFPK2t0xQtfX3KZi0wag9W0jSZl94sHeu2r3nVNEp
-	zjs/9y8pch4KQzUQ6icyo7CO4Cd1ak8UCZqPQ9v+M/Jz2F4gtlYPejqVK/vKo2fzUP7dEE1Q9vj
-	iNaA+h/Cvmox5XCvpp+FfMXekFgFvr4p2YHxYwcZ8rd5qOJ5iwGzPDi9vzJhd4zDc/Ig8cTLkxH
-	amd5dqQzGDwof/bZRkY=
-X-Google-Smtp-Source: AGHT+IHXA2qJBi6f10DqUtNaDt/G9hT+Ey8B/WnoFdz3Hmrh6KCUpLdIDtROPfgXbvSfxz+h0BRwI+TkCKOqKrtbbyk=
-X-Received: by 2002:a05:6402:1462:b0:640:ea21:8bfd with SMTP id
- 4fb4d7f45d1cf-640ea219598mr1427481a12.31.1762249547237; Tue, 04 Nov 2025
- 01:45:47 -0800 (PST)
+	s=arc-20240116; t=1762256442; c=relaxed/simple;
+	bh=W07D7k8d9r42eIB9elVR5UyKqnAXxbxiWn376ofpzAE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PhNaOALMln6C4DVPsoNqEhl1J1C7OrpSWydmoYXAmvu/kRH0am3lCyIHyvA6b0i6/3uMWLLTNdlgynZ/dD20WFf9IgPN6MLHXTqrCjWdgBsCkbVQn4UZy/2CNFn1zsO420pa9gTIjJC/Uz2lwsFjSnvnc5mJd0jOoCwPveDz9Qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TjxRGUvs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 578D9C116B1;
+	Tue,  4 Nov 2025 11:40:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762256442;
+	bh=W07D7k8d9r42eIB9elVR5UyKqnAXxbxiWn376ofpzAE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TjxRGUvsTz2TY9x558mHTIz1Ih91p9JqOFsGFSwluMb08sYCfC6Ta+zRipYa9vIQO
+	 sibc5N5/8swj3yBcqMXzlZviupVerLGaz7oBWIfyw0edv8u8ZJoJ/Jad9Wfy3QYUTJ
+	 WxUM9obfJfM21WpmvJzLl6YFVkGFkqwhWyuF/cDhSjTUDFTux0PggSbhNbsoGf3D7J
+	 cXkQaq1eT0oOY29VqHb9Fwjpnefr6N/CoaJP2W9ISCdRcRvl8DTW4iG1YeYHw7WC6H
+	 8U8SBPX4W5hp7daJ1pRBpbhJIzlkSSgVCiQid6fuR9ivcp6dJvC9HEt0z/VPCUfUVy
+	 rTpA4nSfJZaqA==
+Date: Tue, 4 Nov 2025 12:40:36 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-aio@kvack.org, linux-unionfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
+	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
+	cgroups@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 14/16] act: use credential guards in acct_write_process()
+Message-ID: <20251104-hebamme-sinnieren-a30735196a26@brauner>
+References: <20251103-work-creds-guards-simple-v1-0-a3e156839e7f@kernel.org>
+ <20251103-work-creds-guards-simple-v1-14-a3e156839e7f@kernel.org>
+ <CAHk-=wiSmez2LFEpM05VUX=_GKJC8Ag68TJDByVPO=x4QwjyuA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251103-work-creds-guards-simple-v1-0-a3e156839e7f@kernel.org>
- <20251103-work-creds-guards-simple-v1-14-a3e156839e7f@kernel.org> <CAHk-=wiSmez2LFEpM05VUX=_GKJC8Ag68TJDByVPO=x4QwjyuA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 In-Reply-To: <CAHk-=wiSmez2LFEpM05VUX=_GKJC8Ag68TJDByVPO=x4QwjyuA@mail.gmail.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 4 Nov 2025 10:45:36 +0100
-X-Gm-Features: AWmQ_bn9rw0ha0qFFSykU1xP6jfkkEMSMAVkMSHJG30ZX97XNHwd3yxbJVnihQI
-Message-ID: <CAOQ4uxhw2Tc4YXwhkS=5EVC3Tg4F+QyrA7LE3V29pNhQ4WJeyA@mail.gmail.com>
-Subject: Re: [PATCH 14/16] act: use credential guards in acct_write_process()
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-aio@kvack.org, 
-	linux-unionfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
-	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, cgroups@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 4, 2025 at 12:04=E2=80=AFAM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Mon, 3 Nov 2025 at 20:27, Christian Brauner <brauner@kernel.org> wrote=
-:
+On Tue, Nov 04, 2025 at 08:04:28AM +0900, Linus Torvalds wrote:
+> On Mon, 3 Nov 2025 at 20:27, Christian Brauner <brauner@kernel.org> wrote:
 > >
-> >         /* Perform file operations on behalf of whoever enabled account=
-ing */
-> > -       cred =3D override_creds(file->f_cred);
+> >         /* Perform file operations on behalf of whoever enabled accounting */
+> > -       cred = override_creds(file->f_cred);
 > > -
 > > +       with_creds(file->f_cred);
->
+> 
 > I'd almost prefer if we *only* did "scoped_with_creds()" and didn't
 > have this version at all.
->
+> 
 > Most of the cases want that anyway, and the couple of plain
 > "with_creds()" cases look like they would only be cleaned up by making
 > the cred scoping more explicit.
->
+> 
 > What do you think?
 
-I had a similar reaction but for another reason.
+Yeah, good idea. I reworked it all so now we're only left with:
 
-The 'with' lingo reminds me of python with statement (e.g.
-with open_file('example.txt', 'w') as file:), which implies a scope.
-So in my head I am reading "with_creds" as with_creds_do.
+scoped_with_creds()
+scoped_with_kernel_creds()
 
-Add to that the dubious practice (IMO) of scoped statements
-without an explicit {} scope and this can become a source of
-human brainos, but maybe the only problematic brain is mine..
+It increases the indentation for about 3 cases but otherwise is safer.
+It's all in:
 
-Thanks,
-Amir.
+https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/log/?h=kernel-6.19.cred
 
