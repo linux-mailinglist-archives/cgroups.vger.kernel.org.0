@@ -1,150 +1,188 @@
-Return-Path: <cgroups+bounces-11568-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11569-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90BB5C31D66
-	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 16:29:37 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F084C32986
+	for <lists+cgroups@lfdr.de>; Tue, 04 Nov 2025 19:19:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7515189FDCE
-	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 15:30:01 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 574014F4C85
+	for <lists+cgroups@lfdr.de>; Tue,  4 Nov 2025 18:16:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7F2264FB5;
-	Tue,  4 Nov 2025 15:29:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F52A33EAFD;
+	Tue,  4 Nov 2025 18:14:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="komXz4R+"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CYncNzCz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A7E1C8606
-	for <cgroups@vger.kernel.org>; Tue,  4 Nov 2025 15:29:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42AE33DEFD
+	for <cgroups@vger.kernel.org>; Tue,  4 Nov 2025 18:14:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762270172; cv=none; b=jIFi84nWv8qoajr3Zm8bsMhtTEqW3JDehzD7Ej7ZID0RAP3IzaAMjvxTLD2y8ot9mmwLYR4J4W0aUVkgASa2G7FBwZ8XTRMX33bWa+89tzOUnYKuc1Sarr6d239/ffV+pLlfzZ9AYD1Gb5mqWTOYuMfqzboPmb3bSbAYI1skZnw=
+	t=1762280068; cv=none; b=d5EQ2sQanwH0VMz1rvltto0X6pmv7NdDROJ6yr2Ee/o74wUE9PiDyADwGo+2hdPnCu09u+qisIjS6+cAcZMHeTqTts1tvqTR4bn83g8JD4JbjsuyjH5PKeNZI0hGhL0pZf+raMY4ggBa4q/DQHJRacQcUjXfgUisbbH2397M6yY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762270172; c=relaxed/simple;
-	bh=8GNMbexAGe1nKqMzzLVClEkNd7j6DVDRkgcdOMp8ajQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iqo3CllkY/b9Q8yWn1hIGrvfd8by2SAxn5EdMUNIqlOmjlhdd7vFefHVW8Ls32abXPZvroQw8ZFQvyvPjza4XX93r05s/4mBMJQRd8qbjFKWgn8cp50qhqmTfhM0vEgwHgWAvVAkawe1HExtdl8Hyg/lBJxpCEyBTpo/xbV29S4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=komXz4R+; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2959197b68eso195855ad.1
-        for <cgroups@vger.kernel.org>; Tue, 04 Nov 2025 07:29:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1762270170; x=1762874970; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8GNMbexAGe1nKqMzzLVClEkNd7j6DVDRkgcdOMp8ajQ=;
-        b=komXz4R+41dzT/XSiGVn89xk28v1lVjn5ZUX4+R3Vry1fRFm0on3hzx47TViArkgsV
-         64igP4q74IHlHGz/e6WNOhIzO4NoXFVpzWZY5PT6xsU5aMt5urG5Tmgum3HpayNNAR7W
-         qMgE5xpOgsKWwcZiD/HiON3MyShaU7sEGd9iKE/mhwXRZZth+xK/SZMi8eNiy6M2u/JN
-         mu5mOt3DcNFAVsM5g7HUMIvWJa2e7uJ6jJGTK7/tdfqn1iuKZ03YmvQ6604ISnoZsI6F
-         EwQrKMGUNWm7ChO2CPB+o/p4InWbwf4bs/Ew38x9e09dHaSp+1R2iw0gthCKjcs7qe3Y
-         ZcNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762270170; x=1762874970;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8GNMbexAGe1nKqMzzLVClEkNd7j6DVDRkgcdOMp8ajQ=;
-        b=AzNmRxjwaYZyrH9QaNuc19j6ysoqQg5/RdaVMRwHS8OUYXVR4zBsBBu458aOz3/tQ6
-         +2kO6LD2+7M5E2BMeG5RseJSXEWOuOS1uYV4vZPz70HGcyE9xo8x35XO8JHubwLhH74J
-         Is28HmQt9xDKVEdMe+SqNI6MJWF/f3bbRaZTNpRqj4/i9Hv0d180QMBFlILu6fkSjFhS
-         9GlWpwpuYYyrMK1K9/rUw1WSuuXzuXVptbmIJWBLGeJ82q/E6v6KF6VYE9okgaaiAscr
-         rXqPt/P5ycF7PnHlW7ofXxNx0wgx18o8G456h7CKxa0z7F/qPsXlxdhoPBtFmmp6hxtY
-         EOPg==
-X-Forwarded-Encrypted: i=1; AJvYcCUUeoIduYfaWbQGj5Gdrh4fKyfBuyDFMx/bECHp9Ns3CwKcZVHbc9Xkdzm/1F5wjyQnQ0IfNCyc@vger.kernel.org
-X-Gm-Message-State: AOJu0YwvawN/vbfcvA1ldSGdcicD9pys6r6r2Vg6BLT/jApGhPILkub/
-	K6NG2xF09xMGOvdIcImRDzlQlg3YIeBS6vBbTCAauzeZ4lo5OzbOU/5TUKoOD9KQM0ExApj9yEj
-	sR+At1O+piqSA8GFZDMt7QLwBhDNyCjVnRjE211bq
-X-Gm-Gg: ASbGncv4eKgBeev8hOd+uLVvkA0ChpcBOuJ+cKH9yBlfMp/ANRiTrDedxpFxSTyBctW
-	SD5DPE9qgq7NhCpOmmYNoCyxvZUZ//ymvFXvnuRU5r2K8bVYNhY7E6uf/wiYS4jOpUqyeQM+wVO
-	Ua8d9GK5oTLF9I0dp92xkmUHKjIMd1VLWlLH53QawZAqxnGbvZYpZgkazGu9XcqbR3413VdMF+W
-	5xU6JKJzrYain2y/jHSUGgojT5aAIPKg6MFkcIaBXXPuHSAiaq7EYEL4sAM/mwR6FALQkBPEXwe
-	nc77B3k4aHreXQ2jsQ==
-X-Google-Smtp-Source: AGHT+IH4UAJnle8ScuJWqynVoBOWdaJhxSn6rAs6bqvidoqyAcb3/mjW+zeWXvxPSrbgnMnIJK48J8HHgBswCtIjjHM=
-X-Received: by 2002:a17:902:c412:b0:294:d42c:ca0f with SMTP id
- d9443c01a7336-295fd276d54mr4970305ad.2.1762270169379; Tue, 04 Nov 2025
- 07:29:29 -0800 (PST)
+	s=arc-20240116; t=1762280068; c=relaxed/simple;
+	bh=eW9gLOYQ4PO/YSLIAFmpY62Rr4JFZ49YbcwqvrnIPBU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=TgcnZaYe30XYWhrGZMF3FTCCCOV5Z6xBER/2qIYuR5gMmxKXDEoOpSuRHf+EjiYndJlkjJRJoutsA/Vs65LkSXrYmKSrmqu97wl55alYGUY9am1eG8bUQvZsBmr8tP2+pJGqk2TgO8X38Qhd/FKRyGp6mmxoy3/3YfT2G1WfBLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CYncNzCz; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762280054;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NAWdqQAMF5nun7wl28IZyFWxTMsXgZF6tpsdkVCFUVk=;
+	b=CYncNzCzYkQqitwhPYqZZ2XB5M4zBBImGrmM8RswwHaI5fjYIChKwb+qJ+P6ev/4Y8jaEV
+	UINgarZFhBJlyEkb3eGVjNfCyAerXhNhDDKh9POde27z+UNbv9dAnXxmOAcCOohdCIqP0I
+	m20QJOx7Cz/kEmiqvkHdkwAZ8kL8w+w=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+  linux-kernel@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,
+  Suren Baghdasaryan <surenb@google.com>,  Shakeel Butt
+ <shakeel.butt@linux.dev>,  Johannes Weiner <hannes@cmpxchg.org>,  Andrii
+ Nakryiko <andrii@kernel.org>,  JP Kobryn <inwardvessel@gmail.com>,
+  linux-mm@kvack.org,  cgroups@vger.kernel.org,  bpf@vger.kernel.org,
+  Martin KaFai Lau <martin.lau@kernel.org>,  Song Liu <song@kernel.org>,
+  Kumar Kartikeya Dwivedi <memxor@gmail.com>,  Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 06/23] mm: introduce BPF struct ops for OOM handling
+In-Reply-To: <aQm2zqmD9mHE1psg@tiehlicka> (Michal Hocko's message of "Tue, 4
+	Nov 2025 09:18:22 +0100")
+References: <20251027231727.472628-1-roman.gushchin@linux.dev>
+	<20251027231727.472628-7-roman.gushchin@linux.dev>
+	<aQR7HIiQ82Ye2UfA@tiehlicka> <875xbsglra.fsf@linux.dev>
+	<aQj7uRjz668NNrm_@tiehlicka> <87a512muze.fsf@linux.dev>
+	<aQm2zqmD9mHE1psg@tiehlicka>
+Date: Tue, 04 Nov 2025 10:14:05 -0800
+Message-ID: <87h5v93bte.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1760731772.git.ackerleytng@google.com> <5a4dfc265a46959953e6c24730d22584972b1179.1760731772.git.ackerleytng@google.com>
- <aQnGJ5agTohMijj8@yzhao56-desk.sh.intel.com>
-In-Reply-To: <aQnGJ5agTohMijj8@yzhao56-desk.sh.intel.com>
-From: Vishal Annapurve <vannapurve@google.com>
-Date: Tue, 4 Nov 2025 07:29:14 -0800
-X-Gm-Features: AWmQ_bl_ayCFfhnMsugNyyrAbP6HSGsNUxGOugUtPG7U3zm3zMrinB0nHoIiMMY
-Message-ID: <CAGtprH9cajbGWrU9PAZWNKMeKJ9DyhoV=nEYk_DnYnR8Fyapww@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 11/37] KVM: guest_memfd: Add support for KVM_SET_MEMORY_ATTRIBUTES
-To: Yan Zhao <yan.y.zhao@intel.com>
-Cc: Ackerley Tng <ackerleytng@google.com>, cgroups@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de, 
-	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org, 
-	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com, 
-	david@redhat.com, dmatlack@google.com, erdemaktas@google.com, 
-	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com, hannes@cmpxchg.org, 
-	hch@infradead.org, hpa@zytor.com, hughd@google.com, ira.weiny@intel.com, 
-	isaku.yamahata@intel.com, jack@suse.cz, james.morse@arm.com, 
-	jarkko@kernel.org, jgg@ziepe.ca, jgowans@amazon.com, jhubbard@nvidia.com, 
-	jroedel@suse.de, jthoughton@google.com, jun.miao@intel.com, 
-	kai.huang@intel.com, keirf@google.com, kent.overstreet@linux.dev, 
-	liam.merwick@oracle.com, maciej.wieczor-retman@intel.com, 
-	mail@maciej.szmigiero.name, maobibo@loongson.cn, 
-	mathieu.desnoyers@efficios.com, maz@kernel.org, mhiramat@kernel.org, 
-	mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com, mingo@redhat.com, 
-	mlevitsk@redhat.com, mpe@ellerman.id.au, muchun.song@linux.dev, 
-	nikunj@amd.com, nsaenz@amazon.es, oliver.upton@linux.dev, palmer@dabbelt.com, 
-	pankaj.gupta@amd.com, paul.walmsley@sifive.com, pbonzini@redhat.com, 
-	peterx@redhat.com, pgonda@google.com, prsampat@amd.com, pvorel@suse.cz, 
-	qperret@google.com, richard.weiyang@gmail.com, rick.p.edgecombe@intel.com, 
-	rientjes@google.com, rostedt@goodmis.org, roypat@amazon.co.uk, 
-	rppt@kernel.org, seanjc@google.com, shakeel.butt@linux.dev, shuah@kernel.org, 
-	steven.price@arm.com, steven.sistare@oracle.com, suzuki.poulose@arm.com, 
-	tabba@google.com, tglx@linutronix.de, thomas.lendacky@amd.com, vbabka@suse.cz, 
-	viro@zeniv.linux.org.uk, vkuznets@redhat.com, wei.w.wang@intel.com, 
-	will@kernel.org, willy@infradead.org, wyihan@google.com, xiaoyao.li@intel.com, 
-	yilun.xu@intel.com, yuzenghui@huawei.com, zhiquan1.li@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Nov 4, 2025 at 1:27=E2=80=AFAM Yan Zhao <yan.y.zhao@intel.com> wrot=
-e:
+Michal Hocko <mhocko@suse.com> writes:
+
+> On Mon 03-11-25 17:45:09, Roman Gushchin wrote:
+>> Michal Hocko <mhocko@suse.com> writes:
+>> 
+>> > On Sun 02-11-25 13:36:25, Roman Gushchin wrote:
+>> >> Michal Hocko <mhocko@suse.com> writes:
+> [...]
+>> > No, I do not feel strongly one way or the other but I would like to
+>> > understand thinking behind that. My slight preference would be to have a
+>> > single return status that clearly describe the intention. If you want to
+>> > have more flexible chaining semantic then an enum { IGNORED, HANDLED,
+>> > PASS_TO_PARENT, ...} would be both more flexible, extensible and easier
+>> > to understand.
+>> 
+>> The thinking is simple:
+>> 1) Most users will have a single global bpf oom policy, which basically
+>> replaces the in-kernel oom killer.
+>> 2) If there are standalone containers, they might want to do the same on
+>> their level. And the "host" system doesn't directly control it.
+>> 3) If for some reason the inner oom handler fails to free up some
+>> memory, there are two potential fallback options: call the in-kernel oom
+>> killer for that memory cgroup or call an upper level bpf oom killer, if
+>> there is one.
+>> 
+>> I think the latter is more logical and less surprising. Imagine you're
+>> running multiple containers and some of them implement their own bpf oom
+>> logic and some don't. Why would we treat them differently if their bpf
+>> logic fails?
 >
-> On Fri, Oct 17, 2025 at 01:11:52PM -0700, Ackerley Tng wrote:
-> > For shared to private conversions, if refcounts on any of the folios
-> > within the range are elevated, fail the conversion with -EAGAIN.
-> >
-> > At the point of shared to private conversion, all folios in range are
-> > also unmapped. The filemap_invalidate_lock() is held, so no faulting
-> > can occur. Hence, from that point on, only transient refcounts can be
-> > taken on the folios associated with that guest_memfd.
-> >
-> > Hence, it is safe to do the conversion from shared to private.
-> >
-> > After conversion is complete, refcounts may become elevated, but that
-> > is fine since users of transient refcounts don't actually access
-> > memory.
-> >
-> > For private to shared conversions, there are no refcount checks. any
-> > transient refcounts are expected to drop their refcounts soon. The
-> > conversion process will spin waiting for these transient refcounts to
-> > go away.
-> Where's the code to spin?
+> I think both approaches are valid and it should be the actual handler to
+> tell what to do next. If the handler would prefer the in-kernel fallback
+> it should be able to enforce that rather than a potentially unknown bpf
+> handler up the chain.
 
-When dealing with 4k pages, I think we don't need to spin waiting for
-transient refcounts to drop, that logic will be needed when dealing
-with huge folios in order to restructure them while handling
-conversion. So the specific part can be safely dropped from the commit
-message.
+The counter-argument is that cgroups are hierarchical and higher level
+cgroups should be able to enforce the desired behavior for their
+sub-trees. I'm not sure what's more important here and have to think
+more about it.
+Do you have an example when it might be important for container to not
+pass to a higher level bpf handler?
+
+>
+>> Re a single return value: I can absolutely specify return values as an
+>> enum, my point is that unlike the kernel code we can't fully trust the
+>> value returned from a bpf program, this is why the second check is in
+>> place.
+>
+> I do not understand this. Could you elaborate? Why we cannot trust the
+> return value but we can trust a combination of the return value and a
+> state stored in a helper structure?
+
+Imagine bpf program which does nothing and simple returns 1. Imagine
+it's loaded as a system-wide oom handler. This will effectively disable
+the oom killer and lead to a potential deadlock on memory.
+But it's a perfectly valid bpf program.
+This is something I want to avoid (and it's a common practice with other
+bpf programs).
+
+What I do I also rely on the value of the oom control's field, which is
+not accessible to the bpf program for write directly, but can be changed
+by calling certain helper functions, e.g. bpf_oom_kill_process.
+
+>> Can we just ignore the returned value and rely on the freed_memory flag?
+>
+> I do not think having a single freed_memory flag is more helpful. This
+> is just a number that cannot say much more than a memory has been freed.
+> It is not really important whether and how much memory bpf handler
+> believes it has freed. It is much more important to note whether it
+> believes it is done, it needs assistance from a different handler up the
+> chain or just pass over to the in-kernel implementation.
+
+Btw in general in a containerized environment a bpf handler knows
+nothing about bpf programs up in the cgroup hierarchy... So it only
+knows whether it was able to free some memory or not.
+
+>
+>> Sure, but I don't think it bus us anything.
+>> 
+>> Also, I have to admit that I don't have an immediate production use case
+>> for nested oom handlers (I'm fine with a global one), but it was asked
+>> by Alexei Starovoitov. And I agree with him that the containerized case
+>> will come up soon, so it's better to think of it in advance.
+>
+> I agree it is good to be prepared for that.
+>
+>> >> >> The bpf_handle_out_of_memory() callback program is sleepable to enable
+>> >> >> using iterators, e.g. cgroup iterators. The callback receives struct
+>> >> >> oom_control as an argument, so it can determine the scope of the OOM
+>> >> >> event: if this is a memcg-wide or system-wide OOM.
+>> >> >
+>> >> > This could be tricky because it might introduce a subtle and hard to
+>> >> > debug lock dependency chain. lock(a); allocation() -> oom -> lock(a).
+>> >> > Sleepable locks should be only allowed in trylock mode.
+>> >> 
+>> >> Agree, but it's achieved by controlling the context where oom can be
+>> >> declared (e.g. in bpf_psi case it's done from a work context).
+>> >
+>> > but out_of_memory is any sleepable context. So this is a real problem.
+>> 
+>> We need to restrict both:
+>> 1) where from bpf_out_of_memory() can be called (already done, as of now
+>> only from bpf_psi callback, which is safe).
+>> 2) which kfuncs are available to bpf oom handlers (only those, which are
+>> not trying to grab unsafe locks) - I'll double check it in thenext version.
+>
+> OK. All I am trying to say is that only safe sleepable locks are
+> trylocks and that should be documented because I do not think it can be
+> enforced
+
+It can! Not directly, but by controlling which kfuncs/helpers are
+available to bpf programs.
+I agree with you in principle re locks and necessary precaution here.
+
+Thanks!
 
