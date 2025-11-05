@@ -1,87 +1,90 @@
-Return-Path: <cgroups+bounces-11610-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11611-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ED1BC37D41
-	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 22:04:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3A97C37D50
+	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 22:05:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 275F434FC54
-	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 21:04:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94C0F18C82E2
+	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 21:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C43F34C989;
-	Wed,  5 Nov 2025 21:04:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0336F34D4D3;
+	Wed,  5 Nov 2025 21:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dtbAR/JO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AJURCUSi"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA5C2D8783;
-	Wed,  5 Nov 2025 21:04:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71F734CFD4;
+	Wed,  5 Nov 2025 21:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762376643; cv=none; b=tqTWDSiuGyPaPP9m+9xluqaj6GajjZlG8xYeoxgafDk09D4Qoo44N9x+kGgryLz1uuY6b3Snti6GqTyD/X6wXJfJxxADMhF/jb+2/Hmn0BWDfH0NkQ97c9goTz3jLuAuf2T81KftGJoiVS8HiTmj9xv98XAVMLmbSZ1f9VHFgto=
+	t=1762376652; cv=none; b=SIlCGA7xZ0CzsyYKnQ728bvfhfX6sV3ukYJsipuyGI0JmHqc7iEPMXAd7ajqww1JbDBeFNll7VnrLbmY+n2CLHRSF93E4YqbwbI0vSY1BKK9yGlAVHPkNhl9XVOZp6S39R3LgDyYMeMKSlA7iPKacQp8LPiUYWL1e6YovW6qMow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762376643; c=relaxed/simple;
-	bh=3lbd/EU2NQ8mLBwmqz/2m2jc7qv0uF70cLO4qQ/HcLI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W4I3orefCSJOfTMMifWUpQgYd6rWcb4z+CAnAOfRX04Z2C3m/THvsoM7nHrg52h7tzYaQ0yOKLCagkdXqVhW3f7GumxJV1OFoMLJq121zSSLXSZRKje2ea2M4177CXd4ILfI/W0AstgS1t/oDxZgByiFnlUDcHZkU0WIK4LW95I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dtbAR/JO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21204C4CEF5;
-	Wed,  5 Nov 2025 21:03:54 +0000 (UTC)
+	s=arc-20240116; t=1762376652; c=relaxed/simple;
+	bh=8Q71EO557AK60zUjy5zJPPkN07FPtYd1UuHTAzHqsFk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AziKYoli+ok5+UGMKOm+eJ1IuFyKk0hz67fCC1R+Bj80r/oQM8Uzux4AzvNv7NQfeEYo3c3TPi8AmVDcSUYU/IUCGz1nW0ybEx+gxioDQsMFR5LRkEUKGth68r6fjitQHmzoc1+D6m1GjMlIQjHPVfAxlNHq5sNKAH2ibB1Llhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AJURCUSi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13AB5C116D0;
+	Wed,  5 Nov 2025 21:04:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762376642;
-	bh=3lbd/EU2NQ8mLBwmqz/2m2jc7qv0uF70cLO4qQ/HcLI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=dtbAR/JOu+tct/pxmTcYqviFrVXO6KQL6RNEt8EvVv6P33xPHb9dgHSk9ViufUw5h
-	 kJ1uxg96GLeI8292NUvdAXLPsvexKzZTOvz/gqFR4B6Tf9OaddzbqXg2yQcuwzn5ku
-	 NZ8Sz2aQ7UWT3Uo0jQ1QoNPnzhRVhti/SyAe56tyLNPuuhK+nf+q1QjFVpUI4PCL/l
-	 xdV1u0DRnHSkyp4q84sPX72DQOu3N6R+ft0MWsYIMWFXcaMrhmv46DFunA41fPSuim
-	 VgLUQjfA+k0lz49d9bWIB9ytxdlmtWzuFUN4GpAWzvETdfY0TBnWeKp8qSygESbq3Z
-	 Ohs2vu0HGP3Lw==
+	s=k20201202; t=1762376650;
+	bh=8Q71EO557AK60zUjy5zJPPkN07FPtYd1UuHTAzHqsFk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=AJURCUSilbHUliUZRLrgr+YTl80lHSkFVtDFlHcKKO/sO5PBq/MhEJUXJz916fP81
+	 wAbJ8Yy5s6zsZm9lBVZoeQXrmyCrVMNai4ryobrKlPGWI6PI6p6Jep72D7ahE5dvcd
+	 k4C/l6tC0UJksuZsxtngb12Gs/wAUhM8HZr8RudMlyYPQQHJ6z+N1Fiqf5+++lztgm
+	 sINWjeiVCtGxC9uvySEPj5+spW1J3KjyQn3Fa6fEASxYDs+prWyAMn68bY/cKaaxjd
+	 txBp5Oc4fioT76vUk0O5Kgl+uyh1HTeyhNjK41/nevk/wEXq14ugto76jhLUchVfJp
+	 9jeOdMslbHixg==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Thomas Gleixner <tglx@linutronix.de>,
 	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Danilo Krummrich <dakr@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Will Deacon <will@kernel.org>,
 	Gabriele Monaco <gmonaco@redhat.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Phil Auld <pauld@redhat.com>,
-	Paolo Abeni <pabeni@redhat.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
 	Ingo Molnar <mingo@redhat.com>,
-	cgroups@vger.kernel.org,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Phil Auld <pauld@redhat.com>,
 	"Rafael J . Wysocki" <rafael@kernel.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Danilo Krummrich <dakr@kernel.org>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	linux-mm@kvack.org,
-	Michal Hocko <mhocko@suse.com>,
-	linux-pci@vger.kernel.org,
+	Shakeel Butt <shakeel.butt@linux.dev>,
 	Simon Horman <horms@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Waiman Long <longman@redhat.com>,
-	linux-block@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
 	Tejun Heo <tj@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
 	Vlastimil Babka <vbabka@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	netdev@vger.kernel.org,
-	Muchun Song <muchun.song@linux.dev>
-Subject: [PATCH 00/31 v4] cpuset/isolation: Honour kthreads preferred affinity
-Date: Wed,  5 Nov 2025 22:03:16 +0100
-Message-ID: <20251105210348.35256-1-frederic@kernel.org>
+	Waiman Long <longman@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	cgroups@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-block@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-pci@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH 01/31] PCI: Prepare to protect against concurrent isolated cpuset change
+Date: Wed,  5 Nov 2025 22:03:17 +0100
+Message-ID: <20251105210348.35256-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251105210348.35256-1-frederic@kernel.org>
+References: <20251105210348.35256-1-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,123 +93,118 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+HK_TYPE_DOMAIN will soon integrate cpuset isolated partitions and
+therefore be made modifiable at runtime. Synchronize against the cpumask
+update using RCU.
 
-The kthread code was enhanced lately to provide an infrastructure which
-manages the preferred affinity of unbound kthreads (node or custom
-cpumask) against housekeeping constraints and CPU hotplug events.
+The RCU locked section includes both the housekeeping CPU target
+election for the PCI probe work and the work enqueue.
 
-One crucial missing piece is cpuset: when an isolated partition is
-created, deleted, or its CPUs updated, all the unbound kthreads in the
-top cpuset are affine to _all_ the non-isolated CPUs, possibly breaking
-their preferred affinity along the way
+This way the housekeeping update side will simply need to flush the
+pending related works after updating the housekeeping mask in order to
+make sure that no PCI work ever executes on an isolated CPU. This part
+will be handled in a subsequent patch.
 
-Solve this with performing the kthreads affinity update from cpuset to
-the kthreads consolidated relevant code instead so that preferred
-affinities are honoured.
-
-The dispatch of the new cpumasks to workqueues and kthreads is performed
-by housekeeping, as per the nice Tejun's suggestion.
-
-As a welcome side effect, HK_TYPE_DOMAIN then integrates both the set
-from isolcpus= and cpuset isolated partitions. Housekeeping cpumasks are
-now modifyable with specific synchronization. A big step toward making
-nohz_full= also mutable through cpuset in the future.
-
-Changes since v3:
-
-- Spelling issues all over the place (Bjorn Helgaas, Simon Horman
-
-- Comment each HK_TYPE_* (Valentin Schneider)
-
-- Keep static branch in housekeeping_test_cpu() (Waiman Long)
-
-- Use rcu_dereference_all_check() to also check preemption disabled
-  (Chen Ridong)
-
-- Use cpumask_size() for allocation (Waiman Long)
-
-- Fix inverted branch on update (Phil Auld)
-
-- Set WQ_PERCPU to memcg workqueue (Waiman Long)
-
-- Remove linux/cpuset.h include from include/linux/sched/isolation.h
-  (Waiman Long)
-
-- Comment why unbound kthreads aren't updated on CPU online (Waiman Long)
-
-- Remove genirq related patches (handled in another patch after discussion
-  with Thomas Gleixner)
-
-git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-	kthread/core-v4
-
-HEAD: 9ba457a61e09fb17a4698879367b7e6593c256d2
-
-Thanks,
-	Frederic
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
+ drivers/pci/pci-driver.c | 47 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 38 insertions(+), 9 deletions(-)
 
-Frederic Weisbecker (30):
-      PCI: Prepare to protect against concurrent isolated cpuset change
-      cpu: Revert "cpu/hotplug: Prevent self deadlock on CPU hot-unplug"
-      memcg: Prepare to protect against concurrent isolated cpuset change
-      mm: vmstat: Prepare to protect against concurrent isolated cpuset change
-      sched/isolation: Save boot defined domain flags
-      cpuset: Convert boot_hk_cpus to use HK_TYPE_DOMAIN_BOOT
-      driver core: cpu: Convert /sys/devices/system/cpu/isolated to use HK_TYPE_DOMAIN_BOOT
-      net: Keep ignoring isolated cpuset change
-      block: Protect against concurrent isolated cpuset change
-      cpu: Provide lockdep check for CPU hotplug lock write-held
-      cpuset: Provide lockdep check for cpuset lock held
-      sched/isolation: Convert housekeeping cpumasks to rcu pointers
-      cpuset: Update HK_TYPE_DOMAIN cpumask from cpuset
-      sched/isolation: Flush memcg workqueues on cpuset isolated partition change
-      sched/isolation: Flush vmstat workqueues on cpuset isolated partition change
-      PCI: Flush PCI probe workqueue on cpuset isolated partition change
-      cpuset: Propagate cpuset isolation update to workqueue through housekeeping
-      cpuset: Remove cpuset_cpu_is_isolated()
-      sched/isolation: Remove HK_TYPE_TICK test from cpu_is_isolated()
-      PCI: Remove superfluous HK_TYPE_WQ check
-      kthread: Refine naming of affinity related fields
-      kthread: Include unbound kthreads in the managed affinity list
-      kthread: Include kthreadd to the managed affinity list
-      kthread: Rely on HK_TYPE_DOMAIN for preferred affinity management
-      sched: Switch the fallback task allowed cpumask to HK_TYPE_DOMAIN
-      sched/arm64: Move fallback task cpumask to HK_TYPE_DOMAIN
-      kthread: Honour kthreads preferred affinity after cpuset changes
-      kthread: Comment on the purpose and placement of kthread_affine_node() call
-      kthread: Document kthread_affine_preferred()
-      doc: Add housekeeping documentation
+diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
+index 302d61783f6c..7b74d22b20f7 100644
+--- a/drivers/pci/pci-driver.c
++++ b/drivers/pci/pci-driver.c
+@@ -302,9 +302,8 @@ struct drv_dev_and_id {
+ 	const struct pci_device_id *id;
+ };
+ 
+-static long local_pci_probe(void *_ddi)
++static int local_pci_probe(struct drv_dev_and_id *ddi)
+ {
+-	struct drv_dev_and_id *ddi = _ddi;
+ 	struct pci_dev *pci_dev = ddi->dev;
+ 	struct pci_driver *pci_drv = ddi->drv;
+ 	struct device *dev = &pci_dev->dev;
+@@ -338,6 +337,19 @@ static long local_pci_probe(void *_ddi)
+ 	return 0;
+ }
+ 
++struct pci_probe_arg {
++	struct drv_dev_and_id *ddi;
++	struct work_struct work;
++	int ret;
++};
++
++static void local_pci_probe_callback(struct work_struct *work)
++{
++	struct pci_probe_arg *arg = container_of(work, struct pci_probe_arg, work);
++
++	arg->ret = local_pci_probe(arg->ddi);
++}
++
+ static bool pci_physfn_is_probed(struct pci_dev *dev)
+ {
+ #ifdef CONFIG_PCI_IOV
+@@ -362,34 +374,51 @@ static int pci_call_probe(struct pci_driver *drv, struct pci_dev *dev,
+ 	dev->is_probed = 1;
+ 
+ 	cpu_hotplug_disable();
+-
+ 	/*
+ 	 * Prevent nesting work_on_cpu() for the case where a Virtual Function
+ 	 * device is probed from work_on_cpu() of the Physical device.
+ 	 */
+ 	if (node < 0 || node >= MAX_NUMNODES || !node_online(node) ||
+ 	    pci_physfn_is_probed(dev)) {
+-		cpu = nr_cpu_ids;
++		error = local_pci_probe(&ddi);
+ 	} else {
+ 		cpumask_var_t wq_domain_mask;
++		struct pci_probe_arg arg = { .ddi = &ddi };
++
++		INIT_WORK_ONSTACK(&arg.work, local_pci_probe_callback);
+ 
+ 		if (!zalloc_cpumask_var(&wq_domain_mask, GFP_KERNEL)) {
+ 			error = -ENOMEM;
+ 			goto out;
+ 		}
++
++		/*
++		 * The target election and the enqueue of the work must be within
++		 * the same RCU read side section so that when the workqueue pool
++		 * is flushed after a housekeeping cpumask update, further readers
++		 * are guaranteed to queue the probing work to the appropriate
++		 * targets.
++		 */
++		rcu_read_lock();
+ 		cpumask_and(wq_domain_mask,
+ 			    housekeeping_cpumask(HK_TYPE_WQ),
+ 			    housekeeping_cpumask(HK_TYPE_DOMAIN));
+ 
+ 		cpu = cpumask_any_and(cpumask_of_node(node),
+ 				      wq_domain_mask);
++		if (cpu < nr_cpu_ids) {
++			schedule_work_on(cpu, &arg.work);
++			rcu_read_unlock();
++			flush_work(&arg.work);
++			error = arg.ret;
++		} else {
++			rcu_read_unlock();
++			error = local_pci_probe(&ddi);
++		}
++
+ 		free_cpumask_var(wq_domain_mask);
++		destroy_work_on_stack(&arg.work);
+ 	}
+-
+-	if (cpu < nr_cpu_ids)
+-		error = work_on_cpu(cpu, local_pci_probe, &ddi);
+-	else
+-		error = local_pci_probe(&ddi);
+ out:
+ 	dev->is_probed = 0;
+ 	cpu_hotplug_enable();
+-- 
+2.51.0
 
-Gabriele Monaco (1):
-      cgroup/cpuset: Fail if isolated and nohz_full don't leave any housekeeping
-
- Documentation/cpu_isolation/housekeeping.rst | 111 +++++++++++++++++++
- arch/arm64/kernel/cpufeature.c               |  18 ++-
- block/blk-mq.c                               |   6 +-
- drivers/base/cpu.c                           |   2 +-
- drivers/pci/pci-driver.c                     |  71 ++++++++----
- include/linux/cpu.h                          |   4 +
- include/linux/cpuhplock.h                    |   1 +
- include/linux/cpuset.h                       |   8 +-
- include/linux/kthread.h                      |   1 +
- include/linux/memcontrol.h                   |   4 +
- include/linux/mmu_context.h                  |   2 +-
- include/linux/pci.h                          |   3 +
- include/linux/percpu-rwsem.h                 |   1 +
- include/linux/sched/isolation.h              |  16 ++-
- include/linux/vmstat.h                       |   2 +
- include/linux/workqueue.h                    |   2 +-
- init/Kconfig                                 |   1 +
- kernel/cgroup/cpuset.c                       | 134 +++++++++++++++-------
- kernel/cpu.c                                 |  42 +++----
- kernel/kthread.c                             | 160 ++++++++++++++++++---------
- kernel/sched/isolation.c                     | 138 ++++++++++++++++++-----
- kernel/sched/sched.h                         |   4 +
- kernel/workqueue.c                           |  17 +--
- mm/memcontrol.c                              |  25 ++++-
- mm/vmstat.c                                  |  15 ++-
- net/core/net-sysfs.c                         |   2 +-
- 26 files changed, 596 insertions(+), 194 deletions(-)
 
