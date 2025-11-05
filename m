@@ -1,336 +1,165 @@
-Return-Path: <cgroups+bounces-11579-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11580-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1722C33F0F
-	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 05:40:38 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29857C34071
+	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 07:02:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C59D218C4D6E
-	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 04:40:51 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A6EB934B74F
+	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 06:02:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7FC27AC4C;
-	Wed,  5 Nov 2025 04:39:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5B7A2BE7D0;
+	Wed,  5 Nov 2025 06:02:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ba71Yriy"
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="ERQZDNRN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C7D5276058
-	for <cgroups@vger.kernel.org>; Wed,  5 Nov 2025 04:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07C726E709
+	for <cgroups@vger.kernel.org>; Wed,  5 Nov 2025 06:02:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762317567; cv=none; b=KZiRnnikIYo5U+mCg17sHjnB1RWakxzNJvjmXC80CT8wq5R8NTHDyhn+CoV0X34uZOTvGgZg0OsRl3glHciChiAZ8275HqdH5g5cVxcRM4HVO1ImJawsCgsfwynsTpc6HRoMaQ9EAxLs09PFnZEB5faJ4tgModKsVrdr5BrfEo0=
+	t=1762322534; cv=none; b=Ksz3ZTxG3f3h/tGEAC48B0UUupQ78VxK0y5dHT1/8/3jbImpi1n6MUSdYIRFl+sYrKEgxSFC7Ml4wc7lQqftWmBmS+7ksbaF6uA3DsxEtUzD/KDpQeDSzTe7NNpSyouhPhZ3Hcsw2Rf09TXP8Go/XsToVPXs2Z1zS+hDUTTV43Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762317567; c=relaxed/simple;
-	bh=PRMJcyYJl61mZBeSGGgiHzEd0shtT9jlqiAi1ex1Arw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WWXTG53yufRaUvZb/m73KJUuedFLq0j10gqO0RHsTixjEPTk4l2XQDkE4c59KNsvyUKVCDxd2j7fzLsEELzraxGQXhXPrW+3V/UM6Svf8vqVq49IJYPcji6ggkPyQSFatGyZAM7rBFZ/OzFrTwScT1lY20Wo/D3sD+6H17qPQrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ba71Yriy; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1762317565;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wQG5O0jywdiZSfV+8D+TD6Dmb/AbN0MrtQRlMhnkX3c=;
-	b=Ba71YriyOC2kUBcLbjLHLKNRnRZloaj3cz8H2KAqjDJYbmbLpDrRzslbJ3SJ0X2pYw53WO
-	AfZRmbLkqBy96z9JIfKdPXGoc2IhvDv/jzf3+Itknw3lHxMKfspP/ev8REbwSKj1oK9EBg
-	ukXBc9arwQtYti2+zuCfSoGD4pdLTu8=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-517--pHnmFIJO1CImlX9mI_A5w-1; Tue,
- 04 Nov 2025 23:39:19 -0500
-X-MC-Unique: -pHnmFIJO1CImlX9mI_A5w-1
-X-Mimecast-MFC-AGG-ID: -pHnmFIJO1CImlX9mI_A5w_1762317558
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DAB1118011EF;
-	Wed,  5 Nov 2025 04:39:17 +0000 (UTC)
-Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.89.34])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 33E18195608E;
-	Wed,  5 Nov 2025 04:39:16 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chen Ridong <chenridong@huawei.com>,
-	Gabriele Monaco <gmonaco@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Waiman Long <longman@redhat.com>
-Subject: [cgroup/for-6.19 PATCH v3 5/5] cgroup/cpuset: Globally track isolated_cpus update
-Date: Tue,  4 Nov 2025 23:38:48 -0500
-Message-ID: <20251105043848.382703-6-longman@redhat.com>
-In-Reply-To: <20251105043848.382703-1-longman@redhat.com>
-References: <20251105043848.382703-1-longman@redhat.com>
+	s=arc-20240116; t=1762322534; c=relaxed/simple;
+	bh=rB26i8gg+y3xFbXaOX+BukR99gcLLiKA6P6pz/n0flQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SZYUR1DKCtIWNUKhQ45mfNM+Lh1ooh5jS+yOKBpt5pDPVqybUWIgU5SuIeCJ7hsB5DKY3sgRmKrCFcPf4KdZC3cNIIN9K2cBaEV85NW0b3/LqCV1kjmCdBZxIt10h90hBf8NMEKSwvhz8sgq24o3NAA3vlZB9v186XCy2TxwVuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=ERQZDNRN; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b6d2f5c0e8eso1217857366b.3
+        for <cgroups@vger.kernel.org>; Tue, 04 Nov 2025 22:02:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1762322530; x=1762927330; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ko+h2HHqIfyVkiIdgqbGuzIvxFEpCvepvxTD0kgHwio=;
+        b=ERQZDNRN2PWRX1/EMYpLuryhsJePx8dLLR6HMR0G3StPlHyHMNU7tcKcLOyfEbhW+h
+         inS0O8sMbszfsihBBXG23K3YUSpzE/cpyukL9MgARfVI23ILr3fgyUb9m+9wjPyfUjpr
+         wESlDLbSGtW3SV79L89Zts97LY+pJ0xTfv2xbo0DT8rZk8DWo1KVR7RPR4Ar/1/E6Rp2
+         3xfyFvxW6HODP/jEsVW/+vidb6+BhJvkqnjAmx0YQ90goj94gvaZQ0ewRGMb2yEVMP8w
+         FQfUny5NtEVDkQQP4rfVLYLsnebR6QjNwv0PMkY6ELdHjyGt558Ke61gGTmqBUQEScTb
+         yTwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762322530; x=1762927330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ko+h2HHqIfyVkiIdgqbGuzIvxFEpCvepvxTD0kgHwio=;
+        b=ZcExb3Wt4Md5AzRqFAQf0ATgq7xtEDhnH8i9+QIfyt0t/eAFAb7FygiqnJX5TIcY5Q
+         h65S2G2+wyseXVZD69R3I1XEjzG15eO6Lq4LnjZ8n3osUp3+6rFbJd3IWwBLfAxPE55C
+         kg0Rl+XeELMe7w6PnU0TLtVWY+mDxN7gnwUTsslvMhMJ/Rpb2U+1WlQufGFjTeTGVKpM
+         z7pzizXqeCZK20fDiYXEnPTb1tUjwPWdIPM00KNluxYee6kPhMX4QAC5vqGF3L3nqnmO
+         WCjEYZ3m44PMhHFyQw+gv1PQ0AEIb3LKTV4mOZ8dsRv6GI5BS8hQhNkFVe62E0s5yVDN
+         jC8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV3ipXkQ4umhYNZPUY2clDUV5AXWh5flkSPPB5yKnGUE7auNCH86JStSDYafMs0b2cfX6m4/I3T@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4seTEStLS6lqX4NVuRGCNlB2Uv1naGTWbjilj/TOZYxt5wrOI
+	tzsioFQ1HvAJpaDXu5Bf89cVsWDSUuOyTF0sCS8uKDrEI0ruP5AQbA2lsBg+BAxKy1JQLhYxP+e
+	Rt3Y0ZyrDXhGqmDP8iVSumSVZdvgUIVVheLUffJuj4w==
+X-Gm-Gg: ASbGnctSKSs9oIls2nkCBE0iW5/k7Fxygkm2DMlB11Cez6v8qwR8r6vrU8kf1ME68O6
+	+p7foWb4zyZNSBZqaYrVUJtzLjC+oXdCLSaVTE4yDt286731L1m9oF3dY6Pj2l8oa4bzg7P/P3M
+	+6wgLX89hJENUgduooL3zATCJm011KMBgMQxjzIUfSOz4TkOop5QHJVX5wVSvz4OdYrGyiuVqCL
+	B2iRtxVz2AWKAQzgERUTghDtCWqsMBafnZW2K6/v+y6U55h6/nvAnF9lC8=
+X-Google-Smtp-Source: AGHT+IGhzBDN0J2xo0zgTrF8hoLMoPjH/0yoSaTiCKabdffwkstVhE2JzObLLjxmM0V2ZK+kJ0pjRcykFQushFkcK04=
+X-Received: by 2002:a17:907:94d2:b0:b71:ee24:8a3d with SMTP id
+ a640c23a62f3a-b7265154e9bmr164396666b.12.1762322529791; Tue, 04 Nov 2025
+ 22:02:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+References: <20251104031908.77313-1-leon.huangfu@shopee.com> <aQnFn6vPQ5D6STGw@tiehlicka>
+In-Reply-To: <aQnFn6vPQ5D6STGw@tiehlicka>
+From: Leon Huang Fu <leon.huangfu@shopee.com>
+Date: Wed, 5 Nov 2025 14:01:33 +0800
+X-Gm-Features: AWmQ_bkS8mFduVj_GZzMUe3ULkR8btNSr45nec1ttI4iNP0pSA8_ELWgHC8BzUM
+Message-ID: <CAPV86rrt0YT-npNSBJ_eHvAYdr_j1qkN7H+J4QLN8zsfi5TJ4w@mail.gmail.com>
+Subject: Re: [PATCH mm-new] mm/memcontrol: Introduce sysctl vm.memcg_stats_flush_threshold
+To: Michal Hocko <mhocko@suse.com>
+Cc: linux-mm@kvack.org, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org, 
+	joel.granados@kernel.org, jack@suse.cz, laoar.shao@gmail.com, 
+	mclapinski@google.com, kyle.meyer@hpe.com, corbet@lwn.net, 
+	lance.yang@linux.dev, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The current cpuset code passes a local isolcpus_updated flag around in a
-number of functions to determine if external isolation related cpumasks
-like wq_unbound_cpumask should be updated. It is a bit cumbersome and
-makes the code more complex. Simplify the code by using a global boolean
-flag "isolated_cpus_updating" to track this. This flag will be set in
-isolated_cpus_update() and cleared in update_isolation_cpumasks().
+On Tue, Nov 4, 2025 at 5:21=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Tue 04-11-25 11:19:08, Leon Huang Fu wrote:
+> > The current implementation uses a flush threshold calculated as
+> > MEMCG_CHARGE_BATCH * num_online_cpus() for determining when to
+> > aggregate per-CPU memory cgroup statistics. On systems with high core
+> > counts, this threshold can become very large (e.g., 64 * 256 =3D 16,384
+> > on a 256-core system), leading to stale statistics when userspace reads
+> > memory.stat files.
+> >
+> > This is particularly problematic for monitoring and management tools
+> > that rely on reasonably fresh statistics, as they may observe data that
+> > is thousands of updates out of date.
+> >
+> > Introduce a new sysctl, vm.memcg_stats_flush_threshold, that allows
+> > administrators to override the flush threshold specifically for
+> > userspace reads of memory.stat. When set to 0 (default), the behavior
+> > remains unchanged, using the automatic calculation. When set to a
+> > non-zero value, userspace reads will use the custom threshold for more
+> > frequent flushing.
+>
+> How are admins supposed to know how to tune this? Wouldn't it make more
+> sense to allow explicit flushing on write to the file? That would allow
+> admins to implement their preferred accuracy tuning by writing to the fil=
+e
+> when the precision is required.
 
-No functional change is expected.
+Thank you for the feedback. Let me clarify the use case and design rational=
+e.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
-Reviewed-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/cpuset.c | 73 ++++++++++++++++++++----------------------
- 1 file changed, 35 insertions(+), 38 deletions(-)
+The threshold approach is intended for scenarios where administrators want =
+to
+improve accuracy for existing monitoring tools on high core-count systems. =
+On
+such systems, the default threshold (MEMCG_CHARGE_BATCH * num_cpus) can rea=
+ch
+16K+ updates, causing monitoring dashboards to display stale data.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 2daf58bf0bbb..90288efe5367 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -81,6 +81,13 @@ static cpumask_var_t	subpartitions_cpus;
-  */
- static cpumask_var_t	isolated_cpus;
- 
-+/*
-+ * isolated_cpus updating flag (protected by cpuset_mutex)
-+ * Set if isolated_cpus is going to be updated in the current
-+ * cpuset_mutex crtical section.
-+ */
-+static bool isolated_cpus_updating;
-+
- /*
-  * Housekeeping (HK_TYPE_DOMAIN) CPUs at boot
-  */
-@@ -1327,6 +1334,8 @@ static void isolated_cpus_update(int old_prs, int new_prs, struct cpumask *xcpus
- 		cpumask_or(isolated_cpus, isolated_cpus, xcpus);
- 	else
- 		cpumask_andnot(isolated_cpus, isolated_cpus, xcpus);
-+
-+	isolated_cpus_updating = true;
- }
- 
- /*
-@@ -1334,15 +1343,12 @@ static void isolated_cpus_update(int old_prs, int new_prs, struct cpumask *xcpus
-  * @new_prs: new partition_root_state
-  * @parent: parent cpuset
-  * @xcpus: exclusive CPUs to be added
-- * Return: true if isolated_cpus modified, false otherwise
-  *
-  * Remote partition if parent == NULL
-  */
--static bool partition_xcpus_add(int new_prs, struct cpuset *parent,
-+static void partition_xcpus_add(int new_prs, struct cpuset *parent,
- 				struct cpumask *xcpus)
- {
--	bool isolcpus_updated;
--
- 	WARN_ON_ONCE(new_prs < 0);
- 	lockdep_assert_held(&callback_lock);
- 	if (!parent)
-@@ -1352,13 +1358,11 @@ static bool partition_xcpus_add(int new_prs, struct cpuset *parent,
- 	if (parent == &top_cpuset)
- 		cpumask_or(subpartitions_cpus, subpartitions_cpus, xcpus);
- 
--	isolcpus_updated = (new_prs != parent->partition_root_state);
--	if (isolcpus_updated)
-+	if (new_prs != parent->partition_root_state)
- 		isolated_cpus_update(parent->partition_root_state, new_prs,
- 				     xcpus);
- 
- 	cpumask_andnot(parent->effective_cpus, parent->effective_cpus, xcpus);
--	return isolcpus_updated;
- }
- 
- /*
-@@ -1366,15 +1370,12 @@ static bool partition_xcpus_add(int new_prs, struct cpuset *parent,
-  * @old_prs: old partition_root_state
-  * @parent: parent cpuset
-  * @xcpus: exclusive CPUs to be removed
-- * Return: true if isolated_cpus modified, false otherwise
-  *
-  * Remote partition if parent == NULL
-  */
--static bool partition_xcpus_del(int old_prs, struct cpuset *parent,
-+static void partition_xcpus_del(int old_prs, struct cpuset *parent,
- 				struct cpumask *xcpus)
- {
--	bool isolcpus_updated;
--
- 	WARN_ON_ONCE(old_prs < 0);
- 	lockdep_assert_held(&callback_lock);
- 	if (!parent)
-@@ -1383,14 +1384,12 @@ static bool partition_xcpus_del(int old_prs, struct cpuset *parent,
- 	if (parent == &top_cpuset)
- 		cpumask_andnot(subpartitions_cpus, subpartitions_cpus, xcpus);
- 
--	isolcpus_updated = (old_prs != parent->partition_root_state);
--	if (isolcpus_updated)
-+	if (old_prs != parent->partition_root_state)
- 		isolated_cpus_update(old_prs, parent->partition_root_state,
- 				     xcpus);
- 
- 	cpumask_and(xcpus, xcpus, cpu_active_mask);
- 	cpumask_or(parent->effective_cpus, parent->effective_cpus, xcpus);
--	return isolcpus_updated;
- }
- 
- /*
-@@ -1452,17 +1451,24 @@ static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
- 	return false;
- }
- 
--static void update_isolation_cpumasks(bool isolcpus_updated)
-+/*
-+ * update_isolation_cpumasks - Update external isolation related CPU masks
-+ *
-+ * The following external CPU masks will be updated if necessary:
-+ * - workqueue unbound cpumask
-+ */
-+static void update_isolation_cpumasks(void)
- {
- 	int ret;
- 
--	lockdep_assert_cpus_held();
--
--	if (!isolcpus_updated)
-+	if (!isolated_cpus_updating)
- 		return;
- 
-+	lockdep_assert_cpus_held();
-+
- 	ret = workqueue_unbound_exclude_cpumask(isolated_cpus);
- 	WARN_ON_ONCE(ret < 0);
-+	isolated_cpus_updating = false;
- }
- 
- /**
-@@ -1587,8 +1593,6 @@ static inline bool is_local_partition(struct cpuset *cs)
- static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 				   struct tmpmasks *tmp)
- {
--	bool isolcpus_updated;
--
- 	/*
- 	 * The user must have sysadmin privilege.
- 	 */
-@@ -1616,11 +1620,11 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 		return PERR_HKEEPING;
- 
- 	spin_lock_irq(&callback_lock);
--	isolcpus_updated = partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
-+	partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
- 	list_add(&cs->remote_sibling, &remote_children);
- 	cpumask_copy(cs->effective_xcpus, tmp->new_cpus);
- 	spin_unlock_irq(&callback_lock);
--	update_isolation_cpumasks(isolcpus_updated);
-+	update_isolation_cpumasks();
- 	cpuset_force_rebuild();
- 	cs->prs_err = 0;
- 
-@@ -1643,15 +1647,12 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
-  */
- static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
- {
--	bool isolcpus_updated;
--
- 	WARN_ON_ONCE(!is_remote_partition(cs));
- 	WARN_ON_ONCE(!cpumask_subset(cs->effective_xcpus, subpartitions_cpus));
- 
- 	spin_lock_irq(&callback_lock);
- 	list_del_init(&cs->remote_sibling);
--	isolcpus_updated = partition_xcpus_del(cs->partition_root_state,
--					       NULL, cs->effective_xcpus);
-+	partition_xcpus_del(cs->partition_root_state, NULL, cs->effective_xcpus);
- 	if (cs->prs_err)
- 		cs->partition_root_state = -cs->partition_root_state;
- 	else
-@@ -1661,7 +1662,7 @@ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
- 	compute_excpus(cs, cs->effective_xcpus);
- 	reset_partition_data(cs);
- 	spin_unlock_irq(&callback_lock);
--	update_isolation_cpumasks(isolcpus_updated);
-+	update_isolation_cpumasks();
- 	cpuset_force_rebuild();
- 
- 	/*
-@@ -1686,7 +1687,6 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
- {
- 	bool adding, deleting;
- 	int prs = cs->partition_root_state;
--	int isolcpus_updated = 0;
- 
- 	if (WARN_ON_ONCE(!is_remote_partition(cs)))
- 		return;
-@@ -1722,9 +1722,9 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
- 
- 	spin_lock_irq(&callback_lock);
- 	if (adding)
--		isolcpus_updated += partition_xcpus_add(prs, NULL, tmp->addmask);
-+		partition_xcpus_add(prs, NULL, tmp->addmask);
- 	if (deleting)
--		isolcpus_updated += partition_xcpus_del(prs, NULL, tmp->delmask);
-+		partition_xcpus_del(prs, NULL, tmp->delmask);
- 	/*
- 	 * Need to update effective_xcpus and exclusive_cpus now as
- 	 * update_sibling_cpumasks() below may iterate back to the same cs.
-@@ -1733,7 +1733,7 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
- 	if (xcpus)
- 		cpumask_copy(cs->exclusive_cpus, xcpus);
- 	spin_unlock_irq(&callback_lock);
--	update_isolation_cpumasks(isolcpus_updated);
-+	update_isolation_cpumasks();
- 	if (adding || deleting)
- 		cpuset_force_rebuild();
- 
-@@ -1794,7 +1794,6 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 	int deleting;	/* Deleting cpus from parent's effective_cpus	*/
- 	int old_prs, new_prs;
- 	int part_error = PERR_NONE;	/* Partition error? */
--	int isolcpus_updated = 0;
- 	struct cpumask *xcpus = user_xcpus(cs);
- 	int parent_prs = parent->partition_root_state;
- 	bool nocpu;
-@@ -2073,14 +2072,12 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 	 * and vice versa.
- 	 */
- 	if (adding)
--		isolcpus_updated += partition_xcpus_del(old_prs, parent,
--							tmp->addmask);
-+		partition_xcpus_del(old_prs, parent, tmp->addmask);
- 	if (deleting)
--		isolcpus_updated += partition_xcpus_add(new_prs, parent,
--							tmp->delmask);
-+		partition_xcpus_add(new_prs, parent, tmp->delmask);
- 
- 	spin_unlock_irq(&callback_lock);
--	update_isolation_cpumasks(isolcpus_updated);
-+	update_isolation_cpumasks();
- 
- 	if ((old_prs != new_prs) && (cmd == partcmd_update))
- 		update_partition_exclusive_flag(cs, new_prs);
-@@ -3103,7 +3100,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
- 	else if (isolcpus_updated)
- 		isolated_cpus_update(old_prs, new_prs, cs->effective_xcpus);
- 	spin_unlock_irq(&callback_lock);
--	update_isolation_cpumasks(isolcpus_updated);
-+	update_isolation_cpumasks();
- 
- 	/* Force update if switching back to member & update effective_xcpus */
- 	update_cpumasks_hier(cs, &tmpmask, !new_prs);
--- 
-2.51.1
+Regarding tunability: while the exact threshold value requires some
+understanding, the principle is straightforward - lower values mean fresher
+stats but higher overhead. Administrators can start conservatively (e.g.,
+1/4 of the default: num_cpus * 16) and adjust based on observed overhead.
 
+Your suggestion about allowing writes to memory.stat to trigger explicit
+flushing is interesting. Comparing the two approaches:
+
+- Threshold (this patch):
+  - Administrator sets once system-wide via sysctl
+  - Affects all memory.stat reads automatically
+  - Tradeoff: harder to tune, always-on overhead
+
+- Write-to-flush (your suggestion):
+  - Tools write to memory.stat before reading: echo 1 > memory.stat
+  - Per-cgroup, on-demand control
+  - Tradeoff: requires tool modifications, but more precise control
+
+Actually, your approach may be more elegant - tools pay the flush cost only
+when they need accuracy, rather than imposing a system-wide policy. The
+write-to-flush pattern is also more discoverable and self-documenting.
+
+Let me try your approach in the next revision.
+
+Thanks,
+Leon
+
+>
+> --
+> Michal Hocko
+> SUSE Labs
 
