@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-11621-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11622-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BDEBC37E19
-	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 22:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 759BCC37E23
+	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 22:10:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E10E3BA610
-	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 21:08:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 505B63BB568
+	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 21:08:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89AF350D79;
-	Wed,  5 Nov 2025 21:05:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992DF354ADD;
+	Wed,  5 Nov 2025 21:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ptyyf6KV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iz1hWSwd"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66C7C34DB78;
-	Wed,  5 Nov 2025 21:05:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC3C34DB78;
+	Wed,  5 Nov 2025 21:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762376729; cv=none; b=LiqVZFKXjEYRFTCa08oiExmo/SU63HPdHdzkH7Ja00on7vE+BnHpzhEfruIOGjwTWe2O3HERz96lwGc+NoE76ED+p3cIp1k+6WaszWRgVB+9+fqKVP25qbuGbig/ioDBGaukv4/RViHcw9ku4mmu9L99lHLL1Heer8WL/Fv860g=
+	t=1762376738; cv=none; b=RE+VAJ0l2+bf756uLzWD0BZVywvO9/ZS48xMwxtuQFG0PL1Vgpk5IF3HSY+SV3M0X2Ef6m5ERHcr6IlTd0M7FOkJe8dYFqA9sGy6h6MpN9yVlQfXr96GTZBpTd5ku5zDgaV9ffAyz/Tl3jNXh42dXZIF3vBji7Vbq9RYMEbq2lM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762376729; c=relaxed/simple;
-	bh=VdxniS9PgPy7NwhH2qd2yJdMmQz1qplz7zrJIak9Kiw=;
+	s=arc-20240116; t=1762376738; c=relaxed/simple;
+	bh=ZZ+yP0oE5nMuQO76ubRYWghmJmjtLp6J4+mGRrvjt9Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oGv27mnrkOZPQgYN2E0xZah5L3VPTt7nEPEnLtEdhTopjWMR3VHZFltXVhjcG/Q611ES8ZVbyrzNqrsEJLSLVJC4V/pGMaRca/RiAD4dMue40uHiY6GkVPxWdj3GDiueq5bDHHEFaMRGiPoPkVj4YVmUWS3QzbavSDprlLLK5Ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ptyyf6KV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1154C4CEF5;
-	Wed,  5 Nov 2025 21:05:21 +0000 (UTC)
+	 MIME-Version; b=CAqS9LOpefzj2vGVPvchia5p+wcARp9R62JOqQ6xULlKxyEwE2BEXno2Hk5oQbsjwo8pV58X4XdPpMZqAwdl9IHIsWEJzDlR5b6sUlkTEZ4AbwUpk2Ro7i3Zp8PMYTOPm3vD9x2+82uWJcQDu7BpPA0/FHPdjsc++q5m+66D6MU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iz1hWSwd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEAC4C16AAE;
+	Wed,  5 Nov 2025 21:05:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762376729;
-	bh=VdxniS9PgPy7NwhH2qd2yJdMmQz1qplz7zrJIak9Kiw=;
+	s=k20201202; t=1762376736;
+	bh=ZZ+yP0oE5nMuQO76ubRYWghmJmjtLp6J4+mGRrvjt9Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ptyyf6KVzJ0lA9mUbJMRTUMDBxFbFqsC7D72x5Es055cz5O6o+7X0VRAI46bJaeX1
-	 IR4WE2Lj3E9TiqBgFbWjMrFSWMNGGAy8Bh2T4cDmUyCakgmccGz0OLgjYIo10G4vez
-	 X41hI+3qx0OgMbveZU476QadXo3RIrr04BXSlHz9KQ2vGGxtGVUlpa0WFTm+A/bBvp
-	 1BJar5S1ziv66ELBOGUJEuzhVHcaxUtgsuDeEcD/R0uDbBnw/KgyFHlPjQx0YWswAG
-	 UWIjs3xA+jcx7za2UJJZ6K84bgaKV1VKCrBdWGGmlKDLgPoerOSfU/sxU0t89VhBaD
-	 WWhAqun83nwlA==
+	b=iz1hWSwdNKtj6UL9xcFuZBN1Kztkumf9wbEcmW5UjeJ2+UdL5tz673c7YJbvnt7/W
+	 c/EsY/6qjrORrgn3JfyeSAFSA6yfuYj5MTyOVvQkADRrio6BIJnZRu8YgpBrNgVOTQ
+	 eB/pL0KTpvOBNIGNkXD26pikUAULqAaaEwLWkA8jIkjfsA7l7XWyC38MgQB4N6su+k
+	 xJuzdIt/BEh9tFL8ETLq2lHz2UCG4Z9ajVxdFB5FH9oWQbaVglAAEfr62yb7elqNOG
+	 NuaQirecRskVf5fcOpqOIlmu+m4oVCOMYMKsiFs1KZvDxh3o6NbGgk4qDg0Xqhox9y
+	 ldKy71009PlQQ==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -79,9 +79,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 11/31] cpuset: Provide lockdep check for cpuset lock held
-Date: Wed,  5 Nov 2025 22:03:27 +0100
-Message-ID: <20251105210348.35256-12-frederic@kernel.org>
+Subject: [PATCH 12/31] sched/isolation: Convert housekeeping cpumasks to rcu pointers
+Date: Wed,  5 Nov 2025 22:03:28 +0100
+Message-ID: <20251105210348.35256-13-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251105210348.35256-1-frederic@kernel.org>
 References: <20251105210348.35256-1-frederic@kernel.org>
@@ -91,54 +91,159 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-cpuset modifies partitions, including isolated, while holding the cpuset
-mutex.
+HK_TYPE_DOMAIN's cpumask will soon be made modifiable by cpuset.
+A synchronization mechanism is then needed to synchronize the updates
+with the housekeeping cpumask readers.
 
-This means that holding the cpuset mutex is safe to synchronize against
-housekeeping cpumask changes.
-
-Provide a lockdep check to validate that.
+Turn the housekeeping cpumasks into RCU pointers. Once a housekeeping
+cpumask will be modified, the update side will wait for an RCU grace
+period and propagate the change to interested subsystem when deemed
+necessary.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- include/linux/cpuset.h | 2 ++
- kernel/cgroup/cpuset.c | 7 +++++++
- 2 files changed, 9 insertions(+)
+ kernel/sched/isolation.c | 58 +++++++++++++++++++++++++---------------
+ kernel/sched/sched.h     |  1 +
+ 2 files changed, 37 insertions(+), 22 deletions(-)
 
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index 2ddb256187b5..051d36fec578 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -18,6 +18,8 @@
- #include <linux/mmu_context.h>
- #include <linux/jump_label.h>
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 8690fb705089..bee6c04be103 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -21,7 +21,7 @@ DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
+ EXPORT_SYMBOL_GPL(housekeeping_overridden);
  
-+extern bool lockdep_is_cpuset_held(void);
+ struct housekeeping {
+-	cpumask_var_t cpumasks[HK_TYPE_MAX];
++	struct cpumask __rcu *cpumasks[HK_TYPE_MAX];
+ 	unsigned long flags;
+ };
+ 
+@@ -33,17 +33,28 @@ bool housekeeping_enabled(enum hk_type type)
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_enabled);
+ 
++const struct cpumask *housekeeping_cpumask(enum hk_type type)
++{
++	if (static_branch_unlikely(&housekeeping_overridden)) {
++		if (housekeeping.flags & BIT(type)) {
++			return rcu_dereference_check(housekeeping.cpumasks[type], 1);
++		}
++	}
++	return cpu_possible_mask;
++}
++EXPORT_SYMBOL_GPL(housekeeping_cpumask);
 +
- #ifdef CONFIG_CPUSETS
+ int housekeeping_any_cpu(enum hk_type type)
+ {
+ 	int cpu;
  
- /*
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 8595f1eadf23..aa1ac7bcf2ea 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -279,6 +279,13 @@ void cpuset_full_unlock(void)
- 	cpus_read_unlock();
+ 	if (static_branch_unlikely(&housekeeping_overridden)) {
+ 		if (housekeeping.flags & BIT(type)) {
+-			cpu = sched_numa_find_closest(housekeeping.cpumasks[type], smp_processor_id());
++			cpu = sched_numa_find_closest(housekeeping_cpumask(type), smp_processor_id());
+ 			if (cpu < nr_cpu_ids)
+ 				return cpu;
+ 
+-			cpu = cpumask_any_and_distribute(housekeeping.cpumasks[type], cpu_online_mask);
++			cpu = cpumask_any_and_distribute(housekeeping_cpumask(type), cpu_online_mask);
+ 			if (likely(cpu < nr_cpu_ids))
+ 				return cpu;
+ 			/*
+@@ -59,28 +70,18 @@ int housekeeping_any_cpu(enum hk_type type)
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_any_cpu);
+ 
+-const struct cpumask *housekeeping_cpumask(enum hk_type type)
+-{
+-	if (static_branch_unlikely(&housekeeping_overridden))
+-		if (housekeeping.flags & BIT(type))
+-			return housekeeping.cpumasks[type];
+-	return cpu_possible_mask;
+-}
+-EXPORT_SYMBOL_GPL(housekeeping_cpumask);
+-
+ void housekeeping_affine(struct task_struct *t, enum hk_type type)
+ {
+ 	if (static_branch_unlikely(&housekeeping_overridden))
+ 		if (housekeeping.flags & BIT(type))
+-			set_cpus_allowed_ptr(t, housekeeping.cpumasks[type]);
++			set_cpus_allowed_ptr(t, housekeeping_cpumask(type));
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_affine);
+ 
+ bool housekeeping_test_cpu(int cpu, enum hk_type type)
+ {
+-	if (static_branch_unlikely(&housekeeping_overridden))
+-		if (housekeeping.flags & BIT(type))
+-			return cpumask_test_cpu(cpu, housekeeping.cpumasks[type]);
++	if (static_branch_unlikely(&housekeeping_overridden) && housekeeping.flags & BIT(type))
++		return cpumask_test_cpu(cpu, housekeeping_cpumask(type));
+ 	return true;
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
+@@ -96,20 +97,33 @@ void __init housekeeping_init(void)
+ 
+ 	if (housekeeping.flags & HK_FLAG_KERNEL_NOISE)
+ 		sched_tick_offload_init();
+-
++	/*
++	 * Realloc with a proper allocator so that any cpumask update
++	 * can indifferently free the old version with kfree().
++	 */
+ 	for_each_set_bit(type, &housekeeping.flags, HK_TYPE_MAX) {
++		struct cpumask *omask, *nmask = kmalloc(cpumask_size(), GFP_KERNEL);
++
++		if (WARN_ON_ONCE(!nmask))
++			return;
++
++		omask = rcu_dereference(housekeeping.cpumasks[type]);
++
+ 		/* We need at least one CPU to handle housekeeping work */
+-		WARN_ON_ONCE(cpumask_empty(housekeeping.cpumasks[type]));
++		WARN_ON_ONCE(cpumask_empty(omask));
++		cpumask_copy(nmask, omask);
++		RCU_INIT_POINTER(housekeeping.cpumasks[type], nmask);
++		memblock_free(omask, cpumask_size());
+ 	}
  }
  
-+#ifdef CONFIG_LOCKDEP
-+bool lockdep_is_cpuset_held(void)
-+{
-+	return lockdep_is_held(&cpuset_mutex);
-+}
-+#endif
-+
- static DEFINE_SPINLOCK(callback_lock);
+ static void __init housekeeping_setup_type(enum hk_type type,
+ 					   cpumask_var_t housekeeping_staging)
+ {
++	struct cpumask *mask = memblock_alloc_or_panic(cpumask_size(), SMP_CACHE_BYTES);
  
- void cpuset_callback_lock_irq(void)
+-	alloc_bootmem_cpumask_var(&housekeeping.cpumasks[type]);
+-	cpumask_copy(housekeeping.cpumasks[type],
+-		     housekeeping_staging);
++	cpumask_copy(mask, housekeeping_staging);
++	RCU_INIT_POINTER(housekeeping.cpumasks[type], mask);
+ }
+ 
+ static int __init housekeeping_setup(char *str, unsigned long flags)
+@@ -162,7 +176,7 @@ static int __init housekeeping_setup(char *str, unsigned long flags)
+ 
+ 		for_each_set_bit(type, &iter_flags, HK_TYPE_MAX) {
+ 			if (!cpumask_equal(housekeeping_staging,
+-					   housekeeping.cpumasks[type])) {
++					   housekeeping_cpumask(type))) {
+ 				pr_warn("Housekeeping: nohz_full= must match isolcpus=\n");
+ 				goto free_housekeeping_staging;
+ 			}
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index adfb6e3409d7..2fc1ddde3120 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -42,6 +42,7 @@
+ #include <linux/ktime_api.h>
+ #include <linux/lockdep_api.h>
+ #include <linux/lockdep.h>
++#include <linux/memblock.h>
+ #include <linux/minmax.h>
+ #include <linux/mm.h>
+ #include <linux/module.h>
 -- 
 2.51.0
 
