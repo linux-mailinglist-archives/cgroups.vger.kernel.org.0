@@ -1,74 +1,118 @@
-Return-Path: <cgroups+bounces-11606-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11607-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B4B2C370E4
-	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 18:24:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4AEDC37111
+	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 18:26:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5D436507926
-	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 17:09:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CECE1895E4A
+	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 17:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA2BF33A03C;
-	Wed,  5 Nov 2025 17:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C2A334C25;
+	Wed,  5 Nov 2025 17:26:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dYe7RY+t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OParZvII"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F2B31353B;
-	Wed,  5 Nov 2025 17:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9439C3126D6;
+	Wed,  5 Nov 2025 17:26:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762362448; cv=none; b=Pxi7AAWfaHQVhgRygjTq6NeAnwKejpsHXLK9B+eBS26PcV+AmLd+3Zbpek0ffu+IfCnoVwO//UOFZfQ+VQRxGmnQW5Q0SH5hHJ2TYiPenVdl4mhgdTHnTCbCd5N4wM82NqH6xIAnQrqdtZQnydC8JkDzRVnaZgF/NlQnnJDVDwg=
+	t=1762363600; cv=none; b=hZfyIETKURFp7Vs85oNsKv5P2V/Asuqx20MpPZ4MgN9pkKzN7Z27tcTyS5VPTbtgy/MngxzK9PKZ8QKqtjzme0tfj6PMBK51/PLyijUZUAVn7Zg6XuzMsul9vTLHFoPjLaXKvWFZrxXWHUMxRfxhQw+KNMEmZCJ9GmIbwQy/fZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762362448; c=relaxed/simple;
-	bh=uvpy1+5IwsPTyPrF41fa8kfdS2ROsOZT51o7Rrkd1x0=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=Sd/lt7Daq5zrhCmcCxALOEtO08maMf6VSIsblwYeTCgx/7oMePkbcYrZLHWvNjZAwrzLj1VtHHAOFncWrCZemCOKE/HDcnFvjrzXX1F7YXCno7gU48NJvM+Qjzr/pZOCJ1BxZJhDXaJb/FiTa0ZULV9CgWqUD/I4uIfqsnMaG+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dYe7RY+t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC847C4CEF8;
-	Wed,  5 Nov 2025 17:07:27 +0000 (UTC)
+	s=arc-20240116; t=1762363600; c=relaxed/simple;
+	bh=YFkDJLxlVgB8fCGfrzLzPiyZl67TcHqa4QAD1eCk1n4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PDqo2rI62i/T2Sntswh4zcQ1LUIgoQvTBMUCKf7ZpLZjYi0MX3aHvVT8DCW98fBVxv1TCY+jsCJ079cOZcgyfQMRsQPBOns+zN4n3YIbQxkS+5Qn5x4wcMaBadze95237GtOGgzDkSQ/yCcO/ujljKevOSmt7oTc9GOb5lEin10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OParZvII; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92223C4CEF8;
+	Wed,  5 Nov 2025 17:26:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762362448;
-	bh=uvpy1+5IwsPTyPrF41fa8kfdS2ROsOZT51o7Rrkd1x0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=dYe7RY+tVWdGRnIeg+gwFVXUpQ6o5CluJK3cpv/aSVE+bCjA29bhRCiXL4IDnEDkZ
-	 J+hwm86a1ZIRt3QHx7KM5LK7MThK7jGyHeMio8LaxcLkLp5Ay+ZYBqMXxKKkO9LB+4
-	 BN9WY6F46oNFhPsCpysQXw0kh6p051VLIkUNTVrEEJAeJ6tF+OXZ7MEhGOD97SulaS
-	 7vl84L+Wjs+IXFa2gOj8WxPVTzS9jPa0NCIGuDJdKucoZRRUz4oEJyUV7Zv3yViPmU
-	 /IDqFPvPOKKjdx3s7oxt9ZX++Yn+Fzk8xG7xqf+0GTKTp6A0rhFIt6ZPvD5c5VctnO
-	 iFTWPNiIWbmWA==
-Date: Wed, 05 Nov 2025 07:07:27 -1000
-Message-ID: <a8248fa3f61fb85f7088312aefbf2751@kernel.org>
-From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Gabriele Monaco <gmonaco@redhat.com>, Chen Ridong <chenridong@huaweicloud.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] cgroup/cpuset: Additional housekeeping check & cleanup
-In-Reply-To: <20251105043848.382703-1-longman@redhat.com>
-References: <20251105043848.382703-1-longman@redhat.com>
+	s=k20201202; t=1762363600;
+	bh=YFkDJLxlVgB8fCGfrzLzPiyZl67TcHqa4QAD1eCk1n4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OParZvIIPyLR/7+d2Nc6dNNHFfgvciQYcDXNfvWRUfLM3ALdZr2Qma8M0FObiSEDX
+	 4yAZaB4HMBbFQrVX9l1Nc5Mz9Akx6GYVPeFSxJauPuNjV+cvXZHiYCJny752RKPXaZ
+	 nb6HFbh2rTIqP1/GSHtyqu5D4fAirasFidCHLVTYcLZQRPj1LLeRYNMtTIBUkecGZD
+	 NUQfI4i1crcBXLrqQ3YrkVWcmSf4kYDrq048l6zq2V/zPjyDvLarmgFinhmBNoPsqB
+	 5DP9Yf37WOYWdxdZegji5DJs83/ZGNy27MtOeueRr7A8jum6leEhur43LN6wcOt6ld
+	 1Fax28SwoFeww==
+Date: Wed, 5 Nov 2025 18:26:37 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Simon Horman <horms@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Danilo Krummrich <dakr@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Gabriele Monaco <gmonaco@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>, Phil Auld <pauld@redhat.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>, Tejun Heo <tj@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>, Waiman Long <longman@redhat.com>,
+	Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+	linux-mm@kvack.org, linux-pci@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH 30/33] kthread: Add API to update preferred affinity on
+ kthread runtime
+Message-ID: <aQuIzQo3tDbwoytv@localhost.localdomain>
+References: <20251013203146.10162-1-frederic@kernel.org>
+ <20251013203146.10162-31-frederic@kernel.org>
+ <aO5Dn2AwQWn0SQKQ@horms.kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aO5Dn2AwQWn0SQKQ@horms.kernel.org>
 
-> Gabriele Monaco (1):
->   cgroup/cpuset: Rename update_unbound_workqueue_cpumask() to
->     update_isolation_cpumasks()
->
-> Waiman Long (4):
->   cgroup/cpuset: Fail if isolated and nohz_full don't leave any
->     housekeeping
->   cgroup/cpuset: Move up prstate_housekeeping_conflict() helper
->   cgroup/cpuset: Ensure domain isolated CPUs stay in root or isolated
->     partition
->   cgroup/cpuset: Globally track isolated_cpus update
+Le Tue, Oct 14, 2025 at 01:35:43PM +0100, Simon Horman a écrit :
+> On Mon, Oct 13, 2025 at 10:31:43PM +0200, Frederic Weisbecker wrote:
+> 
+> ...
+> 
+> > @@ -900,6 +899,46 @@ int kthread_affine_preferred(struct task_struct *p, const struct cpumask *mask)
+> >  }
+> >  EXPORT_SYMBOL_GPL(kthread_affine_preferred);
+> >  
+> > +/**
+> > + * kthread_affine_preferred_update - update a kthread's preferred affinity
+> > + * @p: thread created by kthread_create().
+> > + * @cpumask: new mask of CPUs (might not be online, must be possible) for @k
+> > + *           to run on.
+> 
+> nit: @mask: ...
 
-Applied 1-5 to cgroup/for-6.19.
+Thanks! I'm dropping the current patch anyway but...
 
-Thanks.
---
-tejun
+> 
+> Likewise for the documentation of kthread_affine_preferred()
+> in a subsequent patch in this series.
+
+...fixing it to that patch.
+
+-- 
+Frederic Weisbecker
+SUSE Labs
 
