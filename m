@@ -1,47 +1,47 @@
-Return-Path: <cgroups+bounces-11596-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11597-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 059FCC367F2
-	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 16:55:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8EB3C36B12
+	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 17:29:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B1E484FBF7A
-	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 15:47:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BABD6284A7
+	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 15:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19566342C90;
-	Wed,  5 Nov 2025 15:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4AD335553;
+	Wed,  5 Nov 2025 15:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qW/SfRcZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V49Bcvv4"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B851D341AD0;
-	Wed,  5 Nov 2025 15:42:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B55731DDBB;
+	Wed,  5 Nov 2025 15:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762357360; cv=none; b=QtZDRBdX3Ki1EoqK0ujLYcyzdjUU5YHZPv5QFujZUkk0fKqbjQmeQkc6ljtrJImKeqAaGvQX+NY0ST44FP5413taGTKVLpaHdP1b3r0W3MXEOWh0SO3+pjWmioxBV1o0FsZP53JlMCr5FdWI3fhmRCfRJMDbsHrV1CJZQFxsk0U=
+	t=1762357556; cv=none; b=fho5PErUcRgMplVWpPBwM0ZY1oo04RWe5D5r6yVyOqtL4SdGOZ1peiStdNQdYiNza5dZM98sKl66GMZGfYFLV3FxJkXWu7N9jZVs7aAgVqBOcalh7GIsFVsertxISR7eGy61nsKwEVJwJHgOOsV99K2DBsqNMqtiU6pPc1mEY68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762357360; c=relaxed/simple;
-	bh=boPYeqvdKW7/3CnEhFVgNn0FsAC8XrMy6K95gzM+WjE=;
+	s=arc-20240116; t=1762357556; c=relaxed/simple;
+	bh=xmm6nLsTXBCwCytcbyH8QsnB2JeBdkkjUjdkaJjSew8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HcljYRw4sDGQfyH1RhyXPozjNOcLxUBE509iyZLCdacf9HrVYRbn5DDnCnOGi60+7q9EFLB1urREoiV3BCEpThepLFGusQQfYznTSmQGr1X77Rm7BeUbX58BZFo5wq4YjDf42Je/hpFJOYb+jNKOFeMBdGivLzJ4B4u+hmEqqew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qW/SfRcZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C476DC4CEF5;
-	Wed,  5 Nov 2025 15:42:39 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=s31xmmMlh0tns6mjY13B9Q+0fUna/sS0wojQx/n/SF2mSCjVDewDjZvxIyi5IqWNO9nORNN+UL6qNBbGkW0MbidfZ1Cfl9alotDM/Sv0ctwnsJ6v9wWMjQe0ETAMMg7+l32p4gCjzsvGsv3iSk2aT5sMPUm8MuqdpKQVrxdNZVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V49Bcvv4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70A62C4CEF5;
+	Wed,  5 Nov 2025 15:45:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762357360;
-	bh=boPYeqvdKW7/3CnEhFVgNn0FsAC8XrMy6K95gzM+WjE=;
+	s=k20201202; t=1762357555;
+	bh=xmm6nLsTXBCwCytcbyH8QsnB2JeBdkkjUjdkaJjSew8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qW/SfRcZancAa0hsqKFnQRd29sYyNjQPo/6bgXUIdWQkQrCQ8SrjNfLEv2gd6QIbJ
-	 KNvHuiS8u4kGDpix1rUv2FrtZNIpRj8+YRbgkYtOcqokgdP5Lelomta91mDjj2utK2
-	 pJNN+t5ySqiy5B4IWOvfB+wUu7vtmplfUpxRFlJl/ItWWlSKTIKtO8NPw3lyVBm6hy
-	 PX81LQiCi7jb6e0lest8AkXP8Ttp7CHR2CEtZJBks+yM2bue/m166kiurBIXHdyHQN
-	 xXNTc0DdAqJPwKz19FVfa5KCbSwDOT4ZdNrwR2USJYY4x2nd++Gx+PqPUsZ/tGWHsn
-	 0JuvFbPfX+vtQ==
-Date: Wed, 5 Nov 2025 16:42:37 +0100
+	b=V49Bcvv4Vr1XD0d8nGugzn6nEJFHU94wKaZlMJvIc+YJdz7x5ju9aDQoREW8ASZJU
+	 MW1hUDPpNZJmSffEhIdGydas6VB+w4ctZOakowcXZPe9VCVSOUxeNYJArgQ7UxDpnN
+	 G8fLk11CiNYat6qGWS6sf3enIsQ6suuzdkc/xJ+96sXJyCgwm/VCvwN3kn/uST4kQ/
+	 n2/u4JFfGzZ4lnX2yMvrfbCe1/yIkfyrIb0MDZJtSXAoqGFqJvvBcFvCehuflcypjt
+	 eNy+hH/+vmLM4JvkGDmULWA4wY5yEEwNvPSk59QeVOmmqB4U/icu2vG2nFt6e1YuOS
+	 ZRjYiAhWKqFrQ==
+Date: Wed, 5 Nov 2025 16:45:53 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Waiman Long <llong@redhat.com>
 Cc: LKML <linux-kernel@vger.kernel.org>,
@@ -71,10 +71,10 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	linux-block@vger.kernel.org, linux-mm@kvack.org,
 	linux-pci@vger.kernel.org, netdev@vger.kernel.org
 Subject: Re: [PATCH 13/33] cpuset: Update HK_TYPE_DOMAIN cpumask from cpuset
-Message-ID: <aQtwbRrFBCUoQ2Yj@localhost.localdomain>
+Message-ID: <aQtxMYmwzfg2NW1O@localhost.localdomain>
 References: <20251013203146.10162-1-frederic@kernel.org>
  <20251013203146.10162-14-frederic@kernel.org>
- <0e02915f-bde7-4b04-b760-89f34fb0a436@redhat.com>
+ <ea2d3e0e-b1ee-4b58-a93a-b9d127258e75@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -84,112 +84,67 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0e02915f-bde7-4b04-b760-89f34fb0a436@redhat.com>
+In-Reply-To: <ea2d3e0e-b1ee-4b58-a93a-b9d127258e75@redhat.com>
 
-Le Tue, Oct 21, 2025 at 12:10:16AM -0400, Waiman Long a écrit :
+Le Tue, Oct 21, 2025 at 09:39:10AM -0400, Waiman Long a écrit :
 > On 10/13/25 4:31 PM, Frederic Weisbecker wrote:
-> > Until now, HK_TYPE_DOMAIN used to only include boot defined isolated
-> > CPUs passed through isolcpus= boot option. Users interested in also
-> > knowing the runtime defined isolated CPUs through cpuset must use
-> > different APIs: cpuset_cpu_is_isolated(), cpu_is_isolated(), etc...
-> > 
-> > There are many drawbacks to that approach:
-> > 
-> > 1) Most interested subsystems want to know about all isolated CPUs, not
-> >    just those defined on boot time.
-> > 
-> > 2) cpuset_cpu_is_isolated() / cpu_is_isolated() are not synchronized with
-> >    concurrent cpuset changes.
-> > 
-> > 3) Further cpuset modifications are not propagated to subsystems
-> > 
-> > Solve 1) and 2) and centralize all isolated CPUs within the
-> > HK_TYPE_DOMAIN housekeeping cpumask.
-> > 
-> > Subsystems can rely on RCU to synchronize against concurrent changes.
-> > 
-> > The propagation mentioned in 3) will be handled in further patches.
-> > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > ---
-> >   include/linux/sched/isolation.h |  2 +
-> >   kernel/cgroup/cpuset.c          |  2 +
-> >   kernel/sched/isolation.c        | 75 ++++++++++++++++++++++++++++++---
-> >   kernel/sched/sched.h            |  1 +
-> >   4 files changed, 74 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-> > index da22b038942a..94d5c835121b 100644
-> > --- a/include/linux/sched/isolation.h
-> > +++ b/include/linux/sched/isolation.h
-> > @@ -32,6 +32,7 @@ extern const struct cpumask *housekeeping_cpumask(enum hk_type type);
-> >   extern bool housekeeping_enabled(enum hk_type type);
-> >   extern void housekeeping_affine(struct task_struct *t, enum hk_type type);
-> >   extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
-> > +extern int housekeeping_update(struct cpumask *mask, enum hk_type type);
-> >   extern void __init housekeeping_init(void);
-> >   #else
-> > @@ -59,6 +60,7 @@ static inline bool housekeeping_test_cpu(int cpu, enum hk_type type)
+> > @@ -80,12 +110,45 @@ EXPORT_SYMBOL_GPL(housekeeping_affine);
+> >   bool housekeeping_test_cpu(int cpu, enum hk_type type)
+> >   {
+> > -	if (housekeeping.flags & BIT(type))
+> > +	if (READ_ONCE(housekeeping.flags) & BIT(type))
+> >   		return cpumask_test_cpu(cpu, housekeeping_cpumask(type));
 > >   	return true;
 > >   }
-> > +static inline int housekeeping_update(struct cpumask *mask, enum hk_type type) { return 0; }
-> >   static inline void housekeeping_init(void) { }
-> >   #endif /* CONFIG_CPU_ISOLATION */
-> > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> > index aa1ac7bcf2ea..b04a4242f2fa 100644
-> > --- a/kernel/cgroup/cpuset.c
-> > +++ b/kernel/cgroup/cpuset.c
-> > @@ -1403,6 +1403,8 @@ static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
-> >   	ret = workqueue_unbound_exclude_cpumask(isolated_cpus);
-> >   	WARN_ON_ONCE(ret < 0);
-> > +	ret = housekeeping_update(isolated_cpus, HK_TYPE_DOMAIN);
-> > +	WARN_ON_ONCE(ret < 0);
-> >   }
-> >   /**
-> > diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> > index b46c20b5437f..95d69c2102f6 100644
-> > --- a/kernel/sched/isolation.c
-> > +++ b/kernel/sched/isolation.c
-> > @@ -29,18 +29,48 @@ static struct housekeeping housekeeping;
-> >   bool housekeeping_enabled(enum hk_type type)
-> >   {
-> > -	return !!(housekeeping.flags & BIT(type));
-> > +	return !!(READ_ONCE(housekeeping.flags) & BIT(type));
-> >   }
-> >   EXPORT_SYMBOL_GPL(housekeeping_enabled);
-> > +static bool housekeeping_dereference_check(enum hk_type type)
+> >   EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
+> > +int housekeeping_update(struct cpumask *mask, enum hk_type type)
 > > +{
-> > +	if (IS_ENABLED(CONFIG_LOCKDEP) && type == HK_TYPE_DOMAIN) {
-> > +		/* Cpuset isn't even writable yet? */
-> > +		if (system_state <= SYSTEM_SCHEDULING)
-> > +			return true;
+> > +	struct cpumask *trial, *old = NULL;
 > > +
-> > +		/* CPU hotplug write locked, so cpuset partition can't be overwritten */
-> > +		if (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_write_held())
-> > +			return true;
+> > +	if (type != HK_TYPE_DOMAIN)
+> > +		return -ENOTSUPP;
 > > +
-> > +		/* Cpuset lock held, partitions not writable */
-> > +		if (IS_ENABLED(CONFIG_CPUSETS) && lockdep_is_cpuset_held())
-> > +			return true;
+> > +	trial = kmalloc(sizeof(*trial), GFP_KERNEL);
+> Should you use cpumask_size() instead of sizeof(*trial) as the latter can be
+> much bigger?
+
+Good point!
+
+> > +	if (!trial)
+> > +		return -ENOMEM;
+> > +
+> > +	cpumask_andnot(trial, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT), mask);
+> > +	if (!cpumask_intersects(trial, cpu_online_mask)) {
+> > +		kfree(trial);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (!housekeeping.flags)
+> > +		static_branch_enable(&housekeeping_overridden);
+> > +
+> > +	if (!(housekeeping.flags & BIT(type)))
+> > +		old = housekeeping_cpumask_dereference(type);
+> > +	else
+> > +		WRITE_ONCE(housekeeping.flags, housekeeping.flags | BIT(type));
+> > +	rcu_assign_pointer(housekeeping.cpumasks[type], trial);
+> > +
+> > +	synchronize_rcu();
+> > +
+> > +	kfree(old);
 > 
-> I have some doubt about this condition as the cpuset_mutex may be held in
-> the process of making changes to an isolated partition that will impact
-> HK_TYPE_DOMAIN cpumask.
+> If "isolcpus" boot command line option is set, old can be a pointer to the
+> boot time memblock area which isn't a pointer that can be handled by the
+> slab allocator AFAIU. I don't know the exact consequence, but it may not be
+> good. One possible solution I can think of is to make HK_TYPE_DOMAIN and
+> HK_TYPE_DOMAIN_ROOT point to the same memblock pointer and don't pass the
+> old HK_TYPE_DOMAIN pointer to kfree() if it matches HK_TYPE_DOMAIN_BOOT one.
+> Alternatively, we can just set the HK_TYPE_DOMAIN_BOOT pointer at boot and
+> make HK_TYPE_DOMAIN falls back to HK_TYPE_DOMAIN_BOOT if not set.
 
-Indeed and therefore if the current process is holding the cpuset mutex,
-it is guaranteed that no other process will update the housekeeping cpumask
-concurrently.
+Have a look at housekeeping_init() which reallocates the memblock
+allocated memory with kmalloc to avoid these troubles.
 
-So the housekeeping mask is guaranteed to be stable, right? Of course
-the current task may be changing it but while it is changing it, it is
-not reading it.
-
-Thanks.
-
-> 
-> Cheers,
-> Longman
-> 
+Thanks!
 
 -- 
 Frederic Weisbecker
