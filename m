@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-11634-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11635-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3339C37E91
-	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 22:14:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E50EC37F37
+	for <lists+cgroups@lfdr.de>; Wed, 05 Nov 2025 22:19:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 228B04F4131
-	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 21:12:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 510071889EC3
+	for <lists+cgroups@lfdr.de>; Wed,  5 Nov 2025 21:13:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B7334FF7B;
-	Wed,  5 Nov 2025 21:07:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEDB359711;
+	Wed,  5 Nov 2025 21:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="szIDSeRI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TIAbm/F3"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382D6337BB2;
-	Wed,  5 Nov 2025 21:07:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F90359F8F;
+	Wed,  5 Nov 2025 21:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762376832; cv=none; b=XO70Vamx8nV1lb00FFg2k9X066UMk/fUlc0tCpeJDeGu8oZ+E0xrFCM1WW6n+xaktARqn2jQUQDU2At2wWPAV26EBnwNYfNC3RbFXymUClzMeZBpHC5+4znwRIfuHdBH+YBVniwdNHeBrUfnbG0BVtTZOKEIBteatS41Ay+G9Vs=
+	t=1762376840; cv=none; b=LTjd+Ab+pli75Act9HbyF3TcydtMKFJy5788BTrf50e26MEpGmOsilbKxII1dMSL9RTH8/iBHjVITdgCzDPTv3LWHuh7Dh61DcGMbCZiK/m2VznyFcQlaHkiPDuszsG6Os3QMLfc5FMqdetd9HGRuKqCxZOagxasDFepQVDvufo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762376832; c=relaxed/simple;
-	bh=J6j4zsULKpjy2xGkRdPN0GqxRFQVWDdmCEJclS8fknA=;
+	s=arc-20240116; t=1762376840; c=relaxed/simple;
+	bh=Rz519K4RzNFN9C7FTifkrc2s4js15D9og5elk9stWlE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tp40LY3qV4op9IGVhMvOUZIoRuQFmGsmp4QnvwcTCLgZ9MpKUXG7POWuxWRGxRMDGTh0XNxNpeuN9GtDQDJ4S0HsZQRyjk1Se72J8iEKbcwbOxbi+3hmWRBqCHpDlg9n2r41pOlSdlcuWJ5wkCuYZaqcUfGdXBM1hq4wEftibnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=szIDSeRI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81075C4CEF5;
-	Wed,  5 Nov 2025 21:07:04 +0000 (UTC)
+	 MIME-Version; b=hOjYBwXqSogA4KMDjY3UjeaSePNR5twPcbJxA9UBSPeZ7fDv6BjKB7NWmBcRQGlm5vU54yRe8/y47SMIfRmy82SqBkcIZcC1+bOsX2jOb/lfnXPWvj4DJxK5LpAcF8RUgUQgzeysoDPq7QDZ4bpAjr+j8jtjj5FEU7OHxJW7PRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TIAbm/F3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 798D5C116D0;
+	Wed,  5 Nov 2025 21:07:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762376832;
-	bh=J6j4zsULKpjy2xGkRdPN0GqxRFQVWDdmCEJclS8fknA=;
+	s=k20201202; t=1762376840;
+	bh=Rz519K4RzNFN9C7FTifkrc2s4js15D9og5elk9stWlE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=szIDSeRICvuPVa22uckyIj7tLtbwryeVGfvVRmV5zDtNt+6NVBCBqBwYblGbDqHv6
-	 WQdkxwLPuV6izEzNadmWY/Cp9t5y4JB4wOFuPfAabLsKAgXFvGeFbrrhzqeNduk8ES
-	 yUOiqND2LZGDY74RENtGR/Bq7PP6DayV2rI64BjaalSyI4LE4lkSiJrfizlKFn1Emx
-	 uvFPUHCmqtSHSOY5v+/BkFDW/Z0kokfN1Y/al6wn7QE3P1GrD20T3kbhNhdCZ3GLRg
-	 rZ7BiZ/qbZ2XKuvtAYnPwl0IiJ1OfTlvfENurtuaeb+8HQO0rRM7YpPG6V6BEzxd/v
-	 N3mdEa+6d4mDw==
+	b=TIAbm/F3lkoEFLNp3ZLWekoviyl6iWh5KqGoC3jN5pAXOi5L/sWwbTneX1Sd1f2Kl
+	 7zL5xqMjp906phdgY3w8G4Loes9IQaHO6Jg1QGxIqMQsUXfkKAHhFb1mPBnHUnse7X
+	 h2mJe/zjqzeSRH2cgUsMRXuxYaohkVkO/lgKbv6DBati8qhfwhtKaoi7hBjPHR4dMv
+	 8b9ApEnTcxqi22/RVPbXSqTskMNkQjcdP1Pb7XbijRLMlZfhJpdGLk1g9A53gP9snv
+	 vGCzTSX8nxacEQ8fa/P2hESWu04ejojFuxjWPxaXBvPpcyAYLwEkBrNtfCM7qw2bfC
+	 Dnzv5/9V3vOew==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -79,9 +79,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 24/31] kthread: Rely on HK_TYPE_DOMAIN for preferred affinity management
-Date: Wed,  5 Nov 2025 22:03:40 +0100
-Message-ID: <20251105210348.35256-25-frederic@kernel.org>
+Subject: [PATCH 25/31] sched: Switch the fallback task allowed cpumask to HK_TYPE_DOMAIN
+Date: Wed,  5 Nov 2025 22:03:41 +0100
+Message-ID: <20251105210348.35256-26-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251105210348.35256-1-frederic@kernel.org>
 References: <20251105210348.35256-1-frederic@kernel.org>
@@ -93,45 +93,31 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Unbound kthreads want to run neither on nohz_full CPUs nor on domain
-isolated CPUs. And since nohz_full implies domain isolation, checking
-the latter is enough to verify both.
+Tasks that have all their allowed CPUs offline don't want their affinity
+to fallback on either nohz_full CPUs or on domain isolated CPUs. And
+since nohz_full implies domain isolation, checking the latter is enough
+to verify both.
 
-Therefore exclude kthreads from domain isolation.
+Therefore exclude domain isolation from fallback task affinity.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/kthread.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ include/linux/mmu_context.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 86abfbc21bb0..69d70baceba2 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -362,18 +362,20 @@ static void kthread_fetch_affinity(struct kthread *kthread, struct cpumask *cpum
- {
- 	const struct cpumask *pref;
- 
-+	guard(rcu)();
-+
- 	if (kthread->preferred_affinity) {
- 		pref = kthread->preferred_affinity;
- 	} else {
- 		if (kthread->node == NUMA_NO_NODE)
--			pref = housekeeping_cpumask(HK_TYPE_KTHREAD);
-+			pref = housekeeping_cpumask(HK_TYPE_DOMAIN);
- 		else
- 			pref = cpumask_of_node(kthread->node);
- 	}
- 
--	cpumask_and(cpumask, pref, housekeeping_cpumask(HK_TYPE_KTHREAD));
-+	cpumask_and(cpumask, pref, housekeeping_cpumask(HK_TYPE_DOMAIN));
- 	if (cpumask_empty(cpumask))
--		cpumask_copy(cpumask, housekeeping_cpumask(HK_TYPE_KTHREAD));
-+		cpumask_copy(cpumask, housekeeping_cpumask(HK_TYPE_DOMAIN));
- }
- 
- static void kthread_affine_node(void)
+diff --git a/include/linux/mmu_context.h b/include/linux/mmu_context.h
+index ac01dc4eb2ce..ed3dd0f3fe19 100644
+--- a/include/linux/mmu_context.h
++++ b/include/linux/mmu_context.h
+@@ -24,7 +24,7 @@ static inline void leave_mm(void) { }
+ #ifndef task_cpu_possible_mask
+ # define task_cpu_possible_mask(p)	cpu_possible_mask
+ # define task_cpu_possible(cpu, p)	true
+-# define task_cpu_fallback_mask(p)	housekeeping_cpumask(HK_TYPE_TICK)
++# define task_cpu_fallback_mask(p)	housekeeping_cpumask(HK_TYPE_DOMAIN)
+ #else
+ # define task_cpu_possible(cpu, p)	cpumask_test_cpu((cpu), task_cpu_possible_mask(p))
+ #endif
 -- 
 2.51.0
 
