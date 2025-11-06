@@ -1,96 +1,62 @@
-Return-Path: <cgroups+bounces-11651-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11652-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D35BEC3D8AA
-	for <lists+cgroups@lfdr.de>; Thu, 06 Nov 2025 23:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61A8BC3D929
+	for <lists+cgroups@lfdr.de>; Thu, 06 Nov 2025 23:18:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2FB41884D96
-	for <lists+cgroups@lfdr.de>; Thu,  6 Nov 2025 22:08:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 046C91882D49
+	for <lists+cgroups@lfdr.de>; Thu,  6 Nov 2025 22:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588C830AAA9;
-	Thu,  6 Nov 2025 22:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44AD630B505;
+	Thu,  6 Nov 2025 22:18:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jJ9YhUyH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M6wNmjjO"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D6752773FE;
-	Thu,  6 Nov 2025 22:07:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E6D2C237E;
+	Thu,  6 Nov 2025 22:17:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762466867; cv=none; b=EVHbzpeC9Pe9Jv6lzQMfDF63giA1SeNyPU1BthPQTngN29kiWnx3gefOZVHR/9s/3xruQLM4xL3bsrlM+PuW5FnZxQDMVFGW+0P4zOZut1W0B1MK0N5ImkdIy1EzWjI7EsFHxIheblQBMkMHONOJumQi59PbT07qt9tx13q6ExI=
+	t=1762467480; cv=none; b=rTAvBSfQXnPlrKUxrhvnRYa0rEp77MsvDTMc05gmHPDdy6nAsmtLyq2DJmG5af4BSqApimNSGLkORWLEmt/XO0aqWy7+6x/SGnN1c4uER/CiA3d/X/onRJ+b3l55zk1F8NCcJ/xa3H4A59ZWchvdGQ0QQcetdtYZipMSceWLTaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762466867; c=relaxed/simple;
-	bh=gRPsRjzM6vLUG6pr47XDgUugAM8FFr90lWaQXYl15PE=;
-	h=Date:Message-ID:From:To:Cc:Subject; b=UpIPEUTUIeHP4c4VtExfe8O5R8cCaN0R6olyX4oU+ZwzMpptW4X/DlAElIJg0zmHzfInfAG2I9qSyOBxAtlmNcjmIjTZEdhC5npov7xIqXXp1bTjdH3vPcZtlCOsMyOQ00cY4dymTfpDCLs8adA663ljHKvCY1fzzSjoyAVs6II=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jJ9YhUyH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75275C4CEF7;
-	Thu,  6 Nov 2025 22:07:46 +0000 (UTC)
+	s=arc-20240116; t=1762467480; c=relaxed/simple;
+	bh=TKgkmuIjGpzoXdV/N04dl1nUJWvbygOAWmTO0UUcwmw=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=hzASmoSFdNMFeK2c78BoM7eEUlCdDKml/hIF3633s9S7PqzKbJiQFyqGLPWuC9YdlMbIATx+5RCixVbcTQXJc5mOyYNvysBTSb0ivQb5QRn93jy1wz43mWzWx5wH2nJXymJfG3vpQ8AflfQ5F+GT2fQLAxoG0nXGIniNoOyuEBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M6wNmjjO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E4D9C4CEFB;
+	Thu,  6 Nov 2025 22:17:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762466866;
-	bh=gRPsRjzM6vLUG6pr47XDgUugAM8FFr90lWaQXYl15PE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=jJ9YhUyHowqwxIsRwvnciX/DGVLhHYPtX1eQ4G6f5olzUr3XqV8EyxJoH+yUv8cHv
-	 N5e210zunKliB7anu7wiH/kB7bYqxuvMQEd8XVfHbbidkGz5L24fUY4a1obJKFfXNq
-	 P6MscJKe2gbi/DpLNZ+qrFx43jNgiSZuZNS7sCCxsZj6Rlgtq6sPp38F4mjkt1A/04
-	 UqBvDSDaz3Y3a9d4P8D9jI5kd3k6OJCnT0dA9/DVFxHcpwBRcF7rK+YTp2IB6m20Uu
-	 IBKatSGf6tODyCico+cktXBijptqJeUXx03BMx3bdUm4NgKcAvWfiVsCo+1xagupjv
-	 vpivCAm797xgw==
-Date: Thu, 06 Nov 2025 12:07:45 -1000
-Message-ID: <2016aece61b4da7ad86c6eca2dbcfd16@kernel.org>
+	s=k20201202; t=1762467479;
+	bh=TKgkmuIjGpzoXdV/N04dl1nUJWvbygOAWmTO0UUcwmw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=M6wNmjjO0YtNOk2/v8H0YNDI6KdWKSYnTwQeYa1KOKcYwb3KETAkFB2J+KYy1BUOu
+	 BT1aaK21ifyI55HzGuqm+9xviVvuSROC0zai/Wgjm19t+P5huRKdWi8Gd6Gfxx+2XC
+	 pCc2G/Ufp9wcnmXYCpNYARqAipMlq9mWH8JnwmMaQlmsfeJxGpB23GsYG0s3ZE073x
+	 EWeyLHozUKqcxBvO+g0EaUP4G1CwDfBgzGG1drKopYNy+Tfy5Y1ia/Fm5RetuFZ8Fa
+	 FhGfsHORj7R51JhEAKu7BOkrB4RNJwl3jbnMOVKqvu4TXtgSGyWDDB4ZaOkqDSrCVW
+	 nL7NNQBH6dEBQ==
+Date: Thu, 06 Nov 2025 12:17:58 -1000
+Message-ID: <3039cded79ef28de7d684b659e7d5191@kernel.org>
 From: Tejun Heo <tj@kernel.org>
 To: Johannes Weiner <hannes@cmpxchg.org>, Michal Koutný <mkoutny@suse.com>
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH cgroup/for-6.18-fixes] cgroup: Skip showing PID 0 in cgroup.procs and cgroup.threads
+Subject: Re: [PATCH cgroup/for-6.18-fixes] cgroup: Skip showing PID 0 in cgroup.procs and cgroup.threads
+In-Reply-To: <2016aece61b4da7ad86c6eca2dbcfd16@kernel.org>
+References: <2016aece61b4da7ad86c6eca2dbcfd16@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 
-css_task_iter_next() pins and returns a task, but the task can do whatever
-between that and cgroup_procs_show() being called, including dying and
-losing its PID. When that happens, task_pid_vnr() returns 0.
+Applied to cgroup/for-6.18-fixes.
 
-d245698d727a ("cgroup: Defer task cgroup unlink until after the task is
-done switching out") makes this more likely as tasks now stay iterable with
-css_task_iter_next() until the last schedule is complete, which can be
-after the task has lost its PID.
-
-Showing "0" in cgroup.procs or cgroup.threads is confusing and can lead to
-surprising outcomes. For example, if a user tries to kill PID 0, it kills
-all processes in the current process group.
-
-Skip entries with PID 0 by returning SEQ_SKIP.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- kernel/cgroup/cgroup.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
-
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5287,6 +5287,17 @@ static void *cgroup_procs_start(struct s
-
- static int cgroup_procs_show(struct seq_file *s, void *v)
- {
-+	pid_t pid = task_pid_vnr(v);
-+
-+	/*
-+	 * css_task_iter_next() could have visited a task which has already lost
-+	 * its PID but is not dead yet or the task could have been unhashed
-+	 * since css_task_iter_next(). In such cases, $pid would be 0 here.
-+	 * Don't confuse userspace with it.
-+	 */
-+	if (unlikely(!pid))
-+		return SEQ_SKIP;
-+
- 	seq_printf(s, "%d\n", task_pid_vnr(v));
- 	return 0;
- }
+Thanks.
+--
+tejun
 
