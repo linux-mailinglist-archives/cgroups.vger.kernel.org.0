@@ -1,143 +1,178 @@
-Return-Path: <cgroups+bounces-11646-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11647-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE701C392CE
-	for <lists+cgroups@lfdr.de>; Thu, 06 Nov 2025 06:35:26 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61123C3948B
+	for <lists+cgroups@lfdr.de>; Thu, 06 Nov 2025 07:42:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 47CE64E3935
-	for <lists+cgroups@lfdr.de>; Thu,  6 Nov 2025 05:35:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8AFFD4E71FD
+	for <lists+cgroups@lfdr.de>; Thu,  6 Nov 2025 06:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8082D8764;
-	Thu,  6 Nov 2025 05:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEAB023B616;
+	Thu,  6 Nov 2025 06:42:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E81LWkWL"
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="ZfJkLhxI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02D9E2D63F2
-	for <cgroups@vger.kernel.org>; Thu,  6 Nov 2025 05:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF4F92D7395
+	for <cgroups@vger.kernel.org>; Thu,  6 Nov 2025 06:42:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762407320; cv=none; b=Ggt9mmStkGI8iXC8NJAwZtvF2cBnkmRmrWswG/IW6bUf/U1vQE8pq3o52AyJxzROrie2za+E+2c2rGcXcUW8HO08onrbBC7yshNWZJu5J1qCTIe60Vq5IGozwn057dSNaMRFulLnbQwymqw4KIv3JCfopm0yNyACykmvMPje8kQ=
+	t=1762411330; cv=none; b=SnrrhkuQQZ8fCPu4EsI3T9DuByt8vU9/lXbZuel30mtHRrJP7AEJ27i5ASfxbrabBjFTwnlqKnxLyfJE3+VhAQ9q4SEhtqeCBWPvokq1OadsW5rkywIDcw3NEzs6mllGjaAMy+cddUr2VcYmZAjzBTf+y1buDhf0t6FoaLrUWoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762407320; c=relaxed/simple;
-	bh=jW8Ecmr5jd9+ijYWXvVMEEtpHOAriPwFDiD3dWIebtk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IQUR/WO+8rc1eWI2QK5KqFUcF2iKxNZwEcGTuX+B8OQtu8BjZl9YFbPrql/04lRfeXyOCvlusSgi1nJZ7WyY+AS9x4h5NriSG+go3RLiaEzEb1oLUC0B//4whON5ZCgpaxiH8S8vwryBeoRN0TFmgPgpVMng6CiQ+OMPqVFZ2E4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E81LWkWL; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-7af603c06easo712455b3a.0
-        for <cgroups@vger.kernel.org>; Wed, 05 Nov 2025 21:35:18 -0800 (PST)
+	s=arc-20240116; t=1762411330; c=relaxed/simple;
+	bh=TL19hVOz4D0kxYhklrn7cfeF0qsMbESAPz4b68jgXaw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=JiboUxmpIhqL+JTBfcJZXmapWVgBbYqVCkSVRYxgDLfk6rqjb1aPUgOa8gDAtQyj9z5y2dStmATxyF8/OXBYbsjqtz7b5ffrBI+ahfZkFQhBvNQwlhbtKXFZ13CtIvCBZV9GxoxQWDuzHKfOqk03cLh64vv8YQKsh37udvs+Sgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=ZfJkLhxI; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-29599f08202so8054985ad.3
+        for <cgroups@vger.kernel.org>; Wed, 05 Nov 2025 22:42:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762407318; x=1763012118; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xqu+odkC5y2EUQD3P72UD8nqz7ztmWCfwzT6Wx3nK2g=;
-        b=E81LWkWLvL/I8cJ/R/PgetxwBlzhMuyDLiFT8Q1Ph20irxQUVXuwc+pEsUuQy+p53t
-         Qtz04OzhDE7HEsTAj6edqOgDRxU9caPzs5omrkH+maLrowcY7Di+ZLyyQnSKBY7RIhS5
-         u9BAxoAa8FFxzaxghsAbcTyZ5RfXvoalgMFu73Buq2m70SqakCtn7M9FhJc7Tcd96hjv
-         zx/iiVYlNHkgZ52L3kFdnwX80mz3n1RPpQQYaiYy1IvWyqSoIyV8RGfISvmx9jf/DAlq
-         oi7omQkx2WSiBIkpRb3IhedztVF32Gcw1eAlfVAqTiY6JbpM1Q5Za8PP4MjftM5WNNxE
-         GcTw==
+        d=shopee.com; s=shopee.com; t=1762411328; x=1763016128; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TL19hVOz4D0kxYhklrn7cfeF0qsMbESAPz4b68jgXaw=;
+        b=ZfJkLhxIWZBQvF7NMqvJ0p10+yDwCoWueoYNYNJIWmLJeaSNPIszN5JRPlWXWSh+mp
+         ekXayQqhi1wv956TtCRUXANceH8lpJG7rA+kuROjny5++Tsyd2ifnmIeGHHlcgFnlAv5
+         dMSIiXBAqtuUYD8F8fEVtJGNrPyMopWz6jknkFp+ICmL2LMWKWdJnh4WIWFHZnntKP88
+         QUnVxemjzYLVLx0Arl+rrUYtChkGwiCmMsgOMykU6ZKhDvjBP56GXAClOtHK/ZD5vE6i
+         UfvvCrveG8V3jqabpA/LWQ7S9lPeh/jNih/My/BM5soct5xJijbLonVGifFCB7ag+bQR
+         zW6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762407318; x=1763012118;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xqu+odkC5y2EUQD3P72UD8nqz7ztmWCfwzT6Wx3nK2g=;
-        b=onfPBX3pOAzOd1wgJH6poio2YZVxDko0nGd0++DSE+2vfDxoT283vyY328yx9jv/OP
-         uQdKmrD1Fn6Rto5g2fIMo5s8S3WnW466dGLhRv21mEOGiHE41tkw8U+pR2MGJXEgV7+g
-         SJkVF4Xw4UeWGaBMjZdTWUiVySyQIng26KsVWEep649qbTH+6d6qkYS3WCoTNqOm1jy3
-         XJauB6Ag8cLHHHbvxMPgUcI5b2Zk6Diol6mB8kJyca5dw7S5bCERpvoDwRtSjrMZI05I
-         8ruUXvVBikOEdnsHRPINK3nmutxdh2sXJpk2JkimRd3bbvtjuwR3H+2ilgWs5vTHFteJ
-         tgmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUieznwTiAVlGO+mwrO1DAkrNTCdFJn+Z7Zr28T9Bm6pu54+OPjE5ICN99XcDKMQPASqkx4BFjv@vger.kernel.org
-X-Gm-Message-State: AOJu0YycoLf2vHHWrfsaofMUxOJdb+J6v6ooiswF0V2gCWL8MsFgZmVn
-	dDnmgGEyHl0YuVLj1QdBXW0npUXmThWw/VEBb3bvsM99XPwXT0DOhshR
-X-Gm-Gg: ASbGncvWGh00yBHhnDlm5XF15B8ROWfMfxHtdMvfP17JkJpTcuovtzY77A3u1B9ZkV+
-	TH4diqfkbHB3iBvjHJVH49qZeRbZwL+KMtJA2PSam24uE2eOilJs/25bZJ0Q3hsLqNX8LQNKMND
-	Uc5xPKwpbs8+SnqnlBFllRQzF0DvGshxIgIDcdhtKAFya6gvHNfENCHAlsVkxiVhmzsm+3wPBoD
-	ilnwIUV19lrFYDja6JX4MJWc1XXe3Q5BXQ9fB3N4GGSzhAS3DbwAAHzhypiy7+DPFE7+bHf970Z
-	H2S34ldO74g+0f6L3ncOJTktKGN/qXMQxKKchEq/pheAtdiVzizIUTGKCPR65DFQr88vuALS1+u
-	vDsok0GtsHTqZ2PVAodpmkmcSNuEvNdpKTNtGz3K0kr+nt7AXEfY6f7RcwoGuMJqjCg+e/mUI+o
-	+qvxIpjsn33KAkKdfj4jJ7
-X-Google-Smtp-Source: AGHT+IHdEFv9Zor3bc4Bu4OwuhNr0f57kycevNnexdIDViJx433B1mm7bsY0xFtLkvh/PAGC6U94nQ==
-X-Received: by 2002:a05:6a00:1818:b0:7a9:7887:f0fa with SMTP id d2e1a72fcca58-7af6f5e1aebmr2587605b3a.1.1762407317929;
-        Wed, 05 Nov 2025 21:35:17 -0800 (PST)
-Received: from [192.168.4.196] ([73.222.117.172])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7af82af1907sm1290495b3a.62.2025.11.05.21.35.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Nov 2025 21:35:17 -0800 (PST)
-Message-ID: <c704e7d9-5bc9-43e6-98cf-d28c592b0f3b@gmail.com>
-Date: Wed, 5 Nov 2025 21:35:14 -0800
+        d=1e100.net; s=20230601; t=1762411328; x=1763016128;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TL19hVOz4D0kxYhklrn7cfeF0qsMbESAPz4b68jgXaw=;
+        b=GbErOoJ0T/gFUwWm7ydIlF/fpSn2prjBOrqYzYgqrx3qkY34Dap2MZd7Gc4rv91T8d
+         n6eIqAex8yCELc1k2V9sPx/hf2LySQt/UDrE1ZCKgS8hNuTwxtWwZ54OLhM0fj46OX+n
+         wscjE9ZdBdk+2iNVf1lBliym5tXL4idgIgz4OA1m6IYUqCwNnqz4YgtIlvCaeuvVKgdX
+         YTOmnj38NawuZ4BhwGJoINNnDA3QAlbLpwV19iUTUm1DVcfx1tOkyGmPltj1gYMuja9G
+         BNgkO0s7sACAu4GELvviCy3FjNnNKjSW0yBKt+xMnpnNbOX33EHU06wcFrH7/Ge6gi2L
+         hZEw==
+X-Forwarded-Encrypted: i=1; AJvYcCWg4jejOBf0PW0nDNrlZ4ty2lQAQ6YMcx4xUNStDl4yd9dVcK7FxiEVY6mv5lAxcZhpKkZcUuBj@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz/NPUN6yqcFcbhqwuGheqOTwB9WzCKUU9lDGDy/p3zd1kFl4cO
+	rg1Ewm8RepCcOWYuEtYyN3DBK1nv9+X5sHYi5TYMzMmM6tD6mEtqG5k6WxlNpSXJGaw=
+X-Gm-Gg: ASbGncuDnxFwXbdbtMSqKXQbukNuJ+Y4Xb1euoAPpHTPOD4r5U+A64+/EJsz/BDn4rq
+	6CK49smfFHXtVeNptGYRV7ebrzisNglL27b6SUfZU1mpMUpMCBgor7G7BWtGn/Q4FDacwWQ6g1J
+	xg+1UwH++1xDkdNL7hpPy67nmOrVQRj0IbjBdRs5rntai7vPQxcBviO26OXqgcaj8XXsNYmnlAj
+	DrTXnJhY/k7UiUqgN7TVIT/TtkbBuJlqn3JF9TaIg9UwAL34KgGBbiIVK21E1oBvkkDho21F1Bf
+	QHC2iSsR0GDDVIXTbOElQkkJaNJJfqmNufZOC3vsjr6OoxrlIN5X4vhW+VQUvv0XBWM03ivme7u
+	75VTVocxaq57hcIz0dZRzFc66lkV5g6hF0j5ngwkciB1OWeD7D09nofWfFy82vZkE4VfZ1QrUMk
+	lPqTzhDgJTi7lDMw==
+X-Google-Smtp-Source: AGHT+IHUkyt8WCcqdVjY6Gz4mADuanTmzresjnwoIZFRGAhN7gntziMCQomA+rIkuthn7tqcXJO81w==
+X-Received: by 2002:a17:902:e5c5:b0:28d:18d3:46ca with SMTP id d9443c01a7336-2962adb62f9mr95573365ad.49.1762411327911;
+        Wed, 05 Nov 2025 22:42:07 -0800 (PST)
+Received: from .shopee.com ([122.11.166.8])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29651ccc19asm16080265ad.104.2025.11.05.22.42.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Nov 2025 22:42:07 -0800 (PST)
+From: Leon Huang Fu <leon.huangfu@shopee.com>
+To: inwardvessel@gmail.com
+Cc: akpm@linux-foundation.org,
+	cgroups@vger.kernel.org,
+	corbet@lwn.net,
+	hannes@cmpxchg.org,
+	jack@suse.cz,
+	joel.granados@kernel.org,
+	kyle.meyer@hpe.com,
+	lance.yang@linux.dev,
+	laoar.shao@gmail.com,
+	leon.huangfu@shopee.com,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	mclapinski@google.com,
+	mhocko@kernel.org,
+	muchun.song@linux.dev,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	yosry.ahmed@linux.dev
+Subject: Re: [PATCH mm-new v2] mm/memcontrol: Flush stats when write stat file
+Date: Thu,  6 Nov 2025 14:42:00 +0800
+Message-ID: <20251106064200.64198-1-leon.huangfu@shopee.com>
+X-Mailer: git-send-email 2.51.2
+In-Reply-To: <c704e7d9-5bc9-43e6-98cf-d28c592b0f3b@gmail.com>
+References: <c704e7d9-5bc9-43e6-98cf-d28c592b0f3b@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH mm-new v2] mm/memcontrol: Flush stats when write stat file
-To: Leon Huang Fu <leon.huangfu@shopee.com>, shakeel.butt@linux.dev
-Cc: akpm@linux-foundation.org, cgroups@vger.kernel.org, corbet@lwn.net,
- hannes@cmpxchg.org, jack@suse.cz, joel.granados@kernel.org,
- kyle.meyer@hpe.com, lance.yang@linux.dev, laoar.shao@gmail.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- mclapinski@google.com, mhocko@kernel.org, muchun.song@linux.dev,
- roman.gushchin@linux.dev, yosry.ahmed@linux.dev
-References: <6kh6hle2xp75hrtikasequ7qvfyginz7pyttltx6pkli26iir5@oqjmglatjg22>
- <20251106033045.41607-1-leon.huangfu@shopee.com>
-Content-Language: en-US
-From: JP Kobryn <inwardvessel@gmail.com>
-In-Reply-To: <20251106033045.41607-1-leon.huangfu@shopee.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 11/5/25 7:30 PM, Leon Huang Fu wrote:
-> On Thu, Nov 6, 2025 at 9:19 AM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+>On 11/5/25 7:30 PM, Leon Huang Fu wrote:
+>> On Thu, Nov 6, 2025 at 9:19 AM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+>>>
+>>> +Yosry, JP
+>>>
+>>> On Wed, Nov 05, 2025 at 03:49:16PM +0800, Leon Huang Fu wrote:
+>>>> On high-core count systems, memory cgroup statistics can become stale
+>>>> due to per-CPU caching and deferred aggregation. Monitoring tools and
+>>>> management applications sometimes need guaranteed up-to-date statistics
+>>>> at specific points in time to make accurate decisions.
+>>>
+>>> Can you explain a bit more on your environment where you are seeing
+>>> stale stats? More specifically, how often the management applications
+>>> are reading the memcg stats and if these applications are reading memcg
+>>> stats for each nodes of the cgroup tree.
+>>>
+>>> We force flush all the memcg stats at root level every 2 seconds but it
+>>> seems like that is not enough for your case. I am fine with an explicit
+>>> way for users to flush the memcg stats. In that way only users who want
+>>> to has to pay for the flush cost.
+>>>
 >>
->> +Yosry, JP
+>> Thanks for the feedback. I encountered this issue while running the LTP
+>> memcontrol02 test case [1] on a 256-core server with the 6.6.y kernel on XFS,
+>> where it consistently failed.
 >>
->> On Wed, Nov 05, 2025 at 03:49:16PM +0800, Leon Huang Fu wrote:
->>> On high-core count systems, memory cgroup statistics can become stale
->>> due to per-CPU caching and deferred aggregation. Monitoring tools and
->>> management applications sometimes need guaranteed up-to-date statistics
->>> at specific points in time to make accurate decisions.
+>> I was aware that Yosry had improved the memory statistics refresh mechanism
+>> in "mm: memcg: subtree stats flushing and thresholds" [2], so I attempted to
+>> backport that patchset to 6.6.y [3]. However, even on the 6.15.0-061500-generic
+>> kernel with those improvements, the test still fails intermittently on XFS.
 >>
->> Can you explain a bit more on your environment where you are seeing
->> stale stats? More specifically, how often the management applications
->> are reading the memcg stats and if these applications are reading memcg
->> stats for each nodes of the cgroup tree.
->>
->> We force flush all the memcg stats at root level every 2 seconds but it
->> seems like that is not enough for your case. I am fine with an explicit
->> way for users to flush the memcg stats. In that way only users who want
->> to has to pay for the flush cost.
->>
-> 
-> Thanks for the feedback. I encountered this issue while running the LTP
-> memcontrol02 test case [1] on a 256-core server with the 6.6.y kernel on XFS,
-> where it consistently failed.
-> 
-> I was aware that Yosry had improved the memory statistics refresh mechanism
-> in "mm: memcg: subtree stats flushing and thresholds" [2], so I attempted to
-> backport that patchset to 6.6.y [3]. However, even on the 6.15.0-061500-generic
-> kernel with those improvements, the test still fails intermittently on XFS.
-> 
+>
+>I'm not against this change, but it might be worth testing on a 6.16 or
+>later kernel. There were some changes that could affect your
+>measurements. One is that flushing was isolated to individual subsystems
+>[0] and the other is that updating stats became lockless [1].
+>
+>[0]
+>https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/cgroup/rstat.c?h=v6.18-rc4&id=5da3bfa029d6809e192d112f39fca4dbe0137aaf
+>[1]
+>https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/cgroup/rstat.c?h=v6.18-rc4&id=36df6e3dbd7e7b074e55fec080012184e2fa3a46
 
-I'm not against this change, but it might be worth testing on a 6.16 or
-later kernel. There were some changes that could affect your
-measurements. One is that flushing was isolated to individual subsystems
-[0] and the other is that updating stats became lockless [1].
+Thanks for the suggestion! I've tested on kernel 6.17.7-061707-generic and
+the results show the problem has actually gotten worse compared to
+6.15.0-061500-generic.
 
-[0] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/cgroup/rstat.c?h=v6.18-rc4&id=5da3bfa029d6809e192d112f39fca4dbe0137aaf
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/cgroup/rstat.c?h=v6.18-rc4&id=36df6e3dbd7e7b074e55fec080012184e2fa3a46
+Test results (100 runs each on the LTP memcontrol02 test scenario):
+
+Kernel 6.15.0-061500-generic:
+- Failures: 2/100 runs
+- Failure rate: 2%
+
+Kernel 6.17.7-061707-generic:
+- Failures: 25/100 runs
+- Failure rate: 25%
+
+The increased failure rate with the newer kernel suggests that the lockless
+stats updates and subsystem isolation changes, while improving performance,
+may have reduced the implicit synchronization that was helping mask the
+staleness issue in some cases.
+
+This reinforces the need for an explicit flush mechanism (memory.stat_refresh)
+to give users control when they need guaranteed up-to-date statistics.
+
+Thanks,
+Leon
 
